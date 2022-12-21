@@ -509,7 +509,7 @@ void main() {
         });
 
         test(
-          'after manually going back to loading, dispose throws StateError',
+          'after manually going back to loading, resolves with last future result',
           () async {
             final container = createContainer();
             final completer = Completer<int>.sync();
@@ -526,6 +526,30 @@ void main() {
             container.dispose();
 
             completer.complete(42);
+
+            await expectLater(future, completion(42));
+          },
+        );
+
+        test(
+          'if going back to loading after future resolved, throws StateError',
+          () async {
+            final container = createContainer();
+            final completer = Completer<int>.sync();
+            final provider = factory.simpleTestProvider<int>(
+              (ref) => completer.future,
+            );
+
+            container.read(provider);
+
+            completer.complete(42);
+
+            container.read(provider.notifier).state = const AsyncData(42);
+            container.read(provider.notifier).state = const AsyncLoading<int>();
+
+            final future = container.read(provider.future);
+
+            container.dispose();
 
             await expectLater(future, throwsStateError);
           },
@@ -550,8 +574,13 @@ void main() {
 
           completer.complete(42);
 
-          expect(sub.read().future, completion(21));
-          verifyZeroInteractions(listener);
+          expect(sub.read().future, completion(42));
+          final capture =
+              verifyOnly(listener, listener(captureAny, captureAny)).captured;
+
+          expect(capture.length, 2);
+          expect(capture.first, completion(21));
+          expect(capture.last, completion(42));
         });
 
         test('resolves with the new state when notifier.state is changed',

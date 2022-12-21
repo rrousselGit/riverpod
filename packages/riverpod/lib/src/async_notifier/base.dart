@@ -173,8 +173,6 @@ mixin FutureHandlerProviderElementMixin<T>
   }
 
   void _dataTransition(T value) {
-    _builtFuture = null;
-
     final completer = _futureCompleter;
     if (completer != null) {
       completer.complete(value);
@@ -192,8 +190,6 @@ mixin FutureHandlerProviderElementMixin<T>
   }
 
   void _errorTransition(Object err, StackTrace stackTrace) {
-    _builtFuture = null;
-
     final completer = _futureCompleter;
     if (completer != null) {
       completer
@@ -253,7 +249,6 @@ mixin FutureHandlerProviderElementMixin<T>
               if (_builtFuture == futureOr) {
                 _errorTransition(error, stackTrace);
                 setState(AsyncError<T>(error, stackTrace));
-                _builtFuture = null;
               }
             },
           );
@@ -295,7 +290,6 @@ mixin FutureHandlerProviderElementMixin<T>
         );
       }
     }
-
     super.dispose();
   }
 
