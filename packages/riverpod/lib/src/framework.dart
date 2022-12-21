@@ -5,7 +5,6 @@ import 'dart:collection';
 
 import 'package:meta/meta.dart';
 import 'package:state_notifier/state_notifier.dart';
-import 'devtool.dart';
 import 'internals.dart';
 import 'stack_trace.dart';
 

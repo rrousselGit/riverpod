@@ -231,9 +231,6 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
     _mounted = true;
     assert(
       () {
-        RiverpodBinding.debugInstance
-            .providerListChangedFor(containerId: container._debugId);
-
         _debugCurrentCreateHash = provider.debugGetCreateSourceHash?.call();
 
         return true;
@@ -855,15 +852,6 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   @protected
   @mustCallSuper
   void dispose() {
-    assert(
-      () {
-        RiverpodBinding.debugInstance
-            .providerListChangedFor(containerId: container._debugId);
-        return true;
-      }(),
-      '',
-    );
-
     runOnDispose();
 
     // TODO test invalidateSelf() then dispose() properly unlinks dependencies
