@@ -65,7 +65,7 @@ jobs:
         run: flutter pub get
       - name: Install dependencies (integration/buid.yaml)
         run: |
-          if test -d "integration/build.yaml"; then
+          if test -d "integration/build_yaml"; then
             flutter pub get
           fi
 
