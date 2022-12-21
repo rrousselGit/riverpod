@@ -1,13 +1,5 @@
 pubspec.lock
 
-# Ignoring generated files, as they pollute pull requests and can create merge conflicts
-*.g.dart
-*.freezed.dart
-!packages/*/lib/**/*.freezed.dart
-!packages/*/lib/**/*.g.dart
-!website/third-party/**/*.freezed.dart
-!website/third-party/**/*.g.dart
-
 # Ignoring native folders of the example as they can be re-generated easily using:
 # flutter create --platforms=android,ios,web,windows,macos .
 **/example/android/
