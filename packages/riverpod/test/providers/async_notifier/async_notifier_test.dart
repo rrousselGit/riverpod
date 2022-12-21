@@ -5,7 +5,6 @@ import 'dart:async';
 import 'package:meta/meta.dart';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart' hide ErrorListener;
-import 'package:riverpod/src/async_notifier.dart';
 import 'package:riverpod/src/synchronous_future.dart';
 import 'package:test/test.dart';
 

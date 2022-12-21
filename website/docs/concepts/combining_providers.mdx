@@ -140,22 +140,21 @@ but there is little to no use in doing that.
 In this situation, we can use [read], which is similar to [watch], but will not
 cause the provider to recreate the value it exposes when the value obtained changes.
 
-In that case, a common practice is to pass `ref.read` to the object created.
+In that case, a common practice is to pass the provider's `Ref` to the object created.
 The object created will then be able to read providers whenever it wants.
 
 ```dart
 final userTokenProvider = StateProvider<String>((ref) => null);
 
-final repositoryProvider = Provider((ref) => Repository(ref.read));
+final repositoryProvider = Provider(Repository.new);
 
 class Repository {
-  Repository(this.read);
+  Repository(this.ref);
 
-  /// The `ref.read` function
-  final Reader read;
+  final Ref ref;
 
   Future<Catalog> fetchCatalog() async {
-    String token = read(userTokenProvider);
+    String token = ref.read(userTokenProvider);
 
     final response = await dio.get('/path', queryParameters: {
       'token': token,
@@ -165,23 +164,6 @@ class Repository {
   }
 }
 ```
-
-:::note
-You could also pass the `ref` instead of `ref.read` to your object:
-
-```dart
-final repositoryProvider = Provider((ref) => Repository(ref));
-
-class Repository {
-  Repository(this.ref);
-
-  final Ref ref;
-}
-```
-
-The only difference that passing `ref.read` brings is that it is 
-slightly less verbose and ensures that our object never uses `ref.watch`.
-:::
 
 :::danger **DON'T** call [read] inside the body of a provider
 
@@ -196,7 +178,7 @@ If you used [read] as an attempt to avoid unwanted rebuilds of your object,
 refer to [My provider updates too often, what can I do?](#my-provider-updates-too-often-what-can-i-do)
 :::
 
-### How to test an object that receives [read] as a parameter of its constructor?
+### How to test an object that receives [ref] as a parameter of its constructor?
 
 If you are using the pattern described in [Can I read a provider without listening to it?](#can-i-read-a-provider-without-listening-to-it),
 you may be wondering how to write tests for your object.
@@ -205,7 +187,7 @@ In this scenario, consider testing the provider directly instead of the raw obje
 You can do so by using the [ProviderContainer] class:
 
 ```dart
-final repositoryProvider = Provider((ref) => Repository(ref.read));
+final repositoryProvider = Provider((ref) => Repository(ref));
 
 test('fetches catalog', () async {
   final container = ProviderContainer();

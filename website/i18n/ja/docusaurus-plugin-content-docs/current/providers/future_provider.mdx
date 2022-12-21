@@ -1,13 +1,14 @@
 ---
 title: FutureProvider
+version: 1
 ---
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
-import configProvider from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/providers/future_provider/config_provider.dart";
-import configConsumer from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/providers/future_provider/config_consumer.dart";
-import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+import configProvider from "/docs/providers/future_provider/config_provider";
+import configConsumer from "/docs/providers/future_provider/config_consumer";
+import { trimSnippet,AutoSnippet} from "../../../../../src/components/CodeSnippet";
 
 `FutureProvider` は非同期操作が可能な [Provider] であると言えます。
 
@@ -32,11 +33,11 @@ import { trimSnippet } from "../../../../../src/components/CodeSnippet";
 ファイルの読み込みはプロバイダ内で async/await を使うことで可能です。
 Flutter のアセットからファイルを読み込む場合は、次のようになります。
 
-<CodeBlock>{trimSnippet(configProvider)}</CodeBlock>
+<AutoSnippet language="dart" {...configProvider}></AutoSnippet>
 
 UI 側では以下の通り `Configuration` を監視します。
 
-<CodeBlock>{trimSnippet(configConsumer)}</CodeBlock>
+<AutoSnippet language="dart" {...configConsumer}></AutoSnippet>
 
 これにより [Future] が解決すると UI は自動で更新されます。
 おまけにキャッシュ機能が働くため、複数のウィジェットがこの `Configuration` を必要とする場合でもアセットは一度しか読み込まれません。

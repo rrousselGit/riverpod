@@ -600,6 +600,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
         assert(
           provider != origin ||
+              // Families are allowed to depend on themselves with different parameters.
+              (origin.from != null && listenable.from == origin.from) ||
               origin.dependencies == null ||
               origin.dependencies!.contains(listenable.from) ||
               origin.dependencies!.contains(listenable),

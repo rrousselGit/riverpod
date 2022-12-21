@@ -1,8 +1,12 @@
+---
+title: Search as we type
+---
+
 Un esempio reale potrebbe essere usare `FutureProvider` per implementare una barra di ricerca.
 
 ## Esempio d'uso: barra di ricerca "Search as we type"
 
-Implementare una "search as we type" ("cerca mentre si digita") può sembrare 
+Implementare una "search as we type" ("cerca mentre si digita") può sembrare
 scoraggiante all'inizio quando si utilizzano mezzi convenzionali.
 Ci sono molte parti dinamiche, come:
 
@@ -12,19 +16,19 @@ Ci sono molte parti dinamiche, come:
 - cancellare precedenti richieste di rete in sospeso quando il
   campo di ricerca cambia.
 
-Tuttavia, la combinazione di `FutureProvider` e la potenza di [ref.watch] 
+Tuttavia, la combinazione di `FutureProvider` e la potenza di [ref.watch]
 possono semplificare di gran lunga questo lavoro.
 
-Un pattern comune per eseguire richieste asincrone consiste nel 
+Un pattern comune per eseguire richieste asincrone consiste nel
 suddividerle in più provider:
 
 - uno [StateNotifierProvider] o `StateProvider` per i parametri della tua richiesta
   (o in alternativa usare [family])
-- un `FutureProvider`, che farà la richiesta leggendo i parametri dagli altri 
+- un `FutureProvider`, che farà la richiesta leggendo i parametri dagli altri
   providers/[family].
 
-Il primo passo è immagazzinare l'input dell'utente da qualche parte. 
-Per questo esempio useremo `StateProvider` (dato che lo stato di ricerca 
+Il primo passo è immagazzinare l'input dell'utente da qualche parte.
+Per questo esempio useremo `StateProvider` (dato che lo stato di ricerca
 è solo una singola `String`):
 
 ```dart

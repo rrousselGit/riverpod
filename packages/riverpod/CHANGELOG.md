@@ -1,49 +1,98 @@
-# Unreleased major
+## 2.0.2
+
+ - **FIX**: Fixed an assert error if a `family` depends on itself while specifying `dependencies`. (#1721).
+
+## 2.0.2
+
+Fixed an assert error if a `family` depends on itself while specifying `dependencies`.
+
+## 2.0.1
+
+Updated changelog (see 2.0.0)
+
+## 2.0.0
+
+Here is the changelog for all the changes in the 2.0 version.
+An article is in progress and will be linked here once available.
 
 **Breaking changes**:
 
-- `FutureProvider.stream` is removed
-- `Family` now has a single generic parameter instead of 3.
+- `FutureProvider.stream` is removed.
 - Using `overrideWithProvider`, it is no-longer possible to override a provider
   with a different type of provider (such as overriding `FutureProvider` with a `StreamProvider`).
 - `AsyncError.stackTrace` is now a required positional parameter and non-nullable
 - All `overrideWithValue` methods are removed, besides `Provider.overrideWithValue`.
   This change is temporary, and these methods will be reintroduced in a later version.
+  In the meantime, you can use `overrideWithProvider`.
 - Modifiers (`provider.future`, `provider.state`, ...) no-longer are providers, and therefore no-longer
-  appears inside `ProviderObserver`.
+  appear inside `ProviderObserver`.
 - The `Reader` typedef is removed. Use `Ref` instead.
 - `ProviderListener` is removed. Used `ref.listen` instead.
-- Providers other than `FutureProvider`/`StreamProvider` no-longer override `AsyncValue`s
-  to set `AsyncValue.isRefreshing` when an `AsyncLoading` is emitted.
+- Removed the deprecated `ProviderReference`.
+- Providers no-longer throw a `ProviderException` if an exception was thrown while building their value.
+  Instead, they will rethrow the thrown exception and its stacktrace.
 - It is no longer possible to pass `provider.future/.notifier/...` to the parameter `dependencies` of provider.
-  Simply pass the provider instead.
-- `cacheTime`/`disposeDelay` are no longer a `Duration` but instead an `int`,
-  representing the `Duration` in milliseconds.
+  Passing the provider directly is enough.
+- The `Family` type now has a single generic parameter instead of 3.
 
 Non-breaking changes:
 
-- feat: A new `AutoDisposeRef.keepAlive()` function is added. It is meant to replace
-  `AutoDisposeRef.maintainState` to make logic for preventing the disposal of a provider more reusable.
-- `AutoDisposeRef.maintainState` is deprecated. Use the new `AutoDisposeRef.keepAlive()` instead.
-- feat: Add support for `ref.invalidate(family)` to recompiute an entire family (#1517)
-- fixed a bug where `AsyncValue.whenData` did not preserve `AsyncValue.isLoading/isRefreshing`
-- fix: `StateProvider` and `StateNotifierProvider` no longer notify their listeners
-  on `ref.refresh` if the new result is identical to the old one.
-- fix: potential null exception when using `autoDispose`
+- Upgrade minimum required Dart SDK version to 2.17.0
+- Added `provider.selectAsync`, which allows to both await an async value
+  while also filtering rebuilds.
+- Added `ref.listenSelf`, for subscribing to changes of a provider within
+  that provider.
+  That can be useful for logging purposes or storing the state of a provider
+  in a DB.
+- Added `container.invalidate(provider)`/`ref.invalidate(provider)` and `ref.invalidateSelf()`.
+  These are similar to `ref.refresh` methods, but do not immediately rebuild the provider.
 
-# 2.0.0-dev.9
+These methods are safer than `ref.refresh` as they can avoid a provider
+rebuilding twice in a quick succession.
+
+- Added `ref.onAddListener`, `ref.onRemoveListener`, `ref.onCancel` and
+  `ref.onResume`. All of which allow performing side-effects when providers
+  are listened or stop being listened.
+
+- A new `AutoDisposeRef.keepAlive()` function is added. It is meant to replace
+  `AutoDisposeRef.maintainState` to make logic for preventing the disposal of a provider more reusable.
+- feat; `AutoDisposeRef.maintainState` is deprecated. Use the new `AutoDisposeRef.keepAlive()` instead.
+- Add support for `ref.invalidate(family)` to recompute an entire family (#1517)
+- Added `AsyncValue.valueOrNull` to obtain the value while ignoring potential errors.
+- Added new functionalities to `AsyncValue`: `hasError`, `hasData`, `asError`, `isLoading`
+  , `copyWithPrevious` and `unwrapPrevious`.
+
+Fixes:
+
+- fixed a bug where `AsyncValue.whenData` did not preserve `AsyncValue.isLoading/isRefreshing`
+- `StateProvider` and `StateNotifierProvider` no longer notify their listeners
+  on `ref.refresh` if the new result is identical to the old one.
+- fixed potential null exception when using `autoDispose`
+- fixed a bug where unmounting a nested ProviderScope could cause an exception (#1400)
+- Fixed an issue where providers were incorrectly allowed to depend on themselves,
+  breaking `autoDispose` in the process.
+- Fixed a memory leak when using `StateProvider.autoDispose`'s `.state`
+- Fix `ProviderObserver.didDisposeProvider` not executing on provider refresh.
+- Fixed an issue where `AsyncValue.value` did not throw if there is an error.
+- Fixed a cast error when overriding a provider with a more specific provider type (#1100)
+- Fixed a bug where `onDispose` listeners could be executed twice under certain
+  conditions when using `autoDispose`.
+- Fixed an issue where refreshing a `provider.future`/`provider.stream` did work properly
+- Fixed false positive with `ref.watch` asserts
+
+## 2.0.0-dev.9
 
 Fix Timer leak when using `cacheTime`/`disposeDelay` and disposing a `ProviderContainer`
 
-# 2.0.0-dev.8
+## 2.0.0-dev.8
 
 fix: a bug where unmounting a nested ProviderScope could cause an exception (#1400)
 
-# 2.0.0-dev.7
+## 2.0.0-dev.7
 
 Upgrade minimum required Dart SDK version to 2.17.0
 
-# 2.0.0-dev.6
+## 2.0.0-dev.6
 
 - Added `AsyncValue.valueOrNull` to obtain the value while ignoring potential errors.
 - Fixed an issue where `AsyncValue.value` did not throw if there is an error.
@@ -51,11 +100,11 @@ Upgrade minimum required Dart SDK version to 2.17.0
 - Fixed a bug where an exception may be thrown asynchronously after a
   `KeepAliveLink` is cancelled.
 
-# 2.0.0-dev.5
+## 2.0.0-dev.5
 
 - Fixed a bug where emitting an `AsyncData` after an `AsyncError` leads to `AsyncValue.hasError` to be true
 
-# 2.0.0-dev.4
+## 2.0.0-dev.4
 
 - Added `ref.listenSelf`, for subscribing to changes of a provider within
   that provider.
@@ -82,12 +131,12 @@ Upgrade minimum required Dart SDK version to 2.17.0
 
 - Fix `ProviderObserver.didDisposeProvider` not executing on provider refresh.
 
-# 2.0.0-dev.3
+## 2.0.0-dev.3
 
 When calling `ref.listen` on a provider, this provider will now properly
 rebuild if one of its dependency had changed.
 
-# 2.0.0-dev.2
+## 2.0.0-dev.2
 
 - Deprecated `ref.maintainState=` in favor of a newly added `ref.keepAlive()`.
   This new `ref.keepAlive()` function is similar to `maintainState` but
@@ -104,7 +153,7 @@ rebuild if one of its dependency had changed.
   `ref.onResume`. All of which allow performing side-effects when providers
   are listened or stop being listened.
 
-# 2.0.0-dev.1
+## 2.0.0-dev.1
 
 - Now requires Dart 2.16
 
@@ -122,7 +171,7 @@ rebuild if one of its dependency had changed.
 - Fixed a bug where `onDispose` listeners could be executed twice under certain
   conditions when using `autoDispose`.
 
-# 2.0.0-dev.0
+## 2.0.0-dev.0
 
 - **Breaking** After a provider has emitted an `AsyncValue.data` or `AsyncValue.error`,
   that provider will no longer emit an `AsyncValue.loading`.
