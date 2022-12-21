@@ -29,23 +29,23 @@ class _SystemHash {
   }
 }
 
-String $keepAliveHash() => r'72dd192676126d487c24c7695a91d59410c62696';
+String _$keepAliveHash() => r'72dd192676126d487c24c7695a91d59410c62696';
 
 /// See also [keepAlive].
 final keepAliveProvider = Provider<int>(
   keepAlive,
   name: r'keepAliveProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : $keepAliveHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : _$keepAliveHash,
 );
 typedef KeepAliveRef = ProviderRef<int>;
-String $notKeepAliveHash() => r'1ccc497d7c651f8e730ec1bcecf271ffe9615d83';
+String _$notKeepAliveHash() => r'1ccc497d7c651f8e730ec1bcecf271ffe9615d83';
 
 /// See also [notKeepAlive].
 final notKeepAliveProvider = AutoDisposeProvider<int>(
   notKeepAlive,
   name: r'notKeepAliveProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : $notKeepAliveHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : _$notKeepAliveHash,
 );
 typedef NotKeepAliveRef = AutoDisposeProviderRef<int>;
