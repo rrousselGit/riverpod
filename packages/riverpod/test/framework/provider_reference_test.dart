@@ -19,7 +19,7 @@ void main() {
 
         container.read(provider);
 
-        container.read(dep.state).state++;
+        container.read(dep.notifier).state++;
 
         final another = Provider((ref) => 0);
 
@@ -74,7 +74,7 @@ void main() {
         var buildCount = 0;
         final provider = Provider((ref) {
           buildCount++;
-          return ref.watch(dep.state).state;
+          return ref.watch(dep);
         });
         final listener = Listener<int>();
         final another = Provider((ref) {
@@ -85,7 +85,7 @@ void main() {
         expect(container.read(provider), 0);
         expect(buildCount, 1);
 
-        container.read(dep.state).state = 42;
+        container.read(dep.notifier).state = 42;
 
         expect(buildCount, 1);
 
@@ -99,10 +99,7 @@ void main() {
         final listener = Listener<num>();
         final dep = StateProvider((ref) => 0);
         final provider = Provider((ref) {
-          ref.listen<StateController<num>>(
-            dep.state,
-            (prev, value) => listener(prev?.state, value.state),
-          );
+          ref.listen<num>(dep, listener);
         });
 
         final container = createContainer();
@@ -110,10 +107,10 @@ void main() {
 
         verifyZeroInteractions(listener);
 
-        container.read(dep.state).state++;
+        container.read(dep.notifier).state++;
         await container.pump();
 
-        verifyOnly(listener, listener(1, 1));
+        verifyOnly(listener, listener(0, 1));
       });
 
       test('can listen selectors', () async {
@@ -249,7 +246,7 @@ void main() {
         verifyZeroInteractions(onDispose);
         verifyZeroInteractions(onDispose2);
 
-        container.read(count.state).state++;
+        container.read(count.notifier).state++;
         await container.pump();
 
         verifyInOrder([
@@ -279,8 +276,8 @@ void main() {
 
         verifyZeroInteractions(onDispose);
 
-        container.read(count.state).state++;
-        container.read(count2.state).state++;
+        container.read(count.notifier).state++;
+        container.read(count2.notifier).state++;
 
         verifyOnly(onDispose, onDispose());
       });
@@ -306,7 +303,7 @@ void main() {
 
         verifyZeroInteractions(onDispose);
 
-        container.read(count.state).state++;
+        container.read(count.notifier).state++;
         // no pump() because that would rebuild the provider, which means it would
         // need to be disposed once again.
 
@@ -340,7 +337,7 @@ void main() {
         container.read(provider);
         expect(mounted, null);
 
-        container.read(dep.state).state++;
+        container.read(dep.notifier).state++;
 
         expect(mounted, false);
       });
@@ -376,7 +373,7 @@ void main() {
         container.read(provider);
         expect(element.mounted, true);
 
-        container.read(dep.state).state++;
+        container.read(dep.notifier).state++;
 
         expect(element.mounted, false);
       });

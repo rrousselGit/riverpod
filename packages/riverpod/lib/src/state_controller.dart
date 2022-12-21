@@ -21,7 +21,7 @@ class StateController<T> extends StateNotifier<T> {
   /// depends on the previous state, such that rather than:
   ///
   /// ```dart
-  /// ref.read(provider.state).state = ref.read(provider.state).state + 1;
+  /// ref.read(provider.notifier).state = ref.read(provider.notifier).state + 1;
   /// ```
   ///
   /// we can do:

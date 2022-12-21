@@ -17,13 +17,30 @@ abstract class Ref<State extends Object?> {
   /// {@template riverpod.refresh}
   /// Forces a provider to re-evaluate its state immediately, and return the created value.
   ///
-  /// If you do not care about the new value, prefer [invalidate] instead,
-  /// which makes the invalidation logic more resilient by avoiding
-  /// multiple refreshes at once.
+  /// Writing:
+  ///
+  /// ```dart
+  /// final newValue = ref.refresh(provider);
+  /// ```
+  ///
+  /// is strictly identical to doing:
+  ///
+  /// ```dart
+  /// ref.invalidate(provider);
+  /// final newValue = ref.read(provider);
+  /// ```
+  ///
+  /// If you do not care about the return value of [refresh], use [invalidate] instead.
+  /// Doing so has the benefit of:
+  /// - making the invalidation logic more resilient by avoiding multiple
+  ///   refreshes at once.
+  /// - possibly avoids recomputing a provider if it isn't
+  ///   needed immediately.
   ///
   /// This method is useful for features like "pull to refresh" or "retry on error",
   /// to restart a specific provider.
   /// {@endtemplate}
+  @useResult
   T refresh<T>(Refreshable<T> provider);
 
   /// {@template riverpod.invalidate}
@@ -38,6 +55,23 @@ abstract class Ref<State extends Object?> {
   /// Calling [invalidate] will cause the provider to be disposed immediately.
   /// {@endtemplate}
   void invalidate(ProviderOrFamily provider);
+
+  /// Notify depedents that this provider has changed.
+  ///
+  /// This is typically used for mutable state, such as to do:
+  ///
+  /// ```dart
+  /// class TodoList extends Notifier<List<Todo>> {
+  ///   @override
+  ///   List<Todo>> build() => [];
+  ///
+  ///   void addTodo(Todo todo) {
+  ///     state.add(todo);
+  ///     ref.notifyListeners();
+  ///   }
+  /// }
+  /// ```
+  void notifyListeners();
 
   /// Listens to changes on the value exposed by this provider.
   ///
@@ -156,6 +190,41 @@ abstract class Ref<State extends Object?> {
   /// If possible, avoid using [read] and prefer [watch], which is generally
   /// safer to use.
   T read<T>(ProviderListenable<T> provider);
+
+  /// {@template riverpod.exists}
+  /// Determines whether a provider is initialized or not.
+  ///
+  /// Writing logic that conditionally depends on the existence of a provider
+  /// is generally unsafe and should be avoided.
+  /// The problem is that once the provider gets initialized, logic that
+  /// depends on the existence or not of a provider won't be rerun; possibly
+  /// causing your state to get out of date.
+  ///
+  /// But it can be useful in some cases, such as to avoid re-fetching an
+  /// object if a different network request already obtained it:
+  ///
+  /// ```dart
+  /// final fetchItemList = FutureProvider<List<Item>>(...);
+  ///
+  /// final fetchItem = FutureProvider.autoDispose.family<Item, String>((ref, id) async {
+  ///   if (ref.exists(fetchItemList)) {
+  ///     // If `fetchItemList` is initialized, we look into its state
+  ///     // and return the already obtained item.
+  ///     final itemFromItemList = await ref.watch(
+  ///       fetchItemList.selectAsync((items) => items.firstWhereOrNull((item) => item.id == id)),
+  ///     );
+  ///     if (itemFromItemList != null) return itemFromItemList;
+  ///   }
+  ///
+  ///   // If `fetchItemList` is not initialized, perform a network request for
+  ///   // "id" separately
+  ///
+  ///   final json = await http.get('api/items/$id');
+  ///   return Item.fromJson(json);
+  /// });
+  /// ```
+  /// {@endtemplate}
+  bool exists(ProviderBase<Object?> provider);
 
   /// Obtains the state of a provider and causes the state to be re-evaluated
   /// when that provider emits a new value.

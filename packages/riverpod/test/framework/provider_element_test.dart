@@ -7,6 +7,124 @@ import 'package:test/test.dart';
 import '../utils.dart';
 
 void main() {
+  group('Ref.exists', () {
+    test('simple use-case', () {
+      final container = createContainer();
+      final provider = Provider((ref) => 0);
+      final refProvider = Provider((ref) => ref);
+
+      final ref = container.read(refProvider);
+
+      expect(
+        container.getAllProviderElements().map((e) => e.origin),
+        [refProvider],
+      );
+      expect(container.exists(refProvider), true);
+      expect(ref.exists(provider), false);
+
+      ref.read(provider);
+
+      expect(ref.exists(refProvider), true);
+      expect(ref.exists(provider), true);
+    });
+  });
+
+  group('ref.notifyListeners', () {
+    test('If called after initialization, notify listeners', () {
+      final observer = ProviderObserverMock();
+      final listener = Listener<int>();
+      final selfListener = Listener<int>();
+      final container = createContainer(observers: [observer]);
+      late Ref<int> ref;
+      final provider = Provider<int>((r) {
+        ref = r;
+        ref.listenSelf(selfListener);
+        return 0;
+      });
+
+      container.listen(provider, listener, fireImmediately: true);
+
+      verifyOnly(observer, observer.didAddProvider(provider, 0, container));
+      verifyOnly(listener, listener(null, 0));
+      verifyOnly(selfListener, selfListener(null, 0));
+
+      ref.notifyListeners();
+
+      verifyOnly(listener, listener(0, 0));
+      verifyOnly(selfListener, selfListener(0, 0));
+      verifyOnly(
+        observer,
+        observer.didUpdateProvider(provider, 0, 0, container),
+      );
+    });
+
+    test(
+        'can be invoked during first initialization, and does not notify listenrs',
+        () {
+      final observer = ProviderObserverMock();
+      final selfListener = Listener<int>();
+      final listener = Listener<int>();
+      final container = createContainer(observers: [observer]);
+      final provider = Provider<int>((ref) {
+        ref.listenSelf(selfListener);
+        ref.notifyListeners();
+        return 0;
+      });
+
+      container.listen(provider, listener, fireImmediately: true);
+
+      verifyOnly(observer, observer.didAddProvider(provider, 0, container));
+      verifyOnly(listener, listener(null, 0));
+      verifyOnly(selfListener, selfListener(null, 0));
+    });
+
+    test(
+        'can be invoked during a re-initialization, and does not notify listenrs',
+        () {
+      final observer = ProviderObserverMock();
+      final listener = Listener<Object>();
+      final selfListener = Listener<Object>();
+      final container = createContainer(observers: [observer]);
+      var callNotifyListeners = false;
+      const firstValue = 'first';
+      const secondValue = 'second';
+      var result = firstValue;
+      final provider = Provider<Object>((ref) {
+        ref.listenSelf(selfListener);
+        if (callNotifyListeners) {
+          ref.notifyListeners();
+        }
+        return result;
+      });
+
+      container.listen(provider, listener, fireImmediately: true);
+
+      verifyOnly(
+        observer,
+        observer.didAddProvider(provider, firstValue, container),
+      );
+      verifyOnly(selfListener, selfListener(null, firstValue));
+      verifyOnly(listener, listener(null, firstValue));
+
+      result = secondValue;
+      callNotifyListeners = true;
+      container.refresh(provider);
+
+      verifyOnly(selfListener, selfListener(firstValue, secondValue));
+      verifyOnly(listener, listener(firstValue, secondValue));
+      verify(observer.didDisposeProvider(provider, container));
+      verify(
+        observer.didUpdateProvider(
+          provider,
+          firstValue,
+          secondValue,
+          container,
+        ),
+      ).called(1);
+      verifyNoMoreInteractions(observer);
+    });
+  });
+
   group('ref.invalidate on families', () {
     test('recomputes providers associated with the family', () async {
       final container = createContainer();
@@ -1132,7 +1250,7 @@ void main() {
 
     final dep = StateProvider((ref) => 0);
     final provider = Provider((ref) {
-      ref.watch(dep.state).state;
+      ref.watch(dep);
       return ref.state = 0;
     });
 
@@ -1140,7 +1258,7 @@ void main() {
 
     verifyOnly(listener, listener(null, 0));
 
-    container.read(dep.state).state++;
+    container.read(dep.notifier).state++;
     await container.pump();
 
     verifyNoMoreInteractions(listener);

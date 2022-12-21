@@ -102,6 +102,18 @@ class StreamProvider<T> extends _StreamProviderBase<T>
 
   @override
   StreamProviderElement<T> createElement() => StreamProviderElement._(this);
+
+  /// {@macro riverpod.overridewith}
+  Override overrideWith(Create<Stream<T>, StreamProviderRef<T>> create) {
+    return ProviderOverride(
+      origin: this,
+      override: StreamProvider<T>(
+        create,
+        from: from,
+        argument: argument,
+      ),
+    );
+  }
 }
 
 /// The element of [StreamProvider].
@@ -121,7 +133,15 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
   AsyncValue<T> get state => requireState;
 
   @override
-  set state(AsyncValue<T> state) => setState(state);
+  set state(AsyncValue<T> state) {
+    if (state.isLoading) {
+      setState(
+        state.copyWithPrevious(requireState, isRefresh: false),
+      );
+    } else {
+      setState(state);
+    }
+  }
 
   @override
   void create({required bool didChangeDependency}) {
@@ -171,14 +191,8 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
         if (completer != null) {
           completer.complete(event);
           _completer = null;
-          // TODO test that ref.read(p.future) after an event is emitted
-          // obtains a SynchronousFuture.
-          // Yet listeners of .future added before the first event aren't notified
-          _futureNotifier.UNSAFE_setResultWithoutNotifyingListeners(
-            Result.data(SynchronousFuture(event)),
-          );
         } else {
-          _futureNotifier.result = Result.data(SynchronousFuture(event));
+          _futureNotifier.result = Result.data(Future.value(event));
         }
 
         setState(AsyncData(event));
@@ -247,4 +261,18 @@ class StreamProviderFamily<R, Arg> extends FamilyBase<StreamProviderRef<R>,
     super.name,
     super.dependencies,
   }) : super(providerFactory: StreamProvider<R>.new);
+
+  /// {@macro riverpod.overridewith}
+  Override overrideWith(
+    Stream<R> Function(StreamProviderRef<R> ref, Arg arg) create,
+  ) {
+    return FamilyOverrideImpl<AsyncValue<R>, Arg, StreamProvider<R>>(
+      this,
+      (arg) => StreamProvider<R>(
+        (ref) => create(ref, arg),
+        from: from,
+        argument: arg,
+      ),
+    );
+  }
 }

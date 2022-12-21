@@ -9,7 +9,6 @@ import 'future_provider.dart' show FutureProvider;
 import 'listenable.dart';
 import 'notifier.dart';
 import 'result.dart';
-import 'synchronous_future.dart';
 
 part 'async_notifier/auto_dispose.dart';
 part 'async_notifier/auto_dispose_family.dart';
@@ -61,7 +60,7 @@ abstract class AsyncNotifierBase<State> {
   /// {@endtemplate}
   Future<State> get future {
     _element.flush();
-    return _element._futureNotifier.value;
+    return _element.futureNotifier.value;
   }
 
   /// A function to update [state] from its previous value, while
@@ -140,7 +139,7 @@ ProviderElementProxy<AsyncValue<T>, Future<T>> _future<T>(
     that,
     (element) {
       return (element as AsyncNotifierProviderElement<AsyncNotifierBase<T>, T>)
-          ._futureNotifier;
+          .futureNotifier;
     },
   );
 }

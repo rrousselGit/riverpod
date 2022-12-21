@@ -1,0 +1,41 @@
+---
+title: StreamProvider
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import configProvider from "!!raw-loader!./future_provider/config_provider.dart";
+import configConsumer from "!!raw-loader!./future_provider/config_consumer.dart";
+import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+
+`StreamProvider` - это тот же [FutureProvider], но возвращающий [Stream] вместо [Future].
+
+`StreamProvider` обычно используется для:
+
+- прослушивания Firebase или веб-сокетов
+- перестройки другого провайдера каждые N секунд
+
+Т. к. [Stream] сам по себе предоставляет возможность наблюдать за изменениями,
+вы можете подумать, что `StreamProvider` особо и не нужен. В частности, вам может
+показаться, что [StreamBuilder] будет также работать со [Stream], но это мнение ошибочно.
+
+Использование `StreamProvider` вместо [StreamBuilder] имеет несколько преимуществ:
+
+- возможность другим провайдерам слушать данный [Stream] с помощью [ref.watch].
+- гарантия того, что загрузка и ошибки будут надлежащим образом обработаны благодаря [AsyncValue].
+- не нужно уточнять: broadcast или не broadcast [Stream].
+- последнее значение [Stream] сохраняется, т. е. каждый добавленный слушатель
+  может сразу получить последние актуальные данные.
+- легко мокать такой [Stream] во время тестирования путем переопределения `StreamProvider`.
+
+[ref.watch]: ../concepts/reading#using-refwatch-to-observe-a-provider
+[statenotifierprovider]: ./state_notifier_provider
+[provider]: ./provider
+[futureprovider]: ./future_provider
+[asyncvalue]: https://pub.dev/documentation/riverpod/latest/riverpod/AsyncValue-class.html
+[future]: https://api.dart.dev/dart-async/Future-class.html
+[stream]: https://api.dart.dev/dart-async/Stream-class.html
+[stream.periodic]: https://api.dart.dev/stable/2.15.1/dart-async/Stream/Stream.periodic.html
+[family]: ../concepts/modifiers/family
+[streambuilder]: https://api.flutter.dev/flutter/widgets/StreamBuilder-class.html

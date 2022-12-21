@@ -1,4 +1,4 @@
-// ignore_for_file: invalid_use_of_internal_member
+// ignore_for_file: invalid_use_of_internal_member, avoid_types_on_closure_parameters
 
 import 'package:flutter/widgets.dart' hide Listener;
 import 'package:flutter_riverpod/src/internals.dart';
@@ -8,6 +8,58 @@ import 'package:mockito/mockito.dart';
 import '../../utils.dart';
 
 void main() {
+  test('supports overrideWith', () {
+    final provider =
+        ChangeNotifierProvider<ValueNotifier<int>>((ref) => ValueNotifier(0));
+    final autoDispose = ChangeNotifierProvider.autoDispose<ValueNotifier<int>>(
+      (ref) => ValueNotifier(0),
+    );
+
+    final container = createContainer(
+      overrides: [
+        provider.overrideWith(
+          (ChangeNotifierProviderRef<ValueNotifier<int>> ref) =>
+              ValueNotifier(42),
+        ),
+        autoDispose.overrideWith(
+          (AutoDisposeChangeNotifierProviderRef<ValueNotifier<int>> ref) =>
+              ValueNotifier(84),
+        ),
+      ],
+    );
+
+    expect(container.read(provider).value, 42);
+    expect(container.read(autoDispose).value, 84);
+  });
+
+  test('supports family overrideWith', () {
+    final family = ChangeNotifierProvider.family<ValueNotifier<String>, int>(
+      (ref, arg) => ValueNotifier('0 $arg'),
+    );
+    final autoDisposeFamily =
+        ChangeNotifierProvider.autoDispose.family<ValueNotifier<String>, int>(
+      (ref, arg) => ValueNotifier('0 $arg'),
+    );
+    final container = createContainer(
+      overrides: [
+        family.overrideWith(
+          (ChangeNotifierProviderRef<ValueNotifier<String>> ref, int arg) =>
+              ValueNotifier('42 $arg'),
+        ),
+        autoDisposeFamily.overrideWith(
+          (
+            AutoDisposeChangeNotifierProviderRef<ValueNotifier<String>> ref,
+            int arg,
+          ) =>
+              ValueNotifier('84 $arg'),
+        ),
+      ],
+    );
+
+    expect(container.read(family(10)).value, '42 10');
+    expect(container.read(autoDisposeFamily(10)).value, '84 10');
+  });
+
   test('ref.listenSelf listens to state changes', () {
     final listener = Listener<ValueNotifier<int>>();
     final container = createContainer();
@@ -141,6 +193,7 @@ void main() {
       final container = createContainer(
         parent: root,
         overrides: [
+          // ignore: deprecated_member_use
           provider.overrideWithProvider(
             ChangeNotifierProvider((ref) => ValueNotifier(42)),
           ),
@@ -258,7 +311,7 @@ void main() {
     final notifier = TestNotifier();
     final notifier2 = TestNotifier();
     final provider = ChangeNotifierProvider((ref) {
-      return ref.watch(dep.state).state == 0 ? notifier : notifier2;
+      return ref.watch(dep) == 0 ? notifier : notifier2;
     });
     final container = createContainer();
     addTearDown(container.dispose);
@@ -277,7 +330,7 @@ void main() {
     await container.pump();
     expect(callCount, 0);
 
-    container.read(dep.state).state++;
+    container.read(dep.notifier).state++;
 
     expect(sub.read(), notifier2);
 
@@ -363,6 +416,7 @@ void main() {
     final notifier2 = TestNotifier();
     final container = createContainer(
       overrides: [
+        // ignore: deprecated_member_use
         provider.overrideWithProvider(ChangeNotifierProvider((_) => notifier)),
       ],
     );
@@ -382,6 +436,7 @@ void main() {
     expect(callCount, 1);
 
     container.updateOverrides([
+      // ignore: deprecated_member_use
       provider.overrideWithProvider(ChangeNotifierProvider((_) => notifier2)),
     ]);
 

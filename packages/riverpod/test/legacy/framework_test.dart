@@ -8,14 +8,6 @@ import 'package:test/test.dart';
 import '../utils.dart';
 
 void main() {
-  test('disposing parent container when child container is not dispose throws',
-      () {
-    final root = createContainer();
-    createContainer(parent: root);
-
-    expect(root.dispose, throwsStateError);
-  });
-
   test('hasListeners', () {
     final container = createContainer();
     final provider = Provider((_) => 42);

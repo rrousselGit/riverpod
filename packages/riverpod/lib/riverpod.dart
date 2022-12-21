@@ -16,9 +16,15 @@ export 'src/common.dart' hide AsyncTransition;
 
 export 'src/framework.dart'
     hide
+        debugCanModifyProviders,
+        vsync,
+        vsyncOverride,
+        ValueProviderElement,
+        ValueProvider,
         FamilyCreate,
         AsyncSelector,
         FamilyBase,
+        FamilyOverrideImpl,
         AutoDisposeProviderElementMixin,
         FamilyOverride,
         NotifierFamilyBase,
@@ -31,7 +37,8 @@ export 'src/framework.dart'
         handleFireImmediately,
         Create,
         Node,
-        ProviderElementProxy;
+        ProviderElementProxy,
+        OnError;
 
 export 'src/future_provider.dart';
 

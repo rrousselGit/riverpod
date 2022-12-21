@@ -1,6 +1,47 @@
+## [Unreleased patch]
+
+- Update dependencies.
+
+## 2.1.1
+
+Fix typos
+
+## 2.1.0
+
+A small release adding missing utilities and fixing some web related issues.
+
+- Added `provider.overrideWith((ref) => state`)
+- Added `FutureProviderRef.future`.
+- Deprecated `StateProvider.state`
+  Instead, use either `ref.watch(stateProvider)` or `ref.read(stateProvider.notifier).state =`
+- Deprecated `provider.overrideWithProvider`. Instead use `provider.overrideWith`
+- Added `Ref.notifyListeners()` to forcibly notify dependents.
+  This can be useful for mutable state.
+- Added `@useResult` to `Ref.refresh`/`WidgetRef.refresh`
+- Added `Ref.exists` to check whether a provider is initialized or not.
+- `FutureProvider`, `StreamProvider` and `AsyncNotifierProvider` now preserve the
+  previous data/error when going back to loading.
+  This is done by allowing `AsyncLoading` to optionally contain a value/error.
+- Added `AsyncValue.when(skipLoadingOnReload: bool, skipLoadingOnRefresh: bool, skipError: bool)`
+  flags to give fine control over whether the UI should show `loading`
+  or `data/error` cases.
+- Add `AsyncValue.requireValue`, to forcibly obtain the `value` and throw if in
+  loading/error state
+- Doing `ref.watch(futureProvider.future)` can no-longer return a `SynchronousFuture`.
+  That behavior could break various `Future` utilities, such as `Future.wait`
+- Add `AsyncValue.copyWithPrevious(..., isRefresh: false)` to differentiate
+  rebuilds from `ref.watch` vs rebuilds from `ref.refresh`.
+- ProviderContainer no-longer throws when disposed if it has an undisposed child ProviderContainer.
+- Improved the error message when trying to modify a provider inside a
+  widget life-cycle.
+
+- Fixes a stackoverflow on Web caused by Dart (thanks to @leehack)
+- Fixes a bug when the root ProviderContainer is not associated with a ProviderScope.
+- Fixes a case where a circular dependency between providers was incorrectly allowed (#1766)
+
 ## 2.0.2
 
- - **FIX**: Fixed an assert error if a `family` depends on itself while specifying `dependencies`. (#1721).
+- **FIX**: Fixed an assert error if a `family` depends on itself while specifying `dependencies`. (#1721).
 
 # 2.0.2
 

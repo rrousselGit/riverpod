@@ -7,7 +7,7 @@ import 'integration/sync.dart';
 import 'utils.dart';
 
 void main() {
-  test('Creates a Provider<T> if @provider is used on a synchronous function',
+  test('Creates a Provider<T> if @riverpod is used on a synchronous function',
       () {
     final container = createContainer();
 
@@ -27,7 +27,7 @@ void main() {
   });
 
   test(
-      'Creates a NotifierProvider.family<T> if @provider is used on a synchronous function with parameters',
+      'Creates a NotifierProvider.family<T> if @riverpod is used on a synchronous function with parameters',
       () {
     final container = createContainer();
 

@@ -9,7 +9,7 @@ void main() {
   group('WidgetRef.listen', () {
     testWidgets('can downcast the value', (tester) async {
       final dep = StateProvider((ref) => 0);
-      final provider = Provider((ref) => ref.watch(dep.state).state);
+      final provider = Provider((ref) => ref.watch(dep));
 
       final container = createContainer();
       final listener = Listener<num>();
@@ -28,7 +28,7 @@ void main() {
 
       verifyZeroInteractions(listener);
 
-      container.read(dep.state).state++;
+      container.read(dep.notifier).state++;
       await tester.pump();
 
       verifyOnly(listener, listener(0, 1));
@@ -58,8 +58,8 @@ void main() {
               container: container,
               child: Consumer(
                 builder: (context, ref, _) {
-                  ref.listen<StateController<int>>(
-                    provider.state,
+                  ref.listen<int>(
+                    provider,
                     (prev, v) => setState(() {}),
                   );
                   return Container();
@@ -73,7 +73,7 @@ void main() {
       verifyZeroInteractions(onChange);
 
       // This would fail if the setState was not allowed
-      container.read(provider.state).state++;
+      container.read(provider.notifier).state++;
     });
 
     testWidgets('calls onChange synchronously if possible', (tester) async {
@@ -86,10 +86,7 @@ void main() {
           container: container,
           child: Consumer(
             builder: (context, ref, _) {
-              ref.listen<StateController<int>>(
-                provider.state,
-                (prev, v) => onChange(prev?.state, v.state),
-              );
+              ref.listen<int>(provider, onChange);
               return Container();
             },
           ),
@@ -97,14 +94,14 @@ void main() {
       );
       verifyZeroInteractions(onChange);
 
-      container.read(provider.state).state++;
-      container.read(provider.state).state++;
-      container.read(provider.state).state++;
+      container.read(provider.notifier).state++;
+      container.read(provider.notifier).state++;
+      container.read(provider.notifier).state++;
 
       verifyInOrder([
-        onChange(1, 1),
-        onChange(2, 2),
-        onChange(3, 3),
+        onChange(0, 1),
+        onChange(1, 2),
+        onChange(2, 3),
       ]);
       verifyNoMoreInteractions(onChange);
     });
@@ -112,7 +109,7 @@ void main() {
     testWidgets('calls onChange asynchronously if the change is indirect',
         (tester) async {
       final provider = StateProvider((ref) => 0);
-      final isEven = Provider((ref) => ref.watch(provider.state).state.isEven);
+      final isEven = Provider((ref) => ref.watch(provider).isEven);
       final onChange = Listener<bool>();
       final container = createContainer();
 
@@ -129,9 +126,9 @@ void main() {
       );
       verifyZeroInteractions(onChange);
 
-      container.read(provider.state).state++;
-      container.read(provider.state).state++;
-      container.read(provider.state).state++;
+      container.read(provider.notifier).state++;
+      container.read(provider.notifier).state++;
+      container.read(provider.notifier).state++;
 
       verifyZeroInteractions(onChange);
 

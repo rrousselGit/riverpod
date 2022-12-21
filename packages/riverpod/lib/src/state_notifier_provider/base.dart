@@ -107,6 +107,20 @@ class StateNotifierProvider<NotifierT extends StateNotifier<T>, T>
 
   @override
   late final AlwaysAliveRefreshable<NotifierT> notifier = _notifier(this);
+
+  /// {@macro riverpod.overridewith}
+  Override overrideWith(
+    Create<NotifierT, StateNotifierProviderRef<NotifierT, T>> create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: StateNotifierProvider<NotifierT, T>(
+        create,
+        from: from,
+        argument: argument,
+      ),
+    );
+  }
 }
 
 /// The element of [StateNotifierProvider].
@@ -182,4 +196,19 @@ class StateNotifierProviderFamily<NotifierT extends StateNotifier<T>, T, Arg>
     super.name,
     super.dependencies,
   }) : super(providerFactory: StateNotifierProvider.new);
+
+  /// {@macro riverpod.overridewith}
+  Override overrideWith(
+    NotifierT Function(StateNotifierProviderRef<NotifierT, T> ref, Arg arg)
+        create,
+  ) {
+    return FamilyOverrideImpl<T, Arg, StateNotifierProvider<NotifierT, T>>(
+      this,
+      (arg) => StateNotifierProvider<NotifierT, T>(
+        (ref) => create(ref, arg),
+        from: from,
+        argument: arg,
+      ),
+    );
+  }
 }

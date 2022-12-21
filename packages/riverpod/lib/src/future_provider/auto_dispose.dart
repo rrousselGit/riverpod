@@ -22,7 +22,7 @@ class AutoDisposeFutureProvider<T> extends _FutureProviderBase<T>
   /// {@macro riverpod.family}
   static const family = AutoDisposeFutureProviderFamily.new;
 
-  final FutureOr<T> Function(AutoDisposeFutureProviderRef<T> ref) _createFn;
+  final Create<FutureOr<T>, AutoDisposeFutureProviderRef<T>> _createFn;
 
   @override
   FutureOr<T> _create(AutoDisposeFutureProviderElement<T> ref) =>
@@ -35,12 +35,31 @@ class AutoDisposeFutureProvider<T> extends _FutureProviderBase<T>
 
   @override
   late final Refreshable<Future<T>> future = _future(this);
+
+  /// {@macro riverpod.overridewith}
+  Override overrideWith(
+    Create<FutureOr<T>, AutoDisposeFutureProviderRef<T>> create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: AutoDisposeFutureProvider(
+        create,
+        from: from,
+        argument: argument,
+      ),
+    );
+  }
 }
 
 /// The [ProviderElementBase] of [AutoDisposeFutureProvider]
-class AutoDisposeFutureProviderElement<T> = FutureProviderElement<T>
+class AutoDisposeFutureProviderElement<T> extends FutureProviderElement<T>
     with AutoDisposeProviderElementMixin<AsyncValue<T>>
-    implements AutoDisposeFutureProviderRef<T>;
+    implements AutoDisposeFutureProviderRef<T> {
+  /// The [ProviderElementBase] for [FutureProvider]
+  AutoDisposeFutureProviderElement._(
+    AutoDisposeFutureProvider<T> super.provider,
+  ) : super._();
+}
 
 /// The [Family] of an [AutoDisposeFutureProvider]
 class AutoDisposeFutureProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
@@ -55,4 +74,18 @@ class AutoDisposeFutureProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
     super.name,
     super.dependencies,
   }) : super(providerFactory: AutoDisposeFutureProvider.new);
+
+  /// {@macro riverpod.overridewith}
+  Override overrideWith(
+    FutureOr<R> Function(AutoDisposeFutureProviderRef<R> ref, Arg arg) create,
+  ) {
+    return FamilyOverrideImpl<AsyncValue<R>, Arg, AutoDisposeFutureProvider<R>>(
+      this,
+      (arg) => AutoDisposeFutureProvider<R>(
+        (ref) => create(ref, arg),
+        from: from,
+        argument: arg,
+      ),
+    );
+  }
 }
