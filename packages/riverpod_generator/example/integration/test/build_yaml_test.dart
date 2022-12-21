@@ -1,5 +1,5 @@
 import 'package:build_verify/build_verify.dart';
-import 'package:build_yaml/main.dart';
+import 'package:integration/main.dart';
 import 'package:test/test.dart';
 
 void main() {
