@@ -3,4 +3,4 @@ environment:
   sdk: ">=2.17.0 <3.0.0"
 
 dependencies:
-  riverpod: ^2.0.2
+  riverpod: ^2.1.1
