@@ -16,6 +16,8 @@ enum ProviderType {
   asyncNotifier,
 }
 
+const _defaultProviderNameSuffix = 'Provider';
+
 class Data {
   Data.function({
     required this.rawName,
@@ -29,6 +31,7 @@ class Data {
     required this.providerDoc,
     required this.createElement,
     required this.createAst,
+    required this.buildYamlOptions,
   }) : notifierName = null;
 
   Data.notifier({
@@ -43,6 +46,7 @@ class Data {
     required this.providerDoc,
     required this.createElement,
     required this.createAst,
+    required this.buildYamlOptions,
   }) : functionName = null;
 
   final ExecutableElement createElement;
@@ -57,6 +61,7 @@ class Data {
   final List<ParameterElement> parameters;
   final bool keepAlive;
   final String providerDoc;
+  final BuildYamlOptions buildYamlOptions;
 
   String get hashFunctionName => '_\$${rawName}Hash';
 
@@ -68,13 +73,13 @@ class Data {
   /// foo -> fooProvider
   /// Foo -> fooProvider
   String get providerName {
-    return '${rawName.lowerFirst}Provider';
+    return '${rawName.lowerFirst}$_nameSuffix';
   }
 
   /// foo -> FooProvider
   /// Foo -> FooProvider
   String get providerTypeNameImpl {
-    return '${rawName.titled}Provider';
+    return '${rawName.titled}$_nameSuffix';
   }
 
   /// foo -> FooFamily
@@ -104,6 +109,9 @@ class Data {
       parameters.where((e) => e.isNamed).toList();
 
   bool get isNotifier => functionName == null;
+
+  String get _nameSuffix =>
+      buildYamlOptions.providerNameSuffix ?? _defaultProviderNameSuffix;
 
   String notifierType({bool generics = true}) {
     final trailing = generics ? '<$valueDisplayType>' : '';
@@ -251,6 +259,20 @@ class GlobalData {
   GlobalData();
 
   final ElementHash hash = ElementHash();
+}
+
+class BuildYamlOptions {
+  BuildYamlOptions({
+    this.providerNameSuffix,
+  });
+
+  factory BuildYamlOptions.fromMap(Map<String, dynamic> map) {
+    return BuildYamlOptions(
+      providerNameSuffix: map['provider_name_suffix'] as String?,
+    );
+  }
+
+  final String? providerNameSuffix;
 }
 
 extension on String {

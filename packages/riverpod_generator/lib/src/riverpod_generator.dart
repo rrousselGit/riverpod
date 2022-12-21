@@ -22,9 +22,10 @@ const riverpodTypeChecker = TypeChecker.fromRuntime(Riverpod);
 @immutable
 // ignore: invalid_use_of_internal_member
 class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Riverpod> {
-  RiverpodGenerator(this.configs);
+  RiverpodGenerator(Map<String, Object?> mapConfig)
+      : config = BuildYamlOptions.fromMap(mapConfig);
 
-  final Map<String, Object?> configs;
+  final BuildYamlOptions config;
 
   @override
   GlobalData parseGlobalData(LibraryElement library) {
@@ -78,6 +79,7 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Riverpod> {
       parameters: element.parameters.skip(1).toList(),
       valueDisplayType:
           _getUserModelType(element).getDisplayString(withNullability: true),
+      buildYamlOptions: config,
     );
   }
 
@@ -129,6 +131,7 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Riverpod> {
       parameters: buildMethod.parameters,
       valueDisplayType: _getUserModelType(buildMethod)
           .getDisplayString(withNullability: true),
+      buildYamlOptions: config,
     );
   }
 
