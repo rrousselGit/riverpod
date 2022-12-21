@@ -1,5 +1,5 @@
 codecov:
-  require_ci_to_pass: yes
+  require_ci_to_pass: true
 
 coverage:
   precision: 2
@@ -21,8 +21,10 @@ ignore:
   - "**/*.g.dart"
   - "**/*.freezed.dart"
   - "packages/riverpod_cli"
+  - "packages/riverpod_generator"
+  - "packages/riverpod_lint"
 
 comment:
   layout: "reach,diff,flags,tree"
   behavior: default
-  require_changes: no
+  require_changes: false
