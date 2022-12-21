@@ -71,6 +71,11 @@ jobs:
           if test -d "integration/build_yaml"; then
             flutter pub get integration/build_yaml
           fi
+      - name: Install dependencies (website/third-party)
+        run: |
+          if test -d "third-party"; then
+            flutter pub get third-party/cosmic_frontmatter
+          fi
 
       - name: Check format
         run: flutter format --set-exit-if-changed .
