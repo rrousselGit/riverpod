@@ -1,5 +1,5 @@
 import 'package:build_verify/build_verify.dart';
-import 'package:integration/main.dart';
+import 'package:build_yaml/main.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -7,7 +7,7 @@ void main() {
     'ensure_build',
     () => expectBuildClean(
       packageRelativeDirectory:
-          'packages/riverpod_generator/example/integration',
+          'packages/riverpod_generator/integration/build_yaml',
     ),
     timeout: const Timeout(Duration(minutes: 1)),
   );

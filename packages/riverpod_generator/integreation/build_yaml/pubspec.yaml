@@ -1,4 +1,4 @@
-name: integration
+name: build_yaml
 description: A sample command-line application.
 version: 1.0.0
 
