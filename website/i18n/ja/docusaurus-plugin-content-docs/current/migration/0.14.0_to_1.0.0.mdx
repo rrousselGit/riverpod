@@ -49,7 +49,7 @@ riverpod --help
 
 ```diff
 -Widget build(BuildContext context, ScopedReader watch) {
-+Widget build(BuildContext context, Widget ref) {
++Widget build(BuildContext context, WidgetRef ref) {
 -  MyModel state = watch(provider);
 +  MyModel state = ref.watch(provider);
 }

@@ -31,39 +31,45 @@ void main() {
     of: thirdItem,
     matching: find.byType(Checkbox),
   );
-  testWidgets('Render the default todos', (tester) async {
-    await tester.pumpWidget(const ProviderScope(child: MyApp()));
 
-    expect(
-      find.descendant(of: firstItem, matching: find.text('hi')),
-      findsOneWidget,
-    );
-    expect(
-      tester.widget(firstCheckbox),
-      isA<Checkbox>().having((s) => s.value, 'value', false),
-    );
-    expect(
-      find.descendant(of: secondItem, matching: find.text('hello')),
-      findsOneWidget,
-    );
-    expect(
-      tester.widget(secondCheckbox),
-      isA<Checkbox>().having((s) => s.value, 'value', false),
-    );
-    expect(
-      find.descendant(of: thirdItem, matching: find.text('bonjour')),
-      findsOneWidget,
-    );
-    expect(
-      tester.widget(thirdCheckbox),
-      isA<Checkbox>().having((s) => s.value, 'value', false),
-    );
+  testWidgets(
+    'Render the default todos',
+    (tester) async {
+      await tester.pumpWidget(const ProviderScope(child: MyApp()));
 
-    await expectLater(
-      find.byType(MyApp),
-      matchesGoldenFile('initial_state.png'),
-    );
-  }, skip: !Platform.isMacOS);
+      expect(
+        find.descendant(of: firstItem, matching: find.text('hi')),
+        findsOneWidget,
+      );
+      expect(
+        tester.widget(firstCheckbox),
+        isA<Checkbox>().having((s) => s.value, 'value', false),
+      );
+      expect(
+        find.descendant(of: secondItem, matching: find.text('hello')),
+        findsOneWidget,
+      );
+      expect(
+        tester.widget(secondCheckbox),
+        isA<Checkbox>().having((s) => s.value, 'value', false),
+      );
+      expect(
+        find.descendant(of: thirdItem, matching: find.text('bonjour')),
+        findsOneWidget,
+      );
+      expect(
+        tester.widget(thirdCheckbox),
+        isA<Checkbox>().having((s) => s.value, 'value', false),
+      );
+
+      await expectLater(
+        find.byType(MyApp),
+        matchesGoldenFile('initial_state.png'),
+      );
+    },
+    skip: !Platform.isMacOS,
+  );
+
   testWidgets('Clicking on checkbox toggles the todo', (tester) async {
     await tester.pumpWidget(const ProviderScope(child: MyApp()));
 
@@ -172,42 +178,46 @@ void main() {
     expect(thirdItem, findsOneWidget);
   });
 
-  testWidgets('The input allows adding todos', (tester) async {
-    await tester.pumpWidget(const ProviderScope(child: MyApp()));
+  testWidgets(
+    'The input allows adding todos',
+    (tester) async {
+      await tester.pumpWidget(const ProviderScope(child: MyApp()));
 
-    expect(find.text('Newly added todo'), findsNothing);
-    expect(find.text('3 items left'), findsOneWidget);
-    expect(find.text('4 items left'), findsNothing);
+      expect(find.text('Newly added todo'), findsNothing);
+      expect(find.text('3 items left'), findsOneWidget);
+      expect(find.text('4 items left'), findsNothing);
 
-    await tester.enterText(addTodoInput, 'Newly added todo');
+      await tester.enterText(addTodoInput, 'Newly added todo');
 
-    expect(
-      find.descendant(
-        of: addTodoInput,
-        matching: find.text('Newly added todo'),
-      ),
-      findsOneWidget,
-    );
+      expect(
+        find.descendant(
+          of: addTodoInput,
+          matching: find.text('Newly added todo'),
+        ),
+        findsOneWidget,
+      );
 
-    await tester.testTextInput.receiveAction(TextInputAction.done);
-    await tester.pump();
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.pump();
 
-    // clears the input
-    expect(
-      find.descendant(
-        of: addTodoInput,
-        matching: find.text('Newly added todo'),
-      ),
-      findsNothing,
-    );
+      // clears the input
+      expect(
+        find.descendant(
+          of: addTodoInput,
+          matching: find.text('Newly added todo'),
+        ),
+        findsNothing,
+      );
 
-    await expectLater(
-      find.byType(MyApp),
-      matchesGoldenFile('new_todo.png'),
-    );
+      await expectLater(
+        find.byType(MyApp),
+        matchesGoldenFile('new_todo.png'),
+      );
 
-    expect(find.text('Newly added todo'), findsOneWidget);
-    expect(find.text('4 items left'), findsOneWidget);
-    expect(find.text('3 items left'), findsNothing);
-  }, skip: !Platform.isMacOS);
+      expect(find.text('Newly added todo'), findsOneWidget);
+      expect(find.text('4 items left'), findsOneWidget);
+      expect(find.text('3 items left'), findsNothing);
+    },
+    skip: !Platform.isMacOS,
+  );
 }

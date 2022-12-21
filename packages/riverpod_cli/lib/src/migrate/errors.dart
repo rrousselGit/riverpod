@@ -7,7 +7,8 @@ const migrationUrl = 'https://riverpod.dev/docs/migration/0.14.0_to_1.0.0';
 final migrationErrors = <String, String>{};
 void printErrorLogs() {
   stderr.writeln(
-      'There was an error during migration, please submit a bug report to riverpod, with any relevant logs and code');
+    'There was an error during migration, please submit a bug report to riverpod, with any relevant logs and code',
+  );
   stderr.writeln();
   stderr
       .writeln('The following files were not able to be successfully migrated');
@@ -17,9 +18,11 @@ void printErrorLogs() {
   stderr.writeln();
   stderr.writeln('Next Steps - either');
   stderr.writeln(
-      '\t1: Revert your changes and wait for the migration tool to be fixed');
+    '\t1: Revert your changes and wait for the migration tool to be fixed',
+  );
   stderr.writeln(
-      '\t2: Run flutter pub upgrade and finish the migration manually using the migration guide $migrationUrl');
+    '\t2: Run flutter pub upgrade and finish the migration manually using the migration guide $migrationUrl',
+  );
 }
 
 mixin ErrorHandling<T> on AstVisitingSuggestor<T> {

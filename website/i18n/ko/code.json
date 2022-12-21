@@ -43,7 +43,7 @@
     "message": "Flutter에 의존하지 않고 Provider를 생성/공유/테스트합니다. 여기에는 {BuildContext} 없이 Provider를 수신할 수 있는 기능이 포함됩니다."
   },
   "home.tagline": {
-    "message": "리엑티싱 캐싱, 데이터바인딩 프레임워크"
+    "message": "리엑티브 캐싱, 데이터바인딩 프레임워크"
   },
   "home.get_started": {
     "message": "시작하기"

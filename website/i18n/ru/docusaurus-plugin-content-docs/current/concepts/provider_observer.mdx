@@ -1,0 +1,46 @@
+---
+title: ProviderObserver
+---
+
+import CodeBlock from "@theme/CodeBlock";
+import logger from "!!raw-loader!./provider_observer_logger.dart";
+import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+
+[ProviderObserver] наблюдает за изменениями ProviderContainer.
+
+Для работы с ним наследуйтесь от ProviderObserver и переопределите метод, который
+хотите использовать.
+
+[ProviderObserver] имеет три метода:
+
+- `didAddProvider` вызывается каждый раз, когда провайдер инициализируется;
+`value` является хранимым значением.
+- `didDisposeProvider` вызывается каждый раз при аннулировании провайдера.
+- `didUpdateProvider` вызывается каждый раз, когда провайдеры создают уведомление.
+
+### Использование:
+
+Простейший вариант использование [ProviderObserver] это логгирование изменений, происходящих
+в провайдере, путем переопределения `didUpdateProvider`.
+
+<CodeBlock>{trimSnippet(logger)}</CodeBlock>
+
+Теперь, каждый раз, когда значение провайдера изменяется, логгер выводит сообщение в консоль:
+
+```
+I/flutter (16783): {
+I/flutter (16783):   "provider": "counter",
+I/flutter (16783):   "newValue": "1"
+I/flutter (16783): }
+```
+
+:::note
+Для изменяемых состояний как у [StateController] (это состояние [StateProvider.state]) и
+[ChangeNotifier] previousValue и newValue будут одинаковыми.
+Т. к. они ссылаются на один и тот же `StateController` / `ChangeNotifier`.
+:::
+
+[providerobserver]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderObserver-class.html
+[statecontroller]: https://pub.dev/documentation/riverpod/latest/riverpod/StateController-class.html
+[stateprovider.state]: https://pub.dev/documentation/riverpod/latest/riverpod/StateProvider/state.html
+[changenotifier]: https://api.flutter.dev/flutter/foundation/ChangeNotifier-class.html

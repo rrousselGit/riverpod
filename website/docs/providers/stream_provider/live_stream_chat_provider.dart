@@ -2,8 +2,8 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /* SNIPPET START */
-// Fake chats as data sorce it might be come from Websocket
-// Erro last index is represent error which is not string
+// Fake chats as data sorce
+// Error last index is represent error which type is not a string
 const fakeChats = ['John Hi', 'Flutter is Cute', 1];
 
 // stream provider

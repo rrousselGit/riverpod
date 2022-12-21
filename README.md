@@ -1,7 +1,7 @@
 <p align="center">
-<a href="https://github.com/rrousselGit/river_pod/actions"><img src="https://github.com/rrousselGit/river_pod/workflows/Build/badge.svg" alt="Build Status"></a>
-<a href="https://codecov.io/gh/rrousselgit/river_pod"><img src="https://codecov.io/gh/rrousselgit/river_pod/branch/master/graph/badge.svg" alt="codecov"></a>
-<a href="https://github.com/rrousselgit/river_pod"><img src="https://img.shields.io/github/stars/rrousselgit/river_pod.svg?style=flat&logo=github&colorB=deeppink&label=stars" alt="Star on Github"></a>
+<a href="https://github.com/rrousselGit/riverpod/actions"><img src="https://github.com/rrousselGit/riverpod/workflows/Build/badge.svg" alt="Build Status"></a>
+<a href="https://codecov.io/gh/rrousselgit/riverpod"><img src="https://codecov.io/gh/rrousselgit/riverpod/branch/master/graph/badge.svg" alt="codecov"></a>
+<a href="https://github.com/rrousselgit/riverpod"><img src="https://img.shields.io/github/stars/rrousselgit/riverpod.svg?style=flat&logo=github&colorB=deeppink&label=stars" alt="Star on Github"></a>
 <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-purple.svg" alt="License: MIT"></a>
 <a href="https://discord.gg/Bbumvej"><img src="https://img.shields.io/discord/765557403865186374.svg?logo=discord&color=blue" alt="Discord"></a>
 
@@ -12,7 +12,7 @@
 </p>
 
 <p align="center">
-<img src="https://github.com/rrousselGit/river_pod/blob/master/resources/icon/Facebook%20Cover%20A.png?raw=true" width="100%" alt="Riverpod" />
+<img src="https://github.com/rrousselGit/riverpod/blob/master/resources/icon/Facebook%20Cover%20A.png?raw=true" width="100%" alt="Riverpod" />
 </p>
 
 </p>
@@ -165,22 +165,28 @@ Yes.
 
 ### Will this get merged with provider at some point?
 
-No. At least not until it is proven that the community likes [Riverpod]
-and that it doesn't cause more problems than it solves.
+It is possible. Some experiments are being made that could make this
+doable. But their outcome isn't clear yet.
+(no link to an issue to avoid putting unnecessary pressure on the people
+involved)
 
-While [provider] and this project have a lot in common, they do have some
-major differences. Differences big enough that it would be a large breaking
-change for users of [provider] to migrate [Riverpod].
-
-Considering that, separating both projects initially sounds like a better
-compromise.
+If those experiments are successful (although unlikely), then Provider
+and Riverpod could be fused.
 
 ### Will provider be deprecated/stop being supported?
 
-Not in the short term, no.
+Maybe. 
 
-However, a migration tool is planned to help assist migration from provider
-to [Riverpod].
+Provider has numerous flaws that can't quite be fixed. At the same time,
+Riverpod has proven to fix many of those.  
+As such, deprecating Provider is being considered.
+
+The only inconvenience of Riverpod is the need for a "Consumer",
+which Provider doesn't need.
+But some alternatives are being investigated to maybe remove this constraint.
+
+Whatever the decision is, a migration tool is planned to help assist
+migration from provider to [Riverpod]. Along with whatever other tool necessary to help.
 
 ## Sponsors
 
@@ -191,7 +197,7 @@ to [Riverpod].
 </p>
 
 [provider]: https://github.com/rrousselGit/provider
-[riverpod]: https://github.com/rrousselGit/river_pod
+[riverpod]: https://github.com/rrousselGit/riverpod
 [flutter_hooks]: https://github.com/rrousselGit/flutter_hooks
 [inheritedwidget]: https://api.flutter.dev/flutter/widgets/InheritedWidget-class.html
 [hooks_riverpod]: https://pub.dev/packages/hooks_riverpod

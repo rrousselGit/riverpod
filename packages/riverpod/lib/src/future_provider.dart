@@ -1,16 +1,27 @@
 import 'dart:async';
 
-import 'package:meta/meta.dart';
-import 'async_value_converters.dart';
-
+import 'async_notifier.dart';
 import 'builders.dart';
 import 'common.dart';
 import 'framework.dart';
-import 'provider.dart';
-import 'stream_provider.dart';
+import 'provider.dart' show Provider;
+import 'stream_provider.dart' show StreamProvider;
 
 part 'future_provider/auto_dispose.dart';
 part 'future_provider/base.dart';
+
+ProviderElementProxy<AsyncValue<T>, Future<T>> _future<T>(
+  _FutureProviderBase<T> that,
+) {
+  return ProviderElementProxy<AsyncValue<T>, Future<T>>(
+    that,
+    (element) {
+      return FutureHandlerProviderElementMixin.futureNotifierOf(
+        element as FutureHandlerProviderElementMixin<T>,
+      );
+    },
+  );
+}
 
 /// {@template riverpod.futureprovider}
 /// A provider that asynchronously creates a single value.
@@ -78,39 +89,38 @@ part 'future_provider/base.dart';
 /// - [FutureProvider.family], to create a [FutureProvider] from external parameters
 /// - [FutureProvider.autoDispose], to destroy the state of a [FutureProvider] when no longer needed.
 /// {@endtemplate}
-mixin _FutureProviderElementMixin<State>
-    on ProviderElementBase<AsyncValue<State>> {
-  AsyncValue<State> _listenFuture(
-    FutureOr<State> Function() future,
-  ) {
-    var running = true;
-    onDispose(() => running = false);
-    try {
-      final value = future();
+abstract class _FutureProviderBase<T> extends ProviderBase<AsyncValue<T>> {
+  _FutureProviderBase({
+    required this.dependencies,
+    required super.name,
+    required super.from,
+    required super.argument,
+    required super.debugGetCreateSourceHash,
+  });
 
-      if (value is Future<State>) {
-        setState(AsyncValue<State>.loading());
+  @override
+  final List<ProviderOrFamily>? dependencies;
 
-        value.then(
-          (event) {
-            if (running) setState(AsyncValue<State>.data(event));
-          },
-          // ignore: avoid_types_on_closure_parameters
-          onError: (Object err, StackTrace stack) {
-            if (running) {
-              setState(
-                AsyncValue<State>.error(err, stackTrace: stack),
-              );
-            }
-          },
-        );
-      } else {
-        return AsyncData(value);
-      }
+  /// Obtains the [Future] associated with a [FutureProvider].
+  ///
+  /// The instance of [Future] obtained may change over time, if the provider
+  /// was recreated (such as when using [Ref.watch]).
+  ///
+  /// This provider allows using `async`/`await` to easily combine
+  /// [FutureProvider] together:
+  ///
+  /// ```dart
+  /// final configsProvider = FutureProvider((ref) async => Configs());
+  ///
+  /// final productsProvider = FutureProvider((ref) async {
+  ///   // Wait for the configurations to resolve
+  ///   final configs = await ref.watch(configsProvider.future);
+  ///
+  ///   // Do something with the result
+  ///   return await http.get('${configs.host}/products');
+  /// });
+  /// ```
+  ProviderListenable<Future<T>> get future;
 
-      return requireState;
-    } catch (err, stack) {
-      return AsyncValue.error(err, stackTrace: stack);
-    }
-  }
+  FutureOr<T> _create(covariant FutureProviderElement<T> ref);
 }

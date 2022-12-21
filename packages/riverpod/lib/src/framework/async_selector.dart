@@ -1,7 +1,11 @@
 part of '../framework.dart';
 
 /// Adds [selectAsync] to [ProviderListenable]
-extension AsyncSelector<Input> on ProviderListenable<AsyncValue<Input>> {
+@internal
+mixin AsyncSelector<Input> on ProviderListenable<AsyncValue<Input>> {
+  /// The future that [selectAsync] will query
+  Refreshable<Future<Input>> get future;
+
   /// {@template riverpod.async_select}
   /// A variant of [select] for asynchronous values
   ///
@@ -34,23 +38,42 @@ extension AsyncSelector<Input> on ProviderListenable<AsyncValue<Input>> {
   ProviderListenable<Future<Output>> selectAsync<Output>(
     Output Function(Input data) selector,
   ) {
-    return _AlwaysAliveAsyncSelector(selector: selector, provider: this);
+    return _AlwaysAliveAsyncSelector(
+      selector: selector,
+      provider: this,
+      future: future,
+    );
   }
 }
 
 /// Adds [selectAsync] to [AlwaysAliveProviderListenable]
-extension AlwaysAliveAsyncSelector<Input>
+@internal
+mixin AlwaysAliveAsyncSelector<Input>
     on AlwaysAliveProviderListenable<AsyncValue<Input>> {
+  /// The future that [selectAsync] will query
+  AlwaysAliveRefreshable<Future<Input>> get future;
+
   /// {@macro riverpod.async_select}
   AlwaysAliveProviderListenable<Future<Output>> selectAsync<Output>(
     Output Function(Input data) selector,
   ) {
-    return _AlwaysAliveAsyncSelector(selector: selector, provider: this);
+    return _AlwaysAliveAsyncSelector(
+      selector: selector,
+      provider: this,
+      future: future,
+    );
   }
 }
 
-class _AlwaysAliveAsyncSelector<Input, Output> = _AsyncSelector<Input, Output>
-    with AlwaysAliveProviderListenable<Future<Output>>;
+class _AlwaysAliveAsyncSelector<Input, Output>
+    extends _AsyncSelector<Input, Output>
+    with AlwaysAliveProviderListenable<Future<Output>> {
+  _AlwaysAliveAsyncSelector({
+    required super.provider,
+    required super.future,
+    required super.selector,
+  });
+}
 
 /// An internal class for `ProviderBase.selectAsync`.
 @sealed
@@ -58,30 +81,40 @@ class _AsyncSelector<Input, Output> with ProviderListenable<Future<Output>> {
   /// An internal class for `ProviderBase.select`.
   _AsyncSelector({
     required this.provider,
+    required this.future,
     required this.selector,
   });
 
   /// The provider that was selected
   final ProviderListenable<AsyncValue<Input>> provider;
 
+  /// The future associated to the listened provider
+  final ProviderListenable<Future<Input>> future;
+
   /// The selector applied
   final Output Function(Input) selector;
 
   Result<Output> _select(Input value) {
-    assert(() {
-      _debugIsRunningSelector = true;
-      return true;
-    }(), '');
+    assert(
+      () {
+        _debugIsRunningSelector = true;
+        return true;
+      }(),
+      '',
+    );
 
     try {
       return Result.data(selector(value));
     } catch (err, stack) {
       return Result.error(err, stack);
     } finally {
-      assert(() {
-        _debugIsRunningSelector = false;
-        return true;
-      }(), '');
+      assert(
+        () {
+          _debugIsRunningSelector = false;
+          return true;
+        }(),
+        '',
+      );
     }
   }
 
@@ -89,8 +122,9 @@ class _AsyncSelector<Input, Output> with ProviderListenable<Future<Output>> {
   _SelectorSubscription<AsyncValue<Input>, Future<Output>> addListener(
     Node node,
     void Function(Future<Output>? previous, Future<Output> next) listener, {
-    void Function(Object error, StackTrace stackTrace)? onError,
-    bool fireImmediately = false,
+    required void Function(Object error, StackTrace stackTrace)? onError,
+    required void Function()? onDependencyMayHaveChanged,
+    required bool fireImmediately,
   }) {
     Result<Output>? lastSelectedValue;
     Completer<Output>? selectedCompleter;
@@ -176,11 +210,9 @@ class _AsyncSelector<Input, Output> with ProviderListenable<Future<Output>> {
             return;
           }
 
-          final stack = value.stackTrace ?? StackTrace.empty;
-
           emitError(
             value.error,
-            stack,
+            value.stackTrace,
             callListeners: callListeners,
           );
 
@@ -208,4 +240,7 @@ class _AsyncSelector<Input, Output> with ProviderListenable<Future<Output>> {
       () => selectedFuture!,
     );
   }
+
+  @override
+  Future<Output> read(Node node) => future.read(node).then(selector);
 }

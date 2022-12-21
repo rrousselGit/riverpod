@@ -11,17 +11,6 @@ void main() {
 
       expect(provider(0).from, provider);
       expect(provider(0).argument, 0);
-
-      expect(provider(0).future.from, provider);
-      expect(provider(0).future.argument, 0);
-
-      expect(provider(0).stream.from, provider);
-      expect(provider(0).stream.argument, 0);
-
-      // ignore: deprecated_member_use_from_same_package
-      expect(provider(0).last.from, provider);
-      // ignore: deprecated_member_use_from_same_package
-      expect(provider(0).last.argument, 0);
     });
 
     group('scoping an override overrides all the associated subproviders', () {
@@ -40,10 +29,6 @@ void main() {
           unorderedEquals(<Object?>[
             isA<ProviderElementBase>()
                 .having((e) => e.origin, 'origin', provider(0)),
-            isA<ProviderElementBase>()
-                .having((e) => e.origin, 'origin', provider(0).future),
-            isA<ProviderElementBase>()
-                .having((e) => e.origin, 'origin', provider(0).stream),
           ]),
         );
       });
@@ -52,11 +37,14 @@ void main() {
         final provider =
             StreamProvider.family<int, int>((ref, _) => Stream.value(0));
         final root = createContainer();
-        final container = createContainer(parent: root, overrides: [
-          provider.overrideWithProvider(
-            (value) => StreamProvider((ref) => Stream.value(42)),
-          ),
-        ]);
+        final container = createContainer(
+          parent: root,
+          overrides: [
+            provider.overrideWithProvider(
+              (value) => StreamProvider((ref) => Stream.value(42)),
+            ),
+          ],
+        );
 
         expect(await container.read(provider(0).stream).first, 42);
         expect(await container.read(provider(0).future), 42);
@@ -67,10 +55,6 @@ void main() {
           unorderedEquals(<Object?>[
             isA<ProviderElementBase>()
                 .having((e) => e.origin, 'origin', provider(0)),
-            isA<ProviderElementBase>()
-                .having((e) => e.origin, 'origin', provider(0).future),
-            isA<ProviderElementBase>()
-                .having((e) => e.origin, 'origin', provider(0).stream),
           ]),
         );
       });
@@ -99,11 +83,13 @@ void main() {
       final provider = StreamProvider.family<String, int>((ref, a) {
         return Stream.value('$a');
       });
-      final container = ProviderContainer(overrides: [
-        provider.overrideWithProvider(
-          (a) => StreamProvider((ref) => Stream.value('override $a')),
-        ),
-      ]);
+      final container = ProviderContainer(
+        overrides: [
+          provider.overrideWithProvider(
+            (a) => StreamProvider((ref) => Stream.value('override $a')),
+          ),
+        ],
+      );
 
       expect(container.read(provider(0)), const AsyncValue<String>.loading());
 

@@ -94,10 +94,6 @@ void main() {
   printer.printToStdout();
 }
 
-int create(Ref ref) {
-  return 0;
-}
-
 void pushProviders(int count, ProviderContainer container) {
   final providers = List.generate(1, (index) => Provider((ref) => index));
   providers.forEach(container.read);

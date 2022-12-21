@@ -5,12 +5,25 @@ import 'package:test/test.dart';
 import '../../utils.dart';
 
 void main() {
+  test(
+      'It is possible to read provider sub-values by specifying the provider in `dependencies`',
+      () {
+    final dep = StateProvider((ref) => 0);
+    final provider = Provider(
+      (ref) => ref.watch(dep.notifier),
+      dependencies: [dep],
+    );
+    final container = createContainer();
+
+    expect(container.read(provider).state, 0);
+  });
+
   group('scoping mechanism', () {
     test('use the deepest override', () {
       final provider = Provider((ref) => 0);
-      final root = createContainer(overrides: [
-        provider.overrideWithValue(1),
-      ]);
+      final root = createContainer(
+        overrides: [provider.overrideWithValue(1)],
+      );
       final mid = createContainer(
         parent: root,
         overrides: [
@@ -32,12 +45,13 @@ void main() {
 
     test('can read both parent and child simultaneously', () async {
       final provider = Provider((ref) => 0);
-      final root = createContainer(overrides: [
-        provider.overrideWithValue(21),
-      ]);
-      final container = createContainer(parent: root, overrides: [
-        provider.overrideWithValue(42),
-      ]);
+      final root = createContainer(
+        overrides: [provider.overrideWithValue(21)],
+      );
+      final container = createContainer(
+        parent: root,
+        overrides: [provider.overrideWithValue(42)],
+      );
 
       expect(container.read(provider), 42);
       expect(root.read(provider), 21);
@@ -48,12 +62,13 @@ void main() {
     test('updating parent override when there is a child override is no-op',
         () async {
       final provider = Provider((ref) => 0);
-      final root = createContainer(overrides: [
-        provider.overrideWithValue(21),
-      ]);
-      final container = createContainer(parent: root, overrides: [
-        provider.overrideWithValue(42),
-      ]);
+      final root = createContainer(
+        overrides: [provider.overrideWithValue(21)],
+      );
+      final container = createContainer(
+        parent: root,
+        overrides: [provider.overrideWithValue(42)],
+      );
       final listener = Listener<int>();
 
       container.listen(provider, listener, fireImmediately: true);
@@ -91,9 +106,9 @@ void main() {
 
     test('are disposed on nested containers', () {
       final provider = Provider((ref) => 0);
-      final root = createContainer(overrides: [
-        provider.overrideWithValue(1),
-      ]);
+      final root = createContainer(
+        overrides: [provider.overrideWithValue(1)],
+      );
       final container = createContainer(
         parent: root,
         overrides: [
@@ -114,10 +129,12 @@ void main() {
       final provider = Provider<int>((ref) => -1);
       final provider2 = Provider<int>((ref) => -1);
 
-      final container = createContainer(overrides: [
-        provider.overrideWithValue(21),
-        provider2.overrideWithValue(42),
-      ]);
+      final container = createContainer(
+        overrides: [
+          provider.overrideWithValue(21),
+          provider2.overrideWithValue(42),
+        ],
+      );
 
       final listener = Listener<int>();
       final listener2 = Listener<int>();
@@ -143,9 +160,9 @@ void main() {
 
     test('handles parent override update', () {
       final provider = Provider((ref) => 0);
-      final root = createContainer(overrides: [
-        provider.overrideWithValue(1),
-      ]);
+      final root = createContainer(
+        overrides: [provider.overrideWithValue(1)],
+      );
       final mid = createContainer(
         parent: root,
         overrides: [
@@ -169,9 +186,10 @@ void main() {
     test('can be overridden on non-root container', () {
       final provider = Provider((ref) => 0);
       final root = createContainer();
-      final container = createContainer(parent: root, overrides: [
-        provider.overrideWithValue(42),
-      ]);
+      final container = createContainer(
+        parent: root,
+        overrides: [provider.overrideWithValue(42)],
+      );
 
       expect(container.read(provider), 42);
     });
@@ -183,10 +201,13 @@ void main() {
         return ref.watch(provider) * 2;
       });
       final root = createContainer();
-      final container = createContainer(parent: root, overrides: [
-        provider.overrideWithValue(1),
-        provider2,
-      ]);
+      final container = createContainer(
+        parent: root,
+        overrides: [
+          provider.overrideWithValue(1),
+          provider2,
+        ],
+      );
 
       container.listen(provider2, listener, fireImmediately: true);
 
@@ -206,7 +227,7 @@ void main() {
       final listener = Listener<int>();
       final provider = StateProvider((ref) => 1);
       final provider2 = Provider((ref) {
-        return ref.watch(provider.state).state * 2;
+        return ref.watch(provider) * 2;
       });
       final root = createContainer();
       final container = createContainer(parent: root, overrides: [provider2]);
@@ -215,7 +236,7 @@ void main() {
 
       verifyOnly(listener, listener(null, 2));
 
-      root.read(provider.state).state++;
+      root.read(provider.notifier).state++;
 
       await container.pump();
 

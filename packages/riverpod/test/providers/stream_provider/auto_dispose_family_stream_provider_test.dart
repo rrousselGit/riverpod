@@ -1,47 +1,10 @@
-import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
-import '../../third_party/fake_async.dart';
 import '../../utils.dart';
 
 void main() {
   group('StreamProvider.autoDispose.family', () {
-    test('supports cacheTime', () async {
-      final onDispose = cacheFamily<int, OnDisposeMock>(
-        (key) => OnDisposeMock(),
-      );
-      await fakeAsync((async) async {
-        final container = createContainer();
-        final provider =
-            StreamProvider.autoDispose.family<int, int>((ref, value) {
-          ref.onDispose(onDispose(value));
-          return Stream.value(value);
-        }, cacheTime: const Duration(minutes: 5));
-
-        final sub = container.listen<Future<int>>(
-          provider(42).future,
-          (previous, next) {},
-        );
-
-        expect(await sub.read(), 42);
-
-        verifyZeroInteractions(onDispose(42));
-
-        sub.close();
-
-        async.elapse(const Duration(minutes: 2));
-        await container.pump();
-
-        verifyZeroInteractions(onDispose(42));
-
-        async.elapse(const Duration(minutes: 3));
-        await container.pump();
-
-        verifyOnly(onDispose(42), onDispose(42)());
-      });
-    });
-
     test('specifies `from` & `argument` for related providers', () {
       final provider = StreamProvider.autoDispose.family<int, int>(
         (ref, _) => Stream.value(0),
@@ -49,17 +12,6 @@ void main() {
 
       expect(provider(0).from, provider);
       expect(provider(0).argument, 0);
-
-      expect(provider(0).future.from, provider);
-      expect(provider(0).future.argument, 0);
-
-      expect(provider(0).stream.from, provider);
-      expect(provider(0).stream.argument, 0);
-
-      // ignore: deprecated_member_use_from_same_package
-      expect(provider(0).last.from, provider);
-      // ignore: deprecated_member_use_from_same_package
-      expect(provider(0).last.argument, 0);
     });
 
     group('scoping an override overrides all the associated subproviders', () {
@@ -78,10 +30,6 @@ void main() {
           unorderedEquals(<Object?>[
             isA<ProviderElementBase>()
                 .having((e) => e.origin, 'origin', provider(0)),
-            isA<ProviderElementBase>()
-                .having((e) => e.origin, 'origin', provider(0).future),
-            isA<ProviderElementBase>()
-                .having((e) => e.origin, 'origin', provider(0).stream),
           ]),
         );
       });
@@ -110,11 +58,13 @@ void main() {
       final provider = StreamProvider.autoDispose.family<int, int>((ref, a) {
         return Stream.value(a * 2);
       });
-      final container = ProviderContainer(overrides: [
-        provider.overrideWithProvider((a) {
-          return StreamProvider.autoDispose((ref) => Stream.value(a * 4));
-        }),
-      ]);
+      final container = ProviderContainer(
+        overrides: [
+          provider.overrideWithProvider((a) {
+            return StreamProvider.autoDispose((ref) => Stream.value(a * 4));
+          }),
+        ],
+      );
       final listener = Listener<AsyncValue<int>>();
 
       container.listen(provider(21), listener, fireImmediately: true);

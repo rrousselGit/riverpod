@@ -10,11 +10,12 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
-  flutter_riverpod: ^1.0.0-dev.6
+  flutter_riverpod: ^2.1.1
   mockito: ^5.0.13
   build_runner: ^2.0.6
 
 dev_dependencies:
+  build_verify: ^3.0.0
   flutter_test:
     sdk: flutter
   flutter_lints: ^1.0.0

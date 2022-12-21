@@ -41,17 +41,17 @@ module.exports = {
         {
           type: "link",
           label: "Counter",
-          href: "https://github.com/rrousselGit/river_pod/tree/master/examples/counter",
+          href: "https://github.com/rrousselGit/riverpod/tree/master/examples/counter",
         },
         {
           type: "link",
           label: "Todo list",
-          href: "https://github.com/rrousselGit/river_pod/tree/master/examples/todos",
+          href: "https://github.com/rrousselGit/riverpod/tree/master/examples/todos",
         },
         {
           type: "link",
           label: "Marvel API",
-          href: "https://github.com/rrousselGit/river_pod/tree/master/examples/marvel",
+          href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
         },
       ],
     },
@@ -73,11 +73,6 @@ module.exports = {
           type: "link",
           label: "Dictionary App",
           href: "https://github.com/lohanidamodar/fl_dictio",
-        },
-        {
-          type: "link",
-          label: "Firebase Starter",
-          href: "https://github.com/lohanidamodar/flutter_firebase_starter/tree/feature/riverpod",
         },
         {
           type: "link",
@@ -135,6 +130,16 @@ module.exports = {
           label: "Piano Chords Test",
           href: "https://github.com/akvus/piano_fun",
         },
+        {
+          type: "link",
+          label: "Movies API App with Caching & Pagination",
+          href: "https://github.com/Roaa94/movies_app",
+        },
+        {
+          type: "link",
+          label: "AWS Amplify Storage Gallery App with Riverpod & Freezed",
+          href: "https://github.com/offlineprogrammer/amplify_storage_app",
+        },        
       ],
     },
     {

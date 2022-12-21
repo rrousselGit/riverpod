@@ -150,7 +150,7 @@ class Toolbar extends HookConsumerWidget {
         children: [
           Expanded(
             child: Text(
-              '${ref.watch(uncompletedTodosCount).toString()} items left',
+              '${ref.watch(uncompletedTodosCount)} items left',
               overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -284,14 +284,17 @@ class TodoItem extends HookConsumerWidget {
 bool useIsFocused(FocusNode node) {
   final isFocused = useState(node.hasFocus);
 
-  useEffect(() {
-    void listener() {
-      isFocused.value = node.hasFocus;
-    }
+  useEffect(
+    () {
+      void listener() {
+        isFocused.value = node.hasFocus;
+      }
 
-    node.addListener(listener);
-    return () => node.removeListener(listener);
-  }, [node]);
+      node.addListener(listener);
+      return () => node.removeListener(listener);
+    },
+    [node],
+  );
 
   return isFocused.value;
 }

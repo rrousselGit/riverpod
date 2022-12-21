@@ -2,6 +2,7 @@ part of '../framework.dart';
 
 /// An abstraction of both [ProviderContainer] and [ProviderElement] used by
 /// [ProviderListenable].
+@internal
 abstract class Node {
   /// Starts listening to this transformer
   ProviderSubscription<State> listen<State>(
@@ -21,7 +22,8 @@ abstract class Node {
     ProviderBase<State> provider,
   );
 
-  ProviderSubscription<State> _createSubscription<State>(
+  /// Subscribes to a [ProviderElementBase].
+  ProviderSubscription<State> _listenElement<State>(
     ProviderElementBase<State> element, {
     required void Function(State? previous, State next) listener,
     required void Function(Object error, StackTrace stackTrace) onError,
@@ -44,10 +46,13 @@ class _ProviderSelector<Input, Output> with ProviderListenable<Output> {
   final Output Function(Input) selector;
 
   Result<Output> _select(Result<Input> value) {
-    assert(() {
-      _debugIsRunningSelector = true;
-      return true;
-    }(), '');
+    assert(
+      () {
+        _debugIsRunningSelector = true;
+        return true;
+      }(),
+      '',
+    );
 
     try {
       return value.map(
@@ -59,10 +64,13 @@ class _ProviderSelector<Input, Output> with ProviderListenable<Output> {
       // TODO test
       return Result.error(err, stack);
     } finally {
-      assert(() {
-        _debugIsRunningSelector = false;
-        return true;
-      }(), '');
+      assert(
+        () {
+          _debugIsRunningSelector = false;
+          return true;
+        }(),
+        '',
+      );
     }
   }
 
@@ -98,8 +106,9 @@ class _ProviderSelector<Input, Output> with ProviderListenable<Output> {
   _SelectorSubscription<Input, Output> addListener(
     Node node,
     void Function(Output? previous, Output next) listener, {
-    void Function(Object error, StackTrace stackTrace)? onError,
-    bool fireImmediately = false,
+    required void Function(Object error, StackTrace stackTrace)? onError,
+    required void Function()? onDependencyMayHaveChanged,
+    required bool fireImmediately,
   }) {
     onError ??= Zone.current.handleUncaughtError;
 
@@ -142,6 +151,12 @@ class _ProviderSelector<Input, Output> with ProviderListenable<Output> {
       },
     );
   }
+
+  @override
+  Output read(Node node) {
+    final input = provider.read(node);
+    return selector(input);
+  }
 }
 
 class _SelectorSubscription<Input, Output>
@@ -170,4 +185,14 @@ class _SelectorSubscription<Input, Output>
 
     return _read();
   }
+}
+
+class _AlwaysAliveProviderSelector<Input, Output>
+    extends _ProviderSelector<Input, Output>
+    with AlwaysAliveProviderListenable<Output> {
+  /// An internal class for `ProviderBase.select`.
+  _AlwaysAliveProviderSelector({
+    required super.provider,
+    required super.selector,
+  });
 }

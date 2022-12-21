@@ -12,36 +12,18 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+        scaffoldBackgroundColor: const Color(0xFF2d2d2d),
+      ),
       builder: (context, child) {
         final theme = Theme.of(context);
 
         return ProviderScope(
           overrides: [
-            tagThemeProvider.overrideWithValue(
-              TagTheme(
-                padding: EdgeInsets.symmetric(
-                  horizontal: theme.textTheme.bodyText1!.fontSize! * 0.5,
-                  vertical: theme.textTheme.bodyText1!.fontSize! * 0.4,
-                ),
-                style: theme.textTheme.bodyText2!.copyWith(
-                  color: const Color(0xff9cc3db),
-                ),
-                borderRadius: BorderRadius.circular(3),
-                backgroundColor: const Color(0xFF3e4a52),
-              ),
-            ),
-            questionThemeProvider.overrideWithValue(
-              const QuestionTheme(
-                titleStyle: TextStyle(
-                  color: Color(0xFF3ca4ff),
-                  fontSize: 16,
-                ),
-                descriptionStyle: TextStyle(
-                  color: Color(0xFFe7e8eb),
-                  fontSize: 13,
-                ),
-              ),
-            ),
+            /// We override "themeProvider" with a valid theme instance.
+            /// This allows providers such as "tagThemeProvider" to read the
+            /// current theme, without having a BuildContext.
+            themeProvider.overrideWithValue(theme),
           ],
           child: ListTileTheme(
             textColor: const Color(0xFFe7e8eb),
@@ -49,9 +31,6 @@ class MyApp extends StatelessWidget {
           ),
         );
       },
-      theme: ThemeData(
-        scaffoldBackgroundColor: const Color(0xFF2d2d2d),
-      ),
       home: const MyHomePage(),
     );
   }

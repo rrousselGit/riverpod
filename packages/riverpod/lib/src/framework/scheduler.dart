@@ -1,5 +1,22 @@
 part of '../framework.dart';
 
+/// A way to override [vsync], used by Flutter to synchronize a container
+/// with the widget tree.
+@internal
+void Function(void Function() task)? vsyncOverride;
+
+void _defaultVsync(void Function() task) {
+  Future(task);
+}
+
+/// A function that controls the refresh rate of providers.
+///
+/// Defaults to refreshing providers at the end of the next event-loop.
+@internal
+void Function(void Function()) get vsync {
+  return vsyncOverride ?? _defaultVsync;
+}
+
 /// The object that handles when providers are refreshed and disposed.
 ///
 /// Providers are typically refreshed at the end of the frame where they
@@ -7,11 +24,7 @@ part of '../framework.dart';
 ///
 /// Providers are disposed if they spent at least one full frame without any listener.
 class _ProviderScheduler {
-  _ProviderScheduler(this.vsync);
-
-  final void Function(void Function() onDone) vsync;
-
-  final _stateToDispose = <AutoDisposeProviderElementBase>[];
+  final _stateToDispose = <AutoDisposeProviderElementMixin>[];
   final _stateToRefresh = <ProviderElementBase>[];
 
   Completer<void>? _pendingTaskCompleter;
@@ -50,7 +63,7 @@ class _ProviderScheduler {
     }
   }
 
-  void scheduleProviderDispose(AutoDisposeProviderElementBase element) {
+  void scheduleProviderDispose(AutoDisposeProviderElementMixin element) {
     assert(
       !element.hasListeners,
       'Tried to dispose ${element._provider} , but still has listeners',
@@ -69,9 +82,11 @@ class _ProviderScheduler {
     for (var i = 0; i < _stateToDispose.length; i++) {
       final element = _stateToDispose[i];
 
+      final links = element._keepAliveLinks;
+
       // ignore: deprecated_member_use_from_same_package
       if (element.maintainState ||
-          element._keepAliveLinks.isNotEmpty ||
+          (links != null && links.isNotEmpty) ||
           element.hasListeners ||
           element._container._disposed) {
         continue;

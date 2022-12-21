@@ -10,11 +10,11 @@ final pageIndexProvider = StateProvider<int>((ref) => 0);
 /* highlight-start */
 final canGoToPreviousPageProvider = Provider<bool>((ref) {
 /* highlight-end */
-  return ref.watch(pageIndexProvider) == 0;
+  return ref.watch(pageIndexProvider) != 0;
 });
 
 class PreviousButton extends ConsumerWidget {
-  const PreviousButton({Key? key}): super(key: key);
+  const PreviousButton({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

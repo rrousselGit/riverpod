@@ -7,6 +7,11 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 // ignore: unnecessary_import
 import 'package:riverpod/riverpod.dart';
 
+extension on ProviderBase {
+  // ignore: unused_element
+  Override overrideWithValue(Object? value) => throw UnimplementedError();
+}
+
 class Counter extends StateNotifier<int> {
   Counter(ProviderReference this.ref) : super(1);
   final ProviderReference ref;
@@ -43,16 +48,20 @@ final plainProvider = Provider((ProviderReference ref) => '');
 final plainNullProvider = Provider<String?>((ProviderReference ref) => null);
 final plainProviderAD = Provider.autoDispose((ProviderReference ref) => '');
 final stateProvider = StateProvider((ProviderReference ref) => '');
-final changeNotifier =
-    ChangeNotifierProvider((ProviderReference ref) => ChangeNotifier());
+final changeNotifier = ChangeNotifierProvider(
+  (ProviderReference ref) => ChangeNotifier(),
+);
 final plainProviderFamilyAD = Provider.family
     .autoDispose<String, String>((ProviderReference ref, _) => '');
-final futureProviderAD =
-    FutureProvider.autoDispose((ProviderReference ref) async => '');
+final futureProviderAD = FutureProvider.autoDispose(
+  (ProviderReference ref) async => '',
+);
 final streamProviderAD = StreamProvider.autoDispose(
-    (ProviderReference ref) => Stream.fromIterable(['1', '2', '3']));
+  (ProviderReference ref) => Stream.fromIterable(['1', '2', '3']),
+);
 final stateNotifierProvider = StateNotifierProvider<Counter, int>(
-    (ProviderReference ref) => Counter(ref));
+  (ProviderReference ref) => Counter(ref),
+);
 final scopedProvider = ScopedProvider<int>((watch) => 0);
 final otherScopedProvider =
     ScopedProvider<int>((watch) => watch(scopedProvider));
@@ -123,11 +132,13 @@ class StatelessConsumerRead extends StatelessWidget {
           onPressed(context);
           onPressed2(context);
         },
-        child: Consumer(builder: (context, watch, child) {
-          final count = watch(counterProvider);
+        child: Consumer(
+          builder: (context, watch, child) {
+            final count = watch(counterProvider);
 
-          return Text('Counter $count');
-        }),
+            return Text('Counter $count');
+          },
+        ),
       ),
     );
   }
@@ -282,10 +293,18 @@ class HooksWatch extends HookWidget {
     final asyncValue = useProvider(futureProvider);
     asyncValue.when(loading: () {}, data: (_) {}, error: (_, __) {});
     asyncValue.maybeWhen(
-        loading: () {}, data: (_) {}, error: (_, __) {}, orElse: () {});
+      loading: () {},
+      data: (_) {},
+      error: (_, __) {},
+      orElse: () {},
+    );
     asyncValue.when(loading: empty, data: (_) {}, error: error);
     asyncValue.maybeWhen(
-        loading: empty, data: (_) {}, error: error, orElse: () {});
+      loading: empty,
+      data: (_) {},
+      error: error,
+      orElse: () {},
+    );
     return Center(
       child: ElevatedButton(
         onPressed: () {
@@ -367,9 +386,11 @@ class NoMigrateHook extends HookWidget {
 void main() {
   final container = ProviderContainer();
   final count = container.read(testProvider);
-  ProviderContainer(overrides: [
-    stateNotifierProvider.overrideWithValue(CounterTest()),
-  ]).listen(stateNotifierProvider.notifier).read();
+  ProviderContainer(
+    overrides: [
+      stateNotifierProvider.overrideWithValue(CounterTest()),
+    ],
+  ).listen(stateNotifierProvider.notifier).read();
   ProviderContainer().read(testProvider);
   final _ = ProviderContainer(
     overrides: [

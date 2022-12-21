@@ -1,0 +1,57 @@
+---
+title: FutureProvider
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import configProvider from "!!raw-loader!./future_provider/config_provider.dart";
+import configConsumer from "!!raw-loader!./future_provider/config_consumer.dart";
+import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+
+`FutureProvider` является аналогом [Provider], но для асинхронного кода.
+
+`FutureProvider` обычно используется для:
+
+- выполнения и кэширования асинхронных операций (например сетевые запросы)
+- красивая обработка ошибок/загрузок асинхронных операций
+- комбинирование нескольких асинхронных значений в одном
+
+`FutureProvider` с [ref.watch] еще более полезен.
+Такая комбинации позволяет автоматически получать новые данные
+при изменении переменных. Тем самым мы гарантируем наличие актуальных данных.
+
+:::info
+`FutureProvider` не предоставляет способа изменения вычислений после взаимодействия
+пользователя. Он был создан для решения простых задач. Для более сложных ситуаций
+следует использовать [StateNotifierProvider].
+:::
+
+## Пример использования: чтение файла конфигурации
+
+`FutureProvider` может быть хорошим способом хранения объекта `Configuration`,
+созданного после прочтения JSON файла.
+
+Создание конфигурации может быть реализовано с использованием async/await,
+но теперь внутри провайдера.
+Используя asset, это можно сделать так:
+
+<CodeBlock>{trimSnippet(configProvider)}</CodeBlock>
+
+Далее UI может наблюдать за конфигурацией:
+
+<CodeBlock>{trimSnippet(configConsumer)}</CodeBlock>
+
+Таким образом, UI автоматически перестроится, когда завершится [Future].
+В то же время, если конфигурация понадобится нескольким виджетам,
+файл конфигурации будет прочтен единожды.
+
+Как вы можете видеть, прослушивание `FutureProvider` внутри виджета
+возвращает [AsyncValue], которое позволяет обрабатывать ошибки/загрузку.
+
+[ref.watch]: ../concepts/reading#using-refwatch-to-observe-a-provider
+[statenotifierprovider]: ./state_notifier_provider
+[provider]: ./provider
+[asyncvalue]: https://pub.dev/documentation/riverpod/latest/riverpod/AsyncValue-class.html
+[future]: https://api.dart.dev/dart-async/Future-class.html
+[family]: ../concepts/modifiers/family

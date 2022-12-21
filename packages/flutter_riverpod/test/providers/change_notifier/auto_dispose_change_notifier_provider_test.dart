@@ -1,5 +1,7 @@
+// ignore_for_file: invalid_use_of_internal_member
+
 import 'package:flutter/widgets.dart' hide Listener;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/src/internals.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
@@ -82,44 +84,46 @@ void main() {
           unorderedEquals(<Object>[
             isA<ProviderElementBase>()
                 .having((e) => e.origin, 'origin', provider),
-            isA<ProviderElementBase>()
-                .having((e) => e.origin, 'origin', provider.notifier)
           ]),
         );
         expect(root.getAllProviderElements(), isEmpty);
       });
 
-      test('when using provider.overrideWithValue', () {
-        final provider =
-            ChangeNotifierProvider.autoDispose((ref) => ValueNotifier(0));
-        final root = createContainer();
-        final container = createContainer(parent: root, overrides: [
-          provider.overrideWithValue(ValueNotifier(42)),
-        ]);
+      // test('when using provider.overrideWithValue', () {
+      //   final provider =
+      //       ChangeNotifierProvider.autoDispose((ref) => ValueNotifier(0));
+      //   final root = createContainer();
+      //   final container = createContainer(parent: root, overrides: [
+      //     provider.overrideWithValue(ValueNotifier(42)),
+      //   ]);
 
-        expect(container.read(provider.notifier).value, 42);
-        expect(container.read(provider).value, 42);
-        expect(
-          container.getAllProviderElements(),
-          unorderedEquals(<Object>[
-            isA<ProviderElementBase>()
-                .having((e) => e.origin, 'origin', provider),
-            isA<ProviderElementBase>()
-                .having((e) => e.origin, 'origin', provider.notifier)
-          ]),
-        );
-        expect(root.getAllProviderElements(), isEmpty);
-      });
+      //   expect(container.read(provider.notifier).value, 42);
+      //   expect(container.read(provider).value, 42);
+      //   expect(
+      //     container.getAllProviderElements(),
+      //     unorderedEquals(<Object>[
+      //       isA<ProviderElementBase>()
+      //           .having((e) => e.origin, 'origin', provider),
+      //       isA<ProviderElementBase>()
+      //           .having((e) => e.origin, 'origin', provider.notifier)
+      //     ]),
+      //   );
+      //   expect(root.getAllProviderElements(), isEmpty);
+      // });
 
       test('when using provider.overrideWithProvider', () {
         final provider =
             ChangeNotifierProvider.autoDispose((ref) => ValueNotifier(0));
         final root = createContainer();
-        final container = createContainer(parent: root, overrides: [
-          provider.overrideWithProvider(
-            ChangeNotifierProvider.autoDispose((ref) => ValueNotifier(42)),
-          ),
-        ]);
+        final container = createContainer(
+          parent: root,
+          overrides: [
+            // ignore: deprecated_member_use
+            provider.overrideWithProvider(
+              ChangeNotifierProvider.autoDispose((ref) => ValueNotifier(42)),
+            ),
+          ],
+        );
 
         expect(container.read(provider.notifier).value, 42);
         expect(container.read(provider).value, 42);
@@ -128,8 +132,6 @@ void main() {
           unorderedEquals(<Object>[
             isA<ProviderElementBase>()
                 .having((e) => e.origin, 'origin', provider),
-            isA<ProviderElementBase>()
-                .having((e) => e.origin, 'origin', provider.notifier)
           ]),
         );
         expect(root.getAllProviderElements(), isEmpty);

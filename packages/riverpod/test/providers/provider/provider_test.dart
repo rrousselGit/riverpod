@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_types_on_closure_parameters
+
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
@@ -6,20 +8,38 @@ import '../../utils.dart';
 
 void main() {
   group('Provider', () {
-    test('can benefit from .future extension if returning an AsyncValue',
-        () async {
-      final container = createContainer();
-      final provider = Provider((ref) => const AsyncValue.data(42));
+    test('supports overrideWith', () {
+      final provider = Provider<int>((ref) => 0);
+      final autoDispose = Provider.autoDispose<int>((ref) => 0);
+      final container = createContainer(
+        overrides: [
+          provider.overrideWith((ProviderRef<int> ref) => 42),
+          autoDispose.overrideWith(
+            (AutoDisposeProviderRef<int> ref) => 84,
+          ),
+        ],
+      );
 
-      await expectLater(container.read(provider.future), completion(42));
+      expect(container.read(provider), 42);
+      expect(container.read(autoDispose), 84);
     });
 
-    test('can benefit from .stream extension if returning an AsyncValue',
-        () async {
-      final container = createContainer();
-      final provider = Provider((ref) => const AsyncValue.data(42));
+    test('supports family overrideWith', () {
+      final family = Provider.family<String, int>((ref, arg) => '0 $arg');
+      final autoDisposeFamily = Provider.autoDispose.family<String, int>(
+        (ref, arg) => '0 $arg',
+      );
+      final container = createContainer(
+        overrides: [
+          family.overrideWith((ProviderRef<String> ref, int arg) => '42 $arg'),
+          autoDisposeFamily.overrideWith(
+            (AutoDisposeProviderRef<String> ref, int arg) => '84 $arg',
+          ),
+        ],
+      );
 
-      await expectLater(container.read(provider.stream), emits(42));
+      expect(container.read(family(10)), '42 10');
+      expect(container.read(autoDisposeFamily(10)), '84 10');
     });
 
     test('can be refreshed', () async {
@@ -97,7 +117,7 @@ void main() {
         final container = createContainer();
         Object? err;
         final provider = Provider<int>((ref) {
-          if (ref.watch(dep.state).state) {
+          if (ref.watch(dep)) {
             try {
               ref.state;
             } catch (e) {
@@ -110,7 +130,7 @@ void main() {
         container.read(provider);
         expect(err, isNull);
 
-        container.read(dep.state).state = true;
+        container.read(dep.notifier).state = true;
         container.read(provider);
 
         expect(err, isStateError);
@@ -165,9 +185,10 @@ void main() {
       test('when using provider.overrideWithValue', () {
         final provider = Provider((ref) => 0);
         final root = createContainer();
-        final container = createContainer(parent: root, overrides: [
-          provider.overrideWithValue(42),
-        ]);
+        final container = createContainer(
+          parent: root,
+          overrides: [provider.overrideWithValue(42)],
+        );
 
         expect(container.read(provider), 42);
         expect(container.getAllProviderElements(), [
@@ -179,9 +200,13 @@ void main() {
       test('when using provider.overrideWithProvider', () {
         final provider = Provider((ref) => 0);
         final root = createContainer();
-        final container = createContainer(parent: root, overrides: [
-          provider.overrideWithProvider(Provider((ref) => 42)),
-        ]);
+        final container = createContainer(
+          parent: root,
+          overrides: [
+            // ignore: deprecated_member_use_from_same_package
+            provider.overrideWithProvider(Provider((ref) => 42)),
+          ],
+        );
 
         expect(container.read(provider), 42);
         expect(container.getAllProviderElements(), [
@@ -192,23 +217,11 @@ void main() {
     });
 
     group('override', () {
-      test('Provider can be overridden by anything', () {
-        final provider = Provider((_) => 42);
-        final AlwaysAliveProviderBase<int> override = Provider((_) {
-          return 21;
-        });
-        final container = createContainer(overrides: [
-          provider.overrideWithProvider(override),
-        ]);
-
-        expect(container.read(provider), 21);
-      });
-
       test('does not notify listeners if updated with the same value', () {
         final provider = Provider((ref) => 0);
-        final container = createContainer(overrides: [
-          provider.overrideWithValue(42),
-        ]);
+        final container = createContainer(
+          overrides: [provider.overrideWithValue(42)],
+        );
         final listener = Listener<int>();
 
         addTearDown(container.dispose);
@@ -227,9 +240,9 @@ void main() {
 
       test('notify listeners when value changes', () {
         final provider = Provider((ref) => 0);
-        final container = createContainer(overrides: [
-          provider.overrideWithValue(42),
-        ]);
+        final container = createContainer(
+          overrides: [provider.overrideWithValue(42)],
+        );
         final listener = Listener<int>();
 
         addTearDown(container.dispose);

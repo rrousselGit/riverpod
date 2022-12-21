@@ -16,19 +16,21 @@ void main() {
       return ValueNotifier(0);
     });
 
-    Consumer(builder: (context, ref, _) {
-      // ignore: omit_local_variable_types, unused_local_variable, prefer_final_locals
-      int providerValue = ref.read(provider);
-      // ignore: omit_local_variable_types, unused_local_variable, prefer_final_locals
-      AsyncValue<int> futureProviderValue = ref.read(futureProvider);
-      // ignore: omit_local_variable_types, unused_local_variable, prefer_final_locals
-      AsyncValue<int> streamProviderValue = ref.read(streamProvider);
-      // ignore: omit_local_variable_types, unused_local_variable, prefer_final_locals
-      ValueNotifier<int> changeNotifierProviderValue =
-          ref.read(changeNotifierProvider);
+    Consumer(
+      builder: (context, ref, _) {
+        // ignore: omit_local_variable_types, unused_local_variable, prefer_final_locals
+        int providerValue = ref.read(provider);
+        // ignore: omit_local_variable_types, unused_local_variable, prefer_final_locals
+        AsyncValue<int> futureProviderValue = ref.read(futureProvider);
+        // ignore: omit_local_variable_types, unused_local_variable, prefer_final_locals
+        AsyncValue<int> streamProviderValue = ref.read(streamProvider);
+        // ignore: omit_local_variable_types, unused_local_variable, prefer_final_locals
+        ValueNotifier<int> changeNotifierProviderValue =
+            ref.read(changeNotifierProvider);
 
-      return Container();
-    });
+        return Container();
+      },
+    );
   });
 
   testWidgets('no onDispose does not crash', (tester) async {
@@ -36,12 +38,14 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer(builder: (c, ref, _) {
-          return Text(
-            ref.watch(provider).toString(),
-            textDirection: TextDirection.ltr,
-          );
-        }),
+        child: Consumer(
+          builder: (c, ref, _) {
+            return Text(
+              ref.watch(provider).toString(),
+              textDirection: TextDirection.ltr,
+            );
+          },
+        ),
       ),
     );
 
@@ -69,12 +73,14 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer(builder: (c, ref, _) {
-          return Text(
-            ref.watch(provider).toString(),
-            textDirection: TextDirection.ltr,
-          );
-        }),
+        child: Consumer(
+          builder: (c, ref, _) {
+            return Text(
+              ref.watch(provider).toString(),
+              textDirection: TextDirection.ltr,
+            );
+          },
+        ),
       ),
     );
 
@@ -110,12 +116,14 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer(builder: (c, ref, _) {
-          return Text(
-            ref.watch(provider).toString(),
-            textDirection: TextDirection.ltr,
-          );
-        }),
+        child: Consumer(
+          builder: (c, ref, _) {
+            return Text(
+              ref.watch(provider).toString(),
+              textDirection: TextDirection.ltr,
+            );
+          },
+        ),
       ),
     );
 
@@ -130,12 +138,14 @@ void main() {
       callCount++;
       return ref.watch(dep);
     });
-    final child = Consumer(builder: (c, ref, _) {
-      return Text(
-        ref.watch(provider).toString(),
-        textDirection: TextDirection.ltr,
-      );
-    });
+    final child = Consumer(
+      builder: (c, ref, _) {
+        return Text(
+          ref.watch(provider).toString(),
+          textDirection: TextDirection.ltr,
+        );
+      },
+    );
 
     await tester.pumpWidget(
       ProviderScope(
@@ -177,9 +187,11 @@ void main() {
         overrides: [
           provider.overrideWithValue(1),
         ],
-        child: Consumer(builder: (c, ref, _) {
-          return Text(ref.watch(provider1), textDirection: TextDirection.ltr);
-        }),
+        child: Consumer(
+          builder: (c, ref, _) {
+            return Text(ref.watch(provider1), textDirection: TextDirection.ltr);
+          },
+        ),
       ),
     );
 
@@ -195,18 +207,20 @@ void main() {
     final third = Provider<int>((ref) {
       return ref.watch(second) + 1;
     });
-    final forth = Provider<int>((ref) {
+    final fourth = Provider<int>((ref) {
       return ref.watch(third) + 1;
     });
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer(builder: (c, ref, _) {
-          return Text(
-            ref.watch(forth).toString(),
-            textDirection: TextDirection.ltr,
-          );
-        }),
+        child: Consumer(
+          builder: (c, ref, _) {
+            return Text(
+              ref.watch(fourth).toString(),
+              textDirection: TextDirection.ltr,
+            );
+          },
+        ),
       ),
     );
 
@@ -221,7 +235,7 @@ void main() {
     final third = Provider<int>((ref) {
       return ref.watch(second) + 1;
     });
-    final forth = Provider<int>((ref) {
+    final fourth = Provider<int>((ref) {
       return ref.watch(third) + 1;
     });
 
@@ -230,12 +244,14 @@ void main() {
         overrides: [
           first.overrideWithValue(42),
         ],
-        child: Consumer(builder: (c, ref, _) {
-          return Text(
-            ref.watch(forth).toString(),
-            textDirection: TextDirection.ltr,
-          );
-        }),
+        child: Consumer(
+          builder: (c, ref, _) {
+            return Text(
+              ref.watch(fourth).toString(),
+              textDirection: TextDirection.ltr,
+            );
+          },
+        ),
       ),
     );
 
@@ -250,7 +266,7 @@ void main() {
     final third = Provider<int>((ref) {
       return ref.watch(second) + 1;
     });
-    final forth = Provider<int>((ref) {
+    final fourth = Provider<int>((ref) {
       return ref.watch(third) + 1;
     });
 
@@ -259,12 +275,14 @@ void main() {
         overrides: [
           second.overrideWithValue(0),
         ],
-        child: Consumer(builder: (c, ref, _) {
-          return Text(
-            ref.watch(forth).toString(),
-            textDirection: TextDirection.ltr,
-          );
-        }),
+        child: Consumer(
+          builder: (c, ref, _) {
+            return Text(
+              ref.watch(fourth).toString(),
+              textDirection: TextDirection.ltr,
+            );
+          },
+        ),
       ),
     );
 
@@ -286,12 +304,14 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer(builder: (c, ref, _) {
-          return Text(
-            ref.watch(provider1).toString(),
-            textDirection: TextDirection.ltr,
-          );
-        }),
+        child: Consumer(
+          builder: (c, ref, _) {
+            return Text(
+              ref.watch(provider1).toString(),
+              textDirection: TextDirection.ltr,
+            );
+          },
+        ),
       ),
     );
 

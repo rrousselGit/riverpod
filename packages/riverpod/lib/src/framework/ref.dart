@@ -17,14 +17,31 @@ abstract class Ref<State extends Object?> {
   /// {@template riverpod.refresh}
   /// Forces a provider to re-evaluate its state immediately, and return the created value.
   ///
-  /// If you do not care about the new value, prefer [invalidate] instead,
-  /// which makes the invalidation logic more resilient by avoiding
-  /// multiple refreshes at once.
+  /// Writing:
+  ///
+  /// ```dart
+  /// final newValue = ref.refresh(provider);
+  /// ```
+  ///
+  /// is strictly identical to doing:
+  ///
+  /// ```dart
+  /// ref.invalidate(provider);
+  /// final newValue = ref.read(provider);
+  /// ```
+  ///
+  /// If you do not care about the return value of [refresh], use [invalidate] instead.
+  /// Doing so has the benefit of:
+  /// - making the invalidation logic more resilient by avoiding multiple
+  ///   refreshes at once.
+  /// - possibly avoids recomputing a provider if it isn't
+  ///   needed immediately.
   ///
   /// This method is useful for features like "pull to refresh" or "retry on error",
   /// to restart a specific provider.
   /// {@endtemplate}
-  T refresh<T>(ProviderBase<T> provider);
+  @useResult
+  T refresh<T>(Refreshable<T> provider);
 
   /// {@template riverpod.invalidate}
   /// Invalidates the state of the provider, causing it to refresh.
@@ -37,14 +54,31 @@ abstract class Ref<State extends Object?> {
   ///
   /// Calling [invalidate] will cause the provider to be disposed immediately.
   /// {@endtemplate}
-  void invalidate(ProviderBase<Object?> provider);
+  void invalidate(ProviderOrFamily provider);
 
-  /// Listens to changes on the value exposed by this provider
+  /// Notify depedents that this provider has changed.
+  ///
+  /// This is typically used for mutable state, such as to do:
+  ///
+  /// ```dart
+  /// class TodoList extends Notifier<List<Todo>> {
+  ///   @override
+  ///   List<Todo>> build() => [];
+  ///
+  ///   void addTodo(Todo todo) {
+  ///     state.add(todo);
+  ///     ref.notifyListeners();
+  ///   }
+  /// }
+  /// ```
+  void notifyListeners();
+
+  /// Listens to changes on the value exposed by this provider.
   ///
   /// The listener will be called immediately after the provider completes building.
   ///
   /// As opposed to [listen], the listener will be called even if
-  /// [ProviderBase.updateShouldNotify] returns false, meaning that the previous
+  /// [ProviderElementBase.updateShouldNotify] returns false, meaning that the previous
   /// and new value can potentially be identical.
   void listenSelf(
     void Function(State? previous, State next) listener, {
@@ -107,8 +141,10 @@ abstract class Ref<State extends Object?> {
 
   /// Adds a listener to perform an operation right before the provider is destroyed.
   ///
-  /// This typically happen when a provider marked with `.autoDispose` is no longer
-  /// used, or when [ProviderContainer.dispose] is called.
+  /// This includes:
+  /// - when the provider will rebuild (such as when using [watch] or [refresh]).
+  /// - when an `autoDispose` provider is no longer used
+  /// - when the associated [ProviderContainer]/`ProviderScope` is disposed`.
   ///
   /// See also:
   ///
@@ -129,33 +165,66 @@ abstract class Ref<State extends Object?> {
   ///
   /// ```dart
   /// final configsProvider = FutureProvider(...);
-  /// final myServiceProvider = Provider((ref) {
-  ///   return MyService(ref.read);
-  /// });
+  /// final myServiceProvider = Provider(MyService.new);
   ///
   /// class MyService {
-  ///   MyService(this.read);
+  ///   MyService(this.ref);
   ///
-  ///   final Reader read;
+  ///   final Ref ref;
   ///
   ///   Future<User> fetchUser() {
   ///     // We read the current configurations, but do not care about
   ///     // rebuilding MyService when the configurations changes
-  ///     final configs = read(configsProvider.future);
+  ///     final configs = ref.read(configsProvider.future);
   ///
   ///     return dio.get(configs.host);
   ///   }
   /// }
   /// ```
   ///
-  /// By passing [read] to an object, this allows our object to read other providers.
+  /// By passing [Ref] to an object, this allows our object to read other providers.
   /// But we do not want to re-create our object if any of the provider
   /// obtained changes. We only want to read their current value without doing
   /// anything else.
   ///
   /// If possible, avoid using [read] and prefer [watch], which is generally
   /// safer to use.
-  T read<T>(ProviderBase<T> provider);
+  T read<T>(ProviderListenable<T> provider);
+
+  /// {@template riverpod.exists}
+  /// Determines whether a provider is initialized or not.
+  ///
+  /// Writing logic that conditionally depends on the existence of a provider
+  /// is generally unsafe and should be avoided.
+  /// The problem is that once the provider gets initialized, logic that
+  /// depends on the existence or not of a provider won't be rerun; possibly
+  /// causing your state to get out of date.
+  ///
+  /// But it can be useful in some cases, such as to avoid re-fetching an
+  /// object if a different network request already obtained it:
+  ///
+  /// ```dart
+  /// final fetchItemList = FutureProvider<List<Item>>(...);
+  ///
+  /// final fetchItem = FutureProvider.autoDispose.family<Item, String>((ref, id) async {
+  ///   if (ref.exists(fetchItemList)) {
+  ///     // If `fetchItemList` is initialized, we look into its state
+  ///     // and return the already obtained item.
+  ///     final itemFromItemList = await ref.watch(
+  ///       fetchItemList.selectAsync((items) => items.firstWhereOrNull((item) => item.id == id)),
+  ///     );
+  ///     if (itemFromItemList != null) return itemFromItemList;
+  ///   }
+  ///
+  ///   // If `fetchItemList` is not initialized, perform a network request for
+  ///   // "id" separately
+  ///
+  ///   final json = await http.get('api/items/$id');
+  ///   return Item.fromJson(json);
+  /// });
+  /// ```
+  /// {@endtemplate}
+  bool exists(ProviderBase<Object?> provider);
 
   /// Obtains the state of a provider and causes the state to be re-evaluated
   /// when that provider emits a new value.
@@ -233,5 +302,50 @@ abstract class Ref<State extends Object?> {
     void Function(T? previous, T next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
     bool fireImmediately,
+  });
+}
+
+/// A [Ref] for providers that are automatically destroyed when
+/// no longer used.
+///
+/// The difference with [Ref] is that it has an extra
+/// [keepAlive] function to help determine if the state can be destroyed
+///  or not.
+abstract class AutoDisposeRef<State> extends Ref<State> {
+  /// Whether to destroy the state of the provider when all listeners are removed or not.
+  ///
+  /// Can be changed at any time, in which case when setting it to `false`,
+  /// may destroy the provider state if it currently has no listeners.
+  ///
+  /// Defaults to `false`.
+  @Deprecated('use keepAlive() instead')
+  bool get maintainState;
+
+  @Deprecated('use keepAlive() instead')
+  set maintainState(bool value);
+
+  /// Requests for the state of a provider to not be disposed when all the
+  /// listeners of the provider are removed.
+  ///
+  /// Returns an object which allows cancelling this operation, therefore
+  /// allowing the provider to dispose itself when all listeners are removed.
+  ///
+  /// If [keepAlive] is invoked multiple times, all [KeepAliveLink] will have
+  /// to be closed for the provider to dispose itself when all listeners are removed.
+  KeepAliveLink keepAlive();
+
+  @override
+  T watch<T>(
+    // can read both auto-dispose and non-auto-dispose providers
+    ProviderListenable<T> provider,
+  );
+
+  @override
+  ProviderSubscription<T> listen<T>(
+    // overridden to allow AutoDisposeProviderBase
+    ProviderListenable<T> provider,
+    void Function(T? previous, T next) listener, {
+    bool fireImmediately,
+    void Function(Object error, StackTrace stackTrace)? onError,
   });
 }

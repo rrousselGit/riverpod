@@ -5,6 +5,11 @@ import 'internals.dart';
 
 /// An object that allows widgets to interact with providers.
 abstract class WidgetRef {
+  /// The [BuildContext] of the widget associated to this [WidgetRef].
+  ///
+  /// This is strictly identical to the [BuildContext] passed to [ConsumerWidget.build].
+  BuildContext get context;
+
   /// Returns the value exposed by a provider and rebuild the widget when that
   /// value changes.
   ///
@@ -15,9 +20,44 @@ abstract class WidgetRef {
   /// - [listen], to react to changes on a provider, such as for showing modals.
   T watch<T>(ProviderListenable<T> provider);
 
-  /// Listen to a provider and call `listener` whenever its value changes.
+  /// Determines whether a provider is initialized or not.
   ///
-  /// It is safe to call [listen] within the `build` method of a widget:
+  /// Writing logic that conditionally depends on the existence of a provider
+  /// is generally unsafe and should be avoided.
+  /// The problem is that once the provider gets initialized, logic that
+  /// depends on the existence or not of a provider won't be rerun; possibly
+  /// causing your state to get out of date.
+  ///
+  /// But it can be useful in some cases, such as to avoid re-fetching an
+  /// object if a different network request already obtained it:
+  ///
+  /// ```dart
+  /// final fetchItemList = FutureProvider<List<Item>>(...);
+  ///
+  /// final fetchItem = FutureProvider.autoDispose.family<Item, String>((ref, id) async {
+  ///   if (ref.exists(fetchItemList)) {
+  ///     // If `fetchItemList` is initialized, we look into its state
+  ///     // and return the already obtained item.
+  ///     final itemFromItemList = await ref.watch(
+  ///       fetchItemList.selectAsync((items) => items.firstWhereOrNull((item) => item.id == id)),
+  ///     );
+  ///     if (itemFromItemList != null) return itemFromItemList;
+  ///   }
+  ///
+  ///   // If `fetchItemList` is not initialized, perform a network request for
+  ///   // "id" separately
+  ///
+  ///   final json = await http.get('api/items/$id');
+  ///   return Item.fromJson(json);
+  /// });
+  /// ```
+  bool exists(ProviderBase<Object?> provider);
+
+  /// Listen to a provider and call `listener` whenever its value changes,
+  /// without having to take care of removing the listener.
+  ///
+  /// The [listen] method should exclusively be used within the `build` method
+  /// of a widget:
   ///
   /// ```dart
   /// Consumer(
@@ -32,9 +72,7 @@ abstract class WidgetRef {
   /// When used inside `build`, listeners will automatically be removed
   /// if a widget rebuilds and stops listening to a provider.
   ///
-  /// [listen] should not be used outside of the `build` method of a widget.
-  /// It cannot be used within widget life-cycles such as initState/dispose or
-  /// event handles such as "on tap".
+  /// For listening to a provider from outside `build`, consider using [listenManual] instead.
   ///
   /// This is useful for showing modals or other imperative logic.
   void listen<T>(
@@ -45,17 +83,19 @@ abstract class WidgetRef {
 
   /// Listen to a provider and call `listener` whenever its value changes.
   ///
-  /// As opposed to [listen], [listenOnce] is not safe to use within the `build`
+  /// As opposed to [listen], [listenManual] is not safe to use within the `build`
   /// method of a widget.
-  /// [listenOnce] is meant to typically be used inside [State.initState].
+  /// Instead, [listenManual] is designed to be used inside [State.initState] or
+  /// other [State] lifecycles.
   ///
-  /// [listenOnce] returns a [ProviderSubscription] which can be used to stop
+  /// [listenManual] returns a [ProviderSubscription] which can be used to stop
   /// listening to the provider, or to read the current value exposed by
   /// the provider.
   ///
-  /// It is not necessary to call [ProviderSubscription.close]. The
-  /// subsription will automatically be closed when the widget is disposed.
-  ProviderSubscription<T> listenOnce<T>(
+  /// It is not necessary to call [ProviderSubscription.close] inside [State.dispose].
+  /// When the widget that calls [listenManual] is disposed, the subscription
+  /// will be disposed automatically.
+  ProviderSubscription<T> listenManual<T>(
     ProviderListenable<T> provider,
     void Function(T? previous, T next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
@@ -129,19 +169,35 @@ abstract class WidgetRef {
   /// While more verbose than [read], using [Provider]/`select` is a lot safer.
   /// It does not rely on implementation details on `Model`, and it makes
   /// impossible to have a bug where our UI does not refresh.
-  T read<T>(ProviderBase<T> provider);
+  T read<T>(ProviderListenable<T> provider);
 
   /// Forces a provider to re-evaluate its state immediately, and return the created value.
   ///
-  /// If you do not care about the new value, prefer [invalidate] instead,
-  /// which makes the invalidation logic more resilient by avoiding
-  /// multiple refreshes at once.
+  /// Writing:
+  ///
+  /// ```dart
+  /// final newValue = ref.refresh(provider);
+  /// ```
+  ///
+  /// is strictly identical to doing:
+  ///
+  /// ```dart
+  /// ref.invalidate(provider);
+  /// final newValue = ref.read(provider);
+  /// ```
+  ///
+  /// If you do not care about the return value of [refresh], use [invalidate] instead.
+  /// Doing so has the benefit of:
+  /// - making the invalidation logic more resilient by avoiding multiple
+  ///   refreshes at once.
+  /// - possibly avoids recomputing a provider if it isn't
+  ///   needed immediately.
   ///
   /// This method is useful for features like "pull to refresh" or "retry on error",
   /// to restart a specific provider.
   ///
   /// For example, a pull-to-refresh may be implemented by combining
-  /// [FutureProvider] and a [RefreshIndicator]:
+  /// [FutureProvider] and a `RefreshIndicator`:
   ///
   /// ```dart
   /// final productsProvider = FutureProvider((ref) async {
@@ -165,7 +221,8 @@ abstract class WidgetRef {
   ///   }
   /// }
   /// ```
-  State refresh<State>(ProviderBase<State> provider);
+  @useResult
+  State refresh<State>(Refreshable<State> provider);
 
   /// Invalidates the state of the provider, causing it to refresh.
   ///
@@ -176,7 +233,7 @@ abstract class WidgetRef {
   /// once.
   ///
   /// Calling [invalidate] will cause the provider to be disposed immediately.
-  void invalidate(ProviderBase<Object?> provider);
+  void invalidate(ProviderOrFamily provider);
 }
 
 /// A function that can also listen to providers
@@ -272,7 +329,7 @@ typedef ConsumerBuilder = Widget Function(
 ///               builder: (BuildContext context, WidgetRef ref, Widget? child) {
 ///                 // This builder will only get called when the counterProvider
 ///                 // is updated.
-///                 final count = ref.watch(counterProvider.state).state;
+///                 final count = ref.watch(counterProvider);
 ///
 ///                 return Row(
 ///                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -292,7 +349,7 @@ typedef ConsumerBuilder = Widget Function(
 ///       ),
 ///       floatingActionButton: FloatingActionButton(
 ///         child: Icon(Icons.plus_one),
-///         onPressed: () => ref.read(counterProvider.state).state++,
+///         onPressed: () => ref.read(counterProvider.notifier).state++,
 ///       ),
 ///     );
 ///   }
@@ -306,13 +363,9 @@ typedef ConsumerBuilder = Widget Function(
 @sealed
 class Consumer extends ConsumerWidget {
   /// {@template riverpod.consumer}
-  const Consumer({
-    Key? key,
-    required ConsumerBuilder builder,
-    Widget? child,
-  })  : _child = child,
-        _builder = builder,
-        super(key: key);
+  const Consumer({super.key, required ConsumerBuilder builder, Widget? child})
+      : _child = child,
+        _builder = builder;
 
   final ConsumerBuilder _builder;
   final Widget? _child;
@@ -368,7 +421,7 @@ class Consumer extends ConsumerWidget {
 /// {@endtemplate}
 abstract class ConsumerWidget extends ConsumerStatefulWidget {
   /// {@macro riverpod.consumerwidget}
-  const ConsumerWidget({Key? key}) : super(key: key);
+  const ConsumerWidget({super.key});
 
   /// Describes the part of the user interface represented by this widget.
   ///
@@ -428,7 +481,7 @@ class _ConsumerState extends ConsumerState<ConsumerWidget> {
 /// A [StatefulWidget] that can read providers.
 abstract class ConsumerStatefulWidget extends StatefulWidget {
   /// A [StatefulWidget] that can read providers.
-  const ConsumerStatefulWidget({Key? key}) : super(key: key);
+  const ConsumerStatefulWidget({super.key});
 
   @override
   // ignore: no_logic_in_create_state
@@ -451,13 +504,13 @@ abstract class ConsumerState<T extends ConsumerStatefulWidget>
 /// The [Element] for a [ConsumerStatefulWidget]
 class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
   /// The [Element] for a [ConsumerStatefulWidget]
-  ConsumerStatefulElement(ConsumerStatefulWidget widget) : super(widget);
+  ConsumerStatefulElement(ConsumerStatefulWidget super.widget);
 
   late ProviderContainer _container = ProviderScope.containerOf(this);
   var _dependencies = <ProviderListenable, ProviderSubscription>{};
   Map<ProviderListenable, ProviderSubscription>? _oldDependencies;
   final _listeners = <ProviderSubscription>[];
-  List<_ListenOnce>? _onceListeners;
+  List<_ListenManual>? _manualListeners;
 
   @override
   void didChangeDependencies() {
@@ -509,21 +562,23 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
 
   @override
   void unmount() {
+    /// Calling `super.unmount()` will call `dispose` on the state
+    /// And [ListenManual] subscriptions should be closed after `dispose`
+    super.unmount();
+
     for (final dependency in _dependencies.values) {
       dependency.close();
     }
     for (var i = 0; i < _listeners.length; i++) {
       _listeners[i].close();
     }
-    final onceListeners = _onceListeners;
-    if (onceListeners != null) {
-      for (var i = 0; i < onceListeners.length; i++) {
-        onceListeners[i].close();
+    final manualListeners = _manualListeners?.toList();
+    if (manualListeners != null) {
+      for (final listener in manualListeners) {
+        listener.close();
       }
-      _onceListeners = null;
+      _manualListeners = null;
     }
-
-    super.unmount();
   }
 
   @override
@@ -545,30 +600,35 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
   }
 
   @override
-  T read<T>(ProviderBase<T> provider) {
+  bool exists(ProviderBase<Object?> provider) {
+    return ProviderScope.containerOf(this, listen: false).exists(provider);
+  }
+
+  @override
+  T read<T>(ProviderListenable<T> provider) {
     return ProviderScope.containerOf(this, listen: false).read(provider);
   }
 
   @override
-  State refresh<State>(ProviderBase<State> provider) {
+  State refresh<State>(Refreshable<State> provider) {
     return ProviderScope.containerOf(this, listen: false).refresh(provider);
   }
 
   @override
-  void invalidate(ProviderBase<Object?> provider) {
+  void invalidate(ProviderOrFamily provider) {
     _container.invalidate(provider);
   }
 
   @override
-  ProviderSubscription<T> listenOnce<T>(
+  ProviderSubscription<T> listenManual<T>(
     ProviderListenable<T> provider,
     void Function(T? previous, T next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
     bool fireImmediately = false,
   }) {
-    final listeners = _onceListeners ??= [];
+    final listeners = _manualListeners ??= [];
 
-    final sub = _ListenOnce(
+    final sub = _ListenManual(
       ProviderScope.containerOf(this, listen: false).listen(
         provider,
         listener,
@@ -581,10 +641,13 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
 
     return sub;
   }
+
+  @override
+  BuildContext get context => this;
 }
 
-class _ListenOnce<T> implements ProviderSubscription<T> {
-  _ListenOnce(this._subscription, this._element);
+class _ListenManual<T> implements ProviderSubscription<T> {
+  _ListenManual(this._subscription, this._element);
 
   final ProviderSubscription<T> _subscription;
   final ConsumerStatefulElement _element;
@@ -592,7 +655,7 @@ class _ListenOnce<T> implements ProviderSubscription<T> {
   @override
   void close() {
     _subscription.close();
-    _element._onceListeners?.remove(this);
+    _element._manualListeners?.remove(this);
   }
 
   @override

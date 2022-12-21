@@ -221,7 +221,7 @@ void main() {
       () {
     var callCount = 0;
     final atom = StateProvider((ref) => 0);
-    final dependency = Provider((ref) => ref.watch(atom.state).state);
+    final dependency = Provider((ref) => ref.watch(atom));
     final provider = Provider((ref) {
       callCount++;
       ref.watch(dependency);
@@ -233,7 +233,7 @@ void main() {
     expect(() => container.read(provider), throwsStateError);
     expect(callCount, 1);
 
-    container.read(atom.state).state = 0;
+    container.read(atom.notifier).state = 0;
 
     expect(() => container.read(provider), throwsStateError);
     expect(callCount, 1);
@@ -255,47 +255,59 @@ void main() {
 
     expect(sub.read(), '0');
     var firstDependents = <ProviderElementBase>[];
-    firstElement.visitChildren(firstDependents.add);
+    firstElement.visitChildren(
+      elementVisitor: firstDependents.add,
+      notifierVisitor: (_) {},
+    );
     var secondDependents = <ProviderElementBase>[];
-    secondElement.visitChildren(secondDependents.add);
+    secondElement.visitChildren(
+      elementVisitor: secondDependents.add,
+      notifierVisitor: (_) {},
+    );
 
     expect(firstDependents, [computedElement]);
     expect(firstElement.hasListeners, true);
     expect(secondDependents, [computedElement]);
     expect(secondElement.hasListeners, true);
 
-    container.read(first.state).state++;
+    container.read(first.notifier).state++;
     expect(sub.read(), 'fallback');
 
     firstDependents = <ProviderElementBase>[];
-    firstElement.visitChildren(firstDependents.add);
+    firstElement.visitChildren(
+      elementVisitor: firstDependents.add,
+      notifierVisitor: (_) {},
+    );
     secondDependents = <ProviderElementBase>[];
-    secondElement.visitChildren(secondDependents.add);
+    secondElement.visitChildren(
+      elementVisitor: secondDependents.add,
+      notifierVisitor: (_) {},
+    );
     expect(firstDependents, [computedElement]);
     expect(firstElement.hasListeners, true);
     expect(secondDependents, <ProviderElement>[]);
     expect(secondElement.hasListeners, false);
   });
 
-  group('overrideWithValue', () {
-    test('synchronously overrides the value', () {
-      var callCount = 0;
-      final provider = FutureProvider((ref) async {
-        callCount++;
-        return 0;
-      });
-      final container = createContainer(overrides: [
-        provider.overrideWithValue(const AsyncValue.data(42)),
-      ]);
+  // group('overrideWithValue', () {
+  //   test('synchronously overrides the value', () {
+  //     var callCount = 0;
+  //     final provider = FutureProvider((ref) async {
+  //       callCount++;
+  //       return 0;
+  //     });
+  //     final container = createContainer(overrides: [
+  //       provider.overrideWithValue(const AsyncValue.data(42)),
+  //     ]);
 
-      addTearDown(container.dispose);
+  //     addTearDown(container.dispose);
 
-      final sub = container.listen(provider, (_, __) {});
+  //     final sub = container.listen(provider, (_, __) {});
 
-      expect(callCount, 0);
-      expect(sub.read(), const AsyncValue.data(42));
-    });
-  });
+  //     expect(callCount, 0);
+  //     expect(sub.read(), const AsyncValue.data(42));
+  //   });
+  // });
 
   test('remove dependencies on dispose', () async {
     final first = StateProvider((ref) => 0);
@@ -308,7 +320,10 @@ void main() {
 
     expect(sub.read(), 0);
     var firstDependents = <ProviderElementBase>[];
-    firstElement.visitChildren(firstDependents.add);
+    firstElement.visitChildren(
+      elementVisitor: firstDependents.add,
+      notifierVisitor: (_) {},
+    );
     expect(firstDependents, {computedElement});
     expect(firstElement.hasListeners, true);
 
@@ -316,7 +331,10 @@ void main() {
     await container.pump();
 
     firstDependents = <ProviderElementBase>[];
-    firstElement.visitChildren(firstDependents.add);
+    firstElement.visitChildren(
+      elementVisitor: firstDependents.add,
+      notifierVisitor: (_) {},
+    );
     expect(firstDependents, <ProviderElement>{});
     expect(firstElement.hasListeners, false);
   });
@@ -326,7 +344,7 @@ void main() {
       () async {
     final provider = StateProvider.autoDispose((ref) => 0);
 
-    final state = container.read(provider.state);
+    final state = container.read(provider.notifier);
 
     expect(state.mounted, true);
 
@@ -561,7 +579,7 @@ void main() {
     });
 
     test(
-        'retrying a provider already marked as needing to update do not create the value twice',
+        'refreshing a provider already marked as needing to update do not create the value twice',
         () async {
       var future = Future.value(42);
       var callCount = 0;
@@ -574,13 +592,15 @@ void main() {
       final container = createContainer();
 
       container.refresh(provider);
+
       expect(callCount, 1);
 
-      container.read(dep.state).state++;
+      container.read(dep.notifier).state++;
       future = Future.value(21);
 
       expect(callCount, 1);
       container.refresh(provider);
+
       expect(callCount, 2);
       await expectLater(container.read(provider.future), completion(21));
       expect(callCount, 2);

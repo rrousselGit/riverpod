@@ -7,12 +7,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 final pageIndexProvider = StateProvider<int>((ref) => 0);
 
 class PreviousButton extends ConsumerWidget {
-  const PreviousButton({Key? key}): super(key: key);
+  const PreviousButton({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // 現在のページが最初のページ（0）でない場合、戻るボタンを有効にする
-    final canGoToPreviousPage = ref.watch(pageIndexProvider) == 0;
+    final canGoToPreviousPage = ref.watch(pageIndexProvider) != 0;
 
     void goToPreviousPage() {
       ref.read(pageIndexProvider.notifier).update((state) => state - 1);

@@ -11,11 +11,11 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: Home());
+    return const MaterialApp(home: Home());
   }
 }
 
@@ -23,20 +23,24 @@ class MyApp extends StatelessWidget {
 final counterProvider = StateProvider((ref) => 0);
 
 class Home extends ConsumerWidget {
+  const Home({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(title: const Text('Counter example')),
       body: Center(
         // Consumer is a widget that allows you reading providers.
-        child: Consumer(builder: (context, ref, _) {
-          final count = ref.watch(counterProvider.state).state;
-          return Text('$count');
-        }),
+        child: Consumer(
+          builder: (context, ref, _) {
+            final count = ref.watch(counterProvider);
+            return Text('$count');
+          },
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         // The read method is a utility to read a provider without listening to it
-        onPressed: () => ref.read(counterProvider.state).state++,
+        onPressed: () => ref.read(counterProvider.notifier).state++,
         child: const Icon(Icons.add),
       ),
     );

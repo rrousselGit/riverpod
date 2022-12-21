@@ -89,7 +89,7 @@ final todoListProvider = StateNotifierProvider((ref) => TodoList());
 
 তারপর, ফিল্টার করা টোডো-তালিকা রিড করতে আমাদের UI `filteredTodoListProvider` রিড করতে পারে। এই ধরনের পদ্ধতি ব্যবহার করে, ফিল্টার বা টোডো-তালিকা পরিবর্তন হলে UI স্বয়ংক্রিয়ভাবে আপডেট হবে।
 
-এই পদ্ধতিটি কার্যকরভাবে দেখতে, আপনি [টুডো তালিকা উদাহরণ](https://github.com/rrousselGit/river_pod/tree/master/examples/todos) এর সোর্স কোডটি দেখতে পারেন।
+এই পদ্ধতিটি কার্যকরভাবে দেখতে, আপনি [টুডো তালিকা উদাহরণ](https://github.com/rrousselGit/riverpod/tree/master/examples/todos) এর সোর্স কোডটি দেখতে পারেন।
 
 :::info
 এই আচরণ [Provider] এর জন্য নির্দিষ্ট নয়, এবং সমস্ত প্রভাইডারের সাথে কাজ করে।
@@ -203,7 +203,7 @@ final repositoryProvider = Provider((ref) => Repository(ref.read));
 
 test('fetches catalog', () async {
   final container = ProviderContainer();
-  addTearOff(container.dispose);
+  addTearDown(container.dispose);
 
   Repository repository = container.read(repositoryProvider);
 

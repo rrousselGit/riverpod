@@ -2,12 +2,51 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/src/internals.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
 
 import 'utils.dart';
 
 void main() {
-  test('ref.read should keep providers alive', () {}, skip: true);
+  group('WidgetRef.exists', () {
+    testWidgets('simple use-case', (tester) async {
+      late WidgetRef ref;
+      await tester.pumpWidget(
+        ProviderScope(
+          child: Consumer(
+            builder: (context, r, child) {
+              ref = r;
+              return Container();
+            },
+          ),
+        ),
+      );
+
+      final provider = Provider((ref) => 0);
+
+      expect(ref.exists(provider), false);
+      expect(ref.exists(provider), false);
+
+      ref.read(provider);
+
+      expect(ref.exists(provider), true);
+    });
+  });
+
+  testWidgets('WidgetRef.context exposes the BuildContext', (tester) async {
+    late WidgetRef ref;
+
+    await tester.pumpWidget(
+      CallbackConsumerWidget(
+        key: const Key('initState'),
+        initState: (ctx, r) {
+          ref = r;
+        },
+      ),
+    );
+
+    final consumerElement = tester.element(find.byType(CallbackConsumerWidget));
+
+    expect(ref.context, same(consumerElement));
+  });
 
   testWidgets('throws if listen is used outside of `build`', (tester) async {
     final provider = Provider((ref) => 0);
@@ -70,10 +109,12 @@ void main() {
     var buildCount = 0;
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer(builder: (context, ref, _) {
-          buildCount++;
-          return Container();
-        }),
+        child: Consumer(
+          builder: (context, ref, _) {
+            buildCount++;
+            return Container();
+          },
+        ),
       ),
     );
 
@@ -94,26 +135,33 @@ void main() {
     final stateProvider = StateProvider((ref) => 0, name: 'state');
     final notifier0 = TestNotifier();
     final notifier1 = TestNotifier(42);
-    final provider0 = StateNotifierProvider<TestNotifier, int>((_) {
-      return notifier0;
-    }, name: '0');
-    final provider1 = StateNotifierProvider<TestNotifier, int>((_) {
-      return notifier1;
-    }, name: '1');
+    final provider0 = StateNotifierProvider<TestNotifier, int>(
+      name: '0',
+      (_) => notifier0,
+    );
+    final provider1 = StateNotifierProvider<TestNotifier, int>(
+      name: '1',
+      (_) => notifier1,
+    );
     var buildCount = 0;
 
-    await tester.pumpWidget(ProviderScope(
-      child: Consumer(builder: (c, ref, _) {
-        buildCount++;
-        final state = ref.watch(stateProvider.state).state;
-        final value = state == 0 ? ref.watch(provider0) : ref.watch(provider1);
+    await tester.pumpWidget(
+      ProviderScope(
+        child: Consumer(
+          builder: (c, ref, _) {
+            buildCount++;
+            final state = ref.watch(stateProvider);
+            final value =
+                state == 0 ? ref.watch(provider0) : ref.watch(provider1);
 
-        return Text(
-          '${ref.watch(provider0)} $value',
-          textDirection: TextDirection.ltr,
-        );
-      }),
-    ));
+            return Text(
+              '${ref.watch(provider0)} $value',
+              textDirection: TextDirection.ltr,
+            );
+          },
+        ),
+      ),
+    );
     final container = tester //
         .state<ProviderScopeState>(find.byType(ProviderScope))
         .container;
@@ -144,7 +192,7 @@ void main() {
     expect(buildCount, 2);
 
     // changing the provider that computed is subscribed to
-    container.read(stateProvider.state).state = 1;
+    container.read(stateProvider.notifier).state = 1;
     await tester.pump();
 
     expect(buildCount, 3);
@@ -171,24 +219,28 @@ void main() {
     final stateProvider = StateProvider((ref) => 0, name: 'state');
     final notifier0 = TestNotifier();
     final notifier1 = TestNotifier(42);
-    final provider0 = StateNotifierProvider<TestNotifier, int>((_) {
-      return notifier0;
-    }, name: '0');
-    final provider1 = StateNotifierProvider<TestNotifier, int>((_) {
-      return notifier1;
-    }, name: '1');
+    final provider0 = StateNotifierProvider<TestNotifier, int>(
+      name: '0',
+      (_) => notifier0,
+    );
+    final provider1 = StateNotifierProvider<TestNotifier, int>(
+      name: '1',
+      (_) => notifier1,
+    );
     var buildCount = 0;
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer(builder: (c, ref, _) {
-          buildCount++;
-          final state = ref.watch(stateProvider.state).state;
-          final result = state == 0 //
-              ? ref.watch(provider0)
-              : ref.watch(provider1);
-          return Text('$result', textDirection: TextDirection.ltr);
-        }),
+        child: Consumer(
+          builder: (c, ref, _) {
+            buildCount++;
+            final state = ref.watch(stateProvider);
+            final result = state == 0 //
+                ? ref.watch(provider0)
+                : ref.watch(provider1);
+            return Text('$result', textDirection: TextDirection.ltr);
+          },
+        ),
       ),
     );
     final container = tester //
@@ -221,7 +273,7 @@ void main() {
     expect(buildCount, 2);
 
     // changing the provider that computed is subscribed to
-    container.read(stateProvider.state).state = 1;
+    container.read(stateProvider.notifier).state = 1;
     await tester.pump();
 
     expect(buildCount, 3);
@@ -254,11 +306,13 @@ void main() {
 
     Widget build(StateNotifierProvider<TestNotifier, int> provider) {
       return ProviderScope(
-        child: Consumer(builder: (c, ref, _) {
-          buildCount++;
-          final value = ref.watch(provider);
-          return Text('$value', textDirection: TextDirection.ltr);
-        }),
+        child: Consumer(
+          builder: (c, ref, _) {
+            buildCount++;
+            final value = ref.watch(provider);
+            return Text('$value', textDirection: TextDirection.ltr);
+          },
+        ),
       );
     }
 
@@ -300,14 +354,16 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer(builder: (context, ref, _) {
-          final first = ref.watch(provider);
-          final second = ref.watch(computed);
-          return Text(
-            '$first $second',
-            textDirection: TextDirection.ltr,
-          );
-        }),
+        child: Consumer(
+          builder: (context, ref, _) {
+            final first = ref.watch(provider);
+            final second = ref.watch(computed);
+            return Text(
+              '$first $second',
+              textDirection: TextDirection.ltr,
+            );
+          },
+        ),
       ),
     );
 
@@ -332,13 +388,15 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: Consumer(builder: (c, ref, _) {
-          buildCount++;
-          return Text(
-            'isPositive ${ref.watch(computed)}',
-            textDirection: TextDirection.ltr,
-          );
-        }),
+        child: Consumer(
+          builder: (c, ref, _) {
+            buildCount++;
+            return Text(
+              'isPositive ${ref.watch(computed)}',
+              textDirection: TextDirection.ltr,
+            );
+          },
+        ),
       ),
     );
 
@@ -364,91 +422,91 @@ void main() {
     expect(buildCount, 2);
   });
 
-  testWidgets('remove listener when changing container', (tester) async {
-    final notifier = TestNotifier();
-    final provider = StateNotifierProvider<TestNotifier, int>((_) {
-      return notifier;
-    }, name: 'provider');
-    final notifier2 = TestNotifier(42);
-    const firstOwnerKey = Key('first');
-    const secondOwnerKey = Key('second');
-    final key = GlobalKey();
+  // testWidgets('remove listener when changing container', (tester) async {
+  //   final notifier = TestNotifier();
+  //   final provider = StateNotifierProvider<TestNotifier, int>((_) {
+  //     return notifier;
+  //   }, name: 'provider');
+  //   final notifier2 = TestNotifier(42);
+  //   const firstOwnerKey = Key('first');
+  //   const secondOwnerKey = Key('second');
+  //   final key = GlobalKey();
 
-    final consumer = Consumer(
-        builder: (context, ref, _) {
-          final value = ref.watch(provider);
-          return Text('$value', textDirection: TextDirection.ltr);
-        },
-        key: key);
+  //   final consumer = Consumer(
+  //       builder: (context, ref, _) {
+  //         final value = ref.watch(provider);
+  //         return Text('$value', textDirection: TextDirection.ltr);
+  //       },
+  //       key: key);
 
-    await tester.pumpWidget(
-      Column(
-        children: [
-          ProviderScope(
-            key: firstOwnerKey,
-            child: consumer,
-          ),
-          ProviderScope(
-            key: secondOwnerKey,
-            overrides: [
-              provider.overrideWithValue(notifier2),
-            ],
-            child: Container(),
-          ),
-        ],
-      ),
-    );
+  //   await tester.pumpWidget(
+  //     Column(
+  //       children: [
+  //         ProviderScope(
+  //           key: firstOwnerKey,
+  //           child: consumer,
+  //         ),
+  //         ProviderScope(
+  //           key: secondOwnerKey,
+  //           overrides: [
+  //             provider.overrideWithValue(notifier2),
+  //           ],
+  //           child: Container(),
+  //         ),
+  //       ],
+  //     ),
+  //   );
 
-    final owner1 = tester //
-        .firstState<ProviderScopeState>(find.byKey(firstOwnerKey))
-        .container;
+  //   final owner1 = tester //
+  //       .firstState<ProviderScopeState>(find.byKey(firstOwnerKey))
+  //       .container;
 
-    final state1 = owner1
-        .getAllProviderElements()
-        .firstWhere((s) => s.provider == provider);
+  //   final state1 = owner1
+  //       .getAllProviderElements()
+  //       .firstWhere((s) => s.provider == provider);
 
-    expect(state1.hasListeners, true);
-    expect(find.text('0'), findsOneWidget);
+  //   expect(state1.hasListeners, true);
+  //   expect(find.text('0'), findsOneWidget);
 
-    await tester.pumpWidget(
-      Column(
-        children: [
-          ProviderScope(
-            key: firstOwnerKey,
-            child: Container(),
-          ),
-          ProviderScope(
-            key: secondOwnerKey,
-            overrides: [
-              provider.overrideWithValue(notifier2),
-            ],
-            child: consumer,
-          ),
-        ],
-      ),
-    );
+  //   await tester.pumpWidget(
+  //     Column(
+  //       children: [
+  //         ProviderScope(
+  //           key: firstOwnerKey,
+  //           child: Container(),
+  //         ),
+  //         ProviderScope(
+  //           key: secondOwnerKey,
+  //           overrides: [
+  //             provider.overrideWithValue(notifier2),
+  //           ],
+  //           child: consumer,
+  //         ),
+  //       ],
+  //     ),
+  //   );
 
-    final container2 = tester //
-        .firstState<ProviderScopeState>(find.byKey(secondOwnerKey))
-        .container;
+  //   final container2 = tester //
+  //       .firstState<ProviderScopeState>(find.byKey(secondOwnerKey))
+  //       .container;
 
-    final state2 = container2
-        .getAllProviderElements()
-        .firstWhere((s) => s.provider is StateNotifierProvider);
+  //   final state2 = container2
+  //       .getAllProviderElements()
+  //       .firstWhere((s) => s.provider is StateNotifierProvider);
 
-    expect(find.text('0'), findsNothing);
-    expect(find.text('42'), findsOneWidget);
-    expect(state1.hasListeners, false);
-    expect(state2.hasListeners, true);
+  //   expect(find.text('0'), findsNothing);
+  //   expect(find.text('42'), findsOneWidget);
+  //   expect(state1.hasListeners, false);
+  //   expect(state2.hasListeners, true);
 
-    notifier2.increment();
-    await tester.pump();
+  //   notifier2.increment();
+  //   await tester.pump();
 
-    expect(find.text('0'), findsNothing);
-    expect(find.text('43'), findsOneWidget);
-    expect(state1.hasListeners, false);
-    expect(state2.hasListeners, true);
-  });
+  //   expect(find.text('0'), findsNothing);
+  //   expect(find.text('43'), findsOneWidget);
+  //   expect(state1.hasListeners, false);
+  //   expect(state2.hasListeners, true);
+  // });
 
   testWidgets('remove listener when destroying the consumer', (tester) async {
     final notifier = TestNotifier();
@@ -456,10 +514,12 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer(builder: (context, ref, _) {
-          final value = ref.watch(provider);
-          return Text('$value', textDirection: TextDirection.ltr);
-        }),
+        child: Consumer(
+          builder: (context, ref, _) {
+            final value = ref.watch(provider);
+            return Text('$value', textDirection: TextDirection.ltr);
+          },
+        ),
       ),
     );
 
@@ -495,14 +555,16 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer(builder: (context, ref, _) {
-          final first = ref.watch(firstProvider);
-          final second = ref.watch(secondProvider);
-          return Text(
-            'first $first second $second',
-            textDirection: TextDirection.ltr,
-          );
-        }),
+        child: Consumer(
+          builder: (context, ref, _) {
+            final first = ref.watch(firstProvider);
+            final second = ref.watch(secondProvider);
+            return Text(
+              'first $first second $second',
+              textDirection: TextDirection.ltr,
+            );
+          },
+        ),
       ),
     );
 
@@ -526,10 +588,12 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer(builder: (context, ref, _) {
-          final count = ref.watch(provider);
-          return Text('$count', textDirection: TextDirection.ltr);
-        }),
+        child: Consumer(
+          builder: (context, ref, _) {
+            final count = ref.watch(provider);
+            return Text('$count', textDirection: TextDirection.ltr);
+          },
+        ),
       ),
     );
 
@@ -551,13 +615,15 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer(builder: (context, ref, _) {
-          final value = ref.watch(provider);
-          return Text(
-            '$value',
-            textDirection: TextDirection.ltr,
-          );
-        }),
+        child: Consumer(
+          builder: (context, ref, _) {
+            final value = ref.watch(provider);
+            return Text(
+              '$value',
+              textDirection: TextDirection.ltr,
+            );
+          },
+        ),
       ),
     );
 
@@ -567,13 +633,15 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer(builder: (context, ref, _) {
-          final value = ref.watch(provider2);
-          return Text(
-            '$value',
-            textDirection: TextDirection.ltr,
-          );
-        }),
+        child: Consumer(
+          builder: (context, ref, _) {
+            final value = ref.watch(provider2);
+            return Text(
+              '$value',
+              textDirection: TextDirection.ltr,
+            );
+          },
+        ),
       ),
     );
 
@@ -584,13 +652,15 @@ void main() {
   testWidgets('can read scoped providers', (tester) async {
     final provider = Provider((_) => 0);
 
-    final child = Consumer(builder: (context, ref, _) {
-      final value = ref.watch(provider);
-      return Text(
-        '$value',
-        textDirection: TextDirection.ltr,
-      );
-    });
+    final child = Consumer(
+      builder: (context, ref, _) {
+        final value = ref.watch(provider);
+        return Text(
+          '$value',
+          textDirection: TextDirection.ltr,
+        );
+      },
+    );
 
     await tester.pumpWidget(
       ProviderScope(
@@ -617,7 +687,7 @@ void main() {
 }
 
 class TestNotifier extends StateNotifier<int> {
-  TestNotifier([int initialValue = 0]) : super(initialValue);
+  TestNotifier([super.initialValue = 0]);
 
   void increment() => state++;
 
@@ -625,14 +695,10 @@ class TestNotifier extends StateNotifier<int> {
   set value(int value) => state = value;
 }
 
-class Listener<T> extends Mock {
-  void call(T value);
-}
-
 final _provider = Provider((ref) => 'hello world');
 
 class MyWidget extends ConsumerWidget {
-  const MyWidget({Key? key}) : super(key: key);
+  const MyWidget({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -642,13 +708,13 @@ class MyWidget extends ConsumerWidget {
 
 class CallbackConsumerWidget extends ConsumerStatefulWidget {
   const CallbackConsumerWidget({
-    Key? key,
+    super.key,
     this.initState,
     this.didChangeDependencies,
     this.dispose,
     this.didUpdateWidget,
     this.reassemble,
-  }) : super(key: key);
+  });
 
   final void Function(BuildContext context, WidgetRef ref)? initState;
   final void Function(BuildContext context, WidgetRef ref)?

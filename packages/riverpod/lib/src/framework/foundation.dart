@@ -3,6 +3,9 @@ part of '../framework.dart';
 /// A common interface shared by [ProviderBase] and [Family]
 @sealed
 abstract class ProviderOrFamily {
+  /// A common interface shared by [ProviderBase] and [Family]
+  const ProviderOrFamily();
+
   /// The list of providers that this provider potentially depends on.
   ///
   /// Specifying this list will tell Riverpod to automatically scope this provider
@@ -15,12 +18,12 @@ abstract class ProviderOrFamily {
   Family? get from;
 
   /// All the dependencies of a provider and their dependencies too.
-  late final allTransitiveDependencies =
-      dependencies == null ? null : _allTransitiveDependencies(dependencies!);
+  List<ProviderOrFamily>? get allTransitiveDependencies;
 }
 
 List<ProviderOrFamily> _allTransitiveDependencies(
-    List<ProviderOrFamily> dependencies) {
+  List<ProviderOrFamily> dependencies,
+) {
   final result = <ProviderOrFamily>{};
 
   void visitDependency(ProviderOrFamily dep) {
@@ -72,14 +75,15 @@ mixin ProviderListenable<State> {
   ProviderSubscription<State> addListener(
     Node node,
     void Function(State? previous, State next) listener, {
-    void Function(Object error, StackTrace stackTrace)? onError,
-    bool fireImmediately = false,
+    required void Function(Object error, StackTrace stackTrace)? onError,
+    required void Function()? onDependencyMayHaveChanged,
+    required bool fireImmediately,
   });
 
+  /// Obtains the result of this provider expression without adding listener.
+  State read(Node node);
+
   /// Partially listen to a provider.
-  ///
-  /// Note: This method of listening to an object is currently only supported
-  /// by `ref.watch(` from `hooks_riverpod` and [ProviderContainer.listen].
   ///
   /// The [select] function allows filtering unwanted rebuilds of a Widget
   /// by reading only the properties that we care about.

@@ -1,4 +1,4 @@
-name: website_snipets
+name: website_snippets
 publish_to: "none"
 version: 1.0.0+1
 
@@ -20,6 +20,7 @@ dependencies:
     path: ../packages/riverpod
 
 dev_dependencies:
+  build_verify: ^3.0.0
   flutter_test:
     sdk: flutter
 

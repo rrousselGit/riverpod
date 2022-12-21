@@ -1,63 +1,6 @@
 part of '../framework.dart';
 
-void _runGuarded(void Function() cb) {
-  try {
-    cb();
-  } catch (err, stack) {
-    Zone.current.handleUncaughtError(err, stack);
-  }
-}
-
-void _runUnaryGuarded<T, Res>(Res Function(T) cb, T value) {
-  try {
-    cb(value);
-  } catch (err, stack) {
-    Zone.current.handleUncaughtError(err, stack);
-  }
-}
-
-void _runBinaryGuarded<A, B>(void Function(A, B) cb, A value, B value2) {
-  try {
-    cb(value, value2);
-  } catch (err, stack) {
-    Zone.current.handleUncaughtError(err, stack);
-  }
-}
-
-void _runTernaryGuarded<A, B, C>(
-  void Function(A, B, C) cb,
-  A value,
-  B value2,
-  C value3,
-) {
-  try {
-    cb(value, value2, value3);
-  } catch (err, stack) {
-    Zone.current.handleUncaughtError(err, stack);
-  }
-}
-
-void _runQuaternaryGuarded<A, B, C, D>(
-  void Function(A, B, C, D) cb,
-  A value,
-  B value2,
-  C value3,
-  D value4,
-) {
-  try {
-    cb(value, value2, value3, value4);
-  } catch (err, stack) {
-    Zone.current.handleUncaughtError(err, stack);
-  }
-}
-
 ProviderBase? _circularDependencyLock;
-
-void _defaultVsync(void Function() task) {
-  Future(task);
-}
-
-int _debugNextId = 0;
 
 class _FamilyOverrideRef {
   _FamilyOverrideRef(this.override, this.container);
@@ -107,7 +50,7 @@ class _StateReader {
         // ignore: avoid_types_on_closure_parameters
         data: (ResultData<Object?> data) {
           for (final observer in container._observers) {
-            _runTernaryGuarded(
+            runTernaryGuarded(
               observer.didAddProvider,
               origin,
               data.state,
@@ -117,7 +60,7 @@ class _StateReader {
         },
         error: (error) {
           for (final observer in container._observers) {
-            _runTernaryGuarded(
+            runTernaryGuarded(
               observer.didAddProvider,
               origin,
               null,
@@ -125,7 +68,7 @@ class _StateReader {
             );
           }
           for (final observer in container._observers) {
-            _runQuaternaryGuarded(
+            runQuaternaryGuarded(
               observer.providerDidFail,
               origin,
               error.error,
@@ -158,15 +101,11 @@ class ProviderContainer implements Node {
   /// {@macro riverpod.providercontainer}
   ProviderContainer({
     ProviderContainer? parent,
-    Duration? cacheTime,
-    Duration? disposeDelay,
     List<Override> overrides = const [],
     List<ProviderObserver>? observers,
   })  : _debugOverridesLength = overrides.length,
         depth = parent == null ? 0 : parent.depth + 1,
         _parent = parent,
-        cacheTime = cacheTime ?? parent?.cacheTime ?? Duration.zero,
-        disposeDelay = disposeDelay ?? parent?.disposeDelay ?? Duration.zero,
         _observers = [
           ...?observers,
           if (parent != null) ...parent._observers,
@@ -177,15 +116,6 @@ class ProviderContainer implements Node {
               if (!entry.value.isDynamicallyCreated) entry.key: entry.value,
         },
         _root = parent?._root ?? parent {
-    assert(() {
-      _debugId = '${_debugNextId++}';
-      RiverpodBinding.debugInstance.containers = {
-        ...RiverpodBinding.debugInstance.containers,
-        _debugId: this,
-      };
-      return true;
-    }(), '');
-
     if (parent != null) {
       parent._children.add(this);
       _overrideForFamily.addAll(parent._overrideForFamily);
@@ -209,54 +139,31 @@ class ProviderContainer implements Node {
     }
   }
 
-  /// The default value for [AutoDisposeProviderBase.cacheTime].
-  ///
-  /// {@macro riverpod.cache_time}
-  final Duration cacheTime;
-
-  /// The default value for [AutoDisposeProviderBase.disposeDelay].
-  ///
-  /// {@macro riverpod.dispose_delay}
-  final Duration disposeDelay;
-
   final int _debugOverridesLength;
 
   /// A function that controls the refresh rate of providers.
   ///
   /// Defaults to refreshing providers at the end of the next event-loop.
+  @Deprecated('Will be removed in 3.0.0')
+  @internal
   void Function(void Function() task) get vsync {
     return vsyncOverride ?? _defaultVsync;
   }
 
   /// A way to override [vsync], used by Flutter to synchronize a container
   /// with the widget tree.
+  @Deprecated('Will be removed in 3.0.0')
+  @internal
   void Function(void Function() task)? vsyncOverride;
 
   /// The object that handles when providers are refreshed and disposed.
   late final _ProviderScheduler _scheduler =
-      _parent?._scheduler ?? _ProviderScheduler(vsync);
-
-  late final String _debugId;
+      _parent?._scheduler ?? _ProviderScheduler();
 
   /// How deep this [ProviderContainer] is in the graph of containers.
   ///
   /// Starts at 0.
   final int depth;
-
-  /// A unique ID for this object, used by the devtool to differentiate two [ProviderContainer].
-  ///
-  /// Should not be used.
-  @visibleForTesting
-  String get debugId {
-    String? id;
-    assert(() {
-      id = _debugId;
-      return true;
-    }(), '');
-
-    return id!;
-  }
-
   final ProviderContainer? _root;
   final ProviderContainer? _parent;
 
@@ -282,6 +189,8 @@ class ProviderContainer implements Node {
   /// if it is safe to modify a provider.
   ///
   /// This corresponds to all the widgets that a [Provider] is associated with.
+  @Deprecated('Will be removed in 3.0.0')
+  @internal
   void Function()? debugCanModifyProviders;
 
   /// Whether [dispose] was called or not.
@@ -303,30 +212,51 @@ class ProviderContainer implements Node {
   /// }
   /// ```
   Result read<Result>(
-    ProviderBase<Result> provider,
+    ProviderListenable<Result> provider,
   ) {
-    final element = readProviderElement(provider);
-    element.flush();
+    return provider.read(this);
+  }
 
-    // In case `read` was called on a provider that has no listener
-    element.mayNeedDispose();
+  /// {@macro riverpod.exists}
+  bool exists(ProviderBase<Object?> provider) {
+    final element = _stateReaders[provider]?._element;
 
-    return element.readSelf();
+    return element != null;
+  }
+
+  /// Executes [ProviderElementBase.debugReassemble] on all the providers.
+  void debugReassemble() {
+// TODO hot-reload handle provider type change
+// TODO hot-reload handle provider response type change
+// TODO hot-reload handle provider -> family
+// TODO hot-reload handle family adding parameters
+// TODO found "Future already completed error" after adding family parameter
+
+    assert(
+      () {
+        for (final element in getAllProviderElements()) {
+          element.debugReassemble();
+        }
+
+        return true;
+      }(),
+      '',
+    );
   }
 
   @override
-  ProviderSubscription<State> _createSubscription<State>(
+  ProviderSubscription<State> _listenElement<State>(
     ProviderElementBase<State> element, {
     required void Function(State? previous, State next) listener,
     required void Function(Object error, StackTrace stackTrace) onError,
   }) {
-    final sub = _ProviderSubscription<State>._(
+    final sub = _ExternalProviderSubscription<State>._(
       element,
       listener,
       onError: onError,
     );
 
-    element._listeners.add(sub);
+    element._externalDependents.add(sub);
 
     return sub;
   }
@@ -345,22 +275,32 @@ class ProviderContainer implements Node {
       listener,
       fireImmediately: fireImmediately,
       onError: onError,
+      onDependencyMayHaveChanged: null,
     );
   }
 
   /// {@template riverpod.invalidate}
-  void invalidate(ProviderBase<Object?> provider) {
-    final reader = _getStateReader(provider.originProvider);
+  void invalidate(ProviderOrFamily provider) {
+    if (provider is ProviderBase) {
+      final reader = _getStateReader(provider._origin);
 
-    if (reader._element != null) {
-      final element = reader._element!;
-      element.invalidateSelf();
+      reader._element?.invalidateSelf();
+    } else {
+      provider as Family;
+
+      final familyContainer =
+          _overrideForFamily[provider]?.container ?? _root ?? this;
+
+      for (final stateReader in familyContainer._stateReaders.values) {
+        if (stateReader.origin.from != provider) continue;
+        stateReader._element?.invalidateSelf();
+      }
     }
   }
 
   /// {@template riverpod.refresh}
-  Created refresh<Created>(ProviderBase<Created> provider) {
-    invalidate(provider);
+  State refresh<State>(Refreshable<State> provider) {
+    invalidate(provider._origin);
     return read(provider);
   }
 
@@ -375,10 +315,9 @@ class ProviderContainer implements Node {
       // on provider dispose, to avoid memory leak
 
       void removeStateReaderFrom(ProviderContainer container) {
-        container._stateReaders.remove(element._origin);
-
-        for (var i = 0; i < container._children.length; i++) {
-          removeStateReaderFrom(container._children[i]);
+        if (container._stateReaders[element._origin] == reader) {
+          container._stateReaders.remove(element._origin);
+          container._children.forEach(removeStateReaderFrom);
         }
       }
 
@@ -410,17 +349,23 @@ class ProviderContainer implements Node {
     );
 
     List<Override>? unusedOverrides;
-    assert(() {
-      unusedOverrides = [...overrides];
-      return true;
-    }(), '');
+    assert(
+      () {
+        unusedOverrides = [...overrides];
+        return true;
+      }(),
+      '',
+    );
 
     for (final override in overrides) {
       if (override is ProviderOverride) {
-        assert(() {
-          unusedOverrides!.remove(override);
-          return true;
-        }(), '');
+        assert(
+          () {
+            unusedOverrides!.remove(override);
+            return true;
+          }(),
+          '',
+        );
 
         assert(
           _overrideForProvider[override._origin].runtimeType ==
@@ -439,12 +384,15 @@ class ProviderContainer implements Node {
         final element = reader._element;
         if (element == null) continue;
 
-        _runUnaryGuarded(element.update, override._override);
+        runUnaryGuarded(element.update, override._override);
       } else if (override is FamilyOverride) {
-        assert(() {
-          unusedOverrides!.remove(override);
-          return true;
-        }(), '');
+        assert(
+          () {
+            unusedOverrides!.remove(override);
+            return true;
+          }(),
+          '',
+        );
         // TODO assert family override did not change
 
         _overrideForFamily[override.overriddenFamily]!.override = override;
@@ -469,26 +417,28 @@ class ProviderContainer implements Node {
 
     final reader = _getStateReader(provider);
 
-    assert(() {
-      // Avoid having the assert trigger itself exponentially
-      if (!_debugVerifyDependenciesAreRespectedEnabled) return true;
+    assert(
+      () {
+        // Avoid having the assert trigger itself exponentially
+        if (!_debugVerifyDependenciesAreRespectedEnabled) return true;
 
-      try {
-        _debugVerifyDependenciesAreRespectedEnabled = false;
+        try {
+          _debugVerifyDependenciesAreRespectedEnabled = false;
 
-        // Check that this containers doesn't have access to an overridden
-        // dependency of the targeted provider
-        final targetElement = reader.getElement();
-        final visitedDependencies = <ProviderBase>{};
-        final queue = Queue<ProviderBase>();
-        targetElement.visitAncestors((e) => queue.add(e.origin));
+          // Check that this containers doesn't have access to an overridden
+          // dependency of the targeted provider
+          final targetElement = reader.getElement();
+          final visitedDependencies = <ProviderBase>{};
+          final queue = Queue<ProviderBase>();
+          targetElement.visitAncestors((e) => queue.add(e.origin));
 
-        while (queue.isNotEmpty) {
-          final dependency = queue.removeFirst();
-          if (visitedDependencies.add(dependency)) {
-            final dependencyElement = readProviderElement<Object?>(dependency);
+          while (queue.isNotEmpty) {
+            final dependency = queue.removeFirst();
+            if (visitedDependencies.add(dependency)) {
+              final dependencyElement =
+                  readProviderElement<Object?>(dependency);
 
-            assert(
+              assert(
                 targetElement.provider != targetElement.origin ||
                     dependencyElement ==
                         targetElement.container
@@ -496,22 +446,25 @@ class ProviderContainer implements Node {
                 '''
 Tried to read $provider from a place where one of its dependencies were overridden but the provider is not.
 
-To fix this error, you can add add "dependencies" to $provider such that we have:
+To fix this error, you can add "dependencies" to $provider such that we have:
 
 ```
 final a = Provider(...);
 final b = Provider((ref) => ref.watch(a), dependencies: [a]);
 ```
-''');
+''',
+              );
 
-            dependencyElement.visitAncestors((e) => queue.add(e.origin));
+              dependencyElement.visitAncestors((e) => queue.add(e.origin));
+            }
           }
+        } finally {
+          _debugVerifyDependenciesAreRespectedEnabled = true;
         }
-      } finally {
-        _debugVerifyDependenciesAreRespectedEnabled = true;
-      }
-      return true;
-    }(), '');
+        return true;
+      }(),
+      '',
+    );
 
     return reader.getElement() as ProviderElementBase<State>;
   }
@@ -552,10 +505,10 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
             );
           }
 
-          familyOverrideRef.override.setupOverride(
-            provider.argument,
-            setupOverride,
-          );
+          final providerOverride =
+              familyOverrideRef.override.getProviderOverride(provider);
+
+          setupOverride(origin: provider, override: providerOverride);
 
           // if setupOverride overrode the provider, it was already initialized
           // in the code above. Otherwise we initialize it as if it was not overridden
@@ -615,7 +568,7 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
       }
 
       if (_root?._stateReaders.containsKey(provider) ?? false) {
-        // For unoverriden providers, it is possible that the provider was
+        // For un-overridden providers, it is possible that the provider was
         // read in the root ProviderContainer before this container. In which case
         // we reuse the existing state instead of creating a new one.
         return _root!._stateReaders[provider]!;
@@ -650,17 +603,6 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
     if (_disposed) {
       return;
     }
-    if (_children.isNotEmpty) {
-      throw StateError(
-        'Tried to dispose a ProviderContainer that still has children containers.',
-      );
-    }
-
-    assert(() {
-      RiverpodBinding.debugInstance.containers =
-          Map.from(RiverpodBinding.debugInstance.containers)..remove(_debugId);
-      return true;
-    }(), '');
 
     _parent?._children.remove(this);
 
@@ -725,19 +667,23 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
       // were already visited before.
       // If a child does not have all of its ancestors visited, when those
       // ancestors will be visited, they will retry visiting this child.
-      element.visitChildren((dependent) {
-        if (dependent.container == this) {
-          // All the parents of a node must have been visited before a node is visited
-          var areAllAncestorsAlreadyVisited = true;
-          dependent.visitAncestors((e) {
-            if (e._container == this && !visitedNodes.contains(e)) {
-              areAllAncestorsAlreadyVisited = false;
-            }
-          });
+      element.visitChildren(
+        elementVisitor: (dependent) {
+          if (dependent.container == this) {
+            // All the parents of a node must have been visited before a node is visited
+            var areAllAncestorsAlreadyVisited = true;
+            dependent.visitAncestors((e) {
+              if (e._container == this && !visitedNodes.contains(e)) {
+                areAllAncestorsAlreadyVisited = false;
+              }
+            });
 
-          if (areAllAncestorsAlreadyVisited) queue.add(dependent);
-        }
-      });
+            if (areAllAncestorsAlreadyVisited) queue.add(dependent);
+          }
+        },
+        // We only care about Elements here, so let's ignore notifiers
+        notifierVisitor: (_) {},
+      );
     }
   }
 }
@@ -788,6 +734,7 @@ abstract class ProviderObserver {
 }
 
 /// An implementation detail for the override mechanism of providers
+@internal
 typedef SetupOverride = void Function({
   required ProviderBase origin,
   required ProviderBase override,
@@ -802,6 +749,7 @@ typedef SetupOverride = void Function({
 ///
 /// - [ProviderContainer], which uses this object.
 /// - `overrideWithValue`, which creates a [ProviderOverride].
+@internal
 class ProviderOverride implements Override {
   /// Override a provider
   ProviderOverride({

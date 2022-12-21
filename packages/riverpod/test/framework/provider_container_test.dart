@@ -1,12 +1,158 @@
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart';
 
 import '../utils.dart';
-import 'uni_directional_test.dart';
 
 void main() {
   group('ProviderContainer', () {
+    test('Supports unmounting containers in reverse order', () {
+      final container = createContainer();
+
+      final child = createContainer(parent: container);
+
+      container.dispose();
+      child.dispose();
+    });
+
+    group('exists', () {
+      test('simple use-case', () {
+        final container = createContainer();
+        final provider = Provider((ref) => 0);
+
+        expect(container.exists(provider), false);
+        expect(container.getAllProviderElements(), isEmpty);
+
+        container.read(provider);
+
+        expect(container.exists(provider), true);
+      });
+
+      test('handles autoDispose', () async {
+        final provider = Provider.autoDispose((ref) => 0);
+        final container = createContainer(
+          overrides: [
+            provider.overrideWith((ref) => 42),
+          ],
+        );
+
+        expect(container.exists(provider), false);
+        expect(container.getAllProviderElements(), isEmpty);
+
+        container.read(provider);
+
+        expect(container.exists(provider), true);
+
+        await container.pump();
+
+        expect(container.getAllProviderElements(), isEmpty);
+        expect(container.exists(provider), false);
+        expect(container.getAllProviderElements(), isEmpty);
+      });
+
+      test('Handles uninitialized overrideWith', () {
+        final provider = Provider((ref) => 0);
+        final container = createContainer(
+          overrides: [
+            provider.overrideWith((ref) => 42),
+          ],
+        );
+
+        expect(container.exists(provider), false);
+        expect(container.getAllProviderElements(), isEmpty);
+
+        container.read(provider);
+
+        expect(container.exists(provider), true);
+      });
+
+      test('handles nested providers', () {
+        final provider = Provider((ref) => 0);
+        final provider2 = Provider((ref) => 0);
+        final root = createContainer();
+        final container = createContainer(parent: root, overrides: [provider2]);
+
+        expect(container.exists(provider), false);
+        expect(container.exists(provider2), false);
+        expect(container.getAllProviderElements(), isEmpty);
+        expect(root.getAllProviderElements(), isEmpty);
+
+        container.read(provider);
+
+        expect(container.exists(provider), true);
+        expect(container.exists(provider2), false);
+        expect(container.getAllProviderElements(), isEmpty);
+        expect(root.getAllProviderElements().map((e) => e.origin), [provider]);
+
+        container.read(provider2);
+
+        expect(container.exists(provider2), true);
+        expect(
+          container.getAllProviderElements().map((e) => e.origin),
+          [provider2],
+        );
+        expect(root.getAllProviderElements().map((e) => e.origin), [provider]);
+      });
+    });
+
+    group('debugReassemble', () {
+      test(
+          'reload providers if the debugGetCreateSourceHash of a provider returns a different value',
+          () {
+        final noDebugGetCreateSourceHashBuild = OnBuildMock();
+        final noDebugGetCreateSourceHash = Provider((ref) {
+          noDebugGetCreateSourceHashBuild();
+          return 0;
+        });
+        final constantHashBuild = OnBuildMock();
+        final constantHash = Provider(
+          debugGetCreateSourceHash: () => 'hash',
+          (ref) {
+            constantHashBuild();
+            return 0;
+          },
+        );
+        var hashResult = '42';
+        final changingHashBuild = OnBuildMock();
+        final changingHash = Provider(
+          debugGetCreateSourceHash: () => hashResult,
+          (ref) {
+            changingHashBuild();
+            return 0;
+          },
+        );
+        final container = ProviderContainer();
+
+        container.read(noDebugGetCreateSourceHash);
+        container.read(constantHash);
+        container.read(changingHash);
+
+        clearInteractions(noDebugGetCreateSourceHashBuild);
+        clearInteractions(constantHashBuild);
+        clearInteractions(changingHashBuild);
+
+        hashResult = 'new hash';
+        container.debugReassemble();
+        container.read(noDebugGetCreateSourceHash);
+        container.read(constantHash);
+        container.read(changingHash);
+
+        verifyOnly(changingHashBuild, changingHashBuild());
+        verifyNoMoreInteractions(constantHashBuild);
+        verifyNoMoreInteractions(noDebugGetCreateSourceHashBuild);
+
+        container.debugReassemble();
+        container.read(noDebugGetCreateSourceHash);
+        container.read(constantHash);
+        container.read(changingHash);
+
+        verifyNoMoreInteractions(changingHashBuild);
+        verifyNoMoreInteractions(constantHashBuild);
+        verifyNoMoreInteractions(noDebugGetCreateSourceHashBuild);
+      });
+    });
+
     test('invalidate triggers a rebuild on next frame', () async {
       final container = createContainer();
       final listener = Listener<int>();
@@ -27,55 +173,6 @@ void main() {
       verifyOnly(listener, listener(0, 1));
     });
 
-    group('disposeDelay', () {
-      test('defaults to zero', () {
-        final container = createContainer();
-
-        expect(container.disposeDelay, Duration.zero);
-      });
-
-      test(
-          'if a parent is specified and no default is passed, use the parent disposeDelay',
-          () {
-        final parent =
-            createContainer(disposeDelay: const Duration(seconds: 5));
-        final container = createContainer(
-          parent: parent,
-          disposeDelay: const Duration(seconds: 2),
-        );
-
-        expect(container.disposeDelay, const Duration(seconds: 2));
-
-        final container2 = createContainer(parent: parent);
-
-        expect(container2.disposeDelay, const Duration(seconds: 5));
-      });
-    });
-
-    group('cacheTime', () {
-      test('defaults to zero', () {
-        final container = createContainer();
-
-        expect(container.cacheTime, Duration.zero);
-      });
-
-      test(
-          'if a parent is specified and no default is passed, use the parent cacheTime',
-          () {
-        final parent = createContainer(cacheTime: const Duration(seconds: 5));
-        final container = createContainer(
-          parent: parent,
-          cacheTime: const Duration(seconds: 2),
-        );
-
-        expect(container.cacheTime, const Duration(seconds: 2));
-
-        final container2 = createContainer(parent: parent);
-
-        expect(container2.cacheTime, const Duration(seconds: 5));
-      });
-    });
-
     test(
         'when using overrideWithProvider, handles overriding with a more specific provider type',
         () {
@@ -83,6 +180,7 @@ void main() {
 
       final container = createContainer(
         overrides: [
+          // ignore: deprecated_member_use_from_same_package
           fooProvider.overrideWithProvider(
             Provider<Bar>((ref) => Bar()),
           ),
@@ -186,7 +284,7 @@ void main() {
         () async {
       final container = createContainer();
       final dep = StateProvider((ref) => 0);
-      final provider = Provider((ref) => ref.watch(dep.state).state);
+      final provider = Provider((ref) => ref.watch(dep));
       final listener = Listener<int>();
       final child = createContainer(parent: container);
 
@@ -196,7 +294,7 @@ void main() {
 
       child.dispose();
 
-      container.read(dep.state).state++;
+      container.read(dep.notifier).state++;
       await container.pump();
 
       verifyOnly(listener, listener(0, 1));
@@ -206,18 +304,36 @@ void main() {
         'flushes listened-to providers even if they have no external listeners',
         () async {
       final dep = StateProvider((ref) => 0);
-      final provider = Provider((ref) => ref.watch(dep.state).state);
+      final provider = Provider((ref) => ref.watch(dep));
       final another = StateProvider<int>((ref) {
         ref.listen(provider, (prev, value) => ref.controller.state++);
         return 0;
       });
       final container = createContainer();
 
-      expect(container.read(another.state).state, 0);
+      expect(container.read(another), 0);
 
-      container.read(dep.state).state = 42;
+      container.read(dep.notifier).state = 42;
 
-      expect(container.read(another.state).state, 1);
+      expect(container.read(another), 1);
+    });
+
+    test(
+        'flushes listened-to providers even if they have no external listeners (with ProviderListenable)',
+        () async {
+      final dep = StateProvider((ref) => 0);
+      final provider = Provider((ref) => ref.watch(dep));
+      final another = StateProvider<int>((ref) {
+        ref.listen(provider, (prev, value) => ref.controller.state++);
+        return 0;
+      });
+      final container = createContainer();
+
+      expect(container.read(another), 0);
+
+      container.read(dep.notifier).state = 42;
+
+      expect(container.read(another), 1);
     });
 
     group('.pump', () {
@@ -225,8 +341,8 @@ void main() {
           'waits for providers to rebuild or get disposed, no matter from which container they are associated in the graph',
           () async {
         final dep = StateProvider((ref) => 0);
-        final a = Provider((ref) => ref.watch(dep.state).state);
-        final b = Provider((ref) => ref.watch(dep.state).state);
+        final a = Provider((ref) => ref.watch(dep));
+        final b = Provider((ref) => ref.watch(dep));
         final aListener = Listener<int>();
         final bListener = Listener<int>();
 
@@ -239,13 +355,13 @@ void main() {
         verifyOnly(aListener, aListener(null, 0));
         verifyOnly(bListener, bListener(null, 0));
 
-        root.read(dep.state).state++;
+        root.read(dep.notifier).state++;
         await root.pump();
 
         verifyOnly(aListener, aListener(0, 1));
         verifyOnly(bListener, bListener(0, 1));
 
-        scoped.read(dep.state).state++;
+        scoped.read(dep.notifier).state++;
         await scoped.pump();
 
         verifyOnly(aListener, aListener(1, 2));
@@ -349,7 +465,7 @@ void main() {
           container.getAllProviderElements(),
           unorderedMatches(<Matcher>[
             isA<ProviderElementBase<int>>(),
-            isA<AutoDisposeProviderElementBase<int>>(),
+            isA<AutoDisposeProviderElementMixin<int>>(),
           ]),
         );
 
@@ -367,7 +483,7 @@ void main() {
           container.getAllProviderElements(),
           unorderedMatches(<Matcher>[
             isA<ProviderElementBase<int>>(),
-            isA<AutoDisposeProviderElementBase<int>>(),
+            isA<AutoDisposeProviderElementMixin<int>>(),
           ]),
         );
       });
@@ -443,7 +559,7 @@ void main() {
 
       verifyZeroInteractions(listener);
 
-      container.read(provider.state).state++;
+      container.read(provider.notifier).state++;
 
       verifyOnly(listener, listener(any, any));
     });
@@ -534,14 +650,14 @@ void main() {
         final dep = StateProvider((ref) => 0);
         final provider = Provider((ref) {
           buildCount++;
-          return ref.watch(dep.state).state;
+          return ref.watch(dep);
         });
 
         container.read(provider);
 
         expect(buildCount, 1);
 
-        container.read(dep.state).state++;
+        container.read(dep.notifier).state++;
         await container.pump();
 
         expect(buildCount, 1);

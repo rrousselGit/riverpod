@@ -1,0 +1,426 @@
+---
+title: Чтение провайдера
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import counter from "!!raw-loader!./reading_counter.dart";
+import consumerWidget from "!!raw-loader!./reading_consumer_widget.dart";
+import consumerStatefulWidget from "!!raw-loader!./reading_consumer_stateful_widget.dart";
+import consumerHookWidget from "!!raw-loader!./reading_consumer_hook_widget.dart";
+import statefulHookConsumerWidget from "!!raw-loader!./reading_stateful_hook_consumer_widget.dart";
+import consumerHook from "!!raw-loader!./reading_consumer_hook.dart";
+import watch from "!!raw-loader!./reading_watch.dart";
+import watchBuild from "!!raw-loader!./reading_watch_build.dart";
+import listen from "!!raw-loader!./reading_listen.dart";
+import listenBuild from "!!raw-loader!./reading_listen_build.dart";
+import read from "!!raw-loader!./reading_read.dart";
+import readBuild from "!!raw-loader!./reading_read_build.dart";
+import readNotifierBuild from "!!raw-loader!./reading_read_notifier_build.dart";
+import watchNotifierBuild from "!!raw-loader!./reading_watch_notifier_build.dart";
+import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+
+Прежде чем перейти к чтения данного гайда, убедитесь, что вы уже изучили [Провайдеры](/docs/concepts/providers).
+
+В этом мануале мы посмотрим, как читать провайдер.
+
+## Получение объекта "ref"
+
+Перед чтением провайдера, нам необходимо получить "ref".
+
+Этот объект позволяет нам взаимодействовать с провайдерами из виджета или другого провайдера.
+
+### Получение объекта "ref" из провайдера
+
+Все провайдеры получают "ref" в качестве параметра:
+
+```dart
+final provider = Provider((ref) {
+  // используем ref для взаимодействия с другим провайдером
+  final repository = ref.watch(repositoryProvider);
+
+  return SomeValue(repository);
+})
+```
+
+Этот параметр можно безопасно передавать в хранимое значение.
+
+Например, распространенным случаем является передача "ref" в [StateNotifier]:
+
+<CodeBlock>{trimSnippet(counter)}</CodeBlock>
+
+Это предоставляет классу `Counter` возможность читать провайдеры.
+
+### Получение объекта "ref" из виджета
+
+Изначально виджеты не имеют параметра ref. [Riverpod] предлагает несколько решений
+данной проблемы.
+
+#### Наследование от ConsumerWidget вместо StatelessWidget
+
+Самым распространенным способом получения ref внутри виджета 
+является замена [StatelessWidget] на [ConsumerWidget].
+
+[ConsumerWidget] идентичен [StatelessWidget] в использовании с единственной
+разницей в том, что метод build имеет дополнительный параметр: "ref".
+
+Обычный [ConsumerWidget] выглядит подобным образом:
+
+<CodeBlock>{trimSnippet(consumerWidget)}</CodeBlock>
+
+#### Наследование от ConsumerStatefulWidget+ConsumerState вместо StatefulWidget+State
+
+Подобно виджету [ConsumerWidget], существуют [ConsumerStatefulWidget] и [ConsumerState], являющиеся
+эквивалентом [StatefulWidget] и [State], с разницей в том, что [ConsumerState] имеет "ref".
+
+В этом случае "ref" не передается в метод build как параметр, а является полем объекта [ConsumerState].
+
+<CodeBlock>{trimSnippet(consumerStatefulWidget)}</CodeBlock>
+
+#### Наследование от HookConsumerWidget вместо HookWidget
+
+Данное решение предназначено для пользователей [flutter_hooks]. Т. к. данный пакет
+требует наследования от [HookWidget], то виджеты, использующие хуки, не могу наследоваться
+от [ConsumerWidget].
+
+Пакет [hooks_riverpod] предоставляет виджет [HookConsumerWidget].
+Данный виджет ведет себя как [ConsumerWidget] и [HookWidget]. Такое решение позволяет
+слушать провайдеры и использовать хуки.
+
+Например:
+
+<CodeBlock>{trimSnippet(consumerHookWidget)}</CodeBlock>
+
+#### Наследование от StatefulHookConsumerWidget вместо HookWidget
+
+Данный вариант подходит тем, кому необходимы методы жизненного цикла [StatefulWidget] в добавок к хукам.
+
+Например:
+
+<CodeBlock>{trimSnippet(statefulHookConsumerWidget)}</CodeBlock>
+
+#### Consumer и HookConsumer
+
+И последним способом получения "ref" внутри виджета является
+использование [Consumer]/[HookConsumer].
+
+Эти виджеты имеют те же свойства, что и [ConsumerWidget]/[HookConsumerWidget],
+и могут быть использованы для получения "ref" в функции builder.
+
+По факту, эти виджеты можно использовать для получения "ref" без нужды создавать класс.
+Например:
+
+<CodeBlock>{trimSnippet(consumerHook)}</CodeBlock>
+
+## Использование ref для взаимодействия с провайдерами
+
+Теперь, когда мы имеем "ref", мы можем использовать его.
+
+Существует три основных варианта использования "ref":
+
+- получение значения провайдера и подписка на изменения. В таком случае,
+  при смене состояния наблюдаемого провайдера произойдет перестройка наблюдающего
+  виджета или провайдера.
+  Для этого используем `ref.watch`.
+- подписка на изменения провайдера для выполнения какого-либо действия. Например
+  навигация или открытие модального окна при изменении состояния провайдера.
+  Для этого используем `ref.listen`.
+- одноразовое чтение значения провайдера без подписки на изменения.
+  Например получение значения провайдера по нажатию кнопки.
+  Для этого используем `ref.read`.
+
+:::note
+Рекомендуется использовать `ref.watch` или же `ref.listen` вместо `ref.read`.
+Используя `ref.watch`, вы делаете приложение реактивным и декларативным,
+что упрощает его поддержку.
+:::
+
+### Использование ref.watch для наблюдения за провайдером
+
+`ref.watch` используется внутри метода `build` виджета или в теле провайдера
+для прослушивания изменений другого провайдера.
+
+Например провайдер может использовать `ref.watch` для комбинации нескольких
+провайдеров в одном новом значении.
+
+В качестве примера рассмотрим фильтрацию списка задач.
+Допустим, у нас есть два провайдера:
+
+- `filterTypeProvider` - провайдер, хранящий текущий тип фильтра
+  (без фильтра, только выполненные задачи, ...)
+- `todosProvider` - провайдер, хранящий полный список всех задач
+
+Теперь с помощью `ref.watch` мы можем создать третий провайдер, который
+на основе значений двух других провайдеров будет создавать отфильтрованный список задач:
+
+<CodeBlock>{trimSnippet(watch)}</CodeBlock>
+
+Теперь `filteredTodoListProvider` хранит отфильтрованный список задач.
+
+Отфильтрованный список будет автоматически обновляться при изменении хотя бы одного
+из провайдеров: `filterTypeProvider`, `todosProvider`. Если же ни один из провайдеров
+не изменил свое значение, то `filteredTodoListProvider` также не изменит своего значения.
+
+Подобным образом, виджет может использовать `ref.watch` для отображения содержимого
+провайдера и обновляться при изменении значения прослушиваемого провайдера.
+
+<CodeBlock>{trimSnippet(watchBuild)}</CodeBlock>
+
+В данном отрывке показано, как виджет слушает провайдер.
+При изменении значения провайдера, виджет перестроится и отобразит новое значение.
+
+:::caution
+Метод `watch` не следует вызывать асинхронно, например в `onPressed` [ElevatedButton].
+Также `watch` не стоит использовать внутри `initState` и других методов
+жизненного цикла [State].
+
+В этих случаях используйте `ref.read`.
+:::
+
+### Использование ref.listen для реагирования на изменения провайдера
+
+Аналогично `ref.watch` можно использовать `ref.listen` для наблюдения за провайдером.
+
+Главная разница между `ref.watch` и `ref.listen` заключается в том, что `ref.listen`
+не перестраивает виджет/провайдер, а вызывает определенную функцию.
+
+Это можно использовать для отображения SnackBar, когда случается ошибка.
+
+`ref.listen` принимает 2 позиционных аргумента: первый - провайдер для наблюдения,
+второй - функция, которая должна вызываться при изменении значения провайдера.
+Причем функция должна принимать 2 параметра: предыдущее и новое состояния провайдера.
+
+`ref.listen` можно использовать внутри тела провайдера:
+
+<CodeBlock>{trimSnippet(listen)}</CodeBlock>
+
+или внутри метода `build` виджета:
+
+<CodeBlock>{trimSnippet(listenBuild)}</CodeBlock>
+
+:::caution
+Метод `listen` не следует вызывать асинхронно, например в `onPressed` [ElevatedButton].
+Также `listen` не стоит использовать внутри `initState` и других методов
+жизненного цикла [State].
+:::
+
+### Использование ref.read для получения значения провайдера
+
+Метод `ref.read` позволяет единожды прочесть значение провайдера без подписки
+на его изменения.
+
+Данный метод часто используется внутри функций, которые вызываются при определенном
+действии пользователя. Например, мы можем использовать `ref.read` для увеличения
+счетчика, когда пользователь нажимает кнопку:
+
+<CodeBlock>{trimSnippet(read)}</CodeBlock>
+
+:::note
+Следует максимально избегать использования `ref.read` , т. к. этот метод не реактивен.
+
+Его следует использовать только тогда, когда использование `watch` и `listen`
+может вызвать проблему. При возможности используйте `watch`/`listen`.
+:::
+
+#### **НЕ** используйте `ref.read` внутри метода build
+
+Возможно, вы захотите оптимизировать производительность виджета с помощью `ref.read`:
+
+<CodeBlock>{trimSnippet(readBuild)}</CodeBlock>
+
+Однако это является очень плохой практикой, т. к. это может создать скрытые баги.
+
+Вы можете подумать: "Значение провайдера никогда не изменится, так что
+лучше использовать 'ref.read'". Однако нет никаких гарантий, что завтра этот
+провайдер будет вести себя так же, как и сегодня.
+
+ПО имеет тенденцию меняться, так что в будущем может понадобиться изменить
+значение, которое никогда не изменялось. Если вы использовали `ref.read`, вам придется
+пройтись по всему проекту и заменить `ref.read` на `ref.watch`.
+
+С `ref.watch` у вас будет меньше проблем при рефакторинге.
+
+**_Но я хочу использовать `ref.read` для уменьшения количества перестроек виджета_**
+
+Хотя ваши намерения похвальны, стоит отметить, что вы можете добиться того же эффекта
+(уменьшения количества перестроек), используя `ref.watch`.
+
+Провайдеры предоставляют несколько способов получения значения с учетом уменьшения
+количества перестроек.
+
+Например, вместо этого:
+
+<CodeBlock>{trimSnippet(readNotifierBuild)}</CodeBlock>
+
+мы можем сделать это:
+
+<CodeBlock>{trimSnippet(watchNotifierBuild)}</CodeBlock>
+
+Оба примера работают одинаково: кнопка не будет перестраиваться при
+изменении счетчика.
+
+С другой стороны, второй вариант учитывает случай, когда счетчик сбрасывается.
+Например где-то в другом месте приложения мы можем вызвать:
+
+```dart
+ref.refresh(counterProvider);
+```
+
+что пересоздаст `StateController`.
+
+Если мы будем использовать `ref.read`, то наша кнопка до сих пор будет использовать
+предыдущий `StateController`, который был аннулирован и больше не должен использоваться.
+В то время как `ref.watch` перестоил кнопку и предоставил ей новый `StateController`.
+
+## Определяем что читать
+
+В зависимости от того, какой провайдер вы прослушиваете, у вас может быть несколько 
+значений, которые можно слушать.
+
+В качестве примера рассмотрим [StreamProvider]:
+
+
+```dart
+final userProvider = StreamProvider<User>(...);
+```
+
+При чтении `userProvider` вы можете:
+
+- синхронно получать текущее значение, слушая `userProvider`:
+
+  ```dart
+  Widget build(BuildContext context, WidgetRef ref) {
+    AsyncValue<User> user = ref.watch(userProvider);
+
+    return user.when(
+      loading: () => const CircularProgressIndicator(),
+      error: (error, stack) => const Text('Oops'),
+      data: (user) => Text(user.name),
+    );
+  }
+  ```
+
+- получать соответствующий [Stream], слушая `userProvider.stream`:
+
+  ```dart
+  Widget build(BuildContext context, WidgetRef ref) {
+    Stream<User> user = ref.watch(userProvider.stream);
+  }
+  ```
+
+- получать [Future], который соответствует последнему значению, слушая `userProvider.future`:
+
+  ```dart
+  Widget build(BuildContext context, WidgetRef ref) {
+    Future<User> user = ref.watch(userProvider.future);
+  }
+  ```
+
+Другие провайдеры могут предоставлять какие-нибудь свои значения.
+Для большей информации, вы можете обратиться к документации каждого провайдера
+[API](https://pub.dev/documentation/riverpod/latest/riverpod/riverpod-library.html).
+
+## Использование "select" для контроля перестроек
+
+Напоследок следует упомянуть возможность уменьшения количества перестроек
+виджета/провайдера при использовании `ref.watch` или же количества вызовов сторонней функции
+при использовании `ref.listen`.
+
+Важно помнить, что по умолчанию прослушивается хранимое значение целиком.
+Но бывают случаи, когда виджет/провайдер должен зависеть только от
+конкретного поля, а не от всего объекта состояния.
+
+Например провайдер может хранить объект `User`:
+
+```dart
+abstract class User {
+  String get name;
+  int get age;
+}
+```
+
+Но виджету необходимо только поле name:
+
+```dart
+Widget build(BuildContext context, WidgetRef ref) {
+  User user = ref.watch(userProvider);
+  return Text(user.name);
+}
+```
+
+Если мы просто воспользуемся `ref.watch`, то виджет будет перестраиваться при
+изменении не только `name`, но и `age`.
+
+Решить данную задачу можно путем использования `select`. Так мы сообщаем
+Riverpod, что хотим слушать только поле name класса `User`.
+
+Обновленная версия кода выглядит так:
+
+```dart
+Widget build(BuildContext context, WidgetRef ref) {
+  String name = ref.watch(userProvider.select((user) => user.name));
+  return Text(name);
+}
+```
+
+С помощью `select` мы можем указать функцию, которая будет возвращать
+волнующее нас поле.
+
+Каждый раз при изменении `User` Riverpod вызывает нашу функцию и сравнивает
+предыдущий результат ее выполнения с новым. Если они различаются
+(т.е. name изменилось), Riverpod перестраивает виджет. Но, если результаты функции
+одинаковы (т.е. изменился только age), Riverpod не перестраивает наш виджет.
+
+:::info
+Также можно использовать `select` вместе с `ref.listen`:
+
+```dart
+ref.listen<String>(
+  userProvider.select((user) => user.name),
+  (String? previousName, String newName) {
+    print('The user name changed $newName');
+  }
+);
+```
+
+Таким образом, `ref.listen` будет вызывать сторонную функцию, только когда
+name изменилось.
+:::
+
+:::tip
+Вы не обязаны возвращать именно поле объекта. Любое значение, которое
+переопределяет оператор ==, подойдет. Например можно сделать так:
+
+```dart
+final label = ref.watch(userProvider.select((user) => 'Mr ${user.name}'));
+```
+
+:::
+
+[stateprovider]: ../providers/state_provider
+[providercontainer]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderContainer-class.html
+[providerlistener]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderListener-class.html
+[providerscope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
+[consumer]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Consumer-class.html
+[consumerwidget]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ConsumerWidget-class.html
+[consumerstate]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ConsumerStatefulWidget-class.html
+[consumerstatefulwidget]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ConsumerState-class.html
+[useprovider]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ref.watch(.html
+[elevatedbutton]: https://api.flutter.dev/flutter/material/ElevatedButton-class.html
+[streambuilder]: https://api.flutter.dev/flutter/widgets/StreamBuilder-class.html
+[riverpod]: https://github.com/rrousselgit/riverpod
+[text]: https://api.flutter.dev/flutter/widgets/Text-class.html
+[hooks_riverpod]: https://pub.dev/packages/hooks_riverpod
+[future]: https://api.dart.dev/stable/2.13.4/dart-async/Future-class.html
+[stream]: https://api.dart.dev/stable/2.13.4/dart-async/Stream-class.html
+[hookwidget]: https://pub.dev/documentation/flutter_hooks/latest/flutter_hooks/HookWidget-class.html
+[hookconsumerwidget]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/HookConsumerWidget-class.html
+[hookconsumer]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/HookConsumer-class.html
+[flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
+[flutter_hooks]: https://github.com/rrousselGit/flutter_hooks
+[statenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/StateNotifier-class.html
+[streamprovider]: ../providers/stream_provider
+[statelesswidget]: https://api.flutter.dev/flutter/widgets/StatelessWidget-class.html
+[statefulwidget]: https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html
+[state]: https://api.flutter.dev/flutter/widgets/State-class.html

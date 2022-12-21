@@ -94,7 +94,7 @@ Una manera fácil de implementar tal escenario sería:
 Luego, nuestra interfaz de usuario puede escuchar a `filteredTodoListProvider` para escuchar la lista de tareas filtrada.
 Con este enfoque, la interfaz de usuario se actualizará automáticamente cuando cambie el filtro o la lista de tareas pendientes.
 
-Para ver este enfoque en acción, puede consultar el código fuente del ejemplo de [Lista de Tareas](https://github.com/rrousselGit/river_pod/tree/master/examples/todos).
+Para ver este enfoque en acción, puede consultar el código fuente del ejemplo de [Lista de Tareas](https://github.com/rrousselGit/riverpod/tree/master/examples/todos).
 
 :::info
 Este comportamiento no es específico de [Provider] y funciona con todos los providers.
@@ -198,7 +198,7 @@ final repositoryProvider = Provider((ref) => Repository(ref.read));
 
 test('fetches catalog', () async {
   final container = ProviderContainer();
-  addTearOff(container.dispose);
+  addTearDown(container.dispose);
 
   Repository repository = container.read(repositoryProvider);
 

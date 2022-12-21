@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
 
 import 'utils.dart';
 
@@ -23,13 +22,15 @@ void main() {
       Directionality(
         textDirection: TextDirection.ltr,
         child: ProviderScope(
-          child: Consumer(builder: (c, ref, _) {
-            return ref.watch(futureProvider).when(
-                  data: (data) => Text(data.toString()),
-                  loading: () => const Text('loading'),
-                  error: (err, stack) => Text('$err'),
-                );
-          }),
+          child: Consumer(
+            builder: (c, ref, _) {
+              return ref.watch(futureProvider).when(
+                    data: (data) => Text(data.toString()),
+                    loading: () => const Text('loading'),
+                    error: (err, stack) => Text('$err'),
+                  );
+            },
+          ),
         ),
       ),
     );
@@ -52,17 +53,19 @@ void main() {
       Directionality(
         textDirection: TextDirection.ltr,
         child: ProviderScope(
-          child: Consumer(builder: (c, ref, _) {
-            return ref.watch(futureProvider).when(
-                  data: (data) => Text(data.toString()),
-                  loading: () => const Text('loading'),
-                  error: (err, stack) {
-                    whenError = err;
-                    whenStack = stack;
-                    return const Text('error');
-                  },
-                );
-          }),
+          child: Consumer(
+            builder: (c, ref, _) {
+              return ref.watch(futureProvider).when(
+                    data: (data) => Text(data.toString()),
+                    loading: () => const Text('loading'),
+                    error: (err, stack) {
+                      whenError = err;
+                      whenStack = stack;
+                      return const Text('error');
+                    },
+                  );
+            },
+          ),
         ),
       ),
     );
@@ -82,10 +85,12 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer(builder: (c, ref, _) {
-          ref.watch(futureProvider);
-          return Container();
-        }),
+        child: Consumer(
+          builder: (c, ref, _) {
+            ref.watch(futureProvider);
+            return Container();
+          },
+        ),
       ),
     );
 
@@ -104,10 +109,12 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer(builder: (c, ref, _) {
-          ref.watch(futureProvider);
-          return Container();
-        }),
+        child: Consumer(
+          builder: (c, ref, _) {
+            ref.watch(futureProvider);
+            return Container();
+          },
+        ),
       ),
     );
 
@@ -122,215 +129,215 @@ void main() {
   });
 
   group('overrideWithValue', () {
-    var callCount = 0;
-    final futureProvider = FutureProvider((s) async {
-      callCount++;
-      return 42;
-    });
+    // var callCount = 0;
+    // final futureProvider = FutureProvider((s) async {
+    //   callCount++;
+    //   return 42;
+    // });
 
-    Future<int>? future;
-    var completed = false;
-    final proxy = Provider<String>(
-      (ref) {
-        final first = ref.watch(futureProvider.future);
-        future = first
-          ..then(
-            (value) => completed = true,
-            onError: (dynamic _) => completed = true,
-          );
-        return '';
-      },
-    );
+    // Future<int>? future;
+    // var completed = false;
+    // final proxy = Provider<String>(
+    //   (ref) {
+    //     final first = ref.watch(futureProvider.future);
+    //     future = first
+    //       ..then(
+    //         (value) => completed = true,
+    //         onError: (dynamic _) => completed = true,
+    //       );
+    //     return '';
+    //   },
+    // );
 
-    setUp(() {
-      callCount = 0;
-      completed = false;
-      future = null;
-    });
+    // setUp(() {
+    //   callCount = 0;
+    //   completed = false;
+    //   future = null;
+    // });
 
-    final child = Directionality(
-      textDirection: TextDirection.ltr,
-      child: Consumer(builder: (c, ref, _) {
-        ref.watch(proxy);
-        return ref.watch(futureProvider).when(
-              data: (data) => Text(data.toString()),
-              loading: () => const Text('loading'),
-              error: (err, stack) {
-                return const Text('error');
-              },
-            );
-      }),
-    );
+    // final child = Directionality(
+    //   textDirection: TextDirection.ltr,
+    //   child: Consumer(builder: (c, ref, _) {
+    //     ref.watch(proxy);
+    //     return ref.watch(futureProvider).when(
+    //           data: (data) => Text(data.toString()),
+    //           loading: () => const Text('loading'),
+    //           error: (err, stack) {
+    //             return const Text('error');
+    //           },
+    //         );
+    //   }),
+    // );
 
-    testWidgets('no-op if completed and rebuild with same value',
-        (tester) async {
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            futureProvider.overrideWithValue(const AsyncValue.data(42)),
-          ],
-          child: child,
-        ),
-      );
+    //   testWidgets('no-op if completed and rebuild with same value',
+    //       (tester) async {
+    //     await tester.pumpWidget(
+    //       ProviderScope(
+    //         overrides: [
+    //           futureProvider.overrideWithValue(const AsyncValue.data(42)),
+    //         ],
+    //         child: child,
+    //       ),
+    //     );
 
-      expect(completed, true);
-      await expectLater(future, completion(42));
+    //     expect(completed, true);
+    //     await expectLater(future, completion(42));
 
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            futureProvider.overrideWithValue(const AsyncValue.data(42)),
-          ],
-          child: child,
-        ),
-      );
-    });
+    //     await tester.pumpWidget(
+    //       ProviderScope(
+    //         overrides: [
+    //           futureProvider.overrideWithValue(const AsyncValue.data(42)),
+    //         ],
+    //         child: child,
+    //       ),
+    //     );
+    //   });
 
-    testWidgets(
-        'FutureProviderDependency.future completes on rebuild with data',
-        (tester) async {
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            futureProvider.overrideWithValue(const AsyncValue.loading()),
-          ],
-          child: child,
-        ),
-      );
+    //   testWidgets(
+    //       'FutureProviderDependency.future completes on rebuild with data',
+    //       (tester) async {
+    //     await tester.pumpWidget(
+    //       ProviderScope(
+    //         overrides: [
+    //           futureProvider.overrideWithValue(const AsyncValue.loading()),
+    //         ],
+    //         child: child,
+    //       ),
+    //     );
 
-      // make sure the future doesn't just complete in one frame
-      await Future<void>.value();
+    //     // make sure the future doesn't just complete in one frame
+    //     await Future<void>.value();
 
-      expect(completed, false);
-      expect(future, isNotNull);
+    //     expect(completed, false);
+    //     expect(future, isNotNull);
 
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            futureProvider.overrideWithValue(const AsyncValue.data(42)),
-          ],
-          child: child,
-        ),
-      );
+    //     await tester.pumpWidget(
+    //       ProviderScope(
+    //         overrides: [
+    //           futureProvider.overrideWithValue(const AsyncValue.data(42)),
+    //         ],
+    //         child: child,
+    //       ),
+    //     );
 
-      expect(completed, true);
-      await expectLater(future, completion(42));
-    });
+    //     expect(completed, true);
+    //     await expectLater(future, completion(42));
+    //   });
 
-    testWidgets(
-        'FutureProviderDependency.future completes on rebuild with error',
-        (tester) async {
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            futureProvider.overrideWithValue(const AsyncValue.loading()),
-          ],
-          child: child,
-        ),
-      );
+    //   testWidgets(
+    //       'FutureProviderDependency.future completes on rebuild with error',
+    //       (tester) async {
+    //     await tester.pumpWidget(
+    //       ProviderScope(
+    //         overrides: [
+    //           futureProvider.overrideWithValue(const AsyncValue.loading()),
+    //         ],
+    //         child: child,
+    //       ),
+    //     );
 
-      // make sure the future doesn't just complete in one frame
-      await Future<void>.value();
+    //     // make sure the future doesn't just complete in one frame
+    //     await Future<void>.value();
 
-      expect(completed, false);
-      expect(future, isNotNull);
+    //     expect(completed, false);
+    //     expect(future, isNotNull);
 
-      final error = Error();
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            futureProvider.overrideWithValue(AsyncValue.error(error)),
-          ],
-          child: child,
-        ),
-      );
+    //     final error = Error();
+    //     await tester.pumpWidget(
+    //       ProviderScope(
+    //         overrides: [
+    //           futureProvider.overrideWithValue(AsyncValue.error(error)),
+    //         ],
+    //         child: child,
+    //       ),
+    //     );
 
-      expect(completed, true);
-      await expectLater(future, throwsA(error));
-    });
+    //     expect(completed, true);
+    //     await expectLater(future, throwsA(error));
+    //   });
 
-    testWidgets('FutureProviderDependency.future loading to loading is no-op',
-        (tester) async {
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            futureProvider.overrideWithValue(const AsyncValue.loading()),
-          ],
-          child: child,
-        ),
-      );
+    //   testWidgets('FutureProviderDependency.future loading to loading is no-op',
+    //       (tester) async {
+    //     await tester.pumpWidget(
+    //       ProviderScope(
+    //         overrides: [
+    //           futureProvider.overrideWithValue(const AsyncValue.loading()),
+    //         ],
+    //         child: child,
+    //       ),
+    //     );
 
-      expect(completed, false);
-      expect(future, isNotNull);
+    //     expect(completed, false);
+    //     expect(future, isNotNull);
 
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            futureProvider.overrideWithValue(const AsyncValue.loading()),
-          ],
-          child: child,
-        ),
-      );
+    //     await tester.pumpWidget(
+    //       ProviderScope(
+    //         overrides: [
+    //           futureProvider.overrideWithValue(const AsyncValue.loading()),
+    //         ],
+    //         child: child,
+    //       ),
+    //     );
 
-      // make sure the future doesn't just complete in one frame
-      await Future<void>.value();
+    //     // make sure the future doesn't just complete in one frame
+    //     await Future<void>.value();
 
-      expect(completed, false);
-      expect(future, isNotNull);
-    });
+    //     expect(completed, false);
+    //     expect(future, isNotNull);
+    //   });
 
-    testWidgets('Initial build as loading', (tester) async {
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            futureProvider.overrideWithValue(const AsyncValue.loading()),
-          ],
-          child: child,
-        ),
-      );
+    //   testWidgets('Initial build as loading', (tester) async {
+    //     await tester.pumpWidget(
+    //       ProviderScope(
+    //         overrides: [
+    //           futureProvider.overrideWithValue(const AsyncValue.loading()),
+    //         ],
+    //         child: child,
+    //       ),
+    //     );
 
-      expect(callCount, 0);
-      expect(find.text('loading'), findsOneWidget);
+    //     expect(callCount, 0);
+    //     expect(find.text('loading'), findsOneWidget);
 
-      expect(completed, false);
-      expect(future, isNotNull);
-    });
+    //     expect(completed, false);
+    //     expect(future, isNotNull);
+    //   });
 
-    testWidgets('Initial build as value', (tester) async {
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            futureProvider.overrideWithValue(const AsyncValue.data(42)),
-          ],
-          child: child,
-        ),
-      );
+    //   testWidgets('Initial build as value', (tester) async {
+    //     await tester.pumpWidget(
+    //       ProviderScope(
+    //         overrides: [
+    //           futureProvider.overrideWithValue(const AsyncValue.data(42)),
+    //         ],
+    //         child: child,
+    //       ),
+    //     );
 
-      expect(callCount, 0);
-      expect(find.text('42'), findsOneWidget);
+    //     expect(callCount, 0);
+    //     expect(find.text('42'), findsOneWidget);
 
-      expect(completed, true);
-      await expectLater(future, completion(42));
-    });
+    //     expect(completed, true);
+    //     await expectLater(future, completion(42));
+    //   });
 
-    testWidgets('Initial build as error', (tester) async {
-      final error = Error();
+    //   testWidgets('Initial build as error', (tester) async {
+    //     final error = Error();
 
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            futureProvider.overrideWithValue(AsyncValue.error(error)),
-          ],
-          child: child,
-        ),
-      );
+    //     await tester.pumpWidget(
+    //       ProviderScope(
+    //         overrides: [
+    //           futureProvider.overrideWithValue(AsyncValue.error(error)),
+    //         ],
+    //         child: child,
+    //       ),
+    //     );
 
-      expect(callCount, 0);
-      expect(find.text('error'), findsOneWidget);
+    //     expect(callCount, 0);
+    //     expect(find.text('error'), findsOneWidget);
 
-      expect(completed, true);
-      await expectLater(future, throwsA(error));
-    });
+    //     expect(completed, true);
+    //     await expectLater(future, throwsA(error));
+    //   });
   });
 
   testWidgets('FutureProvider into FutureProviderFamily', (tester) async {
@@ -345,13 +352,15 @@ void main() {
       ProviderScope(
         child: Directionality(
           textDirection: TextDirection.ltr,
-          child: Consumer(builder: (c, ref, _) {
-            return ref.watch(futureProviderFamily).when(
-                  data: (value) => Text(value.toString()),
-                  loading: () => const Text('loading'),
-                  error: (err, stack) => const Text('error'),
-                );
-          }),
+          child: Consumer(
+            builder: (c, ref, _) {
+              return ref.watch(futureProviderFamily).when(
+                    data: (value) => Text(value.toString()),
+                    loading: () => const Text('loading'),
+                    error: (err, stack) => const Text('error'),
+                  );
+            },
+          ),
         ),
       ),
     );
@@ -375,13 +384,15 @@ void main() {
       ProviderScope(
         child: Directionality(
           textDirection: TextDirection.ltr,
-          child: Consumer(builder: (c, ref, _) {
-            return ref.watch(futureProviderFamily).when(
-                  data: (value) => Text(value.toString()),
-                  loading: () => const Text('loading'),
-                  error: (err, stack) => const Text('error'),
-                );
-          }),
+          child: Consumer(
+            builder: (c, ref, _) {
+              return ref.watch(futureProviderFamily).when(
+                    data: (value) => Text(value.toString()),
+                    loading: () => const Text('loading'),
+                    error: (err, stack) => const Text('error'),
+                  );
+            },
+          ),
         ),
       ),
     );
@@ -405,13 +416,15 @@ void main() {
       ProviderScope(
         child: Directionality(
           textDirection: TextDirection.ltr,
-          child: Consumer(builder: (c, ref, _) {
-            return ref.watch(futureProviderFamily).when(
-                  data: (value) => Text(value.toString()),
-                  loading: () => const Text('loading'),
-                  error: (err, stack) => const Text('error'),
-                );
-          }),
+          child: Consumer(
+            builder: (c, ref, _) {
+              return ref.watch(futureProviderFamily).when(
+                    data: (value) => Text(value.toString()),
+                    loading: () => const Text('loading'),
+                    error: (err, stack) => const Text('error'),
+                  );
+            },
+          ),
         ),
       ),
     );
@@ -422,8 +435,4 @@ void main() {
 
     expect(find.text('84'), findsOneWidget);
   });
-}
-
-class Listener extends Mock {
-  void call(AsyncValue<int> value);
 }

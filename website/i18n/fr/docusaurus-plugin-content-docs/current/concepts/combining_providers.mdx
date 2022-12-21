@@ -97,7 +97,7 @@ En utilisant cette approche, l'interface sera automatiquement mise à jour lorsq
 la liste de tâches changera. ou la todo-list change.
 
 Pour voir cette approche en action, vous pouvez consulter le code source de 
-[exemple de Todo List](https://github.com/rrousselGit/river_pod/tree/master/examples/todos).
+[exemple de Todo List](https://github.com/rrousselGit/riverpod/tree/master/examples/todos).
 
 :::info
 Ce comportement n'est pas spécifique à [Provider], et fonctionne avec tous les providers.
@@ -209,7 +209,7 @@ final repositoryProvider = Provider((ref) => Repository(ref.read));
 
 test('fetches catalog', () async {
   final container = ProviderContainer();
-  addTearOff(container.dispose);
+  addTearDown(container.dispose);
 
   Repository repository = container.read(repositoryProvider);
 

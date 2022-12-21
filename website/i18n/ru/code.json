@@ -1,0 +1,289 @@
+{
+  "home.shared_state_title": {
+    "message": "Объявление общего состояния где-угодно"
+  },
+  "home.shared_state_body": {
+    "message": "Больше не нужно переключаться между {main} и UI файлами.\n{br}\nПишите код состояния там, где он нужен — будь то отдельный пакет или виджет — без уменьшения тестируемости.",
+    "description": "The homepage input placeholder"
+  },
+  "home.recompute_title": {
+    "message": "Перевычисление значений / перестройка UI, только когда это необходимо"
+  },
+  "home.recompute_body": {
+    "message": "Больше не нужно осуществлять сортировку / фильтрацию внутри метода {build} и использовать сложные механизмы кэширования.{br} {br}\nС {Provider} и {family} вы можете сортировать списки или выполнять HTTP запросы, только когда это действительно вам нужно."
+  },
+  "home.safe_read_title": {
+    "message": "Безопасное чтение провайдеров"
+  },
+  "home.safe_read_body": {
+    "message": "Чтение провайдера никогда не приведет к bad state. При правильном использовании провайдера вы всегда сможете получить допустимое значение. {br} {br}Это также относится к асинхронно полученным значениям. Riverpod в отличие от provider позволяет элегантно обрабатывать загрузку/ошибки."
+  },
+  "home.devtool_title": {
+    "message": "Проверка вашего состояния в devtool"
+  },
+  "home.devtool_body": {
+    "message": "Riverpod делает видимым ваше состояние в Flutter devtool.{br} Более того, уже разрабатывается полномасштабный инспектор состояния."
+  },
+  "homepage.compile_safe_title": {
+    "message": "Безопасная компиляция"
+  },
+  "homepage.compile_safe_body": {
+    "message": "Больше не нужно боятся {ProviderNotFound} и думать об обработке состояния загрузки. С Riverpod, если ваш код компилируется, значит он работает."
+  },
+  "homepage.unlimited_provider_title": {
+    "message": "Провайдер без ограничений"
+  },
+  "homepage.unlimited_provider_body": {
+    "message": "Riverpod вдохновлен Provider и решает его главные проблемы, такие как поддержка нескольких провайдеров одного типа, ожидание асинхронных провайдеров, создание провайдеров где-угодно, ..."
+  },
+  "homepage.no_flutter_dependency_title": {
+    "message": "Не зависит от Flutter"
+  },
+  "homepage.no_flutter_dependency_body": {
+    "message": "Создавайте / используйте / тестируйте провайдеры, не нуждаясь в Flutter. Вы можете наблюдать за провайдерами без {BuildContext}."
+  },
+  "home.tagline": {
+    "message": "Фреймворк реактивного State-Management и Dependency Injection"
+  },
+  "home.get_started": {
+    "message": "Вступление"
+  },
+  "home.create_provider": {
+    "message": "Создание провайдера"
+  },
+  "home.consume_provider": {
+    "message": "Использование провайдера"
+  },
+  "theme.ErrorPageContent.title": {
+    "message": "Эта страница повреждена.",
+    "description": "The title of the fallback page when the page crashed"
+  },
+  "theme.ErrorPageContent.tryAgain": {
+    "message": "Повторить попытку",
+    "description": "The label of the button to try again when the page crashed"
+  },
+  "theme.NotFound.title": {
+    "message": "Страница не найдена",
+    "description": "The title of the 404 page"
+  },
+  "theme.NotFound.p1": {
+    "message": "Мы не смогли найти то, что вы искали.",
+    "description": "The first paragraph of the 404 page"
+  },
+  "theme.NotFound.p2": {
+    "message": "Пожалуйста, свяжитесь с владельцем страницы, на которую вы ссылаетесь с исходным URL-адресом, и сообщите ему, что ссылка больше не работает.",
+    "description": "The 2nd paragraph of the 404 page"
+  },
+  "theme.blog.archive.title": {
+    "message": "Архив",
+    "description": "The page & hero title of the blog archive page"
+  },
+  "theme.blog.archive.description": {
+    "message": "Архив",
+    "description": "The page & hero description of the blog archive page"
+  },
+  "theme.BackToTopButton.buttonAriaLabel": {
+    "message": "Вверх",
+    "description": "The ARIA label for the back to top button"
+  },
+  "theme.AnnouncementBar.closeButtonAriaLabel": {
+    "message": "Закрыть",
+    "description": "The ARIA label for close button of announcement bar"
+  },
+  "theme.blog.post.readingTime.plurals": {
+    "message": "Примерно минут чтения: {readingTime}",
+    "description": "Pluralized label for \"{readingTime} min read\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
+  },
+  "theme.blog.post.readMore": {
+    "message": "Подробнее",
+    "description": "The label used in blog post item excerpts to link to full blog posts"
+  },
+  "theme.blog.paginator.navAriaLabel": {
+    "message": "Навигация по блогу",
+    "description": "The ARIA label for the blog pagination"
+  },
+  "theme.blog.paginator.newerEntries": {
+    "message": "Новые записи",
+    "description": "The label used to navigate to the newer blog posts page (previous page)"
+  },
+  "theme.blog.paginator.olderEntries": {
+    "message": "Старые записи",
+    "description": "The label used to navigate to the older blog posts page (next page)"
+  },
+  "theme.blog.post.paginator.navAriaLabel": {
+    "message": "Навигация по страницам",
+    "description": "The ARIA label for the blog posts pagination"
+  },
+  "theme.blog.post.paginator.newerPost": {
+    "message": "Более поздний пост",
+    "description": "The blog post button label to navigate to the newer/previous post"
+  },
+  "theme.blog.post.paginator.olderPost": {
+    "message": "Более ранний пост",
+    "description": "The blog post button label to navigate to the older/next post"
+  },
+  "theme.blog.sidebar.navAriaLabel": {
+    "message": "Последние посты в блоге",
+    "description": "The ARIA label for recent posts in the blog sidebar"
+  },
+  "theme.blog.post.plurals": {
+    "message": "Количество постов: {count}",
+    "description": "Pluralized label for \"{count} posts\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
+  },
+  "theme.blog.tagTitle": {
+    "message": "Постов с тегом \"{tagName}\": {nPosts}",
+    "description": "The title of the page for a blog tag"
+  },
+  "theme.tags.tagsPageLink": {
+    "message": "Показать все теги",
+    "description": "The label of the link targeting the tag list page"
+  },
+  "theme.CodeBlock.copyButtonAriaLabel": {
+    "message": "Скопировать",
+    "description": "The ARIA label for copy code blocks button"
+  },
+  "theme.CodeBlock.copied": {
+    "message": "Скопировано",
+    "description": "The copied button label on code blocks"
+  },
+  "theme.CodeBlock.copy": {
+    "message": "Копировать",
+    "description": "The copy button label on code blocks"
+  },
+  "theme.docs.sidebar.expandButtonTitle": {
+    "message": "Открыть боковую панель",
+    "description": "The ARIA label and title attribute for expand button of doc sidebar"
+  },
+  "theme.docs.sidebar.expandButtonAriaLabel": {
+    "message": "Открыть боковую панель",
+    "description": "The ARIA label and title attribute for expand button of doc sidebar"
+  },
+  "theme.docs.paginator.navAriaLabel": {
+    "message": "Навигация по страницам документации",
+    "description": "The ARIA label for the docs pagination"
+  },
+  "theme.docs.paginator.next": {
+    "message": "Далее",
+    "description": "The label used to navigate to the next doc"
+  },
+  "theme.docs.paginator.previous": {
+    "message": "Назад",
+    "description": "The label used to navigate to the previous doc"
+  },
+  "theme.docs.sidebar.collapseButtonTitle": {
+    "message": "Открыть боковую панель",
+    "description": "The title attribute for collapse button of doc sidebar"
+  },
+  "theme.docs.sidebar.collapseButtonAriaLabel": {
+    "message": "Открыть боковую панель",
+    "description": "The title attribute for collapse button of doc sidebar"
+  },
+  "theme.DocSidebarItem.toggleCollapsedCategoryAriaLabel": {
+    "message": "Свернуть/развернуть категорию '{label}'",
+    "description": "The ARIA label to toggle the collapsible sidebar category"
+  },
+  "theme.docs.tagDocListPageTitle.nDocsTagged": {
+    "message": "Документов с тегом: {count}",
+    "description": "Pluralized label for \"{count} docs tagged\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
+  },
+  "theme.docs.tagDocListPageTitle": {
+    "message": "Документов с тегом \"{tagName}\": {nDocsTagged}",
+    "description": "The title of the page for a docs tag"
+  },
+  "theme.docs.versions.unreleasedVersionLabel": {
+    "message": "Это неопубликованная документация по {siteTitle} {versionLabel}.",
+    "description": "The label used to tell the user that he's browsing an unreleased doc version"
+  },
+  "theme.docs.versions.unmaintainedVersionLabel": {
+    "message": "Документация по {siteTitle} {versionLabel} больше не обновляется.",
+    "description": "The label used to tell the user that he's browsing an unmaintained doc version"
+  },
+  "theme.docs.versions.latestVersionSuggestionLabel": {
+    "message": "Для получения самой последней документации, пожалуйста, перейдите по ссылке {latestVersionLink} ({versionLabel}).",
+    "description": "The label used to tell the user to check the latest version"
+  },
+  "theme.docs.versions.latestVersionLinkLabel": {
+    "message": "Последняя версия",
+    "description": "The label used for the latest version suggestion link label"
+  },
+  "theme.common.editThisPage": {
+    "message": "Редактировать эту страницу",
+    "description": "The link label to edit the current page"
+  },
+  "theme.common.headingLinkTitle": {
+    "message": "Ссылка на заголовок",
+    "description": "Title for link to heading"
+  },
+  "theme.lastUpdated.atDate": {
+    "message": "Обновлено {date}",
+    "description": "The words used to describe on which date a page has been last updated"
+  },
+  "theme.lastUpdated.byUser": {
+    "message": "Обновил: {user}",
+    "description": "The words used to describe by who the page has been last updated"
+  },
+  "theme.lastUpdated.lastUpdatedAtBy": {
+    "message": "Последнее обновление {atDate}{byUser}",
+    "description": "The sentence used to display when a page has been last updated, and by who"
+  },
+  "theme.navbar.mobileSidebarSecondaryMenu.backButtonLabel": {
+    "message": "← В главное меню",
+    "description": "The label of the back button to return to main menu, inside the mobile navbar sidebar secondary menu (notably used to display the docs sidebar)"
+  },
+  "theme.navbar.mobileVersionsDropdown.label": {
+    "message": "Версии",
+    "description": "The label for the navbar versions dropdown on mobile view"
+  },
+  "theme.common.skipToMainContent": {
+    "message": "К содержимому",
+    "description": "The skip to content label used for accessibility, allowing to rapidly navigate to main content with keyboard tab/enter navigation"
+  },
+  "theme.TOCCollapsible.toggleButtonLabel": {
+    "message": "На этой странице",
+    "description": "The label used by the button on the collapsible TOC component"
+  },
+  "theme.tags.tagsListLabel": {
+    "message": "Теги:",
+    "description": "The label alongside a tag list"
+  },
+  "theme.SearchPage.documentsFound.plurals": {
+    "message": "Найдено документов: {count}",
+    "description": "Pluralized label for \"{count} documents found\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
+  },
+  "theme.SearchPage.existingResultsTitle": {
+    "message": "Результаты поиска \"{query}\"",
+    "description": "The search page title for non-empty query"
+  },
+  "theme.SearchPage.emptyResultsTitle": {
+    "message": "Поиск в документации",
+    "description": "The search page title for empty query"
+  },
+  "theme.SearchPage.inputPlaceholder": {
+    "message": "Введите поисковый запрос",
+    "description": "The placeholder for search page input"
+  },
+  "theme.SearchPage.inputLabel": {
+    "message": "Поиск",
+    "description": "The ARIA label for search page input"
+  },
+  "theme.SearchPage.algoliaLabel": {
+    "message": "Поиск Algolia",
+    "description": "The ARIA label for Algolia mention"
+  },
+  "theme.SearchPage.noResultsText": {
+    "message": "Ничего не найдено",
+    "description": "The paragraph for empty search result"
+  },
+  "theme.SearchPage.fetchingNewResults": {
+    "message": "Загрузка...",
+    "description": "The paragraph for fetching new search results"
+  },
+  "theme.SearchBar.label": {
+    "message": "Поиск",
+    "description": "The ARIA label and placeholder for search button"
+  },
+  "theme.tags.tagsPageTitle": {
+    "message": "Теги",
+    "description": "The title of the tag list page"
+  }
+}

@@ -1,58 +1,14 @@
-import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
-import '../../third_party/fake_async.dart';
 import '../../utils.dart';
 
 void main() {
-  test('supports cacheTime', () async {
-    final onDispose = cacheFamily<int, OnDisposeMock>(
-      (key) => OnDisposeMock(),
-    );
-
-    await fakeAsync((async) async {
-      final container = createContainer();
-      final provider =
-          FutureProvider.autoDispose.family<int, int>((ref, value) {
-        ref.onDispose(onDispose(value));
-        return value;
-      }, cacheTime: const Duration(minutes: 5));
-
-      final sub = container.listen<Future<int>>(
-        provider(42).future,
-        (previous, next) {},
-      );
-
-      expect(await sub.read(), 42);
-
-      verifyZeroInteractions(onDispose(42));
-
-      sub.close();
-
-      async.elapse(const Duration(minutes: 2));
-      await container.pump();
-
-      verifyZeroInteractions(onDispose(42));
-
-      async.elapse(const Duration(minutes: 3));
-      await container.pump();
-
-      verifyOnly(onDispose(42), onDispose(42)());
-    });
-  });
-
   test('specifies `from` & `argument` for related providers', () {
     final provider = FutureProvider.autoDispose.family<int, int>((ref, _) => 0);
 
     expect(provider(0).from, provider);
     expect(provider(0).argument, 0);
-
-    expect(provider(0).future.from, provider);
-    expect(provider(0).future.argument, 0);
-
-    expect(provider(0).stream.from, provider);
-    expect(provider(0).stream.argument, 0);
   });
 
   group('scoping an override overrides all the associated subproviders', () {
@@ -67,8 +23,6 @@ void main() {
       expect(container.getAllProviderElementsInOrder(), [
         isA<ProviderElementBase>()
             .having((e) => e.origin, 'origin', provider(0)),
-        isA<ProviderElementBase>()
-            .having((e) => e.origin, 'origin', provider(0).future),
       ]);
       expect(root.getAllProviderElementsInOrder(), isEmpty);
     });
@@ -96,11 +50,14 @@ void main() {
         return 0;
       });
       final root = createContainer();
-      final container = createContainer(parent: root, overrides: [
-        provider.overrideWithProvider(
-          (value) => FutureProvider.autoDispose((ref) => 42),
-        ),
-      ]);
+      final container = createContainer(
+        parent: root,
+        overrides: [
+          provider.overrideWithProvider(
+            (value) => FutureProvider.autoDispose((ref) => 42),
+          ),
+        ],
+      );
 
       expect(await container.read(provider(0).future), 42);
       expect(container.read(provider(0)), const AsyncData(42));
@@ -108,8 +65,6 @@ void main() {
       expect(container.getAllProviderElementsInOrder(), [
         isA<ProviderElementBase>()
             .having((e) => e.origin, 'origin', provider(0)),
-        isA<ProviderElementBase>()
-            .having((e) => e.origin, 'origin', provider(0).future),
       ]);
     });
   });

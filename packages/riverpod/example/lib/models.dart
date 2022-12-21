@@ -12,7 +12,7 @@ part 'models.g.dart';
 ///
 /// This is not needed, but reduce the boilerplate.
 @freezed
-abstract class Configuration with _$Configuration {
+class Configuration with _$Configuration {
   @JsonSerializable(fieldRename: FieldRename.snake)
   factory Configuration({
     required String publicKey,
@@ -32,9 +32,11 @@ class Repository {
   Future<List<Comic>> fetchComics() async {
     final timestamp = DateTime.now().millisecondsSinceEpoch;
     final hash = md5
-        .convert(utf8.encode(
-          '$timestamp${_configuration.privateKey}${_configuration.publicKey}',
-        ))
+        .convert(
+          utf8.encode(
+            '$timestamp${_configuration.privateKey}${_configuration.publicKey}',
+          ),
+        )
         .toString();
 
     final result = await _client.get<Map<String, Object?>>(
@@ -45,12 +47,15 @@ class Repository {
         'hash': hash,
       },
     );
-    final response = MarvelResponse.fromJson(result.data);
+    if (result.data == null) {
+      return [];
+    }
+    final response = MarvelResponse.fromJson(result.data!);
 
     return response //
         .data
         .results
-        .map((e) => Comic.fromJson(e))
+        .map(Comic.fromJson)
         .toList();
   }
 
@@ -60,7 +65,7 @@ class Repository {
 }
 
 @freezed
-abstract class MarvelResponse with _$MarvelResponse {
+class MarvelResponse with _$MarvelResponse {
   factory MarvelResponse(MarvelData data) = _MarvelResponse;
 
   factory MarvelResponse.fromJson(Map<String, Object?> json) =>
@@ -68,7 +73,7 @@ abstract class MarvelResponse with _$MarvelResponse {
 }
 
 @freezed
-abstract class MarvelData with _$MarvelData {
+class MarvelData with _$MarvelData {
   factory MarvelData(
     List<Map<String, Object?>> results,
   ) = _MarvelData;
@@ -78,7 +83,7 @@ abstract class MarvelData with _$MarvelData {
 }
 
 @freezed
-abstract class Comic with _$Comic {
+class Comic with _$Comic {
   factory Comic({
     required int id,
     required String title,

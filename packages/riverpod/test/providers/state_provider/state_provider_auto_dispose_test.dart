@@ -5,6 +5,17 @@ import 'package:test/test.dart';
 import '../../utils.dart';
 
 void main() {
+  test('supports .name', () {
+    expect(
+      StateProvider.autoDispose((ref) => 0).name,
+      null,
+    );
+    expect(
+      StateProvider.autoDispose((ref) => 0, name: 'foo').name,
+      'foo',
+    );
+  });
+
   test('can be auto-scoped', () async {
     final dep = Provider((ref) => 0);
     final provider = StateProvider.autoDispose(
@@ -17,7 +28,7 @@ void main() {
       overrides: [dep.overrideWithValue(42)],
     );
 
-    expect(container.read(provider.state).state, 42);
+    expect(container.read(provider), 42);
     expect(container.read(provider.notifier).state, 42);
 
     expect(root.getAllProviderElements(), isEmpty);
@@ -33,17 +44,14 @@ void main() {
         return 0;
       });
 
-      container.listen<StateController<int>>(
-        provider.state,
-        (prev, value) => listener(prev?.state, value.state),
-      );
+      container.listen<int>(provider, listener);
       verifyZeroInteractions(listener);
 
       expect(ref.controller, container.read(provider.notifier));
 
       ref.controller.state = 42;
 
-      verifyOnly(listener, listener(42, 42));
+      verifyOnly(listener, listener(0, 42));
 
       expect(ref.controller.state, 42);
     });
@@ -70,7 +78,7 @@ void main() {
       final container = createContainer();
       Object? err;
       final provider = StateProvider.autoDispose<int>((ref) {
-        if (ref.watch(dep.state).state) {
+        if (ref.watch(dep)) {
           try {
             ref.controller;
           } catch (e) {
@@ -83,30 +91,11 @@ void main() {
       container.read(provider);
       expect(err, isNull);
 
-      container.read(dep.state).state = true;
+      container.read(dep.notifier).state = true;
       container.read(provider);
 
       expect(err, isStateError);
     });
-  });
-
-  test('is compatible with ProviderObserver', () {
-    // regression test for https://github.com/rrousselGit/river_pod/issues/623
-
-    final observer = ObserverMock();
-    final container = createContainer(observers: [observer]);
-    final provider = StateProvider.autoDispose<int>((_) => 0);
-
-    final notifier = container.read(provider.state);
-
-    clearInteractions(observer);
-
-    notifier.state++;
-
-    verifyOnly(
-      observer,
-      observer.didUpdateProvider(provider.state, notifier, notifier, container),
-    );
   });
 
   test('can refresh .notifier', () async {
@@ -125,36 +114,19 @@ void main() {
     expect(container.read(provider), 42);
   });
 
-  test('can refresh .state', () async {
-    // TODO fix this test
-    var initialValue = 1;
-    final provider = StateProvider.autoDispose<int>((ref) => initialValue);
-    final container = createContainer();
-
-    container.listen(provider.state, (prev, value) {});
-
-    expect(container.read(provider), 1);
-    expect(container.read(provider.state).debugState, 1);
-
-    initialValue = 42;
-
-    expect(container.refresh(provider.state).debugState, 42);
-    expect(container.read(provider), 42);
-  }, skip: true);
-
   test('can be refreshed', () async {
     var result = 0;
     final container = createContainer();
     final provider = StateProvider.autoDispose<int>((ref) => result);
 
     final notifier = container.read(provider.notifier);
-    expect(container.read(provider.state).state, 0);
+    expect(container.read(provider), 0);
     expect(notifier.state, 0);
 
     result = 42;
     expect(container.refresh(provider), 42);
 
-    expect(container.read(provider.state).state, 42);
+    expect(container.read(provider), 42);
     expect(container.read(provider.notifier), isNot(notifier));
     expect(container.read(provider.notifier).state, 42);
   });
@@ -166,67 +138,60 @@ void main() {
       final container = createContainer(parent: root, overrides: [provider]);
 
       expect(container.read(provider.notifier).state, 0);
-      expect(container.read(provider.state).state, 0);
       expect(container.read(provider), 0);
       expect(root.getAllProviderElements(), isEmpty);
       expect(
         container.getAllProviderElements(),
         unorderedEquals(<Object?>[
           isA<ProviderElementBase>()
-              .having((e) => e.origin, 'origin', provider.state),
-          isA<ProviderElementBase>()
               .having((e) => e.origin, 'origin', provider),
-          isA<ProviderElementBase>()
-              .having((e) => e.origin, 'origin', provider.notifier),
         ]),
       );
     });
 
-    test('when using provider.overrideWithValue', () async {
-      final provider = StateProvider.autoDispose<int>((ref) => 0);
-      final root = createContainer();
-      final container = createContainer(parent: root, overrides: [
-        provider.overrideWithValue(StateController(42)),
-      ]);
+    // test('when using provider.overrideWithValue', () async {
+    //   final provider = StateProvider.autoDispose<int>((ref) => 0);
+    //   final root = createContainer();
+    //   final container = createContainer(parent: root, overrides: [
+    //     provider.overrideWithValue(StateController(42)),
+    //   ]);
 
-      expect(container.read(provider.notifier).state, 42);
-      expect(container.read(provider.state).state, 42);
-      expect(container.read(provider), 42);
-      expect(root.getAllProviderElements(), isEmpty);
-      expect(
-        container.getAllProviderElements(),
-        unorderedEquals(<Object?>[
-          isA<ProviderElementBase>()
-              .having((e) => e.origin, 'origin', provider),
-          isA<ProviderElementBase>()
-              .having((e) => e.origin, 'origin', provider.state),
-          isA<ProviderElementBase>()
-              .having((e) => e.origin, 'origin', provider.notifier),
-        ]),
-      );
-    });
+    //   expect(container.read(provider.notifier).state, 42);
+    //   expect(container.read(provider), 42);
+    //   expect(root.getAllProviderElements(), isEmpty);
+    //   expect(
+    //     container.getAllProviderElements(),
+    //     unorderedEquals(<Object?>[
+    //       isA<ProviderElementBase>()
+    //           .having((e) => e.origin, 'origin', provider),
+    //       isA<ProviderElementBase>()
+    //           .having((e) => e.origin, 'origin', provider.state),
+    //       isA<ProviderElementBase>()
+    //           .having((e) => e.origin, 'origin', provider.notifier),
+    //     ]),
+    //   );
+    // });
 
     test('when using provider.overrideWithProvider', () async {
       final provider = StateProvider.autoDispose<int>((ref) => 0, name: 'true');
       final root = createContainer();
-      final container = createContainer(parent: root, overrides: [
-        provider.overrideWithProvider(
-          StateProvider.autoDispose((ref) => 42, name: 'meh'),
-        ),
-      ]);
+      final container = createContainer(
+        parent: root,
+        overrides: [
+          // ignore: deprecated_member_use_from_same_package
+          provider.overrideWithProvider(
+            StateProvider.autoDispose((ref) => 42, name: 'meh'),
+          ),
+        ],
+      );
 
       expect(container.read(provider.notifier).state, 42);
-      expect(container.read(provider.state).state, 42);
       expect(container.read(provider), 42);
       expect(
         container.getAllProviderElements(),
         unorderedEquals(<Object?>[
           isA<ProviderElementBase>()
               .having((e) => e.origin, 'origin', provider),
-          isA<ProviderElementBase>()
-              .having((e) => e.origin, 'origin', provider.state),
-          isA<ProviderElementBase>()
-              .having((e) => e.origin, 'origin', provider.notifier),
         ]),
       );
       expect(root.getAllProviderElements(), isEmpty);
@@ -234,24 +199,23 @@ void main() {
   });
 
   group('overrideWithProvider', () {
-    test('listens to state changes', () {
-      final override = StateController(42);
-      final provider = StateProvider.autoDispose((ref) => 0);
-      final container = createContainer(overrides: [
-        provider.overrideWithValue(override),
-      ]);
-      addTearDown(container.dispose);
-      final container2 = ProviderContainer(overrides: [
-        provider.overrideWithProvider(
-          StateProvider.autoDispose((ref) => 42),
-        ),
-      ]);
-      addTearDown(container.dispose);
+    // test('listens to state changes', () {
+    //   final override = StateController(42);
+    //   final provider = StateProvider.autoDispose((ref) => 0);
+    //   final container = createContainer(overrides: [
+    //     provider.overrideWithValue(override),
+    //   ]);
+    //   addTearDown(container.dispose);
+    //   final container2 = ProviderContainer(overrides: [
+    //     provider.overrideWithProvider(
+    //       StateProvider.autoDispose((ref) => 42),
+    //     ),
+    //   ]);
+    //   addTearDown(container.dispose);
 
-      expect(container.read(provider), 42);
-      expect(container.read(provider.notifier), override);
-      expect(container2.read(provider.state).state, 42);
-    });
+    //   expect(container.read(provider), 42);
+    //   expect(container.read(provider.notifier), override);
+    // });
 
     test(
       'properly disposes of the StateController when the provider is disposed',

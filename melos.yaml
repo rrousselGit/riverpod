@@ -1,5 +1,9 @@
 name: my_project
 
+command:
+  bootstrap:
+    usePubspecOverrides: true
+
 packages:
   - website/**
   - packages/**
@@ -13,6 +17,8 @@ scripts:
     cd MELOS_ROOT_PATH/packages/riverpod_cli/fixtures/notifiers/golden && 
     flutter pub get &&
     cd MELOS_ROOT_PATH/packages/riverpod_cli/fixtures/unified_syntax/input && 
+    flutter pub get &&
+    cd MELOS_ROOT_PATH/packages/riverpod_cli/fixtures/unified_syntax/golden && 
     flutter pub get
 
   analyze:
@@ -28,7 +34,7 @@ scripts:
     description: Build all generated files for Dart & Flutter packages in this project.
 
   generate:dart:
-    run: melos exec -c 1 --depends-on="build_runner" --no-flutter -- "dart run build_runner build --delete-conflicting-outputs"
+    run: melos exec -c 1 --depends-on="build_runner" --no-flutter --ignore="riverpod_lint_flutter_test" -- "dart run build_runner build --delete-conflicting-outputs"
     description: Build all generated files for Dart packages in this project.
 
   generate:flutter:

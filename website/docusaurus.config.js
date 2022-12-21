@@ -8,13 +8,11 @@ module.exports = {
   plugins: ["docusaurus-plugin-sass"],
   i18n: {
     defaultLocale: "en",
-    locales: ["en", "fr", "ko", "ja", "es", "bn", "de", "it"],
+    locales: ["en", "fr", "ko", "ja", "es", "bn", "de", "it", "ru"],
   },
   themeConfig: {
-    googleAnalytics: {
-      trackingID: "UA-138675999-4",
-    },
     algolia: {
+      appId: "0UST1QN21Y",
       apiKey: "2a84d9068bda0a387816a77f366d855d",
       indexName: "riverpod",
     },
@@ -47,7 +45,7 @@ module.exports = {
           position: "right",
         },
         {
-          href: "https://github.com/rrousselGit/river_pod",
+          href: "https://github.com/rrousselGit/riverpod",
           label: "GitHub",
           position: "right",
         },
@@ -81,11 +79,11 @@ module.exports = {
             },
             {
               label: "GitHub",
-              href: "https://github.com/rrousselgit/river_pod",
+              href: "https://github.com/rrousselgit/riverpod",
             },
             {
               label: "Code of conduct",
-              href: "https://github.com/rrousselGit/river_pod/blob/master/CODE_OF_CONDUCT.md",
+              href: "https://github.com/rrousselGit/riverpod/blob/master/CODE_OF_CONDUCT.md",
             },
           ],
         },
@@ -103,13 +101,21 @@ module.exports = {
   },
   presets: [
     [
+      "@docusaurus/plugin-google-analytics",
+      {
+        googleAnalytics: {
+          trackingID: "UA-138675999-4",
+        },
+      },
+    ],
+    [
       "@docusaurus/preset-classic",
       {
         docs: {
           editLocalizedFiles: true,
           sidebarPath: require.resolve("./sidebars.js"),
           editUrl:
-            "https://github.com/rrousselGit/river_pod/edit/master/website/",
+            "https://github.com/rrousselGit/riverpod/edit/master/website/",
         },
         theme: {
           customCss: require.resolve("./src/scss/main.scss"),

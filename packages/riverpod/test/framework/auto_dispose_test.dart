@@ -11,6 +11,30 @@ Future<void> main() async {
   final library = await Library.parseFromStacktrace();
 
   test(
+      'When a non-overriden autoDispose provider is disposed '
+      'and the associated ProviderContainer has a child ProviderContainer which overrides said provider, '
+      'the child container keeps its override', () async {
+// Regression test for https://github.com/rrousselGit/riverpod/issues/1519
+
+    final root = createContainer();
+    final provider = Provider.autoDispose((ref) => 0);
+    final child = createContainer(
+      parent: root,
+      overrides: [provider.overrideWithValue(42)],
+    );
+
+    root.read(provider);
+
+    await root.pump();
+
+    child.updateOverrides([
+      provider.overrideWithValue(21),
+    ]);
+
+    expect(child.read(provider), 21);
+  });
+
+  test(
       'Handles cases where the ProviderContainer is disposed yet Scheduler.performDispose is invoked anyway',
       () async {
     // regression test for https://github.com/rrousselGit/riverpod/issues/1400
@@ -25,29 +49,6 @@ Future<void> main() async {
   });
 
   group('ref.keepAlive', () {
-    test('supports pausing providers if they are not listened', () async {
-      // regression test for https://github.com/rrousselGit/riverpod/issues/1360
-      final container = createContainer();
-      final dep = StateProvider((ref) => 0);
-      var buildCount = 0;
-      final provider = Provider.autoDispose((ref) {
-        buildCount++;
-        ref.watch(dep);
-        ref.keepAlive();
-      }, cacheTime: const Duration(seconds: 5));
-
-      expect(buildCount, 0);
-      container.read(provider);
-      expect(buildCount, 1);
-
-      container.read(dep.notifier).state++;
-      await container.pump();
-
-      expect(buildCount, 1);
-      container.read(provider);
-      expect(buildCount, 2);
-    });
-
     test('when the provider rebuilds, links are cleared', () async {
       final container = createContainer();
       final dep = StateProvider((ref) => 0);
@@ -213,11 +214,24 @@ Future<void> main() async {
     });
   });
 
+  test('Can ref.read autoDispose selectors inside non-autoDispose providers',
+      () {
+    final autoDispose = Provider.autoDispose<int>((ref) => 0);
+
+    Provider((ref) {
+      ref.read(
+        autoDispose.select((value) => value),
+      );
+    });
+  });
+
   group(
       'emits compilation error when passing an autoDispose provider to a non-autoDispose provider',
       () {
     test('to ref.watch', () {
-      expect(library.withCode('''
+      expect(
+        library.withCode(
+          '''
 import 'package:riverpod/riverpod.dart';
 
 final autoDispose = Provider.autoDispose<int>((ref) => 0);
@@ -226,11 +240,16 @@ final alwaysAlive = Provider((ref) {
   // expect-error: ARGUMENT_TYPE_NOT_ASSIGNABLE
   ref.watch(autoDispose);
 });
-'''), compiles);
+''',
+        ),
+        compiles,
+      );
     });
 
     test('to ref.watch when using selectors', () {
-      expect(library.withCode('''
+      expect(
+        library.withCode(
+          '''
 import 'package:riverpod/riverpod.dart';
 
 final autoDispose = Provider.autoDispose<int>((ref) => 0);
@@ -242,27 +261,16 @@ final alwaysAlive = Provider((ref) {
       .select((value) => value),
   );
 });
-'''), compiles);
-    });
-
-    test('to ref.read when using selectors', () {
-      expect(library.withCode('''
-import 'package:riverpod/riverpod.dart';
-
-final autoDispose = Provider.autoDispose<int>((ref) => 0);
-
-final alwaysAlive = Provider((ref) {
-  ref.read(
-    // expect-error: ARGUMENT_TYPE_NOT_ASSIGNABLE
-    autoDispose
-      .select((value) => value),
-  );
-});
-'''), compiles);
+''',
+        ),
+        compiles,
+      );
     });
 
     test('to ref.listen', () {
-      expect(library.withCode('''
+      expect(
+        library.withCode(
+          '''
 import 'package:riverpod/riverpod.dart';
 
 final autoDispose = Provider.autoDispose<int>((ref) => 0);
@@ -274,11 +282,16 @@ final alwaysAlive = Provider((ref) {
     (prev, value) {},
   );
 });
-'''), compiles);
+''',
+        ),
+        compiles,
+      );
     });
 
     test('to ref.listen when using selectors', () {
-      expect(library.withCode('''
+      expect(
+        library.withCode(
+          '''
 import 'package:riverpod/riverpod.dart';
 
 final autoDispose = Provider.autoDispose<int>((ref) => 0);
@@ -291,7 +304,10 @@ final alwaysAlive = Provider((ref) {
     (prev, value) {},
   );
 });
-'''), compiles);
+''',
+        ),
+        compiles,
+      );
     });
   });
 
@@ -331,20 +347,26 @@ final alwaysAlive = Provider((ref) {
       () async {
     final container = createContainer();
     var dependencyDisposeCount = 0;
-    final dependency = Provider.autoDispose((ref) {
-      ref.onDispose(() => dependencyDisposeCount++);
-      return 0;
-    });
-    final isDependendingOnDependency = StateProvider(
-      (ref) => true,
-      name: 'foo',
+    final dependency = Provider.autoDispose(
+      name: 'dependency',
+      (ref) {
+        ref.onDispose(() => dependencyDisposeCount++);
+        return 0;
+      },
     );
-    final provider = Provider.autoDispose((ref) {
-      ref.maintainState = true;
-      if (ref.watch(isDependendingOnDependency.state).state) {
-        ref.watch(dependency);
-      }
-    });
+    final isDependendingOnDependency = StateProvider(
+      name: 'isDependendingOnDependency',
+      (ref) => true,
+    );
+    final provider = Provider.autoDispose(
+      name: 'provider',
+      (ref) {
+        ref.maintainState = true;
+        if (ref.watch(isDependendingOnDependency)) {
+          ref.watch(dependency);
+        }
+      },
+    );
 
     container.listen<void>(provider, (_, __) {});
 
@@ -354,12 +376,11 @@ final alwaysAlive = Provider((ref) {
       unorderedEquals(<Object>[
         dependency,
         provider,
-        isDependendingOnDependency.state,
-        isDependendingOnDependency.notifier,
+        isDependendingOnDependency,
       ]),
     );
 
-    container.read(isDependendingOnDependency.state).state = false;
+    container.read(isDependendingOnDependency.notifier).state = false;
     await container.pump();
 
     expect(dependencyDisposeCount, 1);
@@ -367,8 +388,7 @@ final alwaysAlive = Provider((ref) {
       container.getAllProviderElements().map((e) => e.provider),
       unorderedEquals(<Object>[
         provider,
-        isDependendingOnDependency.state,
-        isDependendingOnDependency.notifier,
+        isDependendingOnDependency,
       ]),
     );
   });
@@ -525,8 +545,8 @@ final alwaysAlive = Provider((ref) {
       () async {
     final onDispose = OnDisposeMock();
     late AutoDisposeRef ref;
-    final provider = Provider.autoDispose((_ref) {
-      ref = _ref;
+    final provider = Provider.autoDispose((r) {
+      ref = r;
       ref.onDispose(onDispose);
       ref.maintainState = true;
     });

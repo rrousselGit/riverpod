@@ -14,9 +14,6 @@ void main() {
 
       expect(provider(0).from, provider);
       expect(provider(0).argument, 0);
-
-      expect(provider(0).notifier.from, provider);
-      expect(provider(0).notifier.argument, 0);
     });
 
     test('can be auto-scoped', () async {
@@ -55,8 +52,6 @@ void main() {
           unorderedEquals(<Object?>[
             isA<ProviderElementBase>()
                 .having((e) => e.origin, 'origin', provider(0)),
-            isA<ProviderElementBase>()
-                .having((e) => e.origin, 'origin', provider(0).notifier),
           ]),
         );
         expect(root.getAllProviderElementsInOrder(), isEmpty);
@@ -66,14 +61,18 @@ void main() {
         final controller = StateController(0);
         final provider =
             StateNotifierProvider.family<StateController<int>, int, int>(
-                (ref, _) => controller);
+          (ref, _) => controller,
+        );
         final root = createContainer();
         final controllerOverride = StateController(42);
-        final container = createContainer(parent: root, overrides: [
-          provider.overrideWithProvider(
-            (value) => StateNotifierProvider((ref) => controllerOverride),
-          ),
-        ]);
+        final container = createContainer(
+          parent: root,
+          overrides: [
+            provider.overrideWithProvider(
+              (value) => StateNotifierProvider((ref) => controllerOverride),
+            ),
+          ],
+        );
 
         expect(container.read(provider(0).notifier), controllerOverride);
         expect(container.read(provider(0)), 42);
@@ -83,8 +82,6 @@ void main() {
           unorderedEquals(<Object?>[
             isA<ProviderElementBase>()
                 .having((e) => e.origin, 'origin', provider(0)),
-            isA<ProviderElementBase>()
-                .having((e) => e.origin, 'origin', provider(0).notifier),
           ]),
         );
       });
@@ -109,7 +106,8 @@ void main() {
 
     test('properly overrides ==', () {
       final family = StateNotifierProvider.family<Counter, int, int>(
-          (ref, _) => Counter());
+        (ref, _) => Counter(),
+      );
 
       expect(family(0), family(0));
       expect(family(1), isNot(family(0)));
@@ -131,8 +129,6 @@ void main() {
         expect(
           container.getAllProviderElementsInOrder(),
           [
-            isA<ProviderElementBase>()
-                .having((e) => e.provider, 'provider', family('0').notifier),
             isA<ProviderElementBase>()
                 .having((e) => e.provider, 'provider', family('0')),
           ],

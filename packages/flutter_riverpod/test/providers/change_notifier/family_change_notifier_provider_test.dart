@@ -1,5 +1,7 @@
+// ignore_for_file: invalid_use_of_internal_member
+
 import 'package:flutter/widgets.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/src/internals.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../utils.dart';
@@ -13,9 +15,6 @@ void main() {
 
       expect(provider(0).from, provider);
       expect(provider(0).argument, 0);
-
-      expect(provider(0).notifier.from, provider);
-      expect(provider(0).notifier.argument, 0);
     });
 
     test('support null ChangeNotifier', () {
@@ -33,7 +32,8 @@ void main() {
     group('scoping an override overrides all the associated subproviders', () {
       test('when passing the provider itself', () async {
         final provider = ChangeNotifierProvider.family<ValueNotifier<int>, int>(
-            (ref, _) => ValueNotifier(0));
+          (ref, _) => ValueNotifier(0),
+        );
         final root = createContainer();
         final container = createContainer(parent: root, overrides: [provider]);
 
@@ -44,8 +44,6 @@ void main() {
           unorderedEquals(<Object?>[
             isA<ProviderElementBase>()
                 .having((e) => e.origin, 'origin', provider(0)),
-            isA<ProviderElementBase>()
-                .having((e) => e.origin, 'origin', provider(0).notifier),
           ]),
         );
         expect(root.getAllProviderElementsInOrder(), isEmpty);
@@ -72,13 +70,17 @@ void main() {
 
     test('when using provider.overrideWithProvider', () async {
       final provider = ChangeNotifierProvider.family<ValueNotifier<int>, int>(
-          (ref, _) => ValueNotifier(0));
+        (ref, _) => ValueNotifier(0),
+      );
       final root = createContainer();
-      final container = createContainer(parent: root, overrides: [
-        provider.overrideWithProvider(
-          (value) => ChangeNotifierProvider((ref) => ValueNotifier(42)),
-        ),
-      ]);
+      final container = createContainer(
+        parent: root,
+        overrides: [
+          provider.overrideWithProvider(
+            (value) => ChangeNotifierProvider((ref) => ValueNotifier(42)),
+          ),
+        ],
+      );
 
       expect(container.read(provider(0).notifier).value, 42);
       expect(container.read(provider(0)).value, 42);
@@ -88,8 +90,6 @@ void main() {
         unorderedEquals(<Object?>[
           isA<ProviderElementBase>()
               .having((e) => e.origin, 'origin', provider(0)),
-          isA<ProviderElementBase>()
-              .having((e) => e.origin, 'origin', provider(0).notifier),
         ]),
       );
     });
@@ -99,11 +99,14 @@ void main() {
           ChangeNotifierProvider.family<ValueNotifier<int>, int>((ref, value) {
         return ValueNotifier(value);
       });
-      final container = createContainer(overrides: [
-        provider.overrideWithProvider(
-          (value) => ChangeNotifierProvider((ref) => ValueNotifier(value * 2)),
-        ),
-      ]);
+      final container = createContainer(
+        overrides: [
+          provider.overrideWithProvider(
+            (value) =>
+                ChangeNotifierProvider((ref) => ValueNotifier(value * 2)),
+          ),
+        ],
+      );
 
       expect(
         container.read(provider(0)),

@@ -5,7 +5,7 @@ import 'package:test/test.dart';
 import '../utils.dart';
 
 class Counter extends StateNotifier<int> {
-  Counter([int initialValue = 0]) : super(initialValue);
+  Counter([super.initialValue = 0]);
 
   @override
   int get state => super.state;
@@ -59,20 +59,20 @@ void main() {
     final count2 = StateProvider((ref) => 0);
 
     final provider = Provider((ref) {
-      final first = ref.watch(count.state).state;
-      final second = ref.watch(count2.state).state;
+      final first = ref.watch(count);
+      final second = ref.watch(count2);
 
       return '$first $second';
     });
 
     expect(container.read(provider), '0 0');
 
-    container.read(count.state).state++;
+    container.read(count.notifier).state++;
     await container.pump();
 
     expect(container.read(provider), '1 0');
 
-    container.read(count2.state).state++;
+    container.read(count2.notifier).state++;
     await container.pump();
 
     expect(container.read(provider), '1 1');
@@ -85,7 +85,7 @@ void main() {
     var buildCount = 0;
     final provider = Provider((ref) {
       buildCount++;
-      return ref.watch(count.state).state.isEven;
+      return ref.watch(count).isEven;
     });
 
     final container = ProviderContainer();
@@ -96,7 +96,7 @@ void main() {
     expect(container.read(provider), true);
     expect(buildCount, 1);
 
-    container.read(count.state).state++;
+    container.read(count.notifier).state++;
     await container.pump();
 
     expect(container.read(provider), false);
@@ -128,7 +128,7 @@ void main() {
     final container = createContainer();
     final throws = StateProvider((ref) => true);
     final provider = Provider((ref) {
-      if (ref.watch(throws.state).state) {
+      if (ref.watch(throws)) {
         throw UnimplementedError();
       }
       return 0;
@@ -143,7 +143,7 @@ void main() {
       throwsUnimplementedError,
     );
 
-    container.read(throws.state).state = false;
+    container.read(throws.notifier).state = false;
 
     expect(container.read(dep), 0);
   });
@@ -154,7 +154,7 @@ void main() {
     final container = createContainer();
     final throws = StateProvider((ref) => true);
     final provider = Provider((ref) {
-      if (ref.watch(throws.state).state) {
+      if (ref.watch(throws)) {
         throw UnimplementedError();
       }
       return 0;
@@ -169,7 +169,7 @@ void main() {
       throwsUnimplementedError,
     );
 
-    container.read(throws.state).state = false;
+    container.read(throws.notifier).state = false;
 
     expect(container.read(dep), 0);
   });
@@ -188,12 +188,12 @@ void main() {
 
     container.read(provider);
 
-    container.read(dep.state).state++;
+    container.read(dep.notifier).state++;
 
     verifyOnly(onDispose, onDispose());
 
-    container.read(dep.state).state++;
-    container.read(dep2.state).state++;
+    container.read(dep.notifier).state++;
+    container.read(dep2.notifier).state++;
 
     verifyNoMoreInteractions(onDispose);
   });
@@ -201,9 +201,12 @@ void main() {
   test('throw when trying to use ref.read inside selectors during initial call',
       () {
     final dep = Provider((ref) => 0, name: 'dep');
-    final provider = Provider((ref) {
-      ref.watch(dep.select((value) => ref.read(dep)));
-    }, name: 'provider');
+    final provider = Provider(
+      name: 'provider',
+      (ref) {
+        ref.watch(dep.select((value) => ref.read(dep)));
+      },
+    );
     final container = createContainer();
 
     expect(
@@ -232,10 +235,12 @@ void main() {
       () {
     final dep = Provider((ref) => 0);
     final provider = Provider((ref) {
-      ref.watch(dep.select((value) {
-        ref.listen(dep, (prev, value) {});
-        return 0;
-      }));
+      ref.watch(
+        dep.select((value) {
+          ref.listen(dep, (prev, value) {});
+          return 0;
+        }),
+      );
     });
     final container = createContainer();
 
@@ -267,17 +272,21 @@ void main() {
 
   test('can watch selectors', () {
     final container = createContainer();
-    final provider = StateNotifierProvider<StateController<int>, int>((ref) {
-      return StateController(0);
-    }, name: 'provider');
+    final provider = StateNotifierProvider<StateController<int>, int>(
+      name: 'provider',
+      (ref) => StateController(0),
+    );
     final isEvenSelector = Selector<int, bool>(false, (c) => c.isEven);
     final isEvenListener = Listener<bool>();
     var buildCount = 0;
 
-    final another = Provider<bool>((ref) {
-      buildCount++;
-      return ref.watch(provider.select(isEvenSelector));
-    }, name: 'another');
+    final another = Provider<bool>(
+      name: 'another',
+      (ref) {
+        buildCount++;
+        return ref.watch(provider.select(isEvenSelector));
+      },
+    );
 
     container.listen(another, isEvenListener, fireImmediately: true);
 
@@ -319,7 +328,7 @@ void main() {
     var computedBuildCount = 0;
     final computed = Provider((ref) {
       computedBuildCount++;
-      final state = ref.watch(stateProvider.state).state;
+      final state = ref.watch(stateProvider);
       final value = state == 0 ? ref.watch(provider0) : ref.watch(provider1);
       return '${ref.watch(provider0)} $value';
     });
@@ -352,7 +361,7 @@ void main() {
     verifyNoMoreInteractions(computedListener);
 
     // changing the provider that computed is subscribed to
-    container.read(stateProvider.state).state = 1;
+    container.read(stateProvider.notifier).state = 1;
     await container.pump();
 
     verifyOnly(computedListener, computedListener('1 1', '1 43'));
@@ -390,7 +399,7 @@ void main() {
     var computedBuildCount = 0;
     final computed = Provider((ref) {
       computedBuildCount++;
-      final state = ref.watch(stateProvider.state).state;
+      final state = ref.watch(stateProvider);
       return state == 0 ? ref.watch(provider0) : ref.watch(provider1);
     });
 
@@ -420,7 +429,7 @@ void main() {
     verifyNoMoreInteractions(computedListener);
 
     // changing the provider that computed is subscribed to
-    container.read(stateProvider.state).state = 1;
+    container.read(stateProvider.notifier).state = 1;
     await container.pump();
 
     expect(computedBuildCount, 3);
@@ -503,7 +512,7 @@ void main() {
     var firstCallCount = 0;
     final first = Provider((ref) {
       firstCallCount++;
-      ref.watch(state.state).state;
+      ref.watch(state);
       return 0;
     });
     var secondCallCount = 0;
@@ -513,7 +522,7 @@ void main() {
     });
     final container = createContainer();
 
-    final controller = container.read(state.state);
+    final controller = container.read(state.notifier);
 
     expect(container.read(second), '0');
     expect(firstCallCount, 1);
@@ -530,14 +539,18 @@ void main() {
   test('can call ref.watch asynchronously', () async {
     final container = createContainer();
     final notifier = Notifier(0);
-    final provider = StateNotifierProvider<Notifier<int>, int>((_) {
-      return notifier;
-    }, name: 'provider');
+    final provider = StateNotifierProvider<Notifier<int>, int>(
+      name: 'provider',
+      (_) => notifier,
+    );
     var callCount = 0;
-    final computed = StreamProvider((ref) async* {
-      callCount++;
-      yield ref.watch(provider);
-    }, name: 'computed');
+    final computed = StreamProvider(
+      name: 'computed',
+      (ref) async* {
+        callCount++;
+        yield ref.watch(provider);
+      },
+    );
 
     final sub = container.listen(computed, (_, __) {});
 
@@ -554,7 +567,8 @@ void main() {
 
     expect(
       sub.read(),
-      const AsyncLoading<int>().copyWithPrevious(const AsyncValue<int>.data(0)),
+      const AsyncLoading<int>()
+          .copyWithPrevious(const AsyncData(0), isRefresh: false),
     );
     expect(callCount, 1);
 
@@ -578,17 +592,25 @@ void main() {
 
     late List<int> first;
     final firstListener = Listener<List<int>>();
-    container.listen<List<int>>(computed, (prev, value) {
-      first = value;
-      firstListener(prev, value);
-    }, fireImmediately: true);
+    container.listen<List<int>>(
+      computed,
+      fireImmediately: true,
+      (prev, value) {
+        first = value;
+        firstListener(prev, value);
+      },
+    );
 
     late List<int> second;
     final secondListener = Listener<List<int>>();
-    container.listen<List<int>>(computed, (prev, value) {
-      second = value;
-      secondListener(prev, value);
-    }, fireImmediately: true);
+    container.listen<List<int>>(
+      computed,
+      fireImmediately: true,
+      (prev, value) {
+        second = value;
+        secondListener(prev, value);
+      },
+    );
 
     expect(first, [0]);
     expect(callCount, 1);
@@ -635,7 +657,7 @@ void main() {
 }
 
 class Notifier<T> extends StateNotifier<T> {
-  Notifier(T state) : super(state);
+  Notifier(super.state);
 
   // ignore: use_setters_to_change_properties
   void setState(T value) => state = value;

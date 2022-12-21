@@ -4,13 +4,15 @@ import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
+final isAssertionError = isA<AssertionError>();
+
 R Function(Key) cacheFamily<Key, R>(R Function(Key key) create) {
   final cache = <Key, R>{};
   return (key) => cache.putIfAbsent(key, () => create(key));
 }
 
 class Counter extends StateNotifier<int> {
-  Counter([int initialValue = 0]) : super(initialValue);
+  Counter([super.initialValue = 0]);
 
   void increment() => state++;
 
@@ -24,15 +26,11 @@ ProviderContainer createContainer({
   ProviderContainer? parent,
   List<Override> overrides = const [],
   List<ProviderObserver>? observers,
-  Duration? cacheTime,
-  Duration? disposeDelay,
 }) {
   final container = ProviderContainer(
     parent: parent,
     overrides: overrides,
     observers: observers,
-    cacheTime: cacheTime,
-    disposeDelay: disposeDelay,
   );
   addTearDown(container.dispose);
   return container;
@@ -43,6 +41,8 @@ List<Object> errorsOf(void Function() cb) {
   runZonedGuarded(cb, (err, _) => errors.add(err));
   return [...errors];
 }
+
+class ProviderObserverMock extends Mock implements ProviderObserver {}
 
 class OnBuildMock extends Mock {
   void call();

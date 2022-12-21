@@ -97,7 +97,7 @@ gefilterte Todo-Liste abzufragen. Mit diesem Ansatz wird das UI automatisch
 aktualisiert, wenn sich entweder der Filter oder die ToDo-Liste ändert.
 
 Um diesen Ansatz in Aktion zu sehen, können Sie sich den Quellcode hier anschauen [Todo List
-Beispiel](https://github.com/rrousselGit/river_pod/tree/master/examples/todos)
+Beispiel](https://github.com/rrousselGit/riverpod/tree/master/examples/todos)
 
 :::info
 Dieses Verhalten ist nicht spezifisch für [Provider], sondern funktioniert mit allen Providern.
@@ -210,7 +210,7 @@ final repositoryProvider = Provider((ref) => Repository(ref.read));
 
 test('fetches catalog', () async {
   final container = ProviderContainer();
-  addTearOff(container.dispose);
+  addTearDown(container.dispose);
 
   Repository repository = container.read(repositoryProvider);
 

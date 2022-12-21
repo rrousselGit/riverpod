@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_types_on_closure_parameters
+
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
@@ -7,6 +9,230 @@ import 'package:test/test.dart';
 import '../../utils.dart';
 
 void main() {
+  group('FutureProviderRef.future', () {
+    test('returns the pending future', () async {
+      final container = createContainer();
+      Future<int>? future;
+      int? value;
+      final provider = FutureProvider<int>((ref) {
+        future = ref.future;
+        if (value == null) return ref.future;
+        return value;
+      });
+
+      container.read(provider);
+
+      expect(
+        future,
+        same(container.read(provider.future)),
+      );
+      expect(future, completion(42));
+
+      value = 42;
+      container.refresh(provider);
+
+      expect(
+        future,
+        same(container.read(provider.future)),
+      );
+      expect(future, completion(42));
+    });
+
+    test('flushes the provider when reading ref.future', () async {
+      final container = createContainer();
+      var result = Future.value(42);
+      late FutureProviderRef<int> ref;
+      final provider = FutureProvider<int>((r) {
+        ref = r;
+        return result;
+      });
+
+      container.read(provider);
+
+      await expectLater(ref.future, completion(42));
+
+      result = Future.value(21);
+      container.invalidate(provider);
+
+      expect(ref.future, completion(21));
+    });
+  });
+
+  test('supports overrideWith', () {
+    final provider = FutureProvider<int>((ref) => 0);
+    final autoDispose = FutureProvider.autoDispose<int>((ref) => 0);
+    final container = createContainer(
+      overrides: [
+        provider.overrideWith((FutureProviderRef<int> ref) => 42),
+        autoDispose.overrideWith(
+          (AutoDisposeFutureProviderRef<int> ref) => 84,
+        ),
+      ],
+    );
+
+    expect(container.read(provider).value, 42);
+    expect(container.read(autoDispose).value, 84);
+  });
+
+  test('supports family overrideWith', () {
+    final family = FutureProvider.family<String, int>((ref, arg) => '0 $arg');
+    final autoDisposeFamily = FutureProvider.autoDispose.family<String, int>(
+      (ref, arg) => '0 $arg',
+    );
+    final container = createContainer(
+      overrides: [
+        family.overrideWith(
+          (FutureProviderRef<String> ref, int arg) => '42 $arg',
+        ),
+        autoDisposeFamily.overrideWith(
+          (AutoDisposeFutureProviderRef<String> ref, int arg) => '84 $arg',
+        ),
+      ],
+    );
+
+    expect(container.read(family(10)).value, '42 10');
+    expect(container.read(autoDisposeFamily(10)).value, '84 10');
+  });
+
+  test('Emits AsyncLoading before the create function is executed', () async {
+    final container = createContainer();
+    late AsyncValue<int> state;
+    final provider = FutureProvider<int>((ref) {
+      state = ref.state;
+      return 0;
+    });
+
+    container.read(provider);
+
+    expect(state, const AsyncLoading<int>());
+
+    await container.read(provider.future);
+    container.refresh(provider);
+
+    expect(
+      state,
+      const AsyncLoading<int>().copyWithPrevious(const AsyncData<int>(0)),
+    );
+  });
+
+  test('On dispose, .future resolves with the future returned itself',
+      () async {
+    final container = createContainer();
+    final completer1 = Completer<int>.sync();
+    final completer2 = Completer<int>.sync();
+    var result = completer1.future;
+    final provider = FutureProvider((ref) => result);
+
+    expect(
+      container.read(provider.future),
+      completion(42),
+    );
+
+    result = completer2.future;
+    container.refresh(provider);
+
+    container.dispose();
+
+    completer2.complete(42);
+  });
+
+  group('When going back to AsyncLoading', () {
+    test(
+        'provider.future resolves with the new data instead of the old future result',
+        () async {
+      final container = createContainer();
+      final completer1 = Completer<int>.sync();
+      final completer2 = Completer<int>.sync();
+      var result = completer1.future;
+      final provider = FutureProvider((ref) => result);
+
+      expect(
+        container.read(provider.future),
+        completion(42),
+      );
+
+      result = completer2.future;
+      container.refresh(provider);
+
+      completer1.complete(21);
+
+      expect(container.read(provider), const AsyncLoading<int>());
+
+      completer2.complete(42);
+
+      await expectLater(container.read(provider.future), completion(42));
+    });
+
+    test(
+        'sets isRefreshing to true if triggered by a ref.invalidate/ref.refresh',
+        () async {
+      final container = createContainer();
+      var count = 0;
+      final provider = FutureProvider((ref) => Future.value(count++));
+
+      await expectLater(container.read(provider.future), completion(0));
+      expect(container.read(provider), const AsyncData(0));
+
+      expect(
+        container.refresh(provider),
+        const AsyncLoading<int>().copyWithPrevious(const AsyncData(0)),
+      );
+
+      await expectLater(container.read(provider.future), completion(1));
+      expect(container.read(provider), const AsyncData(1));
+
+      container.invalidate(provider);
+
+      expect(
+        container.read(provider),
+        const AsyncLoading<int>().copyWithPrevious(const AsyncData(1)),
+      );
+      await expectLater(container.read(provider.future), completion(2));
+      expect(container.read(provider), const AsyncData(2));
+    });
+
+    test('does not set isRefreshing if triggered by a dependency change',
+        () async {
+      final container = createContainer();
+      final dep = StateProvider((ref) => 0);
+      final provider = FutureProvider((ref) => Future.value(ref.watch(dep)));
+
+      await expectLater(container.read(provider.future), completion(0));
+      expect(container.read(provider), const AsyncData(0));
+
+      container.read(dep.notifier).state++;
+      expect(
+        container.read(provider),
+        const AsyncLoading<int>()
+            .copyWithPrevious(const AsyncData(0), isRefresh: false),
+      );
+
+      await expectLater(container.read(provider.future), completion(1));
+      expect(container.read(provider), const AsyncData(1));
+    });
+
+    test(
+        'does not set isRefreshing if both triggered by a dependency change and ref.refresh',
+        () async {
+      final container = createContainer();
+      final dep = StateProvider((ref) => 0);
+      final provider = FutureProvider((ref) => Future.value(ref.watch(dep)));
+
+      await expectLater(container.read(provider.future), completion(0));
+      expect(container.read(provider), const AsyncData(0));
+
+      container.read(dep.notifier).state++;
+      expect(
+        container.refresh(provider),
+        const AsyncLoading<int>()
+            .copyWithPrevious(const AsyncData(0), isRefresh: false),
+      );
+
+      await expectLater(container.read(provider.future), completion(1));
+      expect(container.read(provider), const AsyncData(1));
+    });
+  });
+
   test('can read and set current AsyncValue', () {
     final container = createContainer();
     final listener = Listener<AsyncValue<int>>();
@@ -25,7 +251,8 @@ void main() {
 
     expect(
       ref.state,
-      const AsyncLoading<int>().copyWithPrevious(const AsyncValue<int>.data(0)),
+      const AsyncLoading<int>()
+          .copyWithPrevious(const AsyncData(0), isRefresh: false),
     );
 
     verifyOnly(
@@ -33,7 +260,7 @@ void main() {
       listener(
         const AsyncData(0),
         const AsyncLoading<int>()
-            .copyWithPrevious(const AsyncValue<int>.data(0)),
+            .copyWithPrevious(const AsyncData(0), isRefresh: false),
       ),
     );
   });
@@ -91,19 +318,6 @@ void main() {
     expect(container.read(provider), const AsyncData(42));
   });
 
-  test('can refresh .stream', () async {
-    var future = Future.value(1);
-    final provider = FutureProvider((ref) => future);
-    final container = createContainer();
-
-    expect(await container.read(provider.stream).first, 1);
-
-    future = Future.value(42);
-
-    expect(await container.refresh(provider.stream).first, 42);
-    expect(container.read(provider), const AsyncData(42));
-  });
-
   test('can be refreshed', () async {
     var result = 0;
     final container = createContainer();
@@ -137,14 +351,14 @@ void main() {
 
     verifyOnly(listener, listener(null, const AsyncValue.loading()));
 
-    container.read(dep.state).state++;
+    container.read(dep.notifier).state++;
     await container.pump();
 
     verifyNoMoreInteractions(listener);
   });
 
   test(
-      '.stream does not update dependents if the created stream did not change',
+      '.future does not update dependents if the created future did not change',
       () async {
     final container = createContainer();
     final dep = StateProvider((ref) => 0);
@@ -159,15 +373,10 @@ void main() {
 
     verifyOnly(listener, listener(any, any));
 
-    container.read(dep.state).state++;
+    container.read(dep.notifier).state++;
     await container.pump();
 
     verifyNoMoreInteractions(listener);
-
-    // No value were emitted, so the future will fail. Catching the error to
-    // avoid false positive.
-    // ignore: unawaited_futures, avoid_types_on_closure_parameters
-    container.read(provider.future).catchError((Object _) => 0);
   });
 
   group('scoping an override overrides all the associated subproviders', () {
@@ -181,64 +390,64 @@ void main() {
       expect(root.getAllProviderElementsInOrder(), isEmpty);
       expect(container.getAllProviderElementsInOrder(), [
         isA<ProviderElementBase>().having((e) => e.origin, 'origin', provider),
-        isA<ProviderElementBase>()
-            .having((e) => e.origin, 'origin', provider.future)
       ]);
     });
 
-    test('when using provider.overrideWithValue', () async {
-      final provider = FutureProvider((ref) async => 0);
-      final root = createContainer();
-      final container = createContainer(parent: root, overrides: [
-        provider.overrideWithValue(const AsyncValue.data(42)),
-      ]);
+    // test('when using provider.overrideWithValue', () async {
+    //   final provider = FutureProvider((ref) async => 0);
+    //   final root = createContainer();
+    //   final container = createContainer(parent: root, overrides: [
+    //     provider.overrideWithValue(const AsyncValue.data(42)),
+    //   ]);
 
-      expect(await container.read(provider.future), 42);
-      expect(container.read(provider), const AsyncValue.data(42));
-      expect(root.getAllProviderElementsInOrder(), isEmpty);
-      expect(container.getAllProviderElementsInOrder(), [
-        isA<ProviderElementBase>().having((e) => e.origin, 'origin', provider),
-        isA<ProviderElementBase>()
-            .having((e) => e.origin, 'origin', provider.future)
-      ]);
-    });
+    //   expect(await container.read(provider.future), 42);
+    //   expect(container.read(provider), const AsyncValue.data(42));
+    //   expect(root.getAllProviderElementsInOrder(), isEmpty);
+    //   expect(container.getAllProviderElementsInOrder(), [
+    //     isA<ProviderElementBase>().having((e) => e.origin, 'origin', provider),
+    //     isA<ProviderElementBase>()
+    //         .having((e) => e.origin, 'origin', provider.future)
+    //   ]);
+    // });
 
     test('when using provider.overrideWithProvider', () async {
       final provider = FutureProvider((ref) async => 0);
       final root = createContainer();
-      final container = createContainer(parent: root, overrides: [
-        provider.overrideWithProvider(FutureProvider((ref) async => 42)),
-      ]);
+      final container = createContainer(
+        parent: root,
+        overrides: [
+          // ignore: deprecated_member_use_from_same_package
+          provider.overrideWithProvider(FutureProvider((ref) async => 42)),
+        ],
+      );
 
       expect(await container.read(provider.future), 42);
       expect(container.read(provider), const AsyncValue.data(42));
       expect(root.getAllProviderElementsInOrder(), isEmpty);
       expect(container.getAllProviderElementsInOrder(), [
         isA<ProviderElementBase>().having((e) => e.origin, 'origin', provider),
-        isA<ProviderElementBase>()
-            .having((e) => e.origin, 'origin', provider.future)
       ]);
     });
   });
 
-  test(
-      'when overridden with an error but provider.future is not listened to, it should not emit an error to the zone',
-      () async {
-    final error = Error();
-    final future = FutureProvider<int>((ref) async => 0);
+  // test(
+  //     'when overridden with an error but provider.future is not listened to, it should not emit an error to the zone',
+  //     () async {
+  //   final error = Error();
+  //   final future = FutureProvider<int>((ref) async => 0);
 
-    final container = createContainer(overrides: [
-      future.overrideWithValue(AsyncValue.error(error)),
-    ]);
-    addTearDown(container.dispose);
+  //   final container = createContainer(overrides: [
+  //     future.overrideWithValue(AsyncValue.error(error)),
+  //   ]);
+  //   addTearDown(container.dispose);
 
-    expect(
-      container.read(future),
-      AsyncValue<int>.error(error),
-    );
+  //   expect(
+  //     container.read(future),
+  //     AsyncValue<int>.error(error),
+  //   );
 
-    // the test will naturally fail if a non-caught future is created
-  });
+  //   // the test will naturally fail if a non-caught future is created
+  // });
 
   test('throwing inside "create" result in an AsyncValue.error', () {
     // ignore: only_throw_errors
@@ -286,7 +495,7 @@ void main() {
     );
   });
 
-  test('noop if fails after dispose', () async {
+  test('noop if fails after provider dispose', () async {
     // ignore: only_throw_errors
     final provider = FutureProvider<int>((_) async => throw 42);
     final container = createContainer();
@@ -334,15 +543,14 @@ void main() {
     test('update dependents when the future changes', () async {
       final futureProvider = StateProvider((ref) => Future.value(42));
       // a FutureProvider that can rebuild with a new future
-      final provider =
-          FutureProvider<int>((ref) => ref.watch(futureProvider.state).state);
+      final provider = FutureProvider<int>((ref) => ref.watch(futureProvider));
       var callCount = 0;
       final dependent = Provider<Future<int>>((ref) {
         callCount++;
         return ref.watch(provider.future);
       });
       final container = createContainer();
-      final futureController = container.read(futureProvider.state);
+      final futureController = container.read(futureProvider.notifier);
 
       await expectLater(container.read(dependent), completion(42));
       expect(callCount, 1);
@@ -352,43 +560,27 @@ void main() {
       await expectLater(container.read(dependent), completion(21));
       expect(callCount, 2);
     });
-
-    test('.name is the listened-to name.future', () {
-      expect(
-        FutureProvider((ref) async {}, name: 'hey').future.name,
-        'hey.future',
-      );
-      expect(
-        FutureProvider((ref) async {}).future.name,
-        null,
-      );
-    });
   });
 
   group('FutureProvider.autoDispose().future', () {
-    test('.name is the listened-to name.future', () {
-      expect(
-        FutureProvider.autoDispose((ref) async {}, name: 'hey').future.name,
-        'hey.future',
-      );
-      expect(
-        FutureProvider.autoDispose((ref) async {}).future.name,
-        null,
-      );
-    });
-
     test('update dependents when the future changes', () async {
-      final futureProvider = StateProvider((ref) => Future.value(42));
+      final futureProvider = StateProvider(
+        (ref) => Future.value(42),
+        name: 'futureProvider',
+      );
       // a FutureProvider that can rebuild with a new future
       final provider = FutureProvider.autoDispose(
-          (ref) => ref.watch(futureProvider.state).state);
+        name: 'provider',
+        (ref) => ref.watch(futureProvider),
+      );
       var callCount = 0;
-      final dependent = Provider.autoDispose((ref) {
+      final dependent = Provider.autoDispose(name: 'dependent', (ref) {
         callCount++;
         return ref.watch(provider.future);
       });
       final container = createContainer();
-      final futureController = container.read(futureProvider.state);
+
+      final futureController = container.read(futureProvider.notifier);
 
       final sub = container.listen(dependent, (_, __) {});
 
@@ -466,9 +658,7 @@ void main() {
     verifyOnly(listener, listener(null, const AsyncValue<String>.loading()));
     completer.complete(42);
 
-    verifyNoMoreInteractions(listener);
-
-    await container.pump();
+    await container.read(example.future);
 
     verifyOnly(
       listener,
@@ -498,285 +688,285 @@ void main() {
     verifyNoMoreInteractions(listener);
   });
 
-  group('mock as value', () {
-    test('value immediately then other value', () async {
-      final provider = FutureProvider((_) async => 0);
-      final container = createContainer(overrides: [
-        provider.overrideWithValue(const AsyncValue.data(42)),
-      ]);
-
-      await expectLater(
-        container.read(provider.future),
-        completion(42),
-      );
-
-      final sub = container.listen(provider, (_, __) {});
-
-      expect(sub.read(), const AsyncValue.data(42));
-
-      container.updateOverrides([
-        provider.overrideWithValue(const AsyncValue.data(21)),
-      ]);
+  // group('mock as value', () {
+  //   test('value immediately then other value', () async {
+  //     final provider = FutureProvider((_) async => 0);
+  //     final container = createContainer(overrides: [
+  //       provider.overrideWithValue(const AsyncValue.data(42)),
+  //     ]);
+
+  //     await expectLater(
+  //       container.read(provider.future),
+  //       completion(42),
+  //     );
+
+  //     final sub = container.listen(provider, (_, __) {});
+
+  //     expect(sub.read(), const AsyncValue.data(42));
+
+  //     container.updateOverrides([
+  //       provider.overrideWithValue(const AsyncValue.data(21)),
+  //     ]);
 
-      await expectLater(
-        container.read(provider.future),
-        completion(21),
-      );
-      expect(sub.read(), const AsyncValue.data(21));
-    });
+  //     await expectLater(
+  //       container.read(provider.future),
+  //       completion(21),
+  //     );
+  //     expect(sub.read(), const AsyncValue.data(21));
+  //   });
 
-    test('value immediately then error', () async {
-      final provider = FutureProvider((_) async => 0);
-      final container = createContainer(overrides: [
-        provider.overrideWithValue(const AsyncValue.data(42)),
-      ]);
+  //   test('value immediately then error', () async {
+  //     final provider = FutureProvider((_) async => 0);
+  //     final container = createContainer(overrides: [
+  //       provider.overrideWithValue(const AsyncValue.data(42)),
+  //     ]);
 
-      await expectLater(
-        container.read(provider.future),
-        completion(42),
-      );
+  //     await expectLater(
+  //       container.read(provider.future),
+  //       completion(42),
+  //     );
 
-      final sub = container.listen(provider, (_, __) {});
+  //     final sub = container.listen(provider, (_, __) {});
 
-      expect(sub.read(), const AsyncValue.data(42));
+  //     expect(sub.read(), const AsyncValue.data(42));
 
-      container.updateOverrides([
-        provider.overrideWithValue(const AsyncValue.error(21)),
-      ]);
+  //     container.updateOverrides([
+  //       provider.overrideWithValue(const AsyncValue.error(21)),
+  //     ]);
 
-      await expectLater(
-        container.read(provider.future),
-        throwsA(21),
-      );
-      expect(
-        sub.read(),
-        const AsyncValue<int>.error(21).copyWithPrevious(const AsyncData(42)),
-      );
-    });
+  //     await expectLater(
+  //       container.read(provider.future),
+  //       throwsA(21),
+  //     );
+  //     expect(
+  //       sub.read(),
+  //       const AsyncValue<int>.error(21).copyWithPrevious(const AsyncData(42)),
+  //     );
+  //   });
 
-    test('value immediately then loading', () async {
-      final provider = FutureProvider((_) async => 0);
-      final container = createContainer(overrides: [
-        provider.overrideWithValue(const AsyncValue.data(42)),
-      ]);
+  //   test('value immediately then loading', () async {
+  //     final provider = FutureProvider((_) async => 0);
+  //     final container = createContainer(overrides: [
+  //       provider.overrideWithValue(const AsyncValue.data(42)),
+  //     ]);
 
-      final future = container.read(provider.future);
+  //     final future = container.read(provider.future);
 
-      await expectLater(
-        future,
-        completion(42),
-      );
+  //     await expectLater(
+  //       future,
+  //       completion(42),
+  //     );
 
-      final sub = container.listen(provider, (_, __) {});
+  //     final sub = container.listen(provider, (_, __) {});
 
-      expect(sub.read(), const AsyncValue<int>.data(42));
+  //     expect(sub.read(), const AsyncValue<int>.data(42));
 
-      container.updateOverrides([
-        provider.overrideWithValue(const AsyncValue.loading()),
-      ]);
+  //     container.updateOverrides([
+  //       provider.overrideWithValue(const AsyncValue.loading()),
+  //     ]);
 
-      expect(container.read(provider.future), isNot(future));
-      expect(
-        sub.read(),
-        const AsyncLoading<int>()
-            .copyWithPrevious(const AsyncValue<int>.data(42)),
-      );
-    });
+  //     expect(container.read(provider.future), isNot(future));
+  //     expect(
+  //       sub.read(),
+  //       const AsyncLoading<int>()
+  //           .copyWithPrevious(const AsyncValue<int>.data(42)),
+  //     );
+  //   });
 
-    test('loading immediately then value', () async {
-      final provider = FutureProvider((_) async => 0);
-      final container = createContainer(overrides: [
-        provider.overrideWithValue(const AsyncValue.loading()),
-      ]);
+  //   test('loading immediately then value', () async {
+  //     final provider = FutureProvider((_) async => 0);
+  //     final container = createContainer(overrides: [
+  //       provider.overrideWithValue(const AsyncValue.loading()),
+  //     ]);
 
-      final future = container.read(provider.future);
+  //     final future = container.read(provider.future);
 
-      final sub = container.listen(provider, (_, __) {});
-
-      expect(sub.read(), const AsyncValue<int>.loading());
-
-      container.updateOverrides([
-        provider.overrideWithValue(const AsyncValue.data(42)),
-      ]);
+  //     final sub = container.listen(provider, (_, __) {});
+
+  //     expect(sub.read(), const AsyncValue<int>.loading());
+
+  //     container.updateOverrides([
+  //       provider.overrideWithValue(const AsyncValue.data(42)),
+  //     ]);
 
-      expect(sub.read(), const AsyncValue<int>.data(42));
+  //     expect(sub.read(), const AsyncValue<int>.data(42));
 
-      await expectLater(future, completion(42));
-    });
+  //     await expectLater(future, completion(42));
+  //   });
 
-    test('loading immediately then error', () async {
-      final provider = FutureProvider((_) async => 0);
-      final container = createContainer(overrides: [
-        provider.overrideWithValue(const AsyncValue.loading()),
-      ]);
+  //   test('loading immediately then error', () async {
+  //     final provider = FutureProvider((_) async => 0);
+  //     final container = createContainer(overrides: [
+  //       provider.overrideWithValue(const AsyncValue.loading()),
+  //     ]);
 
-      final future = container.read(provider.future);
+  //     final future = container.read(provider.future);
 
-      final sub = container.listen(provider, (_, __) {});
+  //     final sub = container.listen(provider, (_, __) {});
 
-      expect(sub.read(), const AsyncValue<int>.loading());
+  //     expect(sub.read(), const AsyncValue<int>.loading());
 
-      final stackTrace = StackTrace.current;
+  //     final stackTrace = StackTrace.current;
 
-      container.updateOverrides([
-        provider
-            .overrideWithValue(AsyncValue.error(42, stackTrace: stackTrace)),
-      ]);
+  //     container.updateOverrides([
+  //       provider
+  //           .overrideWithValue(AsyncValue.error(42, stackTrace: stackTrace)),
+  //     ]);
 
-      expect(sub.read(), AsyncValue<int>.error(42, stackTrace: stackTrace));
+  //     expect(sub.read(), AsyncValue<int>.error(42, stackTrace: stackTrace));
 
-      await expectLater(future, throwsA(42));
-    });
+  //     await expectLater(future, throwsA(42));
+  //   });
 
-    test('loading immediately then loading', () async {
-      final provider = FutureProvider((_) async => 0);
-      final container = createContainer(overrides: [
-        provider.overrideWithValue(const AsyncValue.loading()),
-      ]);
-      final listener = Listener<AsyncValue<int>>();
+  //   test('loading immediately then loading', () async {
+  //     final provider = FutureProvider((_) async => 0);
+  //     final container = createContainer(overrides: [
+  //       provider.overrideWithValue(const AsyncValue.loading()),
+  //     ]);
+  //     final listener = Listener<AsyncValue<int>>();
 
-      final future = container.read(provider.future);
+  //     final future = container.read(provider.future);
 
-      container.listen(provider, listener, fireImmediately: true);
+  //     container.listen(provider, listener, fireImmediately: true);
 
-      verifyOnly(listener, listener(null, const AsyncValue<int>.loading()));
+  //     verifyOnly(listener, listener(null, const AsyncValue<int>.loading()));
 
-      container.updateOverrides([
-        provider.overrideWithValue(const AsyncValue.loading()),
-      ]);
+  //     container.updateOverrides([
+  //       provider.overrideWithValue(const AsyncValue.loading()),
+  //     ]);
 
-      verifyNoMoreInteractions(listener);
+  //     verifyNoMoreInteractions(listener);
 
-      container.updateOverrides([
-        provider.overrideWithValue(const AsyncValue.data(42)),
-      ]);
+  //     container.updateOverrides([
+  //       provider.overrideWithValue(const AsyncValue.data(42)),
+  //     ]);
 
-      verifyOnly(
-        listener,
-        listener(const AsyncValue.loading(), const AsyncValue.data(42)),
-      );
-      await expectLater(future, completion(42));
-    });
-
-    test('error immediately then different error', () async {
-      final stackTrace = StackTrace.current;
-      final provider = FutureProvider((_) async => 0);
-      final container = createContainer(overrides: [
-        provider
-            .overrideWithValue(AsyncValue.error(42, stackTrace: stackTrace)),
-      ]);
+  //     verifyOnly(
+  //       listener,
+  //       listener(const AsyncValue.loading(), const AsyncValue.data(42)),
+  //     );
+  //     await expectLater(future, completion(42));
+  //   });
+
+  //   test('error immediately then different error', () async {
+  //     final stackTrace = StackTrace.current;
+  //     final provider = FutureProvider((_) async => 0);
+  //     final container = createContainer(overrides: [
+  //       provider
+  //           .overrideWithValue(AsyncValue.error(42, stackTrace: stackTrace)),
+  //     ]);
 
-      await expectLater(
-        container.read(provider.future),
-        throwsA(42),
-      );
+  //     await expectLater(
+  //       container.read(provider.future),
+  //       throwsA(42),
+  //     );
 
-      final sub = container.listen(provider, (_, __) {});
+  //     final sub = container.listen(provider, (_, __) {});
 
-      expect(sub.read(), AsyncValue<int>.error(42, stackTrace: stackTrace));
+  //     expect(sub.read(), AsyncValue<int>.error(42, stackTrace: stackTrace));
 
-      container.updateOverrides([
-        provider
-            .overrideWithValue(AsyncValue.error(21, stackTrace: stackTrace)),
-      ]);
-
-      await expectLater(
-        container.read(provider.future),
-        throwsA(21),
-      );
-      expect(sub.read(), AsyncValue<int>.error(21, stackTrace: stackTrace));
-    });
-
-    test('error immediately then different stacktrace', () async {
-      final stackTrace = StackTrace.current;
-      final provider = FutureProvider((_) async => 0);
-      final container = createContainer(overrides: [
-        provider
-            .overrideWithValue(AsyncValue.error(42, stackTrace: stackTrace)),
-      ]);
-
-      final future = container.read(provider.future);
-
-      await expectLater(future, throwsA(42));
-
-      final sub = container.listen(provider, (_, __) {});
-
-      expect(sub.read(), AsyncValue<int>.error(42, stackTrace: stackTrace));
-
-      final stack2 = StackTrace.current;
-
-      container.updateOverrides([
-        provider.overrideWithValue(AsyncValue.error(42, stackTrace: stack2)),
-      ]);
-
-      expect(
-        container.read(provider.future),
-        isNot(future),
-      );
-      await expectLater(
-        container.read(provider.future),
-        throwsA(42),
-      );
-      expect(sub.read(), AsyncValue<int>.error(42, stackTrace: stack2));
-    });
-
-    test('error immediately then data', () async {
-      final stackTrace = StackTrace.current;
-      final provider = FutureProvider((_) async => 0);
-      final container = createContainer(overrides: [
-        provider
-            .overrideWithValue(AsyncValue.error(42, stackTrace: stackTrace)),
-      ]);
-
-      await expectLater(
-        container.read(provider.future),
-        throwsA(42),
-      );
-
-      final sub = container.listen(provider, (_, __) {});
-
-      expect(sub.read(), AsyncValue<int>.error(42, stackTrace: stackTrace));
-
-      container.updateOverrides([
-        provider.overrideWithValue(const AsyncValue.data(42)),
-      ]);
-
-      await expectLater(
-        container.read(provider.future),
-        completion(42),
-      );
-      expect(
-        sub.read(),
-        const AsyncValue<int>.data(42)
-            .copyWithPrevious(AsyncError(42, stackTrace: stackTrace)),
-      );
-    });
-
-    test('error immediately then loading', () async {
-      final stackTrace = StackTrace.current;
-      final provider = FutureProvider((_) async => 0);
-      final container = createContainer(overrides: [
-        provider
-            .overrideWithValue(AsyncValue.error(42, stackTrace: stackTrace)),
-      ]);
-
-      final future = container.read(provider.future);
-      await expectLater(future, throwsA(42));
-
-      final sub = container.listen(provider, (_, __) {});
-
-      expect(sub.read(), AsyncValue<int>.error(42, stackTrace: stackTrace));
-
-      container.updateOverrides([
-        provider.overrideWithValue(const AsyncValue.loading()),
-      ]);
-
-      expect(container.read(provider.future), isNot(future));
-      expect(
-        sub.read(),
-        const AsyncLoading<int>()
-            .copyWithPrevious(AsyncError<int>(42, stackTrace: stackTrace)),
-      );
-    });
-  });
+  //     container.updateOverrides([
+  //       provider
+  //           .overrideWithValue(AsyncValue.error(21, stackTrace: stackTrace)),
+  //     ]);
+
+  //     await expectLater(
+  //       container.read(provider.future),
+  //       throwsA(21),
+  //     );
+  //     expect(sub.read(), AsyncValue<int>.error(21, stackTrace: stackTrace));
+  //   });
+
+  //   test('error immediately then different stacktrace', () async {
+  //     final stackTrace = StackTrace.current;
+  //     final provider = FutureProvider((_) async => 0);
+  //     final container = createContainer(overrides: [
+  //       provider
+  //           .overrideWithValue(AsyncValue.error(42, stackTrace: stackTrace)),
+  //     ]);
+
+  //     final future = container.read(provider.future);
+
+  //     await expectLater(future, throwsA(42));
+
+  //     final sub = container.listen(provider, (_, __) {});
+
+  //     expect(sub.read(), AsyncValue<int>.error(42, stackTrace: stackTrace));
+
+  //     final stack2 = StackTrace.current;
+
+  //     container.updateOverrides([
+  //       provider.overrideWithValue(AsyncValue.error(42, stackTrace: stack2)),
+  //     ]);
+
+  //     expect(
+  //       container.read(provider.future),
+  //       isNot(future),
+  //     );
+  //     await expectLater(
+  //       container.read(provider.future),
+  //       throwsA(42),
+  //     );
+  //     expect(sub.read(), AsyncValue<int>.error(42, stackTrace: stack2));
+  //   });
+
+  //   test('error immediately then data', () async {
+  //     final stackTrace = StackTrace.current;
+  //     final provider = FutureProvider((_) async => 0);
+  //     final container = createContainer(overrides: [
+  //       provider
+  //           .overrideWithValue(AsyncValue.error(42, stackTrace: stackTrace)),
+  //     ]);
+
+  //     await expectLater(
+  //       container.read(provider.future),
+  //       throwsA(42),
+  //     );
+
+  //     final sub = container.listen(provider, (_, __) {});
+
+  //     expect(sub.read(), AsyncValue<int>.error(42, stackTrace: stackTrace));
+
+  //     container.updateOverrides([
+  //       provider.overrideWithValue(const AsyncValue.data(42)),
+  //     ]);
+
+  //     await expectLater(
+  //       container.read(provider.future),
+  //       completion(42),
+  //     );
+  //     expect(
+  //       sub.read(),
+  //       const AsyncValue<int>.data(42)
+  //           .copyWithPrevious(AsyncError(42, stackTrace: stackTrace)),
+  //     );
+  //   });
+
+  //   test('error immediately then loading', () async {
+  //     final stackTrace = StackTrace.current;
+  //     final provider = FutureProvider((_) async => 0);
+  //     final container = createContainer(overrides: [
+  //       provider
+  //           .overrideWithValue(AsyncValue.error(42, stackTrace: stackTrace)),
+  //     ]);
+
+  //     final future = container.read(provider.future);
+  //     await expectLater(future, throwsA(42));
+
+  //     final sub = container.listen(provider, (_, __) {});
+
+  //     expect(sub.read(), AsyncValue<int>.error(42, stackTrace: stackTrace));
+
+  //     container.updateOverrides([
+  //       provider.overrideWithValue(const AsyncValue.loading()),
+  //     ]);
+
+  //     expect(container.read(provider.future), isNot(future));
+  //     expect(
+  //       sub.read(),
+  //       const AsyncLoading<int>()
+  //           .copyWithPrevious(AsyncError<int>(42, stackTrace: stackTrace)),
+  //     );
+  //   });
+  // });
 }

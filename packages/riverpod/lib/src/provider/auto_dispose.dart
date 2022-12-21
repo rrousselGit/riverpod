@@ -1,101 +1,79 @@
 part of '../provider.dart';
 
 /// {@macro riverpod.providerrefbase}
-/// - [state], the value currently exposed by this provider.
-abstract class AutoDisposeProviderRef<State>
-    implements ProviderRef<State>, AutoDisposeRef<State> {}
+abstract class AutoDisposeProviderRef<State> extends ProviderRef<State>
+    implements AutoDisposeRef<State> {}
 
 /// {@macro riverpod.provider}
-@sealed
-class AutoDisposeProvider<State> extends AutoDisposeProviderBase<State>
-    with
-        OverrideWithValueMixin<State>,
-        OverrideWithProviderMixin<State, AutoDisposeProviderBase<State>> {
+class AutoDisposeProvider<T> extends InternalProvider<T> {
   /// {@macro riverpod.provider}
   AutoDisposeProvider(
-    this._create, {
-    String? name,
-    this.dependencies,
-    Family? from,
-    Object? argument,
-    Duration? cacheTime,
-    Duration? disposeDelay,
-  }) : super(
-          name: name,
-          from: from,
-          argument: argument,
-          cacheTime: cacheTime,
-          disposeDelay: disposeDelay,
-        );
+    this._createFn, {
+    super.name,
+    super.from,
+    super.argument,
+    super.dependencies,
+    super.debugGetCreateSourceHash,
+  });
 
   /// {@macro riverpod.family}
-  static const family = AutoDisposeProviderFamilyBuilder();
+  static const family = AutoDisposeProviderFamily.new;
+
+  final T Function(AutoDisposeProviderRef<T> ref) _createFn;
 
   @override
-  ProviderBase<State> get originProvider => this;
-
-  final Create<State, AutoDisposeProviderRef<State>> _create;
+  T _create(AutoDisposeProviderElement<T> ref) => _createFn(ref);
 
   @override
-  final List<ProviderOrFamily>? dependencies;
-
-  @override
-  State create(AutoDisposeProviderRef<State> ref) => _create(ref);
-
-  @override
-  bool updateShouldNotify(State previousState, State newState) {
-    return previousState != newState;
+  AutoDisposeProviderElement<T> createElement() {
+    return AutoDisposeProviderElement._(this);
   }
 
-  @override
-  AutoDisposeProviderElement<State> createElement() {
-    return AutoDisposeProviderElement(this);
+  /// {@macro riverpod.overridewith}
+  Override overrideWith(
+    Create<T, AutoDisposeProviderRef<T>> create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: AutoDisposeProvider<T>(
+        create,
+        from: from,
+        argument: argument,
+      ),
+    );
   }
 }
 
-/// An [AutoDisposeProviderElementBase] for [AutoDisposeProvider]
-class AutoDisposeProviderElement<State>
-    extends AutoDisposeProviderElementBase<State>
-    implements AutoDisposeProviderRef<State> {
-  /// An [AutoDisposeProviderElementBase] for [AutoDisposeProvider]
-  AutoDisposeProviderElement(ProviderBase<State> provider) : super(provider);
-
-  @override
-  State get state => requireState;
-
-  @override
-  set state(State newState) => setState(newState);
+/// The element of [AutoDisposeProvider]
+class AutoDisposeProviderElement<T> extends ProviderElement<T>
+    with AutoDisposeProviderElementMixin<T>
+    implements AutoDisposeProviderRef<T> {
+  /// The [ProviderElementBase] for [Provider]
+  AutoDisposeProviderElement._(AutoDisposeProvider<T> super.provider)
+      : super._();
 }
 
-/// {@macro riverpod.provider.family}
-@sealed
-class AutoDisposeProviderFamily<State, Arg>
-    extends Family<State, Arg, AutoDisposeProvider<State>> {
-  /// {@macro riverpod.provider.family}
+/// The [Family] of [AutoDisposeProvider]
+class AutoDisposeProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
+    AutoDisposeProviderRef<R>, R, Arg, R, AutoDisposeProvider<R>> {
+  /// The [Family] of [AutoDisposeProvider]
   AutoDisposeProviderFamily(
-    this._create, {
-    String? name,
-    List<ProviderOrFamily>? dependencies,
-    Duration? cacheTime,
-    Duration? disposeDelay,
-  }) : super(
-          name: name,
-          dependencies: dependencies,
-          cacheTime: cacheTime,
-          disposeDelay: disposeDelay,
-        );
+    super.create, {
+    super.name,
+    super.dependencies,
+  }) : super(providerFactory: AutoDisposeProvider.new);
 
-  final FamilyCreate<State, AutoDisposeProviderRef<State>, Arg> _create;
-
-  @override
-  AutoDisposeProvider<State> create(Arg argument) {
-    return AutoDisposeProvider<State>(
-      (ref) => _create(ref, argument),
-      name: name,
-      from: this,
-      argument: argument,
-      cacheTime: cacheTime,
-      disposeDelay: disposeDelay,
+  /// {@macro riverpod.overridewith}
+  Override overrideWith(
+    R Function(AutoDisposeProviderRef<R> ref, Arg arg) create,
+  ) {
+    return FamilyOverrideImpl<R, Arg, AutoDisposeProvider<R>>(
+      this,
+      (arg) => AutoDisposeProvider<R>(
+        (ref) => create(ref, arg),
+        from: from,
+        argument: arg,
+      ),
     );
   }
 }
