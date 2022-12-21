@@ -1,5 +1,6 @@
 ## [Unreleased patch]
 
+- It is now correctly possible to use `ProviderSubscription`s inside `ConsumerState.dispose`
 - Update dependencies.
 
 ## 2.1.1
