@@ -2,6 +2,7 @@
 
 - Update dependencies.
 - fixes an exception on newer Dart versions
+- fixes an edge-case where `FutureProvider`/`AsyncNotifier` did not emit the new state when the created `Future` completed (#1997)
 
 ## 2.1.1
 
