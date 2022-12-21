@@ -1,9 +1,4 @@
 include: ../../analysis_options.yaml
-
-analyzer: 
-  exclude: 
-    - examples/build_yaml/**
-
 linter:
   rules:
     # We don't really have public API
