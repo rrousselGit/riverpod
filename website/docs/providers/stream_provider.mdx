@@ -7,6 +7,8 @@ import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
 import configProvider from "!!raw-loader!/docs/providers/future_provider/config_provider.dart";
 import configConsumer from "!!raw-loader!/docs/providers/future_provider/config_consumer.dart";
+import streamProvider from "!!raw-loader!/docs/providers/stream_provider/live_stream_chat_provider.dart";
+import streamConsumer from "!!raw-loader!/docs/providers/stream_provider/live_stream_chat_consumer.dart";
 import { trimSnippet } from "../../src/components/CodeSnippet";
 
 `StreamProvider` is similar to [FutureProvider] but for [Stream]s instead of
@@ -42,3 +44,14 @@ Using `StreamProvider` over [StreamBuilder] has numerous benefits:
 [stream.periodic]: https://api.dart.dev/stable/2.15.1/dart-async/Stream/Stream.periodic.html
 [family]: ../concepts/modifiers/family
 [streambuilder]: https://api.flutter.dev/flutter/widgets/StreamBuilder-class.html
+
+## Usage example: listening live chats from server
+
+`StreamProvider` is used in when we handle stream of asynchronous data
+such as Video Streaming, Weather broadcasting Apis.
+
+<CodeBlock>{trimSnippet(streamProvider)}</CodeBlock>
+
+Then, the UI can listen to live streaming chats like so:
+
+<CodeBlock>{trimSnippet(streamConsumer)}</CodeBlock>
