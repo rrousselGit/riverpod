@@ -177,7 +177,7 @@
     },
     {
       "name": "riverpod",
-      "rootUri": "file:///D:/flutter/.pub-cache/hosted/pub.dartlang.org/riverpod-2.0.0-dev.9",
+      "rootUri": "../../riverpod",
       "packageUri": "lib/",
       "languageVersion": "2.17"
     },
@@ -266,7 +266,7 @@
       "languageVersion": "2.17"
     }
   ],
-  "generated": "2022-12-21T13:39:37.628272Z",
+  "generated": "2022-12-21T16:21:17.246790Z",
   "generator": "pub",
   "generatorVersion": "2.18.5"
 }
