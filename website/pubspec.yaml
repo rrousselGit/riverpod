@@ -19,6 +19,7 @@ dependencies:
   riverpod:
     path: ../packages/riverpod
   riverpod_annotation:
+  shared_preferences: ^2.0.15
 
 dev_dependencies:
   build_runner:
