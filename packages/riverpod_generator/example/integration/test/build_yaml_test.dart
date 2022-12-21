@@ -7,7 +7,7 @@ void main() {
     'ensure_build',
     () => expectBuildClean(
       packageRelativeDirectory:
-          'packages/riverpod_generator/examples/build_yaml',
+          'packages/riverpod_generator/example/integration',
     ),
     timeout: const Timeout(Duration(minutes: 1)),
   );
