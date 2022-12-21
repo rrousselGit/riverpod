@@ -35,6 +35,7 @@ module.exports = {
           ],
         },
         "concepts/provider_observer",
+        "concepts/why_immutability",
       ],
     },
     {
