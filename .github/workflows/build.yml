@@ -63,6 +63,11 @@ jobs:
         run: echo "PUB_CACHE="$HOME/.pub-cache"" >> $GITHUB_ENV
       - name: Install dependencies
         run: flutter pub get
+      - name: Install dependencies (integration/buid.yaml)
+        run: |
+          if test -d "integration/build.yaml"; then
+            flutter pub get
+          fi
 
       - name: Check format
         run: flutter format --set-exit-if-changed .
