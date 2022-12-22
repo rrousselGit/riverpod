@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'live_stream_chat_provider.dart';
 
 /* SNIPPET START */
-// UI part is same as like Future provider
 Widget build(BuildContext context, WidgetRef ref) {
   final liveChats = ref.watch(liveStreamProvider);
   return liveChats.when(
