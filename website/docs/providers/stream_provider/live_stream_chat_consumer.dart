@@ -10,7 +10,7 @@ Widget build(BuildContext context, WidgetRef ref) {
   return liveChats.when(
     loading: () => const CircularProgressIndicator(),
     error: (error, stackTrace) => Text(error.toString()),
-    data: (msgs) {
+    data: (messages) {
       return Text(msgs);
     },
   );
