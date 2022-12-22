@@ -4,11 +4,6 @@ import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /* SNIPPET START */
-// Fake chats as data sorce
-// Error last index is represent error which type is not a string
-const fakeChats = ['John Hi', 'Flutter is Cute', 1];
-
-// stream provider
 final chatProvider = StreamProvider<List<String>>((ref) async* {
   // Connect to an API using sockets, and decode the output
   final socket = await Socket.connect('my-api', 4242);
