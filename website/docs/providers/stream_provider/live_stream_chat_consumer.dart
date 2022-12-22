@@ -5,7 +5,7 @@ import 'live_stream_chat_provider.dart';
 
 /* SNIPPET START */
 Widget build(BuildContext context, WidgetRef ref) {
-  final liveChats = ref.watch(liveStreamProvider);
+  final liveChats = ref.watch(chatProvider);
   // Like FutureProvider, it is possible to handle loading/error states using AsyncValue.when
   return liveChats.when(
     loading: () => const CircularProgressIndicator(),
