@@ -11,7 +11,16 @@ Widget build(BuildContext context, WidgetRef ref) {
     loading: () => const CircularProgressIndicator(),
     error: (error, stackTrace) => Text(error.toString()),
     data: (messages) {
-      return Text(msgs);
+      // Display all the messages in a scrollable list view.
+      return ListView.builder(
+        // Show messages from bottom to top
+        reverse: true,
+        itemCount: messages.length,
+        itemBuilder: (context, index) {
+          final message = messages[index];
+          return Text(message);
+        },
+      );
     },
   );
 }
