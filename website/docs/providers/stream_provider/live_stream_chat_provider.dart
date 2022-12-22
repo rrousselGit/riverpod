@@ -12,7 +12,7 @@ final liveStreamProvider = StreamProvider((ref) {
 });
 // fake chats come as Stream
 Stream<String> liveStreamChat() async* {
-  for (var i = 0; i < 10; i++) {
+  for (var i = 0; i < fakeChats.length; i++) {
 // Wait for a second
     yield await Future.delayed(const Duration(seconds: 1));
     try {
