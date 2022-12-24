@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'todos.dart';
+import 'codegen.dart';
 
 /* SNIPPET START */
 

@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'todos.g.dart';
+part 'codegen.g.dart';
 
 /* SNIPPET START */
 
