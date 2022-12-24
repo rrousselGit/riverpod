@@ -21,6 +21,9 @@ It is typically used for:
 - centralizing the logic for modifying some state (aka "business logic") in a
   single place, improving maintainability over time.
 
+:::info
+Prefer using [NotifierProvider] instead.  
+:::
 
 As a usage example, we could use `StateNotifierProvider` to implement a todo-list.
 Doing so would allow us to expose methods such as `addTodo` to let the UI
@@ -37,3 +40,4 @@ with the list of todos in our UI:
 [statenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/StateNotifier-class.html
 [provider]: ./provider
 [futureprovider]: ./future_provider
+[notifierprovider]: ./notifier_provider
