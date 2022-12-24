@@ -8,6 +8,7 @@ export 'src/async_notifier.dart'
         FamilyAsyncNotifierProviderImpl,
         AsyncNotifierBase,
         AsyncNotifierProviderBase,
+        CancelAsyncSubscription,
         BuildlessAsyncNotifier,
         BuildlessAutoDisposeAsyncNotifier,
         FutureHandlerProviderElementMixin;

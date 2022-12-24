@@ -2,6 +2,7 @@ import 'package:meta/meta.dart';
 
 import 'framework.dart' show ProviderElementBase;
 import 'internals.dart' show OnError;
+import 'pragma.dart';
 import 'result.dart';
 
 /// Listener for [_ValueListenable]
@@ -255,7 +256,7 @@ class _ValueListenable<T> {
   /// in response to a notification) that has been registered multiple times.
   /// See the discussion at [_removeListener].
   @protected
-  @pragma('vm:notify-debugger-on-exception')
+  @notifyDebuggerOnException
   void _notifyListeners(void Function(_Listener<T> listener) notify) {
     assert(_ValueListenable.debugAssertNotDisposed(this), '');
     if (_count == 0) {

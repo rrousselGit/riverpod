@@ -75,23 +75,34 @@ void main() {
   });
 
   test('Does not skip return value if ref.state was set', () async {
-    final completer = Completer<void>();
     final provider = FutureProvider<int>((ref) async {
       await Future<void>.value();
       ref.state = const AsyncData(1);
       await Future<void>.value();
       ref.state = const AsyncData(2);
       await Future<void>.value();
-      completer.complete();
       return 3;
     });
     final container = createContainer();
     final listener = Listener<AsyncValue<int>>();
+    // Completer used for the sole purpose of being able to await `provider.future`
+    // Since `provider` emits `AsyncData` before the future completes, then
+    // `provider.future` completes early.
+    // As such, awaiting `provider.future` isn't enough to fully await the FutureProvider
+    final completer = Completer<void>();
 
-    container.listen(provider, listener, fireImmediately: true);
+    container.listen<AsyncValue<int>>(
+      provider,
+      (prev, next) {
+        if (next.value == 3) {
+          completer.complete();
+        }
+        listener(prev, next);
+      },
+      fireImmediately: true,
+    );
 
     await completer.future;
-    await container.pump();
 
     verifyInOrder([
       listener(null, const AsyncLoading<int>()),
@@ -710,7 +721,7 @@ void main() {
       listener(const AsyncValue.loading(), const AsyncValue.data(42)),
     );
 
-    await container.pump();
+    await container.read(provider.future);
 
     verifyNoMoreInteractions(listener);
   });
