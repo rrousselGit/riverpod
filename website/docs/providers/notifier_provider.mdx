@@ -1,5 +1,5 @@
 ---
-title: NotifierProvider
+title: (Async)NotifierProvider
 ---
 
 import Tabs from "@theme/Tabs";
@@ -9,15 +9,15 @@ import todos from "./notifier_provider/todos";
 import todosConsumer from "!!raw-loader!/docs/providers/notifier_provider/todos/todos_consumer.dart";
 import { trimSnippet, AutoSnippet } from "../../src/components/CodeSnippet";
 
-[NotifierProvider] is a provider that is used to listen to and expose a
-[Notifier].  
-[NotifierProvider] along with [Notifier] is Riverpod's recommended solution
+[NotifierProvider] is a provider that is used to listen to and expose a [Notifier].
+[AsyncNotifier] is a [Notifier] that can be asynchronously initialized.
+[AsyncNotifierProvider] is a provider that is used to listen to and expose a [AsyncNotifier].  
+`(Async)NotifierProvider` along with `(Async)Notifier` is Riverpod's recommended solution
 for managing state which may change in reaction to a user interaction.
 
 It is typically used for:
 
-- exposing an **immutable** state which can change over time after reacting to
-  custom events.
+- exposing a state which can change over time after reacting to custom events.
 - centralizing the logic for modifying some state (aka "business logic") in a
   single place, improving maintainability over time.
 
@@ -34,3 +34,5 @@ with the list of todos in our UI:
 
 [notifier]: https://pub.dev/documentation/riverpod/latest/riverpod/Notifier-class.html
 [notifierprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/NotifierProvider.html
+[asyncnotifier]: https://pub.dev/documentation/riverpod/latest/riverpod/AsyncNotifier-class.html
+[asyncnotifierprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/AsyncNotifierProvider.html
