@@ -1,5 +1,7 @@
-# melos_managed_dependency_overrides: flutter_riverpod,hooks_riverpod,riverpod
+# melos_managed_dependency_overrides: flutter_riverpod,hooks_riverpod,riverpod,riverpod_annotation,riverpod_generator,cosmic_frontmatter
 dependency_overrides:
+  cosmic_frontmatter:
+    path: third-party/cosmic_frontmatter
   flutter_riverpod:
     path: ../packages/flutter_riverpod
   hooks_riverpod:
