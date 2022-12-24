@@ -1,6 +1,10 @@
-## [Unreleased patch]
+## 2.1.2
 
 - It is now correctly possible to use `ProviderSubscription`s inside `ConsumerState.dispose` (thanks to @1980)
+- Update dependencies.
+- fixes an exception on newer Dart versions
+- fixes an edge-case where `FutureProvider`/`AsyncNotifier` did not emit the new state when the created `Future` completed (#1997)
+- fixes errors inside FutureProvider/AsyncNotifier/StreamProvider not preserving the previous state (if any).
 - Update dependencies.
 
 ## 2.1.1
