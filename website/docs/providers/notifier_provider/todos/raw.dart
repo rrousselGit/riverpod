@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /* SNIPPET START */
 
-// The state of our Notifier should be immutable.
+// An immutable state is preferred.
 // We could also use packages like Freezed to help with the implementation.
 @immutable
 class Todo {

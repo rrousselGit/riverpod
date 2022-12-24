@@ -1,34 +1,18 @@
-import 'package:flutter/foundation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+part 'codegen.freezed.dart';
 part 'codegen.g.dart';
 
 /* SNIPPET START */
 
-// The state of our StateNotifier should be immutable.
-// We could also use packages like Freezed to help with the implementation.
-@immutable
-class Todo {
-  const Todo({
-    required this.id,
-    required this.description,
-    required this.completed,
-  });
-
-  // All properties should be `final` on our class.
-  final String id;
-  final String description;
-  final bool completed;
-
-  // Since Todo is immutable, we implement a method that allows cloning the
-  // Todo with slightly different content.
-  Todo copyWith({String? id, String? description, bool? completed}) {
-    return Todo(
-      id: id ?? this.id,
-      description: description ?? this.description,
-      completed: completed ?? this.completed,
-    );
-  }
+@freezed
+class Todo with _$Todo {
+  factory Todo({
+    required String id,
+    required String description,
+    required bool completed,
+  }) = _Todo;
 }
 
 // This will generates a Notifier and NotifierProvider.
