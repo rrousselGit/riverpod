@@ -113,9 +113,12 @@ class AsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
   }
 }
 
-/// A mixin shared by [AsyncNotifierProvider] and [FutureProvider] for dealing with
-/// the logic of listening to a [Future] and converting it into an [AsyncValue].
+/// Internal typedef for cancelling the subsription to an async operation
 @internal
+typedef CancelAsyncSubscription = void Function();
+
+/// Mixin to help implement logic for listening to [Future]s/[Stream]s and setup
+/// `provider.future` + convert the object into an [AsyncValue].
 mixin FutureHandlerProviderElementMixin<T>
     on ProviderElementBase<AsyncValue<T>> {
   /// A default implementation for [ProviderElementBase.updateShouldNotify].
@@ -142,131 +145,226 @@ mixin FutureHandlerProviderElementMixin<T>
   @internal
   final futureNotifier = ProxyElementValueNotifier<Future<T>>();
   Completer<T>? _futureCompleter;
-
-  /// The latest [Future] returned by [AsyncNotifier.build].
-  ///
-  /// This reference to the future is kept until a state is emitted.
-  /// As soon as a value is emitted, it will revert to `null`.
-  ///
-  /// The purpose of the variable is to handle the case where an [AsyncNotifier]
-  /// is disposed while still in loading state.
-  ///
-  /// In that scenario, `AsyncNotifier.future` will resolve with [_builtFuture].
-  Future<T>? _builtFuture;
+  Future<T>? _lastFuture;
+  CancelAsyncSubscription? _lastFutureSub;
+  CancelAsyncSubscription? _cancelSubscription;
 
   /// Handles manual state change (as opposed to automatic state change from
   /// listening to the [Future]).
   @protected
+  AsyncValue<T> get state => requireState;
+
+  @protected
   set state(AsyncValue<T> newState) {
     // TODO assert Notifier isn't disposed
-    newState.when(
-      error: _errorTransition,
-      loading: _loadingTransition,
-      data: _dataTransition,
+    newState.map(
+      loading: _onLoading,
+      error: onError,
+      data: onData,
     );
-
-    if (newState.isLoading) {
-      setState(newState.copyWithPrevious(requireState, isRefresh: false));
-    } else {
-      setState(newState);
-    }
   }
 
-  void _dataTransition(T value) {
-    final completer = _futureCompleter;
-    if (completer != null) {
-      completer.complete(value);
-      _futureCompleter = null;
-    } else {
-      futureNotifier.result = Result.data(Future.value(value));
-    }
+  @override
+  bool updateShouldNotify(AsyncValue<T> previous, AsyncValue<T> next) {
+    return FutureHandlerProviderElementMixin.handleUpdateShouldNotify(
+      previous,
+      next,
+    );
   }
 
-  void _loadingTransition() {
+  void _onLoading(AsyncLoading<T> value, {bool seamless = false}) {
+    asyncTransition(value, seamless: seamless);
     if (_futureCompleter == null) {
       final completer = _futureCompleter = Completer();
       futureNotifier.result = ResultData(completer.future);
     }
   }
 
-  void _errorTransition(Object err, StackTrace stackTrace) {
+  /// Life-cycle for when an error from the provider's "build" method is received.
+  ///
+  /// Might be invokved after the element is disposed in the case where `provider.future`
+  /// has yet to complete.
+  @visibleForOverriding
+  void onError(AsyncError<T> value, {bool seamless = false}) {
+    if (mounted) {
+      asyncTransition(value, seamless: seamless);
+    }
+
     final completer = _futureCompleter;
     if (completer != null) {
       completer
         // TODO test ignore
         ..future.ignore()
-        ..completeError(err, stackTrace);
+        ..completeError(
+          value.error,
+          value.stackTrace,
+        );
       _futureCompleter = null;
       // TODO SynchronousFuture.error
-    } else {
+    } else if (mounted) {
       futureNotifier.result = Result.data(
         // TODO test ignore
-        Future.error(err, stackTrace)..ignore(),
+        Future.error(
+          value.error,
+          value.stackTrace,
+        )..ignore(),
       );
     }
   }
 
-  /// Listens to a [Future] and transforms it into an [AsyncValue].
-  @internal
+  /// Life-cycle for when a data from the provider's "build" method is received.
+  ///
+  /// Might be invokved after the element is disposed in the case where `provider.future`
+  /// has yet to complete.
+  @visibleForOverriding
+  void onData(AsyncData<T> value, {bool seamless = false}) {
+    if (mounted) {
+      asyncTransition(value, seamless: seamless);
+    }
+
+    final completer = _futureCompleter;
+    if (completer != null) {
+      completer.complete(value.value);
+      _futureCompleter = null;
+    } else if (mounted) {
+      futureNotifier.result = Result.data(Future.value(value.value));
+    }
+  }
+
+  /// Listens to a [Stream] and convert it into an [AsyncValue].
+  @preferInline
+  void handleStream(
+    Stream<T> Function() create, {
+    required bool didChangeDependency,
+  }) {
+    _handleAsync(didChangeDependency: didChangeDependency, ({
+      required data,
+      required done,
+      required error,
+      required last,
+    }) {
+      final rawStream = create();
+      final stream = rawStream.isBroadcast
+          ? rawStream
+          : rawStream.asBroadcastStream(onCancel: (sub) => sub.cancel());
+
+      stream.lastCancelable(last, orElseError: _missingLastValueError);
+
+      final sub = stream.listen(data, onError: error, onDone: done);
+      return sub.cancel;
+    });
+  }
+
+  StateError _missingLastValueError() {
+    return StateError(
+      'The provider $origin was disposed during loading state, '
+      'yet no value could be emitted.',
+    );
+  }
+
+  /// Listens to a [Future] and convert it into an [AsyncValue].
+  @preferInline
   void handleFuture(
     FutureOr<T> Function() create, {
     required bool didChangeDependency,
   }) {
-    assert(_builtFuture == null, 'Bad state');
-    _loadingTransition();
-    asyncTransition(shouldClearPreviousState: didChangeDependency);
+    _handleAsync(didChangeDependency: didChangeDependency, ({
+      required data,
+      required done,
+      required error,
+      required last,
+    }) {
+      final futureOr = create();
+      if (futureOr is T) {
+        data(futureOr);
+        done();
+        return null;
+      }
+      // Received a Future<T>
 
-    final futureOrResult = Result.guard(create);
+      var running = true;
+      void cancel() {
+        running = false;
+      }
 
-    // TODO test build throws -> provider emits AsyncError synchronously & .future emits Future.error
-    // TODO test build resolves with error -> emits AsyncError & .future emits Future.error
-    // TODO test build emits value -> .future emits value & provider emits AsyncData
-    futureOrResult.when(
-      error: (error, stackTrace) {
-        _errorTransition(error, stackTrace);
-        setState(AsyncError(error, stackTrace));
-      },
-      data: (futureOr) {
-        if (futureOr is Future<T>) {
-          _builtFuture = futureOr;
+      futureOr.then(
+        (value) {
+          if (!running) return;
+          data(value);
+          done();
+        },
+        // ignore: avoid_types_on_closure_parameters
+        onError: (Object err, StackTrace stackTrace) {
+          if (!running) return;
+          error(err, stackTrace);
+          done();
+        },
+      );
 
-          futureOr.then(
-            (value) {
-              // If _builtFuture has changed, it means either a new state
-              // was manually emitted (such as with AsyncNotifier.state=)
-              // or the provider rebuilt (so a new future was created).
-              if (_builtFuture == futureOr) {
-                _dataTransition(value);
-                setState(AsyncData(value));
-                _builtFuture = null;
-              }
-            },
-            // ignore: avoid_types_on_closure_parameters
-            onError: (Object error, StackTrace stackTrace) {
-              // If _builtFuture has changed, it means either a new state
-              // was manually emitted (such as with AsyncNotifier.state=)
-              // or the provider rebuilt (so a new future was created).
-              if (_builtFuture == futureOr) {
-                _errorTransition(error, stackTrace);
-                setState(AsyncError<T>(error, stackTrace));
-              }
-            },
-          );
-        } else {
-          // No need to set _builtFuture if AsyncNotifier.build resolved
-          // synchronously, as there is no loading state to handle.
+      last(futureOr, cancel);
 
-          _dataTransition(futureOr);
-          setState(AsyncData(futureOr));
-        }
-      },
-    );
+      return cancel;
+    });
+  }
+
+  /// Listens to a [Future] and transforms it into an [AsyncValue].
+  void _handleAsync(
+    // Stream<T> Function({required void Function(T) fireImmediately}) create,
+    CancelAsyncSubscription? Function({
+      required void Function(T) data,
+      required void Function(Object, StackTrace) error,
+      required void Function() done,
+      required void Function(Future<T>, CancelAsyncSubscription) last,
+    })
+        listen, {
+    required bool didChangeDependency,
+  }) {
+    _onLoading(AsyncLoading<T>(), seamless: !didChangeDependency);
+
+    try {
+      final sub = _cancelSubscription = listen(
+        data: (value) {
+          onData(AsyncData(value), seamless: !didChangeDependency);
+        },
+        error: (error, stack) {
+          onError(AsyncError(error, stack), seamless: !didChangeDependency);
+        },
+        last: (last, sub) {
+          assert(_lastFuture == null, 'bad state');
+          assert(_lastFutureSub == null, 'bad state');
+          _lastFuture = last;
+          _lastFutureSub = sub;
+        },
+        done: () {
+          _lastFutureSub?.call();
+          _lastFutureSub = null;
+          _lastFuture = null;
+        },
+      );
+      assert(
+        sub == null || _lastFuture != null,
+        'An async operation is pending but the state for provider.future was not initialized.',
+      );
+
+      // TODO test build throws -> provider emits AsyncError synchronously & .future emits Future.error
+      // TODO test build resolves with error -> emits AsyncError & .future emits Future.error
+      // TODO test build emits value -> .future emits value & provider emits AsyncData
+    } catch (error, stackTrace) {
+      onError(
+        AsyncError<T>(error, stackTrace),
+        seamless: !didChangeDependency,
+      );
+    }
   }
 
   @override
   void runOnDispose() {
-    // This will both stops listening to the previous future
-    _builtFuture = null;
+    // Stops listening to the previous async operation
+    _lastFutureSub?.call();
+    _lastFutureSub = null;
+    _lastFuture = null;
+    _cancelSubscription?.call();
+    _cancelSubscription = null;
     super.runOnDispose();
   }
 
@@ -274,19 +372,35 @@ mixin FutureHandlerProviderElementMixin<T>
   void dispose() {
     final completer = _futureCompleter;
     if (completer != null) {
-      final future = _builtFuture;
-      // It is normally safe to ignore this error, as the provider is meant
-      // to no-longer be used anymore.
+      // Whatever happens after this, the error is emitted post dispose of the provider.
+      // So the error doesn't matter anymore.
       completer.future.ignore();
 
-      if (future != null) {
-        future.then(completer.complete, onError: completer.completeError);
+      final lastFuture = _lastFuture;
+      if (lastFuture != null) {
+        // The completer will be completed by the while loop in handleStream
+
+        final cancelSubscription = _cancelSubscription;
+        if (cancelSubscription != null) {
+          completer.future
+              .then(
+                (_) {},
+                // ignore: avoid_types_on_closure_parameters
+                onError: (Object _) {},
+              )
+              .whenComplete(cancelSubscription);
+        }
+
+        // Prevent super.dispose from cancelling the subscription on the "last"
+        // stream value, so that it can be sent to `provider.future`.
+        _lastFuture = null;
+        _lastFutureSub = null;
+        _cancelSubscription = null;
       } else {
+        // The listened stream completed during a "loading" state.
         completer.completeError(
-          StateError(
-            'The provider $origin was disposed during loading state, '
-            'yet no value could be emitted.',
-          ),
+          _missingLastValueError(),
+          StackTrace.current,
         );
       }
     }
@@ -330,13 +444,14 @@ class AsyncNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
     // TODO test notifier constructor throws -> .future emits Future.error
     notifierResult.when(
       error: (error, stackTrace) {
-        _errorTransition(error, stackTrace);
-        setState(AsyncError(error, stackTrace));
+        onError(AsyncError(error, stackTrace), seamless: !didChangeDependency);
       },
-      data: (notifier) => handleFuture(
-        () => provider.runNotifierBuild(notifier),
-        didChangeDependency: didChangeDependency,
-      ),
+      data: (notifier) {
+        handleFuture(
+          () => provider.runNotifierBuild(notifier),
+          didChangeDependency: didChangeDependency,
+        );
+      },
     );
   }
 
@@ -357,5 +472,49 @@ class AsyncNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
     return _notifierNotifier.result?.stateOrNull
             ?.updateShouldNotify(previous, next) ??
         true;
+  }
+}
+
+extension<T> on Stream<T> {
+  void lastCancelable(
+    void Function(Future<T>, CancelAsyncSubscription) last, {
+    required Object Function() orElseError,
+  }) {
+    late StreamSubscription<T> subscription;
+    final completer = Completer<T>();
+
+    Result<T>? result;
+    subscription = listen(
+      (event) => result = Result.data(event),
+      // ignore: avoid_types_on_closure_parameters
+      onError: (Object error, StackTrace stackTrace) {
+        result = Result.error(error, stackTrace);
+      },
+      onDone: () {
+        if (result != null) {
+          result!.map(
+            data: (result) => completer.complete(result.state),
+            error: (result) {
+              // TODO: shoould this be reported to the zone?
+              completer.future.ignore();
+              completer.completeError(result.error, result.stackTrace);
+            },
+          );
+        } else {
+          // The error happens after the associated provider is disposed.
+          // As such, it's normally never read. Reporting this error as uncaught
+          // would cause too many false-positives. And the edge-cases that
+          // do reach this error will throw anyway
+          completer.future.ignore();
+
+          completer.completeError(
+            orElseError(),
+            StackTrace.current,
+          );
+        }
+      },
+    );
+
+    last(completer.future, subscription.cancel);
   }
 }

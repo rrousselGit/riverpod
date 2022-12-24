@@ -91,6 +91,32 @@ void main() {
           expect(container.read(provider), const AsyncData(1));
         });
 
+        test('performs seamless data > loading > error transition', () async {
+          final container = createContainer();
+          var result = Future.value(42);
+          final provider = FutureProvider((ref) => result);
+
+          final sub = container.listen(provider.future, (_, __) {});
+
+          expect(container.read(provider), const AsyncLoading<int>());
+          expect(await sub.read(), 42);
+          expect(container.read(provider), const AsyncData<int>(42));
+
+          result = Future.error('err', StackTrace.empty);
+          container.invalidate(provider);
+
+          expect(
+            container.read(provider),
+            const AsyncLoading<int>().copyWithPrevious(const AsyncData(42)),
+          );
+          await expectLater(sub.read(), throwsA('err'));
+          expect(
+            container.read(provider),
+            const AsyncError<int>('err', StackTrace.empty)
+                .copyWithPrevious(const AsyncData<int>(42)),
+          );
+        });
+
         test(
             'performs seamless:false copyWithPrevious if both triggered by a dependency change and ref.refresh',
             () async {
@@ -362,7 +388,7 @@ void main() {
 
       group('AsyncNotifier.state', () {
         test(
-            'when manually modifying the state, the new exposed value is identical to what is passed to the settter',
+            'when manually modifying the state, the new exposed value contains the previous state when possible',
             () async {
           final provider = factory.simpleTestProvider<int>((ref) => 0);
           final container = createContainer();
@@ -390,7 +416,13 @@ void main() {
 
           sub.read().state = newError;
 
-          expect(sub.read().state, same(newError));
+          expect(
+            sub.read().state,
+            newError.copyWithPrevious(
+              const AsyncLoading<int>()
+                  .copyWithPrevious(newState, isRefresh: false),
+            ),
+          );
         });
 
         test(
@@ -501,6 +533,7 @@ void main() {
           );
 
           final future = container.read(provider.future);
+
           container.dispose();
 
           completer.completeError(42);
@@ -509,7 +542,8 @@ void main() {
         });
 
         test(
-          'after manually going back to loading, resolves with last future result',
+          'going data > loading while the future is still pending. '
+          'Resolves with last future result',
           () async {
             final container = createContainer();
             final completer = Completer<int>.sync();

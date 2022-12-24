@@ -118,115 +118,25 @@ class StreamProvider<T> extends _StreamProviderBase<T>
 
 /// The element of [StreamProvider].
 class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
+    with FutureHandlerProviderElementMixin<T>
     implements StreamProviderRef<T> {
   StreamProviderElement._(_StreamProviderBase<T> super.provider);
-
-  final _futureNotifier = ProxyElementValueNotifier<Future<T>>();
-  Completer<T>? _completer;
 
   final _streamNotifier = ProxyElementValueNotifier<Stream<T>>();
   final StreamController<T> _streamController = StreamController<T>.broadcast();
 
-  StreamSubscription<T>? _streamSubscription;
-
-  @override
-  AsyncValue<T> get state => requireState;
-
-  @override
-  set state(AsyncValue<T> state) {
-    if (state.isLoading) {
-      setState(
-        state.copyWithPrevious(requireState, isRefresh: false),
-      );
-    } else {
-      setState(state);
-    }
-  }
-
   @override
   void create({required bool didChangeDependency}) {
-    asyncTransition(shouldClearPreviousState: didChangeDependency);
+    asyncTransition(AsyncLoading<T>(), seamless: !didChangeDependency);
     _streamNotifier.result ??= Result.data(_streamController.stream);
 
-    final streamResult = Result.guard(() {
-      final provider = this.provider as _StreamProviderBase<T>;
-      return provider._create(this);
-    });
-
-    streamResult.when(
-      data: _listenStream,
-      error: (err, stack) {
-        _futureNotifier.result = Result.data(
-          Future<T>.error(err, stack)
-            // TODO test ignore
-            ..ignore(),
-        );
-        setState(AsyncError<T>(err, stack));
+    handleStream(
+      () {
+        final provider = this.provider as _StreamProviderBase<T>;
+        return provider._create(this);
       },
+      didChangeDependency: didChangeDependency,
     );
-  }
-
-  @override
-  bool updateShouldNotify(AsyncValue<T> previous, AsyncValue<T> next) {
-    final wasLoading = previous is AsyncLoading;
-    final isLoading = next is AsyncLoading;
-
-    if (wasLoading || isLoading) return wasLoading != isLoading;
-
-    return true;
-  }
-
-  @pragma('vm:prefer-inline')
-  void _listenStream(Stream<T> stream) {
-    // TODO test that if a provider refreshes with before the stream has emitted a value,
-    // then .future isn't notifying listeners
-    if (_completer == null) {
-      final completer = _completer = Completer<T>();
-      _futureNotifier.result = Result.data(completer.future);
-    }
-
-    _streamSubscription = stream.listen(
-      (event) {
-        final completer = _completer;
-        if (completer != null) {
-          completer.complete(event);
-          _completer = null;
-        } else {
-          _futureNotifier.result = Result.data(Future.value(event));
-        }
-
-        setState(AsyncData(event));
-        _streamController.add(event);
-      },
-      // ignore: avoid_types_on_closure_parameters
-      onError: (Object err, StackTrace stack) {
-        final completer = _completer;
-        if (completer != null) {
-          completer
-            ..completeError(err, stack)
-            // The error is already sent to the Zone through the original Stream
-            // so no need for this Future to send the error to the Zone too.
-            ..future.ignore();
-          _completer = null;
-          // TODO can we have a SynchronousFutureError?
-        } else {
-          _futureNotifier.result = Result.data(
-            Future<T>.error(err, stack)
-              // TODO test ignore
-              ..ignore(),
-          );
-        }
-
-        setState(AsyncError<T>(err, stack));
-        _streamController.addError(err, stack);
-      },
-    );
-  }
-
-  @override
-  void runOnDispose() {
-    super.runOnDispose();
-    _streamSubscription?.cancel();
   }
 
   @override
@@ -247,8 +157,25 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
       elementVisitor: elementVisitor,
       notifierVisitor: notifierVisitor,
     );
-    notifierVisitor(_futureNotifier);
     notifierVisitor(_streamNotifier);
+  }
+
+  @override
+  void onData(AsyncData<T> value, {bool seamless = false}) {
+    if (!_streamController.isClosed) {
+      // The controller might be closed if onData is executed post dispose. Cf onData
+      _streamController.add(value.value);
+    }
+    super.onData(value, seamless: seamless);
+  }
+
+  @override
+  void onError(AsyncError<T> value, {bool seamless = false}) {
+    if (!_streamController.isClosed) {
+      // The controller might be closed if onError is executed post dispose. Cf onError
+      _streamController.addError(value.error, value.stackTrace);
+    }
+    super.onError(value, seamless: seamless);
   }
 }
 

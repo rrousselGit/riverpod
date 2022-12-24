@@ -9,18 +9,27 @@ import 'stream_provider.dart' show StreamProvider;
 @internal
 extension AsyncTransition<T> on ProviderElementBase<AsyncValue<T>> {
   /// Internal utility for transitioning an [AsyncValue] after a provider refresh.
-  void asyncTransition({required bool shouldClearPreviousState}) {
+  ///
+  /// [seamless] controls how the previous state is preserved:
+  /// - seamless:true => import previous state and skip loading
+  /// - seamless:false => import previous state and prefer loading
+  void asyncTransition(
+    AsyncValue<T> newState, {
+    required bool seamless,
+  }) {
     // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
     final previous = getState()?.requireState;
 
     if (previous == null) {
       // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-      setState(AsyncLoading<T>());
+      setState(newState);
     } else {
       // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
       setState(
-        AsyncLoading<T>()
-            .copyWithPrevious(previous, isRefresh: !shouldClearPreviousState),
+        newState.copyWithPrevious(
+          previous,
+          isRefresh: seamless,
+        ),
       );
     }
   }
