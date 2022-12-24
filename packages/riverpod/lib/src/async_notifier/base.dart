@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_types_on_closure_parameters
-
 part of '../async_notifier.dart';
 
 /// A [AsyncNotifier] base class shared between family and non-family notifiers.
@@ -295,6 +293,7 @@ mixin FutureHandlerProviderElementMixin<T>
           data(value);
           done();
         },
+        // ignore: avoid_types_on_closure_parameters
         onError: (Object err, StackTrace stackTrace) {
           if (!running) return;
           error(err, stackTrace);
@@ -384,7 +383,11 @@ mixin FutureHandlerProviderElementMixin<T>
         final cancelSubscription = _cancelSubscription;
         if (cancelSubscription != null) {
           completer.future
-              .then((_) {}, onError: (Object _) {})
+              .then(
+                (_) {},
+                // ignore: avoid_types_on_closure_parameters
+                onError: (Object _) {},
+              )
               .whenComplete(cancelSubscription);
         }
 
@@ -483,6 +486,7 @@ extension<T> on Stream<T> {
     Result<T>? result;
     subscription = listen(
       (event) => result = Result.data(event),
+      // ignore: avoid_types_on_closure_parameters
       onError: (Object error, StackTrace stackTrace) {
         result = Result.error(error, stackTrace);
       },
