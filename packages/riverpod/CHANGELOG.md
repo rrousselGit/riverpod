@@ -1,3 +1,7 @@
+## 2.1.3
+
+Fixes an issue with `FutureProvider<void>` (#2028)
+
 ## 2.1.2
 
 - Update dependencies.

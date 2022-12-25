@@ -1,3 +1,7 @@
+## 1.1.1
+
+Upgrade Riverpod to latest
+
 ## 1.1.0
 
 Upgrade Riverpod to latest
