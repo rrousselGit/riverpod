@@ -1,3 +1,7 @@
+## 1.1.1
+
+Upgrade Riverpod to latest
+
 ## 1.1.0
 
 - The generated hash function of providers is now correctluy private (thanks to @westito)

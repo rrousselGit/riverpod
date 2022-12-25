@@ -275,7 +275,7 @@ mixin FutureHandlerProviderElementMixin<T>
       required last,
     }) {
       final futureOr = create();
-      if (futureOr is T) {
+      if (futureOr is! Future<T>) {
         data(futureOr);
         done();
         return null;

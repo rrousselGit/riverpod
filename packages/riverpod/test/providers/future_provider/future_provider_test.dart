@@ -58,6 +58,20 @@ void main() {
     });
   });
 
+  test('Supports void type', () async {
+    // Regression test for https://github.com/rrousselGit/riverpod/issues/2028
+    final testProvider = FutureProvider<void>((ref) async {
+      return Future.value();
+    });
+
+    final container = createContainer();
+    expect(container.read(testProvider), const AsyncLoading<void>());
+
+    await container.read(testProvider.future);
+
+    expect(container.read(testProvider), const AsyncData<void>(null));
+  });
+
   test('supports overrideWith', () {
     final provider = FutureProvider<int>((ref) => 0);
     final autoDispose = FutureProvider.autoDispose<int>((ref) => 0);

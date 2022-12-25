@@ -1,3 +1,7 @@
+## 2.1.3
+
+Fixes an issue with `FutureProvider<void>` (#2028)
+
 ## 2.1.2
 
 - It is now correctly possible to use `ProviderSubscription`s inside `ConsumerState.dispose` (thanks to @1980)
