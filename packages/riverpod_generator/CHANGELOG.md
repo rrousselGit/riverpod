@@ -1,7 +1,8 @@
-## [Unreleased patch]
+## 1.1.0
 
 - The generated hash function of providers is now correctluy private (thanks to @westito)
 - Allow customizing the name of the generated providers (thanks to @trejdych)
+- Update dependencies.
 
 ## 1.0.6
 
