@@ -2,21 +2,27 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'reading_counter.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'codegen.g.dart';
 
 /* SNIPPET START */
 
-final counterProvider = StateNotifierProvider<Counter, int>((ref) => Counter(ref));
+@riverpod
+class Counter extends _$Counter {
+  @override
+  int build() => 0;
+}
 
 class HomeView extends ConsumerWidget {
-  const HomeView({Key? key}): super(key: key);
+  const HomeView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.listen<int>(counterProvider, (int? previousCount, int newCount) {
       print('The counter changed $newCount');
     });
-    
+
     return Container();
   }
 }
