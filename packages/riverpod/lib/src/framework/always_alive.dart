@@ -9,11 +9,13 @@ part of '../framework.dart';
 mixin AlwaysAliveProviderListenable<State> on ProviderListenable<State> {
   @override
   AlwaysAliveProviderListenable<Selected> select<Selected>(
-    Selected Function(State value) selector,
-  ) {
+    Selected Function(State value) selector, {
+    bool Function(Selected, Selected)? equality,
+  }) {
     return _AlwaysAliveProviderSelector<State, Selected>(
       provider: this,
       selector: selector,
+      equality: equality,
     );
   }
 }
@@ -28,11 +30,13 @@ mixin AlwaysAliveProviderBase<State> on ProviderBase<State>
         AlwaysAliveRefreshable<State> {
   @override
   AlwaysAliveProviderListenable<Selected> select<Selected>(
-    Selected Function(State value) selector,
-  ) {
+    Selected Function(State value) selector, {
+    bool Function(Selected, Selected)? equality,
+  }) {
     return _AlwaysAliveProviderSelector<State, Selected>(
       provider: this,
       selector: selector,
+      equality: equality,
     );
   }
 }

@@ -37,13 +37,16 @@ class _ProviderSelector<Input, Output> with ProviderListenable<Output> {
   _ProviderSelector({
     required this.provider,
     required this.selector,
-  });
+    bool Function(Output, Output)? equality,
+  }) : equality = equality ?? ((x, y) => x == y);
 
   /// The provider that was selected
   final ProviderListenable<Input> provider;
 
   /// The selector applied
   final Output Function(Input) selector;
+
+  final bool Function(Output, Output) equality;
 
   Result<Output> _select(Result<Input> value) {
     assert(
@@ -84,7 +87,7 @@ class _ProviderSelector<Input, Output> with ProviderListenable<Output> {
     final newSelectedValue = _select(Result.data(newState));
     if (!lastSelectedValue.hasState ||
         !newSelectedValue.hasState ||
-        lastSelectedValue.requireState != newSelectedValue.requireState) {
+        !equality(lastSelectedValue.requireState, newSelectedValue.requireState)) {
       // TODO test events after selector exception correctly send `previous`s
 
       onChange(newSelectedValue);
@@ -194,5 +197,6 @@ class _AlwaysAliveProviderSelector<Input, Output>
   _AlwaysAliveProviderSelector({
     required super.provider,
     required super.selector,
+    super.equality,
   });
 }

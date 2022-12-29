@@ -149,11 +149,13 @@ mixin ProviderListenable<State> {
   /// This will further optimise our widget by rebuilding it only when "isAdult"
   /// changed instead of whenever the age changes.
   ProviderListenable<Selected> select<Selected>(
-    Selected Function(State value) selector,
-  ) {
+    Selected Function(State value) selector, {
+    bool Function(Selected, Selected)? equality,
+  }) {
     return _ProviderSelector<State, Selected>(
       provider: this,
       selector: selector,
+      equality: equality,
     );
   }
 }
