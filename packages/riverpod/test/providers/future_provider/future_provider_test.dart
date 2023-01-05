@@ -1,13 +1,99 @@
+// ignore_for_file: avoid_types_on_closure_parameters
+
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/synchronous_future.dart';
 import 'package:test/test.dart';
 
 import '../../utils.dart';
 
 void main() {
+  group('FutureProviderRef.future', () {
+    test('returns the pending future', () async {
+      final container = createContainer();
+      Future<int>? future;
+      int? value;
+      final provider = FutureProvider<int>((ref) {
+        future = ref.future;
+        if (value == null) return ref.future;
+        return value;
+      });
+
+      container.read(provider);
+
+      expect(
+        future,
+        same(container.read(provider.future)),
+      );
+      expect(future, completion(42));
+
+      value = 42;
+      container.refresh(provider);
+
+      expect(
+        future,
+        same(container.read(provider.future)),
+      );
+      expect(future, completion(42));
+    });
+
+    test('flushes the provider when reading ref.future', () async {
+      final container = createContainer();
+      var result = Future.value(42);
+      late FutureProviderRef<int> ref;
+      final provider = FutureProvider<int>((r) {
+        ref = r;
+        return result;
+      });
+
+      container.read(provider);
+
+      await expectLater(ref.future, completion(42));
+
+      result = Future.value(21);
+      container.invalidate(provider);
+
+      expect(ref.future, completion(21));
+    });
+  });
+
+  test('supports overrideWith', () {
+    final provider = FutureProvider<int>((ref) => 0);
+    final autoDispose = FutureProvider.autoDispose<int>((ref) => 0);
+    final container = createContainer(
+      overrides: [
+        provider.overrideWith((FutureProviderRef<int> ref) => 42),
+        autoDispose.overrideWith(
+          (AutoDisposeFutureProviderRef<int> ref) => 84,
+        ),
+      ],
+    );
+
+    expect(container.read(provider).value, 42);
+    expect(container.read(autoDispose).value, 84);
+  });
+
+  test('supports family overrideWith', () {
+    final family = FutureProvider.family<String, int>((ref, arg) => '0 $arg');
+    final autoDisposeFamily = FutureProvider.autoDispose.family<String, int>(
+      (ref, arg) => '0 $arg',
+    );
+    final container = createContainer(
+      overrides: [
+        family.overrideWith(
+          (FutureProviderRef<String> ref, int arg) => '42 $arg',
+        ),
+        autoDisposeFamily.overrideWith(
+          (AutoDisposeFutureProviderRef<String> ref, int arg) => '84 $arg',
+        ),
+      ],
+    );
+
+    expect(container.read(family(10)).value, '42 10');
+    expect(container.read(autoDisposeFamily(10)).value, '84 10');
+  });
+
   test('Emits AsyncLoading before the create function is executed', () async {
     final container = createContainer();
     late AsyncValue<int> state;
@@ -74,7 +160,7 @@ void main() {
 
       completer2.complete(42);
 
-      await expectLater(container.read(provider.future), SynchronousFuture(42));
+      await expectLater(container.read(provider.future), completion(42));
     });
 
     test(
@@ -115,7 +201,11 @@ void main() {
       expect(container.read(provider), const AsyncData(0));
 
       container.read(dep.notifier).state++;
-      expect(container.read(provider), const AsyncLoading<int>());
+      expect(
+        container.read(provider),
+        const AsyncLoading<int>()
+            .copyWithPrevious(const AsyncData(0), isRefresh: false),
+      );
 
       await expectLater(container.read(provider.future), completion(1));
       expect(container.read(provider), const AsyncData(1));
@@ -132,7 +222,11 @@ void main() {
       expect(container.read(provider), const AsyncData(0));
 
       container.read(dep.notifier).state++;
-      expect(container.refresh(provider), const AsyncLoading<int>());
+      expect(
+        container.refresh(provider),
+        const AsyncLoading<int>()
+            .copyWithPrevious(const AsyncData(0), isRefresh: false),
+      );
 
       await expectLater(container.read(provider.future), completion(1));
       expect(container.read(provider), const AsyncData(1));
@@ -155,11 +249,19 @@ void main() {
 
     ref.state = const AsyncLoading<int>();
 
-    expect(ref.state, const AsyncLoading<int>());
+    expect(
+      ref.state,
+      const AsyncLoading<int>()
+          .copyWithPrevious(const AsyncData(0), isRefresh: false),
+    );
 
     verifyOnly(
       listener,
-      listener(const AsyncData(0), const AsyncLoading<int>()),
+      listener(
+        const AsyncData(0),
+        const AsyncLoading<int>()
+            .copyWithPrevious(const AsyncData(0), isRefresh: false),
+      ),
     );
   });
 
@@ -249,7 +351,7 @@ void main() {
 
     verifyOnly(listener, listener(null, const AsyncValue.loading()));
 
-    container.read(dep.state).state++;
+    container.read(dep.notifier).state++;
     await container.pump();
 
     verifyNoMoreInteractions(listener);
@@ -271,7 +373,7 @@ void main() {
 
     verifyOnly(listener, listener(any, any));
 
-    container.read(dep.state).state++;
+    container.read(dep.notifier).state++;
     await container.pump();
 
     verifyNoMoreInteractions(listener);
@@ -314,6 +416,7 @@ void main() {
       final container = createContainer(
         parent: root,
         overrides: [
+          // ignore: deprecated_member_use_from_same_package
           provider.overrideWithProvider(FutureProvider((ref) async => 42)),
         ],
       );
@@ -440,15 +543,14 @@ void main() {
     test('update dependents when the future changes', () async {
       final futureProvider = StateProvider((ref) => Future.value(42));
       // a FutureProvider that can rebuild with a new future
-      final provider =
-          FutureProvider<int>((ref) => ref.watch(futureProvider.state).state);
+      final provider = FutureProvider<int>((ref) => ref.watch(futureProvider));
       var callCount = 0;
       final dependent = Provider<Future<int>>((ref) {
         callCount++;
         return ref.watch(provider.future);
       });
       final container = createContainer();
-      final futureController = container.read(futureProvider.state);
+      final futureController = container.read(futureProvider.notifier);
 
       await expectLater(container.read(dependent), completion(42));
       expect(callCount, 1);
@@ -469,7 +571,7 @@ void main() {
       // a FutureProvider that can rebuild with a new future
       final provider = FutureProvider.autoDispose(
         name: 'provider',
-        (ref) => ref.watch(futureProvider.state).state,
+        (ref) => ref.watch(futureProvider),
       );
       var callCount = 0;
       final dependent = Provider.autoDispose(name: 'dependent', (ref) {
@@ -478,7 +580,7 @@ void main() {
       });
       final container = createContainer();
 
-      final futureController = container.read(futureProvider.state);
+      final futureController = container.read(futureProvider.notifier);
 
       final sub = container.listen(dependent, (_, __) {});
 

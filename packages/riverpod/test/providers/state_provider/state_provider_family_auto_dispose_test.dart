@@ -35,7 +35,7 @@ void main() {
         final container = createContainer(parent: root, overrides: [provider]);
 
         expect(container.read(provider(0).notifier).state, 0);
-        expect(container.read(provider(0).state).state, 0);
+        expect(container.read(provider(0)), 0);
         expect(
           container.getAllProviderElementsInOrder(),
           unorderedEquals(<Object?>[
@@ -60,7 +60,7 @@ void main() {
         );
 
         expect(container.read(provider(0).notifier).state, 42);
-        expect(container.read(provider(0).state).state, 42);
+        expect(container.read(provider(0)), 42);
         expect(root.getAllProviderElementsInOrder(), isEmpty);
         expect(
           container.getAllProviderElementsInOrder(),
@@ -84,7 +84,7 @@ void main() {
         overrides: [dep.overrideWithValue(42)],
       );
 
-      expect(container.read(provider(10).state).state, 52);
+      expect(container.read(provider(10)), 52);
       expect(container.read(provider(10).notifier).state, 52);
 
       expect(root.getAllProviderElements(), isEmpty);

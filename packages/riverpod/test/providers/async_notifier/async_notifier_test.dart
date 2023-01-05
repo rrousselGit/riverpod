@@ -5,7 +5,6 @@ import 'dart:async';
 import 'package:meta/meta.dart';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart' hide ErrorListener;
-import 'package:riverpod/src/synchronous_future.dart';
 import 'package:test/test.dart';
 
 import '../../utils.dart';
@@ -14,9 +13,9 @@ import 'factory.dart';
 void main() {
   for (final factory in matrix()) {
     group(factory.label, () {
-      group('supports refresh transition', () {
+      group('supports AsyncValue transition', () {
         test(
-            'sets isRefreshing to true if triggered by a ref.invalidate/ref.refresh',
+            'performs seamless copyWithPrevious if triggered by ref.invalidate/ref.refresh',
             () async {
           final container = createContainer();
           var count = 0;
@@ -47,7 +46,28 @@ void main() {
           expect(container.read(provider), const AsyncData(2));
         });
 
-        test('does not set isRefreshing if triggered by a dependency change',
+        test(
+            'performs seamless:false copyWithPrevious on `state = AsyncLoading()`',
+            () async {
+          final container = createContainer();
+          final provider = factory.simpleTestProvider((ref) => Future.value(0));
+
+          final sub = container.listen(provider.notifier, (previous, next) {});
+
+          await expectLater(container.read(provider.future), completion(0));
+          expect(container.read(provider), const AsyncData(0));
+
+          sub.read().state = const AsyncLoading<int>();
+
+          expect(
+            sub.read().state,
+            const AsyncLoading<int>()
+                .copyWithPrevious(const AsyncData(0), isRefresh: false),
+          );
+        });
+
+        test(
+            'performs seamless:false copyWithPrevious if triggered by a dependency change',
             () async {
           final container = createContainer();
           final dep = StateProvider((ref) => 0);
@@ -61,14 +81,18 @@ void main() {
           expect(container.read(provider), const AsyncData(0));
 
           container.read(dep.notifier).state++;
-          expect(container.read(provider), const AsyncLoading<int>());
+          expect(
+            container.read(provider),
+            const AsyncLoading<int>()
+                .copyWithPrevious(const AsyncData(0), isRefresh: false),
+          );
 
           await expectLater(container.read(provider.future), completion(1));
           expect(container.read(provider), const AsyncData(1));
         });
 
         test(
-            'does not set isRefreshing if both triggered by a dependency change and ref.refresh',
+            'performs seamless:false copyWithPrevious if both triggered by a dependency change and ref.refresh',
             () async {
           final container = createContainer();
           final dep = StateProvider((ref) => 0);
@@ -82,7 +106,11 @@ void main() {
           expect(container.read(provider), const AsyncData(0));
 
           container.read(dep.notifier).state++;
-          expect(container.refresh(provider), const AsyncLoading<int>());
+          expect(
+            container.refresh(provider),
+            const AsyncLoading<int>()
+                .copyWithPrevious(const AsyncData(0), isRefresh: false),
+          );
 
           await expectLater(container.read(provider.future), completion(1));
           expect(container.read(provider), const AsyncData(1));
@@ -226,7 +254,7 @@ void main() {
 
         verifyOnly(listener, listener(null, const AsyncData(0)));
         expect(container.read(provider.notifier).state, const AsyncData(0));
-        expect(container.read(provider.future), SynchronousFuture<int>(0));
+        await expectLater(container.read(provider.future), completion(0));
       });
 
       test(
@@ -354,7 +382,11 @@ void main() {
 
           sub.read().state = newLoading;
 
-          expect(sub.read().state, same(newLoading));
+          expect(
+            sub.read().state,
+            const AsyncLoading<int>()
+                .copyWithPrevious(newState, isRefresh: false),
+          );
 
           sub.read().state = newError;
 
@@ -384,7 +416,11 @@ void main() {
 
           container.read(dep.notifier).state++;
 
-          expect(notifier.state, const AsyncLoading<int>());
+          expect(
+            notifier.state,
+            const AsyncLoading<int>()
+                .copyWithPrevious(const AsyncData(0), isRefresh: false),
+          );
           expect(await container.read(provider.future), 1);
           expect(notifier.state, const AsyncData(1));
           verify(listener()).called(1);
@@ -527,12 +563,15 @@ void main() {
           final sub = container.listen(provider.notifier, (previous, next) {});
           container.listen(provider.future, listener, fireImmediately: true);
 
-          expect(sub.read().future, SynchronousFuture<int>(0));
-          verifyOnly(listener, listener(null, SynchronousFuture<int>(0)));
+          await expectLater(sub.read().future, completion(0));
+          verifyOnly(
+            listener,
+            listener(argThat(equals(null)), argThat(completion(0))),
+          );
 
           sub.read().state = const AsyncData(1);
 
-          expect(sub.read().future, SynchronousFuture<int>(1));
+          await expectLater(sub.read().future, completion(1));
         });
 
         test('retuns a Future identical to that of .future', () {
@@ -765,6 +804,51 @@ void main() {
       });
     });
   }
+
+  test('supports overrideWith', () {
+    final provider = AsyncNotifierProvider<AsyncTestNotifier<int>, int>(
+      () => AsyncTestNotifier((ref) => 0),
+    );
+    final autoDispose = AsyncNotifierProvider.autoDispose<
+        AutoDisposeAsyncTestNotifier<int>, int>(
+      () => AutoDisposeAsyncTestNotifier((ref) => 0),
+    );
+    final container = createContainer(
+      overrides: [
+        provider.overrideWith(() => AsyncTestNotifier((ref) => 42)),
+        autoDispose.overrideWith(
+          () => AutoDisposeAsyncTestNotifier((ref) => 84),
+        ),
+      ],
+    );
+
+    expect(container.read(provider).value, 42);
+    expect(container.read(autoDispose).value, 84);
+  });
+
+  test('supports family overrideWith', () {
+    final family =
+        AsyncNotifierProvider.family<AsyncTestNotifierFamily<int>, int, int>(
+      () => AsyncTestNotifierFamily<int>((ref) => 0),
+    );
+    final autoDisposeFamily = AsyncNotifierProvider.autoDispose
+        .family<AutoDisposeAsyncTestNotifierFamily<int>, int, int>(
+      () => AutoDisposeAsyncTestNotifierFamily<int>((ref) => 0),
+    );
+    final container = createContainer(
+      overrides: [
+        family.overrideWith(
+          () => AsyncTestNotifierFamily<int>((ref) => 42),
+        ),
+        autoDisposeFamily.overrideWith(
+          () => AutoDisposeAsyncTestNotifierFamily<int>((ref) => 84),
+        ),
+      ],
+    );
+
+    expect(container.read(family(10)).value, 42);
+    expect(container.read(autoDisposeFamily(10)).value, 84);
+  });
 
   group('AutoDispose variant', () {
     test('can watch autoDispose providers', () {

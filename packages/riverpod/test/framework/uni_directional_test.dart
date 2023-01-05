@@ -13,6 +13,32 @@ void main() {
     container.dispose();
   });
 
+  test(
+      'Catches circular dependency when dependencies are setup during provider initialization',
+      () {
+    // regression for #1766
+    final container = createContainer();
+
+    final authInterceptorProvider = Provider((ref) => ref);
+
+    final dioProvider = Provider<int>((ref) {
+      ref.watch(authInterceptorProvider);
+      return 0;
+    });
+
+    final accessTokenProvider = Provider<int>((ref) {
+      return ref.watch(dioProvider);
+    });
+
+    container.read(dioProvider);
+    final interceptor = container.read(authInterceptorProvider);
+
+    expect(
+      () => interceptor.read(accessTokenProvider),
+      throwsA(isA<CircularDependencyError>()),
+    );
+  });
+
   group('ProviderContainer.debugVsyncs', () {
     // test('are called before modifying a provider', () {
     //   final provider = StateProvider((ref) => 0);
@@ -42,7 +68,7 @@ void main() {
     //   final vsync = VsyncMock();
 
     //   final sub = container.listen(provider, (_) {});
-    //   container.read(dep.state).state++;
+    //   container.read(dep.notifier).state++;
 
     //   container.debugVsyncs.add(vsync);
 
@@ -69,18 +95,18 @@ void main() {
 
   test('rebuilding a provider can modify other providers', () async {
     final dep = StateProvider((ref) => 0);
-    final provider = Provider((ref) => ref.watch(dep.state).state);
+    final provider = Provider((ref) => ref.watch(dep));
     final another = StateProvider<int>((ref) {
       ref.listen(provider, (prev, value) => ref.controller.state++);
       return 0;
     });
     final container = createContainer();
 
-    expect(container.read(another.state).state, 0);
+    expect(container.read(another), 0);
 
-    container.read(dep.state).state = 42;
+    container.read(dep.notifier).state = 42;
 
-    expect(container.read(another.state).state, 1);
+    expect(container.read(another), 1);
   });
 
   group('ref.watch cannot end-up in a circular dependency', () {
@@ -162,7 +188,8 @@ void main() {
   test("initState can't dirty ancestors", () {
     final ancestor = StateProvider((_) => 0);
     final child = Provider((ref) {
-      return ref.watch(ancestor.state).state++;
+      ref.watch(ancestor.notifier).state++;
+      return ref.watch(ancestor);
     });
 
     expect(errorsOf(() => container.read(child)), isNotEmpty);
@@ -174,7 +201,7 @@ void main() {
     final sibling = StateNotifierProvider<Counter, int>(
       name: 'sibling',
       (ref) {
-        ref.watch(ancestor.state).state;
+        ref.watch(ancestor);
         return counter;
       },
     );
@@ -197,11 +224,11 @@ void main() {
   test("initState can't mark dirty other provider", () {
     final provider = StateProvider((ref) => 0);
     final provider2 = Provider((ref) {
-      ref.watch(provider.state).state = 42;
+      ref.watch(provider.notifier).state = 42;
       return 0;
     });
 
-    expect(container.read(provider.state).state, 0);
+    expect(container.read(provider), 0);
 
     expect(errorsOf(() => container.read(provider2)), isNotEmpty);
   });

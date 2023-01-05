@@ -165,6 +165,7 @@ abstract class TestNotifierBase<T> extends NotifierBase<T> {
   T get state => super.state;
 
   @override
+  // ignore: unnecessary_overrides, Remove protected
   set state(T value) => super.state = value;
 }
 

@@ -9,6 +9,16 @@ import 'utils.dart';
 
 void main() {
   group('WidgetRef.listenManual', () {
+    testWidgets('returns a subscription that can be used within State.dispose',
+        (tester) async {
+      await tester.pumpWidget(
+        const ProviderScope(child: DisposeListenManual()),
+      );
+
+      // Unmounting DisposeListenManual will throw if this is not allowed
+      await tester.pumpWidget(ProviderScope(child: Container()));
+    });
+
     testWidgets('listens to changes', (tester) async {
       final provider = StateProvider((ref) => 0);
       final listener = Listener<int>();
@@ -205,7 +215,7 @@ void main() {
         (tester) async {
       final isErrored = StateProvider((ref) => false);
       final dep = Provider<int>((ref) {
-        if (ref.watch(isErrored.state).state) throw UnimplementedError();
+        if (ref.watch(isErrored)) throw UnimplementedError();
         return 0;
       });
       final listener = Listener<int>();
@@ -232,7 +242,7 @@ void main() {
       final context = tester.element(find.byType(Consumer));
       final container = ProviderScope.containerOf(context);
 
-      container.read(isErrored.state).state = true;
+      container.read(isErrored.notifier).state = true;
 
       await tester.pump();
 
@@ -245,7 +255,7 @@ void main() {
         (tester) async {
       final isErrored = StateProvider((ref) => false);
       final dep = Provider<int>((ref) {
-        if (ref.watch(isErrored.state).state) throw UnimplementedError();
+        if (ref.watch(isErrored)) throw UnimplementedError();
         return 0;
       });
       final listener = Listener<int>();
@@ -272,7 +282,7 @@ void main() {
       final context = tester.element(find.byType(Consumer));
       final container = ProviderScope.containerOf(context);
 
-      container.read(isErrored.state).state = true;
+      container.read(isErrored.notifier).state = true;
 
       await tester.pump();
 
@@ -283,7 +293,7 @@ void main() {
     testWidgets('when rebuild throws, calls onError', (tester) async {
       final dep = StateProvider((ref) => 0);
       final provider = Provider((ref) {
-        if (ref.watch(dep.state).state != 0) {
+        if (ref.watch(dep) != 0) {
           throw UnimplementedError();
         }
         return 0;
@@ -308,7 +318,7 @@ void main() {
       final context = tester.element(find.byType(Consumer));
       final container = ProviderScope.containerOf(context);
 
-      container.read(dep.state).state++;
+      container.read(dep.notifier).state++;
 
       await tester.pump();
 
@@ -325,7 +335,7 @@ void main() {
       var buildCount = 0;
       final provider = Provider((ref) {
         buildCount++;
-        if (ref.watch(dep.state).state != 0) {
+        if (ref.watch(dep) != 0) {
           throw UnimplementedError();
         }
         return 0;
@@ -355,7 +365,7 @@ void main() {
       final context = tester.element(find.byType(Consumer));
       final container = ProviderScope.containerOf(context);
 
-      container.read(dep.state).state++;
+      container.read(dep.notifier).state++;
 
       await tester.pump();
 
@@ -367,4 +377,35 @@ void main() {
       );
     });
   });
+}
+
+final _provider = Provider<String>((ref) => '');
+
+class DisposeListenManual extends ConsumerStatefulWidget {
+  const DisposeListenManual({super.key});
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _DisposeListenOnceState();
+}
+
+class _DisposeListenOnceState extends ConsumerState<DisposeListenManual> {
+  late final ProviderSubscription<String> sub;
+
+  @override
+  void initState() {
+    super.initState();
+    sub = ref.listenManual(_provider, (prev, next) {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+
+  @override
+  void dispose() {
+    sub.read();
+    super.dispose();
+  }
 }

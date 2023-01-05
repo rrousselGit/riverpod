@@ -1,5 +1,7 @@
 // Tests that the ref is used before async gaps in widget methods
 
+// ignore_for_file: unused_result
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter/material.dart';
 

@@ -99,6 +99,18 @@ class AsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
   FutureOr<T> runNotifierBuild(AsyncNotifierBase<T> notifier) {
     return (notifier as AsyncNotifier<T>).build();
   }
+
+  /// {@macro riverpod.overridewith}
+  Override overrideWith(NotifierT Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: AsyncNotifierProviderImpl<NotifierT, T>(
+        create,
+        from: from,
+        argument: argument,
+      ),
+    );
+  }
 }
 
 /// A mixin shared by [AsyncNotifierProvider] and [FutureProvider] for dealing with
@@ -119,14 +131,16 @@ mixin FutureHandlerProviderElementMixin<T>
     return true;
   }
 
-  /// An internal function used to obtain the private [_futureNotifier] from the mixin
+  /// An internal function used to obtain the private [futureNotifier] from the mixin
   static ProxyElementValueNotifier<Future<T>> futureNotifierOf<T>(
     FutureHandlerProviderElementMixin<T> handler,
   ) {
-    return handler._futureNotifier;
+    return handler.futureNotifier;
   }
 
-  final _futureNotifier = ProxyElementValueNotifier<Future<T>>();
+  /// An observable for [FutureProvider.future].
+  @internal
+  final futureNotifier = ProxyElementValueNotifier<Future<T>>();
   Completer<T>? _futureCompleter;
 
   /// The latest [Future] returned by [AsyncNotifier.build].
@@ -151,7 +165,11 @@ mixin FutureHandlerProviderElementMixin<T>
       data: _dataTransition,
     );
 
-    setState(newState);
+    if (newState.isLoading) {
+      setState(newState.copyWithPrevious(requireState, isRefresh: false));
+    } else {
+      setState(newState);
+    }
   }
 
   void _dataTransition(T value) {
@@ -161,22 +179,15 @@ mixin FutureHandlerProviderElementMixin<T>
     if (completer != null) {
       completer.complete(value);
       _futureCompleter = null;
-
-      // Silently replace .future by a SynchronousFuture now that a value is
-      // available. No need to notify listeners, as the content of strictly the same.
-      // This allows future read of `.future` to resolve synchronously
-      _futureNotifier.UNSAFE_setResultWithoutNotifyingListeners(
-        Result.data(SynchronousFuture(value)),
-      );
     } else {
-      _futureNotifier.result = Result.data(SynchronousFuture(value));
+      futureNotifier.result = Result.data(Future.value(value));
     }
   }
 
   void _loadingTransition() {
     if (_futureCompleter == null) {
       final completer = _futureCompleter = Completer();
-      _futureNotifier.result = ResultData(completer.future);
+      futureNotifier.result = ResultData(completer.future);
     }
   }
 
@@ -192,7 +203,7 @@ mixin FutureHandlerProviderElementMixin<T>
       _futureCompleter = null;
       // TODO SynchronousFuture.error
     } else {
-      _futureNotifier.result = Result.data(
+      futureNotifier.result = Result.data(
         // TODO test ignore
         Future.error(err, stackTrace)..ignore(),
       );
@@ -297,7 +308,7 @@ mixin FutureHandlerProviderElementMixin<T>
       elementVisitor: elementVisitor,
       notifierVisitor: notifierVisitor,
     );
-    notifierVisitor(_futureNotifier);
+    notifierVisitor(futureNotifier);
   }
 }
 

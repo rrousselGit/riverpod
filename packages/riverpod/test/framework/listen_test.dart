@@ -372,7 +372,7 @@ void main() {
       final container = createContainer();
       final isErrored = StateProvider((ref) => false);
       final dep = Provider<int>((ref) {
-        if (ref.watch(isErrored.state).state) throw UnimplementedError();
+        if (ref.watch(isErrored)) throw UnimplementedError();
         return 0;
       });
       final listener = Listener<int>();
@@ -403,7 +403,7 @@ void main() {
       final container = createContainer();
       final isErrored = StateProvider((ref) => false);
       final dep = Provider<int>((ref) {
-        if (ref.watch(isErrored.state).state) throw UnimplementedError();
+        if (ref.watch(isErrored)) throw UnimplementedError();
         return 0;
       });
       final listener = Listener<int>();
@@ -420,7 +420,7 @@ void main() {
       verifyZeroInteractions(listener);
       expect(errors, isEmpty);
 
-      container.read(isErrored.state).state = true;
+      container.read(isErrored.notifier).state = true;
 
       await container.pump();
 
@@ -432,7 +432,7 @@ void main() {
       final container = createContainer();
       final dep = StateProvider((ref) => 0);
       final provider = Provider((ref) {
-        if (ref.watch(dep.state).state != 0) {
+        if (ref.watch(dep) != 0) {
           throw UnimplementedError();
         }
         return 0;
@@ -449,7 +449,7 @@ void main() {
       verifyZeroInteractions(errorListener);
       verifyZeroInteractions(listener);
 
-      container.read(dep.state).state++;
+      container.read(dep.notifier).state++;
       await container.pump();
 
       verifyZeroInteractions(listener);
@@ -463,7 +463,7 @@ void main() {
       final container = createContainer();
       final dep = StateProvider((ref) => 0);
       final provider = Provider((ref) {
-        if (ref.watch(dep.state).state != 0) {
+        if (ref.watch(dep) != 0) {
           throw UnimplementedError();
         }
         return 0;
@@ -484,7 +484,7 @@ void main() {
       verifyZeroInteractions(errorListener);
       verifyZeroInteractions(listener);
 
-      container.read(dep.state).state++;
+      container.read(dep.notifier).state++;
       await container.pump();
 
       verifyZeroInteractions(listener);
@@ -630,7 +630,7 @@ void main() {
         verifyOnly(listener, listener(null, 0));
         expect(errors, [isStateError]);
 
-        container.read(dep.state).state++;
+        container.read(dep.notifier).state++;
         verifyOnly(listener, listener(0, 1));
       });
 
@@ -642,14 +642,14 @@ void main() {
         final container = createContainer();
         final errors = <Object>[];
 
-        ProviderSubscription<StateController<int>>? sub;
+        ProviderSubscription<int>? sub;
 
         final provider = Provider((ref) {
           sub = runZonedGuarded(
-            () => ref.listen<StateController<int>>(
-              dep.state,
+            () => ref.listen<int>(
+              dep,
               (prev, value) {
-                listener(prev?.state, value.state);
+                listener(prev, value);
                 if (isFirstCall) {
                   isFirstCall = false;
                   throw StateError('Some error');
@@ -667,8 +667,8 @@ void main() {
         verifyOnly(listener, listener(null, 0));
         expect(errors, [isStateError]);
 
-        container.read(dep.state).state++;
-        verifyOnly(listener, listener(1, 1));
+        container.read(dep.notifier).state++;
+        verifyOnly(listener, listener(0, 1));
       });
 
       test(
@@ -676,10 +676,10 @@ void main() {
           () async {
         final dep = StateProvider<int>((ref) => 0);
         final dep2 = Provider<int>((ref) {
-          if (ref.watch(dep.state).state == 0) {
+          if (ref.watch(dep) == 0) {
             throw UnimplementedError();
           }
-          return ref.watch(dep.state).state;
+          return ref.watch(dep);
         });
         final listener = Listener<int>();
         final errorListener = ErrorListener();
@@ -718,7 +718,7 @@ void main() {
         );
         expect(errors, [isStateError]);
 
-        container.read(dep.state).state++;
+        container.read(dep.notifier).state++;
         await container.pump();
 
         verifyNoMoreInteractions(errorListener);
@@ -730,10 +730,10 @@ void main() {
           () async {
         final dep = StateProvider<int>((ref) => 0);
         final dep2 = Provider<int>((ref) {
-          if (ref.watch(dep.state).state == 0) {
+          if (ref.watch(dep) == 0) {
             throw UnimplementedError();
           }
-          return ref.watch(dep.state).state;
+          return ref.watch(dep);
         });
         final listener = Listener<int>();
         final errorListener = ErrorListener();
@@ -772,7 +772,7 @@ void main() {
         );
         expect(errors, [isStateError]);
 
-        container.read(dep.state).state++;
+        container.read(dep.notifier).state++;
         await container.pump();
 
         verifyNoMoreInteractions(errorListener);
@@ -787,7 +787,7 @@ void main() {
       final container = createContainer();
       final isErrored = StateProvider((ref) => false);
       final dep = Provider<int>((ref) {
-        if (ref.watch(isErrored.state).state) throw UnimplementedError();
+        if (ref.watch(isErrored)) throw UnimplementedError();
         return 0;
       });
       final listener = Listener<int>();
@@ -801,7 +801,7 @@ void main() {
       verifyZeroInteractions(listener);
       expect(errors, isEmpty);
 
-      container.read(isErrored.state).state = true;
+      container.read(isErrored.notifier).state = true;
 
       await container.pump();
 
@@ -815,7 +815,7 @@ void main() {
       final container = createContainer();
       final isErrored = StateProvider((ref) => false);
       final dep = Provider<int>((ref) {
-        if (ref.watch(isErrored.state).state) throw UnimplementedError();
+        if (ref.watch(isErrored)) throw UnimplementedError();
         return 0;
       });
       final listener = Listener<int>();
@@ -829,7 +829,7 @@ void main() {
       verifyZeroInteractions(listener);
       expect(errors, isEmpty);
 
-      container.read(isErrored.state).state = true;
+      container.read(isErrored.notifier).state = true;
 
       await container.pump();
 
@@ -841,7 +841,7 @@ void main() {
       final container = createContainer();
       final dep = StateProvider((ref) => 0);
       final provider = Provider((ref) {
-        if (ref.watch(dep.state).state != 0) {
+        if (ref.watch(dep) != 0) {
           throw UnimplementedError();
         }
         return 0;
@@ -854,7 +854,7 @@ void main() {
       verifyZeroInteractions(errorListener);
       verifyZeroInteractions(listener);
 
-      container.read(dep.state).state++;
+      container.read(dep.notifier).state++;
       await container.pump();
 
       verifyZeroInteractions(listener);
@@ -868,7 +868,7 @@ void main() {
       final container = createContainer();
       final dep = StateProvider((ref) => 0);
       final provider = Provider((ref) {
-        if (ref.watch(dep.state).state != 0) {
+        if (ref.watch(dep) != 0) {
           throw UnimplementedError();
         }
         return 0;
@@ -885,7 +885,7 @@ void main() {
       verifyZeroInteractions(errorListener);
       verifyZeroInteractions(listener);
 
-      container.read(dep.state).state++;
+      container.read(dep.notifier).state++;
       await container.pump();
 
       verifyZeroInteractions(listener);
@@ -943,17 +943,14 @@ void main() {
 
       final container = createContainer();
 
-      container.listen<StateController<num>>(
-        dep.state,
-        (prev, value) => listener(prev?.state, value.state),
-      );
+      container.listen<num>(dep, listener);
 
       verifyZeroInteractions(listener);
 
-      container.read(dep.state).state++;
+      container.read(dep.notifier).state++;
       await container.pump();
 
-      verifyOnly(listener, listener(1, 1));
+      verifyOnly(listener, listener(0, 1));
     });
 
     test(
@@ -964,22 +961,20 @@ void main() {
 
       final listener = Listener<int>();
 
-      container.listen<StateController<int>>(provider.state, (prev, value) {
-        listener(prev?.state, value.state);
-        container.listen<StateController<int>>(provider.state, (prev, value) {
-          listener(prev?.state, value.state);
-        });
+      container.listen<int>(provider, (prev, value) {
+        listener(prev, value);
+        container.listen<int>(provider, listener);
       });
 
       verifyZeroInteractions(listener);
 
-      container.read(provider.state).state++;
+      container.read(provider.notifier).state++;
 
-      verify(listener(1, 1)).called(1);
+      verify(listener(0, 1)).called(1);
 
-      container.read(provider.state).state++;
+      container.read(provider.notifier).state++;
 
-      verify(listener(2, 2)).called(2);
+      verify(listener(1, 2)).called(2);
     });
 
     test(
@@ -1030,30 +1025,28 @@ void main() {
         final listener2 = Listener<int>();
 
         final p = Provider((ref) {
-          ProviderSubscription<StateController<int>>? a;
-          ref.listen<StateController<int>>(provider.state, (prev, value) {
-            listener(prev?.state, value.state);
+          ProviderSubscription<int>? a;
+          ref.listen<int>(provider, (prev, value) {
+            listener(prev, value);
             a?.close();
             a = null;
           });
 
-          a = ref.listen<StateController<int>>(provider.state, (prev, value) {
-            listener2(prev?.state, value.state);
-          });
+          a = ref.listen<int>(provider, listener2);
         });
         container.read(p);
 
         verifyZeroInteractions(listener);
         verifyZeroInteractions(listener2);
 
-        container.read(provider.state).state++;
+        container.read(provider.notifier).state++;
 
         verifyInOrder([
           listener(1, 1),
           listener2(1, 1),
         ]);
 
-        container.read(provider.state).state++;
+        container.read(provider.notifier).state++;
 
         verify(listener(2, 2)).called(1);
         verifyNoMoreInteractions(listener2);
@@ -1075,24 +1068,22 @@ void main() {
       final listener = Listener<int>();
 
       final p = Provider((ref) {
-        ref.listen<StateController<int>>(provider.state, (prev, value) {
-          listener(prev?.state, value.state);
-          ref.listen<StateController<int>>(provider.state, (prev, value) {
-            listener(prev?.state, value.state);
-          });
+        ref.listen<int>(provider, (prev, value) {
+          listener(prev, value);
+          ref.listen<int>(provider, listener);
         });
       });
       container.read(p);
 
       verifyZeroInteractions(listener);
 
-      container.read(provider.state).state++;
+      container.read(provider.notifier).state++;
 
-      verify(listener(1, 1)).called(1);
+      verify(listener(0, 1)).called(1);
 
-      container.read(provider.state).state++;
+      container.read(provider.notifier).state++;
 
-      verify(listener(2, 2)).called(2);
+      verify(listener(1, 2)).called(2);
     });
 
     test(
@@ -1106,16 +1097,13 @@ void main() {
         final listener2 = Listener<int>();
 
         ProviderSubscription? a;
-        container.listen<StateController<int>>(provider.state, (prev, value) {
-          listener(prev?.state, value.state);
+        container.listen<int>(provider, (prev, value) {
+          listener(prev, value);
           a?.close();
           a = null;
         });
 
-        a = container.listen<StateController<int>>(provider.state,
-            (prev, value) {
-          listener2(prev?.state, value.state);
-        });
+        a = container.listen<int>(provider, listener2);
 
         verifyZeroInteractions(listener);
         verifyZeroInteractions(listener2);
@@ -1273,10 +1261,7 @@ void main() {
 
         final container = createContainer();
 
-        container.listen<StateController<int>>(
-          provider.state,
-          (prev, notifier) => listener(prev?.state, notifier.state),
-        );
+        container.listen<int>(provider, listener);
 
         verifyZeroInteractions(listener);
       });
@@ -1286,10 +1271,10 @@ void main() {
           () async {
         final dep = StateProvider<int>((ref) => 0);
         final provider = Provider<int>((ref) {
-          if (ref.watch(dep.state).state == 0) {
+          if (ref.watch(dep) == 0) {
             throw UnimplementedError();
           }
-          return ref.watch(dep.state).state;
+          return ref.watch(dep);
         });
         final listener = Listener<int>();
         final errorListener = ErrorListener();
@@ -1324,7 +1309,7 @@ void main() {
         );
         expect(errors, [isStateError]);
 
-        container.read(dep.state).state++;
+        container.read(dep.notifier).state++;
         await container.pump();
 
         verifyNoMoreInteractions(errorListener);
@@ -1336,10 +1321,10 @@ void main() {
           () async {
         final dep = StateProvider<int>((ref) => 0);
         final provider = Provider<int>((ref) {
-          if (ref.watch(dep.state).state == 0) {
+          if (ref.watch(dep) == 0) {
             throw UnimplementedError();
           }
-          return ref.watch(dep.state).state;
+          return ref.watch(dep);
         });
         final listener = Listener<int>();
         final errorListener = ErrorListener();
@@ -1374,7 +1359,7 @@ void main() {
         );
         expect(errors, [isStateError]);
 
-        container.read(dep.state).state++;
+        container.read(dep.notifier).state++;
         await container.pump();
 
         verifyNoMoreInteractions(errorListener);
@@ -1408,7 +1393,7 @@ void main() {
         verifyOnly(listener, listener(null, 0));
         expect(errors, [isStateError]);
 
-        container.read(provider.state).state++;
+        container.read(provider.notifier).state++;
 
         verifyOnly(listener, listener(0, 1));
       });
@@ -1422,10 +1407,10 @@ void main() {
         final errors = <Object>[];
 
         final sub = runZonedGuarded(
-          () => container.listen<StateController<int>>(
-            provider.state,
+          () => container.listen<int>(
+            provider,
             (prev, value) {
-              listener(prev?.state, value.state);
+              listener(prev, value);
               if (isFirstCall) {
                 isFirstCall = false;
                 throw StateError('Some error');
@@ -1440,9 +1425,9 @@ void main() {
         verifyOnly(listener, listener(null, 0));
         expect(errors, [isStateError]);
 
-        container.read(provider.state).state++;
+        container.read(provider.notifier).state++;
 
-        verifyOnly(listener, listener(1, 1));
+        verifyOnly(listener, listener(0, 1));
       });
 
       test('correctly listens to the provider if normal listener throws', () {
@@ -1454,10 +1439,10 @@ void main() {
         final errors = <Object>[];
 
         final sub = runZonedGuarded(
-          () => container.listen<StateController<int>>(
-            provider.state,
+          () => container.listen<int>(
+            provider,
             (prev, notifier) {
-              listener(prev?.state, notifier.state);
+              listener(prev, notifier);
               if (isFirstCall) {
                 isFirstCall = false;
                 throw StateError('Some error');
@@ -1472,9 +1457,9 @@ void main() {
         verifyOnly(listener, listener(null, 0));
         expect(errors, [isStateError]);
 
-        container.read(provider.state).state++;
+        container.read(provider.notifier).state++;
 
-        verifyOnly(listener, listener(1, 1));
+        verifyOnly(listener, listener(0, 1));
       });
     });
 
@@ -1597,7 +1582,7 @@ void main() {
       final container = createContainer();
 
       final count = StateProvider((ref) => 0);
-      final provider = Provider((ref) => ref.watch(count.state).state);
+      final provider = Provider((ref) => ref.watch(count));
 
       container.listen<int>(
         provider,
@@ -1605,7 +1590,7 @@ void main() {
         fireImmediately: true,
       );
 
-      container.read(count.state).state++;
+      container.read(count.notifier).state++;
 
       await expectLater(
         controller.stream,
@@ -1619,18 +1604,15 @@ void main() {
       final count = StateProvider((ref) => 0);
       final listener = Listener<int>();
 
-      container.listen<StateController<int>>(
-        count.state,
-        (prev, value) => listener(prev?.state, value.state),
-      );
+      container.listen<int>(count, listener);
 
-      container.read(count.state).state++;
+      container.read(count.notifier).state++;
 
-      verifyOnly(listener, listener(1, 1));
+      verifyOnly(listener, listener(0, 1));
 
-      container.read(count.state).state++;
+      container.read(count.notifier).state++;
 
-      verifyOnly(listener, listener(2, 2));
+      verifyOnly(listener, listener(1, 2));
     });
 
     test('supports selectors', () {
@@ -1647,11 +1629,11 @@ void main() {
 
       verifyOnly(listener, listener(null, true));
 
-      container.read(count.state).state = 2;
+      container.read(count.notifier).state = 2;
 
       verifyNoMoreInteractions(listener);
 
-      container.read(count.state).state = 3;
+      container.read(count.notifier).state = 3;
 
       verifyOnly(listener, listener(true, false));
     });

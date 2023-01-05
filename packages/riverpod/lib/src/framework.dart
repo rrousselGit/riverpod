@@ -5,7 +5,6 @@ import 'dart:collection';
 
 import 'package:meta/meta.dart';
 import 'package:state_notifier/state_notifier.dart';
-import 'devtool.dart';
 import 'internals.dart';
 import 'stack_trace.dart';
 
@@ -22,3 +21,4 @@ part 'framework/proxy_provider_listenable.dart';
 part 'framework/ref.dart';
 part 'framework/selector.dart';
 part 'framework/scheduler.dart';
+part 'framework/value_provider.dart';

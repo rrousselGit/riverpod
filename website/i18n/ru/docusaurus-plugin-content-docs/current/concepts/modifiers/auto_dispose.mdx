@@ -1,0 +1,137 @@
+---
+title: .autoDispose
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+Довольно часто есть необходимость аннулировать состояние
+провайдера, когда он больше не используется.
+
+Существует множество причин, почему стоит так делать:
+
+- При работе с Firebase необходимо разрывать соединение и избегать лишних нагрузок.
+- Сбрасывать экран до начального состояния, когда пользователь переоткрыл его.
+
+Провайдеры имеют встроенный механизм для этого: `.autoDispose`.
+
+## Использование
+
+Чтобы Riverpod аннулировал состояние провайдера, когда он больше не используется,
+нужно просто добавить `.autoDispose` к нашему провайдеру:
+
+```dart
+final userProvider = StreamProvider.autoDispose<User>((ref) {
+
+});
+```
+
+Готово. Теперь, когда `userProvider` перестанет использоваться, его состояние будет
+автоматически аннулировано.
+
+Обратите внимание на то, что generic параметры указываются после `autoDispose`.
+`autoDispose` не является именованным конструктором.
+
+:::note
+Вы можете комбинировать `.autoDispose` с другими модификаторами, если вам это необходимо:
+
+```dart
+final userProvider = StreamProvider.autoDispose.family<User, String>((ref, id) {
+
+});
+```
+
+:::
+
+### ref.keepAlive
+
+Использование `autoDispose` также предоставляет дополнительный метод для `ref`: `keepAlive`.
+
+`keepAlive` сообщает Riverpod, что состояние провайдера
+должно быть сохранено, даже когда провайдер больше не используется.
+
+Например, можно вызывать `keepAlive` после того, как завершился HTTP запрос:
+
+```dart
+final myProvider = FutureProvider.autoDispose((ref) async {
+  final response = await httpClient.get(...);
+  ref.keepAlive();
+  return response;
+});
+```
+
+Таким образом, если запрос завершится неудачей, и пользователь переоткроет экран, то
+запрос будет снова осуществлен.
+Но, если запрос завершится успешно, тогда состояние будет сохранено, и переоткрытие экрана
+не спровоцирует новый запрос.
+
+:::info
+В версии 1.0.x вместо `keepAlive` используется `maintainState`.
+:::
+
+## Пример: Отмена HTTP запросов, когда они больше не нужны
+
+`autoDispose` можно использовать с [FutureProvider] и `ref.onDispose`,
+чтобы легко отменить HTTP запросы, когда они больше не нужны.
+
+Цель:
+
+- Начать выполнение HTTP запроса, когда пользователь открыл экран
+- отменить запрос, если пользователь покинул экран до завершения запроса
+- если запрос успешно завершился, то покидание и переоткрытие экрана не должно
+спровоцировать новый запрос
+
+В коде это может выглядеть так:
+
+```dart
+final myProvider = FutureProvider.autoDispose((ref) async {
+  // Объект из package:dio, который позволяет отменять http запросы
+  final cancelToken = CancelToken();
+  // Отменить http запрос при аннулировании провайдера
+  ref.onDispose(() => cancelToken.cancel());
+
+  // Получение данных и передача `cancelToken` в качестве аргумента
+  final response = await dio.get('path', cancelToken: cancelToken);
+  // Если запрос успешно завершился, сохранить состояние
+  ref.keepAlive();
+  return response;
+});
+```
+
+## The argument type 'AutoDisposeProvider' can't be assigned to the parameter type 'AlwaysAliveProviderBase'
+
+При использовании `.autoDispose` вы можете оказаться в ситуации, когда
+приложение не компилируется, и появляется подобная ошибка:
+
+> The argument type 'AutoDisposeProvider' can't be assigned to the parameter
+> type 'AlwaysAliveProviderBase'
+
+Не волнуйтесь. Данная ошибка всего лишь погрешность. Это происходит, скорей всего, 
+из-за следующего бага:
+
+Вы пытаетесь слушать провайдер с `.autoDispose` внутри другого провайдера,
+который **не** использует `.autoDispose`, например:
+
+```dart
+final firstProvider = Provider.autoDispose((ref) => 0);
+
+final secondProvider = Provider((ref) {
+  // The argument type 'AutoDisposeProvider<int>' can't be assigned to the
+  // parameter type 'AlwaysAliveProviderBase<Object, Null>'
+  ref.watch(firstProvider);
+});
+```
+
+Так не стоит делать, потому что в этом случае `firstProvider` никогда не аннулируется.
+
+Чтобы исправить это, просто используйте `secondProvider` с `.autoDispose`:
+
+```dart
+final firstProvider = Provider.autoDispose((ref) => 0);
+
+final secondProvider = Provider.autoDispose((ref) {
+  ref.watch(firstProvider);
+});
+```
+
+[futureprovider]: ../../providers/future_provider

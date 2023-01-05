@@ -38,14 +38,33 @@ class AutoDisposeStateNotifierProvider<NotifierT extends StateNotifier<T>, T>
 
   @override
   late final Refreshable<NotifierT> notifier = _notifier(this);
+
+  /// {@macro riverpod.overridewith}
+  Override overrideWith(
+    Create<NotifierT, AutoDisposeStateNotifierProviderRef<NotifierT, T>> create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: AutoDisposeStateNotifierProvider<NotifierT, T>(
+        create,
+        from: from,
+        argument: argument,
+      ),
+    );
+  }
 }
 
 /// The element of [AutoDisposeStateNotifierProvider].
 class AutoDisposeStateNotifierProviderElement<
         NotifierT extends StateNotifier<T>,
-        T> = StateNotifierProviderElement<NotifierT, T>
+        T> extends StateNotifierProviderElement<NotifierT, T>
     with AutoDisposeProviderElementMixin<T>
-    implements AutoDisposeStateNotifierProviderRef<NotifierT, T>;
+    implements AutoDisposeStateNotifierProviderRef<NotifierT, T> {
+  /// The [ProviderElementBase] for [StateNotifierProvider]
+  AutoDisposeStateNotifierProviderElement._(
+    AutoDisposeStateNotifierProvider<NotifierT, T> super.provider,
+  ) : super._();
+}
 
 /// The [Family] of [AutoDisposeStateNotifierProvider].
 class AutoDisposeStateNotifierProviderFamily<NotifierT extends StateNotifier<T>,
@@ -62,4 +81,23 @@ class AutoDisposeStateNotifierProviderFamily<NotifierT extends StateNotifier<T>,
     super.name,
     super.dependencies,
   }) : super(providerFactory: AutoDisposeStateNotifierProvider.new);
+
+  /// {@macro riverpod.overridewith}
+  Override overrideWith(
+    NotifierT Function(
+      AutoDisposeStateNotifierProviderRef<NotifierT, T> ref,
+      Arg arg,
+    )
+        create,
+  ) {
+    return FamilyOverrideImpl<T, Arg,
+        AutoDisposeStateNotifierProvider<NotifierT, T>>(
+      this,
+      (arg) => AutoDisposeStateNotifierProvider<NotifierT, T>(
+        (ref) => create(ref, arg),
+        from: from,
+        argument: arg,
+      ),
+    );
+  }
 }

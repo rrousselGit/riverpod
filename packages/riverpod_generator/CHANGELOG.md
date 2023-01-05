@@ -1,3 +1,16 @@
+## [Unreleased patch]
+
+- The generated hash function of providers is now correctluy private (thanks to @westito)
+- Allow customizing the name of the generated providers (thanks to @trejdych)
+
+## 1.0.6
+
+Upgrade Riverpod to latest
+
+## 1.0.5
+
+- Upgrade Riverpod and annotation package to latest
+
 ## 1.0.4
 
 - Update dependencies.

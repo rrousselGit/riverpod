@@ -41,7 +41,7 @@ mixin _FamilyMixin<State, Arg, FamilyProvider extends ProviderBase<State>>
   Override overrideWithProvider(
     FamilyProvider Function(Arg argument) override,
   ) {
-    return _FamilyOverride<State, Arg, FamilyProvider>(this, override);
+    return FamilyOverrideImpl<State, Arg, FamilyProvider>(this, override);
   }
 
   @visibleForOverriding
@@ -73,13 +73,18 @@ abstract class FamilyOverride<State> implements Override {
   ProviderBase<State> getProviderOverride(ProviderBase<State> provider);
 }
 
-class _FamilyOverride<State, Arg, FamilyProvider extends ProviderBase<State>>
+/// An [Override] for families
+@internal
+class FamilyOverrideImpl<State, Arg, FamilyProvider extends ProviderBase<State>>
     implements FamilyOverride<State> {
-  _FamilyOverride(this.overriddenFamily, this._newCreate);
+  /// An [Override] for families
+  // ignore: library_private_types_in_public_api
+  FamilyOverrideImpl(this.overriddenFamily, this._newCreate);
 
   final FamilyProvider Function(Arg arg) _newCreate;
 
   @override
+  // ignore: library_private_types_in_public_api
   final _FamilyMixin<State, Arg, FamilyProvider> overriddenFamily;
 
   @visibleForOverriding

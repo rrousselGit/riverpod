@@ -200,13 +200,17 @@ void main() {
     });
 
     expect(buildCount, 0);
-    expect(container.read(b), const AsyncLoading<int>());
+    expect(container.read(a), const AsyncLoading<int>());
     expect(container.read(b), const AsyncLoading<int>());
     expect(await container.read(b.future), 0);
     expect(buildCount, 1);
 
     container.read(dep.notifier).state = 1;
-    expect(container.read(a), const AsyncLoading<int>());
+    expect(
+      container.read(a),
+      const AsyncLoading<int>()
+          .copyWithPrevious(const AsyncData(0), isRefresh: false),
+    );
     expect(container.read(b), const AsyncData(0));
     expect(buildCount, 1);
 
@@ -215,13 +219,30 @@ void main() {
     expect(buildCount, 2);
 
     container.read(dep.notifier).state = 11;
-    expect(container.read(a), const AsyncLoading<int>());
+    expect(
+      container.read(a),
+      const AsyncLoading<int>()
+          .copyWithPrevious(const AsyncData(1), isRefresh: false),
+    );
     expect(container.read(b), const AsyncData(1));
     expect(buildCount, 2);
 
     await container.read(a.future);
     expect(await container.read(b.future), 1);
     expect(buildCount, 2);
+
+    container.read(dep.notifier).state = 12;
+    expect(
+      container.read(a),
+      const AsyncLoading<int>()
+          .copyWithPrevious(const AsyncData(11), isRefresh: false),
+    );
+    expect(container.read(b), const AsyncData(1));
+    expect(buildCount, 2);
+
+    await container.read(a.future);
+    expect(await container.read(b.future), 2);
+    expect(buildCount, 3);
   });
 
   test('can watch async selectors (autoDispose)', () async {
@@ -241,7 +262,11 @@ void main() {
     expect(buildCount, 1);
 
     container.read(dep.notifier).state = 1;
-    expect(container.read(a), const AsyncLoading<int>());
+    expect(
+      container.read(a),
+      const AsyncLoading<int>()
+          .copyWithPrevious(const AsyncData(0), isRefresh: false),
+    );
     expect(container.read(b), const AsyncData(0));
     expect(buildCount, 1);
 
@@ -250,13 +275,30 @@ void main() {
     expect(buildCount, 2);
 
     container.read(dep.notifier).state = 11;
-    expect(container.read(a), const AsyncLoading<int>());
+    expect(
+      container.read(a),
+      const AsyncLoading<int>()
+          .copyWithPrevious(const AsyncData(1), isRefresh: false),
+    );
     expect(container.read(b), const AsyncData(1));
     expect(buildCount, 2);
 
     await container.read(a.future);
     expect(await container.read(b.future), 1);
     expect(buildCount, 2);
+
+    container.read(dep.notifier).state = 12;
+    expect(
+      container.read(a),
+      const AsyncLoading<int>()
+          .copyWithPrevious(const AsyncData(11), isRefresh: false),
+    );
+    expect(container.read(b), const AsyncData(1));
+    expect(buildCount, 2);
+
+    await container.read(a.future);
+    expect(await container.read(b.future), 2);
+    expect(buildCount, 3);
   });
 
   group('Supports ProviderContainer.read', () {

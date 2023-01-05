@@ -129,6 +129,18 @@ class NotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
   T runNotifierBuild(NotifierBase<T> notifier) {
     return (notifier as Notifier<T>).build();
   }
+
+  /// {@macro riverpod.overridewith}
+  Override overrideWith(NotifierT Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: NotifierProviderImpl<NotifierT, T>(
+        create,
+        from: from,
+        argument: argument,
+      ),
+    );
+  }
 }
 
 /// The element of [NotifierProvider].

@@ -2,12 +2,6 @@ part of '../framework.dart';
 
 ProviderBase? _circularDependencyLock;
 
-void _defaultVsync(void Function() task) {
-  Future(task);
-}
-
-int _debugNextId = 0;
-
 class _FamilyOverrideRef {
   _FamilyOverrideRef(this.override, this.container);
 
@@ -122,18 +116,6 @@ class ProviderContainer implements Node {
               if (!entry.value.isDynamicallyCreated) entry.key: entry.value,
         },
         _root = parent?._root ?? parent {
-    assert(
-      () {
-        _debugId = '${_debugNextId++}';
-        RiverpodBinding.debugInstance.containers = {
-          ...RiverpodBinding.debugInstance.containers,
-          _debugId: this,
-        };
-        return true;
-      }(),
-      '',
-    );
-
     if (parent != null) {
       parent._children.add(this);
       _overrideForFamily.addAll(parent._overrideForFamily);
@@ -162,42 +144,26 @@ class ProviderContainer implements Node {
   /// A function that controls the refresh rate of providers.
   ///
   /// Defaults to refreshing providers at the end of the next event-loop.
+  @Deprecated('Will be removed in 3.0.0')
+  @internal
   void Function(void Function() task) get vsync {
     return vsyncOverride ?? _defaultVsync;
   }
 
   /// A way to override [vsync], used by Flutter to synchronize a container
   /// with the widget tree.
+  @Deprecated('Will be removed in 3.0.0')
+  @internal
   void Function(void Function() task)? vsyncOverride;
 
   /// The object that handles when providers are refreshed and disposed.
   late final _ProviderScheduler _scheduler =
-      _parent?._scheduler ?? _ProviderScheduler(vsync);
-
-  late final String _debugId;
+      _parent?._scheduler ?? _ProviderScheduler();
 
   /// How deep this [ProviderContainer] is in the graph of containers.
   ///
   /// Starts at 0.
   final int depth;
-
-  /// A unique ID for this object, used by the devtool to differentiate two [ProviderContainer].
-  ///
-  /// Should not be used.
-  @visibleForTesting
-  String get debugId {
-    String? id;
-    assert(
-      () {
-        id = _debugId;
-        return true;
-      }(),
-      '',
-    );
-
-    return id!;
-  }
-
   final ProviderContainer? _root;
   final ProviderContainer? _parent;
 
@@ -223,6 +189,8 @@ class ProviderContainer implements Node {
   /// if it is safe to modify a provider.
   ///
   /// This corresponds to all the widgets that a [Provider] is associated with.
+  @Deprecated('Will be removed in 3.0.0')
+  @internal
   void Function()? debugCanModifyProviders;
 
   /// Whether [dispose] was called or not.
@@ -247,6 +215,13 @@ class ProviderContainer implements Node {
     ProviderListenable<Result> provider,
   ) {
     return provider.read(this);
+  }
+
+  /// {@macro riverpod.exists}
+  bool exists(ProviderBase<Object?> provider) {
+    final element = _stateReaders[provider]?._element;
+
+    return element != null;
   }
 
   /// Executes [ProviderElementBase.debugReassemble] on all the providers.
@@ -471,7 +446,7 @@ class ProviderContainer implements Node {
                 '''
 Tried to read $provider from a place where one of its dependencies were overridden but the provider is not.
 
-To fix this error, you can add add "dependencies" to $provider such that we have:
+To fix this error, you can add "dependencies" to $provider such that we have:
 
 ```
 final a = Provider(...);
@@ -628,21 +603,6 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
     if (_disposed) {
       return;
     }
-    if (_children.isNotEmpty) {
-      throw StateError(
-        'Tried to dispose a ProviderContainer that still has children containers.',
-      );
-    }
-
-    assert(
-      () {
-        RiverpodBinding.debugInstance.containers =
-            Map.from(RiverpodBinding.debugInstance.containers)
-              ..remove(_debugId);
-        return true;
-      }(),
-      '',
-    );
 
     _parent?._children.remove(this);
 

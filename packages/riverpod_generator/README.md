@@ -140,7 +140,7 @@ part 'main.g.dart';
 String label(LabelRef ref) => 'Hello world';
 
 void main() {
-  runApp(ProviderScope(Home()));
+  runApp(ProviderScope(child: Home()));
 }
 
 class Home extends ConsumerWidget {
@@ -154,6 +154,21 @@ class Home extends ConsumerWidget {
     );
   }
 }
+```
+
+## Global configuration
+
+You can change provider name suffix in the build.yaml file:
+
+```yaml
+targets:
+  $default:
+    builders:
+      riverpod_generator:
+        options:
+          # Could be changed to "Pod", such that riverpod_generator
+          # would generate "countPod" instead of "countProvider"
+          provider_name_suffix: "Provider" # (default)
 ```
 
 [family]: https://riverpod.dev/docs/concepts/modifiers/family

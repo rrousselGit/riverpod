@@ -1,5 +1,22 @@
 part of '../framework.dart';
 
+/// A way to override [vsync], used by Flutter to synchronize a container
+/// with the widget tree.
+@internal
+void Function(void Function() task)? vsyncOverride;
+
+void _defaultVsync(void Function() task) {
+  Future(task);
+}
+
+/// A function that controls the refresh rate of providers.
+///
+/// Defaults to refreshing providers at the end of the next event-loop.
+@internal
+void Function(void Function()) get vsync {
+  return vsyncOverride ?? _defaultVsync;
+}
+
 /// The object that handles when providers are refreshed and disposed.
 ///
 /// Providers are typically refreshed at the end of the frame where they
@@ -7,10 +24,6 @@ part of '../framework.dart';
 ///
 /// Providers are disposed if they spent at least one full frame without any listener.
 class _ProviderScheduler {
-  _ProviderScheduler(this.vsync);
-
-  final void Function(void Function() onDone) vsync;
-
   final _stateToDispose = <AutoDisposeProviderElementMixin>[];
   final _stateToRefresh = <ProviderElementBase>[];
 

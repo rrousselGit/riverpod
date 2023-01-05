@@ -41,6 +41,53 @@ class Provider<State> extends InternalProvider<State>
 
   @override
   ProviderElement<State> createElement() => ProviderElement._(this);
+
+  /// {@template riverpod.overridewith}
+  /// Override the provider with a new initialization function.
+  ///
+  /// This will also disable the auto-scoping mechanism, meaning that if the
+  /// overridden provider specified `dependencies`, it will have no effect.
+  ///
+  /// The override must not specify a `dependencies`.
+  ///
+  /// Some common use-cases are:
+  /// - testing, by replacing a service with a fake implementation, or to reach
+  ///   a very specific state easily.
+  /// - multiple environments, by changing the implementation of a class
+  ///   based on the platform or other parameters.
+  ///
+  /// This function should be used in combination with `ProviderScope.overrides`
+  /// or `ProviderContainer.overrides`:
+  ///
+  /// ```dart
+  /// final myService = Provider((ref) => MyService());
+  ///
+  /// runApp(
+  ///   ProviderScope(
+  ///     overrides: [
+  ///       // Replace the implementation of the provider with a different one
+  ///       myService.overrideWithProvider((ref) {
+  ///         ref.watch('other');
+  ///         return MyFakeService(),
+  ///       })),
+  ///     ],
+  ///     child: MyApp(),
+  ///   ),
+  /// );
+  /// ```
+  /// {@endtemplate}
+  Override overrideWith(
+    Create<State, ProviderRef<State>> create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: Provider<State>(
+        create,
+        from: from,
+        argument: argument,
+      ),
+    );
+  }
 }
 
 /// {@template riverpod.provider}
@@ -286,4 +333,18 @@ class ProviderFamily<R, Arg>
     super.name,
     super.dependencies,
   }) : super(providerFactory: Provider.new);
+
+  /// {@macro riverpod.overridewith}
+  Override overrideWith(
+    R Function(ProviderRef<R> ref, Arg arg) create,
+  ) {
+    return FamilyOverrideImpl<R, Arg, Provider<R>>(
+      this,
+      (arg) => Provider<R>(
+        (ref) => create(ref, arg),
+        from: from,
+        argument: arg,
+      ),
+    );
+  }
 }

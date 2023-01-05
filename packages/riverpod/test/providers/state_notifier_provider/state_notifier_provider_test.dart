@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_types_on_closure_parameters
+
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
@@ -5,6 +7,57 @@ import 'package:test/test.dart';
 import '../../utils.dart';
 
 void main() {
+  test('supports overrideWith', () {
+    final provider = StateNotifierProvider<TestNotifier, int>(
+      (ref) => TestNotifier(),
+    );
+    final autoDispose = StateNotifierProvider.autoDispose<TestNotifier, int>(
+      (ref) => TestNotifier(),
+    );
+    final container = createContainer(
+      overrides: [
+        provider.overrideWith(
+          (StateNotifierProviderRef<TestNotifier, int> ref) => TestNotifier(42),
+        ),
+        autoDispose.overrideWith(
+          (AutoDisposeStateNotifierProviderRef<TestNotifier, int> ref) =>
+              TestNotifier(84),
+        ),
+      ],
+    );
+
+    expect(container.read(provider), 42);
+    expect(container.read(autoDispose), 84);
+  });
+
+  test('supports family overrideWith', () {
+    final family = StateNotifierProvider.family<TestNotifier, int, int>(
+      (ref, arg) => TestNotifier(0 + arg),
+    );
+    final autoDisposeFamily =
+        StateNotifierProvider.autoDispose.family<TestNotifier, int, int>(
+      (ref, arg) => TestNotifier(0 + arg),
+    );
+    final container = createContainer(
+      overrides: [
+        family.overrideWith(
+          (StateNotifierProviderRef<TestNotifier, int> ref, int arg) =>
+              TestNotifier(42 + arg),
+        ),
+        autoDisposeFamily.overrideWith(
+          (
+            AutoDisposeStateNotifierProviderRef<TestNotifier, int> ref,
+            int arg,
+          ) =>
+              TestNotifier(84 + arg),
+        ),
+      ],
+    );
+
+    expect(container.read(family(10)), 52);
+    expect(container.read(autoDisposeFamily(10)), 94);
+  });
+
   test(
       'on refresh, does not notify listeners if the new value is identical to the previous one',
       () {
@@ -162,6 +215,7 @@ void main() {
         final container = createContainer(
           parent: root,
           overrides: [
+            // ignore: deprecated_member_use_from_same_package
             provider.overrideWithProvider(
               StateNotifierProvider.autoDispose<StateController<int>, int>(
                 (ref) => controllerOverride,
@@ -291,7 +345,7 @@ void main() {
     final notifier = TestNotifier();
     final notifier2 = TestNotifier();
     final provider = StateNotifierProvider<TestNotifier, int>((ref) {
-      return ref.watch(dep.state).state == 0 ? notifier : notifier2;
+      return ref.watch(dep) == 0 ? notifier : notifier2;
     });
     final container = createContainer();
     addTearDown(container.dispose);
@@ -311,7 +365,7 @@ void main() {
 
     expect(callCount, 0);
 
-    container.read(dep.state).state++;
+    container.read(dep.notifier).state++;
 
     expect(sub.read(), notifier2);
 
@@ -374,6 +428,7 @@ void main() {
     final notifier2 = TestNotifier(21);
     final container = createContainer(
       overrides: [
+        // ignore: deprecated_member_use_from_same_package
         provider.overrideWithProvider(
           StateNotifierProvider<TestNotifier, int>((_) {
             return notifier;
@@ -396,6 +451,7 @@ void main() {
     verifyOnly(listener, listener(42, 43));
 
     container.updateOverrides([
+      // ignore: deprecated_member_use_from_same_package
       provider.overrideWithProvider(
         StateNotifierProvider<TestNotifier, int>((_) {
           return notifier2;

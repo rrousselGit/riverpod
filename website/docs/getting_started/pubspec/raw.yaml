@@ -6,4 +6,4 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_riverpod: ^2.0.2
+  flutter_riverpod: ^2.1.1

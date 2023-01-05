@@ -74,11 +74,26 @@ class AutoDisposeAsyncNotifierProviderImpl<
   FutureOr<T> runNotifierBuild(AsyncNotifierBase<T> notifier) {
     return (notifier as AutoDisposeAsyncNotifier<T>).build();
   }
+
+  /// {@macro riverpod.overridewith}
+  Override overrideWith(NotifierT Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: AutoDisposeAsyncNotifierProviderImpl<NotifierT, T>(
+        create,
+        from: from,
+        argument: argument,
+      ),
+    );
+  }
 }
 
 /// The element of [AutoDisposeAsyncNotifierProvider].
 class AutoDisposeAsyncNotifierProviderElement<
         NotifierT extends AsyncNotifierBase<T>,
-        T> = AsyncNotifierProviderElement<NotifierT, T>
+        T> extends AsyncNotifierProviderElement<NotifierT, T>
     with AutoDisposeProviderElementMixin<AsyncValue<T>>
-    implements AutoDisposeAsyncNotifierProviderRef<T>;
+    implements AutoDisposeAsyncNotifierProviderRef<T> {
+  /// The [ProviderElementBase] for [AsyncNotifierProvider]
+  AutoDisposeAsyncNotifierProviderElement._(super.provider) : super._();
+}

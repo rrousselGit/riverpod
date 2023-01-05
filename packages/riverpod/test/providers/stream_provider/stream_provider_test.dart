@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_types_on_closure_parameters
+
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
@@ -19,6 +21,68 @@ void main() {
   tearDown(() {
     container.dispose();
     controller.close();
+  });
+
+  test('supports overrideWith', () {
+    final provider = StreamProvider<int>(
+      (ref) {
+        ref.state = const AsyncData(0);
+        return Stream.value(1);
+      },
+    );
+    final autoDispose = StreamProvider.autoDispose<int>(
+      (ref) {
+        ref.state = const AsyncData(0);
+        return Stream.value(1);
+      },
+    );
+    final container = createContainer(
+      overrides: [
+        provider.overrideWith((StreamProviderRef<int> ref) {
+          ref.state = const AsyncData(42);
+          return Stream.value(43);
+        }),
+        autoDispose.overrideWith((AutoDisposeStreamProviderRef<int> ref) {
+          ref.state = const AsyncData(84);
+          return Stream.value(85);
+        }),
+      ],
+    );
+
+    expect(container.read(provider).value, 42);
+    expect(container.read(autoDispose).value, 84);
+  });
+
+  test('supports family overrideWith', () {
+    final family = StreamProvider.family<String, int>((ref, arg) {
+      ref.state = AsyncData('0 $arg');
+      return Stream.value('1 $arg');
+    });
+    final autoDisposeFamily = StreamProvider.autoDispose.family<String, int>(
+      (ref, arg) {
+        ref.state = AsyncData('0 $arg');
+        return Stream.value('1 $arg');
+      },
+    );
+    final container = createContainer(
+      overrides: [
+        family.overrideWith(
+          (StreamProviderRef<String> ref, int arg) {
+            ref.state = AsyncData('42 $arg');
+            return Stream.value('43 $arg');
+          },
+        ),
+        autoDisposeFamily.overrideWith(
+          (AutoDisposeStreamProviderRef<String> ref, int arg) {
+            ref.state = AsyncData('84 $arg');
+            return Stream.value('85 $arg');
+          },
+        ),
+      ],
+    );
+
+    expect(container.read(family(10)).value, '42 10');
+    expect(container.read(autoDisposeFamily(10)).value, '84 10');
   });
 
   test('Emits AsyncLoading before the create function is executed', () async {
@@ -81,7 +145,11 @@ void main() {
       expect(container.read(provider), const AsyncData(0));
 
       container.read(dep.notifier).state++;
-      expect(container.read(provider), const AsyncLoading<int>());
+      expect(
+        container.read(provider),
+        const AsyncLoading<int>()
+            .copyWithPrevious(const AsyncData(0), isRefresh: false),
+      );
 
       await expectLater(container.read(provider.future), completion(1));
       expect(container.read(provider), const AsyncData(1));
@@ -98,7 +166,11 @@ void main() {
       expect(container.read(provider), const AsyncData(0));
 
       container.read(dep.notifier).state++;
-      expect(container.refresh(provider), const AsyncLoading<int>());
+      expect(
+        container.refresh(provider),
+        const AsyncLoading<int>()
+            .copyWithPrevious(const AsyncData(0), isRefresh: false),
+      );
 
       await expectLater(container.read(provider.future), completion(1));
       expect(container.read(provider), const AsyncData(1));
@@ -128,11 +200,19 @@ void main() {
 
     ref.state = const AsyncLoading<int>();
 
-    expect(ref.state, const AsyncLoading<int>());
+    expect(
+      ref.state,
+      const AsyncLoading<int>()
+          .copyWithPrevious(const AsyncData(0), isRefresh: false),
+    );
 
     verifyOnly(
       listener,
-      listener(const AsyncData(0), const AsyncLoading<int>()),
+      listener(
+        const AsyncData(0),
+        const AsyncLoading<int>()
+            .copyWithPrevious(const AsyncData(0), isRefresh: false),
+      ),
     );
   });
 
@@ -159,7 +239,7 @@ void main() {
       'when going from AsyncLoading to AsyncLoading, does not notify listeners',
       () async {
     final dep = StateProvider((ref) => Stream.value(42));
-    final provider = StreamProvider((ref) => ref.watch(dep.state).state);
+    final provider = StreamProvider((ref) => ref.watch(dep));
     final container = createContainer();
     final listener = Listener<AsyncValue<int>>();
     final controller = StreamController<int>();
@@ -174,15 +254,19 @@ void main() {
       const AsyncData<int>(42),
     );
 
-    container.read(dep.state).state = controller.stream;
+    container.read(dep.notifier).state = controller.stream;
     container.listen(provider, listener, fireImmediately: true);
 
     verifyOnly(
       listener,
-      listener(null, const AsyncLoading<int>()),
+      listener(
+        null,
+        const AsyncLoading<int>()
+            .copyWithPrevious(const AsyncData(42), isRefresh: false),
+      ),
     );
 
-    container.read(dep.state).state = Stream.value(21);
+    container.read(dep.notifier).state = Stream.value(21);
 
     verifyNoMoreInteractions(listener);
 
@@ -266,6 +350,7 @@ void main() {
         parent: root,
         overrides: [
           provider
+              // ignore: deprecated_member_use_from_same_package
               .overrideWithProvider(StreamProvider((ref) => Stream.value(42))),
         ],
       );
@@ -553,7 +638,7 @@ void main() {
 
     verifyOnly(listener, listener(null, const AsyncValue.loading()));
 
-    container.read(dep.state).state++;
+    container.read(dep.notifier).state++;
     await container.pump();
 
     verifyNoMoreInteractions(listener);
@@ -573,7 +658,7 @@ void main() {
 
     verifyOnly(listener, listener(any, any));
 
-    container.read(dep.state).state++;
+    container.read(dep.notifier).state++;
     await container.pump();
 
     verifyNoMoreInteractions(listener);
@@ -594,14 +679,14 @@ void main() {
 
     verifyOnly(listener, listener(any, any));
 
-    container.read(dep.state).state++;
+    container.read(dep.notifier).state++;
     await container.pump();
 
     verifyNoMoreInteractions(listener);
 
     // No value were emitted, so the future will fail. Catching the error to
     // avoid false positive.
-    // ignore: unawaited_futures, avoid_types_on_closure_parameters
+    // ignore: unawaited_futures
     container.read(provider.future).catchError((Object _) => 0);
   });
 

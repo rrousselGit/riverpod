@@ -380,7 +380,7 @@ final alwaysAlive = Provider((ref) {
       ]),
     );
 
-    container.read(isDependendingOnDependency.state).state = false;
+    container.read(isDependendingOnDependency.notifier).state = false;
     await container.pump();
 
     expect(dependencyDisposeCount, 1);
