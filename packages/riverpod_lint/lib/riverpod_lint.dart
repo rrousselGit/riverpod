@@ -591,7 +591,7 @@ class RiverpodVisitor extends AsyncRecursiveVisitor<Lint>
         if (arg != null &&
             !_alwaysAliveProviderListenable.isAssignableFromType(arg)) {
           yield Lint(
-            code: 'riverpod_avoid_read_on_autoDispose',
+            code: 'riverpod_avoid_read_auto_dispose',
             message: 'Avoid using ref.read on an autoDispose provider',
             correction: '''
 Instead use:
