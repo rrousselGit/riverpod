@@ -5,9 +5,8 @@ title: はじめに
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
-import helloWorldHooks from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/getting_started_hello_world_hooks.dart";
-import helloWorldFlutter from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/getting_started_hello_world_flutter.dart";
-import helloWorldDart from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/getting_started_hello_world_dart.dart";
+import dartHelloWorld from "/docs/getting_started/dart_hello_world";
+import helloWorld from "/docs/getting_started/hello_world";
 import { trimSnippet } from "../../../../src/components/CodeSnippet";
 
 [Riverpod] の仕組みについて深掘りする前に、まずはパッケージのインストール方法をご紹介します。
@@ -20,11 +19,11 @@ import { trimSnippet } from "../../../../src/components/CodeSnippet";
 
 こちらはその対応表です。
 
-| アプリの形態                    | パッケージ名                                                                         | 説明                                                     |
-| ----------------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------- |
-| Flutter のみ                   | [flutter_riverpod]                                                                 | Flutter アプリで [Riverpod] を使用する場合の基本のパッケージ。 |
-| Flutter + [flutter_hooks]     | [hooks_riverpod]                                                                   | [flutter_hooks] と [Riverpod] を併用する場合のパッケージ。   |
-| Dart のみ（Flutter は使用しない） | [riverpod](https://github.com/rrousselGit/riverpod/tree/master/packages/riverpod) | Flutter 関連のクラスをすべて除いた [Riverpod] パッケージ。    |
+| アプリの形態                      | パッケージ名                                                                      | 説明                                                           |
+| --------------------------------- | --------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| Flutter のみ                      | [flutter_riverpod]                                                                | Flutter アプリで [Riverpod] を使用する場合の基本のパッケージ。 |
+| Flutter + [flutter_hooks]         | [hooks_riverpod]                                                                  | [flutter_hooks] と [Riverpod] を併用する場合のパッケージ。     |
+| Dart のみ（Flutter は使用しない） | [riverpod](https://github.com/rrousselGit/riverpod/tree/master/packages/riverpod) | Flutter 関連のクラスをすべて除いた [Riverpod] パッケージ。     |
 
 ## パッケージのインストール方法
 
@@ -99,24 +98,19 @@ export const foo = 42;
 
 <Tabs
   groupId="riverpod"
-  defaultValue="hooks_riverpod"
+  defaultValue="flutter_riverpod"
   values={[
-    { label: "Flutter + flutter_hooks", value: "hooks_riverpod" },
     { label: "Flutter", value: "flutter_riverpod" },
     { label: "Dart のみ", value: "riverpod" },
   ]}
 >
-<TabItem value="hooks_riverpod">
-
-<CodeBlock title="lib/main.dart">{trimSnippet(helloWorldHooks)}</CodeBlock>
-
-`flutter run` コマンドを実行してみてください。
-デバイスの画面に Hello world が表示されるはずです。
-
-</TabItem>
 <TabItem value="flutter_riverpod">
 
-<CodeBlock title="lib/main.dart">{trimSnippet(helloWorldFlutter)}</CodeBlock>
+<AutoSnippet
+  title="lib/main.dart"
+  language="dart"
+  {...helloWorld}
+></AutoSnippet>
 
 `flutter run` コマンドを実行してみてください。
 デバイスの画面に Hello world が表示されるはずです。
@@ -124,7 +118,11 @@ export const foo = 42;
 </TabItem>
 <TabItem value="riverpod">
 
-<CodeBlock title="lib/main.dart">{trimSnippet(helloWorldDart)}</CodeBlock>
+<AutoSnippet
+  title="lib/main.dart"
+  language="dart"
+  {...dartHelloWorld}
+></AutoSnippet>
 
 `dart lib/main.dart` コマンドを実行してみてください。
 コンソールに Hello world と出力されるはずです。

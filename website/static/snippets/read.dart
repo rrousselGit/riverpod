@@ -3,6 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'create.dart';
+
 final counterProvider = StateProvider<int>((ref) => 0);
 
 /* SNIPPET START */
@@ -10,7 +12,12 @@ final counterProvider = StateProvider<int>((ref) => 0);
 class Home extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final count = ref.watch(counterProvider);
-    return Text('$count');
+    final boredSuggestion = ref.watch(boredSuggestionProvider);
+    // Perform a switch-case on the result to handle loading/error states
+    return boredSuggestion.when(
+      loading: () => const Text('loading'),
+      error: (error, stackTrace) => Text('error: $error'),
+      data: (data) => Text(data), 
+    );
   }
 }

@@ -3,11 +3,17 @@
 /* SNIPPET START */
 
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'main.g.dart';
 
 // We create a "provider", which will store a value (here "Hello world").
 // By using a provider, this allows us to mock/override the value exposed.
-final helloWorldProvider = Provider((_) => 'Hello world');
+@riverpod
+String helloWorld(HelloWorldRef ref) {
+  return 'Hello world';
+}
 
 void main() {
   runApp(
@@ -20,8 +26,8 @@ void main() {
   );
 }
 
-// Note: MyApp is a HookConsumerWidget, from hooks_riverpod.
-class MyApp extends HookConsumerWidget {
+// Extend ConsumerWidget instead of StatelessWidget, which is exposed by Riverpod
+class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final String value = ref.watch(helloWorldProvider);

@@ -12,7 +12,8 @@ export default function Home() {
   return (
     <Layout
       title={siteConfig.tagline}
-      description="A boilerplate-free and safe way to share state"
+      // Description for search engines
+      description={siteConfig.tagline}
     >
       <Banner />
 

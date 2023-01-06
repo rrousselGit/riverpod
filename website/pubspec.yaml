@@ -3,7 +3,7 @@ publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.12.0-0 <3.0.0"
+  sdk: ">=2.13.0 <3.0.0"
 
 dependencies:
   collection: ^1.15.0
@@ -17,11 +17,20 @@ dependencies:
   mockito: ^5.0.0
   riverpod:
     path: ../packages/riverpod
+  riverpod_annotation:
+  shared_preferences: ^2.0.15
 
 dev_dependencies:
+  build_runner:
   build_verify: ^3.0.0
+  cosmic_frontmatter:
+    path: third-party/cosmic_frontmatter
   flutter_test:
     sdk: flutter
+  glob: ^2.1.0
+  http: ^0.13.5
+  path: ^1.8.1
+  riverpod_generator:
 
 dependency_overrides:
   flutter_riverpod:
@@ -30,6 +39,10 @@ dependency_overrides:
     path: ../packages/hooks_riverpod
   riverpod:
     path: ../packages/riverpod
+  riverpod_annotation:
+    path: ../packages/riverpod_annotation
+  riverpod_generator:
+    path: ../packages/riverpod_generator
 
 flutter:
   uses-material-design: true

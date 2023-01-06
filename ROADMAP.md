@@ -1,53 +1,28 @@
 # Roadmap
 
-## Riverpod
+## Docs
 
-## Examples
+Possible homepage/readme selling points?
 
-- synchronizing two lists with the same editable content
-  (two todo lists, editing a todo in one list edits it in another list too)
-
-### Marvel
-
-- Write tests for everything
-- publish it on the web
-- handle errors (out of calls/day, no configurations)
-- Added to riverpod.dev
-
-### Introduction screen
-
-- Insert a nested UncontrollerProviderScope
-- Pass it a ProviderContainer that overrides the repositories & co to use a specific data-set
-
-
-## riverpod.dev
-
-- Filtering rebuilds
-- "why is my state disposed with autoDisposed?" (read when unlistened)
-- pre-fetch a provider
-- Testing (without flutter, mocking FutureProvider)
-- How it works
-- The differences between hooks and not hooks
-- fundamentals
-  - ProviderScope
-- talks and articles
-- FAQ
-  - My Consumer behaves differently inside overlays/transition
-  - How to prefetch data _in the main_
-- cookbooks:
-  - migration from provider
-  - list items + family, don't pass the id to the item and instead expose a "currentItem" provider
-  - canceling http requests when leaving the screen
-  - state hydration
-  - configurations that change over time
-- DO/DON'T
-  - import lints
-  - DO create a provider for states you want to read multiple times
+- Automatic cache invalidation
+- Error/loading handling by default
+- stateful hot-reload
+- built-in support for complex use-cases
+  pull-to-refresh, cancelling network requests, ...
+- scalable
+  Simple for simple use-cases. Exposes low level APIs for complex use-cases.
+- testable
+- smooth refactoring thanks to compile safety
+- easy error/loading handling inside UI thanks to when/pattern matching.
+- business logic separation from UI
+- (coming) state inspector
+- (coming) documentation graph generator
+- (coming) linter
+- (coming) offline persistence
+- (coming) mutations
 
 ## Linter:
 
-- "unused_widget_parameter"
-- "what caused a widget to rebuild?"
 - Don't create providers inside `build` (https://github.com/rrousselGit/riverpod/issues/144#issuecomment-695361486)
 - don't mutate other providers inside "create" (https://github.com/rrousselGit/riverpod/issues/144#issuecomment-695764973)
 - wrap with `Consumer`
@@ -57,7 +32,6 @@
 - `always_specify_name`
 - `name_match_variable`
 - extract widget as class for rebuild optimization
-- warn if public classes inside /src are not used but not exported
 
 ## Devtool:
 

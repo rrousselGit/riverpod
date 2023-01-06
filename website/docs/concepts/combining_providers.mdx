@@ -178,7 +178,7 @@ If you used [read] as an attempt to avoid unwanted rebuilds of your object,
 refer to [My provider updates too often, what can I do?](#my-provider-updates-too-often-what-can-i-do)
 :::
 
-### How to test an object that receives [read] as a parameter of its constructor?
+### How to test an object that receives [ref] as a parameter of its constructor?
 
 If you are using the pattern described in [Can I read a provider without listening to it?](#can-i-read-a-provider-without-listening-to-it),
 you may be wondering how to write tests for your object.
@@ -187,7 +187,7 @@ In this scenario, consider testing the provider directly instead of the raw obje
 You can do so by using the [ProviderContainer] class:
 
 ```dart
-final repositoryProvider = Provider((ref) => Repository(ref.read));
+final repositoryProvider = Provider((ref) => Repository(ref));
 
 test('fetches catalog', () async {
   final container = ProviderContainer();
