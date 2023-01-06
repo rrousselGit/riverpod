@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:isolate';
 
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/ast/ast.dart';
@@ -10,8 +9,8 @@ import 'package:collection/collection.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:meta/meta.dart';
 import 'package:riverpod/riverpod.dart';
-import 'package:riverpod_lint/src/analyzer_utils.dart';
-import 'package:riverpod_lint/src/type_checker.dart';
+import 'src/analyzer_utils.dart';
+import 'src/type_checker.dart';
 
 const _providerBase =
     TypeChecker.fromName('ProviderBase', packageName: 'riverpod');
@@ -58,15 +57,14 @@ const _ref = TypeChecker.fromName('Ref', packageName: 'riverpod');
 /// [Ref] methods that can make a provider depend on another provider.
 const _refBinders = {'read', 'watch', 'listen'};
 
-void main(List<String> args, SendPort sendPort) {
-  startPlugin(sendPort, RiverpodLint());
-}
+RiverpodLint createPlugin() => RiverpodLint();
 
 class RiverpodLint extends PluginBase {
   @override
-  Stream<Lint> getLints(ResolvedUnitResult unit) {
-    final visitor = RiverpodVisitor(unit);
-    return unit.unit.accept(visitor) ?? const Stream<Lint>.empty();
+  Stream<Lint> getLints(ResolvedUnitResult resolvedUnitResult) {
+    final visitor = RiverpodVisitor(resolvedUnitResult);
+    return resolvedUnitResult.unit.accept(visitor) ??
+        const Stream<Lint>.empty();
   }
 }
 

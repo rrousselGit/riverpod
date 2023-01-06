@@ -14,15 +14,23 @@ final c = StateProvider<int>((ref) {
   return 0;
 }, dependencies: [a]);
 
-final d = StateProvider<int>((ref) {
-  ref.watch(a);
-  return 0;
-}, dependencies: []);
+final d = StateProvider<int>(
+  (ref) {
+    ref.watch(a);
+    return 0;
+  },
+  // expect_lint: riverpod_missing_dependency
+  dependencies: [],
+);
 
 final e = StateProvider<int>((ref) {
   ref.watch(a);
   return 0;
-}, dependencies: [a, b]);
+}, dependencies: [
+  a,
+  // expect_lint: riverpod_unused_dependency
+  b,
+]);
 
 final f = StateProvider<int>((ref) {
   ref.watch(a.notifier);
@@ -39,6 +47,7 @@ final h = StateProvider<int>((ref) {
   return 0;
 }, dependencies: [c]);
 
+// expect_lint: riverpod_unspecified_dependencies
 final i = StateProvider<int>((ref) {
   ref.watch(c);
   return 0;
@@ -61,6 +70,7 @@ class J extends StateNotifier<int> {
 // Notifier with dependency
 final k = StateNotifierProvider<K, int>((ref) {
   return K(ref);
+// expect_lint: riverpod_missing_dependency
 }, dependencies: []);
 
 class K extends StateNotifier<int> {
@@ -79,6 +89,7 @@ final l = StateProvider.autoDispose((ref) {
 
 final m = StateProvider.autoDispose.family((ref, param) {
   return 0;
+// expect_lint: riverpod_unused_dependency
 }, dependencies: [a]);
 
 // Passing ref to a function
@@ -90,6 +101,7 @@ final n = StateProvider((ref) {
 final o = StateProvider((ref) {
   fn(ref);
   return 0;
+// expect_lint: riverpod_missing_dependency
 }, dependencies: []);
 
 void fn(Ref ref) {
@@ -107,7 +119,11 @@ class P extends StateNotifier<int> {
   }
 }
 
-final q = StateNotifierProvider<Q, int>(Q.new, dependencies: []);
+final q = StateNotifierProvider<Q, int>(
+  Q.new,
+  // expect_lint: riverpod_missing_dependency
+  dependencies: [],
+);
 
 class Q extends StateNotifier<int> {
   Q(this.ref) : super(0);
@@ -118,12 +134,17 @@ class Q extends StateNotifier<int> {
   }
 }
 
-final r1 =
-    StateNotifierProvider<R, int>((ref) => R()..ref = ref, dependencies: []);
+final r1 = StateNotifierProvider<R, int>(
+  (ref) => R()..ref = ref,
+  // expect_lint: riverpod_missing_dependency
+  dependencies: [],
+);
+
 final r2 = StateNotifierProvider<R, int>((ref) {
   final r = R();
   r.ref = ref;
   return r;
+  // expect_lint: riverpod_missing_dependency
 }, dependencies: []);
 
 class R extends StateNotifier<int> {

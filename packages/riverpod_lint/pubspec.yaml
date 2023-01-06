@@ -9,10 +9,10 @@ environment:
   sdk: ">=2.17.0 <3.0.0"
 
 dependencies:
-  analyzer: ^4.0.0
-  analyzer_plugin: ^0.10.0
+  analyzer: ^5.0.0
+  analyzer_plugin: ^0.11.2
   collection: ^1.16.0
-  custom_lint_builder: ^0.0.8
+  custom_lint_builder: ^0.1.0
   meta: ^1.7.0
   path: ^1.8.1
   riverpod: ^2.1.1
