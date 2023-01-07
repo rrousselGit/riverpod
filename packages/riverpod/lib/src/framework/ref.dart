@@ -14,6 +14,9 @@ abstract class Ref<State extends Object?> {
   /// The [ProviderContainer] that this provider is associated with.
   ProviderContainer get container;
 
+  ///
+  bool get mounted;
+
   /// {@template riverpod.refresh}
   /// Forces a provider to re-evaluate its state immediately, and return the created value.
   ///

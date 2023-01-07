@@ -113,7 +113,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   bool _mounted = false;
 
   /// Whether the element was disposed or not
-  @internal
+  @override
   bool get mounted => _mounted;
 
   /// Whether the assert that prevents [requireState] from returning
