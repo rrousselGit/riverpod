@@ -72,27 +72,16 @@ class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
   FutureProviderElement._(_FutureProviderBase<T> super.provider);
 
   @override
-  AsyncValue<T> get state => requireState;
-
-  @override
   Future<T> get future {
     flush();
     return futureNotifier.value;
   }
 
   @override
-  bool updateShouldNotify(AsyncValue<T> previous, AsyncValue<T> next) {
-    return FutureHandlerProviderElementMixin.handleUpdateShouldNotify(
-      previous,
-      next,
-    );
-  }
-
-  @override
   void create({required bool didChangeDependency}) {
     final provider = this.provider as _FutureProviderBase<T>;
 
-    return handleFuture(
+    handleFuture(
       () => provider._create(this),
       didChangeDependency: didChangeDependency,
     );

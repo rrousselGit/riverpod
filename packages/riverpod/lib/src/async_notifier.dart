@@ -8,6 +8,7 @@ import 'framework.dart';
 import 'future_provider.dart' show FutureProvider;
 import 'listenable.dart';
 import 'notifier.dart';
+import 'pragma.dart';
 import 'result.dart';
 
 part 'async_notifier/auto_dispose.dart';

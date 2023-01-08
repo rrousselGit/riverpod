@@ -47,17 +47,23 @@ class D extends ConsumerWidget {
         ref.refresh(b);
         Future.delayed(Duration(milliseconds: 10), () {
           // Bad ref is used in future callback
+          // expect_lint: riverpod_no_ref_after_async
           ref.read(b.notifier).state = '';
         });
         // Bad (ref is used after async in fn)
+        // expect_lint: riverpod_no_ref_after_async
         fn(ref);
         // Bad (ref is used after async in fn2)
+        // expect_lint: riverpod_no_ref_after_async
         fn2(ref);
         // Bad (ref is used after async in fn3)
+        // expect_lint: riverpod_no_ref_after_async
         fn3(ref);
         // Bad (ref is used after async in fn4)
+        // expect_lint: riverpod_no_ref_after_async
         await fn4(ref);
         // Bad
+        // expect_lint: riverpod_no_ref_after_async
         ref.read(b.notifier).state = '';
       },
       child: Text('Hi'),

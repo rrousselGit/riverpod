@@ -13,8 +13,8 @@ Future<void> main() async {
 
     expect(result.stdout, '''
   test/goldens/auto_dispose_read.dart:11:5 • Avoid using ref.read inside the build method of widgets/providers. • riverpod_avoid_read_inside_build
-  test/goldens/auto_dispose_read.dart:11:5 • Avoid using ref.read on an autoDispose provider • riverpod_avoid_read_on_autoDispose
-  test/goldens/auto_dispose_read.dart:20:3 • Avoid using ref.read on an autoDispose provider • riverpod_avoid_read_on_autoDispose
+  test/goldens/auto_dispose_read.dart:11:5 • Avoid using ref.read on an autoDispose provider • riverpod_avoid_read_auto_dispose
+  test/goldens/auto_dispose_read.dart:20:3 • Avoid using ref.read on an autoDispose provider • riverpod_avoid_read_auto_dispose
   test/goldens/avoid_dynamic_provider.dart:10:9 • Providers should be either top level variables or static properties • riverpod_avoid_dynamic_provider
   test/goldens/avoid_dynamic_provider.dart:14:9 • Providers should be either top level variables or static properties • riverpod_avoid_dynamic_provider
   test/goldens/avoid_dynamic_provider.dart:15:9 • Providers should be either top level variables or static properties • riverpod_avoid_dynamic_provider

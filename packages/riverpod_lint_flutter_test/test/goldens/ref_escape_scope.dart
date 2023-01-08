@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 final a = StateProvider((ref) => '');
 
 final b = StateNotifierProvider<B, int>((ref) {
+  // expect_lint: riverpod_ref_escape_scope
   get() => ref;
   return B(get);
 });
@@ -34,8 +35,14 @@ class C extends ConsumerWidget {
 }
 
 class BadWidgetA extends StatelessWidget {
-  const BadWidgetA({super.key, this.ref});
+  const BadWidgetA({
+    super.key,
+    // expect_lint: riverpod_ref_escape_scope
+    this.ref,
+  });
+
   final WidgetRef? ref;
+
   @override
   Widget build(BuildContext context) {
     throw UnimplementedError();
@@ -43,7 +50,12 @@ class BadWidgetA extends StatelessWidget {
 }
 
 class BadWidgetB extends StatefulWidget {
-  const BadWidgetB({super.key, this.ref});
+  const BadWidgetB({
+    super.key,
+    // expect_lint: riverpod_ref_escape_scope
+    this.ref,
+  });
+
   final WidgetRef? ref;
 
   @override

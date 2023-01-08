@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'async_notifier.dart';
 import 'builders.dart';
 import 'common.dart';
 import 'framework.dart';
@@ -16,7 +17,9 @@ ProviderElementProxy<AsyncValue<T>, Future<T>> _future<T>(
 ) {
   return ProviderElementProxy<AsyncValue<T>, Future<T>>(
     that,
-    (element) => (element as StreamProviderElement<T>)._futureNotifier,
+    (element) => FutureHandlerProviderElementMixin.futureNotifierOf(
+      element as FutureHandlerProviderElementMixin<T>,
+    ),
   );
 }
 
