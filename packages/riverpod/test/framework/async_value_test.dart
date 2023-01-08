@@ -493,6 +493,15 @@ void main() {
   });
 
   group('mapOrNull', () {
+    test('supports returning null when relying on type-inference', () {
+      // ignore: unused_local_variable, omit_local_variable_types
+      final int? x2 = const AsyncValue.data(1).mapOrNull(
+        data: (value) => null,
+        error: (_) => null,
+        loading: (_) => null,
+      );
+    });
+
     test('matching case', () {
       expect(
         const AsyncValue.data(42).mapOrNull(
@@ -1010,6 +1019,15 @@ void main() {
   });
 
   group('whenOrNull', () {
+    test('supports returning null when relying on type-inference', () {
+      // ignore: unused_local_variable, omit_local_variable_types
+      final int? x2 = const AsyncValue.data(1).whenOrNull(
+        data: (value) => null,
+        error: (err, stack) => null,
+        loading: () => null,
+      );
+    });
+
     test('matching case', () {
       expect(
         const AsyncValue.data(42).whenOrNull(
