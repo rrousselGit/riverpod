@@ -1,0 +1,172 @@
+---
+title: Scopes
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import asyncInitialization from "!!raw-loader!/docs/concepts/async_initialization.dart";
+import dialogScope from "!!raw-loader!/docs/concepts/dialog_scope.dart";
+import themeScope from "!!raw-loader!/docs/concepts/theme_scope.dart";
+import subtreeScope from "!!raw-loader!/docs/concepts/subtree_scope.dart";
+import { trimSnippet } from "../../src/components/CodeSnippet";
+
+Le scoping dans Riverpod est une fonctionnalité très puissante, mais comme toute fonctionnalité puissante, elle doit être utilisée à bon escient et intentionnellement.
+Here are some of the things that framing allows:
+- Remplace l'état des providers pour un sous-arbre spécifique (similaire à la façon dont les thèmes et les `InheritedWidgets` fonctionnent dans flutter) [(voir exemple)](#subtree-scope)
+- Création de providers synchrones pour des API normalement asynchrones [(voir exemple)](#initialization-of-synchronous-provider-for-async-apis)
+- Permettre aux `Dialogs` et `Overlay` d'hériter de l'état des providers du sous-arbre widget qui les font apparaître [(voir exemple)](#showing-dialogs)
+- Optimisation des reconstructions de widgets en supprimant les paramètres des constructeurs de widgets, ce qui vous permet de les rendre `const`.
+
+Si vous voulez utiliser scope pour le premier point, il y a de fortes chances que vous puissiez utiliser les familles à la place.
+Les familles ont l'avantage de vous permettre d'accéder à chacune de ces instances de l'état à partir de n'importe quel endroit de l'arborescence du widget, plutôt que d'accéder uniquement à l'état correspondant à la sous-arborescence spécifique dans laquelle vous vous trouvez.
+
+L'utilisation de la portée (scope) pour créer plusieurs instances de l'état d'un provider est similaire au fonctionnement de `package:provider`.
+
+Toutefois, l'utilisation de la portée (scope) pour accomplir cette tâche est plus restrictive, car vous ne pouvez pas décider d'accéder à d'autres instances à partir de cette portée.
+
+Ainsi, avant de procéder à l'évaluation de chaque provider que vous utilisez, réfléchissez bien aux raisons pour lesquelles vous souhaitez l'évaluer.
+
+## ProviderScope et ProviderContainer
+
+Un scope est introduit par un [ProviderContainer]. Ce conteneur contient l'état actuel de tous vos providers. 
+Il gère la recherche et les abonnements entre les providers.
+
+Dans Flutter, vous devez utiliser le widget [ProviderScope], qui contient un [ProviderContainer]
+en interne, et fournit un moyen d'accéder à ce conteneur dans le reste de l'arborescence des widgets.
+
+```dart
+final valueProvider = StateProvider((ref) => 0);
+
+// DO this
+void main() {
+  runApp(ProviderScope(child: MyApp()));
+}
+
+//DON'T do this:
+final myProviderContainer = ProviderContainer();
+void main(){
+  runApp(MyApp());
+}
+```
+
+:::warning
+N'utilisez pas plusieurs [ProviderContainer] sans savoir comment ils fonctionnent. 
+Chacun aura son propre fil d'états, qui ne pourra pas accéder aux autres.
+Les tests sont un exemple de cas où il est préférable d'utiliser des [ProviderContainer] séparés afin de rendre l'état de chaque test indépendant des autres.
+:::
+
+Ne créez un [ProviderContainer] sans [ProviderScope] qu'à des fins de test et pour un usage exclusif.
+
+## Comment Riverpod trouve un Provider
+
+Lorsqu'un widget ou un provider demande la valeur d'un provider, Riverpod recherche l'état de ce provider dans le widget [ProviderScope] le plus proche. 
+Le widget [ProviderScope] le plus proche. Si ni le provider ni l'une de ses dépendances explicitement listées ne sont remplacés dans cette portée, Riverpod poursuit sa recherche dans l'arbre des widgets. 
+Si le provider n'a été remplacé dans aucun sous-arbre de widget, la recherche se fait par défaut sur le [ProviderContainer] dans le [ProviderScope] racine.
+
+Une fois que ce processus a localisé l'étendue dans laquelle le provider doit résider, il détermine si le provider a déjà été créé. 
+Si c'est le cas, il renvoie l'état du provider.
+Toutefois, si le provider a été invalidé ou n'est pas encore initialisé, il créera l'état en utilisant la méthode de construction du provider.
+
+## Initialisation d'un provider synchrone pour les API asynchrones
+
+Souvent, vous pouvez avoir une initialisation asynchrone d'une dépendance telle que `SharedPreferences` ou `FirebaseApp`.
+De nombreux autres providers peuvent s'appuyer sur cette dépendance, et gérer les états d'erreur/chargement dans chacun de ces providers est redondant.
+
+Vous pourriez garantir que ces providers n'auront pas d'erreurs et qu'ils se chargeront rapidement au démarrage de l'application.
+
+Alors comment faire pour que ces sortes d'états de providers soient disponibles de manière synchrone ?
+
+Voici un exemple qui montre comment le scoping vous permet de remplacer un provider fictif lorsque votre API asynchrone est prête.
+
+<CodeBlock>{trimSnippet(asyncInitialization)}</CodeBlock>
+
+## Affichage des boîtes de dialogue
+
+Lorsque vous affichez un `Dialog` ou un `OverlayEntry`, flutter crée une nouvelle `Route` ou ajoute à un `Overlay` qui a une portée de construction différente, 
+afin qu'il puisse échapper à la mise en page de son parent, et qu'il puisse être affiché au-dessus des autres `Routes`. 
+Cela pose un problème pour les `InheritedWidget`s en général, et comme [ProviderScope] est un `InheritedWidget`, il est également concerné.
+
+Pour résoudre ce problème, Riverpod vous permet de créer un `ProviderScope` qui peut accéder à l'état de tous les providers dans un scope `parent`.
+
+L'exemple suivant montre comment l'utiliser, pour permettre à une `Dialog` d'accéder à l'état d'un compteur depuis le contexte qui a provoqué l'affichage de la `Dialog`.
+
+<CodeBlock>{trimSnippet(dialogScope)}</CodeBlock>
+
+## Portée du sous-arbres
+
+Le scoping vous permet de surcharger l'état d'un provider pour un sous-arbre spécifique de votre arbre de widgets. De cette façon, 
+il peut fournir un mécanisme similaire à `InheritedWidget` de flutter, ou les providers de `package:provider`.
+
+Par exemple, dans flutter, vous pouvez remplacer le `Theme` d'un sous-arbre particulier de votre arbre de widgets, en l'enveloppant dans un widget `Theme`.
+
+<CodeBlock>{trimSnippet(themeScope)}</CodeBlock>
+
+Sous le capot, `Theme` est un `InheritedWidget` et lorsque les widgets recherchent le `Theme`, ils obtiennent le `Theme` du widget `Theme` le plus proche au-dessus d'eux dans l'arbre des widgets.
+
+Riverpod fonctionne différemment, puisque tout l'état de votre application est généralement stocké dans un widget racine [ProviderScope]. 
+Ne vous inquiétez pas, cela n'entraîne pas la reconstruction de toute votre application lorsque l'état change, cela vous permet simplement d'accéder à l'état à partir de n'importe quel endroit de votre arborescence de widgets.
+
+Que faire si vous voulez des providers différents selon la page dans laquelle vous vous trouvez ? 
+
+La première chose à considérer est de savoir si le comportement du provider sera différent d'une manière ou d'une autre.
+
+Si c'est le cas -> créez simplement un nouveau provider avec un nom différent et utilisez-le dans cette page.
+
+Si non -> Pensez à utiliser une famille [En savoir plus sur les familles ici](/docs/concepts/modifiers/family). 
+
+Souvent, vous commencez par penser que vous n'avez besoin d'un "provider" que sur une page particulière, mais vous finissez par vouloir l'utiliser dans une autre page par la suite. 
+Les familles vous protègent contre cette éventualité, et sont une différence majeure dans la façon dont vous devez ajuster votre pensée si vous venez de `package:provider`.
+
+Si les familles ne correspondent vraiment pas à votre cas d'utilisation, l'exemple suivant vous montre comment remplacer un provider pour un sous-arbre particulier.
+
+<CodeBlock>{trimSnippet(subtreeScope)}</CodeBlock>
+
+## Quand choisir Provider Scope ou Family ?
+
+S'il est important de comprendre le fonctionnement d'une lunette, il est facile de s'emballer lorsqu'on l'utilise.
+
+Si vous voulez une instance différente de l'état d'un provider selon l'endroit où il se trouve dans l'arbre des widgets, vous avez quelques alternatives à votre disposition : `Scoping`, `Families`, ou une combinaison.
+Le choix approprié dépend de votre cas d'utilisation.
+
+Family:
+- Pro: Vous pouvez afficher plusieurs états, quel que soit le sous-arbre dans lequel vous vous trouvez.
+- Pro: Cela en fait une solution plus souple et plus évolutive pour de nombreux cas d'utilisation.
+
+Scoping:
+- Con: Vous vous retrouvez avec plus d'imbrications de widgets [ProviderScope] dans votre arbre de widgets.
+- Con: Vous ne pouvez accéder qu'à une seule override dans votre section de l'arbre des widgets. 
+- Con: Vous finissez par devoir lister explicitement les dépendances de la plupart de vos providers.
+- Pro: Vous pouvez réduire le nombre de paramètres dans les constructeurs de vos widgets.
+- Pro: Vous obtenez un léger avantage en termes de performances, et vous pouvez potentiellement rendre certains de vos constructeurs de widgets `const`.
+
+En combinant les deux approches, vous pouvez bénéficier des avantages des deux approches, mais vous devez toujours faire face aux inconvénients du cadrage.
+
+:::warning
+Rappelez-vous que les scopes introduisent une nouvelle instance de l'état de chaque provider qui est surchargé ou qui a listé une dépendance sur un provider qui a été surchargé.If you override with the same parameter in a different subtree of the app, it will **not** be the same instance of the provider's state. 
+Les familles sont plus flexibles en général, et avec la prochaine fonction de génération de code, il est facile d'utiliser plusieurs paramètres pour une famille.
+Une bonne combinaison consiste souvent à utiliser à la fois les familles et le scoping. Utilisez une famille pour fournir un accès général à une partie de l'état n'importe où dans votre application, puis utilisez le scoping 
+pour fournir une instance spécifique de l'état de la famille en fonction de l'endroit où vous vous trouvez dans l'arbre des widgets.
+:::
+
+### Utilisations moins courantes des Scopes
+
+Il peut arriver que vous souhaitiez remplacer un ensemble de providers dans un sous-arbre spécifique de votre application. 
+
+En listant un provider commun dans la liste des dépendances de chacun de ces providers, 
+vous pouvez facilement créer de nouveaux états pour tous ces providers en même temps, en surchargeant le provider commun.
+
+Notez que si vous essayez d'utiliser des familles pour cela, vous vous retrouverez avec de nombreuses familles qui ont toutes le même paramètre, 
+et vous pourriez finir par passer ce paramètre dans toute l'arborescence du widget.
+Dans ce cas, il est également acceptable d'utiliser des scopes.
+
+:::warning
+Une fois que vous commencez à utiliser scope, assurez-vous de toujours lister vos dépendances et de les maintenir à jour, pour éviter les exceptions d'exécution.
+Pour vous aider, nous avons créé [riverpod_lint] qui vous avertira si une dépendance est manquante.
+De plus, avec [riverpod_generator], le générateur de code génère automatiquement la liste des dépendances.
+:::
+
+[ProviderContainer]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderContainer-class.html
+[ProviderScope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
+[riverpod_lint]: https://github.com/rrousselGit/riverpod/tree/master/packages/riverpod_lint
+[riverpod_generator]: https://github.com/rrousselGit/riverpod/tree/master/packages/riverpod_generator

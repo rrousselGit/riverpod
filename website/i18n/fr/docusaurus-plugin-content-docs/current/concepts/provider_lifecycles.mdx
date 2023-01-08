@@ -1,0 +1,104 @@
+---
+title: Cycles de vie des providers
+---
+
+import CodeBlock from "@theme/CodeBlock";
+import onDispose from "!!raw-loader!/docs/concepts/lifecycle_on_dispose.dart";
+import { trimSnippet } from "../../src/components/CodeSnippet";
+
+## Quand mon Provider est-il créé et éliminé ?
+
+Les états par lesquels tous les différents types de providers peuvent passer sont les mêmes :
+
+- Uninitialized (Non initialisé)
+- Alive (En vie)
+- Paused (En pause)
+- Disposed (Éliminé)
+
+### Disposed / Uninitialized
+
+Un provider **Uninitialized** ou **Disposed** n'occupe pas de mémoire puisque son état n'est pas initialisé.
+En fait, il s'agit simplement d'une définition de la manière de créer l'état du provider lorsque vous en avez besoin.
+Il restera dans cet état jusqu'à ce qu'un provider **Alive** ou un [WidgetRef] de l'interface utilisateur UI le lise, le regarde ou l'écoute.
+
+### Creating -> Alive
+
+Lorsqu'un provider **Uninitialized** est lu, écouté ou regardé, son état est créé.
+
+Pendant la création, la fonction de construction de votre provider sera exécutée. 
+Tous les providers que vous lisez ou regardez en utilisant le `ref` exposé par le callback seront créés si nécessaire et leur état sera récupéré.
+
+S'il existe des dépendances circulaires au cours de ce processus de création, Riverpod émettra une erreur.
+La meilleure façon de corriger cette erreur est de reconcevoir vos dépendances pour avoir un flux de données unidirectionnel.
+
+L'état du provider est stocké dans un [ProviderContainer]. Dans une application Flutter, ce conteneur se trouve dans un widget [ProviderScope].
+
+Ainsi, même si la définition de la manière de créer l'état (le provider) est globale, l'état est en fait local, et peut être différent dans différentes parties de 
+votre interface utilisateur UI en utilisant des widgets [ProviderScope] imbriqués et des overrides.
+
+Ce système est très similaire au fonctionnement des widgets de Flutter. Vous ne payez qu'une seule fois pour la définition, mais vous pouvez réutiliser 
+l'état dans différentes parties de l'arbre selon les besoins.
+
+### Alive
+
+Lorsque votre provider est **Alive**, les modifications de son état entraînent la reconstruction des providers dépendants et/ou de l'IU dépendante.
+
+D'un autre côté, en tant que cadre réactif, vous pouvez surveiller d'autres providers pour qu'ils se recréent eux-mêmes lorsque l'une de leurs dépendances change.
+
+Si vous avez besoin d'un état à longue durée de vie qui dépend d'un autre état, vous pouvez utiliser la méthode [listen] de Ref pour vous abonner aux changements d'un autre provider sans provoquer la reconstruction du provider.
+
+Si vous devez utiliser l'état d'un autre provider dans un effet secondaire, vous pouvez utiliser la méthode [read] de Ref pour obtenir l'état actuel d'un autre provider.
+
+Typiquement, lors de la construction d'une classe [StateNotifier] ou [ChangeNotifier], vous devez passer le `ref` pour permettre au Notifier d'obtenir la valeur actuelle des dépendances si nécessaire. 
+En utilisant les nouvelles classes [Notifier] et [AsyncNotifier] de Riverpod 2.0, la référence est déjà disponible en tant que membre d'instance de la classe.
+
+### Alive -> Paused
+Lorsqu'un provider **Alive** n'est plus écouté par les autres providers ou par l'IU, il passe dans un état **Paused**. 
+Cela signifie qu'il ne réagira plus aux changements sur les providers qu'il écoute.
+Il s'agit d'une optimisation, car si vous n'écoutez pas le provider, il n'est pas nécessaire de le maintenir en vie. 
+Chaque provider qui n'est pas utilisé sera remis dans un état **Paused**, réduisant ainsi la charge de calcul de votre application.
+
+Si vous devez maintenir un provider en vie pour les effets secondaires, assurez-vous de l'écouter à un endroit approprié de l'IU où il doit être maintenu en vie.
+
+Si vous devez effectuer une action lorsqu'un provider est en pause, utilisez la méthode [onCancel] du ref pour enregistrer des callbacks.
+
+Si vous devez effectuer une action quelconque lorsqu'un provider passe de l'état de pause à l'état de veille, utilisez la méthode [onResume] du ref pour enregistrer des rappels.
+
+Si vous voulez que l'état soit éliminé, de sorte qu'en plus de ne pas utiliser de ressources de calcul, il soit également éliminé de la mémoire de l'état, utilisez le modificateur `.autoDispose` sur votre définition de provider.
+Cela lui permettra de passer à l'état **Disposed** au lieu de **Paused** lorsqu'il ne sera plus utilisé.
+
+### Alive -> Disposing
+
+Il y a plusieurs raisons pour lesquelles un opérateur peut être éliminé.
+
+- Lorsqu'il est défini à l'aide du modificateur `.autoDispose` et qu'il n'est plus surveillé par l'interface utilisateur UI ou par un autre provider.
+- Lorsque le provider est rafraîchi ou invalidé manuellement.
+- Lorsque le provider est recréé en raison de la modification d'une de ses dépendances surveillées.
+
+L'actualisation fait en sorte que le provider repasse immédiatement par le processus de création, tandis que l'invalidation fait en sorte que la prochaine lecture/veille du provider entraîne la reconstruction de ce dernier.
+
+## Exécution d'actions avant la destruction de l'état
+Si vous devez effectuer une action quelconque lorsqu'un provider est éliminé, utilisez la méthode [onDispose] du ref pour enregistrer des rappels.
+
+L'exemple suivant utilise onDispose pour fermer un StreamController :
+
+<CodeBlock>{trimSnippet(onDispose)}</CodeBlock>
+
+:::note
+Selon le provider utilisé, il peut déjà prendre en charge le processus de nettoyage.
+Par exemple, [StateNotifierProvider] appelle la méthode `dispose` du [StateNotifier] renvoyé.
+:::
+
+[onDispose]: https://pub.dev/documentation/riverpod/latest/riverpod/Ref/onDispose.html
+[listen]: https://pub.dev/documentation/riverpod/latest/riverpod/Ref/listen.html
+[onCancel]: https://pub.dev/documentation/riverpod/latest/riverpod/Ref/onCancel.html
+[onResume]: https://pub.dev/documentation/riverpod/latest/riverpod/Ref/onResume.html
+[ProviderContainer]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderContainer-class.html
+[Notifier]: https://pub.dev/documentation/riverpod/latest/riverpod/Notifier-class.html
+[AsyncNotifier]: https://pub.dev/documentation/riverpod/latest/riverpod/AsyncNotifier-class.html
+[ProviderScope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
+[WidgetRef]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/WidgetRef-class.html
+[StateNotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/StateNotifier-class.html
+[StateNotifierProvider]: https://pub.dev/documentation/riverpod/latest/riverpod/StateNotifierProvider-class.html
+[StreamController]: https://api.dart.dev/stable/2.15.1/dart-async/StreamController-class.html
+[ChangeNotifier]: https://api.flutter.dev/flutter/foundation/ChangeNotifier-class.html
