@@ -1,0 +1,126 @@
+---
+title: Pourquoi l'Immuabilité
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+## Qu'est ce que l'immuabilité ?
+
+On parle d'immuabilité lorsque tous les champs d'un `Objet` sont finaux ou tardifs (late final).
+Ils sont définis exactement une fois lors de la construction.
+
+L'immuabilité est souhaitable pour de nombreuses et différentes raisons
+
+- Égalité des valeurs plutôt que des références
+- Raisonnement local sur un morceau de code
+  - Un morceau de code éloigné ne peut pas obtenir une référence et modifier l'objet sous vos pieds.
+- Plus facile à raisonner pour les tâches asynchrones et parallèles.
+  - Un autre code ne peut pas modifier votre objet entre deux opérations.
+- Sécurité des API
+  - Ce que vous passez dans une méthode ne peut pas être modifié par le demandeur/appelant.
+
+Une méthode copyWith permet de réduire la verbosité lors de la création d'un nouvel objet avec seulement
+quelques éléments modifiés.
+
+La copie est plus efficace que vous ne le pensez, puisque dart peut réutiliser toutes les références aux sous-objets qui n'ont pas changé.
+:::warning
+Assurez-vous que vos objets sont profondément immuables, sinon vous devrez implémenter une sorte de mécanisme de copie profonde.
+:::
+
+## Bonnes pratiques
+
+Vous pouvez utiliser n'importe quel package pour créer un état immuable.
+
+Pour les objets immuables :
+
+- [package:freezed](https://pub.dev/packages/freezed)
+- [package:built_value](https://pub.dev/packages/built_value)
+
+Pour les collections immuables (Map, Set, List):
+
+- [package:fast_immutable_collections](https://pub.dev/packages/fast_immutable_collections)
+- [package:built_collection](https://pub.dev/packages/built_collection)
+- [package:kt_dart](https://pub.dev/packages/kt_dart)
+- [package:dartz](https://pub.dev/packages/dartz)
+
+Il est fortement recommandé d'utiliser [freezed],
+puisqu'il comporte plusieurs ajouts intéressants qui vont au-delà de la simple fabrication d'objets immuables :
+
+- Une méthode copyWith générée
+- Copie profonde (copyWith sur des objets imbriqués et figés)
+- Types d'union
+- Fonctions de mappage d'union
+
+Il n'est pas nécessaire d'utiliser la génération de code pour travailler avec un état immuable, mais cela rend les choses beaucoup plus faciles.
+
+:::warning
+Si vous voulez utiliser les collections intégrées, assurez-vous d'appliquer la discipline de faire des copies des collections lors de leur mise à jour.
+Le problème de ne pas copier une collection est que riverpod détermine s'il faut émettre un nouvel état selon que la référence à l'objet a changé ou non.
+Si vous appelez simplement une méthode qui mute un objet, la référence est la même.
+:::
+
+### Utilisation d'un état immuable
+
+L'état immuable se prête le mieux à l'utilisation d'un [StateNotifier] en combinaison avec un [StateNotifierProvider].
+Un [StateNotifier] vous permet d'exposer une interface par laquelle vous pouvez "muter" l'état.
+Vous ne pouvez pas modifier l'état en dehors de la classe que vous définissez et qui étend [StateNotifier].
+Cela permet d'appliquer une séparation des préoccupations et de maintenir la logique métier en dehors de votre interface utilisateur.
+
+Voici un exemple d'une simple classe de paramètres immuables permettant de modifier le thème d'une application.
+
+```dart
+final themeProvider = StateNotifierProvider((ref) => ThemeNotifier());
+
+class ThemeNotifier extends StateNotifier<ThemeSettings> {
+  ThemeNotifier(): super(
+      ThemeSettings(
+        mode: ThemeMode.system,
+        primaryColor: Colors.blue,
+      ));
+
+  void toggle() {
+    state = state.copyWith(mode: state.mode.toggle);
+  }
+  void setDarkTheme() {
+    state = state.copyWith(mode: ThemeMode.dark);
+  }
+  void setLightTheme() {
+    state = state.copyWith(mode: ThemeMode.light);
+  }
+  void setSystemTheme() {
+    state = state.copyWith(mode: ThemeMode.system);
+  }
+  void setPrimaryColor(Color color) {
+    state = state.copyWith(primaryColor: color);
+  }
+
+}
+
+@freezed
+class ThemeSettings with _$ThemeSettings {
+  const factory ThemeSettings({ThemeMode mode, Color primaryColor}) = _ThemeSettings;
+}
+
+extension ToggleTheme on ThemeMode {
+  ThemeMode get toggle {
+    switch (this){
+      case ThemeMode.dark:
+        return ThemeMode.light;
+      case ThemeMode.light:
+        return ThemeMode.dark;
+      case ThemeMode.system:
+        return ThemeMode.system;
+    }
+  }
+}
+```
+
+Pour utiliser ce code, n'oubliez pas d'importer `freezed_annotation`, ajoutez la directive part et exécutez [build_runner] pour générer les classes freezed (figées) !
+
+[changenotifier]: https://api.flutter.dev/flutter/foundation/ChangeNotifier-class.html
+[statenotifier]: https://pub.dev/documentation/riverpod/latest/riverpod/StateNotifier-class.html
+[statenotifierprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StateNotifierProvider-class.html
+[asyncvalue]: https://pub.dev/documentation/riverpod/latest/riverpod/AsyncValue-class.html
+[freezed]: https://pub.dev/packages/freezed
+[build_runner]: https://pub.dev/packages/build_runner

@@ -264,5 +264,13 @@
   },
   "home.async_img": {
     "message": "img/intro/fr/async.png"
+  },
+  "custom.outdatedTranslations": {
+    "message": "Le contenu de cette page peut être obsolète. Pensez à consulter la {englishLink} à la place.",
+    "description": "The label used inside the outdated translation banner"
+  },
+  "custom.outdatedTranslationLink": {
+    "message": "version anglaise",
+    "description": "The link that redirects to the equivalent English doc"
   }
 }
