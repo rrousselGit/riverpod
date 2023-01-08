@@ -29,7 +29,7 @@ class _SystemHash {
   }
 }
 
-String $MyNotifierHash() => r'776dac1b8cf04992a7ad0e1f43a96bf9b4659f0b';
+String _$MyNotifierHash() => r'776dac1b8cf04992a7ad0e1f43a96bf9b4659f0b';
 
 /// See also [MyNotifier].
 class MyNotifierProvider
@@ -46,7 +46,7 @@ class MyNotifierProvider
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : $MyNotifierHash,
+                  : _$MyNotifierHash,
         );
 
   final int i;
@@ -125,7 +125,7 @@ abstract class _$MyNotifier extends BuildlessAutoDisposeAsyncNotifier<String> {
   );
 }
 
-String $MyNotifier2Hash() => r'86bcf4b54298ca620d50ca3f2cfdce843739e6d1';
+String _$MyNotifier2Hash() => r'86bcf4b54298ca620d50ca3f2cfdce843739e6d1';
 
 /// See also [MyNotifier2].
 class MyNotifier2Provider
@@ -142,7 +142,7 @@ class MyNotifier2Provider
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : $MyNotifier2Hash,
+                  : _$MyNotifier2Hash,
         );
 
   final int i;
@@ -221,7 +221,7 @@ abstract class _$MyNotifier2 extends BuildlessAutoDisposeNotifier<String> {
   );
 }
 
-String $generatedHash() => r'cf482f785592d96d90763d228d1c29d6ab0915ac';
+String _$generatedHash() => r'cf482f785592d96d90763d228d1c29d6ab0915ac';
 
 /// See also [generated].
 class GeneratedProvider extends AutoDisposeFutureProvider<String> {
@@ -239,7 +239,7 @@ class GeneratedProvider extends AutoDisposeFutureProvider<String> {
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : $generatedHash,
+                  : _$generatedHash,
         );
 
   final String value;
@@ -300,7 +300,7 @@ class GeneratedFamily extends Family<AsyncValue<String>> {
   String? get name => r'generatedProvider';
 }
 
-String $generatedSyncHash() => r'15f2d152e33b46338ee523743b2be3415d7fa48f';
+String _$generatedSyncHash() => r'15f2d152e33b46338ee523743b2be3415d7fa48f';
 
 /// See also [generatedSync].
 class GeneratedSyncProvider extends AutoDisposeProvider<String> {
@@ -318,7 +318,7 @@ class GeneratedSyncProvider extends AutoDisposeProvider<String> {
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : $generatedSyncHash,
+                  : _$generatedSyncHash,
         );
 
   final String value;

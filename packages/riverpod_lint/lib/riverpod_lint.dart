@@ -2,7 +2,11 @@ import 'dart:async';
 
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/syntactic_entity.dart';
+import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/type.dart';
+import 'package:analyzer/source/source_range.dart';
 import 'package:analyzer_plugin/protocol/protocol_generated.dart';
 import 'package:analyzer_plugin/utilities/change_builder/change_builder_core.dart';
 import 'package:collection/collection.dart';
@@ -54,10 +58,31 @@ const _consumerState = TypeChecker.fromName(
 );
 const _ref = TypeChecker.fromName('Ref', packageName: 'riverpod');
 
+const _riverpod = TypeChecker.fromName(
+  'Riverpod',
+  packageName: 'riverpod_annotation',
+);
+
 /// [Ref] methods that can make a provider depend on another provider.
 const _refBinders = {'read', 'watch', 'listen'};
 
 RiverpodLint createPlugin() => RiverpodLint();
+
+extension on String {
+  String get titled {
+    return replaceFirstMapped(
+      RegExp('[a-zA-Z]'),
+      (match) => match.group(0)!.toUpperCase(),
+    );
+  }
+
+  String get lowerFirst {
+    return replaceFirstMapped(
+      RegExp('[a-zA-Z]'),
+      (match) => match.group(0)!.toLowerCase(),
+    );
+  }
+}
 
 class RiverpodLint extends PluginBase {
   @override
@@ -66,6 +91,206 @@ class RiverpodLint extends PluginBase {
     return resolvedUnitResult.unit.accept(visitor) ??
         const Stream<Lint>.empty();
   }
+
+  @override
+  Future<EditGetAssistsResult> handleGetAssists(
+    ResolvedUnitResult resolvedUnitResult, {
+    required int offset,
+    required int length,
+  }) async {
+    return EditGetAssistsResult(
+      await _computeAssistChanges(
+        resolvedUnitResult,
+        offset: offset,
+        length: length,
+      ).toList(),
+    );
+  }
+
+  Stream<PrioritizedSourceChange> _computeAssistChanges(
+    ResolvedUnitResult resolvedUnitResult, {
+    required int offset,
+    required int length,
+  }) async* {
+    final unit = SourceRange(
+      resolvedUnitResult.unit.offset,
+      resolvedUnitResult.unit.length,
+    );
+
+    print(
+      'Asked for $offset($length), got ${resolvedUnitResult.unit.offset} '
+      '// ${resolvedUnitResult.unit.length} '
+      '// ${unit.contains(offset)}',
+    );
+    final child = resolvedUnitResult.unit.findAstNodeAtOffset(offset);
+    print('Found item $child ${child.runtimeType}');
+
+    if (child is FunctionDeclaration) {
+      final element = child.declaredElement!;
+      final annotation = _riverpod.firstAnnotationOf(element);
+      if (annotation == null) return;
+
+      print('function at offset');
+      final changeBuilder = ChangeBuilder(session: resolvedUnitResult.session);
+
+      // The function offset after the annotations/comments.
+      final functionStartOffset = child.returnType?.offset ?? child.name.offset;
+      final functionLength = child.end - functionStartOffset;
+
+      final newClassName = child.name.lexeme.titled;
+
+      await changeBuilder.addDartFileEdit(
+        resolvedUnitResult.path,
+        (builder) {
+          builder.addReplacement(
+            SourceRange(functionStartOffset, functionLength),
+            (builder) {
+              builder.write('''
+class $newClassName extends _\$$newClassName {
+  ${child.returnType?.resolveSource(resolvedUnitResult) ?? ''} build() ${child.functionExpression.body.resolveSource(resolvedUnitResult)}
+}
+''');
+            },
+          );
+        },
+      );
+
+      yield PrioritizedSourceChange(
+        1,
+        changeBuilder.sourceChange..message = 'Refactor provider as class',
+      );
+    }
+
+    if (child is ClassDeclaration) {
+      final element = child.declaredElement!;
+      final annotation = _riverpod.firstAnnotationOf(element);
+      if (annotation == null) return;
+
+      final changeBuilder = ChangeBuilder(session: resolvedUnitResult.session);
+
+      final buildMethod = child.members
+          .whereType<MethodDeclaration>()
+          .firstWhereOrNull((element) => element.name.lexeme == 'build');
+      if (buildMethod == null) return;
+
+      final newFunctionName = child.name.lexeme.lowerFirst;
+      final newFunctionRefName = '${child.name.lexeme.titled}Ref';
+
+      await changeBuilder.addDartFileEdit(
+        resolvedUnitResult.path,
+        (builder) {
+          builder.addReplacement(
+            SourceRange(
+              child.classKeyword.offset,
+              child.end - child.classKeyword.offset,
+            ),
+            (builder) {
+              builder.write('''
+${buildMethod.returnType?.resolveSource(resolvedUnitResult) ?? ''} $newFunctionName($newFunctionRefName ref) ${buildMethod.body.resolveSource(resolvedUnitResult)}
+''');
+            },
+          );
+        },
+      );
+
+      yield PrioritizedSourceChange(
+        1,
+        changeBuilder.sourceChange..message = 'Refactor provider as function',
+      );
+    }
+  }
+}
+
+bool _isOffsetInSourceRange(
+  int targetOffset, {
+  required int rangeOffset,
+  required int rangeLength,
+}) {
+  return SourceRange(rangeOffset, rangeLength).contains(targetOffset);
+}
+
+extension on AstNode {
+  String resolveSource(ResolvedUnitResult resolvedUnitResult) {
+    return resolvedUnitResult.content.substring(offset, end);
+  }
+
+  AstNode? findAstNodeAtOffset(int targetOffset) {
+    final containsTarget = _isOffsetInSourceRange(
+      targetOffset,
+      rangeOffset: offset,
+      rangeLength: length,
+    );
+    if (!containsTarget) {
+      return null;
+    }
+
+    for (final child in childEntities) {
+      final match = child.when(
+        token: (_) {
+          // Ignoring tokens as we only care about returning AstNodes
+        },
+        node: (node) => node.findAstNodeAtOffset(targetOffset),
+      );
+      if (match != null) return match;
+    }
+
+    return this;
+  }
+}
+
+extension on SyntacticEntity {
+  R when<R>({
+    required R Function(Token token) token,
+    required R Function(AstNode node) node,
+  }) {
+    final that = this;
+    if (that is Token) {
+      return token(that);
+    } else if (that is AstNode) {
+      return node(that);
+    } else {
+      throw UnsupportedError('Unknown object $runtimeType');
+    }
+  }
+
+  // SyntacticEntity? findChildAtOffset(int targetOffset) {
+  //   final containsTarget = _isOffsetInSourceRange(
+  //     targetOffset,
+  //     rangeOffset: offset,
+  //     rangeLength: length,
+  //   );
+  //   if (!containsTarget) {
+  //     return null;
+  //   }
+
+  //   return when(
+  //     token: (token) {
+  //       var result = token;
+  //       for (Token? tokenItem = token;
+  //           tokenItem != null;
+  //           tokenItem = tokenItem == tokenItem.next ? null : tokenItem.next) {
+  //         if (tokenItem.length >= result.length) continue;
+  //         final containsOffset = _isOffsetInSourceRange(
+  //           targetOffset,
+  //           rangeOffset: tokenItem.offset,
+  //           rangeLength: tokenItem.length,
+  //         );
+  //         if (containsOffset) {
+  //           result = tokenItem;
+  //         }
+  //       }
+
+  //       return result;
+  //     },
+  //     node: (node) {
+  //       for (final child in node.childEntities) {
+  //         final match = child.findChildAtOffset(targetOffset);
+  //         if (match != null) return match;
+  //       }
+  //       return this;
+  //     },
+  //   );
+  // }
 }
 
 mixin _ProviderCreationVisitor<T> on AsyncRecursiveVisitor<T> {

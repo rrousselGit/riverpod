@@ -29,7 +29,7 @@ class _SystemHash {
   }
 }
 
-String $MyNotifierHash() => r'61802219610d8b855bdacda5bf14b6161c69131c';
+String _$MyNotifierHash() => r'61802219610d8b855bdacda5bf14b6161c69131c';
 
 /// See also [MyNotifier].
 class MyNotifierProvider
@@ -46,7 +46,7 @@ class MyNotifierProvider
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : $MyNotifierHash,
+                  : _$MyNotifierHash,
         );
 
   final int i;
@@ -125,7 +125,7 @@ abstract class _$MyNotifier extends BuildlessAutoDisposeAsyncNotifier<String> {
   );
 }
 
-String $generatedHash() => r'40e3f3497855d0f3422139505af4a3e06bd5cc95';
+String _$generatedHash() => r'40e3f3497855d0f3422139505af4a3e06bd5cc95';
 
 /// See also [generated].
 class GeneratedProvider extends AutoDisposeFutureProvider<String> {
@@ -143,7 +143,7 @@ class GeneratedProvider extends AutoDisposeFutureProvider<String> {
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : $generatedHash,
+                  : _$generatedHash,
         );
 
   final String value;
