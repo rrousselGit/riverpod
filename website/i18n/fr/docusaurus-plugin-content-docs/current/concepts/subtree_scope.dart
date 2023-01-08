@@ -13,7 +13,7 @@ final counterProvider = StateProvider(
 final adjustedCountProvider = Provider(
   (ref) => ref.watch(counterProvider) * 2,
   // Notez que si un provider dépend d'un provider qui est surchargé pour un sous-arbre,
-  // vous devez explicitement lister ce fournisseur dans votre liste de dépendances.
+  // vous devez explicitement lister ce provider dans votre liste de dépendances.
   dependencies: [counterProvider],
 );
 

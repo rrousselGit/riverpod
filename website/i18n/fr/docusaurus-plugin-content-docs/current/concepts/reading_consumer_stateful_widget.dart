@@ -21,7 +21,7 @@ class HomeViewState extends ConsumerState<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    // On peut aussi utiliser "ref" pour écouter un fournisseur dans la méthode de build.
+    // On peut aussi utiliser "ref" pour écouter un provider dans la méthode de build.
     final counter = ref.watch(counterProvider);
     return Text('$counter');
   }
