@@ -1,3 +1,7 @@
+## Unreleased minor
+
+Improve type-inference when using `AsyncValue.whenOrNull` (thanks to @AhmedLSayed9)
+
 ## 2.1.3
 
 Fixes an issue with `FutureProvider<void>` (#2028)
