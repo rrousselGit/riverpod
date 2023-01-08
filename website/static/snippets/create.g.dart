@@ -29,7 +29,7 @@ class _SystemHash {
   }
 }
 
-String $boredSuggestionHash() => r'9fa13324205edc69e414b4e0d1458d517b0b4184';
+String _$boredSuggestionHash() => r'9fa13324205edc69e414b4e0d1458d517b0b4184';
 
 /// See also [boredSuggestion].
 final boredSuggestionProvider = AutoDisposeFutureProvider<String>(
@@ -37,6 +37,6 @@ final boredSuggestionProvider = AutoDisposeFutureProvider<String>(
   name: r'boredSuggestionProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : $boredSuggestionHash,
+      : _$boredSuggestionHash,
 );
 typedef BoredSuggestionRef = AutoDisposeFutureProviderRef<String>;

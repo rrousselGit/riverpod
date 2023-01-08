@@ -29,14 +29,14 @@ class _SystemHash {
   }
 }
 
-String $TodosHash() => r'4bd25c3c15bfff56ad6e733bd17ecb7284c4ceb2';
+String _$TodosHash() => r'4bd25c3c15bfff56ad6e733bd17ecb7284c4ceb2';
 
 /// See also [Todos].
 final todosProvider = AutoDisposeNotifierProvider<Todos, List<Todo>>(
   Todos.new,
   name: r'todosProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : $TodosHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : _$TodosHash,
 );
 typedef TodosRef = AutoDisposeNotifierProviderRef<List<Todo>>;
 
