@@ -40,7 +40,11 @@ class Home extends ConsumerWidget {
           onPressed: () {
             ref.read(counterProvider.notifier).state++;
           },
+<<<<<<< HEAD
           child: const Text('Increment Count'),
+=======
+          child: const Text('Incrémenter le compteur'),
+>>>>>>> 01f66c936e312493a4bf6ef40a9254827c7eed99
         ),
       ],
     ));

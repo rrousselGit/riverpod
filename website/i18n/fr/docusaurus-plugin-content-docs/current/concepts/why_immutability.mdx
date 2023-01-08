@@ -1,10 +1,15 @@
 ---
+<<<<<<< HEAD
 title: Pourquoi l'immuabilité
+=======
+title: Pourquoi l'Immuabilité
+>>>>>>> 01f66c936e312493a4bf6ef40a9254827c7eed99
 ---
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 
+<<<<<<< HEAD
 ## Qu'est-ce que l'immuabilité ?
 
 On parle d'immuabilité lorsque tous les champs d'un `Objet` sont 'final' ou 'late final'.
@@ -23,6 +28,27 @@ L'immuabilité est souhaitable pour de nombreuses raisons différentes
 Une méthode copyWith permet de réduire la verbosité lors de la création d'un nouvel objet avec seulement quelques éléments modifiés
 
 La copie est plus efficace que vous ne le pensez, puisque Dart peut réutiliser toutes les références aux sous-objets qui n'ont pas changé
+=======
+## Qu'est ce que l'immuabilité ?
+
+On parle d'immuabilité lorsque tous les champs d'un `Objet` sont finaux ou tardifs (late final).
+Ils sont définis exactement une fois lors de la construction.
+
+L'immuabilité est souhaitable pour de nombreuses et différentes raisons
+
+- Égalité des valeurs plutôt que des références
+- Raisonnement local sur un morceau de code
+  - Un morceau de code éloigné ne peut pas obtenir une référence et modifier l'objet sous vos pieds.
+- Plus facile à raisonner pour les tâches asynchrones et parallèles.
+  - Un autre code ne peut pas modifier votre objet entre deux opérations.
+- Sécurité des API
+  - Ce que vous passez dans une méthode ne peut pas être modifié par le demandeur/appelant.
+
+Une méthode copyWith permet de réduire la verbosité lors de la création d'un nouvel objet avec seulement
+quelques éléments modifiés.
+
+La copie est plus efficace que vous ne le pensez, puisque dart peut réutiliser toutes les références aux sous-objets qui n'ont pas changé.
+>>>>>>> 01f66c936e312493a4bf6ef40a9254827c7eed99
 :::warning
 Assurez-vous que vos objets sont profondément immuables, sinon vous devrez implémenter une sorte de mécanisme de copie profonde.
 :::
@@ -44,21 +70,38 @@ Pour les collections immuables (Map, Set, List):
 - [package:dartz](https://pub.dev/packages/dartz)
 
 Il est fortement recommandé d'utiliser [freezed],
+<<<<<<< HEAD
 puisqu'il comporte plusieurs ajouts intéressants qui vont au-delà de la simple fabrication d'objets immuables, notamment :
 
 - A generated copyWith method
 - Deep copy (copyWith sur les objets freezed imbriqués)
 - Union types
 - Union mapping functions
+=======
+puisqu'il comporte plusieurs ajouts intéressants qui vont au-delà de la simple fabrication d'objets immuables :
+
+- Une méthode copyWith générée
+- Copie profonde (copyWith sur des objets imbriqués et figés)
+- Types d'union
+- Fonctions de mappage d'union
+>>>>>>> 01f66c936e312493a4bf6ef40a9254827c7eed99
 
 Il n'est pas nécessaire d'utiliser la génération de code pour travailler avec un état immuable, mais cela rend les choses beaucoup plus faciles.
 
 :::warning
 Si vous voulez utiliser les collections intégrées, assurez-vous d'appliquer la discipline de faire des copies des collections lors de leur mise à jour.
 Le problème de ne pas copier une collection est que riverpod détermine s'il faut émettre un nouvel état selon que la référence à l'objet a changé ou non.
+<<<<<<< HEAD
 Si vous appelez simplement une méthode qui fait muter un objet, la référence est la même.
 :::
 
+=======
+Si vous appelez simplement une méthode qui mute un objet, la référence est la même.
+:::
+
+### Utilisation d'un état immuable
+
+>>>>>>> 01f66c936e312493a4bf6ef40a9254827c7eed99
 L'état immuable se prête le mieux à l'utilisation d'un [StateNotifier] en combinaison avec un [StateNotifierProvider].
 Un [StateNotifier] vous permet d'exposer une interface par laquelle vous pouvez "muter" l'état.
 Vous ne pouvez pas modifier l'état en dehors de la classe que vous définissez et qui étend [StateNotifier].
@@ -113,7 +156,11 @@ extension ToggleTheme on ThemeMode {
 }
 ```
 
+<<<<<<< HEAD
 Pour utiliser ce code, n'oubliez pas d'importer `freezed_annotation`, ajoutez la directive part et exécutez [build_runner] pour générer les classes figées !
+=======
+Pour utiliser ce code, n'oubliez pas d'importer `freezed_annotation`, ajoutez la directive part et exécutez [build_runner] pour générer les classes freezed (figées) !
+>>>>>>> 01f66c936e312493a4bf6ef40a9254827c7eed99
 
 [changenotifier]: https://api.flutter.dev/flutter/foundation/ChangeNotifier-class.html
 [statenotifier]: https://pub.dev/documentation/riverpod/latest/riverpod/StateNotifier-class.html

@@ -29,14 +29,14 @@ class _SystemHash {
   }
 }
 
-String $PageIndexHash() => r'59307ecf23b5b2432833da5ad6b312bf36435d0e';
+String _$PageIndexHash() => r'59307ecf23b5b2432833da5ad6b312bf36435d0e';
 
 /// See also [PageIndex].
 final pageIndexProvider = AutoDisposeNotifierProvider<PageIndex, int>(
   PageIndex.new,
   name: r'pageIndexProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : $PageIndexHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : _$PageIndexHash,
 );
 typedef PageIndexRef = AutoDisposeNotifierProviderRef<int>;
 

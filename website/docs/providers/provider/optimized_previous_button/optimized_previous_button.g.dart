@@ -29,14 +29,14 @@ class _SystemHash {
   }
 }
 
-String $PageIndexHash() => r'59307ecf23b5b2432833da5ad6b312bf36435d0e';
+String _$PageIndexHash() => r'59307ecf23b5b2432833da5ad6b312bf36435d0e';
 
 /// See also [PageIndex].
 final pageIndexProvider = AutoDisposeNotifierProvider<PageIndex, int>(
   PageIndex.new,
   name: r'pageIndexProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : $PageIndexHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : _$PageIndexHash,
 );
 typedef PageIndexRef = AutoDisposeNotifierProviderRef<int>;
 
@@ -45,7 +45,7 @@ abstract class _$PageIndex extends AutoDisposeNotifier<int> {
   int build();
 }
 
-String $canGoToPreviousPageHash() =>
+String _$canGoToPreviousPageHash() =>
     r'801fe8182a37cd21ae83bdfccbe36c125b4d14fb';
 
 /// See also [canGoToPreviousPage].
@@ -54,6 +54,6 @@ final canGoToPreviousPageProvider = AutoDisposeProvider<bool>(
   name: r'canGoToPreviousPageProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : $canGoToPreviousPageHash,
+      : _$canGoToPreviousPageHash,
 );
 typedef CanGoToPreviousPageRef = AutoDisposeProviderRef<bool>;

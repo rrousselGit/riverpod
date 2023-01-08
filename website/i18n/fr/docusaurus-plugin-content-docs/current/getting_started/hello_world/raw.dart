@@ -3,25 +3,25 @@
 /* SNIPPET START */
 
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// 우리는 값을 저장할 "provider"를 만들겁니다(여기서 값은 "Hello world"를 의미합니다).
-// 프로바이더를 사용하는 것으로 값의 mock/override가 가능하게 됩니다.
+// We create a "provider", which will store a value (here "Hello world").
+// By using a provider, this allows us to mock/override the value exposed.
 final helloWorldProvider = Provider((_) => 'Hello world');
 
 void main() {
   runApp(
-    // 위젯에서 프로바이더를 사용하고 읽기위해
-    // 앱 전체적으로 "ProviderScope" 위젯을 감싸줘야 합니다.
-    // 여기에 프로바이더의 상태가 저장됩니다.
+    // For widgets to be able to read providers, we need to wrap the entire
+    // application in a "ProviderScope" widget.
+    // This is where the state of our providers will be stored.
     ProviderScope(
       child: MyApp(),
     ),
   );
 }
 
-// Note: MyApp은 hooks_riverpod의 HookConsumerWidget을 상속받습니다.
-class MyApp extends HookConsumerWidget {
+// Extend ConsumerWidget instead of StatelessWidget, which is exposed by Riverpod
+class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final String value = ref.watch(helloWorldProvider);

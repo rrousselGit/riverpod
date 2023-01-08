@@ -9,7 +9,7 @@ final example = StreamProvider.autoDispose((ref) {
   final streamController = StreamController<int>();
 
   ref.onDispose(() {
-    // Ferme le StreamController quand son état est détruite.
+    // Ferme le StreamController lorsque l'état de ce fournisseur est détruit.
     streamController.close();
   });
 

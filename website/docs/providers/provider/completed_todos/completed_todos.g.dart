@@ -29,7 +29,7 @@ class _SystemHash {
   }
 }
 
-String $completedTodosHash() => r'855706c09268f428696b3b382ae1605818361b83';
+String _$completedTodosHash() => r'855706c09268f428696b3b382ae1605818361b83';
 
 /// See also [completedTodos].
 final completedTodosProvider = AutoDisposeProvider<List<Todo>>(
@@ -37,6 +37,6 @@ final completedTodosProvider = AutoDisposeProvider<List<Todo>>(
   name: r'completedTodosProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : $completedTodosHash,
+      : _$completedTodosHash,
 );
 typedef CompletedTodosRef = AutoDisposeProviderRef<List<Todo>>;

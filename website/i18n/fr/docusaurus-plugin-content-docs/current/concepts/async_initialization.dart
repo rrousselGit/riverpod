@@ -14,7 +14,7 @@ class LoadingScreen extends StatelessWidget {
 }
 
 /* SNIPPET START */
-// Nous aimerions obtenir une instance de SharedPreferences de manière synchrone dans un provider
+// Nous aimerions obtenir une instance de shared preferences de manière synchrone dans un provider
 final countProvider = StateProvider<int>((ref) {
   final preferences = ref.watch(sharedPreferencesProvider);
   final currentValue = preferences.getInt('count') ?? 0;
@@ -24,16 +24,16 @@ final countProvider = StateProvider<int>((ref) {
   return currentValue;
 });
 
-// Nous n'avons pas d'instance actuelle de SharedPreferences, et nous ne pouvons pas en obtenir une, sauf de manière asynchrone.
+// Nous n'avons pas d'instance réelle de SharedPreferences et nous ne pouvons pas en obtenir une, sauf de manière asynchrone
 final sharedPreferencesProvider =
     Provider<SharedPreferences>((ref) => throw UnimplementedError());
 
 Future<void> main() async {
-  // Afficher un indicateur de chargement avant de lancer l'application complète (facultatif)
+  // Affiche un indicateur de chargement avant de lancer l'application complète (facultatif)
   // L'écran de chargement de la plate-forme sera utilisé pendant l'attente si vous omettez cette option.
   runApp(const LoadingScreen());
 
-  // Obtenir l'instance de SharedPreferences
+  // Obtention de l'instance de shared preferences
   final prefs = await SharedPreferences.getInstance();
   return runApp(
     ProviderScope(
@@ -51,7 +51,7 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Utiliser le provider sans s'occuper des problèmes d'asynchronisme
+    // Utilise le provider sans s'occuper des problèmes d'asynchronisme
     final count = ref.watch(countProvider);
     return Text('$count');
   }
