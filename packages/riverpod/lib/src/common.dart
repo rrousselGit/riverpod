@@ -682,9 +682,9 @@ extension AsyncValueX<T> on AsyncValue<T> {
     bool skipLoadingOnReload = false,
     bool skipLoadingOnRefresh = true,
     bool skipError = false,
-    R Function(T data)? data,
-    R Function(Object error, StackTrace stackTrace)? error,
-    R Function()? loading,
+    R? Function(T data)? data,
+    R? Function(Object error, StackTrace stackTrace)? error,
+    R? Function()? loading,
   }) {
     return when(
       skipError: skipError,
@@ -723,9 +723,9 @@ extension AsyncValueX<T> on AsyncValue<T> {
   /// Perform some actions based on the state of the [AsyncValue], or return null
   /// if the current state wasn't tested.
   R? mapOrNull<R>({
-    R Function(AsyncData<T> data)? data,
-    R Function(AsyncError<T> error)? error,
-    R Function(AsyncLoading<T> loading)? loading,
+    R? Function(AsyncData<T> data)? data,
+    R? Function(AsyncError<T> error)? error,
+    R? Function(AsyncLoading<T> loading)? loading,
   }) {
     return map(
       data: (d) => data?.call(d),
