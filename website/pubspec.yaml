@@ -7,12 +7,12 @@ environment:
 
 dependencies:
   collection: ^1.15.0
-  cupertino_icons: ^0.1.3
   flutter:
     sdk: flutter
   flutter_hooks: ^0.18.2
   flutter_riverpod:
     path: ../packages/flutter_riverpod
+  freezed_annotation: ^2.2.0
   hooks_riverpod:
     path: ../packages/hooks_riverpod
   mockito: ^5.0.0
@@ -28,22 +28,11 @@ dev_dependencies:
     path: third-party/cosmic_frontmatter
   flutter_test:
     sdk: flutter
+  freezed: ^2.2.0
   glob: ^2.1.0
   http: ^0.13.5
   path: ^1.8.1
   riverpod_generator:
-
-dependency_overrides:
-  flutter_riverpod:
-    path: ../packages/flutter_riverpod
-  hooks_riverpod:
-    path: ../packages/hooks_riverpod
-  riverpod:
-    path: ../packages/riverpod
-  riverpod_annotation:
-    path: ../packages/riverpod_annotation
-  riverpod_generator:
-    path: ../packages/riverpod_generator
 
 flutter:
   uses-material-design: true

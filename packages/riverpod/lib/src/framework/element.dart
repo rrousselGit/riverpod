@@ -113,7 +113,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   bool _mounted = false;
 
   /// Whether the element was disposed or not
-  @visibleForTesting
+  @internal
   bool get mounted => _mounted;
 
   /// Whether the assert that prevents [requireState] from returning
@@ -398,7 +398,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   void create({required bool didChangeDependency});
 
   /// Invokes [create] and handles errors.
-  @pragma('vm:notify-debugger-on-exception')
+  @notifyDebuggerOnException
   void buildState() {
     ProviderElementBase? debugPreviouslyBuildingElement;
     final previousDidChangeDependency = _didChangeDependency;

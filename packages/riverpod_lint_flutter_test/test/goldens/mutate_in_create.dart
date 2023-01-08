@@ -9,7 +9,9 @@ part 'mutate_in_create.g.dart';
 final a = StateProvider((ref) => 'String');
 
 final b = Provider<bool>((ref) {
+  // expect_lint: riverpod_no_mutate_sync
   ref.watch(a.notifier).state = '';
+  // expect_lint: riverpod_no_mutate_sync
   ref.watch(c.notifier).fn();
   return false;
 });
@@ -20,12 +22,16 @@ final c = StateNotifierProvider<C, int>((ref) {
 
 class C extends StateNotifier<int> {
   C(this.ref) : super(0) {
+    // expect_lint: riverpod_no_mutate_sync
     ref.read(a.notifier).state = '';
     Future.delayed(Duration(milliseconds: 10), () {
       ref.read(a.notifier).state = '';
     });
+    // expect_lint: riverpod_no_mutate_sync
     ref.read(a.notifier).state = '';
+    // expect_lint: riverpod_no_mutate_sync
     fn();
+    // expect_lint: riverpod_no_mutate_sync
     fn2();
     fn3();
   }
@@ -53,12 +59,18 @@ class D extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // expect_lint: riverpod_no_mutate_sync
     ref.watch(a.notifier).state = '';
+    // expect_lint: riverpod_no_mutate_sync
     fn(ref);
+    // expect_lint: riverpod_no_mutate_sync
     fn2(ref);
     fn3(ref);
+    // expect_lint: riverpod_no_mutate_sync
     ref.watch(c.notifier).fn();
+    // expect_lint: riverpod_no_mutate_sync
     ref.fn_g;
+    // expect_lint: riverpod_no_mutate_sync
     ref.fn2_g;
     ref.fn3_g;
     return Container();
@@ -107,14 +119,20 @@ extension on WidgetRef {
 
 class E extends ChangeNotifier {
   E(this.ref) {
+    // expect_lint: riverpod_no_mutate_sync
     ref.read(a.notifier).state = '';
     Future.delayed(Duration(milliseconds: 10), () {
       ref.read(a.notifier).state = '';
     });
+    // expect_lint: riverpod_no_mutate_sync
     ref.read(a.notifier).state = '';
+    // expect_lint: riverpod_no_mutate_sync
     fn();
+    // expect_lint: riverpod_no_mutate_sync
     fn2();
+    // expect_lint: riverpod_no_mutate_sync
     ref.invalidate(a);
+    // expect_lint: riverpod_no_mutate_sync
     ref.invalidateSelf();
     fn3();
   }
@@ -139,6 +157,7 @@ class E extends ChangeNotifier {
 
 final f = ChangeNotifierProvider<E>((ref) {
   final e = E(ref);
+  // expect_lint: riverpod_no_mutate_sync
   e.fn();
   return e;
 });
@@ -153,9 +172,12 @@ class G extends ConsumerStatefulWidget {
 class _GState extends ConsumerState<G> {
   @override
   void initState() {
+    // expect_lint: riverpod_no_mutate_sync
     ref.read(a.notifier).state = '';
+    // expect_lint: riverpod_no_mutate_sync
     ref.invalidate(a);
-    ref.invalidate(a);
+    // expect_lint: riverpod_no_mutate_sync
+    ref.refresh(a);
     super.initState();
   }
 
@@ -167,8 +189,11 @@ class _GState extends ConsumerState<G> {
 
 @riverpod
 Future<String> generated(GeneratedRef ref, String value, int otherValue) async {
+  // expect_lint: riverpod_no_mutate_sync
   ref.watch(a.notifier).state = 'Other';
+  // expect_lint: riverpod_no_mutate_sync
   ref.invalidate(a);
+  // expect_lint: riverpod_no_mutate_sync
   ref.refresh(a);
   await Future.delayed(Duration(seconds: 1));
   ref.watch(a.notifier).state = 'Other';
@@ -179,8 +204,11 @@ Future<String> generated(GeneratedRef ref, String value, int otherValue) async {
 
 @riverpod
 String generatedSync(GeneratedSyncRef ref, String value, int otherValue) {
+  // expect_lint: riverpod_no_mutate_sync
   ref.watch(a.notifier).state = 'Other';
+  // expect_lint: riverpod_no_mutate_sync
   ref.invalidate(a);
+  // expect_lint: riverpod_no_mutate_sync
   ref.refresh(a);
   Future.delayed(Duration(seconds: 1), () {
     ref.read(a.notifier).state = 'Other';
@@ -194,8 +222,11 @@ String generatedSync(GeneratedSyncRef ref, String value, int otherValue) {
 class MyNotifier extends _$MyNotifier {
   @override
   Future<String> build(int i, String b) async {
+    // expect_lint: riverpod_no_mutate_sync
     ref.watch(a.notifier).state = 'Other';
+    // expect_lint: riverpod_no_mutate_sync
     ref.invalidate(a);
+    // expect_lint: riverpod_no_mutate_sync
     ref.refresh(a);
     await Future.delayed(Duration(seconds: 1));
     ref.watch(a.notifier).state = 'Other';
@@ -209,8 +240,11 @@ class MyNotifier extends _$MyNotifier {
 class MyNotifier2 extends _$MyNotifier2 {
   @override
   String build(int i, String b) {
+    // expect_lint: riverpod_no_mutate_sync
     ref.watch(a.notifier).state = 'Other';
+    // expect_lint: riverpod_no_mutate_sync
     ref.invalidate(a);
+    // expect_lint: riverpod_no_mutate_sync
     ref.refresh(a);
     Future.delayed(Duration(seconds: 1), () {
       ref.read(a.notifier).state = 'Other';

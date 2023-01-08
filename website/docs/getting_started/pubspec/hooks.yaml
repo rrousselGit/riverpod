@@ -7,4 +7,4 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_hooks: ^0.18.0
-  hooks_riverpod: ^2.1.1
+  hooks_riverpod: ^2.1.3

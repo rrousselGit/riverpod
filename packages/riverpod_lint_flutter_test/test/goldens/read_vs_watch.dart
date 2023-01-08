@@ -9,14 +9,17 @@ final provider = Provider((ref) => 0);
 
 final another = Provider((ref) {
   ref.watch(provider);
+  // expect_lint: riverpod_avoid_read_inside_build
   ref.read(provider);
 
   void fn() {
+    // expect_lint: riverpod_avoid_watch_outside_build
     ref.watch(provider);
     ref.read(provider);
   }
 
   final fn2 = () {
+    // expect_lint: riverpod_avoid_watch_outside_build
     ref.watch(provider);
     ref.read(provider);
   };
@@ -25,6 +28,7 @@ final another = Provider((ref) {
 final foo = Consumer(
   builder: (context, ref, child) {
     ref.watch(provider);
+    // expect_lint: riverpod_avoid_read_inside_build
     ref.read(provider);
 
     void fn() {
@@ -33,6 +37,7 @@ final foo = Consumer(
     }
 
     final fn2 = () {
+      // expect_lint: riverpod_avoid_watch_outside_build
       ref.watch(provider);
       ref.read(provider);
     };
@@ -44,6 +49,7 @@ final foo = Consumer(
 final bar = HookConsumer(
   builder: (context, ref, child) {
     ref.watch(provider);
+    // expect_lint: riverpod_avoid_read_inside_build
     ref.read(provider);
 
     void fn() {
@@ -52,6 +58,7 @@ final bar = HookConsumer(
     }
 
     final fn2 = () {
+      // expect_lint: riverpod_avoid_watch_outside_build
       ref.watch(provider);
       ref.read(provider);
     };
@@ -64,16 +71,19 @@ class Home extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(provider);
+    // expect_lint: riverpod_avoid_read_inside_build
     ref.read(provider);
 
     Builder(builder: (context) {
       ref.watch(provider);
+      // expect_lint: riverpod_avoid_read_inside_build
       ref.read(provider);
       return Container();
     });
 
     FloatingActionButton(
       onPressed: () {
+        // expect_lint: riverpod_avoid_watch_outside_build
         ref.watch(provider);
         ref.read(provider);
       },
@@ -84,6 +94,7 @@ class Home extends ConsumerWidget {
   }
 
   void fn(WidgetRef ref) {
+    // expect_lint: riverpod_avoid_watch_outside_build
     ref.watch(provider);
     ref.read(provider);
   }
@@ -93,16 +104,19 @@ class HookHome extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(provider);
+    // expect_lint: riverpod_avoid_read_inside_build
     ref.read(provider);
 
     Builder(builder: (context) {
       ref.watch(provider);
+      // expect_lint: riverpod_avoid_read_inside_build
       ref.read(provider);
       return Container();
     });
 
     FloatingActionButton(
       onPressed: () {
+        // expect_lint: riverpod_avoid_watch_outside_build
         ref.watch(provider);
         ref.read(provider);
       },
@@ -113,6 +127,7 @@ class HookHome extends HookConsumerWidget {
   }
 
   void fn(WidgetRef ref) {
+    // expect_lint: riverpod_avoid_watch_outside_build
     ref.watch(provider);
     ref.read(provider);
   }
@@ -127,6 +142,7 @@ class Counter extends StateNotifier<int> {
   final Ref ref;
 
   void increment() {
+    // expect_lint: riverpod_avoid_watch_outside_build
     ref.watch(provider);
     ref.read(provider);
   }
@@ -134,6 +150,7 @@ class Counter extends StateNotifier<int> {
 
 @riverpod
 Future<String> generated(GeneratedRef ref, String value, int otherValue) async {
+  // expect_lint: riverpod_avoid_read_inside_build
   ref.read(provider);
   ref.watch(provider);
   return '';
@@ -143,6 +160,7 @@ Future<String> generated(GeneratedRef ref, String value, int otherValue) async {
 class MyNotifier extends _$MyNotifier {
   @override
   Future<String> build(int i, String b) async {
+    // expect_lint: riverpod_avoid_read_inside_build
     ref.read(provider);
     ref.watch(provider);
     return '';
@@ -150,6 +168,7 @@ class MyNotifier extends _$MyNotifier {
 
   void fn() {
     ref.read(provider);
+    // expect_lint: riverpod_avoid_watch_outside_build
     ref.watch(provider);
   }
 }

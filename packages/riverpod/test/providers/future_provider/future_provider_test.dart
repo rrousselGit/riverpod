@@ -58,6 +58,20 @@ void main() {
     });
   });
 
+  test('Supports void type', () async {
+    // Regression test for https://github.com/rrousselGit/riverpod/issues/2028
+    final testProvider = FutureProvider<void>((ref) async {
+      return Future.value();
+    });
+
+    final container = createContainer();
+    expect(container.read(testProvider), const AsyncLoading<void>());
+
+    await container.read(testProvider.future);
+
+    expect(container.read(testProvider), const AsyncData<void>(null));
+  });
+
   test('supports overrideWith', () {
     final provider = FutureProvider<int>((ref) => 0);
     final autoDispose = FutureProvider.autoDispose<int>((ref) => 0);
@@ -72,6 +86,44 @@ void main() {
 
     expect(container.read(provider).value, 42);
     expect(container.read(autoDispose).value, 84);
+  });
+
+  test('Does not skip return value if ref.state was set', () async {
+    final provider = FutureProvider<int>((ref) async {
+      await Future<void>.value();
+      ref.state = const AsyncData(1);
+      await Future<void>.value();
+      ref.state = const AsyncData(2);
+      await Future<void>.value();
+      return 3;
+    });
+    final container = createContainer();
+    final listener = Listener<AsyncValue<int>>();
+    // Completer used for the sole purpose of being able to await `provider.future`
+    // Since `provider` emits `AsyncData` before the future completes, then
+    // `provider.future` completes early.
+    // As such, awaiting `provider.future` isn't enough to fully await the FutureProvider
+    final completer = Completer<void>();
+
+    container.listen<AsyncValue<int>>(
+      provider,
+      (prev, next) {
+        if (next.value == 3) {
+          completer.complete();
+        }
+        listener(prev, next);
+      },
+      fireImmediately: true,
+    );
+
+    await completer.future;
+
+    verifyInOrder([
+      listener(null, const AsyncLoading<int>()),
+      listener(const AsyncLoading<int>(), const AsyncData(1)),
+      listener(const AsyncData(1), const AsyncData(2)),
+      listener(const AsyncData(2), const AsyncData(3)),
+    ]);
   });
 
   test('supports family overrideWith', () {
@@ -683,7 +735,7 @@ void main() {
       listener(const AsyncValue.loading(), const AsyncValue.data(42)),
     );
 
-    await container.pump();
+    await container.read(provider.future);
 
     verifyNoMoreInteractions(listener);
   });
