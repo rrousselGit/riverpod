@@ -133,7 +133,7 @@ Par exemple, Riverpod peut être utilisé pour écrire des applications en ligne
 
 Avec Provider, une façon de lire les providers est d'utiliser le `BuildContext` d'un Widget.
 
-Par exemple, si un fournisseur a été défini comme :
+Par exemple, si un provider a été défini comme :
 
 ```dart
 Provider<Model>(...);
@@ -175,7 +175,7 @@ Remarquez comment :
   le `WidgetRef` que nous avons obtenu de `ConsumerWidget`.
 
 - Riverpod ne s'appuie pas sur les types génériques. Il s'appuie plutôt sur la variable
-  créée à l'aide de la définition du fournisseur.
+  créée à l'aide de la définition du provider.
 
 Remarquez également la similitude des définitions. Provider et Riverpod utilisent tous deux le mot-clé
 "watch" pour décrire "ce widget doit se reconstruire lorsque la valeur change".
@@ -240,7 +240,7 @@ que nous avons vu dans la partie précédente concernant `ConsumerWidget`.
 
 ### Combinaison de providers: ProxyProvider avec des objets stateless (sans état)
 
-Lorsque vous utilisez un provider, la manière officielle de combiner des fournisseurs
+Lorsque vous utilisez un provider, la manière officielle de combiner des providers.
 est d'utiliser le widget `ProxyProvider` (ou des variantes telles que `ProxyProvider2`).
 
 Par exemple, nous pouvons définir :
@@ -302,8 +302,8 @@ Ainsi, le `String` émis par notre `labelProvider` sera automatiquement mis à j
 chaque fois que le `userId` change.
 
 Cette ligne `ref.watch` devrait être similaire. Ce modèle a été couvert précédemment
-en expliquant [comment lire les fournisseurs dans les widgets](#lecture-de-providers-buildcontext).
-En effet, les fournisseurs sont maintenant capables d'écouter d'autres fournisseurs de la même façon
+en expliquant [comment lire les providers dans les widgets](#lecture-de-providers-buildcontext).
+En effet, les providers sont maintenant capables d'écouter d'autres providers de la même façon
 que les widgets.
 
 ### Combinaison de providers: ProxyProvider avec des objets stateful (avec état)
