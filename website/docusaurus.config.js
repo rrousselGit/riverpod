@@ -6,6 +6,7 @@ module.exports = {
   organizationName: "rrousselgit", // Usually your GitHub org/user name.
   projectName: "riverpod", // Usually your repo name.
   plugins: ["docusaurus-plugin-sass"],
+  trailingSlash: false,
   i18n: {
     defaultLocale: "en",
     locales: ["en", "fr", "ko", "ja", "es", "bn", "de", "it", "ru"],
