@@ -14,7 +14,7 @@ module.exports = {
   themeConfig: {
     algolia: {
       appId: "0UST1QN21Y",
-      apiKey: "2a84d9068bda0a387816a77f366d855d",
+      apiKey: "30b20f424c381e1c6a1c00ffc2f6826b",
       indexName: "riverpod",
     },
     colorMode: {
