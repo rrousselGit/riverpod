@@ -1,4 +1,4 @@
-// ignore_for_file: omit_local_variable_types
+// ignore_for_file: omit_local_variable_types, prefer_final_locals
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,8 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 final counterProvider = StateProvider((ref) => 0);
 
 Widget build(BuildContext context, WidgetRef ref) {
-  // use "read" to ignore updates on a provider
-  final counter = ref.read(counterProvider.notifier);
+  StateController<int> counter = ref.read(counterProvider.notifier);
   return ElevatedButton(
     onPressed: () => counter.state++,
     child: const Text('button'),

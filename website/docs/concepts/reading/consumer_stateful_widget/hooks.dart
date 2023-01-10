@@ -1,11 +1,14 @@
+// ignore_for_file: unused_local_variable
+
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'reading_counter.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import '../counter/raw.dart';
 
 /* SNIPPET START */
 
-class HomeView extends ConsumerStatefulWidget {
-  const HomeView({Key? key}): super(key: key);
+class HomeView extends StatefulHookConsumerWidget {
+  const HomeView({Key? key}) : super(key: key);
 
   @override
   HomeViewState createState() => HomeViewState();
@@ -21,6 +24,9 @@ class HomeViewState extends ConsumerState<HomeView> {
 
   @override
   Widget build(BuildContext context) {
+    // Like HookConsumerWidget, we can use hooks inside the builder
+    final state = useState(0);
+
     // We can also use "ref" to listen to a provider inside the build method
     final counter = ref.watch(counterProvider);
     return Text('$counter');

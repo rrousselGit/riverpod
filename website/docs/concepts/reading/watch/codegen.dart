@@ -1,6 +1,8 @@
-// ignore_for_file: omit_local_variable_types
+// ignore_for_file: omit_local_variable_types, avoid_types_on_closure_parameters, avoid_print
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'codegen.g.dart';
 
 enum FilterType {
   none,
@@ -11,16 +13,23 @@ abstract class Todo {
   bool get isCompleted;
 }
 
-class TodoList extends StateNotifier<List<Todo>> {
-  TodoList(): super([]);
-}
-
 /* SNIPPET START */
 
-final filterTypeProvider = StateProvider<FilterType>((ref) => FilterType.none);
-final todosProvider = StateNotifierProvider<TodoList, List<Todo>>((ref) => TodoList());
+@riverpod
+FilterType filterType(FilterTypeRef ref) {
+  return FilterType.none;
+}
 
-final filteredTodoListProvider = Provider((ref) {
+@riverpod
+class Todos extends _$Todos {
+  @override
+  List<Todo> build() {
+    return [];
+  }
+}
+
+@riverpod
+List<Todo> filteredTodoList(FilteredTodoListRef ref) {
   // obtains both the filter and the list of todos
   final FilterType filter = ref.watch(filterTypeProvider);
   final List<Todo> todos = ref.watch(todosProvider);
@@ -33,4 +42,4 @@ final filteredTodoListProvider = Provider((ref) {
       // returns the unfiltered list of todos
       return todos;
   }
-});
+}
