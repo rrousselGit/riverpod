@@ -205,7 +205,7 @@
     "message": "Provider, sans ses limitations"
   },
   "homepage.unlimited_provider_body": {
-    "message": "Riverpod est inspiré de Provider mais résous des problèmes clé tel que: le support de plusieurs providers du même type; attendre les providers asynchone; définir des providers n'import où; ..."
+    "message": "Riverpod est inspiré de Provider mais résous des problèmes clé tel que: le support de plusieurs providers du même type; attendre les providers asynchone; définir des providers n'importe où; ..."
   },
   "homepage.no_flutter_dependency_title": {
     "message": "Indépendent de Flutter"
