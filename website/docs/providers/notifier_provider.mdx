@@ -1,0 +1,51 @@
+---
+title: (Async)NotifierProvider
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import todos from "./notifier_provider/todos";
+import todosConsumer from "!!raw-loader!/docs/providers/notifier_provider/todos/todos_consumer.dart";
+import remoteTodos from "./notifier_provider/remote_todos";
+import remoteTodosConsumer from "!!raw-loader!/docs/providers/notifier_provider/remote_todos/todos_consumer.dart";
+import { trimSnippet, AutoSnippet } from "../../src/components/CodeSnippet";
+
+[NotifierProvider] is a provider that is used to listen to and expose a [Notifier].
+[AsyncNotifier] is a [Notifier] that can be asynchronously initialized.
+[AsyncNotifierProvider] is a provider that is used to listen to and expose a [AsyncNotifier].  
+`(Async)NotifierProvider` along with `(Async)Notifier` is Riverpod's recommended solution
+for managing state which may change in reaction to a user interaction.
+
+It is typically used for:
+
+- exposing a state which can change over time after reacting to custom events.
+- centralizing the logic for modifying some state (aka "business logic") in a
+  single place, improving maintainability over time.
+
+As a usage example, we could use [NotifierProvider] to implement a todo-list.
+Doing so would allow us to expose methods such as `addTodo` to let the UI
+modify the list of todos on user interactions:
+
+<AutoSnippet language="dart" {...todos}></AutoSnippet>
+
+Now that we have defined a [NotifierProvider], we can use it to interact
+with the list of todos in our UI:
+
+<CodeBlock>{trimSnippet(todosConsumer)}</CodeBlock>
+
+As a usage example, we could use [AsyncNotifierProvider] to implement a remote todo-list.
+Doing so would allow us to expose methods such as `addTodo` to let the UI
+modify the list of todos on user interactions:
+
+<AutoSnippet language="dart" {...remoteTodos}></AutoSnippet>
+
+Now that we have defined a [AsyncNotifierProvider], we can use it to interact
+with the list of todos in our UI:
+
+<CodeBlock>{trimSnippet(remoteTodosConsumer)}</CodeBlock>
+
+[notifier]: https://pub.dev/documentation/riverpod/latest/riverpod/Notifier-class.html
+[notifierprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/NotifierProvider.html
+[asyncnotifier]: https://pub.dev/documentation/riverpod/latest/riverpod/AsyncNotifier-class.html
+[asyncnotifierprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/AsyncNotifierProvider.html

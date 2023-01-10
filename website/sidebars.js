@@ -8,6 +8,7 @@ module.exports = {
       label: "All Providers",
       items: [
         "providers/provider",
+        "providers/notifier_provider",
         "providers/state_notifier_provider",
         "providers/future_provider",
         "providers/stream_provider",
