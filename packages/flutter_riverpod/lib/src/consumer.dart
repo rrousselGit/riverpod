@@ -507,10 +507,12 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
   ConsumerStatefulElement(ConsumerStatefulWidget super.widget);
 
   late ProviderContainer _container = ProviderScope.containerOf(this);
-  var _dependencies = <ProviderListenable, ProviderSubscription>{};
-  Map<ProviderListenable, ProviderSubscription>? _oldDependencies;
-  final _listeners = <ProviderSubscription>[];
-  List<_ListenManual>? _manualListeners;
+  var _dependencies =
+      <ProviderListenable<Object?>, ProviderSubscription<Object?>>{};
+  Map<ProviderListenable<Object?>, ProviderSubscription<Object?>>?
+      _oldDependencies;
+  final _listeners = <ProviderSubscription<Object?>>[];
+  List<_ListenManual<Object?>>? _manualListeners;
 
   @override
   void didChangeDependencies() {

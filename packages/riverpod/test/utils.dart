@@ -188,7 +188,7 @@ class ObserverMock extends Mock implements ProviderObserver {
 
   @override
   void providerDidFail(
-    ProviderBase? provider,
+    ProviderBase<Object?>? provider,
     Object? error,
     Object? stackTrace,
     Object? container,

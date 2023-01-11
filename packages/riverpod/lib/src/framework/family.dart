@@ -56,8 +56,8 @@ mixin _FamilyMixin<State, Arg, FamilyProvider extends ProviderBase<State>>
 typedef SetupFamilyOverride<Arg> = void Function(
   Arg argument,
   void Function({
-    required ProviderBase origin,
-    required ProviderBase override,
+    required ProviderBase<Object?> origin,
+    required ProviderBase<Object?> override,
   }),
 );
 
@@ -112,7 +112,7 @@ class FamilyBase<RefT extends Ref<R>, R, Arg, Created,
     required ProviderT Function(
       Create<Created, RefT> create, {
       String? name,
-      Family from,
+      Family<Object?> from,
       Object? argument,
       List<ProviderOrFamily>? dependencies,
     })
@@ -124,7 +124,7 @@ class FamilyBase<RefT extends Ref<R>, R, Arg, Created,
   final ProviderT Function(
     Create<Created, RefT> create, {
     String? name,
-    Family from,
+    Family<Object?> from,
     Object? argument,
     List<ProviderOrFamily>? dependencies,
   }) _providerFactory;
@@ -169,7 +169,7 @@ class AutoDisposeFamilyBase<RefT extends Ref<R>, R, Arg, Created,
     required ProviderT Function(
       Create<Created, RefT> create, {
       String? name,
-      Family from,
+      Family<Object?> from,
       Object? argument,
       List<ProviderOrFamily>? dependencies,
     })
@@ -181,7 +181,7 @@ class AutoDisposeFamilyBase<RefT extends Ref<R>, R, Arg, Created,
   final ProviderT Function(
     Create<Created, RefT> create, {
     String? name,
-    Family from,
+    Family<Object?> from,
     Object? argument,
     List<ProviderOrFamily>? dependencies,
   }) _providerFactory;
@@ -226,7 +226,7 @@ class AutoDisposeNotifierFamilyBase<RefT extends Ref<R>, R, Arg, NotifierT,
     required ProviderT Function(
       NotifierT Function() create, {
       String? name,
-      Family from,
+      Family<Object?> from,
       Object? argument,
       List<ProviderOrFamily>? dependencies,
     })
@@ -238,7 +238,7 @@ class AutoDisposeNotifierFamilyBase<RefT extends Ref<R>, R, Arg, NotifierT,
   final ProviderT Function(
     NotifierT Function() create, {
     String? name,
-    Family from,
+    Family<Object?> from,
     Object? argument,
     List<ProviderOrFamily>? dependencies,
   }) _providerFactory;
@@ -283,7 +283,7 @@ class NotifierFamilyBase<RefT extends Ref<R>, R, Arg, NotifierT,
     required ProviderT Function(
       NotifierT Function() create, {
       String? name,
-      Family from,
+      Family<Object?> from,
       Object? argument,
       List<ProviderOrFamily>? dependencies,
     })
@@ -295,7 +295,7 @@ class NotifierFamilyBase<RefT extends Ref<R>, R, Arg, NotifierT,
   final ProviderT Function(
     NotifierT Function() create, {
     String? name,
-    Family from,
+    Family<Object?> from,
     Object? argument,
     List<ProviderOrFamily>? dependencies,
   }) _providerFactory;

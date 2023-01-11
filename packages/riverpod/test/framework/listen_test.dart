@@ -1096,7 +1096,7 @@ void main() {
         final listener = Listener<int>();
         final listener2 = Listener<int>();
 
-        ProviderSubscription? a;
+        ProviderSubscription<Object?>? a;
         container.listen<int>(provider, (prev, value) {
           listener(prev, value);
           a?.close();
@@ -1137,7 +1137,7 @@ void main() {
       final listener = Listener<int>();
       final listener2 = Listener<int>();
 
-      ProviderSubscription? a;
+      ProviderSubscription<Object?>? a;
       container.listen<int>(provider, (prev, value) {
         listener(prev, value);
         a?.close();
@@ -1512,7 +1512,7 @@ void main() {
 
       final sub = container.listen(provider, (_, __) {});
 
-      expect(sub, isA<ProviderSubscription>());
+      expect(sub, isA<ProviderSubscription<Object?>>());
     });
 
     test('selectors can close listeners', () {

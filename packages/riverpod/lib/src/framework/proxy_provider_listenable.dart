@@ -7,7 +7,7 @@ class _ProxySubscription<T> extends ProviderSubscription<T> {
     required this.innerSubscription,
   });
 
-  final ProviderSubscription innerSubscription;
+  final ProviderSubscription<Object?> innerSubscription;
   final RemoveListener _removeListeners;
   final T Function() _read;
 

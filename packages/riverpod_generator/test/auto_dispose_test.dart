@@ -14,11 +14,11 @@ void main() {
 
     expect(
       container.readProviderElement(keepAliveProvider),
-      isA<ProviderElement>(),
+      isA<ProviderElement<Object?>>(),
     );
     expect(
       container.readProviderElement(keepAliveProvider),
-      isNot(isA<AutoDisposeProviderElement>()),
+      isNot(isA<AutoDisposeProviderElement<Object?>>()),
     );
   });
 }

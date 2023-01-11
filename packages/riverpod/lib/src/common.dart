@@ -552,7 +552,7 @@ extension AsyncValueX<T> on AsyncValue<T> {
 
   /// Upcast [AsyncValue] into an [AsyncError], or return null if the [AsyncValue]
   /// is in loading/data state.
-  AsyncError? get asError => map(
+  AsyncError<T>? get asError => map(
         data: (_) => null,
         error: (e) => e,
         loading: (_) => null,

@@ -254,12 +254,12 @@ void main() {
     final sub = container.listen(computed, (_, __) {});
 
     expect(sub.read(), '0');
-    var firstDependents = <ProviderElementBase>[];
+    var firstDependents = <ProviderElementBase<Object?>>[];
     firstElement.visitChildren(
       elementVisitor: firstDependents.add,
       notifierVisitor: (_) {},
     );
-    var secondDependents = <ProviderElementBase>[];
+    var secondDependents = <ProviderElementBase<Object?>>[];
     secondElement.visitChildren(
       elementVisitor: secondDependents.add,
       notifierVisitor: (_) {},
@@ -273,19 +273,19 @@ void main() {
     container.read(first.notifier).state++;
     expect(sub.read(), 'fallback');
 
-    firstDependents = <ProviderElementBase>[];
+    firstDependents = <ProviderElementBase<Object?>>[];
     firstElement.visitChildren(
       elementVisitor: firstDependents.add,
       notifierVisitor: (_) {},
     );
-    secondDependents = <ProviderElementBase>[];
+    secondDependents = <ProviderElementBase<Object?>>[];
     secondElement.visitChildren(
       elementVisitor: secondDependents.add,
       notifierVisitor: (_) {},
     );
     expect(firstDependents, [computedElement]);
     expect(firstElement.hasListeners, true);
-    expect(secondDependents, <ProviderElement>[]);
+    expect(secondDependents, <ProviderElement<Object?>>[]);
     expect(secondElement.hasListeners, false);
   });
 
@@ -319,7 +319,7 @@ void main() {
     final sub = container.listen(computed, (_, __) {});
 
     expect(sub.read(), 0);
-    var firstDependents = <ProviderElementBase>[];
+    var firstDependents = <ProviderElementBase<Object?>>[];
     firstElement.visitChildren(
       elementVisitor: firstDependents.add,
       notifierVisitor: (_) {},
@@ -330,12 +330,12 @@ void main() {
     sub.close();
     await container.pump();
 
-    firstDependents = <ProviderElementBase>[];
+    firstDependents = <ProviderElementBase<Object?>>[];
     firstElement.visitChildren(
       elementVisitor: firstDependents.add,
       notifierVisitor: (_) {},
     );
-    expect(firstDependents, <ProviderElement>{});
+    expect(firstDependents, <ProviderElement<Object?>>{});
     expect(firstElement.hasListeners, false);
   });
 

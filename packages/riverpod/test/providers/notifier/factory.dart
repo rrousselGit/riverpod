@@ -5,7 +5,7 @@ typedef NotifierProviderFactoryType = NotifierProviderBase<NotifierT, T>
   NotifierT Function() create, {
   Object? argument,
   List<ProviderOrFamily>? dependencies,
-  Family? from,
+  Family<Object?>? from,
   String? name,
 });
 

@@ -264,7 +264,7 @@ void main() {
     final element = container.readProviderElement(provider);
     final selectedElement = container.readProviderElement(selected);
 
-    final ancestors = <ProviderElementBase>[];
+    final ancestors = <ProviderElementBase<Object?>>[];
     element.visitAncestors(ancestors.add);
 
     expect(ancestors, [selectedElement]);

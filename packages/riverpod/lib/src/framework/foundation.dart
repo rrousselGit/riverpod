@@ -15,7 +15,7 @@ abstract class ProviderOrFamily {
   List<ProviderOrFamily>? get dependencies;
 
   /// The family that this provider/family depends on.
-  Family? get from;
+  Family<Object?>? get from;
 
   /// All the dependencies of a provider and their dependencies too.
   List<ProviderOrFamily>? get allTransitiveDependencies;

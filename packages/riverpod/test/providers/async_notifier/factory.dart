@@ -8,7 +8,7 @@ typedef AsyncNotifierProviderFactoryType
   NotifierT Function() create, {
   Object? argument,
   List<ProviderOrFamily>? dependencies,
-  Family? from,
+  Family<Object?>? from,
   String? name,
 });
 

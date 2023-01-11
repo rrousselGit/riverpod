@@ -73,7 +73,8 @@ void main() {
 
     expect(
       container.read(provider),
-      isA<AsyncError>().having((e) => e.error, 'error', isUnimplementedError),
+      isA<AsyncError<Never>>()
+          .having((e) => e.error, 'error', isUnimplementedError),
     );
     await expectLater(
       container.read(provider.future),
@@ -221,7 +222,8 @@ void main() {
       expect(container.read(provider), const AsyncValue.data(0));
       expect(root.getAllProviderElementsInOrder(), isEmpty);
       expect(container.getAllProviderElementsInOrder(), [
-        isA<ProviderElementBase>().having((e) => e.origin, 'origin', provider),
+        isA<ProviderElementBase<Object?>>()
+            .having((e) => e.origin, 'origin', provider),
       ]);
     });
 
@@ -236,8 +238,8 @@ void main() {
     //   expect(container.read(provider), const AsyncValue.data(42));
     //   expect(root.getAllProviderElementsInOrder(), isEmpty);
     //   expect(container.getAllProviderElementsInOrder(), [
-    //     isA<ProviderElementBase>().having((e) => e.origin, 'origin', provider),
-    //     isA<ProviderElementBase>()
+    //     isA<ProviderElementBase<Object?>>().having((e) => e.origin, 'origin', provider),
+    //     isA<ProviderElementBase<Object?>>()
     //         .having((e) => e.origin, 'origin', provider.future)
     //   ]);
     // });
@@ -258,7 +260,8 @@ void main() {
       expect(container.read(provider), const AsyncValue.data(42));
       expect(root.getAllProviderElementsInOrder(), isEmpty);
       expect(container.getAllProviderElementsInOrder(), [
-        isA<ProviderElementBase>().having((e) => e.origin, 'origin', provider),
+        isA<ProviderElementBase<Object?>>()
+            .having((e) => e.origin, 'origin', provider),
       ]);
     });
   });

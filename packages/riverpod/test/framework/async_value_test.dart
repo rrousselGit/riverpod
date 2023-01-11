@@ -390,7 +390,7 @@ void main() {
     const value = AsyncValue<int>.error(42, StackTrace.empty);
 
     // ignore: omit_local_variable_types, unused_local_variable, testing that assignment works,
-    final AsyncError? error = value.asError;
+    final AsyncError<int>? error = value.asError;
 
     expect(const AsyncData(42).asError, null);
     expect(const AsyncLoading<int>().asError, null);
@@ -1491,7 +1491,7 @@ void main() {
     const value = AsyncValue<int>.data(42);
 
     // ignore: omit_local_variable_types, unused_local_variable, testing that assignment works,
-    final AsyncData? data = value.asData;
+    final AsyncData<int>? data = value.asData;
 
     expect(
       const AsyncValue.data(42).asData,

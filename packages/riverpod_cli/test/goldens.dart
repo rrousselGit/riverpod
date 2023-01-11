@@ -85,7 +85,7 @@ class FileMatcher extends Matcher {
   }
 
   @override
-  bool matches(dynamic item, Map matchState) {
+  bool matches(dynamic item, Map<Object?, Object?> matchState) {
     this.item = item as String;
     return expected == item;
   }

@@ -39,7 +39,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   /// Do not use.
   ProviderElementBase(this._provider);
 
-  static ProviderElementBase? _debugCurrentlyBuildingElement;
+  static ProviderElementBase<Object?>? _debugCurrentlyBuildingElement;
 
   /// The last result of [ProviderBase.debugGetCreateSourceHash].
   ///
@@ -83,19 +83,19 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   ///
   /// This list is typically updated when this provider calls [listen] on
   /// another provider.
-  final _listenedProviderSubscriptions = <_ProviderListener>[];
+  final _listenedProviderSubscriptions = <_ProviderListener<Object?>>[];
 
   /// The element of the providers that depends on this provider.
-  final _providerDependents = <ProviderElementBase>[];
+  final _providerDependents = <ProviderElementBase<Object?>>[];
 
   /// The subscriptions associated to other providers listening to this provider.
   ///
   /// Storing [_ProviderListener] instead of the raw [ProviderElementBase] as
   /// a provider can listen multiple times to another provider with different listeners.
-  final _subscribers = <_ProviderListener>[];
+  final _subscribers = <_ProviderListener<Object?>>[];
 
-  var _dependencies = HashMap<ProviderElementBase, Object>();
-  HashMap<ProviderElementBase, Object>? _previousDependencies;
+  var _dependencies = HashMap<ProviderElementBase<Object?>, Object>();
+  HashMap<ProviderElementBase<Object?>, Object>? _previousDependencies;
   List<void Function()>? _onDisposeListeners;
   List<void Function()>? _onResumeListeners;
   List<void Function()>? _onCancelListeners;
@@ -400,7 +400,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   /// Invokes [create] and handles errors.
   @notifyDebuggerOnException
   void buildState() {
-    ProviderElementBase? debugPreviouslyBuildingElement;
+    ProviderElementBase<Object?>? debugPreviouslyBuildingElement;
     final previousDidChangeDependency = _didChangeDependency;
     _didChangeDependency = false;
     assert(
@@ -640,7 +640,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
           "To fix, add $listenable to $origin's 'dependencies' parameter",
         );
 
-        final queue = Queue<ProviderElementBase>.from(_providerDependents);
+        final queue =
+            Queue<ProviderElementBase<Object?>>.from(_providerDependents);
 
         while (queue.isNotEmpty) {
           final current = queue.removeFirst();
@@ -810,8 +811,9 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   /// If a provider both [watch] and [listen] an element, or if a provider
   /// [listen] multiple times to an element, it may be visited multiple times.
   void visitChildren({
-    required void Function(ProviderElementBase element) elementVisitor,
-    required void Function(ProxyElementValueNotifier element) notifierVisitor,
+    required void Function(ProviderElementBase<Object?> element) elementVisitor,
+    required void Function(ProxyElementValueNotifier<Object?> element)
+        notifierVisitor,
   }) {
     for (var i = 0; i < _providerDependents.length; i++) {
       elementVisitor(_providerDependents[i]);
@@ -830,7 +832,9 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   /// This method does not guarantee that a provider is visited only once.
   /// If this provider both [watch] and [listen] an element, or if it
   /// [listen] multiple times to an element, that element may be visited multiple times.
-  void visitAncestors(void Function(ProviderElementBase element) visitor) {
+  void visitAncestors(
+    void Function(ProviderElementBase<Object?> element) visitor,
+  ) {
     _dependencies.keys.forEach(visitor);
 
     for (var i = 0; i < _listenedProviderSubscriptions.length; i++) {

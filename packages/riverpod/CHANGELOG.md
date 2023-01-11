@@ -1,6 +1,7 @@
 ## Unreleased minor
 
-Improve type-inference when using `AsyncValue.whenOrNull` (thanks to @AhmedLSayed9)
+- Improve type-inference when using `AsyncValue.whenOrNull` (thanks to @AhmedLSayed9)
+- Fixed AsyncValue.asError incorrectly not preserving the generic type
 
 ## 2.1.3
 

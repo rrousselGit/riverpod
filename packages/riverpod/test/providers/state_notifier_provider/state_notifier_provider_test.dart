@@ -174,7 +174,7 @@ void main() {
         expect(
           container.getAllProviderElements(),
           unorderedEquals(<Object?>[
-            isA<ProviderElementBase>()
+            isA<ProviderElementBase<Object?>>()
                 .having((e) => e.origin, 'origin', provider),
           ]),
         );
@@ -196,9 +196,9 @@ void main() {
       //   expect(
       //     container.getAllProviderElements(),
       //     unorderedEquals(<Object?>[
-      //       isA<ProviderElementBase>()
+      //       isA<ProviderElementBase<Object?>>()
       //           .having((e) => e.origin, 'origin', provider),
-      //       isA<ProviderElementBase>()
+      //       isA<ProviderElementBase<Object?>>()
       //           .having((e) => e.origin, 'origin', provider.notifier),
       //     ]),
       //   );
@@ -230,7 +230,7 @@ void main() {
         expect(
           container.getAllProviderElements(),
           unorderedEquals(<Object?>[
-            isA<ProviderElementBase>()
+            isA<ProviderElementBase<Object?>>()
                 .having((e) => e.origin, 'origin', provider),
           ]),
         );

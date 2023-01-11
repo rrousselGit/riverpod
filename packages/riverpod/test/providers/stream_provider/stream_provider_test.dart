@@ -313,7 +313,7 @@ void main() {
       expect(
         container.getAllProviderElements(),
         unorderedEquals(<Object?>[
-          isA<ProviderElementBase>()
+          isA<ProviderElementBase<Object?>>()
               .having((e) => e.origin, 'origin', provider),
         ]),
       );
@@ -333,11 +333,11 @@ void main() {
     //   expect(
     //     container.getAllProviderElements(),
     //     unorderedEquals(<Object?>[
-    //       isA<ProviderElementBase>()
+    //       isA<ProviderElementBase<Object?>>()
     //           .having((e) => e.origin, 'origin', provider),
-    //       isA<ProviderElementBase>()
+    //       isA<ProviderElementBase<Object?>>()
     //           .having((e) => e.origin, 'origin', provider.future),
-    //       isA<ProviderElementBase>()
+    //       isA<ProviderElementBase<Object?>>()
     //           .having((e) => e.origin, 'origin', provider.stream),
     //     ]),
     //   );
@@ -362,7 +362,7 @@ void main() {
       expect(
         container.getAllProviderElements(),
         unorderedEquals(<Object?>[
-          isA<ProviderElementBase>()
+          isA<ProviderElementBase<Object?>>()
               .having((e) => e.origin, 'origin', provider),
         ]),
       );
@@ -621,7 +621,7 @@ void main() {
 
     expect(
       container.read(provider),
-      isA<AsyncError>().having((s) => s.error, 'error', 42),
+      isA<AsyncError<int>>().having((s) => s.error, 'error', 42),
     );
   });
 
@@ -801,7 +801,7 @@ void main() {
   test('is AlwaysAliveProviderBase', () {
     final provider = StreamProvider<int>((_) async* {});
 
-    expect(provider, isA<AlwaysAliveProviderBase>());
+    expect(provider, isA<AlwaysAliveProviderBase<AsyncValue<int>>>());
   });
 
   test('subscribe exposes loading synchronously then value on change',

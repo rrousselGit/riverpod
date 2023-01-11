@@ -7,7 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 // ignore: unnecessary_import
 import 'package:riverpod/riverpod.dart';
 
-extension on ProviderBase {
+extension on ProviderBase<Object?, Object?> {
   // ignore: unused_element
   Override overrideWithValue(Object? value) => throw UnimplementedError();
 }
@@ -68,7 +68,10 @@ final otherScopedProvider =
 
 class Logger extends ProviderObserver {
   @override
-  void didUpdateProvider(ProviderBase provider, Object? newValue) {
+  void didUpdateProvider(
+    ProviderBase<Object?, Object?> provider,
+    Object? newValue,
+  ) {
     print('$provider $newValue');
   }
 }

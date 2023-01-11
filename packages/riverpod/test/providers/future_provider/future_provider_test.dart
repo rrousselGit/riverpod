@@ -349,7 +349,8 @@ void main() {
 
     expect(
       container.read(provider),
-      isA<AsyncError>().having((e) => e.error, 'error', isUnimplementedError),
+      isA<AsyncError<Never>>()
+          .having((e) => e.error, 'error', isUnimplementedError),
     );
     await expectLater(
       container.read(provider.future),
@@ -441,7 +442,8 @@ void main() {
       expect(container.read(provider), const AsyncValue.data(0));
       expect(root.getAllProviderElementsInOrder(), isEmpty);
       expect(container.getAllProviderElementsInOrder(), [
-        isA<ProviderElementBase>().having((e) => e.origin, 'origin', provider),
+        isA<ProviderElementBase<Object?>>()
+            .having((e) => e.origin, 'origin', provider),
       ]);
     });
 
@@ -456,8 +458,8 @@ void main() {
     //   expect(container.read(provider), const AsyncValue.data(42));
     //   expect(root.getAllProviderElementsInOrder(), isEmpty);
     //   expect(container.getAllProviderElementsInOrder(), [
-    //     isA<ProviderElementBase>().having((e) => e.origin, 'origin', provider),
-    //     isA<ProviderElementBase>()
+    //     isA<ProviderElementBase<Object?>>().having((e) => e.origin, 'origin', provider),
+    //     isA<ProviderElementBase<Object?>>()
     //         .having((e) => e.origin, 'origin', provider.future)
     //   ]);
     // });
@@ -477,7 +479,8 @@ void main() {
       expect(container.read(provider), const AsyncValue.data(42));
       expect(root.getAllProviderElementsInOrder(), isEmpty);
       expect(container.getAllProviderElementsInOrder(), [
-        isA<ProviderElementBase>().having((e) => e.origin, 'origin', provider),
+        isA<ProviderElementBase<Object?>>()
+            .having((e) => e.origin, 'origin', provider),
       ]);
     });
   });
@@ -508,7 +511,7 @@ void main() {
 
     expect(
       container.read(provider),
-      isA<AsyncError>().having((s) => s.error, 'error', 42),
+      isA<AsyncError<int>>().having((s) => s.error, 'error', 42),
     );
   });
 
@@ -536,7 +539,7 @@ void main() {
 
     expect(
       container.read(provider),
-      isA<AsyncValue>().having(
+      isA<AsyncValue<int>>().having(
         (s) => s.maybeWhen(
           error: (err, _) => err,
           orElse: () => null,
@@ -563,7 +566,7 @@ void main() {
   test('is AlwaysAliveProviderBase', () {
     final provider = FutureProvider((_) async => 42);
 
-    expect(provider, isA<AlwaysAliveProviderBase>());
+    expect(provider, isA<AlwaysAliveProviderBase<AsyncValue<int>>>());
   });
 
   group('FutureProvider().future', () {

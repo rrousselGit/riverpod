@@ -33,10 +33,10 @@ abstract class ProviderBase<State> extends ProviderOrFamily
   });
 
   @override
-  ProviderBase get _origin => this;
+  ProviderBase<Object?> get _origin => this;
 
   @override
-  ProviderBase get _override => this;
+  ProviderBase<Object?> get _override => this;
 
   /// A debug-only fucntion for obtaining a hash of the source code of the
   /// initialization function.
@@ -56,7 +56,7 @@ abstract class ProviderBase<State> extends ProviderOrFamily
 
   /// If this provider was created with the `.family` modifier, [from] is the `.family` instance.
   @override
-  final Family? from;
+  final Family<Object?>? from;
 
   /// If this provider was created with the `.family` modifier, [argument] is
   /// the variable that was used.
