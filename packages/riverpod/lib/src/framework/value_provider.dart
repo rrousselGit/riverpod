@@ -56,7 +56,7 @@ class ValueProviderElement<State> extends ProviderElementBase<State> {
         }(),
         '',
       );
-      setState(newValue);
+      _markDependencyChanged();
       assert(
         () {
           // Asserts would otherwise prevent a provider rebuild from updating
