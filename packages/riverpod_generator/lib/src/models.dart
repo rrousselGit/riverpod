@@ -16,6 +16,8 @@ enum ProviderType {
   asyncNotifier,
 }
 
+enum AsyncType { future, futureOr, consecutive }
+
 const _defaultProviderNameSuffix = 'Provider';
 
 class Data {
@@ -23,7 +25,7 @@ class Data {
     required this.rawName,
     required this.functionName,
     required this.valueDisplayType,
-    required this.isAsync,
+    required this.asyncType,
     required this.isScoped,
     required this.isFamily,
     required this.parameters,
@@ -38,7 +40,7 @@ class Data {
     required this.rawName,
     required this.notifierName,
     required this.valueDisplayType,
-    required this.isAsync,
+    required this.asyncType,
     required this.isScoped,
     required this.isFamily,
     required this.parameters,
@@ -52,7 +54,7 @@ class Data {
   final ExecutableElement createElement;
   final AstNode createAst;
   final bool isScoped;
-  final bool isAsync;
+  final AsyncType asyncType;
   final bool isFamily;
   final String rawName;
   final String? functionName;
@@ -89,11 +91,21 @@ class Data {
   }
 
   String get exposedValueDisplayType {
-    return isAsync ? 'AsyncValue<$valueDisplayType>' : valueDisplayType;
+    return asyncType != AsyncType.consecutive
+        ? 'AsyncValue<$valueDisplayType>'
+        : valueDisplayType;
   }
 
+  // TODO
   String get buildValueDisplayType {
-    return isAsync ? 'FutureOr<$valueDisplayType>' : valueDisplayType;
+    switch (asyncType) {
+      case AsyncType.future:
+        return 'Future<$valueDisplayType>';
+      case AsyncType.futureOr:
+        return 'FutureOr<$valueDisplayType>';
+      case AsyncType.consecutive:
+        return valueDisplayType;
+    }
   }
 
   late final String notifierBaseName =
@@ -220,12 +232,14 @@ class Data {
 
   ProviderType get providerType {
     if (isNotifier) {
-      if (isAsync) {
+      if (asyncType != AsyncType.consecutive) {
         return ProviderType.asyncNotifier;
       }
       return ProviderType.notifier;
     } else {
-      if (isAsync) return ProviderType.futureProvider;
+      if (asyncType != AsyncType.consecutive) {
+        return ProviderType.futureProvider;
+      }
       return ProviderType.provider;
     }
   }

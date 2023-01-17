@@ -5,6 +5,7 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
 import 'package:meta/meta.dart';
+
 // ignore: implementation_imports, safe as we are the one controlling this file
 import 'package:riverpod_annotation/src/riverpod_annotation.dart';
 import 'package:source_gen/source_gen.dart';
@@ -70,10 +71,10 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Riverpod> {
       rawName: element.name,
       keepAlive: _getKeepAlive(riverpod),
       isScoped: element.isExternal,
-      // functional providers have a "ref" has paramter, so families have at
+      // functional providers have a "ref" has parameter, so families have at
       // least 2 parameters.
       isFamily: element.parameters.length > 1,
-      isAsync: _isBuildAsync(element),
+      asyncType: _isBuildAsync(element),
       functionName: element.name,
       // Remove "ref" from the parameters
       parameters: element.parameters.skip(1).toList(),
@@ -83,9 +84,15 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Riverpod> {
     );
   }
 
-  bool _isBuildAsync(FunctionTypedElement element) {
-    return element.returnType.isDartAsyncFutureOr ||
-        element.returnType.isDartAsyncFuture;
+  AsyncType _isBuildAsync(FunctionTypedElement element) {
+    if (element.returnType.isDartAsyncFutureOr) {
+      return AsyncType.futureOr;
+    }
+    if (element.returnType.isDartAsyncFuture) {
+      return AsyncType.future;
+    } else {
+      return AsyncType.consecutive;
+    }
   }
 
   DartType _getUserModelType(ExecutableElement element) {
@@ -127,7 +134,7 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Riverpod> {
       isScoped: buildMethod.isAbstract,
       // No "ref" on build, therefore any parameter = family
       isFamily: buildMethod.parameters.isNotEmpty,
-      isAsync: _isBuildAsync(buildMethod),
+      asyncType: _isBuildAsync(buildMethod),
       parameters: buildMethod.parameters,
       valueDisplayType: _getUserModelType(buildMethod)
           .getDisplayString(withNullability: true),
