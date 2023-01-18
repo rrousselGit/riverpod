@@ -1,3 +1,6 @@
+## [Unreleased patch]
+- Fixes dart:async dependency requirement in cases without a clear need
+
 ## 1.1.1
 
 Upgrade Riverpod to latest
