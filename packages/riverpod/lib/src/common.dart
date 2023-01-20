@@ -17,17 +17,17 @@ extension AsyncTransition<T> on ProviderElementBase<AsyncValue<T>> {
     AsyncValue<T> newState, {
     required bool seamless,
   }) {
-    // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+// ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
     final previous = getState()?.requireState;
 
     if (previous == null) {
-      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+// ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
       setState(newState);
     } else {
-      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+// ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
       setState(
         newState.copyWithPrevious(
-          previous,
+          newState.maintainPrevious ? previous : newState,
           isRefresh: seamless,
         ),
       );
@@ -92,6 +92,7 @@ abstract class AsyncValue<T> {
   /// The data can be `null`.
   // coverage:ignore-start
   const factory AsyncValue.data(T value) = AsyncData<T>;
+
   // coverage:ignore-end
 
   /// Creates an [AsyncValue] in loading state.
@@ -99,6 +100,7 @@ abstract class AsyncValue<T> {
   /// Prefer always using this constructor with the `const` keyword.
   // coverage:ignore-start
   const factory AsyncValue.loading() = AsyncLoading<T>;
+
   // coverage:ignore-end
 
   /// {@template asyncvalue.error_ctor}
@@ -114,6 +116,7 @@ abstract class AsyncValue<T> {
   // coverage:ignore-start
   const factory AsyncValue.error(Object error, StackTrace stackTrace) =
       AsyncError<T>;
+
   // coverage:ignore-end
 
   /// Transforms a [Future] that may fail into something that is safe to read.
@@ -208,6 +211,9 @@ abstract class AsyncValue<T> {
     required R Function(AsyncLoading<T> loading) loading,
   });
 
+  /// Whether the new AsyncValue should preserve previous state.
+  bool get maintainPrevious;
+
   /// Clone an [AsyncValue], merging it with [previous].
   ///
   /// When doing so, the resulting [AsyncValue] can contain the information
@@ -291,6 +297,7 @@ class AsyncData<T> extends AsyncValue<T> {
           isLoading: false,
           error: null,
           stackTrace: null,
+          maintainPrevious: true,
         );
 
   const AsyncData._(
@@ -298,6 +305,7 @@ class AsyncData<T> extends AsyncValue<T> {
     required this.isLoading,
     required this.error,
     required this.stackTrace,
+    required this.maintainPrevious,
   }) : super._();
 
   @override
@@ -325,6 +333,9 @@ class AsyncData<T> extends AsyncValue<T> {
   }
 
   @override
+  final bool maintainPrevious;
+
+  @override
   AsyncData<T> copyWithPrevious(
     AsyncValue<T> previous, {
     bool isRefresh = true,
@@ -345,6 +356,7 @@ class AsyncLoading<T> extends AsyncValue<T> {
         value = null,
         error = null,
         stackTrace = null,
+        maintainPrevious = true,
         super._();
 
   const AsyncLoading._({
@@ -352,6 +364,7 @@ class AsyncLoading<T> extends AsyncValue<T> {
     required this.value,
     required this.error,
     required this.stackTrace,
+    required this.maintainPrevious,
   }) : super._();
 
   @override
@@ -379,6 +392,9 @@ class AsyncLoading<T> extends AsyncValue<T> {
   }
 
   @override
+  final bool maintainPrevious;
+
+  @override
   AsyncValue<T> copyWithPrevious(
     AsyncValue<T> previous, {
     bool isRefresh = true,
@@ -390,6 +406,7 @@ class AsyncLoading<T> extends AsyncValue<T> {
           isLoading: true,
           error: d.error,
           stackTrace: d.stackTrace,
+          maintainPrevious: false,
         ),
         error: (e) => AsyncError._(
           e.error,
@@ -397,6 +414,7 @@ class AsyncLoading<T> extends AsyncValue<T> {
           value: e.valueOrNull,
           stackTrace: e.stackTrace,
           hasValue: e.hasValue,
+          maintainPrevious: false,
         ),
         loading: (_) => this,
       );
@@ -407,12 +425,14 @@ class AsyncLoading<T> extends AsyncValue<T> {
           value: d.valueOrNull,
           error: d.error,
           stackTrace: d.stackTrace,
+          maintainPrevious: false,
         ),
         error: (e) => AsyncLoading._(
           hasValue: e.hasValue,
           value: e.valueOrNull,
           error: e.error,
           stackTrace: e.stackTrace,
+          maintainPrevious: false,
         ),
         loading: (e) => e,
       );
@@ -430,6 +450,7 @@ class AsyncError<T> extends AsyncValue<T> {
           isLoading: false,
           hasValue: false,
           value: null,
+          maintainPrevious: true,
         );
 
   const AsyncError._(
@@ -438,6 +459,7 @@ class AsyncError<T> extends AsyncValue<T> {
     required T? value,
     required this.hasValue,
     required this.isLoading,
+    required this.maintainPrevious,
   })  : _value = value,
         super._();
 
@@ -473,6 +495,9 @@ class AsyncError<T> extends AsyncValue<T> {
   }
 
   @override
+  final bool maintainPrevious;
+
+  @override
   AsyncError<T> copyWithPrevious(
     AsyncValue<T> previous, {
     bool isRefresh = true,
@@ -483,6 +508,7 @@ class AsyncError<T> extends AsyncValue<T> {
       isLoading: isLoading,
       value: previous.valueOrNull,
       hasValue: previous.hasValue,
+      maintainPrevious: false,
     );
   }
 }
@@ -571,6 +597,7 @@ extension AsyncValueX<T> on AsyncValue<T> {
             isLoading: d.isLoading,
             error: d.error,
             stackTrace: d.stackTrace,
+            maintainPrevious: true,
           );
         } catch (err, stack) {
           return AsyncError._(
@@ -579,6 +606,7 @@ extension AsyncValueX<T> on AsyncValue<T> {
             isLoading: d.isLoading,
             value: null,
             hasValue: false,
+            maintainPrevious: true,
           );
         }
       },
@@ -588,6 +616,7 @@ extension AsyncValueX<T> on AsyncValue<T> {
         isLoading: e.isLoading,
         value: null,
         hasValue: false,
+        maintainPrevious: true,
       ),
       loading: (l) => AsyncLoading<R>(),
     );

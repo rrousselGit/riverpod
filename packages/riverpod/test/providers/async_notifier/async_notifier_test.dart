@@ -1098,6 +1098,26 @@ void main() {
       // );
     });
   });
+
+  test(
+      'AsyncTransition should not call copyWithPrevious if new state already called copyWithPrevious',
+      () {
+    final provider = AsyncNotifierProvider<UpdatableAsyncTestNotifier, int>(
+      UpdatableAsyncTestNotifier.new,
+    );
+
+    final container = createContainer();
+    container.listen(provider, (previous, next) {});
+    final notifier = container.read(provider.notifier);
+
+    notifier.updateState(
+      const AsyncError<int>('err', StackTrace.empty).copyWithPrevious(
+        const AsyncData<int>(1),
+      ),
+    );
+
+    expect(container.read(provider).value, 1);
+  });
 }
 
 @immutable

@@ -292,3 +292,15 @@ class AutoDisposeAsyncTestNotifierFamily<T>
     return 'AutoDisposeAsyncTestNotifierFamily<$T, int>#$hashCode';
   }
 }
+
+class UpdatableAsyncTestNotifier extends AsyncNotifier<int> {
+  @override
+  FutureOr<int> build() {
+    return 0;
+  }
+
+  //ignore: use_setters_to_change_properties
+  void updateState(AsyncValue<int> value) {
+    state = value;
+  }
+}
