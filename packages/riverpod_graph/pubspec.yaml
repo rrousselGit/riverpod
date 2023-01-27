@@ -3,6 +3,9 @@ version: 0.0.1
 homepage: https://riverpod.dev
 repository: https://github.com/rrousselGit/riverpod
 publish_to: none
+issue_tracker: https://github.com/rrousselGit/riverpod/issues
+funding:
+  - https://github.com/sponsors/rrousselGit/
 
 environment:
   sdk: ">=2.14.0 <3.0.0"
