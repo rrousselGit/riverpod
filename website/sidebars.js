@@ -91,8 +91,8 @@ module.exports = {
         },
         {
           type: "link",
-          label: "Resocoder's Weather Bloc to Weather Riverpod",
-          href: "https://github.com/campanagerald/flutter-bloc-library-v1-tutorial",
+          label: "Resocoder's Weather Bloc to Weather Riverpod V2",
+          href: "https://github.com/coyksdev/flutter-bloc-library-v1-tutorial",
         },
         {
           type: "link",
