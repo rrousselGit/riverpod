@@ -28,12 +28,12 @@ enum StateType {
 
 class StateDetails {
   StateDetails({
-    this.kind,
-    this.className,
-    this.ref,
-    this.constraints,
-    this.generics,
-    this.createType,
+    required this.kind,
+    required this.className,
+    required this.ref,
+    required this.constraints,
+    required this.generics,
+    required this.createType,
   });
 
   final StateType kind;
