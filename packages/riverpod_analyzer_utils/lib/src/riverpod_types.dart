@@ -1,4 +1,4 @@
-import 'type_checker.dart';
+import 'package:custom_lint_builder/custom_lint_builder.dart';
 
 /// Matches with the `Riverpod` annotation from riverpod_annotation.
 const riverpodType =

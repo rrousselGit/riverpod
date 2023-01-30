@@ -1,3 +1,7 @@
+## [Unreleased]
+
+Marked `@Riverpod` as `@sealed`
+
 ## 1.1.1
 
 Upgrade Riverpod to latest

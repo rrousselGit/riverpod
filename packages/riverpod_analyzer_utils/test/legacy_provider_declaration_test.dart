@@ -1,5 +1,7 @@
 import 'package:analyzer/dart/element/type.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
+import 'package:riverpod_analyzer_utils/src/riverpod_ast.dart';
+import 'package:riverpod_analyzer_utils/src/riverpod_element.dart';
 import 'package:test/test.dart';
 
 import 'analyser_test_utils.dart';
@@ -13,13 +15,15 @@ final first = Provider<int>((ref) => 0);
 final second = Provider<int>((ref) => 0);
 ''', (resolver) async {
       final providers =
-          await resolver.parseAllLegacyProviderDefinitions(['first', 'second']);
+          await resolver.parseAllLegacyProviderDeclaration(['first', 'second']);
 
       expect(providers, {
-        'first': isA<LegacyProviderDefinition>()
-            .having((e) => e.name, 'name', 'first'),
-        'second': isA<LegacyProviderDefinition>()
-            .having((e) => e.name, 'name', 'second'),
+        'first': isA<LegacyProviderDeclaration>()
+            .having((e) => e.name.toString(), 'name', 'first')
+            .having((e) => e.node.name.toString(), 'node.name', 'first'),
+        'second': isA<LegacyProviderDeclaration>()
+            .having((e) => e.name.toString(), 'name', 'second')
+            .having((e) => e.node.name.toString(), 'node.name', 'second'),
       });
     });
 
@@ -28,6 +32,12 @@ import 'package:riverpod/riverpod.dart';
 
 final dep = Provider<int>((ref) => 0);
 final family = Provider.family<int, int>((ref, id) => 0);
+
+final explicitDep = Provider<int>((ref) => 0, dependencies: []);
+final explicitFamily = Provider.family<int, int>((ref, id) => 0, dependencies: []);
+
+List<ProviderOrFamily> getDeps() => [];
+final unknownDependencies = Provider<int>((ref) => 0, dependencies: getDeps());
 
 final alwaysAliveProvider = Provider<int>(
   (ref) => 0,
@@ -62,11 +72,19 @@ final explicitAutoDisposeFamily = AutoDisposeProviderFamily<int, int>(
   dependencies: [dep, family, family(42)],
 );
 ''', (resolver) async {
-      final deps = await resolver.parseAllLegacyProviderDefinitions([
+      final deps = await resolver.parseAllLegacyProviderDeclaration([
         'dep',
         'family',
       ]);
-      final providers = await resolver.parseAllLegacyProviderDefinitions([
+      final explicitDeps = await resolver.parseAllLegacyProviderDeclaration([
+        'explicitDep',
+        'explicitFamily',
+      ]);
+      final unknownDependencies =
+          await resolver.parseAllLegacyProviderDeclaration([
+        'unknownDependencies',
+      ]).then((value) => value.values.single);
+      final providers = await resolver.parseAllLegacyProviderDeclaration([
         'alwaysAliveProvider',
         'alwaysAliveFamily',
         'explicitAlwaysAliveFamily',
@@ -77,38 +95,72 @@ final explicitAutoDisposeFamily = AutoDisposeProviderFamily<int, int>(
         'explicitAutoDisposeFamily',
       ]);
 
-      for (final provider in providers.entries) {
-        // Let's unwrap the type
-        final dependencies = provider.value.dependencies!
-            as ListLitteralLegacyProviderDependencyList;
-
+      for (final provider in deps.entries) {
         expect(
-          dependencies.list,
+          provider.value.dependencies,
+          null,
+          reason: '${provider.key} has no dependency',
+        );
+      }
+
+      expect(unknownDependencies.dependencies, isNotNull);
+      expect(unknownDependencies.dependencies?.dependencies, isNull);
+      expect(
+        unknownDependencies.dependencies?.dependenciesNode.toSource(),
+        'dependencies: getDeps()',
+      );
+
+      for (final provider in explicitDeps.entries) {
+        expect(
+          provider.value.dependencies?.dependencies,
+          isEmpty,
+          reason: '${provider.key} has no dependency',
+        );
+        expect(
+          provider.value.dependencies?.dependenciesNode.toSource(),
+          'dependencies: []',
+        );
+      }
+
+      for (final provider in providers.entries) {
+        expect(
+          provider.value.dependencies?.dependencies,
           hasLength(3),
           reason: '${provider.key} has 3 dependencies',
         );
 
         expect(
-          dependencies.list[0],
-          isA<ProviderLegacyProviderDependency>().having(
-            (e) => e.definition.value,
-            'definition',
-            same(deps['dep']),
-          ),
+          provider.value.dependencies?.dependenciesNode.toSource(),
+          'dependencies: [dep, family, family(42)]',
+        );
+
+        expect(
+          provider.value.dependencies?.dependencies?[0],
+          isA<LegacyProviderDependency>()
+              .having((e) => e.node.toSource(), 'node', 'dep')
+              .having(
+                (e) => e.provider,
+                'provider',
+                same(deps['dep']?.providerElement),
+              ),
           reason: '${provider.key} has "dep" as first dependency',
         );
         expect(
-          dependencies.list[1],
-          isA<ProviderLegacyProviderDependency>().having(
-            (e) => e.definition.value,
-            'definition',
-            same(deps['family']),
-          ),
+          provider.value.dependencies?.dependencies?[1],
+          isA<LegacyProviderDependency>()
+              .having((e) => e.node.toSource(), 'node', 'family')
+              .having(
+                (e) => e.provider,
+                'provider',
+                same(deps['family']?.providerElement),
+              ),
           reason: '${provider.key} has "family" as second dependency',
         );
         expect(
-          dependencies.list[2],
-          isA<UnknownLegacyProviderDependency>(),
+          provider.value.dependencies?.dependencies?[2],
+          isA<LegacyProviderDependency>()
+              .having((e) => e.node.toSource(), 'node', 'family(42)')
+              .having((e) => e.provider, 'provider', null),
           reason: '${provider.key} has an unknown third dependency',
         );
       }
@@ -126,7 +178,7 @@ final autoDisposeFamily = Provider.autoDispose.family<int, int>((ref, id) => 0);
 final autoDisposeFamily2 = Provider.family.autoDispose<int, int>((ref, id) => 0);
 final explicitAutoDisposeFamily = AutoDisposeProviderFamily<int, int>((ref, id) => 0);
 ''', (resolver) async {
-      final providers = await resolver.parseAllLegacyProviderDefinitions([
+      final providers = await resolver.parseAllLegacyProviderDeclaration([
         'alwaysAliveProvider',
         'alwaysAliveFamily',
         'explicitAlwaysAliveFamily',
@@ -139,11 +191,80 @@ final explicitAutoDisposeFamily = AutoDisposeProviderFamily<int, int>((ref, id) 
 
       for (final provider in providers.entries) {
         expect(
-          provider.value.providerType,
+          provider.value.providerElement.providerType,
           LegacyProviderType.provider,
           reason: '${provider.key} is a Provider',
         );
       }
+    });
+
+    testSource('Decode various key AstNodes', source: '''
+import 'package:riverpod/riverpod.dart';
+
+final inferred = Provider((ref) => 0);
+final inferredFamily = Provider.family((ref, int id) => 0);
+
+final provider = Provider<int>((ref) => 0, name: 'foo');
+final family = Provider.family<int, int>((ref, id) => 0, name: 'bar');
+
+final autoDisposeFamily = Provider.autoDispose.family<int, int>((ref, id) => 0);
+final explicitAutoDisposeFamily = AutoDisposeProviderFamily<int, int>((ref, id) => 0);
+''', (resolver) async {
+      final providers = await resolver.parseAllLegacyProviderDeclaration([
+        'inferred',
+        'inferredFamily',
+        'provider',
+        'family',
+        'autoDisposeFamily',
+        'explicitAutoDisposeFamily',
+      ]);
+
+      expect(
+        providers['provider']?.argumentList.toSource(),
+        "((ref) => 0, name: 'foo')",
+      );
+      expect(
+        providers['family']?.argumentList.toSource(),
+        "((ref, id) => 0, name: 'bar')",
+      );
+
+      expect(providers['autoDisposeFamily']?.provider.toSource(), 'Provider');
+      expect(
+        providers['explicitAutoDisposeFamily']?.provider.toSource(),
+        'AutoDisposeProviderFamily',
+      );
+
+      expect(
+        providers['autoDisposeFamily']?.familyModifier?.toSource(),
+        'family',
+      );
+      expect(providers['explicitAutoDisposeFamily']?.familyModifier, null);
+
+      expect(
+        providers['autoDisposeFamily']?.autoDisposeModifier?.toSource(),
+        'autoDispose',
+      );
+      expect(providers['explicitAutoDisposeFamily']?.autoDisposeModifier, null);
+
+      expect(
+        providers['autoDisposeFamily']?.build.toSource(),
+        '(ref, id) => 0',
+      );
+      expect(
+        providers['provider']?.build.toSource(),
+        '(ref) => 0',
+      );
+
+      expect(
+        providers['autoDisposeFamily']?.typeArguments?.toSource(),
+        '<int, int>',
+      );
+      expect(
+        providers['provider']?.typeArguments?.toSource(),
+        '<int>',
+      );
+      expect(providers['inferred']?.typeArguments, null);
+      expect(providers['inferredFamily']?.typeArguments, null);
     });
 
     testSource('Decode LegacyProviderType.futureProvider', source: '''
@@ -158,7 +279,7 @@ final autoDisposeFamily = FutureProvider.autoDispose.family<int, int>((ref, id) 
 final autoDisposeFamily2 = FutureProvider.family.autoDispose<int, int>((ref, id) => 0);
 final explicitAutoDisposeFamily = AutoDisposeFutureProviderFamily<int, int>((ref, id) => 0);
 ''', (resolver) async {
-      final providers = await resolver.parseAllLegacyProviderDefinitions([
+      final providers = await resolver.parseAllLegacyProviderDeclaration([
         'alwaysAliveProvider',
         'alwaysAliveFamily',
         'explicitAlwaysAliveFamily',
@@ -171,7 +292,7 @@ final explicitAutoDisposeFamily = AutoDisposeFutureProviderFamily<int, int>((ref
 
       for (final provider in providers.entries) {
         expect(
-          provider.value.providerType,
+          provider.value.providerElement.providerType,
           LegacyProviderType.futureProvider,
           reason: '${provider.key} is a FutureProvider',
         );
@@ -190,7 +311,7 @@ final autoDisposeFamily = StateProvider.autoDispose.family<int, int>((ref, id) =
 final autoDisposeFamily2 = StateProvider.family.autoDispose<int, int>((ref, id) => 0);
 final explicitAutoDisposeFamily = AutoDisposeStateProviderFamily<int, int>((ref, id) => 0);
 ''', (resolver) async {
-      final providers = await resolver.parseAllLegacyProviderDefinitions([
+      final providers = await resolver.parseAllLegacyProviderDeclaration([
         'alwaysAliveProvider',
         'alwaysAliveFamily',
         'explicitAlwaysAliveFamily',
@@ -203,7 +324,7 @@ final explicitAutoDisposeFamily = AutoDisposeStateProviderFamily<int, int>((ref,
 
       for (final provider in providers.entries) {
         expect(
-          provider.value.providerType,
+          provider.value.providerElement.providerType,
           LegacyProviderType.stateProvider,
           reason: '${provider.key} is a StateProvider',
         );
@@ -222,7 +343,7 @@ final autoDisposeFamily = StreamProvider.autoDispose.family<int, int>((ref, id) 
 final autoDisposeFamily2 = StreamProvider.family.autoDispose<int, int>((ref, id) => Stream.empty());
 final explicitAutoDisposeFamily = AutoDisposeStreamProviderFamily<int, int>((ref, id) => Stream.empty());
 ''', (resolver) async {
-      final providers = await resolver.parseAllLegacyProviderDefinitions([
+      final providers = await resolver.parseAllLegacyProviderDeclaration([
         'alwaysAliveProvider',
         'alwaysAliveFamily',
         'explicitAlwaysAliveFamily',
@@ -235,7 +356,7 @@ final explicitAutoDisposeFamily = AutoDisposeStreamProviderFamily<int, int>((ref
 
       for (final provider in providers.entries) {
         expect(
-          provider.value.providerType,
+          provider.value.providerElement.providerType,
           LegacyProviderType.streamProvider,
           reason: '${provider.key} is a StreamProvider',
         );
@@ -254,7 +375,7 @@ final autoDisposeFamily = NotifierProvider.autoDispose.family<AutoDisposeFamilyN
 final autoDisposeFamily2 = NotifierProvider.family.autoDispose<AutoDisposeFamilyNotifier<int, int>, int, int>(() => throw UnimplementedError());
 final explicitAutoDisposeFamily = AutoDisposeNotifierProviderFamily<AutoDisposeFamilyNotifier<int, int>, int, int>(() => throw UnimplementedError());
 ''', (resolver) async {
-      final providers = await resolver.parseAllLegacyProviderDefinitions([
+      final providers = await resolver.parseAllLegacyProviderDeclaration([
         'alwaysAliveProvider',
         'alwaysAliveFamily',
         'explicitAlwaysAliveFamily',
@@ -267,7 +388,7 @@ final explicitAutoDisposeFamily = AutoDisposeNotifierProviderFamily<AutoDisposeF
 
       for (final provider in providers.entries) {
         expect(
-          provider.value.providerType,
+          provider.value.providerElement.providerType,
           LegacyProviderType.notifierProvider,
           reason: '${provider.key} is a NotifierProvider',
         );
@@ -286,7 +407,7 @@ final autoDisposeFamily = AsyncNotifierProvider.autoDispose.family<AutoDisposeFa
 final autoDisposeFamily2 = AsyncNotifierProvider.family.autoDispose<AutoDisposeFamilyAsyncNotifier<int, int>, int, int>(() => throw UnimplementedError());
 final explicitAutoDisposeFamily = AutoDisposeAsyncNotifierProviderFamily<AutoDisposeFamilyAsyncNotifier<int, int>, int, int>(() => throw UnimplementedError());
 ''', (resolver) async {
-      final providers = await resolver.parseAllLegacyProviderDefinitions([
+      final providers = await resolver.parseAllLegacyProviderDeclaration([
         'alwaysAliveProvider',
         'alwaysAliveFamily',
         'explicitAlwaysAliveFamily',
@@ -299,7 +420,7 @@ final explicitAutoDisposeFamily = AutoDisposeAsyncNotifierProviderFamily<AutoDis
 
       for (final provider in providers.entries) {
         expect(
-          provider.value.providerType,
+          provider.value.providerElement.providerType,
           LegacyProviderType.asyncNotifierProvider,
           reason: '${provider.key} is an AsyncNotifierProvider',
         );
@@ -319,7 +440,7 @@ final autoDisposeFamily = ChangeNotifierProvider.autoDispose.family<ValueNotifie
 final autoDisposeFamily2 = ChangeNotifierProvider.family.autoDispose<ValueNotifier<int>, int>((ref, id) => ValueNotifier(0));
 final explicitAutoDisposeFamily = AutoDisposeChangeNotifierProviderFamily<ValueNotifier<int>, int>((ref, id) => ValueNotifier(0));
 ''', (resolver) async {
-      final providers = await resolver.parseAllLegacyProviderDefinitions([
+      final providers = await resolver.parseAllLegacyProviderDeclaration([
         'alwaysAliveProvider',
         'alwaysAliveFamily',
         'explicitAlwaysAliveFamily',
@@ -332,7 +453,7 @@ final explicitAutoDisposeFamily = AutoDisposeChangeNotifierProviderFamily<ValueN
 
       for (final provider in providers.entries) {
         expect(
-          provider.value.providerType,
+          provider.value.providerElement.providerType,
           LegacyProviderType.changeNotifierProvider,
           reason: '${provider.key} is a ChangeNotifierProvider',
         );
@@ -351,7 +472,7 @@ final autoDisposeFamily = StateNotifierProvider.autoDispose.family<StateControll
 final autoDisposeFamily2 = StateNotifierProvider.family.autoDispose<StateController<int>, int, int>((ref, id) => StateController(0));
 final explicitAutoDisposeFamily = AutoDisposeStateNotifierProviderFamily<StateController<int>, int, int>((ref, id) => StateController(0));
 ''', (resolver) async {
-      final providers = await resolver.parseAllLegacyProviderDefinitions([
+      final providers = await resolver.parseAllLegacyProviderDeclaration([
         'alwaysAliveProvider',
         'alwaysAliveFamily',
         'explicitAlwaysAliveFamily',
@@ -364,7 +485,7 @@ final explicitAutoDisposeFamily = AutoDisposeStateNotifierProviderFamily<StateCo
 
       for (final provider in providers.entries) {
         expect(
-          provider.value.providerType,
+          provider.value.providerElement.providerType,
           LegacyProviderType.stateNotifierProvider,
           reason: '${provider.key} is a StreamProvider',
         );
@@ -385,7 +506,7 @@ final autoDisposeFamily2 = Provider.family.autoDispose<int, int>((ref, id) => 0)
 final explicitAutoDisposeFamily = AutoDisposeProviderFamily<int, int>((ref, id) => 0);
 ''', (resolver) async {
       final autoDisposeProviders =
-          await resolver.parseAllLegacyProviderDefinitions([
+          await resolver.parseAllLegacyProviderDeclaration([
         'autoDisposeProvider',
         'explicitAutoDisposeProvider',
         'autoDisposeFamily',
@@ -394,24 +515,24 @@ final explicitAutoDisposeFamily = AutoDisposeProviderFamily<int, int>((ref, id) 
       ]);
 
       final alwaysAliveProviders =
-          await resolver.parseAllLegacyProviderDefinitions([
+          await resolver.parseAllLegacyProviderDeclaration([
         'alwaysAliveProvider',
         'alwaysAliveFamily',
         'explicitAlwaysAliveFamily',
       ]);
 
-      for (final provider in alwaysAliveProviders.entries) {
-        expect(
-          provider.value.isAutoDispose,
-          false,
-          reason: '${provider.key} is not autoDispose',
-        );
-      }
       for (final provider in autoDisposeProviders.entries) {
         expect(
-          provider.value.isAutoDispose,
+          provider.value.providerElement.isAutoDispose,
           true,
           reason: '${provider.key} is autoDispose',
+        );
+      }
+      for (final provider in alwaysAliveProviders.entries) {
+        expect(
+          provider.value.providerElement.isAutoDispose,
+          false,
+          reason: '${provider.key} is not autoDispose',
         );
       }
     });
@@ -429,13 +550,13 @@ final autoDisposeFamily = Provider.autoDispose.family<int, int>((ref, id) => 0);
 final autoDisposeFamily2 = Provider.family.autoDispose<int, int>((ref, id) => 0);
 final explicitAutoDisposeFamily = AutoDisposeProviderFamily<int, int>((ref, id) => 0);
 ''', (resolver) async {
-      final providers = await resolver.parseAllLegacyProviderDefinitions([
+      final providers = await resolver.parseAllLegacyProviderDeclaration([
         'alwaysAliveProvider',
         'autoDisposeProvider',
         'explicitAutoDisposeProvider',
       ]);
 
-      final families = await resolver.parseAllLegacyProviderDefinitions([
+      final families = await resolver.parseAllLegacyProviderDeclaration([
         'alwaysAliveFamily',
         'explicitAlwaysAliveFamily',
         'autoDisposeFamily',
@@ -445,24 +566,14 @@ final explicitAutoDisposeFamily = AutoDisposeProviderFamily<int, int>((ref, id) 
 
       for (final provider in providers.entries) {
         expect(
-          provider.value.isFamily,
-          false,
+          provider.value.providerElement.familyElement,
+          isNull,
           reason: '${provider.key} is not a family',
-        );
-        expect(
-          provider.value.familyArgumentType,
-          null,
-          reason: '${provider.key} has no parameter',
         );
       }
       for (final provider in families.entries) {
         expect(
-          provider.value.isFamily,
-          true,
-          reason: '${provider.key} is a family',
-        );
-        expect(
-          provider.value.familyArgumentType,
+          provider.value.providerElement.familyElement?.parameterType,
           isA<DartType>().having((e) => e.isDartCoreInt, 'is int', true),
           reason: '${provider.key} has int parameters',
         );

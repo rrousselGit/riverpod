@@ -6,12 +6,16 @@ import 'package:analyzer/diagnostic/diagnostic.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:build/build.dart';
 import 'package:build_test/build_test.dart';
-import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
+import 'package:custom_lint_builder/src/node_lint_visitor.dart';
+import 'package:meta/meta.dart';
+import 'package:riverpod_analyzer_utils/src/riverpod_ast.dart';
+import 'package:riverpod_analyzer_utils/src/riverpod_visitor.dart';
 import 'package:test/test.dart';
 
 /// Due to [resolveSource] throwing if trying to interact with the resolver
 /// after the future completed, we change the syntax to make sure our test
 /// executes within the resolver scope.
+@isTest
 void testSource(
   String description,
   Future<void> Function(Resolver resolver) run, {
@@ -23,64 +27,94 @@ void testSource(
       final enclosingZone = Zone.current;
 
       return resolveSource('library foo;$source', (resolver) {
-        return runZoned(
-          () => run(resolver),
-          zoneSpecification: ZoneSpecification(
-            // Somehow prints are captured inside the callback. Let's restore them
-            print: (self, parent, zone, line) => enclosingZone.print(line),
-          ),
-        );
+        try {
+          final originalZone = Zone.current;
+          return runZoned(
+            () => run(resolver),
+            zoneSpecification: ZoneSpecification(
+              // Somehow prints are captured inside the callback. Let's restore them
+              print: (self, parent, zone, line) => enclosingZone.print(line),
+              handleUncaughtError: (self, parent, zone, error, stackTrace) {
+                originalZone.handleUncaughtError(error, stackTrace);
+                // enclosingZone.print('Oy $error\n$stackTrace');
+                enclosingZone.handleUncaughtError(error, stackTrace);
+              },
+            ),
+          );
+        } catch (err, stack) {
+          enclosingZone.handleUncaughtError(err, stack);
+        }
       });
     },
   );
 }
 
 extension ResolverX on Resolver {
-  Future<Map<String, LegacyProviderDefinition>>
-      parseAllLegacyProviderDefinitions(
+  Future<Map<String, LegacyProviderDeclaration>>
+      parseAllLegacyProviderDeclaration(
     List<String> names, {
     String libraryName = 'foo',
   }) async {
-    final library = await requireFindLibraryByName(libraryName);
-    final definitions = await Future.wait([
-      for (final name in names)
-        LegacyProviderDefinition.parse(
-          library.findElementWithName(name),
-          resolver: astNodeFor,
-        ),
-    ]);
-
-    return {
-      for (var i = 0; i < names.length; i++) names[i]: definitions[i],
-    };
+    final declarations =
+        await parseAllProviderDeclaration(names, libraryName: libraryName);
+    return Map.from(declarations);
   }
 
-  Future<Map<String, GeneratorProviderDefinition>>
-      parseAllGeneratorProviderDefinitions(
+  Future<Map<String, GeneratorProviderDeclaration>>
+      parseAllGeneratorProviderDeclaration(
     List<String> names, {
     String libraryName = 'foo',
   }) async {
-    final library = await requireFindLibraryByName(libraryName);
-    final definitions = await Future.wait([
-      for (final name in names)
-        GeneratorProviderDefinition.parse(
-          library.findElementWithName(name),
-          resolver: astNodeFor,
-        ),
-    ]);
+    final declarations =
+        await parseAllProviderDeclaration(names, libraryName: libraryName);
+    return Map.from(declarations);
+  }
 
-    return {
-      for (var i = 0; i < names.length; i++) names[i]: definitions[i],
-    };
+  Future<Map<String, ProviderDeclaration>> parseAllProviderDeclaration(
+    List<String> names, {
+    String libraryName = 'foo',
+  }) async {
+    final nodeLintRegistry = NodeLintRegistry(
+      LintRegistry(),
+      enableTiming: false,
+    );
+    final lintRuleNodeRegistry = LintRuleNodeRegistry(
+      nodeLintRegistry,
+      '',
+    );
+    final visitor = RiverpodVisitor(
+      lintRuleNodeRegistry,
+    );
+
+    final declarations = <String, ProviderDeclaration>{};
+    visitor.addProviderDeclaration((p0) => declarations[p0.name.lexeme] = p0);
+
+    final library = await findLibraryByName(libraryName);
+    final libraryAst =
+        await library!.session.getResolvedLibraryByElement(library);
+
+    libraryAst as ResolvedLibraryResult;
+    libraryAst.units.first.unit.accept(
+      LinterVisitor(nodeLintRegistry),
+    );
+
+    return Map.fromEntries(
+      names.map((name) {
+        final declaration = declarations[name];
+        if (declaration == null) {
+          throw StateError('No declaration found for $name');
+        }
+        return MapEntry(name, declaration);
+      }),
+    );
   }
 
   Future<LibraryElement> requireFindLibraryByName([
     String libraryName = 'foo',
   ]) async {
     final library = await findLibraryByName(libraryName);
-
     if (library == null) {
-      throw StateError('No library found or name "$libraryName"');
+      throw StateError('No library found for name "$libraryName"');
     }
 
     final errorResult = await library.session
