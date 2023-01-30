@@ -27,7 +27,7 @@ class StateController<T> extends StateNotifier<T> {
   /// we can do:
   ///
   /// ```dart
-  /// ref.read(provider.state).update((state) => state + 1);
+  /// ref.read(provider.notifier).update((state) => state + 1);
   /// ```
   T update(T Function(T state) cb) => state = cb(state);
 }
