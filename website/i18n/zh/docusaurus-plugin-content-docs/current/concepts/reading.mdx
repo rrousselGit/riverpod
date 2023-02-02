@@ -1,0 +1,322 @@
+---
+title: 使用 provider
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import counter from "!!raw-loader!/i18n/zh/docusaurus-plugin-content-docs/current/concepts/reading_counter.dart";
+import consumerWidget from "!!raw-loader!/i18n/zh/docusaurus-plugin-content-docs/current/concepts/reading_consumer_widget.dart";
+import consumerStatefulWidget from "!!raw-loader!/i18n/zh/docusaurus-plugin-content-docs/current/concepts/reading_consumer_stateful_widget.dart";
+import consumerHookWidget from "!!raw-loader!/i18n/zh/docusaurus-plugin-content-docs/current/concepts/reading_consumer_hook_widget.dart";
+import statefulHookConsumerWidget from "!!raw-loader!/i18n/zh/docusaurus-plugin-content-docs/current/concepts/reading_stateful_hook_consumer_widget.dart";
+import consumerHook from "!!raw-loader!/i18n/zh/docusaurus-plugin-content-docs/current/concepts/reading_consumer_hook.dart";
+import watch from "!!raw-loader!/i18n/zh/docusaurus-plugin-content-docs/current/concepts/reading_watch.dart";
+import watchBuild from "!!raw-loader!/i18n/zh/docusaurus-plugin-content-docs/current/concepts/reading_watch_build.dart";
+import listen from "!!raw-loader!/i18n/zh/docusaurus-plugin-content-docs/current/concepts/reading_listen.dart";
+import listenBuild from "!!raw-loader!/i18n/zh/docusaurus-plugin-content-docs/current/concepts/reading_listen_build.dart";
+import read from "!!raw-loader!/i18n/zh/docusaurus-plugin-content-docs/current/concepts/reading_read.dart";
+import readBuild from "!!raw-loader!/i18n/zh/docusaurus-plugin-content-docs/current/concepts/reading_read_build.dart";
+import readNotifierBuild from "!!raw-loader!/i18n/zh/docusaurus-plugin-content-docs/current/concepts/reading_read_notifier_build.dart";
+import watchNotifierBuild from "!!raw-loader!/i18n/zh/docusaurus-plugin-content-docs/current/concepts/reading_watch_notifier_build.dart";
+import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+
+本页中，我们将了解如何使用 provider。
+
+:::note 备注
+在阅读本页之前，请确保您已阅读前一页 《[何谓 provider](/docs/concepts/providers)》。
+:::
+
+## 获取 `ref` 对象
+
+首先，在使用一个 provider 之前，我们必须先获取 `ref` 对象。该对象允许我们在组件或其他 provider 的回调中和该 provider 互动。
+
+### 从 provider 中获取 `ref`
+
+每个 provider 都接收一个 `ref` 参数。
+
+```dart
+final provider = Provider((ref) {
+  // 使用 `ref` 读取或监听其它 provider
+  final repository = ref.watch(repositoryProvider);
+
+  return SomeValue(repository);
+})
+```
+该参数可安全地传递给另一个 provider 所提供的值。一种常见的用例是将 `ref` 传递给 [StateNotifier] 如以下：
+
+<CodeBlock>{trimSnippet(counter)}</CodeBlock>
+
+这样做允许我们的 `Counter` 类读取其它 providers。
+
+### 在组件内获取 `ref`
+
+组件本生是不带 `ref` 参数。但是 [Riverpod] 提供了以下几种可在组件内获取 `ref` 的方案。
+
+#### 1. ConsumerWidget 扩展类
+
+在组件树内获取 `ref` 的最常用法是以 [ConsumerWidget] 取代 [StatelessWidget]。
+
+[ConsumerWidget] 和 [StatelessWidget] 的唯一区别是在 `build` 方法内除了 `context` 参数，[ConsumerWidget] 的带有了多一个 `ref` 对象的参数。
+
+以下是一个典型的 [ConsumerWidget] 例子:
+
+<CodeBlock>{trimSnippet(consumerWidget)}</CodeBlock>
+
+#### 2. ConsumerStatefulWidget 与 ConsumerState 扩展类
+
+此方案和 [ConsumerWidget] 的是相同。区别是：
+- [ConsumerStatefulWidget] 与 [ConsumerState] 是专取代 [StatefulWidget] 与 [State]。
+- `ref` 反而是包在 [ConsumerState] 内，而不是在 `build` 方法内的参数。
+
+<CodeBlock>{trimSnippet(consumerStatefulWidget)}</CodeBlock>
+
+#### 3. HookConsumerWidget 扩展类
+
+此方案针对使用 [flutter_hooks] 的开发者。[flutter_hooks] 需要继承 [HookWidget] 才能够操作, 而任何组件使用 hooks 就无法继承 [ConsumerWidget]。
+
+[hooks_riverpod] 包内就提供了一个支持此需求的 [HookConsumerWidget] 新的组件。[HookConsumerWidget] 既是 [ConsumerWidget]，也是 [HookWidget]，可让组件读取或监听 provider， 同时也可使用 
+
+用法是以 [HookConsumerWidget] 取代 [StatelessWidget]，或者是已继承 [ConsumerWidget] 的话，就在 [ConsumerWidget] 前方加上 Hook 这四个字。可参考以下例子。
+
+<CodeBlock>{trimSnippet(consumerHookWidget)}</CodeBlock>
+
+#### 4. StatefulHookConsumerWidget 扩展类
+
+此方案同样是针对使用 [flutter_hooks] 的开发者，但组件需要同时使用 [StatefulWidget] 生命周期的方式和 hooks。
+
+用法是以 `StatefulHookConsumerWidget` 与 [ConsumerState] 取代 [StatefulWidget] 与 [State]，或者是已继承 [ConsumerStatefulWidget] 的话，就改为 `StatefulHookConsumerWidget` 即可。以下是个例子。
+
+<CodeBlock>{trimSnippet(statefulHookConsumerWidget)}</CodeBlock>
+
+#### 5. Consumer 于 HookConsumer 组件
+
+最后一种获取 `ref` 的方案是使用 [Consumer] 或 [HookConsumer] 组件。此类是可用于在构建器（`builder`）的回调中获取 `ref` 的组件。它们的属性和 [ConsumerWidget] 与 [HookConsumerWidget] 相同。
+
+请看以下 [HookConsumer] 的例子。
+
+<CodeBlock>{trimSnippet(consumerHook)}</CodeBlock>
+
+## 使用 `ref` 与其它 provider 互动
+
+获取 `ref` 自后，我们就能使用它。`ref` 有以下三种主要用法：
+
+- **`ref.watch`** — 读取 provider 的值并监听任何变化，而随着变化重建或更新正在监听该 provider 的组件或其它 provider。
+- **`ref.listen`** — 监听 provider，而随着状态变化去执行自定义的操作比如路由至另一页面或者是显示上拉框，等。
+- **`ref.read`** — 仅读取 provider 的值读取而不进行监听，适用于按钮的 `onPressed` 参数，等。
+
+:::tip 建议
+在实现功能时，建议使用 `ref.watch`。`ref.watch` 可使应用程序变得即响应性又声明性，这也就提高了它的可维护性。
+:::
+
+### `ref.watch` 读取并监听 provider
+
+`ref.watch` 必须使用在组件的 `build` 方法中或是在 provider 的回调中来监听 provider 的状态。
+
+例如, 在一个 provider 的回调中可使用 `ref.watch` 监听其它 provider，并通过组合它们的值来创建新的值。
+
+一个例子是任务列表。我们可以先创建两个 providers。
+
+- `filterTypeProvider` — 提供目前筛选条件的 provider（条件有：无 — none，已完成 — completed，等）
+- `todosProvider` — 提供任务列表的 provider
+
+然后，我们再创建第三个 provider 并在该 provider 的回调中使用 `ref.watch` 来合并以上两个 provider 去创建一个筛选过的任务列表，如以下:
+
+<CodeBlock>{trimSnippet(watch)}</CodeBlock>
+
+从这个代码，`filteredTodoListProvider` 现在就能够提供该筛选过的任务列表。
+
+如果筛选条件或任务列表发生变化，筛选过的任务列表将也会自动更新。如果没有任何变化，则无更新。
+
+同样的，我们也可以让组件使用 `ref.watch` 显示一个 provider 的值并在该值发生变化时更新界面。请看以下例子：
+
+<CodeBlock>{trimSnippet(watchBuild)}</CodeBlock>
+
+此代码段显示了一个监听 provider 状态 `count` 的组件。如果 `count` 有变化，组件将重建而界面将会更新显示新值。
+
+:::caution 注意
+**请勿异步使用 `watch`。**例如，不要在 [ElevatedButton] 的 `onPressed` 、`initState`中或 [State] 生命周期中使用 `watch`。在这些情况下，请使用 `ref.read`。
+:::
+
+### `ref.listen` 监听 provider 的变化并做出反应
+
+与 `ref.watch` 相同，使用 `ref.listen` 也能监听 provider。但唯一的区别是，`ref.listen` 不会重建组件或 provider，而是会调用自定义的函数。这对于在某些状态发生变化时执行某些操作，比如当发生错误时显示一个上拉框，等等是很有用的。
+
+`ref.listen` 需要两个位置参数，第一个是 provider，第二个是当状态发生变化时执行的回调函数。当回调函数被调用时，它会传递两个值，前一个状态和新的状态。
+
+例如，我们可以在 provider 的回调中使用 `ref.listen` 来监听其它 provider：
+
+<CodeBlock>{trimSnippet(listen)}</CodeBlock>
+
+我们也可以在组件的 `build` 方法中使用 `ref.listen` 来监听 provider：
+
+<CodeBlock>{trimSnippet(listenBuild)}</CodeBlock>
+
+:::caution 注意
+**请勿异步使用 `listen`。**例如，不要在 [ElevatedButton] 的 `onPressed` 、`initState`中或 [State] 生命周期中使用 `listen`。在这些情况下，请使用 `ref.read`。
+:::
+
+### `ref.read` 仅一次读取 provider
+
+`ref.read` 是一种读取 provider 状态一次的方法，但不会监听它。`ref.read` 通常会在用户交互触发的函数内使用。例如，用户点击按钮时增加计数器：
+
+<CodeBlock>{trimSnippet(read)}</CodeBlock>
+
+:::caution 注意
+在任何情况下，应尽量避免使用 `ref.read`，因为它不是响应式的。它存在于使用 `watch` 或 `listen` 会导致问题的情况。如果可以的话，几乎总是更好的使用 `watch`/`listen`，尤其是 `watch`。
+:::
+
+#### 在 `build` 方法中，请**不要**使用 `ref.read`
+
+您或许会尝试使用 `ref.read` 来优化组件的性能，例如：
+
+<CodeBlock>{trimSnippet(readBuild)}</CodeBlock>
+
+这是一个不良的做法。此做法可能会导致难以跟踪的错误。建议在使用 `ref.read` 时，您必须确保该值永远不会改变。如果该值在未来发生了变化，您将不得不在整个代码库中将 `ref.read` 更改为 `ref.watch`，而此时是非常容易出错的，您可能会忘记代码的位置。所以，如果您一开始就使用 `ref.watch` 的话，那么在重构时您将会遇到更少的问题。
+
+**_”但是我是用 `ref.read` 时，能够降低组件重建的次数“_**
+
+这个目标是可取的，但是需要注意的是，您可以使用 `ref.watch` 来实现相同的效果。
+
+Providers 本生就提供了多种方法来读取值，同时减少重建的次数。例如，以下两个代码片段（前这是 `ref.read`，后者是 `ref.watch`）。
+
+<CodeBlock>{trimSnippet(readNotifierBuild)}</CodeBlock>
+
+<CodeBlock>{trimSnippet(watchNotifierBuild)}</CodeBlock>
+
+两个代码片段都实现了相同的效果，也就是当计数器增加 (`counter.state++`) 时，按钮不会重建。
+
+但是，后者的 `ref.watch` 支持计数器被重置的情况。例如，应用程序内的另一个部分可能会调用...
+
+```dart
+// `refresh` 是刷新的意思，在此表示为重置
+ref.refresh(counterProvider);
+```
+而这将能正确地重新创建 `StateController` 对象。
+
+如果我们使用 `ref.read` 而非 `ref.watch` ，我们的按钮将仍然使用之前的 `StateController` 实例。但是，无法重置因为这个实例已经被销毁并且不应该再被使用。
+
+此页的最后一部分，我们将会学到如何在使用 `ref.watch` 时，筛选重建。
+
+## 可选择读取状态的类型
+
+根据您使用的 provider 类型，读取状态的类型可分几种。例如以下的 [StreamProvider] 用例：
+
+```dart
+final userProvider = StreamProvider<User>(...);
+```
+您可选择通过:
+
+- 监听 `userProvider` 来同步读取目前的状态，
+
+  ```dart
+  Widget build(BuildContext context, WidgetRef ref) {
+    AsyncValue<User> user = ref.watch(userProvider);
+
+    return user.when(
+      loading: () => const CircularProgressIndicator(),
+      error: (error, stack) => const Text('Oops'),
+      data: (user) => Text(user.name),
+    );
+  }
+  ```
+
+- 监听 `userProvider.stream` 来获取相关的流 [Stream] 状态，
+
+  ```dart
+  Widget build(BuildContext context, WidgetRef ref) {
+    Stream<User> user = ref.watch(userProvider.stream);
+  }
+  ```
+
+- 或，监听 `userProvider.future` 来获取 [Future] 所输出的最新状态。
+
+  ```dart
+  Widget build(BuildContext context, WidgetRef ref) {
+    Future<User> user = ref.watch(userProvider.future);
+  }
+  ```
+
+其它 provider 可能会提供不同的选择。有关详细资料，可在 [API参考](https://pub.dev/documentation/riverpod/latest/riverpod/riverpod-library.html) 里参阅各 provider 的文档。
+
+## 使用 `select` 来筛选重建
+
+最后要提到的是 `select` 这个功能。此功能够用来减少使用 `ref.watch` 监听 provider 的组件或 provider 的状态重建次数。同样的，此功能也可用于 `ref.listen` 来减少执行自定义函数的次数。 
+
+需要注意的是，在默认情况下，监听一个 provider 等于监听整个对象的状态。但是在一些情况下，一个组件或 provider 可能只关注对象中的某个或某些属性的变化。  
+
+例如以下代码片段，`userProvider` 返回一个 `User` 对象，而 `Text` 组件的内容是 `User` 的 `name` 属性。
+
+```dart
+abstract class User {
+  String get name;
+  int get age;
+}
+```
+```dart
+Widget build(BuildContext context, WidgetRef ref) {
+  User user = ref.watch(userProvider);
+  return Text(user.name);
+}
+```
+按照以上的 `ref.watch` 单独用法，当 `User` 的 `age` 属性改变时，`Text` 组件也会重建。
+
+所以，为了筛选重建，我们可以将 `select` 应用于 `ref.watch` 来明确告诉 Riverpod 只需关注 `User` 的 `name` 属性。例如以下代码，我们使用 `select` 指定一个函数来返回我们所要关注的属性。
+
+```dart
+Widget build(BuildContext context, WidgetRef ref) {
+  String name = ref.watch(userProvider.select((user) => user.name));
+  return Text(name);
+}
+```
+当 `User` 发生变化时，Riverpod 会调用此函数并比较指定属性的前后结果。如果结果都不同（例如当 `name` 改变时），Riverpod 将重建组件。当然，如果结果相同（例如只有 `age` 改变），Riverpod 将不会重建组件。
+
+:::note
+我们也可以将 `select` 应用于 `ref.listen`。
+
+```dart
+ref.listen<String>(
+  userProvider.select((user) => user.name),
+  (String? previousName, String newName) {
+    print('用户名已改为 $newName');
+  }
+);
+```
+同样的，此用法仅在 `name` 改变时才执行函数。
+:::
+
+:::tip
+返回的值不一定限制在属性。任何重写了 `==` 的值都行得通。例如，我们可以这样做：
+
+```dart
+final label = ref.watch(userProvider.select((user) => 'Mr ${user.name}'));
+```
+
+:::
+
+[stateprovider]: ../providers/state_provider
+[providercontainer]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderContainer-class.html
+[providerlistener]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderListener-class.html
+[providerscope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
+[consumer]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Consumer-class.html
+[consumerwidget]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ConsumerWidget-class.html
+[consumerstate]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ConsumerStatefulWidget-class.html
+[consumerstatefulwidget]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ConsumerState-class.html
+[useprovider]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ref.watch(.html
+[elevatedbutton]: https://api.flutter.dev/flutter/material/ElevatedButton-class.html
+[streambuilder]: https://api.flutter.dev/flutter/widgets/StreamBuilder-class.html
+[riverpod]: https://github.com/rrousselgit/riverpod
+[text]: https://api.flutter.dev/flutter/widgets/Text-class.html
+[hooks_riverpod]: https://pub.dev/packages/hooks_riverpod
+[future]: https://api.dart.dev/stable/2.13.4/dart-async/Future-class.html
+[stream]: https://api.dart.dev/stable/2.13.4/dart-async/Stream-class.html
+[hookwidget]: https://pub.dev/documentation/flutter_hooks/latest/flutter_hooks/HookWidget-class.html
+[hookconsumerwidget]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/HookConsumerWidget-class.html
+[hookconsumer]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/HookConsumer-class.html
+[flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
+[flutter_hooks]: https://github.com/rrousselGit/flutter_hooks
+[statenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/StateNotifier-class.html
+[streamprovider]: ../providers/stream_provider
+[statelesswidget]: https://api.flutter.dev/flutter/widgets/StatelessWidget-class.html
+[statefulwidget]: https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html
+[state]: https://api.flutter.dev/flutter/widgets/State-class.html

@@ -1,0 +1,112 @@
+---
+title: .autoDispose
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+一个常见用例是不再使用 provider 时，自动销毁它的状态。这样做有多种原因，例如：
+
+- 使用 Firebase 或某后端时，关闭连接并避免不必要的费用。
+- 当用户离开屏幕并重新进入时，重置状态。
+
+通过 `.autoDispose` 修饰符，每个 provider 都提供了对此用例的内置支持。
+
+## 用法
+
+要通知 Riverpod 当 provider 不再使用时而自动销毁它的状态，只需为 provider 附加 `.autoDispose`：
+
+```dart
+final userProvider = StreamProvider.autoDispose<User>((ref) {
+
+});
+```
+现在，当 `userProvider` 不再使用时，它的状态将自动销毁。需要注意的是 `.autoDispose` 不是命名构造函数，所以必须在泛型参数之前附加。
+
+:::tip
+我们可以将 `.autoDispose` 与其他修饰符结合使用：
+
+```dart
+final userProvider = StreamProvider.autoDispose.family<User, String>((ref, id) {
+
+});
+```
+
+:::
+
+### ref.keepAlive
+
+当为 provider 附加 `.autoDispose` 还会为 `ref` 添加一个额外的功能 `keepAlive`。
+
+`keepAlive` 函数用于通知 Riverpod，即使不再监听，provider 的状态也需要保留。一个用例是在 HTTP 请求完成后将此标志设置为 `true`：
+
+```dart
+final myProvider = FutureProvider.autoDispose((ref) async {
+  final response = await httpClient.get(...);
+  ref.keepAlive();
+  return response;
+});
+```
+这样，如果请求失败并且用户离开屏幕然后重新进入，则会重新执行请求。但如果请求成功完成，则会保留状态，并且重新进入屏幕不会触发新请求。
+
+:::note
+在 1.0.x 版本中, `keepAlive` 对应的属性为 `maintainState`.
+::: 
+
+## 示例：当不再使用HTTP请求时并取消
+
+`.autoDispose` 修饰符、[FutureProvider] 和 `ref.onDispose` 结合使用可轻松地取消不再需要的 HTTP 请求。
+
+目标是：
+
+- 当用户进入界面时启动 HTTP 请求
+- 如果用户在请求完成之前离开界面，则取消 HTTP 请求
+- 如果请求成功，离开和重新进入界面不会启动新请求
+
+在代码中，这将是：
+
+```dart
+final myProvider = FutureProvider.autoDispose((ref) async {
+  // 来自 package:dio 的对象，允许取消 http 请求
+  final cancelToken = CancelToken();
+  // 当 provider 被销毁时，取消 http 请求
+  ref.onDispose(() => cancelToken.cancel());
+
+  // 获取我们的数据并传递我们的 `cancelToken` 以实现取消
+  final response = await dio.get('path', cancelToken: cancelToken);
+  // 如果请求成功完成，则保留状态
+  ref.keepAlive();
+  return response;
+});
+```
+
+## 寻常错误：The argument type 'AutoDisposeProvider' can't be assigned to the parameter type 'AlwaysAliveProviderBase'
+
+使用 `.autoDispose` 时，我们可能会遇到类似以下的编译错误情况：
+
+> The argument type 'AutoDisposeProvider' can't be assigned to the parameter type 'AlwaysAliveProviderBase'
+
+（中文翻译：参数类型 'AutoDisposeProvider' 无法分配给参数类型 'AlwaysAliveProviderBase'）
+
+您无需担心。该错误是有意的。我们的代码很可能存在试图在没附加 `.autoDispose` 的 provider 回调中监听另一个已附加 `.autoDispose` 的 provider 的错误。例如：
+
+```dart
+final firstProvider = Provider.autoDispose((ref) => 0);
+
+final secondProvider = Provider((ref) {
+  // The argument type 'AutoDisposeProvider<int>' can't be assigned to the
+  // parameter type 'AlwaysAliveProviderBase<Object, Null>'
+  ref.watch(firstProvider);
+});
+```
+在这种情况下将会导致 `firstProvider` 无法自动销毁。解决方案是同样为 `secondProvider` 附加 `.autoDispose`。
+
+```dart
+final firstProvider = Provider.autoDispose((ref) => 0);
+
+final secondProvider = Provider.autoDispose((ref) {
+  ref.watch(firstProvider);
+});
+```
+
+[futureprovider]: ../../providers/future_provider

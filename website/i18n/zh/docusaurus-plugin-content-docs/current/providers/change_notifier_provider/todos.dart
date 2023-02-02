@@ -18,19 +18,19 @@ class Todo {
 class TodosNotifier extends ChangeNotifier {
   final todos = <Todo>[];
 
-  // Let's allow the UI to add todos.
+  // 提供给界面使用的添加任务的方法
   void addTodo(Todo todo) {
     todos.add(todo);
     notifyListeners();
   }
 
-  // Let's allow removing todos
+  // 提供给界面使用的删除任务的方法
   void removeTodo(String todoId) {
     todos.remove(todos.firstWhere((element) => element.id == todoId));
     notifyListeners();
   }
 
-  // Let's mark a todo as completed
+  // 提供给界面使用的标记任务完成的方法
   void toggle(String todoId) {
     for (final todo in todos) {
       if (todo.id == todoId) {
@@ -41,8 +41,7 @@ class TodosNotifier extends ChangeNotifier {
   }
 }
 
-// Finally, we are using ChangeNotifierProvider to allow the UI to interact with
-// our TodosNotifier class.
+// 然后，我们使用 ChangeNotifierProvider 允许界面与我们的 TodosNotifier 类交互。
 final todosProvider = ChangeNotifierProvider<TodosNotifier>((ref) {
   return TodosNotifier();
 });

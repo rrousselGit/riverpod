@@ -1,0 +1,127 @@
+---
+title: 测试
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import testingOriginalTestFlutter from "!!raw-loader!/i18n/zh/docusaurus-plugin-content-docs/current/cookbooks/testing_original_test_flutter.dart";
+import testingOriginalTestDart from "!!raw-loader!/i18n/zh/docusaurus-plugin-content-docs/current/cookbooks/testing_original_test_dart.dart";
+import repositorySnippet from "!!raw-loader!/i18n/zh/docusaurus-plugin-content-docs/current/cookbooks/testing_repository.dart";
+import testFlutter from "!!raw-loader!/i18n/zh/docusaurus-plugin-content-docs/current/cookbooks/testing_flutter.dart";
+import testDart from "!!raw-loader!/i18n/zh/docusaurus-plugin-content-docs/current/cookbooks/testing_dart.dart";
+import testFull from "!!raw-loader!/i18n/zh/docusaurus-plugin-content-docs/current/cookbooks/testing_full.dart";
+import testOverrideInfo from "!!raw-loader!/i18n/zh/docusaurus-plugin-content-docs/current/cookbooks/testing_override_info.dart";
+import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+
+对于任何中大型应用程序，测试都是至关重要的。要成功测试我们的应用程序，我们需要以下：
+- `test`/`testWidgets` 之间必须无状态应保留。这意味着应用程序中不应该有全局状态，或者所有全局状态都应在每个测试之后重置。
+
+- 无论是通过模拟还是通过操纵它们直到达到所需的状态，都能够强制我们的 provider 具有特定状态，
+
+让我们逐一看看 [Riverpod] 如何帮助我们实现这些。
+
+## `test`/`testWidgets` 之间必须无状态应保留
+
+既然 provider 通常被声明为全局变量，您可能会担心这一点。毕竟，全局状态使测试非常困难，因为它可能需要漫长的 `setUp`/`tearDown`。
+
+但是现实是虽然 provider 被声明为全局变量，但它的状态并**不是**全局的。
+
+反而，它存储在名为 [ProviderContainer] 的对象中，如果您查看了 dart-only 示例，可能已经看到过它了。
+如果没有，那么请知道这个 [ProviderContainer] 对象是由 [ProviderScope] 隐式创建的，该 widget 使我们的项目启用了 [Riverpod]。
+
+这也代表着两个 `testWidgets` 使用的 provider 不会共享任何状态。因此，根本不需要任何 `setUp`/`tearDown`。
+
+请参考以下示例：
+
+<Tabs
+  defaultValue="testWidgets"
+  values={[
+    { label: 'testWidgets (Flutter)', value: 'testWidgets', },
+    { label: 'test (Dart only)', value: 'test', },
+  ]}
+>
+<TabItem value="testWidgets">
+
+<CodeBlock>{trimSnippet(testingOriginalTestFlutter)}</CodeBlock>
+
+</TabItem>
+<TabItem value="test">
+
+<CodeBlock>{trimSnippet(testingOriginalTestDart)}</CodeBlock>
+
+</TabItem>
+</Tabs>
+
+
+从这里，您可以看到，尽管 `counterProvider` 被声明为全局变量，但测试之间没有共享任何状态。所以，我们不必担心如果以不同的顺序执行测试，它们的行为可能会有所不同，因为它们在完全隔离的环境中运行。
+
+## 覆盖测试期间的 provider 行为
+
+一个常见的真实应用程序可能具有以下对象：
+
+- 应用程序将具有 `Repository` 类，该类提供了一种类型安全且简单的 API 来执行 HTTP 请求。
+
+- 一个管理应用程序状态的对象，并且可能使用 `Repository` 来根据不同的因素执行 HTTP 请求。这可能是一个 `ChangeNotifier`，`Bloc`，甚至是一个 provider。
+
+在 [Riverpod] 中，它可能如下所示：
+
+<CodeBlock>{trimSnippet(repositorySnippet)}</CodeBlock>
+
+在此情况下，当进行单元或小部件测试时，我们通常希望用一个模拟实施来替换我们的 `Repository` 实例。该实施返回预定义的响应，而不是发出真实的 HTTP 请求。然后，我们希望我们的 `todoListProvider` 或等效项使用 `Repository` 的模拟实施。
+
+要实现这一点，我们可以使用 [ProviderScope]/[ProviderContainer] 的 `overrides` 参数来覆盖 `repositoryProvider` 的行为：
+
+<Tabs
+  defaultValue="ProviderScope"
+  values={[
+    { label: 'ProviderScope (Flutter)', value: 'ProviderScope', },
+    { label: 'ProviderContainer (Dart only)', value: 'ProviderContainer', },
+  ]}
+>
+<TabItem value="ProviderScope">
+
+<CodeBlock>{trimSnippet(testFlutter)}</CodeBlock>
+
+</TabItem>
+<TabItem value="ProviderContainer">
+
+<CodeBlock>{trimSnippet(testDart)}</CodeBlock>
+
+</TabItem>
+</Tabs>
+
+以上所突出显示的代码表明了 [ProviderScope] 与 [ProviderContainer] 允许用不同的行为替换 provider 的实施。
+
+:::info 注意
+有些 provider 类型提供了简化的方式来覆盖它们的行为。例如，[FutureProvider] 允许使用 `AsyncValue` 覆盖 provider：
+
+<CodeBlock>{trimSnippet(testOverrideInfo)}</CodeBlock>
+
+**备注**：作为 2.0.0 版本的一部分，`overrideWithValue` 方法暂时被删除。它们将在以后的版本中添加回来。
+:::
+
+:::info 注意
+覆盖具有 `.family` 修饰符的 provider 的语法略有不同。如果您使用了这样的 provider：
+
+```dart
+final response = ref.watch(myProvider('12345'));
+```
+您可以使用以下方式覆盖它：
+
+```dart
+myProvider('12345').overrideWithValue(...));
+```
+:::
+
+## 完整的小部件测试示例
+
+以下是我们的 Flutter 测试的完整代码。
+
+<CodeBlock>{trimSnippet(testFull)}</CodeBlock>
+
+[riverpod]: https://github.com/rrousselgit/riverpod
+[providerscope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
+[providercontainer]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderContainer-class.html
+[futureprovider]: ../providers/future_provider
+[zone]: https://api.flutter.dev/flutter/dart-async/Zone-class.html

@@ -1,0 +1,4 @@
+name: StateProvider example
+mode: flutter
+files:
+  - name: full.dart

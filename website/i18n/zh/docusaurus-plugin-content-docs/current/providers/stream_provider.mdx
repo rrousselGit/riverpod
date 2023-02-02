@@ -1,0 +1,51 @@
+---
+title: StreamProvider
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import streamProvider from "!!raw-loader!/i18n/zh/docusaurus-plugin-content-docs/current/providers/stream_provider/live_stream_chat_provider.dart";
+import streamConsumer from "!!raw-loader!/i18n/zh/docusaurus-plugin-content-docs/current/providers/stream_provider/live_stream_chat_consumer.dart";
+import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+
+
+`StreamProvider` is similar to [FutureProvider] but for [Stream]s instead of [Future]s.
+`StreamProvider` 与 [FutureProvider] 类似，但是用于 [Stream]（流）而不是 [Future]。
+
+它通常用于：
+
+- 监听 Firebase 或 web-sockets 的数据
+- 每隔几秒重建另一个 provider
+
+既然 [Stream] 本身就提供了一个监听更新的方法，有些人可能会认为使用 `StreamProvider` 的价值不大。特别是，你可能会认为 Flutter 的 [StreamBuilder] 与监听 [Stream] 一样好，但这是一个错误的想法。
+
+Using `StreamProvider` over [StreamBuilder] has numerous benefits:
+`StreamProvider` 与 [StreamBuilder] 相比，前者有很多好处：
+
+- 它允许其他 provider 使用 [ref.watch] 来监听流。
+- 它拥有的 [AsyncValue] 可确保了加载和错误情况都能被正确处理。
+- 它移除了区分广播流（broadcast stream）和普通流的需要。
+- 他缓存了流中最新的值，确保了如果一个监听器在事件被发出后被添加，那么这个监听器仍然能够立即访问到最新的事件。
+- 它允许通过重写 `StreamProvider` 来轻松地在测试中模拟流。
+
+[ref.watch]: ../concepts/reading#using-refwatch-to-observe-a-provider
+[statenotifierprovider]: ./state_notifier_provider
+[provider]: ./provider
+[futureprovider]: ./future_provider
+[asyncvalue]: https://pub.dev/documentation/riverpod/latest/riverpod/AsyncValue-class.html
+[future]: https://api.dart.dev/dart-async/Future-class.html
+[stream]: https://api.dart.dev/dart-async/Stream-class.html
+[stream.periodic]: https://api.dart.dev/stable/2.15.1/dart-async/Stream/Stream.periodic.html
+[family]: ../concepts/modifiers/family
+[streambuilder]: https://api.flutter.dev/flutter/widgets/StreamBuilder-class.html
+
+## 使用示例: 使用 sockets 的实时聊天室
+
+`StreamProvider` 用于处理异步数据流，例如视频流、天气广播 API、等。
+
+<CodeBlock>{trimSnippet(streamProvider)}</CodeBlock>
+
+然后，界面可监听实时聊天，如下所示：
+
+<CodeBlock>{trimSnippet(streamConsumer)}</CodeBlock>

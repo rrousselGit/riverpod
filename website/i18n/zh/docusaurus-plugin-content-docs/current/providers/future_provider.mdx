@@ -1,0 +1,47 @@
+---
+title: FutureProvider
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import configProvider from "!!raw-loader!/i18n/zh/docusaurus-plugin-content-docs/current/providers/future_provider/config_provider.dart";
+import configConsumer from "!!raw-loader!/i18n/zh/docusaurus-plugin-content-docs/current/providers/future_provider/config_consumer.dart";
+import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+
+`FutureProvider` 是 [Provider] 的异步版本。
+
+它通常用于：
+
+- 进行和缓存异步操作（如网络请求）
+- 优雅地处理异步操作的错误/加载状态
+- 将多个异步值组合成另一个值
+
+`FutureProvider` 得益于 [ref.watch] 的组合。这种组合允许在某些变量发生变化时自动重新获取某些数据，确保我们始终拥有最新的值。
+
+:::note
+`FutureProvider` 不为用户交互后直接修改计算提供方法。它旨在解决简单的用例。对于更高级的场景，请考虑使用 [StateNotifierProvider]。
+:::
+
+## 使用示例：读取配置文件
+
+使用 `FutureProvider` 来提供一个通过读取 JSON 文件而创建的 `Configuration` 对象可以是一种方便的方法。创建 `Configuration` 可在 provider 回调中使用典型的异步与等待（async/await）语法。
+
+使用 Flutter 的资源（assets）系统，这将是：
+
+<CodeBlock>{trimSnippet(configProvider)}</CodeBlock>
+
+然后，界面可见听配置内容，如下所示：
+
+<CodeBlock>{trimSnippet(configConsumer)}</CodeBlock>
+
+这将在 [Future] 完成时自动重建界面。就算其它部件也需要配置内容，该资源也只会被解码一次。
+
+从这里，我们也可以看到在部件内监听 [FutureProvider] 返回了一个 [AsyncValue]（异步值）并允许我们处理它的错误或加载状态。
+
+[ref.watch]: ../concepts/reading#using-refwatch-to-observe-a-provider
+[statenotifierprovider]: ./state_notifier_provider
+[provider]: ./provider
+[asyncvalue]: https://pub.dev/documentation/riverpod/latest/riverpod/AsyncValue-class.html
+[future]: https://api.dart.dev/dart-async/Future-class.html
+[family]: ../concepts/modifiers/family

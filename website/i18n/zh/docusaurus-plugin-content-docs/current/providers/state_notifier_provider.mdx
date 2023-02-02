@@ -1,0 +1,30 @@
+---
+title: StateNotifierProvider
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import todos from "!!raw-loader!/i18n/zh/docusaurus-plugin-content-docs/current/providers/state_notifier_provider/todos.dart";
+import todosConsumer from "!!raw-loader!/i18n/zh/docusaurus-plugin-content-docs/current/providers/state_notifier_provider/todos_consumer.dart";
+import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+
+`StateNotifierProvider` 是个用来监听和提供 [StateNotifier]（来自Riverpod 重新导出的 [state_notifier] 包）。它与 [StateNotifier] 结合一起并使用于管理用户交互而发生变化的状态是 Riverpod 推荐的解决方案。
+
+它通常用于：
+
+- 提供一个在响应自定义事件后而随时间变化的 **不可变** 的状态。
+- 中心化逻辑以修改某些状态（即“业务逻辑”）的单个位置，从而提高了随着时间的推移的可维护性。
+
+以下是个使用 `StateNotifierProvider` 管理任务列表的例子。此举允许我们为界面提供修改任务列表的 `addTodo` 方法：
+
+<CodeBlock>{trimSnippet(todos)}</CodeBlock>
+
+现在我们已经定义了一个 `StateNotifierProvider`，我们可使用它和在界面中所显示的任务列表进行交互：
+
+<CodeBlock>{trimSnippet(todosConsumer)}</CodeBlock>
+
+[state_notifier]: https://pub.dev/packages/state_notifier
+[statenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/StateNotifier-class.html
+[provider]: ./provider
+[futureprovider]: ./future_provider

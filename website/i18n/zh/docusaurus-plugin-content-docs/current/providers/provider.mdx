@@ -1,0 +1,66 @@
+---
+title: Provider
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import todo from "!!raw-loader!/i18n/zh/docusaurus-plugin-content-docs/current/providers/provider/todo.dart";
+import completedTodos from "!!raw-loader!/i18n/zh/docusaurus-plugin-content-docs/current/providers/provider/completed_todos.dart";
+import todosConsumer from "!!raw-loader!/i18n/zh/docusaurus-plugin-content-docs/current/providers/provider/todos_consumer.dart";
+import unoptimizedPreviousButton from "!!raw-loader!/i18n/zh/docusaurus-plugin-content-docs/current/providers/provider/unoptimized_previous_button.dart";
+import optimizedPreviousButton from "!!raw-loader!/i18n/zh/docusaurus-plugin-content-docs/current/providers/provider/optimized_previous_button.dart";
+import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+
+`Provider` 是所有 providers 中最基本的。它创建一个值。`Provider` 通常用于：
+- 缓存计算
+- 提供一个值给其他 providers（例如 `Repository`/`HttpClient`）
+- 提供测试或组件一个覆盖值的方法
+- 降低 provider 或组件的重建次数，而无需使用 `select`。
+
+## 使用 `Provider` 来缓存计算
+
+`Provider` 是个强大的工具，可以与 [ref.watch] 一起用于缓存同步操作。
+
+一个例子是筛选任务列表。既然筛选列表可能会有一点点昂贵，我们在理想情况下不希望在应用程序重新渲染时筛选我们的任务列表。在这种情况下，我们可以使用 `Provider` 来帮我们筛选。为此，假设我们的应用程序有个提供任务列表的 [StateNotifierProvider]：
+
+<CodeBlock>{trimSnippet(todo)}</CodeBlock>
+
+从这里，我们可以使用 `Provider` 提供筛选后的任务列表来显示已完成的任务：
+
+<CodeBlock>{trimSnippet(completedTodos)}</CodeBlock>
+
+通过以上的代码，我们的界面现在可以通过监听 `completedTodosProvider` 来显示已完成的任务列表：
+
+<CodeBlock>{trimSnippet(todosConsumer)}</CodeBlock>
+
+有趣的是，列表筛选现在被缓存了。这代表着即使我们多次读取筛选为已完成的任务列表，此列表不会重新计算，除非是任务列表发生了变化（任务被添加、删除或更新）。
+
+所以，当任务列表发生变化时，我们无需手动清除缓存。通过 [ref.watch]，`Provider` 就会自动知道何时重新计算结果。
+
+## 降低 provider 和组件的重建次数
+
+`Provider` 的唯一特性是，即使 `Provider` 被重新计算（通常是使用 [ref.watch]），除了值发生了变化的情况下，它也不会更新监听它的 provider或组件。
+
+以下是一个例子，用于启用和禁用分页视图的上一页（Previous）和下一页（Next）按钮：
+
+![stepper example](https://user-images.githubusercontent.com/134939/47580830-31263a00-d950-11e8-9b61-0eaddab2709e.png)
+
+在这个例子中，我们将专注于“上一页”按钮。一个简单的实施方式是一个按钮组件获取当前页面的索引。如果该索引等于 0，则禁用该按钮。
+
+<CodeBlock>{trimSnippet(unoptimizedPreviousButton)}</CodeBlock>
+
+这代码的问题是，每当我们更改当前页面时，“上一页”按钮都会重建。在理想情况下，我们希望按钮只在启用和禁用之间切换时重建。问题的根源在于，我们直接在“上一页”按钮中计算用户是否允许返回上一页。
+
+一个解决方案是将此逻辑从组件中提取出来，并放入另一个 `Provider` 中。请看一下示例：
+
+<CodeBlock>{trimSnippet(optimizedPreviousButton)}</CodeBlock>
+
+通过这种小的重构，我们的 `PreviousButton` 组件将不再在页面索引更改时重建。
+
+从现在开始，当页面索引更改时，我们的 `canGoToPreviousPageProvider` provider 将被重新计算。但是，如果它所提供的值无更改，则 `PreviousButton` 不会重建。
+
+此举不只改善了我们按钮的性能，还提供将逻辑从组件中提取出来的好处。
+
+[ref.watch]: ../concepts/reading#using-refwatch-to-observe-a-provider
+[statenotifierprovider]: ./state_notifier_provider

@@ -1,0 +1,153 @@
+---
+title: 快速入门
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import helloWorldHooks from "!!raw-loader!/i18n/zh/docusaurus-plugin-content-docs/current/getting_started_hello_world_hooks.dart";
+import helloWorldFlutter from "!!raw-loader!/i18n/zh/docusaurus-plugin-content-docs/current/getting_started_hello_world_flutter.dart";
+import helloWorldDart from "!!raw-loader!/i18n/zh/docusaurus-plugin-content-docs/current/getting_started_hello_world_dart.dart";
+import { trimSnippet } from "../../../../src/components/CodeSnippet";
+
+在深入了解 [Riverpod] 的内部机制之前，让我们先从基本知识开始：
+
+- 安装 [Riverpod]
+- 然后编写 “Hello World”
+
+## 选择包类型
+
+[Riverpod] 有三种包类型，使用目的略有不同。安装哪个 [Riverpod] 包取决于您创建的应用程序的形式。您可参考以下表来帮助您决定使用哪个包。
+
+| App 类型                  | 包名称                                                                       | 描述                                                                   |
+| ------------------------- | ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| 仅限 Flutter              | [flutter_riverpod]                                                                 | Flutter 应用程序中使用 [Riverpod] 时的基本 package。                                 |
+| Flutter + [flutter_hooks] | [hooks_riverpod]                                                                   | 合并 [flutter_hooks] 与 [Riverpod] 时的 package。                    |
+| 仅限 Dart（无 Flutter）    | [riverpod](https://github.com/rrousselGit/riverpod/tree/master/packages/riverpod) | 已排除所有 Flutter 相关类的 [Riverpod] package。 |
+
+## 安装方法
+
+一旦确定要安装的包类型，请将包名称及其版本号添加到 `pubspec.yaml`，如下所示。
+
+<Tabs
+  groupId="riverpod"
+  defaultValue="hooks_riverpod"
+  values={[
+    { label: 'Flutter + flutter_hooks', value: 'hooks_riverpod', },
+    { label: 'Flutter', value: 'flutter_riverpod', },
+    { label: 'Dart', value: 'riverpod', },
+  ]}
+>
+<TabItem value="hooks_riverpod">
+
+```yaml title="pubspec.yaml"
+environment:
+  sdk: ">=2.17.0 <3.0.0"
+  flutter: ">=3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_hooks: ^0.18.0
+  hooks_riverpod: ^2.1.3
+```
+
+然后运行 `flutter pub get`。
+
+</TabItem>
+<TabItem value="flutter_riverpod">
+
+```yaml title="pubspec.yaml"
+environment:
+  sdk: ">=2.17.0 <3.0.0"
+  flutter: ">=3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_riverpod: ^2.1.3
+```
+
+然后运行 `flutter pub get`。
+
+</TabItem>
+<TabItem value="riverpod">
+
+```yaml title="pubspec.yaml"
+environment:
+  sdk: ">=2.12.0-0 <3.0.0"
+
+dependencies:
+  riverpod: ^2.1.3
+```
+
+然后运行 `dart pub get`。
+
+</TabItem>
+</Tabs>
+
+现在 [Riverpod] 已经添加到应用程序中了！
+
+## 用法示例：Hello World
+
+在安装完成后，让我们看看如何使用 [Riverpod]。
+
+下面的代码展示了如何使用我们的新依赖去创建一个 “Hello world” 示例。
+
+export const foo = 42;
+
+<Tabs
+  groupId="riverpod"
+  defaultValue="hooks_riverpod"
+  values={[
+    { label: "Flutter + flutter_hooks", value: "hooks_riverpod" },
+    { label: "Flutter", value: "flutter_riverpod" },
+    { label: "Dart", value: "riverpod" },
+  ]}
+>
+<TabItem value="hooks_riverpod">
+
+<CodeBlock title="lib/main.dart">{trimSnippet(helloWorldHooks)}</CodeBlock>
+
+尝试运行 `flutter run` 命令。Hello world 将出现在设备的屏幕上。
+
+</TabItem>
+<TabItem value="flutter_riverpod">
+
+<CodeBlock title="lib/main.dart">{trimSnippet(helloWorldFlutter)}</CodeBlock>
+
+尝试运行 `flutter run` 命令。Hello world 将出现在设备的屏幕上。
+
+</TabItem>
+<TabItem value="riverpod">
+
+<CodeBlock title="lib/main.dart">{trimSnippet(helloWorldDart)}</CodeBlock>
+
+尝试运行 `dart lib/main.dart` 命令将在控制台中打印 “Hello world”。
+
+</TabItem>
+</Tabs>
+
+## 使用代码片段
+
+代码片段能够让开发人员快速将预定义的代码块插入到文件中。您可考虑安装 Flutter Riverpod 代码片段。
+
+- 用于 `VS Code` 的 [Flutter Riverpod 代码片段](https://marketplace.visualstudio.com/items?itemName=robert-brunhage.flutter-riverpod-snippets)。
+- 用于 `Android Studio` 或 `IntelliJ` 的 [Flutter Riverpod 代码片段](https://plugins.jetbrains.com/plugin/14641-flutter-riverpod-snippets)。
+
+![img](/img/snippets/greetingProvider.gif)
+
+## 请选择下一步
+
+基本概念学习:
+
+- [进一步了解 providers](/docusaurus-plugin-content-docs/current/concepts/providers)
+
+按照教程:
+
+- [如何测试 providers](/docusaurus-plugin-content-docs/current/cookbooks/testing)
+
+[riverpod]: https://github.com/rrousselgit/riverpod
+[hooks_riverpod]: https://pub.dev/packages/hooks_riverpod
+[flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
+[flutter_hooks]: https://github.com/rrousselGit/flutter_hooks

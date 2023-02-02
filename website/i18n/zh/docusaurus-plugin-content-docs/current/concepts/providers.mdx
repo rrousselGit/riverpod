@@ -1,0 +1,134 @@
+---
+title: 何谓 provider
+---
+
+Provider 是 [Riverpod] 应用程序中最重要的部分。每个 provider 是个封装状态并允许监听该状态的对象。
+
+:::note 译者补充
+1. Provider 是 **“提供者“** 的意思。Riverpod 是 Provider 的相同字母异序词。译者觉得 Riverpod 这名称也是为了分辨作者之前所开发的 `package:provider`。有使用过或正在使用 `package:provider` 的读者们可视 Riverpod 为它的继承者、加强大版本、包含了对它种种问题和限制的方案。作者在正在编写中的 Riverpod 文档第二版本中有更详细地提到。相信不久后，大家都有机会去深入了解。
+2. 此（第一版本）文档中，所提到的 **“状态”** 可以表示为 **“值”** 或 **“对象”**。 
+:::
+
+## 使用 provider 的好处
+
+使用 provider 封装状态，可以：
+
+- **更方便地在多个位置轻松访问该状态** — Provider 能够完全取代单例（Singleton）、服务定位（Service Locator）、依赖注入（Dependency Injection）或 InheritedWidget 等模式。
+
+- **轻松地将该状态与其他状态结合** — 在开发中，您可能将多个状态组合成一个状态时遇到困境。但是，provider 的回调中完全支持此类的需求。
+
+- **更好地实现应用程序性能优化** — 无论是用于限制组件重建，还是用于缓存高负载的状态计算，provider 都确保仅重新计算那些已受更改的状态。
+
+- **提高应用程序的可测试性** — 我们无需去进行复杂的 `setUp` 或 `tearDown` 步骤。此外，我们也可以覆盖测试中任何一个 provider，使得在特殊行为下更容进行测试。
+
+- **轻松地集成高级功能** — 如记录（logging）和下拉刷新，等。
+
+## 如何创建 provider
+
+Provider 有几种类型, 但它们的操作方式都是相同的。最常见的用法是将 provider 声明为**全局常量**（global constant），如下所示。
+
+```dart
+final myProvider = Provider((ref) {
+  return MyValue();
+});
+```
+
+:::note 备注
+您无需为以上所描述的 *”provider 声明为全局常量“* 感到不安。Provider 是不可变（immutable）的，与全局声明函数没有区别。此外，provider 是可测试和可维护的。 
+:::
+
+以上的代码段由三个部分组成:
+
+1. **`final myProvider`** 是变量的声明。我们将来会使用该变量来读取或监听 provider 的状态。声明 provider 时必须使用关键字 `final`。
+
+2. **`Provider`** 是我们在代码中决定使用的 provider 类型。[Provider] 是多个 provider 中最基本的一种，它提供一个不可变的对象。根据我们如何与状态进行交互，我们可以将 `Provider` 替换为其他 provider，例如，[StreamProvider] 或 [StateNotifierProvider]。
+
+3. `Provider` 中的**函数**，用于创建共享状态。该函数将始终接收一个名为 `ref` 的对象作为参数。该对象允许我们能够读取其他 providers 或在我们的 provider 状态将被销毁时执行一些操作，等等。
+
+一个 provider 可生成的对象类型取决于要使用的 provider 类型。例如，[Provider] 可以生成任何对象（bool、int、double、String、等），而 [StreamProvider] 的回调必定返回一个 [Stream]。
+
+:::note 备注
+您可以不受限制地声明无数的 providers。与使用 `package:provider` 的不同是 [Riverpod] 允许声明多个提供同样值类型状态的 providers。
+
+```dart
+final cityProvider = Provider((ref) => 'London');
+final countryProvider = Provider((ref) => 'England');
+```
+
+以上例子中，就算两个 provider 所生成的对象同样都是 `String` 也不会导致任何错误。
+:::
+
+:::danger 注意
+要顺利在应用程序内使用 provider，就必须用 [ProviderScope] 包装 MyApp。
+
+```dart
+void main() {
+  runApp(ProviderScope(child: MyApp()));
+}
+```
+
+:::
+
+## Provider 类型
+
+对于不同的用例，您可使用不同的 provider 类型。使用下表选择适合您的用例的 provider。
+
+| Provider 类型            | Provider 创建函数             | 用例示例                                                     |
+| ------------------------ | ------------------------------------ | -------------------------------------------------------------------- |
+| [Provider]               | 返回任何对象类型                     | 服务类 / 计算的属性（筛选列表）                  |
+| [StateProvider]          | 返回任何对象类型                     | 筛选条件 / 简单的状态对象                             |
+| [FutureProvider]         | 返回任何对象类型的 Future         | API调用的结果                                            |
+| [StreamProvider]         | 返回任何对象类型的 Stream          | API调用的 Stream 结果                                      |
+| [StateNotifierProvider]  | 返回 StateNotifier 子类  | 不可变的复杂状态对象（只能通过接口改变） |
+| [ChangeNotifierProvider] | 返回 ChangeNotifier 子类 | 需要可变性的复杂状态对象                      |
+
+:::caution 注意
+由于可变状态可能导致各种问题，所以不建议对可扩展的应用程序使用 [ChangeNotifierProvider] 。它主要是方便从 `package:provider` 进行迁移，并支持一些 Flutter 特定的使用案例，例如集成与一些 Navigator 2.0 包中。
+:::
+
+## Provider 修饰符
+
+每个 provider 都具有对自己添加其他功能的方式。它们可对 `ref` 添加功能或对使用 provider 的方式稍微改变。
+
+这里，我们可以对 provider 添加修饰符，类似于构造函数（named constructor）语法。
+
+```dart
+final myAutoDisposeProvider = StateProvider.autoDispose<int>((ref) => 0);
+final myFamilyProvider = Provider.family<String, int>((ref, id) => '$id');
+```
+目前您可使用以下的两个修饰符:
+
+- [`.autoDispose`](/docs/concepts/modifiers/auto_dispose) — 当 provider 不再被使用或监听时，会自动销。
+- [`.family`](/docs/concepts/modifiers/family) — 以外部参数创建唯一的 provider。
+
+:::note
+您可对任何 provider 同时添加两个修饰符:
+
+```dart
+final userProvider = FutureProvider.autoDispose.family<User, int>((ref, userId) async {
+  return fetchUser(userId);
+});
+```
+:::
+
+<!-- That's it for this guide!
+
+You can continue with [How to read a provider](/docs/concepts/reading).
+Alternatively, you can see [How to combine providers](/docs/concepts/combining_providers). -->
+
+[get_it]: http://pub.dev/packages/get_it
+[inheritedwidget]: https://api.flutter.dev/flutter/widgets/InheritedWidget-class.html
+[stream]: https://api.dart.dev/stable/2.8.4/dart-async/Stream-class.html
+[ondispose]: https://pub.dev/documentation/riverpod/latest/riverpod/Ref/onDispose.html
+[riverpod]: https://github.com/rrousselgit/riverpod
+[hooks_riverpod]: https://pub.dev/packages/hooks_riverpod
+[flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
+[flutter_hooks]: https://github.com/rrousselGit/flutter_hooks
+[provider]: /docs/providers/provider
+[streamprovider]: /docs/providers/stream_provider
+[futureprovider]: /docs/providers/future_provider
+[stateprovider]: /docs/providers/state_provider
+[statenotifierprovider]: /docs/providers/state_notifier_provider
+[changenotifierprovider]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ChangeNotifierProvider-class.html
+
+[providerscope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html

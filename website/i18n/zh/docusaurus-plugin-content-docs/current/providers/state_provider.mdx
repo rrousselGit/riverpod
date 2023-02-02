@@ -1,0 +1,99 @@
+---
+title: StateProvider
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import product from "!!raw-loader!/i18n/zh/docusaurus-plugin-content-docs/current/providers/state_provider/product.dart";
+import productListView from "!!raw-loader!/i18n/zh/docusaurus-plugin-content-docs/current/providers/state_provider/product_list_view.dart";
+import dropdown from "!!raw-loader!/i18n/zh/docusaurus-plugin-content-docs/current/providers/state_provider/dropdown.dart";
+import sortProvider from "!!raw-loader!/i18n/zh/docusaurus-plugin-content-docs/current/providers/state_provider/sort_provider.dart";
+import connectedDropdown from "!!raw-loader!/i18n/zh/docusaurus-plugin-content-docs/current/providers/state_provider/connected_dropdown.dart";
+import sortedProductProvider from "!!raw-loader!/i18n/zh/docusaurus-plugin-content-docs/current/providers/state_provider/sorted_product_provider.dart";
+import updateReadTwice from "!!raw-loader!/i18n/zh/docusaurus-plugin-content-docs/current/providers/state_provider/update_read_twice.dart";
+import updateReadOnce from "!!raw-loader!/i18n/zh/docusaurus-plugin-content-docs/current/providers/state_provider/update_read_once.dart";
+import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+
+
+`StateProvider` 是个提供修改其状态的方法的 provider。它是 [StateNotifierProvider] 的简化版，用于无需为非常简单的用例而使用 [StateNotifier]。
+
+`StateProvider` 主要用于允许用户界面修改**简单**变量。它的状态通常是以下之一：
+
+- 枚举类型（enum）, 例如排序条件
+- String， 文本字段的原始内容
+- bool，复选框
+- int，分页或年龄表单字段
+
+如果您的情况是以下之一，建议您不要使用 `StateProvider`：
+
+- 您的状态需要验证逻辑
+- 您的状态是个复杂的对象（例如自定义类，列表或映射，等）
+- 修改状态的逻辑比简单的 `count++` 更复杂
+
+对于更高级的情况，考虑使用 [StateNotifierProvider] 并创建一个 [StateNotifier] 类。虽然初始的代码会有点大，但是拥有一个自定义的 [StateNotifier] 类对于项目的长期可维护性至关重要，因为它将状态的逻辑集中在一个地方。
+
+## 使用示例：使用下拉菜单更改过筛选类型
+
+一个 `StateProvider` 的真实用例是管理简单表单组件的状态，例如下拉菜单、文本字段或复选框。
+
+我们将看到如何使用 `StateProvider` 实现一个下拉菜单，以更改产品列表的排序方式。为了简单起见，我们将直接在应用程序中构建产品列表，并将其设置为以下：
+
+<CodeBlock>{trimSnippet(product)}</CodeBlock>
+
+在一个真实的应用程序中，这个列表通常会使用 [FutureProvider] 通过发起一个网络请求来获取。界面可以通过以下方式显示产品列表：
+
+<CodeBlock>{trimSnippet(productListView)}</CodeBlock>
+
+完成了基础工作后，我们可以添加一个下拉菜单。它将允许以价格或名称对产品进行排序。对此，我们将使用 [DropDownButton](https://api.flutter.dev/flutter/material/DropdownButton-class.html) 组件。
+
+<CodeBlock>{trimSnippet(dropdown)}</CodeBlock>
+
+有了下拉菜单后，我们将创建一个 `StateProvider` 并将下拉菜单的状态与我们的 provider 同步。
+
+首先，我们创建 `StateProvider`：
+
+<CodeBlock>{trimSnippet(sortProvider)}</CodeBlock>
+
+然后，我们可以通过以下方式将此 provider 与我们的下拉菜单连接：
+
+<CodeBlock>{trimSnippet(connectedDropdown)}</CodeBlock>
+
+有了这个，我们现在应该能够更改排序类型了。但目前还没有影响产品列表。最后的步骤便是更新我们的 `productsProvider` 来对产品列表进行排序。一个实施这一点的关键组件是使用 [ref.watch]。它让我们的 `productsProvider` 获取排序类型，并在排序类型更改时重新计算产品列表。
+
+实施方式如下：
+
+<CodeBlock>{trimSnippet(sortedProductProvider)}</CodeBlock>
+
+此方法足以让界面在更改排序类型时自动重新渲染产品列表。
+
+此处是 Dartpad 上的完整示例：
+
+<iframe
+  src="https://dartpad.dev/embed-flutter.html?gh_owner=rrousselGit&gh_repo=riverpod&gh_path=website%2Fdocs%2Fproviders%2Fstate_provider"
+  style={{ border: 0, width: "100%", aspectRatio: "2/1.5" }}
+></iframe>
+
+## 如何在不读取 provider 两次的情况下，基于前一个值更新状态
+
+有时候，你想要基于前一个值来更新 `StateProvider` 的状态。自然而然，你可能会这样编写：
+
+<CodeBlock>{trimSnippet(updateReadTwice)}</CodeBlock>
+
+虽然这段代码没有什么特别的问题，但语法有点不方便。
+
+要使语法更加方便，我们可以使用 `update` 函数。此函数将接收一个回调，该回调将接收当前状态并返回新状态。而我们可以使用它来重构我们之前的代码：
+
+<CodeBlock>{trimSnippet(updateReadOnce)}</CodeBlock>
+
+此方式虽然实现了同样的效果，但语法变得更加方便。
+
+[ref.watch]: ../concepts/reading#using-refwatch-to-observe-a-provider
+[ref.read]: ../concepts/reading#using-refread-to-obtain-the-state-of-a-provider-once
+[statenotifierprovider]: ./state_notifier_provider
+[futureprovider]: ./future_provider
+[statenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/StateNotifier-class.html
+[provider]: ./provider
+[asyncvalue]: https://pub.dev/documentation/riverpod/latest/riverpod/AsyncValue-class.html
+[future]: https://api.dart.dev/dart-async/Future-class.html
+[family]: ../concepts/modifiers/family

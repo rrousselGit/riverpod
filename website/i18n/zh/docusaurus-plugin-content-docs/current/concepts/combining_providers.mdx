@@ -1,0 +1,212 @@
+---
+title: 结合 provider
+---
+
+:::note 备注
+在阅读本页之前，请确保您已阅读前两页的《[何谓 provider](/docs/concepts/providers)》与《[使用 provider](/docs/concepts/reading)》。
+:::
+
+## 如何结合多个 provider 状态
+
+之前，我们已学到如何创建一个简单的 provider。我们也在《[使用 provider](/docs/concepts/reading)》中看到 provider 的回调中监听两个其它 provider 的任务列表例子。实际上，在很多情况下，一个 provider 生成的状态多少都依赖于其它 provider 的状态。在这里，我们再了解一次如何结合多个 provider 的状态。
+
+我们可在一个 provider 内获取它的 [ref] 对象并在其回调中使用 [watch] 方法。
+
+首先，我们创建一个返回字符串（String）值的 `cityProvider`，而它提供的是一个城市名：
+
+```dart
+final cityProvider = Provider((ref) => '伦敦');
+```
+
+然后，我们在创建另一个将会使用 `cityProvider` 并会随着城市名返回城市的天气的 `weatherProvider`：
+
+```dart
+final weatherProvider = FutureProvider((ref) async {
+  // 在一个 provider 的回调中，我们可以使用 `ref.watch` 来监听另一个或多个 provider 的状态，
+  // 而这代码片段，我们监听的是签个片段的 `cityProvider` 的状态。
+  final city = ref.watch(cityProvider);
+
+  // 然后，我们可使用 `city` (也就是 `cityProvider` 的状态）来执行任何任务。
+  // 在这里，我们将会传递 `city` 给 `fetchWeather` 函数来获取伦敦的天气。
+  return fetchWeather(city: city);
+});
+```
+## 常见问题解答
+
+### 如果一个 provider 的回调中所监听的另一个 provider 的状态随时间推移或用户事件而变化，该怎么办？
+
+首先，取决于所使用的 provider 类型，状态变化可来之数据库的流  `Stream` 、某个用户事件或是系统重启或更新。例如，您可能监听的 provider 类型是 [StateNotifierProvider] 或者是您所监听的 provider 通过
+ [ProviderContainer.refresh] 或 [ref.refresh] 强制刷新。
+
+在这些情况下，当在使用 [watch] 方法时，Riverpod 可以检测到所监听的值已变化，并且会自动在需要时重新执行 provider 的创建回调。这对于计算状态来说是很有用的。
+
+让我们再回顾一下在《[使用 provider](/docs/concepts/reading)》中所提到的任务列表例子。这是例子是个很常见的用例。主要目的是从界面中筛选任务列表来显示已完成或未完成的任务。我们可按照以下简单的步骤来实现。
+
+1. 创建 `todoListProvider`：一个提供任务列表的 [StateNotifierProvider]。（注意：[StateNotifierProvider] 是一个监听 [StateNotifier] 来管理任务列表的状态。详细资料，请参阅文档中的《API参考》。）
+
+  ```dart
+  class TodoList extends StateNotifier<List<Todo>> {
+    TodoList(): super(const []);
+  }
+
+  final todoListProvider = StateNotifierProvider((ref) => TodoList());
+  ```
+
+2. 创建 `filterProvider`：一个提供用户当前选择的筛选类型的 [StateProvider]。
+
+  ```dart
+  enum Filter {
+    none,
+    completed,
+    uncompleted,
+  }
+
+  final filterProvider = StateProvider((ref) => Filter.none);
+  ```
+
+3. 创建 `filteredTodoListProvider`：一个结合筛选类型于任务列表的 provider 来提供筛选后的任务列表： 
+
+  ```dart
+  final filteredTodoListProvider = Provider<List<Todo>>((ref) {
+    final filter = ref.watch(filterProvider);
+    final todos = ref.watch(todoListProvider);
+
+    switch (filter) {
+      case Filter.none:
+        return todos;
+      case Filter.completed:
+        return todos.where((todo) => todo.completed).toList();
+      case Filter.uncompleted:
+        return todos.where((todo) => !todo.completed).toList();
+    }
+  });
+  ```
+然后, 在界面中监听 `filteredTodoListProvider` 即可。此方法可确保当筛选类型或任务列表发生变化时，界面会自动更新。
+
+想要更了解此方法的实际应用，请参阅 Github 的 [Todo List 例子](https://github.com/rrousselGit/riverpod/tree/master/examples/todos).
+
+:::note 备注
+以上方法不仅仅适用于 [Provider]，而且适用于所有的 provider 类型。
+
+例如，您也可以将 [watch] 与 [FutureProvider] 结合使用，以实现支持实时配置更改的搜索功能：
+
+```dart
+// 当前搜索的关键字
+final searchProvider = StateProvider((ref) => '');
+
+// 随时间推移而变化配置流
+final configsProvider = StreamProvider<Configuration>(...);
+
+final charactersProvider = FutureProvider<List<Character>>((ref) async {
+  final search = ref.watch(searchProvider);
+  final configs = await ref.watch(configsProvider.future);
+  final response = await dio.get('${configs.host}/characters?search=$search');
+
+  return response.data.map((json) => Character.fromJson(json)).toList();
+});
+```
+此代码主要是从服务端获取角色列表，并在配置更改或搜索关键字更改时自动重新获取列表。
+:::
+
+### 是否可以在不监听的情况下读取 provider？
+
+有时，我们只想要获取一次 provider 的状态，但不想监听它在值发生变化时进行重建。
+
+以下例子是一个 `Repository`。它向另一个 provider 读取用户令牌（User Token）以进行身份验证。我们可使用 [watch] 来创建一个新的 `Repository`，但是这样做没有任何意义。因为当用户令牌发生变化时，我们并不需要 `Repository` 重建。在这种情况下，我们可以使用 [read]。它与 [watch] 的区别就是 [read] 不去监听。
+
+同样的，我们可在 provider 中获取它的 [ref] 对象并在其回调中使用 [read] 方法。
+
+```dart
+final userTokenProvider = StateProvider<String>((ref) => null);
+
+final repositoryProvider = Provider(Repository.new);
+
+class Repository {
+  Repository(this.ref);
+
+  final Ref ref;
+
+  Future<Catalog> fetchCatalog() async {
+    String token = ref.read(userTokenProvider);
+
+    final response = await dio.get('/path', queryParameters: {
+      'token': token,
+    });
+
+    return Catalog.fromJson(response.data);
+  }
+}
+```
+
+:::danger 注意
+请**不要**在 provider 的回调中使用 [read]。
+
+```dart
+final myProvider = Provider((ref) {
+  // 在 provider 的回调中使用 `read` 是一个不良的做法
+  final value = ref.read(anotherProvider);
+});
+```
+再次提醒，如果您使用 [read] 的目的是为了要避免不必要的重建次数，那请参阅这解答 《[我的 provider 重建太多次, 该怎么办?](#my-provider-updates-too-often-what-can-i-do)》。
+:::
+
+### 如何测试接收 [read] 为其构造函数参数的对象？
+
+如果您使用的是 《[是否可以在不监听的情况下读取 provider？](#can-i-read-a-provider-without-listening-to-it)》 中描述的模式，您或许会在思考如何为您的对象编写测试。
+
+在这种情况下，考虑直接测试 provider 而不是原始对象。您可以使用 [ProviderContainer] 类。
+
+```dart
+final repositoryProvider = Provider((ref) => Repository(ref.read));
+
+test('fetches catalog', () async {
+  final container = ProviderContainer();
+  addTearDown(container.dispose);
+
+  Repository repository = container.read(repositoryProvider);
+
+  await expectLater(
+    repository.fetchCatalog(),
+    completion(Catalog()),
+  );
+});
+```
+### 我的 provider 重建太多次, 该怎么办?
+
+如果您的对象被重建太多次，那么该 provider 返回此对象的很有可能监听到不相关的其它对象或属性。例如，您可能正在监听一个 `Configuration` 对象，但只需要 `host` 属性。如果 `Configuration` 对象中的其它属性发生变化，这将导致您的 provider 重新计算，这是不必要的。一个解决方案是创建另一个 provider 专提供 `Configuration` 对象的属性（例如 `host` ）。
+
+**避免**监听整个对象:
+
+```dart
+final configProvider = StreamProvider<Configuration>(...);
+
+final productsProvider = FutureProvider<List<Product>>((ref) async {
+  // 都能够 `configs` 发生任何变化时，将会导致该 `productsProvider` 重新获取数据
+  final configs = await ref.watch(configProvider.future);
+
+  return dio.get('${configs.host}/products');
+});
+```
+**建议**在只需要监听某对象的一个属性时使用 `select`:
+
+```dart
+final configProvider = StreamProvider<Configuration>(...);
+
+final productsProvider = FutureProvider<List<Product>>((ref) async {
+  // 只监听 `host` 属性。但凡 `configProvider` 对象的其它属性发生变化时，这将不会导致 `productsProvider` 重建或重新获取数据
+  final host = await ref.watch(configProvider.selectAsync((config) => config.host));
+
+  return dio.get('$host/products');
+});
+```
+[provider]: ../providers/provider
+[stateprovider]: ../providers/state_provider
+[futureprovider]: ../providers/future_provider
+[statenotifierprovider]: ../providers/state_notifier_provider
+[statenotifier]: ../providers/state_notifier_provider
+[ref]: https://pub.dev/documentation/riverpod/latest/riverpod/Ref-class.html
+[watch]: https://pub.dev/documentation/riverpod/latest/riverpod/Ref/watch.html
+[read]: https://pub.dev/documentation/riverpod/latest/riverpod/Ref/read.html
+[providercontainer.refresh]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderContainer/refresh.html
+[ref.refresh]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/WidgetRef/refresh.html
+[providercontainer]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderContainer-class.html
