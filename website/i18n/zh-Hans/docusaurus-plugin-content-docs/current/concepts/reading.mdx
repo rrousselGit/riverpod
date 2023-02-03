@@ -88,7 +88,7 @@ Widget自然没有ref参数。但是 [Riverpod] 提供了多种从widget中获�
 
 [hooks_riverpod] package 暴露了一个名为 [HookConsumerWidget] 的widget。
 [HookConsumerWidget] 同时充当 [ConsumerWidget] 和 [HookWidget]。
-这允许widget既侦听提供者又使用钩子。
+这允许widget既监听provider又使用钩子。
 
 比如说：
 
@@ -122,7 +122,7 @@ Widget自然没有ref参数。但是 [Riverpod] 提供了多种从widget中获�
 - 获取provider的值并监听更改，这样当该值发生更改时，
   将重新构建订阅该值的widget或provider。  
   这是使用 `ref.watch` 完成的
-- 在provider上添加监听器，以执行诸如导航到新页面或每当提供者更改时显示模态框等操作。  
+- 在provider上添加监听器，以执行诸如导航到新页面或每当provider更改时显示模态框等操作。  
   这是使用 `ref.listen` 完成的。
 - 在忽略更改的情况下获取provider的值。
   当我们在诸如“on click”之类的事件中需要provider的值时很有用。  
@@ -347,7 +347,7 @@ Widget build(BuildContext context, WidgetRef ref) {
 
 如果我们简单地使用 `ref.watch`，这将在用户年龄(`age`)发生变化时重新构建widget。
 
-解决方案是使用 `select` 显式地告诉Riverpod我们只想侦听 `User` 的 `name` 属性。
+解决方案是使用 `select` 显式地告诉Riverpod我们只想监听 `User` 的 `name` 属性。
 
 更新后的代码如下:
 

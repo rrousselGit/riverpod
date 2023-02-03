@@ -31,7 +31,7 @@ import { trimSnippet } from "../../../../../src/components/CodeSnippet";
 如果在创建过程中存在任何循环依赖关系，Riverpod将抛出一个错误。
 修复此错误的最佳方式是重新设计依赖项，使其具有单向数据流。
 
-提供者的状态存储在 [ProviderContainer] 中。在Flutter应用中，此容器位于[ProviderScope] widget中。
+provider的状态存储在 [ProviderContainer] 中。在Flutter应用中，此容器位于[ProviderScope] widget中。
 
 因此，尽管如何创建状态(provider)的定义是全局的，但状态实际上是本地的，
 并且使用嵌套的[ProviderScope] widget和覆盖在UI的不同部分中有所不同。
@@ -54,8 +54,8 @@ import { trimSnippet } from "../../../../../src/components/CodeSnippet";
 通过使用来自Riverpod 2.0的新[Notifier] 和 [AsyncNotifier]类，ref已经作为类的实例成员可用。
 
 ### 活动中 -> 暂停
-当其他provider或UI不再监听**活动的** provider时，它将进入**暂停**状态。这意味着它将不再对正在监听的提供者的更改做出反应。
-这是一种优化，如果你没有监听的provider，就没有必要让它保持活动状态。每个未被使用的提供者都将返回到**暂停**状态，从而减少你的应用的计算负担。
+当其他provider或UI不再监听**活动的** provider时，它将进入**暂停**状态。这意味着它将不再对正在监听的provider的更改做出反应。
+这是一种优化，如果你没有监听的provider，就没有必要让它保持活动状态。每个未被使用的provider都将返回到**暂停**状态，从而减少你的应用的计算负担。
 
 如果你需要让provider保持活动状态以防止副作用发生，请确保在UI中应该保持活动状态的适当位置监听它。
 
