@@ -10,7 +10,7 @@ import rawFetchUser from "!!raw-loader!./about_codegen/raw.dart";
 import {
   trimSnippet,
   CodeSnippet,
-} from "../src/components/CodeSnippet";
+} from "../../../../src/components/CodeSnippet";
 
 コードジェネレーションはコードを生成するツールを使うというアイディアです。  
 Dart では、コードジェネレーションはアプリケーションを「コンパイルする」という追加のステップが必要になるので欠点になります。
@@ -21,20 +21,20 @@ Riverpod の中では、コードジェネレーションとは「プロバイ�
 
 <CodeBlock language="dart">{trimSnippet(rawFetchUser)}</CodeBlock>
 
-とする代わりに、コードジェネレーションを使うと次のように書けます:
+と書く代わりに、コードジェネレーションを使うと次のように書けます:
 
 <CodeBlock language="dart">{trimSnippet(fetchUser)}</CodeBlock>
 
-Riverpod を使うときにコードジェネレーションを使うかは完全にオプションです。
+Riverpod を使うときにコードジェネレーションを使うかどうかは完全にオプションです。
 コードジェネレーションを使わなくても Riverpod を使うことができます。  
 同時に、 Riverpod ではコードジェネレーションを活用しており、またコードジェネレーションを使うことを推奨しています。
 
-Riverpod のコードジェネレータのインストール方法や使用方法については、[はじめに](./getting_started)のページを参照してください。
+Riverpod のコードジェネレータのインストール方法や使用方法については、「[はじめに](./getting_started)」を参照してください。
 このドキュメントのサイドバーでコードジェネレーションを有効にできます。
 
 ## Riverpod でコードジェネレーションを使う理由
 
-「Riverpod ではコードジェネレーションがオプションなら、なぜ使うのか」と思うかもしれません。
+「Riverpod ではコードジェネレーションがオプションなら、なぜコードジェネレーション使うのか」と思うかもしれません。
 
 パッケージを使うと楽をすることができます。
 これは次のことを含んでいますが、制限されることはありません。
@@ -42,7 +42,7 @@ Riverpod のコードジェネレータのインストール方法や使用方�
 - より良い文法、より読みやすい・柔軟性があり、緩やかな学習曲線
 
   - `FutureProvider` 対 `Provider` というような対立を気にする必要がなくなります。
-    ロジックを書けば、 Riverpod が適切なプロバイダを選びます
+    ロジックを書けば Riverpod が適切なプロバイダを選びます
   - プロバイダに渡すパラメータが制限されなくなります。
     制約のある [family](./concepts/modifiers/family) を使ったり、決まった位置に置かれるパラメータを渡す代わりに、あらゆる形式のパラメータを渡すことができます。
     これは名前付きパラメータやオプションのパラメータ、デフォルト値のあるパラメータを含みます
@@ -51,7 +51,7 @@ Riverpod のコードジェネレータのインストール方法や使用方�
 - デバッガによる追加のメタデータの生成による、より良いデバッグ
 - コードジェネレーションのみで使うことができる Riverpod の機能
 
-同時に、 [Freezed](https://pub.dev/packages/freezed) or [json_serializable](https://pub.dev/packages/json_serializable) をはじめとして、
+同時に、 [Freezed](https://pub.dev/packages/freezed) や [json_serializable](https://pub.dev/packages/json_serializable) をはじめとして、
 多くのパッケージでは既にコードジェネレーションが使えるようになっています。  
 この場合では、コードジェネレーションを使う準備ができており、 Riverpod を簡単に使うことができます。
 
