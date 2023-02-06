@@ -6,45 +6,6 @@ import 'package:meta/meta.dart';
 import '../riverpod_analyzer_utils.dart';
 import 'riverpod_ast.dart';
 
-class RiverpodAnnotationDependencyElement {
-  @internal
-  RiverpodAnnotationDependencyElement(this.provider);
-
-  static RiverpodAnnotationDependencyElement? _parse(
-    DartObject object, {
-    required Element targetElement,
-  }) {
-    final functionType = object.toFunctionValue();
-    if (functionType != null) {
-      final provider = StatelessProviderDeclarationElement.parse(
-        functionType,
-        annotation: null,
-      );
-      if (provider != null) {
-        return RiverpodAnnotationDependencyElement(provider);
-      }
-    }
-    final valueType = object.toTypeValue();
-    if (valueType != null) {
-      final provider = StatefulProviderDeclarationElement.parse(
-        valueType.element! as ClassElement,
-        annotation: null,
-      );
-      if (provider != null) {
-        return RiverpodAnnotationDependencyElement(provider);
-      }
-    }
-
-    throw RiverpodAnalysisException(
-      'Unsupported dependency. '
-      'Only functions and classes annotated by @riverpod are supported.',
-      targetElement: targetElement,
-    );
-  }
-
-  final GeneratorProviderDeclarationElement provider;
-}
-
 class RiverpodAnnotationElement {
   @internal
   RiverpodAnnotationElement({
@@ -59,7 +20,7 @@ class RiverpodAnnotationElement {
     if (annotation == null) return null;
 
     final dependencies = readDependencies(annotation)?.map((dep) {
-      final result = RiverpodAnnotationDependencyElement._parse(
+      final result = _parseDependency(
         dep,
         targetElement: element,
       );
@@ -78,16 +39,44 @@ class RiverpodAnnotationElement {
     );
   }
 
-  static Set<RiverpodAnnotationDependencyElement>?
+  static GeneratorProviderDeclarationElement? _parseDependency(
+    DartObject object, {
+    required Element targetElement,
+  }) {
+    final functionType = object.toFunctionValue();
+    if (functionType != null) {
+      final provider = StatelessProviderDeclarationElement.parse(
+        functionType,
+        annotation: null,
+      );
+      if (provider != null) return provider;
+    }
+    final valueType = object.toTypeValue();
+    if (valueType != null) {
+      final provider = StatefulProviderDeclarationElement.parse(
+        valueType.element! as ClassElement,
+        annotation: null,
+      );
+      if (provider != null) return provider;
+    }
+
+    throw RiverpodAnalysisException(
+      'Unsupported dependency. '
+      'Only functions and classes annotated by @riverpod are supported.',
+      targetElement: targetElement,
+    );
+  }
+
+  static Set<GeneratorProviderDeclarationElement>?
       _computeAllTransitiveDependencies(
-    Set<RiverpodAnnotationDependencyElement>? dependencies,
+    Set<GeneratorProviderDeclarationElement>? dependencies,
   ) {
     if (dependencies == null) return null;
 
     return {
       ...dependencies,
       for (final dependency in dependencies)
-        ...?dependency.provider.annotation.allTransitiveDependencies,
+        ...?dependency.annotation.allTransitiveDependencies,
     };
   }
 
@@ -102,8 +91,8 @@ class RiverpodAnnotationElement {
   }
 
   final bool keepAlive;
-  final Set<RiverpodAnnotationDependencyElement>? dependencies;
-  final Set<RiverpodAnnotationDependencyElement>? allTransitiveDependencies;
+  final Set<GeneratorProviderDeclarationElement>? dependencies;
+  final Set<GeneratorProviderDeclarationElement>? allTransitiveDependencies;
 }
 
 abstract class ProviderDeclarationElement {

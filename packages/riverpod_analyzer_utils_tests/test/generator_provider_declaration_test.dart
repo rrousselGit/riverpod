@@ -198,6 +198,16 @@ class NestedDependencyNotifier extends _$NestedDependencyNotifier {
         null,
         reason: '${provider.key} has no dependency',
       );
+      expect(
+        provider.value.annotation.element.allTransitiveDependencies,
+        null,
+        reason: '${provider.key} has no dependency',
+      );
+      expect(
+        provider.value.annotation.dependenciesNode,
+        null,
+        reason: '${provider.key} has no dependency',
+      );
     }
     for (final provider in empty.entries) {
       expect(
@@ -207,6 +217,11 @@ class NestedDependencyNotifier extends _$NestedDependencyNotifier {
       );
       expect(
         provider.value.annotation.element.dependencies,
+        isEmpty,
+        reason: '${provider.key} has an empty list of dependencies',
+      );
+      expect(
+        provider.value.annotation.element.allTransitiveDependencies,
         isEmpty,
         reason: '${provider.key} has an empty list of dependencies',
       );
@@ -223,10 +238,20 @@ class NestedDependencyNotifier extends _$NestedDependencyNotifier {
         reason: '${provider.key} has two explicit dependencies',
       );
       expect(
+        provider.value.annotation.element.dependencies,
+        hasLength(2),
+        reason: '${provider.key} has two explicit dependencies',
+      );
+      expect(
+        provider.value.annotation.element.allTransitiveDependencies,
+        provider.value.annotation.element.dependencies,
+        reason: '${provider.key} has two explicit dependencies',
+      );
+      expect(
         provider.value.annotation.dependencies?[0],
         isA<RiverpodAnnotationDependency>()
             .having(
-              (e) => e.provider.provider,
+              (e) => e.provider,
               'provider',
               same(empty['empty']!.providerElement),
             )
@@ -237,7 +262,7 @@ class NestedDependencyNotifier extends _$NestedDependencyNotifier {
         provider.value.annotation.dependencies?[1],
         isA<RiverpodAnnotationDependency>()
             .having(
-              (e) => e.provider.provider,
+              (e) => e.provider,
               'provider',
               same(empty['EmptyNotifier']!.providerElement),
             )
@@ -252,20 +277,12 @@ class NestedDependencyNotifier extends _$NestedDependencyNotifier {
       );
       expect(
         provider.value.annotation.element.dependencies?.elementAt(0),
-        isA<RiverpodAnnotationDependencyElement>().having(
-          (e) => e.provider,
-          'provider',
-          same(empty['empty']!.providerElement),
-        ),
+        same(empty['empty']!.providerElement),
         reason: '${provider.key} has `empty` as first dependency',
       );
       expect(
         provider.value.annotation.element.dependencies?.elementAt(1),
-        isA<RiverpodAnnotationDependencyElement>().having(
-          (e) => e.provider,
-          'provider',
-          same(empty['EmptyNotifier']!.providerElement),
-        ),
+        same(empty['EmptyNotifier']!.providerElement),
         reason: '${provider.key} has `EmptyNotifier` as second dependency',
       );
 
@@ -283,10 +300,25 @@ class NestedDependencyNotifier extends _$NestedDependencyNotifier {
         reason: '${provider.key} has two explicit dependencies',
       );
       expect(
+        provider.value.annotation.element.dependencies,
+        hasLength(2),
+        reason: '${provider.key} has two explicit dependencies',
+      );
+      expect(
+        provider.value.annotation.element.allTransitiveDependencies,
+        unorderedEquals([
+          providers['providerDependency']!.providerElement,
+          providers['ProviderDependencyNotifier']!.providerElement,
+          empty['empty']!.providerElement,
+          empty['EmptyNotifier']!.providerElement,
+        ]),
+        reason: '${provider.key} has two explicit dependencies',
+      );
+      expect(
         provider.value.annotation.dependencies?[0],
         isA<RiverpodAnnotationDependency>()
             .having(
-              (e) => e.provider.provider,
+              (e) => e.provider,
               'provider',
               same(providers['providerDependency']!.providerElement),
             )
@@ -297,7 +329,7 @@ class NestedDependencyNotifier extends _$NestedDependencyNotifier {
         provider.value.annotation.dependencies?[1],
         isA<RiverpodAnnotationDependency>()
             .having(
-              (e) => e.provider.provider,
+              (e) => e.provider,
               'provider',
               same(providers['ProviderDependencyNotifier']!.providerElement),
             )
@@ -317,20 +349,12 @@ class NestedDependencyNotifier extends _$NestedDependencyNotifier {
       );
       expect(
         provider.value.annotation.element.dependencies?.elementAt(0),
-        isA<RiverpodAnnotationDependencyElement>().having(
-          (e) => e.provider,
-          'provider',
-          same(providers['providerDependency']!.providerElement),
-        ),
+        same(providers['providerDependency']!.providerElement),
         reason: '${provider.key} has `providerDependency` as first dependency',
       );
       expect(
         provider.value.annotation.element.dependencies?.elementAt(1),
-        isA<RiverpodAnnotationDependencyElement>().having(
-          (e) => e.provider,
-          'provider',
-          same(providers['ProviderDependencyNotifier']!.providerElement),
-        ),
+        same(providers['ProviderDependencyNotifier']!.providerElement),
         reason:
             '${provider.key} has `ProviderDependencyNotifier` as second dependency',
       );

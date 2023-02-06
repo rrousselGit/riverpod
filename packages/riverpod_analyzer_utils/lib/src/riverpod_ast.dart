@@ -303,7 +303,7 @@ class RiverpodAnnotationDependency {
   });
 
   final Expression node;
-  final RiverpodAnnotationDependencyElement provider;
+  final GeneratorProviderDeclarationElement provider;
 }
 
 class RiverpodAnnotation {
@@ -400,7 +400,7 @@ class RiverpodAnnotation {
 
           yield RiverpodAnnotationDependency._(
             node: dependency,
-            provider: RiverpodAnnotationDependencyElement(dependencyProvider),
+            provider: dependencyProvider,
           );
         } else if (dependencyElement is ClassElement) {
           final dependencyProvider = StatefulProviderDeclarationElement.parse(
@@ -416,7 +416,7 @@ class RiverpodAnnotation {
 
           yield RiverpodAnnotationDependency._(
             node: dependency,
-            provider: RiverpodAnnotationDependencyElement(dependencyProvider),
+            provider: dependencyProvider,
           );
         } else {
           throw RiverpodAnalysisException(
