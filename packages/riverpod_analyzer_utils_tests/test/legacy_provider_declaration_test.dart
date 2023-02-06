@@ -27,11 +27,19 @@ final second = Provider<int>((ref) => 0);
       });
     });
 
-    testSource('Decodes dependencies', source: '''
+    testSource('Decodes dependencies', runGenerator: true, source: '''
 import 'package:riverpod/riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'foo.g.dart';
 
 final dep = Provider<int>((ref) => 0);
 final family = Provider.family<int, int>((ref, id) => 0);
+
+@Riverpod(keepAlive: true)
+int dep2(Dep2Ref ref) => 0;
+@Riverpod(keepAlive: true)
+int family2(Family2Ref ref, int id) => 0;
 
 final explicitDep = Provider<int>((ref) => 0, dependencies: []);
 final explicitFamily = Provider.family<int, int>((ref, id) => 0, dependencies: []);
@@ -39,37 +47,41 @@ final explicitFamily = Provider.family<int, int>((ref, id) => 0, dependencies: [
 List<ProviderOrFamily> getDeps() => [];
 final unknownDependencies = Provider<int>((ref) => 0, dependencies: getDeps());
 
+final generatorDependencies = Provider<int>(
+  (ref) => 0,
+  dependencies: [dep2Provider, family2Provider],
+);
 final alwaysAliveProvider = Provider<int>(
   (ref) => 0,
-  dependencies: [dep, family, family(42)],
+  dependencies: [dep, family, family(42), ...getDeps()],
 );
 final alwaysAliveFamily = Provider.family<int, int>(
   (ref, id) => 0,
-  dependencies: [dep, family, family(42)],
+  dependencies: [dep, family, family(42), ...getDeps()],
 );
 final explicitAlwaysAliveFamily = ProviderFamily<int, int>(
   (ref, id) => 0,
-  dependencies: [dep, family, family(42)],
+  dependencies: [dep, family, family(42), ...getDeps()],
 );
 final autoDisposeProvider = Provider.autoDispose<int>(
   (ref) => 0,
-  dependencies: [dep, family, family(42)],
+  dependencies: [dep, family, family(42), ...getDeps()],
 );
 final explicitAutoDisposeProvider = AutoDisposeProvider<int>(
   (ref) => 0,
-  dependencies: [dep, family, family(42)],
+  dependencies: [dep, family, family(42), ...getDeps()],
 );
 final autoDisposeFamily = Provider.autoDispose.family<int, int>(
   (ref, id) => 0,
-  dependencies: [dep, family, family(42)],
+  dependencies: [dep, family, family(42), ...getDeps()],
 );
 final autoDisposeFamily2 = Provider.family.autoDispose<int, int>(
   (ref, id) => 0,
-  dependencies: [dep, family, family(42)],
+  dependencies: [dep, family, family(42), ...getDeps()],
 );
 final explicitAutoDisposeFamily = AutoDisposeProviderFamily<int, int>(
   (ref, id) => 0,
-  dependencies: [dep, family, family(42)],
+  dependencies: [dep, family, family(42), ...getDeps()],
 );
 ''', (resolver) async {
       final result = await resolver.resolveRiverpodAnalyssiResult();
@@ -83,7 +95,8 @@ final explicitAutoDisposeFamily = AutoDisposeProviderFamily<int, int>(
       ]);
       final unknownDependencies =
           result.legacyProviderDeclarations['unknownDependencies']!;
-
+      final generatorDependencies =
+          result.legacyProviderDeclarations['generatorDependencies']!;
       final providers = result.legacyProviderDeclarations.take([
         'alwaysAliveProvider',
         'alwaysAliveFamily',
@@ -125,13 +138,13 @@ final explicitAutoDisposeFamily = AutoDisposeProviderFamily<int, int>(
       for (final provider in providers.entries) {
         expect(
           provider.value.dependencies?.dependencies,
-          hasLength(3),
-          reason: '${provider.key} has 3 dependencies',
+          hasLength(4),
+          reason: '${provider.key} has 4 dependencies',
         );
 
         expect(
           provider.value.dependencies?.dependenciesNode.toSource(),
-          'dependencies: [dep, family, family(42)]',
+          'dependencies: [dep, family, family(42), ...getDeps()]',
         );
 
         expect(
@@ -160,10 +173,56 @@ final explicitAutoDisposeFamily = AutoDisposeProviderFamily<int, int>(
           provider.value.dependencies?.dependencies?[2],
           isA<LegacyProviderDependency>()
               .having((e) => e.node.toSource(), 'node', 'family(42)')
+              .having(
+                (e) => e.provider,
+                'provider',
+                same(deps['family']?.providerElement),
+              ),
+          reason: '${provider.key} has a family expression as third dependency',
+        );
+        expect(
+          provider.value.dependencies?.dependencies?[3],
+          isA<LegacyProviderDependency>()
+              .having((e) => e.node.toSource(), 'node', '...getDeps()')
               .having((e) => e.provider, 'provider', null),
-          reason: '${provider.key} has an unknown third dependency',
+          reason:
+              '${provider.key} has an unknown expression as fourth dependency',
         );
       }
+
+      expect(
+        generatorDependencies.dependencies?.dependencies,
+        hasLength(2),
+      );
+      expect(
+        generatorDependencies.dependencies?.dependenciesNode.toSource(),
+        'dependencies: [dep2Provider, family2Provider]',
+      );
+      expect(
+        generatorDependencies.dependencies?.dependencies?[0],
+        isA<LegacyProviderDependency>()
+            .having((e) => e.node.toSource(), 'node', 'dep2Provider')
+            .having(
+              (e) => e.provider,
+              'provider',
+              same(
+                result.generatorProviderDeclarations['dep2']?.providerElement,
+              ),
+            ),
+      );
+      expect(
+        generatorDependencies.dependencies?.dependencies?[1],
+        isA<LegacyProviderDependency>()
+            .having((e) => e.node.toSource(), 'node', 'family2Provider')
+            .having(
+              (e) => e.provider,
+              'provider',
+              same(
+                result
+                    .generatorProviderDeclarations['family2']?.providerElement,
+              ),
+            ),
+      );
     });
 
     testSource('Decode LegacyProviderType.provider', source: '''

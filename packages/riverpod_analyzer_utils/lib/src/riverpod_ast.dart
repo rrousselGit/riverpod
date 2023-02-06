@@ -496,23 +496,17 @@ class LegacyProviderDependency {
   });
 
   static LegacyProviderDependency parse(CollectionElement node) {
-    final variableElement = node
-        .cast<SimpleIdentifier>()
-        ?.staticElement
-        .cast<PropertyAccessorElement>()
-        ?.variable;
-
-    final providerElement =
-        variableElement.let(LegacyProviderDeclarationElement.parse);
-
     return LegacyProviderDependency._(
       node: node,
-      provider: providerElement,
+      provider: node
+          .cast<Expression>()
+          .let(ProviderListenableExpression.parse)
+          ?.providerElement,
     );
   }
 
   final CollectionElement node;
-  final LegacyProviderDeclarationElement? provider;
+  final ProviderDeclarationElement? provider;
 }
 
 class LegacyProviderDeclaration implements ProviderDeclaration {
