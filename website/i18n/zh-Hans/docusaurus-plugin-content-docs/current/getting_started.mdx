@@ -1,0 +1,132 @@
+---
+title: 开始上手
+version: 1
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import pubspec from "./getting_started/pubspec";
+import dartHelloWorld from "./getting_started/dart_hello_world";
+import helloWorld from "./getting_started/hello_world";
+import dartPubspec from "./getting_started/dart_pubspec";
+import {
+  trimSnippet,
+  AutoSnippet,
+  ConditionalSnippet,
+} from "../../../../src/components/CodeSnippet";
+
+___
+
+## 在线尝试Riverpod
+
+在[Dartpad](https://dartpad.dev/?null_safety=true&id=ef06ab3ce0b822e6cc5db0575248e6e2) 上感受Riverpod的魅力。
+
+## 安装package
+
+按照你的需要添加下列代码到你的`pubspec.yaml`文件中 ：
+
+<Tabs
+  groupId="riverpod"
+  defaultValue="flutter_riverpod"
+  values={[
+    { label: 'Flutter', value: 'flutter_riverpod', },
+    { label: '仅Dart', value: 'riverpod', },
+  ]}
+>
+<TabItem value="flutter_riverpod">
+
+<AutoSnippet title="pubspec.yaml" language="yaml" {...pubspec}></AutoSnippet>
+
+然后使用 `flutter pub get` 命令来安装package。
+
+<ConditionalSnippet codegen={true}>
+  最后，用{" "} 命令来运行代码生成工具
+  <code>flutter pub run build_runner watch</code>
+</ConditionalSnippet>
+
+</TabItem>
+<TabItem value="riverpod">
+
+<AutoSnippet
+  title="pubspec.yaml"
+  language="yaml"
+  {...dartPubspec}
+></AutoSnippet>
+
+然后使用 `dart pub get` 命令来安装package。
+
+<ConditionalSnippet codegen={true}>
+   最后，用{" "} 命令来运行代码生成工具
+  <code>flutter pub run build_runner watch</code>
+</ConditionalSnippet>
+
+</TabItem>
+</Tabs>
+
+就是这样，你成功将[Riverpod]添加到你的应用当中!
+
+## 使用示例: Hello world
+
+安装完[Riverpod]，我们就可以使用了。
+
+下面的代码片段展示了如何使用我们的新依赖来创建一个 "Hello world"：
+
+export const foo = 42;
+
+<Tabs
+  groupId="riverpod"
+  defaultValue="flutter_riverpod"
+  values={[
+    { label: "Flutter", value: "flutter_riverpod" },
+    { label: "仅Dart", value: "riverpod" },
+  ]}
+>
+<TabItem value="flutter_riverpod">
+
+<AutoSnippet
+  title="lib/main.dart"
+  language="dart"
+  {...helloWorld}
+></AutoSnippet>
+
+你可以使用 `flutter run` 命令来运行 ，
+这会在你的设备中央显示 "Hello world" 的文字。
+
+</TabItem>
+<TabItem value="riverpod">
+
+<AutoSnippet
+  title="lib/main.dart"
+  language="dart"
+  {...dartHelloWorld}
+></AutoSnippet>
+
+你可以使用 `dart lib/main.dart` 命令来运行 ，
+这会在你的控制台打印 "Hello world" 的字样。
+
+</TabItem>
+</Tabs>
+
+## 更进一步： 安装代码片段插件
+
+如果你使用 `Flutter` 和 `VS Code` ，推荐使用 [Flutter Riverpod Snippets](https://marketplace.visualstudio.com/items?itemName=robert-brunhage.flutter-riverpod-snippets)
+
+如果你使用 `Flutter` 和 `Android Studio` 或 `IntelliJ`，推荐使用 [Flutter Riverpod Snippets](https://plugins.jetbrains.com/plugin/14641-flutter-riverpod-snippets)
+
+![img](/img/snippets/greetingProvider.gif)
+
+## 选择你的下一步
+
+学习一些基础的概念:
+
+- [了解关于provider的更多内容](/docs/concepts/providers)
+
+Follow a cookbook:
+
+- [如何测试provider](/docs/cookbooks/testing)
+
+[riverpod]: https://github.com/rrousselgit/riverpod
+[hooks_riverpod]: https://pub.dev/packages/hooks_riverpod
+[flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
+[flutter_hooks]: https://github.com/rrousselGit/flutter_hooks
