@@ -1,13 +1,152 @@
+import 'dart:convert';
+
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
+import 'package:analyzer/dart/element/type_provider.dart';
 import 'package:collection/collection.dart';
+import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:meta/meta.dart';
+import 'package:crypto/crypto.dart';
 
 import 'riverpod_element.dart';
 import 'riverpod_types.dart';
 import 'riverpod_visitor.dart';
+
+const _providerForAnnotationChecker = TypeChecker.fromName(
+  'ProviderFor',
+  packageName: 'riverpod_annotation',
+);
+
+@internal
+class RefInvocationVisitor {
+  final onRefInvocation = <void Function(RefInvocation)>[];
+  final onRefWatchInvocation = <void Function(RefWatchInvocation)>[];
+}
+
+class RefInvocation {
+  RefInvocation._({
+    required this.node,
+    required this.function,
+  });
+
+  static void parse(
+    MethodInvocation node,
+    RefInvocationVisitor visitor,
+  ) {
+    final targetType = node.target?.staticType;
+    if (targetType == null) return;
+
+    // Since Ref is sealed, checking that the function is from the package:riverpod
+    // before checking its type skips iterating over the superclasses of an element
+    // if it's not from Riverpod.
+    if (!isFromRiverpod.isExactlyType(targetType) |
+        !refType.isAssignableFromType(targetType)) {
+      return;
+    }
+    final function = node.function;
+    if (function is! SimpleIdentifier) return;
+    final functionOwner = function.staticElement
+        .cast<MethodElement>()
+        ?.declaration
+        .enclosingElement;
+
+    if (functionOwner == null ||
+        // Since Ref is sealed, checking that the function is from the package:riverpod
+        // before checking its type skips iterating over the superclasses of an element
+        // if it's not from Riverpod.
+        !isFromRiverpod.isExactly(functionOwner) ||
+        !refType.isAssignableFrom(functionOwner)) {
+      return;
+    }
+
+    RefInvocation? invocation;
+    switch (function.name) {
+      case 'watch':
+        final watchInvocation =
+            invocation = RefWatchInvocation._parse(node, function);
+        if (watchInvocation == null) break;
+
+        runSubscription(watchInvocation, visitor.onRefWatchInvocation);
+        break;
+    }
+
+    if (invocation == null) return;
+    runSubscription(invocation, visitor.onRefInvocation);
+  }
+
+  final MethodInvocation node;
+  final SimpleIdentifier function;
+}
+
+class RefWatchInvocation extends RefInvocation {
+  RefWatchInvocation._({
+    required super.node,
+    required super.function,
+    required this.provider,
+  }) : super._();
+
+  static RefWatchInvocation? _parse(
+    MethodInvocation node,
+    SimpleIdentifier function,
+  ) {
+    assert(
+      function.name == 'watch',
+      'Argument error, function is not a ref.watch function',
+    );
+
+    final providerListenableExpression = ProviderListenableExpression.parse(
+      node.argumentList.arguments.firstOrNull,
+    );
+    if (providerListenableExpression == null) return null;
+
+    return RefWatchInvocation._(
+      node: node,
+      function: function,
+      provider: providerListenableExpression,
+    );
+  }
+
+  final ProviderListenableExpression provider;
+}
+
+class ProviderListenableExpression {
+  ProviderListenableExpression._({
+    required this.node,
+    required this.provider,
+    required this.providerElement,
+  });
+
+  static ProviderListenableExpression? parse(Expression? expression) {
+    if (expression == null) return null;
+
+    print('oy $expression // ${expression.runtimeType}');
+    SimpleIdentifier? provider;
+    ProviderDeclarationElement? providerElement;
+
+    if (expression is SimpleIdentifier) {
+      provider = expression;
+      final element = provider.staticElement;
+      if (element != null) {
+        final annotation =
+            _providerForAnnotationChecker.firstAnnotationOfExact(element);
+        print(
+            'Foo ${provider.staticElement} // ${annotation?.getField('value')}');
+      }
+    }
+
+    return ProviderListenableExpression._(
+      node: expression,
+      provider: provider,
+      providerElement: providerElement,
+    );
+  }
+
+  final Expression node;
+  final SimpleIdentifier? provider;
+  final ProviderDeclarationElement? providerElement;
+}
 
 class RiverpodAnnotationDependency {
   RiverpodAnnotationDependency._({
@@ -160,7 +299,7 @@ abstract class ProviderDeclaration {
 }
 
 class LegacyProviderDependencies {
-  LegacyProviderDependencies({
+  LegacyProviderDependencies._({
     required this.dependencies,
     required this.dependenciesNode,
   });
@@ -176,7 +315,7 @@ class LegacyProviderDependencies {
           value.elements.map(LegacyProviderDependency.parse).toList();
     }
 
-    return LegacyProviderDependencies(
+    return LegacyProviderDependencies._(
       dependenciesNode: dependenciesNode,
       dependencies: dependencies,
     );
@@ -186,14 +325,16 @@ class LegacyProviderDependencies {
   final NamedExpression dependenciesNode;
 }
 
-extension<T> on T? {
+@internal
+extension ObjectUtils<T> on T? {
   R? cast<R>() {
     final that = this;
     if (that is R) return that;
     return null;
   }
 
-  R? let<R>(R? Function(T value) cb) {
+  R? let<R>(R? Function(T value)? cb) {
+    if (cb == null) return null;
     final that = this;
     if (that != null) return cb(that);
     return null;
@@ -201,7 +342,7 @@ extension<T> on T? {
 }
 
 class LegacyProviderDependency {
-  LegacyProviderDependency({
+  LegacyProviderDependency._({
     required this.node,
     required this.provider,
   });
@@ -216,7 +357,7 @@ class LegacyProviderDependency {
     final providerElement =
         variableElement.let(LegacyProviderDeclarationElement.parse);
 
-    return LegacyProviderDependency(
+    return LegacyProviderDependency._(
       node: node,
       provider: providerElement,
     );
@@ -227,7 +368,7 @@ class LegacyProviderDependency {
 }
 
 class LegacyProviderDeclaration implements ProviderDeclaration {
-  LegacyProviderDeclaration({
+  LegacyProviderDeclaration._({
     required this.name,
     required this.node,
     required this.build,
@@ -307,7 +448,7 @@ class LegacyProviderDeclaration implements ProviderDeclaration {
     final build = arguments.arguments.firstOrNull;
     if (build is! FunctionExpression) return null;
 
-    return LegacyProviderDeclaration(
+    return LegacyProviderDeclaration._(
       name: node.name,
       node: node,
       build: build,
@@ -343,17 +484,52 @@ class LegacyProviderDeclaration implements ProviderDeclaration {
 abstract class GeneratorProviderDeclaration implements ProviderDeclaration {
   @override
   GeneratorProviderDeclarationElement get providerElement;
-
   RiverpodAnnotation get annotation;
+  DartType get valueType;
+  DartType get exposedType;
+  DartType get createdType;
+
+  String computeProviderHash() {
+    // TODO improve hash function to inspect the body of the create fn
+    // such that the hash changes if one of the element defined outside of the
+    // fn changes.
+    final bytes = utf8.encode(node.toSource());
+    final digest = sha1.convert(bytes);
+    return digest.toString();
+  }
 }
 
-class StatefulProviderDeclaration implements GeneratorProviderDeclaration {
+DartType _computeExposedType(
+  DartType createdType,
+  LibraryElement library,
+) {
+  if (createdType.isDartAsyncFuture || createdType.isDartAsyncFutureOr) {
+    createdType as InterfaceType;
+    return library.createdTypeToValueType(createdType.typeArguments.first);
+  }
+
+  return createdType;
+}
+
+DartType _getValueType(DartType createdType) {
+  if (createdType.isDartAsyncFuture || createdType.isDartAsyncFutureOr) {
+    createdType as InterfaceType;
+    return createdType.typeArguments.first;
+  }
+
+  return createdType;
+}
+
+class StatefulProviderDeclaration extends GeneratorProviderDeclaration {
   StatefulProviderDeclaration._({
     required this.name,
     required this.node,
     required this.buildMethod,
     required this.providerElement,
     required this.annotation,
+    required this.createdType,
+    required this.exposedType,
+    required this.valueType,
   });
 
   @internal
@@ -379,35 +555,47 @@ class StatefulProviderDeclaration implements GeneratorProviderDeclaration {
     );
     if (providerElement == null) return null;
 
+    final createdType = buildMethod.returnType?.type ??
+        element.library.typeProvider.dynamicType;
+
     return StatefulProviderDeclaration._(
       name: node.name,
       node: node,
       buildMethod: buildMethod,
       providerElement: providerElement,
       annotation: riverpodAnnotation,
+      createdType: createdType,
+      exposedType: _computeExposedType(createdType, element.library),
+      valueType: _getValueType(createdType),
     );
   }
 
   @override
   final Token name;
-
   @override
   final ClassDeclaration node;
   @override
   final GeneratorProviderDeclarationElement providerElement;
-
   @override
   final RiverpodAnnotation annotation;
-
   final MethodDeclaration buildMethod;
+  @override
+  final DartType createdType;
+  @override
+  final DartType exposedType;
+  @override
+  final DartType valueType;
 }
 
-class StatelessProviderDeclaration implements GeneratorProviderDeclaration {
+class StatelessProviderDeclaration extends GeneratorProviderDeclaration {
   StatelessProviderDeclaration._({
     required this.name,
     required this.node,
     required this.providerElement,
     required this.annotation,
+    required this.createdType,
+    required this.exposedType,
+    required this.valueType,
   });
 
   @internal
@@ -425,11 +613,15 @@ class StatelessProviderDeclaration implements GeneratorProviderDeclaration {
     );
     if (providerElement == null) return null;
 
+    final createdType = element.returnType;
     return StatelessProviderDeclaration._(
       name: node.name,
       node: node,
       providerElement: providerElement,
       annotation: riverpodAnnotation,
+      createdType: createdType,
+      exposedType: _computeExposedType(createdType, element.library),
+      valueType: _getValueType(createdType),
     );
   }
 
@@ -442,4 +634,10 @@ class StatelessProviderDeclaration implements GeneratorProviderDeclaration {
   final GeneratorProviderDeclarationElement providerElement;
   @override
   final RiverpodAnnotation annotation;
+  @override
+  final DartType createdType;
+  @override
+  final DartType exposedType;
+  @override
+  final DartType valueType;
 }

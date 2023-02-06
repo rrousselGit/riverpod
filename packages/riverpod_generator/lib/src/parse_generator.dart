@@ -1,57 +1,49 @@
 import 'dart:async';
 
+import 'package:analyzer/dart/analysis/results.dart';
+import 'package:analyzer/dart/analysis/session.dart';
+import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
+import 'package:path/path.dart' as p;
 import 'package:source_gen/source_gen.dart';
 
-abstract class ParserGenerator<GlobalData, Data, Annotation>
-    extends GeneratorForAnnotation<Annotation> {
-  @override
-  FutureOr<String> generate(
-    // ignore: avoid_renaming_method_parameters
-    LibraryReader oldLibrary,
-    BuildStep buildStep,
-  ) async {
-    final library = await buildStep.resolver.libraryFor(
-      await buildStep.resolver.assetIdForElement(oldLibrary.element),
-    );
+/// Forked from build_resolvers
+String assetPath(AssetId assetId) {
+  return p.posix.join('/${assetId.package}', assetId.path);
+}
 
-    final values = StringBuffer();
-
-    final globalData = parseGlobalData(library);
-
-    var hasGeneratedGlobalCode = false;
-
-    for (final element
-        in library.topLevelElements.where(typeChecker.hasAnnotationOf)) {
-      if (!hasGeneratedGlobalCode) {
-        hasGeneratedGlobalCode = true;
-        generateForAll(globalData)
-            .map((e) => e.toString())
-            .forEach(values.writeln);
+extension on AnalysisSession {
+  Future<ResolvedUnitResult> _getResolvedUnit(String path) async {
+    var i = 0;
+    while (i < 3) {
+      i++;
+      try {
+        final unit = await getResolvedUnit(path);
+        return unit as ResolvedUnitResult;
+      } on InconsistentAnalysisException {
+        // Retry
       }
-
-      final data = await parseElement(buildStep, globalData, element);
-      if (data == null) continue;
-      generateForData(globalData, data)
-          .map((e) => e.toString())
-          .forEach(values.writeln);
     }
 
-    return values.toString();
+    throw StateError(
+      'Failed to obtain the unit: too many inconsistent analysis exceptions.',
+    );
+  }
+}
+
+abstract class ParserGenerator extends GeneratorForAnnotation<Annotation> {
+  @override
+  Future<String> generate(
+    LibraryReader library,
+    BuildStep buildStep,
+  ) async {
+    final path = assetPath(buildStep.inputId);
+    final unit = await library.element.session._getResolvedUnit(path);
+    return generateForUnit(unit);
   }
 
-  Iterable<Object> generateForAll(GlobalData globalData) sync* {}
-
-  GlobalData parseGlobalData(LibraryElement library);
-
-  FutureOr<Data> parseElement(
-    BuildStep buildStep,
-    GlobalData globalData,
-    Element element,
-  );
-
-  Iterable<Object> generateForData(GlobalData globalData, Data data);
+  FutureOr<String> generateForUnit(ResolvedUnitResult resolvedUnitResult);
 
   @override
   Stream<String> generateForAnnotatedElement(
@@ -59,14 +51,8 @@ abstract class ParserGenerator<GlobalData, Data, Annotation>
     ConstantReader annotation,
     BuildStep buildStep,
   ) async* {
-    // implemented for source_gen_test – otherwise unused
-    final globalData = parseGlobalData(element.library!);
-    final data = parseElement(buildStep, globalData, element);
-
-    if (data == null) return;
-
-    for (final value in generateForData(globalData, await data)) {
-      yield value.toString();
-    }
+    final path = assetPath(buildStep.inputId);
+    final unit = await element.session!._getResolvedUnit(path);
+    yield await generateForUnit(unit);
   }
 }

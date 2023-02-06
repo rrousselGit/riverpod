@@ -133,6 +133,9 @@ const widgetStateType = TypeChecker.fromName('State', packageName: 'flutter');
 const widgetRefType =
     TypeChecker.fromName('WidgetRef', packageName: 'flutter_riverpod');
 
+/// Checks that the value is coming from a `package:riverpod` package
+const isFromRiverpod = TypeChecker.fromPackage('riverpod');
+
 /// [TypeChecker for `Ref`
 const refType = TypeChecker.fromName('Ref', packageName: 'riverpod');
 

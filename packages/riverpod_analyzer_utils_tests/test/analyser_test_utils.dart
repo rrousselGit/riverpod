@@ -6,10 +6,9 @@ import 'package:analyzer/diagnostic/diagnostic.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:build/build.dart';
 import 'package:build_test/build_test.dart';
-import 'package:custom_lint_builder/src/node_lint_visitor.dart';
 import 'package:meta/meta.dart';
-import 'package:riverpod_analyzer_utils/src/riverpod_ast.dart';
 import 'package:riverpod_analyzer_utils/src/riverpod_visitor.dart';
+import 'package:riverpod_generator/src/riverpod_generator2.dart';
 import 'package:test/test.dart';
 
 /// Due to [resolveSource] throwing if trying to interact with the resolver
@@ -20,13 +19,30 @@ void testSource(
   String description,
   Future<void> Function(Resolver resolver) run, {
   required String source,
+  bool runGenerator = false,
 }) {
   test(
     description,
-    () {
+    () async {
+      final sourceWithLibrary = 'library foo;$source';
+
       final enclosingZone = Zone.current;
 
-      return resolveSource('library foo;$source', (resolver) {
+      String? generated;
+      if (runGenerator) {
+        final analysisResult = await resolveSources(
+          {'test_lib|lib/foo.dart': sourceWithLibrary},
+          (resolver) {
+            return resolver.resolveRiverpodAnalyssiResult();
+          },
+        );
+        generated = RiverpodGenerator2(const {}).runGenerator(analysisResult);
+      }
+
+      await resolveSources({
+        'test_lib|lib/foo.dart': sourceWithLibrary,
+        if (generated != null) 'test_lib|lib/foo.g.dart': generated,
+      }, (resolver) async {
         try {
           final originalZone = Zone.current;
           return runZoned(
@@ -36,7 +52,6 @@ void testSource(
               print: (self, parent, zone, line) => enclosingZone.print(line),
               handleUncaughtError: (self, parent, zone, error, stackTrace) {
                 originalZone.handleUncaughtError(error, stackTrace);
-                // enclosingZone.print('Oy $error\n$stackTrace');
                 enclosingZone.handleUncaughtError(error, stackTrace);
               },
             ),
@@ -49,67 +64,31 @@ void testSource(
   );
 }
 
+extension MapTake<Key, Value> on Map<Key, Value> {
+  Map<Key, Value> take(List<Key> keys) {
+    return <Key, Value>{
+      for (final key in keys)
+        if (!containsKey(key))
+          key: throw StateError('No key $key found')
+        else
+          key: this[key] as Value,
+    };
+  }
+}
+
 extension ResolverX on Resolver {
-  Future<Map<String, LegacyProviderDeclaration>>
-      parseAllLegacyProviderDeclaration(
-    List<String> names, {
+  Future<RiverpodAnalysisResult> resolveRiverpodAnalyssiResult({
     String libraryName = 'foo',
   }) async {
-    final declarations =
-        await parseAllProviderDeclaration(names, libraryName: libraryName);
-    return Map.from(declarations);
-  }
-
-  Future<Map<String, GeneratorProviderDeclaration>>
-      parseAllGeneratorProviderDeclaration(
-    List<String> names, {
-    String libraryName = 'foo',
-  }) async {
-    final declarations =
-        await parseAllProviderDeclaration(names, libraryName: libraryName);
-    return Map.from(declarations);
-  }
-
-  Future<Map<String, ProviderDeclaration>> parseAllProviderDeclaration(
-    List<String> names, {
-    String libraryName = 'foo',
-  }) async {
-    final nodeLintRegistry = NodeLintRegistry(
-      LintRegistry(),
-      enableTiming: false,
-    );
-    final lintRuleNodeRegistry = LintRuleNodeRegistry(
-      nodeLintRegistry,
-      '',
-    );
-    final visitor = RiverpodVisitor(
-      lintRuleNodeRegistry,
-    );
-
-    final declarations = <String, ProviderDeclaration>{};
-    visitor.addProviderDeclaration((p0) => declarations[p0.name.lexeme] = p0);
-
-    final library = await findLibraryByName(libraryName);
+    final library = await _requireFindLibraryByName(libraryName);
     final libraryAst =
-        await library!.session.getResolvedLibraryByElement(library);
+        await library.session.getResolvedLibraryByElement(library);
 
     libraryAst as ResolvedLibraryResult;
-    libraryAst.units.first.unit.accept(
-      LinterVisitor(nodeLintRegistry),
-    );
-
-    return Map.fromEntries(
-      names.map((name) {
-        final declaration = declarations[name];
-        if (declaration == null) {
-          throw StateError('No declaration found for $name');
-        }
-        return MapEntry(name, declaration);
-      }),
-    );
+    return parseRiverpod(libraryAst.units.first.unit);
   }
 
-  Future<LibraryElement> requireFindLibraryByName([
+  Future<LibraryElement> _requireFindLibraryByName([
     String libraryName = 'foo',
   ]) async {
     final library = await findLibraryByName(libraryName);

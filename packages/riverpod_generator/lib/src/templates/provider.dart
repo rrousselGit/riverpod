@@ -17,6 +17,7 @@ class ProviderTemplate {
 
     return '''
 ${data.providerDoc}
+${data.providerForAnnotation}
 final ${data.providerName} = ${data.providerTypeDisplayString}(
   ${create()},
   name: r'${data.providerName}',
@@ -45,6 +46,7 @@ final ${data.providerName} = ${data.providerTypeDisplayString}(
   String _familyClass() {
     return '''
 ${data.providerDoc}
+${data.providerForAnnotation}
 class ${data.providerTypeNameImpl} extends ${data.providerTypeDisplayString} {
   ${data.providerTypeNameImpl}(${data.thisParamDefinition}) : super(
           $superConstructor,

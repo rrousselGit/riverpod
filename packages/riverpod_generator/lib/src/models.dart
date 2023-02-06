@@ -1,4 +1,3 @@
-import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
 
 import 'templates/hash.dart';
@@ -30,7 +29,6 @@ class Data {
     required this.keepAlive,
     required this.providerDoc,
     required this.createElement,
-    required this.createAst,
     required this.buildYamlOptions,
   }) : notifierName = null;
 
@@ -45,12 +43,10 @@ class Data {
     required this.keepAlive,
     required this.providerDoc,
     required this.createElement,
-    required this.createAst,
     required this.buildYamlOptions,
   }) : functionName = null;
 
   final ExecutableElement createElement;
-  final AstNode createAst;
   final bool isScoped;
   final bool isAsync;
   final bool isFamily;
@@ -62,6 +58,8 @@ class Data {
   final bool keepAlive;
   final String providerDoc;
   final BuildYamlOptions buildYamlOptions;
+
+  String get providerForAnnotation => '@ProviderFor($rawName)';
 
   String get hashFunctionName => '_\$${rawName}Hash';
 
@@ -275,7 +273,7 @@ class BuildYamlOptions {
   final String? providerNameSuffix;
 }
 
-extension on String {
+extension CaseChangeExtension on String {
   String get titled {
     return replaceFirstMapped(
       RegExp('[a-zA-Z]'),
@@ -288,5 +286,10 @@ extension on String {
       RegExp('[a-zA-Z]'),
       (match) => match.group(0)!.toLowerCase(),
     );
+  }
+
+  String get public {
+    if (startsWith('_')) return substring(1);
+    return this;
   }
 }

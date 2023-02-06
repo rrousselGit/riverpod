@@ -14,7 +14,8 @@ class HashTemplate {
 
   @override
   String toString() {
-    return "String ${data.hashFunctionName}() => r'${hash.hashElement(data.createElement, data.createAst)}';";
+    return '';
+    // return "String ${data.hashFunctionName}() => r'${hash.hashElement(data.createElement, data.createAst)}';";
   }
 }
 

@@ -33,3 +33,18 @@ class Riverpod {
 /// {@macro riverpod_annotation.provider}
 @Target({TargetKind.classType, TargetKind.function})
 const riverpod = Riverpod();
+
+/// An annotation used to help the linter find the user-defined element from
+/// the generated provider.
+class ProviderFor {
+  /// An annotation used to help the linter find the user-defined element from
+  /// the generated provider.
+  const ProviderFor(this.value)
+      : assert(
+          value is Function || value is Type,
+          '$value is not a class/function',
+        );
+
+  /// The code annotated by `@riverpod`
+  final Object value;
+}

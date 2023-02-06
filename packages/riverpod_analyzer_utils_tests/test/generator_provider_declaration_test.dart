@@ -1,5 +1,3 @@
-import 'package:analyzer/dart/element/element.dart';
-import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import 'package:riverpod_analyzer_utils/src/riverpod_ast.dart';
 import 'package:riverpod_analyzer_utils/src/riverpod_element.dart';
 import 'package:test/test.dart';
@@ -22,8 +20,9 @@ class Counter extends _$Counter {
   int build() => 0;
 }
 ''', (resolver) async {
-    final providers = await resolver
-        .parseAllGeneratorProviderDeclaration(['first', 'second', 'Counter']);
+    final result = await resolver.resolveRiverpodAnalyssiResult();
+    final providers = result.generatorProviderDeclarations
+        .take(['first', 'second', 'Counter']);
 
     expect(providers, {
       'first': isA<StatelessProviderDeclaration>()
@@ -68,16 +67,16 @@ class KeepAliveNotifier extends _$KeepAliveNotifier {
   int build() => 0;
 }
 ''', (resolver) async {
-    final autoDispose = await resolver.parseAllGeneratorProviderDeclaration([
+    final result = await resolver.resolveRiverpodAnalyssiResult();
+    final autoDispose = result.generatorProviderDeclarations.take([
       'autoDispose',
       'AutoDisposeNotifier',
     ]);
-    final explicitAutoDispose =
-        await resolver.parseAllGeneratorProviderDeclaration([
+    final explicitAutoDispose = result.generatorProviderDeclarations.take([
       'autoDispose2',
       'AutoDisposeNotifier2',
     ]);
-    final keepAlive = await resolver.parseAllGeneratorProviderDeclaration([
+    final keepAlive = result.generatorProviderDeclarations.take([
       'keepAlive',
       'KeepAliveNotifier',
     ]);
@@ -159,19 +158,20 @@ class NestedDependencyNotifier extends _$NestedDependencyNotifier {
   int build() => 0;
 }
 ''', (resolver) async {
-    final roots = await resolver.parseAllGeneratorProviderDeclaration([
+    final result = await resolver.resolveRiverpodAnalyssiResult();
+    final roots = result.generatorProviderDeclarations.take([
       'root',
       'RootNotifier',
     ]);
-    final empty = await resolver.parseAllGeneratorProviderDeclaration([
+    final empty = result.generatorProviderDeclarations.take([
       'empty',
       'EmptyNotifier',
     ]);
-    final providers = await resolver.parseAllGeneratorProviderDeclaration([
+    final providers = result.generatorProviderDeclarations.take([
       'providerDependency',
       'ProviderDependencyNotifier',
     ]);
-    final nesteds = await resolver.parseAllGeneratorProviderDeclaration([
+    final nesteds = result.generatorProviderDeclarations.take([
       'nestedDependency',
       'NestedDependencyNotifier',
     ]);
