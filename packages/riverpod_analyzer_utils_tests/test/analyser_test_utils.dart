@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/diagnostic/diagnostic.dart';
-import 'package:analyzer/error/error.dart';
 import 'package:build/build.dart';
 import 'package:build_test/build_test.dart';
 import 'package:meta/meta.dart';
@@ -112,10 +111,6 @@ extension ResolverX on Resolver {
       final errors = errorResult.errors
           // Infos are only recommendations. There's no reason to fail just for this
           .where((e) => e.severity != Severity.info)
-          // // Since we're using code-generation, some types may be undefined.
-          // // To avoid having to include a fake generated code to silence errors,
-          // // we explicitly ignore errors related to missing generated elements.
-          // .where((e) => !e.isMissingRefType && !e.isMissingBaseNotifierClass)
           .toList();
 
       if (errors.isNotEmpty) {
