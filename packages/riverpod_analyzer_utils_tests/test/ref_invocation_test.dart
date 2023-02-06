@@ -3,10 +3,8 @@ import 'package:test/test.dart';
 import 'analyser_test_utils.dart';
 
 void main() {
-  testSource('Decodes ref.watch usages', runGenerator: true, source: '''
+  testSource('Decodes ref.watch usages', source: '''
 import 'package:riverpod/riverpod.dart';
-
-part '_resolve_source.g.dart';
 
 extension on Ref {
   void fn() {}

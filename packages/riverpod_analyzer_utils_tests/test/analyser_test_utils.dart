@@ -33,7 +33,9 @@ void testSource(
         final analysisResult = await resolveSources(
           {'test_lib|lib/foo.dart': sourceWithLibrary},
           (resolver) {
-            return resolver.resolveRiverpodAnalyssiResult();
+            return resolver.resolveRiverpodAnalyssiResult(
+              ignoreMissingElementErrors: true,
+            );
           },
         );
         generated = RiverpodGenerator2(const {}).runGenerator(analysisResult);
@@ -41,7 +43,8 @@ void testSource(
 
       await resolveSources({
         'test_lib|lib/foo.dart': sourceWithLibrary,
-        if (generated != null) 'test_lib|lib/foo.g.dart': generated,
+        if (generated != null)
+          'test_lib|lib/foo.g.dart': 'part of "foo.dart";$generated',
       }, (resolver) async {
         try {
           final originalZone = Zone.current;
@@ -79,8 +82,12 @@ extension MapTake<Key, Value> on Map<Key, Value> {
 extension ResolverX on Resolver {
   Future<RiverpodAnalysisResult> resolveRiverpodAnalyssiResult({
     String libraryName = 'foo',
+    bool ignoreMissingElementErrors = false,
   }) async {
-    final library = await _requireFindLibraryByName(libraryName);
+    final library = await _requireFindLibraryByName(
+      libraryName,
+      ignoreMissingElementErrors: ignoreMissingElementErrors,
+    );
     final libraryAst =
         await library.session.getResolvedLibraryByElement(library);
 
@@ -88,25 +95,27 @@ extension ResolverX on Resolver {
     return parseRiverpod(libraryAst.units.first.unit);
   }
 
-  Future<LibraryElement> _requireFindLibraryByName([
-    String libraryName = 'foo',
-  ]) async {
+  Future<LibraryElement> _requireFindLibraryByName(
+    String libraryName, {
+    required bool ignoreMissingElementErrors,
+  }) async {
     final library = await findLibraryByName(libraryName);
     if (library == null) {
       throw StateError('No library found for name "$libraryName"');
     }
 
-    final errorResult = await library.session
-        .getErrors('/_resolve_source/lib/_resolve_source.dart');
+    if (!ignoreMissingElementErrors) {
+      final errorResult =
+          await library.session.getErrors('/test_lib/lib/foo.dart');
+      errorResult as ErrorsResult;
 
-    if (errorResult is ErrorsResult) {
       final errors = errorResult.errors
           // Infos are only recommendations. There's no reason to fail just for this
           .where((e) => e.severity != Severity.info)
-          // Since we're using code-generation, some types may be undefined.
-          // To avoid having to include a fake generated code to silence errors,
-          // we explicitly ignore errors related to missing generated elements.
-          .where((e) => !e.isMissingRefType && !e.isMissingBaseNotifierClass)
+          // // Since we're using code-generation, some types may be undefined.
+          // // To avoid having to include a fake generated code to silence errors,
+          // // we explicitly ignore errors related to missing generated elements.
+          // .where((e) => !e.isMissingRefType && !e.isMissingBaseNotifierClass)
           .toList();
 
       if (errors.isNotEmpty) {
@@ -127,17 +136,5 @@ extension LibraryElementX on LibraryElement {
       (element) => !element.isSynthetic && element.name == name,
       orElse: () => throw StateError('No element found with name "$name"'),
     );
-  }
-}
-
-extension on AnalysisError {
-  bool get isMissingRefType {
-    return errorCode.name == 'UNDEFINED_CLASS' &&
-        RegExp(r"Undefined class '\w+Ref'.").hasMatch(message);
-  }
-
-  bool get isMissingBaseNotifierClass {
-    return errorCode.name == 'EXTENDS_NON_CLASS' &&
-        message == 'Classes can only extend other classes.';
   }
 }

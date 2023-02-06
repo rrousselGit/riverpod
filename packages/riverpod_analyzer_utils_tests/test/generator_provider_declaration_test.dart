@@ -5,8 +5,10 @@ import 'package:test/test.dart';
 import 'analyser_test_utils.dart';
 
 void main() {
-  testSource('Decode name', source: r'''
+  testSource('Decode name', runGenerator: true, source: r'''
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'foo.g.dart';
 
 @riverpod
 int first(FirstRef ref) => 0;
@@ -37,8 +39,10 @@ class Counter extends _$Counter {
     });
   });
 
-  testSource('Decode isAutoDispose', source: r'''
+  testSource('Decode isAutoDispose', runGenerator: true, source: r'''
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'foo.g.dart';
 
 @riverpod
 int autoDispose(AutoDisposeRef ref) => 0;
@@ -50,7 +54,7 @@ int autoDispose2(AutoDisposeRef ref) => 0;
 int keepAlive(KeepAliveRef ref) => 0;
 
 @riverpod
-class AutoDisposeNotifier extends _$AutoDisposeNotifier {
+class AutoDisposeNotifierTest extends _$AutoDisposeNotifierTest {
   @override
   int build() => 0;
 }
@@ -70,7 +74,7 @@ class KeepAliveNotifier extends _$KeepAliveNotifier {
     final result = await resolver.resolveRiverpodAnalyssiResult();
     final autoDispose = result.generatorProviderDeclarations.take([
       'autoDispose',
-      'AutoDisposeNotifier',
+      'AutoDisposeNotifierTest',
     ]);
     final explicitAutoDispose = result.generatorProviderDeclarations.take([
       'autoDispose2',
@@ -119,8 +123,10 @@ class KeepAliveNotifier extends _$KeepAliveNotifier {
     }
   });
 
-  testSource('Decode dependencies', source: r'''
+  testSource('Decode dependencies', runGenerator: true, source: r'''
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'foo.g.dart';
 
 @riverpod
 int root(RootRef ref) => 0;
