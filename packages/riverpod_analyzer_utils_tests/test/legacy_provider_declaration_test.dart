@@ -210,6 +210,8 @@ final family = Provider.family<int, int>((ref, id) => 0, name: 'bar');
 
 final autoDisposeFamily = Provider.autoDispose.family<int, int>((ref, id) => 0);
 final explicitAutoDisposeFamily = AutoDisposeProviderFamily<int, int>((ref, id) => 0);
+
+final weird = Provider<int>(name: 'foo', dependencies: [], (ref) => 0);
 ''', (resolver) async {
       final result = await resolver.resolveRiverpodAnalyssiResult();
       final providers = result.legacyProviderDeclarations.take([
@@ -219,6 +221,7 @@ final explicitAutoDisposeFamily = AutoDisposeProviderFamily<int, int>((ref, id) 
         'family',
         'autoDisposeFamily',
         'explicitAutoDisposeFamily',
+        'weird',
       ]);
 
       expect(
@@ -267,6 +270,16 @@ final explicitAutoDisposeFamily = AutoDisposeProviderFamily<int, int>((ref, id) 
       );
       expect(providers['inferred']?.typeArguments, null);
       expect(providers['inferredFamily']?.typeArguments, null);
+
+      expect(
+        providers['weird']?.argumentList.toSource(),
+        "(name: 'foo', dependencies: [], (ref) => 0)",
+      );
+      expect(
+        providers['weird']?.dependencies?.dependenciesNode.toSource(),
+        'dependencies: []',
+      );
+      expect(providers['weird']?.build.toSource(), '(ref) => 0');
     });
 
     testSource('Decode LegacyProviderType.futureProvider', source: '''

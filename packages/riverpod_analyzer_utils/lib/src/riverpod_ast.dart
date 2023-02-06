@@ -11,6 +11,7 @@ import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:meta/meta.dart';
 import 'package:crypto/crypto.dart';
 
+import 'argument_list_utils.dart';
 import 'riverpod_element.dart';
 import 'riverpod_types.dart';
 import 'riverpod_visitor.dart';
@@ -24,6 +25,8 @@ const _providerForAnnotationChecker = TypeChecker.fromName(
 class RefInvocationVisitor {
   final onRefInvocation = <void Function(RefInvocation)>[];
   final onRefWatchInvocation = <void Function(RefWatchInvocation)>[];
+  final onRefListenInvocation = <void Function(RefListenInvocation)>[];
+  final onRefReadInvocation = <void Function(RefReadInvocation)>[];
 }
 
 class RefInvocation {
@@ -71,6 +74,20 @@ class RefInvocation {
 
         runSubscription(watchInvocation, visitor.onRefWatchInvocation);
         break;
+      case 'read':
+        final readInvocation =
+            invocation = RefReadInvocation._parse(node, function);
+        if (readInvocation == null) break;
+
+        runSubscription(readInvocation, visitor.onRefReadInvocation);
+        break;
+      case 'listen':
+        final listenInvocation =
+            invocation = RefListenInvocation._parse(node, function);
+        if (listenInvocation == null) break;
+
+        runSubscription(listenInvocation, visitor.onRefListenInvocation);
+        break;
     }
 
     if (invocation == null) return;
@@ -98,7 +115,7 @@ class RefWatchInvocation extends RefInvocation {
     );
 
     final providerListenableExpression = ProviderListenableExpression.parse(
-      node.argumentList.arguments.firstOrNull,
+      node.argumentList.positionalArguments().singleOrNull,
     );
     if (providerListenableExpression == null) return null;
 
@@ -110,6 +127,76 @@ class RefWatchInvocation extends RefInvocation {
   }
 
   final ProviderListenableExpression provider;
+}
+
+class RefReadInvocation extends RefInvocation {
+  RefReadInvocation._({
+    required super.node,
+    required super.function,
+    required this.provider,
+  }) : super._();
+
+  static RefReadInvocation? _parse(
+    MethodInvocation node,
+    SimpleIdentifier function,
+  ) {
+    assert(
+      function.name == 'read',
+      'Argument error, function is not a ref.read function',
+    );
+
+    final providerListenableExpression = ProviderListenableExpression.parse(
+      node.argumentList.positionalArguments().singleOrNull,
+    );
+    if (providerListenableExpression == null) return null;
+
+    return RefReadInvocation._(
+      node: node,
+      function: function,
+      provider: providerListenableExpression,
+    );
+  }
+
+  final ProviderListenableExpression provider;
+}
+
+class RefListenInvocation extends RefInvocation {
+  RefListenInvocation._({
+    required super.node,
+    required super.function,
+    required this.provider,
+    required this.listener,
+  }) : super._();
+
+  static RefListenInvocation? _parse(
+    MethodInvocation node,
+    SimpleIdentifier function,
+  ) {
+    assert(
+      function.name == 'listen',
+      'Argument error, function is not a ref.listen function',
+    );
+
+    final positionalArgs = node.argumentList.positionalArguments().toList();
+
+    final providerListenableExpression = ProviderListenableExpression.parse(
+      positionalArgs.firstOrNull,
+    );
+    if (providerListenableExpression == null) return null;
+
+    final listener = positionalArgs.elementAtOrNull(1);
+    if (listener == null) return null;
+
+    return RefListenInvocation._(
+      node: node,
+      function: function,
+      provider: providerListenableExpression,
+      listener: listener,
+    );
+  }
+
+  final ProviderListenableExpression provider;
+  final Expression listener;
 }
 
 class ProviderListenableExpression {
@@ -130,6 +217,7 @@ class ProviderListenableExpression {
 
     void parseExpression(Expression? expression) {
       if (expression is SimpleIdentifier) {
+        // watch(expression)
         provider = expression;
         final element = expression.staticElement;
         if (element is PropertyAccessorElement) {
@@ -144,8 +232,21 @@ class ProviderListenableExpression {
           }
         }
       } else if (expression is FunctionExpressionInvocation) {
+        // watch(expression())
         familyArguments = expression.argumentList;
         parseExpression(expression.function);
+      } else if (expression is MethodInvocation) {
+        // watch(expression.method())
+        parseExpression(expression.target);
+      } else if (expression is PrefixedIdentifier) {
+        // watch(expression.modifier)
+        parseExpression(expression.prefix);
+      } else if (expression is IndexExpression) {
+        // watch(expression[])
+        parseExpression(expression.target);
+      } else if (expression is PropertyAccess) {
+        // watch(expression.property)
+        parseExpression(expression.target);
       } else {
         throw UnsupportedError(
           'Unknown expression $expression (${expression.runtimeType})',
@@ -489,11 +590,11 @@ class LegacyProviderDeclaration implements ProviderDeclaration {
       throw UnsupportedError('Unknown type ${initializer.runtimeType}');
     }
 
-    final dependenciesElement = arguments.arguments
-        .whereType<NamedExpression>()
+    final dependenciesElement = arguments
+        .namedArguments()
         .firstWhereOrNull((e) => e.name.label.name == 'dependencies');
 
-    final build = arguments.arguments.firstOrNull;
+    final build = arguments.positionalArguments().firstOrNull;
     if (build is! FunctionExpression) return null;
 
     return LegacyProviderDeclaration._(

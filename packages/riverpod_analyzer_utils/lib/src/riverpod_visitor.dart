@@ -111,6 +111,8 @@ class RiverpodAnalysisResult {
 
   final refInvocations = <RefInvocation>[];
   final refWatchInvocations = <RefWatchInvocation>[];
+  final refReadInvocations = <RefReadInvocation>[];
+  final refListenInvocations = <RefListenInvocation>[];
 }
 
 /// All flags are enabled by default.
@@ -126,6 +128,8 @@ RiverpodAnalysisResult parseRiverpod(
   bool? parseLegacyProviderDeclaration,
   bool? parseRefInvocation,
   bool? parseRefWatchInvocation,
+  bool? parseRefListenInvocation,
+  bool? parseRefReadInvocation,
 }) {
   parseProviderDeclaration ??= defaultFlagValue;
   parseGeneratorProviderDeclaration ??= defaultFlagValue;
@@ -134,6 +138,8 @@ RiverpodAnalysisResult parseRiverpod(
   parseLegacyProviderDeclaration ??= defaultFlagValue;
   parseRefInvocation ??= defaultFlagValue;
   parseRefWatchInvocation ??= defaultFlagValue;
+  parseRefReadInvocation ??= defaultFlagValue;
+  parseRefListenInvocation ??= defaultFlagValue;
 
   final nodeLintRegistry = NodeLintRegistry(
     LintRegistry(),
@@ -177,6 +183,12 @@ RiverpodAnalysisResult parseRiverpod(
   }
   if (parseRefWatchInvocation) {
     visitor.addRefWatchInvocation(result.refWatchInvocations.add);
+  }
+  if (parseRefReadInvocation) {
+    visitor.addRefReadInvocation(result.refReadInvocations.add);
+  }
+  if (parseRefListenInvocation) {
+    visitor.addRefListenInvocation(result.refListenInvocations.add);
   }
 
   node.accept(LinterVisitor(nodeLintRegistry));
@@ -271,7 +283,7 @@ class RiverpodVisitor {
   RefInvocationVisitor? _visitor;
 
   RefInvocationVisitor _addRefVisitor() {
-    final hadVisitor = _visitor == null;
+    final hadVisitor = _visitor != null;
     final visitor = _visitor ??= RefInvocationVisitor();
     if (hadVisitor) return visitor;
 
@@ -290,6 +302,18 @@ class RiverpodVisitor {
     void Function(RefWatchInvocation) cb,
   ) {
     _addRefVisitor().onRefWatchInvocation.add(cb);
+  }
+
+  void addRefListenInvocation(
+    void Function(RefListenInvocation) cb,
+  ) {
+    _addRefVisitor().onRefListenInvocation.add(cb);
+  }
+
+  void addRefReadInvocation(
+    void Function(RefReadInvocation) cb,
+  ) {
+    _addRefVisitor().onRefReadInvocation.add(cb);
   }
 
   // void addRefWatchInvocation();
