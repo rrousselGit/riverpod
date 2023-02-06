@@ -364,7 +364,7 @@ class RiverpodAnnotation {
         annotation: annotation,
         element: RiverpodAnnotationElement(
           keepAlive: RiverpodAnnotationElement.readKeepAlive(dartObject),
-          dependencies: dependencies?.map((e) => e.provider).toList(),
+          dependencies: dependencies?.map((e) => e.provider).toSet(),
         ),
         keepAliveNode: keepAliveNode,
         dependenciesNode: dependenciesNode,

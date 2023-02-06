@@ -42,7 +42,7 @@ class RiverpodAnnotationDependencyElement {
     );
   }
 
-  final ProviderDeclarationElement provider;
+  final GeneratorProviderDeclarationElement provider;
 }
 
 class RiverpodAnnotationElement {
@@ -50,7 +50,8 @@ class RiverpodAnnotationElement {
   RiverpodAnnotationElement({
     required this.keepAlive,
     required this.dependencies,
-  });
+  }) : allTransitiveDependencies =
+            _computeAllTransitiveDependencies(dependencies);
 
   @internal
   static RiverpodAnnotationElement? parse(Element element) {
@@ -69,12 +70,25 @@ class RiverpodAnnotationElement {
         );
       }
       return result;
-    }).toList();
+    }).toSet();
 
     return RiverpodAnnotationElement(
       keepAlive: readKeepAlive(annotation),
       dependencies: dependencies,
     );
+  }
+
+  static Set<RiverpodAnnotationDependencyElement>?
+      _computeAllTransitiveDependencies(
+    Set<RiverpodAnnotationDependencyElement>? dependencies,
+  ) {
+    if (dependencies == null) return null;
+
+    return {
+      ...dependencies,
+      for (final dependency in dependencies)
+        ...?dependency.provider.annotation.allTransitiveDependencies,
+    };
   }
 
   @internal
@@ -88,57 +102,13 @@ class RiverpodAnnotationElement {
   }
 
   final bool keepAlive;
-  final List<RiverpodAnnotationDependencyElement>? dependencies;
-}
-
-class ProviderDependencyElement {
-  ProviderDependencyElement(this.provider);
-  final ProviderDeclarationElement provider;
-}
-
-class ProviderDependenciesElement {
-  const ProviderDependenciesElement(this.dependencies);
-
-  /// If null, it means that the provider likely has some dependencies
-  /// but that they couldn't be computed.
-  final Set<ProviderDependencyElement>? dependencies;
-
-  ProviderDependenciesElement computeAllTransitiveDependencies() {
-    final dependencies = this.dependencies;
-    if (dependencies == null) return const ProviderDependenciesElement(null);
-
-    final result = <ProviderDependencyElement>{...dependencies};
-
-    for (final dependency in dependencies) {
-      final transitiveDependencies =
-          dependency.provider.allTransitiveDependencies;
-      if (transitiveDependencies == null) {
-        // The dependency has no dependency
-        continue;
-      }
-      if (transitiveDependencies.dependencies == null) {
-        // The dependency has some dependencies but they failed to compute.
-        // So we propagate the fact that we couldn't compute the list of dependencies.
-        return const ProviderDependenciesElement(null);
-      }
-      result.addAll(transitiveDependencies.dependencies!);
-    }
-
-    return ProviderDependenciesElement(result);
-  }
+  final Set<RiverpodAnnotationDependencyElement>? dependencies;
+  final Set<RiverpodAnnotationDependencyElement>? allTransitiveDependencies;
 }
 
 abstract class ProviderDeclarationElement {
   Element get element;
   String get name;
-
-  /// If null, the provider has no dependencies.
-  ProviderDependenciesElement? get dependencies;
-
-  /// The provider's [dependencies] and all of their dependencies too.
-  ///
-  /// If null, the provider has no dependencies.
-  ProviderDependenciesElement? get allTransitiveDependencies;
 }
 
 /// The class name for explicitly typed provider.
@@ -207,8 +177,6 @@ class LegacyProviderDeclarationElement implements ProviderDeclarationElement {
     required this.isAutoDispose,
     required this.familyElement,
     required this.providerType,
-    required this.dependencies,
-    required this.allTransitiveDependencies,
   });
 
   static LegacyProviderDeclarationElement? parse(
@@ -245,8 +213,6 @@ class LegacyProviderDeclarationElement implements ProviderDeclarationElement {
         isAutoDispose: isAutoDispose,
         familyElement: familyElement,
         providerType: providerType,
-        dependencies: const ProviderDependenciesElement(null),
-        allTransitiveDependencies: const ProviderDependenciesElement(null),
       );
     });
   }
@@ -264,12 +230,6 @@ class LegacyProviderDeclarationElement implements ProviderDeclarationElement {
   final LegacyFamilyInvocationElement? familyElement;
 
   final LegacyProviderType providerType;
-
-  @override
-  final ProviderDependenciesElement? dependencies;
-
-  @override
-  final ProviderDependenciesElement? allTransitiveDependencies;
 }
 
 class LegacyFamilyInvocationElement {
@@ -289,8 +249,6 @@ class StatefulProviderDeclarationElement
     required this.annotation,
     required this.buildMethod,
     required this.element,
-    required this.allTransitiveDependencies,
-    required this.dependencies,
   });
 
   @internal
@@ -311,21 +269,11 @@ class StatefulProviderDeclarationElement
         ),
       );
 
-      final dependencies = riverpodAnnotation.dependencies.let((dependencies) {
-        return ProviderDependenciesElement({
-          for (final dependency in dependencies)
-            ProviderDependencyElement(dependency.provider),
-        });
-      });
-
       return StatefulProviderDeclarationElement._(
         name: element.name,
         buildMethod: buildMethod,
         element: element,
         annotation: riverpodAnnotation,
-        dependencies: dependencies,
-        allTransitiveDependencies:
-            dependencies?.computeAllTransitiveDependencies(),
       );
     });
   }
@@ -342,12 +290,6 @@ class StatefulProviderDeclarationElement
   final RiverpodAnnotationElement annotation;
 
   final ExecutableElement buildMethod;
-
-  @override
-  final ProviderDependenciesElement? allTransitiveDependencies;
-
-  @override
-  final ProviderDependenciesElement? dependencies;
 }
 
 class StatelessProviderDeclarationElement
@@ -356,8 +298,6 @@ class StatelessProviderDeclarationElement
     required this.name,
     required this.annotation,
     required this.element,
-    required this.allTransitiveDependencies,
-    required this.dependencies,
   });
 
   @internal
@@ -369,20 +309,10 @@ class StatelessProviderDeclarationElement
       final riverpodAnnotation = RiverpodAnnotationElement.parse(element);
       if (riverpodAnnotation == null) return null;
 
-      final dependencies = riverpodAnnotation.dependencies.let((dependencies) {
-        return ProviderDependenciesElement({
-          for (final dependency in dependencies)
-            ProviderDependencyElement(dependency.provider),
-        });
-      });
-
       return StatelessProviderDeclarationElement._(
         name: element.name,
         annotation: riverpodAnnotation,
         element: element,
-        dependencies: dependencies,
-        allTransitiveDependencies:
-            dependencies?.computeAllTransitiveDependencies(),
       );
     });
   }
@@ -397,12 +327,6 @@ class StatelessProviderDeclarationElement
 
   @override
   final RiverpodAnnotationElement annotation;
-
-  @override
-  final ProviderDependenciesElement? allTransitiveDependencies;
-
-  @override
-  final ProviderDependenciesElement? dependencies;
 }
 
 /// An object for differentiating "no cache" from "cache but value is null".
