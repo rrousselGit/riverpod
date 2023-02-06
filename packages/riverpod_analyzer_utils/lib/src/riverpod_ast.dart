@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
+import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/dart/element/type_provider.dart';
@@ -116,36 +117,83 @@ class ProviderListenableExpression {
     required this.node,
     required this.provider,
     required this.providerElement,
+    required this.familyArguments,
   });
 
   static ProviderListenableExpression? parse(Expression? expression) {
     if (expression == null) return null;
 
-    print('oy $expression // ${expression.runtimeType}');
+    // print('oy $expression // ${expression.runtimeType}');
     SimpleIdentifier? provider;
     ProviderDeclarationElement? providerElement;
+    ArgumentList? familyArguments;
 
-    if (expression is SimpleIdentifier) {
-      provider = expression;
-      final element = provider.staticElement;
-      if (element != null) {
-        final annotation =
-            _providerForAnnotationChecker.firstAnnotationOfExact(element);
-        print(
-            'Foo ${provider.staticElement} // ${annotation?.getField('value')}');
+    void parseExpression(Expression? expression) {
+      if (expression is SimpleIdentifier) {
+        provider = expression;
+        final element = expression.staticElement;
+        if (element is PropertyAccessorElement) {
+          final annotation = _providerForAnnotationChecker
+              .firstAnnotationOfExact(element.variable);
+
+          if (annotation == null) {
+            providerElement =
+                LegacyProviderDeclarationElement.parse(element.variable);
+          } else {
+            providerElement = _parseGeneratedProviderFromAnnotation(annotation);
+          }
+        }
+      } else if (expression is FunctionExpressionInvocation) {
+        familyArguments = expression.argumentList;
+        parseExpression(expression.function);
+      } else {
+        throw UnsupportedError(
+          'Unknown expression $expression (${expression.runtimeType})',
+        );
       }
     }
+
+    parseExpression(expression);
 
     return ProviderListenableExpression._(
       node: expression,
       provider: provider,
       providerElement: providerElement,
+      familyArguments: familyArguments,
     );
+  }
+
+  static GeneratorProviderDeclarationElement?
+      _parseGeneratedProviderFromAnnotation(
+    DartObject annotation,
+  ) {
+    final generatedProviderDefinition = annotation.getField('value')!;
+
+    final function = generatedProviderDefinition.toFunctionValue();
+    if (function != null) {
+      return StatelessProviderDeclarationElement.parse(
+        function,
+        annotation: null,
+      );
+    }
+    late final type = generatedProviderDefinition.toTypeValue()?.element;
+    if (type != null && type is ClassElement) {
+      return StatefulProviderDeclarationElement.parse(
+        type,
+        annotation: null,
+      );
+    } else {
+      throw StateError('Unknown value $generatedProviderDefinition');
+    }
   }
 
   final Expression node;
   final SimpleIdentifier? provider;
   final ProviderDeclarationElement? providerElement;
+
+  /// If [provider] is a provider with arguments (family), represents the arguments
+  /// passed to the provider.
+  final ArgumentList? familyArguments;
 }
 
 class RiverpodAnnotationDependency {
