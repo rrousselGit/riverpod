@@ -1,16 +1,13 @@
 import 'dart:async';
 
-import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:collection/collection.dart';
-import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:custom_lint_builder/src/node_lint_visitor.dart';
 import 'package:meta/meta.dart';
 
-import '../riverpod_analyzer_utils.dart';
 import 'riverpod_ast.dart';
 
 @internal
