@@ -6,7 +6,6 @@ part of 'sync.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs
 String _$publicClassHash() => 'c27eae39f455b986e570abb84f1471de7445ef3b';
 
 /// A generated public provider from a class
@@ -406,3 +405,4 @@ final _privateProvider = AutoDisposeProvider<String>.internal(
 );
 
 typedef _PrivateRef = AutoDisposeProviderRef<String>;
+// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

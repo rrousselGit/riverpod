@@ -6,7 +6,6 @@ part of 'main.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs
 String _$countNotifierHash() => 'a8dd7a66ee0002b8af657245c4affaa206fd99ec';
 
 /// See also [CountNotifier].
@@ -67,3 +66,4 @@ final countFuturePod = AutoDisposeFutureProvider<int>.internal(
 );
 
 typedef CountFutureRef = AutoDisposeFutureProviderRef<int>;
+// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

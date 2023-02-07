@@ -6,7 +6,6 @@ part of 'read_vs_watch.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs
 String _$myNotifierHash() => '61802219610d8b855bdacda5bf14b6161c69131c';
 
 /// Copied from Dart SDK
@@ -224,3 +223,4 @@ class GeneratedProvider extends AutoDisposeFutureProvider<String> {
     return _SystemHash.finish(hash);
   }
 }
+// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

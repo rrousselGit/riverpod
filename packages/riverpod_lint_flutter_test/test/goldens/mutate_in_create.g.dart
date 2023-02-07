@@ -6,7 +6,6 @@ part of 'mutate_in_create.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs
 String _$myNotifierHash() => '776dac1b8cf04992a7ad0e1f43a96bf9b4659f0b';
 
 /// Copied from Dart SDK
@@ -422,3 +421,4 @@ class GeneratedSyncProvider extends AutoDisposeProvider<String> {
     return _SystemHash.finish(hash);
   }
 }
+// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

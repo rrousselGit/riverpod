@@ -6,7 +6,6 @@ part of 'auto_dispose.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs
 String _$keepAliveHash() => '72dd192676126d487c24c7695a91d59410c62696';
 
 /// See also [keepAlive].
@@ -35,3 +34,4 @@ final notKeepAliveProvider = AutoDisposeProvider<int>.internal(
 );
 
 typedef NotKeepAliveRef = AutoDisposeProviderRef<int>;
+// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

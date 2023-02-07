@@ -126,9 +126,3 @@ Map<String, dynamic> _$$_PubSearchResponseToJson(
     <String, dynamic>{
       'packages': instance.packages,
     };
-
-// **************************************************************************
-// RiverpodGenerator
-// **************************************************************************
-
-// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs

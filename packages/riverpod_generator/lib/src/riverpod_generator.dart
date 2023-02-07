@@ -54,9 +54,7 @@ class RiverpodGenerator extends ParserGenerator {
   String runGenerator(RiverpodAnalysisResult riverpodResult) {
     final suffix = options.providerNameSuffix ?? 'Provider';
 
-    final buffer = StringBuffer('''
-// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs
-''');
+    final buffer = StringBuffer();
 
     var didEmitHashUtils = false;
     void maybeEmitHashUtils() {
@@ -148,6 +146,13 @@ class _SystemHash {
           hashFn: hashFn,
         ).run(buffer);
       }
+    }
+
+    // Only emit the header if we actually generated something
+    if (buffer.isNotEmpty) {
+      buffer.write('''
+// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions
+''');
     }
 
     return buffer.toString();
