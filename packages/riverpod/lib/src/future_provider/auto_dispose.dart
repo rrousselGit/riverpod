@@ -49,7 +49,7 @@ class AutoDisposeFutureProvider<T> extends _FutureProviderBase<T>
   }
 
   @override
-  Refreshable<Future<T>> get future => _future(this);
+  late final Refreshable<Future<T>> future = _future(this);
 
   /// {@macro riverpod.overridewith}
   Override overrideWith(

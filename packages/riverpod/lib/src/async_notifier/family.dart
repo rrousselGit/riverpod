@@ -71,11 +71,11 @@ class FamilyAsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T,
   static const autoDispose = AutoDisposeAsyncNotifierProviderFamily.new;
 
   @override
-  AlwaysAliveRefreshable<NotifierT> get notifier =>
+  late final AlwaysAliveRefreshable<NotifierT> notifier =
       _notifier<NotifierT, T>(this);
 
   @override
-  AlwaysAliveRefreshable<Future<T>> get future => _future<T>(this);
+  late final AlwaysAliveRefreshable<Future<T>> future = _future<T>(this);
 
   @override
   AsyncNotifierProviderElement<NotifierT, T> createElement() {

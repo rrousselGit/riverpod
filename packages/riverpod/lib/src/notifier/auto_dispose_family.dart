@@ -34,9 +34,9 @@ class AutoDisposeFamilyNotifierProviderImpl<NotifierT extends NotifierBase<T>,
   AutoDisposeFamilyNotifierProviderImpl(
     super._createNotifier, {
     super.name,
+    super.dependencies,
     @Deprecated('Will be removed in 3.0.0') super.from,
     @Deprecated('Will be removed in 3.0.0') super.argument,
-    super.dependencies,
     @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
   }) : super(
           allTransitiveDependencies:
@@ -45,7 +45,7 @@ class AutoDisposeFamilyNotifierProviderImpl<NotifierT extends NotifierBase<T>,
 
   /// An implementation detail of Riverpod
   @internal
-  const AutoDisposeFamilyNotifierProviderImpl.internal(
+  AutoDisposeFamilyNotifierProviderImpl.internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -56,7 +56,7 @@ class AutoDisposeFamilyNotifierProviderImpl<NotifierT extends NotifierBase<T>,
   });
 
   @override
-  Refreshable<NotifierT> get notifier => _notifier<NotifierT, T>(this);
+  late final Refreshable<NotifierT> notifier = _notifier<NotifierT, T>(this);
 
   @override
   AutoDisposeNotifierProviderElement<NotifierT, T> createElement() {

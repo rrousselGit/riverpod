@@ -48,10 +48,10 @@ class StateProvider<T> extends _StateProviderBase<T>
   StateProvider(
     this._createFn, {
     super.name,
+    super.dependencies,
     @Deprecated('Will be removed in 3.0.0') super.from,
     @Deprecated('Will be removed in 3.0.0') super.argument,
     @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
-    super.dependencies,
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),

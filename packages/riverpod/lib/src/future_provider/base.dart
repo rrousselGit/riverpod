@@ -59,7 +59,7 @@ class FutureProvider<T> extends _FutureProviderBase<T>
   final Create<FutureOr<T>, FutureProviderRef<T>> _createFn;
 
   @override
-  AlwaysAliveRefreshable<Future<T>> get future => _future(this);
+  late final AlwaysAliveRefreshable<Future<T>> future = _future(this);
 
   @override
   FutureOr<T> _create(FutureProviderElement<T> ref) => _createFn(ref);

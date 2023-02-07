@@ -77,9 +77,9 @@ class StreamProvider<T> extends _StreamProviderBase<T>
   StreamProvider(
     this._createFn, {
     super.name,
+    super.dependencies,
     @Deprecated('Will be removed in 3.0.0') super.from,
     @Deprecated('Will be removed in 3.0.0') super.argument,
-    super.dependencies,
     @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
   }) : super(
           allTransitiveDependencies:
