@@ -71,9 +71,9 @@ class AsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
   AsyncNotifierProviderImpl(
     super._createNotifier, {
     super.name,
+    super.dependencies,
     @Deprecated('Will be removed in 3.0.0') super.from,
     @Deprecated('Will be removed in 3.0.0') super.argument,
-    super.dependencies,
     @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
   }) : super(
           allTransitiveDependencies:
