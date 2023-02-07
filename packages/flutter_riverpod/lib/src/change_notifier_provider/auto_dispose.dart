@@ -19,7 +19,7 @@ class AutoDisposeChangeNotifierProvider<NotifierT extends ChangeNotifier?>
     @Deprecated('Will be removed in 3.0.0') super.from,
     @Deprecated('Will be removed in 3.0.0') super.argument,
     super.dependencies,
-    super.debugGetCreateSourceHash,
+    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
