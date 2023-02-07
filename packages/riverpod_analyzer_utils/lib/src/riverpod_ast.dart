@@ -635,7 +635,6 @@ abstract class GeneratorProviderDeclaration implements ProviderDeclaration {
   DartType get exposedType;
   DartType get createdType;
 
-  @internal
   String computeProviderHash() {
     // TODO improve hash function to inspect the body of the create fn
     // such that the hash changes if one of the element defined outside of the
