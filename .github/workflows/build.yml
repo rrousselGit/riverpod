@@ -39,7 +39,7 @@ jobs:
           - packages/hooks_riverpod
           - packages/hooks_riverpod/example
           - packages/riverpod_annotation
-          - packages/riverpod_analyzer
+          - packages/riverpod_analyzer_utils
           - packages/riverpod_analyzer_utils_tests
           # TODO(rrousselGit) update riverpod_cli test setup to be supported by the CI
           # - packages/riverpod_cli
