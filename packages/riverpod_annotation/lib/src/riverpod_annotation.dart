@@ -38,10 +38,12 @@ const riverpod = Riverpod();
 /// the generated provider.
 ///
 /// DO NOT USE
-@internal
 class ProviderFor {
   /// An annotation used to help the linter find the user-defined element from
   /// the generated provider.
+  // Put the annotation on the constructor to avoid the linter from complaining
+  // about the annotation being exported; while preventing the user from using it.
+  @internal
   const ProviderFor(this.value)
       : assert(
           value is Function || value is Type,
