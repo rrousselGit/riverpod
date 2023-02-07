@@ -36,6 +36,9 @@ const riverpod = Riverpod();
 
 /// An annotation used to help the linter find the user-defined element from
 /// the generated provider.
+///
+/// DO NOT USE
+@internal
 class ProviderFor {
   /// An annotation used to help the linter find the user-defined element from
   /// the generated provider.

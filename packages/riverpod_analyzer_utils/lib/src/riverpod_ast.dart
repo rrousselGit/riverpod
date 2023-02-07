@@ -34,6 +34,7 @@ class RefInvocation {
     required this.function,
   });
 
+  @internal
   static void parse(
     MethodInvocation node,
     RefInvocationVisitor visitor,
@@ -206,6 +207,7 @@ class ProviderListenableExpression {
     required this.familyArguments,
   });
 
+  @internal
   static ProviderListenableExpression? parse(Expression? expression) {
     if (expression == null) return null;
 
@@ -315,6 +317,7 @@ class RiverpodAnnotation {
     required this.dependenciesNode,
   });
 
+  @internal
   static RiverpodAnnotation? parse(AnnotatedNode node) {
     for (final annotation in node.metadata) {
       final elementAnnotation = annotation.elementAnnotation;
@@ -523,6 +526,7 @@ class LegacyProviderDeclaration implements ProviderDeclaration {
     required this.familyModifier,
   });
 
+  @internal
   static LegacyProviderDeclaration? parse(
     VariableDeclaration node,
   ) {
@@ -631,6 +635,7 @@ abstract class GeneratorProviderDeclaration implements ProviderDeclaration {
   DartType get exposedType;
   DartType get createdType;
 
+  @internal
   String computeProviderHash() {
     // TODO improve hash function to inspect the body of the create fn
     // such that the hash changes if one of the element defined outside of the

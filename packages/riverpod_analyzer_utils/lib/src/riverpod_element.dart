@@ -167,6 +167,7 @@ class LegacyProviderDeclarationElement implements ProviderDeclarationElement {
     required this.providerType,
   });
 
+  @internal
   static LegacyProviderDeclarationElement? parse(
     VariableElement element,
   ) {
