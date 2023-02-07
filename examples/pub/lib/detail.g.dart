@@ -8,7 +8,7 @@ part of 'detail.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$packageMetricsHash() => '67cd25e50357e6e970d432c1d255085a23b856ac';
+String _$packageMetricsHash() => r'67cd25e50357e6e970d432c1d255085a23b856ac';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -163,7 +163,7 @@ class PackageMetricsProvider extends AutoDisposeAsyncNotifierProviderImpl<
 }
 
 String _$fetchPackageDetailsHash() =>
-    'e65ba332cb8397cc5a1aca6e656233dff698391a';
+    r'e65ba332cb8397cc5a1aca6e656233dff698391a';
 typedef FetchPackageDetailsRef = AutoDisposeFutureProviderRef<Package>;
 
 /// See also [fetchPackageDetails].
@@ -246,7 +246,7 @@ class FetchPackageDetailsProvider extends AutoDisposeFutureProvider<Package> {
   }
 }
 
-String _$likedPackagesHash() => '304a4def167e245812638cba776e8d5eb66d8844';
+String _$likedPackagesHash() => r'304a4def167e245812638cba776e8d5eb66d8844';
 
 /// See also [likedPackages].
 @ProviderFor(likedPackages)
@@ -261,7 +261,7 @@ final likedPackagesProvider = AutoDisposeFutureProvider<List<String>>.internal(
 );
 
 typedef LikedPackagesRef = AutoDisposeFutureProviderRef<List<String>>;
-String _$pubRepositoryHash() => '1f4dbfa0911f6467067fab244677acbcb8c7ad4e';
+String _$pubRepositoryHash() => r'1f4dbfa0911f6467067fab244677acbcb8c7ad4e';
 
 /// See also [pubRepository].
 @ProviderFor(pubRepository)

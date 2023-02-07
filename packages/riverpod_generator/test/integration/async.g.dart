@@ -6,7 +6,7 @@ part of 'async.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$publicClassHash() => '98f7b5a2478814264c0a70d066ecabfddc58c577';
+String _$publicClassHash() => r'98f7b5a2478814264c0a70d066ecabfddc58c577';
 
 /// See also [PublicClass].
 @ProviderFor(PublicClass)
@@ -21,7 +21,7 @@ final publicClassProvider =
 );
 
 typedef _$PublicClass = AutoDisposeAsyncNotifier<String>;
-String _$privateClassHash() => '7e69cffe8315999710e4cb6bb3de9f179d3f2f5d';
+String _$privateClassHash() => r'7e69cffe8315999710e4cb6bb3de9f179d3f2f5d';
 
 /// See also [_PrivateClass].
 @ProviderFor(_PrivateClass)
@@ -36,7 +36,7 @@ final _privateClassProvider =
 );
 
 typedef _$PrivateClass = AutoDisposeAsyncNotifier<String>;
-String _$familyClassHash() => '7b31f94e49dff1aa8b2f88d41b8a94e9a6434408';
+String _$familyClassHash() => r'7b31f94e49dff1aa8b2f88d41b8a94e9a6434408';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -199,7 +199,7 @@ class FamilyClassProvider
   }
 }
 
-String _$publicHash() => '9d99b79c013da13926d4ad89c72ebca4fc1cc257';
+String _$publicHash() => r'9d99b79c013da13926d4ad89c72ebca4fc1cc257';
 
 /// See also [public].
 @ProviderFor(public)
@@ -213,7 +213,7 @@ final publicProvider = AutoDisposeFutureProvider<String>.internal(
 );
 
 typedef PublicRef = AutoDisposeFutureProviderRef<String>;
-String _$privateHash() => 'bc0469a9315de114a0ccd82c7db4980844d0009f';
+String _$privateHash() => r'bc0469a9315de114a0ccd82c7db4980844d0009f';
 
 /// See also [_private].
 @ProviderFor(_private)
@@ -227,7 +227,7 @@ final _privateProvider = AutoDisposeFutureProvider<String>.internal(
 );
 
 typedef _PrivateRef = AutoDisposeFutureProviderRef<String>;
-String _$familyHash() => 'f46defb7b007c76254058e9e8bc868260bcfe0f1';
+String _$familyHash() => r'f46defb7b007c76254058e9e8bc868260bcfe0f1';
 typedef FamilyRef = AutoDisposeFutureProviderRef<String>;
 
 /// See also [family].

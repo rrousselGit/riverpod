@@ -6,7 +6,7 @@ part of 'read_vs_watch.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$myNotifierHash() => '61802219610d8b855bdacda5bf14b6161c69131c';
+String _$myNotifierHash() => r'61802219610d8b855bdacda5bf14b6161c69131c';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -134,7 +134,7 @@ class MyNotifierProvider
   }
 }
 
-String _$generatedHash() => '40e3f3497855d0f3422139505af4a3e06bd5cc95';
+String _$generatedHash() => r'40e3f3497855d0f3422139505af4a3e06bd5cc95';
 typedef GeneratedRef = AutoDisposeFutureProviderRef<String>;
 
 /// See also [generated].

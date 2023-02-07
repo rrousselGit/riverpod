@@ -6,7 +6,7 @@ part of 'hash1.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$simpleClassHash() => '958123cd6179c5b88da040cfeb71eb3061765277';
+String _$simpleClassHash() => r'958123cd6179c5b88da040cfeb71eb3061765277';
 
 /// See also [SimpleClass].
 @ProviderFor(SimpleClass)
@@ -21,7 +21,7 @@ final simpleClassProvider =
 );
 
 typedef _$SimpleClass = AutoDisposeNotifier<String>;
-String _$simpleHash() => 'ff9f7451526aef5b3af6646814631a502ad76a5f';
+String _$simpleHash() => r'ff9f7451526aef5b3af6646814631a502ad76a5f';
 
 /// See also [simple].
 @ProviderFor(simple)
@@ -35,7 +35,7 @@ final simpleProvider = AutoDisposeProvider<String>.internal(
 );
 
 typedef SimpleRef = AutoDisposeProviderRef<String>;
-String _$simple2Hash() => '06327442776394c5c9cbb33b048d7a42e709e7fd';
+String _$simple2Hash() => r'06327442776394c5c9cbb33b048d7a42e709e7fd';
 
 /// See also [simple2].
 @ProviderFor(simple2)

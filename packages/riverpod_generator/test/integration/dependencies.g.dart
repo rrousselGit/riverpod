@@ -6,7 +6,7 @@ part of 'dependencies.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$dep2Hash() => '2778537df77f6431148c2ce400724da3e2ab4b94';
+String _$dep2Hash() => r'2778537df77f6431148c2ce400724da3e2ab4b94';
 
 /// See also [Dep2].
 @ProviderFor(Dep2)
@@ -20,7 +20,7 @@ final dep2Provider = AutoDisposeNotifierProvider<Dep2, int>.internal(
 );
 
 typedef _$Dep2 = AutoDisposeNotifier<int>;
-String _$family2Hash() => 'ce727b262aae067b0d4f703f03670abb70ad8977';
+String _$family2Hash() => r'ce727b262aae067b0d4f703f03670abb70ad8977';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -135,7 +135,7 @@ class Family2Provider extends AutoDisposeNotifierProviderImpl<Family2, int> {
   }
 }
 
-String _$provider3Hash() => 'dfdd6dec6cfee543c73d99593ce98d68f4db385c';
+String _$provider3Hash() => r'dfdd6dec6cfee543c73d99593ce98d68f4db385c';
 
 /// See also [Provider3].
 @ProviderFor(Provider3)
@@ -159,7 +159,7 @@ final provider3Provider = AutoDisposeNotifierProvider<Provider3, int>.internal(
 );
 
 typedef _$Provider3 = AutoDisposeNotifier<int>;
-String _$provider4Hash() => '1c955214d99695bb694c96374b277aac58e734df';
+String _$provider4Hash() => r'1c955214d99695bb694c96374b277aac58e734df';
 
 abstract class _$Provider4 extends BuildlessAutoDisposeNotifier<int> {
   late final int id;
@@ -265,7 +265,7 @@ class Provider4Provider
   }
 }
 
-String _$depHash() => '2213a401e03a1a914579b4a3a7707b783de9efba';
+String _$depHash() => r'2213a401e03a1a914579b4a3a7707b783de9efba';
 
 /// See also [dep].
 @ProviderFor(dep)
@@ -279,7 +279,7 @@ final depProvider = AutoDisposeProvider<int>.internal(
 );
 
 typedef DepRef = AutoDisposeProviderRef<int>;
-String _$familyHash() => '8c228ff14b8c6cf1f3d4d6266232d64b5057c440';
+String _$familyHash() => r'8c228ff14b8c6cf1f3d4d6266232d64b5057c440';
 typedef FamilyRef = AutoDisposeProviderRef<int>;
 
 /// See also [family].
@@ -360,7 +360,7 @@ class FamilyProvider extends AutoDisposeProvider<int> {
   }
 }
 
-String _$providerHash() => '6c9184ef4c6a410a2132e1ecc13a2e646e936d37';
+String _$providerHash() => r'6c9184ef4c6a410a2132e1ecc13a2e646e936d37';
 
 /// See also [provider].
 @ProviderFor(provider)
@@ -384,7 +384,7 @@ final providerProvider = AutoDisposeProvider<int>.internal(
 );
 
 typedef ProviderRef = AutoDisposeProviderRef<int>;
-String _$provider2Hash() => '70d908579c5e64ce6558b42f433adfb80f4dc79b';
+String _$provider2Hash() => r'70d908579c5e64ce6558b42f433adfb80f4dc79b';
 
 /// See also [provider2].
 @ProviderFor(provider2)
@@ -409,7 +409,7 @@ final provider2Provider = AutoDisposeProvider<int>.internal(
 
 typedef Provider2Ref = AutoDisposeProviderRef<int>;
 String _$transitiveDependenciesHash() =>
-    '9c81823224bb28a5dc482328c04ce76293370877';
+    r'9c81823224bb28a5dc482328c04ce76293370877';
 
 /// See also [transitiveDependencies].
 @ProviderFor(transitiveDependencies)
@@ -431,7 +431,7 @@ final transitiveDependenciesProvider = AutoDisposeProvider<int>.internal(
 
 typedef TransitiveDependenciesRef = AutoDisposeProviderRef<int>;
 String _$smallTransitiveDependencyCountHash() =>
-    '34689e1ba57e2959975cbf8ebd6c9483f4652a73';
+    r'34689e1ba57e2959975cbf8ebd6c9483f4652a73';
 
 /// See also [smallTransitiveDependencyCount].
 @ProviderFor(smallTransitiveDependencyCount)

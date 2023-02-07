@@ -6,7 +6,7 @@ part of 'mutate_in_create.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$myNotifierHash() => '776dac1b8cf04992a7ad0e1f43a96bf9b4659f0b';
+String _$myNotifierHash() => r'776dac1b8cf04992a7ad0e1f43a96bf9b4659f0b';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -134,7 +134,7 @@ class MyNotifierProvider
   }
 }
 
-String _$myNotifier2Hash() => '86bcf4b54298ca620d50ca3f2cfdce843739e6d1';
+String _$myNotifier2Hash() => r'86bcf4b54298ca620d50ca3f2cfdce843739e6d1';
 
 abstract class _$MyNotifier2 extends BuildlessAutoDisposeNotifier<String> {
   late final int i;
@@ -241,7 +241,7 @@ class MyNotifier2Provider
   }
 }
 
-String _$generatedHash() => 'cf482f785592d96d90763d228d1c29d6ab0915ac';
+String _$generatedHash() => r'cf482f785592d96d90763d228d1c29d6ab0915ac';
 typedef GeneratedRef = AutoDisposeFutureProviderRef<String>;
 
 /// See also [generated].
@@ -331,7 +331,7 @@ class GeneratedProvider extends AutoDisposeFutureProvider<String> {
   }
 }
 
-String _$generatedSyncHash() => '15f2d152e33b46338ee523743b2be3415d7fa48f';
+String _$generatedSyncHash() => r'15f2d152e33b46338ee523743b2be3415d7fa48f';
 typedef GeneratedSyncRef = AutoDisposeProviderRef<String>;
 
 /// See also [generatedSync].

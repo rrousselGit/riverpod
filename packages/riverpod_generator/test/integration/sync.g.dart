@@ -6,7 +6,7 @@ part of 'sync.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$publicClassHash() => 'f04884c039e6200ad3537feeecfc6e83828b5eb5';
+String _$publicClassHash() => r'f04884c039e6200ad3537feeecfc6e83828b5eb5';
 
 /// This is some documentation
 ///
@@ -23,7 +23,7 @@ final publicClassProvider =
 );
 
 typedef _$PublicClass = AutoDisposeNotifier<String>;
-String _$privateClassHash() => '6d41def3ffdc1f79e593beaefb3304ce4b211a77';
+String _$privateClassHash() => r'6d41def3ffdc1f79e593beaefb3304ce4b211a77';
 
 /// See also [_PrivateClass].
 @ProviderFor(_PrivateClass)
@@ -38,7 +38,7 @@ final _privateClassProvider =
 );
 
 typedef _$PrivateClass = AutoDisposeNotifier<String>;
-String _$familyClassHash() => '7dd0013dba8f45e82e8e39fbb2635e5a7f4b9cac';
+String _$familyClassHash() => r'7dd0013dba8f45e82e8e39fbb2635e5a7f4b9cac';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -214,7 +214,7 @@ class FamilyClassProvider
 }
 
 String _$supports$InClassNameHash() =>
-    '4e99f433d9cb3598faaf4d172edf9f28b9e68091';
+    r'4e99f433d9cb3598faaf4d172edf9f28b9e68091';
 
 /// See also [Supports$InClassName].
 @ProviderFor(Supports$InClassName)
@@ -230,7 +230,7 @@ final supports$InClassNameProvider =
 );
 
 typedef _$Supports$InClassName = AutoDisposeNotifier<String>;
-String _$publicHash() => '138be35943899793ab085e711fe3f3d22696a3ba';
+String _$publicHash() => r'138be35943899793ab085e711fe3f3d22696a3ba';
 
 /// This is some documentation
 ///
@@ -246,7 +246,7 @@ final publicProvider = AutoDisposeProvider<String>.internal(
 );
 
 typedef PublicRef = AutoDisposeProviderRef<String>;
-String _$supports$inNamesHash() => 'cbf929802fcbd0aa949ad72743d096fb3ef5f28f';
+String _$supports$inNamesHash() => r'cbf929802fcbd0aa949ad72743d096fb3ef5f28f';
 
 /// See also [supports$inNames].
 @ProviderFor(supports$inNames)
@@ -261,7 +261,7 @@ final supports$inNamesProvider = AutoDisposeProvider<String>.internal(
 );
 
 typedef Supports$inNamesRef = AutoDisposeProviderRef<String>;
-String _$familyHash() => '14d1ee238ca608d547630d0e222ef4c5866e9e61';
+String _$familyHash() => r'14d1ee238ca608d547630d0e222ef4c5866e9e61';
 typedef FamilyRef = AutoDisposeProviderRef<String>;
 
 /// This is some documentation
@@ -387,7 +387,7 @@ class FamilyProvider extends AutoDisposeProvider<String> {
   }
 }
 
-String _$privateHash() => '519561bc7e88e394d7f75ca2102a5c0acc832c66';
+String _$privateHash() => r'519561bc7e88e394d7f75ca2102a5c0acc832c66';
 
 /// See also [_private].
 @ProviderFor(_private)

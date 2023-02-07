@@ -6,7 +6,7 @@ part of 'main.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$countNotifierHash() => 'a8dd7a66ee0002b8af657245c4affaa206fd99ec';
+String _$countNotifierHash() => r'a8dd7a66ee0002b8af657245c4affaa206fd99ec';
 
 /// See also [CountNotifier].
 @ProviderFor(CountNotifier)
@@ -22,7 +22,8 @@ final countNotifierPod =
 );
 
 typedef _$CountNotifier = AutoDisposeNotifier<int>;
-String _$countAsyncNotifierHash() => '2a7049d864bf396e44a5937b4001efb4774a5f29';
+String _$countAsyncNotifierHash() =>
+    r'2a7049d864bf396e44a5937b4001efb4774a5f29';
 
 /// See also [CountAsyncNotifier].
 @ProviderFor(CountAsyncNotifier)
@@ -38,7 +39,7 @@ final countAsyncNotifierPod =
 );
 
 typedef _$CountAsyncNotifier = AutoDisposeAsyncNotifier<int>;
-String _$countHash() => '4c7e72b275767a60ece5e8662ab1e28f73cf7e44';
+String _$countHash() => r'4c7e72b275767a60ece5e8662ab1e28f73cf7e44';
 
 /// See also [count].
 @ProviderFor(count)
@@ -52,7 +53,7 @@ final countPod = AutoDisposeProvider<int>.internal(
 );
 
 typedef CountRef = AutoDisposeProviderRef<int>;
-String _$countFutureHash() => 'ec7cc31ce1c1a10607f1dcb35dd217acd2877729';
+String _$countFutureHash() => r'ec7cc31ce1c1a10607f1dcb35dd217acd2877729';
 
 /// See also [countFuture].
 @ProviderFor(countFuture)

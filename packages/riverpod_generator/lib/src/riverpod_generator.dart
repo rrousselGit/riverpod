@@ -21,7 +21,7 @@ String providerDocFor(Element element) {
 }
 
 String _hashFn(GeneratorProviderDeclaration provider, String hashName) {
-  return "String $hashName() => '${provider.computeProviderHash()}';";
+  return "String $hashName() => r'${provider.computeProviderHash()}';";
 }
 
 String _hashFnName(ProviderDeclaration provider) {
