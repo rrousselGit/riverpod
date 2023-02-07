@@ -31,7 +31,7 @@ void main() {
       () {
     final container = createContainer();
 
-    final FamilyClassFamily family = familyClassProvider;
+    const FamilyClassFamily family = familyClassProvider;
 
     expect(familyClassProvider(42, third: .42).from, familyClassProvider);
 

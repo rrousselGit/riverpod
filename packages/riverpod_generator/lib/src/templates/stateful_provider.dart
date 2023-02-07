@@ -4,7 +4,9 @@ import '../riverpod_generator.dart';
 import 'template.dart';
 
 String providerNameFor(
-    ProviderDeclarationElement provider, BuildYamlOptions options) {
+  ProviderDeclarationElement provider,
+  BuildYamlOptions options,
+) {
   return '${provider.name.lowerFirst}${options.providerNameSuffix ?? 'Provider'}';
 }
 
