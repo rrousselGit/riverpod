@@ -36,9 +36,9 @@ String _hashFnIdentifier(String hashFnName) {
 @immutable
 class RiverpodGenerator2 extends ParserGenerator {
   RiverpodGenerator2(Map<String, Object?> mapConfig)
-      : config = BuildYamlOptions.fromMap(mapConfig);
+      : options = BuildYamlOptions.fromMap(mapConfig);
 
-  final BuildYamlOptions config;
+  final BuildYamlOptions options;
 
   @override
   String generateForUnit(ResolvedUnitResult resolvedUnitResult) {
@@ -52,7 +52,7 @@ class RiverpodGenerator2 extends ParserGenerator {
   }
 
   String runGenerator(RiverpodAnalysisResult riverpodResult) {
-    final suffix = config.providerNameSuffix ?? 'Provider';
+    final suffix = options.providerNameSuffix ?? 'Provider';
 
     final buffer = StringBuffer('''
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment
@@ -103,7 +103,7 @@ class _SystemHash {
       if (parameters.isEmpty) {
         StatefulProviderTemplate(
           provider,
-          providerName: providerName,
+          options: options,
           notifierTypedefName: notifierTypedefName,
           hashFn: hashFn,
         ).run(buffer);
@@ -111,7 +111,7 @@ class _SystemHash {
         maybeEmitHashUtils();
         FamilyTemplate.stateful(
           provider,
-          providerName: providerName,
+          options: options,
           notifierTypedefName: notifierTypedefName,
           hashFn: hashFn,
         ).run(buffer);
@@ -120,8 +120,6 @@ class _SystemHash {
 
     for (final provider
         in riverpodResult.statelessProviderDeclarations.values) {
-      final providerName = '${provider.providerElement.name}$suffix';
-
       final parameters =
           provider.node.functionExpression.parameters?.parameters;
       if (parameters == null) continue;
@@ -138,15 +136,15 @@ class _SystemHash {
         maybeEmitHashUtils();
         FamilyTemplate.stateless(
           provider,
-          providerName: providerName,
+          options: options,
           refName: refName,
           hashFn: hashFn,
         ).run(buffer);
       } else {
         StatelessProviderTemplate(
           provider,
-          providerName: providerName,
           refName: refName,
+          options: options,
           hashFn: hashFn,
         ).run(buffer);
       }

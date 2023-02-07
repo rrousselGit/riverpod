@@ -313,10 +313,6 @@ class RiverpodVisitor {
     _addRefVisitor().onRefReadInvocation.add(cb);
   }
 
-  // void addRefWatchInvocation();
-  // void addRefListenInvocation();
-  // void addRefReadInvocation();
-
   // // Cusumer visitors
   // void addConsumerWidgetDeclaration();
 

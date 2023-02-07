@@ -4,12 +4,13 @@ import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import '../models.dart';
 import '../riverpod_generator2.dart';
 import 'parameters.dart';
+import 'stateful_provider.dart';
 import 'template.dart';
 
 class FamilyTemplate extends Template {
   FamilyTemplate._(
     this.provider, {
-    required this.providerName,
+    required this.options,
     required this.parameters,
     required this.providerType,
     required this.providerGenerics,
@@ -30,9 +31,9 @@ class FamilyTemplate extends Template {
 
   factory FamilyTemplate.stateless(
     StatelessProviderDeclaration provider, {
-    required String providerName,
     required String refName,
     required String hashFn,
+    required BuildYamlOptions options,
   }) {
     var leading = '';
     String providerType;
@@ -59,7 +60,7 @@ class FamilyTemplate extends Template {
 
     return FamilyTemplate._(
       provider,
-      providerName: providerName,
+      options: options,
       parameters: parameters,
       hashFn: hashFn,
       providerGenerics: '<${provider.valueType}>',
@@ -74,9 +75,9 @@ typedef $refName = ${providerType}Ref<${provider.valueType}>;
 
   factory FamilyTemplate.stateful(
     StatefulProviderDeclaration provider, {
-    required String providerName,
     required String notifierTypedefName,
     required String hashFn,
+    required BuildYamlOptions options,
   }) {
     var leading = '';
     if (!provider.annotation.element.keepAlive) {
@@ -107,7 +108,7 @@ typedef $refName = ${providerType}Ref<${provider.valueType}>;
 
     return FamilyTemplate._(
       provider,
-      providerName: providerName,
+      options: options,
       parameters: parameters,
       hashFn: hashFn,
       providerGenerics: '<${provider.name}, ${provider.valueType}>',
@@ -134,8 +135,8 @@ abstract class $notifierTypedefName extends $notifierBaseType<${provider.valueTy
 
   final GeneratorProviderDeclaration provider;
   final List<ParameterElement> parameters;
+  final BuildYamlOptions options;
   final String providerType;
-  final String providerName;
   final String providerGenerics;
   final String providerCreate;
   final String other;
@@ -160,6 +161,37 @@ abstract class $notifierTypedefName extends $notifierBaseType<${provider.valueTy
     });
 
     final docs = providerDocFor(provider.providerElement.element);
+    final providerName = providerNameFor(provider.providerElement, options);
+
+    String transitiveDependencies;
+    if (provider.providerElement.annotation.allTransitiveDependencies == null) {
+      transitiveDependencies = '''
+  @override
+  List<ProviderOrFamily>? get allTransitiveDependencies => null;
+''';
+    } else {
+      transitiveDependencies = '''
+  static final List<ProviderOrFamily> _allTransitiveDependencies = ${serializeDependencies(provider.providerElement.annotation.allTransitiveDependencies, options)};
+
+  @override
+  List<ProviderOrFamily>? get allTransitiveDependencies => _allTransitiveDependencies;
+''';
+    }
+
+    String dependencies;
+    if (provider.providerElement.annotation.dependencies == null) {
+      dependencies = '''
+  @override
+  List<ProviderOrFamily>? get dependencies => null;
+''';
+    } else {
+      dependencies = '''
+  static final List<ProviderOrFamily>_dependencies = ${serializeDependencies(provider.providerElement.annotation.dependencies, options)};
+
+  @override
+  List<ProviderOrFamily>? get dependencies => _dependencies;
+''';
+    }
 
     buffer.write('''
 $other
@@ -183,11 +215,8 @@ class $familyName extends Family<${provider.exposedType}> {
     return call($parameterProviderPassThrough);
   }
 
-  @override
-  List<ProviderOrFamily>? get allTransitiveDependencies => null;
-
-  @override
-  List<ProviderOrFamily>? get dependencies => null;
+$transitiveDependencies
+$dependencies
 
   @override
   String? get name => r'$providerName';
