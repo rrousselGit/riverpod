@@ -139,6 +139,7 @@ RiverpodAnalysisResult parseRiverpod(
   parseRefReadInvocation ??= defaultFlagValue;
   parseRefListenInvocation ??= defaultFlagValue;
 
+  // ignore: invalid_use_of_internal_member
   final nodeLintRegistry = NodeLintRegistry(
     LintRegistry(),
     enableTiming: false,
@@ -189,6 +190,7 @@ RiverpodAnalysisResult parseRiverpod(
     visitor.addRefListenInvocation(result.refListenInvocations.add);
   }
 
+  // ignore: invalid_use_of_internal_member
   node.accept(LinterVisitor(nodeLintRegistry));
 
   return result;
