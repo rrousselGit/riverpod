@@ -29,10 +29,25 @@ class FutureProvider<T> extends _FutureProviderBase<T>
   FutureProvider(
     this._createFn, {
     super.name,
+    super.dependencies,
+    @Deprecated('Will be removed in 3.0.0') super.from,
+    @Deprecated('Will be removed in 3.0.0') super.argument,
+    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
+  }) : super(
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+        );
+
+  /// An implementation detail of Riverpod
+  @internal
+  FutureProvider.internal(
+    this._createFn, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
     super.from,
     super.argument,
-    super.dependencies,
-    super.debugGetCreateSourceHash,
   });
 
   /// {@macro riverpod.autoDispose}
@@ -44,7 +59,7 @@ class FutureProvider<T> extends _FutureProviderBase<T>
   final Create<FutureOr<T>, FutureProviderRef<T>> _createFn;
 
   @override
-  late final AlwaysAliveRefreshable<Future<T>> future = _future(this);
+  AlwaysAliveRefreshable<Future<T>> get future => _future(this);
 
   @override
   FutureOr<T> _create(FutureProviderElement<T> ref) => _createFn(ref);
@@ -56,10 +71,14 @@ class FutureProvider<T> extends _FutureProviderBase<T>
   Override overrideWith(Create<FutureOr<T>, FutureProviderRef<T>> create) {
     return ProviderOverride(
       origin: this,
-      override: FutureProvider(
+      override: FutureProvider.internal(
         create,
         from: from,
         argument: argument,
+        debugGetCreateSourceHash: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        name: null,
       ),
     );
   }
@@ -96,7 +115,22 @@ class FutureProviderFamily<R, Arg> extends FamilyBase<FutureProviderRef<R>,
     super.create, {
     super.name,
     super.dependencies,
-  }) : super(providerFactory: FutureProvider<R>.new);
+  }) : super(
+          providerFactory: FutureProvider<R>.internal,
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+          debugGetCreateSourceHash: null,
+        );
+
+  /// Implementation detail of the code-generator.
+  @internal
+  FutureProviderFamily.generator(
+    super.create, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+  }) : super(providerFactory: FutureProvider<R>.internal);
 
   /// {@macro riverpod.overridewith}
   Override overrideWith(
@@ -104,10 +138,14 @@ class FutureProviderFamily<R, Arg> extends FamilyBase<FutureProviderRef<R>,
   ) {
     return FamilyOverrideImpl<AsyncValue<R>, Arg, FutureProvider<R>>(
       this,
-      (arg) => FutureProvider<R>(
+      (arg) => FutureProvider<R>.internal(
         (ref) => create(ref, arg),
         from: from,
         argument: arg,
+        debugGetCreateSourceHash: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        name: null,
       ),
     );
   }

@@ -1,6 +1,6 @@
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import '../models.dart';
-import '../riverpod_generator2.dart';
+import '../riverpod_generator.dart';
 import 'stateful_provider.dart';
 import 'template.dart';
 
@@ -43,19 +43,16 @@ class StatelessProviderTemplate extends Template {
     }
 
     final providerName = providerNameFor(provider.providerElement, options);
-    final dependencies = provider.providerElement.annotation.dependencies ==
-            null
-        ? ''
-        : 'dependencies: ${serializeDependencies(provider.providerElement.annotation.dependencies, options)},';
 
     buffer.write('''
 ${providerDocFor(provider.providerElement.element)}
 @ProviderFor(${provider.name})
-final $providerName = $providerType<${provider.valueType}>(
+final $providerName = $providerType<${provider.valueType}>.internal(
   ${provider.providerElement.name},
   name: r'$providerName',
   debugGetCreateSourceHash: $hashFn,
-$dependencies
+  dependencies: ${serializeDependencies(provider.providerElement.annotation.dependencies, options)},
+  allTransitiveDependencies: ${serializeDependencies(provider.providerElement.annotation.allTransitiveDependencies, options)},
 );
 
 typedef $refName = ${providerType}Ref<${provider.valueType}>;

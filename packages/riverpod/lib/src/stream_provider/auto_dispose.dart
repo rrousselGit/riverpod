@@ -12,10 +12,25 @@ class AutoDisposeStreamProvider<T> extends _StreamProviderBase<T>
   AutoDisposeStreamProvider(
     this._createFn, {
     super.name,
+    @Deprecated('Will be removed in 3.0.0') super.from,
+    @Deprecated('Will be removed in 3.0.0') super.argument,
+    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
+    super.dependencies,
+  }) : super(
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+        );
+
+  /// An implementation detail of Riverpod
+  @internal
+  AutoDisposeStreamProvider.internal(
+    this._createFn, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
     super.from,
     super.argument,
-    super.dependencies,
-    super.debugGetCreateSourceHash,
   });
 
   /// {@macro riverpod.family}
@@ -43,10 +58,14 @@ class AutoDisposeStreamProvider<T> extends _StreamProviderBase<T>
   ) {
     return ProviderOverride(
       origin: this,
-      override: AutoDisposeStreamProvider<T>(
+      override: AutoDisposeStreamProvider<T>.internal(
         create,
         from: from,
         argument: argument,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        name: null,
       ),
     );
   }
@@ -74,7 +93,12 @@ class AutoDisposeStreamProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
     super.create, {
     super.name,
     super.dependencies,
-  }) : super(providerFactory: AutoDisposeStreamProvider.new);
+  }) : super(
+          providerFactory: AutoDisposeStreamProvider.internal,
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+          debugGetCreateSourceHash: null,
+        );
 
   /// {@macro riverpod.overridewith}
   Override overrideWith(
@@ -82,10 +106,14 @@ class AutoDisposeStreamProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
   ) {
     return FamilyOverrideImpl<AsyncValue<R>, Arg, AutoDisposeStreamProvider<R>>(
       this,
-      (arg) => AutoDisposeStreamProvider<R>(
+      (arg) => AutoDisposeStreamProvider<R>.internal(
         (ref) => create(ref, arg),
         from: from,
         argument: arg,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        name: null,
       ),
     );
   }

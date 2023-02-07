@@ -16,8 +16,8 @@ class AutoDisposeChangeNotifierProvider<NotifierT extends ChangeNotifier?>
   AutoDisposeChangeNotifierProvider(
     this._createFn, {
     super.name,
-    super.from,
-    super.argument,
+    @Deprecated('Will be removed in 3.0.0') super.from,
+    @Deprecated('Will be removed in 3.0.0') super.argument,
     super.dependencies,
     super.debugGetCreateSourceHash,
   });

@@ -46,21 +46,36 @@ class FamilyAsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T,
   FamilyAsyncNotifierProviderImpl(
     super._createNotifier, {
     super.name,
+    @Deprecated('Will be removed in 3.0.0') super.from,
+    @Deprecated('Will be removed in 3.0.0') super.argument,
+    super.dependencies,
+    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
+  }) : super(
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+        );
+
+  /// An implementation detail of Riverpod
+  @internal
+  FamilyAsyncNotifierProviderImpl.internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
     super.from,
     super.argument,
-    super.dependencies,
-    super.debugGetCreateSourceHash,
   });
 
   /// {@macro riverpod.autoDispose}
   static const autoDispose = AutoDisposeAsyncNotifierProviderFamily.new;
 
   @override
-  late final AlwaysAliveRefreshable<NotifierT> notifier =
+  AlwaysAliveRefreshable<NotifierT> get notifier =>
       _notifier<NotifierT, T>(this);
 
   @override
-  late final AlwaysAliveRefreshable<Future<T>> future = _future<T>(this);
+  AlwaysAliveRefreshable<Future<T>> get future => _future<T>(this);
 
   @override
   AsyncNotifierProviderElement<NotifierT, T> createElement() {
@@ -85,17 +100,26 @@ class AsyncNotifierProviderFamily<NotifierT extends FamilyAsyncNotifier<T, Arg>,
     super.create, {
     super.name,
     super.dependencies,
-  }) : super(providerFactory: AsyncNotifierFamilyProvider.new);
+  }) : super(
+          providerFactory: AsyncNotifierFamilyProvider.internal,
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+          debugGetCreateSourceHash: null,
+        );
 
   /// {@macro riverpod.overridewith}
   Override overrideWith(NotifierT Function() create) {
     return FamilyOverrideImpl<AsyncValue<T>, Arg,
         AsyncNotifierFamilyProvider<NotifierT, T, Arg>>(
       this,
-      (arg) => AsyncNotifierFamilyProvider<NotifierT, T, Arg>(
+      (arg) => AsyncNotifierFamilyProvider<NotifierT, T, Arg>.internal(
         create,
         from: from,
         argument: arg,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        name: null,
       ),
     );
   }

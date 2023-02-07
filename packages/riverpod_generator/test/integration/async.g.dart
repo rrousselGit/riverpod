@@ -3,7 +3,7 @@
 part of 'async.dart';
 
 // **************************************************************************
-// Generator: RiverpodGenerator2
+// RiverpodGenerator
 // **************************************************************************
 
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment
@@ -12,11 +12,13 @@ String _$publicClassHash() => '98f7b5a2478814264c0a70d066ecabfddc58c577';
 /// See also [PublicClass].
 @ProviderFor(PublicClass)
 final publicClassProvider =
-    AutoDisposeAsyncNotifierProvider<PublicClass, String>(
+    AutoDisposeAsyncNotifierProvider<PublicClass, String>.internal(
   PublicClass.new,
   name: r'publicClassProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$publicClassHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
 );
 
 typedef _$PublicClass = AutoDisposeAsyncNotifier<String>;
@@ -25,11 +27,13 @@ String _$privateClassHash() => '7e69cffe8315999710e4cb6bb3de9f179d3f2f5d';
 /// See also [_PrivateClass].
 @ProviderFor(_PrivateClass)
 final _privateClassProvider =
-    AutoDisposeAsyncNotifierProvider<_PrivateClass, String>(
+    AutoDisposeAsyncNotifierProvider<_PrivateClass, String>.internal(
   _PrivateClass.new,
   name: r'_privateClassProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$privateClassHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
 );
 
 typedef _$PrivateClass = AutoDisposeAsyncNotifier<String>;
@@ -74,11 +78,11 @@ abstract class _$FamilyClass extends BuildlessAutoDisposeAsyncNotifier<String> {
 
 /// See also [FamilyClass].
 @ProviderFor(FamilyClass)
-final familyClassProvider = FamilyClassFamily();
+const familyClassProvider = FamilyClassFamily();
 
 /// See also [FamilyClass].
 class FamilyClassFamily extends Family<AsyncValue<String>> {
-  FamilyClassFamily();
+  const FamilyClassFamily();
 
   FamilyClassProvider call(
     int first, {
@@ -109,11 +113,16 @@ class FamilyClassFamily extends Family<AsyncValue<String>> {
     );
   }
 
-  @override
-  List<ProviderOrFamily>? get allTransitiveDependencies => null;
+  static final Iterable<ProviderOrFamily>? _dependencies = null;
 
   @override
-  List<ProviderOrFamily>? get dependencies => null;
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static final Set<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Set<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
 
   @override
   String? get name => r'familyClassProvider';
@@ -128,7 +137,7 @@ class FamilyClassProvider
     required this.third,
     this.fourth = true,
     this.fifth,
-  }) : super(
+  }) : super.internal(
           () => FamilyClass()
             ..first = first
             ..second = second
@@ -141,6 +150,9 @@ class FamilyClassProvider
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$familyClassHash,
+          dependencies: FamilyClassFamily._dependencies,
+          allTransitiveDependencies:
+              FamilyClassFamily._allTransitiveDependencies,
         );
 
   final int first;
@@ -189,11 +201,13 @@ String _$publicHash() => '9d99b79c013da13926d4ad89c72ebca4fc1cc257';
 
 /// See also [public].
 @ProviderFor(public)
-final publicProvider = AutoDisposeFutureProvider<String>(
+final publicProvider = AutoDisposeFutureProvider<String>.internal(
   public,
   name: r'publicProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$publicHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
 );
 
 typedef PublicRef = AutoDisposeFutureProviderRef<String>;
@@ -201,11 +215,13 @@ String _$privateHash() => 'bc0469a9315de114a0ccd82c7db4980844d0009f';
 
 /// See also [_private].
 @ProviderFor(_private)
-final _privateProvider = AutoDisposeFutureProvider<String>(
+final _privateProvider = AutoDisposeFutureProvider<String>.internal(
   _private,
   name: r'_privateProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$privateHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
 );
 
 typedef _PrivateRef = AutoDisposeFutureProviderRef<String>;
@@ -214,11 +230,11 @@ typedef FamilyRef = AutoDisposeFutureProviderRef<String>;
 
 /// See also [family].
 @ProviderFor(family)
-final familyProvider = FamilyFamily();
+const familyProvider = FamilyFamily();
 
 /// See also [family].
 class FamilyFamily extends Family<AsyncValue<String>> {
-  FamilyFamily();
+  const FamilyFamily();
 
   FamilyProvider call(
     int first, {
@@ -249,11 +265,16 @@ class FamilyFamily extends Family<AsyncValue<String>> {
     );
   }
 
-  @override
-  List<ProviderOrFamily>? get allTransitiveDependencies => null;
+  static final Iterable<ProviderOrFamily>? _dependencies = null;
 
   @override
-  List<ProviderOrFamily>? get dependencies => null;
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static final Set<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Set<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
 
   @override
   String? get name => r'familyProvider';
@@ -267,7 +288,7 @@ class FamilyProvider extends AutoDisposeFutureProvider<String> {
     required this.third,
     this.fourth = true,
     this.fifth,
-  }) : super(
+  }) : super.internal(
           (ref) => family(
             ref,
             first,
@@ -282,6 +303,8 @@ class FamilyProvider extends AutoDisposeFutureProvider<String> {
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$familyHash,
+          dependencies: FamilyFamily._dependencies,
+          allTransitiveDependencies: FamilyFamily._allTransitiveDependencies,
         );
 
   final int first;

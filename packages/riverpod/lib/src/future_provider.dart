@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:meta/meta.dart';
+
 import 'async_notifier.dart';
 import 'builders.dart';
 import 'common.dart';
@@ -90,16 +92,14 @@ ProviderElementProxy<AsyncValue<T>, Future<T>> _future<T>(
 /// - [FutureProvider.autoDispose], to destroy the state of a [FutureProvider] when no longer needed.
 /// {@endtemplate}
 abstract class _FutureProviderBase<T> extends ProviderBase<AsyncValue<T>> {
-  _FutureProviderBase({
-    required this.dependencies,
+  const _FutureProviderBase({
+    required super.dependencies,
+    required super.allTransitiveDependencies,
     required super.name,
     required super.from,
     required super.argument,
     required super.debugGetCreateSourceHash,
   });
-
-  @override
-  final List<ProviderOrFamily>? dependencies;
 
   /// Obtains the [Future] associated with a [FutureProvider].
   ///

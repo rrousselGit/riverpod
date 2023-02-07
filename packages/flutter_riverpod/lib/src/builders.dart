@@ -70,7 +70,7 @@ class ChangeNotifierProviderBuilder {
   ChangeNotifierProvider<Notifier> call<Notifier extends ChangeNotifier?>(
     Create<Notifier, ChangeNotifierProviderRef<Notifier>> create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
+    Iterable<ProviderOrFamily>? dependencies,
   }) {
     return ChangeNotifierProvider<Notifier>(
       create,
@@ -308,7 +308,7 @@ class ChangeNotifierProviderFamilyBuilder {
       call<Notifier extends ChangeNotifier?, Arg>(
     FamilyCreate<Notifier, ChangeNotifierProviderRef<Notifier>, Arg> create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
+    Iterable<ProviderOrFamily>? dependencies,
   }) {
     return ChangeNotifierProviderFamily<Notifier, Arg>(
       create,
@@ -333,7 +333,7 @@ class AutoDisposeChangeNotifierProviderBuilder {
       call<Notifier extends ChangeNotifier?>(
     Create<Notifier, AutoDisposeChangeNotifierProviderRef<Notifier>> create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
+    Iterable<ProviderOrFamily>? dependencies,
   }) {
     return AutoDisposeChangeNotifierProvider<Notifier>(
       create,
@@ -359,7 +359,7 @@ class AutoDisposeChangeNotifierProviderFamilyBuilder {
     FamilyCreate<Notifier, AutoDisposeChangeNotifierProviderRef<Notifier>, Arg>
         create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
+    Iterable<ProviderOrFamily>? dependencies,
   }) {
     return AutoDisposeChangeNotifierProviderFamily<Notifier, Arg>(
       create,

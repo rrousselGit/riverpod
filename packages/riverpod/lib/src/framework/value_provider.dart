@@ -14,12 +14,17 @@ class ValueProvider<State> extends ProviderBase<State>
           from: null,
           argument: null,
           debugGetCreateSourceHash: null,
+          allTransitiveDependencies: null,
+          dependencies: null,
         );
 
   final State _value;
 
   @override
-  List<ProviderOrFamily>? get dependencies => null;
+  Iterable<ProviderOrFamily>? get dependencies => null;
+
+  @override
+  Set<ProviderOrFamily>? get allTransitiveDependencies => null;
 
   @override
   ValueProviderElement<State> createElement() {

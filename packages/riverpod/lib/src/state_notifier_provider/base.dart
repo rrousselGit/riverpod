@@ -80,10 +80,25 @@ class StateNotifierProvider<NotifierT extends StateNotifier<T>, T>
   StateNotifierProvider(
     this._createFn, {
     super.name,
+    @Deprecated('Will be removed in 3.0.0') super.from,
+    @Deprecated('Will be removed in 3.0.0') super.argument,
+    super.dependencies,
+    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
+  }) : super(
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+        );
+
+  /// An implementation detail of Riverpod
+  @internal
+  StateNotifierProvider.internal(
+    this._createFn, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
     super.from,
     super.argument,
-    super.dependencies,
-    super.debugGetCreateSourceHash,
   });
 
   /// {@macro riverpod.autoDispose}
@@ -114,10 +129,14 @@ class StateNotifierProvider<NotifierT extends StateNotifier<T>, T>
   ) {
     return ProviderOverride(
       origin: this,
-      override: StateNotifierProvider<NotifierT, T>(
+      override: StateNotifierProvider<NotifierT, T>.internal(
         create,
         from: from,
         argument: argument,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        name: null,
       ),
     );
   }
@@ -196,7 +215,12 @@ class StateNotifierProviderFamily<NotifierT extends StateNotifier<T>, T, Arg>
     super.create, {
     super.name,
     super.dependencies,
-  }) : super(providerFactory: StateNotifierProvider.new);
+  }) : super(
+          providerFactory: StateNotifierProvider.internal,
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+          debugGetCreateSourceHash: null,
+        );
 
   /// {@macro riverpod.overridewith}
   Override overrideWith(
@@ -205,10 +229,14 @@ class StateNotifierProviderFamily<NotifierT extends StateNotifier<T>, T, Arg>
   ) {
     return FamilyOverrideImpl<T, Arg, StateNotifierProvider<NotifierT, T>>(
       this,
-      (arg) => StateNotifierProvider<NotifierT, T>(
+      (arg) => StateNotifierProvider<NotifierT, T>.internal(
         (ref) => create(ref, arg),
         from: from,
         argument: arg,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        name: null,
       ),
     );
   }

@@ -50,20 +50,35 @@ class AutoDisposeAsyncNotifierProviderImpl<
   AutoDisposeAsyncNotifierProviderImpl(
     super._createNotifier, {
     super.name,
+    @Deprecated('Will be removed in 3.0.0') super.from,
+    @Deprecated('Will be removed in 3.0.0') super.argument,
+    super.dependencies,
+    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
+  }) : super(
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+        );
+
+  /// An implementation detail of Riverpod
+  @internal
+  AutoDisposeAsyncNotifierProviderImpl.internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
     super.from,
     super.argument,
-    super.dependencies,
-    super.debugGetCreateSourceHash,
   });
 
   /// {@macro riverpod.family}
   static const family = AutoDisposeAsyncNotifierProviderFamily.new;
 
   @override
-  late final Refreshable<NotifierT> notifier = _notifier<NotifierT, T>(this);
+  Refreshable<NotifierT> get notifier => _notifier<NotifierT, T>(this);
 
   @override
-  late final Refreshable<Future<T>> future = _future<T>(this);
+  Refreshable<Future<T>> get future => _future<T>(this);
 
   @override
   AutoDisposeAsyncNotifierProviderElement<NotifierT, T> createElement() {
@@ -79,10 +94,14 @@ class AutoDisposeAsyncNotifierProviderImpl<
   Override overrideWith(NotifierT Function() create) {
     return ProviderOverride(
       origin: this,
-      override: AutoDisposeAsyncNotifierProviderImpl<NotifierT, T>(
+      override: AutoDisposeAsyncNotifierProviderImpl<NotifierT, T>.internal(
         create,
         from: from,
         argument: argument,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        name: null,
       ),
     );
   }

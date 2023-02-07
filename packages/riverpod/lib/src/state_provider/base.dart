@@ -48,10 +48,25 @@ class StateProvider<T> extends _StateProviderBase<T>
   StateProvider(
     this._createFn, {
     super.name,
+    @Deprecated('Will be removed in 3.0.0') super.from,
+    @Deprecated('Will be removed in 3.0.0') super.argument,
+    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
+    super.dependencies,
+  }) : super(
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+        );
+
+  /// An implementation detail of Riverpod
+  @internal
+  StateProvider.internal(
+    this._createFn, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
     super.from,
     super.argument,
-    super.dependencies,
-    super.debugGetCreateSourceHash,
   });
 
   /// {@macro riverpod.autoDispose}
@@ -85,10 +100,14 @@ class StateProvider<T> extends _StateProviderBase<T>
   ) {
     return ProviderOverride(
       origin: this,
-      override: StateProvider<T>(
+      override: StateProvider<T>.internal(
         create,
         from: from,
         argument: argument,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        name: null,
       ),
     );
   }
@@ -163,7 +182,12 @@ class StateProviderFamily<R, Arg>
     super.create, {
     super.name,
     super.dependencies,
-  }) : super(providerFactory: StateProvider.new);
+  }) : super(
+          providerFactory: StateProvider.internal,
+          debugGetCreateSourceHash: null,
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+        );
 
   /// {@macro riverpod.overridewith}
   Override overrideWith(
@@ -171,10 +195,14 @@ class StateProviderFamily<R, Arg>
   ) {
     return FamilyOverrideImpl<R, Arg, StateProvider<R>>(
       this,
-      (arg) => StateProvider<R>(
+      (arg) => StateProvider<R>.internal(
         (ref) => create(ref, arg),
         from: from,
         argument: arg,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        name: null,
       ),
     );
   }

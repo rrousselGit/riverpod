@@ -7,7 +7,7 @@ import 'package:build/build.dart';
 import 'package:build_test/build_test.dart';
 import 'package:meta/meta.dart';
 import 'package:riverpod_analyzer_utils/src/riverpod_visitor.dart';
-import 'package:riverpod_generator/src/riverpod_generator2.dart';
+import 'package:riverpod_generator/src/riverpod_generator.dart';
 import 'package:test/test.dart';
 
 /// Due to [resolveSource] throwing if trying to interact with the resolver
@@ -37,7 +37,7 @@ void testSource(
             );
           },
         );
-        generated = RiverpodGenerator2(const {}).runGenerator(analysisResult);
+        generated = RiverpodGenerator(const {}).runGenerator(analysisResult);
       }
 
       await resolveSources({

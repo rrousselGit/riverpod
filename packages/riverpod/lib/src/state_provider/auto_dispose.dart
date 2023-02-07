@@ -11,10 +11,25 @@ class AutoDisposeStateProvider<T> extends _StateProviderBase<T> {
   AutoDisposeStateProvider(
     this._createFn, {
     super.name,
+    @Deprecated('Will be removed in 3.0.0') super.from,
+    @Deprecated('Will be removed in 3.0.0') super.argument,
+    super.dependencies,
+    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
+  }) : super(
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+        );
+
+  /// An implementation detail of Riverpod
+  @internal
+  AutoDisposeStateProvider.internal(
+    this._createFn, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
     super.from,
     super.argument,
-    super.dependencies,
-    super.debugGetCreateSourceHash,
   });
 
   /// {@macro riverpod.family}
@@ -46,10 +61,14 @@ class AutoDisposeStateProvider<T> extends _StateProviderBase<T> {
   ) {
     return ProviderOverride(
       origin: this,
-      override: AutoDisposeStateProvider<T>(
+      override: AutoDisposeStateProvider<T>.internal(
         create,
         from: from,
         argument: argument,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        name: null,
       ),
     );
   }
@@ -72,7 +91,12 @@ class AutoDisposeStateProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
     super.create, {
     super.name,
     super.dependencies,
-  }) : super(providerFactory: AutoDisposeStateProvider.new);
+  }) : super(
+          providerFactory: AutoDisposeStateProvider.internal,
+          debugGetCreateSourceHash: null,
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+        );
 
   /// {@macro riverpod.overridewith}
   Override overrideWith(
@@ -80,10 +104,14 @@ class AutoDisposeStateProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
   ) {
     return FamilyOverrideImpl<R, Arg, AutoDisposeStateProvider<R>>(
       this,
-      (arg) => AutoDisposeStateProvider<R>(
+      (arg) => AutoDisposeStateProvider<R>.internal(
         (ref) => create(ref, arg),
         from: from,
         argument: arg,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        name: null,
       ),
     );
   }

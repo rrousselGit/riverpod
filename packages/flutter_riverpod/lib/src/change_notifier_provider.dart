@@ -40,7 +40,7 @@ abstract class _ChangeNotifierProviderBase<NotifierT extends ChangeNotifier?>
   });
 
   @override
-  final List<ProviderOrFamily>? dependencies;
+  final Iterable<ProviderOrFamily>? dependencies;
 
   /// Obtains the [ChangeNotifier] associated with this provider, without listening
   /// to state changes.

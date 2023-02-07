@@ -17,16 +17,14 @@ abstract class InternalProvider<State> extends ProviderBase<State>
   /// A base class for [Provider]
   ///
   /// Not meant for public consumption
-  InternalProvider({
-    required this.dependencies,
+  const InternalProvider({
     required super.name,
     required super.from,
     required super.argument,
     required super.debugGetCreateSourceHash,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
   });
-
-  @override
-  final List<ProviderOrFamily>? dependencies;
 
   State _create(covariant ProviderElement<State> ref);
 }

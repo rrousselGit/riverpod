@@ -98,17 +98,15 @@ abstract class NotifierProviderBase<NotifierT extends NotifierBase<T>, T>
   /// An internal base class for [Notifier].
   ///
   /// Not meant for public consumption.
-  NotifierProviderBase(
+  const NotifierProviderBase(
     this._createNotifier, {
     required super.name,
     required super.from,
     required super.argument,
-    required this.dependencies,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
   });
-
-  @override
-  final List<ProviderOrFamily>? dependencies;
 
   /// Obtains the [Notifier] associated with this provider, without listening
   /// to state changes.

@@ -1,6 +1,6 @@
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import '../models.dart';
-import '../riverpod_generator2.dart';
+import '../riverpod_generator.dart';
 import 'template.dart';
 
 String providerNameFor(
@@ -14,12 +14,23 @@ String? serializeDependencies(
 ) {
   if (dependencies == null) return 'null';
 
-  final buffer = StringBuffer('[');
+  final buffer = StringBuffer('<ProviderOrFamily>');
+  if (dependencies.length < 3) {
+    buffer.write('[');
+  } else {
+    buffer.write('{');
+  }
+
   buffer.writeAll(
     dependencies.map((e) => providerNameFor(e, options)),
     ',',
   );
-  buffer.write(']');
+
+  if (dependencies.length < 3) {
+    buffer.write(']');
+  } else {
+    buffer.write('}');
+  }
   return buffer.toString();
 }
 
@@ -63,19 +74,15 @@ class StatefulProviderTemplate extends Template {
       providerType = '${leading}NotifierProvider';
     }
 
-    final dependencies = provider.providerElement.annotation.dependencies ==
-            null
-        ? ''
-        : 'dependencies: ${serializeDependencies(provider.providerElement.annotation.dependencies, options)},';
-
     buffer.write('''
 ${providerDocFor(provider.providerElement.element)}
 @ProviderFor(${provider.name})
-final $providerName = $providerType<${provider.name}, ${provider.valueType}>(
+final $providerName = $providerType<${provider.name}, ${provider.valueType}>.internal(
   ${provider.providerElement.name}.new,
   name: r'$providerName',
   debugGetCreateSourceHash: $hashFn,
-$dependencies
+  dependencies: ${serializeDependencies(provider.providerElement.annotation.dependencies, options)},
+  allTransitiveDependencies: ${serializeDependencies(provider.providerElement.annotation.allTransitiveDependencies, options)},
 );
 
 typedef $notifierTypedefName = $notifierBaseType<${provider.valueType}>;

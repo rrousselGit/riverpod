@@ -1,7 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
 
-import 'templates/hash.dart';
-
 class Optional<T> {
   const Optional(this.value);
 
@@ -251,12 +249,6 @@ class Data {
         return '${leading}AsyncNotifierProvider$trailing';
     }
   }
-}
-
-class GlobalData {
-  GlobalData();
-
-  final ElementHash hash = ElementHash();
 }
 
 class BuildYamlOptions {

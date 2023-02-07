@@ -4,7 +4,21 @@ part of '../framework.dart';
 @sealed
 abstract class ProviderOrFamily {
   /// A common interface shared by [ProviderBase] and [Family]
-  const ProviderOrFamily();
+  const ProviderOrFamily({
+    required this.name,
+    required this.dependencies,
+    required this.allTransitiveDependencies,
+  });
+
+  /// The family that this provider/family depends on.
+  Family<Object?>? get from;
+
+  /// {@template riverpod.name}
+  /// A custom label for providers.
+  ///
+  /// This is picked-up by devtools and [toString] to show better messages.
+  /// {@endtemplate}
+  final String? name;
 
   /// The list of providers that this provider potentially depends on.
   ///
@@ -12,18 +26,18 @@ abstract class ProviderOrFamily {
   /// if one of its dependency is overridden.
   /// The downside is that it prevents `ref.watch` & co to be used with a provider
   /// that isn't listed in [dependencies].
-  List<ProviderOrFamily>? get dependencies;
-
-  /// The family that this provider/family depends on.
-  Family<Object?>? get from;
+  final Iterable<ProviderOrFamily>? dependencies;
 
   /// All the dependencies of a provider and their dependencies too.
-  List<ProviderOrFamily>? get allTransitiveDependencies;
+  final Iterable<ProviderOrFamily>? allTransitiveDependencies;
 }
 
-List<ProviderOrFamily> _allTransitiveDependencies(
-  List<ProviderOrFamily> dependencies,
+/// Computes the list of all dependencies of a provider.
+@internal
+Set<ProviderOrFamily>? computeAllTransitiveDependencies(
+  Iterable<ProviderOrFamily>? dependencies,
 ) {
+  if (dependencies == null) return null;
   final result = <ProviderOrFamily>{};
 
   void visitDependency(ProviderOrFamily dep) {
@@ -39,8 +53,7 @@ List<ProviderOrFamily> _allTransitiveDependencies(
   }
 
   dependencies.forEach(visitDependency);
-
-  return List.unmodifiable(result);
+  return UnmodifiableSetView(result);
 }
 
 // Copied from Flutter
