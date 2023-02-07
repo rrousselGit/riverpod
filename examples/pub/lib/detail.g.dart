@@ -8,7 +8,7 @@ part of 'detail.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors
+// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs
 String _$packageMetricsHash() => '67cd25e50357e6e970d432c1d255085a23b856ac';
 
 /// Copied from Dart SDK
@@ -59,8 +59,22 @@ const packageMetricsProvider = PackageMetricsFamily();
 ///
 /// Copied from [PackageMetrics].
 class PackageMetricsFamily extends Family<AsyncValue<PackageMetricsScore>> {
+  /// A provider that fetches the likes count, popularity score and pub points
+  /// for a given package.
+  ///
+  /// It also exposes utilities to like/unlike a package, assuming the user
+  /// is logged-in.
+  ///
+  /// Copied from [PackageMetrics].
   const PackageMetricsFamily();
 
+  /// A provider that fetches the likes count, popularity score and pub points
+  /// for a given package.
+  ///
+  /// It also exposes utilities to like/unlike a package, assuming the user
+  /// is logged-in.
+  ///
+  /// Copied from [PackageMetrics].
   PackageMetricsProvider call({
     required String packageName,
   }) {
@@ -102,6 +116,13 @@ class PackageMetricsFamily extends Family<AsyncValue<PackageMetricsScore>> {
 /// Copied from [PackageMetrics].
 class PackageMetricsProvider extends AutoDisposeAsyncNotifierProviderImpl<
     PackageMetrics, PackageMetricsScore> {
+  /// A provider that fetches the likes count, popularity score and pub points
+  /// for a given package.
+  ///
+  /// It also exposes utilities to like/unlike a package, assuming the user
+  /// is logged-in.
+  ///
+  /// Copied from [PackageMetrics].
   PackageMetricsProvider({
     required this.packageName,
   }) : super.internal(
@@ -152,8 +173,10 @@ const fetchPackageDetailsProvider = FetchPackageDetailsFamily();
 
 /// See also [fetchPackageDetails].
 class FetchPackageDetailsFamily extends Family<AsyncValue<Package>> {
+  /// See also [fetchPackageDetails].
   const FetchPackageDetailsFamily();
 
+  /// See also [fetchPackageDetails].
   FetchPackageDetailsProvider call({
     required String packageName,
   }) {
@@ -188,6 +211,7 @@ class FetchPackageDetailsFamily extends Family<AsyncValue<Package>> {
 
 /// See also [fetchPackageDetails].
 class FetchPackageDetailsProvider extends AutoDisposeFutureProvider<Package> {
+  /// See also [fetchPackageDetails].
   FetchPackageDetailsProvider({
     required this.packageName,
   }) : super.internal(

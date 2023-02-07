@@ -6,7 +6,8 @@ part of 'mutate_in_create.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-// ignore_for_file: avoid_private_typedef_functions, non_constant_identifier_names, subtype_of_sealed_class, invalid_use_of_internal_member, unused_element, constant_identifier_names, unnecessary_raw_strings, library_private_types_in_public_api
+// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs
+String _$myNotifierHash() => '776dac1b8cf04992a7ad0e1f43a96bf9b4659f0b';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -29,15 +30,69 @@ class _SystemHash {
   }
 }
 
-String $MyNotifierHash() => r'776dac1b8cf04992a7ad0e1f43a96bf9b4659f0b';
+abstract class _$MyNotifier extends BuildlessAutoDisposeAsyncNotifier<String> {
+  late final int i;
+  late final String b;
+
+  Future<String> build(
+    int i,
+    String b,
+  );
+}
+
+/// See also [MyNotifier].
+@ProviderFor(MyNotifier)
+const myNotifierProvider = MyNotifierFamily();
+
+/// See also [MyNotifier].
+class MyNotifierFamily extends Family<AsyncValue<String>> {
+  /// See also [MyNotifier].
+  const MyNotifierFamily();
+
+  /// See also [MyNotifier].
+  MyNotifierProvider call(
+    int i,
+    String b,
+  ) {
+    return MyNotifierProvider(
+      i,
+      b,
+    );
+  }
+
+  @override
+  MyNotifierProvider getProviderOverride(
+    covariant MyNotifierProvider provider,
+  ) {
+    return call(
+      provider.i,
+      provider.b,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'myNotifierProvider';
+}
 
 /// See also [MyNotifier].
 class MyNotifierProvider
     extends AutoDisposeAsyncNotifierProviderImpl<MyNotifier, String> {
+  /// See also [MyNotifier].
   MyNotifierProvider(
     this.i,
     this.b,
-  ) : super(
+  ) : super.internal(
           () => MyNotifier()
             ..i = i
             ..b = b,
@@ -46,7 +101,10 @@ class MyNotifierProvider
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : $MyNotifierHash,
+                  : _$myNotifierHash,
+          dependencies: MyNotifierFamily._dependencies,
+          allTransitiveDependencies:
+              MyNotifierFamily._allTransitiveDependencies,
         );
 
   final int i;
@@ -67,8 +125,8 @@ class MyNotifierProvider
   }
 
   @override
-  FutureOr<String> runNotifierBuild(
-    covariant _$MyNotifier notifier,
+  Future<String> runNotifierBuild(
+    covariant MyNotifier notifier,
   ) {
     return notifier.build(
       i,
@@ -77,27 +135,41 @@ class MyNotifierProvider
   }
 }
 
-typedef MyNotifierRef = AutoDisposeAsyncNotifierProviderRef<String>;
+String _$myNotifier2Hash() => '86bcf4b54298ca620d50ca3f2cfdce843739e6d1';
 
-/// See also [MyNotifier].
-final myNotifierProvider = MyNotifierFamily();
+abstract class _$MyNotifier2 extends BuildlessAutoDisposeNotifier<String> {
+  late final int i;
+  late final String b;
 
-class MyNotifierFamily extends Family<AsyncValue<String>> {
-  MyNotifierFamily();
+  String build(
+    int i,
+    String b,
+  );
+}
 
-  MyNotifierProvider call(
+/// See also [MyNotifier2].
+@ProviderFor(MyNotifier2)
+const myNotifier2Provider = MyNotifier2Family();
+
+/// See also [MyNotifier2].
+class MyNotifier2Family extends Family<String> {
+  /// See also [MyNotifier2].
+  const MyNotifier2Family();
+
+  /// See also [MyNotifier2].
+  MyNotifier2Provider call(
     int i,
     String b,
   ) {
-    return MyNotifierProvider(
+    return MyNotifier2Provider(
       i,
       b,
     );
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderImpl<MyNotifier, String> getProviderOverride(
-    covariant MyNotifierProvider provider,
+  MyNotifier2Provider getProviderOverride(
+    covariant MyNotifier2Provider provider,
   ) {
     return call(
       provider.i,
@@ -105,35 +177,29 @@ class MyNotifierFamily extends Family<AsyncValue<String>> {
     );
   }
 
-  @override
-  List<ProviderOrFamily>? get allTransitiveDependencies => null;
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
 
   @override
-  List<ProviderOrFamily>? get dependencies => null;
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
 
   @override
-  String? get name => r'myNotifierProvider';
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'myNotifier2Provider';
 }
-
-abstract class _$MyNotifier extends BuildlessAutoDisposeAsyncNotifier<String> {
-  late final int i;
-  late final String b;
-
-  FutureOr<String> build(
-    int i,
-    String b,
-  );
-}
-
-String $MyNotifier2Hash() => r'86bcf4b54298ca620d50ca3f2cfdce843739e6d1';
 
 /// See also [MyNotifier2].
 class MyNotifier2Provider
     extends AutoDisposeNotifierProviderImpl<MyNotifier2, String> {
+  /// See also [MyNotifier2].
   MyNotifier2Provider(
     this.i,
     this.b,
-  ) : super(
+  ) : super.internal(
           () => MyNotifier2()
             ..i = i
             ..b = b,
@@ -142,7 +208,10 @@ class MyNotifier2Provider
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : $MyNotifier2Hash,
+                  : _$myNotifier2Hash,
+          dependencies: MyNotifier2Family._dependencies,
+          allTransitiveDependencies:
+              MyNotifier2Family._allTransitiveDependencies,
         );
 
   final int i;
@@ -164,7 +233,7 @@ class MyNotifier2Provider
 
   @override
   String runNotifierBuild(
-    covariant _$MyNotifier2 notifier,
+    covariant MyNotifier2 notifier,
   ) {
     return notifier.build(
       i,
@@ -173,62 +242,61 @@ class MyNotifier2Provider
   }
 }
 
-typedef MyNotifier2Ref = AutoDisposeNotifierProviderRef<String>;
+String _$generatedHash() => 'cf482f785592d96d90763d228d1c29d6ab0915ac';
+typedef GeneratedRef = AutoDisposeFutureProviderRef<String>;
 
-/// See also [MyNotifier2].
-final myNotifier2Provider = MyNotifier2Family();
+/// See also [generated].
+@ProviderFor(generated)
+const generatedProvider = GeneratedFamily();
 
-class MyNotifier2Family extends Family<String> {
-  MyNotifier2Family();
+/// See also [generated].
+class GeneratedFamily extends Family<AsyncValue<String>> {
+  /// See also [generated].
+  const GeneratedFamily();
 
-  MyNotifier2Provider call(
-    int i,
-    String b,
+  /// See also [generated].
+  GeneratedProvider call(
+    String value,
+    int otherValue,
   ) {
-    return MyNotifier2Provider(
-      i,
-      b,
+    return GeneratedProvider(
+      value,
+      otherValue,
     );
   }
 
   @override
-  AutoDisposeNotifierProviderImpl<MyNotifier2, String> getProviderOverride(
-    covariant MyNotifier2Provider provider,
+  GeneratedProvider getProviderOverride(
+    covariant GeneratedProvider provider,
   ) {
     return call(
-      provider.i,
-      provider.b,
+      provider.value,
+      provider.otherValue,
     );
   }
 
-  @override
-  List<ProviderOrFamily>? get allTransitiveDependencies => null;
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
 
   @override
-  List<ProviderOrFamily>? get dependencies => null;
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
 
   @override
-  String? get name => r'myNotifier2Provider';
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'generatedProvider';
 }
-
-abstract class _$MyNotifier2 extends BuildlessAutoDisposeNotifier<String> {
-  late final int i;
-  late final String b;
-
-  String build(
-    int i,
-    String b,
-  );
-}
-
-String $generatedHash() => r'cf482f785592d96d90763d228d1c29d6ab0915ac';
 
 /// See also [generated].
 class GeneratedProvider extends AutoDisposeFutureProvider<String> {
+  /// See also [generated].
   GeneratedProvider(
     this.value,
     this.otherValue,
-  ) : super(
+  ) : super.internal(
           (ref) => generated(
             ref,
             value,
@@ -239,7 +307,9 @@ class GeneratedProvider extends AutoDisposeFutureProvider<String> {
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : $generatedHash,
+                  : _$generatedHash,
+          dependencies: GeneratedFamily._dependencies,
+          allTransitiveDependencies: GeneratedFamily._allTransitiveDependencies,
         );
 
   final String value;
@@ -262,27 +332,32 @@ class GeneratedProvider extends AutoDisposeFutureProvider<String> {
   }
 }
 
-typedef GeneratedRef = AutoDisposeFutureProviderRef<String>;
+String _$generatedSyncHash() => '15f2d152e33b46338ee523743b2be3415d7fa48f';
+typedef GeneratedSyncRef = AutoDisposeProviderRef<String>;
 
-/// See also [generated].
-final generatedProvider = GeneratedFamily();
+/// See also [generatedSync].
+@ProviderFor(generatedSync)
+const generatedSyncProvider = GeneratedSyncFamily();
 
-class GeneratedFamily extends Family<AsyncValue<String>> {
-  GeneratedFamily();
+/// See also [generatedSync].
+class GeneratedSyncFamily extends Family<String> {
+  /// See also [generatedSync].
+  const GeneratedSyncFamily();
 
-  GeneratedProvider call(
+  /// See also [generatedSync].
+  GeneratedSyncProvider call(
     String value,
     int otherValue,
   ) {
-    return GeneratedProvider(
+    return GeneratedSyncProvider(
       value,
       otherValue,
     );
   }
 
   @override
-  AutoDisposeFutureProvider<String> getProviderOverride(
-    covariant GeneratedProvider provider,
+  GeneratedSyncProvider getProviderOverride(
+    covariant GeneratedSyncProvider provider,
   ) {
     return call(
       provider.value,
@@ -290,24 +365,28 @@ class GeneratedFamily extends Family<AsyncValue<String>> {
     );
   }
 
-  @override
-  List<ProviderOrFamily>? get allTransitiveDependencies => null;
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
 
   @override
-  List<ProviderOrFamily>? get dependencies => null;
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
 
   @override
-  String? get name => r'generatedProvider';
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'generatedSyncProvider';
 }
-
-String $generatedSyncHash() => r'15f2d152e33b46338ee523743b2be3415d7fa48f';
 
 /// See also [generatedSync].
 class GeneratedSyncProvider extends AutoDisposeProvider<String> {
+  /// See also [generatedSync].
   GeneratedSyncProvider(
     this.value,
     this.otherValue,
-  ) : super(
+  ) : super.internal(
           (ref) => generatedSync(
             ref,
             value,
@@ -318,7 +397,10 @@ class GeneratedSyncProvider extends AutoDisposeProvider<String> {
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : $generatedSyncHash,
+                  : _$generatedSyncHash,
+          dependencies: GeneratedSyncFamily._dependencies,
+          allTransitiveDependencies:
+              GeneratedSyncFamily._allTransitiveDependencies,
         );
 
   final String value;
@@ -339,42 +421,4 @@ class GeneratedSyncProvider extends AutoDisposeProvider<String> {
 
     return _SystemHash.finish(hash);
   }
-}
-
-typedef GeneratedSyncRef = AutoDisposeProviderRef<String>;
-
-/// See also [generatedSync].
-final generatedSyncProvider = GeneratedSyncFamily();
-
-class GeneratedSyncFamily extends Family<String> {
-  GeneratedSyncFamily();
-
-  GeneratedSyncProvider call(
-    String value,
-    int otherValue,
-  ) {
-    return GeneratedSyncProvider(
-      value,
-      otherValue,
-    );
-  }
-
-  @override
-  AutoDisposeProvider<String> getProviderOverride(
-    covariant GeneratedSyncProvider provider,
-  ) {
-    return call(
-      provider.value,
-      provider.otherValue,
-    );
-  }
-
-  @override
-  List<ProviderOrFamily>? get allTransitiveDependencies => null;
-
-  @override
-  List<ProviderOrFamily>? get dependencies => null;
-
-  @override
-  String? get name => r'generatedSyncProvider';
 }

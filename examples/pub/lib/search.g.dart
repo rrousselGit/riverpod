@@ -8,7 +8,7 @@ part of 'search.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors
+// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs
 String _$fetchPackagesHash() => '3637226080ea667823875a135a6c4cf002cb0329';
 
 /// Copied from Dart SDK
@@ -40,8 +40,10 @@ const fetchPackagesProvider = FetchPackagesFamily();
 
 /// See also [fetchPackages].
 class FetchPackagesFamily extends Family<AsyncValue<List<Package>>> {
+  /// See also [fetchPackages].
   const FetchPackagesFamily();
 
+  /// See also [fetchPackages].
   FetchPackagesProvider call({
     required int page,
     String search = '',
@@ -79,6 +81,7 @@ class FetchPackagesFamily extends Family<AsyncValue<List<Package>>> {
 
 /// See also [fetchPackages].
 class FetchPackagesProvider extends AutoDisposeFutureProvider<List<Package>> {
+  /// See also [fetchPackages].
   FetchPackagesProvider({
     required this.page,
     this.search = '',
