@@ -495,15 +495,15 @@ class LegacyProviderDependency {
     required this.provider,
   });
 
-  static LegacyProviderDependency parse(CollectionElement node) {
-    return LegacyProviderDependency._(
-      node: node,
-      provider: node
-          .cast<Expression>()
-          .let(ProviderListenableExpression.parse)
-          ?.providerElement,
-    );
-  }
+  @internal
+  LegacyProviderDependency.parse(CollectionElement node)
+      : this._(
+          node: node,
+          provider: node
+              .cast<Expression>()
+              .let(ProviderListenableExpression.parse)
+              ?.providerElement,
+        );
 
   final CollectionElement node;
   final ProviderDeclarationElement? provider;

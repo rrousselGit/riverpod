@@ -21,7 +21,7 @@ class AutoDisposeProvider<T> extends InternalProvider<T> {
 
   /// An implementation detail of Riverpod
   @internal
-  AutoDisposeProvider.internal(
+  const AutoDisposeProvider.internal(
     this._createFn, {
     required super.name,
     required super.dependencies,

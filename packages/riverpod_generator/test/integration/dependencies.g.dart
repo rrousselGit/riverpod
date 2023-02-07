@@ -6,7 +6,7 @@ part of 'dependencies.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment
+// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs
 String _$dep2Hash() => '2778537df77f6431148c2ce400724da3e2ab4b94';
 
 /// See also [Dep2].
@@ -58,8 +58,10 @@ const family2Provider = Family2Family();
 
 /// See also [Family2].
 class Family2Family extends Family<int> {
+  /// See also [Family2].
   const Family2Family();
 
+  /// See also [Family2].
   Family2Provider call(
     int id,
   ) {
@@ -77,15 +79,15 @@ class Family2Family extends Family<int> {
     );
   }
 
-  static final Iterable<ProviderOrFamily>? _dependencies = null;
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
 
   @override
   Iterable<ProviderOrFamily>? get dependencies => _dependencies;
 
-  static final Set<ProviderOrFamily>? _allTransitiveDependencies = null;
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
 
   @override
-  Set<ProviderOrFamily>? get allTransitiveDependencies =>
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
       _allTransitiveDependencies;
 
   @override
@@ -94,6 +96,7 @@ class Family2Family extends Family<int> {
 
 /// See also [Family2].
 class Family2Provider extends AutoDisposeNotifierProviderImpl<Family2, int> {
+  /// See also [Family2].
   Family2Provider(
     this.id,
   ) : super.internal(
@@ -173,8 +176,10 @@ const provider4Provider = Provider4Family();
 
 /// See also [Provider4].
 class Provider4Family extends Family<int> {
+  /// See also [Provider4].
   const Provider4Family();
 
+  /// See also [Provider4].
   Provider4Provider call(
     int id,
   ) {
@@ -192,7 +197,7 @@ class Provider4Family extends Family<int> {
     );
   }
 
-  static final Iterable<ProviderOrFamily>? _dependencies = <ProviderOrFamily>{
+  static final Iterable<ProviderOrFamily> _dependencies = <ProviderOrFamily>{
     depProvider,
     familyProvider,
     dep2Provider,
@@ -202,7 +207,7 @@ class Provider4Family extends Family<int> {
   @override
   Iterable<ProviderOrFamily>? get dependencies => _dependencies;
 
-  static final Set<ProviderOrFamily>? _allTransitiveDependencies =
+  static final Iterable<ProviderOrFamily> _allTransitiveDependencies =
       <ProviderOrFamily>{
     depProvider,
     familyProvider,
@@ -211,7 +216,7 @@ class Provider4Family extends Family<int> {
   };
 
   @override
-  Set<ProviderOrFamily>? get allTransitiveDependencies =>
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
       _allTransitiveDependencies;
 
   @override
@@ -221,6 +226,7 @@ class Provider4Family extends Family<int> {
 /// See also [Provider4].
 class Provider4Provider
     extends AutoDisposeNotifierProviderImpl<Provider4, int> {
+  /// See also [Provider4].
   Provider4Provider(
     this.id,
   ) : super.internal(
@@ -283,8 +289,10 @@ const familyProvider = FamilyFamily();
 
 /// See also [family].
 class FamilyFamily extends Family<int> {
+  /// See also [family].
   const FamilyFamily();
 
+  /// See also [family].
   FamilyProvider call(
     int id,
   ) {
@@ -302,15 +310,15 @@ class FamilyFamily extends Family<int> {
     );
   }
 
-  static final Iterable<ProviderOrFamily>? _dependencies = null;
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
 
   @override
   Iterable<ProviderOrFamily>? get dependencies => _dependencies;
 
-  static final Set<ProviderOrFamily>? _allTransitiveDependencies = null;
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
 
   @override
-  Set<ProviderOrFamily>? get allTransitiveDependencies =>
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
       _allTransitiveDependencies;
 
   @override
@@ -319,6 +327,7 @@ class FamilyFamily extends Family<int> {
 
 /// See also [family].
 class FamilyProvider extends AutoDisposeProvider<int> {
+  /// See also [family].
   FamilyProvider(
     this.id,
   ) : super.internal(
@@ -422,3 +431,24 @@ final transitiveDependenciesProvider = AutoDisposeProvider<int>.internal(
 );
 
 typedef TransitiveDependenciesRef = AutoDisposeProviderRef<int>;
+String _$smallTransitiveDependencyCountHash() =>
+    '34689e1ba57e2959975cbf8ebd6c9483f4652a73';
+
+/// See also [smallTransitiveDependencyCount].
+@ProviderFor(smallTransitiveDependencyCount)
+final smallTransitiveDependencyCountProvider =
+    AutoDisposeProvider<int>.internal(
+  smallTransitiveDependencyCount,
+  name: r'smallTransitiveDependencyCountProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$smallTransitiveDependencyCountHash,
+  dependencies: <ProviderOrFamily>[depProvider, familyProvider, dep2Provider],
+  allTransitiveDependencies: <ProviderOrFamily>[
+    depProvider,
+    familyProvider,
+    dep2Provider
+  ],
+);
+
+typedef SmallTransitiveDependencyCountRef = AutoDisposeProviderRef<int>;

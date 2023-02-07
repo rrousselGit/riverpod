@@ -1,5 +1,7 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
+// ignore_for_file: non_constant_identifier_names, require_trailing_commas
+
 part of 'user.dart';
 
 // **************************************************************************
@@ -42,3 +44,9 @@ Map<String, dynamic> _$$_BadgeCountToJson(_$_BadgeCount instance) =>
       'silver': instance.silver,
       'gold': instance.gold,
     };
+
+// **************************************************************************
+// RiverpodGenerator
+// **************************************************************************
+
+// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors

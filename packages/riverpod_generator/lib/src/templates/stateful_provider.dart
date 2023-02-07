@@ -15,7 +15,8 @@ String? serializeDependencies(
   if (dependencies == null) return 'null';
 
   final buffer = StringBuffer('<ProviderOrFamily>');
-  if (dependencies.length < 3) {
+  // Use list vs set based on the number of dependencies to optimize "contains" call
+  if (dependencies.length < 4) {
     buffer.write('[');
   } else {
     buffer.write('{');
@@ -26,7 +27,7 @@ String? serializeDependencies(
     ',',
   );
 
-  if (dependencies.length < 3) {
+  if (dependencies.length < 4) {
     buffer.write(']');
   } else {
     buffer.write('}');

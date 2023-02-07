@@ -6,7 +6,7 @@ part of 'hash1.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment
+// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs
 String _$simpleClassHash() => '958123cd6179c5b88da040cfeb71eb3061765277';
 
 /// See also [SimpleClass].

@@ -1,5 +1,4 @@
 import 'package:riverpod_analyzer_utils/src/riverpod_ast.dart';
-import 'package:riverpod_analyzer_utils/src/riverpod_element.dart';
 import 'package:test/test.dart';
 
 import 'analyser_test_utils.dart';

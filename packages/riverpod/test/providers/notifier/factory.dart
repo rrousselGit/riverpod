@@ -61,25 +61,39 @@ List<NotifierFactory> matrix({
           from,
           name,
         }) {
-          return FamilyNotifierProviderImpl<NotifierT, T, int>(
+          return FamilyNotifierProviderImpl<NotifierT, T, int>.internal(
             create,
             argument: 0,
+            name: null,
+            dependencies: null,
+            allTransitiveDependencies: null,
+            debugGetCreateSourceHash: null,
           );
         },
         notifier: TestNotifierFamily.new,
         testProvider: <T>(createNotifier) {
-          return FamilyNotifierProviderImpl<TestNotifierFamily<T>, T, int>(
+          return FamilyNotifierProviderImpl<TestNotifierFamily<T>, T,
+              int>.internal(
             () => createNotifier() as TestNotifierFamily<T>,
             argument: 0,
+            name: null,
+            dependencies: null,
+            allTransitiveDependencies: null,
+            debugGetCreateSourceHash: null,
           );
         },
         simpleTestProvider: <T>(init, {updateShouldNotify}) {
-          return FamilyNotifierProviderImpl<TestNotifierFamily<T>, T, int>(
+          return FamilyNotifierProviderImpl<TestNotifierFamily<T>, T,
+              int>.internal(
             () => TestNotifierFamily<T>(
               init,
               updateShouldNotify: updateShouldNotify,
             ),
             argument: 0,
+            name: null,
+            dependencies: null,
+            allTransitiveDependencies: null,
+            debugGetCreateSourceHash: null,
           );
         },
       ),
@@ -114,27 +128,40 @@ List<NotifierFactory> matrix({
           from,
           name,
         }) {
-          return AutoDisposeFamilyNotifierProviderImpl<NotifierT, T, int>(
+          return AutoDisposeFamilyNotifierProviderImpl<NotifierT, T,
+              int>.internal(
             create,
             argument: 0,
+            name: null,
+            dependencies: null,
+            allTransitiveDependencies: null,
+            debugGetCreateSourceHash: null,
           );
         },
         notifier: AutoDisposeTestNotifierFamily.new,
         testProvider: <T>(createNotifier) {
           return AutoDisposeFamilyNotifierProviderImpl<
-              AutoDisposeTestNotifierFamily<T>, T, int>(
+              AutoDisposeTestNotifierFamily<T>, T, int>.internal(
             () => createNotifier() as AutoDisposeTestNotifierFamily<T>,
             argument: 0,
+            name: null,
+            dependencies: null,
+            allTransitiveDependencies: null,
+            debugGetCreateSourceHash: null,
           );
         },
         simpleTestProvider: <T>(init, {updateShouldNotify}) {
           return AutoDisposeFamilyNotifierProviderImpl<
-              AutoDisposeTestNotifierFamily<T>, T, int>(
+              AutoDisposeTestNotifierFamily<T>, T, int>.internal(
             () => AutoDisposeTestNotifierFamily<T>(
               init,
               updateShouldNotify: updateShouldNotify,
             ),
             argument: 0,
+            name: null,
+            dependencies: null,
+            allTransitiveDependencies: null,
+            debugGetCreateSourceHash: null,
           );
         },
       ),

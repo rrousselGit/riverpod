@@ -1,12 +1,15 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
+// ignore_for_file: non_constant_identifier_names, require_trailing_commas
+
 part of 'search.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-// ignore_for_file: avoid_private_typedef_functions, non_constant_identifier_names, subtype_of_sealed_class, invalid_use_of_internal_member, unused_element, constant_identifier_names, unnecessary_raw_strings, library_private_types_in_public_api
+// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors
+String _$fetchPackagesHash() => '3637226080ea667823875a135a6c4cf002cb0329';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -29,14 +32,57 @@ class _SystemHash {
   }
 }
 
-String $fetchPackagesHash() => r'3637226080ea667823875a135a6c4cf002cb0329';
+typedef FetchPackagesRef = AutoDisposeFutureProviderRef<List<Package>>;
+
+/// See also [fetchPackages].
+@ProviderFor(fetchPackages)
+const fetchPackagesProvider = FetchPackagesFamily();
+
+/// See also [fetchPackages].
+class FetchPackagesFamily extends Family<AsyncValue<List<Package>>> {
+  const FetchPackagesFamily();
+
+  FetchPackagesProvider call({
+    required int page,
+    String search = '',
+  }) {
+    return FetchPackagesProvider(
+      page: page,
+      search: search,
+    );
+  }
+
+  @override
+  FetchPackagesProvider getProviderOverride(
+    covariant FetchPackagesProvider provider,
+  ) {
+    return call(
+      page: provider.page,
+      search: provider.search,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'fetchPackagesProvider';
+}
 
 /// See also [fetchPackages].
 class FetchPackagesProvider extends AutoDisposeFutureProvider<List<Package>> {
   FetchPackagesProvider({
     required this.page,
     this.search = '',
-  }) : super(
+  }) : super.internal(
           (ref) => fetchPackages(
             ref,
             page: page,
@@ -47,7 +93,10 @@ class FetchPackagesProvider extends AutoDisposeFutureProvider<List<Package>> {
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : $fetchPackagesHash,
+                  : _$fetchPackagesHash,
+          dependencies: FetchPackagesFamily._dependencies,
+          allTransitiveDependencies:
+              FetchPackagesFamily._allTransitiveDependencies,
         );
 
   final int page;
@@ -68,49 +117,4 @@ class FetchPackagesProvider extends AutoDisposeFutureProvider<List<Package>> {
 
     return _SystemHash.finish(hash);
   }
-}
-
-typedef FetchPackagesRef = AutoDisposeFutureProviderRef<List<Package>>;
-
-/// See also [fetchPackages].
-final fetchPackagesProvider = FetchPackagesFamily();
-
-class FetchPackagesFamily extends Family<AsyncValue<List<Package>>> {
-  FetchPackagesFamily();
-
-  FetchPackagesProvider call({
-    required int page,
-    String search = '',
-  }) {
-    return FetchPackagesProvider(
-      page: page,
-      search: search,
-    );
-  }
-
-  @override
-  AutoDisposeFutureProvider<List<Package>> getProviderOverride(
-    covariant FetchPackagesProvider provider,
-  ) {
-    return call(
-      page: provider.page,
-      search: provider.search,
-    );
-  }
-
-  @override
-  List<ProviderOrFamily>? get allTransitiveDependencies =>
-      throw UnimplementedError();
-
-  @override
-  int? get disposeDelay => null;
-
-  @override
-  int? get cacheTime => null;
-
-  @override
-  List<ProviderOrFamily>? get dependencies => throw UnimplementedError();
-
-  @override
-  String? get name => r'fetchPackagesProvider';
 }

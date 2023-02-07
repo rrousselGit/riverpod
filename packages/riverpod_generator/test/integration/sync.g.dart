@@ -6,7 +6,7 @@ part of 'sync.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment
+// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs
 String _$publicClassHash() => 'f04884c039e6200ad3537feeecfc6e83828b5eb5';
 
 /// This is some documentation
@@ -88,8 +88,14 @@ const familyClassProvider = FamilyClassFamily();
 ///
 /// Copied from [FamilyClass].
 class FamilyClassFamily extends Family<String> {
+  /// This is some documentation
+  ///
+  /// Copied from [FamilyClass].
   const FamilyClassFamily();
 
+  /// This is some documentation
+  ///
+  /// Copied from [FamilyClass].
   FamilyClassProvider call(
     int first, {
     String? second,
@@ -119,15 +125,15 @@ class FamilyClassFamily extends Family<String> {
     );
   }
 
-  static final Iterable<ProviderOrFamily>? _dependencies = null;
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
 
   @override
   Iterable<ProviderOrFamily>? get dependencies => _dependencies;
 
-  static final Set<ProviderOrFamily>? _allTransitiveDependencies = null;
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
 
   @override
-  Set<ProviderOrFamily>? get allTransitiveDependencies =>
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
       _allTransitiveDependencies;
 
   @override
@@ -139,6 +145,9 @@ class FamilyClassFamily extends Family<String> {
 /// Copied from [FamilyClass].
 class FamilyClassProvider
     extends AutoDisposeNotifierProviderImpl<FamilyClass, String> {
+  /// This is some documentation
+  ///
+  /// Copied from [FamilyClass].
   FamilyClassProvider(
     this.first, {
     this.second,
@@ -266,8 +275,14 @@ const familyProvider = FamilyFamily();
 ///
 /// Copied from [family].
 class FamilyFamily extends Family<String> {
+  /// This is some documentation
+  ///
+  /// Copied from [family].
   const FamilyFamily();
 
+  /// This is some documentation
+  ///
+  /// Copied from [family].
   FamilyProvider call(
     int first, {
     String? second,
@@ -297,15 +312,15 @@ class FamilyFamily extends Family<String> {
     );
   }
 
-  static final Iterable<ProviderOrFamily>? _dependencies = null;
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
 
   @override
   Iterable<ProviderOrFamily>? get dependencies => _dependencies;
 
-  static final Set<ProviderOrFamily>? _allTransitiveDependencies = null;
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
 
   @override
-  Set<ProviderOrFamily>? get allTransitiveDependencies =>
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
       _allTransitiveDependencies;
 
   @override
@@ -316,6 +331,9 @@ class FamilyFamily extends Family<String> {
 ///
 /// Copied from [family].
 class FamilyProvider extends AutoDisposeProvider<String> {
+  /// This is some documentation
+  ///
+  /// Copied from [family].
   FamilyProvider(
     this.first, {
     this.second,

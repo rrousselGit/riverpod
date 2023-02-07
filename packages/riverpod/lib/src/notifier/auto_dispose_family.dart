@@ -45,7 +45,7 @@ class AutoDisposeFamilyNotifierProviderImpl<NotifierT extends NotifierBase<T>,
 
   /// An implementation detail of Riverpod
   @internal
-  AutoDisposeFamilyNotifierProviderImpl.internal(
+  const AutoDisposeFamilyNotifierProviderImpl.internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,

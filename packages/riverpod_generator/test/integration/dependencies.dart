@@ -40,3 +40,6 @@ class Provider4 extends _$Provider4 {
 
 @Riverpod(dependencies: [provider])
 int transitiveDependencies(TransitiveDependenciesRef ref) => 0;
+
+@Riverpod(dependencies: [dep, family, Dep2])
+int smallTransitiveDependencyCount(SmallTransitiveDependencyCountRef ref) => 0;

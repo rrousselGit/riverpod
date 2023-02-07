@@ -4,7 +4,6 @@ import 'package:analyzer/dart/element/type.dart';
 import 'package:meta/meta.dart';
 
 import '../riverpod_analyzer_utils.dart';
-import 'riverpod_ast.dart';
 
 class RiverpodAnnotationElement {
   @internal

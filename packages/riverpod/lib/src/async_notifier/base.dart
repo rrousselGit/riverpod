@@ -80,6 +80,18 @@ class AsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
               computeAllTransitiveDependencies(dependencies),
         );
 
+  /// An implementation detail of Riverpod
+  @internal
+  AsyncNotifierProviderImpl.internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    super.from,
+    super.argument,
+  });
+
   /// {@macro riverpod.autoDispose}
   static const autoDispose = AutoDisposeAsyncNotifierProviderBuilder();
 
@@ -107,10 +119,14 @@ class AsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
   Override overrideWith(NotifierT Function() create) {
     return ProviderOverride(
       origin: this,
-      override: AsyncNotifierProviderImpl<NotifierT, T>(
+      override: AsyncNotifierProviderImpl<NotifierT, T>.internal(
         create,
         from: from,
         argument: argument,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
       ),
     );
   }

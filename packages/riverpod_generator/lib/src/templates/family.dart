@@ -163,6 +163,11 @@ abstract class $notifierTypedefName extends $notifierBaseType<${provider.valueTy
     final docs = providerDocFor(provider.providerElement.element);
     final providerName = providerNameFor(provider.providerElement, options);
 
+    final dependenciesKeyword =
+        provider.providerElement.annotation.dependencies == null
+            ? 'const Iterable<ProviderOrFamily>?'
+            : 'final Iterable<ProviderOrFamily>';
+
     buffer.write('''
 $other
 
@@ -172,8 +177,10 @@ const $providerName = $familyName();
 
 $docs
 class $familyName extends Family<${provider.exposedType}> {
+  $docs
   const $familyName();
 
+  $docs
   $providerTypeNameImpl call($parameterDefinition) {
     return $providerTypeNameImpl($parametersPassThrough);
   }
@@ -185,15 +192,15 @@ class $familyName extends Family<${provider.exposedType}> {
     return call($parameterProviderPassThrough);
   }
 
-  static final Iterable<ProviderOrFamily>? _dependencies = ${serializeDependencies(provider.providerElement.annotation.dependencies, options)};
+  static $dependenciesKeyword _dependencies = ${serializeDependencies(provider.providerElement.annotation.dependencies, options)};
 
   @override
   Iterable<ProviderOrFamily>? get dependencies => _dependencies;
 
-  static final Set<ProviderOrFamily>? _allTransitiveDependencies = ${serializeDependencies(provider.providerElement.annotation.allTransitiveDependencies, options)};
+  static $dependenciesKeyword _allTransitiveDependencies = ${serializeDependencies(provider.providerElement.annotation.allTransitiveDependencies, options)};
 
   @override
-  Set<ProviderOrFamily>? get allTransitiveDependencies => _allTransitiveDependencies;
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies => _allTransitiveDependencies;
 
   @override
   String? get name => r'$providerName';
@@ -201,6 +208,7 @@ class $familyName extends Family<${provider.exposedType}> {
 
 $docs
 class $providerTypeNameImpl extends $providerType$providerGenerics {
+  $docs
   $providerTypeNameImpl($thisParameterDefinition) : super.internal(
           $providerCreate,
           from: $providerName,

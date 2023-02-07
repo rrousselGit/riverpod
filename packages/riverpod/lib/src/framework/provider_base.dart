@@ -44,6 +44,7 @@ abstract class ProviderBase<State> extends ProviderOrFamily
   @override
   ProviderBase<Object?> get _override => this;
 
+  /// {@template riverpod.create_source_hash}
   /// A debug-only fucntion for obtaining a hash of the source code of the
   /// initialization function.
   ///
@@ -51,6 +52,7 @@ abstract class ProviderBase<State> extends ProviderOrFamily
   /// provider will be re-executed.
   ///
   /// This variable is only set by `riverpod_generator`.
+  /// {@endtemplate}
   @internal
   final DebugGetCreateSourceHash? debugGetCreateSourceHash;
 
