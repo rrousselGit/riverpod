@@ -148,7 +148,7 @@ RiverpodAnalysisResult parseRiverpod(
     nodeLintRegistry,
     '',
   );
-  final visitor = RiverpodVisitor(lintRuleNodeRegistry);
+  final visitor = RiverpodRegistry(lintRuleNodeRegistry);
 
   final result = RiverpodAnalysisResult();
 
@@ -196,8 +196,8 @@ RiverpodAnalysisResult parseRiverpod(
   return result;
 }
 
-class RiverpodVisitor {
-  RiverpodVisitor(this._registry);
+class RiverpodRegistry {
+  RiverpodRegistry(this._registry);
 
   final LintRuleNodeRegistry _registry;
 
