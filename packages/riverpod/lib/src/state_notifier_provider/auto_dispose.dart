@@ -13,10 +13,25 @@ class AutoDisposeStateNotifierProvider<NotifierT extends StateNotifier<T>, T>
   AutoDisposeStateNotifierProvider(
     this._createFn, {
     super.name,
+    super.dependencies,
+    @Deprecated('Will be removed in 3.0.0') super.from,
+    @Deprecated('Will be removed in 3.0.0') super.argument,
+    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
+  }) : super(
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+        );
+
+  /// An implementation detail of Riverpod
+  @internal
+  AutoDisposeStateNotifierProvider.internal(
+    this._createFn, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
     super.from,
     super.argument,
-    super.dependencies,
-    super.debugGetCreateSourceHash,
   });
 
   /// {@macro riverpod.family}
@@ -45,10 +60,14 @@ class AutoDisposeStateNotifierProvider<NotifierT extends StateNotifier<T>, T>
   ) {
     return ProviderOverride(
       origin: this,
-      override: AutoDisposeStateNotifierProvider<NotifierT, T>(
+      override: AutoDisposeStateNotifierProvider<NotifierT, T>.internal(
         create,
         from: from,
         argument: argument,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        name: null,
       ),
     );
   }
@@ -80,7 +99,12 @@ class AutoDisposeStateNotifierProviderFamily<NotifierT extends StateNotifier<T>,
     super.create, {
     super.name,
     super.dependencies,
-  }) : super(providerFactory: AutoDisposeStateNotifierProvider.new);
+  }) : super(
+          providerFactory: AutoDisposeStateNotifierProvider.internal,
+          debugGetCreateSourceHash: null,
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+        );
 
   /// {@macro riverpod.overridewith}
   Override overrideWith(
@@ -93,10 +117,14 @@ class AutoDisposeStateNotifierProviderFamily<NotifierT extends StateNotifier<T>,
     return FamilyOverrideImpl<T, Arg,
         AutoDisposeStateNotifierProvider<NotifierT, T>>(
       this,
-      (arg) => AutoDisposeStateNotifierProvider<NotifierT, T>(
+      (arg) => AutoDisposeStateNotifierProvider<NotifierT, T>.internal(
         (ref) => create(ref, arg),
         from: from,
         argument: arg,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        name: null,
       ),
     );
   }

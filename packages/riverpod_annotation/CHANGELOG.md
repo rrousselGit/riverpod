@@ -1,3 +1,8 @@
+## [Unreleased]
+
+- It is now possible to specify `@Riverpod(dependencies: [...])` to scope providers
+- Marked `@Riverpod` as `@sealed`
+
 ## 1.1.1
 
 Upgrade Riverpod to latest

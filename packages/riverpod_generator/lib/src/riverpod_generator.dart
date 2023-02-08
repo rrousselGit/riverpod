@@ -1,10 +1,7 @@
-import 'dart:async';
-
-import 'package:analyzer/dart/constant/value.dart';
+import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/element/element.dart';
-import 'package:analyzer/dart/element/type.dart';
-import 'package:build/build.dart';
 import 'package:meta/meta.dart';
+import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 // ignore: implementation_imports, safe as we are the one controlling this file
 import 'package:riverpod_annotation/src/riverpod_annotation.dart';
 import 'package:source_gen/source_gen.dart';
@@ -12,134 +9,59 @@ import 'package:source_gen/source_gen.dart';
 import 'models.dart';
 import 'parse_generator.dart';
 import 'templates/family.dart';
-import 'templates/hash.dart';
-import 'templates/notifier.dart';
-import 'templates/provider.dart';
-import 'templates/ref.dart';
+import 'templates/stateful_provider.dart';
+import 'templates/stateless_provider.dart';
 
 const riverpodTypeChecker = TypeChecker.fromRuntime(Riverpod);
 
+String providerDocFor(Element element) {
+  return element.documentationComment == null
+      ? '/// See also [${element.name}].'
+      : '${element.documentationComment}\n///\n/// Copied from [${element.name}].';
+}
+
+String _hashFn(GeneratorProviderDeclaration provider, String hashName) {
+  return "String $hashName() => r'${provider.computeProviderHash()}';";
+}
+
+String _hashFnName(ProviderDeclaration provider) {
+  return '_\$${provider.providerElement.name.public.lowerFirst}Hash';
+}
+
+String _hashFnIdentifier(String hashFnName) {
+  return "const bool.fromEnvironment('dart.vm.product') ? "
+      'null : $hashFnName';
+}
+
 @immutable
-// ignore: invalid_use_of_internal_member
-class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Riverpod> {
+class RiverpodGenerator extends ParserGenerator {
   RiverpodGenerator(Map<String, Object?> mapConfig)
-      : config = BuildYamlOptions.fromMap(mapConfig);
+      : options = BuildYamlOptions.fromMap(mapConfig);
 
-  final BuildYamlOptions config;
-
-  @override
-  GlobalData parseGlobalData(LibraryElement library) {
-    return GlobalData();
-  }
+  final BuildYamlOptions options;
 
   @override
-  FutureOr<Data> parseElement(
-    BuildStep buildStep,
-    GlobalData globalData,
-    Element element,
-  ) async {
-    if (element is FunctionElement) {
-      return _parseFunctionElement(buildStep, globalData, element);
-    } else if (element is ClassElement) {
-      return _parseClassElement(buildStep, globalData, element);
-    } else {
-      throw InvalidGenerationSourceError(
-        '@riverpod can only be applied on functions and classes. Failing element: ${element.name}',
-        element: element,
-      );
-    }
-  }
-
-  bool _getKeepAlive(DartObject element) {
-    return element.getField('keepAlive')?.toBoolValue() ?? false;
-  }
-
-  FutureOr<Data> _parseFunctionElement(
-    BuildStep buildStep,
-    GlobalData globalData,
-    FunctionElement element,
-  ) async {
-    final riverpod = riverpodTypeChecker.firstAnnotationOf(element)!;
-
-    return Data.function(
-      createElement: element,
-      createAst: (await buildStep.resolver.astNodeFor(element, resolve: true))!,
-      providerDoc: element.documentationComment == null
-          ? '/// See also [${element.name}].'
-          : '${element.documentationComment}\n///\n/// Copied from [${element.name}].',
-      rawName: element.name,
-      keepAlive: _getKeepAlive(riverpod),
-      isScoped: element.isExternal,
-      // functional providers have a "ref" has paramter, so families have at
-      // least 2 parameters.
-      isFamily: element.parameters.length > 1,
-      isAsync: _isBuildAsync(element),
-      functionName: element.name,
-      // Remove "ref" from the parameters
-      parameters: element.parameters.skip(1).toList(),
-      valueDisplayType:
-          _getUserModelType(element).getDisplayString(withNullability: true),
-      buildYamlOptions: config,
+  String generateForUnit(ResolvedUnitResult resolvedUnitResult) {
+    final riverpodResult = parseRiverpod(
+      resolvedUnitResult.unit,
+      defaultFlagValue: false,
+      parseStatefulProviderDeclaration: true,
+      parseStatelessProviderDeclaration: true,
     );
+    return runGenerator(riverpodResult);
   }
 
-  bool _isBuildAsync(FunctionTypedElement element) {
-    return element.returnType.isDartAsyncFutureOr ||
-        element.returnType.isDartAsyncFuture;
-  }
+  String runGenerator(RiverpodAnalysisResult riverpodResult) {
+    final suffix = options.providerNameSuffix ?? 'Provider';
 
-  DartType _getUserModelType(ExecutableElement element) {
-    final isAsync = element.returnType.isDartAsyncFuture ||
-        element.returnType.isDartAsyncFutureOr;
+    final buffer = StringBuffer();
 
-    if (!isAsync) return element.returnType;
+    var didEmitHashUtils = false;
+    void maybeEmitHashUtils() {
+      if (didEmitHashUtils) return;
 
-    final returnType = element.returnType as InterfaceType;
-    return returnType.typeArguments.single;
-  }
-
-  FutureOr<Data> _parseClassElement(
-    BuildStep buildStep,
-    GlobalData globalData,
-    ClassElement element,
-  ) async {
-    final riverpod = riverpodTypeChecker.firstAnnotationOf(element)!;
-
-    // TODO check has default constructor with no param.
-
-    final buildMethod = element.methods.firstWhere(
-      (element) => element.name == 'build',
-      orElse: () => throw InvalidGenerationSourceError(
-        'Provider classes must contain a method named `build`.',
-        element: element,
-      ),
-    );
-
-    return Data.notifier(
-      createAst: (await buildStep.resolver.astNodeFor(element, resolve: true))!,
-      createElement: buildMethod,
-      providerDoc: element.documentationComment == null
-          ? '/// See also [${element.name}].'
-          : '${element.documentationComment}\n///\n/// Copied from [${element.name}].',
-      keepAlive: _getKeepAlive(riverpod),
-      rawName: element.name,
-      notifierName: element.name,
-      isScoped: buildMethod.isAbstract,
-      // No "ref" on build, therefore any parameter = family
-      isFamily: buildMethod.parameters.isNotEmpty,
-      isAsync: _isBuildAsync(buildMethod),
-      parameters: buildMethod.parameters,
-      valueDisplayType: _getUserModelType(buildMethod)
-          .getDisplayString(withNullability: true),
-      buildYamlOptions: config,
-    );
-  }
-
-  @override
-  Iterable<Object> generateForAll(GlobalData globalData) sync* {
-    yield '''
-// ignore_for_file: avoid_private_typedef_functions, non_constant_identifier_names, subtype_of_sealed_class, invalid_use_of_internal_member, unused_element, constant_identifier_names, unnecessary_raw_strings, library_private_types_in_public_api
-
+      didEmitHashUtils = true;
+      buffer.write('''
 /// Copied from Dart SDK
 class _SystemHash {
   _SystemHash._();
@@ -160,23 +82,79 @@ class _SystemHash {
     return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
   }
 }
-''';
-  }
-
-  @override
-  Iterable<Object> generateForData(
-    GlobalData globalData,
-    Data data,
-  ) sync* {
-    yield HashTemplate(data, globalData.hash);
-    yield ProviderTemplate(data);
-    yield RefTemplate(data);
-
-    if (data.isFamily) {
-      yield FamilyTemplate(data);
+''');
     }
-    if (data.isNotifier) {
-      yield NotifierTemplate(data);
+
+    for (final provider in riverpodResult.statefulProviderDeclarations.values) {
+      final providerName = '${provider.providerElement.name.lowerFirst}$suffix';
+      final notifierTypedefName = providerName.startsWith('_')
+          ? '_\$${provider.providerElement.name.substring(1)}'
+          : '_\$${provider.providerElement.name}';
+
+      final parameters = provider.buildMethod.parameters?.parameters;
+      if (parameters == null) continue;
+
+      final hashFunctionName = _hashFnName(provider);
+      final hashFn = _hashFnIdentifier(hashFunctionName);
+      buffer.write(_hashFn(provider, hashFunctionName));
+
+      if (parameters.isEmpty) {
+        StatefulProviderTemplate(
+          provider,
+          options: options,
+          notifierTypedefName: notifierTypedefName,
+          hashFn: hashFn,
+        ).run(buffer);
+      } else {
+        maybeEmitHashUtils();
+        FamilyTemplate.stateful(
+          provider,
+          options: options,
+          notifierTypedefName: notifierTypedefName,
+          hashFn: hashFn,
+        ).run(buffer);
+      }
     }
+
+    for (final provider
+        in riverpodResult.statelessProviderDeclarations.values) {
+      final parameters =
+          provider.node.functionExpression.parameters?.parameters;
+      if (parameters == null) continue;
+
+      final hashFunctionName = _hashFnName(provider);
+      final hashFn = _hashFnIdentifier(hashFunctionName);
+      buffer.write(_hashFn(provider, hashFunctionName));
+
+      final refName = '${provider.providerElement.name.titled}Ref';
+
+      // Using >1 as functional providers always have at least one parameter: ref
+      // So a provider is a "family" only if it has parameters besides the ref.
+      if (parameters.length > 1) {
+        maybeEmitHashUtils();
+        FamilyTemplate.stateless(
+          provider,
+          options: options,
+          refName: refName,
+          hashFn: hashFn,
+        ).run(buffer);
+      } else {
+        StatelessProviderTemplate(
+          provider,
+          refName: refName,
+          options: options,
+          hashFn: hashFn,
+        ).run(buffer);
+      }
+    }
+
+    // Only emit the header if we actually generated something
+    if (buffer.isNotEmpty) {
+      buffer.write('''
+// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions
+''');
+    }
+
+    return buffer.toString();
   }
 }

@@ -106,7 +106,10 @@ void main() {
           return 0;
         });
         final constantHashBuild = OnBuildMock();
-        final constantHash = Provider(
+        final constantHash = Provider.internal(
+          name: null,
+          dependencies: null,
+          allTransitiveDependencies: null,
           debugGetCreateSourceHash: () => 'hash',
           (ref) {
             constantHashBuild();
@@ -115,7 +118,10 @@ void main() {
         );
         var hashResult = '42';
         final changingHashBuild = OnBuildMock();
-        final changingHash = Provider(
+        final changingHash = Provider.internal(
+          name: null,
+          dependencies: null,
+          allTransitiveDependencies: null,
           debugGetCreateSourceHash: () => hashResult,
           (ref) {
             changingHashBuild();

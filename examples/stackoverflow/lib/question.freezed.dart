@@ -1,7 +1,7 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
-// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'question.dart';
 
@@ -33,34 +33,37 @@ mixin _$QuestionsResponse {
 abstract class $QuestionsResponseCopyWith<$Res> {
   factory $QuestionsResponseCopyWith(
           QuestionsResponse value, $Res Function(QuestionsResponse) then) =
-      _$QuestionsResponseCopyWithImpl<$Res>;
+      _$QuestionsResponseCopyWithImpl<$Res, QuestionsResponse>;
+  @useResult
   $Res call({List<Question> items, int total});
 }
 
 /// @nodoc
-class _$QuestionsResponseCopyWithImpl<$Res>
+class _$QuestionsResponseCopyWithImpl<$Res, $Val extends QuestionsResponse>
     implements $QuestionsResponseCopyWith<$Res> {
   _$QuestionsResponseCopyWithImpl(this._value, this._then);
 
-  final QuestionsResponse _value;
   // ignore: unused_field
-  final $Res Function(QuestionsResponse) _then;
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? items = freezed,
-    Object? total = freezed,
+    Object? items = null,
+    Object? total = null,
   }) {
     return _then(_value.copyWith(
-      items: items == freezed
+      items: null == items
           ? _value.items
           : items // ignore: cast_nullable_to_non_nullable
               as List<Question>,
-      total: total == freezed
+      total: null == total
           ? _value.total
           : total // ignore: cast_nullable_to_non_nullable
               as int,
-    ));
+    ) as $Val);
   }
 }
 
@@ -71,31 +74,30 @@ abstract class _$$_QuestionsResponseCopyWith<$Res>
           $Res Function(_$_QuestionsResponse) then) =
       __$$_QuestionsResponseCopyWithImpl<$Res>;
   @override
+  @useResult
   $Res call({List<Question> items, int total});
 }
 
 /// @nodoc
 class __$$_QuestionsResponseCopyWithImpl<$Res>
-    extends _$QuestionsResponseCopyWithImpl<$Res>
+    extends _$QuestionsResponseCopyWithImpl<$Res, _$_QuestionsResponse>
     implements _$$_QuestionsResponseCopyWith<$Res> {
   __$$_QuestionsResponseCopyWithImpl(
       _$_QuestionsResponse _value, $Res Function(_$_QuestionsResponse) _then)
-      : super(_value, (v) => _then(v as _$_QuestionsResponse));
+      : super(_value, _then);
 
-  @override
-  _$_QuestionsResponse get _value => super._value as _$_QuestionsResponse;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? items = freezed,
-    Object? total = freezed,
+    Object? items = null,
+    Object? total = null,
   }) {
     return _then(_$_QuestionsResponse(
-      items: items == freezed
+      items: null == items
           ? _value._items
           : items // ignore: cast_nullable_to_non_nullable
               as List<Question>,
-      total: total == freezed
+      total: null == total
           ? _value.total
           : total // ignore: cast_nullable_to_non_nullable
               as int,
@@ -116,6 +118,7 @@ class _$_QuestionsResponse implements _QuestionsResponse {
   final List<Question> _items;
   @override
   List<Question> get items {
+    if (_items is EqualUnmodifiableListView) return _items;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_items);
   }
@@ -134,18 +137,17 @@ class _$_QuestionsResponse implements _QuestionsResponse {
         (other.runtimeType == runtimeType &&
             other is _$_QuestionsResponse &&
             const DeepCollectionEquality().equals(other._items, _items) &&
-            const DeepCollectionEquality().equals(other.total, total));
+            (identical(other.total, total) || other.total == total));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(_items),
-      const DeepCollectionEquality().hash(total));
+      runtimeType, const DeepCollectionEquality().hash(_items), total);
 
   @JsonKey(ignore: true)
   @override
+  @pragma('vm:prefer-inline')
   _$$_QuestionsResponseCopyWith<_$_QuestionsResponse> get copyWith =>
       __$$_QuestionsResponseCopyWithImpl<_$_QuestionsResponse>(
           this, _$identity);
@@ -205,7 +207,8 @@ mixin _$Question {
 /// @nodoc
 abstract class $QuestionCopyWith<$Res> {
   factory $QuestionCopyWith(Question value, $Res Function(Question) then) =
-      _$QuestionCopyWithImpl<$Res>;
+      _$QuestionCopyWithImpl<$Res, Question>;
+  @useResult
   $Res call(
       {List<String> tags,
       int viewCount,
@@ -224,84 +227,88 @@ abstract class $QuestionCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$QuestionCopyWithImpl<$Res> implements $QuestionCopyWith<$Res> {
+class _$QuestionCopyWithImpl<$Res, $Val extends Question>
+    implements $QuestionCopyWith<$Res> {
   _$QuestionCopyWithImpl(this._value, this._then);
 
-  final Question _value;
   // ignore: unused_field
-  final $Res Function(Question) _then;
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? tags = freezed,
-    Object? viewCount = freezed,
-    Object? score = freezed,
+    Object? tags = null,
+    Object? viewCount = null,
+    Object? score = null,
     Object? bountyAmount = freezed,
     Object? acceptedAnswerId = freezed,
-    Object? owner = freezed,
-    Object? answerCount = freezed,
-    Object? creationDate = freezed,
-    Object? questionId = freezed,
-    Object? link = freezed,
-    Object? title = freezed,
-    Object? body = freezed,
+    Object? owner = null,
+    Object? answerCount = null,
+    Object? creationDate = null,
+    Object? questionId = null,
+    Object? link = null,
+    Object? title = null,
+    Object? body = null,
   }) {
     return _then(_value.copyWith(
-      tags: tags == freezed
+      tags: null == tags
           ? _value.tags
           : tags // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      viewCount: viewCount == freezed
+      viewCount: null == viewCount
           ? _value.viewCount
           : viewCount // ignore: cast_nullable_to_non_nullable
               as int,
-      score: score == freezed
+      score: null == score
           ? _value.score
           : score // ignore: cast_nullable_to_non_nullable
               as int,
-      bountyAmount: bountyAmount == freezed
+      bountyAmount: freezed == bountyAmount
           ? _value.bountyAmount
           : bountyAmount // ignore: cast_nullable_to_non_nullable
               as int?,
-      acceptedAnswerId: acceptedAnswerId == freezed
+      acceptedAnswerId: freezed == acceptedAnswerId
           ? _value.acceptedAnswerId
           : acceptedAnswerId // ignore: cast_nullable_to_non_nullable
               as int?,
-      owner: owner == freezed
+      owner: null == owner
           ? _value.owner
           : owner // ignore: cast_nullable_to_non_nullable
               as User,
-      answerCount: answerCount == freezed
+      answerCount: null == answerCount
           ? _value.answerCount
           : answerCount // ignore: cast_nullable_to_non_nullable
               as int,
-      creationDate: creationDate == freezed
+      creationDate: null == creationDate
           ? _value.creationDate
           : creationDate // ignore: cast_nullable_to_non_nullable
               as DateTime,
-      questionId: questionId == freezed
+      questionId: null == questionId
           ? _value.questionId
           : questionId // ignore: cast_nullable_to_non_nullable
               as int,
-      link: link == freezed
+      link: null == link
           ? _value.link
           : link // ignore: cast_nullable_to_non_nullable
               as String,
-      title: title == freezed
+      title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
               as String,
-      body: body == freezed
+      body: null == body
           ? _value.body
           : body // ignore: cast_nullable_to_non_nullable
               as String,
-    ));
+    ) as $Val);
   }
 
   @override
+  @pragma('vm:prefer-inline')
   $UserCopyWith<$Res> get owner {
     return $UserCopyWith<$Res>(_value.owner, (value) {
-      return _then(_value.copyWith(owner: value));
+      return _then(_value.copyWith(owner: value) as $Val);
     });
   }
 }
@@ -312,6 +319,7 @@ abstract class _$$_QuestionCopyWith<$Res> implements $QuestionCopyWith<$Res> {
           _$_Question value, $Res Function(_$_Question) then) =
       __$$_QuestionCopyWithImpl<$Res>;
   @override
+  @useResult
   $Res call(
       {List<String> tags,
       int viewCount,
@@ -331,76 +339,75 @@ abstract class _$$_QuestionCopyWith<$Res> implements $QuestionCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$_QuestionCopyWithImpl<$Res> extends _$QuestionCopyWithImpl<$Res>
+class __$$_QuestionCopyWithImpl<$Res>
+    extends _$QuestionCopyWithImpl<$Res, _$_Question>
     implements _$$_QuestionCopyWith<$Res> {
   __$$_QuestionCopyWithImpl(
       _$_Question _value, $Res Function(_$_Question) _then)
-      : super(_value, (v) => _then(v as _$_Question));
+      : super(_value, _then);
 
-  @override
-  _$_Question get _value => super._value as _$_Question;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? tags = freezed,
-    Object? viewCount = freezed,
-    Object? score = freezed,
+    Object? tags = null,
+    Object? viewCount = null,
+    Object? score = null,
     Object? bountyAmount = freezed,
     Object? acceptedAnswerId = freezed,
-    Object? owner = freezed,
-    Object? answerCount = freezed,
-    Object? creationDate = freezed,
-    Object? questionId = freezed,
-    Object? link = freezed,
-    Object? title = freezed,
-    Object? body = freezed,
+    Object? owner = null,
+    Object? answerCount = null,
+    Object? creationDate = null,
+    Object? questionId = null,
+    Object? link = null,
+    Object? title = null,
+    Object? body = null,
   }) {
     return _then(_$_Question(
-      tags: tags == freezed
+      tags: null == tags
           ? _value._tags
           : tags // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      viewCount: viewCount == freezed
+      viewCount: null == viewCount
           ? _value.viewCount
           : viewCount // ignore: cast_nullable_to_non_nullable
               as int,
-      score: score == freezed
+      score: null == score
           ? _value.score
           : score // ignore: cast_nullable_to_non_nullable
               as int,
-      bountyAmount: bountyAmount == freezed
+      bountyAmount: freezed == bountyAmount
           ? _value.bountyAmount
           : bountyAmount // ignore: cast_nullable_to_non_nullable
               as int?,
-      acceptedAnswerId: acceptedAnswerId == freezed
+      acceptedAnswerId: freezed == acceptedAnswerId
           ? _value.acceptedAnswerId
           : acceptedAnswerId // ignore: cast_nullable_to_non_nullable
               as int?,
-      owner: owner == freezed
+      owner: null == owner
           ? _value.owner
           : owner // ignore: cast_nullable_to_non_nullable
               as User,
-      answerCount: answerCount == freezed
+      answerCount: null == answerCount
           ? _value.answerCount
           : answerCount // ignore: cast_nullable_to_non_nullable
               as int,
-      creationDate: creationDate == freezed
+      creationDate: null == creationDate
           ? _value.creationDate
           : creationDate // ignore: cast_nullable_to_non_nullable
               as DateTime,
-      questionId: questionId == freezed
+      questionId: null == questionId
           ? _value.questionId
           : questionId // ignore: cast_nullable_to_non_nullable
               as int,
-      link: link == freezed
+      link: null == link
           ? _value.link
           : link // ignore: cast_nullable_to_non_nullable
               as String,
-      title: title == freezed
+      title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
               as String,
-      body: body == freezed
+      body: null == body
           ? _value.body
           : body // ignore: cast_nullable_to_non_nullable
               as String,
@@ -433,6 +440,7 @@ class _$_Question implements _Question {
   final List<String> _tags;
   @override
   List<String> get tags {
+    if (_tags is EqualUnmodifiableListView) return _tags;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_tags);
   }
@@ -472,22 +480,23 @@ class _$_Question implements _Question {
         (other.runtimeType == runtimeType &&
             other is _$_Question &&
             const DeepCollectionEquality().equals(other._tags, _tags) &&
-            const DeepCollectionEquality().equals(other.viewCount, viewCount) &&
-            const DeepCollectionEquality().equals(other.score, score) &&
-            const DeepCollectionEquality()
-                .equals(other.bountyAmount, bountyAmount) &&
-            const DeepCollectionEquality()
-                .equals(other.acceptedAnswerId, acceptedAnswerId) &&
-            const DeepCollectionEquality().equals(other.owner, owner) &&
-            const DeepCollectionEquality()
-                .equals(other.answerCount, answerCount) &&
-            const DeepCollectionEquality()
-                .equals(other.creationDate, creationDate) &&
-            const DeepCollectionEquality()
-                .equals(other.questionId, questionId) &&
-            const DeepCollectionEquality().equals(other.link, link) &&
-            const DeepCollectionEquality().equals(other.title, title) &&
-            const DeepCollectionEquality().equals(other.body, body));
+            (identical(other.viewCount, viewCount) ||
+                other.viewCount == viewCount) &&
+            (identical(other.score, score) || other.score == score) &&
+            (identical(other.bountyAmount, bountyAmount) ||
+                other.bountyAmount == bountyAmount) &&
+            (identical(other.acceptedAnswerId, acceptedAnswerId) ||
+                other.acceptedAnswerId == acceptedAnswerId) &&
+            (identical(other.owner, owner) || other.owner == owner) &&
+            (identical(other.answerCount, answerCount) ||
+                other.answerCount == answerCount) &&
+            (identical(other.creationDate, creationDate) ||
+                other.creationDate == creationDate) &&
+            (identical(other.questionId, questionId) ||
+                other.questionId == questionId) &&
+            (identical(other.link, link) || other.link == link) &&
+            (identical(other.title, title) || other.title == title) &&
+            (identical(other.body, body) || other.body == body));
   }
 
   @JsonKey(ignore: true)
@@ -495,20 +504,21 @@ class _$_Question implements _Question {
   int get hashCode => Object.hash(
       runtimeType,
       const DeepCollectionEquality().hash(_tags),
-      const DeepCollectionEquality().hash(viewCount),
-      const DeepCollectionEquality().hash(score),
-      const DeepCollectionEquality().hash(bountyAmount),
-      const DeepCollectionEquality().hash(acceptedAnswerId),
-      const DeepCollectionEquality().hash(owner),
-      const DeepCollectionEquality().hash(answerCount),
-      const DeepCollectionEquality().hash(creationDate),
-      const DeepCollectionEquality().hash(questionId),
-      const DeepCollectionEquality().hash(link),
-      const DeepCollectionEquality().hash(title),
-      const DeepCollectionEquality().hash(body));
+      viewCount,
+      score,
+      bountyAmount,
+      acceptedAnswerId,
+      owner,
+      answerCount,
+      creationDate,
+      questionId,
+      link,
+      title,
+      body);
 
   @JsonKey(ignore: true)
   @override
+  @pragma('vm:prefer-inline')
   _$$_QuestionCopyWith<_$_Question> get copyWith =>
       __$$_QuestionCopyWithImpl<_$_Question>(this, _$identity);
 
@@ -582,34 +592,37 @@ mixin _$QuestionTheme {
 abstract class $QuestionThemeCopyWith<$Res> {
   factory $QuestionThemeCopyWith(
           QuestionTheme value, $Res Function(QuestionTheme) then) =
-      _$QuestionThemeCopyWithImpl<$Res>;
+      _$QuestionThemeCopyWithImpl<$Res, QuestionTheme>;
+  @useResult
   $Res call({TextStyle titleStyle, TextStyle descriptionStyle});
 }
 
 /// @nodoc
-class _$QuestionThemeCopyWithImpl<$Res>
+class _$QuestionThemeCopyWithImpl<$Res, $Val extends QuestionTheme>
     implements $QuestionThemeCopyWith<$Res> {
   _$QuestionThemeCopyWithImpl(this._value, this._then);
 
-  final QuestionTheme _value;
   // ignore: unused_field
-  final $Res Function(QuestionTheme) _then;
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? titleStyle = freezed,
-    Object? descriptionStyle = freezed,
+    Object? titleStyle = null,
+    Object? descriptionStyle = null,
   }) {
     return _then(_value.copyWith(
-      titleStyle: titleStyle == freezed
+      titleStyle: null == titleStyle
           ? _value.titleStyle
           : titleStyle // ignore: cast_nullable_to_non_nullable
               as TextStyle,
-      descriptionStyle: descriptionStyle == freezed
+      descriptionStyle: null == descriptionStyle
           ? _value.descriptionStyle
           : descriptionStyle // ignore: cast_nullable_to_non_nullable
               as TextStyle,
-    ));
+    ) as $Val);
   }
 }
 
@@ -620,31 +633,30 @@ abstract class _$$_QuestionThemeCopyWith<$Res>
           _$_QuestionTheme value, $Res Function(_$_QuestionTheme) then) =
       __$$_QuestionThemeCopyWithImpl<$Res>;
   @override
+  @useResult
   $Res call({TextStyle titleStyle, TextStyle descriptionStyle});
 }
 
 /// @nodoc
 class __$$_QuestionThemeCopyWithImpl<$Res>
-    extends _$QuestionThemeCopyWithImpl<$Res>
+    extends _$QuestionThemeCopyWithImpl<$Res, _$_QuestionTheme>
     implements _$$_QuestionThemeCopyWith<$Res> {
   __$$_QuestionThemeCopyWithImpl(
       _$_QuestionTheme _value, $Res Function(_$_QuestionTheme) _then)
-      : super(_value, (v) => _then(v as _$_QuestionTheme));
+      : super(_value, _then);
 
-  @override
-  _$_QuestionTheme get _value => super._value as _$_QuestionTheme;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? titleStyle = freezed,
-    Object? descriptionStyle = freezed,
+    Object? titleStyle = null,
+    Object? descriptionStyle = null,
   }) {
     return _then(_$_QuestionTheme(
-      titleStyle: titleStyle == freezed
+      titleStyle: null == titleStyle
           ? _value.titleStyle
           : titleStyle // ignore: cast_nullable_to_non_nullable
               as TextStyle,
-      descriptionStyle: descriptionStyle == freezed
+      descriptionStyle: null == descriptionStyle
           ? _value.descriptionStyle
           : descriptionStyle // ignore: cast_nullable_to_non_nullable
               as TextStyle,
@@ -673,20 +685,18 @@ class _$_QuestionTheme implements _QuestionTheme {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_QuestionTheme &&
-            const DeepCollectionEquality()
-                .equals(other.titleStyle, titleStyle) &&
-            const DeepCollectionEquality()
-                .equals(other.descriptionStyle, descriptionStyle));
+            (identical(other.titleStyle, titleStyle) ||
+                other.titleStyle == titleStyle) &&
+            (identical(other.descriptionStyle, descriptionStyle) ||
+                other.descriptionStyle == descriptionStyle));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(titleStyle),
-      const DeepCollectionEquality().hash(descriptionStyle));
+  int get hashCode => Object.hash(runtimeType, titleStyle, descriptionStyle);
 
   @JsonKey(ignore: true)
   @override
+  @pragma('vm:prefer-inline')
   _$$_QuestionThemeCopyWith<_$_QuestionTheme> get copyWith =>
       __$$_QuestionThemeCopyWithImpl<_$_QuestionTheme>(this, _$identity);
 }

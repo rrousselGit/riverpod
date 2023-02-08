@@ -1,12 +1,14 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
+// ignore_for_file: non_constant_identifier_names, require_trailing_commas
+
 part of 'detail.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-// ignore_for_file: avoid_private_typedef_functions, non_constant_identifier_names, subtype_of_sealed_class, invalid_use_of_internal_member, unused_element, constant_identifier_names, unnecessary_raw_strings, library_private_types_in_public_api
+String _$packageMetricsHash() => r'67cd25e50357e6e970d432c1d255085a23b856ac';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -29,7 +31,80 @@ class _SystemHash {
   }
 }
 
-String $PackageMetricsHash() => r'912bc2073d072ecad280fb971eaa0bfaf8f3f72b';
+abstract class _$PackageMetrics
+    extends BuildlessAutoDisposeAsyncNotifier<PackageMetricsScore> {
+  late final String packageName;
+
+  Future<PackageMetricsScore> build({
+    required String packageName,
+  });
+}
+
+/// A provider that fetches the likes count, popularity score and pub points
+/// for a given package.
+///
+/// It also exposes utilities to like/unlike a package, assuming the user
+/// is logged-in.
+///
+/// Copied from [PackageMetrics].
+@ProviderFor(PackageMetrics)
+const packageMetricsProvider = PackageMetricsFamily();
+
+/// A provider that fetches the likes count, popularity score and pub points
+/// for a given package.
+///
+/// It also exposes utilities to like/unlike a package, assuming the user
+/// is logged-in.
+///
+/// Copied from [PackageMetrics].
+class PackageMetricsFamily extends Family<AsyncValue<PackageMetricsScore>> {
+  /// A provider that fetches the likes count, popularity score and pub points
+  /// for a given package.
+  ///
+  /// It also exposes utilities to like/unlike a package, assuming the user
+  /// is logged-in.
+  ///
+  /// Copied from [PackageMetrics].
+  const PackageMetricsFamily();
+
+  /// A provider that fetches the likes count, popularity score and pub points
+  /// for a given package.
+  ///
+  /// It also exposes utilities to like/unlike a package, assuming the user
+  /// is logged-in.
+  ///
+  /// Copied from [PackageMetrics].
+  PackageMetricsProvider call({
+    required String packageName,
+  }) {
+    return PackageMetricsProvider(
+      packageName: packageName,
+    );
+  }
+
+  @override
+  PackageMetricsProvider getProviderOverride(
+    covariant PackageMetricsProvider provider,
+  ) {
+    return call(
+      packageName: provider.packageName,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'packageMetricsProvider';
+}
 
 /// A provider that fetches the likes count, popularity score and pub points
 /// for a given package.
@@ -40,17 +115,26 @@ String $PackageMetricsHash() => r'912bc2073d072ecad280fb971eaa0bfaf8f3f72b';
 /// Copied from [PackageMetrics].
 class PackageMetricsProvider extends AutoDisposeAsyncNotifierProviderImpl<
     PackageMetrics, PackageMetricsScore> {
+  /// A provider that fetches the likes count, popularity score and pub points
+  /// for a given package.
+  ///
+  /// It also exposes utilities to like/unlike a package, assuming the user
+  /// is logged-in.
+  ///
+  /// Copied from [PackageMetrics].
   PackageMetricsProvider({
     required this.packageName,
-  }) : super(
+  }) : super.internal(
           () => PackageMetrics()..packageName = packageName,
           from: packageMetricsProvider,
           name: r'packageMetricsProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : $PackageMetricsHash,
-          cacheTime: 3000,
+                  : _$packageMetricsHash,
+          dependencies: PackageMetricsFamily._dependencies,
+          allTransitiveDependencies:
+              PackageMetricsFamily._allTransitiveDependencies,
         );
 
   final String packageName;
@@ -69,8 +153,8 @@ class PackageMetricsProvider extends AutoDisposeAsyncNotifierProviderImpl<
   }
 
   @override
-  FutureOr<PackageMetricsScore> runNotifierBuild(
-    covariant _$PackageMetrics notifier,
+  Future<PackageMetricsScore> runNotifierBuild(
+    covariant PackageMetrics notifier,
   ) {
     return notifier.build(
       packageName: packageName,
@@ -78,73 +162,58 @@ class PackageMetricsProvider extends AutoDisposeAsyncNotifierProviderImpl<
   }
 }
 
-typedef PackageMetricsRef
-    = AutoDisposeAsyncNotifierProviderRef<PackageMetricsScore>;
+String _$fetchPackageDetailsHash() =>
+    r'e65ba332cb8397cc5a1aca6e656233dff698391a';
+typedef FetchPackageDetailsRef = AutoDisposeFutureProviderRef<Package>;
 
-/// A provider that fetches the likes count, popularity score and pub points
-/// for a given package.
-///
-/// It also exposes utilities to like/unlike a package, assuming the user
-/// is logged-in.
-///
-/// Copied from [PackageMetrics].
-final packageMetricsProvider = PackageMetricsFamily();
+/// See also [fetchPackageDetails].
+@ProviderFor(fetchPackageDetails)
+const fetchPackageDetailsProvider = FetchPackageDetailsFamily();
 
-class PackageMetricsFamily extends Family<AsyncValue<PackageMetricsScore>> {
-  PackageMetricsFamily();
+/// See also [fetchPackageDetails].
+class FetchPackageDetailsFamily extends Family<AsyncValue<Package>> {
+  /// See also [fetchPackageDetails].
+  const FetchPackageDetailsFamily();
 
-  PackageMetricsProvider call({
+  /// See also [fetchPackageDetails].
+  FetchPackageDetailsProvider call({
     required String packageName,
   }) {
-    return PackageMetricsProvider(
+    return FetchPackageDetailsProvider(
       packageName: packageName,
     );
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderImpl<PackageMetrics, PackageMetricsScore>
-      getProviderOverride(
-    covariant PackageMetricsProvider provider,
+  FetchPackageDetailsProvider getProviderOverride(
+    covariant FetchPackageDetailsProvider provider,
   ) {
     return call(
       packageName: provider.packageName,
     );
   }
 
-  @override
-  List<ProviderOrFamily>? get allTransitiveDependencies =>
-      throw UnimplementedError();
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
 
   @override
-  int? get disposeDelay => null;
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
 
   @override
-  int? get cacheTime => 3000;
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
 
   @override
-  List<ProviderOrFamily>? get dependencies => throw UnimplementedError();
-
-  @override
-  String? get name => r'packageMetricsProvider';
+  String? get name => r'fetchPackageDetailsProvider';
 }
-
-abstract class _$PackageMetrics
-    extends BuildlessAutoDisposeAsyncNotifier<PackageMetricsScore> {
-  late final String packageName;
-
-  FutureOr<PackageMetricsScore> build({
-    required String packageName,
-  });
-}
-
-String $fetchPackageDetailsHash() =>
-    r'8566403156408d56498f8644e3f719e0d5daeade';
 
 /// See also [fetchPackageDetails].
 class FetchPackageDetailsProvider extends AutoDisposeFutureProvider<Package> {
+  /// See also [fetchPackageDetails].
   FetchPackageDetailsProvider({
     required this.packageName,
-  }) : super(
+  }) : super.internal(
           (ref) => fetchPackageDetails(
             ref,
             packageName: packageName,
@@ -154,8 +223,10 @@ class FetchPackageDetailsProvider extends AutoDisposeFutureProvider<Package> {
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : $fetchPackageDetailsHash,
-          cacheTime: 3000,
+                  : _$fetchPackageDetailsHash,
+          dependencies: FetchPackageDetailsFamily._dependencies,
+          allTransitiveDependencies:
+              FetchPackageDetailsFamily._allTransitiveDependencies,
         );
 
   final String packageName;
@@ -175,65 +246,34 @@ class FetchPackageDetailsProvider extends AutoDisposeFutureProvider<Package> {
   }
 }
 
-typedef FetchPackageDetailsRef = AutoDisposeFutureProviderRef<Package>;
-
-/// See also [fetchPackageDetails].
-final fetchPackageDetailsProvider = FetchPackageDetailsFamily();
-
-class FetchPackageDetailsFamily extends Family<AsyncValue<Package>> {
-  FetchPackageDetailsFamily();
-
-  FetchPackageDetailsProvider call({
-    required String packageName,
-  }) {
-    return FetchPackageDetailsProvider(
-      packageName: packageName,
-    );
-  }
-
-  @override
-  AutoDisposeFutureProvider<Package> getProviderOverride(
-    covariant FetchPackageDetailsProvider provider,
-  ) {
-    return call(
-      packageName: provider.packageName,
-    );
-  }
-
-  @override
-  List<ProviderOrFamily>? get allTransitiveDependencies =>
-      throw UnimplementedError();
-
-  @override
-  int? get disposeDelay => null;
-
-  @override
-  int? get cacheTime => 3000;
-
-  @override
-  List<ProviderOrFamily>? get dependencies => throw UnimplementedError();
-
-  @override
-  String? get name => r'fetchPackageDetailsProvider';
-}
-
-String $likedPackagesHash() => r'304a4def167e245812638cba776e8d5eb66d8844';
+String _$likedPackagesHash() => r'304a4def167e245812638cba776e8d5eb66d8844';
 
 /// See also [likedPackages].
-final likedPackagesProvider = AutoDisposeFutureProvider<List<String>>(
+@ProviderFor(likedPackages)
+final likedPackagesProvider = AutoDisposeFutureProvider<List<String>>.internal(
   likedPackages,
   name: r'likedPackagesProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : $likedPackagesHash,
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$likedPackagesHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
 );
+
 typedef LikedPackagesRef = AutoDisposeFutureProviderRef<List<String>>;
-String $pubRepositoryHash() => r'1f4dbfa0911f6467067fab244677acbcb8c7ad4e';
+String _$pubRepositoryHash() => r'1f4dbfa0911f6467067fab244677acbcb8c7ad4e';
 
 /// See also [pubRepository].
-final pubRepositoryProvider = AutoDisposeProvider<PubRepository>(
+@ProviderFor(pubRepository)
+final pubRepositoryProvider = AutoDisposeProvider<PubRepository>.internal(
   pubRepository,
   name: r'pubRepositoryProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : $pubRepositoryHash,
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$pubRepositoryHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
 );
+
 typedef PubRepositoryRef = AutoDisposeProviderRef<PubRepository>;
+// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions
