@@ -9,7 +9,7 @@ import 'package:analyzer/dart/analysis/analysis_context_collection.dart';
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:hotreloader/hotreloader.dart';
 import 'package:path/path.dart';
-import 'package:riverpod_lint/riverpod_lint.dart';
+import 'package:riverpod_lint/riverpod_lint.back';
 import 'package:watcher/watcher.dart';
 
 void main() async {
