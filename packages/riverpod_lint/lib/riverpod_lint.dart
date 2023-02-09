@@ -40,6 +40,15 @@ class _RiverpodPlugin extends PluginBase {
 //  "convert to StatelessWidget to COnsumerHookWidget (if hooks_riverpod is installed)"
 //  "convert to StatefulWidgetWidget to COnsumerStatefulWidget
 //  "convert to StatefulWidgetWidget to StatefulHookConsumerWidget (if hooks_riverpod is installed)"
+
+// StateProvider to SyncStatefulProvider
+// convert FutureProvider <> AsyncNotifierProvider
+// convert Provider <> NotifierProvider
+// convert *Notifier <> autoDispose/family
+// Notifier/AsyncNotifier/FutureProvider -> generator
+// Convert StateNotifier -> Notifier
+// Convert StateNotifier<AsyncValue> -> AsyncNotifier
+
         StatelessToStatefulProvider(),
         StatefulToStatelessProvider(),
       ];
