@@ -16,7 +16,7 @@ dev_dependencies:
   build_runner: any
   build_verify: ^3.0.0
   custom_lint: ^0.2.2
-  custom_lint_builder: ^0.2.2
+  custom_lint_builder: ^0.2.4
   flutter_test:
     sdk: flutter
   riverpod_lint:
