@@ -1,7 +1,7 @@
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
-import '../riverpod_lint_rule.dart';
+import '../riverpod_custom_lint.dart';
 
 class AvoidReadInsideBuild extends RiverpodLintRule {
   const AvoidReadInsideBuild() : super(code: _code);
