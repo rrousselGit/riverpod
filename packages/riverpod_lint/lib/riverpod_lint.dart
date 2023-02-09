@@ -36,6 +36,8 @@ class _RiverpodPlugin extends PluginBase {
 
 //  avoid overrides on non-root ProviderScope/ProviderContainer
 //  no ProviderScope detected on runApp
+
+// Hook usage in non-hook widget
       ];
 
   @override
@@ -44,12 +46,6 @@ class _RiverpodPlugin extends PluginBase {
         WrapWithProviderScope(),
         ConvertToConsumerWidget(),
         ConvertToConsumerStatefulWidget(),
-
-//  "extract to consumer widget"
-//  "convert to StatelessWidget to COnsumerWidget"
-//  "convert to StatelessWidget to COnsumerHookWidget (if hooks_riverpod is installed)"
-//  "convert to StatefulWidgetWidget to COnsumerStatefulWidget
-//  "convert to StatefulWidgetWidget to StatefulHookConsumerWidget (if hooks_riverpod is installed)"
 
 // StateProvider to SyncStatefulProvider
 // convert FutureProvider <> AsyncNotifierProvider
