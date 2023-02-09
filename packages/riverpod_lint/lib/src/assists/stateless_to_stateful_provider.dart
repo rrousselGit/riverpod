@@ -2,6 +2,7 @@ import 'package:analyzer/source/source_range.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
 import '../riverpod_custom_lint.dart';
+import 'convert_to_consumer_widget.dart';
 
 class StatelessToStatefulProvider extends RiverpodAssist {
   StatelessToStatefulProvider();
@@ -28,7 +29,7 @@ class StatelessToStatefulProvider extends RiverpodAssist {
 
       final changeBuilder = reporter.createChangeBuilder(
         message: 'Convert to stateful provider',
-        priority: 100,
+        priority: convertPriority,
       );
 
       changeBuilder.addDartFileEdit((builder) {
