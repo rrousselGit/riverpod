@@ -2,6 +2,8 @@ import 'package:custom_lint_builder/custom_lint_builder.dart';
 
 import 'src/assists/stateful_to_stateless_provider.dart';
 import 'src/assists/stateless_to_stateful_provider.dart';
+import 'src/assists/wrap_with_consumer.dart';
+import 'src/assists/wrap_with_provider_scope.dart';
 import 'src/lints/missing_provider_scope.dart';
 import 'src/lints/stateless_ref.dart';
 
@@ -36,7 +38,9 @@ class _RiverpodPlugin extends PluginBase {
 
   @override
   List<Assist> getAssists() => [
-//  "wrap in a consumer"
+        WrapWithConsumer(),
+        WrapWithProviderScope(),
+
 //  "extract to consumer widget"
 //  "convert to StatelessWidget to COnsumerWidget"
 //  "convert to StatelessWidget to COnsumerHookWidget (if hooks_riverpod is installed)"
