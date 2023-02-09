@@ -35,7 +35,10 @@ class HookConsumer extends HookConsumerWidget {
   const HookConsumer({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(
+    BuildContext context,
+    WidgetRef ref,
+  ) {
     return const Placeholder();
   }
 }

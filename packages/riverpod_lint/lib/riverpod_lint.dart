@@ -1,5 +1,6 @@
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
+import 'src/assists/convert_to_consumer_stateful_widget.dart';
 import 'src/assists/convert_to_consumer_widget.dart';
 import 'src/assists/stateful_to_stateless_provider.dart';
 import 'src/assists/stateless_to_stateful_provider.dart';
@@ -42,6 +43,7 @@ class _RiverpodPlugin extends PluginBase {
         WrapWithConsumer(),
         WrapWithProviderScope(),
         ConvertToConsumerWidget(),
+        ConvertToConsumerStatefulWidget(),
 
 //  "extract to consumer widget"
 //  "convert to StatelessWidget to COnsumerWidget"
