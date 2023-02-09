@@ -1,7 +1,9 @@
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
-class AvoidWatchOutsideBuild extends DartLintRule {
+import '../riverpod_lint_rule.dart';
+
+class AvoidWatchOutsideBuild extends RiverpodLintRule {
   const AvoidWatchOutsideBuild() : super(code: _code);
 
   static const _code = LintCode(
@@ -16,6 +18,6 @@ class AvoidWatchOutsideBuild extends DartLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    // TODO: implement run
+    riverpodRegistry(context).addRefWatchInvocation((watch) {});
   }
 }

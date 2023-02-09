@@ -1,7 +1,9 @@
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
-class PreferFinalProvider extends DartLintRule {
+import '../riverpod_lint_rule.dart';
+
+class PreferFinalProvider extends RiverpodLintRule {
   const PreferFinalProvider() : super(code: _code);
 
   static const _code = LintCode(
@@ -15,6 +17,12 @@ class PreferFinalProvider extends DartLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    // TODO: implement run
+    riverpodRegistry(context).addLegacyProviderDeclaration((provider) {
+      if (!provider.node.isFinal) {
+        reporter.reportErrorForNode(_code, provider.node);
+      }
+    });
+
+    context.registry.addPropertyAccess((node) {});
   }
 }

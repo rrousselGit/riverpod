@@ -95,6 +95,7 @@ class RiverpodAnnotationElement {
 }
 
 abstract class ProviderDeclarationElement {
+  bool get isAutoDispose;
   Element get element;
   String get name;
 }
@@ -214,6 +215,7 @@ class LegacyProviderDeclarationElement implements ProviderDeclarationElement {
   @override
   final String name;
 
+  @override
   final bool isAutoDispose;
 
   final LegacyFamilyInvocationElement? familyElement;
@@ -229,10 +231,13 @@ class LegacyFamilyInvocationElement {
 abstract class GeneratorProviderDeclarationElement
     implements ProviderDeclarationElement {
   RiverpodAnnotationElement get annotation;
+
+  @override
+  bool get isAutoDispose => !annotation.keepAlive;
 }
 
 class StatefulProviderDeclarationElement
-    implements GeneratorProviderDeclarationElement {
+    extends GeneratorProviderDeclarationElement {
   StatefulProviderDeclarationElement._({
     required this.name,
     required this.annotation,
@@ -282,7 +287,7 @@ class StatefulProviderDeclarationElement
 }
 
 class StatelessProviderDeclarationElement
-    implements GeneratorProviderDeclarationElement {
+    extends GeneratorProviderDeclarationElement {
   StatelessProviderDeclarationElement._({
     required this.name,
     required this.annotation,

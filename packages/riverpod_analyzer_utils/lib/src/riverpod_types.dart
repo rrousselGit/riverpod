@@ -5,8 +5,16 @@ const riverpodType =
     TypeChecker.fromName('Riverpod', packageName: 'riverpod_annotation');
 
 /// [TypeChecker] for `ProviderBase`
-const providerBaseType =
-    TypeChecker.fromName('ProviderBase', packageName: 'riverpod');
+const providerBaseType = TypeChecker.fromName(
+  'ProviderBase',
+  packageName: 'riverpod',
+);
+
+///  [TypeChecker] from `ProviderContainer`
+const providerContainerType = TypeChecker.fromName(
+  'ProviderContainer',
+  packageName: 'riverpod',
+);
 
 /// [TypeChecker] for `AlwaysAliveProviderListenable`
 const alwaysAliveProviderListenableType = TypeChecker.any([

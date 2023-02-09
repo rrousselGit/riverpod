@@ -1,5 +1,6 @@
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
 class AvoidGlobalProviderContainer extends DartLintRule {
   const AvoidGlobalProviderContainer() : super(code: _code);
@@ -16,6 +17,15 @@ class AvoidGlobalProviderContainer extends DartLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    // TODO: implement run
+    context.registry.addInstanceCreationExpression((node) {
+      // If there is a parameterElement it means we are not declaring a variable
+      if (node.staticParameterElement != null) return;
+
+      // Check that the object created is indeed a ProviderContainer
+      final type = node.staticType;
+      if (type == null || !providerContainerType.isExactlyType(type)) {
+        return;
+      }
+    });
   }
 }
