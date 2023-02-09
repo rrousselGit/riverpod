@@ -2,6 +2,7 @@ import 'package:custom_lint_builder/custom_lint_builder.dart';
 
 import 'src/assists/stateful_to_stateless_provider.dart';
 import 'src/assists/stateless_to_stateful_provider.dart';
+import 'src/lints/missing_provider_scope.dart';
 import 'src/lints/stateless_ref.dart';
 
 PluginBase createPlugin() => _RiverpodPlugin();
@@ -10,6 +11,7 @@ class _RiverpodPlugin extends PluginBase {
   @override
   List<LintRule> getLintRules(CustomLintConfigs configs) => [
         const StatelessRef(),
+        const MissingProviderScope(),
 //         const AvoidDynamicProviders(),
 // //  "Avoid passing providers as parameter to objects"
 //         const AvoidExposingProviderRef(),

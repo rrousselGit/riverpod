@@ -16,6 +16,12 @@ const providerContainerType = TypeChecker.fromName(
   packageName: 'riverpod',
 );
 
+///  [TypeChecker] from `ProviderScope`
+const providerScopeType = TypeChecker.fromName(
+  'ProviderScope',
+  packageName: 'flutter_riverpod',
+);
+
 /// [TypeChecker] for `AlwaysAliveProviderListenable`
 const alwaysAliveProviderListenableType = TypeChecker.any([
   TypeChecker.fromName(
