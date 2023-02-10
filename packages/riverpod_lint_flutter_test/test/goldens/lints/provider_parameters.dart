@@ -5,12 +5,15 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'provider_parameters.g.dart';
 
 final legacy = Provider.family<int, Object?>((ref, value) => 0);
+final provider = Provider.family<int, Object?>((ref, value) => 0);
 
 @Riverpod(keepAlive: true)
 int generator(GeneratorRef ref, {Object? value}) => 0;
 
-final provider = Provider((ref) {
+var list = [42];
+final dep = Provider((ref) {
   ref.read(legacy(42));
+  ref.read(legacy(list));
   // expect_lint: provider_parameters
   ref.read(legacy([42]));
   ref.listen(legacy(42), (prev, next) {});
@@ -28,11 +31,12 @@ final provider = Provider((ref) {
   ref.watch(legacy(const {'string': 42}));
   ref.watch(legacy(const {42}));
   ref.watch(legacy(null));
+  // expect_lint: provider_parameters
   ref.watch(legacy(Object()));
   ref.watch(legacy(const Object()));
 
-  ref.watch(legacy(Foo()));
-  ref.watch(legacy(const Foo()));
+  ref.watch(legacy(ClassThatOverridesEqual()));
+  ref.watch(legacy(const ClassThatOverridesEqual()));
   // expect_lint: provider_parameters
   ref.watch(legacy(Factory.bar()));
   ref.watch(legacy(const Factory.bar()));
@@ -50,11 +54,12 @@ final provider = Provider((ref) {
   ref.watch(generatorProvider(value: const {'string': 42}));
   ref.watch(generatorProvider(value: const {42}));
   ref.watch(generatorProvider(value: null));
+  // expect_lint: provider_parameters
   ref.watch(generatorProvider(value: Object()));
   ref.watch(generatorProvider(value: const Object()));
 
-  ref.watch(generatorProvider(value: Foo()));
-  ref.watch(generatorProvider(value: const Foo()));
+  ref.watch(generatorProvider(value: ClassThatOverridesEqual()));
+  ref.watch(generatorProvider(value: const ClassThatOverridesEqual()));
 
   // expect_lint: provider_parameters
   ref.watch(generatorProvider(value: Bar()));
@@ -73,11 +78,11 @@ class Bar implements Factory {
 
 class Factory {
   const factory Factory.bar() = Bar;
-  const factory Factory.foo() = Foo;
+  const factory Factory.foo() = ClassThatOverridesEqual;
 }
 
-class Foo implements Factory {
-  const Foo();
+class ClassThatOverridesEqual implements Factory {
+  const ClassThatOverridesEqual();
 
   @override
   bool operator ==(Object other) => super == other;
@@ -102,6 +107,7 @@ class MyWidget extends ConsumerWidget {
     ref.listenManual(legacy([42]), (prev, next) {});
 
     ref.watch(legacy(42));
+    ref.read(legacy(list));
     // expect_lint: provider_parameters
     ref.watch(legacy([42]));
     // expect_lint: provider_parameters
@@ -112,11 +118,12 @@ class MyWidget extends ConsumerWidget {
     ref.watch(legacy(const {'string': 42}));
     ref.watch(legacy(const {42}));
     ref.watch(legacy(null));
+    // expect_lint: provider_parameters
     ref.watch(legacy(Object()));
     ref.watch(legacy(const Object()));
 
-    ref.watch(legacy(Foo()));
-    ref.watch(legacy(const Foo()));
+    ref.watch(legacy(ClassThatOverridesEqual()));
+    ref.watch(legacy(const ClassThatOverridesEqual()));
     // expect_lint: provider_parameters
     ref.watch(legacy(Bar()));
     ref.watch(legacy(const Bar()));
@@ -137,11 +144,12 @@ class MyWidget extends ConsumerWidget {
     ref.watch(generatorProvider(value: const {'string': 42}));
     ref.watch(generatorProvider(value: const {42}));
     ref.watch(generatorProvider(value: null));
+    // expect_lint: provider_parameters
     ref.watch(generatorProvider(value: Object()));
     ref.watch(generatorProvider(value: const Object()));
 
-    ref.watch(generatorProvider(value: Foo()));
-    ref.watch(generatorProvider(value: const Foo()));
+    ref.watch(generatorProvider(value: ClassThatOverridesEqual()));
+    ref.watch(generatorProvider(value: const ClassThatOverridesEqual()));
 
     // expect_lint: provider_parameters
     ref.watch(generatorProvider(value: Bar()));

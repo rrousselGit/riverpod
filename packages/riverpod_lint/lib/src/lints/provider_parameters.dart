@@ -1,7 +1,9 @@
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
+import '../object_utils.dart';
 import '../riverpod_custom_lint.dart';
 
 class ProviderParameters extends RiverpodLintRule {
@@ -44,7 +46,12 @@ class ProviderParameters extends RiverpodLintRule {
           final operatorEqual =
               instantiatedObject?.enclosingElement.getMethod('==');
 
-          if (operatorEqual == null) {
+          final isEqualFromObjectMethod = operatorEqual?.enclosingElement
+              .safeCast<ClassElement>()
+              ?.thisType
+              .isDartCoreObject;
+
+          if (operatorEqual == null || (isEqualFromObjectMethod ?? true)) {
             // Doing `provider(new Class())` is bad if the class does not override ==
             reporter.reportErrorForNode(code, value);
           }
