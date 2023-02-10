@@ -111,6 +111,12 @@ class RiverpodAnalysisResult {
   final refWatchInvocations = <RefWatchInvocation>[];
   final refReadInvocations = <RefReadInvocation>[];
   final refListenInvocations = <RefListenInvocation>[];
+
+  final widgetRefInvocations = <WidgetRefInvocation>[];
+  final widgetRefWatchInvocations = <WidgetRefWatchInvocation>[];
+  final widgetRefReadInvocations = <WidgetRefReadInvocation>[];
+  final widgetRefListenInvocations = <WidgetRefListenInvocation>[];
+  final widgetRefListenManualInvocations = <WidgetRefListenManualInvocation>[];
 }
 
 /// All flags are enabled by default.
@@ -128,6 +134,11 @@ RiverpodAnalysisResult parseRiverpod(
   bool? parseRefWatchInvocation,
   bool? parseRefListenInvocation,
   bool? parseRefReadInvocation,
+  bool? parseWidgetRefInvocation,
+  bool? parseWidgetRefWatchInvocation,
+  bool? parseWidgetRefListenInvocation,
+  bool? parseWidgetRefListenManualInvocation,
+  bool? parseWidgetRefReadInvocation,
 }) {
   parseProviderDeclaration ??= defaultFlagValue;
   parseGeneratorProviderDeclaration ??= defaultFlagValue;
@@ -138,6 +149,11 @@ RiverpodAnalysisResult parseRiverpod(
   parseRefWatchInvocation ??= defaultFlagValue;
   parseRefReadInvocation ??= defaultFlagValue;
   parseRefListenInvocation ??= defaultFlagValue;
+  parseWidgetRefInvocation ??= defaultFlagValue;
+  parseWidgetRefWatchInvocation ??= defaultFlagValue;
+  parseWidgetRefReadInvocation ??= defaultFlagValue;
+  parseWidgetRefListenInvocation ??= defaultFlagValue;
+  parseWidgetRefListenManualInvocation ??= defaultFlagValue;
 
   // ignore: invalid_use_of_internal_member
   final nodeLintRegistry = NodeLintRegistry(
@@ -188,6 +204,23 @@ RiverpodAnalysisResult parseRiverpod(
   }
   if (parseRefListenInvocation) {
     visitor.addRefListenInvocation(result.refListenInvocations.add);
+  }
+  if (parseWidgetRefInvocation) {
+    visitor.addWidgetRefInvocation(result.widgetRefInvocations.add);
+  }
+  if (parseWidgetRefWatchInvocation) {
+    visitor.addWidgetRefWatchInvocation(result.widgetRefWatchInvocations.add);
+  }
+  if (parseWidgetRefReadInvocation) {
+    visitor.addWidgetRefReadInvocation(result.widgetRefReadInvocations.add);
+  }
+  if (parseWidgetRefListenInvocation) {
+    visitor.addWidgetRefListenInvocation(result.widgetRefListenInvocations.add);
+  }
+  if (parseWidgetRefListenManualInvocation) {
+    visitor.addWidgetRefListenManualInvocation(
+      result.widgetRefListenManualInvocations.add,
+    );
   }
 
   // ignore: invalid_use_of_internal_member
@@ -280,11 +313,11 @@ class RiverpodRegistry {
   }
 
   // // Ref life-cycle visitors
-  RefInvocationVisitor? _visitor;
 
+  RefInvocationVisitor? _refVisitor;
   RefInvocationVisitor _addRefVisitor() {
-    final hadVisitor = _visitor != null;
-    final visitor = _visitor ??= RefInvocationVisitor();
+    final hadVisitor = _refVisitor != null;
+    final visitor = _refVisitor ??= RefInvocationVisitor();
     if (hadVisitor) return visitor;
 
     _registry.addMethodInvocation((node) => RefInvocation.parse(node, visitor));
@@ -319,9 +352,62 @@ class RiverpodRegistry {
   // // Cusumer visitors
   // void addConsumerWidgetDeclaration();
 
-  // // Ref life-cycle visitors
-  // void addWidgetRefWatchInvocation();
-  // void addWidgetRefListenInvocation();
-  // void addWidgetRefListenManualInvocation();
-  // void addWidgetRefReadInvocation();
+  WidgetRefInvocationVisitor? _widgetRefVisitor;
+  WidgetRefInvocationVisitor _addWidgetRefVisitor() {
+    final hadVisitor = _widgetRefVisitor != null;
+    final visitor = _widgetRefVisitor ??= WidgetRefInvocationVisitor();
+    if (hadVisitor) return visitor;
+
+    _registry.addMethodInvocation(
+      (node) => WidgetRefInvocation.parse(node, visitor),
+    );
+
+    return visitor;
+  }
+
+  void addWidgetRefInvocation(
+    void Function(WidgetRefInvocation) cb,
+  ) {
+    _addWidgetRefVisitor().onWidgetRefInvocation.add(cb);
+  }
+
+  void addWidgetRefWatchInvocation(
+    void Function(WidgetRefWatchInvocation) cb,
+  ) {
+    _addWidgetRefVisitor().onWidgetRefWatchInvocation.add(cb);
+  }
+
+  void addWidgetRefListenInvocation(
+    void Function(WidgetRefListenInvocation) cb,
+  ) {
+    _addWidgetRefVisitor().onWidgetRefListenInvocation.add(cb);
+  }
+
+  void addWidgetRefListenManualInvocation(
+    void Function(WidgetRefListenManualInvocation) cb,
+  ) {
+    _addWidgetRefVisitor().onWidgetRefListenManualInvocation.add(cb);
+  }
+
+  void addWidgetRefReadInvocation(
+    void Function(WidgetRefReadInvocation) cb,
+  ) {
+    _addWidgetRefVisitor().onWidgetRefReadInvocation.add(cb);
+  }
+
+  // Ref life-cycle visitors
+
+  void addProviderListenableExpression(
+    void Function(ProviderListenableExpression node) cb,
+  ) {
+    _addRefVisitor()
+      ..onRefReadInvocation.add((e) => cb(e.provider))
+      ..onRefWatchInvocation.add((e) => cb(e.provider))
+      ..onRefListenInvocation.add((e) => cb(e.provider));
+    _addWidgetRefVisitor()
+      ..onWidgetRefReadInvocation.add((e) => cb(e.provider))
+      ..onWidgetRefWatchInvocation.add((e) => cb(e.provider))
+      ..onWidgetRefListenInvocation.add((e) => cb(e.provider))
+      ..onWidgetRefListenManualInvocation.add((e) => cb(e.provider));
+  }
 }
