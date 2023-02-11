@@ -6,6 +6,7 @@ import 'package:path/path.dart';
 import 'package:custom_lint_builder/src/matcher.dart';
 import 'package:analyzer_plugin/protocol/protocol_generated.dart';
 
+@Deprecated('Do not commit')
 var goldenWrite = false;
 
 File writeToTemporaryFile(String content) {
@@ -22,10 +23,10 @@ File writeToTemporaryFile(String content) {
 void testGolden(
   String description,
   String fileName,
-  Future<List<PrioritizedSourceChange>> Function() body,
+  Future<Iterable<PrioritizedSourceChange>> Function() body,
 ) {
   test(description, () async {
-    final changes = await body();
+    final changes = await body().then((value) => value.toList());
 
     try {
       expect(
@@ -33,6 +34,7 @@ void testGolden(
         matcherNormalizedPrioritizedSourceChangeSnapshot(fileName),
       );
     } on TestFailure {
+      // ignore: deprecated_member_use_from_same_package
       if (!goldenWrite) rethrow;
 
       final file = File('test/$fileName');

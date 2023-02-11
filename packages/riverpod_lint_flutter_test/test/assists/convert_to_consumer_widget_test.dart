@@ -10,8 +10,6 @@ import 'package:analyzer/dart/analysis/utilities.dart';
 import '../golden.dart';
 
 void main() {
-  goldenWrite = true;
-
   testGolden(
     'Convert widgets to consumerwidgets',
     'assists/convert_to_consumer_widget.json',

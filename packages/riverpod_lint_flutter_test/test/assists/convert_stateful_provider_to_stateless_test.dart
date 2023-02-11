@@ -8,8 +8,6 @@ import 'package:analyzer/dart/analysis/utilities.dart';
 import '../golden.dart';
 
 void main() {
-  goldenWrite = true;
-
   testGolden(
     'Convert plain class provider to stateless provider',
     'assists/convert_stateful_provider_to_stateless.json',

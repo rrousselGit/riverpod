@@ -6,6 +6,7 @@ import 'src/assists/stateful_to_stateless_provider.dart';
 import 'src/assists/stateless_to_stateful_provider.dart';
 import 'src/assists/wrap_with_consumer.dart';
 import 'src/assists/wrap_with_provider_scope.dart';
+import 'src/lints/generator_class_extends.dart';
 import 'src/lints/missing_provider_scope.dart';
 import 'src/lints/provider_parameters.dart';
 import 'src/lints/stateless_ref.dart';
@@ -18,6 +19,7 @@ class _RiverpodPlugin extends PluginBase {
         const StatelessRef(),
         const MissingProviderScope(),
         const ProviderParameters(),
+        const GeneratorClassExtends(),
 //         const AvoidDynamicProviders(),
 // //  "Avoid passing providers as parameter to objects"
 //         const AvoidExposingProviderRef(),
