@@ -45,21 +45,15 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
       - run: dart pub global activate custom_lint
-      - name: Install dependencies (integration/buid.yaml)
-        run: |
-          if test -d "integration/build_yaml"; then
-            flutter pub get integration/build_yaml
-          fi
-
       - name: Check format
         run: flutter format --set-exit-if-changed .
-        if: matrix.package_path != 'website'
 
       - name: Analyze
         run: flutter analyze
 
       - name: Run custom_lint
         run: custom_lint
+        if: matrix.package_path != 'packages/riverpod_analyzer_utils_tests'
 
       - name: Run tests
         run: ${{github.workspace}}/scripts/coverage.sh
