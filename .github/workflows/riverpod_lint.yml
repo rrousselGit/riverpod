@@ -44,6 +44,7 @@ jobs:
         run: echo "PUB_CACHE="$HOME/.pub-cache"" >> $GITHUB_ENV
       - name: Install dependencies
         run: flutter pub get
+      - run: dart pub global activate custom_lint
       - name: Install dependencies (integration/buid.yaml)
         run: |
           if test -d "integration/build_yaml"; then
@@ -58,7 +59,7 @@ jobs:
         run: flutter analyze
 
       - name: Run custom_lint
-        run: dart pub run custom_lint
+        run: custom_lint
 
       - name: Run tests
         run: ${{github.workspace}}/scripts/coverage.sh
