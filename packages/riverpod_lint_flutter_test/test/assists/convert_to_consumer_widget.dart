@@ -117,3 +117,15 @@ class _HookConsumerStatefulState extends ConsumerState<HookConsumerStateful> {
     return const Placeholder();
   }
 }
+
+class Consumer extends ConsumerWidget {
+  const Consumer({super.key});
+
+  @override
+  Widget build(
+    BuildContext context,
+    WidgetRef ref,
+  ) {
+    return const Placeholder();
+  }
+}

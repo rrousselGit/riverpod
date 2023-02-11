@@ -13,7 +13,7 @@ const statefulConvertPriority = convertPriority - 1;
 
 const _statelessBaseType = TypeChecker.any([
   TypeChecker.fromName('StatelessWidget', packageName: 'flutter'),
-  TypeChecker.fromName('ConsumerWidget', packageName: 'flutter'),
+  TypeChecker.fromName('ConsumerWidget', packageName: 'flutter_riverpod'),
   TypeChecker.fromName('HookConsumerWidget', packageName: 'hooks_riverpod'),
   TypeChecker.fromName('HookWidget', packageName: 'flutter_hooks'),
 ]);

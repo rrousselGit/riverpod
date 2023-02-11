@@ -53,6 +53,9 @@ void main() {
 
         // HookConsumerStateful
         ...await assist.testRun(result, const SourceRange(2214, 0)),
+
+        // ConsumerWidget
+        ...await assist.testRun(result, const SourceRange(2582, 0)),
       ];
 
       expect(changes, hasLength(9));
@@ -102,6 +105,9 @@ void main() {
 
         // HookConsumerStateful
         ...await assist.testRun(result, const SourceRange(2214, 0)),
+
+        // ConsumerWidget
+        ...await assist.testRun(result, const SourceRange(2582, 0)),
       ];
 
       expect(changes, hasLength(9));
