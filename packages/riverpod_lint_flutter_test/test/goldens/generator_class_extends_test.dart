@@ -10,7 +10,6 @@ import 'package:test/test.dart';
 import '../golden.dart';
 
 void main() {
-  goldenWrite = true;
   testGolden(
     'Verify that @riverpod classes extend the generated typedef',
     'goldens/generator_class_extends.json',
