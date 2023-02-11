@@ -88,6 +88,13 @@ jobs:
               ${{github.workspace}}/scripts/coverage.sh
             fi
           fi
+        # riverpod_lint_flutter_test needs to run `dart test` insetad of `flutter test`
+        # even though it depends on Flutter
+        if: matrix.package_path != 'packages/riverpod_lint_flutter_test'
+
+      - name: Run tests (riverpod_lint_flutter_test)
+        run: ${{github.workspace}}/scripts/coverage.sh
+        if: matrix.package_path == 'packages/riverpod_lint_flutter_test'
 
       - name: Upload coverage to codecov
         run: |
