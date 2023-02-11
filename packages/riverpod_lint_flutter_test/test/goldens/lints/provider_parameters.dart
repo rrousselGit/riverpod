@@ -35,6 +35,12 @@ final dep = Provider((ref) {
   ref.watch(legacy(Object()));
   ref.watch(legacy(const Object()));
 
+  void fn() {}
+
+  // expect_lint: provider_parameters
+  ref.watch(provider(() {}));
+  ref.watch(provider(fn));
+
   ref.watch(legacy(ClassThatOverridesEqual()));
   ref.watch(legacy(const ClassThatOverridesEqual()));
   // expect_lint: provider_parameters

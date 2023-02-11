@@ -38,6 +38,9 @@ class ProviderParameters extends RiverpodLintRule {
         if (value is TypedLiteral && !value.isConst) {
           // Non-const literals always return a new instance and don't override ==
           reporter.reportErrorForNode(code, value);
+        } else if (value is FunctionExpression) {
+          // provider(() => 42) is bad because a new function will always be created
+          reporter.reportErrorForNode(code, value);
         } else if (value is InstanceCreationExpression && !value.isConst) {
           final instantiatedObject =
               value.constructorName.staticElement?.redirectedConstructor ??
