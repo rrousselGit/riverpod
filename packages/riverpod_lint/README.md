@@ -266,15 +266,27 @@ class Example extends Anything {
 
 ### Wrap widget with a `Consumer`
 
+![Wrap with Consumer sample](https://raw.githubusercontent.com/rrousselGit/riverpod/master/packages/riverpod_lint/resources/wrap_with_consumer.gif)
+
 ### Wrap widget with a `ProviderScope`
+
+![Wrap with ProviderScope sample](https://raw.githubusercontent.com/rrousselGit/riverpod/master/packages/riverpod_lint/resources/wrap_with_provider_scope.gif)
 
 ### Convert widget to `ConsumerWidget`
 
+![Convert to ConsumerWidget sample](https://raw.githubusercontent.com/rrousselGit/riverpod/master/packages/riverpod_lint/resources/convert_to_consumer_widget.gif)
+
 ### Convert widget to `ConsumerStatefulWidget`
+
+![Convert to ConsumerStatefulWidget sample](https://raw.githubusercontent.com/rrousselGit/riverpod/master/packages/riverpod_lint/resources/convert_to_stateful_consumer.gif)
 
 ### Convert functional `@riverpod` to class variant
 
+![Convert provider to class variant sample](https://raw.githubusercontent.com/rrousselGit/riverpod/master/packages/riverpod_lint/resources/convert_to_class_provider.gif)
+
 ### Convert class `@riverpod` to functional variant
+
+![Convert provider to functional variant sample](https://raw.githubusercontent.com/rrousselGit/riverpod/master/packages/riverpod_lint/resources/convert_to_functional_provider.gif)
 
 ## Upcoming content:
 
