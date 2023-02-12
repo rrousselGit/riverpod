@@ -29,9 +29,6 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
 - Refactor a widget to a ConsumerWidget/ConsumerStatfulWidget
 - ...
 
-- Refactor a `@riverpod` provider to a class/function
-- Warn if a `@riverpod` provider has some syntax issue (like an incorrectly named ref or `_$MyClass`)
-
 ## Table of content
 
 - [Table of content](#table-of-content)
