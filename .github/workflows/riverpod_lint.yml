@@ -53,7 +53,7 @@ jobs:
 
       - name: Run custom_lint
         run: custom_lint
-        if: matrix.package_path != 'packages/riverpod_analyzer_utils_tests'
+        if: matrix.package_path != 'packages/riverpod_lint_flutter_test'
 
       - name: Run tests
         run: ${{github.workspace}}/scripts/coverage.sh
