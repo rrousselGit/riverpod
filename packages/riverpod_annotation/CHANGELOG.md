@@ -1,3 +1,7 @@
+## 1.2.1
+
+Bump minimum Riverpod version
+
 ## 1.2.0
 
 - It is now possible to specify `@Riverpod(dependencies: [...])` to scope providers
