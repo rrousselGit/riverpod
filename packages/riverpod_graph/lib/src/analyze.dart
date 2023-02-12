@@ -10,7 +10,10 @@ import 'package:analyzer/file_system/physical_file_system.dart';
 import 'package:collection/collection.dart';
 
 /// Analyzes the given [rootDirectory] and prints the dependency graph.
-Future<void> analyze(String rootDirectory) async {
+Future<void> analyze(
+  String rootDirectory, {
+  SupportFormat format = SupportFormat.mermaid,
+}) async {
   final collection = AnalysisContextCollection(
     includedPaths: [rootDirectory],
     resourceProvider: PhysicalResourceProvider.INSTANCE,
@@ -77,15 +80,11 @@ Future<void> analyze(String rootDirectory) async {
     }
   }
 
-  /// output to stdout
-
-  const outputFormat = SupportFormat.d2;
-
-  switch (outputFormat) {
+  switch (format) {
     case SupportFormat.d2:
-      return stdout.writeln(_buildD2(graph));
+      return stdout.write(_buildD2(graph));
     case SupportFormat.mermaid:
-      return stdout.writeln(_buildMermaid(graph));
+      return stdout.write(_buildMermaid(graph));
   }
 }
 

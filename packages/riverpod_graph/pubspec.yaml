@@ -12,9 +12,13 @@ environment:
 
 dependencies:
   analyzer: ">=4.0.0 <4.1.0"
+  args: ^2.4.0
   collection: ^1.0.0
   path: ^1.8.2
 
 dev_dependencies:
   test: ^1.21.4
   test_process: ^2.0.2
+
+executables:
+  riverpod_graph:
