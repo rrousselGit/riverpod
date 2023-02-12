@@ -1,12 +1,26 @@
-import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:custom_lint_core/custom_lint_core.dart';
 
 /// Matches with the `Riverpod` annotation from riverpod_annotation.
 const riverpodType =
     TypeChecker.fromName('Riverpod', packageName: 'riverpod_annotation');
 
 /// [TypeChecker] for `ProviderBase`
-const providerBaseType =
-    TypeChecker.fromName('ProviderBase', packageName: 'riverpod');
+const providerBaseType = TypeChecker.fromName(
+  'ProviderBase',
+  packageName: 'riverpod',
+);
+
+///  [TypeChecker] from `ProviderContainer`
+const providerContainerType = TypeChecker.fromName(
+  'ProviderContainer',
+  packageName: 'riverpod',
+);
+
+///  [TypeChecker] from `ProviderScope`
+const providerScopeType = TypeChecker.fromName(
+  'ProviderScope',
+  packageName: 'flutter_riverpod',
+);
 
 /// [TypeChecker] for `AlwaysAliveProviderListenable`
 const alwaysAliveProviderListenableType = TypeChecker.any([
@@ -135,6 +149,9 @@ const widgetRefType =
 
 /// Checks that the value is coming from a `package:riverpod` package
 const isFromRiverpod = TypeChecker.fromPackage('riverpod');
+
+/// Checks that the value is coming from a `package:riverpod` package
+const isFromFlutterRiverpod = TypeChecker.fromPackage('flutter_riverpod');
 
 /// [TypeChecker for `Ref`
 const refType = TypeChecker.fromName('Ref', packageName: 'riverpod');

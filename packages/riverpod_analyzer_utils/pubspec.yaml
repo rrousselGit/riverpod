@@ -1,5 +1,9 @@
 name: riverpod_analyzer_utils
-description: A sample command-line application.
+description: A project for analyzing Riverpod code. This is internally used by riverpod_lint and riverpod_generator
+repository: https://github.com/rrousselGit/river_pod
+issue_tracker: https://github.com/rrousselGit/riverpod/issues
+funding:
+  - https://github.com/sponsors/rrousselGit/
 version: 0.0.1
 
 environment:
@@ -9,7 +13,7 @@ dependencies:
   analyzer: ^5.0.0
   collection: ^1.16.0
   crypto: ^3.0.2
-  custom_lint_builder: ^0.2.1
+  custom_lint_core: ^0.2.7
   freezed_annotation: ^2.2.0
   meta: ^1.7.0
   path: ^1.8.0

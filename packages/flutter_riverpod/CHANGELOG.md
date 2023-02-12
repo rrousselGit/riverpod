@@ -1,3 +1,9 @@
+## 2.2.0
+
+- Improve type-inference when using `AsyncValue.whenOrNull` (thanks to @AhmedLSayed9)
+- Fixed AsyncValue.asError incorrectly not preserving the generic type
+- Internal refactoring for riverpod_generator
+
 ## 2.1.3
 
 Fixes an issue with `FutureProvider<void>` (#2028)
