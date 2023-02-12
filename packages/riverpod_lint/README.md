@@ -29,6 +29,8 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
 - Refactor a widget to a ConsumerWidget/ConsumerStatfulWidget
 - ...
 
+![Convert to ConsumerStatefulWidget sample](https://raw.githubusercontent.com/rrousselGit/riverpod/master/packages/riverpod_lint/resources/convert_to_stateful_consumer.gif)
+
 ## Table of content
 
 - [Table of content](#table-of-content)
