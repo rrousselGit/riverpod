@@ -77,9 +77,79 @@ Future<void> analyze(String rootDirectory) async {
     }
   }
 
-  stdout.writeln('flowchart TB');
-  stdout.write(
-    '''
+  /// output to stdout
+
+  const outputFormat = SupportFormat.d2;
+
+  switch (outputFormat) {
+    case SupportFormat.d2:
+      return stdout.writeln(_buildD2(graph));
+    case SupportFormat.mermaid:
+      return stdout.writeln(_buildMermaid(graph));
+  }
+}
+
+/// Output formats supported by riverpod_graph
+enum SupportFormat {
+  /// Mermaid.js format
+  mermaid,
+
+  /// D2 format
+  d2,
+}
+
+String _buildD2(ProviderGraph providerGraph) {
+  const _watchLineStyle = '{style.stroke-width: 4}';
+  const _readLineStyle = '{style.stroke-dash: 4}';
+
+  final buffer = StringBuffer();
+
+  for (final node in providerGraph.consumerWidgets) {
+    buffer.writeln('${node.definition.name}.shape: Circle');
+
+    for (final watch in node.watch) {
+      buffer.writeln(
+        '${_displayNameForProvider(watch.definition).name} -> ${node.definition.name}: $_watchLineStyle',
+      );
+    }
+    for (final listen in node.listen) {
+      buffer.writeln(
+        '${_displayNameForProvider(listen.definition).name} -> ${node.definition.name}',
+      );
+    }
+    for (final read in node.read) {
+      buffer.writeln(
+        '${_displayNameForProvider(read.definition).name} -> ${node.definition.name}: $_readLineStyle',
+      );
+    }
+  }
+
+  for (final node in providerGraph.providers) {
+    final providerName = _displayNameForProvider(node.definition).name;
+
+    for (final watch in node.watch) {
+      buffer.writeln(
+        '${_displayNameForProvider(watch.definition).name} -> $providerName: $_watchLineStyle',
+      );
+    }
+    for (final listen in node.listen) {
+      buffer.writeln(
+        '${_displayNameForProvider(listen.definition).name} -> $providerName:',
+      );
+    }
+    for (final read in node.read) {
+      buffer.writeln(
+        '${_displayNameForProvider(read.definition).name} -> $providerName: $_readLineStyle',
+      );
+    }
+  }
+
+  return buffer.toString();
+}
+
+String _buildMermaid(ProviderGraph providerGraph) {
+  final buffer = StringBuffer('''
+flowchart TB
   subgraph Arrows
     direction LR
     start1[ ] -..->|read| stop1[ ]
@@ -98,50 +168,62 @@ Future<void> analyze(String rootDirectory) async {
     ConsumerWidget((widget));
     Provider[[provider]];
   end
-''',
-  );
+''');
 
-  for (final node in graph.consumerWidgets) {
-    stdout.writeln('  ${node.definition.name}((${node.definition.name}));');
+  for (final node in providerGraph.consumerWidgets) {
+    buffer.writeln('  ${node.definition.name}((${node.definition.name}));');
 
     for (final watch in node.watch) {
-      stdout.writeln(
+      buffer.writeln(
         '  ${_displayNameForProvider(watch.definition).name} ==> ${node.definition.name};',
       );
     }
     for (final listen in node.listen) {
-      stdout.writeln(
+      buffer.writeln(
         '  ${_displayNameForProvider(listen.definition).name} --> ${node.definition.name};',
       );
     }
     for (final read in node.read) {
-      stdout.writeln(
+      buffer.writeln(
         '  ${_displayNameForProvider(read.definition).name} -.-> ${node.definition.name};',
       );
     }
   }
 
-  for (final node in graph.providers) {
-    _writeProviderNode(node);
+  for (final node in providerGraph.providers) {
+    final nodeGlobalName = _displayNameForProvider(node.definition);
+    final isContainedInClass = nodeGlobalName.enclosingElementName.isNotEmpty;
+    if (isContainedInClass) {
+      buffer.writeln('  subgraph ${nodeGlobalName.enclosingElementName}');
+      buffer.writeln(
+        '    ${nodeGlobalName.name}[[${nodeGlobalName.providerName}]];',
+      );
+      buffer.writeln('  end');
+    } else {
+      buffer.writeln(
+        '  ${nodeGlobalName.name}[[${nodeGlobalName.providerName}]];',
+      );
+    }
 
-    final nodeGlobalName =
-        _displayNameForProvider(node.definition).providerName;
+    final providerName = nodeGlobalName.providerName;
     for (final watch in node.watch) {
-      stdout.writeln(
-        '  ${_displayNameForProvider(watch.definition).name} ==> $nodeGlobalName;',
+      buffer.writeln(
+        '  ${_displayNameForProvider(watch.definition).name} ==> $providerName;',
       );
     }
     for (final listen in node.listen) {
-      stdout.writeln(
-        '  ${_displayNameForProvider(listen.definition).name} --> $nodeGlobalName;',
+      buffer.writeln(
+        '  ${_displayNameForProvider(listen.definition).name} --> $providerName;',
       );
     }
     for (final read in node.read) {
-      stdout.writeln(
-        '  ${_displayNameForProvider(read.definition).name} -.-> $nodeGlobalName;',
+      buffer.writeln(
+        '  ${_displayNameForProvider(read.definition).name} -.-> $providerName;',
       );
     }
   }
+
+  return buffer.toString();
 }
 
 /// The generated dependency graph.
@@ -581,17 +663,6 @@ VariableElement parseProviderFromExpression(Expression providerExpression) {
   throw UnsupportedError(
     'unknown expression $providerExpression ${providerExpression.runtimeType}',
   );
-}
-
-void _writeProviderNode(ProviderNode node) {
-  final nodeGlobalName = _displayNameForProvider(node.definition);
-  final isContainedInClass = nodeGlobalName.enclosingElementName.isNotEmpty;
-  if (isContainedInClass) {
-    stdout.writeln('  subgraph ${nodeGlobalName.enclosingElementName}');
-    stdout.write('  ');
-  }
-  stdout.writeln('  ${nodeGlobalName.name}[[${nodeGlobalName.providerName}]];');
-  if (isContainedInClass) stdout.writeln('  end');
 }
 
 extension on Element {
