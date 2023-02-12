@@ -7,7 +7,7 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:collection/collection.dart';
 import 'package:crypto/crypto.dart';
-import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:custom_lint_core/custom_lint_core.dart';
 import 'package:meta/meta.dart';
 
 import 'argument_list_utils.dart';
@@ -26,6 +26,238 @@ class RefInvocationVisitor {
   final onRefWatchInvocation = <void Function(RefWatchInvocation)>[];
   final onRefListenInvocation = <void Function(RefListenInvocation)>[];
   final onRefReadInvocation = <void Function(RefReadInvocation)>[];
+}
+
+@internal
+class WidgetRefInvocationVisitor {
+  final onWidgetRefInvocation = <void Function(WidgetRefInvocation)>[];
+  final onWidgetRefWatchInvocation =
+      <void Function(WidgetRefWatchInvocation)>[];
+  final onWidgetRefListenInvocation =
+      <void Function(WidgetRefListenInvocation)>[];
+  final onWidgetRefListenManualInvocation =
+      <void Function(WidgetRefListenManualInvocation)>[];
+  final onWidgetRefReadInvocation = <void Function(WidgetRefReadInvocation)>[];
+}
+
+class WidgetRefInvocation {
+  WidgetRefInvocation._({
+    required this.node,
+    required this.function,
+  });
+
+  @internal
+  static void parse(
+    MethodInvocation node,
+    WidgetRefInvocationVisitor visitor,
+  ) {
+    final targetType = node.target?.staticType;
+    if (targetType == null) return;
+
+    // Since Ref is sealed, checking that the function is from the package:riverpod
+    // before checking its type skips iterating over the superclasses of an element
+    // if it's not from Riverpod.
+    if (!isFromFlutterRiverpod.isExactlyType(targetType) |
+        !widgetRefType.isAssignableFromType(targetType)) {
+      return;
+    }
+    final function = node.function;
+    if (function is! SimpleIdentifier) return;
+    final functionOwner = function.staticElement
+        .cast<MethodElement>()
+        ?.declaration
+        .enclosingElement;
+
+    if (functionOwner == null ||
+        // Since Ref is sealed, checking that the function is from the package:riverpod
+        // before checking its type skips iterating over the superclasses of an element
+        // if it's not from Riverpod.
+        !isFromFlutterRiverpod.isExactly(functionOwner) ||
+        !widgetRefType.isAssignableFrom(functionOwner)) {
+      return;
+    }
+
+    WidgetRefInvocation? invocation;
+    switch (function.name) {
+      case 'watch':
+        final watchInvocation =
+            invocation = WidgetRefWatchInvocation._parse(node, function);
+        if (watchInvocation == null) break;
+
+        runSubscription(watchInvocation, visitor.onWidgetRefWatchInvocation);
+        break;
+      case 'read':
+        final readInvocation =
+            invocation = WidgetRefReadInvocation._parse(node, function);
+        if (readInvocation == null) break;
+
+        runSubscription(readInvocation, visitor.onWidgetRefReadInvocation);
+        break;
+      case 'listen':
+        final listenInvocation =
+            invocation = WidgetRefListenInvocation._parse(node, function);
+        if (listenInvocation == null) break;
+
+        runSubscription(listenInvocation, visitor.onWidgetRefListenInvocation);
+        break;
+      case 'listenManual':
+        final listenInvocation =
+            invocation = WidgetRefListenManualInvocation._parse(node, function);
+        if (listenInvocation == null) break;
+
+        runSubscription(
+          listenInvocation,
+          visitor.onWidgetRefListenManualInvocation,
+        );
+        break;
+    }
+
+    if (invocation == null) return;
+    runSubscription(invocation, visitor.onWidgetRefInvocation);
+  }
+
+  final MethodInvocation node;
+  final SimpleIdentifier function;
+}
+
+class WidgetRefWatchInvocation extends WidgetRefInvocation {
+  WidgetRefWatchInvocation._({
+    required super.node,
+    required super.function,
+    required this.provider,
+  }) : super._();
+
+  static WidgetRefWatchInvocation? _parse(
+    MethodInvocation node,
+    SimpleIdentifier function,
+  ) {
+    assert(
+      function.name == 'watch',
+      'Argument error, function is not a ref.watch function',
+    );
+
+    final providerListenableExpression = ProviderListenableExpression.parse(
+      node.argumentList.positionalArguments().singleOrNull,
+    );
+    if (providerListenableExpression == null) return null;
+
+    return WidgetRefWatchInvocation._(
+      node: node,
+      function: function,
+      provider: providerListenableExpression,
+    );
+  }
+
+  final ProviderListenableExpression provider;
+}
+
+class WidgetRefReadInvocation extends WidgetRefInvocation {
+  WidgetRefReadInvocation._({
+    required super.node,
+    required super.function,
+    required this.provider,
+  }) : super._();
+
+  static WidgetRefReadInvocation? _parse(
+    MethodInvocation node,
+    SimpleIdentifier function,
+  ) {
+    assert(
+      function.name == 'read',
+      'Argument error, function is not a ref.read function',
+    );
+
+    final providerListenableExpression = ProviderListenableExpression.parse(
+      node.argumentList.positionalArguments().singleOrNull,
+    );
+    if (providerListenableExpression == null) return null;
+
+    return WidgetRefReadInvocation._(
+      node: node,
+      function: function,
+      provider: providerListenableExpression,
+    );
+  }
+
+  final ProviderListenableExpression provider;
+}
+
+class WidgetRefListenInvocation extends WidgetRefInvocation {
+  WidgetRefListenInvocation._({
+    required super.node,
+    required super.function,
+    required this.provider,
+    required this.listener,
+  }) : super._();
+
+  static WidgetRefListenInvocation? _parse(
+    MethodInvocation node,
+    SimpleIdentifier function,
+  ) {
+    assert(
+      function.name == 'listen',
+      'Argument error, function is not a ref.listen function',
+    );
+
+    final positionalArgs = node.argumentList.positionalArguments().toList();
+
+    final providerListenableExpression = ProviderListenableExpression.parse(
+      positionalArgs.firstOrNull,
+    );
+    if (providerListenableExpression == null) return null;
+
+    final listener = positionalArgs.elementAtOrNull(1);
+    if (listener == null) return null;
+
+    return WidgetRefListenInvocation._(
+      node: node,
+      function: function,
+      provider: providerListenableExpression,
+      listener: listener,
+    );
+  }
+
+  final ProviderListenableExpression provider;
+  final Expression listener;
+}
+
+class WidgetRefListenManualInvocation extends WidgetRefInvocation {
+  WidgetRefListenManualInvocation._({
+    required super.node,
+    required super.function,
+    required this.provider,
+    required this.listener,
+  }) : super._();
+
+  static WidgetRefListenManualInvocation? _parse(
+    MethodInvocation node,
+    SimpleIdentifier function,
+  ) {
+    assert(
+      function.name == 'listenManual',
+      'Argument error, function is not a ref.listen function',
+    );
+
+    final positionalArgs = node.argumentList.positionalArguments().toList();
+
+    final providerListenableExpression = ProviderListenableExpression.parse(
+      positionalArgs.firstOrNull,
+    );
+    if (providerListenableExpression == null) return null;
+
+    final listener = positionalArgs.elementAtOrNull(1);
+    if (listener == null) return null;
+
+    return WidgetRefListenManualInvocation._(
+      node: node,
+      function: function,
+      provider: providerListenableExpression,
+      listener: listener,
+    );
+  }
+
+  final ProviderListenableExpression provider;
+  final Expression listener;
 }
 
 class RefInvocation {
