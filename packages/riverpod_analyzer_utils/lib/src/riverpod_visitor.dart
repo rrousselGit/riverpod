@@ -6,7 +6,7 @@ import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:collection/collection.dart';
 // ignore: implementation_imports, I made it
-import 'package:custom_lint_builder/src/node_lint_visitor.dart';
+import 'package:custom_lint_core/src/node_lint_visitor.dart';
 import 'package:meta/meta.dart';
 
 import 'riverpod_ast.dart';
