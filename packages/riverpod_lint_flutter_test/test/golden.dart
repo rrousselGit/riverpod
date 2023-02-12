@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:test/test.dart';
 import 'package:path/path.dart';
-import 'package:custom_lint_builder/src/matcher.dart';
+import 'package:custom_lint_core/src/matcher.dart';
 import 'package:analyzer_plugin/protocol/protocol_generated.dart';
 
 @Deprecated('Do not commit')
