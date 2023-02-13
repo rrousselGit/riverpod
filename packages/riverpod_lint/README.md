@@ -150,7 +150,7 @@ Since your project should already have custom_lint installed
 able to run:
 
 ```sh
-dart pub custom_lint
+dart run custom_lint
 ```
 
 Alternatively, you can globally install `custom_lint`:
