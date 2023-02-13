@@ -19,8 +19,8 @@
 
 ---
 
-Riverpod_lint is a developper tool for users of Riverpod, designed to help stop common
-issue and simplify repetetive tasks.
+Riverpod_lint is a developer tool for users of Riverpod, designed to help stop common
+issue and simplify repetitive tasks.
 
 Riverpod_lint adds various warnings with quick fixes and refactoring options, such as:
 
