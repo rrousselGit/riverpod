@@ -9,15 +9,12 @@ import 'package:collection/collection.dart';
 import 'package:custom_lint_core/src/node_lint_visitor.dart';
 import 'package:meta/meta.dart';
 
+import '../riverpod_analyzer_utils.dart';
 import 'riverpod_ast.dart';
 
 @internal
 extension RiverpodLibraryExtension on LibraryElement {
   static final _asyncValueCache = Expando<ClassElement>();
-
-  bool isFromPackage(String packageName) {
-    return librarySource.fullName.startsWith('/$packageName/');
-  }
 
   Element? findElementWithNameFromPackage(
     String name, {
@@ -26,9 +23,8 @@ extension RiverpodLibraryExtension on LibraryElement {
     return library.importedLibraries
         .map((e) => e.exportNamespace.get(name))
         .firstWhereOrNull(
-          (element) =>
-              element != null &&
-              (element.library?.isFromPackage(packageName) ?? false),
+          // TODO find a way to test this
+          (element) => element != null && isFromRiverpod.isExactly(element),
         );
   }
 
