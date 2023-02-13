@@ -1,8 +1,13 @@
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
 import '../riverpod_custom_lint.dart';
+
+String _generatedClassName(ProviderDeclaration declaration) {
+  return '_\$${declaration.name.lexeme.public}';
+}
 
 class GeneratorClassExtends extends RiverpodLintRule {
   const GeneratorClassExtends() : super(code: _code);
@@ -27,7 +32,7 @@ class GeneratorClassExtends extends RiverpodLintRule {
         return;
       }
 
-      final expectedClassName = '_\$${declaration.name.lexeme}';
+      final expectedClassName = _generatedClassName(declaration);
       if (extendsClause.superclass.name.name != expectedClassName) {
         // No type specified. Underlining the ref name
         reporter.reportErrorForNode(_code, extendsClause.superclass);
@@ -55,7 +60,7 @@ class GeneratorClassExtendsFix extends RiverpodFix {
         return;
       }
 
-      final expectedClassName = '_\$${declaration.name.lexeme}';
+      final expectedClassName = _generatedClassName(declaration);
       final extendsClause = declaration.node.extendsClause;
       final changeBuilder = reporter.createChangeBuilder(
         message: 'Extend $expectedClassName',

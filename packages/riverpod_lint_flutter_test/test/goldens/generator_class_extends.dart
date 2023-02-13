@@ -18,3 +18,10 @@ class NoExtends {
 class WrongExtends extends AsyncNotifier<int> {
   int build() => 0;
 }
+
+// Regression test for https://github.com/rrousselGit/riverpod/issues/2165
+@riverpod
+class _PrivateClass extends _$PrivateClass {
+  @override
+  String build() => 'Hello World!';
+}

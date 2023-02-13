@@ -50,4 +50,19 @@ final wrongExtendsProvider =
 );
 
 typedef _$WrongExtends = AutoDisposeNotifier<int>;
+String _$privateClassHash() => r'ba68a29a609566bb8bc0792391f842762356e124';
+
+/// See also [_PrivateClass].
+@ProviderFor(_PrivateClass)
+final _privateClassProvider =
+    AutoDisposeNotifierProvider<_PrivateClass, String>.internal(
+  _PrivateClass.new,
+  name: r'_privateClassProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$privateClassHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$PrivateClass = AutoDisposeNotifier<String>;
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions
