@@ -7,6 +7,12 @@ void main() {
     MyApp(),
   );
   runApp(ProviderScope(child: MyApp()));
+  runApp(
+    UncontrolledProviderScope(
+      container: ProviderContainer(),
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

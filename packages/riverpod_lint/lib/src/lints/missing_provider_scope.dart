@@ -33,7 +33,10 @@ class MissingProviderScope extends DartLintRule {
       if (firstArgument == null) return;
 
       // There is correctly a ProviderScope at the top of the widget tree
-      if (providerScopeType.isExactlyType(firstArgument)) return;
+      if (providerScopeType.isExactlyType(firstArgument) ||
+          uncontrolledProviderScopeType.isExactlyType(firstArgument)) {
+        return;
+      }
 
       reporter.reportErrorForNode(_code, node.methodName);
     });
