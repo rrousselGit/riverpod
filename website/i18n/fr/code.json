@@ -205,16 +205,16 @@
     "message": "Provider, sans ses limitations"
   },
   "homepage.unlimited_provider_body": {
-    "message": "Riverpod est inspiré de Provider mais résous des problèmes clé tel que: le support de plusieurs providers du même type; attendre les providers asynchone; définir des providers n'importe où; ..."
+    "message": "Riverpod est inspiré de Provider mais résout des problèmes clés tels que: le support de plusieurs providers du même type; attendre les providers asynchrones; définir des providers n'importe où; ..."
   },
   "homepage.no_flutter_dependency_title": {
-    "message": "Indépendent de Flutter"
+    "message": "Indépendant de Flutter"
   },
   "homepage.no_flutter_dependency_body": {
-    "message": "Permet de créer/partager/tester des providers, sans dépendre de Flutter. Cela inclus être capable d'écouter un provider sans {BuildContext}."
+    "message": "Permet de créer/partager/tester des providers, sans dépendre de Flutter. Cela inclut être capable d'écouter un provider sans {BuildContext}."
   },
   "home.tagline": {
-    "message": "Un framework Réactif de gestion d'état et d'injection de dépendences"
+    "message": "Un framework Réactif de gestion d'état et d'injection de dépendances"
   },
   "home.get_started": {
     "message": "Commencer"
@@ -223,26 +223,26 @@
     "message": "Déclarez un état partagé de n'importe où"
   },
   "home.shared_state_body": {
-    "message": "Plus besoin de sauter entre votre {main} and vos fichiers d'UI.{br} Placez le code de votre état partagé où vous voulez, que ce soit à côté du Widget qui l'utilise ou dans un autre package, sans perdre en testabilité.",
+    "message": "Plus besoin de sauter entre votre {main} et vos fichiers d'UI.{br} Placez le code de votre état partagé où vous voulez, que ce soit à côté du Widget qui l'utilise ou dans un autre package, sans perdre en testabilité.",
     "description": "The homepage input placeholder"
   },
   "home.recompute_title": {
-    "message": "Mise à jour automatique de l'état de l'application et l'UI, seulement quand nécéssaire"
+    "message": "Mise à jour automatique de l'état de l'application et l'UI, seulement quand nécessaire"
   },
   "home.recompute_body": {
-    "message": "Il n'est plus necessaire de trier/filter nos listes dans la methode {build} ou d'utiliser des méchaniques avancées de cache.{br}{br} Grace à {Provider} et aux {families}, triez vos listes ou faites des requêtes HTTP seulement quand c'est vraiment necessaire."
+    "message": "Il n'est plus nécessaire de trier/filtrer nos listes dans la méthode {build} ou d'utiliser des mécaniques avancées de cache.{br}{br} Grâce à {Provider} et aux {families}, triez vos listes ou faites des requêtes HTTP seulement quand c'est vraiment nécessaire."
   },
   "home.safe_read_title": {
-    "message": "Lecture sécurisé des providers"
+    "message": "Lecture sécurisée des providers"
   },
   "home.safe_read_body": {
-    "message": "Lire un provider ne causera pas d'exceptions. Si vous pouvez lire un provider, une valeur valide sera obtenue. {br}{br} Cela s'applique aussi aux valeurs obtenues de manière asynchrone. Avec Riverpod, les états de chargement et d'erreur seront gérés de manière sécurisés."
+    "message": "Lire un provider ne causera pas d'exceptions. Si vous pouvez lire un provider, une valeur valide sera obtenue. {br}{br} Cela s'applique aussi aux valeurs obtenues de manière asynchrone. Avec Riverpod, les états de chargement et d'erreur seront gérés de manière sécurisée."
   },
   "home.devtool_title": {
     "message": "Inspectez l'état de votre application avec le Devtool Flutter"
   },
   "home.devtool_body": {
-    "message": "Via Riverpod, votre état est visible par défaut dans l'outil de Flutter's. {br} Qui plus est, un outil d'inspection et d'edition d'état complet est en développement."
+    "message": "Via Riverpod, votre état est visible par défaut dans l'outil de Flutter. {br} Qui plus est, un outil d'inspection et d'édition d'état complet est en développement."
   },
   "home.create_provider": {
     "message": "Créer un provider"
