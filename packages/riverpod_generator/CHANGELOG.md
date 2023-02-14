@@ -1,3 +1,7 @@
+## Unreleased
+
+Bump minimum riverpod_analyzer_utils version
+
 ## 1.2.0
 
 - It is now possible to specify `@Riverpod(dependencies: [...])` to scope providers
