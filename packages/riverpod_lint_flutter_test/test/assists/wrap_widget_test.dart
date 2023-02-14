@@ -22,16 +22,16 @@ void main() {
 
       var changes = [
         // Map
-        ...await assist.testRun(result, const SourceRange(171, 0)),
+        ...await assist.testRun(result, const SourceRange(224, 0)),
 
         // Scaffold
-        ...await assist.testRun(result, const SourceRange(192, 0)),
+        ...await assist.testRun(result, const SourceRange(245, 0)),
 
         // Container
-        ...await assist.testRun(result, const SourceRange(215, 0)),
+        ...await assist.testRun(result, const SourceRange(268, 0)),
 
         // Between ()
-        ...await assist.testRun(result, const SourceRange(220, 0)),
+        ...await assist.testRun(result, const SourceRange(273, 0)),
       ];
 
       expect(changes, hasLength(2));
@@ -52,16 +52,16 @@ void main() {
 
       final changes = [
         // Map
-        ...await assist.testRun(result, const SourceRange(171, 0)),
+        ...await assist.testRun(result, const SourceRange(224, 0)),
 
         // Scaffold
-        ...await assist.testRun(result, const SourceRange(192, 0)),
+        ...await assist.testRun(result, const SourceRange(245, 0)),
 
         // Container
-        ...await assist.testRun(result, const SourceRange(215, 0)),
+        ...await assist.testRun(result, const SourceRange(268, 0)),
 
         // Between ()
-        ...await assist.testRun(result, const SourceRange(220, 0)),
+        ...await assist.testRun(result, const SourceRange(273, 0)),
       ];
 
       expect(changes, hasLength(2));
