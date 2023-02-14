@@ -4,23 +4,29 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-// 値（ここでは "Hello world"）を格納する「プロバイダ」を作成します。
-// プロバイダを使うことで値のモックやオーバーライドが可能になります。
-final helloWorldProvider = Provider((_) => 'Hello world');
+part 'main.g.dart';
+
+// We create a "provider", which will store a value (here "Hello world").
+// By using a provider, this allows us to mock/override the value exposed.
+@riverpod
+String helloWorld(HelloWorldRef ref) {
+  return 'Hello world';
+}
 
 void main() {
   runApp(
-    // プロバイダをウィジェットで利用するには、アプリ全体を
-    // `ProviderScope` ウィジェットで囲む必要があります。
-    // ここに各プロバイダのステート（状態）・値が格納されていきます。
+    // For widgets to be able to read providers, we need to wrap the entire
+    // application in a "ProviderScope" widget.
+    // This is where the state of our providers will be stored.
     ProviderScope(
       child: MyApp(),
     ),
   );
 }
 
-// StatelessWidget の代わりに Riverpod の ConsumerWidget を継承します。
+// Extend ConsumerWidget instead of StatelessWidget, which is exposed by Riverpod
 class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
