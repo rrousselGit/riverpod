@@ -22,6 +22,12 @@ const providerScopeType = TypeChecker.fromName(
   packageName: 'flutter_riverpod',
 );
 
+///  [TypeChecker] from `ProviderScope`
+const uncontrolledProviderScopeType = TypeChecker.fromName(
+  'UncontrolledProviderScope',
+  packageName: 'flutter_riverpod',
+);
+
 /// [TypeChecker] for `AlwaysAliveProviderListenable`
 const alwaysAliveProviderListenableType = TypeChecker.any([
   TypeChecker.fromName(
