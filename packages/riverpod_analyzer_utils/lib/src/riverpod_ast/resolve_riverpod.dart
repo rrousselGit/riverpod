@@ -82,14 +82,19 @@ class ResolvedRiverpodLibraryResult extends RiverpodAst {
     for (final declaration in consumerStateDeclaration) {
       declaration.accept(visitor);
     }
+
+    for (final invocation in unknownRefInvocations) {
+      invocation.accept(visitor);
+    }
+    for (final invocation in unknownWidgetRefInvocations) {
+      invocation.accept(visitor);
+    }
   }
 }
 
 mixin _ParseRefInvocationMixin on RecursiveAstVisitor<void> {
   @override
   void visitMethodInvocation(MethodInvocation node) {
-    Zone.root.print('visitMethodInvocation $node');
-
     void superCall() => super.visitMethodInvocation(node);
 
     final refInvocation = RefInvocation.parse(node, superCall: superCall);
@@ -129,6 +134,8 @@ class _ParseRiverpodUnitVisitor extends RecursiveAstVisitor<void>
       // Don't call super as StatefulProviderDeclaration should already be recursive
       return;
     }
+
+    super.visitClassDeclaration(node);
   }
 
   @override
@@ -139,6 +146,8 @@ class _ParseRiverpodUnitVisitor extends RecursiveAstVisitor<void>
       // Don't call super as StatelessProviderDeclaration should already be recursive
       return;
     }
+
+    super.visitFunctionDeclaration(node);
   }
 
   @override
@@ -149,6 +158,8 @@ class _ParseRiverpodUnitVisitor extends RecursiveAstVisitor<void>
       // Don't call super as LegacyProviderDeclaration should already be recursive
       return;
     }
+
+    super.visitVariableDeclaration(node);
   }
 
   @override
@@ -158,7 +169,6 @@ class _ParseRiverpodUnitVisitor extends RecursiveAstVisitor<void>
 
   @override
   void visitWidgetRefInvocation(WidgetRefInvocation invocation) {
-    Zone.root.print('Found widget ref invocation: $invocation');
     result.unknownWidgetRefInvocations.add(invocation);
   }
 }
