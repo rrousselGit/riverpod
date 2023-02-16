@@ -17,10 +17,15 @@ class LegacyProviderDependencies extends RiverpodAst {
           value.elements.map(LegacyProviderDependency.parse).toList();
     }
 
-    return LegacyProviderDependencies._(
+    final legacyProviderDependencies = LegacyProviderDependencies._(
       dependenciesNode: dependenciesNode,
       dependencies: dependencies,
     );
+    legacyProviderDependencies.dependencies?.forEach((element) {
+      element._parent = legacyProviderDependencies;
+    });
+
+    return legacyProviderDependencies;
   }
 
   final List<LegacyProviderDependency>? dependencies;
@@ -54,10 +59,12 @@ class LegacyProviderDependency extends RiverpodAst
     final provider =
         node.cast<Expression>().let(ProviderListenableExpression.parse);
 
-    return LegacyProviderDependency._(
+    final legacyProviderDependency = LegacyProviderDependency._(
       node: node,
       provider: provider,
     );
+    provider?._parent = legacyProviderDependency;
+    return legacyProviderDependency;
   }
 
   final CollectionElement node;
@@ -171,6 +178,7 @@ class LegacyProviderDeclaration extends RiverpodAst
       dependencies: dependencies,
     );
 
+    dependencies?._parent = legacyProviderDeclaration;
     build.accept(_LegacyRefInvocationVisitor(legacyProviderDeclaration));
 
     return legacyProviderDeclaration;
@@ -219,6 +227,7 @@ class _LegacyRefInvocationVisitor extends RecursiveAstVisitor<void>
   @override
   void visitRefInvocation(RefInvocation invocation) {
     declaration.refInvocations.add(invocation);
+    invocation._parent = declaration;
   }
 
   @override

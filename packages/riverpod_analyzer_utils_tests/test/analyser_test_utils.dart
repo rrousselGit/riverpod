@@ -106,7 +106,11 @@ extension ResolverX on Resolver {
         await library.session.getResolvedLibraryByElement(library);
     libraryAst as ResolvedLibraryResult;
 
-    return ResolvedRiverpodLibraryResult.from(libraryAst);
+    final result = ResolvedRiverpodLibraryResult.from(libraryAst);
+
+    expectValidParentChildrenRelationship(result);
+
+    return result;
   }
 
   Future<LibraryElement> _requireFindLibraryByName(
@@ -137,6 +141,243 @@ ${errors.map((e) => '- $e\n').join()}
     }
 
     return library;
+  }
+}
+
+/// Visit all the nodes of the AST and ensure that that all children
+/// have the correct parent.
+void expectValidParentChildrenRelationship(
+  ResolvedRiverpodLibraryResult result,
+) {
+  result.accept(_ParentRiverpodVisitor(null));
+}
+
+class _ParentRiverpodVisitor extends RecursiveRiverpodAstVisitor {
+  _ParentRiverpodVisitor(this.expectedParent);
+
+  final RiverpodAst? expectedParent;
+
+  @override
+  void visitConsumerStateDeclaration(ConsumerStateDeclaration declaration) {
+    expect(
+      declaration.parent,
+      expectedParent,
+      reason:
+          'Node ${declaration.runtimeType} should have $expectedParent as parent',
+    );
+    declaration.visitChildren(_ParentRiverpodVisitor(declaration));
+  }
+
+  @override
+  void visitConsumerWidgetDeclaration(ConsumerWidgetDeclaration declaration) {
+    expect(
+      declaration.parent,
+      expectedParent,
+      reason:
+          'Node ${declaration.runtimeType} should have $expectedParent as parent',
+    );
+    declaration.visitChildren(_ParentRiverpodVisitor(declaration));
+  }
+
+  @override
+  void visitLegacyProviderDeclaration(LegacyProviderDeclaration declaration) {
+    expect(
+      declaration.parent,
+      expectedParent,
+      reason:
+          'Node ${declaration.runtimeType} should have $expectedParent as parent',
+    );
+    declaration.visitChildren(_ParentRiverpodVisitor(declaration));
+  }
+
+  @override
+  void visitLegacyProviderDependencies(
+    LegacyProviderDependencies dependencies,
+  ) {
+    expect(
+      dependencies.parent,
+      expectedParent,
+      reason:
+          'Node ${dependencies.runtimeType} should have $expectedParent as parent',
+    );
+    dependencies.visitChildren(_ParentRiverpodVisitor(dependencies));
+  }
+
+  @override
+  void visitLegacyProviderDependency(LegacyProviderDependency dependency) {
+    expect(
+      dependency.parent,
+      expectedParent,
+      reason:
+          'Node ${dependency.runtimeType} should have $expectedParent as parent',
+    );
+    dependency.visitChildren(_ParentRiverpodVisitor(dependency));
+  }
+
+  @override
+  void visitProviderListenableExpression(
+    ProviderListenableExpression expression,
+  ) {
+    expect(
+      expression.parent,
+      expectedParent,
+      reason:
+          'Node ${expression.runtimeType} should have $expectedParent as parent',
+    );
+    expression.visitChildren(_ParentRiverpodVisitor(expression));
+  }
+
+  @override
+  void visitRefListenInvocation(RefListenInvocation invocation) {
+    expect(
+      invocation.parent,
+      expectedParent,
+      reason:
+          'Node ${invocation.runtimeType} should have $expectedParent as parent',
+    );
+    invocation.visitChildren(_ParentRiverpodVisitor(invocation));
+  }
+
+  @override
+  void visitRefReadInvocation(RefReadInvocation invocation) {
+    expect(
+      invocation.parent,
+      expectedParent,
+      reason:
+          'Node ${invocation.runtimeType} should have $expectedParent as parent',
+    );
+    invocation.visitChildren(_ParentRiverpodVisitor(invocation));
+  }
+
+  @override
+  void visitRefWatchInvocation(RefWatchInvocation invocation) {
+    expect(
+      invocation.parent,
+      expectedParent,
+      reason:
+          'Node ${invocation.runtimeType} should have $expectedParent as parent',
+    );
+    invocation.visitChildren(_ParentRiverpodVisitor(invocation));
+  }
+
+  @override
+  void visitResolvedRiverpodUnit(ResolvedRiverpodLibraryResult result) {
+    expect(
+      result.parent,
+      expectedParent,
+      reason:
+          'Node ${result.runtimeType} should have $expectedParent as parent',
+    );
+    result.visitChildren(_ParentRiverpodVisitor(result));
+  }
+
+  @override
+  void visitRiverpodAnnotation(RiverpodAnnotation annotation) {
+    expect(
+      annotation.parent,
+      expectedParent,
+      reason:
+          'Node ${annotation.runtimeType} should have $expectedParent as parent',
+    );
+    annotation.visitChildren(_ParentRiverpodVisitor(annotation));
+  }
+
+  @override
+  void visitRiverpodAnnotationDependency(
+    RiverpodAnnotationDependency dependency,
+  ) {
+    expect(
+      dependency.parent,
+      expectedParent,
+      reason:
+          'Node ${dependency.runtimeType} should have $expectedParent as parent',
+    );
+    dependency.visitChildren(_ParentRiverpodVisitor(dependency));
+  }
+
+  @override
+  void visitStatefulConsumerWidgetDeclaration(
+    StatefulConsumerWidgetDeclaration declaration,
+  ) {
+    expect(
+      declaration.parent,
+      expectedParent,
+      reason:
+          'Node ${declaration.runtimeType} should have $expectedParent as parent',
+    );
+    declaration.visitChildren(_ParentRiverpodVisitor(declaration));
+  }
+
+  @override
+  void visitStatefulProviderDeclaration(
+    StatefulProviderDeclaration declaration,
+  ) {
+    expect(
+      declaration.parent,
+      expectedParent,
+      reason:
+          'Node ${declaration.runtimeType} should have $expectedParent as parent',
+    );
+    declaration.visitChildren(_ParentRiverpodVisitor(declaration));
+  }
+
+  @override
+  void visitStatelessProviderDeclaration(
+    StatelessProviderDeclaration declaration,
+  ) {
+    expect(
+      declaration.parent,
+      expectedParent,
+      reason:
+          'Node ${declaration.runtimeType} should have $expectedParent as parent',
+    );
+    declaration.visitChildren(_ParentRiverpodVisitor(declaration));
+  }
+
+  @override
+  void visitWidgetRefListenInvocation(WidgetRefListenInvocation invocation) {
+    expect(
+      invocation.parent,
+      expectedParent,
+      reason:
+          'Node ${invocation.runtimeType} should have $expectedParent as parent',
+    );
+    invocation.visitChildren(_ParentRiverpodVisitor(invocation));
+  }
+
+  @override
+  void visitWidgetRefListenManualInvocation(
+    WidgetRefListenManualInvocation invocation,
+  ) {
+    expect(
+      invocation.parent,
+      expectedParent,
+      reason:
+          'Node ${invocation.runtimeType} should have $expectedParent as parent',
+    );
+    invocation.visitChildren(_ParentRiverpodVisitor(invocation));
+  }
+
+  @override
+  void visitWidgetRefReadInvocation(WidgetRefReadInvocation invocation) {
+    expect(
+      invocation.parent,
+      expectedParent,
+      reason:
+          'Node ${invocation.runtimeType} should have $expectedParent as parent',
+    );
+    invocation.visitChildren(_ParentRiverpodVisitor(invocation));
+  }
+
+  @override
+  void visitWidgetRefWatchInvocation(WidgetRefWatchInvocation invocation) {
+    expect(
+      invocation.parent,
+      expectedParent,
+      reason:
+          'Node ${invocation.runtimeType} should have $expectedParent as parent',
+    );
+    invocation.visitChildren(_ParentRiverpodVisitor(invocation));
   }
 }
 

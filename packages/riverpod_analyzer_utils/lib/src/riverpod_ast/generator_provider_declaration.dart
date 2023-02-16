@@ -139,6 +139,7 @@ class StatefulProviderDeclaration extends GeneratorProviderDeclaration {
       exposedType: _computeExposedType(createdType, element.library),
       valueType: _getValueType(createdType),
     );
+    riverpodAnnotation._parent = statefulProviderDeclaration;
     buildMethod.accept(
       _GeneratorRefInvocationVisitor(statefulProviderDeclaration),
     );
@@ -183,6 +184,7 @@ class _GeneratorRefInvocationVisitor extends RecursiveAstVisitor<void>
   @override
   void visitRefInvocation(RefInvocation invocation) {
     declaration.refInvocations.add(invocation);
+    invocation._parent = declaration;
   }
 
   @override
@@ -228,6 +230,7 @@ class StatelessProviderDeclaration extends GeneratorProviderDeclaration {
       exposedType: _computeExposedType(createdType, element.library),
       valueType: _getValueType(createdType),
     );
+    riverpodAnnotation._parent = statelessProviderDeclaration;
     node.accept(
       _GeneratorRefInvocationVisitor(statelessProviderDeclaration),
     );

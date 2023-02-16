@@ -131,6 +131,7 @@ class _ParseRiverpodUnitVisitor extends RecursiveAstVisitor<void>
     final declaration = StatefulProviderDeclaration.parse(node);
     if (declaration != null) {
       result.statefulProviderDeclarations.add(declaration);
+      declaration._parent = result;
       // Don't call super as StatefulProviderDeclaration should already be recursive
       return;
     }
@@ -143,6 +144,7 @@ class _ParseRiverpodUnitVisitor extends RecursiveAstVisitor<void>
     final declaration = StatelessProviderDeclaration.parse(node);
     if (declaration != null) {
       result.statelessProviderDeclarations.add(declaration);
+      declaration._parent = result;
       // Don't call super as StatelessProviderDeclaration should already be recursive
       return;
     }
@@ -155,6 +157,7 @@ class _ParseRiverpodUnitVisitor extends RecursiveAstVisitor<void>
     final declaration = LegacyProviderDeclaration.parse(node);
     if (declaration != null) {
       result.legacyProviderDeclarations.add(declaration);
+      declaration._parent = result;
       // Don't call super as LegacyProviderDeclaration should already be recursive
       return;
     }
@@ -165,10 +168,12 @@ class _ParseRiverpodUnitVisitor extends RecursiveAstVisitor<void>
   @override
   void visitRefInvocation(RefInvocation invocation) {
     result.unknownRefInvocations.add(invocation);
+    invocation._parent = result;
   }
 
   @override
   void visitWidgetRefInvocation(WidgetRefInvocation invocation) {
     result.unknownWidgetRefInvocations.add(invocation);
+    invocation._parent = result;
   }
 }

@@ -89,6 +89,9 @@ class RiverpodAnnotation extends RiverpodAst {
         dependenciesNode: dependenciesNode,
         dependencies: dependencies,
       );
+      dependencies?.forEach((element) {
+        element._parent = riverpodAnnotation;
+      });
 
       return riverpodAnnotation;
     }

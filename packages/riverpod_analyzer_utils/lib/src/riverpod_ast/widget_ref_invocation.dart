@@ -95,11 +95,13 @@ class WidgetRefWatchInvocation extends WidgetRefInvocation {
     );
     if (providerListenableExpression == null) return null;
 
-    return WidgetRefWatchInvocation._(
+    final widgetRefWatchInvocation = WidgetRefWatchInvocation._(
       node: node,
       function: function,
       provider: providerListenableExpression,
     );
+    providerListenableExpression._parent = widgetRefWatchInvocation;
+    return widgetRefWatchInvocation;
   }
 
   final ProviderListenableExpression provider;
@@ -137,11 +139,13 @@ class WidgetRefReadInvocation extends WidgetRefInvocation {
     );
     if (providerListenableExpression == null) return null;
 
-    return WidgetRefReadInvocation._(
+    final widgetRefReadInvocation = WidgetRefReadInvocation._(
       node: node,
       function: function,
       provider: providerListenableExpression,
     );
+    providerListenableExpression._parent = widgetRefReadInvocation;
+    return widgetRefReadInvocation;
   }
 
   final ProviderListenableExpression provider;
@@ -184,12 +188,14 @@ class WidgetRefListenInvocation extends WidgetRefInvocation {
     );
     if (providerListenableExpression == null) return null;
 
-    return WidgetRefListenInvocation._(
+    final widgetRefListenInvocation = WidgetRefListenInvocation._(
       node: node,
       function: function,
       provider: providerListenableExpression,
       listener: listener,
     );
+    providerListenableExpression._parent = widgetRefListenInvocation;
+    return widgetRefListenInvocation;
   }
 
   final ProviderListenableExpression provider;
@@ -233,12 +239,14 @@ class WidgetRefListenManualInvocation extends WidgetRefInvocation {
     );
     if (providerListenableExpression == null) return null;
 
-    return WidgetRefListenManualInvocation._(
+    final widgetRefListenManualInvocation = WidgetRefListenManualInvocation._(
       node: node,
       function: function,
       provider: providerListenableExpression,
       listener: listener,
     );
+    providerListenableExpression._parent = widgetRefListenManualInvocation;
+    return widgetRefListenManualInvocation;
   }
 
   final ProviderListenableExpression provider;

@@ -88,11 +88,13 @@ class RefWatchInvocation extends RefInvocation {
     );
     if (providerListenableExpression == null) return null;
 
-    return RefWatchInvocation._(
+    final refWatchInvocation = RefWatchInvocation._(
       node: node,
       function: function,
       provider: providerListenableExpression,
     );
+    providerListenableExpression._parent = refWatchInvocation;
+    return refWatchInvocation;
   }
 
   final ProviderListenableExpression provider;
@@ -130,11 +132,13 @@ class RefReadInvocation extends RefInvocation {
     );
     if (providerListenableExpression == null) return null;
 
-    return RefReadInvocation._(
+    final refReadInvocation = RefReadInvocation._(
       node: node,
       function: function,
       provider: providerListenableExpression,
     );
+    providerListenableExpression._parent = refReadInvocation;
+    return refReadInvocation;
   }
 
   final ProviderListenableExpression provider;
@@ -178,12 +182,14 @@ class RefListenInvocation extends RefInvocation {
     );
     if (providerListenableExpression == null) return null;
 
-    return RefListenInvocation._(
+    final refListenInvocation = RefListenInvocation._(
       node: node,
       function: function,
       listener: listener,
       provider: providerListenableExpression,
     );
+    providerListenableExpression._parent = refListenInvocation;
+    return refListenInvocation;
   }
 
   final ProviderListenableExpression provider;
