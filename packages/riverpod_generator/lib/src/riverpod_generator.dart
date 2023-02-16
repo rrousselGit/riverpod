@@ -33,6 +33,8 @@ String _hashFnIdentifier(String hashFnName) {
       'null : $hashFnName';
 }
 
+const _defaultProviderNameSuffix = 'Provider';
+
 @immutable
 class RiverpodGenerator extends ParserGenerator {
   RiverpodGenerator(Map<String, Object?> mapConfig)
@@ -41,27 +43,42 @@ class RiverpodGenerator extends ParserGenerator {
   final BuildYamlOptions options;
 
   @override
-  String generateForUnit(ResolvedUnitResult resolvedUnitResult) {
-    final riverpodResult = parseRiverpod(
-      resolvedUnitResult.unit,
-      defaultFlagValue: false,
-      parseStatefulProviderDeclaration: true,
-      parseStatelessProviderDeclaration: true,
-    );
+  String generateForUnit(ResolvedLibraryResult resolvedLibraryResult) {
+    final riverpodResult =
+        ResolvedRiverpodLibraryResult.from(resolvedLibraryResult);
     return runGenerator(riverpodResult);
   }
 
-  String runGenerator(RiverpodAnalysisResult riverpodResult) {
-    final suffix = options.providerNameSuffix ?? 'Provider';
-
+  String runGenerator(ResolvedRiverpodLibraryResult riverpodResult) {
     final buffer = StringBuffer();
 
-    var didEmitHashUtils = false;
-    void maybeEmitHashUtils() {
-      if (didEmitHashUtils) return;
+    riverpodResult.visitChildren(_RiverpodGeneratorVisitor(buffer, options));
 
-      didEmitHashUtils = true;
+    // Only emit the header if we actually generated something
+    if (buffer.isNotEmpty) {
       buffer.write('''
+// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions
+''');
+    }
+
+    return buffer.toString();
+  }
+}
+
+class _RiverpodGeneratorVisitor extends RecursiveRiverpodAstVisitor {
+  _RiverpodGeneratorVisitor(this.buffer, this.options);
+
+  final StringBuffer buffer;
+  final BuildYamlOptions options;
+
+  String get suffix => options.providerNameSuffix ?? _defaultProviderNameSuffix;
+
+  var _didEmitHashUtils = false;
+  void maybeEmitHashUtils() {
+    if (_didEmitHashUtils) return;
+
+    _didEmitHashUtils = true;
+    buffer.write('''
 /// Copied from Dart SDK
 class _SystemHash {
   _SystemHash._();
@@ -83,78 +100,76 @@ class _SystemHash {
   }
 }
 ''');
+  }
+
+  @override
+  void visitStatefulProviderDeclaration(
+    StatefulProviderDeclaration provider,
+  ) {
+    super.visitStatefulProviderDeclaration(provider);
+
+    final providerName = '${provider.providerElement.name.lowerFirst}$suffix';
+    final notifierTypedefName = providerName.startsWith('_')
+        ? '_\$${provider.providerElement.name.substring(1)}'
+        : '_\$${provider.providerElement.name}';
+
+    final parameters = provider.buildMethod.parameters?.parameters;
+    if (parameters == null) return;
+
+    final hashFunctionName = _hashFnName(provider);
+    final hashFn = _hashFnIdentifier(hashFunctionName);
+    buffer.write(_hashFn(provider, hashFunctionName));
+
+    if (parameters.isEmpty) {
+      StatefulProviderTemplate(
+        provider,
+        options: options,
+        notifierTypedefName: notifierTypedefName,
+        hashFn: hashFn,
+      ).run(buffer);
+    } else {
+      maybeEmitHashUtils();
+      FamilyTemplate.stateful(
+        provider,
+        options: options,
+        notifierTypedefName: notifierTypedefName,
+        hashFn: hashFn,
+      ).run(buffer);
     }
+  }
 
-    for (final provider in riverpodResult.statefulProviderDeclarations.values) {
-      final providerName = '${provider.providerElement.name.lowerFirst}$suffix';
-      final notifierTypedefName = providerName.startsWith('_')
-          ? '_\$${provider.providerElement.name.substring(1)}'
-          : '_\$${provider.providerElement.name}';
+  @override
+  void visitStatelessProviderDeclaration(
+    StatelessProviderDeclaration provider,
+  ) {
+    super.visitStatelessProviderDeclaration(provider);
 
-      final parameters = provider.buildMethod.parameters?.parameters;
-      if (parameters == null) continue;
+    final parameters = provider.node.functionExpression.parameters?.parameters;
+    if (parameters == null) return;
 
-      final hashFunctionName = _hashFnName(provider);
-      final hashFn = _hashFnIdentifier(hashFunctionName);
-      buffer.write(_hashFn(provider, hashFunctionName));
+    final hashFunctionName = _hashFnName(provider);
+    final hashFn = _hashFnIdentifier(hashFunctionName);
+    buffer.write(_hashFn(provider, hashFunctionName));
 
-      if (parameters.isEmpty) {
-        StatefulProviderTemplate(
-          provider,
-          options: options,
-          notifierTypedefName: notifierTypedefName,
-          hashFn: hashFn,
-        ).run(buffer);
-      } else {
-        maybeEmitHashUtils();
-        FamilyTemplate.stateful(
-          provider,
-          options: options,
-          notifierTypedefName: notifierTypedefName,
-          hashFn: hashFn,
-        ).run(buffer);
-      }
+    final refName = '${provider.providerElement.name.titled}Ref';
+
+    // Using >1 as functional providers always have at least one parameter: ref
+    // So a provider is a "family" only if it has parameters besides the ref.
+    if (parameters.length > 1) {
+      maybeEmitHashUtils();
+      FamilyTemplate.stateless(
+        provider,
+        options: options,
+        refName: refName,
+        hashFn: hashFn,
+      ).run(buffer);
+    } else {
+      StatelessProviderTemplate(
+        provider,
+        refName: refName,
+        options: options,
+        hashFn: hashFn,
+      ).run(buffer);
     }
-
-    for (final provider
-        in riverpodResult.statelessProviderDeclarations.values) {
-      final parameters =
-          provider.node.functionExpression.parameters?.parameters;
-      if (parameters == null) continue;
-
-      final hashFunctionName = _hashFnName(provider);
-      final hashFn = _hashFnIdentifier(hashFunctionName);
-      buffer.write(_hashFn(provider, hashFunctionName));
-
-      final refName = '${provider.providerElement.name.titled}Ref';
-
-      // Using >1 as functional providers always have at least one parameter: ref
-      // So a provider is a "family" only if it has parameters besides the ref.
-      if (parameters.length > 1) {
-        maybeEmitHashUtils();
-        FamilyTemplate.stateless(
-          provider,
-          options: options,
-          refName: refName,
-          hashFn: hashFn,
-        ).run(buffer);
-      } else {
-        StatelessProviderTemplate(
-          provider,
-          refName: refName,
-          options: options,
-          hashFn: hashFn,
-        ).run(buffer);
-      }
-    }
-
-    // Only emit the header if we actually generated something
-    if (buffer.isNotEmpty) {
-      buffer.write('''
-// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions
-''');
-    }
-
-    return buffer.toString();
   }
 }

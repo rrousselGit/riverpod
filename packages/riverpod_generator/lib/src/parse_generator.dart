@@ -14,13 +14,13 @@ String assetPath(AssetId assetId) {
 }
 
 extension on AnalysisSession {
-  Future<ResolvedUnitResult> _getResolvedUnit(String path) async {
+  Future<ResolvedLibraryResult> _getResolvedUnit(String path) async {
     var i = 0;
     while (i < 3) {
       i++;
       try {
-        final unit = await getResolvedUnit(path);
-        return unit as ResolvedUnitResult;
+        final unit = await getResolvedLibrary(path);
+        return unit as ResolvedLibraryResult;
       } on InconsistentAnalysisException {
         // Retry
       }
@@ -43,7 +43,7 @@ abstract class ParserGenerator extends GeneratorForAnnotation<Annotation> {
     return generateForUnit(unit);
   }
 
-  FutureOr<String> generateForUnit(ResolvedUnitResult resolvedUnitResult);
+  FutureOr<String> generateForUnit(ResolvedLibraryResult resolvedLibraryResult);
 
   @override
   Stream<String> generateForAnnotatedElement(

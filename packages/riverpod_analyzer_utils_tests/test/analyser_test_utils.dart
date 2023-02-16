@@ -6,7 +6,7 @@ import 'package:analyzer/diagnostic/diagnostic.dart';
 import 'package:build/build.dart';
 import 'package:build_test/build_test.dart';
 import 'package:meta/meta.dart';
-import 'package:riverpod_analyzer_utils/src/riverpod_visitor.dart';
+import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import 'package:riverpod_generator/src/riverpod_generator.dart';
 import 'package:test/test.dart';
 
@@ -32,7 +32,7 @@ void testSource(
         final analysisResult = await resolveSources(
           {'test_lib|lib/foo.dart': sourceWithLibrary},
           (resolver) {
-            return resolver.resolveRiverpodAnalyssiResult(
+            return resolver.resolveRiverpodLibraryResult(
               ignoreMissingElementErrors: true,
             );
           },
@@ -83,15 +83,30 @@ extension ResolverX on Resolver {
     String libraryName = 'foo',
     bool ignoreMissingElementErrors = false,
   }) async {
+    final riverpodAst = await resolveRiverpodLibraryResult(
+      libraryName: libraryName,
+      ignoreMissingElementErrors: ignoreMissingElementErrors,
+    );
+
+    final result = RiverpodAnalysisResult();
+    riverpodAst.accept(result);
+
+    return result;
+  }
+
+  Future<ResolvedRiverpodLibraryResult> resolveRiverpodLibraryResult({
+    String libraryName = 'foo',
+    bool ignoreMissingElementErrors = false,
+  }) async {
     final library = await _requireFindLibraryByName(
       libraryName,
       ignoreMissingElementErrors: ignoreMissingElementErrors,
     );
     final libraryAst =
         await library.session.getResolvedLibraryByElement(library);
-
     libraryAst as ResolvedLibraryResult;
-    return parseRiverpod(libraryAst.units.first.unit);
+
+    return ResolvedRiverpodLibraryResult.from(libraryAst);
   }
 
   Future<LibraryElement> _requireFindLibraryByName(
@@ -122,6 +137,179 @@ ${errors.map((e) => '- $e\n').join()}
     }
 
     return library;
+  }
+}
+
+class RiverpodAnalysisResult extends RecursiveRiverpodAstVisitor {
+  final consumerStateDeclarations = <ConsumerStateDeclaration>[];
+  @override
+  void visitConsumerStateDeclaration(ConsumerStateDeclaration declaration) {
+    super.visitConsumerStateDeclaration(declaration);
+    consumerStateDeclarations.add(declaration);
+  }
+
+  final consumerWidgetDeclarations = <ConsumerWidgetDeclaration>[];
+  @override
+  void visitConsumerWidgetDeclaration(ConsumerWidgetDeclaration declaration) {
+    super.visitConsumerWidgetDeclaration(declaration);
+    consumerWidgetDeclarations.add(declaration);
+  }
+
+  final legacyProviderDeclarations = <LegacyProviderDeclaration>[];
+  @override
+  void visitLegacyProviderDeclaration(LegacyProviderDeclaration declaration) {
+    super.visitLegacyProviderDeclaration(declaration);
+    legacyProviderDeclarations.add(declaration);
+  }
+
+  final legacyProviderDependenciess = <LegacyProviderDependencies>[];
+  @override
+  void visitLegacyProviderDependencies(
+    LegacyProviderDependencies dependencies,
+  ) {
+    super.visitLegacyProviderDependencies(dependencies);
+    legacyProviderDependenciess.add(dependencies);
+  }
+
+  final legacyProviderDependencys = <LegacyProviderDependency>[];
+  @override
+  void visitLegacyProviderDependency(LegacyProviderDependency dependency) {
+    super.visitLegacyProviderDependency(dependency);
+    legacyProviderDependencys.add(dependency);
+  }
+
+  final providerListenableExpressions = <ProviderListenableExpression>[];
+  @override
+  void visitProviderListenableExpression(
+    ProviderListenableExpression expression,
+  ) {
+    super.visitProviderListenableExpression(expression);
+    providerListenableExpressions.add(expression);
+  }
+
+  final refInvocations = <RefInvocation>[];
+  final refListenInvocations = <RefListenInvocation>[];
+  @override
+  void visitRefListenInvocation(RefListenInvocation invocation) {
+    super.visitRefListenInvocation(invocation);
+    refInvocations.add(invocation);
+    refListenInvocations.add(invocation);
+  }
+
+  final refReadInvocations = <RefReadInvocation>[];
+  @override
+  void visitRefReadInvocation(RefReadInvocation invocation) {
+    super.visitRefReadInvocation(invocation);
+    refInvocations.add(invocation);
+    refReadInvocations.add(invocation);
+  }
+
+  final refWatchInvocations = <RefWatchInvocation>[];
+  @override
+  void visitRefWatchInvocation(RefWatchInvocation invocation) {
+    super.visitRefWatchInvocation(invocation);
+    refInvocations.add(invocation);
+    refWatchInvocations.add(invocation);
+  }
+
+  final resolvedRiverpodLibraryResults = <ResolvedRiverpodLibraryResult>[];
+  @override
+  void visitResolvedRiverpodUnit(ResolvedRiverpodLibraryResult result) {
+    super.visitResolvedRiverpodUnit(result);
+    resolvedRiverpodLibraryResults.add(result);
+  }
+
+  final riverpodAnnotations = <RiverpodAnnotation>[];
+  @override
+  void visitRiverpodAnnotation(RiverpodAnnotation annotation) {
+    super.visitRiverpodAnnotation(annotation);
+    riverpodAnnotations.add(annotation);
+  }
+
+  final riverpodAnnotationDependencys = <RiverpodAnnotationDependency>[];
+  @override
+  void visitRiverpodAnnotationDependency(
+    RiverpodAnnotationDependency dependency,
+  ) {
+    super.visitRiverpodAnnotationDependency(dependency);
+    riverpodAnnotationDependencys.add(dependency);
+  }
+
+  final statefulConsumerWidgetDeclarations =
+      <StatefulConsumerWidgetDeclaration>[];
+  @override
+  void visitStatefulConsumerWidgetDeclaration(
+    StatefulConsumerWidgetDeclaration declaration,
+  ) {
+    super.visitStatefulConsumerWidgetDeclaration(declaration);
+    statefulConsumerWidgetDeclarations.add(declaration);
+  }
+
+  final generatorProviderDeclarations = <GeneratorProviderDeclaration>[];
+  final statefulProviderDeclarations = <StatefulProviderDeclaration>[];
+  @override
+  void visitStatefulProviderDeclaration(
+    StatefulProviderDeclaration declaration,
+  ) {
+    super.visitStatefulProviderDeclaration(declaration);
+    generatorProviderDeclarations.add(declaration);
+    statefulProviderDeclarations.add(declaration);
+  }
+
+  final statelessProviderDeclarations = <StatelessProviderDeclaration>[];
+  @override
+  void visitStatelessProviderDeclaration(
+    StatelessProviderDeclaration declaration,
+  ) {
+    super.visitStatelessProviderDeclaration(declaration);
+    generatorProviderDeclarations.add(declaration);
+    statelessProviderDeclarations.add(declaration);
+  }
+
+  final widgetRefInvocations = <WidgetRefInvocation>[];
+  final widgetRefListenInvocations = <WidgetRefListenInvocation>[];
+  @override
+  void visitWidgetRefListenInvocation(WidgetRefListenInvocation invocation) {
+    super.visitWidgetRefListenInvocation(invocation);
+    widgetRefInvocations.add(invocation);
+    widgetRefListenInvocations.add(invocation);
+  }
+
+  final widgetRefListenManualInvocations = <WidgetRefListenManualInvocation>[];
+  @override
+  void visitWidgetRefListenManualInvocation(
+    WidgetRefListenManualInvocation invocation,
+  ) {
+    super.visitWidgetRefListenManualInvocation(invocation);
+    widgetRefInvocations.add(invocation);
+    widgetRefListenManualInvocations.add(invocation);
+  }
+
+  final widgetRefReadInvocations = <WidgetRefReadInvocation>[];
+  @override
+  void visitWidgetRefReadInvocation(WidgetRefReadInvocation invocation) {
+    super.visitWidgetRefReadInvocation(invocation);
+    widgetRefInvocations.add(invocation);
+    widgetRefReadInvocations.add(invocation);
+  }
+
+  final widgetRefWatchInvocations = <WidgetRefWatchInvocation>[];
+  @override
+  void visitWidgetRefWatchInvocation(WidgetRefWatchInvocation invocation) {
+    super.visitWidgetRefWatchInvocation(invocation);
+    widgetRefInvocations.add(invocation);
+    widgetRefWatchInvocations.add(invocation);
+  }
+}
+
+extension TakeList<T extends ProviderDeclaration> on List<T> {
+  Map<String, T> takeAll(List<String> names) {
+    final result = Map.fromEntries(map((e) => MapEntry(e.name.lexeme, e)));
+    return result.take(names);
+  }
+
+  T findByName(String name) {
+    return singleWhere((element) => element.name.lexeme == name);
   }
 }
 

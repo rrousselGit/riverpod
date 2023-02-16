@@ -55,7 +55,7 @@ void fn(_Ref ref) {
     expect(result.refWatchInvocations[0].provider.provider?.toSource(), 'dep');
     expect(
       result.refWatchInvocations[0].provider.providerElement,
-      same(result.legacyProviderDeclarations['dep']?.providerElement),
+      same(result.legacyProviderDeclarations.findByName('dep').providerElement),
     );
 
     expect(
@@ -73,7 +73,9 @@ void fn(_Ref ref) {
     );
     expect(
       result.refWatchInvocations[1].provider.providerElement,
-      same(result.statelessProviderDeclarations['dep2']?.providerElement),
+      same(
+        result.statelessProviderDeclarations.findByName('dep2').providerElement,
+      ),
     );
     expect(result.refWatchInvocations[1].provider.familyArguments, null);
 
@@ -92,7 +94,9 @@ void fn(_Ref ref) {
     );
     expect(
       result.refWatchInvocations[2].provider.providerElement,
-      same(result.statefulProviderDeclarations['Dep3']?.providerElement),
+      same(
+        result.statefulProviderDeclarations.findByName('Dep3').providerElement,
+      ),
     );
     expect(result.refWatchInvocations[2].provider.familyArguments, null);
   });
@@ -129,7 +133,7 @@ final provider = Provider<int>((ref) {
     );
     expect(
       result.refListenInvocations[0].provider.providerElement,
-      same(result.legacyProviderDeclarations['dep']?.providerElement),
+      same(result.legacyProviderDeclarations.findByName('dep').providerElement),
     );
 
     expect(
@@ -143,7 +147,7 @@ final provider = Provider<int>((ref) {
     );
     expect(
       result.refListenInvocations[1].provider.providerElement,
-      same(result.legacyProviderDeclarations['dep']?.providerElement),
+      same(result.legacyProviderDeclarations.findByName('dep').providerElement),
     );
 
     expect(
@@ -157,7 +161,7 @@ final provider = Provider<int>((ref) {
     );
     expect(
       result.refListenInvocations[2].provider.providerElement,
-      same(result.legacyProviderDeclarations['dep']?.providerElement),
+      same(result.legacyProviderDeclarations.findByName('dep').providerElement),
     );
   });
 
@@ -186,14 +190,16 @@ final provider = Provider<int>((ref) {
     expect(result.refReadInvocations[0].function.toSource(), 'read');
     expect(
       result.refReadInvocations[0].provider.providerElement,
-      same(result.legacyProviderDeclarations['dep']?.providerElement),
+      same(result.legacyProviderDeclarations.findByName('dep').providerElement),
     );
 
     expect(result.refReadInvocations[1].node.toSource(), 'ref.read(dep2)');
     expect(result.refReadInvocations[1].function.toSource(), 'read');
     expect(
       result.refReadInvocations[1].provider.providerElement,
-      same(result.legacyProviderDeclarations['dep2']?.providerElement),
+      same(
+        result.legacyProviderDeclarations.findByName('dep2').providerElement,
+      ),
     );
   });
 
@@ -251,7 +257,9 @@ void fn(_Ref ref) {
     );
     expect(
       result.refWatchInvocations[0].provider.providerElement,
-      same(result.legacyProviderDeclarations['family']?.providerElement),
+      same(
+        result.legacyProviderDeclarations.findByName('family').providerElement,
+      ),
     );
     expect(
       result.refWatchInvocations[0].provider.familyArguments?.toSource(),
@@ -273,7 +281,11 @@ void fn(_Ref ref) {
     );
     expect(
       result.refWatchInvocations[1].provider.providerElement,
-      same(result.statelessProviderDeclarations['family2']?.providerElement),
+      same(
+        result.statelessProviderDeclarations
+            .findByName('family2')
+            .providerElement,
+      ),
     );
     expect(
       result.refWatchInvocations[1].provider.familyArguments?.toSource(),
@@ -295,7 +307,11 @@ void fn(_Ref ref) {
     );
     expect(
       result.refWatchInvocations[2].provider.providerElement,
-      same(result.statefulProviderDeclarations['Family3']?.providerElement),
+      same(
+        result.statefulProviderDeclarations
+            .findByName('Family3')
+            .providerElement,
+      ),
     );
     expect(
       result.refWatchInvocations[2].provider.familyArguments?.toSource(),
@@ -375,7 +391,7 @@ void fn(_Ref ref) {
     expect(result.refWatchInvocations[0].provider.provider?.toSource(), 'dep');
     expect(
       result.refWatchInvocations[0].provider.providerElement,
-      same(result.legacyProviderDeclarations['dep']?.providerElement),
+      same(result.legacyProviderDeclarations.findByName('dep').providerElement),
     );
 
     expect(
@@ -394,7 +410,9 @@ void fn(_Ref ref) {
     );
     expect(
       result.refWatchInvocations[1].provider.providerElement,
-      same(result.statelessProviderDeclarations['dep2']?.providerElement),
+      same(
+        result.statelessProviderDeclarations.findByName('dep2').providerElement,
+      ),
     );
 
     expect(
@@ -413,7 +431,9 @@ void fn(_Ref ref) {
     );
     expect(
       result.refWatchInvocations[2].provider.providerElement,
-      same(result.statefulProviderDeclarations['Dep3']?.providerElement),
+      same(
+        result.statefulProviderDeclarations.findByName('Dep3').providerElement,
+      ),
     );
 
     expect(
@@ -435,7 +455,11 @@ void fn(_Ref ref) {
     );
     expect(
       result.refWatchInvocations[3].provider.providerElement,
-      same(result.statefulProviderDeclarations['Family']?.providerElement),
+      same(
+        result.statefulProviderDeclarations
+            .findByName('Family')
+            .providerElement,
+      ),
     );
   });
 }
