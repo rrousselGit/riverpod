@@ -25,35 +25,6 @@ class RiverpodAnalysisException implements Exception {
   }
 }
 
-RiverpodAst? _currentParent;
-
-R _computeChildren<R>(
-  RiverpodAst pending,
-  R Function() callback,
-) {
-  final previous = _currentParent;
-  _currentParent = pending;
-  try {
-    return callback();
-  } finally {
-    _currentParent = previous;
-  }
-}
-
-T _registerAst<T extends RiverpodAst?>(
-  T ast,
-  void Function() superCall,
-) {
-  if (ast != null) {
-    ast.setParent(_currentParent!);
-    _computeChildren(ast, superCall);
-  } else {
-    superCall();
-  }
-
-  return ast;
-}
-
 class ResolvedRiverpodLibraryResult extends RiverpodAst {
   ResolvedRiverpodLibraryResult._();
 
@@ -63,11 +34,9 @@ class ResolvedRiverpodLibraryResult extends RiverpodAst {
     final result = ResolvedRiverpodLibraryResult._();
     final visitor = _ParseRiverpodUnitVisitor(result);
 
-    _computeChildren(result, () {
-      for (final unit in libraryUnit.units) {
-        unit.unit.accept(visitor);
-      }
-    });
+    for (final unit in libraryUnit.units) {
+      unit.unit.accept(visitor);
+    }
 
     return result;
   }
@@ -82,6 +51,9 @@ class ResolvedRiverpodLibraryResult extends RiverpodAst {
       <StatefulConsumerWidgetDeclaration>[];
   final consumerStateDeclaration = <ConsumerStateDeclaration>[];
 
+  final unknownRefInvocations = <RefInvocation>[];
+  final unknownWidgetRefInvocations = <WidgetRefInvocation>[];
+
   @override
   Null get parent => null;
 
@@ -89,9 +61,62 @@ class ResolvedRiverpodLibraryResult extends RiverpodAst {
   void accept(RiverpodAstVisitor visitor) {
     visitor.visitResolvedRiverpodUnit(this);
   }
+
+  @override
+  void visitChildren(RiverpodAstVisitor visitor) {
+    for (final declaration in statelessProviderDeclarations) {
+      declaration.accept(visitor);
+    }
+    for (final declaration in statefulProviderDeclarations) {
+      declaration.accept(visitor);
+    }
+    for (final declaration in legacyProviderDeclarations) {
+      declaration.accept(visitor);
+    }
+    for (final declaration in consumerWidgetDeclarations) {
+      declaration.accept(visitor);
+    }
+    for (final declaration in statefulConsumerWidgetDeclarations) {
+      declaration.accept(visitor);
+    }
+    for (final declaration in consumerStateDeclaration) {
+      declaration.accept(visitor);
+    }
+  }
 }
 
-class _ParseRiverpodUnitVisitor extends RecursiveAstVisitor<void> {
+mixin _ParseRefInvocationMixin on RecursiveAstVisitor<void> {
+  @override
+  void visitMethodInvocation(MethodInvocation node) {
+    Zone.root.print('visitMethodInvocation $node');
+
+    void superCall() => super.visitMethodInvocation(node);
+
+    final refInvocation = RefInvocation.parse(node, superCall: superCall);
+    if (refInvocation != null) {
+      visitRefInvocation(refInvocation);
+      // Don't call super as RefInvocation should already be recursive
+      return;
+    }
+
+    final widgetRefInvocation =
+        WidgetRefInvocation.parse(node, superCall: superCall);
+    if (widgetRefInvocation != null) {
+      visitWidgetRefInvocation(widgetRefInvocation);
+      // Don't call super as WidgetRefInvocation should already be recursive
+      return;
+    }
+
+    super.visitMethodInvocation(node);
+  }
+
+  void visitRefInvocation(RefInvocation invocation);
+
+  void visitWidgetRefInvocation(WidgetRefInvocation invocation);
+}
+
+class _ParseRiverpodUnitVisitor extends RecursiveAstVisitor<void>
+    with _ParseRefInvocationMixin {
   _ParseRiverpodUnitVisitor(this.result);
 
   final ResolvedRiverpodLibraryResult result;
@@ -99,43 +124,41 @@ class _ParseRiverpodUnitVisitor extends RecursiveAstVisitor<void> {
   @override
   void visitClassDeclaration(ClassDeclaration node) {
     final declaration = StatefulProviderDeclaration.parse(node);
-    declaration.let(result.statefulProviderDeclarations.add);
-
-    _registerAst(
-      declaration,
-      () => super.visitClassDeclaration(node),
-    );
+    if (declaration != null) {
+      result.statefulProviderDeclarations.add(declaration);
+      // Don't call super as StatefulProviderDeclaration should already be recursive
+      return;
+    }
   }
 
   @override
   void visitFunctionDeclaration(FunctionDeclaration node) {
     final declaration = StatelessProviderDeclaration.parse(node);
-    declaration.let(result.statelessProviderDeclarations.add);
-
-    _registerAst(
-      declaration,
-      () => super.visitFunctionDeclaration(node),
-    );
+    if (declaration != null) {
+      result.statelessProviderDeclarations.add(declaration);
+      // Don't call super as StatelessProviderDeclaration should already be recursive
+      return;
+    }
   }
 
   @override
   void visitVariableDeclaration(VariableDeclaration node) {
     final declaration = LegacyProviderDeclaration.parse(node);
-    declaration.let(result.legacyProviderDeclarations.add);
-
-    _registerAst(
-      declaration,
-      () => super.visitVariableDeclaration(node),
-    );
+    if (declaration != null) {
+      result.legacyProviderDeclarations.add(declaration);
+      // Don't call super as LegacyProviderDeclaration should already be recursive
+      return;
+    }
   }
 
   @override
-  void visitMethodInvocation(MethodInvocation node) {
-    void superCall() => super.visitMethodInvocation(node);
+  void visitRefInvocation(RefInvocation invocation) {
+    result.unknownRefInvocations.add(invocation);
+  }
 
-    final refInvocation = RefInvocation.parse(node, superCall: superCall) ??
-        WidgetRefInvocation.parse(node, superCall: superCall);
-
-    _registerAst(refInvocation, () {});
+  @override
+  void visitWidgetRefInvocation(WidgetRefInvocation invocation) {
+    Zone.root.print('Found widget ref invocation: $invocation');
+    result.unknownWidgetRefInvocations.add(invocation);
   }
 }

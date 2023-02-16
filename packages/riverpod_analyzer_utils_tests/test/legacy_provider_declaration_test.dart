@@ -153,7 +153,7 @@ final explicitAutoDisposeFamily = AutoDisposeProviderFamily<int, int>(
           isA<LegacyProviderDependency>()
               .having((e) => e.node.toSource(), 'node', 'dep')
               .having(
-                (e) => e.provider,
+                (e) => e.provider?.providerElement,
                 'provider',
                 same(deps['dep']?.providerElement),
               ),
@@ -164,7 +164,7 @@ final explicitAutoDisposeFamily = AutoDisposeProviderFamily<int, int>(
           isA<LegacyProviderDependency>()
               .having((e) => e.node.toSource(), 'node', 'family')
               .having(
-                (e) => e.provider,
+                (e) => e.provider?.providerElement,
                 'provider',
                 same(deps['family']?.providerElement),
               ),
@@ -175,7 +175,7 @@ final explicitAutoDisposeFamily = AutoDisposeProviderFamily<int, int>(
           isA<LegacyProviderDependency>()
               .having((e) => e.node.toSource(), 'node', 'family(42)')
               .having(
-                (e) => e.provider,
+                (e) => e.provider?.providerElement,
                 'provider',
                 same(deps['family']?.providerElement),
               ),
@@ -185,7 +185,7 @@ final explicitAutoDisposeFamily = AutoDisposeProviderFamily<int, int>(
           provider.value.dependencies?.dependencies?[3],
           isA<LegacyProviderDependency>()
               .having((e) => e.node.toSource(), 'node', '...getDeps()')
-              .having((e) => e.provider, 'provider', null),
+              .having((e) => e.provider?.providerElement, 'provider', null),
           reason:
               '${provider.key} has an unknown expression as fourth dependency',
         );
@@ -204,7 +204,7 @@ final explicitAutoDisposeFamily = AutoDisposeProviderFamily<int, int>(
         isA<LegacyProviderDependency>()
             .having((e) => e.node.toSource(), 'node', 'dep2Provider')
             .having(
-              (e) => e.provider,
+              (e) => e.provider?.providerElement,
               'provider',
               same(
                 result.generatorProviderDeclarations
@@ -218,7 +218,7 @@ final explicitAutoDisposeFamily = AutoDisposeProviderFamily<int, int>(
         isA<LegacyProviderDependency>()
             .having((e) => e.node.toSource(), 'node', 'family2Provider')
             .having(
-              (e) => e.provider,
+              (e) => e.provider?.providerElement,
               'provider',
               same(
                 result.generatorProviderDeclarations

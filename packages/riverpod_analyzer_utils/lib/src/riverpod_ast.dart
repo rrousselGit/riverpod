@@ -34,41 +34,15 @@ const _providerForAnnotationChecker = TypeChecker.fromName(
   packageName: 'riverpod_annotation',
 );
 
-extension on RiverpodAst {
-  void addChild(RiverpodAst child) {
-    if (child.parent != null) {
-      throw StateError('Child already has a parent ${child.parent}');
-    }
-    child._parent = this;
-    final children = _children ??= [];
-    children.add(child);
-  }
-
-  void setParent(RiverpodAst parent) => parent.addChild(this);
-}
-
 @sealed
 abstract class RiverpodAst {
-  List<RiverpodAst>? _children;
-
   RiverpodAst? _parent;
   RiverpodAst? get parent => _parent;
 
   void accept(RiverpodAstVisitor visitor);
 
   @mustCallSuper
-  void visitChildren(RiverpodAstVisitor visitor) {
-    final children = _children;
-    if (children != null) {
-      for (final child in children) {
-        child.accept(visitor);
-      }
-    }
-  }
-
-  void visitChildren2(void Function(RiverpodAst child) cb) {
-    _children?.forEach(cb);
-  }
+  void visitChildren(RiverpodAstVisitor visitor);
 }
 
 @internal

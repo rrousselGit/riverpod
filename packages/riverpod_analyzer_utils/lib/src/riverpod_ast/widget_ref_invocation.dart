@@ -95,14 +95,11 @@ class WidgetRefWatchInvocation extends WidgetRefInvocation {
     );
     if (providerListenableExpression == null) return null;
 
-    final refInvocation = WidgetRefWatchInvocation._(
+    return WidgetRefWatchInvocation._(
       node: node,
       function: function,
       provider: providerListenableExpression,
     );
-    refInvocation.addChild(providerListenableExpression);
-
-    return refInvocation;
   }
 
   final ProviderListenableExpression provider;
@@ -110,6 +107,11 @@ class WidgetRefWatchInvocation extends WidgetRefInvocation {
   @override
   void accept(RiverpodAstVisitor visitor) {
     visitor.visitWidgetRefWatchInvocation(this);
+  }
+
+  @override
+  void visitChildren(RiverpodAstVisitor visitor) {
+    provider.accept(visitor);
   }
 }
 
@@ -135,14 +137,11 @@ class WidgetRefReadInvocation extends WidgetRefInvocation {
     );
     if (providerListenableExpression == null) return null;
 
-    final refInvocation = WidgetRefReadInvocation._(
+    return WidgetRefReadInvocation._(
       node: node,
       function: function,
       provider: providerListenableExpression,
     );
-    refInvocation.addChild(providerListenableExpression);
-
-    return refInvocation;
   }
 
   final ProviderListenableExpression provider;
@@ -150,6 +149,11 @@ class WidgetRefReadInvocation extends WidgetRefInvocation {
   @override
   void accept(RiverpodAstVisitor visitor) {
     visitor.visitWidgetRefReadInvocation(this);
+  }
+
+  @override
+  void visitChildren(RiverpodAstVisitor visitor) {
+    provider.accept(visitor);
   }
 }
 
@@ -180,15 +184,12 @@ class WidgetRefListenInvocation extends WidgetRefInvocation {
     );
     if (providerListenableExpression == null) return null;
 
-    final refInvocation = WidgetRefListenInvocation._(
+    return WidgetRefListenInvocation._(
       node: node,
       function: function,
       provider: providerListenableExpression,
       listener: listener,
     );
-    refInvocation.addChild(providerListenableExpression);
-
-    return refInvocation;
   }
 
   final ProviderListenableExpression provider;
@@ -197,6 +198,11 @@ class WidgetRefListenInvocation extends WidgetRefInvocation {
   @override
   void accept(RiverpodAstVisitor visitor) {
     visitor.visitWidgetRefListenInvocation(this);
+  }
+
+  @override
+  void visitChildren(RiverpodAstVisitor visitor) {
+    provider.accept(visitor);
   }
 }
 
@@ -227,15 +233,12 @@ class WidgetRefListenManualInvocation extends WidgetRefInvocation {
     );
     if (providerListenableExpression == null) return null;
 
-    final refInvocation = WidgetRefListenManualInvocation._(
+    return WidgetRefListenManualInvocation._(
       node: node,
       function: function,
       provider: providerListenableExpression,
       listener: listener,
     );
-    refInvocation.addChild(providerListenableExpression);
-
-    return refInvocation;
   }
 
   final ProviderListenableExpression provider;
@@ -244,5 +247,10 @@ class WidgetRefListenManualInvocation extends WidgetRefInvocation {
   @override
   void accept(RiverpodAstVisitor visitor) {
     visitor.visitWidgetRefListenManualInvocation(this);
+  }
+
+  @override
+  void visitChildren(RiverpodAstVisitor visitor) {
+    provider.accept(visitor);
   }
 }

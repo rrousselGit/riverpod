@@ -20,6 +20,8 @@ class ProviderListenableExpression extends RiverpodAst {
     ArgumentList? familyArguments;
 
     void parseExpression(Expression? expression) {
+      // Can be reached when the code contains syntax errors
+      if (expression == null) return;
       if (expression is SimpleIdentifier) {
         // watch(expression)
         provider = expression;
@@ -104,4 +106,7 @@ class ProviderListenableExpression extends RiverpodAst {
   void accept(RiverpodAstVisitor visitor) {
     visitor.visitProviderListenableExpression(this);
   }
+
+  @override
+  void visitChildren(RiverpodAstVisitor visitor) {}
 }

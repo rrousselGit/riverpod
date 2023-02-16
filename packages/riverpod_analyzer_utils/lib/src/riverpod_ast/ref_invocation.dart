@@ -88,14 +88,11 @@ class RefWatchInvocation extends RefInvocation {
     );
     if (providerListenableExpression == null) return null;
 
-    final refInvocation = RefWatchInvocation._(
+    return RefWatchInvocation._(
       node: node,
       function: function,
       provider: providerListenableExpression,
     );
-    refInvocation.addChild(providerListenableExpression);
-
-    return refInvocation;
   }
 
   final ProviderListenableExpression provider;
@@ -103,6 +100,11 @@ class RefWatchInvocation extends RefInvocation {
   @override
   void accept(RiverpodAstVisitor visitor) {
     visitor.visitRefWatchInvocation(this);
+  }
+
+  @override
+  void visitChildren(RiverpodAstVisitor visitor) {
+    provider.accept(visitor);
   }
 }
 
@@ -128,14 +130,11 @@ class RefReadInvocation extends RefInvocation {
     );
     if (providerListenableExpression == null) return null;
 
-    final refInvocation = RefReadInvocation._(
+    return RefReadInvocation._(
       node: node,
       function: function,
       provider: providerListenableExpression,
     );
-    refInvocation.addChild(providerListenableExpression);
-
-    return refInvocation;
   }
 
   final ProviderListenableExpression provider;
@@ -143,6 +142,11 @@ class RefReadInvocation extends RefInvocation {
   @override
   void accept(RiverpodAstVisitor visitor) {
     visitor.visitRefReadInvocation(this);
+  }
+
+  @override
+  void visitChildren(RiverpodAstVisitor visitor) {
+    provider.accept(visitor);
   }
 }
 
@@ -170,19 +174,16 @@ class RefListenInvocation extends RefInvocation {
     if (listener == null) return null;
 
     final providerListenableExpression = ProviderListenableExpression.parse(
-      node.argumentList.positionalArguments().singleOrNull,
+      positionalArgs.firstOrNull,
     );
     if (providerListenableExpression == null) return null;
 
-    final refInvocation = RefListenInvocation._(
+    return RefListenInvocation._(
       node: node,
       function: function,
       listener: listener,
       provider: providerListenableExpression,
     );
-    refInvocation.addChild(providerListenableExpression);
-
-    return refInvocation;
   }
 
   final ProviderListenableExpression provider;
@@ -191,5 +192,10 @@ class RefListenInvocation extends RefInvocation {
   @override
   void accept(RiverpodAstVisitor visitor) {
     visitor.visitRefListenInvocation(this);
+  }
+
+  @override
+  void visitChildren(RiverpodAstVisitor visitor) {
+    provider.accept(visitor);
   }
 }

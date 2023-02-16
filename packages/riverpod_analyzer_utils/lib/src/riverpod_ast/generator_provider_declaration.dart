@@ -50,6 +50,8 @@ abstract class GeneratorProviderDeclaration extends ProviderDeclaration {
   DartType get exposedType;
   DartType get createdType;
 
+  final List<RefInvocation> refInvocations = [];
+
   String computeProviderHash() {
     // TODO improve hash function to inspect the body of the create fn
     // such that the hash changes if one of the element defined outside of the
@@ -57,6 +59,14 @@ abstract class GeneratorProviderDeclaration extends ProviderDeclaration {
     final bytes = utf8.encode(node.toSource());
     final digest = sha1.convert(bytes);
     return digest.toString();
+  }
+
+  @mustCallSuper
+  @override
+  void visitChildren(RiverpodAstVisitor visitor) {
+    for (final refInvocation in refInvocations) {
+      refInvocation.accept(visitor);
+    }
   }
 }
 
@@ -98,9 +108,7 @@ class StatefulProviderDeclaration extends GeneratorProviderDeclaration {
     ClassDeclaration node,
   ) {
     final element = node.declaredElement;
-    Zone.root.print('here $element');
     if (element == null) return null;
-    Zone.root.print('here $element');
     final riverpodAnnotation = RiverpodAnnotation.parse(node);
     if (riverpodAnnotation == null) return null;
 
@@ -121,7 +129,7 @@ class StatefulProviderDeclaration extends GeneratorProviderDeclaration {
     final createdType = buildMethod.returnType?.type ??
         element.library.typeProvider.dynamicType;
 
-    return StatefulProviderDeclaration._(
+    final statefulProviderDeclaration = StatefulProviderDeclaration._(
       name: node.name,
       node: node,
       buildMethod: buildMethod,
@@ -131,6 +139,11 @@ class StatefulProviderDeclaration extends GeneratorProviderDeclaration {
       exposedType: _computeExposedType(createdType, element.library),
       valueType: _getValueType(createdType),
     );
+    buildMethod.accept(
+      _GeneratorRefInvocationVisitor(statefulProviderDeclaration),
+    );
+
+    return statefulProviderDeclaration;
   }
 
   @override
@@ -152,6 +165,30 @@ class StatefulProviderDeclaration extends GeneratorProviderDeclaration {
   @override
   void accept(RiverpodAstVisitor visitor) {
     visitor.visitStatefulProviderDeclaration(this);
+  }
+
+  @override
+  void visitChildren(RiverpodAstVisitor visitor) {
+    super.visitChildren(visitor);
+    annotation.accept(visitor);
+  }
+}
+
+class _GeneratorRefInvocationVisitor extends RecursiveAstVisitor<void>
+    with _ParseRefInvocationMixin {
+  _GeneratorRefInvocationVisitor(this.declaration);
+
+  final GeneratorProviderDeclaration declaration;
+
+  @override
+  void visitRefInvocation(RefInvocation invocation) {
+    declaration.refInvocations.add(invocation);
+  }
+
+  @override
+  void visitWidgetRefInvocation(WidgetRefInvocation invocation) {
+    // TODO report to parent
+    // The provider has no widgetef
   }
 }
 
@@ -182,7 +219,7 @@ class StatelessProviderDeclaration extends GeneratorProviderDeclaration {
     if (providerElement == null) return null;
 
     final createdType = element.returnType;
-    return StatelessProviderDeclaration._(
+    final statelessProviderDeclaration = StatelessProviderDeclaration._(
       name: node.name,
       node: node,
       providerElement: providerElement,
@@ -191,6 +228,10 @@ class StatelessProviderDeclaration extends GeneratorProviderDeclaration {
       exposedType: _computeExposedType(createdType, element.library),
       valueType: _getValueType(createdType),
     );
+    node.accept(
+      _GeneratorRefInvocationVisitor(statelessProviderDeclaration),
+    );
+    return statelessProviderDeclaration;
   }
 
   @override
@@ -212,5 +253,11 @@ class StatelessProviderDeclaration extends GeneratorProviderDeclaration {
   @override
   void accept(RiverpodAstVisitor visitor) {
     visitor.visitStatelessProviderDeclaration(this);
+  }
+
+  @override
+  void visitChildren(RiverpodAstVisitor visitor) {
+    super.visitChildren(visitor);
+    annotation.accept(visitor);
   }
 }

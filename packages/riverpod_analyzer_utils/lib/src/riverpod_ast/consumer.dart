@@ -7,6 +7,9 @@ class ConsumerWidgetDeclaration extends RiverpodAst {
   void accept(RiverpodAstVisitor visitor) {
     visitor.visitConsumerWidgetDeclaration(this);
   }
+
+  @override
+  void visitChildren(RiverpodAstVisitor visitor) {}
 }
 
 class StatefulConsumerWidgetDeclaration extends RiverpodAst {
@@ -14,6 +17,9 @@ class StatefulConsumerWidgetDeclaration extends RiverpodAst {
   void accept(RiverpodAstVisitor visitor) {
     visitor.visitStatefulConsumerWidgetDeclaration(this);
   }
+
+  @override
+  void visitChildren(RiverpodAstVisitor visitor) {}
 }
 
 class ConsumerStateDeclaration extends RiverpodAst {
@@ -21,4 +27,7 @@ class ConsumerStateDeclaration extends RiverpodAst {
   void accept(RiverpodAstVisitor visitor) {
     visitor.visitConsumerStateDeclaration(this);
   }
+
+  @override
+  void visitChildren(RiverpodAstVisitor visitor) {}
 }

@@ -13,6 +13,9 @@ class RiverpodAnnotationDependency extends RiverpodAst {
   void accept(RiverpodAstVisitor visitor) {
     visitor.visitRiverpodAnnotationDependency(this);
   }
+
+  @override
+  void visitChildren(RiverpodAstVisitor visitor) {}
 }
 
 class RiverpodAnnotation extends RiverpodAst {
@@ -86,7 +89,6 @@ class RiverpodAnnotation extends RiverpodAst {
         dependenciesNode: dependenciesNode,
         dependencies: dependencies,
       );
-      dependencies?.forEach(riverpodAnnotation.addChild);
 
       return riverpodAnnotation;
     }
@@ -162,5 +164,15 @@ class RiverpodAnnotation extends RiverpodAst {
   @override
   void accept(RiverpodAstVisitor visitor) {
     visitor.visitRiverpodAnnotation(this);
+  }
+
+  @override
+  void visitChildren(RiverpodAstVisitor visitor) {
+    final dependencies = this.dependencies;
+    if (dependencies != null) {
+      for (final dependency in dependencies) {
+        dependency.accept(visitor);
+      }
+    }
   }
 }
