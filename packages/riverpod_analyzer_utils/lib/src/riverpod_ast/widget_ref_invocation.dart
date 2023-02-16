@@ -180,7 +180,7 @@ class WidgetRefListenInvocation extends WidgetRefInvocation {
     if (listener == null) return null;
 
     final providerListenableExpression = ProviderListenableExpression.parse(
-      node.argumentList.positionalArguments().singleOrNull,
+      positionalArgs.firstOrNull,
     );
     if (providerListenableExpression == null) return null;
 
@@ -229,7 +229,7 @@ class WidgetRefListenManualInvocation extends WidgetRefInvocation {
     if (listener == null) return null;
 
     final providerListenableExpression = ProviderListenableExpression.parse(
-      node.argumentList.positionalArguments().singleOrNull,
+      positionalArgs.firstOrNull,
     );
     if (providerListenableExpression == null) return null;
 
