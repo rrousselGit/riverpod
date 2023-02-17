@@ -296,8 +296,8 @@ class _ParentRiverpodVisitor extends RecursiveRiverpodAstVisitor {
   }
 
   @override
-  void visitStatefulConsumerWidgetDeclaration(
-    StatefulConsumerWidgetDeclaration declaration,
+  void visitConsumerStatefulWidgetDeclaration(
+    ConsumerStatefulWidgetDeclaration declaration,
   ) {
     expect(
       declaration.parent,
@@ -379,6 +379,32 @@ class _ParentRiverpodVisitor extends RecursiveRiverpodAstVisitor {
     );
     invocation.visitChildren(_ParentRiverpodVisitor(invocation));
   }
+
+  @override
+  void visitHookConsumerWidgetDeclaration(
+    HookConsumerWidgetDeclaration declaration,
+  ) {
+    expect(
+      declaration.parent,
+      expectedParent,
+      reason:
+          'Node ${declaration.runtimeType} should have $expectedParent as parent',
+    );
+    declaration.visitChildren(_ParentRiverpodVisitor(declaration));
+  }
+
+  @override
+  void visitStatefulHookConsumerWidgetDeclaration(
+    StatefulHookConsumerWidgetDeclaration declaration,
+  ) {
+    expect(
+      declaration.parent,
+      expectedParent,
+      reason:
+          'Node ${declaration.runtimeType} should have $expectedParent as parent',
+    );
+    declaration.visitChildren(_ParentRiverpodVisitor(declaration));
+  }
 }
 
 class RiverpodAnalysisResult extends RecursiveRiverpodAstVisitor {
@@ -394,6 +420,25 @@ class RiverpodAnalysisResult extends RecursiveRiverpodAstVisitor {
   void visitConsumerWidgetDeclaration(ConsumerWidgetDeclaration declaration) {
     super.visitConsumerWidgetDeclaration(declaration);
     consumerWidgetDeclarations.add(declaration);
+  }
+
+  final hookConsumerWidgetDeclaration = <HookConsumerWidgetDeclaration>[];
+  @override
+  void visitHookConsumerWidgetDeclaration(
+    HookConsumerWidgetDeclaration declaration,
+  ) {
+    super.visitHookConsumerWidgetDeclaration(declaration);
+    hookConsumerWidgetDeclaration.add(declaration);
+  }
+
+  final statefulHookConsumerWidgetDeclaration =
+      <StatefulHookConsumerWidgetDeclaration>[];
+  @override
+  void visitStatefulHookConsumerWidgetDeclaration(
+    StatefulHookConsumerWidgetDeclaration declaration,
+  ) {
+    super.visitStatefulHookConsumerWidgetDeclaration(declaration);
+    statefulHookConsumerWidgetDeclaration.add(declaration);
   }
 
   final legacyProviderDeclarations = <LegacyProviderDeclaration>[];
@@ -476,14 +521,14 @@ class RiverpodAnalysisResult extends RecursiveRiverpodAstVisitor {
     riverpodAnnotationDependencys.add(dependency);
   }
 
-  final statefulConsumerWidgetDeclarations =
-      <StatefulConsumerWidgetDeclaration>[];
+  final consumerStatefulWidgetDeclarations =
+      <ConsumerStatefulWidgetDeclaration>[];
   @override
-  void visitStatefulConsumerWidgetDeclaration(
-    StatefulConsumerWidgetDeclaration declaration,
+  void visitConsumerStatefulWidgetDeclaration(
+    ConsumerStatefulWidgetDeclaration declaration,
   ) {
-    super.visitStatefulConsumerWidgetDeclaration(declaration);
-    statefulConsumerWidgetDeclarations.add(declaration);
+    super.visitConsumerStatefulWidgetDeclaration(declaration);
+    consumerStatefulWidgetDeclarations.add(declaration);
   }
 
   final generatorProviderDeclarations = <GeneratorProviderDeclaration>[];

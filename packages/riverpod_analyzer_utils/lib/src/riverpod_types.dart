@@ -171,10 +171,28 @@ const consumerWidgetType = TypeChecker.fromName(
   packageName: 'flutter_riverpod',
 );
 
+/// [TypeChecker for `HookConsumerWidget`
+const hookConsumerWidgetType = TypeChecker.fromName(
+  'HookConsumerWidget',
+  packageName: 'hooks_riverpod',
+);
+
+/// [TypeChecker for `ConsumerStatefulWidget`
+const consumerStatefulWidgetType = TypeChecker.fromName(
+  'ConsumerStatefulWidget',
+  packageName: 'flutter_riverpod',
+);
+
 /// [TypeChecker for `ConsumerState`
 const consumerStateType = TypeChecker.fromName(
   'ConsumerState',
   packageName: 'flutter_riverpod',
+);
+
+/// [TypeChecker for `StatefulHookConsumerWidget`
+const statefulHookConsumerStateType = TypeChecker.fromName(
+  'StatefulHookConsumerWidget',
+  packageName: 'hooks_riverpod',
 );
 
 /// `Ref` methods that can make a provider depend on another provider.

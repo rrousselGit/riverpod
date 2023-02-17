@@ -47,9 +47,12 @@ class ResolvedRiverpodLibraryResult extends RiverpodAst {
   final legacyProviderDeclarations = <LegacyProviderDeclaration>[];
 
   final consumerWidgetDeclarations = <ConsumerWidgetDeclaration>[];
-  final statefulConsumerWidgetDeclarations =
-      <StatefulConsumerWidgetDeclaration>[];
+  final consumerStatefulWidgetDeclarations =
+      <ConsumerStatefulWidgetDeclaration>[];
   final consumerStateDeclaration = <ConsumerStateDeclaration>[];
+  final statefulHookConsumerWidgetDeclarations =
+      <StatefulHookConsumerWidgetDeclaration>[];
+  final hookConsumerWidgetDeclarations = <HookConsumerWidgetDeclaration>[];
 
   final unknownRefInvocations = <RefInvocation>[];
   final unknownWidgetRefInvocations = <WidgetRefInvocation>[];
@@ -76,10 +79,16 @@ class ResolvedRiverpodLibraryResult extends RiverpodAst {
     for (final declaration in consumerWidgetDeclarations) {
       declaration.accept(visitor);
     }
-    for (final declaration in statefulConsumerWidgetDeclarations) {
+    for (final declaration in consumerStatefulWidgetDeclarations) {
       declaration.accept(visitor);
     }
     for (final declaration in consumerStateDeclaration) {
+      declaration.accept(visitor);
+    }
+    for (final declaration in statefulHookConsumerWidgetDeclarations) {
+      declaration.accept(visitor);
+    }
+    for (final declaration in hookConsumerWidgetDeclarations) {
       declaration.accept(visitor);
     }
 
@@ -130,6 +139,14 @@ class _ParseRiverpodUnitVisitor extends RecursiveAstVisitor<void>
   void visitClassDeclaration(ClassDeclaration node) {
     final declaration = StatefulProviderDeclaration.parse(node);
     if (declaration != null) {
+      result.statefulProviderDeclarations.add(declaration);
+      declaration._parent = result;
+      // Don't call super as StatefulProviderDeclaration should already be recursive
+      return;
+    }
+
+    final consumerDeclaration = StatefulProviderDeclaration.parse(node);
+    if (consumerDeclaration != null) {
       result.statefulProviderDeclarations.add(declaration);
       declaration._parent = result;
       // Don't call super as StatefulProviderDeclaration should already be recursive

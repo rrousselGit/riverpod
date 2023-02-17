@@ -43,13 +43,19 @@ abstract class RiverpodAstVisitor {
   );
 
   void visitConsumerWidgetDeclaration(ConsumerWidgetDeclaration declaration);
-  void visitStatefulConsumerWidgetDeclaration(
-    StatefulConsumerWidgetDeclaration declaration,
+  void visitHookConsumerWidgetDeclaration(
+    HookConsumerWidgetDeclaration declaration,
+  );
+  void visitConsumerStatefulWidgetDeclaration(
+    ConsumerStatefulWidgetDeclaration declaration,
+  );
+  void visitStatefulHookConsumerWidgetDeclaration(
+    StatefulHookConsumerWidgetDeclaration declaration,
   );
   void visitConsumerStateDeclaration(ConsumerStateDeclaration declaration);
 }
 
-abstract class RecursiveRiverpodAstVisitor extends RiverpodAstVisitor {
+class RecursiveRiverpodAstVisitor extends RiverpodAstVisitor {
   @override
   void visitConsumerStateDeclaration(ConsumerStateDeclaration declaration) {
     declaration.visitChildren(this);
@@ -117,8 +123,8 @@ abstract class RecursiveRiverpodAstVisitor extends RiverpodAstVisitor {
   }
 
   @override
-  void visitStatefulConsumerWidgetDeclaration(
-    StatefulConsumerWidgetDeclaration declaration,
+  void visitConsumerStatefulWidgetDeclaration(
+    ConsumerStatefulWidgetDeclaration declaration,
   ) {
     declaration.visitChildren(this);
   }
@@ -157,6 +163,20 @@ abstract class RecursiveRiverpodAstVisitor extends RiverpodAstVisitor {
   @override
   void visitWidgetRefWatchInvocation(WidgetRefWatchInvocation invocation) {
     invocation.visitChildren(this);
+  }
+
+  @override
+  void visitHookConsumerWidgetDeclaration(
+    HookConsumerWidgetDeclaration declaration,
+  ) {
+    declaration.visitChildren(this);
+  }
+
+  @override
+  void visitStatefulHookConsumerWidgetDeclaration(
+    StatefulHookConsumerWidgetDeclaration declaration,
+  ) {
+    declaration.visitChildren(this);
   }
 }
 
@@ -334,12 +354,28 @@ class RiverpodAstRegistry {
     _onConsumerWidgetDeclaration.add(cb);
   }
 
-  final _onStatefulConsumerWidgetDeclaration =
-      <void Function(StatefulConsumerWidgetDeclaration)>[];
-  void addStatefulConsumerWidgetDeclaration(
-    void Function(StatefulConsumerWidgetDeclaration) cb,
+  final _onHookConsumerWidgetDeclaration =
+      <void Function(HookConsumerWidgetDeclaration)>[];
+  void addHookConsumerWidgetDeclaration(
+    void Function(HookConsumerWidgetDeclaration) cb,
   ) {
-    _onStatefulConsumerWidgetDeclaration.add(cb);
+    _onHookConsumerWidgetDeclaration.add(cb);
+  }
+
+  final _onStatefulHookConsumerWidgetDeclaration =
+      <void Function(StatefulHookConsumerWidgetDeclaration)>[];
+  void addStatefulHookConsumerWidgetDeclaration(
+    void Function(StatefulHookConsumerWidgetDeclaration) cb,
+  ) {
+    _onStatefulHookConsumerWidgetDeclaration.add(cb);
+  }
+
+  final _onConsumerStatefulWidgetDeclaration =
+      <void Function(ConsumerStatefulWidgetDeclaration)>[];
+  void addConsumerStatefulWidgetDeclaration(
+    void Function(ConsumerStatefulWidgetDeclaration) cb,
+  ) {
+    _onConsumerStatefulWidgetDeclaration.add(cb);
   }
 
   final _onConsumerStateDeclaration =
@@ -437,13 +473,13 @@ class _RiverpodRegistryVisitor extends RiverpodAstVisitor {
   }
 
   @override
-  void visitStatefulConsumerWidgetDeclaration(
-    StatefulConsumerWidgetDeclaration declaration,
+  void visitConsumerStatefulWidgetDeclaration(
+    ConsumerStatefulWidgetDeclaration declaration,
   ) {
     declaration.visitChildren(this);
     _runSubscriptions(
       declaration,
-      _registry._onStatefulConsumerWidgetDeclaration,
+      _registry._onConsumerStatefulWidgetDeclaration,
     );
   }
 
@@ -500,5 +536,24 @@ class _RiverpodRegistryVisitor extends RiverpodAstVisitor {
         Zone.current.handleUncaughtError(e, stack);
       }
     }
+  }
+
+  @override
+  void visitHookConsumerWidgetDeclaration(
+    HookConsumerWidgetDeclaration declaration,
+  ) {
+    declaration.visitChildren(this);
+    _runSubscriptions(declaration, _registry._onHookConsumerWidgetDeclaration);
+  }
+
+  @override
+  void visitStatefulHookConsumerWidgetDeclaration(
+    StatefulHookConsumerWidgetDeclaration declaration,
+  ) {
+    declaration.visitChildren(this);
+    _runSubscriptions(
+      declaration,
+      _registry._onStatefulHookConsumerWidgetDeclaration,
+    );
   }
 }

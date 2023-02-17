@@ -1,3 +1,4 @@
+import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import 'package:test/test.dart';
 
 import 'analyser_test_utils.dart';
@@ -109,6 +110,50 @@ void fn(_Ref ref) {
       ),
     );
     expect(result.widgetRefWatchInvocations[2].provider.familyArguments, null);
+  });
+
+  testSource('Decodes unknown ref usages', source: '''
+import 'package:riverpod/riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+final dep = FutureProvider((ref) => 0);
+final dep2 = FutureProvider((ref) => 0);
+
+void fn(WidgetRef ref) {
+  ref.read(dep);
+  ref.read(dep2);
+}
+''', (resolver) async {
+    final result = await resolver.resolveRiverpodAnalyssiResult();
+
+    final libraryResult = result.resolvedRiverpodLibraryResults.single;
+
+    expect(libraryResult.unknownWidgetRefInvocations, hasLength(2));
+    expect(
+      result.widgetRefReadInvocations,
+      libraryResult.unknownWidgetRefInvocations,
+    );
+    expect(result.widgetRefInvocations, result.widgetRefReadInvocations);
+
+    expect(result.widgetRefReadInvocations[0].node.toSource(), 'ref.read(dep)');
+    expect(result.widgetRefReadInvocations[0].function.toSource(), 'read');
+    expect(
+      result.widgetRefReadInvocations[0].provider.providerElement,
+      same(result.legacyProviderDeclarations.findByName('dep').providerElement),
+    );
+
+    expect(
+      result.widgetRefReadInvocations[1].node.toSource(),
+      'ref.read(dep2)',
+    );
+    expect(result.widgetRefReadInvocations[1].function.toSource(), 'read');
+    expect(
+      result.widgetRefReadInvocations[1].provider.providerElement,
+      same(
+        result.legacyProviderDeclarations.findByName('dep2').providerElement,
+      ),
+    );
   });
 
   testSource('Decodes ref.listen usages', runGenerator: true, source: '''
@@ -326,6 +371,17 @@ void fn(_Ref ref) {
 }
 ''', (resolver) async {
     final result = await resolver.resolveRiverpodAnalyssiResult();
+
+    final libraryResult = result.resolvedRiverpodLibraryResults.single;
+
+    expect(libraryResult.unknownRefInvocations, isEmpty);
+    expect(libraryResult.unknownWidgetRefInvocations, isEmpty);
+
+    final providerRefInvocations = libraryResult.consumerWidgetDeclarations
+        .where((e) => e.name == 'provider')
+        .single
+        .refInvocations
+        .cast<WidgetRefWatchInvocation>();
 
     expect(result.widgetRefWatchInvocations, hasLength(3));
     expect(result.widgetRefInvocations, result.widgetRefWatchInvocations);
