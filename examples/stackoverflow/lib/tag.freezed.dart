@@ -1,7 +1,7 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
-// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'tag.dart';
 
@@ -29,7 +29,8 @@ mixin _$TagTheme {
 /// @nodoc
 abstract class $TagThemeCopyWith<$Res> {
   factory $TagThemeCopyWith(TagTheme value, $Res Function(TagTheme) then) =
-      _$TagThemeCopyWithImpl<$Res>;
+      _$TagThemeCopyWithImpl<$Res, TagTheme>;
+  @useResult
   $Res call(
       {TextStyle style,
       EdgeInsets padding,
@@ -38,38 +39,41 @@ abstract class $TagThemeCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$TagThemeCopyWithImpl<$Res> implements $TagThemeCopyWith<$Res> {
+class _$TagThemeCopyWithImpl<$Res, $Val extends TagTheme>
+    implements $TagThemeCopyWith<$Res> {
   _$TagThemeCopyWithImpl(this._value, this._then);
 
-  final TagTheme _value;
   // ignore: unused_field
-  final $Res Function(TagTheme) _then;
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? style = freezed,
-    Object? padding = freezed,
-    Object? backgroundColor = freezed,
-    Object? borderRadius = freezed,
+    Object? style = null,
+    Object? padding = null,
+    Object? backgroundColor = null,
+    Object? borderRadius = null,
   }) {
     return _then(_value.copyWith(
-      style: style == freezed
+      style: null == style
           ? _value.style
           : style // ignore: cast_nullable_to_non_nullable
               as TextStyle,
-      padding: padding == freezed
+      padding: null == padding
           ? _value.padding
           : padding // ignore: cast_nullable_to_non_nullable
               as EdgeInsets,
-      backgroundColor: backgroundColor == freezed
+      backgroundColor: null == backgroundColor
           ? _value.backgroundColor
           : backgroundColor // ignore: cast_nullable_to_non_nullable
               as Color,
-      borderRadius: borderRadius == freezed
+      borderRadius: null == borderRadius
           ? _value.borderRadius
           : borderRadius // ignore: cast_nullable_to_non_nullable
               as BorderRadius,
-    ));
+    ) as $Val);
   }
 }
 
@@ -79,6 +83,7 @@ abstract class _$$_TagThemeCopyWith<$Res> implements $TagThemeCopyWith<$Res> {
           _$_TagTheme value, $Res Function(_$_TagTheme) then) =
       __$$_TagThemeCopyWithImpl<$Res>;
   @override
+  @useResult
   $Res call(
       {TextStyle style,
       EdgeInsets padding,
@@ -87,36 +92,35 @@ abstract class _$$_TagThemeCopyWith<$Res> implements $TagThemeCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$_TagThemeCopyWithImpl<$Res> extends _$TagThemeCopyWithImpl<$Res>
+class __$$_TagThemeCopyWithImpl<$Res>
+    extends _$TagThemeCopyWithImpl<$Res, _$_TagTheme>
     implements _$$_TagThemeCopyWith<$Res> {
   __$$_TagThemeCopyWithImpl(
       _$_TagTheme _value, $Res Function(_$_TagTheme) _then)
-      : super(_value, (v) => _then(v as _$_TagTheme));
+      : super(_value, _then);
 
-  @override
-  _$_TagTheme get _value => super._value as _$_TagTheme;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? style = freezed,
-    Object? padding = freezed,
-    Object? backgroundColor = freezed,
-    Object? borderRadius = freezed,
+    Object? style = null,
+    Object? padding = null,
+    Object? backgroundColor = null,
+    Object? borderRadius = null,
   }) {
     return _then(_$_TagTheme(
-      style: style == freezed
+      style: null == style
           ? _value.style
           : style // ignore: cast_nullable_to_non_nullable
               as TextStyle,
-      padding: padding == freezed
+      padding: null == padding
           ? _value.padding
           : padding // ignore: cast_nullable_to_non_nullable
               as EdgeInsets,
-      backgroundColor: backgroundColor == freezed
+      backgroundColor: null == backgroundColor
           ? _value.backgroundColor
           : backgroundColor // ignore: cast_nullable_to_non_nullable
               as Color,
-      borderRadius: borderRadius == freezed
+      borderRadius: null == borderRadius
           ? _value.borderRadius
           : borderRadius // ignore: cast_nullable_to_non_nullable
               as BorderRadius,
@@ -152,24 +156,21 @@ class _$_TagTheme implements _TagTheme {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_TagTheme &&
-            const DeepCollectionEquality().equals(other.style, style) &&
-            const DeepCollectionEquality().equals(other.padding, padding) &&
-            const DeepCollectionEquality()
-                .equals(other.backgroundColor, backgroundColor) &&
-            const DeepCollectionEquality()
-                .equals(other.borderRadius, borderRadius));
+            (identical(other.style, style) || other.style == style) &&
+            (identical(other.padding, padding) || other.padding == padding) &&
+            (identical(other.backgroundColor, backgroundColor) ||
+                other.backgroundColor == backgroundColor) &&
+            (identical(other.borderRadius, borderRadius) ||
+                other.borderRadius == borderRadius));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(style),
-      const DeepCollectionEquality().hash(padding),
-      const DeepCollectionEquality().hash(backgroundColor),
-      const DeepCollectionEquality().hash(borderRadius));
+  int get hashCode =>
+      Object.hash(runtimeType, style, padding, backgroundColor, borderRadius);
 
   @JsonKey(ignore: true)
   @override
+  @pragma('vm:prefer-inline')
   _$$_TagThemeCopyWith<_$_TagTheme> get copyWith =>
       __$$_TagThemeCopyWithImpl<_$_TagTheme>(this, _$identity);
 }

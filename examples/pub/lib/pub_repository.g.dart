@@ -1,5 +1,7 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
+// ignore_for_file: non_constant_identifier_names, require_trailing_commas
+
 part of 'pub_repository.dart';
 
 // **************************************************************************

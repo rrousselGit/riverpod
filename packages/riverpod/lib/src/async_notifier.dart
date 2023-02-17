@@ -155,17 +155,15 @@ abstract class AsyncNotifierProviderBase<NotifierT extends AsyncNotifierBase<T>,
   /// A base class for [AsyncNotifierProvider]
   ///
   /// Not meant for public consumption
-  AsyncNotifierProviderBase(
+  const AsyncNotifierProviderBase(
     this._createNotifier, {
     required super.name,
     required super.from,
     required super.argument,
-    required this.dependencies,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
   });
-
-  @override
-  final List<ProviderOrFamily>? dependencies;
 
   /// Obtains the [AsyncNotifier] associated with this provider, without listening
   /// to state changes.

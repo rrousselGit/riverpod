@@ -23,9 +23,24 @@ class Provider<State> extends InternalProvider<State>
     this._createFn, {
     super.name,
     super.dependencies,
+    @Deprecated('Will be removed in 3.0.0') super.from,
+    @Deprecated('Will be removed in 3.0.0') super.argument,
+    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
+  }) : super(
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+        );
+
+  /// An implementation detail of Riverpod
+  @internal
+  Provider.internal(
+    this._createFn, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
     super.from,
     super.argument,
-    super.debugGetCreateSourceHash,
   });
 
   /// {@macro riverpod.family}
@@ -81,10 +96,14 @@ class Provider<State> extends InternalProvider<State>
   ) {
     return ProviderOverride(
       origin: this,
-      override: Provider<State>(
+      override: Provider<State>.internal(
         create,
         from: from,
         argument: argument,
+        allTransitiveDependencies: null,
+        dependencies: null,
+        debugGetCreateSourceHash: null,
+        name: null,
       ),
     );
   }
@@ -332,7 +351,22 @@ class ProviderFamily<R, Arg>
     super.create, {
     super.name,
     super.dependencies,
-  }) : super(providerFactory: Provider.new);
+  }) : super(
+          providerFactory: Provider.internal,
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+          debugGetCreateSourceHash: null,
+        );
+
+  /// An implementation detail of Riverpod
+  @internal
+  ProviderFamily.internal(
+    super.create, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+  }) : super(providerFactory: Provider.internal);
 
   /// {@macro riverpod.overridewith}
   Override overrideWith(
@@ -340,10 +374,14 @@ class ProviderFamily<R, Arg>
   ) {
     return FamilyOverrideImpl<R, Arg, Provider<R>>(
       this,
-      (arg) => Provider<R>(
+      (arg) => Provider<R>.internal(
         (ref) => create(ref, arg),
         from: from,
         argument: arg,
+        name: name,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
       ),
     );
   }

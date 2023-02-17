@@ -6,6 +6,8 @@ dependency_overrides:
     path: ../../packages/hooks_riverpod
   riverpod:
     path: ../../packages/riverpod
+  riverpod_analyzer_utils:
+    path: ../../packages/riverpod_analyzer_utils
   riverpod_annotation:
     path: ../../packages/riverpod_annotation
   riverpod_generator:

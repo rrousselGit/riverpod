@@ -19,17 +19,23 @@ typedef Create<T, R extends Ref> = T Function(R ref);
 @internal
 typedef OnError = void Function(Object, StackTrace);
 
+/// A typedef for `debugGetCreateSourceHash` parameters.
+@internal
+typedef DebugGetCreateSourceHash = String Function();
+
 /// A base class for _all_ providers.
 @immutable
 abstract class ProviderBase<State> extends ProviderOrFamily
     with ProviderListenable<State>
     implements ProviderOverride, Refreshable<State> {
   /// A base class for _all_ providers.
-  ProviderBase({
-    required this.name,
+  const ProviderBase({
+    required super.name,
     required this.from,
     required this.argument,
     required this.debugGetCreateSourceHash,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
   });
 
   @override
@@ -38,6 +44,7 @@ abstract class ProviderBase<State> extends ProviderOrFamily
   @override
   ProviderBase<Object?> get _override => this;
 
+  /// {@template riverpod.create_source_hash}
   /// A debug-only fucntion for obtaining a hash of the source code of the
   /// initialization function.
   ///
@@ -45,14 +52,9 @@ abstract class ProviderBase<State> extends ProviderOrFamily
   /// provider will be re-executed.
   ///
   /// This variable is only set by `riverpod_generator`.
-  final String Function()? debugGetCreateSourceHash;
-
-  /// {@template riverpod.name}
-  /// A custom label for providers.
-  ///
-  /// This is picked-up by devtools and [toString] to show better messages.
   /// {@endtemplate}
-  final String? name;
+  @internal
+  final DebugGetCreateSourceHash? debugGetCreateSourceHash;
 
   /// If this provider was created with the `.family` modifier, [from] is the `.family` instance.
   @override
@@ -61,10 +63,6 @@ abstract class ProviderBase<State> extends ProviderOrFamily
   /// If this provider was created with the `.family` modifier, [argument] is
   /// the variable that was used.
   final Object? argument;
-
-  @override
-  List<ProviderOrFamily>? get allTransitiveDependencies =>
-      dependencies == null ? null : _allTransitiveDependencies(dependencies!);
 
   @override
   ProviderSubscription<State> addListener(

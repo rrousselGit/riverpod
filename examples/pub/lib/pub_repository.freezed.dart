@@ -1,7 +1,7 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
-// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'pub_repository.dart';
 
@@ -36,7 +36,8 @@ mixin _$PackageMetricsScore {
 abstract class $PackageMetricsScoreCopyWith<$Res> {
   factory $PackageMetricsScoreCopyWith(
           PackageMetricsScore value, $Res Function(PackageMetricsScore) then) =
-      _$PackageMetricsScoreCopyWithImpl<$Res>;
+      _$PackageMetricsScoreCopyWithImpl<$Res, PackageMetricsScore>;
+  @useResult
   $Res call(
       {int grantedPoints,
       int maxPoints,
@@ -46,44 +47,46 @@ abstract class $PackageMetricsScoreCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$PackageMetricsScoreCopyWithImpl<$Res>
+class _$PackageMetricsScoreCopyWithImpl<$Res, $Val extends PackageMetricsScore>
     implements $PackageMetricsScoreCopyWith<$Res> {
   _$PackageMetricsScoreCopyWithImpl(this._value, this._then);
 
-  final PackageMetricsScore _value;
   // ignore: unused_field
-  final $Res Function(PackageMetricsScore) _then;
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? grantedPoints = freezed,
-    Object? maxPoints = freezed,
-    Object? likeCount = freezed,
-    Object? popularityScore = freezed,
-    Object? tags = freezed,
+    Object? grantedPoints = null,
+    Object? maxPoints = null,
+    Object? likeCount = null,
+    Object? popularityScore = null,
+    Object? tags = null,
   }) {
     return _then(_value.copyWith(
-      grantedPoints: grantedPoints == freezed
+      grantedPoints: null == grantedPoints
           ? _value.grantedPoints
           : grantedPoints // ignore: cast_nullable_to_non_nullable
               as int,
-      maxPoints: maxPoints == freezed
+      maxPoints: null == maxPoints
           ? _value.maxPoints
           : maxPoints // ignore: cast_nullable_to_non_nullable
               as int,
-      likeCount: likeCount == freezed
+      likeCount: null == likeCount
           ? _value.likeCount
           : likeCount // ignore: cast_nullable_to_non_nullable
               as int,
-      popularityScore: popularityScore == freezed
+      popularityScore: null == popularityScore
           ? _value.popularityScore
           : popularityScore // ignore: cast_nullable_to_non_nullable
               as double,
-      tags: tags == freezed
+      tags: null == tags
           ? _value.tags
           : tags // ignore: cast_nullable_to_non_nullable
               as List<String>,
-    ));
+    ) as $Val);
   }
 }
 
@@ -94,6 +97,7 @@ abstract class _$$_PackageMetricsScoreCopyWith<$Res>
           $Res Function(_$_PackageMetricsScore) then) =
       __$$_PackageMetricsScoreCopyWithImpl<$Res>;
   @override
+  @useResult
   $Res call(
       {int grantedPoints,
       int maxPoints,
@@ -104,41 +108,39 @@ abstract class _$$_PackageMetricsScoreCopyWith<$Res>
 
 /// @nodoc
 class __$$_PackageMetricsScoreCopyWithImpl<$Res>
-    extends _$PackageMetricsScoreCopyWithImpl<$Res>
+    extends _$PackageMetricsScoreCopyWithImpl<$Res, _$_PackageMetricsScore>
     implements _$$_PackageMetricsScoreCopyWith<$Res> {
   __$$_PackageMetricsScoreCopyWithImpl(_$_PackageMetricsScore _value,
       $Res Function(_$_PackageMetricsScore) _then)
-      : super(_value, (v) => _then(v as _$_PackageMetricsScore));
+      : super(_value, _then);
 
-  @override
-  _$_PackageMetricsScore get _value => super._value as _$_PackageMetricsScore;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? grantedPoints = freezed,
-    Object? maxPoints = freezed,
-    Object? likeCount = freezed,
-    Object? popularityScore = freezed,
-    Object? tags = freezed,
+    Object? grantedPoints = null,
+    Object? maxPoints = null,
+    Object? likeCount = null,
+    Object? popularityScore = null,
+    Object? tags = null,
   }) {
     return _then(_$_PackageMetricsScore(
-      grantedPoints: grantedPoints == freezed
+      grantedPoints: null == grantedPoints
           ? _value.grantedPoints
           : grantedPoints // ignore: cast_nullable_to_non_nullable
               as int,
-      maxPoints: maxPoints == freezed
+      maxPoints: null == maxPoints
           ? _value.maxPoints
           : maxPoints // ignore: cast_nullable_to_non_nullable
               as int,
-      likeCount: likeCount == freezed
+      likeCount: null == likeCount
           ? _value.likeCount
           : likeCount // ignore: cast_nullable_to_non_nullable
               as int,
-      popularityScore: popularityScore == freezed
+      popularityScore: null == popularityScore
           ? _value.popularityScore
           : popularityScore // ignore: cast_nullable_to_non_nullable
               as double,
-      tags: tags == freezed
+      tags: null == tags
           ? _value._tags
           : tags // ignore: cast_nullable_to_non_nullable
               as List<String>,
@@ -171,6 +173,7 @@ class _$_PackageMetricsScore implements _PackageMetricsScore {
   final List<String> _tags;
   @override
   List<String> get tags {
+    if (_tags is EqualUnmodifiableListView) return _tags;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_tags);
   }
@@ -185,27 +188,25 @@ class _$_PackageMetricsScore implements _PackageMetricsScore {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_PackageMetricsScore &&
-            const DeepCollectionEquality()
-                .equals(other.grantedPoints, grantedPoints) &&
-            const DeepCollectionEquality().equals(other.maxPoints, maxPoints) &&
-            const DeepCollectionEquality().equals(other.likeCount, likeCount) &&
-            const DeepCollectionEquality()
-                .equals(other.popularityScore, popularityScore) &&
+            (identical(other.grantedPoints, grantedPoints) ||
+                other.grantedPoints == grantedPoints) &&
+            (identical(other.maxPoints, maxPoints) ||
+                other.maxPoints == maxPoints) &&
+            (identical(other.likeCount, likeCount) ||
+                other.likeCount == likeCount) &&
+            (identical(other.popularityScore, popularityScore) ||
+                other.popularityScore == popularityScore) &&
             const DeepCollectionEquality().equals(other._tags, _tags));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(grantedPoints),
-      const DeepCollectionEquality().hash(maxPoints),
-      const DeepCollectionEquality().hash(likeCount),
-      const DeepCollectionEquality().hash(popularityScore),
-      const DeepCollectionEquality().hash(_tags));
+  int get hashCode => Object.hash(runtimeType, grantedPoints, maxPoints,
+      likeCount, popularityScore, const DeepCollectionEquality().hash(_tags));
 
   @JsonKey(ignore: true)
   @override
+  @pragma('vm:prefer-inline')
   _$$_PackageMetricsScoreCopyWith<_$_PackageMetricsScore> get copyWith =>
       __$$_PackageMetricsScoreCopyWithImpl<_$_PackageMetricsScore>(
           this, _$identity);
@@ -264,37 +265,42 @@ mixin _$PackageMetricsResponse {
 abstract class $PackageMetricsResponseCopyWith<$Res> {
   factory $PackageMetricsResponseCopyWith(PackageMetricsResponse value,
           $Res Function(PackageMetricsResponse) then) =
-      _$PackageMetricsResponseCopyWithImpl<$Res>;
+      _$PackageMetricsResponseCopyWithImpl<$Res, PackageMetricsResponse>;
+  @useResult
   $Res call({PackageMetricsScore score});
 
   $PackageMetricsScoreCopyWith<$Res> get score;
 }
 
 /// @nodoc
-class _$PackageMetricsResponseCopyWithImpl<$Res>
+class _$PackageMetricsResponseCopyWithImpl<$Res,
+        $Val extends PackageMetricsResponse>
     implements $PackageMetricsResponseCopyWith<$Res> {
   _$PackageMetricsResponseCopyWithImpl(this._value, this._then);
 
-  final PackageMetricsResponse _value;
   // ignore: unused_field
-  final $Res Function(PackageMetricsResponse) _then;
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? score = freezed,
+    Object? score = null,
   }) {
     return _then(_value.copyWith(
-      score: score == freezed
+      score: null == score
           ? _value.score
           : score // ignore: cast_nullable_to_non_nullable
               as PackageMetricsScore,
-    ));
+    ) as $Val);
   }
 
   @override
+  @pragma('vm:prefer-inline')
   $PackageMetricsScoreCopyWith<$Res> get score {
     return $PackageMetricsScoreCopyWith<$Res>(_value.score, (value) {
-      return _then(_value.copyWith(score: value));
+      return _then(_value.copyWith(score: value) as $Val);
     });
   }
 }
@@ -306,6 +312,7 @@ abstract class _$$_PackageMetricsResponseCopyWith<$Res>
           $Res Function(_$_PackageMetricsResponse) then) =
       __$$_PackageMetricsResponseCopyWithImpl<$Res>;
   @override
+  @useResult
   $Res call({PackageMetricsScore score});
 
   @override
@@ -314,22 +321,20 @@ abstract class _$$_PackageMetricsResponseCopyWith<$Res>
 
 /// @nodoc
 class __$$_PackageMetricsResponseCopyWithImpl<$Res>
-    extends _$PackageMetricsResponseCopyWithImpl<$Res>
+    extends _$PackageMetricsResponseCopyWithImpl<$Res,
+        _$_PackageMetricsResponse>
     implements _$$_PackageMetricsResponseCopyWith<$Res> {
   __$$_PackageMetricsResponseCopyWithImpl(_$_PackageMetricsResponse _value,
       $Res Function(_$_PackageMetricsResponse) _then)
-      : super(_value, (v) => _then(v as _$_PackageMetricsResponse));
+      : super(_value, _then);
 
-  @override
-  _$_PackageMetricsResponse get _value =>
-      super._value as _$_PackageMetricsResponse;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? score = freezed,
+    Object? score = null,
   }) {
     return _then(_$_PackageMetricsResponse(
-      score: score == freezed
+      score: null == score
           ? _value.score
           : score // ignore: cast_nullable_to_non_nullable
               as PackageMetricsScore,
@@ -358,16 +363,16 @@ class _$_PackageMetricsResponse implements _PackageMetricsResponse {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_PackageMetricsResponse &&
-            const DeepCollectionEquality().equals(other.score, score));
+            (identical(other.score, score) || other.score == score));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(score));
+  int get hashCode => Object.hash(runtimeType, score);
 
   @JsonKey(ignore: true)
   @override
+  @pragma('vm:prefer-inline')
   _$$_PackageMetricsResponseCopyWith<_$_PackageMetricsResponse> get copyWith =>
       __$$_PackageMetricsResponseCopyWithImpl<_$_PackageMetricsResponse>(
           this, _$identity);
@@ -414,34 +419,37 @@ mixin _$PackageDetails {
 abstract class $PackageDetailsCopyWith<$Res> {
   factory $PackageDetailsCopyWith(
           PackageDetails value, $Res Function(PackageDetails) then) =
-      _$PackageDetailsCopyWithImpl<$Res>;
+      _$PackageDetailsCopyWithImpl<$Res, PackageDetails>;
+  @useResult
   $Res call({String version, Pubspec pubspec});
 }
 
 /// @nodoc
-class _$PackageDetailsCopyWithImpl<$Res>
+class _$PackageDetailsCopyWithImpl<$Res, $Val extends PackageDetails>
     implements $PackageDetailsCopyWith<$Res> {
   _$PackageDetailsCopyWithImpl(this._value, this._then);
 
-  final PackageDetails _value;
   // ignore: unused_field
-  final $Res Function(PackageDetails) _then;
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? version = freezed,
-    Object? pubspec = freezed,
+    Object? version = null,
+    Object? pubspec = null,
   }) {
     return _then(_value.copyWith(
-      version: version == freezed
+      version: null == version
           ? _value.version
           : version // ignore: cast_nullable_to_non_nullable
               as String,
-      pubspec: pubspec == freezed
+      pubspec: null == pubspec
           ? _value.pubspec
           : pubspec // ignore: cast_nullable_to_non_nullable
               as Pubspec,
-    ));
+    ) as $Val);
   }
 }
 
@@ -452,31 +460,30 @@ abstract class _$$_PackageDetailsCopyWith<$Res>
           _$_PackageDetails value, $Res Function(_$_PackageDetails) then) =
       __$$_PackageDetailsCopyWithImpl<$Res>;
   @override
+  @useResult
   $Res call({String version, Pubspec pubspec});
 }
 
 /// @nodoc
 class __$$_PackageDetailsCopyWithImpl<$Res>
-    extends _$PackageDetailsCopyWithImpl<$Res>
+    extends _$PackageDetailsCopyWithImpl<$Res, _$_PackageDetails>
     implements _$$_PackageDetailsCopyWith<$Res> {
   __$$_PackageDetailsCopyWithImpl(
       _$_PackageDetails _value, $Res Function(_$_PackageDetails) _then)
-      : super(_value, (v) => _then(v as _$_PackageDetails));
+      : super(_value, _then);
 
-  @override
-  _$_PackageDetails get _value => super._value as _$_PackageDetails;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? version = freezed,
-    Object? pubspec = freezed,
+    Object? version = null,
+    Object? pubspec = null,
   }) {
     return _then(_$_PackageDetails(
-      version: version == freezed
+      version: null == version
           ? _value.version
           : version // ignore: cast_nullable_to_non_nullable
               as String,
-      pubspec: pubspec == freezed
+      pubspec: null == pubspec
           ? _value.pubspec
           : pubspec // ignore: cast_nullable_to_non_nullable
               as Pubspec,
@@ -507,19 +514,17 @@ class _$_PackageDetails implements _PackageDetails {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_PackageDetails &&
-            const DeepCollectionEquality().equals(other.version, version) &&
-            const DeepCollectionEquality().equals(other.pubspec, pubspec));
+            (identical(other.version, version) || other.version == version) &&
+            (identical(other.pubspec, pubspec) || other.pubspec == pubspec));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(version),
-      const DeepCollectionEquality().hash(pubspec));
+  int get hashCode => Object.hash(runtimeType, version, pubspec);
 
   @JsonKey(ignore: true)
   @override
+  @pragma('vm:prefer-inline')
   _$$_PackageDetailsCopyWith<_$_PackageDetails> get copyWith =>
       __$$_PackageDetailsCopyWithImpl<_$_PackageDetails>(this, _$identity);
 
@@ -566,41 +571,46 @@ mixin _$Package {
 /// @nodoc
 abstract class $PackageCopyWith<$Res> {
   factory $PackageCopyWith(Package value, $Res Function(Package) then) =
-      _$PackageCopyWithImpl<$Res>;
+      _$PackageCopyWithImpl<$Res, Package>;
+  @useResult
   $Res call({String name, PackageDetails latest});
 
   $PackageDetailsCopyWith<$Res> get latest;
 }
 
 /// @nodoc
-class _$PackageCopyWithImpl<$Res> implements $PackageCopyWith<$Res> {
+class _$PackageCopyWithImpl<$Res, $Val extends Package>
+    implements $PackageCopyWith<$Res> {
   _$PackageCopyWithImpl(this._value, this._then);
 
-  final Package _value;
   // ignore: unused_field
-  final $Res Function(Package) _then;
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? name = freezed,
-    Object? latest = freezed,
+    Object? name = null,
+    Object? latest = null,
   }) {
     return _then(_value.copyWith(
-      name: name == freezed
+      name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      latest: latest == freezed
+      latest: null == latest
           ? _value.latest
           : latest // ignore: cast_nullable_to_non_nullable
               as PackageDetails,
-    ));
+    ) as $Val);
   }
 
   @override
+  @pragma('vm:prefer-inline')
   $PackageDetailsCopyWith<$Res> get latest {
     return $PackageDetailsCopyWith<$Res>(_value.latest, (value) {
-      return _then(_value.copyWith(latest: value));
+      return _then(_value.copyWith(latest: value) as $Val);
     });
   }
 }
@@ -611,6 +621,7 @@ abstract class _$$_PackageCopyWith<$Res> implements $PackageCopyWith<$Res> {
           _$_Package value, $Res Function(_$_Package) then) =
       __$$_PackageCopyWithImpl<$Res>;
   @override
+  @useResult
   $Res call({String name, PackageDetails latest});
 
   @override
@@ -618,25 +629,24 @@ abstract class _$$_PackageCopyWith<$Res> implements $PackageCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$_PackageCopyWithImpl<$Res> extends _$PackageCopyWithImpl<$Res>
+class __$$_PackageCopyWithImpl<$Res>
+    extends _$PackageCopyWithImpl<$Res, _$_Package>
     implements _$$_PackageCopyWith<$Res> {
   __$$_PackageCopyWithImpl(_$_Package _value, $Res Function(_$_Package) _then)
-      : super(_value, (v) => _then(v as _$_Package));
+      : super(_value, _then);
 
-  @override
-  _$_Package get _value => super._value as _$_Package;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? name = freezed,
-    Object? latest = freezed,
+    Object? name = null,
+    Object? latest = null,
   }) {
     return _then(_$_Package(
-      name: name == freezed
+      name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      latest: latest == freezed
+      latest: null == latest
           ? _value.latest
           : latest // ignore: cast_nullable_to_non_nullable
               as PackageDetails,
@@ -667,19 +677,17 @@ class _$_Package implements _Package {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_Package &&
-            const DeepCollectionEquality().equals(other.name, name) &&
-            const DeepCollectionEquality().equals(other.latest, latest));
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.latest, latest) || other.latest == latest));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(name),
-      const DeepCollectionEquality().hash(latest));
+  int get hashCode => Object.hash(runtimeType, name, latest);
 
   @JsonKey(ignore: true)
   @override
+  @pragma('vm:prefer-inline')
   _$$_PackageCopyWith<_$_Package> get copyWith =>
       __$$_PackageCopyWithImpl<_$_Package>(this, _$identity);
 
@@ -727,33 +735,37 @@ mixin _$LikedPackage {
 abstract class $LikedPackageCopyWith<$Res> {
   factory $LikedPackageCopyWith(
           LikedPackage value, $Res Function(LikedPackage) then) =
-      _$LikedPackageCopyWithImpl<$Res>;
+      _$LikedPackageCopyWithImpl<$Res, LikedPackage>;
+  @useResult
   $Res call({String package, bool liked});
 }
 
 /// @nodoc
-class _$LikedPackageCopyWithImpl<$Res> implements $LikedPackageCopyWith<$Res> {
+class _$LikedPackageCopyWithImpl<$Res, $Val extends LikedPackage>
+    implements $LikedPackageCopyWith<$Res> {
   _$LikedPackageCopyWithImpl(this._value, this._then);
 
-  final LikedPackage _value;
   // ignore: unused_field
-  final $Res Function(LikedPackage) _then;
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? package = freezed,
-    Object? liked = freezed,
+    Object? package = null,
+    Object? liked = null,
   }) {
     return _then(_value.copyWith(
-      package: package == freezed
+      package: null == package
           ? _value.package
           : package // ignore: cast_nullable_to_non_nullable
               as String,
-      liked: liked == freezed
+      liked: null == liked
           ? _value.liked
           : liked // ignore: cast_nullable_to_non_nullable
               as bool,
-    ));
+    ) as $Val);
   }
 }
 
@@ -764,31 +776,30 @@ abstract class _$$_LikedPackageCopyWith<$Res>
           _$_LikedPackage value, $Res Function(_$_LikedPackage) then) =
       __$$_LikedPackageCopyWithImpl<$Res>;
   @override
+  @useResult
   $Res call({String package, bool liked});
 }
 
 /// @nodoc
 class __$$_LikedPackageCopyWithImpl<$Res>
-    extends _$LikedPackageCopyWithImpl<$Res>
+    extends _$LikedPackageCopyWithImpl<$Res, _$_LikedPackage>
     implements _$$_LikedPackageCopyWith<$Res> {
   __$$_LikedPackageCopyWithImpl(
       _$_LikedPackage _value, $Res Function(_$_LikedPackage) _then)
-      : super(_value, (v) => _then(v as _$_LikedPackage));
+      : super(_value, _then);
 
-  @override
-  _$_LikedPackage get _value => super._value as _$_LikedPackage;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? package = freezed,
-    Object? liked = freezed,
+    Object? package = null,
+    Object? liked = null,
   }) {
     return _then(_$_LikedPackage(
-      package: package == freezed
+      package: null == package
           ? _value.package
           : package // ignore: cast_nullable_to_non_nullable
               as String,
-      liked: liked == freezed
+      liked: null == liked
           ? _value.liked
           : liked // ignore: cast_nullable_to_non_nullable
               as bool,
@@ -819,19 +830,17 @@ class _$_LikedPackage implements _LikedPackage {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_LikedPackage &&
-            const DeepCollectionEquality().equals(other.package, package) &&
-            const DeepCollectionEquality().equals(other.liked, liked));
+            (identical(other.package, package) || other.package == package) &&
+            (identical(other.liked, liked) || other.liked == liked));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(package),
-      const DeepCollectionEquality().hash(liked));
+  int get hashCode => Object.hash(runtimeType, package, liked);
 
   @JsonKey(ignore: true)
   @override
+  @pragma('vm:prefer-inline')
   _$$_LikedPackageCopyWith<_$_LikedPackage> get copyWith =>
       __$$_LikedPackageCopyWithImpl<_$_LikedPackage>(this, _$identity);
 
@@ -880,29 +889,33 @@ mixin _$LikedPackagesResponse {
 abstract class $LikedPackagesResponseCopyWith<$Res> {
   factory $LikedPackagesResponseCopyWith(LikedPackagesResponse value,
           $Res Function(LikedPackagesResponse) then) =
-      _$LikedPackagesResponseCopyWithImpl<$Res>;
+      _$LikedPackagesResponseCopyWithImpl<$Res, LikedPackagesResponse>;
+  @useResult
   $Res call({List<LikedPackage> likedPackages});
 }
 
 /// @nodoc
-class _$LikedPackagesResponseCopyWithImpl<$Res>
+class _$LikedPackagesResponseCopyWithImpl<$Res,
+        $Val extends LikedPackagesResponse>
     implements $LikedPackagesResponseCopyWith<$Res> {
   _$LikedPackagesResponseCopyWithImpl(this._value, this._then);
 
-  final LikedPackagesResponse _value;
   // ignore: unused_field
-  final $Res Function(LikedPackagesResponse) _then;
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? likedPackages = freezed,
+    Object? likedPackages = null,
   }) {
     return _then(_value.copyWith(
-      likedPackages: likedPackages == freezed
+      likedPackages: null == likedPackages
           ? _value.likedPackages
           : likedPackages // ignore: cast_nullable_to_non_nullable
               as List<LikedPackage>,
-    ));
+    ) as $Val);
   }
 }
 
@@ -913,27 +926,25 @@ abstract class _$$_LikesPackagesResponseCopyWith<$Res>
           $Res Function(_$_LikesPackagesResponse) then) =
       __$$_LikesPackagesResponseCopyWithImpl<$Res>;
   @override
+  @useResult
   $Res call({List<LikedPackage> likedPackages});
 }
 
 /// @nodoc
 class __$$_LikesPackagesResponseCopyWithImpl<$Res>
-    extends _$LikedPackagesResponseCopyWithImpl<$Res>
+    extends _$LikedPackagesResponseCopyWithImpl<$Res, _$_LikesPackagesResponse>
     implements _$$_LikesPackagesResponseCopyWith<$Res> {
   __$$_LikesPackagesResponseCopyWithImpl(_$_LikesPackagesResponse _value,
       $Res Function(_$_LikesPackagesResponse) _then)
-      : super(_value, (v) => _then(v as _$_LikesPackagesResponse));
+      : super(_value, _then);
 
-  @override
-  _$_LikesPackagesResponse get _value =>
-      super._value as _$_LikesPackagesResponse;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? likedPackages = freezed,
+    Object? likedPackages = null,
   }) {
     return _then(_$_LikesPackagesResponse(
-      likedPackages: likedPackages == freezed
+      likedPackages: null == likedPackages
           ? _value._likedPackages
           : likedPackages // ignore: cast_nullable_to_non_nullable
               as List<LikedPackage>,
@@ -953,6 +964,7 @@ class _$_LikesPackagesResponse implements _LikesPackagesResponse {
   final List<LikedPackage> _likedPackages;
   @override
   List<LikedPackage> get likedPackages {
+    if (_likedPackages is EqualUnmodifiableListView) return _likedPackages;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_likedPackages);
   }
@@ -978,6 +990,7 @@ class _$_LikesPackagesResponse implements _LikesPackagesResponse {
 
   @JsonKey(ignore: true)
   @override
+  @pragma('vm:prefer-inline')
   _$$_LikesPackagesResponseCopyWith<_$_LikesPackagesResponse> get copyWith =>
       __$$_LikesPackagesResponseCopyWithImpl<_$_LikesPackagesResponse>(
           this, _$identity);
@@ -1024,29 +1037,32 @@ mixin _$PubPackagesResponse {
 abstract class $PubPackagesResponseCopyWith<$Res> {
   factory $PubPackagesResponseCopyWith(
           PubPackagesResponse value, $Res Function(PubPackagesResponse) then) =
-      _$PubPackagesResponseCopyWithImpl<$Res>;
+      _$PubPackagesResponseCopyWithImpl<$Res, PubPackagesResponse>;
+  @useResult
   $Res call({List<Package> packages});
 }
 
 /// @nodoc
-class _$PubPackagesResponseCopyWithImpl<$Res>
+class _$PubPackagesResponseCopyWithImpl<$Res, $Val extends PubPackagesResponse>
     implements $PubPackagesResponseCopyWith<$Res> {
   _$PubPackagesResponseCopyWithImpl(this._value, this._then);
 
-  final PubPackagesResponse _value;
   // ignore: unused_field
-  final $Res Function(PubPackagesResponse) _then;
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? packages = freezed,
+    Object? packages = null,
   }) {
     return _then(_value.copyWith(
-      packages: packages == freezed
+      packages: null == packages
           ? _value.packages
           : packages // ignore: cast_nullable_to_non_nullable
               as List<Package>,
-    ));
+    ) as $Val);
   }
 }
 
@@ -1057,26 +1073,25 @@ abstract class _$$_PubPackagesResponseCopyWith<$Res>
           $Res Function(_$_PubPackagesResponse) then) =
       __$$_PubPackagesResponseCopyWithImpl<$Res>;
   @override
+  @useResult
   $Res call({List<Package> packages});
 }
 
 /// @nodoc
 class __$$_PubPackagesResponseCopyWithImpl<$Res>
-    extends _$PubPackagesResponseCopyWithImpl<$Res>
+    extends _$PubPackagesResponseCopyWithImpl<$Res, _$_PubPackagesResponse>
     implements _$$_PubPackagesResponseCopyWith<$Res> {
   __$$_PubPackagesResponseCopyWithImpl(_$_PubPackagesResponse _value,
       $Res Function(_$_PubPackagesResponse) _then)
-      : super(_value, (v) => _then(v as _$_PubPackagesResponse));
+      : super(_value, _then);
 
-  @override
-  _$_PubPackagesResponse get _value => super._value as _$_PubPackagesResponse;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? packages = freezed,
+    Object? packages = null,
   }) {
     return _then(_$_PubPackagesResponse(
-      packages: packages == freezed
+      packages: null == packages
           ? _value._packages
           : packages // ignore: cast_nullable_to_non_nullable
               as List<Package>,
@@ -1096,6 +1111,7 @@ class _$_PubPackagesResponse implements _PubPackagesResponse {
   final List<Package> _packages;
   @override
   List<Package> get packages {
+    if (_packages is EqualUnmodifiableListView) return _packages;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_packages);
   }
@@ -1120,6 +1136,7 @@ class _$_PubPackagesResponse implements _PubPackagesResponse {
 
   @JsonKey(ignore: true)
   @override
+  @pragma('vm:prefer-inline')
   _$$_PubPackagesResponseCopyWith<_$_PubPackagesResponse> get copyWith =>
       __$$_PubPackagesResponseCopyWithImpl<_$_PubPackagesResponse>(
           this, _$identity);
@@ -1165,29 +1182,32 @@ mixin _$SearchPackage {
 abstract class $SearchPackageCopyWith<$Res> {
   factory $SearchPackageCopyWith(
           SearchPackage value, $Res Function(SearchPackage) then) =
-      _$SearchPackageCopyWithImpl<$Res>;
+      _$SearchPackageCopyWithImpl<$Res, SearchPackage>;
+  @useResult
   $Res call({String package});
 }
 
 /// @nodoc
-class _$SearchPackageCopyWithImpl<$Res>
+class _$SearchPackageCopyWithImpl<$Res, $Val extends SearchPackage>
     implements $SearchPackageCopyWith<$Res> {
   _$SearchPackageCopyWithImpl(this._value, this._then);
 
-  final SearchPackage _value;
   // ignore: unused_field
-  final $Res Function(SearchPackage) _then;
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? package = freezed,
+    Object? package = null,
   }) {
     return _then(_value.copyWith(
-      package: package == freezed
+      package: null == package
           ? _value.package
           : package // ignore: cast_nullable_to_non_nullable
               as String,
-    ));
+    ) as $Val);
   }
 }
 
@@ -1198,26 +1218,25 @@ abstract class _$$_SearchPackageCopyWith<$Res>
           _$_SearchPackage value, $Res Function(_$_SearchPackage) then) =
       __$$_SearchPackageCopyWithImpl<$Res>;
   @override
+  @useResult
   $Res call({String package});
 }
 
 /// @nodoc
 class __$$_SearchPackageCopyWithImpl<$Res>
-    extends _$SearchPackageCopyWithImpl<$Res>
+    extends _$SearchPackageCopyWithImpl<$Res, _$_SearchPackage>
     implements _$$_SearchPackageCopyWith<$Res> {
   __$$_SearchPackageCopyWithImpl(
       _$_SearchPackage _value, $Res Function(_$_SearchPackage) _then)
-      : super(_value, (v) => _then(v as _$_SearchPackage));
+      : super(_value, _then);
 
-  @override
-  _$_SearchPackage get _value => super._value as _$_SearchPackage;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? package = freezed,
+    Object? package = null,
   }) {
     return _then(_$_SearchPackage(
-      package: package == freezed
+      package: null == package
           ? _value.package
           : package // ignore: cast_nullable_to_non_nullable
               as String,
@@ -1246,16 +1265,16 @@ class _$_SearchPackage implements _SearchPackage {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_SearchPackage &&
-            const DeepCollectionEquality().equals(other.package, package));
+            (identical(other.package, package) || other.package == package));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(package));
+  int get hashCode => Object.hash(runtimeType, package);
 
   @JsonKey(ignore: true)
   @override
+  @pragma('vm:prefer-inline')
   _$$_SearchPackageCopyWith<_$_SearchPackage> get copyWith =>
       __$$_SearchPackageCopyWithImpl<_$_SearchPackage>(this, _$identity);
 
@@ -1299,29 +1318,32 @@ mixin _$PubSearchResponse {
 abstract class $PubSearchResponseCopyWith<$Res> {
   factory $PubSearchResponseCopyWith(
           PubSearchResponse value, $Res Function(PubSearchResponse) then) =
-      _$PubSearchResponseCopyWithImpl<$Res>;
+      _$PubSearchResponseCopyWithImpl<$Res, PubSearchResponse>;
+  @useResult
   $Res call({List<SearchPackage> packages});
 }
 
 /// @nodoc
-class _$PubSearchResponseCopyWithImpl<$Res>
+class _$PubSearchResponseCopyWithImpl<$Res, $Val extends PubSearchResponse>
     implements $PubSearchResponseCopyWith<$Res> {
   _$PubSearchResponseCopyWithImpl(this._value, this._then);
 
-  final PubSearchResponse _value;
   // ignore: unused_field
-  final $Res Function(PubSearchResponse) _then;
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? packages = freezed,
+    Object? packages = null,
   }) {
     return _then(_value.copyWith(
-      packages: packages == freezed
+      packages: null == packages
           ? _value.packages
           : packages // ignore: cast_nullable_to_non_nullable
               as List<SearchPackage>,
-    ));
+    ) as $Val);
   }
 }
 
@@ -1332,26 +1354,25 @@ abstract class _$$_PubSearchResponseCopyWith<$Res>
           $Res Function(_$_PubSearchResponse) then) =
       __$$_PubSearchResponseCopyWithImpl<$Res>;
   @override
+  @useResult
   $Res call({List<SearchPackage> packages});
 }
 
 /// @nodoc
 class __$$_PubSearchResponseCopyWithImpl<$Res>
-    extends _$PubSearchResponseCopyWithImpl<$Res>
+    extends _$PubSearchResponseCopyWithImpl<$Res, _$_PubSearchResponse>
     implements _$$_PubSearchResponseCopyWith<$Res> {
   __$$_PubSearchResponseCopyWithImpl(
       _$_PubSearchResponse _value, $Res Function(_$_PubSearchResponse) _then)
-      : super(_value, (v) => _then(v as _$_PubSearchResponse));
+      : super(_value, _then);
 
-  @override
-  _$_PubSearchResponse get _value => super._value as _$_PubSearchResponse;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? packages = freezed,
+    Object? packages = null,
   }) {
     return _then(_$_PubSearchResponse(
-      packages: packages == freezed
+      packages: null == packages
           ? _value._packages
           : packages // ignore: cast_nullable_to_non_nullable
               as List<SearchPackage>,
@@ -1371,6 +1392,7 @@ class _$_PubSearchResponse implements _PubSearchResponse {
   final List<SearchPackage> _packages;
   @override
   List<SearchPackage> get packages {
+    if (_packages is EqualUnmodifiableListView) return _packages;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_packages);
   }
@@ -1395,6 +1417,7 @@ class _$_PubSearchResponse implements _PubSearchResponse {
 
   @JsonKey(ignore: true)
   @override
+  @pragma('vm:prefer-inline')
   _$$_PubSearchResponseCopyWith<_$_PubSearchResponse> get copyWith =>
       __$$_PubSearchResponseCopyWithImpl<_$_PubSearchResponse>(
           this, _$identity);

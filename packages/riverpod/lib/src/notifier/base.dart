@@ -104,10 +104,25 @@ class NotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
   NotifierProviderImpl(
     super._createNotifier, {
     super.name,
+    super.dependencies,
+    @Deprecated('Will be removed in 3.0.0') super.from,
+    @Deprecated('Will be removed in 3.0.0') super.argument,
+    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
+  }) : super(
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+        );
+
+  /// An implementation detail of Riverpod
+  @internal
+  NotifierProviderImpl.internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
     super.from,
     super.argument,
-    super.dependencies,
-    super.debugGetCreateSourceHash,
   });
 
   /// {@macro riverpod.autoDispose}
@@ -134,10 +149,14 @@ class NotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
   Override overrideWith(NotifierT Function() create) {
     return ProviderOverride(
       origin: this,
-      override: NotifierProviderImpl<NotifierT, T>(
+      override: NotifierProviderImpl<NotifierT, T>.internal(
         create,
         from: from,
         argument: argument,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
       ),
     );
   }

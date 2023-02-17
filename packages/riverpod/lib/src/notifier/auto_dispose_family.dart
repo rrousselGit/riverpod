@@ -34,10 +34,25 @@ class AutoDisposeFamilyNotifierProviderImpl<NotifierT extends NotifierBase<T>,
   AutoDisposeFamilyNotifierProviderImpl(
     super._createNotifier, {
     super.name,
+    super.dependencies,
+    @Deprecated('Will be removed in 3.0.0') super.from,
+    @Deprecated('Will be removed in 3.0.0') super.argument,
+    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
+  }) : super(
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+        );
+
+  /// An implementation detail of Riverpod
+  @internal
+  AutoDisposeFamilyNotifierProviderImpl.internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
     super.from,
     super.argument,
-    super.dependencies,
-    super.debugGetCreateSourceHash,
   });
 
   @override
@@ -66,17 +81,36 @@ class AutoDisposeNotifierProviderFamily<
     super.create, {
     super.name,
     super.dependencies,
-  }) : super(providerFactory: AutoDisposeFamilyNotifierProvider.new);
+  }) : super(
+          providerFactory: AutoDisposeFamilyNotifierProvider.internal,
+          debugGetCreateSourceHash: null,
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+        );
+
+  /// An implementation detail of Riverpod
+  @internal
+  AutoDisposeNotifierProviderFamily.internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+  }) : super(providerFactory: AutoDisposeFamilyNotifierProvider.internal);
 
   /// {@macro riverpod.overridewith}
   Override overrideWith(NotifierT Function() create) {
     return FamilyOverrideImpl<T, Arg,
         AutoDisposeFamilyNotifierProvider<NotifierT, T, Arg>>(
       this,
-      (arg) => AutoDisposeFamilyNotifierProvider<NotifierT, T, Arg>(
+      (arg) => AutoDisposeFamilyNotifierProvider<NotifierT, T, Arg>.internal(
         create,
         from: from,
         argument: arg,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        name: null,
       ),
     );
   }

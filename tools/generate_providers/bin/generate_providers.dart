@@ -28,12 +28,12 @@ enum StateType {
 
 class StateDetails {
   StateDetails({
-    this.kind,
-    this.className,
-    this.ref,
-    this.constraints,
-    this.generics,
-    this.createType,
+    required this.kind,
+    required this.className,
+    required this.ref,
+    required this.constraints,
+    required this.generics,
+    required this.createType,
   });
 
   final StateType kind;
@@ -434,7 +434,7 @@ class AsyncNotifierProviderBuilder {
       call<NotifierT extends AsyncNotifier<T>, T>(
     NotifierT Function() create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
+    Iterable<ProviderOrFamily>? dependencies,
   }) {
     return AsyncNotifierProvider<NotifierT, T>(
       create,
@@ -464,7 +464,7 @@ class AsyncNotifierProviderFamilyBuilder {
       call<NotifierT extends FamilyAsyncNotifier<T, Arg>, T, Arg>(
     NotifierT Function() create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
+    Iterable<ProviderOrFamily>? dependencies,
   }) {
     return AsyncNotifierProviderFamily<NotifierT, T, Arg>(
       create,
@@ -489,7 +489,7 @@ class AutoDisposeAsyncNotifierProviderBuilder {
       call<NotifierT extends AutoDisposeAsyncNotifier<T>, T>(
     NotifierT Function() create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
+    Iterable<ProviderOrFamily>? dependencies,
   }) {
     return AutoDisposeAsyncNotifierProvider<NotifierT, T>(
       create,
@@ -514,7 +514,7 @@ class AutoDisposeAsyncNotifierProviderFamilyBuilder {
       call<NotifierT extends AutoDisposeFamilyAsyncNotifier<T, Arg>, T, Arg>(
     NotifierT Function() create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
+    Iterable<ProviderOrFamily>? dependencies,
   }) {
     return AutoDisposeAsyncNotifierProviderFamily<NotifierT, T, Arg>(
       create,
@@ -534,7 +534,7 @@ class NotifierProviderBuilder {
       call<NotifierT extends Notifier<State>, State>(
     NotifierT Function() create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
+    Iterable<ProviderOrFamily>? dependencies,
   }) {
     return NotifierProvider<NotifierT, State>(
       create,
@@ -564,7 +564,7 @@ class NotifierProviderFamilyBuilder {
       call<NotifierT extends FamilyNotifier<State, Arg>, State, Arg>(
     NotifierT Function() create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
+    Iterable<ProviderOrFamily>? dependencies,
   }) {
     return NotifierProviderFamily<NotifierT, State, Arg>(
       create,
@@ -589,7 +589,7 @@ class AutoDisposeNotifierProviderBuilder {
       call<NotifierT extends AutoDisposeNotifier<State>, State>(
     NotifierT Function() create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
+    Iterable<ProviderOrFamily>? dependencies,
   }) {
     return AutoDisposeNotifierProvider<NotifierT, State>(
       create,
@@ -614,7 +614,7 @@ class AutoDisposeNotifierProviderFamilyBuilder {
       call<NotifierT extends AutoDisposeFamilyNotifier<State, Arg>, State, Arg>(
     NotifierT Function() create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
+    Iterable<ProviderOrFamily>? dependencies,
   }) {
     return AutoDisposeNotifierProviderFamily<NotifierT, State, Arg>(
       create,
@@ -747,7 +747,7 @@ class FamilyBuilder {
   String toString() {
     final createNamedParams = [
       'String? name',
-      'List<ProviderOrFamily>? dependencies',
+      'Iterable<ProviderOrFamily>? dependencies',
     ].map((e) => '$e,').join();
     final providerParams = [
       'create',
@@ -781,7 +781,7 @@ class ProviderBuilder {
   String toString() {
     final callNamedParams = [
       'String? name',
-      'List<ProviderOrFamily>? dependencies',
+      'Iterable<ProviderOrFamily>? dependencies',
     ].map((e) => '$e,').join();
     final providerParams = [
       'create',

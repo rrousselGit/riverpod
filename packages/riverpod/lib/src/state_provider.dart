@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import 'internals.dart';
 import 'state_controller.dart';
 
@@ -27,16 +29,14 @@ ProviderElementProxy<T, StateController<T>> _state<T>(
 }
 
 abstract class _StateProviderBase<T> extends ProviderBase<T> {
-  _StateProviderBase({
+  const _StateProviderBase({
     required super.name,
     required super.from,
     required super.argument,
-    required this.dependencies,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
   });
-
-  @override
-  final List<ProviderOrFamily>? dependencies;
 
   ProviderListenable<StateController<T>> get notifier;
   ProviderListenable<StateController<T>> get state;

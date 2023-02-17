@@ -1,6 +1,8 @@
 // ignore_for_file: invalid_use_of_internal_member
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:meta/meta.dart';
 // ignore: implementation_imports
 import 'package:riverpod/src/internals.dart';
 
@@ -31,16 +33,14 @@ ProviderElementProxy<NotifierT, NotifierT>
 /// {@endtemplate}
 abstract class _ChangeNotifierProviderBase<NotifierT extends ChangeNotifier?>
     extends ProviderBase<NotifierT> {
-  _ChangeNotifierProviderBase({
+  const _ChangeNotifierProviderBase({
     required super.name,
     required super.from,
     required super.argument,
-    required this.dependencies,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
   });
-
-  @override
-  final List<ProviderOrFamily>? dependencies;
 
   /// Obtains the [ChangeNotifier] associated with this provider, without listening
   /// to state changes.
