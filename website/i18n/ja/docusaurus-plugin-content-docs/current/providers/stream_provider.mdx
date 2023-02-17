@@ -37,3 +37,12 @@ Flutter の [StreamBuilder] で十分ではないか、と。
 [stream.periodic]: https://api.dart.dev/stable/2.15.1/dart-async/Stream/Stream.periodic.html
 [family]: ../concepts/modifiers/family
 [streambuilder]: https://api.flutter.dev/flutter/widgets/StreamBuilder-class.html
+
+## 使用例: ソケットを使ったライブチャット
+`StreamProvider`は、ビデオストリーミングや天気予報のAPIなど非同期データのストリームを扱うときに使用されます。
+
+<CodeBlock>{trimSnippet(streamProvider)}</CodeBlock>
+
+そして、UIはこのようにライブストリーミングチャットを監視することができます:
+
+<CodeBlock>{trimSnippet(streamConsumer)}</CodeBlock>
