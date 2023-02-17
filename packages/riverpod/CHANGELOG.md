@@ -1,3 +1,6 @@
+## Unreleased fix
+- Annotate notifier state's setter as protected.
+
 ## 2.2.0
 
 - Improve type-inference when using `AsyncValue.whenOrNull` (thanks to @AhmedLSayed9)
