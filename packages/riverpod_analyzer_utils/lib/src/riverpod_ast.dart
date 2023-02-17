@@ -953,7 +953,7 @@ class StatefulProviderDeclaration extends GeneratorProviderDeclaration {
   @override
   final ClassDeclaration node;
   @override
-  final GeneratorProviderDeclarationElement providerElement;
+  final StatefulProviderDeclarationElement providerElement;
   @override
   final RiverpodAnnotation annotation;
   final MethodDeclaration buildMethod;
@@ -1009,7 +1009,7 @@ class StatelessProviderDeclaration extends GeneratorProviderDeclaration {
   @override
   final FunctionDeclaration node;
   @override
-  final GeneratorProviderDeclarationElement providerElement;
+  final StatelessProviderDeclarationElement providerElement;
   @override
   final RiverpodAnnotation annotation;
   @override
