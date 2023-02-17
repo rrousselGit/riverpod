@@ -1,5 +1,5 @@
 ## Unreleased fix
-- Annotate notifier state's setter as protected.
+- Annotate `Notifier.state` setter as protected.
 
 ## 2.2.0
 
