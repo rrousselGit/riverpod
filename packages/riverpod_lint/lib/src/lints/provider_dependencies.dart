@@ -4,8 +4,8 @@ import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
 import '../riverpod_custom_lint.dart';
 
-class ProviderDependency extends RiverpodLintRule {
-  const ProviderDependency() : super(code: _code);
+class ProviderDependencies extends RiverpodLintRule {
+  const ProviderDependencies() : super(code: _code);
 
   static const _code = LintCode(
     name: 'provider_dependencies',
@@ -20,13 +20,66 @@ class ProviderDependency extends RiverpodLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    void checkDependency(ProviderListenableExpression dependency) {
-      final dependencyElement = dependency.providerElement;
+    void checkInvocation(
+      GeneratorProviderDeclaration provider,
+      RefDependencyInvocation dependency,
+    ) {
+      final dependencyElement = dependency.provider.providerElement;
       if (dependencyElement is! GeneratorProviderDeclarationElement) {
+        // If we cannot statically determine the dependencies of the dependency,
+        // we cannot check if the provider is missing a dependency.
+        return;
+      }
+
+      if (dependencyElement.annotation.dependencies == null) {
+        // The dependency did not specify "dependencies" and therefore
+        // does not need to be listed in the provider's "dependencies"
+        return;
+      }
+
+      final dependencies = provider.annotation.dependencies;
+      if (dependencies == null) {
+        // Depends on a scoped provider but does not specify "dependencies"
+        reporter.reportErrorForNode(_code, provider.annotation.annotation);
+        return;
+      }
+
+      if (!dependencies.any((e) => e.provider == dependencyElement)) {
+        // The provider specified "dependencies" but is missing a scoped dependency
+        reporter.reportErrorForNode(_code, provider.annotation.annotation);
         return;
       }
     }
 
-    riverpodRegistry(context).addGeneratorProviderDeclaration((declaration) {});
+    void checkDependency(
+      GeneratorProviderDeclaration declaration,
+      RiverpodAnnotationDependency dependency,
+    ) {
+      for (final invocation
+          in declaration.refInvocations.whereType<RefDependencyInvocation>()) {
+        if (invocation.provider.providerElement?.name ==
+            dependency.provider.name) {
+          return;
+        }
+      }
+
+      // The provider specified a dependency but does not use it
+      reporter.reportErrorForNode(_code, dependency.node);
+    }
+
+    riverpodRegistry(context).addGeneratorProviderDeclaration((declaration) {
+      for (final invocation in declaration.refInvocations) {
+        if (invocation is RefDependencyInvocation) {
+          checkInvocation(declaration, invocation);
+        }
+      }
+
+      final dependencies = declaration.annotation.dependencies;
+      if (dependencies != null) {
+        for (final dependency in dependencies) {
+          checkDependency(declaration, dependency);
+        }
+      }
+    });
   }
 }

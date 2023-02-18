@@ -66,11 +66,23 @@ abstract class RefInvocation extends RiverpodAst
   final SimpleIdentifier function;
 }
 
-class RefWatchInvocation extends RefInvocation {
-  RefWatchInvocation._({
+/// A [RefInvocation] which interacts with a provider, inducing a dependency.
+abstract class RefDependencyInvocation extends RefInvocation {
+  RefDependencyInvocation._({
     required super.node,
     required super.function,
     required this.provider,
+  }) : super._();
+
+  /// The provider that is being interacted with.
+  final ProviderListenableExpression provider;
+}
+
+class RefWatchInvocation extends RefDependencyInvocation {
+  RefWatchInvocation._({
+    required super.node,
+    required super.function,
+    required super.provider,
   }) : super._();
 
   static RefWatchInvocation? _parse(
@@ -97,8 +109,6 @@ class RefWatchInvocation extends RefInvocation {
     return refWatchInvocation;
   }
 
-  final ProviderListenableExpression provider;
-
   @override
   void accept(RiverpodAstVisitor visitor) {
     visitor.visitRefWatchInvocation(this);
@@ -110,11 +120,11 @@ class RefWatchInvocation extends RefInvocation {
   }
 }
 
-class RefReadInvocation extends RefInvocation {
+class RefReadInvocation extends RefDependencyInvocation {
   RefReadInvocation._({
     required super.node,
     required super.function,
-    required this.provider,
+    required super.provider,
   }) : super._();
 
   static RefReadInvocation? _parse(
@@ -141,8 +151,6 @@ class RefReadInvocation extends RefInvocation {
     return refReadInvocation;
   }
 
-  final ProviderListenableExpression provider;
-
   @override
   void accept(RiverpodAstVisitor visitor) {
     visitor.visitRefReadInvocation(this);
@@ -154,12 +162,12 @@ class RefReadInvocation extends RefInvocation {
   }
 }
 
-class RefListenInvocation extends RefInvocation {
+class RefListenInvocation extends RefDependencyInvocation {
   RefListenInvocation._({
     required super.node,
     required super.function,
     required this.listener,
-    required this.provider,
+    required super.provider,
   }) : super._();
 
   static RefListenInvocation? _parse(
@@ -192,7 +200,6 @@ class RefListenInvocation extends RefInvocation {
     return refListenInvocation;
   }
 
-  final ProviderListenableExpression provider;
   final Expression listener;
 
   @override

@@ -45,7 +45,7 @@ class RiverpodGenerator extends ParserGenerator {
   @override
   String generateForUnit(ResolvedLibraryResult resolvedLibraryResult) {
     final riverpodResult =
-        ResolvedRiverpodLibraryResult.from(resolvedLibraryResult);
+        ResolvedRiverpodLibraryResult.from(resolvedLibraryResult.units);
     return runGenerator(riverpodResult);
   }
 

@@ -106,7 +106,7 @@ extension ResolverX on Resolver {
         await library.session.getResolvedLibraryByElement(library);
     libraryAst as ResolvedLibraryResult;
 
-    final result = ResolvedRiverpodLibraryResult.from(libraryAst);
+    final result = ResolvedRiverpodLibraryResult.from(libraryAst.units);
 
     expectValidParentChildrenRelationship(result);
 

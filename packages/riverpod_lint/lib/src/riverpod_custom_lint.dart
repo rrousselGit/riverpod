@@ -46,7 +46,7 @@ abstract class RiverpodAssist extends DartAssist with _ParseRiverpod {
     CustomLintContext context,
     SourceRange target,
   ) async {
-    _setupRiverpod(context);
+    await _setupRiverpod(resolver, context);
     await super.startUp(resolver, context, target);
   }
 }
@@ -59,7 +59,7 @@ abstract class RiverpodLintRule extends DartLintRule with _ParseRiverpod {
     CustomLintResolver resolver,
     CustomLintContext context,
   ) async {
-    _setupRiverpod(context);
+    await _setupRiverpod(resolver, context);
     await super.startUp(resolver, context);
   }
 }
@@ -70,7 +70,7 @@ abstract class RiverpodFix extends DartFix with _ParseRiverpod {
     CustomLintResolver resolver,
     CustomLintContext context,
   ) async {
-    _setupRiverpod(context);
+    await _setupRiverpod(resolver, context);
     await super.startUp(resolver, context);
   }
 }
@@ -78,10 +78,18 @@ abstract class RiverpodFix extends DartFix with _ParseRiverpod {
 mixin _ParseRiverpod {
   static final _contextKey = Object();
 
-  void _setupRiverpod(CustomLintContext context) {
+  Future<void> _setupRiverpod(
+    CustomLintResolver resolver,
+    CustomLintContext context,
+  ) async {
     if (context.sharedState.containsKey(_contextKey)) return;
     // Only run the riverpod parsing logic once
-    context.sharedState[_contextKey] = RiverpodAstRegistry();
+    final registry = context.sharedState[_contextKey] = RiverpodAstRegistry();
+
+    final unit = await resolver.getResolvedUnitResult();
+    final result = ResolvedRiverpodLibraryResult.from([unit]);
+
+    context.addPostRunCallback(() => registry.run(result));
   }
 
   RiverpodAstRegistry riverpodRegistry(CustomLintContext context) {

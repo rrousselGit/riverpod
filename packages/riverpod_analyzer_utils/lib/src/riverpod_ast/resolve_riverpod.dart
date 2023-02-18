@@ -29,12 +29,12 @@ class ResolvedRiverpodLibraryResult extends RiverpodAst {
   ResolvedRiverpodLibraryResult._();
 
   factory ResolvedRiverpodLibraryResult.from(
-    ResolvedLibraryResult libraryUnit,
+    List<ResolvedUnitResult> units,
   ) {
     final result = ResolvedRiverpodLibraryResult._();
     final visitor = _ParseRiverpodUnitVisitor(result);
 
-    for (final unit in libraryUnit.units) {
+    for (final unit in units) {
       unit.unit.accept(visitor);
     }
 
