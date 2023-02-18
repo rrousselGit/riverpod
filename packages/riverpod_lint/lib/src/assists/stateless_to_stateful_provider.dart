@@ -21,11 +21,11 @@ class StatelessToStatefulProvider extends RiverpodAssist {
       final parameters = declaration.node.functionExpression.parameters!;
 
       // The function prototype, from the first character to the opening parenthesis
-      final functioHeading = sourceRangeFrom(
+      final functionHeading = sourceRangeFrom(
         start: functionStartOffset,
         end: parameters.leftParenthesis.end,
       );
-      if (!functioHeading.intersects(target)) return;
+      if (!functionHeading.intersects(target)) return;
 
       final changeBuilder = reporter.createChangeBuilder(
         message: 'Convert to stateful provider',

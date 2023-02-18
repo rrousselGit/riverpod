@@ -710,10 +710,23 @@ final b = Provider(
     });
 
     test(
-        'Throw if trying to watch a provider that is not in the dependencies list',
+        'does not throw if trying to watch a non-scoped provider that is not in the dependencies list',
         () {
       final container = createContainer();
       final dep = Provider((ref) => 0);
+      final provider = Provider(
+        (ref) => ref.watch(dep),
+        dependencies: const [],
+      );
+
+      expect(container.read(provider), 0);
+    });
+
+    test(
+        'Throw if trying to watch a scoped provider that is not in the dependencies list',
+        () {
+      final container = createContainer();
+      final dep = Provider((ref) => 0, dependencies: const []);
       final dep2 = Provider((ref) => 0, dependencies: [dep]);
       final provider = Provider(
         dependencies: [dep],
@@ -727,10 +740,10 @@ final b = Provider(
     });
 
     test(
-        'Throw if trying to listen a provider that is not in the dependencies list',
+        'Throw if trying to listen a scoped provider that is not in the dependencies list',
         () {
       final container = createContainer();
-      final dep = Provider((ref) => 0);
+      final dep = Provider((ref) => 0, dependencies: const []);
       final dep2 = Provider((ref) => 0, dependencies: [dep]);
       final provider = Provider(
         dependencies: [dep],
@@ -744,10 +757,10 @@ final b = Provider(
     });
 
     test(
-        'Throw if trying to read a provider that is not in the dependencies list',
+        'Throw if trying to read a scoped provider that is not in the dependencies list',
         () {
       final container = createContainer();
-      final dep = Provider((ref) => 0);
+      final dep = Provider((ref) => 0, dependencies: const []);
       final dep2 = Provider((ref) => 0, dependencies: [dep]);
       final provider = Provider(
         dependencies: [dep],

@@ -44,11 +44,20 @@ class StatelessProviderTemplate extends Template {
 
     final providerName = providerNameFor(provider.providerElement, options);
 
+    final createFn = provider.node.externalKeyword == null
+        ? provider.providerElement.name
+        : '''
+(_) => throw UnsupportedError(
+  'The provider "$providerName" is expected to get overridden/scoped, '
+  'but was accessed without an override.',
+)
+''';
+
     buffer.write('''
 ${providerDocFor(provider.providerElement.element)}
 @ProviderFor(${provider.name})
 final $providerName = $providerType<${provider.valueType}>.internal(
-  ${provider.providerElement.name},
+  $createFn,
   name: r'$providerName',
   debugGetCreateSourceHash: $hashFn,
   dependencies: ${serializeDependencies(provider.providerElement.annotation.dependencies, options)},
