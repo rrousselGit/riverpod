@@ -6,21 +6,6 @@ part of 'hash1.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$simpleClassHash() => r'958123cd6179c5b88da040cfeb71eb3061765277';
-
-/// See also [SimpleClass].
-@ProviderFor(SimpleClass)
-final simpleClassProvider =
-    AutoDisposeNotifierProvider<SimpleClass, String>.internal(
-  SimpleClass.new,
-  name: r'simpleClassProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$simpleClassHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef _$SimpleClass = AutoDisposeNotifier<String>;
 String _$simpleHash() => r'ff9f7451526aef5b3af6646814631a502ad76a5f';
 
 /// See also [simple].
@@ -49,4 +34,19 @@ final simple2Provider = AutoDisposeProvider<String>.internal(
 );
 
 typedef Simple2Ref = AutoDisposeProviderRef<String>;
+String _$simpleClassHash() => r'958123cd6179c5b88da040cfeb71eb3061765277';
+
+/// See also [SimpleClass].
+@ProviderFor(SimpleClass)
+final simpleClassProvider =
+    AutoDisposeNotifierProvider<SimpleClass, String>.internal(
+  SimpleClass.new,
+  name: r'simpleClassProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$simpleClassHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$SimpleClass = AutoDisposeNotifier<String>;
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions
