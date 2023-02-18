@@ -93,6 +93,27 @@ void main() {
 
 :::
 
+
+## Tipos diferentes de Providers
+
+Hay múltiples tipos de providers para diferentes casos de uso.
+
+Con todos estos providers disponibles, a veces es difícil entender cuándo utilizar un tipo de provider sobre otro.
+Utiliza la tabla a continuación para elegir un provider que se adapte a lo que deseas proporcionar al árbol de widgets.
+
+| Tipo de Provider            | Función de creación de Provider             | Ejemplo de caso de uso                                                     |
+| ------------------------ | ------------------------------------ | -------------------------------------------------------------------- |
+| [Provider]               | Retorna cualquier tipo                   | Una clase de servicio / propiedad calculada (lista filtrada)                  |
+| [StateProvider]          | Retorna cualquier tipo                     | Una condición de filtro / objeto de estado simple                            |
+| [FutureProvider]         | Retorna un Future de cualquier tipo         | Un resultado de una llamada a una API                                           |
+| [StreamProvider]         | Retorna un Stream de cualquier tipo         | Un stream de los resultados de una API                                      |
+| [StateNotifierProvider]  | Retorna una subclase de StateNotifier  | Un objeto de estado complejo que es inmutable excepto a través de una interfaz |
+| [ChangeNotifierProvider] | Retorna una subclase de ChangeNotifier | Un objeto de estado complejo que requiere mutabilidad                      |
+
+:::caution
+Aunque todos los proveedores tienen su propósito, los [ChangeNotifierProvider] no se recomiendan para aplicaciones escalables debido a problemas con el estado mutable. Existe en el paquete `flutter_riverpod` para proporcionar una ruta de migración fácil desde `package:provider`, y permite algunos casos de uso específicos de Flutter, como la integración con algunos paquetes de Navigator 2
+:::
+
 ## Realizando acciones antes de la destrucción del estado
 
 En algunos casos, el estado de un provider puede destruirse o recrearse. 
@@ -167,7 +188,11 @@ Alternativamente, puede ver [Cómo combinar providers](/docs/concepts/combining_
 [hooks_riverpod]: https://pub.dev/packages/hooks_riverpod
 [flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
 [flutter_hooks]: https://github.com/rrousselGit/flutter_hooks
-[provider]: ../providers/provider
+[provider]: /docs/providers/provider
 [streamprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StreamProvider-class.html
-[statenotifierprovider]: ../providers/state_notifier_provider
+[futureprovider]: /docs/providers/future_provider
+[stateprovider]: /docs/providers/state_provider
+[statenotifierprovider]: /docs/providers/state_notifier_provider
+[changenotifierprovider]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ChangeNotifierProvider-class.html
+
 [providerscope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
