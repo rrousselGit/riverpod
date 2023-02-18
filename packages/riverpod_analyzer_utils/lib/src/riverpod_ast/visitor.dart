@@ -180,6 +180,218 @@ class RecursiveRiverpodAstVisitor extends RiverpodAstVisitor {
   }
 }
 
+class SimpleRiverpodAstVisitor extends RiverpodAstVisitor {
+  @override
+  void visitConsumerStateDeclaration(ConsumerStateDeclaration declaration) {}
+
+  @override
+  void visitConsumerStatefulWidgetDeclaration(
+    ConsumerStatefulWidgetDeclaration declaration,
+  ) {}
+
+  @override
+  void visitConsumerWidgetDeclaration(ConsumerWidgetDeclaration declaration) {}
+
+  @override
+  void visitHookConsumerWidgetDeclaration(
+    HookConsumerWidgetDeclaration declaration,
+  ) {}
+
+  @override
+  void visitLegacyProviderDeclaration(LegacyProviderDeclaration declaration) {}
+
+  @override
+  void visitLegacyProviderDependencies(
+    LegacyProviderDependencies dependencies,
+  ) {}
+
+  @override
+  void visitLegacyProviderDependency(LegacyProviderDependency dependency) {}
+
+  @override
+  void visitProviderListenableExpression(
+    ProviderListenableExpression expression,
+  ) {}
+
+  @override
+  void visitRefListenInvocation(RefListenInvocation invocation) {}
+
+  @override
+  void visitRefReadInvocation(RefReadInvocation invocation) {}
+
+  @override
+  void visitRefWatchInvocation(RefWatchInvocation invocation) {}
+
+  @override
+  void visitResolvedRiverpodUnit(ResolvedRiverpodLibraryResult result) {}
+
+  @override
+  void visitRiverpodAnnotation(RiverpodAnnotation annotation) {}
+
+  @override
+  void visitRiverpodAnnotationDependency(
+    RiverpodAnnotationDependency dependency,
+  ) {}
+
+  @override
+  void visitStatefulHookConsumerWidgetDeclaration(
+    StatefulHookConsumerWidgetDeclaration declaration,
+  ) {}
+
+  @override
+  void visitStatefulProviderDeclaration(
+    StatefulProviderDeclaration declaration,
+  ) {}
+
+  @override
+  void visitStatelessProviderDeclaration(
+    StatelessProviderDeclaration declaration,
+  ) {}
+
+  @override
+  void visitWidgetRefListenInvocation(WidgetRefListenInvocation invocation) {}
+
+  @override
+  void visitWidgetRefListenManualInvocation(
+    WidgetRefListenManualInvocation invocation,
+  ) {}
+
+  @override
+  void visitWidgetRefReadInvocation(WidgetRefReadInvocation invocation) {}
+
+  @override
+  void visitWidgetRefWatchInvocation(WidgetRefWatchInvocation invocation) {}
+}
+
+class UnimplementedRiverpodAstVisitor extends RiverpodAstVisitor {
+  @override
+  void visitConsumerStateDeclaration(ConsumerStateDeclaration declaration) {
+    throw UnimplementedError('implement visitConsumerStateDeclaration');
+  }
+
+  @override
+  void visitConsumerStatefulWidgetDeclaration(
+    ConsumerStatefulWidgetDeclaration declaration,
+  ) {
+    throw UnimplementedError(
+      'implement visitConsumerStatefulWidgetDeclaration',
+    );
+  }
+
+  @override
+  void visitConsumerWidgetDeclaration(ConsumerWidgetDeclaration declaration) {
+    throw UnimplementedError('implement visitConsumerWidgetDeclaration');
+  }
+
+  @override
+  void visitHookConsumerWidgetDeclaration(
+    HookConsumerWidgetDeclaration declaration,
+  ) {
+    throw UnimplementedError('implement visitHookConsumerWidgetDeclaration');
+  }
+
+  @override
+  void visitLegacyProviderDeclaration(LegacyProviderDeclaration declaration) {
+    throw UnimplementedError('implement visitLegacyProviderDeclaration');
+  }
+
+  @override
+  void visitLegacyProviderDependencies(
+    LegacyProviderDependencies dependencies,
+  ) {
+    throw UnimplementedError('implement visitLegacyProviderDependencies');
+  }
+
+  @override
+  void visitLegacyProviderDependency(LegacyProviderDependency dependency) {
+    throw UnimplementedError('implement visitLegacyProviderDependency');
+  }
+
+  @override
+  void visitProviderListenableExpression(
+    ProviderListenableExpression expression,
+  ) {
+    throw UnimplementedError('implement visitProviderListenableExpression');
+  }
+
+  @override
+  void visitRefListenInvocation(RefListenInvocation invocation) {
+    throw UnimplementedError('implement visitRefListenInvocation');
+  }
+
+  @override
+  void visitRefReadInvocation(RefReadInvocation invocation) {
+    throw UnimplementedError('implement visitRefReadInvocation');
+  }
+
+  @override
+  void visitRefWatchInvocation(RefWatchInvocation invocation) {
+    throw UnimplementedError('implement visitRefWatchInvocation');
+  }
+
+  @override
+  void visitResolvedRiverpodUnit(ResolvedRiverpodLibraryResult result) {
+    throw UnimplementedError('implement visitResolvedRiverpodUnit');
+  }
+
+  @override
+  void visitRiverpodAnnotation(RiverpodAnnotation annotation) {
+    throw UnimplementedError('implement visitRiverpodAnnotation');
+  }
+
+  @override
+  void visitRiverpodAnnotationDependency(
+    RiverpodAnnotationDependency dependency,
+  ) {
+    throw UnimplementedError('implement visitRiverpodAnnotationDependency');
+  }
+
+  @override
+  void visitStatefulHookConsumerWidgetDeclaration(
+    StatefulHookConsumerWidgetDeclaration declaration,
+  ) {
+    throw UnimplementedError(
+      'implement visitStatefulHookConsumerWidgetDeclaration',
+    );
+  }
+
+  @override
+  void visitStatefulProviderDeclaration(
+    StatefulProviderDeclaration declaration,
+  ) {
+    throw UnimplementedError('implement visitStatefulProviderDeclaration');
+  }
+
+  @override
+  void visitStatelessProviderDeclaration(
+    StatelessProviderDeclaration declaration,
+  ) {
+    throw UnimplementedError('implement visitStatelessProviderDeclaration');
+  }
+
+  @override
+  void visitWidgetRefListenInvocation(WidgetRefListenInvocation invocation) {
+    throw UnimplementedError('implement visitWidgetRefListenInvocation');
+  }
+
+  @override
+  void visitWidgetRefListenManualInvocation(
+    WidgetRefListenManualInvocation invocation,
+  ) {
+    throw UnimplementedError('implement visitWidgetRefListenManualInvocation');
+  }
+
+  @override
+  void visitWidgetRefReadInvocation(WidgetRefReadInvocation invocation) {
+    throw UnimplementedError('implement visitWidgetRefReadInvocation');
+  }
+
+  @override
+  void visitWidgetRefWatchInvocation(WidgetRefWatchInvocation invocation) {
+    throw UnimplementedError('implement visitWidgetRefWatchInvocation');
+  }
+}
+
 class RiverpodAstRegistry {
   void run(RiverpodAst node) {
     node.accept(_RiverpodRegistryVisitor(this));
