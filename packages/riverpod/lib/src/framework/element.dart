@@ -629,7 +629,11 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         );
 
         assert(
-          provider != origin ||
+          // If the target has a null "dependencies", it should never be scoped.
+          // As such, the current provider's "dependencies" does not need to
+          // include the target in its dependencies.
+          listenable.dependencies == null ||
+              provider != origin ||
               // Families are allowed to depend on themselves with different parameters.
               (origin.from != null && listenable.from == origin.from) ||
               origin.dependencies == null ||
