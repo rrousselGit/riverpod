@@ -6,7 +6,7 @@ part of 'dependencies.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$depHash() => r'2213a401e03a1a914579b4a3a7707b783de9efba';
+String _$depHash() => r'749c4d696d29c72686cabcabd6fa7855f5cbf4db';
 
 /// See also [dep].
 @ProviderFor(dep)
@@ -15,8 +15,8 @@ final depProvider = AutoDisposeProvider<int>.internal(
   name: r'depProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$depHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
+  dependencies: <ProviderOrFamily>[],
+  allTransitiveDependencies: <ProviderOrFamily>[],
 );
 
 typedef DepRef = AutoDisposeProviderRef<int>;

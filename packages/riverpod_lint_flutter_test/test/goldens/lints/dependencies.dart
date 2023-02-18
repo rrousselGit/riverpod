@@ -2,7 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'dependencies.g.dart';
 
-@riverpod
+@Riverpod(dependencies: [])
 int dep(DepRef ref) => 0;
 
 final scoped = Provider((ref) => 0, dependencies: []);
@@ -117,7 +117,11 @@ int watchGeneratedScopedAndContainsDependency(
   return ref.watch(generatedScopedProvider);
 }
 
-@Riverpod(dependencies: [generatedRoot])
+@Riverpod(dependencies: [
+  // The dependency is redundant because it is not a scoped provider
+  // expect_lint: provider_dependencies
+  generatedRoot,
+])
 int watchGeneratedRootAndContainsDependency(
   WatchGeneratedRootAndContainsDependencyRef ref,
 ) {
