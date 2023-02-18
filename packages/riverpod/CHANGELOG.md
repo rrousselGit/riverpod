@@ -1,8 +1,8 @@
 ## Unreleased minor
-- Annotate `Notifier.state` setter as protected.
 - Some restrictions on the `dependencies` parameter of providers have been lifted.
   It is no-longer necessary to include providers which do not themselves specify `dependencies`.
   All providers should specify `dependencies` if they are scoped at any point.
+- Annotate `Notifier.state` setter as protected.
 
 ## 2.2.0
 
