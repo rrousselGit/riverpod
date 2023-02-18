@@ -377,14 +377,12 @@ void fn(_Ref ref) {
     expect(libraryResult.unknownRefInvocations, isEmpty);
     expect(libraryResult.unknownWidgetRefInvocations, isEmpty);
 
-    final providerRefInvocations = libraryResult.consumerWidgetDeclarations
-        .where((e) => e.name == 'provider')
-        .single
-        .refInvocations
-        .cast<WidgetRefWatchInvocation>();
+    final providerRefInvocations =
+        libraryResult.consumerWidgetDeclarations.single.widgetRefInvocations;
 
     expect(result.widgetRefWatchInvocations, hasLength(3));
     expect(result.widgetRefInvocations, result.widgetRefWatchInvocations);
+    expect(result.widgetRefInvocations, providerRefInvocations);
 
     expect(
       result.widgetRefWatchInvocations[0].node.toSource(),
