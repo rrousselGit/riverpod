@@ -172,17 +172,11 @@ class StatefulHookConsumerWidgetDeclaration extends ConsumerDeclaration {
 
 class ConsumerStateDeclaration extends ConsumerDeclaration {
   ConsumerStateDeclaration._({
-    required this.buildMethod,
     required this.node,
   });
 
   static ConsumerStateDeclaration? parse(ClassDeclaration node) {
-    final buildMethod = node.members
-        .whereType<MethodDeclaration>()
-        .firstWhereOrNull((e) => e.name.lexeme == 'build');
-
     final consumerWidgetDeclaration = ConsumerStateDeclaration._(
-      buildMethod: buildMethod,
       node: node,
     );
     final visitor = _ParseConsumerRefInvocationVisitor(
@@ -195,7 +189,6 @@ class ConsumerStateDeclaration extends ConsumerDeclaration {
     return consumerWidgetDeclaration;
   }
 
-  final MethodDeclaration? buildMethod;
   final List<WidgetRefInvocation> widgetRefInvocations = [];
 
   @override

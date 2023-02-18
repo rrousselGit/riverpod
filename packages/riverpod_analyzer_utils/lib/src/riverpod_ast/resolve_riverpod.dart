@@ -129,6 +129,43 @@ mixin _ParseRefInvocationMixin on RecursiveAstVisitor<void> {
   void visitWidgetRefInvocation(WidgetRefInvocation invocation);
 }
 
+class _AddConsumerDeclarationVisitor extends UnimplementedRiverpodAstVisitor {
+  _AddConsumerDeclarationVisitor(this.result);
+
+  final ResolvedRiverpodLibraryResult result;
+
+  @override
+  void visitConsumerStatefulWidgetDeclaration(
+    ConsumerStatefulWidgetDeclaration declaration,
+  ) {
+    result.consumerStatefulWidgetDeclarations.add(declaration);
+  }
+
+  @override
+  void visitConsumerStateDeclaration(ConsumerStateDeclaration declaration) {
+    result.consumerStateDeclaration.add(declaration);
+  }
+
+  @override
+  void visitStatefulHookConsumerWidgetDeclaration(
+    StatefulHookConsumerWidgetDeclaration declaration,
+  ) {
+    result.statefulHookConsumerWidgetDeclarations.add(declaration);
+  }
+
+  @override
+  void visitHookConsumerWidgetDeclaration(
+    HookConsumerWidgetDeclaration declaration,
+  ) {
+    result.hookConsumerWidgetDeclarations.add(declaration);
+  }
+
+  @override
+  void visitConsumerWidgetDeclaration(ConsumerWidgetDeclaration declaration) {
+    result.consumerWidgetDeclarations.add(declaration);
+  }
+}
+
 class _ParseRiverpodUnitVisitor extends RecursiveAstVisitor<void>
     with _ParseRefInvocationMixin {
   _ParseRiverpodUnitVisitor(this.result);
@@ -145,10 +182,10 @@ class _ParseRiverpodUnitVisitor extends RecursiveAstVisitor<void>
       return;
     }
 
-    final consumerDeclaration = StatefulProviderDeclaration.parse(node);
+    final consumerDeclaration = ConsumerDeclaration.parse(node);
     if (consumerDeclaration != null) {
-      result.statefulProviderDeclarations.add(declaration);
-      declaration._parent = result;
+      consumerDeclaration._parent = result;
+      consumerDeclaration.accept(_AddConsumerDeclarationVisitor(result));
       // Don't call super as StatefulProviderDeclaration should already be recursive
       return;
     }
