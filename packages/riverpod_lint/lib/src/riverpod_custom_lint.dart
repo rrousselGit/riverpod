@@ -81,13 +81,13 @@ mixin _ParseRiverpod {
   void _setupRiverpod(CustomLintContext context) {
     if (context.sharedState.containsKey(_contextKey)) return;
     // Only run the riverpod parsing logic once
-    context.sharedState[_contextKey] = RiverpodRegistry(context.registry);
+    context.sharedState[_contextKey] = RiverpodAstRegistry();
   }
 
-  RiverpodRegistry riverpodRegistry(CustomLintContext context) {
-    final registry = context.sharedState[_contextKey] as RiverpodRegistry?;
+  RiverpodAstRegistry riverpodRegistry(CustomLintContext context) {
+    final registry = context.sharedState[_contextKey] as RiverpodAstRegistry?;
     if (registry == null) {
-      throw StateError('RiverpodRegistry not initialized');
+      throw StateError('RiverpodAstRegistry not initialized');
     }
     return registry;
   }

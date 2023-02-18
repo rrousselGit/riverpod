@@ -394,7 +394,7 @@ class UnimplementedRiverpodAstVisitor extends RiverpodAstVisitor {
 
 class RiverpodAstRegistry {
   void run(RiverpodAst node) {
-    node.accept(_RiverpodRegistryVisitor(this));
+    node.accept(_RiverpodAstRegistryVisitor(this));
   }
 
   // misc
@@ -601,8 +601,8 @@ class RiverpodAstRegistry {
 
 // Voluntarily not extenting RiverpodAstVisitor to trigger a compilation error
 // when new nodes are added.
-class _RiverpodRegistryVisitor extends RiverpodAstVisitor {
-  _RiverpodRegistryVisitor(this._registry);
+class _RiverpodAstRegistryVisitor extends RiverpodAstVisitor {
+  _RiverpodAstRegistryVisitor(this._registry);
 
   final RiverpodAstRegistry _registry;
 
