@@ -9,6 +9,9 @@ abstract class RiverpodAstVisitor {
   void visitRiverpodAnnotationDependency(
     RiverpodAnnotationDependency dependency,
   );
+  void visitRiverpodAnnotationDependencies(
+    RiverpodAnnotationDependencies dependencies,
+  );
 
   void visitLegacyProviderDeclaration(
     LegacyProviderDeclaration declaration,
@@ -123,6 +126,13 @@ class RecursiveRiverpodAstVisitor extends RiverpodAstVisitor {
   }
 
   @override
+  void visitRiverpodAnnotationDependencies(
+    RiverpodAnnotationDependencies dependencies,
+  ) {
+    dependencies.visitChildren(this);
+  }
+
+  @override
   void visitConsumerStatefulWidgetDeclaration(
     ConsumerStatefulWidgetDeclaration declaration,
   ) {
@@ -231,6 +241,11 @@ class SimpleRiverpodAstVisitor extends RiverpodAstVisitor {
   @override
   void visitRiverpodAnnotationDependency(
     RiverpodAnnotationDependency dependency,
+  ) {}
+
+  @override
+  void visitRiverpodAnnotationDependencies(
+    RiverpodAnnotationDependencies dependencies,
   ) {}
 
   @override
@@ -347,6 +362,13 @@ class UnimplementedRiverpodAstVisitor extends RiverpodAstVisitor {
   }
 
   @override
+  void visitRiverpodAnnotationDependencies(
+    RiverpodAnnotationDependencies dependencies,
+  ) {
+    throw UnimplementedError('implement visitRiverpodAnnotationDependencies');
+  }
+
+  @override
   void visitStatefulHookConsumerWidgetDeclaration(
     StatefulHookConsumerWidgetDeclaration declaration,
   ) {
@@ -448,6 +470,14 @@ class RiverpodAstRegistry {
     void Function(RiverpodAnnotationDependency) cb,
   ) {
     _onRiverpodAnnotationDependency.add(cb);
+  }
+
+  final _onRiverpodAnnotationDependencies =
+      <void Function(RiverpodAnnotationDependencies)>[];
+  void addRiverpodAnnotationDependencies(
+    void Function(RiverpodAnnotationDependencies) cb,
+  ) {
+    _onRiverpodAnnotationDependencies.add(cb);
   }
 
   // Legacy-specific visitors
@@ -682,6 +712,17 @@ class _RiverpodAstRegistryVisitor extends RiverpodAstVisitor {
   ) {
     dependency.visitChildren(this);
     _runSubscriptions(dependency, _registry._onRiverpodAnnotationDependency);
+  }
+
+  @override
+  void visitRiverpodAnnotationDependencies(
+    RiverpodAnnotationDependencies dependencies,
+  ) {
+    dependencies.visitChildren(this);
+    _runSubscriptions(
+      dependencies,
+      _registry._onRiverpodAnnotationDependencies,
+    );
   }
 
   @override

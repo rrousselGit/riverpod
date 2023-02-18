@@ -33,7 +33,7 @@ void testSource(
           {'test_lib|lib/foo.dart': sourceWithLibrary},
           (resolver) {
             return resolver.resolveRiverpodLibraryResult(
-              ignoreMissingElementErrors: true,
+              ignoreErrors: true,
             );
           },
         );
@@ -81,26 +81,35 @@ extension MapTake<Key, Value> on Map<Key, Value> {
 extension ResolverX on Resolver {
   Future<RiverpodAnalysisResult> resolveRiverpodAnalyssiResult({
     String libraryName = 'foo',
-    bool ignoreMissingElementErrors = false,
+    bool ignoreErrors = false,
   }) async {
     final riverpodAst = await resolveRiverpodLibraryResult(
       libraryName: libraryName,
-      ignoreMissingElementErrors: ignoreMissingElementErrors,
+      ignoreErrors: ignoreErrors,
     );
 
     final result = RiverpodAnalysisResult();
     riverpodAst.accept(result);
+
+    if (!ignoreErrors) {
+      final errors = result.resolvedRiverpodLibraryResults
+          .expand((e) => e.errors)
+          .toList();
+      if (errors.isNotEmpty) {
+        throw StateError(errors.map((e) => '- $e\n').join());
+      }
+    }
 
     return result;
   }
 
   Future<ResolvedRiverpodLibraryResult> resolveRiverpodLibraryResult({
     String libraryName = 'foo',
-    bool ignoreMissingElementErrors = false,
+    bool ignoreErrors = false,
   }) async {
     final library = await _requireFindLibraryByName(
       libraryName,
-      ignoreMissingElementErrors: ignoreMissingElementErrors,
+      ignoreErrors: ignoreErrors,
     );
     final libraryAst =
         await library.session.getResolvedLibraryByElement(library);
@@ -115,14 +124,14 @@ extension ResolverX on Resolver {
 
   Future<LibraryElement> _requireFindLibraryByName(
     String libraryName, {
-    required bool ignoreMissingElementErrors,
+    required bool ignoreErrors,
   }) async {
     final library = await findLibraryByName(libraryName);
     if (library == null) {
       throw StateError('No library found for name "$libraryName"');
     }
 
-    if (!ignoreMissingElementErrors) {
+    if (!ignoreErrors) {
       final errorResult =
           await library.session.getErrors('/test_lib/lib/foo.dart');
       errorResult as ErrorsResult;
@@ -293,6 +302,19 @@ class _ParentRiverpodVisitor extends RecursiveRiverpodAstVisitor {
           'Node ${dependency.runtimeType} should have $expectedParent as parent',
     );
     dependency.visitChildren(_ParentRiverpodVisitor(dependency));
+  }
+
+  @override
+  void visitRiverpodAnnotationDependencies(
+    RiverpodAnnotationDependencies dependencies,
+  ) {
+    expect(
+      dependencies.parent,
+      expectedParent,
+      reason:
+          'Node ${dependencies.runtimeType} should have $expectedParent as parent',
+    );
+    dependencies.visitChildren(_ParentRiverpodVisitor(dependencies));
   }
 
   @override
@@ -519,6 +541,15 @@ class RiverpodAnalysisResult extends RecursiveRiverpodAstVisitor {
   ) {
     super.visitRiverpodAnnotationDependency(dependency);
     riverpodAnnotationDependencys.add(dependency);
+  }
+
+  final riverpodAnnotationDependencies = <RiverpodAnnotationDependencies>[];
+  @override
+  void visitRiverpodAnnotationDependencies(
+    RiverpodAnnotationDependencies dependencies,
+  ) {
+    super.visitRiverpodAnnotationDependencies(dependencies);
+    riverpodAnnotationDependencies.add(dependencies);
   }
 
   final consumerStatefulWidgetDeclarations =

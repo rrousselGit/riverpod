@@ -1,9 +1,11 @@
 import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
+import 'package:collection/collection.dart';
 import 'package:meta/meta.dart';
 
 import '../riverpod_analyzer_utils.dart';
+import 'errors.dart';
 
 class RiverpodAnnotationElement {
   @internal
@@ -24,17 +26,25 @@ class RiverpodAnnotationElement {
         targetElement: element,
       );
       if (result == null) {
-        throw RiverpodAnalysisException(
-          'Failed to parse dependency $dep',
-          targetElement: element,
+        errorReporter?.call(
+          RiverpodAnalysisError(
+            'Failed to parse dependency $dep',
+            targetElement: element,
+          ),
         );
+        return null;
       }
       return result;
     }).toSet();
 
+    if (dependencies?.any((e) => e == null) ?? false) {
+      // One of the dependencies failed to parse
+      return null;
+    }
+
     return RiverpodAnnotationElement(
       keepAlive: readKeepAlive(annotation),
-      dependencies: dependencies,
+      dependencies: dependencies?.cast(),
     );
   }
 
@@ -58,12 +68,14 @@ class RiverpodAnnotationElement {
       );
       if (provider != null) return provider;
     }
-
-    throw RiverpodAnalysisException(
-      'Unsupported dependency. '
-      'Only functions and classes annotated by @riverpod are supported.',
-      targetElement: targetElement,
+    errorReporter?.call(
+      RiverpodAnalysisError(
+        'Unsupported dependency. '
+        'Only functions and classes annotated by @riverpod are supported.',
+        targetElement: targetElement,
+      ),
     );
+    return null;
   }
 
   static Set<GeneratorProviderDeclarationElement>?
@@ -255,13 +267,20 @@ class StatefulProviderDeclarationElement
           annotation ?? RiverpodAnnotationElement.parse(element);
       if (riverpodAnnotation == null) return null;
 
-      final buildMethod = element.methods.firstWhere(
-        (method) => method.name == 'build',
-        orElse: () => throw RiverpodAnalysisException(
-          'No "build" method found. '
-          'Classes annotated with @riverpod must define a method named "build".',
-        ),
-      );
+      final buildMethod =
+          element.methods.firstWhereOrNull((method) => method.name == 'build');
+
+      if (buildMethod == null) {
+        errorReporter?.call(
+          RiverpodAnalysisError(
+            'No "build" method found. '
+            'Classes annotated with @riverpod must define a method named "build".',
+            targetElement: element,
+          ),
+        );
+
+        return null;
+      }
 
       return StatefulProviderDeclarationElement._(
         name: element.name,

@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/analysis/results.dart';
+import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:meta/meta.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
@@ -35,6 +36,21 @@ String _hashFnIdentifier(String hashFnName) {
 
 const _defaultProviderNameSuffix = 'Provider';
 
+/// May be thrown by generators during [Generator.generate].
+class RiverpodInvalidGenerationSourceError
+    extends InvalidGenerationSourceError {
+  RiverpodInvalidGenerationSourceError(
+    super.message, {
+    super.todo = '',
+    super.element,
+    this.astNode,
+  });
+
+  final AstNode? astNode;
+
+  // TODO overrride toString to render AST nodes.
+}
+
 @immutable
 class RiverpodGenerator extends ParserGenerator {
   RiverpodGenerator(Map<String, Object?> mapConfig)
@@ -50,6 +66,14 @@ class RiverpodGenerator extends ParserGenerator {
   }
 
   String runGenerator(ResolvedRiverpodLibraryResult riverpodResult) {
+    for (final error in riverpodResult.errors) {
+      throw RiverpodInvalidGenerationSourceError(
+        error.message,
+        element: error.targetElement,
+        astNode: error.targetNode,
+      );
+    }
+
     final buffer = StringBuffer();
 
     riverpodResult.visitChildren(_RiverpodGeneratorVisitor(buffer, options));

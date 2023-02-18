@@ -14,6 +14,8 @@
   int count(CountRef ref) => throw UnsupportedError('...');
   ```
 
+- Fix exception thrown when the analyzed file has some syntax errors.
+
 ## 1.2.0
 
 - It is now possible to specify `@Riverpod(dependencies: [...])` to scope providers

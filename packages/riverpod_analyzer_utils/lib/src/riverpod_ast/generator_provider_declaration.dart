@@ -15,7 +15,7 @@ extension on LibraryElement {
         );
   }
 
-  ClassElement findAsyncValue() {
+  ClassElement? findAsyncValue() {
     final cache = _asyncValueCache[this];
     if (cache != null) return cache;
 
@@ -24,18 +24,23 @@ extension on LibraryElement {
       packageName: 'riverpod',
     );
     if (result == null) {
-      throw RiverpodAnalysisException(
-        'No AsyncValue accessible in the library. Did you forget to import Riverpod?',
+      errorReporter?.call(
+        RiverpodAnalysisError(
+          'No AsyncValue accessible in the library. '
+          'Did you forget to import Riverpod?',
+          targetElement: this,
+        ),
       );
+      return null;
     }
 
-    return _asyncValueCache[this] = result as ClassElement;
+    return _asyncValueCache[this] = result as ClassElement?;
   }
 
-  DartType createdTypeToValueType(DartType? typeArg) {
+  DartType? createdTypeToValueType(DartType? typeArg) {
     final asyncValue = findAsyncValue();
 
-    return asyncValue.instantiate(
+    return asyncValue?.instantiate(
       typeArguments: [if (typeArg != null) typeArg],
       nullabilitySuffix: NullabilitySuffix.none,
     );
@@ -70,7 +75,7 @@ abstract class GeneratorProviderDeclaration extends ProviderDeclaration {
   }
 }
 
-DartType _computeExposedType(
+DartType? _computeExposedType(
   DartType createdType,
   LibraryElement library,
 ) {
@@ -112,13 +117,19 @@ class StatefulProviderDeclaration extends GeneratorProviderDeclaration {
     final riverpodAnnotation = RiverpodAnnotation.parse(node);
     if (riverpodAnnotation == null) return null;
 
-    final buildMethod = node.members.whereType<MethodDeclaration>().firstWhere(
-          (method) => method.name.lexeme == 'build',
-          orElse: () => throw RiverpodAnalysisException(
-            'No "build" method found. '
-            'Classes annotated with @riverpod must define a method named "build".',
-          ),
-        );
+    final buildMethod = node.members
+        .whereType<MethodDeclaration>()
+        .firstWhereOrNull((method) => method.name.lexeme == 'build');
+    if (buildMethod == null) {
+      errorReporter?.call(
+        RiverpodAnalysisError(
+          'No "build" method found. '
+          'Classes annotated with @riverpod must define a method named "build".',
+          targetNode: node,
+        ),
+      );
+      return null;
+    }
 
     final providerElement = StatefulProviderDeclarationElement.parse(
       element,
@@ -129,6 +140,12 @@ class StatefulProviderDeclaration extends GeneratorProviderDeclaration {
     final createdType = buildMethod.returnType?.type ??
         element.library.typeProvider.dynamicType;
 
+    final exposedType = _computeExposedType(createdType, element.library);
+    if (exposedType == null) {
+      // Error already reported
+      return null;
+    }
+
     final statefulProviderDeclaration = StatefulProviderDeclaration._(
       name: node.name,
       node: node,
@@ -136,7 +153,7 @@ class StatefulProviderDeclaration extends GeneratorProviderDeclaration {
       providerElement: providerElement,
       annotation: riverpodAnnotation,
       createdType: createdType,
-      exposedType: _computeExposedType(createdType, element.library),
+      exposedType: exposedType,
       valueType: _getValueType(createdType),
     );
     riverpodAnnotation._parent = statefulProviderDeclaration;
@@ -221,13 +238,19 @@ class StatelessProviderDeclaration extends GeneratorProviderDeclaration {
     if (providerElement == null) return null;
 
     final createdType = element.returnType;
+    final exposedType = _computeExposedType(createdType, element.library);
+    if (exposedType == null) {
+      // Error already reported
+      return null;
+    }
+
     final statelessProviderDeclaration = StatelessProviderDeclaration._(
       name: node.name,
       node: node,
       providerElement: providerElement,
       annotation: riverpodAnnotation,
       createdType: createdType,
-      exposedType: _computeExposedType(createdType, element.library),
+      exposedType: exposedType,
       valueType: _getValueType(createdType),
     );
     riverpodAnnotation._parent = statelessProviderDeclaration;

@@ -1,4 +1,4 @@
-# 1.1.0
+# Unreleased minor
 
 - Added `provider_dependencies` lint.
   This checks the validity of the `@Riverpod(dependencies: )` parameter, warning against
@@ -9,6 +9,8 @@
 - Added `avoid_manual_providers_as_generated_provider_depenency` lint.
   This lint warns if a generated provider depends on a non-generated provider,
   as this would break the `provider_dependencies` lint.
+
+- Fix exception thrown when the analyzed file has some syntax errors.
 
 # 1.0.1
 

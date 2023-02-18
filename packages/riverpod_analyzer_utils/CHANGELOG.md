@@ -1,7 +1,9 @@
-## Unreleased minor
+## Unreleased major
 
 - Upcast `StatefulProviderDeclaratation.providerElement` &
   `StatelessProviderDeclaratation.providerElement` to their respective element type.
+
+- Change error handling mechanism (no more exceptions)
 
 ## 0.0.2
 

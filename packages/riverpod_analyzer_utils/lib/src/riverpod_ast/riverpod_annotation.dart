@@ -18,12 +18,36 @@ class RiverpodAnnotationDependency extends RiverpodAst {
   void visitChildren(RiverpodAstVisitor visitor) {}
 }
 
+class RiverpodAnnotationDependencies extends RiverpodAst {
+  RiverpodAnnotationDependencies._({
+    required this.node,
+    required this.dependencies,
+  });
+
+  final NamedExpression node;
+  final List<RiverpodAnnotationDependency>? dependencies;
+
+  @override
+  void accept(RiverpodAstVisitor visitor) {
+    visitor.visitRiverpodAnnotationDependencies(this);
+  }
+
+  @override
+  void visitChildren(RiverpodAstVisitor visitor) {
+    final dependencies = this.dependencies;
+    if (dependencies != null) {
+      for (final dependency in dependencies) {
+        dependency.accept(visitor);
+      }
+    }
+  }
+}
+
 class RiverpodAnnotation extends RiverpodAst {
   RiverpodAnnotation._({
     required this.annotation,
     required this.element,
     required this.keepAliveNode,
-    required this.dependenciesNode,
     required this.dependencies,
   });
 
@@ -64,34 +88,19 @@ class RiverpodAnnotation extends RiverpodAst {
         }
       }
 
-      final dependenciesNodeValue = dependenciesNode?.expression;
-
-      if (dependenciesNodeValue != null &&
-          dependenciesNodeValue is! ListLiteral) {
-        throw RiverpodAnalysisException(
-          '@Riverpod(dependencies: <...>) only support list literals (using []).',
-          targetNode: dependenciesNodeValue,
-        );
-      }
-
       final riverpodAnnotationElement =
           RiverpodAnnotationElement.parse(annotatedElement);
       if (riverpodAnnotationElement == null) return null;
 
-      final dependencies = dependenciesNodeValue == null
-          ? null
-          : _parseDependencies(dependenciesNodeValue as ListLiteral).toList();
+      final dependencies = _parseDependencies(dependenciesNode);
 
       final riverpodAnnotation = RiverpodAnnotation._(
         annotation: annotation,
         element: riverpodAnnotationElement,
         keepAliveNode: keepAliveNode,
-        dependenciesNode: dependenciesNode,
         dependencies: dependencies,
       );
-      dependencies?.forEach((element) {
-        element._parent = riverpodAnnotation;
-      });
+      dependencies?._parent = riverpodAnnotation;
 
       return riverpodAnnotation;
     }
@@ -99,16 +108,44 @@ class RiverpodAnnotation extends RiverpodAst {
     return null;
   }
 
-  static Iterable<RiverpodAnnotationDependency> _parseDependencies(
-    ListLiteral dependenciesNodeValue,
-  ) sync* {
-    for (final dependency in dependenciesNodeValue.elements) {
-      if (dependency is! Expression) {
-        throw RiverpodAnalysisException(
-          '@Riverpod(dependencies: [...]) does not support if/for/spread operators.',
-          targetNode: dependency,
-        );
-      } else if (dependency is SimpleIdentifier) {
+  static RiverpodAnnotationDependencies? _parseDependencies(
+    NamedExpression? dependenciesNode,
+  ) {
+    if (dependenciesNode == null) return null;
+    final dependenciesNodeValue = dependenciesNode.expression;
+    // TODO handle Riverpod(dependencies:null)
+
+    final dependencies = <RiverpodAnnotationDependency>[];
+
+    if (dependenciesNodeValue is! ListLiteral) {
+      errorReporter?.call(
+        RiverpodAnalysisError(
+          '@Riverpod(dependencies: <...>) only support list literals (using []).',
+          targetNode: dependenciesNodeValue,
+        ),
+      );
+    } else {
+      for (final dependency in dependenciesNodeValue.elements) {
+        if (dependency is! Expression) {
+          errorReporter?.call(
+            RiverpodAnalysisError(
+              '@Riverpod(dependencies: [...]) does not support if/for/spread operators.',
+              targetNode: dependency,
+            ),
+          );
+          continue;
+        }
+
+        if (dependency is! SimpleIdentifier) {
+          errorReporter?.call(
+            RiverpodAnalysisError(
+              'Only elements annotated with @riverpod are supported as "dependencies".',
+              targetNode: dependency,
+            ),
+          );
+          continue;
+        }
+
         final dependencyElement = dependency.staticElement;
         if (dependencyElement is FunctionElement) {
           final dependencyProvider = StatelessProviderDeclarationElement.parse(
@@ -116,15 +153,20 @@ class RiverpodAnnotation extends RiverpodAst {
             annotation: null,
           );
           if (dependencyProvider == null) {
-            throw RiverpodAnalysisException(
-              'The dependency $dependency is not a class annotated with @riverpod',
-              targetNode: dependency,
+            errorReporter?.call(
+              RiverpodAnalysisError(
+                'The dependency $dependency is not a class annotated with @riverpod',
+                targetNode: dependency,
+              ),
             );
+            continue;
           }
 
-          yield RiverpodAnnotationDependency._(
-            node: dependency,
-            provider: dependencyProvider,
+          dependencies.add(
+            RiverpodAnnotationDependency._(
+              node: dependency,
+              provider: dependencyProvider,
+            ),
           );
         } else if (dependencyElement is ClassElement) {
           final dependencyProvider = StatefulProviderDeclarationElement.parse(
@@ -132,37 +174,48 @@ class RiverpodAnnotation extends RiverpodAst {
             annotation: null,
           );
           if (dependencyProvider == null) {
-            throw RiverpodAnalysisException(
-              'The dependency $dependency is not a class annotated with @riverpod',
-              targetNode: dependency,
+            errorReporter?.call(
+              RiverpodAnalysisError(
+                'The dependency $dependency is not a class annotated with @riverpod',
+                targetNode: dependency,
+              ),
             );
+            continue;
           }
 
-          yield RiverpodAnnotationDependency._(
-            node: dependency,
-            provider: dependencyProvider,
+          dependencies.add(
+            RiverpodAnnotationDependency._(
+              node: dependency,
+              provider: dependencyProvider,
+            ),
           );
         } else {
-          throw RiverpodAnalysisException(
-            '@Riverpod(dependencies: [...]) only supports elements annotated with @riverpod as values.',
-            targetNode: dependency,
+          errorReporter?.call(
+            RiverpodAnalysisError(
+              '@Riverpod(dependencies: [...]) only supports elements annotated with @riverpod as values.',
+              targetNode: dependency,
+            ),
           );
         }
-      } else {
-        throw RiverpodAnalysisException(
-          'Only elements annotated with @riverpod are supported as "dependencies".',
-          targetNode: dependency,
-        );
       }
     }
+
+    final riverpodAnnotationDependencies = RiverpodAnnotationDependencies._(
+      node: dependenciesNode,
+      dependencies: dependencies,
+    );
+
+    for (final dependency in dependencies) {
+      dependency._parent = riverpodAnnotationDependencies;
+    }
+
+    return riverpodAnnotationDependencies;
   }
 
   final Annotation annotation;
   final RiverpodAnnotationElement element;
   final NamedExpression? keepAliveNode;
-  final NamedExpression? dependenciesNode;
-
-  final List<RiverpodAnnotationDependency>? dependencies;
+  final RiverpodAnnotationDependencies? dependencies;
 
   @override
   void accept(RiverpodAstVisitor visitor) {
@@ -171,11 +224,6 @@ class RiverpodAnnotation extends RiverpodAst {
 
   @override
   void visitChildren(RiverpodAstVisitor visitor) {
-    final dependencies = this.dependencies;
-    if (dependencies != null) {
-      for (final dependency in dependencies) {
-        dependency.accept(visitor);
-      }
-    }
+    dependencies?.accept(visitor);
   }
 }

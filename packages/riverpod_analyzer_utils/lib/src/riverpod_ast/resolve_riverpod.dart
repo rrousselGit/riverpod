@@ -1,30 +1,5 @@
 part of '../riverpod_ast.dart';
 
-class RiverpodAnalysisException implements Exception {
-  RiverpodAnalysisException(
-    this.message, {
-    this.targetNode,
-    this.targetElement,
-  });
-
-  final String message;
-  final AstNode? targetNode;
-  final Element? targetElement;
-
-  @override
-  String toString() {
-    var trailing = '';
-    if (targetElement != null) {
-      trailing += '\nelement: $targetElement (${targetElement.runtimeType})';
-    }
-    if (targetNode != null) {
-      trailing += '\nelement: $targetNode (${targetNode.runtimeType})';
-    }
-
-    return 'RiverpodAnalysisException: $message$trailing';
-  }
-}
-
 class ResolvedRiverpodLibraryResult extends RiverpodAst {
   ResolvedRiverpodLibraryResult._();
 
@@ -34,12 +9,20 @@ class ResolvedRiverpodLibraryResult extends RiverpodAst {
     final result = ResolvedRiverpodLibraryResult._();
     final visitor = _ParseRiverpodUnitVisitor(result);
 
-    for (final unit in units) {
-      unit.unit.accept(visitor);
+    try {
+      errorReporter = result.errors.add;
+
+      for (final unit in units) {
+        unit.unit.accept(visitor);
+      }
+    } finally {
+      errorReporter = null;
     }
 
     return result;
   }
+
+  final errors = <RiverpodAnalysisError>[];
 
   final statelessProviderDeclarations = <StatelessProviderDeclaration>[];
   final statefulProviderDeclarations = <StatefulProviderDeclaration>[];

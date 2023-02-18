@@ -32,7 +32,7 @@ extension on GeneratorProviderDeclaration {
   _ExtraAndMissingDendencies findExtraAndMissingDependencies() {
     final result = _ExtraAndMissingDendencies();
 
-    final dependencies = annotation.dependencies;
+    final dependencies = annotation.dependencies?.dependencies;
     final scopedInvocations = findScopedDependencies().toList();
 
     for (final scopedDependency in scopedInvocations) {
@@ -84,7 +84,7 @@ class ProviderDependencies extends RiverpodLintRule {
       if (extraAndMissing.missing.isNotEmpty) {
         reporter.reportErrorForNode(
           _code,
-          declaration.annotation.dependenciesNode ??
+          declaration.annotation.dependencies?.node ??
               declaration.annotation.annotation,
         );
       }
@@ -110,7 +110,7 @@ class _ProviderDependenciesFix extends RiverpodFix {
       }
 
       final scopedDependencies = declaration.findScopedDependencies().toList();
-      final dependenciesNode = declaration.annotation.dependenciesNode;
+      final dependenciesNode = declaration.annotation.dependencies?.node;
 
       final newDependencies = scopedDependencies.isEmpty
           ? null

@@ -16,6 +16,7 @@ import 'package:meta/meta.dart';
 
 import '../riverpod_analyzer_utils.dart';
 import 'argument_list_utils.dart';
+import 'errors.dart';
 
 part 'riverpod_ast/consumer.dart';
 part 'riverpod_ast/generator_provider_declaration.dart';
