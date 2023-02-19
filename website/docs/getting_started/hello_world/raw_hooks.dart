@@ -24,6 +24,9 @@ void main() {
 class MyApp extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // We can use hooks inside HookConsumerWidget
+    final counter = useState(0);
+
     final String value = ref.watch(helloWorldProvider);
 
     return MaterialApp(
