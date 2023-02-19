@@ -33,7 +33,7 @@ class MyApp extends HookConsumerWidget {
       home: Scaffold(
         appBar: AppBar(title: const Text('Example')),
         body: Center(
-          child: Text(value),
+          child: Text('$value ${counter.value}'),
         ),
       ),
     );
