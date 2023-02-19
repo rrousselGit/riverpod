@@ -29,7 +29,7 @@ class _SystemHash {
   }
 }
 
-String $fetchUserHash() => r'ff427bbb4130a8a6994fa623ae70997f7b0f6bdb';
+String _$fetchUserHash() => r'ff427bbb4130a8a6994fa623ae70997f7b0f6bdb';
 
 /// See also [fetchUser].
 class FetchUserProvider extends AutoDisposeFutureProvider<User> {
@@ -45,7 +45,7 @@ class FetchUserProvider extends AutoDisposeFutureProvider<User> {
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : $fetchUserHash,
+                  : _$fetchUserHash,
         );
 
   final int userId;
