@@ -4,6 +4,72 @@ import 'package:test/test.dart';
 import 'analyser_test_utils.dart';
 
 void main() {
+  testSource('Decode dependencies with syntax errors', source: '''
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+const deps = <ProviderOrFamily>[];
+
+@Riverpod(dependencies: deps)
+int first(FirstRef ref) => 0;
+
+@Riverpod(dependencies: )
+int second(SecondRef ref) => 0;
+
+@Riverpod(dependencies: [gibberish])
+int forth(ForthRef ref) => 0;
+
+@Riverpod(dependencies: [if (true) forth])
+int fifth(FifthRef ref) => 0;
+
+@Riverpod(dependencies: [int])
+int sixth(SixthRef ref) => 0;
+''', (resolver) async {
+    final result = await resolver.resolveRiverpodAnalyssiResult(
+      ignoreErrors: true,
+    );
+
+    final errors =
+        result.resolvedRiverpodLibraryResults.expand((e) => e.errors).toList();
+
+    expect(errors, hasLength(6));
+
+    expect(
+      errors[0].message,
+      '@Riverpod(dependencies: <...>) only support list literals (using []).',
+    );
+    expect(errors[0].targetNode?.toSource(), 'deps');
+
+    expect(
+      errors[1].message,
+      '@Riverpod(dependencies: <...>) only support list literals (using []).',
+    );
+    expect(errors[1].targetNode?.toSource(), '');
+
+    expect(
+      errors[2].message,
+      '@Riverpod(dependencies: [...]) only supports elements annotated with @riverpod as values.',
+    );
+    expect(errors[2].targetNode?.toSource(), 'gibberish');
+
+    expect(
+      errors[3].message,
+      '@Riverpod(dependencies: [...]) does not support if/for/spread operators.',
+    );
+    expect(errors[3].targetNode?.toSource(), 'if (true) forth');
+
+    expect(
+      errors[4].message,
+      'Unsupported dependency. Only functions and classes annotated by @riverpod are supported.',
+    );
+    expect(errors[4].targetElement.toString(), 'int sixth(dynamic ref)');
+
+    expect(
+      errors[5].message,
+      'Failed to parse dependency Type (int*)',
+    );
+    expect(errors[5].targetElement?.toString(), 'int sixth(dynamic ref)');
+  });
+
   testSource('Decode name', runGenerator: true, source: r'''
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -22,20 +88,19 @@ class Counter extends _$Counter {
 }
 ''', (resolver) async {
     final result = await resolver.resolveRiverpodAnalyssiResult();
-    final providers = result.generatorProviderDeclarations
-        .take(['first', 'second', 'Counter']);
+    final providers = result.generatorProviderDeclarations;
 
-    expect(providers, {
-      'first': isA<StatelessProviderDeclaration>()
+    expect(providers, [
+      isA<StatelessProviderDeclaration>()
           .having((e) => e.name.toString(), 'name', 'first')
           .having((e) => e.node.name.toString(), 'node.name', 'first'),
-      'second': isA<StatelessProviderDeclaration>()
+      isA<StatelessProviderDeclaration>()
           .having((e) => e.name.toString(), 'name', 'second')
           .having((e) => e.node.name.toString(), 'node.name', 'second'),
-      'Counter': isA<StatefulProviderDeclaration>()
+      isA<StatefulProviderDeclaration>()
           .having((e) => e.name.toString(), 'name', 'Counter')
           .having((e) => e.node.name.toString(), 'node.name', 'Counter'),
-    });
+    ]);
   });
 
   testSource('Decode isAutoDispose', runGenerator: true, source: r'''
@@ -71,15 +136,15 @@ class KeepAliveNotifier extends _$KeepAliveNotifier {
 }
 ''', (resolver) async {
     final result = await resolver.resolveRiverpodAnalyssiResult();
-    final autoDispose = result.generatorProviderDeclarations.take([
+    final autoDispose = result.generatorProviderDeclarations.takeAll([
       'autoDispose',
       'AutoDisposeNotifierTest',
     ]);
-    final explicitAutoDispose = result.generatorProviderDeclarations.take([
+    final explicitAutoDispose = result.generatorProviderDeclarations.takeAll([
       'autoDispose2',
       'AutoDisposeNotifier2',
     ]);
-    final keepAlive = result.generatorProviderDeclarations.take([
+    final keepAlive = result.generatorProviderDeclarations.takeAll([
       'keepAlive',
       'KeepAliveNotifier',
     ]);
@@ -164,19 +229,19 @@ class NestedDependencyNotifier extends _$NestedDependencyNotifier {
 }
 ''', (resolver) async {
     final result = await resolver.resolveRiverpodAnalyssiResult();
-    final roots = result.generatorProviderDeclarations.take([
+    final roots = result.generatorProviderDeclarations.takeAll([
       'root',
       'RootNotifier',
     ]);
-    final empty = result.generatorProviderDeclarations.take([
+    final empty = result.generatorProviderDeclarations.takeAll([
       'empty',
       'EmptyNotifier',
     ]);
-    final providers = result.generatorProviderDeclarations.take([
+    final providers = result.generatorProviderDeclarations.takeAll([
       'providerDependency',
       'ProviderDependencyNotifier',
     ]);
-    final nesteds = result.generatorProviderDeclarations.take([
+    final nesteds = result.generatorProviderDeclarations.takeAll([
       'nestedDependency',
       'NestedDependencyNotifier',
     ]);
@@ -193,24 +258,14 @@ class NestedDependencyNotifier extends _$NestedDependencyNotifier {
         reason: '${provider.key} has no dependency',
       );
       expect(
-        provider.value.annotation.dependenciesNode,
-        null,
-        reason: '${provider.key} has no dependency',
-      );
-      expect(
         provider.value.annotation.element.allTransitiveDependencies,
-        null,
-        reason: '${provider.key} has no dependency',
-      );
-      expect(
-        provider.value.annotation.dependenciesNode,
         null,
         reason: '${provider.key} has no dependency',
       );
     }
     for (final provider in empty.entries) {
       expect(
-        provider.value.annotation.dependencies,
+        provider.value.annotation.dependencies?.dependencies,
         isEmpty,
         reason: '${provider.key} has an empty list of dependencies',
       );
@@ -225,14 +280,14 @@ class NestedDependencyNotifier extends _$NestedDependencyNotifier {
         reason: '${provider.key} has an empty list of dependencies',
       );
       expect(
-        provider.value.annotation.dependenciesNode?.toSource(),
+        provider.value.annotation.dependencies?.node.toSource(),
         'dependencies: []',
         reason: '${provider.key} has an empty list of dependencies',
       );
     }
     for (final provider in providers.entries) {
       expect(
-        provider.value.annotation.dependencies,
+        provider.value.annotation.dependencies?.dependencies,
         hasLength(2),
         reason: '${provider.key} has two explicit dependencies',
       );
@@ -247,7 +302,7 @@ class NestedDependencyNotifier extends _$NestedDependencyNotifier {
         reason: '${provider.key} has two explicit dependencies',
       );
       expect(
-        provider.value.annotation.dependencies?[0],
+        provider.value.annotation.dependencies?.dependencies?[0],
         isA<RiverpodAnnotationDependency>()
             .having(
               (e) => e.provider,
@@ -258,7 +313,7 @@ class NestedDependencyNotifier extends _$NestedDependencyNotifier {
         reason: '${provider.key} has `empty` as first dependency',
       );
       expect(
-        provider.value.annotation.dependencies?[1],
+        provider.value.annotation.dependencies?.dependencies?[1],
         isA<RiverpodAnnotationDependency>()
             .having(
               (e) => e.provider,
@@ -286,7 +341,7 @@ class NestedDependencyNotifier extends _$NestedDependencyNotifier {
       );
 
       expect(
-        provider.value.annotation.dependenciesNode?.toSource(),
+        provider.value.annotation.dependencies?.node.toSource(),
         'dependencies: [empty, EmptyNotifier]',
         reason: '${provider.key} has two dependencies',
       );
@@ -294,7 +349,7 @@ class NestedDependencyNotifier extends _$NestedDependencyNotifier {
 
     for (final provider in nesteds.entries) {
       expect(
-        provider.value.annotation.dependencies,
+        provider.value.annotation.dependencies?.dependencies,
         hasLength(2),
         reason: '${provider.key} has two explicit dependencies',
       );
@@ -314,7 +369,7 @@ class NestedDependencyNotifier extends _$NestedDependencyNotifier {
         reason: '${provider.key} has two explicit dependencies',
       );
       expect(
-        provider.value.annotation.dependencies?[0],
+        provider.value.annotation.dependencies?.dependencies?[0],
         isA<RiverpodAnnotationDependency>()
             .having(
               (e) => e.provider,
@@ -325,7 +380,7 @@ class NestedDependencyNotifier extends _$NestedDependencyNotifier {
         reason: '${provider.key} has `providerDependency` as first dependency',
       );
       expect(
-        provider.value.annotation.dependencies?[1],
+        provider.value.annotation.dependencies?.dependencies?[1],
         isA<RiverpodAnnotationDependency>()
             .having(
               (e) => e.provider,
@@ -359,7 +414,7 @@ class NestedDependencyNotifier extends _$NestedDependencyNotifier {
       );
 
       expect(
-        provider.value.annotation.dependenciesNode?.toSource(),
+        provider.value.annotation.dependencies?.node.toSource(),
         'dependencies: [providerDependency, ProviderDependencyNotifier]',
         reason: '${provider.key} has two dependencies',
       );

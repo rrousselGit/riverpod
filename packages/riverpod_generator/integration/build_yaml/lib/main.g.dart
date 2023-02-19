@@ -6,6 +6,34 @@ part of 'main.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+String _$countHash() => r'4c7e72b275767a60ece5e8662ab1e28f73cf7e44';
+
+/// See also [count].
+@ProviderFor(count)
+final countPod = AutoDisposeProvider<int>.internal(
+  count,
+  name: r'countPod',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$countHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef CountRef = AutoDisposeProviderRef<int>;
+String _$countFutureHash() => r'ec7cc31ce1c1a10607f1dcb35dd217acd2877729';
+
+/// See also [countFuture].
+@ProviderFor(countFuture)
+final countFuturePod = AutoDisposeFutureProvider<int>.internal(
+  countFuture,
+  name: r'countFuturePod',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$countFutureHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef CountFutureRef = AutoDisposeFutureProviderRef<int>;
 String _$countNotifierHash() => r'a8dd7a66ee0002b8af657245c4affaa206fd99ec';
 
 /// See also [CountNotifier].
@@ -39,32 +67,4 @@ final countAsyncNotifierPod =
 );
 
 typedef _$CountAsyncNotifier = AutoDisposeAsyncNotifier<int>;
-String _$countHash() => r'4c7e72b275767a60ece5e8662ab1e28f73cf7e44';
-
-/// See also [count].
-@ProviderFor(count)
-final countPod = AutoDisposeProvider<int>.internal(
-  count,
-  name: r'countPod',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$countHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef CountRef = AutoDisposeProviderRef<int>;
-String _$countFutureHash() => r'ec7cc31ce1c1a10607f1dcb35dd217acd2877729';
-
-/// See also [countFuture].
-@ProviderFor(countFuture)
-final countFuturePod = AutoDisposeFutureProvider<int>.internal(
-  countFuture,
-  name: r'countFuturePod',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$countFutureHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef CountFutureRef = AutoDisposeFutureProviderRef<int>;
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

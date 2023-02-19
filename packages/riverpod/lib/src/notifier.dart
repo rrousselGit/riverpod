@@ -36,6 +36,7 @@ abstract class NotifierBase<State> {
     return _element.requireState;
   }
 
+  @protected
   set state(State value) {
     // ignore: invalid_use_of_protected_member
     _element.setState(value);

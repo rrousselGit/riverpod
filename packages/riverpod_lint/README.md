@@ -41,17 +41,11 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
 - [Running riverpod\_lint in the terminal/CI](#running-riverpod_lint-in-the-terminalci)
 - [All the lints](#all-the-lints)
   - [missing\_provider\_scope](#missing_provider_scope)
-    - [Good:](#good)
-    - [Bad:](#bad)
+  - [provider\_dependencies (riverpod\_generator only)](#provider_dependencies-riverpod_generator-only)
+  - [avoid\_manual\_providers\_as\_generated\_provider\_depenency](#avoid_manual_providers_as_generated_provider_depenency)
   - [provider\_parameters](#provider_parameters)
-    - [Good:](#good-1)
-    - [Bad:](#bad-1)
   - [stateless\_ref](#stateless_ref)
-    - [Good:](#good-2)
-    - [Bad:](#bad-2)
   - [generator\_class\_extends](#generator_class_extends)
-    - [Good:](#good-3)
-    - [Bad:](#bad-3)
 - [All assists](#all-assists)
   - [Wrap widget with a `Consumer`](#wrap-widget-with-a-consumer)
   - [Wrap widget with a `ProviderScope`](#wrap-widget-with-a-providerscope)
@@ -169,7 +163,7 @@ custom_lint
 Flutter applications using Riverpod should have a ProviderScope widget at the top
 of the widget tree.
 
-#### Good:
+**Good**:
 
 ```dart
 void main() {
@@ -177,7 +171,7 @@ void main() {
 }
 ```
 
-#### Bad:
+**Bad**:
 
 ```dart
 void main() {
@@ -185,11 +179,105 @@ void main() {
 }
 ```
 
+### provider_dependencies (riverpod_generator only)
+
+If a provider depends on providers which specify `dependencies`, they should
+themselves specify `dependencies` and include all the scoped providers.
+
+This lint only works for providers using the `@riverpod` annotation.
+
+Consider the following providers:
+
+```dart
+// A non-scoped provider
+@riverpod
+int root(RootRef ref) => 0;
+
+// A possibly scoped provider
+@Riverpod(dependencies: [])
+int scoped(ScopedRef ref) => 0;
+```
+
+**Good**:
+
+```dart
+// No dependencies used, no need to specify "dependencies"
+@riverpod
+int example(ExampleRef ref) => 0;
+
+// We can specify an empty "dependencies" list if we wish to.
+// This marks the provider as "scoped".
+@Riverpod(dependencies: [])
+int example(ExampleRef ref) => 0;
+
+@riverpod
+int example(ExampleRef ref) {
+  // rootProvider is not scoped, no need to specify it as "dependencies"
+  ref.watch(rootProvider);
+}
+
+@Riverpod(dependencies: [scoped])
+int example(ExampleRef ref) {
+  // scopedProvider is scoped and as such specifying "dependencies" is required.
+  ref.watch(scopedProvider);
+}
+```
+
+**Bad**:
+
+```dart
+// scopedProvider isn't used and should therefore not be listed
+@Riverpod(dependencies: [scoped])
+int example(ExampleRef ref) => 0;
+
+@Riverpod(dependencies: [])
+int example(ExampleRef ref) {
+  // scopedProvider is used but not present in the list of dependencies
+  ref.watch(scopedProvider);
+}
+
+@Riverpod(dependencies: [root])
+int example(ExampleRef ref) {
+  // rootProvider is not a scoped provider. As such it shouldn't be listed in "dependencies"
+  ref.watch(rootProvider);
+}
+```
+
+### avoid_manual_providers_as_generated_provider_depenency
+
+Providers using riverpod_generator should not depend on providers which do not use riverpod_generator.
+Failing to do so would break the [provider_dependencies](#provider_dependencies-riverpod_generator-only) lint.
+
+**Good**:
+
+```dart
+@riverpod
+int dep(DepRef ref) => 0;
+
+@riverpod
+int example(ExampleRef ref) {
+  /// Generated providers can depend on other generated providers
+  ref.watch(depProvider);
+}
+```
+
+**Bad**:
+
+```dart
+final depProvider = Provider((ref) => 0);
+
+@riverpod
+int example(ExampleRef ref) {
+  // Generated providers should not depend on non-generated providers
+  ref.watch(depProvider);
+}
+```
+
 ### provider_parameters
 
 Providers parameters should have a consistent ==. Meaning either the values should be cached, or the parameters should override ==.
 
-#### Good:
+**Good**:
 
 ```dart
 // Parameters may override ==
@@ -203,7 +291,7 @@ ref.watch(myProvider(const [42]));
 ref.watch(myProvider(variable));
 ```
 
-#### Bad:
+**Bad**:
 
 ```dart
 // New instances passed as provider parameter must override ==
@@ -216,14 +304,14 @@ ref.watch(myProvider([42]));
 
 Stateless providers must receive a ref matching the provider name as their first positional parameter.
 
-#### Good:
+**Good**:
 
 ```dart
 @riverpod
 int myProvider(MyProviderRef ref) => 0;
 ```
 
-#### Bad:
+**Bad**:
 
 ```dart
 // No "ref" parameter found
@@ -239,7 +327,7 @@ int myProvider(int ref) => 0;
 
 Classes annotated by `@riverpod` must extend \_$ClassName
 
-#### Good:
+**Good**:
 
 ```dart
 @riverpod
@@ -248,7 +336,7 @@ class Example extends _$Example {
 }
 ```
 
-#### Bad:
+**Bad**:
 
 ```dart
 // No "extends" found

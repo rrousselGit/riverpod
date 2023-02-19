@@ -22,10 +22,59 @@ abstract class ProviderOrFamily {
 
   /// The list of providers that this provider potentially depends on.
   ///
-  /// Specifying this list will tell Riverpod to automatically scope this provider
-  /// if one of its dependency is overridden.
-  /// The downside is that it prevents `ref.watch` & co to be used with a provider
-  /// that isn't listed in [dependencies].
+  /// Specifying this list is strictly equivalent to saying "This provider may
+  /// be scoped". If a provider is scoped, it should specify [dependencies].
+  /// If it is never scoped, it should not specify [dependencies].
+  ///
+  /// The content of [dependencies] should be a list of all the providers that
+  /// this provider may depend on which can be scoped.
+  ///
+  /// For example, consider the following providers:
+  /// ```dart
+  /// // By not specifying "dependencies", we are saying that this provider is never scoped
+  /// final rootProvider = Provider((ref) => Foo());
+  /// // By specifying "dependencies" (even if the list is empty),
+  /// // we are saying that this provider is potentially scoped
+  /// final scopedProvider = Provider((ref) => Foo(), dependencies: []);
+  /// ```
+  ///
+  /// Then if we were to depend on `rootProvider` in a scoped provider, we
+  /// could write any of:
+  ///
+  /// ```dart
+  /// final dependentProvider = Provider((ref) {
+  ///   ref.watch(rootProvider);
+  ///   // This provider does not depend on any scoped provider,
+  ///   // as such "dependencies" is optional
+  /// });
+  ///
+  /// final dependentProvider = Provider((ref) {
+  ///   ref.watch(rootProvider);
+  ///   // This provider decided to spcecify "dependencies" anyway, marking
+  ///   // "dependentProvider" as possibly scoped.
+  ///   // Since "rootProvider" is never scoped, it doesn't need to be included
+  ///   // in "dependencies".
+  /// }, dependencies: []);
+  ///
+  /// final dependentProvider = Provider((ref) {
+  ///   ref.watch(rootProvider);
+  ///   // Including "rootProvider" in "dependencies" is fine too, even though
+  ///   // it is not required. It is a no-op.
+  /// }, dependencies: [rootProvider]);
+  /// ```
+  ///
+  /// However, if we were to depend on `scopedProvider` then our only choice is:
+  ///
+  /// ```dart
+  /// final dependentProvider = Provider((ref) {
+  ///   ref.watch(scopedProvider);
+  ///   // Since "scopedProvider" specifies "dependencies", any provider that
+  ///   // depends on it must also specify "dependencies" and include "scopedProvider".
+  /// }, dependencies: [scopedProvider]);
+  /// ```
+  ///
+  /// In that scenario, the `dependencies` parameter is required and it must
+  /// include `scopedProvider`.
   final Iterable<ProviderOrFamily>? dependencies;
 
   /// All the dependencies of a provider and their dependencies too.

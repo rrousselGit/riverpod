@@ -15,7 +15,7 @@ final second = Provider<int>((ref) => 0);
 ''', (resolver) async {
       final result = await resolver.resolveRiverpodAnalyssiResult();
       final providers =
-          result.legacyProviderDeclarations.take(['first', 'second']);
+          result.legacyProviderDeclarations.takeAll(['first', 'second']);
 
       expect(providers, {
         'first': isA<LegacyProviderDeclaration>()
@@ -85,19 +85,20 @@ final explicitAutoDisposeFamily = AutoDisposeProviderFamily<int, int>(
 );
 ''', (resolver) async {
       final result = await resolver.resolveRiverpodAnalyssiResult();
-      final deps = result.legacyProviderDeclarations.take([
+      final deps = result.legacyProviderDeclarations.takeAll([
         'dep',
         'family',
       ]);
-      final explicitDeps = result.legacyProviderDeclarations.take([
+      final explicitDeps = result.legacyProviderDeclarations.takeAll([
         'explicitDep',
         'explicitFamily',
       ]);
       final unknownDependencies =
-          result.legacyProviderDeclarations['unknownDependencies']!;
+          result.legacyProviderDeclarations.findByName('unknownDependencies');
+
       final generatorDependencies =
-          result.legacyProviderDeclarations['generatorDependencies']!;
-      final providers = result.legacyProviderDeclarations.take([
+          result.legacyProviderDeclarations.findByName('generatorDependencies');
+      final providers = result.legacyProviderDeclarations.takeAll([
         'alwaysAliveProvider',
         'alwaysAliveFamily',
         'explicitAlwaysAliveFamily',
@@ -152,7 +153,7 @@ final explicitAutoDisposeFamily = AutoDisposeProviderFamily<int, int>(
           isA<LegacyProviderDependency>()
               .having((e) => e.node.toSource(), 'node', 'dep')
               .having(
-                (e) => e.provider,
+                (e) => e.provider?.providerElement,
                 'provider',
                 same(deps['dep']?.providerElement),
               ),
@@ -163,7 +164,7 @@ final explicitAutoDisposeFamily = AutoDisposeProviderFamily<int, int>(
           isA<LegacyProviderDependency>()
               .having((e) => e.node.toSource(), 'node', 'family')
               .having(
-                (e) => e.provider,
+                (e) => e.provider?.providerElement,
                 'provider',
                 same(deps['family']?.providerElement),
               ),
@@ -174,7 +175,7 @@ final explicitAutoDisposeFamily = AutoDisposeProviderFamily<int, int>(
           isA<LegacyProviderDependency>()
               .having((e) => e.node.toSource(), 'node', 'family(42)')
               .having(
-                (e) => e.provider,
+                (e) => e.provider?.providerElement,
                 'provider',
                 same(deps['family']?.providerElement),
               ),
@@ -184,7 +185,7 @@ final explicitAutoDisposeFamily = AutoDisposeProviderFamily<int, int>(
           provider.value.dependencies?.dependencies?[3],
           isA<LegacyProviderDependency>()
               .having((e) => e.node.toSource(), 'node', '...getDeps()')
-              .having((e) => e.provider, 'provider', null),
+              .having((e) => e.provider?.providerElement, 'provider', null),
           reason:
               '${provider.key} has an unknown expression as fourth dependency',
         );
@@ -203,10 +204,12 @@ final explicitAutoDisposeFamily = AutoDisposeProviderFamily<int, int>(
         isA<LegacyProviderDependency>()
             .having((e) => e.node.toSource(), 'node', 'dep2Provider')
             .having(
-              (e) => e.provider,
+              (e) => e.provider?.providerElement,
               'provider',
               same(
-                result.generatorProviderDeclarations['dep2']?.providerElement,
+                result.generatorProviderDeclarations
+                    .findByName('dep2')
+                    .providerElement,
               ),
             ),
       );
@@ -215,11 +218,12 @@ final explicitAutoDisposeFamily = AutoDisposeProviderFamily<int, int>(
         isA<LegacyProviderDependency>()
             .having((e) => e.node.toSource(), 'node', 'family2Provider')
             .having(
-              (e) => e.provider,
+              (e) => e.provider?.providerElement,
               'provider',
               same(
-                result
-                    .generatorProviderDeclarations['family2']?.providerElement,
+                result.generatorProviderDeclarations
+                    .findByName('family2')
+                    .providerElement,
               ),
             ),
       );
@@ -238,7 +242,7 @@ final autoDisposeFamily2 = Provider.family.autoDispose<int, int>((ref, id) => 0)
 final explicitAutoDisposeFamily = AutoDisposeProviderFamily<int, int>((ref, id) => 0);
 ''', (resolver) async {
       final result = await resolver.resolveRiverpodAnalyssiResult();
-      final providers = result.legacyProviderDeclarations.take([
+      final providers = result.legacyProviderDeclarations.takeAll([
         'alwaysAliveProvider',
         'alwaysAliveFamily',
         'explicitAlwaysAliveFamily',
@@ -273,7 +277,7 @@ final explicitAutoDisposeFamily = AutoDisposeProviderFamily<int, int>((ref, id) 
 final weird = Provider<int>(name: 'foo', dependencies: [], (ref) => 0);
 ''', (resolver) async {
       final result = await resolver.resolveRiverpodAnalyssiResult();
-      final providers = result.legacyProviderDeclarations.take([
+      final providers = result.legacyProviderDeclarations.takeAll([
         'inferred',
         'inferredFamily',
         'provider',
@@ -354,7 +358,7 @@ final autoDisposeFamily2 = FutureProvider.family.autoDispose<int, int>((ref, id)
 final explicitAutoDisposeFamily = AutoDisposeFutureProviderFamily<int, int>((ref, id) => 0);
 ''', (resolver) async {
       final result = await resolver.resolveRiverpodAnalyssiResult();
-      final providers = result.legacyProviderDeclarations.take([
+      final providers = result.legacyProviderDeclarations.takeAll([
         'alwaysAliveProvider',
         'alwaysAliveFamily',
         'explicitAlwaysAliveFamily',
@@ -387,7 +391,7 @@ final autoDisposeFamily2 = StateProvider.family.autoDispose<int, int>((ref, id) 
 final explicitAutoDisposeFamily = AutoDisposeStateProviderFamily<int, int>((ref, id) => 0);
 ''', (resolver) async {
       final result = await resolver.resolveRiverpodAnalyssiResult();
-      final providers = result.legacyProviderDeclarations.take([
+      final providers = result.legacyProviderDeclarations.takeAll([
         'alwaysAliveProvider',
         'alwaysAliveFamily',
         'explicitAlwaysAliveFamily',
@@ -420,7 +424,7 @@ final autoDisposeFamily2 = StreamProvider.family.autoDispose<int, int>((ref, id)
 final explicitAutoDisposeFamily = AutoDisposeStreamProviderFamily<int, int>((ref, id) => Stream.empty());
 ''', (resolver) async {
       final result = await resolver.resolveRiverpodAnalyssiResult();
-      final providers = result.legacyProviderDeclarations.take([
+      final providers = result.legacyProviderDeclarations.takeAll([
         'alwaysAliveProvider',
         'alwaysAliveFamily',
         'explicitAlwaysAliveFamily',
@@ -453,7 +457,7 @@ final autoDisposeFamily2 = NotifierProvider.family.autoDispose<AutoDisposeFamily
 final explicitAutoDisposeFamily = AutoDisposeNotifierProviderFamily<AutoDisposeFamilyNotifier<int, int>, int, int>(() => throw UnimplementedError());
 ''', (resolver) async {
       final result = await resolver.resolveRiverpodAnalyssiResult();
-      final providers = result.legacyProviderDeclarations.take([
+      final providers = result.legacyProviderDeclarations.takeAll([
         'alwaysAliveProvider',
         'alwaysAliveFamily',
         'explicitAlwaysAliveFamily',
@@ -486,7 +490,7 @@ final autoDisposeFamily2 = AsyncNotifierProvider.family.autoDispose<AutoDisposeF
 final explicitAutoDisposeFamily = AutoDisposeAsyncNotifierProviderFamily<AutoDisposeFamilyAsyncNotifier<int, int>, int, int>(() => throw UnimplementedError());
 ''', (resolver) async {
       final result = await resolver.resolveRiverpodAnalyssiResult();
-      final providers = result.legacyProviderDeclarations.take([
+      final providers = result.legacyProviderDeclarations.takeAll([
         'alwaysAliveProvider',
         'alwaysAliveFamily',
         'explicitAlwaysAliveFamily',
@@ -520,7 +524,7 @@ final autoDisposeFamily2 = ChangeNotifierProvider.family.autoDispose<ValueNotifi
 final explicitAutoDisposeFamily = AutoDisposeChangeNotifierProviderFamily<ValueNotifier<int>, int>((ref, id) => ValueNotifier(0));
 ''', (resolver) async {
       final result = await resolver.resolveRiverpodAnalyssiResult();
-      final providers = result.legacyProviderDeclarations.take([
+      final providers = result.legacyProviderDeclarations.takeAll([
         'alwaysAliveProvider',
         'alwaysAliveFamily',
         'explicitAlwaysAliveFamily',
@@ -553,7 +557,7 @@ final autoDisposeFamily2 = StateNotifierProvider.family.autoDispose<StateControl
 final explicitAutoDisposeFamily = AutoDisposeStateNotifierProviderFamily<StateController<int>, int, int>((ref, id) => StateController(0));
 ''', (resolver) async {
       final result = await resolver.resolveRiverpodAnalyssiResult();
-      final providers = result.legacyProviderDeclarations.take([
+      final providers = result.legacyProviderDeclarations.takeAll([
         'alwaysAliveProvider',
         'alwaysAliveFamily',
         'explicitAlwaysAliveFamily',
@@ -587,7 +591,7 @@ final autoDisposeFamily2 = Provider.family.autoDispose<int, int>((ref, id) => 0)
 final explicitAutoDisposeFamily = AutoDisposeProviderFamily<int, int>((ref, id) => 0);
 ''', (resolver) async {
       final result = await resolver.resolveRiverpodAnalyssiResult();
-      final autoDisposeProviders = result.legacyProviderDeclarations.take([
+      final autoDisposeProviders = result.legacyProviderDeclarations.takeAll([
         'autoDisposeProvider',
         'explicitAutoDisposeProvider',
         'autoDisposeFamily',
@@ -595,7 +599,7 @@ final explicitAutoDisposeFamily = AutoDisposeProviderFamily<int, int>((ref, id) 
         'explicitAutoDisposeFamily',
       ]);
 
-      final alwaysAliveProviders = result.legacyProviderDeclarations.take([
+      final alwaysAliveProviders = result.legacyProviderDeclarations.takeAll([
         'alwaysAliveProvider',
         'alwaysAliveFamily',
         'explicitAlwaysAliveFamily',
@@ -631,13 +635,13 @@ final autoDisposeFamily2 = Provider.family.autoDispose<int, int>((ref, id) => 0)
 final explicitAutoDisposeFamily = AutoDisposeProviderFamily<int, int>((ref, id) => 0);
 ''', (resolver) async {
       final result = await resolver.resolveRiverpodAnalyssiResult();
-      final providers = result.legacyProviderDeclarations.take([
+      final providers = result.legacyProviderDeclarations.takeAll([
         'alwaysAliveProvider',
         'autoDisposeProvider',
         'explicitAutoDisposeProvider',
       ]);
 
-      final families = result.legacyProviderDeclarations.take([
+      final families = result.legacyProviderDeclarations.takeAll([
         'alwaysAliveFamily',
         'explicitAlwaysAliveFamily',
         'autoDisposeFamily',

@@ -1,6 +1,20 @@
 ## Unreleased
 
-Bump minimum riverpod_analyzer_utils version
+- Bump minimum riverpod_analyzer_utils version
+- Syntax sugar for providers which _must_ be overridden is now available:
+  ```dart
+  @riverpod
+  int count();
+  ```
+
+  This is equivalent to writing:
+
+  ```dart
+  @riverpod
+  int count(CountRef ref) => throw UnsupportedError('...');
+  ```
+
+- Fix exception thrown when the analyzed file has some syntax errors.
 
 ## 1.2.0
 
