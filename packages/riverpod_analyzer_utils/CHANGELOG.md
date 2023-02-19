@@ -5,6 +5,8 @@
 
 - Change error handling mechanism (no more exceptions)
 
+- Parse `ProviderContainerInstanceCreationExpression` and `ProviderScopeInstanceCreationExpression`.
+
 ## 0.0.2
 
 - Fix crash when parsing async generated providers

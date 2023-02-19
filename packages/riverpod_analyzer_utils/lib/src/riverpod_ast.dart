@@ -29,6 +29,7 @@ part 'riverpod_ast/resolve_riverpod.dart';
 part 'riverpod_ast/riverpod_annotation.dart';
 part 'riverpod_ast/visitor.dart';
 part 'riverpod_ast/widget_ref_invocation.dart';
+part 'riverpod_ast/provider_scope.dart';
 
 const _providerForAnnotationChecker = TypeChecker.fromName(
   'ProviderFor',

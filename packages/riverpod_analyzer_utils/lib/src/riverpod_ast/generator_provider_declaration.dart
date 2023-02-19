@@ -108,13 +108,13 @@ class StatefulProviderDeclaration extends GeneratorProviderDeclaration {
     required this.valueType,
   });
 
-  @internal
-  static StatefulProviderDeclaration? parse(
+  static StatefulProviderDeclaration? _parse(
     ClassDeclaration node,
+    _ParseRefInvocationMixin parent,
   ) {
     final element = node.declaredElement;
     if (element == null) return null;
-    final riverpodAnnotation = RiverpodAnnotation.parse(node);
+    final riverpodAnnotation = RiverpodAnnotation._parse(node);
     if (riverpodAnnotation == null) return null;
 
     final buildMethod = node.members
@@ -158,7 +158,7 @@ class StatefulProviderDeclaration extends GeneratorProviderDeclaration {
     );
     riverpodAnnotation._parent = statefulProviderDeclaration;
     buildMethod.accept(
-      _GeneratorRefInvocationVisitor(statefulProviderDeclaration),
+      _GeneratorRefInvocationVisitor(statefulProviderDeclaration, parent),
     );
 
     return statefulProviderDeclaration;
@@ -194,9 +194,10 @@ class StatefulProviderDeclaration extends GeneratorProviderDeclaration {
 
 class _GeneratorRefInvocationVisitor extends RecursiveAstVisitor<void>
     with _ParseRefInvocationMixin {
-  _GeneratorRefInvocationVisitor(this.declaration);
+  _GeneratorRefInvocationVisitor(this.declaration, this.parent);
 
   final GeneratorProviderDeclaration declaration;
+  final _ParseRefInvocationMixin parent;
 
   @override
   void visitRefInvocation(RefInvocation invocation) {
@@ -206,8 +207,21 @@ class _GeneratorRefInvocationVisitor extends RecursiveAstVisitor<void>
 
   @override
   void visitWidgetRefInvocation(WidgetRefInvocation invocation) {
-    // TODO report to parent
-    // The provider has no widgetef
+    parent.visitWidgetRefInvocation(invocation);
+  }
+
+  @override
+  void visitProviderContainerInstanceCreationExpression(
+    ProviderContainerInstanceCreationExpression expression,
+  ) {
+    parent.visitProviderContainerInstanceCreationExpression(expression);
+  }
+
+  @override
+  void visitProviderScopeInstanceCreationExpression(
+    ProviderScopeInstanceCreationExpression expression,
+  ) {
+    parent.visitProviderScopeInstanceCreationExpression(expression);
   }
 }
 
@@ -222,13 +236,13 @@ class StatelessProviderDeclaration extends GeneratorProviderDeclaration {
     required this.valueType,
   });
 
-  @internal
-  static StatelessProviderDeclaration? parse(
+  static StatelessProviderDeclaration? _parse(
     FunctionDeclaration node,
+    _ParseRefInvocationMixin parent,
   ) {
     final element = node.declaredElement;
     if (element == null) return null;
-    final riverpodAnnotation = RiverpodAnnotation.parse(node);
+    final riverpodAnnotation = RiverpodAnnotation._parse(node);
     if (riverpodAnnotation == null) return null;
 
     final providerElement = StatelessProviderDeclarationElement.parse(
@@ -255,7 +269,7 @@ class StatelessProviderDeclaration extends GeneratorProviderDeclaration {
     );
     riverpodAnnotation._parent = statelessProviderDeclaration;
     node.accept(
-      _GeneratorRefInvocationVisitor(statelessProviderDeclaration),
+      _GeneratorRefInvocationVisitor(statelessProviderDeclaration, parent),
     );
     return statelessProviderDeclaration;
   }

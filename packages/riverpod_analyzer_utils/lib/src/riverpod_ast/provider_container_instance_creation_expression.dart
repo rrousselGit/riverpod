@@ -1,12 +1,11 @@
 part of '../riverpod_ast.dart';
 
-class ProviderContainerInstanceCreationExpression {
+class ProviderContainerInstanceCreationExpression extends RiverpodAst {
   ProviderContainerInstanceCreationExpression._({
     required this.node,
   });
 
-  @internal
-  static ProviderContainerInstanceCreationExpression? parse(
+  static ProviderContainerInstanceCreationExpression? _parse(
     InstanceCreationExpression node,
   ) {
     final createdType = node.constructorName.type.type;
@@ -15,10 +14,16 @@ class ProviderContainerInstanceCreationExpression {
       return null;
     }
 
-    return ProviderContainerInstanceCreationExpression._(
-      node: node,
-    );
+    return ProviderContainerInstanceCreationExpression._(node: node);
   }
 
   final InstanceCreationExpression node;
+
+  @override
+  void accept(RiverpodAstVisitor visitor) {
+    visitor.visitProviderContainerInstanceCreationExpression(this);
+  }
+
+  @override
+  void visitChildren(RiverpodAstVisitor visitor) {}
 }

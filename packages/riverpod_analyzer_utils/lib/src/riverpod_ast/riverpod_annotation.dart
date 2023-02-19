@@ -51,8 +51,7 @@ class RiverpodAnnotation extends RiverpodAst {
     required this.dependencies,
   });
 
-  @internal
-  static RiverpodAnnotation? parse(
+  static RiverpodAnnotation? _parse(
     Declaration node,
   ) {
     final annotatedElement = node.declaredElement;

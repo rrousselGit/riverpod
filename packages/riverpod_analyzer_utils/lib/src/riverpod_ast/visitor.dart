@@ -3,6 +3,13 @@ part of '../riverpod_ast.dart';
 abstract class RiverpodAstVisitor {
   void visitResolvedRiverpodUnit(ResolvedRiverpodLibraryResult result);
 
+  void visitProviderScopeInstanceCreationExpression(
+    ProviderScopeInstanceCreationExpression container,
+  );
+  void visitProviderContainerInstanceCreationExpression(
+    ProviderContainerInstanceCreationExpression expression,
+  );
+
   void visitRiverpodAnnotation(
     RiverpodAnnotation annotation,
   );
@@ -59,6 +66,20 @@ abstract class RiverpodAstVisitor {
 }
 
 class RecursiveRiverpodAstVisitor extends RiverpodAstVisitor {
+  @override
+  void visitProviderScopeInstanceCreationExpression(
+    ProviderScopeInstanceCreationExpression container,
+  ) {
+    container.visitChildren(this);
+  }
+
+  @override
+  void visitProviderContainerInstanceCreationExpression(
+    ProviderContainerInstanceCreationExpression expression,
+  ) {
+    expression.visitChildren(this);
+  }
+
   @override
   void visitConsumerStateDeclaration(ConsumerStateDeclaration declaration) {
     declaration.visitChildren(this);
@@ -192,6 +213,16 @@ class RecursiveRiverpodAstVisitor extends RiverpodAstVisitor {
 
 class SimpleRiverpodAstVisitor extends RiverpodAstVisitor {
   @override
+  void visitProviderScopeInstanceCreationExpression(
+    ProviderScopeInstanceCreationExpression container,
+  ) {}
+
+  @override
+  void visitProviderContainerInstanceCreationExpression(
+    ProviderContainerInstanceCreationExpression expression,
+  ) {}
+
+  @override
   void visitConsumerStateDeclaration(ConsumerStateDeclaration declaration) {}
 
   @override
@@ -279,6 +310,24 @@ class SimpleRiverpodAstVisitor extends RiverpodAstVisitor {
 }
 
 class UnimplementedRiverpodAstVisitor extends RiverpodAstVisitor {
+  @override
+  void visitProviderScopeInstanceCreationExpression(
+    ProviderScopeInstanceCreationExpression container,
+  ) {
+    throw UnimplementedError(
+      'implement visitProviderScopeInstanceCreationExpression',
+    );
+  }
+
+  @override
+  void visitProviderContainerInstanceCreationExpression(
+    ProviderContainerInstanceCreationExpression expression,
+  ) {
+    throw UnimplementedError(
+      'implement visitProviderContainerInstanceCreationExpression',
+    );
+  }
+
   @override
   void visitConsumerStateDeclaration(ConsumerStateDeclaration declaration) {
     throw UnimplementedError('implement visitConsumerStateDeclaration');
@@ -627,6 +676,22 @@ class RiverpodAstRegistry {
   ) {
     _onConsumerStateDeclaration.add(cb);
   }
+
+  final _onProviderScopeInstanceCreationExpression =
+      <void Function(ProviderScopeInstanceCreationExpression)>[];
+  void addProviderScopeInstanceCreationExpression(
+    void Function(ProviderScopeInstanceCreationExpression) cb,
+  ) {
+    _onProviderScopeInstanceCreationExpression.add(cb);
+  }
+
+  final _onProviderContainerInstanceCreationExpression =
+      <void Function(ProviderContainerInstanceCreationExpression)>[];
+  void addProviderContainerInstanceCreationExpression(
+    void Function(ProviderContainerInstanceCreationExpression) cb,
+  ) {
+    _onProviderContainerInstanceCreationExpression.add(cb);
+  }
 }
 
 // Voluntarily not extenting RiverpodAstVisitor to trigger a compilation error
@@ -635,6 +700,28 @@ class _RiverpodAstRegistryVisitor extends RiverpodAstVisitor {
   _RiverpodAstRegistryVisitor(this._registry);
 
   final RiverpodAstRegistry _registry;
+
+  @override
+  void visitProviderScopeInstanceCreationExpression(
+    ProviderScopeInstanceCreationExpression container,
+  ) {
+    container.visitChildren(this);
+    _runSubscriptions(
+      container,
+      _registry._onProviderScopeInstanceCreationExpression,
+    );
+  }
+
+  @override
+  void visitProviderContainerInstanceCreationExpression(
+    ProviderContainerInstanceCreationExpression expression,
+  ) {
+    expression.visitChildren(this);
+    _runSubscriptions(
+      expression,
+      _registry._onProviderContainerInstanceCreationExpression,
+    );
+  }
 
   @override
   void visitConsumerStateDeclaration(ConsumerStateDeclaration declaration) {
