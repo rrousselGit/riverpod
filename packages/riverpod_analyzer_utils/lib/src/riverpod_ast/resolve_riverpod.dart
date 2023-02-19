@@ -24,6 +24,11 @@ class ResolvedRiverpodLibraryResult extends RiverpodAst {
 
   final errors = <RiverpodAnalysisError>[];
 
+  final providerScopeInstanceCreationExpressions =
+      <ProviderScopeInstanceCreationExpression>[];
+  final providerContainerInstanceCreationExpressions =
+      <ProviderContainerInstanceCreationExpression>[];
+
   final statelessProviderDeclarations = <StatelessProviderDeclaration>[];
   final statefulProviderDeclarations = <StatefulProviderDeclaration>[];
 
@@ -50,6 +55,13 @@ class ResolvedRiverpodLibraryResult extends RiverpodAst {
 
   @override
   void visitChildren(RiverpodAstVisitor visitor) {
+    for (final declaration in providerScopeInstanceCreationExpressions) {
+      declaration.accept(visitor);
+    }
+    for (final declaration in providerContainerInstanceCreationExpressions) {
+      declaration.accept(visitor);
+    }
+
     for (final declaration in statelessProviderDeclarations) {
       declaration.accept(visitor);
     }
@@ -89,7 +101,7 @@ mixin _ParseRefInvocationMixin on RecursiveAstVisitor<void> {
   void visitMethodInvocation(MethodInvocation node) {
     void superCall() => super.visitMethodInvocation(node);
 
-    final refInvocation = RefInvocation.parse(node, superCall: superCall);
+    final refInvocation = RefInvocation._parse(node, superCall: superCall);
     if (refInvocation != null) {
       visitRefInvocation(refInvocation);
       // Don't call super as RefInvocation should already be recursive
@@ -97,7 +109,7 @@ mixin _ParseRefInvocationMixin on RecursiveAstVisitor<void> {
     }
 
     final widgetRefInvocation =
-        WidgetRefInvocation.parse(node, superCall: superCall);
+        WidgetRefInvocation._parse(node, superCall: superCall);
     if (widgetRefInvocation != null) {
       visitWidgetRefInvocation(widgetRefInvocation);
       // Don't call super as WidgetRefInvocation should already be recursive
@@ -106,6 +118,40 @@ mixin _ParseRefInvocationMixin on RecursiveAstVisitor<void> {
 
     super.visitMethodInvocation(node);
   }
+
+  @override
+  void visitInstanceCreationExpression(InstanceCreationExpression node) {
+    final providerScopeInstanceCreationExpression =
+        ProviderScopeInstanceCreationExpression._parse(node);
+    if (providerScopeInstanceCreationExpression != null) {
+      visitProviderScopeInstanceCreationExpression(
+        providerScopeInstanceCreationExpression,
+      );
+      // Don't call super as ProviderScopeInstanceCreationExpression should
+      // already be recursive
+      return;
+    }
+
+    final providerContainerInstanceCreationExpression =
+        ProviderContainerInstanceCreationExpression._parse(node);
+    if (providerContainerInstanceCreationExpression != null) {
+      visitProviderContainerInstanceCreationExpression(
+        providerContainerInstanceCreationExpression,
+      );
+      // Don't call super as ProviderContainerInstanceCreationExpression should
+      // already be recursive
+      return;
+    }
+
+    super.visitInstanceCreationExpression(node);
+  }
+
+  void visitProviderScopeInstanceCreationExpression(
+    ProviderScopeInstanceCreationExpression expression,
+  );
+  void visitProviderContainerInstanceCreationExpression(
+    ProviderContainerInstanceCreationExpression expression,
+  );
 
   void visitRefInvocation(RefInvocation invocation);
 
@@ -157,7 +203,7 @@ class _ParseRiverpodUnitVisitor extends RecursiveAstVisitor<void>
 
   @override
   void visitClassDeclaration(ClassDeclaration node) {
-    final declaration = StatefulProviderDeclaration.parse(node);
+    final declaration = StatefulProviderDeclaration._parse(node, this);
     if (declaration != null) {
       result.statefulProviderDeclarations.add(declaration);
       declaration._parent = result;
@@ -165,7 +211,7 @@ class _ParseRiverpodUnitVisitor extends RecursiveAstVisitor<void>
       return;
     }
 
-    final consumerDeclaration = ConsumerDeclaration.parse(node);
+    final consumerDeclaration = ConsumerDeclaration._parse(node, this);
     if (consumerDeclaration != null) {
       consumerDeclaration._parent = result;
       consumerDeclaration.accept(_AddConsumerDeclarationVisitor(result));
@@ -178,7 +224,7 @@ class _ParseRiverpodUnitVisitor extends RecursiveAstVisitor<void>
 
   @override
   void visitFunctionDeclaration(FunctionDeclaration node) {
-    final declaration = StatelessProviderDeclaration.parse(node);
+    final declaration = StatelessProviderDeclaration._parse(node, this);
     if (declaration != null) {
       result.statelessProviderDeclarations.add(declaration);
       declaration._parent = result;
@@ -191,7 +237,7 @@ class _ParseRiverpodUnitVisitor extends RecursiveAstVisitor<void>
 
   @override
   void visitVariableDeclaration(VariableDeclaration node) {
-    final declaration = LegacyProviderDeclaration.parse(node);
+    final declaration = LegacyProviderDeclaration._parse(node, this);
     if (declaration != null) {
       result.legacyProviderDeclarations.add(declaration);
       declaration._parent = result;
@@ -212,5 +258,21 @@ class _ParseRiverpodUnitVisitor extends RecursiveAstVisitor<void>
   void visitWidgetRefInvocation(WidgetRefInvocation invocation) {
     result.unknownWidgetRefInvocations.add(invocation);
     invocation._parent = result;
+  }
+
+  @override
+  void visitProviderContainerInstanceCreationExpression(
+    ProviderContainerInstanceCreationExpression expression,
+  ) {
+    result.providerContainerInstanceCreationExpressions.add(expression);
+    expression._parent = result;
+  }
+
+  @override
+  void visitProviderScopeInstanceCreationExpression(
+    ProviderScopeInstanceCreationExpression expression,
+  ) {
+    result.providerScopeInstanceCreationExpressions.add(expression);
+    expression._parent = result;
   }
 }

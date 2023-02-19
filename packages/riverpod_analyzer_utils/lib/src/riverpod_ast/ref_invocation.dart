@@ -7,8 +7,7 @@ abstract class RefInvocation extends RiverpodAst
     required this.function,
   });
 
-  @internal
-  static RefInvocation? parse(
+  static RefInvocation? _parse(
     MethodInvocation node, {
     required void Function() superCall,
   }) {
@@ -95,7 +94,7 @@ class RefWatchInvocation extends RefDependencyInvocation {
       'Argument error, function is not a ref.watch function',
     );
 
-    final providerListenableExpression = ProviderListenableExpression.parse(
+    final providerListenableExpression = ProviderListenableExpression._parse(
       node.argumentList.positionalArguments().singleOrNull,
     );
     if (providerListenableExpression == null) return null;
@@ -137,7 +136,7 @@ class RefReadInvocation extends RefDependencyInvocation {
       'Argument error, function is not a ref.read function',
     );
 
-    final providerListenableExpression = ProviderListenableExpression.parse(
+    final providerListenableExpression = ProviderListenableExpression._parse(
       node.argumentList.positionalArguments().singleOrNull,
     );
     if (providerListenableExpression == null) return null;
@@ -185,7 +184,7 @@ class RefListenInvocation extends RefDependencyInvocation {
     final listener = positionalArgs.elementAtOrNull(1);
     if (listener == null) return null;
 
-    final providerListenableExpression = ProviderListenableExpression.parse(
+    final providerListenableExpression = ProviderListenableExpression._parse(
       positionalArgs.firstOrNull,
     );
     if (providerListenableExpression == null) return null;

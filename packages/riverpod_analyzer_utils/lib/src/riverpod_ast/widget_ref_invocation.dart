@@ -7,8 +7,7 @@ abstract class WidgetRefInvocation extends RiverpodAst
     required this.function,
   });
 
-  @internal
-  static WidgetRefInvocation? parse(
+  static WidgetRefInvocation? _parse(
     MethodInvocation node, {
     required void Function() superCall,
   }) {
@@ -90,7 +89,7 @@ class WidgetRefWatchInvocation extends WidgetRefInvocation {
       'Argument error, function is not a ref.watch function',
     );
 
-    final providerListenableExpression = ProviderListenableExpression.parse(
+    final providerListenableExpression = ProviderListenableExpression._parse(
       node.argumentList.positionalArguments().singleOrNull,
     );
     if (providerListenableExpression == null) return null;
@@ -134,7 +133,7 @@ class WidgetRefReadInvocation extends WidgetRefInvocation {
       'Argument error, function is not a ref.read function',
     );
 
-    final providerListenableExpression = ProviderListenableExpression.parse(
+    final providerListenableExpression = ProviderListenableExpression._parse(
       node.argumentList.positionalArguments().singleOrNull,
     );
     if (providerListenableExpression == null) return null;
@@ -183,7 +182,7 @@ class WidgetRefListenInvocation extends WidgetRefInvocation {
     final listener = positionalArgs.elementAtOrNull(1);
     if (listener == null) return null;
 
-    final providerListenableExpression = ProviderListenableExpression.parse(
+    final providerListenableExpression = ProviderListenableExpression._parse(
       positionalArgs.firstOrNull,
     );
     if (providerListenableExpression == null) return null;
@@ -234,7 +233,7 @@ class WidgetRefListenManualInvocation extends WidgetRefInvocation {
     final listener = positionalArgs.elementAtOrNull(1);
     if (listener == null) return null;
 
-    final providerListenableExpression = ProviderListenableExpression.parse(
+    final providerListenableExpression = ProviderListenableExpression._parse(
       positionalArgs.firstOrNull,
     );
     if (providerListenableExpression == null) return null;

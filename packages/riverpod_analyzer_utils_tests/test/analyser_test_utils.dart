@@ -167,6 +167,32 @@ class _ParentRiverpodVisitor extends RecursiveRiverpodAstVisitor {
   final RiverpodAst? expectedParent;
 
   @override
+  void visitProviderScopeInstanceCreationExpression(
+    ProviderScopeInstanceCreationExpression declaration,
+  ) {
+    expect(
+      declaration.parent,
+      expectedParent,
+      reason:
+          'Node ${declaration.runtimeType} should have $expectedParent as parent',
+    );
+    declaration.visitChildren(_ParentRiverpodVisitor(declaration));
+  }
+
+  @override
+  void visitProviderContainerInstanceCreationExpression(
+    ProviderContainerInstanceCreationExpression declaration,
+  ) {
+    expect(
+      declaration.parent,
+      expectedParent,
+      reason:
+          'Node ${declaration.runtimeType} should have $expectedParent as parent',
+    );
+    declaration.visitChildren(_ParentRiverpodVisitor(declaration));
+  }
+
+  @override
   void visitConsumerStateDeclaration(ConsumerStateDeclaration declaration) {
     expect(
       declaration.parent,
@@ -430,6 +456,26 @@ class _ParentRiverpodVisitor extends RecursiveRiverpodAstVisitor {
 }
 
 class RiverpodAnalysisResult extends RecursiveRiverpodAstVisitor {
+  final providerContainerInstanceCreationExpressions =
+      <ProviderContainerInstanceCreationExpression>[];
+  @override
+  void visitProviderContainerInstanceCreationExpression(
+    ProviderContainerInstanceCreationExpression expression,
+  ) {
+    super.visitProviderContainerInstanceCreationExpression(expression);
+    providerContainerInstanceCreationExpressions.add(expression);
+  }
+
+  final providerScopeInstanceCreationExpressions =
+      <ProviderScopeInstanceCreationExpression>[];
+  @override
+  void visitProviderScopeInstanceCreationExpression(
+    ProviderScopeInstanceCreationExpression expression,
+  ) {
+    super.visitProviderScopeInstanceCreationExpression(expression);
+    providerScopeInstanceCreationExpressions.add(expression);
+  }
+
   final consumerStateDeclarations = <ConsumerStateDeclaration>[];
   @override
   void visitConsumerStateDeclaration(ConsumerStateDeclaration declaration) {
