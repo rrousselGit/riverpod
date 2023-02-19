@@ -10,7 +10,6 @@ class ProviderListenableExpression extends RiverpodAst {
     required this.familyArguments,
   });
 
-  @internal
   static ProviderListenableExpression? _parse(Expression? expression) {
     if (expression == null) return null;
 
