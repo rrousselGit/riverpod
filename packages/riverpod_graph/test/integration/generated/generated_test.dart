@@ -2,38 +2,39 @@ import 'package:test/test.dart';
 import 'package:test_process/test_process.dart';
 
 void main() {
-  // TODO(ValentinVignal): Support the generated families.
-  test('It should log the structure of the generated project', () async {
-    final process = await TestProcess.start(
-      'dart',
-      const [
-        'run',
-        'riverpod_graph',
-        'test/integration/generated/golden',
-      ],
-    );
-
-    final stdoutList = <String>[];
-    while (await process.stdout.hasNext) {
-      stdoutList.add(await process.stdout.next);
-    }
-
-    expect(
-      stdoutList.first,
-      allOf(
-        [
-          startsWith('Analyzing'),
-          endsWith(
-            'packages/riverpod_graph/test/integration/generated/golden ...',
-          ),
+  group('mermaid format', () {
+    // TODO(ValentinVignal): Support the generated families.
+    test('It should log the structure of the generated project', () async {
+      final process = await TestProcess.start(
+        'dart',
+        const [
+          'run',
+          'riverpod_graph',
+          'test/integration/generated/golden',
         ],
-      ),
-      reason: 'It should log the analyzed folder',
-    );
+      );
 
-    expect(
-      stdoutList.sublist(1).join('\n'),
-      r'''
+      final stdoutList = <String>[];
+      while (await process.stdout.hasNext) {
+        stdoutList.add(await process.stdout.next);
+      }
+
+      expect(
+        stdoutList.first,
+        allOf(
+          [
+            startsWith('Analyzing'),
+            endsWith(
+              'packages/riverpod_graph/test/integration/generated/golden ...',
+            ),
+          ],
+        ),
+        reason: 'It should log the analyzed folder',
+      );
+
+      expect(
+        stdoutList.sublist(1).join('\n'),
+        r'''
 flowchart TB
   subgraph Arrows
     direction LR
@@ -68,8 +69,55 @@ flowchart TB
   publicProvider ==> familyProvider;
   _privateProvider[[_privateProvider]];
   publicProvider ==> _privateProvider;''',
-      reason: 'It should log the riverpod graph',
-    );
-    await process.shouldExit(0);
+        reason: 'It should log the riverpod graph',
+      );
+      await process.shouldExit(0);
+    });
+  });
+  group('d2 format', () {
+    test('It should log the structure of the generated project', () async {
+      final process = await TestProcess.start(
+        'dart',
+        const [
+          'run',
+          'riverpod_graph',
+          'test/integration/generated/golden',
+          '-f',
+          'd2',
+        ],
+      );
+
+      final stdoutList = <String>[];
+      while (await process.stdout.hasNext) {
+        stdoutList.add(await process.stdout.next);
+      }
+
+      expect(
+        stdoutList.first,
+        allOf(
+          [
+            startsWith('Analyzing'),
+            endsWith(
+              'packages/riverpod_graph/test/integration/generated/golden ...',
+            ),
+          ],
+        ),
+        reason: 'It should log the analyzed folder',
+      );
+
+      expect(
+        stdoutList.sublist(1).join('\n'),
+        r'''
+publicProvider -> publicClassProvider: {style.stroke-width: 4}
+publicProvider -> _privateClassProvider: {style.stroke-width: 4}
+publicProvider -> familyClassProvider: {style.stroke-width: 4}
+publicProvider -> supports$InClassNameProvider: {style.stroke-width: 4}
+publicProvider -> supports$inNamesProvider: {style.stroke-width: 4}
+publicProvider -> familyProvider: {style.stroke-width: 4}
+publicProvider -> _privateProvider: {style.stroke-width: 4}''',
+        reason: 'It should log the riverpod graph',
+      );
+      await process.shouldExit(0);
+    });
   });
 }
