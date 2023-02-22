@@ -7,7 +7,7 @@ class AvoidBuildContextInProvider extends DartLintRule {
   static const _code = LintCode(
       name: 'avoid_buildcontext_in_providers',
       problemMessage:
-          'Providers should pass BuildContext to any of its methods');
+          'Providers should pass BuildContext to any of its methods',);
 
   @override
   void run(
