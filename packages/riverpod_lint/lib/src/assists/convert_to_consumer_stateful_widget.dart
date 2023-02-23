@@ -91,17 +91,17 @@ class ConvertToConsumerStatefulWidget extends RiverpodAssist {
       if (createStateMethod != null) {
         final returnTypeString = createStateMethod.returnType?.toSource() ?? '';
         if (returnTypeString != stateClass.name.lexeme) {
-          // Replace State<MyWidget> with MyWidgetState
+          // Replace State<MyWidget> with ConsumerState<MyWidget>
           builder.addSimpleReplacement(
             createStateMethod.returnType!.sourceRange,
-            stateClass.name.lexeme,
+            'ConsumerState<${widgetClass.name}>',
           );
         }
       }
 
       final stateExtends = stateClass.extendsClause;
       if (stateExtends != null) {
-        // Replace State<MyWidget> with MyWidgetState
+        // Replace State<MyWidget> with ConsumerState<MyWidget>
         builder.addSimpleReplacement(
           stateExtends.superclass.sourceRange,
           'ConsumerState<${widgetClass.name}>',
@@ -167,7 +167,7 @@ class ConvertToConsumerStatefulWidget extends RiverpodAssist {
       // Split the class into two classes right before the build method
       builder.addSimpleInsertion(buildMethod.offset, '''
 @override
-  $createdStateClassName createState() => $createdStateClassName();
+  ConsumerState<${widgetClass.name.lexeme}> createState() => $createdStateClassName();
 }
 
 class $createdStateClassName extends ConsumerState<${widgetClass.name}> {
