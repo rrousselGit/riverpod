@@ -1,5 +1,6 @@
 # Unreleased minor
 
+- Fix "convert to ConsumerStatefulWidget" assist on private widget
 - Added `provider_dependencies` lint.
   This checks the validity of the `@Riverpod(dependencies: )` parameter, warning against
   missing or extra dependencies.
