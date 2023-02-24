@@ -42,6 +42,7 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
 - [All the lints](#all-the-lints)
   - [missing\_provider\_scope](#missing_provider_scope)
   - [provider\_dependencies (riverpod\_generator only)](#provider_dependencies-riverpod_generator-only)
+  - [scoped\_providers\_should\_specify\_dependencies (generator only)](#scoped_providers_should_specify_dependencies-generator-only)
   - [avoid\_manual\_providers\_as\_generated\_provider\_depenency](#avoid_manual_providers_as_generated_provider_depenency)
   - [provider\_parameters](#provider_parameters)
   - [stateless\_ref](#stateless_ref)
@@ -240,6 +241,74 @@ int example(ExampleRef ref) {
 int example(ExampleRef ref) {
   // rootProvider is not a scoped provider. As such it shouldn't be listed in "dependencies"
   ref.watch(rootProvider);
+}
+```
+
+### scoped_providers_should_specify_dependencies (generator only)
+
+Providers that do not specify "dependencies" shouldn't be overridden in a
+`ProviderScope`/`ProviderContainer` that is possibly not at the root of the tree.
+
+Consider the following providers:
+
+```dart
+@Riverpod(dependencies: [])
+int scoped(ScopedRef ref) => 0;
+
+@riverpod
+int root(RootRef ref) => 0;
+```
+
+(Providers defined without `riverpod_generator` are not supported)
+
+**Good**
+
+```dart
+void main() {
+  runApp(
+    ProviderScope(
+      // This is the main ProviderScope. All providers can be overridden there
+      overrides: [
+        rootProvider.overrideWith(...),
+        scopedProvider.overrideWith(...),
+      ],
+      child: MyApp(),
+    ),
+  );
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ProviderScope(
+      // This ProviderScope is not the root one, so only providers with "dependencies"
+      // can be specified.
+      overrides: [
+        scopedProvider.overrideWith(...),
+      ],
+      child: Container(),
+    );
+  }
+}
+```
+
+**Bad**:
+
+```dart
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ProviderScope(
+        // This ProviderScope is not the root one, so only providers with "dependencies"
+      // can be specified.
+      overrides: [
+        // rootProvider does not specify "dependencies" and therefore should not
+        // be overridden here.
+        rootProvider.overrideWith(...),
+      ],
+      child: Container(),
+    );
+  }
 }
 ```
 

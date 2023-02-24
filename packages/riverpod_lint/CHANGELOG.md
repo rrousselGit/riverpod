@@ -11,6 +11,9 @@
   This lint warns if a generated provider depends on a non-generated provider,
   as this would break the `provider_dependencies` lint.
 
+- Added `scoped_providers_should_specify_dependencies` lint.
+  This lint warns if a generated provider is overriden in a scoped ProviderScope/ProviderContainer and does not specifies `@Riverpod(dependencies: ...)`.
+
 - Fix exception thrown when the analyzed file has some syntax errors.
 
 # 1.0.1
