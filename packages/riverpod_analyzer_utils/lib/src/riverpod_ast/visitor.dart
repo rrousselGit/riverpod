@@ -1,6 +1,13 @@
 part of '../riverpod_ast.dart';
 
 abstract class RiverpodAstVisitor {
+  void visitProviderOverrideList(
+    ProviderOverrideList overrideList,
+  );
+  void visitProviderOverrideExpression(
+    ProviderOverrideExpression expression,
+  );
+
   void visitResolvedRiverpodUnit(ResolvedRiverpodLibraryResult result);
 
   void visitProviderScopeInstanceCreationExpression(
@@ -66,6 +73,20 @@ abstract class RiverpodAstVisitor {
 }
 
 class RecursiveRiverpodAstVisitor extends RiverpodAstVisitor {
+  @override
+  void visitProviderOverrideList(
+    ProviderOverrideList overrideList,
+  ) {
+    overrideList.visitChildren(this);
+  }
+
+  @override
+  void visitProviderOverrideExpression(
+    ProviderOverrideExpression expression,
+  ) {
+    expression.visitChildren(this);
+  }
+
   @override
   void visitProviderScopeInstanceCreationExpression(
     ProviderScopeInstanceCreationExpression container,
@@ -213,6 +234,16 @@ class RecursiveRiverpodAstVisitor extends RiverpodAstVisitor {
 
 class SimpleRiverpodAstVisitor extends RiverpodAstVisitor {
   @override
+  void visitProviderOverrideList(
+    ProviderOverrideList overrideList,
+  ) {}
+
+  @override
+  void visitProviderOverrideExpression(
+    ProviderOverrideExpression expression,
+  ) {}
+
+  @override
   void visitProviderScopeInstanceCreationExpression(
     ProviderScopeInstanceCreationExpression container,
   ) {}
@@ -310,6 +341,24 @@ class SimpleRiverpodAstVisitor extends RiverpodAstVisitor {
 }
 
 class UnimplementedRiverpodAstVisitor extends RiverpodAstVisitor {
+  @override
+  void visitProviderOverrideList(
+    ProviderOverrideList overrideList,
+  ) {
+    throw UnimplementedError(
+      'implement visitProviderOverrideList',
+    );
+  }
+
+  @override
+  void visitProviderOverrideExpression(
+    ProviderOverrideExpression expression,
+  ) {
+    throw UnimplementedError(
+      'implement visitProviderOverrideExpression',
+    );
+  }
+
   @override
   void visitProviderScopeInstanceCreationExpression(
     ProviderScopeInstanceCreationExpression container,
@@ -692,6 +741,19 @@ class RiverpodAstRegistry {
   ) {
     _onProviderContainerInstanceCreationExpression.add(cb);
   }
+
+  final _onProviderOverrideExpression =
+      <void Function(ProviderOverrideExpression)>[];
+  void addProviderOverrideExpression(
+    void Function(ProviderOverrideExpression) cb,
+  ) {
+    _onProviderOverrideExpression.add(cb);
+  }
+
+  final _onProviderOverrideList = <void Function(ProviderOverrideList)>[];
+  void addProviderOverrideList(void Function(ProviderOverrideList) cb) {
+    _onProviderOverrideList.add(cb);
+  }
 }
 
 // Voluntarily not extenting RiverpodAstVisitor to trigger a compilation error
@@ -700,6 +762,28 @@ class _RiverpodAstRegistryVisitor extends RiverpodAstVisitor {
   _RiverpodAstRegistryVisitor(this._registry);
 
   final RiverpodAstRegistry _registry;
+
+  @override
+  void visitProviderOverrideList(
+    ProviderOverrideList overrideList,
+  ) {
+    overrideList.visitChildren(this);
+    _runSubscriptions(
+      overrideList,
+      _registry._onProviderOverrideList,
+    );
+  }
+
+  @override
+  void visitProviderOverrideExpression(
+    ProviderOverrideExpression expression,
+  ) {
+    expression.visitChildren(this);
+    _runSubscriptions(
+      expression,
+      _registry._onProviderOverrideExpression,
+    );
+  }
 
   @override
   void visitProviderScopeInstanceCreationExpression(

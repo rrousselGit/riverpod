@@ -3,6 +3,7 @@ part of '../riverpod_ast.dart';
 class ProviderContainerInstanceCreationExpression extends RiverpodAst {
   ProviderContainerInstanceCreationExpression._({
     required this.node,
+    required this.overrides,
   });
 
   static ProviderContainerInstanceCreationExpression? _parse(
@@ -14,10 +15,18 @@ class ProviderContainerInstanceCreationExpression extends RiverpodAst {
       return null;
     }
 
-    return ProviderContainerInstanceCreationExpression._(node: node);
+    final overrides = node.argumentList
+        .namedArguments()
+        .firstWhereOrNull((e) => e.name.label.name == 'overrides');
+
+    return ProviderContainerInstanceCreationExpression._(
+      node: node,
+      overrides: ProviderOverrideList._parse(overrides),
+    );
   }
 
   final InstanceCreationExpression node;
+  final ProviderOverrideList? overrides;
 
   @override
   void accept(RiverpodAstVisitor visitor) {
@@ -25,5 +34,7 @@ class ProviderContainerInstanceCreationExpression extends RiverpodAst {
   }
 
   @override
-  void visitChildren(RiverpodAstVisitor visitor) {}
+  void visitChildren(RiverpodAstVisitor visitor) {
+    overrides?.accept(visitor);
+  }
 }

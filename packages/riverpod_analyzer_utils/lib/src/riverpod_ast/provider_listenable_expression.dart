@@ -52,10 +52,6 @@ class ProviderListenableExpression extends RiverpodAst {
       } else if (expression is PropertyAccess) {
         // watch(expression.property)
         parseExpression(expression.target);
-      } else {
-        throw UnsupportedError(
-          'Unknown expression $expression (${expression.runtimeType})',
-        );
       }
     }
 
@@ -65,7 +61,8 @@ class ProviderListenableExpression extends RiverpodAst {
       node: expression,
       provider: provider,
       providerElement: providerElement,
-      familyArguments: familyArguments,
+      // Make sure `(){}()` doesn't report an argument list even though it's not a provider
+      familyArguments: provider == null ? null : familyArguments,
     );
   }
 
