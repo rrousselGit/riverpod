@@ -16,6 +16,8 @@
 
 - Fix exception thrown when the analyzed file has some syntax errors.
 
+- Fix provider_parameters when applied on Freezed classes
+
 # 1.0.1
 
 - Fixed an exception thrown when a file contains `fn?.call()`

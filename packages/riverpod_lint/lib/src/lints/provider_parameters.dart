@@ -42,12 +42,11 @@ class ProviderParameters extends RiverpodLintRule {
           // provider(() => 42) is bad because a new function will always be created
           reporter.reportErrorForNode(code, value);
         } else if (value is InstanceCreationExpression && !value.isConst) {
-          final instantiatedObject =
-              value.constructorName.staticElement?.redirectedConstructor ??
-                  value.constructorName.staticElement;
+          final instantiatedObject = value.constructorName.staticElement
+              ?.applyRedirectedConstructors();
 
           final operatorEqual =
-              instantiatedObject?.enclosingElement.getMethod('==');
+              instantiatedObject?.enclosingElement.recursiveGetMethod('==');
 
           final isEqualFromObjectMethod = operatorEqual?.enclosingElement
               .safeCast<ClassElement>()
@@ -61,5 +60,29 @@ class ProviderParameters extends RiverpodLintRule {
         }
       }
     });
+  }
+}
+
+extension on ConstructorElement {
+  ConstructorElement applyRedirectedConstructors() {
+    final redirected = redirectedConstructor;
+    if (redirected != null) return redirected.applyRedirectedConstructors();
+    return this;
+  }
+}
+
+extension on InterfaceElement {
+  MethodElement? recursiveGetMethod(String name) {
+    final thisMethod = getMethod(name);
+    if (thisMethod != null) return thisMethod;
+
+    for (final superType in allSupertypes) {
+      if (superType.isDartCoreObject) continue;
+
+      final superMethod = superType.getMethod(name);
+      if (superMethod != null) return superMethod;
+    }
+
+    return null;
   }
 }
