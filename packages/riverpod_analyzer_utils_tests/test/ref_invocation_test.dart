@@ -4,6 +4,38 @@ import 'package:test/test.dart';
 import 'analyser_test_utils.dart';
 
 void main() {
+  testSource('Decode watch expressions with syntax errors', source: '''
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+@ProviderFor(gibberish)
+final gibberishProvider = Provider((ref) => 0);
+
+final dependency = Provider((ref) {
+  ref.watch(gibberishProvider);
+});
+''', (resolver) async {
+    final result = await resolver.resolveRiverpodAnalyssiResult(
+      ignoreErrors: true,
+    );
+
+    expect(result.refWatchInvocations, hasLength(1));
+    expect(result.refInvocations.single.function.toSource(), 'watch');
+    expect(
+      result.refInvocations.single.node.toSource(),
+      'ref.watch(gibberishProvider)',
+    );
+    expect(result.refWatchInvocations.single.provider.familyArguments, null);
+    expect(
+      result.refWatchInvocations.single.provider.node.toSource(),
+      'gibberishProvider',
+    );
+    expect(
+      result.refWatchInvocations.single.provider.provider?.toSource(),
+      'gibberishProvider',
+    );
+    expect(result.refWatchInvocations.single.provider.providerElement, null);
+  });
+
   testSource('Decodes simple ref.watch usages', runGenerator: true, source: r'''
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

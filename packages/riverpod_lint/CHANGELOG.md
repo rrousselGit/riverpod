@@ -18,6 +18,8 @@
 
 - Fix provider_parameters when applied on Freezed classes
 
+- Fix exception when riverpod_lint analyzes files before riverpod_generator runs
+
 # 1.0.1
 
 - Fixed an exception thrown when a file contains `fn?.call()`

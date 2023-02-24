@@ -17,7 +17,15 @@ class RiverpodAnnotationElement {
 
   @internal
   static RiverpodAnnotationElement? parse(Element element) {
-    final annotation = riverpodType.firstAnnotationOfExact(element);
+    DartObject? annotation;
+    try {
+      annotation = riverpodType.firstAnnotationOfExact(element);
+    } catch (_) {
+      return RiverpodAnnotationElement(
+        keepAlive: false,
+        dependencies: null,
+      );
+    }
     if (annotation == null) return null;
 
     final dependencies = readDependencies(annotation)?.map((dep) {

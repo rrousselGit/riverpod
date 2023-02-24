@@ -26,8 +26,13 @@ class ProviderListenableExpression extends RiverpodAst {
         provider = expression;
         final element = expression.staticElement;
         if (element is PropertyAccessorElement) {
-          final annotation = _providerForAnnotationChecker
-              .firstAnnotationOfExact(element.variable);
+          DartObject? annotation;
+          try {
+            annotation = _providerForAnnotationChecker
+                .firstAnnotationOfExact(element.variable);
+          } catch (_) {
+            return;
+          }
 
           if (annotation == null) {
             providerElement =

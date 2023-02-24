@@ -3,6 +3,50 @@ import 'package:test/test.dart';
 import 'analyser_test_utils.dart';
 
 void main() {
+  testSource('Decode watch expressions with syntax errors', source: '''
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/material.dart';
+
+@ProviderFor(gibberish)
+final gibberishProvider = Provider((ref) => 0);
+
+class Example extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(gibberishProvider);
+    return Container();
+  }
+}
+''', (resolver) async {
+    final result = await resolver.resolveRiverpodAnalyssiResult(
+      ignoreErrors: true,
+    );
+
+    expect(result.widgetRefWatchInvocations, hasLength(1));
+    expect(result.widgetRefInvocations.single.function.toSource(), 'watch');
+    expect(
+      result.widgetRefInvocations.single.node.toSource(),
+      'ref.watch(gibberishProvider)',
+    );
+    expect(
+      result.widgetRefWatchInvocations.single.provider.familyArguments,
+      null,
+    );
+    expect(
+      result.widgetRefWatchInvocations.single.provider.node.toSource(),
+      'gibberishProvider',
+    );
+    expect(
+      result.widgetRefWatchInvocations.single.provider.provider?.toSource(),
+      'gibberishProvider',
+    );
+    expect(
+      result.widgetRefWatchInvocations.single.provider.providerElement,
+      null,
+    );
+  });
+
   testSource('Decodes simple ref.watch usages', runGenerator: true, source: r'''
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

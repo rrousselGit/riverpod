@@ -7,6 +7,8 @@
 
 - Parse `ProviderContainerInstanceCreationExpression` and `ProviderScopeInstanceCreationExpression`.
 
+- Fix exception when riverpod_lint analyzes files before riverpod_generator runs
+
 ## 0.0.2
 
 - Fix crash when parsing async generated providers
