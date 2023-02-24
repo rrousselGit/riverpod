@@ -1,5 +1,6 @@
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
 import '../riverpod_custom_lint.dart';
 
@@ -18,8 +19,16 @@ class ScopedProvidersShouldSpecifyDependencies extends RiverpodLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
+    void checkOverrideList(ProviderOverrideList? overrides) {
+      if (overrides == null) return;
+    }
+
     riverpodRegistry(context)
-      ..addProviderScopeInstanceCreationExpression((expression) {})
-      ..addProviderContainerInstanceCreationExpression((expression) {});
+      ..addProviderScopeInstanceCreationExpression((expression) {
+        checkOverrideList(expression.overrides);
+      })
+      ..addProviderContainerInstanceCreationExpression((expression) {
+        checkOverrideList(expression.overrides);
+      });
   }
 }
