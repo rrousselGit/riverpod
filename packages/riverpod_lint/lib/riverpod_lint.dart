@@ -11,6 +11,7 @@ import 'src/lints/generator_class_extends.dart';
 import 'src/lints/missing_provider_scope.dart';
 import 'src/lints/provider_dependencies.dart';
 import 'src/lints/provider_parameters.dart';
+import 'src/lints/scoped_providers_should_specify_dependencies.dart';
 import 'src/lints/stateless_ref.dart';
 
 PluginBase createPlugin() => _RiverpodPlugin();
@@ -24,6 +25,7 @@ class _RiverpodPlugin extends PluginBase {
         const GeneratorClassExtends(),
         const ProviderDependencies(),
         const AvoidManualProvidersAsGeneratedProviderDependency(),
+        const ScopedProvidersShouldSpecifyDependencies(),
 //         const AvoidDynamicProviders(),
 // //  "Avoid passing providers as parameter to objects"
 //         const AvoidExposingProviderRef(),
