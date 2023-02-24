@@ -1,7 +1,9 @@
 import 'package:flutter/widgets.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+part 'provider_parameters.freezed.dart';
 part 'provider_parameters.g.dart';
 
 final legacy = Provider.family<int, Object?>((ref, value) => 0);
@@ -34,6 +36,7 @@ final dep = Provider((ref) {
   // expect_lint: provider_parameters
   ref.watch(legacy(Object()));
   ref.watch(legacy(const Object()));
+  ref.watch(legacy(FreezedExample()));
 
   void fn() {}
 
@@ -77,6 +80,11 @@ final dep = Provider((ref) {
   ref.watch(generatorProvider(value: Factory.foo()));
   ref.watch(generatorProvider(value: const Factory.foo()));
 });
+
+@freezed
+class FreezedExample with _$FreezedExample {
+  factory FreezedExample() = _FreezedExample;
+}
 
 class Bar implements Factory {
   const Bar();
