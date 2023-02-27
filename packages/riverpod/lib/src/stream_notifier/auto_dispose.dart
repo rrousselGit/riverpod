@@ -1,6 +1,6 @@
 part of '../async_notifier.dart';
 
-/// {@macro riverpod.StreamNotifier}
+/// {@macro riverpod.streamNotifier}
 abstract class AutoDisposeStreamNotifier<State>
     extends BuildlessAutoDisposeAsyncNotifier<State> {
   /// {@macro riverpod.StreamNotifier.build}

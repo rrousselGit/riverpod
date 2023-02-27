@@ -1,6 +1,6 @@
 part of '../async_notifier.dart';
 
-/// {@macro riverpod.StreamNotifier}
+/// {@macro riverpod.streamNotifier}
 abstract class FamilyStreamNotifier<State, Arg>
     extends BuildlessAsyncNotifier<State> {
   /// {@template riverpod.notifier.family_arg}

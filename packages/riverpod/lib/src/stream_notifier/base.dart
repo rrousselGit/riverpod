@@ -1,6 +1,10 @@
 part of '../async_notifier.dart';
 
+/// {@template riverpod.streamNotifier}
+/// A variant of [AsyncNotifier] which has [build] creating a [Stream].
+/// {@endtemplate riverpod.streamNotifier}
 abstract class StreamNotifier<State> extends BuildlessAsyncNotifier<State> {
+  /// {@template riverpod.asyncnotifier.build}
   @visibleForOverriding
   Stream<State> build();
 }
