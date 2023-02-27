@@ -66,7 +66,6 @@ abstract class StreamProviderRef<State> implements Ref<AsyncValue<State>> {
 /// - [Provider], a provider that synchronously creates a value
 /// - [FutureProvider], a provider that asynchronously exposes a value that
 ///   can change over time.
-/// - [stream], to obtain the [Stream] created instead of an [AsyncValue].
 /// - [future], to obtain the last value emitted by a [Stream].
 /// - [StreamProvider.family], to create a [StreamProvider] from external parameters
 /// - [StreamProvider.autoDispose], to destroy the state of a [StreamProvider] when no longer needed.
@@ -109,6 +108,10 @@ class StreamProvider<T> extends _StreamProviderBase<T>
   @override
   late final AlwaysAliveRefreshable<Future<T>> future = _future(this);
 
+  @Deprecated(
+    '.stream will be removed in 3.0.0. As a replacement, either listen to the '
+    'provider itself (AsyncValue) or .future.',
+  )
   @override
   late final AlwaysAliveRefreshable<Stream<T>> stream = _stream(this);
 

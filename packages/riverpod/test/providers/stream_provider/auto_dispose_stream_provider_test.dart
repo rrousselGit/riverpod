@@ -59,6 +59,7 @@ void main() {
         overrides: [dep.overrideWithValue(42)],
       );
 
+      // ignore: deprecated_member_use_from_same_package
       await expectLater(container.read(provider.stream), emits(42));
       await expectLater(container.read(provider.future), completion(42));
       expect(container.read(provider), const AsyncData(42));
@@ -79,6 +80,7 @@ void main() {
       container.listen(provider, (prev, value) {});
 
       await expectLater(
+        // ignore: deprecated_member_use_from_same_package
         container.read(provider.stream),
         emits(42),
       );
@@ -104,6 +106,7 @@ void main() {
       verifyNoMoreInteractions(listener);
 
       await expectLater(
+        // ignore: deprecated_member_use_from_same_package
         container.read(provider.stream),
         emits(21),
       );
@@ -121,6 +124,7 @@ void main() {
 
       container.listen(provider, (_, __) {});
 
+      // ignore: deprecated_member_use_from_same_package
       expect(container.read(provider.stream), emits(0));
       expect(await container.read(provider.future), 0);
       expect(container.read(provider), const AsyncValue.data(0));
@@ -132,6 +136,7 @@ void main() {
             .copyWithPrevious(const AsyncValue<int>.data(0)),
       );
 
+      // ignore: deprecated_member_use_from_same_package
       expect(container.read(provider.stream), emits(1));
       expect(await container.read(provider.future), 1);
       expect(container.read(provider), const AsyncValue.data(1));
@@ -168,6 +173,7 @@ void main() {
       });
       final listener = Listener<Stream<int>>();
 
+      // ignore: deprecated_member_use_from_same_package
       container.listen(provider.stream, listener, fireImmediately: true);
 
       verifyOnly(listener, listener(any, any));
@@ -210,6 +216,7 @@ void main() {
         final root = createContainer();
         final container = createContainer(parent: root, overrides: [provider]);
 
+        // ignore: deprecated_member_use_from_same_package
         expect(await container.read(provider.stream).first, 0);
         expect(await container.read(provider.future), 0);
         expect(container.read(provider), const AsyncValue.data(0));
@@ -260,6 +267,7 @@ void main() {
           ],
         );
 
+        // ignore: deprecated_member_use_from_same_package
         expect(await container.read(provider.stream).first, 42);
         expect(await container.read(provider.future), 42);
         expect(container.read(provider), const AsyncValue.data(42));

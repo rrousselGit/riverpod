@@ -557,7 +557,7 @@ void main() {
     expect(callCount, 0);
     expect(sub.read(), const AsyncValue<int>.loading());
 
-    await container.read(computed.stream).first;
+    await container.read(computed.future);
 
     expect(sub.read(), const AsyncValue<int>.data(0));
     expect(callCount, 1);
@@ -572,7 +572,7 @@ void main() {
     );
     expect(callCount, 1);
 
-    await container.read(computed.stream).first;
+    await container.read(computed.future);
 
     expect(sub.read(), const AsyncValue<int>.data(42));
     expect(callCount, 2);

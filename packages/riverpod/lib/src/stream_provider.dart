@@ -47,6 +47,11 @@ abstract class _StreamProviderBase<T> extends ProviderBase<AsyncValue<T>> {
   });
 
   ProviderListenable<Future<T>> get future;
+
+  @Deprecated(
+    '.stream will be removed in 3.0.0. As a replacement, either listen to the '
+    'provider itself (AsyncValue) or .future.',
+  )
   ProviderListenable<Stream<T>> get stream;
 
   Stream<T> _create(covariant StreamProviderElement<T> ref);
