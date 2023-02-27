@@ -1,9 +1,28 @@
 part of '../async_notifier.dart';
 
+/// A [StreamNotifier] base class shared between family and non-family notifiers.
+///
+/// Not meant for public consumption outside of riverpod_generator
+@internal
+abstract class BuildlessStreamNotifier<State> extends AsyncNotifierBase<State> {
+  @override
+  late final StreamNotifierProviderElement<AsyncNotifierBase<State>, State>
+      _element;
+
+  @override
+  void _setElement(ProviderElementBase<AsyncValue<State>> element) {
+    _element = element
+        as StreamNotifierProviderElement<AsyncNotifierBase<State>, State>;
+  }
+
+  @override
+  StreamNotifierProviderRef<State> get ref => _element;
+}
+
 /// {@template riverpod.streamNotifier}
-/// A variant of [AsyncNotifier] which has [build] creating a [Stream].
+/// A variant of [StreamNotifier] which has [build] creating a [Stream].
 /// {@endtemplate riverpod.streamNotifier}
-abstract class StreamNotifier<State> extends BuildlessAsyncNotifier<State> {
+abstract class StreamNotifier<State> extends BuildlessStreamNotifier<State> {
   /// {@template riverpod.asyncnotifier.build}
   @visibleForOverriding
   Stream<State> build();
@@ -94,14 +113,11 @@ class StreamNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
 
 /// The element of [StreamNotifierProvider].
 class StreamNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
-    extends ProviderElementBase<AsyncValue<T>>
-    with FutureHandlerProviderElementMixin<T>
+    extends AsyncNotifierProviderElementBase<NotifierT, T>
     implements StreamNotifierProviderRef<T> {
   StreamNotifierProviderElement._(
     StreamNotifierProviderBase<NotifierT, T> super.provider,
-  );
-
-  final _notifierNotifier = ProxyElementValueNotifier<NotifierT>();
+  ) : super._();
 
   @override
   void create({required bool didChangeDependency}) {
@@ -111,9 +127,6 @@ class StreamNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
       return provider._createNotifier().._setElement(this);
     });
 
-    // TODO test notifier constructor throws -> provider emits AsyncError
-    // TODO test notifier constructor throws -> .notifier rethrows the error
-    // TODO test notifier constructor throws -> .future emits Future.error
     notifierResult.when(
       error: (error, stackTrace) {
         onError(AsyncError(error, stackTrace), seamless: !didChangeDependency);
@@ -125,25 +138,5 @@ class StreamNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
         );
       },
     );
-  }
-
-  @override
-  void visitChildren({
-    required void Function(ProviderElementBase<Object?> element) elementVisitor,
-    required void Function(ProxyElementValueNotifier<Object?> element)
-        notifierVisitor,
-  }) {
-    super.visitChildren(
-      elementVisitor: elementVisitor,
-      notifierVisitor: notifierVisitor,
-    );
-    notifierVisitor(_notifierNotifier);
-  }
-
-  @override
-  bool updateShouldNotify(AsyncValue<T> previous, AsyncValue<T> next) {
-    return _notifierNotifier.result?.stateOrNull
-            ?.updateShouldNotify(previous, next) ??
-        true;
   }
 }

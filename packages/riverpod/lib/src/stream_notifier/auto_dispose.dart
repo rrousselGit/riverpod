@@ -1,8 +1,28 @@
 part of '../async_notifier.dart';
 
+/// A [AutoDisposeStreamNotifier] base class shared between family and non-family notifiers.
+///
+/// Not meant for public consumption outside of riverpod_generator
+@internal
+abstract class BuildlessAutoDisposeStreamNotifier<State>
+    extends AsyncNotifierBase<State> {
+  @override
+  late final AutoDisposeStreamNotifierProviderElement<AsyncNotifierBase<State>,
+      State> _element;
+
+  @override
+  void _setElement(ProviderElementBase<AsyncValue<State>> element) {
+    _element = element as AutoDisposeStreamNotifierProviderElement<
+        AsyncNotifierBase<State>, State>;
+  }
+
+  @override
+  AutoDisposeStreamNotifierProviderRef<State> get ref => _element;
+}
+
 /// {@macro riverpod.streamNotifier}
 abstract class AutoDisposeStreamNotifier<State>
-    extends BuildlessAutoDisposeAsyncNotifier<State> {
+    extends BuildlessAutoDisposeStreamNotifier<State> {
   /// {@macro riverpod.StreamNotifier.build}
   @visibleForOverriding
   Stream<State> build();
@@ -31,12 +51,12 @@ class AutoDisposeStreamNotifierProviderImpl<
     super._createNotifier, {
     super.name,
     super.dependencies,
-    @Deprecated('Will be removed in 3.0.0') super.from,
-    @Deprecated('Will be removed in 3.0.0') super.argument,
-    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          from: null,
+          argument: null,
+          debugGetCreateSourceHash: null,
         );
 
   /// An implementation detail of Riverpod

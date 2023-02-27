@@ -444,15 +444,42 @@ mixin FutureHandlerProviderElementMixin<T>
 }
 
 /// The element of [AsyncNotifierProvider].
+abstract class AsyncNotifierProviderElementBase<
+        NotifierT extends AsyncNotifierBase<T>,
+        T> extends ProviderElementBase<AsyncValue<T>>
+    with FutureHandlerProviderElementMixin<T> {
+  AsyncNotifierProviderElementBase._(super.provider);
+
+  final _notifierNotifier = ProxyElementValueNotifier<NotifierT>();
+
+  @override
+  void visitChildren({
+    required void Function(ProviderElementBase<Object?> element) elementVisitor,
+    required void Function(ProxyElementValueNotifier<Object?> element)
+        notifierVisitor,
+  }) {
+    super.visitChildren(
+      elementVisitor: elementVisitor,
+      notifierVisitor: notifierVisitor,
+    );
+    notifierVisitor(_notifierNotifier);
+  }
+
+  @override
+  bool updateShouldNotify(AsyncValue<T> previous, AsyncValue<T> next) {
+    return _notifierNotifier.result?.stateOrNull
+            ?.updateShouldNotify(previous, next) ??
+        true;
+  }
+}
+
+/// The element of [AsyncNotifierProvider].
 class AsyncNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
-    extends ProviderElementBase<AsyncValue<T>>
-    with FutureHandlerProviderElementMixin<T>
+    extends AsyncNotifierProviderElementBase<NotifierT, T>
     implements AsyncNotifierProviderRef<T> {
   AsyncNotifierProviderElement._(
     AsyncNotifierProviderBase<NotifierT, T> super.provider,
-  );
-
-  final _notifierNotifier = ProxyElementValueNotifier<NotifierT>();
+  ) : super._();
 
   @override
   void create({required bool didChangeDependency}) {
@@ -476,26 +503,6 @@ class AsyncNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
         );
       },
     );
-  }
-
-  @override
-  void visitChildren({
-    required void Function(ProviderElementBase<Object?> element) elementVisitor,
-    required void Function(ProxyElementValueNotifier<Object?> element)
-        notifierVisitor,
-  }) {
-    super.visitChildren(
-      elementVisitor: elementVisitor,
-      notifierVisitor: notifierVisitor,
-    );
-    notifierVisitor(_notifierNotifier);
-  }
-
-  @override
-  bool updateShouldNotify(AsyncValue<T> previous, AsyncValue<T> next) {
-    return _notifierNotifier.result?.stateOrNull
-            ?.updateShouldNotify(previous, next) ??
-        true;
   }
 }
 

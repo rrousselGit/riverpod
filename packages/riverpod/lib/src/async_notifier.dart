@@ -27,7 +27,8 @@ part 'stream_notifier/family.dart';
 /// Not meant for public consumption.
 @internal
 abstract class AsyncNotifierBase<State> {
-  AsyncNotifierProviderElement<AsyncNotifierBase<State>, State> get _element;
+  AsyncNotifierProviderElementBase<AsyncNotifierBase<State>, State>
+      get _element;
 
   void _setElement(ProviderElementBase<AsyncValue<State>> element);
 

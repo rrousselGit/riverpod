@@ -2,7 +2,7 @@ part of '../async_notifier.dart';
 
 /// {@macro riverpod.streamNotifier}
 abstract class AutoDisposeFamilyStreamNotifier<State, Arg>
-    extends BuildlessAutoDisposeAsyncNotifier<State> {
+    extends BuildlessAutoDisposeStreamNotifier<State> {
   /// {@template riverpod.notifier.family_arg}
   late final Arg arg;
 
@@ -36,12 +36,12 @@ class AutoDisposeFamilyStreamNotifierProviderImpl<
     super._createNotifier, {
     super.name,
     super.dependencies,
-    @Deprecated('Will be removed in 3.0.0') super.from,
-    @Deprecated('Will be removed in 3.0.0') super.argument,
-    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          from: null,
+          argument: null,
+          debugGetCreateSourceHash: null,
         );
 
   /// An implementation detail of Riverpod

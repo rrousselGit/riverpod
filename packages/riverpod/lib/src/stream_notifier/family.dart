@@ -2,7 +2,7 @@ part of '../async_notifier.dart';
 
 /// {@macro riverpod.streamNotifier}
 abstract class FamilyStreamNotifier<State, Arg>
-    extends BuildlessAsyncNotifier<State> {
+    extends BuildlessStreamNotifier<State> {
   /// {@template riverpod.notifier.family_arg}
   /// The argument that was passed to this family.
   ///
@@ -47,12 +47,12 @@ class FamilyStreamNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>,
     super._createNotifier, {
     super.name,
     super.dependencies,
-    @Deprecated('Will be removed in 3.0.0') super.from,
-    @Deprecated('Will be removed in 3.0.0') super.argument,
-    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          from: null,
+          argument: null,
+          debugGetCreateSourceHash: null,
         );
 
   /// An implementation detail of Riverpod
