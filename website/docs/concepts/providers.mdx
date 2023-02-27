@@ -2,6 +2,14 @@
 title: Providers
 ---
 
+import creatingProvider from "./providers/creating_a_provider"
+import declaringManyProviders from "./providers/declaring_many_providers"
+import {
+  trimSnippet,
+  AutoSnippet,
+  ConditionalSnippet,
+} from "../../src/components/CodeSnippet";
+
 Now that we have installed [Riverpod], let's talk about "providers".
 
 Providers are the most important part of a [Riverpod] application.
@@ -38,11 +46,7 @@ Providers come in many variants, but they all work the same way.
 
 The most common usage is to declare them as global constants like so:
 
-```dart
-final myProvider = Provider((ref) {
-  return MyValue();
-});
-```
+<AutoSnippet language="dart" {...creatingProvider}></AutoSnippet>
 
 :::note
 Do not be frightened by the global aspect of providers.
@@ -77,10 +81,8 @@ You can declare as many providers as you want without limitations.
 As opposed to when using `package:provider`, [Riverpod] allows creating multiple
 providers exposing a state of the same "type":
 
-```dart
-final cityProvider = Provider((ref) => 'London');
-final countryProvider = Provider((ref) => 'England');
-```
+<AutoSnippet language="dart" {...declaringManyProviders}></AutoSnippet>
+
 
 The fact that both providers create a `String` does not cause any problem.
 :::
