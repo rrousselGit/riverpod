@@ -91,32 +91,6 @@ void main() {
           expect(container.read(provider), const AsyncData(1));
         });
 
-        test('performs seamless data > loading > error transition', () async {
-          final container = createContainer();
-          var result = Stream.value(42);
-          final provider = FutureProvider((ref) => result);
-
-          final sub = container.listen(provider.future, (_, __) {});
-
-          expect(container.read(provider), const AsyncLoading<int>());
-          expect(await sub.read(), 42);
-          expect(container.read(provider), const AsyncData<int>(42));
-
-          result = Stream.error('err', StackTrace.empty);
-          container.invalidate(provider);
-
-          expect(
-            container.read(provider),
-            const AsyncLoading<int>().copyWithPrevious(const AsyncData(42)),
-          );
-          await expectLater(sub.read(), throwsA('err'));
-          expect(
-            container.read(provider),
-            const AsyncError<int>('err', StackTrace.empty)
-                .copyWithPrevious(const AsyncData<int>(42)),
-          );
-        });
-
         test(
             'performs seamless:false copyWithPrevious if both triggered by a dependency change and ref.refresh',
             () async {
@@ -476,10 +450,13 @@ void main() {
           );
         });
 
-        test('notifies listeners when the setter is called', () {
+        test('notifies listeners when the setter is called', () async {
           final provider = factory.simpleTestProvider((ref) => Stream.value(0));
           final container = createContainer();
           final listener = Listener<AsyncValue<int>>();
+
+          // Skip the loading
+          await container.listen(provider.future, (previous, next) {}).read();
 
           container.listen(provider, listener);
 
@@ -687,6 +664,9 @@ void main() {
           });
           final container = createContainer();
 
+          // Skip the loading
+          await container.listen(provider.future, (previous, next) {}).read();
+
           container.listen(provider, (previous, next) {});
           final notifier = container.read(provider.notifier);
 
@@ -694,6 +674,7 @@ void main() {
           expect(container.read(provider), const AsyncData(0));
 
           container.read(dep.notifier).state++;
+          await container.read(provider.future);
 
           expect(container.read(provider), const AsyncData(1));
           expect(container.read(provider.notifier), same(notifier));
@@ -703,13 +684,16 @@ void main() {
 
       test(
           'Can override StreamNotifier.updateShouldNotify to change the default filter logic',
-          () {
+          () async {
         final provider = factory.simpleTestProvider<Equal<int>>(
           (ref) => Stream.value(Equal(42)),
           updateShouldNotify: (a, b) => a != b,
         );
         final container = createContainer();
         final listener = Listener<AsyncValue<Equal<int>>>();
+
+        // Skip the loading
+        await container.listen(provider.future, (previous, next) {}).read();
 
         container.listen(provider, listener);
         final notifier = container.read(provider.notifier);
@@ -735,6 +719,9 @@ void main() {
           final provider = factory.simpleTestProvider<int>(
             (ref) => Stream.value(0),
           );
+
+          // Skip the loading
+          await container.listen(provider.future, (previous, next) {}).read();
 
           final sub = container.listen(provider.notifier, (prev, next) {});
 
@@ -801,6 +788,9 @@ void main() {
             (ref) => Stream.value(1),
           );
 
+          // Skip the loading
+          await container.listen(provider.future, (previous, next) {}).read();
+
           final sub = container.listen(provider.notifier, (prev, next) {});
 
           expect(container.read(provider), const AsyncData(1));
@@ -863,7 +853,7 @@ void main() {
     });
   }
 
-  test('supports overrideWith', () {
+  test('supports overrideWith', () async {
     final provider = StreamNotifierProvider<StreamTestNotifier<int>, int>(
       () => StreamTestNotifier((ref) => Stream.value(0)),
     );
@@ -882,11 +872,15 @@ void main() {
       ],
     );
 
+    // Skip the loading
+    await container.listen(provider.future, (previous, next) {}).read();
+    await container.listen(autoDispose.future, (previous, next) {}).read();
+
     expect(container.read(provider).value, 42);
     expect(container.read(autoDispose).value, 84);
   });
 
-  test('supports family overrideWith', () {
+  test('supports family overrideWith', () async {
     final family =
         StreamNotifierProvider.family<StreamTestNotifierFamily<int>, int, int>(
       () => StreamTestNotifierFamily<int>((ref) => Stream.value(0)),
@@ -908,12 +902,18 @@ void main() {
       ],
     );
 
+    // Skip the loading
+    await container.listen(family(10).future, (previous, next) {}).read();
+    await container
+        .listen(autoDisposeFamily(10).future, (previous, next) {})
+        .read();
+
     expect(container.read(family(10)).value, 42);
     expect(container.read(autoDisposeFamily(10)).value, 84);
   });
 
   group('AutoDispose variant', () {
-    test('can watch autoDispose providers', () {
+    test('can watch autoDispose providers', () async {
       final dep = Provider.autoDispose((ref) => 0);
       final provider = AutoDisposeStreamNotifierProvider<
           AutoDisposeStreamTestNotifier<int>, int>(
@@ -922,6 +922,9 @@ void main() {
         }),
       );
       final container = createContainer();
+
+      // Skip the loading
+      await container.listen(provider.future, (previous, next) {}).read();
 
       expect(container.read(provider), const AsyncData(0));
     });
