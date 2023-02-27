@@ -72,6 +72,9 @@ class StatefulProviderTemplate extends Template {
         (returnType?.isDartAsyncFuture ?? false)) {
       notifierBaseType = '${leading}AsyncNotifier';
       providerType = '${leading}AsyncNotifierProvider';
+    } else if (returnType?.isDartAsyncStream ?? false) {
+      notifierBaseType = '${leading}StreamNotifier';
+      providerType = '${leading}StreamNotifierProvider';
     } else {
       notifierBaseType = '${leading}Notifier';
       providerType = '${leading}NotifierProvider';

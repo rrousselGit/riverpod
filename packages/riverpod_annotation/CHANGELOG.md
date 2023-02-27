@@ -1,3 +1,7 @@
+## Unreleased minor
+
+Export necessary utilites for providers returning a Stream.
+
 ## 1.2.1
 
 Bump minimum Riverpod version

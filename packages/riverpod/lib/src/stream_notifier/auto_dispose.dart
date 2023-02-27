@@ -87,8 +87,8 @@ class AutoDisposeStreamNotifierProviderImpl<
   }
 
   @override
-  Stream<T> runNotifierBuild(covariant AutoDisposeStreamNotifier<T> notifier) {
-    return notifier.build();
+  Stream<T> runNotifierBuild(AsyncNotifierBase<T> notifier) {
+    return (notifier as AutoDisposeStreamNotifier<T>).build();
   }
 
   /// {@macro riverpod.overridewith}

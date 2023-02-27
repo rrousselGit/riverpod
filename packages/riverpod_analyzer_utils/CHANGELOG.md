@@ -1,5 +1,7 @@
 ## Unreleased major
 
+- Decode generated StreamProviders.
+
 - Upcast `StatefulProviderDeclaratation.providerElement` &
   `StatelessProviderDeclaratation.providerElement` to their respective element type.
 

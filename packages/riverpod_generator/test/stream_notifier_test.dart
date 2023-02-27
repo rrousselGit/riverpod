@@ -3,16 +3,16 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:test/test.dart';
 
-import 'integration/async.dart';
+import 'integration/stream.dart';
 import 'utils.dart';
 
 void main() {
   test(
-      'Creates an AsyncNotifierProvider<T> if @riverpod is used on an async class',
+      'Creates a StreamNotifierProvider<T> if @riverpod is used on a Stream class',
       () {
     final container = createContainer();
 
-    final AutoDisposeAsyncNotifierProvider<PublicClass, String> provider =
+    final AutoDisposeStreamNotifierProvider<PublicClass, String> provider =
         publicClassProvider;
     final AsyncValue<String> result = container.read(publicClassProvider);
 
@@ -77,7 +77,7 @@ void main() {
       fifth: ['x42'],
     );
     // ignore: invalid_use_of_internal_member
-    final AutoDisposeAsyncNotifierProviderImpl<FamilyClass, String>
+    final AutoDisposeStreamNotifierProviderImpl<FamilyClass, String>
         futureProvider = provider;
 
     expect(provider.first, 42);
