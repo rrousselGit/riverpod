@@ -1,8 +1,8 @@
-part of '../stream_notifier.dart';
+part of '../async_notifier.dart';
 
 /// {@macro riverpod.StreamNotifier}
 abstract class AutoDisposeFamilyStreamNotifier<State, Arg>
-    extends BuildlessAutoDisposeStreamNotifier<State> {
+    extends BuildlessAutoDisposeAsyncNotifier<State> {
   /// {@template riverpod.notifier.family_arg}
   late final Arg arg;
 
@@ -14,7 +14,7 @@ abstract class AutoDisposeFamilyStreamNotifier<State, Arg>
 
   /// {@macro riverpod.StreamNotifier.build}
   @visibleForOverriding
-  FutureOr<State> build(Arg arg);
+  Stream<State> build(Arg arg);
 }
 
 /// {@macro riverpod.StreamNotifier}
@@ -29,7 +29,7 @@ typedef AutoDisposeFamilyStreamNotifierProvider<
 /// [StreamNotifierProvider] at the same time.
 @internal
 class AutoDisposeFamilyStreamNotifierProviderImpl<
-        NotifierT extends StreamNotifierBase<T>, T, Arg>
+        NotifierT extends AsyncNotifierBase<T>, T, Arg>
     extends StreamNotifierProviderBase<NotifierT, T> with AsyncSelector<T> {
   /// {@macro riverpod.async_notifier_family_provider}
   AutoDisposeFamilyStreamNotifierProviderImpl(
@@ -57,10 +57,11 @@ class AutoDisposeFamilyStreamNotifierProviderImpl<
   });
 
   @override
-  late final Refreshable<NotifierT> notifier = _notifier<NotifierT, T>(this);
+  late final Refreshable<NotifierT> notifier =
+      _streamNotifier<NotifierT, T>(this);
 
   @override
-  late final Refreshable<Future<T>> future = _future<T>(this);
+  late final Refreshable<Future<T>> future = _streamFuture<T>(this);
 
   @override
   AutoDisposeStreamNotifierProviderElement<NotifierT, T> createElement() {
@@ -68,7 +69,7 @@ class AutoDisposeFamilyStreamNotifierProviderImpl<
   }
 
   @override
-  FutureOr<T> runNotifierBuild(
+  Stream<T> runNotifierBuild(
     covariant AutoDisposeFamilyStreamNotifier<T, Arg> notifier,
   ) {
     return notifier.build(notifier.arg);

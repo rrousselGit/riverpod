@@ -72,10 +72,10 @@ class FamilyAsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T,
 
   @override
   late final AlwaysAliveRefreshable<NotifierT> notifier =
-      _notifier<NotifierT, T>(this);
+      _asyncNotifier<NotifierT, T>(this);
 
   @override
-  late final AlwaysAliveRefreshable<Future<T>> future = _future<T>(this);
+  late final AlwaysAliveRefreshable<Future<T>> future = _asyncFuture<T>(this);
 
   @override
   AsyncNotifierProviderElement<NotifierT, T> createElement() {

@@ -1,8 +1,8 @@
-part of '../stream_notifier.dart';
+part of '../async_notifier.dart';
 
 /// {@macro riverpod.StreamNotifier}
 abstract class FamilyStreamNotifier<State, Arg>
-    extends BuildlessStreamNotifier<State> {
+    extends BuildlessAsyncNotifier<State> {
   /// {@template riverpod.notifier.family_arg}
   /// The argument that was passed to this family.
   ///
@@ -24,7 +24,7 @@ abstract class FamilyStreamNotifier<State, Arg>
 
   /// {@macro riverpod.StreamNotifier.build}
   @visibleForOverriding
-  FutureOr<State> build(Arg arg);
+  Stream<State> build(Arg arg);
 }
 
 /// {@template riverpod.async_notifier_family_provider}
@@ -39,7 +39,7 @@ typedef StreamNotifierFamilyProvider<
 /// Not meant for public consumption.
 @visibleForTesting
 @internal
-class FamilyStreamNotifierProviderImpl<NotifierT extends StreamNotifierBase<T>,
+class FamilyStreamNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>,
         T, Arg> extends StreamNotifierProviderBase<NotifierT, T>
     with AlwaysAliveProviderBase<AsyncValue<T>>, AlwaysAliveAsyncSelector<T> {
   /// {@macro riverpod.async_notifier_family_provider}
@@ -72,10 +72,10 @@ class FamilyStreamNotifierProviderImpl<NotifierT extends StreamNotifierBase<T>,
 
   @override
   late final AlwaysAliveRefreshable<NotifierT> notifier =
-      _notifier<NotifierT, T>(this);
+      _streamNotifier<NotifierT, T>(this);
 
   @override
-  late final AlwaysAliveRefreshable<Future<T>> future = _future<T>(this);
+  late final AlwaysAliveRefreshable<Future<T>> future = _streamFuture<T>(this);
 
   @override
   StreamNotifierProviderElement<NotifierT, T> createElement() {
@@ -83,7 +83,7 @@ class FamilyStreamNotifierProviderImpl<NotifierT extends StreamNotifierBase<T>,
   }
 
   @override
-  FutureOr<T> runNotifierBuild(
+  Stream<T> runNotifierBuild(
     covariant FamilyStreamNotifier<T, Arg> notifier,
   ) {
     return notifier.build(notifier.arg);

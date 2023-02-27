@@ -16,10 +16,15 @@ part 'async_notifier/auto_dispose_family.dart';
 part 'async_notifier/base.dart';
 part 'async_notifier/family.dart';
 
+part 'stream_notifier.dart';
+part 'stream_notifier/auto_dispose.dart';
+part 'stream_notifier/auto_dispose_family.dart';
+part 'stream_notifier/base.dart';
+part 'stream_notifier/family.dart';
+
 /// A base class for [AsyncNotifier].
 ///
 /// Not meant for public consumption.
-@visibleForTesting
 @internal
 abstract class AsyncNotifierBase<State> {
   AsyncNotifierProviderElement<AsyncNotifierBase<State>, State> get _element;
@@ -121,7 +126,7 @@ abstract class AsyncNotifierBase<State> {
 }
 
 ProviderElementProxy<AsyncValue<T>, NotifierT>
-    _notifier<NotifierT extends AsyncNotifierBase<T>, T>(
+    _asyncNotifier<NotifierT extends AsyncNotifierBase<T>, T>(
   AsyncNotifierProviderBase<NotifierT, T> that,
 ) {
   return ProviderElementProxy<AsyncValue<T>, NotifierT>(
@@ -133,7 +138,7 @@ ProviderElementProxy<AsyncValue<T>, NotifierT>
   );
 }
 
-ProviderElementProxy<AsyncValue<T>, Future<T>> _future<T>(
+ProviderElementProxy<AsyncValue<T>, Future<T>> _asyncFuture<T>(
   AsyncNotifierProviderBase<AsyncNotifierBase<T>, T> that,
 ) {
   return ProviderElementProxy<AsyncValue<T>, Future<T>>(

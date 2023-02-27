@@ -1,53 +1,8 @@
-part of '../stream_notifier.dart';
+part of '../async_notifier.dart';
 
-/// A [StreamNotifier] base class shared between family and non-family notifiers.
-///
-/// Not meant for public consumption outside of riverpod_generator
-@internal
-abstract class BuildlessStreamNotifier<State>
-    extends StreamNotifierBase<State> {
-  @override
-  late final StreamNotifierProviderElement<StreamNotifierBase<State>, State>
-      _element;
-
-  @override
-  void _setElement(ProviderElementBase<AsyncValue<State>> element) {
-    _element = element
-        as StreamNotifierProviderElement<StreamNotifierBase<State>, State>;
-  }
-
-  @override
-  StreamNotifierProviderRef<State> get ref => _element;
-}
-
-/// {@template riverpod.StreamNotifier}
-/// A [Notifier] implementation that is asynchronously initialized.
-///
-/// It is commonly used for:
-/// - Caching a network request while also allowing to perform side-effects.
-///   For example, `build` could fetch information about the current "user".
-///   And the [StreamNotifier] could expose methods such as "setName",
-///   to allow changing the current user name.
-/// - Initializing a [Notifier] from an asynchronous source of data.
-///   For example, obtaining the initial state of [Notifier] from a local database.
-/// {@endtemplate}
-// TODO add usage example
-abstract class StreamNotifier<State> extends BuildlessStreamNotifier<State> {
-  /// {@template riverpod.StreamNotifier.build}
-  /// Initialize an [StreamNotifier].
-  ///
-  /// It is safe to use [Ref.watch] or [Ref.listen] inside this method.
-  ///
-  /// If a dependency of this [StreamNotifier] (when using [Ref.watch]) changes,
-  /// then [build] will be re-executed. On the other hand, the [StreamNotifier]
-  /// will **not** be recreated. Its instance will be preserved between
-  /// executions of [build].
-  ///
-  /// If this method throws or returns a future that fails, the error
-  /// will be caught and an [AsyncError] will be emitted.
-  /// {@endtemplate}
+abstract class StreamNotifier<State> extends BuildlessAsyncNotifier<State> {
   @visibleForOverriding
-  FutureOr<State> build();
+  Stream<State> build();
 }
 
 /// {@macro riverpod.providerrefbase}
@@ -65,7 +20,7 @@ typedef StreamNotifierProvider<NotifierT extends StreamNotifier<T>, T>
 /// [AutoDisposeStreamNotifierProvider] at the same time.
 @visibleForTesting
 @internal
-class StreamNotifierProviderImpl<NotifierT extends StreamNotifierBase<T>, T>
+class StreamNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
     extends StreamNotifierProviderBase<NotifierT, T>
     with AlwaysAliveProviderBase<AsyncValue<T>>, AlwaysAliveAsyncSelector<T> {
   /// {@macro riverpod.async_notifier_provider}
@@ -73,12 +28,12 @@ class StreamNotifierProviderImpl<NotifierT extends StreamNotifierBase<T>, T>
     super._createNotifier, {
     super.name,
     super.dependencies,
-    @Deprecated('Will be removed in 3.0.0') super.from,
-    @Deprecated('Will be removed in 3.0.0') super.argument,
-    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          from: null,
+          argument: null,
+          debugGetCreateSourceHash: null,
         );
 
   /// An implementation detail of Riverpod
@@ -101,10 +56,10 @@ class StreamNotifierProviderImpl<NotifierT extends StreamNotifierBase<T>, T>
 
   @override
   late final AlwaysAliveRefreshable<NotifierT> notifier =
-      _notifier<NotifierT, T>(this);
+      _streamNotifier<NotifierT, T>(this);
 
   @override
-  late final AlwaysAliveRefreshable<Future<T>> future = _future<T>(this);
+  late final AlwaysAliveRefreshable<Future<T>> future = _streamFuture<T>(this);
 
   @override
   StreamNotifierProviderElement<NotifierT, T> createElement() {
@@ -112,7 +67,7 @@ class StreamNotifierProviderImpl<NotifierT extends StreamNotifierBase<T>, T>
   }
 
   @override
-  FutureOr<T> runNotifierBuild(StreamNotifierBase<T> notifier) {
+  Stream<T> runNotifierBuild(AsyncNotifierBase<T> notifier) {
     return (notifier as StreamNotifier<T>).build();
   }
 
@@ -134,7 +89,7 @@ class StreamNotifierProviderImpl<NotifierT extends StreamNotifierBase<T>, T>
 }
 
 /// The element of [StreamNotifierProvider].
-class StreamNotifierProviderElement<NotifierT extends StreamNotifierBase<T>, T>
+class StreamNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
     extends ProviderElementBase<AsyncValue<T>>
     with FutureHandlerProviderElementMixin<T>
     implements StreamNotifierProviderRef<T> {
@@ -160,7 +115,7 @@ class StreamNotifierProviderElement<NotifierT extends StreamNotifierBase<T>, T>
         onError(AsyncError(error, stackTrace), seamless: !didChangeDependency);
       },
       data: (notifier) {
-        handleFuture(
+        handleStream(
           () => provider.runNotifierBuild(notifier),
           didChangeDependency: didChangeDependency,
         );
@@ -186,49 +141,5 @@ class StreamNotifierProviderElement<NotifierT extends StreamNotifierBase<T>, T>
     return _notifierNotifier.result?.stateOrNull
             ?.updateShouldNotify(previous, next) ??
         true;
-  }
-}
-
-extension<T> on Stream<T> {
-  void lastCancelable(
-    void Function(Future<T>, CancelAsyncSubscription) last, {
-    required Object Function() orElseError,
-  }) {
-    late StreamSubscription<T> subscription;
-    final completer = Completer<T>();
-
-    Result<T>? result;
-    subscription = listen(
-      (event) => result = Result.data(event),
-      // ignore: avoid_types_on_closure_parameters
-      onError: (Object error, StackTrace stackTrace) {
-        result = Result.error(error, stackTrace);
-      },
-      onDone: () {
-        if (result != null) {
-          result!.map(
-            data: (result) => completer.complete(result.state),
-            error: (result) {
-              // TODO: shoould this be reported to the zone?
-              completer.future.ignore();
-              completer.completeError(result.error, result.stackTrace);
-            },
-          );
-        } else {
-          // The error happens after the associated provider is disposed.
-          // As such, it's normally never read. Reporting this error as uncaught
-          // would cause too many false-positives. And the edge-cases that
-          // do reach this error will throw anyway
-          completer.future.ignore();
-
-          completer.completeError(
-            orElseError(),
-            StackTrace.current,
-          );
-        }
-      },
-    );
-
-    last(completer.future, subscription.cancel);
   }
 }
