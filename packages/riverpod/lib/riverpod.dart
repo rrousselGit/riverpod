@@ -16,7 +16,9 @@ export 'src/async_notifier.dart'
         StreamNotifierProviderImpl,
         AutoDisposeStreamNotifierProviderImpl,
         AutoDisposeFamilyStreamNotifierProviderImpl,
-        StreamNotifierProviderBase;
+        StreamNotifierProviderBase,
+        BuildlessAutoDisposeStreamNotifier,
+        BuildlessStreamNotifier;
 
 export 'src/common.dart' hide AsyncTransition;
 
