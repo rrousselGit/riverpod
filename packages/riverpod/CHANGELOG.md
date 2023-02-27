@@ -24,7 +24,7 @@
   Do:
 
   ```dart
-  final a = FuturProvider((ref) async {
+  final a = FutureProvider((ref) async {
     final e = await ref.watch(b.future);
     return Model(e);
   })
