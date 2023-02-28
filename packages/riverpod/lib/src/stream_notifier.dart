@@ -53,7 +53,7 @@ abstract class StreamNotifierProviderBase<
   ///
   /// ```dart
   /// Button(
-  ///   onTap: () => ref.read(stateNotifierProvider.notifer).increment(),
+  ///   onTap: () => ref.read(streamNotifierProvider.notifer).increment(),
   /// )
   /// ```
   ///

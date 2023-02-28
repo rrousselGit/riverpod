@@ -91,6 +91,8 @@ class StreamNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
 
   @override
   Stream<T> runNotifierBuild(AsyncNotifierBase<T> notifier) {
+    // Not using "covariant" as riverpod_generator subclasses this with a
+    // different notifier type
     return (notifier as StreamNotifier<T>).build();
   }
 

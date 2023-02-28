@@ -88,6 +88,8 @@ class AutoDisposeStreamNotifierProviderImpl<
 
   @override
   Stream<T> runNotifierBuild(AsyncNotifierBase<T> notifier) {
+    // Not using "covariant" as riverpod_generator subclasses this with a
+    // different notifier type
     return (notifier as AutoDisposeStreamNotifier<T>).build();
   }
 
