@@ -1,4 +1,4 @@
-## Unreleased minor
+## 2.3.0
 
 - Added `StreamNotifier` + `StreamNotifierProvider`.
   This is for building a `StreamProvider` while exposing ways to modify the stream.
@@ -49,7 +49,8 @@
 - Some restrictions on the `dependencies` parameter of providers have been lifted.
   It is no-longer necessary to include providers which do not themselves specify `dependencies`.
   All providers should specify `dependencies` if they are scoped at any point.
-- Annotate `Notifier.state` setter as protected.
+
+- Annotated `Notifier.state` setter as protected.
 
 ## 2.2.0
 

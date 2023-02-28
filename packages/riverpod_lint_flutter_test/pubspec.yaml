@@ -7,8 +7,8 @@ environment:
   flutter: ">=3.0.0"
 
 dependencies:
-  riverpod_annotation: ^1.0.3
-  hooks_riverpod: ^2.1.1
+  riverpod_annotation: ^2.0.0
+  hooks_riverpod: ^2.3.0
   flutter:
     sdk: flutter
   freezed_annotation: ^2.2.0
@@ -24,7 +24,7 @@ dev_dependencies:
   json_serializable: ^6.6.1
   riverpod_lint:
     path: ../riverpod_lint
-  riverpod_generator: ^1.0.3
+  riverpod_generator: ^2.0.0
 
 dependency_overrides:
   riverpod_generator:

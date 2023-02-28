@@ -1,6 +1,7 @@
-## Unreleased minor
+## 2.0.0
 
-Export necessary utilites for providers returning a Stream.
+- Export necessary utilites for providers returning a Stream.
+- Upgraded riverpod dependency
 
 ## 1.2.1
 

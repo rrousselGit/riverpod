@@ -1,4 +1,4 @@
-## Unreleased
+## 2.0.0
 
 - Add support for returning a `Stream` inside providers.
   This is equivalent to creating a `StreamProvider` using the "old" syntax.
