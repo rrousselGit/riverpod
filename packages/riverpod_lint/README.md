@@ -45,8 +45,9 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
   - [scoped\_providers\_should\_specify\_dependencies (generator only)](#scoped_providers_should_specify_dependencies-generator-only)
   - [avoid\_manual\_providers\_as\_generated\_provider\_depenency](#avoid_manual_providers_as_generated_provider_depenency)
   - [provider\_parameters](#provider_parameters)
-  - [stateless\_ref](#stateless_ref)
-  - [generator\_class\_extends](#generator_class_extends)
+  - [unsupported\_provider\_value (riverpod\_generator only)](#unsupported_provider_value-riverpod_generator-only)
+  - [stateless\_ref (riverpod\_generator only)](#stateless_ref-riverpod_generator-only)
+  - [generator\_class\_extends (riverpod\_generator only)](#generator_class_extends-riverpod_generator-only)
 - [All assists](#all-assists)
   - [Wrap widget with a `Consumer`](#wrap-widget-with-a-consumer)
   - [Wrap widget with a `ProviderScope`](#wrap-widget-with-a-providerscope)
@@ -369,7 +370,40 @@ ref.watch(myProvider(ClassWithNoCustomEqual()));
 ref.watch(myProvider([42]));
 ```
 
-### stateless_ref
+### unsupported_provider_value (riverpod_generator only)
+
+The riverpod_generator package does not support `StateNotifier`/`ChangeNotifier` and
+manually creating a `Notifier`/`AsyncNotifier`.
+
+This lints warns against unsupported value types.
+
+**Good**:
+
+```dart
+@riverpod
+int integer(IntegerRef ref) => 0;
+
+@riverpod
+class IntegerNotifier extends _$IntegerNotifier {
+  @override
+  int build() => 0;
+}
+```
+
+**Bad**:
+
+```dart
+// KO: riverpod_generator does not support creating StateNotifier/ChangeNotifiers/...
+// Instead annotate a class with @riverpod.
+@riverpod
+MyStateNotifier stateNotifier(StateNotifierRef ref) => MyStateNotifier();
+
+class MyStateNotifier extends StateNotifier<int> {
+  MyStateNotifier(): super(0);
+}
+```
+
+### stateless_ref (riverpod_generator only)
 
 Stateless providers must receive a ref matching the provider name as their first positional parameter.
 
@@ -392,7 +426,7 @@ int myProvider() => 0;
 int myProvider(int ref) => 0;
 ```
 
-### generator_class_extends
+### generator_class_extends (riverpod_generator only)
 
 Classes annotated by `@riverpod` must extend \_$ClassName
 

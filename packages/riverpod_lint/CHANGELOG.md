@@ -14,6 +14,9 @@
 - Added `scoped_providers_should_specify_dependencies` lint.
   This lint warns if a generated provider is overriden in a scoped ProviderScope/ProviderContainer and does not specifies `@Riverpod(dependencies: ...)`.
 
+- Added `unsupported_provider_value` lint. This warns against
+  using riverpod_generator to create a `StateNotifier` and other unsupported values.
+
 - Fix exception thrown when the analyzed file has some syntax errors.
 
 - Fix provider_parameters when applied on Freezed classes
