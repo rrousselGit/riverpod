@@ -12,9 +12,7 @@ export 'src/async_notifier.dart'
         BuildlessAsyncNotifier,
         BuildlessAutoDisposeAsyncNotifier,
         FutureHandlerProviderElementMixin;
-
 export 'src/common.dart' hide AsyncTransition;
-
 export 'src/framework.dart'
     hide
         debugCanModifyProviders,
@@ -44,9 +42,8 @@ export 'src/framework.dart'
         Node,
         ProviderElementProxy,
         OnError;
-
 export 'src/future_provider.dart';
-
+export 'src/mutation_state.dart';
 export 'src/notifier.dart'
     hide
         NotifierBase,
@@ -57,7 +54,6 @@ export 'src/notifier.dart'
         NotifierProviderImpl,
         BuildlessAutoDisposeNotifier,
         BuildlessNotifier;
-
 export 'src/provider.dart' hide InternalProvider;
 export 'src/state_controller.dart';
 export 'src/state_notifier_provider.dart';
