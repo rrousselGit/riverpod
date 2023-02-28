@@ -9,14 +9,16 @@ import 'utils.dart';
 void main() {
   test(
       'Creates a StreamNotifierProvider<T> if @riverpod is used on a Stream class',
-      () {
+      () async {
     final container = createContainer();
 
     final AutoDisposeStreamNotifierProvider<PublicClass, String> provider =
         publicClassProvider;
-    final AsyncValue<String> result = container.read(publicClassProvider);
 
-    expect(result, const AsyncData('Hello world'));
+    expect(
+      await container.listen(publicClassProvider.future, (_, __) {}).read(),
+      'Hello world',
+    );
   });
 
   test('Generates .name for providers', () {
@@ -29,7 +31,7 @@ void main() {
 
   test(
       'Creates a NotifierProvider.family<T> if @riverpod is used on a synchronous function with parameters',
-      () {
+      () async {
     final container = createContainer();
 
     const FamilyClassFamily family = familyClassProvider;
@@ -86,21 +88,20 @@ void main() {
     expect(provider.fourth, false);
     expect(provider.fifth, ['x42']);
 
-    final AsyncValue<String> result = container.read(
-      familyClassProvider(
-        42,
-        second: 'x42',
-        third: .42,
-        fourth: false,
-        fifth: ['x42'],
-      ),
-    );
-
     expect(
-      result,
-      const AsyncData(
-        '(first: 42, second: x42, third: 0.42, fourth: false, fifth: [x42])',
-      ),
+      await container
+          .listen(
+            familyClassProvider(
+              42,
+              second: 'x42',
+              third: .42,
+              fourth: false,
+              fifth: ['x42'],
+            ).future,
+            (_, __) {},
+          )
+          .read(),
+      '(first: 42, second: x42, third: 0.42, fourth: false, fifth: [x42])',
     );
   });
 }
