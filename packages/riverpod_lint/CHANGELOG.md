@@ -1,4 +1,4 @@
-# Unreleased minor
+# 1.1.0
 
 - Fix "convert to ConsumerStatefulWidget" assist on private widget
 - Added `provider_dependencies` lint.

@@ -1,4 +1,4 @@
-## Unreleased major
+## 0.1.0
 
 - Decode generated StreamProviders.
 
