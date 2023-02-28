@@ -11,7 +11,14 @@ export 'src/async_notifier.dart'
         CancelAsyncSubscription,
         BuildlessAsyncNotifier,
         BuildlessAutoDisposeAsyncNotifier,
-        FutureHandlerProviderElementMixin;
+        FutureHandlerProviderElementMixin,
+        FamilyStreamNotifierProviderImpl,
+        StreamNotifierProviderImpl,
+        AutoDisposeStreamNotifierProviderImpl,
+        AutoDisposeFamilyStreamNotifierProviderImpl,
+        StreamNotifierProviderBase,
+        BuildlessAutoDisposeStreamNotifier,
+        BuildlessStreamNotifier;
 
 export 'src/common.dart' hide AsyncTransition;
 

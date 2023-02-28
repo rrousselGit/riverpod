@@ -1,7 +1,10 @@
 ## Unreleased
 
+- Add support for returning a `Stream` inside providers.
+  This is equivalent to creating a `StreamProvider` using the "old" syntax.
 - Bump minimum riverpod_analyzer_utils version
 - Syntax sugar for providers which _must_ be overridden is now available:
+
   ```dart
   @riverpod
   int count();

@@ -44,6 +44,8 @@ class FamilyTemplate extends Template {
     final returnType = provider.createdType;
     if (returnType.isDartAsyncFutureOr || returnType.isDartAsyncFuture) {
       providerType = '${leading}FutureProvider';
+    } else if (returnType.isDartAsyncStream) {
+      providerType = '${leading}StreamProvider';
     } else {
       providerType = '${leading}Provider';
     }
@@ -90,6 +92,9 @@ typedef $refName = ${providerType}Ref<${provider.valueType}>;
     if (returnType.isDartAsyncFutureOr || returnType.isDartAsyncFuture) {
       providerType = '${leading}AsyncNotifierProviderImpl';
       notifierBaseType = 'Buildless${leading}AsyncNotifier';
+    } else if (returnType.isDartAsyncStream) {
+      providerType = '${leading}StreamNotifierProviderImpl';
+      notifierBaseType = 'Buildless${leading}StreamNotifier';
     } else {
       providerType = '${leading}NotifierProviderImpl';
       notifierBaseType = 'Buildless${leading}Notifier';
