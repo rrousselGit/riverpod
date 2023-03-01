@@ -1,4 +1,4 @@
-## Unreleased minor
+## 0.1.1
 
 Generated declarations now have a `needsOverride` and `providerELement.isScoped` property respecting
 the `@riverpod external int value()` syntax.

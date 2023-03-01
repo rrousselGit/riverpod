@@ -1,4 +1,4 @@
-# Unreleased fix
+# 1.1.1
 
 - Fix false positive with `stateless_ref` lint on scoped providers
 - Fix false positive with `provider_dependencies` lint on scoped providers
