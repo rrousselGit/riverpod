@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:collection/collection.dart';
@@ -136,15 +138,21 @@ class _ProviderDependenciesFix extends RiverpodFix {
           } else {
             // Some parameters are specified in the annotation, so we remove
             // only the "dependencies" parameter.
-            final dependenciesEnd =
-                dependenciesNode.endToken.next?.end ?? dependenciesNode.end;
 
-            builder.addDeletion(
-              sourceRangeFrom(
-                start: dependenciesNode.offset,
-                end: dependenciesEnd,
-              ),
+            final end = min(
+              // End before the closing parenthesis or before the next parameter
+              declaration
+                  .annotation.annotation.arguments!.rightParenthesis.offset,
+              dependenciesNode.endToken.next!.end,
             );
+
+            final start = max(
+              // Start after the opening parenthesis or after the next parameter
+              declaration.annotation.annotation.arguments!.leftParenthesis.end,
+              dependenciesNode.beginToken.previous!.end,
+            );
+
+            builder.addDeletion(sourceRangeFrom(start: start, end: end));
           }
         });
 

@@ -169,4 +169,19 @@ final noDepNoParamProvider = AutoDisposeProvider<int>.internal(
 );
 
 typedef NoDepNoParamRef = AutoDisposeProviderRef<int>;
+String _$noDepWithoutCommaHash() => r'59d5a7874da40605b1b187766ebb4927d2eaae81';
+
+/// See also [noDepWithoutComma].
+@ProviderFor(noDepWithoutComma)
+final noDepWithoutCommaProvider = AutoDisposeProvider<int>.internal(
+  noDepWithoutComma,
+  name: r'noDepWithoutCommaProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$noDepWithoutCommaHash,
+  dependencies: <ProviderOrFamily>[depProvider],
+  allTransitiveDependencies: <ProviderOrFamily>[depProvider],
+);
+
+typedef NoDepWithoutCommaRef = AutoDisposeProviderRef<int>;
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions
