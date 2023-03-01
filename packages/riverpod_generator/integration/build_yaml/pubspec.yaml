@@ -1,6 +1,7 @@
 name: build_yaml
 description: A sample command-line application.
 version: 1.0.0
+pubish_to: none
 
 environment:
   sdk: ">=2.18.4 <3.0.0"
