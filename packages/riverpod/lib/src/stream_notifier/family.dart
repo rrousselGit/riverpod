@@ -1,8 +1,8 @@
 part of '../async_notifier.dart';
 
-/// {@macro riverpod.asyncnotifier}
-abstract class FamilyAsyncNotifier<State, Arg>
-    extends BuildlessAsyncNotifier<State> {
+/// {@macro riverpod.streamNotifier}
+abstract class FamilyStreamNotifier<State, Arg>
+    extends BuildlessStreamNotifier<State> {
   /// {@template riverpod.notifier.family_arg}
   /// The argument that was passed to this family.
   ///
@@ -22,42 +22,42 @@ abstract class FamilyAsyncNotifier<State, Arg>
     arg = element.origin.argument as Arg;
   }
 
-  /// {@macro riverpod.asyncnotifier.build}
+  /// {@macro riverpod.StreamNotifier.build}
   @visibleForOverriding
-  FutureOr<State> build(Arg arg);
+  Stream<State> build(Arg arg);
 }
 
 /// {@template riverpod.async_notifier_family_provider}
-/// The provider for [AsyncNotifierProviderFamily].
+/// The provider for [StreamNotifierProviderFamily].
 /// {@endtemplate}
-typedef AsyncNotifierFamilyProvider<
-        NotifierT extends FamilyAsyncNotifier<T, Arg>, T, Arg>
-    = FamilyAsyncNotifierProviderImpl<NotifierT, T, Arg>;
+typedef StreamNotifierFamilyProvider<
+        NotifierT extends FamilyStreamNotifier<T, Arg>, T, Arg>
+    = FamilyStreamNotifierProviderImpl<NotifierT, T, Arg>;
 
-/// An internal implementation of [AsyncNotifierFamilyProvider] for testing purpose.
+/// An internal implementation of [StreamNotifierFamilyProvider] for testing purpose.
 ///
 /// Not meant for public consumption.
 @visibleForTesting
 @internal
-class FamilyAsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T,
-        Arg> extends AsyncNotifierProviderBase<NotifierT, T>
+class FamilyStreamNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>,
+        T, Arg> extends StreamNotifierProviderBase<NotifierT, T>
     with AlwaysAliveProviderBase<AsyncValue<T>>, AlwaysAliveAsyncSelector<T> {
   /// {@macro riverpod.async_notifier_family_provider}
-  FamilyAsyncNotifierProviderImpl(
+  FamilyStreamNotifierProviderImpl(
     super._createNotifier, {
     super.name,
     super.dependencies,
-    @Deprecated('Will be removed in 3.0.0') super.from,
-    @Deprecated('Will be removed in 3.0.0') super.argument,
-    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          from: null,
+          argument: null,
+          debugGetCreateSourceHash: null,
         );
 
   /// An implementation detail of Riverpod
   @internal
-  FamilyAsyncNotifierProviderImpl.internal(
+  FamilyStreamNotifierProviderImpl.internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -68,40 +68,40 @@ class FamilyAsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T,
   });
 
   /// {@macro riverpod.autoDispose}
-  static const autoDispose = AutoDisposeAsyncNotifierProviderFamily.new;
+  static const autoDispose = AutoDisposeStreamNotifierProviderFamily.new;
 
   @override
   late final AlwaysAliveRefreshable<NotifierT> notifier =
-      _asyncNotifier<NotifierT, T>(this);
+      _streamNotifier<NotifierT, T>(this);
 
   @override
-  late final AlwaysAliveRefreshable<Future<T>> future = _asyncFuture<T>(this);
+  late final AlwaysAliveRefreshable<Future<T>> future = _streamFuture<T>(this);
 
   @override
-  AsyncNotifierProviderElement<NotifierT, T> createElement() {
-    return AsyncNotifierProviderElement._(this);
+  StreamNotifierProviderElement<NotifierT, T> createElement() {
+    return StreamNotifierProviderElement._(this);
   }
 
   @override
-  FutureOr<T> runNotifierBuild(
-    covariant FamilyAsyncNotifier<T, Arg> notifier,
+  Stream<T> runNotifierBuild(
+    covariant FamilyStreamNotifier<T, Arg> notifier,
   ) {
     return notifier.build(notifier.arg);
   }
 }
 
-/// The [Family] of [AsyncNotifierProvider].
-class AsyncNotifierProviderFamily<NotifierT extends FamilyAsyncNotifier<T, Arg>,
-        T, Arg>
-    extends NotifierFamilyBase<AsyncNotifierProviderRef<T>, AsyncValue<T>, Arg,
-        NotifierT, AsyncNotifierFamilyProvider<NotifierT, T, Arg>> {
-  /// The [Family] of [AsyncNotifierProvider].
-  AsyncNotifierProviderFamily(
+/// The [Family] of [StreamNotifierProvider].
+class StreamNotifierProviderFamily<
+        NotifierT extends FamilyStreamNotifier<T, Arg>, T, Arg>
+    extends NotifierFamilyBase<StreamNotifierProviderRef<T>, AsyncValue<T>, Arg,
+        NotifierT, StreamNotifierFamilyProvider<NotifierT, T, Arg>> {
+  /// The [Family] of [StreamNotifierProvider].
+  StreamNotifierProviderFamily(
     super.create, {
     super.name,
     super.dependencies,
   }) : super(
-          providerFactory: AsyncNotifierFamilyProvider.internal,
+          providerFactory: StreamNotifierFamilyProvider.internal,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
           debugGetCreateSourceHash: null,
@@ -110,9 +110,9 @@ class AsyncNotifierProviderFamily<NotifierT extends FamilyAsyncNotifier<T, Arg>,
   /// {@macro riverpod.overridewith}
   Override overrideWith(NotifierT Function() create) {
     return FamilyOverrideImpl<AsyncValue<T>, Arg,
-        AsyncNotifierFamilyProvider<NotifierT, T, Arg>>(
+        StreamNotifierFamilyProvider<NotifierT, T, Arg>>(
       this,
-      (arg) => AsyncNotifierFamilyProvider<NotifierT, T, Arg>.internal(
+      (arg) => StreamNotifierFamilyProvider<NotifierT, T, Arg>.internal(
         create,
         from: from,
         argument: arg,

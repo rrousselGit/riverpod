@@ -38,6 +38,8 @@ class StatelessProviderTemplate extends Template {
     if ((returnType?.isDartAsyncFutureOr ?? false) ||
         (returnType?.isDartAsyncFuture ?? false)) {
       providerType = '${leading}FutureProvider';
+    } else if (returnType?.isDartAsyncStream ?? false) {
+      providerType = '${leading}StreamProvider';
     } else {
       providerType = '${leading}Provider';
     }

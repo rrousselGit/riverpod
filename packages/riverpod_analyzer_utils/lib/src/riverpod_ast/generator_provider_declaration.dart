@@ -79,7 +79,9 @@ DartType? _computeExposedType(
   DartType createdType,
   LibraryElement library,
 ) {
-  if (createdType.isDartAsyncFuture || createdType.isDartAsyncFutureOr) {
+  if (createdType.isDartAsyncFuture ||
+      createdType.isDartAsyncFutureOr ||
+      createdType.isDartAsyncStream) {
     createdType as InterfaceType;
     return library.createdTypeToValueType(createdType.typeArguments.first);
   }
@@ -88,7 +90,9 @@ DartType? _computeExposedType(
 }
 
 DartType _getValueType(DartType createdType) {
-  if (createdType.isDartAsyncFuture || createdType.isDartAsyncFutureOr) {
+  if (createdType.isDartAsyncFuture ||
+      createdType.isDartAsyncFutureOr ||
+      createdType.isDartAsyncStream) {
     createdType as InterfaceType;
     return createdType.typeArguments.first;
   }

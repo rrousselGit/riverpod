@@ -27,6 +27,16 @@ export 'package:riverpod/src/internals.dart'
         FutureProviderElement,
         AutoDisposeFutureProviderElement,
 
+        // StreamProvider
+        StreamProvider,
+        StreamProviderFamily,
+        StreamProviderRef,
+        AutoDisposeStreamProvider,
+        AutoDisposeStreamProviderFamily,
+        AutoDisposeStreamProviderRef,
+        StreamProviderElement,
+        AutoDisposeStreamProviderElement,
+
         // AsyncValue
         AsyncValue,
         AsyncLoading,
@@ -65,10 +75,27 @@ export 'package:riverpod/src/internals.dart'
         BuildlessAsyncNotifier,
         // ignore: invalid_use_of_internal_member
         BuildlessAutoDisposeAsyncNotifier,
-        // TODO remove those exports once Notifer API is stable
         AsyncNotifierProvider,
         AsyncNotifierProviderRef,
         AutoDisposeAsyncNotifierProvider,
-        AutoDisposeAsyncNotifierProviderRef;
+        AutoDisposeAsyncNotifierProviderRef,
+
+        // StreamNotifier
+        StreamNotifier,
+        AutoDisposeStreamNotifier,
+        StreamNotifierProviderElement,
+        AutoDisposeStreamNotifierProviderElement,
+        // ignore: invalid_use_of_internal_member
+        StreamNotifierProviderImpl,
+        // ignore: invalid_use_of_internal_member
+        AutoDisposeStreamNotifierProviderImpl,
+        // ignore: invalid_use_of_internal_member
+        BuildlessStreamNotifier,
+        // ignore: invalid_use_of_internal_member
+        BuildlessAutoDisposeStreamNotifier,
+        StreamNotifierProvider,
+        StreamNotifierProviderRef,
+        AutoDisposeStreamNotifierProvider,
+        AutoDisposeStreamNotifierProviderRef;
 
 export 'src/riverpod_annotation.dart';

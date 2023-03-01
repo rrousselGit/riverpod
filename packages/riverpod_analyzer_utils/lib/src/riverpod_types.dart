@@ -100,6 +100,18 @@ const anyStateNotifierProviderType = TypeChecker.any([
   ),
 ]);
 
+/// [TypeChecker] for `StateNotifier`
+const stateNotifierType = TypeChecker.fromName(
+  'StateNotifier',
+  packageName: 'state_notifier',
+);
+
+/// [TypeChecker] for `ChangeNotifier`
+const changeNotifierType = TypeChecker.fromName(
+  'ChangeNotifier',
+  packageName: 'flutter',
+);
+
 /// Either StateProvider or AutoDisposeStateProvider
 const anyStateProviderType = TypeChecker.any([
   TypeChecker.fromName('StateProvider', packageName: 'riverpod'),

@@ -1,4 +1,4 @@
-# Unreleased minor
+# 1.1.0
 
 - Fix "convert to ConsumerStatefulWidget" assist on private widget
 - Added `provider_dependencies` lint.
@@ -13,6 +13,9 @@
 
 - Added `scoped_providers_should_specify_dependencies` lint.
   This lint warns if a generated provider is overriden in a scoped ProviderScope/ProviderContainer and does not specifies `@Riverpod(dependencies: ...)`.
+
+- Added `unsupported_provider_value` lint. This warns against
+  using riverpod_generator to create a `StateNotifier` and other unsupported values.
 
 - Fix exception thrown when the analyzed file has some syntax errors.
 

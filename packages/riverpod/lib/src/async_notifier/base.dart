@@ -100,10 +100,10 @@ class AsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
 
   @override
   late final AlwaysAliveRefreshable<NotifierT> notifier =
-      _notifier<NotifierT, T>(this);
+      _asyncNotifier<NotifierT, T>(this);
 
   @override
-  late final AlwaysAliveRefreshable<Future<T>> future = _future<T>(this);
+  late final AlwaysAliveRefreshable<Future<T>> future = _asyncFuture<T>(this);
 
   @override
   AsyncNotifierProviderElement<NotifierT, T> createElement() {
@@ -203,7 +203,7 @@ mixin FutureHandlerProviderElementMixin<T>
   ///
   /// Might be invokved after the element is disposed in the case where `provider.future`
   /// has yet to complete.
-  @visibleForOverriding
+  @internal
   void onError(AsyncError<T> value, {bool seamless = false}) {
     if (mounted) {
       asyncTransition(value, seamless: seamless);
@@ -235,7 +235,7 @@ mixin FutureHandlerProviderElementMixin<T>
   ///
   /// Might be invokved after the element is disposed in the case where `provider.future`
   /// has yet to complete.
-  @visibleForOverriding
+  @internal
   void onData(AsyncData<T> value, {bool seamless = false}) {
     if (mounted) {
       asyncTransition(value, seamless: seamless);
@@ -252,6 +252,7 @@ mixin FutureHandlerProviderElementMixin<T>
 
   /// Listens to a [Stream] and convert it into an [AsyncValue].
   @preferInline
+  @internal
   void handleStream(
     Stream<T> Function() create, {
     required bool didChangeDependency,
@@ -283,6 +284,7 @@ mixin FutureHandlerProviderElementMixin<T>
 
   /// Listens to a [Future] and convert it into an [AsyncValue].
   @preferInline
+  @internal
   void handleFuture(
     FutureOr<T> Function() create, {
     required bool didChangeDependency,
@@ -377,6 +379,7 @@ mixin FutureHandlerProviderElementMixin<T>
   }
 
   @override
+  @internal
   void runOnDispose() {
     // Stops listening to the previous async operation
     _lastFutureSub?.call();
@@ -441,15 +444,42 @@ mixin FutureHandlerProviderElementMixin<T>
 }
 
 /// The element of [AsyncNotifierProvider].
+abstract class AsyncNotifierProviderElementBase<
+        NotifierT extends AsyncNotifierBase<T>,
+        T> extends ProviderElementBase<AsyncValue<T>>
+    with FutureHandlerProviderElementMixin<T> {
+  AsyncNotifierProviderElementBase._(super.provider);
+
+  final _notifierNotifier = ProxyElementValueNotifier<NotifierT>();
+
+  @override
+  void visitChildren({
+    required void Function(ProviderElementBase<Object?> element) elementVisitor,
+    required void Function(ProxyElementValueNotifier<Object?> element)
+        notifierVisitor,
+  }) {
+    super.visitChildren(
+      elementVisitor: elementVisitor,
+      notifierVisitor: notifierVisitor,
+    );
+    notifierVisitor(_notifierNotifier);
+  }
+
+  @override
+  bool updateShouldNotify(AsyncValue<T> previous, AsyncValue<T> next) {
+    return _notifierNotifier.result?.stateOrNull
+            ?.updateShouldNotify(previous, next) ??
+        true;
+  }
+}
+
+/// The element of [AsyncNotifierProvider].
 class AsyncNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
-    extends ProviderElementBase<AsyncValue<T>>
-    with FutureHandlerProviderElementMixin<T>
+    extends AsyncNotifierProviderElementBase<NotifierT, T>
     implements AsyncNotifierProviderRef<T> {
   AsyncNotifierProviderElement._(
     AsyncNotifierProviderBase<NotifierT, T> super.provider,
-  );
-
-  final _notifierNotifier = ProxyElementValueNotifier<NotifierT>();
+  ) : super._();
 
   @override
   void create({required bool didChangeDependency}) {
@@ -473,26 +503,6 @@ class AsyncNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
         );
       },
     );
-  }
-
-  @override
-  void visitChildren({
-    required void Function(ProviderElementBase<Object?> element) elementVisitor,
-    required void Function(ProxyElementValueNotifier<Object?> element)
-        notifierVisitor,
-  }) {
-    super.visitChildren(
-      elementVisitor: elementVisitor,
-      notifierVisitor: notifierVisitor,
-    );
-    notifierVisitor(_notifierNotifier);
-  }
-
-  @override
-  bool updateShouldNotify(AsyncValue<T> previous, AsyncValue<T> next) {
-    return _notifierNotifier.result?.stateOrNull
-            ?.updateShouldNotify(previous, next) ??
-        true;
   }
 }
 
