@@ -7,7 +7,7 @@
 
   ```dart
   @riverpod
-  int count();
+  external int count();
   ```
 
   This is equivalent to writing:
