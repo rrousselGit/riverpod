@@ -1,9 +1,13 @@
-# 1.1.1
+## Unreleased fix
+
+Fix quick-fix for provider_dependencies
+
+## 1.1.1
 
 - Fix false positive with `stateless_ref` lint on scoped providers
 - Fix false positive with `provider_dependencies` lint on scoped providers
 
-# 1.1.0
+## 1.1.0
 
 - Fix "convert to ConsumerStatefulWidget" assist on private widget
 - Added `provider_dependencies` lint.
@@ -28,7 +32,7 @@
 
 - Fix exception when riverpod_lint analyzes files before riverpod_generator runs
 
-# 1.0.1
+## 1.0.1
 
 - Fixed an exception thrown when a file contains `fn?.call()`
 - Fix `generator_class_extends` on private classes incorrectly
@@ -36,6 +40,6 @@
 - Fix `missing_provider_scope` not detecting `UncontrolledProviderScope`
 - Bump minimum riverpod_analyzer_utils version
 
-# 1.0.0
+## 1.0.0
 
 Initial release

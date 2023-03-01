@@ -100,3 +100,9 @@ int dependenciesFirstThenKeepAlive(DependenciesFirstThenKeepAliveRef ref) {
 int noDepNoParam(NoDepNoParamRef ref) {
   return 0;
 }
+
+// expect_lint: provider_dependencies
+@Riverpod(keepAlive: false, dependencies: [dep])
+int noDepWithoutComma(NoDepWithoutCommaRef ref) {
+  return 0;
+}
