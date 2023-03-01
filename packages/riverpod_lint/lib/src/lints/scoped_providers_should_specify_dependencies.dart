@@ -31,8 +31,7 @@ class ScopedProvidersShouldSpecifyDependencies extends RiverpodLintRule {
         // We can only know statically if a provider is scoped on generator providers
         if (provider is! GeneratorProviderDeclarationElement) continue;
 
-        final isRoot = provider.annotation.dependencies == null;
-        if (isRoot) {
+        if (!provider.isScoped) {
           reporter.reportErrorForNode(code, override.expression);
         }
       }

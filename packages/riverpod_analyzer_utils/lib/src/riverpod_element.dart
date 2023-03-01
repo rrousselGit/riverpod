@@ -252,6 +252,8 @@ abstract class GeneratorProviderDeclarationElement
     implements ProviderDeclarationElement {
   RiverpodAnnotationElement get annotation;
 
+  bool get isScoped => annotation.dependencies != null;
+
   @override
   bool get isAutoDispose => !annotation.keepAlive;
 }
@@ -348,6 +350,9 @@ class StatelessProviderDeclarationElement
 
   @override
   final RiverpodAnnotationElement annotation;
+
+  @override
+  bool get isScoped => super.isScoped || element.isExternal;
 }
 
 /// An object for differentiating "no cache" from "cache but value is null".

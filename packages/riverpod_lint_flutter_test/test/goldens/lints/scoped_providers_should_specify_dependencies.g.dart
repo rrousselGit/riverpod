@@ -20,6 +20,25 @@ final scopedProvider = AutoDisposeProvider<int>.internal(
 );
 
 typedef ScopedRef = AutoDisposeProviderRef<int>;
+String _$unimplementedScopedHash() =>
+    r'5f32fc56f4157238612d62ef54038fe92b7cdfe8';
+
+/// See also [unimplementedScoped].
+@ProviderFor(unimplementedScoped)
+final unimplementedScopedProvider = AutoDisposeProvider<int>.internal(
+  (_) => throw UnsupportedError(
+    'The provider "unimplementedScopedProvider" is expected to get overridden/scoped, '
+    'but was accessed without an override.',
+  ),
+  name: r'unimplementedScopedProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$unimplementedScopedHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef UnimplementedScopedRef = AutoDisposeProviderRef<int>;
 String _$rootHash() => r'1cd85d73316aad02169ff0f5e7af5cf1423410ff';
 
 /// See also [root].

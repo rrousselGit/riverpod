@@ -4,23 +4,39 @@ import 'package:test/test.dart';
 import 'analyser_test_utils.dart';
 
 void main() {
-  testSource('Decode scoped providers', source: '''
+  testSource('Decode needsOverride/isScoped', source: '''
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 @riverpod
-external int scoped();
+external int needsOverride();
+
+@Riverpod(dependencies: [])
+int scoped() => 0;
+
+@riverpod
+int plain(PlainRef ref) => 0;
 ''', (resolver) async {
     final result = await resolver.resolveRiverpodAnalyssiResult(
       ignoreErrors: true,
     );
 
+    final needsOverride = result.statelessProviderDeclarations.singleWhere(
+      (e) => e.name.toString() == 'needsOverride',
+    );
     final scoped = result.statelessProviderDeclarations.singleWhere(
       (e) => e.name.toString() == 'scoped',
     );
+    final plain = result.statelessProviderDeclarations.singleWhere(
+      (e) => e.name.toString() == 'plain',
+    );
 
-    expect(scoped.node.toSource(), '@riverpod external int scoped();');
-    expect(scoped.name.toString(), 'scoped');
-    expect(scoped.isScoped, true);
+    expect(needsOverride.needsOverride, true);
+    expect(scoped.needsOverride, false);
+    expect(plain.needsOverride, false);
+
+    expect(needsOverride.providerElement.isScoped, true);
+    expect(scoped.providerElement.isScoped, true);
+    expect(plain.providerElement.isScoped, false);
   });
 
   testSource('Decode dependencies with syntax errors', source: '''

@@ -6,6 +6,25 @@ part of 'dependencies.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+String _$unimplementedScopedHash() =>
+    r'5f32fc56f4157238612d62ef54038fe92b7cdfe8';
+
+/// See also [unimplementedScoped].
+@ProviderFor(unimplementedScoped)
+final unimplementedScopedProvider = AutoDisposeProvider<int>.internal(
+  (_) => throw UnsupportedError(
+    'The provider "unimplementedScopedProvider" is expected to get overridden/scoped, '
+    'but was accessed without an override.',
+  ),
+  name: r'unimplementedScopedProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$unimplementedScopedHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef UnimplementedScopedRef = AutoDisposeProviderRef<int>;
 String _$depHash() => r'749c4d696d29c72686cabcabd6fa7855f5cbf4db';
 
 /// See also [dep].
@@ -66,6 +85,23 @@ final watchScopedButNoDependenciesProvider = AutoDisposeProvider<int>.internal(
 );
 
 typedef WatchScopedButNoDependenciesRef = AutoDisposeProviderRef<int>;
+String _$watchExternalButNoDependenciesHash() =>
+    r'bbe1ed12645a261e2030222549308d378f5f368c';
+
+/// See also [watchExternalButNoDependencies].
+@ProviderFor(watchExternalButNoDependencies)
+final watchExternalButNoDependenciesProvider =
+    AutoDisposeProvider<int>.internal(
+  watchExternalButNoDependencies,
+  name: r'watchExternalButNoDependenciesProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$watchExternalButNoDependenciesHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef WatchExternalButNoDependenciesRef = AutoDisposeProviderRef<int>;
 String _$watchGeneratedScopedButNoDependenciesHash() =>
     r'2a4aba824078fe2c999260b4138939dee96c4fba';
 

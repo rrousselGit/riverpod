@@ -2,6 +2,9 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'dependencies.g.dart';
 
+@riverpod
+external int unimplementedScoped();
+
 @Riverpod(dependencies: [])
 int dep(DepRef ref) => 0;
 
@@ -21,6 +24,12 @@ int generatedRoot(GeneratedRootRef ref) => 0;
 int watchScopedButNoDependencies(WatchScopedButNoDependenciesRef ref) {
   // expect_lint: avoid_manual_providers_as_generated_provider_depenency
   return ref.watch(scoped);
+}
+
+// expect_lint: provider_dependencies
+@riverpod
+int watchExternalButNoDependencies(WatchExternalButNoDependenciesRef ref) {
+  return ref.watch(unimplementedScopedProvider);
 }
 
 // expect_lint: provider_dependencies

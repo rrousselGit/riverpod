@@ -1,6 +1,6 @@
 ## Unreleased minor
 
-Generated stateless declarations now have an `isScoped` property representing
+Generated declarations now have a `needsOverride` and `providerELement.isScoped` property respecting
 the `@riverpod external int value()` syntax.
 
 ## 0.1.0

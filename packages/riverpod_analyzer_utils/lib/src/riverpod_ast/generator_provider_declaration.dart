@@ -238,7 +238,6 @@ class StatelessProviderDeclaration extends GeneratorProviderDeclaration {
     required this.createdType,
     required this.exposedType,
     required this.valueType,
-    required this.isScoped,
   });
 
   static StatelessProviderDeclaration? _parse(
@@ -271,7 +270,6 @@ class StatelessProviderDeclaration extends GeneratorProviderDeclaration {
       createdType: createdType,
       exposedType: exposedType,
       valueType: _getValueType(createdType),
-      isScoped: node.externalKeyword != null,
     );
     riverpodAnnotation._parent = statelessProviderDeclaration;
     node.accept(
@@ -302,7 +300,7 @@ class StatelessProviderDeclaration extends GeneratorProviderDeclaration {
   /// @riverpod
   /// external int count();
   /// ```
-  final bool isScoped;
+  bool get needsOverride => node.externalKeyword != null;
 
   @override
   void accept(RiverpodAstVisitor visitor) {

@@ -23,7 +23,7 @@ extension on GeneratorProviderDeclaration {
         // we cannot check if the provider is missing a dependency.
         return;
       }
-      if (dependencyElement.annotation.dependencies != null) {
+      if (dependencyElement.isScoped) {
         yield dependency;
       }
     }
