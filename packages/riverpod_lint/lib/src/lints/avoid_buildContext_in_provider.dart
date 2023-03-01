@@ -23,7 +23,7 @@ class AvoidBuildContextInProviders extends RiverpodLintRule {
         value = argument is NamedExpression ? argument.expression : argument;
         if (value is BuildContext) {
           // still in progress, looking for a way to check if the argument type is BuildContext
-          reporter.reportErrorForNode(code, value);
+          reporter.reportErrorForNode(_code, value);
         }
       }
     });
