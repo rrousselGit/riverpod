@@ -23,3 +23,6 @@ int incorrectlyTyped(
 ) {
   return 0;
 }
+
+@riverpod
+external int scoped();

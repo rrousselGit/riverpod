@@ -22,6 +22,9 @@ class StatelessRef extends RiverpodLintRule {
     CustomLintContext context,
   ) {
     riverpodRegistry(context).addStatelessProviderDeclaration((declaration) {
+      // Scoped providers don't need a ref
+      if (declaration.isScoped) return;
+
       final parameters = declaration.node.functionExpression.parameters!;
 
       final refNode = parameters.parameters.firstOrNull;

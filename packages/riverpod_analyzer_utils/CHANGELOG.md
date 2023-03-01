@@ -1,3 +1,8 @@
+## Unreleased minor
+
+Generated stateless declarations now have an `isScoped` property representing
+the `@riverpod external int value()` syntax.
+
 ## 0.1.0
 
 - Decode generated StreamProviders.

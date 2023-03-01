@@ -238,6 +238,7 @@ class StatelessProviderDeclaration extends GeneratorProviderDeclaration {
     required this.createdType,
     required this.exposedType,
     required this.valueType,
+    required this.isScoped,
   });
 
   static StatelessProviderDeclaration? _parse(
@@ -270,6 +271,7 @@ class StatelessProviderDeclaration extends GeneratorProviderDeclaration {
       createdType: createdType,
       exposedType: exposedType,
       valueType: _getValueType(createdType),
+      isScoped: node.externalKeyword != null,
     );
     riverpodAnnotation._parent = statelessProviderDeclaration;
     node.accept(
@@ -293,6 +295,14 @@ class StatelessProviderDeclaration extends GeneratorProviderDeclaration {
   final DartType exposedType;
   @override
   final DartType valueType;
+
+  /// Whether the provider uses the syntax sugar for scoped providers:
+  ///
+  /// ```dart
+  /// @riverpod
+  /// external int count();
+  /// ```
+  final bool isScoped;
 
   @override
   void accept(RiverpodAstVisitor visitor) {

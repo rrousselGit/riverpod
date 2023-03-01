@@ -4,6 +4,25 @@ import 'package:test/test.dart';
 import 'analyser_test_utils.dart';
 
 void main() {
+  testSource('Decode scoped providers', source: '''
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+@riverpod
+external int scoped();
+''', (resolver) async {
+    final result = await resolver.resolveRiverpodAnalyssiResult(
+      ignoreErrors: true,
+    );
+
+    final scoped = result.statelessProviderDeclarations.singleWhere(
+      (e) => e.name.toString() == 'scoped',
+    );
+
+    expect(scoped.node.toSource(), '@riverpod external int scoped();');
+    expect(scoped.name.toString(), 'scoped');
+    expect(scoped.isScoped, true);
+  });
+
   testSource('Decode dependencies with syntax errors', source: '''
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

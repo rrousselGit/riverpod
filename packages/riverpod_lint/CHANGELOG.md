@@ -1,3 +1,7 @@
+# Unreleased fix
+
+- Fix false positive with `stateless_ref` lint on scoped providers
+
 # 1.1.0
 
 - Fix "convert to ConsumerStatefulWidget" assist on private widget
