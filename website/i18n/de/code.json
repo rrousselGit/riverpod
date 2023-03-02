@@ -3,7 +3,7 @@
     "message": "Gemeinsamen Zustand von überall aus deklarieren"
   },
   "home.shared_state_body": {
-    "message": "Du musst nicht mehr zwischen deiner {main} und deinen UI Dateien\n          hin- und herspringen. {br}\n          Platziere den Code deines gemeinsamen Zustands dort, wo er hingehört, sei\n          in einem separaten Paket oder direkt neben dem Widget, das\n          ihn benötigt, ohne dass die Testbarkeit verloren geht.",
+    "message": "Du musst nicht mehr zwischen deiner {main} und deinen UI Dateien\n          hin- und herspringen. {br}\n          Platziere den Code deines gemeinsamen Zustands dort, wo er hingehört, sei\n          es in einem separaten Paket oder direkt neben dem Widget, das\n          ihn benötigt, ohne dass die Testbarkeit verloren geht.",
     "description": "The homepage input placeholder"
   },
   "home.recompute_title": {
