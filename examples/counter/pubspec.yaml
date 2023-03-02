@@ -18,23 +18,25 @@ dependencies:
     path: ../../packages/hooks_riverpod
   riverpod:
     path: ../../packages/riverpod
+  riverpod_annotation:
+    path: ../../packages/riverpod_annotation
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  riverpod_annotation:
+  build_runner: ^2.3.3
+  riverpod_generator:
+    path: ../../packages/riverpod_generator
   riverpod_lint:
     path: ../../packages/riverpod_lint
 
 dependency_overrides:
-  build_runner: ^2.3.3
   flutter_riverpod:
     path: ../../packages/flutter_riverpod
   hooks_riverpod:
     path: ../../packages/hooks_riverpod
   riverpod:
     path: ../../packages/riverpod
-  riverpod_generator:
 
 flutter:
   uses-material-design: true
