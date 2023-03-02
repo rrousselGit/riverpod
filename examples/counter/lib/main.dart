@@ -28,8 +28,10 @@ class MyApp extends StatelessWidget {
 /// and exposing ways to modify it (cf [increment]).
 @riverpod
 class Counter extends _$Counter {
-  /// We need to override the build() method which will define
-  /// the first value of our counter
+  /// Classes annotated by `@riverpod` **must** define a [build] function.
+  /// This function is expected to return the initial state of your shared state.
+  /// It is totally acceptable for this function to return a [Future] or [Stream] if you need to.
+  /// You can also freely define parameters on this method.
   @override
   int build() => 0;
 
