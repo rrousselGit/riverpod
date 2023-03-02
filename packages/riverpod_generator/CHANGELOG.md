@@ -1,22 +1,13 @@
+## Unreleased patch
+
+Deprecate the (new) shorthand syntax for scoping provider using the `external`
+keyword. That syntax unfortunately does not work on web and therefore will be removed.
+
 ## 2.0.0
 
 - Add support for returning a `Stream` inside providers.
   This is equivalent to creating a `StreamProvider` using the "old" syntax.
 - Bump minimum riverpod_analyzer_utils version
-- Syntax sugar for providers which _must_ be overridden is now available:
-
-  ```dart
-  @riverpod
-  external int count();
-  ```
-
-  This is equivalent to writing:
-
-  ```dart
-  @riverpod
-  int count(CountRef ref) => throw UnsupportedError('...');
-  ```
-
 - Fix exception thrown when the analyzed file has some syntax errors.
 
 ## 1.2.0
