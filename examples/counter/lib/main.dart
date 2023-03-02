@@ -22,9 +22,12 @@ class MyApp extends StatelessWidget {
   }
 }
 
-/// Providers are declared globally and specify how to create a state
+/// This class will create automatically [counterProvider]
+/// in the main.g.dart file, thanks to the @riverpod annotation
 @riverpod
 class Counter extends _$Counter {
+  /// We need to override the build() method which will define
+  /// the first value of our counter
   @override
   int build() => 0;
 
