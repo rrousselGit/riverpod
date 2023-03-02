@@ -40,10 +40,10 @@
     "message": "Hängt nicht von Flutter ab"
   },
   "homepage.no_flutter_dependency_body": {
-    "message": "Erstellen/teilen/testen von Providern, ohne Abhängigkeit zu Flutter. Dazu\n          dazu gehört auch die Möglichkeit, auf Provider ohne\n          einen {BuildContext} zu hören."
+    "message": "Erstellen/teilen/testen von Providern, ohne Abhängigkeit zu Flutter. Dazu\n          gehört auch die Möglichkeit, auf Provider ohne\n          einen {BuildContext} zu hören."
   },
   "home.tagline": {
-    "message": "Ein reactives State-Management und Dependency Injection Framework"
+    "message": "Ein reaktives State-Management und Dependency Injection Framework"
   },
   "home.get_started": {
     "message": "Erste Schritte"
