@@ -10,3 +10,7 @@ dependency_overrides:
     path: ../../packages/riverpod_analyzer_utils
   riverpod_lint:
     path: ../../packages/riverpod_lint
+  riverpod_annotation:
+    path: ../../packages/riverpod_annotation
+  riverpod_generator:
+    path: ../../packages/riverpod_generator
