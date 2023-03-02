@@ -10,7 +10,7 @@ import '../riverpod_custom_lint.dart';
 
 const _fixDependenciesPriority = 100;
 
-class _ExtraAndMissingDendencies {
+class _ExtraAndMissingDependencies {
   final List<RiverpodAnnotationDependency> extra = [];
   final List<RefDependencyInvocation> missing = [];
 }
@@ -31,17 +31,17 @@ extension on GeneratorProviderDeclaration {
     }
   }
 
-  _ExtraAndMissingDendencies findExtraAndMissingDependencies() {
-    final result = _ExtraAndMissingDendencies();
+  _ExtraAndMissingDependencies findExtraAndMissingDependencies() {
+    final result = _ExtraAndMissingDependencies();
 
     final dependencies = annotation.dependencies?.dependencies;
     final scopedInvocations = findScopedDependencies().toList();
 
     for (final scopedDependency in scopedInvocations) {
-      final dpeendencyName = scopedDependency.provider.providerElement?.name;
+      final dependencyName = scopedDependency.provider.providerElement?.name;
 
       if (dependencies == null ||
-          !dependencies.any((e) => e.provider.name == dpeendencyName)) {
+          !dependencies.any((e) => e.provider.name == dependencyName)) {
         result.missing.add(scopedDependency);
       }
     }
