@@ -22,8 +22,10 @@ class MyApp extends StatelessWidget {
   }
 }
 
-/// This class will create automatically [counterProvider]
-/// in the main.g.dart file, thanks to the @riverpod annotation
+/// Annotating a class by `@riverpod` defines a new shared state for your application,
+/// accessible using the generated [counterProvider].
+/// This class is both responsible for initializing the state (through the [build] method)
+/// and exposing ways to modify it (cf [increment]).
 @riverpod
 class Counter extends _$Counter {
   /// We need to override the build() method which will define
