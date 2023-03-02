@@ -28,6 +28,7 @@ dev_dependencies:
     path: ../../packages/riverpod_lint
 
 dependency_overrides:
+  build_runner: ^2.3.3
   flutter_riverpod:
     path: ../../packages/flutter_riverpod
   hooks_riverpod:
