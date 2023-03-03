@@ -87,11 +87,15 @@ abstract class MutationState<Result, Param> {
   //   _setState.state = state.copyWithPrevious(_setState.state);
   // }
 
+  void _mutateState(MutationState<Result, Param> state) {
+    _setState(state.copyWithPrevious(this));
+  }
+
   Future<MutationState<Result, Param>> call(Param parameter) async {
-    _setState(MutationState<Result, Param>.loading(_setState, _fn));
+    _mutateState(MutationState<Result, Param>.loading(_setState, _fn));
     final result =
         await MutationState.guard<Result, Param>(_setState, _fn, parameter);
-    _setState(result);
+    _mutateState(result);
     return result;
   }
 
