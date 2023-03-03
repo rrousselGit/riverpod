@@ -6,12 +6,12 @@ import 'package:test/test.dart';
 /// generic mutation. pass a function into `call` to execute the mutation
 final genericMutationProvider =
     Provider<MutationState<void, Future<void> Function()>>((ref) {
-  return MutationState.create(ref, (fn) => fn());
+  return MutationState.create((newState) => ref.state = newState, (fn) => fn());
 });
 
 /// mutation that converts a string to a double
 final stringToDoubleProvider = Provider<MutationState<double, String>>((ref) {
-  return MutationState.create(ref, double.parse);
+  return MutationState.create((newState) => ref.state = newState, double.parse);
 });
 
 void main() {
