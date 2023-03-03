@@ -2,10 +2,15 @@ import 'dart:async';
 
 import 'package:meta/meta.dart';
 
-import 'provider.dart';
 import 'stack_trace.dart';
 
-/// AsyncValue-like data class, but includes a ref and callback
+typedef Mutation<Result> = MutationState<Result, FutureOr<Result> Function()>;
+
+typedef SetState<Result, Param> = void Function(
+  MutationState<Result, Param> newState,
+);
+
+/// AsyncValue-like data class, but includes a setState and callback
 /// strictly for use in providers
 /// `_fn` is the handler for whatever parameter gets passed in (a call to a notifier function, for example)
 /// Param is the type of the value that gets passed in by the front end
@@ -13,11 +18,11 @@ import 'stack_trace.dart';
 /// (the type of the `value`)
 @immutable
 abstract class MutationState<Result, Param> {
-  const MutationState._(this._ref, this._fn);
+  const MutationState(this._setState, this._fn);
 
   /// Use to initialize your own mutation provider
   ///
-  /// [ref] is the provider reference
+  /// [setState] is the provider reference
   ///
   /// [fn] is the function that will be called when the mutation is called
   /// with the parameter passed in by the front end
@@ -25,53 +30,51 @@ abstract class MutationState<Result, Param> {
   /// Here's an example for a generic mutation:
   /// ```dart
   /// @riverpod
-  /// MutationState<void, Future<void> Function()> genericMutation(GenericMutationRef ref, Object mutationKey) {
+  /// MutationState<void, Future<void> Function()> genericMutation(GenericMutationRef setState, Object mutationKey) {
   ///   // simply calls the function provided by the user
-  ///   return MutationState.create(ref, (fn) => fn());
+  ///   return MutationState.create(setState, (fn) => fn());
   /// }
   /// ```
-  factory MutationState.create(
-    ProviderRef<MutationState<Result, Param>> ref,
+  const factory MutationState.create(
+    SetState<Result, Param> setState,
     FutureOr<Result> Function(Param p) fn,
-  ) =>
-      MutationState<Result, Param>._initial(ref, fn);
+  ) = MutationState<Result, Param>.initial;
 
-  const factory MutationState._initial(
-    ProviderRef<MutationState<Result, Param>> ref,
+  const factory MutationState.initial(
+    SetState<Result, Param> setState,
     FutureOr<Result> Function(Param p) fn,
-  ) = MutationInitial<Result, Param>._;
+  ) = MutationInitial<Result, Param>;
 
-  const factory MutationState._error(
-    ProviderRef<MutationState<Result, Param>> ref,
+  const factory MutationState.error(
+    SetState<Result, Param> setState,
     FutureOr<Result> Function(Param p) fn,
     Object error, {
     required StackTrace stackTrace,
-  }) = MutationError<Result, Param>._;
+  }) = MutationError<Result, Param>;
 
-  const factory MutationState._data(
-    ProviderRef<MutationState<Result, Param>> ref,
+  const factory MutationState.data(
+    SetState<Result, Param> setState,
     FutureOr<Result> Function(Param p) fn,
     Result value,
-  ) = MutationData<Result, Param>._;
+  ) = MutationData<Result, Param>;
 
-  const factory MutationState._loading(
-    ProviderRef<MutationState<Result, Param>> ref,
+  const factory MutationState.loading(
+    SetState<Result, Param> setState,
     FutureOr<Result> Function(Param p) fn,
-  ) = MutationLoading<Result, Param>._;
+  ) = MutationLoading<Result, Param>;
 
-  static Future<MutationState<Result, P>> _guard<Result, P>(
-    ProviderRef<MutationState<Result, P>> ref,
-    FutureOr<Result> Function(P p) cb,
+  static Future<MutationState<Result, P>> guard<Result, P>(
+    SetState<Result, P> setState,
+    FutureOr<Result> Function(P p) fn,
     P parameter,
   ) async {
     try {
-      return MutationState<Result, P>._data(ref, cb, await cb(parameter));
+      return MutationState<Result, P>.data(setState, fn, await fn(parameter));
     } catch (e, s) {
-      return MutationState<Result, P>._error(ref, cb, e, stackTrace: s);
+      return MutationState<Result, P>.error(setState, fn, e, stackTrace: s);
     }
   }
 
-  final ProviderRef<MutationState<Result, Param>> _ref;
   bool get isLoading;
   bool get hasValue;
   Result? get value;
@@ -79,15 +82,15 @@ abstract class MutationState<Result, Param> {
   StackTrace? get stackTrace;
   final FutureOr<Result> Function(Param p) _fn;
 
-  void _setState(MutationState<Result, Param> state) {
-    _ref.state = state.copyWithPrevious(_ref.state);
-  }
+  final SetState<Result, Param> _setState;
+  // {
+  //   _setState.state = state.copyWithPrevious(_setState.state);
+  // }
 
   Future<MutationState<Result, Param>> call(Param parameter) async {
-    final cb = this._fn;
-    _setState(MutationState<Result, Param>._loading(_ref, cb));
+    _setState(MutationState<Result, Param>.loading(_setState, _fn));
     final result =
-        await MutationState._guard<Result, Param>(_ref, cb, parameter);
+        await MutationState.guard<Result, Param>(_setState, _fn, parameter);
     _setState(result);
     return result;
   }
@@ -105,16 +108,23 @@ abstract class MutationState<Result, Param> {
 
   MutationState<Result, Param> unwrapPrevious() {
     return map(
-      initial: (i) => MutationInitial<Result, Param>._(_ref, _fn),
+      initial: (i) => MutationInitial<Result, Param>(_setState, _fn),
       data: (d) {
-        if (d.isLoading) return MutationLoading<Result, Param>._(_ref, _fn);
-        return MutationData._(_ref, _fn, d.value!);
+        if (d.isLoading) {
+          return MutationLoading<Result, Param>(_setState, _fn);
+        }
+        return MutationData(_setState, _fn, d.value!);
       },
       error: (e) {
-        if (e.isLoading) return MutationLoading._(_ref, _fn);
-        return MutationError._(_ref, _fn, e.error, stackTrace: e.stackTrace);
+        if (e.isLoading) return MutationLoading(_setState, _fn);
+        return MutationError(
+          _setState,
+          _fn,
+          e.error,
+          stackTrace: e.stackTrace,
+        );
       },
-      loading: (l) => MutationLoading<Result, Param>._(_ref, _fn),
+      loading: (l) => MutationLoading<Result, Param>(_setState, _fn),
     );
   }
 
@@ -157,7 +167,7 @@ abstract class MutationState<Result, Param> {
 }
 
 class MutationInitial<Result, Param> extends MutationState<Result, Param> {
-  const MutationInitial._(super._ref, super._fn) : super._();
+  const MutationInitial(super._setState, super._fn);
 
   @override
   Result? get value => null;
@@ -194,21 +204,20 @@ class MutationInitial<Result, Param> extends MutationState<Result, Param> {
 }
 
 class MutationLoading<Result, Param> extends MutationState<Result, Param> {
-  const MutationLoading._(super._ref, super._fn)
+  const MutationLoading(super._setState, super._fn)
       : hasValue = false,
         value = null,
         error = null,
-        stackTrace = null,
-        super._();
+        stackTrace = null;
 
-  const MutationLoading.__(
-    super._ref,
+  const MutationLoading._(
+    super._setState,
     super._fn, {
     required this.hasValue,
     required this.value,
     required this.error,
     required this.stackTrace,
-  }) : super._();
+  });
 
   @override
   bool get isLoading => true;
@@ -243,16 +252,16 @@ class MutationLoading<Result, Param> extends MutationState<Result, Param> {
     if (isRefresh) {
       return previous.map(
         initial: (_) => this,
-        data: (d) => MutationData.__(
-          _ref,
+        data: (d) => MutationData._(
+          _setState,
           _fn,
           d.value,
           isLoading: true,
           error: d.error,
           stackTrace: d.stackTrace,
         ),
-        error: (e) => MutationError.__(
-          _ref,
+        error: (e) => MutationError._(
+          _setState,
           _fn,
           e.error,
           isLoading: true,
@@ -265,16 +274,16 @@ class MutationLoading<Result, Param> extends MutationState<Result, Param> {
     } else {
       return previous.map(
         initial: (_) => this,
-        data: (e) => MutationLoading.__(
-          _ref,
+        data: (e) => MutationLoading._(
+          _setState,
           _fn,
           hasValue: true,
           value: e.valueOrNull,
           error: e.error,
           stackTrace: e.stackTrace,
         ),
-        error: (e) => MutationLoading.__(
-          _ref,
+        error: (e) => MutationLoading._(
+          _setState,
           _fn,
           hasValue: e.hasValue,
           value: e.valueOrNull,
@@ -288,20 +297,19 @@ class MutationLoading<Result, Param> extends MutationState<Result, Param> {
 }
 
 class MutationData<Result, Param> extends MutationState<Result, Param> {
-  const MutationData._(super._ref, super._fn, this.value)
+  const MutationData(super._setState, super._fn, this.value)
       : isLoading = false,
         error = null,
-        stackTrace = null,
-        super._();
+        stackTrace = null;
 
-  const MutationData.__(
-    super._ref,
+  const MutationData._(
+    super._setState,
     super._fn,
     this.value, {
     required this.isLoading,
     required this.error,
     required this.stackTrace,
-  }) : super._();
+  });
 
   @override
   final Result value;
@@ -336,26 +344,24 @@ class MutationData<Result, Param> extends MutationState<Result, Param> {
 }
 
 class MutationError<Result, Param> extends MutationState<Result, Param> {
-  const MutationError.__(
-    super._ref,
+  const MutationError(
+    super._setState,
+    super._fn,
+    this.error, {
+    required this.stackTrace,
+  })  : isLoading = false,
+        hasValue = false,
+        _value = null;
+
+  const MutationError._(
+    super._setState,
     super._fn,
     this.error, {
     required this.stackTrace,
     required this.isLoading,
     required Result? value,
     required this.hasValue,
-  })  : _value = value,
-        super._();
-
-  const MutationError._(
-    super._ref,
-    super._fn,
-    this.error, {
-    required this.stackTrace,
-  })  : isLoading = false,
-        hasValue = false,
-        _value = null,
-        super._();
+  }) : _value = value;
 
   @override
   final bool isLoading;
@@ -392,8 +398,8 @@ class MutationError<Result, Param> extends MutationState<Result, Param> {
   MutationState<Result, Param> copyWithPrevious(
     MutationState<Result, Param> previous,
   ) {
-    return MutationError.__(
-      _ref,
+    return MutationError._(
+      _setState,
       _fn,
       error,
       stackTrace: stackTrace,
