@@ -120,7 +120,7 @@ abstract class NotifierProviderBase<NotifierT extends NotifierBase<T>, T>
   /// )
   /// ```
   ///
-  /// This listenable will notify its notifiers if the [Notifier] instance
+  /// This listenable will notify its listeners if the [Notifier] instance
   /// changes.
   /// This may happen if the provider is refreshed or one of its dependencies
   /// has changes.
