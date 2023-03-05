@@ -15,6 +15,7 @@ class Riverpod {
   /// {@macro riverpod_annotation.provider}
   const Riverpod({
     this.keepAlive = false,
+    this.name,
     this.dependencies,
   });
 
@@ -22,6 +23,11 @@ class Riverpod {
   ///
   /// Defaults to false.
   final bool keepAlive;
+
+  /// To set a custom name for the provider you want to generate.
+  ///
+  /// Defaults to null.
+  final String? name;
 
   /// The list of dependencies of a provider.
   ///

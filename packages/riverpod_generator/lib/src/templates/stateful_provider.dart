@@ -5,8 +5,12 @@ import 'template.dart';
 
 String providerNameFor(
   ProviderDeclarationElement provider,
-  BuildYamlOptions options,
-) {
+  BuildYamlOptions options, {
+  required String? annotationName,
+}) {
+  if (annotationName != null && annotationName.isNotEmpty) {
+    return '${annotationName.lowerFirst}${options.providerNameSuffix ?? 'Provider'}';
+  }
   return '${provider.name.lowerFirst}${options.providerNameSuffix ?? 'Provider'}';
 }
 
@@ -25,7 +29,13 @@ String? serializeDependencies(
   }
 
   buffer.writeAll(
-    dependencies.map((e) => providerNameFor(e, options)),
+    dependencies.map(
+      (e) => providerNameFor(
+        e,
+        options,
+        annotationName: e.annotation.name,
+      ),
+    ),
     ',',
   );
 
@@ -66,7 +76,11 @@ class StatefulProviderTemplate extends Template {
       leading = 'AutoDispose';
     }
 
-    final providerName = providerNameFor(provider.providerElement, options);
+    final providerName = providerNameFor(
+      provider.providerElement,
+      options,
+      annotationName: provider.providerElement.annotation.name,
+    );
     final returnType = provider.buildMethod.returnType?.type;
     if ((returnType?.isDartAsyncFutureOr ?? false) ||
         (returnType?.isDartAsyncFuture ?? false)) {

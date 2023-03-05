@@ -11,6 +11,7 @@ class RiverpodAnnotationElement {
   @internal
   RiverpodAnnotationElement({
     required this.keepAlive,
+    required this.name,
     required this.dependencies,
   }) : allTransitiveDependencies =
             _computeAllTransitiveDependencies(dependencies);
@@ -24,6 +25,7 @@ class RiverpodAnnotationElement {
       return RiverpodAnnotationElement(
         keepAlive: false,
         dependencies: null,
+        name: null,
       );
     }
     if (annotation == null) return null;
@@ -52,6 +54,7 @@ class RiverpodAnnotationElement {
 
     return RiverpodAnnotationElement(
       keepAlive: readKeepAlive(annotation),
+      name: readName(annotation),
       dependencies: dependencies?.cast(),
     );
   }
@@ -105,11 +108,17 @@ class RiverpodAnnotationElement {
   }
 
   @internal
+  static String? readName(DartObject object) {
+    return object.getField('name')?.toStringValue();
+  }
+
+  @internal
   static List<DartObject>? readDependencies(DartObject object) {
     return object.getField('dependencies')?.toListValue();
   }
 
   final bool keepAlive;
+  final String? name;
   final Set<GeneratorProviderDeclarationElement>? dependencies;
   final Set<GeneratorProviderDeclarationElement>? allTransitiveDependencies;
 }
