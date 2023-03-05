@@ -166,8 +166,11 @@ abstract class $notifierTypedefName extends $notifierBaseType<${provider.valueTy
     });
 
     final docs = providerDocFor(provider.providerElement.element);
-    final providerName = providerNameFor(provider.providerElement, options,
-        annotationName: provider.providerElement.annotation.name);
+    final providerName = providerNameFor(
+      provider.providerElement,
+      options,
+      providerName: provider.providerElement.annotation.name,
+    );
 
     final dependenciesKeyword =
         provider.providerElement.annotation.dependencies == null

@@ -47,7 +47,7 @@ class StatelessProviderTemplate extends Template {
     final providerName = providerNameFor(
       provider.providerElement,
       options,
-      annotationName: provider.providerElement.annotation.name,
+      providerName: provider.providerElement.annotation.name,
     );
 
     final createFn = provider.node.externalKeyword == null
