@@ -11,7 +11,7 @@ abstract class BaseRef {
 
   /// Returns the value exposed by a provider and rebuild the widget when that
   /// value changes.
-  T watch<T>(covariant ProviderListenable<T> provider);
+  T watch<T>(AlwaysAliveProviderListenable<T> provider);
 }
 
 /// {@template riverpod.providerrefbase}
