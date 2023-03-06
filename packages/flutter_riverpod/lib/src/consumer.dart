@@ -4,7 +4,7 @@ import 'package:meta/meta.dart';
 import 'internals.dart';
 
 /// An object that allows widgets to interact with providers.
-abstract class WidgetRef {
+abstract class WidgetRef extends BaseRef {
   /// The [BuildContext] of the widget associated to this [WidgetRef].
   ///
   /// This is strictly identical to the [BuildContext] passed to [ConsumerWidget.build].
@@ -18,6 +18,7 @@ abstract class WidgetRef {
   /// - [ProviderListenable.select], which allows a widget to filter rebuilds by
   ///   observing only the selected properties.
   /// - [listen], to react to changes on a provider, such as for showing modals.
+  @override
   T watch<T>(ProviderListenable<T> provider);
 
   /// Determines whether a provider is initialized or not.
@@ -51,6 +52,7 @@ abstract class WidgetRef {
   ///   return Item.fromJson(json);
   /// });
   /// ```
+  @override
   bool exists(ProviderBase<Object?> provider);
 
   /// Listen to a provider and call `listener` whenever its value changes,
@@ -169,6 +171,7 @@ abstract class WidgetRef {
   /// While more verbose than [read], using [Provider]/`select` is a lot safer.
   /// It does not rely on implementation details on `Model`, and it makes
   /// impossible to have a bug where our UI does not refresh.
+  @override
   T read<T>(ProviderListenable<T> provider);
 
   /// Forces a provider to re-evaluate its state immediately, and return the created value.

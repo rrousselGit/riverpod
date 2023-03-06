@@ -1,5 +1,19 @@
 part of '../framework.dart';
 
+/// Base class for [Ref]
+@optionalTypeArgs
+abstract class BaseRef {
+  /// Read the state associated with a provider, without listening to that provider.
+  T read<T>(ProviderListenable<T> provider);
+
+  /// Determines whether a provider is initialized or not.
+  bool exists(ProviderBase<Object?> provider);
+
+  /// Returns the value exposed by a provider and rebuild the widget when that
+  /// value changes.
+  T watch<T>(covariant ProviderListenable<T> provider);
+}
+
 /// {@template riverpod.providerrefbase}
 /// An object used by providers to interact with other providers and the life-cycles
 /// of the application.
@@ -10,7 +24,7 @@ part of '../framework.dart';
 /// - [onDispose], a method that allows performing a task when the provider is destroyed.
 /// {@endtemplate}
 @optionalTypeArgs
-abstract class Ref<State extends Object?> {
+abstract class Ref<State extends Object?> extends BaseRef {
   /// The [ProviderContainer] that this provider is associated with.
   ProviderContainer get container;
 
@@ -189,6 +203,7 @@ abstract class Ref<State extends Object?> {
   ///
   /// If possible, avoid using [read] and prefer [watch], which is generally
   /// safer to use.
+  @override
   T read<T>(ProviderListenable<T> provider);
 
   /// {@template riverpod.exists}
@@ -224,6 +239,7 @@ abstract class Ref<State extends Object?> {
   /// });
   /// ```
   /// {@endtemplate}
+  @override
   bool exists(ProviderBase<Object?> provider);
 
   /// Obtains the state of a provider and causes the state to be re-evaluated
@@ -276,6 +292,7 @@ abstract class Ref<State extends Object?> {
   /// - if multiple widgets depends on `sortedTodosProvider` the list will be
   ///   sorted only once.
   /// - if nothing is listening to `sortedTodosProvider`, then no sort is performed.
+  @override
   T watch<T>(AlwaysAliveProviderListenable<T> provider);
 
   /// {@template riverpod.listen}
