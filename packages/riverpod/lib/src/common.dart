@@ -17,14 +17,14 @@ extension AsyncTransition<T> on ProviderElementBase<AsyncValue<T>> {
     AsyncValue<T> newState, {
     required bool seamless,
   }) {
-    // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+// ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
     final previous = getState()?.requireState;
 
     if (previous == null) {
-      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+// ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
       setState(newState);
     } else {
-      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+// ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
       setState(
         newState.copyWithPrevious(
           previous,
@@ -92,6 +92,7 @@ abstract class AsyncValue<T> {
   /// The data can be `null`.
   // coverage:ignore-start
   const factory AsyncValue.data(T value) = AsyncData<T>;
+
   // coverage:ignore-end
 
   /// Creates an [AsyncValue] in loading state.
@@ -99,6 +100,7 @@ abstract class AsyncValue<T> {
   /// Prefer always using this constructor with the `const` keyword.
   // coverage:ignore-start
   const factory AsyncValue.loading() = AsyncLoading<T>;
+
   // coverage:ignore-end
 
   /// {@template asyncvalue.error_ctor}
@@ -114,6 +116,7 @@ abstract class AsyncValue<T> {
   // coverage:ignore-start
   const factory AsyncValue.error(Object error, StackTrace stackTrace) =
       AsyncError<T>;
+
   // coverage:ignore-end
 
   /// Transforms a [Future] that may fail into something that is safe to read.
@@ -183,11 +186,17 @@ abstract class AsyncValue<T> {
 
   /// The value currently exposed.
   ///
-  /// When reading [value] during loading state, null will be returning.
+  /// It will return previous value during loading/error state.
   ///
-  /// When trying to read [value] in error state, the error will be rethrown
-  /// instead. The exception is if [isRefreshing] is true, in which case
-  /// the previous value will be returned.
+  /// If there is no previous value, reading [value] during loading state will
+  /// return null. while during error state, the error will be rethrown instead.
+  ///
+  /// If you do not want to return previous value during loading/error states,
+  /// consider using [unwrapPrevious] :
+  ///
+  /// ```dart
+  /// ref.watch(provider).unwrapPrevious().value
+  /// ```
   ///
   /// See also [valueOrNull], which does not throw during error state.
   T? get value;
@@ -504,10 +513,18 @@ extension AsyncValueX<T> on AsyncValue<T> {
     );
   }
 
-  /// Return the value, or null if in error/loading state.
+  /// Return the value or previous value if in loading/error state.
   ///
-  /// This is different from [value], which will throw if trying to read the value
-  /// in error state.
+  /// If there is no previous value, null will be returned during loading/error state.
+  ///
+  /// This is different from [value], which will rethrow the error instead of returning null.
+  ///
+  /// If you do not want to return previous value during loading/error states,
+  /// consider using [unwrapPrevious] :
+  ///
+  /// ```dart
+  /// ref.watch(provider).unwrapPrevious().valueOrNull
+  /// ```
   T? get valueOrNull {
     if (hasValue) return value;
     return null;
