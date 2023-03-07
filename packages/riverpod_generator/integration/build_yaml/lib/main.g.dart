@@ -34,6 +34,20 @@ final countFuturePod = AutoDisposeFutureProvider<int>.internal(
 );
 
 typedef CountFutureRef = AutoDisposeFutureProviderRef<int>;
+String _$countStreamHash() => r'1dbe49244ea19e8dbc3af0534429bb323720c07a';
+
+/// See also [countStream].
+@ProviderFor(countStream)
+final countStreamPod = AutoDisposeStreamProvider<int>.internal(
+  countStream,
+  name: r'countStreamPod',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$countStreamHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef CountStreamRef = AutoDisposeStreamProviderRef<int>;
 String _$count2Hash() => r'6256825480d83bb13acde282cf3c9d9524cc3a6c';
 
 /// Copied from Dart SDK
@@ -219,6 +233,88 @@ class CountFuture2Provider extends AutoDisposeFutureProvider<int> {
   }
 }
 
+String _$countStream2Hash() => r'051264dd685ebc0a57e454bb676957c93cb4ae20';
+typedef CountStream2Ref = AutoDisposeStreamProviderRef<int>;
+
+/// See also [countStream2].
+@ProviderFor(countStream2)
+const countStream2ProviderFamily = CountStream2Family();
+
+/// See also [countStream2].
+class CountStream2Family extends Family<AsyncValue<int>> {
+  /// See also [countStream2].
+  const CountStream2Family();
+
+  /// See also [countStream2].
+  CountStream2Provider call(
+    int a,
+  ) {
+    return CountStream2Provider(
+      a,
+    );
+  }
+
+  @override
+  CountStream2Provider getProviderOverride(
+    covariant CountStream2Provider provider,
+  ) {
+    return call(
+      provider.a,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'countStream2ProviderFamily';
+}
+
+/// See also [countStream2].
+class CountStream2Provider extends AutoDisposeStreamProvider<int> {
+  /// See also [countStream2].
+  CountStream2Provider(
+    this.a,
+  ) : super.internal(
+          (ref) => countStream2(
+            ref,
+            a,
+          ),
+          from: countStream2ProviderFamily,
+          name: r'countStream2ProviderFamily',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$countStream2Hash,
+          dependencies: CountStream2Family._dependencies,
+          allTransitiveDependencies:
+              CountStream2Family._allTransitiveDependencies,
+        );
+
+  final int a;
+
+  @override
+  bool operator ==(Object other) {
+    return other is CountStream2Provider && other.a == a;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, a.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
 String _$countNotifierHash() => r'a8dd7a66ee0002b8af657245c4affaa206fd99ec';
 
 /// See also [CountNotifier].
@@ -252,6 +348,23 @@ final countAsyncNotifierPod =
 );
 
 typedef _$CountAsyncNotifier = AutoDisposeAsyncNotifier<int>;
+String _$countStreamNotifierHash() =>
+    r'61d2cd311c4808f8d7e8b2d67f5c7b85337666c6';
+
+/// See also [CountStreamNotifier].
+@ProviderFor(CountStreamNotifier)
+final countStreamNotifierPod =
+    AutoDisposeStreamNotifierProvider<CountStreamNotifier, int>.internal(
+  CountStreamNotifier.new,
+  name: r'countStreamNotifierPod',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$countStreamNotifierHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$CountStreamNotifier = AutoDisposeStreamNotifier<int>;
 String _$countNotifier2Hash() => r'ef12bb4f94add336804ae43bcdbcd8e9b0bec420';
 
 abstract class _$CountNotifier2 extends BuildlessAutoDisposeNotifier<int> {
@@ -439,6 +552,104 @@ class CountAsyncNotifier2Provider
   @override
   FutureOr<int> runNotifierBuild(
     covariant CountAsyncNotifier2 notifier,
+  ) {
+    return notifier.build(
+      a,
+    );
+  }
+}
+
+String _$countStreamNotifier2Hash() =>
+    r'13be1b7aa32801b33c68f2a228851d2fb6a4a9ee';
+
+abstract class _$CountStreamNotifier2
+    extends BuildlessAutoDisposeStreamNotifier<int> {
+  late final int a;
+
+  Stream<int> build(
+    int a,
+  );
+}
+
+/// See also [CountStreamNotifier2].
+@ProviderFor(CountStreamNotifier2)
+const countStreamNotifier2ProviderFamily = CountStreamNotifier2Family();
+
+/// See also [CountStreamNotifier2].
+class CountStreamNotifier2Family extends Family<AsyncValue<int>> {
+  /// See also [CountStreamNotifier2].
+  const CountStreamNotifier2Family();
+
+  /// See also [CountStreamNotifier2].
+  CountStreamNotifier2Provider call(
+    int a,
+  ) {
+    return CountStreamNotifier2Provider(
+      a,
+    );
+  }
+
+  @override
+  CountStreamNotifier2Provider getProviderOverride(
+    covariant CountStreamNotifier2Provider provider,
+  ) {
+    return call(
+      provider.a,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'countStreamNotifier2ProviderFamily';
+}
+
+/// See also [CountStreamNotifier2].
+class CountStreamNotifier2Provider
+    extends AutoDisposeStreamNotifierProviderImpl<CountStreamNotifier2, int> {
+  /// See also [CountStreamNotifier2].
+  CountStreamNotifier2Provider(
+    this.a,
+  ) : super.internal(
+          () => CountStreamNotifier2()..a = a,
+          from: countStreamNotifier2ProviderFamily,
+          name: r'countStreamNotifier2ProviderFamily',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$countStreamNotifier2Hash,
+          dependencies: CountStreamNotifier2Family._dependencies,
+          allTransitiveDependencies:
+              CountStreamNotifier2Family._allTransitiveDependencies,
+        );
+
+  final int a;
+
+  @override
+  bool operator ==(Object other) {
+    return other is CountStreamNotifier2Provider && other.a == a;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, a.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+
+  @override
+  Stream<int> runNotifierBuild(
+    covariant CountStreamNotifier2 notifier,
   ) {
     return notifier.build(
       a,
