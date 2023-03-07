@@ -19,6 +19,7 @@ class HomeView extends HookConsumerWidget {
     final greeting = useState('Hello');
     
     return Scaffold(
+      body: Center(child: Text(greeting.value)),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // Call `increment()` on the `Counter` class

@@ -26,6 +26,9 @@ class HomeView extends HookConsumerWidget {
 
     final greeting = useState('Hello');
 
-    return Container();
+    return Container(
+      alignment: Alignment.center,
+      child: Text(greeting.value),
+    );
   }
 }

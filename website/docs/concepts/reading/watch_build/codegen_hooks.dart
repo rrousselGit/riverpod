@@ -38,6 +38,6 @@ class HomeView extends HookConsumerWidget {
     // use ref to listen to a provider
     final counter = ref.watch(counterProvider);
 
-    return Text('$counter');
+    return Text('${greeting.value} $counter');
   }
 }
