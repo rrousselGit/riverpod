@@ -7,4 +7,10 @@ void main() {
     final options = BuildYamlOptions.fromMap(map);
     expect(options.providerNameSuffix, 'Pod');
   });
+
+  test('custom family suffix', () async {
+    const map = {'provider_family_name_suffix': 'ProviderFamily'};
+    final options = BuildYamlOptions.fromMap(map);
+    expect(options.providerFamilyNameSuffix, 'ProviderFamily');
+  });
 }
