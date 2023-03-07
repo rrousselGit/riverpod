@@ -233,7 +233,7 @@ ChangeNotifierProvider<UserIdNotifier>(create: (context) => UserIdNotifier()),
 ```
 
 接下来我们有两个选择： 
-我们可能结合 `UserIdNotifier` 来撞见一个新的 “无状态(stateless)” 的provider(通常是一个重载了==方法的不可变的值)， 比如：
+我们可能结合 `UserIdNotifier` 来创建一个新的 “无状态(stateless)” 的provider(通常是一个重载了==方法的不可变的值)， 比如：
 
 ```dart
 ProxyProvider<UserIdNotifier, String>(
