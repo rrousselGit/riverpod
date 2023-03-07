@@ -18,4 +18,14 @@ void main() {
     expect(countNotifierPod.name, 'countNotifierPod');
     expect(countAsyncNotifierPod.name, 'countAsyncNotifierPod');
   });
+
+  test('provider family names', () {
+    expect(count2ProviderFamily.name, 'count2ProviderFamily');
+    expect(countFuture2ProviderFamily.name, 'countFuture2ProviderFamily');
+    expect(countNotifier2ProviderFamily.name, 'countNotifier2ProviderFamily');
+    expect(
+      countAsyncNotifier2ProviderFamily.name,
+      'countAsyncNotifier2ProviderFamily',
+    );
+  });
 }

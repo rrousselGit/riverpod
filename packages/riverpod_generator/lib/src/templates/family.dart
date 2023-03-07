@@ -1,11 +1,19 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:collection/collection.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
+
 import '../models.dart';
 import '../riverpod_generator.dart';
 import 'parameters.dart';
 import 'stateful_provider.dart';
 import 'template.dart';
+
+String providerFamilyNameFor(
+  ProviderDeclarationElement provider,
+  BuildYamlOptions options,
+) {
+  return '${provider.name.lowerFirst}${options.providerFamilyNameSuffix ?? options.providerNameSuffix ?? 'Provider'}';
+}
 
 class FamilyTemplate extends Template {
   FamilyTemplate._(
@@ -166,7 +174,8 @@ abstract class $notifierTypedefName extends $notifierBaseType<${provider.valueTy
     });
 
     final docs = providerDocFor(provider.providerElement.element);
-    final providerName = providerNameFor(provider.providerElement, options);
+    final providerName =
+        providerFamilyNameFor(provider.providerElement, options);
 
     final dependenciesKeyword =
         provider.providerElement.annotation.dependencies == null

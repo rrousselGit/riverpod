@@ -27,3 +27,29 @@ class CountAsyncNotifier extends _$CountAsyncNotifier {
     return 1;
   }
 }
+
+@riverpod
+int count2(Count2Ref ref, int a) {
+  return 1;
+}
+
+@riverpod
+FutureOr<int> countFuture2(CountFuture2Ref ref, int a) {
+  return 1;
+}
+
+@riverpod
+class CountNotifier2 extends _$CountNotifier2 {
+  @override
+  int build(int a) {
+    return 1;
+  }
+}
+
+@riverpod
+class CountAsyncNotifier2 extends _$CountAsyncNotifier2 {
+  @override
+  FutureOr<int> build(int a) {
+    return 1;
+  }
+}
