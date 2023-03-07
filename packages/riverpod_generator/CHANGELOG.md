@@ -1,7 +1,9 @@
-## Unreleased patch
+## Unreleased minor
 
-Deprecate the (new) shorthand syntax for scoping provider using the `external`
-keyword. That syntax unfortunately does not work on web and therefore will be removed.
+- Added support for configuring the name of providers with parameters ("families") (thanks to @K9i-0)
+
+- Deprecate the (new) shorthand syntax for scoping provider using the `external`
+  keyword. That syntax unfortunately does not work on web and therefore will be removed.
 
 ## 2.0.0
 
