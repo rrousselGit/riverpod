@@ -41,7 +41,7 @@ class TodosNotifier extends ChangeNotifier {
   }
 }
 
-// Finally, we are using StateNotifierProvider to allow the UI to interact with
+// Finally, we are using ChangeNotifierProvider to allow the UI to interact with
 // our TodosNotifier class.
 final todosProvider = ChangeNotifierProvider<TodosNotifier>((ref) {
   return TodosNotifier();
