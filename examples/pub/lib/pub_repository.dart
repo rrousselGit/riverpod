@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:pubspec_parse/pubspec_parse.dart';
 
@@ -6,10 +7,16 @@ part 'pub_repository.freezed.dart';
 part 'pub_repository.g.dart';
 
 class PubRepository {
+  PubRepository() {
+    dio = Dio();
+    if (kIsWeb) {
+      dio.interceptors.add(PubProxyInterceptor());
+    }
+  }
+
   static const _scheme = 'https';
   static const _host = 'pub.dartlang.org';
-
-  final dio = Dio();
+  late final Dio dio;
 
   Future<List<Package>> getPackages({
     required int page,
@@ -56,7 +63,6 @@ class PubRepository {
     required String packageName,
     CancelToken? cancelToken,
   }) async {
-    final dio = Dio();
     final uri = Uri(
       scheme: _scheme,
       host: _host,
@@ -257,4 +263,20 @@ class PubSearchResponse with _$PubSearchResponse {
 
   factory PubSearchResponse.fromJson(Map<String, Object?> json) =>
       _$PubSearchResponseFromJson(json);
+}
+
+class PubProxyInterceptor extends Interceptor {
+  @override
+  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+    super.onRequest(
+      options.copyWith(
+        path: 'https://cors-anywhere.herokuapp.com/${options.path}',
+        headers: {
+          ...options.headers,
+          'origin': 'pub.dev',
+        },
+      ),
+      handler,
+    );
+  }
 }
