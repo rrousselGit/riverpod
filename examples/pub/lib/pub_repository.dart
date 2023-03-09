@@ -8,15 +8,12 @@ part 'pub_repository.g.dart';
 
 class PubRepository {
   PubRepository() {
-    dio = Dio();
-    if (kIsWeb) {
-      dio.interceptors.add(PubProxyInterceptor());
-    }
+    _configureDio();
   }
 
   static const _scheme = 'https';
   static const _host = 'pub.dartlang.org';
-  late final Dio dio;
+  final Dio dio = Dio();
 
   Future<List<Package>> getPackages({
     required int page,
@@ -169,6 +166,12 @@ class PubRepository {
     final packageResponse = LikedPackagesResponse.fromJson(response.data!);
     return packageResponse.likedPackages.map((e) => e.package).toList();
   }
+  
+  void _configureDio() {
+    if (kIsWeb) {
+      dio.interceptors.add(PubProxyInterceptor());
+    }
+  }
 }
 
 const userToken = '';
@@ -265,6 +268,9 @@ class PubSearchResponse with _$PubSearchResponse {
       _$PubSearchResponseFromJson(json);
 }
 
+
+// A custom interceptor that proxies requests to a cors-proxy server 
+// in order to workaround the CORS issue on web platform.
 class PubProxyInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
