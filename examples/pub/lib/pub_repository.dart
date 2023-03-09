@@ -270,11 +270,7 @@ class PubProxyInterceptor extends Interceptor {
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     super.onRequest(
       options.copyWith(
-        path: 'https://cors-anywhere.herokuapp.com/${options.path}',
-        headers: {
-          ...options.headers,
-          'origin': 'pub.dev',
-        },
+        path: 'https://api.codetabs.com/v1/proxy/?quest=${options.path}',
       ),
       handler,
     );

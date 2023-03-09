@@ -4,7 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class PubAppbar extends StatelessWidget implements PreferredSizeWidget {
   const PubAppbar({super.key});
-  static const _webProxy = 'https://cors-anywhere.herokuapp.com';
+  static const _webProxy = 'https://api.codetabs.com/v1/proxy';
   static const _dartLogoURL = 'https://pub.dev/static/hash-6pt3begn/img/pub-dev-logo.svg';
 
   @override
@@ -12,7 +12,7 @@ class PubAppbar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       backgroundColor: const Color(0xFF1c2834),
       title: SvgPicture.network(
-        kIsWeb ? '$_webProxy/$_dartLogoURL' : _dartLogoURL,
+        kIsWeb ? '$_webProxy/?quest=$_dartLogoURL' : _dartLogoURL,
         width: 150,
       ),
     );
