@@ -1,3 +1,8 @@
+## Unreleased patch
+
+Added workaround to reduce the likelyness of an InconsistentAnalysisException.  
+A better fix will be made once the issue is fully understood.
+
 ## 2.1.2 - 2023-03-09
 
 - `riverpod_analyzer_utils` upgraded to `0.1.3`

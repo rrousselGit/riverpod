@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:analyzer/dart/analysis/analysis_context.dart';
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/analysis/session.dart';
 import 'package:analyzer/dart/ast/ast.dart';
@@ -13,16 +14,17 @@ String assetPath(AssetId assetId) {
   return p.posix.join('/${assetId.package}', assetId.path);
 }
 
-extension on AnalysisSession {
+extension on AnalysisContext {
   Future<ResolvedLibraryResult> _getResolvedUnit(String path) async {
     var i = 0;
     while (i < 3) {
       i++;
       try {
-        final unit = await getResolvedLibrary(path);
+        final unit = await currentSession.getResolvedLibrary(path);
         return unit as ResolvedLibraryResult;
       } on InconsistentAnalysisException {
         // Retry
+        await applyPendingFileChanges();
       }
     }
 
@@ -39,7 +41,8 @@ abstract class ParserGenerator extends GeneratorForAnnotation<Annotation> {
     BuildStep buildStep,
   ) async {
     final path = assetPath(buildStep.inputId);
-    final unit = await library.element.session._getResolvedUnit(path);
+    final unit =
+        await library.element.session.analysisContext._getResolvedUnit(path);
     return generateForUnit(unit);
   }
 
@@ -52,7 +55,7 @@ abstract class ParserGenerator extends GeneratorForAnnotation<Annotation> {
     BuildStep buildStep,
   ) async* {
     final path = assetPath(buildStep.inputId);
-    final unit = await element.session!._getResolvedUnit(path);
+    final unit = await element.session!.analysisContext._getResolvedUnit(path);
     yield await generateForUnit(unit);
   }
 }
