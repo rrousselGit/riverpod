@@ -186,7 +186,7 @@ abstract class AsyncValue<T> {
 
   /// The value currently exposed.
   ///
-  /// It will return previous value during loading/error state.
+  /// It will return the previous value during loading/error state.
   ///
   /// If there is no previous value, reading [value] during loading state will
   /// return null. while during error state, the error will be rethrown instead.

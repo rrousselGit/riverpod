@@ -1,4 +1,10 @@
+## 1.1.3 - 2023-03-09
+
+- Upgrade dependencies
+- `riverpod_analyzer_utils` upgraded to `0.1.2`
+
 ## 1.1.2 - 2023-03-01
+
 Fix quick-fix for provider_dependencies
 
 ## 1.1.1

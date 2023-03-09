@@ -1,3 +1,8 @@
+## 2.3.1 - 2023-03-09
+
+- `flutter_riverpod` upgraded to `2.3.1`
+- `riverpod` upgraded to `2.3.1`
+
 ## 2.3.0
 
 - Added `StreamNotifier` + `StreamNotifierProvider`.

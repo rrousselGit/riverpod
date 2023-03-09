@@ -1,3 +1,7 @@
+## 2.0.1 - 2023-03-09
+
+- `riverpod` upgraded to `2.3.1`
+
 ## 2.0.0
 
 - Export necessary utilites for providers returning a Stream.
