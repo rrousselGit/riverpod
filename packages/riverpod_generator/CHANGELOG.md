@@ -1,3 +1,7 @@
+## 2.1.1 - 2023-03-09
+
+- `riverpod_analyzer_utils` upgraded to `0.1.2`
+
 ## 2.1.0 - 2023-03-09
 
 - Added support for configuring the name of providers with parameters ("families") (thanks to @K9i-0)
