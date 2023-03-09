@@ -24,9 +24,10 @@ class Riverpod {
   /// Defaults to false.
   final bool keepAlive;
 
-  /// To set a custom name for the provider you want to generate.
+  /// A custom name for the provider you want to generate.
+  /// Riverpod adds a suffix to this, which defaults to `Provider`. Set the `provider_name_suffix` option in build_runner settings to change this; see [riverpod_generator](https://pub.dev/packages/riverpod_generator#global-configuration) for more details.
   ///
-  /// Defaults to null.
+  /// Defaults to the name of the annotated method.
   final String? name;
 
   /// The list of dependencies of a provider.
