@@ -1,4 +1,4 @@
-## Unreleased minor
+## 2.1.0 - 2023-03-09
 
 - Added support for configuring the name of providers with parameters ("families") (thanks to @K9i-0)
 

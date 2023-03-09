@@ -1,4 +1,4 @@
-## Unreleased fix
+## 2.3.1 - 2023-03-09
 
 - Updated `AsyncValue.value/valueOrNull` docs to cover the "previous value" cases (thanks to @AhmedLSayed9)
 
