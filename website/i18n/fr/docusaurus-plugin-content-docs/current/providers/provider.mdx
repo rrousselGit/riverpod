@@ -17,7 +17,7 @@ import { trimSnippet } from "../../../../../src/components/CodeSnippet";
 `Provider` est typiquement utilisé pour :
 
 - les calculs du caching (mise en cache)
-- exposer une valeur à d'autres fournisseurs (comme un `Repository`/`HttpClient`).
+- exposer une valeur à d'autres providers (comme un `Repository`/`HttpClient`).
 - offre un moyen pour les tests ou les widgets de remplacer une valeur.
 - réduire les reconstructions de providers/widgets sans avoir à utiliser `select`.
 
@@ -90,7 +90,7 @@ Une façon de résoudre ce problème est d'extraire cette logique en dehors du w
 En effectuant cette petite refactorisation, notre widget `PreviousButton` ne sera plus 
 reconstruit lorsque l'index de la page change grâce à `Provider`.
 
-Dorénavant, lorsque l'index de la page change, notre fournisseur `canGoToPreviousPageProvider` 
+Dorénavant, lorsque l'index de la page change, notre provider `canGoToPreviousPageProvider` 
 sera recalculé. Mais si la valeur exposée par le 
 provider ne change pas, alors le `PreviousButton` ne sera pas reconstruit.
 
