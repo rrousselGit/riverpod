@@ -1,3 +1,7 @@
+## 2.1.2 - 2023-03-09
+
+- `riverpod_analyzer_utils` upgraded to `0.1.3`
+
 ## 2.1.1 - 2023-03-09
 
 - `riverpod_analyzer_utils` upgraded to `0.1.2`
