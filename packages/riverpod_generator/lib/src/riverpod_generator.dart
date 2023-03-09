@@ -96,6 +96,7 @@ class _RiverpodGeneratorVisitor extends RecursiveRiverpodAstVisitor {
   final BuildYamlOptions options;
 
   String get suffix => options.providerNameSuffix ?? _defaultProviderNameSuffix;
+  String get familySuffix => options.providerFamilyNameSuffix ?? suffix;
 
   var _didEmitHashUtils = false;
   void maybeEmitHashUtils() {
@@ -132,11 +133,6 @@ class _SystemHash {
   ) {
     super.visitStatefulProviderDeclaration(provider);
 
-    final providerName = '${provider.providerElement.name.lowerFirst}$suffix';
-    final notifierTypedefName = providerName.startsWith('_')
-        ? '_\$${provider.providerElement.name.substring(1)}'
-        : '_\$${provider.providerElement.name}';
-
     final parameters = provider.buildMethod.parameters?.parameters;
     if (parameters == null) return;
 
@@ -145,6 +141,11 @@ class _SystemHash {
     buffer.write(_hashFn(provider, hashFunctionName));
 
     if (parameters.isEmpty) {
+      final providerName = '${provider.providerElement.name.lowerFirst}$suffix';
+      final notifierTypedefName = providerName.startsWith('_')
+          ? '_\$${provider.providerElement.name.substring(1)}'
+          : '_\$${provider.providerElement.name}';
+
       StatefulProviderTemplate(
         provider,
         options: options,
@@ -152,6 +153,12 @@ class _SystemHash {
         hashFn: hashFn,
       ).run(buffer);
     } else {
+      final providerName =
+          '${provider.providerElement.name.lowerFirst}$familySuffix';
+      final notifierTypedefName = providerName.startsWith('_')
+          ? '_\$${provider.providerElement.name.substring(1)}'
+          : '_\$${provider.providerElement.name}';
+
       maybeEmitHashUtils();
       FamilyTemplate.stateful(
         provider,

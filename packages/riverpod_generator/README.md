@@ -169,6 +169,10 @@ targets:
           # Could be changed to "Pod", such that riverpod_generator
           # would generate "countPod" instead of "countProvider"
           provider_name_suffix: "Provider" # (default)
+          # Similar to provider_name_sufix, this is an option for renaming
+          # providers with parameters ("families").
+          # This takes precedence over provider_name_suffix.
+          provider_family_name_suffix: "Provider" # (default)
 ```
 
 [family]: https://riverpod.dev/docs/concepts/modifiers/family

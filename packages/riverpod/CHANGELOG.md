@@ -1,3 +1,7 @@
+## Unreleased fix
+
+- Updated `AsyncValue.value/valueOrNull` docs to cover the "previous value" cases (thanks to @AhmedLSayed9)
+
 ## 2.3.0
 
 - Added `StreamNotifier` + `StreamNotifierProvider`.
