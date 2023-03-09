@@ -13,7 +13,7 @@ class PubRepository {
 
   static const _scheme = 'https';
   static const _host = 'pub.dartlang.org';
-  final Dio dio = Dio();
+  final dio = Dio();
 
   Future<List<Package>> getPackages({
     required int page,
@@ -166,7 +166,7 @@ class PubRepository {
     final packageResponse = LikedPackagesResponse.fromJson(response.data!);
     return packageResponse.likedPackages.map((e) => e.package).toList();
   }
-  
+
   void _configureDio() {
     if (kIsWeb) {
       dio.interceptors.add(PubProxyInterceptor());
