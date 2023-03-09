@@ -1,3 +1,7 @@
+## Unreleased patch
+
+Upgrade dependencies
+
 ## 0.1.1
 
 Generated declarations now have a `needsOverride` and `providerELement.isScoped` property respecting
