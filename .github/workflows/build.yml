@@ -69,7 +69,7 @@ jobs:
           fi
 
       - name: Check format
-        run: flutter format --set-exit-if-changed .
+        run: dart format --set-exit-if-changed .
         if: matrix.package_path != 'website'
 
       - name: Analyze

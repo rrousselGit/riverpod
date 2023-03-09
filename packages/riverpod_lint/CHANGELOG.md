@@ -1,3 +1,7 @@
+## 1.1.4 - 2023-03-09
+
+Upgrade dependencies
+
 ## 1.1.3 - 2023-03-09
 
 - Upgrade dependencies
