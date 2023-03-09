@@ -268,8 +268,7 @@ class PubSearchResponse with _$PubSearchResponse {
       _$PubSearchResponseFromJson(json);
 }
 
-
-// A custom interceptor that proxies requests to a cors-proxy server 
+// A custom interceptor that proxies requests to a cors-proxy server
 // in order to workaround the CORS issue on web platform.
 class PubProxyInterceptor extends Interceptor {
   @override

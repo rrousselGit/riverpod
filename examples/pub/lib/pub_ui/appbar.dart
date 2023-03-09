@@ -5,7 +5,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 class PubAppbar extends StatelessWidget implements PreferredSizeWidget {
   const PubAppbar({super.key});
   static const _webProxy = 'https://api.codetabs.com/v1/proxy';
-  static const _dartLogoURL = 'https://pub.dev/static/hash-6pt3begn/img/pub-dev-logo.svg';
+  static const _dartLogoURL =
+      'https://pub.dev/static/hash-6pt3begn/img/pub-dev-logo.svg';
 
   @override
   Widget build(BuildContext context) {
