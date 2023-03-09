@@ -16,6 +16,7 @@ class PubRepository {
 
   static const _scheme = 'https';
   static const _host = 'pub.dartlang.org';
+
   late final Dio dio;
 
   Future<List<Package>> getPackages({
