@@ -1,3 +1,7 @@
+## Unreleased patch
+
+Upgrade dependencies
+
 ## 0.1.2 - 2023-03-09
 
 Upgrade dependencies
