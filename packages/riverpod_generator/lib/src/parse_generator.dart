@@ -1,7 +1,5 @@
 import 'dart:async';
 
-import 'package:analyzer/dart/analysis/results.dart';
-import 'package:analyzer/dart/analysis/session.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
@@ -13,37 +11,34 @@ String assetPath(AssetId assetId) {
   return p.posix.join('/${assetId.package}', assetId.path);
 }
 
-extension on AnalysisSession {
-  Future<ResolvedLibraryResult> _getResolvedUnit(String path) async {
-    var i = 0;
-    while (i < 3) {
-      i++;
-      try {
-        final unit = await getResolvedLibrary(path);
-        return unit as ResolvedLibraryResult;
-      } on InconsistentAnalysisException {
-        // Retry
-      }
-    }
-
-    throw StateError(
-      'Failed to obtain the unit: too many inconsistent analysis exceptions.',
-    );
-  }
-}
-
-abstract class ParserGenerator extends GeneratorForAnnotation<Annotation> {
+abstract class ParserGenerator<AnnotationT>
+    extends GeneratorForAnnotation<AnnotationT> {
   @override
   Future<String> generate(
     LibraryReader library,
     BuildStep buildStep,
   ) async {
-    final path = assetPath(buildStep.inputId);
-    final unit = await library.element.session._getResolvedUnit(path);
-    return generateForUnit(unit);
+    final firstAnnotatedElementFromUniqueSource = <Uri, Element>{};
+
+    for (final annotated in library.annotatedWithExact(typeChecker)) {
+      firstAnnotatedElementFromUniqueSource.putIfAbsent(
+        annotated.element.source!.uri,
+        () => annotated.element,
+      );
+    }
+
+    final ast = await Future.wait(
+      firstAnnotatedElementFromUniqueSource.values.map(
+        (e) => buildStep.resolver
+            .astNodeFor(e, resolve: true)
+            .then((value) => value!.root as CompilationUnit),
+      ),
+    );
+
+    return generateForUnit(ast);
   }
 
-  FutureOr<String> generateForUnit(ResolvedLibraryResult resolvedLibraryResult);
+  FutureOr<String> generateForUnit(List<CompilationUnit> compilationUnits);
 
   @override
   Stream<String> generateForAnnotatedElement(
@@ -51,8 +46,13 @@ abstract class ParserGenerator extends GeneratorForAnnotation<Annotation> {
     ConstantReader annotation,
     BuildStep buildStep,
   ) async* {
-    final path = assetPath(buildStep.inputId);
-    final unit = await element.session!._getResolvedUnit(path);
-    yield await generateForUnit(unit);
+    final ast = await buildStep.resolver
+        .astNodeFor(element, resolve: true)
+        .then((value) => value?.root);
+
+    ast as CompilationUnit?;
+    if (ast == null) return;
+
+    yield await generateForUnit([ast]);
   }
 }

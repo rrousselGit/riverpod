@@ -199,6 +199,20 @@ final _privateProvider = AutoDisposeProvider<String>.internal(
 );
 
 typedef _PrivateRef = AutoDisposeProviderRef<String>;
+String _$generatedHash() => r'fecbc1d5d9a05fc996b452a57fd1975ff368af91';
+
+/// See also [generated].
+@ProviderFor(generated)
+final generatedProvider = AutoDisposeProvider<String>.internal(
+  generated,
+  name: r'generatedProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$generatedHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef GeneratedRef = AutoDisposeProviderRef<String>;
 String _$publicClassHash() => r'f04884c039e6200ad3537feeecfc6e83828b5eb5';
 
 /// This is some documentation

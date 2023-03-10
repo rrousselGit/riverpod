@@ -1,3 +1,8 @@
+## Unreleased patch
+
+- Fixed InconsistentAnalysisException
+- Fixed an `Unsupported operation: Unknown type SimpleIdentifierImpl` crash
+
 ## 2.1.2 - 2023-03-09
 
 - `riverpod_analyzer_utils` upgraded to `0.1.3`

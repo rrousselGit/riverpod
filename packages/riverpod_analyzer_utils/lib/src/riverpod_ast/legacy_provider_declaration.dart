@@ -153,7 +153,9 @@ class LegacyProviderDeclaration extends RiverpodAst
       arguments = initializer.argumentList;
       typeArguments = initializer.typeArguments;
     } else {
-      throw UnsupportedError('Unknown type ${initializer.runtimeType}');
+      // Invalid provider expression.
+      // Such as "final provider = variable;"
+      return null;
     }
 
     final build = arguments.positionalArguments().firstOrNull;

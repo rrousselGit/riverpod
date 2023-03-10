@@ -1,3 +1,7 @@
+## Unreleased patch
+
+- Fixed an `Unsupported operation: Unknown type SimpleIdentifierImpl` crash
+
 ## 0.1.3 - 2023-03-09
 
 Upgrade dependencies
