@@ -1,4 +1,4 @@
-## Unreleased patch
+## 2.1.3 - 2023-03-10
 
 - Fixed InconsistentAnalysisException
 - Fixed an `Unsupported operation: Unknown type SimpleIdentifierImpl` crash
