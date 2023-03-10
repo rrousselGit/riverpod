@@ -4,7 +4,7 @@ class ResolvedRiverpodLibraryResult extends RiverpodAst {
   ResolvedRiverpodLibraryResult._();
 
   factory ResolvedRiverpodLibraryResult.from(
-    List<ResolvedUnitResult> units,
+    List<CompilationUnit> units,
   ) {
     final result = ResolvedRiverpodLibraryResult._();
     final visitor = _ParseRiverpodUnitVisitor(result);
@@ -13,7 +13,7 @@ class ResolvedRiverpodLibraryResult extends RiverpodAst {
       errorReporter = result.errors.add;
 
       for (final unit in units) {
-        unit.unit.accept(visitor);
+        unit.accept(visitor);
       }
     } finally {
       errorReporter = null;

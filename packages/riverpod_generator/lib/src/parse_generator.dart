@@ -34,19 +34,34 @@ extension on AnalysisContext {
   }
 }
 
-abstract class ParserGenerator extends GeneratorForAnnotation<Annotation> {
+abstract class ParserGenerator<AnnotationT>
+    extends GeneratorForAnnotation<AnnotationT> {
   @override
   Future<String> generate(
     LibraryReader library,
     BuildStep buildStep,
   ) async {
-    final path = assetPath(buildStep.inputId);
-    final unit =
-        await library.element.session.analysisContext._getResolvedUnit(path);
-    return generateForUnit(unit);
+    final firstAnnotatedElementFromUniqueSource = <Uri, Element>{};
+
+    for (final annotated in library.annotatedWithExact(typeChecker)) {
+      firstAnnotatedElementFromUniqueSource.putIfAbsent(
+        annotated.element.source!.uri,
+        () => annotated.element,
+      );
+    }
+
+    final ast = await Future.wait(
+      firstAnnotatedElementFromUniqueSource.values.map(
+        (e) => buildStep.resolver
+            .astNodeFor(e, resolve: true)
+            .then((value) => value!.root as CompilationUnit),
+      ),
+    );
+
+    return generateForUnit(ast);
   }
 
-  FutureOr<String> generateForUnit(ResolvedLibraryResult resolvedLibraryResult);
+  FutureOr<String> generateForUnit(List<CompilationUnit> compilationUnits);
 
   @override
   Stream<String> generateForAnnotatedElement(
@@ -54,8 +69,13 @@ abstract class ParserGenerator extends GeneratorForAnnotation<Annotation> {
     ConstantReader annotation,
     BuildStep buildStep,
   ) async* {
-    final path = assetPath(buildStep.inputId);
-    final unit = await element.session!.analysisContext._getResolvedUnit(path);
-    yield await generateForUnit(unit);
+    final ast = await buildStep.resolver
+        .astNodeFor(element, resolve: true)
+        .then((value) => value?.root);
+
+    ast as CompilationUnit?;
+    if (ast == null) return;
+
+    yield await generateForUnit([ast]);
   }
 }

@@ -52,16 +52,15 @@ class RiverpodInvalidGenerationSourceError
 }
 
 @immutable
-class RiverpodGenerator extends ParserGenerator {
+class RiverpodGenerator extends ParserGenerator<Riverpod> {
   RiverpodGenerator(Map<String, Object?> mapConfig)
       : options = BuildYamlOptions.fromMap(mapConfig);
 
   final BuildYamlOptions options;
 
   @override
-  String generateForUnit(ResolvedLibraryResult resolvedLibraryResult) {
-    final riverpodResult =
-        ResolvedRiverpodLibraryResult.from(resolvedLibraryResult.units);
+  String generateForUnit(List<CompilationUnit> compilationUnits) {
+    final riverpodResult = ResolvedRiverpodLibraryResult.from(compilationUnits);
     return runGenerator(riverpodResult);
   }
 
