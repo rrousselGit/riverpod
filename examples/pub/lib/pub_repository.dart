@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:pubspec_parse/pubspec_parse.dart';
 
@@ -6,9 +7,12 @@ part 'pub_repository.freezed.dart';
 part 'pub_repository.g.dart';
 
 class PubRepository {
+  PubRepository() {
+    _configureDio();
+  }
+
   static const _scheme = 'https';
   static const _host = 'pub.dartlang.org';
-
   final dio = Dio();
 
   Future<List<Package>> getPackages({
@@ -56,7 +60,6 @@ class PubRepository {
     required String packageName,
     CancelToken? cancelToken,
   }) async {
-    final dio = Dio();
     final uri = Uri(
       scheme: _scheme,
       host: _host,
@@ -163,6 +166,12 @@ class PubRepository {
     final packageResponse = LikedPackagesResponse.fromJson(response.data!);
     return packageResponse.likedPackages.map((e) => e.package).toList();
   }
+
+  void _configureDio() {
+    if (kIsWeb) {
+      dio.interceptors.add(PubProxyInterceptor());
+    }
+  }
 }
 
 const userToken = '';
@@ -257,4 +266,18 @@ class PubSearchResponse with _$PubSearchResponse {
 
   factory PubSearchResponse.fromJson(Map<String, Object?> json) =>
       _$PubSearchResponseFromJson(json);
+}
+
+// A custom interceptor that proxies requests to a cors-proxy server
+// in order to workaround the CORS issue on web platform.
+class PubProxyInterceptor extends Interceptor {
+  @override
+  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+    super.onRequest(
+      options.copyWith(
+        path: 'https://api.codetabs.com/v1/proxy/?quest=${options.path}',
+      ),
+      handler,
+    );
+  }
 }
