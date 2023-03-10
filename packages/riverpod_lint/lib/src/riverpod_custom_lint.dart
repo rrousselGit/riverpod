@@ -87,7 +87,7 @@ mixin _ParseRiverpod {
     final registry = context.sharedState[_contextKey] = RiverpodAstRegistry();
 
     final unit = await resolver.getResolvedUnitResult();
-    final result = ResolvedRiverpodLibraryResult.from([unit]);
+    final result = ResolvedRiverpodLibraryResult.from([unit.unit]);
 
     context.addPostRunCallback(() => registry.run(result));
   }
