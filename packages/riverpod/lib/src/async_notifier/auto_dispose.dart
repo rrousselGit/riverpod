@@ -20,7 +20,9 @@ abstract class BuildlessAutoDisposeAsyncNotifier<State>
   AutoDisposeAsyncNotifierProviderRef<State> get ref => _element;
 }
 
-/// {@macro riverpod.asyncnotifier}
+/// {@macro riverpod.async_notifier_provider}
+///
+/// {@macro riverpod.async_notifier_provider_modifier}
 abstract class AutoDisposeAsyncNotifier<State>
     extends BuildlessAutoDisposeAsyncNotifier<State> {
   /// {@macro riverpod.asyncnotifier.build}
@@ -32,7 +34,9 @@ abstract class AutoDisposeAsyncNotifier<State>
 abstract class AutoDisposeAsyncNotifierProviderRef<T>
     implements AsyncNotifierProviderRef<T>, AutoDisposeRef<AsyncValue<T>> {}
 
-/// {@macro riverpod.asyncnotifier}
+/// {@macro riverpod.async_notifier_provider}
+///
+/// {@macro riverpod.async_notifier_provider_modifier}
 typedef AutoDisposeAsyncNotifierProvider<
         NotifierT extends AutoDisposeAsyncNotifier<T>, T>
     = AutoDisposeAsyncNotifierProviderImpl<NotifierT, T>;

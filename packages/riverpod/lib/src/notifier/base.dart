@@ -64,6 +64,14 @@ abstract class BuildlessNotifier<State> extends NotifierBase<State> {
 /// The state of [Notifier] is expected to be initialized synchronously.
 /// For asynchronous initializations, see [AsyncNotifier].
 /// {@endtemplate}
+///
+/// {@template riverpod.notifier_provider_modifier}
+/// When using `autoDispose` or `family`, your notifier type changes.
+/// Instead of extending [Notifier], you should extend either:
+/// - [AutoDisposeNotifier] for `autoDispose`
+/// - [FamilyNotifier] for `family`
+/// - [AutoDisposeFamilyNotifier] for `autoDispose.family`
+/// {@endtemplate}
 abstract class Notifier<State> extends BuildlessNotifier<State> {
   /// {@template riverpod.notifier.build}
   /// Initialize a [Notifier].
@@ -87,8 +95,12 @@ abstract class NotifierProviderRef<T> implements Ref<T> {}
 /// {@template riverpod.notifier_provider}
 /// A Provider which exposes a [Notifier] and listens to it.
 ///
+/// This is equivalent to a [Provider] that exposes ways to modify its state.
+///
 /// See also [Notifier] for more information.
 /// {@endtemplate}
+///
+/// {@macro riverpod.notifier_provider_modifier}
 typedef NotifierProvider<NotifierT extends Notifier<T>, T>
     = NotifierProviderImpl<NotifierT, T>;
 
@@ -101,6 +113,8 @@ typedef NotifierProvider<NotifierT extends Notifier<T>, T>
 class NotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
     extends NotifierProviderBase<NotifierT, T> with AlwaysAliveProviderBase<T> {
   /// {@macro riverpod.notifier_provider}
+  ///
+  /// {@macro riverpod.notifier_provider_modifier}
   NotifierProviderImpl(
     super._createNotifier, {
     super.name,

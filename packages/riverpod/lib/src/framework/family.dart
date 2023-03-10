@@ -1,6 +1,6 @@
 part of '../framework.dart';
 
-/// A typedef representing the constructor of a provider.
+/// A typedef representing the constructor of any classical provider.
 @internal
 typedef ProviderCreate<ProviderT, Created, RefT extends Ref> = ProviderT
     Function(
@@ -13,7 +13,7 @@ typedef ProviderCreate<ProviderT, Created, RefT extends Ref> = ProviderT
   Object? argument,
 });
 
-/// A typedef representing the constructor of a provider.
+/// A typedef representing the constructor of a [NotifierProvider].
 @internal
 typedef ProviderNotifierCreate<ProviderT, Created, RefT extends Ref> = ProviderT
     Function(
@@ -28,14 +28,16 @@ typedef ProviderNotifierCreate<ProviderT, Created, RefT extends Ref> = ProviderT
 
 /// A [Create] equivalent used by [Family].
 @internal
-typedef FamilyCreate<T, R extends Ref, Arg> = T Function(
-  R ref,
-  Arg arg,
-);
+typedef FamilyCreate<T, R extends Ref, Arg> = T Function(R ref, Arg arg);
 
 /// A base class for all families
-abstract class Family<State>
-    implements FamilyOverride<State>, ProviderOrFamily {
+abstract class Family<
+    @Deprecated(
+  'The generic parameter will be removed in version 3.0.0. '
+  'This is to enable riverpod_generator to implement families with generic parameters',
+)
+        // ignore: deprecated_member_use_from_same_package
+        State> implements FamilyOverride<State>, ProviderOrFamily {
   /// A base class for all families
   const Family();
 
@@ -43,6 +45,7 @@ abstract class Family<State>
   Family<Object?>? get from => null;
 
   @override
+  // ignore: deprecated_member_use_from_same_package
   Family<State> get overriddenFamily => this;
 }
 

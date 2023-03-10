@@ -1,6 +1,8 @@
 part of '../async_notifier.dart';
 
 /// {@macro riverpod.asyncnotifier}
+///
+/// {@macro riverpod.async_notifier_provider_modifier}
 abstract class FamilyAsyncNotifier<State, Arg>
     extends BuildlessAsyncNotifier<State> {
   /// {@template riverpod.notifier.family_arg}
@@ -27,9 +29,9 @@ abstract class FamilyAsyncNotifier<State, Arg>
   FutureOr<State> build(Arg arg);
 }
 
-/// {@template riverpod.async_notifier_family_provider}
-/// The provider for [AsyncNotifierProviderFamily].
-/// {@endtemplate}
+/// {@macro riverpod.async_notifier_provider}
+///
+/// {@macro riverpod.async_notifier_provider_modifier}
 typedef AsyncNotifierFamilyProvider<
         NotifierT extends FamilyAsyncNotifier<T, Arg>, T, Arg>
     = FamilyAsyncNotifierProviderImpl<NotifierT, T, Arg>;

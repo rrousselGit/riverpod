@@ -1,6 +1,8 @@
 part of '../notifier.dart';
 
-/// {@template riverpod.notifier}
+/// {@macro riverpod.notifier}
+///
+/// {@macro riverpod.notifier_provider_modifier}
 abstract class FamilyNotifier<State, Arg> extends BuildlessNotifier<State> {
   /// {@template riverpod.notifier.family_arg}
   late final Arg arg;

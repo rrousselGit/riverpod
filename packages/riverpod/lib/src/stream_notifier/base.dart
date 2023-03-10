@@ -20,8 +20,24 @@ abstract class BuildlessStreamNotifier<State> extends AsyncNotifierBase<State> {
 }
 
 /// {@template riverpod.streamNotifier}
-/// A variant of [StreamNotifier] which has [build] creating a [Stream].
-/// {@endtemplate riverpod.streamNotifier}
+/// A variant of [AsyncNotifier] which has [build] creating a [Stream].
+///
+/// This can be considered as a [StreamProvider] that can mutate its value over time.
+///
+/// The syntax for using this provider is slightly different from the others
+/// in that the provider's function doesn't receive a "ref" (and in case
+/// of `family`, doesn't receive an argument either).
+/// Instead the ref (and argument) are directly accessible in the associated
+/// [AsyncNotifier].
+///
+/// This can be considered as a [StreamProvider] that can mutate its value over time.
+/// When using `autoDispose` or `family`, your notifier type changes.
+/// Instead of extending [StreamNotifier], you should extend either:
+/// - [AutoDisposeStreamNotifier] for `autoDispose`
+/// - [FamilyStreamNotifier] for `family`
+/// - [AutoDisposeFamilyStreamNotifier] for `autoDispose.family`
+///
+/// {@endtemplate}
 abstract class StreamNotifier<State> extends BuildlessStreamNotifier<State> {
   /// {@template riverpod.asyncnotifier.build}
   @visibleForOverriding
@@ -31,8 +47,7 @@ abstract class StreamNotifier<State> extends BuildlessStreamNotifier<State> {
 /// {@macro riverpod.providerrefbase}
 abstract class StreamNotifierProviderRef<T> implements Ref<AsyncValue<T>> {}
 
-/// {@template riverpod.async_notifier_provider}
-/// {@endtemplate}
+/// {@macro riverpod.streamNotifier}
 typedef StreamNotifierProvider<NotifierT extends StreamNotifier<T>, T>
     = StreamNotifierProviderImpl<NotifierT, T>;
 
@@ -46,7 +61,7 @@ typedef StreamNotifierProvider<NotifierT extends StreamNotifier<T>, T>
 class StreamNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
     extends StreamNotifierProviderBase<NotifierT, T>
     with AlwaysAliveProviderBase<AsyncValue<T>>, AlwaysAliveAsyncSelector<T> {
-  /// {@macro riverpod.async_notifier_provider}
+  /// {@macro riverpod.streamNotifier}
   StreamNotifierProviderImpl(
     super._createNotifier, {
     super.name,

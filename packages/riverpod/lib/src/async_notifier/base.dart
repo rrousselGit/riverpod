@@ -22,6 +22,9 @@ abstract class BuildlessAsyncNotifier<State> extends AsyncNotifierBase<State> {
 /// {@template riverpod.asyncnotifier}
 /// A [Notifier] implementation that is asynchronously initialized.
 ///
+/// This is similar to a [FutureProvider] but allows to perform side-effects
+/// by defining public methods.
+///
 /// It is commonly used for:
 /// - Caching a network request while also allowing to perform side-effects.
 ///   For example, `build` could fetch information about the current "user".
@@ -30,6 +33,8 @@ abstract class BuildlessAsyncNotifier<State> extends AsyncNotifierBase<State> {
 /// - Initializing a [Notifier] from an asynchronous source of data.
 ///   For example, obtaining the initial state of [Notifier] from a local database.
 /// {@endtemplate}
+///
+/// {@macro riverpod.async_notifier_provider_modifier}
 // TODO add usage example
 abstract class AsyncNotifier<State> extends BuildlessAsyncNotifier<State> {
   /// {@template riverpod.asyncnotifier.build}
@@ -53,6 +58,23 @@ abstract class AsyncNotifier<State> extends BuildlessAsyncNotifier<State> {
 abstract class AsyncNotifierProviderRef<T> implements Ref<AsyncValue<T>> {}
 
 /// {@template riverpod.async_notifier_provider}
+/// A provider which creates and listen to an [AsyncNotifier].
+///
+/// This is similar to [FutureProvider] but allows to perform side-effects.
+///
+/// The syntax for using this provider is slightly different from the others
+/// in that the provider's function doesn't receive a "ref" (and in case
+/// of `family`, doesn't receive an argument either).
+/// Instead the ref (and argument) are directly accessible in the associated
+/// [AsyncNotifier].
+/// {@endtemplate}
+///
+/// {@template riverpod.async_notifier_provider_modifier}
+/// When using `autoDispose` or `family`, your notifier type changes.
+/// Instead of extending [AsyncNotifier], you should extend either:
+/// - [AutoDisposeAsyncNotifier] for `autoDispose`
+/// - [FamilyAsyncNotifier] for `family`
+/// - [AutoDisposeFamilyAsyncNotifier] for `autoDispose.family`
 /// {@endtemplate}
 typedef AsyncNotifierProvider<NotifierT extends AsyncNotifier<T>, T>
     = AsyncNotifierProviderImpl<NotifierT, T>;
@@ -68,6 +90,8 @@ class AsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
     extends AsyncNotifierProviderBase<NotifierT, T>
     with AlwaysAliveProviderBase<AsyncValue<T>>, AlwaysAliveAsyncSelector<T> {
   /// {@macro riverpod.async_notifier_provider}
+  ///
+  /// {@macro riverpod.async_notifier_provider_modifier}
   AsyncNotifierProviderImpl(
     super._createNotifier, {
     super.name,
@@ -138,6 +162,7 @@ typedef CancelAsyncSubscription = void Function();
 
 /// Mixin to help implement logic for listening to [Future]s/[Stream]s and setup
 /// `provider.future` + convert the object into an [AsyncValue].
+@internal
 mixin FutureHandlerProviderElementMixin<T>
     on ProviderElementBase<AsyncValue<T>> {
   /// A default implementation for [ProviderElementBase.updateShouldNotify].
