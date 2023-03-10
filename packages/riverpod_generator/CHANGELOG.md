@@ -1,7 +1,7 @@
 ## Unreleased patch
 
-Added workaround to reduce the likelyness of an InconsistentAnalysisException.  
-A better fix will be made once the issue is fully understood.
+- Fixed InconsistentAnalysisException
+- Fixed an `Unsupported operation: Unknown type SimpleIdentifierImpl` crash
 
 ## 2.1.2 - 2023-03-09
 
