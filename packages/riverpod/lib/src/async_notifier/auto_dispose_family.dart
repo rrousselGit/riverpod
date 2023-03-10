@@ -1,6 +1,8 @@
 part of '../async_notifier.dart';
 
-/// {@macro riverpod.asyncnotifier}
+/// {@macro riverpod.async_notifier_provider}
+///
+/// {@macro riverpod.async_notifier_provider_modifier}
 abstract class AutoDisposeFamilyAsyncNotifier<State, Arg>
     extends BuildlessAutoDisposeAsyncNotifier<State> {
   /// {@template riverpod.notifier.family_arg}
@@ -17,7 +19,9 @@ abstract class AutoDisposeFamilyAsyncNotifier<State, Arg>
   FutureOr<State> build(Arg arg);
 }
 
-/// {@macro riverpod.asyncnotifier}
+/// {@macro riverpod.async_notifier_provider}
+///
+/// {@macro riverpod.async_notifier_provider_modifier}
 typedef AutoDisposeFamilyAsyncNotifierProvider<
         NotifierT extends AutoDisposeFamilyAsyncNotifier<T, Arg>, T, Arg>
     = AutoDisposeFamilyAsyncNotifierProviderImpl<NotifierT, T, Arg>;

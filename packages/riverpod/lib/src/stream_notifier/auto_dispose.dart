@@ -46,7 +46,7 @@ typedef AutoDisposeStreamNotifierProvider<
 class AutoDisposeStreamNotifierProviderImpl<
     NotifierT extends AsyncNotifierBase<T>,
     T> extends StreamNotifierProviderBase<NotifierT, T> with AsyncSelector<T> {
-  /// {@macro riverpod.notifier}
+  /// {@macro riverpod.streamNotifier}
   AutoDisposeStreamNotifierProviderImpl(
     super._createNotifier, {
     super.name,

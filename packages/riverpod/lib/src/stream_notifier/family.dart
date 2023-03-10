@@ -27,9 +27,7 @@ abstract class FamilyStreamNotifier<State, Arg>
   Stream<State> build(Arg arg);
 }
 
-/// {@template riverpod.async_notifier_family_provider}
-/// The provider for [StreamNotifierProviderFamily].
-/// {@endtemplate}
+/// {@macro riverpod.streamNotifier}
 typedef StreamNotifierFamilyProvider<
         NotifierT extends FamilyStreamNotifier<T, Arg>, T, Arg>
     = FamilyStreamNotifierProviderImpl<NotifierT, T, Arg>;
@@ -42,7 +40,7 @@ typedef StreamNotifierFamilyProvider<
 class FamilyStreamNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>,
         T, Arg> extends StreamNotifierProviderBase<NotifierT, T>
     with AlwaysAliveProviderBase<AsyncValue<T>>, AlwaysAliveAsyncSelector<T> {
-  /// {@macro riverpod.async_notifier_family_provider}
+  /// {@macro riverpod.streamNotifier}
   FamilyStreamNotifierProviderImpl(
     super._createNotifier, {
     super.name,

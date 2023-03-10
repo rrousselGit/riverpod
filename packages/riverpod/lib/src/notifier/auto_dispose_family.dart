@@ -1,6 +1,8 @@
 part of '../notifier.dart';
 
 /// {@template riverpod.notifier}
+///
+/// {@macro riverpod.notifier_provider_modifier}
 abstract class AutoDisposeFamilyNotifier<State, Arg>
     extends BuildlessAutoDisposeNotifier<State> {
   /// {@template riverpod.notifier.family_arg}
@@ -17,7 +19,9 @@ abstract class AutoDisposeFamilyNotifier<State, Arg>
   State build(Arg arg);
 }
 
-/// {@macro riverpod.notifier}
+/// {@macro riverpod.notifier_provider}
+///
+/// {@macro riverpod.notifier_provider_modifier}
 typedef AutoDisposeFamilyNotifierProvider<
         NotifierT extends AutoDisposeFamilyNotifier<T, Arg>, T, Arg>
     = AutoDisposeFamilyNotifierProviderImpl<NotifierT, T, Arg>;
@@ -30,7 +34,9 @@ typedef AutoDisposeFamilyNotifierProvider<
 @internal
 class AutoDisposeFamilyNotifierProviderImpl<NotifierT extends NotifierBase<T>,
     T, Arg> extends NotifierProviderBase<NotifierT, T> {
-  /// {@macro riverpod.notifier}
+  /// {@macro riverpod.notifier_provider}
+  ///
+  /// {@macro riverpod.notifier_provider_modifier}
   AutoDisposeFamilyNotifierProviderImpl(
     super._createNotifier, {
     super.name,

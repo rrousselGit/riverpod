@@ -10,12 +10,12 @@ import 'listenable.dart';
 import 'notifier.dart';
 import 'pragma.dart';
 import 'result.dart';
+import 'stream_provider.dart';
 
 part 'async_notifier/auto_dispose.dart';
 part 'async_notifier/auto_dispose_family.dart';
 part 'async_notifier/base.dart';
 part 'async_notifier/family.dart';
-
 part 'stream_notifier.dart';
 part 'stream_notifier/auto_dispose.dart';
 part 'stream_notifier/auto_dispose_family.dart';
@@ -32,13 +32,16 @@ abstract class AsyncNotifierBase<State> {
 
   void _setElement(ProviderElementBase<AsyncValue<State>> element);
 
-  /// The value currently exposed by this [Notifier].
+  /// The value currently exposed by this [AsyncNotifier].
+  ///
+  /// Defaults to [AsyncLoading] inside the [AsyncNotifier.build] method.
   ///
   /// Invoking the setter will notify listeners if [updateShouldNotify] returns true.
-  /// By default, this will compare the previous and new value using [identical].
+  /// By default, this always notifies listeners (unless going from "loading"
+  /// to "loading", in which case the change is ignored).
   ///
   /// Reading [state] if the provider is out of date (such as if one of its
-  /// dependency has changed) will trigger [Notifier.build] to be re-executed.
+  /// dependency has changed) will trigger [AsyncNotifier.build] to be re-executed.
   @protected
   AsyncValue<State> get state {
     _element.flush();
@@ -62,8 +65,8 @@ abstract class AsyncNotifierBase<State> {
   /// If [state] is modified before [AsyncNotifier.build] completes, then [future]
   /// will resolve with that new [state] value.
   ///
-  /// The future will fail if [AsyncNotifier.build] throws or returns a future
-  /// that fails.
+  /// The future will fail if [state] is in error state. In which case the
+  /// error will be the same as [AsyncValue.error] and its stacktrace.
   /// {@endtemplate}
   Future<State> get future {
     _element.flush();
@@ -73,12 +76,17 @@ abstract class AsyncNotifierBase<State> {
   /// A function to update [state] from its previous value, while
   /// abstracting loading/error cases for [state].
   ///
+  /// This method neither causes [state] to go back to "loading" while the
+  /// operation is pending. Neither does it cause [state] to go to error state
+  /// if the operation fails.
+  ///
   /// If [state] was in error state, the callback will not be invoked and instead
   /// the error will be returned. Alternatively, [onError] can specified to
   /// gracefully handle error states.
   ///
   /// See also:
   /// - [future], for manually awaiting the resolution of [state].
+  /// - [AsyncValue.guard], and alternate way to perform asynchronous operations.
   @protected
   Future<State> update(
     FutureOr<State> Function(State) cb, {
@@ -92,31 +100,22 @@ abstract class AsyncNotifierBase<State> {
   }
 
   /// A method invoked when the state exposed by this [AsyncNotifier] changes.
-  /// It compares the previous and new value, and return whether listeners
-  /// should be notified.
   ///
-  /// By default, the previous and new value are compared using [identical]
-  /// for performance reasons.
-  ///
-  /// Doing so ensured that doing:
-  ///
-  /// ```dart
-  /// state = const AsyncData(42);
-  /// state = const AsyncData(42);
-  /// ```
-  ///
-  /// does not notify listeners twice.
-  ///
-  /// But at the same time, for very complex objects with potentially dozens
-  /// if not hundreds of properties, Riverpod won't deeply compare every single
+  /// As opposed to with [Notifier.updateShouldNotify], this method
+  /// does not filter out changes to [state] that are equal to the previous
   /// value.
+  /// By default, any change to [state] will emit an update.
+  /// This method can be overridden to implement custom filtering logic if that
+  /// is undesired.
   ///
-  /// This ensures that the comparison stays efficient for the most common scenarios.
-  /// But it also means that listeners should be notified even if the
-  /// previous and new values are considered "equal".
+  /// The reasoning for this default behavior is that [AsyncNotifier.build]
+  /// returns a [Future]. As such, the value of [state] typically transitions
+  /// from "loading" to "data" or "error". In that scenario, the value equality
+  /// does not matter. Checking `==` would only hinder performances for no reason.
   ///
-  /// If you do not want that, you can override this method to perform a deep
-  /// comparison of the previous and new values.
+  /// See also:
+  /// - [ProviderBase.select] and [AsyncSelector.selectAsync], which are
+  ///   alternative ways to filter out changes to [state].
   @protected
   bool updateShouldNotify(AsyncValue<State> previous, AsyncValue<State> next) {
     return FutureHandlerProviderElementMixin.handleUpdateShouldNotify(

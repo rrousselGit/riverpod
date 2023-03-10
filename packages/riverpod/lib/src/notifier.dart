@@ -4,6 +4,7 @@ import 'async_notifier.dart';
 import 'builders.dart';
 import 'framework.dart';
 import 'listenable.dart';
+import 'provider.dart';
 import 'result.dart';
 
 part 'notifier/auto_dispose.dart';

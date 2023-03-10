@@ -2,7 +2,7 @@ part of '../framework.dart';
 
 /// A base class for all providers, used to consume a provider.
 ///
-/// It is used by [ProviderContainer.listen] and `ref.watch` to listen to
+/// It is used by [ProviderContainer.listen] and [Ref.watch] to listen to
 /// both a provider and `provider.select`.
 ///
 /// Do not implement or extend.

@@ -32,11 +32,19 @@ abstract class AlwaysAliveRefreshable<T>
 @internal
 void Function()? debugCanModifyProviders;
 
+/// {@template riverpod.provider_element_base}
 /// An internal class that handles the state of a provider.
 ///
+/// This is what keeps track of the state of a provider, and notifies listeners
+/// when the state changes. It is also responsible for rebuilding the provider
+/// when once of its dependencies changes.
+///
+/// This class is not meant to be used directly and is an implemnetation detail
+/// of providers.
 /// Do not use.
+/// {@endtemplate}
 abstract class ProviderElementBase<State> implements Ref<State>, Node {
-  /// Do not use.
+  /// {@macro riverpod.provider_element_base}
   ProviderElementBase(this._provider);
 
   static ProviderElementBase<Object?>? _debugCurrentlyBuildingElement;

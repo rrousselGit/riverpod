@@ -1,3 +1,11 @@
+## Unreleased patch
+
+
+- Deprecated the generic parameter of `Family`.
+  This will enable implementing generic providers in `riverpod_generator` once
+  it is removed.
+- Updated documentation
+
 ## 2.3.1 - 2023-03-09
 
 - Updated `AsyncValue.value/valueOrNull` docs to cover the "previous value" cases (thanks to @AhmedLSayed9)

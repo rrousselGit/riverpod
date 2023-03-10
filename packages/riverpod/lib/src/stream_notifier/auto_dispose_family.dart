@@ -31,7 +31,7 @@ typedef AutoDisposeFamilyStreamNotifierProvider<
 class AutoDisposeFamilyStreamNotifierProviderImpl<
         NotifierT extends AsyncNotifierBase<T>, T, Arg>
     extends StreamNotifierProviderBase<NotifierT, T> with AsyncSelector<T> {
-  /// {@macro riverpod.async_notifier_family_provider}
+  /// {@macro riverpod.streamNotifier}
   AutoDisposeFamilyStreamNotifierProviderImpl(
     super._createNotifier, {
     super.name,
