@@ -8,7 +8,7 @@ import '../config_provider/codegen.dart';
 /* SNIPPET START */
 
 class MyConfigration extends HookConsumerWidget  {
-  const MyConfigration({Key? key}) : super(key: key);
+  const MyConfigration({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

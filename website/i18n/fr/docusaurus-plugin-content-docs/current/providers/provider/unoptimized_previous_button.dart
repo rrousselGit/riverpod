@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 final pageIndexProvider = StateProvider<int>((ref) => 0);
 
 class PreviousButton extends ConsumerWidget {
-  const PreviousButton({Key? key}): super(key: key);
+  const PreviousButton({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

@@ -17,7 +17,7 @@ class Home extends ConsumerWidget {
     return boredSuggestion.when(
       loading: () => const Text('loading'),
       error: (error, stackTrace) => Text('error: $error'),
-      data: (data) => Text(data), 
+      data: Text.new, 
     );
   }
 }

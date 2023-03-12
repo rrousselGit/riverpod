@@ -28,7 +28,7 @@ class TodoList extends _$TodoList {
 int counter(CounterRef ref) => 0;
 
 class HomeView extends HookConsumerWidget {
-  const HomeView({Key? key}) : super(key: key);
+  const HomeView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

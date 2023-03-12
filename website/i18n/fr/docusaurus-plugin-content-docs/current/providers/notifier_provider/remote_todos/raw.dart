@@ -52,7 +52,7 @@ class AsyncTodosNotifier extends AsyncNotifier<List<Todo>> {
   Future<List<Todo>> _fetchTodo() async {
     final json = await http.get('api/todos');
     final todos = jsonDecode(json) as List<Map<String, dynamic>>;
-    return todos.map((todo) => Todo.fromJson(todo)).toList();
+    return todos.map(Todo.fromJson).toList();
   }
 
   @override

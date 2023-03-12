@@ -22,7 +22,7 @@ final counterProvider = StateProvider(
 );
 
 class Home extends ConsumerWidget {
-  const Home({Key? key}) : super(key: key);
+  const Home({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -48,7 +48,7 @@ class Home extends ConsumerWidget {
 }
 
 class CounterDisplay extends ConsumerWidget {
-  const CounterDisplay({Key? key}) : super(key: key);
+  const CounterDisplay({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

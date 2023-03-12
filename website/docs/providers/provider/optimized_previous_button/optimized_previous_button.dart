@@ -28,7 +28,7 @@ bool canGoToPreviousPage(CanGoToPreviousPageRef ref) {
 }
 
 class PreviousButton extends ConsumerWidget {
-  const PreviousButton({Key? key}) : super(key: key);
+  const PreviousButton({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
