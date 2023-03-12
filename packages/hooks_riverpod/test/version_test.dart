@@ -27,20 +27,7 @@ void main() {
   final riverpodGeneratorPubspec =
       parsePubspecIfExist('$baseDir/../riverpod_generator/pubspec.yaml');
 
-  final gettingStartedPubspecs = [
-    Directory('$baseDir/../../website/docs/getting_started/pubspec'),
-    Directory('$baseDir/../../website/docs/getting_started/dart_pubspec'),
-  ]
-      .expand((dir) => dir.listSync())
-      .whereType<File>()
-      .where((e) => e.path.endsWith('.yaml'))
-      .toList();
-
   final allPubspecsWithRiverpodDependencies = <String, Pubspec?>{
-    ...Map.fromEntries(
-      gettingStartedPubspecs
-          .map((e) => MapEntry(e.path, parsePubspecIfExist(e.path))),
-    ),
     'flutter_riverpod': flutterRiverpodPubspec,
     'hooks_riverpod': hooksRiverpodPubspec,
     'riverpod_annotation': riverpodAnnotationPubspec,
