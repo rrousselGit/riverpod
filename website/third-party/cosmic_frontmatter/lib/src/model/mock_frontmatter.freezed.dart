@@ -1,7 +1,7 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
-// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'mock_frontmatter.dart';
 
@@ -36,7 +36,8 @@ mixin _$MockFrontmatter {
 abstract class $MockFrontmatterCopyWith<$Res> {
   factory $MockFrontmatterCopyWith(
           MockFrontmatter value, $Res Function(MockFrontmatter) then) =
-      _$MockFrontmatterCopyWithImpl<$Res>;
+      _$MockFrontmatterCopyWithImpl<$Res, MockFrontmatter>;
+  @useResult
   $Res call(
       {String title,
       String author,
@@ -46,44 +47,46 @@ abstract class $MockFrontmatterCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$MockFrontmatterCopyWithImpl<$Res>
+class _$MockFrontmatterCopyWithImpl<$Res, $Val extends MockFrontmatter>
     implements $MockFrontmatterCopyWith<$Res> {
   _$MockFrontmatterCopyWithImpl(this._value, this._then);
 
-  final MockFrontmatter _value;
   // ignore: unused_field
-  final $Res Function(MockFrontmatter) _then;
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? title = freezed,
-    Object? author = freezed,
-    Object? excerpt = freezed,
-    Object? category = freezed,
-    Object? date = freezed,
+    Object? title = null,
+    Object? author = null,
+    Object? excerpt = null,
+    Object? category = null,
+    Object? date = null,
   }) {
     return _then(_value.copyWith(
-      title: title == freezed
+      title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
               as String,
-      author: author == freezed
+      author: null == author
           ? _value.author
           : author // ignore: cast_nullable_to_non_nullable
               as String,
-      excerpt: excerpt == freezed
+      excerpt: null == excerpt
           ? _value.excerpt
           : excerpt // ignore: cast_nullable_to_non_nullable
               as String,
-      category: category == freezed
+      category: null == category
           ? _value.category
           : category // ignore: cast_nullable_to_non_nullable
               as String,
-      date: date == freezed
+      date: null == date
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
               as String,
-    ));
+    ) as $Val);
   }
 }
 
@@ -94,6 +97,7 @@ abstract class _$$_MockFrontmatterCopyWith<$Res>
           _$_MockFrontmatter value, $Res Function(_$_MockFrontmatter) then) =
       __$$_MockFrontmatterCopyWithImpl<$Res>;
   @override
+  @useResult
   $Res call(
       {String title,
       String author,
@@ -104,41 +108,39 @@ abstract class _$$_MockFrontmatterCopyWith<$Res>
 
 /// @nodoc
 class __$$_MockFrontmatterCopyWithImpl<$Res>
-    extends _$MockFrontmatterCopyWithImpl<$Res>
+    extends _$MockFrontmatterCopyWithImpl<$Res, _$_MockFrontmatter>
     implements _$$_MockFrontmatterCopyWith<$Res> {
   __$$_MockFrontmatterCopyWithImpl(
       _$_MockFrontmatter _value, $Res Function(_$_MockFrontmatter) _then)
-      : super(_value, (v) => _then(v as _$_MockFrontmatter));
+      : super(_value, _then);
 
-  @override
-  _$_MockFrontmatter get _value => super._value as _$_MockFrontmatter;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? title = freezed,
-    Object? author = freezed,
-    Object? excerpt = freezed,
-    Object? category = freezed,
-    Object? date = freezed,
+    Object? title = null,
+    Object? author = null,
+    Object? excerpt = null,
+    Object? category = null,
+    Object? date = null,
   }) {
     return _then(_$_MockFrontmatter(
-      title: title == freezed
+      title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
               as String,
-      author: author == freezed
+      author: null == author
           ? _value.author
           : author // ignore: cast_nullable_to_non_nullable
               as String,
-      excerpt: excerpt == freezed
+      excerpt: null == excerpt
           ? _value.excerpt
           : excerpt // ignore: cast_nullable_to_non_nullable
               as String,
-      category: category == freezed
+      category: null == category
           ? _value.category
           : category // ignore: cast_nullable_to_non_nullable
               as String,
-      date: date == freezed
+      date: null == date
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
               as String,
@@ -181,25 +183,22 @@ class _$_MockFrontmatter extends _MockFrontmatter {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_MockFrontmatter &&
-            const DeepCollectionEquality().equals(other.title, title) &&
-            const DeepCollectionEquality().equals(other.author, author) &&
-            const DeepCollectionEquality().equals(other.excerpt, excerpt) &&
-            const DeepCollectionEquality().equals(other.category, category) &&
-            const DeepCollectionEquality().equals(other.date, date));
+            (identical(other.title, title) || other.title == title) &&
+            (identical(other.author, author) || other.author == author) &&
+            (identical(other.excerpt, excerpt) || other.excerpt == excerpt) &&
+            (identical(other.category, category) ||
+                other.category == category) &&
+            (identical(other.date, date) || other.date == date));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(title),
-      const DeepCollectionEquality().hash(author),
-      const DeepCollectionEquality().hash(excerpt),
-      const DeepCollectionEquality().hash(category),
-      const DeepCollectionEquality().hash(date));
+  int get hashCode =>
+      Object.hash(runtimeType, title, author, excerpt, category, date);
 
   @JsonKey(ignore: true)
   @override
+  @pragma('vm:prefer-inline')
   _$$_MockFrontmatterCopyWith<_$_MockFrontmatter> get copyWith =>
       __$$_MockFrontmatterCopyWithImpl<_$_MockFrontmatter>(this, _$identity);
 

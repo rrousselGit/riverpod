@@ -18,7 +18,7 @@ class Counter extends _$Counter {
 Widget build(BuildContext context, WidgetRef ref) {
   Counter counter = ref.read(counterProvider.notifier);
   return ElevatedButton(
-    onPressed: () => counter.state++,
+    onPressed: () => counter.increment(),
     child: const Text('button'),
   );
 }
