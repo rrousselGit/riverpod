@@ -9,7 +9,7 @@ import { highlights } from "../data/highlights";
 
 const checkBoxes = [
   { key: "declarative_check", value: "Declarative programming" },
-  { key: "network_check", value: "Native support for network requests" },
+  { key: "network_check", value: "Native network requests support" },
   { key: "error_check", value: "Automatic loading/error handling" },
   { key: "conpile_check", value: "Compile safety" },
   { key: "typed_query_check", value: "Type-safe query parameters" },
@@ -20,7 +20,9 @@ const checkBoxes = [
   { key: "lint_check", value: "Custom lint rules" },
   { key: "refactor_check", value: "Built-in refactorings" },
   { key: "hot_reload_check", value: "Hot-reload support" },
-  { key: "logger_check", value: "Logger support" },
+  { key: "logger_check", value: "Logging" },
+  { key: "socket_check", value: "Websocket support" },
+  { key: "graph_check", value: "Documentation generator" },
 ];
 
 export default function Home() {
@@ -42,17 +44,12 @@ export default function Home() {
           </div>
         </section>
 
-        <section>
-          <ul
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
-              columnGap: 50,
-            }}
-          >
+        <section className="features">
+          <h2>Features</h2>
+          <ul>
             {checkBoxes.map((check) => (
-              <li style={{ listStyleType: "none" }} key={check.key}>
-                ✅ <strong>{check.value}</strong>
+              <li key={check.key}>
+                ✅ {check.value}
               </li>
             ))}
           </ul>

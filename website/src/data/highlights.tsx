@@ -10,10 +10,10 @@ export const highlights: IHighlightProps[] = [
       message: "Declarative programming",
     }),
     description: (
-      <Translate id="homepage.declarative_body">
-        Write business logic in a manner similar to Stateless widgets. Have your
-        network requests to automatically recompute when necessary, and make
-        your logic easily reusable/composable/maintainable.
+      <Translate id="homepage.declarative_body" values={{br: <br/>}} >
+        {`Write business logic in a manner similar to Stateless widgets.{br}Have your
+        network requests to automatically recompute when necessary and make
+        your logic easily reusable/composable/maintainable.`}
       </Translate>
     ),
   },

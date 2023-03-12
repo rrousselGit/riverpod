@@ -22,10 +22,23 @@
 
   &__title {
     margin-bottom: 12px;
+  }
+}
+
+.features {
+  padding-bottom: 40px;
+
+  h2 {
     text-align: center;
   }
 
-  &__description {
-    text-align: center;
+  ul {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 50px;
+
+    li {
+      list-style: none;
+    }
   }
 }
