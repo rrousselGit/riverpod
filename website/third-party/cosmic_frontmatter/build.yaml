@@ -18,3 +18,7 @@ targets:
           generic_argument_factories: false
           ignore_unannotated: false
           include_if_null: true
+      source_gen:combining_builder:
+        options:
+          ignore_for_file:
+          - type=lint
