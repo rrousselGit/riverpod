@@ -7,25 +7,12 @@ import 'package:custom_lint_builder/custom_lint_builder.dart';
 
 import '../object_utils.dart';
 import '../riverpod_custom_lint.dart';
-import 'convert_to_consumer_widget.dart';
+import 'convert_to_widget_utils.dart';
 
-const statefulConvertPriority = convertPriority - 1;
+const _convertTarget = ConvertToWidget.consumerStatefulWidget;
 
-const _statelessBaseType = TypeChecker.any([
-  TypeChecker.fromName('StatelessWidget', packageName: 'flutter'),
-  TypeChecker.fromName('ConsumerWidget', packageName: 'flutter_riverpod'),
-  TypeChecker.fromName('HookConsumerWidget', packageName: 'hooks_riverpod'),
-  TypeChecker.fromName('HookWidget', packageName: 'flutter_hooks'),
-]);
-
-const _statefulBaseType = TypeChecker.any([
-  TypeChecker.fromName('StatefulWidget', packageName: 'flutter'),
-  TypeChecker.fromName(
-    'StatefulHookConsumerWidget',
-    packageName: 'hooks_riverpod',
-  ),
-  TypeChecker.fromName('StatefulHookWidget', packageName: 'flutter_hooks'),
-]);
+final _statelessBaseType = getStatelessBaseType(excludes: [_convertTarget]);
+final _statefulBaseType = getStatefulBaseType(excludes: [_convertTarget]);
 
 const _stateType = TypeChecker.fromName('State', packageName: 'flutter');
 
@@ -68,8 +55,8 @@ class ConvertToConsumerStatefulWidget extends RiverpodAssist {
     Source source,
   ) {
     final changeBuilder = reporter.createChangeBuilder(
-      message: 'Convert to ConsumerStatefulWidget',
-      priority: statefulConvertPriority,
+      message: 'Convert to ${_convertTarget.widgetName}',
+      priority: _convertTarget.priority,
     );
 
     changeBuilder.addDartFileEdit((builder) {
@@ -140,8 +127,8 @@ class ConvertToConsumerStatefulWidget extends RiverpodAssist {
     ExtendsClause node,
   ) {
     final changeBuilder = reporter.createChangeBuilder(
-      message: 'Convert to ConsumerStatefulWidget',
-      priority: statefulConvertPriority,
+      message: 'Convert to ${_convertTarget.widgetName}',
+      priority: _convertTarget.priority,
     );
 
     changeBuilder.addDartFileEdit((builder) {
