@@ -88,7 +88,7 @@ export const features: IFeatureProps[] = [
     }),
     description: (
       <Translate
-        id="home.refactors_body"
+        id="home.lint_body"
         values={{
           warnings: (
             <a href="https://github.com/rrousselGit/riverpod/tree/master/packages/riverpod_lint#all-the-lints">
