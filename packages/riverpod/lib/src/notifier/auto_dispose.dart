@@ -20,6 +20,8 @@ abstract class BuildlessAutoDisposeNotifier<State> extends NotifierBase<State> {
 }
 
 /// {@template riverpod.notifier}
+///
+/// {@macro riverpod.notifier_provider_modifier}
 abstract class AutoDisposeNotifier<State>
     extends BuildlessAutoDisposeNotifier<State> {
   /// {@macro riverpod.asyncnotifier.build}
@@ -31,7 +33,9 @@ abstract class AutoDisposeNotifier<State>
 abstract class AutoDisposeNotifierProviderRef<T>
     implements NotifierProviderRef<T>, AutoDisposeRef<T> {}
 
-/// {@macro riverpod.notifier}
+/// {@macro riverpod.notifier_provider}
+///
+/// {@macro riverpod.notifier_provider_modifier}
 typedef AutoDisposeNotifierProvider<NotifierT extends AutoDisposeNotifier<T>, T>
     = AutoDisposeNotifierProviderImpl<NotifierT, T>;
 
@@ -43,14 +47,31 @@ typedef AutoDisposeNotifierProvider<NotifierT extends AutoDisposeNotifier<T>, T>
 @internal
 class AutoDisposeNotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
     extends NotifierProviderBase<NotifierT, T> {
-  /// {@macro riverpod.notifier}
+  /// {@macro riverpod.notifier_provider}
+  ///
+  /// {@macro riverpod.notifier_provider_modifier}
   AutoDisposeNotifierProviderImpl(
     super._createNotifier, {
     super.name,
+    super.dependencies,
+    @Deprecated('Will be removed in 3.0.0') super.from,
+    @Deprecated('Will be removed in 3.0.0') super.argument,
+    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
+  }) : super(
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+        );
+
+  /// An implementation detail of Riverpod
+  @internal
+  AutoDisposeNotifierProviderImpl.internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
     super.from,
     super.argument,
-    super.dependencies,
-    super.debugGetCreateSourceHash,
   });
 
   /// {@macro riverpod.family}
@@ -73,10 +94,14 @@ class AutoDisposeNotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
   Override overrideWith(NotifierT Function() create) {
     return ProviderOverride(
       origin: this,
-      override: AutoDisposeNotifierProviderImpl<NotifierT, T>(
+      override: AutoDisposeNotifierProviderImpl<NotifierT, T>.internal(
         create,
         from: from,
         argument: argument,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        name: null,
       ),
     );
   }

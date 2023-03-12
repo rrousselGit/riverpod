@@ -154,7 +154,8 @@ Future<void> main() async {
       expect(child.read(provider), 0);
 
       expect(child.getAllProviderElements(), [
-        isA<ProviderElement>().having((e) => e.provider, 'provider', provider)
+        isA<ProviderElement<Object?>>()
+            .having((e) => e.provider, 'provider', provider)
       ]);
       expect(container.getAllProviderElements(), isEmpty);
     });
@@ -266,7 +267,7 @@ Future<void> main() async {
       expect(child.read(provider(0)), 0);
 
       expect(child.getAllProviderElements(), [
-        isA<ProviderElement>()
+        isA<ProviderElement<Object?>>()
             .having((e) => e.provider, 'provider', provider(0))
       ]);
       expect(container.getAllProviderElements(), isEmpty);
@@ -510,13 +511,17 @@ Future<void> main() async {
       expect(
         mid2.getAllProviderElements(),
         unorderedEquals(<Object?>[
-          isA<ProviderElementBase>().having((e) => e.origin, 'origin', dep2),
-          isA<ProviderElementBase>().having((e) => e.origin, 'origin', a),
-          isA<ProviderElementBase>().having((e) => e.origin, 'origin', b)
+          isA<ProviderElementBase<Object?>>()
+              .having((e) => e.origin, 'origin', dep2),
+          isA<ProviderElementBase<Object?>>()
+              .having((e) => e.origin, 'origin', a),
+          isA<ProviderElementBase<Object?>>()
+              .having((e) => e.origin, 'origin', b)
         ]),
       );
       expect(mid.getAllProviderElements(), [
-        isA<ProviderElementBase>().having((e) => e.origin, 'origin', dep),
+        isA<ProviderElementBase<Object?>>()
+            .having((e) => e.origin, 'origin', dep),
       ]);
       expect(root.getAllProviderElements(), isEmpty);
     });
@@ -548,8 +553,10 @@ Future<void> main() async {
       expect(
         mid.getAllProviderElements(),
         unorderedEquals(<Object?>[
-          isA<ProviderElementBase>().having((e) => e.origin, 'origin', dep),
-          isA<ProviderElementBase>().having((e) => e.origin, 'origin', a),
+          isA<ProviderElementBase<Object?>>()
+              .having((e) => e.origin, 'origin', dep),
+          isA<ProviderElementBase<Object?>>()
+              .having((e) => e.origin, 'origin', a),
         ]),
       );
       expect(root.getAllProviderElements(), isEmpty);
@@ -578,7 +585,8 @@ Future<void> main() async {
       expect(
         mid.getAllProviderElements(),
         [
-          isA<ProviderElementBase>().having((e) => e.origin, 'origin', provider)
+          isA<ProviderElementBase<Object?>>()
+              .having((e) => e.origin, 'origin', provider)
         ],
       );
     });
@@ -603,9 +611,9 @@ Future<void> main() async {
       expect(
         mid.getAllProviderElements(),
         unorderedEquals(<Object>[
-          isA<ProviderElementBase>()
+          isA<ProviderElementBase<Object?>>()
               .having((e) => e.origin, 'origin', provider),
-          isA<ProviderElementBase>()
+          isA<ProviderElementBase<Object?>>()
               .having((e) => e.origin, 'origin', family(21))
         ]),
       );
@@ -632,10 +640,11 @@ Future<void> main() async {
       expect(
         mid.getAllProviderElements(),
         unorderedEquals(<Object>[
-          isA<ProviderElementBase>()
+          isA<ProviderElementBase<Object?>>()
               .having((e) => e.origin, 'origin', provider),
-          isA<ProviderElementBase>().having((e) => e.origin, 'origin', dep),
-          isA<ProviderElementBase>()
+          isA<ProviderElementBase<Object?>>()
+              .having((e) => e.origin, 'origin', dep),
+          isA<ProviderElementBase<Object?>>()
               .having((e) => e.origin, 'origin', family(21))
         ]),
       );
@@ -657,9 +666,10 @@ Future<void> main() async {
       expect(
         container.getAllProviderElements(),
         unorderedEquals(<Object>[
-          isA<ProviderElementBase>()
+          isA<ProviderElementBase<Object?>>()
               .having((e) => e.origin, 'origin', provider),
-          isA<ProviderElementBase>().having((e) => e.origin, 'origin', dep),
+          isA<ProviderElementBase<Object?>>()
+              .having((e) => e.origin, 'origin', dep),
         ]),
       );
       expect(root.getAllProviderElements(), isEmpty);
@@ -668,7 +678,10 @@ Future<void> main() async {
 
       expect(
         container.getAllProviderElements(),
-        [isA<ProviderElementBase>().having((e) => e.origin, 'origin', dep)],
+        [
+          isA<ProviderElementBase<Object?>>()
+              .having((e) => e.origin, 'origin', dep)
+        ],
       );
       expect(root.getAllProviderElements(), isEmpty);
     });
@@ -697,10 +710,23 @@ final b = Provider(
     });
 
     test(
-        'Throw if trying to watch a provider that is not in the dependencies list',
+        'does not throw if trying to watch a non-scoped provider that is not in the dependencies list',
         () {
       final container = createContainer();
       final dep = Provider((ref) => 0);
+      final provider = Provider(
+        (ref) => ref.watch(dep),
+        dependencies: const [],
+      );
+
+      expect(container.read(provider), 0);
+    });
+
+    test(
+        'Throw if trying to watch a scoped provider that is not in the dependencies list',
+        () {
+      final container = createContainer();
+      final dep = Provider((ref) => 0, dependencies: const []);
       final dep2 = Provider((ref) => 0, dependencies: [dep]);
       final provider = Provider(
         dependencies: [dep],
@@ -714,10 +740,10 @@ final b = Provider(
     });
 
     test(
-        'Throw if trying to listen a provider that is not in the dependencies list',
+        'Throw if trying to listen a scoped provider that is not in the dependencies list',
         () {
       final container = createContainer();
-      final dep = Provider((ref) => 0);
+      final dep = Provider((ref) => 0, dependencies: const []);
       final dep2 = Provider((ref) => 0, dependencies: [dep]);
       final provider = Provider(
         dependencies: [dep],
@@ -731,10 +757,10 @@ final b = Provider(
     });
 
     test(
-        'Throw if trying to read a provider that is not in the dependencies list',
+        'Throw if trying to read a scoped provider that is not in the dependencies list',
         () {
       final container = createContainer();
-      final dep = Provider((ref) => 0);
+      final dep = Provider((ref) => 0, dependencies: const []);
       final dep2 = Provider((ref) => 0, dependencies: [dep]);
       final provider = Provider(
         dependencies: [dep],

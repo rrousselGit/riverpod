@@ -326,7 +326,7 @@ void main() {
       test('is false during onDispose caused by ref.watch', () {
         final container = createContainer();
         bool? mounted;
-        late ProviderElementBase element;
+        late ProviderElementBase<Object?> element;
         final dep = StateProvider((ref) => 0);
         final provider = Provider((ref) {
           ref.watch(dep);
@@ -345,7 +345,7 @@ void main() {
       test('is false during onDispose caused by container dispose', () {
         final container = createContainer();
         bool? mounted;
-        late ProviderElementBase element;
+        late ProviderElementBase<Object?> element;
         final dep = StateProvider((ref) => 0);
         final provider = Provider((ref) {
           ref.watch(dep);
@@ -364,7 +364,7 @@ void main() {
       test('is false in between rebuilds', () {
         final container = createContainer();
         final dep = StateProvider((ref) => 0);
-        late ProviderElementBase element;
+        late ProviderElementBase<Object?> element;
         final provider = Provider((ref) {
           ref.watch(dep);
           element = ref as ProviderElementBase;

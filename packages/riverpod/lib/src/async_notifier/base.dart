@@ -22,6 +22,9 @@ abstract class BuildlessAsyncNotifier<State> extends AsyncNotifierBase<State> {
 /// {@template riverpod.asyncnotifier}
 /// A [Notifier] implementation that is asynchronously initialized.
 ///
+/// This is similar to a [FutureProvider] but allows to perform side-effects
+/// by defining public methods.
+///
 /// It is commonly used for:
 /// - Caching a network request while also allowing to perform side-effects.
 ///   For example, `build` could fetch information about the current "user".
@@ -30,6 +33,8 @@ abstract class BuildlessAsyncNotifier<State> extends AsyncNotifierBase<State> {
 /// - Initializing a [Notifier] from an asynchronous source of data.
 ///   For example, obtaining the initial state of [Notifier] from a local database.
 /// {@endtemplate}
+///
+/// {@macro riverpod.async_notifier_provider_modifier}
 // TODO add usage example
 abstract class AsyncNotifier<State> extends BuildlessAsyncNotifier<State> {
   /// {@template riverpod.asyncnotifier.build}
@@ -53,6 +58,23 @@ abstract class AsyncNotifier<State> extends BuildlessAsyncNotifier<State> {
 abstract class AsyncNotifierProviderRef<T> implements Ref<AsyncValue<T>> {}
 
 /// {@template riverpod.async_notifier_provider}
+/// A provider which creates and listen to an [AsyncNotifier].
+///
+/// This is similar to [FutureProvider] but allows to perform side-effects.
+///
+/// The syntax for using this provider is slightly different from the others
+/// in that the provider's function doesn't receive a "ref" (and in case
+/// of `family`, doesn't receive an argument either).
+/// Instead the ref (and argument) are directly accessible in the associated
+/// [AsyncNotifier].
+/// {@endtemplate}
+///
+/// {@template riverpod.async_notifier_provider_modifier}
+/// When using `autoDispose` or `family`, your notifier type changes.
+/// Instead of extending [AsyncNotifier], you should extend either:
+/// - [AutoDisposeAsyncNotifier] for `autoDispose`
+/// - [FamilyAsyncNotifier] for `family`
+/// - [AutoDisposeFamilyAsyncNotifier] for `autoDispose.family`
 /// {@endtemplate}
 typedef AsyncNotifierProvider<NotifierT extends AsyncNotifier<T>, T>
     = AsyncNotifierProviderImpl<NotifierT, T>;
@@ -68,13 +90,30 @@ class AsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
     extends AsyncNotifierProviderBase<NotifierT, T>
     with AlwaysAliveProviderBase<AsyncValue<T>>, AlwaysAliveAsyncSelector<T> {
   /// {@macro riverpod.async_notifier_provider}
+  ///
+  /// {@macro riverpod.async_notifier_provider_modifier}
   AsyncNotifierProviderImpl(
     super._createNotifier, {
     super.name,
+    super.dependencies,
+    @Deprecated('Will be removed in 3.0.0') super.from,
+    @Deprecated('Will be removed in 3.0.0') super.argument,
+    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
+  }) : super(
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+        );
+
+  /// An implementation detail of Riverpod
+  @internal
+  AsyncNotifierProviderImpl.internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
     super.from,
     super.argument,
-    super.dependencies,
-    super.debugGetCreateSourceHash,
   });
 
   /// {@macro riverpod.autoDispose}
@@ -85,10 +124,10 @@ class AsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
 
   @override
   late final AlwaysAliveRefreshable<NotifierT> notifier =
-      _notifier<NotifierT, T>(this);
+      _asyncNotifier<NotifierT, T>(this);
 
   @override
-  late final AlwaysAliveRefreshable<Future<T>> future = _future<T>(this);
+  late final AlwaysAliveRefreshable<Future<T>> future = _asyncFuture<T>(this);
 
   @override
   AsyncNotifierProviderElement<NotifierT, T> createElement() {
@@ -104,10 +143,14 @@ class AsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
   Override overrideWith(NotifierT Function() create) {
     return ProviderOverride(
       origin: this,
-      override: AsyncNotifierProviderImpl<NotifierT, T>(
+      override: AsyncNotifierProviderImpl<NotifierT, T>.internal(
         create,
         from: from,
         argument: argument,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
       ),
     );
   }
@@ -119,6 +162,7 @@ typedef CancelAsyncSubscription = void Function();
 
 /// Mixin to help implement logic for listening to [Future]s/[Stream]s and setup
 /// `provider.future` + convert the object into an [AsyncValue].
+@internal
 mixin FutureHandlerProviderElementMixin<T>
     on ProviderElementBase<AsyncValue<T>> {
   /// A default implementation for [ProviderElementBase.updateShouldNotify].
@@ -184,7 +228,7 @@ mixin FutureHandlerProviderElementMixin<T>
   ///
   /// Might be invokved after the element is disposed in the case where `provider.future`
   /// has yet to complete.
-  @visibleForOverriding
+  @internal
   void onError(AsyncError<T> value, {bool seamless = false}) {
     if (mounted) {
       asyncTransition(value, seamless: seamless);
@@ -216,7 +260,7 @@ mixin FutureHandlerProviderElementMixin<T>
   ///
   /// Might be invokved after the element is disposed in the case where `provider.future`
   /// has yet to complete.
-  @visibleForOverriding
+  @internal
   void onData(AsyncData<T> value, {bool seamless = false}) {
     if (mounted) {
       asyncTransition(value, seamless: seamless);
@@ -233,6 +277,7 @@ mixin FutureHandlerProviderElementMixin<T>
 
   /// Listens to a [Stream] and convert it into an [AsyncValue].
   @preferInline
+  @internal
   void handleStream(
     Stream<T> Function() create, {
     required bool didChangeDependency,
@@ -264,6 +309,7 @@ mixin FutureHandlerProviderElementMixin<T>
 
   /// Listens to a [Future] and convert it into an [AsyncValue].
   @preferInline
+  @internal
   void handleFuture(
     FutureOr<T> Function() create, {
     required bool didChangeDependency,
@@ -358,6 +404,7 @@ mixin FutureHandlerProviderElementMixin<T>
   }
 
   @override
+  @internal
   void runOnDispose() {
     // Stops listening to the previous async operation
     _lastFutureSub?.call();
@@ -409,8 +456,9 @@ mixin FutureHandlerProviderElementMixin<T>
 
   @override
   void visitChildren({
-    required void Function(ProviderElementBase element) elementVisitor,
-    required void Function(ProxyElementValueNotifier element) notifierVisitor,
+    required void Function(ProviderElementBase<Object?> element) elementVisitor,
+    required void Function(ProxyElementValueNotifier<Object?> element)
+        notifierVisitor,
   }) {
     super.visitChildren(
       elementVisitor: elementVisitor,
@@ -421,15 +469,42 @@ mixin FutureHandlerProviderElementMixin<T>
 }
 
 /// The element of [AsyncNotifierProvider].
+abstract class AsyncNotifierProviderElementBase<
+        NotifierT extends AsyncNotifierBase<T>,
+        T> extends ProviderElementBase<AsyncValue<T>>
+    with FutureHandlerProviderElementMixin<T> {
+  AsyncNotifierProviderElementBase._(super.provider);
+
+  final _notifierNotifier = ProxyElementValueNotifier<NotifierT>();
+
+  @override
+  void visitChildren({
+    required void Function(ProviderElementBase<Object?> element) elementVisitor,
+    required void Function(ProxyElementValueNotifier<Object?> element)
+        notifierVisitor,
+  }) {
+    super.visitChildren(
+      elementVisitor: elementVisitor,
+      notifierVisitor: notifierVisitor,
+    );
+    notifierVisitor(_notifierNotifier);
+  }
+
+  @override
+  bool updateShouldNotify(AsyncValue<T> previous, AsyncValue<T> next) {
+    return _notifierNotifier.result?.stateOrNull
+            ?.updateShouldNotify(previous, next) ??
+        true;
+  }
+}
+
+/// The element of [AsyncNotifierProvider].
 class AsyncNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
-    extends ProviderElementBase<AsyncValue<T>>
-    with FutureHandlerProviderElementMixin<T>
+    extends AsyncNotifierProviderElementBase<NotifierT, T>
     implements AsyncNotifierProviderRef<T> {
   AsyncNotifierProviderElement._(
     AsyncNotifierProviderBase<NotifierT, T> super.provider,
-  );
-
-  final _notifierNotifier = ProxyElementValueNotifier<NotifierT>();
+  ) : super._();
 
   @override
   void create({required bool didChangeDependency}) {
@@ -453,25 +528,6 @@ class AsyncNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
         );
       },
     );
-  }
-
-  @override
-  void visitChildren({
-    required void Function(ProviderElementBase element) elementVisitor,
-    required void Function(ProxyElementValueNotifier element) notifierVisitor,
-  }) {
-    super.visitChildren(
-      elementVisitor: elementVisitor,
-      notifierVisitor: notifierVisitor,
-    );
-    notifierVisitor(_notifierNotifier);
-  }
-
-  @override
-  bool updateShouldNotify(AsyncValue<T> previous, AsyncValue<T> next) {
-    return _notifierNotifier.result?.stateOrNull
-            ?.updateShouldNotify(previous, next) ??
-        true;
   }
 }
 

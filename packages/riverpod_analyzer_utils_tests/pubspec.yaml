@@ -1,0 +1,39 @@
+name: riverpod_analyzer_utils_tests
+description: A sample command-line application.
+publish_to: none
+version: 0.0.1
+
+environment:
+  sdk: ">=2.18.0 <3.0.0"
+
+dependencies:
+  analyzer: ^5.0.0
+  collection: ^1.16.0
+  freezed_annotation: ^2.2.0
+  meta: ^1.7.0
+  path: ^1.8.0
+  source_span: ^1.8.0
+
+dev_dependencies:
+  build: ^2.3.1
+  build_runner: ^2.3.2
+  build_test: ^2.1.5
+  freezed: ^2.2.0
+  lints: ^2.0.0
+  riverpod_analyzer_utils:
+  riverpod_generator:
+  test: ^1.21.7
+
+dependency_overrides:
+  flutter_riverpod:
+    path: ../flutter_riverpod
+  hooks_riverpod:
+    path: ../hooks_riverpod
+  riverpod:
+    path: ../riverpod
+  riverpod_analyzer_utils:
+    path: ../riverpod_analyzer_utils
+  riverpod_annotation:
+    path: ../riverpod_annotation
+  riverpod_generator:
+    path: ../riverpod_generator

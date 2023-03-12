@@ -2,33 +2,34 @@ import 'package:test/test.dart';
 import 'package:test_process/test_process.dart';
 
 void main() {
-  test('It should log the structure of the addition project', () async {
-    final process = await TestProcess.start(
-      'dart',
-      const ['run', 'riverpod_graph', 'test/integration/addition/golden'],
-    );
+  group('mermaid format', () {
+    test('It should log the structure of the addition project', () async {
+      final process = await TestProcess.start(
+        'dart',
+        const ['run', 'riverpod_graph', 'test/integration/addition/golden'],
+      );
 
-    final stdoutList = <String>[];
-    while (await process.stdout.hasNext) {
-      stdoutList.add(await process.stdout.next);
-    }
+      final stdoutList = <String>[];
+      while (await process.stdout.hasNext) {
+        stdoutList.add(await process.stdout.next);
+      }
 
-    expect(
-      stdoutList.first,
-      allOf(
-        [
-          startsWith('Analyzing'),
-          endsWith(
-            'packages/riverpod_graph/test/integration/addition/golden ...',
-          ),
-        ],
-      ),
-      reason: 'It should log the analyzed folder',
-    );
+      expect(
+        stdoutList.first,
+        allOf(
+          [
+            startsWith('Analyzing'),
+            endsWith(
+              'packages/riverpod_graph/test/integration/addition/golden ...',
+            ),
+          ],
+        ),
+        reason: 'It should log the analyzed folder',
+      );
 
-    expect(
-      stdoutList.sublist(1).join('\n'),
-      '''
+      expect(
+        stdoutList.sublist(1).join('\n'),
+        '''
 flowchart TB
   subgraph Arrows
     direction LR
@@ -79,8 +80,58 @@ flowchart TB
   subgraph SampleClass
     SampleClass.selectedProvider[[selectedProvider]];
   end''',
-      reason: 'It should log the riverpod graph',
-    );
-    await process.shouldExit(0);
+        reason: 'It should log the riverpod graph',
+      );
+      await process.shouldExit(0);
+    });
+  });
+  group('d2 format', () {
+    test('It should log the structure of the addition project', () async {
+      final process = await TestProcess.start(
+        'dart',
+        const [
+          'run',
+          'riverpod_graph',
+          'test/integration/addition/golden',
+          '-f',
+          'd2',
+        ],
+      );
+
+      final stdoutList = <String>[];
+      while (await process.stdout.hasNext) {
+        stdoutList.add(await process.stdout.next);
+      }
+
+      expect(
+        stdoutList.first,
+        allOf(
+          [
+            startsWith('Analyzing'),
+            endsWith(
+              'packages/riverpod_graph/test/integration/addition/golden ...',
+            ),
+          ],
+        ),
+        reason: 'It should log the analyzed folder',
+      );
+
+      expect(
+        stdoutList.sublist(1).join('\n'),
+        '''
+normalProvider -> additionProvider: {style.stroke-width: 4}
+futureProvider -> additionProvider: {style.stroke-width: 4}
+familyProviders -> additionProvider: {style.stroke-width: 4}
+functionProvider -> additionProvider: {style.stroke-width: 4}
+selectedProvider -> additionProvider: {style.stroke-width: 4}
+SampleClass.normalProvider -> additionProvider: {style.stroke-width: 4}
+SampleClass.futureProvider -> additionProvider: {style.stroke-width: 4}
+SampleClass.familyProviders -> additionProvider: {style.stroke-width: 4}
+SampleClass.functionProvider -> additionProvider: {style.stroke-width: 4}
+SampleClass.selectedProvider -> additionProvider: {style.stroke-width: 4}''',
+        reason: 'It should log the riverpod graph',
+      );
+      await process.shouldExit(0);
+    });
   });
 }

@@ -177,7 +177,8 @@ void main() {
 
         expect(container.read(provider), 0);
         expect(container.getAllProviderElements(), [
-          isA<ProviderElementBase>().having((e) => e.origin, 'origin', provider)
+          isA<ProviderElementBase<Object?>>()
+              .having((e) => e.origin, 'origin', provider)
         ]);
         expect(root.getAllProviderElements(), isEmpty);
       });
@@ -192,7 +193,8 @@ void main() {
 
         expect(container.read(provider), 42);
         expect(container.getAllProviderElements(), [
-          isA<ProviderElementBase>().having((e) => e.origin, 'origin', provider)
+          isA<ProviderElementBase<Object?>>()
+              .having((e) => e.origin, 'origin', provider)
         ]);
         expect(root.getAllProviderElements(), isEmpty);
       });
@@ -210,7 +212,8 @@ void main() {
 
         expect(container.read(provider), 42);
         expect(container.getAllProviderElements(), [
-          isA<ProviderElementBase>().having((e) => e.origin, 'origin', provider)
+          isA<ProviderElementBase<Object?>>()
+              .having((e) => e.origin, 'origin', provider)
         ]);
         expect(root.getAllProviderElements(), isEmpty);
       });
@@ -274,7 +277,7 @@ void main() {
 
     test('is AlwaysAliveProviderBase', () {
       // ignore: unused_local_variable, testing that Provider can be assigned to AlwaysAliveProviderBase
-      final AlwaysAliveProviderBase provider = Provider<int>((_) => 42);
+      final AlwaysAliveProviderBase<int> provider = Provider<int>((_) => 42);
     });
   });
 

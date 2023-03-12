@@ -1,6 +1,8 @@
 part of '../notifier.dart';
 
-/// {@template riverpod.notifier}
+/// {@macro riverpod.notifier}
+///
+/// {@macro riverpod.notifier_provider_modifier}
 abstract class FamilyNotifier<State, Arg> extends BuildlessNotifier<State> {
   /// {@template riverpod.notifier.family_arg}
   late final Arg arg;
@@ -33,10 +35,25 @@ class FamilyNotifierProviderImpl<NotifierT extends NotifierBase<T>, T, Arg>
   FamilyNotifierProviderImpl(
     super._createNotifier, {
     super.name,
+    super.dependencies,
+    @Deprecated('Will be removed in 3.0.0') super.from,
+    @Deprecated('Will be removed in 3.0.0') super.argument,
+    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
+  }) : super(
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+        );
+
+  /// An implementation detail of Riverpod
+  @internal
+  FamilyNotifierProviderImpl.internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
     super.from,
     super.argument,
-    super.dependencies,
-    super.debugGetCreateSourceHash,
   });
 
   /// {@macro riverpod.autoDispose}
@@ -72,17 +89,36 @@ class NotifierProviderFamily<NotifierT extends FamilyNotifier<T, Arg>, T, Arg>
     super.create, {
     super.name,
     super.dependencies,
-  }) : super(providerFactory: NotifierFamilyProvider.new);
+  }) : super(
+          providerFactory: NotifierFamilyProvider.internal,
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+          debugGetCreateSourceHash: null,
+        );
+
+  /// An implementation detail of Riverpod
+  @internal
+  NotifierProviderFamily.internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+  }) : super(providerFactory: NotifierFamilyProvider.internal);
 
   /// {@macro riverpod.overridewith}
   Override overrideWith(NotifierT Function() create) {
     return FamilyOverrideImpl<T, Arg,
         NotifierFamilyProvider<NotifierT, T, Arg>>(
       this,
-      (arg) => NotifierFamilyProvider<NotifierT, T, Arg>(
+      (arg) => NotifierFamilyProvider<NotifierT, T, Arg>.internal(
         create,
         from: from,
         argument: arg,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        name: null,
       ),
     );
   }

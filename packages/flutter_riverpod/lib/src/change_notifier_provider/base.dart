@@ -83,10 +83,25 @@ class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
   ChangeNotifierProvider(
     this._createFn, {
     super.name,
+    super.dependencies,
+    @Deprecated('Will be removed in 3.0.0') super.from,
+    @Deprecated('Will be removed in 3.0.0') super.argument,
+    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
+  }) : super(
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+        );
+
+  /// An implementation detail of Riverpod
+  @internal
+  ChangeNotifierProvider.internal(
+    this._createFn, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
     super.from,
     super.argument,
-    super.dependencies,
-    super.debugGetCreateSourceHash,
   });
 
   /// {@macro riverpod.autoDispose}
@@ -150,10 +165,14 @@ class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
   ) {
     return ProviderOverride(
       origin: this,
-      override: ChangeNotifierProvider<NotifierT>(
+      override: ChangeNotifierProvider<NotifierT>.internal(
         create,
         from: from,
         argument: argument,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
       ),
     );
   }
@@ -212,8 +231,9 @@ class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
 
   @override
   void visitChildren({
-    required void Function(ProviderElementBase element) elementVisitor,
-    required void Function(ProxyElementValueNotifier element) notifierVisitor,
+    required void Function(ProviderElementBase<Object?> element) elementVisitor,
+    required void Function(ProxyElementValueNotifier<Object?> element)
+        notifierVisitor,
   }) {
     super.visitChildren(
       elementVisitor: elementVisitor,
@@ -233,7 +253,12 @@ class ChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?, Arg>
     super.create, {
     super.name,
     super.dependencies,
-  }) : super(providerFactory: ChangeNotifierProvider.new);
+  }) : super(
+          providerFactory: ChangeNotifierProvider.internal,
+          debugGetCreateSourceHash: null,
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+        );
 
   /// {@macro riverpod.overridewith}
   Override overrideWith(
@@ -243,10 +268,14 @@ class ChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?, Arg>
     return FamilyOverrideImpl<NotifierT, Arg,
         ChangeNotifierProvider<NotifierT>>(
       this,
-      (arg) => ChangeNotifierProvider<NotifierT>(
+      (arg) => ChangeNotifierProvider<NotifierT>.internal(
         (ref) => create(ref, arg),
         from: from,
         argument: arg,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
       ),
     );
   }

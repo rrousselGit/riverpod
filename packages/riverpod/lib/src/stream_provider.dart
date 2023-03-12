@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:meta/meta.dart';
+
 import 'async_notifier.dart';
 import 'builders.dart';
 import 'common.dart';
@@ -35,18 +37,21 @@ ProviderElementProxy<AsyncValue<T>, Stream<T>> _stream<T>(
 }
 
 abstract class _StreamProviderBase<T> extends ProviderBase<AsyncValue<T>> {
-  _StreamProviderBase({
-    required this.dependencies,
+  const _StreamProviderBase({
+    required super.allTransitiveDependencies,
+    required super.dependencies,
     required super.name,
     required super.from,
     required super.argument,
     required super.debugGetCreateSourceHash,
   });
 
-  @override
-  final List<ProviderOrFamily>? dependencies;
-
   ProviderListenable<Future<T>> get future;
+
+  @Deprecated(
+    '.stream will be removed in 3.0.0. As a replacement, either listen to the '
+    'provider itself (AsyncValue) or .future.',
+  )
   ProviderListenable<Stream<T>> get stream;
 
   Stream<T> _create(covariant StreamProviderElement<T> ref);

@@ -1,29 +1,51 @@
 part of '../framework.dart';
 
+/// A typedef representing the constructor of any classical provider.
+@internal
+typedef ProviderCreate<ProviderT, Created, RefT extends Ref> = ProviderT
+    Function(
+  Create<Created, RefT> create, {
+  required String? name,
+  required Iterable<ProviderOrFamily>? dependencies,
+  required Set<ProviderOrFamily>? allTransitiveDependencies,
+  required DebugGetCreateSourceHash? debugGetCreateSourceHash,
+  Family<Object?> from,
+  Object? argument,
+});
+
+/// A typedef representing the constructor of a [NotifierProvider].
+@internal
+typedef ProviderNotifierCreate<ProviderT, Created, RefT extends Ref> = ProviderT
+    Function(
+  Created Function() create, {
+  required String? name,
+  required Iterable<ProviderOrFamily>? dependencies,
+  required Set<ProviderOrFamily>? allTransitiveDependencies,
+  required DebugGetCreateSourceHash? debugGetCreateSourceHash,
+  Family<Object?> from,
+  Object? argument,
+});
+
 /// A [Create] equivalent used by [Family].
 @internal
-typedef FamilyCreate<T, R extends Ref, Arg> = T Function(
-  R ref,
-  Arg arg,
-);
+typedef FamilyCreate<T, R extends Ref, Arg> = T Function(R ref, Arg arg);
 
 /// A base class for all families
-abstract class Family<State> extends ProviderOrFamily
-    implements FamilyOverride<State> {
+abstract class Family<
+    @Deprecated(
+  'The generic parameter will be removed in version 3.0.0. '
+  'This is to enable riverpod_generator to implement families with generic parameters',
+)
+        // ignore: deprecated_member_use_from_same_package
+        State> implements FamilyOverride<State>, ProviderOrFamily {
   /// A base class for all families
   const Family();
-
-  @override
-  List<ProviderOrFamily>? get dependencies;
-
-  /// The family name.
-  @protected
-  String? get name;
 
   @override
   Family<Object?>? get from => null;
 
   @override
+  // ignore: deprecated_member_use_from_same_package
   Family<State> get overriddenFamily => this;
 }
 
@@ -56,8 +78,8 @@ mixin _FamilyMixin<State, Arg, FamilyProvider extends ProviderBase<State>>
 typedef SetupFamilyOverride<Arg> = void Function(
   Arg argument,
   void Function({
-    required ProviderBase origin,
-    required ProviderBase override,
+    required ProviderBase<Object?> origin,
+    required ProviderBase<Object?> override,
   }),
 );
 
@@ -107,27 +129,16 @@ class FamilyBase<RefT extends Ref<R>, R, Arg, Created,
   /// help them define a [Family].
   ///
   /// This API is not meant for public consumption.
-  FamilyBase(
+  const FamilyBase(
     this._createFn, {
-    required ProviderT Function(
-      Create<Created, RefT> create, {
-      String? name,
-      Family from,
-      Object? argument,
-      List<ProviderOrFamily>? dependencies,
-    })
-        providerFactory,
+    required ProviderCreate<ProviderT, Created, RefT> providerFactory,
     required this.name,
     required this.dependencies,
+    required this.allTransitiveDependencies,
+    required this.debugGetCreateSourceHash,
   }) : _providerFactory = providerFactory;
 
-  final ProviderT Function(
-    Create<Created, RefT> create, {
-    String? name,
-    Family from,
-    Object? argument,
-    List<ProviderOrFamily>? dependencies,
-  }) _providerFactory;
+  final ProviderCreate<ProviderT, Created, RefT> _providerFactory;
 
   final Created Function(RefT ref, Arg arg) _createFn;
 
@@ -138,17 +149,20 @@ class FamilyBase<RefT extends Ref<R>, R, Arg, Created,
         from: this,
         argument: argument,
         dependencies: dependencies,
+        allTransitiveDependencies: allTransitiveDependencies,
+        debugGetCreateSourceHash: debugGetCreateSourceHash,
       );
 
   @override
   final String? name;
-
   @override
-  final List<ProviderOrFamily>? dependencies;
-
+  final Iterable<ProviderOrFamily>? dependencies;
   @override
-  late final List<ProviderOrFamily>? allTransitiveDependencies =
-      dependencies == null ? null : _allTransitiveDependencies(dependencies!);
+  final Set<ProviderOrFamily>? allTransitiveDependencies;
+
+  /// {@template riverpod.create_source_hash}
+  @internal
+  final DebugGetCreateSourceHash? debugGetCreateSourceHash;
 }
 
 /// A base implementation for [Family], used by the various providers to
@@ -164,27 +178,16 @@ class AutoDisposeFamilyBase<RefT extends Ref<R>, R, Arg, Created,
   /// help them define a [Family].
   ///
   /// This API is not meant for public consumption.
-  AutoDisposeFamilyBase(
+  const AutoDisposeFamilyBase(
     this._createFn, {
-    required ProviderT Function(
-      Create<Created, RefT> create, {
-      String? name,
-      Family from,
-      Object? argument,
-      List<ProviderOrFamily>? dependencies,
-    })
-        providerFactory,
+    required ProviderCreate<ProviderT, Created, RefT> providerFactory,
     required this.name,
     required this.dependencies,
+    required this.allTransitiveDependencies,
+    required this.debugGetCreateSourceHash,
   }) : _providerFactory = providerFactory;
 
-  final ProviderT Function(
-    Create<Created, RefT> create, {
-    String? name,
-    Family from,
-    Object? argument,
-    List<ProviderOrFamily>? dependencies,
-  }) _providerFactory;
+  final ProviderCreate<ProviderT, Created, RefT> _providerFactory;
 
   final Created Function(RefT ref, Arg arg) _createFn;
 
@@ -195,17 +198,20 @@ class AutoDisposeFamilyBase<RefT extends Ref<R>, R, Arg, Created,
         from: this,
         argument: argument,
         dependencies: dependencies,
+        allTransitiveDependencies: allTransitiveDependencies,
+        debugGetCreateSourceHash: debugGetCreateSourceHash,
       );
 
   @override
   final String? name;
-
   @override
-  final List<ProviderOrFamily>? dependencies;
-
+  final Iterable<ProviderOrFamily>? dependencies;
   @override
-  late final List<ProviderOrFamily>? allTransitiveDependencies =
-      dependencies == null ? null : _allTransitiveDependencies(dependencies!);
+  final Set<ProviderOrFamily>? allTransitiveDependencies;
+
+  /// {@template riverpod.create_source_hash}
+  @internal
+  final DebugGetCreateSourceHash? debugGetCreateSourceHash;
 }
 
 /// A base implementation for [Family] specific to autoDispose `Notifier`-based providers.
@@ -221,27 +227,16 @@ class AutoDisposeNotifierFamilyBase<RefT extends Ref<R>, R, Arg, NotifierT,
   /// help them define a [Family].
   ///
   /// This API is not meant for public consumption.
-  AutoDisposeNotifierFamilyBase(
+  const AutoDisposeNotifierFamilyBase(
     this._createFn, {
-    required ProviderT Function(
-      NotifierT Function() create, {
-      String? name,
-      Family from,
-      Object? argument,
-      List<ProviderOrFamily>? dependencies,
-    })
-        providerFactory,
+    required ProviderNotifierCreate<ProviderT, NotifierT, RefT> providerFactory,
     required this.name,
     required this.dependencies,
+    required this.allTransitiveDependencies,
+    required this.debugGetCreateSourceHash,
   }) : _providerFactory = providerFactory;
 
-  final ProviderT Function(
-    NotifierT Function() create, {
-    String? name,
-    Family from,
-    Object? argument,
-    List<ProviderOrFamily>? dependencies,
-  }) _providerFactory;
+  final ProviderNotifierCreate<ProviderT, NotifierT, RefT> _providerFactory;
 
   final NotifierT Function() _createFn;
 
@@ -252,17 +247,20 @@ class AutoDisposeNotifierFamilyBase<RefT extends Ref<R>, R, Arg, NotifierT,
         from: this,
         argument: argument,
         dependencies: dependencies,
+        allTransitiveDependencies: allTransitiveDependencies,
+        debugGetCreateSourceHash: debugGetCreateSourceHash,
       );
 
   @override
   final String? name;
-
   @override
-  final List<ProviderOrFamily>? dependencies;
-
+  final Iterable<ProviderOrFamily>? dependencies;
   @override
-  late final List<ProviderOrFamily>? allTransitiveDependencies =
-      dependencies == null ? null : _allTransitiveDependencies(dependencies!);
+  final Set<ProviderOrFamily>? allTransitiveDependencies;
+
+  /// {@template riverpod.create_source_hash}
+  @internal
+  final DebugGetCreateSourceHash? debugGetCreateSourceHash;
 }
 
 /// A base implementation for [Family] specific to `Notifier`-based providers.
@@ -278,27 +276,16 @@ class NotifierFamilyBase<RefT extends Ref<R>, R, Arg, NotifierT,
   /// help them define a [Family].
   ///
   /// This API is not meant for public consumption.
-  NotifierFamilyBase(
+  const NotifierFamilyBase(
     this._createFn, {
-    required ProviderT Function(
-      NotifierT Function() create, {
-      String? name,
-      Family from,
-      Object? argument,
-      List<ProviderOrFamily>? dependencies,
-    })
-        providerFactory,
+    required ProviderNotifierCreate<ProviderT, NotifierT, RefT> providerFactory,
     required this.name,
     required this.dependencies,
+    required this.allTransitiveDependencies,
+    required this.debugGetCreateSourceHash,
   }) : _providerFactory = providerFactory;
 
-  final ProviderT Function(
-    NotifierT Function() create, {
-    String? name,
-    Family from,
-    Object? argument,
-    List<ProviderOrFamily>? dependencies,
-  }) _providerFactory;
+  final ProviderNotifierCreate<ProviderT, NotifierT, RefT> _providerFactory;
 
   final NotifierT Function() _createFn;
 
@@ -309,15 +296,18 @@ class NotifierFamilyBase<RefT extends Ref<R>, R, Arg, NotifierT,
         from: this,
         argument: argument,
         dependencies: dependencies,
+        allTransitiveDependencies: allTransitiveDependencies,
+        debugGetCreateSourceHash: debugGetCreateSourceHash,
       );
 
   @override
   final String? name;
-
   @override
-  final List<ProviderOrFamily>? dependencies;
-
+  final Iterable<ProviderOrFamily>? dependencies;
   @override
-  late final List<ProviderOrFamily>? allTransitiveDependencies =
-      dependencies == null ? null : _allTransitiveDependencies(dependencies!);
+  final Set<ProviderOrFamily>? allTransitiveDependencies;
+
+  /// {@macro riverpod.create_source_hash}
+  @internal
+  final DebugGetCreateSourceHash? debugGetCreateSourceHash;
 }

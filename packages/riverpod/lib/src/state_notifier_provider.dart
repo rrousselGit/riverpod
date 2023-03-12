@@ -1,3 +1,4 @@
+import 'package:meta/meta.dart';
 import 'package:state_notifier/state_notifier.dart';
 
 import 'internals.dart';
@@ -20,16 +21,14 @@ ProviderElementProxy<T, NotifierT>
 
 abstract class _StateNotifierProviderBase<NotifierT extends StateNotifier<T>, T>
     extends ProviderBase<T> {
-  _StateNotifierProviderBase({
+  const _StateNotifierProviderBase({
     required super.name,
     required super.from,
     required super.argument,
-    required this.dependencies,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
   });
-
-  @override
-  final List<ProviderOrFamily>? dependencies;
 
   /// Obtains the [StateNotifier] associated with this provider, without listening
   /// to state changes.

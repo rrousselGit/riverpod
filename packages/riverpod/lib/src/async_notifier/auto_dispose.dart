@@ -20,7 +20,9 @@ abstract class BuildlessAutoDisposeAsyncNotifier<State>
   AutoDisposeAsyncNotifierProviderRef<State> get ref => _element;
 }
 
-/// {@macro riverpod.asyncnotifier}
+/// {@macro riverpod.async_notifier_provider}
+///
+/// {@macro riverpod.async_notifier_provider_modifier}
 abstract class AutoDisposeAsyncNotifier<State>
     extends BuildlessAutoDisposeAsyncNotifier<State> {
   /// {@macro riverpod.asyncnotifier.build}
@@ -32,7 +34,9 @@ abstract class AutoDisposeAsyncNotifier<State>
 abstract class AutoDisposeAsyncNotifierProviderRef<T>
     implements AsyncNotifierProviderRef<T>, AutoDisposeRef<AsyncValue<T>> {}
 
-/// {@macro riverpod.asyncnotifier}
+/// {@macro riverpod.async_notifier_provider}
+///
+/// {@macro riverpod.async_notifier_provider_modifier}
 typedef AutoDisposeAsyncNotifierProvider<
         NotifierT extends AutoDisposeAsyncNotifier<T>, T>
     = AutoDisposeAsyncNotifierProviderImpl<NotifierT, T>;
@@ -50,20 +54,36 @@ class AutoDisposeAsyncNotifierProviderImpl<
   AutoDisposeAsyncNotifierProviderImpl(
     super._createNotifier, {
     super.name,
+    super.dependencies,
+    @Deprecated('Will be removed in 3.0.0') super.from,
+    @Deprecated('Will be removed in 3.0.0') super.argument,
+    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
+  }) : super(
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+        );
+
+  /// An implementation detail of Riverpod
+  @internal
+  AutoDisposeAsyncNotifierProviderImpl.internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
     super.from,
     super.argument,
-    super.dependencies,
-    super.debugGetCreateSourceHash,
   });
 
   /// {@macro riverpod.family}
   static const family = AutoDisposeAsyncNotifierProviderFamily.new;
 
   @override
-  late final Refreshable<NotifierT> notifier = _notifier<NotifierT, T>(this);
+  late final Refreshable<NotifierT> notifier =
+      _asyncNotifier<NotifierT, T>(this);
 
   @override
-  late final Refreshable<Future<T>> future = _future<T>(this);
+  late final Refreshable<Future<T>> future = _asyncFuture<T>(this);
 
   @override
   AutoDisposeAsyncNotifierProviderElement<NotifierT, T> createElement() {
@@ -79,10 +99,14 @@ class AutoDisposeAsyncNotifierProviderImpl<
   Override overrideWith(NotifierT Function() create) {
     return ProviderOverride(
       origin: this,
-      override: AutoDisposeAsyncNotifierProviderImpl<NotifierT, T>(
+      override: AutoDisposeAsyncNotifierProviderImpl<NotifierT, T>.internal(
         create,
         from: from,
         argument: argument,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        name: null,
       ),
     );
   }

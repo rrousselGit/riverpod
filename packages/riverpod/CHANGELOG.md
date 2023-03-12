@@ -1,6 +1,74 @@
-## Unreleased minor
+## Unreleased patch
 
-Improve type-inference when using `AsyncValue.whenOrNull` (thanks to @AhmedLSayed9)
+
+- Deprecated the generic parameter of `Family`.
+  This will enable implementing generic providers in `riverpod_generator` once
+  it is removed.
+- Updated documentation
+
+## 2.3.1 - 2023-03-09
+
+- Updated `AsyncValue.value/valueOrNull` docs to cover the "previous value" cases (thanks to @AhmedLSayed9)
+
+## 2.3.0
+
+- Added `StreamNotifier` + `StreamNotifierProvider`.
+  This is for building a `StreamProvider` while exposing ways to modify the stream.
+
+  It is primarily meant to be used using code-generation via riverpod_generator,
+  by writing:
+
+  ```dart
+  @riverpod
+  class Example extends _$Example {
+    @override
+    Stream<Model> build() {
+      // TODO return some stream
+    }
+  }
+  ```
+
+- Deprecated `StreamProvider.stream`
+  Instead of:
+
+  ```dart
+  ref.watch(provider.stream).listen(...)
+  ```
+
+  do:
+
+  ```dart
+  ref.listen(provider, (_, value) {...});
+  ```
+
+  Instead of:
+
+  ```dart
+  final a = StreamProvider((ref) {
+    return ref.watch(b.stream).map((e) => Model(e));
+  })
+  ```
+
+  Do:
+
+  ```dart
+  final a = FutureProvider((ref) async {
+    final e = await ref.watch(b.future);
+    return Model(e);
+  })
+  ```
+
+- Some restrictions on the `dependencies` parameter of providers have been lifted.
+  It is no-longer necessary to include providers which do not themselves specify `dependencies`.
+  All providers should specify `dependencies` if they are scoped at any point.
+
+- Annotated `Notifier.state` setter as protected.
+
+## 2.2.0
+
+- Improve type-inference when using `AsyncValue.whenOrNull` (thanks to @AhmedLSayed9)
+- Fixed AsyncValue.asError incorrectly not preserving the generic type
+- Internal refactoring for riverpod_generator
 
 ## 2.1.3
 

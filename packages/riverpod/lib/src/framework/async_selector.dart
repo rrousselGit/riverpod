@@ -161,7 +161,6 @@ class _AsyncSelector<Input, Output> with ProviderListenable<Future<Output>> {
       bool callListeners = true,
     }) {
       void onLoading(AsyncValue<void> loading) {
-        // if (selectedCompleter == null) {
         if (selectedFuture == null) {
           // The first time a future is emitted
 
@@ -171,7 +170,6 @@ class _AsyncSelector<Input, Output> with ProviderListenable<Future<Output>> {
 
         // We don't notify listeners when the future changes since
         // they want to filter rebuilds based on the result
-        // }
       }
 
       value.map(

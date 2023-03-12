@@ -4,6 +4,7 @@ import 'async_notifier.dart';
 import 'builders.dart';
 import 'framework.dart';
 import 'listenable.dart';
+import 'provider.dart';
 import 'result.dart';
 
 part 'notifier/auto_dispose.dart';
@@ -36,6 +37,7 @@ abstract class NotifierBase<State> {
     return _element.requireState;
   }
 
+  @protected
   set state(State value) {
     // ignore: invalid_use_of_protected_member
     _element.setState(value);
@@ -98,17 +100,15 @@ abstract class NotifierProviderBase<NotifierT extends NotifierBase<T>, T>
   /// An internal base class for [Notifier].
   ///
   /// Not meant for public consumption.
-  NotifierProviderBase(
+  const NotifierProviderBase(
     this._createNotifier, {
     required super.name,
     required super.from,
     required super.argument,
-    required this.dependencies,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
   });
-
-  @override
-  final List<ProviderOrFamily>? dependencies;
 
   /// Obtains the [Notifier] associated with this provider, without listening
   /// to state changes.

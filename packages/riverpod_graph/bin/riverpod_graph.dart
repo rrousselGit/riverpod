@@ -4,12 +4,26 @@
 
 import 'dart:io';
 
+import 'package:args/args.dart';
 import 'package:path/path.dart' as path;
-import 'package:riverpod_graph/riverpod_graph.dart';
+import 'package:riverpod_graph/src/analyze.dart';
 
 Future<void> main(List<String> args) {
-  final rootDirectory = args.isNotEmpty
-      ? path.normalize(path.absolute(args.first))
+  final parser = ArgParser();
+  parser.addOption(
+    'format',
+    abbr: 'f',
+    defaultsTo: 'mermaid',
+    help: 'output format. [mermaid(default), d2]',
+  );
+
+  final parsedArgs = parser.parse(args);
+
+  final rootDirectory = parsedArgs.arguments.isNotEmpty
+      ? path.normalize(path.absolute(parsedArgs.arguments.first))
       : Directory.current.absolute.path;
-  return analyze(rootDirectory);
+
+  final format = SupportFormat.values.byName(parsedArgs['format'].toString());
+
+  return analyze(rootDirectory, format: format);
 }

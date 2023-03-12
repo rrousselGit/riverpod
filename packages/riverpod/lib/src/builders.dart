@@ -23,7 +23,7 @@ class AsyncNotifierProviderBuilder {
       call<NotifierT extends AsyncNotifier<T>, T>(
     NotifierT Function() create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
+    Iterable<ProviderOrFamily>? dependencies,
   }) {
     return AsyncNotifierProvider<NotifierT, T>(
       create,
@@ -53,7 +53,7 @@ class AsyncNotifierProviderFamilyBuilder {
       call<NotifierT extends FamilyAsyncNotifier<T, Arg>, T, Arg>(
     NotifierT Function() create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
+    Iterable<ProviderOrFamily>? dependencies,
   }) {
     return AsyncNotifierProviderFamily<NotifierT, T, Arg>(
       create,
@@ -78,7 +78,7 @@ class AutoDisposeAsyncNotifierProviderBuilder {
       call<NotifierT extends AutoDisposeAsyncNotifier<T>, T>(
     NotifierT Function() create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
+    Iterable<ProviderOrFamily>? dependencies,
   }) {
     return AutoDisposeAsyncNotifierProvider<NotifierT, T>(
       create,
@@ -103,7 +103,7 @@ class AutoDisposeAsyncNotifierProviderFamilyBuilder {
       call<NotifierT extends AutoDisposeFamilyAsyncNotifier<T, Arg>, T, Arg>(
     NotifierT Function() create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
+    Iterable<ProviderOrFamily>? dependencies,
   }) {
     return AutoDisposeAsyncNotifierProviderFamily<NotifierT, T, Arg>(
       create,
@@ -123,7 +123,7 @@ class NotifierProviderBuilder {
       call<NotifierT extends Notifier<State>, State>(
     NotifierT Function() create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
+    Iterable<ProviderOrFamily>? dependencies,
   }) {
     return NotifierProvider<NotifierT, State>(
       create,
@@ -153,7 +153,7 @@ class NotifierProviderFamilyBuilder {
       call<NotifierT extends FamilyNotifier<State, Arg>, State, Arg>(
     NotifierT Function() create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
+    Iterable<ProviderOrFamily>? dependencies,
   }) {
     return NotifierProviderFamily<NotifierT, State, Arg>(
       create,
@@ -178,7 +178,7 @@ class AutoDisposeNotifierProviderBuilder {
       call<NotifierT extends AutoDisposeNotifier<State>, State>(
     NotifierT Function() create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
+    Iterable<ProviderOrFamily>? dependencies,
   }) {
     return AutoDisposeNotifierProvider<NotifierT, State>(
       create,
@@ -203,9 +203,109 @@ class AutoDisposeNotifierProviderFamilyBuilder {
       call<NotifierT extends AutoDisposeFamilyNotifier<State, Arg>, State, Arg>(
     NotifierT Function() create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
+    Iterable<ProviderOrFamily>? dependencies,
   }) {
     return AutoDisposeNotifierProviderFamily<NotifierT, State, Arg>(
+      create,
+      name: name,
+      dependencies: dependencies,
+    );
+  }
+}
+
+/// Builds a [StreamNotifierProvider].
+class StreamNotifierProviderBuilder {
+  /// Builds a [StreamNotifierProvider].
+  const StreamNotifierProviderBuilder();
+
+  /// {@macro riverpod.autoDispose}
+  StreamNotifierProvider<NotifierT, T>
+      call<NotifierT extends StreamNotifier<T>, T>(
+    NotifierT Function() create, {
+    String? name,
+    Iterable<ProviderOrFamily>? dependencies,
+  }) {
+    return StreamNotifierProvider<NotifierT, T>(
+      create,
+      name: name,
+      dependencies: dependencies,
+    );
+  }
+
+  /// {@macro riverpod.autoDispose}
+  AutoDisposeStreamNotifierProviderBuilder get autoDispose {
+    return const AutoDisposeStreamNotifierProviderBuilder();
+  }
+
+  /// {@macro riverpod.family}
+  StreamNotifierProviderFamilyBuilder get family {
+    return const StreamNotifierProviderFamilyBuilder();
+  }
+}
+
+/// Builds a [StreamNotifierProviderFamily].
+class StreamNotifierProviderFamilyBuilder {
+  /// Builds a [StreamNotifierProviderFamily].
+  const StreamNotifierProviderFamilyBuilder();
+
+  /// {@macro riverpod.family}
+  StreamNotifierProviderFamily<NotifierT, T, Arg>
+      call<NotifierT extends FamilyStreamNotifier<T, Arg>, T, Arg>(
+    NotifierT Function() create, {
+    String? name,
+    Iterable<ProviderOrFamily>? dependencies,
+  }) {
+    return StreamNotifierProviderFamily<NotifierT, T, Arg>(
+      create,
+      name: name,
+      dependencies: dependencies,
+    );
+  }
+
+  /// {@macro riverpod.autoDispose}
+  AutoDisposeStreamNotifierProviderFamilyBuilder get autoDispose {
+    return const AutoDisposeStreamNotifierProviderFamilyBuilder();
+  }
+}
+
+/// Builds a [AutoDisposeStreamNotifierProvider].
+class AutoDisposeStreamNotifierProviderBuilder {
+  /// Builds a [AutoDisposeStreamNotifierProvider].
+  const AutoDisposeStreamNotifierProviderBuilder();
+
+  /// {@macro riverpod.autoDispose}
+  AutoDisposeStreamNotifierProvider<NotifierT, T>
+      call<NotifierT extends AutoDisposeStreamNotifier<T>, T>(
+    NotifierT Function() create, {
+    String? name,
+    Iterable<ProviderOrFamily>? dependencies,
+  }) {
+    return AutoDisposeStreamNotifierProvider<NotifierT, T>(
+      create,
+      name: name,
+      dependencies: dependencies,
+    );
+  }
+
+  /// {@macro riverpod.family}
+  AutoDisposeStreamNotifierProviderFamilyBuilder get family {
+    return const AutoDisposeStreamNotifierProviderFamilyBuilder();
+  }
+}
+
+/// Builds a [AutoDisposeStreamNotifierProviderFamily].
+class AutoDisposeStreamNotifierProviderFamilyBuilder {
+  /// Builds a [AutoDisposeStreamNotifierProviderFamily].
+  const AutoDisposeStreamNotifierProviderFamilyBuilder();
+
+  /// {@macro riverpod.family}
+  AutoDisposeStreamNotifierProviderFamily<NotifierT, T, Arg>
+      call<NotifierT extends AutoDisposeFamilyStreamNotifier<T, Arg>, T, Arg>(
+    NotifierT Function() create, {
+    String? name,
+    Iterable<ProviderOrFamily>? dependencies,
+  }) {
+    return AutoDisposeStreamNotifierProviderFamily<NotifierT, T, Arg>(
       create,
       name: name,
       dependencies: dependencies,
@@ -270,7 +370,7 @@ class StateProviderBuilder {
   StateProvider<State> call<State>(
     Create<State, StateProviderRef<State>> create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
+    Iterable<ProviderOrFamily>? dependencies,
   }) {
     return StateProvider<State>(
       create,
@@ -507,7 +607,7 @@ class StateProviderFamilyBuilder {
   StateProviderFamily<State, Arg> call<State, Arg>(
     FamilyCreate<State, StateProviderRef<State>, Arg> create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
+    Iterable<ProviderOrFamily>? dependencies,
   }) {
     return StateProviderFamily<State, Arg>(
       create,
@@ -532,7 +632,7 @@ class StateNotifierProviderBuilder {
       call<Notifier extends StateNotifier<State>, State>(
     Create<Notifier, StateNotifierProviderRef<Notifier, State>> create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
+    Iterable<ProviderOrFamily>? dependencies,
   }) {
     return StateNotifierProvider<Notifier, State>(
       create,
@@ -563,7 +663,7 @@ class StateNotifierProviderFamilyBuilder {
     FamilyCreate<Notifier, StateNotifierProviderRef<Notifier, State>, Arg>
         create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
+    Iterable<ProviderOrFamily>? dependencies,
   }) {
     return StateNotifierProviderFamily<Notifier, State, Arg>(
       create,
@@ -587,7 +687,7 @@ class ProviderBuilder {
   Provider<State> call<State>(
     Create<State, ProviderRef<State>> create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
+    Iterable<ProviderOrFamily>? dependencies,
   }) {
     return Provider<State>(
       create,
@@ -616,7 +716,7 @@ class ProviderFamilyBuilder {
   ProviderFamily<State, Arg> call<State, Arg>(
     FamilyCreate<State, ProviderRef<State>, Arg> create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
+    Iterable<ProviderOrFamily>? dependencies,
   }) {
     return ProviderFamily<State, Arg>(
       create,
@@ -640,7 +740,7 @@ class FutureProviderBuilder {
   FutureProvider<State> call<State>(
     Create<FutureOr<State>, FutureProviderRef<State>> create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
+    Iterable<ProviderOrFamily>? dependencies,
   }) {
     return FutureProvider<State>(
       create,
@@ -669,7 +769,7 @@ class FutureProviderFamilyBuilder {
   FutureProviderFamily<State, Arg> call<State, Arg>(
     FamilyCreate<FutureOr<State>, FutureProviderRef<State>, Arg> create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
+    Iterable<ProviderOrFamily>? dependencies,
   }) {
     return FutureProviderFamily<State, Arg>(
       create,
@@ -693,7 +793,7 @@ class StreamProviderBuilder {
   StreamProvider<State> call<State>(
     Create<Stream<State>, StreamProviderRef<State>> create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
+    Iterable<ProviderOrFamily>? dependencies,
   }) {
     return StreamProvider<State>(
       create,
@@ -722,7 +822,7 @@ class StreamProviderFamilyBuilder {
   StreamProviderFamily<State, Arg> call<State, Arg>(
     FamilyCreate<Stream<State>, StreamProviderRef<State>, Arg> create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
+    Iterable<ProviderOrFamily>? dependencies,
   }) {
     return StreamProviderFamily<State, Arg>(
       create,
@@ -746,7 +846,7 @@ class AutoDisposeStateProviderBuilder {
   AutoDisposeStateProvider<State> call<State>(
     Create<State, AutoDisposeStateProviderRef<State>> create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
+    Iterable<ProviderOrFamily>? dependencies,
   }) {
     return AutoDisposeStateProvider<State>(
       create,
@@ -770,7 +870,7 @@ class AutoDisposeStateProviderFamilyBuilder {
   AutoDisposeStateProviderFamily<State, Arg> call<State, Arg>(
     FamilyCreate<State, AutoDisposeStateProviderRef<State>, Arg> create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
+    Iterable<ProviderOrFamily>? dependencies,
   }) {
     return AutoDisposeStateProviderFamily<State, Arg>(
       create,
@@ -791,7 +891,7 @@ class AutoDisposeStateNotifierProviderBuilder {
     Create<Notifier, AutoDisposeStateNotifierProviderRef<Notifier, State>>
         create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
+    Iterable<ProviderOrFamily>? dependencies,
   }) {
     return AutoDisposeStateNotifierProvider<Notifier, State>(
       create,
@@ -818,7 +918,7 @@ class AutoDisposeStateNotifierProviderFamilyBuilder {
             Arg>
         create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
+    Iterable<ProviderOrFamily>? dependencies,
   }) {
     return AutoDisposeStateNotifierProviderFamily<Notifier, State, Arg>(
       create,
@@ -837,7 +937,7 @@ class AutoDisposeProviderBuilder {
   AutoDisposeProvider<State> call<State>(
     Create<State, AutoDisposeProviderRef<State>> create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
+    Iterable<ProviderOrFamily>? dependencies,
   }) {
     return AutoDisposeProvider<State>(
       create,
@@ -861,7 +961,7 @@ class AutoDisposeProviderFamilyBuilder {
   AutoDisposeProviderFamily<State, Arg> call<State, Arg>(
     FamilyCreate<State, AutoDisposeProviderRef<State>, Arg> create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
+    Iterable<ProviderOrFamily>? dependencies,
   }) {
     return AutoDisposeProviderFamily<State, Arg>(
       create,
@@ -880,7 +980,7 @@ class AutoDisposeFutureProviderBuilder {
   AutoDisposeFutureProvider<State> call<State>(
     Create<FutureOr<State>, AutoDisposeFutureProviderRef<State>> create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
+    Iterable<ProviderOrFamily>? dependencies,
   }) {
     return AutoDisposeFutureProvider<State>(
       create,
@@ -905,7 +1005,7 @@ class AutoDisposeFutureProviderFamilyBuilder {
     FamilyCreate<FutureOr<State>, AutoDisposeFutureProviderRef<State>, Arg>
         create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
+    Iterable<ProviderOrFamily>? dependencies,
   }) {
     return AutoDisposeFutureProviderFamily<State, Arg>(
       create,
@@ -924,7 +1024,7 @@ class AutoDisposeStreamProviderBuilder {
   AutoDisposeStreamProvider<State> call<State>(
     Create<Stream<State>, AutoDisposeStreamProviderRef<State>> create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
+    Iterable<ProviderOrFamily>? dependencies,
   }) {
     return AutoDisposeStreamProvider<State>(
       create,
@@ -949,7 +1049,7 @@ class AutoDisposeStreamProviderFamilyBuilder {
     FamilyCreate<Stream<State>, AutoDisposeStreamProviderRef<State>, Arg>
         create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
+    Iterable<ProviderOrFamily>? dependencies,
   }) {
     return AutoDisposeStreamProviderFamily<State, Arg>(
       create,

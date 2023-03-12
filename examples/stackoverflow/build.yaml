@@ -1,0 +1,8 @@
+targets:
+  $default:
+    builders:
+      source_gen:combining_builder:
+        options:
+          ignore_for_file:
+          - non_constant_identifier_names
+          - require_trailing_commas

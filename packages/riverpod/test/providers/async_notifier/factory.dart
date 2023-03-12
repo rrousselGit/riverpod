@@ -7,8 +7,8 @@ typedef AsyncNotifierProviderFactoryType
         Function<NotifierT extends AsyncNotifierBase<T>, T>(
   NotifierT Function() create, {
   Object? argument,
-  List<ProviderOrFamily>? dependencies,
-  Family? from,
+  Iterable<ProviderOrFamily>? dependencies,
+  Family<Object?>? from,
   String? name,
 });
 
@@ -64,27 +64,39 @@ List<AsyncNotifierFactory> matrix({
           from,
           name,
         }) {
-          return FamilyAsyncNotifierProviderImpl<NotifierT, T, int>(
+          return FamilyAsyncNotifierProviderImpl<NotifierT, T, int>.internal(
             create,
             argument: 0,
+            name: null,
+            dependencies: null,
+            allTransitiveDependencies: null,
+            debugGetCreateSourceHash: null,
           );
         },
         notifier: AsyncTestNotifierFamily.new,
         testProvider: <T>(createNotifier) {
           return FamilyAsyncNotifierProviderImpl<AsyncTestNotifierFamily<T>, T,
-              int>(
+              int>.internal(
             () => createNotifier() as AsyncTestNotifierFamily<T>,
             argument: 0,
+            name: null,
+            dependencies: null,
+            allTransitiveDependencies: null,
+            debugGetCreateSourceHash: null,
           );
         },
         simpleTestProvider: <T>(init, {updateShouldNotify}) {
           return FamilyAsyncNotifierProviderImpl<AsyncTestNotifierFamily<T>, T,
-              int>(
+              int>.internal(
             () => AsyncTestNotifierFamily<T>(
               init,
               updateShouldNotify: updateShouldNotify,
             ),
             argument: 0,
+            name: null,
+            dependencies: null,
+            allTransitiveDependencies: null,
+            debugGetCreateSourceHash: null,
           );
         },
       ),
@@ -121,27 +133,40 @@ List<AsyncNotifierFactory> matrix({
           from,
           name,
         }) {
-          return AutoDisposeFamilyAsyncNotifierProviderImpl<NotifierT, T, int>(
+          return AutoDisposeFamilyAsyncNotifierProviderImpl<NotifierT, T,
+              int>.internal(
             create,
             argument: 0,
+            name: null,
+            dependencies: null,
+            allTransitiveDependencies: null,
+            debugGetCreateSourceHash: null,
           );
         },
         notifier: AutoDisposeAsyncTestNotifierFamily.new,
         testProvider: <T>(createNotifier) {
           return AutoDisposeFamilyAsyncNotifierProviderImpl<
-              AutoDisposeAsyncTestNotifierFamily<T>, T, int>(
+              AutoDisposeAsyncTestNotifierFamily<T>, T, int>.internal(
             () => createNotifier() as AutoDisposeAsyncTestNotifierFamily<T>,
             argument: 0,
+            name: null,
+            dependencies: null,
+            allTransitiveDependencies: null,
+            debugGetCreateSourceHash: null,
           );
         },
         simpleTestProvider: <T>(init, {updateShouldNotify}) {
           return AutoDisposeFamilyAsyncNotifierProviderImpl<
-              AutoDisposeAsyncTestNotifierFamily<T>, T, int>(
+              AutoDisposeAsyncTestNotifierFamily<T>, T, int>.internal(
             () => AutoDisposeAsyncTestNotifierFamily<T>(
               init,
               updateShouldNotify: updateShouldNotify,
             ),
             argument: 0,
+            name: null,
+            dependencies: null,
+            allTransitiveDependencies: null,
+            debugGetCreateSourceHash: null,
           );
         },
       ),

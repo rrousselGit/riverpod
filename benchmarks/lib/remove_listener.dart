@@ -106,7 +106,11 @@ void main() {
   printer.printToStdout();
 }
 
-void pushListener(int count, ProviderContainer container, Provider provider) {
+void pushListener(
+  int count,
+  ProviderContainer container,
+  Provider<Object?> provider,
+) {
   for (var i = 0; i < count; i++) {
     container.listen<void>(provider, (_, __) {});
   }

@@ -1,3 +1,21 @@
+## 2.0.1 - 2023-03-09
+
+- `riverpod` upgraded to `2.3.1`
+
+## 2.0.0
+
+- Export necessary utilites for providers returning a Stream.
+- Upgraded riverpod dependency
+
+## 1.2.1
+
+Bump minimum Riverpod version
+
+## 1.2.0
+
+- It is now possible to specify `@Riverpod(dependencies: [...])` to scope providers
+- Marked `@Riverpod` as `@sealed`
+
 ## 1.1.1
 
 Upgrade Riverpod to latest

@@ -8,6 +8,8 @@ dependency_overrides:
     path: ../flutter_riverpod
   hooks_riverpod:
     path: ../hooks_riverpod
+  riverpod_analyzer_utils:
+    path: ../riverpod_analyzer_utils
   riverpod_annotation:
     path: ../riverpod_annotation
   riverpod_lint:

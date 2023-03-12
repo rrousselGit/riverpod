@@ -20,7 +20,7 @@ void main() {
 
         expect(container.read(provider(0)), 0);
         expect(container.getAllProviderElements(), [
-          isA<ProviderElementBase>()
+          isA<ProviderElementBase<Object?>>()
               .having((e) => e.origin, 'origin', provider(0))
         ]);
         expect(root.getAllProviderElements(), isEmpty);
@@ -39,7 +39,7 @@ void main() {
         expect(root.getAllProviderElements(), isEmpty);
         expect(container.read(provider(0)), 42);
         expect(container.getAllProviderElements(), [
-          isA<ProviderElementBase>()
+          isA<ProviderElementBase<Object?>>()
               .having((e) => e.origin, 'origin', provider(0))
         ]);
       });

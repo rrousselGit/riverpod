@@ -1,6 +1,8 @@
 part of '../async_notifier.dart';
 
 /// {@macro riverpod.asyncnotifier}
+///
+/// {@macro riverpod.async_notifier_provider_modifier}
 abstract class FamilyAsyncNotifier<State, Arg>
     extends BuildlessAsyncNotifier<State> {
   /// {@template riverpod.notifier.family_arg}
@@ -27,9 +29,9 @@ abstract class FamilyAsyncNotifier<State, Arg>
   FutureOr<State> build(Arg arg);
 }
 
-/// {@template riverpod.async_notifier_family_provider}
-/// The provider for [AsyncNotifierProviderFamily].
-/// {@endtemplate}
+/// {@macro riverpod.async_notifier_provider}
+///
+/// {@macro riverpod.async_notifier_provider_modifier}
 typedef AsyncNotifierFamilyProvider<
         NotifierT extends FamilyAsyncNotifier<T, Arg>, T, Arg>
     = FamilyAsyncNotifierProviderImpl<NotifierT, T, Arg>;
@@ -46,10 +48,25 @@ class FamilyAsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T,
   FamilyAsyncNotifierProviderImpl(
     super._createNotifier, {
     super.name,
+    super.dependencies,
+    @Deprecated('Will be removed in 3.0.0') super.from,
+    @Deprecated('Will be removed in 3.0.0') super.argument,
+    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
+  }) : super(
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+        );
+
+  /// An implementation detail of Riverpod
+  @internal
+  FamilyAsyncNotifierProviderImpl.internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
     super.from,
     super.argument,
-    super.dependencies,
-    super.debugGetCreateSourceHash,
   });
 
   /// {@macro riverpod.autoDispose}
@@ -57,10 +74,10 @@ class FamilyAsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T,
 
   @override
   late final AlwaysAliveRefreshable<NotifierT> notifier =
-      _notifier<NotifierT, T>(this);
+      _asyncNotifier<NotifierT, T>(this);
 
   @override
-  late final AlwaysAliveRefreshable<Future<T>> future = _future<T>(this);
+  late final AlwaysAliveRefreshable<Future<T>> future = _asyncFuture<T>(this);
 
   @override
   AsyncNotifierProviderElement<NotifierT, T> createElement() {
@@ -85,17 +102,26 @@ class AsyncNotifierProviderFamily<NotifierT extends FamilyAsyncNotifier<T, Arg>,
     super.create, {
     super.name,
     super.dependencies,
-  }) : super(providerFactory: AsyncNotifierFamilyProvider.new);
+  }) : super(
+          providerFactory: AsyncNotifierFamilyProvider.internal,
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+          debugGetCreateSourceHash: null,
+        );
 
   /// {@macro riverpod.overridewith}
   Override overrideWith(NotifierT Function() create) {
     return FamilyOverrideImpl<AsyncValue<T>, Arg,
         AsyncNotifierFamilyProvider<NotifierT, T, Arg>>(
       this,
-      (arg) => AsyncNotifierFamilyProvider<NotifierT, T, Arg>(
+      (arg) => AsyncNotifierFamilyProvider<NotifierT, T, Arg>.internal(
         create,
         from: from,
         argument: arg,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        name: null,
       ),
     );
   }

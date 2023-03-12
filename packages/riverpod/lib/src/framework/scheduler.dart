@@ -24,13 +24,13 @@ void Function(void Function()) get vsync {
 ///
 /// Providers are disposed if they spent at least one full frame without any listener.
 class _ProviderScheduler {
-  final _stateToDispose = <AutoDisposeProviderElementMixin>[];
-  final _stateToRefresh = <ProviderElementBase>[];
+  final _stateToDispose = <AutoDisposeProviderElementMixin<Object?>>[];
+  final _stateToRefresh = <ProviderElementBase<Object?>>[];
 
   Completer<void>? _pendingTaskCompleter;
   Future<void>? get pendingFuture => _pendingTaskCompleter?.future;
 
-  void scheduleProviderRefresh(ProviderElementBase element) {
+  void scheduleProviderRefresh(ProviderElementBase<Object?> element) {
     _stateToRefresh.add(element);
 
     _scheduleTask();
@@ -63,7 +63,9 @@ class _ProviderScheduler {
     }
   }
 
-  void scheduleProviderDispose(AutoDisposeProviderElementMixin element) {
+  void scheduleProviderDispose(
+    AutoDisposeProviderElementMixin<Object?> element,
+  ) {
     assert(
       !element.hasListeners,
       'Tried to dispose ${element._provider} , but still has listeners',

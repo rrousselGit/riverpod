@@ -1,7 +1,7 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
-// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'user.dart';
 
@@ -35,7 +35,8 @@ mixin _$User {
 /// @nodoc
 abstract class $UserCopyWith<$Res> {
   factory $UserCopyWith(User value, $Res Function(User) then) =
-      _$UserCopyWithImpl<$Res>;
+      _$UserCopyWithImpl<$Res, User>;
+  @useResult
   $Res call(
       {int reputation,
       int userId,
@@ -48,58 +49,62 @@ abstract class $UserCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$UserCopyWithImpl<$Res> implements $UserCopyWith<$Res> {
+class _$UserCopyWithImpl<$Res, $Val extends User>
+    implements $UserCopyWith<$Res> {
   _$UserCopyWithImpl(this._value, this._then);
 
-  final User _value;
   // ignore: unused_field
-  final $Res Function(User) _then;
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? reputation = freezed,
-    Object? userId = freezed,
+    Object? reputation = null,
+    Object? userId = null,
     Object? badgeCounts = freezed,
-    Object? displayName = freezed,
-    Object? profileImage = freezed,
-    Object? link = freezed,
+    Object? displayName = null,
+    Object? profileImage = null,
+    Object? link = null,
   }) {
     return _then(_value.copyWith(
-      reputation: reputation == freezed
+      reputation: null == reputation
           ? _value.reputation
           : reputation // ignore: cast_nullable_to_non_nullable
               as int,
-      userId: userId == freezed
+      userId: null == userId
           ? _value.userId
           : userId // ignore: cast_nullable_to_non_nullable
               as int,
-      badgeCounts: badgeCounts == freezed
+      badgeCounts: freezed == badgeCounts
           ? _value.badgeCounts
           : badgeCounts // ignore: cast_nullable_to_non_nullable
               as BadgeCount?,
-      displayName: displayName == freezed
+      displayName: null == displayName
           ? _value.displayName
           : displayName // ignore: cast_nullable_to_non_nullable
               as String,
-      profileImage: profileImage == freezed
+      profileImage: null == profileImage
           ? _value.profileImage
           : profileImage // ignore: cast_nullable_to_non_nullable
               as String,
-      link: link == freezed
+      link: null == link
           ? _value.link
           : link // ignore: cast_nullable_to_non_nullable
               as String,
-    ));
+    ) as $Val);
   }
 
   @override
+  @pragma('vm:prefer-inline')
   $BadgeCountCopyWith<$Res>? get badgeCounts {
     if (_value.badgeCounts == null) {
       return null;
     }
 
     return $BadgeCountCopyWith<$Res>(_value.badgeCounts!, (value) {
-      return _then(_value.copyWith(badgeCounts: value));
+      return _then(_value.copyWith(badgeCounts: value) as $Val);
     });
   }
 }
@@ -109,6 +114,7 @@ abstract class _$$_UserCopyWith<$Res> implements $UserCopyWith<$Res> {
   factory _$$_UserCopyWith(_$_User value, $Res Function(_$_User) then) =
       __$$_UserCopyWithImpl<$Res>;
   @override
+  @useResult
   $Res call(
       {int reputation,
       int userId,
@@ -122,45 +128,43 @@ abstract class _$$_UserCopyWith<$Res> implements $UserCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$_UserCopyWithImpl<$Res> extends _$UserCopyWithImpl<$Res>
+class __$$_UserCopyWithImpl<$Res> extends _$UserCopyWithImpl<$Res, _$_User>
     implements _$$_UserCopyWith<$Res> {
   __$$_UserCopyWithImpl(_$_User _value, $Res Function(_$_User) _then)
-      : super(_value, (v) => _then(v as _$_User));
+      : super(_value, _then);
 
-  @override
-  _$_User get _value => super._value as _$_User;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? reputation = freezed,
-    Object? userId = freezed,
+    Object? reputation = null,
+    Object? userId = null,
     Object? badgeCounts = freezed,
-    Object? displayName = freezed,
-    Object? profileImage = freezed,
-    Object? link = freezed,
+    Object? displayName = null,
+    Object? profileImage = null,
+    Object? link = null,
   }) {
     return _then(_$_User(
-      reputation: reputation == freezed
+      reputation: null == reputation
           ? _value.reputation
           : reputation // ignore: cast_nullable_to_non_nullable
               as int,
-      userId: userId == freezed
+      userId: null == userId
           ? _value.userId
           : userId // ignore: cast_nullable_to_non_nullable
               as int,
-      badgeCounts: badgeCounts == freezed
+      badgeCounts: freezed == badgeCounts
           ? _value.badgeCounts
           : badgeCounts // ignore: cast_nullable_to_non_nullable
               as BadgeCount?,
-      displayName: displayName == freezed
+      displayName: null == displayName
           ? _value.displayName
           : displayName // ignore: cast_nullable_to_non_nullable
               as String,
-      profileImage: profileImage == freezed
+      profileImage: null == profileImage
           ? _value.profileImage
           : profileImage // ignore: cast_nullable_to_non_nullable
               as String,
-      link: link == freezed
+      link: null == link
           ? _value.link
           : link // ignore: cast_nullable_to_non_nullable
               as String,
@@ -205,31 +209,26 @@ class _$_User implements _User {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_User &&
-            const DeepCollectionEquality()
-                .equals(other.reputation, reputation) &&
-            const DeepCollectionEquality().equals(other.userId, userId) &&
-            const DeepCollectionEquality()
-                .equals(other.badgeCounts, badgeCounts) &&
-            const DeepCollectionEquality()
-                .equals(other.displayName, displayName) &&
-            const DeepCollectionEquality()
-                .equals(other.profileImage, profileImage) &&
-            const DeepCollectionEquality().equals(other.link, link));
+            (identical(other.reputation, reputation) ||
+                other.reputation == reputation) &&
+            (identical(other.userId, userId) || other.userId == userId) &&
+            (identical(other.badgeCounts, badgeCounts) ||
+                other.badgeCounts == badgeCounts) &&
+            (identical(other.displayName, displayName) ||
+                other.displayName == displayName) &&
+            (identical(other.profileImage, profileImage) ||
+                other.profileImage == profileImage) &&
+            (identical(other.link, link) || other.link == link));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(reputation),
-      const DeepCollectionEquality().hash(userId),
-      const DeepCollectionEquality().hash(badgeCounts),
-      const DeepCollectionEquality().hash(displayName),
-      const DeepCollectionEquality().hash(profileImage),
-      const DeepCollectionEquality().hash(link));
+  int get hashCode => Object.hash(runtimeType, reputation, userId, badgeCounts,
+      displayName, profileImage, link);
 
   @JsonKey(ignore: true)
   @override
+  @pragma('vm:prefer-inline')
   _$$_UserCopyWith<_$_User> get copyWith =>
       __$$_UserCopyWithImpl<_$_User>(this, _$identity);
 
@@ -289,38 +288,42 @@ mixin _$BadgeCount {
 abstract class $BadgeCountCopyWith<$Res> {
   factory $BadgeCountCopyWith(
           BadgeCount value, $Res Function(BadgeCount) then) =
-      _$BadgeCountCopyWithImpl<$Res>;
+      _$BadgeCountCopyWithImpl<$Res, BadgeCount>;
+  @useResult
   $Res call({int bronze, int silver, int gold});
 }
 
 /// @nodoc
-class _$BadgeCountCopyWithImpl<$Res> implements $BadgeCountCopyWith<$Res> {
+class _$BadgeCountCopyWithImpl<$Res, $Val extends BadgeCount>
+    implements $BadgeCountCopyWith<$Res> {
   _$BadgeCountCopyWithImpl(this._value, this._then);
 
-  final BadgeCount _value;
   // ignore: unused_field
-  final $Res Function(BadgeCount) _then;
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? bronze = freezed,
-    Object? silver = freezed,
-    Object? gold = freezed,
+    Object? bronze = null,
+    Object? silver = null,
+    Object? gold = null,
   }) {
     return _then(_value.copyWith(
-      bronze: bronze == freezed
+      bronze: null == bronze
           ? _value.bronze
           : bronze // ignore: cast_nullable_to_non_nullable
               as int,
-      silver: silver == freezed
+      silver: null == silver
           ? _value.silver
           : silver // ignore: cast_nullable_to_non_nullable
               as int,
-      gold: gold == freezed
+      gold: null == gold
           ? _value.gold
           : gold // ignore: cast_nullable_to_non_nullable
               as int,
-    ));
+    ) as $Val);
   }
 }
 
@@ -331,35 +334,35 @@ abstract class _$$_BadgeCountCopyWith<$Res>
           _$_BadgeCount value, $Res Function(_$_BadgeCount) then) =
       __$$_BadgeCountCopyWithImpl<$Res>;
   @override
+  @useResult
   $Res call({int bronze, int silver, int gold});
 }
 
 /// @nodoc
-class __$$_BadgeCountCopyWithImpl<$Res> extends _$BadgeCountCopyWithImpl<$Res>
+class __$$_BadgeCountCopyWithImpl<$Res>
+    extends _$BadgeCountCopyWithImpl<$Res, _$_BadgeCount>
     implements _$$_BadgeCountCopyWith<$Res> {
   __$$_BadgeCountCopyWithImpl(
       _$_BadgeCount _value, $Res Function(_$_BadgeCount) _then)
-      : super(_value, (v) => _then(v as _$_BadgeCount));
+      : super(_value, _then);
 
-  @override
-  _$_BadgeCount get _value => super._value as _$_BadgeCount;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? bronze = freezed,
-    Object? silver = freezed,
-    Object? gold = freezed,
+    Object? bronze = null,
+    Object? silver = null,
+    Object? gold = null,
   }) {
     return _then(_$_BadgeCount(
-      bronze: bronze == freezed
+      bronze: null == bronze
           ? _value.bronze
           : bronze // ignore: cast_nullable_to_non_nullable
               as int,
-      silver: silver == freezed
+      silver: null == silver
           ? _value.silver
           : silver // ignore: cast_nullable_to_non_nullable
               as int,
-      gold: gold == freezed
+      gold: null == gold
           ? _value.gold
           : gold // ignore: cast_nullable_to_non_nullable
               as int,
@@ -393,21 +396,18 @@ class _$_BadgeCount implements _BadgeCount {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_BadgeCount &&
-            const DeepCollectionEquality().equals(other.bronze, bronze) &&
-            const DeepCollectionEquality().equals(other.silver, silver) &&
-            const DeepCollectionEquality().equals(other.gold, gold));
+            (identical(other.bronze, bronze) || other.bronze == bronze) &&
+            (identical(other.silver, silver) || other.silver == silver) &&
+            (identical(other.gold, gold) || other.gold == gold));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(bronze),
-      const DeepCollectionEquality().hash(silver),
-      const DeepCollectionEquality().hash(gold));
+  int get hashCode => Object.hash(runtimeType, bronze, silver, gold);
 
   @JsonKey(ignore: true)
   @override
+  @pragma('vm:prefer-inline')
   _$$_BadgeCountCopyWith<_$_BadgeCount> get copyWith =>
       __$$_BadgeCountCopyWithImpl<_$_BadgeCount>(this, _$identity);
 

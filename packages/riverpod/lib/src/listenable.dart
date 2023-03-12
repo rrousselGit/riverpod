@@ -67,7 +67,7 @@ class _ValueListenable<T> {
   int _reentrantlyRemovedListeners = 0;
   bool _debugDisposed = false;
 
-  static bool debugAssertNotDisposed(_ValueListenable notifier) {
+  static bool debugAssertNotDisposed(_ValueListenable<Object?> notifier) {
     assert(
       !notifier._debugDisposed,
       'A ${notifier.runtimeType} was used after being disposed.\n'

@@ -66,7 +66,6 @@ abstract class StreamProviderRef<State> implements Ref<AsyncValue<State>> {
 /// - [Provider], a provider that synchronously creates a value
 /// - [FutureProvider], a provider that asynchronously exposes a value that
 ///   can change over time.
-/// - [stream], to obtain the [Stream] created instead of an [AsyncValue].
 /// - [future], to obtain the last value emitted by a [Stream].
 /// - [StreamProvider.family], to create a [StreamProvider] from external parameters
 /// - [StreamProvider.autoDispose], to destroy the state of a [StreamProvider] when no longer needed.
@@ -77,10 +76,25 @@ class StreamProvider<T> extends _StreamProviderBase<T>
   StreamProvider(
     this._createFn, {
     super.name,
+    super.dependencies,
+    @Deprecated('Will be removed in 3.0.0') super.from,
+    @Deprecated('Will be removed in 3.0.0') super.argument,
+    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
+  }) : super(
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+        );
+
+  /// An implementation detail of Riverpod
+  @internal
+  StreamProvider.internal(
+    this._createFn, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
     super.from,
     super.argument,
-    super.dependencies,
-    super.debugGetCreateSourceHash,
   });
 
   /// {@macro riverpod.autoDispose}
@@ -94,6 +108,10 @@ class StreamProvider<T> extends _StreamProviderBase<T>
   @override
   late final AlwaysAliveRefreshable<Future<T>> future = _future(this);
 
+  @Deprecated(
+    '.stream will be removed in 3.0.0. As a replacement, either listen to the '
+    'provider itself (AsyncValue) or .future.',
+  )
   @override
   late final AlwaysAliveRefreshable<Stream<T>> stream = _stream(this);
 
@@ -107,10 +125,14 @@ class StreamProvider<T> extends _StreamProviderBase<T>
   Override overrideWith(Create<Stream<T>, StreamProviderRef<T>> create) {
     return ProviderOverride(
       origin: this,
-      override: StreamProvider<T>(
+      override: StreamProvider<T>.internal(
         create,
         from: from,
         argument: argument,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        name: null,
       ),
     );
   }
@@ -150,8 +172,9 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
 
   @override
   void visitChildren({
-    required void Function(ProviderElementBase element) elementVisitor,
-    required void Function(ProxyElementValueNotifier element) notifierVisitor,
+    required void Function(ProviderElementBase<Object?> element) elementVisitor,
+    required void Function(ProxyElementValueNotifier<Object?> element)
+        notifierVisitor,
   }) {
     super.visitChildren(
       elementVisitor: elementVisitor,
@@ -187,7 +210,12 @@ class StreamProviderFamily<R, Arg> extends FamilyBase<StreamProviderRef<R>,
     super.create, {
     super.name,
     super.dependencies,
-  }) : super(providerFactory: StreamProvider<R>.new);
+  }) : super(
+          providerFactory: StreamProvider<R>.internal,
+          debugGetCreateSourceHash: null,
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+        );
 
   /// {@macro riverpod.overridewith}
   Override overrideWith(
@@ -195,10 +223,14 @@ class StreamProviderFamily<R, Arg> extends FamilyBase<StreamProviderRef<R>,
   ) {
     return FamilyOverrideImpl<AsyncValue<R>, Arg, StreamProvider<R>>(
       this,
-      (arg) => StreamProvider<R>(
+      (arg) => StreamProvider<R>.internal(
         (ref) => create(ref, arg),
         from: from,
         argument: arg,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        name: null,
       ),
     );
   }

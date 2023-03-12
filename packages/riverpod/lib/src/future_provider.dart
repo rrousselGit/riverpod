@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:meta/meta.dart';
+
 import 'async_notifier.dart';
 import 'builders.dart';
 import 'common.dart';
@@ -24,7 +26,7 @@ ProviderElementProxy<AsyncValue<T>, Future<T>> _future<T>(
 }
 
 /// {@template riverpod.futureprovider}
-/// A provider that asynchronously creates a single value.
+/// A provider that asynchronously creates a value.
 ///
 /// [FutureProvider] can be considered as a combination of [Provider] and
 /// `FutureBuilder`.
@@ -83,6 +85,8 @@ ProviderElementProxy<AsyncValue<T>, Future<T>> _future<T>(
 ///
 /// See also:
 ///
+/// - [AsyncNotifierProvider], similar to [FutureProvider] but also enables
+///   modifying the state from the UI.
 /// - [Provider], a provider that synchronously creates a value
 /// - [StreamProvider], a provider that asynchronously exposes a value that
 ///   can change over time.
@@ -90,16 +94,14 @@ ProviderElementProxy<AsyncValue<T>, Future<T>> _future<T>(
 /// - [FutureProvider.autoDispose], to destroy the state of a [FutureProvider] when no longer needed.
 /// {@endtemplate}
 abstract class _FutureProviderBase<T> extends ProviderBase<AsyncValue<T>> {
-  _FutureProviderBase({
-    required this.dependencies,
+  const _FutureProviderBase({
+    required super.dependencies,
+    required super.allTransitiveDependencies,
     required super.name,
     required super.from,
     required super.argument,
     required super.debugGetCreateSourceHash,
   });
-
-  @override
-  final List<ProviderOrFamily>? dependencies;
 
   /// Obtains the [Future] associated with a [FutureProvider].
   ///
@@ -120,7 +122,7 @@ abstract class _FutureProviderBase<T> extends ProviderBase<AsyncValue<T>> {
   ///   return await http.get('${configs.host}/products');
   /// });
   /// ```
-  ProviderListenable<Future<T>> get future;
+  Refreshable<Future<T>> get future;
 
   FutureOr<T> _create(covariant FutureProviderElement<T> ref);
 }

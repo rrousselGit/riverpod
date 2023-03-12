@@ -1,11 +1,11 @@
 part of '../framework.dart';
 
-ProviderBase? _circularDependencyLock;
+ProviderBase<Object?>? _circularDependencyLock;
 
 class _FamilyOverrideRef {
   _FamilyOverrideRef(this.override, this.container);
 
-  FamilyOverride override;
+  FamilyOverride<Object?> override;
   final ProviderContainer container;
 }
 
@@ -22,19 +22,19 @@ class _StateReader {
     required this.isDynamicallyCreated,
   });
 
-  final ProviderBase origin;
-  ProviderBase override;
+  final ProviderBase<Object?> origin;
+  ProviderBase<Object?> override;
   final ProviderContainer container;
 
   /// Whether the [_StateReader] was created on first provider read instead of
   /// at the creation of the [ProviderContainer]
   final bool isDynamicallyCreated;
 
-  ProviderElementBase? _element;
+  ProviderElementBase<Object?>? _element;
 
-  ProviderElementBase getElement() => _element ??= _create();
+  ProviderElementBase<Object?> getElement() => _element ??= _create();
 
-  ProviderElementBase _create() {
+  ProviderElementBase<Object?> _create() {
     if (origin == _circularDependencyLock) {
       throw CircularDependencyError._();
     }
@@ -174,9 +174,10 @@ class ProviderContainer implements Node {
   /// Do not use in production
   List<ProviderContainer> get debugChildren => UnmodifiableListView(_children);
 
-  final _overrideForProvider = HashMap<ProviderBase, ProviderBase>();
-  final _overrideForFamily = HashMap<Family, _FamilyOverrideRef>();
-  final Map<ProviderBase, _StateReader> _stateReaders;
+  final _overrideForProvider =
+      HashMap<ProviderBase<Object?>, ProviderBase<Object?>>();
+  final _overrideForFamily = HashMap<Family<Object?>, _FamilyOverrideRef>();
+  final Map<ProviderBase<Object?>, _StateReader> _stateReaders;
 
   /// Awaits for providers to rebuild/be disposed and for listeners to be notified.
   Future<void> pump() async {
@@ -428,8 +429,8 @@ class ProviderContainer implements Node {
           // Check that this containers doesn't have access to an overridden
           // dependency of the targeted provider
           final targetElement = reader.getElement();
-          final visitedDependencies = <ProviderBase>{};
-          final queue = Queue<ProviderBase>();
+          final visitedDependencies = <ProviderBase<Object?>>{};
+          final queue = Queue<ProviderBase<Object?>>();
           targetElement.visitAncestors((e) => queue.add(e.origin));
 
           while (queue.isNotEmpty) {
@@ -469,7 +470,7 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
     return reader.getElement() as ProviderElementBase<State>;
   }
 
-  _StateReader _getStateReader(ProviderBase provider) {
+  _StateReader _getStateReader(ProviderBase<Object?> provider) {
     final currentReader = _stateReaders[provider];
     if (currentReader != null) return currentReader;
 
@@ -486,8 +487,8 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
           }
 
           void setupOverride({
-            required ProviderBase origin,
-            required ProviderBase override,
+            required ProviderBase<Object?> origin,
+            required ProviderBase<Object?> override,
           }) {
             assert(
               origin == override || override.dependencies == null,
@@ -616,7 +617,7 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
   }
 
   /// Traverse the [ProviderElementBase]s associated with this [ProviderContainer].
-  Iterable<ProviderElementBase> getAllProviderElements() sync* {
+  Iterable<ProviderElementBase<Object?>> getAllProviderElements() sync* {
     for (final reader in _stateReaders.values) {
       if (reader._element != null && reader.container == this) {
         yield reader._element!;
@@ -629,9 +630,9 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
   /// This is fairly expensive and should be avoided as much as possible.
   /// If you do not need for providers to be sorted, consider using [getAllProviderElements]
   /// instead, which returns an unsorted list and is significantly faster.
-  Iterable<ProviderElementBase> getAllProviderElementsInOrder() sync* {
-    final visitedNodes = HashSet<ProviderElementBase>();
-    final queue = DoubleLinkedQueue<ProviderElementBase>();
+  Iterable<ProviderElementBase<Object?>> getAllProviderElementsInOrder() sync* {
+    final visitedNodes = HashSet<ProviderElementBase<Object?>>();
+    final queue = DoubleLinkedQueue<ProviderElementBase<Object?>>();
 
     // get providers that don't depend on other providers from this container
     for (final reader in _stateReaders.values) {
@@ -701,7 +702,7 @@ abstract class ProviderObserver {
   ///
   /// [value] will be `null` if the provider threw during initialization.
   void didAddProvider(
-    ProviderBase provider,
+    ProviderBase<Object?> provider,
     Object? value,
     ProviderContainer container,
   ) {}
@@ -709,7 +710,7 @@ abstract class ProviderObserver {
   /// A provider emitted an error, be it by throwing during initialization
   /// or by having a [Future]/[Stream] emit an error
   void providerDidFail(
-    ProviderBase provider,
+    ProviderBase<Object?> provider,
     Object error,
     StackTrace stackTrace,
     ProviderContainer container,
@@ -720,7 +721,7 @@ abstract class ProviderObserver {
   /// - [newValue] will be `null` if the provider threw during initialization.
   /// - [previousValue] will be `null` if the previous build threw during initialization.
   void didUpdateProvider(
-    ProviderBase provider,
+    ProviderBase<Object?> provider,
     Object? previousValue,
     Object? newValue,
     ProviderContainer container,
@@ -728,7 +729,7 @@ abstract class ProviderObserver {
 
   /// A provider was disposed
   void didDisposeProvider(
-    ProviderBase provider,
+    ProviderBase<Object?> provider,
     ProviderContainer container,
   ) {}
 }
@@ -736,8 +737,8 @@ abstract class ProviderObserver {
 /// An implementation detail for the override mechanism of providers
 @internal
 typedef SetupOverride = void Function({
-  required ProviderBase origin,
-  required ProviderBase override,
+  required ProviderBase<Object?> origin,
+  required ProviderBase<Object?> override,
 });
 
 /// An object used by [ProviderContainer] to override the behavior of a provider
@@ -753,16 +754,16 @@ typedef SetupOverride = void Function({
 class ProviderOverride implements Override {
   /// Override a provider
   ProviderOverride({
-    required ProviderBase origin,
-    required ProviderBase override,
+    required ProviderBase<Object?> origin,
+    required ProviderBase<Object?> override,
   })  : _origin = origin,
         _override = override;
 
   /// The provider that is overridden.
-  final ProviderBase _origin;
+  final ProviderBase<Object?> _origin;
 
   /// The new provider behaviour.
-  final ProviderBase _override;
+  final ProviderBase<Object?> _override;
 }
 
 /// An object used by [ProviderContainer]/`ProviderScope` to override the behavior

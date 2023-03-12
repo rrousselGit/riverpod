@@ -52,7 +52,7 @@ mixin AutoDisposeProviderElementMixin<State> on ProviderElementBase<State>
   }
 }
 
-/// A object which maintains a provider alive
+/// A object which maintains a provider alive.
 class KeepAliveLink {
   KeepAliveLink._(this._close);
 

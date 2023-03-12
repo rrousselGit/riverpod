@@ -3,47 +3,47 @@
     "message": "Gemeinsamen Zustand von überall aus deklarieren"
   },
   "home.shared_state_body": {
-    "message": "Sie müssen nicht mehr zwischen Ihrer {main} und Ihrer UI Dateien\n          hin- und herspringen. {br}\n          Platzieren Sie den Code Ihres gemeinsamen Zustands dort, wo er hingehört, sei\n          in einem separaten Paket oder direkt nehben dem Widget, dass\n          ihn benötigt, ohne dass die Testbarkeit verloren geht.",
+    "message": "Du musst nicht mehr zwischen deiner {main} und deinen UI Dateien\n          hin- und herspringen. {br}\n          Platziere den Code deines gemeinsamen Zustands dort, wo er hingehört, sei\n          es in einem separaten Paket oder direkt neben dem Widget, das\n          ihn benötigt, ohne dass die Testbarkeit verloren geht.",
     "description": "The homepage input placeholder"
   },
   "home.recompute_title": {
     "message": "Neuberechnung von Zuständen/Neuaufbau der Benutzeroberfläche nur bei Bedarf"
   },
   "home.recompute_body": {
-    "message": "Listen müssen nicht mehr in der {build} Methode sortiert/gefiltert\n          werden oder auf erweiterte Cache-Mechanismen zurückgreifen. {br} {br}\n          Mit {Provider} und {families}, sortieren deiner Liste oder HTTP\n          Requests müssen nur noch gemacht werden, wenn du es wirklich brauchst."
+    "message": "Listen müssen nicht mehr in der {build} Methode sortiert/gefiltert\n          werden oder auf erweiterte Cache-Mechanismen zurückgreifen. {br} {br}\n          Mit {Provider} und {families} sortierst du deine Liste oder machst HTTP\n          Requests nur noch, wenn du es wirklich brauchst."
   },
   "home.safe_read_title": {
     "message": "Provider sicher lesen"
   },
   "home.safe_read_body": {
-    "message": "Das Lesen eines Providers wird niemals zu einem bad state führen. Wenn\n          der benötigte Code zum Auslesen eines Providers geschrieben werden kann, erhält man\n          einen validen Wert. {br} {br}\n          Das gilt auch für asynchron geladene Werte. Im Gegensatz\n          zu Providern, erlaubt Riverpod eine saubere Handhabung\n          von Lade-/Fehlerfällen."
+    "message": "Das Lesen eines Providers wird niemals zu einem bad state führen. Wenn\n          der benötigte Code zum Auslesen eines Providers geschrieben werden kann, erhält man\n          einen validen Wert. {br} {br}\n          Das gilt auch für asynchron geladene Werte. Im Gegensatz\n          zu Providern erlaubt Riverpod eine saubere Handhabung\n          von Lade-/Fehlerfällen."
   },
   "home.devtool_title": {
-    "message": "Überprüfen Sie ihren Zustand im devtool"
+    "message": "Überprüfe deinen Zustand im Devtool"
   },
   "home.devtool_body": {
-    "message": "Durch die Verwendung von Riverpod, ist ihr Zustand direkt im Devtool von Flutter sichtbar. {br}\n          Darüber hinaus ist ein vollwertiger State-Inspector in Arbeit."
+    "message": "Durch die Verwendung von Riverpod ist dein Zustand direkt im Devtool von Flutter sichtbar. {br}\n          Darüber hinaus ist ein vollwertiger State-Inspector in Arbeit."
   },
   "homepage.compile_safe_title": {
     "message": "Compile safe"
   },
   "homepage.compile_safe_body": {
-    "message": "Keine {ProviderNotFound} mehr und kein Vergessen der Behandlungen von Ladezuständen.\n          Durch die Benutzung von Riverpod, funktioniert ihr Code, wenn er erfolgreich compiliert."
+    "message": "Keine {ProviderNotFound} mehr und kein Vergessen der Behandlungen von Ladezuständen.\n          Durch die Benutzung von Riverpod funktioniert dein Code, wenn er erfolgreich kompiliert."
   },
   "homepage.unlimited_provider_title": {
     "message": "Provider ohne Einschränkungen"
   },
   "homepage.unlimited_provider_body": {
-    "message": "Riverpod ist von Provider inspiriert, löst aber einige seiner Hauptprobleme, wie z.B. die Unterstützung mehrerer Provider desselben Typs, das Warten auf asynchrone Provider, das Hinzufügen von Providern von überall ..."
+    "message": "Riverpod ist von Provider inspiriert, löst aber einige seiner Hauptprobleme, wie z.B. die Unterstützung mehrerer Provider desselben Typs, das Warten auf asynchrone Provider, das Hinzufügen von Providern von überall, ..."
   },
   "homepage.no_flutter_dependency_title": {
     "message": "Hängt nicht von Flutter ab"
   },
   "homepage.no_flutter_dependency_body": {
-    "message": "Erstellen/teilen/testen von Providern, ohne Abhängigkeit zu Flutter. Dazu\n          dazu gehört auch die Möglichkeit, auf Provider ohne\n          einen {BuildContext} zu hören."
+    "message": "Erstellen/teilen/testen von Providern, ohne Abhängigkeit zu Flutter. Dazu\n          gehört auch die Möglichkeit, auf Provider ohne\n          einen {BuildContext} zu hören."
   },
   "home.tagline": {
-    "message": "Ein reactives State-Management und Dependency Injection Framework"
+    "message": "Ein reaktives State-Management und Dependency Injection Framework"
   },
   "home.get_started": {
     "message": "Erste Schritte"

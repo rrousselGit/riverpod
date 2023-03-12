@@ -106,7 +106,10 @@ void main() {
           return 0;
         });
         final constantHashBuild = OnBuildMock();
-        final constantHash = Provider(
+        final constantHash = Provider.internal(
+          name: null,
+          dependencies: null,
+          allTransitiveDependencies: null,
           debugGetCreateSourceHash: () => 'hash',
           (ref) {
             constantHashBuild();
@@ -115,7 +118,10 @@ void main() {
         );
         var hashResult = '42';
         final changingHashBuild = OnBuildMock();
-        final changingHash = Provider(
+        final changingHash = Provider.internal(
+          name: null,
+          dependencies: null,
+          allTransitiveDependencies: null,
           debugGetCreateSourceHash: () => hashResult,
           (ref) {
             changingHashBuild();
@@ -203,7 +209,8 @@ void main() {
 
       expect(container.read(provider), 42);
       expect(container.getAllProviderElements(), [
-        isA<ProviderElementBase>().having((e) => e.origin, 'origin', provider),
+        isA<ProviderElementBase<Object?>>()
+            .having((e) => e.origin, 'origin', provider),
       ]);
     });
 
@@ -220,7 +227,7 @@ void main() {
 
       expect(container.read(provider(0)), 42);
       expect(container.getAllProviderElements(), [
-        isA<ProviderElementBase>()
+        isA<ProviderElementBase<Object?>>()
             .having((e) => e.origin, 'origin', provider(0)),
       ]);
     });
@@ -397,7 +404,7 @@ void main() {
 
         expect(
           child.getAllProviderElements().single,
-          isA<ProviderElement>()
+          isA<ProviderElement<Object?>>()
               .having((e) => e.origin, 'origin', scopedProvider),
         );
       });
@@ -417,7 +424,7 @@ void main() {
 
         expect(
           child.getAllProviderElements().single,
-          isA<ProviderElement>()
+          isA<ProviderElement<Object?>>()
               .having((e) => e.origin, 'origin', scopedProvider),
         );
       });
@@ -438,17 +445,17 @@ void main() {
 
         expect(
           root.getAllProviderElements().single,
-          isA<ProviderElement>()
+          isA<ProviderElement<Object?>>()
               .having((e) => e.provider, 'provider', provider),
         );
         expect(
           mid.getAllProviderElements().single,
-          isA<ProviderElement>()
+          isA<ProviderElement<Object?>>()
               .having((e) => e.provider, 'provider', provider2),
         );
         expect(
           leaf.getAllProviderElements().single,
-          isA<ProviderElement>()
+          isA<ProviderElement<Object?>>()
               .having((e) => e.provider, 'provider', provider3),
         );
       });
@@ -502,7 +509,7 @@ void main() {
 
         expect(
           child.getAllProviderElementsInOrder().single,
-          isA<ProviderElement>()
+          isA<ProviderElement<Object?>>()
               .having((e) => e.origin, 'origin', scopedProvider),
         );
       });
@@ -522,7 +529,7 @@ void main() {
 
         expect(
           child.getAllProviderElementsInOrder().single,
-          isA<ProviderElement>()
+          isA<ProviderElement<Object?>>()
               .having((e) => e.origin, 'origin', scopedProvider),
         );
       });
@@ -565,7 +572,7 @@ void main() {
     });
 
     test(
-      'can close a ProviderSubscription multiple times with no effect',
+      'can close a ProviderSubscription<Object?> multiple times with no effect',
       () {
         final container = createContainer();
         final provider =
@@ -588,7 +595,7 @@ void main() {
     );
 
     test(
-      'closing an already closed ProviderSubscription does not remove subscriptions with the same listener',
+      'closing an already closed ProviderSubscription<Object?> does not remove subscriptions with the same listener',
       () {
         final container = createContainer();
         final provider =

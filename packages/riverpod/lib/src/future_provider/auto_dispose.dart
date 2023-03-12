@@ -13,10 +13,25 @@ class AutoDisposeFutureProvider<T> extends _FutureProviderBase<T>
   AutoDisposeFutureProvider(
     this._createFn, {
     super.name,
+    super.dependencies,
+    @Deprecated('Will be removed in 3.0.0') super.from,
+    @Deprecated('Will be removed in 3.0.0') super.argument,
+    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
+  }) : super(
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+        );
+
+  /// An implementation detail of Riverpod
+  @internal
+  AutoDisposeFutureProvider.internal(
+    this._createFn, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
     super.from,
     super.argument,
-    super.dependencies,
-    super.debugGetCreateSourceHash,
   });
 
   /// {@macro riverpod.family}
@@ -42,10 +57,14 @@ class AutoDisposeFutureProvider<T> extends _FutureProviderBase<T>
   ) {
     return ProviderOverride(
       origin: this,
-      override: AutoDisposeFutureProvider(
+      override: AutoDisposeFutureProvider.internal(
         create,
         from: from,
         argument: argument,
+        debugGetCreateSourceHash: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        name: null,
       ),
     );
   }
@@ -73,7 +92,22 @@ class AutoDisposeFutureProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
     super.create, {
     super.name,
     super.dependencies,
-  }) : super(providerFactory: AutoDisposeFutureProvider.new);
+  }) : super(
+          providerFactory: AutoDisposeFutureProvider.internal,
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+          debugGetCreateSourceHash: null,
+        );
+
+  /// Implementation detail of the code-generator.
+  @internal
+  AutoDisposeFutureProviderFamily.generator(
+    super.create, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+  }) : super(providerFactory: AutoDisposeFutureProvider<R>.internal);
 
   /// {@macro riverpod.overridewith}
   Override overrideWith(
@@ -81,10 +115,14 @@ class AutoDisposeFutureProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
   ) {
     return FamilyOverrideImpl<AsyncValue<R>, Arg, AutoDisposeFutureProvider<R>>(
       this,
-      (arg) => AutoDisposeFutureProvider<R>(
+      (arg) => AutoDisposeFutureProvider<R>.internal(
         (ref) => create(ref, arg),
         from: from,
         argument: arg,
+        debugGetCreateSourceHash: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        name: null,
       ),
     );
   }

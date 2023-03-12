@@ -42,7 +42,7 @@ void main() {
         expect(
           container.getAllProviderElementsInOrder(),
           unorderedEquals(<Object?>[
-            isA<ProviderElementBase>()
+            isA<ProviderElementBase<Object?>>()
                 .having((e) => e.origin, 'origin', provider(0)),
           ]),
         );
@@ -88,7 +88,7 @@ void main() {
       expect(
         container.getAllProviderElementsInOrder(),
         unorderedEquals(<Object?>[
-          isA<ProviderElementBase>()
+          isA<ProviderElementBase<Object?>>()
               .having((e) => e.origin, 'origin', provider(0)),
         ]),
       );

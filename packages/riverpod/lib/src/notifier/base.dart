@@ -64,6 +64,14 @@ abstract class BuildlessNotifier<State> extends NotifierBase<State> {
 /// The state of [Notifier] is expected to be initialized synchronously.
 /// For asynchronous initializations, see [AsyncNotifier].
 /// {@endtemplate}
+///
+/// {@template riverpod.notifier_provider_modifier}
+/// When using `autoDispose` or `family`, your notifier type changes.
+/// Instead of extending [Notifier], you should extend either:
+/// - [AutoDisposeNotifier] for `autoDispose`
+/// - [FamilyNotifier] for `family`
+/// - [AutoDisposeFamilyNotifier] for `autoDispose.family`
+/// {@endtemplate}
 abstract class Notifier<State> extends BuildlessNotifier<State> {
   /// {@template riverpod.notifier.build}
   /// Initialize a [Notifier].
@@ -87,8 +95,12 @@ abstract class NotifierProviderRef<T> implements Ref<T> {}
 /// {@template riverpod.notifier_provider}
 /// A Provider which exposes a [Notifier] and listens to it.
 ///
+/// This is equivalent to a [Provider] that exposes ways to modify its state.
+///
 /// See also [Notifier] for more information.
 /// {@endtemplate}
+///
+/// {@macro riverpod.notifier_provider_modifier}
 typedef NotifierProvider<NotifierT extends Notifier<T>, T>
     = NotifierProviderImpl<NotifierT, T>;
 
@@ -101,13 +113,30 @@ typedef NotifierProvider<NotifierT extends Notifier<T>, T>
 class NotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
     extends NotifierProviderBase<NotifierT, T> with AlwaysAliveProviderBase<T> {
   /// {@macro riverpod.notifier_provider}
+  ///
+  /// {@macro riverpod.notifier_provider_modifier}
   NotifierProviderImpl(
     super._createNotifier, {
     super.name,
+    super.dependencies,
+    @Deprecated('Will be removed in 3.0.0') super.from,
+    @Deprecated('Will be removed in 3.0.0') super.argument,
+    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
+  }) : super(
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+        );
+
+  /// An implementation detail of Riverpod
+  @internal
+  NotifierProviderImpl.internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
     super.from,
     super.argument,
-    super.dependencies,
-    super.debugGetCreateSourceHash,
   });
 
   /// {@macro riverpod.autoDispose}
@@ -134,10 +163,14 @@ class NotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
   Override overrideWith(NotifierT Function() create) {
     return ProviderOverride(
       origin: this,
-      override: NotifierProviderImpl<NotifierT, T>(
+      override: NotifierProviderImpl<NotifierT, T>.internal(
         create,
         from: from,
         argument: argument,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
       ),
     );
   }
@@ -168,8 +201,9 @@ class NotifierProviderElement<NotifierT extends NotifierBase<T>, T>
 
   @override
   void visitChildren({
-    required void Function(ProviderElementBase element) elementVisitor,
-    required void Function(ProxyElementValueNotifier element) notifierVisitor,
+    required void Function(ProviderElementBase<Object?> element) elementVisitor,
+    required void Function(ProxyElementValueNotifier<Object?> element)
+        notifierVisitor,
   }) {
     super.visitChildren(
       elementVisitor: elementVisitor,

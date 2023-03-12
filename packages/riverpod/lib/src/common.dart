@@ -17,14 +17,14 @@ extension AsyncTransition<T> on ProviderElementBase<AsyncValue<T>> {
     AsyncValue<T> newState, {
     required bool seamless,
   }) {
-    // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+// ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
     final previous = getState()?.requireState;
 
     if (previous == null) {
-      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+// ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
       setState(newState);
     } else {
-      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+// ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
       setState(
         newState.copyWithPrevious(
           previous,
@@ -66,20 +66,23 @@ extension AsyncTransition<T> on ProviderElementBase<AsyncValue<T>> {
 /// ```
 ///
 /// If a consumer of an [AsyncValue] does not care about the loading/error
-/// state, consider using [value] to read the state:
+/// state, consider using [value]/[valueOrNull] to read the state:
 ///
 /// ```dart
 /// Widget build(BuildContext context, WidgetRef ref) {
-///   // reads the data state directly – will be throw during loading/error states
+///   // Reading .value will be throw during error and return null on "loading" states.
 ///   final User user = ref.watch(userProvider).value;
 ///
-///   return Text('Hello ${user.name}');
+///   // Reading .value will be throw both on loading and errorstates.
+///   final User user2 = ref.watch(userProvider).requiredValue;
+///
+///   ...
 /// }
 /// ```
 ///
 /// See also:
 ///
-/// - [FutureProvider] and [StreamProvider], which transforms a [Future] into
+/// - [FutureProvider], [StreamProvider] which transforms a [Future] into
 ///   an [AsyncValue].
 /// - [AsyncValue.guard], to simplify transforming a [Future] into an [AsyncValue].
 @sealed
@@ -87,16 +90,18 @@ extension AsyncTransition<T> on ProviderElementBase<AsyncValue<T>> {
 abstract class AsyncValue<T> {
   const AsyncValue._();
 
+  /// {@template asyncvalue.data}
   /// Creates an [AsyncValue] with a data.
-  ///
-  /// The data can be `null`.
+  /// {@endtemplate}
   // coverage:ignore-start
   const factory AsyncValue.data(T value) = AsyncData<T>;
   // coverage:ignore-end
 
+  /// {@template asyncvalue.loading}
   /// Creates an [AsyncValue] in loading state.
   ///
   /// Prefer always using this constructor with the `const` keyword.
+  /// {@endtemplate}
   // coverage:ignore-start
   const factory AsyncValue.loading() = AsyncLoading<T>;
   // coverage:ignore-end
@@ -118,15 +123,15 @@ abstract class AsyncValue<T> {
 
   /// Transforms a [Future] that may fail into something that is safe to read.
   ///
-  /// This is useful to avoid having to do a tedious `try/catch`. Instead of:
+  /// This is useful to avoid having to do a tedious `try/catch`. Instead of
+  /// writing:
   ///
   /// ```dart
-  /// class MyNotifier extends StateNotifier<AsyncValue<MyData> {
-  ///   MyNotifier(): super(const AsyncValue.loading()) {
-  ///     _fetchData();
-  ///   }
+  /// class MyNotifier extends AsyncNotifier<MyData> {
+  ///   @override
+  ///   Future<MyData> build() => Future.value(MyData());
   ///
-  ///   Future<void> _fetchData() async {
+  ///   Future<void> sideEffect() async {
   ///     state = const AsyncValue.loading();
   ///     try {
   ///       final response = await dio.get('my_api/data');
@@ -139,17 +144,14 @@ abstract class AsyncValue<T> {
   /// }
   /// ```
   ///
-  /// which is redundant as the application grows and we need more and more of this
-  /// pattern – we can use [guard] to simplify it:
-  ///
+  /// We can use [guard] to simplify it:
   ///
   /// ```dart
-  /// class MyNotifier extends StateNotifier<AsyncValue<MyData>> {
-  ///   MyNotifier(): super(const AsyncValue.loading()) {
-  ///     _fetchData();
-  ///   }
+  /// class MyNotifier extends AsyncNotifier<MyData> {
+  ///   @override
+  ///   Future<MyData> build() => Future.value(MyData());
   ///
-  ///   Future<void> _fetchData() async {
+  ///   Future<void> sideEffect() async {
   ///     state = const AsyncValue.loading();
   ///     // does the try/catch for us like previously
   ///     state = await AsyncValue.guard(() async {
@@ -177,17 +179,22 @@ abstract class AsyncValue<T> {
   ///
   /// Even if [hasValue] is true, it is still possible for [isLoading]/[hasError]
   /// to also be true.
-  ///
-  /// [hasValue] correctly supports a null [value].
   bool get hasValue;
 
   /// The value currently exposed.
   ///
-  /// When reading [value] during loading state, null will be returning.
+  /// It will return the previous value during loading/error state.
+  /// If there is no previous value, reading [value] during loading state will
+  /// return null. While during error state, the error will be rethrown instead.
   ///
-  /// When trying to read [value] in error state, the error will be rethrown
-  /// instead. The exception is if [isRefreshing] is true, in which case
-  /// the previous value will be returned.
+  /// If you do not want to return previous value during loading/error states,
+  /// consider using [asData]:
+  ///
+  /// ```dart
+  /// ref.watch(provider).asData()?.value;
+  /// ```
+  ///
+  /// This will return null during loading/error states.
   ///
   /// See also [valueOrNull], which does not throw during error state.
   T? get value;
@@ -271,20 +278,15 @@ abstract class AsyncValue<T> {
         runtimeType,
         isLoading,
         hasValue,
-        // Fallback null values to 0, making sure Object.hash hashes all values
-        valueOrNull ?? 0,
-        error ?? 0,
-        stackTrace ?? 0,
+        valueOrNull,
+        error,
+        stackTrace,
       );
 }
 
-/// Creates an [AsyncValue] with a data.
-///
-/// The data can be `null`.
+/// {@macro asyncvalue.data}
 class AsyncData<T> extends AsyncValue<T> {
-  /// Creates an [AsyncValue] with a data.
-  ///
-  /// The data can be `null`.
+  /// {@macro asyncvalue.data}
   const AsyncData(T value)
       : this._(
           value,
@@ -333,13 +335,9 @@ class AsyncData<T> extends AsyncValue<T> {
   }
 }
 
-/// Creates an [AsyncValue] in loading state.
-///
-/// Prefer always using this constructor with the `const` keyword.
+/// {@macro asyncvalue.loading}
 class AsyncLoading<T> extends AsyncValue<T> {
-  /// Creates an [AsyncValue] in loading state.
-  ///
-  /// Prefer always using this constructor with the `const` keyword.
+  /// {@macro asyncvalue.loading}
   const AsyncLoading()
       : hasValue = false,
         value = null,
@@ -489,8 +487,9 @@ class AsyncError<T> extends AsyncValue<T> {
 
 /// An extension that adds methods like [when] to an [AsyncValue].
 extension AsyncValueX<T> on AsyncValue<T> {
-  /// If [hasValue] is true, returns the value. If in error, rethrows the error.
-  /// Otherwise if in loading state, throws a [StateError].
+  /// If [hasValue] is true, returns the value.
+  /// Otherwise if [hasError], rethrows the error.
+  /// Finally if in loading state, throws a [StateError].
   ///
   /// This is typically used for when the UI assumes that [value] is always present.
   T get requireValue {
@@ -504,17 +503,25 @@ extension AsyncValueX<T> on AsyncValue<T> {
     );
   }
 
-  /// Return the value, or null if in error/loading state.
+  /// Return the value or previous value if in loading/error state.
   ///
-  /// This is different from [value], which will throw if trying to read the value
-  /// in error state.
+  /// If there is no previous value, null will be returned during loading/error state.
+  ///
+  /// This is different from [value], which will rethrow the error instead of returning null.
+  ///
+  /// If you do not want to return previous value during loading/error states,
+  /// consider using [asData] :
+  ///
+  /// ```dart
+  /// ref.watch(provider).asData()?.valueOrNull;
+  /// ```
   T? get valueOrNull {
     if (hasValue) return value;
     return null;
   }
 
   /// Whether the associated provider was forced to recompute even though
-  /// none of its dependencies has changed.
+  /// none of its dependencies has changed, after at least one [value]/[error] was emitted.
   ///
   /// This is usually the case when rebuilding a provider with either
   /// [Ref.invalidate]/[Ref.refresh].
@@ -527,8 +534,8 @@ extension AsyncValueX<T> on AsyncValue<T> {
   /// Whether the associated provider was recomputed because of a dependency change
   /// (using [Ref.watch]), after at least one [value]/[error] was emitted.
   ///
-  /// If a provider rebuilds because one of its dependencies changes (using [Ref.watch]),
-  /// then [isRefreshing] will be false.
+  /// If a provider rebuilds because one of its dependencies changed (using [Ref.watch]),
+  /// then [isReloading] will be false.
   ///
   /// See also [isRefreshing] for manual provider rebuild.
   bool get isReloading => (hasValue || hasError) && this is AsyncLoading;
@@ -538,6 +545,7 @@ extension AsyncValueX<T> on AsyncValue<T> {
   /// Even if [hasError] is true, it is still possible for [hasValue]/[isLoading]
   /// to also be true.
   // It is safe to check it through `error != null` because `error` is non-nullable
+  // on the AsyncError constructor.
   bool get hasError => error != null;
 
   /// Upcast [AsyncValue] into an [AsyncData], or return null if the [AsyncValue]
@@ -552,7 +560,7 @@ extension AsyncValueX<T> on AsyncValue<T> {
 
   /// Upcast [AsyncValue] into an [AsyncError], or return null if the [AsyncValue]
   /// is in loading/data state.
-  AsyncError? get asError => map(
+  AsyncError<T>? get asError => map(
         data: (_) => null,
         error: (e) => e,
         loading: (_) => null,

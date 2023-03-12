@@ -1,0 +1,9 @@
+dependency_overrides:
+  flutter_riverpod:
+    path: ../flutter_riverpod
+  hooks_riverpod:
+    path: ../hooks_riverpod
+  riverpod:
+    path: ../riverpod
+  riverpod_annotation:
+    path: ../riverpod_annotation

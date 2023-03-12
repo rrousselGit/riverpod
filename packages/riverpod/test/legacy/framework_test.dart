@@ -41,10 +41,12 @@ void main() {
     expect(container.read(family2(0)), '0 2');
 
     expect(container.getAllProviderElements(), [
-      isA<ProviderElementBase>().having((e) => e.origin, 'origin', family2(0))
+      isA<ProviderElementBase<Object?>>()
+          .having((e) => e.origin, 'origin', family2(0))
     ]);
     expect(root.getAllProviderElements(), [
-      isA<ProviderElementBase>().having((e) => e.origin, 'origin', family(0))
+      isA<ProviderElementBase<Object?>>()
+          .having((e) => e.origin, 'origin', family(0))
     ]);
   });
 
@@ -253,7 +255,7 @@ void main() {
 
   test('Ref is unusable after dispose (read/onDispose)', () {
     final container = createContainer();
-    late ProviderElement ref;
+    late ProviderElement<Object?> ref;
     final provider = Provider((s) {
       ref = s as ProviderElement;
       return 42;

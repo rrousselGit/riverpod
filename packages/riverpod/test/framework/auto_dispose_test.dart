@@ -154,7 +154,7 @@ Future<void> main() async {
         () async {
       final container = createContainer();
       late KeepAliveLink a;
-      late AutoDisposeRef ref;
+      late AutoDisposeRef<Object?> ref;
 
       final provider = Provider.autoDispose<void>((r) {
         ref = r;
@@ -186,7 +186,7 @@ Future<void> main() async {
         'the provider will not be disposed.', () async {
       final container = createContainer();
       late KeepAliveLink a;
-      late AutoDisposeRef ref;
+      late AutoDisposeRef<Object?> ref;
 
       final provider = Provider.autoDispose<void>((r) {
         ref = r;
@@ -544,7 +544,7 @@ final alwaysAlive = Provider((ref) {
   test('setting maintainState to false destroys the state when not listened to',
       () async {
     final onDispose = OnDisposeMock();
-    late AutoDisposeRef ref;
+    late AutoDisposeRef<Object?> ref;
     final provider = Provider.autoDispose((r) {
       ref = r;
       ref.onDispose(onDispose);

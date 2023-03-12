@@ -74,3 +74,17 @@ class Supports$InClassName extends _$Supports$InClassName {
     return 'Hello world';
   }
 }
+
+@riverpod
+String generated(GeneratedRef ref) {
+  return 'Just a simple normal generated provider';
+}
+
+Provider<String> someProvider() => Provider((ref) => 'hello');
+
+// Regression test for https://github.com/rrousselGit/riverpod/issues/2299
+final _someProvider = someProvider();
+
+// Regression test for https://github.com/rrousselGit/riverpod/issues/2294
+// ignore: unused_element
+final _other = _someProvider;
