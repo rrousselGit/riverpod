@@ -4,7 +4,7 @@ import {
   riverpodAnnotationVersion,
   riverpodGeneratorVersion,
   riverpodLintVersion,
-} from "../../../src/versions";
+} from "../../src/versions";
 
 function plain(riverpod: string) {
   return `
