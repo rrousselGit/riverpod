@@ -6,7 +6,7 @@ import 'src/assists/convert_to_hook_consumer_widget.dart';
 import 'src/assists/convert_to_hook_widget.dart';
 import 'src/assists/convert_to_stateful_hook_consumer_widget.dart';
 import 'src/assists/convert_to_stateful_hook_widget.dart';
-import 'src/assists/convert_to_stateful_wigdet.dart';
+import 'src/assists/convert_to_stateful_widget.dart';
 import 'src/assists/convert_to_stateless_widget.dart';
 import 'src/assists/stateful_to_stateless_provider.dart';
 import 'src/assists/stateless_to_stateful_provider.dart';
