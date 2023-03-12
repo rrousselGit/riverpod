@@ -6,7 +6,7 @@ part of 'main.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-// ignore_for_file: avoid_private_typedef_functions, non_constant_identifier_names, subtype_of_sealed_class, invalid_use_of_internal_member, unused_element, constant_identifier_names, unnecessary_raw_strings, library_private_types_in_public_api
+String _$fetchUserHash() => r'ff427bbb4130a8a6994fa623ae70997f7b0f6bdb';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -29,13 +29,56 @@ class _SystemHash {
   }
 }
 
-String _$fetchUserHash() => r'ff427bbb4130a8a6994fa623ae70997f7b0f6bdb';
+typedef FetchUserRef = AutoDisposeFutureProviderRef<User>;
+
+/// See also [fetchUser].
+@ProviderFor(fetchUser)
+const fetchUserProvider = FetchUserFamily();
+
+/// See also [fetchUser].
+class FetchUserFamily extends Family<AsyncValue<User>> {
+  /// See also [fetchUser].
+  const FetchUserFamily();
+
+  /// See also [fetchUser].
+  FetchUserProvider call({
+    required int userId,
+  }) {
+    return FetchUserProvider(
+      userId: userId,
+    );
+  }
+
+  @override
+  FetchUserProvider getProviderOverride(
+    covariant FetchUserProvider provider,
+  ) {
+    return call(
+      userId: provider.userId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'fetchUserProvider';
+}
 
 /// See also [fetchUser].
 class FetchUserProvider extends AutoDisposeFutureProvider<User> {
+  /// See also [fetchUser].
   FetchUserProvider({
     required this.userId,
-  }) : super(
+  }) : super.internal(
           (ref) => fetchUser(
             ref,
             userId: userId,
@@ -46,6 +89,8 @@ class FetchUserProvider extends AutoDisposeFutureProvider<User> {
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$fetchUserHash,
+          dependencies: FetchUserFamily._dependencies,
+          allTransitiveDependencies: FetchUserFamily._allTransitiveDependencies,
         );
 
   final int userId;
@@ -63,38 +108,4 @@ class FetchUserProvider extends AutoDisposeFutureProvider<User> {
     return _SystemHash.finish(hash);
   }
 }
-
-typedef FetchUserRef = AutoDisposeFutureProviderRef<User>;
-
-/// See also [fetchUser].
-final fetchUserProvider = FetchUserFamily();
-
-class FetchUserFamily extends Family<AsyncValue<User>> {
-  FetchUserFamily();
-
-  FetchUserProvider call({
-    required int userId,
-  }) {
-    return FetchUserProvider(
-      userId: userId,
-    );
-  }
-
-  @override
-  AutoDisposeFutureProvider<User> getProviderOverride(
-    covariant FetchUserProvider provider,
-  ) {
-    return call(
-      userId: provider.userId,
-    );
-  }
-
-  @override
-  List<ProviderOrFamily>? get allTransitiveDependencies => null;
-
-  @override
-  List<ProviderOrFamily>? get dependencies => null;
-
-  @override
-  String? get name => r'fetchUserProvider';
-}
+// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

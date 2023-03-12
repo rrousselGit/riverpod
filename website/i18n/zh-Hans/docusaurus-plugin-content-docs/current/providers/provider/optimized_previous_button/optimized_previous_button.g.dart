@@ -6,54 +6,34 @@ part of 'optimized_previous_button.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-// ignore_for_file: avoid_private_typedef_functions, non_constant_identifier_names, subtype_of_sealed_class, invalid_use_of_internal_member, unused_element, constant_identifier_names, unnecessary_raw_strings, library_private_types_in_public_api
-
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-String _$PageIndexHash() => r'59307ecf23b5b2432833da5ad6b312bf36435d0e';
-
-/// See also [PageIndex].
-final pageIndexProvider = AutoDisposeNotifierProvider<PageIndex, int>(
-  PageIndex.new,
-  name: r'pageIndexProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$PageIndexHash,
-);
-typedef PageIndexRef = AutoDisposeNotifierProviderRef<int>;
-
-abstract class _$PageIndex extends AutoDisposeNotifier<int> {
-  @override
-  int build();
-}
-
 String _$canGoToPreviousPageHash() =>
     r'801fe8182a37cd21ae83bdfccbe36c125b4d14fb';
 
 /// See also [canGoToPreviousPage].
-final canGoToPreviousPageProvider = AutoDisposeProvider<bool>(
+@ProviderFor(canGoToPreviousPage)
+final canGoToPreviousPageProvider = AutoDisposeProvider<bool>.internal(
   canGoToPreviousPage,
   name: r'canGoToPreviousPageProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$canGoToPreviousPageHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
 );
+
 typedef CanGoToPreviousPageRef = AutoDisposeProviderRef<bool>;
+String _$pageIndexHash() => r'59307ecf23b5b2432833da5ad6b312bf36435d0e';
+
+/// See also [PageIndex].
+@ProviderFor(PageIndex)
+final pageIndexProvider = AutoDisposeNotifierProvider<PageIndex, int>.internal(
+  PageIndex.new,
+  name: r'pageIndexProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$pageIndexHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$PageIndex = AutoDisposeNotifier<int>;
+// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions
