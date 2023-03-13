@@ -31,12 +31,12 @@ void main() {
 
     expect(
       emptyDependenciesStatelessProvider.dependencies,
-      const <ProviderOrFamily>[],
+      same(const <ProviderOrFamily>[]),
     );
 
     expect(
       emptyDependenciesStatefulProvider.dependencies,
-      const <ProviderOrFamily>[],
+      same(const <ProviderOrFamily>[]),
     );
   });
 
@@ -76,12 +76,12 @@ void main() {
 
     expect(
       emptyDependenciesStatelessProvider.allTransitiveDependencies,
-      const <ProviderOrFamily>[],
+      same(const <ProviderOrFamily>[]),
     );
 
     expect(
       emptyDependenciesStatefulProvider.allTransitiveDependencies,
-      const <ProviderOrFamily>[],
+      same(const <ProviderOrFamily>[]),
     );
   });
 
