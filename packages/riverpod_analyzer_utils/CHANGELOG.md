@@ -1,4 +1,4 @@
-## Unreleased minor
+## 0.2.0 - 2023-03-13
 
 - Added `providerForType` TypeChecker for `ProviderFor` annotation
 - Generated providers inside `.g.dart` no-longer are incorrectly parsed as legacy providers.

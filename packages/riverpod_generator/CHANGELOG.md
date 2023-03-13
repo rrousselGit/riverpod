@@ -1,3 +1,8 @@
+## 2.1.4 - 2023-03-13
+
+- `riverpod_analyzer_utils` upgraded to `0.2.0`
+- `riverpod_annotation` upgraded to `2.0.2`
+
 ## 2.1.3 - 2023-03-10
 
 - Fixed InconsistentAnalysisException
