@@ -13,7 +13,7 @@ class Configuration {
 /* SNIPPET START */
 
 @riverpod
-Future<Configuration> fetchConfigration(FetchConfigrationRef ref) async {
+Future<Configuration> fetchConfiguration(FetchConfigurationRef ref) async {
   final content = json.decode(
     await rootBundle.loadString('assets/configurations.json'),
   ) as Map<String, Object?>;

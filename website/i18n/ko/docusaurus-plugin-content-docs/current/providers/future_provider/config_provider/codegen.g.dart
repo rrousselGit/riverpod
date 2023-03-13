@@ -8,20 +8,21 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$fetchConfigrationHash() => r'924bbed412597a6359d5468329c9be1a074da987';
+String _$fetchConfigurationHash() =>
+    r'6c0f062e6f20baf883c4282856f1197fbe633d89';
 
-/// See also [fetchConfigration].
-@ProviderFor(fetchConfigration)
-final fetchConfigrationProvider =
+/// See also [fetchConfiguration].
+@ProviderFor(fetchConfiguration)
+final fetchConfigurationProvider =
     AutoDisposeFutureProvider<Configuration>.internal(
-  fetchConfigration,
-  name: r'fetchConfigrationProvider',
+  fetchConfiguration,
+  name: r'fetchConfigurationProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$fetchConfigrationHash,
+      : _$fetchConfigurationHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef FetchConfigrationRef = AutoDisposeFutureProviderRef<Configuration>;
+typedef FetchConfigurationRef = AutoDisposeFutureProviderRef<Configuration>;
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions
