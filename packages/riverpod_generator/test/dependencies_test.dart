@@ -106,6 +106,18 @@ void main() {
       transitiveDependenciesProvider.dependencies,
       same(transitiveDependenciesProvider.dependencies),
     );
+    expect(
+      smallTransitiveDependencyCountProvider.dependencies,
+      same(smallTransitiveDependencyCountProvider.dependencies),
+    );
+    expect(
+      emptyDependenciesStatelessProvider.dependencies,
+      same(emptyDependenciesStatelessProvider.dependencies),
+    );
+    expect(
+      emptyDependenciesStatefulProvider.dependencies,
+      same(emptyDependenciesStatefulProvider.dependencies),
+    );
 
     expect(
       provider3Provider.allTransitiveDependencies,
@@ -118,6 +130,10 @@ void main() {
     expect(
       transitiveDependenciesProvider.allTransitiveDependencies,
       same(transitiveDependenciesProvider.allTransitiveDependencies),
+    );
+    expect(
+      smallTransitiveDependencyCountProvider.allTransitiveDependencies,
+      same(smallTransitiveDependencyCountProvider.allTransitiveDependencies),
     );
   });
 }
