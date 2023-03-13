@@ -146,7 +146,8 @@ class LegacyProviderDeclaration extends RiverpodAst
         }
       }
 
-      final modifier = initializer.function as PropertyAccess;
+      final modifier = initializer.function;
+      if (modifier is! PropertyAccess) return null;
 
       decodeIdentifier(modifier.propertyName);
       decodeTarget(modifier.target);
