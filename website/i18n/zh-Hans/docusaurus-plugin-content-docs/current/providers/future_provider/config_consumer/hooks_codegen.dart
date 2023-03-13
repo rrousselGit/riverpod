@@ -7,12 +7,12 @@ import '../config_provider/codegen.dart';
 
 /* SNIPPET START */
 
-class MyConfigration extends HookConsumerWidget  {
-  const MyConfigration({super.key});
+class MyConfiguration extends HookConsumerWidget  {
+  const MyConfiguration({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watch(fetchConfigrationProvider);
+    final config = ref.watch(fetchConfigurationProvider);
     return Scaffold(
       body: config.when(
       loading: () => const Center(child: CircularProgressIndicator()),

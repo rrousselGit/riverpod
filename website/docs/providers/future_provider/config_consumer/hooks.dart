@@ -4,8 +4,8 @@ import '../config_provider/raw.dart';
 
 /* SNIPPET START */
 
-class MyConfigration extends HookConsumerWidget {
-  const MyConfigration({super.key});
+class MyConfiguration extends HookConsumerWidget {
+  const MyConfiguration({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
