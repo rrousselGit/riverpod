@@ -45,11 +45,10 @@ int transitiveDependencies(TransitiveDependenciesRef ref) => 0;
 int smallTransitiveDependencyCount(SmallTransitiveDependencyCountRef ref) => 0;
 
 @Riverpod(dependencies: [])
-int emptyDependenciesStateless(EmptyDependenciesStatelessRef ref) =>
-    throw UnimplementedError();
+int emptyDependenciesStateless(EmptyDependenciesStatelessRef ref) => 0;
 
 @Riverpod(dependencies: [])
 class EmptyDependenciesStateful extends _$EmptyDependenciesStateful {
   @override
-  int build() => throw UnimplementedError();
+  int build() => 0;
 }

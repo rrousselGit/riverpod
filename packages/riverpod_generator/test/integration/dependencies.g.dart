@@ -215,7 +215,7 @@ final smallTransitiveDependencyCountProvider =
 
 typedef SmallTransitiveDependencyCountRef = AutoDisposeProviderRef<int>;
 String _$emptyDependenciesStatelessHash() =>
-    r'aec0bd8c67f34613ec89c86cdbbe21cde4b869b8';
+    r'2415aab6f03b1cb67fa8fecc5d2af1ec5d261398';
 
 /// See also [emptyDependenciesStateless].
 @ProviderFor(emptyDependenciesStateless)
@@ -469,7 +469,7 @@ class Provider4Provider
 }
 
 String _$emptyDependenciesStatefulHash() =>
-    r'dbcaefd3f0bab7d3dac57d4d96471c1630e53ff4';
+    r'7cd5d081bbfb866823b0d493e63bfc63b9d9c804';
 
 /// See also [EmptyDependenciesStateful].
 @ProviderFor(EmptyDependenciesStateful)
