@@ -282,7 +282,7 @@ class UserIdNotifier extends ChangeNotifier {
 
 final userIdNotifierProvider = ChangeNotifierProvider<UserIdNotifier>(
   (ref) => UserIdNotifier(),
-),
+);
 ```
 
 From there, to generate our `String` based on the `userId`, we could do:
@@ -371,15 +371,26 @@ final userIdNotifierProvider = ChangeNotifierProvider<UserIdNotifier>(
 From there, the equivalent to the previous `ChangeNotifierProxyProvider` would be:
 
 ```dart
-class UserNotifier extends ChangeNotifier {}
+class UserNotifier extends ChangeNotifier {
+  String? _userId;
 
-final userNotfierProvider = ChangeNotifierProvider<UserNotifier>((ref) {
+  void setUserId(String? userId) {
+    if (userId != _userId) {
+      print('The user ID changed from $_userId to $userId');
+      _userId = userId;
+    }
+  }
+}
+
+// ...
+
+final userNotifierProvider = ChangeNotifierProvider<UserNotifier>((ref) {
   final userNotifier = UserNotifier();
   ref.listen<UserIdNotifier>(
     userIdNotifierProvider,
-    (previous, next) {
+        (previous, next) {
       if (previous?.userId != next.userId) {
-        print('The user ID changed from ${previous?.userId} to ${next.userId}');
+        userNotifier.setUserId(next.userId);
       }
     },
   );
