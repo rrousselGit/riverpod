@@ -1,3 +1,4 @@
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:test/test.dart';
 
 import 'integration/dependencies.dart';
@@ -27,6 +28,16 @@ void main() {
     );
 
     expect(transitiveDependenciesProvider.dependencies, [providerProvider]);
+
+    expect(
+      emptyDependenciesStatelessProvider.dependencies,
+      const <ProviderOrFamily>[],
+    );
+
+    expect(
+      emptyDependenciesStatefulProvider.dependencies,
+      const <ProviderOrFamily>[],
+    );
   });
 
   test('Generates transitive dependencies', () {
@@ -61,6 +72,16 @@ void main() {
         dep2Provider,
         family2Provider,
       ],
+    );
+
+    expect(
+      emptyDependenciesStatelessProvider.allTransitiveDependencies,
+      const <ProviderOrFamily>[],
+    );
+
+    expect(
+      emptyDependenciesStatefulProvider.allTransitiveDependencies,
+      const <ProviderOrFamily>[],
     );
   });
 

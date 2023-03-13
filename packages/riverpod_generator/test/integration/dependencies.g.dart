@@ -214,6 +214,22 @@ final smallTransitiveDependencyCountProvider =
 );
 
 typedef SmallTransitiveDependencyCountRef = AutoDisposeProviderRef<int>;
+String _$emptyDependenciesStatelessHash() =>
+    r'aec0bd8c67f34613ec89c86cdbbe21cde4b869b8';
+
+/// See also [emptyDependenciesStateless].
+@ProviderFor(emptyDependenciesStateless)
+final emptyDependenciesStatelessProvider = AutoDisposeProvider<int>.internal(
+  emptyDependenciesStateless,
+  name: r'emptyDependenciesStatelessProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$emptyDependenciesStatelessHash,
+  dependencies: const <ProviderOrFamily>[],
+  allTransitiveDependencies: const <ProviderOrFamily>[],
+);
+
+typedef EmptyDependenciesStatelessRef = AutoDisposeProviderRef<int>;
 String _$dep2Hash() => r'2778537df77f6431148c2ce400724da3e2ab4b94';
 
 /// See also [Dep2].
@@ -451,4 +467,22 @@ class Provider4Provider
     );
   }
 }
+
+String _$emptyDependenciesStatefulHash() =>
+    r'dbcaefd3f0bab7d3dac57d4d96471c1630e53ff4';
+
+/// See also [EmptyDependenciesStateful].
+@ProviderFor(EmptyDependenciesStateful)
+final emptyDependenciesStatefulProvider =
+    AutoDisposeNotifierProvider<EmptyDependenciesStateful, int>.internal(
+  EmptyDependenciesStateful.new,
+  name: r'emptyDependenciesStatefulProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$emptyDependenciesStatefulHash,
+  dependencies: const <ProviderOrFamily>[],
+  allTransitiveDependencies: const <ProviderOrFamily>[],
+);
+
+typedef _$EmptyDependenciesStateful = AutoDisposeNotifier<int>;
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions
