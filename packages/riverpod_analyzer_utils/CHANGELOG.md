@@ -2,6 +2,7 @@
 
 - Added `providerForType` TypeChecker for `ProviderFor` annotation
 - Generated providers inside `.g.dart` no-longer are incorrectly parsed as legacy providers.
+- Fixed "type 'SimpleIdentifierImpl' is not a subtype of type 'PropertyAccess' in type cast"
 
 ## 0.1.4 - 2023-03-10
 

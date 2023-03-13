@@ -1,6 +1,7 @@
 ## Unreleased fix
 
 - No-longer throw "Bad state: Too many elements"
+- Fixed "type 'SimpleIdentifierImpl' is not a subtype of type 'PropertyAccess' in type cast"
 
 ## 1.1.5 - 2023-03-10
 
