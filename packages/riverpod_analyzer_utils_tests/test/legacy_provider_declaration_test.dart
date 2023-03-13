@@ -7,6 +7,28 @@ import 'analyser_test_utils.dart';
 
 void main() {
   group('LegacyProviderDefinition.parse', () {
+    testSource('Does not try to parse generated providers',
+        runGenerator: true, source: '''
+import 'package:riverpod/riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'foo.g.dart';
+
+final legacy = Provider<int>((ref) => 0);
+
+@riverpod
+int simple(SimpleRef ref) => 0;
+
+// Regression test for https://github.com/rrousselGit/riverpod/issues/2194
+@riverpod
+int complex(ComplexRef ref, {int? id, String? another}) => 0;
+''', (resolver) async {
+      final result = await resolver.resolveRiverpodAnalyssiResult();
+
+      expect(result.legacyProviderDeclarations, hasLength(1));
+      expect(result.generatorProviderDeclarations, hasLength(2));
+    });
+
     testSource('Decode name', source: '''
 import 'package:riverpod/riverpod.dart';
 

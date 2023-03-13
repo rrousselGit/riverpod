@@ -1,3 +1,8 @@
+## Unreleased minor
+
+- Added `providerForType` TypeChecker for `ProviderFor` annotation
+- Generated providers inside `.g.dart` no-longer are incorrectly parsed as legacy providers.
+
 ## 0.1.4 - 2023-03-10
 
 - Fixed an `Unsupported operation: Unknown type SimpleIdentifierImpl` crash

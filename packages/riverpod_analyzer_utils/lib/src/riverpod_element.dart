@@ -193,6 +193,11 @@ class LegacyProviderDeclarationElement implements ProviderDeclarationElement {
     VariableElement element,
   ) {
     return _cache.putIfAbsent(element, () {
+      // Search for @ProviderFor annotation. If present, then this is a generated provider
+      if (providerForType.hasAnnotationOfExact(element)) {
+        return null;
+      }
+
       bool isAutoDispose;
       LegacyFamilyInvocationElement? familyElement;
       LegacyProviderType providerType;
