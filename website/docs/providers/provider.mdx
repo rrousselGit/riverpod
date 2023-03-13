@@ -31,7 +31,7 @@ Since filtering a list could be slightly expensive, we ideally do not want to
 filter our list of todos whenever our application re-renders.
 In this situation, we could use `Provider` to do the filtering for us.
 
-For that, assume that our application has an existing [StateNotifierProvider]
+For that, assume that our application has an existing [NotifierProvider]
 which manipulates a list of todos:
 
 <AutoSnippet language="dart" {...todo}></AutoSnippet>
@@ -98,4 +98,4 @@ This change both improved the performance of our button and had the interesting
 benefit of extracting the logic outside of our widget.
 
 [ref.watch]: ../concepts/reading#using-refwatch-to-observe-a-provider
-[statenotifierprovider]: ./state_notifier_provider
+[notifierprovider]: ./notifier_provider
