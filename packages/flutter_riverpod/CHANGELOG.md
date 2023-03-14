@@ -1,3 +1,10 @@
+## 2.3.2 - 2023-03-13
+
+- Deprecated the generic parameter of `Family`.
+  This will enable implementing generic providers in `riverpod_generator` once
+  it is removed.
+- Updated documentation
+
 ## 2.3.1 - 2023-03-09
 
 - `riverpod` upgraded to `2.3.1`
