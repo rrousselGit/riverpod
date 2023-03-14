@@ -148,6 +148,7 @@ abstract class ProviderBase<State> extends ProviderOrFamily
 var _debugIsRunningSelector = false;
 
 class _ExternalProviderSubscription<State>
+    extends LinkedListEntry<_ExternalProviderSubscription<State>>
     implements ProviderSubscription<State> {
   _ExternalProviderSubscription._(
     this._listenedElement,
@@ -163,7 +164,9 @@ class _ExternalProviderSubscription<State>
   @override
   void close() {
     _closed = true;
-    _listenedElement._externalDependents.remove(this);
+    if (list != null) {
+      unlink();
+    }
     _listenedElement._onRemoveListener();
   }
 

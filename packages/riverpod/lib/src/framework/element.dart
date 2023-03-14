@@ -84,7 +84,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   ///
   /// This is typically Flutter widgets or manual calls to [ProviderContainer.listen]
   /// with this provider as target.
-  final _externalDependents = <_ExternalProviderSubscription<State>>[];
+  final _externalDependents = LinkedList<_ExternalProviderSubscription<State>>();
 
   /// The [ProviderSubscription]s associated to the providers that this
   /// [ProviderElementBase] listens to.
@@ -536,9 +536,10 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     final subscribers = _subscribers.toList(growable: false);
     newState.map(
       data: (newState) {
-        for (var i = 0; i < listeners.length; i++) {
+        for (final listener in listeners) {
+        // for (var i = 0; i < listeners.length; i++) {
           Zone.current.runBinaryGuarded(
-            listeners[i]._listener,
+            listener._listener,
             previousState,
             newState.state,
           );
@@ -552,9 +553,9 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         }
       },
       error: (newState) {
-        for (var i = 0; i < listeners.length; i++) {
+        for (final listener in listeners) {
           Zone.current.runBinaryGuarded(
-            listeners[i].onError,
+            listener.onError,
             newState.error,
             newState.stackTrace,
           );
