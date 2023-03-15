@@ -233,6 +233,8 @@ abstract class WidgetRef {
   /// once.
   ///
   /// Calling [invalidate] will cause the provider to be disposed immediately.
+  ///
+  /// If used on a provider which is not initialized, this method will have no effect.
   void invalidate(ProviderOrFamily provider);
 }
 
