@@ -227,7 +227,7 @@ final modelProvider = Provider<Model>(...);
 Puis en utilisant `Consumer` nous pourrions faire :
 
 ```dart
-Consumer<Model>(
+Consumer(
   builder: (BuildContext context, WidgetRef ref, Widget? child) {
     Model model = ref.watch(modelProvider);
 
