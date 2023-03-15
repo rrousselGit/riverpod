@@ -388,7 +388,7 @@ final userNotifierProvider = ChangeNotifierProvider<UserNotifier>((ref) {
   final userNotifier = UserNotifier();
   ref.listen<UserIdNotifier>(
     userIdNotifierProvider,
-        (previous, next) {
+    (previous, next) {
       if (previous?.userId != next.userId) {
         userNotifier.setUserId(next.userId);
       }
