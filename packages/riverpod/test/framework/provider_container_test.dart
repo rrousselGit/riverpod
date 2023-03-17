@@ -391,6 +391,45 @@ void main() {
       expect(c.depth, 2);
     });
 
+    test('3-depth autoDispose', () async {
+      final a = createContainer();
+      final b = createContainer(parent: a);
+      final c = createContainer(parent: b);
+
+      var count = 0;
+      final autoDisposeProvider = Provider.autoDispose((ref) {
+        count += 1;
+        ref.onDispose(() {
+          count -= 1;
+        });
+        return 3;
+      });
+
+      var subscription = c.listen(
+        autoDisposeProvider,
+        (previous, next) {},
+        fireImmediately: true,
+      );
+      await a.pump();
+      expect(count, 1);
+
+      subscription.close();
+      await a.pump();
+      expect(count, 0);
+
+      subscription = c.listen(
+        autoDisposeProvider,
+        (previous, next) {},
+        fireImmediately: true,
+      );
+      await a.pump();
+      expect(count, 1);
+
+      subscription.close();
+      await a.pump();
+      expect(count, 0);
+    });
+
     group('getAllProviderElements', () {
       test('list scoped providers that depends on nothing', () {
         final scopedProvider = Provider<int>((ref) => 0);
