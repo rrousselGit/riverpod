@@ -19,7 +19,7 @@ class PreviousButton extends ConsumerWidget {
     }
 
     return ElevatedButton(
-      onPressed: canGoToPreviousPage ? null : goToPreviousPage,
+      onPressed: canGoToPreviousPage ? goToPreviousPage : null,
       child: const Text('previous'),
     );
   }
