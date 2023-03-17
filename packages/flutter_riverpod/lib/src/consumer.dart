@@ -312,12 +312,12 @@ typedef ConsumerBuilder = Widget Function(
 /// ```dart
 /// final counterProvider = StateProvider((ref) => 0);
 ///
-/// class MyHomePage extends StatelessWidget {
+/// class MyHomePage extends ConsumerWidget {
 ///   MyHomePage({Key? key, required this.title}) : super(key: key);
 ///   final String title;
 ///
 ///   @override
-///   Widget build(BuildContext context) {
+///   Widget build(BuildContext context, WidgetRef ref) {
 ///     return Scaffold(
 ///       appBar: AppBar(
 ///         title: Text(title)
