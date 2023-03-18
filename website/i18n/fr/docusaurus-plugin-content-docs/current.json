@@ -31,16 +31,16 @@
     "message": "Exemples de la communauté",
     "description": "The label for category Third party examples in sidebar Sidebar"
   },
-  "sidebar.Sidebar.category.Api references": {
+  "sidebar.Sidebar.link.API reference": {
     "message": "Références API",
-    "description": "The label for category Api references in sidebar Sidebar"
+    "description": "The label for link Api references in sidebar Sidebar, linking to https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/hooks_riverpod-library.html"
   },
   "sidebar.Sidebar.link.Counter": {
     "message": "Compteur",
     "description": "The label for link Counter in sidebar Sidebar, linking to https://github.com/rrousselGit/riverpod/tree/master/examples/counter"
   },
   "sidebar.Sidebar.link.Todo list": {
-    "message": "Liste de taches",
+    "message": "Liste de tâches",
     "description": "The label for link Todo list in sidebar Sidebar, linking to https://github.com/rrousselGit/riverpod/tree/master/examples/todos"
   },
   "sidebar.Sidebar.link.Marvel API": {
@@ -68,7 +68,7 @@
     "description": "The label for link Time Tracking App (with Firebase) in sidebar Sidebar, linking to https://github.com/bizz84/starter_architecture_flutter_firebase"
   },
   "sidebar.Sidebar.link.Firebase Phone Authentication with Riverpod": {
-    "message": "Firebase Phone Authentication with Riverpod",
+    "message": "Authentification par téléphone via Firebase avec Riverpod",
     "description": "The label for link Firebase Phone Authentication with Riverpod in sidebar Sidebar, linking to https://github.com/julienlebren/flutter_firebase_phone_auth_riverpod"
   },
   "sidebar.Sidebar.link.ListView paging with search": {
@@ -76,7 +76,7 @@
     "description": "The label for link ListView paging with search in sidebar Sidebar, linking to https://github.com/tbm98/flutter_loadmore_search"
   },
   "sidebar.Sidebar.link.Resocoder's Weather Bloc to Weather Riverpod": {
-    "message": "Resocoder's Weather Bloc to Weather Riverpod",
+    "message": "Application météo de Resocoder en Bloc vers Riverpod",
     "description": "The label for link Resocoder's Weather Bloc to Weather Riverpod in sidebar Sidebar, linking to https://github.com/campanagerald/flutter-bloc-library-v1-tutorial"
   },
   "sidebar.Sidebar.link.Blood Pressure Tracker App": {
@@ -84,8 +84,28 @@
     "description": "The label for link Blood Pressure Tracker App in sidebar Sidebar, linking to https://github.com/UrosTodosijevic/blood_pressure_tracker"
   },
   "sidebar.Sidebar.link.Firebase Authentication with Riverpod Following Flutter DDD Architecture Pattern": {
-    "message": "Firebase Authentication with Riverpod Following Flutter DDD Architecture Pattern",
+    "message": "Authentification Firebase avec Riverpod suivant le modèle d'architecture Flutter DDD",
     "description": "The label for link Firebase Authentication with Riverpod Following Flutter DDD Architecture Pattern in sidebar Sidebar, linking to https://github.com/pythonhubpy/firebase_authentication_flutter_DDD"
+  },
+  "sidebar.Sidebar.link.Todo App with Backup and Restore feature": {
+    "message": "Application Todo avec fonction de sauvegarde et de restauration",
+    "description": "The label for link Todo App with Backup and Restore feature in sidebar Sidebar, linking to https://github.com/TheAlphaApp/flutter_riverpod_todo_app"
+  },
+  "sidebar.Sidebar.link.Integrating Hive database with Riverpod (simple example)": {
+    "message": "Integration d'une base de donnée Hive avec Riverpod (exemple simple)",
+    "description": "The label for link Integrating Hive database with Riverpod (simple example) in sidebar Sidebar, linking to https://github.com/GitGud31/theme_riverpod_hive"
+  },
+  "sidebar.Sidebar.link.Browser App with Riverpod": {
+    "message": "Application navigateur avec Riverpod",
+    "description": "The label for link Browser App with Riverpod, linking to https://github.com/MarioCroSite/simple_browser_app"
+  },
+  "sidebar.Sidebar.link.GoRouter with Riverpod": {
+    "message": "GoRouter avec Riverpod",
+    "description": "The label for link GoRouter with Riverpod, linking to https://github.com/lucavenir/go_router_riverpod"
+  },
+  "sidebar.Sidebar.link.Piano Chords Test": {
+    "message": "Test d'accords de piano",
+    "description": "The label for link Piano Chords Test, linking to https://github.com/akvus/piano_fun"
   },
   "sidebar.Sidebar.link.riverpod": {
     "message": "riverpod",
