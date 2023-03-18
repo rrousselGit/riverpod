@@ -36,6 +36,26 @@ Once you know what package you want to install, proceed to add the following to 
 >
 <TabItem value="flutter_riverpod">
 
+<p/>
+
+<ConditionalSnippet codegen={false} hooks={true}>
+  <code>flutter pub add hooks_riverpod dev:custom_lint dev:riverpod_lint</code>
+</ConditionalSnippet>
+
+<ConditionalSnippet codegen={false} hooks={false}>
+  <code>flutter pub add flutter_riverpod dev:custom_lint dev:riverpod_lint</code>
+</ConditionalSnippet>
+
+<ConditionalSnippet codegen={true} hooks={true}>
+  <code>flutter pub add hooks_riverpod dev:custom_lint dev:riverpod_lint riverpod_annotation dev:build_runner dev:riverpod_generator</code>
+</ConditionalSnippet>
+
+<ConditionalSnippet codegen={true} hooks={false}>
+  <code>flutter pub add flutter_riverpod dev:custom_lint dev:riverpod_lint riverpod_annotation dev:build_runner dev:riverpod_generator</code>
+</ConditionalSnippet>
+
+<p/>
+
 <AutoSnippet title="pubspec.yaml" language="yaml" {...pubspec}></AutoSnippet>
 
 Then install packages with `flutter pub get`.
@@ -47,6 +67,18 @@ Then install packages with `flutter pub get`.
 
 </TabItem>
 <TabItem value="riverpod">
+
+<p/>
+
+<ConditionalSnippet codegen={true}>
+  <code>dart pub add riverpod dev:custom_lint dev:riverpod_lint riverpod_annotation dev:build_runner dev:riverpod_generator</code>
+</ConditionalSnippet>
+
+<ConditionalSnippet codegen={false}>
+  <code>dart pub add riverpod dev:custom_lint dev:riverpod_lint</code>
+</ConditionalSnippet>
+
+<p/>
 
 <AutoSnippet
   title="pubspec.yaml"
