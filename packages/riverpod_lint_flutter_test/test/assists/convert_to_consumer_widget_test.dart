@@ -5,6 +5,10 @@ import 'package:analyzer/dart/analysis/utilities.dart';
 import 'package:analyzer/source/source_range.dart';
 import 'package:riverpod_lint/src/assists/convert_to_consumer_stateful_widget.dart';
 import 'package:riverpod_lint/src/assists/convert_to_consumer_widget.dart';
+import 'package:riverpod_lint/src/assists/convert_to_hook_consumer_widget.dart';
+import 'package:riverpod_lint/src/assists/convert_to_hook_widget.dart';
+import 'package:riverpod_lint/src/assists/convert_to_stateful_hook_consumer_widget.dart';
+import 'package:riverpod_lint/src/assists/convert_to_stateful_hook_widget.dart';
 import 'package:riverpod_lint/src/assists/convert_to_stateful_widget.dart';
 import 'package:riverpod_lint/src/assists/convert_to_stateless_widget.dart';
 import 'package:test/test.dart';
@@ -215,6 +219,214 @@ void main() {
       ];
 
       expect(changes, hasLength(6));
+
+      return changes;
+    },
+  );
+
+  testGolden(
+    'Convert widgets to hookwidgets',
+    'assists/convert_to_hook_widget.json',
+    () async {
+      final assist = ConvertToHookWidget();
+      final file = File(
+        'test/assists/convert_to_consumer_widget.dart',
+      ).absolute;
+
+      final result = await resolveFile2(path: file.path);
+      result as ResolvedUnitResult;
+
+      var changes = [
+        // Stateless
+        ...await assist.testRun(result, const SourceRange(163, 0)),
+        ...await assist.testRun(result, const SourceRange(174, 0)),
+        ...await assist.testRun(result, const SourceRange(185, 0)),
+
+        // StatelessWithComma
+        ...await assist.testRun(result, const SourceRange(350, 0)),
+
+        // Hook
+        ...await assist.testRun(result, const SourceRange(524, 0)),
+
+        // HookConsumer
+        ...await assist.testRun(result, const SourceRange(690, 0)),
+
+        // Stateful
+        ...await assist.testRun(result, const SourceRange(884, 0)),
+
+        // ExplicitCreateState
+        ...await assist.testRun(result, const SourceRange(1208, 0)),
+
+        // HookStateful
+        ...await assist.testRun(result, const SourceRange(1553, 0)),
+
+        // ConsumerStateful
+        ...await assist.testRun(result, const SourceRange(1863, 0)),
+
+        // HookConsumerStateful
+        ...await assist.testRun(result, const SourceRange(2214, 0)),
+
+        // ConsumerWidget
+        ...await assist.testRun(result, const SourceRange(2582, 0)),
+      ];
+
+      expect(changes, hasLength(9));
+
+      return changes;
+    },
+  );
+
+  testGolden(
+    'Convert widgets to statefulhookwidgets',
+    'assists/convert_to_stateful_hook_widget.json',
+    () async {
+      final assist = ConvertToStatefulHookWidget();
+      final file = File(
+        'test/assists/convert_to_consumer_widget.dart',
+      ).absolute;
+
+      final result = await resolveFile2(path: file.path);
+      result as ResolvedUnitResult;
+
+      var changes = [
+        // Stateless
+        ...await assist.testRun(result, const SourceRange(163, 0)),
+        ...await assist.testRun(result, const SourceRange(174, 0)),
+        ...await assist.testRun(result, const SourceRange(185, 0)),
+
+        // StatelessWithComma
+        ...await assist.testRun(result, const SourceRange(350, 0)),
+
+        // Hook
+        ...await assist.testRun(result, const SourceRange(524, 0)),
+
+        // HookConsumer
+        ...await assist.testRun(result, const SourceRange(690, 0)),
+
+        // Stateful
+        ...await assist.testRun(result, const SourceRange(884, 0)),
+
+        // ExplicitCreateState
+        ...await assist.testRun(result, const SourceRange(1208, 0)),
+
+        // HookStateful
+        ...await assist.testRun(result, const SourceRange(1553, 0)),
+
+        // ConsumerStateful
+        ...await assist.testRun(result, const SourceRange(1863, 0)),
+
+        // HookConsumerStateful
+        ...await assist.testRun(result, const SourceRange(2214, 0)),
+
+        // ConsumerWidget
+        ...await assist.testRun(result, const SourceRange(2582, 0)),
+      ];
+
+      expect(changes, hasLength(9));
+
+      return changes;
+    },
+  );
+
+  testGolden(
+    'Convert widgets to hookconsumerwidgets',
+    'assists/convert_to_hook_consumer_widget.json',
+    () async {
+      final assist = ConvertToHookConsumerWidget();
+      final file = File(
+        'test/assists/convert_to_consumer_widget.dart',
+      ).absolute;
+
+      final result = await resolveFile2(path: file.path);
+      result as ResolvedUnitResult;
+
+      var changes = [
+        // Stateless
+        ...await assist.testRun(result, const SourceRange(163, 0)),
+        ...await assist.testRun(result, const SourceRange(174, 0)),
+        ...await assist.testRun(result, const SourceRange(185, 0)),
+
+        // StatelessWithComma
+        ...await assist.testRun(result, const SourceRange(350, 0)),
+
+        // Hook
+        ...await assist.testRun(result, const SourceRange(524, 0)),
+
+        // HookConsumer
+        ...await assist.testRun(result, const SourceRange(690, 0)),
+
+        // Stateful
+        ...await assist.testRun(result, const SourceRange(884, 0)),
+
+        // ExplicitCreateState
+        ...await assist.testRun(result, const SourceRange(1208, 0)),
+
+        // HookStateful
+        ...await assist.testRun(result, const SourceRange(1553, 0)),
+
+        // ConsumerStateful
+        ...await assist.testRun(result, const SourceRange(1863, 0)),
+
+        // HookConsumerStateful
+        ...await assist.testRun(result, const SourceRange(2214, 0)),
+
+        // ConsumerWidget
+        ...await assist.testRun(result, const SourceRange(2582, 0)),
+      ];
+
+      expect(changes, hasLength(9));
+
+      return changes;
+    },
+  );
+
+  testGolden(
+    'Convert widgets to statefulhookconsumerwidgets',
+    'assists/convert_to_stateful_hook_consumer_widget.json',
+    () async {
+      final assist = ConvertToStatefulHookConsumerWidget();
+      final file = File(
+        'test/assists/convert_to_consumer_widget.dart',
+      ).absolute;
+
+      final result = await resolveFile2(path: file.path);
+      result as ResolvedUnitResult;
+
+      var changes = [
+        // Stateless
+        ...await assist.testRun(result, const SourceRange(163, 0)),
+        ...await assist.testRun(result, const SourceRange(174, 0)),
+        ...await assist.testRun(result, const SourceRange(185, 0)),
+
+        // StatelessWithComma
+        ...await assist.testRun(result, const SourceRange(350, 0)),
+
+        // Hook
+        ...await assist.testRun(result, const SourceRange(524, 0)),
+
+        // HookConsumer
+        ...await assist.testRun(result, const SourceRange(690, 0)),
+
+        // Stateful
+        ...await assist.testRun(result, const SourceRange(884, 0)),
+
+        // ExplicitCreateState
+        ...await assist.testRun(result, const SourceRange(1208, 0)),
+
+        // HookStateful
+        ...await assist.testRun(result, const SourceRange(1553, 0)),
+
+        // ConsumerStateful
+        ...await assist.testRun(result, const SourceRange(1863, 0)),
+
+        // HookConsumerStateful
+        ...await assist.testRun(result, const SourceRange(2214, 0)),
+
+        // ConsumerWidget
+        ...await assist.testRun(result, const SourceRange(2582, 0)),
+      ];
+
+      expect(changes, hasLength(9));
 
       return changes;
     },
