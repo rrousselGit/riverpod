@@ -8,8 +8,10 @@ import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
 import pubspec from "./getting_started/pubspec";
 import dartHelloWorld from "./getting_started/dart_hello_world";
+import pubadd from  "./getting_started/pub_add";
 import helloWorld from "./getting_started/hello_world";
 import dartPubspec from "./getting_started/dart_pubspec";
+import dartPubadd from  "./getting_started/dart_pub_add";
 import {
   trimSnippet,
   AutoSnippet,
@@ -24,6 +26,30 @@ To get a feel of Riverpod, try it online on [Dartpad](https://dartpad.dev/?null_
 
 ## Installing the package
 
+run in your terminal
+
+<Tabs
+  groupId="riverpod"
+  defaultValue="flutter_riverpod"
+  values={[
+    { label: 'Flutter', value: 'flutter_riverpod', },
+    { label: 'Dart only', value: 'riverpod', },
+  ]}
+>
+<TabItem value="flutter_riverpod">
+
+<AutoSnippet title="Terminal" {...pubadd}></AutoSnippet>
+
+</TabItem>
+
+<TabItem value="riverpod">
+
+<AutoSnippet title="Terminal" {...dartPubadd}></AutoSnippet>
+
+</TabItem>
+
+</Tabs>
+
 Once you know what package you want to install, proceed to add the following to your `pubspec.yaml`:
 
 <Tabs
@@ -36,26 +62,6 @@ Once you know what package you want to install, proceed to add the following to 
 >
 <TabItem value="flutter_riverpod">
 
-<p/>
-
-<ConditionalSnippet codegen={false} hooks={true}>
-  <code>flutter pub add hooks_riverpod dev:custom_lint dev:riverpod_lint</code>
-</ConditionalSnippet>
-
-<ConditionalSnippet codegen={false} hooks={false}>
-  <code>flutter pub add flutter_riverpod dev:custom_lint dev:riverpod_lint</code>
-</ConditionalSnippet>
-
-<ConditionalSnippet codegen={true} hooks={true}>
-  <code>flutter pub add hooks_riverpod dev:custom_lint dev:riverpod_lint riverpod_annotation dev:build_runner dev:riverpod_generator</code>
-</ConditionalSnippet>
-
-<ConditionalSnippet codegen={true} hooks={false}>
-  <code>flutter pub add flutter_riverpod dev:custom_lint dev:riverpod_lint riverpod_annotation dev:build_runner dev:riverpod_generator</code>
-</ConditionalSnippet>
-
-<p/>
-
 <AutoSnippet title="pubspec.yaml" language="yaml" {...pubspec}></AutoSnippet>
 
 Then install packages with `flutter pub get`.
@@ -67,18 +73,6 @@ Then install packages with `flutter pub get`.
 
 </TabItem>
 <TabItem value="riverpod">
-
-<p/>
-
-<ConditionalSnippet codegen={true}>
-  <code>dart pub add riverpod dev:custom_lint dev:riverpod_lint riverpod_annotation dev:build_runner dev:riverpod_generator</code>
-</ConditionalSnippet>
-
-<ConditionalSnippet codegen={false}>
-  <code>dart pub add riverpod dev:custom_lint dev:riverpod_lint</code>
-</ConditionalSnippet>
-
-<p/>
 
 <AutoSnippet
   title="pubspec.yaml"
