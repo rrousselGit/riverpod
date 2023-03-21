@@ -13,7 +13,7 @@ class ConvertToStatefulBaseWidget extends RiverpodAssist {
     required this.targetWidget,
   });
   final StatefulBaseWidgetType targetWidget;
-  late final TypeChecker statelessBaseType = getStatelessBaseType(
+  late final statelessBaseType = getStatelessBaseType(
     exclude: targetWidget == StatefulBaseWidgetType.statefulWidget
         ? StatelessBaseWidgetType.statelessWidget
         : null,
