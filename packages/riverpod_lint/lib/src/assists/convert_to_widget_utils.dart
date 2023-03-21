@@ -1,25 +1,20 @@
+import 'package:analyzer/dart/ast/ast.dart';
+// ignore: implementation_imports, somehow not exported by analyzer
+import 'package:collection/collection.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
-enum ConvertToWidget {
+import '../object_utils.dart';
+
+enum StatelessBaseWidgetType {
   consumerWidget(
     widgetName: 'ConsumerWidget',
 
-    /// But the priority above everything else
+    // But the priority above everything else
     priority: 100,
     typeChecker: TypeChecker.fromName(
       'ConsumerWidget',
       packageName: 'flutter_riverpod',
     ),
-    isStateless: true,
-  ),
-  consumerStatefulWidget(
-    widgetName: 'ConsumerStatefulWidget',
-    priority: 99,
-    typeChecker: TypeChecker.fromName(
-      'ConsumerStatefulWidget',
-      packageName: 'flutter_riverpod',
-    ),
-    isStateless: false,
   ),
   hookWidget(
     widgetName: 'HookWidget',
@@ -28,16 +23,6 @@ enum ConvertToWidget {
       'HookWidget',
       packageName: 'flutter_hooks',
     ),
-    isStateless: true,
-  ),
-  statefulHookWidget(
-    widgetName: 'StatefulHookWidget',
-    priority: 97,
-    typeChecker: TypeChecker.fromName(
-      'StatefulHookWidget',
-      packageName: 'flutter_hooks',
-    ),
-    isStateless: false,
   ),
   hookConsumerWidget(
     widgetName: 'HookConsumerWidget',
@@ -46,16 +31,6 @@ enum ConvertToWidget {
       'HookConsumerWidget',
       packageName: 'hooks_riverpod',
     ),
-    isStateless: true,
-  ),
-  statefulHookConsumerWidget(
-    widgetName: 'StatefulHookConsumerWidget',
-    priority: 95,
-    typeChecker: TypeChecker.fromName(
-      'StatefulHookConsumerWidget',
-      packageName: 'hooks_riverpod',
-    ),
-    isStateless: false,
   ),
   statelessWidget(
     widgetName: 'StatelessWidget',
@@ -64,7 +39,43 @@ enum ConvertToWidget {
       'StatelessWidget',
       packageName: 'flutter',
     ),
-    isStateless: true,
+  ),
+  ;
+
+  const StatelessBaseWidgetType({
+    required this.widgetName,
+    required this.priority,
+    required this.typeChecker,
+  });
+  final String widgetName;
+  final int priority;
+  final TypeChecker typeChecker;
+}
+
+enum StatefulBaseWidgetType {
+  consumerStatefulWidget(
+    widgetName: 'ConsumerStatefulWidget',
+    priority: 99,
+    typeChecker: TypeChecker.fromName(
+      'ConsumerStatefulWidget',
+      packageName: 'flutter_riverpod',
+    ),
+  ),
+  statefulHookWidget(
+    widgetName: 'StatefulHookWidget',
+    priority: 97,
+    typeChecker: TypeChecker.fromName(
+      'StatefulHookWidget',
+      packageName: 'flutter_hooks',
+    ),
+  ),
+  statefulHookConsumerWidget(
+    widgetName: 'StatefulHookConsumerWidget',
+    priority: 95,
+    typeChecker: TypeChecker.fromName(
+      'StatefulHookConsumerWidget',
+      packageName: 'hooks_riverpod',
+    ),
   ),
   statefulWidget(
     widgetName: 'StatefulWidget',
@@ -73,42 +84,62 @@ enum ConvertToWidget {
       'StatefulWidget',
       packageName: 'flutter',
     ),
-    isStateless: false,
   ),
   ;
 
-  const ConvertToWidget({
+  const StatefulBaseWidgetType({
     required this.widgetName,
     required this.priority,
     required this.typeChecker,
-    required this.isStateless,
   });
   final String widgetName;
   final int priority;
   final TypeChecker typeChecker;
-  final bool isStateless;
 }
 
 TypeChecker getStatelessBaseType({
-  required List<ConvertToWidget> excludes,
+  required StatelessBaseWidgetType? exclude,
 }) {
   return TypeChecker.any(
-    ConvertToWidget.values
-        .where((e) => e.isStateless)
-        .where((e) => !excludes.contains(e))
-        .map((e) => e.typeChecker)
-        .toList(),
+    StatelessBaseWidgetType.values
+        .where((e) => e != exclude)
+        .map((e) => e.typeChecker),
   );
 }
 
 TypeChecker getStatefulBaseType({
-  required List<ConvertToWidget> excludes,
+  required StatefulBaseWidgetType? exclude,
 }) {
   return TypeChecker.any(
-    ConvertToWidget.values
-        .where((e) => !e.isStateless)
-        .where((e) => !excludes.contains(e))
-        .map((e) => e.typeChecker)
-        .toList(),
+    StatefulBaseWidgetType.values
+        .where((e) => e != exclude)
+        .map((e) => e.typeChecker),
   );
+}
+
+const _stateType = TypeChecker.fromName('State', packageName: 'flutter');
+
+ClassDeclaration? findStateClass(ClassDeclaration widgetClass) {
+  final widgetType = widgetClass.declaredElement?.thisType;
+  if (widgetType == null) return null;
+
+  return widgetClass
+      .thisOrAncestorOfType<CompilationUnit>()
+      ?.declarations
+      .whereType<ClassDeclaration>()
+      .where(
+        // Is the class a state class?
+        (e) =>
+            e.extendsClause?.superclass.type
+                .let(_stateType.isAssignableFromType) ??
+            false,
+      )
+      .firstWhereOrNull((e) {
+    final stateWidgetType =
+        e.extendsClause?.superclass.typeArguments?.arguments.firstOrNull?.type;
+    if (stateWidgetType == null) return false;
+
+    final checker = TypeChecker.fromStatic(widgetType);
+    return checker.isExactlyType(stateWidgetType);
+  });
 }

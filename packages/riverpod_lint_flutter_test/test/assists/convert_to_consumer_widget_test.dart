@@ -3,14 +3,9 @@ import 'dart:io';
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/analysis/utilities.dart';
 import 'package:analyzer/source/source_range.dart';
-import 'package:riverpod_lint/src/assists/convert_to_consumer_stateful_widget.dart';
-import 'package:riverpod_lint/src/assists/convert_to_consumer_widget.dart';
-import 'package:riverpod_lint/src/assists/convert_to_hook_consumer_widget.dart';
-import 'package:riverpod_lint/src/assists/convert_to_hook_widget.dart';
-import 'package:riverpod_lint/src/assists/convert_to_stateful_hook_consumer_widget.dart';
-import 'package:riverpod_lint/src/assists/convert_to_stateful_hook_widget.dart';
-import 'package:riverpod_lint/src/assists/convert_to_stateful_widget.dart';
-import 'package:riverpod_lint/src/assists/convert_to_stateless_widget.dart';
+import 'package:riverpod_lint/src/assists/convert_to_stateful_base_widget.dart';
+import 'package:riverpod_lint/src/assists/convert_to_stateless_base_widget.dart';
+import 'package:riverpod_lint/src/assists/convert_to_widget_utils.dart';
 import 'package:test/test.dart';
 
 import '../golden.dart';
@@ -20,7 +15,9 @@ void main() {
     'Convert widgets to consumerwidgets',
     'assists/convert_to_consumer_widget.json',
     () async {
-      final assist = ConvertToConsumerWidget();
+      final assist = ConvertToStatelessBaseWidget(
+        targetWidget: StatelessBaseWidgetType.consumerWidget,
+      );
       final file = File(
         'test/assists/convert_to_consumer_widget.dart',
       ).absolute;
@@ -72,7 +69,9 @@ void main() {
     'Convert widgets to stateful consumers',
     'assists/convert_to_consumer_stateful_widget.json',
     () async {
-      final assist = ConvertToConsumerStatefulWidget();
+      final assist = ConvertToStatefulBaseWidget(
+        targetWidget: StatefulBaseWidgetType.consumerStatefulWidget,
+      );
       final file = File(
         'test/assists/convert_to_consumer_widget.dart',
       ).absolute;
@@ -124,7 +123,9 @@ void main() {
     'Convert widgets to statelesswidgets',
     'assists/convert_to_stateless_widget.json',
     () async {
-      final assist = ConvertToStatelessWidget();
+      final assist = ConvertToStatelessBaseWidget(
+        targetWidget: StatelessBaseWidgetType.statelessWidget,
+      );
       final file = File(
         'test/assists/convert_to_consumer_widget.dart',
       ).absolute;
@@ -176,7 +177,9 @@ void main() {
     'Convert widgets to statefulwidgets',
     'assists/convert_to_stateful_widget.json',
     () async {
-      final assist = ConvertToStatefulWidget();
+      final assist = ConvertToStatefulBaseWidget(
+        targetWidget: StatefulBaseWidgetType.statefulWidget,
+      );
       final file = File(
         'test/assists/convert_to_consumer_widget.dart',
       ).absolute;
@@ -228,7 +231,9 @@ void main() {
     'Convert widgets to hookwidgets',
     'assists/convert_to_hook_widget.json',
     () async {
-      final assist = ConvertToHookWidget();
+      final assist = ConvertToStatelessBaseWidget(
+        targetWidget: StatelessBaseWidgetType.hookWidget,
+      );
       final file = File(
         'test/assists/convert_to_consumer_widget.dart',
       ).absolute;
@@ -280,7 +285,9 @@ void main() {
     'Convert widgets to statefulhookwidgets',
     'assists/convert_to_stateful_hook_widget.json',
     () async {
-      final assist = ConvertToStatefulHookWidget();
+      final assist = ConvertToStatefulBaseWidget(
+        targetWidget: StatefulBaseWidgetType.statefulHookWidget,
+      );
       final file = File(
         'test/assists/convert_to_consumer_widget.dart',
       ).absolute;
@@ -332,7 +339,9 @@ void main() {
     'Convert widgets to hookconsumerwidgets',
     'assists/convert_to_hook_consumer_widget.json',
     () async {
-      final assist = ConvertToHookConsumerWidget();
+      final assist = ConvertToStatelessBaseWidget(
+        targetWidget: StatelessBaseWidgetType.hookConsumerWidget,
+      );
       final file = File(
         'test/assists/convert_to_consumer_widget.dart',
       ).absolute;
@@ -384,7 +393,9 @@ void main() {
     'Convert widgets to statefulhookconsumerwidgets',
     'assists/convert_to_stateful_hook_consumer_widget.json',
     () async {
-      final assist = ConvertToStatefulHookConsumerWidget();
+      final assist = ConvertToStatefulBaseWidget(
+        targetWidget: StatefulBaseWidgetType.statefulHookConsumerWidget,
+      );
       final file = File(
         'test/assists/convert_to_consumer_widget.dart',
       ).absolute;

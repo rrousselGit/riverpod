@@ -5,21 +5,22 @@ import 'package:analyzer/src/generated/source.dart' show Source;
 import 'package:collection/collection.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
-import '../object_utils.dart';
 import '../riverpod_custom_lint.dart';
 import 'convert_to_widget_utils.dart';
 
-const _convertTarget = ConvertToWidget.statelessWidget;
-
-final _statelessBaseType = getStatelessBaseType(excludes: [_convertTarget]);
-final _statefulBaseType = getStatefulBaseType(
-  excludes: [_convertTarget, ConvertToWidget.statefulWidget],
-);
-
-const _stateType = TypeChecker.fromName('State', packageName: 'flutter');
-
-class ConvertToStatelessWidget extends RiverpodAssist {
-  ConvertToStatelessWidget();
+class ConvertToStatelessBaseWidget extends RiverpodAssist {
+  ConvertToStatelessBaseWidget({
+    required this.targetWidget,
+  });
+  final StatelessBaseWidgetType targetWidget;
+  late final TypeChecker statelessBaseType = getStatelessBaseType(
+    exclude: targetWidget,
+  );
+  late final statefulBaseType = getStatefulBaseType(
+    exclude: targetWidget == StatelessBaseWidgetType.statelessWidget
+        ? StatefulBaseWidgetType.statefulWidget
+        : null,
+  );
 
   @override
   void run(
@@ -35,12 +36,12 @@ class ConvertToStatelessWidget extends RiverpodAssist {
       final type = node.superclass.type;
       if (type == null) return;
 
-      if (_statelessBaseType.isExactlyType(type)) {
+      if (statelessBaseType.isExactlyType(type)) {
         _convertStatelessToStatelessWidget(reporter, node);
         return;
       }
 
-      if (_statefulBaseType.isExactlyType(type)) {
+      if (statefulBaseType.isExactlyType(type)) {
         _convertStatefulToStatelessWidget(reporter, node, resolver.source);
         return;
       }
@@ -52,15 +53,15 @@ class ConvertToStatelessWidget extends RiverpodAssist {
     ExtendsClause node,
   ) {
     final changeBuilder = reporter.createChangeBuilder(
-      message: 'Convert to ${_convertTarget.widgetName}',
-      priority: _convertTarget.priority,
+      message: 'Convert to ${targetWidget.widgetName}',
+      priority: targetWidget.priority,
     );
 
     changeBuilder.addDartFileEdit((builder) {
       // Change the extended base class
       builder.addSimpleReplacement(
         node.superclass.sourceRange,
-        _convertTarget.widgetName,
+        targetWidget.widgetName,
       );
 
       final buildMethod = node
@@ -72,14 +73,31 @@ class ConvertToStatelessWidget extends RiverpodAssist {
       if (buildMethod == null) return;
       final buildParams = buildMethod.parameters;
 
-      // If the build method has a ref, remove it
-      if (buildParams != null && buildParams.parameters.length == 2) {
-        builder.addDeletion(
-          sourceRangeFrom(
-            start: buildParams.parameters.first.end,
-            end: buildParams.rightParenthesis.offset,
-          ),
-        );
+      if (buildParams == null) return;
+
+      switch (targetWidget) {
+        case StatelessBaseWidgetType.consumerWidget:
+        case StatelessBaseWidgetType.hookConsumerWidget:
+          // If the build method has not a ref, add it
+          if (buildParams.parameters.length == 1) {
+            builder.addSimpleInsertion(
+              buildParams.parameters.last.end,
+              ', WidgetRef ref',
+            );
+          }
+          break;
+        case StatelessBaseWidgetType.hookWidget:
+        case StatelessBaseWidgetType.statelessWidget:
+          // If the build method has a ref, remove it
+          if (buildParams.parameters.length == 2) {
+            builder.addDeletion(
+              sourceRangeFrom(
+                start: buildParams.parameters.first.end,
+                end: buildParams.rightParenthesis.offset,
+              ),
+            );
+          }
+          break;
       }
     });
   }
@@ -90,15 +108,15 @@ class ConvertToStatelessWidget extends RiverpodAssist {
     Source source,
   ) {
     final changeBuilder = reporter.createChangeBuilder(
-      message: 'Convert to ${_convertTarget.widgetName}',
-      priority: _convertTarget.priority,
+      message: 'Convert to ${targetWidget.widgetName}',
+      priority: targetWidget.priority,
     );
 
     changeBuilder.addDartFileEdit((builder) {
       // Change the extended base class
       builder.addSimpleReplacement(
         node.superclass.sourceRange,
-        _convertTarget.widgetName,
+        targetWidget.widgetName,
       );
 
       final widgetClass = node.thisOrAncestorOfType<ClassDeclaration>();
@@ -113,7 +131,7 @@ class ConvertToStatelessWidget extends RiverpodAssist {
       }
 
       // Search for the associated State class
-      final stateClass = _findStateClass(widgetClass);
+      final stateClass = findStateClass(widgetClass);
       if (stateClass == null) return;
 
       // Move the build method to the widget class
@@ -122,7 +140,18 @@ class ConvertToStatelessWidget extends RiverpodAssist {
           .firstWhereOrNull((element) => element.name.lexeme == 'build');
       if (buildMethod == null) return;
 
-      final newBuildMethod = _buildMethodWithoutRef(buildMethod, source);
+      final String? newBuildMethod;
+      switch (targetWidget) {
+        case StatelessBaseWidgetType.consumerWidget:
+        case StatelessBaseWidgetType.hookConsumerWidget:
+          newBuildMethod = _buildMethodWithRef(buildMethod, source);
+          break;
+        case StatelessBaseWidgetType.hookWidget:
+        case StatelessBaseWidgetType.statelessWidget:
+          newBuildMethod = _buildMethodWithoutRef(buildMethod, source);
+          break;
+      }
+
       if (newBuildMethod == null) return;
       builder.addSimpleInsertion(
         widgetClass.rightBracket.offset,
@@ -134,33 +163,34 @@ class ConvertToStatelessWidget extends RiverpodAssist {
     });
   }
 
-  // TODO: standardization
-  ClassDeclaration? _findStateClass(ClassDeclaration widgetClass) {
-    final widgetType = widgetClass.declaredElement?.thisType;
-    if (widgetType == null) return null;
+  String? _buildMethodWithRef(
+    MethodDeclaration buildMethod,
+    Source source,
+  ) {
+    final parameters = buildMethod.parameters;
+    if (parameters == null) return null;
 
-    return widgetClass
-        .thisOrAncestorOfType<CompilationUnit>()
-        ?.declarations
-        .whereType<ClassDeclaration>()
-        .where(
-          // Is the class a state class?
-          (e) =>
-              e.extendsClause?.superclass.type
-                  .let(_stateType.isAssignableFromType) ??
-              false,
-        )
-        .firstWhereOrNull((e) {
-      final stateWidgetType = e
-          .extendsClause?.superclass.typeArguments?.arguments.firstOrNull?.type;
-      if (stateWidgetType == null) return false;
+    if (parameters.parameters.length == 2) {
+      // The build method already has a ref parameter, nothing to change
+      return '${source.contents.data.substring(buildMethod.offset, buildMethod.end)}\n';
+    }
 
-      final checker = TypeChecker.fromStatic(widgetType);
-      return checker.isExactlyType(stateWidgetType);
-    });
+    final buffer = StringBuffer();
+    final refParamStartOffset = parameters.parameters.firstOrNull?.end ??
+        parameters.leftParenthesis.offset + 1;
+
+    buffer
+      ..write(
+        source.contents.data.substring(buildMethod.offset, refParamStartOffset),
+      )
+      ..write(', WidgetRef ref')
+      ..writeln(
+        source.contents.data.substring(refParamStartOffset, buildMethod.end),
+      );
+
+    return buffer.toString();
   }
 
-  // TODO: standardization
   String? _buildMethodWithoutRef(
     MethodDeclaration buildMethod,
     Source source,

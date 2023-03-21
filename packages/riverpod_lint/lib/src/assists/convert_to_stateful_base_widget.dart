@@ -5,19 +5,22 @@ import 'package:analyzer/src/generated/source.dart' show Source;
 import 'package:collection/collection.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
-import '../object_utils.dart';
 import '../riverpod_custom_lint.dart';
 import 'convert_to_widget_utils.dart';
 
-const _convertTarget = ConvertToWidget.statefulHookWidget;
-
-final _statelessBaseType = getStatelessBaseType(excludes: [_convertTarget]);
-final _statefulBaseType = getStatefulBaseType(excludes: [_convertTarget]);
-
-const _stateType = TypeChecker.fromName('State', packageName: 'flutter');
-
-class ConvertToStatefulHookWidget extends RiverpodAssist {
-  ConvertToStatefulHookWidget();
+class ConvertToStatefulBaseWidget extends RiverpodAssist {
+  ConvertToStatefulBaseWidget({
+    required this.targetWidget,
+  });
+  final StatefulBaseWidgetType targetWidget;
+  late final TypeChecker statelessBaseType = getStatelessBaseType(
+    exclude: targetWidget == StatefulBaseWidgetType.statefulWidget
+        ? StatelessBaseWidgetType.statelessWidget
+        : null,
+  );
+  late final statefulBaseType = getStatefulBaseType(
+    exclude: targetWidget,
+  );
 
   @override
   void run(
@@ -33,42 +36,37 @@ class ConvertToStatefulHookWidget extends RiverpodAssist {
       final type = node.superclass.type;
       if (type == null) return;
 
-      if (_statelessBaseType.isExactlyType(type)) {
-        _convertStatelessToStatefulHookWidget(reporter, node);
+      if (statelessBaseType.isExactlyType(type)) {
+        _convertStatelessToStatefulWidget(reporter, node);
         return;
       }
 
-      if (_statefulBaseType.isExactlyType(type)) {
-        _convertStatefulToStatefulHookWidget(
-          reporter,
-          node,
-          resolver.source,
-        );
+      if (statefulBaseType.isExactlyType(type)) {
+        _convertStatefulToStatefulWidget(reporter, node, resolver.source);
         return;
       }
     });
   }
 
-  void _convertStatelessToStatefulHookWidget(
+  void _convertStatelessToStatefulWidget(
     ChangeReporter reporter,
     ExtendsClause node,
   ) {
     final changeBuilder = reporter.createChangeBuilder(
-      message: 'Convert to ${_convertTarget.widgetName}',
-      priority: _convertTarget.priority,
+      message: 'Convert to ${targetWidget.widgetName}',
+      priority: targetWidget.priority,
     );
 
     changeBuilder.addDartFileEdit((builder) {
       // Change the extended base class
       builder.addSimpleReplacement(
         node.superclass.sourceRange,
-        _convertTarget.widgetName,
+        targetWidget.widgetName,
       );
 
       final widgetClass = node.thisOrAncestorOfType<ClassDeclaration>();
       if (widgetClass == null) return;
 
-      // Now update "build" to take a "ref" parameter
       final buildMethod = node
           .thisOrAncestorOfType<ClassDeclaration>()
           ?.members
@@ -76,16 +74,27 @@ class ConvertToStatefulHookWidget extends RiverpodAssist {
           .firstWhereOrNull((element) => element.name.lexeme == 'build');
       if (buildMethod == null) return;
 
-      final createdStateClassName = '_${widgetClass.name.lexeme}HookState';
+      final createdStateClassName = '_${widgetClass.name.lexeme.public}State';
+      final String baseStateName;
+      switch (targetWidget) {
+        case StatefulBaseWidgetType.consumerStatefulWidget:
+        case StatefulBaseWidgetType.statefulHookConsumerWidget:
+          baseStateName = 'ConsumerState';
+          break;
+        case StatefulBaseWidgetType.statefulHookWidget:
+        case StatefulBaseWidgetType.statefulWidget:
+          baseStateName = 'State';
+          break;
+      }
 
       // Split the class into two classes right before the build method
       builder.addSimpleInsertion(buildMethod.offset, '''
-  @override
-    State<${widgetClass.name.lexeme}> createState() => $createdStateClassName();
-  }
+@override
+  $baseStateName<${widgetClass.name.lexeme}> createState() => $createdStateClassName();
+}
 
-  class $createdStateClassName extends State<${widgetClass.name.lexeme}> {
-  ''');
+class $createdStateClassName extends $baseStateName<${widgetClass.name}> {
+''');
 
       final buildParams = buildMethod.parameters;
       // If the build method has a ref, remove it
@@ -100,28 +109,40 @@ class ConvertToStatefulHookWidget extends RiverpodAssist {
     });
   }
 
-  void _convertStatefulToStatefulHookWidget(
+  void _convertStatefulToStatefulWidget(
     ChangeReporter reporter,
     ExtendsClause node,
     Source source,
   ) {
     final changeBuilder = reporter.createChangeBuilder(
-      message: 'Convert to ${_convertTarget.widgetName}',
-      priority: _convertTarget.priority,
+      message: 'Convert to ${targetWidget.widgetName}',
+      priority: targetWidget.priority,
     );
 
     changeBuilder.addDartFileEdit((builder) {
       // Change the extended base class
       builder.addSimpleReplacement(
         node.superclass.sourceRange,
-        _convertTarget.widgetName,
+        targetWidget.widgetName,
       );
 
       final widgetClass = node.thisOrAncestorOfType<ClassDeclaration>();
       if (widgetClass == null) return;
 
-      final stateClass = _findStateClass(widgetClass);
+      final stateClass = findStateClass(widgetClass);
       if (stateClass == null) return;
+
+      final String baseStateName;
+      switch (targetWidget) {
+        case StatefulBaseWidgetType.consumerStatefulWidget:
+        case StatefulBaseWidgetType.statefulHookConsumerWidget:
+          baseStateName = 'ConsumerState';
+          break;
+        case StatefulBaseWidgetType.statefulHookWidget:
+        case StatefulBaseWidgetType.statefulWidget:
+          baseStateName = 'State';
+          break;
+      }
 
       final createStateMethod = widgetClass.members
           .whereType<MethodDeclaration>()
@@ -129,48 +150,22 @@ class ConvertToStatefulHookWidget extends RiverpodAssist {
       if (createStateMethod != null) {
         final returnTypeString = createStateMethod.returnType?.toSource() ?? '';
         if (returnTypeString != stateClass.name.lexeme) {
-          // Replace ConsumerState<MyWidget> with State<MyWidget>
+          // Replace State
           builder.addSimpleReplacement(
             createStateMethod.returnType!.sourceRange,
-            'State<${widgetClass.name}>',
+            '$baseStateName<${widgetClass.name}>',
           );
         }
       }
 
       final stateExtends = stateClass.extendsClause;
       if (stateExtends != null) {
-        // Replace ConsumerState<MyWidget> with State<MyWidget>
+        // Replace State
         builder.addSimpleReplacement(
           stateExtends.superclass.sourceRange,
-          'State<${widgetClass.name}>',
+          '$baseStateName<${widgetClass.name}>',
         );
       }
-    });
-  }
-
-  // TODO: standardization
-  ClassDeclaration? _findStateClass(ClassDeclaration widgetClass) {
-    final widgetType = widgetClass.declaredElement?.thisType;
-    if (widgetType == null) return null;
-
-    return widgetClass
-        .thisOrAncestorOfType<CompilationUnit>()
-        ?.declarations
-        .whereType<ClassDeclaration>()
-        .where(
-          // Is the class a state class?
-          (e) =>
-              e.extendsClause?.superclass.type
-                  .let(_stateType.isAssignableFromType) ??
-              false,
-        )
-        .firstWhereOrNull((e) {
-      final stateWidgetType = e
-          .extendsClause?.superclass.typeArguments?.arguments.firstOrNull?.type;
-      if (stateWidgetType == null) return false;
-
-      final checker = TypeChecker.fromStatic(widgetType);
-      return checker.isExactlyType(stateWidgetType);
     });
   }
 }
