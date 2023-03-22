@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'models.dart';
@@ -17,7 +18,8 @@ final configsProvider = StreamProvider<Configuration>(
 final charactersProvider = FutureProvider<List<Character>>((ref) async {
   final search = ref.watch(searchProvider);
   final configs = await ref.watch(configsProvider.future);
-  final response = await dio.get('${configs.host}/characters?search=$search');
+  final response = await dio.get<List<Map<String, dynamic>>>(
+      '${configs.host}/characters?search=$search');
 
-  return response.data.map(Character.fromJson).toList();
+  return response.data!.map(Character.fromJson).toList();
 });

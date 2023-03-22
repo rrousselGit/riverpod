@@ -15,11 +15,3 @@ class Configuration {
 
   final String host;
 }
-
-class Dio {
-  Future<Response> get(String path) async => Response();
-}
-
-class Response {
-  List<Map<String, dynamic>> get data => [];
-}

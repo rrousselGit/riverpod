@@ -1,4 +1,4 @@
-
+import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'models.dart';
@@ -18,5 +18,7 @@ Future<List<Product>> products(ProductsRef ref) async {
   // configurations changes
   final configs = await ref.watch(configProvider.future);
 
-  return dio.get('${configs.host}/products');
+  final result =
+      await dio.get<List<Map<String, dynamic>>>('${configs.host}/products');
+  return result.data!.map(Product.fromJson).toList();
 }
