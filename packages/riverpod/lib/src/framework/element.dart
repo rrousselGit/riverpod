@@ -406,7 +406,6 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   void create({required bool didChangeDependency});
 
   /// Invokes [create] and handles errors.
-  @notifyDebuggerOnException
   void buildState() {
     ProviderElementBase<Object?>? debugPreviouslyBuildingElement;
     final previousDidChangeDependency = _didChangeDependency;
