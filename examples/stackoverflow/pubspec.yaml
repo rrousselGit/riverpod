@@ -8,7 +8,7 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
-  dio: ^4.0.0
+  dio: ^5.1.1
   flutter:
     sdk: flutter
   flutter_hooks: ^0.18.0
