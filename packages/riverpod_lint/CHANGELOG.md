@@ -1,3 +1,6 @@
+## Unreleased fix
+
+- Fix typo in the name of the lint `avoid_manual_providers_as_generated_provider_dependency` (thanks to @mafreud)
 ## 1.1.6 - 2023-03-13
 
 - No-longer throw "Bad state: Too many elements"
@@ -34,7 +37,7 @@ Fix quick-fix for provider_dependencies
   It also contains a quick-fix to automatically update the list of `dependencies` to match.
   This lint only works with generated providers.
 
-- Added `avoid_manual_providers_as_generated_provider_depenency` lint.
+- Added `avoid_manual_providers_as_generated_provider_dependency` lint.
   This lint warns if a generated provider depends on a non-generated provider,
   as this would break the `provider_dependencies` lint.
 
