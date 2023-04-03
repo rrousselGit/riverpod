@@ -13,7 +13,6 @@ environment:
   sdk: ">=2.17.0 <3.0.0"
 
 dependencies:
-  collection: ^1.15.0
   meta: ^1.4.0
   stack_trace: ^1.10.0
   state_notifier: ^0.7.2
