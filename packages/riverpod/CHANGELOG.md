@@ -1,3 +1,7 @@
+## Unreleased fix
+
+- Fixes an issue with nested ProviderScope (thanks to @jeiea)
+
 ## 2.3.3 - 2023-04-06
 
 - The debugger no-longer pauses on uncaught exceptions inside providers.
