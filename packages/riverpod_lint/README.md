@@ -43,7 +43,7 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
   - [missing\_provider\_scope](#missing_provider_scope)
   - [provider\_dependencies (riverpod\_generator only)](#provider_dependencies-riverpod_generator-only)
   - [scoped\_providers\_should\_specify\_dependencies (generator only)](#scoped_providers_should_specify_dependencies-generator-only)
-  - [avoid\_manual\_providers\_as\_generated\_provider\_depenency](#avoid_manual_providers_as_generated_provider_depenency)
+  - [avoid\_manual\_providers\_as\_generated\_provider\_depenency](#avoid_manual_providers_as_generated_provider_dependency)
   - [provider\_parameters](#provider_parameters)
   - [unsupported\_provider\_value (riverpod\_generator only)](#unsupported_provider_value-riverpod_generator-only)
   - [stateless\_ref (riverpod\_generator only)](#stateless_ref-riverpod_generator-only)
@@ -313,7 +313,7 @@ class MyApp extends StatelessWidget {
 }
 ```
 
-### avoid_manual_providers_as_generated_provider_depenency
+### avoid_manual_providers_as_generated_provider_dependency
 
 Providers using riverpod_generator should not depend on providers which do not use riverpod_generator.
 Failing to do so would break the [provider_dependencies](#provider_dependencies-riverpod_generator-only) lint.

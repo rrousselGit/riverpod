@@ -1,3 +1,7 @@
+## 2.0.3 - 2023-04-06
+
+- `riverpod` upgraded to `2.3.3`
+
 ## 2.0.2 - 2023-03-13
 
 - `riverpod` upgraded to `2.3.2`
