@@ -1,3 +1,10 @@
+## Unreleased patch
+
+- The debugger no-longer pauses on uncaught exceptions inside providers.
+  This was voluntary, but too many people have complained that it often
+  is a false positive.
+- Removed unused dependency (thanks to @passsy)
+
 ## 2.3.2 - 2023-03-13
 
 - Deprecated the generic parameter of `Family`.
