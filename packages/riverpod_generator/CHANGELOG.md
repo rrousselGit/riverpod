@@ -1,3 +1,7 @@
+## 2.1.5 - 2023-04-06
+
+- `riverpod_annotation` upgraded to `2.0.3`
+
 ## 2.1.4 - 2023-03-13
 
 - `riverpod_analyzer_utils` upgraded to `0.2.0`

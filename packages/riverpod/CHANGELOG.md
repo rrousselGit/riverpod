@@ -1,4 +1,4 @@
-## Unreleased patch
+## 2.3.3 - 2023-04-06
 
 - The debugger no-longer pauses on uncaught exceptions inside providers.
   This was voluntary, but too many people have complained that it often
