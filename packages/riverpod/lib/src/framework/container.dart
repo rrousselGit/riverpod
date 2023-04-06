@@ -195,6 +195,17 @@ class ProviderContainer implements Node {
   /// a [StateError] when attempting to use them.
   bool _disposed = false;
 
+  /// An internal utility for checking if a [ProviderContainer] has a fast
+  /// path for reading a provider.
+  ///
+  /// This should not be used and is an implementation detail of [ProviderContainer].
+  /// It could be removed at any time without a major version bump.
+  @internal
+  @visibleForTesting
+  bool hasStateReaderFor(ProviderListenable<Object?> provider) {
+    return _stateReaders.containsKey(provider);
+  }
+
   /// Awaits for providers to rebuild/be disposed and for listeners to be notified.
   Future<void> pump() async {
     return _scheduler.pendingFuture;
