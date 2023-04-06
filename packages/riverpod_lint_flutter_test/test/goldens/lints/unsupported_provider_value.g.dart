@@ -81,6 +81,23 @@ final notifierProvider = AutoDisposeProvider<MyNotifier>.internal(
 );
 
 typedef NotifierRef = AutoDisposeProviderRef<MyNotifier>;
+String _$autoDisposeNotifierHash() =>
+    r'620df0fc11c887f01e125454afe8de553cfea6d0';
+
+/// See also [autoDisposeNotifier].
+@ProviderFor(autoDisposeNotifier)
+final autoDisposeNotifierProvider =
+    AutoDisposeProvider<MyAutoDisposeNotifier>.internal(
+  autoDisposeNotifier,
+  name: r'autoDisposeNotifierProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$autoDisposeNotifierHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef AutoDisposeNotifierRef = AutoDisposeProviderRef<MyAutoDisposeNotifier>;
 String _$asyncNotifierHash() => r'c90348efac71d241468236924f6c6bc80ae0d0e0';
 
 /// See also [asyncNotifier].
@@ -113,6 +130,54 @@ final stateNotifierClassProvider =
 );
 
 typedef _$StateNotifierClass = AutoDisposeNotifier<MyStateNotifier>;
+String _$selfNotifierHash() => r'5a857f5c92a9b7a35daa4e527bd333cf3d8d19ac';
+
+/// See also [SelfNotifier].
+@ProviderFor(SelfNotifier)
+final selfNotifierProvider =
+    AutoDisposeAsyncNotifierProvider<SelfNotifier, SelfNotifier>.internal(
+  SelfNotifier.new,
+  name: r'selfNotifierProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$selfNotifierHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$SelfNotifier = AutoDisposeAsyncNotifier<SelfNotifier>;
+String _$syncSelfNotifierHash() => r'4f3a2463cb5693a5c8d7e772b4d7c9774b9ba637';
+
+/// See also [SyncSelfNotifier].
+@ProviderFor(SyncSelfNotifier)
+final syncSelfNotifierProvider =
+    AutoDisposeNotifierProvider<SyncSelfNotifier, SyncSelfNotifier>.internal(
+  SyncSelfNotifier.new,
+  name: r'syncSelfNotifierProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$syncSelfNotifierHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$SyncSelfNotifier = AutoDisposeNotifier<SyncSelfNotifier>;
+String _$streamSelfNotifierHash() =>
+    r'18705475d157d8e592205406c0b884b7213d329e';
+
+/// See also [StreamSelfNotifier].
+@ProviderFor(StreamSelfNotifier)
+final streamSelfNotifierProvider = AutoDisposeStreamNotifierProvider<
+    StreamSelfNotifier, StreamSelfNotifier>.internal(
+  StreamSelfNotifier.new,
+  name: r'streamSelfNotifierProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$streamSelfNotifierHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$StreamSelfNotifier = AutoDisposeStreamNotifier<StreamSelfNotifier>;
 String _$stateNotifierClassAsyncHash() =>
     r'06c519ed7dbdcd9440365dd2dc3ec12e603b6b7e';
 

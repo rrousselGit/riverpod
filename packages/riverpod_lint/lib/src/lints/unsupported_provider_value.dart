@@ -1,8 +1,18 @@
+import 'package:analyzer/dart/element/type.dart';
+import 'package:analyzer/dart/element/type_system.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
 import '../riverpod_custom_lint.dart';
+
+extension on StatefulProviderDeclaration {
+  /// Returns whether the value exposed by the provider is the newly created
+  /// Notifier itself.
+  bool get returnsSelf {
+    return valueType == node.declaredElement?.thisType;
+  }
+}
 
 class UnsupportedProviderValue extends RiverpodLintRule {
   const UnsupportedProviderValue() : super(code: _code);
@@ -21,16 +31,26 @@ class UnsupportedProviderValue extends RiverpodLintRule {
   ) {
     void checkCreatedType(GeneratorProviderDeclaration declaration) {
       String? invalidValueName;
+      if (notifierBaseType.isAssignableFromType(declaration.valueType)) {
+        invalidValueName = 'Notifier';
+      } else if (asyncNotifierBaseType
+          .isAssignableFromType(declaration.valueType)) {
+        invalidValueName = 'AsyncNotifier';
+      }
+
+      /// If a provider returns itself, we allow it. This is to enable
+      /// ChangeNotifier-like mutable state.
+      if (invalidValueName != null &&
+          declaration is StatefulProviderDeclaration &&
+          declaration.returnsSelf) {
+        return;
+      }
+
       if (stateNotifierType.isAssignableFromType(declaration.valueType)) {
         invalidValueName = 'StateNotifier';
       } else if (changeNotifierType
           .isAssignableFromType(declaration.valueType)) {
         invalidValueName = 'ChangeNotifier';
-      } else if (notifierBaseType.isAssignableFromType(declaration.valueType)) {
-        invalidValueName = 'Notifier';
-      } else if (asyncNotifierBaseType
-          .isAssignableFromType(declaration.valueType)) {
-        invalidValueName = 'AsyncNotifier';
       }
 
       if (invalidValueName != null) {
