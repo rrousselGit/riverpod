@@ -1,6 +1,11 @@
+## Unreleased fix
+
+- Disable unsupported_provider_value when a notifier returns "this"
+
 ## 1.1.7 - 2023-04-06
 
 - Fix typo in the name of the lint `avoid_manual_providers_as_generated_provider_dependency` (thanks to @mafreud)
+
 ## 1.1.6 - 2023-03-13
 
 - No-longer throw "Bad state: Too many elements"
