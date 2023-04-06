@@ -179,11 +179,6 @@ class ProviderContainer implements Node {
   final _overrideForFamily = HashMap<Family<Object?>, _FamilyOverrideRef>();
   final Map<ProviderBase<Object?>, _StateReader> _stateReaders;
 
-  /// Awaits for providers to rebuild/be disposed and for listeners to be notified.
-  Future<void> pump() async {
-    return _scheduler.pendingFuture;
-  }
-
   final List<ProviderObserver> _observers;
 
   /// A debug utility used by `flutter_riverpod`/`hooks_riverpod` to check
@@ -199,6 +194,11 @@ class ProviderContainer implements Node {
   /// This disables the different methods of [ProviderContainer], resulting in
   /// a [StateError] when attempting to use them.
   bool _disposed = false;
+
+  /// Awaits for providers to rebuild/be disposed and for listeners to be notified.
+  Future<void> pump() async {
+    return _scheduler.pendingFuture;
+  }
 
   /// Reads a provider without listening to it and returns the currently
   /// exposed value.
