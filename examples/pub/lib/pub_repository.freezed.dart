@@ -150,7 +150,9 @@ class __$$_PackageMetricsScoreCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_PackageMetricsScore implements _PackageMetricsScore {
+class _$_PackageMetricsScore
+    with DiagnosticableTreeMixin
+    implements _PackageMetricsScore {
   _$_PackageMetricsScore(
       {required this.grantedPoints,
       required this.maxPoints,
@@ -179,8 +181,20 @@ class _$_PackageMetricsScore implements _PackageMetricsScore {
   }
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'PackageMetricsScore(grantedPoints: $grantedPoints, maxPoints: $maxPoints, likeCount: $likeCount, popularityScore: $popularityScore, tags: $tags)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'PackageMetricsScore'))
+      ..add(DiagnosticsProperty('grantedPoints', grantedPoints))
+      ..add(DiagnosticsProperty('maxPoints', maxPoints))
+      ..add(DiagnosticsProperty('likeCount', likeCount))
+      ..add(DiagnosticsProperty('popularityScore', popularityScore))
+      ..add(DiagnosticsProperty('tags', tags));
   }
 
   @override
@@ -344,7 +358,9 @@ class __$$_PackageMetricsResponseCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_PackageMetricsResponse implements _PackageMetricsResponse {
+class _$_PackageMetricsResponse
+    with DiagnosticableTreeMixin
+    implements _PackageMetricsResponse {
   _$_PackageMetricsResponse({required this.score});
 
   factory _$_PackageMetricsResponse.fromJson(Map<String, dynamic> json) =>
@@ -354,8 +370,16 @@ class _$_PackageMetricsResponse implements _PackageMetricsResponse {
   final PackageMetricsScore score;
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'PackageMetricsResponse(score: $score)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'PackageMetricsResponse'))
+      ..add(DiagnosticsProperty('score', score));
   }
 
   @override
@@ -493,7 +517,9 @@ class __$$_PackageDetailsCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_PackageDetails implements _PackageDetails {
+class _$_PackageDetails
+    with DiagnosticableTreeMixin
+    implements _PackageDetails {
   _$_PackageDetails({required this.version, required this.pubspec});
 
   factory _$_PackageDetails.fromJson(Map<String, dynamic> json) =>
@@ -505,8 +531,17 @@ class _$_PackageDetails implements _PackageDetails {
   final Pubspec pubspec;
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'PackageDetails(version: $version, pubspec: $pubspec)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'PackageDetails'))
+      ..add(DiagnosticsProperty('version', version))
+      ..add(DiagnosticsProperty('pubspec', pubspec));
   }
 
   @override
@@ -656,7 +691,7 @@ class __$$_PackageCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_Package implements _Package {
+class _$_Package with DiagnosticableTreeMixin implements _Package {
   _$_Package({required this.name, required this.latest});
 
   factory _$_Package.fromJson(Map<String, dynamic> json) =>
@@ -668,8 +703,17 @@ class _$_Package implements _Package {
   final PackageDetails latest;
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'Package(name: $name, latest: $latest)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'Package'))
+      ..add(DiagnosticsProperty('name', name))
+      ..add(DiagnosticsProperty('latest', latest));
   }
 
   @override
@@ -809,7 +853,7 @@ class __$$_LikedPackageCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_LikedPackage implements _LikedPackage {
+class _$_LikedPackage with DiagnosticableTreeMixin implements _LikedPackage {
   _$_LikedPackage({required this.package, required this.liked});
 
   factory _$_LikedPackage.fromJson(Map<String, dynamic> json) =>
@@ -821,8 +865,17 @@ class _$_LikedPackage implements _LikedPackage {
   final bool liked;
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'LikedPackage(package: $package, liked: $liked)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'LikedPackage'))
+      ..add(DiagnosticsProperty('package', package))
+      ..add(DiagnosticsProperty('liked', liked));
   }
 
   @override
@@ -954,7 +1007,9 @@ class __$$_LikesPackagesResponseCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_LikesPackagesResponse implements _LikesPackagesResponse {
+class _$_LikesPackagesResponse
+    with DiagnosticableTreeMixin
+    implements _LikesPackagesResponse {
   _$_LikesPackagesResponse({required final List<LikedPackage> likedPackages})
       : _likedPackages = likedPackages;
 
@@ -970,8 +1025,16 @@ class _$_LikesPackagesResponse implements _LikesPackagesResponse {
   }
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'LikedPackagesResponse(likedPackages: $likedPackages)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'LikedPackagesResponse'))
+      ..add(DiagnosticsProperty('likedPackages', likedPackages));
   }
 
   @override
@@ -1101,7 +1164,9 @@ class __$$_PubPackagesResponseCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_PubPackagesResponse implements _PubPackagesResponse {
+class _$_PubPackagesResponse
+    with DiagnosticableTreeMixin
+    implements _PubPackagesResponse {
   _$_PubPackagesResponse({required final List<Package> packages})
       : _packages = packages;
 
@@ -1117,8 +1182,16 @@ class _$_PubPackagesResponse implements _PubPackagesResponse {
   }
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'PubPackagesResponse(packages: $packages)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'PubPackagesResponse'))
+      ..add(DiagnosticsProperty('packages', packages));
   }
 
   @override
@@ -1246,7 +1319,7 @@ class __$$_SearchPackageCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_SearchPackage implements _SearchPackage {
+class _$_SearchPackage with DiagnosticableTreeMixin implements _SearchPackage {
   _$_SearchPackage({required this.package});
 
   factory _$_SearchPackage.fromJson(Map<String, dynamic> json) =>
@@ -1256,8 +1329,16 @@ class _$_SearchPackage implements _SearchPackage {
   final String package;
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'SearchPackage(package: $package)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'SearchPackage'))
+      ..add(DiagnosticsProperty('package', package));
   }
 
   @override
@@ -1382,7 +1463,9 @@ class __$$_PubSearchResponseCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_PubSearchResponse implements _PubSearchResponse {
+class _$_PubSearchResponse
+    with DiagnosticableTreeMixin
+    implements _PubSearchResponse {
   _$_PubSearchResponse({required final List<SearchPackage> packages})
       : _packages = packages;
 
@@ -1398,8 +1481,16 @@ class _$_PubSearchResponse implements _PubSearchResponse {
   }
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'PubSearchResponse(packages: $packages)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'PubSearchResponse'))
+      ..add(DiagnosticsProperty('packages', packages));
   }
 
   @override

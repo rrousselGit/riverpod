@@ -34,8 +34,8 @@ final depProvider = AutoDisposeProvider<int>.internal(
   name: r'depProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$depHash,
-  dependencies: <ProviderOrFamily>[],
-  allTransitiveDependencies: <ProviderOrFamily>[],
+  dependencies: const <ProviderOrFamily>[],
+  allTransitiveDependencies: const <ProviderOrFamily>[],
 );
 
 typedef DepRef = AutoDisposeProviderRef<int>;
@@ -49,8 +49,8 @@ final generatedScopedProvider = AutoDisposeProvider<int>.internal(
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$generatedScopedHash,
-  dependencies: <ProviderOrFamily>[],
-  allTransitiveDependencies: <ProviderOrFamily>[],
+  dependencies: const <ProviderOrFamily>[],
+  allTransitiveDependencies: const <ProviderOrFamily>[],
 );
 
 typedef GeneratedScopedRef = AutoDisposeProviderRef<int>;
@@ -164,8 +164,8 @@ final watchScopedButEmptyDependenciesProvider =
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$watchScopedButEmptyDependenciesHash,
-  dependencies: <ProviderOrFamily>[],
-  allTransitiveDependencies: <ProviderOrFamily>[],
+  dependencies: const <ProviderOrFamily>[],
+  allTransitiveDependencies: const <ProviderOrFamily>[],
 );
 
 typedef WatchScopedButEmptyDependenciesRef = AutoDisposeProviderRef<int>;
@@ -181,8 +181,8 @@ final watchGeneratedScopedButEmptyDependenciesProvider =
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$watchGeneratedScopedButEmptyDependenciesHash,
-  dependencies: <ProviderOrFamily>[],
-  allTransitiveDependencies: <ProviderOrFamily>[],
+  dependencies: const <ProviderOrFamily>[],
+  allTransitiveDependencies: const <ProviderOrFamily>[],
 );
 
 typedef WatchGeneratedScopedButEmptyDependenciesRef
@@ -198,8 +198,8 @@ final watchRootButEmptyDependenciesProvider = AutoDisposeProvider<int>.internal(
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$watchRootButEmptyDependenciesHash,
-  dependencies: <ProviderOrFamily>[],
-  allTransitiveDependencies: <ProviderOrFamily>[],
+  dependencies: const <ProviderOrFamily>[],
+  allTransitiveDependencies: const <ProviderOrFamily>[],
 );
 
 typedef WatchRootButEmptyDependenciesRef = AutoDisposeProviderRef<int>;
@@ -215,8 +215,8 @@ final watchGeneratedRootButEmptyDependenciesProvider =
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$watchGeneratedRootButEmptyDependenciesHash,
-  dependencies: <ProviderOrFamily>[],
-  allTransitiveDependencies: <ProviderOrFamily>[],
+  dependencies: const <ProviderOrFamily>[],
+  allTransitiveDependencies: const <ProviderOrFamily>[],
 );
 
 typedef WatchGeneratedRootButEmptyDependenciesRef = AutoDisposeProviderRef<int>;
@@ -374,8 +374,8 @@ final classWatchGeneratedRootButMissingDependenciesProvider =
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$classWatchGeneratedRootButMissingDependenciesHash,
-  dependencies: <ProviderOrFamily>[],
-  allTransitiveDependencies: <ProviderOrFamily>[],
+  dependencies: const <ProviderOrFamily>[],
+  allTransitiveDependencies: const <ProviderOrFamily>[],
 );
 
 typedef _$ClassWatchGeneratedRootButMissingDependencies
@@ -393,8 +393,8 @@ final classWatchGeneratedScopedButMissingDependenciesProvider =
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$classWatchGeneratedScopedButMissingDependenciesHash,
-  dependencies: <ProviderOrFamily>[],
-  allTransitiveDependencies: <ProviderOrFamily>[],
+  dependencies: const <ProviderOrFamily>[],
+  allTransitiveDependencies: const <ProviderOrFamily>[],
 );
 
 typedef _$ClassWatchGeneratedScopedButMissingDependencies
