@@ -1,3 +1,8 @@
+## Unreleased patch
+
+- If a provider has an empty list of dependencies, the generated list is now `const`
+  (thanks to @K9i-0)
+
 ## 2.1.3 - 2023-03-10
 
 - Fixed InconsistentAnalysisException
