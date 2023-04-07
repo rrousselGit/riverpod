@@ -15,8 +15,8 @@ final depProvider = AutoDisposeProvider<int>.internal(
   name: r'depProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$depHash,
-  dependencies: <ProviderOrFamily>[],
-  allTransitiveDependencies: <ProviderOrFamily>[],
+  dependencies: const <ProviderOrFamily>[],
+  allTransitiveDependencies: const <ProviderOrFamily>[],
 );
 
 typedef DepRef = AutoDisposeProviderRef<int>;
@@ -29,8 +29,8 @@ final dep2Provider = AutoDisposeProvider<int>.internal(
   name: r'dep2Provider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$dep2Hash,
-  dependencies: <ProviderOrFamily>[],
-  allTransitiveDependencies: <ProviderOrFamily>[],
+  dependencies: const <ProviderOrFamily>[],
+  allTransitiveDependencies: const <ProviderOrFamily>[],
 );
 
 typedef Dep2Ref = AutoDisposeProviderRef<int>;
@@ -91,8 +91,8 @@ final existingDepProvider = AutoDisposeProvider<int>.internal(
   name: r'existingDepProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$existingDepHash,
-  dependencies: <ProviderOrFamily>[],
-  allTransitiveDependencies: <ProviderOrFamily>[],
+  dependencies: const <ProviderOrFamily>[],
+  allTransitiveDependencies: const <ProviderOrFamily>[],
 );
 
 typedef ExistingDepRef = AutoDisposeProviderRef<int>;
@@ -105,8 +105,8 @@ final multipleDepsProvider = AutoDisposeProvider<int>.internal(
   name: r'multipleDepsProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$multipleDepsHash,
-  dependencies: <ProviderOrFamily>[],
-  allTransitiveDependencies: <ProviderOrFamily>[],
+  dependencies: const <ProviderOrFamily>[],
+  allTransitiveDependencies: const <ProviderOrFamily>[],
 );
 
 typedef MultipleDepsRef = AutoDisposeProviderRef<int>;

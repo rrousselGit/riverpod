@@ -1,3 +1,8 @@
+## Unreleased patch
+
+- If a provider has an empty list of dependencies, the generated list is now `const`
+  (thanks to @K9i-0)
+
 ## 2.1.5 - 2023-04-06
 
 - `riverpod_annotation` upgraded to `2.0.3`

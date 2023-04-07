@@ -15,8 +15,8 @@ final scopedProvider = AutoDisposeProvider<int>.internal(
   name: r'scopedProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$scopedHash,
-  dependencies: <ProviderOrFamily>[],
-  allTransitiveDependencies: <ProviderOrFamily>[],
+  dependencies: const <ProviderOrFamily>[],
+  allTransitiveDependencies: const <ProviderOrFamily>[],
 );
 
 typedef ScopedRef = AutoDisposeProviderRef<int>;

@@ -16,7 +16,9 @@ String? serializeDependencies(
 ) {
   if (dependencies == null) return 'null';
 
-  final buffer = StringBuffer('<ProviderOrFamily>');
+  final buffer = StringBuffer(
+    '${dependencies.isEmpty ? 'const ' : ''}<ProviderOrFamily>',
+  );
   // Use list vs set based on the number of dependencies to optimize "contains" call
   if (dependencies.length < 4) {
     buffer.write('[');
