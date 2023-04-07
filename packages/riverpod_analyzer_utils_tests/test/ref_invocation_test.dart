@@ -36,6 +36,94 @@ final dependency = Provider((ref) {
     expect(result.refWatchInvocations.single.provider.providerElement, null);
   });
 
+  testSource('Decodes ..watch', runGenerator: true, source: r'''
+import 'package:riverpod/riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'foo.g.dart';
+
+final dep = FutureProvider((ref) => 0);
+
+@Riverpod(keepAlive: true)
+Future<int> dep2(Dep2Ref ref) async => 0;
+
+@Riverpod(keepAlive: true)
+class Dep3 extends _$Dep3 {
+  @override
+  Future<int> build() async => 0;
+}
+
+final provider = Provider<int>((ref) {
+  ref
+    ..watch(dep)
+    ..watch(dep2Provider)
+    ..watch(dep3Provider);
+
+  return 0;
+});
+
+''', (resolver) async {
+    final result = await resolver.resolveRiverpodAnalyssiResult();
+
+    expect(result.refWatchInvocations, hasLength(3));
+    expect(result.refInvocations, result.refWatchInvocations);
+
+    expect(
+      result.refWatchInvocations[0].node.toSource(),
+      '..watch(dep)',
+    );
+    expect(result.refWatchInvocations[0].function.toSource(), 'watch');
+    expect(result.refWatchInvocations[0].provider.node.toSource(), 'dep');
+    expect(result.refWatchInvocations[0].provider.familyArguments, null);
+    expect(result.refWatchInvocations[0].provider.provider?.toSource(), 'dep');
+    expect(
+      result.refWatchInvocations[0].provider.providerElement,
+      same(result.legacyProviderDeclarations.findByName('dep').providerElement),
+    );
+
+    expect(
+      result.refWatchInvocations[1].node.toSource(),
+      '..watch(dep2Provider)',
+    );
+    expect(result.refWatchInvocations[1].function.toSource(), 'watch');
+    expect(
+      result.refWatchInvocations[1].provider.node.toSource(),
+      'dep2Provider',
+    );
+    expect(
+      result.refWatchInvocations[1].provider.provider?.toSource(),
+      'dep2Provider',
+    );
+    expect(
+      result.refWatchInvocations[1].provider.providerElement,
+      same(
+        result.statelessProviderDeclarations.findByName('dep2').providerElement,
+      ),
+    );
+    expect(result.refWatchInvocations[1].provider.familyArguments, null);
+
+    expect(
+      result.refWatchInvocations[2].node.toSource(),
+      '..watch(dep3Provider)',
+    );
+    expect(result.refWatchInvocations[2].function.toSource(), 'watch');
+    expect(
+      result.refWatchInvocations[2].provider.node.toSource(),
+      'dep3Provider',
+    );
+    expect(
+      result.refWatchInvocations[2].provider.provider?.toSource(),
+      'dep3Provider',
+    );
+    expect(
+      result.refWatchInvocations[2].provider.providerElement,
+      same(
+        result.statefulProviderDeclarations.findByName('Dep3').providerElement,
+      ),
+    );
+    expect(result.refWatchInvocations[2].provider.familyArguments, null);
+  });
+
   testSource('Decodes simple ref.watch usages', runGenerator: true, source: r'''
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

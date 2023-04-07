@@ -169,3 +169,9 @@ class ClassWatchGeneratedScopedButMissingDependencies
     return ref.watch(generatedScopedProvider);
   }
 }
+
+@Riverpod(dependencies: [generatedScoped])
+int regression2348(Regression2348Ref ref) {
+  ref..watch(generatedScopedProvider);
+  return 0;
+}
