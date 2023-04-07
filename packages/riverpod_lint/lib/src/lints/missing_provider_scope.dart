@@ -6,6 +6,8 @@ import 'package:collection/collection.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
+import 'scoped_providers_should_specify_dependencies.dart';
+
 class MissingProviderScope extends DartLintRule {
   const MissingProviderScope() : super(code: _code);
 
@@ -22,7 +24,7 @@ class MissingProviderScope extends DartLintRule {
     CustomLintContext context,
   ) {
     context.registry.addMethodInvocation((node) {
-      if (node.methodName.name != 'runApp') return;
+      if (!node.methodName.isFlutterRunApp) return;
       final function = node.function;
       if (function is! SimpleIdentifier) return;
       final functionElement = function.staticElement;

@@ -1,7 +1,7 @@
 name: marvel
 description: A new Flutter project.
 publish_to: "none"
-version: 1.0.0+1
+version: 1.0.1
 
 environment:
   sdk: ">=2.17.0 <3.0.0"
@@ -10,7 +10,7 @@ environment:
 dependencies:
   crypto: ^3.0.0
   cupertino_icons: ^1.0.2
-  dio: ^4.0.0
+  dio: ^5.1.1
   flutter:
     sdk: flutter
   flutter_hooks: ^0.18.0

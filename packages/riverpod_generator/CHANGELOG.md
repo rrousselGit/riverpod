@@ -3,6 +3,15 @@
 - If a provider has an empty list of dependencies, the generated list is now `const`
   (thanks to @K9i-0)
 
+## 2.1.5 - 2023-04-06
+
+- `riverpod_annotation` upgraded to `2.0.3`
+
+## 2.1.4 - 2023-03-13
+
+- `riverpod_analyzer_utils` upgraded to `0.2.0`
+- `riverpod_annotation` upgraded to `2.0.2`
+
 ## 2.1.3 - 2023-03-10
 
 - Fixed InconsistentAnalysisException

@@ -22,6 +22,24 @@ class StateNotifierClass extends _$StateNotifierClass {
 Future<MyStateNotifier> stateNotifierAsync(StateNotifierAsyncRef ref) async =>
     MyStateNotifier();
 
+// Regression tests for https://github.com/rrousselGit/riverpod/issues/2302
+@riverpod
+class SelfNotifier extends _$SelfNotifier {
+  Future<SelfNotifier> build() async => this;
+}
+
+// Regression tests for https://github.com/rrousselGit/riverpod/issues/2302
+@riverpod
+class SyncSelfNotifier extends _$SyncSelfNotifier {
+  SyncSelfNotifier build() => this;
+}
+
+// Regression tests for https://github.com/rrousselGit/riverpod/issues/2302
+@riverpod
+class StreamSelfNotifier extends _$StreamSelfNotifier {
+  Stream<StreamSelfNotifier> build() => Stream.value(this);
+}
+
 @riverpod
 // expect_lint: unsupported_provider_value
 class StateNotifierClassAsync extends _$StateNotifierClassAsync {
@@ -50,11 +68,22 @@ MyNotifier notifier(NotifierRef ref) => MyNotifier();
 
 @riverpod
 // expect_lint: unsupported_provider_value
+MyAutoDisposeNotifier autoDisposeNotifier(AutoDisposeNotifierRef ref) {
+  return MyAutoDisposeNotifier();
+}
+
+@riverpod
+// expect_lint: unsupported_provider_value
 class NotifierClass extends _$NotifierClass {
   MyNotifier build() => MyNotifier();
 }
 
 class MyNotifier extends Notifier<int> {
+  @override
+  int build() => 0;
+}
+
+class MyAutoDisposeNotifier extends AutoDisposeNotifier<int> {
   @override
   int build() => 0;
 }

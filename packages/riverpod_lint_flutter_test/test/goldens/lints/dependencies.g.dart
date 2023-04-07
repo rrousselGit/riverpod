@@ -346,6 +346,21 @@ final specifiedDependencyButNeverUsedProvider =
 );
 
 typedef SpecifiedDependencyButNeverUsedRef = AutoDisposeProviderRef<int>;
+String _$regression2348Hash() => r'72fbbe420e9835c9843c28b7c9375ca3d99ca4b7';
+
+/// See also [regression2348].
+@ProviderFor(regression2348)
+final regression2348Provider = AutoDisposeProvider<int>.internal(
+  regression2348,
+  name: r'regression2348Provider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$regression2348Hash,
+  dependencies: <ProviderOrFamily>[generatedScopedProvider],
+  allTransitiveDependencies: <ProviderOrFamily>[generatedScopedProvider],
+);
+
+typedef Regression2348Ref = AutoDisposeProviderRef<int>;
 String _$classWatchGeneratedRootButMissingDependenciesHash() =>
     r'e36d7126a86ea9ded6dc66a6f33eabb2724455a9';
 
@@ -384,4 +399,20 @@ final classWatchGeneratedScopedButMissingDependenciesProvider =
 
 typedef _$ClassWatchGeneratedScopedButMissingDependencies
     = AutoDisposeNotifier<int>;
+String _$regression2417Hash() => r'c9ac0ba44e849ea1460c79c1f676feba1b5400da';
+
+/// See also [Regression2417].
+@ProviderFor(Regression2417)
+final regression2417Provider =
+    AutoDisposeNotifierProvider<Regression2417, int>.internal(
+  Regression2417.new,
+  name: r'regression2417Provider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$regression2417Hash,
+  dependencies: <ProviderOrFamily>[generatedScopedProvider],
+  allTransitiveDependencies: <ProviderOrFamily>[generatedScopedProvider],
+);
+
+typedef _$Regression2417 = AutoDisposeNotifier<int>;
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

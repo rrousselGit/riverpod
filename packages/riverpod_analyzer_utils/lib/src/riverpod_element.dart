@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
@@ -193,6 +195,14 @@ class LegacyProviderDeclarationElement implements ProviderDeclarationElement {
     VariableElement element,
   ) {
     return _cache.putIfAbsent(element, () {
+      // Search for @ProviderFor annotation. If present, then this is a generated provider
+      if (providerForType.hasAnnotationOfExact(
+        element,
+        throwOnUnresolved: false,
+      )) {
+        return null;
+      }
+
       bool isAutoDispose;
       LegacyFamilyInvocationElement? familyElement;
       LegacyProviderType providerType;
@@ -206,6 +216,9 @@ class LegacyProviderDeclarationElement implements ProviderDeclarationElement {
           'call',
           element.library!,
         )!;
+        if (callFn.parameters.length != 1) {
+          stdout.writeln('Problem eleemnt: $element');
+        }
         final parameter = callFn.parameters.single;
 
         isAutoDispose = !alwaysAliveProviderListenableType
