@@ -22,7 +22,7 @@ int generatedRoot(GeneratedRootRef ref) => 0;
 
 @riverpod
 int watchScopedButNoDependencies(WatchScopedButNoDependenciesRef ref) {
-  // expect_lint: avoid_manual_providers_as_generated_provider_depenency
+  // expect_lint: avoid_manual_providers_as_generated_provider_dependency
   return ref.watch(scoped);
 }
 
@@ -42,7 +42,7 @@ int watchGeneratedScopedButNoDependencies(
 
 @riverpod
 int watchRootButNoDependencies(WatchRootButNoDependenciesRef ref) {
-  // expect_lint: avoid_manual_providers_as_generated_provider_depenency
+  // expect_lint: avoid_manual_providers_as_generated_provider_dependency
   return ref.watch(root);
 }
 
@@ -57,7 +57,7 @@ int watchGeneratedRootButNoDependencies(
 
 @Riverpod(dependencies: [])
 int watchScopedButEmptyDependencies(WatchScopedButEmptyDependenciesRef ref) {
-  // expect_lint: avoid_manual_providers_as_generated_provider_depenency
+  // expect_lint: avoid_manual_providers_as_generated_provider_dependency
   return ref.watch(scoped);
 }
 
@@ -71,7 +71,7 @@ int watchGeneratedScopedButEmptyDependencies(
 
 @Riverpod(dependencies: [])
 int watchRootButEmptyDependencies(WatchRootButEmptyDependenciesRef ref) {
-  // expect_lint: avoid_manual_providers_as_generated_provider_depenency
+  // expect_lint: avoid_manual_providers_as_generated_provider_dependency
   return ref.watch(root);
 }
 
@@ -89,7 +89,7 @@ int watchScopedButMissingDependencies(
   WatchScopedButMissingDependenciesRef ref,
 ) {
   ref.watch(depProvider);
-  // expect_lint: avoid_manual_providers_as_generated_provider_depenency
+  // expect_lint: avoid_manual_providers_as_generated_provider_dependency
   return ref.watch(scoped);
 }
 
@@ -105,7 +105,7 @@ int watchGeneratedScopedButMissingDependencies(
 @Riverpod(dependencies: [dep])
 int watchRootButMissingDependencies(WatchRootButMissingDependenciesRef ref) {
   ref.watch(depProvider);
-  // expect_lint: avoid_manual_providers_as_generated_provider_depenency
+  // expect_lint: avoid_manual_providers_as_generated_provider_dependency
   return ref.watch(root);
 }
 
@@ -167,5 +167,21 @@ class ClassWatchGeneratedScopedButMissingDependencies
   @override
   int build() {
     return ref.watch(generatedScopedProvider);
+  }
+}
+
+@Riverpod(dependencies: [generatedScoped])
+int regression2348(Regression2348Ref ref) {
+  ref..watch(generatedScopedProvider);
+  return 0;
+}
+
+@Riverpod(dependencies: [generatedScoped])
+class Regression2417 extends _$Regression2417 {
+  @override
+  int build() => 0;
+
+  void method() {
+    ref.watch(generatedScopedProvider);
   }
 }

@@ -5,6 +5,20 @@ import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
 import '../riverpod_custom_lint.dart';
 
+extension SimpleIdentifierX on SimpleIdentifier {
+  bool get isFlutterRunApp {
+    if (name != 'runApp') return false;
+
+    final library = staticElement?.library;
+    if (library == null) return false;
+    final libraryUri = Uri.tryParse(library.identifier);
+    if (libraryUri == null) return false;
+
+    return libraryUri.scheme == 'package' &&
+        libraryUri.pathSegments.first == 'flutter';
+  }
+}
+
 class ScopedProvidersShouldSpecifyDependencies extends RiverpodLintRule {
   const ScopedProvidersShouldSpecifyDependencies() : super(code: _code);
 
@@ -62,18 +76,20 @@ class ScopedProvidersShouldSpecifyDependencies extends RiverpodLintRule {
   bool isProviderScopeScoped(
     ProviderScopeInstanceCreationExpression expression,
   ) {
-    final hasParent = expression.node.argumentList.arguments
+    final hasParentParameter = expression.node.argumentList.arguments
         .whereType<NamedExpression>()
         // TODO handle parent:null.
         // This might be doable by checking that the expression's
         // static type is non-nullable
         .any((e) => e.name.label.name == 'parent');
-    if (hasParent) return true;
+    if (hasParentParameter) return true;
 
-    final enclosingFunction =
-        expression.node.thisOrAncestorOfType<FunctionDeclaration>();
+    // in runApp(ProviderScope(..)) the direct parent of the ProviderScope
+    // is an ArgumentList.
+    final enclosingExpression = expression.node.parent?.parent;
 
-    // Any ProviderScope without parent outside of the main are considered "scoped".
-    return enclosingFunction == null || enclosingFunction.name.lexeme != 'main';
+    // If the ProviderScope isn't directly as a child of runApp, it is scoped
+    return enclosingExpression is! MethodInvocation ||
+        !enclosingExpression.methodName.isFlutterRunApp;
   }
 }

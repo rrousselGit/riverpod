@@ -2,7 +2,7 @@ name: riverpod_graph_golden_generated
 description: A new Flutter project.
 
 publish_to: "none"
-version: 1.0.0+1
+version: 1.0.1
 
 environment:
   sdk: ">=2.17.0 <3.0.0"

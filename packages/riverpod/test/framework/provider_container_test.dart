@@ -16,6 +16,60 @@ void main() {
       child.dispose();
     });
 
+    group('when unmounting providders', () {
+      test(
+          'cleans up all the StateReaders of a provider in the entire ProviderContainer tree',
+          () async {
+        // Regression test for https://github.com/rrousselGit/riverpod/issues/1943
+        final a = createContainer();
+        // b/c voluntarily do not use the Provider, but a/d do. This is to test
+        // that the disposal logic correctly cleans up the StateReaders
+        // in all ProviderContainers associated with the provider, even if
+        // some links between two ProviderContainers are not using the provider.
+        final b = createContainer(parent: a);
+        final c = createContainer(parent: b);
+        final d = createContainer(parent: c);
+
+        final provider = Provider.autoDispose((ref) => 3);
+
+        final subscription = d.listen(
+          provider,
+          (previous, next) {},
+          fireImmediately: true,
+        );
+
+        expect(a.hasStateReaderFor(provider), true);
+        expect(b.hasStateReaderFor(provider), false);
+        expect(c.hasStateReaderFor(provider), false);
+        expect(d.hasStateReaderFor(provider), true);
+
+        subscription.close();
+
+        expect(a.hasStateReaderFor(provider), true);
+        expect(b.hasStateReaderFor(provider), false);
+        expect(c.hasStateReaderFor(provider), false);
+        expect(d.hasStateReaderFor(provider), true);
+
+        await a.pump();
+
+        expect(a.hasStateReaderFor(provider), false);
+        expect(b.hasStateReaderFor(provider), false);
+        expect(c.hasStateReaderFor(provider), false);
+        expect(d.hasStateReaderFor(provider), false);
+
+        d.listen(
+          provider,
+          (previous, next) {},
+          fireImmediately: true,
+        );
+
+        expect(a.hasStateReaderFor(provider), true);
+        expect(b.hasStateReaderFor(provider), false);
+        expect(c.hasStateReaderFor(provider), false);
+        expect(d.hasStateReaderFor(provider), true);
+      });
+    });
+
     group('exists', () {
       test('simple use-case', () {
         final container = createContainer();
