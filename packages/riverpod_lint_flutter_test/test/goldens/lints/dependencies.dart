@@ -175,3 +175,13 @@ int regression2348(Regression2348Ref ref) {
   ref..watch(generatedScopedProvider);
   return 0;
 }
+
+@Riverpod(dependencies: [generatedScoped])
+class Regression2417 extends _$Regression2417 {
+  @override
+  int build() => 0;
+
+  void method() {
+    ref.watch(generatedScopedProvider);
+  }
+}
