@@ -346,6 +346,21 @@ final specifiedDependencyButNeverUsedProvider =
 );
 
 typedef SpecifiedDependencyButNeverUsedRef = AutoDisposeProviderRef<int>;
+String _$regression2348Hash() => r'72fbbe420e9835c9843c28b7c9375ca3d99ca4b7';
+
+/// See also [regression2348].
+@ProviderFor(regression2348)
+final regression2348Provider = AutoDisposeProvider<int>.internal(
+  regression2348,
+  name: r'regression2348Provider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$regression2348Hash,
+  dependencies: <ProviderOrFamily>[generatedScopedProvider],
+  allTransitiveDependencies: <ProviderOrFamily>[generatedScopedProvider],
+);
+
+typedef Regression2348Ref = AutoDisposeProviderRef<int>;
 String _$classWatchGeneratedRootButMissingDependenciesHash() =>
     r'e36d7126a86ea9ded6dc66a6f33eabb2724455a9';
 

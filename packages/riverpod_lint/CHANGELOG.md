@@ -2,6 +2,7 @@
 
 - Disable unsupported_provider_value when a notifier returns "this"
 - Fix scoped_providers_should_specify_dependencies incorrectly triggering on functions other than "main"
+- Handle cascade operators in ref expressions
 
 ## 1.1.7 - 2023-04-06
 

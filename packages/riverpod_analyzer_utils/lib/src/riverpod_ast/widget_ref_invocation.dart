@@ -11,7 +11,7 @@ abstract class WidgetRefInvocation extends RiverpodAst
     MethodInvocation node, {
     required void Function() superCall,
   }) {
-    final targetType = node.target?.staticType;
+    final targetType = node.realTarget?.staticType;
     if (targetType == null) return null;
 
     // Since Ref is sealed, checking that the function is from the package:riverpod

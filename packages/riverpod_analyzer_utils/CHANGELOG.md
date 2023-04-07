@@ -1,3 +1,7 @@
+## Unreleased fix
+
+- Handle cascade operators in ref expressions
+
 ## 0.2.0 - 2023-03-13
 
 - Added `providerForType` TypeChecker for `ProviderFor` annotation
