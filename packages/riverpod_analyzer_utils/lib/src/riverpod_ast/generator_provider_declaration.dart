@@ -161,7 +161,7 @@ class StatefulProviderDeclaration extends GeneratorProviderDeclaration {
       valueType: _getValueType(createdType),
     );
     riverpodAnnotation._parent = statefulProviderDeclaration;
-    buildMethod.accept(
+    node.accept(
       _GeneratorRefInvocationVisitor(statefulProviderDeclaration, parent),
     );
 

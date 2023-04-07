@@ -36,6 +36,44 @@ final dependency = Provider((ref) {
     expect(result.refWatchInvocations.single.provider.providerElement, null);
   });
 
+  testSource('Decodes ref expressions in Notifier methods',
+      runGenerator: true, source: r'''
+import 'package:riverpod/riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'foo.g.dart';
+
+@riverpod
+class MyNotifier extends _$MyNotifier {
+  @override
+  int build() => 0;
+
+  void method() {
+    ref.watch(generatedScopedProvider);
+  }
+}
+
+''', (resolver) async {
+// Regression test for https://github.com/rrousselGit/riverpod/issues/2417
+    final result = await resolver.resolveRiverpodAnalyssiResult();
+
+    final notifier = result.statefulProviderDeclarations.single;
+
+    expect(result.refInvocations, hasLength(1));
+    expect(
+      result.refWatchInvocations.single.provider.node.toSource(),
+      'generatedScopedProvider',
+    );
+    expect(
+      notifier.refInvocations.single,
+      isA<RefWatchInvocation>().having(
+        (e) => e.provider.node.toSource(),
+        'provider',
+        'generatedScopedProvider',
+      ),
+    );
+  });
+
   testSource('Decodes ..watch', runGenerator: true, source: r'''
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
