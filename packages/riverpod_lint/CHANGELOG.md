@@ -1,4 +1,4 @@
-## Unreleased fix
+## 1.1.8 - 2023-04-07
 
 - Disable unsupported_provider_value when a notifier returns "this"
 - Fix scoped_providers_should_specify_dependencies incorrectly triggering on functions other than "main"

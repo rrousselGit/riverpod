@@ -1,4 +1,4 @@
-## Unreleased fix
+## 0.2.1 - 2023-04-07
 
 - Handle cascade operators in ref expressions
 - Fix ref.watch/read/... not being decoded inside Notifier methods of generated providers.
