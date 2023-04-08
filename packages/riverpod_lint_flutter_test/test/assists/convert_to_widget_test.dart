@@ -148,7 +148,7 @@ void _runGoldenTest(
     goldenFilePath,
     () async {
       final file = File(
-        'test/assists/convert_to_consumer_widget.dart',
+        'test/assists/convert_to_widget.dart',
       ).absolute;
 
       final result = await resolveFile2(path: file.path);
