@@ -6,38 +6,36 @@ import 'package:custom_lint_builder/custom_lint_builder.dart';
 import '../object_utils.dart';
 
 enum StatelessBaseWidgetType {
-  consumerWidget(
-    widgetName: 'ConsumerWidget',
-
-    // But the priority above everything else
-    priority: 100,
-    typeChecker: TypeChecker.fromName(
-      'ConsumerWidget',
-      packageName: 'flutter_riverpod',
-    ),
-    needHooksRiverpod: false,
-  ),
-  hookWidget(
-    widgetName: 'HookWidget',
-    priority: 98,
-    typeChecker: TypeChecker.fromName(
-      'HookWidget',
-      packageName: 'flutter_hooks',
-    ),
-    needHooksRiverpod: true,
-  ),
   hookConsumerWidget(
     widgetName: 'HookConsumerWidget',
-    priority: 96,
+    priority: 37,
     typeChecker: TypeChecker.fromName(
       'HookConsumerWidget',
       packageName: 'hooks_riverpod',
     ),
     needHooksRiverpod: true,
   ),
+  hookWidget(
+    widgetName: 'HookWidget',
+    priority: 36,
+    typeChecker: TypeChecker.fromName(
+      'HookWidget',
+      packageName: 'flutter_hooks',
+    ),
+    needHooksRiverpod: true,
+  ),
+  consumerWidget(
+    widgetName: 'ConsumerWidget',
+    priority: 35,
+    typeChecker: TypeChecker.fromName(
+      'ConsumerWidget',
+      packageName: 'flutter_riverpod',
+    ),
+    needHooksRiverpod: false,
+  ),
   statelessWidget(
     widgetName: 'StatelessWidget',
-    priority: 94,
+    priority: 34,
     typeChecker: TypeChecker.fromName(
       'StatelessWidget',
       packageName: 'flutter',
@@ -59,36 +57,36 @@ enum StatelessBaseWidgetType {
 }
 
 enum StatefulBaseWidgetType {
-  consumerStatefulWidget(
-    widgetName: 'ConsumerStatefulWidget',
-    priority: 99,
-    typeChecker: TypeChecker.fromName(
-      'ConsumerStatefulWidget',
-      packageName: 'flutter_riverpod',
-    ),
-    needHooksRiverpod: false,
-  ),
-  statefulHookWidget(
-    widgetName: 'StatefulHookWidget',
-    priority: 97,
-    typeChecker: TypeChecker.fromName(
-      'StatefulHookWidget',
-      packageName: 'flutter_hooks',
-    ),
-    needHooksRiverpod: true,
-  ),
   statefulHookConsumerWidget(
     widgetName: 'StatefulHookConsumerWidget',
-    priority: 95,
+    priority: 33,
     typeChecker: TypeChecker.fromName(
       'StatefulHookConsumerWidget',
       packageName: 'hooks_riverpod',
     ),
     needHooksRiverpod: true,
   ),
+  statefulHookWidget(
+    widgetName: 'StatefulHookWidget',
+    priority: 32,
+    typeChecker: TypeChecker.fromName(
+      'StatefulHookWidget',
+      packageName: 'flutter_hooks',
+    ),
+    needHooksRiverpod: true,
+  ),
+  consumerStatefulWidget(
+    widgetName: 'ConsumerStatefulWidget',
+    priority: 31,
+    typeChecker: TypeChecker.fromName(
+      'ConsumerStatefulWidget',
+      packageName: 'flutter_riverpod',
+    ),
+    needHooksRiverpod: false,
+  ),
   statefulWidget(
     widgetName: 'StatefulWidget',
-    priority: 93,
+    priority: 30,
     typeChecker: TypeChecker.fromName(
       'StatefulWidget',
       packageName: 'flutter',

@@ -42,12 +42,25 @@ class ConvertToStatelessBaseWidget extends RiverpodAssist {
       if (type == null) return;
 
       if (statelessBaseType.isExactlyType(type)) {
-        _convertStatelessToStatelessWidget(reporter, node);
+        _convertStatelessToStatelessWidget(
+          reporter,
+          node,
+        );
         return;
       }
 
       if (statefulBaseType.isExactlyType(type)) {
-        _convertStatefulToStatelessWidget(reporter, node, resolver.source);
+        final isExactlyStatefulWidget = StatefulBaseWidgetType
+            .statefulWidget.typeChecker
+            .isExactlyType(type);
+
+        _convertStatefulToStatelessWidget(
+          reporter,
+          node,
+          resolver.source,
+          // This adjustment assumes that the priority of the standard "Convert to StatelessWidget" is 30.
+          isExactlyStatefulWidget ? -4 : 0,
+        );
         return;
       }
     });
@@ -111,10 +124,11 @@ class ConvertToStatelessBaseWidget extends RiverpodAssist {
     ChangeReporter reporter,
     ExtendsClause node,
     Source source,
+    int priorityAdjustment,
   ) {
     final changeBuilder = reporter.createChangeBuilder(
       message: 'Convert to ${targetWidget.widgetName}',
-      priority: targetWidget.priority,
+      priority: targetWidget.priority + priorityAdjustment,
     );
 
     changeBuilder.addDartFileEdit((builder) {
