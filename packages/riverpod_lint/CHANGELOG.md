@@ -1,4 +1,4 @@
-## Unreleased minor
+## 1.2.0 - 2023-04-08
 
 - Added `avoid_public_notifier_properties` lint.
   This warns if a Notifier/AsyncNotifier contains any form of public state
