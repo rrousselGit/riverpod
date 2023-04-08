@@ -8,6 +8,7 @@ import 'src/assists/stateless_to_stateful_provider.dart';
 import 'src/assists/wrap_with_consumer.dart';
 import 'src/assists/wrap_with_provider_scope.dart';
 import 'src/lints/avoid_manual_providers_as_generated_provider_dependency.dart';
+import 'src/lints/avoid_public_notifier_properties.dart';
 import 'src/lints/generator_class_extends.dart';
 import 'src/lints/missing_provider_scope.dart';
 import 'src/lints/provider_dependencies.dart';
@@ -21,6 +22,7 @@ PluginBase createPlugin() => _RiverpodPlugin();
 class _RiverpodPlugin extends PluginBase {
   @override
   List<LintRule> getLintRules(CustomLintConfigs configs) => [
+        const AvoidPublicNotifierProperties(),
         const StatelessRef(),
         const MissingProviderScope(),
         const ProviderParameters(),

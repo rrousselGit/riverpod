@@ -43,8 +43,9 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
   - [missing\_provider\_scope](#missing_provider_scope)
   - [provider\_dependencies (riverpod\_generator only)](#provider_dependencies-riverpod_generator-only)
   - [scoped\_providers\_should\_specify\_dependencies (generator only)](#scoped_providers_should_specify_dependencies-generator-only)
-  - [avoid\_manual\_providers\_as\_generated\_provider\_depenency](#avoid_manual_providers_as_generated_provider_dependency)
+  - [avoid\_manual\_providers\_as\_generated\_provider\_dependency](#avoid_manual_providers_as_generated_provider_dependency)
   - [provider\_parameters](#provider_parameters)
+  - [avoid\_public\_notifier\_properties](#avoid_public_notifier_properties)
   - [unsupported\_provider\_value (riverpod\_generator only)](#unsupported_provider_value-riverpod_generator-only)
   - [stateless\_ref (riverpod\_generator only)](#stateless_ref-riverpod_generator-only)
   - [generator\_class\_extends (riverpod\_generator only)](#generator_class_extends-riverpod_generator-only)
@@ -368,6 +369,47 @@ ref.watch(myProvider(variable));
 ref.watch(myProvider(ClassWithNoCustomEqual()));
 // List/map/set litterals do not have a custom ==
 ref.watch(myProvider([42]));
+```
+
+### avoid_public_notifier_properties
+
+The `Notifier`/`AsyncNotifier` classes should not have public state outside
+of the `state` property.
+
+**Good**:
+
+```dart
+class Model {
+  Model(this.a, this.b);
+  final int a;
+  final int b;
+}
+
+// Notifiers using the code-generator
+@riverpod
+class GeneratedNotifier extends _$GeneratedNotifier {
+  @override
+  Model build() => Model(0, 0);
+}
+
+// Manually written Notifiers
+class ManualNotifier extends Notifier<Model> {
+  @override
+  Model build() => Model(0, 0);
+}
+```
+
+**Bad**:
+
+```dart
+@riverpod
+class GeneratedNotifier extends _$GeneratedNotifier {
+  // Notifiers should not have public properties/getters
+  int b = 0;
+
+  @override
+  int build() => 0;
+}
 ```
 
 ### unsupported_provider_value (riverpod_generator only)
