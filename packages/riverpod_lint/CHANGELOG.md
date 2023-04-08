@@ -1,5 +1,8 @@
 ## Unreleased minor
 
+- Added `avoid_public_properties_in_notifiers` lint.
+  This warns if a Notifier/AsyncNotifier contains any form of public state
+  outside the `state` property.
 - Added assists for converting widgets to HookWidget/HookConsumerWidget (thanks to @K9i-0)
 
 ## 1.1.8 - 2023-04-07
