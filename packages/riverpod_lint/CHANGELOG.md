@@ -1,3 +1,7 @@
+## Unreleased patch
+
+- Improve documentation of `avoid_public_notifier_properties`
+
 ## 1.2.0 - 2023-04-08
 
 - Added `avoid_public_notifier_properties` lint.

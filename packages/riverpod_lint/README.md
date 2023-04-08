@@ -376,28 +376,9 @@ ref.watch(myProvider([42]));
 The `Notifier`/`AsyncNotifier` classes should not have public state outside
 of the `state` property.
 
-**Good**:
-
-```dart
-class Model {
-  Model(this.a, this.b);
-  final int a;
-  final int b;
-}
-
-// Notifiers using the code-generator
-@riverpod
-class GeneratedNotifier extends _$GeneratedNotifier {
-  @override
-  Model build() => Model(0, 0);
-}
-
-// Manually written Notifiers
-class ManualNotifier extends Notifier<Model> {
-  @override
-  Model build() => Model(0, 0);
-}
-```
+The reasoning is that all "state" should be accessed through the `.state` property.
+There should never be a case where you do `ref.watch(someProvider.notifier).someState`.
+Instead you should do `ref.watch(provider).someState`.
 
 **Bad**:
 
@@ -409,6 +390,42 @@ class GeneratedNotifier extends _$GeneratedNotifier {
 
   @override
   int build() => 0;
+}
+```
+
+**Good**:
+
+```dart
+class Model {
+  Model(this.a, this.b);
+  final int a;
+  final int b;
+}
+
+// Notifiers using the code-generator
+@riverpod
+class MyNotifier extends _$MyNotifier {
+  // No public getters/fields, this is fine. Instead
+  // Everythign is available in the `state` object.
+  @override
+  Model build() => Model(0, 0);
+}
+```
+
+```dart
+@riverpod
+class MyNotifier extends _$MyNotifier {
+  // Alternatively, notifiers are allowed to have properties/getters if they
+  // are either private or annotated such that using inside widgets would
+  // trigger a warning.
+  int _internal = 0;
+  @protected
+  int publicButProtected = 0;
+  @visibleForTesting
+  int testOnly = 0;
+
+  @override
+  Something build() {...}
 }
 ```
 
