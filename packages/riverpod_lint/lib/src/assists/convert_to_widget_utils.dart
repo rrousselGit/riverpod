@@ -13,7 +13,7 @@ enum StatelessBaseWidgetType {
       'HookConsumerWidget',
       packageName: 'hooks_riverpod',
     ),
-    needHooksRiverpod: true,
+    requiredPackage: 'hooks_riverpod',
   ),
   hookWidget(
     widgetName: 'HookWidget',
@@ -22,7 +22,7 @@ enum StatelessBaseWidgetType {
       'HookWidget',
       packageName: 'flutter_hooks',
     ),
-    needHooksRiverpod: true,
+    requiredPackage: 'flutter_hooks',
   ),
   consumerWidget(
     widgetName: 'ConsumerWidget',
@@ -31,7 +31,6 @@ enum StatelessBaseWidgetType {
       'ConsumerWidget',
       packageName: 'flutter_riverpod',
     ),
-    needHooksRiverpod: false,
   ),
   statelessWidget(
     widgetName: 'StatelessWidget',
@@ -40,7 +39,6 @@ enum StatelessBaseWidgetType {
       'StatelessWidget',
       packageName: 'flutter',
     ),
-    needHooksRiverpod: false,
   ),
   ;
 
@@ -48,12 +46,12 @@ enum StatelessBaseWidgetType {
     required this.widgetName,
     required this.priority,
     required this.typeChecker,
-    required this.needHooksRiverpod,
+    this.requiredPackage,
   });
   final String widgetName;
   final int priority;
   final TypeChecker typeChecker;
-  final bool needHooksRiverpod;
+  final String? requiredPackage;
 }
 
 enum StatefulBaseWidgetType {
@@ -64,7 +62,7 @@ enum StatefulBaseWidgetType {
       'StatefulHookConsumerWidget',
       packageName: 'hooks_riverpod',
     ),
-    needHooksRiverpod: true,
+    requiredPackage: 'hooks_riverpod',
   ),
   statefulHookWidget(
     widgetName: 'StatefulHookWidget',
@@ -73,7 +71,7 @@ enum StatefulBaseWidgetType {
       'StatefulHookWidget',
       packageName: 'flutter_hooks',
     ),
-    needHooksRiverpod: true,
+    requiredPackage: 'flutter_hooks',
   ),
   consumerStatefulWidget(
     widgetName: 'ConsumerStatefulWidget',
@@ -82,7 +80,6 @@ enum StatefulBaseWidgetType {
       'ConsumerStatefulWidget',
       packageName: 'flutter_riverpod',
     ),
-    needHooksRiverpod: false,
   ),
   statefulWidget(
     widgetName: 'StatefulWidget',
@@ -91,7 +88,6 @@ enum StatefulBaseWidgetType {
       'StatefulWidget',
       packageName: 'flutter',
     ),
-    needHooksRiverpod: false,
   ),
   ;
 
@@ -99,12 +95,12 @@ enum StatefulBaseWidgetType {
     required this.widgetName,
     required this.priority,
     required this.typeChecker,
-    required this.needHooksRiverpod,
+    this.requiredPackage,
   });
   final String widgetName;
   final int priority;
   final TypeChecker typeChecker;
-  final bool needHooksRiverpod;
+  final String? requiredPackage;
 }
 
 TypeChecker getStatelessBaseType({
