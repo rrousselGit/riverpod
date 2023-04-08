@@ -1,4 +1,4 @@
-## Unreleased fix
+## 2.3.4 - 2023-04-07
 
 - Fixes an issue with nested ProviderScope (thanks to @jeiea)
 

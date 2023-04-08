@@ -1,4 +1,4 @@
-## Unreleased patch
+## 2.1.6 - 2023-04-07
 
 - If a provider has an empty list of dependencies, the generated list is now `const`
   (thanks to @K9i-0)
