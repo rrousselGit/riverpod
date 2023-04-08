@@ -13,7 +13,7 @@ import 'package:test/test.dart';
 import '../golden.dart';
 
 void main() {
-  final pubspec = Pubspec(
+  final pubspecWithDependencies = Pubspec(
     'test_project',
     dependencies: {
       'hooks_riverpod': SdkDependency(''),
@@ -29,7 +29,7 @@ void main() {
         ),
         'Convert widgets to ${targetWidget.name}s with hooks_riverpod and flutter_hooks dependency',
         'assists/convert_to_${targetWidget.name.toSnakeCase()}.json',
-        pubspec,
+        pubspecWithDependencies,
         targetWidget == StatelessBaseWidgetType.statelessWidget ? 6 : 9,
       );
     },
@@ -43,10 +43,14 @@ void main() {
         ),
         'Convert widgets to ${targetWidget.name}s with hooks_riverpod and flutter_hooks dependency',
         'assists/convert_to_${targetWidget.name.toSnakeCase()}.json',
-        pubspec,
+        pubspecWithDependencies,
         targetWidget == StatefulBaseWidgetType.statefulWidget ? 6 : 9,
       );
     },
+  );
+
+  final pubspecWithoutDependencies = Pubspec(
+    'test_project',
   );
 
   StatelessBaseWidgetType.values.forEach(
@@ -83,7 +87,7 @@ void main() {
         ),
         'Convert widgets to ${targetWidget.name}s without hooks_riverpod and flutter_hooks dependency',
         goldenFilePath,
-        null,
+        pubspecWithoutDependencies,
         expectedChangeCount,
       );
     },
@@ -123,7 +127,7 @@ void main() {
         ),
         'Convert widgets to ${targetWidget.name}s without hooks_riverpod and flutter_hooks dependency',
         goldenFilePath,
-        null,
+        pubspecWithoutDependencies,
         expectedChangeCount,
       );
     },
@@ -143,7 +147,7 @@ void _runGoldenTest(
   RiverpodAssist assist,
   String description,
   String goldenFilePath,
-  Pubspec? pubspec,
+  Pubspec pubspec,
   int expectedChangeCount,
 ) {
   testGolden(
