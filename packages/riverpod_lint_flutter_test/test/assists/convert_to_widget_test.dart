@@ -16,8 +16,8 @@ void main() {
   final pubspecWithDependencies = Pubspec(
     'test_project',
     dependencies: {
-      'hooks_riverpod': SdkDependency(''),
-      'flutter_hooks': SdkDependency(''),
+      'hooks_riverpod': HostedDependency(),
+      'flutter_hooks': HostedDependency(),
     },
   );
 
