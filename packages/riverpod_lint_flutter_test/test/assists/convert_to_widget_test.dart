@@ -55,7 +55,7 @@ void main() {
 
   StatelessBaseWidgetType.values.forEach(
     (targetWidget) {
-      final expectedChangeCount;
+      final int expectedChangeCount;
       switch (targetWidget) {
         case StatelessBaseWidgetType.consumerWidget:
           expectedChangeCount = 9;
@@ -68,7 +68,7 @@ void main() {
           expectedChangeCount = 6;
           break;
       }
-      final goldenFilePath;
+      final String goldenFilePath;
       switch (targetWidget) {
         case StatelessBaseWidgetType.hookWidget:
         case StatelessBaseWidgetType.hookConsumerWidget:
@@ -95,7 +95,7 @@ void main() {
 
   StatefulBaseWidgetType.values.forEach(
     (targetWidget) {
-      final expectedChangeCount;
+      final int expectedChangeCount;
       switch (targetWidget) {
         case StatefulBaseWidgetType.consumerStatefulWidget:
           expectedChangeCount = 9;
@@ -108,7 +108,7 @@ void main() {
           expectedChangeCount = 6;
           break;
       }
-      final goldenFilePath;
+      final String goldenFilePath;
       switch (targetWidget) {
         case StatefulBaseWidgetType.statefulHookWidget:
         case StatefulBaseWidgetType.statefulHookConsumerWidget:
