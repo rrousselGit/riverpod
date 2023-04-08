@@ -15,6 +15,7 @@ enum StatelessBaseWidgetType {
       'ConsumerWidget',
       packageName: 'flutter_riverpod',
     ),
+    needHooksRiverpod: false,
   ),
   hookWidget(
     widgetName: 'HookWidget',
@@ -23,6 +24,7 @@ enum StatelessBaseWidgetType {
       'HookWidget',
       packageName: 'flutter_hooks',
     ),
+    needHooksRiverpod: true,
   ),
   hookConsumerWidget(
     widgetName: 'HookConsumerWidget',
@@ -31,6 +33,7 @@ enum StatelessBaseWidgetType {
       'HookConsumerWidget',
       packageName: 'hooks_riverpod',
     ),
+    needHooksRiverpod: true,
   ),
   statelessWidget(
     widgetName: 'StatelessWidget',
@@ -39,6 +42,7 @@ enum StatelessBaseWidgetType {
       'StatelessWidget',
       packageName: 'flutter',
     ),
+    needHooksRiverpod: false,
   ),
   ;
 
@@ -46,10 +50,12 @@ enum StatelessBaseWidgetType {
     required this.widgetName,
     required this.priority,
     required this.typeChecker,
+    required this.needHooksRiverpod,
   });
   final String widgetName;
   final int priority;
   final TypeChecker typeChecker;
+  final bool needHooksRiverpod;
 }
 
 enum StatefulBaseWidgetType {
@@ -60,6 +66,7 @@ enum StatefulBaseWidgetType {
       'ConsumerStatefulWidget',
       packageName: 'flutter_riverpod',
     ),
+    needHooksRiverpod: false,
   ),
   statefulHookWidget(
     widgetName: 'StatefulHookWidget',
@@ -68,6 +75,7 @@ enum StatefulBaseWidgetType {
       'StatefulHookWidget',
       packageName: 'flutter_hooks',
     ),
+    needHooksRiverpod: true,
   ),
   statefulHookConsumerWidget(
     widgetName: 'StatefulHookConsumerWidget',
@@ -76,6 +84,7 @@ enum StatefulBaseWidgetType {
       'StatefulHookConsumerWidget',
       packageName: 'hooks_riverpod',
     ),
+    needHooksRiverpod: true,
   ),
   statefulWidget(
     widgetName: 'StatefulWidget',
@@ -84,6 +93,7 @@ enum StatefulBaseWidgetType {
       'StatefulWidget',
       packageName: 'flutter',
     ),
+    needHooksRiverpod: false,
   ),
   ;
 
@@ -91,10 +101,12 @@ enum StatefulBaseWidgetType {
     required this.widgetName,
     required this.priority,
     required this.typeChecker,
+    required this.needHooksRiverpod,
   });
   final String widgetName;
   final int priority;
   final TypeChecker typeChecker;
+  final bool needHooksRiverpod;
 }
 
 TypeChecker getStatelessBaseType({

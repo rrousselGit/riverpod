@@ -29,6 +29,11 @@ class ConvertToStatefulBaseWidget extends RiverpodAssist {
     CustomLintContext context,
     SourceRange target,
   ) {
+    if (targetWidget.needHooksRiverpod &&
+        !context.pubspec.dependencies.keys.contains('hooks_riverpod')) {
+      return;
+    }
+
     context.registry.addExtendsClause((node) {
       // Only offer the assist if hovering the extended type
       if (!node.superclass.sourceRange.intersects(target)) return;
