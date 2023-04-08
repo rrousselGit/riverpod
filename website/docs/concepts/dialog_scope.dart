@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 /* SNIPPET START */
 
 // Have a counter that is being incremented by the FloatingActionButton
-final counterProvider = StateProvider((ref) => 0);
+final counterProvider = StateProvider.autoDispose((ref) => 0);
 
 class Home extends ConsumerWidget {
   const Home({super.key});
