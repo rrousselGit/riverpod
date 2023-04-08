@@ -1,7 +1,8 @@
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
-import 'src/assists/convert_to_consumer_stateful_widget.dart';
-import 'src/assists/convert_to_consumer_widget.dart';
+import 'src/assists/convert_to_stateful_base_widget.dart';
+import 'src/assists/convert_to_stateless_base_widget.dart';
+import 'src/assists/convert_to_widget_utils.dart';
 import 'src/assists/stateful_to_stateless_provider.dart';
 import 'src/assists/stateless_to_stateful_provider.dart';
 import 'src/assists/wrap_with_consumer.dart';
@@ -56,8 +57,16 @@ class _RiverpodPlugin extends PluginBase {
   List<Assist> getAssists() => [
         WrapWithConsumer(),
         WrapWithProviderScope(),
-        ConvertToConsumerWidget(),
-        ConvertToConsumerStatefulWidget(),
+        ...StatelessBaseWidgetType.values.map(
+          (targetWidget) => ConvertToStatelessBaseWidget(
+            targetWidget: targetWidget,
+          ),
+        ),
+        ...StatefulBaseWidgetType.values.map(
+          (targetWidget) => ConvertToStatefulBaseWidget(
+            targetWidget: targetWidget,
+          ),
+        ),
 
 // StateProvider to SyncStatefulProvider
 // convert FutureProvider <> AsyncNotifierProvider

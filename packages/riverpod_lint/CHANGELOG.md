@@ -1,3 +1,7 @@
+## Unreleased minor
+
+- Added assists for converting widgets to HookWidget/HookConsumerWidget (thanks to @K9i-0)
+
 ## 1.1.8 - 2023-04-07
 
 - Disable unsupported_provider_value when a notifier returns "this"
