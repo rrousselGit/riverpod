@@ -60,7 +60,7 @@ class ConvertToStatelessBaseWidget extends RiverpodAssist {
           node,
           resolver.source,
           // This adjustment assumes that the priority of the standard "Convert to StatelessWidget" is 30.
-          isExactlyStatefulWidget ? -4 : 0,
+          priorityAdjustment: isExactlyStatefulWidget ? -4 : 0,
         );
         return;
       }
@@ -124,9 +124,9 @@ class ConvertToStatelessBaseWidget extends RiverpodAssist {
   void _convertStatefulToStatelessWidget(
     ChangeReporter reporter,
     ExtendsClause node,
-    Source source,
-    int priorityAdjustment,
-  ) {
+    Source source, {
+    required int priorityAdjustment,
+  }) {
     final changeBuilder = reporter.createChangeBuilder(
       message: 'Convert to ${targetWidget.widgetName}',
       priority: targetWidget.priority + priorityAdjustment,
