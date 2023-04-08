@@ -3,10 +3,11 @@
 /* SNIPPET START */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'main.g.dart';
+part 'main_hooks.g.dart';
 
 // 我们创建一个 “provider”，它将用于保存一个值（这里是 “Hello world”）。
 // 通过使用一个 provider，我们能够模拟或覆盖被暴露的值。
@@ -27,16 +28,19 @@ void main() {
 }
 
 // 扩展来自 Riverpod 的 HookConsumerWidget 而不是 HookWidget
-class MyApp extends ConsumerWidget {
+class MyApp extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // We can use hooks inside HookConsumerWidget
+    final counter = useState(0);
+
     final String value = ref.watch(helloWorldProvider);
 
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: const Text('Example')),
         body: Center(
-          child: Text(value),
+          child: Text('$value ${counter.value}'),
         ),
       ),
     );

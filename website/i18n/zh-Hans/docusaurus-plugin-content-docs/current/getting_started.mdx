@@ -1,6 +1,6 @@
 ---
 title: 开始上手
-version: 1
+version: 2
 ---
 
 import Tabs from "@theme/Tabs";
@@ -8,40 +8,42 @@ import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
 import pubspec from "./getting_started/pubspec";
 import dartHelloWorld from "./getting_started/dart_hello_world";
+import pubadd from "./getting_started/pub_add";
 import helloWorld from "./getting_started/hello_world";
 import dartPubspec from "./getting_started/dart_pubspec";
+import dartPubadd from "./getting_started/dart_pub_add";
 import {
   trimSnippet,
   AutoSnippet,
   ConditionalSnippet,
 } from "../../../../src/components/CodeSnippet";
 
-___
+---
 
-## 在线尝试Riverpod
+## 在线尝试 Riverpod
 
-在[Dartpad](https://dartpad.dev/?null_safety=true&id=ef06ab3ce0b822e6cc5db0575248e6e2) 上感受Riverpod的魅力。
+在 [Dartpad](https://dartpad.dev/?null_safety=true&id=ef06ab3ce0b822e6cc5db0575248e6e2) 上感受 Riverpod 的魅力。
 
-## 安装package
+## 安装包文件
 
-按照你的需要添加下列代码到你的`pubspec.yaml`文件中 ：
+当你确定好你想要安装的包文件后，添加下列代码到你的 `pubspec.yaml` 文件中：
 
 <Tabs
   groupId="riverpod"
   defaultValue="flutter_riverpod"
   values={[
-    { label: 'Flutter', value: 'flutter_riverpod', },
-    { label: '仅Dart', value: 'riverpod', },
+    { label: 'Flutter 项目', value: 'flutter_riverpod', },
+    { label: '纯 Dart 项目', value: 'riverpod', },
   ]}
 >
 <TabItem value="flutter_riverpod">
 
 <AutoSnippet title="pubspec.yaml" language="yaml" {...pubspec}></AutoSnippet>
 
-然后使用 `flutter pub get` 命令来安装package。
+然后使用 `flutter pub get` 命令来安装包文件。
 
 <ConditionalSnippet codegen={true}>
-  最后，用{" "} 命令来运行代码生成工具
+  最后，运行代码生成器 {" "}
   <code>flutter pub run build_runner watch</code>
 </ConditionalSnippet>
 
@@ -54,21 +56,45 @@ ___
   {...dartPubspec}
 ></AutoSnippet>
 
-然后使用 `dart pub get` 命令来安装package。
+然后使用 `dart pub get` 命令来安装包文件。
 
 <ConditionalSnippet codegen={true}>
-   最后，用{" "} 命令来运行代码生成工具
+  最后，用命令 来运行代码生成工具
   <code>flutter pub run build_runner watch</code>
 </ConditionalSnippet>
 
 </TabItem>
 </Tabs>
 
-就是这样，你成功将[Riverpod]添加到你的应用当中!
+或者你也可以通过下方一行命令来为你的应用添加依赖包：
+
+<Tabs
+  groupId="riverpod"
+  defaultValue="flutter_riverpod"
+  values={[
+    { label: 'Flutter 项目', value: 'flutter_riverpod', },
+    { label: '纯 Dart 项目', value: 'riverpod', },
+  ]}
+>
+<TabItem value="flutter_riverpod">
+
+<AutoSnippet title="Terminal" {...pubadd}></AutoSnippet>
+
+</TabItem>
+
+<TabItem value="riverpod">
+
+<AutoSnippet title="Terminal" {...dartPubadd}></AutoSnippet>
+
+</TabItem>
+
+</Tabs>
+
+就是这样，你已成功将 [Riverpod] 添加到你的应用当中!
 
 ## 使用示例: Hello world
 
-安装完[Riverpod]，我们就可以使用了。
+安装完 [Riverpod]，我们就可以使用了。
 
 下面的代码片段展示了如何使用我们的新依赖来创建一个 "Hello world"：
 
@@ -78,8 +104,8 @@ export const foo = 42;
   groupId="riverpod"
   defaultValue="flutter_riverpod"
   values={[
-    { label: "Flutter", value: "flutter_riverpod" },
-    { label: "仅Dart", value: "riverpod" },
+    { label: "Flutter 项目", value: "flutter_riverpod" },
+    { label: "纯 Dart 项目", value: "riverpod" },
   ]}
 >
 <TabItem value="flutter_riverpod">
@@ -90,8 +116,8 @@ export const foo = 42;
   {...helloWorld}
 ></AutoSnippet>
 
-你可以使用 `flutter run` 命令来运行 ，
-这会在你的设备中央显示 "Hello world" 的文字。
+你可以使用 `flutter run` 命令来运行。
+这会在你的设备上渲染 "Hello world" 的文字。
 
 </TabItem>
 <TabItem value="riverpod">
@@ -102,15 +128,15 @@ export const foo = 42;
   {...dartHelloWorld}
 ></AutoSnippet>
 
-你可以使用 `dart lib/main.dart` 命令来运行 ，
+你可以使用 `dart lib/main.dart` 命令来运行。
 这会在你的控制台打印 "Hello world" 的字样。
 
 </TabItem>
 </Tabs>
 
-## 更进一步： 安装代码片段插件
+## 更进一步：安装代码片段插件
 
-如果你使用 `Flutter` 和 `VS Code` ，推荐使用 [Flutter Riverpod Snippets](https://marketplace.visualstudio.com/items?itemName=robert-brunhage.flutter-riverpod-snippets)
+如果你使用 `Flutter` 和 `VS Code`，推荐使用 [Flutter Riverpod Snippets](https://marketplace.visualstudio.com/items?itemName=robert-brunhage.flutter-riverpod-snippets)
 
 如果你使用 `Flutter` 和 `Android Studio` 或 `IntelliJ`，推荐使用 [Flutter Riverpod Snippets](https://plugins.jetbrains.com/plugin/14641-flutter-riverpod-snippets)
 
@@ -120,11 +146,11 @@ export const foo = 42;
 
 学习一些基础的概念:
 
-- [了解关于provider的更多内容](/docs/concepts/providers)
+- [了解更多关于 provider 的内容](/docs/concepts/providers)
 
-Follow a cookbook:
+遵循专题手册：
 
-- [如何测试provider](/docs/cookbooks/testing)
+- [如何测试 provider](/docs/cookbooks/testing)
 
 [riverpod]: https://github.com/rrousselgit/riverpod
 [hooks_riverpod]: https://pub.dev/packages/hooks_riverpod

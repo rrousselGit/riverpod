@@ -7,18 +7,18 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'main.g.dart';
 
-// 我们创建了一个 "provider", 这里它存储了一个值 (这里是 "Hello world")。
-// 通过使用provider，我们能够重写或模拟这个暴露的值
+// 我们创建一个 “provider”，它将用于保存一个值（这里是 “Hello world”）。
+// 通过使用一个 provider，我们能够模拟或覆盖被暴露的值。
 @riverpod
 String helloWorld(HelloWorldRef ref) {
   return 'Hello world';
 }
 
 void main() {
-  // 我们的provider将会在这个对象中保存。
+  // 我们的 provider 将借这个对象存储状态。
   final container = ProviderContainer();
 
-  // 多亏了"container", 我们可以在任意的地方读取各种provider。
+  // 我们可以借助这个 “container” 对象读取 provider。
   final value = container.read(helloWorldProvider);
 
   print(value); // Hello world
