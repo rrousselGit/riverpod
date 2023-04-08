@@ -20,7 +20,7 @@
 ---
 
 Riverpod_lint is a developer tool for users of Riverpod, designed to help stop common
-issue and simplify repetitive tasks.
+issues and simplify repetitive tasks.
 
 Riverpod_lint adds various warnings with quick fixes and refactoring options, such as:
 
@@ -50,8 +50,8 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
   - [stateless\_ref (riverpod\_generator only)](#stateless_ref-riverpod_generator-only)
   - [generator\_class\_extends (riverpod\_generator only)](#generator_class_extends-riverpod_generator-only)
 - [All assists](#all-assists)
-  - [Wrap widget with a `Consumer`](#wrap-widget-with-a-consumer)
-  - [Wrap widget with a `ProviderScope`](#wrap-widget-with-a-providerscope)
+  - [Wrap widgets with a `Consumer`](#wrap-widgets-with-a-consumer)
+  - [Wrap widgets with a `ProviderScope`](#wrap-widgets-with-a-providerscope)
   - [Convert widget to `ConsumerWidget`](#convert-widget-to-consumerwidget)
   - [Convert widget to `ConsumerStatefulWidget`](#convert-widget-to-consumerstatefulwidget)
   - [Convert functional `@riverpod` to class variant](#convert-functional-riverpod-to-class-variant)
@@ -185,7 +185,7 @@ void main() {
 ### provider_dependencies (riverpod_generator only)
 
 If a provider depends on providers which specify `dependencies`, they should
-themselves specify `dependencies` and include all the scoped providers.
+specify `dependencies` and include all the scoped providers.
 
 This lint only works for providers using the `@riverpod` annotation.
 
@@ -346,7 +346,7 @@ int example(ExampleRef ref) {
 
 ### provider_parameters
 
-Providers parameters should have a consistent ==. Meaning either the values should be cached, or the parameters should override ==.
+Providers' parameters should have a consistent ==. Meaning either the values should be cached, or the parameters should override ==.
 
 **Good**:
 
@@ -373,12 +373,12 @@ ref.watch(myProvider([42]));
 
 ### avoid_public_notifier_properties
 
-The `Notifier`/`AsyncNotifier` classes should not have public state outside
+The `Notifier`/`AsyncNotifier` classes should not have a public state outside
 of the `state` property.
 
 The reasoning is that all "state" should be accessed through the `.state` property.
 There should never be a case where you do `ref.watch(someProvider.notifier).someState`.
-Instead you should do `ref.watch(provider).someState`.
+Instead, you should do `ref.watch(provider).someState`.
 
 **Bad**:
 
@@ -434,7 +434,7 @@ class MyNotifier extends _$MyNotifier {
 The riverpod_generator package does not support `StateNotifier`/`ChangeNotifier` and
 manually creating a `Notifier`/`AsyncNotifier`.
 
-This lints warns against unsupported value types.
+This lint warns against unsupported value types.
 
 **Good**:
 
@@ -516,11 +516,11 @@ class Example extends Anything {
 
 ## All assists
 
-### Wrap widget with a `Consumer`
+### Wrap widgets with a `Consumer`
 
 ![Wrap with Consumer sample](https://raw.githubusercontent.com/rrousselGit/riverpod/master/packages/riverpod_lint/resources/wrap_with_consumer.gif)
 
-### Wrap widget with a `ProviderScope`
+### Wrap widgets with a `ProviderScope`
 
 ![Wrap with ProviderScope sample](https://raw.githubusercontent.com/rrousselGit/riverpod/master/packages/riverpod_lint/resources/wrap_with_provider_scope.gif)
 
