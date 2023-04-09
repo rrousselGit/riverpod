@@ -534,9 +534,6 @@ extension AsyncValueX<T> on AsyncValue<T> {
   /// Whether the associated provider was recomputed because of a dependency change
   /// (using [Ref.watch]), after at least one [value]/[error] was emitted.
   ///
-  /// If a provider rebuilds because one of its dependencies changed (using [Ref.watch]),
-  /// then [isReloading] will be false.
-  ///
   /// See also [isRefreshing] for manual provider rebuild.
   bool get isReloading => (hasValue || hasError) && this is AsyncLoading;
 
