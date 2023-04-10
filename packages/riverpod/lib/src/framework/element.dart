@@ -37,9 +37,9 @@ void Function()? debugCanModifyProviders;
 ///
 /// This is what keeps track of the state of a provider, and notifies listeners
 /// when the state changes. It is also responsible for rebuilding the provider
-/// when once of its dependencies changes.
+/// when one of its dependencies changes.
 ///
-/// This class is not meant to be used directly and is an implemnetation detail
+/// This class is not meant to be used directly and is an implementation detail
 /// of providers.
 /// Do not use.
 /// {@endtemplate}
@@ -159,10 +159,10 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
     }
   }
 
-  /// Obtains the current state, of null if the provider has yet to initialize.
+  /// Obtains the current state, or null if the provider has yet to initialize.
   ///
   /// The returned object will contain error information, if any.
-  /// This function does not cause the provider to rebuild if it someohow was
+  /// This function does not cause the provider to rebuild if it somehow was
   /// outdated.
   ///
   /// This is not meant for public consumption. Instead, public API should use
@@ -453,7 +453,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   void notifyListeners() {
     final currentResult = getState();
     // If `notifyListeners` is used during `build`, the result will be null.
-    // Throwing would be unnecesserily inconvenient, so we simply skip it.
+    // Throwing would be unnecessarily inconvenient, so we simply skip it.
     if (currentResult == null) return;
 
     if (_didBuild) {
@@ -623,7 +623,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         if (listenable is! ProviderBase<Object?>) return true;
 
         try {
-          // Initializating the provider, to make sure its dependencies are setup.
+          // Initializing the provider, to make sure its dependencies are setup.
           _container.readProviderElement(listenable);
         } catch (err) {
           // We don't care whether the provider is in error or not. We're just
@@ -647,7 +647,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
               origin.dependencies!.contains(listenable.from) ||
               origin.dependencies!.contains(listenable),
           'The provider $origin tried to read $listenable, but it specified a '
-          "'dependendencies' list yet that list does not contain $listenable.\n\n"
+          "'dependencies' list yet that list does not contain $listenable.\n\n"
           "To fix, add $listenable to $origin's 'dependencies' parameter",
         );
 
@@ -793,7 +793,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     void Function(Object error, StackTrace stackTrace)? onError,
   }) {
     // TODO do we want to expose a way to close the subscription?
-    // TODO do we want a fireImmdiately?
+    // TODO do we want a fireImmediately?
 
     _onChangeSelfListeners ??= [];
     _onChangeSelfListeners!.add(listener);
