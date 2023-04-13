@@ -26,25 +26,23 @@ abstract class ChangeNotifierProviderRef<NotifierT extends ChangeNotifier?>
 /// Using [ChangeNotifier], you could represent such state as:
 ///
 /// ```dart
-/// class TodosNotifier extends ChangeNotifier<List<Todo>> {
-///   TodosNotifier(): super([]);
+/// class TodosNotifier extends ChangeNotifier {
+///   List<Todo> todos = [];
 ///
 ///   void add(Todo todo) {
-///     state = [...state, todo];
+///     todos.add(todo);
+///     notifyListeners();
 ///   }
 ///
 ///   void remove(String todoId) {
-///     state = [
-///       for (final todo in state)
-///         if (todo.id != todoId) todo,
-///     ];
+///     todos.removeWhere((todo) => todo.id == todoId);
+///     notifyListeners();
 ///   }
 ///
 ///   void toggle(String todoId) {
-///     state = [
-///       for (final todo in state)
-///         if (todo.id == todoId) todo.copyWith(completed: !todo.completed),
-///     ];
+///     final todo = todos.firstWhere((todo) => todo.id == todoId);
+///     todo.completed = !todo.completed;
+///     notifyListeners();
 ///   }
 /// }
 /// ```
@@ -60,7 +58,7 @@ abstract class ChangeNotifierProviderRef<NotifierT extends ChangeNotifier?>
 /// ```dart
 /// Widget build(BuildContext context, WidgetRef ref) {
 ///   // rebuild the widget when the todo list changes
-///   List<Todo> todos = ref.watch(todosProvider);
+///   List<Todo> todos = ref.watch(todosProvider).todos;
 ///
 ///   return ListView(
 ///     children: [
