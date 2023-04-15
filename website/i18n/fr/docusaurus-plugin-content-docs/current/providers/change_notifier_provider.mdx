@@ -1,0 +1,51 @@
+---
+title: ChangeNotifierProvider
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import todos from "!!raw-loader!/i18n/fr/docusaurus-plugin-content-docs/current/providers/change_notifier_provider/todos.dart";
+import todosConsumer from "!!raw-loader!/i18n/fr/docusaurus-plugin-content-docs/current/providers/change_notifier_provider/todos_consumer.dart";
+import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+
+`ChangeNotifierProvider` (flutter_riverpod/hooks_riverpod uniquement) est un provider qui
+est utilisé pour écouter et exposer un [ChangeNotifier] depuis Flutter lui-même.
+
+L'utilisation de `ChangeNotifierProvider` est déconseillée par Riverpod et existe principalement pour :
+
+- faire une transition facile à partir de `package:provider` lors de l'utilisation de son `ChangeNotifierProvider`.
+- le support de l'état muable, même si l'état immuable est préférable
+
+:::info
+Préférez utiliser [StateNotifierProvider] à la place.  
+Envisagez d'utiliser `ChangeNotifierProvider` uniquement si 
+vous êtes absolument certain que vous voulez un état muable.
+:::
+
+L'utilisation d'un état muable au lieu d'un état immuable peut parfois être plus efficace.
+L'inconvénient est qu'il peut être plus difficile à maintenir et peut casser diverses fonctionnalités.
+Par exemple, l'utilisation de `provider.select` pour optimiser les reconstructions de 
+vos widgets peut ne pas fonctionner si votre état est mutable, car `select` 
+pensera que la valeur n'a pas changé.  
+Ainsi, l'utilisation de structures de données immuables peut parfois être plus rapide. 
+Il est donc important de faire des tests spécifiques à votre cas d'utilisation, 
+afin de vous assurer que vous gagnez réellement en performance en utilisant `ChangeNotifierProvider`.
+
+A titre d'exemple d'utilisation, on peut utiliser `ChangeNotifierProvider` pour implémenter une todo-list.
+Cela nous permettrait d'exposer des méthodes telles que `addTodo` pour permettre à 
+l'interface utilisateur de modifier la liste des tâches à accomplir en fonction des 
+interactions de l'utilisateur :
+
+<CodeBlock>{trimSnippet(todos)}</CodeBlock>
+
+Maintenant qu'on a défini un `ChangeNotifierProvider`, nous pouvons l'utiliser pour interagir
+avec la liste des tâches dans notre interface utilisateur :
+
+<CodeBlock>{trimSnippet(todosConsumer)}</CodeBlock>
+
+[state_notifier]: https://pub.dev/packages/state_notifier
+[statenotifierprovider]: ./state_notifier_provider
+[changenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/ChangeNotifier-class.html
+[provider]: ./provider
+[futureprovider]: ./future_provider

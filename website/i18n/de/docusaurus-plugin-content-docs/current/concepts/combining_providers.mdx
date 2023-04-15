@@ -1,0 +1,280 @@
+---
+title: Combining providers
+---
+
+Make sure to [read about Providers](/docs/concepts/providers) first.  
+In diesem Leitfaden erfahren Sie alles Wissenswerte über die Kombination von Providern.
+
+## Kombination von Providern
+
+Wir haben bereits gesehen, wie man einen einfachen Provider erstellt. In der Realität 
+wird ein Anbieter jedoch in vielen Fällen den Status eines anderen Providers lesen wollen.
+
+Dazu können wir das [ref]-Objekt verwenden, das an den Callback unseres Providers 
+übergeben wird, und seine [watch]-Methode verwenden.
+
+Betrachten wir als Beispiel den folgenden Provider:
+
+```dart
+final cityProvider = Provider((ref) => 'London');
+```
+
+Wir können nun einen weiteren Provider erstellen, der unseren `cityProvider` benutzt:
+
+```dart
+final weatherProvider = FutureProvider((ref) async {
+  // Wir verwenden `ref.watch`, um einen anderen Provider abzuhören, und wir übergeben 
+  // ihm den Provider, den wir konsumieren wollen. Hier: cityProvider
+  final city = ref.watch(cityProvider);
+
+  // Wir können dann das Ergebnis verwenden, um etwas auf der Grundlage des Wertes von `cityProvider` zu tun.
+  return fetchWeather(city: city);
+});
+```
+
+Das war's. Wir haben einen Provider erstellt, der von einem anderen Provider abhängig ist.
+
+## FAQ
+
+### Was ist, wenn sich der abgehörte Wert im Laufe der Zeit ändert?
+
+Je nach dem Provider, den Sie abhören, kann sich der erhaltene Wert im Laufe der Zeit ändern.  
+Sie können z. B. einen [StateNotifierProvider] abhören, oder der abgehörte Provider wurde 
+mit [ProviderContainer.refresh]/[ref.refresh] zur Aktualisierung gezwungen.
+
+Wenn Sie [watch] verwenden, kann Riverpod erkennen, dass sich der abgehörte Wert geändert 
+hat, und führt den Provider bei Bedarf _automatisch_ erneut aus.
+
+Dies kann für berechnete Zustände nützlich sein.
+Nehmen wir zum Beispiel einen [StateNotifierProvider], der eine ToDo-Liste bereitstellt:
+
+```dart
+class TodoList extends StateNotifier<List<Todo>> {
+  TodoList(): super(const []);
+}
+
+final todoListProvider = StateNotifierProvider((ref) => TodoList());
+```
+
+Ein häufiger Anwendungsfall wäre, dass die Benutzeroberfläche die Liste 
+der Aufgaben filtert, um nur die erledigten/unerledigten Aufgaben anzuzeigen.
+
+Ein einfacher Weg, ein solches Szenario zu implementieren, wäre:
+
+- Erstellen Sie einen [StateProvider], der die aktuell ausgewählte Filtermethode zur Verfügung stellt:
+
+  ```dart
+  enum Filter {
+    none,
+    completed,
+    uncompleted,
+  }
+
+  final filterProvider = StateProvider((ref) => Filter.none);
+  ```
+
+- einen separaten Provider erstellen, der die Filtermethode und die ToDo-Liste 
+  kombiniert, um die gefilterte ToDo-Liste bereitzustellen:
+
+  ```dart
+  final filteredTodoListProvider = Provider<List<Todo>>((ref) {
+    final filter = ref.watch(filterProvider);
+    final todos = ref.watch(todoListProvider);
+
+    switch (filter) {
+      case Filter.none:
+        return todos;
+      case Filter.completed:
+        return todos.where((todo) => todo.completed).toList();
+      case Filter.uncompleted:
+        return todos.where((todo) => !todo.completed).toList();
+    }
+  });
+  ```
+
+Dann kann unsere UI auf den `filteredTodoListProvider` hören, um die 
+gefilterte Todo-Liste abzufragen. Mit diesem Ansatz wird das UI automatisch 
+aktualisiert, wenn sich entweder der Filter oder die ToDo-Liste ändert.
+
+Um diesen Ansatz in Aktion zu sehen, können Sie sich den Quellcode hier anschauen [Todo List
+Beispiel](https://github.com/rrousselGit/riverpod/tree/master/examples/todos)
+
+:::info
+Dieses Verhalten ist nicht spezifisch für [Provider], sondern funktioniert mit allen Providern.
+
+Sie könnten zum Beispiel [watch] mit [FutureProvider] kombinieren, um eine 
+Suchfunktion oder eine Änderung der Live-Konfiguration zu implementieren:
+
+```dart
+// Der aktuelle Suchfilter
+final searchProvider = StateProvider((ref) => '');
+
+/// Konfigurationen, die sich mit der Zeit ändern können
+final configsProvider = StreamProvider<Configuration>(...);
+
+final charactersProvider = FutureProvider<List<Character>>((ref) async {
+  final search = ref.watch(searchProvider);
+  final configs = await ref.watch(configsProvider.future);
+  final response = await dio.get('${configs.host}/characters?search=$search');
+
+  return response.data.map((json) => Character.fromJson(json)).toList();
+});
+```
+
+Dieser Code ruft eine Liste von Zeichen aus dem Dienst ab und ruft die Liste 
+automatisch erneut ab, wenn sich die Konfigurationen oder die Suchanfrage ändern.
+:::
+
+### Kann ich einen Provider auslesen ohne auf ihn zu lauschen?
+
+Manchmal möchten wir den Inhalt eines Providers lesen, ohne den Wert 
+neu zu erstellen, wenn sich der erhaltene Wert ändert.
+
+Ein Beispiel wäre ein `Repository`, das von einem anderen Anbieter das 
+Benutzer-Token für die Authentifizierung liest.  
+Wir könnten [watch] verwenden und ein neues `Repository` erstellen, wenn 
+sich das Benutzer-Token ändert, aber das hat wenig bis keinen Sinn.
+
+In dieser Situation können wir [read] verwenden, was ähnlich wie [watch] ist, 
+aber den Provider nicht dazu veranlasst, seinen exponierten Wert neu zu 
+erstellen, wenn sich der erhaltene Wert ändert.
+
+In diesem Fall ist es üblich, `ref.read` an das erstellte Objekt zu übergeben.
+Das erstellte Objekt ist dann in der Lage, Provider zu lesen, wann immer es will.
+
+```dart
+final userTokenProvider = StateProvider<String>((ref) => null);
+
+final repositoryProvider = Provider((ref) => Repository(ref.read));
+
+class Repository {
+  Repository(this.read);
+
+  /// The `ref.read` function
+  final Reader read;
+
+  Future<Catalog> fetchCatalog() async {
+    String token = read(userTokenProvider);
+
+    final response = await dio.get('/path', queryParameters: {
+      'token': token,
+    });
+
+    return Catalog.fromJson(response.data);
+  }
+}
+```
+
+:::note
+Sie könnten auch `ref` anstelle von `ref.read` an Ihr Objekt übergeben:
+
+```dart
+final repositoryProvider = Provider((ref) => Repository(ref));
+
+class Repository {
+  Repository(this.ref);
+
+  final Ref ref;
+}
+```
+
+Der einzige Unterschied, den die Übergabe von `ref.read` mit sich bringt, 
+ist ein etwas weniger ausführlicher Code und die Sicherstellung, dass 
+unser Objekt niemals `ref.watch` verwendet.
+:::
+
+:::danger Rufen Sie [read] **nicht** innerhalb des Body eines Providers auf
+
+```dart
+final myProvider = Provider((ref) {
+  // Bad practice: hier `read` auszuführen
+  final value = ref.read(anotherProvider);
+});
+```
+
+Wenn Sie mit [read] versucht haben, unerwünschte Neuaufbauten Ihres Objekts zu vermeiden, 
+lesen Sie bitte [Mein Provider aktualisiert zu oft, was kann ich tun?](#my-provider-updates-too-often-what-can-i-do)
+
+:::
+
+### Wie testet man ein Objekt, das [read] als Parameter seines Konstruktors erhält?
+
+Wenn Sie das in [Can-i-read-a-provider-without-listening-to-it?](#can-i-read-a-provider-without-listening-to-it) 
+beschriebene Muster verwenden, fragen Sie sich vielleicht, wie Sie Tests für Ihr Objekt schreiben können.
+
+In diesem Szenario sollten Sie den Provider direkt anstelle des Rohobjekts testen.
+Dazu können Sie die Klasse [ProviderContainer] verwenden:
+
+```dart
+final repositoryProvider = Provider((ref) => Repository(ref.read));
+
+test('fetches catalog', () async {
+  final container = ProviderContainer();
+  addTearDown(container.dispose);
+
+  Repository repository = container.read(repositoryProvider);
+
+  await expectLater(
+    repository.fetchCatalog(),
+    completion(Catalog()),
+  );
+});
+```
+
+### Mein Provider aktualisiert zu oft, was kann ich tun?
+
+Wenn Ihr Objekt zu oft neu erstellt wird, besteht die Möglichkeit, dass 
+Ihr Provider auf Objekte hört, die ihn nicht interessieren.
+
+Sie können zum Beispiel ein `Configuration`-Objekt abhören, aber nur die 
+Eigenschaft `host` verwenden.  
+Wenn Sie das gesamte Objekt `Configuration` abhören und sich eine andere 
+Eigenschaft als `host` ändert, würde dies dazu führen, dass Ihr Anbieter 
+neu ausgewertet wird, was möglicherweise unerwünscht ist.
+
+Die Lösung für dieses Problem ist, einen separaten Anbieter zu erstellen, 
+der _nur_ das offenlegt, was Sie in `Configuration` benötigen (also `host`):
+
+**VERMEIDEN** Sie das Abhören des gesamten Objekts:
+
+```dart
+final configsProvider = StreamProvider<Configuration>(...);
+
+final productsProvider = FutureProvider<List<Product>>((ref) async {
+  // Veranlasst productsProvider dazu, die Produkte erneut abzurufen, 
+  // wenn sich etwas an den Konfigurationen ändert
+  final configs = await ref.watch(configsProvider.future);
+
+  return dio.get('${configs.host}/products');
+});
+```
+
+**BEVORZUGEN** Sie es, nur auf das zu hören, was Sie benutzen:
+
+```dart
+final configsProvider = StreamProvider<Configuration>(...);
+
+/// Ein Provider, der nur den aktuellen Host offenlegt
+final _hostProvider = FutureProvider<String>((ref) async {
+  final config = await ref.watch(configsProvider.future);
+  return config.host;
+});
+
+final productsProvider = FutureProvider<List<Product>>((ref) async {
+  // Hört nur auf den Host. Wenn sich etwas anderes in den Konfigurationen 
+  // ändert, wird unser Provider nicht sinnloserweise neu berechnet.
+  final host = await ref.watch(_hostProvider.future);
+
+  return dio.get('$host/products');
+});
+```
+
+[provider]: ../providers/provider
+[stateprovider]: ../providers/state_provider
+[futureprovider]: ../providers/future_provider
+[statenotifierprovider]: ../providers/state_notifier_provider
+[ref]: https://pub.dev/documentation/riverpod/latest/riverpod/Ref-class.html
+[watch]: https://pub.dev/documentation/riverpod/latest/riverpod/Ref/watch.html
+[read]: https://pub.dev/documentation/riverpod/latest/riverpod/Ref/read.html
+[providercontainer.refresh]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderContainer/refresh.html
+[ref.refresh]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/WidgetRef/refresh.html

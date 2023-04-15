@@ -1,0 +1,159 @@
+---
+title: StateProvider
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import product from "!!raw-loader!/i18n/es/docusaurus-plugin-content-docs/current/providers/state_provider/product.dart";
+import productListView from "!!raw-loader!/i18n/es/docusaurus-plugin-content-docs/current/providers/state_provider/product_list_view.dart";
+import sortProvider from "!!raw-loader!/i18n/es/docusaurus-plugin-content-docs/current/providers/state_provider/sort_provider.dart";
+import connectedDropdown from "!!raw-loader!/i18n/es/docusaurus-plugin-content-docs/current/providers/state_provider/connected_dropdown.dart";
+import sortedProductProvider from "!!raw-loader!/i18n/es/docusaurus-plugin-content-docs/current/providers/state_provider/sorted_product_provider.dart";
+import updateReadTwice from "!!raw-loader!/i18n/es/docusaurus-plugin-content-docs/current/providers/state_provider/update_read_twice.dart";
+import updateReadOnce from "!!raw-loader!/i18n/es/docusaurus-plugin-content-docs/current/providers/state_provider/update_read_once.dart";
+import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+
+`StateProvider` es un provider que expone una forma de modificar su estado. 
+Es una simplificación de [StateNotifierProvider], diseñada para evitar tener 
+que escribir una clase [StateNotifier] para casos de uso muy simples.
+
+`StateProvider` existe principalmente para permitir la modificación de variables **simples** por 
+parte de la interfaz de usuario. El estado de un `StateProvider` suele ser uno de los siguientes:
+
+- un enum, como un tipo de filtro 
+- un String, normalmente el contenido plano (raw) de un campo de texto 
+- un boolean, para casillas de verificación 
+- number, para paginación o campos de formulario de edad
+
+No debe usar `StateProvider` si:
+
+- su estado necesita lógica de validación
+- su estado es un objeto complejo (como una clase personalizada, List/Map, ...)
+- la lógica para modificar su estado es más avanzada que un simple `count++`.
+
+Para casos más avanzados, considere usar [StateNotifierProvider] en su lugar y cree una clase [StateNotifier].
+Si bien el boilerplate será un poco más grande, tener una clase [StateNotifier] 
+personalizada es fundamental para la capacidad de mantenimiento a largo plazo de su proyecto, 
+ya que centraliza la lógica del negocio de su estado en un solo lugar.
+
+
+## Ejemplo de uso: Cambiar el tipo de filtro usando un menú desplegable (dropdown)
+
+Un caso de uso del mundo real de `StateProvider` sería administrar el estado de componentes 
+de formularios simples como dropdowns/text y fields/checkboxes.
+
+En particular, veremos cómo usar `StateProvider` para implementar un menú desplegable que 
+permita cambiar la forma en que se ordena una lista de productos.
+
+En aras de la sencillez, la lista de productos que obtendremos se construirá 
+directamente en la aplicación y será la siguiente:
+
+<CodeBlock>{trimSnippet(product)}</CodeBlock>
+
+En una aplicación del mundo real, esta lista normalmente se obtendría utilizando 
+[FutureProvider] al realizar una solicitud de red (network request). 
+
+La interfaz de usuario podría mostrar la lista de productos haciendo lo siguiente:
+
+<CodeBlock>{trimSnippet(productListView)}</CodeBlock>
+
+Ahora que hemos terminado con la base, podemos agregar un menú desplegable (dropdown), 
+que permitirá filtrar nuestros productos ya sea por precio o por nombre.  
+Para eso, usaremos [DropDownButton](https://api.flutter.dev/flutter/material/DropdownButton-class.html).
+
+```dart
+// Un enum que representa el tipo de filtro.
+enum ProductSortType {
+  name,
+  price,
+}
+
+Widget build(BuildContext context, WidgetRef ref) {
+  final products = ref.watch(productsProvider);
+  return Scaffold(
+    appBar: AppBar(
+      title: const Text('Products'),
+      actions: [
+        DropdownButton<ProductSortType>(
+          value: ProductSortType.price,
+          onChanged: (value) {},
+          items: const [
+            DropdownMenuItem(
+              value: ProductSortType.name,
+              child: Icon(Icons.sort_by_alpha),
+            ),
+            DropdownMenuItem(
+              value: ProductSortType.price,
+              child: Icon(Icons.sort),
+            ),
+          ],
+        ),
+      ],
+    ),
+    body: ListView.builder(
+      // ... 
+    ),
+  );
+}
+```
+
+Ahora que tenemos un dropdown, creemos un `StateProvider` 
+y sincronicemos el estado del dropdown con nuestro provider.
+
+Primero, vamos a crear el `StateProvider`:
+
+<CodeBlock>{trimSnippet(sortProvider)}</CodeBlock>
+
+Luego, podemos conectar este provider con nuestro dropdown haciendo:
+
+<CodeBlock>{trimSnippet(connectedDropdown)}</CodeBlock>
+
+Con esto, ahora deberíamos poder cambiar el tipo de clasificación.  
+¡Aún no tiene impacto en la lista de productos! Ahora es el momento de la parte final: 
+actualizar nuestro `productsProvider` para ordenar la lista de productos.
+
+Un componente clave para implementar esto es usar [ref.watch], para que nuestro `productsProvider` 
+obtenga el tipo de clasificación y vuelva a calcular la lista de productos cada vez que cambie 
+el tipo de clasificación.
+
+La implementación sería:
+
+<CodeBlock>{trimSnippet(sortedProductProvider)}</CodeBlock>
+
+¡Eso es todo! Este cambio es suficiente para que la interfaz de usuario vuelva a representar 
+automáticamente la lista de productos cuando cambia el tipo de clasificación. 
+
+Aquí está el ejemplo completo en Dartpad:
+
+<iframe
+  src="https://dartpad.dev/embed-flutter.html?gh_owner=rrousselGit&gh_repo=riverpod&gh_path=website%2Fdocs%2Fproviders%2Fstate_provider"
+  style={{ border: 0, width: "100%", aspectRatio: "2/1.5" }}
+></iframe>
+
+## Cómo actualizar el estado en función del valor anterior sin leer el provider dos veces
+
+A veces, deseamos actualizar el estado de un `StateProvider` en función del valor anterior. 
+Naturalmente, puedes terminar escribiendo:
+
+<CodeBlock>{trimSnippet(updateReadTwice)}</CodeBlock>
+
+Si bien no hay nada particularmente malo con este fragmento, la sintaxis es un poco inconveniente.
+
+Para mejorar un poco la sintaxis, podemos usar la función `update`. Esta función 
+recibirá un callback que recibirá el estado actual y se espera que devuelva 
+el nuevo estado. Podemos usarlo para refactorizar nuestro código anterior a:
+
+<CodeBlock>{trimSnippet(updateReadOnce)}</CodeBlock>
+
+Este cambio logra el mismo efecto mejorando un poco la sintaxis.
+
+[ref.watch]: ../concepts/reading#uso-de-refwatch-para-observar-a-un-provider
+[ref.read]: ../concepts/reading#uso-de-refread-para-obtener-el-estado-de-un-provider-una-vez
+[statenotifierprovider]: ./state_notifier_provider
+[futureprovider]: ./future_provider
+[statenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/StateNotifier-class.html
+[provider]: ./provider
+[asyncvalue]: https://pub.dev/documentation/riverpod/latest/riverpod/AsyncValue-class.html
+[future]: https://api.dart.dev/dart-async/Future-class.html
+[family]: ../concepts/modifiers/family

@@ -1,0 +1,145 @@
+---
+title: テスト
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import testingOriginalTestFlutter from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/cookbooks/testing_original_test_flutter.dart";
+import testingOriginalTestDart from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/cookbooks/testing_original_test_dart.dart";
+import repositorySnippet from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/cookbooks/testing_repository.dart";
+import testFlutter from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/cookbooks/testing_flutter.dart";
+import testDart from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/cookbooks/testing_dart.dart";
+import testFull from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/cookbooks/testing_full.dart";
+import testOverrideInfo from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/cookbooks/testing_override_info.dart";
+import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+
+中〜大規模のアプリにおいてテストは重要な工程です。
+
+[Riverpod] で正しくテストを実施するには、以下のポイントを実現する必要があります。
+
+- `test` もしくは `testWidgets` の間でステート（状態）を共有しない。
+  グローバルステートは持たず、持つとしても各テスト実施後にすべてリセットする。
+
+- モッキングあるいはプロバイダのオーバーライドを通じて、強制的にプロバイダに特定のステートを持たせることができる。
+
+[Riverpod] の機能をどう活用できるか、一つ一つ見ていきましょう。
+
+## `test` もしくは `testWidgets` の間でステートを共有しない
+
+通常プロバイダはグローバル変数として定義されるため、この点が心配になる人もいるかもしれません。
+グローバルステートは面倒な `setUp` や `tearDown` が必要になることがあるため、テストを厄介なものにしがちです。
+
+しかし、[Riverpod] ではプロバイダがグローバルで定義されたとしても、ステート自体は **グローバルではありません**。
+
+ステートは [ProviderContainer] というオブジェクトに格納されています。
+Dart のみのサンプルコードでこのオブジェクトを見かけた人もいるかもしれません。
+この [ProviderContainer] オブジェクトは [ProviderScope]
+（[Riverpod] を使うためにウィジェットツリーに挿入するウィジェット）によって暗黙的に生成されます。
+
+ステートがグローバルではないということは、そのプロバイダを利用する2つの `testWidget` の間でステートは共有されないということです。
+そのため、`setUp` や `tearDown` を設定する必要性は全くないのです。
+
+言葉での説明より実際のサンプルコードの方が多くを語ると思いますので、以下でご紹介します。
+
+<Tabs
+  defaultValue="testWidgets"
+  values={[
+    { label: 'testWidgets (Flutter)', value: 'testWidgets', },
+    { label: 'test (Dart のみ)', value: 'test', },
+  ]}
+>
+<TabItem value="testWidgets">
+
+<CodeBlock>{trimSnippet(testingOriginalTestFlutter)}</CodeBlock>
+
+</TabItem>
+<TabItem value="test">
+
+<CodeBlock>{trimSnippet(testingOriginalTestDart)}</CodeBlock>
+
+</TabItem>
+</Tabs>
+
+この通り、`counterProvider` がグローバルに宣言されている一方で、テスト間でステートは共有されていません。
+それぞれのテストは互いに独立した環境で実施されるため、実施順序によってテスト結果が異なることを心配する必要もありません。
+
+## プロバイダの挙動をオーバーライドする
+
+現実のアプリでは次のようなオブジェクトを持つことが多いかと思います。
+
+- 型安全でシンプルなAPIを提供し、HTTP リクエストを実行する `Repository` オブジェクト。
+
+- アプリのステートを管理し、`Repository` を使って様々な条件をもとに HTTP リクエストを実行するオブジェクト（これは `ChangeNotifier` や `Bloc`、時にはプロバイダだったりします）。
+
+[Riverpod] を使う場合、これらのオブジェクトは次のように表すことができます。
+
+<CodeBlock>{trimSnippet(repositorySnippet)}</CodeBlock>
+
+このシチュエーションでユニットあるいはウィジェットテストを作成する場合、
+`Repository` インスタンスをモックオブジェクトに置き換えて、あらかじめ定義されたレスポンスを返すことで
+HTTP リクエストの代わりとするのが一般的かと思います。
+
+そして `todoListProvider` にこのモックオブジェクトの仮実装を使わせます。
+
+これを Riverpod で行うには [ProviderScope] あるいは [ProviderContainer] の `overrides` パラメータを使って、
+`repositoryProvider` の挙動をオーバーライドします。
+
+<Tabs
+  defaultValue="ProviderScope"
+  values={[
+    { label: 'ProviderScope (Flutter)', value: 'ProviderScope', },
+    { label: 'ProviderContainer (Dart のみ)', value: 'ProviderContainer', },
+  ]}
+>
+<TabItem value="ProviderScope">
+
+<CodeBlock>{trimSnippet(testFlutter)}</CodeBlock>
+
+</TabItem>
+<TabItem value="ProviderContainer">
+
+<CodeBlock>{trimSnippet(testDart)}</CodeBlock>
+
+</TabItem>
+</Tabs>
+
+上記のハイライト行の通り、[ProviderScope] あるいは [ProviderContainer]
+を使用して `repositoryProvider` に指定の値を持たせることができました。
+
+:::info
+プロバイダによっては、挙動をオーバーライドする際に指定する値の型が特殊な場合があります。
+例えば、[FutureProvider] は `AsyncValue` オブジェクトを指定する必要があります。
+
+<CodeBlock>{trimSnippet(testOverrideInfo)}</CodeBlock>
+
+:::
+
+:::info
+`.family` 修飾子付きのプロバイダをオーバーライドするには、通常と少し異なる構文を使う必要があります。
+
+次のようなプロバイダがあるとします。
+
+```dart
+final response = ref.watch(myProvider('12345'));
+```
+
+この場合は以下の通り、値をオーバーライドする必要があります。
+
+```dart
+myProvider('12345').overrideWithValue(...));
+```
+
+:::
+
+## ウィジェットテストのサンプルコードまとめ
+
+以上の内容をまとめたウィジェットテストのサンプルコードです。
+
+<CodeBlock>{trimSnippet(testFull)}</CodeBlock>
+
+[riverpod]: https://github.com/rrousselgit/riverpod
+[providerscope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
+[providercontainer]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderContainer-class.html
+[futureprovider]: ../providers/future_provider
+[zone]: https://api.flutter.dev/flutter/dart-async/Zone-class.html

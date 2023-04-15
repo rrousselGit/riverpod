@@ -1,0 +1,394 @@
+---
+title: プロバイダの利用方法
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import counter from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/concepts/reading_counter.dart";
+import consumerWidget from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/concepts/reading_consumer_widget.dart";
+import consumerStatefulWidget from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/concepts/reading_consumer_stateful_widget.dart";
+import consumerHookWidget from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/concepts/reading_consumer_hook_widget.dart";
+import statefulHookConsumerWidget from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/concepts/reading_stateful_hook_consumer_widget.dart";
+import consumerHook from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/concepts/reading_consumer_hook.dart";
+import watch from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/concepts/reading_watch.dart";
+import watchBuild from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/concepts/reading_watch_build.dart";
+import listen from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/concepts/reading_listen.dart";
+import listenBuild from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/concepts/reading_listen_build.dart";
+import read from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/concepts/reading_read.dart";
+import readBuild from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/concepts/reading_read_build.dart";
+import readNotifierBuild from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/concepts/reading_read_notifier_build.dart";
+import watchNotifierBuild from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/concepts/reading_watch_notifier_build.dart";
+import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+
+本セクションの前に「[プロバイダとは](/docs/concepts/providers)」のセクションに目を通していただくことをおすすめします。
+
+ここではプロバイダの利用方法について説明します。
+
+## `ref` オブジェクトを取得する
+
+プロバイダを利用するには、まず `ref` オブジェクトを取得する必要があります。
+
+このオブジェクトを通じて、プロバイダと様々なやり取りを行うことになります。
+`ref` はウィジェットもしくはプロバイダから取得することができます。
+
+### プロバイダから `ref` を取得する
+
+プロバイダはすべて `ref` オブジェクトを引数として受け取ります。
+
+```dart
+final provider = Provider((ref) {
+  // `ref` を通じて他のプロバイダを利用する
+  final repository = ref.watch(repositoryProvider);
+
+  return SomeValue(repository);
+})
+```
+
+この `ref` はさらに別のオブジェクトに渡すこともできます。
+
+例えば...
+
+<CodeBlock>{trimSnippet(counter)}</CodeBlock>
+
+これで [StateNotifier] である `Counter` は `ref` を通じて他のプロバイダを利用することができるようになりました。
+
+### ウィジェットから `ref` を取得する
+
+通常のウィジェットでは `ref` を使用することができないため、[Riverpod] では複数の方法を用意しています。
+
+#### StatelessWidget の代わりに ConsumerWidget を継承する
+
+ウィジェットツリーの中で `ref` を取得するには [StatelessWidget] を [ConsumerWidget] に置き換えるのが基本です。
+
+[ConsumerWidget] は [StatelessWidget] とほぼ同等のものであり、build メソッドに第2パラメータが存在する以外の違いはありません。
+それが `ref` です。
+
+[ConsumerWidget] の使用例は次の通りです。
+
+<CodeBlock>{trimSnippet(consumerWidget)}</CodeBlock>
+
+#### StatefulWidget+State の代わりに ConsumerStatefulWidget+ConsumerState を継承する
+
+[ConsumerWidget] と同様、[ConsumerStatefulWidget]+[ConsumerState] は [StatefulWidget]+[State] に対応します。
+唯一の違いは `ref` オブジェクトが使用できるということです。
+
+ただ [ConsumerWidget] と異なり、build メソッドに `ref` オブジェクトは渡されていません。
+`ref` は [ConsumerState] のプロパティです。
+
+<CodeBlock>{trimSnippet(consumerStatefulWidget)}</CodeBlock>
+
+#### HookWidget の代わりに HookConsumerWidget を継承する
+
+これは [flutter_hooks] のユーザ向けです。
+フックを使用するために [HookWidget] を使っている場合、そのまま [ConsumerWidget] に置き換えることができません。
+
+そこで登場するのが [hooks_riverpod] の [HookConsumerWidget] です。
+[HookConsumerWidget] は [ConsumerWidget] と [HookWidget] の役割を併せ持ちます。
+これにより、ウィジェットはプロバイダーとフックの両方を利用することができます。
+
+使用例は次の通りです。
+
+<CodeBlock>{trimSnippet(consumerHookWidget)}</CodeBlock>
+
+#### HookWidget の代わりに StatefulHookConsumerWidget を継承する
+
+[flutter_hooks] のフックに加えて [StatefulWidget] のライフサイクルメソッドを活用する必要がある場合は [StatefulHookConsumerWidget] に置き換えてください。
+
+使用例は次の通りです。
+
+<CodeBlock>{trimSnippet(statefulHookConsumerWidget)}</CodeBlock>
+
+#### Consumer と HookConsumer ウィジェット
+
+`ref` オブジェクトは [Consumer] もしくは [HookConsumer] ウィジェットのコールバック関数  `builder` から取得することもできます。
+
+これらのウィジェットを使用する場合は [ConsumerWidget] および [HookConsumerWidget] のようにクラスを定義する必要がありません。
+使用例は次の通りです。
+
+<CodeBlock>{trimSnippet(consumerHook)}</CodeBlock>
+
+## `ref` を使ってプロバイダを利用する
+
+`ref` オブジェクトの取得方法が分かったところで、早速使ってみましょう。
+
+`ref` の使い道は主に3通りあります。
+
+- `ref.watch`: プロバイダの値を取得した上で、その変化を監視する。値が変化すると、その値に依存するウィジェットやプロバイダの更新が行われる。
+- `ref.listen`: プロバイダの値を監視し、値が変化するたびに呼び出されるコールバック関数（画面遷移、ダイアログの表示など）を登録する。
+- `ref.read`: プロバイダの値を取得する（監視はしない）。クリックイベント等の発生時に、その時点での値を取得する場合に使用できる。
+
+:::note
+機能の実装時には可能な限り `ref.watch` を使用するようにしてください。
+`ref.watch` によりアプリはリアクティブかつ宣言的になり、コードの保守性を高めることができます。
+:::
+
+### `ref.watch` を使ってプロバイダを監視する
+
+ウィジェットあるいはプロバイダ内で `ref.watch` を使ってプロバイダを監視することができます。
+
+例えば、`ref.watch` でプロバイダに別の複数のプロバイダを監視させ、それらの値を組み合わせて新たに値を生成するということも可能です。
+
+この手法は Todo リストのフィルタリングにも活用できます。
+例えば、Todo アプリに次のプロバイダがあるとします。
+
+- `filterTypeProvider`: 現在のフィルタの種類を公開するプロバイダ（なし、完了のみ表示、未完了のみ表示...）
+- `todosProvider`:  Todo リストの内容をすべて公開するプロバイダ
+
+これらのプロバイダを第3のプロバイダで `ref.watch` を使って組み合わせ、Todo リストにフィルタを適用します。
+
+<CodeBlock>{trimSnippet(watch)}</CodeBlock>
+
+これで `filteredTodoListProvider` はフィルタ適用済みの Todo リストを公開することができます。
+
+この Todo リストは、`filterTypeProvider` や `todosProvider` の値が変わると自動的に更新されます。
+逆に言えば、いずれかが変わらない限りは再計算されることはありません。
+
+同様にウィジェット内でも `ref.watch` を使ってプロバイダの値を表示し、値が変わるたびに UI を更新させることができます。
+
+<CodeBlock>{trimSnippet(watchBuild)}</CodeBlock>
+
+このサンプルコードでは、カウンターの数字を値として管理するプロバイダを監視しています。
+プロバイダの値が変わると、ウィジェットが更新されて新しい値で UI が構築されます。
+
+:::caution
+`watch` メソッドは [ElevatedButton] の `onPressed` 内など、非同期的な場面で呼び出さないでください。
+また `initState` を始め、[State] のライフサイクルメソッド内での使用も避けてください。
+
+これらの場合は代わりに `ref.read` を使用してください。
+:::
+
+### `ref.listen` を使ってプロバイダを監視する
+
+`ref.listen` は `ref.watch` と同様にプロバイダを監視することができます。
+
+最も大きな違いは、`ref.watch` が値の変化に応じてウィジェットやプロバイダを更新するのに対して、
+`ref.listen` は任意の関数を呼び出してくれるという点です。
+
+例えば、エラー発生時のスナックバー表示など、何かしらの変化に反応して処理を実行したいときに便利です。
+
+`ref.listen` メソッドは2つの位置引数が必要です。
+第1引数にプロバイダ、第2引数にステート（状態）が変化した際に実行するコールバック関数を設定します。
+このコールバック関数には呼び出し時に、プロバイダの直前のステートと新しいステートの値が渡されるため、それぞれをパラメータとして使用できます。
+
+以下はプロバイダ内で使用した例です。
+
+<CodeBlock>{trimSnippet(listen)}</CodeBlock>
+
+また、ウィジェットの `build` メソッド内でも使用できます。
+
+<CodeBlock>{trimSnippet(listenBuild)}</CodeBlock>
+
+:::caution
+`listen` メソッドは [ElevatedButton] の `onPressed` 内など、非同期的な場面で呼び出さないでください。
+また `initState` を始め、[State] のライフサイクルメソッド内での使用も避けてください。
+:::
+
+### `ref.read` を使ってプロバイダのステートを取得する
+
+`ref.read` メソッドを使うことでプロバイダのその時点でのステートを取得することができます。純粋な取得以外の副作用はありません。
+
+`ref.read` はユーザ操作によって呼び出される関数内で使用するのが一般的です。
+例えば、ボタンクリックイベント発生時にカウンターの数字を変更する場合に使用できます。
+
+<CodeBlock>{trimSnippet(read)}</CodeBlock>
+
+:::note
+`ref.read` はリアクティブではないため、可能な限り使用を避けてください。
+
+`watch` や `listen` の使用では問題が生じる場合の回避策として存在しています。
+ほとんどの場面では `watch` や `listen` の使用、特に `watch` の使用がベターなはずです。
+:::
+
+#### **【重要】** `ref.read` は build メソッドの中で使わない
+
+ウィジェットのパフォーマンスを最適化するため、`ref.read` を次のように使いたくなることがあるかもしれません。
+
+<CodeBlock>{trimSnippet(readBuild)}</CodeBlock>
+
+しかしこれは悪い使用例であり、追跡困難なバグの要因になり得ます。
+
+このような `ref.read` の使い方は、次のような考え方がもとになっていることが多いと思われます。
+「プロバイダが公開する値が変わることはない。だから ref.read の使用は安全である」。
+しかし、そのプロバイダは今は値が変わることがないかもしれませんが、明日も同じことが言えるとは保証できません。
+その点でこの推測には問題があると言えます。
+
+ソフトウェアに変更はつきものです。そして将来、絶対に変わらないと考えられていた値が、変わる必要に迫られることは十分あり得ることです。
+そしてもしこの値の取得に `ref.read` が使われていたら、その時にはコードを振り返り `ref.read` が使われているところをすべて
+`ref.watch` に変更する必要があります。これはエラーを招くおそれがありますし、変更し忘れる箇所がいくつか出てくる可能性もあります。
+
+一方、最初から `ref.watch` を使用していれば、リファクタリング時に生じる問題は比較的少ないはずです。
+
+**_でもウィジェットの更新回数を抑えるためにどうしても `ref.read` が使いたい_**
+
+このような声に対しては、`ref.watch` を使用してまったく同じ効果を得ることができる点を強調しておきたいです。
+
+例えば...
+
+<CodeBlock>{trimSnippet(readNotifierBuild)}</CodeBlock>
+
+とする代わりに、
+
+<CodeBlock>{trimSnippet(watchNotifierBuild)}</CodeBlock>
+
+としてください。
+この2つのコードの効果はいずれも同等です。
+カウンターの数字が増えた際にボタンが更新されることはありません。
+
+加えて、後者のアプローチの場合はカウンターの数字がリセットされた場合にも対応することができます。
+例えば、別の場所で次のメソッドを呼び出すとします。
+
+```dart
+ref.refresh(counterProvider);
+```
+
+するとこの `ref.refresh` メソッドにより `StateController` オブジェクトは再度生成されます。
+
+もしここで `ref.read` を使用していたら、ボタンは古い `StateController` インスタンスを使うことになります。
+このインスタンスはこの時点で既に破棄されているため、使うべきではないはずです。
+一方 `ref.watch` を使用した場合は、ボタンが更新されて新しい `StateController` を取得することができます。
+
+## プロバイダから取得できる値の種類
+
+利用するプロバイダによっては、取得できる値の種類にバリエーションが存在します。
+
+例えば、次のような [StreamProvider] があるとします。
+
+```dart
+final userProvider = StreamProvider<User>(...);
+```
+
+この `userProvider` を利用する場合は、以下の値を取得することができます。
+
+- `userProvider` を監視することで、[Stream] の現在のステートを同期的に取得する。
+
+  ```dart
+  Widget build(BuildContext context, WidgetRef ref) {
+    AsyncValue<User> user = ref.watch(userProvider);
+
+    return user.when(
+      loading: () => const CircularProgressIndicator(),
+      error: (error, stack) => const Text('Oops'),
+      data: (user) => Text(user.name),
+    );
+  }
+  ```
+
+- `userProvider.stream` を監視することで、[Stream] を取得する。
+
+  ```dart
+  Widget build(BuildContext context, WidgetRef ref) {
+    Stream<User> user = ref.watch(userProvider.stream);
+  }
+  ```
+
+- `userProvider.future` を監視することで、[Stream] から出力された最新の値で解決する [Future] を取得する。
+
+  ```dart
+  Widget build(BuildContext context, WidgetRef ref) {
+    Future<User> user = ref.watch(userProvider.future);
+  }
+  ```
+
+その他のプロバイダで取得できる値の種類については、
+[API reference](https://pub.dev/documentation/riverpod/latest/riverpod/riverpod-library.html)
+を参照してください。
+
+## `select`を使って更新の条件を限定する
+
+最後に、ウィジェットおよびプロバイダの更新（もしくは `ref.listen` による関数の実行）の条件を限定する方法をご紹介します。
+
+プロバイダを監視するということは、そのプロバイダが公開するオブジェクト全体のステートを監視するということです。
+しかし、その監視の範囲を狭めて特定のプロパティのみを監視対象としたい場合があります。
+
+例えば、次の `User` オブジェクトを公開するプロバイダがあるとします。
+
+```dart
+abstract class User {
+  String get name;
+  int get age;
+}
+```
+
+それを監視するウィジェット側は user の name プロパティしか使用しません。
+
+```dart
+Widget build(BuildContext context, WidgetRef ref) {
+  User user = ref.watch(userProvider);
+  return Text(user.name);
+}
+```
+
+このように userProvider を普通に監視すると、
+無関係な age プロパティの変化もウィジェット更新のトリガーとなってしまいます。
+
+監視対象を name プロパティに限定したい場合は、`select` を使ってその旨明示します。
+
+変更後のコードは次のようになります。
+
+```dart
+Widget build(BuildContext context, WidgetRef ref) {
+  String name = ref.watch(userProvider.select((user) => user.name));
+  return Text(name);
+}
+```
+
+つまり `select` を使って監視対象にするプロパティを返す関数を指定することができるのです。
+
+これで `User` オブジェクトに変化があるたびに、Riverpod はこの関数を呼び出し、対象プロパティの古い値と新しい値を比較します。
+そして値が異なる場合は Riverpod はウィジェットを更新します。
+一方、対象プロパティ以外の値が変わっただけで対象プロパティの値自体が不変の場合は、Riverpod はウィジェットの更新を行いません。
+
+:::info
+もちろん、`select` と `ref.listen` を組み合わせることもできます。
+
+```dart
+ref.listen<String>(
+  userProvider.select((user) => user.name),
+  (String? previousName, String newName) {
+    print('The user name changed $newName');
+  }
+);
+```
+
+このようにすることで name プロパティの値が変わったときにだけ、第2引数で登録したコールバック関数を呼び出すことが可能になります。
+:::
+
+:::tip
+`select` で明示する値は、必ずしも対象オブジェクトのプロパティそのものである必要はありません。
+`==` 演算子のオーバーライドなどでオブジェクトの等価性が定義されていれば何を返しても問題ありません。
+例えば、以下のような値を返すことも可能です。
+
+```dart
+final label = ref.watch(userProvider.select((user) => 'Mr ${user.name}'));
+```
+
+:::
+
+[stateprovider]: ../providers/state_provider
+[providercontainer]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderContainer-class.html
+[providerlistener]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderListener-class.html
+[providerscope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
+[consumer]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Consumer-class.html
+[consumerwidget]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ConsumerWidget-class.html
+[consumerstate]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ConsumerStatefulWidget-class.html
+[consumerstatefulwidget]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ConsumerState-class.html
+[useprovider]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ref.watch(.html
+[elevatedbutton]: https://api.flutter.dev/flutter/material/ElevatedButton-class.html
+[streambuilder]: https://api.flutter.dev/flutter/widgets/StreamBuilder-class.html
+[riverpod]: https://github.com/rrousselgit/riverpod
+[text]: https://api.flutter.dev/flutter/widgets/Text-class.html
+[hooks_riverpod]: https://pub.dev/packages/hooks_riverpod
+[future]: https://api.dart.dev/stable/2.13.4/dart-async/Future-class.html
+[stream]: https://api.dart.dev/stable/2.13.4/dart-async/Stream-class.html
+[hookwidget]: https://pub.dev/documentation/flutter_hooks/latest/flutter_hooks/HookWidget-class.html
+[hookconsumerwidget]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/HookConsumerWidget-class.html
+[hookconsumer]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/HookConsumer-class.html
+[statefulhookconsumerwidget]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/StatefulHookConsumerWidget-class.html
+[flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
+[flutter_hooks]: https://github.com/rrousselGit/flutter_hooks
+[statenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/StateNotifier-class.html
+[streamprovider]: ../providers/stream_provider
+[statelesswidget]: https://api.flutter.dev/flutter/widgets/StatelessWidget-class.html
+[statefulwidget]: https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html
+[state]: https://api.flutter.dev/flutter/widgets/State-class.html

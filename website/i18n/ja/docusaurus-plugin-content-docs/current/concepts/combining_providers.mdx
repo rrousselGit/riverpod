@@ -1,0 +1,259 @@
+---
+title: プロバイダのステートを組み合わせる
+---
+
+本セクションの前に「[プロバイダとは](/docs/concepts/providers)」のセクションに目を通していただくことをおすすめします。
+ここでは複数のプロバイダのステート（状態）を組み合わせる方法をご紹介します。
+
+## プロバイダのステートを組み合わせる
+
+これまでプロバイダの簡単な使用方法をご紹介しましたが、実際の開発ではプロバイダを他のプロバイダと組み合わせる場面が多いかと思います。
+
+このような場面では、プロバイダのコールバック関数に渡される [ref] オブジェクトの [watch] メソッドを使用してください。
+
+例として、次のようなプロバイダがあるとします。
+
+```dart
+final cityProvider = Provider((ref) => 'London');
+```
+
+この `cityProvider` を利用する別のプロバイダを作成します。
+
+```dart
+final weatherProvider = FutureProvider((ref) async {
+  // `ref.watch` により他のプロバイダの値を取得・監視します。
+  // 利用するプロバイダ（ここでは cityProvider）を引数として渡します。
+  final city = ref.watch(cityProvider);
+
+  // 最後に `cityProvider` の値をもとに行った計算結果を返します。
+  return fetchWeather(city: city);
+});
+```
+
+以上です。これで他のプロバイダの値に依存するプロバイダを作ることができました。
+
+## よくある質問
+
+### 依存先のプロバイダの値が変わったら、その依存元のプロバイダはどうなりますか?
+
+依存先のプロバイダが [StateNotifierProvider] であったり、[ProviderContainer.refresh] や [ref.refresh]
+により更新された場合、その値は変わることがあります。
+
+しかしこのような場合でも値の取得に [watch] を使っていれば、Riverpod は値の変化を検出して _自動的に_ 依存元のプロバイダの値を再評価してくれます。
+
+例えば Todo リストを値として外部に公開する、次のような [StateNotifierProvider] があるとします。
+
+```dart
+class TodoList extends StateNotifier<List<Todo>> {
+  TodoList(): super(const []);
+}
+
+final todoListProvider = StateNotifierProvider((ref) => TodoList());
+```
+
+そしてこの Todo リストを完了タスク（あるいは未完了タスク）のみのリストに変換して、UI 側に表示させたいとします。
+
+このような機能を実現する方法としては、一般的に次のようなものが考えられます。
+
+- 現在選択されているフィルタの種類（enum）を公開する [StateProvider] を作成する。
+
+  ```dart
+  enum Filter {
+    none,
+    completed,
+    uncompleted,
+  }
+
+  final filterProvider = StateProvider((ref) => Filter.none);
+  ```
+
+- フィルタの種類と Todo リストを組み合わせることで新たな Todo リストを生成し、値として外部に公開する第3のプロバイダを作成する。
+
+  ```dart
+  final filteredTodoListProvider = Provider<List<Todo>>((ref) {
+    final filter = ref.watch(filterProvider);
+    final todos = ref.watch(todoListProvider);
+
+    switch (filter) {
+      case Filter.none:
+        return todos;
+      case Filter.completed:
+        return todos.where((todo) => todo.completed).toList();
+      case Filter.uncompleted:
+        return todos.where((todo) => !todo.completed).toList();
+    }
+  });
+  ```
+
+これで UI 側にこの `filteredTodoListProvider` を監視させることで、その値の変化に応じて Todo リストを表示することができるようになりました。
+フィルタの種類もしくは Todo リストの内容が変われば、UI も自動的に再構築されます。
+
+この手法を使って作成された Todo アプリのサンプルコードは[こちら](https://github.com/rrousselGit/riverpod/tree/master/examples/todos)でご覧いただけます。
+
+:::info
+依存するプロバイダの値が変わると自動で値が再評価されるプロバイダは [Provider] だけではありません。
+すべてのプロバイダがこの性質を持ちます。
+
+例えば [watch] と [FutureProvider] を組み合わせて、検索クエリや検索設定をステートの算出に組み込んだ検索機能を実現することもできます。
+
+```dart
+// 検索クエリ
+final searchProvider = StateProvider((ref) => '');
+
+/// ホスト名等の検索設定
+final configProvider = StreamProvider<Configuration>(...);
+
+final charactersProvider = FutureProvider<List<Character>>((ref) async {
+  final search = ref.watch(searchProvider);
+  final configs = await ref.watch(configProvider.future);
+  final response = await dio.get('${configs.host}/characters?search=$search');
+
+  return response.data.map((json) => Character.fromJson(json)).toList();
+});
+```
+
+これで検索設定や検索クエリに変更があるたびに、外部サービスからキャラクターのリストを自動で取得してくれるようになりました。
+:::
+
+### プロバイダ内で別のプロバイダの値を監視せずに、取得だけする方法はないですか?
+
+プロバイダ内で別のプロバイダの値を取得して利用したいけど、プロバイダの更新は避けたいというケースに遭遇したことはないですか。
+
+このようなケースに遭遇するプロバイダの典型例としては、`Repository` オブジェクトを値として公開するプロバイダでしょう。
+`Repository` は認証用トークンを利用して HTTP リクエストを実行するため、まず認証用トークンを取得する必要があります。
+一つの方法として、プロバイダ内で [watch] を使って別のプロバイダからトークンを取得し、トークンが変わるたびに新しく `Repository` を作り直すことも可能です。
+しかし、これは無駄が多いように思えます。
+
+それなら [read] を使うのはどうでしょうか? この場合はトークンが変わったとしても `Repository` はそのままなので、リクエストの実行ができません。
+
+このような場合は `Repository` オブジェクトに `ref.read` を渡してください。
+そうすることで `Repository` オブジェクトは自身のタイミングで、別のプロバイダからトークンを取得できるようになります。
+
+```dart
+final userTokenProvider = StateProvider<String>((ref) => null);
+
+final repositoryProvider = Provider((ref) => Repository(ref.read));
+
+class Repository {
+  Repository(this.read);
+
+  /// `ref.read` 関数
+  final Reader read;
+
+  Future<Catalog> fetchCatalog() async {
+    String token = read(userTokenProvider);
+
+    final response = await dio.get('/path', queryParameters: {
+      'token': token,
+    });
+
+    return Catalog.fromJson(response.data);
+  }
+}
+```
+
+:::note
+`ref.read` の代わりに `ref` をそのままオブジェクトに渡すこともできます。
+
+```dart
+final repositoryProvider = Provider((ref) => Repository(ref));
+
+class Repository {
+  Repository(this.ref);
+
+  final Ref ref;
+}
+```
+
+ただし、`ref.read` を渡す場合は `ref` に比べて若干コードの記述量を減らすことができ、
+`ref.watch` が使用されないことを保証できるという利点があります。
+:::
+
+:::danger **【重要】** プロバイダ内で [read] は使わないでください。
+
+```dart
+final myProvider = Provider((ref) {
+  // ここで `read` を呼び出すのは悪いプラクティスです
+  final value = ref.read(anotherProvider);
+});
+```
+
+プロバイダが無駄に更新されるのを避けたい場合は、
+「[プロバイダが頻繁に更新されます。どうしたらいいですか?](#プロバイダが頻繁に更新されますどうしたらいいですか)」
+の項目に目を通していただくことをおすすめします。
+
+:::
+
+### [read] をプロパティに持つオブジェクトのテスト方法を教えてください。
+
+「[プロバイダ内で別のプロバイダの値を監視せずに、取得だけする方法はないですか?](#プロバイダ内で別のプロバイダの値を監視せずに取得だけする方法はないですか)」
+の項目で紹介したパターンを使う場合、オブジェクトのテストはどうやるんだろうと疑問に思うかもしれません。
+
+この場合はオブジェクトではなく、それをラップするプロバイダの方をテストの対象とします。
+これには [ProviderContainer] クラスを利用してください。
+
+```dart
+final repositoryProvider = Provider((ref) => Repository(ref.read));
+
+test('fetches catalog', () async {
+  final container = ProviderContainer();
+  addTearDown(container.dispose);
+
+  Repository repository = container.read(repositoryProvider);
+
+  await expectLater(
+    repository.fetchCatalog(),
+    completion(Catalog()),
+  );
+});
+```
+
+### プロバイダが頻繁に更新されます。どうしたらいいですか?
+
+プロバイダが頻繁に更新されると感じる場合は、もしかしたら依存先のプロバイダの値に、更新とは無関係な要素が含まれているかもしれません。
+
+例えば、依存元プロバイダの値の評価に組み込まれる要素が `Configuration` オブジェクトの `host` プロパティのみだとします。
+それにも関わらず、オブジェクト全体を監視している場合、`host` 以外のプロパティのみが変わった場合でもプロバイダは本来必要のない値の再評価を行います。
+
+この問題を解決するには、`Configuration` の必要なプロパティのみを公開するプロバイダを別途作成してください。
+
+**【変更前】** オブジェクト全体を監視
+
+```dart
+final configProvider = StreamProvider<Configuration>(...);
+
+final productsProvider = FutureProvider<List<Product>>((ref) async {
+  // この場合、値の再評価に無関係なプロパティに変化があったとしても
+  // 製品リストを再取得する処理が実行されてしまう。
+  final configs = await ref.watch(configProvider.future);
+
+  return dio.get('${configs.host}/products');
+});
+```
+
+**【変更後】** select を利用して必要なプロパティのみを監視
+
+```dart
+final configProvider = StreamProvider<Configuration>(...);
+
+final productsProvider = FutureProvider<List<Product>>((ref) async {
+  // select によりホスト名の値のみを監視することができる。
+  // Configuration の他のプロパティが変わっても無駄に値が再評価されることはない。
+  final host = await ref.watch(configProvider.selectAsync((config) => config.host));
+
+  return dio.get('$host/products');
+});
+```
+
+これにより `productsProvider` は `host` の値が変わったときにのみ更新されるようになります。
+
+[provider]: ../providers/provider
+[stateprovider]: ../providers/state_provider
+[futureprovider]: ../providers/future_provider
+[statenotifierprovider]: ../providers/state_notifier_provider
+[ref]: https://pub.dev/documentation/riverpod/latest/riverpod/Ref-class.html
+[watch]: https://pub.dev/documentation/riverpod/latest/riverpod/Ref/watch.html
+[read]: https://pub.dev/documentation/riverpod/latest/riverpod/Ref/read.html
+[providercontainer.refresh]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderContainer/refresh.html
+[ref.refresh]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/WidgetRef/refresh.html
+[providercontainer]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderContainer-class.html

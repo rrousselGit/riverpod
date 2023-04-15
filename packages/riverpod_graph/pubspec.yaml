@@ -1,0 +1,24 @@
+name: riverpod_graph
+version: 0.0.1
+homepage: https://riverpod.dev
+repository: https://github.com/rrousselGit/riverpod
+publish_to: none
+issue_tracker: https://github.com/rrousselGit/riverpod/issues
+funding:
+  - https://github.com/sponsors/rrousselGit/
+
+environment:
+  sdk: ">=2.15.0 <3.0.0"
+
+dependencies:
+  analyzer: ">=4.0.0 <4.1.0"
+  args: ^2.4.0
+  collection: ^1.0.0
+  path: ^1.8.2
+
+dev_dependencies:
+  test: ^1.21.4
+  test_process: ^2.0.2
+
+executables:
+  riverpod_graph:

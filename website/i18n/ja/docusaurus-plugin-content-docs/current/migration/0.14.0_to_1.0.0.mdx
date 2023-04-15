@@ -1,0 +1,223 @@
+---
+title: ^0.14.0 → ^1.0.0
+---
+
+Riverpod の最初の安定版がようやくリリースされました 👏
+
+変更点をすべて確認するには、こちらの[変更履歴](https://pub.dev/packages/flutter_riverpod/changelog#100)をご覧ください。
+本セクションでは、既存アプリの Riverpod をバージョン 0.14.x から 1.0.0 へ移行する方法を中心に説明します。
+
+## 移行ツールを使用してプロジェクトをアップデートする
+
+主な変更点について触れる前に、専用のコマンドラインツールを使用してプロジェクトを新バージョンに移行する方法をご紹介します。
+
+### インストール方法
+
+移行ツールをインストールするには次のコマンドを実行します。
+
+```sh
+dart pub global activate riverpod_cli
+```
+
+インストール完了後、次のコマンドが有効になっているはずです。
+
+```sh
+riverpod --help
+```
+
+### 使用方法
+
+それでは、実際にコマンドラインツールを使用してプロジェクトの移行を行いましょう。
+
+- まず、移行したいプロジェクトをターミナルで開きます。
+- Riverpod を **手動でアップグレードしない** でください。
+  アップグレードは移行ツールが自動で行ってくれます。
+
+  :::danger
+  既にバージョン 1.0.0 がインストールされている場合は移行ツールが正常に動作しないため、
+  ツールを使い始める前に現在の Riverpod のバージョンが古いものであることを必ず確認してください。
+  :::
+
+- 移行する前に、プロジェクトにエラーが含まれていないことを確認してください。
+- 次のコマンドを実行します。
+  ```sh
+  riverpod migrate
+  ```
+
+これで移行ツールがプロジェクトの解析と変更の提案を行ってくれます。
+例えば、次のような内容が表示されます。
+
+```diff
+-Widget build(BuildContext context, ScopedReader watch) {
++Widget build(BuildContext context, WidgetRef ref) {
+-  MyModel state = watch(provider);
++  MyModel state = ref.watch(provider);
+}
+
+Accept change (y = yes, n = no [default], A = yes to all, q = quit)?
+```
+
+変更の提案を受け入れるには <kbd>y</kbd> を押してください。
+変更せず、そのままにする場合は <kbd>n</kbd> を押します。
+
+## 変更点
+
+それでは、新バージョンの主な変更点です。
+
+### 構文の統一
+
+Riverpod バージョン 1.0.0 の目玉は、プロバイダを利用する際の構文の統一です。
+これまでは `ref.watch(provider)` / `useProvider(provider)` / `watch(provider)` 等、場面によって複数の異なる構文が存在していました。
+しかしバージョン 1.0.0 では構文は `ref.watch(provider)` の一つに統一されました。
+
+- `HookConsumerWidget` の導入により `useProvider` が廃止されました。
+
+  変更前:
+
+  ```dart
+  class Example extends HookWidget {
+    @override
+    Widget build(BuildContext context) {
+      useState(...);
+      int count = useProvider(counterProvider);
+      ...
+    }
+  }
+  ```
+
+  変更後:
+
+  ```dart
+  class Example extends HookConsumerWidget {
+    @override
+    Widget build(BuildContext context, WidgetRef ref) {
+      useState(...);
+      int count = ref.watch(counterProvider);
+      ...
+    }
+  }
+  ```
+
+- `ConsumerWidget` の `build` と `Consumer` の `builder` のシグネチャが変わりました。
+
+  変更前:
+
+  ```dart
+  class Example extends ConsumerWidget {
+    @override
+    Widget build(BuildContext context, ScopedReader watch) {
+      int count = watch(counterProvider);
+      ...
+    }
+  }
+
+  Consumer(
+    builder: (context, watch, child) {
+      int count = watch(counterProvider);
+      ...
+    }
+  )
+  ```
+
+  変更後:
+
+  ```dart
+  class Example extends ConsumerWidget {
+    @override
+    Widget build(BuildContext context, WidgetRef ref) {
+      int count = ref.watch(counterProvider);
+      ...
+    }
+  }
+
+  Consumer(
+    builder: (context, ref, child) {
+      int count = ref.watch(counterProvider);
+      ...
+    }
+  )
+  ```
+
+- `ref.read` の導入により `context.read` は廃止されました。
+
+  変更前:
+
+  ```dart
+  class Example extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      SomeButton(
+        onPressed: () => context.read(provider.notifier).doSomething(),
+      );
+    }
+  }
+  ```
+
+  変更後:
+
+  ```dart
+  class Example extends ConsumerWidget {
+    @override
+    Widget build(BuildContext context, WidgetRef ref) {
+      SomeButton(
+        onPressed: () => ref.read(provider.notifier).doSomething(),
+      );
+    }
+  }
+  ```
+
+### StateProvider のアップデート
+
+[StateProvider] が [StateNotifierProvider] に合わせる形でアップデートされました。
+
+これまでは `ref.watch(StateProvider)` の戻り値は `StateController` インスタンスでした。
+本バージョンでは `StateController` のステート（状態）が戻り値となります。
+
+移行方法は複数あります。
+対象のコードがステート（状態）の値をそのまま利用するものであれば、次のように変更可能です。
+
+変更前:
+
+```dart
+final provider = StateProvider<int>(...);
+
+Consumer(
+  builder: (context, ref, child) {
+    StateController<int> count = ref.watch(provider);
+
+    return Text('${count.state}');
+  }
+)
+```
+
+変更後:
+
+```dart
+final provider = StateProvider<int>(...);
+
+Consumer(
+  builder: (context, ref, child) {
+    int count = ref.watch(provider);
+
+    return Text('${count}');
+  }
+)
+```
+
+あるいは、コード変更を最小限に抑えたい場合は新しい `StateProvider.state` を使用してください。
+
+```dart
+final provider = StateProvider<int>(...);
+
+Consumer(
+  builder: (context, ref, child) {
+    StateController<int> count = ref.watch(provider.state);
+
+    return Text('${count.state}');
+  }
+)
+```
+
+[statenotifierprovider]: ../providers/state_notifier_provider
+[stateprovider]: ../providers/state_provider
+[statenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/StateNotifier-class.html

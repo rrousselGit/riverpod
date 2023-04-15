@@ -1,0 +1,179 @@
+---
+title: Providers
+---
+Nachdem nun [Riverpod] installiert ist, können wir uns "providers" anschauen.
+
+Die Provider sind der wichtigste Teil einer [Riverpod] Anwendung.
+Ein Provider ist ein Objekt, welches einen (Teil-) Zustand kapselt und die Möglichkeit
+bietet auf den Zustand zu lauschen.
+
+## Warum Provider benutzen?
+
+Einen (Teil-) Zustand in einen Provider zu packen, bietet folgendes:
+
+- Ermöglicht einen einfachen Zugriff auf den Zustand, an mehreren Stellen im Code.
+  Provider erstetzen das Singleton Pattern, Service Locators, Dependency Injection
+  oder InheritedWidgets.
+
+- Vereinfacht die Kombination eines Zustands mit anderen Zuständen.
+  Haben Sie schon einmal damit zu kämpfen gehabt, mehrere Objekte zu einem einzigen 
+  zusammenzuführen? Dieses Szenario ist im Provider mit einer einfachen 
+  Syntax eingebaut.
+
+- Ermöglicht Leistungsoptimierungen.
+  Provider stellen sicher, dass nur das, was von einer Zustandsänderung betroffen ist, 
+  neu berechnet wird. Egal ob Filterergebnisse oder das Zwischenspeichern von 
+  aufwendigen Zustandsberechnungen.
+
+- Erhöht die Testbarkeit von Applikationen.
+  Mit Provider braucht man keine komplizierten `setUp`/`tearDown`-Schritte. Außerdem
+  kann jeder Provider so überschrieben werden, dass er sich während des Tests anders 
+  verhält, was ein sehr spezifisches Verhalten leicht testen kann.
+
+- Einfache Integration mit fortgeschrittenen Funktionen wie z.B. Logging oder pull-to-refresh.
+
+## Erstellen eines Providers
+
+Provider gibt es in verschiedenen Varianten, aber sie funktionieren alle auf die gleiche Weise.
+
+Am häufigsten werden Provider als globale Konstanten deklariert, wie z.B.:
+
+```dart
+final myProvider = Provider((ref) {
+  return MyValue();
+});
+```
+
+:::note
+Lassen Sie sich nicht von dem globalen Aspekt der Provider abschrecken.
+Provider sind komplett immutable. Die Deklaration eines Providers unterscheidet 
+sich nicht von der Deklaration einer Funktion, und ist testbar und wartbar.
+:::
+
+Dieses Snippet besteht aus drei Komponenten:
+
+- `final myProvider`, die Deklaration einer variable.
+  Diese Variable wollen wir in Zukunft dazu nutzen, um den Zustand des Providers zu Lesen.
+  Es sollte immer immutable sein.
+
+- `Provider`, der Provider, für den man sich entschieden hat.
+  [Provider] ist der einfachste aller Provider. Er stellt ein Objekt zur Verfügung, 
+  das sich nie verändert.
+  Wir könnten [Provider] durch andere Provider wie z.B. [StreamProvider] oder 
+  [StateNotifierProvider] ersetzen, um zu ändern, wie mit dem Wert interagiert wird.
+
+- Eine Funktion, die den gemeinsamen Zustand erzeugt.
+  Diese Funktion erhält immer ein Objekt namens "ref" als Parameter. Dieses Objekt
+  ermöglicht es uns, andere Provider zu lesen oder einige Operationen durchzuführen, 
+  wenn der Zustand unseres Providers zerstört wird.
+
+Der Typ des Objekts, das durch die an einen Provider übergebene Funktion erstellt wird, 
+hängt von dem verwendeten Provider ab.
+Zum Beispiel kann die Funktion eines [Providers] ein beliebiges Objekt erstellen.
+Andererseits wird vom Callback eines [StreamProvider] erwartet, dass er einen [Stream] 
+zurückgibt.
+
+:::info
+Es können beliebig viele Provider, ohne Einschränkungen anmelden.
+Im Gegensatz zur Verwendung von `package:provider`, mit [Riverpod] können wir zwei Provider 
+haben, die einen Zustand vom gleichen "Typ" bereitstellen.
+
+```dart
+final cityProvider = Provider((ref) => 'London');
+final countryProvider = Provider((ref) => 'England');
+```
+
+Die Tatsache, dass beide Anbieter einen `String` erstellen, stellt kein Problem dar.
+:::
+
+:::caution
+Damit Provider funktionieren, muss [ProviderScope] am Einstiegspunkt der 
+Applikation hinzugefügt werden:
+
+```dart
+void main() {
+  runApp(ProviderScope(child: MyApp()));
+}
+```
+
+:::
+
+## Ausführen von Aktionen, bevor der Zustand zerstört wird
+
+In einigen Fällen kann der Zustand eines Provider zerstört oder neu erstellt werden.
+Ein üblicher Anwendungsfall in solchen Situationen ist die Durchführung einer Bereinigung, 
+bevor der Zustand eines Providers zerstört wird, z.B. das Schließen eines "StreamControllers".
+
+Dies geschieht mit Hilfe des Objekts `ref`, das mit seiner Methode [onDispose] an den Callback 
+aller Provider übergeben wird.
+
+Das folgende Beispiel nutzt [onDispose] um einen `StreamController` zu schließen:
+
+```dart
+final example = StreamProvider.autoDispose((ref) {
+  final streamController = StreamController<int>();
+
+  ref.onDispose(() {
+    // Schließt den StreamController, wenn der Zustand des Providers zerstört wird.
+    streamController.close();
+  });
+
+  return streamController.stream;
+});
+```
+
+:::note
+In Abhängigkeit des eingesetzten Providers, kann er sich bereits um den Bereinigungsprozess kümmern.
+Z.B. wird der [StateNotifierProvider] die `dispose` Funktion des `StateNotifier` aufrufen.
+:::
+
+## Provider Modifikatoren
+
+Alle Provider haben eine eingebaute Möglichkeit, zusätzliche Funktionen zu Ihren verschiedenen 
+Providern hinzuzufügen.
+
+Sie können dem Objekt "ref" neue Funktionen hinzufügen oder die Art und Weise, 
+wie der Provider konsumiert wird.
+Modifikatoren können für alle Provider verwendet werden, mit einer Syntax ähnlich 
+wie bei named cunstructors:
+
+```dart
+final myAutoDisposeProvider = StateProvider.autoDispose<int>((ref) => 0);
+final myFamilyProvider = Provider.family<String, int>((ref, id) => '$id');
+```
+
+Zum aktuellen Zeitpunkt sind zwei Modifikatoren verfügbar:
+
+- [`.autoDispose`](/docs/concepts/modifiers/auto_dispose), der dafür sorgt, dass der Provider seinen 
+Status automatisch zerstört, wenn auf ihn nicht mehr gelauscht wird.
+- [`.family`](/docs/concepts/modifiers/family), der es ermöglicht, einen Anbieter aus externen Parametern 
+zu erstellen.
+
+:::note
+Ein Provider kann mehrere Modifikatoren gleichzeitig verwenden:
+
+```dart
+final userProvider = FutureProvider.autoDispose.family<User, int>((ref, userId) async {
+  return fetchUser(userId);
+});
+```
+
+:::
+
+Das war's für diesen Leitfaden!
+
+Du kannst hier weiterlesen [How to read a provider](/docs/concepts/reading).
+Alternativ, kannst du dir auch das durchlesen [How to combine providers](/docs/concepts/combining_providers).
+
+[get_it]: http://pub.dev/packages/get_it
+[inheritedwidget]: https://api.flutter.dev/flutter/widgets/InheritedWidget-class.html
+[stream]: https://api.dart.dev/stable/2.8.4/dart-async/Stream-class.html
+[ondispose]: https://pub.dev/documentation/riverpod/latest/riverpod/Ref/onDispose.html
+[riverpod]: https://github.com/rrousselgit/riverpod
+[hooks_riverpod]: https://pub.dev/packages/hooks_riverpod
+[flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
+[flutter_hooks]: https://github.com/rrousselGit/flutter_hooks
+[provider]: ../providers/provider
+[streamprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StreamProvider-class.html
+[statenotifierprovider]: ../providers/state_notifier_provider
+[providerscope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html

@@ -1,0 +1,161 @@
+---
+title: プロバイダとは
+---
+
+[Riverpod] のインストールが完了したところで、「プロバイダ」について学びましょう。
+
+プロバイダは [Riverpod] において中心的な役割を担っています。
+プロバイダはあるステート（状態）をラップするためのオブジェクトであり、その監視を可能にしてくれます。
+
+（ ※ 訳注: 以降、原文に従い「ステート」を「値」もしくは「オブジェクト」と表記することがあります。）
+
+## プロバイダが必要な理由
+
+ステートをプロバイダでラップすることで次のことが可能になります。
+
+- アプリの様々な場所からステートにアクセスできるようになります。
+  つまり、プロバイダはシングルトンやサービスロケータのようなパターン、依存性注入、あるいは InheritedWidget を完全に代替することができます。
+
+- ステートを別のプロバイダのステートと簡単に組み合わせることができるようになります。
+  開発では複数のオブジェクトを組み合わせて一つのステートにまとめるのに四苦八苦する場面も多いかと思います。プロバイダにはこのための機能が組み込まれています。
+
+- アプリのパフォーマンスを最適化してくれます。
+  例えば、ウィジェット更新の条件を限定したり、負荷が高いステートの計算をキャッシュしたりといったことが可能になります。
+  プロバイダがステートの変化による外部への影響をコントロールしてくれます。
+
+- アプリのテスト容易性を高めてくれます。
+  プロバイダがあれば `setUp` や `tearDown` のような面倒な手順は不要です。
+  さらに、テスト中のプロバイダの挙動をオーバーライドすることができます。
+  これにより特異な条件下での動作も確認しやすくなります。
+
+- ロギングやプルリフレッシュ（画面を引っ張って更新）などの高度な機能との組み合わせが容易に実現できます。
+
+## プロバイダを作成する
+
+プロバイダには様々な種類がありますが、基本はすべて同じです。
+
+次のように、グローバル定数として宣言するのが一般的な使用方法です。
+
+```dart
+final myProvider = Provider((ref) {
+  return MyValue();
+});
+```
+
+:::note
+グローバルで宣言することに不安を覚える方もいるかと思いますが心配はいりません。
+プロバイダは完全にイミュータブル（不変）であり、関数をグローバルで宣言することと違いはありません。
+また、テスト容易性および保守性が損なわれることはありません。
+:::
+
+上記コードは3つのパーツから成り立っています。
+
+- `final myProvider` は変数の宣言です。ここは常に `final` で宣言するようにしてください。
+  詳細は次のセクションで説明しますが、プロバイダのステートを取得するにはこの変数を利用します。
+
+- `Provider` はここで使用するプロバイダの種類を示しています。
+  [Provider] は複数あるプロバイダのうち最もベーシックなもので、外部からは変更することのできないオブジェクトを外部に公開します。
+  [Provider] の部分は [StreamProvider] や [StateNotifierProvider]
+  など適宜他のプロバイダに置き換えることができ、それぞれ取り扱い方が異なります。
+
+- 残りの部分は、外部に公開するステートを生成するための関数であり `ref` と呼ばれるオブジェクトをパラメータとして受け取ります。
+  この `ref` を使って他のプロバイダを利用したり、プロバイダのステートが破棄される際のコールバック関数を登録したりすることができます。
+
+プロバイダ内で生成できるオブジェクトの型は、使用するプロバイダの種類によって異なります。
+例えば、[Provider] ではどのようなオブジェクトでも生成できる一方、
+[StreamProvider] では [Stream] オブジェクトを生成する必要があります。
+
+:::info
+宣言できるプロバイダの数に制限はありません。
+また [Riverpod] は `package:provider` と異なり、同じ型のオブジェクトを公開するプロバイダを複数宣言できます。
+
+```dart
+final cityProvider = Provider((ref) => 'London');
+final countryProvider = Provider((ref) => 'England');
+```
+
+この例では両プロバイダが `String` 型のオブジェクトを公開しますが、エラーの要因になることはありません。
+:::
+
+:::caution
+プロバイダを利用するには、Flutter アプリのルート（root）に [ProviderScope] を置く必要があります。
+
+```dart
+void main() {
+  runApp(ProviderScope(child: MyApp()));
+}
+```
+
+:::
+
+## プロバイダの種類
+
+プロバイダには複数の種類があり、それぞれ用途が異なります。
+
+ステートをウィジェットツリーに挿入するためにどのプロバイダを使えばいいのか、慣れるまで迷うこともあるかと思います。
+そのような場合は次の表を参考にしてください。
+
+| プロバイダの種類            | 生成されるステートの型        | 具体例                                                         |
+| ------------------------ | ------------------------- | -------------------------------------------------------------  |
+| [Provider]               | 任意                       | サービスクラス / 算出プロパティ（リストのフィルタなど）                |
+| [StateProvider]          | 任意                       | フィルタの条件 / シンプルなステートオブジェクト                       |
+| [FutureProvider]         | 任意の Future              | API の呼び出し結果                                               |
+| [StreamProvider]         | 任意の Stream              | API の呼び出し結果の Stream                                      |
+| [StateNotifierProvider]  | StateNotifier のサブクラス  | イミュータブル（インタフェースを介さない限り）で複雑なステートオブジェクト |
+| [ChangeNotifierProvider] | ChangeNotifier のサブクラス | ミュータブルで複雑なステートオブジェクト                             |
+
+:::caution
+拡張性が求められるアプリの開発に [ChangeNotifierProvider] を使用することはおすすめできません。
+ミュータブル（可変）なステートが様々な問題を引き起こす可能性があるためです。
+基本的には `package:provider` からの移行を容易にするため、そして Navigator 2.0 系のパッケージでの使用など
+Flutter 特有のユースケースに対応するために存在しています。
+:::
+
+## プロバイダ修飾子
+
+「プロバイダ修飾子」はプロバイダに便利な機能を追加してくれます。
+
+名前付きコンストラクタに似た構文で、どのプロバイダでも使用できます。
+
+```dart
+final myAutoDisposeProvider = StateProvider.autoDispose<int>((ref) => 0);
+final myFamilyProvider = Provider.family<String, int>((ref, id) => '$id');
+```
+
+現在のところ、修飾子は2種類あります。
+
+- [`.autoDispose`](/docs/concepts/modifiers/auto_dispose) はプロバイダの監視が終わったタイミングで、プロバイダに自動でステートを破棄させることができるようになります。
+- [`.family`](/docs/concepts/modifiers/family) はプロバイダ外部の値を用いてプロバイダを作成できるようになります。
+
+:::note
+プロバイダを作成する際に複数の修飾子を同時に使用することもできます。
+
+```dart
+final userProvider = FutureProvider.autoDispose.family<User, int>((ref, userId) async {
+  return fetchUser(userId);
+});
+```
+
+:::
+
+このセクションは以上です!
+
+「[プロバイダの利用方法](/docs/concepts/reading)」のセクションに続きます。
+もしくは、その後の「[プロバイダのステートを組み合わせる](/docs/concepts/combining_providers)」のセクションを先にご覧いただいても問題ありません。
+
+[get_it]: http://pub.dev/packages/get_it
+[inheritedwidget]: https://api.flutter.dev/flutter/widgets/InheritedWidget-class.html
+[stream]: https://api.dart.dev/stable/2.8.4/dart-async/Stream-class.html
+[ondispose]: https://pub.dev/documentation/riverpod/latest/riverpod/Ref/onDispose.html
+[riverpod]: https://github.com/rrousselgit/riverpod
+[hooks_riverpod]: https://pub.dev/packages/hooks_riverpod
+[flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
+[flutter_hooks]: https://github.com/rrousselGit/flutter_hooks
+[provider]: /docs/providers/provider
+[streamprovider]: /docs/providers/stream_provider
+[futureprovider]: /docs/providers/future_provider
+[stateprovider]: /docs/providers/state_provider
+[statenotifierprovider]: /docs/providers/state_notifier_provider
+[changenotifierprovider]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ChangeNotifierProvider-class.html
+
+[providerscope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html

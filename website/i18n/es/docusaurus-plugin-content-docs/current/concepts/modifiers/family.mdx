@@ -1,0 +1,183 @@
+---
+title: .family
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+Antes de leer esto, considere leer acerca de los [providers](/docs/concepts/providers) y [cómo leerlos](/docs/concepts/reading). 
+En esta parte, hablaremos en detalle sobre el modificador de providers `.family` .
+
+El modificador `.family` tiene un propósito: crear un provider a partir de valores externos.
+
+Algunos casos de uso comunes para `family` serían:
+
+- Combinar [FutureProvider] con `.family` para obtener (fetch) un `Message` a partir de su ID.
+- Pasar el `Locale` actual a un provider, para que podamos manejar las traducciones.
+
+## Uso
+
+La forma en que funcionan las familias es agregando un parámetro adicional al provider.
+Este parámetro se puede usar libremente en nuestro provider para crear algún estado.
+
+Por ejemplo, podríamos combinar `family` con [FutureProvider] para obtener un `Message` a partir de su ID:
+
+```dart
+final messagesFamily = FutureProvider.family<Message, String>((ref, id) async {
+  return dio.get('http://my_api.dev/messages/$id');
+});
+```
+
+Luego, al usar nuestro provider `messagesFamily`, la sintaxis se modifica ligeramente.
+La sintaxis habitual ya no funcionará:
+
+```dart
+Widget build(BuildContext context, WidgetRef ref) {
+  // Error – messagesFamily no es un provider
+  final response = ref.watch(messagesFamily);
+}
+```
+
+En su lugar, necesitamos pasar un parámetro a `messagesFamily`:
+
+```dart
+Widget build(BuildContext context, WidgetRef ref) {
+  final response = ref.watch(messagesFamily('id'));
+}
+```
+
+:::info
+Es posible utilizar una familia con diferentes parámetros simultáneamente.  
+Por ejemplo, podríamos usar a `titleFamily` para leer las traducciones al francés y al inglés al mismo tiempo:
+
+```dart
+@override
+Widget build(BuildContext context, WidgetRef ref) {
+  final frenchTitle = ref.watch(titleFamily(const Locale('fr')));
+  final englishTitle = ref.watch(titleFamily(const Locale('en')));
+
+  return Text('fr: $frenchTitle en: $englishTitle');
+}
+```
+
+:::
+
+## Restricciones de Parámetros
+
+
+Para que las familias funcionen correctamente, es fundamental que el parámetro que se 
+pasa a un provider tenga un valor consistente de `hashCode` y `==`.
+
+Idealmente, el parámetro debería ser un primitivo (bool/int/double/String), una constante (providers) 
+o un objeto inmutable que sobrescriba `==` y `hashCode`.
+
+### _PREFIERA_ usar `autoDispose` cuando el parámetro no es constante:
+
+Es posible que desee utilizar familias para pasar la entrada de un campo de búsqueda a su provider. 
+Pero ese valor puede cambiar a menudo y nunca volver a utilizarse.  
+Esto podría causar el uso de memoria en vano ya que, de manera predeterminada, un provider nunca se destruye, incluso si ya no se usa.
+
+Usando ambos `.family` y `.autoDispose` corrige esa pérdida de memoria:
+
+```dart
+final characters = FutureProvider.autoDispose.family<List<Character>, String>((ref, filter) async {
+  return fetchCharacters(filter: filter);
+});
+```
+
+## Pasar múltiples parámetros a una familia
+
+Las familias no tienen soporte integrado para pasar múltiples valores a un provider.
+
+Por otro lado, ese valor podría ser _cualquier_ cosa (siempre que coincida con las restricciones mencionadas anteriormente).
+
+Esto incluye:
+
+- Una tupla de [tuple](http://pub.dev/packages/tuple).
+- Objetos generados con [Freezed] o [built_value](https://pub.dev/packages/built_value).
+- Objetos que utilicen [Equatable](https://pub.dev/packages/equatable).
+
+Aquí hay un ejemplo usando [Freezed] y [Equatable]:
+
+<Tabs
+  groupId="family"
+  defaultValue="freezed"
+  values={[
+    { label: 'Freezed', value: 'freezed', },
+    { label: 'Equatable', value: 'equatable', },
+  ]}
+>
+
+<TabItem value="freezed">
+
+```dart
+@freezed
+abstract class MyParameter with _$MyParameter {
+  factory MyParameter({
+    required int userId,
+    required Locale locale,
+  }) = _MyParameter;
+}
+
+final exampleProvider = Provider.autoDispose.family<Something, MyParameter>((ref, myParameter) {
+  print(myParameter.userId);
+  print(myParameter.locale);
+  // Hacer algo con userId/locale
+});
+
+@override
+Widget build(BuildContext context, WidgetRef ref) {
+  int userId; // Leer el ID de usuario desde cualquier lugar
+  final locale = Localizations.localeOf(context);
+
+  final something = ref.watch(
+    exampleProvider(MyParameter(userId: userId, locale: locale)),
+  );
+
+  ...
+}
+```
+
+</TabItem>
+<TabItem value="equatable">
+
+```dart
+class MyParameter extends Equatable  {
+  MyParameter({
+    required this.userId,
+    required this.locale,
+  });
+
+  final int userId;
+  final Locale locale;
+
+  @override
+  List<Object> get props => [userId, locale];
+}
+
+final exampleProvider = Provider.family<Something, MyParameter>((ref, myParameter) {
+  print(myParameter.userId);
+  print(myParameter.locale);
+  // Hacer algo con userId/locale
+});
+
+@override
+Widget build(BuildContext context, WidgetRef ref) {
+  int userId; // Leer el ID de usuario desde cualquier lugar
+  final locale = Localizations.localeOf(context);
+
+  final something = ref.watch(
+    exampleProvider(MyParameter(userId: userId, locale: locale)),
+  );
+
+  ...
+}
+```
+
+</TabItem>
+</Tabs>
+
+[freezed]: https://pub.dev/packages/freezed
+[provider]: https://pub.dev/documentation/riverpod/latest/riverpod/Provider-class.html
+[Equatable]: https://pub.dev/packages/equatable
+[futureprovider]: ../../providers/future_provider

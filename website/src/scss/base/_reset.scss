@@ -1,0 +1,51 @@
+:root {
+  --ifm-color-primary-lightest: #6dd0f6;
+  --ifm-color-primary-lighter: #5dbdea;
+  --ifm-color-primary-light: #4eabdd;
+  --ifm-color-primary: #3889c4;
+  --ifm-color-primary-dark: #256aac;
+  --ifm-color-primary-darker: #2855a3;
+  --ifm-color-primary-darkest: #22427a;
+}
+
+.theme-code-block-highlighted-line {
+  display: block;
+  margin: 0 calc(-1 * var(--ifm-pre-padding));
+  padding: 0 var(--ifm-pre-padding);
+  background-color: rgb(72, 77, 91);
+}
+
+html[data-theme=light] .theme-code-block-highlighted-line {
+  background-color: rgb(203, 209, 232);
+}
+
+.markdown {
+  > .player {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;
+    margin-bottom: var(--ifm-paragraph-margin-bottom);
+
+    > iframe {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+section {
+  max-width: 100vw;
+}
+
+html[data-theme=light]  pre code {
+  background-color: var(--ifm-pre-background);
+}

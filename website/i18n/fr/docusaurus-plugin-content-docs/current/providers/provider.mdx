@@ -1,0 +1,101 @@
+---
+title: Provider
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import todo from "!!raw-loader!/i18n/fr/docusaurus-plugin-content-docs/current/providers/provider/todo.dart";
+import completedTodos from "!!raw-loader!/i18n/fr/docusaurus-plugin-content-docs/current/providers/provider/completed_todos.dart";
+import todosConsumer from "!!raw-loader!/i18n/fr/docusaurus-plugin-content-docs/current/providers/provider/todos_consumer.dart";
+import unoptimizedPreviousButton from "!!raw-loader!/i18n/fr/docusaurus-plugin-content-docs/current/providers/provider/unoptimized_previous_button.dart";
+import optimizedPreviousButton from "!!raw-loader!/i18n/fr/docusaurus-plugin-content-docs/current/providers/provider/optimized_previous_button.dart";
+import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+
+`Provider` est le plus basique de tous les providers. Il crée une valeur... Et c'est à peu près tout.
+
+`Provider` est typiquement utilisé pour :
+
+- les calculs du caching (mise en cache)
+- exposer une valeur à d'autres providers (comme un `Repository`/`HttpClient`).
+- offre un moyen pour les tests ou les widgets de remplacer une valeur.
+- réduire les reconstructions de providers/widgets sans avoir à utiliser `select`.
+
+## Utilisation de `Provider` pour mettre en cache des calculs
+
+`Provider` est un outil puissant pour caching (mettre en cache) des opérations synchrones 
+lorsqu'il est combiné avec [ref.watch].
+
+Un exemple serait de filtrer une liste de tâches à accomplir.
+Comme le filtrage d'une liste peut être légèrement coûteux, nous ne voulons idéalement pas 
+filtrer notre liste de tâches à chaque fois que notre application se re-affiche à nouveau (re-render).
+Dans cette situation, on peut utiliser `Provider` pour faire le filtrage à notre place.
+
+Pour cela, supposons que notre application possède un [StateNotifierProvider] existant.
+qui manipule une liste de tâches :
+
+<CodeBlock>{trimSnippet(todo)}</CodeBlock>
+
+A partir de là, on peut utiliser `Provider` pour exposer la liste filtrée des todos, 
+en montrant seulement les tâches terminées :
+
+<CodeBlock>{trimSnippet(completedTodos)}</CodeBlock>
+
+Avec ce code, notre interface est maintenant capable d'afficher la liste des todos complétés
+en écoutant le `completedTodosProvider` :
+
+<CodeBlock>{trimSnippet(todosConsumer)}</CodeBlock>
+
+La partie intéressante est que le filtrage de la liste est maintenant mis en cache.
+
+Cela signifie que la liste des tâches terminées ne sera pas recalculée 
+jusqu'à ce que les tâches soient ajoutées/supprimées/mises à jour, 
+même si nous lisons la liste des tâches terminées plusieurs fois. 
+
+Notez que nous n'avons pas besoin d'invalider manuellement le cache lorsque la liste 
+de tâches change. `Provider` est automatiquement 
+capable de savoir quand le résultat doit être recalculé grâce à [ref.watch].
+
+## Réduire les reconstructions de provider/widgets en utilisant `Provider`.
+
+Un aspect unique de `Provider` est que même lorsque `Provider` est recalculé 
+(typiquement lors de l'utilisation de [ref.watch]), il ne mettra pas à jour 
+les widgets/providers qui l'écoutent, sauf si la valeur a changé.
+
+Un exemple concret serait d'activer/désactiver les boutons précédent/suivant
+d'une vue paginée :
+
+![stepper example](https://user-images.githubusercontent.com/134939/47580830-31263a00-d950-11e8-9b61-0eaddab2709e.png)
+
+Dans notre cas, nous nous concentrerons spécifiquement sur le bouton "précédent".
+Une implémentation naïve d'un tel bouton serait un widget qui obtiendrait l'index de la page actuelle, 
+et si cet index est égal à 0, nous désactiverions le bouton.
+
+Ce code pourrait être :
+
+<CodeBlock>{trimSnippet(unoptimizedPreviousButton)}</CodeBlock>
+
+Le problème avec ce code est qu'à chaque fois que nous changeons la page en cours, 
+le bouton "précédent" sera reconstruit.
+Dans un monde idéal, on voudrait que le bouton ne se reconstruise que 
+lorsqu'il passe de l'état activé à l'état désactivé.
+
+Le problème ici est que nous calculons si l'utilisateur est 
+autorisé à aller à la page précédente directement à partir du bouton "précédent".
+
+Une façon de résoudre ce problème est d'extraire cette logique en dehors du widget et dans un `Provider` :
+
+<CodeBlock>{trimSnippet(optimizedPreviousButton)}</CodeBlock>
+
+En effectuant cette petite refactorisation, notre widget `PreviousButton` ne sera plus 
+reconstruit lorsque l'index de la page change grâce à `Provider`.
+
+Dorénavant, lorsque l'index de la page change, notre provider `canGoToPreviousPageProvider` 
+sera recalculé. Mais si la valeur exposée par le 
+provider ne change pas, alors le `PreviousButton` ne sera pas reconstruit.
+
+Ce changement a permis d'améliorer les performances de notre bouton et a eu 
+l'avantage intéressant d'extraire la logique en dehors de notre widget.
+
+[ref.watch]: ../concepts/reading#using-refwatch-to-observe-a-provider
+[statenotifierprovider]: ./state_notifier_provider

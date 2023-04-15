@@ -1,0 +1,40 @@
+---
+title: StateNotifierProvider
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import todos from "!!raw-loader!/i18n/fr/docusaurus-plugin-content-docs/current/providers/state_notifier_provider/todos.dart";
+import todosConsumer from "!!raw-loader!/i18n/fr/docusaurus-plugin-content-docs/current/providers/state_notifier_provider/todos_consumer.dart";
+import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+
+`StateNotifierProvider` est un provider qui est utilisé pour écouter et exposer 
+un [StateNotifier] (du package [state_notifier], que Riverpod réexporte).  
+`StateNotifierProvider` avec [StateNotifier] est la solution recommandée par 
+Riverpod pour gérer l'état qui peut changer en réagissant à une interaction avec l'utilisateur.
+
+Il est généralement utilisé pour :
+
+- exposant un état **immuable** qui peut changer dans le temps après 
+  avoir réagi à des événements personnalisés.
+- centraliser la logique de modification d'un état (alias "business logic") en un seul, 
+  ce qui améliore la maintenabilité au fil du temps.
+
+
+A titre d'exemple d'utilisation, nous pourrions utiliser `StateNotifierProvider` pour implémenter une todo-list.
+Cela nous permettrait d'exposer des méthodes telles que `addTodo` pour permettre 
+à l'interface utilisateur de modifier la liste des tâches lors des interactions avec 
+l'utilisateur.
+
+<CodeBlock>{trimSnippet(todos)}</CodeBlock>
+
+Maintenant que nous avons défini un `StateNotifierProvider`, on peut l'utiliser pour 
+interagir avec la liste des tâches dans notre interface utilisateur :
+
+<CodeBlock>{trimSnippet(todosConsumer)}</CodeBlock>
+
+[state_notifier]: https://pub.dev/packages/state_notifier
+[statenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/StateNotifier-class.html
+[provider]: ./provider
+[futureprovider]: ./future_provider

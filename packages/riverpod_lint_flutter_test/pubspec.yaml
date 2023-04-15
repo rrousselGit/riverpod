@@ -1,0 +1,39 @@
+name: riverpod_lint_flutter_test
+publish_to: none
+
+environment:
+  sdk: ">=2.17.0 <3.0.0"
+  flutter: ">=3.0.0"
+
+dependencies:
+  riverpod_annotation:
+  hooks_riverpod:
+  flutter:
+    sdk: flutter
+  freezed_annotation: ^2.2.0
+  json_annotation: ^4.8.0
+
+dev_dependencies:
+  build_runner: any
+  build_verify: ^3.0.0
+  custom_lint: ^0.3.3
+  flutter_test:
+    sdk: flutter
+  freezed: ^2.3.2
+  json_serializable: ^6.6.1
+  riverpod_lint:
+    path: ../riverpod_lint
+  riverpod_generator: ^2.0.0
+
+dependency_overrides:
+  riverpod_generator:
+    path: ../riverpod_generator
+  riverpod:
+    path: ../riverpod
+  flutter_riverpod:
+    path: ../flutter_riverpod
+  hooks_riverpod:
+    path: ../hooks_riverpod
+  riverpod_annotation:
+    path: ../riverpod_annotation
+  

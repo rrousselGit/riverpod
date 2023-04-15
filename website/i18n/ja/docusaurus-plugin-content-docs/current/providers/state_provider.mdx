@@ -1,0 +1,122 @@
+---
+title: StateProvider
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import product from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/providers/state_provider/product.dart";
+import productListView from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/providers/state_provider/product_list_view.dart";
+import dropdown from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/providers/state_provider/dropdown.dart";
+import sortProvider from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/providers/state_provider/sort_provider.dart";
+import connectedDropdown from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/providers/state_provider/connected_dropdown.dart";
+import sortedProductProvider from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/providers/state_provider/sorted_product_provider.dart";
+import updateReadTwice from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/providers/state_provider/update_read_twice.dart";
+import updateReadOnce from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/providers/state_provider/update_read_once.dart";
+import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+
+`StateProvider` は外部から変更が可能なステート（状態）を公開するプロバイダです。
+[StateNotifierProvider] の簡易版であり、ステートの管理にわざわざ [StateNotifier] クラスを定義するほどではない場合にご利用いただけます。
+
+そのため、`StateProvider` は UI 側で利用される **シンプルなステート** を管理するのにうってつけでしょう。
+シンプルなステートとは、次のような型のステートのことを指します。
+
+- 列挙型（enum）、例えばフィルタの種類など
+- 文字列型、例えばテキストフィールドの入力内容など
+- bool 型、例えばチェックボックスの値など
+- 数値型、例えばページネーションのページ数やフォームの年齢など
+
+逆に言えば、`StateProvider` は次のようなステートを公開するために使うべきではありません。
+
+- ステートの算出に何かしらのバリデーション（検証）ロジックが必要
+- ステート自体が複雑なオブジェクトである（カスタムのクラスや `List`/`Map` など）
+- ステートを変更するためのロジックが単純な `count++` よりは高度である必要がある
+
+上記のように一歩踏み込んだステート管理が必要な場合は、カスタムの [StateNotifier]
+クラスを定義した上で [StateNotifierProvider] を利用することをおすすめします。
+この場合は最初に多少のボイラープレートコードの設定が必要になりますが、長期的な観点からプロジェクトの保守性を考えれば、
+ステートのビジネスロジックを一箇所で集中管理できるため得策だと言えます。
+
+## 使用例: ドロップダウンメニューを使ってフィルタの種類を切り替える
+
+`StateProvider` の代表的なユースケースとしては、ドロップダウンメニューやテキストフィールド、
+チェックボックスなどフォームに使用されるコンポーネントのステート管理が挙げられます。
+ここでは商品リストのソートの種類を切り替えられるドロップダウンメニューを、`StateProvider` を利用して実装していきたいと思います。
+
+商品（`Product`）の定義と商品リストの内容は次の通りです。
+
+<CodeBlock>{trimSnippet(product)}</CodeBlock>
+
+実際のアプリでは商品リストは [FutureProvider] のネットワークリクエストを通じて取得するものかと思いますが、ここでは簡略化のためハードコーディングしています。
+
+そして UI 側は次のように商品リストを表示します。
+
+<CodeBlock>{trimSnippet(productListView)}</CodeBlock>
+
+土台ができたところで、ここにドロップダウンメニューを追加しましょう。
+このドロップダウンメニューは商品リストを値段順か名前順かでソートしてくれます。
+メニューを表示するボタンには Flutter の
+[DropDownButton](https://api.flutter.dev/flutter/material/DropdownButton-class.html) を使います。
+
+<CodeBlock>{trimSnippet(dropdown)}</CodeBlock>
+
+ドロップダウンメニューが完成したら、`StateProvider`
+を作成してプロバイダとドロップダウンメニューのステートを同期させましょう。
+
+まずは `StateProvider` の作成から。
+
+<CodeBlock>{trimSnippet(sortProvider)}</CodeBlock>
+
+そして、次のようにプロバイダとドロップダウンメニューを紐づけます。
+
+<CodeBlock>{trimSnippet(connectedDropdown)}</CodeBlock>
+
+これによりメニューからソートの種類を選ぶことが可能になりました。
+ただし、これだけでは商品リストはソートされません!
+最後に `productsProvider` を更新することで実際のソートを行う必要があります。
+
+この機能を実装するカギとなるのは [ref.watch] です。
+[ref.watch] を使って `productsProvider` に現在のソートの種類を監視・取得させ、
+その値が変わるたびに商品リストを再評価させます。
+
+具体的な実装は次の通りです。
+
+<CodeBlock>{trimSnippet(sortedProductProvider)}</CodeBlock>
+
+これだけです!
+この変更により UI はソートの種類が変わったことを検知して、自動的に商品リストを更新してくれます。
+
+本サンプルコードのフルバージョンです。
+
+<iframe
+  src="https://dartpad.dev/embed-flutter.html?gh_owner=rrousselGit&gh_repo=riverpod&gh_path=website%2Fi18n%2Fja%2Fdocusaurus-plugin-content-docs%2Fcurrent%2Fproviders%2Fstate_provider"
+  style={{ border: 0, width: "100%", aspectRatio: "2/1.5" }}
+></iframe>
+
+## `update` を使って直近のステートから新たなステートを算出する
+
+`StateProvider` の直近のステートをもとに新たなステートを算出するようなケースでは、
+以下のようなコードを書いてしまいがちです。
+
+<CodeBlock>{trimSnippet(updateReadTwice)}</CodeBlock>
+
+このコードは間違いではありませんが、ちょっと書くのが億劫ですよね。
+
+もう少しコードを簡略化したい場合は `update` メソッドを使ってください。
+このメソッドに、新しいステートを戻り値とするコールバック関数を渡します。
+このコールバック関数は直近のステートの値をパラメータとして利用できます。
+`update` メソッドを使ってコードをリファクタリングした例がこちらです。
+
+<CodeBlock>{trimSnippet(updateReadOnce)}</CodeBlock>
+
+効果はそのままに、簡潔で見やすいコードにすることができました。
+
+[ref.watch]: ../concepts/reading#refwatch-を使ってプロバイダを監視する
+[ref.read]: ../concepts/reading#refread-を使ってプロバイダのステートを取得する
+[statenotifierprovider]: ./state_notifier_provider
+[futureprovider]: ./future_provider
+[statenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/StateNotifier-class.html
+[provider]: ./provider
+[asyncvalue]: https://pub.dev/documentation/riverpod/latest/riverpod/AsyncValue-class.html
+[future]: https://api.dart.dev/dart-async/Future-class.html
+[family]: ../concepts/modifiers/family

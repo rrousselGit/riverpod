@@ -1,0 +1,120 @@
+---
+title: ^0.13.0 to ^0.14.0
+---
+
+
+রিভারপডের `0.14.0` সংস্করণ প্রকাশের সাথে সাথে, [StateNotifierProvider] ব্যবহারের সিনট্যাক্স পরিবর্তিত হয়েছে
+(ব্যাখ্যার জন্য https://github.com/rrousselGit/riverpod/issues/341 দেখুন)।
+
+সম্পূর্ণ আর্টিকেলের জন্য, নিম্নলিখিত [StateNotifier] বিবেচনা করুন:
+
+```dart
+class MyModel {}
+
+class MyStateNotifier extends StateNotifier<MyModel> {
+  MyStateNotifier(): super(MyModel());
+}
+```
+
+## পরিবর্তন
+
+- [StateNotifierProvider] একটি অতিরিক্ত জেনেরিক প্যারামিটার নেয়, যা আপনার [StateNotifier]-এর স্ট্যাটের ধরন হওয়া উচিত।
+
+  আগেঃ
+
+  ```dart
+  final provider = StateNotifierProvider<MyStateNotifier>((ref) {
+    return MyStateNotifier();
+  });
+  ```
+
+  পরেঃ
+
+  ```dart
+  final provider = StateNotifierProvider<MyStateNotifier, MyModel>((ref) {
+    return MyStateNotifier();
+  });
+  ```
+
+- [StateNotifier] পেতে, আপনার এখন শুধু `myProvider` এর পরিবর্তে `myProvider.notifier` পড়তে হবেঃ
+  আগেঃ
+
+  ```dart
+  Widget build(BuildContext context, ScopedReader watch) {
+    MyStateNotifier notifier = watch(provider);
+  }
+  ```
+
+  পরেঃ
+
+  ```dart
+  Widget build(BuildContext context, ScopedReader watch) {
+    MyStateNotifier notifier = watch(provider.notifier);
+  }
+  ```
+
+- [StateNotifier]-এর স্ট্যাট রিড করতে, আপনার এখন `myProvider.state`-এর পরিবর্তে `myProvider` পড়তে হবেঃ
+
+  আগেঃ
+
+  ```dart
+  Widget build(BuildContext context, ScopedReader watch) {
+    MyModel state = watch(provider.state);
+  }
+  ```
+
+  পরেঃ
+
+  ```dart
+  Widget build(BuildContext context, ScopedReader watch) {
+    MyModel state = watch(provider);
+  }
+  ```
+
+## স্বয়ংক্রিয়ভাবে নতুন সিনট্যাক্সে আপনার প্রজেক্ট আপগ্রেড করতে মাইগ্রেশন টুল ব্যবহার করে
+
+সংস্করণ 0.14.0 এর সাথে রিভারপডের জন্য একটি কমান্ড লাইন টুল প্রকাশিত হয়েছে, যা আপনাকে আপনার প্রজেক্টগুলি স্থানান্তর করতে সহায়তা করতে পারে।
+
+### কমান্ড লাইন টুল ইনস্টল করা
+
+মাইগ্রেশন টুল ইনস্টল করতে, নিচের কমান্ডটা রান করেনঃ
+
+```sh
+dart pub global activate riverpod_cli
+```
+
+আপনি এখন নিচের কমান্ড চালাতে পারবেনঃ
+
+```sh
+riverpod --help
+```
+
+### ব্যবহার
+
+এখন কমান্ড লাইন ইনস্টল করা হয়েছে, আমরা এটি ব্যবহার শুরু করতে পারি।
+
+- প্রথমে, আপনি আপনার টার্মিনালে যে প্রজেক্টটি স্থানান্তর করতে চান সেটি খুলুন।
+- রিভারপড আপগ্রেড **করবেন না।**  
+  মাইগ্রেশন টুলটি আপনার জন্য রিভারপডের সংস্করণ আপগ্রেড করবে।
+- নিশ্চিত করুন যে আপনার প্রজেক্টটে ত্রুটি নেই।
+- এক্সিকিঊটঃ
+  ```sh
+  riverpod migrate
+  ```
+
+টুলটি তারপর আপনার প্রজেক্টটি বিশ্লেষণ করবে এবং পরিবর্তনের পরামর্শ দেবে। উদাহরণস্বরূপ আপনি দেখতে পারেনঃ
+
+```diff
+Widget build(BuildContext context, ScopedReader watch) {
+-  MyModel state = watch(provider.state);
++  MyModel state = watch(provider);
+}
+
+Accept change (y = yes, n = no [default], A = yes to all, q = quit)? 
+```
+
+পরিবর্তনটি গ্রহণ করতে, শুধু <kbd>y</kbd> টিপুন। অন্যথায় এটি প্রত্যাখ্যান করতে, <kbd>n</kbd> টিপুন।
+
+
+[statenotifierprovider]: ../providers/state_notifier_provider
+[statenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/StateNotifier-class.html

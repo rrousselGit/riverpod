@@ -1,0 +1,253 @@
+{
+  "theme.NotFound.title": {
+    "message": "ページが見つかりません",
+    "description": "The title of the 404 page"
+  },
+  "theme.NotFound.p1": {
+    "message": "お探しのページを見つけることができませんでした。",
+    "description": "The first paragraph of the 404 page"
+  },
+  "theme.NotFound.p2": {
+    "message": "この URL の提供元にリンクが切れている旨をお知らせいただくようお願いします。",
+    "description": "The 2nd paragraph of the 404 page"
+  },
+  "theme.AnnouncementBar.closeButtonAriaLabel": {
+    "message": "閉じる",
+    "description": "The ARIA label for close button of announcement bar"
+  },
+  "theme.blog.paginator.navAriaLabel": {
+    "message": "ブログ記事のリスト一覧",
+    "description": "The ARIA label for the blog pagination"
+  },
+  "theme.blog.paginator.newerEntries": {
+    "message": "前のエントリー",
+    "description": "The label used to navigate to the newer blog posts page (previous page)"
+  },
+  "theme.blog.paginator.olderEntries": {
+    "message": "次のエントリー",
+    "description": "The label used to navigate to the older blog posts page (next page)"
+  },
+  "theme.blog.post.readingTime.plurals": {
+    "message": "{readingTime} min read",
+    "description": "Pluralized label for \"{readingTime} min read\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
+  },
+  "theme.tags.tagsListLabel": {
+    "message": "タグ: ",
+    "description": "The label alongside a tag list"
+  },
+  "theme.blog.post.readMore": {
+    "message": "続きを読む",
+    "description": "The label used in blog post item excerpts to link to full blog posts"
+  },
+  "theme.blog.post.paginator.navAriaLabel": {
+    "message": "ブログ記事の一覧",
+    "description": "The ARIA label for the blog posts pagination"
+  },
+  "theme.blog.post.paginator.newerPost": {
+    "message": "前の記事",
+    "description": "The blog post button label to navigate to the newer/previous post"
+  },
+  "theme.blog.post.paginator.olderPost": {
+    "message": "次の記事",
+    "description": "The blog post button label to navigate to the older/next post"
+  },
+  "theme.blog.sidebar.navAriaLabel": {
+    "message": "最近の記事",
+    "description": "The ARIA label for recent posts in the blog sidebar"
+  },
+  "theme.blog.post.plurals": {
+    "message": "記事の数: {count}",
+    "description": "Pluralized label for \"{count} posts\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
+  },
+  "theme.blog.tagTitle": {
+    "message": "[ {tagName} ]タグが付いた記事の数: {nPosts}",
+    "description": "The title of the page for a blog tag"
+  },
+  "theme.tags.tagsPageLink": {
+    "message": "タグ一覧",
+    "description": "The label of the link targeting the tag list page"
+  },
+  "theme.CodeBlock.copyButtonAriaLabel": {
+    "message": "コードをコピーする",
+    "description": "The ARIA label for copy code blocks button"
+  },
+  "theme.CodeBlock.copied": {
+    "message": "完了",
+    "description": "The copied button label on code blocks"
+  },
+  "theme.CodeBlock.copy": {
+    "message": "コピー",
+    "description": "The copy button label on code blocks"
+  },
+  "theme.tags.tagsPageTitle": {
+    "message": "タグ",
+    "description": "The title of the tag list page"
+  },
+  "theme.docs.sidebar.expandButtonTitle": {
+    "message": "メニューを展開する",
+    "description": "The ARIA label and title attribute for expand button of doc sidebar"
+  },
+  "theme.docs.sidebar.expandButtonAriaLabel": {
+    "message": "メニューを展開する",
+    "description": "The ARIA label and title attribute for expand button of doc sidebar"
+  },
+  "theme.docs.paginator.navAriaLabel": {
+    "message": "ドキュメントの一覧",
+    "description": "The ARIA label for the docs pagination"
+  },
+  "theme.docs.paginator.previous": {
+    "message": "戻る",
+    "description": "The label used to navigate to the previous doc"
+  },
+  "theme.docs.paginator.next": {
+    "message": "次へ",
+    "description": "The label used to navigate to the next doc"
+  },
+  "theme.docs.sidebar.collapseButtonTitle": {
+    "message": "メニューを折りたたむ",
+    "description": "The title attribute for collapse button of doc sidebar"
+  },
+  "theme.docs.sidebar.collapseButtonAriaLabel": {
+    "message": "メニューを折りたたむ",
+    "description": "The title attribute for collapse button of doc sidebar"
+  },
+  "theme.docs.versions.unreleasedVersionLabel": {
+    "message": "このドキュメントは本サイト「 {siteTitle} 」の次のバージョン[ {versionLabel} ]で公開を予定しています。",
+    "description": "The label used to tell the user that he's browsing an unreleased doc version"
+  },
+  "theme.docs.versions.unmaintainedVersionLabel": {
+    "message": "このドキュメントは本サイト「 {siteTitle} 」のバージョン[ {versionLabel} ]用であり、メンテナスされることはありません。",
+    "description": "The label used to tell the user that he's browsing an unmaintained doc version"
+  },
+  "theme.docs.versions.latestVersionSuggestionLabel": {
+    "message": "最新バージョン[ {versionLabel} ]のドキュメントはこちら: {latestVersionLink}",
+    "description": "The label used to tell the user to check the latest version"
+  },
+  "theme.docs.versions.latestVersionLinkLabel": {
+    "message": "最新バージョン",
+    "description": "The label used for the latest version suggestion link label"
+  },
+  "theme.common.editThisPage": {
+    "message": "編集",
+    "description": "The link label to edit the current page"
+  },
+  "theme.common.headingLinkTitle": {
+    "message": "見出しへのリンク",
+    "description": "Title for link to heading"
+  },
+  "theme.lastUpdated.atDate": {
+    "message": "最終更新日: {date}",
+    "description": "The words used to describe on which date a page has been last updated"
+  },
+  "theme.lastUpdated.byUser": {
+    "message": "最終更新者: {user}",
+    "description": "The words used to describe by who the page has been last updated"
+  },
+  "theme.lastUpdated.lastUpdatedAtBy": {
+    "message": "最終更新: {atDate} by {byUser}",
+    "description": "The sentence used to display when a page has been last updated, and by who"
+  },
+  "theme.navbar.mobileSidebarSecondaryMenu.backButtonLabel": {
+    "message": "← メインメニューに戻る",
+    "description": "The label of the back button to return to main menu, inside the mobile navbar sidebar secondary menu (notably used to display the docs sidebar)"
+  },
+  "theme.common.skipToMainContent": {
+    "message": "メインコンテンツに進む",
+    "description": "The skip to content label used for accessibility, allowing to rapidly navigate to main content with keyboard tab/enter navigation"
+  },
+  "theme.TOCCollapsible.toggleButtonLabel": {
+    "message": "目次",
+    "description": "The label used by the button on the collapsible TOC component"
+  },
+  "theme.SearchPage.documentsFound.plurals": {
+    "message": "ドキュメントが {count} 点見つかりました",
+    "description": "Pluralized label for \"{count} documents found\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
+  },
+  "theme.SearchPage.existingResultsTitle": {
+    "message": "「 {query} 」の検索結果",
+    "description": "The search page title for non-empty query"
+  },
+  "theme.SearchPage.emptyResultsTitle": {
+    "message": "ドキュメントを検索",
+    "description": "The search page title for empty query"
+  },
+  "theme.SearchPage.inputPlaceholder": {
+    "message": "検索",
+    "description": "The placeholder for search page input"
+  },
+  "theme.SearchPage.inputLabel": {
+    "message": "検索",
+    "description": "The ARIA label for search page input"
+  },
+  "theme.SearchPage.algoliaLabel": {
+    "message": "Search by Algolia",
+    "description": "The ARIA label for Algolia mention"
+  },
+  "theme.SearchPage.noResultsText": {
+    "message": "検索結果が見つかりませんでした",
+    "description": "The paragraph for empty search result"
+  },
+  "theme.SearchPage.fetchingNewResults": {
+    "message": "検索中...",
+    "description": "The paragraph for fetching new search results"
+  },
+  "theme.SearchBar.label": {
+    "message": "検索",
+    "description": "The ARIA label and placeholder for search button"
+  },
+  "homepage.compile_safe_title": {
+    "message": "コンパイルセーフ"
+  },
+  "homepage.compile_safe_body": {
+    "message": "{ProviderNotFound} の発生や、loading ステートを処理し忘れることを心配する必要はもうありません。Riverpod ではコンパイル可能なコードは有効なコードです。"
+  },
+  "homepage.unlimited_provider_title": {
+    "message": "制限のない Provider"
+  },
+  "homepage.unlimited_provider_body": {
+    "message": "Riverpod は Provider からインスパイアされていますが、その主要な問題を解決します。同じ型を値に持つプロバイダを複数作成したり、場所に縛られずにプロバイダを作成したり、といったことが可能になりました。"
+  },
+  "homepage.no_flutter_dependency_title": {
+    "message": "Flutter に依存しない"
+  },
+  "homepage.no_flutter_dependency_body": {
+    "message": "Riverpod は Flutter に依存することなくプロバイダを作成・共有・テストすることが可能です。 {BuildContext} を使わずにプロバイダを利用することができます。"
+  },
+  "home.tagline": {
+    "message": "リアクティブ・キャッシングとデータバインディングを実現するフレームワーク"
+  },
+  "home.get_started": {
+    "message": "利用開始"
+  },
+  "home.shared_state_title": {
+    "message": "場所に縛られないステート宣言"
+  },
+  "home.shared_state_body": {
+    "message": "{main} と UI 側のコードの間を行き来する必要はもうありません。 {br} 別のパッケージ内であろうと、ウィジェットのコードと同じファイル内であろうと、場所に縛られることなくステートを宣言することができます。これによりテスト容易性を損なうことはありません。",
+    "description": "The homepage input placeholder"
+  },
+  "home.recompute_title": {
+    "message": "ステートの再評価、UI の更新を最小限に"
+  },
+  "home.recompute_body": {
+    "message": "{build} メソッドの中でリストをソート / フィルタする必要はもうありません。高度なキャッシュ手法に頼る必要もありません。 {br}{br} {Provider} と {families} を使って、本当に必要な時に限ってリストのソートや HTTP リクエストを行えます。"
+  },
+  "home.safe_read_title": {
+    "message": "Bad state とは無縁"
+  },
+  "home.safe_read_body": {
+    "message": "プロバイダの監視により Bad state エラーが発生することはありません。プロバイダを適切に利用することで、常に有効な値を取得できます。 {br}{br} これは非同期操作により値を取得する場合も同様です。Riverpod なら、loading/error のステートを簡潔に処理することができます。"
+  },
+  "home.devtool_title": {
+    "message": "DevTools によるステートの検証"
+  },
+  "home.devtool_body": {
+    "message": "Riverpod では特別な設定をすることなく Flutter の DevTools でステートを検証することができます。 {br} 加えて、より本格的なステート検証ツールの開発が進行中です。"
+  },
+  "home.create_provider": {
+    "message": "プロバイダを作成する"
+  },
+  "home.consume_provider": {
+    "message": "プロバイダを利用する"
+  }
+}

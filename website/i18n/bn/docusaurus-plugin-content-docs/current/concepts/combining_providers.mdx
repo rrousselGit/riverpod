@@ -1,0 +1,269 @@
+---
+title: প্রভাইডার যুক্ত করা
+---
+ 
+প্রথমে [প্রোভাইডার সম্পর্কে পড়া](../concepts/providers) নিশ্চিত করুন।
+এই গাইডে, আমরা প্রোভাইডারকে একত্রিত করার বিষয়ে যা জানার আছে তা দেখব।
+
+## প্রভাইডার যুক্ত করা
+
+
+আমরা আগে দেখেছি কিভাবে একটি সহজ প্রভাইডার তৈরি করতে হয়। কিন্তু বাস্তবতা হল, অনেক পরিস্থিতিতে একটি প্রভাইডার অন্য প্রভাইডারের স্টেট পড়তে চাইবে।
+
+এটি করার জন্য, আমরা আমাদের প্রভাইডারের কলব্যাকে পাস করা [ref] অবজেক্ট ব্যবহার করতে পারি এবং এটির [watch] মেথড ব্যবহার করতে পারি।
+
+একটি উদাহরণ হিসাবে, নিম্নলিখিত প্রভাইডার বিবেচনা করুন:
+
+```dart
+final cityProvider = Provider((ref) => 'London');
+```
+
+আমরা এখন অন্য একটি প্রভাইডার তৈরি করতে পারি যেটি আমাদের `cityProvider` ব্যবহার করবে:
+
+```dart
+final weatherProvider = FutureProvider((ref) async {
+  // আমরা অন্য প্রভাইডারকে রিড করার জন্যে `ref.watch` ব্যবহার করি এবং আমরা এটি সে প্রভাইডারকে পাস করি
+  // যেটি আমরা ব্যবহার করতে চাই, এখানেঃ cityProvider
+  final city = ref.watch(cityProvider);
+
+  // তারপরে আমরা `cityProvider` এর ভ্যালু এর উপর ভিত্তি করে কিছু করতে ফলাফলটি ব্যবহার করতে পারি।
+  return fetchWeather(city: city);
+});
+```
+
+এটাই. আমরা একটি প্রভাইডার তৈরি করেছি যা অন্য প্রভাইডারের উপর নির্ভর করে।
+
+## সচরাচর জিজ্ঞাস্য
+
+### সময়ের সাথে সাথে যদি লিসেনের ভ্যালু পরিবর্তন হয়?
+
+আপনি যে প্রভাইডার রিড করছেন তার উপর নির্ভর করে, প্রাপ্ত ভ্যালু সময়ের সাথে পরিবর্তিত হতে পারে। উদাহরণস্বরূপ, আপনি হয়ত একটি [StateNotifierProvider] শুনছেন, অথবা যে প্রভাইডার রিড করা হচ্ছে তাকে [ProviderContainer.refresh]/[ref.refresh] ব্যবহার করে রিফ্রেশ করতে বাধ্য করা হতে পারে।
+
+[watch] ব্যবহার করার সময়, রিভারপড শনাক্ত করতে সক্ষম হয় যে ভ্যালুটি পরিবর্তিত হচ্ছে এবং প্রয়োজনে প্রদানকারীকে _স্বয়ংক্রিয়ভাবে_ পুনরায় কার্যকর করবে।
+
+এটি গণনাকৃত স্টেটের জন্য উপযোগী হতে পারে।
+উদাহরণস্বরূপ, একটি [StateNotifierProvider] বিবেচনা করুন যা একটি টুডুলিস্ট তালিকা প্রকাশ করে:
+
+```dart
+class TodoList extends StateNotifier<List<Todo>> {
+  TodoList(): super(const []);
+}
+
+final todoListProvider = StateNotifierProvider((ref) => TodoList());
+```
+
+একটি সাধারণ ব্যবহারের ক্ষেত্রে শুধুমাত্র সম্পূর্ণ/অসম্পূর্ণ টোডোগুলি দেখানোর জন্য UI ফিল্টার করতে হবে।
+
+এই ধরনের একটি দৃশ্য বাস্তবায়ন করার একটি সহজ উপায় হবেঃ
+
+- একটি [StateProvider] তৈরি করুন, যা বর্তমানে নির্বাচিত ফিল্টার মেথডটি প্রকাশ করেঃ
+
+  ```dart
+  enum Filter {
+    none,
+    completed,
+    uncompleted,
+  }
+
+  final filterProvider = StateProvider((ref) => Filter.none);
+  ```
+
+- একটি পৃথক প্রভাইডার তৈরি করুন যা ফিল্টার মেথড এবং টোডো-তালিকাকে একত্রিত করে ফিল্টার 
+  করা টোডো-তালিকাটি এক্সপোস করেঃ
+
+  ```dart
+  final filteredTodoListProvider = Provider<List<Todo>>((ref) {
+    final filter = ref.watch(filterProvider);
+    final todos = ref.watch(todoListProvider);
+
+    switch (filter) {
+      case Filter.none:
+        return todos;
+      case Filter.completed:
+        return todos.where((todo) => todo.completed).toList();
+      case Filter.uncompleted:
+        return todos.where((todo) => !todo.completed).toList();
+    }
+  });
+  ```
+
+তারপর, ফিল্টার করা টোডো-তালিকা রিড করতে আমাদের UI `filteredTodoListProvider` রিড করতে পারে। এই ধরনের পদ্ধতি ব্যবহার করে, ফিল্টার বা টোডো-তালিকা পরিবর্তন হলে UI স্বয়ংক্রিয়ভাবে আপডেট হবে।
+
+এই পদ্ধতিটি কার্যকরভাবে দেখতে, আপনি [টুডো তালিকা উদাহরণ](https://github.com/rrousselGit/riverpod/tree/master/examples/todos) এর সোর্স কোডটি দেখতে পারেন।
+
+:::info
+এই আচরণ [Provider] এর জন্য নির্দিষ্ট নয়, এবং সমস্ত প্রভাইডারের সাথে কাজ করে।
+
+For example, you could combine [watch] with [FutureProvider] to implement a search
+feature that supports live-configuration changes:
+
+উদাহরণস্বরূপ, আপনি লাইভ-কনফিগারেশন যুক্ত এমন একটি সার্চ ফিচার বাস্তবায়ন করতে [watch] এর সাথে
+[FutureProvider] একত্রিত করতে পারেন:
+
+```dart
+// বর্তমান সার্চ ফিল্টার
+final searchProvider = StateProvider((ref) => '');
+
+/// কনফিগারেশন যা সময়ের সাথে পরিবর্তিত হতে পারে
+final configsProvider = StreamProvider<Configuration>(...);
+
+final charactersProvider = FutureProvider<List<Character>>((ref) async {
+  final search = ref.watch(searchProvider);
+  final configs = await ref.watch(configsProvider.future);
+  final response = await dio.get('${configs.host}/characters?search=$search');
+
+  return response.data.map((json) => Character.fromJson(json)).toList();
+});
+```
+
+এই কোডটি সার্ভিস থেকে অক্ষরগুলির একটি তালিকা ফেচ করবে এবং যখনই কনফিগারেশন পরিবর্তন হবে বা অনুসন্ধান ক্যোয়ারী পরিবর্তিত হবে তখন স্বয়ংক্রিয়ভাবে তালিকাটি পুনরায় ফেচ করবে।
+:::
+
+### আমি কি একটি প্রভাইডার লিসেন না করে শুধু রিড করতে পারব?
+
+কখনও কখনও, আমরা একটি প্রভাইডারের বিষয়বস্তু রিড করতে চাই, কিন্তু প্রাপ্ত ভ্যালু পরিবর্তন হলে উন্মুক্ত ভ্যালু পুনরায় তৈরি না করে।
+
+
+একটি উদাহরণ হতে পারে একটি `Repository`, যা অন্য একটি প্রভাইডার থেকে ইউজার টোকেন রিড করে 
+অথেনটিকেশন করার জন্য।
+
+যখনই ব্যবহারকারীর টোকেন পরিবর্তিত হয় তখন আমরা [watch] ব্যবহার করতে পারি এবং একটি নতুন
+`Repository` তৈরি করতে পারি, কিন্তু তা করে কোনো লাভ নেই।
+
+এই পরিস্থিতিতে, আমরা [read] ব্যবহার করতে পারি, যা [watch] এর মতই, কিন্তু প্রাপ্ত ভ্যালু পরিবর্তিত হলে প্রদানকারী যে ভ্যালুটি প্রকাশ করে তা পুনরায় তৈরি করতে পারে না।
+
+সেক্ষেত্রে, একটি সাধারণ অনুশীলন হল, তৈরিকৃত অবজেক্টে `ref.read` পাস করা। তারপরে তৈরি করা অবজেক্টটি যখনই চাইবে প্রভাইডার গুলা পড়তে সক্ষম হবে।
+
+```dart
+final userTokenProvider = StateProvider<String>((ref) => null);
+
+final repositoryProvider = Provider((ref) => Repository(ref.read));
+
+class Repository {
+  Repository(this.read);
+
+  /// `ref.read` ফাংশনটি
+  final Reader read;
+
+  Future<Catalog> fetchCatalog() async {
+    String token = read(userTokenProvider);
+
+    final response = await dio.get('/path', queryParameters: {
+      'token': token,
+    });
+
+    return Catalog.fromJson(response.data);
+  }
+}
+```
+
+:::note
+আপনি চাইলে `ref` পাস করতে পারেন অবজেক্টে, `ref.read` এর পরিবর্তে :
+
+```dart
+final repositoryProvider = Provider((ref) => Repository(ref));
+
+class Repository {
+  Repository(this.ref);
+
+  final Ref ref;
+}
+```
+
+কিন্তু, `ref.read` পাস করলে  কোড একটু কম দেখায় এবং নিশ্চিত করে যে 
+আমাদের অবজেক্ট কখনোই `ref.watch` ব্যবহার করবে না।
+:::
+
+:::danger **কখনো** প্রভাইডার এর বডির ভিতরে [read] কল করবেন না
+
+```dart
+final myProvider = Provider((ref) {
+  // এখানে 'read' কল খারাপ অভ্যাস
+  final value = ref.read(anotherProvider);
+});
+```
+
+আপনি যদি আপনার অবজেক্টে অবাঞ্ছিত রিবিল্ট এড়াতে একটি প্রচেষ্টা হিসাবে [read] ব্যবহার করেন, এটি পড়ুনঃ [আমার প্রদানকারী আপডেটগুলি প্রায়শই, আমি কী করতে পারি?](#my-provider-updates-too-often-what-can-i-do)
+
+:::
+
+### কিভাবে একটি অবজেক্ট টেস্ট করবেন যা তার কনস্ট্রাক্টরের একটি প্যারামিটার হিসাবে [read] পায়?
+
+আপনি যদি বর্ণনা করা প্যাটার্ন ব্যবহার করেন [আমি কি একটি প্রভাইডার লিসেন না করে শুধু রিড করতে পারব?](#can-i-read-a-provider-without-listening-to-it),
+আপনি ভাবছেন কিভাবে আপনার অবজেক্টের জন্য টেস্ট লিখতে হয়।
+
+In this scenario, consider testing the provider directly instead of the raw object.
+You can do so by using the [ProviderContainer] class:
+
+এই পরিস্থিতিতে, র অবজেক্টের পরিবর্তে সরাসরি প্রভাইডারকে টেস্ট করার কথা বিবেচনা করুন।
+আপনি [ProviderContainer] ক্লাস ব্যবহার করে এটি করতে পারেন:
+
+```dart
+final repositoryProvider = Provider((ref) => Repository(ref.read));
+
+test('fetches catalog', () async {
+  final container = ProviderContainer();
+  addTearDown(container.dispose);
+
+  Repository repository = container.read(repositoryProvider);
+
+  await expectLater(
+    repository.fetchCatalog(),
+    completion(Catalog()),
+  );
+});
+```
+
+### আমার প্রভাইডার বেশি আপডেট হচ্ছে, আমি কি করতে পারি?
+
+যদি আপনার অবজেক্ট খুব ঘন ঘন পুনঃতৈরি করা হয়, তাহলে আপনার প্রভাইডার এমন অবজেক্ট রিড করছে যেগুলিকে সে গুরুত্ব দেয় না।
+
+উদাহরণস্বরূপ, আপনি হয়ত একটি `Configuration` অবজেক্ট শুনছেন, কিন্তু শুধুমাত্র `host` প্রপার্টি ব্যবহার করছেন।
+সম্পূর্ণ `Configuration` অবজেক্ট শোনার মাধ্যমে, যদি `host` ছাড়া অন্য কোনো প্রপার্টি পরিবর্তিত হয়, তাহলেও এটি আপনার প্রভাইডারকে পুনরায় মূল্যায়ন করতে বাধ্য করবে - যা অনাকাঙ্ক্ষিত হতে পারে।
+
+
+এই সমস্যার সমাধান হল একটি পৃথক প্রভাইডার তৈরি করা যা _শুধুমাত্র_ আপনার যা প্রয়োজন তা প্রকাশ করে `Configuration` (তাই `host`):
+
+**এড়িয়ে চলুন** একটি পুরো অবজেক্টকে লিসেন করাঃ
+
+```dart
+final configsProvider = StreamProvider<Configuration>(...);
+
+final productsProvider = FutureProvider<List<Product>>((ref) async {
+  // productsProvider কে পুনরায় ফেচ করার কারণ হবে যদি কনফিগারেশন এ
+  // কিছু পরিবর্তন হয়।
+  final configs = await ref.watch(configsProvider.future);
+
+  return dio.get('${configs.host}/products');
+});
+```
+
+**লিসেন করুন**  শুধুমাত্র যা আপনি ব্যবহার করেনঃ
+
+```dart
+final configsProvider = StreamProvider<Configuration>(...);
+
+/// একটি প্রভাইডার যা শুধু বর্তমান host কে এক্সপোস করে
+final _hostProvider = FutureProvider<String>((ref) async {
+  final config = await ref.watch(configsProvider.future);
+  return config.host;
+});
+
+final productsProvider = FutureProvider<List<Product>>((ref) async {
+  // শুধু মাত্র host কে লিসেন করবে, যদি কনফিগারেশন এ অন্য কিছু পরিবর্তন হয়,
+  // তাহলে এটি অর্থহীনভাবে আমাদের প্রভাইডারকে পুনরায় মূল্যায়ন করবে না।
+  final host = await ref.watch(_hostProvider.future);
+
+  return dio.get('$host/products');
+});
+```
+
+[provider]: ../providers/provider
+[stateprovider]: ../providers/state_provider
+[futureprovider]: ../providers/future_provider
+[statenotifierprovider]: ../providers/state_notifier_provider
+[ref]: https://pub.dev/documentation/riverpod/latest/riverpod/Ref-class.html
+[watch]: https://pub.dev/documentation/riverpod/latest/riverpod/Ref/watch.html
+[read]: https://pub.dev/documentation/riverpod/latest/riverpod/Ref/read.html
+[providercontainer.refresh]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderContainer/refresh.html
+[ref.refresh]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/WidgetRef/refresh.html

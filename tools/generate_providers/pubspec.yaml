@@ -1,0 +1,13 @@
+name: generate_providers
+publish_to: "none"
+
+environment:
+  sdk: ">=2.19.0 <4.0.0"
+
+dependencies:
+  dart_style: ^2.0.0
+  trotter: ^2.0.0
+  tuple: ^2.0.0
+
+executables:
+  generate_providers:

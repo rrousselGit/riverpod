@@ -1,0 +1,110 @@
+{
+  "version.label": {
+    "message": "Далее",
+    "description": "The label for version current"
+  },
+  "sidebar.Sidebar.category.Guides": {
+    "message": "Гайды",
+    "description": "The label for category Guides in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.Concepts": {
+    "message": "Понятия",
+    "description": "The label for category Concepts in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.Modifiers": {
+    "message": "Модификаторы",
+    "description": "The label for category Modifiers in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.Migration": {
+    "message": "Миграция",
+    "description": "The label for category Migration in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.Official examples": {
+    "message": "Официальные примеры",
+    "description": "The label for category Official examples in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.Third party examples": {
+    "message": "Неофициальные примеры",
+    "description": "The label for category Third party examples in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.Api references": {
+    "message": "Ссылки на API",
+    "description": "The label for category Api references in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.All Providers": {
+    "message": "Провайдеры",
+    "description": "The label for category All Providers in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.link.Counter": {
+    "message": "Counter",
+    "description": "The label for link Counter in sidebar Sidebar, linking to https://github.com/rrousselGit/riverpod/tree/master/examples/counter"
+  },
+  "sidebar.Sidebar.link.Todo list": {
+    "message": "Todo list",
+    "description": "The label for link Todo list in sidebar Sidebar, linking to https://github.com/rrousselGit/riverpod/tree/master/examples/todos"
+  },
+  "sidebar.Sidebar.link.Marvel API": {
+    "message": "Marvel API",
+    "description": "The label for link Marvel API in sidebar Sidebar, linking to https://github.com/rrousselGit/riverpod/tree/master/examples/marvel"
+  },
+  "sidebar.Sidebar.link.Android Launcher": {
+    "message": "Android Launcher",
+    "description": "The label for link Android Launcher in sidebar Sidebar, linking to https://github.com/lohanidamodar/fl_live_launcher"
+  },
+  "sidebar.Sidebar.link.Worldtime Clock": {
+    "message": "Worldtime Clock",
+    "description": "The label for link Worldtime Clock in sidebar Sidebar, linking to https://github.com/lohanidamodar/flutter_worldtime"
+  },
+  "sidebar.Sidebar.link.Dictionary App": {
+    "message": "Dictionary App",
+    "description": "The label for link Dictionary App in sidebar Sidebar, linking to https://github.com/lohanidamodar/fl_dictio"
+  },
+  "sidebar.Sidebar.link.Firebase Starter": {
+    "message": "Firebase Starter",
+    "description": "The label for link Firebase Starter in sidebar Sidebar, linking to https://github.com/lohanidamodar/flutter_firebase_starter/tree/feature/riverpod"
+  },
+  "sidebar.Sidebar.link.Time Tracking App (with Firebase)": {
+    "message": "Time Tracking App (mit Firebase)",
+    "description": "The label for link Time Tracking App (with Firebase) in sidebar Sidebar, linking to https://github.com/bizz84/starter_architecture_flutter_firebase"
+  },
+  "sidebar.Sidebar.link.Firebase Phone Authentication with Riverpod": {
+    "message": "Firebase Phone Authentication mit Riverpod",
+    "description": "The label for link Firebase Phone Authentication with Riverpod in sidebar Sidebar, linking to https://github.com/julienlebren/flutter_firebase_phone_auth_riverpod"
+  },
+  "sidebar.Sidebar.link.ListView paging with search": {
+    "message": "ListView paging with search",
+    "description": "The label for link ListView paging with search in sidebar Sidebar, linking to https://github.com/tbm98/flutter_loadmore_search"
+  },
+  "sidebar.Sidebar.link.Resocoder's Weather Bloc to Weather Riverpod": {
+    "message": "Resocoder's Weather Bloc to Weather Riverpod",
+    "description": "The label for link Resocoder's Weather Bloc to Weather Riverpod in sidebar Sidebar, linking to https://github.com/campanagerald/flutter-bloc-library-v1-tutorial"
+  },
+  "sidebar.Sidebar.link.Blood Pressure Tracker App": {
+    "message": "Blood Pressure Tracker App",
+    "description": "The label for link Blood Pressure Tracker App in sidebar Sidebar, linking to https://github.com/UrosTodosijevic/blood_pressure_tracker"
+  },
+  "sidebar.Sidebar.link.Firebase Authentication with Riverpod Following Flutter DDD Architecture Pattern": {
+    "message": "Firebase Authentication with Riverpod Following Flutter DDD Architecture Pattern",
+    "description": "The label for link Firebase Authentication with Riverpod Following Flutter DDD Architecture Pattern in sidebar Sidebar, linking to https://github.com/pythonhubpy/firebase_authentication_flutter_DDD"
+  },
+  "sidebar.Sidebar.link.Todo App with Backup and Restore feature": {
+    "message": "Todo App with Backup and Restore feature",
+    "description": "The label for link Todo App with Backup and Restore feature in sidebar Sidebar, linking to https://github.com/TheAlphaApp/flutter_riverpod_todo_app"
+  },
+  "sidebar.Sidebar.link.Integrating Hive database with Riverpod (simple example)": {
+    "message": "Integrating Hive database with Riverpod (simple example)",
+    "description": "The label for link Integrating Hive database with Riverpod (simple example) in sidebar Sidebar, linking to https://github.com/GitGud31/theme_riverpod_hive"
+  },
+  "sidebar.Sidebar.link.riverpod": {
+    "message": "riverpod",
+    "description": "The label for link riverpod in sidebar Sidebar, linking to https://pub.dev/documentation/riverpod/latest/riverpod/riverpod-library.html"
+  },
+  "sidebar.Sidebar.link.flutter_riverpod": {
+    "message": "flutter_riverpod",
+    "description": "The label for link flutter_riverpod in sidebar Sidebar, linking to https://pub.dev/documentation//flutter_riverpod/latest/flutter_riverpod/flutter_riverpod-library.html"
+  },
+  "sidebar.Sidebar.link.hooks_riverpod": {
+    "message": "hooks_riverpod",
+    "description": "The label for link hooks_riverpod in sidebar Sidebar, linking to https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/hooks_riverpod-library.html"
+  }
+}

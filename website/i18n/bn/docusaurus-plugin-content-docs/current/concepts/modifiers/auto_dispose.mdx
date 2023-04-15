@@ -1,0 +1,125 @@
+---
+title: .autoDispose
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+
+প্রভাইডার ব্যবহার করার সময় একটি সাধারণ ব্যবহারের ক্ষেত্রে একটি প্রভাইডারের অবস্থা ধ্বংস করতে চান যখন এটি আর ব্যবহার করা হয় না।
+
+এটি করার একাধিক কারণ রয়েছে, যেমনঃ
+
+- Firebase ব্যবহার করার সময়, সংযোগ বন্ধ করতে এবং অপ্রয়োজনীয় খরচ এড়াতে।
+- যখন ব্যবহারকারী একটি স্ক্রীন ছেড়ে পুনরায় প্রবেশ করে তখন অবস্থা পুনরায় সেট করতে৷
+
+
+প্রভাইডাররা এই ধরনের ব্যবহারের ক্ষেত্রে অন্তর্নির্মিত সমর্থন নিয়ে আসে, `.autoDispose` মডিফায়ারের মাধ্যমে।
+
+## ব্যবহার
+
+
+রিভারপডকে একটি প্রভাইডারের অবস্থা ধ্বংস করতে বলার জন্য যখন এটি আর ব্যবহার করা হয় না, কেবলমাত্র আপনার প্রদানকারীর সাথে `.autoDispose` যোগ করুন:
+
+```dart
+final userProvider = StreamProvider.autoDispose<User>((ref) {
+
+});
+```
+
+এটাই. এখন, `userProvider` এর অবস্থা স্বয়ংক্রিয়ভাবে ধ্বংস হয়ে যাবে যখন এটি আর ব্যবহার করা হবে না।
+
+জেনেরিক প্যারামিটারগুলি কীভাবে পূর্বের পরিবর্তে `autoDispose` এর পরে পাস করা হয় - `autoDispose` একটি নামযুক্ত কনস্ট্রাক্টর নয়।
+
+:::note
+
+আপনার যদি প্রয়োজন হয় তবে আপনি অন্য মডিফায়ারের সাথে `.autoDispose` একত্রিত করতে পারেনঃ
+
+```dart
+final userProvider = StreamProvider.autoDispose.family<User, String>((ref, id) {
+
+});
+```
+
+:::
+
+### ref.keepAlive
+
+একটি প্রদানকারীকে `autoDispose` দিয়ে চিহ্নিত করলে `ref`-এ একটি অতিরিক্ত প্রপার্টি যোগ হয়: `keepAlive`।
+
+`keepAlive` প্রপার্টি হল একটি বুলিয়ান (ডিফল্টরূপে `false`) যা প্রভাইডার রিভারপডকে জানাতে দেয় যে প্রভাইডাররের অবস্থা সংরক্ষণ করা উচিত, এমনকি যদি এটি আর শোনা না হয়।
+
+একটি ব্যবহার-কেস একটি HTTP রিকুয়েস্ট সম্পূর্ণ হওয়ার পরে এই ফ্ল্যাগটি `true` তে সেট করতে হবে:
+
+```dart
+final myProvider = FutureProvider.autoDispose((ref) async {
+  final response = await httpClient.get(...);
+  ref.keepAlive();
+  return response;
+});
+```
+
+এইভাবে, যদি রিকুয়েস্ট ব্যর্থ হয় এবং ব্যবহারকারী স্ক্রীন ছেড়ে চলে যায় এবং পুনরায় প্রবেশ করে, তাহলে অনুরোধটি আবার সঞ্চালিত হবে। কিন্তু যদি রিকুয়েস্টটি সফলভাবে সম্পন্ন হয়, তাহলে স্টেটটি সংরক্ষিত থাকবে এবং স্ক্রীনে পুনরায় প্রবেশ করলে নতুন রিকুয়েস্ট ট্রিগার হবে না।
+
+## উদাহরণ: আর ব্যবহার না হলে HTTP রিকুয়েস্ট বাতিল করা
+
+`autoDispose` মডিফায়ারকে [FutureProvider] এবং `ref.onDispose`-এর সাথে একত্রিত করা যেতে পারে যাতে HTTP রিকুয়েস্টগুলি আর প্রয়োজন না থাকলে সহজেই বাতিল করা যায়।
+
+লক্ষ্য হল:
+
+- যখন ব্যবহারকারী একটি স্ক্রীনে প্রবেশ করে তখন একটি HTTP রিকুয়েস্ট শুরু করা।
+- রিকুয়েস্ট সম্পূর্ণ হওয়ার আগে ব্যবহারকারী স্ক্রীন ছেড়ে চলে গেলে, HTTP রিকুয়েস্ট বাতিল করা।
+- রিকুয়েস্ট সফল হলে, স্ক্রীন ছেড়ে যাওয়া এবং পুনরায় প্রবেশ করা নতুন রিকুয়েস্ট শুরু না করা।
+
+কোডে, এটি হবে:
+
+```dart
+final myProvider = FutureProvider.autoDispose((ref) async {
+  // package:dio থেকে একটি অবজেক্ট যা HTTP রিকুয়েস্টগুলি বাতিল করার অনুমতি দেয়
+  final cancelToken = CancelToken();
+  // প্রভাইডার ধ্বংস হয়ে গেলে, http রিকুয়েস্টটি বাতিল করুন
+  ref.onDispose(() => cancelToken.cancel());
+
+  // আমাদের ডেটা ফেচ করুন এবং বাতিলকরণ এর জন্য আমাদের `cancelToken` পাস করুন
+  final response = await dio.get('path', cancelToken: cancelToken);
+  // অনুরোধ সফলভাবে সম্পন্ন হলে, স্টেট রাখুন
+  ref.keepAlive();
+  return response;
+});
+```
+
+## The argument type 'AutoDisposeProvider' can't be assigned to the parameter type 'AlwaysAliveProviderBase'
+
+`.autoDispose` ব্যবহার করার সময়, আপনি নিজেকে এমন একটি পরিস্থিতিতে খুঁজে পেতে পারেন যেখানে আপনার অ্যাপ্লিকেশনটি  নিচের মতো একটি ত্রুটি সহ কম্পাইল করে না:
+
+> The argument type 'AutoDisposeProvider' can't be assigned to the parameter
+> type 'AlwaysAliveProviderBase'
+
+চিন্তা করবেন না! এই ত্রুটি স্বেচ্ছাকৃত. এটা ঘটবে কারণ এখানে সম্ভবত
+একটি বাগ আছেঃ
+
+আপনি একটি প্রভাইডারকে `.autoDispose` দিয়ে চিহ্নিত একটি প্রভাইডারের রিড করার চেষ্টা করেছেন যা `.autoDispose` দিয়ে **চিহ্নিত** নয়, যেমন:
+
+```dart
+final firstProvider = Provider.autoDispose((ref) => 0);
+
+final secondProvider = Provider((ref) {
+  // The argument type 'AutoDisposeProvider<int>' can't be assigned to the
+  // parameter type 'AlwaysAliveProviderBase<Object, Null>'
+  ref.watch(firstProvider);
+});
+```
+
+এটি অবাঞ্ছিত, কারণ এটি `firstProvider` কে কখনই নিষ্পত্তি করবে না।
+
+এটি ঠিক করতে, `.autoDispose` দিয়ে `secondProvider` চিহ্নিত করার কথাও বিবেচনা করুনঃ
+
+```dart
+final firstProvider = Provider.autoDispose((ref) => 0);
+
+final secondProvider = Provider.autoDispose((ref) {
+  ref.watch(firstProvider);
+});
+```
+
+[futureprovider]: ../../providers/future_provider

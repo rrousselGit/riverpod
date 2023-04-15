@@ -1,0 +1,162 @@
+---
+title: Testing
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import testingOriginalTestFlutter from "!!raw-loader!/docs/cookbooks/testing_original_test_flutter.dart";
+import testingOriginalTestDart from "!!raw-loader!/docs/cookbooks/testing_original_test_dart.dart";
+import repositorySnippet from "!!raw-loader!/docs/cookbooks/testing_repository.dart";
+import testFlutter from "!!raw-loader!/docs/cookbooks/testing_flutter.dart";
+import testDart from "!!raw-loader!/docs/cookbooks/testing_dart.dart";
+import testFull from "!!raw-loader!/docs/cookbooks/testing_full.dart";
+import testOverrideInfo from "!!raw-loader!/docs/cookbooks/testing_override_info.dart";
+import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+
+Für alle mittelgroßen bis großen Anwendungen ist es wichtig, die Anwendung zu testen.
+
+Um unsere Anwendung erfolgreich zu testen, benötigen wir die folgenden Dinge:
+
+- Es sollten keine Zustände zwischen `test`/`testWidgets` reserviert sein.  
+  Das bedeutet, dass kein globaler Zustand in der Anwendung oder alle globalen Zustände 
+  nach jedem Test zurückgesetzt werden sollten.
+
+- Wir können unsere Anbieter dazu zwingen, einen bestimmten Zustand einzunehmen, entweder durch 
+  Mocking oder durch Manipulation, bis wir den gewünschten Zustand erreicht haben.
+
+Schauen wir uns nacheinander an, wie [Riverpod] hier hilft.
+
+## Es sollten keine Zustände zwischen `test`/`testWidgets` reserviert sein. 
+
+Da Provider in der Regel als globale Variablen deklariert werden, könnten 
+Sie sich darüber Gedanken machen.
+Schließlich macht ein globaler Zustand das Testen sehr schwierig, da er langwierige 
+`setUp`/`tearDown` erfordern kann.
+
+Aber die Realität sieht so aus: Während Provider als globale Variablen deklariert werden, 
+ist der Zustand eines Providers **nicht** global.
+
+Stattdessen wird der Zustand in einem Objekt namens [ProviderContainer] gespeichert, das Sie 
+vielleicht schon gesehen haben, wenn Sie sich die "dart-only"-Beispiele angesehen haben.  
+Falls nicht, sollten Sie wissen, dass dieses [ProviderContainer]-Objekt implizit von 
+[ProviderScope] erstellt wird, dem Widget, das [Riverpod] in unserem Projekt aktiviert.
+
+Instead, it is stored in an object named [ProviderContainer], that you may have
+seen if you looked at the dart-only examples.  
+If you haven't, know that this [ProviderContainer] object is implicitly created
+by [ProviderScope], the widget that enables [Riverpod] on our project.
+
+Konkret bedeutet dies, dass zwei `testWidgets`, die Provider verwenden, keinen gemeinsamen 
+Status haben. 
+Es besteht also überhaupt kein Bedarf an `setUp`/`tearDown`.
+
+Aber ein Beispiel ist besser als lange Erklärungen:
+
+<Tabs
+  defaultValue="testWidgets"
+  values={[
+    { label: 'testWidgets (Flutter)', value: 'testWidgets', },
+    { label: 'test (Dart only)', value: 'test', },
+  ]}
+>
+<TabItem value="testWidgets">
+
+<CodeBlock>{trimSnippet(testingOriginalTestFlutter)}</CodeBlock>
+
+</TabItem>
+<TabItem value="test">
+
+<CodeBlock>{trimSnippet(testingOriginalTestDart)}</CodeBlock>
+
+</TabItem>
+</Tabs>
+
+Wie Sie sehen, wurde `counterProvider` zwar als global deklariert, aber es wurde kein Zustand 
+zwischen den Tests ausgetauscht.   
+Wir müssen uns also keine Sorgen machen, dass sich unsere Tests möglicherweise anders verhalten, 
+wenn sie in einer anderen Reihenfolge ausgeführt werden, da sie völlig isoliert laufen.
+
+## Überschreiben des Verhaltens eines Providers während der Tests.
+
+Eine gewöhnliche reale Anwendung kann die folgenden Objekte haben:
+
+- Sie hat eine `Repository`-Klasse, die eine typsichere und einfache API \
+  zur Durchführung von HTTP-Anfragen bietet.
+
+- Ein Objekt, das den Anwendungsstatus verwaltet und das `Repository` dazu verwenden kann,
+  HTTP-Anfragen auf Basis verschiedener Faktoren durchzuführen.
+  Dies kann ein `ChangeNotifier`, `Bloc` oder sogar ein Provider sein.
+
+Unter Verwendung von [Riverpod] kann dies wie folgt dargestellt werden:
+
+<CodeBlock>{trimSnippet(repositorySnippet)}</CodeBlock>
+
+In dieser Situation, wenn wir einen Unit/Widget-Test machen, werden wir typischerweise 
+unsere `Repository`-Instanz durch eine Mock Implementierung ersetzen wollen, die eine vordefinierte 
+Antwort zurückgibt, anstatt eine echte HTTP-Anfrage zu senden.
+
+Wir möchten dann, dass unser `todoListProvider` oder ein Äquivalent die gemockte Implementierung 
+von `Repository` verwendet.
+
+Um dies zu erreichen, können wir den Parameter `overrides` von [ProviderScope]/[ProviderContainer] 
+verwenden, um das Verhalten von `repositoryProvider` zu überschreiben:
+
+<Tabs
+  defaultValue="ProviderScope"
+  values={[
+    { label: 'ProviderScope (Flutter)', value: 'ProviderScope', },
+    { label: 'ProviderContainer (Dart only)', value: 'ProviderContainer', },
+  ]}
+>
+<TabItem value="ProviderScope">
+
+<CodeBlock>{trimSnippet(testFlutter)}</CodeBlock>
+
+</TabItem>
+<TabItem value="ProviderContainer">
+
+<CodeBlock>{trimSnippet(testDart)}</CodeBlock>
+
+</TabItem>
+</Tabs>
+
+Wie Sie anhand des hervorgehobenen Codes sehen können, ermöglicht [ProviderScope]/[ProviderContainer] 
+die Implementierung eines Providers durch ein anderes Verhalten zu ersetzen.
+
+:::info
+Einige Provider bieten vereinfachte Möglichkeiten, ihr Verhalten zu überschreiben.  
+Zum Beispiel erlaubt [FutureProvider] das Überschreiben des Providers mit einem `AsyncValue`:
+
+<CodeBlock>{trimSnippet(testOverrideInfo)}</CodeBlock>
+
+:::
+
+:::info
+Die Syntax für das Überschreiben eines Providers mit dem Modifikator `family` ist etwas anders.
+
+Wenn Sie einen Provider wie diesen nutzen:
+
+```dart
+final response = ref.watch(myProvider('12345'));
+```
+
+Können sie den Provider so überschreiben:
+
+```dart
+myProvider('12345').overrideWithValue(...));
+```
+
+:::
+
+## Beispiel für einen vollständigen Widget-Test
+
+Abschließend finden Sie hier den vollständigen Code für unseren Flutter-Test.
+
+<CodeBlock>{trimSnippet(testFull)}</CodeBlock>
+
+[riverpod]: https://github.com/rrousselgit/riverpod
+[providerscope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
+[providercontainer]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderContainer-class.html
+[futureprovider]: ../providers/future_provider
+[zone]: https://api.flutter.dev/flutter/dart-async/Zone-class.html

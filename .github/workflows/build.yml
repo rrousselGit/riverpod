@@ -1,0 +1,92 @@
+name: Build
+
+on:
+  pull_request:
+    paths-ignore:
+      - "**.md"
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - "**.md"
+  schedule:
+    # runs the CI everyday at 10AM
+    - cron: "0 10 * * *"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ${{ matrix.package_path }}
+
+    strategy:
+      matrix:
+        channel:
+          - stable
+        package_path:
+          - examples/counter
+          - examples/marvel
+          - examples/pub
+          - examples/random_number
+          - examples/stackoverflow
+          - examples/todos
+          - packages/riverpod
+          - packages/riverpod/example
+          - packages/flutter_riverpod
+          - packages/flutter_riverpod/example
+          - packages/hooks_riverpod
+          - packages/hooks_riverpod/example
+          - packages/riverpod_annotation
+          # TODO(rrousselGit) update riverpod_cli test setup to be supported by the CI
+          # - packages/riverpod_cli
+          - packages/riverpod_generator
+          - packages/riverpod_generator/integration/build_yaml
+          # TODO(rrousselGit) update riverpod_graph test setup to be supported by the CI
+          # - packages/riverpod_graph
+          # TODO(rousselGit) blocked by https://github.com/invertase/dart_custom_lint/issues/16
+          # - packages/riverpod_lint_flutter_test
+          - website
+
+    steps:
+      - uses: actions/checkout@v3.1.0
+        with:
+          fetch-depth: 2
+      - uses: subosito/flutter-action@v2.7.1
+        with:
+          channel: ${{ matrix.channel }}
+      - name: Add pub cache bin to PATH
+        run: echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
+      - name: Add pub cache to PATH
+        run: echo "PUB_CACHE="$HOME/.pub-cache"" >> $GITHUB_ENV
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Install dependencies (integration/buid.yaml)
+        run: |
+          if test -d "integration/build_yaml"; then
+            flutter pub get integration/build_yaml
+          fi
+
+      - name: Check format
+        run: dart format --set-exit-if-changed .
+        if: matrix.package_path != 'website'
+
+      - name: Analyze
+        run: flutter analyze
+
+      - name: Run tests
+        run: |
+          if test -d "test"; then
+            if grep -q flutter "pubspec.yaml"; then
+              flutter test --coverage
+            else
+              ${{github.workspace}}/scripts/coverage.sh
+            fi
+          fi
+
+      - name: Upload coverage to codecov
+        run: |
+          if test -d "test"; then
+            curl -s https://codecov.io/bash | bash
+          fi

@@ -1,0 +1,50 @@
+---
+title: StreamProvider
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import configProvider from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/providers/future_provider/config_provider.dart";
+import configConsumer from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/providers/future_provider/config_consumer.dart";
+import streamProvider from "!!raw-loader!/docs/providers/stream_provider/live_stream_chat_provider.dart";
+import streamConsumer from "!!raw-loader!/docs/providers/stream_provider/live_stream_chat_consumer.dart";
+import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+
+`StreamProvider` は [FutureProvider] の [Stream] 版です。
+
+一般的には次のような用途で使われます。
+
+- Firebase や WebSocket の監視するため。
+- 一定時間ごとに別のプロバイダを更新するため。
+
+[Stream] 自体が値の更新を監視する性質を持つため、`StreamProvider` を使うことにあまり意義を見出せない方もいるかもしれません。
+Flutter の [StreamBuilder] で十分ではないか、と。
+
+しかし、[StreamBuilder] の代わりに `StreamProvider` を使うことで次の利点を得ることができます。
+
+- 他のプロバイダで [ref.watch] を通じてストリームを監視することができる。
+- [AsyncValue] により loading/error のステートを適切に処理することができる。
+- 通常のストリームとブロードキャスト（broadcast）ストリームを区別する必要がない。
+- ストリームから出力された直近の値をキャッシュしてくれる（途中で監視を開始しても最新の値を取得することができる）。
+- `StreamProvider` をオーバーライドすることでテスト時のストリームを簡単にモックすることができる。
+
+[ref.watch]: ../concepts/reading#refwatch-を使ってプロバイダを監視する
+[statenotifierprovider]: ./state_notifier_provider
+[provider]: ./provider
+[futureprovider]: ./future_provider
+[asyncvalue]: https://pub.dev/documentation/riverpod/latest/riverpod/AsyncValue-class.html
+[future]: https://api.dart.dev/dart-async/Future-class.html
+[stream]: https://api.dart.dev/dart-async/Stream-class.html
+[stream.periodic]: https://api.dart.dev/stable/2.15.1/dart-async/Stream/Stream.periodic.html
+[family]: ../concepts/modifiers/family
+[streambuilder]: https://api.flutter.dev/flutter/widgets/StreamBuilder-class.html
+
+## 使用例: ソケットを使ったライブチャット
+`StreamProvider`は、ビデオストリーミングや天気予報のAPIなど非同期データのストリームを扱うときに使用されます。
+
+<CodeBlock>{trimSnippet(streamProvider)}</CodeBlock>
+
+そして、UIはこのようにライブストリーミングチャットを監視することができます:
+
+<CodeBlock>{trimSnippet(streamConsumer)}</CodeBlock>

@@ -1,0 +1,182 @@
+---
+title: Providers
+---
+
+Maintenant que nous avons installé [Riverpod], parlons des "providers".
+
+Les providers sont la partie la plus importante d'une application utilisant [Riverpod].
+Un provider est un objet qui encapsule un état, et qui permet d'écouter les changements
+de cet état.
+
+## Pourquoi utiliser un provider?
+
+En encapsulant un état dans un provider, cela permet de:
+
+- Facilement accéder et écouter cet état à differents endroits.
+  Les providers sont un remplacement complet d'autres patterns tels que les
+  Singletons, Service Locators, Injection de Dédependence, ou InheritedWidgets.
+
+- Simplifier la combination d'états.
+  Combiner plusieurs objets est un scénario directement inclus dans les
+  providers, avec une syntax simple.
+
+- Optimiser son application.
+  Que ce soit pour réduire le nombre de reconstruction d'un widget ou pour cacher
+  une valeur qui coûte cher à calculer, les providers assurent que seulement
+  ce qui doit changer est recalculé.
+
+- Augmenter la testabilité de votre application.
+  Avec les providers, il n'y a pas besoin de complexe `setUp`/`tearDown`.
+  Qui plus est, tous les providers peuvent être surchargés durant les tests
+  pour facilement tester un comportement spécifique.
+
+- Facilement implémenter des fonctionnalités avancées, telles que le logging ou pull-to-refresh.
+
+## Créer un provider
+
+Les providers viennent en plusieurs variants, mais fonctionnent tous de façon
+similaire.
+
+Un usage commun est de déclarer un provider en tant que constante globale, telle que:
+
+```dart
+final myProvider = Provider((ref) {
+  return MyValue();
+});
+```
+
+:::note
+Ne vous inquiétez pas de l'aspect global des providers.
+Les providers sont complètement immutables. Déclarer un provider n'est pas différent
+de déclarer une function, et est testable et maintenable.
+:::
+
+Ce bout de code est constitué de trois composants:
+
+- `final myProvider`, la déclaration d'une variable.
+  Cette variable est ce qui va nous permettre plus tard de lire l'état de nos providers.
+  Elle doit toujours être immutable.
+
+- `Provider`, le type de provider que l'on a choisit d'utiliser.
+  [Provider] est le plus basique des providers qui expose un objet quelconque.
+  Nous pourrions remplacer [Provider] par d'autres types de provider tels que
+  [StreamProvider] ou [StateNotifierProvider], qui changent la façon dont
+  la valeur est interagit avec.
+
+- Une fonction qui crée un état partagé.
+  Cette fonction recevra toujours un objet appelé `ref` en paramètre. Cet objet
+  nous permet de lire d'autres providers ou faire certaines opérations quand
+  l'état sera détruit.
+
+Le type d'objet créé par la function passée au provider dépend du type de provider
+utilisé.  
+Par exemple, [Provider] peut créer n'importe quel objet.
+Tandis que [StreamProvider] demandera de créer un [Stream].
+
+:::info
+Il est possible de déclarer plusieurs providers sans limitations.
+
+Contrairement à `package:provider`, avec [Riverpod] il est possible de
+declarer plusieurs providers du même type:
+
+```dart
+final cityProvider = Provider((ref) => 'London');
+final countryProvider = Provider((ref) => 'England');
+```
+
+Le fait que les deux providers créent une `String` ne pose pas de problème.
+:::
+
+:::caution
+Pour que les providers fonctionnent, il est nécessaire d'ajouter [ProviderScope]
+à la racine de votre application Flutter:
+
+```dart
+void main() {
+  runApp(ProviderScope(child: MyApp()));
+}
+```
+
+:::
+
+## Exécuter une action avant la destruction d'un état
+
+Dans certains cas, l'état d'un provider peut être détruit ou recréé.
+Un exemple commun est de vouloir libérer certaines ressources à la destruction
+d'un état, tel que fermer un `StreamController`.
+
+Cela peut être fait grace à l'objet `ref`, passé en paramètre à tous les providers,
+avec sa methode [onDispose].
+
+L'exemple suivant utilise [onDispose] pour fermer un `StreamController`:
+
+```dart
+final example = StreamProvider.autoDispose((ref) {
+  final streamController = StreamController<int>();
+
+  ref.onDispose(() {
+    // Ferme le StreamController quand le provider est détruit.
+    streamController.close();
+  });
+
+  return streamController.stream;
+});
+```
+
+:::note
+Selon le provider utilisé, il est possible qu'il s'occupe déjà de libérer
+les objets créés.  
+Par exemple, [StateNotifierProvider] va appeler `dispose` de `StateNotifier`.
+:::
+
+## Les modifieurs de Providers
+
+Tous les providers ont des fonctions permettant d'ajouter des fonctionnalités
+à un provider.
+
+Elles peuvent ajouter des fonctionnalités à `ref` ou changer légèrement comment
+un provider est utilisé.
+Les modifieurs peuvent s'utiliser sur tous les providers, avec une syntaxe similaire
+au constructeurs nommés.
+
+```dart
+final myAutoDisposeProvider = StateProvider.autoDispose<String>((ref) => 0);
+final myFamilyProvider = Provider.family<String, int>((ref, id) => '$id');
+```
+
+Pour le moment, il y a deux modifieurs disponibles:
+
+- [`.autoDispose`](/docs/concepts/modifiers/auto_dispose), qui va permettre aux providers
+  de détruire leur état quand le provider n'est plus utilisé (c'est à dire quand
+  plus aucun provider/widget ne l'écoute)
+- [`.family`](/docs/concepts/modifiers/family), qui permet aux providers
+  de créer une valeur à partir d'un paramètre externe.
+
+:::note
+Un provider peut être utilisé avec plusieurs modifieurs en même temps:
+
+```dart
+final userProvider = FutureProvider.autoDispose.family<User, int>((ref, userId) async {
+  return fetchUser(userId);
+});
+```
+
+:::
+
+Voila!
+
+Pour continuer, vous pouvez lire [Comment lire un provider](/docs/concepts/reading).
+Alternativement, vous pouvez lire [Comment combiner des providers](/docs/concepts/combining_providers).
+
+[get_it]: http://pub.dev/packages/get_it
+[inheritedwidget]: https://api.flutter.dev/flutter/widgets/InheritedWidget-class.html
+[stream]: https://api.dart.dev/stable/2.8.4/dart-async/Stream-class.html
+[ondispose]: https://pub.dev/documentation/riverpod/latest/riverpod/Ref/onDispose.html
+[riverpod]: https://github.com/rrousselgit/riverpod
+[hooks_riverpod]: https://pub.dev/packages/hooks_riverpod
+[flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
+[flutter_hooks]: https://github.com/rrousselGit/flutter_hooks
+[provider]: https://pub.dev/documentation/riverpod/latest/riverpod/Provider-class.html
+[streamprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StreamProvider-class.html
+[statenotifierprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StateNotifierProvider-class.html
+[providerscope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html

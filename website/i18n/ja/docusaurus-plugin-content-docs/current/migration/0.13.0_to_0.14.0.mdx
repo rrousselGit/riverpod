@@ -1,0 +1,124 @@
+---
+title: ^0.13.0 → ^0.14.0
+---
+
+Riverpod ではバージョン `0.14.0` のリリースより [StateNotifierProvider]
+を使用する際の構文が変わりました（変更の背景についての詳細は https://github.com/rrousselGit/riverpod/issues/341 をご覧ください）。
+
+本セクションでは次の [StateNotifier] を使用して説明します。
+
+```dart
+class MyModel {}
+
+class MyStateNotifier extends StateNotifier<MyModel> {
+  MyStateNotifier(): super(MyModel());
+}
+```
+
+## 変更点
+
+- [StateNotifierProvider] に第2の型引数が必要になりました。
+  [StateNotifier] の型に続き、その [StateNotifier] のステート（状態）の型を明示する必要があります。
+
+  変更前:
+
+  ```dart
+  final provider = StateNotifierProvider<MyStateNotifier>((ref) {
+    return MyStateNotifier();
+  });
+  ```
+
+  変更後:
+
+  ```dart
+  final provider = StateNotifierProvider<MyStateNotifier, MyModel>((ref) {
+    return MyStateNotifier();
+  });
+  ```
+
+- [StateNotifier] を取得するには、`myProvider` ではなく `myProvider.notifier` を利用します。
+
+  変更前:
+
+  ```dart
+  Widget build(BuildContext context, ScopedReader watch) {
+    MyStateNotifier notifier = watch(provider);
+  }
+  ```
+
+  変更後:
+
+  ```dart
+  Widget build(BuildContext context, ScopedReader watch) {
+    MyStateNotifier notifier = watch(provider.notifier);
+  }
+  ```
+
+- [StateNotifier] のステート（状態）を監視するには、`myProvider.state` ではなく `myProvider` を利用します。
+
+  変更前:
+
+  ```dart
+  Widget build(BuildContext context, ScopedReader watch) {
+    MyModel state = watch(provider.state);
+  }
+  ```
+
+  変更後:
+
+  ```dart
+  Widget build(BuildContext context, ScopedReader watch) {
+    MyModel state = watch(provider);
+  }
+  ```
+
+## 移行ツールを使用してプロジェクトをアップデートする
+
+バージョン 0.14.0 から Riverpod 専用のコマンドラインツールがリリースされました。
+これを使用してプロジェクトを新しいバージョンに移行することが可能です。
+
+### インストール方法
+
+移行ツールをインストールするには次のコマンドを実行します。
+
+```sh
+dart pub global activate riverpod_cli
+```
+
+インストール完了後、次のコマンドが有効になっているはずです。
+
+```sh
+riverpod --help
+```
+
+### 使用方法
+
+それでは、実際にコマンドラインツールを使用してプロジェクトの移行を行ってみましょう。
+
+- まず、新バージョンへ移行したいプロジェクトをターミナルで開きます。
+- Riverpod は手動で **アップグレードしないように** してください。
+  アップグレードは移行ツールが自動で行ってくれます。
+- 移行する前に、プロジェクトにエラーが含まれていないことを確認してください。
+- 次のコマンドを実行します。
+  ```sh
+  riverpod migrate
+  ```
+
+これで移行ツールがプロジェクトの解析と変更の提案を行ってくれます。
+例えば、次のような内容が表示されます。
+
+```diff
+Widget build(BuildContext context, ScopedReader watch) {
+-  MyModel state = watch(provider.state);
++  MyModel state = watch(provider);
+}
+
+Accept change (y = yes, n = no [default], A = yes to all, q = quit)? 
+```
+
+変更の提案を受け入れるには <kbd>y</kbd> を押してください。
+変更せず、そのままにする場合は <kbd>n</kbd> を押します。
+
+
+[statenotifierprovider]: ../providers/state_notifier_provider
+[statenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/StateNotifier-class.html
