@@ -27,21 +27,21 @@ class StatelessProviderTemplate extends Template {
 
   @override
   void run(StringBuffer buffer) {
-    String providerType;
     var leading = '';
 
     if (!provider.annotation.element.keepAlive) {
       leading = 'AutoDispose';
     }
 
-    final returnType = provider.node.returnType?.type;
-    if ((returnType?.isDartAsyncFutureOr ?? false) ||
-        (returnType?.isDartAsyncFuture ?? false)) {
-      providerType = '${leading}FutureProvider';
-    } else if (returnType?.isDartAsyncStream ?? false) {
-      providerType = '${leading}StreamProvider';
-    } else {
-      providerType = '${leading}Provider';
+    var providerType = '${leading}Provider';
+
+    final returnType = provider.createdType;
+    if (!returnType.isRaw) {
+      if ((returnType.isDartAsyncFutureOr) || (returnType.isDartAsyncFuture)) {
+        providerType = '${leading}FutureProvider';
+      } else if (returnType.isDartAsyncStream) {
+        providerType = '${leading}StreamProvider';
+      }
     }
 
     final providerName = providerNameFor(provider.providerElement, options);

@@ -13,6 +13,12 @@ MyStateNotifier stateNotifier(StateNotifierRef ref) => MyStateNotifier();
 
 @riverpod
 // expect_lint: unsupported_provider_value
+Future<MyStateNotifier> asyncStateNotifier(AsyncStateNotifierRef ref) async {
+  return MyStateNotifier();
+}
+
+@riverpod
+// expect_lint: unsupported_provider_value
 class StateNotifierClass extends _$StateNotifierClass {
   MyStateNotifier build() => MyStateNotifier();
 }
@@ -101,4 +107,35 @@ class AsyncNotifierClass extends _$AsyncNotifierClass {
 class MyAsyncNotifier extends AsyncNotifier<int> {
   @override
   int build() => 0;
+}
+
+@riverpod
+Raw<MyChangeNotifier> rawNotifier(RawNotifierRef ref) => MyChangeNotifier();
+
+@riverpod
+Raw<Future<MyChangeNotifier>> rawFutureNotifier(
+  RawFutureNotifierRef ref,
+) async {
+  return MyChangeNotifier();
+}
+
+@riverpod
+Raw<Stream<MyChangeNotifier>> rawStreamNotifier(
+  RawStreamNotifierRef ref,
+) async* {
+  yield MyChangeNotifier();
+}
+
+@riverpod
+Future<Raw<MyChangeNotifier>> futureRawNotifier(
+  FutureRawNotifierRef ref,
+) async {
+  return MyChangeNotifier();
+}
+
+@riverpod
+Stream<Raw<MyChangeNotifier>> streamRawNotifier(
+  StreamRawNotifierRef ref,
+) async* {
+  yield MyChangeNotifier();
 }

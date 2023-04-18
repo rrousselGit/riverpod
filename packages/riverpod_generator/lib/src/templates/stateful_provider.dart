@@ -61,25 +61,24 @@ class StatefulProviderTemplate extends Template {
 
   @override
   void run(StringBuffer buffer) {
-    String notifierBaseType;
-    String providerType;
     var leading = '';
     if (!provider.annotation.element.keepAlive) {
       leading = 'AutoDispose';
     }
 
+    var notifierBaseType = '${leading}Notifier';
+    var providerType = '${leading}NotifierProvider';
+
     final providerName = providerNameFor(provider.providerElement, options);
-    final returnType = provider.buildMethod.returnType?.type;
-    if ((returnType?.isDartAsyncFutureOr ?? false) ||
-        (returnType?.isDartAsyncFuture ?? false)) {
-      notifierBaseType = '${leading}AsyncNotifier';
-      providerType = '${leading}AsyncNotifierProvider';
-    } else if (returnType?.isDartAsyncStream ?? false) {
-      notifierBaseType = '${leading}StreamNotifier';
-      providerType = '${leading}StreamNotifierProvider';
-    } else {
-      notifierBaseType = '${leading}Notifier';
-      providerType = '${leading}NotifierProvider';
+    final returnType = provider.createdType;
+    if (!returnType.isRaw) {
+      if ((returnType.isDartAsyncFutureOr) || (returnType.isDartAsyncFuture)) {
+        notifierBaseType = '${leading}AsyncNotifier';
+        providerType = '${leading}AsyncNotifierProvider';
+      } else if (returnType.isDartAsyncStream) {
+        notifierBaseType = '${leading}StreamNotifier';
+        providerType = '${leading}StreamNotifierProvider';
+      }
     }
 
     buffer.write('''

@@ -6,6 +6,220 @@ part of 'sync.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+String _$rawFutureHash() => r'5203a56065b768023770326281618e3229ccb530';
+
+/// See also [rawFuture].
+@ProviderFor(rawFuture)
+final rawFutureProvider = AutoDisposeProvider<Future<String>>.internal(
+  rawFuture,
+  name: r'rawFutureProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$rawFutureHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef RawFutureRef = AutoDisposeProviderRef<Future<String>>;
+String _$rawStreamHash() => r'2b764189753a8b74f47ba557a79416f00ef5cebd';
+
+/// See also [rawStream].
+@ProviderFor(rawStream)
+final rawStreamProvider = AutoDisposeProvider<Stream<String>>.internal(
+  rawStream,
+  name: r'rawStreamProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$rawStreamHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef RawStreamRef = AutoDisposeProviderRef<Stream<String>>;
+String _$rawFamilyFutureHash() => r'485f59512081852e51279658facc015309743864';
+
+/// Copied from Dart SDK
+class _SystemHash {
+  _SystemHash._();
+
+  static int combine(int hash, int value) {
+    // ignore: parameter_assignments
+    hash = 0x1fffffff & (hash + value);
+    // ignore: parameter_assignments
+    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
+    return hash ^ (hash >> 6);
+  }
+
+  static int finish(int hash) {
+    // ignore: parameter_assignments
+    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
+    // ignore: parameter_assignments
+    hash = hash ^ (hash >> 11);
+    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
+  }
+}
+
+typedef RawFamilyFutureRef = AutoDisposeProviderRef<Future<String>>;
+
+/// See also [rawFamilyFuture].
+@ProviderFor(rawFamilyFuture)
+const rawFamilyFutureProvider = RawFamilyFutureFamily();
+
+/// See also [rawFamilyFuture].
+class RawFamilyFutureFamily extends Family<Future<String>> {
+  /// See also [rawFamilyFuture].
+  const RawFamilyFutureFamily();
+
+  /// See also [rawFamilyFuture].
+  RawFamilyFutureProvider call(
+    int id,
+  ) {
+    return RawFamilyFutureProvider(
+      id,
+    );
+  }
+
+  @override
+  RawFamilyFutureProvider getProviderOverride(
+    covariant RawFamilyFutureProvider provider,
+  ) {
+    return call(
+      provider.id,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'rawFamilyFutureProvider';
+}
+
+/// See also [rawFamilyFuture].
+class RawFamilyFutureProvider extends AutoDisposeProvider<Future<String>> {
+  /// See also [rawFamilyFuture].
+  RawFamilyFutureProvider(
+    this.id,
+  ) : super.internal(
+          (ref) => rawFamilyFuture(
+            ref,
+            id,
+          ),
+          from: rawFamilyFutureProvider,
+          name: r'rawFamilyFutureProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$rawFamilyFutureHash,
+          dependencies: RawFamilyFutureFamily._dependencies,
+          allTransitiveDependencies:
+              RawFamilyFutureFamily._allTransitiveDependencies,
+        );
+
+  final int id;
+
+  @override
+  bool operator ==(Object other) {
+    return other is RawFamilyFutureProvider && other.id == id;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, id.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+String _$rawFamilyStreamHash() => r'e778e5cfcb8ab381e2412f5c73213aaa03b93012';
+typedef RawFamilyStreamRef = AutoDisposeProviderRef<Stream<String>>;
+
+/// See also [rawFamilyStream].
+@ProviderFor(rawFamilyStream)
+const rawFamilyStreamProvider = RawFamilyStreamFamily();
+
+/// See also [rawFamilyStream].
+class RawFamilyStreamFamily extends Family<Stream<String>> {
+  /// See also [rawFamilyStream].
+  const RawFamilyStreamFamily();
+
+  /// See also [rawFamilyStream].
+  RawFamilyStreamProvider call(
+    int id,
+  ) {
+    return RawFamilyStreamProvider(
+      id,
+    );
+  }
+
+  @override
+  RawFamilyStreamProvider getProviderOverride(
+    covariant RawFamilyStreamProvider provider,
+  ) {
+    return call(
+      provider.id,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'rawFamilyStreamProvider';
+}
+
+/// See also [rawFamilyStream].
+class RawFamilyStreamProvider extends AutoDisposeProvider<Stream<String>> {
+  /// See also [rawFamilyStream].
+  RawFamilyStreamProvider(
+    this.id,
+  ) : super.internal(
+          (ref) => rawFamilyStream(
+            ref,
+            id,
+          ),
+          from: rawFamilyStreamProvider,
+          name: r'rawFamilyStreamProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$rawFamilyStreamHash,
+          dependencies: RawFamilyStreamFamily._dependencies,
+          allTransitiveDependencies:
+              RawFamilyStreamFamily._allTransitiveDependencies,
+        );
+
+  final int id;
+
+  @override
+  bool operator ==(Object other) {
+    return other is RawFamilyStreamProvider && other.id == id;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, id.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
 String _$publicHash() => r'138be35943899793ab085e711fe3f3d22696a3ba';
 
 /// This is some documentation
@@ -38,28 +252,6 @@ final supports$inNamesProvider = AutoDisposeProvider<String>.internal(
 
 typedef Supports$inNamesRef = AutoDisposeProviderRef<String>;
 String _$familyHash() => r'14d1ee238ca608d547630d0e222ef4c5866e9e61';
-
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
 typedef FamilyRef = AutoDisposeProviderRef<String>;
 
 /// This is some documentation
@@ -213,6 +405,234 @@ final generatedProvider = AutoDisposeProvider<String>.internal(
 );
 
 typedef GeneratedRef = AutoDisposeProviderRef<String>;
+String _$rawFutureClassHash() => r'bf66f1cdbd99118b8845d206e6a2611b3101f45c';
+
+/// See also [RawFutureClass].
+@ProviderFor(RawFutureClass)
+final rawFutureClassProvider =
+    AutoDisposeNotifierProvider<RawFutureClass, Future<String>>.internal(
+  RawFutureClass.new,
+  name: r'rawFutureClassProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$rawFutureClassHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$RawFutureClass = AutoDisposeNotifier<Future<String>>;
+String _$rawStreamClassHash() => r'712cffcb2018cfb4ff45012c1aa6e43c8cbe9d5d';
+
+/// See also [RawStreamClass].
+@ProviderFor(RawStreamClass)
+final rawStreamClassProvider =
+    AutoDisposeNotifierProvider<RawStreamClass, Stream<String>>.internal(
+  RawStreamClass.new,
+  name: r'rawStreamClassProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$rawStreamClassHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$RawStreamClass = AutoDisposeNotifier<Stream<String>>;
+String _$rawFamilyFutureClassHash() =>
+    r'd7cacb0f2c51697d107de6daa68b242c04085dca';
+
+abstract class _$RawFamilyFutureClass
+    extends BuildlessAutoDisposeNotifier<Future<String>> {
+  late final int id;
+
+  Future<String> build(
+    int id,
+  );
+}
+
+/// See also [RawFamilyFutureClass].
+@ProviderFor(RawFamilyFutureClass)
+const rawFamilyFutureClassProvider = RawFamilyFutureClassFamily();
+
+/// See also [RawFamilyFutureClass].
+class RawFamilyFutureClassFamily extends Family<Future<String>> {
+  /// See also [RawFamilyFutureClass].
+  const RawFamilyFutureClassFamily();
+
+  /// See also [RawFamilyFutureClass].
+  RawFamilyFutureClassProvider call(
+    int id,
+  ) {
+    return RawFamilyFutureClassProvider(
+      id,
+    );
+  }
+
+  @override
+  RawFamilyFutureClassProvider getProviderOverride(
+    covariant RawFamilyFutureClassProvider provider,
+  ) {
+    return call(
+      provider.id,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'rawFamilyFutureClassProvider';
+}
+
+/// See also [RawFamilyFutureClass].
+class RawFamilyFutureClassProvider extends AutoDisposeNotifierProviderImpl<
+    RawFamilyFutureClass, Future<String>> {
+  /// See also [RawFamilyFutureClass].
+  RawFamilyFutureClassProvider(
+    this.id,
+  ) : super.internal(
+          () => RawFamilyFutureClass()..id = id,
+          from: rawFamilyFutureClassProvider,
+          name: r'rawFamilyFutureClassProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$rawFamilyFutureClassHash,
+          dependencies: RawFamilyFutureClassFamily._dependencies,
+          allTransitiveDependencies:
+              RawFamilyFutureClassFamily._allTransitiveDependencies,
+        );
+
+  final int id;
+
+  @override
+  bool operator ==(Object other) {
+    return other is RawFamilyFutureClassProvider && other.id == id;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, id.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+
+  @override
+  Future<String> runNotifierBuild(
+    covariant RawFamilyFutureClass notifier,
+  ) {
+    return notifier.build(
+      id,
+    );
+  }
+}
+
+String _$rawFamilyStreamClassHash() =>
+    r'321796a0befc43fb83f7ccfdcb6b011fc8c7c599';
+
+abstract class _$RawFamilyStreamClass
+    extends BuildlessAutoDisposeNotifier<Stream<String>> {
+  late final int id;
+
+  Stream<String> build(
+    int id,
+  );
+}
+
+/// See also [RawFamilyStreamClass].
+@ProviderFor(RawFamilyStreamClass)
+const rawFamilyStreamClassProvider = RawFamilyStreamClassFamily();
+
+/// See also [RawFamilyStreamClass].
+class RawFamilyStreamClassFamily extends Family<Stream<String>> {
+  /// See also [RawFamilyStreamClass].
+  const RawFamilyStreamClassFamily();
+
+  /// See also [RawFamilyStreamClass].
+  RawFamilyStreamClassProvider call(
+    int id,
+  ) {
+    return RawFamilyStreamClassProvider(
+      id,
+    );
+  }
+
+  @override
+  RawFamilyStreamClassProvider getProviderOverride(
+    covariant RawFamilyStreamClassProvider provider,
+  ) {
+    return call(
+      provider.id,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'rawFamilyStreamClassProvider';
+}
+
+/// See also [RawFamilyStreamClass].
+class RawFamilyStreamClassProvider extends AutoDisposeNotifierProviderImpl<
+    RawFamilyStreamClass, Stream<String>> {
+  /// See also [RawFamilyStreamClass].
+  RawFamilyStreamClassProvider(
+    this.id,
+  ) : super.internal(
+          () => RawFamilyStreamClass()..id = id,
+          from: rawFamilyStreamClassProvider,
+          name: r'rawFamilyStreamClassProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$rawFamilyStreamClassHash,
+          dependencies: RawFamilyStreamClassFamily._dependencies,
+          allTransitiveDependencies:
+              RawFamilyStreamClassFamily._allTransitiveDependencies,
+        );
+
+  final int id;
+
+  @override
+  bool operator ==(Object other) {
+    return other is RawFamilyStreamClassProvider && other.id == id;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, id.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+
+  @override
+  Stream<String> runNotifierBuild(
+    covariant RawFamilyStreamClass notifier,
+  ) {
+    return notifier.build(
+      id,
+    );
+  }
+}
+
 String _$publicClassHash() => r'f04884c039e6200ad3537feeecfc6e83828b5eb5';
 
 /// This is some documentation
