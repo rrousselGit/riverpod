@@ -1,6 +1,16 @@
-## Unreleased patch
+## Unreleased minor
 
-- Improve documentation of `avoid_public_notifier_properties`
+- Added support for `Raw` typedef in the return value of providers.
+  This can be used to silence `unsupported_provider_value` when a provider knowingly
+  returns an unsupported object.
+
+  ```dart
+  // Will not trigger unsupported_provider_value
+  @riverpod
+  Raw<MyChangeNotifier> myProvider(...) => MyChangeNotifier();
+  ```
+
+- Improved documentation of `avoid_public_notifier_properties`
 
 ## 1.2.0 - 2023-04-08
 
@@ -11,7 +21,7 @@
 
 ## 1.1.8 - 2023-04-07
 
-- Disable unsupported_provider_value when a notifier returns "this"
+- Disable `unsupported_provider_value` when a notifier returns "this"
 - Fix scoped_providers_should_specify_dependencies incorrectly triggering on functions other than "main"
 - Handle cascade operators in ref expressions
 - Fix `provider_dependencies` not considering dependencies inside methods

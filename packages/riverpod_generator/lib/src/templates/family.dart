@@ -44,18 +44,19 @@ class FamilyTemplate extends Template {
     required BuildYamlOptions options,
   }) {
     var leading = '';
-    String providerType;
     if (!provider.annotation.element.keepAlive) {
       leading = 'AutoDispose';
     }
 
+    var providerType = '${leading}Provider';
+
     final returnType = provider.createdType;
-    if (returnType.isDartAsyncFutureOr || returnType.isDartAsyncFuture) {
-      providerType = '${leading}FutureProvider';
-    } else if (returnType.isDartAsyncStream) {
-      providerType = '${leading}StreamProvider';
-    } else {
-      providerType = '${leading}Provider';
+    if (!returnType.isRaw) {
+      if (returnType.isDartAsyncFutureOr || returnType.isDartAsyncFuture) {
+        providerType = '${leading}FutureProvider';
+      } else if (returnType.isDartAsyncStream) {
+        providerType = '${leading}StreamProvider';
+      }
     }
 
     final parameters = provider
@@ -94,18 +95,18 @@ typedef $refName = ${providerType}Ref<${provider.valueType}>;
       leading = 'AutoDispose';
     }
 
-    String providerType;
-    String notifierBaseType;
+    var providerType = '${leading}NotifierProviderImpl';
+    var notifierBaseType = 'Buildless${leading}Notifier';
+
     final returnType = provider.createdType;
-    if (returnType.isDartAsyncFutureOr || returnType.isDartAsyncFuture) {
-      providerType = '${leading}AsyncNotifierProviderImpl';
-      notifierBaseType = 'Buildless${leading}AsyncNotifier';
-    } else if (returnType.isDartAsyncStream) {
-      providerType = '${leading}StreamNotifierProviderImpl';
-      notifierBaseType = 'Buildless${leading}StreamNotifier';
-    } else {
-      providerType = '${leading}NotifierProviderImpl';
-      notifierBaseType = 'Buildless${leading}Notifier';
+    if (!returnType.isRaw) {
+      if (returnType.isDartAsyncFutureOr || returnType.isDartAsyncFuture) {
+        providerType = '${leading}AsyncNotifierProviderImpl';
+        notifierBaseType = 'Buildless${leading}AsyncNotifier';
+      } else if (returnType.isDartAsyncStream) {
+        providerType = '${leading}StreamNotifierProviderImpl';
+        notifierBaseType = 'Buildless${leading}StreamNotifier';
+      }
     }
 
     final parameters = provider.buildMethod.parameters!.parameterElements

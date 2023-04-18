@@ -436,6 +436,12 @@ manually creating a `Notifier`/`AsyncNotifier`.
 
 This lint warns against unsupported value types.
 
+**Note**:
+
+In some cases, you may voluntarily want to return a `ChangeNotifier` & co, even though
+riverpod_generator will neither listen nor disposes of the value.  
+In that scenario, you may explicitly wrap the value in `Raw`:
+
 **Good**:
 
 ```dart
@@ -446,6 +452,17 @@ int integer(IntegerRef ref) => 0;
 class IntegerNotifier extends _$IntegerNotifier {
   @override
   int build() => 0;
+}
+
+// By using "Raw", we can explicitly return a ChangeNotifier in a provider
+// without triggering `unsupported_provider_value`.
+@riverpod
+Raw<GoRouter> myRouter(MyRouterRef ref) {
+  final router = GoRouter(...);
+  // Riverpod won't dispose the ChangeNotifier for you in this case. Don't forget
+  // to do it on your own!
+  ref.onDispose(router.dispose);
+  return router;
 }
 ```
 

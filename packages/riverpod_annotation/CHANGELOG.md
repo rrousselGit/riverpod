@@ -1,3 +1,15 @@
+## Unreleased minor
+
+- Added support for `Raw` typedef in the return value of providers.
+  This can be used to disable the conversion of Futures/Streams into AsyncValues
+  ```dart
+  @riverpod
+  Raw<Future<int>> myProvider(...) async => ...;
+  ...
+  // returns a Future<int> instead of AsyncValue<int>
+  Future<int> value = ref.watch(myProvider);
+  ```
+
 ## 2.0.4 - 2023-04-07
 
 - `riverpod` upgraded to `2.3.4`
