@@ -1,4 +1,4 @@
-## Unreleased minor
+## 2.2.0 - 2023-04-18
 
 - Added support for `Raw` typedef in the return value of providers.
   This can be used to disable the conversion of Futures/Streams into AsyncValues

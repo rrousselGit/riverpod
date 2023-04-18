@@ -1,4 +1,4 @@
-## Unreleased minor
+## 1.3.0 - 2023-04-18
 
 - Added support for `Raw` typedef in the return value of providers.
   This can be used to silence `unsupported_provider_value` when a provider knowingly

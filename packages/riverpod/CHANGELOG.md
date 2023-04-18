@@ -1,4 +1,4 @@
-## Unreleased fix
+## 2.3.5 - 2023-04-18
 
 - fix `AsyncValue.isReloading` docs
 
