@@ -51,6 +51,7 @@ class FamilyStreamNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>,
           from: null,
           argument: null,
           debugGetCreateSourceHash: null,
+          debugFamilyCallRuntimeType: null,
         );
 
   /// An implementation detail of Riverpod
@@ -61,6 +62,7 @@ class FamilyStreamNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>,
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
+    required super.debugFamilyCallRuntimeType,
     super.from,
     super.argument,
   });
@@ -114,6 +116,7 @@ class StreamNotifierProviderFamily<
         create,
         from: from,
         argument: arg,
+        debugFamilyCallRuntimeType: from?.debugFamilyCallRuntimeType,
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,

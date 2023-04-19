@@ -44,6 +44,7 @@ abstract class StreamNotifierProviderBase<
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
+    required super.debugFamilyCallRuntimeType,
   });
 
   /// Obtains the [StreamNotifier] associated with this provider, without listening

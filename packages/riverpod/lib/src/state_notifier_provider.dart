@@ -28,6 +28,7 @@ abstract class _StateNotifierProviderBase<NotifierT extends StateNotifier<T>, T>
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
+    required super.debugFamilyCallRuntimeType,
   });
 
   /// Obtains the [StateNotifier] associated with this provider, without listening

@@ -218,6 +218,10 @@ class $familyName extends Family<${provider.exposedType}> {
 
   @override
   String? get name => r'$providerName';
+
+  @override
+  Type get debugFamilyCallRuntimeType => call.runtimeType;
+
 }
 
 $docs
@@ -230,6 +234,7 @@ class $providerTypeNameImpl extends $providerType$providerGenerics {
           debugGetCreateSourceHash: $hashFn,
           dependencies: $familyName._dependencies,
           allTransitiveDependencies: $familyName._allTransitiveDependencies,
+          debugFamilyCallRuntimeType: $providerName.debugFamilyCallRuntimeType,
         );
 
 ${parameters.map((e) => 'final ${e.type.getDisplayString(withNullability: true)} ${e.name};').join()}

@@ -168,6 +168,7 @@ abstract class AsyncNotifierProviderBase<NotifierT extends AsyncNotifierBase<T>,
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
+    required super.debugFamilyCallRuntimeType,
   });
 
   /// Obtains the [AsyncNotifier] associated with this provider, without listening

@@ -101,6 +101,7 @@ abstract class _FutureProviderBase<T> extends ProviderBase<AsyncValue<T>> {
     required super.from,
     required super.argument,
     required super.debugGetCreateSourceHash,
+    required super.debugFamilyCallRuntimeType,
   });
 
   /// Obtains the [Future] associated with a [FutureProvider].

@@ -15,6 +15,7 @@ final scopedProvider = AutoDisposeProvider<int>.internal(
   name: r'scopedProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$scopedHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: const <ProviderOrFamily>[],
   allTransitiveDependencies: const <ProviderOrFamily>[],
 );
@@ -34,6 +35,7 @@ final unimplementedScopedProvider = AutoDisposeProvider<int>.internal(
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$unimplementedScopedHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -48,6 +50,7 @@ final rootProvider = AutoDisposeProvider<int>.internal(
   name: r'rootProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$rootHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );

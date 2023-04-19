@@ -89,6 +89,7 @@ final $providerName = $providerType<${provider.name}, ${provider.valueType}>.int
   ${provider.providerElement.name}.new,
   name: r'$providerName',
   debugGetCreateSourceHash: $hashFn,
+  debugFamilyCallRuntimeType: null,
   dependencies: ${serializeDependencies(provider.providerElement.annotation.dependencies, options)},
   allTransitiveDependencies: ${serializeDependencies(provider.providerElement.annotation.allTransitiveDependencies, options)},
 );

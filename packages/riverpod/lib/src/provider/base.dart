@@ -29,6 +29,7 @@ class Provider<State> extends InternalProvider<State>
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          debugFamilyCallRuntimeType: null,
         );
 
   /// An implementation detail of Riverpod
@@ -39,6 +40,7 @@ class Provider<State> extends InternalProvider<State>
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
+    required super.debugFamilyCallRuntimeType,
     super.from,
     super.argument,
   });
@@ -103,6 +105,7 @@ class Provider<State> extends InternalProvider<State>
         allTransitiveDependencies: null,
         dependencies: null,
         debugGetCreateSourceHash: null,
+        debugFamilyCallRuntimeType: null,
         name: null,
       ),
     );
@@ -378,6 +381,7 @@ class ProviderFamily<R, Arg>
         (ref) => create(ref, arg),
         from: from,
         argument: arg,
+        debugFamilyCallRuntimeType: from?.debugFamilyCallRuntimeType,
         name: name,
         dependencies: null,
         allTransitiveDependencies: null,

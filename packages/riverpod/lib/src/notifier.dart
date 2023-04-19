@@ -108,6 +108,7 @@ abstract class NotifierProviderBase<NotifierT extends NotifierBase<T>, T>
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
+    required super.debugFamilyCallRuntimeType,
   });
 
   /// Obtains the [Notifier] associated with this provider, without listening

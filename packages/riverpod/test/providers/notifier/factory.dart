@@ -68,6 +68,7 @@ List<NotifierFactory> matrix({
             dependencies: null,
             allTransitiveDependencies: null,
             debugGetCreateSourceHash: null,
+            debugFamilyCallRuntimeType: null,
           );
         },
         notifier: TestNotifierFamily.new,
@@ -80,6 +81,7 @@ List<NotifierFactory> matrix({
             dependencies: null,
             allTransitiveDependencies: null,
             debugGetCreateSourceHash: null,
+            debugFamilyCallRuntimeType: null,
           );
         },
         simpleTestProvider: <T>(init, {updateShouldNotify}) {
@@ -94,6 +96,7 @@ List<NotifierFactory> matrix({
             dependencies: null,
             allTransitiveDependencies: null,
             debugGetCreateSourceHash: null,
+            debugFamilyCallRuntimeType: null,
           );
         },
       ),
@@ -136,6 +139,7 @@ List<NotifierFactory> matrix({
             dependencies: null,
             allTransitiveDependencies: null,
             debugGetCreateSourceHash: null,
+            debugFamilyCallRuntimeType: null,
           );
         },
         notifier: AutoDisposeTestNotifierFamily.new,
@@ -148,6 +152,7 @@ List<NotifierFactory> matrix({
             dependencies: null,
             allTransitiveDependencies: null,
             debugGetCreateSourceHash: null,
+            debugFamilyCallRuntimeType: null,
           );
         },
         simpleTestProvider: <T>(init, {updateShouldNotify}) {
@@ -162,6 +167,7 @@ List<NotifierFactory> matrix({
             dependencies: null,
             allTransitiveDependencies: null,
             debugGetCreateSourceHash: null,
+            debugFamilyCallRuntimeType: null,
           );
         },
       ),

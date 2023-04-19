@@ -88,6 +88,7 @@ class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          debugFamilyCallRuntimeType: null,
         );
 
   /// An implementation detail of Riverpod
@@ -98,6 +99,7 @@ class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
+    required super.debugFamilyCallRuntimeType,
     super.from,
     super.argument,
   });
@@ -167,6 +169,7 @@ class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
         create,
         from: from,
         argument: argument,
+        debugFamilyCallRuntimeType: from?.debugFamilyCallRuntimeType,
         name: null,
         dependencies: null,
         allTransitiveDependencies: null,
@@ -270,6 +273,7 @@ class ChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?, Arg>
         (ref) => create(ref, arg),
         from: from,
         argument: arg,
+        debugFamilyCallRuntimeType: from?.debugFamilyCallRuntimeType,
         name: null,
         dependencies: null,
         allTransitiveDependencies: null,

@@ -87,6 +87,7 @@ class StateNotifierProvider<NotifierT extends StateNotifier<T>, T>
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          debugFamilyCallRuntimeType: null,
         );
 
   /// An implementation detail of Riverpod
@@ -97,6 +98,7 @@ class StateNotifierProvider<NotifierT extends StateNotifier<T>, T>
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
+    required super.debugFamilyCallRuntimeType,
     super.from,
     super.argument,
   });
@@ -133,6 +135,7 @@ class StateNotifierProvider<NotifierT extends StateNotifier<T>, T>
         create,
         from: from,
         argument: argument,
+        debugFamilyCallRuntimeType: from?.debugFamilyCallRuntimeType,
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
@@ -233,6 +236,7 @@ class StateNotifierProviderFamily<NotifierT extends StateNotifier<T>, T, Arg>
         (ref) => create(ref, arg),
         from: from,
         argument: arg,
+        debugFamilyCallRuntimeType: from?.debugFamilyCallRuntimeType,
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,

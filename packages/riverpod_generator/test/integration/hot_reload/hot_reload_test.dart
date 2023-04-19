@@ -100,6 +100,7 @@ void main() {
           .transform(const LineSplitter())
           .map((e) => e.startsWith('flutter: ') ? e.substring(9) : e)
           .listen((line) {
+        print('Output $line');
         if (line.contains(renderStart)) {
           _pendingRenderBuffer = StringBuffer();
         } else if (line.contains(renderEnd)) {
@@ -116,7 +117,10 @@ void main() {
       });
       _onClose.add(outSub.cancel);
 
-      void onError(Object event) => _renderController.addError(event);
+      void onError(Object event) {
+        print('Err $event');
+        _renderController.addError(event);
+      }
 
       final errSub = process.stderr.transform(utf8.decoder).listen(onError);
       _onClose.add(errSub.cancel);
@@ -146,10 +150,12 @@ void main() {
       familyParamDir.file('step1.dart'),
     );
 
+    print('Wait for id: 0');
     expect(await runner.currentRender.next, 'id: 0');
 
     runner.update(familyParamDir.file('step2.dart'));
 
+    print('Wait for id2: 0');
     expect(await runner.currentRender.next, 'id2: 0');
   });
 

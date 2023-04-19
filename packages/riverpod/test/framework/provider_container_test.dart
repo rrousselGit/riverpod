@@ -164,6 +164,7 @@ void main() {
           name: null,
           dependencies: null,
           allTransitiveDependencies: null,
+          debugFamilyCallRuntimeType: null,
           debugGetCreateSourceHash: () => 'hash',
           (ref) {
             constantHashBuild();
@@ -176,6 +177,7 @@ void main() {
           name: null,
           dependencies: null,
           allTransitiveDependencies: null,
+          debugFamilyCallRuntimeType: null,
           debugGetCreateSourceHash: () => hashResult,
           (ref) {
             changingHashBuild();

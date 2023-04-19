@@ -44,6 +44,7 @@ abstract class _StreamProviderBase<T> extends ProviderBase<AsyncValue<T>> {
     required super.from,
     required super.argument,
     required super.debugGetCreateSourceHash,
+    required super.debugFamilyCallRuntimeType,
   });
 
   ProviderListenable<Future<T>> get future;

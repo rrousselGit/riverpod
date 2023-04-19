@@ -47,6 +47,7 @@ class AutoDisposeFamilyAsyncNotifierProviderImpl<
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          debugFamilyCallRuntimeType: null,
         );
 
   /// An implementation detail of Riverpod
@@ -57,6 +58,7 @@ class AutoDisposeFamilyAsyncNotifierProviderImpl<
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
+    required super.debugFamilyCallRuntimeType,
     super.from,
     super.argument,
   });
@@ -112,6 +114,7 @@ class AutoDisposeAsyncNotifierProviderFamily<
         create,
         from: from,
         argument: arg,
+        debugFamilyCallRuntimeType: from?.debugFamilyCallRuntimeType,
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,

@@ -9,6 +9,7 @@ typedef ProviderCreate<ProviderT, Created, RefT extends Ref> = ProviderT
   required Iterable<ProviderOrFamily>? dependencies,
   required Set<ProviderOrFamily>? allTransitiveDependencies,
   required DebugGetCreateSourceHash? debugGetCreateSourceHash,
+  required Type? debugFamilyCallRuntimeType,
   Family<Object?> from,
   Object? argument,
 });
@@ -22,6 +23,7 @@ typedef ProviderNotifierCreate<ProviderT, Created, RefT extends Ref> = ProviderT
   required Iterable<ProviderOrFamily>? dependencies,
   required Set<ProviderOrFamily>? allTransitiveDependencies,
   required DebugGetCreateSourceHash? debugGetCreateSourceHash,
+  required Type? debugFamilyCallRuntimeType,
   Family<Object?> from,
   Object? argument,
 });
@@ -47,6 +49,9 @@ abstract class Family<
   @override
   // ignore: deprecated_member_use_from_same_package
   Family<State> get overriddenFamily => this;
+
+  @internal
+  Type? get debugFamilyCallRuntimeType;
 }
 
 mixin _FamilyMixin<State, Arg, FamilyProvider extends ProviderBase<State>>
@@ -71,6 +76,9 @@ mixin _FamilyMixin<State, Arg, FamilyProvider extends ProviderBase<State>>
   ProviderBase<State> getProviderOverride(ProviderBase<State> provider) {
     return call(provider.argument as Arg);
   }
+
+  @override
+  Type get debugFamilyCallRuntimeType => call.runtimeType;
 }
 
 /// Setup how a family is overridden
@@ -151,6 +159,7 @@ class FamilyBase<RefT extends Ref<R>, R, Arg, Created,
         dependencies: dependencies,
         allTransitiveDependencies: allTransitiveDependencies,
         debugGetCreateSourceHash: debugGetCreateSourceHash,
+        debugFamilyCallRuntimeType: debugFamilyCallRuntimeType,
       );
 
   @override
@@ -200,6 +209,7 @@ class AutoDisposeFamilyBase<RefT extends Ref<R>, R, Arg, Created,
         dependencies: dependencies,
         allTransitiveDependencies: allTransitiveDependencies,
         debugGetCreateSourceHash: debugGetCreateSourceHash,
+        debugFamilyCallRuntimeType: debugFamilyCallRuntimeType,
       );
 
   @override
@@ -249,6 +259,7 @@ class AutoDisposeNotifierFamilyBase<RefT extends Ref<R>, R, Arg, NotifierT,
         dependencies: dependencies,
         allTransitiveDependencies: allTransitiveDependencies,
         debugGetCreateSourceHash: debugGetCreateSourceHash,
+        debugFamilyCallRuntimeType: from?.debugFamilyCallRuntimeType,
       );
 
   @override
@@ -298,6 +309,7 @@ class NotifierFamilyBase<RefT extends Ref<R>, R, Arg, NotifierT,
         dependencies: dependencies,
         allTransitiveDependencies: allTransitiveDependencies,
         debugGetCreateSourceHash: debugGetCreateSourceHash,
+        debugFamilyCallRuntimeType: from?.debugFamilyCallRuntimeType,
       );
 
   @override

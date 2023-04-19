@@ -36,6 +36,7 @@ class FutureProvider<T> extends _FutureProviderBase<T>
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          debugFamilyCallRuntimeType: null,
         );
 
   /// An implementation detail of Riverpod
@@ -46,6 +47,7 @@ class FutureProvider<T> extends _FutureProviderBase<T>
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
+    required super.debugFamilyCallRuntimeType,
     super.from,
     super.argument,
   });
@@ -74,6 +76,7 @@ class FutureProvider<T> extends _FutureProviderBase<T>
       override: FutureProvider.internal(
         create,
         from: from,
+        debugFamilyCallRuntimeType: from?.debugFamilyCallRuntimeType,
         argument: argument,
         debugGetCreateSourceHash: null,
         dependencies: null,
@@ -142,6 +145,7 @@ class FutureProviderFamily<R, Arg> extends FamilyBase<FutureProviderRef<R>,
         (ref) => create(ref, arg),
         from: from,
         argument: arg,
+        debugFamilyCallRuntimeType: from?.debugFamilyCallRuntimeType,
         debugGetCreateSourceHash: null,
         dependencies: null,
         allTransitiveDependencies: null,

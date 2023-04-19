@@ -83,6 +83,7 @@ class StreamProvider<T> extends _StreamProviderBase<T>
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          debugFamilyCallRuntimeType: null,
         );
 
   /// An implementation detail of Riverpod
@@ -93,6 +94,7 @@ class StreamProvider<T> extends _StreamProviderBase<T>
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
+    required super.debugFamilyCallRuntimeType,
     super.from,
     super.argument,
   });
@@ -129,6 +131,7 @@ class StreamProvider<T> extends _StreamProviderBase<T>
         create,
         from: from,
         argument: argument,
+        debugFamilyCallRuntimeType: from?.debugFamilyCallRuntimeType,
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
@@ -227,6 +230,7 @@ class StreamProviderFamily<R, Arg> extends FamilyBase<StreamProviderRef<R>,
         (ref) => create(ref, arg),
         from: from,
         argument: arg,
+        debugFamilyCallRuntimeType: from?.debugFamilyCallRuntimeType,
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,

@@ -68,6 +68,7 @@ List<StreamNotifierFactory> matrix({
             dependencies: null,
             allTransitiveDependencies: null,
             debugGetCreateSourceHash: null,
+            debugFamilyCallRuntimeType: null,
           );
         },
         notifier: StreamTestNotifierFamily.new,
@@ -80,6 +81,7 @@ List<StreamNotifierFactory> matrix({
             dependencies: null,
             allTransitiveDependencies: null,
             debugGetCreateSourceHash: null,
+            debugFamilyCallRuntimeType: null,
           );
         },
         simpleTestProvider: <T>(init, {updateShouldNotify}) {
@@ -94,6 +96,7 @@ List<StreamNotifierFactory> matrix({
             dependencies: null,
             allTransitiveDependencies: null,
             debugGetCreateSourceHash: null,
+            debugFamilyCallRuntimeType: null,
           );
         },
       ),
@@ -138,6 +141,7 @@ List<StreamNotifierFactory> matrix({
             dependencies: null,
             allTransitiveDependencies: null,
             debugGetCreateSourceHash: null,
+            debugFamilyCallRuntimeType: null,
           );
         },
         notifier: AutoDisposeStreamTestNotifierFamily.new,
@@ -150,6 +154,7 @@ List<StreamNotifierFactory> matrix({
             dependencies: null,
             allTransitiveDependencies: null,
             debugGetCreateSourceHash: null,
+            debugFamilyCallRuntimeType: null,
           );
         },
         simpleTestProvider: <T>(init, {updateShouldNotify}) {
@@ -164,6 +169,7 @@ List<StreamNotifierFactory> matrix({
             dependencies: null,
             allTransitiveDependencies: null,
             debugGetCreateSourceHash: null,
+            debugFamilyCallRuntimeType: null,
           );
         },
       ),

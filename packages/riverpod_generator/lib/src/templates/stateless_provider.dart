@@ -62,6 +62,7 @@ final $providerName = $providerType<${provider.valueType}>.internal(
   $createFn,
   name: r'$providerName',
   debugGetCreateSourceHash: $hashFn,
+  debugFamilyCallRuntimeType: null,
   dependencies: ${serializeDependencies(provider.providerElement.annotation.dependencies, options)},
   allTransitiveDependencies: ${serializeDependencies(provider.providerElement.annotation.allTransitiveDependencies, options)},
 );

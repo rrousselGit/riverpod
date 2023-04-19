@@ -24,6 +24,7 @@ abstract class InternalProvider<State> extends ProviderBase<State>
     required super.debugGetCreateSourceHash,
     required super.dependencies,
     required super.allTransitiveDependencies,
+    required super.debugFamilyCallRuntimeType,
   });
 
   State _create(covariant ProviderElement<State> ref);

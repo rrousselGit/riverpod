@@ -42,6 +42,7 @@ class AutoDisposeFamilyStreamNotifierProviderImpl<
           from: null,
           argument: null,
           debugGetCreateSourceHash: null,
+          debugFamilyCallRuntimeType: null,
         );
 
   /// An implementation detail of Riverpod
@@ -52,6 +53,7 @@ class AutoDisposeFamilyStreamNotifierProviderImpl<
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
+    required super.debugFamilyCallRuntimeType,
     super.from,
     super.argument,
   });
@@ -107,6 +109,7 @@ class AutoDisposeStreamNotifierProviderFamily<
         create,
         from: from,
         argument: arg,
+        debugFamilyCallRuntimeType: from?.debugFamilyCallRuntimeType,
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,

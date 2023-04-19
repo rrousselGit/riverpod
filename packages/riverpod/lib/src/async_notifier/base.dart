@@ -102,6 +102,7 @@ class AsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          debugFamilyCallRuntimeType: null,
         );
 
   /// An implementation detail of Riverpod
@@ -112,6 +113,7 @@ class AsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
+    required super.debugFamilyCallRuntimeType,
     super.from,
     super.argument,
   });
@@ -147,6 +149,7 @@ class AsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
         create,
         from: from,
         argument: argument,
+        debugFamilyCallRuntimeType: from?.debugFamilyCallRuntimeType,
         name: null,
         dependencies: null,
         allTransitiveDependencies: null,
@@ -361,8 +364,7 @@ mixin FutureHandlerProviderElementMixin<T>
       required void Function(Object, StackTrace) error,
       required void Function() done,
       required void Function(Future<T>, CancelAsyncSubscription) last,
-    })
-        listen, {
+    }) listen, {
     required bool didChangeDependency,
   }) {
     _onLoading(AsyncLoading<T>(), seamless: !didChangeDependency);

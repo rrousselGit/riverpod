@@ -125,6 +125,7 @@ class NotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          debugFamilyCallRuntimeType: null,
         );
 
   /// An implementation detail of Riverpod
@@ -135,6 +136,7 @@ class NotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
+    required super.debugFamilyCallRuntimeType,
     super.from,
     super.argument,
   });
@@ -167,6 +169,7 @@ class NotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
         create,
         from: from,
         argument: argument,
+        debugFamilyCallRuntimeType: from?.debugFamilyCallRuntimeType,
         name: null,
         dependencies: null,
         allTransitiveDependencies: null,

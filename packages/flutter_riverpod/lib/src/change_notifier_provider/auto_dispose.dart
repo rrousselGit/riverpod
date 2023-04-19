@@ -23,6 +23,7 @@ class AutoDisposeChangeNotifierProvider<NotifierT extends ChangeNotifier?>
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          debugFamilyCallRuntimeType: null,
         );
 
   /// An implementation detail of Riverpod
@@ -33,6 +34,7 @@ class AutoDisposeChangeNotifierProvider<NotifierT extends ChangeNotifier?>
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
+    required super.debugFamilyCallRuntimeType,
     super.from,
     super.argument,
   });
@@ -66,6 +68,7 @@ class AutoDisposeChangeNotifierProvider<NotifierT extends ChangeNotifier?>
         create,
         from: from,
         argument: argument,
+        debugFamilyCallRuntimeType: from?.debugFamilyCallRuntimeType,
         name: null,
         dependencies: null,
         allTransitiveDependencies: null,
@@ -114,8 +117,7 @@ class AutoDisposeChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?,
     NotifierT Function(
       AutoDisposeChangeNotifierProviderRef<NotifierT> ref,
       Arg arg,
-    )
-        create,
+    ) create,
   ) {
     return FamilyOverrideImpl<NotifierT, Arg,
         AutoDisposeChangeNotifierProvider<NotifierT>>(
@@ -124,6 +126,7 @@ class AutoDisposeChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?,
         (ref) => create(ref, arg),
         from: from,
         argument: arg,
+        debugFamilyCallRuntimeType: from?.debugFamilyCallRuntimeType,
         name: null,
         dependencies: null,
         allTransitiveDependencies: null,

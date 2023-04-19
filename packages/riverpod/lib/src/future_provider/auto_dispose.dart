@@ -20,6 +20,7 @@ class AutoDisposeFutureProvider<T> extends _FutureProviderBase<T>
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          debugFamilyCallRuntimeType: null,
         );
 
   /// An implementation detail of Riverpod
@@ -30,6 +31,7 @@ class AutoDisposeFutureProvider<T> extends _FutureProviderBase<T>
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
+    required super.debugFamilyCallRuntimeType,
     super.from,
     super.argument,
   });
@@ -61,6 +63,7 @@ class AutoDisposeFutureProvider<T> extends _FutureProviderBase<T>
         create,
         from: from,
         argument: argument,
+        debugFamilyCallRuntimeType: from?.debugFamilyCallRuntimeType,
         debugGetCreateSourceHash: null,
         dependencies: null,
         allTransitiveDependencies: null,
@@ -119,6 +122,7 @@ class AutoDisposeFutureProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
         (ref) => create(ref, arg),
         from: from,
         argument: arg,
+        debugFamilyCallRuntimeType: from?.debugFamilyCallRuntimeType,
         debugGetCreateSourceHash: null,
         dependencies: null,
         allTransitiveDependencies: null,

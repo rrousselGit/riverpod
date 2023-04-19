@@ -40,6 +40,7 @@ abstract class _ChangeNotifierProviderBase<NotifierT extends ChangeNotifier?>
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
+    required super.debugFamilyCallRuntimeType,
   });
 
   /// Obtains the [ChangeNotifier] associated with this provider, without listening

@@ -16,6 +16,7 @@ class ValueProvider<State> extends ProviderBase<State>
           debugGetCreateSourceHash: null,
           allTransitiveDependencies: null,
           dependencies: null,
+          debugFamilyCallRuntimeType: null,
         );
 
   final State _value;

@@ -20,6 +20,7 @@ class AutoDisposeStateNotifierProvider<NotifierT extends StateNotifier<T>, T>
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          debugFamilyCallRuntimeType: null,
         );
 
   /// An implementation detail of Riverpod
@@ -30,6 +31,7 @@ class AutoDisposeStateNotifierProvider<NotifierT extends StateNotifier<T>, T>
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
+    required super.debugFamilyCallRuntimeType,
     super.from,
     super.argument,
   });
@@ -64,6 +66,7 @@ class AutoDisposeStateNotifierProvider<NotifierT extends StateNotifier<T>, T>
         create,
         from: from,
         argument: argument,
+        debugFamilyCallRuntimeType: from?.debugFamilyCallRuntimeType,
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
@@ -111,8 +114,7 @@ class AutoDisposeStateNotifierProviderFamily<NotifierT extends StateNotifier<T>,
     NotifierT Function(
       AutoDisposeStateNotifierProviderRef<NotifierT, T> ref,
       Arg arg,
-    )
-        create,
+    ) create,
   ) {
     return FamilyOverrideImpl<T, Arg,
         AutoDisposeStateNotifierProvider<NotifierT, T>>(
@@ -121,6 +123,7 @@ class AutoDisposeStateNotifierProviderFamily<NotifierT extends StateNotifier<T>,
         (ref) => create(ref, arg),
         from: from,
         argument: arg,
+        debugFamilyCallRuntimeType: from?.debugFamilyCallRuntimeType,
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,

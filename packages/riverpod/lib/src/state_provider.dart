@@ -36,6 +36,7 @@ abstract class _StateProviderBase<T> extends ProviderBase<T> {
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
+    required super.debugFamilyCallRuntimeType,
   });
 
   ProviderListenable<StateController<T>> get notifier;

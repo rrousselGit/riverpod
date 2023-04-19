@@ -36,6 +36,7 @@ abstract class ProviderBase<State> extends ProviderOrFamily
     required this.debugGetCreateSourceHash,
     required super.dependencies,
     required super.allTransitiveDependencies,
+    required this.debugFamilyCallRuntimeType,
   });
 
   @override
@@ -55,6 +56,14 @@ abstract class ProviderBase<State> extends ProviderOrFamily
   /// {@endtemplate}
   @internal
   final DebugGetCreateSourceHash? debugGetCreateSourceHash;
+
+  /// The runtimeType of the family's call function.
+  ///
+  /// This is an implementation detail of the hot-reload mechanism
+  /// and should not be used.
+  /// It is used to detect if parameters were added/remove from the family.
+  @internal
+  final Type? debugFamilyCallRuntimeType;
 
   /// If this provider was created with the `.family` modifier, [from] is the `.family` instance.
   @override
