@@ -29,6 +29,8 @@ class HotReloadRunner {
       'dart',
       [
         '--enable-vm-service',
+        // Enable asserts to make sure reassemble goes through
+        '--enable-asserts',
         // Flag the code as running in debug mode according to Flutter's convention
         // TODO: refactor to use a constant "isAssertEnabled" if that is added:
         // https://github.com/dart-lang/language/issues/2876
@@ -56,8 +58,8 @@ class HotReloadRunner {
     writeFile(
       _workspace.file('main.dart'),
       '''
-import 'renderer.dart';
 import 'entrypoint.dart';
+import 'renderer.dart';
 
 void main() {
   entrypoint(renderer);
@@ -143,20 +145,49 @@ void main() {
 }
 
 void main() {
-  test(
-      timeout: const Timeout.factor(2),
-      'Supports adding/removing family parameters', () async {
-    final familyParamDir = srcDir.dir('family_param');
-
-    final runner = await HotReloadRunner.start(
-      familyParamDir.file('step1.dart'),
+  group('Supports family hot-reload', () {
+    test(
+      'by recursively deleting _stateReaders of affected providers',
+      () async {},
     );
 
-    expect(await runner.currentRender.next, 'id: 0');
+    test(
+      'gracefully handles not disposing providers twice when debugReassemble'
+      ' is called multiple times on the same contaiener',
+      () async {},
+    );
 
-    runner.update(familyParamDir.file('step2.dart'));
+    test(
+      'handles changing default values',
+      () async {},
+    );
 
-    expect(await runner.currentRender.next, 'id2: 0');
+    test(
+      'disposes of providers in the correct order',
+      () async {},
+    );
+
+    test(timeout: const Timeout.factor(2), 'when adding/removing parameters',
+        () async {
+      final familyParamDir = srcDir.dir('family_param');
+
+      final runner = await HotReloadRunner.start(
+        familyParamDir.file('step1.dart'),
+      );
+
+      expect(await runner.currentRender.next, 'id: 0');
+
+      runner.update(familyParamDir.file('step2.dart'));
+
+      expect(
+        await runner.currentRender.next,
+        '''
+Provider count before reassemble: 1
+disposing step1 0
+Provider count after reassemble: 0
+id2: 0''',
+      );
+    });
   });
 
   test(
@@ -175,5 +206,7 @@ void main() {
 
   test('Supports enabling/disabling autoDispose', () {});
 
-  test('Supports changing the runtimeType', () {});
+  test('Supports changing the runtimeType of a provider', () {});
+
+  test('Supports adding/removing overrides', () {});
 }

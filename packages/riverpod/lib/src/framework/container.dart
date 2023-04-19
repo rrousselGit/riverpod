@@ -241,13 +241,50 @@ class ProviderContainer implements Node {
 // TODO hot-reload handle provider type change
 // TODO hot-reload handle provider response type change
 // TODO hot-reload handle provider -> family
-// TODO hot-reload handle family adding parameters
 // TODO found "Future already completed error" after adding family parameter
 
     assert(
       () {
-        for (final element in getAllProviderElements()) {
+        // TODO test that we are using getAllProviderElementsInOrder
+        for (final element in getAllProviderElementsInOrder()) {
+          if (element.origin.didFamilyPrototypeChange) {
+            // The prototype of a family changed. This could mean that
+            // new parameters were added/removed/modified.
+            // In that scenario, the old provider is no-longer usable.
+            // We'll destroy it.
+            // This is tested though e2e in riverpod_generator
+
+            element.dispose();
+            continue;
+          }
+
           element.debugReassemble();
+        }
+
+        // We update _stateReaders to remove all providers which have been
+        // been affected by hot-reload.
+        // We cannot rely on _stateReaders.remove(key) due to the ==/hashCode
+        // of the provider likely having changed and now possibly throwing.
+        // So to clean-up _stateReaders, we clear the map (which does not rely
+        // on existing keys hashCode/==) and re-add all the still valid readers.
+        final readersWithUnchangedFamily =
+            <ProviderBase<Object?>, _StateReader>{};
+        for (final reader in _stateReaders.values) {
+          if (reader.origin.didFamilyPrototypeChange) continue;
+          readersWithUnchangedFamily[reader.origin] = reader;
+        }
+
+        _stateReaders.clear();
+        _stateReaders.addAll(readersWithUnchangedFamily);
+
+        // Recursively call debugReassemble on all child containers to make
+        // sure that all providers are reassembled.
+        // It is fine if somehow [debugReassemble] is called twice on the same
+        // container, as it will be a no-op the second time.
+        // TODO write test for double reassemble
+        // TODO test recursive reassemble
+        for (final child in _children) {
+          child.debugReassemble();
         }
 
         return true;
@@ -331,12 +368,21 @@ class ProviderContainer implements Node {
         if (reader?.override == provider) {
           container._stateReaders.remove(element._origin);
         }
-        container._children.forEach(removeStateReaderFrom);
       }
 
-      removeStateReaderFrom(this);
+      // TODO can this be optimized to not visit the entire tree of ProviderContainer?
+      _visitContainers(removeStateReaderFrom);
     } else {
       reader._element = null;
+    }
+  }
+
+  void _visitContainers(
+    void Function(ProviderContainer container) callback,
+  ) {
+    callback(this);
+    for (final child in _children) {
+      child._visitContainers(callback);
     }
   }
 

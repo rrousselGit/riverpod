@@ -99,12 +99,6 @@ class FnProvider extends AutoDisposeProvider<String> {
   @override
   bool operator ==(Object other) {
     if (other is! FnProvider) return false;
-    // Check that the family function prototype hasn't changed
-    if (_riverpodIsDebugMode &&
-        other.debugFamilyCallRuntimeType != debugFamilyCallRuntimeType) {
-      return false;
-    }
-
     return other.id2 == id2;
   }
 
@@ -112,11 +106,6 @@ class FnProvider extends AutoDisposeProvider<String> {
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, id2.hashCode);
-
-    // == relies on debugFamilyCallRuntimeType in debug mode.
-    if (_riverpodIsDebugMode) {
-      hash = _SystemHash.combine(hash, debugFamilyCallRuntimeType.hashCode);
-    }
 
     return _SystemHash.finish(hash);
   }

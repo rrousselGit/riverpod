@@ -151,12 +151,6 @@ class FamilyProvider extends AutoDisposeFutureProvider<String> {
   @override
   bool operator ==(Object other) {
     if (other is! FamilyProvider) return false;
-    // Check that the family function prototype hasn't changed
-    if (_riverpodIsDebugMode &&
-        other.debugFamilyCallRuntimeType != debugFamilyCallRuntimeType) {
-      return false;
-    }
-
     return other.first == first &&
         other.second == second &&
         other.third == third &&
@@ -172,11 +166,6 @@ class FamilyProvider extends AutoDisposeFutureProvider<String> {
     hash = _SystemHash.combine(hash, third.hashCode);
     hash = _SystemHash.combine(hash, fourth.hashCode);
     hash = _SystemHash.combine(hash, fifth.hashCode);
-
-    // == relies on debugFamilyCallRuntimeType in debug mode.
-    if (_riverpodIsDebugMode) {
-      hash = _SystemHash.combine(hash, debugFamilyCallRuntimeType.hashCode);
-    }
 
     return _SystemHash.finish(hash);
   }
@@ -324,12 +313,6 @@ class FamilyClassProvider
   @override
   bool operator ==(Object other) {
     if (other is! FamilyClassProvider) return false;
-    // Check that the family function prototype hasn't changed
-    if (_riverpodIsDebugMode &&
-        other.debugFamilyCallRuntimeType != debugFamilyCallRuntimeType) {
-      return false;
-    }
-
     return other.first == first &&
         other.second == second &&
         other.third == third &&
@@ -345,11 +328,6 @@ class FamilyClassProvider
     hash = _SystemHash.combine(hash, third.hashCode);
     hash = _SystemHash.combine(hash, fourth.hashCode);
     hash = _SystemHash.combine(hash, fifth.hashCode);
-
-    // == relies on debugFamilyCallRuntimeType in debug mode.
-    if (_riverpodIsDebugMode) {
-      hash = _SystemHash.combine(hash, debugFamilyCallRuntimeType.hashCode);
-    }
 
     return _SystemHash.finish(hash);
   }

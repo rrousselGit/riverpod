@@ -4,15 +4,13 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:hotreloader/hotreloader.dart';
-import 'package:riverpod/riverpod.dart';
 
 const renderStart = '<<<<rendering>>>>';
 const renderEnd = '<<<<done rendering>>>>';
 
 Future<void> entrypoint(
-  void Function(ProviderContainer container) renderer,
+  void Function() renderer,
 ) async {
-  final container = ProviderContainer();
   void run(void Function() cb) {
     try {
       print(renderStart);
@@ -34,10 +32,10 @@ Future<void> entrypoint(
         run(() {
           switch (value.result) {
             case HotReloadResult.Succeeded:
-              renderer(container);
+              renderer();
               break;
             default:
-              print('Hey ${value.reloadReports.length}');
+              print('Error ${value.reloadReports.length}');
               for (final report in value.reloadReports.entries) {
                 print(report.value.json);
               }
@@ -50,5 +48,5 @@ Future<void> entrypoint(
     stderr.addError(err, stack);
   }
 
-  run(() => renderer(container));
+  run(() => renderer());
 }

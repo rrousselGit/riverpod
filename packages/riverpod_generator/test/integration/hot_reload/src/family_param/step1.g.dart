@@ -6,7 +6,7 @@ part of 'step1.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$fnHash() => r'eec1cc02fa4fe9b0aff9d4f9d0ca6c9f5a0e2487';
+String _$fnHash() => r'b9b4b59ff047bac0cb19b0c660831b392153f035';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -99,12 +99,6 @@ class FnProvider extends AutoDisposeProvider<String> {
   @override
   bool operator ==(Object other) {
     if (other is! FnProvider) return false;
-    // Check that the family function prototype hasn't changed
-    if (_riverpodIsDebugMode &&
-        other.debugFamilyCallRuntimeType != debugFamilyCallRuntimeType) {
-      return false;
-    }
-
     return other.id == id;
   }
 
@@ -112,11 +106,6 @@ class FnProvider extends AutoDisposeProvider<String> {
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, id.hashCode);
-
-    // == relies on debugFamilyCallRuntimeType in debug mode.
-    if (_riverpodIsDebugMode) {
-      hash = _SystemHash.combine(hash, debugFamilyCallRuntimeType.hashCode);
-    }
 
     return _SystemHash.finish(hash);
   }
