@@ -1,3 +1,8 @@
+## Unreleased fix
+
+- Improved error message for missing `dependencies` (thanks to @ValentinVignal)
+- Fixed various typos in the documentation (thanks to @ValentinVignal)
+
 ## 2.3.5 - 2023-04-18
 
 - fix `AsyncValue.isReloading` docs
