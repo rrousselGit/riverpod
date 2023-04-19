@@ -15,8 +15,7 @@ String _$statefulHash() => r'97a80741e820dc6e31ab7abf4b116c22dae0590b';
 final statefulProvider = AutoDisposeNotifierProvider<Stateful, int>.internal(
   Stateful.new,
   name: r'statefulProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$statefulHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$statefulHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -130,9 +129,7 @@ class StatefulFamilyProvider
           from: statefulFamilyProvider,
           name: r'statefulFamilyProvider',
           debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$statefulFamilyHash,
+              _riverpodIsDebugMode ? null : _$statefulFamilyHash,
           dependencies: StatefulFamilyFamily._dependencies,
           allTransitiveDependencies:
               StatefulFamilyFamily._allTransitiveDependencies,
@@ -145,7 +142,14 @@ class StatefulFamilyProvider
 
   @override
   bool operator ==(Object other) {
-    return other is StatefulFamilyProvider && other.a == a && other.b == b;
+    if (other is! StatefulFamilyProvider) return false;
+    // Check that the family function prototype hasn't changed
+    if (_riverpodIsDebugMode &&
+        other.debugFamilyCallRuntimeType != debugFamilyCallRuntimeType) {
+      return false;
+    }
+
+    return other.a == a && other.b == b;
   }
 
   @override
@@ -153,6 +157,11 @@ class StatefulFamilyProvider
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, a.hashCode);
     hash = _SystemHash.combine(hash, b.hashCode);
+
+    // == relies on debugFamilyCallRuntimeType in debug mode.
+    if (_riverpodIsDebugMode) {
+      hash = _SystemHash.combine(hash, debugFamilyCallRuntimeType.hashCode);
+    }
 
     return _SystemHash.finish(hash);
   }
@@ -167,4 +176,6 @@ class StatefulFamilyProvider
     );
   }
 }
+
+const _riverpodIsDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

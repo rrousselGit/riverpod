@@ -13,8 +13,7 @@ String _$integerHash() => r'a8ce0296e677f64c8b9d1893eed85598c096765e';
 final integerProvider = AutoDisposeProvider<int>.internal(
   integer,
   name: r'integerProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$integerHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$integerHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -28,9 +27,7 @@ String _$stateNotifierHash() => r'5d517187bf927e19246ffbcc279d59e15df8ef30';
 final stateNotifierProvider = AutoDisposeProvider<MyStateNotifier>.internal(
   stateNotifier,
   name: r'stateNotifierProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$stateNotifierHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$stateNotifierHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -46,9 +43,8 @@ final stateNotifierAsyncProvider =
     AutoDisposeFutureProvider<MyStateNotifier>.internal(
   stateNotifierAsync,
   name: r'stateNotifierAsyncProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$stateNotifierAsyncHash,
+  debugGetCreateSourceHash:
+      _riverpodIsDebugMode ? null : _$stateNotifierAsyncHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -62,9 +58,7 @@ String _$changeNotifierHash() => r'6325328c129773979364c3cfd628f8f696bbaf66';
 final changeNotifierProvider = AutoDisposeProvider<MyChangeNotifier>.internal(
   changeNotifier,
   name: r'changeNotifierProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$changeNotifierHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$changeNotifierHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -78,8 +72,7 @@ String _$notifierHash() => r'2f323c78400044790faaf61912fc98c6153942f6';
 final notifierProvider = AutoDisposeProvider<MyNotifier>.internal(
   notifier,
   name: r'notifierProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$notifierHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$notifierHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -95,9 +88,8 @@ final autoDisposeNotifierProvider =
     AutoDisposeProvider<MyAutoDisposeNotifier>.internal(
   autoDisposeNotifier,
   name: r'autoDisposeNotifierProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$autoDisposeNotifierHash,
+  debugGetCreateSourceHash:
+      _riverpodIsDebugMode ? null : _$autoDisposeNotifierHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -111,9 +103,7 @@ String _$asyncNotifierHash() => r'c90348efac71d241468236924f6c6bc80ae0d0e0';
 final asyncNotifierProvider = AutoDisposeProvider<MyAsyncNotifier>.internal(
   asyncNotifier,
   name: r'asyncNotifierProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$asyncNotifierHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$asyncNotifierHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -129,9 +119,8 @@ final stateNotifierClassProvider =
     AutoDisposeNotifierProvider<StateNotifierClass, MyStateNotifier>.internal(
   StateNotifierClass.new,
   name: r'stateNotifierClassProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$stateNotifierClassHash,
+  debugGetCreateSourceHash:
+      _riverpodIsDebugMode ? null : _$stateNotifierClassHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -146,8 +135,7 @@ final selfNotifierProvider =
     AutoDisposeAsyncNotifierProvider<SelfNotifier, SelfNotifier>.internal(
   SelfNotifier.new,
   name: r'selfNotifierProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$selfNotifierHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$selfNotifierHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -162,9 +150,8 @@ final syncSelfNotifierProvider =
     AutoDisposeNotifierProvider<SyncSelfNotifier, SyncSelfNotifier>.internal(
   SyncSelfNotifier.new,
   name: r'syncSelfNotifierProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$syncSelfNotifierHash,
+  debugGetCreateSourceHash:
+      _riverpodIsDebugMode ? null : _$syncSelfNotifierHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -180,9 +167,8 @@ final streamSelfNotifierProvider = AutoDisposeStreamNotifierProvider<
     StreamSelfNotifier, StreamSelfNotifier>.internal(
   StreamSelfNotifier.new,
   name: r'streamSelfNotifierProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$streamSelfNotifierHash,
+  debugGetCreateSourceHash:
+      _riverpodIsDebugMode ? null : _$streamSelfNotifierHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -198,9 +184,8 @@ final stateNotifierClassAsyncProvider = AutoDisposeAsyncNotifierProvider<
     StateNotifierClassAsync, MyStateNotifier>.internal(
   StateNotifierClassAsync.new,
   name: r'stateNotifierClassAsyncProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$stateNotifierClassAsyncHash,
+  debugGetCreateSourceHash:
+      _riverpodIsDebugMode ? null : _$stateNotifierClassAsyncHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -216,9 +201,8 @@ final changeNotifierClassProvider =
     AutoDisposeNotifierProvider<ChangeNotifierClass, MyChangeNotifier>.internal(
   ChangeNotifierClass.new,
   name: r'changeNotifierClassProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$changeNotifierClassHash,
+  debugGetCreateSourceHash:
+      _riverpodIsDebugMode ? null : _$changeNotifierClassHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -233,9 +217,7 @@ final notifierClassProvider =
     AutoDisposeNotifierProvider<NotifierClass, MyNotifier>.internal(
   NotifierClass.new,
   name: r'notifierClassProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$notifierClassHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$notifierClassHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -251,13 +233,13 @@ final asyncNotifierClassProvider =
     AutoDisposeNotifierProvider<AsyncNotifierClass, MyAsyncNotifier>.internal(
   AsyncNotifierClass.new,
   name: r'asyncNotifierClassProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$asyncNotifierClassHash,
+  debugGetCreateSourceHash:
+      _riverpodIsDebugMode ? null : _$asyncNotifierClassHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
 typedef _$AsyncNotifierClass = AutoDisposeNotifier<MyAsyncNotifier>;
+const _riverpodIsDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

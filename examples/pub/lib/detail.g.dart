@@ -92,9 +92,7 @@ class FetchPackageDetailsProvider extends AutoDisposeFutureProvider<Package> {
           from: fetchPackageDetailsProvider,
           name: r'fetchPackageDetailsProvider',
           debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$fetchPackageDetailsHash,
+              _riverpodIsDebugMode ? null : _$fetchPackageDetailsHash,
           dependencies: FetchPackageDetailsFamily._dependencies,
           allTransitiveDependencies:
               FetchPackageDetailsFamily._allTransitiveDependencies,
@@ -106,14 +104,25 @@ class FetchPackageDetailsProvider extends AutoDisposeFutureProvider<Package> {
 
   @override
   bool operator ==(Object other) {
-    return other is FetchPackageDetailsProvider &&
-        other.packageName == packageName;
+    if (other is! FetchPackageDetailsProvider) return false;
+    // Check that the family function prototype hasn't changed
+    if (_riverpodIsDebugMode &&
+        other.debugFamilyCallRuntimeType != debugFamilyCallRuntimeType) {
+      return false;
+    }
+
+    return other.packageName == packageName;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, packageName.hashCode);
+
+    // == relies on debugFamilyCallRuntimeType in debug mode.
+    if (_riverpodIsDebugMode) {
+      hash = _SystemHash.combine(hash, debugFamilyCallRuntimeType.hashCode);
+    }
 
     return _SystemHash.finish(hash);
   }
@@ -126,9 +135,7 @@ String _$likedPackagesHash() => r'304a4def167e245812638cba776e8d5eb66d8844';
 final likedPackagesProvider = AutoDisposeFutureProvider<List<String>>.internal(
   likedPackages,
   name: r'likedPackagesProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$likedPackagesHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$likedPackagesHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -142,9 +149,7 @@ String _$pubRepositoryHash() => r'1f4dbfa0911f6467067fab244677acbcb8c7ad4e';
 final pubRepositoryProvider = AutoDisposeProvider<PubRepository>.internal(
   pubRepository,
   name: r'pubRepositoryProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$pubRepositoryHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$pubRepositoryHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -254,9 +259,7 @@ class PackageMetricsProvider extends AutoDisposeAsyncNotifierProviderImpl<
           from: packageMetricsProvider,
           name: r'packageMetricsProvider',
           debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$packageMetricsHash,
+              _riverpodIsDebugMode ? null : _$packageMetricsHash,
           dependencies: PackageMetricsFamily._dependencies,
           allTransitiveDependencies:
               PackageMetricsFamily._allTransitiveDependencies,
@@ -268,13 +271,25 @@ class PackageMetricsProvider extends AutoDisposeAsyncNotifierProviderImpl<
 
   @override
   bool operator ==(Object other) {
-    return other is PackageMetricsProvider && other.packageName == packageName;
+    if (other is! PackageMetricsProvider) return false;
+    // Check that the family function prototype hasn't changed
+    if (_riverpodIsDebugMode &&
+        other.debugFamilyCallRuntimeType != debugFamilyCallRuntimeType) {
+      return false;
+    }
+
+    return other.packageName == packageName;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, packageName.hashCode);
+
+    // == relies on debugFamilyCallRuntimeType in debug mode.
+    if (_riverpodIsDebugMode) {
+      hash = _SystemHash.combine(hash, debugFamilyCallRuntimeType.hashCode);
+    }
 
     return _SystemHash.finish(hash);
   }
@@ -288,4 +303,6 @@ class PackageMetricsProvider extends AutoDisposeAsyncNotifierProviderImpl<
     );
   }
 }
+
+const _riverpodIsDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

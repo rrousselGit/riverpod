@@ -13,8 +13,7 @@ String _$countHash() => r'4c7e72b275767a60ece5e8662ab1e28f73cf7e44';
 final countPod = AutoDisposeProvider<int>.internal(
   count,
   name: r'countPod',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$countHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$countHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -28,8 +27,7 @@ String _$countFutureHash() => r'ec7cc31ce1c1a10607f1dcb35dd217acd2877729';
 final countFuturePod = AutoDisposeFutureProvider<int>.internal(
   countFuture,
   name: r'countFuturePod',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$countFutureHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$countFutureHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -43,8 +41,7 @@ String _$countStreamHash() => r'1dbe49244ea19e8dbc3af0534429bb323720c07a';
 final countStreamPod = AutoDisposeStreamProvider<int>.internal(
   countStream,
   name: r'countStreamPod',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$countStreamHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$countStreamHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -133,10 +130,7 @@ class Count2Provider extends AutoDisposeProvider<int> {
           ),
           from: count2ProviderFamily,
           name: r'count2ProviderFamily',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$count2Hash,
+          debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$count2Hash,
           dependencies: Count2Family._dependencies,
           allTransitiveDependencies: Count2Family._allTransitiveDependencies,
           debugFamilyCallRuntimeType:
@@ -147,13 +141,25 @@ class Count2Provider extends AutoDisposeProvider<int> {
 
   @override
   bool operator ==(Object other) {
-    return other is Count2Provider && other.a == a;
+    if (other is! Count2Provider) return false;
+    // Check that the family function prototype hasn't changed
+    if (_riverpodIsDebugMode &&
+        other.debugFamilyCallRuntimeType != debugFamilyCallRuntimeType) {
+      return false;
+    }
+
+    return other.a == a;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, a.hashCode);
+
+    // == relies on debugFamilyCallRuntimeType in debug mode.
+    if (_riverpodIsDebugMode) {
+      hash = _SystemHash.combine(hash, debugFamilyCallRuntimeType.hashCode);
+    }
 
     return _SystemHash.finish(hash);
   }
@@ -220,9 +226,7 @@ class CountFuture2Provider extends AutoDisposeFutureProvider<int> {
           from: countFuture2ProviderFamily,
           name: r'countFuture2ProviderFamily',
           debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$countFuture2Hash,
+              _riverpodIsDebugMode ? null : _$countFuture2Hash,
           dependencies: CountFuture2Family._dependencies,
           allTransitiveDependencies:
               CountFuture2Family._allTransitiveDependencies,
@@ -234,13 +238,25 @@ class CountFuture2Provider extends AutoDisposeFutureProvider<int> {
 
   @override
   bool operator ==(Object other) {
-    return other is CountFuture2Provider && other.a == a;
+    if (other is! CountFuture2Provider) return false;
+    // Check that the family function prototype hasn't changed
+    if (_riverpodIsDebugMode &&
+        other.debugFamilyCallRuntimeType != debugFamilyCallRuntimeType) {
+      return false;
+    }
+
+    return other.a == a;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, a.hashCode);
+
+    // == relies on debugFamilyCallRuntimeType in debug mode.
+    if (_riverpodIsDebugMode) {
+      hash = _SystemHash.combine(hash, debugFamilyCallRuntimeType.hashCode);
+    }
 
     return _SystemHash.finish(hash);
   }
@@ -307,9 +323,7 @@ class CountStream2Provider extends AutoDisposeStreamProvider<int> {
           from: countStream2ProviderFamily,
           name: r'countStream2ProviderFamily',
           debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$countStream2Hash,
+              _riverpodIsDebugMode ? null : _$countStream2Hash,
           dependencies: CountStream2Family._dependencies,
           allTransitiveDependencies:
               CountStream2Family._allTransitiveDependencies,
@@ -321,13 +335,25 @@ class CountStream2Provider extends AutoDisposeStreamProvider<int> {
 
   @override
   bool operator ==(Object other) {
-    return other is CountStream2Provider && other.a == a;
+    if (other is! CountStream2Provider) return false;
+    // Check that the family function prototype hasn't changed
+    if (_riverpodIsDebugMode &&
+        other.debugFamilyCallRuntimeType != debugFamilyCallRuntimeType) {
+      return false;
+    }
+
+    return other.a == a;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, a.hashCode);
+
+    // == relies on debugFamilyCallRuntimeType in debug mode.
+    if (_riverpodIsDebugMode) {
+      hash = _SystemHash.combine(hash, debugFamilyCallRuntimeType.hashCode);
+    }
 
     return _SystemHash.finish(hash);
   }
@@ -341,9 +367,7 @@ final countNotifierPod =
     AutoDisposeNotifierProvider<CountNotifier, int>.internal(
   CountNotifier.new,
   name: r'countNotifierPod',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$countNotifierHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$countNotifierHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -359,9 +383,8 @@ final countAsyncNotifierPod =
     AutoDisposeAsyncNotifierProvider<CountAsyncNotifier, int>.internal(
   CountAsyncNotifier.new,
   name: r'countAsyncNotifierPod',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$countAsyncNotifierHash,
+  debugGetCreateSourceHash:
+      _riverpodIsDebugMode ? null : _$countAsyncNotifierHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -377,9 +400,8 @@ final countStreamNotifierPod =
     AutoDisposeStreamNotifierProvider<CountStreamNotifier, int>.internal(
   CountStreamNotifier.new,
   name: r'countStreamNotifierPod',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$countStreamNotifierHash,
+  debugGetCreateSourceHash:
+      _riverpodIsDebugMode ? null : _$countStreamNotifierHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -452,9 +474,7 @@ class CountNotifier2Provider
           from: countNotifier2ProviderFamily,
           name: r'countNotifier2ProviderFamily',
           debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$countNotifier2Hash,
+              _riverpodIsDebugMode ? null : _$countNotifier2Hash,
           dependencies: CountNotifier2Family._dependencies,
           allTransitiveDependencies:
               CountNotifier2Family._allTransitiveDependencies,
@@ -466,13 +486,25 @@ class CountNotifier2Provider
 
   @override
   bool operator ==(Object other) {
-    return other is CountNotifier2Provider && other.a == a;
+    if (other is! CountNotifier2Provider) return false;
+    // Check that the family function prototype hasn't changed
+    if (_riverpodIsDebugMode &&
+        other.debugFamilyCallRuntimeType != debugFamilyCallRuntimeType) {
+      return false;
+    }
+
+    return other.a == a;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, a.hashCode);
+
+    // == relies on debugFamilyCallRuntimeType in debug mode.
+    if (_riverpodIsDebugMode) {
+      hash = _SystemHash.combine(hash, debugFamilyCallRuntimeType.hashCode);
+    }
 
     return _SystemHash.finish(hash);
   }
@@ -555,9 +587,7 @@ class CountAsyncNotifier2Provider
           from: countAsyncNotifier2ProviderFamily,
           name: r'countAsyncNotifier2ProviderFamily',
           debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$countAsyncNotifier2Hash,
+              _riverpodIsDebugMode ? null : _$countAsyncNotifier2Hash,
           dependencies: CountAsyncNotifier2Family._dependencies,
           allTransitiveDependencies:
               CountAsyncNotifier2Family._allTransitiveDependencies,
@@ -569,13 +599,25 @@ class CountAsyncNotifier2Provider
 
   @override
   bool operator ==(Object other) {
-    return other is CountAsyncNotifier2Provider && other.a == a;
+    if (other is! CountAsyncNotifier2Provider) return false;
+    // Check that the family function prototype hasn't changed
+    if (_riverpodIsDebugMode &&
+        other.debugFamilyCallRuntimeType != debugFamilyCallRuntimeType) {
+      return false;
+    }
+
+    return other.a == a;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, a.hashCode);
+
+    // == relies on debugFamilyCallRuntimeType in debug mode.
+    if (_riverpodIsDebugMode) {
+      hash = _SystemHash.combine(hash, debugFamilyCallRuntimeType.hashCode);
+    }
 
     return _SystemHash.finish(hash);
   }
@@ -658,9 +700,7 @@ class CountStreamNotifier2Provider
           from: countStreamNotifier2ProviderFamily,
           name: r'countStreamNotifier2ProviderFamily',
           debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$countStreamNotifier2Hash,
+              _riverpodIsDebugMode ? null : _$countStreamNotifier2Hash,
           dependencies: CountStreamNotifier2Family._dependencies,
           allTransitiveDependencies:
               CountStreamNotifier2Family._allTransitiveDependencies,
@@ -672,13 +712,25 @@ class CountStreamNotifier2Provider
 
   @override
   bool operator ==(Object other) {
-    return other is CountStreamNotifier2Provider && other.a == a;
+    if (other is! CountStreamNotifier2Provider) return false;
+    // Check that the family function prototype hasn't changed
+    if (_riverpodIsDebugMode &&
+        other.debugFamilyCallRuntimeType != debugFamilyCallRuntimeType) {
+      return false;
+    }
+
+    return other.a == a;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, a.hashCode);
+
+    // == relies on debugFamilyCallRuntimeType in debug mode.
+    if (_riverpodIsDebugMode) {
+      hash = _SystemHash.combine(hash, debugFamilyCallRuntimeType.hashCode);
+    }
 
     return _SystemHash.finish(hash);
   }
@@ -692,4 +744,6 @@ class CountStreamNotifier2Provider
     );
   }
 }
+
+const _riverpodIsDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

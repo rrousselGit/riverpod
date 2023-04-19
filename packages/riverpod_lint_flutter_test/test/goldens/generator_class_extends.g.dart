@@ -14,8 +14,7 @@ final myNotifierProvider =
     AutoDisposeNotifierProvider<MyNotifier, int>.internal(
   MyNotifier.new,
   name: r'myNotifierProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$myNotifierHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$myNotifierHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -29,8 +28,7 @@ String _$noExtendsHash() => r'3f1276999a9a6d3676c628c25ed853cbefb21ce9';
 final noExtendsProvider = AutoDisposeNotifierProvider<NoExtends, int>.internal(
   NoExtends.new,
   name: r'noExtendsProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$noExtendsHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$noExtendsHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -45,8 +43,7 @@ final wrongExtendsProvider =
     AutoDisposeNotifierProvider<WrongExtends, int>.internal(
   WrongExtends.new,
   name: r'wrongExtendsProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$wrongExtendsHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$wrongExtendsHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -61,12 +58,12 @@ final _privateClassProvider =
     AutoDisposeNotifierProvider<_PrivateClass, String>.internal(
   _PrivateClass.new,
   name: r'_privateClassProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$privateClassHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$privateClassHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
 typedef _$PrivateClass = AutoDisposeNotifier<String>;
+const _riverpodIsDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

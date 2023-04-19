@@ -15,8 +15,7 @@ String _$statelessHash() => r'be6619f112495a6ba3b6f76af9a8324058f6387a';
 final statelessProvider = AutoDisposeProvider<int>.internal(
   stateless,
   name: r'statelessProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$statelessHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$statelessHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -123,9 +122,7 @@ class StatelessFamilyProvider extends AutoDisposeProvider<int> {
           from: statelessFamilyProvider,
           name: r'statelessFamilyProvider',
           debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$statelessFamilyHash,
+              _riverpodIsDebugMode ? null : _$statelessFamilyHash,
           dependencies: StatelessFamilyFamily._dependencies,
           allTransitiveDependencies:
               StatelessFamilyFamily._allTransitiveDependencies,
@@ -138,7 +135,14 @@ class StatelessFamilyProvider extends AutoDisposeProvider<int> {
 
   @override
   bool operator ==(Object other) {
-    return other is StatelessFamilyProvider && other.a == a && other.b == b;
+    if (other is! StatelessFamilyProvider) return false;
+    // Check that the family function prototype hasn't changed
+    if (_riverpodIsDebugMode &&
+        other.debugFamilyCallRuntimeType != debugFamilyCallRuntimeType) {
+      return false;
+    }
+
+    return other.a == a && other.b == b;
   }
 
   @override
@@ -147,7 +151,14 @@ class StatelessFamilyProvider extends AutoDisposeProvider<int> {
     hash = _SystemHash.combine(hash, a.hashCode);
     hash = _SystemHash.combine(hash, b.hashCode);
 
+    // == relies on debugFamilyCallRuntimeType in debug mode.
+    if (_riverpodIsDebugMode) {
+      hash = _SystemHash.combine(hash, debugFamilyCallRuntimeType.hashCode);
+    }
+
     return _SystemHash.finish(hash);
   }
 }
+
+const _riverpodIsDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

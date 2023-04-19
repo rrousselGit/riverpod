@@ -17,9 +17,8 @@ final unimplementedScopedProvider = AutoDisposeProvider<int>.internal(
     'but was accessed without an override.',
   ),
   name: r'unimplementedScopedProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$unimplementedScopedHash,
+  debugGetCreateSourceHash:
+      _riverpodIsDebugMode ? null : _$unimplementedScopedHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -33,8 +32,7 @@ String _$depHash() => r'749c4d696d29c72686cabcabd6fa7855f5cbf4db';
 final depProvider = AutoDisposeProvider<int>.internal(
   dep,
   name: r'depProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$depHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$depHash,
   debugFamilyCallRuntimeType: null,
   dependencies: const <ProviderOrFamily>[],
   allTransitiveDependencies: const <ProviderOrFamily>[],
@@ -48,9 +46,7 @@ String _$generatedScopedHash() => r'2eefb4cc872ddccfeb862142fd5f7e6d8bd82159';
 final generatedScopedProvider = AutoDisposeProvider<int>.internal(
   generatedScoped,
   name: r'generatedScopedProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$generatedScopedHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$generatedScopedHash,
   debugFamilyCallRuntimeType: null,
   dependencies: const <ProviderOrFamily>[],
   allTransitiveDependencies: const <ProviderOrFamily>[],
@@ -64,9 +60,7 @@ String _$generatedRootHash() => r'080e3393566db0f44add3607e28a5a2980948704';
 final generatedRootProvider = AutoDisposeProvider<int>.internal(
   generatedRoot,
   name: r'generatedRootProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$generatedRootHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$generatedRootHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -81,9 +75,8 @@ String _$watchScopedButNoDependenciesHash() =>
 final watchScopedButNoDependenciesProvider = AutoDisposeProvider<int>.internal(
   watchScopedButNoDependencies,
   name: r'watchScopedButNoDependenciesProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$watchScopedButNoDependenciesHash,
+  debugGetCreateSourceHash:
+      _riverpodIsDebugMode ? null : _$watchScopedButNoDependenciesHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -99,9 +92,8 @@ final watchExternalButNoDependenciesProvider =
     AutoDisposeProvider<int>.internal(
   watchExternalButNoDependencies,
   name: r'watchExternalButNoDependenciesProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$watchExternalButNoDependenciesHash,
+  debugGetCreateSourceHash:
+      _riverpodIsDebugMode ? null : _$watchExternalButNoDependenciesHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -117,9 +109,8 @@ final watchGeneratedScopedButNoDependenciesProvider =
     AutoDisposeProvider<int>.internal(
   watchGeneratedScopedButNoDependencies,
   name: r'watchGeneratedScopedButNoDependenciesProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$watchGeneratedScopedButNoDependenciesHash,
+  debugGetCreateSourceHash:
+      _riverpodIsDebugMode ? null : _$watchGeneratedScopedButNoDependenciesHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -134,9 +125,8 @@ String _$watchRootButNoDependenciesHash() =>
 final watchRootButNoDependenciesProvider = AutoDisposeProvider<int>.internal(
   watchRootButNoDependencies,
   name: r'watchRootButNoDependenciesProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$watchRootButNoDependenciesHash,
+  debugGetCreateSourceHash:
+      _riverpodIsDebugMode ? null : _$watchRootButNoDependenciesHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -152,9 +142,8 @@ final watchGeneratedRootButNoDependenciesProvider =
     AutoDisposeProvider<int>.internal(
   watchGeneratedRootButNoDependencies,
   name: r'watchGeneratedRootButNoDependenciesProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$watchGeneratedRootButNoDependenciesHash,
+  debugGetCreateSourceHash:
+      _riverpodIsDebugMode ? null : _$watchGeneratedRootButNoDependenciesHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -170,9 +159,8 @@ final watchScopedButEmptyDependenciesProvider =
     AutoDisposeProvider<int>.internal(
   watchScopedButEmptyDependencies,
   name: r'watchScopedButEmptyDependenciesProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$watchScopedButEmptyDependenciesHash,
+  debugGetCreateSourceHash:
+      _riverpodIsDebugMode ? null : _$watchScopedButEmptyDependenciesHash,
   debugFamilyCallRuntimeType: null,
   dependencies: const <ProviderOrFamily>[],
   allTransitiveDependencies: const <ProviderOrFamily>[],
@@ -188,7 +176,7 @@ final watchGeneratedScopedButEmptyDependenciesProvider =
     AutoDisposeProvider<int>.internal(
   watchGeneratedScopedButEmptyDependencies,
   name: r'watchGeneratedScopedButEmptyDependenciesProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+  debugGetCreateSourceHash: _riverpodIsDebugMode
       ? null
       : _$watchGeneratedScopedButEmptyDependenciesHash,
   debugFamilyCallRuntimeType: null,
@@ -206,9 +194,8 @@ String _$watchRootButEmptyDependenciesHash() =>
 final watchRootButEmptyDependenciesProvider = AutoDisposeProvider<int>.internal(
   watchRootButEmptyDependencies,
   name: r'watchRootButEmptyDependenciesProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$watchRootButEmptyDependenciesHash,
+  debugGetCreateSourceHash:
+      _riverpodIsDebugMode ? null : _$watchRootButEmptyDependenciesHash,
   debugFamilyCallRuntimeType: null,
   dependencies: const <ProviderOrFamily>[],
   allTransitiveDependencies: const <ProviderOrFamily>[],
@@ -224,7 +211,7 @@ final watchGeneratedRootButEmptyDependenciesProvider =
     AutoDisposeProvider<int>.internal(
   watchGeneratedRootButEmptyDependencies,
   name: r'watchGeneratedRootButEmptyDependenciesProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+  debugGetCreateSourceHash: _riverpodIsDebugMode
       ? null
       : _$watchGeneratedRootButEmptyDependenciesHash,
   debugFamilyCallRuntimeType: null,
@@ -242,9 +229,8 @@ final watchScopedButMissingDependenciesProvider =
     AutoDisposeProvider<int>.internal(
   watchScopedButMissingDependencies,
   name: r'watchScopedButMissingDependenciesProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$watchScopedButMissingDependenciesHash,
+  debugGetCreateSourceHash:
+      _riverpodIsDebugMode ? null : _$watchScopedButMissingDependenciesHash,
   debugFamilyCallRuntimeType: null,
   dependencies: <ProviderOrFamily>[depProvider],
   allTransitiveDependencies: <ProviderOrFamily>[depProvider],
@@ -260,7 +246,7 @@ final watchGeneratedScopedButMissingDependenciesProvider =
     AutoDisposeProvider<int>.internal(
   watchGeneratedScopedButMissingDependencies,
   name: r'watchGeneratedScopedButMissingDependenciesProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+  debugGetCreateSourceHash: _riverpodIsDebugMode
       ? null
       : _$watchGeneratedScopedButMissingDependenciesHash,
   debugFamilyCallRuntimeType: null,
@@ -279,9 +265,8 @@ final watchRootButMissingDependenciesProvider =
     AutoDisposeProvider<int>.internal(
   watchRootButMissingDependencies,
   name: r'watchRootButMissingDependenciesProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$watchRootButMissingDependenciesHash,
+  debugGetCreateSourceHash:
+      _riverpodIsDebugMode ? null : _$watchRootButMissingDependenciesHash,
   debugFamilyCallRuntimeType: null,
   dependencies: <ProviderOrFamily>[depProvider],
   allTransitiveDependencies: <ProviderOrFamily>[depProvider],
@@ -297,7 +282,7 @@ final watchGeneratedRootButMissingDependenciesProvider =
     AutoDisposeProvider<int>.internal(
   watchGeneratedRootButMissingDependencies,
   name: r'watchGeneratedRootButMissingDependenciesProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+  debugGetCreateSourceHash: _riverpodIsDebugMode
       ? null
       : _$watchGeneratedRootButMissingDependenciesHash,
   debugFamilyCallRuntimeType: null,
@@ -316,7 +301,7 @@ final watchGeneratedScopedAndContainsDependencyProvider =
     AutoDisposeProvider<int>.internal(
   watchGeneratedScopedAndContainsDependency,
   name: r'watchGeneratedScopedAndContainsDependencyProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+  debugGetCreateSourceHash: _riverpodIsDebugMode
       ? null
       : _$watchGeneratedScopedAndContainsDependencyHash,
   debugFamilyCallRuntimeType: null,
@@ -335,7 +320,7 @@ final watchGeneratedRootAndContainsDependencyProvider =
     AutoDisposeProvider<int>.internal(
   watchGeneratedRootAndContainsDependency,
   name: r'watchGeneratedRootAndContainsDependencyProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+  debugGetCreateSourceHash: _riverpodIsDebugMode
       ? null
       : _$watchGeneratedRootAndContainsDependencyHash,
   debugFamilyCallRuntimeType: null,
@@ -354,9 +339,8 @@ final specifiedDependencyButNeverUsedProvider =
     AutoDisposeProvider<int>.internal(
   specifiedDependencyButNeverUsed,
   name: r'specifiedDependencyButNeverUsedProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$specifiedDependencyButNeverUsedHash,
+  debugGetCreateSourceHash:
+      _riverpodIsDebugMode ? null : _$specifiedDependencyButNeverUsedHash,
   debugFamilyCallRuntimeType: null,
   dependencies: <ProviderOrFamily>[depProvider, generatedRootProvider],
   allTransitiveDependencies: <ProviderOrFamily>[
@@ -373,9 +357,7 @@ String _$regression2348Hash() => r'72fbbe420e9835c9843c28b7c9375ca3d99ca4b7';
 final regression2348Provider = AutoDisposeProvider<int>.internal(
   regression2348,
   name: r'regression2348Provider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$regression2348Hash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$regression2348Hash,
   debugFamilyCallRuntimeType: null,
   dependencies: <ProviderOrFamily>[generatedScopedProvider],
   allTransitiveDependencies: <ProviderOrFamily>[generatedScopedProvider],
@@ -392,7 +374,7 @@ final classWatchGeneratedRootButMissingDependenciesProvider =
         int>.internal(
   ClassWatchGeneratedRootButMissingDependencies.new,
   name: r'classWatchGeneratedRootButMissingDependenciesProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+  debugGetCreateSourceHash: _riverpodIsDebugMode
       ? null
       : _$classWatchGeneratedRootButMissingDependenciesHash,
   debugFamilyCallRuntimeType: null,
@@ -412,7 +394,7 @@ final classWatchGeneratedScopedButMissingDependenciesProvider =
         int>.internal(
   ClassWatchGeneratedScopedButMissingDependencies.new,
   name: r'classWatchGeneratedScopedButMissingDependenciesProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+  debugGetCreateSourceHash: _riverpodIsDebugMode
       ? null
       : _$classWatchGeneratedScopedButMissingDependenciesHash,
   debugFamilyCallRuntimeType: null,
@@ -430,13 +412,12 @@ final regression2417Provider =
     AutoDisposeNotifierProvider<Regression2417, int>.internal(
   Regression2417.new,
   name: r'regression2417Provider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$regression2417Hash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$regression2417Hash,
   debugFamilyCallRuntimeType: null,
   dependencies: <ProviderOrFamily>[generatedScopedProvider],
   allTransitiveDependencies: <ProviderOrFamily>[generatedScopedProvider],
 );
 
 typedef _$Regression2417 = AutoDisposeNotifier<int>;
+const _riverpodIsDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

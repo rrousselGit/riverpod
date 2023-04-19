@@ -13,8 +13,7 @@ String _$depHash() => r'749c4d696d29c72686cabcabd6fa7855f5cbf4db';
 final depProvider = AutoDisposeProvider<int>.internal(
   dep,
   name: r'depProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$depHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$depHash,
   debugFamilyCallRuntimeType: null,
   dependencies: const <ProviderOrFamily>[],
   allTransitiveDependencies: const <ProviderOrFamily>[],
@@ -28,8 +27,7 @@ String _$dep2Hash() => r'13cd909366c79168e3d9cd95f529ddbcee6de7dc';
 final dep2Provider = AutoDisposeProvider<int>.internal(
   dep2,
   name: r'dep2Provider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$dep2Hash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$dep2Hash,
   debugFamilyCallRuntimeType: null,
   dependencies: const <ProviderOrFamily>[],
   allTransitiveDependencies: const <ProviderOrFamily>[],
@@ -44,9 +42,7 @@ String _$plainAnnotationHash() =>
 final plainAnnotationProvider = AutoDisposeProvider<int>.internal(
   plainAnnotation,
   name: r'plainAnnotationProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$plainAnnotationHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$plainAnnotationHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -60,9 +56,8 @@ String _$customAnnotationHash() => r'04faed9b424be360e594870f91c4ef4689f05672';
 final customAnnotationProvider = AutoDisposeProvider<int>.internal(
   customAnnotation,
   name: r'customAnnotationProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$customAnnotationHash,
+  debugGetCreateSourceHash:
+      _riverpodIsDebugMode ? null : _$customAnnotationHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -78,9 +73,8 @@ final customAnnotationWithTrailingCommaProvider =
     AutoDisposeProvider<int>.internal(
   customAnnotationWithTrailingComma,
   name: r'customAnnotationWithTrailingCommaProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$customAnnotationWithTrailingCommaHash,
+  debugGetCreateSourceHash:
+      _riverpodIsDebugMode ? null : _$customAnnotationWithTrailingCommaHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -94,8 +88,7 @@ String _$existingDepHash() => r'8d7866d1af7e350d7c792e43a542cd47b130b239';
 final existingDepProvider = AutoDisposeProvider<int>.internal(
   existingDep,
   name: r'existingDepProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$existingDepHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$existingDepHash,
   debugFamilyCallRuntimeType: null,
   dependencies: const <ProviderOrFamily>[],
   allTransitiveDependencies: const <ProviderOrFamily>[],
@@ -109,8 +102,7 @@ String _$multipleDepsHash() => r'9d08791636a0435ba115062a453d0d9e530ecf71';
 final multipleDepsProvider = AutoDisposeProvider<int>.internal(
   multipleDeps,
   name: r'multipleDepsProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$multipleDepsHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$multipleDepsHash,
   debugFamilyCallRuntimeType: null,
   dependencies: const <ProviderOrFamily>[],
   allTransitiveDependencies: const <ProviderOrFamily>[],
@@ -124,8 +116,7 @@ String _$extraDepHash() => r'038d9c819b5d91eb1f7166194d8e646f17ea24d7';
 final extraDepProvider = AutoDisposeProvider<int>.internal(
   extraDep,
   name: r'extraDepProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$extraDepHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$extraDepHash,
   debugFamilyCallRuntimeType: null,
   dependencies: <ProviderOrFamily>[depProvider, dep2Provider],
   allTransitiveDependencies: <ProviderOrFamily>[depProvider, dep2Provider],
@@ -139,8 +130,7 @@ String _$noDepHash() => r'38d78ded1eba491968c0200cc0b51969fcf3ec9a';
 final noDepProvider = AutoDisposeProvider<int>.internal(
   noDep,
   name: r'noDepProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$noDepHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$noDepHash,
   debugFamilyCallRuntimeType: null,
   dependencies: <ProviderOrFamily>[depProvider],
   allTransitiveDependencies: <ProviderOrFamily>[depProvider],
@@ -156,9 +146,8 @@ final dependenciesFirstThenKeepAliveProvider =
     AutoDisposeProvider<int>.internal(
   dependenciesFirstThenKeepAlive,
   name: r'dependenciesFirstThenKeepAliveProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$dependenciesFirstThenKeepAliveHash,
+  debugGetCreateSourceHash:
+      _riverpodIsDebugMode ? null : _$dependenciesFirstThenKeepAliveHash,
   debugFamilyCallRuntimeType: null,
   dependencies: <ProviderOrFamily>[depProvider],
   allTransitiveDependencies: <ProviderOrFamily>[depProvider],
@@ -172,8 +161,7 @@ String _$noDepNoParamHash() => r'fe52f15a4d98159beafe8b9a177073f6b6cbae6d';
 final noDepNoParamProvider = AutoDisposeProvider<int>.internal(
   noDepNoParam,
   name: r'noDepNoParamProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$noDepNoParamHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$noDepNoParamHash,
   debugFamilyCallRuntimeType: null,
   dependencies: <ProviderOrFamily>[depProvider],
   allTransitiveDependencies: <ProviderOrFamily>[depProvider],
@@ -187,13 +175,13 @@ String _$noDepWithoutCommaHash() => r'59d5a7874da40605b1b187766ebb4927d2eaae81';
 final noDepWithoutCommaProvider = AutoDisposeProvider<int>.internal(
   noDepWithoutComma,
   name: r'noDepWithoutCommaProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$noDepWithoutCommaHash,
+  debugGetCreateSourceHash:
+      _riverpodIsDebugMode ? null : _$noDepWithoutCommaHash,
   debugFamilyCallRuntimeType: null,
   dependencies: <ProviderOrFamily>[depProvider],
   allTransitiveDependencies: <ProviderOrFamily>[depProvider],
 );
 
 typedef NoDepWithoutCommaRef = AutoDisposeProviderRef<int>;
+const _riverpodIsDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

@@ -89,9 +89,7 @@ class GeneratorProvider extends Provider<int> {
           from: generatorProvider,
           name: r'generatorProvider',
           debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$generatorHash,
+              _riverpodIsDebugMode ? null : _$generatorHash,
           dependencies: GeneratorFamily._dependencies,
           allTransitiveDependencies: GeneratorFamily._allTransitiveDependencies,
           debugFamilyCallRuntimeType:
@@ -102,7 +100,14 @@ class GeneratorProvider extends Provider<int> {
 
   @override
   bool operator ==(Object other) {
-    return other is GeneratorProvider && other.value == value;
+    if (other is! GeneratorProvider) return false;
+    // Check that the family function prototype hasn't changed
+    if (_riverpodIsDebugMode &&
+        other.debugFamilyCallRuntimeType != debugFamilyCallRuntimeType) {
+      return false;
+    }
+
+    return other.value == value;
   }
 
   @override
@@ -110,7 +115,14 @@ class GeneratorProvider extends Provider<int> {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, value.hashCode);
 
+    // == relies on debugFamilyCallRuntimeType in debug mode.
+    if (_riverpodIsDebugMode) {
+      hash = _SystemHash.combine(hash, debugFamilyCallRuntimeType.hashCode);
+    }
+
     return _SystemHash.finish(hash);
   }
 }
+
+const _riverpodIsDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

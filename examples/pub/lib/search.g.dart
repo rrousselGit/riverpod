@@ -96,9 +96,7 @@ class FetchPackagesProvider extends AutoDisposeFutureProvider<List<Package>> {
           from: fetchPackagesProvider,
           name: r'fetchPackagesProvider',
           debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$fetchPackagesHash,
+              _riverpodIsDebugMode ? null : _$fetchPackagesHash,
           dependencies: FetchPackagesFamily._dependencies,
           allTransitiveDependencies:
               FetchPackagesFamily._allTransitiveDependencies,
@@ -111,9 +109,14 @@ class FetchPackagesProvider extends AutoDisposeFutureProvider<List<Package>> {
 
   @override
   bool operator ==(Object other) {
-    return other is FetchPackagesProvider &&
-        other.page == page &&
-        other.search == search;
+    if (other is! FetchPackagesProvider) return false;
+    // Check that the family function prototype hasn't changed
+    if (_riverpodIsDebugMode &&
+        other.debugFamilyCallRuntimeType != debugFamilyCallRuntimeType) {
+      return false;
+    }
+
+    return other.page == page && other.search == search;
   }
 
   @override
@@ -122,7 +125,14 @@ class FetchPackagesProvider extends AutoDisposeFutureProvider<List<Package>> {
     hash = _SystemHash.combine(hash, page.hashCode);
     hash = _SystemHash.combine(hash, search.hashCode);
 
+    // == relies on debugFamilyCallRuntimeType in debug mode.
+    if (_riverpodIsDebugMode) {
+      hash = _SystemHash.combine(hash, debugFamilyCallRuntimeType.hashCode);
+    }
+
     return _SystemHash.finish(hash);
   }
 }
+
+const _riverpodIsDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

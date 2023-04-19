@@ -15,8 +15,7 @@ String _$publicHash() => r'138be35943899793ab085e711fe3f3d22696a3ba';
 final publicProvider = AutoDisposeProvider<String>.internal(
   public,
   name: r'publicProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$publicHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$publicHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -32,9 +31,8 @@ String _$supports$inNamesHash() => r'baacdb7b92917860b02aba1fa7010c7056da4a67';
 final supports$inNamesProvider = AutoDisposeProvider<String>.internal(
   supports$inNames,
   name: r'supports$inNamesProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$supports$inNamesHash,
+  debugGetCreateSourceHash:
+      _riverpodIsDebugMode ? null : _$supports$inNamesHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -155,10 +153,7 @@ class FamilyProvider extends AutoDisposeProvider<String> {
           ),
           from: familyProvider,
           name: r'familyProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$familyHash,
+          debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$familyHash,
           dependencies: FamilyFamily._dependencies,
           allTransitiveDependencies: FamilyFamily._allTransitiveDependencies,
           debugFamilyCallRuntimeType: familyProvider.debugFamilyCallRuntimeType,
@@ -172,8 +167,14 @@ class FamilyProvider extends AutoDisposeProvider<String> {
 
   @override
   bool operator ==(Object other) {
-    return other is FamilyProvider &&
-        other.first == first &&
+    if (other is! FamilyProvider) return false;
+    // Check that the family function prototype hasn't changed
+    if (_riverpodIsDebugMode &&
+        other.debugFamilyCallRuntimeType != debugFamilyCallRuntimeType) {
+      return false;
+    }
+
+    return other.first == first &&
         other.second == second &&
         other.third == third &&
         other.forth == forth &&
@@ -189,6 +190,11 @@ class FamilyProvider extends AutoDisposeProvider<String> {
     hash = _SystemHash.combine(hash, forth.hashCode);
     hash = _SystemHash.combine(hash, fifth.hashCode);
 
+    // == relies on debugFamilyCallRuntimeType in debug mode.
+    if (_riverpodIsDebugMode) {
+      hash = _SystemHash.combine(hash, debugFamilyCallRuntimeType.hashCode);
+    }
+
     return _SystemHash.finish(hash);
   }
 }
@@ -200,8 +206,7 @@ String _$privateHash() => r'9a87ed0765ad8448525fa1290b34760c79e7402b';
 final _privateProvider = AutoDisposeProvider<String>.internal(
   _private,
   name: r'_privateProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$privateHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$privateHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -218,8 +223,7 @@ final publicClassProvider =
     AutoDisposeNotifierProvider<PublicClass, String>.internal(
   PublicClass.new,
   name: r'publicClassProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$publicClassHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$publicClassHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -234,8 +238,7 @@ final _privateClassProvider =
     AutoDisposeNotifierProvider<_PrivateClass, String>.internal(
   _PrivateClass.new,
   name: r'_privateClassProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$privateClassHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$privateClassHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -349,9 +352,7 @@ class FamilyClassProvider
           from: familyClassProvider,
           name: r'familyClassProvider',
           debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$familyClassHash,
+              _riverpodIsDebugMode ? null : _$familyClassHash,
           dependencies: FamilyClassFamily._dependencies,
           allTransitiveDependencies:
               FamilyClassFamily._allTransitiveDependencies,
@@ -367,8 +368,14 @@ class FamilyClassProvider
 
   @override
   bool operator ==(Object other) {
-    return other is FamilyClassProvider &&
-        other.first == first &&
+    if (other is! FamilyClassProvider) return false;
+    // Check that the family function prototype hasn't changed
+    if (_riverpodIsDebugMode &&
+        other.debugFamilyCallRuntimeType != debugFamilyCallRuntimeType) {
+      return false;
+    }
+
+    return other.first == first &&
         other.second == second &&
         other.third == third &&
         other.forth == forth &&
@@ -383,6 +390,11 @@ class FamilyClassProvider
     hash = _SystemHash.combine(hash, third.hashCode);
     hash = _SystemHash.combine(hash, forth.hashCode);
     hash = _SystemHash.combine(hash, fifth.hashCode);
+
+    // == relies on debugFamilyCallRuntimeType in debug mode.
+    if (_riverpodIsDebugMode) {
+      hash = _SystemHash.combine(hash, debugFamilyCallRuntimeType.hashCode);
+    }
 
     return _SystemHash.finish(hash);
   }
@@ -412,13 +424,13 @@ final supports$InClassNameProvider =
     AutoDisposeNotifierProvider<Supports$InClassName, String>.internal(
   Supports$InClassName.new,
   name: r'supports$InClassNameProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$supports$InClassNameHash,
+  debugGetCreateSourceHash:
+      _riverpodIsDebugMode ? null : _$supports$InClassNameHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
 typedef _$Supports$InClassName = AutoDisposeNotifier<String>;
+const _riverpodIsDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

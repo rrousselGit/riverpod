@@ -20,12 +20,12 @@ String _$counterHash() => r'4243b34530f53accfd9014a9f0e316fe304ada3e';
 final counterProvider = AutoDisposeNotifierProvider<Counter, int>.internal(
   Counter.new,
   name: r'counterProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$counterHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$counterHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
 typedef _$Counter = AutoDisposeNotifier<int>;
+const _riverpodIsDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions
