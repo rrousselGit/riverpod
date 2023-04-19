@@ -142,12 +142,6 @@ class Count2Provider extends AutoDisposeProvider<int> {
   @override
   bool operator ==(Object other) {
     if (other is! Count2Provider) return false;
-    // Check that the family function prototype hasn't changed
-    if (_riverpodIsDebugMode &&
-        other.debugFamilyCallRuntimeType != debugFamilyCallRuntimeType) {
-      return false;
-    }
-
     return other.a == a;
   }
 
@@ -155,11 +149,6 @@ class Count2Provider extends AutoDisposeProvider<int> {
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, a.hashCode);
-
-    // == relies on debugFamilyCallRuntimeType in debug mode.
-    if (_riverpodIsDebugMode) {
-      hash = _SystemHash.combine(hash, debugFamilyCallRuntimeType.hashCode);
-    }
 
     return _SystemHash.finish(hash);
   }
@@ -239,12 +228,6 @@ class CountFuture2Provider extends AutoDisposeFutureProvider<int> {
   @override
   bool operator ==(Object other) {
     if (other is! CountFuture2Provider) return false;
-    // Check that the family function prototype hasn't changed
-    if (_riverpodIsDebugMode &&
-        other.debugFamilyCallRuntimeType != debugFamilyCallRuntimeType) {
-      return false;
-    }
-
     return other.a == a;
   }
 
@@ -252,11 +235,6 @@ class CountFuture2Provider extends AutoDisposeFutureProvider<int> {
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, a.hashCode);
-
-    // == relies on debugFamilyCallRuntimeType in debug mode.
-    if (_riverpodIsDebugMode) {
-      hash = _SystemHash.combine(hash, debugFamilyCallRuntimeType.hashCode);
-    }
 
     return _SystemHash.finish(hash);
   }
@@ -336,12 +314,6 @@ class CountStream2Provider extends AutoDisposeStreamProvider<int> {
   @override
   bool operator ==(Object other) {
     if (other is! CountStream2Provider) return false;
-    // Check that the family function prototype hasn't changed
-    if (_riverpodIsDebugMode &&
-        other.debugFamilyCallRuntimeType != debugFamilyCallRuntimeType) {
-      return false;
-    }
-
     return other.a == a;
   }
 
@@ -349,11 +321,6 @@ class CountStream2Provider extends AutoDisposeStreamProvider<int> {
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, a.hashCode);
-
-    // == relies on debugFamilyCallRuntimeType in debug mode.
-    if (_riverpodIsDebugMode) {
-      hash = _SystemHash.combine(hash, debugFamilyCallRuntimeType.hashCode);
-    }
 
     return _SystemHash.finish(hash);
   }
@@ -487,12 +454,6 @@ class CountNotifier2Provider
   @override
   bool operator ==(Object other) {
     if (other is! CountNotifier2Provider) return false;
-    // Check that the family function prototype hasn't changed
-    if (_riverpodIsDebugMode &&
-        other.debugFamilyCallRuntimeType != debugFamilyCallRuntimeType) {
-      return false;
-    }
-
     return other.a == a;
   }
 
@@ -500,11 +461,6 @@ class CountNotifier2Provider
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, a.hashCode);
-
-    // == relies on debugFamilyCallRuntimeType in debug mode.
-    if (_riverpodIsDebugMode) {
-      hash = _SystemHash.combine(hash, debugFamilyCallRuntimeType.hashCode);
-    }
 
     return _SystemHash.finish(hash);
   }
@@ -600,12 +556,6 @@ class CountAsyncNotifier2Provider
   @override
   bool operator ==(Object other) {
     if (other is! CountAsyncNotifier2Provider) return false;
-    // Check that the family function prototype hasn't changed
-    if (_riverpodIsDebugMode &&
-        other.debugFamilyCallRuntimeType != debugFamilyCallRuntimeType) {
-      return false;
-    }
-
     return other.a == a;
   }
 
@@ -613,11 +563,6 @@ class CountAsyncNotifier2Provider
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, a.hashCode);
-
-    // == relies on debugFamilyCallRuntimeType in debug mode.
-    if (_riverpodIsDebugMode) {
-      hash = _SystemHash.combine(hash, debugFamilyCallRuntimeType.hashCode);
-    }
 
     return _SystemHash.finish(hash);
   }
@@ -713,12 +658,6 @@ class CountStreamNotifier2Provider
   @override
   bool operator ==(Object other) {
     if (other is! CountStreamNotifier2Provider) return false;
-    // Check that the family function prototype hasn't changed
-    if (_riverpodIsDebugMode &&
-        other.debugFamilyCallRuntimeType != debugFamilyCallRuntimeType) {
-      return false;
-    }
-
     return other.a == a;
   }
 
@@ -726,11 +665,6 @@ class CountStreamNotifier2Provider
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, a.hashCode);
-
-    // == relies on debugFamilyCallRuntimeType in debug mode.
-    if (_riverpodIsDebugMode) {
-      hash = _SystemHash.combine(hash, debugFamilyCallRuntimeType.hashCode);
-    }
 
     return _SystemHash.finish(hash);
   }

@@ -105,12 +105,6 @@ class FetchPackageDetailsProvider extends AutoDisposeFutureProvider<Package> {
   @override
   bool operator ==(Object other) {
     if (other is! FetchPackageDetailsProvider) return false;
-    // Check that the family function prototype hasn't changed
-    if (_riverpodIsDebugMode &&
-        other.debugFamilyCallRuntimeType != debugFamilyCallRuntimeType) {
-      return false;
-    }
-
     return other.packageName == packageName;
   }
 
@@ -118,11 +112,6 @@ class FetchPackageDetailsProvider extends AutoDisposeFutureProvider<Package> {
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, packageName.hashCode);
-
-    // == relies on debugFamilyCallRuntimeType in debug mode.
-    if (_riverpodIsDebugMode) {
-      hash = _SystemHash.combine(hash, debugFamilyCallRuntimeType.hashCode);
-    }
 
     return _SystemHash.finish(hash);
   }
@@ -272,12 +261,6 @@ class PackageMetricsProvider extends AutoDisposeAsyncNotifierProviderImpl<
   @override
   bool operator ==(Object other) {
     if (other is! PackageMetricsProvider) return false;
-    // Check that the family function prototype hasn't changed
-    if (_riverpodIsDebugMode &&
-        other.debugFamilyCallRuntimeType != debugFamilyCallRuntimeType) {
-      return false;
-    }
-
     return other.packageName == packageName;
   }
 
@@ -285,11 +268,6 @@ class PackageMetricsProvider extends AutoDisposeAsyncNotifierProviderImpl<
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, packageName.hashCode);
-
-    // == relies on debugFamilyCallRuntimeType in debug mode.
-    if (_riverpodIsDebugMode) {
-      hash = _SystemHash.combine(hash, debugFamilyCallRuntimeType.hashCode);
-    }
 
     return _SystemHash.finish(hash);
   }
