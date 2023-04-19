@@ -35,6 +35,23 @@ final stateNotifierProvider = AutoDisposeProvider<MyStateNotifier>.internal(
 );
 
 typedef StateNotifierRef = AutoDisposeProviderRef<MyStateNotifier>;
+String _$asyncStateNotifierHash() =>
+    r'66442390f13e38cd9594f841a7610ab0f632db81';
+
+/// See also [asyncStateNotifier].
+@ProviderFor(asyncStateNotifier)
+final asyncStateNotifierProvider =
+    AutoDisposeFutureProvider<MyStateNotifier>.internal(
+  asyncStateNotifier,
+  name: r'asyncStateNotifierProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$asyncStateNotifierHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef AsyncStateNotifierRef = AutoDisposeFutureProviderRef<MyStateNotifier>;
 String _$stateNotifierAsyncHash() =>
     r'9a9b1986076dfdfa4490cc109f1bd0f112a7455c';
 
@@ -113,6 +130,84 @@ final asyncNotifierProvider = AutoDisposeProvider<MyAsyncNotifier>.internal(
 );
 
 typedef AsyncNotifierRef = AutoDisposeProviderRef<MyAsyncNotifier>;
+String _$rawNotifierHash() => r'c01adc70a8e08258bf5d13024aa8e9b86359a2b2';
+
+/// See also [rawNotifier].
+@ProviderFor(rawNotifier)
+final rawNotifierProvider = AutoDisposeProvider<MyChangeNotifier>.internal(
+  rawNotifier,
+  name: r'rawNotifierProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$rawNotifierHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef RawNotifierRef = AutoDisposeProviderRef<MyChangeNotifier>;
+String _$rawFutureNotifierHash() => r'883253dbf7ade868c44b288ec3da02be64dcfb20';
+
+/// See also [rawFutureNotifier].
+@ProviderFor(rawFutureNotifier)
+final rawFutureNotifierProvider =
+    AutoDisposeFutureProvider<MyChangeNotifier>.internal(
+  rawFutureNotifier,
+  name: r'rawFutureNotifierProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$rawFutureNotifierHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef RawFutureNotifierRef = AutoDisposeFutureProviderRef<MyChangeNotifier>;
+String _$rawStreamNotifierHash() => r'f22f6a906e275c6245365bf029e2dc217cf3a301';
+
+/// See also [rawStreamNotifier].
+@ProviderFor(rawStreamNotifier)
+final rawStreamNotifierProvider =
+    AutoDisposeStreamProvider<MyChangeNotifier>.internal(
+  rawStreamNotifier,
+  name: r'rawStreamNotifierProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$rawStreamNotifierHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef RawStreamNotifierRef = AutoDisposeStreamProviderRef<MyChangeNotifier>;
+String _$futureRawNotifierHash() => r'd70ca757ff2539fc698ff924c135ee5e88a98018';
+
+/// See also [futureRawNotifier].
+@ProviderFor(futureRawNotifier)
+final futureRawNotifierProvider =
+    AutoDisposeFutureProvider<MyChangeNotifier>.internal(
+  futureRawNotifier,
+  name: r'futureRawNotifierProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$futureRawNotifierHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef FutureRawNotifierRef = AutoDisposeFutureProviderRef<MyChangeNotifier>;
+String _$streamRawNotifierHash() => r'b1075c37ef3e8a83dfb9a3d469b76bd4855c336f';
+
+/// See also [streamRawNotifier].
+@ProviderFor(streamRawNotifier)
+final streamRawNotifierProvider =
+    AutoDisposeStreamProvider<MyChangeNotifier>.internal(
+  streamRawNotifier,
+  name: r'streamRawNotifierProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$streamRawNotifierHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef StreamRawNotifierRef = AutoDisposeStreamProviderRef<MyChangeNotifier>;
 String _$stateNotifierClassHash() =>
     r'576978be5b8a02c212afe7afbe37c733a49ecbce';
 

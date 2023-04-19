@@ -1,3 +1,7 @@
+## 2.3.5 - 2023-04-18
+
+- fix `AsyncValue.isReloading` docs
+
 ## 2.3.4 - 2023-04-07
 
 - Fixes an issue with nested ProviderScope (thanks to @jeiea)

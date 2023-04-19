@@ -32,12 +32,9 @@ class TodosNotifier extends ChangeNotifier {
 
   // Let's mark a todo as completed
   void toggle(String todoId) {
-    for (final todo in todos) {
-      if (todo.id == todoId) {
-        todo.completed = !todo.completed;
-        notifyListeners();
-      }
-    }
+    final todo = todos.firstWhere((todo) => todo.id == todoId);
+    todo.completed = !todo.completed;
+    notifyListeners();
   }
 }
 

@@ -19,6 +19,9 @@ class UnsupportedProviderValue extends RiverpodLintRule {
     name: 'unsupported_provider_value',
     problemMessage:
         'The riverpod_generator package does not support {0} values.',
+    correctionMessage:
+        'If using {0} even though riverpod_generator does not support it, '
+        'you can wrap the type in "Raw" to silence the warning. For example by returning Raw<{0}>.',
   );
 
   @override
@@ -28,6 +31,10 @@ class UnsupportedProviderValue extends RiverpodLintRule {
     CustomLintContext context,
   ) {
     void checkCreatedType(GeneratorProviderDeclaration declaration) {
+      if (declaration.valueType.isRaw) {
+        return;
+      }
+
       String? invalidValueName;
       if (notifierBaseType.isAssignableFromType(declaration.valueType)) {
         invalidValueName = 'Notifier';
