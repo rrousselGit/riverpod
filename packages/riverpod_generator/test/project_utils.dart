@@ -46,10 +46,7 @@ Directory createTempDir() {
   final tempDir = Directory.current
       .dir('.dart_tool')
       .createTempSync('flutter_riverpod_test');
-  addTearDown(() {
-    print('Delete');
-    tempDir.deleteSync(recursive: true);
-  });
+  addTearDown(() => tempDir.deleteSync(recursive: true));
 
   tempDir.createSync(recursive: true);
 
