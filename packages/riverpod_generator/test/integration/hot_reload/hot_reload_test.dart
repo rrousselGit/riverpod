@@ -104,7 +104,6 @@ void main() {
           .transform(const LineSplitter())
           .map((e) => e.startsWith('flutter: ') ? e.substring(9) : e)
           .listen((line) {
-        print('Output $line');
         if (line.contains(renderStart)) {
           _pendingRenderBuffer = StringBuffer();
         } else if (line.contains(renderEnd)) {
@@ -122,7 +121,6 @@ void main() {
       _onClose.add(outSub.cancel);
 
       void onError(Object event) {
-        print('Err $event');
         _renderController.addError(event);
       }
 

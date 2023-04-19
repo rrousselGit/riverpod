@@ -50,6 +50,10 @@ abstract class Family<
   // ignore: deprecated_member_use_from_same_package
   Family<State> get overriddenFamily => this;
 
+  /// The runtimeType of the `call` function of the family.
+  ///
+  /// This is used in `riverpod_generator` to improve hot-reload support
+  /// by destroying the old providers and creating new ones.
   @internal
   Type? get debugFamilyCallRuntimeType;
 }
