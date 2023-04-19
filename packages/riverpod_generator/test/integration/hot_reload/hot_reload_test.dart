@@ -29,6 +29,10 @@ class HotReloadRunner {
       'dart',
       [
         '--enable-vm-service',
+        // Flag the code as running in debug mode according to Flutter's convention
+        // TODO: refactor to use a constant "isAssertEnabled" if that is added:
+        // https://github.com/dart-lang/language/issues/2876
+        '--define=dart.vm.product=true',
         srcDir.file('main.dart').path,
       ],
       // No workingDirection as hotReloader expects to be run from the root
@@ -150,12 +154,10 @@ void main() {
       familyParamDir.file('step1.dart'),
     );
 
-    print('Wait for id: 0');
     expect(await runner.currentRender.next, 'id: 0');
 
     runner.update(familyParamDir.file('step2.dart'));
 
-    print('Wait for id2: 0');
     expect(await runner.currentRender.next, 'id2: 0');
   });
 

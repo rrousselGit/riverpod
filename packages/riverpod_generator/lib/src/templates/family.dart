@@ -241,16 +241,25 @@ ${parameters.map((e) => 'final ${e.type.getDisplayString(withNullability: true)}
 
   @override
   bool operator ==(Object other) {
-    return ${[
-      'other is $providerTypeNameImpl',
-      ...parameters.map((e) => 'other.${e.name} == ${e.name}')
-    ].join(' && ')};
+    if (other is! $providerTypeNameImpl) return false;
+    // Check that the family function prototype hasn't changed
+    if (_riverpodIsDebugMode
+        && other.debugFamilyCallRuntimeType != debugFamilyCallRuntimeType) {
+      return false;
+    }
+
+    return ${parameters.map((e) => 'other.${e.name} == ${e.name}').join(' && ')};
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
 ${parameters.map((e) => 'hash = _SystemHash.combine(hash, ${e.name}.hashCode);').join()}
+
+    // == relies on debugFamilyCallRuntimeType in debug mode.
+    if (_riverpodIsDebugMode) {
+      hash = _SystemHash.combine(hash, debugFamilyCallRuntimeType.hashCode);
+    }
 
     return _SystemHash.finish(hash);
   }

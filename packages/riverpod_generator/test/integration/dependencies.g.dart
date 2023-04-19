@@ -112,13 +112,25 @@ class FamilyProvider extends AutoDisposeProvider<int> {
 
   @override
   bool operator ==(Object other) {
-    return other is FamilyProvider && other.id == id;
+    if (other is! FamilyProvider) return false;
+    // Check that the family function prototype hasn't changed
+    if (_riverpodIsDebugMode &&
+        other.debugFamilyCallRuntimeType != debugFamilyCallRuntimeType) {
+      return false;
+    }
+
+    return other.id == id;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, id.hashCode);
+
+    // == relies on debugFamilyCallRuntimeType in debug mode.
+    if (_riverpodIsDebugMode) {
+      hash = _SystemHash.combine(hash, debugFamilyCallRuntimeType.hashCode);
+    }
 
     return _SystemHash.finish(hash);
   }
@@ -320,13 +332,25 @@ class Family2Provider extends AutoDisposeNotifierProviderImpl<Family2, int> {
 
   @override
   bool operator ==(Object other) {
-    return other is Family2Provider && other.id == id;
+    if (other is! Family2Provider) return false;
+    // Check that the family function prototype hasn't changed
+    if (_riverpodIsDebugMode &&
+        other.debugFamilyCallRuntimeType != debugFamilyCallRuntimeType) {
+      return false;
+    }
+
+    return other.id == id;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, id.hashCode);
+
+    // == relies on debugFamilyCallRuntimeType in debug mode.
+    if (_riverpodIsDebugMode) {
+      hash = _SystemHash.combine(hash, debugFamilyCallRuntimeType.hashCode);
+    }
 
     return _SystemHash.finish(hash);
   }
@@ -453,13 +477,25 @@ class Provider4Provider
 
   @override
   bool operator ==(Object other) {
-    return other is Provider4Provider && other.id == id;
+    if (other is! Provider4Provider) return false;
+    // Check that the family function prototype hasn't changed
+    if (_riverpodIsDebugMode &&
+        other.debugFamilyCallRuntimeType != debugFamilyCallRuntimeType) {
+      return false;
+    }
+
+    return other.id == id;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, id.hashCode);
+
+    // == relies on debugFamilyCallRuntimeType in debug mode.
+    if (_riverpodIsDebugMode) {
+      hash = _SystemHash.combine(hash, debugFamilyCallRuntimeType.hashCode);
+    }
 
     return _SystemHash.finish(hash);
   }
