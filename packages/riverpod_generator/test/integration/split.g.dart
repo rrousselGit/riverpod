@@ -15,6 +15,7 @@ final counter2Provider = AutoDisposeProvider<int>.internal(
   name: r'counter2Provider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$counter2Hash,
+  debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -29,6 +30,7 @@ final counterProvider = AutoDisposeProvider<int>.internal(
   name: r'counterProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$counterHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );

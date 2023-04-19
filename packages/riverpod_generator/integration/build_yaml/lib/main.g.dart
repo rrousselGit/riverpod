@@ -15,6 +15,7 @@ final countPod = AutoDisposeProvider<int>.internal(
   name: r'countPod',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$countHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -29,6 +30,7 @@ final countFuturePod = AutoDisposeFutureProvider<int>.internal(
   name: r'countFuturePod',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$countFutureHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -43,6 +45,7 @@ final countStreamPod = AutoDisposeStreamProvider<int>.internal(
   name: r'countStreamPod',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$countStreamHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -113,6 +116,9 @@ class Count2Family extends Family<int> {
 
   @override
   String? get name => r'count2ProviderFamily';
+
+  @override
+  Type get debugFamilyCallRuntimeType => call.runtimeType;
 }
 
 /// See also [count2].
@@ -133,6 +139,8 @@ class Count2Provider extends AutoDisposeProvider<int> {
                   : _$count2Hash,
           dependencies: Count2Family._dependencies,
           allTransitiveDependencies: Count2Family._allTransitiveDependencies,
+          debugFamilyCallRuntimeType:
+              count2ProviderFamily.debugFamilyCallRuntimeType,
         );
 
   final int a;
@@ -194,6 +202,9 @@ class CountFuture2Family extends Family<AsyncValue<int>> {
 
   @override
   String? get name => r'countFuture2ProviderFamily';
+
+  @override
+  Type get debugFamilyCallRuntimeType => call.runtimeType;
 }
 
 /// See also [countFuture2].
@@ -215,6 +226,8 @@ class CountFuture2Provider extends AutoDisposeFutureProvider<int> {
           dependencies: CountFuture2Family._dependencies,
           allTransitiveDependencies:
               CountFuture2Family._allTransitiveDependencies,
+          debugFamilyCallRuntimeType:
+              countFuture2ProviderFamily.debugFamilyCallRuntimeType,
         );
 
   final int a;
@@ -276,6 +289,9 @@ class CountStream2Family extends Family<AsyncValue<int>> {
 
   @override
   String? get name => r'countStream2ProviderFamily';
+
+  @override
+  Type get debugFamilyCallRuntimeType => call.runtimeType;
 }
 
 /// See also [countStream2].
@@ -297,6 +313,8 @@ class CountStream2Provider extends AutoDisposeStreamProvider<int> {
           dependencies: CountStream2Family._dependencies,
           allTransitiveDependencies:
               CountStream2Family._allTransitiveDependencies,
+          debugFamilyCallRuntimeType:
+              countStream2ProviderFamily.debugFamilyCallRuntimeType,
         );
 
   final int a;
@@ -326,6 +344,7 @@ final countNotifierPod =
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$countNotifierHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -343,6 +362,7 @@ final countAsyncNotifierPod =
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$countAsyncNotifierHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -360,6 +380,7 @@ final countStreamNotifierPod =
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$countStreamNotifierHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -415,6 +436,9 @@ class CountNotifier2Family extends Family<int> {
 
   @override
   String? get name => r'countNotifier2ProviderFamily';
+
+  @override
+  Type get debugFamilyCallRuntimeType => call.runtimeType;
 }
 
 /// See also [CountNotifier2].
@@ -434,6 +458,8 @@ class CountNotifier2Provider
           dependencies: CountNotifier2Family._dependencies,
           allTransitiveDependencies:
               CountNotifier2Family._allTransitiveDependencies,
+          debugFamilyCallRuntimeType:
+              countNotifier2ProviderFamily.debugFamilyCallRuntimeType,
         );
 
   final int a;
@@ -513,6 +539,9 @@ class CountAsyncNotifier2Family extends Family<AsyncValue<int>> {
 
   @override
   String? get name => r'countAsyncNotifier2ProviderFamily';
+
+  @override
+  Type get debugFamilyCallRuntimeType => call.runtimeType;
 }
 
 /// See also [CountAsyncNotifier2].
@@ -532,6 +561,8 @@ class CountAsyncNotifier2Provider
           dependencies: CountAsyncNotifier2Family._dependencies,
           allTransitiveDependencies:
               CountAsyncNotifier2Family._allTransitiveDependencies,
+          debugFamilyCallRuntimeType:
+              countAsyncNotifier2ProviderFamily.debugFamilyCallRuntimeType,
         );
 
   final int a;
@@ -611,6 +642,9 @@ class CountStreamNotifier2Family extends Family<AsyncValue<int>> {
 
   @override
   String? get name => r'countStreamNotifier2ProviderFamily';
+
+  @override
+  Type get debugFamilyCallRuntimeType => call.runtimeType;
 }
 
 /// See also [CountStreamNotifier2].
@@ -630,6 +664,8 @@ class CountStreamNotifier2Provider
           dependencies: CountStreamNotifier2Family._dependencies,
           allTransitiveDependencies:
               CountStreamNotifier2Family._allTransitiveDependencies,
+          debugFamilyCallRuntimeType:
+              countStreamNotifier2ProviderFamily.debugFamilyCallRuntimeType,
         );
 
   final int a;

@@ -74,6 +74,9 @@ class FetchPackageDetailsFamily extends Family<AsyncValue<Package>> {
 
   @override
   String? get name => r'fetchPackageDetailsProvider';
+
+  @override
+  Type get debugFamilyCallRuntimeType => call.runtimeType;
 }
 
 /// See also [fetchPackageDetails].
@@ -95,6 +98,8 @@ class FetchPackageDetailsProvider extends AutoDisposeFutureProvider<Package> {
           dependencies: FetchPackageDetailsFamily._dependencies,
           allTransitiveDependencies:
               FetchPackageDetailsFamily._allTransitiveDependencies,
+          debugFamilyCallRuntimeType:
+              fetchPackageDetailsProvider.debugFamilyCallRuntimeType,
         );
 
   final String packageName;
@@ -124,6 +129,7 @@ final likedPackagesProvider = AutoDisposeFutureProvider<List<String>>.internal(
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$likedPackagesHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -139,6 +145,7 @@ final pubRepositoryProvider = AutoDisposeProvider<PubRepository>.internal(
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$pubRepositoryHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -219,6 +226,9 @@ class PackageMetricsFamily extends Family<AsyncValue<PackageMetricsScore>> {
 
   @override
   String? get name => r'packageMetricsProvider';
+
+  @override
+  Type get debugFamilyCallRuntimeType => call.runtimeType;
 }
 
 /// A provider that fetches the likes count, popularity score and pub points
@@ -250,6 +260,8 @@ class PackageMetricsProvider extends AutoDisposeAsyncNotifierProviderImpl<
           dependencies: PackageMetricsFamily._dependencies,
           allTransitiveDependencies:
               PackageMetricsFamily._allTransitiveDependencies,
+          debugFamilyCallRuntimeType:
+              packageMetricsProvider.debugFamilyCallRuntimeType,
         );
 
   final String packageName;

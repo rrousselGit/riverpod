@@ -17,6 +17,7 @@ final publicProvider = AutoDisposeProvider<String>.internal(
   name: r'publicProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$publicHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -34,6 +35,7 @@ final supports$inNamesProvider = AutoDisposeProvider<String>.internal(
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$supports$inNamesHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -124,6 +126,9 @@ class FamilyFamily extends Family<String> {
 
   @override
   String? get name => r'familyProvider';
+
+  @override
+  Type get debugFamilyCallRuntimeType => call.runtimeType;
 }
 
 /// A generated family provider.
@@ -156,6 +161,7 @@ class FamilyProvider extends AutoDisposeProvider<String> {
                   : _$familyHash,
           dependencies: FamilyFamily._dependencies,
           allTransitiveDependencies: FamilyFamily._allTransitiveDependencies,
+          debugFamilyCallRuntimeType: familyProvider.debugFamilyCallRuntimeType,
         );
 
   final int first;
@@ -196,6 +202,7 @@ final _privateProvider = AutoDisposeProvider<String>.internal(
   name: r'_privateProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$privateHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -213,6 +220,7 @@ final publicClassProvider =
   name: r'publicClassProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$publicClassHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -228,6 +236,7 @@ final _privateClassProvider =
   name: r'_privateClassProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$privateClassHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -311,6 +320,9 @@ class FamilyClassFamily extends Family<String> {
 
   @override
   String? get name => r'familyClassProvider';
+
+  @override
+  Type get debugFamilyCallRuntimeType => call.runtimeType;
 }
 
 /// A generated family provider from a class.
@@ -343,6 +355,8 @@ class FamilyClassProvider
           dependencies: FamilyClassFamily._dependencies,
           allTransitiveDependencies:
               FamilyClassFamily._allTransitiveDependencies,
+          debugFamilyCallRuntimeType:
+              familyClassProvider.debugFamilyCallRuntimeType,
         );
 
   final int first;
@@ -401,6 +415,7 @@ final supports$InClassNameProvider =
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$supports$InClassNameHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );

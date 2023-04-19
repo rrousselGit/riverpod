@@ -71,6 +71,9 @@ class FnFamily extends Family<String> {
 
   @override
   String? get name => r'fnProvider';
+
+  @override
+  Type get debugFamilyCallRuntimeType => call.runtimeType;
 }
 
 /// See also [fn].
@@ -89,6 +92,7 @@ class FnProvider extends AutoDisposeProvider<String> {
               const bool.fromEnvironment('dart.vm.product') ? null : _$fnHash,
           dependencies: FnFamily._dependencies,
           allTransitiveDependencies: FnFamily._allTransitiveDependencies,
+          debugFamilyCallRuntimeType: fnProvider.debugFamilyCallRuntimeType,
         );
 
   final int id2;

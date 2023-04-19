@@ -15,6 +15,7 @@ final publicProvider = AutoDisposeStreamProvider<String>.internal(
   name: r'publicProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$publicHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -29,6 +30,7 @@ final _privateProvider = AutoDisposeStreamProvider<String>.internal(
   name: r'_privateProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$privateHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -111,6 +113,9 @@ class FamilyFamily extends Family<AsyncValue<String>> {
 
   @override
   String? get name => r'familyProvider';
+
+  @override
+  Type get debugFamilyCallRuntimeType => call.runtimeType;
 }
 
 /// See also [family].
@@ -139,6 +144,7 @@ class FamilyProvider extends AutoDisposeStreamProvider<String> {
                   : _$familyHash,
           dependencies: FamilyFamily._dependencies,
           allTransitiveDependencies: FamilyFamily._allTransitiveDependencies,
+          debugFamilyCallRuntimeType: familyProvider.debugFamilyCallRuntimeType,
         );
 
   final int first;
@@ -180,6 +186,7 @@ final publicClassProvider =
   name: r'publicClassProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$publicClassHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -195,6 +202,7 @@ final _privateClassProvider =
   name: r'_privateClassProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$privateClassHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -271,6 +279,9 @@ class FamilyClassFamily extends Family<AsyncValue<String>> {
 
   @override
   String? get name => r'familyClassProvider';
+
+  @override
+  Type get debugFamilyCallRuntimeType => call.runtimeType;
 }
 
 /// See also [FamilyClass].
@@ -299,6 +310,8 @@ class FamilyClassProvider
           dependencies: FamilyClassFamily._dependencies,
           allTransitiveDependencies:
               FamilyClassFamily._allTransitiveDependencies,
+          debugFamilyCallRuntimeType:
+              familyClassProvider.debugFamilyCallRuntimeType,
         );
 
   final int first;

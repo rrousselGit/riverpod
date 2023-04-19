@@ -76,6 +76,9 @@ class FetchPackagesFamily extends Family<AsyncValue<List<Package>>> {
 
   @override
   String? get name => r'fetchPackagesProvider';
+
+  @override
+  Type get debugFamilyCallRuntimeType => call.runtimeType;
 }
 
 /// See also [fetchPackages].
@@ -99,6 +102,8 @@ class FetchPackagesProvider extends AutoDisposeFutureProvider<List<Package>> {
           dependencies: FetchPackagesFamily._dependencies,
           allTransitiveDependencies:
               FetchPackagesFamily._allTransitiveDependencies,
+          debugFamilyCallRuntimeType:
+              fetchPackagesProvider.debugFamilyCallRuntimeType,
         );
 
   final int page;

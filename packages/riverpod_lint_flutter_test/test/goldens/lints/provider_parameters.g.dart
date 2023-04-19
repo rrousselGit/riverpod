@@ -71,6 +71,9 @@ class GeneratorFamily extends Family<int> {
 
   @override
   String? get name => r'generatorProvider';
+
+  @override
+  Type get debugFamilyCallRuntimeType => call.runtimeType;
 }
 
 /// See also [generator].
@@ -91,6 +94,8 @@ class GeneratorProvider extends Provider<int> {
                   : _$generatorHash,
           dependencies: GeneratorFamily._dependencies,
           allTransitiveDependencies: GeneratorFamily._allTransitiveDependencies,
+          debugFamilyCallRuntimeType:
+              generatorProvider.debugFamilyCallRuntimeType,
         );
 
   final Object? value;

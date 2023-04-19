@@ -17,6 +17,7 @@ final statelessProvider = AutoDisposeProvider<int>.internal(
   name: r'statelessProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$statelessHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -98,6 +99,9 @@ class StatelessFamilyFamily extends Family<int> {
 
   @override
   String? get name => r'statelessFamilyProvider';
+
+  @override
+  Type get debugFamilyCallRuntimeType => call.runtimeType;
 }
 
 /// Some comment
@@ -125,6 +129,8 @@ class StatelessFamilyProvider extends AutoDisposeProvider<int> {
           dependencies: StatelessFamilyFamily._dependencies,
           allTransitiveDependencies:
               StatelessFamilyFamily._allTransitiveDependencies,
+          debugFamilyCallRuntimeType:
+              statelessFamilyProvider.debugFamilyCallRuntimeType,
         );
 
   final int a;

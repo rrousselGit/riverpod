@@ -15,6 +15,7 @@ final keepAliveProvider = Provider<int>.internal(
   name: r'keepAliveProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$keepAliveHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -29,6 +30,7 @@ final notKeepAliveProvider = AutoDisposeProvider<int>.internal(
   name: r'notKeepAliveProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$notKeepAliveHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );

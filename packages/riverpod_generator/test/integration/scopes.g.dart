@@ -18,6 +18,7 @@ final scopedProvider = AutoDisposeProvider<int>.internal(
   name: r'scopedProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$scopedHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );

@@ -15,6 +15,7 @@ final depProvider = AutoDisposeProvider<int>.internal(
   name: r'depProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$depHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -85,6 +86,9 @@ class FamilyFamily extends Family<int> {
 
   @override
   String? get name => r'familyProvider';
+
+  @override
+  Type get debugFamilyCallRuntimeType => call.runtimeType;
 }
 
 /// See also [family].
@@ -105,6 +109,7 @@ class FamilyProvider extends AutoDisposeProvider<int> {
                   : _$familyHash,
           dependencies: FamilyFamily._dependencies,
           allTransitiveDependencies: FamilyFamily._allTransitiveDependencies,
+          debugFamilyCallRuntimeType: familyProvider.debugFamilyCallRuntimeType,
         );
 
   final int id;
@@ -132,6 +137,7 @@ final providerProvider = AutoDisposeProvider<int>.internal(
   name: r'providerProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$providerHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: <ProviderOrFamily>{
     depProvider,
     familyProvider,
@@ -156,6 +162,7 @@ final provider2Provider = AutoDisposeProvider<int>.internal(
   name: r'provider2Provider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$provider2Hash,
+  debugFamilyCallRuntimeType: null,
   dependencies: <ProviderOrFamily>{
     depProvider,
     familyProvider,
@@ -182,6 +189,7 @@ final transitiveDependenciesProvider = AutoDisposeProvider<int>.internal(
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$transitiveDependenciesHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: <ProviderOrFamily>[providerProvider],
   allTransitiveDependencies: <ProviderOrFamily>{
     providerProvider,
@@ -205,6 +213,7 @@ final smallTransitiveDependencyCountProvider =
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$smallTransitiveDependencyCountHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: <ProviderOrFamily>[depProvider, familyProvider, dep2Provider],
   allTransitiveDependencies: <ProviderOrFamily>[
     depProvider,
@@ -225,6 +234,7 @@ final emptyDependenciesStatelessProvider = AutoDisposeProvider<int>.internal(
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$emptyDependenciesStatelessHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: const <ProviderOrFamily>[],
   allTransitiveDependencies: const <ProviderOrFamily>[],
 );
@@ -239,6 +249,7 @@ final dep2Provider = AutoDisposeNotifierProvider<Dep2, int>.internal(
   name: r'dep2Provider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$dep2Hash,
+  debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -294,6 +305,9 @@ class Family2Family extends Family<int> {
 
   @override
   String? get name => r'family2Provider';
+
+  @override
+  Type get debugFamilyCallRuntimeType => call.runtimeType;
 }
 
 /// See also [Family2].
@@ -311,6 +325,8 @@ class Family2Provider extends AutoDisposeNotifierProviderImpl<Family2, int> {
                   : _$family2Hash,
           dependencies: Family2Family._dependencies,
           allTransitiveDependencies: Family2Family._allTransitiveDependencies,
+          debugFamilyCallRuntimeType:
+              family2Provider.debugFamilyCallRuntimeType,
         );
 
   final int id;
@@ -347,6 +363,7 @@ final provider3Provider = AutoDisposeNotifierProvider<Provider3, int>.internal(
   name: r'provider3Provider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$provider3Hash,
+  debugFamilyCallRuntimeType: null,
   dependencies: <ProviderOrFamily>{
     depProvider,
     familyProvider,
@@ -423,6 +440,9 @@ class Provider4Family extends Family<int> {
 
   @override
   String? get name => r'provider4Provider';
+
+  @override
+  Type get debugFamilyCallRuntimeType => call.runtimeType;
 }
 
 /// See also [Provider4].
@@ -441,6 +461,8 @@ class Provider4Provider
                   : _$provider4Hash,
           dependencies: Provider4Family._dependencies,
           allTransitiveDependencies: Provider4Family._allTransitiveDependencies,
+          debugFamilyCallRuntimeType:
+              provider4Provider.debugFamilyCallRuntimeType,
         );
 
   final int id;
@@ -480,6 +502,7 @@ final emptyDependenciesStatefulProvider =
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$emptyDependenciesStatefulHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: const <ProviderOrFamily>[],
   allTransitiveDependencies: const <ProviderOrFamily>[],
 );

@@ -17,6 +17,7 @@ final statefulProvider = AutoDisposeNotifierProvider<Stateful, int>.internal(
   name: r'statefulProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$statefulHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -106,6 +107,9 @@ class StatefulFamilyFamily extends Family<int> {
 
   @override
   String? get name => r'statefulFamilyProvider';
+
+  @override
+  Type get debugFamilyCallRuntimeType => call.runtimeType;
 }
 
 /// Some comment
@@ -132,6 +136,8 @@ class StatefulFamilyProvider
           dependencies: StatefulFamilyFamily._dependencies,
           allTransitiveDependencies:
               StatefulFamilyFamily._allTransitiveDependencies,
+          debugFamilyCallRuntimeType:
+              statefulFamilyProvider.debugFamilyCallRuntimeType,
         );
 
   final int a;

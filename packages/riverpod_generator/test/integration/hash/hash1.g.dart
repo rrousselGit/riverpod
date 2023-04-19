@@ -15,6 +15,7 @@ final simpleProvider = AutoDisposeProvider<String>.internal(
   name: r'simpleProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$simpleHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -29,6 +30,7 @@ final simple2Provider = AutoDisposeProvider<String>.internal(
   name: r'simple2Provider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$simple2Hash,
+  debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -44,6 +46,7 @@ final simpleClassProvider =
   name: r'simpleClassProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$simpleClassHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );

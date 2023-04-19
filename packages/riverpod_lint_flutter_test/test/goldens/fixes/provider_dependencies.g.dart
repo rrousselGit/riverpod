@@ -15,6 +15,7 @@ final depProvider = AutoDisposeProvider<int>.internal(
   name: r'depProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$depHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: const <ProviderOrFamily>[],
   allTransitiveDependencies: const <ProviderOrFamily>[],
 );
@@ -29,6 +30,7 @@ final dep2Provider = AutoDisposeProvider<int>.internal(
   name: r'dep2Provider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$dep2Hash,
+  debugFamilyCallRuntimeType: null,
   dependencies: const <ProviderOrFamily>[],
   allTransitiveDependencies: const <ProviderOrFamily>[],
 );
@@ -45,6 +47,7 @@ final plainAnnotationProvider = AutoDisposeProvider<int>.internal(
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$plainAnnotationHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -60,6 +63,7 @@ final customAnnotationProvider = AutoDisposeProvider<int>.internal(
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$customAnnotationHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -77,6 +81,7 @@ final customAnnotationWithTrailingCommaProvider =
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$customAnnotationWithTrailingCommaHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -91,6 +96,7 @@ final existingDepProvider = AutoDisposeProvider<int>.internal(
   name: r'existingDepProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$existingDepHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: const <ProviderOrFamily>[],
   allTransitiveDependencies: const <ProviderOrFamily>[],
 );
@@ -105,6 +111,7 @@ final multipleDepsProvider = AutoDisposeProvider<int>.internal(
   name: r'multipleDepsProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$multipleDepsHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: const <ProviderOrFamily>[],
   allTransitiveDependencies: const <ProviderOrFamily>[],
 );
@@ -119,6 +126,7 @@ final extraDepProvider = AutoDisposeProvider<int>.internal(
   name: r'extraDepProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$extraDepHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: <ProviderOrFamily>[depProvider, dep2Provider],
   allTransitiveDependencies: <ProviderOrFamily>[depProvider, dep2Provider],
 );
@@ -133,6 +141,7 @@ final noDepProvider = AutoDisposeProvider<int>.internal(
   name: r'noDepProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$noDepHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: <ProviderOrFamily>[depProvider],
   allTransitiveDependencies: <ProviderOrFamily>[depProvider],
 );
@@ -150,6 +159,7 @@ final dependenciesFirstThenKeepAliveProvider =
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$dependenciesFirstThenKeepAliveHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: <ProviderOrFamily>[depProvider],
   allTransitiveDependencies: <ProviderOrFamily>[depProvider],
 );
@@ -164,6 +174,7 @@ final noDepNoParamProvider = AutoDisposeProvider<int>.internal(
   name: r'noDepNoParamProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$noDepNoParamHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: <ProviderOrFamily>[depProvider],
   allTransitiveDependencies: <ProviderOrFamily>[depProvider],
 );
@@ -179,6 +190,7 @@ final noDepWithoutCommaProvider = AutoDisposeProvider<int>.internal(
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$noDepWithoutCommaHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: <ProviderOrFamily>[depProvider],
   allTransitiveDependencies: <ProviderOrFamily>[depProvider],
 );

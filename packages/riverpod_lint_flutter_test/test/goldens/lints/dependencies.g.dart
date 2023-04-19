@@ -20,6 +20,7 @@ final unimplementedScopedProvider = AutoDisposeProvider<int>.internal(
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$unimplementedScopedHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -34,6 +35,7 @@ final depProvider = AutoDisposeProvider<int>.internal(
   name: r'depProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$depHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: const <ProviderOrFamily>[],
   allTransitiveDependencies: const <ProviderOrFamily>[],
 );
@@ -49,6 +51,7 @@ final generatedScopedProvider = AutoDisposeProvider<int>.internal(
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$generatedScopedHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: const <ProviderOrFamily>[],
   allTransitiveDependencies: const <ProviderOrFamily>[],
 );
@@ -64,6 +67,7 @@ final generatedRootProvider = AutoDisposeProvider<int>.internal(
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$generatedRootHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -80,6 +84,7 @@ final watchScopedButNoDependenciesProvider = AutoDisposeProvider<int>.internal(
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$watchScopedButNoDependenciesHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -97,6 +102,7 @@ final watchExternalButNoDependenciesProvider =
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$watchExternalButNoDependenciesHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -114,6 +120,7 @@ final watchGeneratedScopedButNoDependenciesProvider =
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$watchGeneratedScopedButNoDependenciesHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -130,6 +137,7 @@ final watchRootButNoDependenciesProvider = AutoDisposeProvider<int>.internal(
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$watchRootButNoDependenciesHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -147,6 +155,7 @@ final watchGeneratedRootButNoDependenciesProvider =
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$watchGeneratedRootButNoDependenciesHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -164,6 +173,7 @@ final watchScopedButEmptyDependenciesProvider =
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$watchScopedButEmptyDependenciesHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: const <ProviderOrFamily>[],
   allTransitiveDependencies: const <ProviderOrFamily>[],
 );
@@ -181,6 +191,7 @@ final watchGeneratedScopedButEmptyDependenciesProvider =
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$watchGeneratedScopedButEmptyDependenciesHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: const <ProviderOrFamily>[],
   allTransitiveDependencies: const <ProviderOrFamily>[],
 );
@@ -198,6 +209,7 @@ final watchRootButEmptyDependenciesProvider = AutoDisposeProvider<int>.internal(
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$watchRootButEmptyDependenciesHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: const <ProviderOrFamily>[],
   allTransitiveDependencies: const <ProviderOrFamily>[],
 );
@@ -215,6 +227,7 @@ final watchGeneratedRootButEmptyDependenciesProvider =
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$watchGeneratedRootButEmptyDependenciesHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: const <ProviderOrFamily>[],
   allTransitiveDependencies: const <ProviderOrFamily>[],
 );
@@ -232,6 +245,7 @@ final watchScopedButMissingDependenciesProvider =
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$watchScopedButMissingDependenciesHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: <ProviderOrFamily>[depProvider],
   allTransitiveDependencies: <ProviderOrFamily>[depProvider],
 );
@@ -249,6 +263,7 @@ final watchGeneratedScopedButMissingDependenciesProvider =
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$watchGeneratedScopedButMissingDependenciesHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: <ProviderOrFamily>[depProvider],
   allTransitiveDependencies: <ProviderOrFamily>[depProvider],
 );
@@ -267,6 +282,7 @@ final watchRootButMissingDependenciesProvider =
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$watchRootButMissingDependenciesHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: <ProviderOrFamily>[depProvider],
   allTransitiveDependencies: <ProviderOrFamily>[depProvider],
 );
@@ -284,6 +300,7 @@ final watchGeneratedRootButMissingDependenciesProvider =
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$watchGeneratedRootButMissingDependenciesHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: <ProviderOrFamily>[depProvider],
   allTransitiveDependencies: <ProviderOrFamily>[depProvider],
 );
@@ -302,6 +319,7 @@ final watchGeneratedScopedAndContainsDependencyProvider =
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$watchGeneratedScopedAndContainsDependencyHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: <ProviderOrFamily>[generatedScopedProvider],
   allTransitiveDependencies: <ProviderOrFamily>[generatedScopedProvider],
 );
@@ -320,6 +338,7 @@ final watchGeneratedRootAndContainsDependencyProvider =
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$watchGeneratedRootAndContainsDependencyHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: <ProviderOrFamily>[generatedRootProvider],
   allTransitiveDependencies: <ProviderOrFamily>[generatedRootProvider],
 );
@@ -338,6 +357,7 @@ final specifiedDependencyButNeverUsedProvider =
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$specifiedDependencyButNeverUsedHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: <ProviderOrFamily>[depProvider, generatedRootProvider],
   allTransitiveDependencies: <ProviderOrFamily>[
     depProvider,
@@ -356,6 +376,7 @@ final regression2348Provider = AutoDisposeProvider<int>.internal(
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$regression2348Hash,
+  debugFamilyCallRuntimeType: null,
   dependencies: <ProviderOrFamily>[generatedScopedProvider],
   allTransitiveDependencies: <ProviderOrFamily>[generatedScopedProvider],
 );
@@ -374,6 +395,7 @@ final classWatchGeneratedRootButMissingDependenciesProvider =
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$classWatchGeneratedRootButMissingDependenciesHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: const <ProviderOrFamily>[],
   allTransitiveDependencies: const <ProviderOrFamily>[],
 );
@@ -393,6 +415,7 @@ final classWatchGeneratedScopedButMissingDependenciesProvider =
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$classWatchGeneratedScopedButMissingDependenciesHash,
+  debugFamilyCallRuntimeType: null,
   dependencies: const <ProviderOrFamily>[],
   allTransitiveDependencies: const <ProviderOrFamily>[],
 );
@@ -410,6 +433,7 @@ final regression2417Provider =
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$regression2417Hash,
+  debugFamilyCallRuntimeType: null,
   dependencies: <ProviderOrFamily>[generatedScopedProvider],
   allTransitiveDependencies: <ProviderOrFamily>[generatedScopedProvider],
 );
