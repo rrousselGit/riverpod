@@ -29,8 +29,7 @@ String _hashFnName(ProviderDeclaration provider) {
 }
 
 String _hashFnIdentifier(String hashFnName) {
-  return "const bool.fromEnvironment('dart.vm.product') ? "
-      'null : $hashFnName';
+  return '_riverpodIsDebugMode ? null : $hashFnName';
 }
 
 const _defaultProviderNameSuffix = 'Provider';
@@ -76,9 +75,14 @@ class RiverpodGenerator extends ParserGenerator<Riverpod> {
 
     riverpodResult.visitChildren(_RiverpodGeneratorVisitor(buffer, options));
 
-    // Only emit the header if we actually generated something
     if (buffer.isNotEmpty) {
-      buffer.write('''
+      // Only emit the kDebugMode const if we actually generated something
+      buffer.writeln(
+        "const _riverpodIsDebugMode = bool.fromEnvironment('dart.vm.product');",
+      );
+
+      // Only emit the header if we actually generated something
+      buffer.writeln('''
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions
 ''');
     }

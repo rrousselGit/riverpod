@@ -13,8 +13,7 @@ String _$publicHash() => r'c5cc0eac434371901cf6ab159a81bba49c58da12';
 final publicProvider = AutoDisposeStreamProvider<String>.internal(
   public,
   name: r'publicProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$publicHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$publicHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -28,8 +27,7 @@ String _$privateHash() => r'bbee0c7e27bda81346b5f52c96b23b2e48f83077';
 final _privateProvider = AutoDisposeStreamProvider<String>.internal(
   _private,
   name: r'_privateProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$privateHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$privateHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -138,10 +136,7 @@ class FamilyProvider extends AutoDisposeStreamProvider<String> {
           ),
           from: familyProvider,
           name: r'familyProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$familyHash,
+          debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$familyHash,
           dependencies: FamilyFamily._dependencies,
           allTransitiveDependencies: FamilyFamily._allTransitiveDependencies,
           debugFamilyCallRuntimeType: familyProvider.debugFamilyCallRuntimeType,
@@ -184,8 +179,7 @@ final publicClassProvider =
     AutoDisposeStreamNotifierProvider<PublicClass, String>.internal(
   PublicClass.new,
   name: r'publicClassProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$publicClassHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$publicClassHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -200,8 +194,7 @@ final _privateClassProvider =
     AutoDisposeStreamNotifierProvider<_PrivateClass, String>.internal(
   _PrivateClass.new,
   name: r'_privateClassProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$privateClassHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$privateClassHash,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -304,9 +297,7 @@ class FamilyClassProvider
           from: familyClassProvider,
           name: r'familyClassProvider',
           debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$familyClassHash,
+              _riverpodIsDebugMode ? null : _$familyClassHash,
           dependencies: FamilyClassFamily._dependencies,
           allTransitiveDependencies:
               FamilyClassFamily._allTransitiveDependencies,
@@ -355,4 +346,6 @@ class FamilyClassProvider
     );
   }
 }
+
+const _riverpodIsDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

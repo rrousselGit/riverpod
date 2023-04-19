@@ -88,8 +88,7 @@ class FnProvider extends AutoDisposeProvider<String> {
           ),
           from: fnProvider,
           name: r'fnProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product') ? null : _$fnHash,
+          debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$fnHash,
           dependencies: FnFamily._dependencies,
           allTransitiveDependencies: FnFamily._allTransitiveDependencies,
           debugFamilyCallRuntimeType: fnProvider.debugFamilyCallRuntimeType,
@@ -110,4 +109,6 @@ class FnProvider extends AutoDisposeProvider<String> {
     return _SystemHash.finish(hash);
   }
 }
+
+const _riverpodIsDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions
