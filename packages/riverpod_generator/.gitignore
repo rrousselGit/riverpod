@@ -1,0 +1,3 @@
+test/integration/hot_reload/src/renderer.dart
+test/integration/hot_reload/src/renderer.g.dart
+test/integration/hot_reload/src/main.dart

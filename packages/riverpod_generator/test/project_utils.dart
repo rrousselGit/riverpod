@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart';
+import 'package:test/test.dart';
 
 extension PackageIOUtils on Directory {
   /// Creates a child [File] from a list of path segments.

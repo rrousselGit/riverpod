@@ -22,7 +22,9 @@ dependencies:
   source_gen: ^1.2.0
 
 dev_dependencies:
+  async: ^2.11.0
   build_runner: ^2.1.7
   build_verify: ^3.0.0
+  hotreloader: ^3.0.6
   riverpod: ^2.3.0
   test: ^1.21.0

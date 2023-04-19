@@ -1,0 +1,20 @@
+name: hot_reload_test
+environment:
+  sdk: ">=2.18.0 <3.0.0"
+
+dependencies:
+  riverpod:
+  riverpod_annotation:
+  hotreloader:
+
+dev_dependencies:
+  build_runner:
+  riverpod_generator:
+
+dependency_overrides:
+  riverpod:
+    path: ../../../../riverpod
+  riverpod_annotation:
+    path: ../../../../riverpod_annotation
+  riverpod_generator:
+    path: ../../../../riverpod_generator
