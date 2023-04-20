@@ -1,3 +1,7 @@
+## Unreleased fix
+
+- Removed incorrect statement in ChangeNotifierProvider docs
+
 ## 2.3.5 - 2023-04-18
 
 - fix `AsyncValue.isReloading` docs

@@ -15,8 +15,6 @@ abstract class ChangeNotifierProviderRef<NotifierT extends ChangeNotifier?>
 /// {@template riverpod.ChangeNotifierprovider}
 /// Creates a [ChangeNotifier] and exposes its current state.
 ///
-/// This provider is used in combination with `package:state_notifier`.
-///
 /// Combined with [ChangeNotifier], [ChangeNotifierProvider] can be used to manipulate
 /// advanced states, that would otherwise be difficult to represent with simpler
 /// providers such as [Provider] or [FutureProvider].
