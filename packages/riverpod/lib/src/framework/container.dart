@@ -327,8 +327,7 @@ class ProviderContainer implements Node {
       // on provider dispose, to avoid memory leak
 
       void removeStateReaderFrom(ProviderContainer container) {
-        final reader = container._stateReaders[element._origin];
-        if (reader?.override == provider) {
+        if (container._stateReaders[element._origin] == reader) {
           container._stateReaders.remove(element._origin);
         }
         container._children.forEach(removeStateReaderFrom);

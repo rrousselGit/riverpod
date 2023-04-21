@@ -530,6 +530,33 @@ final alwaysAlive = Provider((ref) {
   });
 
   test(
+      'when cancel autoDispose family override it should be disposed immediately',
+      () async {
+    final provider = Provider.autoDispose.family<int, int>((ref, _) => -1);
+
+    var constructionCount = 0;
+    final override = Provider.autoDispose.family<int, int>((ref, _) {
+      return ++constructionCount;
+    });
+
+    final overriden = provider.overrideWithProvider(override);
+    final root = createContainer();
+    final container = createContainer(
+      parent: root,
+      overrides: [overriden],
+    );
+
+    final instance1 = provider(0);
+    var count = container.read(instance1);
+    expect(count, 1);
+    await container.pump();
+
+    final instance2 = provider(0);
+    count = container.read(instance2);
+    expect(count, 2);
+  });
+
+  test(
       'can select auto-dispose providers if the selecting provider is auto-dispose too',
       () {
     final container = createContainer();
