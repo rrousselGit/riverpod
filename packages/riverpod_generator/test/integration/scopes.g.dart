@@ -16,7 +16,7 @@ final scopedProvider = AutoDisposeProvider<int>.internal(
     'but was accessed without an override.',
   ),
   name: r'scopedProvider',
-  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$scopedHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? _$scopedHash : null,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,

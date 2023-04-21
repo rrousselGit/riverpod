@@ -95,8 +95,14 @@ void main() {
 
     final generated = RiverpodGenerator(const {}).runGenerator(analysisResult);
 
-    writeFile(_workspace.file('renderer.dart'), source);
-    writeFile(_workspace.file('renderer.g.dart'), generated);
+    writeFile(_workspace.file('renderer.dart'), '''
+// ignore_for_file: avoid_print
+$source
+''');
+    writeFile(_workspace.file('renderer.g.dart'), '''
+part of 'renderer.dart';
+$generated
+''');
   }
 
   Future<void> _listenToOutput() {

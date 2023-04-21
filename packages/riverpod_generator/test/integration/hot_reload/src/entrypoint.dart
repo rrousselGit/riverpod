@@ -8,32 +8,26 @@ import 'package:hotreloader/hotreloader.dart';
 const renderStart = '<<<<rendering>>>>';
 const renderEnd = '<<<<done rendering>>>>';
 
-Future<void> entrypoint(
-  void Function() renderer,
-) async {
-  void run(void Function() cb) {
-    try {
-      print(renderStart);
-      cb();
-    } catch (err, stack) {
-      print(err);
-      print(stack);
-    } finally {
-      print(renderEnd);
-    }
+Future<void> _run(FutureOr<void> Function() cb) async {
+  try {
+    print(renderStart);
+    await cb();
+  } catch (err, stack) {
+    print(err);
+    print(stack);
+  } finally {
+    print(renderEnd);
   }
+}
 
+Future<void> entrypoint(FutureOr<void> Function() renderer) async {
   try {
     await HotReloader.create(
-      onBeforeReload: (_) {
-        return true;
-      },
-      onAfterReload: (value) {
-        run(() {
+      onAfterReload: (value) async {
+        await _run(() {
           switch (value.result) {
             case HotReloadResult.Succeeded:
-              renderer();
-              break;
+              return renderer();
             default:
               print('Error ${value.reloadReports.length}');
               for (final report in value.reloadReports.entries) {
@@ -45,8 +39,9 @@ Future<void> entrypoint(
       },
     );
   } catch (err, stack) {
-    stderr.addError(err, stack);
+    stderr.writeln(err);
+    stderr.writeln(stack);
   }
 
-  run(() => renderer());
+  await _run(renderer);
 }

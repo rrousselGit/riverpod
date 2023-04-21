@@ -13,7 +13,7 @@ String _$counter2Hash() => r'9328919066a683f85226fc59201bb7c54f107a7d';
 final counter2Provider = AutoDisposeProvider<int>.internal(
   counter2,
   name: r'counter2Provider',
-  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$counter2Hash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? _$counter2Hash : null,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -27,7 +27,7 @@ String _$counterHash() => r'9b0db44ecc47057e79891e5ecd92d34b08637679';
 final counterProvider = AutoDisposeProvider<int>.internal(
   counter,
   name: r'counterProvider',
-  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$counterHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? _$counterHash : null,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,

@@ -13,7 +13,7 @@ String _$publicHash() => r'9d99b79c013da13926d4ad89c72ebca4fc1cc257';
 final publicProvider = AutoDisposeFutureProvider<String>.internal(
   public,
   name: r'publicProvider',
-  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$publicHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? _$publicHash : null,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -27,7 +27,7 @@ String _$privateHash() => r'bc0469a9315de114a0ccd82c7db4980844d0009f';
 final _privateProvider = AutoDisposeFutureProvider<String>.internal(
   _private,
   name: r'_privateProvider',
-  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$privateHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? _$privateHash : null,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -136,7 +136,7 @@ class FamilyProvider extends AutoDisposeFutureProvider<String> {
           ),
           from: familyProvider,
           name: r'familyProvider',
-          debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$familyHash,
+          debugGetCreateSourceHash: _riverpodIsDebugMode ? _$familyHash : null,
           dependencies: FamilyFamily._dependencies,
           allTransitiveDependencies: FamilyFamily._allTransitiveDependencies,
           debugFamilyCallRuntimeType: familyProvider.debugFamilyCallRuntimeType,
@@ -179,7 +179,7 @@ final publicClassProvider =
     AutoDisposeAsyncNotifierProvider<PublicClass, String>.internal(
   PublicClass.new,
   name: r'publicClassProvider',
-  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$publicClassHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? _$publicClassHash : null,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -194,7 +194,7 @@ final _privateClassProvider =
     AutoDisposeAsyncNotifierProvider<_PrivateClass, String>.internal(
   _PrivateClass.new,
   name: r'_privateClassProvider',
-  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$privateClassHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? _$privateClassHash : null,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -296,7 +296,7 @@ class FamilyClassProvider
           from: familyClassProvider,
           name: r'familyClassProvider',
           debugGetCreateSourceHash:
-              _riverpodIsDebugMode ? null : _$familyClassHash,
+              _riverpodIsDebugMode ? _$familyClassHash : null,
           dependencies: FamilyClassFamily._dependencies,
           allTransitiveDependencies:
               FamilyClassFamily._allTransitiveDependencies,

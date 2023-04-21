@@ -13,7 +13,7 @@ String _$keepAliveHash() => r'72dd192676126d487c24c7695a91d59410c62696';
 final keepAliveProvider = Provider<int>.internal(
   keepAlive,
   name: r'keepAliveProvider',
-  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$keepAliveHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? _$keepAliveHash : null,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -27,7 +27,7 @@ String _$notKeepAliveHash() => r'1ccc497d7c651f8e730ec1bcecf271ffe9615d83';
 final notKeepAliveProvider = AutoDisposeProvider<int>.internal(
   notKeepAlive,
   name: r'notKeepAliveProvider',
-  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$notKeepAliveHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? _$notKeepAliveHash : null,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,

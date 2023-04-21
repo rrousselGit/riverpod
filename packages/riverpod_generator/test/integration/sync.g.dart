@@ -15,7 +15,7 @@ String _$publicHash() => r'138be35943899793ab085e711fe3f3d22696a3ba';
 final publicProvider = AutoDisposeProvider<String>.internal(
   public,
   name: r'publicProvider',
-  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$publicHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? _$publicHash : null,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -30,7 +30,7 @@ final supports$inNamesProvider = AutoDisposeProvider<String>.internal(
   supports$inNames,
   name: r'supports$inNamesProvider',
   debugGetCreateSourceHash:
-      _riverpodIsDebugMode ? null : _$supports$inNamesHash,
+      _riverpodIsDebugMode ? _$supports$inNamesHash : null,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -151,7 +151,7 @@ class FamilyProvider extends AutoDisposeProvider<String> {
           ),
           from: familyProvider,
           name: r'familyProvider',
-          debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$familyHash,
+          debugGetCreateSourceHash: _riverpodIsDebugMode ? _$familyHash : null,
           dependencies: FamilyFamily._dependencies,
           allTransitiveDependencies: FamilyFamily._allTransitiveDependencies,
           debugFamilyCallRuntimeType: familyProvider.debugFamilyCallRuntimeType,
@@ -193,7 +193,7 @@ String _$privateHash() => r'519561bc7e88e394d7f75ca2102a5c0acc832c66';
 final _privateProvider = AutoDisposeProvider<String>.internal(
   _private,
   name: r'_privateProvider',
-  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$privateHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? _$privateHash : null,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -207,7 +207,7 @@ String _$generatedHash() => r'fecbc1d5d9a05fc996b452a57fd1975ff368af91';
 final generatedProvider = AutoDisposeProvider<String>.internal(
   generated,
   name: r'generatedProvider',
-  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$generatedHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? _$generatedHash : null,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -224,7 +224,7 @@ final publicClassProvider =
     AutoDisposeNotifierProvider<PublicClass, String>.internal(
   PublicClass.new,
   name: r'publicClassProvider',
-  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$publicClassHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? _$publicClassHash : null,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -239,7 +239,7 @@ final _privateClassProvider =
     AutoDisposeNotifierProvider<_PrivateClass, String>.internal(
   _PrivateClass.new,
   name: r'_privateClassProvider',
-  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$privateClassHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? _$privateClassHash : null,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -353,7 +353,7 @@ class FamilyClassProvider
           from: familyClassProvider,
           name: r'familyClassProvider',
           debugGetCreateSourceHash:
-              _riverpodIsDebugMode ? null : _$familyClassHash,
+              _riverpodIsDebugMode ? _$familyClassHash : null,
           dependencies: FamilyClassFamily._dependencies,
           allTransitiveDependencies:
               FamilyClassFamily._allTransitiveDependencies,
@@ -413,7 +413,7 @@ final supports$InClassNameProvider =
   Supports$InClassName.new,
   name: r'supports$InClassNameProvider',
   debugGetCreateSourceHash:
-      _riverpodIsDebugMode ? null : _$supports$InClassNameHash,
+      _riverpodIsDebugMode ? _$supports$InClassNameHash : null,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,

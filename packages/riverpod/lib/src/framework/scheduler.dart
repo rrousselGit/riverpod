@@ -6,7 +6,9 @@ part of '../framework.dart';
 void Function(void Function() task)? vsyncOverride;
 
 void _defaultVsync(void Function() task) {
-  Future(task);
+  Future(() {
+    task();
+  });
 }
 
 /// A function that controls the refresh rate of providers.

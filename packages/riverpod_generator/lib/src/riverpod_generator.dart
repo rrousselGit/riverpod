@@ -29,7 +29,7 @@ String _hashFnName(ProviderDeclaration provider) {
 }
 
 String _hashFnIdentifier(String hashFnName) {
-  return '_riverpodIsDebugMode ? null : $hashFnName';
+  return '_riverpodIsDebugMode ? $hashFnName : null';
 }
 
 const _defaultProviderNameSuffix = 'Provider';

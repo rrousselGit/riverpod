@@ -13,7 +13,7 @@ String _$depHash() => r'2213a401e03a1a914579b4a3a7707b783de9efba';
 final depProvider = AutoDisposeProvider<int>.internal(
   dep,
   name: r'depProvider',
-  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$depHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? _$depHash : null,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -102,7 +102,7 @@ class FamilyProvider extends AutoDisposeProvider<int> {
           ),
           from: familyProvider,
           name: r'familyProvider',
-          debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$familyHash,
+          debugGetCreateSourceHash: _riverpodIsDebugMode ? _$familyHash : null,
           dependencies: FamilyFamily._dependencies,
           allTransitiveDependencies: FamilyFamily._allTransitiveDependencies,
           debugFamilyCallRuntimeType: familyProvider.debugFamilyCallRuntimeType,
@@ -132,7 +132,7 @@ String _$providerHash() => r'6c9184ef4c6a410a2132e1ecc13a2e646e936d37';
 final providerProvider = AutoDisposeProvider<int>.internal(
   provider,
   name: r'providerProvider',
-  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$providerHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? _$providerHash : null,
   debugFamilyCallRuntimeType: null,
   dependencies: <ProviderOrFamily>{
     depProvider,
@@ -156,7 +156,7 @@ String _$provider2Hash() => r'70d908579c5e64ce6558b42f433adfb80f4dc79b';
 final provider2Provider = AutoDisposeProvider<int>.internal(
   provider2,
   name: r'provider2Provider',
-  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$provider2Hash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? _$provider2Hash : null,
   debugFamilyCallRuntimeType: null,
   dependencies: <ProviderOrFamily>{
     depProvider,
@@ -182,7 +182,7 @@ final transitiveDependenciesProvider = AutoDisposeProvider<int>.internal(
   transitiveDependencies,
   name: r'transitiveDependenciesProvider',
   debugGetCreateSourceHash:
-      _riverpodIsDebugMode ? null : _$transitiveDependenciesHash,
+      _riverpodIsDebugMode ? _$transitiveDependenciesHash : null,
   debugFamilyCallRuntimeType: null,
   dependencies: <ProviderOrFamily>[providerProvider],
   allTransitiveDependencies: <ProviderOrFamily>{
@@ -205,7 +205,7 @@ final smallTransitiveDependencyCountProvider =
   smallTransitiveDependencyCount,
   name: r'smallTransitiveDependencyCountProvider',
   debugGetCreateSourceHash:
-      _riverpodIsDebugMode ? null : _$smallTransitiveDependencyCountHash,
+      _riverpodIsDebugMode ? _$smallTransitiveDependencyCountHash : null,
   debugFamilyCallRuntimeType: null,
   dependencies: <ProviderOrFamily>[depProvider, familyProvider, dep2Provider],
   allTransitiveDependencies: <ProviderOrFamily>[
@@ -225,7 +225,7 @@ final emptyDependenciesStatelessProvider = AutoDisposeProvider<int>.internal(
   emptyDependenciesStateless,
   name: r'emptyDependenciesStatelessProvider',
   debugGetCreateSourceHash:
-      _riverpodIsDebugMode ? null : _$emptyDependenciesStatelessHash,
+      _riverpodIsDebugMode ? _$emptyDependenciesStatelessHash : null,
   debugFamilyCallRuntimeType: null,
   dependencies: const <ProviderOrFamily>[],
   allTransitiveDependencies: const <ProviderOrFamily>[],
@@ -239,7 +239,7 @@ String _$dep2Hash() => r'2778537df77f6431148c2ce400724da3e2ab4b94';
 final dep2Provider = AutoDisposeNotifierProvider<Dep2, int>.internal(
   Dep2.new,
   name: r'dep2Provider',
-  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$dep2Hash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? _$dep2Hash : null,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -310,7 +310,7 @@ class Family2Provider extends AutoDisposeNotifierProviderImpl<Family2, int> {
           () => Family2()..id = id,
           from: family2Provider,
           name: r'family2Provider',
-          debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$family2Hash,
+          debugGetCreateSourceHash: _riverpodIsDebugMode ? _$family2Hash : null,
           dependencies: Family2Family._dependencies,
           allTransitiveDependencies: Family2Family._allTransitiveDependencies,
           debugFamilyCallRuntimeType:
@@ -350,7 +350,7 @@ String _$provider3Hash() => r'dfdd6dec6cfee543c73d99593ce98d68f4db385c';
 final provider3Provider = AutoDisposeNotifierProvider<Provider3, int>.internal(
   Provider3.new,
   name: r'provider3Provider',
-  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$provider3Hash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? _$provider3Hash : null,
   debugFamilyCallRuntimeType: null,
   dependencies: <ProviderOrFamily>{
     depProvider,
@@ -444,7 +444,7 @@ class Provider4Provider
           from: provider4Provider,
           name: r'provider4Provider',
           debugGetCreateSourceHash:
-              _riverpodIsDebugMode ? null : _$provider4Hash,
+              _riverpodIsDebugMode ? _$provider4Hash : null,
           dependencies: Provider4Family._dependencies,
           allTransitiveDependencies: Provider4Family._allTransitiveDependencies,
           debugFamilyCallRuntimeType:
@@ -487,7 +487,7 @@ final emptyDependenciesStatefulProvider =
   EmptyDependenciesStateful.new,
   name: r'emptyDependenciesStatefulProvider',
   debugGetCreateSourceHash:
-      _riverpodIsDebugMode ? null : _$emptyDependenciesStatefulHash,
+      _riverpodIsDebugMode ? _$emptyDependenciesStatefulHash : null,
   debugFamilyCallRuntimeType: null,
   dependencies: const <ProviderOrFamily>[],
   allTransitiveDependencies: const <ProviderOrFamily>[],

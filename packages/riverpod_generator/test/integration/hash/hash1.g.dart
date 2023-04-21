@@ -13,7 +13,7 @@ String _$simpleHash() => r'ff9f7451526aef5b3af6646814631a502ad76a5f';
 final simpleProvider = AutoDisposeProvider<String>.internal(
   simple,
   name: r'simpleProvider',
-  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$simpleHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? _$simpleHash : null,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -27,7 +27,7 @@ String _$simple2Hash() => r'06327442776394c5c9cbb33b048d7a42e709e7fd';
 final simple2Provider = AutoDisposeProvider<String>.internal(
   simple2,
   name: r'simple2Provider',
-  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$simple2Hash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? _$simple2Hash : null,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
@@ -42,7 +42,7 @@ final simpleClassProvider =
     AutoDisposeNotifierProvider<SimpleClass, String>.internal(
   SimpleClass.new,
   name: r'simpleClassProvider',
-  debugGetCreateSourceHash: _riverpodIsDebugMode ? null : _$simpleClassHash,
+  debugGetCreateSourceHash: _riverpodIsDebugMode ? _$simpleClassHash : null,
   debugFamilyCallRuntimeType: null,
   dependencies: null,
   allTransitiveDependencies: null,
