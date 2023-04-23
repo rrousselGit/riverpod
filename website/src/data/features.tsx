@@ -70,7 +70,9 @@ export const features: IFeatureProps[] = [
         values={{
           warnings: (
             <a href="https://github.com/rrousselGit/riverpod/tree/master/packages/riverpod_lint#all-assists">
-              list of refactorings
+              <Translate id="home.refactors_list_link">
+                {`list of refactorings`}
+              </Translate>
             </a>
           ),
         }}
@@ -92,7 +94,9 @@ export const features: IFeatureProps[] = [
         values={{
           warnings: (
             <a href="https://github.com/rrousselGit/riverpod/tree/master/packages/riverpod_lint#all-the-lints">
-              list of lint rules
+              <Translate id="home.lint_rules_list_link">
+                {`list of lint rules`}
+              </Translate>
             </a>
           ),
         }}

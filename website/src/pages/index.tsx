@@ -6,12 +6,13 @@ import { Feature } from "../components/Feature";
 import { Highlight } from "../components/Highlight";
 import { features } from "../data/features";
 import { highlights } from "../data/highlights";
+import Translate from "@docusaurus/Translate";
 
 const checkBoxes = [
   { key: "declarative_check", value: "Declarative programming" },
   { key: "network_check", value: "Native network requests support" },
   { key: "error_check", value: "Automatic loading/error handling" },
-  { key: "conpile_check", value: "Compile safety" },
+  { key: "compile_check", value: "Compile safety" },
   { key: "typed_query_check", value: "Type-safe query parameters" },
   { key: "test_check", value: "Test ready" },
   { key: "dart_check", value: "Work in plain Dart (servers/CLI/...)" },
@@ -45,11 +46,17 @@ export default function Home() {
         </section>
 
         <section className="features">
-          <h2>Features</h2>
+          <h2>
+            <Translate
+              id="homepage.features_title"
+            >
+              {`Features`}
+            </Translate>
+          </h2>
           <ul>
             {checkBoxes.map((check) => (
               <li key={check.key}>
-                ✅ {check.value}
+                ✅ <Translate id={`homepage.features_${check.key}`}>{check.value}</Translate>
               </li>
             ))}
           </ul>
