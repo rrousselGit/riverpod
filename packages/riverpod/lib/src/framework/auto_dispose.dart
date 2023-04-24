@@ -25,7 +25,6 @@ mixin AutoDisposeProviderElementMixin<State> on ProviderElementBase<State>
   void mayNeedDispose() {
     final links = _keepAliveLinks;
 
-    // ignore: deprecated_member_use_from_same_package
     if (!hasListeners && (links == null || links.isEmpty)) {
       _container._scheduler.scheduleProviderDispose(this);
     }
