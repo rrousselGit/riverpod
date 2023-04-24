@@ -530,8 +530,9 @@ final alwaysAlive = Provider((ref) {
   });
 
   test(
-      'when cancel autoDispose family override it should be disposed immediately',
+      'supports disposing of overridden families',
       () async {
+    // Regression test for https://github.com/rrousselGit/riverpod/issues/2480
     final provider = Provider.autoDispose.family<int, int>((ref, _) => -1);
 
     var constructionCount = 0;
@@ -549,6 +550,7 @@ final alwaysAlive = Provider((ref) {
     final instance1 = provider(0);
     var count = container.read(instance1);
     expect(count, 1);
+
     await container.pump();
 
     final instance2 = provider(0);
