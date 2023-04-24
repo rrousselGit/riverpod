@@ -22,7 +22,7 @@ final configProvider = AutoDisposeStreamProvider<Configuration>.internal(
 );
 
 typedef ConfigRef = AutoDisposeStreamProviderRef<Configuration>;
-String _$productsHash() => r'a3bf499c8c660f94db3f5a2fbaab9040b361eb0d';
+String _$productsHash() => r'd1f4523880408cf8ee0e68969c40cf87d5c78557';
 
 /// See also [products].
 @ProviderFor(products)

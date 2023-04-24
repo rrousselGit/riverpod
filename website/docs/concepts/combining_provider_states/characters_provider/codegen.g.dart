@@ -22,7 +22,7 @@ final configsProvider = AutoDisposeStreamProvider<Configuration>.internal(
 );
 
 typedef ConfigsRef = AutoDisposeStreamProviderRef<Configuration>;
-String _$charactersHash() => r'22f84439c47a6f3b440f0c0740f85cc69344dede';
+String _$charactersHash() => r'b1e8e15bbeab60d92fe959d9e1dd4ceba6a31446';
 
 /// See also [characters].
 @ProviderFor(characters)
