@@ -1,4 +1,4 @@
-## Unreleased fix
+## 2.3.6 - 2023-04-24
 
 - Improved error message for missing `dependencies` (thanks to @ValentinVignal)
 - Fixed various typos in the documentation (thanks to @ValentinVignal)

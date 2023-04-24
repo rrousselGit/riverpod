@@ -1,3 +1,7 @@
+## 2.2.1 - 2023-04-24
+
+- `riverpod_annotation` upgraded to `2.1.1`
+
 ## 2.2.0 - 2023-04-18
 
 - Added support for `Raw` typedef in the return value of providers.

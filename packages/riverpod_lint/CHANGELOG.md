@@ -1,3 +1,7 @@
+## 1.3.1 - 2023-04-24
+
+- `riverpod` upgraded to `2.3.6`
+
 ## 1.3.0 - 2023-04-18
 
 - Added support for `Raw` typedef in the return value of providers.
