@@ -64,7 +64,7 @@ typedef RawFamilyFutureRef = AutoDisposeProviderRef<Future<String>>;
 const rawFamilyFutureProvider = RawFamilyFutureFamily();
 
 /// See also [rawFamilyFuture].
-class RawFamilyFutureFamily extends Family<Future<String>> {
+class RawFamilyFutureFamily extends Family {
   /// See also [rawFamilyFuture].
   const RawFamilyFutureFamily();
 
@@ -146,7 +146,7 @@ typedef RawFamilyStreamRef = AutoDisposeProviderRef<Stream<String>>;
 const rawFamilyStreamProvider = RawFamilyStreamFamily();
 
 /// See also [rawFamilyStream].
-class RawFamilyStreamFamily extends Family<Stream<String>> {
+class RawFamilyStreamFamily extends Family {
   /// See also [rawFamilyStream].
   const RawFamilyStreamFamily();
 
@@ -263,7 +263,7 @@ const familyProvider = FamilyFamily();
 /// This is some documentation
 ///
 /// Copied from [family].
-class FamilyFamily extends Family<String> {
+class FamilyFamily extends Family {
   /// This is some documentation
   ///
   /// Copied from [family].
@@ -454,7 +454,7 @@ abstract class _$RawFamilyFutureClass
 const rawFamilyFutureClassProvider = RawFamilyFutureClassFamily();
 
 /// See also [RawFamilyFutureClass].
-class RawFamilyFutureClassFamily extends Family<Future<String>> {
+class RawFamilyFutureClassFamily extends Family {
   /// See also [RawFamilyFutureClass].
   const RawFamilyFutureClassFamily();
 
@@ -552,7 +552,7 @@ abstract class _$RawFamilyStreamClass
 const rawFamilyStreamClassProvider = RawFamilyStreamClassFamily();
 
 /// See also [RawFamilyStreamClass].
-class RawFamilyStreamClassFamily extends Family<Stream<String>> {
+class RawFamilyStreamClassFamily extends Family {
   /// See also [RawFamilyStreamClass].
   const RawFamilyStreamClassFamily();
 
@@ -692,7 +692,7 @@ const familyClassProvider = FamilyClassFamily();
 /// This is some documentation
 ///
 /// Copied from [FamilyClass].
-class FamilyClassFamily extends Family<String> {
+class FamilyClassFamily extends Family {
   /// This is some documentation
   ///
   /// Copied from [FamilyClass].

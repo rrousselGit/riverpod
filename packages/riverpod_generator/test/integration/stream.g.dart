@@ -64,7 +64,7 @@ typedef FamilyRef = AutoDisposeStreamProviderRef<String>;
 const familyProvider = FamilyFamily();
 
 /// See also [family].
-class FamilyFamily extends Family<AsyncValue<String>> {
+class FamilyFamily extends Family {
   /// See also [family].
   const FamilyFamily();
 
@@ -224,7 +224,7 @@ abstract class _$FamilyClass
 const familyClassProvider = FamilyClassFamily();
 
 /// See also [FamilyClass].
-class FamilyClassFamily extends Family<AsyncValue<String>> {
+class FamilyClassFamily extends Family {
   /// See also [FamilyClass].
   const FamilyClassFamily();
 

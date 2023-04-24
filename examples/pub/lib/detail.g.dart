@@ -39,7 +39,7 @@ typedef FetchPackageDetailsRef = AutoDisposeFutureProviderRef<Package>;
 const fetchPackageDetailsProvider = FetchPackageDetailsFamily();
 
 /// See also [fetchPackageDetails].
-class FetchPackageDetailsFamily extends Family<AsyncValue<Package>> {
+class FetchPackageDetailsFamily extends Family {
   /// See also [fetchPackageDetails].
   const FetchPackageDetailsFamily();
 
@@ -172,7 +172,7 @@ const packageMetricsProvider = PackageMetricsFamily();
 /// is logged-in.
 ///
 /// Copied from [PackageMetrics].
-class PackageMetricsFamily extends Family<AsyncValue<PackageMetricsScore>> {
+class PackageMetricsFamily extends Family {
   /// A provider that fetches the likes count, popularity score and pub points
   /// for a given package.
   ///

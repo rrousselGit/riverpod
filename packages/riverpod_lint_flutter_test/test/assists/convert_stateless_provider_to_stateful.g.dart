@@ -56,7 +56,7 @@ const statelessFamilyProvider = StatelessFamilyFamily();
 /// Some comment
 ///
 /// Copied from [statelessFamily].
-class StatelessFamilyFamily extends Family<int> {
+class StatelessFamilyFamily extends Family {
   /// Some comment
   ///
   /// Copied from [statelessFamily].

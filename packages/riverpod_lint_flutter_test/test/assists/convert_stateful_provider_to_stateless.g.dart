@@ -64,7 +64,7 @@ const statefulFamilyProvider = StatefulFamilyFamily();
 /// Some comment
 ///
 /// Copied from [StatefulFamily].
-class StatefulFamilyFamily extends Family<int> {
+class StatefulFamilyFamily extends Family {
   /// Some comment
   ///
   /// Copied from [StatefulFamily].

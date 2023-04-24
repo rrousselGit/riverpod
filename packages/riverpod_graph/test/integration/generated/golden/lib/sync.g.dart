@@ -73,7 +73,7 @@ const familyProvider = FamilyFamily();
 /// A generated family provider.
 ///
 /// Copied from [family].
-class FamilyFamily extends Family<String> {
+class FamilyFamily extends Family {
   /// A generated family provider.
   ///
   /// Copied from [family].
@@ -260,7 +260,7 @@ const familyClassProvider = FamilyClassFamily();
 /// A generated family provider from a class.
 ///
 /// Copied from [FamilyClass].
-class FamilyClassFamily extends Family<String> {
+class FamilyClassFamily extends Family {
   /// A generated family provider from a class.
   ///
   /// Copied from [FamilyClass].

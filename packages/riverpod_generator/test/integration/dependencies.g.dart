@@ -50,7 +50,7 @@ typedef FamilyRef = AutoDisposeProviderRef<int>;
 const familyProvider = FamilyFamily();
 
 /// See also [family].
-class FamilyFamily extends Family<int> {
+class FamilyFamily extends Family {
   /// See also [family].
   const FamilyFamily();
 
@@ -259,7 +259,7 @@ abstract class _$Family2 extends BuildlessAutoDisposeNotifier<int> {
 const family2Provider = Family2Family();
 
 /// See also [Family2].
-class Family2Family extends Family<int> {
+class Family2Family extends Family {
   /// See also [Family2].
   const Family2Family();
 
@@ -377,7 +377,7 @@ abstract class _$Provider4 extends BuildlessAutoDisposeNotifier<int> {
 const provider4Provider = Provider4Family();
 
 /// See also [Provider4].
-class Provider4Family extends Family<int> {
+class Provider4Family extends Family {
   /// See also [Provider4].
   const Provider4Family();
 

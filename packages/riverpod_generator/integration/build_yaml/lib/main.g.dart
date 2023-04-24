@@ -78,7 +78,7 @@ typedef Count2Ref = AutoDisposeProviderRef<int>;
 const count2ProviderFamily = Count2Family();
 
 /// See also [count2].
-class Count2Family extends Family<int> {
+class Count2Family extends Family {
   /// See also [count2].
   const Count2Family();
 
@@ -159,7 +159,7 @@ typedef CountFuture2Ref = AutoDisposeFutureProviderRef<int>;
 const countFuture2ProviderFamily = CountFuture2Family();
 
 /// See also [countFuture2].
-class CountFuture2Family extends Family<AsyncValue<int>> {
+class CountFuture2Family extends Family {
   /// See also [countFuture2].
   const CountFuture2Family();
 
@@ -241,7 +241,7 @@ typedef CountStream2Ref = AutoDisposeStreamProviderRef<int>;
 const countStream2ProviderFamily = CountStream2Family();
 
 /// See also [countStream2].
-class CountStream2Family extends Family<AsyncValue<int>> {
+class CountStream2Family extends Family {
   /// See also [countStream2].
   const CountStream2Family();
 
@@ -380,7 +380,7 @@ abstract class _$CountNotifier2 extends BuildlessAutoDisposeNotifier<int> {
 const countNotifier2ProviderFamily = CountNotifier2Family();
 
 /// See also [CountNotifier2].
-class CountNotifier2Family extends Family<int> {
+class CountNotifier2Family extends Family {
   /// See also [CountNotifier2].
   const CountNotifier2Family();
 
@@ -478,7 +478,7 @@ abstract class _$CountAsyncNotifier2
 const countAsyncNotifier2ProviderFamily = CountAsyncNotifier2Family();
 
 /// See also [CountAsyncNotifier2].
-class CountAsyncNotifier2Family extends Family<AsyncValue<int>> {
+class CountAsyncNotifier2Family extends Family {
   /// See also [CountAsyncNotifier2].
   const CountAsyncNotifier2Family();
 
@@ -576,7 +576,7 @@ abstract class _$CountStreamNotifier2
 const countStreamNotifier2ProviderFamily = CountStreamNotifier2Family();
 
 /// See also [CountStreamNotifier2].
-class CountStreamNotifier2Family extends Family<AsyncValue<int>> {
+class CountStreamNotifier2Family extends Family {
   /// See also [CountStreamNotifier2].
   const CountStreamNotifier2Family();
 

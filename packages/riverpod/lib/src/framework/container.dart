@@ -5,7 +5,7 @@ ProviderBase<Object?>? _circularDependencyLock;
 class _FamilyOverrideRef {
   _FamilyOverrideRef(this.override, this.container);
 
-  FamilyOverride<Object?> override;
+  FamilyOverride override;
   final ProviderContainer container;
 }
 
@@ -161,7 +161,7 @@ class ProviderContainer implements Node {
 
   final _overrideForProvider =
       HashMap<ProviderBase<Object?>, ProviderBase<Object?>>();
-  final _overrideForFamily = HashMap<Family<Object?>, _FamilyOverrideRef>();
+  final _overrideForFamily = HashMap<Family, _FamilyOverrideRef>();
   final Map<ProviderBase<Object?>, _StateReader> _stateReaders;
 
   final List<ProviderObserver> _observers;

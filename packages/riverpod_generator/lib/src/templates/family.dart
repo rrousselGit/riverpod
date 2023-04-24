@@ -191,7 +191,7 @@ $docs
 const $providerName = $familyName();
 
 $docs
-class $familyName extends Family<${provider.exposedType}> {
+class $familyName extends Family {
   $docs
   const $familyName();
 

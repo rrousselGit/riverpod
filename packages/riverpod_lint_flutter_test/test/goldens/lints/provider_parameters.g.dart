@@ -36,7 +36,7 @@ typedef GeneratorRef = ProviderRef<int>;
 const generatorProvider = GeneratorFamily();
 
 /// See also [generator].
-class GeneratorFamily extends Family<int> {
+class GeneratorFamily extends Family {
   /// See also [generator].
   const GeneratorFamily();
 

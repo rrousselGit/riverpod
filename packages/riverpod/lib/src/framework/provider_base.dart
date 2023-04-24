@@ -58,7 +58,7 @@ abstract class ProviderBase<State> extends ProviderOrFamily
 
   /// If this provider was created with the `.family` modifier, [from] is the `.family` instance.
   @override
-  final Family<Object?>? from;
+  final Family? from;
 
   /// If this provider was created with the `.family` modifier, [argument] is
   /// the variable that was used.

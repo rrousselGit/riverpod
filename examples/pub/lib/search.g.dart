@@ -38,7 +38,7 @@ typedef FetchPackagesRef = AutoDisposeFutureProviderRef<List<Package>>;
 const fetchPackagesProvider = FetchPackagesFamily();
 
 /// See also [fetchPackages].
-class FetchPackagesFamily extends Family<AsyncValue<List<Package>>> {
+class FetchPackagesFamily extends Family {
   /// See also [fetchPackages].
   const FetchPackagesFamily();
 

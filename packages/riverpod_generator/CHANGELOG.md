@@ -1,3 +1,7 @@
+## Unreleased major
+
+- Upgraded to use Riverpod 3.0
+
 ## 2.2.1 - 2023-04-24
 
 - `riverpod_annotation` upgraded to `2.1.1`
