@@ -144,4 +144,76 @@ class StatelessFamilyProvider extends AutoDisposeProvider<int> {
     return _SystemHash.finish(hash);
   }
 }
+
+String _$genericHash() => r'd31aaf9c8c291a44a486f914abfe94c420d48502';
+typedef GenericRef<A, B> = AutoDisposeProviderRef<int>;
+
+/// See also [generic].
+@ProviderFor(generic)
+const genericProvider = GenericFamily();
+
+/// See also [generic].
+class GenericFamily extends Family {
+  /// See also [generic].
+  const GenericFamily();
+
+  /// See also [generic].
+  GenericProvider<A, B> call<A, B>() {
+    return GenericProvider<A, B>();
+  }
+
+  @override
+  GenericProvider<Object?, Object?> getProviderOverride(
+    covariant GenericProvider<Object?, Object?> provider,
+  ) {
+    return call();
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'genericProvider';
+}
+
+/// See also [generic].
+class GenericProvider<A, B> extends AutoDisposeProvider<int> {
+  /// See also [generic].
+  GenericProvider()
+      : super.internal(
+          (ref) => generic<A, B>(
+            ref,
+          ),
+          from: genericProvider,
+          name: r'genericProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$genericHash,
+          dependencies: GenericFamily._dependencies,
+          allTransitiveDependencies: GenericFamily._allTransitiveDependencies,
+        );
+
+  @override
+  bool operator ==(Object other) {
+    return other is GenericProvider && other.runtimeType == runtimeType;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, A.hashCode);
+    hash = _SystemHash.combine(hash, B.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

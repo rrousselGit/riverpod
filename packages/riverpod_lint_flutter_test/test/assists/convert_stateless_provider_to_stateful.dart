@@ -12,3 +12,6 @@ int statelessFamily(StatelessFamilyRef ref, {required int a, String b = '42'}) {
   // Hello world
   return 0;
 }
+
+@riverpod
+int generic<A, /* comment */ B>(GenericRef<A, B> ref) => 0;

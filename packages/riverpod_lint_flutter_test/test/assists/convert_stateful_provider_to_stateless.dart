@@ -18,3 +18,9 @@ class StatefulFamily extends _$StatefulFamily {
     return 0;
   }
 }
+
+@riverpod
+class Generic<A, /* comment */ B> extends _$Generic<A, B> {
+  @override
+  int build() => 0;
+}
