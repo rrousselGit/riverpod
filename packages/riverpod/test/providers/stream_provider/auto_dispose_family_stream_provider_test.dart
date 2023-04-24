@@ -21,8 +21,6 @@ void main() {
         final root = createContainer();
         final container = createContainer(parent: root, overrides: [provider]);
 
-        // ignore: deprecated_member_use_from_same_package
-        expect(await container.read(provider(0).stream).first, 0);
         expect(await container.read(provider(0).future), 0);
         expect(container.read(provider(0)), const AsyncData(0));
         expect(root.getAllProviderElements(), isEmpty);
@@ -95,8 +93,6 @@ void main() {
         overrides: [dep.overrideWithValue(42)],
       );
 
-      // ignore: deprecated_member_use_from_same_package
-      await expectLater(container.read(provider(10).stream), emits(52));
       await expectLater(container.read(provider(10).future), completion(52));
       expect(container.read(provider(10)), const AsyncData(52));
 
