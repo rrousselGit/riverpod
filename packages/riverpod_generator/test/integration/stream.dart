@@ -8,7 +8,7 @@ Stream<List<T>> generic<T extends num>(GenericRef<T> ref) async* {
 }
 
 @riverpod
-class GenericClass<T> extends _$GenericClass<T> {
+class GenericClass<T extends num> extends _$GenericClass<T> {
   @override
   Stream<List<T>> build() async* {
     yield <T>[];

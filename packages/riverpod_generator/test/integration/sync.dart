@@ -8,7 +8,7 @@ List<T> generic<T extends num>(GenericRef<T> ref) {
 }
 
 @riverpod
-class GenericClass<T> extends _$GenericClass<T> {
+class GenericClass<T extends num> extends _$GenericClass<T> {
   @override
   List<T> build() {
     return <T>[];
