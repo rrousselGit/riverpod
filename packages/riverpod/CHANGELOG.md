@@ -3,6 +3,7 @@
 - **Breaking**: `AsyncValue` is now "sealed" and `AsyncData/AsyncLoading/AsyncError`
   are "final". This means that it is no-longer possible to subclass
   `AsyncValue` or the associated classes.
+- **Breaking**: Removed the deprecated from/argument/debugGetCreateSourceHash of providers
 - Bumped minimum Dart SDK to >= 3.0.0-dev
 
 ## 2.3.6 - 2023-04-24

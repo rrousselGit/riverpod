@@ -3,9 +3,7 @@ import 'package:riverpod/src/internals.dart';
 typedef NotifierProviderFactoryType = NotifierProviderBase<NotifierT, T>
     Function<NotifierT extends NotifierBase<T>, T>(
   NotifierT Function() create, {
-  Object? argument,
   Iterable<ProviderOrFamily>? dependencies,
-  Family<Object?>? from,
   String? name,
 });
 

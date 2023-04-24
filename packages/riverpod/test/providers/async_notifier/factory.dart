@@ -6,9 +6,7 @@ typedef AsyncNotifierProviderFactoryType
     = AsyncNotifierProviderBase<NotifierT, T>
         Function<NotifierT extends AsyncNotifierBase<T>, T>(
   NotifierT Function() create, {
-  Object? argument,
   Iterable<ProviderOrFamily>? dependencies,
-  Family<Object?>? from,
   String? name,
 });
 
