@@ -1,11 +1,14 @@
-// ignore_for_file: unused_local_variable, unnecessary_lambdas
+// ignore_for_file: unnecessary_lambdas
 
 import 'dart:async';
 
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'codegen.g.dart';
 
 /* SNIPPET START */
-final example = StreamProvider.autoDispose((ref) {
+@riverpod
+Stream<int> example(ExampleRef ref) {
   final streamController = StreamController<int>();
 
   ref.onDispose(() {
@@ -14,4 +17,5 @@ final example = StreamProvider.autoDispose((ref) {
   });
 
   return streamController.stream;
-});
+}
+
