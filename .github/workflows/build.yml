@@ -25,6 +25,7 @@ jobs:
       matrix:
         channel:
           - stable
+          - master
         package_path:
           - examples/counter
           - examples/marvel
@@ -70,10 +71,11 @@ jobs:
 
       - name: Check format
         run: dart format --set-exit-if-changed .
-        if: matrix.package_path != 'website'
+        if: matrix.package_path != 'website' && matrix.channel == 'master'
 
       - name: Analyze
         run: flutter analyze
+        if: matrix.channel == 'master'
 
       - name: Run tests
         run: |
