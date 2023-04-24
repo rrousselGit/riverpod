@@ -1,3 +1,8 @@
+## Unreleased minor
+
+- Updated `stateless_ref` and `generator_class_extends` to support providers
+  with generic parameters.
+
 ## 1.3.1 - 2023-04-24
 
 - `riverpod` upgraded to `2.3.6`
