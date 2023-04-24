@@ -534,25 +534,18 @@ final alwaysAlive = Provider((ref) {
     final provider = Provider.autoDispose.family<int, int>((ref, _) => -1);
 
     var constructionCount = 0;
-    final override = Provider.autoDispose.family<int, int>((ref, _) {
-      return ++constructionCount;
-    });
-
-    final overriden = provider.overrideWithProvider(override);
     final root = createContainer();
     final container = createContainer(
       parent: root,
-      overrides: [overriden],
+      overrides: [provider.overrideWith((ref, arg) => ++constructionCount)],
     );
 
-    final instance1 = provider(0);
-    var count = container.read(instance1);
+    var count = container.read(provider(0));
     expect(count, 1);
 
     await container.pump();
 
-    final instance2 = provider(0);
-    count = container.read(instance2);
+    count = container.read(provider(0));
     expect(count, 2);
   });
 
