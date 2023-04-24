@@ -529,9 +529,7 @@ final alwaysAlive = Provider((ref) {
     expect(container.getAllProviderElements(), isEmpty);
   });
 
-  test(
-      'supports disposing of overridden families',
-      () async {
+  test('supports disposing of overridden families', () async {
     // Regression test for https://github.com/rrousselGit/riverpod/issues/2480
     final provider = Provider.autoDispose.family<int, int>((ref, _) => -1);
 
