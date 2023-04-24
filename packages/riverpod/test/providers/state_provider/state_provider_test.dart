@@ -90,29 +90,6 @@ void main() {
     );
   });
 
-  test('.state clears listener when autoDisposed', () async {
-    final observer = ObserverMock();
-    final container = createContainer(observers: [observer]);
-    final provider = StateProvider.autoDispose((ref) => 0);
-    final listener = Listener<StateController<int>>();
-
-    container.listen(provider.notifier, (previous, next) {});
-
-    // ignore: deprecated_member_use_from_same_package
-    container.read(provider.state);
-    await container.pump();
-
-    verifyZeroInteractions(listener);
-
-    // ignore: deprecated_member_use_from_same_package
-    container.listen(provider.state, listener);
-
-    container.read(provider.notifier).state++;
-
-    verify(listener(any, any)).called(1);
-    verify(observer.didUpdateProvider(any, any, any, container)).called(1);
-  });
-
   test('can be auto-scoped', () async {
     final dep = Provider((ref) => 0);
     final provider = StateProvider(

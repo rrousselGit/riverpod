@@ -17,17 +17,6 @@ ProviderElementProxy<T, StateController<T>> _notifier<T>(
   );
 }
 
-ProviderElementProxy<T, StateController<T>> _state<T>(
-  _StateProviderBase<T> that,
-) {
-  return ProviderElementProxy<T, StateController<T>>(
-    that,
-    (element) {
-      return (element as StateProviderElement<T>)._stateNotifier;
-    },
-  );
-}
-
 abstract class _StateProviderBase<T> extends ProviderBase<T> {
   const _StateProviderBase({
     required super.name,
@@ -39,7 +28,6 @@ abstract class _StateProviderBase<T> extends ProviderBase<T> {
   });
 
   ProviderListenable<StateController<T>> get notifier;
-  ProviderListenable<StateController<T>> get state;
 
   T _create(covariant StateProviderElement<T> ref);
 }
