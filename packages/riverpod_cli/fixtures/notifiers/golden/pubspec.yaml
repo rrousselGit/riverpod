@@ -3,7 +3,7 @@ description: Test riverpod codemods
 publish_to: none
 
 environment:
-  sdk: ">=2.12.0-0 <3.0.0"
+  sdk: ">=3.0.0-0.0-dev <4.0.0"
 
 dependencies:
   flutter:
