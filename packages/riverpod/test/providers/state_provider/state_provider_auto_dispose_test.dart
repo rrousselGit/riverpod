@@ -172,16 +172,13 @@ void main() {
     //   );
     // });
 
-    test('when using provider.overrideWithProvider', () async {
+    test('when using provider.overrideWith', () async {
       final provider = StateProvider.autoDispose<int>((ref) => 0, name: 'true');
       final root = createContainer();
       final container = createContainer(
         parent: root,
         overrides: [
-          // ignore: deprecated_member_use_from_same_package
-          provider.overrideWithProvider(
-            StateProvider.autoDispose((ref) => 42, name: 'meh'),
-          ),
+          provider.overrideWith((ref) => 42),
         ],
       );
 
@@ -198,7 +195,7 @@ void main() {
     });
   });
 
-  group('overrideWithProvider', () {
+  group('overrideWith', () {
     // test('listens to state changes', () {
     //   final override = StateController(42);
     //   final provider = StateProvider.autoDispose((ref) => 0);
@@ -207,7 +204,7 @@ void main() {
     //   ]);
     //   addTearDown(container.dispose);
     //   final container2 = ProviderContainer(overrides: [
-    //     provider.overrideWithProvider(
+    //     provider.overrideWith(
     //       StateProvider.autoDispose((ref) => 42),
     //     ),
     //   ]);

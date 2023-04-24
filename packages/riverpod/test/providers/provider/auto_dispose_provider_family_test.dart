@@ -76,11 +76,9 @@ void main() {
       final listener = Listener<String>();
       final container = ProviderContainer(
         overrides: [
-          provider.overrideWithProvider((value) {
-            return Provider.autoDispose<String>((ref) {
-              ref.onDispose(onDispose);
-              return '$value override';
-            });
+          provider.overrideWith((ref, value) {
+            ref.onDispose(onDispose);
+            return '$value override';
           })
         ],
       );

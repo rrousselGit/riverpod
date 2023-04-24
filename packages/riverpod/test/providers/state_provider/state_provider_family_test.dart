@@ -43,15 +43,13 @@ void main() {
         expect(root.getAllProviderElementsInOrder(), isEmpty);
       });
 
-      test('when using provider.overrideWithProvider', () async {
+      test('when using provider.overrideWith', () async {
         final provider = StateProvider.family<int, int>((ref, _) => 0);
         final root = createContainer();
         final container = createContainer(
           parent: root,
           overrides: [
-            provider.overrideWithProvider(
-              (value) => StateProvider((ref) => 42),
-            ),
+            provider.overrideWith((ref, value) => 42),
           ],
         );
 
@@ -102,9 +100,7 @@ void main() {
       });
       final container = createContainer(
         overrides: [
-          provider.overrideWithProvider((a) {
-            return StateProvider((ref) => 'override $a');
-          }),
+          provider.overrideWith((ref, a) => 'override $a'),
         ],
       );
 

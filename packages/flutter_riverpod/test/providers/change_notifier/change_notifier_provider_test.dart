@@ -187,16 +187,13 @@ void main() {
     //   expect(root.getAllProviderElements(), isEmpty);
     // });
 
-    test('when using provider.overrideWithProvider', () {
+    test('when using provider.overrideWith', () {
       final provider = ChangeNotifierProvider((ref) => ValueNotifier(0));
       final root = createContainer();
       final container = createContainer(
         parent: root,
         overrides: [
-          // ignore: deprecated_member_use
-          provider.overrideWithProvider(
-            ChangeNotifierProvider((ref) => ValueNotifier(42)),
-          ),
+          provider.overrideWith((ref) => ValueNotifier(42)),
         ],
       );
 
@@ -408,7 +405,7 @@ void main() {
     expect(root.getAllProviderElements(), isEmpty);
   });
 
-  test('overrideWithProvider preserves the state across update', () async {
+  test('overrideWith preserves the state across update', () async {
     final provider = ChangeNotifierProvider((_) {
       return TestNotifier();
     });
@@ -416,8 +413,7 @@ void main() {
     final notifier2 = TestNotifier();
     final container = createContainer(
       overrides: [
-        // ignore: deprecated_member_use
-        provider.overrideWithProvider(ChangeNotifierProvider((_) => notifier)),
+        provider.overrideWith((_) => notifier),
       ],
     );
     addTearDown(container.dispose);
@@ -436,8 +432,7 @@ void main() {
     expect(callCount, 1);
 
     container.updateOverrides([
-      // ignore: deprecated_member_use
-      provider.overrideWithProvider(ChangeNotifierProvider((_) => notifier2)),
+      provider.overrideWith((_) => notifier2),
     ]);
 
     await container.pump();

@@ -244,16 +244,12 @@ void main() {
     //   ]);
     // });
 
-    test('when using provider.overrideWithProvider', () async {
+    test('when using provider.overrideWith', () async {
       final provider = FutureProvider.autoDispose((ref) async => 0);
       final root = createContainer();
       final container = createContainer(
         parent: root,
-        overrides: [
-          provider
-              // ignore: deprecated_member_use_from_same_package
-              .overrideWithProvider(FutureProvider.autoDispose((ref) => 42)),
-        ],
+        overrides: [provider.overrideWith((ref) => 42)],
       );
 
       expect(await container.read(provider.future), 42);

@@ -53,15 +53,13 @@ void main() {
       );
     });
 
-    test('overrideWithProvider', () async {
+    test('overrideWith', () async {
       final provider = StreamProvider.autoDispose.family<int, int>((ref, a) {
         return Stream.value(a * 2);
       });
       final container = ProviderContainer(
         overrides: [
-          provider.overrideWithProvider((a) {
-            return StreamProvider.autoDispose((ref) => Stream.value(a * 4));
-          }),
+          provider.overrideWith((ref, a) => Stream.value(a * 4)),
         ],
       );
       final listener = Listener<AsyncValue<int>>();

@@ -222,16 +222,13 @@ void main() {
       //   );
       // });
 
-      test('when using provider.overrideWithProvider', () async {
+      test('when using provider.overrideWith', () async {
         final provider = StreamProvider.autoDispose((ref) => Stream.value(0));
         final root = createContainer();
         final container = createContainer(
           parent: root,
           overrides: [
-            // ignore: deprecated_member_use_from_same_package
-            provider.overrideWithProvider(
-              StreamProvider.autoDispose((ref) => Stream.value(42)),
-            ),
+            provider.overrideWith((ref) => Stream.value(42)),
           ],
         );
 

@@ -146,7 +146,7 @@ class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
   ///   ProviderScope(
   ///     overrides: [
   ///       // Replace the implementation of the provider with a different one
-  ///       myService.overrideWithProvider((ref) {
+  ///       myService.overrideWith((ref) {
   ///         ref.watch('other');
   ///         return MyFakeService(),
   ///       })),

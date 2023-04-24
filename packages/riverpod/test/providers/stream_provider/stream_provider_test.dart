@@ -339,7 +339,7 @@ void main() {
     //   );
     // });
 
-    test('when using provider.overrideWithProvider', () async {
+    test('when using provider.overrideWith', () async {
       final provider = StreamProvider((ref) => Stream.value(0));
       final root = createContainer();
       final container = createContainer(

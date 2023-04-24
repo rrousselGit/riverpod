@@ -147,14 +147,13 @@ void main() {
         expect(root.getAllProviderElements(), isEmpty);
       });
 
-      test('when using provider.overrideWithProvider', () {
+      test('when using provider.overrideWith', () {
         final provider = Provider.autoDispose((ref) => 0);
         final root = createContainer();
         final container = createContainer(
           parent: root,
           overrides: [
-            // ignore: deprecated_member_use_from_same_package
-            provider.overrideWithProvider(Provider.autoDispose((ref) => 42)),
+            provider.overrideWith((ref) => 42),
           ],
         );
 
@@ -165,21 +164,6 @@ void main() {
         ]);
         expect(root.getAllProviderElements(), isEmpty);
       });
-    });
-
-    test('can be overridden by anything', () {
-      final provider = Provider.autoDispose<num>((_) => 42);
-      final override = Provider.autoDispose<int>((_) {
-        return 21;
-      });
-      final container = createContainer(
-        overrides: [
-          // ignore: deprecated_member_use_from_same_package
-          provider.overrideWithProvider(override),
-        ],
-      );
-
-      expect(container.read(provider), 21);
     });
 
     test('can be auto-scoped', () async {

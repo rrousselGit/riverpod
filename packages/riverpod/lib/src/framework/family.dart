@@ -57,15 +57,6 @@ mixin _FamilyMixin<State, Arg, FamilyProvider extends ProviderBase<State>>
   /// See the documentation of [Provider.family] for more information.
   FamilyProvider call(Arg argument);
 
-  /// Overrides the behavior of a family for a part of the application.
-  ///
-  /// {@macro riverpod.overrideWith}
-  Override overrideWithProvider(
-    FamilyProvider Function(Arg argument) override,
-  ) {
-    return FamilyOverrideImpl<State, Arg, FamilyProvider>(this, override);
-  }
-
   @visibleForOverriding
   @override
   ProviderBase<State> getProviderOverride(ProviderBase<State> provider) {

@@ -45,7 +45,7 @@ void main() {
       expect(root.getAllProviderElements(), isEmpty);
     });
 
-    test('when using provider.overrideWithProvider', () async {
+    test('when using provider.overrideWith', () async {
       final provider = FutureProvider.autoDispose.family<int, int>((ref, _) {
         return 0;
       });
@@ -53,9 +53,7 @@ void main() {
       final container = createContainer(
         parent: root,
         overrides: [
-          provider.overrideWithProvider(
-            (value) => FutureProvider.autoDispose((ref) => 42),
-          ),
+          provider.overrideWith((ref, value) => 42),
         ],
       );
 

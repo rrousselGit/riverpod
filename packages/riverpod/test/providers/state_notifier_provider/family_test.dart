@@ -57,7 +57,7 @@ void main() {
         expect(root.getAllProviderElementsInOrder(), isEmpty);
       });
 
-      test('when using provider.overrideWithProvider', () async {
+      test('when using provider.overrideWith', () async {
         final controller = StateController(0);
         final provider =
             StateNotifierProvider.family<StateController<int>, int, int>(
@@ -68,9 +68,7 @@ void main() {
         final container = createContainer(
           parent: root,
           overrides: [
-            provider.overrideWithProvider(
-              (value) => StateNotifierProvider((ref) => controllerOverride),
-            ),
+            provider.overrideWith((ref, value) => controllerOverride),
           ],
         );
 
@@ -142,11 +140,7 @@ void main() {
           .family<TestNotifier, int, int>((ref, a) => TestNotifier());
       final container = createContainer(
         overrides: [
-          provider.overrideWithProvider((a) {
-            return StateNotifierProvider.autoDispose<TestNotifier, int>(
-              (ref) => notifier2,
-            );
-          }),
+          provider.overrideWith((ref, a) => notifier2),
         ],
       );
       addTearDown(container.dispose);

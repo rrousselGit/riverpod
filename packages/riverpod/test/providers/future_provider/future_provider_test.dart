@@ -464,14 +464,13 @@ void main() {
     //   ]);
     // });
 
-    test('when using provider.overrideWithProvider', () async {
+    test('when using provider.overrideWith', () async {
       final provider = FutureProvider((ref) async => 0);
       final root = createContainer();
       final container = createContainer(
         parent: root,
         overrides: [
-          // ignore: deprecated_member_use_from_same_package
-          provider.overrideWithProvider(FutureProvider((ref) async => 42)),
+          provider.overrideWith((ref) async => 42),
         ],
       );
 
