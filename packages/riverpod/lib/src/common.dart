@@ -205,6 +205,8 @@ sealed class AsyncValue<T> {
   /// The stacktrace of [error].
   StackTrace? get stackTrace;
 
+  String get _displayString;
+
   /// Perform some action based on the current state of the [AsyncValue].
   ///
   /// This allows reading the content of an [AsyncValue] in a type-safe way,
@@ -259,7 +261,7 @@ sealed class AsyncValue<T> {
       ]
     ].join(', ');
 
-    return '$runtimeType($content)';
+    return '$_displayString<$T>($content)';
   }
 
   @override
@@ -303,11 +305,15 @@ class AsyncData<T> extends AsyncValue<T> {
   }) : super._();
 
   @override
-  final T value;
+  String get _displayString => 'AsyncData';
 
   @override
   bool get hasValue => true;
 
+  @override
+  final T value;
+
+  @override
   @override
   final bool isLoading;
 
@@ -354,6 +360,9 @@ class AsyncLoading<T> extends AsyncValue<T> {
 
   @override
   bool get isLoading => true;
+
+  @override
+  String get _displayString => 'AsyncLoading';
 
   @override
   final bool hasValue;
@@ -438,6 +447,9 @@ class AsyncError<T> extends AsyncValue<T> {
     required this.isLoading,
   })  : _value = value,
         super._();
+
+  @override
+  String get _displayString => 'AsyncError';
 
   @override
   final bool isLoading;
