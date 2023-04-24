@@ -8,7 +8,7 @@ Future<List<T>> generic<T extends num>(GenericRef<T> ref) async {
 }
 
 @riverpod
-class GenericClass<T> extends _$GenericClass<T> {
+class GenericClass<T extends num> extends _$GenericClass<T> {
   @override
   Future<List<T>> build() async {
     return <T>[];

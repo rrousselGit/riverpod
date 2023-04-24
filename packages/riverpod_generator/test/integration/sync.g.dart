@@ -29,7 +29,7 @@ class _SystemHash {
   }
 }
 
-typedef GenericRef = AutoDisposeProviderRef<List<T>>;
+typedef GenericRef<T extends num> = AutoDisposeProviderRef<List<T>>;
 
 /// See also [generic].
 @ProviderFor(generic)
@@ -41,13 +41,13 @@ class GenericFamily extends Family {
   const GenericFamily();
 
   /// See also [generic].
-  GenericProvider call() {
-    return GenericProvider();
+  GenericProvider<T> call<T extends num>() {
+    return GenericProvider<T>();
   }
 
   @override
-  GenericProvider getProviderOverride(
-    covariant GenericProvider provider,
+  GenericProvider<num> getProviderOverride(
+    covariant GenericProvider<num> provider,
   ) {
     return call();
   }
@@ -68,11 +68,11 @@ class GenericFamily extends Family {
 }
 
 /// See also [generic].
-class GenericProvider extends AutoDisposeProvider<List<T>> {
+class GenericProvider<T extends num> extends AutoDisposeProvider<List<T>> {
   /// See also [generic].
   GenericProvider()
       : super.internal(
-          (ref) => generic(
+          (ref) => generic<T>(
             ref,
           ),
           from: genericProvider,
@@ -87,12 +87,109 @@ class GenericProvider extends AutoDisposeProvider<List<T>> {
 
   @override
   bool operator ==(Object other) {
-    return other is GenericProvider;
+    return other is GenericProvider && other.runtimeType == runtimeType;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, T.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+String _$complexGenericHash() => r'a5254e5552cd61bb8d65c018539ff2d8edfd5822';
+typedef ComplexGenericRef<T extends num, Foo extends String?>
+    = AutoDisposeProviderRef<List<T>>;
+
+/// See also [complexGeneric].
+@ProviderFor(complexGeneric)
+const complexGenericProvider = ComplexGenericFamily();
+
+/// See also [complexGeneric].
+class ComplexGenericFamily extends Family {
+  /// See also [complexGeneric].
+  const ComplexGenericFamily();
+
+  /// See also [complexGeneric].
+  ComplexGenericProvider<T, Foo> call<T extends num, Foo extends String?>({
+    required T param,
+    Foo? otherParam,
+  }) {
+    return ComplexGenericProvider<T, Foo>(
+      param: param,
+      otherParam: otherParam,
+    );
+  }
+
+  @override
+  ComplexGenericProvider<num, String?> getProviderOverride(
+    covariant ComplexGenericProvider<num, String?> provider,
+  ) {
+    return call(
+      param: provider.param,
+      otherParam: provider.otherParam,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'complexGenericProvider';
+}
+
+/// See also [complexGeneric].
+class ComplexGenericProvider<T extends num, Foo extends String?>
+    extends AutoDisposeProvider<List<T>> {
+  /// See also [complexGeneric].
+  ComplexGenericProvider({
+    required this.param,
+    this.otherParam,
+  }) : super.internal(
+          (ref) => complexGeneric<T, Foo>(
+            ref,
+            param: param,
+            otherParam: otherParam,
+          ),
+          from: complexGenericProvider,
+          name: r'complexGenericProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$complexGenericHash,
+          dependencies: ComplexGenericFamily._dependencies,
+          allTransitiveDependencies:
+              ComplexGenericFamily._allTransitiveDependencies,
+        );
+
+  final T param;
+  final Foo? otherParam;
+
+  @override
+  bool operator ==(Object other) {
+    return other is ComplexGenericProvider &&
+        other.runtimeType == runtimeType &&
+        other.param == param &&
+        other.otherParam == otherParam;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, param.hashCode);
+    hash = _SystemHash.combine(hash, otherParam.hashCode);
+    hash = _SystemHash.combine(hash, T.hashCode);
+    hash = _SystemHash.combine(hash, Foo.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -475,9 +572,10 @@ final generatedProvider = AutoDisposeProvider<String>.internal(
 );
 
 typedef GeneratedRef = AutoDisposeProviderRef<String>;
-String _$genericClassHash() => r'5a3dcf57f724f9c16ef52b4d86d767ac65175cf7';
+String _$genericClassHash() => r'671e348a5abf8e00ab06c5f247defbca8af9677b';
 
-abstract class _$GenericClass extends BuildlessAutoDisposeNotifier<List<T>> {
+abstract class _$GenericClass<T extends num>
+    extends BuildlessAutoDisposeNotifier<List<T>> {
   List<T> build();
 }
 
@@ -491,13 +589,13 @@ class GenericClassFamily extends Family {
   const GenericClassFamily();
 
   /// See also [GenericClass].
-  GenericClassProvider call() {
-    return GenericClassProvider();
+  GenericClassProvider<T> call<T extends num>() {
+    return GenericClassProvider<T>();
   }
 
   @override
-  GenericClassProvider getProviderOverride(
-    covariant GenericClassProvider provider,
+  GenericClassProvider<num> getProviderOverride(
+    covariant GenericClassProvider<num> provider,
   ) {
     return call();
   }
@@ -518,12 +616,12 @@ class GenericClassFamily extends Family {
 }
 
 /// See also [GenericClass].
-class GenericClassProvider
-    extends AutoDisposeNotifierProviderImpl<GenericClass, List<T>> {
+class GenericClassProvider<T extends num>
+    extends AutoDisposeNotifierProviderImpl<GenericClass<T>, List<T>> {
   /// See also [GenericClass].
   GenericClassProvider()
       : super.internal(
-          () => GenericClass(),
+          GenericClass<T>.new,
           from: genericClassProvider,
           name: r'genericClassProvider',
           debugGetCreateSourceHash:
@@ -537,19 +635,20 @@ class GenericClassProvider
 
   @override
   bool operator ==(Object other) {
-    return other is GenericClassProvider;
+    return other is GenericClassProvider && other.runtimeType == runtimeType;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, T.hashCode);
 
     return _SystemHash.finish(hash);
   }
 
   @override
   List<T> runNotifierBuild(
-    covariant GenericClass notifier,
+    covariant GenericClass<T> notifier,
   ) {
     return notifier.build();
   }

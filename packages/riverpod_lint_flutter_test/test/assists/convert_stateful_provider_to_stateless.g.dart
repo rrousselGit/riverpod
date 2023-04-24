@@ -161,4 +161,85 @@ class StatefulFamilyProvider
     );
   }
 }
+
+String _$genericHash() => r'0a3792d7b59723aebd92715eef2c74d2f267cbd2';
+
+abstract class _$Generic<A, B> extends BuildlessAutoDisposeNotifier<int> {
+  int build();
+}
+
+/// See also [Generic].
+@ProviderFor(Generic)
+const genericProvider = GenericFamily();
+
+/// See also [Generic].
+class GenericFamily extends Family {
+  /// See also [Generic].
+  const GenericFamily();
+
+  /// See also [Generic].
+  GenericProvider<A, B> call<A, B>() {
+    return GenericProvider<A, B>();
+  }
+
+  @override
+  GenericProvider<Object?, Object?> getProviderOverride(
+    covariant GenericProvider<Object?, Object?> provider,
+  ) {
+    return call();
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'genericProvider';
+}
+
+/// See also [Generic].
+class GenericProvider<A, B>
+    extends AutoDisposeNotifierProviderImpl<Generic<A, B>, int> {
+  /// See also [Generic].
+  GenericProvider()
+      : super.internal(
+          Generic<A, B>.new,
+          from: genericProvider,
+          name: r'genericProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$genericHash,
+          dependencies: GenericFamily._dependencies,
+          allTransitiveDependencies: GenericFamily._allTransitiveDependencies,
+        );
+
+  @override
+  bool operator ==(Object other) {
+    return other is GenericProvider && other.runtimeType == runtimeType;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, A.hashCode);
+    hash = _SystemHash.combine(hash, B.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+
+  @override
+  int runNotifierBuild(
+    covariant Generic<A, B> notifier,
+  ) {
+    return notifier.build();
+  }
+}
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

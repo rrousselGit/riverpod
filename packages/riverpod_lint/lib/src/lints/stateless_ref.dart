@@ -5,6 +5,7 @@ import 'package:collection/collection.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
 import '../riverpod_custom_lint.dart';
+import 'generator_class_extends.dart';
 
 class StatelessRef extends RiverpodLintRule {
   const StatelessRef() : super(code: _code);
@@ -48,6 +49,26 @@ class StatelessRef extends RiverpodLintRule {
       if (refNodeType.beginToken.lexeme != expectedRefName) {
         reporter.reportErrorForNode(_code, refNodeType);
       }
+
+      final expectedTypeArguments =
+          declaration.node.functionExpression.typeParameters?.typeParameters ??
+              const <TypeParameter>[];
+
+      final currentRefType = refNode.type;
+      if (currentRefType is! NamedType) {
+        reporter.reportErrorForNode(_code, refNodeType);
+        return;
+      }
+      final actualTypeArguments =
+          currentRefType.typeArguments?.arguments ?? const <TypeAnnotation>[];
+
+      if (!areGenericTypeArgumentsMatching(
+        expectedTypeArguments,
+        actualTypeArguments,
+      )) {
+        reporter.reportErrorForNode(_code, refNodeType);
+        return;
+      }
     });
   }
 
@@ -70,7 +91,11 @@ class StatelessRefFix extends RiverpodFix {
         return;
       }
 
-      final expectedRefType = refNameFor(declaration);
+      final expectedGenerics = genericsDisplayStringFor(
+        declaration.node.functionExpression.typeParameters,
+      );
+      final expectedRefType = '${refNameFor(declaration)}$expectedGenerics';
+
       final refNode = declaration
           .node.functionExpression.parameters!.parameters.firstOrNull;
       if (refNode == null) {

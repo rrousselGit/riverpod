@@ -1,3 +1,4 @@
+import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:collection/collection.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
@@ -15,11 +16,32 @@ String providerFamilyNameFor(
   return '${provider.name.lowerFirst}${options.providerFamilyNameSuffix ?? options.providerNameSuffix ?? 'Provider'}';
 }
 
+String genericDefinitionDisplayString(TypeParameterList? typeParameters) {
+  return typeParameters?.toSource() ?? '';
+}
+
+String genericUsageDisplayString(TypeParameterList? typeParameterList) {
+  if (typeParameterList == null) {
+    return '';
+  }
+
+  return '<${typeParameterList.typeParameters.map((e) => e.name.lexeme).join(', ')}>';
+}
+
+String anyGenericUsageDisplayString(TypeParameterList? typeParameterList) {
+  if (typeParameterList == null) {
+    return '';
+  }
+
+  return '<${typeParameterList.typeParameters.map((e) => e.declaredElement?.bound?.toString() ?? 'Object?').join(', ')}>';
+}
+
 class FamilyTemplate extends Template {
   FamilyTemplate._(
     this.provider, {
     required this.options,
     required this.parameters,
+    required this.typeParameters,
     required this.providerType,
     required this.providerGenerics,
     required this.providerCreate,
@@ -69,17 +91,24 @@ class FamilyTemplate extends Template {
       for (final parameter in parameters) parameter: parameter.name,
     });
 
+    final typeParameters = provider.node.functionExpression.typeParameters;
+    final typeParametersDefinition =
+        genericDefinitionDisplayString(typeParameters);
+    final typeParametersUsage = genericUsageDisplayString(typeParameters);
+
     return FamilyTemplate._(
       provider,
       options: options,
       parameters: parameters,
+      typeParameters: typeParameters,
       hashFn: hashFn,
       providerGenerics: '<${provider.valueType}>',
-      providerCreate: '(ref) => ${provider.name}(ref, $parametersPassThrough)',
+      providerCreate:
+          '(ref) => ${provider.name}$typeParametersUsage(ref, $parametersPassThrough)',
       providerType: providerType,
       parametersPassThrough: parametersPassThrough,
       other: '''
-typedef $refName = ${providerType}Ref<${provider.valueType}>;
+typedef $refName$typeParametersDefinition = ${providerType}Ref<${provider.valueType}>;
 ''',
     );
   }
@@ -120,17 +149,28 @@ typedef $refName = ${providerType}Ref<${provider.valueType}>;
       for (final parameter in parameters) parameter: parameter.name,
     });
 
+    final typeParameters = provider.node.typeParameters;
+    final typeParametersUsage = genericUsageDisplayString(typeParameters);
+    final typeParametersDefinition =
+        genericDefinitionDisplayString(typeParameters);
+
     return FamilyTemplate._(
       provider,
       options: options,
       parameters: parameters,
+      typeParameters: typeParameters,
       hashFn: hashFn,
-      providerGenerics: '<${provider.name}, ${provider.valueType}>',
+      providerGenerics:
+          '<${provider.name}$typeParametersUsage, ${provider.valueType}>',
       providerType: providerType,
-      providerCreate: '() => ${provider.name}()$cascadePropertyInit',
+      providerCreate: parameters.isEmpty
+          // If the provider has no arguments (and therefore only generics),
+          // use tear-off constructor
+          ? '${provider.name.lexeme}$typeParametersUsage.new'
+          : '() => ${provider.name}$typeParametersUsage()$cascadePropertyInit',
       parametersPassThrough: parametersPassThrough,
       other: '''
-abstract class $notifierTypedefName extends $notifierBaseType<${provider.valueType}> {
+abstract class $notifierTypedefName$typeParametersDefinition extends $notifierBaseType<${provider.valueType}> {
   ${parameters.map((e) => 'late final ${e.type} ${e.name};').join('\n')}
 
   ${provider.createdType} build($parameterDefinition);
@@ -139,7 +179,7 @@ abstract class $notifierTypedefName extends $notifierBaseType<${provider.valueTy
       providerOther: '''
   @override
   ${provider.createdType} runNotifierBuild(
-    covariant ${provider.name} notifier,
+    covariant ${provider.name}$typeParametersUsage notifier,
   ) {
     return notifier.build($parametersPassThrough);
   }
@@ -149,6 +189,7 @@ abstract class $notifierTypedefName extends $notifierBaseType<${provider.valueTy
 
   final GeneratorProviderDeclaration provider;
   final List<ParameterElement> parameters;
+  final TypeParameterList? typeParameters;
   final BuildYamlOptions options;
   final String providerType;
   final String providerGenerics;
@@ -183,6 +224,11 @@ abstract class $notifierTypedefName extends $notifierBaseType<${provider.valueTy
             ? 'const Iterable<ProviderOrFamily>?'
             : 'final Iterable<ProviderOrFamily>';
 
+    final typeParametersDefinition =
+        genericDefinitionDisplayString(typeParameters);
+    final typeParametersUsage = genericUsageDisplayString(typeParameters);
+    final anyTypeParametersUsage = anyGenericUsageDisplayString(typeParameters);
+
     buffer.write('''
 $other
 
@@ -196,13 +242,13 @@ class $familyName extends Family {
   const $familyName();
 
   $docs
-  $providerTypeNameImpl call($parameterDefinition) {
-    return $providerTypeNameImpl($parametersPassThrough);
+  $providerTypeNameImpl$typeParametersUsage call$typeParametersDefinition($parameterDefinition) {
+    return $providerTypeNameImpl$typeParametersUsage($parametersPassThrough);
   }
 
   @override
-  $providerTypeNameImpl getProviderOverride(
-    covariant $providerTypeNameImpl provider,
+  $providerTypeNameImpl$anyTypeParametersUsage getProviderOverride(
+    covariant $providerTypeNameImpl$anyTypeParametersUsage provider,
   ) {
     return call($parameterProviderPassThrough);
   }
@@ -222,7 +268,7 @@ class $familyName extends Family {
 }
 
 $docs
-class $providerTypeNameImpl extends $providerType$providerGenerics {
+class $providerTypeNameImpl$typeParametersDefinition extends $providerType$providerGenerics {
   $docs
   $providerTypeNameImpl($thisParameterDefinition) : super.internal(
           $providerCreate,
@@ -239,14 +285,20 @@ ${parameters.map((e) => 'final ${e.type.getDisplayString(withNullability: true)}
   bool operator ==(Object other) {
     return ${[
       'other is $providerTypeNameImpl',
-      ...parameters.map((e) => 'other.${e.name} == ${e.name}')
+      // If there are type parameters, check the runtimeType to check them too.
+      if (typeParameters?.typeParameters.isNotEmpty ?? false)
+        'other.runtimeType == runtimeType',
+      ...parameters.map((e) => 'other.${e.name} == ${e.name}'),
     ].join(' && ')};
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-${parameters.map((e) => 'hash = _SystemHash.combine(hash, ${e.name}.hashCode);').join()}
+${[
+      ...parameters.map((e) => e.name),
+      ...?typeParameters?.typeParameters.map((e) => e.name)
+    ].map((e) => 'hash = _SystemHash.combine(hash, $e.hashCode);').join()}
 
     return _SystemHash.finish(hash);
   }

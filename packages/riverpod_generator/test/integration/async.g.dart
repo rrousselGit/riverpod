@@ -29,7 +29,7 @@ class _SystemHash {
   }
 }
 
-typedef GenericRef = AutoDisposeFutureProviderRef<List<T>>;
+typedef GenericRef<T extends num> = AutoDisposeFutureProviderRef<List<T>>;
 
 /// See also [generic].
 @ProviderFor(generic)
@@ -41,13 +41,13 @@ class GenericFamily extends Family {
   const GenericFamily();
 
   /// See also [generic].
-  GenericProvider call() {
-    return GenericProvider();
+  GenericProvider<T> call<T extends num>() {
+    return GenericProvider<T>();
   }
 
   @override
-  GenericProvider getProviderOverride(
-    covariant GenericProvider provider,
+  GenericProvider<num> getProviderOverride(
+    covariant GenericProvider<num> provider,
   ) {
     return call();
   }
@@ -68,11 +68,12 @@ class GenericFamily extends Family {
 }
 
 /// See also [generic].
-class GenericProvider extends AutoDisposeFutureProvider<List<T>> {
+class GenericProvider<T extends num>
+    extends AutoDisposeFutureProvider<List<T>> {
   /// See also [generic].
   GenericProvider()
       : super.internal(
-          (ref) => generic(
+          (ref) => generic<T>(
             ref,
           ),
           from: genericProvider,
@@ -87,12 +88,13 @@ class GenericProvider extends AutoDisposeFutureProvider<List<T>> {
 
   @override
   bool operator ==(Object other) {
-    return other is GenericProvider;
+    return other is GenericProvider && other.runtimeType == runtimeType;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, T.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -240,9 +242,9 @@ class FamilyProvider extends AutoDisposeFutureProvider<String> {
   }
 }
 
-String _$genericClassHash() => r'0c53e36d8c4776a3835fb87502355340a8dd2cc6';
+String _$genericClassHash() => r'd3c4acc9cdae12f6c666fbf1f89aee212bb086db';
 
-abstract class _$GenericClass
+abstract class _$GenericClass<T extends num>
     extends BuildlessAutoDisposeAsyncNotifier<List<T>> {
   Future<List<T>> build();
 }
@@ -257,13 +259,13 @@ class GenericClassFamily extends Family {
   const GenericClassFamily();
 
   /// See also [GenericClass].
-  GenericClassProvider call() {
-    return GenericClassProvider();
+  GenericClassProvider<T> call<T extends num>() {
+    return GenericClassProvider<T>();
   }
 
   @override
-  GenericClassProvider getProviderOverride(
-    covariant GenericClassProvider provider,
+  GenericClassProvider<num> getProviderOverride(
+    covariant GenericClassProvider<num> provider,
   ) {
     return call();
   }
@@ -284,12 +286,12 @@ class GenericClassFamily extends Family {
 }
 
 /// See also [GenericClass].
-class GenericClassProvider
-    extends AutoDisposeAsyncNotifierProviderImpl<GenericClass, List<T>> {
+class GenericClassProvider<T extends num>
+    extends AutoDisposeAsyncNotifierProviderImpl<GenericClass<T>, List<T>> {
   /// See also [GenericClass].
   GenericClassProvider()
       : super.internal(
-          () => GenericClass(),
+          GenericClass<T>.new,
           from: genericClassProvider,
           name: r'genericClassProvider',
           debugGetCreateSourceHash:
@@ -303,19 +305,20 @@ class GenericClassProvider
 
   @override
   bool operator ==(Object other) {
-    return other is GenericClassProvider;
+    return other is GenericClassProvider && other.runtimeType == runtimeType;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, T.hashCode);
 
     return _SystemHash.finish(hash);
   }
 
   @override
   Future<List<T>> runNotifierBuild(
-    covariant GenericClass notifier,
+    covariant GenericClass<T> notifier,
   ) {
     return notifier.build();
   }

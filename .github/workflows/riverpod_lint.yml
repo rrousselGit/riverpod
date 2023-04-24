@@ -24,7 +24,7 @@ jobs:
     strategy:
       matrix:
         channel:
-          - stable
+          - master
         package_path:
           - packages/riverpod_analyzer_utils
           - packages/riverpod_analyzer_utils_tests
@@ -46,7 +46,7 @@ jobs:
         run: flutter pub get
       - run: dart pub global activate custom_lint
       - name: Check format
-        run: flutter format --set-exit-if-changed .
+        run: dart format --set-exit-if-changed .
 
       - name: Analyze
         run: flutter analyze
