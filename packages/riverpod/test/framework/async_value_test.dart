@@ -7,6 +7,17 @@ import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart';
 
 void main() {
+  test('Can do exhaustive pattern matching', () {
+    expect(
+      switch (const AsyncValue<int>.loading()) {
+        AsyncData() => 'data',
+        AsyncError() => 'error',
+        AsyncLoading() => 'loading',
+      },
+      'loading',
+    );
+  });
+
   group('custom AsyncValue', () {
     test('supports when', () {
       expect(
