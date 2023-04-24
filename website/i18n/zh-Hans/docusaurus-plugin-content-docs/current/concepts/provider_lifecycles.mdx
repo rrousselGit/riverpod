@@ -3,8 +3,8 @@ title: Provider生命周期
 ---
 
 import CodeBlock from "@theme/CodeBlock";
-import onDispose from "!!raw-loader!/docs/concepts/lifecycle_on_dispose.dart";
-import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+import onDispose from "./lifecycle_on_dispose";
+import { trimSnippet, CodeSnippet, AutoSnippet } from "../../../../../src/components/CodeSnippet";
 
 ## 什么时候创建并销毁我的Provider？
 
@@ -81,7 +81,7 @@ provider的状态存储在 [ProviderContainer] 中。在Flutter应用中，此�
 
 下面的例子使用onDispose关闭StreamController：
 
-<CodeBlock>{trimSnippet(onDispose)}</CodeBlock>
+<AutoSnippet {...onDispose}></AutoSnippet>
 
 :::note
 根据所使用的provider，它可能已经处理了清理过程。
