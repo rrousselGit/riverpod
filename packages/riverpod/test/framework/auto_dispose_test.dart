@@ -150,38 +150,6 @@ Future<void> main() async {
     });
 
     test(
-        'when closing KeepAliveLink, does not dispose the provider maintainState=true',
-        () async {
-      final container = createContainer();
-      late KeepAliveLink a;
-      late AutoDisposeRef<Object?> ref;
-
-      final provider = Provider.autoDispose<void>((r) {
-        ref = r;
-        r.maintainState = true;
-        a = ref.keepAlive();
-      });
-
-      container.read<void>(provider);
-
-      a.close();
-      await container.pump();
-
-      expect(
-        container.getAllProviderElements().map((e) => e.provider),
-        [provider],
-      );
-
-      ref.maintainState = false;
-      await container.pump();
-
-      expect(
-        container.getAllProviderElements().map((e) => e.provider),
-        isEmpty,
-      );
-    });
-
-    test(
         'when closing the last KeepAliveLink, then immediately adding a new link, '
         'the provider will not be disposed.', () async {
       final container = createContainer();
@@ -361,7 +329,6 @@ final alwaysAlive = Provider((ref) {
     final provider = Provider.autoDispose(
       name: 'provider',
       (ref) {
-        ref.maintainState = true;
         if (ref.watch(isDependendingOnDependency)) {
           ref.watch(dependency);
         }
@@ -559,76 +526,6 @@ final alwaysAlive = Provider((ref) {
     });
 
     expect(container.read(isEven), true);
-  });
-
-  test('setting maintainState to false destroys the state when not listened to',
-      () async {
-    final onDispose = OnDisposeMock();
-    late AutoDisposeRef<Object?> ref;
-    final provider = Provider.autoDispose((r) {
-      ref = r;
-      ref.onDispose(onDispose);
-      ref.maintainState = true;
-    });
-    final container = createContainer();
-
-    final sub = container.listen<void>(provider, (prev, value) {});
-    sub.close();
-
-    await container.pump();
-
-    verifyZeroInteractions(onDispose);
-
-    ref.maintainState = false;
-
-    verifyZeroInteractions(onDispose);
-
-    await container.pump();
-
-    verify(onDispose()).called(1);
-    verifyNoMoreInteractions(onDispose);
-  });
-
-  test(
-      "maintainState to true don't dispose the state when no longer listened to",
-      () async {
-    var value = 42;
-    final onDispose = OnDisposeMock();
-    final provider = Provider.autoDispose((ref) {
-      ref.onDispose(onDispose);
-      ref.maintainState = true;
-      return value;
-    });
-    final container = createContainer();
-    final listener = Listener<int>();
-
-    final sub = container.listen(provider, listener, fireImmediately: true);
-    verify(listener(null, 42)).called(1);
-    verifyNoMoreInteractions(listener);
-    sub.close();
-
-    await container.pump();
-
-    verifyZeroInteractions(onDispose);
-
-    value = 21;
-    container.listen(provider, listener, fireImmediately: true);
-
-    verify(listener(null, 42)).called(1);
-    verifyNoMoreInteractions(listener);
-  });
-
-  test('maintainState defaults to false', () {
-    late bool maintainState;
-    final provider = Provider.autoDispose((ref) {
-      maintainState = ref.maintainState;
-      return 42;
-    });
-    final container = createContainer();
-
-    container.listen(provider, (prev, value) {});
-
-    expect(maintainState, false);
   });
 
   test('unsub to A then make B sub to A then unsub to B disposes B before A',

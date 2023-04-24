@@ -87,8 +87,7 @@ class _ProviderScheduler {
       final links = element._keepAliveLinks;
 
       // ignore: deprecated_member_use_from_same_package
-      if (element.maintainState ||
-          (links != null && links.isNotEmpty) ||
+      if ((links != null && links.isNotEmpty) ||
           element.hasListeners ||
           element._container._disposed) {
         continue;
