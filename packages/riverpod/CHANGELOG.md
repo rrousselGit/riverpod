@@ -1,5 +1,6 @@
 ## Unreleased major
 
+- **Breaking**: `AsyncValue` is now "sealed" (cannot be extended/implemented)
 - Bumped minimum Dart SDK to >= 3.0.0-dev
 
 ## 2.3.6 - 2023-04-24

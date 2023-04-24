@@ -87,7 +87,7 @@ extension AsyncTransition<T> on ProviderElementBase<AsyncValue<T>> {
 /// - [AsyncValue.guard], to simplify transforming a [Future] into an [AsyncValue].
 @sealed
 @immutable
-abstract class AsyncValue<T> {
+sealed class AsyncValue<T> {
   const AsyncValue._();
 
   /// {@template asyncvalue.data}
