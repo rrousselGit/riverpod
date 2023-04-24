@@ -18,26 +18,6 @@ void main() {
     );
   });
 
-  group('custom AsyncValue', () {
-    test('supports when', () {
-      expect(
-        const CustomData(42).whenOrNull(data: (v) => v * 2),
-        84,
-      );
-
-      expect(
-        const CustomError<int>(42, stackTrace: StackTrace.empty)
-            .whenOrNull(data: (v) => v * 2),
-        null,
-      );
-
-      expect(
-        const CustomLoading<int>().whenOrNull(data: (v) => v * 2),
-        null,
-      );
-    });
-  });
-
   test('unwrapPrevious', () {
     expect(
       const AsyncLoading<int>()
@@ -1579,20 +1559,4 @@ void main() {
       completion(AsyncError<int>(42, stack)),
     );
   });
-}
-
-class CustomLoading<T> extends AsyncLoading<T> {
-  const CustomLoading();
-}
-
-class CustomData<T> extends AsyncData<T> {
-  const CustomData(super.value);
-}
-
-class CustomError<T> extends AsyncError<T> {
-  const CustomError(Object error, {required StackTrace stackTrace})
-      : super(
-          error,
-          stackTrace,
-        );
 }

@@ -287,7 +287,7 @@ sealed class AsyncValue<T> {
 }
 
 /// {@macro asyncvalue.data}
-class AsyncData<T> extends AsyncValue<T> {
+final class AsyncData<T> extends AsyncValue<T> {
   /// {@macro asyncvalue.data}
   const AsyncData(T value)
       : this._(
@@ -342,7 +342,7 @@ class AsyncData<T> extends AsyncValue<T> {
 }
 
 /// {@macro asyncvalue.loading}
-class AsyncLoading<T> extends AsyncValue<T> {
+final class AsyncLoading<T> extends AsyncValue<T> {
   /// {@macro asyncvalue.loading}
   const AsyncLoading()
       : hasValue = false,
@@ -428,7 +428,7 @@ class AsyncLoading<T> extends AsyncValue<T> {
 }
 
 /// {@macro asyncvalue.error_ctor}
-class AsyncError<T> extends AsyncValue<T> {
+final class AsyncError<T> extends AsyncValue<T> {
   /// {@macro asyncvalue.error_ctor}
   const AsyncError(Object error, StackTrace stackTrace)
       : this._(
