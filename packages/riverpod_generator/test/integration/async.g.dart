@@ -6,6 +6,98 @@ part of 'async.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+String _$genericHash() => r'6ee5473ece745b00328c1e048f6967c160343620';
+
+/// Copied from Dart SDK
+class _SystemHash {
+  _SystemHash._();
+
+  static int combine(int hash, int value) {
+    // ignore: parameter_assignments
+    hash = 0x1fffffff & (hash + value);
+    // ignore: parameter_assignments
+    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
+    return hash ^ (hash >> 6);
+  }
+
+  static int finish(int hash) {
+    // ignore: parameter_assignments
+    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
+    // ignore: parameter_assignments
+    hash = hash ^ (hash >> 11);
+    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
+  }
+}
+
+typedef GenericRef = AutoDisposeFutureProviderRef<List<T>>;
+
+/// See also [generic].
+@ProviderFor(generic)
+const genericProvider = GenericFamily();
+
+/// See also [generic].
+class GenericFamily extends Family {
+  /// See also [generic].
+  const GenericFamily();
+
+  /// See also [generic].
+  GenericProvider call() {
+    return GenericProvider();
+  }
+
+  @override
+  GenericProvider getProviderOverride(
+    covariant GenericProvider provider,
+  ) {
+    return call();
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'genericProvider';
+}
+
+/// See also [generic].
+class GenericProvider extends AutoDisposeFutureProvider<List<T>> {
+  /// See also [generic].
+  GenericProvider()
+      : super.internal(
+          (ref) => generic(
+            ref,
+          ),
+          from: genericProvider,
+          name: r'genericProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$genericHash,
+          dependencies: GenericFamily._dependencies,
+          allTransitiveDependencies: GenericFamily._allTransitiveDependencies,
+        );
+
+  @override
+  bool operator ==(Object other) {
+    return other is GenericProvider;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
 String _$publicHash() => r'9d99b79c013da13926d4ad89c72ebca4fc1cc257';
 
 /// See also [public].
@@ -35,28 +127,6 @@ final _privateProvider = AutoDisposeFutureProvider<String>.internal(
 
 typedef _PrivateRef = AutoDisposeFutureProviderRef<String>;
 String _$familyHash() => r'f46defb7b007c76254058e9e8bc868260bcfe0f1';
-
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
 typedef FamilyRef = AutoDisposeFutureProviderRef<String>;
 
 /// See also [family].
@@ -167,6 +237,87 @@ class FamilyProvider extends AutoDisposeFutureProvider<String> {
     hash = _SystemHash.combine(hash, fifth.hashCode);
 
     return _SystemHash.finish(hash);
+  }
+}
+
+String _$genericClassHash() => r'0c53e36d8c4776a3835fb87502355340a8dd2cc6';
+
+abstract class _$GenericClass
+    extends BuildlessAutoDisposeAsyncNotifier<List<T>> {
+  Future<List<T>> build();
+}
+
+/// See also [GenericClass].
+@ProviderFor(GenericClass)
+const genericClassProvider = GenericClassFamily();
+
+/// See also [GenericClass].
+class GenericClassFamily extends Family {
+  /// See also [GenericClass].
+  const GenericClassFamily();
+
+  /// See also [GenericClass].
+  GenericClassProvider call() {
+    return GenericClassProvider();
+  }
+
+  @override
+  GenericClassProvider getProviderOverride(
+    covariant GenericClassProvider provider,
+  ) {
+    return call();
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'genericClassProvider';
+}
+
+/// See also [GenericClass].
+class GenericClassProvider
+    extends AutoDisposeAsyncNotifierProviderImpl<GenericClass, List<T>> {
+  /// See also [GenericClass].
+  GenericClassProvider()
+      : super.internal(
+          () => GenericClass(),
+          from: genericClassProvider,
+          name: r'genericClassProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$genericClassHash,
+          dependencies: GenericClassFamily._dependencies,
+          allTransitiveDependencies:
+              GenericClassFamily._allTransitiveDependencies,
+        );
+
+  @override
+  bool operator ==(Object other) {
+    return other is GenericClassProvider;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+
+  @override
+  Future<List<T>> runNotifierBuild(
+    covariant GenericClass notifier,
+  ) {
+    return notifier.build();
   }
 }
 

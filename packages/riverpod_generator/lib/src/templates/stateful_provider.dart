@@ -46,11 +46,11 @@ class StatefulProviderTemplate extends Template {
     required this.hashFn,
     required this.options,
   }) {
-    if (provider.buildMethod.parameters!.parameters.isNotEmpty) {
+    if (provider.providerElement.isFamily) {
       throw ArgumentError.value(
-        provider.buildMethod.parameters?.toSource(),
-        'provider',
-        'Expected a stateful provider with no parameter',
+        provider.providerElement.isFamily,
+        'provider.providerElement.isFamily',
+        'Expected a non-family provider',
       );
     }
   }

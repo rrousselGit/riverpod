@@ -3,6 +3,19 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'async.g.dart';
 
 @riverpod
+Future<List<T>> generic<T extends num>(GenericRef<T> ref) async {
+  return <T>[];
+}
+
+@riverpod
+class GenericClass<T> extends _$GenericClass<T> {
+  @override
+  Future<List<T>> build() async {
+    return <T>[];
+  }
+}
+
+@riverpod
 FutureOr<String> public(PublicRef ref) {
   return 'Hello world';
 }

@@ -28,11 +28,11 @@ class FamilyTemplate extends Template {
     this.other = '',
     this.providerOther = '',
   }) {
-    if (parameters.isEmpty) {
+    if (!provider.providerElement.isFamily) {
       throw ArgumentError.value(
-        parameters,
-        'provider',
-        'Expected a provider with parameters',
+        provider.providerElement.isFamily,
+        'provider.providerElement.isFamily',
+        'Expected a family provider',
       );
     }
   }
