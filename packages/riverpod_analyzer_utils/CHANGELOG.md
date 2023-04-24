@@ -1,3 +1,7 @@
+## Unreleased minor
+
+- Added `GeneratorProviderDeclarationElement.isFamily`
+
 ## 0.3.0 - 2023-04-18
 
 - Added `DartType.isRaw` extension property for checking if a type is from a `Raw` typedef.
