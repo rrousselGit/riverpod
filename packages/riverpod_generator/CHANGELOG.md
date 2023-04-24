@@ -1,5 +1,27 @@
 ## Unreleased major
 
+- Providers can now be generic:
+
+  ```dart
+  @riverpod
+  List<T> example<T extends num>(ExampleRef<T> ref) {
+    return <T>[];
+  }
+
+  @riverpod
+  class ClassExample<T> extends _$ClassExample<T> {
+    @override
+    List<T> build() => <T>[];
+  }
+  ```
+
+  Specifying type parameters works the same as specifying arguments, and
+  make the generated provider a "function":
+
+  ```dart
+  ref.watch(example<int>());
+  ```
+
 - Upgraded to use Riverpod 3.0
 
 ## 2.2.1 - 2023-04-24

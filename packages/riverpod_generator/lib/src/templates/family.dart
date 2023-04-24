@@ -243,7 +243,7 @@ class $familyName extends Family {
 
   $docs
   $providerTypeNameImpl$typeParametersUsage call$typeParametersDefinition($parameterDefinition) {
-    return $providerTypeNameImpl($parametersPassThrough);
+    return $providerTypeNameImpl$typeParametersUsage($parametersPassThrough);
   }
 
   @override

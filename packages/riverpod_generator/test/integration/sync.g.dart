@@ -42,7 +42,7 @@ class GenericFamily extends Family {
 
   /// See also [generic].
   GenericProvider<T> call<T extends num>() {
-    return GenericProvider();
+    return GenericProvider<T>();
   }
 
   @override
@@ -94,6 +94,102 @@ class GenericProvider<T extends num> extends AutoDisposeProvider<List<T>> {
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, T.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+String _$complexGenericHash() => r'a5254e5552cd61bb8d65c018539ff2d8edfd5822';
+typedef ComplexGenericRef<T extends num, Foo extends String?>
+    = AutoDisposeProviderRef<List<T>>;
+
+/// See also [complexGeneric].
+@ProviderFor(complexGeneric)
+const complexGenericProvider = ComplexGenericFamily();
+
+/// See also [complexGeneric].
+class ComplexGenericFamily extends Family {
+  /// See also [complexGeneric].
+  const ComplexGenericFamily();
+
+  /// See also [complexGeneric].
+  ComplexGenericProvider<T, Foo> call<T extends num, Foo extends String?>({
+    required T param,
+    Foo? otherParam,
+  }) {
+    return ComplexGenericProvider<T, Foo>(
+      param: param,
+      otherParam: otherParam,
+    );
+  }
+
+  @override
+  ComplexGenericProvider<num, String?> getProviderOverride(
+    covariant ComplexGenericProvider<num, String?> provider,
+  ) {
+    return call(
+      param: provider.param,
+      otherParam: provider.otherParam,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'complexGenericProvider';
+}
+
+/// See also [complexGeneric].
+class ComplexGenericProvider<T extends num, Foo extends String?>
+    extends AutoDisposeProvider<List<T>> {
+  /// See also [complexGeneric].
+  ComplexGenericProvider({
+    required this.param,
+    this.otherParam,
+  }) : super.internal(
+          (ref) => complexGeneric<T, Foo>(
+            ref,
+            param: param,
+            otherParam: otherParam,
+          ),
+          from: complexGenericProvider,
+          name: r'complexGenericProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$complexGenericHash,
+          dependencies: ComplexGenericFamily._dependencies,
+          allTransitiveDependencies:
+              ComplexGenericFamily._allTransitiveDependencies,
+        );
+
+  final T param;
+  final Foo? otherParam;
+
+  @override
+  bool operator ==(Object other) {
+    return other is ComplexGenericProvider &&
+        other.runtimeType == runtimeType &&
+        other.param == param &&
+        other.otherParam == otherParam;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, param.hashCode);
+    hash = _SystemHash.combine(hash, otherParam.hashCode);
+    hash = _SystemHash.combine(hash, T.hashCode);
+    hash = _SystemHash.combine(hash, Foo.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -494,7 +590,7 @@ class GenericClassFamily extends Family {
 
   /// See also [GenericClass].
   GenericClassProvider<T> call<T extends num>() {
-    return GenericClassProvider();
+    return GenericClassProvider<T>();
   }
 
   @override

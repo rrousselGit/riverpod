@@ -8,6 +8,15 @@ List<T> generic<T extends num>(GenericRef<T> ref) {
 }
 
 @riverpod
+List<T> complexGeneric<T extends num, Foo extends String?>(
+  ComplexGenericRef<T, Foo> ref, {
+  required T param,
+  Foo? otherParam,
+}) {
+  return <T>[];
+}
+
+@riverpod
 class GenericClass<T extends num> extends _$GenericClass<T> {
   @override
   List<T> build() {

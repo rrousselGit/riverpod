@@ -42,7 +42,7 @@ class GenericFamily extends Family {
 
   /// See also [generic].
   GenericProvider<T> call<T extends num>() {
-    return GenericProvider();
+    return GenericProvider<T>();
   }
 
   @override
@@ -260,7 +260,7 @@ class GenericClassFamily extends Family {
 
   /// See also [GenericClass].
   GenericClassProvider<T> call<T extends num>() {
-    return GenericClassProvider();
+    return GenericClassProvider<T>();
   }
 
   @override
