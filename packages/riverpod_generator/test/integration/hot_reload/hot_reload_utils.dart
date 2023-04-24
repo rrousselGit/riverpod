@@ -77,15 +77,26 @@ void main() {
   int _testNumber = 0;
 
   Future<void> updateRenders(String source) async {
+    final sourceWithImports = '''
+library renderer;
+// ignore_for_file: avoid_print
+
+import 'package:riverpod/riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'renderer.g.dart';
+
+$source
+''';
+
     final testId = _testNumber++;
 
     // Giving a unique name to the package to avoid the analyzer cache
     // messing up tests.
     final packageName = 'test_lib$testId';
-    final sourceWithLibrary = 'library renderer;$source';
 
     final analysisResult = await resolveSources(
-      {'$packageName|lib/renderer.dart': sourceWithLibrary},
+      {'$packageName|lib/renderer.dart': sourceWithImports},
       (resolver) {
         return resolver.resolveRiverpodLibraryResult(
           ignoreErrors: true,
@@ -95,10 +106,7 @@ void main() {
 
     final generated = RiverpodGenerator(const {}).runGenerator(analysisResult);
 
-    writeFile(_workspace.file('renderer.dart'), '''
-// ignore_for_file: avoid_print
-$source
-''');
+    writeFile(_workspace.file('renderer.dart'), sourceWithImports);
     writeFile(_workspace.file('renderer.g.dart'), '''
 part of 'renderer.dart';
 $generated

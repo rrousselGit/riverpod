@@ -49,6 +49,9 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
 
   static ProviderElementBase<Object?>? _debugCurrentlyBuildingElement;
 
+  /// The [_StateReader] associated with this element.
+  late final _StateReader _debugStateReader;
+
   /// The last result of [ProviderBase.debugGetCreateSourceHash].
   ///
   /// Available only in debug mode.
@@ -58,7 +61,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   /// The provider associated with this [ProviderElementBase], before applying overrides.
   // Not typed as <State> because of https://github.com/rrousselGit/riverpod/issues/1100
   ProviderBase<Object?> get origin => _origin;
-  late ProviderBase<Object?> _origin;
+  late final ProviderBase<Object?> _origin;
 
   /// The provider associated with this [ProviderElementBase], after applying overrides.
   ProviderBase<State> get provider => _provider;
@@ -67,7 +70,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   /// The [ProviderContainer] that owns this [ProviderElementBase].
   @override
   ProviderContainer get container => _container;
-  late ProviderContainer _container;
+  late final ProviderContainer _container;
 
   /// Whether this [ProviderElementBase] is currently listened to or not.
   ///

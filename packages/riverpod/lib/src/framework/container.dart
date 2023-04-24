@@ -20,7 +20,15 @@ class _StateReader {
     required this.override,
     required this.container,
     required this.isDynamicallyCreated,
-  });
+  }) {
+    assert(
+      () {
+        _debugOriginRuntimeType = origin.runtimeType;
+        return true;
+      }(),
+      '',
+    );
+  }
 
   final ProviderBase<Object?> origin;
   ProviderBase<Object?> override;
@@ -30,8 +38,33 @@ class _StateReader {
   /// at the creation of the [ProviderContainer]
   final bool isDynamicallyCreated;
 
-  ProviderElementBase<Object?>? _element;
+  /// The [runtimeType] of [origin] at the time of the last hot-reload
+  /// or initial creation.
+  ///
+  /// This is used for comparing with the [runtimeType] of [origin]
+  /// in [ProviderContainer.debugReassemble], to determine if a provider
+  /// was hot-reloaded.
+  late final Type _debugOriginRuntimeType;
 
+  /// Whether the [runtimeType] of [origin] was changed in any way.
+  ///
+  /// This could happen after a hot-reload if:
+  /// - the return value changed
+  /// - the provider type changed (for ex: from class to function)
+  /// - autoDispose was enabled/disabled
+  /// - the list of parameters of the provider changed
+  ///
+  /// This is used for comparing to know after a hot-reload if the
+  /// [ProviderElementBase] should be fully destroyed.
+  @internal
+  bool get debugDidProviderTypeChange {
+    print('Check reader $_debugOriginRuntimeType // ${origin.runtimeType}');
+    return _debugOriginRuntimeType != origin.runtimeType ||
+        origin.from?.debugFamilyCallRuntimeType !=
+            origin.debugFamilyCallRuntimeType;
+  }
+
+  ProviderElementBase<Object?>? _element;
   ProviderElementBase<Object?> getElement() => _element ??= _create();
 
   ProviderElementBase<Object?> _create() {
@@ -43,8 +76,17 @@ class _StateReader {
       final element = override.createElement()
         .._provider = override
         .._origin = origin
-        .._container = container
-        ..mount();
+        .._container = container;
+
+      assert(
+        () {
+          element._debugStateReader = this;
+          return true;
+        }(),
+        '',
+      );
+
+      element.mount();
 
       element.getState()!.map<void>(
         // ignore: avoid_types_on_closure_parameters
@@ -247,9 +289,11 @@ class ProviderContainer implements Node {
       () {
         // TODO test that we are using getAllProviderElementsInOrder
         for (final element in getAllProviderElementsInOrder()) {
-          if (element.origin.didFamilyPrototypeChange) {
-            // The prototype of a family changed. This could mean that
-            // new parameters were added/removed/modified.
+          final stateReader = element._debugStateReader;
+          if (stateReader.debugDidProviderTypeChange) {
+            // The type of a provider changed. This could mean that
+            // new parameters were added/removed/modified, or that
+            // the return value is different, or that autoDispose was toggled.
             // In that scenario, the old provider is no-longer usable.
             // We'll destroy it.
             // This is tested though e2e in riverpod_generator
@@ -270,10 +314,21 @@ class ProviderContainer implements Node {
         final readersWithUnchangedFamily =
             <ProviderBase<Object?>, _StateReader>{};
         for (final reader in _stateReaders.values) {
-          if (reader.origin.didFamilyPrototypeChange) continue;
+          // TODO this may remove some "permanent" StateReaders. Is that alright?
+          // Maybe this should only be done for non-permanent ones.
+          // But a permanent origin might be associated with a family, in which
+          // case, the origin is no-longer usable.
+          if (reader.debugDidProviderTypeChange) continue;
+
+          // TODO should we update _stateReader.originRuntimeType?
+          // But then what if the origin is a family(param) override?
+          // Maybe the override list should be updated on reassemble too.
+
           readersWithUnchangedFamily[reader.origin] = reader;
         }
 
+        // TODO test using the using the internal public StateReader API
+        // that the list of stateReader is correctly updated post hot-reload
         _stateReaders.clear();
         _stateReaders.addAll(readersWithUnchangedFamily);
 

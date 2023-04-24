@@ -5,11 +5,6 @@ import 'hot_reload_utils.dart';
 void main() {
   group('Supports family hot-reload', () {
     test(
-      'by recursively deleting _stateReaders of affected providers',
-      () async {},
-    );
-
-    test(
       'gracefully handles not disposing providers twice when debugReassemble'
       ' is called multiple times on the same contaiener',
       () async {},
@@ -23,11 +18,6 @@ void main() {
       'handles changing default values',
       () async {
         final runner = await HotReloadRunner.start(r'''
-import 'package:riverpod/riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-part 'renderer.g.dart';
-
 // Reused through hot reload
 final container = ProviderContainer();
 
@@ -56,11 +46,6 @@ value: id(0)''',
         );
 
         await runner.updateRenders(r'''
-import 'package:riverpod/riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-part 'renderer.g.dart';
-
 // Reused through hot reload
 final container = ProviderContainer();
 
@@ -102,11 +87,6 @@ id2(42)''',
 
     test('when adding/removing parameters', () async {
       final runner = await HotReloadRunner.start(r'''
-import 'package:riverpod/riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-part 'renderer.g.dart';
-
 // Reused through hot reload
 final container = ProviderContainer();
 
@@ -129,11 +109,6 @@ void renderer() {
       expect(await runner.currentRender.next, 'value: id(0)');
 
       await runner.updateRenders(r'''
-import 'package:riverpod/riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-part 'renderer.g.dart';
-
 // Reused through hot reload
 final container = ProviderContainer();
 
@@ -185,7 +160,78 @@ value2: id2(0)''',
 
   test('Supports enabling/disabling autoDispose', () {});
 
-  test('Supports changing the runtimeType of a provider', () {});
-
   test('Supports adding/removing overrides', () {});
+
+  test('Supports changing the runtimeType of a provider', () async {
+    final runner = await HotReloadRunner.start(r'''
+// Reused through hot reload
+final container = ProviderContainer();
+
+@riverpod
+String fn(FnRef ref) {
+  ref.onDispose(() => print('disposing step1'));
+  return 'v1';
+}
+
+const int x = 0;
+
+Future<void> renderer() async {
+  print(x);
+  // container.listen(
+  //   fnProvider, (_, value) => print('value: $value'),
+  //   fireImmediately: true,
+  // );
+}
+''');
+
+    // expect(await runner.currentRender.next, 'value: v1');
+    expect(await runner.currentRender.next, '0');
+
+    await runner.updateRenders(r'''
+// Reused through hot reload
+final container = ProviderContainer();
+
+@riverpod
+Future<String> fn(FnRef ref) async => 'v2';
+
+const String x = '1';
+
+
+Future<void> renderer() async {
+  print(x);
+
+  // print(
+  //   'Provider count before reassemble: '
+  //   '${container.getAllProviderElements().length}',
+  // );
+  // container.debugReassemble();
+  // print(
+  //   'Provider count after reassemble: '
+  //   '${container.getAllProviderElements().length}',
+  // );
+
+  // container.listen(
+  //   fnProvider, (_, value) {
+  //     print('value2: $value');
+  //   },
+  //   fireImmediately: true,
+  // );
+  // await container.read(fnProvider.future);
+}
+''');
+
+    expect(
+      await runner.currentRender.next,
+      '''
+Provider count before reassemble: 1
+disposing step1
+Provider count after reassemble: 0
+value2: AsyncLoading<String>()
+value2: AsyncData<String>(value: v2)
+''',
+    );
+  });
+
+  test('replaces permanent StateReaders with new ones on type change', () {});
+  test('deletes temporary StateReaders on type change', () {});
 }

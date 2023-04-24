@@ -45,13 +45,6 @@ abstract class ProviderBase<State> extends ProviderOrFamily
   @override
   ProviderBase<Object?> get _override => this;
 
-  /// Check whether the provider has seen its "family" change prototype
-  /// after a hot-reload.
-  @internal
-  bool get didFamilyPrototypeChange {
-    return from?.debugFamilyCallRuntimeType != debugFamilyCallRuntimeType;
-  }
-
   /// {@template riverpod.create_source_hash}
   /// A debug-only fucntion for obtaining a hash of the source code of the
   /// initialization function.
