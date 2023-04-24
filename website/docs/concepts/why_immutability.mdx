@@ -4,6 +4,12 @@ title: Why Immutability
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import whyImmutability from "./why_immutability"
+import {
+  trimSnippet,
+  AutoSnippet,
+  ConditionalSnippet,
+} from "../../src/components/CodeSnippet";
 
 ## What is Immutability?
 
@@ -61,65 +67,22 @@ If you just call a method that mutates an object, the reference is the same.
 
 ### Using immutable state
 
-Immutable state is best fit for using a [StateNotifier] in combination with [StateNotifierProvider].
-A [StateNotifier] allows you to expose an interface through which you can 'mutate' the state.
-You cannot mutate the state from outside the class you define that extends [StateNotifier].
+Immutable state is best fit for using a [Notifier] <ConditionalSnippet codegen={false}> in combination with [NotifierProvider] </ConditionalSnippet>.
+A [Notifier] allows you to expose an interface through which you can 'mutate' the state.
+You cannot mutate the state from outside the class you define that extends [Notifier].
 This enforces a separation of concerns and keeps business logic outside of your UI.
 
 Here is an example of a simple immutable settings class for changing an app theme.
 
-```dart
-final themeProvider = StateNotifierProvider((ref) => ThemeNotifier());
-
-class ThemeNotifier extends StateNotifier<ThemeSettings> {
-  ThemeNotifier(): super(
-      ThemeSettings(
-        mode: ThemeMode.system,
-        primaryColor: Colors.blue,
-      ));
-
-  void toggle() {
-    state = state.copyWith(mode: state.mode.toggle);
-  }
-  void setDarkTheme() {
-    state = state.copyWith(mode: ThemeMode.dark);
-  }
-  void setLightTheme() {
-    state = state.copyWith(mode: ThemeMode.light);
-  }
-  void setSystemTheme() {
-    state = state.copyWith(mode: ThemeMode.system);
-  }
-  void setPrimaryColor(Color color) {
-    state = state.copyWith(primaryColor: color);
-  }
-
-}
-
-@freezed
-class ThemeSettings with _$ThemeSettings {
-  const factory ThemeSettings({ThemeMode mode, Color primaryColor}) = _ThemeSettings;
-}
-
-extension ToggleTheme on ThemeMode {
-  ThemeMode get toggle {
-    switch (this){
-      case ThemeMode.dark:
-        return ThemeMode.light;
-      case ThemeMode.light:
-        return ThemeMode.dark;
-      case ThemeMode.system:
-        return ThemeMode.system;
-    }
-  }
-}
-```
+<AutoSnippet language="dart" {...whyImmutability}></AutoSnippet>
 
 To use this code, remember to import `freezed_annotation` add the part directive and run [build_runner] to generate the freezed classes!
 
 [changenotifier]: https://api.flutter.dev/flutter/foundation/ChangeNotifier-class.html
 [statenotifier]: https://pub.dev/documentation/riverpod/latest/riverpod/StateNotifier-class.html
 [statenotifierprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StateNotifierProvider-class.html
+[notifier]: https://pub.dev/documentation/riverpod/latest/riverpod/Notifier-class.html
+[notifierprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/NotifierProvider.html
 [asyncvalue]: https://pub.dev/documentation/riverpod/latest/riverpod/AsyncValue-class.html
 [freezed]: https://pub.dev/packages/freezed
 [build_runner]: https://pub.dev/packages/build_runner

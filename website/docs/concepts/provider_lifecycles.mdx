@@ -3,8 +3,8 @@ title: Provider Lifecycles
 ---
 
 import CodeBlock from "@theme/CodeBlock";
-import onDispose from "!!raw-loader!/docs/concepts/lifecycle_on_dispose.dart";
-import { trimSnippet } from "../../src/components/CodeSnippet";
+import onDispose from "./lifecycle_on_dispose";
+import { trimSnippet, ConditionalSnippet, AutoSnippet } from "../../src/components/CodeSnippet";
 
 ## When does my Provider get created and disposed?
 
@@ -80,7 +80,7 @@ If you need to perform some action when a provider is disposed, use the ref's [o
 
 The following example uses onDispose to close a StreamController:
 
-<CodeBlock>{trimSnippet(onDispose)}</CodeBlock>
+<AutoSnippet {...onDispose}></AutoSnippet>
 
 :::note
 Depending on the provider used, it may already take care of the clean-up process.
