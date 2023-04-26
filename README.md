@@ -17,6 +17,10 @@
 
 </p>
 
+<p align="center">
+<a ref="./README_zh.md">中文文档</a>
+</p>
+
 ---
 
 A state-management library that:
@@ -36,7 +40,7 @@ Welcome to [Riverpod]!
 This project can be considered as a rewrite of [provider] to make improvements
 that would be otherwise impossible.
 
-For learning how to use [Riverpod], see its documentation: https://riverpod.dev
+For learning how to use [Riverpod], see its documentation: [https://riverpod.dev](https://riverpod.dev)
 
 Long story short:
 
@@ -120,7 +124,7 @@ From there, [Riverpod] goes a few steps beyond:
 These are achieved by no longer using [InheritedWidget]s. Instead, [Riverpod]
 implements its own mechanism that works in a similar fashion.
 
-For learning how to use [Riverpod], see its documentation: https://riverpod.dev
+For learning how to use [Riverpod], see its documentation: [https://riverpod.dev](https://riverpod.dev)
 
 ## Contributing
 
@@ -175,10 +179,10 @@ and Riverpod could be fused.
 
 ### Will provider be deprecated/stop being supported?
 
-Maybe. 
+Maybe.
 
 Provider has numerous flaws that can't quite be fixed. At the same time,
-Riverpod has proven to fix many of those.  
+Riverpod has proven to fix many of those.
 As such, deprecating Provider is being considered.
 
 The only inconvenience of Riverpod is the need for a "Consumer",
@@ -186,7 +190,7 @@ which Provider doesn't need.
 But some alternatives are being investigated to maybe remove this constraint.
 
 Whatever the decision is, a migration tool is planned to help assist
-migration from provider to [Riverpod]. Along with whatever other tool necessary to help.
+migration from [Provider] to [Riverpod]. Along with whatever other tool necessary to help.
 
 ## Sponsors
 
