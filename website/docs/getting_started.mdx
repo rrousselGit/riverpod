@@ -26,7 +26,31 @@ To get a feel of Riverpod, try it online on [Dartpad](https://dartpad.dev/?null_
 
 ## Installing the package
 
-Once you know what package you want to install, proceed to add the following to your `pubspec.yaml`:
+Once you know what package you want to install, proceed to add the dependency to your app in a single line like this:
+
+<Tabs
+  groupId="riverpod"
+  defaultValue="flutter_riverpod"
+  values={[
+    { label: 'Flutter', value: 'flutter_riverpod', },
+    { label: 'Dart only', value: 'riverpod', },
+  ]}
+>
+<TabItem value="flutter_riverpod">
+
+<AutoSnippet title="Terminal" {...pubadd}></AutoSnippet>
+
+</TabItem>
+
+<TabItem value="riverpod">
+
+<AutoSnippet title="Terminal" {...dartPubadd}></AutoSnippet>
+
+</TabItem>
+
+</Tabs>
+
+Alternatively, you can manually add the dependency to your app from within your `pubspec.yaml`:
 
 <Tabs
   groupId="riverpod"
@@ -64,30 +88,6 @@ Then install packages with `dart pub get`.
 </ConditionalSnippet>
 
 </TabItem>
-</Tabs>
-
-Alternatively, you can add the dependency to your app in a single line like this:
-
-<Tabs
-  groupId="riverpod"
-  defaultValue="flutter_riverpod"
-  values={[
-    { label: 'Flutter', value: 'flutter_riverpod', },
-    { label: 'Dart only', value: 'riverpod', },
-  ]}
->
-<TabItem value="flutter_riverpod">
-
-<AutoSnippet title="Terminal" {...pubadd}></AutoSnippet>
-
-</TabItem>
-
-<TabItem value="riverpod">
-
-<AutoSnippet title="Terminal" {...dartPubadd}></AutoSnippet>
-
-</TabItem>
-
 </Tabs>
 
 That's it. You've added [Riverpod] to your app!
