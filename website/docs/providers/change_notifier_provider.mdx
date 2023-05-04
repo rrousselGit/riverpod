@@ -31,6 +31,7 @@ hasn't changed.
 As such, using immutable data structures can sometimes be faster. Therefore
 it is important to make benchmarks specific to your use-case, to make sure
 that you are truly gaining performance by using `ChangeNotifierProvider`.
+(See [Why Immutability] for more details on the benefits of immutable state.)
 
 As a usage example, we could use `ChangeNotifierProvider` to implement a todo-list.
 Doing so would allow us to expose methods such as `addTodo` to let the UI
@@ -49,3 +50,4 @@ with the list of todos in our UI:
 [changenotifier]: https://api.flutter.dev/flutter/foundation/ChangeNotifier-class.html
 [provider]: ./provider
 [futureprovider]: ./future_provider
+[why immutability]: https://docs-v2.riverpod.dev/docs/concepts/why_immutability
