@@ -11,7 +11,7 @@ import {
   ConditionalSnippet,
 } from "../../src/components/CodeSnippet";
 
-Riverpod generally recommends leveraging immutability as often as possible. Mutability should only be considered in specific cases for possible performance optimization, after careful benchmarking to make sure it's worth it. Immutability enables better tooling and generally makes optimizations simpler. For example, `provider.select` assumes that the returned value is immutable. If returning a mutable object, `provider.select` won't cause the object to rebuild when said object is mutated. Using immutable state on a `Notifier` is also necessary if you want `ref.listen`'s "previous" to work. If you use mutable state instead, the "previous" and "next" values on change could end-up being the same if an object is mutated.
+Riverpod generally recommends leveraging immutability as often as possible. *Mutability* should only be considered in specific cases for possible performance optimization, after careful benchmarking to make sure it's worth it. Immutability enables better tooling and generally makes optimizations simpler. For example, `provider.select` assumes that the returned value is immutable. If returning a mutable object, `provider.select` won't cause the object to rebuild when said object is mutated. Using immutable state on a `Notifier` is also necessary if you want `ref.listen`'s "previous" to work. If you use mutable state instead, the "previous" and "next" values on change could end-up being the same if an object is mutated.
 
 ## What is Immutability?
 
