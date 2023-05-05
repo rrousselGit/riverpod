@@ -5,7 +5,8 @@ analyzer:
 `;
 
 export default {
-  raw,
+  raw: raw,
   hooks: raw,
+  codegen: raw,
   hooksCodegen: raw,
 };
