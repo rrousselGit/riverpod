@@ -12,6 +12,7 @@ import pubadd from  "./getting_started/pub_add";
 import helloWorld from "./getting_started/hello_world";
 import dartPubspec from "./getting_started/dart_pubspec";
 import dartPubadd from  "./getting_started/dart_pub_add";
+import analysisOptions from "./getting_started/analysis_options"
 import {
   trimSnippet,
   AutoSnippet,
@@ -67,7 +68,7 @@ Alternatively, you can manually add the dependency to your app from within your 
 Then install packages with `flutter pub get`.
 
 <ConditionalSnippet codegen={true}>
-  Finally, run the code-generator with{" "}
+  Run the code-generator with{" "}
   <code>flutter pub run build_runner watch</code>
 </ConditionalSnippet>
 
@@ -83,9 +84,17 @@ Then install packages with `flutter pub get`.
 Then install packages with `dart pub get`.
 
 <ConditionalSnippet codegen={true}>
-  Finally, run the code-generator with{" "}
+  Run the code-generator with{" "}
   <code>flutter pub run build_runner watch</code>
 </ConditionalSnippet>
+
+Enable custom_lint's plugin in your analysis_options.yaml:
+
+<AutoSnippet
+  title="analysis_options.yaml"
+  language="yaml"
+  {...analysisOptions}
+></AutoSnippet>
 
 </TabItem>
 </Tabs>
