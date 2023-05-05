@@ -12,7 +12,6 @@ import pubadd from  "./getting_started/pub_add";
 import helloWorld from "./getting_started/hello_world";
 import dartPubspec from "./getting_started/dart_pubspec";
 import dartPubadd from  "./getting_started/dart_pub_add";
-import analysisOptions from "./getting_started/analysis_options"
 import {
   trimSnippet,
   AutoSnippet,
@@ -93,11 +92,11 @@ Then, install packages with `dart pub get`.
 
 Enable `custom_lint`'s plugin in your `analysis_options.yaml`:
 
-<AutoSnippet
-  title="analysis_options.yaml"
-  language="yaml"
-  {...analysisOptions}
-></AutoSnippet>
+<CodeBlock language="yaml" title="analysis_options.yaml">
+  {`analyzer:
+  plugins:
+    - custom_lint`}
+</CodeBlock>
 
 That's it. You've added [Riverpod] to your app!
 
