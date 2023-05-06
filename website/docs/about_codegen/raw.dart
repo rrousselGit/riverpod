@@ -13,7 +13,7 @@ class Http {
 final http = Http();
 
 /* SNIPPET START */
-final fetchUserProvider = FutureProvider.autoDispose.family<User, String>((ref, userId) async {
+final fetchUserProvider = FutureProvider.autoDispose.family<User, int>((ref, userId) async {
   final json = await http.get('api/user/$userId');
   return User.fromJson(json);
 });
