@@ -27,8 +27,11 @@ Using code generation, we would write:
 <CodeBlock language="dart">{trimSnippet(fetchUser)}</CodeBlock>
 
 :::info
-Use `@Riverpod(keepAlive: true)`, instead of `@riverpod`, if you want Riverpod to 
-maintain the state of the provider even when it is no longer used.
+By default, `@riverpod` will generate a provider with
+[autodispose](/docs/concepts/modifiers/auto_dispose) enabled.
+If you'd prefer Riverpod to maintain the state of the provider even when it is no
+longer used, you can disable autodispose by using `@Riverpod(keepAlive: true)`,
+instead of `@riverpod`.
 :::
 
 When using Riverpod, code generation is completely optional. It is entirely possible
