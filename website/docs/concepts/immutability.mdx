@@ -1,10 +1,10 @@
 ---
-title: Why Immutability
+title: Immutability
 ---
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
-import whyImmutability from "./why_immutability"
+import immutability from "./immutability"
 import {
   trimSnippet,
   AutoSnippet,
@@ -84,7 +84,7 @@ This enforces a separation of concerns and keeps business logic outside of your 
 
 Here is an example of a simple immutable settings class for changing an app theme.
 
-<AutoSnippet language="dart" {...whyImmutability}></AutoSnippet>
+<AutoSnippet language="dart" {...immutability}></AutoSnippet>
 
 To use this code, remember to import `freezed_annotation` add the part directive and run [build_runner] to generate the freezed classes!
 

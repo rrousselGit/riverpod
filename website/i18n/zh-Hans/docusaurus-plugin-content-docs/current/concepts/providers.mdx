@@ -102,7 +102,7 @@ void main() {
 | [ChangeNotifierProvider] | 返回ChangeNotifier的子类   | 需要可变的复杂状态对象                             |
 
 :::caution
-尽管所有的provider都有它的使用目的，由于 [不可变状态相关的问题](/docs/concepts/why_immutability) 的原因，
+尽管所有的provider都有它的使用目的，由于 [不可变状态相关的问题](/docs/concepts/immutability) 的原因，
 我们不推荐在较大型的应用程序中使用 [ChangeNotifierProvider] 。
 `flutter_riverpod` 中的 [ChangeNotifierProvider] 提供了一个简单的方式来让你从 `package:provider` 迁移到 [riverpod] ，
 这允许一些 flutter 上一些特定的用法比如与Navigator 2 package 集成。
