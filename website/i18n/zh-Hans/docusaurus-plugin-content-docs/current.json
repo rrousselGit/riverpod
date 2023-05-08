@@ -114,5 +114,9 @@
   "sidebar.Sidebar.link.API reference": {
     "message": "API 参考",
     "description": "The label for link API reference in sidebar Sidebar, linking to https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/hooks_riverpod-library.html"
+  },
+  "sidebar.Sidebar.link.Resocoder's Weather Bloc to Weather Riverpod V2": {
+    "message": "Resocoder's Weather Bloc to Weather Riverpod V2",
+    "description": "The label for link Resocoder's Weather Bloc to Weather Riverpod V2 in sidebar Sidebar, linking to https://github.com/coyksdev/flutter-bloc-library-v1-tutorial"
   }
 }

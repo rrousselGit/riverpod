@@ -32,7 +32,7 @@
     "description": "The label of footer link with label=Code of conduct linking to https://github.com/rrousselGit/riverpod/blob/master/CODE_OF_CONDUCT.md"
   },
   "copyright": {
-    "message": "Copyright © 2023 Remi Rousselet.<br /> 使用Docusaurus构建。",
+    "message": "Copyright © 2023 Remi Rousselet.<br /> 使用Docusaurus构建",
     "description": "The footer copyright"
   }
 }
