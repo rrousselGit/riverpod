@@ -9,21 +9,66 @@ import { highlights } from "../data/highlights";
 import Translate from "@docusaurus/Translate";
 
 const checkBoxes = [
-  { key: "declarative_check", value: "Declarative programming" },
-  { key: "network_check", value: "Native network requests support" },
-  { key: "error_check", value: "Automatic loading/error handling" },
-  { key: "compile_check", value: "Compile safety" },
-  { key: "typed_query_check", value: "Type-safe query parameters" },
-  { key: "test_check", value: "Test ready" },
-  { key: "dart_check", value: "Work in plain Dart (servers/CLI/...)" },
-  { key: "combine_check", value: "Easily combinable states" },
-  { key: "refresh_check", value: "Built-in support for pull-to-refresh" },
-  { key: "lint_check", value: "Custom lint rules" },
-  { key: "refactor_check", value: "Built-in refactorings" },
-  { key: "hot_reload_check", value: "Hot-reload support" },
-  { key: "logger_check", value: "Logging" },
-  { key: "socket_check", value: "Websocket support" },
-  { key: "graph_check", value: "Documentation generator" },
+  {
+    key: "homepage.features_declarative_check",
+    value: <Translate>Declarative programming</Translate>,
+  },
+  {
+    key: "homepage.features_network_check",
+    value: <Translate>Native network requests support</Translate>,
+  },
+  {
+    key: "homepage.features_error_check",
+    value: <Translate>Automatic loading/error handling</Translate>,
+  },
+  {
+    key: "homepage.features_compile_check",
+    value: <Translate>Compile safety</Translate>,
+  },
+  {
+    key: "homepage.features_typed_query_check",
+    value: <Translate>Type-safe query parameters</Translate>,
+  },
+  {
+    key: "homepage.features_test_check",
+    value: <Translate>Test ready</Translate>,
+  },
+  {
+    key: "homepage.features_dart_check",
+    value: <Translate>Work in plain Dart (servers/CLI/...)</Translate>,
+  },
+  {
+    key: "homepage.features_combine_check",
+    value: <Translate>Easily combinable states</Translate>,
+  },
+  {
+    key: "homepage.features_refresh_check",
+    value: <Translate>Built-in support for pull-to-refresh</Translate>,
+  },
+  {
+    key: "homepage.features_lint_check",
+    value: <Translate>Custom lint rules</Translate>,
+  },
+  {
+    key: "homepage.features_refactor_check",
+    value: <Translate>Built-in refactorings</Translate>,
+  },
+  {
+    key: "homepage.features_hot_reload_check",
+    value: <Translate>Hot-reload support</Translate>,
+  },
+  {
+    key: "homepage.features_logger_check",
+    value: <Translate>Logging</Translate>,
+  },
+  {
+    key: "homepage.features_socket_check",
+    value: <Translate>Websocket support</Translate>,
+  },
+  {
+    key: "homepage.features_graph_check",
+    value: <Translate>Documentation generator</Translate>,
+  },
 ];
 
 export default function Home() {
@@ -47,17 +92,15 @@ export default function Home() {
 
         <section className="features">
           <h2>
-            <Translate
-              id="homepage.features_title"
-            >
-              {`Features`}
-            </Translate>
+            <Translate id="homepage.features_title">{`Features`}</Translate>
           </h2>
+          {
+            // TIPS: TEXT LABELS MUST BE STATIC
+            // MORE INFO at https://docusaurus.io/docs/i18n/tutorial
+          }
           <ul>
             {checkBoxes.map((check) => (
-              <li key={check.key}>
-                ✅ <Translate id={`homepage.features_${check.key}`}>{check.value}</Translate>
-              </li>
+              <li key={check.key}>✅ {check.value}</li>
             ))}
           </ul>
         </section>

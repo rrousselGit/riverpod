@@ -34,5 +34,9 @@
   "copyright": {
     "message": "Copyright © 2023 Remi Rousselet.<br /> 使用Docusaurus构建",
     "description": "The footer copyright"
+  },
+  "logo.alt": {
+    "message": "Riverpod",
+    "description": "The alt text of footer logo"
   }
 }

@@ -24,24 +24,6 @@
   "home.devtool_body": {
     "message": "你可以在 Flutter 的开发工具中一眼看到 Riverpod 的各种状态。 {br} 此外，一款功能更全面的状态检查工具正在开发中。"
   },
-  "homepage.compile_safe_title": {
-    "message": "编译安全"
-  },
-  "homepage.compile_safe_body": {
-    "message": "不再需要关心 {ProviderNotFound} 或忘记处理加载中的状态。使用 Riverpod，你的代码如果能够通过编译，那么就不用再担心。"
-  },
-  "homepage.unlimited_provider_title": {
-    "message": "没有限制的 Provider"
-  },
-  "homepage.unlimited_provider_body": {
-    "message": "Riverpod 的灵感来自于 Provider，且解决一些关键的问题：比如支持多个同类型的 provider、异步的 provider、在任意地方添加各种 provider……"
-  },
-  "homepage.no_flutter_dependency_title": {
-    "message": "不依赖于 Flutter"
-  },
-  "homepage.no_flutter_dependency_body": {
-    "message": "Riverpod 可以在不依赖 Flutter 的情况下创建、共享和测试 Provider。你不需要 {BuildContext} 就能监听 Provider。"
-  },
   "home.tagline": {
     "message": "响应式缓存和数据绑定框架"
   },
@@ -93,7 +75,7 @@
   },
   "theme.ErrorPageContent.tryAgain": {
     "message": "重试",
-    "description": "The label of the button to try again when the page crashed"
+    "description": "The label of the button to try again rendering when the React error boundary captures an error"
   },
   "theme.NotFound.title": {
     "message": "找不到页面",
@@ -469,10 +451,10 @@
     "message": "通过重构简化日常工作"
   },
   "home.refactors_body": {
-    "message": "Riverpod 提供多样的重构方法，如 \"Wrap widget in a Consumer\"。查看 {warnings} 以获取更多信息。"
+    "message": "Riverpod 提供多样的重构功能，如 \"Wrap widget in a Consumer\"。查看 {warnings} 以获取更多信息。"
   },
   "home.refactors_list_link": {
-    "message": "重构方法列表"
+    "message": "重构功能列表"
   },
   "home.lint_title": {
     "message": "通过使用 lint 规则使你的代码更易维护"
@@ -496,10 +478,10 @@
     "message": "使用 Riverpod 实现常见但复杂的 UI 模式，例如下拉刷新、键入时搜索等，只需几行代码即可。"
   },
   "homepage.tooling_ready_title": {
-    "message": "Tooling ready"
+    "message": "工具完备"
   },
   "homepage.tooling_ready_body": {
-    "message": "Riverpod 通过将常见错误作为编译错误来增强编译器。它还提供自定义 lint 规则和重构选项。它甚至有一个用于生成文档的命令行。"
+    "message": "Riverpod 通过将常见错误作为编译错误来增强编译器。它还提供自定义 lint 规则和重构功能。它甚至有一个文档生成器。"
   },
   "homepage.features_title": {
     "message": "特性"
@@ -511,5 +493,50 @@
   "theme.docs.sidebar.navAriaLabel": {
     "message": "文档侧边栏",
     "description": "The ARIA label for the sidebar navigation"
+  },
+  "Declarative programming": {
+    "message": "声明式编程"
+  },
+  "Native network requests support": {
+    "message": "支持原生网络请求"
+  },
+  "Automatic loading/error handling": {
+    "message": "自动处理 loading/error 状态"
+  },
+  "Compile safety": {
+    "message": "编译安全"
+  },
+  "Type-safe query parameters": {
+    "message": "类型安全的查询参数"
+  },
+  "Test ready": {
+    "message": "可随时测试"
+  },
+  "Work in plain Dart (servers/CLI/...)": {
+    "message": "在纯 Dart 下工作，如服务器、CLI 等"
+  },
+  "Easily combinable states": {
+    "message": "易于组合的状态"
+  },
+  "Built-in support for pull-to-refresh": {
+    "message": "内置支持下拉刷新"
+  },
+  "Custom lint rules": {
+    "message": "自定义 lint 规则"
+  },
+  "Built-in refactorings": {
+    "message": "内置重构功能"
+  },
+  "Hot-reload support": {
+    "message": "支持热重载"
+  },
+  "Logging": {
+    "message": "支持 Log"
+  },
+  "Websocket support": {
+    "message": "支持 Websocket"
+  },
+  "Documentation generator": {
+    "message": "文档生成器"
   }
 }

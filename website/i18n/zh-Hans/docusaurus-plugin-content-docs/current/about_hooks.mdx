@@ -15,31 +15,30 @@ import {
   ConditionalSnippet,
 } from "../../../../src/components/CodeSnippet";
 
-本页解释了什么是钩子，以及它们如何与Riverpod相关。
+本页解释了什么是钩子，以及它们如何与 Riverpod 相关。
 
-“Hooks”是独立于Riverpod: [flutter_hooks] 的package中的常用工具。  
-尽管 [flutter_hooks] 是一个完全独立的package，与Riverpod没有任何关系(至少没有直接关系)，
-但将Riverpod和 [flutter_hooks] 放在一起很常见。
-毕竟，Riverpod和 [flutter_hooks] 是由同一个团队维护的。
+“Hooks”是独立于 Riverpod 的名为 [flutter_hooks] 的常用 package。
 
-钩子是完全可选的。特别是如果你刚开始使用Flutter，那么你不必使用钩子。
-虽然它们是很强大的工具，但没有Flutter的那个“味”。
-所以，入门选择使用Flutter和Riverpod这样的搭配。当你有更多相关的经验时，那么你可以回来尝试一下钩子。
+尽管 [flutter_hooks] 是一个完全独立的 package，与 Riverpod 没有任何关系（至少没有直接关系），但将 Riverpod 和 [flutter_hooks] 放在一起是很常见的。毕竟 Riverpod 和 [flutter_hooks] 是由同一个团队维护的。
+
+钩子是完全可选的。特别是如果你刚开始使用 Flutter，那么你不必使用钩子。
+
+虽然它们是很强大的工具，但它没有 Flutter 的那个“味”，所以初学者应该选择 Flutter 和 Riverpod 这样的搭配。当你有更多相关的经验时，那么你可以回来尝试一下钩子。
 
 ## 什么是钩子？
 
-钩子是在widget中使用的函数。它们被设计为 [StatefulWidget] 的替代品，以使逻辑更具可重用性和可组合性。
+钩子是在 widget 中使用的函数。它们被设计为 [StatefulWidget] 的替代品，以使逻辑更具可重用性和可组合性。
 
-Hooks是一个来自 [React](https://reactjs.org/) 的概念，
-而 [flutter_hooks] 仅仅是Flutter的一个React实现。
-所以是的，在Flutter中钩子可能感觉有点不合适。
-理想情况下，将来我们会有专门为Flutter设计的用钩子解决问题的解决方案。
+Hooks 是一个来自 [React](https://reactjs.org/) 的概念，而 [flutter_hooks] 仅仅是 Flutter 的一个 React 实现。所以在 Flutter 中钩子可能感觉有点不合适。
 
-如果说Riverpod的provider是针对“全局”应用状态的，钩子则是针对本地widget的状态。
-钩子通常用于处理有状态的UI对象，如 [TextEditingController](https://api.flutter.dev/flutter/widgets/TextEditingController-class.html),
-[AnimationController](https://api.flutter.dev/flutter/animation/AnimationController-class.html)。  
-它们也可以作为“构建器(builder)”模式的替代品，
-用不涉及“嵌套”的替代品来替换 [FutureBuilder](https://api.flutter.dev/flutter/widgets/FutureBuilder-class.html)/[TweenAnimatedBuilder](https://api.flutter.dev/flutter/widgets/TweenAnimationBuilder-class.html) 之类的widget——极大地提高了可读性。
+理想情况下，将来我们会有专门为 Flutter 设计的用钩子解决问题的解决方案。
+
+如果说 Riverpod 的 provider 是针对“全局”应用状态的，钩子则是针对本地 widget 的状态。
+
+钩子通常用于处理有状态的 UI 对象，如 [TextEditingController](https://api.flutter.dev/flutter/widgets/TextEditingController-class.html)，
+[AnimationController](https://api.flutter.dev/flutter/animation/AnimationController-class.html)。
+
+它们也可以作为“构建器（builder）”模式的替代品，用不涉及“嵌套”的替代品来替换 [FutureBuilder](https://api.flutter.dev/flutter/widgets/FutureBuilder-class.html) 或 [TweenAnimatedBuilder](https://api.flutter.dev/flutter/widgets/TweenAnimationBuilder-class.html) 之类的 widget——这极大地提高了可读性。
 
 一般来说，钩子有助于：
 
@@ -48,9 +47,9 @@ Hooks是一个来自 [React](https://reactjs.org/) 的概念，
 - 响应用户事件
 - ……
 
-例如，我们可以使用钩子手动实现淡入动画，其中widget开始时不可见，然后慢慢出现。
+例如，我们可以使用钩子手动实现淡入动画，其中 widget 开始时不可见，然后慢慢出现。
 
-如果我们使用 [StatefulWidget],，代码看起来会像这样：
+如果我们使用 [StatefulWidget]，代码看起来会像这样：
 
 ```dart
 class FadeIn extends StatefulWidget {
@@ -105,16 +104,16 @@ class FadeIn extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Create an AnimationController. The controller will automatically be
-    // disposed when the widget is unmounted.
+    // 创建一个 AnimationController，它将自动在 unmounted 状态下 dispose 掉
     final animationController = useAnimationController(
       duration: const Duration(seconds: 2),
     );
 
-    // useEffect is the equivalent of initState + didUpdateWidget + dispose.
-    // The callback passed to useEffect is executed the first time the hook is
-    // invoked, and then whenever the list passed as second parameter changes.
-    // Since we pass an empty const list here, that's strictly equivalent to `initState`.
+
+    // useEffect 相当于 initState + didUpdateWidget + dispose
+    // 传递给 useEffect 的回调在钩子第一次被调用时执行
+    // 然后当作为第二个参数传递的列表发生变化时执行
+    // 因为我们在这里传递了一个空的 const 列表，所以它严格等同于 `initState`
     useEffect(() {
       // start the animation when the widget is first rendered.
       animationController.forward();
@@ -122,8 +121,8 @@ class FadeIn extends HookWidget {
       return null;
     }, const []);
 
-    // Tell Flutter to rebuild this widget when the animation updates.
-    // This is equivalent to AnimatedBuilder
+    // 告诉 Flutter 在动画更新时重建这个 widget
+    // 这相当于 AnimatedBuilder
     useAnimation(animationController);
 
     return Opacity(
@@ -136,11 +135,9 @@ class FadeIn extends HookWidget {
 
 在这段代码中有一些有趣的事情需要注意：
 
-- 不存在内存泄漏。这段代码不会在widget重新构建时重新创建一个新的 `AnimationController`，
-  并且它在widget销毁时正确地释放控制器。
+- 不存在内存泄漏。这段代码不会在 widget 重新构建时重新创建一个新的 `AnimationController`，它在 widget 销毁时也能正确地释放控制器。
 
-- 在同一个小部件中，可以任意多次地使用钩子。
-  因此，如果我们想要我们可以创建多个 `AnimationController`：
+- 在同一个小部件中，可以任意多次地使用钩子。因此，如果我们想要我们可以创建多个 `AnimationController`：
 
   ```dart
   @override
@@ -174,7 +171,7 @@ class FadeIn extends HookWidget {
   }
   ```
 
-  然后我们可以在widget中使用这个函数，只要那个widget是[HookWidget]：
+  然后我们可以在 widget 中使用这个函数，只要那个 widget 是 [HookWidget]：
 
   ```dart
   class FadeIn extends HookWidget {
@@ -191,16 +188,17 @@ class FadeIn extends HookWidget {
   }
   ```
 
-  注意我们的 `useFadeIn` 函数是如何完全独立于我们的 `FadeIn` widget的。  
-  如果我们愿意，我们可以在一个完全不同的widget中使用 `useFadeIn` 函数，它仍然也可以工作!
+  注意我们的 `useFadeIn` 函数是如何完全独立于我们的 `FadeIn` widget 的。
+
+  如果我们愿意，我们可以在一个完全不同的 widget 中使用 `useFadeIn` 函数，它仍然也可以工作！
 
 ## 如何使用钩子
 
 钩子有独特的约束条件：
 
-- 它们只能在扩展了 [HookWidget] 的widget的 `build` 方法中使用：
+- 它们只能在扩展了 [HookWidget] 的 widget 的 `build` 方法中使用：
 
-  **正确**:
+  **正确**：
 
   ```dart
   class Example extends HookWidget {
@@ -212,10 +210,10 @@ class FadeIn extends HookWidget {
   }
   ```
 
-  **错误**:
+  **错误**：
 
   ```dart
-  // 不是一个HookWidget
+  // 不是一个 HookWidget
   class Example extends StatelessWidget {
     @override
     Widget build(BuildContext context) {
@@ -225,7 +223,7 @@ class FadeIn extends HookWidget {
   }
   ```
 
-  **错误**:
+  **错误**：
 
   ```dart
   class Example extends HookWidget {
@@ -233,8 +231,8 @@ class FadeIn extends HookWidget {
     Widget build(BuildContext context) {
       return ElevatedButton(
         onPressed: () {
-          // Not _actually_ inside the "build" method, but instead inside
-          // a user interaction lifecycle (here "on pressed").
+          // 实际上不是在 "build" 方法内
+          // 而是用户交互生命周期内（这里是 onPressed）
           final controller = useAnimationController();
         },
         child: Text('click me'),
@@ -245,7 +243,7 @@ class FadeIn extends HookWidget {
 
 - 它们不能在条件语句或循环语句内使用。
 
-  **错误**:
+  **错误**：
 
   ```dart
   class Example extends HookWidget {
@@ -254,7 +252,7 @@ class FadeIn extends HookWidget {
     @override
     Widget build(BuildContext context) {
       if (condition) {
-        // Hooks should not be used inside "if"s/"for"s, ...
+        // 钩子不应该在 if 或 for 等语句内使用
         final controller = useAnimationController();
       }
       ...
