@@ -18,7 +18,7 @@ class Counter extends StateNotifier<int> {
   final Ref ref;
 
   void increment() {
-    // Counter可以使用“ref”读取其他provider
+    // Counter can use the "ref" to read other providers
     final repository = ref.read(repositoryProvider);
     repository.post('...');
   }

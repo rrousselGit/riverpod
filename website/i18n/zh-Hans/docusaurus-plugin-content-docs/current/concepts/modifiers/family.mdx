@@ -6,21 +6,21 @@ import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 
 在阅读本文之前，请考虑阅读有关 [providers](/docs/concepts/providers) 的内容以及 [如何读取provider](/docs/concepts/reading)。
-在本部分中，我们将详细讨论`.family`修饰符。
 
-`.family`  修饰符有一个目的：根据外部参数获取唯一的provider。
+在本部分中，我们将详细讨论 `.family` 修饰符。
 
-比如`family`的一些常用的使用场景：
+`.family` 修饰符有一个目的：根据外部参数获取唯一的 provider。
 
-- 结合 [FutureProvider] 和 `.family` 通过它的ID来获取一条 `消息`。
-- 将当前 `区域` 传递给provider，以便让我们可以处理翻译相关的内容。
+比如 `.family` 的一些常用的使用场景：
+
+- 结合 [FutureProvider] 和 `.family` 通过它的 ID 来获取一条 `消息`。
+- 将当前 `区域` 传递给 provider，以便让我们可以处理翻译相关的内容。
 
 ## 用法
 
-family的工作方式是向provider添加一个额外的参数。
-然后可以在我们的provider中自由地使用这个参数来创建一些状态。
+`.family` 的工作方式是向 provider 添加一个额外的参数。然后可以在我们的 provider 中自由地使用这个参数来创建一些状态。
 
-比如说，我们可以组合 `family` 和 [FutureProvider] 通过它的ID来获取一条 `消息` ：
+比如说，我们可以组合 `.family` 和 [FutureProvider] 通过它的 ID 来获取一条 `消息` ：
 
 ```dart
 final messagesFamily = FutureProvider.family<Message, String>((ref, id) async {
@@ -28,12 +28,13 @@ final messagesFamily = FutureProvider.family<Message, String>((ref, id) async {
 });
 ```
 
-在使用 `messagesFamily` provider时，语法略有不同。  
+在使用 `messagesFamily` provider 时，语法略有不同。
+
 通常的语法将不能使用：
 
 ```dart
 Widget build(BuildContext context, WidgetRef ref) {
-  // Error – messagesFamily is not a provider
+  // 错误 – messagesFamily 不是一个 provider
   final response = ref.watch(messagesFamily);
 }
 ```
@@ -47,8 +48,9 @@ Widget build(BuildContext context, WidgetRef ref) {
 ```
 
 :::info
-可以同时使用具有不同参数的 family。  
-比如，我们可以使用`titleFamily`同时读取法语和英语的翻译：
+可以同时使用具有不同参数的 family。
+
+比如，我们可以使用 `titleFamily` 同时读取法语和英语的翻译：
 
 ```dart
 @override
@@ -64,16 +66,15 @@ Widget build(BuildContext context, WidgetRef ref) {
 
 ## 参数限制
 
-为了让family正常工作，传递给provider的参数必须具有一致的 `hashCode` 和 `==`。
-
+为了让 `.family` 正常工作，传递给 provider 的参数必须具有一致的 `hashCode` 和 `==`。
 
 理想情况下，参数应该是基础类型(bool/int/double/String)、常量(providers)或重载 `==` 和 `hashCode` 的不可变对象。
 
-### 当参数不是常量时_最好_使用`autoDispose`:
+### 当参数不是常量时 _最好_ 使用 `autoDispose`:
 
-你可能希望使用family将搜索内容传递给你的provider。
-但是这个值经常会改变，并且永远不会被重用。  
-这可能会导致内存泄漏，因为默认情况下，即使不再使用provider也不会销毁。
+你可能希望使用 `.family` 将搜索内容传递给你的 provider。但是这个值经常会改变，并且永远不会被重用。
+
+这可能会导致内存泄漏，因为默认情况下，即使不再使用 provider 也不会销毁。
 
 同时使用 `.family` 和 `.autoDispose` 可以解决内存泄漏的问题：
 
@@ -83,21 +84,18 @@ final characters = FutureProvider.autoDispose.family<List<Character>, String>((r
 });
 ```
 
-## 将多个参数传递给family
+## 将多个参数传递给 `.family`
 
-family不支持将多个值传递给provider。
-
-On the other hand, that value could be _anything_ (as long as it matches with
-the restrictions mentioned previously).
-另一方面，该值可以是任何东西(只要它在前面提到的限制当中)。
+`.family` 不支持将多个值传递给 provider，相反传入的参数可以是任何东西（只要它在前面提到的限制当中）。
 
 这包括：
 
 - 一个元组 [tuple](http://pub.dev/packages/tuple)
-- 使用[Freezed] 或 [built_value](https://pub.dev/packages/built_value) 生成的对象
+- 使用 [Freezed] 或 [built_value](https://pub.dev/packages/built_value) 生成的对象
 - 使用 [equatable](https://pub.dev/packages/equatable) 的对象
 
 下面是使用 [Freezed] 或 [equatable] 来传递多个参数的示例：
+
 <Tabs
   groupId="family"
   defaultValue="freezed"
@@ -157,12 +155,12 @@ class MyParameter extends Equatable  {
 final exampleProvider = Provider.family<Something, MyParameter>((ref, myParameter) {
   print(myParameter.userId);
   print(myParameter.locale);
-  // Do something with userId/locale
+  // 做些和 userId/locale 相关的事
 });
 
 @override
 Widget build(BuildContext context, WidgetRef ref) {
-  int userId; // Read the user ID from somewhere
+  int userId; // 在其他的什么地方读取 user ID
   final locale = Localizations.localeOf(context);
 
   final something = ref.watch(

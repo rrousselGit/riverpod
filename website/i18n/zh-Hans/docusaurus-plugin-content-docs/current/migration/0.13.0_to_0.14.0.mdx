@@ -1,0 +1,117 @@
+---
+title: ^0.13.0 至 ^0.14.0
+---
+
+随着 Riverpod `0.14.0` 版本的发布，使用 [StateNotifierProvider] 的语法已更改（请查看 https://github.com/rrousselGit/riverpod/issues/341 的解释）。
+
+对于整篇文章，请考虑以下 [StateNotifier]：
+
+```dart
+class MyModel {}
+
+class MyStateNotifier extends StateNotifier<MyModel> {
+  MyStateNotifier(): super(MyModel());
+}
+```
+
+## 改动
+
+- [StateNotifierProvider] 采用额外的通用参数，它应该是 [StateNotifier] 的状态类型。
+
+  原先：
+
+  ```dart
+  final provider = StateNotifierProvider<MyStateNotifier>((ref) {
+    return MyStateNotifier();
+  });
+  ```
+
+  现在：
+
+  ```dart
+  final provider = StateNotifierProvider<MyStateNotifier, MyModel>((ref) {
+    return MyStateNotifier();
+  });
+  ```
+
+- 为获取 [StateNotifier]，你现在应该读取 `myProvider.notifier` 而不仅仅是 `myProvider`：
+
+  原先：
+
+  ```dart
+  Widget build(BuildContext context, ScopedReader watch) {
+    MyStateNotifier notifier = watch(provider);
+  }
+  ```
+
+  现在：
+
+  ```dart
+  Widget build(BuildContext context, ScopedReader watch) {
+    MyStateNotifier notifier = watch(provider.notifier);
+  }
+  ```
+
+- 为监听 [StateNotifier] 的状态，你现在应该读取 `myProvider` 而不是 `myProvider.state`：
+
+  原先：
+
+  ```dart
+  Widget build(BuildContext context, ScopedReader watch) {
+    MyModel state = watch(provider.state);
+  }
+  ```
+
+  现在：
+
+  ```dart
+  Widget build(BuildContext context, ScopedReader watch) {
+    MyModel state = watch(provider);
+  }
+  ```
+
+## 使用迁移工具自动将你的项目升级到新语法
+
+随着 0.14.0 版的发布，Riverpod 的命令行工具发布了，这可以帮助你迁移项目。
+
+### 安装命令行
+
+要安装迁移工具，请运行：
+
+```sh
+dart pub global activate riverpod_cli
+```
+
+你现在应该能够运行：
+
+```sh
+riverpod --help
+```
+
+### 使用方法
+
+现在命令行已经安装好了，我们可以开始使用它了。
+
+- 首先，在你的终端中打开你要迁移的项目。
+- **先别急着升级** Riverpod，迁移工具会为你升级 Riverpod 的版本。
+- 确保你的项目不包含错误。
+- 执行：
+  ```sh
+  riverpod migrate
+  ```
+
+然后该工具将分析你的项目并提出更改建议，你可能看到：
+
+```diff
+Widget build(BuildContext context, ScopedReader watch) {
+-  MyModel state = watch(provider.state);
++  MyModel state = watch(provider);
+}
+
+Accept change (y = yes, n = no [default], A = yes to all, q = quit)?
+```
+
+要接受更改，只需按 <kbd>y</kbd>，否则拒绝请按 <kbd>n</kbd>。
+
+[statenotifierprovider]: ../providers/state_notifier_provider
+[statenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/StateNotifier-class.html

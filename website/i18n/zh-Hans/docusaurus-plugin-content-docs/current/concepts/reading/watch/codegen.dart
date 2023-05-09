@@ -30,16 +30,16 @@ class Todos extends _$Todos {
 
 @riverpod
 List<Todo> filteredTodoList(FilteredTodoListRef ref) {
-  // 获取筛选器和待办清单列表
+  // obtains both the filter and the list of todos
   final FilterType filter = ref.watch(filterTypeProvider);
   final List<Todo> todos = ref.watch(todosProvider);
 
   switch (filter) {
     case FilterType.completed:
-      // 返回完成的待办清单
+      // return the completed list of todos
       return todos.where((todo) => todo.isCompleted).toList();
     case FilterType.none:
-      // 返回所有的待办清单
+      // returns the unfiltered list of todos
       return todos;
   }
 }

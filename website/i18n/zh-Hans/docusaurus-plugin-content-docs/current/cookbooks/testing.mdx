@@ -18,27 +18,29 @@ import { trimSnippet } from "../../../../../src/components/CodeSnippet";
 
 为了成功地测试我们的应用，我们需要以下东西：
 
-- `test` 和`testWidgets` 之间不应该保留任何状态。
+- `test` 和 `testWidgets` 之间不应该保留任何状态。
+
   这意味着应用中没有全局状态，或者所有的全局状态都应该在每次测试后重置。
 
-- 能够强制我们的provider具有特定的状态，无论是通过模拟还是通过操纵它们直到我们达到所需的状态。
+- 能够强制我们的 provider 具有特定的状态，无论是通过模拟还是通过操纵它们直到我们达到所需的状态。
 
 让我们来逐个看看 [Riverpod] 是如何帮助你处理这些问题的。
 
-## `test` 和`testWidgets` 之间不应该保留任何状态。
+## `test` 和`testWidgets` 之间不应该保留任何状态
 
-由于provider通常声明为全局变量，你可能会担心这一点。
-毕竟，全局状态使得测试非常困难，因为它可能需要漫长的 `配置(setUp)` 和 `销毁(tearDown)`。
+由于 provider 通常声明为全局变量，你可能会担心这一点。
 
-但实际情况是虽然provider声明为全局的，但provider的状态却**不是**全局的。
+毕竟，全局状态使得测试非常困难，因为它可能需要漫长的 `配置（setUp）` 和 `销毁（tearDown）`。
 
-相反，它存储在一个名为 [ProviderContainer] 的对象中，
-如果你查看Dart的示例，你可能已经看到了这个对象。
-如果你还没有看，请了解这个 [ProviderContainer] 对象是由 [ProviderScope] 隐式创建的，
-这个widget可以让我们在Flutter项目中启用 [Riverpod]。
+但实际情况是虽然 provider 声明为全局的，但 provider 的状态却 **不是** 全局的。
 
-具体来说，这意味着两个使用provider的 `testWidgets` 不共享任何状态。  
-因此，根本不需要任何 `配置(setUp)` 和 `销毁(tearDown)`。
+相反，它存储在一个名为 [ProviderContainer] 的对象中，如果你查看 Dart 的示例，你可能已经看到了这个对象。
+
+如果你还没有看，请了解这个 [ProviderContainer] 对象是由 [ProviderScope] 隐式创建的，这个widget可以让我们在 Flutter 项目中启用 [Riverpod]。
+
+具体来说，这意味着两个使用 provider 的 `testWidgets` 不共享任何状态。
+
+因此，根本不需要任何 `配置（setUp）` 和 `销毁（tearDown）`。
 
 解释这么多不如来一个例子：
 
@@ -61,27 +63,28 @@ import { trimSnippet } from "../../../../../src/components/CodeSnippet";
 </TabItem>
 </Tabs>
 
-可以看到，虽然 `counterProvider` 被声明为全局变量，但测试间没有共享任何状态。  
+可以看到，虽然 `counterProvider` 被声明为全局变量，但测试间没有共享任何状态。
+
 因此，如果以不同的顺序执行，我们不必担心我们的测试可能表现不同，因为它们是在完全隔离的情况下运行的。
 
-## 在测试期间重写provider的行为
+## 在测试期间重写 provider 的行为
 
 现实中，一个常见的应用可能有以下对象：
 
-- 它将有一个 `Repository` 类，该类提供类型安全且简单的API来执行HTTP请求。
-- 一个管理应用程序状态的对象，可以使用 `Repository` 根据不同的因素来执行HTTP请求。
-  这可能是一个 `ChangeNotifier`， `Bloc`，甚至是一个provider。
+- 它将有一个 `Repository` 类，该类提供类型安全且简单的 API 来执行 HTTP 请求。
+- 一个管理应用程序状态的对象，可以使用 `Repository` 根据不同的因素来执行 HTTP 请求。
+
+  这可能是一个 `ChangeNotifier`、`Bloc`，甚至是一个 provider。
 
 使用 [Riverpod]，可以这样表示：
 
 <CodeBlock>{trimSnippet(repositorySnippet)}</CodeBlock>
 
-在这种情况下，当进行单元测试或widget测试时，
-我们一般希望用一个返回预定义响应的伪实现来替换 `Repository` 实例，而不是发出真正的HTTP请求。
+在这种情况下，当进行单元测试或 widget 测试时，我们一般希望用一个返回预定义响应的伪实现来替换 `Repository` 实例，而不是发出真正的 HTTP 请求。
 
 然后，我们希望我们的 `todoListProvider` 或类似的组件使用 `Repository` 的模拟实现。
 
-为了实现这一点，我们可以使用[ProviderScope] 或 [ProviderContainer]的 `overrides` 参数来覆盖 `repositoryProvider` 的行为：
+为了实现这一点，我们可以使用 [ProviderScope] 或 [ProviderContainer] 的 `overrides` 参数来覆盖 `repositoryProvider` 的行为：
 
 <Tabs
   defaultValue="ProviderScope"
@@ -102,29 +105,31 @@ import { trimSnippet } from "../../../../../src/components/CodeSnippet";
 </TabItem>
 </Tabs>
 
-正如您可以从高亮的代码中看到的，[ProviderScope]/[ProviderContainer] 允许用不同的行为替换provider的实现。
+正如你可以从高亮的代码中看到的，[ProviderScope] 或 [ProviderContainer] 允许用不同的行为替换 provider 的实现。
 
 :::info
-一些provider暴露了重写其行为的简化方法。  
-例如，[FutureProvider] 允许使用 `AsyncValue` 重写provider：
+一些 provider 暴露了重写其行为的简化方法。
+
+例如，[FutureProvider] 允许使用 `AsyncValue` 重写 provider：
 
 <CodeBlock>{trimSnippet(testOverrideInfo)}</CodeBlock>
 
-**注意**：作为2.0.0版本的一部分， `overrideWithValue` 方法被暂时移除。
+**注意**：作为 2.0.0 版本的一部分，`overrideWithValue` 方法被暂时移除。
+
 它们将在未来的版本中重新添加。
 
 :::
 
 :::info
-使用 `family` 修饰符覆盖provider的语法略有不同。
+使用 `family` 修饰符覆盖 provider 的语法略有不同。
 
-如果你像这样使用provider：
+如果你像这样使用 provider：
 
 ```dart
 final response = ref.watch(myProvider('12345'));
 ```
 
-你可以这样覆盖provider：
+你可以这样覆盖 provider：
 
 ```dart
 myProvider('12345').overrideWithValue(...));
@@ -132,9 +137,9 @@ myProvider('12345').overrideWithValue(...));
 
 :::
 
-## 完整的widget测试用例
+## 完整的 widget 测试用例
 
-最后，这里是我们Flutter测试的完整代码。
+最后，这里是我们 Flutter 测试的完整代码。
 
 <CodeBlock>{trimSnippet(testFull)}</CodeBlock>
 

@@ -1,0 +1,224 @@
+---
+title: ^0.14.0 至 ^1.0.0
+---
+
+经过漫长的等待，Riverpod 的第一个稳定版本终于发布了👏
+
+要查看完整的更改列表，请查阅 [Changelog](https://pub.dev/packages/flutter_riverpod/changelog#100)。
+
+本页面我们将重点介绍如何将现有的 Riverpod 应用程序从 0.14.x 版迁移到 1.0.0 版。
+
+## 使用迁移工具自动将你的项目升级到新语法
+
+在解释各种变化之前，值得注意的是 Riverpod 附带了一个命令行工具，可以自动为你迁移项目。
+
+### 安装命令行
+
+要安装迁移工具，请运行：
+
+```sh
+dart pub global activate riverpod_cli
+```
+
+你现在应该能够运行：
+
+```sh
+riverpod --help
+```
+
+### 使用方法
+
+现在命令行已经安装好了，我们可以开始使用它了。
+
+- 首先，在你的终端中打开你要迁移的项目。
+- **先别急着升级** Riverpod，迁移工具会为你升级 Riverpod 的版本。
+
+  :::danger
+  不急着升级 Riverpod 这点很重要。如果你已经安装了 1.0.0 版，该工具将无法正常执行。
+
+  因此，请确保在启动该工具之前正确使用旧版本。
+  :::
+
+- 确保你的项目不包含错误。
+- 执行：
+  ```sh
+  riverpod migrate
+  ```
+
+然后该工具将分析你的项目并提出更改建议，你可能看到：
+
+```diff
+-Widget build(BuildContext context, ScopedReader watch) {
++Widget build(BuildContext context, Widget ref) {
+-  MyModel state = watch(provider);
++  MyModel state = ref.watch(provider);
+}
+
+Accept change (y = yes, n = no [default], A = yes to all, q = quit)?
+```
+
+要接受更改，只需按 <kbd>y</kbd>，否则拒绝请按 <kbd>n</kbd>。
+
+## 改动
+
+现在我们已经了解了如何使用 CLI 自动升级你的项目，让我们详细了解必要的改动。
+
+### 语法统一
+
+Riverpod 1.0.0 版侧重于统一与提供者交互的语法。
+
+之前，Riverpod 有许多相似但不同的语法来读取提供者，例如 `ref.watch(provider)`、`useProvider(provider)`、`watch(provider)`。
+
+对于 1.0.0 版，只保留一种语法：`ref.watch(provider)`，其他方法已被移除。
+
+像是这样：
+
+- `useProvider` 被 `HookConsumerWidget` 取代。
+
+  原先：
+
+  ```dart
+  class Example extends HookWidget {
+    @override
+    Widget build(BuildContext context) {
+      useState(...);
+      int count = useProvider(counterProvider);
+      ...
+    }
+  }
+  ```
+
+  现在：
+
+  ```dart
+  class Example extends HookConsumerWidget {
+    @override
+    Widget build(BuildContext context, WidgetRef ref) {
+      useState(...);
+      int count = ref.watch(counterProvider);
+      ...
+    }
+  }
+  ```
+
+- 改变了 `ConsumerWidget` 的 `build` 和 `Consumer` 的 `builder` 的参数类型。
+
+  原先：
+
+  ```dart
+  class Example extends ConsumerWidget {
+    @override
+    Widget build(BuildContext context, ScopedReader watch) {
+      int count = watch(counterProvider);
+      ...
+    }
+  }
+
+  Consumer(
+    builder: (context, watch, child) {
+      int count = watch(counterProvider);
+      ...
+    }
+  )
+  ```
+
+  现在：
+
+  ```dart
+  class Example extends ConsumerWidget {
+    @override
+    Widget build(BuildContext context, WidgetRef ref) {
+      int count = ref.watch(counterProvider);
+      ...
+    }
+  }
+
+  Consumer(
+    builder: (context, ref, child) {
+      int count = ref.watch(counterProvider);
+      ...
+    }
+  )
+  ```
+
+- `context.read` 被 `ref.read` 取代。
+
+  原先：
+
+  ```dart
+  class Example extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      SomeButton(
+        onPressed: () => context.read(provider.notifier).doSomething(),
+      );
+    }
+  }
+  ```
+
+  现在：
+
+  ```dart
+  class Example extends ConsumerWidget {
+    @override
+    Widget build(BuildContext context, WidgetRef ref) {
+      SomeButton(
+        onPressed: () => ref.read(provider.notifier).doSomething(),
+      );
+    }
+  }
+  ```
+
+### 更新 StateProvider
+
+[StateProvider] 已更新以匹配 [StateNotifierProvider]。
+
+原先执行 ref.watch(StateProvider) 会返回一个 StateController 实例，现在它只返回 StateController 的状态。
+
+你有一些解决方案来迁移代码。
+
+如果你的代码只是获取状态而不修改它，你可以像下面这样从：
+
+```dart
+final provider = StateProvider<int>(...);
+
+Consumer(
+  builder: (context, ref, child) {
+    StateController<int> count = ref.watch(provider);
+
+    return Text('${count.state}');
+  }
+)
+```
+
+修改为：
+
+```dart
+final provider = StateProvider<int>(...);
+
+Consumer(
+  builder: (context, ref, child) {
+    int count = ref.watch(provider);
+
+    return Text('${count}');
+  }
+)
+```
+
+或者你可以使用新的 `StateProvider.state` 来保持旧的行为。
+
+```dart
+final provider = StateProvider<int>(...);
+
+Consumer(
+  builder: (context, ref, child) {
+    StateController<int> count = ref.watch(provider.state);
+
+    return Text('${count.state}');
+  }
+)
+```
+
+[statenotifierprovider]: ../providers/state_notifier_provider
+[stateprovider]: ../providers/state_provider
+[statenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/StateNotifier-class.html

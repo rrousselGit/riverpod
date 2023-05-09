@@ -1,5 +1,6 @@
 ---
 title: Reading a Provider
+version: 2
 ---
 
 import Tabs from "@theme/Tabs";
@@ -60,7 +61,7 @@ solutions to obtain one from widgets.
 
 <ConditionalSnippet>
 
-#### Extending ConsumerWidget instead of StatelessWidget
+#### 1. Extending ConsumerWidget instead of StatelessWidget
 
 The most common way to obtain a ref in the widget tree is
 to replace [StatelessWidget] with [ConsumerWidget].
@@ -70,9 +71,9 @@ difference being that it has an extra parameter on its build method: the "ref" o
 
 A typical [ConsumerWidget] looks like:
 
-<AutoSnippet language="dart" {...consumerWidget}></AutoSnippet>
+<AutoSnippet language="dart" disableHook={true} {...consumerWidget}></AutoSnippet>
 
-#### Extending ConsumerStatefulWidget+ConsumerState instead of StatefulWidget+State
+#### 2. Extending ConsumerStatefulWidget+ConsumerState instead of StatefulWidget+State
 
 Similar to [ConsumerWidget], [ConsumerStatefulWidget] and [ConsumerState] are the equivalent of a
 [StatefulWidget] with its [State], with the difference that the state has a "ref" object.
@@ -80,13 +81,13 @@ Similar to [ConsumerWidget], [ConsumerStatefulWidget] and [ConsumerState] are th
 This time, the "ref" isn't passed as parameter of the build method, but is
 a property of the [ConsumerState] object:
 
-<AutoSnippet language="dart" {...consumerStatefulWidget}></AutoSnippet>
+<AutoSnippet language="dart" disableHook={true} {...consumerStatefulWidget}></AutoSnippet>
 
 </ConditionalSnippet>
 
 <ConditionalSnippet hooks>
 
-#### Extending HookConsumerWidget instead of HookWidget
+#### 3. Extending HookConsumerWidget instead of HookWidget
 
 This option is for [flutter_hooks] users. Since [flutter_hooks] requires
 extending [HookWidget] to work, widgets that use hooks are unable to extend
@@ -100,7 +101,7 @@ An example would be:
 
 <AutoSnippet language="dart" {...consumerWidget}></AutoSnippet>
 
-#### Extending StatefulHookConsumerWidget instead of HookWidget
+#### 4. Extending StatefulHookConsumerWidget instead of HookWidget
 
 This option is for [flutter_hooks] users, who need to use [StatefulWidget] lifecycle methods in addition to hooks.
 
@@ -108,7 +109,7 @@ An example would be:
 
 <AutoSnippet language="dart" {...consumerStatefulWidget}></AutoSnippet>
 
-#### Consumer and HookConsumer widgets
+#### 5. Consumer and HookConsumer widgets
 
 A final way to obtain a "ref" inside widgets is to rely on [Consumer]/
 [HookConsumer].

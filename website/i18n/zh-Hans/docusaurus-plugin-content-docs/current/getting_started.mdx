@@ -8,25 +8,49 @@ import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
 import pubspec from "./getting_started/pubspec";
 import dartHelloWorld from "./getting_started/dart_hello_world";
-import pubadd from "./getting_started/pub_add";
+import pubadd from  "./getting_started/pub_add";
 import helloWorld from "./getting_started/hello_world";
 import dartPubspec from "./getting_started/dart_pubspec";
-import dartPubadd from "./getting_started/dart_pub_add";
+import dartPubadd from  "./getting_started/dart_pub_add";
 import {
   trimSnippet,
   AutoSnippet,
   ConditionalSnippet,
 } from "../../../../src/components/CodeSnippet";
 
----
+___
 
 ## 在线尝试 Riverpod
 
 在 [Dartpad](https://dartpad.dev/?null_safety=true&id=ef06ab3ce0b822e6cc5db0575248e6e2) 上感受 Riverpod 的魅力。
 
-## 安装包文件
+## 安装 package
 
-当你确定好你想要安装的包文件后，添加下列代码到你的 `pubspec.yaml` 文件中：
+当你确定好你想要安装的包文件后，你可以通过下方的单行命令来为你的应用添加依赖包：
+
+<Tabs
+  groupId="riverpod"
+  defaultValue="flutter_riverpod"
+  values={[
+    { label: 'Flutter 项目', value: 'flutter_riverpod', },
+    { label: '纯 Dart 项目', value: 'riverpod', },
+  ]}
+>
+<TabItem value="flutter_riverpod">
+
+<AutoSnippet title="终端" {...pubadd}></AutoSnippet>
+
+</TabItem>
+
+<TabItem value="riverpod">
+
+<AutoSnippet title="终端" {...dartPubadd}></AutoSnippet>
+
+</TabItem>
+
+</Tabs>
+
+或者手动添加下列代码到你的 `pubspec.yaml` 文件中：
 
 <Tabs
   groupId="riverpod"
@@ -43,8 +67,7 @@ import {
 然后使用 `flutter pub get` 命令来安装包文件。
 
 <ConditionalSnippet codegen={true}>
-  最后，运行代码生成器 {" "}
-  <code>flutter pub run build_runner watch</code>
+  最后，用如下命令来运行代码生成工具 <code>flutter pub run build_runner watch</code>
 </ConditionalSnippet>
 
 </TabItem>
@@ -59,44 +82,19 @@ import {
 然后使用 `dart pub get` 命令来安装包文件。
 
 <ConditionalSnippet codegen={true}>
-  最后，用命令 来运行代码生成工具
-  <code>flutter pub run build_runner watch</code>
+  最后，用如下命令来运行代码生成工具 <code>dart pub run build_runner watch</code>
 </ConditionalSnippet>
 
 </TabItem>
-</Tabs>
-
-或者你也可以通过下方一行命令来为你的应用添加依赖包：
-
-<Tabs
-  groupId="riverpod"
-  defaultValue="flutter_riverpod"
-  values={[
-    { label: 'Flutter 项目', value: 'flutter_riverpod', },
-    { label: '纯 Dart 项目', value: 'riverpod', },
-  ]}
->
-<TabItem value="flutter_riverpod">
-
-<AutoSnippet title="Terminal" {...pubadd}></AutoSnippet>
-
-</TabItem>
-
-<TabItem value="riverpod">
-
-<AutoSnippet title="Terminal" {...dartPubadd}></AutoSnippet>
-
-</TabItem>
-
 </Tabs>
 
 就是这样，你已成功将 [Riverpod] 添加到你的应用当中!
 
 ## 使用示例：Hello world
 
-安装完 [Riverpod]，我们就可以使用了。
+安装完 [Riverpod] 我们就可以开始使用它了。
 
-下面的代码片段展示了如何使用我们的新依赖来创建一个 "Hello world"：
+下面的代码片段展示了如何使用我们的新依赖来创建一个 Hello world：
 
 export const foo = 42;
 
@@ -117,6 +115,7 @@ export const foo = 42;
 ></AutoSnippet>
 
 你可以使用 `flutter run` 命令来运行。
+
 这会在你的设备上渲染 "Hello world" 的文字。
 
 </TabItem>
@@ -129,6 +128,7 @@ export const foo = 42;
 ></AutoSnippet>
 
 你可以使用 `dart lib/main.dart` 命令来运行。
+
 这会在你的控制台打印 "Hello world" 的字样。
 
 </TabItem>

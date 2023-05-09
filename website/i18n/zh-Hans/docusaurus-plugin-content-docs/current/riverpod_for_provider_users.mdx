@@ -15,58 +15,58 @@ import {
   ConditionalSnippet,
 } from "../../../../src/components/CodeSnippet";
 
-本文是为熟悉 [Provider] 并希望了解 Riverpod 的开发者所设计的。
+本文是为熟悉 [Provider] 包并希望了解 Riverpod 的开发者所设计的。
 
 ## Riverpod 和 [Provider] 之间的关系
 
 Riverpod 可以说是 Provider 的“精神”继承者。而且 Riverpod 这个名字就是 Provider 的变位词。
 
 Riverpod 是在寻找解决 Provider 所面临的技术限制的方案中诞生的。
-一开始 Riverpod 被认为是解决这一问题的 Provider 的下一个大版本。
-但最后并没有这么做，因为这样会是一个相当大的突破性变更，
-而 Provider 是现如今最常用的 Flutter package 之一。
+
+一开始 Riverpod 被认为是解决这一问题的 Provider 的下一个大版本。但最后并没有这么做，因为这样会是一个相当大的突破性变更，而 Provider 是现如今最常用的 Flutter package 之一。
 
 当然了，Riverpod 和 Provider 从概念上来说还是差不多的。
 两个 package 都扮演着类似的角色。两者都试图：
 
 - 缓存和小会一些有状态的对象
 - 在测试时提供一个模拟这些对象的方法
-- 在 flutter widget 中提供了一个简单的方式来监听这些对象的变化
+- 在 Flutter Widget 中提供了一个简单的方式来监听这些对象的变化
 
 与此同时，如果 Riverpod 继续成熟下去，它也可能会成为 Provider。
 
-Riverpod 修复了 Provider 的许多基本问题，例如但不限于：
+Riverpod 修复了 Provider 的许多基本问题，包括但不限于：
 
 - 显著简化了与 provider 的组合。
-  Riverpod 提供了简单强大的工具比如 [ref.watch] 和 [ref.listen] ，
-  而不是冗长且容易出错的 `ProxyProvider`。
+
+  Riverpod 提供了简单强大的工具比如 [ref.watch] 和 [ref.listen] ，而不是冗长且容易出错的 `ProxyProvider`。
 - 允许多个 provider 公开相同类型的值。
+
   当你暴露一个 int 类型或 String 类型的 provider 时不需要自定义一个类也能完美地使用。
 - 不需要在测试中重新定义 provider。
+
   在 Riverpod 中默认情况下 provider 可以直接使用。
-- 通过提供一种替代的方法来销毁对象（[autoDispose]），减少对“作用域”的过度依赖。
+- 通过提供一种替代的方法 [autoDispose] 来销毁对象，从而减少对“作用域”的过度依赖。
+
   虽然很强大，但确定一个 provider 的作用域相当复杂而且很难做对。
 
-还有更多……
+以及更多……
 
 Riverpod 唯一的缺点就是他需要变更 Widget 继承的类型才能使用：
 
-- 在Riverpod中你应该扩展 `ConsumerWidget` 类，而不是 `StatelessWidget` 类。
-- 在Riverpod中你应该扩展 `ConsumerStatefulWidget` 类，而不是 `StatefulWidget` 类。
+- 在 Riverpod 中你应该扩展 `ConsumerWidget` 类，而不是 `StatelessWidget` 类。
+- 在 Riverpod 中你应该扩展 `ConsumerStatefulWidget` 类，而不是 `StatefulWidget` 类。
 
 但从大局上来看这种不便利的影响还是比较小的。而且这个限制在未来可能被移除。
 
-所以要回答这个问题，你可能会问自己：
-**我要使用 Provider 还是 Riverpod？**
+来回答你可能会问自己的这个问题：**我应该使用 Provider 还是 Riverpod？**
 
-你大概率会选择 Riverpod。
-Riverpod 设计得更好还能急剧简化你的逻辑。
+你很可能应该选择 Riverpod。Riverpod 设计得更好还能急剧简化你的逻辑。
 
 ## Provider 和 Riverpod 的差异
 
 ### 定义 providers
 
-两个 package 最主要的区别在于如何定于 provider。
+两个 package 最主要的区别在于如何定义他们的 provider。
 
 对 [Provider] 来说，provider 是 widget，因此被放在 widget 树中，一般位于 `MultiProvider` 中：
 
@@ -88,18 +88,19 @@ void main() {
 ```
 
 对于 Riverpod 来说，provider **不是** widget 而是普通的 Dart 对象。
+
 类似地，provider 定义在 widget 树之外，并声明为全局 final 变量。
 
 另外，为了让 Riverpod 工作，应当在整个应用上方添加一个 `ProviderScope` widget。
 下面是 Riverpod 的 provider 示例：
 
 ```dart
-// Providers 现在是顶级变量
+// Provider 现在是全局变量
 final counterProvider = ChangeNotifierProvider<Counter>((ref) => Counter());
 
 void main() {
   runApp(
-    // 这个 widget 可以让Riverpod在整个Flutter 项目中使用
+    // 这个 widget 可以让 Riverpod 在整个 Flutter 项目中使用
     ProviderScope(
       child: MyApp(),
     ),
@@ -107,10 +108,11 @@ void main() {
 }
 ```
 
-provider 的定义只是向上移动了几行。
+注意到 provider 的定义只是向上移动了几行。
 
 :::info
 由于 Riverpod 的 provider 是普通的 Dart 对象，因此可以同时在 Dart 和 Flutter 使用 Riverpod。
+
 例如 Riverpod 也可以编写命令行应用。
 :::
 
@@ -167,6 +169,7 @@ Riverpod 使用和 Provider 相同的术语来读取 provider。
 - `BuildContext.read` -> `WidgetRef.read`
 
 `context.watch` 和 `context.read` 的规则也适用于 Riverpod：
+
 在 `build` 方法中使用 watch。在点击或其他事件中使用 read。
 :::
 
@@ -231,7 +234,7 @@ ChangeNotifierProvider<UserIdNotifier>(create: (context) => UserIdNotifier()),
 ```
 
 接下来我们有两个选择：
-我们可能结合 `UserIdNotifier` 来创建一个新的“无状态（stateless）”的 provider（通常是一个重载了 == 方法的不可变的值），比如：
+我们可能结合 `UserIdNotifier` 来创建一个新的“无状态（stateless）”的 provider（通常是一个重载了 `==` 方法的不可变的值），比如：
 
 ```dart
 ProxyProvider<UserIdNotifier, String>(
@@ -244,6 +247,7 @@ ProxyProvider<UserIdNotifier, String>(
 每当 `UserIdNotifier.userId` 出现变化时 provider 会自动返回一个新的 `String` 的值。
 
 我们可以在 Riverpod 中做类似的事，但是语法不同。
+
 首先，在 Riverpod中 `UserIdNotifier` 的定义是：
 
 ```dart
@@ -255,7 +259,7 @@ class UserIdNotifier extends ChangeNotifier {
 
 final userIdNotifierProvider = ChangeNotifierProvider<UserIdNotifier>(
   (ref) => UserIdNotifier(),
-),
+);
 ```
 
 然后我们就可以根据 `userId` 生成我们的 `String` ：
@@ -272,10 +276,11 @@ final labelProvider = Provider<String>((ref) {
 
 这行代码告诉 Riverpod 获取 `userIdNotifierProvider` 的内容，
 并当值发生变化时，`labelProvider` 也将被重新计算。
+
 因此，当 `userId` 发生变化时，我们的 `labelProvider` 将自动更新 `String`。
 
-`ref.watch` 这一行你应该感觉类似。
-这种模式在前面的 [如何在widget中读取provider](#读取provider-buildcontext) 已经解释过了。
+`ref.watch` 这一行你应该感觉类似。这种模式在前面的 [如何在widget中读取provider](#读取provider-buildcontext) 已经解释过了。
+
 实际上，provider 现在可以像 widget 一样监听其他 provider。
 
 ### 组合 provider：带有有状态对象的 ProxyProvider
@@ -283,6 +288,7 @@ final labelProvider = Provider<String>((ref) {
 在组合 provider 时，另一个可选的替代的用法是暴露一个有状态的对象，比如 `ChangeNotifier` 实例。
 
 为此我们可以使用 `ChangeNotifierProxyProvider`（如 `ChangeNotifierProxyProvider2` 等变体）。
+
 比如我们可能定义：
 
 ```dart
@@ -295,7 +301,9 @@ class UserIdNotifier extends ChangeNotifier {
 ChangeNotifierProvider<UserIdNotifier>(create: (context) => UserIdNotifier()),
 ```
 
-然后，我们可以定义一个基于 `UserIdNotifier.userId` 的新 `ChangeNotifier`。举个例子：
+然后，我们可以定义一个基于 `UserIdNotifier.userId` 的新 `ChangeNotifier`。
+
+举个例子：
 
 ```dart
 class UserNotifier extends ChangeNotifier {
@@ -321,6 +329,7 @@ ChangeNotifierProxyProvider<UserIdNotifier, UserNotifier>(
 ```
 
 这个新的 provider 创建一个 `UserNotifier` 实例（并且永远不会重新构造），并在用户 ID 更改时打印一个字符串。
+
 在 Riverpod 中，这个功能的实现方式不同于 provider。首先，我们的 `UserIdNotifier` 定义为：
 
 ```dart
@@ -338,15 +347,26 @@ final userIdNotifierProvider = ChangeNotifierProvider<UserIdNotifier>(
 接着，与前面的 `ChangeNotifierProxyProvider` 等价的是：
 
 ```dart
-class UserNotifier extends ChangeNotifier {}
+class UserNotifier extends ChangeNotifier {
+  String? _userId;
 
-final userNotfierProvider = ChangeNotifierProvider<UserNotifier>((ref) {
+  void setUserId(String? userId) {
+    if (userId != _userId) {
+      print('The user ID changed from $_userId to $userId');
+      _userId = userId;
+    }
+  }
+}
+
+// ...
+
+final userNotifierProvider = ChangeNotifierProvider<UserNotifier>((ref) {
   final userNotifier = UserNotifier();
   ref.listen<UserIdNotifier>(
     userIdNotifierProvider,
     (previous, next) {
       if (previous?.userId != next.userId) {
-        print('The user ID changed from ${previous?.userId} to ${next.userId}');
+        userNotifier.setUserId(next.userId);
       }
     },
   );

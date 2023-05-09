@@ -14,40 +14,41 @@ import { trimSnippet,AutoSnippet} from "../../../../../src/components/CodeSnippe
 
 `FutureProvider` 一般用于：
 
-- 执行和缓存异步操作 (比如网络请求)
+- 执行和缓存异步操作（比如网络请求）
 - 能很好地处理异步操作中的错误/加载中的状态
 - 将多个异步的值组合为另一个异步的值
 
 `FutureProvider` 与 [ref.watch] 结合使用有很多好处。
+
 这种组合允许在某些变量改变时自动重新获取一些数据，确保我们总是拥有最新的值。
 
 :::info
 `FutureProvider` 不提供给用户交互后直接修改计算结果的方法。它被设计用来解决简单的用例。
-对于更高级的场景请考虑使用 [StateNotifierProvider] 。
+
+对于更高级的场景请考虑使用 [StateNotifierProvider]。
 :::
 
 ## 用法示例：读取配置文件
 
-`FutureProvider` 可以是一种通过读取JSON文件创建的 `Configuration` 对象的便捷方法。
+`FutureProvider` 可以是一种通过读取 JSON 文件创建的 `Configuration` 对象的便捷方法。
 
-在provider内部使用的async/await语法创建配置。
-再加上使用Flutter的资产系统，举个例子：
+在 provider 内部使用 async/await 语法创建配置，再加上使用 Flutter 的资产系统即可。
+
+举个例子：
 
 <AutoSnippet language="dart" {...configProvider}></AutoSnippet>
 
 
-接着，UI可以像这样监听配置：
+接着，UI 可以像这样监听配置：
 
 <AutoSnippet language="dart" {...configConsumer}></AutoSnippet>
 
-这将在 [Future] 完成时自动重新构建UI。
-同时，如果多个widget需要配置，Flutter资产将只载入一次。
+这将在 [Future] 完成时自动重新构建 UI。同时，如果多个 widget 需要配置，Flutter 资产将只载入一次。
 
-如你所见，在widget中监听 `FutureProvider` 会返回一个 [AsyncValue] ，
-它允许你处理错误/加载中的状态。
+如你所见，在widget中监听 `FutureProvider` 会返回一个 [AsyncValue]，它允许你处理错误/加载中的状态。
 
 [ref.watch]: ../concepts/reading#using-refwatch-to-observe-a-provider
-[statenotifierprovider]: ./state_notifier_provider
+[asyncnotifierprovider]: ./notifier_provider
 [provider]: ./provider
 [asyncvalue]: https://pub.dev/documentation/riverpod/latest/riverpod/AsyncValue-class.html
 [future]: https://api.dart.dev/dart-async/Future-class.html

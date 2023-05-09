@@ -5,19 +5,18 @@ title: .autoDispose
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 
-一个常见的用例是当不再使用provider时销毁它的状态。
+一个常见的用例是当不再使用 provider 时销毁它的状态。
 
 这么做有很多原因，比如：
 
-- 使用Firebase时，关闭连接，避免不必要的开销。
+- 使用 Firebase 时，关闭连接，避免不必要的开销。
 - 当用户离开页面并重新进入时重置状态。
 
-Provider内置了 `.autoDispose` 修饰符来支持这些功能。
+Provider 内置了 `.autoDispose` 修饰符来支持这些功能。
 
 ## 用法
 
-要告诉Riverpod在provider不再使用时销毁它的状态，
-只需将 `.autoDispose` 附加到你的provider上：
+要告诉 Riverpod 在 provider 不再使用时销毁它的状态，只需将 `.autoDispose` 附加到你的 provider 上：
 
 ```dart
 final userProvider = StreamProvider.autoDispose<User>((ref) {
@@ -42,11 +41,11 @@ final userProvider = StreamProvider.autoDispose.family<User, String>((ref, id) {
 
 ### ref.keepAlive
 
-使用 `autoDispose` 的 provider还会添加一个额外的方法到 `ref` 上：  `keepAlive`。
+使用 `autoDispose` 的 provider 还会添加一个额外的方法到 `ref` 上：`keepAlive`。
 
-`keepAlive` 函数用于告诉Riverpod即使不再监听provider的状态也应该保留。
+`keepAlive` 函数用于告诉 Riverpod 即使不再监听 provider 的状态也应该保留。
 
-一个用例是在HTTP请求完成后将此标志设置为 `true`：
+一个用例是在 HTTP 请求完成后将此标志设置为 `true`：
 
 ```dart
 final myProvider = FutureProvider.autoDispose((ref) async {
@@ -60,30 +59,29 @@ final myProvider = FutureProvider.autoDispose((ref) async {
 但是如果请求成功完成，状态将被保留，重新进入就不会触发新的请求。
 
 :::info
-在1.0.x的版本中， `maintainState` 属性等价于 `keepAlive`。
+在 `1.0.x` 的版本中， `maintainState` 属性等价于 `keepAlive`。
 :::
 
-## 示例:取消不再使用的HTTP请求
+## 示例：取消不再使用的 HTTP 请求
 
-`autoDispose` 修饰符可以与 [FutureProvider] 和 `ref.onDispose` 结合使用，
-以便在不再需要HTTP请求时轻松取消它们。
+`autoDispose` 修饰符可以与 [FutureProvider] 和 `ref.onDispose` 结合使用，以便在不再需要 HTTP 请求时轻松取消它们。
 
 目标:
 
-- 当用户进入一个页面时启动一个HTTP请求
-- 如果用户在请求完成前离开页面，则取消HTTP请求
+- 当用户进入一个页面时启动一个 HTTP 请求
+- 如果用户在请求完成前离开页面，则取消 HTTP 请求
 - 如果请求成功，离开并重新进入页面则不会开始新的请求
 
 下面是代码示例：
 
 ```dart
 final myProvider = FutureProvider.autoDispose((ref) async {
-  // 来自package:dio的一个对象，允许取消http请求
+  // 来自 package:dio 的一个对象，允许取消 http 请求
   final cancelToken = CancelToken();
-  // 当provider被销毁时，取消http请求
+  // 当 provider 被销毁时，取消 http 请求
   ref.onDispose(() => cancelToken.cancel());
 
-  // 获取我们的数据并传递“cancelToken”来取消工作
+  // 获取我们的数据并传递 cancelToken 来取消工作
   final response = await dio.get('path', cancelToken: cancelToken);
   // 如果请求成功完成，则保持该状态
   ref.keepAlive();
@@ -95,19 +93,18 @@ final myProvider = FutureProvider.autoDispose((ref) async {
 
 当使用 `.autoDispose` 时，你可能会发现你的应用在编译时出现类似错误：
 
-> The argument type 'AutoDisposeProvider' can't be assigned to the parameter
-> type 'AlwaysAliveProviderBase'
+> `The argument type 'AutoDisposeProvider' can't be assigned to the parameter type 'AlwaysAliveProviderBase'`
 
-不要担心！这个错误是正常的。发生这种情况是因为你很可能编写了一个bug：
+不要担心！这个错误是正常的。发生这种情况是因为你很可能编写了一个 bug：
 
-你试图在未标记 `.autoDispose` 的provider中监听标记了 `.autoDispose` 的provider，例如：
+你试图在未标记 `.autoDispose` 的 provider 中监听标记了 `.autoDispose` 的 provider，例如：
 
 ```dart
 final firstProvider = Provider.autoDispose((ref) => 0);
 
 final secondProvider = Provider((ref) {
-  // The argument type 'AutoDisposeProvider<int>' can't be assigned to the
-  // parameter type 'AlwaysAliveProviderBase<Object, Null>'
+  // 参数类型 'AutoDisposeProvider<int>' 不能被赋值
+  // 给参数类型 'AlwaysAliveProviderBase<Object, Null>'
   ref.watch(firstProvider);
 });
 ```

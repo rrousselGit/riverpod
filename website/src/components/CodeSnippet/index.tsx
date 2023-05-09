@@ -32,7 +32,11 @@ interface CodeSnippetProps {
   snippet: string;
 }
 
-export const CodeSnippet: React.FC<CodeSnippetProps> = ({ snippet, title, ...other }) => {
+export const CodeSnippet: React.FC<CodeSnippetProps> = ({
+  snippet,
+  title,
+  ...other
+}) => {
   return (
     <div className={`snippet`}>
       <div className="snippet__title_bar">
@@ -55,9 +59,14 @@ export function AutoSnippet(props: {
   hooksCodegen: string | Array<string>;
   raw: string | Array<string>;
   hooks: string | Array<string>;
+  disableHook?: boolean;
 }) {
   const [codegen] = useContext(CodegenContext);
-  const [hooksEnabled] = useContext(FlutterHooksContext);
+
+  const [hooksEnabled] =
+    props.disableHook != null && props.disableHook == true
+      ? [!props.disableHook]
+      : useContext(FlutterHooksContext);
 
   let snippet: string | Array<string>;
   if (codegen) {
@@ -87,7 +96,7 @@ export function ConditionalSnippet(props: {
     (props.codegen == undefined || props.codegen == codegen) &&
     (props.hooks == undefined || props.hooks == hooks)
   ) {
-    return props.children
+    return props.children;
   }
 
   return <></>;

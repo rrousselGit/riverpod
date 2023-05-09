@@ -16,7 +16,7 @@ class Counter extends _$Counter {
 }
 
 Widget build(BuildContext context, WidgetRef ref) {
-  // 使用 “read” 忽略provider的更新
+  // use "read" to ignore updates on a provider
   final counter = ref.read(counterProvider.notifier);
   return ElevatedButton(
     onPressed: counter.increment,
