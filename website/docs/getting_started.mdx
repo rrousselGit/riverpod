@@ -8,17 +8,17 @@ import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
 import pubspec from "./getting_started/pubspec";
 import dartHelloWorld from "./getting_started/dart_hello_world";
-import pubadd from  "./getting_started/pub_add";
+import pubadd from "./getting_started/pub_add";
 import helloWorld from "./getting_started/hello_world";
 import dartPubspec from "./getting_started/dart_pubspec";
-import dartPubadd from  "./getting_started/dart_pub_add";
+import dartPubadd from "./getting_started/dart_pub_add";
 import {
   trimSnippet,
   AutoSnippet,
   ConditionalSnippet,
 } from "../src/components/CodeSnippet";
 
-___
+---
 
 ## Try Riverpod online
 
@@ -67,8 +67,7 @@ Alternatively, you can manually add the dependency to your app from within your 
 Then, install packages with `flutter pub get`.
 
 <ConditionalSnippet codegen={true}>
-  Run the code-generator with{" "}
-  <code>flutter pub run build_runner watch</code>.
+  Run the code-generator with <code>flutter pub run build_runner watch</code>.
 </ConditionalSnippet>
 
 </TabItem>
@@ -83,14 +82,24 @@ Then, install packages with `flutter pub get`.
 Then, install packages with `dart pub get`.
 
 <ConditionalSnippet codegen={true}>
-  Run the code-generator with{" "}
-  <code>flutter pub run build_runner watch</code>.
+  Run the code-generator with <code>flutter pub run build_runner watch</code>.
 </ConditionalSnippet>
 
 </TabItem>
 </Tabs>
 
-Enable `custom_lint`'s plugin in your `analysis_options.yaml`:
+That's it. You've added [Riverpod] to your app!
+
+## Enabling riverpod_lint/custom_lint
+
+Riverpod comes with an optional [riverpod_lint](https://pub.dev/packages/riverpod_lint)
+package that provides lint rules to help you write better code.
+
+The package should already be installed if you followed the previous steps, but a
+separate step is necessary to enable it.
+
+To enable [riverpod_lint], you need add an `analysis_options.yaml` placed next to
+your `pubspec.yaml` and include the following:
 
 <CodeBlock language="yaml" title="analysis_options.yaml">
   {`analyzer:
@@ -98,7 +107,18 @@ Enable `custom_lint`'s plugin in your `analysis_options.yaml`:
     - custom_lint`}
 </CodeBlock>
 
-That's it. You've added [Riverpod] to your app!
+You should now see warnings in your IDE if you made mistakes when using Riverpod
+in your codebase.
+
+:::note
+Those warnings will not show-up in the `dart analyze` command.  
+If you want to check those warnings in the CI/terminal, you can run the following:
+
+```sh
+dart run custom_lint
+```
+
+:::
 
 ## Usage example: Hello world
 
