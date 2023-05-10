@@ -3,6 +3,7 @@ module.exports = {
     "introduction",
     "getting_started",
     "riverpod_for_provider_users",
+    "provider_type",
     {
       type: "category",
       label: "All Providers",
