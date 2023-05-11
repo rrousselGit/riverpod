@@ -2,6 +2,8 @@ name: Check website/src/outdated_translations.json
 
 on:
   pull_request:
+    paths:
+      - "**.mdx"
 
 jobs:
   build:
