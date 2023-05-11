@@ -230,6 +230,53 @@ final emptyDependenciesStatelessProvider = AutoDisposeProvider<int>.internal(
 );
 
 typedef EmptyDependenciesStatelessRef = AutoDisposeProviderRef<int>;
+String _$providerWithDependenciesHash() =>
+    r'beecbe7a41b647ab92367dbcc12055bcd6345af7';
+
+/// See also [providerWithDependencies].
+@ProviderFor(providerWithDependencies)
+final providerWithDependenciesProvider = AutoDisposeProvider<int>.internal(
+  providerWithDependencies,
+  name: r'providerWithDependenciesProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$providerWithDependenciesHash,
+  dependencies: <ProviderOrFamily>[_privateDepProvider, publicDepProvider],
+  allTransitiveDependencies: <ProviderOrFamily>[
+    _privateDepProvider,
+    publicDepProvider
+  ],
+);
+
+typedef ProviderWithDependenciesRef = AutoDisposeProviderRef<int>;
+String _$privateDepHash() => r'f610d91bd39e0dcffe6ff4e74160964a291289d9';
+
+/// See also [_privateDep].
+@ProviderFor(_privateDep)
+final _privateDepProvider = AutoDisposeProvider<int>.internal(
+  _privateDep,
+  name: r'_privateDepProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$privateDepHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _PrivateDepRef = AutoDisposeProviderRef<int>;
+String _$publicDepHash() => r'bcb69aace017c86c3c4b8eccf59fa22d010834bc';
+
+/// See also [publicDep].
+@ProviderFor(publicDep)
+final publicDepProvider = AutoDisposeProvider<int>.internal(
+  publicDep,
+  name: r'publicDepProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$publicDepHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef PublicDepRef = AutoDisposeProviderRef<int>;
 String _$dep2Hash() => r'2778537df77f6431148c2ce400724da3e2ab4b94';
 
 /// See also [Dep2].
