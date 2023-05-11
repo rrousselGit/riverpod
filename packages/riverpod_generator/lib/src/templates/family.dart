@@ -207,12 +207,12 @@ class $familyName extends Family<${provider.exposedType}> {
     return call($parameterProviderPassThrough);
   }
 
-  static $dependenciesKeyword _dependencies = ${serializeDependencies(provider.providerElement.annotation.dependencies, options)};
+  static $dependenciesKeyword _dependencies = ${serializeDependencies(provider.providerElement.annotation, options)};
 
   @override
   Iterable<ProviderOrFamily>? get dependencies => _dependencies;
 
-  static $dependenciesKeyword _allTransitiveDependencies = ${serializeDependencies(provider.providerElement.annotation.allTransitiveDependencies, options)};
+  static $dependenciesKeyword _allTransitiveDependencies = ${serializeAllTransitiveDependencies(provider.providerElement.annotation, options)};
 
   @override
   Iterable<ProviderOrFamily>? get allTransitiveDependencies => _allTransitiveDependencies;

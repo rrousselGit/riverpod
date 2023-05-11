@@ -62,8 +62,8 @@ final $providerName = $providerType<${provider.valueType}>.internal(
   $createFn,
   name: r'$providerName',
   debugGetCreateSourceHash: $hashFn,
-  dependencies: ${serializeDependencies(provider.providerElement.annotation.dependencies, options)},
-  allTransitiveDependencies: ${serializeDependencies(provider.providerElement.annotation.allTransitiveDependencies, options)},
+  dependencies: ${serializeDependencies(provider.providerElement.annotation, options)},
+  allTransitiveDependencies: ${serializeAllTransitiveDependencies(provider.providerElement.annotation, options)},
 );
 
 typedef $refName = ${providerType}Ref<${provider.valueType}>;
