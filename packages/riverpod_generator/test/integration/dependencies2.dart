@@ -10,6 +10,23 @@ int providerWithDependencies2(ProviderWithDependencies2Ref ref) {
   return 0;
 }
 
+@Riverpod(dependencies: [providerWithDependencies, _private2, public2])
+int familyWithDependencies2(ProviderWithDependencies2Ref ref, {int? id}) {
+  return 0;
+}
+
+@Riverpod(dependencies: [providerWithDependencies, _private2, public2])
+class NotifierWithDependencies extends _$NotifierWithDependencies {
+  @override
+  int build() => 0;
+}
+
+@Riverpod(dependencies: [providerWithDependencies, _private2, public2])
+class NotifierFamilyWithDependencies extends _$NotifierFamilyWithDependencies {
+  @override
+  int build({int? id}) => 0;
+}
+
 @riverpod
 int _private2(_Private2Ref ref) => 0;
 

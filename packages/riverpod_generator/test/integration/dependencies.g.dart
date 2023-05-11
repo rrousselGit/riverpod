@@ -140,9 +140,13 @@ final providerProvider = AutoDisposeProvider<int>.internal(
   },
   allTransitiveDependencies: <ProviderOrFamily>{
     depProvider,
+    ...?depProvider.allTransitiveDependencies,
     familyProvider,
+    ...?familyProvider.allTransitiveDependencies,
     dep2Provider,
-    family2Provider
+    ...?dep2Provider.allTransitiveDependencies,
+    family2Provider,
+    ...?family2Provider.allTransitiveDependencies
   },
 );
 
@@ -164,9 +168,13 @@ final provider2Provider = AutoDisposeProvider<int>.internal(
   },
   allTransitiveDependencies: <ProviderOrFamily>{
     depProvider,
+    ...?depProvider.allTransitiveDependencies,
     familyProvider,
+    ...?familyProvider.allTransitiveDependencies,
     dep2Provider,
-    family2Provider
+    ...?dep2Provider.allTransitiveDependencies,
+    family2Provider,
+    ...?family2Provider.allTransitiveDependencies
   },
 );
 
@@ -185,10 +193,7 @@ final transitiveDependenciesProvider = AutoDisposeProvider<int>.internal(
   dependencies: <ProviderOrFamily>[providerProvider],
   allTransitiveDependencies: <ProviderOrFamily>{
     providerProvider,
-    depProvider,
-    familyProvider,
-    dep2Provider,
-    family2Provider
+    ...?providerProvider.allTransitiveDependencies
   },
 );
 
@@ -206,11 +211,14 @@ final smallTransitiveDependencyCountProvider =
       ? null
       : _$smallTransitiveDependencyCountHash,
   dependencies: <ProviderOrFamily>[depProvider, familyProvider, dep2Provider],
-  allTransitiveDependencies: <ProviderOrFamily>[
+  allTransitiveDependencies: <ProviderOrFamily>{
     depProvider,
+    ...?depProvider.allTransitiveDependencies,
     familyProvider,
-    dep2Provider
-  ],
+    ...?familyProvider.allTransitiveDependencies,
+    dep2Provider,
+    ...?dep2Provider.allTransitiveDependencies
+  },
 );
 
 typedef SmallTransitiveDependencyCountRef = AutoDisposeProviderRef<int>;
@@ -226,7 +234,7 @@ final emptyDependenciesStatelessProvider = AutoDisposeProvider<int>.internal(
       ? null
       : _$emptyDependenciesStatelessHash,
   dependencies: const <ProviderOrFamily>[],
-  allTransitiveDependencies: const <ProviderOrFamily>[],
+  allTransitiveDependencies: const <ProviderOrFamily>{},
 );
 
 typedef EmptyDependenciesStatelessRef = AutoDisposeProviderRef<int>;
@@ -242,10 +250,12 @@ final providerWithDependenciesProvider = AutoDisposeProvider<int>.internal(
       ? null
       : _$providerWithDependenciesHash,
   dependencies: <ProviderOrFamily>[_privateDepProvider, publicDepProvider],
-  allTransitiveDependencies: <ProviderOrFamily>[
+  allTransitiveDependencies: <ProviderOrFamily>{
     _privateDepProvider,
-    publicDepProvider
-  ],
+    ...?_privateDepProvider.allTransitiveDependencies,
+    publicDepProvider,
+    ...?publicDepProvider.allTransitiveDependencies
+  },
 );
 
 typedef ProviderWithDependenciesRef = AutoDisposeProviderRef<int>;
@@ -402,9 +412,13 @@ final provider3Provider = AutoDisposeNotifierProvider<Provider3, int>.internal(
   },
   allTransitiveDependencies: <ProviderOrFamily>{
     depProvider,
+    ...?depProvider.allTransitiveDependencies,
     familyProvider,
+    ...?familyProvider.allTransitiveDependencies,
     dep2Provider,
-    family2Provider
+    ...?dep2Provider.allTransitiveDependencies,
+    family2Provider,
+    ...?family2Provider.allTransitiveDependencies
   },
 );
 
@@ -459,9 +473,13 @@ class Provider4Family extends Family<int> {
   static final Iterable<ProviderOrFamily> _allTransitiveDependencies =
       <ProviderOrFamily>{
     depProvider,
+    ...?depProvider.allTransitiveDependencies,
     familyProvider,
+    ...?familyProvider.allTransitiveDependencies,
     dep2Provider,
-    family2Provider
+    ...?dep2Provider.allTransitiveDependencies,
+    family2Provider,
+    ...?family2Provider.allTransitiveDependencies
   };
 
   @override
@@ -528,7 +546,7 @@ final emptyDependenciesStatefulProvider =
       ? null
       : _$emptyDependenciesStatefulHash,
   dependencies: const <ProviderOrFamily>[],
-  allTransitiveDependencies: const <ProviderOrFamily>[],
+  allTransitiveDependencies: const <ProviderOrFamily>{},
 );
 
 typedef _$EmptyDependenciesStateful = AutoDisposeNotifier<int>;
