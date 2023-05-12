@@ -1,3 +1,8 @@
+## Unreleased fix
+
+- Fix an issue where specifying a dependency on a provider declared in a
+  different file could cause a missing import.
+
 ## 2.2.1 - 2023-04-24
 
 - `riverpod_annotation` upgraded to `2.1.1`
