@@ -111,8 +111,7 @@ class AutoDisposeStateNotifierProviderFamily<NotifierT extends StateNotifier<T>,
     NotifierT Function(
       AutoDisposeStateNotifierProviderRef<NotifierT, T> ref,
       Arg arg,
-    )
-        create,
+    ) create,
   ) {
     return FamilyOverrideImpl<T, Arg,
         AutoDisposeStateNotifierProvider<NotifierT, T>>(

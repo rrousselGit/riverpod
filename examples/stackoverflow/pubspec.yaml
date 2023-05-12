@@ -1,19 +1,18 @@
 name: stackoverflow
 description: A new Flutter project.
 publish_to: "none"
-version: 1.0.0+1
 
 environment:
   sdk: ">=2.17.0 <3.0.0"
   flutter: ">=1.17.0"
 
 dependencies:
-  dio: ^4.0.0
+  dio: ^5.1.1
   flutter:
     sdk: flutter
   flutter_hooks: ^0.18.0
   freezed_annotation: ^2.1.0
-  hooks_riverpod: ^2.1.3
+  hooks_riverpod:
   html: ^0.15.0
   json_annotation: ^4.8.0
   riverpod_annotation:

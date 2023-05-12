@@ -20,7 +20,7 @@
 ---
 
 Riverpod_lint is a developer tool for users of Riverpod, designed to help stop common
-issue and simplify repetitive tasks.
+issues and simplify repetitive tasks.
 
 Riverpod_lint adds various warnings with quick fixes and refactoring options, such as:
 
@@ -43,14 +43,15 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
   - [missing\_provider\_scope](#missing_provider_scope)
   - [provider\_dependencies (riverpod\_generator only)](#provider_dependencies-riverpod_generator-only)
   - [scoped\_providers\_should\_specify\_dependencies (generator only)](#scoped_providers_should_specify_dependencies-generator-only)
-  - [avoid\_manual\_providers\_as\_generated\_provider\_depenency](#avoid_manual_providers_as_generated_provider_depenency)
+  - [avoid\_manual\_providers\_as\_generated\_provider\_dependency](#avoid_manual_providers_as_generated_provider_dependency)
   - [provider\_parameters](#provider_parameters)
+  - [avoid\_public\_notifier\_properties](#avoid_public_notifier_properties)
   - [unsupported\_provider\_value (riverpod\_generator only)](#unsupported_provider_value-riverpod_generator-only)
   - [stateless\_ref (riverpod\_generator only)](#stateless_ref-riverpod_generator-only)
   - [generator\_class\_extends (riverpod\_generator only)](#generator_class_extends-riverpod_generator-only)
 - [All assists](#all-assists)
-  - [Wrap widget with a `Consumer`](#wrap-widget-with-a-consumer)
-  - [Wrap widget with a `ProviderScope`](#wrap-widget-with-a-providerscope)
+  - [Wrap widgets with a `Consumer`](#wrap-widgets-with-a-consumer)
+  - [Wrap widgets with a `ProviderScope`](#wrap-widgets-with-a-providerscope)
   - [Convert widget to `ConsumerWidget`](#convert-widget-to-consumerwidget)
   - [Convert widget to `ConsumerStatefulWidget`](#convert-widget-to-consumerstatefulwidget)
   - [Convert functional `@riverpod` to class variant](#convert-functional-riverpod-to-class-variant)
@@ -184,7 +185,7 @@ void main() {
 ### provider_dependencies (riverpod_generator only)
 
 If a provider depends on providers which specify `dependencies`, they should
-themselves specify `dependencies` and include all the scoped providers.
+specify `dependencies` and include all the scoped providers.
 
 This lint only works for providers using the `@riverpod` annotation.
 
@@ -313,7 +314,7 @@ class MyApp extends StatelessWidget {
 }
 ```
 
-### avoid_manual_providers_as_generated_provider_depenency
+### avoid_manual_providers_as_generated_provider_dependency
 
 Providers using riverpod_generator should not depend on providers which do not use riverpod_generator.
 Failing to do so would break the [provider_dependencies](#provider_dependencies-riverpod_generator-only) lint.
@@ -345,7 +346,7 @@ int example(ExampleRef ref) {
 
 ### provider_parameters
 
-Providers parameters should have a consistent ==. Meaning either the values should be cached, or the parameters should override ==.
+Providers' parameters should have a consistent ==. Meaning either the values should be cached, or the parameters should override ==.
 
 **Good**:
 
@@ -370,12 +371,76 @@ ref.watch(myProvider(ClassWithNoCustomEqual()));
 ref.watch(myProvider([42]));
 ```
 
+### avoid_public_notifier_properties
+
+The `Notifier`/`AsyncNotifier` classes should not have a public state outside
+of the `state` property.
+
+The reasoning is that all "state" should be accessed through the `.state` property.
+There should never be a case where you do `ref.watch(someProvider.notifier).someState`.
+Instead, you should do `ref.watch(provider).someState`.
+
+**Bad**:
+
+```dart
+@riverpod
+class GeneratedNotifier extends _$GeneratedNotifier {
+  // Notifiers should not have public properties/getters
+  int b = 0;
+
+  @override
+  int build() => 0;
+}
+```
+
+**Good**:
+
+```dart
+class Model {
+  Model(this.a, this.b);
+  final int a;
+  final int b;
+}
+
+// Notifiers using the code-generator
+@riverpod
+class MyNotifier extends _$MyNotifier {
+  // No public getters/fields, this is fine. Instead
+  // Everythign is available in the `state` object.
+  @override
+  Model build() => Model(0, 0);
+}
+```
+
+```dart
+@riverpod
+class MyNotifier extends _$MyNotifier {
+  // Alternatively, notifiers are allowed to have properties/getters if they
+  // are either private or annotated such that using inside widgets would
+  // trigger a warning.
+  int _internal = 0;
+  @protected
+  int publicButProtected = 0;
+  @visibleForTesting
+  int testOnly = 0;
+
+  @override
+  Something build() {...}
+}
+```
+
 ### unsupported_provider_value (riverpod_generator only)
 
 The riverpod_generator package does not support `StateNotifier`/`ChangeNotifier` and
 manually creating a `Notifier`/`AsyncNotifier`.
 
-This lints warns against unsupported value types.
+This lint warns against unsupported value types.
+
+**Note**:
+
+In some cases, you may voluntarily want to return a `ChangeNotifier` & co, even though
+riverpod_generator will neither listen nor disposes of the value.  
+In that scenario, you may explicitly wrap the value in `Raw`:
 
 **Good**:
 
@@ -387,6 +452,17 @@ int integer(IntegerRef ref) => 0;
 class IntegerNotifier extends _$IntegerNotifier {
   @override
   int build() => 0;
+}
+
+// By using "Raw", we can explicitly return a ChangeNotifier in a provider
+// without triggering `unsupported_provider_value`.
+@riverpod
+Raw<GoRouter> myRouter(MyRouterRef ref) {
+  final router = GoRouter(...);
+  // Riverpod won't dispose the ChangeNotifier for you in this case. Don't forget
+  // to do it on your own!
+  ref.onDispose(router.dispose);
+  return router;
 }
 ```
 
@@ -457,11 +533,11 @@ class Example extends Anything {
 
 ## All assists
 
-### Wrap widget with a `Consumer`
+### Wrap widgets with a `Consumer`
 
 ![Wrap with Consumer sample](https://raw.githubusercontent.com/rrousselGit/riverpod/master/packages/riverpod_lint/resources/wrap_with_consumer.gif)
 
-### Wrap widget with a `ProviderScope`
+### Wrap widgets with a `ProviderScope`
 
 ![Wrap with ProviderScope sample](https://raw.githubusercontent.com/rrousselGit/riverpod/master/packages/riverpod_lint/resources/wrap_with_provider_scope.gif)
 

@@ -2,7 +2,6 @@ name: counter
 description: A new Flutter project.
 
 publish_to: "none"
-version: 1.0.0+1
 
 environment:
   sdk: ">=2.18.0 <3.0.0"
@@ -26,7 +25,7 @@ dependencies:
 dev_dependencies:
   build_runner: ^2.3.3
   build_verify: ^3.0.0
-  custom_lint: ^0.3.2
+  custom_lint: ^0.4.0
   flutter_test:
     sdk: flutter
   freezed: ^2.3.2

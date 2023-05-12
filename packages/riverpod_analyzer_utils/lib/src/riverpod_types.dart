@@ -1,5 +1,11 @@
 import 'package:custom_lint_core/custom_lint_core.dart';
 
+/// TypeChecker for the `ProviderFor` annotation
+const providerForType = TypeChecker.fromName(
+  'ProviderFor',
+  packageName: 'riverpod_annotation',
+);
+
 /// Matches with the `Riverpod` annotation from riverpod_annotation.
 const riverpodType =
     TypeChecker.fromName('Riverpod', packageName: 'riverpod_annotation');
@@ -167,6 +173,9 @@ const widgetRefType =
 
 /// Checks that the value is coming from a `package:riverpod` package
 const isFromRiverpod = TypeChecker.fromPackage('riverpod');
+
+/// Checks that the value is coming from a `package:riverpod_annotation` package
+const isFromRiverpodAnnotation = TypeChecker.fromPackage('riverpod_annotation');
 
 /// Checks that the value is coming from a `package:riverpod` package
 const isFromFlutterRiverpod = TypeChecker.fromPackage('flutter_riverpod');

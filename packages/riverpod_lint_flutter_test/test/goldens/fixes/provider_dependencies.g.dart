@@ -15,8 +15,8 @@ final depProvider = AutoDisposeProvider<int>.internal(
   name: r'depProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$depHash,
-  dependencies: <ProviderOrFamily>[],
-  allTransitiveDependencies: <ProviderOrFamily>[],
+  dependencies: const <ProviderOrFamily>[],
+  allTransitiveDependencies: const <ProviderOrFamily>{},
 );
 
 typedef DepRef = AutoDisposeProviderRef<int>;
@@ -29,8 +29,8 @@ final dep2Provider = AutoDisposeProvider<int>.internal(
   name: r'dep2Provider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$dep2Hash,
-  dependencies: <ProviderOrFamily>[],
-  allTransitiveDependencies: <ProviderOrFamily>[],
+  dependencies: const <ProviderOrFamily>[],
+  allTransitiveDependencies: const <ProviderOrFamily>{},
 );
 
 typedef Dep2Ref = AutoDisposeProviderRef<int>;
@@ -91,8 +91,8 @@ final existingDepProvider = AutoDisposeProvider<int>.internal(
   name: r'existingDepProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$existingDepHash,
-  dependencies: <ProviderOrFamily>[],
-  allTransitiveDependencies: <ProviderOrFamily>[],
+  dependencies: const <ProviderOrFamily>[],
+  allTransitiveDependencies: const <ProviderOrFamily>{},
 );
 
 typedef ExistingDepRef = AutoDisposeProviderRef<int>;
@@ -105,8 +105,8 @@ final multipleDepsProvider = AutoDisposeProvider<int>.internal(
   name: r'multipleDepsProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$multipleDepsHash,
-  dependencies: <ProviderOrFamily>[],
-  allTransitiveDependencies: <ProviderOrFamily>[],
+  dependencies: const <ProviderOrFamily>[],
+  allTransitiveDependencies: const <ProviderOrFamily>{},
 );
 
 typedef MultipleDepsRef = AutoDisposeProviderRef<int>;
@@ -120,7 +120,12 @@ final extraDepProvider = AutoDisposeProvider<int>.internal(
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$extraDepHash,
   dependencies: <ProviderOrFamily>[depProvider, dep2Provider],
-  allTransitiveDependencies: <ProviderOrFamily>[depProvider, dep2Provider],
+  allTransitiveDependencies: <ProviderOrFamily>{
+    depProvider,
+    ...?depProvider.allTransitiveDependencies,
+    dep2Provider,
+    ...?dep2Provider.allTransitiveDependencies
+  },
 );
 
 typedef ExtraDepRef = AutoDisposeProviderRef<int>;
@@ -134,7 +139,10 @@ final noDepProvider = AutoDisposeProvider<int>.internal(
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$noDepHash,
   dependencies: <ProviderOrFamily>[depProvider],
-  allTransitiveDependencies: <ProviderOrFamily>[depProvider],
+  allTransitiveDependencies: <ProviderOrFamily>{
+    depProvider,
+    ...?depProvider.allTransitiveDependencies
+  },
 );
 
 typedef NoDepRef = AutoDisposeProviderRef<int>;
@@ -151,7 +159,10 @@ final dependenciesFirstThenKeepAliveProvider =
       ? null
       : _$dependenciesFirstThenKeepAliveHash,
   dependencies: <ProviderOrFamily>[depProvider],
-  allTransitiveDependencies: <ProviderOrFamily>[depProvider],
+  allTransitiveDependencies: <ProviderOrFamily>{
+    depProvider,
+    ...?depProvider.allTransitiveDependencies
+  },
 );
 
 typedef DependenciesFirstThenKeepAliveRef = AutoDisposeProviderRef<int>;
@@ -165,7 +176,10 @@ final noDepNoParamProvider = AutoDisposeProvider<int>.internal(
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$noDepNoParamHash,
   dependencies: <ProviderOrFamily>[depProvider],
-  allTransitiveDependencies: <ProviderOrFamily>[depProvider],
+  allTransitiveDependencies: <ProviderOrFamily>{
+    depProvider,
+    ...?depProvider.allTransitiveDependencies
+  },
 );
 
 typedef NoDepNoParamRef = AutoDisposeProviderRef<int>;
@@ -180,7 +194,10 @@ final noDepWithoutCommaProvider = AutoDisposeProvider<int>.internal(
       ? null
       : _$noDepWithoutCommaHash,
   dependencies: <ProviderOrFamily>[depProvider],
-  allTransitiveDependencies: <ProviderOrFamily>[depProvider],
+  allTransitiveDependencies: <ProviderOrFamily>{
+    depProvider,
+    ...?depProvider.allTransitiveDependencies
+  },
 );
 
 typedef NoDepWithoutCommaRef = AutoDisposeProviderRef<int>;

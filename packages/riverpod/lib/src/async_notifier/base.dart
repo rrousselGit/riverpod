@@ -361,8 +361,7 @@ mixin FutureHandlerProviderElementMixin<T>
       required void Function(Object, StackTrace) error,
       required void Function() done,
       required void Function(Future<T>, CancelAsyncSubscription) last,
-    })
-        listen, {
+    }) listen, {
     required bool didChangeDependency,
   }) {
     _onLoading(AsyncLoading<T>(), seamless: !didChangeDependency);

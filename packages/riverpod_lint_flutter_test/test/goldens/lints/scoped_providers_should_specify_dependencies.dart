@@ -1,4 +1,7 @@
-import 'package:flutter/material.dart';
+// ignore_for_file: unused_local_variable
+
+import 'package:flutter/material.dart' as flutter;
+import 'package:flutter/material.dart' hide runApp;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -13,6 +16,9 @@ external int unimplementedScoped();
 @riverpod
 int root(RootRef ref) => 0;
 
+// A fake runApp to check that we lint only on the official Flutter's runApp
+void runApp(Widget widget) {}
+
 void main() {
   final rootContainer = ProviderContainer(
     overrides: [
@@ -22,7 +28,6 @@ void main() {
     ],
   );
 
-  // ignore: unused_local_variable
   final scopedContainer = ProviderContainer(
     parent: rootContainer,
     overrides: [
@@ -33,7 +38,7 @@ void main() {
     ],
   );
 
-  runApp(
+  flutter.runApp(
     ProviderScope(
       overrides: [
         scopedProvider.overrideWith((ref) => 0),
@@ -45,6 +50,64 @@ void main() {
   );
 
   runApp(
+    ProviderScope(
+      overrides: [
+        scopedProvider.overrideWith((ref) => 0),
+        unimplementedScopedProvider.overrideWith((ref) => 0),
+        // This is not a Flutter's runApp, so the ProviderScope is considered scoped
+        // expect_lint: scoped_providers_should_specify_dependencies
+        rootProvider.overrideWith((ref) => 0),
+      ],
+      child: Container(),
+    ),
+  );
+
+  flutter.runApp(
+    ProviderScope(
+      parent: rootContainer,
+      overrides: [
+        scopedProvider.overrideWith((ref) => 0),
+        unimplementedScopedProvider.overrideWith((ref) => 0),
+        // expect_lint: scoped_providers_should_specify_dependencies
+        rootProvider.overrideWith((ref) => 0),
+      ],
+      child: Container(),
+    ),
+  );
+}
+
+// Regression tests for https://github.com/rrousselGit/riverpod/issues/2340
+void definitelyNotAMain() {
+  final rootContainer = ProviderContainer(
+    overrides: [
+      scopedProvider.overrideWith((ref) => 0),
+      unimplementedScopedProvider.overrideWith((ref) => 0),
+      rootProvider.overrideWith((ref) => 0),
+    ],
+  );
+
+  final scopedContainer = ProviderContainer(
+    parent: rootContainer,
+    overrides: [
+      scopedProvider.overrideWith((ref) => 0),
+      unimplementedScopedProvider.overrideWith((ref) => 0),
+      // expect_lint: scoped_providers_should_specify_dependencies
+      rootProvider.overrideWith((ref) => 0),
+    ],
+  );
+
+  flutter.runApp(
+    ProviderScope(
+      overrides: [
+        scopedProvider.overrideWith((ref) => 0),
+        unimplementedScopedProvider.overrideWith((ref) => 0),
+        rootProvider.overrideWith((ref) => 0),
+      ],
+      child: Container(),
+    ),
+  );
+
+  flutter.runApp(
     ProviderScope(
       parent: rootContainer,
       overrides: [

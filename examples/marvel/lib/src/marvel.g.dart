@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of marvel;
+part of 'marvel.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator

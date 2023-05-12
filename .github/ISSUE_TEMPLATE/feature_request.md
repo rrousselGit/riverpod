@@ -3,6 +3,8 @@ name: Feature request
 about: Suggest an idea for this project
 title: ""
 labels: enhancement, needs triage
+assignees:
+  - rrousselGit
 ---
 
 **Is your feature request related to a problem? Please describe.**
