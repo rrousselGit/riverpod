@@ -7,15 +7,14 @@ issue_tracker: https://github.com/rrousselGit/riverpod/issues
 funding:
   - https://github.com/sponsors/rrousselGit/
 
-
 environment:
   sdk: ">=2.17.0 <3.0.0"
 
 dependencies:
-  analyzer: ^5.2.0
+  analyzer: ^5.12.0
   analyzer_plugin: ^0.11.2
   collection: ^1.16.0
-  custom_lint_builder: ^0.3.3
+  custom_lint_builder: ^0.4.0
   meta: ^1.7.0
   path: ^1.8.1
   riverpod: ^2.3.6
