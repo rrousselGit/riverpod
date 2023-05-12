@@ -1,3 +1,7 @@
+## Unreleased patch
+
+- Upgrade `custom_lint_builder` to 0.4.0
+
 ## 1.3.1 - 2023-04-24
 
 - `riverpod` upgraded to `2.3.6`
