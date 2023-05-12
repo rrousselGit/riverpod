@@ -358,9 +358,9 @@ final weird = Provider<int>(name: 'foo', dependencies: [], (ref) => 0);
         "((ref, id) => 0, name: 'bar')",
       );
 
-      expect(providers['autoDisposeFamily']?.provider.toSource(), 'Provider');
+      expect(providers['autoDisposeFamily']?.provider.toString(), 'Provider');
       expect(
-        providers['explicitAutoDisposeFamily']?.provider.toSource(),
+        providers['explicitAutoDisposeFamily']?.provider.toString(),
         'AutoDisposeProviderFamily',
       );
 

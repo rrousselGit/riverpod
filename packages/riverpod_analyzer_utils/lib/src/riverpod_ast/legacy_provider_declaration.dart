@@ -107,7 +107,7 @@ class LegacyProviderDeclaration extends RiverpodAst
 
     final initializer = node.initializer;
     ArgumentList? arguments;
-    late Identifier provider;
+    late SyntacticEntity provider;
     SimpleIdentifier? autoDisposeModifier;
     SimpleIdentifier? familyModifier;
     TypeArgumentList? typeArguments;
@@ -115,7 +115,7 @@ class LegacyProviderDeclaration extends RiverpodAst
       // Provider((ref) => ...)
 
       arguments = initializer.argumentList;
-      provider = initializer.constructorName.type.name;
+      provider = initializer.constructorName.type.name2;
       typeArguments = initializer.constructorName.type.typeArguments;
     } else if (initializer is FunctionExpressionInvocation) {
       // Provider.modifier()
@@ -195,7 +195,7 @@ class LegacyProviderDeclaration extends RiverpodAst
 
   final FunctionExpression build;
   final ArgumentList argumentList;
-  final Identifier provider;
+  final SyntacticEntity provider;
   final SimpleIdentifier? autoDisposeModifier;
   final SimpleIdentifier? familyModifier;
   final TypeArgumentList? typeArguments;
