@@ -48,7 +48,7 @@ class AvoidPublicNotifierProperties extends DartLintRule {
             reporter.reportErrorForNode(_code, member);
           }
         } else if (member is MethodDeclaration) {
-          if (!member.isGetter && !member.isSetter) continue;
+          if (!member.isGetter) continue;
           if (member.isStatic) continue;
           if (!isVisibleOutsiteTheNotifier(member.declaredElement)) continue;
 
