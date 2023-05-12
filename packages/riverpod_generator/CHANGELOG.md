@@ -1,3 +1,7 @@
+## 2.2.3 - 2023-05-12
+
+- `riverpod_analyzer_utils` upgraded to `0.3.1`
+
 ## 2.2.2 - 2023-05-12
 
 - Fix an issue where specifying a dependency on a provider declared in a
