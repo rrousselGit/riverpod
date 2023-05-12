@@ -10,6 +10,8 @@ import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import 'package:riverpod_generator/src/riverpod_generator.dart';
 import 'package:test/test.dart';
 
+int _testNumber = 0;
+
 /// Due to [resolveSource] throwing if trying to interact with the resolver
 /// after the future completed, we change the syntax to make sure our test
 /// executes within the resolver scope.
@@ -20,9 +22,13 @@ void testSource(
   required String source,
   bool runGenerator = false,
 }) {
+  final testId = _testNumber++;
   test(
     description,
     () async {
+      // Giving a unique name to the package to avoid the analyzer cache
+      // messing up tests.
+      final packageName = 'test_lib$testId';
       final sourceWithLibrary = 'library foo;$source';
 
       final enclosingZone = Zone.current;
@@ -30,7 +36,7 @@ void testSource(
       String? generated;
       if (runGenerator) {
         final analysisResult = await resolveSources(
-          {'test_lib|lib/foo.dart': sourceWithLibrary},
+          {'$packageName|lib/foo.dart': sourceWithLibrary},
           (resolver) {
             return resolver.resolveRiverpodLibraryResult(
               ignoreErrors: true,
@@ -41,9 +47,9 @@ void testSource(
       }
 
       await resolveSources({
-        'test_lib|lib/foo.dart': sourceWithLibrary,
+        '$packageName|lib/foo.dart': sourceWithLibrary,
         if (generated != null)
-          'test_lib|lib/foo.g.dart': 'part of "foo.dart";$generated',
+          '$packageName|lib/foo.g.dart': 'part of "foo.dart";$generated',
       }, (resolver) async {
         try {
           final originalZone = Zone.current;

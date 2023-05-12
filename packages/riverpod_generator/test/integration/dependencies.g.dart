@@ -140,9 +140,13 @@ final providerProvider = AutoDisposeProvider<int>.internal(
   },
   allTransitiveDependencies: <ProviderOrFamily>{
     depProvider,
+    ...?depProvider.allTransitiveDependencies,
     familyProvider,
+    ...?familyProvider.allTransitiveDependencies,
     dep2Provider,
-    family2Provider
+    ...?dep2Provider.allTransitiveDependencies,
+    family2Provider,
+    ...?family2Provider.allTransitiveDependencies
   },
 );
 
@@ -164,9 +168,13 @@ final provider2Provider = AutoDisposeProvider<int>.internal(
   },
   allTransitiveDependencies: <ProviderOrFamily>{
     depProvider,
+    ...?depProvider.allTransitiveDependencies,
     familyProvider,
+    ...?familyProvider.allTransitiveDependencies,
     dep2Provider,
-    family2Provider
+    ...?dep2Provider.allTransitiveDependencies,
+    family2Provider,
+    ...?family2Provider.allTransitiveDependencies
   },
 );
 
@@ -185,10 +193,7 @@ final transitiveDependenciesProvider = AutoDisposeProvider<int>.internal(
   dependencies: <ProviderOrFamily>[providerProvider],
   allTransitiveDependencies: <ProviderOrFamily>{
     providerProvider,
-    depProvider,
-    familyProvider,
-    dep2Provider,
-    family2Provider
+    ...?providerProvider.allTransitiveDependencies
   },
 );
 
@@ -206,14 +211,82 @@ final smallTransitiveDependencyCountProvider =
       ? null
       : _$smallTransitiveDependencyCountHash,
   dependencies: <ProviderOrFamily>[depProvider, familyProvider, dep2Provider],
-  allTransitiveDependencies: <ProviderOrFamily>[
+  allTransitiveDependencies: <ProviderOrFamily>{
     depProvider,
+    ...?depProvider.allTransitiveDependencies,
     familyProvider,
-    dep2Provider
-  ],
+    ...?familyProvider.allTransitiveDependencies,
+    dep2Provider,
+    ...?dep2Provider.allTransitiveDependencies
+  },
 );
 
 typedef SmallTransitiveDependencyCountRef = AutoDisposeProviderRef<int>;
+String _$emptyDependenciesStatelessHash() =>
+    r'2415aab6f03b1cb67fa8fecc5d2af1ec5d261398';
+
+/// See also [emptyDependenciesStateless].
+@ProviderFor(emptyDependenciesStateless)
+final emptyDependenciesStatelessProvider = AutoDisposeProvider<int>.internal(
+  emptyDependenciesStateless,
+  name: r'emptyDependenciesStatelessProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$emptyDependenciesStatelessHash,
+  dependencies: const <ProviderOrFamily>[],
+  allTransitiveDependencies: const <ProviderOrFamily>{},
+);
+
+typedef EmptyDependenciesStatelessRef = AutoDisposeProviderRef<int>;
+String _$providerWithDependenciesHash() =>
+    r'beecbe7a41b647ab92367dbcc12055bcd6345af7';
+
+/// See also [providerWithDependencies].
+@ProviderFor(providerWithDependencies)
+final providerWithDependenciesProvider = AutoDisposeProvider<int>.internal(
+  providerWithDependencies,
+  name: r'providerWithDependenciesProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$providerWithDependenciesHash,
+  dependencies: <ProviderOrFamily>[_privateDepProvider, publicDepProvider],
+  allTransitiveDependencies: <ProviderOrFamily>{
+    _privateDepProvider,
+    ...?_privateDepProvider.allTransitiveDependencies,
+    publicDepProvider,
+    ...?publicDepProvider.allTransitiveDependencies
+  },
+);
+
+typedef ProviderWithDependenciesRef = AutoDisposeProviderRef<int>;
+String _$privateDepHash() => r'f610d91bd39e0dcffe6ff4e74160964a291289d9';
+
+/// See also [_privateDep].
+@ProviderFor(_privateDep)
+final _privateDepProvider = AutoDisposeProvider<int>.internal(
+  _privateDep,
+  name: r'_privateDepProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$privateDepHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _PrivateDepRef = AutoDisposeProviderRef<int>;
+String _$publicDepHash() => r'bcb69aace017c86c3c4b8eccf59fa22d010834bc';
+
+/// See also [publicDep].
+@ProviderFor(publicDep)
+final publicDepProvider = AutoDisposeProvider<int>.internal(
+  publicDep,
+  name: r'publicDepProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$publicDepHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef PublicDepRef = AutoDisposeProviderRef<int>;
 String _$dep2Hash() => r'2778537df77f6431148c2ce400724da3e2ab4b94';
 
 /// See also [Dep2].
@@ -339,9 +412,13 @@ final provider3Provider = AutoDisposeNotifierProvider<Provider3, int>.internal(
   },
   allTransitiveDependencies: <ProviderOrFamily>{
     depProvider,
+    ...?depProvider.allTransitiveDependencies,
     familyProvider,
+    ...?familyProvider.allTransitiveDependencies,
     dep2Provider,
-    family2Provider
+    ...?dep2Provider.allTransitiveDependencies,
+    family2Provider,
+    ...?family2Provider.allTransitiveDependencies
   },
 );
 
@@ -396,9 +473,13 @@ class Provider4Family extends Family<int> {
   static final Iterable<ProviderOrFamily> _allTransitiveDependencies =
       <ProviderOrFamily>{
     depProvider,
+    ...?depProvider.allTransitiveDependencies,
     familyProvider,
+    ...?familyProvider.allTransitiveDependencies,
     dep2Provider,
-    family2Provider
+    ...?dep2Provider.allTransitiveDependencies,
+    family2Provider,
+    ...?family2Provider.allTransitiveDependencies
   };
 
   @override
@@ -451,4 +532,22 @@ class Provider4Provider
     );
   }
 }
+
+String _$emptyDependenciesStatefulHash() =>
+    r'7cd5d081bbfb866823b0d493e63bfc63b9d9c804';
+
+/// See also [EmptyDependenciesStateful].
+@ProviderFor(EmptyDependenciesStateful)
+final emptyDependenciesStatefulProvider =
+    AutoDisposeNotifierProvider<EmptyDependenciesStateful, int>.internal(
+  EmptyDependenciesStateful.new,
+  name: r'emptyDependenciesStatefulProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$emptyDependenciesStatefulHash,
+  dependencies: const <ProviderOrFamily>[],
+  allTransitiveDependencies: const <ProviderOrFamily>{},
+);
+
+typedef _$EmptyDependenciesStateful = AutoDisposeNotifier<int>;
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

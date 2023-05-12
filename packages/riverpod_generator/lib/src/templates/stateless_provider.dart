@@ -27,21 +27,21 @@ class StatelessProviderTemplate extends Template {
 
   @override
   void run(StringBuffer buffer) {
-    String providerType;
     var leading = '';
 
     if (!provider.annotation.element.keepAlive) {
       leading = 'AutoDispose';
     }
 
-    final returnType = provider.node.returnType?.type;
-    if ((returnType?.isDartAsyncFutureOr ?? false) ||
-        (returnType?.isDartAsyncFuture ?? false)) {
-      providerType = '${leading}FutureProvider';
-    } else if (returnType?.isDartAsyncStream ?? false) {
-      providerType = '${leading}StreamProvider';
-    } else {
-      providerType = '${leading}Provider';
+    var providerType = '${leading}Provider';
+
+    final returnType = provider.createdType;
+    if (!returnType.isRaw) {
+      if ((returnType.isDartAsyncFutureOr) || (returnType.isDartAsyncFuture)) {
+        providerType = '${leading}FutureProvider';
+      } else if (returnType.isDartAsyncStream) {
+        providerType = '${leading}StreamProvider';
+      }
     }
 
     final providerName = providerNameFor(provider.providerElement, options);
@@ -62,8 +62,8 @@ final $providerName = $providerType<${provider.valueType}>.internal(
   $createFn,
   name: r'$providerName',
   debugGetCreateSourceHash: $hashFn,
-  dependencies: ${serializeDependencies(provider.providerElement.annotation.dependencies, options)},
-  allTransitiveDependencies: ${serializeDependencies(provider.providerElement.annotation.allTransitiveDependencies, options)},
+  dependencies: ${serializeDependencies(provider.providerElement.annotation, options)},
+  allTransitiveDependencies: ${serializeAllTransitiveDependencies(provider.providerElement.annotation, options)},
 );
 
 typedef $refName = ${providerType}Ref<${provider.valueType}>;

@@ -1,7 +1,6 @@
 name: random_number
 description: A new Flutter project.
 publish_to: 'none'
-version: 1.0.0+1
 
 environment:
   sdk: ">=2.14.0 <3.0.0"
@@ -10,7 +9,7 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
-  flutter_riverpod: ^2.3.0
+  flutter_riverpod:
   mockito: ^5.0.13
   build_runner: ^2.0.6
 

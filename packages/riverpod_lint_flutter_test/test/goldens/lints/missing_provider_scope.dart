@@ -15,6 +15,20 @@ void main() {
   );
 }
 
+void definitelyNotAMain() {
+  // expect_lint: missing_provider_scope
+  runApp(
+    MyApp(),
+  );
+  runApp(ProviderScope(child: MyApp()));
+  runApp(
+    UncontrolledProviderScope(
+      container: ProviderContainer(),
+      child: MyApp(),
+    ),
+  );
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 

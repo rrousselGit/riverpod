@@ -1,3 +1,32 @@
+## 2.3.6 - 2023-04-24
+
+- Improved error message for missing `dependencies` (thanks to @ValentinVignal)
+- Fixed various typos in the documentation (thanks to @ValentinVignal)
+- Fix not disposing autoDispose family providers
+- Removed incorrect statement in ChangeNotifierProvider docs
+
+## 2.3.5 - 2023-04-18
+
+- fix `AsyncValue.isReloading` docs
+
+## 2.3.4 - 2023-04-07
+
+- Fixes an issue with nested ProviderScope (thanks to @jeiea)
+
+## 2.3.3 - 2023-04-06
+
+- The debugger no-longer pauses on uncaught exceptions inside providers.
+  This was voluntary, but too many people have complained that it often
+  is a false positive.
+- Removed unused dependency (thanks to @passsy)
+
+## 2.3.2 - 2023-03-13
+
+- Deprecated the generic parameter of `Family`.
+  This will enable implementing generic providers in `riverpod_generator` once
+  it is removed.
+- Updated documentation
+
 ## 2.3.1 - 2023-03-09
 
 - `flutter_riverpod` upgraded to `2.3.1`

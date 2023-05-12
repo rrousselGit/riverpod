@@ -11,12 +11,15 @@ String providerNameFor(
 }
 
 String? serializeDependencies(
-  Set<GeneratorProviderDeclarationElement>? dependencies,
+  RiverpodAnnotationElement annotation,
   BuildYamlOptions options,
 ) {
+  final dependencies = annotation.dependencies;
   if (dependencies == null) return 'null';
 
-  final buffer = StringBuffer('<ProviderOrFamily>');
+  final buffer = StringBuffer(
+    '${dependencies.isEmpty ? 'const ' : ''}<ProviderOrFamily>',
+  );
   // Use list vs set based on the number of dependencies to optimize "contains" call
   if (dependencies.length < 4) {
     buffer.write('[');
@@ -34,6 +37,33 @@ String? serializeDependencies(
   } else {
     buffer.write('}');
   }
+  return buffer.toString();
+}
+
+String? serializeAllTransitiveDependencies(
+  RiverpodAnnotationElement annotation,
+  BuildYamlOptions options,
+) {
+  // Not optimizing based off "allTransitiveDependencies" yet due to https://github.com/dart-lang/language/issues/3037
+  // This could be worked around by having the "Provider" type expose
+  // the transitive dependencies.
+  // But this assumes that all providers have their custom Provider class.
+  final dependencies = annotation.dependencies;
+  if (dependencies == null) return 'null';
+
+  final buffer = StringBuffer(
+    '${dependencies.isEmpty ? 'const ' : ''}<ProviderOrFamily>',
+  );
+
+  buffer.write('{');
+  buffer.writeAll(
+    dependencies
+        .map((e) => providerNameFor(e, options))
+        .map((e) => '$e, ...?$e.allTransitiveDependencies'),
+    ',',
+  );
+  buffer.write('}');
+
   return buffer.toString();
 }
 
@@ -59,25 +89,24 @@ class StatefulProviderTemplate extends Template {
 
   @override
   void run(StringBuffer buffer) {
-    String notifierBaseType;
-    String providerType;
     var leading = '';
     if (!provider.annotation.element.keepAlive) {
       leading = 'AutoDispose';
     }
 
+    var notifierBaseType = '${leading}Notifier';
+    var providerType = '${leading}NotifierProvider';
+
     final providerName = providerNameFor(provider.providerElement, options);
-    final returnType = provider.buildMethod.returnType?.type;
-    if ((returnType?.isDartAsyncFutureOr ?? false) ||
-        (returnType?.isDartAsyncFuture ?? false)) {
-      notifierBaseType = '${leading}AsyncNotifier';
-      providerType = '${leading}AsyncNotifierProvider';
-    } else if (returnType?.isDartAsyncStream ?? false) {
-      notifierBaseType = '${leading}StreamNotifier';
-      providerType = '${leading}StreamNotifierProvider';
-    } else {
-      notifierBaseType = '${leading}Notifier';
-      providerType = '${leading}NotifierProvider';
+    final returnType = provider.createdType;
+    if (!returnType.isRaw) {
+      if ((returnType.isDartAsyncFutureOr) || (returnType.isDartAsyncFuture)) {
+        notifierBaseType = '${leading}AsyncNotifier';
+        providerType = '${leading}AsyncNotifierProvider';
+      } else if (returnType.isDartAsyncStream) {
+        notifierBaseType = '${leading}StreamNotifier';
+        providerType = '${leading}StreamNotifierProvider';
+      }
     }
 
     buffer.write('''
@@ -87,8 +116,8 @@ final $providerName = $providerType<${provider.name}, ${provider.valueType}>.int
   ${provider.providerElement.name}.new,
   name: r'$providerName',
   debugGetCreateSourceHash: $hashFn,
-  dependencies: ${serializeDependencies(provider.providerElement.annotation.dependencies, options)},
-  allTransitiveDependencies: ${serializeDependencies(provider.providerElement.annotation.allTransitiveDependencies, options)},
+  dependencies: ${serializeDependencies(provider.providerElement.annotation, options)},
+  allTransitiveDependencies: ${serializeAllTransitiveDependencies(provider.providerElement.annotation, options)},
 );
 
 typedef $notifierTypedefName = $notifierBaseType<${provider.valueType}>;
