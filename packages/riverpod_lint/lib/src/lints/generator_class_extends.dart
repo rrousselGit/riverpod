@@ -33,7 +33,7 @@ class GeneratorClassExtends extends RiverpodLintRule {
       }
 
       final expectedClassName = _generatedClassName(declaration);
-      if (extendsClause.superclass.name.name != expectedClassName) {
+      if (extendsClause.superclass.name2.lexeme != expectedClassName) {
         // No type specified. Underlining the ref name
         reporter.reportErrorForNode(_code, extendsClause.superclass);
         return;
