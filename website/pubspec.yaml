@@ -26,15 +26,11 @@ dependencies:
 dev_dependencies:
   build_runner:
   build_verify: ^3.0.0
-  cosmic_frontmatter:
-    path: third-party/cosmic_frontmatter
   flutter_test:
     sdk: flutter
   freezed: ^2.2.0
-  glob: ^2.1.0
   http: ^0.13.5
   json_serializable: ^6.6.1
-  path: ^1.8.1
   riverpod_generator:
 
 flutter:
