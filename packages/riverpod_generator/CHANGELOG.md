@@ -1,4 +1,4 @@
-## Unreleased fix
+## 2.2.2 - 2023-05-12
 
 - Fix an issue where specifying a dependency on a provider declared in a
   different file could cause a missing import.
