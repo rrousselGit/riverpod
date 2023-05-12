@@ -1,7 +1,7 @@
-import * as fs from "fs";
-import * as glob from "glob";
-import * as path from "path";
-import gm from "gray-matter";
+const fs = require("fs");
+const glob = require("glob");
+const path = require("path");
+const gm = require("gray-matter");
 
 const englishDocFiles = "docs/**/*.mdx";
 const translatedDocFiles = "i18n/**/*.mdx";
@@ -23,9 +23,7 @@ async function main() {
 
 function findOutdatedTranslations() {
   const translatedDocs = decodeDocuments(glob.sync(translatedDocFiles));
-  //   console.log(translatedDocs)
   const englishDocs = decodeDocuments(glob.sync(englishDocFiles));
-  //   console.log(englishDocs)
 
   let result = [];
   for (const englishDocList of englishDocs.values()) {
@@ -41,7 +39,6 @@ function findOutdatedTranslations() {
     }
   }
 
-  console.log(result);
   return result;
 }
 

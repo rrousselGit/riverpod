@@ -2,12 +2,11 @@
   "name": "website",
   "version": "0.0.0",
   "private": true,
-  "type": "module",
   "scripts": {
     "generate-outdated-translations.js": "node outdated_docs_generator.js",
     "docusaurus": "docusaurus",
     "start": "docusaurus start",
-    "build": "npm run build generate-outdated-translations.js && docusaurus build",
+    "build": "npm run generate-outdated-translations.js && docusaurus build",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
     "clear": "docusaurus clear",
