@@ -1,3 +1,7 @@
+## Unreleased minor
+
+- `avoid_public_notifier_properties` no-longer warns against public setters (thanks to @skreborn)
+
 ## 1.3.2 - 2023-05-12
 
 - Upgrade `analyzer` to 5.12.0

@@ -12,7 +12,7 @@ class MyNotifier extends Notifier<int> {
   // expect_lint: avoid_public_notifier_properties
   int get publicGetter => _privateGetter;
 
-  // expect_lint: avoid_public_notifier_properties
+  // Public setters are OK
   set publicSetter(int value) {
     _privateProperty = value;
   }
