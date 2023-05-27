@@ -21,20 +21,29 @@ abstract class NotifierBase<State> {
 
   void _setElement(ProviderElementBase<State> element);
 
-  /// The value currently exposed by this [Notifier].
+  /// The values currently exposed by this [Notifier].
   ///
   /// Invoking the setter will notify listeners if [updateShouldNotify] returns true.
   /// By default, this will compare the previous and new value using [identical].
   ///
-  /// Reading [state] if the provider is out of date (such as if one of its
+  /// Reading [state] or [stateOrNull] if the provider is out of date (such as if one of its
   /// dependency has changed) will trigger [Notifier.build] to be re-executed.
   ///
-  /// If [Notifier.build] threw, reading [state] will rethow the exception.
+  /// If [Notifier.build] threw, reading [state] or [stateOrNull] will rethow the exception.
+  /// If [state] is read before initialization it will throw a [StateError].
   @protected
   State get state {
     _element.flush();
     // ignore: invalid_use_of_protected_member
     return _element.requireState;
+  }
+
+  /// If [stateOrNull] is read before initialization it will return null.
+  @protected
+  State? get stateOrNull {
+    _element.flush();
+    // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+    return _element.getState()?.stateOrNull;
   }
 
   @protected
