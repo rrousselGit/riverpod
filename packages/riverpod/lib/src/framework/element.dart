@@ -171,6 +171,13 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   @visibleForTesting
   Result<State>? getState() => _state;
 
+  /// Obtains the current state, or null if the provider has yet to initialize.
+  ///
+  /// This is not meant for public consumption. Instead, public API should use
+  /// [readSelf].
+  @protected
+  State? get stateOrNull => _state?.stateOrNull;
+
   /// Read the current value of a provider and:
   ///
   /// - if in error state, rethrow the error

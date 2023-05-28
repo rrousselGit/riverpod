@@ -24,21 +24,27 @@ abstract class NotifierBase<State> {
   /// The value currently exposed by this [Notifier].
   ///
   /// Invoking the setter will notify listeners if [updateShouldNotify] returns true.
+  /// If setter is null then it will throw [ArgumentError.notNull].
   /// By default, this will compare the previous and new value using [identical].
   ///
   /// Reading [state] if the provider is out of date (such as if one of its
   /// dependency has changed) will trigger [Notifier.build] to be re-executed.
   ///
   /// If [Notifier.build] threw, reading [state] will rethow the exception.
+  /// if provider is not initialized then it will return null.
   @protected
-  State get state {
+  State? get state {
     _element.flush();
     // ignore: invalid_use_of_protected_member
-    return _element.requireState;
+    return _element.stateOrNull;
   }
 
   @protected
-  set state(State value) {
+  set state(State? value) {
+    if (value == null) {
+      throw ArgumentError.notNull();
+    }
+
     // ignore: invalid_use_of_protected_member
     _element.setState(value);
   }
