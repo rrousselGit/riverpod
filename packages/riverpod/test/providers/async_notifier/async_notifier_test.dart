@@ -148,7 +148,7 @@ void main() {
         final container = createContainer();
         final listener = Listener<AsyncValue<int>>();
 
-        container.listen(provider, listener, fireImmediately: true);
+        container.listen(provider, listener.call, fireImmediately: true);
 
         verifyOnly(listener, listener(null, const AsyncLoading()));
 
@@ -166,7 +166,7 @@ void main() {
         final listener = Listener<AsyncValue<int>>();
         final onError = ErrorListener();
         final provider = factory.simpleTestProvider<int>((ref) {
-          ref.listenSelf(listener, onError: onError);
+          ref.listenSelf(listener.call, onError: onError.call);
           Error.throwWithStackTrace(42, StackTrace.empty);
         });
         final container = createContainer();
@@ -198,7 +198,7 @@ void main() {
         final container = createContainer();
         final listener = Listener<AsyncValue<int>>();
 
-        container.listen(provider, listener, fireImmediately: true);
+        container.listen(provider, listener.call, fireImmediately: true);
 
         verifyOnly(listener, listener(null, const AsyncLoading()));
         expect(
@@ -227,7 +227,7 @@ void main() {
         final container = createContainer();
         final listener = Listener<AsyncValue<int>>();
 
-        container.listen(provider, listener, fireImmediately: true);
+        container.listen(provider, listener.call, fireImmediately: true);
 
         verifyOnly(listener, listener(null, const AsyncLoading()));
         expect(
@@ -255,7 +255,7 @@ void main() {
         final container = createContainer();
         final listener = Listener<AsyncValue<int>>();
 
-        container.listen(provider, listener, fireImmediately: true);
+        container.listen(provider, listener.call, fireImmediately: true);
 
         verifyOnly(
           listener,
@@ -276,7 +276,7 @@ void main() {
         final container = createContainer();
         final listener = Listener<AsyncValue<int>>();
 
-        container.listen(provider, listener, fireImmediately: true);
+        container.listen(provider, listener.call, fireImmediately: true);
 
         verifyOnly(listener, listener(null, const AsyncData(0)));
         expect(container.read(provider.notifier).state, const AsyncData(0));
@@ -292,7 +292,7 @@ void main() {
         final container = createContainer();
         final listener = Listener<AsyncValue<int>>();
 
-        container.listen(provider, listener, fireImmediately: true);
+        container.listen(provider, listener.call, fireImmediately: true);
 
         verifyOnly(
           listener,
@@ -319,7 +319,7 @@ void main() {
         );
         final listener = Listener<AsyncValue<int>>();
 
-        container.listen(provider, listener);
+        container.listen(provider, listener.call);
 
         expect(
           container.read(provider.future),
@@ -358,7 +358,7 @@ void main() {
         );
         final listener = Listener<AsyncValue<int>>();
 
-        container.listen(provider, listener);
+        container.listen(provider, listener.call);
 
         expect(
           container.read(provider.future),
@@ -492,7 +492,7 @@ void main() {
           final container = createContainer();
           final listener = Listener<AsyncValue<int>>();
 
-          container.listen(provider, listener);
+          container.listen(provider, listener.call);
 
           verifyZeroInteractions(listener);
 
@@ -600,7 +600,7 @@ void main() {
           final listener = Listener<Future<int>>();
 
           final sub = container.listen(provider.notifier, (previous, next) {});
-          container.listen(provider.future, listener);
+          container.listen(provider.future, listener.call);
 
           expect(sub.read().future, completion(21));
 
@@ -624,7 +624,7 @@ void main() {
           final listener = Listener<Future<int>>();
 
           final sub = container.listen(provider.notifier, (previous, next) {});
-          container.listen(provider.future, listener, fireImmediately: true);
+          container.listen(provider.future, listener.call, fireImmediately: true);
 
           await expectLater(sub.read().future, completion(0));
           verifyOnly(
@@ -718,7 +718,7 @@ void main() {
         final container = createContainer();
         final listener = Listener<AsyncValue<Equal<int>>>();
 
-        container.listen(provider, listener);
+        container.listen(provider, listener.call);
         final notifier = container.read(provider.notifier);
         notifier.state = notifier.state;
 

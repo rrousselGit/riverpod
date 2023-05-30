@@ -96,12 +96,12 @@ void main() {
     final listener = Listener<AsyncValue<String>>();
     final listener2 = Listener<AsyncValue<String>>();
 
-    container.listen(family(0), listener, fireImmediately: true);
+    container.listen(family(0), listener.call, fireImmediately: true);
     verify(listener(null, const AsyncValue.loading()));
     verifyNoMoreInteractions(listener);
     verifyNoMoreInteractions(listener2);
 
-    container.listen(family(1), listener2, fireImmediately: true);
+    container.listen(family(1), listener2.call, fireImmediately: true);
     verify(listener2(null, const AsyncValue.loading()));
     verifyNoMoreInteractions(listener);
     verifyNoMoreInteractions(listener2);

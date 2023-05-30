@@ -181,7 +181,7 @@ void main() {
     final dep2 = StateProvider((ref) => 0);
     final container = createContainer();
     final provider = Provider((ref) {
-      ref.onDispose(onDispose);
+      ref.onDispose(onDispose.call);
       ref.watch(dep);
       ref.watch(dep2);
     });
@@ -284,11 +284,11 @@ void main() {
       name: 'another',
       (ref) {
         buildCount++;
-        return ref.watch(provider.select(isEvenSelector));
+        return ref.watch(provider.select(isEvenSelector.call));
       },
     );
 
-    container.listen(another, isEvenListener, fireImmediately: true);
+    container.listen(another, isEvenListener.call, fireImmediately: true);
 
     expect(buildCount, 1);
     verifyOnly(isEvenListener, isEvenListener(null, true));
@@ -341,7 +341,7 @@ void main() {
     final provider0Element = container.readProviderElement(provider0);
     final provider1Element = container.readProviderElement(provider1);
 
-    container.listen(computed, computedListener, fireImmediately: true);
+    container.listen(computed, computedListener.call, fireImmediately: true);
 
     verifyOnly(computedListener, computedListener(null, '0 0'));
     expect(computedBuildCount, 1);
@@ -409,7 +409,7 @@ void main() {
     final provider0Element = container.readProviderElement(provider0);
     final provider1Element = container.readProviderElement(provider1);
 
-    container.listen(computed, computedListener, fireImmediately: true);
+    container.listen(computed, computedListener.call, fireImmediately: true);
 
     verifyOnly(computedListener, computedListener(null, 0));
     expect(computedBuildCount, 1);
@@ -462,7 +462,7 @@ void main() {
     final container = createContainer();
     final listener = Listener<String>();
 
-    container.listen(computed(provider), listener, fireImmediately: true);
+    container.listen(computed(provider), listener.call, fireImmediately: true);
 
     verifyOnly(listener, listener(null, '0'));
 
@@ -493,7 +493,7 @@ void main() {
     });
     final listener = Listener<String>();
 
-    container.listen(tested, listener, fireImmediately: true);
+    container.listen(tested, listener.call, fireImmediately: true);
 
     verifyOnly(listener, listener(null, '0 0'));
     expect(callCount, 1);
@@ -636,7 +636,7 @@ void main() {
       return !ref.watch(provider).isNegative;
     });
 
-    container.listen(isPositiveComputed, listener, fireImmediately: true);
+    container.listen(isPositiveComputed, listener.call, fireImmediately: true);
 
     expect(notifier.hasListeners, true);
     verifyOnly(listener, listener(null, true));

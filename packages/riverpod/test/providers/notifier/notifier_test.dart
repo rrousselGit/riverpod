@@ -18,7 +18,7 @@ void main() {
         final container = createContainer();
         final listener = Listener<int>();
 
-        container.listen(provider, listener, fireImmediately: true);
+        container.listen(provider, listener.call, fireImmediately: true);
 
         verifyOnly(listener, listener(null, 0));
 
@@ -35,7 +35,7 @@ void main() {
         final container = createContainer();
         final listener = Listener<TestNotifierBase<int>>();
 
-        container.listen(provider.notifier, listener, fireImmediately: true);
+        container.listen(provider.notifier, listener.call, fireImmediately: true);
 
         final notifier = container.read(provider.notifier);
 
@@ -56,7 +56,7 @@ void main() {
         final container = createContainer();
         final listener = Listener<int>();
 
-        container.listen(provider, listener, fireImmediately: true);
+        container.listen(provider, listener.call, fireImmediately: true);
 
         verifyOnly(listener, listener(null, 0));
 
@@ -104,28 +104,28 @@ void main() {
         );
 
         final stateSub =
-            container.listen(provider, (previous, next) {}, onError: listener);
+            container.listen(provider, (previous, next) {}, onError: listener.call);
 
         verifyNoMoreInteractions(listener);
 
         container.listen(
           provider,
           (previous, next) {},
-          onError: listener,
+          onError: listener.call,
           fireImmediately: true,
         );
 
         verifyOnly(listener, listener(err, stack));
 
         final notifierSub = container
-            .listen(provider.notifier, (previous, next) {}, onError: listener);
+            .listen(provider.notifier, (previous, next) {}, onError: listener.call);
 
         verifyNoMoreInteractions(listener);
 
         container.listen(
           provider.notifier,
           (previous, next) {},
-          onError: listener,
+          onError: listener.call,
           fireImmediately: true,
         );
 
@@ -140,7 +140,7 @@ void main() {
         final container = createContainer();
         final listener = Listener<int>();
 
-        container.listen(provider, listener, fireImmediately: true);
+        container.listen(provider, listener.call, fireImmediately: true);
         final notifier = container.read(provider.notifier);
 
         expect(notifier.state, 0);
@@ -183,8 +183,8 @@ void main() {
 
         container.listen(
           provider,
-          listener,
-          onError: onError,
+          listener.call,
+          onError: onError.call,
           fireImmediately: true,
         );
         final notifier = container.read(provider.notifier);
@@ -203,8 +203,8 @@ void main() {
 
         container.listen(
           provider,
-          listener,
-          onError: onError,
+          listener.call,
+          onError: onError.call,
           fireImmediately: true,
         );
 
@@ -221,7 +221,7 @@ void main() {
         final container = createContainer();
         final listener = Listener<int>();
 
-        container.listen(provider, listener);
+        container.listen(provider, listener.call);
         final notifier = container.read(provider.notifier);
 
         expect(notifier.state, 0);
@@ -258,7 +258,7 @@ void main() {
         final listener = Listener<int>();
         final onError = ErrorListener();
         final provider = factory.simpleTestProvider<int>((ref) {
-          ref.listenSelf(listener, onError: onError);
+          ref.listenSelf(listener.call, onError: onError.call);
           Error.throwWithStackTrace(42, StackTrace.empty);
         });
         final container = createContainer();
@@ -274,7 +274,7 @@ void main() {
         final container = createContainer();
         final listener = Listener<Equal<int>>();
 
-        container.listen(provider, listener);
+        container.listen(provider, listener.call);
         final notifier = container.read(provider.notifier);
         final firstState = notifier.state;
 
@@ -297,7 +297,7 @@ void main() {
         final container = createContainer();
         final listener = Listener<Equal<int>>();
 
-        container.listen(provider, listener);
+        container.listen(provider, listener.call);
         final notifier = container.read(provider.notifier);
         notifier.state = notifier.state;
 
@@ -327,7 +327,7 @@ void main() {
           final container = createContainer();
           final onDispose = OnDisposeMock();
           final provider = factory.simpleTestProvider<int>((ref) {
-            ref.onDispose(onDispose);
+            ref.onDispose(onDispose.call);
             return 0;
           });
 

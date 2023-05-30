@@ -240,7 +240,7 @@ void main() {
         final container = createContainer(observers: [observer]);
         final isNegativeListener = Listener<bool>();
 
-        container.listen(isNegative, isNegativeListener, fireImmediately: true);
+        container.listen(isNegative, isNegativeListener.call, fireImmediately: true);
 
         clearInteractions(observer);
         verifyOnly(isNegativeListener, isNegativeListener(null, false));
@@ -530,7 +530,7 @@ void main() {
       final observer3 = ObserverMock();
       final onDispose = OnDisposeMock();
       final provider = Provider((ref) {
-        ref.onDispose(onDispose);
+        ref.onDispose(onDispose.call);
         return 0;
       });
       final provider2 = Provider((ref) => ref.watch(provider));

@@ -17,7 +17,7 @@ void main() {
         return Stream.value(0);
       });
 
-      container.listen(provider, listener);
+      container.listen(provider, listener.call);
 
       await container.read(provider.future);
       expect(ref.state, const AsyncData<int>(0));
@@ -90,7 +90,7 @@ void main() {
       );
 
       container.read(dep.notifier).state = controller.stream;
-      container.listen(provider, listener, fireImmediately: true);
+      container.listen(provider, listener.call, fireImmediately: true);
 
       verifyOnly(
         listener,
@@ -152,7 +152,7 @@ void main() {
       });
       final listener = Listener<AsyncValue<int>>();
 
-      container.listen(provider, listener, fireImmediately: true);
+      container.listen(provider, listener.call, fireImmediately: true);
 
       verifyOnly(listener, listener(null, const AsyncValue.loading()));
 
@@ -174,7 +174,7 @@ void main() {
       final listener = Listener<Stream<int>>();
 
       // ignore: deprecated_member_use_from_same_package
-      container.listen(provider.stream, listener, fireImmediately: true);
+      container.listen(provider.stream, listener.call, fireImmediately: true);
 
       verifyOnly(listener, listener(any, any));
 
@@ -195,7 +195,7 @@ void main() {
       });
       final listener = Listener<Future<int>>();
 
-      container.listen(provider.future, listener, fireImmediately: true);
+      container.listen(provider.future, listener.call, fireImmediately: true);
 
       verifyOnly(listener, listener(any, any));
 
@@ -286,13 +286,13 @@ void main() {
       var stream = Stream.value(42);
       final onDispose = OnDisposeMock();
       final provider = StreamProvider.autoDispose((ref) {
-        ref.onDispose(onDispose);
+        ref.onDispose(onDispose.call);
         return stream;
       });
       final container = createContainer();
       final listener = Listener<AsyncValue<int>>();
 
-      final sub = container.listen(provider, listener, fireImmediately: true);
+      final sub = container.listen(provider, listener.call, fireImmediately: true);
 
       verifyOnly(listener, listener(null, const AsyncValue.loading()));
 
@@ -306,7 +306,7 @@ void main() {
 
       container.listen(
         provider,
-        listener,
+        listener.call,
         fireImmediately: true,
       );
 

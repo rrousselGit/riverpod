@@ -31,8 +31,8 @@ void main() {
       late ProviderRef<int> ref;
       final provider = Provider<int>((r) {
         ref = r;
-        ref.listenSelf(listener);
-        ref.listenSelf(listener2);
+        ref.listenSelf(listener.call);
+        ref.listenSelf(listener2.call);
 
         return 0;
       });
@@ -62,8 +62,8 @@ void main() {
       final listener2 = Listener<int>();
       var result = 0;
       final provider = Provider<int>((ref) {
-        ref.listenSelf(listener);
-        ref.listenSelf(listener2);
+        ref.listenSelf(listener.call);
+        ref.listenSelf(listener2.call);
 
         return result;
       });
@@ -93,8 +93,8 @@ void main() {
       final listener = Listener<int>();
       final listener2 = Listener<int>();
       final provider = Provider<int>((ref) {
-        ref.listenSelf(listener);
-        ref.listenSelf(listener2);
+        ref.listenSelf(listener.call);
+        ref.listenSelf(listener2.call);
 
         return 0;
       });
@@ -125,9 +125,9 @@ void main() {
       var result = 0;
       final provider = Provider<int>((ref) {
         if (result == 0) {
-          ref.listenSelf(listener);
+          ref.listenSelf(listener.call);
         } else {
-          ref.listenSelf(listener2);
+          ref.listenSelf(listener2.call);
         }
 
         return result;
@@ -154,8 +154,8 @@ void main() {
       final errorListener2 = ErrorListener();
       var error = 42;
       final provider = Provider<int>((ref) {
-        ref.listenSelf(listener, onError: errorListener);
-        ref.listenSelf((prev, next) {}, onError: errorListener2);
+        ref.listenSelf(listener.call, onError: errorListener.call);
+        ref.listenSelf((prev, next) {}, onError: errorListener2.call);
 
         Error.throwWithStackTrace(error, StackTrace.empty);
       });
@@ -189,14 +189,14 @@ void main() {
       final errorListener2 = ErrorListener();
       Exception? error;
       final provider = Provider<int>((ref) {
-        ref.listenSelf((prev, next) {}, onError: errorListener);
+        ref.listenSelf((prev, next) {}, onError: errorListener.call);
 
         if (error != null) Error.throwWithStackTrace(error, StackTrace.empty);
 
         return 0;
       });
 
-      container.listen(provider, (prev, next) {}, onError: errorListener2);
+      container.listen(provider, (prev, next) {}, onError: errorListener2.call);
 
       verifyZeroInteractions(errorListener);
       verifyZeroInteractions(errorListener2);
@@ -218,11 +218,11 @@ void main() {
       final listener2 = Listener<int>();
       var result = 0;
       final provider = Provider<int>((ref) {
-        ref.listenSelf(listener);
+        ref.listenSelf(listener.call);
         return result;
       });
 
-      container.listen(provider, listener2, fireImmediately: true);
+      container.listen(provider, listener2.call, fireImmediately: true);
 
       verifyInOrder([
         listener(null, 0),
@@ -259,8 +259,8 @@ void main() {
 
       container.listen(
         provider,
-        listener,
-        onError: errorListener,
+        listener.call,
+        onError: errorListener.call,
         fireImmediately: true,
       );
 
@@ -298,7 +298,7 @@ void main() {
       );
       final listener = Listener<int>();
       final provider = Provider((ref) {
-        ref.listen<int>(dep, listener, fireImmediately: true);
+        ref.listen<int>(dep, listener.call, fireImmediately: true);
       });
 
       container.read(provider);
@@ -324,7 +324,7 @@ void main() {
       });
       final listener = Listener<int>();
       final provider = Provider((ref) {
-        ref.listen<int>(dep, listener);
+        ref.listen<int>(dep, listener.call);
       });
 
       container.read(dep);
@@ -350,7 +350,7 @@ void main() {
       final provider = Provider((ref) {
         ref.listen<bool>(
           dep.select((value) => value.isEven),
-          listener,
+          listener.call,
           fireImmediately: true,
         );
       });
@@ -379,7 +379,7 @@ void main() {
       final errors = <Object>[];
       final provider = Provider((ref) {
         runZonedGuarded(
-          () => ref.listen(dep, listener),
+          () => ref.listen(dep, listener.call),
           (err, stack) => errors.add(err),
         );
       });
@@ -410,7 +410,7 @@ void main() {
       final errors = <Object>[];
       final provider = Provider((ref) {
         runZonedGuarded(
-          () => ref.listen(dep.select((value) => value), listener),
+          () => ref.listen(dep.select((value) => value), listener.call),
           (err, stack) => errors.add(err),
         );
       });
@@ -441,7 +441,7 @@ void main() {
       final listener = Listener<int>();
 
       final a = Provider((ref) {
-        ref.listen(provider, listener, onError: errorListener);
+        ref.listen(provider, listener.call, onError: errorListener.call);
       });
 
       container.read(a);
@@ -474,8 +474,8 @@ void main() {
       final a = Provider((ref) {
         ref.listen(
           provider.select((value) => value),
-          listener,
-          onError: errorListener,
+          listener.call,
+          onError: errorListener.call,
         );
       });
 
@@ -506,7 +506,7 @@ void main() {
             () {
               ref.listen(
                 dep,
-                listener,
+                listener.call,
                 fireImmediately: true,
               );
             },
@@ -534,7 +534,7 @@ void main() {
             () {
               ref.listen(
                 dep.select((value) => value),
-                listener,
+                listener.call,
                 fireImmediately: true,
               );
             },
@@ -558,8 +558,8 @@ void main() {
         final provider = Provider((ref) {
           ref.listen(
             dep,
-            listener,
-            onError: errorListener,
+            listener.call,
+            onError: errorListener.call,
             fireImmediately: true,
           );
         });
@@ -582,8 +582,8 @@ void main() {
         final provider = Provider((ref) {
           ref.listen<int>(
             dep.select((value) => 0),
-            listener,
-            onError: errorListener,
+            listener.call,
+            onError: errorListener.call,
             fireImmediately: true,
           );
         });
@@ -694,7 +694,7 @@ void main() {
           sub = runZonedGuarded(
             () => ref.listen<int>(
               dep2.select((value) => value),
-              listener,
+              listener.call,
               onError: (err, stack) {
                 errorListener(err, stack);
                 if (isFirstCall) {
@@ -748,7 +748,7 @@ void main() {
           sub = runZonedGuarded(
             () => ref.listen<int>(
               dep2,
-              listener,
+              listener.call,
               onError: (err, stack) {
                 errorListener(err, stack);
                 if (isFirstCall) {
@@ -794,7 +794,7 @@ void main() {
       final errors = <Object>[];
 
       runZonedGuarded(
-        () => container.listen(dep, listener),
+        () => container.listen(dep, listener.call),
         (err, stack) => errors.add(err),
       );
 
@@ -822,7 +822,7 @@ void main() {
       final errors = <Object>[];
 
       runZonedGuarded(
-        () => container.listen(dep.select((value) => value), listener),
+        () => container.listen(dep.select((value) => value), listener.call),
         (err, stack) => errors.add(err),
       );
 
@@ -849,7 +849,7 @@ void main() {
       final errorListener = ErrorListener();
       final listener = Listener<int>();
 
-      container.listen(provider, listener, onError: errorListener);
+      container.listen(provider, listener.call, onError: errorListener.call);
 
       verifyZeroInteractions(errorListener);
       verifyZeroInteractions(listener);
@@ -878,8 +878,8 @@ void main() {
 
       container.listen(
         provider.select((value) => value),
-        listener,
-        onError: errorListener,
+        listener.call,
+        onError: errorListener.call,
       );
 
       verifyZeroInteractions(errorListener);
@@ -906,7 +906,7 @@ void main() {
 
       container.listen<bool>(
         provider.select((value) => value.isEven),
-        listener,
+        listener.call,
         fireImmediately: true,
       );
 
@@ -928,7 +928,7 @@ void main() {
       );
       final listener = Listener<int>();
 
-      container.listen<int>(provider, listener, fireImmediately: true);
+      container.listen<int>(provider, listener.call, fireImmediately: true);
 
       verifyOnly(listener, listener(null, 0));
 
@@ -943,7 +943,7 @@ void main() {
 
       final container = createContainer();
 
-      container.listen<num>(dep, listener);
+      container.listen<num>(dep, listener.call);
 
       verifyZeroInteractions(listener);
 
@@ -963,7 +963,7 @@ void main() {
 
       container.listen<int>(provider, (prev, value) {
         listener(prev, value);
-        container.listen<int>(provider, listener);
+        container.listen<int>(provider, listener.call);
       });
 
       verifyZeroInteractions(listener);
@@ -994,7 +994,7 @@ void main() {
           a = null;
         });
 
-        a = ref.listen<int>(provider, listener2);
+        a = ref.listen<int>(provider, listener2.call);
       });
       container.read(p);
 
@@ -1032,7 +1032,7 @@ void main() {
             a = null;
           });
 
-          a = ref.listen<int>(provider, listener2);
+          a = ref.listen<int>(provider, listener2.call);
         });
         container.read(p);
 
@@ -1070,7 +1070,7 @@ void main() {
       final p = Provider((ref) {
         ref.listen<int>(provider, (prev, value) {
           listener(prev, value);
-          ref.listen<int>(provider, listener);
+          ref.listen<int>(provider, listener.call);
         });
       });
       container.read(p);
@@ -1103,7 +1103,7 @@ void main() {
           a = null;
         });
 
-        a = container.listen<int>(provider, listener2);
+        a = container.listen<int>(provider, listener2.call);
 
         verifyZeroInteractions(listener);
         verifyZeroInteractions(listener2);
@@ -1144,7 +1144,7 @@ void main() {
         a = null;
       });
 
-      a = container.listen<int>(provider, listener2);
+      a = container.listen<int>(provider, listener2.call);
 
       verifyZeroInteractions(listener);
       verifyZeroInteractions(listener2);
@@ -1174,7 +1174,7 @@ void main() {
           () {
             container.listen(
               dep,
-              listener,
+              listener.call,
               fireImmediately: true,
             );
           },
@@ -1199,7 +1199,7 @@ void main() {
           () {
             container.listen(
               dep.select((value) => value),
-              listener,
+              listener.call,
               fireImmediately: true,
             );
           },
@@ -1220,8 +1220,8 @@ void main() {
 
         container.listen(
           provider,
-          listener,
-          onError: errorListener,
+          listener.call,
+          onError: errorListener.call,
           fireImmediately: true,
         );
 
@@ -1241,10 +1241,10 @@ void main() {
 
         container.listen(
           provider.select((v) => v.isEven),
-          listener,
+          listener.call,
           fireImmediately: true,
         );
-        container.listen(provider.select((v) => v.isEven), listener2);
+        container.listen(provider.select((v) => v.isEven), listener2.call);
 
         verifyOnly(listener, listener(null, true));
         verifyZeroInteractions(listener2);
@@ -1261,7 +1261,7 @@ void main() {
 
         final container = createContainer();
 
-        container.listen<int>(provider, listener);
+        container.listen<int>(provider, listener.call);
 
         verifyZeroInteractions(listener);
       });
@@ -1286,7 +1286,7 @@ void main() {
         final sub = runZonedGuarded(
           () => container.listen<int>(
             provider.select((value) => value),
-            listener,
+            listener.call,
             onError: (err, stack) {
               errorListener(err, stack);
               if (isFirstCall) {
@@ -1336,7 +1336,7 @@ void main() {
         final sub = runZonedGuarded(
           () => container.listen<int>(
             provider,
-            listener,
+            listener.call,
             onError: (err, stack) {
               errorListener(err, stack);
               if (isFirstCall) {
@@ -1469,7 +1469,7 @@ void main() {
       final container = createContainer();
       final listener = Listener<int>();
 
-      final sub = container.listen(provider, listener, fireImmediately: true);
+      final sub = container.listen(provider, listener.call, fireImmediately: true);
 
       verify(listener(null, 0)).called(1);
       verifyNoMoreInteractions(listener);
@@ -1490,7 +1490,7 @@ void main() {
 
       final sub = container.listen(
         provider.select((value) => value * 2),
-        listener,
+        listener.call,
         fireImmediately: true,
       );
 
@@ -1541,8 +1541,8 @@ void main() {
 
       final controller = container.read(provider.notifier);
       container.listen<bool>(
-        provider.select(isAdultSelector),
-        isAdultListener,
+        provider.select(isAdultSelector.call),
+        isAdultListener.call,
         fireImmediately: true,
       );
 
@@ -1571,7 +1571,7 @@ void main() {
 
       final container = createContainer();
 
-      container.listen(provider, listener, fireImmediately: true);
+      container.listen(provider, listener.call, fireImmediately: true);
 
       verifyOnly(listener, listener(null, 0));
     });
@@ -1604,7 +1604,7 @@ void main() {
       final count = StateProvider((ref) => 0);
       final listener = Listener<int>();
 
-      container.listen<int>(count, listener);
+      container.listen<int>(count, listener.call);
 
       container.read(count.notifier).state++;
 
@@ -1623,7 +1623,7 @@ void main() {
 
       container.listen<bool>(
         count.select((value) => value.isEven),
-        listener,
+        listener.call,
         fireImmediately: true,
       );
 

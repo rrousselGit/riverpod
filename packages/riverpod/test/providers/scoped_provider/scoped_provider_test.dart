@@ -71,7 +71,7 @@ void main() {
       );
       final listener = Listener<int>();
 
-      container.listen(provider, listener, fireImmediately: true);
+      container.listen(provider, listener.call, fireImmediately: true);
 
       verifyOnly(listener, listener(null, 42));
 
@@ -139,8 +139,8 @@ void main() {
       final listener = Listener<int>();
       final listener2 = Listener<int>();
 
-      container.listen(provider, listener, fireImmediately: true);
-      container.listen(provider2, listener2, fireImmediately: true);
+      container.listen(provider, listener.call, fireImmediately: true);
+      container.listen(provider2, listener2.call, fireImmediately: true);
 
       verifyOnly(listener, listener(null, 21));
       verifyOnly(listener2, listener2(null, 42));
@@ -172,7 +172,7 @@ void main() {
       final container = createContainer(parent: mid);
       final listener = Listener<int>();
 
-      container.listen(provider, listener, fireImmediately: true);
+      container.listen(provider, listener.call, fireImmediately: true);
 
       verifyOnly(listener, listener(null, 42));
 
@@ -209,7 +209,7 @@ void main() {
         ],
       );
 
-      container.listen(provider2, listener, fireImmediately: true);
+      container.listen(provider2, listener.call, fireImmediately: true);
 
       verifyOnly(listener, listener(null, 2));
 
@@ -232,7 +232,7 @@ void main() {
       final root = createContainer();
       final container = createContainer(parent: root, overrides: [provider2]);
 
-      container.listen(provider2, listener, fireImmediately: true);
+      container.listen(provider2, listener.call, fireImmediately: true);
 
       verifyOnly(listener, listener(null, 2));
 
