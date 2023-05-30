@@ -27,7 +27,7 @@ void main() {
     // Observe a provider and spy the changes.
     container.listen<int>(
       counterProvider,
-      listener,
+      listener.call,
       fireImmediately: true,
     );
 
@@ -52,7 +52,7 @@ void main() {
 
     container.listen<int>(
       counterProvider,
-      listener,
+      listener.call,
       fireImmediately: true,
     );
 

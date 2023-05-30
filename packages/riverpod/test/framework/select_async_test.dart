@@ -86,7 +86,7 @@ void main() {
 
     container.listen(
       provider.selectAsync((data) => data.isEven),
-      listener,
+      listener.call,
       fireImmediately: true,
     );
 
@@ -103,7 +103,7 @@ void main() {
 
     container.listen(
       provider.selectAsync((data) => data.isEven),
-      listener,
+      listener.call,
       fireImmediately: true,
     );
 
@@ -120,7 +120,7 @@ void main() {
 
     container.listen(
       provider.selectAsync((data) => data.isEven),
-      listener,
+      listener.call,
       fireImmediately: true,
     );
 
@@ -137,7 +137,7 @@ void main() {
 
     container.listen(
       provider.selectAsync((data) => data.isEven),
-      listener,
+      listener.call,
       fireImmediately: false,
     );
 

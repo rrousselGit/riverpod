@@ -44,7 +44,7 @@ void main() {
         return 0;
       });
 
-      container.listen<int>(provider, listener);
+      container.listen<int>(provider, listener.call);
       verifyZeroInteractions(listener);
 
       expect(ref.controller, container.read(provider.notifier));

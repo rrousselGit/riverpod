@@ -53,7 +53,7 @@ void main() {
     final provider = StateProvider((ref) => 0);
     final listener = Listener<int>();
 
-    container.listen(provider, listener, fireImmediately: true);
+    container.listen(provider, listener.call, fireImmediately: true);
 
     verifyOnly(listener, listener(null, 0));
 
@@ -66,7 +66,7 @@ void main() {
     final listener = Listener<int>();
     final container = createContainer();
     final provider = StateProvider<int>((ref) {
-      ref.listenSelf(listener);
+      ref.listenSelf(listener.call);
       return 0;
     });
 
@@ -105,7 +105,7 @@ void main() {
     verifyZeroInteractions(listener);
 
     // ignore: deprecated_member_use_from_same_package
-    container.listen(provider.state, listener);
+    container.listen(provider.state, listener.call);
 
     container.read(provider.notifier).state++;
 
@@ -141,7 +141,7 @@ void main() {
         return 0;
       });
 
-      container.listen<int>(provider, listener);
+      container.listen<int>(provider, listener.call);
       verifyZeroInteractions(listener);
 
       expect(ref.controller, container.read(provider.notifier));
@@ -380,7 +380,7 @@ void main() {
     final controller = container.read(provider.notifier);
     expect(controller.state, 0);
 
-    container.listen(provider, listener, fireImmediately: true);
+    container.listen(provider, listener.call, fireImmediately: true);
     verifyOnly(listener, listener(null, 0));
 
     controller.state = 42;

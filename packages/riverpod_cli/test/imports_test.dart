@@ -32,7 +32,7 @@ import "package:flutter_riverpod/flutter_riverpod.dart";
 ''';
 
       expectSuggestorGeneratesPatches(
-        RiverpodImportAllMigrationSuggestor(),
+        RiverpodImportAllMigrationSuggestor().call,
         sourceFile,
         expectedOutput,
       );

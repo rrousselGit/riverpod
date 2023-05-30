@@ -113,5 +113,5 @@ class AutoDisposeNotifierProviderElement<NotifierT extends NotifierBase<T>, T>
     with AutoDisposeProviderElementMixin<T>
     implements AutoDisposeNotifierProviderRef<T> {
   /// The [ProviderElementBase] for [NotifierProvider]
-  AutoDisposeNotifierProviderElement._(super.provider) : super._();
+  AutoDisposeNotifierProviderElement._(super._provider) : super._();
 }

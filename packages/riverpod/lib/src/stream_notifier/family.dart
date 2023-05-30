@@ -95,7 +95,7 @@ class StreamNotifierProviderFamily<
         NotifierT, StreamNotifierFamilyProvider<NotifierT, T, Arg>> {
   /// The [Family] of [StreamNotifierProvider].
   StreamNotifierProviderFamily(
-    super.create, {
+    super._createFn, {
     super.name,
     super.dependencies,
   }) : super(

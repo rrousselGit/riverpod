@@ -133,7 +133,7 @@ class StreamNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
     extends AsyncNotifierProviderElementBase<NotifierT, T>
     implements StreamNotifierProviderRef<T> {
   StreamNotifierProviderElement._(
-    StreamNotifierProviderBase<NotifierT, T> super.provider,
+    StreamNotifierProviderBase<NotifierT, T> super._provider,
   ) : super._();
 
   @override

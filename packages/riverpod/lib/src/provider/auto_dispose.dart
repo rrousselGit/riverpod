@@ -68,7 +68,7 @@ class AutoDisposeProviderElement<T> extends ProviderElement<T>
     with AutoDisposeProviderElementMixin<T>
     implements AutoDisposeProviderRef<T> {
   /// The [ProviderElementBase] for [Provider]
-  AutoDisposeProviderElement._(AutoDisposeProvider<T> super.provider)
+  AutoDisposeProviderElement._(AutoDisposeProvider<T> super._provider)
       : super._();
 }
 
@@ -77,7 +77,7 @@ class AutoDisposeProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
     AutoDisposeProviderRef<R>, R, Arg, R, AutoDisposeProvider<R>> {
   /// The [Family] of [AutoDisposeProvider]
   AutoDisposeProviderFamily(
-    super.create, {
+    super._createFn, {
     super.name,
     super.dependencies,
   }) : super(

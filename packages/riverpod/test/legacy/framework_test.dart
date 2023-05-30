@@ -223,19 +223,19 @@ void main() {
     final onDispose3 = OnDisposeMock();
 
     final provider1 = Provider((ref) {
-      ref.onDispose(onDispose1);
+      ref.onDispose(onDispose1.call);
       return 1;
     });
 
     final provider2 = Provider((ref) {
       final value = ref.watch(provider1);
-      ref.onDispose(onDispose2);
+      ref.onDispose(onDispose2.call);
       return value + 1;
     });
 
     final provider3 = Provider((ref) {
       final value = ref.watch(provider2);
-      ref.onDispose(onDispose3);
+      ref.onDispose(onDispose3.call);
       return value + 1;
     });
 
@@ -278,7 +278,7 @@ void main() {
     final provider = Provider((ref) {
       reference = ref;
       callCount++;
-      ref.onDispose(onDispose);
+      ref.onDispose(onDispose.call);
       throw error;
     });
     final container = createContainer();
@@ -287,7 +287,7 @@ void main() {
     expect(callCount, 1);
 
     final onDispose2 = OnDisposeMock();
-    reference.onDispose(onDispose2);
+    reference.onDispose(onDispose2.call);
 
     verifyNoMoreInteractions(onDispose);
     verifyNoMoreInteractions(onDispose2);

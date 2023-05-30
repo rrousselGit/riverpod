@@ -16,7 +16,7 @@ void main() {
           return 0;
         });
 
-        container.listen(provider, listener);
+        container.listen(provider, listener.call);
         verifyZeroInteractions(listener);
 
         expect(ref.state, 0);
@@ -105,7 +105,7 @@ void main() {
         return 0;
       });
 
-      container.listen(provider, listener, fireImmediately: true);
+      container.listen(provider, listener.call, fireImmediately: true);
 
       verifyOnly(listener, listener(null, 0));
 
