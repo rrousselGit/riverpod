@@ -325,7 +325,8 @@ void main() {
     });
     final listener = Listener<bool>();
 
-    final sub = container.listen(provider, listener.call, fireImmediately: true);
+    final sub =
+        container.listen(provider, listener.call, fireImmediately: true);
 
     verifyOnly(listener, listener(null, true));
     expect(sub.read(), true);
@@ -348,7 +349,8 @@ void main() {
     });
     final listener = Listener<bool>();
 
-    final sub = container.listen(provider, listener.call, fireImmediately: true);
+    final sub =
+        container.listen(provider, listener.call, fireImmediately: true);
 
     verifyOnly(listener, listener(null, true));
     expect(sub.read(), true);

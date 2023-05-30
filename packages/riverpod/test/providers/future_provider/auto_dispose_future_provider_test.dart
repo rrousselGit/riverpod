@@ -276,7 +276,8 @@ void main() {
     final container = createContainer();
     final listener = Listener<AsyncValue<int>>();
 
-    final sub = container.listen(provider, listener.call, fireImmediately: true);
+    final sub =
+        container.listen(provider, listener.call, fireImmediately: true);
 
     verifyOnly(listener, listener(null, const AsyncValue.loading()));
 

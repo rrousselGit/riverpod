@@ -1469,7 +1469,8 @@ void main() {
       final container = createContainer();
       final listener = Listener<int>();
 
-      final sub = container.listen(provider, listener.call, fireImmediately: true);
+      final sub =
+          container.listen(provider, listener.call, fireImmediately: true);
 
       verify(listener(null, 0)).called(1);
       verifyNoMoreInteractions(listener);

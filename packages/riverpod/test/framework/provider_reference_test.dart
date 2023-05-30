@@ -125,7 +125,8 @@ void main() {
 
         final another = Provider<int>((ref) {
           buildCount++;
-          ref.listen<bool>(provider.select(isEvenSelector.call), isEvenListener.call);
+          ref.listen<bool>(
+              provider.select(isEvenSelector.call), isEvenListener.call);
           return 0;
         });
 

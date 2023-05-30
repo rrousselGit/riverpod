@@ -407,7 +407,8 @@ final alwaysAlive = Provider((ref) {
     final root = createContainer();
     final container = createContainer(parent: root);
 
-    final sub = container.listen(provider, listener.call, fireImmediately: true);
+    final sub =
+        container.listen(provider, listener.call, fireImmediately: true);
 
     verifyOnly(listener, listener(null, 0));
     expect(buildCount, 1);
@@ -602,7 +603,8 @@ final alwaysAlive = Provider((ref) {
     final container = createContainer();
     final listener = Listener<int>();
 
-    final sub = container.listen(provider, listener.call, fireImmediately: true);
+    final sub =
+        container.listen(provider, listener.call, fireImmediately: true);
     verify(listener(null, 42)).called(1);
     verifyNoMoreInteractions(listener);
     sub.close();
