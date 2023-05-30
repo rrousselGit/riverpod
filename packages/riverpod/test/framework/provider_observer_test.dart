@@ -240,8 +240,11 @@ void main() {
         final container = createContainer(observers: [observer]);
         final isNegativeListener = Listener<bool>();
 
-        container.listen(isNegative, isNegativeListener.call,
-            fireImmediately: true);
+        container.listen(
+          isNegative,
+          isNegativeListener.call,
+          fireImmediately: true,
+        );
 
         clearInteractions(observer);
         verifyOnly(isNegativeListener, isNegativeListener(null, false));
