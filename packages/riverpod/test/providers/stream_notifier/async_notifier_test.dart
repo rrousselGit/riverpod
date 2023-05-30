@@ -592,7 +592,11 @@ void main() {
           final listener = Listener<Future<int>>();
 
           final sub = container.listen(provider.notifier, (previous, next) {});
-          container.listen(provider.future, listener.call, fireImmediately: true);
+          container.listen(
+            provider.future,
+            listener.call,
+            fireImmediately: true,
+          );
 
           await expectLater(sub.read().future, completion(0));
           verifyOnly(
@@ -697,7 +701,10 @@ void main() {
 
         container.listen(provider, listener.call);
         final notifier = container.read(provider.notifier);
-        notifier.state = notifier.state;
+
+        // voluntarily assigning the same value
+        final self = notifier.state;
+        notifier.state = self;
 
         verifyZeroInteractions(listener);
 

@@ -28,7 +28,7 @@ void main() {
     // একটি প্রভাইডার অবসারব করে এবং পরির্বতন গুলা গোয়েন্দাগিরি করে
     container.listen<int>(
       counterProvider,
-      listener,
+      listener.call,
       fireImmediately: true,
     );
 
@@ -53,7 +53,7 @@ void main() {
 
     container.listen<int>(
       counterProvider,
-      listener,
+      listener.call,
       fireImmediately: true,
     );
 

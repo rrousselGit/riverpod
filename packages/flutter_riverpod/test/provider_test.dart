@@ -65,9 +65,9 @@ void main() {
 
     final provider = Provider<int>((ref) {
       ref
-        ..onDispose(dispose1)
-        ..onDispose(dispose2)
-        ..onDispose(dispose3);
+        ..onDispose(dispose1.call)
+        ..onDispose(dispose2.call)
+        ..onDispose(dispose3.call);
       return 42;
     });
 

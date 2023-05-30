@@ -10,7 +10,7 @@ void main() {
     final container = createContainer();
     final onDispose = OnDisposeMock();
     final provider = ChangeNotifierProvider.autoDispose((ref) {
-      ref.onDispose(onDispose);
+      ref.onDispose(onDispose.call);
       return ValueNotifier(0);
     });
 
@@ -38,8 +38,8 @@ void main() {
     final listener1 = Listener<ValueNotifier<int>>();
     final listener2 = Listener<ValueNotifier<int>>();
 
-    container.listen(provider(0), listener1, fireImmediately: true);
-    container.listen(provider(42), listener2, fireImmediately: true);
+    container.listen(provider(0), listener1.call, fireImmediately: true);
+    container.listen(provider(42), listener2.call, fireImmediately: true);
 
     verifyOnly(
       listener1,

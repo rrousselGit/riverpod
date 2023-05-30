@@ -97,7 +97,7 @@ class AutoDisposeNotifierProviderFamily<
   /// An implementation detail of Riverpod
   @internal
   AutoDisposeNotifierProviderFamily.internal(
-    super._createNotifier, {
+    super._createFn, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,

@@ -36,7 +36,7 @@ void main() {
         ),
       );
 
-      ref.listenManual(provider, listener);
+      ref.listenManual(provider, listener.call);
 
       ref.read(provider.notifier).state++;
       verifyOnly(listener, listener(0, 1));
@@ -68,8 +68,8 @@ void main() {
         tester.element(find.byType(Consumer)),
       );
 
-      ref.listenManual(provider, listener);
-      ref.listenManual(provider, listener2);
+      ref.listenManual(provider, listener.call);
+      ref.listenManual(provider, listener2.call);
 
       await tester.pumpWidget(ProviderScope(child: Container()));
 
@@ -94,7 +94,7 @@ void main() {
         ),
       );
 
-      ref.listenManual(provider, listener, fireImmediately: true);
+      ref.listenManual(provider, listener.call, fireImmediately: true);
 
       verifyOnly(listener, listener(null, 0));
     });
@@ -140,7 +140,7 @@ void main() {
         ),
       );
 
-      final sub = ref.listenManual(provider, listener);
+      final sub = ref.listenManual(provider, listener.call);
 
       ref.read(provider.notifier).state++;
       verifyOnly(listener, listener(0, 1));
@@ -165,7 +165,7 @@ void main() {
           container: container,
           child: Consumer(
             builder: (context, ref, _) {
-              ref.listen<int>(dep, listener);
+              ref.listen<int>(dep, listener.call);
               return Container();
             },
           ),
@@ -193,7 +193,7 @@ void main() {
             builder: (context, ref, _) {
               ref.listen<bool>(
                 dep.select((value) => value.isEven),
-                listener,
+                listener.call,
               );
               return Container();
             },
@@ -226,7 +226,7 @@ void main() {
           child: Consumer(
             builder: (context, ref, _) {
               runZonedGuarded(
-                () => ref.listen(dep, listener),
+                () => ref.listen(dep, listener.call),
                 (err, stack) => errors.add(err),
               );
 
@@ -266,7 +266,7 @@ void main() {
           child: Consumer(
             builder: (context, ref, _) {
               runZonedGuarded(
-                () => ref.listen(dep.select((value) => value), listener),
+                () => ref.listen(dep.select((value) => value), listener.call),
                 (err, stack) => errors.add(err),
               );
 
@@ -305,7 +305,7 @@ void main() {
         ProviderScope(
           child: Consumer(
             builder: (context, ref, _) {
-              ref.listen(provider, listener, onError: errorListener);
+              ref.listen(provider, listener.call, onError: errorListener.call);
               return Container();
             },
           ),
@@ -349,8 +349,8 @@ void main() {
             builder: (context, ref, _) {
               ref.listen(
                 provider.select((value) => value),
-                listener,
-                onError: errorListener,
+                listener.call,
+                onError: errorListener.call,
               );
               return Container();
             },

@@ -657,7 +657,7 @@ void main() {
 }
 
 class Notifier<T> extends StateNotifier<T> {
-  Notifier(super.state);
+  Notifier(super._state);
 
   // ignore: use_setters_to_change_properties
   void setState(T value) => state = value;

@@ -35,7 +35,11 @@ void main() {
         final container = createContainer();
         final listener = Listener<TestNotifierBase<int>>();
 
-        container.listen(provider.notifier, listener.call, fireImmediately: true);
+        container.listen(
+          provider.notifier,
+          listener.call,
+          fireImmediately: true,
+        );
 
         final notifier = container.read(provider.notifier);
 
@@ -103,8 +107,11 @@ void main() {
           throwsUnimplementedError,
         );
 
-        final stateSub =
-            container.listen(provider, (previous, next) {}, onError: listener.call);
+        final stateSub = container.listen(
+          provider,
+          (previous, next) {},
+          onError: listener.call,
+        );
 
         verifyNoMoreInteractions(listener);
 
@@ -117,8 +124,11 @@ void main() {
 
         verifyOnly(listener, listener(err, stack));
 
-        final notifierSub = container
-            .listen(provider.notifier, (previous, next) {}, onError: listener.call);
+        final notifierSub = container.listen(
+          provider.notifier,
+          (previous, next) {},
+          onError: listener.call,
+        );
 
         verifyNoMoreInteractions(listener);
 
@@ -278,7 +288,9 @@ void main() {
         final notifier = container.read(provider.notifier);
         final firstState = notifier.state;
 
-        notifier.state = notifier.state;
+        // voluntarily assigning the same value
+        final self = notifier.state;
+        notifier.state = self;
 
         verifyZeroInteractions(listener);
 
@@ -299,7 +311,10 @@ void main() {
 
         container.listen(provider, listener.call);
         final notifier = container.read(provider.notifier);
-        notifier.state = notifier.state;
+
+        // voluntarily assigning the same value
+        final self = notifier.state;
+        notifier.state = self;
 
         verifyZeroInteractions(listener);
 
