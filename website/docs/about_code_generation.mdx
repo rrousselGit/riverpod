@@ -59,9 +59,42 @@ as [Freezed](https://pub.dev/packages/freezed) or [json_serializable](https://pu
 In that case, your project probably is already setup for code generation, and
 using for Riverpod should be simple.
 
+## Provider type for code generation
+
+### \[Sync/Async]\[Stateless/Stateful]Provider
+
+- <i><u>Note:</u></i> This is just a way of thinking, not actual types. You don’t need to pick
+  a type when using code generation variant anyway!
+
+- `Sync/Async` is being decided by your return type, either of your function or the [build] method
+  in case of using a class (stateful):
+   - `Sync` ⇒ T `Async` ⇒ Future<T\> or Stream<T\>
+
+- `Stateless/Stateful` is being decided by whether you need to expose methods to modify the state or not (side-effects):
+   - `Stateless` ⇒ use a function. `Stateful` ⇒ use a class with [build] method + side effect methods.
+
+
+### Migrate from non code generation variant:
+When using non code generation variant, it is necessary to manually determine the type of your provider.
+The following are the corresponding options for transitioning into code generation variant:
+
+- Sync Stateless Provider ⇒ [Provider]
+- Sync Stateful Provider ⇒ [NotifierProvider]
+- Async Stateless Provider ⇒ [FutureProvider] / [StreamProvider]
+- Async Stateful Provider ⇒ [AsyncNotifierProvider] / [StreamNotifierProvider]
+
+These providers are covered in-details at [All Providers](providers/provider).
+
 [hookwidget]: https://pub.dev/documentation/flutter_hooks/latest/flutter_hooks/HookWidget-class.html
 [statefulwidget]: https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html
 [riverpod]: https://github.com/rrousselgit/riverpod
 [hooks_riverpod]: https://pub.dev/packages/hooks_riverpod
 [flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
 [flutter_hooks]: https://github.com/rrousselGit/flutter_hooks
+[build]: https://pub.dev/documentation/riverpod/latest/riverpod/Notifier/build.html
+[provider]: /docs/providers/provider
+[notifierProvider]: /docs/providers/notifier_provider
+[futureProvider]: /docs/providers/future_provider
+[streamProvider]: /docs/providers/stream_provider
+[asyncNotifierProvider]: /docs/providers/notifier_provider
+[streamNotifierProvider]: https://pub.dev/documentation/riverpod/latest/riverpod/StreamNotifierProvider.html
