@@ -36,8 +36,8 @@ abstract class Family<
       'The generic parameter will be removed in version 3.0.0. '
       'This is to enable riverpod_generator to implement families with generic parameters',
     )
-        // ignore: deprecated_member_use_from_same_package
-        State> implements FamilyOverride<State>, ProviderOrFamily {
+    // ignore: deprecated_member_use_from_same_package
+    State> implements FamilyOverride<State>, ProviderOrFamily {
   /// A base class for all families
   const Family();
 
