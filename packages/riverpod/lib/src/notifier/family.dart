@@ -86,7 +86,7 @@ class NotifierProviderFamily<NotifierT extends FamilyNotifier<T, Arg>, T, Arg>
         NotifierFamilyProvider<NotifierT, T, Arg>> {
   /// The [Family] of [NotifierProvider].
   NotifierProviderFamily(
-    super.create, {
+    super._createFn, {
     super.name,
     super.dependencies,
   }) : super(

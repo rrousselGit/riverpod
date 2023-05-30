@@ -472,7 +472,7 @@ abstract class AsyncNotifierProviderElementBase<
         NotifierT extends AsyncNotifierBase<T>,
         T> extends ProviderElementBase<AsyncValue<T>>
     with FutureHandlerProviderElementMixin<T> {
-  AsyncNotifierProviderElementBase._(super.provider);
+  AsyncNotifierProviderElementBase._(super._provider);
 
   final _notifierNotifier = ProxyElementValueNotifier<NotifierT>();
 
@@ -502,7 +502,7 @@ class AsyncNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
     extends AsyncNotifierProviderElementBase<NotifierT, T>
     implements AsyncNotifierProviderRef<T> {
   AsyncNotifierProviderElement._(
-    AsyncNotifierProviderBase<NotifierT, T> super.provider,
+    AsyncNotifierProviderBase<NotifierT, T> super._provider,
   ) : super._();
 
   @override

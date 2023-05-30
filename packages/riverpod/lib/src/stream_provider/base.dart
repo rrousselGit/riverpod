@@ -142,7 +142,7 @@ class StreamProvider<T> extends _StreamProviderBase<T>
 class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
     with FutureHandlerProviderElementMixin<T>
     implements StreamProviderRef<T> {
-  StreamProviderElement._(_StreamProviderBase<T> super.provider);
+  StreamProviderElement._(_StreamProviderBase<T> super._provider);
 
   final _streamNotifier = ProxyElementValueNotifier<Stream<T>>();
   final StreamController<T> _streamController = StreamController<T>.broadcast();
@@ -207,7 +207,7 @@ class StreamProviderFamily<R, Arg> extends FamilyBase<StreamProviderRef<R>,
     AsyncValue<R>, Arg, Stream<R>, StreamProvider<R>> {
   /// The [Family] of [StreamProvider].
   StreamProviderFamily(
-    super.create, {
+    super._createFn, {
     super.name,
     super.dependencies,
   }) : super(

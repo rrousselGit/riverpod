@@ -3,7 +3,6 @@ linter:
     - always_declare_return_types
     - always_put_control_body_on_new_line
     - always_put_required_named_parameters_first
-    - always_require_non_null_named_parameters
     - always_specify_types
     - always_use_package_imports
     - annotate_overrides
@@ -32,8 +31,6 @@ linter:
     - avoid_relative_lib_imports
     - avoid_renaming_method_parameters
     - avoid_return_types_on_setters
-    - avoid_returning_null
-    - avoid_returning_null_for_future
     - avoid_returning_null_for_void
     - avoid_returning_this
     - avoid_setters_without_getters
@@ -54,14 +51,17 @@ linter:
     - cascade_invocations
     - cast_nullable_to_non_nullable
     - close_sinks
+    - collection_methods_unrelated_type
     - combinators_ordering
     - comment_references
     - conditional_uri_does_not_exist
     - constant_identifier_names
     - control_flow_in_finally
     - curly_braces_in_flow_control_structures
+    - dangling_library_doc_comments
     - depend_on_referenced_packages
     - deprecated_consistency
+    - deprecated_member_use_from_same_package
     - diagnostic_describe_all_properties
     - directives_ordering
     - discarded_futures
@@ -75,23 +75,28 @@ linter:
     - flutter_style_todos
     - hash_and_equals
     - implementation_imports
-    - iterable_contains_unrelated_type
+    - implicit_call_tearoffs
+    - implicit_reopen
+    - invalid_case_patterns
     - join_return_with_assignment
     - leading_newlines_in_multiline_strings
+    - library_annotations
     - library_names
     - library_prefixes
     - library_private_types_in_public_api
     - lines_longer_than_80_chars
-    - list_remove_unrelated_type
     - literal_only_boolean_expressions
+    - matching_super_parameters
     - missing_whitespace_between_adjacent_strings
     - no_adjacent_strings_in_list
     - no_default_cases
     - no_duplicate_case_values
     - no_leading_underscores_for_library_prefixes
     - no_leading_underscores_for_local_identifiers
+    - no_literal_bool_comparisons
     - no_logic_in_create_state
     - no_runtimeType_toString
+    - no_self_assignments
     - non_constant_identifier_names
     - noop_primitive_operations
     - null_check_on_nullable_type_parameter
@@ -116,7 +121,6 @@ linter:
     - prefer_constructors_over_static_methods
     - prefer_contains
     - prefer_double_quotes
-    - prefer_equal_for_default_values
     - prefer_expression_function_bodies
     - prefer_final_fields
     - prefer_final_in_for_each
@@ -161,15 +165,18 @@ linter:
     - tighten_type_of_initializing_formals
     - type_annotate_public_apis
     - type_init_formals
+    - type_literal_in_constant_pattern
     - unawaited_futures
     - unnecessary_await_in_return
     - unnecessary_brace_in_string_interps
+    - unnecessary_breaks
     - unnecessary_const
     - unnecessary_constructor_name
     - unnecessary_final
     - unnecessary_getters_setters
     - unnecessary_lambdas
     - unnecessary_late
+    - unnecessary_library_directive
     - unnecessary_new
     - unnecessary_null_aware_assignments
     - unnecessary_null_aware_operator_on_extension_on_nullable

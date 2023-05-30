@@ -84,7 +84,7 @@ class AutoDisposeNotifierProviderFamily<
         Arg, NotifierT, AutoDisposeFamilyNotifierProvider<NotifierT, T, Arg>> {
   /// The [Family] of [AutoDisposeNotifierProvider].
   AutoDisposeNotifierProviderFamily(
-    super.create, {
+    super._createFn, {
     super.name,
     super.dependencies,
   }) : super(
