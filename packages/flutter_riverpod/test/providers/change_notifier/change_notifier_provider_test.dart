@@ -64,7 +64,7 @@ void main() {
     final listener = Listener<ValueNotifier<int>>();
     final container = createContainer();
     final provider = ChangeNotifierProvider<ValueNotifier<int>>((ref) {
-      ref.listenSelf(listener);
+      ref.listenSelf(listener.call);
       return ValueNotifier(0);
     });
 
@@ -96,7 +96,7 @@ void main() {
       return ValueNotifier(0);
     });
 
-    container.listen(provider, listener);
+    container.listen(provider, listener.call);
 
     verifyZeroInteractions(listener);
     expect(ref.notifier.value, 0);
@@ -139,7 +139,7 @@ void main() {
     final provider = ChangeNotifierProvider((ref) => notifier);
     final listener = Listener<ValueNotifier<int>>();
 
-    container.listen(provider, listener, fireImmediately: true);
+    container.listen(provider, listener.call, fireImmediately: true);
 
     verifyOnly(listener, listener(null, notifier));
 

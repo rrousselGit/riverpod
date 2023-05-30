@@ -20,7 +20,7 @@ class Counter extends StateNotifier<int> {
 }
 
 class CounterNullable extends StateNotifier<int?> {
-  CounterNullable(super.init);
+  CounterNullable(super._state);
 
   void increment() => state = state! + 1;
   void decrement() => state = state! - 1;

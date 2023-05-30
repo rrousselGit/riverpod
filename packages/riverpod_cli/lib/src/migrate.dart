@@ -82,12 +82,12 @@ class MigrateCommand extends Command<void> {
       [
         aggregate(
           [
-            RiverpodImportAllMigrationSuggestor(),
-            RiverpodNotifierChangesMigrationSuggestor(dep.version),
+            RiverpodImportAllMigrationSuggestor().call,
+            RiverpodNotifierChangesMigrationSuggestor(dep.version).call,
           ],
         ),
-        RiverpodProviderUsageInfo(dep.version),
-        RiverpodUnifiedSyntaxChangesMigrationSuggestor(dep.version),
+        RiverpodProviderUsageInfo(dep.version).call,
+        RiverpodUnifiedSyntaxChangesMigrationSuggestor(dep.version).call,
       ],
       args: argResults?.arguments ?? [],
     );

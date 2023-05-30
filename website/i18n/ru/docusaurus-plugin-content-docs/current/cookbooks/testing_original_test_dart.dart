@@ -29,7 +29,7 @@ void main() {
     // Наблюдение за провайдером и его изменениями
     container.listen<int>(
       counterProvider,
-      listener,
+      listener.call,
       fireImmediately: true,
     );
 
@@ -55,7 +55,7 @@ void main() {
 
     container.listen<int>(
       counterProvider,
-      listener,
+      listener.call,
       fireImmediately: true,
     );
 

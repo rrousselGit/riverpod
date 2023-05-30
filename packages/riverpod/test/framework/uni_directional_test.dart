@@ -284,7 +284,7 @@ void main() {
 
     expect(container.read(provider), 0);
 
-    container.listen(computed, listener, fireImmediately: true);
+    container.listen(computed, listener.call, fireImmediately: true);
 
     verify(listener(null, 0)).called(1);
     verifyNoMoreInteractions(listener);

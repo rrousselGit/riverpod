@@ -117,5 +117,5 @@ class AutoDisposeStreamNotifierProviderElement<
     with AutoDisposeProviderElementMixin<AsyncValue<T>>
     implements AutoDisposeStreamNotifierProviderRef<T> {
   /// The [ProviderElementBase] for [StreamNotifierProvider]
-  AutoDisposeStreamNotifierProviderElement._(super.provider) : super._();
+  AutoDisposeStreamNotifierProviderElement._(super._provider) : super._();
 }

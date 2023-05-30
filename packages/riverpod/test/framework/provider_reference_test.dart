@@ -78,7 +78,7 @@ void main() {
         });
         final listener = Listener<int>();
         final another = Provider((ref) {
-          ref.listen<int>(provider, listener, fireImmediately: true);
+          ref.listen<int>(provider, listener.call, fireImmediately: true);
         });
         final container = createContainer();
 
@@ -99,7 +99,7 @@ void main() {
         final listener = Listener<num>();
         final dep = StateProvider((ref) => 0);
         final provider = Provider((ref) {
-          ref.listen<num>(dep, listener);
+          ref.listen<num>(dep, listener.call);
         });
 
         final container = createContainer();
@@ -125,7 +125,10 @@ void main() {
 
         final another = Provider<int>((ref) {
           buildCount++;
-          ref.listen<bool>(provider.select(isEvenSelector), isEvenListener);
+          ref.listen<bool>(
+            provider.select(isEvenSelector.call),
+            isEvenListener.call,
+          );
           return 0;
         });
 
@@ -168,8 +171,8 @@ void main() {
         final another = Provider<int>((ref) {
           buildCount++;
           ref.listen<bool>(
-            provider.select(isEvenSelector),
-            isEvenListener,
+            provider.select(isEvenSelector.call),
+            isEvenListener.call,
             fireImmediately: true,
           );
           return 0;
@@ -204,8 +207,8 @@ void main() {
         final onDispose = OnDisposeMock();
         final onDispose2 = OnDisposeMock();
         final provider = Provider((ref) {
-          ref.onDispose(onDispose);
-          ref.onDispose(onDispose2);
+          ref.onDispose(onDispose.call);
+          ref.onDispose(onDispose2.call);
         });
 
         final container = ProviderContainer();
@@ -234,8 +237,8 @@ void main() {
         final count = StateProvider((ref) => 0);
         final provider = Provider((ref) {
           ref.watch(count);
-          ref.onDispose(onDispose);
-          ref.onDispose(onDispose2);
+          ref.onDispose(onDispose.call);
+          ref.onDispose(onDispose2.call);
         });
 
         final container = ProviderContainer();
@@ -266,7 +269,7 @@ void main() {
         final provider = Provider((ref) {
           ref.watch(count);
           ref.watch(count2);
-          ref.onDispose(onDispose);
+          ref.onDispose(onDispose.call);
         });
 
         final container = ProviderContainer();
@@ -292,7 +295,7 @@ void main() {
         final provider = Provider((ref) {
           buildCount++;
           ref.watch(count);
-          ref.onDispose(onDispose);
+          ref.onDispose(onDispose.call);
         });
 
         final container = ProviderContainer();

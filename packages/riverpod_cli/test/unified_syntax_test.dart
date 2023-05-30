@@ -19,10 +19,10 @@ void main() {
         [
           RiverpodProviderUsageInfo(
             VersionConstraint.parse('^0.14.0'),
-          ),
+          ).call,
           RiverpodUnifiedSyntaxChangesMigrationSuggestor(
             VersionConstraint.parse('^0.14.0'),
-          ),
+          ).call,
         ],
         sourceFile,
         expected,
@@ -40,10 +40,10 @@ void main() {
         [
           RiverpodProviderUsageInfo(
             VersionConstraint.parse('^1.0.0'),
-          ),
+          ).call,
           RiverpodUnifiedSyntaxChangesMigrationSuggestor(
             VersionConstraint.parse('^1.0.0'),
-          ),
+          ).call,
         ],
         sourceFile,
         expected,

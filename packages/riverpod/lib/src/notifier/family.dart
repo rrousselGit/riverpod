@@ -86,7 +86,7 @@ class NotifierProviderFamily<NotifierT extends FamilyNotifier<T, Arg>, T, Arg>
         NotifierFamilyProvider<NotifierT, T, Arg>> {
   /// The [Family] of [NotifierProvider].
   NotifierProviderFamily(
-    super.create, {
+    super._createFn, {
     super.name,
     super.dependencies,
   }) : super(
@@ -99,7 +99,7 @@ class NotifierProviderFamily<NotifierT extends FamilyNotifier<T, Arg>, T, Arg>
   /// An implementation detail of Riverpod
   @internal
   NotifierProviderFamily.internal(
-    super._createNotifier, {
+    super._createFn, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,

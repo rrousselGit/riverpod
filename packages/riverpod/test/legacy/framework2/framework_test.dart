@@ -166,7 +166,7 @@ void main() {
       var buildCount = 0;
       final provider = Provider((ref) {
         buildCount++;
-        ref.onDispose(onDispose);
+        ref.onDispose(onDispose.call);
       });
       final container = createContainer();
 
@@ -359,7 +359,7 @@ void main() {
         final counter = Counter();
         final provider = StateNotifierProvider<Counter, int>((ref) => counter);
 
-        container.listen(provider, didChange);
+        container.listen(provider, didChange.call);
 
         verifyZeroInteractions(didChange);
 
@@ -373,7 +373,7 @@ void main() {
         final provider = StateNotifierProvider<Counter, int>((ref) => counter);
         final computed = Provider((ref) => ref.watch(provider));
 
-        container.listen(computed, didChange);
+        container.listen(computed, didChange.call);
 
         verifyZeroInteractions(didChange);
 
@@ -391,8 +391,8 @@ void main() {
         final provider = StateNotifierProvider<Counter, int>((ref) => counter);
         final didChange2 = Listener<int>();
 
-        container.listen(provider, didChange);
-        container.listen(provider, didChange2);
+        container.listen(provider, didChange.call);
+        container.listen(provider, didChange2.call);
 
         counter.increment();
 
@@ -407,8 +407,8 @@ void main() {
         when(didChange(any, any)).thenThrow(42);
         when(didChange2(any, any)).thenThrow(21);
 
-        container.listen(provider, didChange);
-        container.listen(provider, didChange2);
+        container.listen(provider, didChange.call);
+        container.listen(provider, didChange2.call);
 
         final errors = errorsOf(counter.increment);
 
@@ -428,7 +428,7 @@ void main() {
 
       expect(element.hasListeners, false);
 
-      final sub = container.listen(provider, didChange);
+      final sub = container.listen(provider, didChange.call);
 
       expect(element.hasListeners, true);
 
