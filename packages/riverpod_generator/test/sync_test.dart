@@ -9,6 +9,73 @@ import 'utils.dart';
 void main() {
   // TODO test that the generated providers contain the docs from the annotated element
 
+  test('Supports Raw', () async {
+    final container = createContainer();
+
+    expect(
+      container.read(rawFutureProvider),
+      isA<Future<String>>(),
+    );
+    expect(
+      container.read(rawFutureClassProvider),
+      isA<Future<String>>(),
+    );
+    expect(
+      container.read(rawFutureClassProvider.notifier),
+      isA<RawFutureClass>(),
+    );
+
+    expect(
+      container.read(rawStreamProvider),
+      isA<Stream<String>>(),
+    );
+    expect(
+      container.read(rawStreamClassProvider),
+      isA<Stream<String>>(),
+    );
+    expect(
+      container.read(rawStreamClassProvider.notifier),
+      isA<RawStreamClass>(),
+    );
+
+    expect(
+      container.read(rawFamilyFutureProvider(0)),
+      isA<Future<String>>(),
+    );
+    expect(
+      container.read(rawFamilyFutureClassProvider(0)),
+      isA<Future<String>>(),
+    );
+    expect(
+      container.read(rawFamilyFutureClassProvider(0).notifier),
+      isA<RawFamilyFutureClass>(),
+    );
+
+    expect(
+      container.read(rawFamilyStreamProvider(0)),
+      isA<Stream<String>>(),
+    );
+    expect(
+      container.read(rawFamilyStreamClassProvider(0)),
+      isA<Stream<String>>(),
+    );
+    expect(
+      container.read(rawFamilyStreamClassProvider(0).notifier),
+      isA<RawFamilyStreamClass>(),
+    );
+  });
+
+  test(
+      'Creates a Provider<T> if @riverpod is used on an stream function wrapped in Raw',
+      () async {
+    final container = createContainer();
+
+    final AutoDisposeProvider<Stream<String>> provider = rawStreamProvider;
+    final Stream<String> result = container.read(rawStreamProvider);
+
+    await expectLater(result, emits('Hello world'));
+  });
+
   test('Creates a Provider<T> if @riverpod is used on a synchronous function',
       () {
     final container = createContainer();

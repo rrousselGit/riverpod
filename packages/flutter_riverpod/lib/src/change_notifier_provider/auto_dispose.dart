@@ -83,7 +83,7 @@ class AutoDisposeChangeNotifierProviderElement<
     implements AutoDisposeChangeNotifierProviderRef<NotifierT> {
   /// The [ProviderElementBase] for [ChangeNotifier]
   AutoDisposeChangeNotifierProviderElement._(
-    AutoDisposeChangeNotifierProvider<NotifierT> super.provider,
+    AutoDisposeChangeNotifierProvider<NotifierT> super._provider,
   ) : super._();
 }
 
@@ -99,7 +99,7 @@ class AutoDisposeChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?,
         AutoDisposeChangeNotifierProvider<NotifierT>> {
   /// The [Family] of [AutoDisposeChangeNotifierProvider].
   AutoDisposeChangeNotifierProviderFamily(
-    super.create, {
+    super._createFn, {
     super.name,
     super.dependencies,
   }) : super(
@@ -114,8 +114,7 @@ class AutoDisposeChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?,
     NotifierT Function(
       AutoDisposeChangeNotifierProviderRef<NotifierT> ref,
       Arg arg,
-    )
-        create,
+    ) create,
   ) {
     return FamilyOverrideImpl<NotifierT, Arg,
         AutoDisposeChangeNotifierProvider<NotifierT>>(

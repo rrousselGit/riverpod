@@ -1,3 +1,42 @@
+## 2.2.3 - 2023-05-12
+
+- `riverpod_analyzer_utils` upgraded to `0.3.1`
+
+## 2.2.2 - 2023-05-12
+
+- Fix an issue where specifying a dependency on a provider declared in a
+  different file could cause a missing import.
+
+## 2.2.1 - 2023-04-24
+
+- `riverpod_annotation` upgraded to `2.1.1`
+
+## 2.2.0 - 2023-04-18
+
+- Added support for `Raw` typedef in the return value of providers.
+  This can be used to disable the conversion of Futures/Streams into AsyncValues
+  ```dart
+  @riverpod
+  Raw<Future<int>> myProvider(...) async => ...;
+  ...
+  // returns a Future<int> instead of AsyncValue<int>
+  Future<int> value = ref.watch(myProvider);
+  ```
+
+## 2.1.6 - 2023-04-07
+
+- If a provider has an empty list of dependencies, the generated list is now `const`
+  (thanks to @K9i-0)
+
+## 2.1.5 - 2023-04-06
+
+- `riverpod_annotation` upgraded to `2.0.3`
+
+## 2.1.4 - 2023-03-13
+
+- `riverpod_analyzer_utils` upgraded to `0.2.0`
+- `riverpod_annotation` upgraded to `2.0.2`
+
 ## 2.1.3 - 2023-03-10
 
 - Fixed InconsistentAnalysisException

@@ -147,7 +147,7 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<T>, T>
     extends ProviderElementBase<T>
     implements StateNotifierProviderRef<NotifierT, T> {
   StateNotifierProviderElement._(
-    _StateNotifierProviderBase<NotifierT, T> super.provider,
+    _StateNotifierProviderBase<NotifierT, T> super._provider,
   );
 
   @override
@@ -212,7 +212,7 @@ class StateNotifierProviderFamily<NotifierT extends StateNotifier<T>, T, Arg>
         NotifierT, StateNotifierProvider<NotifierT, T>> {
   /// The [Family] of [StateNotifierProvider].
   StateNotifierProviderFamily(
-    super.create, {
+    super._createFn, {
     super.name,
     super.dependencies,
   }) : super(

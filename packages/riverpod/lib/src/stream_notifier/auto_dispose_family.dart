@@ -87,7 +87,7 @@ class AutoDisposeStreamNotifierProviderFamily<
         AutoDisposeFamilyStreamNotifierProvider<NotifierT, T, Arg>> {
   /// The [Family] of [AutoDisposeStreamNotifierProvider].
   AutoDisposeStreamNotifierProviderFamily(
-    super.create, {
+    super._createFn, {
     super.name,
     super.dependencies,
   }) : super(

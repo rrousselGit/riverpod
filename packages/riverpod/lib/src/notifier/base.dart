@@ -179,7 +179,7 @@ class NotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
 /// The element of [NotifierProvider].
 class NotifierProviderElement<NotifierT extends NotifierBase<T>, T>
     extends ProviderElementBase<T> implements NotifierProviderRef<T> {
-  NotifierProviderElement._(NotifierProviderBase<NotifierT, T> super.provider);
+  NotifierProviderElement._(NotifierProviderBase<NotifierT, T> super._provider);
 
   final _notifierNotifier = ProxyElementValueNotifier<NotifierT>();
 

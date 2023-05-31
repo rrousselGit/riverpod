@@ -1,5 +1,15 @@
 part of '../riverpod_ast.dart';
 
+extension RawTypeX on DartType {
+  /// Returns whether this type is a `Raw` typedef from `package:riverpod_annotation`.
+  bool get isRaw {
+    final alias = this.alias;
+    if (alias == null) return false;
+    return alias.element.name == 'Raw' &&
+        isFromRiverpodAnnotation.isExactly(alias.element);
+  }
+}
+
 extension on LibraryElement {
   static final _asyncValueCache = Expando<ClassElement>();
 
@@ -79,6 +89,8 @@ DartType? _computeExposedType(
   DartType createdType,
   LibraryElement library,
 ) {
+  if (createdType.isRaw) return createdType;
+
   if (createdType.isDartAsyncFuture ||
       createdType.isDartAsyncFutureOr ||
       createdType.isDartAsyncStream) {
@@ -90,6 +102,8 @@ DartType? _computeExposedType(
 }
 
 DartType _getValueType(DartType createdType) {
+  if (createdType.isRaw) return createdType;
+
   if (createdType.isDartAsyncFuture ||
       createdType.isDartAsyncFutureOr ||
       createdType.isDartAsyncStream) {
@@ -161,7 +175,7 @@ class StatefulProviderDeclaration extends GeneratorProviderDeclaration {
       valueType: _getValueType(createdType),
     );
     riverpodAnnotation._parent = statefulProviderDeclaration;
-    buildMethod.accept(
+    node.accept(
       _GeneratorRefInvocationVisitor(statefulProviderDeclaration, parent),
     );
 

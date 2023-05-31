@@ -179,11 +179,6 @@ class ProviderContainer implements Node {
   final _overrideForFamily = HashMap<Family<Object?>, _FamilyOverrideRef>();
   final Map<ProviderBase<Object?>, _StateReader> _stateReaders;
 
-  /// Awaits for providers to rebuild/be disposed and for listeners to be notified.
-  Future<void> pump() async {
-    return _scheduler.pendingFuture;
-  }
-
   final List<ProviderObserver> _observers;
 
   /// A debug utility used by `flutter_riverpod`/`hooks_riverpod` to check
@@ -199,6 +194,22 @@ class ProviderContainer implements Node {
   /// This disables the different methods of [ProviderContainer], resulting in
   /// a [StateError] when attempting to use them.
   bool _disposed = false;
+
+  /// An internal utility for checking if a [ProviderContainer] has a fast
+  /// path for reading a provider.
+  ///
+  /// This should not be used and is an implementation detail of [ProviderContainer].
+  /// It could be removed at any time without a major version bump.
+  @internal
+  @visibleForTesting
+  bool hasStateReaderFor(ProviderListenable<Object?> provider) {
+    return _stateReaders.containsKey(provider);
+  }
+
+  /// Awaits for providers to rebuild/be disposed and for listeners to be notified.
+  Future<void> pump() async {
+    return _scheduler.pendingFuture;
+  }
 
   /// Reads a provider without listening to it and returns the currently
   /// exposed value.
@@ -318,8 +329,8 @@ class ProviderContainer implements Node {
       void removeStateReaderFrom(ProviderContainer container) {
         if (container._stateReaders[element._origin] == reader) {
           container._stateReaders.remove(element._origin);
-          container._children.forEach(removeStateReaderFrom);
         }
+        container._children.forEach(removeStateReaderFrom);
       }
 
       removeStateReaderFrom(this);
@@ -447,7 +458,7 @@ class ProviderContainer implements Node {
                 '''
 Tried to read $provider from a place where one of its dependencies were overridden but the provider is not.
 
-To fix this error, you can add "dependencies" to $provider such that we have:
+To fix this error, you can add $dependency (a) to the "dependencies" of $provider (b) such that we have:
 
 ```
 final a = Provider(...);

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/syntactic_entity.dart';
 import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/constant/value.dart';
@@ -10,7 +11,6 @@ import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:collection/collection.dart';
 import 'package:crypto/crypto.dart';
-import 'package:custom_lint_core/custom_lint_core.dart';
 import 'package:meta/meta.dart';
 
 import '../riverpod_analyzer_utils.dart';
@@ -30,11 +30,6 @@ part 'riverpod_ast/visitor.dart';
 part 'riverpod_ast/widget_ref_invocation.dart';
 part 'riverpod_ast/provider_scope.dart';
 part 'riverpod_ast/provider_override.dart';
-
-const _providerForAnnotationChecker = TypeChecker.fromName(
-  'ProviderFor',
-  packageName: 'riverpod_annotation',
-);
 
 @sealed
 abstract class RiverpodAst {

@@ -16,6 +16,60 @@ void main() {
       child.dispose();
     });
 
+    group('when unmounting providders', () {
+      test(
+          'cleans up all the StateReaders of a provider in the entire ProviderContainer tree',
+          () async {
+        // Regression test for https://github.com/rrousselGit/riverpod/issues/1943
+        final a = createContainer();
+        // b/c voluntarily do not use the Provider, but a/d do. This is to test
+        // that the disposal logic correctly cleans up the StateReaders
+        // in all ProviderContainers associated with the provider, even if
+        // some links between two ProviderContainers are not using the provider.
+        final b = createContainer(parent: a);
+        final c = createContainer(parent: b);
+        final d = createContainer(parent: c);
+
+        final provider = Provider.autoDispose((ref) => 3);
+
+        final subscription = d.listen(
+          provider,
+          (previous, next) {},
+          fireImmediately: true,
+        );
+
+        expect(a.hasStateReaderFor(provider), true);
+        expect(b.hasStateReaderFor(provider), false);
+        expect(c.hasStateReaderFor(provider), false);
+        expect(d.hasStateReaderFor(provider), true);
+
+        subscription.close();
+
+        expect(a.hasStateReaderFor(provider), true);
+        expect(b.hasStateReaderFor(provider), false);
+        expect(c.hasStateReaderFor(provider), false);
+        expect(d.hasStateReaderFor(provider), true);
+
+        await a.pump();
+
+        expect(a.hasStateReaderFor(provider), false);
+        expect(b.hasStateReaderFor(provider), false);
+        expect(c.hasStateReaderFor(provider), false);
+        expect(d.hasStateReaderFor(provider), false);
+
+        d.listen(
+          provider,
+          (previous, next) {},
+          fireImmediately: true,
+        );
+
+        expect(a.hasStateReaderFor(provider), true);
+        expect(b.hasStateReaderFor(provider), false);
+        expect(c.hasStateReaderFor(provider), false);
+        expect(d.hasStateReaderFor(provider), true);
+      });
+    });
+
     group('exists', () {
       test('simple use-case', () {
         final container = createContainer();
@@ -165,7 +219,7 @@ void main() {
       var result = 0;
       final provider = Provider((r) => result);
 
-      container.listen(provider, listener);
+      container.listen(provider, listener.call);
       verifyZeroInteractions(listener);
 
       container.invalidate(provider);
@@ -295,7 +349,7 @@ void main() {
       final listener = Listener<int>();
       final child = createContainer(parent: container);
 
-      container.listen<int>(provider, listener, fireImmediately: true);
+      container.listen<int>(provider, listener.call, fireImmediately: true);
 
       verifyOnly(listener, listener(null, 0));
 
@@ -356,8 +410,8 @@ void main() {
         final root = createContainer();
         final scoped = createContainer(parent: root, overrides: [b]);
 
-        scoped.listen(a, aListener, fireImmediately: true);
-        scoped.listen(b, bListener, fireImmediately: true);
+        scoped.listen(a, aListener.call, fireImmediately: true);
+        scoped.listen(b, bListener.call, fireImmediately: true);
 
         verifyOnly(aListener, aListener(null, 0));
         verifyOnly(bListener, bListener(null, 0));
@@ -562,7 +616,7 @@ void main() {
       final provider = StateProvider<int>((ref) => 0);
       final listener = Listener<void>();
 
-      container.listen<void>(provider, listener);
+      container.listen<void>(provider, listener.call);
 
       verifyZeroInteractions(listener);
 
@@ -583,7 +637,7 @@ void main() {
 
         final controller = container.read(provider.notifier);
 
-        final sub = container.listen(provider, listener);
+        final sub = container.listen(provider, listener.call);
 
         sub.close();
         sub.close();
@@ -606,8 +660,8 @@ void main() {
 
         final controller = container.read(provider.notifier);
 
-        final sub = container.listen(provider, listener);
-        container.listen(provider, listener);
+        final sub = container.listen(provider, listener.call);
+        container.listen(provider, listener.call);
 
         controller.state++;
 

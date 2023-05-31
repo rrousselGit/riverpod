@@ -7,7 +7,7 @@ final counterProvider = StateProvider((ref) => 0);
 /// Counter widget.
 class CounterWidget extends ConsumerWidget {
   /// Counter widget.
-  const CounterWidget({Key? key}) : super(key: key);
+  const CounterWidget({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

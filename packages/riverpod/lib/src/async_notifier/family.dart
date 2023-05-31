@@ -99,7 +99,7 @@ class AsyncNotifierProviderFamily<NotifierT extends FamilyAsyncNotifier<T, Arg>,
         NotifierT, AsyncNotifierFamilyProvider<NotifierT, T, Arg>> {
   /// The [Family] of [AsyncNotifierProvider].
   AsyncNotifierProviderFamily(
-    super.create, {
+    super._createFn, {
     super.name,
     super.dependencies,
   }) : super(

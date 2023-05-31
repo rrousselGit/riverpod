@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
+// ignore: undefined_hidden_name
+import 'package:flutter/material.dart' hide SearchBar;
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 

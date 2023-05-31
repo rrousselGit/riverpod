@@ -81,7 +81,7 @@ class AutoDisposeStreamProviderElement<T> extends StreamProviderElement<T>
     implements AutoDisposeStreamProviderRef<T> {
   /// The [ProviderElementBase] for [StreamProvider]
   AutoDisposeStreamProviderElement._(
-    AutoDisposeStreamProvider<T> super.provider,
+    AutoDisposeStreamProvider<T> super._provider,
   ) : super._();
 }
 
@@ -94,7 +94,7 @@ class AutoDisposeStreamProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
     AutoDisposeStreamProvider<R>> {
   /// The [Family] of [AutoDisposeStreamProvider].
   AutoDisposeStreamProviderFamily(
-    super.create, {
+    super._createFn, {
     super.name,
     super.dependencies,
   }) : super(

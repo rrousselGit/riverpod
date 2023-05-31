@@ -19,7 +19,7 @@ void main() {
           container: container,
           child: Consumer(
             builder: (context, ref, _) {
-              ref.listen<num>(provider, listener);
+              ref.listen<num>(provider, listener.call);
               return Container();
             },
           ),
@@ -86,7 +86,7 @@ void main() {
           container: container,
           child: Consumer(
             builder: (context, ref, _) {
-              ref.listen<int>(provider, onChange);
+              ref.listen<int>(provider, onChange.call);
               return Container();
             },
           ),
@@ -118,7 +118,7 @@ void main() {
           container: container,
           child: Consumer(
             builder: (context, ref, _) {
-              ref.listen<bool>(isEven, onChange);
+              ref.listen<bool>(isEven, onChange.call);
               return Container();
             },
           ),
@@ -147,7 +147,7 @@ void main() {
           container: container,
           child: Consumer(
             builder: (context, ref, _) {
-              ref.listen<int>(provider, onChange);
+              ref.listen<int>(provider, onChange.call);
               return Container();
             },
           ),
@@ -207,7 +207,7 @@ void main() {
           container: container,
           child: Consumer(
             builder: (context, ref, _) {
-              ref.listen<int>(provider(0), onChange);
+              ref.listen<int>(provider(0), onChange.call);
               return Container();
             },
           ),
@@ -219,7 +219,7 @@ void main() {
           container: container,
           child: Consumer(
             builder: (context, ref, _) {
-              ref.listen<int>(provider(1), onChange);
+              ref.listen<int>(provider(1), onChange.call);
               return Container();
             },
           ),
@@ -251,7 +251,7 @@ void main() {
           container: container,
           child: Consumer(
             builder: (context, ref, _) {
-              ref.listen<int>(provider, onChange);
+              ref.listen<int>(provider, onChange.call);
               return Container();
             },
           ),
@@ -263,7 +263,7 @@ void main() {
           container: container2,
           child: Consumer(
             builder: (context, ref, _) {
-              ref.listen<int>(provider, onChange);
+              ref.listen<int>(provider, onChange.call);
               return Container();
             },
           ),
@@ -294,7 +294,7 @@ void main() {
           container: container,
           child: Consumer(
             builder: (context, ref, _) {
-              ref.listen<int>(provider, onChange);
+              ref.listen<int>(provider, onChange.call);
               return Container();
             },
           ),

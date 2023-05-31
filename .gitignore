@@ -55,3 +55,5 @@ lib/generated_plugin_registrant.dart
 .vscode/settings.json
 
 website/.vscode/
+node_modules
+package-lock.json

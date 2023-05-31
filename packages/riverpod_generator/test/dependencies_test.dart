@@ -1,3 +1,4 @@
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:test/test.dart';
 
 import 'integration/dependencies.dart';
@@ -27,6 +28,16 @@ void main() {
     );
 
     expect(transitiveDependenciesProvider.dependencies, [providerProvider]);
+
+    expect(
+      emptyDependenciesStatelessProvider.dependencies,
+      same(const <ProviderOrFamily>[]),
+    );
+
+    expect(
+      emptyDependenciesStatefulProvider.dependencies,
+      same(const <ProviderOrFamily>[]),
+    );
   });
 
   test('Generates transitive dependencies', () {
@@ -62,6 +73,16 @@ void main() {
         family2Provider,
       ],
     );
+
+    expect(
+      emptyDependenciesStatelessProvider.allTransitiveDependencies,
+      same(const <ProviderOrFamily>{}),
+    );
+
+    expect(
+      emptyDependenciesStatefulProvider.allTransitiveDependencies,
+      same(const <ProviderOrFamily>{}),
+    );
   });
 
   test('Caches dependencies', () {
@@ -85,6 +106,18 @@ void main() {
       transitiveDependenciesProvider.dependencies,
       same(transitiveDependenciesProvider.dependencies),
     );
+    expect(
+      smallTransitiveDependencyCountProvider.dependencies,
+      same(smallTransitiveDependencyCountProvider.dependencies),
+    );
+    expect(
+      emptyDependenciesStatelessProvider.dependencies,
+      same(emptyDependenciesStatelessProvider.dependencies),
+    );
+    expect(
+      emptyDependenciesStatefulProvider.dependencies,
+      same(emptyDependenciesStatefulProvider.dependencies),
+    );
 
     expect(
       provider3Provider.allTransitiveDependencies,
@@ -97,6 +130,10 @@ void main() {
     expect(
       transitiveDependenciesProvider.allTransitiveDependencies,
       same(transitiveDependenciesProvider.allTransitiveDependencies),
+    );
+    expect(
+      smallTransitiveDependencyCountProvider.allTransitiveDependencies,
+      same(smallTransitiveDependencyCountProvider.allTransitiveDependencies),
     );
   });
 }
