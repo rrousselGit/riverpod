@@ -18,7 +18,7 @@ module.exports = {
     },
     "about_code_generation",
     "about_hooks",
-
+    "immutability",
     {
       type: "category",
       label: "Concepts",
@@ -38,7 +38,6 @@ module.exports = {
         "concepts/provider_observer",
         "concepts/scopes",
         "concepts/provider_lifecycles",
-        "concepts/immutability",
       ],
     },
     {
