@@ -11,8 +11,32 @@ import {
   trimSnippet,
   CodeSnippet,
 } from "../src/components/CodeSnippet";
+import syncStateless from "!!raw-loader!./about_codegen/provider_type/sync_stateless.dart";
+import syncStateful from "!!raw-loader!./about_codegen/provider_type/sync_stateful.dart";
+import asyncStatelessFuture from "!!raw-loader!./about_codegen/provider_type/async_stateless_future.dart";
+import asyncStatefulFuture from "!!raw-loader!./about_codegen/provider_type/async_stateful_future.dart";
+import asyncStatelessStream from "!!raw-loader!./about_codegen/provider_type/async_stateless_stream.dart";
+import asyncStatefulStream from "!!raw-loader!./about_codegen/provider_type/async_stateful_stream.dart";
+import provider from "!!raw-loader!./about_codegen/provider_type/non_code_gen/provider.dart";
+import notifierProvider from "!!raw-loader!./about_codegen/provider_type/non_code_gen/notifier_provider.dart";
+import futureProvider from "!!raw-loader!./about_codegen/provider_type/non_code_gen/future_provider.dart";
+import asyncNotifierProvider from "!!raw-loader!./about_codegen/provider_type/non_code_gen/async_notifier_provider.dart";
+import streamProvider from "!!raw-loader!./about_codegen/provider_type/non_code_gen/stream_provider.dart";
+import streamNotifierProvider from "!!raw-loader!./about_codegen/provider_type/non_code_gen/stream_notifier_provider.dart";
+import autoDisposeCodeGen from "!!raw-loader!./about_codegen/provider_type/auto_dispose.dart";
+import autoDisposeNonCodeGen from "!!raw-loader!./about_codegen/provider_type/non_code_gen/auto_dispose.dart";
+import familyCodeGen from "!!raw-loader!./about_codegen/provider_type/family.dart";
+import familyNonCodeGen from "!!raw-loader!./about_codegen/provider_type/non_code_gen/family.dart";
+const RED_STYLE = {color: 'indianred', fontWeight: '700'};
+const BLUE_STYLE = {color: 'rgb(103, 134, 196)', fontWeight: '700'};
+const RED_16_STYLE = {color: 'indianred', fontSize: '16px', fontWeight: '700'};
+const BLUE_20_STYLE = {color: 'rgb(103, 134, 196)', fontSize: '20px', fontWeight: '700'};
+const MAX_WIDTH_380 = {maxWidth: '380px'};
+const PROVIDER_STYLE = {textAlign: 'center', fontWeight: '600', maxWidth: '210px'};
+const BEFORE_STYLE = {textAlign: 'center', fontWeight: '600', color: 'crimson'};
+const AFTER_STYLE = {textAlign: 'center', fontWeight: '600', color: 'rgb(40,180,40)'};
 
-Code generation is the idea of using a tool to generate code for us.  
+Code generation is the idea of using a tool to generate code for us.
 In Dart, it comes with the downside of requiring an extra step to "compile"
 an application. Although this problem may be solved in the near future, as the
 Dart team is working on a potential solution to this problem.
@@ -27,7 +51,7 @@ Using code generation, we would write:
 <CodeBlock language="dart">{trimSnippet(fetchUser)}</CodeBlock>
 
 When using Riverpod, code generation is completely optional. It is entirely possible
-to use Riverpod without.  
+to use Riverpod without.
 At the same time, Riverpod embraces code generation and recommends using it.
 
 For information on how to install and use Riverpod's code generator, refer to
@@ -55,33 +79,126 @@ This includes but is not limited to:
 - some Riverpod features will be available only with code generation.
 
 At the same time, many applications already use code generation with packages such
-as [Freezed](https://pub.dev/packages/freezed) or [json_serializable](https://pub.dev/packages/json_serializable).  
+as [Freezed](https://pub.dev/packages/freezed) or [json_serializable](https://pub.dev/packages/json_serializable).
 In that case, your project probably is already setup for code generation, and
 using for Riverpod should be simple.
 
-## Provider type for code generation
+## Provider type
 
-### \[Sync/Async]\[Stateless/Stateful]Provider
+### <span style={RED_STYLE}>[Sync/Async]</span><span style={BLUE_STYLE}>[Stateless/Stateful]</span>Provider
+:::note
+This is just a way of thinking, not actual types. You don’t need to pick a type
+when using code-generation variant anyway. Instead, <span style={RED_STYLE}>Sync/Async</span> is being
+decided by your return type and <span style={BLUE_STYLE}>Stateless/Stateful</span> is being decided
+by whether you need to perform side-effects.
+:::
 
-- <i><u>Note:</u></i> This is just a way of thinking, not actual types. You don’t need to pick
-  a type when using code generation variant anyway!
-
-- `Sync/Async` is being decided by your return type, either of your function or the [build] method
-  in case of using a class (stateful):
-   - `Sync` ⇒ T `Async` ⇒ Future<T\> or Stream<T\>
-
-- `Stateless/Stateful` is being decided by whether you need to expose methods to modify the state or not (side-effects):
-   - `Stateless` ⇒ use a function. `Stateful` ⇒ use a class with [build] method + side effect methods.
-
+<table>
+  <colgroup>
+    <col style={{ minWidth: '200px', maxWidth: '200px' }}/>
+    <col style={MAX_WIDTH_380}/>
+    <col style={MAX_WIDTH_380}/>
+  </colgroup>
+  <tr>
+    <th></th>
+    <th style={{textAlign: 'center'}}><span style={BLUE_20_STYLE}>Stateless</span><br/>(Can’t perform side-effects using public methods)</th>
+    <th style={{textAlign: 'center'}}><span style={BLUE_20_STYLE}>Stateful</span><br/>(Can perform side-effects using public methods)</th>
+  </tr>
+  <tr>
+    <td><span style={RED_16_STYLE}>Sync initialization</span></td>
+    <td style={MAX_WIDTH_380}><CodeBlock language="dart">{trimSnippet(syncStateless)}</CodeBlock></td>
+    <td style={MAX_WIDTH_380}><CodeBlock language="dart">{trimSnippet(syncStateful)}</CodeBlock></td>
+  </tr>
+  <tr>
+    <td><span style={RED_16_STYLE}>Async initialization - Returns a Future</span></td>
+    <td style={MAX_WIDTH_380}><CodeBlock language="dart">{trimSnippet(asyncStatelessFuture)}</CodeBlock></td>
+    <td style={MAX_WIDTH_380}><CodeBlock language="dart">{trimSnippet(asyncStatefulFuture)}</CodeBlock></td>
+  </tr>
+  <tr>
+    <td><span style={RED_16_STYLE}>Async initialization - Returns a Stream</span></td>
+    <td style={MAX_WIDTH_380}><CodeBlock language="dart">{trimSnippet(asyncStatelessStream)}</CodeBlock></td>
+    <td style={MAX_WIDTH_380}><CodeBlock language="dart">{trimSnippet(asyncStatefulStream)}</CodeBlock></td>
+  </tr>
+</table>
 
 ### Migrate from non code generation variant:
 When using non code generation variant, it is necessary to manually determine the type of your provider.
 The following are the corresponding options for transitioning into code generation variant:
 
-- Sync Stateless Provider ⇒ [Provider]
-- Sync Stateful Provider ⇒ [NotifierProvider]
-- Async Stateless Provider ⇒ [FutureProvider] / [StreamProvider]
-- Async Stateful Provider ⇒ [AsyncNotifierProvider] / [StreamNotifierProvider]
+<table>
+  <tr>
+    <td style={PROVIDER_STYLE} rowspan="2">Provider</td>
+    <td style={BEFORE_STYLE}>Before</td>
+    <td><CodeBlock language="dart">{trimSnippet(provider)}</CodeBlock></td>
+  </tr>
+  <tr>
+    <td style={AFTER_STYLE}>After</td>
+    <td><CodeBlock language="dart">{trimSnippet(syncStateless)}</CodeBlock></td>
+  </tr>
+  <tr>
+    <td style={PROVIDER_STYLE} rowspan="2">NotifierProvider</td>
+    <td style={BEFORE_STYLE}>Before</td>
+    <td><CodeBlock language="dart">{trimSnippet(notifierProvider)}</CodeBlock></td>
+  </tr>
+  <tr>
+    <td style={AFTER_STYLE}>After</td>
+    <td><CodeBlock language="dart">{trimSnippet(syncStateful)}</CodeBlock></td>
+  </tr>
+  <tr>
+    <td style={PROVIDER_STYLE} rowspan="2">FutureProvider</td>
+    <td style={BEFORE_STYLE}>Before</td>
+    <td><CodeBlock language="dart">{trimSnippet(futureProvider)}</CodeBlock></td>
+  </tr>
+  <tr>
+    <td style={AFTER_STYLE}>After</td>
+    <td><CodeBlock language="dart">{trimSnippet(asyncStatelessFuture)}</CodeBlock></td>
+  </tr>
+  <tr>
+    <td style={PROVIDER_STYLE} rowspan="2">StreamProvider</td>
+    <td style={BEFORE_STYLE}>Before</td>
+    <td><CodeBlock language="dart">{trimSnippet(streamProvider)}</CodeBlock></td>
+  </tr>
+  <tr>
+    <td style={AFTER_STYLE}>After</td>
+    <td><CodeBlock language="dart">{trimSnippet(asyncStatelessStream)}</CodeBlock></td>
+  </tr>
+  <tr>
+    <td style={PROVIDER_STYLE} rowspan="2">AsyncNotifierProvider</td>
+    <td style={BEFORE_STYLE}>Before</td>
+    <td><CodeBlock language="dart">{trimSnippet(asyncNotifierProvider)}</CodeBlock></td>
+  </tr>
+  <tr>
+    <td style={AFTER_STYLE}>After</td>
+    <td><CodeBlock language="dart">{trimSnippet(asyncStatefulFuture)}</CodeBlock></td>
+  </tr>
+  <tr>
+    <td style={PROVIDER_STYLE} rowspan="2">StreamNotifierProvider</td>
+    <td style={BEFORE_STYLE}>Before</td>
+    <td><CodeBlock language="dart">{trimSnippet(streamNotifierProvider)}</CodeBlock></td>
+  </tr>
+  <tr>
+    <td style={AFTER_STYLE}>After</td>
+    <td><CodeBlock language="dart">{trimSnippet(asyncStatefulStream)}</CodeBlock></td>
+  </tr>
+  <tr>
+    <td style={PROVIDER_STYLE} rowspan="2">.autoDispose</td>
+    <td style={BEFORE_STYLE}>Before</td>
+    <td><CodeBlock language="dart">{trimSnippet(autoDisposeNonCodeGen)}</CodeBlock></td>
+  </tr>
+  <tr>
+    <td style={AFTER_STYLE}>After</td>
+    <td><CodeBlock language="dart">{trimSnippet(autoDisposeCodeGen)}</CodeBlock></td>
+  </tr>
+  <tr>
+    <td style={PROVIDER_STYLE} rowspan="2">.family</td>
+    <td style={BEFORE_STYLE}>Before</td>
+    <td><CodeBlock language="dart">{trimSnippet(familyNonCodeGen)}</CodeBlock></td>
+  </tr>
+  <tr>
+    <td style={AFTER_STYLE}>After</td>
+    <td><CodeBlock language="dart">{trimSnippet(familyCodeGen)}</CodeBlock></td>
+  </tr>
+</table>
 
 These providers are covered in-details at [All Providers](providers/provider).
 
@@ -92,9 +209,3 @@ These providers are covered in-details at [All Providers](providers/provider).
 [flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
 [flutter_hooks]: https://github.com/rrousselGit/flutter_hooks
 [build]: https://pub.dev/documentation/riverpod/latest/riverpod/Notifier/build.html
-[provider]: /docs/providers/provider
-[notifierProvider]: /docs/providers/notifier_provider
-[futureProvider]: /docs/providers/future_provider
-[streamProvider]: /docs/providers/stream_provider
-[asyncNotifierProvider]: /docs/providers/notifier_provider
-[streamNotifierProvider]: https://pub.dev/documentation/riverpod/latest/riverpod/StreamNotifierProvider.html
