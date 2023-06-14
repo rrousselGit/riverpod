@@ -31,7 +31,7 @@ const RED_STYLE = {color: 'indianred', fontWeight: '700'};
 const BLUE_STYLE = {color: 'rgb(103, 134, 196)', fontWeight: '700'};
 const RED_16_STYLE = {color: 'indianred', fontSize: '16px', fontWeight: '700'};
 const BLUE_20_STYLE = {color: 'rgb(103, 134, 196)', fontSize: '20px', fontWeight: '700'};
-const MAX_WIDTH_380 = {maxWidth: '380px'};
+const MAX_WIDTH_420 = {maxWidth: '420px'};
 const PROVIDER_STYLE = {textAlign: 'center', fontWeight: '600', maxWidth: '210px'};
 const BEFORE_STYLE = {textAlign: 'center', fontWeight: '600', color: 'crimson'};
 const AFTER_STYLE = {textAlign: 'center', fontWeight: '600', color: 'rgb(40,180,40)'};
@@ -95,9 +95,9 @@ by whether you need to perform side-effects.
 
 <table>
   <colgroup>
-    <col style={{ minWidth: '200px', maxWidth: '200px' }}/>
-    <col style={MAX_WIDTH_380}/>
-    <col style={MAX_WIDTH_380}/>
+    <col style={{ minWidth: '180px', maxWidth: '180px' }}/>
+    <col style={MAX_WIDTH_420}/>
+    <col style={MAX_WIDTH_420}/>
   </colgroup>
   <tr>
     <th></th>
@@ -106,18 +106,18 @@ by whether you need to perform side-effects.
   </tr>
   <tr>
     <td><span style={RED_16_STYLE}>Sync initialization</span></td>
-    <td style={MAX_WIDTH_380}><CodeBlock language="dart">{trimSnippet(syncStateless)}</CodeBlock></td>
-    <td style={MAX_WIDTH_380}><CodeBlock language="dart">{trimSnippet(syncStateful)}</CodeBlock></td>
+    <td style={MAX_WIDTH_420}><CodeBlock language="dart">{trimSnippet(syncStateless)}</CodeBlock></td>
+    <td style={MAX_WIDTH_420}><CodeBlock language="dart">{trimSnippet(syncStateful)}</CodeBlock></td>
   </tr>
   <tr>
     <td><span style={RED_16_STYLE}>Async initialization - Returns a Future</span></td>
-    <td style={MAX_WIDTH_380}><CodeBlock language="dart">{trimSnippet(asyncStatelessFuture)}</CodeBlock></td>
-    <td style={MAX_WIDTH_380}><CodeBlock language="dart">{trimSnippet(asyncStatefulFuture)}</CodeBlock></td>
+    <td style={MAX_WIDTH_420}><CodeBlock language="dart">{trimSnippet(asyncStatelessFuture)}</CodeBlock></td>
+    <td style={MAX_WIDTH_420}><CodeBlock language="dart">{trimSnippet(asyncStatefulFuture)}</CodeBlock></td>
   </tr>
   <tr>
     <td><span style={RED_16_STYLE}>Async initialization - Returns a Stream</span></td>
-    <td style={MAX_WIDTH_380}><CodeBlock language="dart">{trimSnippet(asyncStatelessStream)}</CodeBlock></td>
-    <td style={MAX_WIDTH_380}><CodeBlock language="dart">{trimSnippet(asyncStatefulStream)}</CodeBlock></td>
+    <td style={MAX_WIDTH_420}><CodeBlock language="dart">{trimSnippet(asyncStatelessStream)}</CodeBlock></td>
+    <td style={MAX_WIDTH_420}><CodeBlock language="dart">{trimSnippet(asyncStatefulStream)}</CodeBlock></td>
   </tr>
 </table>
 

@@ -12,5 +12,5 @@ class ExampleNotifier extends AutoDisposeStreamNotifier<String> {
     yield 'Hello World';
   }
 
-//Add other methods that can mutate the state.
+//Add methods to mutate the state
 }
