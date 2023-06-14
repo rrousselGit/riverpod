@@ -86,12 +86,11 @@ using for Riverpod should be simple.
 ## The Syntax
 
 ### Defining a provider:
-:::note
-This is just a way of thinking, not actual types. You don’t need to pick a type
-when using code-generation variant anyway. Instead, <span style={RED_STYLE}>Sync/Async</span> is being
-decided by your return type and <span style={BLUE_STYLE}>Stateless/Stateful</span> is being decided
-by whether you need to perform side-effects.
-:::
+When defining a provider using code generation, there are two key points to consider:
+1. Return Type: Choose the appropriate return type based on whether the state is initialized
+synchronously or asynchronously.
+2. Function/Class Syntax: Choose between function-based or class-based syntax depending on whether
+you need to perform side-effects using public methods or not.
 
 <table>
   <colgroup>
