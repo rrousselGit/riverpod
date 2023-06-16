@@ -26,8 +26,7 @@ import familyCodeGen from "!!raw-loader!./about_codegen/provider_type/family.dar
 import familyNonCodeGen from "!!raw-loader!./about_codegen/provider_type/non_code_gen/family.dart";
 const RED_STYLE = { color: "indianred", fontWeight: "700" };
 const BLUE_STYLE = { color: "rgb(103, 134, 196)", fontWeight: "700" };
-const RED_16_STYLE = {
-  color: "indianred",
+const FONT_16_STYLE = {
   fontSize: "16px",
   fontWeight: "700",
 };
@@ -137,7 +136,9 @@ When defining a provider using code generation, there are two key points to cons
   </tr>
   <tr>
     <td>
-      <span style={RED_16_STYLE}>Sync initialization</span>
+      <span style={FONT_16_STYLE}>
+        <span style={RED_STYLE}>Sync</span> initialization
+      </span>
     </td>
     <td style={MAX_WIDTH_420}>
       <CodeBlock language="dart">{trimSnippet(syncStateless)}</CodeBlock>
@@ -148,7 +149,9 @@ When defining a provider using code generation, there are two key points to cons
   </tr>
   <tr>
     <td>
-      <span style={RED_16_STYLE}>Async initialization - Returns a Future</span>
+      <span style={FONT_16_STYLE}>
+        <span style={RED_STYLE}>Async</span> initialization - Returns a Future
+      </span>
     </td>
     <td style={MAX_WIDTH_420}>
       <CodeBlock language="dart">{trimSnippet(asyncStatelessFuture)}</CodeBlock>
@@ -159,7 +162,9 @@ When defining a provider using code generation, there are two key points to cons
   </tr>
   <tr>
     <td>
-      <span style={RED_16_STYLE}>Async initialization - Returns a Stream</span>
+      <span style={FONT_16_STYLE}>
+        <span style={RED_STYLE}>Async</span> initialization - Returns a Stream
+      </span>
     </td>
     <td style={MAX_WIDTH_420}>
       <CodeBlock language="dart">{trimSnippet(asyncStatelessStream)}</CodeBlock>
