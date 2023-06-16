@@ -178,6 +178,15 @@ When defining a provider using code generation, it is useful to keep in mind the
   </tr>
 </table>
 
+### Making a provider autoDispose/keepAlive:
+
+Providers created using code generation are autoDispose by default, which means that they will automatically
+dispose of themselves when there are no listeners attached to them (ref.watch/ref.listen).<br />
+This default setting better aligns with Riverpod's philosophy. Initially with the non-code generation variant,
+autoDispose was off by default to accommodate users migrating from `package:provider`.
+
+<CodeBlock language="dart">{trimSnippet(autoDisposeCodeGen)}</CodeBlock>
+
 ## Migrate from non-code-generation variant:
 
 When using non-code-generation variant, it is necessary to manually determine the type of your provider.
