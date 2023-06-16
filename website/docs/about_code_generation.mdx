@@ -14,6 +14,8 @@ import asyncFnFuture from "!!raw-loader!./about_codegen/provider_type/async_fn_f
 import asyncClassFuture from "!!raw-loader!./about_codegen/provider_type/async_class_future.dart";
 import asyncFnStream from "!!raw-loader!./about_codegen/provider_type/async_fn_stream.dart";
 import asyncClassStream from "!!raw-loader!./about_codegen/provider_type/async_class_stream.dart";
+import familyFn from "!!raw-loader!./about_codegen/provider_type/family_fn.dart";
+import familyClass from "!!raw-loader!./about_codegen/provider_type/family_class.dart";
 import provider from "!!raw-loader!./about_codegen/provider_type/non_code_gen/provider.dart";
 import notifierProvider from "!!raw-loader!./about_codegen/provider_type/non_code_gen/notifier_provider.dart";
 import futureProvider from "!!raw-loader!./about_codegen/provider_type/non_code_gen/future_provider.dart";
@@ -186,6 +188,35 @@ This default setting better aligns with Riverpod's philosophy. Initially with th
 autoDispose was off by default to accommodate users migrating from `package:provider`.
 
 <CodeBlock language="dart">{trimSnippet(autoDisposeCodeGen)}</CodeBlock>
+
+### Passing parameters to a provider (family):
+
+Providers created using code generation can accept any number of parameters,
+including named, optional, or default values. However, these parameters should have a consistent ==.
+Meaning either the values should be cached, or the parameters should override ==.
+
+<table>
+  <colgroup>
+    <col style={{ minWidth: "400px" }} />
+    <col style={{ minWidth: "400px" }} />
+  </colgroup>
+  <tr>
+    <th style={{ textAlign: "center" }}>
+      <span style={BLUE_20_STYLE}>Function-Based</span>
+    </th>
+    <th style={{ textAlign: "center" }}>
+      <span style={BLUE_20_STYLE}>Class-Based</span>
+    </th>
+  </tr>
+  <tr>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(familyFn)}</CodeBlock>
+    </td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(familyClass)}</CodeBlock>
+    </td>
+  </tr>
+</table>
 
 ## Migrate from non-code-generation variant:
 
