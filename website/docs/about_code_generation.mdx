@@ -7,10 +7,7 @@ import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
 import fetchUser from "!!raw-loader!./about_codegen/main.dart";
 import rawFetchUser from "!!raw-loader!./about_codegen/raw.dart";
-import {
-  trimSnippet,
-  CodeSnippet,
-} from "../src/components/CodeSnippet";
+import { trimSnippet, CodeSnippet } from "../src/components/CodeSnippet";
 import syncStateless from "!!raw-loader!./about_codegen/provider_type/sync_stateless.dart";
 import syncStateful from "!!raw-loader!./about_codegen/provider_type/sync_stateful.dart";
 import asyncStatelessFuture from "!!raw-loader!./about_codegen/provider_type/async_stateless_future.dart";
@@ -27,14 +24,34 @@ import autoDisposeCodeGen from "!!raw-loader!./about_codegen/provider_type/auto_
 import autoDisposeNonCodeGen from "!!raw-loader!./about_codegen/provider_type/non_code_gen/auto_dispose.dart";
 import familyCodeGen from "!!raw-loader!./about_codegen/provider_type/family.dart";
 import familyNonCodeGen from "!!raw-loader!./about_codegen/provider_type/non_code_gen/family.dart";
-const RED_STYLE = {color: 'indianred', fontWeight: '700'};
-const BLUE_STYLE = {color: 'rgb(103, 134, 196)', fontWeight: '700'};
-const RED_16_STYLE = {color: 'indianred', fontSize: '16px', fontWeight: '700'};
-const BLUE_20_STYLE = {color: 'rgb(103, 134, 196)', fontSize: '20px', fontWeight: '700'};
-const MAX_WIDTH_420 = {maxWidth: '420px'};
-const PROVIDER_STYLE = {textAlign: 'center', fontWeight: '600', maxWidth: '210px'};
-const BEFORE_STYLE = {textAlign: 'center', fontWeight: '600', color: 'crimson'};
-const AFTER_STYLE = {textAlign: 'center', fontWeight: '600', color: 'rgb(40,180,40)'};
+const RED_STYLE = { color: "indianred", fontWeight: "700" };
+const BLUE_STYLE = { color: "rgb(103, 134, 196)", fontWeight: "700" };
+const RED_16_STYLE = {
+  color: "indianred",
+  fontSize: "16px",
+  fontWeight: "700",
+};
+const BLUE_20_STYLE = {
+  color: "rgb(103, 134, 196)",
+  fontSize: "20px",
+  fontWeight: "700",
+};
+const MAX_WIDTH_420 = { maxWidth: "420px" };
+const PROVIDER_STYLE = {
+  textAlign: "center",
+  fontWeight: "600",
+  maxWidth: "210px",
+};
+const BEFORE_STYLE = {
+  textAlign: "center",
+  fontWeight: "600",
+  color: "crimson",
+};
+const AFTER_STYLE = {
+  textAlign: "center",
+  fontWeight: "600",
+  color: "rgb(40,180,40)",
+};
 
 Code generation is the idea of using a tool to generate code for us.
 In Dart, it comes with the downside of requiring an extra step to "compile"
@@ -86,116 +103,204 @@ using for Riverpod should be simple.
 ## The Syntax
 
 ### Defining a provider:
+
 When defining a provider using code generation, there are two key points to consider:
-1. <span style={RED_STYLE}>Sync/Async</span> initialization: Choose the appropriate return type based on whether the state is initialized
-synchronously or asynchronously.
-2. <span style={BLUE_STYLE}>Function/Class</span> syntax: Choose between function-based or class-based syntax depending on whether
-you need to perform side-effects using public methods or not.
+
+1. <span style={RED_STYLE}>Sync/Async</span> initialization: Choose the appropriate
+   return type based on whether the state is initialized synchronously or asynchronously.
+2. <span style={BLUE_STYLE}>Function/Class</span> syntax: Choose between function-based
+   or class-based syntax depending on whether you need to perform side-effects using
+   public methods or not.
 
 <table>
   <colgroup>
-    <col style={{ minWidth: '180px', maxWidth: '180px' }}/>
-    <col style={MAX_WIDTH_420}/>
-    <col style={MAX_WIDTH_420}/>
+    <col style={{ minWidth: "180px", maxWidth: "180px" }} />
+    <col style={MAX_WIDTH_420} />
+    <col style={MAX_WIDTH_420} />
   </colgroup>
   <tr>
     <th></th>
-    <th style={{textAlign: 'center'}}><span style={BLUE_20_STYLE}>Function-Based</span><br/>(Can’t perform side-effects<br/>using public methods)</th>
-    <th style={{textAlign: 'center'}}><span style={BLUE_20_STYLE}>Class-Based</span><br/>(Can perform side-effects<br/>using public methods)</th>
+    <th style={{ textAlign: "center" }}>
+      <span style={BLUE_20_STYLE}>Function-Based</span>
+      <br />
+      (Can’t perform side-effects
+      <br />
+      using public methods)
+    </th>
+    <th style={{ textAlign: "center" }}>
+      <span style={BLUE_20_STYLE}>Class-Based</span>
+      <br />
+      (Can perform side-effects
+      <br />
+      using public methods)
+    </th>
   </tr>
   <tr>
-    <td><span style={RED_16_STYLE}>Sync initialization</span></td>
-    <td style={MAX_WIDTH_420}><CodeBlock language="dart">{trimSnippet(syncStateless)}</CodeBlock></td>
-    <td style={MAX_WIDTH_420}><CodeBlock language="dart">{trimSnippet(syncStateful)}</CodeBlock></td>
+    <td>
+      <span style={RED_16_STYLE}>Sync initialization</span>
+    </td>
+    <td style={MAX_WIDTH_420}>
+      <CodeBlock language="dart">{trimSnippet(syncStateless)}</CodeBlock>
+    </td>
+    <td style={MAX_WIDTH_420}>
+      <CodeBlock language="dart">{trimSnippet(syncStateful)}</CodeBlock>
+    </td>
   </tr>
   <tr>
-    <td><span style={RED_16_STYLE}>Async initialization - Returns a Future</span></td>
-    <td style={MAX_WIDTH_420}><CodeBlock language="dart">{trimSnippet(asyncStatelessFuture)}</CodeBlock></td>
-    <td style={MAX_WIDTH_420}><CodeBlock language="dart">{trimSnippet(asyncStatefulFuture)}</CodeBlock></td>
+    <td>
+      <span style={RED_16_STYLE}>Async initialization - Returns a Future</span>
+    </td>
+    <td style={MAX_WIDTH_420}>
+      <CodeBlock language="dart">{trimSnippet(asyncStatelessFuture)}</CodeBlock>
+    </td>
+    <td style={MAX_WIDTH_420}>
+      <CodeBlock language="dart">{trimSnippet(asyncStatefulFuture)}</CodeBlock>
+    </td>
   </tr>
   <tr>
-    <td><span style={RED_16_STYLE}>Async initialization - Returns a Stream</span></td>
-    <td style={MAX_WIDTH_420}><CodeBlock language="dart">{trimSnippet(asyncStatelessStream)}</CodeBlock></td>
-    <td style={MAX_WIDTH_420}><CodeBlock language="dart">{trimSnippet(asyncStatefulStream)}</CodeBlock></td>
+    <td>
+      <span style={RED_16_STYLE}>Async initialization - Returns a Stream</span>
+    </td>
+    <td style={MAX_WIDTH_420}>
+      <CodeBlock language="dart">{trimSnippet(asyncStatelessStream)}</CodeBlock>
+    </td>
+    <td style={MAX_WIDTH_420}>
+      <CodeBlock language="dart">{trimSnippet(asyncStatefulStream)}</CodeBlock>
+    </td>
   </tr>
 </table>
 
 ## Migrate from non-code-generation variant:
+
 When using non-code-generation variant, it is necessary to manually determine the type of your provider.
 The following are the corresponding options for transitioning into code-generation variant:
 
 <table>
   <tr>
-    <td style={PROVIDER_STYLE} rowspan="2">Provider</td>
+    <td style={PROVIDER_STYLE} rowspan="2">
+      Provider
+    </td>
     <td style={BEFORE_STYLE}>Before</td>
-    <td><CodeBlock language="dart">{trimSnippet(provider)}</CodeBlock></td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(provider)}</CodeBlock>
+    </td>
   </tr>
   <tr>
     <td style={AFTER_STYLE}>After</td>
-    <td><CodeBlock language="dart">{trimSnippet(syncStateless)}</CodeBlock></td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(syncStateless)}</CodeBlock>
+    </td>
   </tr>
   <tr>
-    <td style={PROVIDER_STYLE} rowspan="2">NotifierProvider</td>
+    <td style={PROVIDER_STYLE} rowspan="2">
+      NotifierProvider
+    </td>
     <td style={BEFORE_STYLE}>Before</td>
-    <td><CodeBlock language="dart">{trimSnippet(notifierProvider)}</CodeBlock></td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(notifierProvider)}</CodeBlock>
+    </td>
   </tr>
   <tr>
     <td style={AFTER_STYLE}>After</td>
-    <td><CodeBlock language="dart">{trimSnippet(syncStateful)}</CodeBlock></td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(syncStateful)}</CodeBlock>
+    </td>
   </tr>
   <tr>
-    <td style={PROVIDER_STYLE} rowspan="2">FutureProvider</td>
+    <td style={PROVIDER_STYLE} rowspan="2">
+      FutureProvider
+    </td>
     <td style={BEFORE_STYLE}>Before</td>
-    <td><CodeBlock language="dart">{trimSnippet(futureProvider)}</CodeBlock></td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(futureProvider)}</CodeBlock>
+    </td>
   </tr>
   <tr>
     <td style={AFTER_STYLE}>After</td>
-    <td><CodeBlock language="dart">{trimSnippet(asyncStatelessFuture)}</CodeBlock></td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(asyncStatelessFuture)}</CodeBlock>
+    </td>
   </tr>
   <tr>
-    <td style={PROVIDER_STYLE} rowspan="2">StreamProvider</td>
+    <td style={PROVIDER_STYLE} rowspan="2">
+      StreamProvider
+    </td>
     <td style={BEFORE_STYLE}>Before</td>
-    <td><CodeBlock language="dart">{trimSnippet(streamProvider)}</CodeBlock></td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(streamProvider)}</CodeBlock>
+    </td>
   </tr>
   <tr>
     <td style={AFTER_STYLE}>After</td>
-    <td><CodeBlock language="dart">{trimSnippet(asyncStatelessStream)}</CodeBlock></td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(asyncStatelessStream)}</CodeBlock>
+    </td>
   </tr>
   <tr>
-    <td style={PROVIDER_STYLE} rowspan="2">AsyncNotifierProvider</td>
+    <td style={PROVIDER_STYLE} rowspan="2">
+      AsyncNotifierProvider
+    </td>
     <td style={BEFORE_STYLE}>Before</td>
-    <td><CodeBlock language="dart">{trimSnippet(asyncNotifierProvider)}</CodeBlock></td>
+    <td>
+      <CodeBlock language="dart">
+        {trimSnippet(asyncNotifierProvider)}
+      </CodeBlock>
+    </td>
   </tr>
   <tr>
     <td style={AFTER_STYLE}>After</td>
-    <td><CodeBlock language="dart">{trimSnippet(asyncStatefulFuture)}</CodeBlock></td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(asyncStatefulFuture)}</CodeBlock>
+    </td>
   </tr>
   <tr>
-    <td style={PROVIDER_STYLE} rowspan="2">StreamNotifierProvider</td>
+    <td style={PROVIDER_STYLE} rowspan="2">
+      StreamNotifierProvider
+    </td>
     <td style={BEFORE_STYLE}>Before</td>
-    <td><CodeBlock language="dart">{trimSnippet(streamNotifierProvider)}</CodeBlock></td>
+    <td>
+      <CodeBlock language="dart">
+        {trimSnippet(streamNotifierProvider)}
+      </CodeBlock>
+    </td>
   </tr>
   <tr>
     <td style={AFTER_STYLE}>After</td>
-    <td><CodeBlock language="dart">{trimSnippet(asyncStatefulStream)}</CodeBlock></td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(asyncStatefulStream)}</CodeBlock>
+    </td>
   </tr>
   <tr>
-    <td style={PROVIDER_STYLE} rowspan="2">.autoDispose</td>
+    <td style={PROVIDER_STYLE} rowspan="2">
+      .autoDispose
+    </td>
     <td style={BEFORE_STYLE}>Before</td>
-    <td><CodeBlock language="dart">{trimSnippet(autoDisposeNonCodeGen)}</CodeBlock></td>
+    <td>
+      <CodeBlock language="dart">
+        {trimSnippet(autoDisposeNonCodeGen)}
+      </CodeBlock>
+    </td>
   </tr>
   <tr>
     <td style={AFTER_STYLE}>After</td>
-    <td><CodeBlock language="dart">{trimSnippet(autoDisposeCodeGen)}</CodeBlock></td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(autoDisposeCodeGen)}</CodeBlock>
+    </td>
   </tr>
   <tr>
-    <td style={PROVIDER_STYLE} rowspan="2">.family</td>
+    <td style={PROVIDER_STYLE} rowspan="2">
+      .family
+    </td>
     <td style={BEFORE_STYLE}>Before</td>
-    <td><CodeBlock language="dart">{trimSnippet(familyNonCodeGen)}</CodeBlock></td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(familyNonCodeGen)}</CodeBlock>
+    </td>
   </tr>
   <tr>
     <td style={AFTER_STYLE}>After</td>
-    <td><CodeBlock language="dart">{trimSnippet(familyCodeGen)}</CodeBlock></td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(familyCodeGen)}</CodeBlock>
+    </td>
   </tr>
 </table>
 
