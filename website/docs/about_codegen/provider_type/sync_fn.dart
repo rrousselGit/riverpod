@@ -1,5 +1,9 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+part 'sync_fn.g.dart';
+
 /* SNIPPET START */
 @riverpod
-String example() => 'Hello world';
+String example(ExampleRef ref) {
+  return 'Hello world';
+}

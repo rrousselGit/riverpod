@@ -6,7 +6,9 @@ part 'sync_class.g.dart';
 @riverpod
 class Example extends _$Example {
   @override
-  String build() => 'Hello world';
+  String build() {
+    return 'Hello world';
+  }
 
 //Add methods to mutate the state
 }
