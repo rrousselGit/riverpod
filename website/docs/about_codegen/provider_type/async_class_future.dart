@@ -1,6 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'async_stateful_future.g.dart';
+part 'async_class_future.g.dart';
 
 /* SNIPPET START */
 @riverpod

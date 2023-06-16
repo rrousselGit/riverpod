@@ -1,12 +1,14 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'sync_stateful.g.dart';
+part 'async_class_stream.g.dart';
 
 /* SNIPPET START */
 @riverpod
 class Example extends _$Example {
   @override
-  String build() => 'Hello world';
+  Stream<String> build() async* {
+    yield 'Hello World';
+  }
 
 //Add methods to mutate the state
 }

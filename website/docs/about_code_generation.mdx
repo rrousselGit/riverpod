@@ -8,12 +8,12 @@ import CodeBlock from "@theme/CodeBlock";
 import fetchUser from "!!raw-loader!./about_codegen/main.dart";
 import rawFetchUser from "!!raw-loader!./about_codegen/raw.dart";
 import { trimSnippet, CodeSnippet } from "../src/components/CodeSnippet";
-import syncStateless from "!!raw-loader!./about_codegen/provider_type/sync_stateless.dart";
-import syncStateful from "!!raw-loader!./about_codegen/provider_type/sync_stateful.dart";
-import asyncStatelessFuture from "!!raw-loader!./about_codegen/provider_type/async_stateless_future.dart";
-import asyncStatefulFuture from "!!raw-loader!./about_codegen/provider_type/async_stateful_future.dart";
-import asyncStatelessStream from "!!raw-loader!./about_codegen/provider_type/async_stateless_stream.dart";
-import asyncStatefulStream from "!!raw-loader!./about_codegen/provider_type/async_stateful_stream.dart";
+import syncFn from "!!raw-loader!./about_codegen/provider_type/sync_fn.dart";
+import syncClass from "!!raw-loader!./about_codegen/provider_type/sync_class.dart";
+import asyncFnFuture from "!!raw-loader!./about_codegen/provider_type/async_fn_future.dart";
+import asyncClassFuture from "!!raw-loader!./about_codegen/provider_type/async_class_future.dart";
+import asyncFnStream from "!!raw-loader!./about_codegen/provider_type/async_fn_stream.dart";
+import asyncClassStream from "!!raw-loader!./about_codegen/provider_type/async_class_stream.dart";
 import provider from "!!raw-loader!./about_codegen/provider_type/non_code_gen/provider.dart";
 import notifierProvider from "!!raw-loader!./about_codegen/provider_type/non_code_gen/notifier_provider.dart";
 import futureProvider from "!!raw-loader!./about_codegen/provider_type/non_code_gen/future_provider.dart";
@@ -144,10 +144,10 @@ When defining a provider using code generation, it is useful to keep in mind the
       </span>
     </td>
     <td style={MAX_WIDTH_420}>
-      <CodeBlock language="dart">{trimSnippet(syncStateless)}</CodeBlock>
+      <CodeBlock language="dart">{trimSnippet(syncFn)}</CodeBlock>
     </td>
     <td style={MAX_WIDTH_420}>
-      <CodeBlock language="dart">{trimSnippet(syncStateful)}</CodeBlock>
+      <CodeBlock language="dart">{trimSnippet(syncClass)}</CodeBlock>
     </td>
   </tr>
   <tr>
@@ -157,10 +157,10 @@ When defining a provider using code generation, it is useful to keep in mind the
       </span>
     </td>
     <td style={MAX_WIDTH_420}>
-      <CodeBlock language="dart">{trimSnippet(asyncStatelessFuture)}</CodeBlock>
+      <CodeBlock language="dart">{trimSnippet(asyncFnFuture)}</CodeBlock>
     </td>
     <td style={MAX_WIDTH_420}>
-      <CodeBlock language="dart">{trimSnippet(asyncStatefulFuture)}</CodeBlock>
+      <CodeBlock language="dart">{trimSnippet(asyncClassFuture)}</CodeBlock>
     </td>
   </tr>
   <tr>
@@ -170,10 +170,10 @@ When defining a provider using code generation, it is useful to keep in mind the
       </span>
     </td>
     <td style={MAX_WIDTH_420}>
-      <CodeBlock language="dart">{trimSnippet(asyncStatelessStream)}</CodeBlock>
+      <CodeBlock language="dart">{trimSnippet(asyncFnStream)}</CodeBlock>
     </td>
     <td style={MAX_WIDTH_420}>
-      <CodeBlock language="dart">{trimSnippet(asyncStatefulStream)}</CodeBlock>
+      <CodeBlock language="dart">{trimSnippet(asyncClassStream)}</CodeBlock>
     </td>
   </tr>
 </table>
@@ -196,7 +196,7 @@ The following are the corresponding options for transitioning into code-generati
   <tr>
     <td style={AFTER_STYLE}>After</td>
     <td>
-      <CodeBlock language="dart">{trimSnippet(syncStateless)}</CodeBlock>
+      <CodeBlock language="dart">{trimSnippet(syncFn)}</CodeBlock>
     </td>
   </tr>
   <tr>
@@ -211,7 +211,7 @@ The following are the corresponding options for transitioning into code-generati
   <tr>
     <td style={AFTER_STYLE}>After</td>
     <td>
-      <CodeBlock language="dart">{trimSnippet(syncStateful)}</CodeBlock>
+      <CodeBlock language="dart">{trimSnippet(syncClass)}</CodeBlock>
     </td>
   </tr>
   <tr>
@@ -226,7 +226,7 @@ The following are the corresponding options for transitioning into code-generati
   <tr>
     <td style={AFTER_STYLE}>After</td>
     <td>
-      <CodeBlock language="dart">{trimSnippet(asyncStatelessFuture)}</CodeBlock>
+      <CodeBlock language="dart">{trimSnippet(asyncFnFuture)}</CodeBlock>
     </td>
   </tr>
   <tr>
@@ -241,7 +241,7 @@ The following are the corresponding options for transitioning into code-generati
   <tr>
     <td style={AFTER_STYLE}>After</td>
     <td>
-      <CodeBlock language="dart">{trimSnippet(asyncStatelessStream)}</CodeBlock>
+      <CodeBlock language="dart">{trimSnippet(asyncFnStream)}</CodeBlock>
     </td>
   </tr>
   <tr>
@@ -258,7 +258,7 @@ The following are the corresponding options for transitioning into code-generati
   <tr>
     <td style={AFTER_STYLE}>After</td>
     <td>
-      <CodeBlock language="dart">{trimSnippet(asyncStatefulFuture)}</CodeBlock>
+      <CodeBlock language="dart">{trimSnippet(asyncClassFuture)}</CodeBlock>
     </td>
   </tr>
   <tr>
@@ -275,7 +275,7 @@ The following are the corresponding options for transitioning into code-generati
   <tr>
     <td style={AFTER_STYLE}>After</td>
     <td>
-      <CodeBlock language="dart">{trimSnippet(asyncStatefulStream)}</CodeBlock>
+      <CodeBlock language="dart">{trimSnippet(asyncClassStream)}</CodeBlock>
     </td>
   </tr>
   <tr>

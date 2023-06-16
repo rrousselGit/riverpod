@@ -2,18 +2,17 @@
 
 // ignore_for_file: type=lint
 
-part of 'async_stateful_stream.dart';
+part of 'sync_class.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$exampleHash() => r'79a180d17c5e95105cfe8ccdcde24ead46858c99';
+String _$exampleHash() => r'f176fa5f6d7ef609e77dd64f096152b2065854f7';
 
 /// See also [Example].
 @ProviderFor(Example)
-final exampleProvider =
-    AutoDisposeStreamNotifierProvider<Example, String>.internal(
+final exampleProvider = AutoDisposeNotifierProvider<Example, String>.internal(
   Example.new,
   name: r'exampleProvider',
   debugGetCreateSourceHash:
@@ -22,5 +21,5 @@ final exampleProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$Example = AutoDisposeStreamNotifier<String>;
+typedef _$Example = AutoDisposeNotifier<String>;
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions
