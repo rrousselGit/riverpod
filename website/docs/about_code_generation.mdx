@@ -103,13 +103,16 @@ using for Riverpod should be simple.
 
 ### Defining a provider:
 
-When defining a provider using code generation, there are two key points to consider:
+When defining a provider using code generation, it is useful to keep in mind the following points:
 
-1. <span style={RED_STYLE}>Sync/Async</span> initialization: Choose the appropriate
-   return type based on whether the state is initialized synchronously or asynchronously.
-2. <span style={BLUE_STYLE}>Function/Class</span> syntax: Choose between function-based
-   or class-based syntax depending on whether you need to perform side-effects using
-   public methods or not.
+- All Dart <span style={RED_STYLE}>async</span> primitives (Future, FutureOr, and Stream) are supported.
+- When a function is marked as <span style={RED_STYLE}>async</span>, the provider automatically handles
+  errors/loading states and exposes an AsyncValue.
+- <span style={BLUE_STYLE}>Function-based</span> provider and
+  <span style={BLUE_STYLE}> Class-based</span> provider are pretty much the same,
+  but Class-based provider has the advantage of including public methods that enable
+  external objects to modify the state of the provider (side-effects). Providers,
+  by default, do not have a way to be modified from outside.
 
 <table>
   <colgroup>
