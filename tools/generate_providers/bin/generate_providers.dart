@@ -15,20 +15,8 @@ const disposeLabel = {
   DisposeType.autoDispose: 'AutoDispose',
 };
 
-enum StateType {
-  none,
-  state,
-  stateNotifier,
-  notifier,
-  asyncNotifier,
-  changeNotifier,
-  future,
-  stream,
-}
-
 class StateDetails {
   StateDetails({
-    required this.kind,
     required this.className,
     required this.ref,
     required this.constraints,
@@ -36,7 +24,6 @@ class StateDetails {
     required this.createType,
   });
 
-  final StateType kind;
   final String className;
   final String ref;
   final String constraints;
@@ -375,7 +362,6 @@ Future<void> main(List<String> args) async {
         DisposeType.values,
         [
           StateDetails(
-            kind: StateType.state,
             className: 'StateProvider',
             ref: 'StateProviderRef<State>',
             constraints: 'State',
@@ -383,7 +369,6 @@ Future<void> main(List<String> args) async {
             createType: 'State',
           ),
           StateDetails(
-            kind: StateType.stateNotifier,
             className: 'StateNotifierProvider',
             ref: 'StateNotifierProviderRef<Notifier, State>',
             constraints: 'Notifier extends StateNotifier<State>, State',
@@ -391,7 +376,6 @@ Future<void> main(List<String> args) async {
             createType: 'Notifier',
           ),
           StateDetails(
-            kind: StateType.none,
             className: 'Provider',
             ref: 'ProviderRef<State>',
             constraints: 'State',
@@ -399,7 +383,6 @@ Future<void> main(List<String> args) async {
             createType: 'State',
           ),
           StateDetails(
-            kind: StateType.future,
             className: 'FutureProvider',
             ref: 'FutureProviderRef<State>',
             constraints: 'State',
@@ -407,7 +390,6 @@ Future<void> main(List<String> args) async {
             createType: 'FutureOr<State>',
           ),
           StateDetails(
-            kind: StateType.stream,
             className: 'StreamProvider',
             ref: 'StreamProviderRef<State>',
             constraints: 'State',
@@ -731,7 +713,6 @@ class AutoDisposeStreamNotifierProviderFamilyBuilder {
         DisposeType.values,
         [
           StateDetails(
-            kind: StateType.changeNotifier,
             className: 'ChangeNotifierProvider',
             ref: 'ChangeNotifierProviderRef<Notifier>',
             constraints: 'Notifier extends ChangeNotifier?',
