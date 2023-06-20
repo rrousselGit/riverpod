@@ -436,7 +436,7 @@ void main() {
             provider,
             42,
             container,
-          )
+          ),
         ]);
         verifyNoMoreInteractions(observer);
         verifyNoMoreInteractions(observer2);

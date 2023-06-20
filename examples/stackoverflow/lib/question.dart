@@ -294,7 +294,7 @@ class AnswersCount extends StatelessWidget {
       child: Column(
         children: [
           Text(answerCount.toString(), style: textStyle),
-          Text('answers', style: textStyle)
+          Text('answers', style: textStyle),
         ],
       ),
     );
@@ -316,7 +316,7 @@ class UpvoteCount extends StatelessWidget {
       child: Column(
         children: [
           Text(upvoteCount.toString(), style: textStyle),
-          const Text('votes', style: textStyle)
+          const Text('votes', style: textStyle),
         ],
       ),
     );

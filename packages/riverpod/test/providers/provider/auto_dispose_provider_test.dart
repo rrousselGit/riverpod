@@ -124,7 +124,7 @@ void main() {
         expect(container.read(provider), 0);
         expect(container.getAllProviderElements(), [
           isA<ProviderElementBase<Object?>>()
-              .having((e) => e.origin, 'origin', provider)
+              .having((e) => e.origin, 'origin', provider),
         ]);
         expect(root.getAllProviderElements(), isEmpty);
       });
@@ -142,7 +142,7 @@ void main() {
         expect(container.read(provider), 42);
         expect(container.getAllProviderElements(), [
           isA<ProviderElementBase<Object?>>()
-              .having((e) => e.origin, 'origin', provider)
+              .having((e) => e.origin, 'origin', provider),
         ]);
         expect(root.getAllProviderElements(), isEmpty);
       });
@@ -161,7 +161,7 @@ void main() {
         expect(container.read(provider), 42);
         expect(container.getAllProviderElements(), [
           isA<ProviderElementBase<Object?>>()
-              .having((e) => e.origin, 'origin', provider)
+              .having((e) => e.origin, 'origin', provider),
         ]);
         expect(root.getAllProviderElements(), isEmpty);
       });

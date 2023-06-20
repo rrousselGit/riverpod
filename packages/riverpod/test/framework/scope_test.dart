@@ -155,7 +155,7 @@ Future<void> main() async {
 
       expect(child.getAllProviderElements(), [
         isA<ProviderElement<Object?>>()
-            .having((e) => e.provider, 'provider', provider)
+            .having((e) => e.provider, 'provider', provider),
       ]);
       expect(container.getAllProviderElements(), isEmpty);
     });
@@ -268,7 +268,7 @@ Future<void> main() async {
 
       expect(child.getAllProviderElements(), [
         isA<ProviderElement<Object?>>()
-            .having((e) => e.provider, 'provider', provider(0))
+            .having((e) => e.provider, 'provider', provider(0)),
       ]);
       expect(container.getAllProviderElements(), isEmpty);
     });
@@ -489,7 +489,7 @@ Future<void> main() async {
         (ref) => ref.watch(dep) - ref.watch(dep2),
         dependencies: [
           dep2,
-          dep
+          dep,
         ], // checking that the 'dependencies' order doesn't matter
         name: 'b',
       );
@@ -516,7 +516,7 @@ Future<void> main() async {
           isA<ProviderElementBase<Object?>>()
               .having((e) => e.origin, 'origin', a),
           isA<ProviderElementBase<Object?>>()
-              .having((e) => e.origin, 'origin', b)
+              .having((e) => e.origin, 'origin', b),
         ]),
       );
       expect(mid.getAllProviderElements(), [
@@ -586,7 +586,7 @@ Future<void> main() async {
         mid.getAllProviderElements(),
         [
           isA<ProviderElementBase<Object?>>()
-              .having((e) => e.origin, 'origin', provider)
+              .having((e) => e.origin, 'origin', provider),
         ],
       );
     });
@@ -614,7 +614,7 @@ Future<void> main() async {
           isA<ProviderElementBase<Object?>>()
               .having((e) => e.origin, 'origin', provider),
           isA<ProviderElementBase<Object?>>()
-              .having((e) => e.origin, 'origin', family(21))
+              .having((e) => e.origin, 'origin', family(21)),
         ]),
       );
     });
@@ -645,7 +645,7 @@ Future<void> main() async {
           isA<ProviderElementBase<Object?>>()
               .having((e) => e.origin, 'origin', dep),
           isA<ProviderElementBase<Object?>>()
-              .having((e) => e.origin, 'origin', family(21))
+              .having((e) => e.origin, 'origin', family(21)),
         ]),
       );
     });
@@ -680,7 +680,7 @@ Future<void> main() async {
         container.getAllProviderElements(),
         [
           isA<ProviderElementBase<Object?>>()
-              .having((e) => e.origin, 'origin', dep)
+              .having((e) => e.origin, 'origin', dep),
         ],
       );
       expect(root.getAllProviderElements(), isEmpty);

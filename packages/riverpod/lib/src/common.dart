@@ -256,7 +256,7 @@ abstract class AsyncValue<T> {
       if (hasError) ...[
         'error: $error',
         'stackTrace: $stackTrace',
-      ]
+      ],
     ].join(', ');
 
     return '$runtimeType($content)';

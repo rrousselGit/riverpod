@@ -22,7 +22,7 @@ void main() {
         expect(container.read(provider(0)), 0);
         expect(container.getAllProviderElements(), [
           isA<ProviderElementBase<Object?>>()
-              .having((e) => e.origin, 'origin', provider(0))
+              .having((e) => e.origin, 'origin', provider(0)),
         ]);
         expect(root.getAllProviderElements(), isEmpty);
       });
@@ -81,7 +81,7 @@ void main() {
               ref.onDispose(onDispose.call);
               return '$value override';
             });
-          })
+          }),
         ],
       );
       addTearDown(container.dispose);
