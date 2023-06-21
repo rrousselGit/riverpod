@@ -7,7 +7,7 @@ part 'async_class_stream.g.dart';
 class Example extends _$Example {
   @override
   Stream<String> build() async* {
-    yield 'Hello World';
+    yield 'foo';
   }
 
   //Add methods to mutate the state

@@ -9,7 +9,7 @@ final exampleProvider =
 class ExampleNotifier extends AutoDisposeStreamNotifier<String> {
   @override
   Stream<String> build() async* {
-    yield 'Hello World';
+    yield 'foo';
   }
 
 //Add methods to mutate the state

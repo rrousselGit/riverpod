@@ -7,5 +7,5 @@ part 'async_fn_stream.g.dart';
 Stream<String> example(
   ExampleRef ref,
 ) async* {
-  yield 'Hello World';
+  yield 'foo';
 }

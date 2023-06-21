@@ -7,5 +7,5 @@ part 'async_fn_future.g.dart';
 Future<String> example(
   ExampleRef ref,
 ) async {
-  return Future.value('Hello world');
+  return Future.value('foo');
 }

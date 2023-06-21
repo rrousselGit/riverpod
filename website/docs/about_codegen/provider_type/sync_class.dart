@@ -7,7 +7,7 @@ part 'sync_class.g.dart';
 class Example extends _$Example {
   @override
   String build() {
-    return 'Hello world';
+    return 'foo';
   }
 
   //Add methods to mutate the state

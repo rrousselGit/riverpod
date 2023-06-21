@@ -9,7 +9,7 @@ final exampleProvider =
 class ExampleNotifier extends AutoDisposeAsyncNotifier<String> {
   @override
   Future<String> build() async {
-    return Future.value('Hello World');
+    return Future.value('foo');
   }
 
 //Add methods to mutate the state

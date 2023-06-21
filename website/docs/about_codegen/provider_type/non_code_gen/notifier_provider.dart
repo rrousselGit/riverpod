@@ -9,7 +9,7 @@ final exampleProvider =
 class ExampleNotifier extends AutoDisposeNotifier<String> {
   @override
   String build() {
-    return 'Hello World';
+    return 'foo';
   }
 
 //Add methods to mutate the state

@@ -26,6 +26,7 @@ import autoDisposeCodeGen from "!!raw-loader!./about_codegen/provider_type/auto_
 import autoDisposeNonCodeGen from "!!raw-loader!./about_codegen/provider_type/non_code_gen/auto_dispose.dart";
 import familyCodeGen from "!!raw-loader!./about_codegen/provider_type/family.dart";
 import familyNonCodeGen from "!!raw-loader!./about_codegen/provider_type/non_code_gen/family.dart";
+const TRANSPARENT_STYLE = { backgroundColor: "transparent" };
 const RED_STYLE = { color: "indianred", fontWeight: "700" };
 const BLUE_STYLE = { color: "rgb(103, 134, 196)", fontWeight: "700" };
 const FONT_16_STYLE = {
@@ -37,18 +38,19 @@ const BLUE_20_STYLE = {
   fontSize: "20px",
   fontWeight: "700",
 };
-const MAX_WIDTH_420 = { maxWidth: "420px" };
 const PROVIDER_STYLE = {
   textAlign: "center",
   fontWeight: "600",
   maxWidth: "210px",
 };
 const BEFORE_STYLE = {
+  minWidth: "120px",
   textAlign: "center",
   fontWeight: "600",
   color: "crimson",
 };
 const AFTER_STYLE = {
+  minWidth: "120px",
   textAlign: "center",
   fontWeight: "600",
   color: "rgb(40,180,40)",
@@ -118,11 +120,7 @@ When defining a provider using code generation, it is useful to keep in mind the
   errors/loading states and exposes an AsyncValue.
 
 <table>
-  <colgroup>
-    <col style={{ minWidth: "180px", maxWidth: "180px" }} />
-    <col style={MAX_WIDTH_420} />
-    <col style={MAX_WIDTH_420} />
-  </colgroup>
+  <colgroup></colgroup>
   <tr>
     <th></th>
     <th style={{ textAlign: "center" }}>
@@ -140,42 +138,42 @@ When defining a provider using code generation, it is useful to keep in mind the
       using public methods)
     </th>
   </tr>
-  <tr>
+  <tr style={TRANSPARENT_STYLE}>
     <td>
       <span style={FONT_16_STYLE}>
         <span style={RED_STYLE}>Sync</span>
       </span>
     </td>
-    <td style={MAX_WIDTH_420}>
+    <td>
       <CodeBlock language="dart">{trimSnippet(syncFn)}</CodeBlock>
     </td>
-    <td style={MAX_WIDTH_420}>
+    <td>
       <CodeBlock language="dart">{trimSnippet(syncClass)}</CodeBlock>
     </td>
   </tr>
-  <tr>
+  <tr style={TRANSPARENT_STYLE}>
     <td>
       <span style={FONT_16_STYLE}>
         <span style={RED_STYLE}>Async</span>
       </span>
     </td>
-    <td style={MAX_WIDTH_420}>
+    <td>
       <CodeBlock language="dart">{trimSnippet(asyncFnFuture)}</CodeBlock>
     </td>
-    <td style={MAX_WIDTH_420}>
+    <td>
       <CodeBlock language="dart">{trimSnippet(asyncClassFuture)}</CodeBlock>
     </td>
   </tr>
-  <tr>
+  <tr style={TRANSPARENT_STYLE}>
     <td>
       <span style={FONT_16_STYLE}>
         <span style={RED_STYLE}>Stream</span>
       </span>
     </td>
-    <td style={MAX_WIDTH_420}>
+    <td>
       <CodeBlock language="dart">{trimSnippet(asyncFnStream)}</CodeBlock>
     </td>
-    <td style={MAX_WIDTH_420}>
+    <td>
       <CodeBlock language="dart">{trimSnippet(asyncClassStream)}</CodeBlock>
     </td>
   </tr>
@@ -209,7 +207,7 @@ Meaning either the values should be cached, or the parameters should override ==
       <span style={BLUE_20_STYLE}>Class-Based</span>
     </th>
   </tr>
-  <tr>
+  <tr style={TRANSPARENT_STYLE}>
     <td>
       <CodeBlock language="dart">{trimSnippet(familyFn)}</CodeBlock>
     </td>
@@ -225,70 +223,85 @@ When using non-code-generation variant, it is necessary to manually determine th
 The following are the corresponding options for transitioning into code-generation variant:
 
 <table>
+  <colgroup></colgroup>
   <tr>
-    <td style={PROVIDER_STYLE} rowspan="2">
+    <td style={PROVIDER_STYLE} colspan="2">
       Provider
     </td>
+  </tr>
+  <tr style={TRANSPARENT_STYLE}>
     <td style={BEFORE_STYLE}>Before</td>
     <td>
       <CodeBlock language="dart">{trimSnippet(provider)}</CodeBlock>
     </td>
   </tr>
-  <tr>
+  <tr style={TRANSPARENT_STYLE}>
     <td style={AFTER_STYLE}>After</td>
     <td>
       <CodeBlock language="dart">{trimSnippet(syncFn)}</CodeBlock>
     </td>
   </tr>
+  <colgroup></colgroup>
   <tr>
-    <td style={PROVIDER_STYLE} rowspan="2">
+    <td style={PROVIDER_STYLE} colspan="2">
       NotifierProvider
     </td>
+  </tr>
+  <tr style={TRANSPARENT_STYLE}>
     <td style={BEFORE_STYLE}>Before</td>
     <td>
       <CodeBlock language="dart">{trimSnippet(notifierProvider)}</CodeBlock>
     </td>
   </tr>
-  <tr>
+  <tr style={TRANSPARENT_STYLE}>
     <td style={AFTER_STYLE}>After</td>
     <td>
       <CodeBlock language="dart">{trimSnippet(syncClass)}</CodeBlock>
     </td>
   </tr>
+  <colgroup></colgroup>
   <tr>
-    <td style={PROVIDER_STYLE} rowspan="2">
+    <td style={PROVIDER_STYLE} colspan="2">
       FutureProvider
     </td>
+  </tr>
+  <tr style={TRANSPARENT_STYLE}>
     <td style={BEFORE_STYLE}>Before</td>
     <td>
       <CodeBlock language="dart">{trimSnippet(futureProvider)}</CodeBlock>
     </td>
   </tr>
-  <tr>
+  <tr style={TRANSPARENT_STYLE}>
     <td style={AFTER_STYLE}>After</td>
     <td>
       <CodeBlock language="dart">{trimSnippet(asyncFnFuture)}</CodeBlock>
     </td>
   </tr>
+  <colgroup></colgroup>
   <tr>
-    <td style={PROVIDER_STYLE} rowspan="2">
+    <td style={PROVIDER_STYLE} colspan="2">
       StreamProvider
     </td>
+  </tr>
+  <tr style={TRANSPARENT_STYLE}>
     <td style={BEFORE_STYLE}>Before</td>
     <td>
       <CodeBlock language="dart">{trimSnippet(streamProvider)}</CodeBlock>
     </td>
   </tr>
-  <tr>
+  <tr style={TRANSPARENT_STYLE}>
     <td style={AFTER_STYLE}>After</td>
     <td>
       <CodeBlock language="dart">{trimSnippet(asyncFnStream)}</CodeBlock>
     </td>
   </tr>
+  <colgroup></colgroup>
   <tr>
-    <td style={PROVIDER_STYLE} rowspan="2">
+    <td style={PROVIDER_STYLE} colspan="2">
       AsyncNotifierProvider
     </td>
+  </tr>
+  <tr style={TRANSPARENT_STYLE}>
     <td style={BEFORE_STYLE}>Before</td>
     <td>
       <CodeBlock language="dart">
@@ -296,16 +309,19 @@ The following are the corresponding options for transitioning into code-generati
       </CodeBlock>
     </td>
   </tr>
-  <tr>
+  <tr style={TRANSPARENT_STYLE}>
     <td style={AFTER_STYLE}>After</td>
     <td>
       <CodeBlock language="dart">{trimSnippet(asyncClassFuture)}</CodeBlock>
     </td>
   </tr>
+  <colgroup></colgroup>
   <tr>
-    <td style={PROVIDER_STYLE} rowspan="2">
+    <td style={PROVIDER_STYLE} colspan="2">
       StreamNotifierProvider
     </td>
+  </tr>
+  <tr style={TRANSPARENT_STYLE}>
     <td style={BEFORE_STYLE}>Before</td>
     <td>
       <CodeBlock language="dart">
@@ -313,16 +329,19 @@ The following are the corresponding options for transitioning into code-generati
       </CodeBlock>
     </td>
   </tr>
-  <tr>
+  <tr style={TRANSPARENT_STYLE}>
     <td style={AFTER_STYLE}>After</td>
     <td>
       <CodeBlock language="dart">{trimSnippet(asyncClassStream)}</CodeBlock>
     </td>
   </tr>
+  <colgroup></colgroup>
   <tr>
-    <td style={PROVIDER_STYLE} rowspan="2">
+    <td style={PROVIDER_STYLE} colspan="2">
       .autoDispose
     </td>
+  </tr>
+  <tr style={TRANSPARENT_STYLE}>
     <td style={BEFORE_STYLE}>Before</td>
     <td>
       <CodeBlock language="dart">
@@ -330,22 +349,25 @@ The following are the corresponding options for transitioning into code-generati
       </CodeBlock>
     </td>
   </tr>
-  <tr>
+  <tr style={TRANSPARENT_STYLE}>
     <td style={AFTER_STYLE}>After</td>
     <td>
       <CodeBlock language="dart">{trimSnippet(autoDisposeCodeGen)}</CodeBlock>
     </td>
   </tr>
+  <colgroup></colgroup>
   <tr>
-    <td style={PROVIDER_STYLE} rowspan="2">
+    <td style={PROVIDER_STYLE} colspan="2">
       .family
     </td>
+  </tr>
+  <tr style={TRANSPARENT_STYLE}>
     <td style={BEFORE_STYLE}>Before</td>
     <td>
       <CodeBlock language="dart">{trimSnippet(familyNonCodeGen)}</CodeBlock>
     </td>
   </tr>
-  <tr>
+  <tr style={TRANSPARENT_STYLE}>
     <td style={AFTER_STYLE}>After</td>
     <td>
       <CodeBlock language="dart">{trimSnippet(familyCodeGen)}</CodeBlock>
