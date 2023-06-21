@@ -81,7 +81,7 @@ class AutoDisposeStateNotifierProviderElement<
     implements AutoDisposeStateNotifierProviderRef<NotifierT, T> {
   /// The [ProviderElementBase] for [StateNotifierProvider]
   AutoDisposeStateNotifierProviderElement._(
-    AutoDisposeStateNotifierProvider<NotifierT, T> super.provider,
+    AutoDisposeStateNotifierProvider<NotifierT, T> super._provider,
   ) : super._();
 }
 
@@ -96,7 +96,7 @@ class AutoDisposeStateNotifierProviderFamily<NotifierT extends StateNotifier<T>,
         AutoDisposeStateNotifierProvider<NotifierT, T>> {
   /// The [Family] of [AutoDisposeStateNotifierProvider].
   AutoDisposeStateNotifierProviderFamily(
-    super.create, {
+    super._createFn, {
     super.name,
     super.dependencies,
   }) : super(
@@ -111,8 +111,7 @@ class AutoDisposeStateNotifierProviderFamily<NotifierT extends StateNotifier<T>,
     NotifierT Function(
       AutoDisposeStateNotifierProviderRef<NotifierT, T> ref,
       Arg arg,
-    )
-        create,
+    ) create,
   ) {
     return FamilyOverrideImpl<T, Arg,
         AutoDisposeStateNotifierProvider<NotifierT, T>>(

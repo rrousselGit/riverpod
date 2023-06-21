@@ -22,7 +22,7 @@ void main() {
         expect(container.read(provider(0)), 0);
         expect(container.getAllProviderElements(), [
           isA<ProviderElementBase<Object?>>()
-              .having((e) => e.origin, 'origin', provider(0))
+              .having((e) => e.origin, 'origin', provider(0)),
         ]);
         expect(root.getAllProviderElements(), isEmpty);
       });
@@ -48,14 +48,14 @@ void main() {
     test('works', () async {
       final onDispose = OnDisposeMock();
       final provider = Provider.autoDispose.family<String, int>((ref, value) {
-        ref.onDispose(onDispose);
+        ref.onDispose(onDispose.call);
         return '$value';
       });
       final listener = Listener<String>();
       final container = createContainer();
 
       final sub =
-          container.listen(provider(0), listener, fireImmediately: true);
+          container.listen(provider(0), listener.call, fireImmediately: true);
 
       verifyOnly(listener, listener(null, '0'));
 
@@ -78,17 +78,17 @@ void main() {
         overrides: [
           provider.overrideWithProvider((value) {
             return Provider.autoDispose<String>((ref) {
-              ref.onDispose(onDispose);
+              ref.onDispose(onDispose.call);
               return '$value override';
             });
-          })
+          }),
         ],
       );
       addTearDown(container.dispose);
 
       final sub = container.listen(
         provider(0),
-        listener,
+        listener.call,
         fireImmediately: true,
       );
 

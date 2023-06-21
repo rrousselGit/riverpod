@@ -14,7 +14,7 @@ void main() {
       return Counter();
     });
 
-    container.listen(provider, listener);
+    container.listen(provider, listener.call);
 
     verifyZeroInteractions(listener);
     expect(ref.notifier.debugState, 0);
@@ -197,7 +197,7 @@ void main() {
     final container = createContainer();
     addTearDown(container.dispose);
 
-    container.listen(provider.notifier, listener, fireImmediately: true);
+    container.listen(provider.notifier, listener.call, fireImmediately: true);
 
     verifyOnly(
       listener,
@@ -224,7 +224,7 @@ void main() {
     final container = createContainer();
     addTearDown(container.dispose);
 
-    container.listen(provider, listener, fireImmediately: true);
+    container.listen(provider, listener.call, fireImmediately: true);
 
     verifyOnly(listener, listener(null, 0));
 
@@ -287,7 +287,7 @@ void main() {
     addTearDown(container.dispose);
     final listener = Listener<int>();
 
-    container.listen<int>(provider, listener, fireImmediately: true);
+    container.listen<int>(provider, listener.call, fireImmediately: true);
 
     verifyOnly(listener, listener(null, 42));
     expect(container.read(provider.notifier), notifier);

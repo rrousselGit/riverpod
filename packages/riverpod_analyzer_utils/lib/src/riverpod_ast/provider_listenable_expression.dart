@@ -28,8 +28,8 @@ class ProviderListenableExpression extends RiverpodAst {
         if (element is PropertyAccessorElement) {
           DartObject? annotation;
           try {
-            annotation = _providerForAnnotationChecker
-                .firstAnnotationOfExact(element.variable);
+            annotation =
+                providerForType.firstAnnotationOfExact(element.variable);
           } catch (_) {
             return;
           }

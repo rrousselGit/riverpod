@@ -270,10 +270,10 @@ On peut faire
 
 <CodeBlock>{trimSnippet(watchNotifierBuild)}</CodeBlock>
 
-On obtient les memes effects dans les deux exemples: notre bouton ne se reconstruira 
+On obtient les mêmes effets dans les deux exemples: notre bouton ne se reconstruira 
 pas lorsque le compteur s'incrémente.
 
-En revanche, le deuxième approche prend en charge les cas où le compteur est remis à zéro. 
+En revanche, la deuxième approche prend en charge les cas où le compteur est remis à zéro. 
 Par exemple, une autre partie de l'application pourrait appeler :
 
 ```dart
@@ -330,10 +330,9 @@ En lisant ce `userProvider`, vous pouvez :
 
 D'autres providers peuvent offrir des valeurs alternatives différentes. 
 Pour plus d'informations, reportez-vous à la documentation de chaque 
-provider en consultant la 
-[Référence API] (https://pub.dev/documentation/riverpod/latest/riverpod/riverpod-library.html).
+provider en consultant la [Référence API](https://pub.dev/documentation/riverpod/latest/riverpod/riverpod-library.html).
 
-## Usage "select" pour filtrer les 'rebuilds'
+## Usage de "select" pour filtrer les 'rebuilds'
 
 Une dernière fonctionnalité à mentionner concernant la lecture des providers est la possibilité 
 de réduire le nombre de reconstructions d'un widget/provider, ou combien de fois `ref.listen` exécute une fonction.

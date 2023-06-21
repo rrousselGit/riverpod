@@ -53,6 +53,8 @@ abstract class Ref<State extends Object?> {
   /// once.
   ///
   /// Calling [invalidate] will cause the provider to be disposed immediately.
+  ///
+  /// If used on a provider which is not initialized, this method will have no effect.
   /// {@endtemplate}
   void invalidate(ProviderOrFamily provider);
 

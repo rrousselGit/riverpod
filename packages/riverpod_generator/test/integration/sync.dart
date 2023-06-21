@@ -2,6 +2,58 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'sync.g.dart';
 
+@riverpod
+Raw<Future<String>> rawFuture(RawFutureRef ref) async {
+  return 'Hello world';
+}
+
+@riverpod
+Raw<Stream<String>> rawStream(RawStreamRef ref) async* {
+  yield 'Hello world';
+}
+
+@riverpod
+class RawFutureClass extends _$RawFutureClass {
+  @override
+  Raw<Future<String>> build() async {
+    return 'Hello world';
+  }
+}
+
+@riverpod
+class RawStreamClass extends _$RawStreamClass {
+  @override
+  Raw<Stream<String>> build() async* {
+    yield 'Hello world';
+  }
+}
+
+@riverpod
+Raw<Future<String>> rawFamilyFuture(RawFamilyFutureRef ref, int id) async {
+  return 'Hello world';
+}
+
+@riverpod
+Raw<Stream<String>> rawFamilyStream(RawFamilyStreamRef ref, int id) async* {
+  yield 'Hello world';
+}
+
+@riverpod
+class RawFamilyFutureClass extends _$RawFamilyFutureClass {
+  @override
+  Raw<Future<String>> build(int id) async {
+    return 'Hello world';
+  }
+}
+
+@riverpod
+class RawFamilyStreamClass extends _$RawFamilyStreamClass {
+  @override
+  Raw<Stream<String>> build(int id) async* {
+    yield 'Hello world';
+  }
+}
+
 /// This is some documentation
 @riverpod
 String public(PublicRef ref) {

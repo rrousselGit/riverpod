@@ -116,7 +116,7 @@ class StateProvider<T> extends _StateProviderBase<T>
 /// The element of [StateProvider].
 class StateProviderElement<T> extends ProviderElementBase<T>
     implements StateProviderRef<T> {
-  StateProviderElement._(_StateProviderBase<T> super.provider);
+  StateProviderElement._(_StateProviderBase<T> super._provider);
 
   @override
   StateController<T> get controller => _controllerNotifier.value;
@@ -179,7 +179,7 @@ class StateProviderFamily<R, Arg>
     extends FamilyBase<StateProviderRef<R>, R, Arg, R, StateProvider<R>> {
   /// The [Family] of [StateProvider].
   StateProviderFamily(
-    super.create, {
+    super._createFn, {
     super.name,
     super.dependencies,
   }) : super(

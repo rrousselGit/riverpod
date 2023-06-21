@@ -80,7 +80,7 @@
     "description": "The label for link Resocoder's Weather Bloc to Weather Riverpod in sidebar Sidebar, linking to https://github.com/campanagerald/flutter-bloc-library-v1-tutorial"
   },
   "sidebar.Sidebar.link.Blood Pressure Tracker App": {
-    "message": "Application de suivi de la pression artérielle",
+    "message": "Application de suivi de la tension artérielle",
     "description": "The label for link Blood Pressure Tracker App in sidebar Sidebar, linking to https://github.com/UrosTodosijevic/blood_pressure_tracker"
   },
   "sidebar.Sidebar.link.Firebase Authentication with Riverpod Following Flutter DDD Architecture Pattern": {

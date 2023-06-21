@@ -1,12 +1,14 @@
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
-import 'src/assists/convert_to_consumer_stateful_widget.dart';
-import 'src/assists/convert_to_consumer_widget.dart';
+import 'src/assists/convert_to_stateful_base_widget.dart';
+import 'src/assists/convert_to_stateless_base_widget.dart';
+import 'src/assists/convert_to_widget_utils.dart';
 import 'src/assists/stateful_to_stateless_provider.dart';
 import 'src/assists/stateless_to_stateful_provider.dart';
 import 'src/assists/wrap_with_consumer.dart';
 import 'src/assists/wrap_with_provider_scope.dart';
-import 'src/lints/avoid_manual_providers_as_generated_provider_depenency.dart';
+import 'src/lints/avoid_manual_providers_as_generated_provider_dependency.dart';
+import 'src/lints/avoid_public_notifier_properties.dart';
 import 'src/lints/generator_class_extends.dart';
 import 'src/lints/missing_provider_scope.dart';
 import 'src/lints/provider_dependencies.dart';
@@ -20,6 +22,7 @@ PluginBase createPlugin() => _RiverpodPlugin();
 class _RiverpodPlugin extends PluginBase {
   @override
   List<LintRule> getLintRules(CustomLintConfigs configs) => [
+        const AvoidPublicNotifierProperties(),
         const StatelessRef(),
         const MissingProviderScope(),
         const ProviderParameters(),
@@ -56,8 +59,16 @@ class _RiverpodPlugin extends PluginBase {
   List<Assist> getAssists() => [
         WrapWithConsumer(),
         WrapWithProviderScope(),
-        ConvertToConsumerWidget(),
-        ConvertToConsumerStatefulWidget(),
+        ...StatelessBaseWidgetType.values.map(
+          (targetWidget) => ConvertToStatelessBaseWidget(
+            targetWidget: targetWidget,
+          ),
+        ),
+        ...StatefulBaseWidgetType.values.map(
+          (targetWidget) => ConvertToStatefulBaseWidget(
+            targetWidget: targetWidget,
+          ),
+        ),
 
 // StateProvider to SyncStatefulProvider
 // convert FutureProvider <> AsyncNotifierProvider

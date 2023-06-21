@@ -13,6 +13,12 @@ MyStateNotifier stateNotifier(StateNotifierRef ref) => MyStateNotifier();
 
 @riverpod
 // expect_lint: unsupported_provider_value
+Future<MyStateNotifier> asyncStateNotifier(AsyncStateNotifierRef ref) async {
+  return MyStateNotifier();
+}
+
+@riverpod
+// expect_lint: unsupported_provider_value
 class StateNotifierClass extends _$StateNotifierClass {
   MyStateNotifier build() => MyStateNotifier();
 }
@@ -21,6 +27,24 @@ class StateNotifierClass extends _$StateNotifierClass {
 // expect_lint: unsupported_provider_value
 Future<MyStateNotifier> stateNotifierAsync(StateNotifierAsyncRef ref) async =>
     MyStateNotifier();
+
+// Regression tests for https://github.com/rrousselGit/riverpod/issues/2302
+@riverpod
+class SelfNotifier extends _$SelfNotifier {
+  Future<SelfNotifier> build() async => this;
+}
+
+// Regression tests for https://github.com/rrousselGit/riverpod/issues/2302
+@riverpod
+class SyncSelfNotifier extends _$SyncSelfNotifier {
+  SyncSelfNotifier build() => this;
+}
+
+// Regression tests for https://github.com/rrousselGit/riverpod/issues/2302
+@riverpod
+class StreamSelfNotifier extends _$StreamSelfNotifier {
+  Stream<StreamSelfNotifier> build() => Stream.value(this);
+}
 
 @riverpod
 // expect_lint: unsupported_provider_value
@@ -50,11 +74,22 @@ MyNotifier notifier(NotifierRef ref) => MyNotifier();
 
 @riverpod
 // expect_lint: unsupported_provider_value
+MyAutoDisposeNotifier autoDisposeNotifier(AutoDisposeNotifierRef ref) {
+  return MyAutoDisposeNotifier();
+}
+
+@riverpod
+// expect_lint: unsupported_provider_value
 class NotifierClass extends _$NotifierClass {
   MyNotifier build() => MyNotifier();
 }
 
 class MyNotifier extends Notifier<int> {
+  @override
+  int build() => 0;
+}
+
+class MyAutoDisposeNotifier extends AutoDisposeNotifier<int> {
   @override
   int build() => 0;
 }
@@ -72,4 +107,35 @@ class AsyncNotifierClass extends _$AsyncNotifierClass {
 class MyAsyncNotifier extends AsyncNotifier<int> {
   @override
   int build() => 0;
+}
+
+@riverpod
+Raw<MyChangeNotifier> rawNotifier(RawNotifierRef ref) => MyChangeNotifier();
+
+@riverpod
+Raw<Future<MyChangeNotifier>> rawFutureNotifier(
+  RawFutureNotifierRef ref,
+) async {
+  return MyChangeNotifier();
+}
+
+@riverpod
+Raw<Stream<MyChangeNotifier>> rawStreamNotifier(
+  RawStreamNotifierRef ref,
+) async* {
+  yield MyChangeNotifier();
+}
+
+@riverpod
+Future<Raw<MyChangeNotifier>> futureRawNotifier(
+  FutureRawNotifierRef ref,
+) async {
+  return MyChangeNotifier();
+}
+
+@riverpod
+Stream<Raw<MyChangeNotifier>> streamRawNotifier(
+  StreamRawNotifierRef ref,
+) async* {
+  yield MyChangeNotifier();
 }

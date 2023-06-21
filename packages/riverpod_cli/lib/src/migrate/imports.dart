@@ -15,7 +15,7 @@ class RiverpodImportAllMigrationSuggestor extends GeneralizingAstVisitor<void>
       'package:flutter_riverpod/all.dart':
           'package:flutter_riverpod/flutter_riverpod.dart',
       'package:hooks_riverpod/all.dart':
-          'package:hooks_riverpod/hooks_riverpod.dart'
+          'package:hooks_riverpod/hooks_riverpod.dart',
     };
     for (final entry in imports.entries) {
       if (entry.key == node.uri.stringValue) {

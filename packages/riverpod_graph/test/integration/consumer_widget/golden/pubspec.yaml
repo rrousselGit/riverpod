@@ -2,10 +2,9 @@ name: riverpod_graph_golden_consumer_widget
 description: A new Flutter project.
 
 publish_to: "none"
-version: 1.0.0+1
 
 environment:
-  sdk: ">=2.14.0 <3.0.0"
+  sdk: ">=2.17.0 <3.0.0"
   flutter: ">=1.17.0"
 
 dependencies:

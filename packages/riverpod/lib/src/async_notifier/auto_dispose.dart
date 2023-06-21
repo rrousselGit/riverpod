@@ -119,5 +119,5 @@ class AutoDisposeAsyncNotifierProviderElement<
     with AutoDisposeProviderElementMixin<AsyncValue<T>>
     implements AutoDisposeAsyncNotifierProviderRef<T> {
   /// The [ProviderElementBase] for [AsyncNotifierProvider]
-  AutoDisposeAsyncNotifierProviderElement._(super.provider) : super._();
+  AutoDisposeAsyncNotifierProviderElement._(super._provider) : super._();
 }

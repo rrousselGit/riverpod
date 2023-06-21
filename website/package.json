@@ -3,9 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "generate-outdated-translations.js": "node outdated_docs_generator.js",
     "docusaurus": "docusaurus",
     "start": "docusaurus start",
-    "build": "docusaurus build",
+    "build": "npm run generate-outdated-translations.js && docusaurus build",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
     "clear": "docusaurus clear",
@@ -22,7 +23,8 @@
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
     "sass": "^1.39.2",
-    "yaml": "^2.2.1"
+    "yaml": "^2.2.2",
+    "@babel/helper-get-function-arity": "^7.16.7"
   },
   "devDependencies": {
     "@babel/helper-get-function-arity": "^7.16.7",
@@ -31,7 +33,10 @@
     "@types/react": "^17.0.20",
     "@types/react-helmet": "^6.1.2",
     "@types/react-router-dom": "^5.1.8",
-    "typescript": "^4.4.3"
+    "typescript": "^4.4.3",
+    "fs": "^0.0.1-security",
+    "glob": "^10.2.3",
+    "gray-matter": "^4.0.3"
   },
   "browserslist": {
     "production": [

@@ -1,6 +1,5 @@
 name: codemod_riverpod_test_notifiers_golden
 description: Test riverpod codemods
-version: 0.0.1
 publish_to: none
 
 environment:
@@ -10,6 +9,6 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_hooks:
-  flutter_riverpod: ^0.14.0
-  hooks_riverpod: ^0.14.0
-  riverpod: ^0.14.0
+  flutter_riverpod:
+  hooks_riverpod:
+  riverpod:

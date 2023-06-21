@@ -18,7 +18,7 @@ void main() {
           File('./fixtures/notifiers/golden/$type.dart').readAsStringSync();
 
       await expectSuggestorGeneratesFormattedPatches(
-        RiverpodNotifierChangesMigrationSuggestor(versionConstraint),
+        RiverpodNotifierChangesMigrationSuggestor(versionConstraint).call,
         sourceFile,
         expected,
       );
@@ -34,7 +34,7 @@ void main() {
           File('./fixtures/notifiers/golden/$type.dart').readAsStringSync();
 
       await expectSuggestorGeneratesFormattedPatches(
-        RiverpodNotifierChangesMigrationSuggestor(versionConstraint),
+        RiverpodNotifierChangesMigrationSuggestor(versionConstraint).call,
         sourceFile,
         expected,
       );

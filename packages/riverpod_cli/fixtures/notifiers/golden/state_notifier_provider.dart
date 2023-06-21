@@ -20,7 +20,7 @@ class Counter extends StateNotifier<int> {
 }
 
 class CounterNullable extends StateNotifier<int?> {
-  CounterNullable(int? init) : super(init);
+  CounterNullable(super._state);
 
   void increment() => state = state! + 1;
   void decrement() => state = state! - 1;
@@ -53,7 +53,7 @@ final otherProvider = Provider<int>((ref) {
 });
 
 class ConsumerWatch extends ConsumerWidget {
-  const ConsumerWatch({Key? key}) : super(key: key);
+  const ConsumerWatch({super.key});
 
   @override
   Widget build(BuildContext context, ScopedReader watch) {
@@ -67,7 +67,7 @@ class ConsumerWatch extends ConsumerWidget {
 }
 
 class HooksWatch extends HookWidget {
-  const HooksWatch({Key? key}) : super(key: key);
+  const HooksWatch({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -288,7 +288,7 @@ class ConsumerWidgetVisitor extends RecursiveAstVisitor<void> {
   void visitMethodInvocation(MethodInvocation node) {
     super.visitMethodInvocation(node);
 
-    final targetTypeElement = node.target?.staticType?.element;
+    final targetTypeElement = node.realTarget?.staticType?.element;
 
     if (const {'watch', 'listen', 'read'}.contains(node.methodName.name) &&
         targetTypeElement != null &&
@@ -548,7 +548,7 @@ class ProviderDependencyVisitor extends RecursiveAstVisitor<void> {
   void visitMethodInvocation(MethodInvocation node) {
     super.visitMethodInvocation(node);
 
-    final targetTypeElement = node.target?.staticType?.element;
+    final targetTypeElement = node.realTarget?.staticType?.element;
 
     if (const {'watch', 'listen', 'read'}.contains(node.methodName.name) &&
         targetTypeElement != null &&
@@ -628,12 +628,12 @@ VariableElement parseProviderFromExpression(Expression providerExpression) {
   if (providerExpression is PropertyAccess) {
     final staticElement = providerExpression.propertyName.staticElement;
     if (staticElement is PropertyAccessorElement &&
-        staticElement.library.isFromRiverpod == false) {
+        !staticElement.library.isFromRiverpod) {
       // watch(SampleClass.familyProviders(id))
       return staticElement.declaration.variable;
     }
-    final target = providerExpression.target;
-    if (target != null) return parseProviderFromExpression(target);
+    final target = providerExpression.realTarget;
+    return parseProviderFromExpression(target);
   } else if (providerExpression is PrefixedIdentifier) {
     if (providerExpression.name.isStartedUpperCaseLetter) {
       // watch(SomeClass.provider)
@@ -655,7 +655,7 @@ VariableElement parseProviderFromExpression(Expression providerExpression) {
     return parseProviderFromExpression(providerExpression.function);
   } else if (providerExpression is MethodInvocation) {
     // watch(variable.select(...)) or watch(family(id).select(...))
-    final target = providerExpression.target;
+    final target = providerExpression.realTarget;
     if (target != null) return parseProviderFromExpression(target);
   }
 
