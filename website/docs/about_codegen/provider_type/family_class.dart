@@ -13,5 +13,5 @@ class Example extends _$Example {
     return 'Hello $param1 & param2';
   }
 
-//Add methods to mutate the state
+  //Add methods to mutate the state
 }

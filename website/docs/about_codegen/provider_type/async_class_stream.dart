@@ -10,5 +10,5 @@ class Example extends _$Example {
     yield 'Hello World';
   }
 
-//Add methods to mutate the state
+  //Add methods to mutate the state
 }

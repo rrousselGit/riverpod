@@ -107,14 +107,15 @@ using for Riverpod should be simple.
 
 When defining a provider using code generation, it is useful to keep in mind the following points:
 
+- Providers can be defined either as an annotated <span style={BLUE_STYLE}>function</span> or
+  as an annotated <span style={BLUE_STYLE}>class</span>. They are pretty much the same,
+  but Class-based provider has the advantage of including public methods that enable
+  external objects to modify the state of the provider (side-effects). Functional providers
+  are syntax sugar for writing a Class-based provider with nothing but a `build` method,
+  and as such cannot be modified by the UI.
 - All Dart <span style={RED_STYLE}>async</span> primitives (Future, FutureOr, and Stream) are supported.
 - When a function is marked as <span style={RED_STYLE}>async</span>, the provider automatically handles
   errors/loading states and exposes an AsyncValue.
-- <span style={BLUE_STYLE}>Function-based</span> provider and
-  <span style={BLUE_STYLE}> Class-based</span> provider are pretty much the same,
-  but Class-based provider has the advantage of including public methods that enable
-  external objects to modify the state of the provider (side-effects). Providers,
-  by default, do not have a way to be modified from outside.
 
 <table>
   <colgroup>
@@ -142,7 +143,7 @@ When defining a provider using code generation, it is useful to keep in mind the
   <tr>
     <td>
       <span style={FONT_16_STYLE}>
-        <span style={RED_STYLE}>Sync</span> initialization
+        <span style={RED_STYLE}>Sync</span>
       </span>
     </td>
     <td style={MAX_WIDTH_420}>
@@ -155,7 +156,7 @@ When defining a provider using code generation, it is useful to keep in mind the
   <tr>
     <td>
       <span style={FONT_16_STYLE}>
-        <span style={RED_STYLE}>Async</span> initialization - Returns a Future
+        <span style={RED_STYLE}>Async</span>
       </span>
     </td>
     <td style={MAX_WIDTH_420}>
@@ -168,7 +169,7 @@ When defining a provider using code generation, it is useful to keep in mind the
   <tr>
     <td>
       <span style={FONT_16_STYLE}>
-        <span style={RED_STYLE}>Async</span> initialization - Returns a Stream
+        <span style={RED_STYLE}>Stream</span>
       </span>
     </td>
     <td style={MAX_WIDTH_420}>
