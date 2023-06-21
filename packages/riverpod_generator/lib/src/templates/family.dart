@@ -239,7 +239,7 @@ ${parameters.map((e) => 'final ${e.type.getDisplayString(withNullability: true)}
   bool operator ==(Object other) {
     return ${[
       'other is $providerTypeNameImpl',
-      ...parameters.map((e) => 'other.${e.name} == ${e.name}')
+      ...parameters.map((e) => 'other.${e.name} == ${e.name}'),
     ].join(' && ')};
   }
 

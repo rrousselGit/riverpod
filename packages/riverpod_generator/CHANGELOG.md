@@ -1,3 +1,7 @@
+## Unreleased patch
+
+Disable all lints in generated files.
+
 ## 2.2.3 - 2023-05-12
 
 - `riverpod_analyzer_utils` upgraded to `0.3.1`
