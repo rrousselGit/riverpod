@@ -2,7 +2,7 @@
 
 // ignore_for_file: type=lint
 
-part of 'why_immutability_example.dart';
+part of 'codegen_why_immutability_example.dart';
 
 // **************************************************************************
 // RiverpodGenerator
