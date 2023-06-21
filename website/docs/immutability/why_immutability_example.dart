@@ -4,6 +4,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'why_immutability_example.g.dart';
 
+/* SNIPPET START */
+
 class Fruit {
   Fruit({this.typeOfFruit = 'Apple'});
 
