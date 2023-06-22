@@ -24,13 +24,13 @@ class ChangeFruitButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ref.listen<Fruit>(
       getFruitProvider,
-      (Fruit? previousFruit, Fruit newFruit) {
-        print('The type of fruit has changed');
+      (previousFruit, newFruit) {
+        // The type of fruit has changed
       },
     );
     return ElevatedButton(
       onPressed: () {
-        var fruit = ref.read<Fruit>(getFruitProvider);
+        final fruit = ref.read<Fruit>(getFruitProvider);
         fruit.typeOfFruit = 'Banana'; // Does not trigger listener
       },
       child: const Text('Change type of fruit'),
