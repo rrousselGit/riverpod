@@ -6,6 +6,7 @@ version: 1
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 import immutableState from "./immutability/immutable_state"
+import whyImmutability from "./immutability/why_immutability"
 import {
   trimSnippet,
   AutoSnippet,
@@ -44,6 +45,8 @@ assumes that the returned value is immutable. If returning a mutable object, `pr
 object to rebuild when said object is mutated. Using immutable state on a `Notifier` is also necessary if you
 want `ref.listen`'s "previous" to work. If you use mutable state instead, the "previous" and "next" values on change
 could end-up being the same if an object is mutated.
+
+<AutoSnippet language="dart" {...whyImmutability}></AutoSnippet>
 
 ## Best Practices
 
