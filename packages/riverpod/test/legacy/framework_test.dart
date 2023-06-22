@@ -42,11 +42,11 @@ void main() {
 
     expect(container.getAllProviderElements(), [
       isA<ProviderElementBase<Object?>>()
-          .having((e) => e.origin, 'origin', family2(0))
+          .having((e) => e.origin, 'origin', family2(0)),
     ]);
     expect(root.getAllProviderElements(), [
       isA<ProviderElementBase<Object?>>()
-          .having((e) => e.origin, 'origin', family(0))
+          .having((e) => e.origin, 'origin', family(0)),
     ]);
   });
 

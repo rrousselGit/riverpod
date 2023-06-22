@@ -122,7 +122,7 @@ class Home extends HookConsumerWidget {
                   ],
                   child: const TodoItem(),
                 ),
-              )
+              ),
             ],
           ],
         ),

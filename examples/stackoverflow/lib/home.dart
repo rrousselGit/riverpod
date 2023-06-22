@@ -23,7 +23,7 @@ class MyHomePage extends HookConsumerWidget {
               child: CircularProgressIndicator(),
             ),
             error: (err, stack) {
-              if (err is DioError) {
+              if (err is DioException) {
                 return Text(
                   err.response!.data.toString(),
                 );

@@ -81,7 +81,7 @@ class Logger extends ProviderObserver {
 }
 
 class ImageProvider extends StatelessWidget {
-  const ImageProvider({super.key});
+  const ImageProvider({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +90,7 @@ class ImageProvider extends StatelessWidget {
 }
 
 class ConsumerWatch extends ConsumerWidget {
-  const ConsumerWatch({super.key});
+  const ConsumerWatch({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -108,7 +108,7 @@ class ConsumerWatch extends ConsumerWidget {
 }
 
 class StatelessRead extends ConsumerWidget {
-  const StatelessRead({super.key});
+  const StatelessRead({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -125,7 +125,7 @@ class StatelessRead extends ConsumerWidget {
 }
 
 class StatelessConsumerRead extends ConsumerWidget {
-  const StatelessConsumerRead({super.key});
+  const StatelessConsumerRead({Key? key}) : super(key: key);
 
   void onPressed(WidgetRef ref, BuildContext context) {
     ref.read(counterProvider);
@@ -156,7 +156,7 @@ class StatelessConsumerRead extends ConsumerWidget {
 }
 
 class StatelessListen extends ConsumerWidget {
-  const StatelessListen({super.key});
+  const StatelessListen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -168,7 +168,7 @@ class StatelessListen extends ConsumerWidget {
 }
 
 class StatelessListen2 extends ConsumerWidget {
-  const StatelessListen2({super.key});
+  const StatelessListen2({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -178,7 +178,7 @@ class StatelessListen2 extends ConsumerWidget {
 }
 
 class StatelessListen3 extends ConsumerWidget {
-  const StatelessListen3({super.key});
+  const StatelessListen3({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -194,7 +194,7 @@ void _onChange(int? previous, int i) {
 }
 
 class StatelessExpressionListen extends ConsumerWidget {
-  const StatelessExpressionListen({super.key});
+  const StatelessExpressionListen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -208,7 +208,7 @@ class StatelessExpressionListen extends ConsumerWidget {
 }
 
 class StatefulConsumerBasic extends ConsumerStatefulWidget {
-  const StatefulConsumerBasic({super.key});
+  const StatefulConsumerBasic({Key? key}) : super(key: key);
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -229,7 +229,7 @@ class _StatefulConsumerBasicState extends ConsumerState<StatefulConsumerBasic> {
 }
 
 class StatefulConsumer extends ConsumerStatefulWidget {
-  const StatefulConsumer({super.key});
+  const StatefulConsumer({Key? key}) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
@@ -271,7 +271,7 @@ class _StatefulConsumerState2 extends ConsumerState<StatefulConsumer2> {
 }
 
 class StatefulConsumer2 extends ConsumerStatefulWidget {
-  const StatefulConsumer2({super.key});
+  const StatefulConsumer2({Key? key}) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
@@ -279,7 +279,7 @@ class StatefulConsumer2 extends ConsumerStatefulWidget {
 }
 
 class HooksWatch extends HookConsumerWidget {
-  const HooksWatch({super.key});
+  const HooksWatch({Key? key}) : super(key: key);
 
   void empty() {}
   void error(Object err, StackTrace? st) {}
@@ -316,7 +316,7 @@ class HooksWatch extends HookConsumerWidget {
 }
 
 class HooksConsumerWatch extends StatelessWidget {
-  const HooksConsumerWatch({super.key});
+  const HooksConsumerWatch({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -338,7 +338,7 @@ class HooksConsumerWatch extends StatelessWidget {
 }
 
 class HooksConsumerSimple extends ConsumerWidget {
-  const HooksConsumerSimple({super.key});
+  const HooksConsumerSimple({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => _build(ref);
@@ -352,7 +352,7 @@ class HooksConsumerSimple extends ConsumerWidget {
 }
 
 class BasicUseOfCustomHook extends HookConsumerWidget {
-  const BasicUseOfCustomHook({super.key});
+  const BasicUseOfCustomHook({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     useAnotherHook(ref);
@@ -373,7 +373,7 @@ void useAnotherHook(WidgetRef ref) {
 }
 
 class NoMigrateHook extends HookWidget {
-  const NoMigrateHook({super.key});
+  const NoMigrateHook({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     final state = useState('');
