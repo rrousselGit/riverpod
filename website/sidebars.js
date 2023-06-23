@@ -3,6 +3,8 @@ module.exports = {
     "introduction",
     "getting_started",
     "riverpod_for_provider_users",
+    "about_code_generation",
+    "about_hooks",
     {
       type: "category",
       label: "All Providers",
@@ -16,9 +18,6 @@ module.exports = {
         "providers/change_notifier_provider",
       ],
     },
-    "about_code_generation",
-    "about_hooks",
-
     {
       type: "category",
       label: "Concepts",
