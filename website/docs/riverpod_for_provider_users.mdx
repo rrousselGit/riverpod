@@ -79,6 +79,11 @@ implies significant memory leaks if some provider state is "dynamically mounted"
 i.e. when passing parameters to providers, thus obtaining a `.family` equivalent for Provider 
 is fundamentally impossible at the moment in time.
 
+### Triggering side effects isn't straightforward
+Recall that Provider is a wrapper around `InheritedWidget`'s APIs: there's no `onChange` callback in there. 
+This is problematic for navigation, such as for snackbars, modals, etc. 
+Instead, Riverpod simply offers `ref.listen`, which [integrates well with Flutter].
+
 ## The relationship between Riverpod and Provider
 
 Riverpod is designed to be the spiritual successor of Provider. Hence the
