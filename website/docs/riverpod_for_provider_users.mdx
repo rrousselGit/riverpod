@@ -36,6 +36,10 @@ Declaring two `Provider<int>` will result into unreliable behavior: `InheritedWi
 obtain only one of the two: the closest `Provider<int>` ancestor. While a [workaround] is explained in Provider's 
 documentation, Riverpod simply doesn't have this problem.
 
+By removing this limitation, we can freely split logic into tiny pieces, like having one 
+`Provider<List<Item>> itemsProvider` for all items, and use it to create e.g. 
+`Provider<List<Item>> filteredItemsProvider`.
+
 ### Providers reasonably emit only one value at a time
 When reading an external RESTful API, it's quite common to show 
 the last read value, while a new requested call loads the next one. 
