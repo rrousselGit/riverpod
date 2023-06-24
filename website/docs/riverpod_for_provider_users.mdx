@@ -53,6 +53,15 @@ It's common to end-up with a `ProviderNotFoundException` during refactors and / 
 Indeed, this runtime exception was one of the main reasons Riverpod was created in the first place. 
 With Riverpod, this exceptin simply doesn't exist.
 
+### Disposing of state is difficult
+`InheritedWidget` *can't* react when a consumer stops liste to them. This prevents the ability for Provider 
+to automatically destroy its providers' state when they're no-longer used. 
+With Provider, [we have to] rely on scoping providers to dispose the state when it stops being used. 
+But this isn't easy, as it gets tricky when state is shared between pages. 
+Riverpod solves with easy-to-understand APIs such as [the .autoDispose modifier] and [its keepAlive method]. 
+Furthermore, these two APIs enable flexible and creative caching strategies (e.g. time-based caching). 
+Unluckily, there's no way to implement this with raw `InheritedWidgets`, thus with Provider.
+
 ## The relationship between Riverpod and Provider
 
 Riverpod is designed to be the spiritual successor of Provider. Hence the
