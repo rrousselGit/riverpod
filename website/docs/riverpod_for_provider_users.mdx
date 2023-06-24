@@ -117,29 +117,23 @@ Both packages fill a similar role. Both try to:
 
 You can think of Riverpod as what Provider could've been if it continued to mature for a few years.
 
-- Reducing the over-reliance on "scoping" to dispose objects by offering
-  alternate ways to dispose objects ([autoDispose])
-  While powerful, scoping a provider is fairly advanced and hard to get right.
+### The breaking change
+The only true downside of Riverpod is that it requires changing the widget type to work:
 
-... And a lot more.
+- Instead of extending `StatelessWidget`, with Riverpod you should extend `ConsumerWidget`.
+- Instead of extending `StatefulWidget`, with Riverpod you should extend `ConsumerStatefulWidget`.
 
-The only true downside of Riverpod is that it requires changing the widget type
-to work:
+But this inconvenience is fairly minor in the grand scheme of things. And this requirement might, one day, disappear.
 
-- Instead of extending `StatelessWidget`, with Riverpod you should extend
-  `ConsumerWidget`.
-- Instead of extending `StatefulWidget`, with Riverpod you should extend
-  `ConsumerStatefulWidget`.
+### Choosing the right library
+You're probably asking yourself: 
+*"So, as a Provider user, should I use Provider or Riverpod?"*.
 
-But this inconvenience is fairly minor in the grand scheme of things. And this
-requirement might one day disappear.
+We want to answer to this question very clearly:
 
-So to answer the question you're probably asking yourself:  
-**Should I use Provider or Riverpod?**
+    You probably should be using Riverpod
 
-You probably should be using Riverpod.  
-Riverpod is overhaul better designed and could lead to drastic simplifications
-of your logic.
+Riverpod is overhaul better designed and could lead to drastic simplifications of your logic.
 
 ## The difference between Provider and Riverpod
 
