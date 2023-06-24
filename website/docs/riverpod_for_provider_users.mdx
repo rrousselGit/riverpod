@@ -48,6 +48,11 @@ This would be unreliable, as `didChangeDependencies` may be triggered even if no
 has changed (e.g. such as when there's a GlobalKey involved in the widget tree). 
 Combining state is a core Riverpod mechanism, as we can combine and cache values reactively with zero overhead.
 
+### Lack of safety.
+It's common to end-up with a `ProviderNotFoundException` during refactors and / or during large changes. 
+Indeed, this runtime exception was one of the main reasons Riverpod was created in the first place. 
+With Riverpod, this exceptin simply doesn't exist.
+
 ## The relationship between Riverpod and Provider
 
 Riverpod is designed to be the spiritual successor of Provider. Hence the
