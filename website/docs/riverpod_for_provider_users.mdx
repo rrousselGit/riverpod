@@ -523,6 +523,38 @@ and whenever the provider changes, executes a function.
 The `previous` and `next` parameters of that function correspond to the
 last value before the provider changed and the new value after it changed.
 
+### Scoping Providers vs `.family` + `.autoDispose`
+In pkg:Provider, scoping was used for two things:
+  - destroying state when leaving a page
+  - having custom state per page
+
+As stated above, using scoping just to destroy state isn't ideal. 
+The problem is that scoping didn't work well over large applications. 
+For example, state often is created in one page, but destroyed later in a different page after navigation. 
+This doesn't allow for multiple caches to be active over different pages.
+
+Similarly, the "custom state per page" approach quickly becomes difficult to handle if that state 
+needs to be shared with another part of the widget tree, 
+like you'd need with modals or a with a multi-step form.
+
+Riverpod takes a different approach: first, scoping providers is kind of discouraged; second, 
+`.family` and `.autoDispose` are a complete replacement solution for this.
+
+Within Riverpod, Providers marked as `.autoDispose` automatically destroy their state when they aren't used anymore. 
+When the last widget removing a provider is unmounted, Riverpod will detect this and destroy the provider.
+
+This inherently solves the "destroying state" problem.
+
+Also it is possible to mark a Provider as `.family` (and, at the same time, as `.autoDispose`). 
+This enables passing parameters to providers, which make multiple providers to be spawned and tracked internally. 
+In other words, when passing parameters, *a unique state is created per unique parameter*. 
+
+This solves the "custom state per page" problem. Actually, there's another advantage: such state is no-longer bound to one specific page. 
+Instead, if a different page tries to access the same state, such page will be able to do so by just reusing the parameters.
+
+In many ways, passing parameters to providers is equivalent to a Map key. 
+If the key is the same, the value obtained is the same. If it's a different key, a different state will be obtained.
+
 [provider]: https://pub.dev/packages/provider
 [ref.watch]: /docs/concepts/reading#using-refwatch-to-observe-a-provider
 [ref.listen]: /docs/concepts/reading#using-reflisten-to-react-to-a-provider-change
