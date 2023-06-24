@@ -30,6 +30,11 @@ By the end of this read you should be convinced that Riverpod should be used ins
 
 Such limitations include the following.
 
+### Provider can't keep two (or more) providers of the same "type"
+Declaring two `Provider<int>` will result into unreliable behaviors: InheritedWidget's API will 
+obtain only one: the closest `int` ancestor. While a [workaround] is explained in Provider's 
+documentation, Riverpod simply doesn't have this problem.
+
 ## The relationship between Riverpod and Provider
 
 Riverpod is designed to be the spiritual successor of Provider. Hence the
