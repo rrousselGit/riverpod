@@ -62,6 +62,23 @@ Riverpod solves with easy-to-understand APIs such as [the .autoDispose modifier]
 Furthermore, these two APIs enable flexible and creative caching strategies (e.g. time-based caching). 
 Unluckily, there's no way to implement this with raw `InheritedWidgets`, thus with Provider.
 
+### Lack of a reliable parametrization mechanism
+Riverpod allows its user to declare "parametrized" Providers with the [.family modifier]. 
+Indeed, `.family` is one of the most powerful feature of Riverpod and it's core to its innovations, 
+e.g. it enables enormous [simplification of logic]. 
+
+If we wanted to implement something similar using Provider, we would have to give 
+up easiness of use *and* type-safeness on such parameters. 
+
+Furthermore, not being able to implement a similar `.autoDispose` mechanism with Provider 
+inherently prevents any equivalent implementation of `.family`, too: indeed, 
+these two features [go hand-in-hand].
+
+Finally, [it turns out] that widgets *never* stop to listen to an `InheritedWidget`; this 
+implies significant memory leaks if some provider state is "dynamically mounted", 
+i.e. when passing parameters to providers, thus obtaining a `.family` equivalent for Provider 
+is fundamentally impossible at the moment in time.
+
 ## The relationship between Riverpod and Provider
 
 Riverpod is designed to be the spiritual successor of Provider. Hence the
