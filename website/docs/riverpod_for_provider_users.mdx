@@ -18,92 +18,92 @@ import {
 This article is designed for people familiar with the [Provider] package who
 wants to learn about Riverpod.
 
-Since Provider is widely popular, why would one migrate to Riverpod instead?
+Since Provider is widely popular, why would one migrate to Riverpod?
 
 ## Provider's limitations
 Provider has fundamental issues due to being restricted by the InheritedWidget API.
-Indeed, it is good to keep in mind that, inherently, Provider is a "simpler InheritedWidget".
+Inherently, Provider is a "simpler `InheritedWidget`", or, in other words, 
 Provider is merely an InheritedWidget wrapper, and thus it's limited by it.
 
-By the end of this read you should be convinced that Riverpod should be used instead of Provider. 
-**Riverpod is the more modern, recommended and reliable approach**, whereas Provider is currently lacking in many areas with no way forward.
+By the end of this paragraph you should be convinced that Riverpod is to be prefered over Provider. 
+**Riverpod is indeed a more modern, recommended and reliable approach towards State Management, Caching and Reactivty**, 
+whereas Provider is currently lacking in many areas with no way forward.
 
-Such limitations include the following.
+Here's a list of known Provider issues.
 
 ### Provider can't keep two (or more) providers of the same "type"
-Declaring two `Provider<int>` will result into unreliable behaviors: InheritedWidget's API will 
-obtain only one: the closest `int` ancestor. While a [workaround] is explained in Provider's 
+Declaring two `Provider<int>` will result into unreliable behavior: `InheritedWidget`'s API will 
+obtain only one of the two: the closest `Provider<int>` ancestor. While a [workaround] is explained in Provider's 
 documentation, Riverpod simply doesn't have this problem.
 
 ### Providers reasonably emit only one value at a time
-When reading an external RESTful API, it's quite common to want to show 
+When reading an external RESTful API, it's quite common to show 
 the last read value, while a new requested call loads the next one. 
-Riverpod allows this behavior via emitting two values at a time (a previous data value, 
+Riverpod allows this behavior via emitting two values at a time (i.e. a previous data value, 
 and an incoming new loading value), via `AsyncValue`'s APIs. 
-With Provider, this isn't as easy, or even achieavable.
+With Provider, this isn't as easy, or achievable, even.
 
 ### Combining providers is *very* difficult.
-With Provider we may be tempted to enable the usage of `context.watch` inside provider's create. 
+With Provider we may be tempted to use `context.watch` inside provider's `create`. 
 This would be unreliable, as `didChangeDependencies` may be triggered even if no dependency 
 has changed (e.g. such as when there's a GlobalKey involved in the widget tree). 
-Combining state is a core Riverpod mechanism, as we can combine and cache values reactively with zero overhead.
+Instead, combining state is a core Riverpod mechanism, as we can combine and cache values reactively with zero overhead.
 
 ### Lack of safety.
 It's common to end-up with a `ProviderNotFoundException` during refactors and / or during large changes. 
-Indeed, this runtime exception was one of the main reasons Riverpod was created in the first place. 
-With Riverpod, this exceptin simply doesn't exist.
+Indeed, this runtime exception *was* one of the main reasons Riverpod was created in the first place. 
+Although Riverpod brings much more utility than this, this exception simply can't be thrown.
 
 ### Disposing of state is difficult
-`InheritedWidget` *can't* react when a consumer stops liste to them. This prevents the ability for Provider 
+`InheritedWidget` [*can't* react when a consumer stops listening to them]. This prevents the ability for Provider 
 to automatically destroy its providers' state when they're no-longer used. 
 With Provider, [we have to] rely on scoping providers to dispose the state when it stops being used. 
 But this isn't easy, as it gets tricky when state is shared between pages. 
-Riverpod solves with easy-to-understand APIs such as [the .autoDispose modifier] and [its keepAlive method]. 
+Riverpod solves this with easy-to-understand APIs such as [autodispose] and [keepAlive]. 
 Furthermore, these two APIs enable flexible and creative caching strategies (e.g. time-based caching). 
-Unluckily, there's no way to implement this with raw `InheritedWidgets`, thus with Provider.
+Unluckily, there's no way to implement this with raw `InheritedWidgets`, and thus with Provider.
 
 ### Lack of a reliable parametrization mechanism
 Riverpod allows its user to declare "parametrized" Providers with the [.family modifier]. 
-Indeed, `.family` is one of the most powerful feature of Riverpod and it's core to its innovations, 
+Indeed, `.family` is one of Riverpod's most powerful feature and it is core to its innovations, 
 e.g. it enables enormous [simplification of logic]. 
 
 If we wanted to implement something similar using Provider, we would have to give 
 up easiness of use *and* type-safeness on such parameters. 
 
 Furthermore, not being able to implement a similar `.autoDispose` mechanism with Provider 
-inherently prevents any equivalent implementation of `.family`, too: indeed, 
-these two features [go hand-in-hand].
+inherently prevents any equivalent implementation of `.family`, [as these two features go hand-in-hand].
 
-Finally, [it turns out] that widgets *never* stop to listen to an `InheritedWidget`; this 
-implies significant memory leaks if some provider state is "dynamically mounted", 
-i.e. when passing parameters to providers, thus obtaining a `.family` equivalent for Provider 
-is fundamentally impossible at the moment in time.
+Finally, as shown before, [it turns out] that widgets *never* stop to listen to an `InheritedWidget`; this 
+implies significant memory leaks if some provider state is "dynamically mounted", i.e. when using parameters 
+to a build a Provider, which is exactly what `.family` does.
+Thus, obtaining a `.family` equivalent for Provider is fundamentally impossible at the moment in time.
 
 ### Triggering side effects isn't straightforward
-Recall that Provider is a wrapper around `InheritedWidget`'s APIs: there's no `onChange` callback in there. 
+Since `InheritedWidget` has no `onChange` callback, Provider can't have one. 
 This is problematic for navigation, such as for snackbars, modals, etc. 
 Instead, Riverpod simply offers `ref.listen`, which [integrates well with Flutter].
 
 ## Riverpod's birth
 Originally, a major version of Provider was planned to ship, as a way to solve 
-the aforementioned problems. But it was decided against as this would have been "too breaking" 
-and even controversial, because of the new `ConsumerWidget` API.
-Since Provider is still one of the most used Flutter packages, tt was instead decided 
-to make a separate package, and this Riverpod was created.
+the aforementioned problems. But it was then decided against it, as this would have been 
+"too breaking" and even controversial, because of the new `ConsumerWidget` API.
+Since Provider is still one of the most used Flutter packages, it was instead decided 
+to create a separate package, and thus Riverpod was created.
 
 Creating a separate package enabled:
-  1. Ease of migration for whoever wants to, by also enabling the use of both approaches *at the same time* temporarily;
-  2. Allow folks to stick to Provider if they dislike Riverpod in principle, or if they weren't just confident enough yet;
-  3. Experimentation, allowing for Riverpod to search for production-ready solutions to the various Provider's technical limitations.
+  - Ease of migration for whoever wants to, by also enabling the temporary use of both approaches, *at the same time*;
+  - Allow folks to stick to Provider if they dislike Riverpod in principle, or if they didn't find it reliable yet;
+  - Experimentation, allowing for Riverpod to search for production-ready solutions to the various Provider's technical limitations.
 
-Indeed, Riverpod is designed to be the spiritual successor of Provider. Hence the name "Riverpod", which is an anagram of "Provider".
+Indeed, Riverpod is designed to be the spiritual successor of Provider. Hence the name "Riverpod" (which is an anagram of "Provider").
 
 ### The relationship between Riverpod and Provider
 Still, conceptually, Riverpod and Provider are fairly similar.
 Both packages fill a similar role. Both try to:
 
-- cache and dispose some stateful objects
-- offer a way to mock those objects during tests
+- cache and dispose some stateful objects;
+- offer a way to mock those objects during tests;
 - offer a way for Widgets to listen to those objects in a simple way.
 
 At the same time, think of Riverpod as what Provider could've been if
@@ -482,10 +482,10 @@ last value before the provider changed and the new value after it changed.
 [autodispose]: /docs/concepts/modifiers/auto_dispose
 [workaround]: https://pub.dev/packages/provider#can-i-obtain-two-different-providers-using-the-same-type
 [.family modifier]: /docs/concepts/modifiers/family
-[.autoDispose]: /docs/concepts/modifiers/auto_dispose
-[its keepAlive method]: /docs/concepts/modifiers/auto_dispose#refkeepalive
-[go hand-in-hand]: /docs/concepts/modifiers/family#prefer-using-autodispose-when-the-parameter-is-not-constant
+[keepAlive]: /docs/concepts/modifiers/auto_dispose#refkeepalive
+[as these two features go hand-in-hand]: /docs/concepts/modifiers/family#prefer-using-autodispose-when-the-parameter-is-not-constant
 [simplification of logic]: /docs/concepts/modifiers/family#usage
 [we have to]: https://github.com/flutter/flutter/issues/128432
-[it turns out]: https://github.com/flutter/flutter/issues/106546
+[it turns out]: https://github.com/flutter/flutter/issues/106549
+[*can't* react when a consumer stops listening to them]: https://github.com/flutter/flutter/issues/106546
 [integrates well with Flutter]: /docs/concepts/reading#using-reflisten-to-react-to-a-provider-change
