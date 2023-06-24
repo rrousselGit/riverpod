@@ -42,6 +42,12 @@ Riverpod allows this behavior via emitting two values at a time (a previous data
 and an incoming new loading value), via `AsyncValue`'s APIs. 
 With Provider, this isn't as easy, or even achieavable.
 
+### Combining providers is *very* difficult.
+With Provider we may be tempted to enable the usage of `context.watch` inside provider's create. 
+This would be unreliable, as `didChangeDependencies` may be triggered even if no dependency 
+has changed (e.g. such as when there's a GlobalKey involved in the widget tree). 
+Combining state is a core Riverpod mechanism, as we can combine and cache values reactively with zero overhead.
+
 ## The relationship between Riverpod and Provider
 
 Riverpod is designed to be the spiritual successor of Provider. Hence the
