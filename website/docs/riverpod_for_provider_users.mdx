@@ -18,6 +18,18 @@ import {
 This article is designed for people familiar with the [Provider] package who
 wants to learn about Riverpod.
 
+But why was Riverpod created in the first place?
+
+## Provider's limitations
+Provider has fundamental issues due to being restricted by the InheritedWidget API.
+Indeed, it is good to keep in mind that, inherently, Provider is a "simpler InheritedWidget".
+Provider is merely an InheritedWidget wrapper, and thus it's limited by it.
+
+By the end of this read you should be convinced that Riverpod should be used instead of Provider. 
+**Riverpod is the more modern, recommended and reliable approach**, whereas Provider is currently lacking in many areas with no way forward.
+
+Such limitations include the following.
+
 ## The relationship between Riverpod and Provider
 
 Riverpod is designed to be the spiritual successor of Provider. Hence the
