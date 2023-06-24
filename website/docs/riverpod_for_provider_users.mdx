@@ -43,11 +43,14 @@ Riverpod allows this behavior via emitting two values at a time (i.e. a previous
 and an incoming new loading value), via `AsyncValue`'s APIs. 
 With Provider, this isn't as easy, or achievable, even.
 
-### Combining providers is *very* difficult.
+### Combining providers is hard and error prone.
 With Provider we may be tempted to use `context.watch` inside provider's `create`. 
 This would be unreliable, as `didChangeDependencies` may be triggered even if no dependency 
-has changed (e.g. such as when there's a GlobalKey involved in the widget tree). 
-Instead, combining state is a core Riverpod mechanism, as we can combine and cache values reactively with zero overhead.
+has changed (e.g. such as when there's a GlobalKey involved in the widget tree).
+
+Nonetheless, Provider has an ad-hoc solution named `ProxyProvider`, but it's considered tedious and error-prone.
+Instead, combining state is a core Riverpod mechanism, as we can combine and cache values reactively with zero overhead 
+with simple yet powerful utilites such as [ref.watch] and [ref.listen].
 
 ### Lack of safety.
 It's common to end-up with a `ProviderNotFoundException` during refactors and / or during large changes. 
@@ -106,14 +109,8 @@ Both packages fill a similar role. Both try to:
 - offer a way to mock those objects during tests;
 - offer a way for Widgets to listen to those objects in a simple way.
 
-At the same time, think of Riverpod as what Provider could've been if
-it continued to mature for a few years.
+You can think of Riverpod as what Provider could've been if it continued to mature for a few years.
 
-Riverpod fixes various fundamental problems with Provider, such as but not limited to:
-
-- Significantly simplifying the combination of "providers".
-  Instead of the tedious and error-prone `ProxyProvider`, Riverpod exposes
-  simple yet powerful utilites such as [ref.watch] and [ref.listen].
 - Allowing multiple "provider" to expose a value of the same type.  
   This removes the need for defining custom classes when exposing a
   plain `int` or `String` would work just as well.
