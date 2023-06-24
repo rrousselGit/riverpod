@@ -82,6 +82,12 @@ implies significant memory leaks if some provider state is "dynamically mounted"
 to a build a Provider, which is exactly what `.family` does.
 Thus, obtaining a `.family` equivalent for Provider is fundamentally impossible at the moment in time.
 
+### Testing is tedious
+To be able to write a test, you *have to* re-define providers inside each test.
+
+With Riverpod, providers are ready to use inside tests, by default. Furthermore, Riverpod exposes a 
+handy collection of "overriding" utilites that are crucial when mocking Providers.
+
 ### Triggering side effects isn't straightforward
 Since `InheritedWidget` has no `onChange` callback, Provider can't have one. 
 This is problematic for navigation, such as for snackbars, modals, etc. 
@@ -111,11 +117,6 @@ Both packages fill a similar role. Both try to:
 
 You can think of Riverpod as what Provider could've been if it continued to mature for a few years.
 
-- Allowing multiple "provider" to expose a value of the same type.  
-  This removes the need for defining custom classes when exposing a
-  plain `int` or `String` would work just as well.
-- Removing the need to re-define providers inside tests.
-  With Riverpod, providers are ready to use inside tests by default.
 - Reducing the over-reliance on "scoping" to dispose objects by offering
   alternate ways to dispose objects ([autoDispose])
   While powerful, scoping a provider is fairly advanced and hard to get right.
