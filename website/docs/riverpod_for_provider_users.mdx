@@ -84,18 +84,22 @@ Recall that Provider is a wrapper around `InheritedWidget`'s APIs: there's no `o
 This is problematic for navigation, such as for snackbars, modals, etc. 
 Instead, Riverpod simply offers `ref.listen`, which [integrates well with Flutter].
 
-## The relationship between Riverpod and Provider
+## Riverpod's birth
+Originally, a major version of Provider was planned to ship, as a way to solve 
+the aforementioned problems. But it was decided against as this would have been "too breaking" 
+and even controversial, because of the new `ConsumerWidget` API.
+Since Provider is still one of the most used Flutter packages, tt was instead decided 
+to make a separate package, and this Riverpod was created.
 
-Riverpod is designed to be the spiritual successor of Provider. Hence the
-name "Riverpod", which is an anagram of "Provider".
+Creating a separate package enabled:
+  1. Ease of migration for whoever wants to, by also enabling the use of both approaches *at the same time* temporarily;
+  2. Allow folks to stick to Provider if they dislike Riverpod in principle, or if they weren't just confident enough yet;
+  3. Experimentation, allowing for Riverpod to search for production-ready solutions to the various Provider's technical limitations.
 
-Riverpod was born while searching for solutions to the various technical
-limitations that Provider face. Originally, Riverpod was supposed to be a
-major version of Provider as a way to solve this problem. But it was
-decided against as this would be a decently big breaking change, and
-Provider is one of the most used Flutter packages.
+Indeed, Riverpod is designed to be the spiritual successor of Provider. Hence the name "Riverpod", which is an anagram of "Provider".
 
-Still, conceptually, Riverpod and Provider are fairly similar.  
+### The relationship between Riverpod and Provider
+Still, conceptually, Riverpod and Provider are fairly similar.
 Both packages fill a similar role. Both try to:
 
 - cache and dispose some stateful objects
