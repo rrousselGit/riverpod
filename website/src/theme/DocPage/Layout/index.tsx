@@ -41,7 +41,7 @@ function getBooleanValue(key:string, defaultValue:boolean):boolean {
 
 function Codegen({ children }) {
   const defaultCodeGen = getBooleanValue('codegen-checked', true)
-  const defaultFlutterHooks = getBooleanValue('flutter-hooks-checked', true)
+  const defaultFlutterHooks = getBooleanValue('flutter-hooks-checked', false)
 
   const codegen = useState(defaultCodeGen);
   const flutterHooks = useState(defaultFlutterHooks);
