@@ -1,0 +1,45 @@
+---
+title: Towards Riverpod
+---
+
+
+Originally, a major version of Provider was planned to ship, as a way to solve 
+the aforementioned problems. But it was then decided against it, as this would have been 
+"too breaking" and even controversial, because of the new `ConsumerWidget` API.
+Since Provider is still one of the most used Flutter packages, it was instead decided 
+to create a separate package, and thus Riverpod was created.
+
+Creating a separate package enabled:
+  - Ease of migration for whoever wants to, by also enabling the temporary use of both approaches, *at the same time*;
+  - Allow folks to stick to Provider if they dislike Riverpod in principle, or if they didn't find it reliable yet;
+  - Experimentation, allowing for Riverpod to search for production-ready solutions to the various Provider's technical limitations.
+
+Indeed, Riverpod is designed to be the spiritual successor of Provider. Hence the name "Riverpod" (which is an anagram of "Provider").
+
+### The relationship between Riverpod and Provider
+Still, conceptually, Riverpod and Provider are fairly similar.
+Both packages fill a similar role. Both try to:
+
+- cache and dispose some stateful objects;
+- offer a way to mock those objects during tests;
+- offer a way for Widgets to listen to those objects in a simple way.
+
+You can think of Riverpod as what Provider could've been if it continued to mature for a few years.
+
+### The breaking change
+The only true downside of Riverpod is that it requires changing the widget type to work:
+
+- Instead of extending `StatelessWidget`, with Riverpod you should extend `ConsumerWidget`.
+- Instead of extending `StatefulWidget`, with Riverpod you should extend `ConsumerStatefulWidget`.
+
+But this inconvenience is fairly minor in the grand scheme of things. And this requirement might, one day, disappear.
+
+### Choosing the right library
+You're probably asking yourself: 
+*"So, as a Provider user, should I use Provider or Riverpod?"*.
+
+We want to answer to this question very clearly:
+
+    You probably should be using Riverpod
+
+Riverpod is overhaul better designed and could lead to drastic simplifications of your logic.

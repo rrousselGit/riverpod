@@ -2,7 +2,17 @@ module.exports = {
   Sidebar: [
     "introduction",
     "getting_started",
-    "riverpod_for_provider_users",
+    {
+      type: "category",
+      label: "Riverpod for Provider Users",
+      items: [
+        "from_provider/introduction",
+        "from_provider/providers_limitations/providers_limitations",
+        "from_provider/towards_riverpod",
+        "from_provider/migrating_tips",
+        "from_provider/differences_and_similarities",
+      ],
+    },
     "about_code_generation",
     "about_hooks",
     {

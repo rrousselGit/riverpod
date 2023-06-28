@@ -1,0 +1,57 @@
+---
+title: Migrating tips
+---
+
+
+Migrating from Provider to Riverpod can be very straightforward.  
+Migrating basically consists in a few steps that can be done in an *incremental* way.
+
+### A gentle start
+*If you have an existing app, don't try to migrate all your providers at once.*  
+Don't immediately try to change your `ChangeNotifiers` into the more modern [AsyncNotifiers] from Riverpod.
+
+This will requite a bit of a paradigm shift, so it may be difficult to do initially.  
+Take your time, as it is important to get yourself familiar with Riverpod first.
+
+It's fine to keep using `ChangeNotifier` using Riverpod and not use the latest fancy Riverpod features ASAP.
+
+While you should strive toward moving all your application to Riverpod in the long-run, 
+**don't burn yourself out**.  
+Do it one provider at a time.
+
+### Riverpod and Provider can coexist
+*Keep in mind that it is entirely possible to use both Provider and Riverpod at the same time.*
+
+Indeed, using import aliases, it is possible to use the two APIs altogheter.  
+This is also great for readibilty and it removes any ambiguous API usage.
+
+If you plan on doing this, consider using import aliases for each Provider import in your codebase.
+
+:::info
+A full guide onto how to effectively implement import aliases is incoming soon.
+:::
+
+### Migrating one Provider at a time
+*All Providers from pkg:provider have a strict equivalent in Riverpod*.
+
+In particular, you'll find [ChangeNotifierProvider], which is there to enable migration from Provider.  
+This provider is not recommended when writing new code, and it is not the best way to use Riverpod, but 
+it's a gentle and very easy way to start your migration.
+
+Thus, migrating consists in moving a `provider.Provider` definition *outside* of `MultiProvider`, 
+and change it to a `riverpod.Provider` definition (see the differences below).
+
+
+### Code Generation
+[Code generation] is recommended to use Riverpod the *cutting edge* way.  
+Even so, don't try using codegen right away.
+
+Instead, this should be taken as a further step forward.
+
+Once the "base" migration is done, and you're positive that there are no more `ChangeNotifierProvider`s 
+in your codebase, you can start migrating towards the codegen apprach, which has a simpler yet different syntax.
+
+
+[ChangeNotifierProvider]: /docs/providers/change_notifier_provider
+[Code generation]: /docs/about_code_generation
+[AsyncNotifiers]: /docs/providers/notifier_provider
