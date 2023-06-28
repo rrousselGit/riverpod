@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Layout from "@theme-original/DocPage/Layout";
 // import {useDoc} from '@docusaurus/theme-common/internal';
 
@@ -31,9 +31,25 @@ export const FlutterHooksContext = React.createContext<ContextValue<boolean>>([
   },
 ]);
 
+function getBooleanValue(key:string, defaultValue:boolean):boolean {
+  const value = localStorage.getItem(key);
+  if (value === null || value === undefined) {
+    return defaultValue;
+  }
+  return value === 'true';
+}
+
 function Codegen({ children }) {
-  const codegen = useState(true);
-  const flutterHooks = useState(false);
+  const defaultCodeGen = getBooleanValue('codegen-checked', true)
+  const defaultFlutterHooks = getBooleanValue('flutter-hooks-checked', true)
+
+  const codegen = useState(defaultCodeGen);
+  const flutterHooks = useState(defaultFlutterHooks);
+
+  useEffect(()=>{
+    localStorage.setItem('codegen-checked', codegen[0].toString());
+    localStorage.setItem('flutter-hooks-checked', flutterHooks[0].toString());
+  },[codegen[0],flutterHooks[0]]);
 
   return (
     <CodegenContext.Provider value={codegen}>
