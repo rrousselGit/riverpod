@@ -1,8 +1,6 @@
 name: my_project
 
-command:
-  bootstrap:
-    usePubspecOverrides: true
+
 
 packages:
   - website/**
@@ -48,13 +46,13 @@ scripts:
   test:dart:
     run: melos exec  -c 1 --fail-fast -- "\$MELOS_ROOT_PATH/scripts/coverage.sh"
     description: Run Dart tests for a specific package in this project.
-    select-package:
+    packageFilters:
       flutter: false
-      dir-exists: test
+      dirExists: test
 
   test:flutter:
     run: melos exec --dir-exists="test" -c 1 --fail-fast -- "flutter test --coverage"
     description: Run Flutter tests for a specific package in this project.
-    select-package:
+    packageFilters:
       flutter: true
-      dir-exists: test
+      dirExists: test
