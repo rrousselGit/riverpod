@@ -22,20 +22,19 @@ final itemsProvider = AutoDisposeProvider<List<Item>>.internal(
 );
 
 typedef ItemsRef = AutoDisposeProviderRef<List<Item>>;
-String _$evenOnlyItemsHash() => r'98a0df4a53b29869bc0c1ae583c2129f27c03525';
+String _$evenItemsHash() => r'82b4525e91604745f2b4664531b32d4aff5717d4';
 
-/// See also [evenOnlyItems].
-@ProviderFor(evenOnlyItems)
-final evenOnlyItemsProvider = AutoDisposeProvider<List<Item>>.internal(
-  evenOnlyItems,
-  name: r'evenOnlyItemsProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$evenOnlyItemsHash,
+/// See also [evenItems].
+@ProviderFor(evenItems)
+final evenItemsProvider = AutoDisposeProvider<List<Item>>.internal(
+  evenItems,
+  name: r'evenItemsProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$evenItemsHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef EvenOnlyItemsRef = AutoDisposeProviderRef<List<Item>>;
+typedef EvenItemsRef = AutoDisposeProviderRef<List<Item>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member

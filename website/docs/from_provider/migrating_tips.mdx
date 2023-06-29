@@ -6,7 +6,7 @@ title: Migrating tips
 Migrating from Provider to Riverpod can be very straightforward.  
 Migrating basically consists in a few steps that can be done in an *incremental* way.
 
-### A gentle start
+## A gentle start
 *If you have an existing app, don't try to migrate all your providers at once.*  
 Don't immediately try to change your `ChangeNotifiers` into the more modern [AsyncNotifiers] from Riverpod.
 
@@ -19,7 +19,7 @@ While you should strive toward moving all your application to Riverpod in the lo
 **don't burn yourself out**.  
 Do it one provider at a time.
 
-### Riverpod and Provider can coexist
+## Riverpod and Provider can coexist
 *Keep in mind that it is entirely possible to use both Provider and Riverpod at the same time.*
 
 Indeed, using import aliases, it is possible to use the two APIs altogheter.  
@@ -31,7 +31,7 @@ If you plan on doing this, consider using import aliases for each Provider impor
 A full guide onto how to effectively implement import aliases is incoming soon.
 :::
 
-### Migrating one Provider at a time
+## Migrating one Provider at a time
 *All Providers from pkg:provider have a strict equivalent in Riverpod*.
 
 In particular, you'll find [ChangeNotifierProvider], which is there to enable migration from Provider.  
@@ -42,7 +42,7 @@ Thus, migrating consists in moving a `provider.Provider` definition *outside* of
 and change it to a `riverpod.Provider` definition (see the differences below).
 
 
-### Code Generation
+## Code Generation
 [Code generation] is recommended to use Riverpod the *cutting edge* way.  
 Even so, don't try using codegen right away.
 

@@ -9,7 +9,7 @@ final itemsProvider = Provider.autoDispose(
   (ref) => <Item>[], // ...
 );
 
-final evenOnlyItemsProvider = Provider.autoDispose((ref) {
+final evenItemsProvider = Provider.autoDispose((ref) {
   final items = ref.watch(itemsProvider);
   return [...items.whereIndexed((index, element) => index.isEven)];
 });

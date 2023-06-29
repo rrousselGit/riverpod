@@ -13,7 +13,7 @@ List<Item> items(ItemsRef ref) {
 }
 
 @riverpod
-List<Item> evenOnlyItems(EvenOnlyItemsRef ref) {
+List<Item> evenItems(EvenItemsRef ref) {
   final items = ref.watch(itemsProvider);
   return [...items.whereIndexed((index, element) => index.isEven)];
 }
