@@ -31,25 +31,24 @@ export const FlutterHooksContext = React.createContext<ContextValue<boolean>>([
   },
 ]);
 
-function getBooleanValue(key:string, defaultValue:boolean):boolean {
-  const value = localStorage.getItem(key);
-  if (value === null || value === undefined) {
-    return defaultValue;
+function useSavedState(key: string, defaultValue: boolean) {
+  let saved = localStorage.getItem(key);
+  let value: boolean;
+  if (saved === null || saved === undefined) {
+    value = defaultValue;
+  } else {
+    value = saved === "true";
   }
-  return value === 'true';
+  const state = useState(value);
+  useEffect(() => {
+    localStorage.setItem(key, state[0].toString());
+  }, [state[0]]);
+  return state
 }
 
 function Codegen({ children }) {
-  const defaultCodeGen = getBooleanValue('codegen-checked', true)
-  const defaultFlutterHooks = getBooleanValue('flutter-hooks-checked', false)
-
-  const codegen = useState(defaultCodeGen);
-  const flutterHooks = useState(defaultFlutterHooks);
-
-  useEffect(()=>{
-    localStorage.setItem('codegen-checked', codegen[0].toString());
-    localStorage.setItem('flutter-hooks-checked', flutterHooks[0].toString());
-  },[codegen[0],flutterHooks[0]]);
+  const codegen = useSavedState("codegen-checked", true);
+  const flutterHooks = useSavedState("flutter-hooks-checked", false);
 
   return (
     <CodegenContext.Provider value={codegen}>
