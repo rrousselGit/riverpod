@@ -48,8 +48,7 @@ void testSource(
 
       await resolveSources({
         '$packageName|lib/foo.dart': sourceWithLibrary,
-        if (generated != null)
-          '$packageName|lib/foo.g.dart': 'part of "foo.dart";$generated',
+        if (generated != null) '$packageName|lib/foo.g.dart': 'part of "foo.dart";$generated',
       }, (resolver) async {
         try {
           final originalZone = Zone.current;
@@ -98,9 +97,7 @@ extension ResolverX on Resolver {
     riverpodAst.accept(result);
 
     if (!ignoreErrors) {
-      final errors = result.resolvedRiverpodLibraryResults
-          .expand((e) => e.errors)
-          .toList();
+      final errors = result.resolvedRiverpodLibraryResults.expand((e) => e.errors).toList();
       if (errors.isNotEmpty) {
         throw StateError(errors.map((e) => '- $e\n').join());
       }
@@ -117,8 +114,7 @@ extension ResolverX on Resolver {
       libraryName,
       ignoreErrors: ignoreErrors,
     );
-    final libraryAst =
-        await library.session.getResolvedLibraryByElement(library);
+    final libraryAst = await library.session.getResolvedLibraryByElement(library);
     libraryAst as ResolvedLibraryResult;
 
     final result = ResolvedRiverpodLibraryResult.from(
@@ -140,8 +136,7 @@ extension ResolverX on Resolver {
     }
 
     if (!ignoreErrors) {
-      final errorResult =
-          await library.session.getErrors('/test_lib/lib/foo.dart');
+      final errorResult = await library.session.getErrors('/test_lib/lib/foo.dart');
       errorResult as ErrorsResult;
 
       final errors = errorResult.errors
@@ -181,8 +176,7 @@ class _ParentRiverpodVisitor extends RecursiveRiverpodAstVisitor {
     expect(
       declaration.parent,
       expectedParent,
-      reason:
-          'Node ${declaration.runtimeType} should have $expectedParent as parent',
+      reason: 'Node ${declaration.runtimeType} should have $expectedParent as parent',
     );
     declaration.visitChildren(_ParentRiverpodVisitor(declaration));
   }
@@ -194,8 +188,7 @@ class _ParentRiverpodVisitor extends RecursiveRiverpodAstVisitor {
     expect(
       declaration.parent,
       expectedParent,
-      reason:
-          'Node ${declaration.runtimeType} should have $expectedParent as parent',
+      reason: 'Node ${declaration.runtimeType} should have $expectedParent as parent',
     );
     declaration.visitChildren(_ParentRiverpodVisitor(declaration));
   }
@@ -205,8 +198,7 @@ class _ParentRiverpodVisitor extends RecursiveRiverpodAstVisitor {
     expect(
       declaration.parent,
       expectedParent,
-      reason:
-          'Node ${declaration.runtimeType} should have $expectedParent as parent',
+      reason: 'Node ${declaration.runtimeType} should have $expectedParent as parent',
     );
     declaration.visitChildren(_ParentRiverpodVisitor(declaration));
   }
@@ -216,8 +208,7 @@ class _ParentRiverpodVisitor extends RecursiveRiverpodAstVisitor {
     expect(
       declaration.parent,
       expectedParent,
-      reason:
-          'Node ${declaration.runtimeType} should have $expectedParent as parent',
+      reason: 'Node ${declaration.runtimeType} should have $expectedParent as parent',
     );
     declaration.visitChildren(_ParentRiverpodVisitor(declaration));
   }
@@ -227,8 +218,7 @@ class _ParentRiverpodVisitor extends RecursiveRiverpodAstVisitor {
     expect(
       declaration.parent,
       expectedParent,
-      reason:
-          'Node ${declaration.runtimeType} should have $expectedParent as parent',
+      reason: 'Node ${declaration.runtimeType} should have $expectedParent as parent',
     );
     declaration.visitChildren(_ParentRiverpodVisitor(declaration));
   }
@@ -240,8 +230,7 @@ class _ParentRiverpodVisitor extends RecursiveRiverpodAstVisitor {
     expect(
       dependencies.parent,
       expectedParent,
-      reason:
-          'Node ${dependencies.runtimeType} should have $expectedParent as parent',
+      reason: 'Node ${dependencies.runtimeType} should have $expectedParent as parent',
     );
     dependencies.visitChildren(_ParentRiverpodVisitor(dependencies));
   }
@@ -251,8 +240,7 @@ class _ParentRiverpodVisitor extends RecursiveRiverpodAstVisitor {
     expect(
       dependency.parent,
       expectedParent,
-      reason:
-          'Node ${dependency.runtimeType} should have $expectedParent as parent',
+      reason: 'Node ${dependency.runtimeType} should have $expectedParent as parent',
     );
     dependency.visitChildren(_ParentRiverpodVisitor(dependency));
   }
@@ -264,8 +252,7 @@ class _ParentRiverpodVisitor extends RecursiveRiverpodAstVisitor {
     expect(
       expression.parent,
       expectedParent,
-      reason:
-          'Node ${expression.runtimeType} should have $expectedParent as parent',
+      reason: 'Node ${expression.runtimeType} should have $expectedParent as parent',
     );
     expression.visitChildren(_ParentRiverpodVisitor(expression));
   }
@@ -275,8 +262,7 @@ class _ParentRiverpodVisitor extends RecursiveRiverpodAstVisitor {
     expect(
       invocation.parent,
       expectedParent,
-      reason:
-          'Node ${invocation.runtimeType} should have $expectedParent as parent',
+      reason: 'Node ${invocation.runtimeType} should have $expectedParent as parent',
     );
     invocation.visitChildren(_ParentRiverpodVisitor(invocation));
   }
@@ -286,8 +272,7 @@ class _ParentRiverpodVisitor extends RecursiveRiverpodAstVisitor {
     expect(
       invocation.parent,
       expectedParent,
-      reason:
-          'Node ${invocation.runtimeType} should have $expectedParent as parent',
+      reason: 'Node ${invocation.runtimeType} should have $expectedParent as parent',
     );
     invocation.visitChildren(_ParentRiverpodVisitor(invocation));
   }
@@ -297,8 +282,7 @@ class _ParentRiverpodVisitor extends RecursiveRiverpodAstVisitor {
     expect(
       invocation.parent,
       expectedParent,
-      reason:
-          'Node ${invocation.runtimeType} should have $expectedParent as parent',
+      reason: 'Node ${invocation.runtimeType} should have $expectedParent as parent',
     );
     invocation.visitChildren(_ParentRiverpodVisitor(invocation));
   }
@@ -308,8 +292,7 @@ class _ParentRiverpodVisitor extends RecursiveRiverpodAstVisitor {
     expect(
       result.parent,
       expectedParent,
-      reason:
-          'Node ${result.runtimeType} should have $expectedParent as parent',
+      reason: 'Node ${result.runtimeType} should have $expectedParent as parent',
     );
     result.visitChildren(_ParentRiverpodVisitor(result));
   }
@@ -319,8 +302,7 @@ class _ParentRiverpodVisitor extends RecursiveRiverpodAstVisitor {
     expect(
       annotation.parent,
       expectedParent,
-      reason:
-          'Node ${annotation.runtimeType} should have $expectedParent as parent',
+      reason: 'Node ${annotation.runtimeType} should have $expectedParent as parent',
     );
     annotation.visitChildren(_ParentRiverpodVisitor(annotation));
   }
@@ -332,8 +314,7 @@ class _ParentRiverpodVisitor extends RecursiveRiverpodAstVisitor {
     expect(
       dependency.parent,
       expectedParent,
-      reason:
-          'Node ${dependency.runtimeType} should have $expectedParent as parent',
+      reason: 'Node ${dependency.runtimeType} should have $expectedParent as parent',
     );
     dependency.visitChildren(_ParentRiverpodVisitor(dependency));
   }
@@ -345,8 +326,7 @@ class _ParentRiverpodVisitor extends RecursiveRiverpodAstVisitor {
     expect(
       dependencies.parent,
       expectedParent,
-      reason:
-          'Node ${dependencies.runtimeType} should have $expectedParent as parent',
+      reason: 'Node ${dependencies.runtimeType} should have $expectedParent as parent',
     );
     dependencies.visitChildren(_ParentRiverpodVisitor(dependencies));
   }
@@ -358,34 +338,31 @@ class _ParentRiverpodVisitor extends RecursiveRiverpodAstVisitor {
     expect(
       declaration.parent,
       expectedParent,
-      reason:
-          'Node ${declaration.runtimeType} should have $expectedParent as parent',
+      reason: 'Node ${declaration.runtimeType} should have $expectedParent as parent',
     );
     declaration.visitChildren(_ParentRiverpodVisitor(declaration));
   }
 
   @override
-  void visitStatefulProviderDeclaration(
-    StatefulProviderDeclaration declaration,
+  void visitClassBasedProviderDeclaration(
+    ClassBasedProviderDeclaration declaration,
   ) {
     expect(
       declaration.parent,
       expectedParent,
-      reason:
-          'Node ${declaration.runtimeType} should have $expectedParent as parent',
+      reason: 'Node ${declaration.runtimeType} should have $expectedParent as parent',
     );
     declaration.visitChildren(_ParentRiverpodVisitor(declaration));
   }
 
   @override
-  void visitStatelessProviderDeclaration(
-    StatelessProviderDeclaration declaration,
+  void visitFunctionBasedProviderDeclaration(
+    FunctionBasedProviderDeclaration declaration,
   ) {
     expect(
       declaration.parent,
       expectedParent,
-      reason:
-          'Node ${declaration.runtimeType} should have $expectedParent as parent',
+      reason: 'Node ${declaration.runtimeType} should have $expectedParent as parent',
     );
     declaration.visitChildren(_ParentRiverpodVisitor(declaration));
   }
@@ -395,8 +372,7 @@ class _ParentRiverpodVisitor extends RecursiveRiverpodAstVisitor {
     expect(
       invocation.parent,
       expectedParent,
-      reason:
-          'Node ${invocation.runtimeType} should have $expectedParent as parent',
+      reason: 'Node ${invocation.runtimeType} should have $expectedParent as parent',
     );
     invocation.visitChildren(_ParentRiverpodVisitor(invocation));
   }
@@ -408,8 +384,7 @@ class _ParentRiverpodVisitor extends RecursiveRiverpodAstVisitor {
     expect(
       invocation.parent,
       expectedParent,
-      reason:
-          'Node ${invocation.runtimeType} should have $expectedParent as parent',
+      reason: 'Node ${invocation.runtimeType} should have $expectedParent as parent',
     );
     invocation.visitChildren(_ParentRiverpodVisitor(invocation));
   }
@@ -419,8 +394,7 @@ class _ParentRiverpodVisitor extends RecursiveRiverpodAstVisitor {
     expect(
       invocation.parent,
       expectedParent,
-      reason:
-          'Node ${invocation.runtimeType} should have $expectedParent as parent',
+      reason: 'Node ${invocation.runtimeType} should have $expectedParent as parent',
     );
     invocation.visitChildren(_ParentRiverpodVisitor(invocation));
   }
@@ -430,8 +404,7 @@ class _ParentRiverpodVisitor extends RecursiveRiverpodAstVisitor {
     expect(
       invocation.parent,
       expectedParent,
-      reason:
-          'Node ${invocation.runtimeType} should have $expectedParent as parent',
+      reason: 'Node ${invocation.runtimeType} should have $expectedParent as parent',
     );
     invocation.visitChildren(_ParentRiverpodVisitor(invocation));
   }
@@ -443,8 +416,7 @@ class _ParentRiverpodVisitor extends RecursiveRiverpodAstVisitor {
     expect(
       declaration.parent,
       expectedParent,
-      reason:
-          'Node ${declaration.runtimeType} should have $expectedParent as parent',
+      reason: 'Node ${declaration.runtimeType} should have $expectedParent as parent',
     );
     declaration.visitChildren(_ParentRiverpodVisitor(declaration));
   }
@@ -456,8 +428,7 @@ class _ParentRiverpodVisitor extends RecursiveRiverpodAstVisitor {
     expect(
       declaration.parent,
       expectedParent,
-      reason:
-          'Node ${declaration.runtimeType} should have $expectedParent as parent',
+      reason: 'Node ${declaration.runtimeType} should have $expectedParent as parent',
     );
     declaration.visitChildren(_ParentRiverpodVisitor(declaration));
   }
@@ -474,8 +445,7 @@ class RiverpodAnalysisResult extends RecursiveRiverpodAstVisitor {
     providerContainerInstanceCreationExpressions.add(expression);
   }
 
-  final providerScopeInstanceCreationExpressions =
-      <ProviderScopeInstanceCreationExpression>[];
+  final providerScopeInstanceCreationExpressions = <ProviderScopeInstanceCreationExpression>[];
   @override
   void visitProviderScopeInstanceCreationExpression(
     ProviderScopeInstanceCreationExpression expression,
@@ -507,8 +477,7 @@ class RiverpodAnalysisResult extends RecursiveRiverpodAstVisitor {
     hookConsumerWidgetDeclaration.add(declaration);
   }
 
-  final statefulHookConsumerWidgetDeclaration =
-      <StatefulHookConsumerWidgetDeclaration>[];
+  final statefulHookConsumerWidgetDeclaration = <StatefulHookConsumerWidgetDeclaration>[];
   @override
   void visitStatefulHookConsumerWidgetDeclaration(
     StatefulHookConsumerWidgetDeclaration declaration,
@@ -606,8 +575,7 @@ class RiverpodAnalysisResult extends RecursiveRiverpodAstVisitor {
     riverpodAnnotationDependencies.add(dependencies);
   }
 
-  final consumerStatefulWidgetDeclarations =
-      <ConsumerStatefulWidgetDeclaration>[];
+  final consumerStatefulWidgetDeclarations = <ConsumerStatefulWidgetDeclaration>[];
   @override
   void visitConsumerStatefulWidgetDeclaration(
     ConsumerStatefulWidgetDeclaration declaration,
@@ -617,24 +585,24 @@ class RiverpodAnalysisResult extends RecursiveRiverpodAstVisitor {
   }
 
   final generatorProviderDeclarations = <GeneratorProviderDeclaration>[];
-  final statefulProviderDeclarations = <StatefulProviderDeclaration>[];
+  final classBasedProviderDeclarations = <ClassBasedProviderDeclaration>[];
   @override
-  void visitStatefulProviderDeclaration(
-    StatefulProviderDeclaration declaration,
+  void visitClassBasedProviderDeclaration(
+    ClassBasedProviderDeclaration declaration,
   ) {
-    super.visitStatefulProviderDeclaration(declaration);
+    super.visitClassBasedProviderDeclaration(declaration);
     generatorProviderDeclarations.add(declaration);
-    statefulProviderDeclarations.add(declaration);
+    classBasedProviderDeclarations.add(declaration);
   }
 
-  final statelessProviderDeclarations = <StatelessProviderDeclaration>[];
+  final functionBasedProviderDeclarations = <FunctionBasedProviderDeclaration>[];
   @override
-  void visitStatelessProviderDeclaration(
-    StatelessProviderDeclaration declaration,
+  void visitFunctionBasedProviderDeclaration(
+    FunctionBasedProviderDeclaration declaration,
   ) {
-    super.visitStatelessProviderDeclaration(declaration);
+    super.visitFunctionBasedProviderDeclaration(declaration);
     generatorProviderDeclarations.add(declaration);
-    statelessProviderDeclarations.add(declaration);
+    functionBasedProviderDeclarations.add(declaration);
   }
 
   final widgetRefInvocations = <WidgetRefInvocation>[];

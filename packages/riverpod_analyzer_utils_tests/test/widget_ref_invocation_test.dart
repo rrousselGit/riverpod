@@ -117,7 +117,7 @@ class MyWidget extends ConsumerWidget {
     expect(
       result.widgetRefWatchInvocations[1].provider.providerElement,
       same(
-        result.statelessProviderDeclarations.findByName('dep2').providerElement,
+        result.functionBasedProviderDeclarations.findByName('dep2').providerElement,
       ),
     );
     expect(result.widgetRefWatchInvocations[1].provider.familyArguments, null);
@@ -138,7 +138,7 @@ class MyWidget extends ConsumerWidget {
     expect(
       result.widgetRefWatchInvocations[2].provider.providerElement,
       same(
-        result.statefulProviderDeclarations.findByName('Dep3').providerElement,
+        result.classBasedProviderDeclarations.findByName('Dep3').providerElement,
       ),
     );
     expect(result.widgetRefWatchInvocations[2].provider.familyArguments, null);
@@ -225,7 +225,7 @@ void fn(_Ref ref) {
     expect(
       result.widgetRefWatchInvocations[1].provider.providerElement,
       same(
-        result.statelessProviderDeclarations.findByName('dep2').providerElement,
+        result.functionBasedProviderDeclarations.findByName('dep2').providerElement,
       ),
     );
     expect(result.widgetRefWatchInvocations[1].provider.familyArguments, null);
@@ -246,7 +246,7 @@ void fn(_Ref ref) {
     expect(
       result.widgetRefWatchInvocations[2].provider.providerElement,
       same(
-        result.statefulProviderDeclarations.findByName('Dep3').providerElement,
+        result.classBasedProviderDeclarations.findByName('Dep3').providerElement,
       ),
     );
     expect(result.widgetRefWatchInvocations[2].provider.familyArguments, null);
@@ -564,9 +564,7 @@ void fn(_Ref ref) {
     expect(
       result.widgetRefWatchInvocations[1].provider.providerElement,
       same(
-        result.statelessProviderDeclarations
-            .findByName('family2')
-            .providerElement,
+        result.functionBasedProviderDeclarations.findByName('family2').providerElement,
       ),
     );
     expect(
@@ -590,9 +588,7 @@ void fn(_Ref ref) {
     expect(
       result.widgetRefWatchInvocations[2].provider.providerElement,
       same(
-        result.statefulProviderDeclarations
-            .findByName('Family3')
-            .providerElement,
+        result.classBasedProviderDeclarations.findByName('Family3').providerElement,
       ),
     );
     expect(
@@ -601,8 +597,7 @@ void fn(_Ref ref) {
     );
   });
 
-  testSource('Decodes provider.query ref.watch usages',
-      runGenerator: true, source: r'''
+  testSource('Decodes provider.query ref.watch usages', runGenerator: true, source: r'''
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -703,7 +698,7 @@ void fn(_Ref ref) {
     expect(
       result.widgetRefWatchInvocations[1].provider.providerElement,
       same(
-        result.statelessProviderDeclarations.findByName('dep2').providerElement,
+        result.functionBasedProviderDeclarations.findByName('dep2').providerElement,
       ),
     );
 
@@ -724,7 +719,7 @@ void fn(_Ref ref) {
     expect(
       result.widgetRefWatchInvocations[2].provider.providerElement,
       same(
-        result.statefulProviderDeclarations.findByName('Dep3').providerElement,
+        result.classBasedProviderDeclarations.findByName('Dep3').providerElement,
       ),
     );
 
@@ -748,9 +743,7 @@ void fn(_Ref ref) {
     expect(
       result.widgetRefWatchInvocations[3].provider.providerElement,
       same(
-        result.statefulProviderDeclarations
-            .findByName('Family')
-            .providerElement,
+        result.classBasedProviderDeclarations.findByName('Family').providerElement,
       ),
     );
   });

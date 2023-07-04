@@ -36,8 +36,7 @@ final dependency = Provider((ref) {
     expect(result.refWatchInvocations.single.provider.providerElement, null);
   });
 
-  testSource('Decodes ref expressions in Notifier methods',
-      runGenerator: true, source: r'''
+  testSource('Decodes ref expressions in Notifier methods', runGenerator: true, source: r'''
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -57,7 +56,7 @@ class MyNotifier extends _$MyNotifier {
 // Regression test for https://github.com/rrousselGit/riverpod/issues/2417
     final result = await resolver.resolveRiverpodAnalyssiResult();
 
-    final notifier = result.statefulProviderDeclarations.single;
+    final notifier = result.classBasedProviderDeclarations.single;
 
     expect(result.refInvocations, hasLength(1));
     expect(
@@ -135,7 +134,7 @@ final provider = Provider<int>((ref) {
     expect(
       result.refWatchInvocations[1].provider.providerElement,
       same(
-        result.statelessProviderDeclarations.findByName('dep2').providerElement,
+        result.functionBasedProviderDeclarations.findByName('dep2').providerElement,
       ),
     );
     expect(result.refWatchInvocations[1].provider.familyArguments, null);
@@ -156,7 +155,7 @@ final provider = Provider<int>((ref) {
     expect(
       result.refWatchInvocations[2].provider.providerElement,
       same(
-        result.statefulProviderDeclarations.findByName('Dep3').providerElement,
+        result.classBasedProviderDeclarations.findByName('Dep3').providerElement,
       ),
     );
     expect(result.refWatchInvocations[2].provider.familyArguments, null);
@@ -233,7 +232,7 @@ void fn(_Ref ref) {
     expect(
       result.refWatchInvocations[1].provider.providerElement,
       same(
-        result.statelessProviderDeclarations.findByName('dep2').providerElement,
+        result.functionBasedProviderDeclarations.findByName('dep2').providerElement,
       ),
     );
     expect(result.refWatchInvocations[1].provider.familyArguments, null);
@@ -254,7 +253,7 @@ void fn(_Ref ref) {
     expect(
       result.refWatchInvocations[2].provider.providerElement,
       same(
-        result.statefulProviderDeclarations.findByName('Dep3').providerElement,
+        result.classBasedProviderDeclarations.findByName('Dep3').providerElement,
       ),
     );
     expect(result.refWatchInvocations[2].provider.familyArguments, null);
@@ -489,9 +488,7 @@ void fn(_Ref ref) {
     expect(
       providerRefInvocations[1].provider.providerElement,
       same(
-        result.statelessProviderDeclarations
-            .findByName('family2')
-            .providerElement,
+        result.functionBasedProviderDeclarations.findByName('family2').providerElement,
       ),
     );
     expect(
@@ -515,9 +512,7 @@ void fn(_Ref ref) {
     expect(
       result.refWatchInvocations[2].provider.providerElement,
       same(
-        result.statefulProviderDeclarations
-            .findByName('Family3')
-            .providerElement,
+        result.classBasedProviderDeclarations.findByName('Family3').providerElement,
       ),
     );
     expect(
@@ -526,8 +521,7 @@ void fn(_Ref ref) {
     );
   });
 
-  testSource('Decodes provider.query ref.watch usages',
-      runGenerator: true, source: r'''
+  testSource('Decodes provider.query ref.watch usages', runGenerator: true, source: r'''
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -618,7 +612,7 @@ void fn(_Ref ref) {
     expect(
       result.refWatchInvocations[1].provider.providerElement,
       same(
-        result.statelessProviderDeclarations.findByName('dep2').providerElement,
+        result.functionBasedProviderDeclarations.findByName('dep2').providerElement,
       ),
     );
 
@@ -639,7 +633,7 @@ void fn(_Ref ref) {
     expect(
       result.refWatchInvocations[2].provider.providerElement,
       same(
-        result.statefulProviderDeclarations.findByName('Dep3').providerElement,
+        result.classBasedProviderDeclarations.findByName('Dep3').providerElement,
       ),
     );
 
@@ -663,9 +657,7 @@ void fn(_Ref ref) {
     expect(
       result.refWatchInvocations[3].provider.providerElement,
       same(
-        result.statefulProviderDeclarations
-            .findByName('Family')
-            .providerElement,
+        result.classBasedProviderDeclarations.findByName('Family').providerElement,
       ),
     );
   });
