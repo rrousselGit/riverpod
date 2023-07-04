@@ -34,21 +34,21 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
 ## Table of content
 
 - [Table of content](#table-of-content)
-- [Installing riverpod\_lint](#installing-riverpod_lint)
+- [Installing riverpod_lint](#installing-riverpod_lint)
 - [Enabling/disabling lints.](#enablingdisabling-lints)
   - [Disable one specific rule](#disable-one-specific-rule)
   - [Disable all lints by default](#disable-all-lints-by-default)
-- [Running riverpod\_lint in the terminal/CI](#running-riverpod_lint-in-the-terminalci)
+- [Running riverpod_lint in the terminal/CI](#running-riverpod_lint-in-the-terminalci)
 - [All the lints](#all-the-lints)
-  - [missing\_provider\_scope](#missing_provider_scope)
-  - [provider\_dependencies (riverpod\_generator only)](#provider_dependencies-riverpod_generator-only)
-  - [scoped\_providers\_should\_specify\_dependencies (generator only)](#scoped_providers_should_specify_dependencies-generator-only)
-  - [avoid\_manual\_providers\_as\_generated\_provider\_dependency](#avoid_manual_providers_as_generated_provider_dependency)
-  - [provider\_parameters](#provider_parameters)
-  - [avoid\_public\_notifier\_properties](#avoid_public_notifier_properties)
-  - [unsupported\_provider\_value (riverpod\_generator only)](#unsupported_provider_value-riverpod_generator-only)
-  - [stateless\_ref (riverpod\_generator only)](#stateless_ref-riverpod_generator-only)
-  - [generator\_class\_extends (riverpod\_generator only)](#generator_class_extends-riverpod_generator-only)
+  - [missing_provider_scope](#missing_provider_scope)
+  - [provider_dependencies (riverpod_generator only)](#provider_dependencies-riverpod_generator-only)
+  - [scoped_providers_should_specify_dependencies (generator only)](#scoped_providers_should_specify_dependencies-generator-only)
+  - [avoid_manual_providers_as_generated_provider_dependency](#avoid_manual_providers_as_generated_provider_dependency)
+  - [provider_parameters](#provider_parameters)
+  - [avoid_public_notifier_properties](#avoid_public_notifier_properties)
+  - [unsupported_provider_value (riverpod_generator only)](#unsupported_provider_value-riverpod_generator-only)
+  - [function_based_ref (riverpod_generator only)](#function_based_ref-riverpod_generator-only)
+  - [generator_class_extends (riverpod_generator only)](#generator_class_extends-riverpod_generator-only)
 - [All assists](#all-assists)
   - [Wrap widgets with a `Consumer`](#wrap-widgets-with-a-consumer)
   - [Wrap widgets with a `ProviderScope`](#wrap-widgets-with-a-providerscope)
@@ -479,9 +479,9 @@ class MyStateNotifier extends StateNotifier<int> {
 }
 ```
 
-### stateless_ref (riverpod_generator only)
+### function_based_ref (riverpod_generator only)
 
-Stateless providers must receive a ref matching the provider name as their first positional parameter.
+Function-based providers must receive a ref matching the provider name as their first positional parameter.
 
 **Good**:
 

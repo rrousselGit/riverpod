@@ -2,10 +2,10 @@ import 'package:analyzer/source/source_range.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
 import '../riverpod_custom_lint.dart';
-import 'stateful_to_stateless_provider.dart';
+import 'class_based_to_function_based_provider.dart';
 
-class StatelessToStatefulProvider extends RiverpodAssist {
-  StatelessToStatefulProvider();
+class FunctionBasedToClassBasedProvider extends RiverpodAssist {
+  FunctionBasedToClassBasedProvider();
 
   @override
   void run(
@@ -14,7 +14,7 @@ class StatelessToStatefulProvider extends RiverpodAssist {
     CustomLintContext context,
     SourceRange target,
   ) {
-    riverpodRegistry(context).addStatelessProviderDeclaration((declaration) {
+    riverpodRegistry(context).addFunctionBasedProviderDeclaration((declaration) {
       // The first character of the function
       final functionStartOffset =
           declaration.node.returnType?.offset ?? declaration.node.name.offset;
@@ -28,7 +28,7 @@ class StatelessToStatefulProvider extends RiverpodAssist {
       if (!functionHeading.intersects(target)) return;
 
       final changeBuilder = reporter.createChangeBuilder(
-        message: 'Convert to stateful provider',
+        message: 'Convert to class-based provider',
         priority: convertPriority,
       );
 
@@ -53,8 +53,7 @@ class ${classNameFor(declaration)} extends ${generatedClassNameFor(declaration)}
           if (parameters.parameters.length > 1) {
             // There is a second parameter, so we need to remove the comma
             final secondParameter = parameters.parameters[1];
-            if (secondParameter.isNamed ||
-                secondParameter.isOptionalPositional) {
+            if (secondParameter.isNamed || secondParameter.isOptionalPositional) {
               // The second parameter introduces either {} or [], so the comma
               // is placed before those.
               refEnd = parameters.leftDelimiter!.offset;

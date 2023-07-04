@@ -23,7 +23,7 @@ class GeneratorClassExtends extends RiverpodLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    riverpodRegistry(context).addStatefulProviderDeclaration((declaration) {
+    riverpodRegistry(context).addClassBasedProviderDeclaration((declaration) {
       final extendsClause = declaration.node.extendsClause;
 
       if (extendsClause == null) {
@@ -54,7 +54,7 @@ class GeneratorClassExtendsFix extends RiverpodFix {
     AnalysisError analysisError,
     List<AnalysisError> others,
   ) {
-    riverpodRegistry(context).addStatefulProviderDeclaration((declaration) {
+    riverpodRegistry(context).addClassBasedProviderDeclaration((declaration) {
       // This provider is not the one that triggered the error
       if (!analysisError.sourceRange.intersects(declaration.node.sourceRange)) {
         return;

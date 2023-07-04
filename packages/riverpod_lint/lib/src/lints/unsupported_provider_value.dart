@@ -4,7 +4,7 @@ import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
 import '../riverpod_custom_lint.dart';
 
-extension on StatefulProviderDeclaration {
+extension on ClassBasedProviderDeclaration {
   /// Returns whether the value exposed by the provider is the newly created
   /// Notifier itself.
   bool get returnsSelf {
@@ -17,10 +17,8 @@ class UnsupportedProviderValue extends RiverpodLintRule {
 
   static const _code = LintCode(
     name: 'unsupported_provider_value',
-    problemMessage:
-        'The riverpod_generator package does not support {0} values.',
-    correctionMessage:
-        'If using {0} even though riverpod_generator does not support it, '
+    problemMessage: 'The riverpod_generator package does not support {0} values.',
+    correctionMessage: 'If using {0} even though riverpod_generator does not support it, '
         'you can wrap the type in "Raw" to silence the warning. For example by returning Raw<{0}>.',
   );
 
@@ -38,23 +36,21 @@ class UnsupportedProviderValue extends RiverpodLintRule {
       String? invalidValueName;
       if (notifierBaseType.isAssignableFromType(declaration.valueType)) {
         invalidValueName = 'Notifier';
-      } else if (asyncNotifierBaseType
-          .isAssignableFromType(declaration.valueType)) {
+      } else if (asyncNotifierBaseType.isAssignableFromType(declaration.valueType)) {
         invalidValueName = 'AsyncNotifier';
       }
 
       /// If a provider returns itself, we allow it. This is to enable
       /// ChangeNotifier-like mutable state.
       if (invalidValueName != null &&
-          declaration is StatefulProviderDeclaration &&
+          declaration is ClassBasedProviderDeclaration &&
           declaration.returnsSelf) {
         return;
       }
 
       if (stateNotifierType.isAssignableFromType(declaration.valueType)) {
         invalidValueName = 'StateNotifier';
-      } else if (changeNotifierType
-          .isAssignableFromType(declaration.valueType)) {
+      } else if (changeNotifierType.isAssignableFromType(declaration.valueType)) {
         invalidValueName = 'ChangeNotifier';
       }
 
@@ -68,7 +64,7 @@ class UnsupportedProviderValue extends RiverpodLintRule {
     }
 
     riverpodRegistry(context)
-      ..addStatelessProviderDeclaration(checkCreatedType)
-      ..addStatefulProviderDeclaration(checkCreatedType);
+      ..addFunctionBasedProviderDeclaration(checkCreatedType)
+      ..addClassBasedProviderDeclaration(checkCreatedType);
   }
 }

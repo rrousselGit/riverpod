@@ -6,13 +6,13 @@ import 'package:custom_lint_builder/custom_lint_builder.dart';
 
 import '../riverpod_custom_lint.dart';
 
-class StatelessRef extends RiverpodLintRule {
-  const StatelessRef() : super(code: _code);
+class FunctionBasedRef extends RiverpodLintRule {
+  const FunctionBasedRef() : super(code: _code);
 
   static const _code = LintCode(
-    name: 'stateless_ref',
+    name: 'function_based_ref',
     problemMessage:
-        'Stateless providers must receive a ref matching the provider name as their first positional parameter.',
+        'Function-based providers must receive a ref matching the provider name as their first positional parameter.',
   );
 
   @override
@@ -21,7 +21,7 @@ class StatelessRef extends RiverpodLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    riverpodRegistry(context).addStatelessProviderDeclaration((declaration) {
+    riverpodRegistry(context).addFunctionBasedProviderDeclaration((declaration) {
       // Scoped providers don't need a ref
       if (declaration.needsOverride) return;
 
@@ -52,10 +52,10 @@ class StatelessRef extends RiverpodLintRule {
   }
 
   @override
-  List<Fix> getFixes() => [StatelessRefFix()];
+  List<Fix> getFixes() => [FunctionBasedRefFix()];
 }
 
-class StatelessRefFix extends RiverpodFix {
+class FunctionBasedRefFix extends RiverpodFix {
   @override
   void run(
     CustomLintResolver resolver,
@@ -64,15 +64,14 @@ class StatelessRefFix extends RiverpodFix {
     AnalysisError analysisError,
     List<AnalysisError> others,
   ) {
-    riverpodRegistry(context).addStatelessProviderDeclaration((declaration) {
+    riverpodRegistry(context).addFunctionBasedProviderDeclaration((declaration) {
       // This provider is not the one that triggered the error
       if (!analysisError.sourceRange.intersects(declaration.node.sourceRange)) {
         return;
       }
 
       final expectedRefType = refNameFor(declaration);
-      final refNode = declaration
-          .node.functionExpression.parameters!.parameters.firstOrNull;
+      final refNode = declaration.node.functionExpression.parameters!.parameters.firstOrNull;
       if (refNode == null) {
         // No ref parameter, adding one
         final changeBuilder = reporter.createChangeBuilder(
