@@ -8,8 +8,12 @@
           "fileStamp": 0,
           "edits": [
             { "offset": 213, "length": 2, "replacement": "" },
-            { "offset": 206, "length": 0, "replacement": "ClassBasedRef ref" },
-            { "offset": 200, "length": 5, "replacement": "classBased" },
+            {
+              "offset": 206,
+              "length": 0,
+              "replacement": "FunctionBasedRef ref"
+            },
+            { "offset": 200, "length": 5, "replacement": "functionBased" },
             { "offset": 146, "length": 50, "replacement": "" }
           ]
         }
