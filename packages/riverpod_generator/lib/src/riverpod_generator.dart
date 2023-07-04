@@ -8,8 +8,8 @@ import 'package:source_gen/source_gen.dart';
 
 import 'models.dart';
 import 'parse_generator.dart';
-import 'templates/family.dart';
 import 'templates/class_based_provider.dart';
+import 'templates/family.dart';
 import 'templates/function_based_provider.dart';
 
 const riverpodTypeChecker = TypeChecker.fromRuntime(Riverpod);
