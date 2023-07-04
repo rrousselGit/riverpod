@@ -24,22 +24,19 @@ class ResolvedRiverpodLibraryResult extends RiverpodAst {
 
   final errors = <RiverpodAnalysisError>[];
 
-  final providerScopeInstanceCreationExpressions =
-      <ProviderScopeInstanceCreationExpression>[];
+  final providerScopeInstanceCreationExpressions = <ProviderScopeInstanceCreationExpression>[];
   final providerContainerInstanceCreationExpressions =
       <ProviderContainerInstanceCreationExpression>[];
 
-  final statelessProviderDeclarations = <StatelessProviderDeclaration>[];
-  final statefulProviderDeclarations = <StatefulProviderDeclaration>[];
+  final functionBasedProviderDeclarations = <FunctionBasedProviderDeclaration>[];
+  final classBasedProviderDeclarations = <ClassBasedProviderDeclaration>[];
 
   final legacyProviderDeclarations = <LegacyProviderDeclaration>[];
 
   final consumerWidgetDeclarations = <ConsumerWidgetDeclaration>[];
-  final consumerStatefulWidgetDeclarations =
-      <ConsumerStatefulWidgetDeclaration>[];
+  final consumerStatefulWidgetDeclarations = <ConsumerStatefulWidgetDeclaration>[];
   final consumerStateDeclaration = <ConsumerStateDeclaration>[];
-  final statefulHookConsumerWidgetDeclarations =
-      <StatefulHookConsumerWidgetDeclaration>[];
+  final statefulHookConsumerWidgetDeclarations = <StatefulHookConsumerWidgetDeclaration>[];
   final hookConsumerWidgetDeclarations = <HookConsumerWidgetDeclaration>[];
 
   final unknownRefInvocations = <RefInvocation>[];
@@ -62,10 +59,10 @@ class ResolvedRiverpodLibraryResult extends RiverpodAst {
       declaration.accept(visitor);
     }
 
-    for (final declaration in statelessProviderDeclarations) {
+    for (final declaration in functionBasedProviderDeclarations) {
       declaration.accept(visitor);
     }
-    for (final declaration in statefulProviderDeclarations) {
+    for (final declaration in classBasedProviderDeclarations) {
       declaration.accept(visitor);
     }
     for (final declaration in legacyProviderDeclarations) {
@@ -108,8 +105,7 @@ mixin _ParseRefInvocationMixin on RecursiveAstVisitor<void> {
       return;
     }
 
-    final widgetRefInvocation =
-        WidgetRefInvocation._parse(node, superCall: superCall);
+    final widgetRefInvocation = WidgetRefInvocation._parse(node, superCall: superCall);
     if (widgetRefInvocation != null) {
       visitWidgetRefInvocation(widgetRefInvocation);
       // Don't call super as WidgetRefInvocation should already be recursive
@@ -195,19 +191,18 @@ class _AddConsumerDeclarationVisitor extends UnimplementedRiverpodAstVisitor {
   }
 }
 
-class _ParseRiverpodUnitVisitor extends RecursiveAstVisitor<void>
-    with _ParseRefInvocationMixin {
+class _ParseRiverpodUnitVisitor extends RecursiveAstVisitor<void> with _ParseRefInvocationMixin {
   _ParseRiverpodUnitVisitor(this.result);
 
   final ResolvedRiverpodLibraryResult result;
 
   @override
   void visitClassDeclaration(ClassDeclaration node) {
-    final declaration = StatefulProviderDeclaration._parse(node, this);
+    final declaration = ClassBasedProviderDeclaration._parse(node, this);
     if (declaration != null) {
-      result.statefulProviderDeclarations.add(declaration);
+      result.classBasedProviderDeclarations.add(declaration);
       declaration._parent = result;
-      // Don't call super as StatefulProviderDeclaration should already be recursive
+      // Don't call super as ClassBasedProviderDeclaration should already be recursive
       return;
     }
 
@@ -215,7 +210,7 @@ class _ParseRiverpodUnitVisitor extends RecursiveAstVisitor<void>
     if (consumerDeclaration != null) {
       consumerDeclaration._parent = result;
       consumerDeclaration.accept(_AddConsumerDeclarationVisitor(result));
-      // Don't call super as StatefulProviderDeclaration should already be recursive
+      // Don't call super as ClassBasedProviderDeclaration should already be recursive
       return;
     }
 
@@ -224,11 +219,11 @@ class _ParseRiverpodUnitVisitor extends RecursiveAstVisitor<void>
 
   @override
   void visitFunctionDeclaration(FunctionDeclaration node) {
-    final declaration = StatelessProviderDeclaration._parse(node, this);
+    final declaration = FunctionBasedProviderDeclaration._parse(node, this);
     if (declaration != null) {
-      result.statelessProviderDeclarations.add(declaration);
+      result.functionBasedProviderDeclarations.add(declaration);
       declaration._parent = result;
-      // Don't call super as StatelessProviderDeclaration should already be recursive
+      // Don't call super as FunctionBasedProviderDeclaration should already be recursive
       return;
     }
 

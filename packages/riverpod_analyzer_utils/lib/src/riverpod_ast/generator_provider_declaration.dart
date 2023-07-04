@@ -5,8 +5,7 @@ extension RawTypeX on DartType {
   bool get isRaw {
     final alias = this.alias;
     if (alias == null) return false;
-    return alias.element.name == 'Raw' &&
-        isFromRiverpodAnnotation.isExactly(alias.element);
+    return alias.element.name == 'Raw' && isFromRiverpodAnnotation.isExactly(alias.element);
   }
 }
 
@@ -17,9 +16,7 @@ extension on LibraryElement {
     String name, {
     required String packageName,
   }) {
-    return library.importedLibraries
-        .map((e) => e.exportNamespace.get(name))
-        .firstWhereOrNull(
+    return library.importedLibraries.map((e) => e.exportNamespace.get(name)).firstWhereOrNull(
           // TODO find a way to test this
           (element) => element != null && isFromRiverpod.isExactly(element),
         );
@@ -114,8 +111,8 @@ DartType _getValueType(DartType createdType) {
   return createdType;
 }
 
-class StatefulProviderDeclaration extends GeneratorProviderDeclaration {
-  StatefulProviderDeclaration._({
+class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration {
+  ClassBasedProviderDeclaration._({
     required this.name,
     required this.node,
     required this.buildMethod,
@@ -126,7 +123,7 @@ class StatefulProviderDeclaration extends GeneratorProviderDeclaration {
     required this.valueType,
   });
 
-  static StatefulProviderDeclaration? _parse(
+  static ClassBasedProviderDeclaration? _parse(
     ClassDeclaration node,
     _ParseRefInvocationMixin parent,
   ) {
@@ -149,14 +146,13 @@ class StatefulProviderDeclaration extends GeneratorProviderDeclaration {
       return null;
     }
 
-    final providerElement = StatefulProviderDeclarationElement.parse(
+    final providerElement = ClassBasedProviderDeclarationElement.parse(
       element,
       annotation: riverpodAnnotation.element,
     );
     if (providerElement == null) return null;
 
-    final createdType = buildMethod.returnType?.type ??
-        element.library.typeProvider.dynamicType;
+    final createdType = buildMethod.returnType?.type ?? element.library.typeProvider.dynamicType;
 
     final exposedType = _computeExposedType(createdType, element.library);
     if (exposedType == null) {
@@ -164,7 +160,7 @@ class StatefulProviderDeclaration extends GeneratorProviderDeclaration {
       return null;
     }
 
-    final statefulProviderDeclaration = StatefulProviderDeclaration._(
+    final classBasedProviderDeclaration = ClassBasedProviderDeclaration._(
       name: node.name,
       node: node,
       buildMethod: buildMethod,
@@ -174,12 +170,12 @@ class StatefulProviderDeclaration extends GeneratorProviderDeclaration {
       exposedType: exposedType,
       valueType: _getValueType(createdType),
     );
-    riverpodAnnotation._parent = statefulProviderDeclaration;
+    riverpodAnnotation._parent = classBasedProviderDeclaration;
     node.accept(
-      _GeneratorRefInvocationVisitor(statefulProviderDeclaration, parent),
+      _GeneratorRefInvocationVisitor(classBasedProviderDeclaration, parent),
     );
 
-    return statefulProviderDeclaration;
+    return classBasedProviderDeclaration;
   }
 
   @override
@@ -187,7 +183,7 @@ class StatefulProviderDeclaration extends GeneratorProviderDeclaration {
   @override
   final ClassDeclaration node;
   @override
-  final StatefulProviderDeclarationElement providerElement;
+  final ClassBasedProviderDeclarationElement providerElement;
   @override
   final RiverpodAnnotation annotation;
   final MethodDeclaration buildMethod;
@@ -200,7 +196,7 @@ class StatefulProviderDeclaration extends GeneratorProviderDeclaration {
 
   @override
   void accept(RiverpodAstVisitor visitor) {
-    visitor.visitStatefulProviderDeclaration(this);
+    visitor.visitClassBasedProviderDeclaration(this);
   }
 
   @override
@@ -243,8 +239,8 @@ class _GeneratorRefInvocationVisitor extends RecursiveAstVisitor<void>
   }
 }
 
-class StatelessProviderDeclaration extends GeneratorProviderDeclaration {
-  StatelessProviderDeclaration._({
+class FunctionBasedProviderDeclaration extends GeneratorProviderDeclaration {
+  FunctionBasedProviderDeclaration._({
     required this.name,
     required this.node,
     required this.providerElement,
@@ -254,7 +250,7 @@ class StatelessProviderDeclaration extends GeneratorProviderDeclaration {
     required this.valueType,
   });
 
-  static StatelessProviderDeclaration? _parse(
+  static FunctionBasedProviderDeclaration? _parse(
     FunctionDeclaration node,
     _ParseRefInvocationMixin parent,
   ) {
@@ -263,7 +259,7 @@ class StatelessProviderDeclaration extends GeneratorProviderDeclaration {
     final riverpodAnnotation = RiverpodAnnotation._parse(node);
     if (riverpodAnnotation == null) return null;
 
-    final providerElement = StatelessProviderDeclarationElement.parse(
+    final providerElement = FunctionBasedProviderDeclarationElement.parse(
       element,
       annotation: riverpodAnnotation.element,
     );
@@ -276,7 +272,7 @@ class StatelessProviderDeclaration extends GeneratorProviderDeclaration {
       return null;
     }
 
-    final statelessProviderDeclaration = StatelessProviderDeclaration._(
+    final functionBasedProviderDeclaration = FunctionBasedProviderDeclaration._(
       name: node.name,
       node: node,
       providerElement: providerElement,
@@ -285,11 +281,11 @@ class StatelessProviderDeclaration extends GeneratorProviderDeclaration {
       exposedType: exposedType,
       valueType: _getValueType(createdType),
     );
-    riverpodAnnotation._parent = statelessProviderDeclaration;
+    riverpodAnnotation._parent = functionBasedProviderDeclaration;
     node.accept(
-      _GeneratorRefInvocationVisitor(statelessProviderDeclaration, parent),
+      _GeneratorRefInvocationVisitor(functionBasedProviderDeclaration, parent),
     );
-    return statelessProviderDeclaration;
+    return functionBasedProviderDeclaration;
   }
 
   @override
@@ -298,7 +294,7 @@ class StatelessProviderDeclaration extends GeneratorProviderDeclaration {
   @override
   final FunctionDeclaration node;
   @override
-  final StatelessProviderDeclarationElement providerElement;
+  final FunctionBasedProviderDeclarationElement providerElement;
   @override
   final RiverpodAnnotation annotation;
   @override
@@ -318,7 +314,7 @@ class StatelessProviderDeclaration extends GeneratorProviderDeclaration {
 
   @override
   void accept(RiverpodAstVisitor visitor) {
-    visitor.visitStatelessProviderDeclaration(this);
+    visitor.visitFunctionBasedProviderDeclaration(this);
   }
 
   @override
