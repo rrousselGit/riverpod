@@ -1,28 +1,30 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'convert_stateful_provider_to_stateless.dart';
+part of 'convert_function_based_provider_to_class_based.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$statefulHash() => r'97a80741e820dc6e31ab7abf4b116c22dae0590b';
+String _$functionBasedHash() => r'0f4933f7560dc99d8c5fae5edb62d4354317a60d';
 
 /// Some comment
 ///
-/// Copied from [Stateful].
-@ProviderFor(Stateful)
-final statefulProvider = AutoDisposeNotifierProvider<Stateful, int>.internal(
-  Stateful.new,
-  name: r'statefulProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$statefulHash,
+/// Copied from [functionBased].
+@ProviderFor(functionBased)
+final functionBasedProvider = AutoDisposeProvider<int>.internal(
+  functionBased,
+  name: r'functionBasedProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$functionBasedHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$Stateful = AutoDisposeNotifier<int>;
-String _$statefulFamilyHash() => r'8df1b3aa9081e66af197b7f69945cc81e3ddf82d';
+typedef FunctionBasedRef = AutoDisposeProviderRef<int>;
+String _$functionBasedFamilyHash() =>
+    r'ca48619302e925bc5723896e3f551a006eaf434c';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -45,47 +47,39 @@ class _SystemHash {
   }
 }
 
-abstract class _$StatefulFamily extends BuildlessAutoDisposeNotifier<int> {
-  late final int a;
-  late final String b;
-
-  int build({
-    required int a,
-    String b = '42',
-  });
-}
+typedef FunctionBasedFamilyRef = AutoDisposeProviderRef<int>;
 
 /// Some comment
 ///
-/// Copied from [StatefulFamily].
-@ProviderFor(StatefulFamily)
-const statefulFamilyProvider = StatefulFamilyFamily();
+/// Copied from [functionBasedFamily].
+@ProviderFor(functionBasedFamily)
+const functionBasedFamilyProvider = FunctionBasedFamilyFamily();
 
 /// Some comment
 ///
-/// Copied from [StatefulFamily].
-class StatefulFamilyFamily extends Family<int> {
+/// Copied from [functionBasedFamily].
+class FunctionBasedFamilyFamily extends Family<int> {
   /// Some comment
   ///
-  /// Copied from [StatefulFamily].
-  const StatefulFamilyFamily();
+  /// Copied from [functionBasedFamily].
+  const FunctionBasedFamilyFamily();
 
   /// Some comment
   ///
-  /// Copied from [StatefulFamily].
-  StatefulFamilyProvider call({
+  /// Copied from [functionBasedFamily].
+  FunctionBasedFamilyProvider call({
     required int a,
     String b = '42',
   }) {
-    return StatefulFamilyProvider(
+    return FunctionBasedFamilyProvider(
       a: a,
       b: b,
     );
   }
 
   @override
-  StatefulFamilyProvider getProviderOverride(
-    covariant StatefulFamilyProvider provider,
+  FunctionBasedFamilyProvider getProviderOverride(
+    covariant FunctionBasedFamilyProvider provider,
   ) {
     return call(
       a: provider.a,
@@ -105,33 +99,34 @@ class StatefulFamilyFamily extends Family<int> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'statefulFamilyProvider';
+  String? get name => r'functionBasedFamilyProvider';
 }
 
 /// Some comment
 ///
-/// Copied from [StatefulFamily].
-class StatefulFamilyProvider
-    extends AutoDisposeNotifierProviderImpl<StatefulFamily, int> {
+/// Copied from [functionBasedFamily].
+class FunctionBasedFamilyProvider extends AutoDisposeProvider<int> {
   /// Some comment
   ///
-  /// Copied from [StatefulFamily].
-  StatefulFamilyProvider({
+  /// Copied from [functionBasedFamily].
+  FunctionBasedFamilyProvider({
     required this.a,
     this.b = '42',
   }) : super.internal(
-          () => StatefulFamily()
-            ..a = a
-            ..b = b,
-          from: statefulFamilyProvider,
-          name: r'statefulFamilyProvider',
+          (ref) => functionBasedFamily(
+            ref,
+            a: a,
+            b: b,
+          ),
+          from: functionBasedFamilyProvider,
+          name: r'functionBasedFamilyProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$statefulFamilyHash,
-          dependencies: StatefulFamilyFamily._dependencies,
+                  : _$functionBasedFamilyHash,
+          dependencies: FunctionBasedFamilyFamily._dependencies,
           allTransitiveDependencies:
-              StatefulFamilyFamily._allTransitiveDependencies,
+              FunctionBasedFamilyFamily._allTransitiveDependencies,
         );
 
   final int a;
@@ -139,7 +134,7 @@ class StatefulFamilyProvider
 
   @override
   bool operator ==(Object other) {
-    return other is StatefulFamilyProvider && other.a == a && other.b == b;
+    return other is FunctionBasedFamilyProvider && other.a == a && other.b == b;
   }
 
   @override
@@ -149,16 +144,6 @@ class StatefulFamilyProvider
     hash = _SystemHash.combine(hash, b.hashCode);
 
     return _SystemHash.finish(hash);
-  }
-
-  @override
-  int runNotifierBuild(
-    covariant StatefulFamily notifier,
-  ) {
-    return notifier.build(
-      a: a,
-      b: b,
-    );
   }
 }
 // ignore_for_file: type=lint

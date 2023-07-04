@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:riverpod_lint/src/assists/stateful_to_stateless_provider.dart';
+import 'package:riverpod_lint/src/assists/class_based_to_function_based_provider.dart';
 import 'package:analyzer/source/source_range.dart';
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/analysis/utilities.dart';
@@ -9,12 +9,12 @@ import '../golden.dart';
 
 void main() {
   testGolden(
-    'Convert plain class provider to stateless provider',
-    'assists/convert_stateful_provider_to_stateless.json',
+    'Convert plain class provider to function-based provider',
+    'assists/convert_class_based_provider_to_function_based.json',
     () async {
-      final assist = StatefulToStatelessProvider();
+      final assist = ClassBasedToFunctionBasedProvider();
       final file = File(
-        'test/assists/convert_stateful_provider_to_stateless.dart',
+        'test/assists/convert_class_based_provider_to_function_based.dart',
       ).absolute;
 
       final result = await resolveFile2(path: file.path);

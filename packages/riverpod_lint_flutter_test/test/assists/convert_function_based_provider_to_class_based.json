@@ -1,0 +1,68 @@
+[
+  {
+    "priority": 100,
+    "change": {
+      "message": "Convert to class-based provider",
+      "edits": [
+        {
+          "fileStamp": 0,
+          "edits": [
+            { "offset": 183, "length": 0, "replacement": "\n}" },
+            { "offset": 160, "length": 16, "replacement": "" },
+            { "offset": 150, "length": 9, "replacement": "build" },
+            {
+              "offset": 146,
+              "length": 0,
+              "replacement": "class ClassBased extends _$ClassBased {\n  @override\n  "
+            }
+          ]
+        }
+      ],
+      "linkedEditGroups": []
+    }
+  },
+  {
+    "priority": 100,
+    "change": {
+      "message": "Convert to class-based provider",
+      "edits": [
+        {
+          "fileStamp": 0,
+          "edits": [
+            { "offset": 183, "length": 0, "replacement": "\n}" },
+            { "offset": 160, "length": 16, "replacement": "" },
+            { "offset": 150, "length": 9, "replacement": "build" },
+            {
+              "offset": 146,
+              "length": 0,
+              "replacement": "class ClassBased extends _$ClassBased {\n  @override\n  "
+            }
+          ]
+        }
+      ],
+      "linkedEditGroups": []
+    }
+  },
+  {
+    "priority": 100,
+    "change": {
+      "message": "Convert to class-based provider",
+      "edits": [
+        {
+          "fileStamp": 0,
+          "edits": [
+            { "offset": 323, "length": 0, "replacement": "\n}" },
+            { "offset": 232, "length": 24, "replacement": "" },
+            { "offset": 216, "length": 15, "replacement": "build" },
+            {
+              "offset": 212,
+              "length": 0,
+              "replacement": "class ClassBasedFamily extends _$ClassBasedFamily {\n  @override\n  "
+            }
+          ]
+        }
+      ],
+      "linkedEditGroups": []
+    }
+  }
+]

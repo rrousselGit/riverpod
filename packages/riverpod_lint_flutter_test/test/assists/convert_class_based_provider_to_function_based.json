@@ -1,0 +1,112 @@
+[
+  {
+    "priority": 100,
+    "change": {
+      "message": "Convert to function-based provider",
+      "edits": [
+        {
+          "fileStamp": 0,
+          "edits": [
+            { "offset": 213, "length": 2, "replacement": "" },
+            { "offset": 206, "length": 0, "replacement": "ClassBasedRef ref" },
+            { "offset": 200, "length": 5, "replacement": "classBased" },
+            { "offset": 146, "length": 50, "replacement": "" }
+          ]
+        }
+      ],
+      "linkedEditGroups": []
+    }
+  },
+  {
+    "priority": 100,
+    "change": {
+      "message": "Convert to function-based provider",
+      "edits": [
+        {
+          "fileStamp": 0,
+          "edits": [
+            { "offset": 213, "length": 2, "replacement": "" },
+            {
+              "offset": 206,
+              "length": 0,
+              "replacement": "FunctionBasedRef ref"
+            },
+            { "offset": 200, "length": 5, "replacement": "functionBased" },
+            { "offset": 146, "length": 50, "replacement": "" }
+          ]
+        }
+      ],
+      "linkedEditGroups": []
+    }
+  },
+  {
+    "priority": 100,
+    "change": {
+      "message": "Convert to function-based provider",
+      "edits": [
+        {
+          "fileStamp": 0,
+          "edits": [
+            { "offset": 213, "length": 2, "replacement": "" },
+            {
+              "offset": 206,
+              "length": 0,
+              "replacement": "FunctionBasedRef ref"
+            },
+            { "offset": 200, "length": 5, "replacement": "functionBased" },
+            { "offset": 146, "length": 50, "replacement": "" }
+          ]
+        }
+      ],
+      "linkedEditGroups": []
+    }
+  },
+  {
+    "priority": 100,
+    "change": {
+      "message": "Convert to function-based provider",
+      "edits": [
+        {
+          "fileStamp": 0,
+          "edits": [
+            { "offset": 213, "length": 2, "replacement": "" },
+            {
+              "offset": 206,
+              "length": 0,
+              "replacement": "FunctionBasedRef ref"
+            },
+            { "offset": 200, "length": 5, "replacement": "functionBased" },
+            { "offset": 146, "length": 50, "replacement": "" }
+          ]
+        }
+      ],
+      "linkedEditGroups": []
+    }
+  },
+  {
+    "priority": 100,
+    "change": {
+      "message": "Convert to function-based provider",
+      "edits": [
+        {
+          "fileStamp": 0,
+          "edits": [
+            { "offset": 389, "length": 2, "replacement": "" },
+            {
+              "offset": 316,
+              "length": 0,
+              "replacement": "FunctionBasedFamilyRef ref, "
+            },
+            {
+              "offset": 310,
+              "length": 5,
+              "replacement": "functionBasedFamily"
+            },
+            { "offset": 244, "length": 62, "replacement": "" }
+          ]
+        }
+      ],
+      "linkedEditGroups": []
+    }
+  }
+]

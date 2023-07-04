@@ -76,8 +76,7 @@ void main() {
           break;
         case StatelessBaseWidgetType.consumerWidget:
         case StatelessBaseWidgetType.statelessWidget:
-          goldenFilePath =
-              'assists/convert_to_${targetWidget.name.toSnakeCase()}.json';
+          goldenFilePath = 'assists/convert_to_${targetWidget.name.toSnakeCase()}.json';
           break;
       }
 
@@ -116,8 +115,7 @@ void main() {
           break;
         case StatefulBaseWidgetType.consumerStatefulWidget:
         case StatefulBaseWidgetType.statefulWidget:
-          goldenFilePath =
-              'assists/convert_to_${targetWidget.name.toSnakeCase()}.json';
+          goldenFilePath = 'assists/convert_to_${targetWidget.name.toSnakeCase()}.json';
           break;
       }
 
@@ -163,48 +161,36 @@ void _runGoldenTest(
 
       final changes = [
         // Stateless
-        ...await assist.testRun(result, const SourceRange(163, 0),
-            pubspec: pubspec),
-        ...await assist.testRun(result, const SourceRange(174, 0),
-            pubspec: pubspec),
-        ...await assist.testRun(result, const SourceRange(185, 0),
-            pubspec: pubspec),
+        ...await assist.testRun(result, const SourceRange(163, 0), pubspec: pubspec),
+        ...await assist.testRun(result, const SourceRange(174, 0), pubspec: pubspec),
+        ...await assist.testRun(result, const SourceRange(185, 0), pubspec: pubspec),
 
         // StatelessWithComma
-        ...await assist.testRun(result, const SourceRange(350, 0),
-            pubspec: pubspec),
+        ...await assist.testRun(result, const SourceRange(350, 0), pubspec: pubspec),
 
         // Hook
-        ...await assist.testRun(result, const SourceRange(524, 0),
-            pubspec: pubspec),
+        ...await assist.testRun(result, const SourceRange(524, 0), pubspec: pubspec),
 
         // HookConsumer
-        ...await assist.testRun(result, const SourceRange(690, 0),
-            pubspec: pubspec),
+        ...await assist.testRun(result, const SourceRange(690, 0), pubspec: pubspec),
 
         // Stateful
-        ...await assist.testRun(result, const SourceRange(884, 0),
-            pubspec: pubspec),
+        ...await assist.testRun(result, const SourceRange(884, 0), pubspec: pubspec),
 
         // ExplicitCreateState
-        ...await assist.testRun(result, const SourceRange(1208, 0),
-            pubspec: pubspec),
+        ...await assist.testRun(result, const SourceRange(1208, 0), pubspec: pubspec),
 
         // HookStateful
-        ...await assist.testRun(result, const SourceRange(1553, 0),
-            pubspec: pubspec),
+        ...await assist.testRun(result, const SourceRange(1553, 0), pubspec: pubspec),
 
         // ConsumerStateful
-        ...await assist.testRun(result, const SourceRange(1863, 0),
-            pubspec: pubspec),
+        ...await assist.testRun(result, const SourceRange(1863, 0), pubspec: pubspec),
 
         // HookConsumerStateful
-        ...await assist.testRun(result, const SourceRange(2214, 0),
-            pubspec: pubspec),
+        ...await assist.testRun(result, const SourceRange(2214, 0), pubspec: pubspec),
 
         // ConsumerWidget
-        ...await assist.testRun(result, const SourceRange(2582, 0),
-            pubspec: pubspec),
+        ...await assist.testRun(result, const SourceRange(2582, 0), pubspec: pubspec),
       ];
 
       expect(changes, hasLength(expectedChangeCount));
