@@ -1,11 +1,11 @@
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import '../models.dart';
 import '../riverpod_generator.dart';
-import 'stateful_provider.dart';
+import 'class_based_provider.dart';
 import 'template.dart';
 
-class StatelessProviderTemplate extends Template {
-  StatelessProviderTemplate(
+class FunctionBasedProviderTemplate extends Template {
+  FunctionBasedProviderTemplate(
     this.provider, {
     required this.refName,
     required this.hashFn,
@@ -15,12 +15,12 @@ class StatelessProviderTemplate extends Template {
       throw ArgumentError.value(
         provider.node.functionExpression.parameters?.toSource(),
         'provider',
-        'Expected a stateless provider with no parameter',
+        'Expected a function-based provider with no parameter',
       );
     }
   }
 
-  final StatelessProviderDeclaration provider;
+  final FunctionBasedProviderDeclaration provider;
   final String refName;
   final String hashFn;
   final BuildYamlOptions options;

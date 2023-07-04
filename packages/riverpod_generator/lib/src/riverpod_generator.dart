@@ -9,8 +9,8 @@ import 'package:source_gen/source_gen.dart';
 import 'models.dart';
 import 'parse_generator.dart';
 import 'templates/family.dart';
-import 'templates/stateful_provider.dart';
-import 'templates/stateless_provider.dart';
+import 'templates/class_based_provider.dart';
+import 'templates/function_based_provider.dart';
 
 const riverpodTypeChecker = TypeChecker.fromRuntime(Riverpod);
 
@@ -36,8 +36,7 @@ String _hashFnIdentifier(String hashFnName) {
 const _defaultProviderNameSuffix = 'Provider';
 
 /// May be thrown by generators during [Generator.generate].
-class RiverpodInvalidGenerationSourceError
-    extends InvalidGenerationSourceError {
+class RiverpodInvalidGenerationSourceError extends InvalidGenerationSourceError {
   RiverpodInvalidGenerationSourceError(
     super.message, {
     super.todo = '',
@@ -52,8 +51,7 @@ class RiverpodInvalidGenerationSourceError
 
 @immutable
 class RiverpodGenerator extends ParserGenerator<Riverpod> {
-  RiverpodGenerator(Map<String, Object?> mapConfig)
-      : options = BuildYamlOptions.fromMap(mapConfig);
+  RiverpodGenerator(Map<String, Object?> mapConfig) : options = BuildYamlOptions.fromMap(mapConfig);
 
   final BuildYamlOptions options;
 
@@ -127,10 +125,10 @@ class _SystemHash {
   }
 
   @override
-  void visitStatefulProviderDeclaration(
-    StatefulProviderDeclaration provider,
+  void visitClassBasedProviderDeclaration(
+    ClassBasedProviderDeclaration provider,
   ) {
-    super.visitStatefulProviderDeclaration(provider);
+    super.visitClassBasedProviderDeclaration(provider);
 
     final parameters = provider.buildMethod.parameters?.parameters;
     if (parameters == null) return;
@@ -145,21 +143,20 @@ class _SystemHash {
           ? '_\$${provider.providerElement.name.substring(1)}'
           : '_\$${provider.providerElement.name}';
 
-      StatefulProviderTemplate(
+      ClassBasedProviderTemplate(
         provider,
         options: options,
         notifierTypedefName: notifierTypedefName,
         hashFn: hashFn,
       ).run(buffer);
     } else {
-      final providerName =
-          '${provider.providerElement.name.lowerFirst}$familySuffix';
+      final providerName = '${provider.providerElement.name.lowerFirst}$familySuffix';
       final notifierTypedefName = providerName.startsWith('_')
           ? '_\$${provider.providerElement.name.substring(1)}'
           : '_\$${provider.providerElement.name}';
 
       maybeEmitHashUtils();
-      FamilyTemplate.stateful(
+      FamilyTemplate.classBased(
         provider,
         options: options,
         notifierTypedefName: notifierTypedefName,
@@ -169,10 +166,10 @@ class _SystemHash {
   }
 
   @override
-  void visitStatelessProviderDeclaration(
-    StatelessProviderDeclaration provider,
+  void visitFunctionBasedProviderDeclaration(
+    FunctionBasedProviderDeclaration provider,
   ) {
-    super.visitStatelessProviderDeclaration(provider);
+    super.visitFunctionBasedProviderDeclaration(provider);
 
     final parameters = provider.node.functionExpression.parameters?.parameters;
     if (parameters == null) return;
@@ -187,14 +184,14 @@ class _SystemHash {
     // So a provider is a "family" only if it has parameters besides the ref.
     if (parameters.length > 1) {
       maybeEmitHashUtils();
-      FamilyTemplate.stateless(
+      FamilyTemplate.functionBased(
         provider,
         options: options,
         refName: refName,
         hashFn: hashFn,
       ).run(buffer);
     } else {
-      StatelessProviderTemplate(
+      FunctionBasedProviderTemplate(
         provider,
         refName: refName,
         options: options,
