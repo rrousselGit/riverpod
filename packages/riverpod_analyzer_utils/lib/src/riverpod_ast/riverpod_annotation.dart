@@ -74,7 +74,8 @@ class RiverpodAnnotation extends RiverpodAst {
       NamedExpression? dependenciesNode;
       final argumentList = annotation.arguments;
       if (argumentList != null) {
-        for (final argument in argumentList.arguments.whereType<NamedExpression>()) {
+        for (final argument
+            in argumentList.arguments.whereType<NamedExpression>()) {
           switch (argument.name.label.name) {
             case 'keepAlive':
               keepAliveNode = argument;
@@ -86,7 +87,8 @@ class RiverpodAnnotation extends RiverpodAst {
         }
       }
 
-      final riverpodAnnotationElement = RiverpodAnnotationElement.parse(annotatedElement);
+      final riverpodAnnotationElement =
+          RiverpodAnnotationElement.parse(annotatedElement);
       if (riverpodAnnotationElement == null) return null;
 
       final dependencies = _parseDependencies(dependenciesNode);
@@ -145,7 +147,8 @@ class RiverpodAnnotation extends RiverpodAst {
 
         final dependencyElement = dependency.staticElement;
         if (dependencyElement is FunctionElement) {
-          final dependencyProvider = FunctionBasedProviderDeclarationElement.parse(
+          final dependencyProvider =
+              FunctionBasedProviderDeclarationElement.parse(
             dependencyElement,
             annotation: null,
           );

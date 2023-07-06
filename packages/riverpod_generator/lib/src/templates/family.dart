@@ -59,7 +59,8 @@ class FamilyTemplate extends Template {
       }
     }
 
-    final parameters = provider.node.functionExpression.parameters!.parameterElements
+    final parameters = provider
+        .node.functionExpression.parameters!.parameterElements
         .whereNotNull()
         .skip(1)
         .toList();
@@ -108,9 +109,12 @@ typedef $refName = ${providerType}Ref<${provider.valueType}>;
       }
     }
 
-    final parameters = provider.buildMethod.parameters!.parameterElements.whereNotNull().toList();
+    final parameters = provider.buildMethod.parameters!.parameterElements
+        .whereNotNull()
+        .toList();
     final parameterDefinition = buildParamDefinitionQuery(parameters);
-    final cascadePropertyInit = parameters.map((e) => '..${e.name} = ${e.name}').join('\n');
+    final cascadePropertyInit =
+        parameters.map((e) => '..${e.name} = ${e.name}').join('\n');
 
     final parametersPassThrough = buildParamInvocationQuery({
       for (final parameter in parameters) parameter: parameter.name,
@@ -156,7 +160,8 @@ abstract class $notifierTypedefName extends $notifierBaseType<${provider.valueTy
 
   @override
   void run(StringBuffer buffer) {
-    final providerTypeNameImpl = '${provider.providerElement.name.titled}Provider';
+    final providerTypeNameImpl =
+        '${provider.providerElement.name.titled}Provider';
     final familyName = '${provider.providerElement.name.titled}Family';
 
     final parameterDefinition = buildParamDefinitionQuery(parameters);
@@ -165,15 +170,18 @@ abstract class $notifierTypedefName extends $notifierBaseType<${provider.valueTy
       asThisParameter: true,
     );
     final parameterProviderPassThrough = buildParamInvocationQuery({
-      for (final parameter in parameters) parameter: 'provider.${parameter.name}',
+      for (final parameter in parameters)
+        parameter: 'provider.${parameter.name}',
     });
 
     final docs = providerDocFor(provider.providerElement.element);
-    final providerName = providerFamilyNameFor(provider.providerElement, options);
+    final providerName =
+        providerFamilyNameFor(provider.providerElement, options);
 
-    final dependenciesKeyword = provider.providerElement.annotation.dependencies == null
-        ? 'const Iterable<ProviderOrFamily>?'
-        : 'final Iterable<ProviderOrFamily>';
+    final dependenciesKeyword =
+        provider.providerElement.annotation.dependencies == null
+            ? 'const Iterable<ProviderOrFamily>?'
+            : 'final Iterable<ProviderOrFamily>';
 
     buffer.write('''
 $other

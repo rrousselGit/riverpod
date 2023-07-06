@@ -13,7 +13,8 @@ class LegacyProviderDependencies extends RiverpodAst {
 
     List<LegacyProviderDependency>? dependencies;
     if (value is ListLiteral) {
-      dependencies = value.elements.map(LegacyProviderDependency._parse).toList();
+      dependencies =
+          value.elements.map(LegacyProviderDependency._parse).toList();
     }
 
     final legacyProviderDependencies = LegacyProviderDependencies._(
@@ -46,14 +47,16 @@ class LegacyProviderDependencies extends RiverpodAst {
   }
 }
 
-class LegacyProviderDependency extends RiverpodAst implements ProviderListenableExpressionParent {
+class LegacyProviderDependency extends RiverpodAst
+    implements ProviderListenableExpressionParent {
   LegacyProviderDependency._({
     required this.node,
     required this.provider,
   });
 
   factory LegacyProviderDependency._parse(CollectionElement node) {
-    final provider = node.cast<Expression>().let(ProviderListenableExpression._parse);
+    final provider =
+        node.cast<Expression>().let(ProviderListenableExpression._parse);
 
     final legacyProviderDependency = LegacyProviderDependency._(
       node: node,
@@ -77,7 +80,8 @@ class LegacyProviderDependency extends RiverpodAst implements ProviderListenable
   }
 }
 
-class LegacyProviderDeclaration extends RiverpodAst implements ProviderDeclaration {
+class LegacyProviderDeclaration extends RiverpodAst
+    implements ProviderDeclaration {
   LegacyProviderDeclaration._({
     required this.name,
     required this.node,
@@ -158,8 +162,9 @@ class LegacyProviderDeclaration extends RiverpodAst implements ProviderDeclarati
     final build = arguments.positionalArguments().firstOrNull;
     if (build is! FunctionExpression) return null;
 
-    final dependenciesElement =
-        arguments.namedArguments().firstWhereOrNull((e) => e.name.label.name == 'dependencies');
+    final dependenciesElement = arguments
+        .namedArguments()
+        .firstWhereOrNull((e) => e.name.label.name == 'dependencies');
     final dependencies = LegacyProviderDependencies._parse(dependenciesElement);
 
     final legacyProviderDeclaration = LegacyProviderDeclaration._(
@@ -220,7 +225,8 @@ class LegacyProviderDeclaration extends RiverpodAst implements ProviderDeclarati
   }
 }
 
-class _LegacyRefInvocationVisitor extends RecursiveAstVisitor<void> with _ParseRefInvocationMixin {
+class _LegacyRefInvocationVisitor extends RecursiveAstVisitor<void>
+    with _ParseRefInvocationMixin {
   _LegacyRefInvocationVisitor(this.declaration, this.parent);
 
   final LegacyProviderDeclaration declaration;

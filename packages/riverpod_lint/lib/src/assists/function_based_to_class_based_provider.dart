@@ -14,7 +14,8 @@ class FunctionBasedToClassBasedProvider extends RiverpodAssist {
     CustomLintContext context,
     SourceRange target,
   ) {
-    riverpodRegistry(context).addFunctionBasedProviderDeclaration((declaration) {
+    riverpodRegistry(context)
+        .addFunctionBasedProviderDeclaration((declaration) {
       // The first character of the function
       final functionStartOffset =
           declaration.node.returnType?.offset ?? declaration.node.name.offset;
@@ -53,7 +54,8 @@ class ${classNameFor(declaration)} extends ${generatedClassNameFor(declaration)}
           if (parameters.parameters.length > 1) {
             // There is a second parameter, so we need to remove the comma
             final secondParameter = parameters.parameters[1];
-            if (secondParameter.isNamed || secondParameter.isOptionalPositional) {
+            if (secondParameter.isNamed ||
+                secondParameter.isOptionalPositional) {
               // The second parameter introduces either {} or [], so the comma
               // is placed before those.
               refEnd = parameters.leftDelimiter!.offset;

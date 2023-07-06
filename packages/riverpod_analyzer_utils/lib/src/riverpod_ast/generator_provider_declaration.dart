@@ -5,7 +5,8 @@ extension RawTypeX on DartType {
   bool get isRaw {
     final alias = this.alias;
     if (alias == null) return false;
-    return alias.element.name == 'Raw' && isFromRiverpodAnnotation.isExactly(alias.element);
+    return alias.element.name == 'Raw' &&
+        isFromRiverpodAnnotation.isExactly(alias.element);
   }
 }
 
@@ -16,7 +17,9 @@ extension on LibraryElement {
     String name, {
     required String packageName,
   }) {
-    return library.importedLibraries.map((e) => e.exportNamespace.get(name)).firstWhereOrNull(
+    return library.importedLibraries
+        .map((e) => e.exportNamespace.get(name))
+        .firstWhereOrNull(
           // TODO find a way to test this
           (element) => element != null && isFromRiverpod.isExactly(element),
         );
@@ -152,7 +155,8 @@ class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration {
     );
     if (providerElement == null) return null;
 
-    final createdType = buildMethod.returnType?.type ?? element.library.typeProvider.dynamicType;
+    final createdType = buildMethod.returnType?.type ??
+        element.library.typeProvider.dynamicType;
 
     final exposedType = _computeExposedType(createdType, element.library);
     if (exposedType == null) {

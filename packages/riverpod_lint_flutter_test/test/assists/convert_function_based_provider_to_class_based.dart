@@ -8,7 +8,8 @@ int functionBased(FunctionBasedRef ref) => 0;
 
 /// Some comment
 @riverpod
-int functionBasedFamily(FunctionBasedFamilyRef ref, {required int a, String b = '42'}) {
+int functionBasedFamily(FunctionBasedFamilyRef ref,
+    {required int a, String b = '42'}) {
   // Hello world
   return 0;
 }

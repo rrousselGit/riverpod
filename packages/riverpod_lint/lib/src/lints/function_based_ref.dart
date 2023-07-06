@@ -21,7 +21,8 @@ class FunctionBasedRef extends RiverpodLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    riverpodRegistry(context).addFunctionBasedProviderDeclaration((declaration) {
+    riverpodRegistry(context)
+        .addFunctionBasedProviderDeclaration((declaration) {
       // Scoped providers don't need a ref
       if (declaration.needsOverride) return;
 
@@ -64,14 +65,16 @@ class FunctionBasedRefFix extends RiverpodFix {
     AnalysisError analysisError,
     List<AnalysisError> others,
   ) {
-    riverpodRegistry(context).addFunctionBasedProviderDeclaration((declaration) {
+    riverpodRegistry(context)
+        .addFunctionBasedProviderDeclaration((declaration) {
       // This provider is not the one that triggered the error
       if (!analysisError.sourceRange.intersects(declaration.node.sourceRange)) {
         return;
       }
 
       final expectedRefType = refNameFor(declaration);
-      final refNode = declaration.node.functionExpression.parameters!.parameters.firstOrNull;
+      final refNode = declaration
+          .node.functionExpression.parameters!.parameters.firstOrNull;
       if (refNode == null) {
         // No ref parameter, adding one
         final changeBuilder = reporter.createChangeBuilder(
