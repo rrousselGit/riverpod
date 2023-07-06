@@ -9,6 +9,7 @@ import 'src/assists/wrap_with_consumer.dart';
 import 'src/assists/wrap_with_provider_scope.dart';
 import 'src/lints/avoid_manual_providers_as_generated_provider_dependency.dart';
 import 'src/lints/avoid_public_notifier_properties.dart';
+import 'src/lints/avoid_use_ref_inside_dispose.dart';
 import 'src/lints/generator_class_extends.dart';
 import 'src/lints/missing_provider_scope.dart';
 import 'src/lints/provider_dependencies.dart';
@@ -31,6 +32,7 @@ class _RiverpodPlugin extends PluginBase {
         const AvoidManualProvidersAsGeneratedProviderDependency(),
         const ScopedProvidersShouldSpecifyDependencies(),
         const UnsupportedProviderValue(),
+        const AvoidUseRefInsideDispose(),
 //         const AvoidDynamicProviders(),
 // //  "Avoid passing providers as parameter to objects"
 //         const AvoidExposingProviderRef(),
