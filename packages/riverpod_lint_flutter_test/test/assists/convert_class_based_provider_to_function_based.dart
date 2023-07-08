@@ -4,14 +4,14 @@ part 'convert_class_based_provider_to_function_based.g.dart';
 
 /// Some comment
 @riverpod
-class ClassBased extends _$ClassBased {
+class Example extends _$Example {
   @override
   int build() => 0;
 }
 
 /// Some comment
 @riverpod
-class ClassBasedFamily extends _$ClassBasedFamily {
+class ExampleFamily extends _$ExampleFamily {
   @override
   int build({required int a, String b = '42'}) {
     // Hello world

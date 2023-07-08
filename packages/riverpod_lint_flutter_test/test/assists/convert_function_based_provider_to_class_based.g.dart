@@ -6,25 +6,23 @@ part of 'convert_function_based_provider_to_class_based.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$functionBasedHash() => r'0f4933f7560dc99d8c5fae5edb62d4354317a60d';
+String _$exampleHash() => r'638d7db2be22eaad0f51ea0b3ae38e0483d43725';
 
 /// Some comment
 ///
-/// Copied from [functionBased].
-@ProviderFor(functionBased)
-final functionBasedProvider = AutoDisposeProvider<int>.internal(
-  functionBased,
-  name: r'functionBasedProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$functionBasedHash,
+/// Copied from [example].
+@ProviderFor(example)
+final exampleProvider = AutoDisposeProvider<int>.internal(
+  example,
+  name: r'exampleProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$exampleHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef FunctionBasedRef = AutoDisposeProviderRef<int>;
-String _$functionBasedFamilyHash() =>
-    r'ca48619302e925bc5723896e3f551a006eaf434c';
+typedef ExampleRef = AutoDisposeProviderRef<int>;
+String _$exampleFamilyHash() => r'f5547d3d88c42b135db5efea7dfaa542b3db9cc1';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -47,39 +45,39 @@ class _SystemHash {
   }
 }
 
-typedef FunctionBasedFamilyRef = AutoDisposeProviderRef<int>;
+typedef ExampleFamilyRef = AutoDisposeProviderRef<int>;
 
 /// Some comment
 ///
-/// Copied from [functionBasedFamily].
-@ProviderFor(functionBasedFamily)
-const functionBasedFamilyProvider = FunctionBasedFamilyFamily();
+/// Copied from [exampleFamily].
+@ProviderFor(exampleFamily)
+const exampleFamilyProvider = ExampleFamilyFamily();
 
 /// Some comment
 ///
-/// Copied from [functionBasedFamily].
-class FunctionBasedFamilyFamily extends Family<int> {
+/// Copied from [exampleFamily].
+class ExampleFamilyFamily extends Family<int> {
   /// Some comment
   ///
-  /// Copied from [functionBasedFamily].
-  const FunctionBasedFamilyFamily();
+  /// Copied from [exampleFamily].
+  const ExampleFamilyFamily();
 
   /// Some comment
   ///
-  /// Copied from [functionBasedFamily].
-  FunctionBasedFamilyProvider call({
+  /// Copied from [exampleFamily].
+  ExampleFamilyProvider call({
     required int a,
     String b = '42',
   }) {
-    return FunctionBasedFamilyProvider(
+    return ExampleFamilyProvider(
       a: a,
       b: b,
     );
   }
 
   @override
-  FunctionBasedFamilyProvider getProviderOverride(
-    covariant FunctionBasedFamilyProvider provider,
+  ExampleFamilyProvider getProviderOverride(
+    covariant ExampleFamilyProvider provider,
   ) {
     return call(
       a: provider.a,
@@ -99,34 +97,34 @@ class FunctionBasedFamilyFamily extends Family<int> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'functionBasedFamilyProvider';
+  String? get name => r'exampleFamilyProvider';
 }
 
 /// Some comment
 ///
-/// Copied from [functionBasedFamily].
-class FunctionBasedFamilyProvider extends AutoDisposeProvider<int> {
+/// Copied from [exampleFamily].
+class ExampleFamilyProvider extends AutoDisposeProvider<int> {
   /// Some comment
   ///
-  /// Copied from [functionBasedFamily].
-  FunctionBasedFamilyProvider({
+  /// Copied from [exampleFamily].
+  ExampleFamilyProvider({
     required this.a,
     this.b = '42',
   }) : super.internal(
-          (ref) => functionBasedFamily(
+          (ref) => exampleFamily(
             ref,
             a: a,
             b: b,
           ),
-          from: functionBasedFamilyProvider,
-          name: r'functionBasedFamilyProvider',
+          from: exampleFamilyProvider,
+          name: r'exampleFamilyProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$functionBasedFamilyHash,
-          dependencies: FunctionBasedFamilyFamily._dependencies,
+                  : _$exampleFamilyHash,
+          dependencies: ExampleFamilyFamily._dependencies,
           allTransitiveDependencies:
-              FunctionBasedFamilyFamily._allTransitiveDependencies,
+              ExampleFamilyFamily._allTransitiveDependencies,
         );
 
   final int a;
@@ -134,7 +132,7 @@ class FunctionBasedFamilyProvider extends AutoDisposeProvider<int> {
 
   @override
   bool operator ==(Object other) {
-    return other is FunctionBasedFamilyProvider && other.a == a && other.b == b;
+    return other is ExampleFamilyProvider && other.a == a && other.b == b;
   }
 
   @override

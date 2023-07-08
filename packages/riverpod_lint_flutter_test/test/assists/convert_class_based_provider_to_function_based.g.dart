@@ -6,24 +6,23 @@ part of 'convert_class_based_provider_to_function_based.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$classBasedHash() => r'27c425a18f7602488054c7bbe3c3b570f614761c';
+String _$exampleHash() => r'081776126bafed3e1583bba9c1fadef798215ad7';
 
 /// Some comment
 ///
-/// Copied from [ClassBased].
-@ProviderFor(ClassBased)
-final classBasedProvider =
-    AutoDisposeNotifierProvider<ClassBased, int>.internal(
-  ClassBased.new,
-  name: r'classBasedProvider',
+/// Copied from [Example].
+@ProviderFor(Example)
+final exampleProvider = AutoDisposeNotifierProvider<Example, int>.internal(
+  Example.new,
+  name: r'exampleProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$classBasedHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : _$exampleHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$ClassBased = AutoDisposeNotifier<int>;
-String _$classBasedFamilyHash() => r'00f758cf96448ab7c34735222189d1add9ff7254';
+typedef _$Example = AutoDisposeNotifier<int>;
+String _$exampleFamilyHash() => r'37d4a4fd66999562cd92051f91266270d5a1e5ea';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -46,7 +45,7 @@ class _SystemHash {
   }
 }
 
-abstract class _$ClassBasedFamily extends BuildlessAutoDisposeNotifier<int> {
+abstract class _$ExampleFamily extends BuildlessAutoDisposeNotifier<int> {
   late final int a;
   late final String b;
 
@@ -58,35 +57,35 @@ abstract class _$ClassBasedFamily extends BuildlessAutoDisposeNotifier<int> {
 
 /// Some comment
 ///
-/// Copied from [ClassBasedFamily].
-@ProviderFor(ClassBasedFamily)
-const classBasedFamilyProvider = ClassBasedFamilyFamily();
+/// Copied from [ExampleFamily].
+@ProviderFor(ExampleFamily)
+const exampleFamilyProvider = ExampleFamilyFamily();
 
 /// Some comment
 ///
-/// Copied from [ClassBasedFamily].
-class ClassBasedFamilyFamily extends Family<int> {
+/// Copied from [ExampleFamily].
+class ExampleFamilyFamily extends Family<int> {
   /// Some comment
   ///
-  /// Copied from [ClassBasedFamily].
-  const ClassBasedFamilyFamily();
+  /// Copied from [ExampleFamily].
+  const ExampleFamilyFamily();
 
   /// Some comment
   ///
-  /// Copied from [ClassBasedFamily].
-  ClassBasedFamilyProvider call({
+  /// Copied from [ExampleFamily].
+  ExampleFamilyProvider call({
     required int a,
     String b = '42',
   }) {
-    return ClassBasedFamilyProvider(
+    return ExampleFamilyProvider(
       a: a,
       b: b,
     );
   }
 
   @override
-  ClassBasedFamilyProvider getProviderOverride(
-    covariant ClassBasedFamilyProvider provider,
+  ExampleFamilyProvider getProviderOverride(
+    covariant ExampleFamilyProvider provider,
   ) {
     return call(
       a: provider.a,
@@ -106,33 +105,33 @@ class ClassBasedFamilyFamily extends Family<int> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'classBasedFamilyProvider';
+  String? get name => r'exampleFamilyProvider';
 }
 
 /// Some comment
 ///
-/// Copied from [ClassBasedFamily].
-class ClassBasedFamilyProvider
-    extends AutoDisposeNotifierProviderImpl<ClassBasedFamily, int> {
+/// Copied from [ExampleFamily].
+class ExampleFamilyProvider
+    extends AutoDisposeNotifierProviderImpl<ExampleFamily, int> {
   /// Some comment
   ///
-  /// Copied from [ClassBasedFamily].
-  ClassBasedFamilyProvider({
+  /// Copied from [ExampleFamily].
+  ExampleFamilyProvider({
     required this.a,
     this.b = '42',
   }) : super.internal(
-          () => ClassBasedFamily()
+          () => ExampleFamily()
             ..a = a
             ..b = b,
-          from: classBasedFamilyProvider,
-          name: r'classBasedFamilyProvider',
+          from: exampleFamilyProvider,
+          name: r'exampleFamilyProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$classBasedFamilyHash,
-          dependencies: ClassBasedFamilyFamily._dependencies,
+                  : _$exampleFamilyHash,
+          dependencies: ExampleFamilyFamily._dependencies,
           allTransitiveDependencies:
-              ClassBasedFamilyFamily._allTransitiveDependencies,
+              ExampleFamilyFamily._allTransitiveDependencies,
         );
 
   final int a;
@@ -140,7 +139,7 @@ class ClassBasedFamilyProvider
 
   @override
   bool operator ==(Object other) {
-    return other is ClassBasedFamilyProvider && other.a == a && other.b == b;
+    return other is ExampleFamilyProvider && other.a == a && other.b == b;
   }
 
   @override
@@ -154,7 +153,7 @@ class ClassBasedFamilyProvider
 
   @override
   int runNotifierBuild(
-    covariant ClassBasedFamily notifier,
+    covariant ExampleFamily notifier,
   ) {
     return notifier.build(
       a: a,
