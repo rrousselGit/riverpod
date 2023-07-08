@@ -11,14 +11,13 @@ class MyWidget extends ConsumerStatefulWidget {
 }
 
 class _MyWidgetState extends ConsumerState<MyWidget> {
-
   @override
   void dispose() {
     // ignore: avoid_use_ref_inside_dispose
     ref.read(provider);
     // ignore: avoid_use_ref_inside_dispose
-    ref.watch(provider);  
-    
+    ref.watch(provider);
+
     super.dispose();
   }
 
