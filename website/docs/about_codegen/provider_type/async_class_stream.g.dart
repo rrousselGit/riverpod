@@ -1,14 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-// ignore_for_file: type=lint
-
 part of 'async_class_stream.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$exampleHash() => r'79a180d17c5e95105cfe8ccdcde24ead46858c99';
+String _$exampleHash() => r'4bca936132b77a9a804549f086f33571724b4804';
 
 /// See also [Example].
 @ProviderFor(Example)
@@ -23,4 +21,5 @@ final exampleProvider =
 );
 
 typedef _$Example = AutoDisposeStreamNotifier<String>;
-// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
