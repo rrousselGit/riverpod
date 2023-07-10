@@ -7,8 +7,7 @@ import {
 } from "../../src/versions";
 
 function plain(riverpod: string) {
-  return `
-name: my_app_name
+  return `name: my_app_name
 environment:
   sdk: ">=2.17.0 <3.0.0"
   flutter: ">=3.0.0"
@@ -25,8 +24,7 @@ dev_dependencies:
 }
 
 function codegen(riverpod: string) {
-  return `
-name: my_app_name
+  return `name: my_app_name
 environment:
   sdk: ">=2.17.0 <3.0.0"
   flutter: ">=3.0.0"

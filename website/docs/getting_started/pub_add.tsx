@@ -1,34 +1,35 @@
-const raw = `
-flutter pub add \
-  flutter_riverpod \
-  dev:custom_lint \
-  dev:riverpod_lint`;
+export function buildDeps({
+  deps = [],
+  devDeps = [],
+}: {
+  deps?: string[];
+  devDeps?: string[];
+}) {
+  var result = "flutter pub add";
+  for (const dep of deps) {
+    result += ` \\\n  ${dep}`;
+  }
 
-const codegen = `
-flutter pub add \
-  flutter_riverpod \
-  riverpod_annotation \
-  dev:riverpod_generator \
-  dev:custom_lint \
-  dev:riverpod_lint \
-  dev:build_runner`;
+  for (const dep of [...devDeps, "custom_lint", "riverpod_lint"]) {
+    result += ` \\\n  dev:${dep}`;
+  }
 
-const hooks = `
-flutter pub add \
-  hooks_riverpod \
-  flutter_hooks \
-  dev:custom_lint \
-  dev:riverpod_lint`;
+  return result;
+}
 
-const hooksCodegen = `
-flutter pub add \
-  hooks_riverpod \
-  riverpod_annotation \
-  flutter_hooks \
-  dev:riverpod_generator \
-  dev:custom_lint \
-  dev:riverpod_lint \
-  dev:build_runner`;
+const raw = buildDeps({ deps: ["flutter_riverpod"] });
+
+const codegen = buildDeps({
+  deps: ["flutter_riverpod", "riverpod_annotation"],
+  devDeps: ["riverpod_generator", "build_runner"],
+});
+
+const hooks = buildDeps({ deps: ["hooks_riverpod", "flutter_hooks"] });
+
+const hooksCodegen = buildDeps({
+  deps: ["hooks_riverpod", "flutter_hooks", "riverpod_annotation"],
+  devDeps: ["riverpod_generator", "build_runner"],
+});
 
 export default {
   raw: raw,

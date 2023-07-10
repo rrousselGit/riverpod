@@ -5,8 +5,7 @@ import {
   riverpodLintVersion,
 } from "../../src/versions";
 
-const codegen = `
-name: my_app_name
+const codegen = `name: my_app_name
 environment:
   sdk: ">=2.17.0 <3.0.0"
 
@@ -21,8 +20,7 @@ dev_dependencies:
   riverpod_lint: ^${riverpodLintVersion}
 `;
 
-const raw = `
-name: my_app_name
+const raw = `name: my_app_name
 environment:
   sdk: ">=2.17.0 <3.0.0"
 
