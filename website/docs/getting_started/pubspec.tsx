@@ -47,7 +47,7 @@ dev_dependencies:
 
 export default {
   raw: plain(`flutter_riverpod: ^${flutterRiverpodVersion}`),
-  hooks: plain(`hooks_riverpod: ^${hooksRiverpodVersion}`),
+  hooks: plain(`hooks_riverpod: ^${hooksRiverpodVersion}\n  flutter_hooks:`),
   codegen: codegen(`flutter_riverpod: ^${flutterRiverpodVersion}`),
-  hooksCodegen: codegen(`hooks_riverpod: ^${hooksRiverpodVersion}`),
+  hooksCodegen: codegen(`hooks_riverpod: ^${hooksRiverpodVersion}\n  flutter_hooks:`),
 };
