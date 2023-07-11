@@ -1,25 +1,56 @@
 ---
-title: Migrating tips
+title: Quickstart
 ---
 
+## Try Riverpod online
+
+Before anything, we'd suggest you try out Riverpod in a sandbox to test its features out.
+
+The following example should be familiar and readable enough:
+  - dartpad.dev example (link)
+  - marvel app example, or another github repo example (link)
+  - ... more?
+
+## Migrating
+
+This section is designed for people familiar with the [Provider] package who
+wants to learn about Riverpod.
 
 Migrating from Provider to Riverpod can be very straightforward.  
 Migrating basically consists in a few steps that can be done in an *incremental* way.
 
-## A gentle start
+### Start gently
 *If you have an existing app, don't try to migrate all your providers at once.*  
 Don't immediately try to change your `ChangeNotifiers` into the more modern [AsyncNotifiers] from Riverpod.
-
 This will requite a bit of a paradigm shift, so it may be difficult to do initially.  
-Take your time, as it is important to get yourself familiar with Riverpod first.
+
+Take your time, as it is important to get yourself familiar with Riverpod first.  
+The following is perfectly fine to start with:
+
+```dart
+// If you have this...
+class MyNotifier extends ChangeNotifier {
+  int state = 0;
+
+  void increment() {
+    state++;
+    notifyListeners();
+  }
+}
+
+// ... just add this!
+final myNotifierProvider = ChangeNotifierProvider<MyNotifier>((ref) {
+  return MyNotifier();
+});
+```
 
 It's fine to keep using `ChangeNotifier` using Riverpod and not use the latest fancy Riverpod features ASAP.
 
 While you should strive toward moving all your application to Riverpod in the long-run, 
 **don't burn yourself out**.  
-Do it one provider at a time.
+Do it one provider at a time.  
 
-## Riverpod and Provider can coexist
+### Riverpod and Provider can coexist
 *Keep in mind that it is entirely possible to use both Provider and Riverpod at the same time.*
 
 Indeed, using import aliases, it is possible to use the two APIs altogheter.  
@@ -31,18 +62,31 @@ If you plan on doing this, consider using import aliases for each Provider impor
 A full guide onto how to effectively implement import aliases is incoming soon.
 :::
 
-## Migrating one Provider at a time
+### Migrate one Provider at a time
 *All Providers from pkg:provider have a strict equivalent in Riverpod*.
 
 In particular, you'll find [ChangeNotifierProvider], which is there to enable migration from Provider.  
 This provider is not recommended when writing new code, and it is not the best way to use Riverpod, but 
 it's a gentle and very easy way to start your migration.
 
-Thus, migrating consists in moving a `provider.Provider` definition *outside* of `MultiProvider`, 
-and change it to a `riverpod.Provider` definition (see the differences below).
+Take the above example. Fully migrating that Provider means writing the following:
+
+```dart
+class MyNotifier extends Notifier<int> {
+  @override
+  int build() => 0;
+
+  void increment() => state++;
+}
+
+final myNotifierProvider = NotifierProvider<MyNotifier, int>(MyNotifier.new);
+```
+
+Thus, migrating consists in moving `provider.Provider` definitions *outside* of `MultiProvider`, 
+defining it as a final global `riverpod.Provider` variable and using `riverpod`'s new classes where needed.
 
 
-## Code Generation
+### Code Generation
 [Code generation] is recommended to use Riverpod the *cutting edge* way.  
 Even so, don't try using codegen right away.
 
@@ -51,7 +95,21 @@ Instead, this should be taken as a further step forward.
 Once the "base" migration is done, and you're positive that there are no more `ChangeNotifierProvider`s 
 in your codebase, you can start migrating towards the codegen apprach, which has a simpler yet different syntax.
 
+With codegen, the above example becomes: 
 
+```dart
+@riverpod
+class MyNotifier extends _$MyNotifier {
+  @override
+  int build() => 0;
+
+  void increment() => state++;
+}
+```
+
+
+[provider]: https://pub.dev/packages/provider
 [ChangeNotifierProvider]: /docs/providers/change_notifier_provider
 [Code generation]: /docs/about_code_generation
 [AsyncNotifiers]: /docs/providers/notifier_provider
+
