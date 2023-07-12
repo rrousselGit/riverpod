@@ -1,19 +1,17 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/error/listener.dart';
-import 'package:collection/collection.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
 import '../riverpod_custom_lint.dart';
 
-const overrideAnnotation = 'override';
 const disposeMethod = 'dispose';
 
 class AvoidUseRefInsideDispose extends RiverpodLintRule {
   const AvoidUseRefInsideDispose() : super(code: _code);
 
   static const _code = LintCode(
-    name: 'avoid_use_ref_inside_dispose',
+    name: 'avoid_ref_inside_state_dispose',
     problemMessage: "Avoid using 'Ref' in the dispose method.",
   );
 
@@ -30,14 +28,29 @@ class AvoidUseRefInsideDispose extends RiverpodLintRule {
 
       if (widgetRefType.isAssignableFromType(targetType)) {
         final ancestor = node.thisOrAncestorMatching((method) {
-          if (method is MethodDeclaration) {
-            final hasOverride = method.metadata.firstWhereOrNull((element) {
-              return element.name.name == overrideAnnotation;
+          if (method is MethodDeclaration &&
+              method.name.lexeme == disposeMethod) {
+            /// This [thisOrAncestorMatching] is to look for an ancestor of the
+            /// [dispose] method found
+            final classe = method.thisOrAncestorMatching((element) {
+              /// Looking for the class which is a [ConsumeState]
+              final classe = element.thisOrAncestorMatching((classe) {
+                if (classe is ClassDeclaration) {
+                  final extendsClause = classe.extendsClause;
+                  if (extendsClause == null) return false;
+                  final extendsType = extendsClause.superclass.type;
+                  if (extendsType == null) return false;
+
+                  return consumerStateType.isExactlyType(extendsType);
+                }
+
+                return false;
+              });
+
+              return classe != null;
             });
 
-            if (method.name.lexeme == disposeMethod && hasOverride != null) {
-              return true;
-            }
+            return classe != null;
           }
           return false;
         });

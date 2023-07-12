@@ -13,9 +13,9 @@ class MyWidget extends ConsumerStatefulWidget {
 class _MyWidgetState extends ConsumerState<MyWidget> {
   @override
   void dispose() {
-    // ignore: avoid_use_ref_inside_dispose
+    // expect_lint: avoid_ref_inside_state_dispose
     ref.read(provider);
-    // ignore: avoid_use_ref_inside_dispose
+    // expect_lint: avoid_ref_inside_state_dispose
     ref.watch(provider);
 
     super.dispose();
@@ -24,5 +24,19 @@ class _MyWidgetState extends ConsumerState<MyWidget> {
   @override
   Widget build(BuildContext context) {
     return Container();
+  }
+}
+
+class PlainClass with ChangeNotifier {
+  PlainClass(this.ref);
+
+  final WidgetRef ref;
+
+  @override
+  void dispose() {
+    ref.read(provider);
+    ref.watch(provider);
+
+    super.dispose();
   }
 }
