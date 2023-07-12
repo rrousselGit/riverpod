@@ -28,7 +28,7 @@
     "message": "안전한 컴파일"
   },
   "homepage.compile_safe_body": {
-    "message": "더 이상 {ProviderNotFound} 예외가 발생하지 않고, 로딩 상태를 처리하는 것을 걱정하지 않아도 됩니다. Riverpod를 사용하면 코드가 컴파일되면 작동합니다."
+    "message": "더 이상 {ProviderNotFound} 예외가 발생하지 않고, 로딩 상태를 처리하는 것을 걱정하지 않아도 됩니다. Riverpod를 사용하면 코드가 컴파일되어 작동합니다."
   },
   "homepage.unlimited_provider_title": {
     "message": "제한없는 Provider"
