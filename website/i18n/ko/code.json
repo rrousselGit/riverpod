@@ -16,7 +16,7 @@
     "message": "안전하게 Provider 읽기"
   },
   "home.safe_read_body": {
-    "message": "Provider를 읽는 중 더 이상 bad state가 되지 않습니다. 만약\nProvider를 읽기위한 필요한 코드를 작성하면, 당신은 유요한 값을 얻을 수 있습니다.\n {br} {br}\n Provider는 비동기적으로 로드된 값에도 적용됩니다. 제공자와는 대조적으로 Riverpod는 로드/오류 사례를 깔끔하게 처리할 수 있습니다."
+    "message": "Provider를 읽는 중 더 이상 bad state가 되지 않습니다. 만약\nProvider를 읽기 위한 필요한 코드를 작성하면, 당신은 유효한 값을 얻을 수 있습니다.\n {br} {br}\n Provider는 비동기적으로 로드된 값에도 적용됩니다. 제공자와는 대조적으로 Riverpod는 로드/오류 사례를 깔끔하게 처리할 수 있습니다."
   },
   "home.devtool_title": {
     "message": "Devtool에서 상태를 관찰하세요."
