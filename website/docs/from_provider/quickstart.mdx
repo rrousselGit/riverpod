@@ -95,6 +95,35 @@ If you plan on doing this, consider using import aliases for each Provider impor
 A full guide onto how to effectively implement import aliases is incoming soon.
 :::
 
+
+### You don't *have to* use `Consumer` right away
+
+It's important to keep in mind that there is no need to *immediately* use [Riverpod's `Consumer` APIs].  
+If you've just started the migration, [as mentioned above], you should probably start with `ChangeNotifierProvider`.
+
+
+Say you've just migrated `myChangeNotifierProvider` like so:
+```dart
+class MyChangeNotifier extends ChangeNotifier {}
+
+final myChangeNotifierProvider = ChangeNotifierProvider<MyChangeNotifier>((ref) {
+  return MyChangeNotifier();
+});
+```
+
+If your inner code is depending on pkg:Provider consume APIs, the following is more than enough to start with your new pkg:Riverpod's providers.
+```dart
+MultiProvider(
+  providers: [
+    ChangeNotifierProvider.value(value: ref.watch(myNotifier.notifier)),
+  ]
+)
+```
+
+This way, only the root Widget has to be initially converted into a `ConsumerWidget`.  
+This should ease the migration towards pkg:Riverpod even more.
+
+
 ### Migrating a `ProxyProvider`
 Within pkg:Provider, `ProxyProvider` is used to combine values from other Providers;
 its build depends on the value of other providers, reactively.
@@ -137,4 +166,5 @@ class MyNotifier extends _$MyNotifier {
 [Code generation]: /docs/about_code_generation
 [AsyncNotifiers]: /docs/providers/notifier_provider
 [are composable by default]: /docs/from_provider/motivation#combining-providers-is-hard-and-error-prone
-
+[as mentioned above]: /docs/from_provider/quickstart#start-with-changenotifierprovider
+[Riverpod's `Consumer` APIs]: /docs/concepts/reading
