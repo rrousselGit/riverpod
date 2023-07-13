@@ -125,10 +125,11 @@ Riverpod uses the same terminology as Provider for reading providers.
 
 - `BuildContext.watch` -> `WidgetRef.watch`
 - `BuildContext.read` -> `WidgetRef.read`
+- `BuildContext.select` -> `WidgetRef.watch(myProvider.select)`
 
 The rules for `context.watch` vs `context.read` applies to Riverpod too:  
 Inside the `build` method, use "watch". Inside click handlers and other events,
-use "read".
+use "read". When in need of filtering out values and rebuilds, use "select".
 :::
 
 ## Reading providers: Consumer
