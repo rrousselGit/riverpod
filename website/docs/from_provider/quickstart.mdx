@@ -85,6 +85,20 @@ final myNotifierProvider = NotifierProvider<MyNotifier, int>(MyNotifier.new);
 Thus, migrating consists in moving `provider.Provider` definitions *outside* of `MultiProvider`, 
 defining it as a final global `riverpod.Provider` variable and using `riverpod`'s new classes where needed.
 
+### Migrating a `ProxyProvider`
+Within pkg:Provider, `ProxyProvider` is used to combine values from other Providers;
+its build depends on the value of other providers, reactively.
+
+With Riverpod, instead, Providers [are composable by default]; therefore, when migrating a `ProxyProvider`
+you'll simply need to write `ref.watch` if you want a direct dependency from a Provider to another, or `ref.listen`
+if your Proxy used to simply trigger a side-effect.
+
+If anything, combining values with Riverpod should feel simpler and straightforward; thus, the migration should greatly
+simplify your code.
+
+Furthermore, there are no shanenigans about combining more than two providers together:
+just add another `ref.watch` (or `ref.listen`) and you'll be good to go.
+
 
 ### Code Generation
 [Code generation] is recommended to use Riverpod the *cutting edge* way.  
@@ -112,4 +126,5 @@ class MyNotifier extends _$MyNotifier {
 [ChangeNotifierProvider]: /docs/providers/change_notifier_provider
 [Code generation]: /docs/about_code_generation
 [AsyncNotifiers]: /docs/providers/notifier_provider
+[are composable by default]: /docs/from_provider/motivation#combining-providers-is-hard-and-error-prone
 
