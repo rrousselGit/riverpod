@@ -2,30 +2,23 @@
 title: Quickstart
 ---
 
-## Try Riverpod online
-
-Before anything, we'd suggest you try out Riverpod in a sandbox to test its features out.
-
-The following example should be familiar and readable enough:
-  - dartpad.dev example (link)
-  - marvel app example, or another github repo example (link)
-  - ... more?
-
-## Migrating
-
 This section is designed for people familiar with the [Provider] package who
 wants to learn about Riverpod.
 
-Migrating from Provider to Riverpod can be very straightforward.  
+Before anything, we suggest you read the short [getting started] article and try out the small
+[sandbox] example to test Riverpod's features out. If you like what you see there, you should then
+definitively consider a migration.
+
+Indeed, migrating from Provider to Riverpod can be very straightforward.  
+
 Migrating basically consists in a few steps that can be done in an *incremental* way.
 
-### Start with `ChangeNotifierProvider`
-*If you have an existing app, don't try to migrate all your providers at once.*  
-Don't immediately try to change your `ChangeNotifiers` into the more modern [AsyncNotifiers] from Riverpod.
-This will requite a bit of a paradigm shift, so it may be difficult to do initially.  
+## Start with `ChangeNotifierProvider`
 
-Take your time, as it is important to get yourself familiar with Riverpod first.  
-The following is perfectly fine to start with:
+It's fine to keep using `ChangeNotifier` while transitioning towards Riverpod,
+and not use its latest fancy features ASAP.
+  
+Indeed, the following is perfectly fine to start with:
 
 ```dart
 // If you have this...
@@ -44,36 +37,21 @@ final myNotifierProvider = ChangeNotifierProvider<MyNotifier>((ref) {
 });
 ```
 
-It's fine to keep using `ChangeNotifier` using Riverpod and not use the latest fancy Riverpod features ASAP.
+As you can see Riverpod exposes a [ChangeNotifierProvider] class,
+which is there precisely to support migrations from pkg:Provider.
 
-While you should strive toward moving all your application to Riverpod in the long-run, 
-**don't burn yourself out**.  
-Do it one provider at a time.  
+Keep in mind that this provider is not recommended when writing new code,
+and it is not the best way to use Riverpod, but it's a gentle and very easy way to start your migration.
 
-### Migrate one Provider at a time
-*Almost* all Providers from pkg:provider have a strict equivalent in pkg:riverpod.
+:::tip
+There is no rush to *immediately* try to change your `ChangeNotifier`s into the more modern [Riverpod's providers].
+Some requite a bit of a paradigm shift, so it may be difficult to do initially.  
 
-In particular, you'll find [ChangeNotifierProvider], which is there to enable migration from Provider.  
-This provider is not recommended when writing new code, and it is not the best way to use Riverpod, but 
-it's a gentle and very easy way to start your migration.
+Take your time, as it is important to get yourself familiar with Riverpod first;
+you'll quickly find out that *almost* all Providers from pkg:provider have a strict equivalent in pkg:riverpod.
+:::
 
-Take the above example. Fully migrating that Provider means writing the following:
-
-```dart
-class MyNotifier extends Notifier<int> {
-  @override
-  int build() => 0;
-
-  void increment() => state++;
-}
-
-final myNotifierProvider = NotifierProvider<MyNotifier, int>(MyNotifier.new);
-```
-
-Thus, migrating consists in moving `provider.Provider` definitions *outside* of `MultiProvider`, 
-defining it as a final global `riverpod.Provider` variable and using `riverpod`'s new classes where needed.
-
-### Starts with *leaves*
+## Starts with *leaves*
 
 Start with Providers that do not depend on anything else, i.e. start with the *leaves* in your dependency tree.  
 Once you have migrated all of the leaves, you can then move on to the providers that depend on leaves.
@@ -83,7 +61,7 @@ In other words, avoid migrating `ProxyProvider`s at first; tackle them once all 
 This should boost and simplify the migration process, while also minimizing / tracking down any errors.
 
 
-### Riverpod and Provider can coexist
+## Riverpod and Provider can coexist
 *Keep in mind that it is entirely possible to use both Provider and Riverpod at the same time.*
 
 Indeed, using import aliases, it is possible to use the two APIs altogheter.  
@@ -96,26 +74,18 @@ A full guide onto how to effectively implement import aliases is incoming soon.
 :::
 
 
-### You don't *have to* use `Consumer` right away
+## You don't *have to* use `Consumer` right away
 
 It's important to keep in mind that there is no need to *immediately* use [Riverpod's `Consumer` APIs].  
 If you've just started the migration, [as mentioned above], you should probably start with `ChangeNotifierProvider`.
 
+Consider `myNotifierProvider`, defined above.
 
-Say you've just migrated `myChangeNotifierProvider` like so:
-```dart
-class MyChangeNotifier extends ChangeNotifier {}
-
-final myChangeNotifierProvider = ChangeNotifierProvider<MyChangeNotifier>((ref) {
-  return MyChangeNotifier();
-});
-```
-
-If your inner code is depending on pkg:Provider consume APIs, the following is more than enough to start with your new pkg:Riverpod's providers.
+Since your inner code is probably depending on pkg:Provider's APIs, use the following to start consuming `ChangeNotifier`s with pkg:Riverpod.
 ```dart
 MultiProvider(
   providers: [
-    ChangeNotifierProvider.value(value: ref.watch(myNotifier.notifier)),
+    ChangeNotifierProvider.value(value: ref.watch(myNotifierProvider.notifier)),
   ]
 )
 ```
@@ -124,22 +94,47 @@ This way, only the root Widget has to be initially converted into a `ConsumerWid
 This should ease the migration towards pkg:Riverpod even more.
 
 
-### Migrating a `ProxyProvider`
+
+## Migrate one Provider at a time
+
+If you have an existing app, don't try to migrate all your providers at once!
+
+While you should strive toward moving all your application to Riverpod in the long-run, 
+**don't burn yourself out**.  
+Do it one provider at a time.  
+
+Take the above example. **Fully** migrating that `myNotifierProvider` to Riverpod means writing the following:
+
+```dart
+class MyNotifier extends Notifier<int> {
+  @override
+  int build() => 0;
+
+  void increment() => state++;
+}
+
+final myNotifierProvider = NotifierProvider<MyNotifier, int>(MyNotifier.new);
+```
+
+.. and it's _also_ needed to change how that provider is consumed, i.e. writing `ref.watch` in the place of each `context.watch` for this provider.
+
+This operation might take some time and might lead to some errors, so don't rush doing this all at once.
+
+## Migrating `ProxyProvider`s
 Within pkg:Provider, `ProxyProvider` is used to combine values from other Providers;
 its build depends on the value of other providers, reactively.
 
 With Riverpod, instead, Providers [are composable by default]; therefore, when migrating a `ProxyProvider`
-you'll simply need to write `ref.watch` if you want a direct dependency from a Provider to another, or `ref.listen`
-if your Proxy used to simply trigger a side-effect.
+you'll simply need to write `ref.watch` if you want to declare a direct dependency from a Provider to another.
 
 If anything, combining values with Riverpod should feel simpler and straightforward; thus, the migration should greatly
 simplify your code.
 
 Furthermore, there are no shanenigans about combining more than two providers together:
-just add another `ref.watch` (or `ref.listen`) and you'll be good to go.
+just add another `ref.watch` and you'll be good to go.
 
 
-### Code Generation
+## Code Generation
 [Code generation] is recommended to use Riverpod the *cutting edge* way.  
 Even so, don't try using codegen right away.
 
@@ -160,7 +155,7 @@ class MyNotifier extends _$MyNotifier {
 }
 ```
 
-### Eager initialization
+## Eager initialization
 
 Since Riverpod's providers are final global variables, they are [lazy by default].
 
@@ -170,11 +165,12 @@ the best way to do it is to first read your provider in the place where you used
 In other words, since Riverpod can't be forced to be eager initialized, they can be read and cached
 in your startup phase, so that they're warm and ready when needed inside the rest of your application.
 
-
+[getting started]: /docs/getting_started
+[sandbox]: https://dartpad.dev/?null_safety=true&id=ef06ab3ce0b822e6cc5db0575248e6e2
 [provider]: https://pub.dev/packages/provider
 [ChangeNotifierProvider]: /docs/providers/change_notifier_provider
 [Code generation]: /docs/about_code_generation
-[AsyncNotifiers]: /docs/providers/notifier_provider
+[Riverpod's providers]: /docs/providers/notifier_provider
 [are composable by default]: /docs/from_provider/motivation#combining-providers-is-hard-and-error-prone
 [as mentioned above]: /docs/from_provider/quickstart#start-with-changenotifierprovider
 [Riverpod's `Consumer` APIs]: /docs/concepts/reading
