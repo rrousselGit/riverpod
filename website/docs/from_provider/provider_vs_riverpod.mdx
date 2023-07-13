@@ -137,7 +137,7 @@ Provider optionally comes with a widget named `Consumer` (and variants such as `
 for reading providers.
 
 `Consumer` is helpful as a performance optimization, by allowing more granular rebuilds
-of the widget tree – updating only the revelant widgets when the state changes:
+of the widget tree - updating only the revelant widgets when the state changes:
 
 As such, if a provider was defined as:
 
@@ -177,6 +177,26 @@ Consumer(
 
 Notice how `Consumer` gives us a `WidgetRef` object. This is the same object
 as we saw in the previous part related to `ConsumerWidget`.
+
+### There is no `ConsumerN` equivalent in Riverpod
+
+Notice how pkg:Provider's `Consumer2`, `Consumer3` and such aren't needed nor missed in Riverpod.
+
+With Riverpod, if you want to read values from multiple providers, you can simply write multiple `ref.watch` statements,
+like so:
+
+```dart
+Consumer(
+  builder: (context, ref, child) {
+    Model1 model = ref.watch(model1Provider);
+    Model2 model = ref.watch(model2Provider);
+    Model3 model = ref.watch(model3Provider);
+    // ...
+  }
+)
+```
+
+When compared to pkg:Provider's `ConsumerN` APIs, the above solution feels way less heavy and it should be easier to understand.
 
 ## Combining providers: ProxyProvider with stateless objects
 
