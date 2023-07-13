@@ -19,7 +19,7 @@ wants to learn about Riverpod.
 Migrating from Provider to Riverpod can be very straightforward.  
 Migrating basically consists in a few steps that can be done in an *incremental* way.
 
-### Start with ChangeNotifierProvider
+### Start with `ChangeNotifierProvider`
 *If you have an existing app, don't try to migrate all your providers at once.*  
 Don't immediately try to change your `ChangeNotifiers` into the more modern [AsyncNotifiers] from Riverpod.
 This will requite a bit of a paradigm shift, so it may be difficult to do initially.  
@@ -63,7 +63,7 @@ A full guide onto how to effectively implement import aliases is incoming soon.
 :::
 
 ### Migrate one Provider at a time
-*All Providers from pkg:provider have a strict equivalent in Riverpod*.
+*Almost* all Providers from pkg:provider have a strict equivalent in pkg:riverpod.
 
 In particular, you'll find [ChangeNotifierProvider], which is there to enable migration from Provider.  
 This provider is not recommended when writing new code, and it is not the best way to use Riverpod, but 
