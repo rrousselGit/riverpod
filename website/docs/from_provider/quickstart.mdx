@@ -50,18 +50,6 @@ While you should strive toward moving all your application to Riverpod in the lo
 **don't burn yourself out**.  
 Do it one provider at a time.  
 
-### Riverpod and Provider can coexist
-*Keep in mind that it is entirely possible to use both Provider and Riverpod at the same time.*
-
-Indeed, using import aliases, it is possible to use the two APIs altogheter.  
-This is also great for readibilty and it removes any ambiguous API usage.
-
-If you plan on doing this, consider using import aliases for each Provider import in your codebase.
-
-:::info
-A full guide onto how to effectively implement import aliases is incoming soon.
-:::
-
 ### Migrate one Provider at a time
 *Almost* all Providers from pkg:provider have a strict equivalent in pkg:riverpod.
 
@@ -84,6 +72,19 @@ final myNotifierProvider = NotifierProvider<MyNotifier, int>(MyNotifier.new);
 
 Thus, migrating consists in moving `provider.Provider` definitions *outside* of `MultiProvider`, 
 defining it as a final global `riverpod.Provider` variable and using `riverpod`'s new classes where needed.
+
+
+### Riverpod and Provider can coexist
+*Keep in mind that it is entirely possible to use both Provider and Riverpod at the same time.*
+
+Indeed, using import aliases, it is possible to use the two APIs altogheter.  
+This is also great for readibilty and it removes any ambiguous API usage.
+
+If you plan on doing this, consider using import aliases for each Provider import in your codebase.
+
+:::info
+A full guide onto how to effectively implement import aliases is incoming soon.
+:::
 
 ### Migrating a `ProxyProvider`
 Within pkg:Provider, `ProxyProvider` is used to combine values from other Providers;
