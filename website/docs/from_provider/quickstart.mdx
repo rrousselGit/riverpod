@@ -160,6 +160,16 @@ class MyNotifier extends _$MyNotifier {
 }
 ```
 
+### Eager initialization
+
+Since Riverpod's providers are final global variables, they are [lazy by default].
+
+If you need to initialize some warm-up data or a useful service on startup,
+the best way to do it is to first read your provider in the place where you used to put `MultiProvider`.
+
+In other words, since Riverpod can't be forced to be eager initialized, they can be read and cached
+in your startup phase, so that they're warm and ready when needed inside the rest of your application.
+
 
 [provider]: https://pub.dev/packages/provider
 [ChangeNotifierProvider]: /docs/providers/change_notifier_provider
@@ -168,3 +178,4 @@ class MyNotifier extends _$MyNotifier {
 [are composable by default]: /docs/from_provider/motivation#combining-providers-is-hard-and-error-prone
 [as mentioned above]: /docs/from_provider/quickstart#start-with-changenotifierprovider
 [Riverpod's `Consumer` APIs]: /docs/concepts/reading
+[lazy by default]: /docs/concepts/provider_lifecycles
