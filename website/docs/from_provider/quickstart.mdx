@@ -73,6 +73,15 @@ final myNotifierProvider = NotifierProvider<MyNotifier, int>(MyNotifier.new);
 Thus, migrating consists in moving `provider.Provider` definitions *outside* of `MultiProvider`, 
 defining it as a final global `riverpod.Provider` variable and using `riverpod`'s new classes where needed.
 
+### Starts with *leaves*
+
+Start with Providers that do not depend on anything else, i.e. start with the *leaves* in your dependency tree.  
+Once you have migrated all of the leaves, you can then move on to the providers that depend on leaves.
+
+In other words, avoid migrating `ProxyProvider`s at first; tackle them once all of their dependencies have been migrated.
+
+This should boost and simplify the migration process, while also minimizing / tracking down any errors.
+
 
 ### Riverpod and Provider can coexist
 *Keep in mind that it is entirely possible to use both Provider and Riverpod at the same time.*
