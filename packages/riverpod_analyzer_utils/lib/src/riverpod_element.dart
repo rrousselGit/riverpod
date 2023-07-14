@@ -14,7 +14,8 @@ class RiverpodAnnotationElement {
   RiverpodAnnotationElement({
     required this.keepAlive,
     required this.dependencies,
-  }) : allTransitiveDependencies = _computeAllTransitiveDependencies(dependencies);
+  }) : allTransitiveDependencies =
+            _computeAllTransitiveDependencies(dependencies);
 
   @internal
   static RiverpodAnnotationElement? parse(Element element) {
@@ -87,14 +88,16 @@ class RiverpodAnnotationElement {
     return null;
   }
 
-  static Set<GeneratorProviderDeclarationElement>? _computeAllTransitiveDependencies(
+  static Set<GeneratorProviderDeclarationElement>?
+      _computeAllTransitiveDependencies(
     Set<GeneratorProviderDeclarationElement>? dependencies,
   ) {
     if (dependencies == null) return null;
 
     return {
       ...dependencies,
-      for (final dependency in dependencies) ...?dependency.annotation.allTransitiveDependencies,
+      for (final dependency in dependencies)
+        ...?dependency.annotation.allTransitiveDependencies,
     };
   }
 
@@ -204,7 +207,8 @@ class LegacyProviderDeclarationElement implements ProviderDeclarationElement {
       LegacyFamilyInvocationElement? familyElement;
       LegacyProviderType providerType;
       if (providerBaseType.isAssignableFromType(element.type)) {
-        isAutoDispose = !alwaysAliveProviderListenableType.isAssignableFromType(element.type);
+        isAutoDispose = !alwaysAliveProviderListenableType
+            .isAssignableFromType(element.type);
 
         providerType = LegacyProviderType._parse(element.type);
       } else if (familyType.isAssignableFromType(element.type)) {
@@ -217,7 +221,8 @@ class LegacyProviderDeclarationElement implements ProviderDeclarationElement {
         }
         final parameter = callFn.parameters.single;
 
-        isAutoDispose = !alwaysAliveProviderListenableType.isAssignableFromType(callFn.returnType);
+        isAutoDispose = !alwaysAliveProviderListenableType
+            .isAssignableFromType(callFn.returnType);
         providerType = LegacyProviderType._parse(callFn.returnType);
         familyElement = LegacyFamilyInvocationElement._(parameter.type);
       } else {
@@ -256,7 +261,8 @@ class LegacyFamilyInvocationElement {
   final DartType parameterType;
 }
 
-abstract class GeneratorProviderDeclarationElement implements ProviderDeclarationElement {
+abstract class GeneratorProviderDeclarationElement
+    implements ProviderDeclarationElement {
   RiverpodAnnotationElement get annotation;
 
   bool get isScoped => annotation.dependencies != null;
@@ -265,7 +271,8 @@ abstract class GeneratorProviderDeclarationElement implements ProviderDeclaratio
   bool get isAutoDispose => !annotation.keepAlive;
 }
 
-class ClassBasedProviderDeclarationElement extends GeneratorProviderDeclarationElement {
+class ClassBasedProviderDeclarationElement
+    extends GeneratorProviderDeclarationElement {
   ClassBasedProviderDeclarationElement._({
     required this.name,
     required this.annotation,
@@ -279,10 +286,12 @@ class ClassBasedProviderDeclarationElement extends GeneratorProviderDeclarationE
     required RiverpodAnnotationElement? annotation,
   }) {
     return _cache.putIfAbsent(element, () {
-      final riverpodAnnotation = annotation ?? RiverpodAnnotationElement.parse(element);
+      final riverpodAnnotation =
+          annotation ?? RiverpodAnnotationElement.parse(element);
       if (riverpodAnnotation == null) return null;
 
-      final buildMethod = element.methods.firstWhereOrNull((method) => method.name == 'build');
+      final buildMethod =
+          element.methods.firstWhereOrNull((method) => method.name == 'build');
 
       if (buildMethod == null) {
         errorReporter?.call(
@@ -319,7 +328,8 @@ class ClassBasedProviderDeclarationElement extends GeneratorProviderDeclarationE
   final ExecutableElement buildMethod;
 }
 
-class FunctionalProviderDeclarationElement extends GeneratorProviderDeclarationElement {
+class FunctionalProviderDeclarationElement
+    extends GeneratorProviderDeclarationElement {
   FunctionalProviderDeclarationElement._({
     required this.name,
     required this.annotation,

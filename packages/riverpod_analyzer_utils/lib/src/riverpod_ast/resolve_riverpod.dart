@@ -24,7 +24,8 @@ class ResolvedRiverpodLibraryResult extends RiverpodAst {
 
   final errors = <RiverpodAnalysisError>[];
 
-  final providerScopeInstanceCreationExpressions = <ProviderScopeInstanceCreationExpression>[];
+  final providerScopeInstanceCreationExpressions =
+      <ProviderScopeInstanceCreationExpression>[];
   final providerContainerInstanceCreationExpressions =
       <ProviderContainerInstanceCreationExpression>[];
 
@@ -34,9 +35,11 @@ class ResolvedRiverpodLibraryResult extends RiverpodAst {
   final legacyProviderDeclarations = <LegacyProviderDeclaration>[];
 
   final consumerWidgetDeclarations = <ConsumerWidgetDeclaration>[];
-  final consumerStatefulWidgetDeclarations = <ConsumerStatefulWidgetDeclaration>[];
+  final consumerStatefulWidgetDeclarations =
+      <ConsumerStatefulWidgetDeclaration>[];
   final consumerStateDeclaration = <ConsumerStateDeclaration>[];
-  final statefulHookConsumerWidgetDeclarations = <StatefulHookConsumerWidgetDeclaration>[];
+  final statefulHookConsumerWidgetDeclarations =
+      <StatefulHookConsumerWidgetDeclaration>[];
   final hookConsumerWidgetDeclarations = <HookConsumerWidgetDeclaration>[];
 
   final unknownRefInvocations = <RefInvocation>[];
@@ -105,7 +108,8 @@ mixin _ParseRefInvocationMixin on RecursiveAstVisitor<void> {
       return;
     }
 
-    final widgetRefInvocation = WidgetRefInvocation._parse(node, superCall: superCall);
+    final widgetRefInvocation =
+        WidgetRefInvocation._parse(node, superCall: superCall);
     if (widgetRefInvocation != null) {
       visitWidgetRefInvocation(widgetRefInvocation);
       // Don't call super as WidgetRefInvocation should already be recursive
@@ -191,7 +195,8 @@ class _AddConsumerDeclarationVisitor extends UnimplementedRiverpodAstVisitor {
   }
 }
 
-class _ParseRiverpodUnitVisitor extends RecursiveAstVisitor<void> with _ParseRefInvocationMixin {
+class _ParseRiverpodUnitVisitor extends RecursiveAstVisitor<void>
+    with _ParseRefInvocationMixin {
   _ParseRiverpodUnitVisitor(this.result);
 
   final ResolvedRiverpodLibraryResult result;
