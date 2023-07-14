@@ -8,7 +8,7 @@ import 'todos.dart';
 /* SNIPPET START */
 
 class TodoListView extends ConsumerWidget {
-  const TodoListView({Key? key}): super(key: key);
+  const TodoListView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -22,7 +22,8 @@ class TodoListView extends ConsumerWidget {
           CheckboxListTile(
             value: todo.completed,
             // En appuyant sur le todo, on modifie son état d'achèvement.
-            onChanged: (value) => ref.read(todosProvider.notifier).toggle(todo.id),
+            onChanged: (value) =>
+                ref.read(todosProvider.notifier).toggle(todo.id),
             title: Text(todo.description),
           ),
       ],

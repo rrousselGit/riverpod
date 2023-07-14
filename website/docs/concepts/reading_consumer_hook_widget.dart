@@ -8,7 +8,7 @@ import 'reading_counter.dart';
 /* SNIPPET START */
 
 class HomeView extends HookConsumerWidget {
-  const HomeView({Key? key}): super(key: key);
+  const HomeView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

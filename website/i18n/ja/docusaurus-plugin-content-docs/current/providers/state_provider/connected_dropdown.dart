@@ -9,17 +9,17 @@ import 'sort_provider.dart';
 Widget build(BuildContext context, WidgetRef ref) {
   return AppBar(actions: [
 /* SNIPPET START */
-DropdownButton<ProductSortType>(
-  // ソートの種類が変わると、ドロップダウンメニューが更新されて
-  // 表示されるアイコン（メニューアイテム）が変わります。
-  value: ref.watch(productSortTypeProvider),
-  // ユーザがドロップダウンメニューを操作するとプロバイダのステートが更新されます。
-  onChanged: (value) =>
-      ref.read(productSortTypeProvider.notifier).state = value!,
-  items: [
-    // ...
-  ],
-),
+    DropdownButton<ProductSortType>(
+      // ソートの種類が変わると、ドロップダウンメニューが更新されて
+      // 表示されるアイコン（メニューアイテム）が変わります。
+      value: ref.watch(productSortTypeProvider),
+      // ユーザがドロップダウンメニューを操作するとプロバイダのステートが更新されます。
+      onChanged: (value) =>
+          ref.read(productSortTypeProvider.notifier).state = value!,
+      items: [
+        // ...
+      ],
+    ),
 /* SNIPPET END */
   ]);
 }

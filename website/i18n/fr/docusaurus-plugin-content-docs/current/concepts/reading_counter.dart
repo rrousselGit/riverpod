@@ -13,7 +13,7 @@ final counterProvider = StateNotifierProvider<Counter, int>((ref) {
 });
 
 class Counter extends StateNotifier<int> {
-  Counter(this.ref): super(0);
+  Counter(this.ref) : super(0);
 
   final Ref ref;
 

@@ -13,7 +13,8 @@ String _$depHash() => r'2213a401e03a1a914579b4a3a7707b783de9efba';
 final depProvider = AutoDisposeProvider<int>.internal(
   dep,
   name: r'depProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product') ? null : _$depHash,
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$depHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -79,7 +80,8 @@ class FamilyFamily extends Family<int> {
   static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies => _allTransitiveDependencies;
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
 
   @override
   String? get name => r'familyProvider';
@@ -98,7 +100,9 @@ class FamilyProvider extends AutoDisposeProvider<int> {
           from: familyProvider,
           name: r'familyProvider',
           debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product') ? null : _$familyHash,
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$familyHash,
           dependencies: FamilyFamily._dependencies,
           allTransitiveDependencies: FamilyFamily._allTransitiveDependencies,
         );
@@ -126,8 +130,14 @@ String _$providerHash() => r'6c9184ef4c6a410a2132e1ecc13a2e646e936d37';
 final providerProvider = AutoDisposeProvider<int>.internal(
   provider,
   name: r'providerProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product') ? null : _$providerHash,
-  dependencies: <ProviderOrFamily>{depProvider, familyProvider, dep2Provider, family2Provider},
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$providerHash,
+  dependencies: <ProviderOrFamily>{
+    depProvider,
+    familyProvider,
+    dep2Provider,
+    family2Provider
+  },
   allTransitiveDependencies: <ProviderOrFamily>{
     depProvider,
     ...?depProvider.allTransitiveDependencies,
@@ -148,8 +158,14 @@ String _$provider2Hash() => r'70d908579c5e64ce6558b42f433adfb80f4dc79b';
 final provider2Provider = AutoDisposeProvider<int>.internal(
   provider2,
   name: r'provider2Provider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product') ? null : _$provider2Hash,
-  dependencies: <ProviderOrFamily>{depProvider, familyProvider, dep2Provider, family2Provider},
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$provider2Hash,
+  dependencies: <ProviderOrFamily>{
+    depProvider,
+    familyProvider,
+    dep2Provider,
+    family2Provider
+  },
   allTransitiveDependencies: <ProviderOrFamily>{
     depProvider,
     ...?depProvider.allTransitiveDependencies,
@@ -163,15 +179,17 @@ final provider2Provider = AutoDisposeProvider<int>.internal(
 );
 
 typedef Provider2Ref = AutoDisposeProviderRef<int>;
-String _$transitiveDependenciesHash() => r'9c81823224bb28a5dc482328c04ce76293370877';
+String _$transitiveDependenciesHash() =>
+    r'9c81823224bb28a5dc482328c04ce76293370877';
 
 /// See also [transitiveDependencies].
 @ProviderFor(transitiveDependencies)
 final transitiveDependenciesProvider = AutoDisposeProvider<int>.internal(
   transitiveDependencies,
   name: r'transitiveDependenciesProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$transitiveDependenciesHash,
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$transitiveDependenciesHash,
   dependencies: <ProviderOrFamily>[providerProvider],
   allTransitiveDependencies: <ProviderOrFamily>{
     providerProvider,
@@ -180,15 +198,18 @@ final transitiveDependenciesProvider = AutoDisposeProvider<int>.internal(
 );
 
 typedef TransitiveDependenciesRef = AutoDisposeProviderRef<int>;
-String _$smallTransitiveDependencyCountHash() => r'34689e1ba57e2959975cbf8ebd6c9483f4652a73';
+String _$smallTransitiveDependencyCountHash() =>
+    r'34689e1ba57e2959975cbf8ebd6c9483f4652a73';
 
 /// See also [smallTransitiveDependencyCount].
 @ProviderFor(smallTransitiveDependencyCount)
-final smallTransitiveDependencyCountProvider = AutoDisposeProvider<int>.internal(
+final smallTransitiveDependencyCountProvider =
+    AutoDisposeProvider<int>.internal(
   smallTransitiveDependencyCount,
   name: r'smallTransitiveDependencyCountProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$smallTransitiveDependencyCountHash,
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$smallTransitiveDependencyCountHash,
   dependencies: <ProviderOrFamily>[depProvider, familyProvider, dep2Provider],
   allTransitiveDependencies: <ProviderOrFamily>{
     depProvider,
@@ -201,29 +222,33 @@ final smallTransitiveDependencyCountProvider = AutoDisposeProvider<int>.internal
 );
 
 typedef SmallTransitiveDependencyCountRef = AutoDisposeProviderRef<int>;
-String _$emptyDependenciesFunctionalHash() => r'73d68dcbd3ea09b593b84b4a4dae9eb6e72e3640';
+String _$emptyDependenciesFunctionalHash() =>
+    r'73d68dcbd3ea09b593b84b4a4dae9eb6e72e3640';
 
 /// See also [emptyDependenciesFunctional].
 @ProviderFor(emptyDependenciesFunctional)
 final emptyDependenciesFunctionalProvider = AutoDisposeProvider<int>.internal(
   emptyDependenciesFunctional,
   name: r'emptyDependenciesFunctionalProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$emptyDependenciesFunctionalHash,
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$emptyDependenciesFunctionalHash,
   dependencies: const <ProviderOrFamily>[],
   allTransitiveDependencies: const <ProviderOrFamily>{},
 );
 
 typedef EmptyDependenciesFunctionalRef = AutoDisposeProviderRef<int>;
-String _$providerWithDependenciesHash() => r'beecbe7a41b647ab92367dbcc12055bcd6345af7';
+String _$providerWithDependenciesHash() =>
+    r'beecbe7a41b647ab92367dbcc12055bcd6345af7';
 
 /// See also [providerWithDependencies].
 @ProviderFor(providerWithDependencies)
 final providerWithDependenciesProvider = AutoDisposeProvider<int>.internal(
   providerWithDependencies,
   name: r'providerWithDependenciesProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$providerWithDependenciesHash,
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$providerWithDependenciesHash,
   dependencies: <ProviderOrFamily>[_privateDepProvider, publicDepProvider],
   allTransitiveDependencies: <ProviderOrFamily>{
     _privateDepProvider,
@@ -241,7 +266,8 @@ String _$privateDepHash() => r'f610d91bd39e0dcffe6ff4e74160964a291289d9';
 final _privateDepProvider = AutoDisposeProvider<int>.internal(
   _privateDep,
   name: r'_privateDepProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product') ? null : _$privateDepHash,
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$privateDepHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -254,7 +280,8 @@ String _$publicDepHash() => r'bcb69aace017c86c3c4b8eccf59fa22d010834bc';
 final publicDepProvider = AutoDisposeProvider<int>.internal(
   publicDep,
   name: r'publicDepProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product') ? null : _$publicDepHash,
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$publicDepHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -267,7 +294,8 @@ String _$dep2Hash() => r'2778537df77f6431148c2ce400724da3e2ab4b94';
 final dep2Provider = AutoDisposeNotifierProvider<Dep2, int>.internal(
   Dep2.new,
   name: r'dep2Provider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product') ? null : _$dep2Hash,
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$dep2Hash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -318,7 +346,8 @@ class Family2Family extends Family<int> {
   static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies => _allTransitiveDependencies;
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
 
   @override
   String? get name => r'family2Provider';
@@ -334,7 +363,9 @@ class Family2Provider extends AutoDisposeNotifierProviderImpl<Family2, int> {
           from: family2Provider,
           name: r'family2Provider',
           debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product') ? null : _$family2Hash,
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$family2Hash,
           dependencies: Family2Family._dependencies,
           allTransitiveDependencies: Family2Family._allTransitiveDependencies,
         );
@@ -371,8 +402,14 @@ String _$provider3Hash() => r'dfdd6dec6cfee543c73d99593ce98d68f4db385c';
 final provider3Provider = AutoDisposeNotifierProvider<Provider3, int>.internal(
   Provider3.new,
   name: r'provider3Provider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product') ? null : _$provider3Hash,
-  dependencies: <ProviderOrFamily>{depProvider, familyProvider, dep2Provider, family2Provider},
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$provider3Hash,
+  dependencies: <ProviderOrFamily>{
+    depProvider,
+    familyProvider,
+    dep2Provider,
+    family2Provider
+  },
   allTransitiveDependencies: <ProviderOrFamily>{
     depProvider,
     ...?depProvider.allTransitiveDependencies,
@@ -433,7 +470,8 @@ class Provider4Family extends Family<int> {
   @override
   Iterable<ProviderOrFamily>? get dependencies => _dependencies;
 
-  static final Iterable<ProviderOrFamily> _allTransitiveDependencies = <ProviderOrFamily>{
+  static final Iterable<ProviderOrFamily> _allTransitiveDependencies =
+      <ProviderOrFamily>{
     depProvider,
     ...?depProvider.allTransitiveDependencies,
     familyProvider,
@@ -445,14 +483,16 @@ class Provider4Family extends Family<int> {
   };
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies => _allTransitiveDependencies;
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
 
   @override
   String? get name => r'provider4Provider';
 }
 
 /// See also [Provider4].
-class Provider4Provider extends AutoDisposeNotifierProviderImpl<Provider4, int> {
+class Provider4Provider
+    extends AutoDisposeNotifierProviderImpl<Provider4, int> {
   /// See also [Provider4].
   Provider4Provider(
     this.id,
@@ -461,7 +501,9 @@ class Provider4Provider extends AutoDisposeNotifierProviderImpl<Provider4, int> 
           from: provider4Provider,
           name: r'provider4Provider',
           debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product') ? null : _$provider4Hash,
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$provider4Hash,
           dependencies: Provider4Family._dependencies,
           allTransitiveDependencies: Provider4Family._allTransitiveDependencies,
         );
@@ -491,7 +533,8 @@ class Provider4Provider extends AutoDisposeNotifierProviderImpl<Provider4, int> 
   }
 }
 
-String _$emptyDependenciesClassBasedHash() => r'e20c18353984a81977b656e9879b3841dbaedc6c';
+String _$emptyDependenciesClassBasedHash() =>
+    r'e20c18353984a81977b656e9879b3841dbaedc6c';
 
 /// See also [EmptyDependenciesClassBased].
 @ProviderFor(EmptyDependenciesClassBased)
@@ -499,8 +542,9 @@ final emptyDependenciesClassBasedProvider =
     AutoDisposeNotifierProvider<EmptyDependenciesClassBased, int>.internal(
   EmptyDependenciesClassBased.new,
   name: r'emptyDependenciesClassBasedProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$emptyDependenciesClassBasedHash,
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$emptyDependenciesClassBasedHash,
   dependencies: const <ProviderOrFamily>[],
   allTransitiveDependencies: const <ProviderOrFamily>{},
 );

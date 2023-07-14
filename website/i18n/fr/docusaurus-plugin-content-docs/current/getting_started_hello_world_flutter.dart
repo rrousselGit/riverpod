@@ -11,7 +11,7 @@ final helloWorldProvider = Provider((_) => 'Hello world');
 
 void main() {
   runApp(
-    // Pour que les widgets puissent lire les providers, nous devons 
+    // Pour que les widgets puissent lire les providers, nous devons
     // envelopper l'application entière dans un widget "ProviderScope".
     // C'est là où l'état de nos providers sera stocké.
     ProviderScope(

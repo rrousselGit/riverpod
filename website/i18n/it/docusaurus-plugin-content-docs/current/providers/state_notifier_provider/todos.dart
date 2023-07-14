@@ -8,7 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 @immutable
 class Todo {
-  const Todo({required this.id, required this.description, required this.completed});
+  const Todo(
+      {required this.id, required this.description, required this.completed});
 
   // Tutte le proprietà dovrebbero essere `final` nella nostra classe.
   final String id;

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -55,9 +54,7 @@ void main() {
   testWidgets('override repositoryProvider', (tester) async {
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [
-          repositoryProvider.overrideWithValue(FakeRepository())
-        ],
+        overrides: [repositoryProvider.overrideWithValue(FakeRepository())],
         // Наше приложение, которые читает значение todoListProvider
         // для отображение списка задач.
         // Вы можете вынести это в отдельный MyApp виджет
