@@ -36,8 +36,7 @@ String _hashFnIdentifier(String hashFnName) {
 const _defaultProviderNameSuffix = 'Provider';
 
 /// May be thrown by generators during [Generator.generate].
-class RiverpodInvalidGenerationSourceError
-    extends InvalidGenerationSourceError {
+class RiverpodInvalidGenerationSourceError extends InvalidGenerationSourceError {
   RiverpodInvalidGenerationSourceError(
     super.message, {
     super.todo = '',
@@ -52,8 +51,7 @@ class RiverpodInvalidGenerationSourceError
 
 @immutable
 class RiverpodGenerator extends ParserGenerator<Riverpod> {
-  RiverpodGenerator(Map<String, Object?> mapConfig)
-      : options = BuildYamlOptions.fromMap(mapConfig);
+  RiverpodGenerator(Map<String, Object?> mapConfig) : options = BuildYamlOptions.fromMap(mapConfig);
 
   final BuildYamlOptions options;
 
@@ -152,8 +150,7 @@ class _SystemHash {
         hashFn: hashFn,
       ).run(buffer);
     } else {
-      final providerName =
-          '${provider.providerElement.name.lowerFirst}$familySuffix';
+      final providerName = '${provider.providerElement.name.lowerFirst}$familySuffix';
       final notifierTypedefName = providerName.startsWith('_')
           ? '_\$${provider.providerElement.name.substring(1)}'
           : '_\$${provider.providerElement.name}';

@@ -67,9 +67,7 @@ void main() {
                 return const CircularProgressIndicator();
               }
               return ListView(
-                children: [
-                  for (final todo in todos.asData!.value) TodoItem(todo: todo)
-                ],
+                children: [for (final todo in todos.asData!.value) TodoItem(todo: todo)],
               );
             }),
           ),

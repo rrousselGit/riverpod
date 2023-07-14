@@ -5,7 +5,7 @@ import 'reading_counter.dart';
 /* SNIPPET START */
 
 class HomeView extends ConsumerStatefulWidget {
-  const HomeView({Key? key}) : super(key: key);
+  const HomeView({Key? key}): super(key: key);
 
   @override
   HomeViewState createState() => HomeViewState();
@@ -21,7 +21,7 @@ class HomeViewState extends ConsumerState<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    // Также мы можем использовать ref внутри метода build
+    // Также мы можем использовать ref внутри метода build 
     // для прослушивания провайдеров.
     final counter = ref.watch(counterProvider);
     return Text('$counter');

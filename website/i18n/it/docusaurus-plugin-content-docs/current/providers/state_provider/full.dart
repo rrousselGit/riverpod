@@ -71,8 +71,7 @@ class MyHomePage extends ConsumerWidget {
 
             value: ref.watch(productSortTypeProvider),
             // Quando l'utente interagisce con la dropdown aggiorniamo lo stato del provider.
-            onChanged: (value) =>
-                ref.read(productSortTypeProvider.notifier).state = value!,
+            onChanged: (value) => ref.read(productSortTypeProvider.notifier).state = value!,
             items: const [
               DropdownMenuItem(
                 value: ProductSortType.name,

@@ -5,25 +5,26 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'reading_counter.dart';
 
+
 class HomeView extends HookConsumerWidget {
-  const HomeView({Key? key}) : super(key: key);
+  const HomeView({Key? key}): super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return
+return 
 /* SNIPPET START */
-        Scaffold(
-      body: HookConsumer(
-        builder: (context, ref, child) {
-          // HookConsumerWidget と同様にフックが使えます。
-          final state = useState(0);
+Scaffold(
+  body: HookConsumer(
+    builder: (context, ref, child) {
+      // HookConsumerWidget と同様にフックが使えます。
+      final state = useState(0);
 
-          // `ref` オブジェクトを使ってプロバイダを監視することもできます。
-          final counter = ref.watch(counterProvider);
-          return Text('$counter');
-        },
-      ),
-    );
+      // `ref` オブジェクトを使ってプロバイダを監視することもできます。
+      final counter = ref.watch(counterProvider);
+      return Text('$counter');
+    },
+  ),
+);
 /* SNIPPET END */
   }
 }

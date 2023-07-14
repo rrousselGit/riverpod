@@ -107,8 +107,7 @@ int sixth(SixthRef ref) => 0;
       ignoreErrors: true,
     );
 
-    final errors =
-        result.resolvedRiverpodLibraryResults.expand((e) => e.errors).toList();
+    final errors = result.resolvedRiverpodLibraryResults.expand((e) => e.errors).toList();
 
     expect(errors, hasLength(6));
 
@@ -471,8 +470,7 @@ class NestedDependencyNotifier extends _$NestedDependencyNotifier {
               'node',
               'ProviderDependencyNotifier',
             ),
-        reason:
-            '${provider.key} has `ProviderDependencyNotifier` as second dependency',
+        reason: '${provider.key} has `ProviderDependencyNotifier` as second dependency',
       );
 
       expect(
@@ -488,8 +486,7 @@ class NestedDependencyNotifier extends _$NestedDependencyNotifier {
       expect(
         provider.value.annotation.element.dependencies?.elementAt(1),
         same(providers['ProviderDependencyNotifier']!.providerElement),
-        reason:
-            '${provider.key} has `ProviderDependencyNotifier` as second dependency',
+        reason: '${provider.key} has `ProviderDependencyNotifier` as second dependency',
       );
 
       expect(

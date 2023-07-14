@@ -14,8 +14,7 @@ Widget build(BuildContext context, WidgetRef ref) {
       // per aggiornare l'icona mostrata.
       value: ref.watch(productSortTypeProvider),
       // Quando l'utente interagisce con la dropdown aggiorniamo lo stato del provider.
-      onChanged: (value) =>
-          ref.read(productSortTypeProvider.notifier).state = value!,
+      onChanged: (value) => ref.read(productSortTypeProvider.notifier).state = value!,
       items: [
         // ...
       ],

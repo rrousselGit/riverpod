@@ -66,7 +66,7 @@ class MyHomePage extends ConsumerWidget {
         title: const Text('Products'),
         actions: [
           DropdownButton<ProductSortType>(
-            // Lorsque le type de tri change, la liste déroulante est
+            // Lorsque le type de tri change, la liste déroulante est 
             // reconstruite pour mettre à jour l'icône affichée.
             value: ref.watch(productSortTypeProvider),
             // Lorsque l'utilisateur interagit avec le dropdown, nous mettons à jour l'état du provider.

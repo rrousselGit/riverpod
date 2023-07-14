@@ -6,13 +6,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'completed_todos.dart';
 
 Widget build() {
-  return
+return
 /* SNIPPET START */
-      Consumer(builder: (context, ref, child) {
-    final completedTodos = ref.watch(completedTodosProvider);
-    // TODO ListView/GridView/... を使って Todo リストを表示する /* SKIP */
-    return Container();
-    /* SKIP END */
-  });
+Consumer(builder: (context, ref, child) {
+  final completedTodos = ref.watch(completedTodosProvider);
+  // TODO ListView/GridView/... を使って Todo リストを表示する /* SKIP */
+  return Container();
+  /* SKIP END */
+});
 /* SNIPPET END */
 }

@@ -9,16 +9,16 @@ import 'sort_provider.dart';
 Widget build(BuildContext context, WidgetRef ref) {
   return AppBar(actions: [
 /* SNIPPET START */
-    DropdownButton<ProductSortType>(
-      // При изменении типа сортировки произойдет перестройка DropdownButton
-      value: ref.watch(productSortTypeProvider),
-      // Обновляем состояние провайдера при взаимодействии пользователя с DropdownButton
-      onChanged: (value) =>
-          ref.read(productSortTypeProvider.notifier).state = value!,
-      items: [
-        // ...
-      ],
-    ),
+DropdownButton<ProductSortType>(
+  // При изменении типа сортировки произойдет перестройка DropdownButton
+  value: ref.watch(productSortTypeProvider),
+  // Обновляем состояние провайдера при взаимодействии пользователя с DropdownButton
+  onChanged: (value) =>
+      ref.read(productSortTypeProvider.notifier).state = value!,
+  items: [
+    // ...
+  ],
+),
 /* SNIPPET END */
   ]);
 }

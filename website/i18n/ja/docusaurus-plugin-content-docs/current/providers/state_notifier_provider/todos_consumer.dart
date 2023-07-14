@@ -8,7 +8,7 @@ import 'todos.dart';
 /* SNIPPET START */
 
 class TodoListView extends ConsumerWidget {
-  const TodoListView({Key? key}) : super(key: key);
+  const TodoListView({Key? key}): super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -22,8 +22,7 @@ class TodoListView extends ConsumerWidget {
           CheckboxListTile(
             value: todo.completed,
             // 各 Todo をタップすると、完了ステータスを変更できる
-            onChanged: (value) =>
-                ref.read(todosProvider.notifier).toggle(todo.id),
+            onChanged: (value) => ref.read(todosProvider.notifier).toggle(todo.id),
             title: Text(todo.description),
           ),
       ],

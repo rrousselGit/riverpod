@@ -27,7 +27,7 @@ class HomeViewState extends ConsumerState<HomeView> {
     // Мы можем использовать хуки внутри builder, как и в HookConsumerWidget
     final state = useState(0);
 
-    // Также мы можем использовать ref внутри метода build
+    // Также мы можем использовать ref внутри метода build 
     // для прослушивания провайдеров.
     final counter = ref.watch(counterProvider);
     return Text('$counter');

@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -54,7 +55,9 @@ void main() {
   testWidgets('override repositoryProvider', (tester) async {
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [repositoryProvider.overrideWithValue(FakeRepository())],
+        overrides: [
+          repositoryProvider.overrideWithValue(FakeRepository())
+        ],
         // Our application, which will read from todoListProvider to display the todo-list.
         // You may extract this into a MyApp widget
         child: MaterialApp(

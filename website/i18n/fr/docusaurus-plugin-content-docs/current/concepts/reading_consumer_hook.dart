@@ -11,6 +11,7 @@ class HomeView extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
+
       /* SNIPPET START */
       body: HookConsumer(
         builder: (context, ref, child) {
@@ -24,5 +25,5 @@ class HomeView extends HookConsumerWidget {
       ),
     );
   }
-  /* SNIPPET END */
+    /* SNIPPET END */
 }

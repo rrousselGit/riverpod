@@ -24,7 +24,7 @@ void main() {
 class MyApp extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Pour lire notre provider, on peut utiliser le hook "ref.watch",
+    // Pour lire notre provider, on peut utiliser le hook "ref.watch", 
     // ce qui n'est possible que parce que MyApp est un HookConsumerWidget.
     final String value = ref.watch(helloWorldProvider);
 
