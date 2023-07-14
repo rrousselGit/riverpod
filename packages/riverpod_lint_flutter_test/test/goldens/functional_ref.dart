@@ -1,16 +1,16 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'function_based_ref.g.dart';
+part 'functional_ref.g.dart';
 
 @riverpod
-// expect_lint: function_based_ref
+// expect_lint: functional_ref
 int refless() {
   return 0;
 }
 
 @riverpod
 int nameless(
-  // expect_lint: function_based_ref
+  // expect_lint: functional_ref
   ref,
 ) {
   return 0;
@@ -18,7 +18,7 @@ int nameless(
 
 @riverpod
 int incorrectlyTyped(
-  // expect_lint: function_based_ref
+  // expect_lint: functional_ref
   int ref,
 ) {
   return 0;

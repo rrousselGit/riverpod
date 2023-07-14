@@ -1,19 +1,19 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'convert_class_based_provider_to_function_based.dart';
+part of 'convert_functional_provider_to_class_based.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$exampleHash() => r'081776126bafed3e1583bba9c1fadef798215ad7';
+String _$exampleHash() => r'638d7db2be22eaad0f51ea0b3ae38e0483d43725';
 
 /// Some comment
 ///
-/// Copied from [Example].
-@ProviderFor(Example)
-final exampleProvider = AutoDisposeNotifierProvider<Example, int>.internal(
-  Example.new,
+/// Copied from [example].
+@ProviderFor(example)
+final exampleProvider = AutoDisposeProvider<int>.internal(
+  example,
   name: r'exampleProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$exampleHash,
@@ -21,8 +21,8 @@ final exampleProvider = AutoDisposeNotifierProvider<Example, int>.internal(
   allTransitiveDependencies: null,
 );
 
-typedef _$Example = AutoDisposeNotifier<int>;
-String _$exampleFamilyHash() => r'37d4a4fd66999562cd92051f91266270d5a1e5ea';
+typedef ExampleRef = AutoDisposeProviderRef<int>;
+String _$exampleFamilyHash() => r'f5547d3d88c42b135db5efea7dfaa542b3db9cc1';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -45,34 +45,26 @@ class _SystemHash {
   }
 }
 
-abstract class _$ExampleFamily extends BuildlessAutoDisposeNotifier<int> {
-  late final int a;
-  late final String b;
-
-  int build({
-    required int a,
-    String b = '42',
-  });
-}
+typedef ExampleFamilyRef = AutoDisposeProviderRef<int>;
 
 /// Some comment
 ///
-/// Copied from [ExampleFamily].
-@ProviderFor(ExampleFamily)
+/// Copied from [exampleFamily].
+@ProviderFor(exampleFamily)
 const exampleFamilyProvider = ExampleFamilyFamily();
 
 /// Some comment
 ///
-/// Copied from [ExampleFamily].
+/// Copied from [exampleFamily].
 class ExampleFamilyFamily extends Family<int> {
   /// Some comment
   ///
-  /// Copied from [ExampleFamily].
+  /// Copied from [exampleFamily].
   const ExampleFamilyFamily();
 
   /// Some comment
   ///
-  /// Copied from [ExampleFamily].
+  /// Copied from [exampleFamily].
   ExampleFamilyProvider call({
     required int a,
     String b = '42',
@@ -110,19 +102,20 @@ class ExampleFamilyFamily extends Family<int> {
 
 /// Some comment
 ///
-/// Copied from [ExampleFamily].
-class ExampleFamilyProvider
-    extends AutoDisposeNotifierProviderImpl<ExampleFamily, int> {
+/// Copied from [exampleFamily].
+class ExampleFamilyProvider extends AutoDisposeProvider<int> {
   /// Some comment
   ///
-  /// Copied from [ExampleFamily].
+  /// Copied from [exampleFamily].
   ExampleFamilyProvider({
     required this.a,
     this.b = '42',
   }) : super.internal(
-          () => ExampleFamily()
-            ..a = a
-            ..b = b,
+          (ref) => exampleFamily(
+            ref,
+            a: a,
+            b: b,
+          ),
           from: exampleFamilyProvider,
           name: r'exampleFamilyProvider',
           debugGetCreateSourceHash:
@@ -149,16 +142,6 @@ class ExampleFamilyProvider
     hash = _SystemHash.combine(hash, b.hashCode);
 
     return _SystemHash.finish(hash);
-  }
-
-  @override
-  int runNotifierBuild(
-    covariant ExampleFamily notifier,
-  ) {
-    return notifier.build(
-      a: a,
-      b: b,
-    );
   }
 }
 // ignore_for_file: type=lint

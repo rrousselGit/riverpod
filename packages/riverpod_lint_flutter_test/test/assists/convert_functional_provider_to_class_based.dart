@@ -1,6 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'convert_function_based_provider_to_class_based.g.dart';
+part 'convert_functional_provider_to_class_based.g.dart';
 
 /// Some comment
 @riverpod

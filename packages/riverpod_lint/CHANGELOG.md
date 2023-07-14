@@ -68,7 +68,7 @@ Fix quick-fix for provider_dependencies
 
 ## 1.1.1
 
-- Fix false positive with `function_based_ref` lint on scoped providers
+- Fix false positive with `functional_ref` lint on scoped providers
 - Fix false positive with `provider_dependencies` lint on scoped providers
 
 ## 1.1.0

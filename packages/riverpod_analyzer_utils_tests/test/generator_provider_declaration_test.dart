@@ -20,13 +20,13 @@ Future<Raw<int>> value3(Value3Ref ref) async => 0;
       ignoreErrors: true,
     );
 
-    final value = result.functionBasedProviderDeclarations.singleWhere(
+    final value = result.functionalProviderDeclarations.singleWhere(
       (e) => e.name.toString() == 'value',
     );
-    final value2 = result.functionBasedProviderDeclarations.singleWhere(
+    final value2 = result.functionalProviderDeclarations.singleWhere(
       (e) => e.name.toString() == 'value2',
     );
-    final value3 = result.functionBasedProviderDeclarations.singleWhere(
+    final value3 = result.functionalProviderDeclarations.singleWhere(
       (e) => e.name.toString() == 'value3',
     );
     expect(value.createdType.toString(), 'Future<int>');
@@ -64,13 +64,13 @@ int plain(PlainRef ref) => 0;
       ignoreErrors: true,
     );
 
-    final needsOverride = result.functionBasedProviderDeclarations.singleWhere(
+    final needsOverride = result.functionalProviderDeclarations.singleWhere(
       (e) => e.name.toString() == 'needsOverride',
     );
-    final scoped = result.functionBasedProviderDeclarations.singleWhere(
+    final scoped = result.functionalProviderDeclarations.singleWhere(
       (e) => e.name.toString() == 'scoped',
     );
-    final plain = result.functionBasedProviderDeclarations.singleWhere(
+    final plain = result.functionalProviderDeclarations.singleWhere(
       (e) => e.name.toString() == 'plain',
     );
 
@@ -107,8 +107,7 @@ int sixth(SixthRef ref) => 0;
       ignoreErrors: true,
     );
 
-    final errors =
-        result.resolvedRiverpodLibraryResults.expand((e) => e.errors).toList();
+    final errors = result.resolvedRiverpodLibraryResults.expand((e) => e.errors).toList();
 
     expect(errors, hasLength(6));
 
@@ -170,10 +169,10 @@ class Counter extends _$Counter {
     final providers = result.generatorProviderDeclarations;
 
     expect(providers, [
-      isA<FunctionBasedProviderDeclaration>()
+      isA<FunctionalProviderDeclaration>()
           .having((e) => e.name.toString(), 'name', 'first')
           .having((e) => e.node.name.toString(), 'node.name', 'first'),
-      isA<FunctionBasedProviderDeclaration>()
+      isA<FunctionalProviderDeclaration>()
           .having((e) => e.name.toString(), 'name', 'second')
           .having((e) => e.node.name.toString(), 'node.name', 'second'),
       isA<ClassBasedProviderDeclaration>()
@@ -471,8 +470,7 @@ class NestedDependencyNotifier extends _$NestedDependencyNotifier {
               'node',
               'ProviderDependencyNotifier',
             ),
-        reason:
-            '${provider.key} has `ProviderDependencyNotifier` as second dependency',
+        reason: '${provider.key} has `ProviderDependencyNotifier` as second dependency',
       );
 
       expect(
@@ -488,8 +486,7 @@ class NestedDependencyNotifier extends _$NestedDependencyNotifier {
       expect(
         provider.value.annotation.element.dependencies?.elementAt(1),
         same(providers['ProviderDependencyNotifier']!.providerElement),
-        reason:
-            '${provider.key} has `ProviderDependencyNotifier` as second dependency',
+        reason: '${provider.key} has `ProviderDependencyNotifier` as second dependency',
       );
 
       expect(

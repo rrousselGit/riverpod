@@ -6,8 +6,8 @@ import '../riverpod_custom_lint.dart';
 /// But the priority above everything else
 const convertPriority = 100;
 
-class ClassBasedToFunctionBasedProvider extends RiverpodAssist {
-  ClassBasedToFunctionBasedProvider();
+class ClassBasedToFunctionalProvider extends RiverpodAssist {
+  ClassBasedToFunctionalProvider();
 
   @override
   void run(
@@ -26,14 +26,13 @@ class ClassBasedToFunctionBasedProvider extends RiverpodAssist {
       if (!classHeading.intersects(target)) return;
 
       final changeBuilder = reporter.createChangeBuilder(
-        message: 'Convert to function-based provider',
+        message: 'Convert to functional provider',
         priority: convertPriority,
       );
 
       changeBuilder.addDartFileEdit((builder) {
         final buildTypeOrNameStartOffset =
-            declaration.buildMethod.returnType?.offset ??
-                declaration.buildMethod.name.offset;
+            declaration.buildMethod.returnType?.offset ?? declaration.buildMethod.name.offset;
 
         // Remove anything between the first character of the build method
         // and the start of the class.

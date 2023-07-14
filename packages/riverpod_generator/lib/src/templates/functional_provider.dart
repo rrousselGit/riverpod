@@ -4,8 +4,8 @@ import '../riverpod_generator.dart';
 import 'class_based_provider.dart';
 import 'template.dart';
 
-class FunctionBasedProviderTemplate extends Template {
-  FunctionBasedProviderTemplate(
+class FunctionalProviderTemplate extends Template {
+  FunctionalProviderTemplate(
     this.provider, {
     required this.refName,
     required this.hashFn,
@@ -15,12 +15,12 @@ class FunctionBasedProviderTemplate extends Template {
       throw ArgumentError.value(
         provider.node.functionExpression.parameters?.toSource(),
         'provider',
-        'Expected a function-based provider with no parameter',
+        'Expected a functional provider with no parameter',
       );
     }
   }
 
-  final FunctionBasedProviderDeclaration provider;
+  final FunctionalProviderDeclaration provider;
   final String refName;
   final String hashFn;
   final BuildYamlOptions options;

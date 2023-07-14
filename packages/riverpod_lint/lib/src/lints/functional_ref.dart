@@ -6,13 +6,13 @@ import 'package:custom_lint_builder/custom_lint_builder.dart';
 
 import '../riverpod_custom_lint.dart';
 
-class FunctionBasedRef extends RiverpodLintRule {
-  const FunctionBasedRef() : super(code: _code);
+class FunctionalRef extends RiverpodLintRule {
+  const FunctionalRef() : super(code: _code);
 
   static const _code = LintCode(
-    name: 'function_based_ref',
+    name: 'functional_ref',
     problemMessage:
-        'Function-based providers must receive a ref matching the provider name as their first positional parameter.',
+        'Functional providers must receive a ref matching the provider name as their first positional parameter.',
   );
 
   @override
@@ -21,8 +21,7 @@ class FunctionBasedRef extends RiverpodLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    riverpodRegistry(context)
-        .addFunctionBasedProviderDeclaration((declaration) {
+    riverpodRegistry(context).addFunctionalProviderDeclaration((declaration) {
       // Scoped providers don't need a ref
       if (declaration.needsOverride) return;
 
@@ -53,10 +52,10 @@ class FunctionBasedRef extends RiverpodLintRule {
   }
 
   @override
-  List<Fix> getFixes() => [FunctionBasedRefFix()];
+  List<Fix> getFixes() => [FunctionalRefFix()];
 }
 
-class FunctionBasedRefFix extends RiverpodFix {
+class FunctionalRefFix extends RiverpodFix {
   @override
   void run(
     CustomLintResolver resolver,
@@ -65,16 +64,14 @@ class FunctionBasedRefFix extends RiverpodFix {
     AnalysisError analysisError,
     List<AnalysisError> others,
   ) {
-    riverpodRegistry(context)
-        .addFunctionBasedProviderDeclaration((declaration) {
+    riverpodRegistry(context).addFunctionalProviderDeclaration((declaration) {
       // This provider is not the one that triggered the error
       if (!analysisError.sourceRange.intersects(declaration.node.sourceRange)) {
         return;
       }
 
       final expectedRefType = refNameFor(declaration);
-      final refNode = declaration
-          .node.functionExpression.parameters!.parameters.firstOrNull;
+      final refNode = declaration.node.functionExpression.parameters!.parameters.firstOrNull;
       if (refNode == null) {
         // No ref parameter, adding one
         final changeBuilder = reporter.createChangeBuilder(

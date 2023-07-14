@@ -47,7 +47,7 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
   - [provider_parameters](#provider_parameters)
   - [avoid_public_notifier_properties](#avoid_public_notifier_properties)
   - [unsupported_provider_value (riverpod_generator only)](#unsupported_provider_value-riverpod_generator-only)
-  - [function_based_ref (riverpod_generator only)](#function_based_ref-riverpod_generator-only)
+  - [functional_ref (riverpod_generator only)](#functional_ref-riverpod_generator-only)
   - [generator_class_extends (riverpod_generator only)](#generator_class_extends-riverpod_generator-only)
 - [All assists](#all-assists)
   - [Wrap widgets with a `Consumer`](#wrap-widgets-with-a-consumer)
@@ -479,9 +479,9 @@ class MyStateNotifier extends StateNotifier<int> {
 }
 ```
 
-### function_based_ref (riverpod_generator only)
+### functional_ref (riverpod_generator only)
 
-Function-based providers must receive a ref matching the provider name as their first positional parameter.
+Functional providers must receive a ref matching the provider name as their first positional parameter.
 
 **Good**:
 

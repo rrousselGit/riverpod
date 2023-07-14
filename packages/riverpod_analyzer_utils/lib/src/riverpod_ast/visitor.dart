@@ -40,8 +40,8 @@ abstract class RiverpodAstVisitor {
   void visitClassBasedProviderDeclaration(
     ClassBasedProviderDeclaration declaration,
   );
-  void visitFunctionBasedProviderDeclaration(
-    FunctionBasedProviderDeclaration declaration,
+  void visitFunctionalProviderDeclaration(
+    FunctionalProviderDeclaration declaration,
   );
 
   void visitProviderListenableExpression(
@@ -189,8 +189,8 @@ class RecursiveRiverpodAstVisitor extends RiverpodAstVisitor {
   }
 
   @override
-  void visitFunctionBasedProviderDeclaration(
-    FunctionBasedProviderDeclaration declaration,
+  void visitFunctionalProviderDeclaration(
+    FunctionalProviderDeclaration declaration,
   ) {
     declaration.visitChildren(this);
   }
@@ -321,8 +321,8 @@ class SimpleRiverpodAstVisitor extends RiverpodAstVisitor {
   ) {}
 
   @override
-  void visitFunctionBasedProviderDeclaration(
-    FunctionBasedProviderDeclaration declaration,
+  void visitFunctionalProviderDeclaration(
+    FunctionalProviderDeclaration declaration,
   ) {}
 
   @override
@@ -483,10 +483,10 @@ class UnimplementedRiverpodAstVisitor extends RiverpodAstVisitor {
   }
 
   @override
-  void visitFunctionBasedProviderDeclaration(
-    FunctionBasedProviderDeclaration declaration,
+  void visitFunctionalProviderDeclaration(
+    FunctionalProviderDeclaration declaration,
   ) {
-    throw UnimplementedError('implement visitFunctionBasedProviderDeclaration');
+    throw UnimplementedError('implement visitFunctionalProviderDeclaration');
   }
 
   @override
@@ -518,8 +518,7 @@ class RiverpodAstRegistry {
   }
 
   // misc
-  final _onResolvedRiverpodUnit =
-      <void Function(ResolvedRiverpodLibraryResult)>[];
+  final _onResolvedRiverpodUnit = <void Function(ResolvedRiverpodLibraryResult)>[];
   void addRiverpodUnit(void Function(ResolvedRiverpodLibraryResult) cb) {
     _onResolvedRiverpodUnit.add(cb);
   }
@@ -536,23 +535,21 @@ class RiverpodAstRegistry {
     void Function(GeneratorProviderDeclaration) cb,
   ) {
     addClassBasedProviderDeclaration(cb);
-    addFunctionBasedProviderDeclaration(cb);
+    addFunctionalProviderDeclaration(cb);
   }
 
-  final _onClassBasedProviderDeclaration =
-      <void Function(ClassBasedProviderDeclaration)>[];
+  final _onClassBasedProviderDeclaration = <void Function(ClassBasedProviderDeclaration)>[];
   void addClassBasedProviderDeclaration(
     void Function(ClassBasedProviderDeclaration) cb,
   ) {
     _onClassBasedProviderDeclaration.add(cb);
   }
 
-  final _onFunctionBasedProviderDeclaration =
-      <void Function(FunctionBasedProviderDeclaration)>[];
-  void addFunctionBasedProviderDeclaration(
-    void Function(FunctionBasedProviderDeclaration) cb,
+  final _onFunctionalProviderDeclaration = <void Function(FunctionalProviderDeclaration)>[];
+  void addFunctionalProviderDeclaration(
+    void Function(FunctionalProviderDeclaration) cb,
   ) {
-    _onFunctionBasedProviderDeclaration.add(cb);
+    _onFunctionalProviderDeclaration.add(cb);
   }
 
   final _onRiverpodAnnotation = <void Function(RiverpodAnnotation)>[];
@@ -562,16 +559,14 @@ class RiverpodAstRegistry {
     _onRiverpodAnnotation.add(cb);
   }
 
-  final _onRiverpodAnnotationDependency =
-      <void Function(RiverpodAnnotationDependency)>[];
+  final _onRiverpodAnnotationDependency = <void Function(RiverpodAnnotationDependency)>[];
   void addRiverpodAnnotationDependency(
     void Function(RiverpodAnnotationDependency) cb,
   ) {
     _onRiverpodAnnotationDependency.add(cb);
   }
 
-  final _onRiverpodAnnotationDependencies =
-      <void Function(RiverpodAnnotationDependencies)>[];
+  final _onRiverpodAnnotationDependencies = <void Function(RiverpodAnnotationDependencies)>[];
   void addRiverpodAnnotationDependencies(
     void Function(RiverpodAnnotationDependencies) cb,
   ) {
@@ -580,24 +575,21 @@ class RiverpodAstRegistry {
 
   // Legacy-specific visitors
 
-  final _onLegacyProviderDeclaration =
-      <void Function(LegacyProviderDeclaration)>[];
+  final _onLegacyProviderDeclaration = <void Function(LegacyProviderDeclaration)>[];
   void addLegacyProviderDeclaration(
     void Function(LegacyProviderDeclaration) cb,
   ) {
     _onLegacyProviderDeclaration.add(cb);
   }
 
-  final _onLegacyProviderDependencies =
-      <void Function(LegacyProviderDependencies)>[];
+  final _onLegacyProviderDependencies = <void Function(LegacyProviderDependencies)>[];
   void addLegacyProviderDependencies(
     void Function(LegacyProviderDependencies) cb,
   ) {
     _onLegacyProviderDependencies.add(cb);
   }
 
-  final _onLegacyProviderDependency =
-      <void Function(LegacyProviderDependency)>[];
+  final _onLegacyProviderDependency = <void Function(LegacyProviderDependency)>[];
   void addLegacyProviderDependency(
     void Function(LegacyProviderDependency) cb,
   ) {
@@ -643,8 +635,7 @@ class RiverpodAstRegistry {
     _onWidgetRefInvocation.add(cb);
   }
 
-  final _onWidgetRefWatchInvocation =
-      <void Function(WidgetRefWatchInvocation)>[];
+  final _onWidgetRefWatchInvocation = <void Function(WidgetRefWatchInvocation)>[];
   void addWidgetRefWatchInvocation(
     void Function(WidgetRefWatchInvocation) cb,
   ) {
@@ -658,16 +649,14 @@ class RiverpodAstRegistry {
     _onWidgetRefReadInvocation.add(cb);
   }
 
-  final _onWidgetRefListenInvocation =
-      <void Function(WidgetRefListenInvocation)>[];
+  final _onWidgetRefListenInvocation = <void Function(WidgetRefListenInvocation)>[];
   void addWidgetRefListenInvocation(
     void Function(WidgetRefListenInvocation) cb,
   ) {
     _onWidgetRefListenInvocation.add(cb);
   }
 
-  final _onWidgetRefListenManualInvocation =
-      <void Function(WidgetRefListenManualInvocation)>[];
+  final _onWidgetRefListenManualInvocation = <void Function(WidgetRefListenManualInvocation)>[];
   void addWidgetRefListenManualInvocation(
     void Function(WidgetRefListenManualInvocation) cb,
   ) {
@@ -676,8 +665,7 @@ class RiverpodAstRegistry {
 
   // Ref misc
 
-  final _onProviderListenableExpression =
-      <void Function(ProviderListenableExpression)>[];
+  final _onProviderListenableExpression = <void Function(ProviderListenableExpression)>[];
   void addProviderListenableExpression(
     void Function(ProviderListenableExpression) cb,
   ) {
@@ -686,16 +674,14 @@ class RiverpodAstRegistry {
 
   // Consumers
 
-  final _onConsumerWidgetDeclaration =
-      <void Function(ConsumerWidgetDeclaration)>[];
+  final _onConsumerWidgetDeclaration = <void Function(ConsumerWidgetDeclaration)>[];
   void addConsumerWidgetDeclaration(
     void Function(ConsumerWidgetDeclaration) cb,
   ) {
     _onConsumerWidgetDeclaration.add(cb);
   }
 
-  final _onHookConsumerWidgetDeclaration =
-      <void Function(HookConsumerWidgetDeclaration)>[];
+  final _onHookConsumerWidgetDeclaration = <void Function(HookConsumerWidgetDeclaration)>[];
   void addHookConsumerWidgetDeclaration(
     void Function(HookConsumerWidgetDeclaration) cb,
   ) {
@@ -710,16 +696,14 @@ class RiverpodAstRegistry {
     _onStatefulHookConsumerWidgetDeclaration.add(cb);
   }
 
-  final _onConsumerStatefulWidgetDeclaration =
-      <void Function(ConsumerStatefulWidgetDeclaration)>[];
+  final _onConsumerStatefulWidgetDeclaration = <void Function(ConsumerStatefulWidgetDeclaration)>[];
   void addConsumerStatefulWidgetDeclaration(
     void Function(ConsumerStatefulWidgetDeclaration) cb,
   ) {
     _onConsumerStatefulWidgetDeclaration.add(cb);
   }
 
-  final _onConsumerStateDeclaration =
-      <void Function(ConsumerStateDeclaration)>[];
+  final _onConsumerStateDeclaration = <void Function(ConsumerStateDeclaration)>[];
   void addConsumerStateDeclaration(
     void Function(ConsumerStateDeclaration) cb,
   ) {
@@ -742,8 +726,7 @@ class RiverpodAstRegistry {
     _onProviderContainerInstanceCreationExpression.add(cb);
   }
 
-  final _onProviderOverrideExpression =
-      <void Function(ProviderOverrideExpression)>[];
+  final _onProviderOverrideExpression = <void Function(ProviderOverrideExpression)>[];
   void addProviderOverrideExpression(
     void Function(ProviderOverrideExpression) cb,
   ) {
@@ -916,13 +899,13 @@ class _RiverpodAstRegistryVisitor extends RiverpodAstVisitor {
   }
 
   @override
-  void visitFunctionBasedProviderDeclaration(
-    FunctionBasedProviderDeclaration declaration,
+  void visitFunctionalProviderDeclaration(
+    FunctionalProviderDeclaration declaration,
   ) {
     declaration.visitChildren(this);
     _runSubscriptions(
       declaration,
-      _registry._onFunctionBasedProviderDeclaration,
+      _registry._onFunctionalProviderDeclaration,
     );
   }
 

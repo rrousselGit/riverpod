@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'function_based_ref.dart';
+part of 'functional_ref.dart';
 
 // **************************************************************************
 // RiverpodGenerator

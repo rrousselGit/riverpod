@@ -45,7 +45,7 @@ int transitiveDependencies(TransitiveDependenciesRef ref) => 0;
 int smallTransitiveDependencyCount(SmallTransitiveDependencyCountRef ref) => 0;
 
 @Riverpod(dependencies: [])
-int emptyDependenciesFunctionBased(EmptyDependenciesFunctionBasedRef ref) => 0;
+int emptyDependenciesFunctional(EmptyDependenciesFunctionalRef ref) => 0;
 
 @Riverpod(dependencies: [])
 class EmptyDependenciesClassBased extends _$EmptyDependenciesClassBased {

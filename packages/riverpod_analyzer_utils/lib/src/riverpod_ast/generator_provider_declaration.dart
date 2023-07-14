@@ -5,8 +5,7 @@ extension RawTypeX on DartType {
   bool get isRaw {
     final alias = this.alias;
     if (alias == null) return false;
-    return alias.element.name == 'Raw' &&
-        isFromRiverpodAnnotation.isExactly(alias.element);
+    return alias.element.name == 'Raw' && isFromRiverpodAnnotation.isExactly(alias.element);
   }
 }
 
@@ -17,9 +16,7 @@ extension on LibraryElement {
     String name, {
     required String packageName,
   }) {
-    return library.importedLibraries
-        .map((e) => e.exportNamespace.get(name))
-        .firstWhereOrNull(
+    return library.importedLibraries.map((e) => e.exportNamespace.get(name)).firstWhereOrNull(
           // TODO find a way to test this
           (element) => element != null && isFromRiverpod.isExactly(element),
         );
@@ -155,8 +152,7 @@ class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration {
     );
     if (providerElement == null) return null;
 
-    final createdType = buildMethod.returnType?.type ??
-        element.library.typeProvider.dynamicType;
+    final createdType = buildMethod.returnType?.type ?? element.library.typeProvider.dynamicType;
 
     final exposedType = _computeExposedType(createdType, element.library);
     if (exposedType == null) {
@@ -243,8 +239,8 @@ class _GeneratorRefInvocationVisitor extends RecursiveAstVisitor<void>
   }
 }
 
-class FunctionBasedProviderDeclaration extends GeneratorProviderDeclaration {
-  FunctionBasedProviderDeclaration._({
+class FunctionalProviderDeclaration extends GeneratorProviderDeclaration {
+  FunctionalProviderDeclaration._({
     required this.name,
     required this.node,
     required this.providerElement,
@@ -254,7 +250,7 @@ class FunctionBasedProviderDeclaration extends GeneratorProviderDeclaration {
     required this.valueType,
   });
 
-  static FunctionBasedProviderDeclaration? _parse(
+  static FunctionalProviderDeclaration? _parse(
     FunctionDeclaration node,
     _ParseRefInvocationMixin parent,
   ) {
@@ -263,7 +259,7 @@ class FunctionBasedProviderDeclaration extends GeneratorProviderDeclaration {
     final riverpodAnnotation = RiverpodAnnotation._parse(node);
     if (riverpodAnnotation == null) return null;
 
-    final providerElement = FunctionBasedProviderDeclarationElement.parse(
+    final providerElement = FunctionalProviderDeclarationElement.parse(
       element,
       annotation: riverpodAnnotation.element,
     );
@@ -276,7 +272,7 @@ class FunctionBasedProviderDeclaration extends GeneratorProviderDeclaration {
       return null;
     }
 
-    final functionBasedProviderDeclaration = FunctionBasedProviderDeclaration._(
+    final functionalProviderDeclaration = FunctionalProviderDeclaration._(
       name: node.name,
       node: node,
       providerElement: providerElement,
@@ -285,11 +281,11 @@ class FunctionBasedProviderDeclaration extends GeneratorProviderDeclaration {
       exposedType: exposedType,
       valueType: _getValueType(createdType),
     );
-    riverpodAnnotation._parent = functionBasedProviderDeclaration;
+    riverpodAnnotation._parent = functionalProviderDeclaration;
     node.accept(
-      _GeneratorRefInvocationVisitor(functionBasedProviderDeclaration, parent),
+      _GeneratorRefInvocationVisitor(functionalProviderDeclaration, parent),
     );
-    return functionBasedProviderDeclaration;
+    return functionalProviderDeclaration;
   }
 
   @override
@@ -298,7 +294,7 @@ class FunctionBasedProviderDeclaration extends GeneratorProviderDeclaration {
   @override
   final FunctionDeclaration node;
   @override
-  final FunctionBasedProviderDeclarationElement providerElement;
+  final FunctionalProviderDeclarationElement providerElement;
   @override
   final RiverpodAnnotation annotation;
   @override
@@ -318,7 +314,7 @@ class FunctionBasedProviderDeclaration extends GeneratorProviderDeclaration {
 
   @override
   void accept(RiverpodAstVisitor visitor) {
-    visitor.visitFunctionBasedProviderDeclaration(this);
+    visitor.visitFunctionalProviderDeclaration(this);
   }
 
   @override
