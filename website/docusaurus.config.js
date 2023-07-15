@@ -62,6 +62,10 @@ module.exports = {
           title: "Docs",
           items: [
             {
+              label: "Why Riverpod?",
+              to: "docs/why_riverpod",
+            },
+            {
               label: "Getting started",
               to: "docs/getting_started",
             },
