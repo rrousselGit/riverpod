@@ -1,5 +1,6 @@
 ---
 title: About code generation
+version: 1
 ---
 
 import Tabs from "@theme/Tabs";
@@ -86,7 +87,11 @@ With that in mind, you may wonder if you should use it or not.
 The answer is: **Most likely Yes**.  
 Using code generation is the recommended way to use Riverpod. It
 is the more future-proof approach and will allow you to use Riverpod to its full
-potential.
+potential.  
+At the same time, many applications already use code generation with packages such
+as [Freezed](https://pub.dev/packages/freezed) or [json_serializable](https://pub.dev/packages/json_serializable).
+In that case, your project probably is already setup for code generation, and
+using for Riverpod should be simple.
 
 Currently, code generation is optional because `build_runner` is disliked by many.
 But once [Static Metaprogramming](https://github.com/dart-lang/language/issues/1482)
@@ -94,13 +99,13 @@ is available in Dart, `build_runner` will no longer be an issue. At that point,
 the code generation syntax will be the only syntax available in Riverpod.
 
 If using `build_runner` is a deal-breaker for you, then and only then you should
-consider not using code generation. 
+consider not using code generation.
 But keep in mind that you will be missing out on some features, and that
 you will have to migrate to code generation in the future.  
 Although when that happens, Riverpod will provide a migration tool to make
 the transition as smooth as possible.
 
-## Why use code generation with Riverpod?
+## What are the benefits of using code generation?
 
 You may be wondering: "If code generation is optional in Riverpod, why use it?"
 
@@ -108,22 +113,15 @@ As always with packages: To make your life easier.
 This includes but is not limited to:
 
 - better syntax, more readable/flexible and with reduced learning curve.
-
-  - No need to worry about `FutureProvider` vs `Provider` vs etc. Write your logic,
+  - No need to worry about about the type of a provider. Write your logic,
     and Riverpod will pick the most suitable provider for you.
   - Passing parameters to providers is now unrestricted. Instead of being limited to
     using [family](./concepts/modifiers/family) and passing a single positional parameter,
     you can now pass any form of parameter. This includes named parametes, optional ones,
     and even default values.
-
 - **stateful hot-reload** of the code written in Riverpod.
 - better debugging, through the generation of extra metadata that the debugger then picks-up.
 - some Riverpod features will be available only with code generation.
-
-At the same time, many applications already use code generation with packages such
-as [Freezed](https://pub.dev/packages/freezed) or [json_serializable](https://pub.dev/packages/json_serializable).
-In that case, your project probably is already setup for code generation, and
-using for Riverpod should be simple.
 
 ## The Syntax
 
