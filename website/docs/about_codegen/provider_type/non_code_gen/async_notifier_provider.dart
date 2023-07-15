@@ -12,5 +12,5 @@ class ExampleNotifier extends AutoDisposeAsyncNotifier<String> {
     return Future.value('foo');
   }
 
-//Add methods to mutate the state
+// Add methods to mutate the state
 }

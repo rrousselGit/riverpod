@@ -199,19 +199,22 @@ When defining a provider using code generation, it is useful to keep in mind the
   </tr>
 </table>
 
-### Making a provider autoDispose/keepAlive:
+### Enabling/disable autoDispose:
 
-Providers created using code generation are autoDispose by default, which means that they will automatically
-dispose of themselves when there are no listeners attached to them (ref.watch/ref.listen).<br />
+When using code generation, providers are autoDispose by default. That means that they will automatically
+dispose of themselves when there are no listeners attached to them (ref.watch/ref.listen).  
 This default setting better aligns with Riverpod's philosophy. Initially with the non-code generation variant,
 autoDispose was off by default to accommodate users migrating from `package:provider`.
+
+If you want to disable autoDispose, you can do so by passing `keepAlive: true` to the annotation.
 
 <CodeBlock language="dart">{trimSnippet(autoDisposeCodeGen)}</CodeBlock>
 
 ### Passing parameters to a provider (family):
 
-Providers created using code generation can accept any number of parameters,
-including named, optional, or default values. However, these parameters should have a consistent ==.
+When using code generation, we no-longer need to rely on the `family` modifier to pass parameters to a provider.
+Instead, the main function of our provider can accept any number of parameters, including named, optional, or default values.  
+Do note however that these parameters should have still have a consistent ==.
 Meaning either the values should be cached, or the parameters should override ==.
 
 <table>
@@ -353,44 +356,6 @@ The following are the corresponding options for transitioning into code-generati
     <td style={AFTER_STYLE}>After</td>
     <td>
       <CodeBlock language="dart">{trimSnippet(asyncClassStream)}</CodeBlock>
-    </td>
-  </tr>
-  <colgroup></colgroup>
-  <tr>
-    <td style={PROVIDER_STYLE} colspan="2">
-      .autoDispose
-    </td>
-  </tr>
-  <tr style={TRANSPARENT_STYLE}>
-    <td style={BEFORE_STYLE}>Before</td>
-    <td>
-      <CodeBlock language="dart">
-        {trimSnippet(autoDisposeNonCodeGen)}
-      </CodeBlock>
-    </td>
-  </tr>
-  <tr style={TRANSPARENT_STYLE}>
-    <td style={AFTER_STYLE}>After</td>
-    <td>
-      <CodeBlock language="dart">{trimSnippet(autoDisposeCodeGen)}</CodeBlock>
-    </td>
-  </tr>
-  <colgroup></colgroup>
-  <tr>
-    <td style={PROVIDER_STYLE} colspan="2">
-      .family
-    </td>
-  </tr>
-  <tr style={TRANSPARENT_STYLE}>
-    <td style={BEFORE_STYLE}>Before</td>
-    <td>
-      <CodeBlock language="dart">{trimSnippet(familyNonCodeGen)}</CodeBlock>
-    </td>
-  </tr>
-  <tr style={TRANSPARENT_STYLE}>
-    <td style={AFTER_STYLE}>After</td>
-    <td>
-      <CodeBlock language="dart">{trimSnippet(familyCodeGen)}</CodeBlock>
     </td>
   </tr>
 </table>
