@@ -1,6 +1,6 @@
 module.exports = {
   Sidebar: [
-    "introduction",
+    "why_riverpod",
     "getting_started",
     "riverpod_for_provider_users",
     "about_code_generation",

@@ -36,7 +36,7 @@ module.exports = {
       },
       items: [
         {
-          to: "docs/introduction",
+          to: "docs/why_riverpod",
           activeBasePath: "docs",
           label: "Docs",
           position: "right",
