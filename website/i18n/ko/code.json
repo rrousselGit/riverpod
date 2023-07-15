@@ -16,19 +16,19 @@
     "message": "안전하게 Provider 읽기"
   },
   "home.safe_read_body": {
-    "message": "Provider를 읽는 중 더 이상 bad state가 되지 않습니다. 만약\nProvider를 읽기위한 필요한 코드를 작성하면, 당신은 유요한 값을 얻을 수 있습니다.\n {br} {br}\n Provider는 비동기적으로 로드된 값에도 적용됩니다. 제공자와는 대조적으로 Riverpod는 로드/오류 사례를 깔끔하게 처리할 수 있습니다."
+    "message": "Provider를 읽는 중 더 이상 bad state가 되지 않습니다. 만약\nProvider를 읽기 위한 필요한 코드를 작성하면, 당신은 유효한 값을 얻을 수 있습니다.\n {br} {br}\n Provider는 비동기적으로 로드된 값에도 적용됩니다. 제공자와는 대조적으로 Riverpod는 로드/오류 사례를 깔끔하게 처리할 수 있습니다."
   },
   "home.devtool_title": {
     "message": "Devtool에서 상태를 관찰하세요."
   },
   "home.devtool_body": {
-    "message": "Riverpod를 사용하면 Flutter의 devtool 내부에서 상자 밖에서 상태를 확인할 수 있습니다. {br}\n 게다가, 진행 상태를 감시할 수 있습니다."
+    "message": "Riverpod를 사용하면 Flutter의 devtool 내부에서 상자 밖으로 상태를 확인할 수 있습니다. {br}\n 게다가, 진행 상태를 감시할 수 있습니다."
   },
   "homepage.compile_safe_title": {
     "message": "안전한 컴파일"
   },
   "homepage.compile_safe_body": {
-    "message": "더 이상 {ProviderNotFound} 예외가 발생하지 않고, 로딩 상태를 처리하는 것을 걱정하지 않아도 됩니다. Riverpod를 사용하면 코드가 컴파일되면 작동합니다."
+    "message": "더 이상 {ProviderNotFound} 예외가 발생하지 않고, 로딩 상태를 처리하는 것을 걱정하지 않아도 됩니다. Riverpod를 사용하면 코드가 컴파일되어 작동합니다."
   },
   "homepage.unlimited_provider_title": {
     "message": "제한없는 Provider"
