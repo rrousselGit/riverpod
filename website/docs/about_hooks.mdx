@@ -4,16 +4,10 @@ title: About hooks
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
-import CodeBlock from "@theme/CodeBlock";
-import pubspec from "./getting_started/pubspec";
-import dartHelloWorld from "./getting_started/dart_hello_world";
-import helloWorld from "./getting_started/hello_world";
-import dartPubspec from "./getting_started/dart_pubspec";
-import {
-  trimSnippet,
-  AutoSnippet,
-  ConditionalSnippet,
-} from "../src/components/CodeSnippet";
+import hookAndConsumer from "!!raw-loader!./about_hooks/hook_and_consumer.dart";
+import hookConsumer from "!!raw-loader!./about_hooks/hook_consumer.dart";
+import hookConsumerWidget from "!!raw-loader!./about_hooks/hook_consumer_widget.dart";
+import { CodeSnippet } from "../src/components/CodeSnippet";
 
 This page explains what are hooks and how they are related to Riverpod.
 
@@ -21,13 +15,20 @@ This page explains what are hooks and how they are related to Riverpod.
 [flutter_hooks].  
 Although [flutter_hooks] is a completely separate package and does not have anything
 to do with Riverpod (at least directly), it is common to pair Riverpod
-and [flutter_hooks] together. After-all, Riverpod and [flutter_hooks] are
-maintained by the same team.
+and [flutter_hooks] together.
 
-Hooks are completely optional. You do not have to use hooks, especially if you
-are starting Flutter. They are powerful tools, but not very "Flutter-like".  
-As such, it may make sense to start first with plain Flutter/Riverpod, and come back
-to hooks once you have a bit more experience.
+## Should you use hooks?
+
+Hooks are a powerful tool, but they are not for everyone.  
+If you are a newcomer to Riverpod, you should probably avoid using hooks.
+
+Although useful, hooks are not necessary for Riverpod.  
+You shouldn't start using hooks because of Riverpod. Rather, you should start
+using hooks because you want to use hooks.
+
+Using hooks is a tradeoff. They can be great for producing robust and reusable
+code, but they are also a new concept to learn, and they can be confusing at first.
+Hooks aren't a core Flutter concept. As such, they will feel out of place in Flutter/Dart.
 
 ## What are hooks?
 
@@ -204,7 +205,7 @@ There are a few interesting things to note in this code:
   If we wanted, we could use that `useFadeIn` function in a completely different
   widget, and it would still work!
 
-## How to use hooks
+## The rules of hooks
 
 Hooks comes with unique constraints:
 
@@ -272,10 +273,51 @@ Hooks comes with unique constraints:
   }
   ```
 
-
 For more information about hooks, see [flutter_hooks].
 
+## Hooks and Riverpod
+
+### Installation
+
+Since hooks are independent from Riverpod, it is necessary to install hooks
+separately. If you want to use them, installing [hooks_riverpod] is not
+enough. You will still need to add [flutter_hooks] to your dependencies.
+See [Getting Started](./getting_started#installing-the-package) for more information.
+
+### Usage
+
+In some cases, you may want to write a Widget that uses both hooks and Riverpod.
+But as you may have already noticed, both hooks and Riverpod provide their
+own custom widget base type: [HookWidget] and [ConsumerWidget].  
+But classes can only extend one superclass at a time.
+
+To solve this problem, you can use the [hooks_riverpod] package.
+This package provides a [HookConsumerWidget] class that combines both
+[HookWidget] and [ConsumerWidget] into a single type.  
+You can therefore subclass [HookConsumerWidget] instead of [HookWidget]:
+
+<CodeSnippet snippet={hookConsumerWidget}></CodeSnippet>
+
+Alternatively, you can use the "builders" provided by both packages.  
+For example, we could stick to using `StatelessWidget`, and use both
+`HookBuilder` and `Consumer`.
+
+<CodeSnippet snippet={hookAndConsumer}></CodeSnippet>
+
+:::note
+This approach would work without using [hooks_riverpod]. Only [flutter_riverpod]
+is needed.
+:::
+
+If you like this approach, [hooks_riverpod] streamlines it by providing [HookConsumer],
+which is the combination of both builders in one:
+
+<CodeSnippet snippet={hookConsumer}></CodeSnippet>
+
 [hookwidget]: https://pub.dev/documentation/flutter_hooks/latest/flutter_hooks/HookWidget-class.html
+[hookconsumer]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/HookConsumer-class.html
+[hookconsumerwidget]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/HookConsumerWidget-class.html
+[consumerwidget]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ConsumerWidget-class.html
 [statefulwidget]: https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html
 [riverpod]: https://github.com/rrousselgit/riverpod
 [hooks_riverpod]: https://pub.dev/packages/hooks_riverpod
