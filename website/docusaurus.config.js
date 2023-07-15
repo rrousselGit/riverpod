@@ -71,16 +71,20 @@ module.exports = {
           title: "Community",
           items: [
             {
+              label: "Discord",
+              href: "https://discord.gg/Bbumvej",
+            },
+            {
+              label: "GitHub",
+              href: "https://github.com/rrousselgit/riverpod",
+            },
+            {
               label: "Stack Overflow",
               href: "https://stackoverflow.com/questions/tagged/flutter",
             },
             {
               label: "Twitter",
               href: "https://twitter.com/remi_rousselet",
-            },
-            {
-              label: "GitHub",
-              href: "https://github.com/rrousselgit/riverpod",
             },
             {
               label: "Code of conduct",
