@@ -2,12 +2,20 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'declare.g.dart';
 
 /* SNIPPET START */
 
-// A shared state that can be accessed by multiple
-// objects at the same time
-final countProvider = StateProvider((ref) => 0);
+// A shared state that can be accessed by multiple widgets at the same time.
+@riverpod
+class Count extends _$Count {
+  @override
+  int build() => 0;
+
+  void increment() => state++;
+}
 
 // Consumes the shared state and rebuild when it changes
 class Title extends ConsumerWidget {
