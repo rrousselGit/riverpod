@@ -8,6 +8,7 @@ import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
 import fetchUser from "!!raw-loader!./about_codegen/main.dart";
 import rawFetchUser from "!!raw-loader!./about_codegen/raw.dart";
+import { Link } from "../src/components/Link";
 import { trimSnippet, CodeSnippet } from "../src/components/CodeSnippet";
 import syncFn from "!!raw-loader!./about_codegen/provider_type/sync_fn.dart";
 import syncClass from "!!raw-loader!./about_codegen/provider_type/sync_class.dart";
@@ -76,7 +77,7 @@ to use Riverpod without.
 At the same time, Riverpod embraces code generation and recommends using it.
 
 For information on how to install and use Riverpod's code generator, refer to
-the [getting started](./getting_started) page. Make sure to enable code generation
+the <Link documentID="introduction/getting_started"/> page. Make sure to enable code generation
 in the documentation's sidebar.
 
 ## Should I use code generation?
@@ -118,7 +119,7 @@ This includes but is not limited to:
   - The syntax no longer looks like we're defining a "dirty global variable".
     Instead we are defining a custom function/class.
   - Passing parameters to providers is now unrestricted. Instead of being limited to
-    using [family](./concepts/modifiers/family) and passing a single positional parameter,
+    using <Link documentID="concepts/modifiers/family"/> and passing a single positional parameter,
     you can now pass any parameter. This includes named parameters, optional ones,
     and even default values.
 - **stateful hot-reload** of the code written in Riverpod.
@@ -361,8 +362,6 @@ The following are the corresponding options for transitioning into code-generati
     </td>
   </tr>
 </table>
-
-These providers are covered in-details at [All Providers](providers/provider).
 
 [hookwidget]: https://pub.dev/documentation/flutter_hooks/latest/flutter_hooks/HookWidget-class.html
 [statefulwidget]: https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html

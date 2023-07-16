@@ -4,6 +4,7 @@ import { useDoc } from "@docusaurus/theme-common/internal";
 
 type LinkProps = {
   documentID: string;
+  hash?: string;
 };
 
 export function Link(props: LinkProps) {
@@ -21,5 +22,7 @@ export function Link(props: LinkProps) {
     );
   }
 
-  return <a href={`/docs/${props.documentID}`}>{docTitle}</a>;
+  const trailing = props.hash ? `#${props.hash}` : "";
+
+  return <a href={`/docs/${props.documentID}${trailing}`}>{docTitle}</a>;
 }
