@@ -5,7 +5,7 @@ module.exports = {
       label: "Introduction",
       collapsible: false,
       items: [
-        "why_riverpod",
+        "introduction/why_riverpod",
         "introduction/getting_started",
         "introduction/riverpod_for_provider_users",
       ],
