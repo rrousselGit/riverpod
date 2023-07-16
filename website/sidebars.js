@@ -4,7 +4,11 @@ module.exports = {
       type: "category",
       label: "Introduction",
       collapsible: false,
-      items: ["why_riverpod", "getting_started", "riverpod_for_provider_users"],
+      items: [
+        "why_riverpod",
+        "introduction/getting_started",
+        "introduction/riverpod_for_provider_users",
+      ],
     },
 
     {
