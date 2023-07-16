@@ -3,14 +3,14 @@ module.exports = {
     {
       type: "category",
       label: "Introduction",
-      collapsed: false,
+      collapsible: false,
       items: ["why_riverpod", "getting_started", "riverpod_for_provider_users"],
     },
 
     {
       type: "category",
       label: "Essentials",
-      collapsed: false,
+      collapsible: false,
       items: [
         {
           type: "link",
@@ -84,7 +84,7 @@ module.exports = {
     {
       type: "category",
       label: "Case studies",
-      collapsed: false,
+      collapsible: false,
       items: [
         {
           type: "link",
@@ -130,7 +130,7 @@ module.exports = {
     {
       type: "category",
       label: "Concepts",
-      collapsed: false,
+      collapsible: false,
       items: [
         "about_code_generation",
         "about_hooks",
@@ -151,7 +151,7 @@ module.exports = {
     {
       type: "category",
       label: "Migration guides",
-      collapsed: false,
+      collapsible: false,
       items: [
         {
           type: "link",
@@ -313,7 +313,7 @@ module.exports = {
     // {
     //   type: "category",
     //   label: "Concepts",
-    //   collapsed: false,
+    //   collapsible: false,
     //   items: [
     //     "concepts/providers",
     //     "concepts/reading",
@@ -336,7 +336,7 @@ module.exports = {
     // {
     //   type: "category",
     //   label: "Guides",
-    //   collapsed: false,
+    //   collapsible: false,
     //   items: ["cookbooks/testing"],
     // },
   ],
