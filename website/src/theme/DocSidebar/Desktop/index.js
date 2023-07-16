@@ -92,7 +92,7 @@ export function Toggle({ checked, onClick, leading, docsProps }) {
     <div
       style={{
         padding: "5px 16px",
-        paddingRight: 40,
+        paddingRight: 100,
         transition: "background-color .5s",
         borderRadius: 8,
         fontWeight: 600,
