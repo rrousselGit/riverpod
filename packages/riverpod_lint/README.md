@@ -49,6 +49,7 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
   - [unsupported\_provider\_value (riverpod\_generator only)](#unsupported_provider_value-riverpod_generator-only)
   - [stateless\_ref (riverpod\_generator only)](#stateless_ref-riverpod_generator-only)
   - [generator\_class\_extends (riverpod\_generator only)](#generator_class_extends-riverpod_generator-only)
+  - [avoid\_ref\_inside\_state\_dispose](#avoid_ref_inside_state_dispose)
 - [All assists](#all-assists)
   - [Wrap widgets with a `Consumer`](#wrap-widgets-with-a-consumer)
   - [Wrap widgets with a `ProviderScope`](#wrap-widgets-with-a-providerscope)
@@ -528,6 +529,61 @@ class Example {
 @riverpod
 class Example extends Anything {
   int build() => 0;
+}
+```
+
+### avoid_ref_inside_state_dispose
+
+Avoid using `Ref` in the dispose method.
+
+**Good**:
+
+```dart
+class MyWidget extends ConsumerStatefulWidget {
+  const MyWidget({super.key});
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _MyWidgetState();
+}
+
+class _MyWidgetState extends ConsumerState<MyWidget> {
+ 
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () async {
+        ref.read(provider).doSomething();
+        return true;
+      },
+      child: Container(),
+    );
+  }
+}
+```
+
+**Bad**:
+
+```dart
+class MyWidget extends ConsumerStatefulWidget {
+  const MyWidget({super.key});
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _MyWidgetState();
+}
+
+class _MyWidgetState extends ConsumerState<MyWidget> {
+  @override
+  void dispose() {
+    // Do not use 'ref' in the dispose method
+    ref.read(provider).doSomething();
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
 }
 ```
 
