@@ -26,39 +26,40 @@ class AvoidUseRefInsideDispose extends RiverpodLintRule {
 
       if (targetType == null) return;
 
-      if (widgetRefType.isAssignableFromType(targetType)) {
-        final ancestor = node.thisOrAncestorMatching((method) {
-          if (method is MethodDeclaration &&
-              method.name.lexeme == disposeMethod) {
-            /// This [thisOrAncestorMatching] is to look for an ancestor of the
-            /// [dispose] method found
-            final classe = method.thisOrAncestorMatching((element) {
-              /// Looking for the class which is a [ConsumeState]
-              final classe = element.thisOrAncestorMatching((classe) {
-                if (classe is ClassDeclaration) {
-                  final extendsClause = classe.extendsClause;
-                  if (extendsClause == null) return false;
-                  final extendsType = extendsClause.superclass.type;
-                  if (extendsType == null) return false;
+      if (!widgetRefType.isAssignableFromType(targetType)) return;
 
-                  return consumerStateType.isExactlyType(extendsType);
-                }
+      final ancestor = node.thisOrAncestorMatching((method) {
+        final isMethodCalledDispose =
+            method is MethodDeclaration && method.name.lexeme == disposeMethod;
 
-                return false;
-              });
+        if (!isMethodCalledDispose) return false;
 
-              return classe != null;
-            });
+        final classeDeclaration = _findConsumeStateClass(node);
 
-            return classe != null;
-          }
-          return false;
-        });
+        return classeDeclaration != null;
+      });
 
-        if (ancestor != null) {
-          reporter.reportErrorForNode(_code, node);
-        }
+      if (ancestor != null) {
+        reporter.reportErrorForNode(_code, node);
       }
     });
+  }
+
+  /// Looking for the ConsumeState class ancestor
+  /// into the [node] parent.
+  AstNode? _findConsumeStateClass(AstNode node) {
+    final classeDeclaration = node.parent?.thisOrAncestorMatching((node) {
+      if (node is! ClassDeclaration) return false;
+
+      /// Looking for the class which is a [ConsumeState]
+      final extendsClause = node.extendsClause;
+      if (extendsClause == null) return false;
+      final extendsType = extendsClause.superclass.type;
+      if (extendsType == null) return false;
+
+      return consumerStateType.isExactlyType(extendsType);
+    });
+
+    return classeDeclaration;
   }
 }
