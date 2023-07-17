@@ -1,3 +1,7 @@
+## Unreleased minor
+
+- Support flutter_hooks 0.19.0
+
 ## 2.3.6 - 2023-04-24
 
 - Improved error message for missing `dependencies` (thanks to @ValentinVignal)
