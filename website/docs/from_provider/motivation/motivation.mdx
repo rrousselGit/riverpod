@@ -144,7 +144,16 @@ Instead, Riverpod simply offers `ref.listen`, which [integrates well with Flutte
 
 ## Towards Riverpod
 
+Conceptually, Riverpod and Provider are fairly similar.
+Both packages fill a similar role. Both try to:
 
+- cache and dispose some stateful objects;
+- offer a way to mock those objects during tests;
+- offer a way for Widgets to listen to those objects in a simple way.
+
+You can think of Riverpod as what Provider could've been if it continued to mature for a few years.
+
+### Why a separate package?
 Originally, a major version of Provider was planned to ship, as a way to solve 
 the aforementioned problems.  
 But it was then decided against it, as this would have been 
@@ -158,16 +167,6 @@ Creating a separate package enabled:
   - Experimentation, allowing for Riverpod to search for production-ready solutions to the various Provider's technical limitations.
 
 Indeed, Riverpod is designed to be the spiritual successor of Provider. Hence the name "Riverpod" (which is an anagram of "Provider").
-
-### The relationship between Riverpod and Provider
-Still, conceptually, Riverpod and Provider are fairly similar.
-Both packages fill a similar role. Both try to:
-
-- cache and dispose some stateful objects;
-- offer a way to mock those objects during tests;
-- offer a way for Widgets to listen to those objects in a simple way.
-
-You can think of Riverpod as what Provider could've been if it continued to mature for a few years.
 
 ### The breaking change
 The only true downside of Riverpod is that it requires changing the widget type to work:
