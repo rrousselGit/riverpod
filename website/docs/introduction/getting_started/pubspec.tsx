@@ -4,13 +4,12 @@ import {
   riverpodAnnotationVersion,
   riverpodGeneratorVersion,
   riverpodLintVersion,
-} from "../../src/versions";
+} from "../../../src/versions";
 
 function plain(riverpod: string) {
-  return `
-name: my_app_name
+  return `name: my_app_name
 environment:
-  sdk: ">=2.17.0 <3.0.0"
+  sdk: ">=3.0.0 <4.0.0"
   flutter: ">=3.0.0"
 
 dependencies:
@@ -25,10 +24,9 @@ dev_dependencies:
 }
 
 function codegen(riverpod: string) {
-  return `
-name: my_app_name
+  return `name: my_app_name
 environment:
-  sdk: ">=2.17.0 <3.0.0"
+  sdk: ">=3.0.0 <4.0.0"
   flutter: ">=3.0.0"
 
 dependencies:
@@ -47,7 +45,7 @@ dev_dependencies:
 
 export default {
   raw: plain(`flutter_riverpod: ^${flutterRiverpodVersion}`),
-  hooks: plain(`hooks_riverpod: ^${hooksRiverpodVersion}`),
+  hooks: plain(`hooks_riverpod: ^${hooksRiverpodVersion}\n  flutter_hooks:`),
   codegen: codegen(`flutter_riverpod: ^${flutterRiverpodVersion}`),
-  hooksCodegen: codegen(`hooks_riverpod: ^${hooksRiverpodVersion}`),
+  hooksCodegen: codegen(`hooks_riverpod: ^${hooksRiverpodVersion}\n  flutter_hooks:`),
 };

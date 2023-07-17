@@ -3,12 +3,11 @@ import {
   riverpodAnnotationVersion,
   riverpodGeneratorVersion,
   riverpodLintVersion,
-} from "../../src/versions";
+} from "../../../src/versions";
 
-const codegen = `
-name: my_app_name
+const codegen = `name: my_app_name
 environment:
-  sdk: ">=2.17.0 <3.0.0"
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   riverpod: ^${riverpodVersion}
@@ -21,10 +20,9 @@ dev_dependencies:
   riverpod_lint: ^${riverpodLintVersion}
 `;
 
-const raw = `
-name: my_app_name
+const raw = `name: my_app_name
 environment:
-  sdk: ">=2.17.0 <3.0.0"
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   riverpod: ^${riverpodVersion}

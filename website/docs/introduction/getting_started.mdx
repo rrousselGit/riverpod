@@ -1,6 +1,6 @@
 ---
 title: Getting started
-version: 3
+version: 4
 ---
 
 import Tabs from "@theme/Tabs";
@@ -13,16 +13,20 @@ import helloWorld from "./getting_started/hello_world";
 import dartPubspec from "./getting_started/dart_pubspec";
 import dartPubadd from "./getting_started/dart_pub_add";
 import {
-  trimSnippet,
   AutoSnippet,
   ConditionalSnippet,
-} from "../src/components/CodeSnippet";
-
----
+} from "../../src/components/CodeSnippet";
+import { Link } from "../../src/components/Link";
 
 ## Try Riverpod online
 
-To get a feel of Riverpod, try it online on [Dartpad](https://dartpad.dev/?null_safety=true&id=ef06ab3ce0b822e6cc5db0575248e6e2).
+To get a feel of Riverpod, try it online on [Dartpad](https://dartpad.dev/?null_safety=true&id=ef06ab3ce0b822e6cc5db0575248e6e2)
+or on [Zapp](https://zapp.run/new):
+
+<iframe
+  src="https://zapp.run/edit/zv2060sv306?theme=dark&lazy=false"
+  style={{ width: "100%", border: 0, overflow: "hidden", aspectRatio: "1.5" }}
+></iframe>
 
 ## Installing the package
 
@@ -38,13 +42,13 @@ Once you know what package you want to install, proceed to add the dependency to
 >
 <TabItem value="flutter_riverpod">
 
-<AutoSnippet title="Terminal" {...pubadd}></AutoSnippet>
+<AutoSnippet {...pubadd}></AutoSnippet>
 
 </TabItem>
 
 <TabItem value="riverpod">
 
-<AutoSnippet title="Terminal" {...dartPubadd}></AutoSnippet>
+<AutoSnippet {...dartPubadd}></AutoSnippet>
 
 </TabItem>
 
@@ -67,7 +71,8 @@ Alternatively, you can manually add the dependency to your app from within your 
 Then, install packages with `flutter pub get`.
 
 <ConditionalSnippet codegen={true}>
-  Run the code-generator with <code>flutter pub run build_runner watch</code>.
+  You can now run the code-generator with{" "}
+  <code>dart run build_runner watch</code>.
 </ConditionalSnippet>
 
 </TabItem>
@@ -82,7 +87,8 @@ Then, install packages with `flutter pub get`.
 Then, install packages with `dart pub get`.
 
 <ConditionalSnippet codegen={true}>
-  Run the code-generator with <code>flutter pub run build_runner watch</code>.
+  You can now run the code-generator with{" "}
+  <code>flutter pub run build_runner watch</code>.
 </ConditionalSnippet>
 
 </TabItem>
@@ -147,7 +153,7 @@ export const foo = 42;
   {...helloWorld}
 ></AutoSnippet>
 
-Which you can then execute with `flutter run`.  
+Then, start the application with `flutter run`.  
 This will render "Hello world" on your device.
 
 </TabItem>
@@ -159,7 +165,7 @@ This will render "Hello world" on your device.
   {...dartHelloWorld}
 ></AutoSnippet>
 
-Which you can then execute with `dart lib/main.dart`.  
+Then, start the application with `dart lib/main.dart`.  
 This will print "Hello world" in the console.
 
 </TabItem>
@@ -177,11 +183,11 @@ If you are using `Flutter` and `Android Studio` or `IntelliJ`, consider using [F
 
 Learn some basic concepts:
 
-- [Learn more about providers](/docs/concepts/providers)
+- <Link documentID="concepts/providers" />
 
 Follow a cookbook:
 
-- [How to test providers](/docs/cookbooks/testing)
+- <Link documentID="cookbooks/testing" />
 
 [riverpod]: https://github.com/rrousselgit/riverpod
 [hooks_riverpod]: https://pub.dev/packages/hooks_riverpod

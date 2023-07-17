@@ -36,7 +36,7 @@ module.exports = {
       },
       items: [
         {
-          to: "docs/introduction",
+          to: "docs/introduction/why_riverpod",
           activeBasePath: "docs",
           label: "Docs",
           position: "right",
@@ -62,8 +62,12 @@ module.exports = {
           title: "Docs",
           items: [
             {
+              label: "Why Riverpod?",
+              to: "docs/introduction/why_riverpod",
+            },
+            {
               label: "Getting started",
-              to: "docs/getting_started",
+              to: "docs/introduction/getting_started",
             },
           ],
         },
@@ -71,16 +75,20 @@ module.exports = {
           title: "Community",
           items: [
             {
+              label: "Discord",
+              href: "https://discord.gg/Bbumvej",
+            },
+            {
+              label: "GitHub",
+              href: "https://github.com/rrousselgit/riverpod",
+            },
+            {
               label: "Stack Overflow",
               href: "https://stackoverflow.com/questions/tagged/flutter",
             },
             {
               label: "Twitter",
               href: "https://twitter.com/remi_rousselet",
-            },
-            {
-              label: "GitHub",
-              href: "https://github.com/rrousselgit/riverpod",
             },
             {
               label: "Code of conduct",

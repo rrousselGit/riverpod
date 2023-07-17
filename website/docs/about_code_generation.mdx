@@ -1,5 +1,6 @@
 ---
 title: About code generation
+version: 1
 ---
 
 import Tabs from "@theme/Tabs";
@@ -7,6 +8,7 @@ import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
 import fetchUser from "!!raw-loader!./about_codegen/main.dart";
 import rawFetchUser from "!!raw-loader!./about_codegen/raw.dart";
+import { Link } from "../src/components/Link";
 import { trimSnippet, CodeSnippet } from "../src/components/CodeSnippet";
 import syncFn from "!!raw-loader!./about_codegen/provider_type/sync_fn.dart";
 import syncClass from "!!raw-loader!./about_codegen/provider_type/sync_class.dart";
@@ -75,39 +77,60 @@ to use Riverpod without.
 At the same time, Riverpod embraces code generation and recommends using it.
 
 For information on how to install and use Riverpod's code generator, refer to
-the [getting started](./getting_started) page. Make sure to enable code generation
+the <Link documentID="introduction/getting_started"/> page. Make sure to enable code generation
 in the documentation's sidebar.
 
-## Why use code generation with Riverpod?
+## Should I use code generation?
+
+Code generation is optional in Riverpod.
+With that in mind, you may wonder if you should use it or not.
+
+The answer is: **Most likely Yes**.  
+Using code generation is the recommended way to use Riverpod. It
+is the more future-proof approach and will allow you to use Riverpod to its full
+potential.  
+At the same time, many applications already use code generation with packages such
+as [Freezed](https://pub.dev/packages/freezed) or [json_serializable](https://pub.dev/packages/json_serializable).
+In that case, your project probably is already set up for code generation, and
+using Riverpod should be simple.
+
+Currently, code generation is optional because `build_runner` is disliked by many.
+But once [Static Metaprogramming](https://github.com/dart-lang/language/issues/1482)
+is available in Dart, `build_runner` will no longer be an issue. At that point,
+the code generation syntax will be the only syntax available in Riverpod.
+
+If using `build_runner` is a deal-breaker for you, then and only then you should
+consider not using code generation.
+But keep in mind that you will be missing out on some features, and that
+you will have to migrate to code generation in the future.  
+Although when that happens, Riverpod will provide a migration tool to make
+the transition as smoothly as possible.
+
+## What are the benefits of using code generation?
 
 You may be wondering: "If code generation is optional in Riverpod, why use it?"
 
 As always with packages: To make your life easier.
 This includes but is not limited to:
 
-- better syntax, more readable/flexible and with reduced learning curve.
-
-  - No need to worry about `FutureProvider` vs `Provider` vs etc. Write your logic,
+- better syntax, more readable/flexible, and with a reduced learning curve.
+  - No need to worry about the type of provider. Write your logic,
     and Riverpod will pick the most suitable provider for you.
+  - The syntax no longer looks like we're defining a "dirty global variable".
+    Instead we are defining a custom function/class.
   - Passing parameters to providers is now unrestricted. Instead of being limited to
-    using [family](./concepts/modifiers/family) and passing a single positional parameter,
-    you can now pass any form of parameter. This includes named parametes, optional ones,
+    using <Link documentID="concepts/modifiers/family"/> and passing a single positional parameter,
+    you can now pass any parameter. This includes named parameters, optional ones,
     and even default values.
-
 - **stateful hot-reload** of the code written in Riverpod.
-- better debugging, through the generation of extra metadata that the debugger then picks-up.
+- better debugging, through the generation of extra metadata that the debugger then picks up.
 - some Riverpod features will be available only with code generation.
-
-At the same time, many applications already use code generation with packages such
-as [Freezed](https://pub.dev/packages/freezed) or [json_serializable](https://pub.dev/packages/json_serializable).
-In that case, your project probably is already setup for code generation, and
-using for Riverpod should be simple.
 
 ## The Syntax
 
 ### Defining a provider:
 
-When defining a provider using code generation, it is useful to keep in mind the following points:
+When defining a provider using code generation, it is helpful to keep in mind the following points:
 
 - Providers can be defined either as an annotated <span style={BLUE_STYLE}>function</span> or
   as an annotated <span style={BLUE_STYLE}>class</span>. They are pretty much the same,
@@ -154,7 +177,7 @@ When defining a provider using code generation, it is useful to keep in mind the
   <tr style={TRANSPARENT_STYLE}>
     <td>
       <span style={FONT_16_STYLE}>
-        <span style={RED_STYLE}>Async</span>
+        <span style={RED_STYLE}>Async - Future</span>
       </span>
     </td>
     <td>
@@ -167,7 +190,7 @@ When defining a provider using code generation, it is useful to keep in mind the
   <tr style={TRANSPARENT_STYLE}>
     <td>
       <span style={FONT_16_STYLE}>
-        <span style={RED_STYLE}>Stream</span>
+        <span style={RED_STYLE}>Async - Stream</span>
       </span>
     </td>
     <td>
@@ -179,19 +202,22 @@ When defining a provider using code generation, it is useful to keep in mind the
   </tr>
 </table>
 
-### Making a provider autoDispose/keepAlive:
+### Enabling/disable autoDispose:
 
-Providers created using code generation are autoDispose by default, which means that they will automatically
-dispose of themselves when there are no listeners attached to them (ref.watch/ref.listen).<br />
+When using code generation, providers are autoDispose by default. That means that they will automatically
+dispose of themselves when there are no listeners attached to them (ref.watch/ref.listen).  
 This default setting better aligns with Riverpod's philosophy. Initially with the non-code generation variant,
 autoDispose was off by default to accommodate users migrating from `package:provider`.
+
+If you want to disable autoDispose, you can do so by passing `keepAlive: true` to the annotation.
 
 <CodeBlock language="dart">{trimSnippet(autoDisposeCodeGen)}</CodeBlock>
 
 ### Passing parameters to a provider (family):
 
-Providers created using code generation can accept any number of parameters,
-including named, optional, or default values. However, these parameters should have a consistent ==.
+When using code generation, we no-longer need to rely on the `family` modifier to pass parameters to a provider.
+Instead, the main function of our provider can accept any number of parameters, including named, optional, or default values.  
+Do note however that these parameters should have still have a consistent ==.
 Meaning either the values should be cached, or the parameters should override ==.
 
 <table>
@@ -335,47 +361,7 @@ The following are the corresponding options for transitioning into code-generati
       <CodeBlock language="dart">{trimSnippet(asyncClassStream)}</CodeBlock>
     </td>
   </tr>
-  <colgroup></colgroup>
-  <tr>
-    <td style={PROVIDER_STYLE} colspan="2">
-      .autoDispose
-    </td>
-  </tr>
-  <tr style={TRANSPARENT_STYLE}>
-    <td style={BEFORE_STYLE}>Before</td>
-    <td>
-      <CodeBlock language="dart">
-        {trimSnippet(autoDisposeNonCodeGen)}
-      </CodeBlock>
-    </td>
-  </tr>
-  <tr style={TRANSPARENT_STYLE}>
-    <td style={AFTER_STYLE}>After</td>
-    <td>
-      <CodeBlock language="dart">{trimSnippet(autoDisposeCodeGen)}</CodeBlock>
-    </td>
-  </tr>
-  <colgroup></colgroup>
-  <tr>
-    <td style={PROVIDER_STYLE} colspan="2">
-      .family
-    </td>
-  </tr>
-  <tr style={TRANSPARENT_STYLE}>
-    <td style={BEFORE_STYLE}>Before</td>
-    <td>
-      <CodeBlock language="dart">{trimSnippet(familyNonCodeGen)}</CodeBlock>
-    </td>
-  </tr>
-  <tr style={TRANSPARENT_STYLE}>
-    <td style={AFTER_STYLE}>After</td>
-    <td>
-      <CodeBlock language="dart">{trimSnippet(familyCodeGen)}</CodeBlock>
-    </td>
-  </tr>
 </table>
-
-These providers are covered in-details at [All Providers](providers/provider).
 
 [hookwidget]: https://pub.dev/documentation/flutter_hooks/latest/flutter_hooks/HookWidget-class.html
 [statefulwidget]: https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html

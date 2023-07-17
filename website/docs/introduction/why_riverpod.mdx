@@ -1,14 +1,20 @@
 ---
-title: Introduction
+title: Why Riverpod?
+version: 1
 ---
 
----
+import whyRiverpod from "./why_riverpod";
+import { AutoSnippet } from "../../src/components/CodeSnippet";
 
 ## What is Riverpod?
 
 Riverpod (anagram of [Provider](https://pub.dev/packages/provider)) is a reactive
-caching framework for Flutter/Dart. It can automatically fetch, cache, combine and
-recompute network requests, while also taking care of errors for you.
+caching framework for Flutter/Dart.
+
+Using declararive and reactive programming, Riverpod is able to take care of
+a large part of your application's logic for you. It can perform network-requests
+with built-in error handling and caching, while automatically re-fetching
+data when necessary.
 
 ## Motivation
 
@@ -17,11 +23,11 @@ their User Interface. Instead, the data is often fetched asynchronously
 from a server.
 
 The problem is, working with asynchronous code is hard. Although Flutter comes
-with some way to store state, it doesn't do much besides that. Thus, a number
-of challenges remain unsolved:
+with some way to create state variables and refresh the UI on change, it is still
+fairly limited. A number of challenges remain unsolved:
 
 - Asynchronous requests need to be cached locally, as it would be unreasonable
-  to re-execute them whenever the UI refreshes.
+  to re-execute them whenever the UI updates.
 - Since we have a cache, our cache could get out of date if we're not careful.
 - We also need to handle errors and loading states
 
@@ -52,25 +58,7 @@ that's left is to focus on your UI.
 Skeptical? Here's an example. The following snippet is a simplification of the [Pub.dev](https://github.com/rrousselGit/riverpod/tree/master/examples/pub)
 client application implemented using Riverpod.
 
-```dart
-// Fetches the list of packages from pub.dev
-@riverpod
-Future<List<Package>> fetchPackages(
-  FetchPackagesRef ref, {
-  required int page,
-  String search = '',
-}) async {
-  final dio = Dio();
-  // Fetch an API. Here we're using package:dio, but we could use anything else.
-  final response = await dio.get(
-    'https://pub.dartlang.org/api/search?page=$page&q=${Uri.encodeQueryComponent(search)}',
-  );
-
-  // Decode the JSON response into a Dart class.
-  final json = response.data as List;
-  return json.map(Package.fromJson).toList();
-}
-```
+<AutoSnippet language="dart" {...whyRiverpod}></AutoSnippet>
 
 This snippet is all the business logic you need for a "search as we type" +
 "pull to refresh" + "infinite list", while handling error/loading states.

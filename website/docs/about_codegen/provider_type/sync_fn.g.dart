@@ -1,14 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-// ignore_for_file: type=lint
-
 part of 'sync_fn.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$exampleHash() => r'4341796a79b54d3fafc8a84ebee6c8a2200e22ef';
+String _$exampleHash() => r'dd4e9043c704a42a3fc025e7fef9515f659fc78a';
 
 /// See also [example].
 @ProviderFor(example)
@@ -22,4 +20,5 @@ final exampleProvider = AutoDisposeProvider<String>.internal(
 );
 
 typedef ExampleRef = AutoDisposeProviderRef<String>;
-// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member

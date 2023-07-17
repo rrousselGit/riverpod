@@ -1,10 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /* SNIPPET START */
-final exampleProvider =
-    NotifierProvider.autoDispose<ExampleNotifier, String>(() {
-  return ExampleNotifier();
-});
+final exampleProvider = NotifierProvider.autoDispose<ExampleNotifier, String>(
+  ExampleNotifier.new,
+);
 
 class ExampleNotifier extends AutoDisposeNotifier<String> {
   @override
@@ -12,5 +11,5 @@ class ExampleNotifier extends AutoDisposeNotifier<String> {
     return 'foo';
   }
 
-//Add methods to mutate the state
+  // Add methods to mutate the state
 }
