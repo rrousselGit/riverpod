@@ -62,7 +62,7 @@ export function SidebarHead({ direction }) {
             </label>
           }
           docsProps={{
-            href: "/docs/about_code_generation",
+            href: "/docs/concepts/about_code_generation",
             title: translate({ message: "About code generation" }),
           }}
         ></Toggle>

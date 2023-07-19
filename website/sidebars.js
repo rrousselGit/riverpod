@@ -136,7 +136,7 @@ module.exports = {
       label: "Concepts",
       collapsible: false,
       items: [
-        "about_code_generation",
+        "concepts/about_code_generation",
         "concepts/about_hooks",
         {
           type: "link",
