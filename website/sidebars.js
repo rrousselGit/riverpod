@@ -137,7 +137,7 @@ module.exports = {
       collapsible: false,
       items: [
         "about_code_generation",
-        "about_hooks",
+        "concepts/about_hooks",
         {
           type: "link",
           label: "Provider life-cycles (WIP)",

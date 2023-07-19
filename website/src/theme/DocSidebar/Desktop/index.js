@@ -71,7 +71,7 @@ export function SidebarHead({ direction }) {
           onClick={() => setFlutterHooks(!flutterHooks)}
           leading={<label>flutter_hooks</label>}
           docsProps={{
-            href: "/docs/about_hooks",
+            href: "/docs/concepts/about_hooks",
             title: translate({ message: "About hooks" }),
           }}
         ></Toggle>
