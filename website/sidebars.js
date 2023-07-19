@@ -16,21 +16,9 @@ module.exports = {
       label: "Essentials",
       collapsible: false,
       items: [
-        {
-          type: "link",
-          label: "Making your first network request (WIP)",
-          href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
-        },
-        {
-          type: "link",
-          label: "Passing arguments to network requests (WIP)",
-          href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
-        },
-        {
-          type: "link",
-          label: "Performing side effects (WIP)",
-          href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
-        },
+        "essentials/first_request",
+        "essentials/passing_args",
+        "essentials/side_effects",
         {
           type: "link",
           label: "Combining states (WIP)",

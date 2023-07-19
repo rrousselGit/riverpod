@@ -1,0 +1,27 @@
+---
+title: Performing side effects (WIP)
+version: 1
+---
+
+:::note
+This page is a work in progress
+:::
+
+TODO:
+
+- [ ] Define a simple FutureProvider to fetch a list of todos
+- [ ] Refactor said FutureProvider into an AsyncNotifier
+- [ ] Mention how an AsyncNotifier with no method outside of `build`
+      is identical to a FutureProvider
+- [ ] Add an empty `addTodo` method on the AsyncNotifier
+- [ ] Invoke the `addTodo` method in consumers using `ref.read(provider.notifier).addTodo()`
+- [ ] Have `addTodo` obtain the previous state by reading `this.future`
+  - [ ] mention that awaiting `future` may throw on errors
+- [ ] call `state = AsyncData([...state.data, todo])`
+
+Going further: Showing a spinner & error handling
+
+- [ ] Make the Consumer capture to the Future returned by `addTodo`
+- [ ] Store the Future in a hook or StatefulWidget
+- [ ] listen to the future using `useFuture`/`FutureBuilder`
+- [ ] switch over AsyncSnapshot to show a spinner/error message
