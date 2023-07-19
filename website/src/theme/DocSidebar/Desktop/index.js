@@ -116,6 +116,7 @@ export function Toggle({ checked, onClick, leading, docsProps }) {
             flexShrink: 0,
             border: "1px solid rgba(84, 84, 84, .65)",
             transition: "background-color .25s",
+            backgroundColor: "var(--ifm-color-emphasis-400)",
           }}
         >
           <span
