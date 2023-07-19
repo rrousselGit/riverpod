@@ -19,11 +19,7 @@ module.exports = {
         "essentials/first_request",
         "essentials/passing_args",
         "essentials/side_effects",
-        {
-          type: "link",
-          label: "Combining states (WIP)",
-          href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
-        },
+        "essentials/combining_requests",
         {
           type: "link",
           label: "Clearing cache and reacting to state disposal (WIP)",
@@ -86,6 +82,11 @@ module.exports = {
         {
           type: "link",
           label: "Infinite lists (WIP)",
+          href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
+        },
+        {
+          type: "link",
+          label: "Optimistic UI (WIP)",
           href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
         },
         {

@@ -8,8 +8,11 @@ This page is a work in progress
 :::
 
 TODO:
-- [ ] Define a FutureProvider
+
+- [ ] Make sure `ProviderScope` is added at the root of the application
+  - Do not add it to `MaterialApp`, but straight up as parameter to `runApp`
+- [ ] Define a `FutureProvider`
   - This could fetch the bored API to return a random activity
-- [ ] Consume the FutureProvider inside a Consumer
+- [ ] Consume the `FutureProvider` inside a Consumer
 - [ ] Handle Loading/Error states
-- [ ] Mention how the FutureProvider is cached by default
+- [ ] Mention how the `FutureProvider` is cached by default
