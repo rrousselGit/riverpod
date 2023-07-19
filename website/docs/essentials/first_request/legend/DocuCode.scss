@@ -1,0 +1,36 @@
+.docu-code {
+  .code {
+    position: relative;
+
+    .underlines {
+      pointer-events: none;
+      background: unset;
+      z-index: 1;
+      position: absolute;
+      left: 15px;
+      right: 0;
+      top: 14px;
+      bottom: 0;
+      color: transparent;
+      border: unset;
+
+      &.has-title {
+        top: 64px;
+      }
+    }
+  }
+
+  .underline {
+    text-decoration: underline wavy;
+  }
+
+  .annotations {
+    padding-top: 20px;
+  }
+
+  .annotation {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+}
