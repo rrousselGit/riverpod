@@ -1,25 +1,25 @@
 # Pub
 
-Install needed global packages
+## Install needed global packages
 
 ```bash
 cd riverpod
 dart pub global activate melos
 ```
 
-Build the riverpod packages
+## Build the Example App
 
-```bash
-flutter pub get
-```
-
-## Start the Example App
-
+Run the code generation
 ```bash
 cd examples/pub
-flutter pub run build_runner build
+flutter pub get
+dart run build_runner build
+```
 
+## Run the Example App
 
+Create and run the android deployable
+```bash
 flutter create . --platforms android
 flutter run
 ```
