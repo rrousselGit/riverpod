@@ -13,7 +13,7 @@ Run the code generation
 ```bash
 cd examples/pub
 flutter pub get
-dart run build_runner build
+dart run build_runner build --delete-conflicting-outputs
 ```
 
 ## Run the Example App
