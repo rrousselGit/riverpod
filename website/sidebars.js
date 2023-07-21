@@ -24,26 +24,10 @@ module.exports = {
       label: "Essentials",
       collapsible: false,
       items: [
-        {
-          type: "link",
-          label: "Making your first network request (WIP)",
-          href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
-        },
-        {
-          type: "link",
-          label: "Passing arguments to network requests (WIP)",
-          href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
-        },
-        {
-          type: "link",
-          label: "Performing side effects (WIP)",
-          href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
-        },
-        {
-          type: "link",
-          label: "Combining states (WIP)",
-          href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
-        },
+        "essentials/first_request",
+        "essentials/passing_args",
+        "essentials/side_effects",
+        "essentials/combining_requests",
         {
           type: "link",
           label: "Clearing cache and reacting to state disposal (WIP)",
@@ -110,6 +94,11 @@ module.exports = {
         },
         {
           type: "link",
+          label: "Optimistic UI (WIP)",
+          href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
+        },
+        {
+          type: "link",
           label: "HTTP polling (WIP)",
           href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
         },
@@ -130,6 +119,11 @@ module.exports = {
         },
         {
           type: "link",
+          label: "Deduplicating network requests (WIP)",
+          href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
+        },
+        {
+          type: "link",
           label: "Search as we type (WIP)",
           href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
         },
@@ -144,8 +138,8 @@ module.exports = {
       label: "Concepts",
       collapsible: false,
       items: [
-        "about_code_generation",
-        "about_hooks",
+        "concepts/about_code_generation",
+        "concepts/about_hooks",
         {
           type: "link",
           label: "Provider life-cycles (WIP)",

@@ -62,7 +62,7 @@ export function SidebarHead({ direction }) {
             </label>
           }
           docsProps={{
-            href: "/docs/about_code_generation",
+            href: "/docs/concepts/about_code_generation",
             title: translate({ message: "About code generation" }),
           }}
         ></Toggle>
@@ -71,7 +71,7 @@ export function SidebarHead({ direction }) {
           onClick={() => setFlutterHooks(!flutterHooks)}
           leading={<label>flutter_hooks</label>}
           docsProps={{
-            href: "/docs/about_hooks",
+            href: "/docs/concepts/about_hooks",
             title: translate({ message: "About hooks" }),
           }}
         ></Toggle>
@@ -116,6 +116,7 @@ export function Toggle({ checked, onClick, leading, docsProps }) {
             flexShrink: 0,
             border: "1px solid rgba(84, 84, 84, .65)",
             transition: "background-color .25s",
+            backgroundColor: "var(--ifm-color-emphasis-400)",
           }}
         >
           <span

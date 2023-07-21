@@ -1,7 +1,5 @@
 export const documentTitles = {
   'en': {
-    "about_hooks": "About hooks",
-    "about_code_generation": "About code generation",
     "providers/stream_provider": "StreamProvider",
     "providers/state_provider": "StateProvider",
     "providers/state_notifier_provider": "StateNotifierProvider",
@@ -16,6 +14,10 @@ export const documentTitles = {
     "from_provider/quickstart": "Quickstart",
     "from_provider/provider_vs_riverpod": "Provider vs Riverpod",
     "from_provider/motivation/motivation": "Motivation",
+    "essentials/side_effects": "Performing side effects (WIP)",
+    "essentials/passing_args": "Passing arguments to your requests (WIP)",
+    "essentials/first_request": "Make your first network request (WIP)",
+    "essentials/combining_requests": "Combining requests (WIP)",
     "cookbooks/testing": "Testing",
     "cookbooks/search_as_we_type": "Search as we type",
     "cookbooks/refresh": "Pull-to-refresh / Retry-on-error",
@@ -26,6 +28,8 @@ export const documentTitles = {
     "concepts/provider_observer": "ProviderObserver",
     "concepts/provider_lifecycles": "Provider Lifecycles",
     "concepts/combining_providers": "Combining Provider States",
+    "concepts/about_hooks": "About hooks",
+    "concepts/about_code_generation": "About code generation",
     "concepts/modifiers/family": ".family",
     "concepts/modifiers/auto_dispose": ".autoDispose",
   },
@@ -218,9 +222,5 @@ export const documentTitles = {
   },
 };
 export const outdatedTranslations = [
-{"countryCode":"fr","id":"about_code_generation","englishPath":"/docs/about_code_generation"},
-{"countryCode":"ja","id":"about_code_generation","englishPath":"/docs/about_code_generation"},
-{"countryCode":"ko","id":"about_code_generation","englishPath":"/docs/about_code_generation"},
 {"countryCode":"ru","id":"providers/future_provider","englishPath":"/docs/providers/future_provider"},
-{"countryCode":"zh-Hans","id":"about_code_generation","englishPath":"/docs/about_code_generation"},
 ];

@@ -1,0 +1,26 @@
+---
+title: Combining requests (WIP)
+version: 1
+---
+
+:::note
+This page is a work in progress
+:::
+
+- [ ] Mention that some network requests may depend on the result of
+      other requests. For example, a request to get the list of cities
+      near the user would depend on a request to get the user's location.
+
+- [ ] Mention that there are two primary ways to combine requests:
+
+  - [ ] `ref.watch` - declarative approach, will automatically recompute the request on change
+    - [ ] Mention that this is the recommended approach due to simplified error handling
+          & automatic recomputation.
+  - [ ] `ref.listen` - imperative approach, will invoke a listener when the result changes.
+        It is then up to the listener to perform changes, such as maybe calling `ref.state=`.
+    - [ ] Link Provider migration guide, to showcase how using ref.listen
+          can be used to migrate ProxyProviders to Riverpod
+
+- [ ] A `ref` is always available when defining a provider:
+  - it is either passed as parameter to the provider's function
+  - or it is a property of the Notifier class.
