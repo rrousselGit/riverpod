@@ -11,5 +11,5 @@ This can be done with:
 
 ```sh
 cd examples/stackoverflow
-dart run build_runner build --delete-conflicting-outputs
+dart run build_runner build -d
 ```
