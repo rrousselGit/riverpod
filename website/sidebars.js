@@ -1,5 +1,6 @@
 module.exports = {
   Sidebar: [
+
     {
       type: "category",
       label: "Introduction",
@@ -7,10 +8,17 @@ module.exports = {
       items: [
         "introduction/why_riverpod",
         "introduction/getting_started",
-        "introduction/riverpod_for_provider_users",
       ],
     },
-
+    {
+      type: "category",
+      label: "Riverpod for Provider Users",
+      items: [
+        "from_provider/quickstart",
+        "from_provider/provider_vs_riverpod",
+        "from_provider/motivation/motivation",
+      ],
+    },
     {
       type: "category",
       label: "Essentials",

@@ -1,82 +1,21 @@
 ---
-title: Riverpod for Provider users
-version: 1
+title: Provider vs Riverpod
 ---
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
-import pubspec from "./getting_started/pubspec";
-import dartHelloWorld from "./getting_started/dart_hello_world";
-import helloWorld from "./getting_started/hello_world";
-import dartPubspec from "./getting_started/dart_pubspec";
+import family from "./family";
 import {
   trimSnippet,
   AutoSnippet,
   ConditionalSnippet,
 } from "../../src/components/CodeSnippet";
 
-This article is designed for people familiar with the [Provider] package who
-wants to learn about Riverpod.
 
-## The relationship between Riverpod and Provider
+This article recaps the defferences and the similarities between Provider and Riverpod.
 
-Riverpod is designed to be the spiritual successor of Provider. Hence the
-name "Riverpod", which is an anagram of "Provider".
-
-Riverpod was born while searching for solutions to the various technical
-limitations that Provider face. Originally, Riverpod was supposed to be a
-major version of Provider as a way to solve this problem. But it was
-decided against as this would be a decently big breaking change, and
-Provider is one of the most used Flutter packages.
-
-Still, conceptually, Riverpod and Provider are fairly similar.  
-Both packages fill a similar role. Both try to:
-
-- cache and dispose some stateful objects
-- offer a way to mock those objects during tests
-- offer a way for Widgets to listen to those objects in a simple way.
-
-At the same time, think of Riverpod as what Provider could've been if
-it continued to mature for a few years.
-
-Riverpod fixes various fundamental problems with Provider, such as but not limited to:
-
-- Significantly simplifying the combination of "providers".
-  Instead of the tedious and error-prone `ProxyProvider`, Riverpod exposes
-  simple yet powerful utilites such as [ref.watch] and [ref.listen].
-- Allowing multiple "provider" to expose a value of the same type.  
-  This removes the need for defining custom classes when exposing a
-  plain `int` or `String` would work just as well.
-- Removing the need to re-define providers inside tests.
-  With Riverpod, providers are ready to use inside tests by default.
-- Reducing the over-reliance on "scoping" to dispose objects by offering
-  alternate ways to dispose objects ([autoDispose])
-  While powerful, scoping a provider is fairly advanced and hard to get right.
-
-... And a lot more.
-
-The only true downside of Riverpod is that it requires changing the widget type
-to work:
-
-- Instead of extending `StatelessWidget`, with Riverpod you should extend
-  `ConsumerWidget`.
-- Instead of extending `StatefulWidget`, with Riverpod you should extend
-  `ConsumerStatefulWidget`.
-
-But this inconvenience is fairly minor in the grand scheme of things. And this
-requirement might one day disappear.
-
-So to answer the question you're probably asking yourself:  
-**Should I use Provider or Riverpod?**
-
-You probably should be using Riverpod.  
-Riverpod is overhaul better designed and could lead to drastic simplifications
-of your logic.
-
-## The difference between Provider and Riverpod
-
-### Defining providers
+## Defining providers
 
 The primary difference between both packages is how "providers" are defined.
 
@@ -130,7 +69,7 @@ Riverpod without Flutter.
 For example, Riverpod can be used to write command line applications.
 :::
 
-### Reading providers: BuildContext
+## Reading providers: BuildContext
 
 With Provider, one way of reading providers is to use a Widget's `BuildContext`.
 
@@ -186,19 +125,20 @@ Riverpod uses the same terminology as Provider for reading providers.
 
 - `BuildContext.watch` -> `WidgetRef.watch`
 - `BuildContext.read` -> `WidgetRef.read`
+- `BuildContext.select` -> `WidgetRef.watch(myProvider.select)`
 
 The rules for `context.watch` vs `context.read` applies to Riverpod too:  
 Inside the `build` method, use "watch". Inside click handlers and other events,
-use "read".
+use "read". When in need of filtering out values and rebuilds, use "select".
 :::
 
-### Reading providers: Consumer
+## Reading providers: Consumer
 
 Provider optionally comes with a widget named `Consumer` (and variants such as `Consumer2`)
 for reading providers.
 
 `Consumer` is helpful as a performance optimization, by allowing more granular rebuilds
-of the widget tree – updating only the revelant widgets when the state changes:
+of the widget tree - updating only the revelant widgets when the state changes:
 
 As such, if a provider was defined as:
 
@@ -239,7 +179,27 @@ Consumer(
 Notice how `Consumer` gives us a `WidgetRef` object. This is the same object
 as we saw in the previous part related to `ConsumerWidget`.
 
-### Combining providers: ProxyProvider with stateless objects
+### There is no `ConsumerN` equivalent in Riverpod
+
+Notice how pkg:Provider's `Consumer2`, `Consumer3` and such aren't needed nor missed in Riverpod.
+
+With Riverpod, if you want to read values from multiple providers, you can simply write multiple `ref.watch` statements,
+like so:
+
+```dart
+Consumer(
+  builder: (context, ref, child) {
+    Model1 model = ref.watch(model1Provider);
+    Model2 model = ref.watch(model2Provider);
+    Model3 model = ref.watch(model3Provider);
+    // ...
+  }
+)
+```
+
+When compared to pkg:Provider's `ConsumerN` APIs, the above solution feels way less heavy and it should be easier to understand.
+
+## Combining providers: ProxyProvider with stateless objects
 
 When using Provider, the official way of combining providers is using the
 `ProxyProvider` widget (or variants such as `ProxyProvider2`).
@@ -307,7 +267,7 @@ when explaining [how to read providers inside widgets](#reading-providers-buildc
 Indeed, providers are now able to listen to other providers in the same way
 that widgets do.
 
-### Combining providers: ProxyProvider with stateful objects
+## Combining providers: ProxyProvider with stateful objects
 
 When combining providers, another alternative use-case is to expose
 stateful objects, such as a `ChangeNotifier` instance.
@@ -407,7 +367,66 @@ and whenever the provider changes, executes a function.
 The `previous` and `next` parameters of that function correspond to the
 last value before the provider changed and the new value after it changed.
 
+## Scoping Providers vs `.family` + `.autoDispose`
+In pkg:Provider, scoping was used for two things:
+  - destroying state when leaving a page
+  - having custom state per page
+
+Using scoping just to destroy state isn't ideal.  
+The problem is that scoping doesn't work well over large applications.  
+For example, state often is created in one page, but destroyed later in a different page after navigation.  
+This doesn't allow for multiple caches to be active over different pages.
+
+Similarly, the "custom state per page" approach quickly becomes difficult to handle if that state 
+needs to be shared with another part of the widget tree, 
+like you'd need with modals or a with a multi-step form.
+
+Riverpod takes a different approach: first, scoping providers is kind-of discouraged; second, 
+`.family` and `.autoDispose` are a complete replacement solution for this.
+
+Within Riverpod, Providers marked as `.autoDispose` automatically destroy their state when they aren't used anymore.  
+When the last widget removing a provider is unmounted, Riverpod will detect this and destroy the provider.  
+Try using these two lifecycle methods in a provider to test this behavior:
+
+```dart
+ref.onCancel((){
+  print("No one listens to me anymore!");
+});
+ref.onDispose((){
+  print("If I've been defined as `.autoDispose`, I just got disposed!");
+});
+```
+
+This inherently solves the "destroying state" problem.
+
+Also it is possible to mark a Provider as `.family` (and, at the same time, as `.autoDispose`).  
+This enables passing parameters to providers, which make multiple providers to be spawned and tracked internally.  
+In other words, when passing parameters, *a unique state is created per unique parameter*.
+
+<AutoSnippet language="dart" {...family}></AutoSnippet>
+
+
+This solves the "custom state per page" problem. Actually, there's another advantage: such state is no-longer bound to one specific page.  
+Instead, if a different page tries to access the same state, such page will be able to do so by just reusing the parameters.
+ 
+In many ways, passing parameters to providers is equivalent to a Map key.  
+If the key is the same, the value obtained is the same. If it's a different key, a different state will be obtained.
+
 [provider]: https://pub.dev/packages/provider
 [ref.watch]: /docs/concepts/reading#using-refwatch-to-observe-a-provider
 [ref.listen]: /docs/concepts/reading#using-reflisten-to-react-to-a-provider-change
 [autodispose]: /docs/concepts/modifiers/auto_dispose
+[workaround]: https://pub.dev/packages/provider#can-i-obtain-two-different-providers-using-the-same-type
+[.family modifier]: /docs/concepts/modifiers/family
+[keepAlive]: /docs/concepts/modifiers/auto_dispose#refkeepalive
+[as these two features go hand-in-hand]: /docs/concepts/modifiers/family#prefer-using-autodispose-when-the-parameter-is-not-constant
+[simplification of logic]: /docs/concepts/modifiers/family#usage
+[we have to]: https://github.com/flutter/flutter/issues/128432
+[it turns out]: https://github.com/flutter/flutter/issues/106549
+[*can't* react when a consumer stops listening to them]: https://github.com/flutter/flutter/issues/106546
+[integrates well with Flutter]: /docs/concepts/reading#using-reflisten-to-react-to-a-provider-change
+[ChangeNotifierProvider]: /docs/providers/change_notifier_provider
+[Code generation]: /docs/about_code_generation
+[AsyncNotifiers]: /docs/providers/notifier_provider
+[combining Providers]: /docs/concepts/combining_providers
+[global final variable]: /docs/concepts/providers#creating-a-provider
