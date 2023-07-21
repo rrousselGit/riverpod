@@ -13,7 +13,7 @@ import dartPubspec from "./getting_started/dart_pubspec";
 import {
   trimSnippet,
   AutoSnippet,
-  ConditionalSnippet,
+  When,
 } from "../../../../src/components/CodeSnippet";
 
 ___
@@ -40,10 +40,10 @@ Riverpod の感覚を掴むために、[Dartpad](https://dartpad.dev/?null_safet
 
 そして `flutter pub get` でパッケージをインストールしてください。
 
-<ConditionalSnippet codegen={true}>
+<When codegen={true}>
   最後に、 {" "} でコードジェネレータを実行してください。
   <code>flutter pub run build_runner watch</code>
-</ConditionalSnippet>
+</When>
 
 </TabItem>
 <TabItem value="riverpod">
@@ -56,10 +56,10 @@ Riverpod の感覚を掴むために、[Dartpad](https://dartpad.dev/?null_safet
 
 そして、 `dart pub get` でパッケージをインストールしてください。
 
-<ConditionalSnippet codegen={true}>
+<When codegen={true}>
   最後に、 {" "} でコードジェネレータを実行してください。
   <code>flutter pub run build_runner watch</code>
-</ConditionalSnippet>
+</When>
 
 </TabItem>
 </Tabs>

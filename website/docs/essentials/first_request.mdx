@@ -4,8 +4,9 @@ version: 1
 ---
 
 import { Link } from "../../src/components/Link";
-import { AutoSnippet } from "../../src/components/CodeSnippet";
-import model from "./first_request/model";
+import { AutoSnippet, When } from "../../src/components/CodeSnippet";
+import activity from "./first_request/activity";
+import provider from "./first_request/provider";
 import Legend from "./first_request/legend/legend";
 
 :::note
@@ -79,7 +80,7 @@ JSON decoding. But of course, it's also possible to do it by hand.
 
 Anyway, here's our model:
 
-<AutoSnippet {...model} />
+<AutoSnippet {...activity} />
 
 ### Creating the provider
 
@@ -88,57 +89,159 @@ To do so, we will need to create our first provider.
 
 The syntax for defining a provider is as followed:
 
+<When codegen={false}>
 <Legend
-  title="activity.dart"
-  annotations={[
-    {
-      offset: 6,
-      length: 8,
-      color: "red",
-      description:
-        "The provider name. This will be used later to access our network request.",
-    },
-    {
-      offset: 17,
-      length: 14,
-      color: "blue",
-      description:
-        "The type of provider (Provider, FutureProvider, StreamProvider, ...). The type of provider used depends on the return value of your function. For example, if your function return a Future, then you'll want a FutureProvider; whereas if it returns a Stream, you'll want a StreamProvider.",
-    },
-    {
-      offset: 43,
-      length: 3,
-      color: "yellow",
-      description: "An object used to interact with other providers.",
-    },
-  ]}
->
-  {`final provider = FutureProvider<Activity>((ref) async {
+  code={`final name = SomeProvider<Result>((ref) {
   <your logic here>
 });
 `}
-</Legend>
+  annotations={[
+    {
+      offset: 6,
+      length: 4,
+      label: "The provider variable",
+       description: <>
 
-// TODO mentions that, although Riverpod has many providers, FutureProvider is the main one you should care about
+This variable is what will be used to interact with our provider.  
+The variable must be final and "top-level" (global).
 
-In our case, we want to return a `Future<Actvitiy>`.
+</>
+    },
+    {
+      offset: 13,
+      length: 12,
+      label: "The provider type",
+      description: <>
 
-```dart
-final boredApiProvider = FutureProvider.autoDispose((ref) async {
-  final response = await http.get(Uri.parse('https://www.boredapi.com/api/activity'));
-  return Activity.fromJson(json.decode(response.body));
-});
-```
+Can be one of many (`Provider`, `FutureProvider`, `StreamProvider`, ...).  
+The type of provider used depends on the return value of your function.
+For example, to create a `Future<Activity>`, you'll want a `FutureProvider<Activity>`.
+
+:::tip
+Don't think in terms of "Which provider should I pick".
+Instead, think in terms of "What do I want to return". The provider type
+will follow naturally.
+:::
+
+</>
+    },
+    {
+      offset: 35,
+      length: 3,
+      label: "Ref",
+      description: <>
+
+An object used to interact with other providers.  
+All providers have one; either as parameter of the provider function,
+or as a property of a Notifier.
+
+</>
+    },
+    {
+      offset: 44,
+      length: 17,
+      label: "The provider function",
+      description: <>
+
+This is where we place the logic of our providers.
+This function will be called when the provider is first read.  
+Subsequent reads will not call the function again, but instead return the cached value.
+
+</>
+    },
+]}
+/>
+</When>
+
+<When codegen={true}>
+<Legend
+  code={`@riverpod
+Result myFunction(MyFunctionRef ref) {
+  <your logic here>
+}
+`}
+  annotations={[
+    {
+      offset: 0,
+      length: 9,
+      label: "The annotation",
+       description: <>
+
+All providers must be annotated with `@riverpod` or `@Riverpod()`.
+This annotation can be placed on global functions or classes.  
+Through this annotation, it is possible to configure the provider.
+
+For example, we can disable "auto-dispose" (which we will see later) by writing `@Riverpod(keepAlive: true)`.
+
+</>
+    },
+    {
+      offset: 17,
+      length: 10,
+      label: "The annotated function",
+       description: <>
+
+The name of the annotated function determines how the provider
+will be interacted with.  
+For a given function `myFunction`, a generated `myFunctionProvider` variable will be generated.
+
+Annotated functions **must** specify a "ref" as first parameter.  
+Besides that, the function can have any number of parameters, including generics.
+The function is also free to return a `Future`/`Stream` if it wishes to.
+
+This function will be called when the provider is first read.  
+Subsequent reads will not call the function again, but instead return the cached value.
+
+</>
+    },
+    {
+      offset: 28,
+      length: 17,
+      label: "Ref",
+      description: <>
+
+An object used to interact with other providers.  
+All providers have one; either as parameter of the provider function,
+or as a property of a Notifier.  
+The type of this object is determined by the name of the function/class.
+
+</>
+    },
+]}
+/>
+</When>
+
+In our case, we want to _GET_ an activity from the API.  
+Since a _GET_ is an asynchronous operation, that means we will want
+to create a `Future<Activity>`.
+
+Using the syntax defined previously, we can therefore define our provider as followed:
+
+<AutoSnippet {...provider} />
+
+In this snippet, we've defined a provider named `activityProvider` which
+our UI will be able to use to obtain a random activity. It is worth nothing
+that:
+
+- The network request will not be executed until the UI reads the provider
+  at least once.
+- Subsequent reads will not re-execute the network request,
+  but instead return the previously fetched activity.
+- If the UI stops using this provider, the cache will be destroyed.
+  Then, if the UI ever uses the provider again, that a new network request will be made.
+
+:::info
+Notice how we did not catch errors. This is voluntary, as providers
+natively handle errors.  
+If the network request or if the JSON parsing throws, the error
+will be caught by Riverpod. Then, the UI will automatically have the necessary
+information to render an error page.
+:::
 
 TODO:
 
-- [x] Make sure `ProviderScope` is added at the root of the application
-  - Do not add it to `MaterialApp`, but straight up as parameter to `runApp`
-- [ ] Define a `FutureProvider`
-  - This could fetch the bored API to return a random activity
 - [ ] Consume the `FutureProvider` inside a Consumer
 - [ ] Handle Loading/Error states
-- [ ] Mention how the `FutureProvider` is cached by default
 
 Going further: Making a Repository
 

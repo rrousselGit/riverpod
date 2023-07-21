@@ -1,36 +1,18 @@
-.docu-code {
-  .code {
-    position: relative;
+.legend {
+  table,
+  td,
+  tr {
+    background: none !important;
+    border: none;
 
-    .underlines {
-      pointer-events: none;
-      background: unset;
-      z-index: 1;
-      position: absolute;
-      left: 15px;
-      right: 0;
-      top: 14px;
-      bottom: 0;
-      color: transparent;
-      border: unset;
-
-      &.has-title {
-        top: 64px;
-      }
-    }
+    vertical-align: top;
   }
 
-  .underline {
-    text-decoration: underline wavy;
+  td:first-child {
+    text-align: end;
   }
 
-  .annotations {
-    padding-top: 20px;
-  }
-
-  .annotation {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
+  tr + tr {
+    border-top: solid 0.5px;
   }
 }

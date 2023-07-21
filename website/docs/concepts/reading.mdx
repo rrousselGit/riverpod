@@ -21,7 +21,7 @@ import provider from "./reading/provider";
 import {
   trimSnippet,
   AutoSnippet,
-  ConditionalSnippet,
+  When,
 } from "../../src/components/CodeSnippet";
 import { Link } from "../../src/components/Link";
 
@@ -44,11 +44,11 @@ All providers receive a "ref" as a parameter:
 
 This parameter is safe to pass to the value exposed by the provider.
 
-<ConditionalSnippet codegen={false}>
+<When codegen={false}>
 
 A common use-case is to pass the provider's "ref" to a `StateNotifier`
 
-</ConditionalSnippet>
+</When>
 
 <AutoSnippet language="dart" {...counter}></AutoSnippet>
 
@@ -59,7 +59,7 @@ Doing so allows our `Counter` class to read providers.
 Widgets naturally do not have a ref parameter. But [Riverpod] offers multiple
 solutions to obtain one from widgets.
 
-<ConditionalSnippet>
+<When>
 
 #### Extending ConsumerWidget instead of StatelessWidget
 
@@ -83,9 +83,9 @@ a property of the [ConsumerState] object:
 
 <AutoSnippet language="dart" {...consumerStatefulWidget}></AutoSnippet>
 
-</ConditionalSnippet>
+</When>
 
-<ConditionalSnippet hooks>
+<When hooks>
 
 #### Extending HookConsumerWidget instead of HookWidget
 
@@ -122,7 +122,7 @@ An example would be:
 
 <CodeBlock>{trimSnippet(consumerHook)}</CodeBlock>
 
-</ConditionalSnippet>
+</When>
 
 ## Using ref to interact with providers
 
@@ -283,7 +283,7 @@ For example, another part of the application could call:
 ref.refresh(counterProvider);
 ```
 
-<ConditionalSnippet codegen={false}>
+<When codegen={false}>
   
 which would recreate the `StateController` object.
 
@@ -292,9 +292,9 @@ If we used `ref.read` here, our button would still use the previous
 Whereas using `ref.watch` correctly rebuilds the button to use the new
 `StateController`.
 
-</ConditionalSnippet>
+</When>
 
-<ConditionalSnippet codegen>
+<When codegen>
 
 which would recreate the `Counter` object.
 
@@ -302,7 +302,7 @@ If we used `ref.read` here, our button would still use the previous `Counter`
 instance, which was disposed and should no-longer be used. Whereas using
 `ref.watch` correctly rebuilds the button to use the new `Counter`.
 
-</ConditionalSnippet>
+</When>
 
 ## Deciding what to read
 

@@ -15,7 +15,7 @@ import dartPubadd from "./getting_started/dart_pub_add";
 import {
   trimSnippet,
   AutoSnippet,
-  ConditionalSnippet,
+  When,
 } from "../../../../src/components/CodeSnippet";
 
 ---
@@ -66,10 +66,10 @@ import {
 
 然后使用 `flutter pub get` 命令来安装包文件。
 
-<ConditionalSnippet codegen={true}>
+<When codegen={true}>
   最后，运行代码生成器 {" "}
   <code>flutter pub run build_runner watch</code>
-</ConditionalSnippet>
+</When>
 
 </TabItem>
 <TabItem value="riverpod">
@@ -82,10 +82,10 @@ import {
 
 然后使用 `dart pub get` 命令来安装包文件。
 
-<ConditionalSnippet codegen={true}>
+<When codegen={true}>
   最后，运行代码生成器 {" "}
   <code>flutter pub run build_runner watch</code>
-</ConditionalSnippet>
+</When>
 
 </TabItem>
 </Tabs>

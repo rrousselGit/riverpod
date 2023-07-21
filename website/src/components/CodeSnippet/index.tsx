@@ -75,7 +75,7 @@ export function AutoSnippet(props: {
   );
 }
 
-export function ConditionalSnippet(props: {
+export function When(props: {
   hooks?: boolean;
   codegen?: boolean;
   children: string;

@@ -21,7 +21,7 @@ import provider from "./reading/provider";
 import {
   trimSnippet,
   AutoSnippet,
-  ConditionalSnippet,
+  When,
 } from "../../../../../src/components/CodeSnippet";
 
 在阅读本指南之前，请确保先阅读有关[Providers](/docs/concepts/providers)的内容。
@@ -42,11 +42,11 @@ import {
 
 将此参数传递给provider暴露的值是安全的。
 
-<ConditionalSnippet codegen={false}>
+<When codegen={false}>
 
 一个常见的用例是将provider的“ref”传递给`StateNotifier`
 
-</ConditionalSnippet>
+</When>
 
 <AutoSnippet language="dart" {...counter}></AutoSnippet>
 
@@ -56,7 +56,7 @@ import {
 
 Widget自然没有ref参数。但是 [Riverpod] 提供了多种从widget中获取ref的解决方案。
 
-<ConditionalSnippet>
+<When>
 
 #### 扩展ConsumerWidget而不是StatelessWidget
 
@@ -77,9 +77,9 @@ Widget自然没有ref参数。但是 [Riverpod] 提供了多种从widget中获�
 
 <AutoSnippet language="dart" {...consumerStatefulWidget}></AutoSnippet>
 
-</ConditionalSnippet>
+</When>
 
-<ConditionalSnippet hooks>
+<When hooks>
 
 #### 扩展HookConsumerWidget类而不是HookWidget类
 
@@ -111,7 +111,7 @@ Widget自然没有ref参数。但是 [Riverpod] 提供了多种从widget中获�
 
 <CodeBlock>{trimSnippet(consumerHook)}</CodeBlock>
 
-</ConditionalSnippet>
+</When>
 
 ## 使用ref与provider交互
 
@@ -253,7 +253,7 @@ provider提供了许多获取值的方法，同时也减少了重新构建的次
 ref.refresh(counterProvider);
 ```
 
-<ConditionalSnippet codegen={false}>
+<When codegen={false}>
 
 
 来重新创建 `Counter` 对象。
@@ -262,9 +262,9 @@ ref.refresh(counterProvider);
 但实际上该实例已被丢弃，不应该再使用。
 当我们正确使用 `ref.watch` 将重新构建按钮以使用新的 `Counter`实例
 
-</ConditionalSnippet>
+</When>
 
-<ConditionalSnippet codegen>
+<When codegen>
 
 来重新创建 `Counter` 对象。
 
@@ -272,7 +272,7 @@ ref.refresh(counterProvider);
 但实际上该实例已被丢弃，不应该再使用。
 而正确使用 `ref.watch` 将重新构建按钮以使用新的 `Counter`实例。
 
-</ConditionalSnippet>
+</When>
 
 ## 选择读取的方式
 

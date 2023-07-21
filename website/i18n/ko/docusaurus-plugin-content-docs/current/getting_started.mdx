@@ -15,7 +15,7 @@ import dartPubspec from "../../../../i18n/ko/docusaurus-plugin-content-docs/curr
 import { 
   trimSnippet,
   AutoSnippet,
-  ConditionalSnippet } from "../../../../src/components/CodeSnippet";
+  When } from "../../../../src/components/CodeSnippet";
 
 ---
 
@@ -57,10 +57,10 @@ To get a feel of Riverpod, try it online on [Dartpad](https://dartpad.dev/?null_
 
 패키지 추가 후 `flutter pub get` 를 실행해주세요.
 
-<ConditionalSnippet codegen={true}>
+<When codegen={true}>
   마지막으로, {" "}를 실행하여 코드를 생성합니다.
   <code>flutter pub run build_runner watch</code>
-</ConditionalSnippet>
+</When>
 
 </TabItem>
 <TabItem value="riverpod">
@@ -73,10 +73,10 @@ To get a feel of Riverpod, try it online on [Dartpad](https://dartpad.dev/?null_
 
 패키지 추가 후 `dart pub get`를 실행해주세요.
 
-<ConditionalSnippet codegen={true}>
+<When codegen={true}>
   마지막으로, {" "}를 실행하여 코드를 생성합니다.
   <code>flutter pub run build_runner watch</code>
-</ConditionalSnippet>
+</When>
 
 </TabItem>
 </Tabs>

@@ -8,8 +8,9 @@ type AnnotatedCode = {
   code: string;
 };
 
-const DocuCode = ({ children, annotations, title }) => {
-  const code = children as string;
+const colors = ["#2196f3", "#4caf50", "#f44336", "#ff9800"];
+
+const DocuCode = ({ annotations, code }) => {
   const fullAnnotations = new Array<AnnotatedCode>();
 
   let annotationOffset = 0;
@@ -37,7 +38,7 @@ const DocuCode = ({ children, annotations, title }) => {
     annotationOffset++;
     codeOffset = annotation.offset + annotation.length;
     fullAnnotations.push({
-      color: annotation.color,
+      color: colors[annotationOffset - 1],
       code: code.substring(
         annotation.offset,
         annotation.offset + annotation.length
@@ -45,38 +46,30 @@ const DocuCode = ({ children, annotations, title }) => {
     });
   }
 
-  const underlinesClassName = title ? "underlines has-title" : "underlines";
-
   return (
-    <div className="docu-code">
-      <span className="code">
-        <code className={underlinesClassName}>
-          {fullAnnotations.map(({ code, color }) => {
-            let underlineClass = color ? `underline` : "";
-            let style = color ? { textDecorationColor: color } : undefined;
+    <div className="legend">
+      <pre className="code">
+        {fullAnnotations.map(({ code, color }) => {
+          let underlineClass = color ? `underline` : "";
+          let style = color ? { color: color } : undefined;
 
-            return (
-              <span key={code} className={underlineClass} style={style}>
-                {code}
-              </span>
-            );
-          })}
-        </code>
-        <CodeBlock title={title}>{code}</CodeBlock>
-      </span>
-      <div className="annotations">
-        {annotations.map((annotation, index) => (
-          <div key={index} className="annotation">
-            <span
-              className="underline"
-              style={{ textDecorationColor: annotation.color }}
-            >
-              {index}){" "}
+          return (
+            <span key={code} className={underlineClass} style={style}>
+              {code}
             </span>
-            {annotation.description}
-          </div>
+          );
+        })}
+      </pre>
+      <table className="annotations">
+        {annotations.map((annotation, index) => (
+          <tr key={annotation.label} className="annotation">
+            <td className="underline" style={{ color: colors[index] }}>
+              {annotation.label}
+            </td>
+            <td>{annotation.description}</td>
+          </tr>
         ))}
-      </div>
+      </table>
     </div>
   );
 };
