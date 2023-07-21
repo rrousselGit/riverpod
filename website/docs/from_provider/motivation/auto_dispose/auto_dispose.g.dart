@@ -1,7 +1,5 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-// ignore_for_file: type=lint
-
 part of 'auto_dispose.dart';
 
 // **************************************************************************
@@ -37,4 +35,5 @@ final cachedDiceRollProvider = AutoDisposeProvider<int>.internal(
 );
 
 typedef CachedDiceRollRef = AutoDisposeProviderRef<int>;
+// ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
