@@ -15,12 +15,22 @@ Assuming you are working on `riverpod_graph` in this repo.  You can test against
 
 ```
 cd <the riverpod_graph directory>
+```
+
+mermaid.js markup
+```bash
+../riverpod/packages/riverpod_graph$ dart run riverpod_graph:riverpod_graph ../../examples/todos/lib
+```
+
+d2 markup
+```bash
 ../riverpod/packages/riverpod_graph$ dart run riverpod_graph:riverpod_graph ../../examples/todos/lib -f d2
 ```
 
 Assuming you have activated, installed, riverpod_graph in the global dart cache:
 
-```
+mermaid.js markup
+```bash
 cd <the lib directory of the program you wish to analyze>
-$ dart pub global run riverpod_graph . -f d2
+$ dart pub global run riverpod_graph .
 ```
