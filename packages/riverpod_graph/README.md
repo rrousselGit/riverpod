@@ -14,13 +14,13 @@ Here is graph example, generated from the Flutter Devtool project (which uses Ri
 Assuming you are working on `riverpod_graph` in this repo.  You can test against other projects with relative references. Generating a graph against the `examples/todos` project would look like:
 
 ```
-cd into the riverpod_graph directory
+cd <the riverpod_graph directory>
 ../riverpod/packages/riverpod_graph$ dart run riverpod_graph:riverpod_graph ../../examples/todos/lib -f d2
 ```
 
-Assuming you have activated, installed, riverpod_graph in the dart cache:
+Assuming you have activated, installed, riverpod_graph in the global dart cache:
 
 ```
-cd into the lib directory of the program you wish to analyze
-dart run riverpod_graph:riverpod_graph <path-to-root-dir> -f d2
+cd <the lib directory of the program you wish to analyze>
+$ dart pub global run riverpod_graph . -f d2
 ```
