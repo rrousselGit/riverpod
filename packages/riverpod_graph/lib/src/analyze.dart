@@ -96,7 +96,8 @@ Future<void> analyze(
 bool verifyRootDirectoryExists(String rootDirectory) {
   if (!Directory(rootDirectory).existsSync()) {
     throw FileSystemException(
-        'Requested scanning target directory does not exist $rootDirectory');
+      'Requested scanning target directory does not exist $rootDirectory',
+    );
   }
   return true;
 }
