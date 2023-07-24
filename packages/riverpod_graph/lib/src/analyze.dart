@@ -115,7 +115,19 @@ String _buildD2(ProviderGraph providerGraph) {
   const _watchLineStyle = '{style.stroke-width: 4}';
   const _readLineStyle = '{style.stroke-dash: 4}';
 
-  final buffer = StringBuffer();
+  final buffer = StringBuffer('''
+Legend: {
+  Type: {
+    Widget.shape: circle
+    Provider
+  }
+  Arrows: {
+    "." -> "..": read: {style.stroke-dash: 4}
+    "." -> "..": listen
+    "." -> "..": watch: {style.stroke-width: 4}
+  }
+}
+''');
 
   for (final node in providerGraph.consumerWidgets) {
     buffer.writeln('${node.definition.name}.shape: Circle');
