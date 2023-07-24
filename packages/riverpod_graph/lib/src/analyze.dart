@@ -19,6 +19,8 @@ Future<void> analyze(
     resourceProvider: PhysicalResourceProvider.INSTANCE,
   );
 
+  verifyRootDirectoryExists(rootDirectory);
+
   // Often one context is returned, but depending on the project structure we
   // can see multiple contexts.
   for (final context in collection.contexts) {
@@ -86,6 +88,17 @@ Future<void> analyze(
     case SupportFormat.mermaid:
       return stdout.write(_buildMermaid(graph));
   }
+}
+
+///
+///Throws an exception if the directory doesn't exist
+///
+bool verifyRootDirectoryExists(String rootDirectory) {
+  if (!Directory(rootDirectory).existsSync()) {
+    throw FileSystemException(
+        'Requested scanning target directory does not exist $rootDirectory');
+  }
+  return true;
 }
 
 /// Output formats supported by riverpod_graph
@@ -156,10 +169,10 @@ flowchart TB
     style stop1 height:0px;
     start2[ ] --->|listen| stop2[ ]
     style start2 height:0px;
-    style stop2 height:0px; 
+    style stop2 height:0px;
     start3[ ] ===>|watch| stop3[ ]
     style start3 height:0px;
-    style stop3 height:0px; 
+    style stop3 height:0px;
   end
 
   subgraph Type
