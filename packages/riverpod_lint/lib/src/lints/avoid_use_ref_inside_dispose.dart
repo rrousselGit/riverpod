@@ -32,7 +32,7 @@ class AvoidUseRefInsideDispose extends RiverpodLintRule {
 
         if (!isMethodCalledDispose) return false;
 
-        final classeDeclaration = _findConsumeStateClass(node);
+        final classeDeclaration = _findConsumerStateClass(node);
 
         return classeDeclaration != null;
       });
@@ -43,9 +43,9 @@ class AvoidUseRefInsideDispose extends RiverpodLintRule {
     });
   }
 
-  /// Looking for the ConsumeState class ancestor
+  /// Looking for the ConsumerState class ancestor
   /// into the [node] parent.
-  AstNode? _findConsumeStateClass(AstNode node) {
+  AstNode? _findConsumerStateClass(AstNode node) {
     final classeDeclaration = node.parent?.thisOrAncestorMatching((node) {
       if (node is! ClassDeclaration) return false;
 
