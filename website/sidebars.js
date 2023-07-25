@@ -1,7 +1,7 @@
 module.exports = {
   Sidebar: [
     "getting_started",
-    
+
     {
       type: "category",
       label: "Concepts",
@@ -28,8 +28,9 @@ module.exports = {
         "cookbooks/testing",
         //"cookbooks/refresh",
       ],
-    }, 
-    { type: "category",
+    },
+    {
+      type: "category",
       label: "Migration",
       collapsed: false,
       items: ["migration/0.13.0_to_0.14.0", "migration/0.14.0_to_1.0.0"],
@@ -139,7 +140,12 @@ module.exports = {
           type: "link",
           label: "AWS Amplify Storage Gallery App with Riverpod & Freezed",
           href: "https://github.com/offlineprogrammer/amplify_storage_app",
-        },        
+        },
+        {
+          type: "link",
+          label: "Clean Architecture demonstration with Riverpod",
+          href: "https://github.com/Uuttssaavv/flutter-clean-architecture-riverpod",
+        },
       ],
     },
     {
