@@ -12,7 +12,7 @@ class AvoidUseRefInsideDispose extends RiverpodLintRule {
 
   static const _code = LintCode(
     name: 'avoid_ref_inside_state_dispose',
-    problemMessage: "Avoid using 'Ref' in the dispose method.",
+    problemMessage: "Avoid using 'Ref' inside State.dispose.",
   );
 
   @override
