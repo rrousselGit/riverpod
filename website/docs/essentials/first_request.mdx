@@ -8,11 +8,10 @@ import { AutoSnippet, When } from "../../src/components/CodeSnippet";
 import activity from "./first_request/activity";
 import provider from "./first_request/provider";
 import consumer from "./first_request/consumer";
+import consumerWidget from "./first_request/consumer_widget";
+import consumerStatefulWidget from "./first_request/consumer_stateful_widget";
+import hookConsumerWidget from "./first_request/hook_consumer_widget";
 import Legend from "./first_request/legend/legend";
-
-:::note
-This page is a work in progress
-:::
 
 Network requests are the core of any application. But there are a lot of things to consider when
 making a network request:
@@ -40,7 +39,7 @@ void main() {
 }
 ```
 
-This is a necessary step to enable Riverpod in your project.
+Doing so will enable Riverpod for the entire application.
 
 :::note
 For complete installation steps (such as installing [riverpod_lint](https://pub.dev/packages/riverpod_lint)
@@ -239,7 +238,7 @@ will be caught by Riverpod. Then, the UI will automatically have the necessary
 information to render an error page.
 :::
 
-### Listening to providers inside widgets
+### Rendering the network request's response in the UI
 
 Now that we have defined a provider, we can start using it inside our UI
 to display the activity.
@@ -250,22 +249,68 @@ to a "ref" object.
 But in our case, we aren't in a provider, but a widget. So how do we get a "ref"?
 
 The solution is to use a custom widget called `Consumer`. A `Consumer` is a widget
-similar to `Builder`, but with the added benefit of offering us a "ref".  
-This enables our UI to read providers.
+similar to `Builder`, but with the added benefit of offering us a "ref". This enables our UI to read providers.
+The following example showcases how to use a `Consumer`:
 
 <AutoSnippet title="consumer.dart" {...consumer} />
 
-TODO:
+In that snippet, we've used a `Consumer` to read our `activityProvider` and display the activity.
+We also gracefully handled the loading/error states.  
+Notice how the UI was able to handle loading/error states without having to do anything special
+in the provider.  
+At the same time, if the widget were to rebuild, the network request would correctly
+not be re-executed. Other widgets could also access the same provider without
+re-executing the network request.
 
-- [ ] Consume the `FutureProvider` inside a Consumer
-- [ ] Handle Loading/Error states
+:::info
+Widgets can listen to as many providers as they want. To do so, simply add more `ref.watch` calls.
+:::
 
-Going further: Making a Repository
+:::tip
+Make sure to install the linter. That will enable your IDE to offer refactoring
+options to automatically add a `Consumer` or convert a `StatelessWidget` into a `ConsumerWidget`.
 
-- [ ] Cross-link to the Combining request page
-- [ ] Mention how making a repository can be useful for testing
-      to mock all requests in a single place
-- [ ] Mention that making a repository can also be useful for
-      deduplicating requests (e.g. to not fetch `/books/:id` if a given ID was already fetched in `/books`)
-- [ ] Mention that making a repository is otherwise not that useful,
-      as Riverpod already offers a way to mock
+See <Link documentID="introduction/getting_started" hash="enabling-riverpod_lintcustom_lint" /> for installation steps.
+:::
+
+## Going further: Removing code indentation by using `ConsumerWidget` instead of `Consumer`.
+
+In the previous example, we used a `Consumer` to read our provider.  
+Although there is nothing wrong with this approach, the added indentation
+can make the code harder to read.
+
+Riverpod offers an alternative way of achieving the same result:
+Instead of writing a `StatelessWidget`/`StatefulWidge` return returns a `Consumer`, we can
+define a `ConsumerWidget`/`ConsumerStatefulWidget`.  
+`ConsumerWidget` and `ConsumerStatefulWidget` are effectively the fusion
+of a `StatelessWidget`/`StatefulWidget` and a `Consumer`. They behave the same
+as their original couterpart, but with the added benefit of offering a "ref".
+
+We can rewrite the previous examples to use `ConsumerWidget` as followed:
+
+<AutoSnippet {...consumerWidget} />
+
+As for `ConsumerStatefulWidget`, we would instead write:
+
+<AutoSnippet {...consumerStatefulWidget} />
+
+### Flutter_hooks considerations: Combining `HookWidget` and `ConsumerWidget`
+
+:::caution
+If you have never heard about "hooks" before, feel free to skip this section.  
+[Flutter_hooks](https://pub.dev/packages/flutter_hooks) is a package
+independent from Riverpod but often used alongside it. If you are new to Riverpod,
+using "hooks" is discouraged. See more in <Link documentID="concepts/about_hooks"/>.
+:::
+
+If you are using `flutter_hooks`, you may be wondering how to combine `HookWidget`
+and `ConsumerWidget`. After all, both involve changing the extended widget class.
+
+Riverpod offers a solution to this problem: `HookConsumerWidget` and `StatefulHookConsumerWidget`.  
+Similarly to how `ConsumerWidget` and `ConsumerStatefulWidget` are the fusion of `Consumer` and `StatelessWidget`/`StatefulWidget`,
+`HookConsumerWidget` and `StatefulHookConsumerWidget` are the fusion of `Consumer` and `HookWidget`/`HookStatefulWidget`.
+As such, they enable using both hooks and providers in the same widget.
+
+To showcase this, we could one more time rewrite the previous example:
+
+<AutoSnippet {...hookConsumerWidget} />

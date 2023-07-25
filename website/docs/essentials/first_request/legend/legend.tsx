@@ -10,7 +10,7 @@ type AnnotatedCode = {
 
 const colors = ["#2196f3", "#4caf50", "#f44336", "#ff9800"];
 
-const DocuCode = ({ annotations, code }) => {
+const Legend = ({ annotations, code }) => {
   const fullAnnotations = new Array<AnnotatedCode>();
 
   let annotationOffset = 0;
@@ -61,29 +61,19 @@ const DocuCode = ({ annotations, code }) => {
         })}
       </pre>
       <table className="annotations">
-        {annotations.map((annotation, index) => (
-          <tr key={annotation.label} className="annotation">
-            <td className="underline" style={{ color: colors[index] }}>
-              {annotation.label}
-            </td>
-            <td>{annotation.description}</td>
-          </tr>
-        ))}
+        <tbody>
+          {annotations.map((annotation, index) => (
+            <tr key={annotation.label} className="annotation">
+              <td className="underline" style={{ color: colors[index] }}>
+                {annotation.label}
+              </td>
+              <td>{annotation.description}</td>
+            </tr>
+          ))}
+        </tbody>
       </table>
     </div>
   );
 };
 
-DocuCode.propTypes = {
-  children: PropTypes.string.isRequired,
-  annotations: PropTypes.arrayOf(
-    PropTypes.shape({
-      offset: PropTypes.number.isRequired,
-      length: PropTypes.number.isRequired,
-      color: PropTypes.string.isRequired,
-      description: PropTypes.string.isRequired,
-    })
-  ).isRequired,
-};
-
-export default DocuCode;
+export default Legend;

@@ -6,9 +6,6 @@ import BrowserOnly from "@docusaurus/BrowserOnly";
 // Wrapping <Layout> to add custom contexts available for the entire app.
 
 export default function LayoutWrapper(props) {
-  // const doc = useDoc();
-  // console.log('Hello', doc )
-
   return (
     <BrowserOnly>
       {() => (
