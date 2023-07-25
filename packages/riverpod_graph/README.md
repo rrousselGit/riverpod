@@ -19,12 +19,12 @@ cd <the riverpod_graph directory>
 
 mermaid.js markup
 ```bash
-../riverpod/packages/riverpod_graph$ dart run riverpod_graph:riverpod_graph ../../examples/todos/lib
+dart run riverpod_graph:riverpod_graph path/to/folder
 ```
 
 d2 markup
 ```bash
-../riverpod/packages/riverpod_graph$ dart run riverpod_graph:riverpod_graph ../../examples/todos/lib -f d2
+dart run riverpod_graph:riverpod_graph path/to/folder -f d2
 ```
 
 Assuming you have activated, installed, riverpod_graph in the global dart cache:
