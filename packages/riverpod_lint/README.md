@@ -536,7 +536,6 @@ class Example extends Anything {
 
 Avoid using `Ref` in the dispose method.
 
-
 **Bad**:
 
 ```dart
