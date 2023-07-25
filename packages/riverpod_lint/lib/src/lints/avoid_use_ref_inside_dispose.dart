@@ -29,12 +29,9 @@ class AvoidUseRefInsideDispose extends RiverpodLintRule {
       final ancestor = node.thisOrAncestorMatching((method) {
         final isDisposeMethod =
             method is MethodDeclaration && method.name.lexeme == disposeMethod;
-
         if (!isDisposeMethod) return false;
 
-        final classeDeclaration = _findConsumerStateClass(node);
-
-        return classeDeclaration != null;
+        return _findConsumerStateClass(node) != null;
       });
 
       if (ancestor != null) {
