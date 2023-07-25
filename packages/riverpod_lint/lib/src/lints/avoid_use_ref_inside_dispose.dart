@@ -23,9 +23,7 @@ class AvoidUseRefInsideDispose extends RiverpodLintRule {
   ) {
     context.registry.addMethodInvocation((node) {
       final targetType = node.realTarget?.staticType;
-
       if (targetType == null) return;
-
       if (!widgetRefType.isAssignableFromType(targetType)) return;
 
       final ancestor = node.thisOrAncestorMatching((method) {
