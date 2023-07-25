@@ -536,30 +536,6 @@ class Example extends Anything {
 
 Avoid using `Ref` in the dispose method.
 
-**Good**:
-
-```dart
-class MyWidget extends ConsumerStatefulWidget {
-  const MyWidget({super.key});
-
-  @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _MyWidgetState();
-}
-
-class _MyWidgetState extends ConsumerState<MyWidget> {
- 
-  @override
-  Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        ref.read(provider).doSomething();
-        return true;
-      },
-      child: Container(),
-    );
-  }
-}
-```
 
 **Bad**:
 
