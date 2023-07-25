@@ -49,7 +49,7 @@ class AvoidUseRefInsideDispose extends RiverpodLintRule {
     return node.parent?.thisOrAncestorMatching((node) {
       if (node is! ClassDeclaration) return false;
 
-      /// Looking for the class which is a [ConsumeState]
+      /// Looking for the class which is a [ConsumerState]
       final extendsClause = node.extendsClause;
       if (extendsClause == null) return false;
       final extendsType = extendsClause.superclass.type;
