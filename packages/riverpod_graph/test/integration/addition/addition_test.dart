@@ -15,7 +15,8 @@ void main() {
       }
 
       expect(
-        stdoutList.first,
+        // replace windows file separator with linux - make test pass on windows
+        stdoutList.first.replaceAll(r'\', '/'),
         allOf(
           [
             startsWith('Analyzing'),
@@ -38,18 +39,37 @@ flowchart TB
     style stop1 height:0px;
     start2[ ] --->|listen| stop2[ ]
     style start2 height:0px;
-    style stop2 height:0px; 
+    style stop2 height:0px;
     start3[ ] ===>|watch| stop3[ ]
     style start3 height:0px;
-    style stop3 height:0px; 
+    style stop3 height:0px;
   end
-
   subgraph Type
     direction TB
     ConsumerWidget((widget));
     Provider[[provider]];
   end
-  additionProvider[[additionProvider]];
+  additionProvider[["additionProvider</br>FutureProvider&lt; num&gt;"]];
+  normalProvider[["normalProvider</br>Provider&lt; int&gt;"]];
+  futureProvider[["futureProvider</br>FutureProvider&lt; int&gt;"]];
+  familyProviders[["familyProviders</br>ProviderFamily&lt; int, Object?&gt;"]];
+  functionProvider[["functionProvider</br>Provider&lt; int Function()&gt;"]];
+  selectedProvider[["selectedProvider</br>Provider&lt; int&gt;"]];
+  subgraph SampleClass
+    SampleClass.normalProvider[["normalProvider</br>Provider&lt; int&gt;"]];
+  end
+  subgraph SampleClass
+    SampleClass.futureProvider[["futureProvider</br>FutureProvider&lt; int&gt;"]];
+  end
+  subgraph SampleClass
+    SampleClass.familyProviders[["familyProviders</br>ProviderFamily&lt; int, Object?&gt;"]];
+  end
+  subgraph SampleClass
+    SampleClass.functionProvider[["functionProvider</br>Provider&lt; int Function()&gt;"]];
+  end
+  subgraph SampleClass
+    SampleClass.selectedProvider[["selectedProvider</br>Provider&lt; int&gt;"]];
+  end
   normalProvider ==> additionProvider;
   futureProvider ==> additionProvider;
   familyProviders ==> additionProvider;
@@ -59,27 +79,7 @@ flowchart TB
   SampleClass.futureProvider ==> additionProvider;
   SampleClass.familyProviders ==> additionProvider;
   SampleClass.functionProvider ==> additionProvider;
-  SampleClass.selectedProvider ==> additionProvider;
-  normalProvider[[normalProvider]];
-  futureProvider[[futureProvider]];
-  familyProviders[[familyProviders]];
-  functionProvider[[functionProvider]];
-  selectedProvider[[selectedProvider]];
-  subgraph SampleClass
-    SampleClass.normalProvider[[normalProvider]];
-  end
-  subgraph SampleClass
-    SampleClass.futureProvider[[futureProvider]];
-  end
-  subgraph SampleClass
-    SampleClass.familyProviders[[familyProviders]];
-  end
-  subgraph SampleClass
-    SampleClass.functionProvider[[functionProvider]];
-  end
-  subgraph SampleClass
-    SampleClass.selectedProvider[[selectedProvider]];
-  end''',
+  SampleClass.selectedProvider ==> additionProvider;''',
         reason: 'It should log the riverpod graph',
       );
       await process.shouldExit(0);
@@ -104,7 +104,8 @@ flowchart TB
       }
 
       expect(
-        stdoutList.first,
+        // replace windows file separator with linux - make test pass on windows
+        stdoutList.first.replaceAll(r'\', '/'),
         allOf(
           [
             startsWith('Analyzing'),
@@ -118,7 +119,40 @@ flowchart TB
 
       expect(
         stdoutList.sublist(1).join('\n'),
-        '''
+        r'''
+Legend: {
+  Type: {
+    Widget.shape: circle
+    Provider: rectangle
+  }
+  Arrows: {
+    "." -> "..": read: {style.stroke-dash: 4}
+    "." -> "..": listen
+    "." -> "..": watch: {style.stroke-width: 4}
+  }
+}
+additionProvider: "additionProvider\nFutureProvider<num>"
+additionProvider.shape: rectangle
+normalProvider: "normalProvider\nProvider<int>"
+normalProvider.shape: rectangle
+futureProvider: "futureProvider\nFutureProvider<int>"
+futureProvider.shape: rectangle
+familyProviders: "familyProviders\nProviderFamily<int, Object?>"
+familyProviders.shape: rectangle
+functionProvider: "functionProvider\nProvider<int Function()>"
+functionProvider.shape: rectangle
+selectedProvider: "selectedProvider\nProvider<int>"
+selectedProvider.shape: rectangle
+SampleClass.normalProvider: "SampleClass.normalProvider\nProvider<int>"
+SampleClass.normalProvider.shape: rectangle
+SampleClass.futureProvider: "SampleClass.futureProvider\nFutureProvider<int>"
+SampleClass.futureProvider.shape: rectangle
+SampleClass.familyProviders: "SampleClass.familyProviders\nProviderFamily<int, Object?>"
+SampleClass.familyProviders.shape: rectangle
+SampleClass.functionProvider: "SampleClass.functionProvider\nProvider<int Function()>"
+SampleClass.functionProvider.shape: rectangle
+SampleClass.selectedProvider: "SampleClass.selectedProvider\nProvider<int>"
+SampleClass.selectedProvider.shape: rectangle
 normalProvider -> additionProvider: {style.stroke-width: 4}
 futureProvider -> additionProvider: {style.stroke-width: 4}
 familyProviders -> additionProvider: {style.stroke-width: 4}

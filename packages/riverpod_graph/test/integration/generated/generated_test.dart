@@ -20,7 +20,8 @@ void main() {
       }
 
       expect(
-        stdoutList.first,
+        // replace windows file separator with linux - make test pass on windows
+        stdoutList.first.replaceAll(r'\', '/'),
         allOf(
           [
             startsWith('Analyzing'),
@@ -43,32 +44,31 @@ flowchart TB
     style stop1 height:0px;
     start2[ ] --->|listen| stop2[ ]
     style start2 height:0px;
-    style stop2 height:0px; 
+    style stop2 height:0px;
     start3[ ] ===>|watch| stop3[ ]
     style start3 height:0px;
-    style stop3 height:0px; 
+    style stop3 height:0px;
   end
-
   subgraph Type
     direction TB
     ConsumerWidget((widget));
     Provider[[provider]];
   end
-  publicClassProvider[[publicClassProvider]];
-  publicProvider ==> publicClassProvider;
-  publicProvider[[publicProvider]];
-  _privateClassProvider[[_privateClassProvider]];
-  publicProvider ==> _privateClassProvider;
-  familyClassProvider[[familyClassProvider]];
-  publicProvider ==> familyClassProvider;
-  supports$InClassNameProvider[[supports$InClassNameProvider]];
-  publicProvider ==> supports$InClassNameProvider;
-  supports$inNamesProvider[[supports$inNamesProvider]];
+  supports$inNamesProvider[["supports$inNamesProvider</br>AutoDisposeProvider&lt; String&gt;"]];
+  publicProvider[["publicProvider</br>AutoDisposeProvider&lt; String&gt;"]];
+  familyProvider[["familyProvider</br>FamilyFamily"]];
+  _privateProvider[["_privateProvider</br>AutoDisposeProvider&lt; String&gt;"]];
+  publicClassProvider[["publicClassProvider</br>AutoDisposeNotifierProviderImpl&lt; PublicClass, String&gt;"]];
+  _privateClassProvider[["_privateClassProvider</br>AutoDisposeNotifierProviderImpl&lt; _PrivateClass, String&gt;"]];
+  familyClassProvider[["familyClassProvider</br>FamilyClassFamily"]];
+  supports$InClassNameProvider[["supports$InClassNameProvider</br>AutoDisposeNotifierProviderImpl&lt; Supports$InClassName, String&gt;"]];
   publicProvider ==> supports$inNamesProvider;
-  familyProvider[[familyProvider]];
   publicProvider ==> familyProvider;
-  _privateProvider[[_privateProvider]];
-  publicProvider ==> _privateProvider;''',
+  publicProvider ==> _privateProvider;
+  publicProvider ==> publicClassProvider;
+  publicProvider ==> _privateClassProvider;
+  publicProvider ==> familyClassProvider;
+  publicProvider ==> supports$InClassNameProvider;''',
         reason: 'It should log the riverpod graph',
       );
       await process.shouldExit(0);
@@ -93,7 +93,8 @@ flowchart TB
       }
 
       expect(
-        stdoutList.first,
+        // replace windows file separator with linux - make test pass on windows
+        stdoutList.first.replaceAll(r'\', '/'),
         allOf(
           [
             startsWith('Analyzing'),
@@ -108,13 +109,40 @@ flowchart TB
       expect(
         stdoutList.sublist(1).join('\n'),
         r'''
+Legend: {
+  Type: {
+    Widget.shape: circle
+    Provider: rectangle
+  }
+  Arrows: {
+    "." -> "..": read: {style.stroke-dash: 4}
+    "." -> "..": listen
+    "." -> "..": watch: {style.stroke-width: 4}
+  }
+}
+supports$inNamesProvider: "supports$inNamesProvider\nAutoDisposeProvider<String>"
+supports$inNamesProvider.shape: rectangle
+publicProvider: "publicProvider\nAutoDisposeProvider<String>"
+publicProvider.shape: rectangle
+familyProvider: "familyProvider\nFamilyFamily"
+familyProvider.shape: rectangle
+_privateProvider: "_privateProvider\nAutoDisposeProvider<String>"
+_privateProvider.shape: rectangle
+publicClassProvider: "publicClassProvider\nAutoDisposeNotifierProviderImpl<PublicClass, String>"
+publicClassProvider.shape: rectangle
+_privateClassProvider: "_privateClassProvider\nAutoDisposeNotifierProviderImpl<_PrivateClass, String>"
+_privateClassProvider.shape: rectangle
+familyClassProvider: "familyClassProvider\nFamilyClassFamily"
+familyClassProvider.shape: rectangle
+supports$InClassNameProvider: "supports$InClassNameProvider\nAutoDisposeNotifierProviderImpl<Supports$InClassName, String>"
+supports$InClassNameProvider.shape: rectangle
+publicProvider -> supports$inNamesProvider: {style.stroke-width: 4}
+publicProvider -> familyProvider: {style.stroke-width: 4}
+publicProvider -> _privateProvider: {style.stroke-width: 4}
 publicProvider -> publicClassProvider: {style.stroke-width: 4}
 publicProvider -> _privateClassProvider: {style.stroke-width: 4}
 publicProvider -> familyClassProvider: {style.stroke-width: 4}
-publicProvider -> supports$InClassNameProvider: {style.stroke-width: 4}
-publicProvider -> supports$inNamesProvider: {style.stroke-width: 4}
-publicProvider -> familyProvider: {style.stroke-width: 4}
-publicProvider -> _privateProvider: {style.stroke-width: 4}''',
+publicProvider -> supports$InClassNameProvider: {style.stroke-width: 4}''',
         reason: 'It should log the riverpod graph',
       );
       await process.shouldExit(0);

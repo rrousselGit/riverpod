@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:analyzer/dart/analysis/analysis_context_collection.dart';
@@ -111,6 +112,9 @@ enum SupportFormat {
   d2,
 }
 
+/// used to wrap names in d2 diagram boxes
+const rawNewline = r'\n';
+
 String _buildD2(ProviderGraph providerGraph) {
   const _watchLineStyle = '{style.stroke-width: 4}';
   const _readLineStyle = '{style.stroke-dash: 4}';
@@ -119,7 +123,7 @@ String _buildD2(ProviderGraph providerGraph) {
 Legend: {
   Type: {
     Widget.shape: circle
-    Provider
+    Provider: rectangle
   }
   Arrows: {
     "." -> "..": read: {style.stroke-dash: 4}
@@ -129,9 +133,23 @@ Legend: {
 }
 ''');
 
-  for (final node in providerGraph.consumerWidgets) {
-    buffer.writeln('${node.definition.name}.shape: Circle');
+  // declare all the provider nodes before doing any connections
+  // this lets us do all node config in one place before they are used
+  for (final node in providerGraph.providers) {
+    final providerName = _displayNameForProvider(node.definition).name;
+    final typeDefinition = _displayTypeForProvider(node.definition);
+    buffer.writeln('$providerName: "$providerName$rawNewline$typeDefinition"');
+    buffer.writeln('$providerName.shape: rectangle');
+  }
 
+  // declare all the widget nodes before doing any connections
+  // this lets us do all node config in one place before they are used
+  for (final node in providerGraph.consumerWidgets) {
+    final widgetName = node.definition.name;
+    buffer.writeln('$widgetName.shape: circle');
+  }
+
+  for (final node in providerGraph.consumerWidgets) {
     for (final watch in node.watch) {
       buffer.writeln(
         '${_displayNameForProvider(watch.definition).name} -> ${node.definition.name}: $_watchLineStyle',
@@ -187,7 +205,6 @@ flowchart TB
     style start3 height:0px;
     style stop3 height:0px;
   end
-
   subgraph Type
     direction TB
     ConsumerWidget((widget));
@@ -195,9 +212,40 @@ flowchart TB
   end
 ''');
 
+  // markdown has to be html escaped because the previewers seem to be  html viewers
+  final htmlEscaper = HtmlEscape();
+
+  // declare all the provider nodes before doing any connections
+  // this lets us do all node config in one place before they are used
+  for (final node in providerGraph.providers) {
+    final nodeGlobalName = _displayNameForProvider(node.definition);
+    final isContainedInClass = nodeGlobalName.enclosingElementName.isNotEmpty;
+
+    // some special handling for generics because markdown is HTML sensitive
+    // the '<' replaceAll was found in test where '&lt;' followed by any charcter was eaten
+    final typeDefinition = htmlEscaper.convert(
+        _displayTypeForProvider(node.definition).replaceAll('<', '< '));
+
+    if (isContainedInClass) {
+      buffer.writeln('  subgraph ${nodeGlobalName.enclosingElementName}');
+      buffer.writeln(
+        '    ${nodeGlobalName.name}[["${nodeGlobalName.providerName}</br>$typeDefinition"]];',
+      );
+      buffer.writeln('  end');
+    } else {
+      buffer.writeln(
+        '  ${nodeGlobalName.name}[["${nodeGlobalName.providerName}</br>$typeDefinition"]];',
+      );
+    }
+  }
+
+  // declare all the widget nodes before doing any connections
+  // this lets us do all node config in one place before they are used
   for (final node in providerGraph.consumerWidgets) {
     buffer.writeln('  ${node.definition.name}((${node.definition.name}));');
+  }
 
+  for (final node in providerGraph.consumerWidgets) {
     for (final watch in node.watch) {
       buffer.writeln(
         '  ${_displayNameForProvider(watch.definition).name} ==> ${node.definition.name};',
@@ -217,18 +265,6 @@ flowchart TB
 
   for (final node in providerGraph.providers) {
     final nodeGlobalName = _displayNameForProvider(node.definition);
-    final isContainedInClass = nodeGlobalName.enclosingElementName.isNotEmpty;
-    if (isContainedInClass) {
-      buffer.writeln('  subgraph ${nodeGlobalName.enclosingElementName}');
-      buffer.writeln(
-        '    ${nodeGlobalName.name}[[${nodeGlobalName.providerName}]];',
-      );
-      buffer.writeln('  end');
-    } else {
-      buffer.writeln(
-        '  ${nodeGlobalName.name}[[${nodeGlobalName.providerName}]];',
-      );
-    }
 
     final providerName = nodeGlobalName.providerName;
     for (final watch in node.watch) {
@@ -631,6 +667,10 @@ class _ProviderName {
   String get name => enclosingElementName.isNotEmpty
       ? '$enclosingElementName.$providerName'
       : providerName;
+}
+
+String _displayTypeForProvider(VariableElement definition) {
+  return definition.type.getDisplayString(withNullability: true);
 }
 
 /// Returns the name of the provider.
