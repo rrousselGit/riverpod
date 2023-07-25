@@ -46,7 +46,7 @@ class AvoidUseRefInsideDispose extends RiverpodLintRule {
   /// Looking for the ConsumerState class ancestor
   /// into the [node] parent.
   AstNode? _findConsumerStateClass(AstNode node) {
-    final classeDeclaration = node.parent?.thisOrAncestorMatching((node) {
+    return node.parent?.thisOrAncestorMatching((node) {
       if (node is! ClassDeclaration) return false;
 
       /// Looking for the class which is a [ConsumeState]
@@ -57,7 +57,5 @@ class AvoidUseRefInsideDispose extends RiverpodLintRule {
 
       return consumerStateType.isExactlyType(extendsType);
     });
-
-    return classeDeclaration;
   }
 }
