@@ -564,26 +564,15 @@ class _MyWidgetState extends ConsumerState<MyWidget> {
 **Bad**:
 
 ```dart
-class MyWidget extends ConsumerStatefulWidget {
-  const MyWidget({super.key});
-
-  @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _MyWidgetState();
-}
-
 class _MyWidgetState extends ConsumerState<MyWidget> {
   @override
   void dispose() {
     // Do not use 'ref' in the dispose method
     ref.read(provider).doSomething();
-
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
+  // ...
 }
 ```
 
