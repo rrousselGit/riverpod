@@ -103,7 +103,7 @@ Note that you can both enable and disable lint rules at once.
 This can be useful if your `analysis_options.yaml` includes another one:
 
 ```yaml
-include: path/to/another/analys_options.yaml
+include: path/to/another/analysis_options.yaml
 analyzer:
   plugins:
     - custom_lint
