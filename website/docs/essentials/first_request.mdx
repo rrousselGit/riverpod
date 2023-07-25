@@ -229,13 +229,15 @@ that:
   but instead return the previously fetched activity.
 - If the UI stops using this provider, the cache will be destroyed.
   Then, if the UI ever uses the provider again, that a new network request will be made.
+- We did not catch errors. This is voluntary, as providers
+  natively handle errors.  
+  If the network request or if the JSON parsing throws, the error
+  will be caught by Riverpod. Then, the UI will automatically have the necessary
+  information to render an error page.
 
 :::info
-Notice how we did not catch errors. This is voluntary, as providers
-natively handle errors.  
-If the network request or if the JSON parsing throws, the error
-will be caught by Riverpod. Then, the UI will automatically have the necessary
-information to render an error page.
+Providers are "lazy". Defining a provider will not execute the network request.
+Instead, the network request will be executed when the provider is first read.
 :::
 
 ### Rendering the network request's response in the UI

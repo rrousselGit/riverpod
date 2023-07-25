@@ -15,6 +15,8 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
+        // Read the activityProvider. This will start the network request
+        // if it wasn't already started.
         // By using ref.watch, this widget will rebuild whenever the
         // the activityProvider updates. This can happen when:
         // - The response goes from "loading" to "data/error"
