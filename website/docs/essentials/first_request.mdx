@@ -7,6 +7,7 @@ import { Link } from "../../src/components/Link";
 import { AutoSnippet, When } from "../../src/components/CodeSnippet";
 import activity from "./first_request/activity";
 import provider from "./first_request/provider";
+import consumer from "./first_request/consumer";
 import Legend from "./first_request/legend/legend";
 
 :::note
@@ -24,7 +25,7 @@ In this section, we will see how Riverpod can help us deal with all of this natu
 
 ## Setting up `ProviderScope`
 
-Before we start making network requests, we need to make sure that `ProviderScope` is added at the
+Before we start making network requests, make sure that `ProviderScope` is added at the
 root of the application.
 
 ```dart
@@ -80,7 +81,7 @@ JSON decoding. But of course, it's also possible to do it by hand.
 
 Anyway, here's our model:
 
-<AutoSnippet {...activity} />
+<AutoSnippet title="activity.dart" {...activity} />
 
 ### Creating the provider
 
@@ -217,7 +218,7 @@ to create a `Future<Activity>`.
 
 Using the syntax defined previously, we can therefore define our provider as followed:
 
-<AutoSnippet {...provider} />
+<AutoSnippet title="provider.dart" {...provider} />
 
 In this snippet, we've defined a provider named `activityProvider` which
 our UI will be able to use to obtain a random activity. It is worth nothing
@@ -237,6 +238,22 @@ If the network request or if the JSON parsing throws, the error
 will be caught by Riverpod. Then, the UI will automatically have the necessary
 information to render an error page.
 :::
+
+### Listening to providers inside widgets
+
+Now that we have defined a provider, we can start using it inside our UI
+to display the activity.
+
+To interact with a provider, we need an object called "ref". You may have seen
+it previously in the provider definition, as providers naturally have access
+to a "ref" object.  
+But in our case, we aren't in a provider, but a widget. So how do we get a "ref"?
+
+The solution is to use a custom widget called `Consumer`. A `Consumer` is a widget
+similar to `Builder`, but with the added benefit of offering us a "ref".  
+This enables our UI to read providers.
+
+<AutoSnippet title="consumer.dart" {...consumer} />
 
 TODO:
 
