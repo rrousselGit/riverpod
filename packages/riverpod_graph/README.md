@@ -19,7 +19,7 @@ cd <the riverpod_graph directory>
 
 mermaid.js markup
 ```bash
-dart run riverpod_graphpath/to/folder
+dart run riverpod_graph path/to/folder
 ```
 
 d2 markup
