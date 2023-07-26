@@ -7,8 +7,8 @@ import '../riverpod_custom_lint.dart';
 
 const disposeMethod = 'dispose';
 
-class AvoidUseRefInsideDispose extends RiverpodLintRule {
-  const AvoidUseRefInsideDispose() : super(code: _code);
+class AvoidRefInsideStateDispose extends RiverpodLintRule {
+  const AvoidRefInsideStateDispose() : super(code: _code);
 
   static const _code = LintCode(
     name: 'avoid_ref_inside_state_dispose',
