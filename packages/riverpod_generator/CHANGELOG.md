@@ -1,4 +1,4 @@
-## Unreleased patch
+## 2.2.4 - 2023-07-25
 
 Disable all lints in generated files.
 
