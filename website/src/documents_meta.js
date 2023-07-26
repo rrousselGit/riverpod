@@ -16,7 +16,7 @@ export const documentTitles = {
     "from_provider/motivation/motivation": "Motivation",
     "essentials/side_effects": "Performing side effects (WIP)",
     "essentials/passing_args": "Passing arguments to your requests (WIP)",
-    "essentials/first_request": "Make your first network request (WIP)",
+    "essentials/first_request": "Make your first provider/network request",
     "essentials/combining_requests": "Combining requests (WIP)",
     "cookbooks/testing": "Testing",
     "cookbooks/search_as_we_type": "Search as we type",
