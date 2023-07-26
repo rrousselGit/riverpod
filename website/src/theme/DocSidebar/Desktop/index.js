@@ -7,6 +7,7 @@ import Content from "@theme/DocSidebar/Desktop/Content";
 import styles from "./styles.module.css";
 import { CodegenContext, FlutterHooksContext } from "../../DocPage/Layout";
 import Translate, { translate } from "@docusaurus/Translate";
+import "./toggle.scss";
 
 function DocSidebarDesktop({ path, sidebar, onCollapse, isHidden }) {
   const {
@@ -89,16 +90,7 @@ export function SidebarHead({ direction }) {
 
 export function Toggle({ checked, onClick, leading, docsProps }) {
   return (
-    <div
-      style={{
-        padding: "5px 16px",
-        paddingRight: 100,
-        transition: "background-color .5s",
-        borderRadius: 8,
-        fontWeight: 600,
-        fontSize: 14,
-      }}
-    >
+    <div className="toggle">
       <div style={{ display: "flex", alignItems: "center" }}>
         {leading}
         <button
