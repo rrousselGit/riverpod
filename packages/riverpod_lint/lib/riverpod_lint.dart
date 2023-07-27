@@ -10,8 +10,8 @@ import 'src/assists/wrap_with_provider_scope.dart';
 import 'src/lints/avoid_manual_providers_as_generated_provider_dependency.dart';
 import 'src/lints/avoid_public_notifier_properties.dart';
 import 'src/lints/functional_ref.dart';
-import 'src/lints/generator_class_extends.dart';
 import 'src/lints/missing_provider_scope.dart';
+import 'src/lints/notifier_extends.dart';
 import 'src/lints/provider_dependencies.dart';
 import 'src/lints/provider_parameters.dart';
 import 'src/lints/scoped_providers_should_specify_dependencies.dart';
@@ -26,7 +26,7 @@ class _RiverpodPlugin extends PluginBase {
         const FunctionalRef(),
         const MissingProviderScope(),
         const ProviderParameters(),
-        const GeneratorClassExtends(),
+        const NotifierExtends(),
         const ProviderDependencies(),
         const AvoidManualProvidersAsGeneratedProviderDependency(),
         const ScopedProvidersShouldSpecifyDependencies(),

@@ -9,11 +9,11 @@ String _generatedClassName(ProviderDeclaration declaration) {
   return '_\$${declaration.name.lexeme.public}';
 }
 
-class GeneratorClassExtends extends RiverpodLintRule {
-  const GeneratorClassExtends() : super(code: _code);
+class NotifierExtends extends RiverpodLintRule {
+  const NotifierExtends() : super(code: _code);
 
   static const _code = LintCode(
-    name: 'generator_class_extends',
+    name: 'notifier_extends',
     problemMessage: r'Classes annotated by @riverpod must extend _$ClassName',
   );
 
@@ -42,10 +42,10 @@ class GeneratorClassExtends extends RiverpodLintRule {
   }
 
   @override
-  List<Fix> getFixes() => [GeneratorClassExtendsFix()];
+  List<Fix> getFixes() => [NotifierExtendsFix()];
 }
 
-class GeneratorClassExtendsFix extends RiverpodFix {
+class NotifierExtendsFix extends RiverpodFix {
   @override
   void run(
     CustomLintResolver resolver,
