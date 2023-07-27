@@ -125,20 +125,28 @@ Legend: {
 
 supports$inNamesProvider: "supports$inNamesProvider\nAutoDisposeProvider<String>"
 supports$inNamesProvider.shape: rectangle
+supports$inNamesProvider.tooltip: "A generated provider with a '$' in its name."
 publicProvider: "publicProvider\nAutoDisposeProvider<String>"
 publicProvider.shape: rectangle
+publicProvider.tooltip: "A public generated provider."
 familyProvider: "familyProvider\nFamilyFamily"
 familyProvider.shape: rectangle
+familyProvider.tooltip: "A generated family provider."
 _privateProvider: "_privateProvider\nAutoDisposeProvider<String>"
 _privateProvider.shape: rectangle
+_privateProvider.tooltip: "See also [_private]."
 publicClassProvider: "publicClassProvider\nAutoDisposeNotifierProviderImpl<PublicClass, String>"
 publicClassProvider.shape: rectangle
+publicClassProvider.tooltip: "A generated public provider from a class"
 _privateClassProvider: "_privateClassProvider\nAutoDisposeNotifierProviderImpl<_PrivateClass, String>"
 _privateClassProvider.shape: rectangle
+_privateClassProvider.tooltip: "See also [_PrivateClass]."
 familyClassProvider: "familyClassProvider\nFamilyClassFamily"
 familyClassProvider.shape: rectangle
+familyClassProvider.tooltip: "A generated family provider from a class."
 supports$InClassNameProvider: "supports$InClassNameProvider\nAutoDisposeNotifierProviderImpl<Supports$InClassName, String>"
 supports$InClassNameProvider.shape: rectangle
+supports$InClassNameProvider.tooltip: "A generated provider from a class with a '$' in its name."
 
 publicProvider -> supports$inNamesProvider: {style.stroke-width: 4}
 publicProvider -> familyProvider: {style.stroke-width: 4}

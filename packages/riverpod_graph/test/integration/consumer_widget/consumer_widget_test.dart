@@ -115,7 +115,9 @@ Legend: {
 
 counterProvider: "counterProvider\nStateProvider<int>"
 counterProvider.shape: rectangle
+counterProvider.tooltip: "Counter provider."
 CounterWidget.shape: circle
+CounterWidget.tooltip: "Counter widget."
 
 counterProvider -> CounterWidget: {style.stroke-width: 4}
 counterProvider -> CounterWidget: {style.stroke-dash: 4}''',

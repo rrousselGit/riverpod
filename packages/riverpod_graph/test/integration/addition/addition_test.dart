@@ -139,30 +139,43 @@ Legend: {
 
 additionProvider: "additionProvider\nFutureProvider<num>"
 additionProvider.shape: rectangle
+additionProvider.tooltip: "A provider returning the sum of the other providers."
 normalProvider: "normalProvider\nProvider<int>"
 normalProvider.shape: rectangle
+normalProvider.tooltip: "A provider returning a number."
 futureProvider: "futureProvider\nFutureProvider<int>"
 futureProvider.shape: rectangle
+futureProvider.tooltip: "A future provider returning a number."
 familyProviders: "familyProviders\nProviderFamily<int, Object?>"
 familyProviders.shape: rectangle
+familyProviders.tooltip: "A family provider returning a number."
 functionProvider: "functionProvider\nProvider<int Function()>"
 functionProvider.shape: rectangle
+functionProvider.tooltip: "A provider returning a function that returns a number."
 selectedProvider: "selectedProvider\nProvider<int>"
 selectedProvider.shape: rectangle
+selectedProvider.tooltip: "A provider returning a number that will be selected."
 SampleClass.normalProvider: "SampleClass.normalProvider\nProvider<int>"
 SampleClass.normalProvider.shape: rectangle
+SampleClass.normalProvider.tooltip: "A provider returning a number."
 SampleClass.futureProvider: "SampleClass.futureProvider\nFutureProvider<int>"
 SampleClass.futureProvider.shape: rectangle
+SampleClass.futureProvider.tooltip: "A future provider returning a number."
 SampleClass.familyProviders: "SampleClass.familyProviders\nProviderFamily<int, Object?>"
 SampleClass.familyProviders.shape: rectangle
+SampleClass.familyProviders.tooltip: "A family provider returning a number."
 SampleClass.functionProvider: "SampleClass.functionProvider\nProvider<int Function()>"
 SampleClass.functionProvider.shape: rectangle
+SampleClass.functionProvider.tooltip: "A provider returning a function that returns a number."
 SampleClass.selectedProvider: "SampleClass.selectedProvider\nProvider<int>"
 SampleClass.selectedProvider.shape: rectangle
+SampleClass.selectedProvider.tooltip: "A provider returning a number that will be selected."
 marvelTearOffConsumer: "marvelTearOffConsumer\nProvider<Null>"
 marvelTearOffConsumer.shape: rectangle
+marvelTearOffConsumer.tooltip: "read/watch/listen seem to be required to bring this in scope for analysis"
 marvelRefdProvider: "marvelRefdProvider\nProvider<MarvelRepository>"
 marvelRefdProvider.shape: rectangle
+marvelRefdProvider.tooltip: "taken from the marvel example"
 
 normalProvider -> additionProvider: {style.stroke-width: 4}
 futureProvider -> additionProvider: {style.stroke-width: 4}

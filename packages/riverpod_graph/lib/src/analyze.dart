@@ -141,6 +141,13 @@ Legend: {
     final typeDefinition = _displayTypeForProvider(node.definition);
     buffer.writeln('$providerName: "$providerName$rawNewline$typeDefinition"');
     buffer.writeln('$providerName.shape: rectangle');
+
+    // d2 supports tooltips.  mermaid does not
+    // add the first line of any documentation comment as a tooltip
+    final docComment = _displayDocCommentForProvider(node.definition);
+    if (docComment != null) {
+      buffer.writeln('$providerName.tooltip: "$docComment"');
+    }
   }
 
   // declare all the widget nodes before doing any connections
@@ -148,6 +155,13 @@ Legend: {
   for (final node in providerGraph.consumerWidgets) {
     final widgetName = node.definition.name;
     buffer.writeln('$widgetName.shape: circle');
+
+    // d2 supports tooltips.  mermaid does not
+    // add the first line of any documentation comment as a tooltip
+    final docComment = _displayDocCommentForWidget(node.definition);
+    if (docComment != null) {
+      buffer.writeln('$widgetName.tooltip: "$docComment"');
+    }
   }
   buffer.writeln();
 
@@ -689,6 +703,22 @@ _ProviderName _displayNameForProvider(VariableElement provider) {
     providerName: providerName,
     enclosingElementName: enclosingElementName ?? '',
   );
+}
+
+String? _displayDocCommentForProvider(VariableElement definition) {
+  return definition.documentationComment
+      // this will show no text if the first doc comment line is blank :-(
+      // tooltips should be short
+      ?.split('\n')[0]
+      .replaceAll('/// ', '');
+}
+
+String? _displayDocCommentForWidget(ClassElement definition) {
+  return definition.documentationComment
+      // this will show no text if the first doc comment line is blank :-(
+      // tooltips should be short
+      ?.split('\n')[0]
+      .replaceAll('/// ', '');
 }
 
 /// Returns the variable element of the watched/listened/read `provider` in an expression. For example:
