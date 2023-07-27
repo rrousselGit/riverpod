@@ -4,7 +4,7 @@ import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
 import '../riverpod_custom_lint.dart';
 
-extension on StatefulProviderDeclaration {
+extension on ClassBasedProviderDeclaration {
   /// Returns whether the value exposed by the provider is the newly created
   /// Notifier itself.
   bool get returnsSelf {
@@ -46,7 +46,7 @@ class UnsupportedProviderValue extends RiverpodLintRule {
       /// If a provider returns itself, we allow it. This is to enable
       /// ChangeNotifier-like mutable state.
       if (invalidValueName != null &&
-          declaration is StatefulProviderDeclaration &&
+          declaration is ClassBasedProviderDeclaration &&
           declaration.returnsSelf) {
         return;
       }
@@ -68,7 +68,7 @@ class UnsupportedProviderValue extends RiverpodLintRule {
     }
 
     riverpodRegistry(context)
-      ..addStatelessProviderDeclaration(checkCreatedType)
-      ..addStatefulProviderDeclaration(checkCreatedType);
+      ..addFunctionalProviderDeclaration(checkCreatedType)
+      ..addClassBasedProviderDeclaration(checkCreatedType);
   }
 }

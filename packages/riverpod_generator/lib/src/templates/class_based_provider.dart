@@ -67,8 +67,8 @@ String? serializeAllTransitiveDependencies(
   return buffer.toString();
 }
 
-class StatefulProviderTemplate extends Template {
-  StatefulProviderTemplate(
+class ClassBasedProviderTemplate extends Template {
+  ClassBasedProviderTemplate(
     this.provider, {
     required this.notifierTypedefName,
     required this.hashFn,
@@ -78,11 +78,11 @@ class StatefulProviderTemplate extends Template {
       throw ArgumentError.value(
         provider.buildMethod.parameters?.toSource(),
         'provider',
-        'Expected a stateful provider with no parameter',
+        'Expected a class-based provider with no parameter',
       );
     }
   }
-  final StatefulProviderDeclaration provider;
+  final ClassBasedProviderDeclaration provider;
   final String notifierTypedefName;
   final String hashFn;
   final BuildYamlOptions options;

@@ -7,6 +7,8 @@
 ## 1.4.0 - 2023-07-25
 
 - `avoid_public_notifier_properties` no-longer warns against public setters (thanks to @skreborn)
+- **Breaking** Renamed `generator_class_extends` to `notifier_extends`
+- **Breaking** Renamed `stateless_ref` to `functional_ref` (thanks to @AhmedLSayed9)
 
 ## 1.3.2 - 2023-05-12
 
@@ -74,7 +76,7 @@ Fix quick-fix for provider_dependencies
 
 ## 1.1.1
 
-- Fix false positive with `stateless_ref` lint on scoped providers
+- Fix false positive with `functional_ref` lint on scoped providers
 - Fix false positive with `provider_dependencies` lint on scoped providers
 
 ## 1.1.0
@@ -105,7 +107,7 @@ Fix quick-fix for provider_dependencies
 ## 1.0.1
 
 - Fixed an exception thrown when a file contains `fn?.call()`
-- Fix `generator_class_extends` on private classes incorrectly
+- Fix `notifier_extends` on private classes incorrectly
   expecting the generated class to be `_$_MyClass`
 - Fix `missing_provider_scope` not detecting `UncontrolledProviderScope`
 - Bump minimum riverpod_analyzer_utils version

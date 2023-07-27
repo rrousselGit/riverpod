@@ -1,21 +1,21 @@
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
+import 'src/assists/class_based_to_functional_provider.dart';
 import 'src/assists/convert_to_stateful_base_widget.dart';
 import 'src/assists/convert_to_stateless_base_widget.dart';
 import 'src/assists/convert_to_widget_utils.dart';
-import 'src/assists/stateful_to_stateless_provider.dart';
-import 'src/assists/stateless_to_stateful_provider.dart';
+import 'src/assists/functional_to_class_based_provider.dart';
 import 'src/assists/wrap_with_consumer.dart';
 import 'src/assists/wrap_with_provider_scope.dart';
 import 'src/lints/avoid_manual_providers_as_generated_provider_dependency.dart';
 import 'src/lints/avoid_public_notifier_properties.dart';
 import 'src/lints/avoid_ref_inside_state_dispose.dart';
-import 'src/lints/generator_class_extends.dart';
+import 'src/lints/functional_ref.dart';
 import 'src/lints/missing_provider_scope.dart';
+import 'src/lints/notifier_extends.dart';
 import 'src/lints/provider_dependencies.dart';
 import 'src/lints/provider_parameters.dart';
 import 'src/lints/scoped_providers_should_specify_dependencies.dart';
-import 'src/lints/stateless_ref.dart';
 import 'src/lints/unsupported_provider_value.dart';
 
 PluginBase createPlugin() => _RiverpodPlugin();
@@ -24,10 +24,10 @@ class _RiverpodPlugin extends PluginBase {
   @override
   List<LintRule> getLintRules(CustomLintConfigs configs) => [
         const AvoidPublicNotifierProperties(),
-        const StatelessRef(),
+        const FunctionalRef(),
         const MissingProviderScope(),
         const ProviderParameters(),
-        const GeneratorClassExtends(),
+        const NotifierExtends(),
         const ProviderDependencies(),
         const AvoidManualProvidersAsGeneratedProviderDependency(),
         const ScopedProvidersShouldSpecifyDependencies(),
@@ -72,7 +72,7 @@ class _RiverpodPlugin extends PluginBase {
           ),
         ),
 
-// StateProvider to SyncStatefulProvider
+// StateProvider to SyncClassBasedProvider
 // convert FutureProvider <> AsyncNotifierProvider
 // convert Provider <> NotifierProvider
 // convert *Notifier <> autoDispose/family
@@ -80,7 +80,7 @@ class _RiverpodPlugin extends PluginBase {
 // Convert StateNotifier -> Notifier
 // Convert StateNotifier<AsyncValue> -> AsyncNotifier
 
-        StatelessToStatefulProvider(),
-        StatefulToStatelessProvider(),
+        FunctionalToClassBasedProvider(),
+        ClassBasedToFunctionalProvider(),
       ];
 }
