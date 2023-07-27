@@ -1,14 +1,10 @@
 module.exports = {
   Sidebar: [
-
     {
       type: "category",
       label: "Introduction",
       collapsible: false,
-      items: [
-        "introduction/why_riverpod",
-        "introduction/getting_started",
-      ],
+      items: ["introduction/why_riverpod", "introduction/getting_started"],
     },
     {
       type: "category",
@@ -26,6 +22,11 @@ module.exports = {
       items: [
         "essentials/first_request",
         "essentials/passing_args",
+        {
+          type: "link",
+          label: "Websockets and synchronous execution (WIP)",
+          href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
+        },
         "essentials/side_effects",
         "essentials/combining_requests",
         {
@@ -127,10 +128,46 @@ module.exports = {
           label: "Search as we type (WIP)",
           href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
         },
+        {
+          type: "link",
+          label: "Reading InheritedWidgets inside providers (WIP)",
+          href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
+        },
       ],
     },
 
+    // Tutorials
+    {
+      type: "category",
+      label: "Tutorials",
+      collapsible: false,
+      items: [
+        {
+          type: "link",
+          label: "Multi-step forms (WIP)",
+          href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
+        },
+        {
+          type: "link",
+          label: "Building a login page (WIP)",
+          href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
+        },
+      ],
+    },
+    
     // Advanced
+    {
+      type: "category",
+      label: "Advanced topics",
+      collapsible: false,
+      items: [
+        {
+          type: "link",
+          label: "Scoping providers (WIP)",
+          href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
+        },
+      ],
+    },
 
     // Concepts
     {
@@ -200,7 +237,6 @@ module.exports = {
     },
 
     // Third party examples
-
     {
       type: "category",
       label: "Third party examples",
