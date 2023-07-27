@@ -14,7 +14,7 @@ void main() {
     'Verify that @riverpod classes extend the generated typedef',
     'goldens/notifier_extends.json',
     () async {
-      final lint = GeneratorClassExtends();
+      final lint = NotifierExtends();
       final fix = lint.getFixes().single as DartFix;
       final file = File(
         'test/goldens/notifier_extends.dart',
