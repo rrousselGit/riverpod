@@ -10,3 +10,5 @@ dependency_overrides:
     path: ../packages/riverpod_annotation
   riverpod_generator:
     path: ../packages/riverpod_generator
+  riverpod_analyzer_utils:
+    path: ../packages/riverpod_analyzer_utils
