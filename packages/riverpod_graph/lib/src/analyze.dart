@@ -131,6 +131,7 @@ Legend: {
     "." -> "..": watch: {style.stroke-width: 4}
   }
 }
+
 ''');
 
   // declare all the provider nodes before doing any connections
@@ -148,6 +149,7 @@ Legend: {
     final widgetName = node.definition.name;
     buffer.writeln('$widgetName.shape: circle');
   }
+  buffer.writeln();
 
   for (final node in providerGraph.consumerWidgets) {
     for (final watch in node.watch) {
@@ -210,10 +212,11 @@ flowchart TB
     ConsumerWidget((widget));
     Provider[[provider]];
   end
+
 ''');
 
   // markdown has to be html escaped because the previewers seem to be  html viewers
-  final htmlEscaper = HtmlEscape();
+  const htmlEscaper = HtmlEscape();
 
   // declare all the provider nodes before doing any connections
   // this lets us do all node config in one place before they are used
@@ -224,7 +227,8 @@ flowchart TB
     // some special handling for generics because markdown is HTML sensitive
     // the '<' replaceAll was found in test where '&lt;' followed by any charcter was eaten
     final typeDefinition = htmlEscaper.convert(
-        _displayTypeForProvider(node.definition).replaceAll('<', '< '));
+      _displayTypeForProvider(node.definition).replaceAll('<', '< '),
+    );
 
     if (isContainedInClass) {
       buffer.writeln('  subgraph ${nodeGlobalName.enclosingElementName}');
@@ -244,6 +248,7 @@ flowchart TB
   for (final node in providerGraph.consumerWidgets) {
     buffer.writeln('  ${node.definition.name}((${node.definition.name}));');
   }
+  buffer.writeln();
 
   for (final node in providerGraph.consumerWidgets) {
     for (final watch in node.watch) {
@@ -467,14 +472,17 @@ class ProviderDependencyVisitor extends RecursiveAstVisitor<void> {
                 )
                 ?.node;
             if (classDeclaration is ClassDeclaration) {
+              // firstWhereOrNull required if a class was created with .new
               final buildMethod = classDeclaration.members
                   .whereType<MethodDeclaration>()
-                  .firstWhere(
+                  .firstWhereOrNull(
                     (method) => method.name.name == 'build',
                   );
               // Instead of continuing with the current node, we visit the one of
               // the referenced constructor.
-              return buildMethod.visitChildren(this);
+              if (buildMethod != null) {
+                return buildMethod.visitChildren(this);
+              }
             }
           }
         }

@@ -49,6 +49,7 @@ flowchart TB
     ConsumerWidget((widget));
     Provider[[provider]];
   end
+
   additionProvider[["additionProvider</br>FutureProvider&lt; num&gt;"]];
   normalProvider[["normalProvider</br>Provider&lt; int&gt;"]];
   futureProvider[["futureProvider</br>FutureProvider&lt; int&gt;"]];
@@ -70,6 +71,9 @@ flowchart TB
   subgraph SampleClass
     SampleClass.selectedProvider[["selectedProvider</br>Provider&lt; int&gt;"]];
   end
+  marvelTearOffConsumer[["marvelTearOffConsumer</br>Provider&lt; Null&gt;"]];
+  marvelRefdProvider[["marvelRefdProvider</br>Provider&lt; MarvelRepository&gt;"]];
+
   normalProvider ==> additionProvider;
   futureProvider ==> additionProvider;
   familyProviders ==> additionProvider;
@@ -79,7 +83,8 @@ flowchart TB
   SampleClass.futureProvider ==> additionProvider;
   SampleClass.familyProviders ==> additionProvider;
   SampleClass.functionProvider ==> additionProvider;
-  SampleClass.selectedProvider ==> additionProvider;''',
+  SampleClass.selectedProvider ==> additionProvider;
+  marvelRefdProvider -.-> marvelTearOffConsumer;''',
         reason: 'It should log the riverpod graph',
       );
       await process.shouldExit(0);
@@ -131,6 +136,7 @@ Legend: {
     "." -> "..": watch: {style.stroke-width: 4}
   }
 }
+
 additionProvider: "additionProvider\nFutureProvider<num>"
 additionProvider.shape: rectangle
 normalProvider: "normalProvider\nProvider<int>"
@@ -153,6 +159,11 @@ SampleClass.functionProvider: "SampleClass.functionProvider\nProvider<int Functi
 SampleClass.functionProvider.shape: rectangle
 SampleClass.selectedProvider: "SampleClass.selectedProvider\nProvider<int>"
 SampleClass.selectedProvider.shape: rectangle
+marvelTearOffConsumer: "marvelTearOffConsumer\nProvider<Null>"
+marvelTearOffConsumer.shape: rectangle
+marvelRefdProvider: "marvelRefdProvider\nProvider<MarvelRepository>"
+marvelRefdProvider.shape: rectangle
+
 normalProvider -> additionProvider: {style.stroke-width: 4}
 futureProvider -> additionProvider: {style.stroke-width: 4}
 familyProviders -> additionProvider: {style.stroke-width: 4}
@@ -162,7 +173,8 @@ SampleClass.normalProvider -> additionProvider: {style.stroke-width: 4}
 SampleClass.futureProvider -> additionProvider: {style.stroke-width: 4}
 SampleClass.familyProviders -> additionProvider: {style.stroke-width: 4}
 SampleClass.functionProvider -> additionProvider: {style.stroke-width: 4}
-SampleClass.selectedProvider -> additionProvider: {style.stroke-width: 4}''',
+SampleClass.selectedProvider -> additionProvider: {style.stroke-width: 4}
+marvelRefdProvider -> marvelTearOffConsumer: {style.stroke-dash: 4}''',
         reason: 'It should log the riverpod graph',
       );
       await process.shouldExit(0);

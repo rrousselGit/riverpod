@@ -2,7 +2,7 @@ name: riverpod_graph_golden_addition
 publish_to: none
 
 environment:
-  sdk: ">=2.14.0 <3.0.0"
+  sdk: ">=2.15.0 <3.0.0"
 
 dependencies:
   riverpod:

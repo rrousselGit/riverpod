@@ -54,6 +54,7 @@ flowchart TB
     ConsumerWidget((widget));
     Provider[[provider]];
   end
+
   supports$inNamesProvider[["supports$inNamesProvider</br>AutoDisposeProvider&lt; String&gt;"]];
   publicProvider[["publicProvider</br>AutoDisposeProvider&lt; String&gt;"]];
   familyProvider[["familyProvider</br>FamilyFamily"]];
@@ -62,6 +63,7 @@ flowchart TB
   _privateClassProvider[["_privateClassProvider</br>AutoDisposeNotifierProviderImpl&lt; _PrivateClass, String&gt;"]];
   familyClassProvider[["familyClassProvider</br>FamilyClassFamily"]];
   supports$InClassNameProvider[["supports$InClassNameProvider</br>AutoDisposeNotifierProviderImpl&lt; Supports$InClassName, String&gt;"]];
+
   publicProvider ==> supports$inNamesProvider;
   publicProvider ==> familyProvider;
   publicProvider ==> _privateProvider;
@@ -120,6 +122,7 @@ Legend: {
     "." -> "..": watch: {style.stroke-width: 4}
   }
 }
+
 supports$inNamesProvider: "supports$inNamesProvider\nAutoDisposeProvider<String>"
 supports$inNamesProvider.shape: rectangle
 publicProvider: "publicProvider\nAutoDisposeProvider<String>"
@@ -136,6 +139,7 @@ familyClassProvider: "familyClassProvider\nFamilyClassFamily"
 familyClassProvider.shape: rectangle
 supports$InClassNameProvider: "supports$InClassNameProvider\nAutoDisposeNotifierProviderImpl<Supports$InClassName, String>"
 supports$InClassNameProvider.shape: rectangle
+
 publicProvider -> supports$inNamesProvider: {style.stroke-width: 4}
 publicProvider -> familyProvider: {style.stroke-width: 4}
 publicProvider -> _privateProvider: {style.stroke-width: 4}

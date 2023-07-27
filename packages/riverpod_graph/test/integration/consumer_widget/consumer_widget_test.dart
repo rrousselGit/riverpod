@@ -54,8 +54,10 @@ flowchart TB
     ConsumerWidget((widget));
     Provider[[provider]];
   end
+
   counterProvider[["counterProvider</br>StateProvider&lt; int&gt;"]];
   CounterWidget((CounterWidget));
+
   counterProvider ==> CounterWidget;
   counterProvider -.-> CounterWidget;''',
         reason: 'It should log the riverpod graph',
@@ -110,9 +112,11 @@ Legend: {
     "." -> "..": watch: {style.stroke-width: 4}
   }
 }
+
 counterProvider: "counterProvider\nStateProvider<int>"
 counterProvider.shape: rectangle
 CounterWidget.shape: circle
+
 counterProvider -> CounterWidget: {style.stroke-width: 4}
 counterProvider -> CounterWidget: {style.stroke-dash: 4}''',
         reason: 'It should log the riverpod graph',
