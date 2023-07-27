@@ -8,4 +8,12 @@
   @media (min-width: 996px) {
     padding-right: 100px;
   }
+
+  button {
+    background-color: var(--ifm-color-emphasis-400);
+  }
+
+  &.checked button {
+    background-color: var(--ifm-color-primary);
+  }
 }

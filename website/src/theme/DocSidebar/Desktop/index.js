@@ -90,7 +90,7 @@ export function SidebarHead({ direction }) {
 
 export function Toggle({ checked, onClick, leading, docsProps }) {
   return (
-    <div className="toggle">
+    <div className={clsx("toggle", checked ? "checked" : undefined)}>
       <div style={{ display: "flex", alignItems: "center" }}>
         {leading}
         <button
@@ -108,7 +108,6 @@ export function Toggle({ checked, onClick, leading, docsProps }) {
             flexShrink: 0,
             border: "1px solid rgba(84, 84, 84, .65)",
             transition: "background-color .25s",
-            backgroundColor: "var(--ifm-color-emphasis-400)",
           }}
         >
           <span
