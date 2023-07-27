@@ -20,13 +20,13 @@ Future<Raw<int>> value3(Value3Ref ref) async => 0;
       ignoreErrors: true,
     );
 
-    final value = result.statelessProviderDeclarations.singleWhere(
+    final value = result.functionalProviderDeclarations.singleWhere(
       (e) => e.name.toString() == 'value',
     );
-    final value2 = result.statelessProviderDeclarations.singleWhere(
+    final value2 = result.functionalProviderDeclarations.singleWhere(
       (e) => e.name.toString() == 'value2',
     );
-    final value3 = result.statelessProviderDeclarations.singleWhere(
+    final value3 = result.functionalProviderDeclarations.singleWhere(
       (e) => e.name.toString() == 'value3',
     );
     expect(value.createdType.toString(), 'Future<int>');
@@ -64,13 +64,13 @@ int plain(PlainRef ref) => 0;
       ignoreErrors: true,
     );
 
-    final needsOverride = result.statelessProviderDeclarations.singleWhere(
+    final needsOverride = result.functionalProviderDeclarations.singleWhere(
       (e) => e.name.toString() == 'needsOverride',
     );
-    final scoped = result.statelessProviderDeclarations.singleWhere(
+    final scoped = result.functionalProviderDeclarations.singleWhere(
       (e) => e.name.toString() == 'scoped',
     );
-    final plain = result.statelessProviderDeclarations.singleWhere(
+    final plain = result.functionalProviderDeclarations.singleWhere(
       (e) => e.name.toString() == 'plain',
     );
 
@@ -170,13 +170,13 @@ class Counter extends _$Counter {
     final providers = result.generatorProviderDeclarations;
 
     expect(providers, [
-      isA<StatelessProviderDeclaration>()
+      isA<FunctionalProviderDeclaration>()
           .having((e) => e.name.toString(), 'name', 'first')
           .having((e) => e.node.name.toString(), 'node.name', 'first'),
-      isA<StatelessProviderDeclaration>()
+      isA<FunctionalProviderDeclaration>()
           .having((e) => e.name.toString(), 'name', 'second')
           .having((e) => e.node.name.toString(), 'node.name', 'second'),
-      isA<StatefulProviderDeclaration>()
+      isA<ClassBasedProviderDeclaration>()
           .having((e) => e.name.toString(), 'name', 'Counter')
           .having((e) => e.node.name.toString(), 'node.name', 'Counter'),
     ]);

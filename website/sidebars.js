@@ -323,6 +323,11 @@ module.exports = {
           label: "AWS Amplify Storage Gallery App with Riverpod & Freezed",
           href: "https://github.com/offlineprogrammer/amplify_storage_app",
         },
+        {
+          type: "link",
+          label: "Clean Architecture demonstration with Riverpod",
+          href: "https://github.com/Uuttssaavv/flutter-clean-architecture-riverpod",
+        },
       ],
     },
 

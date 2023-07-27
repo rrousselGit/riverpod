@@ -1,6 +1,6 @@
 # random_number
 
-A new Flutter project.
+A random number generator similar to the counter project.  It has a single button that generates a random number.
 
 ## Getting Started
 

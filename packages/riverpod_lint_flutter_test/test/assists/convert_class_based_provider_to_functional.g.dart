@@ -1,28 +1,28 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'convert_stateless_provider_to_stateful.dart';
+part of 'convert_class_based_provider_to_functional.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$statelessHash() => r'be6619f112495a6ba3b6f76af9a8324058f6387a';
+String _$exampleHash() => r'081776126bafed3e1583bba9c1fadef798215ad7';
 
 /// Some comment
 ///
-/// Copied from [stateless].
-@ProviderFor(stateless)
-final statelessProvider = AutoDisposeProvider<int>.internal(
-  stateless,
-  name: r'statelessProvider',
+/// Copied from [Example].
+@ProviderFor(Example)
+final exampleProvider = AutoDisposeNotifierProvider<Example, int>.internal(
+  Example.new,
+  name: r'exampleProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$statelessHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : _$exampleHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef StatelessRef = AutoDisposeProviderRef<int>;
-String _$statelessFamilyHash() => r'fdbbd6ea193e742d4d740c3f212eba09c489c3b2';
+typedef _$Example = AutoDisposeNotifier<int>;
+String _$exampleFamilyHash() => r'37d4a4fd66999562cd92051f91266270d5a1e5ea';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -45,39 +45,47 @@ class _SystemHash {
   }
 }
 
-typedef StatelessFamilyRef = AutoDisposeProviderRef<int>;
+abstract class _$ExampleFamily extends BuildlessAutoDisposeNotifier<int> {
+  late final int a;
+  late final String b;
+
+  int build({
+    required int a,
+    String b = '42',
+  });
+}
 
 /// Some comment
 ///
-/// Copied from [statelessFamily].
-@ProviderFor(statelessFamily)
-const statelessFamilyProvider = StatelessFamilyFamily();
+/// Copied from [ExampleFamily].
+@ProviderFor(ExampleFamily)
+const exampleFamilyProvider = ExampleFamilyFamily();
 
 /// Some comment
 ///
-/// Copied from [statelessFamily].
-class StatelessFamilyFamily extends Family<int> {
+/// Copied from [ExampleFamily].
+class ExampleFamilyFamily extends Family<int> {
   /// Some comment
   ///
-  /// Copied from [statelessFamily].
-  const StatelessFamilyFamily();
+  /// Copied from [ExampleFamily].
+  const ExampleFamilyFamily();
 
   /// Some comment
   ///
-  /// Copied from [statelessFamily].
-  StatelessFamilyProvider call({
+  /// Copied from [ExampleFamily].
+  ExampleFamilyProvider call({
     required int a,
     String b = '42',
   }) {
-    return StatelessFamilyProvider(
+    return ExampleFamilyProvider(
       a: a,
       b: b,
     );
   }
 
   @override
-  StatelessFamilyProvider getProviderOverride(
-    covariant StatelessFamilyProvider provider,
+  ExampleFamilyProvider getProviderOverride(
+    covariant ExampleFamilyProvider provider,
   ) {
     return call(
       a: provider.a,
@@ -97,34 +105,33 @@ class StatelessFamilyFamily extends Family<int> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'statelessFamilyProvider';
+  String? get name => r'exampleFamilyProvider';
 }
 
 /// Some comment
 ///
-/// Copied from [statelessFamily].
-class StatelessFamilyProvider extends AutoDisposeProvider<int> {
+/// Copied from [ExampleFamily].
+class ExampleFamilyProvider
+    extends AutoDisposeNotifierProviderImpl<ExampleFamily, int> {
   /// Some comment
   ///
-  /// Copied from [statelessFamily].
-  StatelessFamilyProvider({
+  /// Copied from [ExampleFamily].
+  ExampleFamilyProvider({
     required this.a,
     this.b = '42',
   }) : super.internal(
-          (ref) => statelessFamily(
-            ref,
-            a: a,
-            b: b,
-          ),
-          from: statelessFamilyProvider,
-          name: r'statelessFamilyProvider',
+          () => ExampleFamily()
+            ..a = a
+            ..b = b,
+          from: exampleFamilyProvider,
+          name: r'exampleFamilyProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$statelessFamilyHash,
-          dependencies: StatelessFamilyFamily._dependencies,
+                  : _$exampleFamilyHash,
+          dependencies: ExampleFamilyFamily._dependencies,
           allTransitiveDependencies:
-              StatelessFamilyFamily._allTransitiveDependencies,
+              ExampleFamilyFamily._allTransitiveDependencies,
         );
 
   final int a;
@@ -132,7 +139,7 @@ class StatelessFamilyProvider extends AutoDisposeProvider<int> {
 
   @override
   bool operator ==(Object other) {
-    return other is StatelessFamilyProvider && other.a == a && other.b == b;
+    return other is ExampleFamilyProvider && other.a == a && other.b == b;
   }
 
   @override
@@ -142,6 +149,16 @@ class StatelessFamilyProvider extends AutoDisposeProvider<int> {
     hash = _SystemHash.combine(hash, b.hashCode);
 
     return _SystemHash.finish(hash);
+  }
+
+  @override
+  int runNotifierBuild(
+    covariant ExampleFamily notifier,
+  ) {
+    return notifier.build(
+      a: a,
+      b: b,
+    );
   }
 }
 // ignore_for_file: type=lint
