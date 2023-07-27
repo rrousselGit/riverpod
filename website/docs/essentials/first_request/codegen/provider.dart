@@ -14,7 +14,7 @@ part 'provider.g.dart';
 Future<Activity> activity(ActivityRef ref) async {
   // Using package:http, we fetch a random activity from the Bored API.
   final response = await http.get(
-    Uri.parse('https://www.boredapi.com/api/activity'),
+    Uri(scheme: 'https', host: 'boredapi.com', path: '/api/activity'),
   );
   // Using dart:convert, we then decode the JSON payload into a Map data structure.
   final json = jsonDecode(response.body) as Map<String, dynamic>;

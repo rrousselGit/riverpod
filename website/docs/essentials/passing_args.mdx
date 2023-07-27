@@ -5,6 +5,7 @@ version: 1
 
 import { AutoSnippet, When } from "../../src/components/CodeSnippet";
 import noArgProvider from "./passing_args/no_arg_provider";
+import family from "!!raw-loader!./passing_args/raw/family.dart";
 
 :::note
 This page is a work in progress
@@ -14,7 +15,7 @@ In the previous article, we saw how we could define a "provider" to make
 a simple _GET_ HTTP request.  
 But often, HTTP requests depend on external parameters.
 
-For example, previously we used the [Bored API](https://www.boredapi.com/)
+For example, previously we used the [Bored API](https://boredapi.com/)
 to suggest a random activity to users.
 But maybe users would want to filter the type of activity they want to do,
 or have price requirements, etc...  
@@ -25,11 +26,20 @@ these parameters from our UI to our providers.
 
 As a reminding, previously we defined our provider like this:
 
+<AutoSnippet {...noArgProvider} />
+
 <When codegen={false}>
 
 When not relying on code-generation, we need to tweak the syntax for defining
-our providers a bit to support passing arguments.  
-This is done by relying on what we call a "family" (more about why this name later).
+our providers a bit to support passing arguments. This is done by relying on
+the "modifier" called "family".
+
+In short, we need to add `.family` after the type of our provider, and
+an extra type parameter corresponding to the argument type.
+For example, we could update our provider to accept a `String` argument
+corresponding to the type of activity desired:
+
+<AutoSnippet raw={family} />
 
 </When>
 

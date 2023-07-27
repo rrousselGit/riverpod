@@ -8,7 +8,7 @@ part of 'create.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$boredSuggestionHash() => r'9fa13324205edc69e414b4e0d1458d517b0b4184';
+String _$boredSuggestionHash() => r'5975efd623c41e5bc92ecd326209e6124cb1736d';
 
 /// See also [boredSuggestion].
 @ProviderFor(boredSuggestion)
