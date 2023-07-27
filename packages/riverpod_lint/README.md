@@ -49,6 +49,7 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
   - [unsupported\_provider\_value (riverpod\_generator only)](#unsupported_provider_value-riverpod_generator-only)
   - [functional\_ref (riverpod\_generator only)](#functional_ref-riverpod_generator-only)
   - [notifier\_extends (riverpod\_generator only)](#notifier_extends-riverpod_generator-only)
+  - [avoid\_ref\_inside\_state\_dispose](#avoid_ref_inside_state_dispose)
 - [All assists](#all-assists)
   - [Wrap widgets with a `Consumer`](#wrap-widgets-with-a-consumer)
   - [Wrap widgets with a `ProviderScope`](#wrap-widgets-with-a-providerscope)
@@ -103,7 +104,7 @@ Note that you can both enable and disable lint rules at once.
 This can be useful if your `analysis_options.yaml` includes another one:
 
 ```yaml
-include: path/to/another/analys_options.yaml
+include: path/to/another/analysis_options.yaml
 analyzer:
   plugins:
     - custom_lint
@@ -528,6 +529,25 @@ class Example {
 @riverpod
 class Example extends Anything {
   int build() => 0;
+}
+```
+
+### avoid_ref_inside_state_dispose
+
+Avoid using `Ref` in the dispose method.
+
+**Bad**:
+
+```dart
+class _MyWidgetState extends ConsumerState<MyWidget> {
+  @override
+  void dispose() {
+    // Do not use 'ref' in the dispose method
+    ref.read(provider).doSomething();
+    super.dispose();
+  }
+
+  // ...
 }
 ```
 
