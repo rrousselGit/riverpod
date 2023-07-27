@@ -1,3 +1,9 @@
+## Unreleased minor
+
+- Added `avoid_ref_inside_state_dispose` (thanks to @LeonardoRosaa).
+  This warns if a `WidgetRef` is used in `State.dispose`, which would result
+  in a runtime error.
+
 ## 1.4.0 - 2023-07-25
 
 - `avoid_public_notifier_properties` no-longer warns against public setters (thanks to @skreborn)
