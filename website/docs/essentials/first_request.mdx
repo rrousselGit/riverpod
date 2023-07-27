@@ -92,7 +92,7 @@ The syntax for defining a provider is as followed:
 
 <When codegen={false}>
 <Legend
-  code={`final name = SomeProvider<Result>((ref) {
+  code={`final name = SomeProvider.someModifier<Result>((ref) {
   <your logic here>
 });
 `}
@@ -127,7 +127,27 @@ will follow naturally.
 </>
     },
     {
-      offset: 35,
+      offset: 25,
+      length: 13,
+      label: "Modifiers (optional)",
+      description: <>
+
+Often, after the type of the provider you may see a "motifier".  
+Modifiers are optional, and are used to tweak the behavior of the provider
+in a way that is type-safe.
+
+There are currently two modifiers available:
+
+- `autoDispose`, which will automatically clear the cache when the provider
+  stops being used.  
+  See also <Link documentID="essentials/auto_dispose" />
+- `family`, which enables passing arguments to your provider.  
+  See also <Link documentID="essentials/passing_args" />.
+
+</>
+    },
+    {
+      offset: 48,
       length: 3,
       label: "Ref",
       description: <>
@@ -139,7 +159,7 @@ or as a property of a Notifier.
 </>
     },
     {
-      offset: 44,
+      offset: 57,
       length: 17,
       label: "The provider function",
       description: <>

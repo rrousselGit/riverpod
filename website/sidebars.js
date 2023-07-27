@@ -29,11 +29,7 @@ module.exports = {
         },
         "essentials/side_effects",
         "essentials/combining_requests",
-        {
-          type: "link",
-          label: "Clearing cache and reacting to state disposal (WIP)",
-          href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
-        },
+        "essentials/auto_dispose",
         {
           type: "link",
           label: "Progress indicators and error pages (WIP)",

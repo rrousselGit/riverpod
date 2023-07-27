@@ -8,7 +8,16 @@ type AnnotatedCode = {
   code: string;
 };
 
-const colors = ["#2196f3", "#4caf50", "#f44336", "#ff9800"];
+const colors = [
+  "#2196f3",
+  "#4caf50",
+  "#f44336",
+  "#ff9800",
+  "#009688",
+  "#ffeb3b",
+  "#795548",
+  "#607d8b",
+];
 
 const Legend = ({ annotations, code }) => {
   const fullAnnotations = new Array<AnnotatedCode>();
