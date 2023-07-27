@@ -3,9 +3,35 @@ title: Passing arguments to your requests (WIP)
 version: 1
 ---
 
+import { AutoSnippet, When } from "../../src/components/CodeSnippet";
+import noArgProvider from "./passing_args/no_arg_provider";
+
 :::note
 This page is a work in progress
 :::
+
+In the previous article, we saw how we could define a "provider" to make
+a simple _GET_ HTTP request.  
+But often, HTTP requests depend on external parameters.
+
+For example, previously we used the [Bored API](https://www.boredapi.com/)
+to suggest a random activity to users.
+But maybe users would want to filter the type of activity they want to do,
+or have price requirements, etc...  
+These parameters are not known in advance. So we need a way to pass
+these parameters from our UI to our providers.
+
+## Updating our providers to accept arguments
+
+As a reminding, previously we defined our provider like this:
+
+<When codegen={false}>
+
+When not relying on code-generation, we need to tweak the syntax for defining
+our providers a bit to support passing arguments.  
+This is done by relying on what we call a "family" (more about why this name later).
+
+</When>
 
 TODO:
 
@@ -14,7 +40,11 @@ TODO:
 - [ ] Update Consumers to pass the argument to the requests
 - [ ] Mention how it is possible to listen to the same provider
       with different arguments simultaneously
+- [ ] Note that providers should generally enable "autoDispose" when using
+      arguments, to avoid memory leaks
+- [ ] Explain why "family" is called this way
 - [ ] Mention how it is important for parameters to have consistent equality
+  - [ ] Talk about how if you do provider([]) you'll have an infinite rebuild/loading loop
   - [ ] Recommend using riverpod_lint's lint to ensure consistent equality
 - [ ] Showcase how using Dart 3 records can allow passing multiple arguments
       without having to create a class
