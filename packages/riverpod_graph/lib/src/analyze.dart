@@ -19,6 +19,8 @@ Future<void> analyze(
     resourceProvider: PhysicalResourceProvider.INSTANCE,
   );
 
+  verifyRootDirectoryExists(rootDirectory);
+
   // Often one context is returned, but depending on the project structure we
   // can see multiple contexts.
   for (final context in collection.contexts) {
@@ -88,6 +90,18 @@ Future<void> analyze(
   }
 }
 
+///
+///Throws an exception if the directory doesn't exist
+///
+bool verifyRootDirectoryExists(String rootDirectory) {
+  if (!Directory(rootDirectory).existsSync()) {
+    throw FileSystemException(
+      'Requested scanning target directory does not exist $rootDirectory',
+    );
+  }
+  return true;
+}
+
 /// Output formats supported by riverpod_graph
 enum SupportFormat {
   /// Mermaid.js format
@@ -101,7 +115,19 @@ String _buildD2(ProviderGraph providerGraph) {
   const _watchLineStyle = '{style.stroke-width: 4}';
   const _readLineStyle = '{style.stroke-dash: 4}';
 
-  final buffer = StringBuffer();
+  final buffer = StringBuffer('''
+Legend: {
+  Type: {
+    Widget.shape: circle
+    Provider
+  }
+  Arrows: {
+    "." -> "..": read: {style.stroke-dash: 4}
+    "." -> "..": listen
+    "." -> "..": watch: {style.stroke-width: 4}
+  }
+}
+''');
 
   for (final node in providerGraph.consumerWidgets) {
     buffer.writeln('${node.definition.name}.shape: Circle');
@@ -156,10 +182,10 @@ flowchart TB
     style stop1 height:0px;
     start2[ ] --->|listen| stop2[ ]
     style start2 height:0px;
-    style stop2 height:0px; 
+    style stop2 height:0px;
     start3[ ] ===>|watch| stop3[ ]
     style start3 height:0px;
-    style stop3 height:0px; 
+    style stop3 height:0px;
   end
 
   subgraph Type

@@ -22,7 +22,7 @@
     "message": "Devtool에서 상태를 관찰하세요."
   },
   "home.devtool_body": {
-    "message": "Riverpod를 사용하면 Flutter의 devtool 내부에서 상자 밖으로 상태를 확인할 수 있습니다. {br}\n 게다가, 진행 상태를 감시할 수 있습니다."
+    "message": "Riverpod을 사용하면 Flutter의 devtool 내부에서 상자 밖에서 상태를 확인할 수 있습니다. {br}\n 게다가, 진행 상태를 감시할 수 있습니다."
   },
   "homepage.compile_safe_title": {
     "message": "안전한 컴파일"

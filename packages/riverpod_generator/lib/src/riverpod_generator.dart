@@ -8,9 +8,9 @@ import 'package:source_gen/source_gen.dart';
 
 import 'models.dart';
 import 'parse_generator.dart';
+import 'templates/class_based_provider.dart';
 import 'templates/family.dart';
-import 'templates/stateful_provider.dart';
-import 'templates/stateless_provider.dart';
+import 'templates/functional_provider.dart';
 
 const riverpodTypeChecker = TypeChecker.fromRuntime(Riverpod);
 
@@ -127,10 +127,10 @@ class _SystemHash {
   }
 
   @override
-  void visitStatefulProviderDeclaration(
-    StatefulProviderDeclaration provider,
+  void visitClassBasedProviderDeclaration(
+    ClassBasedProviderDeclaration provider,
   ) {
-    super.visitStatefulProviderDeclaration(provider);
+    super.visitClassBasedProviderDeclaration(provider);
 
     final parameters = provider.buildMethod.parameters?.parameters;
     if (parameters == null) return;
@@ -145,7 +145,7 @@ class _SystemHash {
           ? '_\$${provider.providerElement.name.substring(1)}'
           : '_\$${provider.providerElement.name}';
 
-      StatefulProviderTemplate(
+      ClassBasedProviderTemplate(
         provider,
         options: options,
         notifierTypedefName: notifierTypedefName,
@@ -159,7 +159,7 @@ class _SystemHash {
           : '_\$${provider.providerElement.name}';
 
       maybeEmitHashUtils();
-      FamilyTemplate.stateful(
+      FamilyTemplate.classBased(
         provider,
         options: options,
         notifierTypedefName: notifierTypedefName,
@@ -169,10 +169,10 @@ class _SystemHash {
   }
 
   @override
-  void visitStatelessProviderDeclaration(
-    StatelessProviderDeclaration provider,
+  void visitFunctionalProviderDeclaration(
+    FunctionalProviderDeclaration provider,
   ) {
-    super.visitStatelessProviderDeclaration(provider);
+    super.visitFunctionalProviderDeclaration(provider);
 
     final parameters = provider.node.functionExpression.parameters?.parameters;
     if (parameters == null) return;
@@ -187,14 +187,14 @@ class _SystemHash {
     // So a provider is a "family" only if it has parameters besides the ref.
     if (parameters.length > 1) {
       maybeEmitHashUtils();
-      FamilyTemplate.stateless(
+      FamilyTemplate.functional(
         provider,
         options: options,
         refName: refName,
         hashFn: hashFn,
       ).run(buffer);
     } else {
-      StatelessProviderTemplate(
+      FunctionalProviderTemplate(
         provider,
         refName: refName,
         options: options,
