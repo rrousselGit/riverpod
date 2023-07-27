@@ -50,6 +50,7 @@ class MarvelLostProviderContainer {
 /// read/watch/listen seem to be required to bring this in scope for analysis
 /// just references are not enough
 final marvelTearOffConsumer = Provider((ref) {
+  // ignore: unused_element
   void doSomething() {
     // ignore: unused_local_variable
     final theTime = ref.read(marvelRefdProvider)._getCurrentTimestamp;
