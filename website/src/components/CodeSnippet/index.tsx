@@ -5,8 +5,6 @@ import {
   FlutterHooksContext,
 } from "../../theme/DocPage/Layout";
 
-const SKIP = "/* SKIP */";
-const SKIP_END = "/* SKIP END */";
 const START_AT = "/* SNIPPET START */";
 const END_AT = "/* SNIPPET END */";
 
@@ -17,14 +15,23 @@ export function trimSnippet(snippet: string): string {
   let endAtIndex = snippet.indexOf(END_AT);
   if (endAtIndex < 0) endAtIndex = undefined;
 
-  snippet = snippet
-    .substring(startAtIndex + START_AT.length, endAtIndex)
-    .trim();
+  // Substring starts after "/* START" + 1 for the newline
+  snippet = snippet.substring(startAtIndex + START_AT.length + 1, endAtIndex);
 
-  return snippet.replace(
-    /\n?(?:\/\* SKIP \*\/)(?:\n|.)+(?:\/\* SKIP END \*\/)/,
-    ""
-  );
+  const leadingSpaces = snippet.match(/^\s+/);
+  if (leadingSpaces) {
+    const leadingSpaceCount = leadingSpaces[0].length;
+    snippet = snippet
+      .split("\n")
+      .map((line) =>
+        line.startsWith(leadingSpaces[0])
+          ? line.substring(leadingSpaceCount)
+          : line
+      )
+      .join("\n");
+  }
+
+  return snippet;
 }
 
 interface CodeSnippetProps {
