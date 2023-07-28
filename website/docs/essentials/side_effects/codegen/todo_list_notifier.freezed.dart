@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'todo_list_provider.dart';
+part of 'todo_list_notifier.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -14,11 +14,16 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
+Todo _$TodoFromJson(Map<String, dynamic> json) {
+  return _Todo.fromJson(json);
+}
+
 /// @nodoc
 mixin _$Todo {
   String get description => throw _privateConstructorUsedError;
   bool get completed => throw _privateConstructorUsedError;
 
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $TodoCopyWith<Todo> get copyWith => throw _privateConstructorUsedError;
 }
@@ -95,9 +100,11 @@ class __$$_TodoCopyWithImpl<$Res> extends _$TodoCopyWithImpl<$Res, _$_Todo>
 }
 
 /// @nodoc
-
+@JsonSerializable()
 class _$_Todo implements _Todo {
   _$_Todo({required this.description, this.completed = false});
+
+  factory _$_Todo.fromJson(Map<String, dynamic> json) => _$$_TodoFromJson(json);
 
   @override
   final String description;
@@ -121,6 +128,7 @@ class _$_Todo implements _Todo {
                 other.completed == completed));
   }
 
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, description, completed);
 
@@ -129,11 +137,20 @@ class _$_Todo implements _Todo {
   @pragma('vm:prefer-inline')
   _$$_TodoCopyWith<_$_Todo> get copyWith =>
       __$$_TodoCopyWithImpl<_$_Todo>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$_TodoToJson(
+      this,
+    );
+  }
 }
 
 abstract class _Todo implements Todo {
   factory _Todo({required final String description, final bool completed}) =
       _$_Todo;
+
+  factory _Todo.fromJson(Map<String, dynamic> json) = _$_Todo.fromJson;
 
   @override
   String get description;

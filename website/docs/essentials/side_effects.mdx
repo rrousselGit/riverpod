@@ -7,6 +7,9 @@ import { Link } from "../../src/components/Link";
 import { AutoSnippet, When } from "../../src/components/CodeSnippet";
 import Legend, { colors } from "./first_request/legend/legend";
 import todoListProvider from "./side_effects/todo_list_provider";
+import todoListNotifier from "./side_effects/todo_list_notifier";
+import todoListNotifierAddTodo from "./side_effects/todo_list_notifier_add_todo";
+import consumerAddTodoCall from "!!raw-loader!./side_effects/raw/consumer_add_todo_call.dart";
 
 :::note
 This page is a work in progress
@@ -25,10 +28,10 @@ This is by design, to ensure that the state is only modified in a controlled way
 and promote separation of concerns.  
 Instead, providers have to explicitly expose a way to modify their state.
 
-So far, we've only seen providers that cannot be modified from the outside.  
+To do that, we will use a new concept: Notifiers.  
 To showcase this new concept, let's use a more advanced example: A to-do list.
 
-## Fetching a list of todos
+## Defining a Notifier
 
 Let's start with what we already know by this point: A plain simple _GET_ request.
 As saw previously in <Link documentID="essentials/first_request" />, we could
@@ -267,27 +270,123 @@ as a shorthand for notifiers with no way to be modified from the UI.
 :::
 
 Now that we've seen the syntax, let's see how to convert our previously
-defined provider to a notifier.
+defined provider to a notifier:
+
+<AutoSnippet {...todoListNotifier} />
+
+Note that the way of reading the provider inside widgets is unchanged.  
+You can still use `ref.watch(todoListProvider)` as with the previous syntax.
+
+## Exposing a method to perform a _POST_ request
+
+Now that we have a Notifier, we can start adding methods to enable
+performing side-effects.
+One such side-effect would be to have the client _POST_ a new todo.
+We could do so by adding an `addTodo` method on our notifier:
+
+<AutoSnippet {...todoListNotifierAddTodo} />
+
+Then, we can invoke this method in our UI using the same `Consumer`/`ConsumerWidget`
+we saw in <Link documentID="essentials/first_request" />:
+
+<AutoSnippet raw={consumerAddTodoCall} />
+
+:::info
+Notice how we are using `ref.read` instead of `ref.watch` to invoke our method.  
+Although `ref.watch` could technically work, it is recommended to use `ref.read`
+when logic is performed in event handlers such as "onPressed".
+:::
+
+We now have a button which makes a _POST_ request when pressed.  
+However, at the moment, our UI does not update to reflect the new todo list.
+We will want to our local cache to match the server's state.
+
+There are a few ways to do so with their pros and cons.
+
+### Updating our local cache to match the API response
+
+A common backend practice is to have the _POST_ request return the new
+state of the resource.  
+In particular, our API would return the new list of todos after adding
+a new todo.
+
+// TODO
+
+:::tip pros
+
+- The UI will have the most up-to-date state possible.
+  If another user added a todo, we will see it too.
+- The server is the source of truth.
+  With this approach, the client doesn't need to know where the new todo
+  needs to be inserted in the list of todos.
+- Only a single network-request is needed.
+
+:::
+
+:::danger cons
+
+- This approach will only work if the server is implemented in a specific way.
+  If the server does not return the new state, this approach will not work.
+- May still not be doable if the associated _GET_ request is more complex,
+  such as if it has filters/sorting.
+
+:::
+
+### Using `ref.invalidateSelf()` to refresh the provider.
+
+One option is to have our provider re-execute the _GET_ request.  
+This can be done by calling `ref.invalidateSelf()` after the _POST_ request:
+
+// TODO
+
+:::tip pros
+
+- The UI will have the most up-to-date state possible.
+  If another user added a todo, we will see it too.
+- The server is the source of truth.
+  With this approach, the client doesn't need to know where the new todo
+  needs to be inserted in the list of todos.
+- This approach should work regarless of the server implementation.
+  It can be especially useful if your _GET_ request is more complex,
+  such as if it has filters/sorting.
+
+:::
+
+:::danger cons
+
+- This approach will perform an extra _GET_ request, which may be
+  inefficient.
+
+:::
+
+### Updating the local cache manually
+
+Another option is to update the local cache manually.  
+This would involve trying to mimick the backend's behavior.
+For instance, we would need to know whether the backend inserts new items
+at the start or at the end.
+
+// TODO
+
+:::tip pros
+
+- This approach should work regarless of the server implementation.
+- Only a single network-request is needed.
+
+:::
+
+:::danger cons
+
+- The local cache may not match the server's state.
+  If another user added a todo, we will not see it.
+- This approach may be more complex to implement and effectively
+  duplicate the backend's logic.
+
+:::
 
 TODO:
 
-- [ ] Define a simple FutureProvider to fetch a list of todos
-- [ ] Refactor said FutureProvider into an AsyncNotifier
-- [ ] Mention how an AsyncNotifier with no method outside of `build`
-      is identical to a FutureProvider
-- [ ] Add an empty `addTodo` method on the AsyncNotifier
-- [ ] Invoke the `addTodo` method in consumers using `ref.read(provider.notifier).addTodo()`
-- [ ] Have `addTodo` obtain the previous state by reading `this.future`
-  - [ ] mention that awaiting `future` may throw on errors
-- [ ] Update the state using one of the following alternatives:
-  - [ ] call `state = AsyncData(response)`
-        Ideal
-        This assumes that the POST request to add todos returns the new todo list.
-  - [ ] call `ref.invalidateSelf()` after the POST request
-        This will cause the future to be re-fetched, which will obtain the most up-to-date state.
-  - [ ] call `state = AsyncData([...state.data, todo])`
-        More efficient than `invalidateSelf` approach as it avoids one
-        network request, but harder to maintain and could get out of date.
+- [ ] add updates snippets
 
 Going further: Showing a spinner & error handling
 
