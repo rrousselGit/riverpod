@@ -6,6 +6,13 @@ class Todo {
     this.completed = false,
   });
 
+  factory Todo.fromJson(Map<String, Object?> json) {
+    return Todo(
+      description: json['description']! as String,
+      completed: json['completed']! as bool,
+    );
+  }
+
   final String description;
   final bool completed;
 

@@ -10,6 +10,11 @@ import todoListProvider from "./side_effects/todo_list_provider";
 import todoListNotifier from "./side_effects/todo_list_notifier";
 import todoListNotifierAddTodo from "./side_effects/todo_list_notifier_add_todo";
 import consumerAddTodoCall from "!!raw-loader!./side_effects/raw/consumer_add_todo_call.dart";
+import restAddTodo from "!!raw-loader!./side_effects/raw/rest_add_todo.dart";
+import invalidateSelfAddTodo from "!!raw-loader!./side_effects/raw/invalidate_self_add_todo.dart";
+import manualAddTodo from "!!raw-loader!./side_effects/raw/manual_add_todo.dart";
+import mutableManualAddTodo from "!!raw-loader!./side_effects/raw/mutable_manual_add_todo.dart";
+import renderAddTodo from "./side_effects/render_add_todo";
 
 :::note
 This page is a work in progress
@@ -308,9 +313,9 @@ There are a few ways to do so with their pros and cons.
 A common backend practice is to have the _POST_ request return the new
 state of the resource.  
 In particular, our API would return the new list of todos after adding
-a new todo.
+a new todo. One way of doing this is by writing `state = AsyncData(response)`:
 
-// TODO
+<AutoSnippet raw={restAddTodo} />
 
 :::tip pros
 
@@ -337,7 +342,7 @@ a new todo.
 One option is to have our provider re-execute the _GET_ request.  
 This can be done by calling `ref.invalidateSelf()` after the _POST_ request:
 
-// TODO
+<AutoSnippet raw={invalidateSelfAddTodo} />
 
 :::tip pros
 
@@ -366,7 +371,16 @@ This would involve trying to mimick the backend's behavior.
 For instance, we would need to know whether the backend inserts new items
 at the start or at the end.
 
-// TODO
+<AutoSnippet raw={manualAddTodo} />
+
+:::info
+This example uses immutable state. This is not required, but recommended.
+See <Link documentID="concepts/why_immutability" /> for more details.  
+If you want to use mutable state instead, you can alternatively do:
+
+<AutoSnippet raw={mutableManualAddTodo} />
+
+:::
 
 :::tip pros
 
@@ -384,17 +398,23 @@ at the start or at the end.
 
 :::
 
-TODO:
+## Going further: Showing a spinner & error handling
 
-- [ ] add updates snippets
+We've all we seen do far, we have a button which makes a _POST_ request
+when pressed; and when the request is done, the UI updates to reflect
+changes.  
+But at the moment, there is no indication that the request is being
+performed, nor any information if failed.
 
-Going further: Showing a spinner & error handling
+One way to do so is to store the Future returned by `addTodo`
+in the local widget state, and then listen to that future to show
+a snipper or error message.  
+This is one scenario where [flutter_hooks](https://pub.dev/packages/flutter_hooks)
+comes in handy. But of course, you can also use a `StatefulWidget` instead.
 
-- [ ] Make the Consumer capture to the Future returned by `addTodo`
-- [ ] Store the Future in a hook or StatefulWidget
-- [ ] listen to the future using `useFuture`/`FutureBuilder`
-- [ ] switch over AsyncSnapshot to show a spinner/error message
+The following snippet shows a progress indicator while
+and operation is pending. And if it failed, renders the button as red:
 
-Cross-references:
+![A button which turns red when the operation failed](/img/essentials/side_effects/spinner.gif)
 
-- [ ] Link optimistic UI case study
+<AutoSnippet {...renderAddTodo} />
