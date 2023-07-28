@@ -8,15 +8,15 @@ type AnnotatedCode = {
   code: string;
 };
 
-const colors = [
+export const colors = [
   "#2196f3",
   "#4caf50",
   "#f44336",
   "#ff9800",
   "#009688",
-  "#ffeb3b",
-  "#795548",
-  "#607d8b",
+  "#e91e63",
+  "#00bcd4",
+  "#8bc34a",
 ];
 
 const Legend = ({ annotations, code }) => {

@@ -114,9 +114,11 @@ The variable must be final and "top-level" (global).
       label: "The provider type",
       description: <>
 
-Can be one of many (`Provider`, `FutureProvider`, `StreamProvider`, ...).  
+Generally either `Provider`, `FutureProvider` or `StreamProvider`.  
 The type of provider used depends on the return value of your function.
 For example, to create a `Future<Activity>`, you'll want a `FutureProvider<Activity>`.
+
+`FutureProvider` is the one you'll want to use the most.
 
 :::tip
 Don't think in terms of "Which provider should I pick".

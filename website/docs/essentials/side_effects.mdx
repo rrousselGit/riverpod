@@ -3,9 +3,271 @@ title: Performing side effects (WIP)
 version: 1
 ---
 
+import { Link } from "../../src/components/Link";
+import { AutoSnippet, When } from "../../src/components/CodeSnippet";
+import Legend, { colors } from "./first_request/legend/legend";
+import todoListProvider from "./side_effects/todo_list_provider";
+
 :::note
 This page is a work in progress
 :::
+
+So far, we've only seen how to fetch data (aka perform a _GET_ HTTP request).  
+But what about side-effects, such as a _POST_ request?
+
+Applications often implement a CRUD (Create, Read, Update, Delete) API.  
+When doing so, it is common that an update request (typically a _POST_) should
+also update the local cache to have the UI reflect the new state.
+
+The problem is, how do we update the state of a provider from within a consumer?  
+Naturally, providers do not expose a way to modify their state.
+This is by design, to ensure that the state is only modified in a controlled way
+and promote separation of concerns.  
+Instead, providers have to explicitly expose a way to modify their state.
+
+So far, we've only seen providers that cannot be modified from the outside.  
+To showcase this new concept, let's use a more advanced example: A to-do list.
+
+## Fetching a list of todos
+
+Let's start with what we already know by this point: A plain simple _GET_ request.
+As saw previously in <Link documentID="essentials/first_request" />, we could
+fetch a list of todos by writing:
+
+<AutoSnippet {...todoListProvider} />
+
+Now that we've fetch a list of todos, let's see how we can add a new todos.  
+For this, we will need to modify our provider such that they expose a public API
+for modifying their state. This is done by converting our provider into what
+we call a "notifier".
+
+Notifiers are the "stateful widget" of providers. They require a slight tweak to
+the syntax for defining a provider.  
+This new syntax is as follows:
+
+<When codegen={false}>
+<Legend
+  code={`final name = SomeNotifierProvider.someModifier<MyNotifier, Result>(MyNotifier.new);
+ 
+class MyNotifier extends SomeNotifier<Result> {
+  @override
+  Result build() {
+    <your logic here>
+  }
+
+  <your methods here>
+}`}
+  annotations={[
+    {
+      offset: 6,
+      length: 4,
+      label: "The provider variable",
+       description: <>
+
+This variable is what will be used to interact with our provider.  
+The variable must be final and "top-level" (global).
+
+</>
+    },
+    {
+      offset: 13,
+      length: 20,
+      label: "The provider type",
+       description: <>
+
+Generally either `NotifierProvider`, `AsyncNotifierProvider` or `StreamNotifierProvider`.  
+The type of provider used depends on the return value of your function.
+For example, to create a `Future<Activity>`, you'll want a `AsyncNotifierProvider<Activity>`.
+
+`AsyncNotifierProvider` is the one you'll want to use the most.
+
+:::tip
+Don't think in terms of "Which provider should I pick".
+Instead, think in terms of "What do I want to return". The provider type
+will follow naturally.
+:::
+
+</>
+    },
+    {
+      offset: 33,
+      length: 13,
+      label: "Modifiers (optional)",
+      description: <>
+
+Often, after the type of the provider you may see a "motifier".  
+Modifiers are optional, and are used to tweak the behavior of the provider
+in a way that is type-safe.
+
+There are currently two modifiers available:
+
+- `autoDispose`, which will automatically clear the cache when the provider
+  stops being used.  
+  See also <Link documentID="essentials/auto_dispose" />
+- `family`, which enables passing arguments to your provider.  
+  See also <Link documentID="essentials/passing_args" />.
+
+</>
+    },
+    {
+      offset: 67,
+      length: 14,
+      label: "The Notifier's constructor",
+      description: <>
+
+The parameter of "notifier providers" is a function which is expected
+to instantiate the "notifier".  
+It generally should be a "constructor tear-off".
+
+</>
+    },
+    {
+      offset: 86,
+      length: 16,
+      label: "The Notifier",
+      description: <>
+
+If `NotifierProvider` is the "StatefulWidget" class, then this part is
+the `State` class.
+
+This class is responsible for exposing ways to modify the state of the provider.  
+Public methods on this class are accessible to consumers using `ref.read(yourProvider.notifier).yourMethod()`.
+
+:::note
+Notifiers should not have public properties besides the built-in `state`, as the UI
+would have no mean to know that state has changed.
+:::
+
+</>
+    },
+    {
+      offset: 111,
+      length: 12,
+      label: "The Notifier type",
+      description: <>
+
+The base class extended by your notifier should match that of the provider + modifiers.
+Some examples would be:
+
+- <span style={{ color: colors[0] }}>Notifier</span>Provider -> <span style={{ color: colors[0] }}>Notifier</span>
+- <span style={{ color: colors[0] }}>AsyncNotifier</span>Provider -> <span style={{ color: colors[0] }}>AsyncNotifier</span>
+- <span style={{ color: colors[0] }}>AsyncNotifier</span>Provider.
+  <span style={{ color: colors[1] }}>autoDispose</span> -> <span
+    style={{ color: colors[1] }}
+  >
+    AutoDispose
+  </span>
+  <span style={{ color: colors[0] }}>AsyncNotifier</span>
+- <span style={{ color: colors[0] }}>AsyncNotifier</span>Provider.
+  <span style={{ color: colors[1] }}>autoDispose</span>.<span
+    style={{ color: colors[2] }}
+  >
+    family
+  </span> -> <span style={{ color: colors[1] }}>AutoDispose</span>
+  <span style={{ color: colors[2] }}>Family</span>
+  <span style={{ color: colors[0] }}>AsyncNotifier</span>
+
+To make this simpler, it is recommended to use the code generator, as it
+automatically infers the correct type.
+
+</>
+    },
+    {
+      offset: 136,
+      length: 54,
+      label: "The build method",
+      description: <>
+
+All notifiers must override the `build` method.  
+This method is equivalent to the place where you would normally put your
+logic in a non-notifier provider.
+
+This method should not be called directly.
+
+</>
+    },
+]}
+/>
+</When>
+
+<!-- Some separation for good mesure -->
+
+<When codegen={true}>
+<Legend
+  code={`@riverpod
+class MyNotifier extends _$MyNotifier {
+  @override
+  Result build() {
+    <your logic here>
+  }
+
+  <your methods here>
+}`}
+  annotations={[
+    {
+      offset: 0,
+      length: 9,
+      label: "The annotation",
+      description: <>
+
+All providers must be annotated with `@riverpod` or `@Riverpod()`.
+This annotation can be placed on global functions or classes.  
+Through this annotation, it is possible to configure the provider.
+
+For example, we can disable "auto-dispose" (which we will see later) by writing `@Riverpod(keepAlive: true)`.
+
+</>
+    },
+    {
+      offset: 10,
+      length: 16,
+      label: "The Notifier",
+       description: <>
+
+When a `@riverpod` annotation is placed on a class, that class is called
+a "Notifier".  
+The class must extend `_$NotifierName`, where `NotifierName` is class name.
+
+Notifiers are responsible for exposing ways to modify the state of the provider.  
+Public methods on this class are accessible to consumers using `ref.read(yourProvider.notifier).yourMethod()`.
+
+:::note
+Notifiers should not have public properties besides the built-in `state`, as the UI
+would have no mean to know that state has changed.
+:::
+
+</>
+    },
+    {
+      offset: 52,
+      length: 54,
+      label: "The build method",
+      description: <>
+
+All notifiers must override the `build` method.  
+This method is equivalent to the place where you would normally put your
+logic in a non-notifier provider.
+
+This method should not be called directly.
+
+</>
+    },
+]}
+/>
+</When>
+
+For reference, you might want to check <Link documentID="essentials/first_request" />
+to compare this new syntax with the previously seen syntax.
+
+:::info
+A Notifier with no method outside of `build` is identical to using the
+previously seen syntax.  
+The syntax shown in <Link documentID="essentials/first_request" /> can be considered
+as a shorthand for notifiers with no way to be modified from the UI.
+:::
+
+Now that we've seen the syntax, let's see how to convert our previously
+defined provider to a notifier.
 
 TODO:
 
