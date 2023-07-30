@@ -692,7 +692,20 @@ class _ProviderName {
 }
 
 String _displayTypeForProvider(VariableElement definition) {
-  return definition.type.getDisplayString(withNullability: true);
+  final type = definition.type;
+  if (type is ParameterizedType) {
+    final parameterizedType = definition.type as ParameterizedType;
+    if (parameterizedType.typeArguments.isNotEmpty) {
+      // return the type definitions parameters
+      return '<${parameterizedType.typeArguments.join(', ')}>';
+    } else {
+      // Some test data is custom class with no type information `FamilyFamily`
+      return definition.type.getDisplayString(withNullability: true);
+    }
+  } else {
+    // return the base type if it isn't a parameterized type.
+    return definition.type.getDisplayString(withNullability: true);
+  }
 }
 
 /// Returns the name of the provider.

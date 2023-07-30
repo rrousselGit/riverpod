@@ -50,29 +50,29 @@ flowchart TB
     Provider[[provider]];
   end
 
-  additionProvider[["additionProvider</br>FutureProvider&lt; num&gt;"]];
-  normalProvider[["normalProvider</br>Provider&lt; int&gt;"]];
-  futureProvider[["futureProvider</br>FutureProvider&lt; int&gt;"]];
-  familyProviders[["familyProviders</br>ProviderFamily&lt; int, Object?&gt;"]];
-  functionProvider[["functionProvider</br>Provider&lt; int Function()&gt;"]];
-  selectedProvider[["selectedProvider</br>Provider&lt; int&gt;"]];
+  additionProvider[["additionProvider</br>&lt; num&gt;"]];
+  normalProvider[["normalProvider</br>&lt; int&gt;"]];
+  futureProvider[["futureProvider</br>&lt; int&gt;"]];
+  familyProviders[["familyProviders</br>&lt; int, Object?&gt;"]];
+  functionProvider[["functionProvider</br>&lt; int Function()&gt;"]];
+  selectedProvider[["selectedProvider</br>&lt; int&gt;"]];
   subgraph SampleClass
-    SampleClass.normalProvider[["normalProvider</br>Provider&lt; int&gt;"]];
+    SampleClass.normalProvider[["normalProvider</br>&lt; int&gt;"]];
   end
   subgraph SampleClass
-    SampleClass.futureProvider[["futureProvider</br>FutureProvider&lt; int&gt;"]];
+    SampleClass.futureProvider[["futureProvider</br>&lt; int&gt;"]];
   end
   subgraph SampleClass
-    SampleClass.familyProviders[["familyProviders</br>ProviderFamily&lt; int, Object?&gt;"]];
+    SampleClass.familyProviders[["familyProviders</br>&lt; int, Object?&gt;"]];
   end
   subgraph SampleClass
-    SampleClass.functionProvider[["functionProvider</br>Provider&lt; int Function()&gt;"]];
+    SampleClass.functionProvider[["functionProvider</br>&lt; int Function()&gt;"]];
   end
   subgraph SampleClass
-    SampleClass.selectedProvider[["selectedProvider</br>Provider&lt; int&gt;"]];
+    SampleClass.selectedProvider[["selectedProvider</br>&lt; int&gt;"]];
   end
-  marvelTearOffConsumer[["marvelTearOffConsumer</br>Provider&lt; Null&gt;"]];
-  marvelRefdProvider[["marvelRefdProvider</br>Provider&lt; MarvelRepository&gt;"]];
+  marvelTearOffConsumer[["marvelTearOffConsumer</br>&lt; Null&gt;"]];
+  marvelRefdProvider[["marvelRefdProvider</br>&lt; MarvelRepository&gt;"]];
 
   normalProvider ==> additionProvider;
   futureProvider ==> additionProvider;
@@ -137,43 +137,43 @@ Legend: {
   }
 }
 
-additionProvider: "additionProvider\nFutureProvider<num>"
+additionProvider: "additionProvider\n<num>"
 additionProvider.shape: rectangle
 additionProvider.tooltip: "A provider returning the sum of the other providers."
-normalProvider: "normalProvider\nProvider<int>"
+normalProvider: "normalProvider\n<int>"
 normalProvider.shape: rectangle
 normalProvider.tooltip: "A provider returning a number."
-futureProvider: "futureProvider\nFutureProvider<int>"
+futureProvider: "futureProvider\n<int>"
 futureProvider.shape: rectangle
 futureProvider.tooltip: "A future provider returning a number."
-familyProviders: "familyProviders\nProviderFamily<int, Object?>"
+familyProviders: "familyProviders\n<int, Object?>"
 familyProviders.shape: rectangle
 familyProviders.tooltip: "A family provider returning a number."
-functionProvider: "functionProvider\nProvider<int Function()>"
+functionProvider: "functionProvider\n<int Function()>"
 functionProvider.shape: rectangle
 functionProvider.tooltip: "A provider returning a function that returns a number."
-selectedProvider: "selectedProvider\nProvider<int>"
+selectedProvider: "selectedProvider\n<int>"
 selectedProvider.shape: rectangle
 selectedProvider.tooltip: "A provider returning a number that will be selected."
-SampleClass.normalProvider: "SampleClass.normalProvider\nProvider<int>"
+SampleClass.normalProvider: "SampleClass.normalProvider\n<int>"
 SampleClass.normalProvider.shape: rectangle
 SampleClass.normalProvider.tooltip: "A provider returning a number."
-SampleClass.futureProvider: "SampleClass.futureProvider\nFutureProvider<int>"
+SampleClass.futureProvider: "SampleClass.futureProvider\n<int>"
 SampleClass.futureProvider.shape: rectangle
 SampleClass.futureProvider.tooltip: "A future provider returning a number."
-SampleClass.familyProviders: "SampleClass.familyProviders\nProviderFamily<int, Object?>"
+SampleClass.familyProviders: "SampleClass.familyProviders\n<int, Object?>"
 SampleClass.familyProviders.shape: rectangle
 SampleClass.familyProviders.tooltip: "A family provider returning a number."
-SampleClass.functionProvider: "SampleClass.functionProvider\nProvider<int Function()>"
+SampleClass.functionProvider: "SampleClass.functionProvider\n<int Function()>"
 SampleClass.functionProvider.shape: rectangle
 SampleClass.functionProvider.tooltip: "A provider returning a function that returns a number."
-SampleClass.selectedProvider: "SampleClass.selectedProvider\nProvider<int>"
+SampleClass.selectedProvider: "SampleClass.selectedProvider\n<int>"
 SampleClass.selectedProvider.shape: rectangle
 SampleClass.selectedProvider.tooltip: "A provider returning a number that will be selected."
-marvelTearOffConsumer: "marvelTearOffConsumer\nProvider<Null>"
+marvelTearOffConsumer: "marvelTearOffConsumer\n<Null>"
 marvelTearOffConsumer.shape: rectangle
 marvelTearOffConsumer.tooltip: "read/watch/listen seem to be required to bring this in scope for analysis"
-marvelRefdProvider: "marvelRefdProvider\nProvider<MarvelRepository>"
+marvelRefdProvider: "marvelRefdProvider\n<MarvelRepository>"
 marvelRefdProvider.shape: rectangle
 marvelRefdProvider.tooltip: "taken from the marvel example"
 

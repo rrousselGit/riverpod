@@ -55,7 +55,7 @@ flowchart TB
     Provider[[provider]];
   end
 
-  counterProvider[["counterProvider</br>StateProvider&lt; int&gt;"]];
+  counterProvider[["counterProvider</br>&lt; int&gt;"]];
   CounterWidget((CounterWidget));
 
   counterProvider ==> CounterWidget;
@@ -113,7 +113,7 @@ Legend: {
   }
 }
 
-counterProvider: "counterProvider\nStateProvider<int>"
+counterProvider: "counterProvider\n<int>"
 counterProvider.shape: rectangle
 counterProvider.tooltip: "Counter provider."
 CounterWidget.shape: circle
