@@ -62,11 +62,11 @@ flowchart TB
     ConsumerWidget((widget));
     Provider[[provider]];
   end
-  filteredTodos[["filteredTodos</br>Provider&lt; List&lt; Todo &gt; &gt;"]];
-  todoListProvider[["todoListProvider</br>StateNotifierProvider&lt; TodoList, List&lt; Todo &gt; &gt;"]];
-  todoListFilter[["todoListFilter</br>StateProvider&lt; TodoListFilter &gt;"]];
-  uncompletedTodosCount[["uncompletedTodosCount</br>Provider&lt; int &gt;"]];
-  _currentTodo[["_currentTodo</br>Provider&lt; Todo &gt;"]];
+  filteredTodos[["filteredTodos"]];
+  todoListProvider[["todoListProvider"]];
+  todoListFilter[["todoListFilter"]];
+  uncompletedTodosCount[["uncompletedTodosCount"]];
+  _currentTodo[["_currentTodo"]];
   Home((Home));
   filteredTodos ==> Home;
   todoListProvider -.-> Home;
@@ -110,26 +110,26 @@ _A work in progress_
     ConsumerWidget((widget));
     Provider[[provider]];
   end
-  additionProvider[["additionProvider</br>FutureProvider&lt; num&gt;"]];
-  normalProvider[["normalProvider</br>Provider&lt; int&gt;"]];
-  futureProvider[["futureProvider</br>FutureProvider&lt; int&gt;"]];
-  familyProviders[["familyProviders</br>ProviderFamily&lt; int, Object?&gt;"]];
-  functionProvider[["functionProvider</br>Provider&lt; int Function()&gt;"]];
-  selectedProvider[["selectedProvider</br>Provider&lt; int&gt;"]];
+  additionProvider[["additionProvider"]];
+  normalProvider[["normalProvider"]];
+  futureProvider[["futureProvider"]];
+  familyProviders[["familyProviders"]];
+  functionProvider[["functionProvider"]];
+  selectedProvider[["selectedProvider"]];
   subgraph SampleClass
-    SampleClass.normalProvider[["normalProvider</br>Provider&lt; int&gt;"]];
+    SampleClass.normalProvider[["normalProvider"]];
   end
   subgraph SampleClass
-    SampleClass.futureProvider[["futureProvider</br>FutureProvider&lt; int&gt;"]];
+    SampleClass.futureProvider[["futureProvider"]];
   end
   subgraph SampleClass
-    SampleClass.familyProviders[["familyProviders</br>ProviderFamily&lt; int, Object?&gt;"]];
+    SampleClass.familyProviders[["familyProviders"]];
   end
   subgraph SampleClass
-    SampleClass.functionProvider[["functionProvider</br>Provider&lt; int Function()&gt;"]];
+    SampleClass.functionProvider[["functionProvider"]];
   end
   subgraph SampleClass
-    SampleClass.selectedProvider[["selectedProvider</br>Provider&lt; int&gt;"]];
+    SampleClass.selectedProvider[["selectedProvider"]];
   end
   normalProvider ==> additionProvider;
   futureProvider ==> additionProvider;
