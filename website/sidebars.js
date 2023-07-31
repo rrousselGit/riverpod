@@ -21,8 +21,8 @@ module.exports = {
       collapsible: false,
       items: [
         "essentials/first_request",
-        "essentials/passing_args",
         "essentials/side_effects",
+        "essentials/passing_args",
         {
           type: "link",
           label: "Websockets and synchronous execution (WIP)",
