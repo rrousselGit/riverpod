@@ -94,6 +94,10 @@ module.exports = {
               label: "Code of conduct",
               href: "https://github.com/rrousselGit/riverpod/blob/master/CODE_OF_CONDUCT.md",
             },
+            {
+              label: "Contributing guide",
+              href: "https://github.com/rrousselGit/riverpod/blob/rework-flow/CONTRIBUTING.md",
+            },
           ],
         },
         {
