@@ -55,14 +55,14 @@ flowchart TB
     Provider[[provider]];
   end
 
-  supports$inNamesProvider[["supports$inNamesProvider</br>&lt; String&gt;"]];
-  publicProvider[["publicProvider</br>&lt; String&gt;"]];
-  familyProvider[["familyProvider</br>FamilyFamily"]];
-  _privateProvider[["_privateProvider</br>&lt; String&gt;"]];
-  publicClassProvider[["publicClassProvider</br>&lt; PublicClass, String&gt;"]];
-  _privateClassProvider[["_privateClassProvider</br>&lt; _PrivateClass, String&gt;"]];
-  familyClassProvider[["familyClassProvider</br>FamilyClassFamily"]];
-  supports$InClassNameProvider[["supports$InClassNameProvider</br>&lt; Supports$InClassName, String&gt;"]];
+  supports$inNamesProvider[["supports$inNamesProvider"]];
+  publicProvider[["publicProvider"]];
+  familyProvider[["familyProvider"]];
+  _privateProvider[["_privateProvider"]];
+  publicClassProvider[["publicClassProvider"]];
+  _privateClassProvider[["_privateClassProvider"]];
+  familyClassProvider[["familyClassProvider"]];
+  supports$InClassNameProvider[["supports$InClassNameProvider"]];
 
   publicProvider ==> supports$inNamesProvider;
   publicProvider ==> familyProvider;
@@ -123,28 +123,28 @@ Legend: {
   }
 }
 
-supports$inNamesProvider: "supports$inNamesProvider\n<String>"
+supports$inNamesProvider: "supports$inNamesProvider"
 supports$inNamesProvider.shape: rectangle
 supports$inNamesProvider.tooltip: "A generated provider with a '$' in its name."
-publicProvider: "publicProvider\n<String>"
+publicProvider: "publicProvider"
 publicProvider.shape: rectangle
 publicProvider.tooltip: "A public generated provider."
-familyProvider: "familyProvider\nFamilyFamily"
+familyProvider: "familyProvider"
 familyProvider.shape: rectangle
 familyProvider.tooltip: "A generated family provider."
-_privateProvider: "_privateProvider\n<String>"
+_privateProvider: "_privateProvider"
 _privateProvider.shape: rectangle
 _privateProvider.tooltip: "See also [_private]."
-publicClassProvider: "publicClassProvider\n<PublicClass, String>"
+publicClassProvider: "publicClassProvider"
 publicClassProvider.shape: rectangle
 publicClassProvider.tooltip: "A generated public provider from a class"
-_privateClassProvider: "_privateClassProvider\n<_PrivateClass, String>"
+_privateClassProvider: "_privateClassProvider"
 _privateClassProvider.shape: rectangle
 _privateClassProvider.tooltip: "See also [_PrivateClass]."
-familyClassProvider: "familyClassProvider\nFamilyClassFamily"
+familyClassProvider: "familyClassProvider"
 familyClassProvider.shape: rectangle
 familyClassProvider.tooltip: "A generated family provider from a class."
-supports$InClassNameProvider: "supports$InClassNameProvider\n<Supports$InClassName, String>"
+supports$InClassNameProvider: "supports$InClassNameProvider"
 supports$InClassNameProvider.shape: rectangle
 supports$InClassNameProvider.tooltip: "A generated provider from a class with a '$' in its name."
 

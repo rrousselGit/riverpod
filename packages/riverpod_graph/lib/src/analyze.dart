@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:analyzer/dart/analysis/analysis_context_collection.dart';
@@ -138,8 +137,7 @@ Legend: {
   // this lets us do all node config in one place before they are used
   for (final node in providerGraph.providers) {
     final providerName = _displayNameForProvider(node.definition).name;
-    final typeDefinition = _displayTypeForProvider(node.definition);
-    buffer.writeln('$providerName: "$providerName$rawNewline$typeDefinition"');
+    buffer.writeln('$providerName: "$providerName"');
     buffer.writeln('$providerName.shape: rectangle');
 
     // d2 supports tooltips.  mermaid does not
@@ -229,30 +227,21 @@ flowchart TB
 
 ''');
 
-  // markdown has to be html escaped because the previewers seem to be  html viewers
-  const htmlEscaper = HtmlEscape();
-
   // declare all the provider nodes before doing any connections
   // this lets us do all node config in one place before they are used
   for (final node in providerGraph.providers) {
     final nodeGlobalName = _displayNameForProvider(node.definition);
     final isContainedInClass = nodeGlobalName.enclosingElementName.isNotEmpty;
 
-    // some special handling for generics because markdown is HTML sensitive
-    // the '<' replaceAll was found in test where '&lt;' followed by any charcter was eaten
-    final typeDefinition = htmlEscaper.convert(
-      _displayTypeForProvider(node.definition).replaceAll('<', '< '),
-    );
-
     if (isContainedInClass) {
       buffer.writeln('  subgraph ${nodeGlobalName.enclosingElementName}');
       buffer.writeln(
-        '    ${nodeGlobalName.name}[["${nodeGlobalName.providerName}</br>$typeDefinition"]];',
+        '    ${nodeGlobalName.name}[["${nodeGlobalName.providerName}"]];',
       );
       buffer.writeln('  end');
     } else {
       buffer.writeln(
-        '  ${nodeGlobalName.name}[["${nodeGlobalName.providerName}</br>$typeDefinition"]];',
+        '  ${nodeGlobalName.name}[["${nodeGlobalName.providerName}"]];',
       );
     }
   }
@@ -689,23 +678,6 @@ class _ProviderName {
   String get name => enclosingElementName.isNotEmpty
       ? '$enclosingElementName.$providerName'
       : providerName;
-}
-
-String _displayTypeForProvider(VariableElement definition) {
-  final type = definition.type;
-  if (type is ParameterizedType) {
-    final parameterizedType = definition.type as ParameterizedType;
-    if (parameterizedType.typeArguments.isNotEmpty) {
-      // return the type definitions parameters
-      return '<${parameterizedType.typeArguments.join(', ')}>';
-    } else {
-      // Some test data is custom class with no type information `FamilyFamily`
-      return definition.type.getDisplayString(withNullability: true);
-    }
-  } else {
-    // return the base type if it isn't a parameterized type.
-    return definition.type.getDisplayString(withNullability: true);
-  }
 }
 
 /// Returns the name of the provider.

@@ -55,7 +55,7 @@ flowchart TB
     Provider[[provider]];
   end
 
-  counterProvider[["counterProvider</br>&lt; int&gt;"]];
+  counterProvider[["counterProvider"]];
   CounterWidget((CounterWidget));
 
   counterProvider ==> CounterWidget;
@@ -100,7 +100,7 @@ flowchart TB
 
       expect(
         stdoutList.sublist(1).join('\n'),
-        r'''
+        '''
 Legend: {
   Type: {
     Widget.shape: circle
@@ -113,7 +113,7 @@ Legend: {
   }
 }
 
-counterProvider: "counterProvider\n<int>"
+counterProvider: "counterProvider"
 counterProvider.shape: rectangle
 counterProvider.tooltip: "Counter provider."
 CounterWidget.shape: circle
