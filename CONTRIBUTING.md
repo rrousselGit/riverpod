@@ -76,6 +76,33 @@ Translations are hosted in [`/website/i18n`](https://github.com/rrousselGit/rive
 
 ### Working on packages
 
+### Updating english docs
+
+English docs are the source of truth for Riverpod docs. As such, translations
+may get "out of date" for a period of time.  
+To make it obvious for users that a translated page may be out of date, Riverpod's
+website supports showing a warning banner at the top of the translation pages.
+
+To support in a maintainable way, when editing english docs in a way that requires
+translations to be updated, the english's "version number" needs to be bumped.  
+**This does not need to be done when fixing typos**
+
+To bump the version number of a page, you should either add or update
+a `version: nbr` at the very top of the file.
+
+For example:
+
+```md
+---
+title: This is an example
+version: 2
+# ^ This number needs to be incremented.
+# Doing so will show an outdated banner on all translations of this page.
+---
+
+Some content
+```
+
 #### Adding code snippets
 
 Unless agree otherwise, all code snippets inside docs need to be placed in a `.dart` file
@@ -92,4 +119,4 @@ your code snippets should support those.
 This is done by having a separate `.dart` file for each possible scenario.  
 Again, look at the [Getting Started] for an example.
 
-[Getting Started]: https://github.com/rrousselGit/riverpod/blob/master/website/docs/getting_started.mdx
+[Getting Started]: https://github.com/rrousselGit/riverpod/blob/rework-flow/website/docs/introduction/getting_started.mdx
