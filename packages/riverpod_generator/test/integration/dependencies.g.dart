@@ -222,22 +222,22 @@ final smallTransitiveDependencyCountProvider =
 );
 
 typedef SmallTransitiveDependencyCountRef = AutoDisposeProviderRef<int>;
-String _$emptyDependenciesStatelessHash() =>
-    r'2415aab6f03b1cb67fa8fecc5d2af1ec5d261398';
+String _$emptyDependenciesFunctionalHash() =>
+    r'73d68dcbd3ea09b593b84b4a4dae9eb6e72e3640';
 
-/// See also [emptyDependenciesStateless].
-@ProviderFor(emptyDependenciesStateless)
-final emptyDependenciesStatelessProvider = AutoDisposeProvider<int>.internal(
-  emptyDependenciesStateless,
-  name: r'emptyDependenciesStatelessProvider',
+/// See also [emptyDependenciesFunctional].
+@ProviderFor(emptyDependenciesFunctional)
+final emptyDependenciesFunctionalProvider = AutoDisposeProvider<int>.internal(
+  emptyDependenciesFunctional,
+  name: r'emptyDependenciesFunctionalProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$emptyDependenciesStatelessHash,
+      : _$emptyDependenciesFunctionalHash,
   dependencies: const <ProviderOrFamily>[],
   allTransitiveDependencies: const <ProviderOrFamily>{},
 );
 
-typedef EmptyDependenciesStatelessRef = AutoDisposeProviderRef<int>;
+typedef EmptyDependenciesFunctionalRef = AutoDisposeProviderRef<int>;
 String _$providerWithDependenciesHash() =>
     r'beecbe7a41b647ab92367dbcc12055bcd6345af7';
 
@@ -533,22 +533,22 @@ class Provider4Provider
   }
 }
 
-String _$emptyDependenciesStatefulHash() =>
-    r'7cd5d081bbfb866823b0d493e63bfc63b9d9c804';
+String _$emptyDependenciesClassBasedHash() =>
+    r'e20c18353984a81977b656e9879b3841dbaedc6c';
 
-/// See also [EmptyDependenciesStateful].
-@ProviderFor(EmptyDependenciesStateful)
-final emptyDependenciesStatefulProvider =
-    AutoDisposeNotifierProvider<EmptyDependenciesStateful, int>.internal(
-  EmptyDependenciesStateful.new,
-  name: r'emptyDependenciesStatefulProvider',
+/// See also [EmptyDependenciesClassBased].
+@ProviderFor(EmptyDependenciesClassBased)
+final emptyDependenciesClassBasedProvider =
+    AutoDisposeNotifierProvider<EmptyDependenciesClassBased, int>.internal(
+  EmptyDependenciesClassBased.new,
+  name: r'emptyDependenciesClassBasedProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$emptyDependenciesStatefulHash,
+      : _$emptyDependenciesClassBasedHash,
   dependencies: const <ProviderOrFamily>[],
   allTransitiveDependencies: const <ProviderOrFamily>{},
 );
 
-typedef _$EmptyDependenciesStateful = AutoDisposeNotifier<int>;
+typedef _$EmptyDependenciesClassBased = AutoDisposeNotifier<int>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member

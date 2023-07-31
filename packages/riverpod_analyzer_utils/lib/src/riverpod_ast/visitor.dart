@@ -37,11 +37,11 @@ abstract class RiverpodAstVisitor {
     LegacyProviderDependency dependency,
   );
 
-  void visitStatefulProviderDeclaration(
-    StatefulProviderDeclaration declaration,
+  void visitClassBasedProviderDeclaration(
+    ClassBasedProviderDeclaration declaration,
   );
-  void visitStatelessProviderDeclaration(
-    StatelessProviderDeclaration declaration,
+  void visitFunctionalProviderDeclaration(
+    FunctionalProviderDeclaration declaration,
   );
 
   void visitProviderListenableExpression(
@@ -182,15 +182,15 @@ class RecursiveRiverpodAstVisitor extends RiverpodAstVisitor {
   }
 
   @override
-  void visitStatefulProviderDeclaration(
-    StatefulProviderDeclaration declaration,
+  void visitClassBasedProviderDeclaration(
+    ClassBasedProviderDeclaration declaration,
   ) {
     declaration.visitChildren(this);
   }
 
   @override
-  void visitStatelessProviderDeclaration(
-    StatelessProviderDeclaration declaration,
+  void visitFunctionalProviderDeclaration(
+    FunctionalProviderDeclaration declaration,
   ) {
     declaration.visitChildren(this);
   }
@@ -316,13 +316,13 @@ class SimpleRiverpodAstVisitor extends RiverpodAstVisitor {
   ) {}
 
   @override
-  void visitStatefulProviderDeclaration(
-    StatefulProviderDeclaration declaration,
+  void visitClassBasedProviderDeclaration(
+    ClassBasedProviderDeclaration declaration,
   ) {}
 
   @override
-  void visitStatelessProviderDeclaration(
-    StatelessProviderDeclaration declaration,
+  void visitFunctionalProviderDeclaration(
+    FunctionalProviderDeclaration declaration,
   ) {}
 
   @override
@@ -476,17 +476,17 @@ class UnimplementedRiverpodAstVisitor extends RiverpodAstVisitor {
   }
 
   @override
-  void visitStatefulProviderDeclaration(
-    StatefulProviderDeclaration declaration,
+  void visitClassBasedProviderDeclaration(
+    ClassBasedProviderDeclaration declaration,
   ) {
-    throw UnimplementedError('implement visitStatefulProviderDeclaration');
+    throw UnimplementedError('implement visitClassBasedProviderDeclaration');
   }
 
   @override
-  void visitStatelessProviderDeclaration(
-    StatelessProviderDeclaration declaration,
+  void visitFunctionalProviderDeclaration(
+    FunctionalProviderDeclaration declaration,
   ) {
-    throw UnimplementedError('implement visitStatelessProviderDeclaration');
+    throw UnimplementedError('implement visitFunctionalProviderDeclaration');
   }
 
   @override
@@ -535,24 +535,24 @@ class RiverpodAstRegistry {
   void addGeneratorProviderDeclaration(
     void Function(GeneratorProviderDeclaration) cb,
   ) {
-    addStatefulProviderDeclaration(cb);
-    addStatelessProviderDeclaration(cb);
+    addClassBasedProviderDeclaration(cb);
+    addFunctionalProviderDeclaration(cb);
   }
 
-  final _onStatefulProviderDeclaration =
-      <void Function(StatefulProviderDeclaration)>[];
-  void addStatefulProviderDeclaration(
-    void Function(StatefulProviderDeclaration) cb,
+  final _onClassBasedProviderDeclaration =
+      <void Function(ClassBasedProviderDeclaration)>[];
+  void addClassBasedProviderDeclaration(
+    void Function(ClassBasedProviderDeclaration) cb,
   ) {
-    _onStatefulProviderDeclaration.add(cb);
+    _onClassBasedProviderDeclaration.add(cb);
   }
 
-  final _onStatelessProviderDeclaration =
-      <void Function(StatelessProviderDeclaration)>[];
-  void addStatelessProviderDeclaration(
-    void Function(StatelessProviderDeclaration) cb,
+  final _onFunctionalProviderDeclaration =
+      <void Function(FunctionalProviderDeclaration)>[];
+  void addFunctionalProviderDeclaration(
+    void Function(FunctionalProviderDeclaration) cb,
   ) {
-    _onStatelessProviderDeclaration.add(cb);
+    _onFunctionalProviderDeclaration.add(cb);
   }
 
   final _onRiverpodAnnotation = <void Function(RiverpodAnnotation)>[];
@@ -908,19 +908,22 @@ class _RiverpodAstRegistryVisitor extends RiverpodAstVisitor {
   }
 
   @override
-  void visitStatefulProviderDeclaration(
-    StatefulProviderDeclaration declaration,
+  void visitClassBasedProviderDeclaration(
+    ClassBasedProviderDeclaration declaration,
   ) {
     declaration.visitChildren(this);
-    _runSubscriptions(declaration, _registry._onStatefulProviderDeclaration);
+    _runSubscriptions(declaration, _registry._onClassBasedProviderDeclaration);
   }
 
   @override
-  void visitStatelessProviderDeclaration(
-    StatelessProviderDeclaration declaration,
+  void visitFunctionalProviderDeclaration(
+    FunctionalProviderDeclaration declaration,
   ) {
     declaration.visitChildren(this);
-    _runSubscriptions(declaration, _registry._onStatelessProviderDeclaration);
+    _runSubscriptions(
+      declaration,
+      _registry._onFunctionalProviderDeclaration,
+    );
   }
 
   @override

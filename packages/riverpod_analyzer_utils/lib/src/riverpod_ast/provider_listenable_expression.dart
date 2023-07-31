@@ -79,14 +79,14 @@ class ProviderListenableExpression extends RiverpodAst {
 
     final function = generatedProviderDefinition.toFunctionValue();
     if (function != null) {
-      return StatelessProviderDeclarationElement.parse(
+      return FunctionalProviderDeclarationElement.parse(
         function,
         annotation: null,
       );
     }
     late final type = generatedProviderDefinition.toTypeValue()?.element;
     if (type != null && type is ClassElement) {
-      return StatefulProviderDeclarationElement.parse(
+      return ClassBasedProviderDeclarationElement.parse(
         type,
         annotation: null,
       );

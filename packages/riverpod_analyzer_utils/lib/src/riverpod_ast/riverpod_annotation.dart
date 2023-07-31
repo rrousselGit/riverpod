@@ -147,7 +147,7 @@ class RiverpodAnnotation extends RiverpodAst {
 
         final dependencyElement = dependency.staticElement;
         if (dependencyElement is FunctionElement) {
-          final dependencyProvider = StatelessProviderDeclarationElement.parse(
+          final dependencyProvider = FunctionalProviderDeclarationElement.parse(
             dependencyElement,
             annotation: null,
           );
@@ -168,7 +168,7 @@ class RiverpodAnnotation extends RiverpodAst {
             ),
           );
         } else if (dependencyElement is ClassElement) {
-          final dependencyProvider = StatefulProviderDeclarationElement.parse(
+          final dependencyProvider = ClassBasedProviderDeclarationElement.parse(
             dependencyElement,
             annotation: null,
           );

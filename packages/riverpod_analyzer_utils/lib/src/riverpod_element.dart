@@ -64,7 +64,7 @@ class RiverpodAnnotationElement {
   }) {
     final functionType = object.toFunctionValue();
     if (functionType != null) {
-      final provider = StatelessProviderDeclarationElement.parse(
+      final provider = FunctionalProviderDeclarationElement.parse(
         functionType,
         annotation: null,
       );
@@ -72,7 +72,7 @@ class RiverpodAnnotationElement {
     }
     final valueType = object.toTypeValue();
     if (valueType != null) {
-      final provider = StatefulProviderDeclarationElement.parse(
+      final provider = ClassBasedProviderDeclarationElement.parse(
         valueType.element! as ClassElement,
         annotation: null,
       );
@@ -271,9 +271,9 @@ abstract class GeneratorProviderDeclarationElement
   bool get isAutoDispose => !annotation.keepAlive;
 }
 
-class StatefulProviderDeclarationElement
+class ClassBasedProviderDeclarationElement
     extends GeneratorProviderDeclarationElement {
-  StatefulProviderDeclarationElement._({
+  ClassBasedProviderDeclarationElement._({
     required this.name,
     required this.annotation,
     required this.buildMethod,
@@ -281,7 +281,7 @@ class StatefulProviderDeclarationElement
   });
 
   @internal
-  static StatefulProviderDeclarationElement? parse(
+  static ClassBasedProviderDeclarationElement? parse(
     ClassElement element, {
     required RiverpodAnnotationElement? annotation,
   }) {
@@ -305,7 +305,7 @@ class StatefulProviderDeclarationElement
         return null;
       }
 
-      return StatefulProviderDeclarationElement._(
+      return ClassBasedProviderDeclarationElement._(
         name: element.name,
         buildMethod: buildMethod,
         element: element,
@@ -314,7 +314,7 @@ class StatefulProviderDeclarationElement
     });
   }
 
-  static final _cache = Expando<_Box<StatefulProviderDeclarationElement>>();
+  static final _cache = Expando<_Box<ClassBasedProviderDeclarationElement>>();
 
   @override
   final ClassElement element;
@@ -328,16 +328,16 @@ class StatefulProviderDeclarationElement
   final ExecutableElement buildMethod;
 }
 
-class StatelessProviderDeclarationElement
+class FunctionalProviderDeclarationElement
     extends GeneratorProviderDeclarationElement {
-  StatelessProviderDeclarationElement._({
+  FunctionalProviderDeclarationElement._({
     required this.name,
     required this.annotation,
     required this.element,
   });
 
   @internal
-  static StatelessProviderDeclarationElement? parse(
+  static FunctionalProviderDeclarationElement? parse(
     ExecutableElement element, {
     required RiverpodAnnotationElement? annotation,
   }) {
@@ -345,7 +345,7 @@ class StatelessProviderDeclarationElement
       final riverpodAnnotation = RiverpodAnnotationElement.parse(element);
       if (riverpodAnnotation == null) return null;
 
-      return StatelessProviderDeclarationElement._(
+      return FunctionalProviderDeclarationElement._(
         name: element.name,
         annotation: riverpodAnnotation,
         element: element,
@@ -353,7 +353,7 @@ class StatelessProviderDeclarationElement
     });
   }
 
-  static final _cache = Expando<_Box<StatelessProviderDeclarationElement>>();
+  static final _cache = Expando<_Box<FunctionalProviderDeclarationElement>>();
 
   @override
   final ExecutableElement element;

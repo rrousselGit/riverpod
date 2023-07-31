@@ -365,8 +365,8 @@ class _ParentRiverpodVisitor extends RecursiveRiverpodAstVisitor {
   }
 
   @override
-  void visitStatefulProviderDeclaration(
-    StatefulProviderDeclaration declaration,
+  void visitClassBasedProviderDeclaration(
+    ClassBasedProviderDeclaration declaration,
   ) {
     expect(
       declaration.parent,
@@ -378,8 +378,8 @@ class _ParentRiverpodVisitor extends RecursiveRiverpodAstVisitor {
   }
 
   @override
-  void visitStatelessProviderDeclaration(
-    StatelessProviderDeclaration declaration,
+  void visitFunctionalProviderDeclaration(
+    FunctionalProviderDeclaration declaration,
   ) {
     expect(
       declaration.parent,
@@ -617,24 +617,24 @@ class RiverpodAnalysisResult extends RecursiveRiverpodAstVisitor {
   }
 
   final generatorProviderDeclarations = <GeneratorProviderDeclaration>[];
-  final statefulProviderDeclarations = <StatefulProviderDeclaration>[];
+  final classBasedProviderDeclarations = <ClassBasedProviderDeclaration>[];
   @override
-  void visitStatefulProviderDeclaration(
-    StatefulProviderDeclaration declaration,
+  void visitClassBasedProviderDeclaration(
+    ClassBasedProviderDeclaration declaration,
   ) {
-    super.visitStatefulProviderDeclaration(declaration);
+    super.visitClassBasedProviderDeclaration(declaration);
     generatorProviderDeclarations.add(declaration);
-    statefulProviderDeclarations.add(declaration);
+    classBasedProviderDeclarations.add(declaration);
   }
 
-  final statelessProviderDeclarations = <StatelessProviderDeclaration>[];
+  final functionalProviderDeclarations = <FunctionalProviderDeclaration>[];
   @override
-  void visitStatelessProviderDeclaration(
-    StatelessProviderDeclaration declaration,
+  void visitFunctionalProviderDeclaration(
+    FunctionalProviderDeclaration declaration,
   ) {
-    super.visitStatelessProviderDeclaration(declaration);
+    super.visitFunctionalProviderDeclaration(declaration);
     generatorProviderDeclarations.add(declaration);
-    statelessProviderDeclarations.add(declaration);
+    functionalProviderDeclarations.add(declaration);
   }
 
   final widgetRefInvocations = <WidgetRefInvocation>[];
