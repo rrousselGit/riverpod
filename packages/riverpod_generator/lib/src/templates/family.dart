@@ -4,8 +4,8 @@ import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
 import '../models.dart';
 import '../riverpod_generator.dart';
+import 'class_based_provider.dart';
 import 'parameters.dart';
-import 'stateful_provider.dart';
 import 'template.dart';
 
 String providerFamilyNameFor(
@@ -37,8 +37,8 @@ class FamilyTemplate extends Template {
     }
   }
 
-  factory FamilyTemplate.stateless(
-    StatelessProviderDeclaration provider, {
+  factory FamilyTemplate.functional(
+    FunctionalProviderDeclaration provider, {
     required String refName,
     required String hashFn,
     required BuildYamlOptions options,
@@ -84,8 +84,8 @@ typedef $refName = ${providerType}Ref<${provider.valueType}>;
     );
   }
 
-  factory FamilyTemplate.stateful(
-    StatefulProviderDeclaration provider, {
+  factory FamilyTemplate.classBased(
+    ClassBasedProviderDeclaration provider, {
     required String notifierTypedefName,
     required String hashFn,
     required BuildYamlOptions options,

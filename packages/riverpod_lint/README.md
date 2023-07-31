@@ -47,8 +47,9 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
   - [provider\_parameters](#provider_parameters)
   - [avoid\_public\_notifier\_properties](#avoid_public_notifier_properties)
   - [unsupported\_provider\_value (riverpod\_generator only)](#unsupported_provider_value-riverpod_generator-only)
-  - [stateless\_ref (riverpod\_generator only)](#stateless_ref-riverpod_generator-only)
-  - [generator\_class\_extends (riverpod\_generator only)](#generator_class_extends-riverpod_generator-only)
+  - [functional\_ref (riverpod\_generator only)](#functional_ref-riverpod_generator-only)
+  - [notifier\_extends (riverpod\_generator only)](#notifier_extends-riverpod_generator-only)
+  - [avoid\_ref\_inside\_state\_dispose](#avoid_ref_inside_state_dispose)
 - [All assists](#all-assists)
   - [Wrap widgets with a `Consumer`](#wrap-widgets-with-a-consumer)
   - [Wrap widgets with a `ProviderScope`](#wrap-widgets-with-a-providerscope)
@@ -479,9 +480,9 @@ class MyStateNotifier extends StateNotifier<int> {
 }
 ```
 
-### stateless_ref (riverpod_generator only)
+### functional_ref (riverpod_generator only)
 
-Stateless providers must receive a ref matching the provider name as their first positional parameter.
+Functional providers must receive a ref matching the provider name as their first positional parameter.
 
 **Good**:
 
@@ -502,7 +503,7 @@ int myProvider() => 0;
 int myProvider(int ref) => 0;
 ```
 
-### generator_class_extends (riverpod_generator only)
+### notifier_extends (riverpod_generator only)
 
 Classes annotated by `@riverpod` must extend \_$ClassName
 
@@ -528,6 +529,25 @@ class Example {
 @riverpod
 class Example extends Anything {
   int build() => 0;
+}
+```
+
+### avoid_ref_inside_state_dispose
+
+Avoid using `Ref` in the dispose method.
+
+**Bad**:
+
+```dart
+class _MyWidgetState extends ConsumerState<MyWidget> {
+  @override
+  void dispose() {
+    // Do not use 'ref' in the dispose method
+    ref.read(provider).doSomething();
+    super.dispose();
+  }
+
+  // ...
 }
 ```
 

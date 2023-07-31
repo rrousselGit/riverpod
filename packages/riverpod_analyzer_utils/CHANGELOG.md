@@ -40,8 +40,8 @@ the `@riverpod external int value()` syntax.
 
 - Decode generated StreamProviders.
 
-- Upcast `StatefulProviderDeclaratation.providerElement` &
-  `StatelessProviderDeclaratation.providerElement` to their respective element type.
+- Upcast `ClassBasedProviderDeclaratation.providerElement` &
+  `FunctionalProviderDeclaratation.providerElement` to their respective element type.
 
 - Change error handling mechanism (no more exceptions)
 
