@@ -24,7 +24,8 @@ jobs:
     strategy:
       matrix:
         channel:
-          - stable
+          # Disabled due to some outdated dependencies on Flutter stable
+          # - stable
           - master
         package_path:
           - examples/counter
