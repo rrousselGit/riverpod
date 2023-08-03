@@ -1,3 +1,7 @@
+## Unreleased patch
+
+Support analyzer 6.0.0
+
 ## 0.3.1 - 2023-05-12
 
 - Upgrade `custom_lint_core` to 0.4.0
