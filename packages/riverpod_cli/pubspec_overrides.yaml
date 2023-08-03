@@ -1,0 +1,3 @@
+dependency_overrides:
+  # necessary for codemod
+  analyzer: ^6.0.0
