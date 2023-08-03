@@ -5,6 +5,7 @@
 - Added `avoid_ref_inside_state_dispose` (thanks to @LeonardoRosaa).
   This warns if a `WidgetRef` is used in `State.dispose`, which would result
   in a runtime error.
+- Support analyzer 6.0.0
 
 ## 1.4.0 - 2023-07-25
 
