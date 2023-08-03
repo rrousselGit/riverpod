@@ -1,4 +1,4 @@
-## Unreleased patch
+## 2.2.5 - 2023-08-03
 
 Support analyzer 6.0.0
 

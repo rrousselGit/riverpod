@@ -1,4 +1,4 @@
-## Unreleased major
+## 2.0.0 - 2023-08-03
 
 - **Breaking** Renamed `generator_class_extends` to `notifier_extends`
 - **Breaking** Renamed `stateless_ref` to `functional_ref` (thanks to @AhmedLSayed9)
