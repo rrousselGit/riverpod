@@ -1,5 +1,5 @@
 name: riverpod_graph
-version: 0.0.1
+version: 0.0.2
 homepage: https://riverpod.dev
 repository: https://github.com/rrousselGit/riverpod
 publish_to: none
@@ -11,7 +11,7 @@ environment:
   sdk: ">=2.15.0 <3.0.0"
 
 dependencies:
-  analyzer: ">=4.0.0 <5.0.0"
+  analyzer: ^6.0.0
   args: ^2.4.0
   collection: ^1.0.0
   path: ^1.8.2

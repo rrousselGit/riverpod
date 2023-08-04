@@ -479,7 +479,7 @@ class ProviderDependencyVisitor extends RecursiveAstVisitor<void> {
               final buildMethod = classDeclaration.members
                   .whereType<MethodDeclaration>()
                   .firstWhereOrNull(
-                    (method) => method.name.name == 'build',
+                    (method) => method.name.lexeme == 'build',
                   );
               // Instead of continuing with the current node, we visit the one of
               // the referenced constructor.
