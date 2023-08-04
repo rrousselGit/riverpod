@@ -15,7 +15,7 @@ In this page, we will focus on:
 - How to migrate from `ProviderListener` to `ProviderObserver` for logging purposes
 
 
-## From `StateNotifier`(or `ChangeNotifier`) to `Notifier` (or `AsyncNotifier`)
+## Migrating from `StateNotifier`
 
 Riverpod `2.0` introduced the new `Notifier` and `AsyncNotifier` classes.  
 These two are meant to replace the - now - legacy `StateNotifier`, with the following advantages:
@@ -25,6 +25,10 @@ These two are meant to replace the - now - legacy `StateNotifier`, with the foll
 - Easier provider initialization
 
 Alas, these features introduce a few breaking changes. This page is meant to help you overcome these.
+
+:::info
+This migration guide is useful for migrating away from `ChangeNotifier` as well.
+:::
 
 ### Initialization with `build`
 
@@ -57,7 +61,7 @@ You can notice the following differences:
 - No constructor specification needed
 - Initialization is done in the new `build` method
 - Dependencies are specified directly in the new `build` method
-- Thus, `NotifierProvider` has no `ref` in its build callback
+- `NotifierProvider` has no `ref` in its build callback
 
 ### `Notifier` and `AsyncNotifier` have their own `ref`
 
