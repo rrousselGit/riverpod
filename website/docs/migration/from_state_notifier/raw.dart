@@ -5,6 +5,10 @@ class DiceNotifier extends Notifier<int> {
   @override
   int build() {
     final random = ref.watch(randomProvider);
+
+    print('Post-initialization effects go here.');
+    _startCamera();
+
     return random + 1;
   }
 

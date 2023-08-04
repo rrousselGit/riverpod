@@ -43,7 +43,10 @@ final randomProvider = Provider<int>((ref) {
 });
 
 class DiceNotifier extends StateNotifier<int> {
-  DiceNotifier(int random) : super(random + 1);
+  DiceNotifier(int random) : super(random + 1) {
+    print('Post-initialization effects go here.');
+    _startCamera();
+  }
 
   void adjust(int offset) => state = state + offset;
 }
