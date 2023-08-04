@@ -5,6 +5,7 @@ title: ^1.0.0 to ^2.0.0
 import fromStateNotifier from "./from_state_notifier";
 import fromStateNotifier2 from "./from_state_notifier_2";
 import fromStateProvider from "./from_state_provider";
+import oldLifecycles from "./old_lifecycles";
 import {AutoSnippet} from "../../src/components/CodeSnippet";
 
 Riverpod went `2.0`! To see the full list of changes, consult the [Changelog].
@@ -89,6 +90,59 @@ class DiceNotifier extends StateNotifier<int> {
 With `Notifier`, no pipe-down is ever needed.
 <AutoSnippet language="dart" {...fromStateNotifier2}></AutoSnippet>
 
+### `Notifier` and `AsyncNotifier` have a different disposal behavior
+One main difference  between `Notifier` (and `AsyncNotifier`) and `StateNotifier` (and `ChangeNotifier`)
+is their lifecycle.  
+Indeed, while their internal state's lifecycle is identical to any other provider,
+their surrounding class behaves differently.
+
+A `StateNotifier` (or a `ChangeNotifier`) instance is indeed bound to their outer
+`StateNotifierProvider` (or `ChangeNotifierProvider`). When the latter rebuilds, their exposed value,
+aka its `StateNotifier` (or `ChangeNotifier`) is `disposed`, and then re-created (through its constructor).
+
+Take this example:
+```dart
+class MyNotifier extends StateNotifier<int> {
+  MyNotifier(this.period) : super(0) {
+    _timer = Timer.periodic(period, (t) => update());
+  }
+  final Duration period;
+  late final Timer _timer;
+
+  void update() => state++;
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+}
+
+final myNotifierProvider = StateNotifierProvider<MyNotifier, int>((ref) {
+  final Duration period = ref.watch(durationProvider);
+  return MyNotifier(period);
+});
+```
+
+A first takeaway from this example is the following: *if `durationProvider` updates,
+`MyNotifier` disposes*. Its instance is then re-created and its internal state re-initialized as usual.
+
+The second takeaway from the above example is that, unlike every other provider,
+the `dispose` callback is to be defined in the class. It is still possible to write `ref.onDispose`,
+but two different dispose cycles are to be maintained.
+
+Then, check the same example, migrated to its `Notifier` equivalent.
+<AutoSnippet language="dart" {...oldLifecycles}></AutoSnippet>
+
+Here, instead, `MyNotifier`, *will not dispose* when `durationProvider` updates:
+**only its internal state will**.
+
+This incredibly simplifies the API for you, the developer. There is only one lifecycle to take care of:
+the one we really care about, `Notifier`'s inner state.
+
+Finally, notice how to register a `dispose` action we use `ref.onDispose`, just like we would with any
+other provider.
+
 ## Migrating from `StateProvider`
 
 `StateProvider` was exposed by Riverpod's libraries to save a few LoC when in need of a `StateNotifierProvider`.  
@@ -103,8 +157,8 @@ final counterProvider = StateProvider<int>((ref) {
 });
 ```
 
-With a simple migration, this becomes:
-<AutoSnippet language="dart" {...fromStateProvider}></AutoSnippet>
+When migrating to `Notifier`, this becomes:
+<AutoSnippet language="dart" {...oldLifecycles}></AutoSnippet>
 
 Even though it costs us a few more LoC, migrating away from `StateProvider` brings way more advantages, as shown above.
 
