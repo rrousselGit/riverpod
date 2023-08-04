@@ -1,15 +1,19 @@
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 /* SNIPPET START */
-class DiceNotifier extends Notifier<int> {
+class DiceNotifier extends FamilyNotifier<int, String> {
+  late String _id;
   @override
-  int build() {
+  int build(String arg) {
     final random = ref.watch(randomProvider);
+    _id = arg;
     return random + 1;
   }
 
   void adjust(int offset) {
-    ref.read(myRepositoryProvider).post(change: offset).ignore();
+    ref.read(myRepositoryProvider).post(id: _id, change: offset).ignore();
     state = state + offset;
   }
 }
+
+final diceNotifierProvider = NotifierProviderFamily<DiceNotifier, int, String>(DiceNotifier.new);

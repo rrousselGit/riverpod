@@ -11,7 +11,7 @@ import {AutoSnippet} from "../../src/components/CodeSnippet";
 Riverpod went `2.0`! To see the full list of changes, consult the [Changelog].
 
 In this page, we will focus on:
-- How to migrate from the deprecated `StateNotifier` to the new `Notifier`
+- How to migrate from the deprecated `StateNotifier` to the new `Notifier` APIs
 - How to handle the new `AsyncValue` behavior and its new properties
 - How to migrate from `ProviderListener` to `ProviderObserver` for logging purposes
 
@@ -19,21 +19,22 @@ In this page, we will focus on:
 ## Migrating from `StateNotifier`
 
 Riverpod `2.0` introduced the new `Notifier` and `AsyncNotifier` classes.  
-These two are meant to replace the - now - legacy `StateNotifier`, with the following advantages:
+These two are meant to replace the legacy `StateNotifier` (and `ChangeNotifier`), with the following advantages:
+- Conciseness and a better DX overall
 - Codegen support
 - One less [external dependency]
 - Easier distinction between sync and async providers
-- Easier provider initialization
 
 Alas, these features introduce a few breaking changes. This page is meant to help you overcome these.
 
 :::info
-This migration guide is useful for migrating away from `ChangeNotifier` as well.
+This migration guide can be used for migrating away from `ChangeNotifier` as well.
+Its behavior is quite similar to its equivalent for immutable data, `StateNotifier`.
 :::
 
 ### Initialization with `build`
 
-When defining a `StateNotifierProvider` (or `ChangeNotifierProvider`), initialization was
+When defining a `StateNotifierProvider` (or `ChangeNotifierProvider`), initialization is
 typically placed inside the provider itself. Take the following example:
 
 ```dart
@@ -42,8 +43,7 @@ final randomProvider = Provider<int>((ref) {
 });
 
 class DiceNotifier extends StateNotifier<int> {
-  DiceNotifier(this.random) : super(random + 1);
-  final int random;
+  DiceNotifier(int random) : super(random + 1);
 
   void adjust(int offset) => state = state + offset;
 }
@@ -58,37 +58,61 @@ With the new `Notifier` class, the above example translates to:
 <AutoSnippet language="dart" {...fromStateNotifier}></AutoSnippet>
 
 You can notice the following differences:
-- More concise syntax
-- No constructor specification needed
-- Initialization is done in the new `build` method
-- Dependencies are specified directly in the new `build` method
+- A more concise syntax, with no constructor logic
+- There's a new `build` method instead, which specifies initialization logic and its reactive dependencies
 - `NotifierProvider` has no `ref` in its build callback
+- `Notifier` has its own `ref`, internally
 
-### `Notifier` and `AsyncNotifier` have their own `ref`
+### `Notifier` and `AsyncNotifier` have their own `ref` and family attributes
 
 A common `pre-2.0` pattern was to pipe down a `Ref` parameter into your `StateNotifier` (or `ChangeNotifier`) classes.
-This was useful for a plethora of reasons.
+This was useful for a plethora of reasons.  
+Also, if such providers had family parameters, chances are that these parameters must have been piped down
+to their `StateNotifier` (or `ChangeNotifier`), too.
 
-`Notifier` (and `AsyncNotifier`) have their own `Ref` getter, which is handy
-to perform side effects, mutations and, as specified above, to write dependencies into its `build` method.
+`Notifier` (and `AsyncNotifier`), instead, have their own `Ref` getter, which is handy to perform
+side effects, to invoke mutations and, as specified above, to write dependencies into its `build` method.
 
-Taking the above example, say a side-effect is required when invoking `adjust`:
+Also, `Notifier` (and `AsyncNotifier`) have their own `.family` counterpart, which has a more
+transparent API; in a `Notifier` (or `AsyncNotifier`) parameters are explicitly stated and they are
+injected in the `build` method, available to the initialization logic.
 
+Take the above the example, with two slight variations.
+- say a side-effect is required when invoking `adjust`;
+- say that another *external* parameter is required when doing so.
+
+We obtain:
 ```dart
 class DiceNotifier extends StateNotifier<int> {
-  DiceNotifier(this.dice, this.ref) : super(dice + 1);
-  final int dice;
+  DiceNotifier({
+    required this.id,
+    required int random,
+    required this.ref,
+  }) : super(random + 1);
+  final String id;
   final Ref ref;
 
   void adjust(int offset) {
-    ref.read(myRepositoryProvider).post(change: offset).ignore();
+    ref.read(myRepositoryProvider).post(id: id, change: offset).ignore();
     state = state + offset;
   }
 }
+
+final diceNotifierProvider = StateNotifierProvider.family<DiceNotifier, int, String>((ref, id) {
+  final random = ref.watch(randomProvider);
+  return DiceNotifier(id: id, random: random, ref: ref);
+});
 ```
 
-With `Notifier`, no pipe-down is ever needed.
+As you can notice, `diceNotifierProvider` is now a `.family` provider. The whole thing works fine.
+
+But with `Notifier` (and its `FamilyNotifier` variant), no pipe-down is ever needed.  
+The `.family` modification, which is very important, is clearly stated in its own definition,
+and it's used directly in its `build` method.  
+The whole thing is more readable, more concise and less error-prone.
 <AutoSnippet language="dart" {...fromStateNotifier2}></AutoSnippet>
+
+Notice how the code-generated version is even more concise and less error-prone than ever.
 
 ### `Notifier` and `AsyncNotifier` have a different disposal behavior
 One main difference  between `Notifier` (and `AsyncNotifier`) and `StateNotifier` (and `ChangeNotifier`)
