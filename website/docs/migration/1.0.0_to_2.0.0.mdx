@@ -3,6 +3,7 @@ title: ^1.0.0 to ^2.0.0
 ---
 
 import notifier from "./notifier";
+import notifier2 from "./notifier_2";
 import {AutoSnippet} from "../../src/components/CodeSnippet";
 
 Riverpod went `2.0`! To see the full list of changes, consult the [Changelog].
@@ -57,6 +58,31 @@ You can notice the following differences:
 - Dependencies are specified directly in the new `build` method
 - Thus, `NotifierProvider` has no `ref` in its build callback
 
+### `Notifier` and `AsyncNotifier` have their own `ref`
+
+A common `pre-2.0` pattern was to pipe down a `Ref` parameter into your `StateNotifier` (or `ChangeNotifier`) classes.
+This was useful for a plethora of reasons.
+
+`Notifier` (and `AsyncNotifier`) have their own `Ref` getter, which is handy
+to perform side effects, mutations and, as specified above, to write dependencies into its `build` method.
+
+Taking the above example, say a side-effect is required when invoking `adjust`:
+
+```dart
+class DiceNotifier extends StateNotifier<int> {
+  DiceNotifier(this.dice, this.ref) : super(dice + 1);
+  final int dice;
+  final Ref ref;
+
+  void adjust(int offset) {
+    ref.read(myRepositoryProvider).post(change: offset).ignore();
+    state = state + offset;
+  }
+}
+```
+
+With `Notifier`, no pipe-down is ever needed.
+<AutoSnippet language="dart" {...notifier2}></AutoSnippet>
 
 
 [Changelog]: https://pub.dev/packages/flutter_riverpod/changelog#200
