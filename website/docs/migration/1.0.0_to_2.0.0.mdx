@@ -2,8 +2,9 @@
 title: ^1.0.0 to ^2.0.0
 ---
 
-import notifier from "./notifier";
-import notifier2 from "./notifier_2";
+import fromStateNotifier from "./from_state_notifier";
+import fromStateNotifier2 from "./from_state_notifier_2";
+import fromStateProvider from "./from_state_provider";
 import {AutoSnippet} from "../../src/components/CodeSnippet";
 
 Riverpod went `2.0`! To see the full list of changes, consult the [Changelog].
@@ -49,7 +50,7 @@ final diceNotifierProvider = StateNotifierProvider<DiceNotifier, int>((ref) {
 ```
 
 With the new `Notifier` class, the above example translates to:
-<AutoSnippet language="dart" {...notifier}></AutoSnippet>
+<AutoSnippet language="dart" {...fromStateNotifier}></AutoSnippet>
 
 You can notice the following differences:
 - More concise syntax
@@ -82,7 +83,7 @@ class DiceNotifier extends StateNotifier<int> {
 ```
 
 With `Notifier`, no pipe-down is ever needed.
-<AutoSnippet language="dart" {...notifier2}></AutoSnippet>
+<AutoSnippet language="dart" {...fromStateNotifier2}></AutoSnippet>
 
 
 [Changelog]: https://pub.dev/packages/flutter_riverpod/changelog#200
