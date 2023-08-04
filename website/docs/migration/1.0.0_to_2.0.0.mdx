@@ -12,6 +12,15 @@ In this page, we will focus on:
 
 ## From `StateNotifier`(or `ChangeNotifier`) to `Notifier` (or `AsyncNotifier`)
 
+Riverpod `2.0` introduced the new `Notifier` and `AsyncNotifier` classes.  
+These two are meant to replace the - now - legacy `StateNotifier`, with the following advantages:
+- Codegen support
+- One less [external dependency]
+- Easier distinction between sync and async providers
+- Easier provider initialization
+
+Alas, these features introduce a few breaking changes. This page is meant to help you overcome these.
 
 
 [Changelog]: https://pub.dev/packages/flutter_riverpod/changelog#200
+[external dependency]: https://github.com/rrousselGit/state_notifier
