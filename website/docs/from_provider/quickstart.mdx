@@ -37,7 +37,7 @@ final myNotifierProvider = ChangeNotifierProvider<MyNotifier>((ref) {
 });
 ```
 
-As you can see Riverpod exposes a [ChangeNotifierProvider] class,
+As you can see, Riverpod exposes a [ChangeNotifierProvider] class,
 which is there precisely to support migrations from pkg:Provider.
 
 Keep in mind that this provider is not recommended when writing new code,
@@ -45,11 +45,12 @@ and it is not the best way to use Riverpod, but it's a gentle and very easy way 
 
 :::tip
 There is no rush to *immediately* try to change your `ChangeNotifier`s into the more modern [Riverpod's providers].
-Some requite a bit of a paradigm shift, so it may be difficult to do initially.  
+Some requite a bit of a [paradigm shift], so it may be difficult to do initially.  
 
 Take your time, as it is important to get yourself familiar with Riverpod first;
 you'll quickly find out that *almost* all Providers from pkg:provider have a strict equivalent in pkg:riverpod.
 :::
+
 
 ## Starts with *leaves*
 
@@ -119,6 +120,10 @@ final myNotifierProvider = NotifierProvider<MyNotifier, int>(MyNotifier.new);
 .. and it's _also_ needed to change how that provider is consumed, i.e. writing `ref.watch` in the place of each `context.watch` for this provider.
 
 This operation might take some time and might lead to some errors, so don't rush doing this all at once.
+
+Please follow [this migration guide] to migrate from `ChangeNotifier` to the more modern 
+`Notifier` and `AsyncNotifier`, one step at a time.
+
 
 ## Migrating `ProxyProvider`s
 Within pkg:Provider, `ProxyProvider` is used to combine values from other Providers;
@@ -205,3 +210,5 @@ Following this guide, you *can* migrate towards codegen as a further step forwar
 [as mentioned above]: /docs/from_provider/quickstart#start-with-changenotifierprovider
 [Riverpod's `Consumer` APIs]: /docs/concepts/reading
 [lazy by default]: /docs/concepts/provider_lifecycles
+[paradigm shift]: /docs/from_provider/quickstart#migrate-one-provider-at-a-time
+[this migration guide]: /docs/migration/1.0.0_to_2.0.0#from-changenotifier-to-notifier
