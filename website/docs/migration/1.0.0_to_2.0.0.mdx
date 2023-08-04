@@ -114,6 +114,14 @@ The whole thing is more readable, more concise and less error-prone.
 
 Notice how the code-generated version is even more concise and less error-prone than ever.
 
+:::info
+`Notifier` and `AsyncNotifier` are intrinsically bound to the `.autoDispose` and `.family` features.
+Enabling or disabling such features means it's needed to change the subclassed notifier type.
+
+For example, to define an `AsyncNotifier` with `.autoDispose` and `.family` features altogether,
+it is needed to extend `AutoDisposeFamilyAsyncNotifier`.
+:::
+
 ### `Notifier` and `AsyncNotifier` have a different disposal behavior
 One main difference  between `Notifier` (and `AsyncNotifier`) and `StateNotifier` (and `ChangeNotifier`)
 is their lifecycle.  
