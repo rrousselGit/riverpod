@@ -177,6 +177,18 @@ This breaking change simplifies the API and, hopefully, your DX, for two reasons
 1. there is only one lifecycle to take care of, the one we really care about: `Notifier`'s inner state;
 2. there is only one API to register a `dispose` action: `ref.onDispose`.
 
+### Other breaking changes
+Other changes are worth mentioning are included here.
+
+#### Moving from `StateNotifier.addListener` and `StateNotifier.stream`
+WIP
+
+#### Moving from `StateNotifier.debugState`
+WIP
+
+#### Moving from `StateNotifier.mounted`
+WIP
+
 ## Migrating from `StateProvider`
 
 `StateProvider` was exposed by Riverpod's libraries to save a few LoC when in need of a `StateNotifierProvider`.  
@@ -196,6 +208,20 @@ When migrating to `Notifier`, this becomes:
 
 Even though it costs us a few more LoC, migrating away from `StateProvider` brings way more advantages, as shown above.
 
+## An improved `AsyncValue`
+WIP
+
+### `AsyncValue` can expose two or more values at the same time
+e.g. "hasValue=true", "hasError=true" and "isLoading=true"
+WIP
+
+### How to work around the new APIs
+valueOrNull, hasError, hasData, asError, isLoading, etc.
+WIP
+
+## `ProviderListener` is not a thing anymore
+use ProviderObserver instead 
+WIP
 
 [Changelog]: https://pub.dev/packages/flutter_riverpod/changelog#200
 [external dependency]: https://github.com/rrousselGit/state_notifier
