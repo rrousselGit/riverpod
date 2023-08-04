@@ -85,6 +85,25 @@ class DiceNotifier extends StateNotifier<int> {
 With `Notifier`, no pipe-down is ever needed.
 <AutoSnippet language="dart" {...fromStateNotifier2}></AutoSnippet>
 
+## Migrating from `StateProvider`
+
+`StateProvider` was exposed by Riverpod's libraries to save a few LoC when in need of a `StateNotifierProvider`.  
+Since `StateNotifierProvider` is deprecated, `StateProvider` is to be avoided, too.
+
+To migrate away from `StateProvider` and towards `Notifier` is simple.  
+Take this example:
+
+```dart
+final counterProvider = StateProvider<int>((ref) {
+  return 0;
+});
+```
+
+With a simple migration, this becomes:
+<AutoSnippet language="dart" {...fromStateProvider}></AutoSnippet>
+
+Even though it costs us a few more LoC, migrating away from `StateProvider` brings way more advantages, as shown above.
+
 
 [Changelog]: https://pub.dev/packages/flutter_riverpod/changelog#200
 [external dependency]: https://github.com/rrousselGit/state_notifier
