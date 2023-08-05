@@ -177,6 +177,9 @@ This breaking change simplifies the API and, hopefully, your DX, for two reasons
 1. there is only one lifecycle to take care of, the one we really care about: `Notifier`'s inner state;
 2. there is only one API to register a `dispose` action: `ref.onDispose`.
 
+### There is no `.mounted` property
+WIP
+
 ### Final remarks
 When transitioning to `Notifier` (or `AsyncNotifier`), it is good to keep in mind some more differences.
 
@@ -189,11 +192,19 @@ Indeed, using a `Notifier` or an `AsyncNotifier` shouldn't be any different from
 
 So, if you want to listen to a `Notifier`, just use `ref.listen`, [as explained here].
 
-#### Moving from `StateNotifier.debugState`
-WIP
+#### Migrating from `.debugState`
+`StateNotifier` exposed a `.debugState` getter that isn't a thing on `Notifier`.  
+This property had some use within `state_notifier`, as it enabled accessing state
+from outside the class when in development mode, aka for testing purposes.
 
-#### Moving from `StateNotifier.mounted`
-WIP
+Again, for uniformity reasons, it doesn't make sense to expose such property on a `Notifier`
+(or on an `AsyncNotifier`).  
+If you want to interact with `Notifier` or `AsyncNotifier` in a testing environment, you should do
+it just like with any other provider: by reading them directly (as opposed of directly instantiating
+a `Notifier` by hand).
+
+This [testing guide] fully explains how to use `ProviderContainer.read` to do so.
+
 
 ## Migrating from `StateProvider`
 
@@ -232,3 +243,4 @@ WIP
 [Changelog]: https://pub.dev/packages/flutter_riverpod/changelog#200
 [external dependency]: https://github.com/rrousselGit/state_notifier
 [as explained here]: /docs/concepts/reading#using-reflisten-to-react-to-a-provider-change
+[testing guide]: /docs/cookbooks/testing
