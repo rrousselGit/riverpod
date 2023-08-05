@@ -32,7 +32,7 @@ This migration guide can be used for migrating away from `ChangeNotifier` as wel
 Its behavior is quite similar to its equivalent for immutable data, `StateNotifier`.
 :::
 
-### Initialization with `build`
+### Initialization comes with a `build` method
 
 When defining a `StateNotifierProvider` (or `ChangeNotifierProvider`), initialization is
 typically placed inside the provider itself. Take the following example:
@@ -66,7 +66,7 @@ You can notice the following differences:
 - `NotifierProvider` has no `ref` in its build callback
 - `Notifier` has its own `ref`, internally
 
-### `Notifier` and `AsyncNotifier` have their own `ref` and family attributes
+### `ref` and family attributes are exposed by their classes directly
 
 A common `pre-2.0` pattern was to pipe down a `Ref` parameter into your `StateNotifier` (or `ChangeNotifier`) classes.
 This was useful for a plethora of reasons.  
@@ -125,7 +125,7 @@ For example, to define an `AsyncNotifier` with `.autoDispose` and `.family` feat
 it is needed to extend `AutoDisposeFamilyAsyncNotifier`.
 :::
 
-### `Notifier` and `AsyncNotifier` have a different disposal behavior
+### Lifecycles (and `dispose`) have a different behavior
 Lifecycles  between `Notifier` (and `AsyncNotifier`) and `StateNotifier` (and `ChangeNotifier`)
 differ substantially.
 
@@ -228,7 +228,7 @@ Even though it costs us a few more LoC, migrating away from `StateProvider` brin
 ## An improved `AsyncValue`
 WIP
 
-### `AsyncValue` can expose two or more values at the same time
+### `AsyncValue` can now expose two or more values at the same time
 e.g. "hasValue=true", "hasError=true" and "isLoading=true"
 WIP
 
