@@ -13,9 +13,7 @@ part 'provider.g.dart';
 @riverpod
 Future<Activity> activity(ActivityRef ref) async {
   // Using package:http, we fetch a random activity from the Bored API.
-  final response = await http.get(
-    Uri(scheme: 'https', host: 'boredapi.com', path: '/api/activity'),
-  );
+  final response = await http.get(Uri.https('boredapi.com', '/api/activity'));
   // Using dart:convert, we then decode the JSON payload into a Map data structure.
   final json = jsonDecode(response.body) as Map<String, dynamic>;
   // Finally, we convert the Map into an Activity instance.

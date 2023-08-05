@@ -6,9 +6,7 @@ import '../../first_request/raw/activity.dart';
 /* SNIPPET START */
 
 final activityProvider = FutureProvider.autoDispose((ref) async {
-  final response = await http.get(
-    Uri(scheme: 'https', host: 'boredapi.com', path: '/api/activity'),
-  );
+  final response = await http.get(Uri.https('boredapi.com', '/api/activity'));
   final json = jsonDecode(response.body) as Map<String, dynamic>;
   return Activity.fromJson(json);
 });
