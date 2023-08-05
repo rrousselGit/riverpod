@@ -177,11 +177,17 @@ This breaking change simplifies the API and, hopefully, your DX, for two reasons
 1. there is only one lifecycle to take care of, the one we really care about: `Notifier`'s inner state;
 2. there is only one API to register a `dispose` action: `ref.onDispose`.
 
-### Other breaking changes
-Other changes are worth mentioning are included here.
+### Final remarks
+When transitioning to `Notifier` (or `AsyncNotifier`), it is good to keep in mind some more differences.
 
-#### Moving from `StateNotifier.addListener` and `StateNotifier.stream`
-WIP
+#### Migrating from `.addListener` and `.stream`
+`StateNotifier`'s `.addListener` and `.stream` can be used to listen for state changes.
+These two APIs aren't a thing within `Notifier` or `AsyncNotifier`.
+
+This is intentional due to the API uniformity `Notifier` and `AsyncNotifier` offer.
+Indeed, using a `Notifier` or an `AsyncNotifier` shouldn't be any different from any other provider.
+
+So, if you want to listen to a `Notifier`, just use `ref.listen`, [as explained here].
 
 #### Moving from `StateNotifier.debugState`
 WIP
@@ -225,3 +231,4 @@ WIP
 
 [Changelog]: https://pub.dev/packages/flutter_riverpod/changelog#200
 [external dependency]: https://github.com/rrousselGit/state_notifier
+[as explained here]: /docs/concepts/reading#using-reflisten-to-react-to-a-provider-change
