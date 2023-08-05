@@ -1,5 +1,5 @@
 import raw from "!!raw-loader!./raw.dart";
-import codegen from "!!raw-loader!./from_state_notifier_2.dart";
+import codegen from "!!raw-loader!./family_and_dispose.dart";
 
 export default {
   raw,

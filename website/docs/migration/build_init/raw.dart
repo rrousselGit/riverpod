@@ -1,5 +1,9 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../utils.dart';
+
+Future<void> _startCamera() async {}
+
 /* SNIPPET START */
 class DiceNotifier extends Notifier<int> {
   @override

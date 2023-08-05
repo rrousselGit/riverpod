@@ -1,6 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'notifier.g.dart';
+part 'from_state_provider.g.dart';
 
 /* SNIPPET START */
 @riverpod

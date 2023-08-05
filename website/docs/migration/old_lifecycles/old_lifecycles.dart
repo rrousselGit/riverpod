@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../utils.dart';
+
 part 'old_lifecycles.g.dart';
 
 /* SNIPPET START */

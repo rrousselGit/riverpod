@@ -2,8 +2,8 @@
 title: ^1.0.0 to ^2.0.0
 ---
 
-import fromStateNotifier from "./from_state_notifier";
-import fromStateNotifier2 from "./from_state_notifier_2";
+import buildIinit from "./build_init";
+import familyAndDispose from "./family_and_dispose";
 import fromStateProvider from "./from_state_provider";
 import oldLifecycles from "./old_lifecycles";
 import {AutoSnippet} from "../../src/components/CodeSnippet";
@@ -58,7 +58,7 @@ final diceNotifierProvider = StateNotifierProvider<DiceNotifier, int>((ref) {
 ```
 
 With the new `Notifier` class, the above example translates to:
-<AutoSnippet language="dart" {...fromStateNotifier}></AutoSnippet>
+<AutoSnippet language="dart" {...buildIinit}></AutoSnippet>
 
 You can notice the following differences:
 - A more concise syntax, with no constructor logic
@@ -113,7 +113,7 @@ But with `Notifier` (and its `FamilyNotifier` variant), no pipe-down is ever nee
 The `.family` modification, which is very important, is clearly stated in its own definition,
 and it's used directly in its `build` method.  
 The whole thing is more readable, more concise and less error-prone.
-<AutoSnippet language="dart" {...fromStateNotifier2}></AutoSnippet>
+<AutoSnippet language="dart" {...familyAndDispose}></AutoSnippet>
 
 Notice how the code-generated version is even more concise and less error-prone than ever.
 

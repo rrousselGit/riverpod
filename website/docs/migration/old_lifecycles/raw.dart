@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../utils.dart';
+
 /* SNIPPET START */
 class MyNotifier extends Notifier<int> {
   late Timer _timer;

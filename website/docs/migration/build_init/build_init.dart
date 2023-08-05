@@ -1,6 +1,10 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'notifier.g.dart';
+import '../utils.dart';
+
+part 'build_init.g.dart';
+
+Future<void> _startCamera() async {}
 
 /* SNIPPET START */
 @riverpod
