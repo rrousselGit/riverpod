@@ -208,11 +208,11 @@ This [testing guide] fully explains how to use `ProviderContainer.read` to do so
 
 ## Migrating from `StateProvider`
 
-`StateProvider` was exposed by Riverpod's libraries to save a few LoC when in need of a `StateNotifierProvider`.  
+`StateProvider` was exposed by Riverpod's libraries to save a few LoC when in need of a
+simplified version of `StateNotifierProvider`.  
 Since `StateNotifierProvider` is deprecated, `StateProvider` is to be avoided, too.
 
-To migrate away from `StateProvider` and towards `Notifier` is simple.  
-Take this example:
+To migrate from `StateProvider` and towards `Notifier` is simple. Take this example:
 
 ```dart
 final counterProvider = StateProvider<int>((ref) {
@@ -221,7 +221,7 @@ final counterProvider = StateProvider<int>((ref) {
 ```
 
 When migrating to `Notifier`, this becomes:
-<AutoSnippet language="dart" {...oldLifecycles}></AutoSnippet>
+<AutoSnippet language="dart" {...fromStateProvider}></AutoSnippet>
 
 Even though it costs us a few more LoC, migrating away from `StateProvider` brings way more advantages, as shown above.
 
