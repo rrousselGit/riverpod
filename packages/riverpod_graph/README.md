@@ -1,4 +1,4 @@
-## Work in progress
+**Work in progress**
 
 This project is a work-in-progress command that analyzes a Riverpod project and
 generates a graph of the interactions between providers/widgets
