@@ -111,6 +111,9 @@ enum SupportFormat {
   d2,
 }
 
+/// used to wrap names in d2 diagram boxes
+const rawNewline = r'\n';
+
 String _buildD2(ProviderGraph providerGraph) {
   const _watchLineStyle = '{style.stroke-width: 4}';
   const _readLineStyle = '{style.stroke-dash: 4}';
@@ -119,7 +122,7 @@ String _buildD2(ProviderGraph providerGraph) {
 Legend: {
   Type: {
     Widget.shape: circle
-    Provider
+    Provider: rectangle
   }
   Arrows: {
     "." -> "..": read: {style.stroke-dash: 4}
@@ -127,11 +130,40 @@ Legend: {
     "." -> "..": watch: {style.stroke-width: 4}
   }
 }
+
 ''');
 
-  for (final node in providerGraph.consumerWidgets) {
-    buffer.writeln('${node.definition.name}.shape: Circle');
+  // declare all the provider nodes before doing any connections
+  // this lets us do all node config in one place before they are used
+  for (final node in providerGraph.providers) {
+    final providerName = _displayNameForProvider(node.definition).name;
+    buffer.writeln('$providerName: "$providerName"');
+    buffer.writeln('$providerName.shape: rectangle');
 
+    // d2 supports tooltips.  mermaid does not
+    // add the first line of any documentation comment as a tooltip
+    final docComment = _displayDocCommentForProvider(node.definition);
+    if (docComment != null) {
+      buffer.writeln('$providerName.tooltip: "$docComment"');
+    }
+  }
+
+  // declare all the widget nodes before doing any connections
+  // this lets us do all node config in one place before they are used
+  for (final node in providerGraph.consumerWidgets) {
+    final widgetName = node.definition.name;
+    buffer.writeln('$widgetName.shape: circle');
+
+    // d2 supports tooltips.  mermaid does not
+    // add the first line of any documentation comment as a tooltip
+    final docComment = _displayDocCommentForWidget(node.definition);
+    if (docComment != null) {
+      buffer.writeln('$widgetName.tooltip: "$docComment"');
+    }
+  }
+  buffer.writeln();
+
+  for (final node in providerGraph.consumerWidgets) {
     for (final watch in node.watch) {
       buffer.writeln(
         '${_displayNameForProvider(watch.definition).name} -> ${node.definition.name}: $_watchLineStyle',
@@ -187,17 +219,41 @@ flowchart TB
     style start3 height:0px;
     style stop3 height:0px;
   end
-
   subgraph Type
     direction TB
     ConsumerWidget((widget));
     Provider[[provider]];
   end
+
 ''');
 
+  // declare all the provider nodes before doing any connections
+  // this lets us do all node config in one place before they are used
+  for (final node in providerGraph.providers) {
+    final nodeGlobalName = _displayNameForProvider(node.definition);
+    final isContainedInClass = nodeGlobalName.enclosingElementName.isNotEmpty;
+
+    if (isContainedInClass) {
+      buffer.writeln('  subgraph ${nodeGlobalName.enclosingElementName}');
+      buffer.writeln(
+        '    ${nodeGlobalName.name}[["${nodeGlobalName.providerName}"]];',
+      );
+      buffer.writeln('  end');
+    } else {
+      buffer.writeln(
+        '  ${nodeGlobalName.name}[["${nodeGlobalName.providerName}"]];',
+      );
+    }
+  }
+
+  // declare all the widget nodes before doing any connections
+  // this lets us do all node config in one place before they are used
   for (final node in providerGraph.consumerWidgets) {
     buffer.writeln('  ${node.definition.name}((${node.definition.name}));');
+  }
+  buffer.writeln();
 
+  for (final node in providerGraph.consumerWidgets) {
     for (final watch in node.watch) {
       buffer.writeln(
         '  ${_displayNameForProvider(watch.definition).name} ==> ${node.definition.name};',
@@ -217,18 +273,6 @@ flowchart TB
 
   for (final node in providerGraph.providers) {
     final nodeGlobalName = _displayNameForProvider(node.definition);
-    final isContainedInClass = nodeGlobalName.enclosingElementName.isNotEmpty;
-    if (isContainedInClass) {
-      buffer.writeln('  subgraph ${nodeGlobalName.enclosingElementName}');
-      buffer.writeln(
-        '    ${nodeGlobalName.name}[[${nodeGlobalName.providerName}]];',
-      );
-      buffer.writeln('  end');
-    } else {
-      buffer.writeln(
-        '  ${nodeGlobalName.name}[[${nodeGlobalName.providerName}]];',
-      );
-    }
 
     final providerName = nodeGlobalName.providerName;
     for (final watch in node.watch) {
@@ -431,14 +475,17 @@ class ProviderDependencyVisitor extends RecursiveAstVisitor<void> {
                 )
                 ?.node;
             if (classDeclaration is ClassDeclaration) {
+              // firstWhereOrNull required if a class was created with .new
               final buildMethod = classDeclaration.members
                   .whereType<MethodDeclaration>()
-                  .firstWhere(
+                  .firstWhereOrNull(
                     (method) => method.name.lexeme == 'build',
                   );
               // Instead of continuing with the current node, we visit the one of
               // the referenced constructor.
-              return buildMethod.visitChildren(this);
+              if (buildMethod != null) {
+                return buildMethod.visitChildren(this);
+              }
             }
           }
         }
@@ -641,6 +688,22 @@ _ProviderName _displayNameForProvider(VariableElement provider) {
     providerName: providerName,
     enclosingElementName: enclosingElementName ?? '',
   );
+}
+
+String? _displayDocCommentForProvider(VariableElement definition) {
+  return definition.documentationComment
+      // this will show no text if the first doc comment line is blank :-(
+      // tooltips should be short
+      ?.split('\n')[0]
+      .replaceAll('/// ', '');
+}
+
+String? _displayDocCommentForWidget(ClassElement definition) {
+  return definition.documentationComment
+      // this will show no text if the first doc comment line is blank :-(
+      // tooltips should be short
+      ?.split('\n')[0]
+      .replaceAll('/// ', '');
 }
 
 /// Returns the variable element of the watched/listened/read `provider` in an expression. For example:

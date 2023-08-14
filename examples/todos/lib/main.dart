@@ -231,6 +231,7 @@ class Title extends StatelessWidget {
 /// impacted widgets rebuilds, instead of the entire list of items.
 final _currentTodo = Provider<Todo>((ref) => throw UnimplementedError());
 
+/// The widget that that displays the components of an individual Todo Item
 class TodoItem extends HookConsumerWidget {
   const TodoItem({Key? key}) : super(key: key);
 

@@ -56,7 +56,7 @@ class RandomNumberApp extends StatelessWidget {
   }
 }
 
-//Custom consumer using the provider
+/// Custom consumer using the provider
 class RandomConsumer extends ConsumerWidget {
   const RandomConsumer({Key? key}) : super(key: key);
 

@@ -20,7 +20,8 @@ void main() {
       }
 
       expect(
-        stdoutList.first,
+        // replace windows file separator with linux - make test pass on windows
+        stdoutList.first.replaceAll(r'\', '/'),
         allOf(
           [
             startsWith('Analyzing'),
@@ -43,21 +44,22 @@ flowchart TB
     style stop1 height:0px;
     start2[ ] --->|listen| stop2[ ]
     style start2 height:0px;
-    style stop2 height:0px; 
+    style stop2 height:0px;
     start3[ ] ===>|watch| stop3[ ]
     style start3 height:0px;
-    style stop3 height:0px; 
+    style stop3 height:0px;
   end
-
   subgraph Type
     direction TB
     ConsumerWidget((widget));
     Provider[[provider]];
   end
+
+  counterProvider[["counterProvider"]];
   CounterWidget((CounterWidget));
+
   counterProvider ==> CounterWidget;
-  counterProvider -.-> CounterWidget;
-  counterProvider[[counterProvider]];''',
+  counterProvider -.-> CounterWidget;''',
         reason: 'It should log the riverpod graph',
       );
       await process.shouldExit(0);
@@ -83,7 +85,8 @@ flowchart TB
       }
 
       expect(
-        stdoutList.first,
+        // replace windows file separator with linux - make test pass on windows
+        stdoutList.first.replaceAll(r'\', '/'),
         allOf(
           [
             startsWith('Analyzing'),
@@ -98,7 +101,24 @@ flowchart TB
       expect(
         stdoutList.sublist(1).join('\n'),
         '''
-CounterWidget.shape: Circle
+Legend: {
+  Type: {
+    Widget.shape: circle
+    Provider: rectangle
+  }
+  Arrows: {
+    "." -> "..": read: {style.stroke-dash: 4}
+    "." -> "..": listen
+    "." -> "..": watch: {style.stroke-width: 4}
+  }
+}
+
+counterProvider: "counterProvider"
+counterProvider.shape: rectangle
+counterProvider.tooltip: "Counter provider."
+CounterWidget.shape: circle
+CounterWidget.tooltip: "Counter widget."
+
 counterProvider -> CounterWidget: {style.stroke-width: 4}
 counterProvider -> CounterWidget: {style.stroke-dash: 4}''',
         reason: 'It should log the riverpod graph',
