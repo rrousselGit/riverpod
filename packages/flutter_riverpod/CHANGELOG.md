@@ -1,3 +1,8 @@
+## Unreleased patch
+
+- Added support for state_notifier 1.0.0
+- `Notifier.state` is now accessible inside tests
+
 ## 2.3.6 - 2023-04-24
 
 - Improved error message for missing `dependencies` (thanks to @ValentinVignal)

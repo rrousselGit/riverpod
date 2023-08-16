@@ -1,3 +1,8 @@
+## Unreleased patch
+
+- Added support for state_notifier 1.0.0
+- `Notifier.state` is now accessible inside tests
+
 ## 2.3.7 - 2023-07-25
 
 - Support flutter_hooks 0.20.0
