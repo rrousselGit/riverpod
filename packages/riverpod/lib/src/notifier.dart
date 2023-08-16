@@ -31,6 +31,7 @@ abstract class NotifierBase<State> {
   ///
   /// If [Notifier.build] threw, reading [state] will rethow the exception.
   @protected
+  @visibleForTesting
   State get state {
     _element.flush();
     // ignore: invalid_use_of_protected_member
@@ -38,6 +39,7 @@ abstract class NotifierBase<State> {
   }
 
   @protected
+  @visibleForTesting
   set state(State value) {
     // ignore: invalid_use_of_protected_member
     _element.setState(value);

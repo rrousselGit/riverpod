@@ -264,12 +264,12 @@ void main() {
     final sub = container.listen<void>(provider2, (_, __) {});
     sub.close();
 
-    expect(counter.debugState, 0);
+    expect(counter.state, 0);
 
     await container.pump();
 
     expect(didDispose, true);
-    expect(counter.debugState, 1);
+    expect(counter.state, 1);
   });
 
   test("Provider can't dirty anything on create", () {
