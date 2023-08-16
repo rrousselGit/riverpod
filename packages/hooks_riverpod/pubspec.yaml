@@ -20,7 +20,7 @@ dependencies:
   flutter_hooks: '>=0.18.0 <0.21.0'
   flutter_riverpod: 2.3.6
   riverpod: 2.3.6
-  state_notifier: ^0.7.2
+  state_notifier: ">=0.7.2 <2.0.0"
 
 dev_dependencies:
   flutter_test:
