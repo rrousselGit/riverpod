@@ -1,3 +1,7 @@
+## Unreleased patch
+
+- Support both analyzer 5.12.0 and analyzer 6.0.0
+
 ## 2.0.0 - 2023-08-03
 
 - **Breaking** Renamed `generator_class_extends` to `notifier_extends`

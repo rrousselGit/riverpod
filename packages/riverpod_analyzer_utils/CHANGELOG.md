@@ -1,3 +1,7 @@
+## Unreleased patch
+
+- Support both analyzer 5.12.0 and analyzer 6.0.0
+
 ## 0.3.2 - 2023-08-03
 
 Support analyzer 6.0.0
