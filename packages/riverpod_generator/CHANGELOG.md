@@ -1,4 +1,4 @@
-## Unreleased patch
+## 2.2.6 - 2023-08-16
 
 - Support both analyzer 5.12.0 and analyzer 6.0.0
 

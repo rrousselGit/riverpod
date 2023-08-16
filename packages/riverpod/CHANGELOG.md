@@ -1,4 +1,4 @@
-## Unreleased patch
+## 2.3.7 - 2023-08-16
 
 - Added support for state_notifier 1.0.0
 - `Notifier.state` is now accessible inside tests
