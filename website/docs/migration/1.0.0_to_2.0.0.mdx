@@ -8,7 +8,8 @@ import fromStateProvider from "./from_state_provider";
 import oldLifecycles from "./old_lifecycles";
 import {AutoSnippet} from "../../src/components/CodeSnippet";
 
-Riverpod went `2.0`! To see the full list of changes, consult the [Changelog].
+Riverpod went `2.0`! To see the full list of changes, consult the
+[Changelog](https://pub.dev/packages/flutter_riverpod/changelog#200).
 
 In this page, we will focus on:
 - How to migrate from the deprecated `StateNotifier` to the new `Notifier` APIs
@@ -22,7 +23,7 @@ Riverpod `2.0` introduced the new `Notifier` and `AsyncNotifier` classes.
 These two are meant to replace the legacy `StateNotifier` (and `ChangeNotifier`), with the following advantages:
 - Conciseness and a better DX overall
 - Codegen support
-- One less [external dependency]
+- One less [external dependency](https://github.com/rrousselGit/state_notifier)
 - Easier distinction between sync and async providers
 
 Alas, these features introduce a few breaking changes. This page is meant to help you overcome these.
@@ -190,7 +191,8 @@ These two APIs aren't a thing within `Notifier` or `AsyncNotifier`.
 This is intentional due to the API uniformity `Notifier` and `AsyncNotifier` offer.
 Indeed, using a `Notifier` or an `AsyncNotifier` shouldn't be any different from any other provider.
 
-So, if you want to listen to a `Notifier`, just use `ref.listen`, [as explained here].
+So, if you want to listen to a `Notifier`, just use `ref.listen`,
+[as explained here](/docs/concepts/reading#using-reflisten-to-react-to-a-provider-change).
 
 #### Migrating from `.debugState`
 `StateNotifier` exposed a `.debugState` getter that isn't a thing on `Notifier`.  
@@ -203,7 +205,7 @@ If you want to interact with `Notifier` or `AsyncNotifier` in a testing environm
 it just like with any other provider: by reading them directly (as opposed of directly instantiating
 a `Notifier` by hand).
 
-This [testing guide] fully explains how to use `ProviderContainer.read` to do so.
+This [testing guide](/docs/cookbooks/testing) fully explains how to use `ProviderContainer.read` to do so.
 
 
 ## Migrating from `StateProvider`
@@ -240,7 +242,3 @@ WIP
 use ProviderObserver instead 
 WIP
 
-[Changelog]: https://pub.dev/packages/flutter_riverpod/changelog#200
-[external dependency]: https://github.com/rrousselGit/state_notifier
-[as explained here]: /docs/concepts/reading#using-reflisten-to-react-to-a-provider-change
-[testing guide]: /docs/cookbooks/testing
