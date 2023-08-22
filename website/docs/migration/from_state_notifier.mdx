@@ -1,5 +1,5 @@
 ---
-title: From `StateNotifier` (and `ChangeNotifier`)
+title: From `StateNotifier` and `ChangeNotifier`
 ---
 
 import buildIinit from "./build_init";
@@ -15,57 +15,58 @@ Riverpod `2.0` introduced the new `Notifier` and `AsyncNotifier` classes.
 This page shows how to migrate from the deprecated `StateNotifier` (and from the legacy `ChangeNotifier`)
 to the new APIs.
 
-The main benefit introduced by `AsyncNotifier` is better `async` support; indeed,
+The main benefit introduced by `AsyncNotifier` is a better `async` support; indeed,
 `AsyncNotifier` can be thought as a `FutureProvider` with methods.
 
-Furthermore, the new Notifiers:
+Furthermore, the new `Notifier`s:
 - Expose a `Ref` object inside its class
 - Offer similar syntax between codegen and non-codegen approaches
 - Offer similar syntax between their sync and async versions
 - Move away logic from Providers and centralize it into the Notifiers themselves
 
+Let's see how to define a `Notifier`, how it compares with `StateNotifier` and explore
+the new `AsyncNotifier` for asynchronous state classes.
 
-:::info
-This migration guide can be used for migrating away from `ChangeNotifier` as well.
-Its behavior is quite similar to its equivalent for immutable data, `StateNotifier`.
-:::
+## The new syntax
+Let's write some simple logic with a synchronous `Notifier`:
+<AutoSnippet language="dart" {...buildIinit}></AutoSnippet>
 
-### Initialization comes with a `build` method
+Notice the following design choices:
+- Notifiers are initialized in their `build` method, along with their reactive dependencies
+- Notifiers expose `ref` into their class, whereas their Provider don't 
 
-When defining a `StateNotifierProvider` (or `ChangeNotifierProvider`), initialization is
-typically placed inside the provider itself. Take the following example:
+### Comparison with `StateNotifier`
+
+Let's compare the new APIs with the old ones; here, we implement the above example with `StateNotifier`:
 
 ```dart
-final randomProvider = Provider<int>((ref) {
-  return Random().nextInt(6);
-});
+class WellNotifier extends StateNotifier<int> {
+  WellNotifier(int availableToDrink) : super(availableToDrink);
 
-class DiceNotifier extends StateNotifier<int> {
-  DiceNotifier(int random) : super(random + 1) {
-    _postInitEffects();
-  }
-
-  void adjust(int offset) => state = state + offset;
-
-  void _postInitEffects() async {
-    // perform post-init effects here, e.g. start camera
-  }
+  void drink(int liters) => state = min(state - liters, 0);
 }
 
-final diceNotifierProvider = StateNotifierProvider<DiceNotifier, int>((ref) {
-  final random = ref.watch(randomProvider);
-  return DiceNotifier(random);
+final wellNotifierProvider = StateNotifierProvider<WellNotifier, int>((ref) {
+  final availableToDrink = ref.watch(availableWater);
+  return WellNotifier(availableToDrink);
 });
 ```
 
-With the new `Notifier` class, the above example translates to:
-<AutoSnippet language="dart" {...buildIinit}></AutoSnippet>
+Let's recap the main differences:
+- `StateNotifier`'s reactive dependencies are declared in its provider, whereas `Notifier`
+centralizes this logic in its `build` method
+- Indeed, `StateNotifier`'s initialization is split between its provider and its constructor, whereas
+`Notifier` centralizes initialization in its `build` method
+- As opposed to `StateNotifier`, no logic is ever written into a `Notifier`'s constructor or on its Provider.
 
-You can notice the following differences:
-- A more concise syntax, with no constructor logic
-- There's a new `build` method instead, which specifies initialization logic and its reactive dependencies
-- `NotifierProvider` has no `ref` in its build callback
-- `Notifier` has its own `ref`, internally
+## Better async support with `AsyncNotifier`
+Previously, with `StateNotifier`, we would handle stateful asynchronous logic like so:
+```dart
+WIP
+```
+
+## Further reading
+WIP these should be re-arranged as suggested
 
 ### `ref` and family attributes are exposed by their classes directly
 
@@ -126,7 +127,7 @@ For example, to define an `AsyncNotifier` with `.autoDispose` and `.family` feat
 it is needed to extend `AutoDisposeFamilyAsyncNotifier`.
 :::
 
-### Lifecycles (and `dispose`) have a different behavior
+### Lifecycles have a different behavior
 Lifecycles  between `Notifier` (and `AsyncNotifier`) and `StateNotifier` (and `ChangeNotifier`)
 differ substantially.
 

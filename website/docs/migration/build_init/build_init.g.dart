@@ -8,20 +8,20 @@ part of 'build_init.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$diceNotifierHash() => r'4a4e88e96fa4b068f2067517e4543d7acc490267';
+String _$wellNotifierHash() => r'd13a501738fbba0347eb23956aed1b505f5f8eab';
 
-/// See also [DiceNotifier].
-@ProviderFor(DiceNotifier)
-final diceNotifierProvider =
-    AutoDisposeNotifierProvider<DiceNotifier, int>.internal(
-  DiceNotifier.new,
-  name: r'diceNotifierProvider',
+/// See also [WellNotifier].
+@ProviderFor(WellNotifier)
+final wellNotifierProvider =
+    AutoDisposeNotifierProvider<WellNotifier, int>.internal(
+  WellNotifier.new,
+  name: r'wellNotifierProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$diceNotifierHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : _$wellNotifierHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$DiceNotifier = AutoDisposeNotifier<int>;
+typedef _$WellNotifier = AutoDisposeNotifier<int>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member

@@ -1,24 +1,21 @@
 // ignore_for_file: avoid_print
 
+import 'dart:math';
+
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../utils.dart';
 
-Future<void> _startCamera() async {}
-
 /* SNIPPET START */
-class DiceNotifier extends Notifier<int> {
+class WellNotifier extends Notifier<int> {
   @override
   int build() {
-    final random = ref.watch(randomProvider);
-
-    print('Post-initialization effects go here.');
-    _startCamera();
-
-    return random + 1;
+    final availableToDrink = ref.watch(availableWater);
+    return availableToDrink;
   }
 
-  void adjust(int offset) => state = state + offset;
+  void drink(int liters) => state = min(state - liters, 0);
 }
 
-final diceNotifierProvider = NotifierProvider<DiceNotifier, int>(DiceNotifier.new);
+final wellNotifierProvider = NotifierProvider<WellNotifier, int>(WellNotifier.new);
