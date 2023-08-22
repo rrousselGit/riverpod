@@ -11,7 +11,8 @@ class MissingBuildMethodProvider extends RiverpodLintRule {
 
   static const _code = LintCode(
     name: 'missed_build_method',
-    problemMessage: 'Classes annotated by `@riverpod` must have the `build` method',
+    problemMessage:
+        'Classes annotated by `@riverpod` must have the `build` method',
   );
 
   @override
