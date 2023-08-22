@@ -1,5 +1,5 @@
 name: riverpod_lint
-description: Riverpod_lint is a developper tool for users of Riverpod, designed to help stop common issue and simplify repetetive tasks.
+description: Riverpod_lint is a developer tool for users of Riverpod, designed to help stop common issues and simplify repetitive tasks.
 version: 2.0.1
 homepage: https://riverpod.dev
 repository: https://github.com/rrousselGit/river_pod
