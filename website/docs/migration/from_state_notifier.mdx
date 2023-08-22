@@ -1,5 +1,5 @@
 ---
-title: ^1.0.0 to ^2.0.0
+title: From `StateNotifier`
 ---
 
 import buildIinit from "./build_init";
@@ -11,16 +11,11 @@ import {AutoSnippet} from "../../src/components/CodeSnippet";
 Riverpod went `2.0`! To see the full list of changes, consult the
 [Changelog](https://pub.dev/packages/flutter_riverpod/changelog#200).
 
-In this page, we will focus on:
-- How to migrate from the deprecated `StateNotifier` to the new `Notifier` APIs
-- How to handle the new `AsyncValue` behavior and its new properties
-- How to migrate from `ProviderListener` to `ProviderObserver` for logging purposes
-
-
-## Migrating from `StateNotifier`
-
 Riverpod `2.0` introduced the new `Notifier` and `AsyncNotifier` classes.  
-These two are meant to replace the legacy `StateNotifier` (and `ChangeNotifier`), with the following advantages:
+This page shows how to migrate from the deprecated `StateNotifier` to the new APIs.
+
+`Notifier` and `AsyncNotifier` exist exactly to replace the legacy `StateNotifier`
+(and `ChangeNotifier`), with the following advantages:
 - Conciseness and a better DX overall
 - Codegen support
 - One less [external dependency](https://github.com/rrousselGit/state_notifier)
@@ -226,19 +221,3 @@ When migrating to `Notifier`, this becomes:
 <AutoSnippet language="dart" {...fromStateProvider}></AutoSnippet>
 
 Even though it costs us a few more LoC, migrating away from `StateProvider` brings way more advantages, as shown above.
-
-## An improved `AsyncValue`
-WIP
-
-### `AsyncValue` can now expose two or more values at the same time
-e.g. "hasValue=true", "hasError=true" and "isLoading=true"
-WIP
-
-### How to work around the new APIs
-valueOrNull, hasError, hasData, asError, isLoading, etc.
-WIP
-
-## `ProviderListener` is not a thing anymore
-use ProviderObserver instead 
-WIP
-
