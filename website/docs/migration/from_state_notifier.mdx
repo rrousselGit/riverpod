@@ -68,17 +68,12 @@ WIP
 ## Further reading
 WIP these should be re-arranged as suggested
 
-### `ref` and family attributes are exposed by their classes directly
+### Family attributes are exposed by their classes directly
 
-A common `pre-2.0` pattern was to pipe down a `Ref` parameter into your `StateNotifier` (or `ChangeNotifier`) classes.
-This was useful for a plethora of reasons.  
-Also, if such providers had family parameters, chances are that these parameters must have been piped down
-to their `StateNotifier` (or `ChangeNotifier`), too.
+When a `StateNotifier` had family parameters, these were defined in its provider, and chances are
+that these parameters must have been piped down its class, too.
 
-`Notifier` (and `AsyncNotifier`), instead, have their own `Ref` getter, which is handy to perform
-side effects, to invoke mutations and, as specified above, to write dependencies into its `build` method.
-
-Also, `Notifier` (and `AsyncNotifier`) have their own `.family` counterpart, which has a more
+`Notifier` (and `AsyncNotifier`), instead, have their own `.family` counterpart, which has a more
 transparent API; in a `Notifier` (or `AsyncNotifier`) parameters are explicitly stated and they are
 injected in the `build` method, available to the initialization logic.
 
