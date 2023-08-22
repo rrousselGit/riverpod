@@ -6,12 +6,12 @@ final randomProvider = Provider<int>((ref) {
   return math.Random().nextInt(6);
 });
 
-final myRepositoryProvider = Provider<SomeRepo>((ref) {
-  return SomeRepo();
+final taskTrackerProvider = Provider<TaskTrackerRepo>((ref) {
+  return TaskTrackerRepo();
 });
 
-class SomeRepo {
-  Future<void> post({required String id, required int change}) async {}
+class TaskTrackerRepo {
+  Future<int> fix({required String id, required int fixed}) async => 0;
 }
 
 final durationProvider = Provider<Duration>((ref) {

@@ -8,7 +8,8 @@ part of 'family_and_dispose.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$diceNotifierHash() => r'8db76f099f429adb27719619fd9d55c7901c1c77';
+String _$bugsEncounteredNotifierHash() =>
+    r'f45903bf1c7a2b38cad33907afcdce86901b738b';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -31,38 +32,39 @@ class _SystemHash {
   }
 }
 
-abstract class _$DiceNotifier extends BuildlessAutoDisposeNotifier<int> {
-  late final String arg;
+abstract class _$BugsEncounteredNotifier
+    extends BuildlessAutoDisposeAsyncNotifier<int> {
+  late final String featureId;
 
-  int build(
-    String arg,
+  FutureOr<int> build(
+    String featureId,
   );
 }
 
-/// See also [DiceNotifier].
-@ProviderFor(DiceNotifier)
-const diceNotifierProvider = DiceNotifierFamily();
+/// See also [BugsEncounteredNotifier].
+@ProviderFor(BugsEncounteredNotifier)
+const bugsEncounteredNotifierProvider = BugsEncounteredNotifierFamily();
 
-/// See also [DiceNotifier].
-class DiceNotifierFamily extends Family<int> {
-  /// See also [DiceNotifier].
-  const DiceNotifierFamily();
+/// See also [BugsEncounteredNotifier].
+class BugsEncounteredNotifierFamily extends Family<AsyncValue<int>> {
+  /// See also [BugsEncounteredNotifier].
+  const BugsEncounteredNotifierFamily();
 
-  /// See also [DiceNotifier].
-  DiceNotifierProvider call(
-    String arg,
+  /// See also [BugsEncounteredNotifier].
+  BugsEncounteredNotifierProvider call(
+    String featureId,
   ) {
-    return DiceNotifierProvider(
-      arg,
+    return BugsEncounteredNotifierProvider(
+      featureId,
     );
   }
 
   @override
-  DiceNotifierProvider getProviderOverride(
-    covariant DiceNotifierProvider provider,
+  BugsEncounteredNotifierProvider getProviderOverride(
+    covariant BugsEncounteredNotifierProvider provider,
   ) {
     return call(
-      provider.arg,
+      provider.featureId,
     );
   }
 
@@ -78,49 +80,50 @@ class DiceNotifierFamily extends Family<int> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'diceNotifierProvider';
+  String? get name => r'bugsEncounteredNotifierProvider';
 }
 
-/// See also [DiceNotifier].
-class DiceNotifierProvider
-    extends AutoDisposeNotifierProviderImpl<DiceNotifier, int> {
-  /// See also [DiceNotifier].
-  DiceNotifierProvider(
-    this.arg,
+/// See also [BugsEncounteredNotifier].
+class BugsEncounteredNotifierProvider
+    extends AutoDisposeAsyncNotifierProviderImpl<BugsEncounteredNotifier, int> {
+  /// See also [BugsEncounteredNotifier].
+  BugsEncounteredNotifierProvider(
+    this.featureId,
   ) : super.internal(
-          () => DiceNotifier()..arg = arg,
-          from: diceNotifierProvider,
-          name: r'diceNotifierProvider',
+          () => BugsEncounteredNotifier()..featureId = featureId,
+          from: bugsEncounteredNotifierProvider,
+          name: r'bugsEncounteredNotifierProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$diceNotifierHash,
-          dependencies: DiceNotifierFamily._dependencies,
+                  : _$bugsEncounteredNotifierHash,
+          dependencies: BugsEncounteredNotifierFamily._dependencies,
           allTransitiveDependencies:
-              DiceNotifierFamily._allTransitiveDependencies,
+              BugsEncounteredNotifierFamily._allTransitiveDependencies,
         );
 
-  final String arg;
+  final String featureId;
 
   @override
   bool operator ==(Object other) {
-    return other is DiceNotifierProvider && other.arg == arg;
+    return other is BugsEncounteredNotifierProvider &&
+        other.featureId == featureId;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, arg.hashCode);
+    hash = _SystemHash.combine(hash, featureId.hashCode);
 
     return _SystemHash.finish(hash);
   }
 
   @override
-  int runNotifierBuild(
-    covariant DiceNotifier notifier,
+  FutureOr<int> runNotifierBuild(
+    covariant BugsEncounteredNotifier notifier,
   ) {
     return notifier.build(
-      arg,
+      featureId,
     );
   }
 }

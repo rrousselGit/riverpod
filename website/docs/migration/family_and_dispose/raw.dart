@@ -1,21 +1,27 @@
+import 'dart:math';
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../utils.dart';
 
 /* SNIPPET START */
-class DiceNotifier extends FamilyNotifier<int, String> {
+class BugsEncounteredNotifier extends FamilyAsyncNotifier<int, String> {
   late String _id;
   @override
-  int build(String arg) {
-    final random = ref.watch(randomProvider);
-    _id = arg;
-    return random + 1;
+  FutureOr<int> build(String featureId) {
+    _id = featureId;
+    return 99;
   }
 
-  void adjust(int offset) {
-    ref.read(myRepositoryProvider).post(id: _id, change: offset).ignore();
-    state = state + offset;
+  Future<void> fix(int amount) async {
+    state = await AsyncValue.guard(() async {
+      final old = state.requireValue;
+      final result = await ref.read(taskTrackerProvider).fix(id: _id, fixed: amount);
+      return max(old - result, 0);
+    });
   }
 }
 
-final diceNotifierProvider = NotifierProviderFamily<DiceNotifier, int, String>(DiceNotifier.new);
+final bugsEncounteredNotifierProvider =
+    AsyncNotifierProviderFamily<BugsEncounteredNotifier, int, String>(BugsEncounteredNotifier.new);

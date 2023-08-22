@@ -65,59 +65,51 @@ Previously, with `StateNotifier`, we would handle stateful asynchronous logic li
 WIP
 ```
 
-## Further reading
-WIP these should be re-arranged as suggested
-
-### Family attributes are exposed by their classes directly
+## Differences with `.family` and their attributes
 
 When a `StateNotifier` had family parameters, these were defined in its provider, and chances are
 that these parameters must have been piped down its class, too.
 
-`Notifier` (and `AsyncNotifier`), instead, have their own `.family` counterpart, which has a more
-transparent API; in a `Notifier` (or `AsyncNotifier`) parameters are explicitly stated and they are
-injected in the `build` method, available to the initialization logic.
+`Notifier` and `AsyncNotifier`, instead, have their own `.family` counterpart: `FamilyNotifier`
+and `FamilyAsyncNotifier`.  
+A main difference is that parameters are explicitly stated and they are directly injected in their
+`build` method, so that they're available to the initialization logic.    
+This should bring better readability, more conciseness and less mistakes.
 
-Take the above the example, with two slight variations.
-- say a side-effect is required when invoking `adjust`;
-- say that another *external* parameter is required when doing so.
-
-We obtain:
+Take the following example, in which a `StateNotifierProvider.family` is being defined.
 ```dart
-class DiceNotifier extends StateNotifier<int> {
-  DiceNotifier({
-    required this.id,
-    required int random,
+class BugsEncounteredNotifier extends StateNotifier<AsyncValue<int>> {
+  BugsEncounteredNotifier({
     required this.ref,
-  }) : super(random + 1);
-  final String id;
+    required this.featureId,
+  }) : super(const AsyncData(99));
+  final String featureId;
   final Ref ref;
 
-  void adjust(int offset) {
-    ref.read(myRepositoryProvider).post(id: id, change: offset).ignore();
-    state = state + offset;
+  Future<void> fix(int amount) async {
+    state = await AsyncValue.guard(() async {
+      final old = state.requireValue;
+      final result = await ref.read(taskTrackerProvider).fix(id: featureId, fixed: amount);
+      return max(old - result, 0);
+    });
   }
 }
 
-final diceNotifierProvider = StateNotifierProvider.family<DiceNotifier, int, String>((ref, id) {
-  final random = ref.watch(randomProvider);
-  return DiceNotifier(id: id, random: random, ref: ref);
+final bugsEncounteredNotifierProvider =
+    StateNotifierProvider.family<BugsEncounteredNotifier, int, String>((ref, id) {
+  return BugsEncounteredNotifier(ref: ref, featureId: id);
 });
 ```
 
-As you can notice, `diceNotifierProvider` is now a `.family` provider. The whole thing works fine.
+Now, let's take a look at the new and improved `AsyncNotifier`:
 
-But with `Notifier` (and its `FamilyNotifier` variant), no pipe-down is ever needed.  
-The `.family` modification, which is very important, is clearly stated in its own definition,
-and it's used directly in its `build` method.  
-The whole thing is more readable, more concise and less error-prone.
 <AutoSnippet language="dart" {...familyAndDispose}></AutoSnippet>
 
-Notice how the code-generated version is even more concise and less error-prone than ever.
+The exact same example should feel way lighter, and should have better readability than before.
 
 :::info
-`Notifier` and `AsyncNotifier` are intrinsically bound to the `.autoDispose` and `.family` features.
-Enabling or disabling such features means it's needed to change the subclassed notifier type.
-
+`Notifier` and `AsyncNotifier` are intrinsically bound to the `.autoDispose` as well.
+Enabling or disabling such features means it's needed to change the subclassed notifier type.  
 For example, to define an `AsyncNotifier` with `.autoDispose` and `.family` features altogether,
 it is needed to extend `AutoDisposeFamilyAsyncNotifier`.
 :::

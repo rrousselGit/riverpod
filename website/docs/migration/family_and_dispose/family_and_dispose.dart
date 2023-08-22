@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../utils.dart';
@@ -6,17 +8,19 @@ part 'family_and_dispose.g.dart';
 
 /* SNIPPET START */
 @riverpod
-class DiceNotifier extends _$DiceNotifier {
+class BugsEncounteredNotifier extends _$BugsEncounteredNotifier {
   late String _id;
   @override
-  int build(String arg) {
-    final random = ref.watch(randomProvider);
-    _id = arg;
-    return random + 1;
+  FutureOr<int> build(String featureId) {
+    _id = featureId;
+    return 99;
   }
 
-  void adjust(int offset) {
-    ref.read(myRepositoryProvider).post(id: _id, change: offset).ignore();
-    state = state + offset;
+  Future<void> fix(int amount) async {
+    state = await AsyncValue.guard(() async {
+      final old = state.requireValue;
+      final result = await ref.read(taskTrackerProvider).fix(id: _id, fixed: amount);
+      return max(old - result, 0);
+    });
   }
 }
