@@ -7,7 +7,7 @@ export const documentTitles = {
     "providers/notifier_provider": "(Async)NotifierProvider",
     "providers/future_provider": "FutureProvider",
     "providers/change_notifier_provider": "ChangeNotifierProvider",
-    "migration/1.0.0_to_2.0.0": "^1.0.0 to ^2.0.0",
+    "migration/from_state_notifier": "From `StateNotifier` and `ChangeNotifier`",
     "migration/0.14.0_to_1.0.0": "^0.14.0 to ^1.0.0",
     "migration/0.13.0_to_0.14.0": "^0.13.0 to ^0.14.0",
     "introduction/why_riverpod": "Why Riverpod?",

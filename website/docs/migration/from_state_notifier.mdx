@@ -57,12 +57,12 @@ Let's recap the main differences:
 centralizes this logic in its `build` method
 - Indeed, `StateNotifier`'s initialization is split between its provider and its constructor, whereas
 `Notifier` centralizes initialization in its `build` method
-- As opposed to `StateNotifier`, no logic is ever written into a `Notifier`'s constructor or on its Provider.
+- As opposed to `StateNotifier`, no logic is ever written into a `Notifier`'s constructor
 
 ## Better async support with `AsyncNotifier`
 Previously, with `StateNotifier`, we would handle stateful asynchronous logic like so:
 ```dart
-WIP
+
 ```
 
 ## Differences with `.family` and their attributes
@@ -113,6 +113,9 @@ Enabling or disabling such features means it's needed to change the subclassed n
 For example, to define an `AsyncNotifier` with `.autoDispose` and `.family` features altogether,
 it is needed to extend `AutoDisposeFamilyAsyncNotifier`.
 :::
+
+## Other differences
+Let's explore the less-impactful differences between `StateNotifier` and `Notifier` (or `AsyncNotifier`)
 
 ### Lifecycles have a different behavior
 Lifecycles  between `Notifier` (and `AsyncNotifier`) and `StateNotifier` (and `ChangeNotifier`)
