@@ -1,5 +1,7 @@
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
 import '../riverpod_custom_lint.dart';
 
@@ -24,7 +26,13 @@ class NotifierBuild extends RiverpodLintRule {
     context.registry.addClassDeclaration((node) {
       final hasRiverpodAnnotation = node.metadata
           .where(
-            (element) => element.name.name.toLowerCase() == _riverpodAnnotation,
+            (element) {
+              final annotationElement = element.element;
+
+              if (annotationElement == null || annotationElement is! ExecutableElement) return false;
+
+              return riverpodType.isExactly(annotationElement);
+            },
           )
           .isNotEmpty;
 
