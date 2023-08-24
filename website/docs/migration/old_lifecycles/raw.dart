@@ -6,12 +6,12 @@ import '../utils.dart';
 
 /* SNIPPET START */
 class MyNotifier extends Notifier<int> {
-  late Timer _timer;
   @override
   int build() {
+    // Just read/write the code here, in one place
     final period = ref.watch(durationProvider);
-    _timer = Timer.periodic(period, (t) => update());
-    ref.onDispose(_timer.cancel);
+    final timer = Timer.periodic(period, (t) => update());
+    ref.onDispose(timer.cancel);
 
     return 0;
   }

@@ -8,20 +8,20 @@ part of 'old_lifecycles.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$myNotifier3Hash() => r'f50e9c23be1084ca20206f047e68be825a0d1698';
+String _$myNotifierHash() => r'768ef0cc026b45823896a770bfb02c9781364838';
 
-/// See also [MyNotifier3].
-@ProviderFor(MyNotifier3)
-final myNotifier3Provider =
-    AutoDisposeNotifierProvider<MyNotifier3, int>.internal(
-  MyNotifier3.new,
-  name: r'myNotifier3Provider',
+/// See also [MyNotifier].
+@ProviderFor(MyNotifier)
+final myNotifierProvider =
+    AutoDisposeNotifierProvider<MyNotifier, int>.internal(
+  MyNotifier.new,
+  name: r'myNotifierProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$myNotifier3Hash,
+      const bool.fromEnvironment('dart.vm.product') ? null : _$myNotifierHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$MyNotifier3 = AutoDisposeNotifier<int>;
+typedef _$MyNotifier = AutoDisposeNotifier<int>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member

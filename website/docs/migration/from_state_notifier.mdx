@@ -152,58 +152,58 @@ This last snippet should showcase better readability: it's possible to immediate
 what modifications are being set for this Notifier.
 
 ## Lifecycles have a different behavior
-Lifecycles  between `Notifier` (and `AsyncNotifier`) and `StateNotifier` (and `ChangeNotifier`)
-differ substantially.
+Lifecycles  between `Notifier`/`AsyncNotifier` and `StateNotifier`/`ChangeNotifier` differ substantially.
 
-A `StateNotifier` (or a `ChangeNotifier`) instance is indeed bound to their outer
-`StateNotifierProvider` (or `ChangeNotifierProvider`).  
-When the latter rebuilds, their exposed value, aka its `StateNotifier` (or `ChangeNotifier`)
+`StateNotifier` and `ChangeNotifier` instances are indeed bound to their outer
+`StateNotifierProvider` and `ChangeNotifierProvider` providers.  
+When their provider rebuilds, their exposed value, aka their `StateNotifier`/`ChangeNotifier` instance,
 is `disposed`, and then re-created (i.e. its constructor gets invoked again).
 
-Take this example:
+This example showcases - again - how the old API have sparse logic:
 ```dart
 class MyNotifier extends StateNotifier<int> {
-  MyNotifier(this.period) : super(0) {
-    _timer = Timer.periodic(period, (t) => update());
+  MyNotifier(this.period) : super(0) { // 1 init logic
+    _timer = Timer.periodic(period, (t) => update());  // 2 side effect on init
   }
   final Duration period;
   late final Timer _timer;
 
-  void update() => state++;
+  void update() => state++;  // 3 mutation
 
   @override
   void dispose() {
-    _timer.cancel();
+    _timer.cancel();  // 4 custom dispose logic
     super.dispose();
   }
 }
 
-final myNotifierProvider = StateNotifierProvider<MyNotifier, int>((ref) {
-  final Duration period = ref.watch(durationProvider);
+final myNotifierProvider = StateNotifierProvider<MyNotifier, int>((ref) {  // 5 provider definition
+  final Duration period = ref.watch(durationProvider);   // 6 reactive dependency logic
   return MyNotifier(period);
 });
 ```
 
-A first takeaway from this example is the following: *if `durationProvider` updates,
-`MyNotifier` disposes*.  
-As stated above, its instance is then re-created and its internal state re-initialized as usual.
-
-The second takeaway is that, unlike every other provider, the `dispose` callback is to be defined
+Here, if `durationProvider` updates, `MyNotifier` *disposes*: its instance is then re-instantiated
+and its internal state is then re-initialized.  
+Furthermore, unlike every other provider, the `dispose` callback is to be defined
 in the class, separately.  
-It is still possible to write `ref.onDispose` in its *provider*,
-but two different dispose callbacks are to be maintained.
+Finally, it is still possible to write `ref.onDispose` in its *provider*, showing once again how
+sparse the logic can be with this API; potentially, the developer might have to look into six (6!)
+different places to understand this Notifier behavior!
 
-This API ambiguity is solved with `Riverpod 2.0`.  
+Again, this ambiguity is solved with `Riverpod 2.0`.
 Check the above example, migrated to its `Notifier` equivalent.
 <AutoSnippet language="dart" {...oldLifecycles}></AutoSnippet>
 
-Here, instead, `MyNotifier`, will *not* dispose when `durationProvider` updates:
-only its *internal state* will.  
-This breaking change simplifies the API and, hopefully, your DX, for two reasons:
-1. there is only one lifecycle to take care of, the one we really care about: `Notifier`'s inner state;
-2. there is only one API to register a `dispose` action: `ref.onDispose`.
+This simplifies the API and, hopefully, your DX, for two reasons:
+1. There is only *one* lifecycle to take care of, and it's managed via `ref.onDispose`
+(and `ref.onCancel`, etc.), just like you would do with any other provider
+2. There is only *one* place to look at to understand lifecycle side-effects, its `build` method
+3. Also, the above `MyNotifier`, will *not* dispose when `durationProvider` updates:
+only its *internal state* will
 
-TODO: talk about how there is no `.mounted` property and how to transition from it
+### `.mounted` is no more
+**TODO: talk about how there is no `.mounted` property and how to transition from it**
 
 ## Other differences
 Let's explore the less-impactful differences between `StateNotifier` and `Notifier` (or `AsyncNotifier`)
