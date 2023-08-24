@@ -4,6 +4,7 @@ title: From `StateNotifier` and `ChangeNotifier`
 
 import buildIinit from "./build_init";
 import familyAndDispose from "./family_and_dispose";
+import asyncNotifier from "./async_notifier";
 import fromStateProvider from "./from_state_provider";
 import oldLifecycles from "./old_lifecycles";
 import {AutoSnippet} from "../../src/components/CodeSnippet";
@@ -55,15 +56,50 @@ final wellNotifierProvider = StateNotifierProvider<WellNotifier, int>((ref) {
 Let's recap the main differences:
 - `StateNotifier`'s reactive dependencies are declared in its provider, whereas `Notifier`
 centralizes this logic in its `build` method
-- Indeed, `StateNotifier`'s initialization is split between its provider and its constructor, whereas
-`Notifier` centralizes initialization in its `build` method
-- As opposed to `StateNotifier`, no logic is ever written into a `Notifier`'s constructor
+- Indeed, `StateNotifier`'s whole initialization process is split between its provider and its constructor,
+whereas `Notifier` reserves a single place to place such logic
+- Notice how, as opposed to `StateNotifier`, no logic is ever written into a `Notifier`'s constructor
+
+Similar conclusions can be made with `AsyncNotifer`, `Notifier`'s asynchronous equivalent.  
+Let's check it out.
 
 ## Better async support with `AsyncNotifier`
-Previously, with `StateNotifier`, we would handle stateful asynchronous logic like so:
+The main appeal of the new API syntax is an improved DX on asynchronous states.  
+Previously, with `StateNotifier`, we would handle that like so:
 ```dart
+class AsyncTodosNotifier extends StateNotifier<AsyncValue<List<Todo>>> {
+  AsyncTodosNotifier() : super(const AsyncLoading()) {
+    _postInit();
+  }
 
+  Future<void> _postInit() async {
+    state = await AsyncValue.guard(
+      // mock of a network request
+      () => Future.delayed(const Duration(seconds: 1), () => []),
+    );
+  }
+
+  // ...
+}
 ```
+This heavy syntax suffers from the same defects showed above.  
+`AsyncNotifer`, just like `Notifier`, brings a simple and uniform API. Here, it's easy to see
+`AsyncNotifer` as a `FutureProvider` with methods.
+
+Here's the above example, rewritten with the new `AsyncNotifier` APIs:
+<AutoSnippet language="dart" {...asyncNotifier}></AutoSnippet>
+
+Therefore, migrating from `StateNotifier<AsyncValue<T>>` to a `AsyncNotifer<T>` should be very straightforward:
+- Place the initialization logic directly into `build`: there's no need to define a `_postInit` method anymore
+- There's no need to explicitly initialize `state` with `AsyncLoading`: as long as `build` returns a `Future`,
+this will be handled by `AsyncNotifer`, directly
+- You can evaluate an initialization synchronously, if ever needed: just avoid returning a `Future` in your `build` method,
+i.e. let `build` be synchronous (this is the equivalent of initializing `StateNotifier` with an `AsyncData`)
+
+Finally, `AsyncNotifer` comes with a set of utilities and getters that `StateNotifier` doesn't have, such as e.g.
+[`future`](https://pub.dev/documentation/riverpod/latest/riverpod/AutoDisposeAsyncNotifier/future.html)
+and [`update`](https://pub.dev/documentation/riverpod/latest/riverpod/AutoDisposeAsyncNotifier/update.html). 
+This enables us to write much simpler logic when handling asynchronous mutations.
 
 ## Differences with `.family` and their attributes
 
