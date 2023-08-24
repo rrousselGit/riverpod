@@ -5,7 +5,6 @@ import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
 import '../riverpod_custom_lint.dart';
 
-const _riverpodAnnotation = 'riverpod';
 const _buildMethodName = 'build';
 
 class NotifierBuild extends RiverpodLintRule {
@@ -28,10 +27,10 @@ class NotifierBuild extends RiverpodLintRule {
           .where(
             (element) {
               final annotationElement = element.element;
-
+              
               if (annotationElement == null || annotationElement is! ExecutableElement) return false;
 
-              return riverpodType.isExactly(annotationElement);
+              return riverpodType.isExactlyType(annotationElement.returnType);
             },
           )
           .isNotEmpty;
@@ -44,7 +43,7 @@ class NotifierBuild extends RiverpodLintRule {
 
       if (hasBuildMethod) return;
 
-      reporter.reportErrorForNode(_code, node);
+      reporter.reportErrorForToken(_code, node.name);
     });
   }
 }
