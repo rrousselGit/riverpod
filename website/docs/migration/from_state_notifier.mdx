@@ -232,22 +232,31 @@ a `Notifier` by hand).
 This [testing guide](/docs/cookbooks/testing) fully explains how to use `ProviderContainer.read` to do so.
 
 
-## There is no `StateProvider` equivalent
+## From `StateProvider` to `Notifier`
 
 `StateProvider` was exposed by Riverpod's libraries to save a few LoC when in need of a
 simplified version of `StateNotifierProvider`.  
-Since `StateNotifierProvider` is deprecated, `StateProvider` is to be avoided, too.
+Since `StateNotifierProvider` is deprecated, `StateProvider` is to be avoided, too.  
+Furthermore, as of now, there is not `StateProvider` equivalent for the new APIs.
 
-To migrate from `StateProvider` and towards `Notifier` is simple. Take this example:
+Nonetheless, migrating from `StateProvider` to `Notifier` is simple.
 
+This:
 ```dart
 final counterProvider = StateProvider<int>((ref) {
   return 0;
 });
 ```
-
-When migrating to `Notifier`, this becomes:
+Becomes:
 <AutoSnippet language="dart" {...fromStateProvider}></AutoSnippet>
 
-Even though it costs us a few more LoC, migrating away from `StateProvider` enables us to move away
-from `StateNotifier`.
+Even though it costs us a few more LoC, migrating away from `StateProvider` enables us to
+definetively archive `StateNotifier`.
+
+## From `ChangeNotifier` to `Notifier`
+
+WIP
+
+### An asynchronous example
+
+WIP
