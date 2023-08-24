@@ -7,7 +7,7 @@ import familyAndDispose from "./family_and_dispose";
 import asyncNotifier from "./async_notifier";
 import fromStateProvider from "./from_state_provider";
 import oldLifecycles from "./old_lifecycles";
-import {AutoSnippet} from "../../src/components/CodeSnippet";
+import { AutoSnippet } from "../../src/components/CodeSnippet";
 
 Riverpod went `2.0`! To see the full list of changes, consult the
 [Changelog](https://pub.dev/packages/flutter_riverpod/changelog#200).
@@ -20,6 +20,7 @@ The main benefit introduced by `AsyncNotifier` is a better `async` support; inde
 `AsyncNotifier` can be thought as a `FutureProvider` with methods.
 
 Furthermore, the new `Notifier`s:
+
 - Expose a `Ref` object inside its class
 - Offer similar syntax between codegen and non-codegen approaches
 - Offer similar syntax between their sync and async versions
@@ -29,12 +30,15 @@ Let's see how to define a `Notifier`, how it compares with `StateNotifier` and e
 the new `AsyncNotifier` for asynchronous state classes.
 
 ## The new syntax
+
 Let's write some simple logic with a synchronous `Notifier`:
+
 <AutoSnippet language="dart" {...buildIinit}></AutoSnippet>
 
 Notice the following design choices:
+
 - Notifiers are initialized in their `build` method, along with their reactive dependencies
-- Notifiers expose `ref` into their class, whereas their Provider don't 
+- Notifiers expose `ref` into their class, whereas their Provider don't
 
 ### Comparison with `StateNotifier`
 
@@ -54,18 +58,21 @@ final wellNotifierProvider = StateNotifierProvider<WellNotifier, int>((ref) {
 ```
 
 Let's recap the main differences:
+
 - `StateNotifier`'s reactive dependencies are declared in its provider, whereas `Notifier`
-centralizes this logic in its `build` method
+  centralizes this logic in its `build` method
 - Indeed, `StateNotifier`'s whole initialization process is split between its provider and its constructor,
-whereas `Notifier` reserves a single place to place such logic
+  whereas `Notifier` reserves a single place to place such logic
 - Notice how, as opposed to `StateNotifier`, no logic is ever written into a `Notifier`'s constructor
 
 Similar conclusions can be made with `AsyncNotifer`, `Notifier`'s asynchronous equivalent.  
 Let's check it out.
 
 ## Better async support with `AsyncNotifier`
+
 The main appeal of the new API syntax is an improved DX on asynchronous states.  
 Previously, with `StateNotifier`, we would handle that like so:
+
 ```dart
 class AsyncTodosNotifier extends StateNotifier<AsyncValue<List<Todo>>> {
   AsyncTodosNotifier() : super(const AsyncLoading()) {
@@ -82,23 +89,26 @@ class AsyncTodosNotifier extends StateNotifier<AsyncValue<List<Todo>>> {
   // ...
 }
 ```
+
 This heavy syntax suffers from the same defects showed above.  
 `AsyncNotifer`, just like `Notifier`, brings a simple and uniform API. Here, it's easy to see
 `AsyncNotifer` as a `FutureProvider` with methods.
 
 Here's the above example, rewritten with the new `AsyncNotifier` APIs:
+
 <AutoSnippet language="dart" {...asyncNotifier}></AutoSnippet>
 
 Therefore, migrating from `StateNotifier<AsyncValue<T>>` to a `AsyncNotifer<T>` should be very straightforward:
+
 - Place the initialization logic directly into `build`: there's no need to define a `_postInit` method anymore
 - There's no need to explicitly initialize `state` with `AsyncLoading`: as long as `build` returns a `Future`,
-this will be handled by `AsyncNotifer`, directly
+  this will be handled by `AsyncNotifer`, directly
 - You can evaluate an initialization synchronously, if ever needed: just avoid returning a `Future` in your `build` method,
-i.e. let `build` be synchronous (this is the equivalent of initializing `StateNotifier` with an `AsyncData`)
+  i.e. let `build` be synchronous (this is the equivalent of initializing `StateNotifier` with an `AsyncData`)
 
 Finally, `AsyncNotifer` comes with a set of utilities and getters that `StateNotifier` doesn't have, such as e.g.
 [`future`](https://pub.dev/documentation/riverpod/latest/riverpod/AutoDisposeAsyncNotifier/future.html)
-and [`update`](https://pub.dev/documentation/riverpod/latest/riverpod/AutoDisposeAsyncNotifier/update.html). 
+and [`update`](https://pub.dev/documentation/riverpod/latest/riverpod/AutoDisposeAsyncNotifier/update.html).
 This enables us to write much simpler logic when handling asynchronous mutations.
 
 ## Explicit `.family` and `.autoDispose` modifications
@@ -112,10 +122,11 @@ Like any other provider, these can be combined (aka `AutoDisposeFamilyNotifier`)
 `AsyncNotifer` has its asynchronous equivalent, too (e.g. `AutoDisposeFamilyAsyncNotifier`).
 
 The main difference (and advantage) is that modifications and any parameters are explicitly stated inside the class;
-furthermore, they are directly injected in the `build` method, so that they're available to the initialization logic.    
+furthermore, they are directly injected in the `build` method, so that they're available to the initialization logic.  
 This should bring better readability, more conciseness and less mistakes.
 
 Take the following example, in which a `StateNotifierProvider.family` is being defined.
+
 ```dart
 class BugsEncounteredNotifier extends StateNotifier<AsyncValue<int>> {
   BugsEncounteredNotifier({
@@ -140,7 +151,7 @@ final bugsEncounteredNotifierProvider =
 });
 ```
 
-The main gotcha here is that reading `BugsEncounteredNotifier` is *not* enough to determine wheter or
+The main gotcha here is that reading `BugsEncounteredNotifier` is _not_ enough to determine wheter or
 not this `StateNotifier` has modifications (e.g. `.family` and/or `.autoDispose`).  
 To determine that, it is required to read the its provider definition.
 
@@ -152,7 +163,8 @@ This last snippet should showcase better readability: it's possible to immediate
 what modifications are being set for this Notifier.
 
 ## Lifecycles have a different behavior
-Lifecycles  between `Notifier`/`AsyncNotifier` and `StateNotifier`/`ChangeNotifier` differ substantially.
+
+Lifecycles between `Notifier`/`AsyncNotifier` and `StateNotifier`/`ChangeNotifier` differ substantially.
 
 `StateNotifier` and `ChangeNotifier` instances are indeed bound to their outer
 `StateNotifierProvider` and `ChangeNotifierProvider` providers.  
@@ -160,6 +172,7 @@ When their provider rebuilds, their exposed value, aka their `StateNotifier`/`Ch
 is `disposed`, and then re-created (i.e. its constructor gets invoked again).
 
 This example showcases - again - how the old API have sparse logic:
+
 ```dart
 class MyNotifier extends StateNotifier<int> {
   MyNotifier(this.period) : super(0) { // 1 init logic
@@ -183,32 +196,37 @@ final myNotifierProvider = StateNotifierProvider<MyNotifier, int>((ref) {  // 5 
 });
 ```
 
-Here, if `durationProvider` updates, `MyNotifier` *disposes*: its instance is then re-instantiated
+Here, if `durationProvider` updates, `MyNotifier` _disposes_: its instance is then re-instantiated
 and its internal state is then re-initialized.  
 Furthermore, unlike every other provider, the `dispose` callback is to be defined
 in the class, separately.  
-Finally, it is still possible to write `ref.onDispose` in its *provider*, showing once again how
+Finally, it is still possible to write `ref.onDispose` in its _provider_, showing once again how
 sparse the logic can be with this API; potentially, the developer might have to look into six (6!)
 different places to understand this Notifier behavior!
 
 Again, this ambiguity is solved with `Riverpod 2.0`.
 Check the above example, migrated to its `Notifier` equivalent.
+
 <AutoSnippet language="dart" {...oldLifecycles}></AutoSnippet>
 
 This simplifies the API and, hopefully, your DX, for two reasons:
-1. There is only *one* lifecycle to take care of, and it's managed via `ref.onDispose`
-(and `ref.onCancel`, etc.), just like you would do with any other provider
-2. There is only *one* place to look at to understand lifecycle side-effects, its `build` method
-3. Also, the above `MyNotifier`, will *not* dispose when `durationProvider` updates:
-only its *internal state* will
+
+1. There is only _one_ lifecycle to take care of, and it's managed via `ref.onDispose`
+   (and `ref.onCancel`, etc.), just like you would do with any other provider
+2. There is only _one_ place to look at to understand lifecycle side-effects, its `build` method
+3. Also, the above `MyNotifier`, will _not_ dispose when `durationProvider` updates:
+   only its _internal state_ will
 
 ### `.mounted` is no more
+
 **TODO: talk about how there is no `.mounted` property and how to transition from it**
 
 ## Other differences
+
 Let's explore the less-impactful differences between `StateNotifier` and `Notifier` (or `AsyncNotifier`)
 
 ### Migrating from `.addListener` and `.stream`
+
 `StateNotifier`'s `.addListener` and `.stream` can be used to listen for state changes.
 These two APIs aren't a thing within `Notifier` or `AsyncNotifier`.
 
@@ -219,6 +237,7 @@ So, if you want to listen to a `Notifier`, just use `ref.listen`,
 [as explained here](/docs/concepts/reading#using-reflisten-to-react-to-a-provider-change).
 
 ### Migrating from `.debugState`
+
 `StateNotifier` exposed a `.debugState` getter that isn't a thing on `Notifier`.  
 This property had some use within `state_notifier`, as it enabled accessing state
 from outside the class when in development mode, aka for testing purposes.
@@ -231,7 +250,6 @@ a `Notifier` by hand).
 
 This [testing guide](/docs/cookbooks/testing) fully explains how to use `ProviderContainer.read` to do so.
 
-
 ## From `StateProvider` to `Notifier`
 
 `StateProvider` was exposed by Riverpod's libraries to save a few LoC when in need of a
@@ -242,12 +260,15 @@ Furthermore, as of now, there is not `StateProvider` equivalent for the new APIs
 Nonetheless, migrating from `StateProvider` to `Notifier` is simple.
 
 This:
+
 ```dart
 final counterProvider = StateProvider<int>((ref) {
   return 0;
 });
 ```
+
 Becomes:
+
 <AutoSnippet language="dart" {...fromStateProvider}></AutoSnippet>
 
 Even though it costs us a few more LoC, migrating away from `StateProvider` enables us to
