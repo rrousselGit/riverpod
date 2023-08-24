@@ -323,11 +323,11 @@ When reading this `userProvider`, you can:
   Widget build(BuildContext context, WidgetRef ref) {
     AsyncValue<User> user = ref.watch(userProvider);
 
-    return user.when(
-      loading: () => const CircularProgressIndicator(),
-      error: (error, stack) => const Text('Oops'),
-      data: (user) => Text(user.name),
-    );
+    return switch (user) {
+      AsyncData(:final value) => Text(value.name),
+      AsyncError(:final error) => const Text('Oops $error'),
+      _ => const CircularProgressIndicator(),
+    };
   }
   ```
 
