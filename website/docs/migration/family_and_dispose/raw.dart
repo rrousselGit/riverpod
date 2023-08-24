@@ -6,7 +6,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../utils.dart';
 
 /* SNIPPET START */
-class BugsEncounteredNotifier extends FamilyAsyncNotifier<int, String> {
+class BugsEncounteredNotifier extends AutoDisposeFamilyAsyncNotifier<int, String> {
   late String _id;
   @override
   FutureOr<int> build(String featureId) {
@@ -24,4 +24,6 @@ class BugsEncounteredNotifier extends FamilyAsyncNotifier<int, String> {
 }
 
 final bugsEncounteredNotifierProvider =
-    AsyncNotifierProviderFamily<BugsEncounteredNotifier, int, String>(BugsEncounteredNotifier.new);
+    AsyncNotifierProvider.family.autoDispose<BugsEncounteredNotifier, int, String>(
+  BugsEncounteredNotifier.new,
+);

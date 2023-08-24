@@ -101,15 +101,18 @@ Finally, `AsyncNotifer` comes with a set of utilities and getters that `StateNot
 and [`update`](https://pub.dev/documentation/riverpod/latest/riverpod/AutoDisposeAsyncNotifier/update.html). 
 This enables us to write much simpler logic when handling asynchronous mutations.
 
-## Differences with `.family` and their attributes
+## Explicit `.family` and `.autoDispose` modifications
 
-When a `StateNotifier` had family parameters, these were defined in its provider, and chances are
-that these parameters must have been piped down its class, too.
+When a `StateNotifier` had family parameters, these were not found into its class, but they were
+defined in its provider; also, and chances are that these parameters must have been piped down its constructor, too.
 
-`Notifier` and `AsyncNotifier`, instead, have their own `.family` counterpart: `FamilyNotifier`
-and `FamilyAsyncNotifier`.  
-A main difference is that parameters are explicitly stated and they are directly injected in their
-`build` method, so that they're available to the initialization logic.    
+`Notifier`, instead, has its own `.family` and `.autoDispose` counterparts, such as `FamilyNotifier`
+and `AutoDisposeNotifier`.  
+Like any other provider, these can be combined (aka `AutoDisposeFamilyNotifier`).  
+`AsyncNotifer` has its asynchronous equivalent, too (e.g. `AutoDisposeFamilyAsyncNotifier`).
+
+The main difference (and advantage) is that modifications and any parameters are explicitly stated inside the class;
+furthermore, they are directly injected in the `build` method, so that they're available to the initialization logic.    
 This should bring better readability, more conciseness and less mistakes.
 
 Take the following example, in which a `StateNotifierProvider.family` is being defined.
@@ -132,23 +135,23 @@ class BugsEncounteredNotifier extends StateNotifier<AsyncValue<int>> {
 }
 
 final bugsEncounteredNotifierProvider =
-    StateNotifierProvider.family<BugsEncounteredNotifier, int, String>((ref, id) {
+    StateNotifierProvider.family.autoDispose<BugsEncounteredNotifier, int, String>((ref, id) {
   return BugsEncounteredNotifier(ref: ref, featureId: id);
 });
 ```
 
-Now, let's take a look at the new and improved `AsyncNotifier`:
+The main gotcha here is that reading `BugsEncounteredNotifier` is *not* enough to determine wheter or
+not this `StateNotifier` has modifications (e.g. `.family` and/or `.autoDispose`).  
+To determine that, it is required to read the its provider definition.
+
+Now, let's take a look at its migrated `AsyncNotifier` counterpart:
 
 <AutoSnippet language="dart" {...familyAndDispose}></AutoSnippet>
 
-The exact same example should feel way lighter, and should have better readability than before.
+This last snippet should showcase better readability: it's possible to immediately tell
+what modifications are being set for this Notifier.
 
 :::info
-`Notifier` and `AsyncNotifier` are intrinsically bound to the `.autoDispose` as well.
-Enabling or disabling such features means it's needed to change the subclassed notifier type.  
-For example, to define an `AsyncNotifier` with `.autoDispose` and `.family` features altogether,
-it is needed to extend `AutoDisposeFamilyAsyncNotifier`.
-:::
 
 ## Other differences
 Let's explore the less-impactful differences between `StateNotifier` and `Notifier` (or `AsyncNotifier`)
