@@ -34,7 +34,7 @@ class _RiverpodPlugin extends PluginBase {
         const ScopedProvidersShouldSpecifyDependencies(),
         const UnsupportedProviderValue(),
         const AvoidRefInsideStateDispose(),
-        const MissingBuildMethodProvider(),
+        const NotifierBuild(),
 //         const AvoidDynamicProviders(),
 // //  "Avoid passing providers as parameter to objects"
 //         const AvoidExposingProviderRef(),

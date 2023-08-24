@@ -6,11 +6,11 @@ import '../riverpod_custom_lint.dart';
 const _riverpodAnnotation = 'riverpod';
 const _buildMethodName = 'build';
 
-class MissingBuildMethodProvider extends RiverpodLintRule {
-  const MissingBuildMethodProvider() : super(code: _code);
+class NotifierBuild extends RiverpodLintRule {
+  const NotifierBuild() : super(code: _code);
 
   static const _code = LintCode(
-    name: 'missed_build_method',
+    name: 'notifier_build',
     problemMessage:
         'Classes annotated by `@riverpod` must have the `build` method',
   );
