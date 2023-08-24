@@ -5,6 +5,7 @@ title: From `StateNotifier` and `ChangeNotifier`
 import buildIinit from "./build_init";
 import familyAndDispose from "./family_and_dispose";
 import asyncNotifier from "./async_notifier";
+import addListener from "./add_listener";
 import fromStateProvider from "./from_state_provider";
 import oldLifecycles from "./old_lifecycles";
 import { AutoSnippet } from "../../src/components/CodeSnippet";
@@ -221,34 +222,54 @@ This simplifies the API and, hopefully, your DX, for two reasons:
 
 **TODO: talk about how there is no `.mounted` property and how to transition from it**
 
-## Other differences
+## Other migrations
 
 Let's explore the less-impactful differences between `StateNotifier` and `Notifier` (or `AsyncNotifier`)
 
-### Migrating from `.addListener` and `.stream`
+### From `.addListener` and `.stream`
 
 `StateNotifier`'s `.addListener` and `.stream` can be used to listen for state changes.
-These two APIs aren't a thing within `Notifier` or `AsyncNotifier`.
+These two APIs are now to be considered outdated.
 
-This is intentional due to the API uniformity `Notifier` and `AsyncNotifier` offer.
+This is intentional due to the desire to reach full API uniformity with `Notifier`, `AsyncNotifier` and other providers.  
 Indeed, using a `Notifier` or an `AsyncNotifier` shouldn't be any different from any other provider.
 
-So, if you want to listen to a `Notifier`, just use `ref.listen`,
+Therefore this:
+```dart
+class MyNotifier extends StateNotifier<int> {
+  MyNotifier() : super(0);
+}
+
+final myNotifierProvider = StateNotifierProvider<MyNotifier, int>((ref) {
+  final notifier = MyNotifier();
+
+  final cleanup = notifier.addListener((state) => debugPrint('$state'));
+  ref.onDispose(cleanup);
+
+  // Or, equivalently:
+  // final listener = notifier.stream.listen((event) => debugPrint('$event'));
+  // ref.onDispose(listener.cancel);
+
+  return notifier;
+});
+```
+Becomes this:
+<AutoSnippet language="dart" {...addListener}></AutoSnippet>
+
+In a nutshell: if you want to listen to a `Notifier`/`AsyncNotifer`, just use `ref.listen`,
 [as explained here](/docs/concepts/reading#using-reflisten-to-react-to-a-provider-change).
 
-### Migrating from `.debugState`
+### From `.debugState`
 
-`StateNotifier` exposed a `.debugState` getter that isn't a thing on `Notifier`.  
-This property had some use within `state_notifier`, as it enabled accessing state
-from outside the class when in development mode, aka for testing purposes.
+`StateNotifier` exposed `.debugState`: this property had some use within `state_notifier`,
+as it enabled accessing state from outside the class when in development mode, for testing purposes.
 
-Again, for uniformity reasons, it doesn't make sense to expose such property on a `Notifier`
-(or on an `AsyncNotifier`).  
-If you want to interact with `Notifier` or `AsyncNotifier` in a testing environment, you should do
+Again, for uniformity reasons, such property is not available in the new APIs.  
+If you want to interact with `Notifier`/`AsyncNotifier` in a testing environment, you should do
 it just like with any other provider: by reading them directly (as opposed of directly instantiating
 a `Notifier` by hand).
 
-This [testing guide](/docs/cookbooks/testing) fully explains how to use `ProviderContainer.read` to do so.
+The [testing guide](/docs/cookbooks/testing) fully explains how to use `ProviderContainer.read` to do so.
 
 ## From `StateProvider` to `Notifier`
 
