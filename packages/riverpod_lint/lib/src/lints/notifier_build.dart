@@ -23,17 +23,16 @@ class NotifierBuild extends RiverpodLintRule {
     CustomLintContext context,
   ) {
     context.registry.addClassDeclaration((node) {
-      final hasRiverpodAnnotation = node.metadata
-          .where(
-            (element) {
-              final annotationElement = element.element;
-              
-              if (annotationElement == null || annotationElement is! ExecutableElement) return false;
+      final hasRiverpodAnnotation = node.metadata.where(
+        (element) {
+          final annotationElement = element.element;
 
-              return riverpodType.isExactlyType(annotationElement.returnType);
-            },
-          )
-          .isNotEmpty;
+          if (annotationElement == null ||
+              annotationElement is! ExecutableElement) return false;
+
+          return riverpodType.isExactlyType(annotationElement.returnType);
+        },
+      ).isNotEmpty;
 
       if (!hasRiverpodAnnotation) return;
 
