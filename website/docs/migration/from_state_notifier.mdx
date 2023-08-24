@@ -151,12 +151,7 @@ Now, let's take a look at its migrated `AsyncNotifier` counterpart:
 This last snippet should showcase better readability: it's possible to immediately tell
 what modifications are being set for this Notifier.
 
-:::info
-
-## Other differences
-Let's explore the less-impactful differences between `StateNotifier` and `Notifier` (or `AsyncNotifier`)
-
-### Lifecycles have a different behavior
+## Lifecycles have a different behavior
 Lifecycles  between `Notifier` (and `AsyncNotifier`) and `StateNotifier` (and `ChangeNotifier`)
 differ substantially.
 
@@ -208,13 +203,12 @@ This breaking change simplifies the API and, hopefully, your DX, for two reasons
 1. there is only one lifecycle to take care of, the one we really care about: `Notifier`'s inner state;
 2. there is only one API to register a `dispose` action: `ref.onDispose`.
 
-### There is no `.mounted` property
-WIP
+TODO: talk about how there is no `.mounted` property and how to transition from it
 
-### Final remarks
-When transitioning to `Notifier` (or `AsyncNotifier`), it is good to keep in mind some more differences.
+## Other differences
+Let's explore the less-impactful differences between `StateNotifier` and `Notifier` (or `AsyncNotifier`)
 
-#### Migrating from `.addListener` and `.stream`
+### Migrating from `.addListener` and `.stream`
 `StateNotifier`'s `.addListener` and `.stream` can be used to listen for state changes.
 These two APIs aren't a thing within `Notifier` or `AsyncNotifier`.
 
@@ -224,7 +218,7 @@ Indeed, using a `Notifier` or an `AsyncNotifier` shouldn't be any different from
 So, if you want to listen to a `Notifier`, just use `ref.listen`,
 [as explained here](/docs/concepts/reading#using-reflisten-to-react-to-a-provider-change).
 
-#### Migrating from `.debugState`
+### Migrating from `.debugState`
 `StateNotifier` exposed a `.debugState` getter that isn't a thing on `Notifier`.  
 This property had some use within `state_notifier`, as it enabled accessing state
 from outside the class when in development mode, aka for testing purposes.
@@ -238,7 +232,7 @@ a `Notifier` by hand).
 This [testing guide](/docs/cookbooks/testing) fully explains how to use `ProviderContainer.read` to do so.
 
 
-## Migrating from `StateProvider`
+## There is no `StateProvider` equivalent
 
 `StateProvider` was exposed by Riverpod's libraries to save a few LoC when in need of a
 simplified version of `StateNotifierProvider`.  
