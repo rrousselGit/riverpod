@@ -85,9 +85,9 @@ extension AsyncTransition<T> on ProviderElementBase<AsyncValue<T>> {
 /// - [FutureProvider], [StreamProvider] which transforms a [Future] into
 ///   an [AsyncValue].
 /// - [AsyncValue.guard], to simplify transforming a [Future] into an [AsyncValue].
-@sealed
+
 @immutable
-abstract class AsyncValue<T> {
+sealed class AsyncValue<T> {
   const AsyncValue._();
 
   /// {@template asyncvalue.data}
@@ -117,8 +117,7 @@ abstract class AsyncValue<T> {
   /// ```
   /// {@endtemplate}
   // coverage:ignore-start
-  const factory AsyncValue.error(Object error, StackTrace stackTrace) =
-      AsyncError<T>;
+  const factory AsyncValue.error(Object error, StackTrace stackTrace) = AsyncError<T>;
   // coverage:ignore-end
 
   /// Transforms a [Future] that may fail into something that is safe to read.
@@ -528,8 +527,7 @@ extension AsyncValueX<T> on AsyncValue<T> {
   ///
   /// If a provider rebuilds because one of its dependencies changes (using [Ref.watch]),
   /// then [isRefreshing] will be false, and instead [isReloading] will be true.
-  bool get isRefreshing =>
-      isLoading && (hasValue || hasError) && this is! AsyncLoading;
+  bool get isRefreshing => isLoading && (hasValue || hasError) && this is! AsyncLoading;
 
   /// Whether the associated provider was recomputed because of a dependency change
   /// (using [Ref.watch]), after at least one [value]/[error] was emitted.
