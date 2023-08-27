@@ -91,8 +91,8 @@ class FamilyFamily extends Family<int> {
 class FamilyProvider extends AutoDisposeProvider<int> {
   /// See also [family].
   FamilyProvider(
-    this.id,
-  ) : super.internal(
+    int id,
+  ) : this._internal(
           (ref) => family(
             ref,
             id,
@@ -105,7 +105,18 @@ class FamilyProvider extends AutoDisposeProvider<int> {
                   : _$familyHash,
           dependencies: FamilyFamily._dependencies,
           allTransitiveDependencies: FamilyFamily._allTransitiveDependencies,
+          id: id,
         );
+
+  FamilyProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.id,
+  }) : super.internal();
 
   final int id;
 
@@ -223,7 +234,7 @@ final smallTransitiveDependencyCountProvider =
 
 typedef SmallTransitiveDependencyCountRef = AutoDisposeProviderRef<int>;
 String _$emptyDependenciesFunctionalHash() =>
-    r'73d68dcbd3ea09b593b84b4a4dae9eb6e72e3640';
+    r'592bebd079450e2071fb12d68c3ae333d5c28359';
 
 /// See also [emptyDependenciesFunctional].
 @ProviderFor(emptyDependenciesFunctional)
@@ -357,8 +368,8 @@ class Family2Family extends Family<int> {
 class Family2Provider extends AutoDisposeNotifierProviderImpl<Family2, int> {
   /// See also [Family2].
   Family2Provider(
-    this.id,
-  ) : super.internal(
+    int id,
+  ) : this._internal(
           () => Family2()..id = id,
           from: family2Provider,
           name: r'family2Provider',
@@ -368,9 +379,45 @@ class Family2Provider extends AutoDisposeNotifierProviderImpl<Family2, int> {
                   : _$family2Hash,
           dependencies: Family2Family._dependencies,
           allTransitiveDependencies: Family2Family._allTransitiveDependencies,
+          id: id,
         );
 
+  Family2Provider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.id,
+  }) : super.internal();
+
   final int id;
+
+  @override
+  int runNotifierBuild(
+    covariant Family2 notifier,
+  ) {
+    return notifier.build(
+      id,
+    );
+  }
+
+  @override
+  Override overrideWith(Family2 Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: Family2Provider._internal(
+        create,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        id: id,
+      ),
+    );
+  }
 
   @override
   bool operator ==(Object other) {
@@ -383,15 +430,6 @@ class Family2Provider extends AutoDisposeNotifierProviderImpl<Family2, int> {
     hash = _SystemHash.combine(hash, id.hashCode);
 
     return _SystemHash.finish(hash);
-  }
-
-  @override
-  int runNotifierBuild(
-    covariant Family2 notifier,
-  ) {
-    return notifier.build(
-      id,
-    );
   }
 }
 
@@ -495,8 +533,8 @@ class Provider4Provider
     extends AutoDisposeNotifierProviderImpl<Provider4, int> {
   /// See also [Provider4].
   Provider4Provider(
-    this.id,
-  ) : super.internal(
+    int id,
+  ) : this._internal(
           () => Provider4()..id = id,
           from: provider4Provider,
           name: r'provider4Provider',
@@ -506,9 +544,45 @@ class Provider4Provider
                   : _$provider4Hash,
           dependencies: Provider4Family._dependencies,
           allTransitiveDependencies: Provider4Family._allTransitiveDependencies,
+          id: id,
         );
 
+  Provider4Provider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.id,
+  }) : super.internal();
+
   final int id;
+
+  @override
+  int runNotifierBuild(
+    covariant Provider4 notifier,
+  ) {
+    return notifier.build(
+      id,
+    );
+  }
+
+  @override
+  Override overrideWith(Provider4 Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: Provider4Provider._internal(
+        create,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        id: id,
+      ),
+    );
+  }
 
   @override
   bool operator ==(Object other) {
@@ -521,15 +595,6 @@ class Provider4Provider
     hash = _SystemHash.combine(hash, id.hashCode);
 
     return _SystemHash.finish(hash);
-  }
-
-  @override
-  int runNotifierBuild(
-    covariant Provider4 notifier,
-  ) {
-    return notifier.build(
-      id,
-    );
   }
 }
 

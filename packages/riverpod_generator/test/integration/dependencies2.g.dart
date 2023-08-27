@@ -117,8 +117,8 @@ class FamilyWithDependencies2Family extends Family<int> {
 class FamilyWithDependencies2Provider extends AutoDisposeProvider<int> {
   /// See also [familyWithDependencies2].
   FamilyWithDependencies2Provider({
-    this.id,
-  }) : super.internal(
+    int? id,
+  }) : this._internal(
           (ref) => familyWithDependencies2(
             ref,
             id: id,
@@ -132,7 +132,18 @@ class FamilyWithDependencies2Provider extends AutoDisposeProvider<int> {
           dependencies: FamilyWithDependencies2Family._dependencies,
           allTransitiveDependencies:
               FamilyWithDependencies2Family._allTransitiveDependencies,
+          id: id,
         );
+
+  FamilyWithDependencies2Provider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.id,
+  }) : super.internal();
 
   final int? id;
 
@@ -279,8 +290,8 @@ class NotifierFamilyWithDependenciesProvider
         int> {
   /// See also [NotifierFamilyWithDependencies].
   NotifierFamilyWithDependenciesProvider({
-    this.id,
-  }) : super.internal(
+    int? id,
+  }) : this._internal(
           () => NotifierFamilyWithDependencies()..id = id,
           from: notifierFamilyWithDependenciesProvider,
           name: r'notifierFamilyWithDependenciesProvider',
@@ -291,9 +302,45 @@ class NotifierFamilyWithDependenciesProvider
           dependencies: NotifierFamilyWithDependenciesFamily._dependencies,
           allTransitiveDependencies:
               NotifierFamilyWithDependenciesFamily._allTransitiveDependencies,
+          id: id,
         );
 
+  NotifierFamilyWithDependenciesProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.id,
+  }) : super.internal();
+
   final int? id;
+
+  @override
+  int runNotifierBuild(
+    covariant NotifierFamilyWithDependencies notifier,
+  ) {
+    return notifier.build(
+      id: id,
+    );
+  }
+
+  @override
+  Override overrideWith(NotifierFamilyWithDependencies Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: NotifierFamilyWithDependenciesProvider._internal(
+        create,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        id: id,
+      ),
+    );
+  }
 
   @override
   bool operator ==(Object other) {
@@ -306,15 +353,6 @@ class NotifierFamilyWithDependenciesProvider
     hash = _SystemHash.combine(hash, id.hashCode);
 
     return _SystemHash.finish(hash);
-  }
-
-  @override
-  int runNotifierBuild(
-    covariant NotifierFamilyWithDependencies notifier,
-  ) {
-    return notifier.build(
-      id: id,
-    );
   }
 }
 // ignore_for_file: type=lint

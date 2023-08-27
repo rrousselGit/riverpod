@@ -105,8 +105,8 @@ class RawFamilyFutureFamily extends Family<Future<String>> {
 class RawFamilyFutureProvider extends AutoDisposeProvider<Future<String>> {
   /// See also [rawFamilyFuture].
   RawFamilyFutureProvider(
-    this.id,
-  ) : super.internal(
+    int id,
+  ) : this._internal(
           (ref) => rawFamilyFuture(
             ref,
             id,
@@ -120,7 +120,18 @@ class RawFamilyFutureProvider extends AutoDisposeProvider<Future<String>> {
           dependencies: RawFamilyFutureFamily._dependencies,
           allTransitiveDependencies:
               RawFamilyFutureFamily._allTransitiveDependencies,
+          id: id,
         );
+
+  RawFamilyFutureProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.id,
+  }) : super.internal();
 
   final int id;
 
@@ -187,8 +198,8 @@ class RawFamilyStreamFamily extends Family<Stream<String>> {
 class RawFamilyStreamProvider extends AutoDisposeProvider<Stream<String>> {
   /// See also [rawFamilyStream].
   RawFamilyStreamProvider(
-    this.id,
-  ) : super.internal(
+    int id,
+  ) : this._internal(
           (ref) => rawFamilyStream(
             ref,
             id,
@@ -202,7 +213,18 @@ class RawFamilyStreamProvider extends AutoDisposeProvider<Stream<String>> {
           dependencies: RawFamilyStreamFamily._dependencies,
           allTransitiveDependencies:
               RawFamilyStreamFamily._allTransitiveDependencies,
+          id: id,
         );
+
+  RawFamilyStreamProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.id,
+  }) : super.internal();
 
   final int id;
 
@@ -324,12 +346,12 @@ class FamilyProvider extends AutoDisposeProvider<String> {
   ///
   /// Copied from [family].
   FamilyProvider(
-    this.first, {
-    this.second,
-    required this.third,
-    this.fourth = true,
-    this.fifth,
-  }) : super.internal(
+    int first, {
+    String? second,
+    required double third,
+    bool fourth = true,
+    List<String>? fifth,
+  }) : this._internal(
           (ref) => family(
             ref,
             first,
@@ -346,7 +368,26 @@ class FamilyProvider extends AutoDisposeProvider<String> {
                   : _$familyHash,
           dependencies: FamilyFamily._dependencies,
           allTransitiveDependencies: FamilyFamily._allTransitiveDependencies,
+          first: first,
+          second: second,
+          third: third,
+          fourth: fourth,
+          fifth: fifth,
         );
+
+  FamilyProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.first,
+    required this.second,
+    required this.third,
+    required this.fourth,
+    required this.fifth,
+  }) : super.internal();
 
   final int first;
   final String? second;
@@ -496,8 +537,8 @@ class RawFamilyFutureClassProvider extends AutoDisposeNotifierProviderImpl<
     RawFamilyFutureClass, Future<String>> {
   /// See also [RawFamilyFutureClass].
   RawFamilyFutureClassProvider(
-    this.id,
-  ) : super.internal(
+    int id,
+  ) : this._internal(
           () => RawFamilyFutureClass()..id = id,
           from: rawFamilyFutureClassProvider,
           name: r'rawFamilyFutureClassProvider',
@@ -508,9 +549,45 @@ class RawFamilyFutureClassProvider extends AutoDisposeNotifierProviderImpl<
           dependencies: RawFamilyFutureClassFamily._dependencies,
           allTransitiveDependencies:
               RawFamilyFutureClassFamily._allTransitiveDependencies,
+          id: id,
         );
 
+  RawFamilyFutureClassProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.id,
+  }) : super.internal();
+
   final int id;
+
+  @override
+  Future<String> runNotifierBuild(
+    covariant RawFamilyFutureClass notifier,
+  ) {
+    return notifier.build(
+      id,
+    );
+  }
+
+  @override
+  Override overrideWith(RawFamilyFutureClass Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: RawFamilyFutureClassProvider._internal(
+        create,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        id: id,
+      ),
+    );
+  }
 
   @override
   bool operator ==(Object other) {
@@ -523,15 +600,6 @@ class RawFamilyFutureClassProvider extends AutoDisposeNotifierProviderImpl<
     hash = _SystemHash.combine(hash, id.hashCode);
 
     return _SystemHash.finish(hash);
-  }
-
-  @override
-  Future<String> runNotifierBuild(
-    covariant RawFamilyFutureClass notifier,
-  ) {
-    return notifier.build(
-      id,
-    );
   }
 }
 
@@ -594,8 +662,8 @@ class RawFamilyStreamClassProvider extends AutoDisposeNotifierProviderImpl<
     RawFamilyStreamClass, Stream<String>> {
   /// See also [RawFamilyStreamClass].
   RawFamilyStreamClassProvider(
-    this.id,
-  ) : super.internal(
+    int id,
+  ) : this._internal(
           () => RawFamilyStreamClass()..id = id,
           from: rawFamilyStreamClassProvider,
           name: r'rawFamilyStreamClassProvider',
@@ -606,9 +674,45 @@ class RawFamilyStreamClassProvider extends AutoDisposeNotifierProviderImpl<
           dependencies: RawFamilyStreamClassFamily._dependencies,
           allTransitiveDependencies:
               RawFamilyStreamClassFamily._allTransitiveDependencies,
+          id: id,
         );
 
+  RawFamilyStreamClassProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.id,
+  }) : super.internal();
+
   final int id;
+
+  @override
+  Stream<String> runNotifierBuild(
+    covariant RawFamilyStreamClass notifier,
+  ) {
+    return notifier.build(
+      id,
+    );
+  }
+
+  @override
+  Override overrideWith(RawFamilyStreamClass Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: RawFamilyStreamClassProvider._internal(
+        create,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        id: id,
+      ),
+    );
+  }
 
   @override
   bool operator ==(Object other) {
@@ -621,15 +725,6 @@ class RawFamilyStreamClassProvider extends AutoDisposeNotifierProviderImpl<
     hash = _SystemHash.combine(hash, id.hashCode);
 
     return _SystemHash.finish(hash);
-  }
-
-  @override
-  Stream<String> runNotifierBuild(
-    covariant RawFamilyStreamClass notifier,
-  ) {
-    return notifier.build(
-      id,
-    );
   }
 }
 
@@ -754,12 +849,12 @@ class FamilyClassProvider
   ///
   /// Copied from [FamilyClass].
   FamilyClassProvider(
-    this.first, {
-    this.second,
-    required this.third,
-    this.fourth = true,
-    this.fifth,
-  }) : super.internal(
+    int first, {
+    String? second,
+    required double third,
+    bool fourth = true,
+    List<String>? fifth,
+  }) : this._internal(
           () => FamilyClass()
             ..first = first
             ..second = second
@@ -775,13 +870,65 @@ class FamilyClassProvider
           dependencies: FamilyClassFamily._dependencies,
           allTransitiveDependencies:
               FamilyClassFamily._allTransitiveDependencies,
+          first: first,
+          second: second,
+          third: third,
+          fourth: fourth,
+          fifth: fifth,
         );
+
+  FamilyClassProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.first,
+    required this.second,
+    required this.third,
+    required this.fourth,
+    required this.fifth,
+  }) : super.internal();
 
   final int first;
   final String? second;
   final double third;
   final bool fourth;
   final List<String>? fifth;
+
+  @override
+  String runNotifierBuild(
+    covariant FamilyClass notifier,
+  ) {
+    return notifier.build(
+      first,
+      second: second,
+      third: third,
+      fourth: fourth,
+      fifth: fifth,
+    );
+  }
+
+  @override
+  Override overrideWith(FamilyClass Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: FamilyClassProvider._internal(
+        create,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        first: first,
+        second: second,
+        third: third,
+        fourth: fourth,
+        fifth: fifth,
+      ),
+    );
+  }
 
   @override
   bool operator ==(Object other) {
@@ -803,19 +950,6 @@ class FamilyClassProvider
     hash = _SystemHash.combine(hash, fifth.hashCode);
 
     return _SystemHash.finish(hash);
-  }
-
-  @override
-  String runNotifierBuild(
-    covariant FamilyClass notifier,
-  ) {
-    return notifier.build(
-      first,
-      second: second,
-      third: third,
-      fourth: fourth,
-      fifth: fifth,
-    );
   }
 }
 
