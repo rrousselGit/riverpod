@@ -91,11 +91,13 @@ class AutoDisposeAsyncNotifierProviderImpl<
   }
 
   @override
+  @mustBeOverridden
   FutureOr<T> runNotifierBuild(AsyncNotifierBase<T> notifier) {
     return (notifier as AutoDisposeAsyncNotifier<T>).build();
   }
 
   /// {@macro riverpod.overridewith}
+  @mustBeOverridden
   Override overrideWith(NotifierT Function() create) {
     return ProviderOverride(
       origin: this,

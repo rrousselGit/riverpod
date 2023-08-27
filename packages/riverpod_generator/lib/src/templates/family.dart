@@ -143,6 +143,22 @@ abstract class $notifierTypedefName extends $notifierBaseType<${provider.valueTy
   ) {
     return notifier.build($parametersPassThrough);
   }
+
+  @override
+  Override overrideWith(${provider.name} Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: ${provider._providerImplName}._internal(
+        create,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+${parameters.map((e) => '        ${e.name}: ${e.name},\n').join()}
+      ),
+    );
+  }
 ''',
     );
   }
@@ -160,15 +176,10 @@ abstract class $notifierTypedefName extends $notifierBaseType<${provider.valueTy
 
   @override
   void run(StringBuffer buffer) {
-    final providerTypeNameImpl =
-        '${provider.providerElement.name.titled}Provider';
+    final providerTypeNameImpl = provider._providerImplName;
     final familyName = '${provider.providerElement.name.titled}Family';
 
     final parameterDefinition = buildParamDefinitionQuery(parameters);
-    final thisParameterDefinition = buildParamDefinitionQuery(
-      parameters,
-      asThisParameter: true,
-    );
     final parameterProviderPassThrough = buildParamInvocationQuery({
       for (final parameter in parameters)
         parameter: 'provider.${parameter.name}',
@@ -224,16 +235,34 @@ class $familyName extends Family<${provider.exposedType}> {
 $docs
 class $providerTypeNameImpl extends $providerType$providerGenerics {
   $docs
-  $providerTypeNameImpl($thisParameterDefinition) : super.internal(
+  $providerTypeNameImpl($parameterDefinition) : this._internal(
           $providerCreate,
           from: $providerName,
           name: r'$providerName',
           debugGetCreateSourceHash: $hashFn,
           dependencies: $familyName._dependencies,
           allTransitiveDependencies: $familyName._allTransitiveDependencies,
+          ${parameters.map((e) => '${e.name}: ${e.name},\n').join()}
         );
 
+  $providerTypeNameImpl._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    ${buildParamDefinitionQuery(
+      parameters,
+      asThisParameter: true,
+      writeBrackets: false,
+      asRequiredNamed: true,
+    )}
+  }) : super.internal();
+
 ${parameters.map((e) => 'final ${e.type.getDisplayString(withNullability: true)} ${e.name};').join()}
+
+$providerOther
 
   @override
   bool operator ==(Object other) {
@@ -250,8 +279,11 @@ ${parameters.map((e) => 'hash = _SystemHash.combine(hash, ${e.name}.hashCode);')
 
     return _SystemHash.finish(hash);
   }
-$providerOther
 }
 ''');
   }
+}
+
+extension on GeneratorProviderDeclaration {
+  String get _providerImplName => '${providerElement.name.titled}Provider';
 }
