@@ -88,6 +88,10 @@ String _private(_PrivateRef ref) {
 /// This is some documentation
 @riverpod
 class PublicClass extends _$PublicClass {
+  PublicClass([this.param]);
+
+  final Object? param;
+
   @override
   String build() {
     return 'Hello world';

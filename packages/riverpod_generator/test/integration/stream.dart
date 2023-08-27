@@ -30,6 +30,10 @@ Stream<String> family(
 
 @riverpod
 class PublicClass extends _$PublicClass {
+  PublicClass([this.param]);
+
+  final Object? param;
+
   @override
   Stream<String> build() {
     return Stream.value('Hello world');

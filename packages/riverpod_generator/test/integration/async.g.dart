@@ -189,7 +189,7 @@ class FamilyProvider extends AutoDisposeFutureProvider<String> {
   }
 }
 
-String _$publicClassHash() => r'98f7b5a2478814264c0a70d066ecabfddc58c577';
+String _$publicClassHash() => r'e9bc69e44b72e8ed77d423524c0d74ad460d629d';
 
 /// See also [PublicClass].
 @ProviderFor(PublicClass)

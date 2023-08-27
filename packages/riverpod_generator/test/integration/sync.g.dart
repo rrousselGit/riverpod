@@ -728,7 +728,7 @@ class RawFamilyStreamClassProvider extends AutoDisposeNotifierProviderImpl<
   }
 }
 
-String _$publicClassHash() => r'f04884c039e6200ad3537feeecfc6e83828b5eb5';
+String _$publicClassHash() => r'c8e7eec9e202acf8394e02496857cbe49405bf62';
 
 /// This is some documentation
 ///

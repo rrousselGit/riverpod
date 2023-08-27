@@ -28,6 +28,10 @@ FutureOr<String> family(
 
 @riverpod
 class PublicClass extends _$PublicClass {
+  PublicClass([this.param]);
+
+  final Object? param;
+
   @override
   FutureOr<String> build() {
     return 'Hello world';

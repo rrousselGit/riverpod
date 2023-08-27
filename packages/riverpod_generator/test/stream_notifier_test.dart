@@ -29,6 +29,20 @@ void main() {
     expect(familyClassProvider(42, third: .42).name, 'familyClassProvider');
   });
 
+  test('Supports overriding non-family notifiers', () {
+    final container = createContainer(
+      overrides: [
+        publicClassProvider.overrideWith(() => PublicClass('Hello world')),
+      ],
+    );
+
+    final notifier = container.read(publicClassProvider.notifier);
+    expect(notifier.param, 'Hello world');
+
+    expect(notifier.ref, isNotNull);
+    expect(notifier.state, isNotNull);
+  });
+
   test('Supports overriding family notifiers', () {
     final container = createContainer(
       overrides: [
