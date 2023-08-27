@@ -134,12 +134,12 @@ class FamilyProvider extends AutoDisposeProvider<String> {
   ///
   /// Copied from [family].
   FamilyProvider(
-    this.first, {
-    this.second,
-    required this.third,
-    this.forth = true,
-    this.fifth,
-  }) : super.internal(
+    int first, {
+    String? second,
+    required double third,
+    bool forth = true,
+    List<String>? fifth,
+  }) : this._internal(
           (ref) => family(
             ref,
             first,
@@ -156,7 +156,26 @@ class FamilyProvider extends AutoDisposeProvider<String> {
                   : _$familyHash,
           dependencies: FamilyFamily._dependencies,
           allTransitiveDependencies: FamilyFamily._allTransitiveDependencies,
+          first: first,
+          second: second,
+          third: third,
+          forth: forth,
+          fifth: fifth,
         );
+
+  FamilyProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.first,
+    required this.second,
+    required this.third,
+    required this.forth,
+    required this.fifth,
+  }) : super.internal();
 
   final int first;
   final String? second;
@@ -322,12 +341,12 @@ class FamilyClassProvider
   ///
   /// Copied from [FamilyClass].
   FamilyClassProvider(
-    this.first, {
-    this.second,
-    required this.third,
-    this.forth = true,
-    this.fifth,
-  }) : super.internal(
+    int first, {
+    String? second,
+    required double third,
+    bool forth = true,
+    List<String>? fifth,
+  }) : this._internal(
           () => FamilyClass()
             ..first = first
             ..second = second
@@ -343,13 +362,65 @@ class FamilyClassProvider
           dependencies: FamilyClassFamily._dependencies,
           allTransitiveDependencies:
               FamilyClassFamily._allTransitiveDependencies,
+          first: first,
+          second: second,
+          third: third,
+          forth: forth,
+          fifth: fifth,
         );
+
+  FamilyClassProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.first,
+    required this.second,
+    required this.third,
+    required this.forth,
+    required this.fifth,
+  }) : super.internal();
 
   final int first;
   final String? second;
   final double third;
   final bool forth;
   final List<String>? fifth;
+
+  @override
+  String runNotifierBuild(
+    covariant FamilyClass notifier,
+  ) {
+    return notifier.build(
+      first,
+      second: second,
+      third: third,
+      forth: forth,
+      fifth: fifth,
+    );
+  }
+
+  @override
+  Override overrideWith(FamilyClass Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: FamilyClassProvider._internal(
+        create,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        first: first,
+        second: second,
+        third: third,
+        forth: forth,
+        fifth: fifth,
+      ),
+    );
+  }
 
   @override
   bool operator ==(Object other) {
@@ -371,19 +442,6 @@ class FamilyClassProvider
     hash = _SystemHash.combine(hash, fifth.hashCode);
 
     return _SystemHash.finish(hash);
-  }
-
-  @override
-  String runNotifierBuild(
-    covariant FamilyClass notifier,
-  ) {
-    return notifier.build(
-      first,
-      second: second,
-      third: third,
-      forth: forth,
-      fifth: fifth,
-    );
   }
 }
 

@@ -119,8 +119,8 @@ class Count2Family extends Family<int> {
 class Count2Provider extends AutoDisposeProvider<int> {
   /// See also [count2].
   Count2Provider(
-    this.a,
-  ) : super.internal(
+    int a,
+  ) : this._internal(
           (ref) => count2(
             ref,
             a,
@@ -133,7 +133,18 @@ class Count2Provider extends AutoDisposeProvider<int> {
                   : _$count2Hash,
           dependencies: Count2Family._dependencies,
           allTransitiveDependencies: Count2Family._allTransitiveDependencies,
+          a: a,
         );
+
+  Count2Provider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.a,
+  }) : super.internal();
 
   final int a;
 
@@ -200,8 +211,8 @@ class CountFuture2Family extends Family<AsyncValue<int>> {
 class CountFuture2Provider extends AutoDisposeFutureProvider<int> {
   /// See also [countFuture2].
   CountFuture2Provider(
-    this.a,
-  ) : super.internal(
+    int a,
+  ) : this._internal(
           (ref) => countFuture2(
             ref,
             a,
@@ -215,7 +226,18 @@ class CountFuture2Provider extends AutoDisposeFutureProvider<int> {
           dependencies: CountFuture2Family._dependencies,
           allTransitiveDependencies:
               CountFuture2Family._allTransitiveDependencies,
+          a: a,
         );
+
+  CountFuture2Provider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.a,
+  }) : super.internal();
 
   final int a;
 
@@ -282,8 +304,8 @@ class CountStream2Family extends Family<AsyncValue<int>> {
 class CountStream2Provider extends AutoDisposeStreamProvider<int> {
   /// See also [countStream2].
   CountStream2Provider(
-    this.a,
-  ) : super.internal(
+    int a,
+  ) : this._internal(
           (ref) => countStream2(
             ref,
             a,
@@ -297,7 +319,18 @@ class CountStream2Provider extends AutoDisposeStreamProvider<int> {
           dependencies: CountStream2Family._dependencies,
           allTransitiveDependencies:
               CountStream2Family._allTransitiveDependencies,
+          a: a,
         );
+
+  CountStream2Provider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.a,
+  }) : super.internal();
 
   final int a;
 
@@ -422,8 +455,8 @@ class CountNotifier2Provider
     extends AutoDisposeNotifierProviderImpl<CountNotifier2, int> {
   /// See also [CountNotifier2].
   CountNotifier2Provider(
-    this.a,
-  ) : super.internal(
+    int a,
+  ) : this._internal(
           () => CountNotifier2()..a = a,
           from: countNotifier2ProviderFamily,
           name: r'countNotifier2ProviderFamily',
@@ -434,9 +467,45 @@ class CountNotifier2Provider
           dependencies: CountNotifier2Family._dependencies,
           allTransitiveDependencies:
               CountNotifier2Family._allTransitiveDependencies,
+          a: a,
         );
 
+  CountNotifier2Provider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.a,
+  }) : super.internal();
+
   final int a;
+
+  @override
+  int runNotifierBuild(
+    covariant CountNotifier2 notifier,
+  ) {
+    return notifier.build(
+      a,
+    );
+  }
+
+  @override
+  Override overrideWith(CountNotifier2 Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: CountNotifier2Provider._internal(
+        create,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        a: a,
+      ),
+    );
+  }
 
   @override
   bool operator ==(Object other) {
@@ -449,15 +518,6 @@ class CountNotifier2Provider
     hash = _SystemHash.combine(hash, a.hashCode);
 
     return _SystemHash.finish(hash);
-  }
-
-  @override
-  int runNotifierBuild(
-    covariant CountNotifier2 notifier,
-  ) {
-    return notifier.build(
-      a,
-    );
   }
 }
 
@@ -520,8 +580,8 @@ class CountAsyncNotifier2Provider
     extends AutoDisposeAsyncNotifierProviderImpl<CountAsyncNotifier2, int> {
   /// See also [CountAsyncNotifier2].
   CountAsyncNotifier2Provider(
-    this.a,
-  ) : super.internal(
+    int a,
+  ) : this._internal(
           () => CountAsyncNotifier2()..a = a,
           from: countAsyncNotifier2ProviderFamily,
           name: r'countAsyncNotifier2ProviderFamily',
@@ -532,9 +592,45 @@ class CountAsyncNotifier2Provider
           dependencies: CountAsyncNotifier2Family._dependencies,
           allTransitiveDependencies:
               CountAsyncNotifier2Family._allTransitiveDependencies,
+          a: a,
         );
 
+  CountAsyncNotifier2Provider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.a,
+  }) : super.internal();
+
   final int a;
+
+  @override
+  FutureOr<int> runNotifierBuild(
+    covariant CountAsyncNotifier2 notifier,
+  ) {
+    return notifier.build(
+      a,
+    );
+  }
+
+  @override
+  Override overrideWith(CountAsyncNotifier2 Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: CountAsyncNotifier2Provider._internal(
+        create,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        a: a,
+      ),
+    );
+  }
 
   @override
   bool operator ==(Object other) {
@@ -547,15 +643,6 @@ class CountAsyncNotifier2Provider
     hash = _SystemHash.combine(hash, a.hashCode);
 
     return _SystemHash.finish(hash);
-  }
-
-  @override
-  FutureOr<int> runNotifierBuild(
-    covariant CountAsyncNotifier2 notifier,
-  ) {
-    return notifier.build(
-      a,
-    );
   }
 }
 
@@ -618,8 +705,8 @@ class CountStreamNotifier2Provider
     extends AutoDisposeStreamNotifierProviderImpl<CountStreamNotifier2, int> {
   /// See also [CountStreamNotifier2].
   CountStreamNotifier2Provider(
-    this.a,
-  ) : super.internal(
+    int a,
+  ) : this._internal(
           () => CountStreamNotifier2()..a = a,
           from: countStreamNotifier2ProviderFamily,
           name: r'countStreamNotifier2ProviderFamily',
@@ -630,9 +717,45 @@ class CountStreamNotifier2Provider
           dependencies: CountStreamNotifier2Family._dependencies,
           allTransitiveDependencies:
               CountStreamNotifier2Family._allTransitiveDependencies,
+          a: a,
         );
 
+  CountStreamNotifier2Provider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.a,
+  }) : super.internal();
+
   final int a;
+
+  @override
+  Stream<int> runNotifierBuild(
+    covariant CountStreamNotifier2 notifier,
+  ) {
+    return notifier.build(
+      a,
+    );
+  }
+
+  @override
+  Override overrideWith(CountStreamNotifier2 Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: CountStreamNotifier2Provider._internal(
+        create,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        a: a,
+      ),
+    );
+  }
 
   @override
   bool operator ==(Object other) {
@@ -645,15 +768,6 @@ class CountStreamNotifier2Provider
     hash = _SystemHash.combine(hash, a.hashCode);
 
     return _SystemHash.finish(hash);
-  }
-
-  @override
-  Stream<int> runNotifierBuild(
-    covariant CountStreamNotifier2 notifier,
-  ) {
-    return notifier.build(
-      a,
-    );
   }
 }
 // ignore_for_file: type=lint

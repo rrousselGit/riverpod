@@ -82,9 +82,9 @@ class FetchPackagesFamily extends Family<AsyncValue<List<Package>>> {
 class FetchPackagesProvider extends AutoDisposeFutureProvider<List<Package>> {
   /// See also [fetchPackages].
   FetchPackagesProvider({
-    required this.page,
-    this.search = '',
-  }) : super.internal(
+    required int page,
+    String search = '',
+  }) : this._internal(
           (ref) => fetchPackages(
             ref,
             page: page,
@@ -99,7 +99,20 @@ class FetchPackagesProvider extends AutoDisposeFutureProvider<List<Package>> {
           dependencies: FetchPackagesFamily._dependencies,
           allTransitiveDependencies:
               FetchPackagesFamily._allTransitiveDependencies,
+          page: page,
+          search: search,
         );
+
+  FetchPackagesProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.page,
+    required this.search,
+  }) : super.internal();
 
   final int page;
   final String search;

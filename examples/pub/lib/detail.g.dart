@@ -80,8 +80,8 @@ class FetchPackageDetailsFamily extends Family<AsyncValue<Package>> {
 class FetchPackageDetailsProvider extends AutoDisposeFutureProvider<Package> {
   /// See also [fetchPackageDetails].
   FetchPackageDetailsProvider({
-    required this.packageName,
-  }) : super.internal(
+    required String packageName,
+  }) : this._internal(
           (ref) => fetchPackageDetails(
             ref,
             packageName: packageName,
@@ -95,7 +95,18 @@ class FetchPackageDetailsProvider extends AutoDisposeFutureProvider<Package> {
           dependencies: FetchPackageDetailsFamily._dependencies,
           allTransitiveDependencies:
               FetchPackageDetailsFamily._allTransitiveDependencies,
+          packageName: packageName,
         );
+
+  FetchPackageDetailsProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.packageName,
+  }) : super.internal();
 
   final String packageName;
 
@@ -238,8 +249,8 @@ class PackageMetricsProvider extends AutoDisposeAsyncNotifierProviderImpl<
   ///
   /// Copied from [PackageMetrics].
   PackageMetricsProvider({
-    required this.packageName,
-  }) : super.internal(
+    required String packageName,
+  }) : this._internal(
           () => PackageMetrics()..packageName = packageName,
           from: packageMetricsProvider,
           name: r'packageMetricsProvider',
@@ -250,9 +261,45 @@ class PackageMetricsProvider extends AutoDisposeAsyncNotifierProviderImpl<
           dependencies: PackageMetricsFamily._dependencies,
           allTransitiveDependencies:
               PackageMetricsFamily._allTransitiveDependencies,
+          packageName: packageName,
         );
 
+  PackageMetricsProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.packageName,
+  }) : super.internal();
+
   final String packageName;
+
+  @override
+  Future<PackageMetricsScore> runNotifierBuild(
+    covariant PackageMetrics notifier,
+  ) {
+    return notifier.build(
+      packageName: packageName,
+    );
+  }
+
+  @override
+  Override overrideWith(PackageMetrics Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: PackageMetricsProvider._internal(
+        create,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        packageName: packageName,
+      ),
+    );
+  }
 
   @override
   bool operator ==(Object other) {
@@ -265,15 +312,6 @@ class PackageMetricsProvider extends AutoDisposeAsyncNotifierProviderImpl<
     hash = _SystemHash.combine(hash, packageName.hashCode);
 
     return _SystemHash.finish(hash);
-  }
-
-  @override
-  Future<PackageMetricsScore> runNotifierBuild(
-    covariant PackageMetrics notifier,
-  ) {
-    return notifier.build(
-      packageName: packageName,
-    );
   }
 }
 // ignore_for_file: type=lint
