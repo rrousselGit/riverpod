@@ -508,10 +508,10 @@ extension AsyncValueX<T> on AsyncValue<T> {
   /// This is different from [value], which will rethrow the error instead of returning null.
   ///
   /// If you do not want to return previous value during loading/error states,
-  /// consider using [asData] :
+  /// consider using [unwrapPrevious] :
   ///
   /// ```dart
-  /// ref.watch(provider).asData()?.valueOrNull;
+  /// ref.watch(provider).unwrapPrevious()?.valueOrNull;
   /// ```
   T? get valueOrNull {
     if (hasValue) return value;
