@@ -46,6 +46,10 @@ class _PrivateClass extends _$PrivateClass {
 
 @riverpod
 class FamilyClass extends _$FamilyClass {
+  FamilyClass([this.param]);
+
+  final Object? param;
+
   @override
   FutureOr<String> build(
     int first, {

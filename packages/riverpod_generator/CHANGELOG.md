@@ -1,6 +1,7 @@
 ## Unreleased patch
 
-- Fix all `Notifier.overrideWith` throwing a cast error.
+- Fix all `provider.overrideWith` causing a cast error if the notifier
+  receives arguments.
 
 ## 2.2.6 - 2023-08-16
 

@@ -219,7 +219,7 @@ final _privateClassProvider =
 );
 
 typedef _$PrivateClass = AutoDisposeStreamNotifier<String>;
-String _$familyClassHash() => r'ece07693f90d6250513cdb3874ee9bfef35abd01';
+String _$familyClassHash() => r'6ec16ca23da8df4c010ecb5eed72e3e655504460';
 
 abstract class _$FamilyClass
     extends BuildlessAutoDisposeStreamNotifier<String> {
@@ -363,7 +363,12 @@ class FamilyClassProvider
     return ProviderOverride(
       origin: this,
       override: FamilyClassProvider._internal(
-        create,
+        () => create()
+          ..first = first
+          ..second = second
+          ..third = third
+          ..fourth = fourth
+          ..fifth = fifth,
         from: from,
         name: null,
         dependencies: null,

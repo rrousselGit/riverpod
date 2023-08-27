@@ -578,7 +578,7 @@ class RawFamilyFutureClassProvider extends AutoDisposeNotifierProviderImpl<
     return ProviderOverride(
       origin: this,
       override: RawFamilyFutureClassProvider._internal(
-        create,
+        () => create()..id = id,
         from: from,
         name: null,
         dependencies: null,
@@ -703,7 +703,7 @@ class RawFamilyStreamClassProvider extends AutoDisposeNotifierProviderImpl<
     return ProviderOverride(
       origin: this,
       override: RawFamilyStreamClassProvider._internal(
-        create,
+        () => create()..id = id,
         from: from,
         name: null,
         dependencies: null,
@@ -760,7 +760,7 @@ final _privateClassProvider =
 );
 
 typedef _$PrivateClass = AutoDisposeNotifier<String>;
-String _$familyClassHash() => r'7dd0013dba8f45e82e8e39fbb2635e5a7f4b9cac';
+String _$familyClassHash() => r'01e3b9cb4d6d0bf12a2284761b1a11819d97d249';
 
 abstract class _$FamilyClass extends BuildlessAutoDisposeNotifier<String> {
   late final int first;
@@ -915,7 +915,12 @@ class FamilyClassProvider
     return ProviderOverride(
       origin: this,
       override: FamilyClassProvider._internal(
-        create,
+        () => create()
+          ..first = first
+          ..second = second
+          ..third = third
+          ..fourth = fourth
+          ..fifth = fifth,
         from: from,
         name: null,
         dependencies: null,

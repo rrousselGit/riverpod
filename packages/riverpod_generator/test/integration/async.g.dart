@@ -219,7 +219,7 @@ final _privateClassProvider =
 );
 
 typedef _$PrivateClass = AutoDisposeAsyncNotifier<String>;
-String _$familyClassHash() => r'7b31f94e49dff1aa8b2f88d41b8a94e9a6434408';
+String _$familyClassHash() => r'2e70b4c3a42b5e88696ab10a18c8446cc92cc52c';
 
 abstract class _$FamilyClass extends BuildlessAutoDisposeAsyncNotifier<String> {
   late final int first;
@@ -362,7 +362,12 @@ class FamilyClassProvider
     return ProviderOverride(
       origin: this,
       override: FamilyClassProvider._internal(
-        create,
+        () => create()
+          ..first = first
+          ..second = second
+          ..third = third
+          ..fourth = fourth
+          ..fifth = fifth,
         from: from,
         name: null,
         dependencies: null,

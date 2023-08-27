@@ -408,7 +408,7 @@ class Family2Provider extends AutoDisposeNotifierProviderImpl<Family2, int> {
     return ProviderOverride(
       origin: this,
       override: Family2Provider._internal(
-        create,
+        () => create()..id = id,
         from: from,
         name: null,
         dependencies: null,
@@ -573,7 +573,7 @@ class Provider4Provider
     return ProviderOverride(
       origin: this,
       override: Provider4Provider._internal(
-        create,
+        () => create()..id = id,
         from: from,
         name: null,
         dependencies: null,

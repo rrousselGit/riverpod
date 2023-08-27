@@ -149,7 +149,7 @@ abstract class $notifierTypedefName extends $notifierBaseType<${provider.valueTy
     return ProviderOverride(
       origin: this,
       override: ${provider._providerImplName}._internal(
-        create,
+        () => create()$cascadePropertyInit,
         from: from,
         name: null,
         dependencies: null,

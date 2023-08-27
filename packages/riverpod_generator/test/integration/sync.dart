@@ -107,6 +107,10 @@ class _PrivateClass extends _$PrivateClass {
 /// This is some documentation
 @riverpod
 class FamilyClass extends _$FamilyClass {
+  FamilyClass([this.param]);
+
+  final Object? param;
+
   @override
   String build(
     int first, {

@@ -331,7 +331,7 @@ class NotifierFamilyWithDependenciesProvider
     return ProviderOverride(
       origin: this,
       override: NotifierFamilyWithDependenciesProvider._internal(
-        create,
+        () => create()..id = id,
         from: from,
         name: null,
         dependencies: null,

@@ -48,6 +48,10 @@ class _PrivateClass extends _$PrivateClass {
 
 @riverpod
 class FamilyClass extends _$FamilyClass {
+  FamilyClass([this.param]);
+
+  final Object? param;
+
   @override
   Stream<String> build(
     int first, {
