@@ -1,3 +1,7 @@
+## Unreleased patch
+
+- Fix some exceptions causing Flutter asking to demangle stacktraces (#1874)
+
 ## 2.3.7 - 2023-08-16
 
 - Added support for state_notifier 1.0.0
