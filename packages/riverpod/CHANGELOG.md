@@ -1,6 +1,7 @@
 ## Unreleased patch
 
 - Fix some exceptions causing Flutter asking to demangle stacktraces (#1874)
+- Fix out of date `AsyncValue` docs.
 
 ## 2.3.7 - 2023-08-16
 
