@@ -1,4 +1,4 @@
-## Unreleased patch
+## 2.3.10 - 2023-08-28
 
 Riverpod now requires package:meta >=1.9.0
 

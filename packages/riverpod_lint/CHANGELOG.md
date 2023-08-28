@@ -1,3 +1,7 @@
+## 2.0.3 - 2023-08-28
+
+- `riverpod` upgraded to `2.3.10`
+
 ## 2.0.2 - 2023-08-28
 
 - Fixed typos in the package description (thanks to @saltedpotatos)

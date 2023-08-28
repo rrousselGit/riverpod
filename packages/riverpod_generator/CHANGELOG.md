@@ -1,3 +1,7 @@
+## 2.3.1 - 2023-08-28
+
+- `riverpod_annotation` upgraded to `2.1.4`
+
 ## 2.3.0 - 2023-08-28
 
 - The "ref" object now contains the provider parameters too.

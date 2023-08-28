@@ -1,3 +1,7 @@
+## 2.3.10 - 2023-08-28
+
+- `riverpod` upgraded to `2.3.10`
+
 ## 2.3.9 - 2023-08-28
 
 - Fix some exceptions causing Flutter asking to demangle stacktraces (#1874)
