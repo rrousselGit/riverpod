@@ -1,3 +1,7 @@
+## Unreleased patch
+
+Riverpod now requires package:meta >=1.9.0
+
 ## 2.3.8 - 2023-08-28
 
 - Fix some exceptions causing Flutter asking to demangle stacktraces (#1874)
