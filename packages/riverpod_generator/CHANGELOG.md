@@ -1,4 +1,4 @@
-## Unreleased minor
+## 2.3.0 - 2023-08-28
 
 - The "ref" object now contains the provider parameters too.
   This enabled `provider.overrideWith` to use the provider arguments:

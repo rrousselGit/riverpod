@@ -1,4 +1,4 @@
-## Unreleased patch
+## 2.0.2 - 2023-08-28
 
 - Fixed typos in the package description (thanks to @saltedpotatos)
 
