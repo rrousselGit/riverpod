@@ -64,7 +64,7 @@ void main() {
 
   test(
       'Creates a NotifierProvider.family<T> if @riverpod is used on a synchronous function with parameters',
-      () {
+      () async {
     final container = createContainer();
 
     const FamilyClassFamily family = familyClassProvider;
@@ -109,7 +109,7 @@ void main() {
       second: 'x42',
       third: .42,
       fourth: false,
-      fifth: ['x42'],
+      fifth: const ['x42'],
     );
     // ignore: invalid_use_of_internal_member
     final AutoDisposeAsyncNotifierProviderImpl<FamilyClass, String>
@@ -119,7 +119,19 @@ void main() {
     expect(provider.second, 'x42');
     expect(provider.third, .42);
     expect(provider.fourth, false);
-    expect(provider.fifth, ['x42']);
+    expect(provider.fifth, same(const ['x42']));
+
+    final sub = container.listen(
+      familyClassProvider(
+        42,
+        second: 'x42',
+        third: .42,
+        fourth: false,
+        fifth: const ['x42'],
+      ).future,
+      (previous, next) {},
+    );
+    await sub.read();
 
     final AsyncValue<String> result = container.read(
       familyClassProvider(
@@ -127,7 +139,7 @@ void main() {
         second: 'x42',
         third: .42,
         fourth: false,
-        fifth: ['x42'],
+        fifth: const ['x42'],
       ),
     );
 

@@ -55,7 +55,7 @@ void main() {
 
   test(
       'Creates a Provider.family<T> if @riverpod is used on a synchronous function with parameters',
-      () {
+      () async {
     final container = createContainer();
 
     const FamilyFamily family = familyProvider;
@@ -100,7 +100,7 @@ void main() {
       second: 'x42',
       third: .42,
       fourth: false,
-      fifth: ['x42'],
+      fifth: const ['x42'],
     );
     final AutoDisposeFutureProvider<String> futureProvider = provider;
 
@@ -108,7 +108,19 @@ void main() {
     expect(provider.second, 'x42');
     expect(provider.third, .42);
     expect(provider.fourth, false);
-    expect(provider.fifth, ['x42']);
+    expect(provider.fifth, same(const ['x42']));
+
+    final sub = container.listen(
+      familyProvider(
+        42,
+        second: 'x42',
+        third: .42,
+        fourth: false,
+        fifth: const ['x42'],
+      ).future,
+      (previous, next) {},
+    );
+    await sub.read();
 
     final AsyncValue<String> result = container.read(
       familyProvider(
@@ -116,7 +128,7 @@ void main() {
         second: 'x42',
         third: .42,
         fourth: false,
-        fifth: ['x42'],
+        fifth: const ['x42'],
       ),
     );
 
