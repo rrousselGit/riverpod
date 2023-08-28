@@ -62,8 +62,6 @@ class _SystemHash {
   }
 }
 
-typedef FamilyRef = AutoDisposeProviderRef<String>;
-
 /// A generated family provider.
 ///
 /// Copied from [family].
@@ -141,7 +139,7 @@ class FamilyProvider extends AutoDisposeProvider<String> {
     List<String>? fifth,
   }) : this._internal(
           (ref) => family(
-            ref,
+            ref as FamilyRef,
             first,
             second: second,
             third: third,
@@ -184,6 +182,33 @@ class FamilyProvider extends AutoDisposeProvider<String> {
   final List<String>? fifth;
 
   @override
+  Override overrideWith(
+    String Function(FamilyRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: FamilyProvider._internal(
+        (ref) => create(ref as FamilyRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        first: first,
+        second: second,
+        third: third,
+        forth: forth,
+        fifth: fifth,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<String> createElement() {
+    return _FamilyProviderElement(this);
+  }
+
+  @override
   bool operator ==(Object other) {
     return other is FamilyProvider &&
         other.first == first &&
@@ -204,6 +229,39 @@ class FamilyProvider extends AutoDisposeProvider<String> {
 
     return _SystemHash.finish(hash);
   }
+}
+
+mixin FamilyRef on AutoDisposeProviderRef<String> {
+  /// The parameter `first` of this provider.
+  int get first;
+
+  /// The parameter `second` of this provider.
+  String? get second;
+
+  /// The parameter `third` of this provider.
+  double get third;
+
+  /// The parameter `forth` of this provider.
+  bool get forth;
+
+  /// The parameter `fifth` of this provider.
+  List<String>? get fifth;
+}
+
+class _FamilyProviderElement extends AutoDisposeProviderElement<String>
+    with FamilyRef {
+  _FamilyProviderElement(super.provider);
+
+  @override
+  int get first => (origin as FamilyProvider).first;
+  @override
+  String? get second => (origin as FamilyProvider).second;
+  @override
+  double get third => (origin as FamilyProvider).third;
+  @override
+  bool get forth => (origin as FamilyProvider).forth;
+  @override
+  List<String>? get fifth => (origin as FamilyProvider).fifth;
 }
 
 String _$privateHash() => r'9a87ed0765ad8448525fa1290b34760c79e7402b';
@@ -407,7 +465,12 @@ class FamilyClassProvider
     return ProviderOverride(
       origin: this,
       override: FamilyClassProvider._internal(
-        create,
+        () => create()
+          ..first = first
+          ..second = second
+          ..third = third
+          ..forth = forth
+          ..fifth = fifth,
         from: from,
         name: null,
         dependencies: null,
@@ -420,6 +483,11 @@ class FamilyClassProvider
         fifth: fifth,
       ),
     );
+  }
+
+  @override
+  AutoDisposeNotifierProviderElement<FamilyClass, String> createElement() {
+    return _FamilyClassProviderElement(this);
   }
 
   @override
@@ -443,6 +511,40 @@ class FamilyClassProvider
 
     return _SystemHash.finish(hash);
   }
+}
+
+mixin FamilyClassRef on AutoDisposeNotifierProviderRef<String> {
+  /// The parameter `first` of this provider.
+  int get first;
+
+  /// The parameter `second` of this provider.
+  String? get second;
+
+  /// The parameter `third` of this provider.
+  double get third;
+
+  /// The parameter `forth` of this provider.
+  bool get forth;
+
+  /// The parameter `fifth` of this provider.
+  List<String>? get fifth;
+}
+
+class _FamilyClassProviderElement
+    extends AutoDisposeNotifierProviderElement<FamilyClass, String>
+    with FamilyClassRef {
+  _FamilyClassProviderElement(super.provider);
+
+  @override
+  int get first => (origin as FamilyClassProvider).first;
+  @override
+  String? get second => (origin as FamilyClassProvider).second;
+  @override
+  double get third => (origin as FamilyClassProvider).third;
+  @override
+  bool get forth => (origin as FamilyClassProvider).forth;
+  @override
+  List<String>? get fifth => (origin as FamilyClassProvider).fifth;
 }
 
 String _$supports$InClassNameHash() =>

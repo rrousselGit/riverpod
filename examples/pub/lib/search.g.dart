@@ -31,8 +31,6 @@ class _SystemHash {
   }
 }
 
-typedef FetchPackagesRef = AutoDisposeFutureProviderRef<List<Package>>;
-
 /// See also [fetchPackages].
 @ProviderFor(fetchPackages)
 const fetchPackagesProvider = FetchPackagesFamily();
@@ -86,7 +84,7 @@ class FetchPackagesProvider extends AutoDisposeFutureProvider<List<Package>> {
     String search = '',
   }) : this._internal(
           (ref) => fetchPackages(
-            ref,
+            ref as FetchPackagesRef,
             page: page,
             search: search,
           ),
@@ -118,6 +116,30 @@ class FetchPackagesProvider extends AutoDisposeFutureProvider<List<Package>> {
   final String search;
 
   @override
+  Override overrideWith(
+    Future<List<Package>> Function(FetchPackagesRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: FetchPackagesProvider._internal(
+        (ref) => create(ref as FetchPackagesRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        page: page,
+        search: search,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<List<Package>> createElement() {
+    return _FetchPackagesProviderElement(this);
+  }
+
+  @override
   bool operator ==(Object other) {
     return other is FetchPackagesProvider &&
         other.page == page &&
@@ -132,6 +154,25 @@ class FetchPackagesProvider extends AutoDisposeFutureProvider<List<Package>> {
 
     return _SystemHash.finish(hash);
   }
+}
+
+mixin FetchPackagesRef on AutoDisposeFutureProviderRef<List<Package>> {
+  /// The parameter `page` of this provider.
+  int get page;
+
+  /// The parameter `search` of this provider.
+  String get search;
+}
+
+class _FetchPackagesProviderElement
+    extends AutoDisposeFutureProviderElement<List<Package>>
+    with FetchPackagesRef {
+  _FetchPackagesProviderElement(super.provider);
+
+  @override
+  int get page => (origin as FetchPackagesProvider).page;
+  @override
+  String get search => (origin as FetchPackagesProvider).search;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member

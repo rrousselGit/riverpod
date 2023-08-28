@@ -43,8 +43,6 @@ class _SystemHash {
   }
 }
 
-typedef FamilyRef = AutoDisposeProviderRef<int>;
-
 /// See also [family].
 @ProviderFor(family)
 const familyProvider = FamilyFamily();
@@ -94,7 +92,7 @@ class FamilyProvider extends AutoDisposeProvider<int> {
     int id,
   ) : this._internal(
           (ref) => family(
-            ref,
+            ref as FamilyRef,
             id,
           ),
           from: familyProvider,
@@ -121,6 +119,29 @@ class FamilyProvider extends AutoDisposeProvider<int> {
   final int id;
 
   @override
+  Override overrideWith(
+    int Function(FamilyRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: FamilyProvider._internal(
+        (ref) => create(ref as FamilyRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        id: id,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<int> createElement() {
+    return _FamilyProviderElement(this);
+  }
+
+  @override
   bool operator ==(Object other) {
     return other is FamilyProvider && other.id == id;
   }
@@ -132,6 +153,19 @@ class FamilyProvider extends AutoDisposeProvider<int> {
 
     return _SystemHash.finish(hash);
   }
+}
+
+mixin FamilyRef on AutoDisposeProviderRef<int> {
+  /// The parameter `id` of this provider.
+  int get id;
+}
+
+class _FamilyProviderElement extends AutoDisposeProviderElement<int>
+    with FamilyRef {
+  _FamilyProviderElement(super.provider);
+
+  @override
+  int get id => (origin as FamilyProvider).id;
 }
 
 String _$providerHash() => r'6c9184ef4c6a410a2132e1ecc13a2e646e936d37';
@@ -420,6 +454,11 @@ class Family2Provider extends AutoDisposeNotifierProviderImpl<Family2, int> {
   }
 
   @override
+  AutoDisposeNotifierProviderElement<Family2, int> createElement() {
+    return _Family2ProviderElement(this);
+  }
+
+  @override
   bool operator ==(Object other) {
     return other is Family2Provider && other.id == id;
   }
@@ -431,6 +470,19 @@ class Family2Provider extends AutoDisposeNotifierProviderImpl<Family2, int> {
 
     return _SystemHash.finish(hash);
   }
+}
+
+mixin Family2Ref on AutoDisposeNotifierProviderRef<int> {
+  /// The parameter `id` of this provider.
+  int get id;
+}
+
+class _Family2ProviderElement
+    extends AutoDisposeNotifierProviderElement<Family2, int> with Family2Ref {
+  _Family2ProviderElement(super.provider);
+
+  @override
+  int get id => (origin as Family2Provider).id;
 }
 
 String _$provider3Hash() => r'dfdd6dec6cfee543c73d99593ce98d68f4db385c';
@@ -585,6 +637,11 @@ class Provider4Provider
   }
 
   @override
+  AutoDisposeNotifierProviderElement<Provider4, int> createElement() {
+    return _Provider4ProviderElement(this);
+  }
+
+  @override
   bool operator ==(Object other) {
     return other is Provider4Provider && other.id == id;
   }
@@ -596,6 +653,20 @@ class Provider4Provider
 
     return _SystemHash.finish(hash);
   }
+}
+
+mixin Provider4Ref on AutoDisposeNotifierProviderRef<int> {
+  /// The parameter `id` of this provider.
+  int get id;
+}
+
+class _Provider4ProviderElement
+    extends AutoDisposeNotifierProviderElement<Provider4, int>
+    with Provider4Ref {
+  _Provider4ProviderElement(super.provider);
+
+  @override
+  int get id => (origin as Provider4Provider).id;
 }
 
 String _$emptyDependenciesClassBasedHash() =>

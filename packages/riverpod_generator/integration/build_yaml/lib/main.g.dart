@@ -71,8 +71,6 @@ class _SystemHash {
   }
 }
 
-typedef Count2Ref = AutoDisposeProviderRef<int>;
-
 /// See also [count2].
 @ProviderFor(count2)
 const count2ProviderFamily = Count2Family();
@@ -122,7 +120,7 @@ class Count2Provider extends AutoDisposeProvider<int> {
     int a,
   ) : this._internal(
           (ref) => count2(
-            ref,
+            ref as Count2Ref,
             a,
           ),
           from: count2ProviderFamily,
@@ -149,6 +147,29 @@ class Count2Provider extends AutoDisposeProvider<int> {
   final int a;
 
   @override
+  Override overrideWith(
+    int Function(Count2Ref provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: Count2Provider._internal(
+        (ref) => create(ref as Count2Ref),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        a: a,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<int> createElement() {
+    return _Count2ProviderElement(this);
+  }
+
+  @override
   bool operator ==(Object other) {
     return other is Count2Provider && other.a == a;
   }
@@ -162,8 +183,20 @@ class Count2Provider extends AutoDisposeProvider<int> {
   }
 }
 
+mixin Count2Ref on AutoDisposeProviderRef<int> {
+  /// The parameter `a` of this provider.
+  int get a;
+}
+
+class _Count2ProviderElement extends AutoDisposeProviderElement<int>
+    with Count2Ref {
+  _Count2ProviderElement(super.provider);
+
+  @override
+  int get a => (origin as Count2Provider).a;
+}
+
 String _$countFuture2Hash() => r'096675b70a267f5d7c62ac7d3e7dd231ef529034';
-typedef CountFuture2Ref = AutoDisposeFutureProviderRef<int>;
 
 /// See also [countFuture2].
 @ProviderFor(countFuture2)
@@ -214,7 +247,7 @@ class CountFuture2Provider extends AutoDisposeFutureProvider<int> {
     int a,
   ) : this._internal(
           (ref) => countFuture2(
-            ref,
+            ref as CountFuture2Ref,
             a,
           ),
           from: countFuture2ProviderFamily,
@@ -242,6 +275,29 @@ class CountFuture2Provider extends AutoDisposeFutureProvider<int> {
   final int a;
 
   @override
+  Override overrideWith(
+    FutureOr<int> Function(CountFuture2Ref provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: CountFuture2Provider._internal(
+        (ref) => create(ref as CountFuture2Ref),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        a: a,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<int> createElement() {
+    return _CountFuture2ProviderElement(this);
+  }
+
+  @override
   bool operator ==(Object other) {
     return other is CountFuture2Provider && other.a == a;
   }
@@ -255,8 +311,20 @@ class CountFuture2Provider extends AutoDisposeFutureProvider<int> {
   }
 }
 
+mixin CountFuture2Ref on AutoDisposeFutureProviderRef<int> {
+  /// The parameter `a` of this provider.
+  int get a;
+}
+
+class _CountFuture2ProviderElement extends AutoDisposeFutureProviderElement<int>
+    with CountFuture2Ref {
+  _CountFuture2ProviderElement(super.provider);
+
+  @override
+  int get a => (origin as CountFuture2Provider).a;
+}
+
 String _$countStream2Hash() => r'051264dd685ebc0a57e454bb676957c93cb4ae20';
-typedef CountStream2Ref = AutoDisposeStreamProviderRef<int>;
 
 /// See also [countStream2].
 @ProviderFor(countStream2)
@@ -307,7 +375,7 @@ class CountStream2Provider extends AutoDisposeStreamProvider<int> {
     int a,
   ) : this._internal(
           (ref) => countStream2(
-            ref,
+            ref as CountStream2Ref,
             a,
           ),
           from: countStream2ProviderFamily,
@@ -335,6 +403,29 @@ class CountStream2Provider extends AutoDisposeStreamProvider<int> {
   final int a;
 
   @override
+  Override overrideWith(
+    Stream<int> Function(CountStream2Ref provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: CountStream2Provider._internal(
+        (ref) => create(ref as CountStream2Ref),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        a: a,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeStreamProviderElement<int> createElement() {
+    return _CountStream2ProviderElement(this);
+  }
+
+  @override
   bool operator ==(Object other) {
     return other is CountStream2Provider && other.a == a;
   }
@@ -346,6 +437,19 @@ class CountStream2Provider extends AutoDisposeStreamProvider<int> {
 
     return _SystemHash.finish(hash);
   }
+}
+
+mixin CountStream2Ref on AutoDisposeStreamProviderRef<int> {
+  /// The parameter `a` of this provider.
+  int get a;
+}
+
+class _CountStream2ProviderElement extends AutoDisposeStreamProviderElement<int>
+    with CountStream2Ref {
+  _CountStream2ProviderElement(super.provider);
+
+  @override
+  int get a => (origin as CountStream2Provider).a;
 }
 
 String _$countNotifierHash() => r'a8dd7a66ee0002b8af657245c4affaa206fd99ec';
@@ -496,7 +600,7 @@ class CountNotifier2Provider
     return ProviderOverride(
       origin: this,
       override: CountNotifier2Provider._internal(
-        create,
+        () => create()..a = a,
         from: from,
         name: null,
         dependencies: null,
@@ -505,6 +609,11 @@ class CountNotifier2Provider
         a: a,
       ),
     );
+  }
+
+  @override
+  AutoDisposeNotifierProviderElement<CountNotifier2, int> createElement() {
+    return _CountNotifier2ProviderElement(this);
   }
 
   @override
@@ -519,6 +628,20 @@ class CountNotifier2Provider
 
     return _SystemHash.finish(hash);
   }
+}
+
+mixin CountNotifier2Ref on AutoDisposeNotifierProviderRef<int> {
+  /// The parameter `a` of this provider.
+  int get a;
+}
+
+class _CountNotifier2ProviderElement
+    extends AutoDisposeNotifierProviderElement<CountNotifier2, int>
+    with CountNotifier2Ref {
+  _CountNotifier2ProviderElement(super.provider);
+
+  @override
+  int get a => (origin as CountNotifier2Provider).a;
 }
 
 String _$countAsyncNotifier2Hash() =>
@@ -621,7 +744,7 @@ class CountAsyncNotifier2Provider
     return ProviderOverride(
       origin: this,
       override: CountAsyncNotifier2Provider._internal(
-        create,
+        () => create()..a = a,
         from: from,
         name: null,
         dependencies: null,
@@ -630,6 +753,12 @@ class CountAsyncNotifier2Provider
         a: a,
       ),
     );
+  }
+
+  @override
+  AutoDisposeAsyncNotifierProviderElement<CountAsyncNotifier2, int>
+      createElement() {
+    return _CountAsyncNotifier2ProviderElement(this);
   }
 
   @override
@@ -644,6 +773,20 @@ class CountAsyncNotifier2Provider
 
     return _SystemHash.finish(hash);
   }
+}
+
+mixin CountAsyncNotifier2Ref on AutoDisposeAsyncNotifierProviderRef<int> {
+  /// The parameter `a` of this provider.
+  int get a;
+}
+
+class _CountAsyncNotifier2ProviderElement
+    extends AutoDisposeAsyncNotifierProviderElement<CountAsyncNotifier2, int>
+    with CountAsyncNotifier2Ref {
+  _CountAsyncNotifier2ProviderElement(super.provider);
+
+  @override
+  int get a => (origin as CountAsyncNotifier2Provider).a;
 }
 
 String _$countStreamNotifier2Hash() =>
@@ -746,7 +889,7 @@ class CountStreamNotifier2Provider
     return ProviderOverride(
       origin: this,
       override: CountStreamNotifier2Provider._internal(
-        create,
+        () => create()..a = a,
         from: from,
         name: null,
         dependencies: null,
@@ -755,6 +898,12 @@ class CountStreamNotifier2Provider
         a: a,
       ),
     );
+  }
+
+  @override
+  AutoDisposeStreamNotifierProviderElement<CountStreamNotifier2, int>
+      createElement() {
+    return _CountStreamNotifier2ProviderElement(this);
   }
 
   @override
@@ -769,6 +918,20 @@ class CountStreamNotifier2Provider
 
     return _SystemHash.finish(hash);
   }
+}
+
+mixin CountStreamNotifier2Ref on AutoDisposeStreamNotifierProviderRef<int> {
+  /// The parameter `a` of this provider.
+  int get a;
+}
+
+class _CountStreamNotifier2ProviderElement
+    extends AutoDisposeStreamNotifierProviderElement<CountStreamNotifier2, int>
+    with CountStreamNotifier2Ref {
+  _CountStreamNotifier2ProviderElement(super.provider);
+
+  @override
+  int get a => (origin as CountStreamNotifier2Provider).a;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member

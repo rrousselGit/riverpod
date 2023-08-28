@@ -57,8 +57,6 @@ class _SystemHash {
   }
 }
 
-typedef FamilyWithDependencies2Ref = AutoDisposeProviderRef<int>;
-
 /// See also [familyWithDependencies2].
 @ProviderFor(familyWithDependencies2)
 const familyWithDependencies2Provider = FamilyWithDependencies2Family();
@@ -120,7 +118,7 @@ class FamilyWithDependencies2Provider extends AutoDisposeProvider<int> {
     int? id,
   }) : this._internal(
           (ref) => familyWithDependencies2(
-            ref,
+            ref as FamilyWithDependencies2Ref,
             id: id,
           ),
           from: familyWithDependencies2Provider,
@@ -148,6 +146,29 @@ class FamilyWithDependencies2Provider extends AutoDisposeProvider<int> {
   final int? id;
 
   @override
+  Override overrideWith(
+    int Function(FamilyWithDependencies2Ref provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: FamilyWithDependencies2Provider._internal(
+        (ref) => create(ref as FamilyWithDependencies2Ref),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        id: id,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<int> createElement() {
+    return _FamilyWithDependencies2ProviderElement(this);
+  }
+
+  @override
   bool operator ==(Object other) {
     return other is FamilyWithDependencies2Provider && other.id == id;
   }
@@ -159,6 +180,19 @@ class FamilyWithDependencies2Provider extends AutoDisposeProvider<int> {
 
     return _SystemHash.finish(hash);
   }
+}
+
+mixin FamilyWithDependencies2Ref on AutoDisposeProviderRef<int> {
+  /// The parameter `id` of this provider.
+  int? get id;
+}
+
+class _FamilyWithDependencies2ProviderElement
+    extends AutoDisposeProviderElement<int> with FamilyWithDependencies2Ref {
+  _FamilyWithDependencies2ProviderElement(super.provider);
+
+  @override
+  int? get id => (origin as FamilyWithDependencies2Provider).id;
 }
 
 String _$private2Hash() => r'5e0fa14ff40fb444c027ed25150a42362db3ef19';
@@ -343,6 +377,12 @@ class NotifierFamilyWithDependenciesProvider
   }
 
   @override
+  AutoDisposeNotifierProviderElement<NotifierFamilyWithDependencies, int>
+      createElement() {
+    return _NotifierFamilyWithDependenciesProviderElement(this);
+  }
+
+  @override
   bool operator ==(Object other) {
     return other is NotifierFamilyWithDependenciesProvider && other.id == id;
   }
@@ -354,6 +394,20 @@ class NotifierFamilyWithDependenciesProvider
 
     return _SystemHash.finish(hash);
   }
+}
+
+mixin NotifierFamilyWithDependenciesRef on AutoDisposeNotifierProviderRef<int> {
+  /// The parameter `id` of this provider.
+  int? get id;
+}
+
+class _NotifierFamilyWithDependenciesProviderElement
+    extends AutoDisposeNotifierProviderElement<NotifierFamilyWithDependencies,
+        int> with NotifierFamilyWithDependenciesRef {
+  _NotifierFamilyWithDependenciesProviderElement(super.provider);
+
+  @override
+  int? get id => (origin as NotifierFamilyWithDependenciesProvider).id;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member

@@ -57,8 +57,6 @@ class _SystemHash {
   }
 }
 
-typedef FamilyRef = AutoDisposeStreamProviderRef<String>;
-
 /// See also [family].
 @ProviderFor(family)
 const familyProvider = FamilyFamily();
@@ -124,7 +122,7 @@ class FamilyProvider extends AutoDisposeStreamProvider<String> {
     List<String>? fifth,
   }) : this._internal(
           (ref) => family(
-            ref,
+            ref as FamilyRef,
             first,
             second: second,
             third: third,
@@ -167,6 +165,33 @@ class FamilyProvider extends AutoDisposeStreamProvider<String> {
   final List<String>? fifth;
 
   @override
+  Override overrideWith(
+    Stream<String> Function(FamilyRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: FamilyProvider._internal(
+        (ref) => create(ref as FamilyRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        first: first,
+        second: second,
+        third: third,
+        fourth: fourth,
+        fifth: fifth,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeStreamProviderElement<String> createElement() {
+    return _FamilyProviderElement(this);
+  }
+
+  @override
   bool operator ==(Object other) {
     return other is FamilyProvider &&
         other.first == first &&
@@ -187,6 +212,39 @@ class FamilyProvider extends AutoDisposeStreamProvider<String> {
 
     return _SystemHash.finish(hash);
   }
+}
+
+mixin FamilyRef on AutoDisposeStreamProviderRef<String> {
+  /// The parameter `first` of this provider.
+  int get first;
+
+  /// The parameter `second` of this provider.
+  String? get second;
+
+  /// The parameter `third` of this provider.
+  double get third;
+
+  /// The parameter `fourth` of this provider.
+  bool get fourth;
+
+  /// The parameter `fifth` of this provider.
+  List<String>? get fifth;
+}
+
+class _FamilyProviderElement extends AutoDisposeStreamProviderElement<String>
+    with FamilyRef {
+  _FamilyProviderElement(super.provider);
+
+  @override
+  int get first => (origin as FamilyProvider).first;
+  @override
+  String? get second => (origin as FamilyProvider).second;
+  @override
+  double get third => (origin as FamilyProvider).third;
+  @override
+  bool get fourth => (origin as FamilyProvider).fourth;
+  @override
+  List<String>? get fifth => (origin as FamilyProvider).fifth;
 }
 
 String _$publicClassHash() => r'b1526943c8ff0aaa20642bf78e744e5833cf9d02';
@@ -384,6 +442,12 @@ class FamilyClassProvider
   }
 
   @override
+  AutoDisposeStreamNotifierProviderElement<FamilyClass, String>
+      createElement() {
+    return _FamilyClassProviderElement(this);
+  }
+
+  @override
   bool operator ==(Object other) {
     return other is FamilyClassProvider &&
         other.first == first &&
@@ -404,6 +468,40 @@ class FamilyClassProvider
 
     return _SystemHash.finish(hash);
   }
+}
+
+mixin FamilyClassRef on AutoDisposeStreamNotifierProviderRef<String> {
+  /// The parameter `first` of this provider.
+  int get first;
+
+  /// The parameter `second` of this provider.
+  String? get second;
+
+  /// The parameter `third` of this provider.
+  double get third;
+
+  /// The parameter `fourth` of this provider.
+  bool get fourth;
+
+  /// The parameter `fifth` of this provider.
+  List<String>? get fifth;
+}
+
+class _FamilyClassProviderElement
+    extends AutoDisposeStreamNotifierProviderElement<FamilyClass, String>
+    with FamilyClassRef {
+  _FamilyClassProviderElement(super.provider);
+
+  @override
+  int get first => (origin as FamilyClassProvider).first;
+  @override
+  String? get second => (origin as FamilyClassProvider).second;
+  @override
+  double get third => (origin as FamilyClassProvider).third;
+  @override
+  bool get fourth => (origin as FamilyClassProvider).fourth;
+  @override
+  List<String>? get fifth => (origin as FamilyClassProvider).fifth;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member

@@ -45,8 +45,6 @@ class _SystemHash {
   }
 }
 
-typedef ExampleFamilyRef = AutoDisposeProviderRef<int>;
-
 /// Some comment
 ///
 /// Copied from [exampleFamily].
@@ -108,11 +106,11 @@ class ExampleFamilyProvider extends AutoDisposeProvider<int> {
   ///
   /// Copied from [exampleFamily].
   ExampleFamilyProvider({
-    required this.a,
-    this.b = '42',
-  }) : super.internal(
+    required int a,
+    String b = '42',
+  }) : this._internal(
           (ref) => exampleFamily(
-            ref,
+            ref as ExampleFamilyRef,
             a: a,
             b: b,
           ),
@@ -125,10 +123,47 @@ class ExampleFamilyProvider extends AutoDisposeProvider<int> {
           dependencies: ExampleFamilyFamily._dependencies,
           allTransitiveDependencies:
               ExampleFamilyFamily._allTransitiveDependencies,
+          a: a,
+          b: b,
         );
+
+  ExampleFamilyProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.a,
+    required this.b,
+  }) : super.internal();
 
   final int a;
   final String b;
+
+  @override
+  Override overrideWith(
+    int Function(ExampleFamilyRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: ExampleFamilyProvider._internal(
+        (ref) => create(ref as ExampleFamilyRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        a: a,
+        b: b,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<int> createElement() {
+    return _ExampleFamilyProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -143,6 +178,24 @@ class ExampleFamilyProvider extends AutoDisposeProvider<int> {
 
     return _SystemHash.finish(hash);
   }
+}
+
+mixin ExampleFamilyRef on AutoDisposeProviderRef<int> {
+  /// The parameter `a` of this provider.
+  int get a;
+
+  /// The parameter `b` of this provider.
+  String get b;
+}
+
+class _ExampleFamilyProviderElement extends AutoDisposeProviderElement<int>
+    with ExampleFamilyRef {
+  _ExampleFamilyProviderElement(super.provider);
+
+  @override
+  int get a => (origin as ExampleFamilyProvider).a;
+  @override
+  String get b => (origin as ExampleFamilyProvider).b;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member

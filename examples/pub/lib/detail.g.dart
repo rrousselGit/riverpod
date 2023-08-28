@@ -32,8 +32,6 @@ class _SystemHash {
   }
 }
 
-typedef FetchPackageDetailsRef = AutoDisposeFutureProviderRef<Package>;
-
 /// See also [fetchPackageDetails].
 @ProviderFor(fetchPackageDetails)
 const fetchPackageDetailsProvider = FetchPackageDetailsFamily();
@@ -83,7 +81,7 @@ class FetchPackageDetailsProvider extends AutoDisposeFutureProvider<Package> {
     required String packageName,
   }) : this._internal(
           (ref) => fetchPackageDetails(
-            ref,
+            ref as FetchPackageDetailsRef,
             packageName: packageName,
           ),
           from: fetchPackageDetailsProvider,
@@ -111,6 +109,29 @@ class FetchPackageDetailsProvider extends AutoDisposeFutureProvider<Package> {
   final String packageName;
 
   @override
+  Override overrideWith(
+    Future<Package> Function(FetchPackageDetailsRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: FetchPackageDetailsProvider._internal(
+        (ref) => create(ref as FetchPackageDetailsRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        packageName: packageName,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<Package> createElement() {
+    return _FetchPackageDetailsProviderElement(this);
+  }
+
+  @override
   bool operator ==(Object other) {
     return other is FetchPackageDetailsProvider &&
         other.packageName == packageName;
@@ -123,6 +144,20 @@ class FetchPackageDetailsProvider extends AutoDisposeFutureProvider<Package> {
 
     return _SystemHash.finish(hash);
   }
+}
+
+mixin FetchPackageDetailsRef on AutoDisposeFutureProviderRef<Package> {
+  /// The parameter `packageName` of this provider.
+  String get packageName;
+}
+
+class _FetchPackageDetailsProviderElement
+    extends AutoDisposeFutureProviderElement<Package>
+    with FetchPackageDetailsRef {
+  _FetchPackageDetailsProviderElement(super.provider);
+
+  @override
+  String get packageName => (origin as FetchPackageDetailsProvider).packageName;
 }
 
 String _$likedPackagesHash() => r'304a4def167e245812638cba776e8d5eb66d8844';
@@ -290,7 +325,7 @@ class PackageMetricsProvider extends AutoDisposeAsyncNotifierProviderImpl<
     return ProviderOverride(
       origin: this,
       override: PackageMetricsProvider._internal(
-        create,
+        () => create()..packageName = packageName,
         from: from,
         name: null,
         dependencies: null,
@@ -299,6 +334,12 @@ class PackageMetricsProvider extends AutoDisposeAsyncNotifierProviderImpl<
         packageName: packageName,
       ),
     );
+  }
+
+  @override
+  AutoDisposeAsyncNotifierProviderElement<PackageMetrics, PackageMetricsScore>
+      createElement() {
+    return _PackageMetricsProviderElement(this);
   }
 
   @override
@@ -313,6 +354,21 @@ class PackageMetricsProvider extends AutoDisposeAsyncNotifierProviderImpl<
 
     return _SystemHash.finish(hash);
   }
+}
+
+mixin PackageMetricsRef
+    on AutoDisposeAsyncNotifierProviderRef<PackageMetricsScore> {
+  /// The parameter `packageName` of this provider.
+  String get packageName;
+}
+
+class _PackageMetricsProviderElement
+    extends AutoDisposeAsyncNotifierProviderElement<PackageMetrics,
+        PackageMetricsScore> with PackageMetricsRef {
+  _PackageMetricsProviderElement(super.provider);
+
+  @override
+  String get packageName => (origin as PackageMetricsProvider).packageName;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
