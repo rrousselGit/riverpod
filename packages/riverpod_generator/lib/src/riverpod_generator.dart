@@ -181,8 +181,6 @@ class _SystemHash {
     final hashFn = _hashFnIdentifier(hashFunctionName);
     buffer.write(_hashFn(provider, hashFunctionName));
 
-    final refName = '${provider.providerElement.name.titled}Ref';
-
     // Using >1 as functional providers always have at least one parameter: ref
     // So a provider is a "family" only if it has parameters besides the ref.
     if (parameters.length > 1) {
@@ -190,10 +188,10 @@ class _SystemHash {
       FamilyTemplate.functional(
         provider,
         options: options,
-        refName: refName,
         hashFn: hashFn,
       ).run(buffer);
     } else {
+      final refName = '${provider.providerElement.name.titled}Ref';
       FunctionalProviderTemplate(
         provider,
         refName: refName,

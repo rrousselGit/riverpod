@@ -55,7 +55,7 @@ class Provider<State> extends InternalProvider<State>
   State _create(ProviderElement<State> ref) => _createFn(ref);
 
   @override
-  ProviderElement<State> createElement() => ProviderElement._(this);
+  ProviderElement<State> createElement() => ProviderElement(this);
 
   /// {@template riverpod.overridewith}
   /// Override the provider with a new initialization function.
@@ -322,7 +322,8 @@ class Provider<State> extends InternalProvider<State>
 class ProviderElement<State> extends ProviderElementBase<State>
     implements ProviderRef<State> {
   /// A [ProviderElementBase] for [Provider]
-  ProviderElement._(super._provider);
+  @internal
+  ProviderElement(super._provider);
 
   @override
   State get state => requireState;

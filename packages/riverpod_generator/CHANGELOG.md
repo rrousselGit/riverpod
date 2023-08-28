@@ -1,3 +1,20 @@
+## Unreleased minor
+
+- The "ref" object now contains the provider parameters too.
+  This enabled `provider.overrideWith` to use the provider arguments:
+  ```dart
+  @riverpod
+  int example(ExampleRef ref, {int? id}) { /* */ }
+  // ...
+  exampleProvider.overrideWith(
+    (ref) {
+      print(ref.id);
+    }
+  )
+  ```
+- Fix all `provider.overrideWith` causing a cast error if the notifier
+  receives arguments.
+
 ## 2.2.6 - 2023-08-16
 
 - Support both analyzer 5.12.0 and analyzer 6.0.0

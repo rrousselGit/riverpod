@@ -21,6 +21,8 @@ class FamilyTemplate extends Template {
     required this.options,
     required this.parameters,
     required this.providerType,
+    required this.refType,
+    required this.elementType,
     required this.providerGenerics,
     required this.providerCreate,
     required this.parametersPassThrough,
@@ -39,7 +41,6 @@ class FamilyTemplate extends Template {
 
   factory FamilyTemplate.functional(
     FunctionalProviderDeclaration provider, {
-    required String refName,
     required String hashFn,
     required BuildYamlOptions options,
   }) {
@@ -49,13 +50,23 @@ class FamilyTemplate extends Template {
     }
 
     var providerType = '${leading}Provider';
+    var refType = '${leading}ProviderRef';
+    var elementType = '${leading}ProviderElement';
+    var createdType = provider.createdType.toString();
 
     final returnType = provider.createdType;
     if (!returnType.isRaw) {
       if (returnType.isDartAsyncFutureOr || returnType.isDartAsyncFuture) {
         providerType = '${leading}FutureProvider';
+        refType = '${leading}FutureProviderRef';
+        elementType = '${leading}FutureProviderElement';
+        // Always use FutureOr<T> in overrideWith as return value
+        // or otherwise we get a compilation error.
+        createdType = 'FutureOr<${provider.valueType}>';
       } else if (returnType.isDartAsyncStream) {
         providerType = '${leading}StreamProvider';
+        refType = '${leading}StreamProviderRef';
+        elementType = '${leading}StreamProviderElement';
       }
     }
 
@@ -74,12 +85,32 @@ class FamilyTemplate extends Template {
       options: options,
       parameters: parameters,
       hashFn: hashFn,
+      elementType: elementType,
+      refType: refType,
       providerGenerics: '<${provider.valueType}>',
-      providerCreate: '(ref) => ${provider.name}(ref, $parametersPassThrough)',
+      providerCreate:
+          '(ref) => ${provider.name}(ref as ${provider._refImplName}, $parametersPassThrough)',
       providerType: providerType,
       parametersPassThrough: parametersPassThrough,
-      other: '''
-typedef $refName = ${providerType}Ref<${provider.valueType}>;
+      providerOther: '''
+
+  @override
+  Override overrideWith(
+    $createdType Function(${provider._refImplName} provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: ${provider._providerImplName}._internal(
+        (ref) => create(ref as ${provider._refImplName}),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+${parameters.map((e) => '        ${e.name}: ${e.name},\n').join()}
+      ),
+    );
+  }
 ''',
     );
   }
@@ -96,16 +127,22 @@ typedef $refName = ${providerType}Ref<${provider.valueType}>;
     }
 
     var providerType = '${leading}NotifierProviderImpl';
+    var refType = '${leading}NotifierProviderRef';
     var notifierBaseType = 'Buildless${leading}Notifier';
+    var elementType = '${leading}NotifierProviderElement';
 
     final returnType = provider.createdType;
     if (!returnType.isRaw) {
       if (returnType.isDartAsyncFutureOr || returnType.isDartAsyncFuture) {
         providerType = '${leading}AsyncNotifierProviderImpl';
+        refType = '${leading}AsyncNotifierProviderRef';
         notifierBaseType = 'Buildless${leading}AsyncNotifier';
+        elementType = '${leading}AsyncNotifierProviderElement';
       } else if (returnType.isDartAsyncStream) {
         providerType = '${leading}StreamNotifierProviderImpl';
+        refType = '${leading}StreamNotifierProviderRef';
         notifierBaseType = 'Buildless${leading}StreamNotifier';
+        elementType = '${leading}StreamNotifierProviderElement';
       }
     }
 
@@ -125,6 +162,8 @@ typedef $refName = ${providerType}Ref<${provider.valueType}>;
       options: options,
       parameters: parameters,
       hashFn: hashFn,
+      elementType: elementType,
+      refType: refType,
       providerGenerics: '<${provider.name}, ${provider.valueType}>',
       providerType: providerType,
       providerCreate: '() => ${provider.name}()$cascadePropertyInit',
@@ -143,6 +182,22 @@ abstract class $notifierTypedefName extends $notifierBaseType<${provider.valueTy
   ) {
     return notifier.build($parametersPassThrough);
   }
+
+  @override
+  Override overrideWith(${provider.name} Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: ${provider._providerImplName}._internal(
+        () => create()$cascadePropertyInit,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+${parameters.map((e) => '        ${e.name}: ${e.name},\n').join()}
+      ),
+    );
+  }
 ''',
     );
   }
@@ -150,6 +205,8 @@ abstract class $notifierTypedefName extends $notifierBaseType<${provider.valueTy
   final GeneratorProviderDeclaration provider;
   final List<ParameterElement> parameters;
   final BuildYamlOptions options;
+  final String refType;
+  final String elementType;
   final String providerType;
   final String providerGenerics;
   final String providerCreate;
@@ -160,15 +217,12 @@ abstract class $notifierTypedefName extends $notifierBaseType<${provider.valueTy
 
   @override
   void run(StringBuffer buffer) {
-    final providerTypeNameImpl =
-        '${provider.providerElement.name.titled}Provider';
+    final providerTypeNameImpl = provider._providerImplName;
+    final refNameImpl = provider._refImplName;
+    final elementNameImpl = '_${providerTypeNameImpl.public}Element';
     final familyName = '${provider.providerElement.name.titled}Family';
 
     final parameterDefinition = buildParamDefinitionQuery(parameters);
-    final thisParameterDefinition = buildParamDefinitionQuery(
-      parameters,
-      asThisParameter: true,
-    );
     final parameterProviderPassThrough = buildParamInvocationQuery({
       for (final parameter in parameters)
         parameter: 'provider.${parameter.name}',
@@ -224,16 +278,39 @@ class $familyName extends Family<${provider.exposedType}> {
 $docs
 class $providerTypeNameImpl extends $providerType$providerGenerics {
   $docs
-  $providerTypeNameImpl($thisParameterDefinition) : super.internal(
+  $providerTypeNameImpl($parameterDefinition) : this._internal(
           $providerCreate,
           from: $providerName,
           name: r'$providerName',
           debugGetCreateSourceHash: $hashFn,
           dependencies: $familyName._dependencies,
           allTransitiveDependencies: $familyName._allTransitiveDependencies,
+          ${parameters.map((e) => '${e.name}: ${e.name},\n').join()}
         );
 
+  $providerTypeNameImpl._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    ${buildParamDefinitionQuery(
+      parameters,
+      asThisParameter: true,
+      writeBrackets: false,
+      asRequiredNamed: true,
+    )}
+  }) : super.internal();
+
 ${parameters.map((e) => 'final ${e.type.getDisplayString(withNullability: true)} ${e.name};').join()}
+
+$providerOther
+
+  @override
+  $elementType$providerGenerics createElement() {
+    return $elementNameImpl(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -250,8 +327,27 @@ ${parameters.map((e) => 'hash = _SystemHash.combine(hash, ${e.name}.hashCode);')
 
     return _SystemHash.finish(hash);
   }
-$providerOther
+}
+
+mixin $refNameImpl on $refType<${provider.valueType}> {
+  ${parameters.map((e) {
+      return '''
+/// The parameter `${e.name}` of this provider.
+${e.type} get ${e.name};''';
+    }).join()}
+}
+
+class $elementNameImpl extends $elementType$providerGenerics with $refNameImpl {
+  $elementNameImpl(super.provider);
+
+${parameters.map((e) => '@override ${e.type} get ${e.name} => (origin as $providerTypeNameImpl).${e.name};').join()}
 }
 ''');
   }
+}
+
+extension on GeneratorProviderDeclaration {
+  String get _providerImplName => '${providerElement.name.titled}Provider';
+
+  String get _refImplName => '${providerElement.name.titled}Ref';
 }

@@ -15,19 +15,28 @@ Future<String> _private(_PrivateRef ref) async {
 }
 
 @riverpod
-FutureOr<String> family(
+FutureOr<String> familyOr(FamilyOrRef ref, int first) {
+  return '(first: $first)';
+}
+
+@riverpod
+Future<String> family(
   FamilyRef ref,
   int first, {
   String? second,
   required double third,
   bool fourth = true,
   List<String>? fifth,
-}) {
+}) async {
   return '(first: $first, second: $second, third: $third, fourth: $fourth, fifth: $fifth)';
 }
 
 @riverpod
 class PublicClass extends _$PublicClass {
+  PublicClass([this.param]);
+
+  final Object? param;
+
   @override
   FutureOr<String> build() {
     return 'Hello world';
@@ -45,15 +54,27 @@ class _PrivateClass extends _$PrivateClass {
 }
 
 @riverpod
-class FamilyClass extends _$FamilyClass {
+class FamilyOrClass extends _$FamilyOrClass {
   @override
-  FutureOr<String> build(
+  FutureOr<String> build(int first) {
+    return '(first: $first)';
+  }
+}
+
+@riverpod
+class FamilyClass extends _$FamilyClass {
+  FamilyClass([this.param]);
+
+  final Object? param;
+
+  @override
+  Future<String> build(
     int first, {
     String? second,
     required double third,
     bool fourth = true,
     List<String>? fifth,
-  }) {
+  }) async {
     return '(first: $first, second: $second, third: $third, fourth: $fourth, fifth: $fifth)';
   }
 }
