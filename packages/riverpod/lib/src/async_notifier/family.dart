@@ -81,7 +81,7 @@ class FamilyAsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T,
 
   @override
   AsyncNotifierProviderElement<NotifierT, T> createElement() {
-    return AsyncNotifierProviderElement._(this);
+    return AsyncNotifierProviderElement(this);
   }
 
   @override

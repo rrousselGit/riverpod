@@ -110,7 +110,7 @@ class FetchPackageDetailsProvider extends AutoDisposeFutureProvider<Package> {
 
   @override
   Override overrideWith(
-    Future<Package> Function(FetchPackageDetailsRef provider) create,
+    FutureOr<Package> Function(FetchPackageDetailsRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,

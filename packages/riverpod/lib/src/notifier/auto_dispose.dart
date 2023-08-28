@@ -82,7 +82,7 @@ class AutoDisposeNotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
 
   @override
   AutoDisposeNotifierProviderElement<NotifierT, T> createElement() {
-    return AutoDisposeNotifierProviderElement._(this);
+    return AutoDisposeNotifierProviderElement(this);
   }
 
   @override
@@ -115,5 +115,6 @@ class AutoDisposeNotifierProviderElement<NotifierT extends NotifierBase<T>, T>
     with AutoDisposeProviderElementMixin<T>
     implements AutoDisposeNotifierProviderRef<T> {
   /// The [ProviderElementBase] for [NotifierProvider]
-  AutoDisposeNotifierProviderElement._(super._provider) : super._();
+  @internal
+  AutoDisposeNotifierProviderElement(super._provider);
 }

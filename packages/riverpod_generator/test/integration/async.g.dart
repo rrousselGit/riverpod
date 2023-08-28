@@ -34,7 +34,7 @@ final _privateProvider = AutoDisposeFutureProvider<String>.internal(
 );
 
 typedef _PrivateRef = AutoDisposeFutureProviderRef<String>;
-String _$familyHash() => r'f46defb7b007c76254058e9e8bc868260bcfe0f1';
+String _$familyOrHash() => r'1c3217e296b0ce52c07c18769d1fffb95850f482';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -56,6 +56,133 @@ class _SystemHash {
     return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
   }
 }
+
+/// See also [familyOr].
+@ProviderFor(familyOr)
+const familyOrProvider = FamilyOrFamily();
+
+/// See also [familyOr].
+class FamilyOrFamily extends Family<AsyncValue<String>> {
+  /// See also [familyOr].
+  const FamilyOrFamily();
+
+  /// See also [familyOr].
+  FamilyOrProvider call(
+    int first,
+  ) {
+    return FamilyOrProvider(
+      first,
+    );
+  }
+
+  @override
+  FamilyOrProvider getProviderOverride(
+    covariant FamilyOrProvider provider,
+  ) {
+    return call(
+      provider.first,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'familyOrProvider';
+}
+
+/// See also [familyOr].
+class FamilyOrProvider extends AutoDisposeFutureProvider<String> {
+  /// See also [familyOr].
+  FamilyOrProvider(
+    int first,
+  ) : this._internal(
+          (ref) => familyOr(
+            ref as FamilyOrRef,
+            first,
+          ),
+          from: familyOrProvider,
+          name: r'familyOrProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$familyOrHash,
+          dependencies: FamilyOrFamily._dependencies,
+          allTransitiveDependencies: FamilyOrFamily._allTransitiveDependencies,
+          first: first,
+        );
+
+  FamilyOrProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.first,
+  }) : super.internal();
+
+  final int first;
+
+  @override
+  Override overrideWith(
+    FutureOr<String> Function(FamilyOrRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: FamilyOrProvider._internal(
+        (ref) => create(ref as FamilyOrRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        first: first,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<String> createElement() {
+    return _FamilyOrProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is FamilyOrProvider && other.first == first;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, first.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin FamilyOrRef on AutoDisposeFutureProviderRef<String> {
+  /// The parameter `first` of this provider.
+  int get first;
+}
+
+class _FamilyOrProviderElement extends AutoDisposeFutureProviderElement<String>
+    with FamilyOrRef {
+  _FamilyOrProviderElement(super.provider);
+
+  @override
+  int get first => (origin as FamilyOrProvider).first;
+}
+
+String _$familyHash() => r'eb6fad35a94d4238b621c2100253ee2c700bee77';
 
 /// See also [family].
 @ProviderFor(family)
@@ -277,7 +404,151 @@ final _privateClassProvider =
 );
 
 typedef _$PrivateClass = AutoDisposeAsyncNotifier<String>;
-String _$familyClassHash() => r'2e70b4c3a42b5e88696ab10a18c8446cc92cc52c';
+String _$familyOrClassHash() => r'b4882d4e79a03c63005d35eb7a021c9c4373a8d9';
+
+abstract class _$FamilyOrClass
+    extends BuildlessAutoDisposeAsyncNotifier<String> {
+  late final int first;
+
+  FutureOr<String> build(
+    int first,
+  );
+}
+
+/// See also [FamilyOrClass].
+@ProviderFor(FamilyOrClass)
+const familyOrClassProvider = FamilyOrClassFamily();
+
+/// See also [FamilyOrClass].
+class FamilyOrClassFamily extends Family<AsyncValue<String>> {
+  /// See also [FamilyOrClass].
+  const FamilyOrClassFamily();
+
+  /// See also [FamilyOrClass].
+  FamilyOrClassProvider call(
+    int first,
+  ) {
+    return FamilyOrClassProvider(
+      first,
+    );
+  }
+
+  @override
+  FamilyOrClassProvider getProviderOverride(
+    covariant FamilyOrClassProvider provider,
+  ) {
+    return call(
+      provider.first,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'familyOrClassProvider';
+}
+
+/// See also [FamilyOrClass].
+class FamilyOrClassProvider
+    extends AutoDisposeAsyncNotifierProviderImpl<FamilyOrClass, String> {
+  /// See also [FamilyOrClass].
+  FamilyOrClassProvider(
+    int first,
+  ) : this._internal(
+          () => FamilyOrClass()..first = first,
+          from: familyOrClassProvider,
+          name: r'familyOrClassProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$familyOrClassHash,
+          dependencies: FamilyOrClassFamily._dependencies,
+          allTransitiveDependencies:
+              FamilyOrClassFamily._allTransitiveDependencies,
+          first: first,
+        );
+
+  FamilyOrClassProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.first,
+  }) : super.internal();
+
+  final int first;
+
+  @override
+  FutureOr<String> runNotifierBuild(
+    covariant FamilyOrClass notifier,
+  ) {
+    return notifier.build(
+      first,
+    );
+  }
+
+  @override
+  Override overrideWith(FamilyOrClass Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: FamilyOrClassProvider._internal(
+        () => create()..first = first,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        first: first,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeAsyncNotifierProviderElement<FamilyOrClass, String>
+      createElement() {
+    return _FamilyOrClassProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is FamilyOrClassProvider && other.first == first;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, first.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin FamilyOrClassRef on AutoDisposeAsyncNotifierProviderRef<String> {
+  /// The parameter `first` of this provider.
+  int get first;
+}
+
+class _FamilyOrClassProviderElement
+    extends AutoDisposeAsyncNotifierProviderElement<FamilyOrClass, String>
+    with FamilyOrClassRef {
+  _FamilyOrClassProviderElement(super.provider);
+
+  @override
+  int get first => (origin as FamilyOrClassProvider).first;
+}
+
+String _$familyClassHash() => r'b7e3ca6091f12bbc99972e961acd885e05f42a15';
 
 abstract class _$FamilyClass extends BuildlessAutoDisposeAsyncNotifier<String> {
   late final int first;
@@ -286,7 +557,7 @@ abstract class _$FamilyClass extends BuildlessAutoDisposeAsyncNotifier<String> {
   late final bool fourth;
   late final List<String>? fifth;
 
-  FutureOr<String> build(
+  Future<String> build(
     int first, {
     String? second,
     required double third,
@@ -403,7 +674,7 @@ class FamilyClassProvider
   final List<String>? fifth;
 
   @override
-  FutureOr<String> runNotifierBuild(
+  Future<String> runNotifierBuild(
     covariant FamilyClass notifier,
   ) {
     return notifier.build(

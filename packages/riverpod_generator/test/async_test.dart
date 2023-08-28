@@ -26,6 +26,33 @@ void main() {
     expect(familyProvider(42, third: .42).name, 'familyProvider');
   });
 
+  test('Supports overriding non-family providers', () async {
+    final container = createContainer(
+      overrides: [
+        publicProvider.overrideWith((ref) => Future.value('Hello world')),
+      ],
+    );
+
+    final result = container.read(publicProvider.future);
+    expect(await result, 'Hello world');
+  });
+
+  test('Supports overriding family providers', () async {
+    final container = createContainer(
+      overrides: [
+        familyProvider(42, third: .42).overrideWith(
+          (ref) => Future.value(
+            'Hello world ${ref.first} ${ref.second} '
+            '${ref.third} ${ref.fourth} ${ref.fifth}',
+          ),
+        ),
+      ],
+    );
+
+    final result = container.read(familyProvider(42, third: .42).future);
+    expect(await result, 'Hello world 42 null 0.42 true null');
+  });
+
   test(
       'Creates a Provider.family<T> if @riverpod is used on a synchronous function with parameters',
       () {

@@ -21,6 +21,8 @@ class FamilyTemplate extends Template {
     required this.options,
     required this.parameters,
     required this.providerType,
+    required this.refType,
+    required this.elementType,
     required this.providerGenerics,
     required this.providerCreate,
     required this.parametersPassThrough,
@@ -39,7 +41,6 @@ class FamilyTemplate extends Template {
 
   factory FamilyTemplate.functional(
     FunctionalProviderDeclaration provider, {
-    required String refName,
     required String hashFn,
     required BuildYamlOptions options,
   }) {
@@ -49,13 +50,23 @@ class FamilyTemplate extends Template {
     }
 
     var providerType = '${leading}Provider';
+    var refType = '${leading}ProviderRef';
+    var elementType = '${leading}ProviderElement';
+    var createdType = provider.createdType.toString();
 
     final returnType = provider.createdType;
     if (!returnType.isRaw) {
       if (returnType.isDartAsyncFutureOr || returnType.isDartAsyncFuture) {
         providerType = '${leading}FutureProvider';
+        refType = '${leading}FutureProviderRef';
+        elementType = '${leading}FutureProviderElement';
+        // Always use FutureOr<T> in overrideWith as return value
+        // or otherwise we get a compilation error.
+        createdType = 'FutureOr<${provider.valueType}>';
       } else if (returnType.isDartAsyncStream) {
         providerType = '${leading}StreamProvider';
+        refType = '${leading}StreamProviderRef';
+        elementType = '${leading}StreamProviderElement';
       }
     }
 
@@ -74,12 +85,32 @@ class FamilyTemplate extends Template {
       options: options,
       parameters: parameters,
       hashFn: hashFn,
+      elementType: elementType,
+      refType: refType,
       providerGenerics: '<${provider.valueType}>',
-      providerCreate: '(ref) => ${provider.name}(ref, $parametersPassThrough)',
+      providerCreate:
+          '(ref) => ${provider.name}(ref as ${provider._refImplName}, $parametersPassThrough)',
       providerType: providerType,
       parametersPassThrough: parametersPassThrough,
-      other: '''
-typedef $refName = ${providerType}Ref<${provider.valueType}>;
+      providerOther: '''
+
+  @override
+  Override overrideWith(
+    $createdType Function(${provider._refImplName} provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: ${provider._providerImplName}._internal(
+        (ref) => create(ref as ${provider._refImplName}),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+${parameters.map((e) => '        ${e.name}: ${e.name},\n').join()}
+      ),
+    );
+  }
 ''',
     );
   }
@@ -96,16 +127,22 @@ typedef $refName = ${providerType}Ref<${provider.valueType}>;
     }
 
     var providerType = '${leading}NotifierProviderImpl';
+    var refType = '${leading}NotifierProviderRef';
     var notifierBaseType = 'Buildless${leading}Notifier';
+    var elementType = '${leading}NotifierProviderElement';
 
     final returnType = provider.createdType;
     if (!returnType.isRaw) {
       if (returnType.isDartAsyncFutureOr || returnType.isDartAsyncFuture) {
         providerType = '${leading}AsyncNotifierProviderImpl';
+        refType = '${leading}AsyncNotifierProviderRef';
         notifierBaseType = 'Buildless${leading}AsyncNotifier';
+        elementType = '${leading}AsyncNotifierProviderElement';
       } else if (returnType.isDartAsyncStream) {
         providerType = '${leading}StreamNotifierProviderImpl';
+        refType = '${leading}StreamNotifierProviderRef';
         notifierBaseType = 'Buildless${leading}StreamNotifier';
+        elementType = '${leading}StreamNotifierProviderElement';
       }
     }
 
@@ -125,6 +162,8 @@ typedef $refName = ${providerType}Ref<${provider.valueType}>;
       options: options,
       parameters: parameters,
       hashFn: hashFn,
+      elementType: elementType,
+      refType: refType,
       providerGenerics: '<${provider.name}, ${provider.valueType}>',
       providerType: providerType,
       providerCreate: '() => ${provider.name}()$cascadePropertyInit',
@@ -166,6 +205,8 @@ ${parameters.map((e) => '        ${e.name}: ${e.name},\n').join()}
   final GeneratorProviderDeclaration provider;
   final List<ParameterElement> parameters;
   final BuildYamlOptions options;
+  final String refType;
+  final String elementType;
   final String providerType;
   final String providerGenerics;
   final String providerCreate;
@@ -177,6 +218,8 @@ ${parameters.map((e) => '        ${e.name}: ${e.name},\n').join()}
   @override
   void run(StringBuffer buffer) {
     final providerTypeNameImpl = provider._providerImplName;
+    final refNameImpl = provider._refImplName;
+    final elementNameImpl = '_${providerTypeNameImpl.public}Element';
     final familyName = '${provider.providerElement.name.titled}Family';
 
     final parameterDefinition = buildParamDefinitionQuery(parameters);
@@ -265,6 +308,11 @@ ${parameters.map((e) => 'final ${e.type.getDisplayString(withNullability: true)}
 $providerOther
 
   @override
+  $elementType$providerGenerics createElement() {
+    return $elementNameImpl(this);
+  }
+
+  @override
   bool operator ==(Object other) {
     return ${[
       'other is $providerTypeNameImpl',
@@ -280,10 +328,26 @@ ${parameters.map((e) => 'hash = _SystemHash.combine(hash, ${e.name}.hashCode);')
     return _SystemHash.finish(hash);
   }
 }
+
+mixin $refNameImpl on $refType<${provider.valueType}> {
+  ${parameters.map((e) {
+      return '''
+/// The parameter `${e.name}` of this provider.
+${e.type} get ${e.name};''';
+    }).join()}
+}
+
+class $elementNameImpl extends $elementType$providerGenerics with $refNameImpl {
+  $elementNameImpl(super.provider);
+
+${parameters.map((e) => '@override ${e.type} get ${e.name} => (origin as $providerTypeNameImpl).${e.name};').join()}
+}
 ''');
   }
 }
 
 extension on GeneratorProviderDeclaration {
   String get _providerImplName => '${providerElement.name.titled}Provider';
+
+  String get _refImplName => '${providerElement.name.titled}Ref';
 }
