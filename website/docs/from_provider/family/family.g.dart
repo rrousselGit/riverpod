@@ -31,8 +31,6 @@ class _SystemHash {
   }
 }
 
-typedef RandomRef = AutoDisposeProviderRef<int>;
-
 /// See also [random].
 @ProviderFor(random)
 const randomProvider = RandomFamily();
@@ -82,11 +80,11 @@ class RandomFamily extends Family<int> {
 class RandomProvider extends AutoDisposeProvider<int> {
   /// See also [random].
   RandomProvider({
-    required this.seed,
-    required this.max,
-  }) : super.internal(
+    required int seed,
+    required int max,
+  }) : this._internal(
           (ref) => random(
-            ref,
+            ref as RandomRef,
             seed: seed,
             max: max,
           ),
@@ -98,10 +96,47 @@ class RandomProvider extends AutoDisposeProvider<int> {
                   : _$randomHash,
           dependencies: RandomFamily._dependencies,
           allTransitiveDependencies: RandomFamily._allTransitiveDependencies,
+          seed: seed,
+          max: max,
         );
+
+  RandomProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.seed,
+    required this.max,
+  }) : super.internal();
 
   final int seed;
   final int max;
+
+  @override
+  Override overrideWith(
+    int Function(RandomRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: RandomProvider._internal(
+        (ref) => create(ref as RandomRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        seed: seed,
+        max: max,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<int> createElement() {
+    return _RandomProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -116,6 +151,24 @@ class RandomProvider extends AutoDisposeProvider<int> {
 
     return _SystemHash.finish(hash);
   }
+}
+
+mixin RandomRef on AutoDisposeProviderRef<int> {
+  /// The parameter `seed` of this provider.
+  int get seed;
+
+  /// The parameter `max` of this provider.
+  int get max;
+}
+
+class _RandomProviderElement extends AutoDisposeProviderElement<int>
+    with RandomRef {
+  _RandomProviderElement(super.provider);
+
+  @override
+  int get seed => (origin as RandomProvider).seed;
+  @override
+  int get max => (origin as RandomProvider).max;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member

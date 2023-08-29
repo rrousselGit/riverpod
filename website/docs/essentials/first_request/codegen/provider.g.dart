@@ -8,7 +8,7 @@ part of 'provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$activityHash() => r'b6d1e93c2ed029bb98ab1718f13275e265f15b78';
+String _$activityHash() => r'636cd5510e09cbfc46f31b74a70d9e98c89e95a4';
 
 /// This will create a provider named `activityProvider`
 /// which will cache the result of this function.

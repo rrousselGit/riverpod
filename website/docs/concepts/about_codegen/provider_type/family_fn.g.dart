@@ -31,8 +31,6 @@ class _SystemHash {
   }
 }
 
-typedef ExampleRef = AutoDisposeProviderRef<String>;
-
 /// See also [example].
 @ProviderFor(example)
 const exampleProvider = ExampleFamily();
@@ -82,11 +80,11 @@ class ExampleFamily extends Family<String> {
 class ExampleProvider extends AutoDisposeProvider<String> {
   /// See also [example].
   ExampleProvider(
-    this.param1, {
-    this.param2 = 'foo',
-  }) : super.internal(
+    int param1, {
+    String param2 = 'foo',
+  }) : this._internal(
           (ref) => example(
-            ref,
+            ref as ExampleRef,
             param1,
             param2: param2,
           ),
@@ -98,10 +96,47 @@ class ExampleProvider extends AutoDisposeProvider<String> {
                   : _$exampleHash,
           dependencies: ExampleFamily._dependencies,
           allTransitiveDependencies: ExampleFamily._allTransitiveDependencies,
+          param1: param1,
+          param2: param2,
         );
+
+  ExampleProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.param1,
+    required this.param2,
+  }) : super.internal();
 
   final int param1;
   final String param2;
+
+  @override
+  Override overrideWith(
+    String Function(ExampleRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: ExampleProvider._internal(
+        (ref) => create(ref as ExampleRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        param1: param1,
+        param2: param2,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<String> createElement() {
+    return _ExampleProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -118,6 +153,24 @@ class ExampleProvider extends AutoDisposeProvider<String> {
 
     return _SystemHash.finish(hash);
   }
+}
+
+mixin ExampleRef on AutoDisposeProviderRef<String> {
+  /// The parameter `param1` of this provider.
+  int get param1;
+
+  /// The parameter `param2` of this provider.
+  String get param2;
+}
+
+class _ExampleProviderElement extends AutoDisposeProviderElement<String>
+    with ExampleRef {
+  _ExampleProviderElement(super.provider);
+
+  @override
+  int get param1 => (origin as ExampleProvider).param1;
+  @override
+  String get param2 => (origin as ExampleProvider).param2;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member

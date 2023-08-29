@@ -31,8 +31,6 @@ class _SystemHash {
   }
 }
 
-typedef ActivityRef = AutoDisposeFutureProviderRef<Activity>;
-
 /// See also [activity].
 @ProviderFor(activity)
 const activityProvider = ActivityFamily();
@@ -79,10 +77,10 @@ class ActivityFamily extends Family<AsyncValue<Activity>> {
 class ActivityProvider extends AutoDisposeFutureProvider<Activity> {
   /// See also [activity].
   ActivityProvider(
-    this.activityType,
-  ) : super.internal(
+    String activityType,
+  ) : this._internal(
           (ref) => activity(
-            ref,
+            ref as ActivityRef,
             activityType,
           ),
           from: activityProvider,
@@ -93,9 +91,43 @@ class ActivityProvider extends AutoDisposeFutureProvider<Activity> {
                   : _$activityHash,
           dependencies: ActivityFamily._dependencies,
           allTransitiveDependencies: ActivityFamily._allTransitiveDependencies,
+          activityType: activityType,
         );
 
+  ActivityProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.activityType,
+  }) : super.internal();
+
   final String activityType;
+
+  @override
+  Override overrideWith(
+    FutureOr<Activity> Function(ActivityRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: ActivityProvider._internal(
+        (ref) => create(ref as ActivityRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        activityType: activityType,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<Activity> createElement() {
+    return _ActivityProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -109,6 +141,19 @@ class ActivityProvider extends AutoDisposeFutureProvider<Activity> {
 
     return _SystemHash.finish(hash);
   }
+}
+
+mixin ActivityRef on AutoDisposeFutureProviderRef<Activity> {
+  /// The parameter `activityType` of this provider.
+  String get activityType;
+}
+
+class _ActivityProviderElement
+    extends AutoDisposeFutureProviderElement<Activity> with ActivityRef {
+  _ActivityProviderElement(super.provider);
+
+  @override
+  String get activityType => (origin as ActivityProvider).activityType;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member

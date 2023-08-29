@@ -90,9 +90,9 @@ class ExampleFamily extends Family<String> {
 class ExampleProvider extends AutoDisposeNotifierProviderImpl<Example, String> {
   /// See also [Example].
   ExampleProvider(
-    this.param1, {
-    this.param2 = 'foo',
-  }) : super.internal(
+    int param1, {
+    String param2 = 'foo',
+  }) : this._internal(
           () => Example()
             ..param1 = param1
             ..param2 = param2,
@@ -104,10 +104,57 @@ class ExampleProvider extends AutoDisposeNotifierProviderImpl<Example, String> {
                   : _$exampleHash,
           dependencies: ExampleFamily._dependencies,
           allTransitiveDependencies: ExampleFamily._allTransitiveDependencies,
+          param1: param1,
+          param2: param2,
         );
+
+  ExampleProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.param1,
+    required this.param2,
+  }) : super.internal();
 
   final int param1;
   final String param2;
+
+  @override
+  String runNotifierBuild(
+    covariant Example notifier,
+  ) {
+    return notifier.build(
+      param1,
+      param2: param2,
+    );
+  }
+
+  @override
+  Override overrideWith(Example Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: ExampleProvider._internal(
+        () => create()
+          ..param1 = param1
+          ..param2 = param2,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        param1: param1,
+        param2: param2,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeNotifierProviderElement<Example, String> createElement() {
+    return _ExampleProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -124,16 +171,25 @@ class ExampleProvider extends AutoDisposeNotifierProviderImpl<Example, String> {
 
     return _SystemHash.finish(hash);
   }
+}
+
+mixin ExampleRef on AutoDisposeNotifierProviderRef<String> {
+  /// The parameter `param1` of this provider.
+  int get param1;
+
+  /// The parameter `param2` of this provider.
+  String get param2;
+}
+
+class _ExampleProviderElement
+    extends AutoDisposeNotifierProviderElement<Example, String>
+    with ExampleRef {
+  _ExampleProviderElement(super.provider);
 
   @override
-  String runNotifierBuild(
-    covariant Example notifier,
-  ) {
-    return notifier.build(
-      param1,
-      param2: param2,
-    );
-  }
+  int get param1 => (origin as ExampleProvider).param1;
+  @override
+  String get param2 => (origin as ExampleProvider).param2;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member

@@ -31,8 +31,6 @@ class _SystemHash {
   }
 }
 
-typedef FetchUserRef = AutoDisposeFutureProviderRef<User>;
-
 /// See also [fetchUser].
 @ProviderFor(fetchUser)
 const fetchUserProvider = FetchUserFamily();
@@ -79,10 +77,10 @@ class FetchUserFamily extends Family<AsyncValue<User>> {
 class FetchUserProvider extends AutoDisposeFutureProvider<User> {
   /// See also [fetchUser].
   FetchUserProvider({
-    required this.userId,
-  }) : super.internal(
+    required int userId,
+  }) : this._internal(
           (ref) => fetchUser(
-            ref,
+            ref as FetchUserRef,
             userId: userId,
           ),
           from: fetchUserProvider,
@@ -93,9 +91,43 @@ class FetchUserProvider extends AutoDisposeFutureProvider<User> {
                   : _$fetchUserHash,
           dependencies: FetchUserFamily._dependencies,
           allTransitiveDependencies: FetchUserFamily._allTransitiveDependencies,
+          userId: userId,
         );
 
+  FetchUserProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.userId,
+  }) : super.internal();
+
   final int userId;
+
+  @override
+  Override overrideWith(
+    FutureOr<User> Function(FetchUserRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: FetchUserProvider._internal(
+        (ref) => create(ref as FetchUserRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        userId: userId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<User> createElement() {
+    return _FetchUserProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -109,6 +141,19 @@ class FetchUserProvider extends AutoDisposeFutureProvider<User> {
 
     return _SystemHash.finish(hash);
   }
+}
+
+mixin FetchUserRef on AutoDisposeFutureProviderRef<User> {
+  /// The parameter `userId` of this provider.
+  int get userId;
+}
+
+class _FetchUserProviderElement extends AutoDisposeFutureProviderElement<User>
+    with FetchUserRef {
+  _FetchUserProviderElement(super.provider);
+
+  @override
+  int get userId => (origin as FetchUserProvider).userId;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
