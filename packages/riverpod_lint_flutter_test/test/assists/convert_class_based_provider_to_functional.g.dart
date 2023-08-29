@@ -117,9 +117,9 @@ class ExampleFamilyProvider
   ///
   /// Copied from [ExampleFamily].
   ExampleFamilyProvider({
-    required this.a,
-    this.b = '42',
-  }) : super.internal(
+    required int a,
+    String b = '42',
+  }) : this._internal(
           () => ExampleFamily()
             ..a = a
             ..b = b,
@@ -132,10 +132,57 @@ class ExampleFamilyProvider
           dependencies: ExampleFamilyFamily._dependencies,
           allTransitiveDependencies:
               ExampleFamilyFamily._allTransitiveDependencies,
+          a: a,
+          b: b,
         );
+
+  ExampleFamilyProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.a,
+    required this.b,
+  }) : super.internal();
 
   final int a;
   final String b;
+
+  @override
+  int runNotifierBuild(
+    covariant ExampleFamily notifier,
+  ) {
+    return notifier.build(
+      a: a,
+      b: b,
+    );
+  }
+
+  @override
+  Override overrideWith(ExampleFamily Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: ExampleFamilyProvider._internal(
+        () => create()
+          ..a = a
+          ..b = b,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        a: a,
+        b: b,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeNotifierProviderElement<ExampleFamily, int> createElement() {
+    return _ExampleFamilyProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -150,16 +197,25 @@ class ExampleFamilyProvider
 
     return _SystemHash.finish(hash);
   }
+}
+
+mixin ExampleFamilyRef on AutoDisposeNotifierProviderRef<int> {
+  /// The parameter `a` of this provider.
+  int get a;
+
+  /// The parameter `b` of this provider.
+  String get b;
+}
+
+class _ExampleFamilyProviderElement
+    extends AutoDisposeNotifierProviderElement<ExampleFamily, int>
+    with ExampleFamilyRef {
+  _ExampleFamilyProviderElement(super.provider);
 
   @override
-  int runNotifierBuild(
-    covariant ExampleFamily notifier,
-  ) {
-    return notifier.build(
-      a: a,
-      b: b,
-    );
-  }
+  int get a => (origin as ExampleFamilyProvider).a;
+  @override
+  String get b => (origin as ExampleFamilyProvider).b;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member

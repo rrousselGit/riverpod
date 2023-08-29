@@ -106,7 +106,7 @@ void main() {
     container.listen(provider, listener.call);
 
     verifyZeroInteractions(listener);
-    expect(ref.notifier.debugState, 0);
+    expect(ref.notifier.state, 0);
   });
 
   test('can be auto-scoped', () async {
@@ -122,7 +122,7 @@ void main() {
     );
 
     expect(container.read(provider), 42);
-    expect(container.read(provider.notifier).debugState, 42);
+    expect(container.read(provider.notifier).state, 42);
 
     expect(root.getAllProviderElements(), isEmpty);
   });
@@ -134,11 +134,11 @@ void main() {
     final container = createContainer();
 
     expect(container.read(provider), 1);
-    expect(container.read(provider.notifier).debugState, 1);
+    expect(container.read(provider.notifier).state, 1);
 
     initialValue = 42;
 
-    expect(container.refresh(provider.notifier).debugState, 42);
+    expect(container.refresh(provider.notifier).state, 42);
     expect(container.read(provider), 42);
   });
 

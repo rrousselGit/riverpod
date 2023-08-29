@@ -10,5 +10,5 @@ Never throwErrorWithCombinedStackTrace(Object error, StackTrace stackTrace) {
     ...Chain.forTrace(stackTrace).traces,
   ]).foldFrames((frame) => frame.package == 'riverpod');
 
-  Error.throwWithStackTrace(error, chain);
+  Error.throwWithStackTrace(error, chain.toTrace().vmTrace);
 }

@@ -140,13 +140,13 @@ int sixth(SixthRef ref) => 0;
       errors[4].message,
       'Unsupported dependency. Only functions and classes annotated by @riverpod are supported.',
     );
-    expect(errors[4].targetElement.toString(), 'int sixth(dynamic ref)');
+    expect(errors[4].targetElement.toString(), 'int sixth(InvalidType ref)');
 
     expect(
       errors[5].message,
       'Failed to parse dependency Type (int*)',
     );
-    expect(errors[5].targetElement?.toString(), 'int sixth(dynamic ref)');
+    expect(errors[5].targetElement?.toString(), 'int sixth(InvalidType ref)');
   });
 
   testSource('Decode name', runGenerator: true, source: r'''

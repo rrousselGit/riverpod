@@ -9,9 +9,7 @@ part 'provider.g.dart';
 /* SNIPPET START */
 @riverpod
 Future<Activity> activity(ActivityRef ref) async {
-  final response = await http.get(
-    Uri(scheme: 'https', host: 'boredapi.com', path: '/api/activity'),
-  );
+  final response = await http.get(Uri.https('boredapi.com', '/api/activity'));
   final json = jsonDecode(response.body) as Map<String, dynamic>;
   return Activity.fromJson(json);
 }

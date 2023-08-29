@@ -83,7 +83,7 @@ class AutoDisposeStreamNotifierProviderImpl<
 
   @override
   AutoDisposeStreamNotifierProviderElement<NotifierT, T> createElement() {
-    return AutoDisposeStreamNotifierProviderElement._(this);
+    return AutoDisposeStreamNotifierProviderElement(this);
   }
 
   @override
@@ -94,6 +94,7 @@ class AutoDisposeStreamNotifierProviderImpl<
   }
 
   /// {@macro riverpod.overridewith}
+  @mustBeOverridden
   Override overrideWith(NotifierT Function() create) {
     return ProviderOverride(
       origin: this,
@@ -117,5 +118,6 @@ class AutoDisposeStreamNotifierProviderElement<
     with AutoDisposeProviderElementMixin<AsyncValue<T>>
     implements AutoDisposeStreamNotifierProviderRef<T> {
   /// The [ProviderElementBase] for [StreamNotifierProvider]
-  AutoDisposeStreamNotifierProviderElement._(super._provider) : super._();
+  @internal
+  AutoDisposeStreamNotifierProviderElement(super._provider);
 }

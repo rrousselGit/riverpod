@@ -19,7 +19,7 @@ class TodoList extends AutoDisposeAsyncNotifier<List<Todo>> {
 
   Future<void> addTodo(Todo todo) async {
     await http.post(
-      Uri(scheme: 'https', host: 'your_api.com', path: '/todos'),
+      Uri.https('your_api.com', '/todos'),
       // We serialize our Todo object and POST it to the server.
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(todo.toJson()),

@@ -131,15 +131,17 @@ class AsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
 
   @override
   AsyncNotifierProviderElement<NotifierT, T> createElement() {
-    return AsyncNotifierProviderElement._(this);
+    return AsyncNotifierProviderElement(this);
   }
 
   @override
+  @mustBeOverridden
   FutureOr<T> runNotifierBuild(AsyncNotifierBase<T> notifier) {
     return (notifier as AsyncNotifier<T>).build();
   }
 
   /// {@macro riverpod.overridewith}
+  @mustBeOverridden
   Override overrideWith(NotifierT Function() create) {
     return ProviderOverride(
       origin: this,
@@ -472,7 +474,9 @@ abstract class AsyncNotifierProviderElementBase<
         NotifierT extends AsyncNotifierBase<T>,
         T> extends ProviderElementBase<AsyncValue<T>>
     with FutureHandlerProviderElementMixin<T> {
-  AsyncNotifierProviderElementBase._(super._provider);
+  /// The element of [AsyncNotifierProvider].
+  @internal
+  AsyncNotifierProviderElementBase(super._provider);
 
   final _notifierNotifier = ProxyElementValueNotifier<NotifierT>();
 
@@ -501,9 +505,11 @@ abstract class AsyncNotifierProviderElementBase<
 class AsyncNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
     extends AsyncNotifierProviderElementBase<NotifierT, T>
     implements AsyncNotifierProviderRef<T> {
-  AsyncNotifierProviderElement._(
+  /// The element of [AsyncNotifierProvider].
+  @internal
+  AsyncNotifierProviderElement(
     AsyncNotifierProviderBase<NotifierT, T> super._provider,
-  ) : super._();
+  );
 
   @override
   void create({required bool didChangeDependency}) {

@@ -3,7 +3,8 @@
 This project is a work-in-progress command that analyzes a Riverpod project and
 generates a graph of the interactions between providers/widgets
 
-The graph generated is generated using [Mermaid](https://mermaid-js.github.io/mermaid/#/)
+## Example
+Graphs can be generated using [d2](https://d2lang.com/) or [Mermaid](https://mermaid-js.github.io/mermaid/#/) text-to-graph syntax.
 
 Here is graph example, generated from the Flutter Devtool project (which uses Riverpod).
 

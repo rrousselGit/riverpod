@@ -88,8 +88,8 @@ class BugsEncounteredNotifierProvider
     extends AutoDisposeAsyncNotifierProviderImpl<BugsEncounteredNotifier, int> {
   /// See also [BugsEncounteredNotifier].
   BugsEncounteredNotifierProvider(
-    this.featureId,
-  ) : super.internal(
+    String featureId,
+  ) : this._internal(
           () => BugsEncounteredNotifier()..featureId = featureId,
           from: bugsEncounteredNotifierProvider,
           name: r'bugsEncounteredNotifierProvider',
@@ -100,9 +100,51 @@ class BugsEncounteredNotifierProvider
           dependencies: BugsEncounteredNotifierFamily._dependencies,
           allTransitiveDependencies:
               BugsEncounteredNotifierFamily._allTransitiveDependencies,
+          featureId: featureId,
         );
 
+  BugsEncounteredNotifierProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.featureId,
+  }) : super.internal();
+
   final String featureId;
+
+  @override
+  FutureOr<int> runNotifierBuild(
+    covariant BugsEncounteredNotifier notifier,
+  ) {
+    return notifier.build(
+      featureId,
+    );
+  }
+
+  @override
+  Override overrideWith(BugsEncounteredNotifier Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: BugsEncounteredNotifierProvider._internal(
+        () => create()..featureId = featureId,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        featureId: featureId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeAsyncNotifierProviderElement<BugsEncounteredNotifier, int>
+      createElement() {
+    return _BugsEncounteredNotifierProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -117,15 +159,20 @@ class BugsEncounteredNotifierProvider
 
     return _SystemHash.finish(hash);
   }
+}
+
+mixin BugsEncounteredNotifierRef on AutoDisposeAsyncNotifierProviderRef<int> {
+  /// The parameter `featureId` of this provider.
+  String get featureId;
+}
+
+class _BugsEncounteredNotifierProviderElement
+    extends AutoDisposeAsyncNotifierProviderElement<BugsEncounteredNotifier,
+        int> with BugsEncounteredNotifierRef {
+  _BugsEncounteredNotifierProviderElement(super.provider);
 
   @override
-  FutureOr<int> runNotifierBuild(
-    covariant BugsEncounteredNotifier notifier,
-  ) {
-    return notifier.build(
-      featureId,
-    );
-  }
+  String get featureId => (origin as BugsEncounteredNotifierProvider).featureId;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member

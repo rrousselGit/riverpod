@@ -147,7 +147,7 @@ class NotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
 
   @override
   NotifierProviderElement<NotifierT, T> createElement() {
-    return NotifierProviderElement._(this);
+    return NotifierProviderElement(this);
   }
 
   @override
@@ -155,11 +155,13 @@ class NotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
       _notifier<NotifierT, T>(this);
 
   @override
+  @mustBeOverridden
   T runNotifierBuild(NotifierBase<T> notifier) {
     return (notifier as Notifier<T>).build();
   }
 
   /// {@macro riverpod.overridewith}
+  @mustBeOverridden
   Override overrideWith(NotifierT Function() create) {
     return ProviderOverride(
       origin: this,
@@ -179,7 +181,9 @@ class NotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
 /// The element of [NotifierProvider].
 class NotifierProviderElement<NotifierT extends NotifierBase<T>, T>
     extends ProviderElementBase<T> implements NotifierProviderRef<T> {
-  NotifierProviderElement._(NotifierProviderBase<NotifierT, T> super._provider);
+  /// The element of [NotifierProvider].
+  @internal
+  NotifierProviderElement(NotifierProviderBase<NotifierT, T> super._provider);
 
   final _notifierNotifier = ProxyElementValueNotifier<NotifierT>();
 
