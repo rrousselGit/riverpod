@@ -7,17 +7,17 @@ import '../utils.dart';
 
 /* SNIPPET START */
 class BugsEncounteredNotifier extends AutoDisposeFamilyAsyncNotifier<int, String> {
-  late String _id;
+  late String featureId;
   @override
   FutureOr<int> build(String featureId) {
-    _id = featureId;
+    this.featureId = featureId;
     return 99;
   }
 
   Future<void> fix(int amount) async {
     state = await AsyncValue.guard(() async {
       final old = state.requireValue;
-      final result = await ref.read(taskTrackerProvider).fix(id: _id, fixed: amount);
+      final result = await ref.read(taskTrackerProvider).fix(id: featureId, fixed: amount);
       return max(old - result, 0);
     });
   }
