@@ -27,7 +27,7 @@ void main() {
     // プロバイダを監視して変化を検出する
     container.listen<int>(
       counterProvider,
-      listener,
+      listener.call,
       fireImmediately: true,
     );
 
@@ -52,7 +52,7 @@ void main() {
 
     container.listen<int>(
       counterProvider,
-      listener,
+      listener.call,
       fireImmediately: true,
     );
 

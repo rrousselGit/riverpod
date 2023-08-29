@@ -6,6 +6,20 @@
 - **Breaking**: Removed everything marked as "deprecated"
 - Bumped minimum Dart SDK to >= 3.0.0-dev
 
+## 2.3.10 - 2023-08-28
+
+Riverpod now requires package:meta >=1.9.0
+
+## 2.3.8 - 2023-08-28
+
+- Fix some exceptions causing Flutter asking to demangle stacktraces (#1874)
+- Fix out of date `AsyncValue` docs.
+
+## 2.3.7 - 2023-08-16
+
+- Added support for state_notifier 1.0.0
+- `Notifier.state` is now accessible inside tests
+
 ## 2.3.6 - 2023-04-24
 
 - Improved error message for missing `dependencies` (thanks to @ValentinVignal)

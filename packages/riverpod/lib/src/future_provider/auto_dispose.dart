@@ -45,7 +45,7 @@ class AutoDisposeFutureProvider<T> extends _FutureProviderBase<T>
 
   @override
   AutoDisposeFutureProviderElement<T> createElement() {
-    return AutoDisposeFutureProviderElement._(this);
+    return AutoDisposeFutureProviderElement(this);
   }
 
   @override
@@ -75,9 +75,10 @@ class AutoDisposeFutureProviderElement<T> extends FutureProviderElement<T>
     with AutoDisposeProviderElementMixin<AsyncValue<T>>
     implements AutoDisposeFutureProviderRef<T> {
   /// The [ProviderElementBase] for [FutureProvider]
-  AutoDisposeFutureProviderElement._(
-    AutoDisposeFutureProvider<T> super.provider,
-  ) : super._();
+  @internal
+  AutoDisposeFutureProviderElement(
+    AutoDisposeFutureProvider<T> super._provider,
+  ) : super();
 }
 
 /// The [Family] of an [AutoDisposeFutureProvider]
@@ -89,7 +90,7 @@ class AutoDisposeFutureProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
     AutoDisposeFutureProvider<R>> {
   /// The [Family] of an [AutoDisposeFutureProvider]
   AutoDisposeFutureProviderFamily(
-    super.create, {
+    super._createFn, {
     super.name,
     super.dependencies,
   }) : super(
@@ -102,7 +103,7 @@ class AutoDisposeFutureProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
   /// Implementation detail of the code-generator.
   @internal
   AutoDisposeFutureProviderFamily.generator(
-    super.create, {
+    super._createFn, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,

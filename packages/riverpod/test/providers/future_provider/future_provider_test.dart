@@ -294,7 +294,7 @@ void main() {
       return 0;
     });
 
-    container.listen(provider, listener);
+    container.listen(provider, listener.call);
 
     expect(ref.state, const AsyncData(0));
     verifyZeroInteractions(listener);
@@ -400,7 +400,7 @@ void main() {
     });
     final listener = Listener<AsyncValue<int>>();
 
-    container.listen(provider, listener, fireImmediately: true);
+    container.listen(provider, listener.call, fireImmediately: true);
 
     verifyOnly(listener, listener(null, const AsyncValue.loading()));
 
@@ -422,7 +422,7 @@ void main() {
     });
     final listener = Listener<Future<int>>();
 
-    container.listen(provider.future, listener, fireImmediately: true);
+    container.listen(provider.future, listener.call, fireImmediately: true);
 
     verifyOnly(listener, listener(any, any));
 
@@ -707,7 +707,7 @@ void main() {
 
     final listener = Listener<AsyncValue<String>>();
 
-    container.listen(example, listener, fireImmediately: true);
+    container.listen(example, listener.call, fireImmediately: true);
 
     verifyOnly(listener, listener(null, const AsyncValue<String>.loading()));
     completer.complete(42);
@@ -726,7 +726,7 @@ void main() {
     final completer = Completer<int>.sync();
     final provider = FutureProvider((_) => completer.future);
 
-    container.listen(provider, listener, fireImmediately: true);
+    container.listen(provider, listener.call, fireImmediately: true);
 
     verifyOnly(listener, listener(null, const AsyncValue.loading()));
 

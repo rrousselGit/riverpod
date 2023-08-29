@@ -29,8 +29,6 @@ class _SystemHash {
   }
 }
 
-typedef GeneratorRef = ProviderRef<int>;
-
 /// See also [generator].
 @ProviderFor(generator)
 const generatorProvider = GeneratorFamily();
@@ -77,10 +75,10 @@ class GeneratorFamily extends Family {
 class GeneratorProvider extends Provider<int> {
   /// See also [generator].
   GeneratorProvider({
-    this.value,
-  }) : super.internal(
+    Object? value,
+  }) : this._internal(
           (ref) => generator(
-            ref,
+            ref as GeneratorRef,
             value: value,
           ),
           from: generatorProvider,
@@ -91,9 +89,43 @@ class GeneratorProvider extends Provider<int> {
                   : _$generatorHash,
           dependencies: GeneratorFamily._dependencies,
           allTransitiveDependencies: GeneratorFamily._allTransitiveDependencies,
+          value: value,
         );
 
+  GeneratorProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.value,
+  }) : super.internal();
+
   final Object? value;
+
+  @override
+  Override overrideWith(
+    int Function(GeneratorRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: GeneratorProvider._internal(
+        (ref) => create(ref as GeneratorRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        value: value,
+      ),
+    );
+  }
+
+  @override
+  ProviderElement<int> createElement() {
+    return _GeneratorProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -108,4 +140,17 @@ class GeneratorProvider extends Provider<int> {
     return _SystemHash.finish(hash);
   }
 }
-// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions
+
+mixin GeneratorRef on ProviderRef<int> {
+  /// The parameter `value` of this provider.
+  Object? get value;
+}
+
+class _GeneratorProviderElement extends ProviderElement<int> with GeneratorRef {
+  _GeneratorProviderElement(super.provider);
+
+  @override
+  Object? get value => (origin as GeneratorProvider).value;
+}
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member

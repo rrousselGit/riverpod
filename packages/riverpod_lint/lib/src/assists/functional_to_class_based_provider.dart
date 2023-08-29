@@ -2,10 +2,10 @@ import 'package:analyzer/source/source_range.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
 import '../riverpod_custom_lint.dart';
-import 'stateful_to_stateless_provider.dart';
+import 'class_based_to_functional_provider.dart';
 
-class StatelessToStatefulProvider extends RiverpodAssist {
-  StatelessToStatefulProvider();
+class FunctionalToClassBasedProvider extends RiverpodAssist {
+  FunctionalToClassBasedProvider();
 
   @override
   void run(
@@ -14,7 +14,7 @@ class StatelessToStatefulProvider extends RiverpodAssist {
     CustomLintContext context,
     SourceRange target,
   ) {
-    riverpodRegistry(context).addStatelessProviderDeclaration((declaration) {
+    riverpodRegistry(context).addFunctionalProviderDeclaration((declaration) {
       // The first character of the function
       final functionStartOffset =
           declaration.node.returnType?.offset ?? declaration.node.name.offset;
@@ -28,7 +28,7 @@ class StatelessToStatefulProvider extends RiverpodAssist {
       if (!functionHeading.intersects(target)) return;
 
       final changeBuilder = reporter.createChangeBuilder(
-        message: 'Convert to stateful provider',
+        message: 'Convert to class-based provider',
         priority: convertPriority,
       );
 

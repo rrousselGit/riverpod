@@ -44,7 +44,7 @@ void main() {
         return 0;
       });
 
-      container.listen<int>(provider, listener);
+      container.listen<int>(provider, listener.call);
       verifyZeroInteractions(listener);
 
       expect(ref.controller, container.read(provider.notifier));
@@ -106,11 +106,11 @@ void main() {
     container.listen(provider.notifier, (prev, value) {});
 
     expect(container.read(provider), 1);
-    expect(container.read(provider.notifier).debugState, 1);
+    expect(container.read(provider.notifier).state, 1);
 
     initialValue = 42;
 
-    expect(container.refresh(provider.notifier).debugState, 42);
+    expect(container.refresh(provider.notifier).state, 42);
     expect(container.read(provider), 42);
   });
 

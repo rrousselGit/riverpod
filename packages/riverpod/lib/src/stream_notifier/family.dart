@@ -77,7 +77,7 @@ class FamilyStreamNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>,
 
   @override
   StreamNotifierProviderElement<NotifierT, T> createElement() {
-    return StreamNotifierProviderElement._(this);
+    return StreamNotifierProviderElement(this);
   }
 
   @override
@@ -95,7 +95,7 @@ class StreamNotifierProviderFamily<
         NotifierT, StreamNotifierFamilyProvider<NotifierT, T, Arg>> {
   /// The [Family] of [StreamNotifierProvider].
   StreamNotifierProviderFamily(
-    super.create, {
+    super._createFn, {
     super.name,
     super.dependencies,
   }) : super(

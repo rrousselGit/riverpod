@@ -29,7 +29,7 @@ void main() {
       );
 
       expect(container.read(provider(10)), 52);
-      expect(container.read(provider(10).notifier).debugState, 52);
+      expect(container.read(provider(10).notifier).state, 52);
 
       expect(root.getAllProviderElements(), isEmpty);
     });

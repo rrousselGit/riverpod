@@ -14,9 +14,9 @@ dependencies:
   json_annotation: ^4.8.0
 
 dev_dependencies:
-  build_runner: any
+  build_runner: ^2.4.6
   build_verify: ^3.0.0
-  custom_lint: ^0.3.3
+  custom_lint: ^0.5.2
   flutter_test:
     sdk: flutter
   freezed: ^2.3.2
@@ -36,4 +36,3 @@ dependency_overrides:
     path: ../hooks_riverpod
   riverpod_annotation:
     path: ../riverpod_annotation
-  

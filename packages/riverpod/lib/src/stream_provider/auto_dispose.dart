@@ -43,7 +43,7 @@ class AutoDisposeStreamProvider<T> extends _StreamProviderBase<T>
 
   @override
   AutoDisposeStreamProviderElement<T> createElement() {
-    return AutoDisposeStreamProviderElement._(this);
+    return AutoDisposeStreamProviderElement(this);
   }
 
   @override
@@ -73,9 +73,9 @@ class AutoDisposeStreamProviderElement<T> extends StreamProviderElement<T>
     with AutoDisposeProviderElementMixin<AsyncValue<T>>
     implements AutoDisposeStreamProviderRef<T> {
   /// The [ProviderElementBase] for [StreamProvider]
-  AutoDisposeStreamProviderElement._(
-    AutoDisposeStreamProvider<T> super.provider,
-  ) : super._();
+  AutoDisposeStreamProviderElement(
+    AutoDisposeStreamProvider<T> super._provider,
+  );
 }
 
 /// The [Family] of [AutoDisposeStreamProvider].
@@ -87,7 +87,7 @@ class AutoDisposeStreamProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
     AutoDisposeStreamProvider<R>> {
   /// The [Family] of [AutoDisposeStreamProvider].
   AutoDisposeStreamProviderFamily(
-    super.create, {
+    super._createFn, {
     super.name,
     super.dependencies,
   }) : super(

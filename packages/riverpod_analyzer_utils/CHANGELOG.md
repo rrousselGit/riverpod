@@ -2,6 +2,19 @@
 
 - Added `GeneratorProviderDeclarationElement.isFamily`
 
+## 0.3.3 - 2023-08-16
+
+- Support both analyzer 5.12.0 and analyzer 6.0.0
+
+## 0.3.2 - 2023-08-03
+
+Support analyzer 6.0.0
+
+## 0.3.1 - 2023-05-12
+
+- Upgrade `custom_lint_core` to 0.4.0
+- Upgrade `analyzer` to 5.12.0
+
 ## 0.3.0 - 2023-04-18
 
 - Added `DartType.isRaw` extension property for checking if a type is from a `Raw` typedef.
@@ -39,8 +52,8 @@ the `@riverpod external int value()` syntax.
 
 - Decode generated StreamProviders.
 
-- Upcast `StatefulProviderDeclaratation.providerElement` &
-  `StatelessProviderDeclaratation.providerElement` to their respective element type.
+- Upcast `ClassBasedProviderDeclaratation.providerElement` &
+  `FunctionalProviderDeclaratation.providerElement` to their respective element type.
 
 - Change error handling mechanism (no more exceptions)
 

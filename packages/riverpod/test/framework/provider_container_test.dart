@@ -219,7 +219,7 @@ void main() {
       var result = 0;
       final provider = Provider((r) => result);
 
-      container.listen(provider, listener);
+      container.listen(provider, listener.call);
       verifyZeroInteractions(listener);
 
       container.invalidate(provider);
@@ -332,7 +332,7 @@ void main() {
       final listener = Listener<int>();
       final child = createContainer(parent: container);
 
-      container.listen<int>(provider, listener, fireImmediately: true);
+      container.listen<int>(provider, listener.call, fireImmediately: true);
 
       verifyOnly(listener, listener(null, 0));
 
@@ -393,8 +393,8 @@ void main() {
         final root = createContainer();
         final scoped = createContainer(parent: root, overrides: [b]);
 
-        scoped.listen(a, aListener, fireImmediately: true);
-        scoped.listen(b, bListener, fireImmediately: true);
+        scoped.listen(a, aListener.call, fireImmediately: true);
+        scoped.listen(b, bListener.call, fireImmediately: true);
 
         verifyOnly(aListener, aListener(null, 0));
         verifyOnly(bListener, bListener(null, 0));
@@ -599,7 +599,7 @@ void main() {
       final provider = StateProvider<int>((ref) => 0);
       final listener = Listener<void>();
 
-      container.listen<void>(provider, listener);
+      container.listen<void>(provider, listener.call);
 
       verifyZeroInteractions(listener);
 
@@ -620,7 +620,7 @@ void main() {
 
         final controller = container.read(provider.notifier);
 
-        final sub = container.listen(provider, listener);
+        final sub = container.listen(provider, listener.call);
 
         sub.close();
         sub.close();
@@ -643,8 +643,8 @@ void main() {
 
         final controller = container.read(provider.notifier);
 
-        final sub = container.listen(provider, listener);
-        container.listen(provider, listener);
+        final sub = container.listen(provider, listener.call);
+        container.listen(provider, listener.call);
 
         controller.state++;
 

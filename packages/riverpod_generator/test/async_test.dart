@@ -26,9 +26,36 @@ void main() {
     expect(familyProvider(42, third: .42).name, 'familyProvider');
   });
 
+  test('Supports overriding non-family providers', () async {
+    final container = createContainer(
+      overrides: [
+        publicProvider.overrideWith((ref) => Future.value('Hello world')),
+      ],
+    );
+
+    final result = container.read(publicProvider.future);
+    expect(await result, 'Hello world');
+  });
+
+  test('Supports overriding family providers', () async {
+    final container = createContainer(
+      overrides: [
+        familyProvider(42, third: .42).overrideWith(
+          (ref) => Future.value(
+            'Hello world ${ref.first} ${ref.second} '
+            '${ref.third} ${ref.fourth} ${ref.fifth}',
+          ),
+        ),
+      ],
+    );
+
+    final result = container.read(familyProvider(42, third: .42).future);
+    expect(await result, 'Hello world 42 null 0.42 true null');
+  });
+
   test(
       'Creates a Provider.family<T> if @riverpod is used on a synchronous function with parameters',
-      () {
+      () async {
     final container = createContainer();
 
     const FamilyFamily family = familyProvider;
@@ -73,7 +100,7 @@ void main() {
       second: 'x42',
       third: .42,
       fourth: false,
-      fifth: ['x42'],
+      fifth: const ['x42'],
     );
     final AutoDisposeFutureProvider<String> futureProvider = provider;
 
@@ -81,7 +108,19 @@ void main() {
     expect(provider.second, 'x42');
     expect(provider.third, .42);
     expect(provider.fourth, false);
-    expect(provider.fifth, ['x42']);
+    expect(provider.fifth, same(const ['x42']));
+
+    final sub = container.listen(
+      familyProvider(
+        42,
+        second: 'x42',
+        third: .42,
+        fourth: false,
+        fifth: const ['x42'],
+      ).future,
+      (previous, next) {},
+    );
+    await sub.read();
 
     final AsyncValue<String> result = container.read(
       familyProvider(
@@ -89,7 +128,7 @@ void main() {
         second: 'x42',
         third: .42,
         fourth: false,
-        fifth: ['x42'],
+        fifth: const ['x42'],
       ),
     );
 

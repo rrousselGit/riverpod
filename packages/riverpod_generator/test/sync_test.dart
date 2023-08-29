@@ -130,6 +130,31 @@ void main() {
     );
   });
 
+  test('Supports overriding non-family providers', () {
+    final container = createContainer(
+      overrides: [
+        publicProvider.overrideWith((ref) => 'Hello world'),
+      ],
+    );
+
+    final result = container.read(publicProvider);
+    expect(result, 'Hello world');
+  });
+
+  test('Supports overriding family providers', () {
+    final container = createContainer(
+      overrides: [
+        familyProvider(42, third: .42).overrideWith(
+          (ref) => 'Hello world ${ref.first} ${ref.second} '
+              '${ref.third} ${ref.fourth} ${ref.fifth}',
+        ),
+      ],
+    );
+
+    final result = container.read(familyProvider(42, third: .42));
+    expect(result, 'Hello world 42 null 0.42 true null');
+  });
+
   test(
       'Creates a Provider<T> if @riverpod is used on an stream function wrapped in Raw',
       () async {

@@ -43,8 +43,6 @@ class _SystemHash {
   }
 }
 
-typedef FamilyRef = AutoDisposeProviderRef<int>;
-
 /// See also [family].
 @ProviderFor(family)
 const familyProvider = FamilyFamily();
@@ -91,10 +89,10 @@ class FamilyFamily extends Family {
 class FamilyProvider extends AutoDisposeProvider<int> {
   /// See also [family].
   FamilyProvider(
-    this.id,
-  ) : super.internal(
+    int id,
+  ) : this._internal(
           (ref) => family(
-            ref,
+            ref as FamilyRef,
             id,
           ),
           from: familyProvider,
@@ -105,9 +103,43 @@ class FamilyProvider extends AutoDisposeProvider<int> {
                   : _$familyHash,
           dependencies: FamilyFamily._dependencies,
           allTransitiveDependencies: FamilyFamily._allTransitiveDependencies,
+          id: id,
         );
 
+  FamilyProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.id,
+  }) : super.internal();
+
   final int id;
+
+  @override
+  Override overrideWith(
+    int Function(FamilyRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: FamilyProvider._internal(
+        (ref) => create(ref as FamilyRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        id: id,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<int> createElement() {
+    return _FamilyProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -121,6 +153,19 @@ class FamilyProvider extends AutoDisposeProvider<int> {
 
     return _SystemHash.finish(hash);
   }
+}
+
+mixin FamilyRef on AutoDisposeProviderRef<int> {
+  /// The parameter `id` of this provider.
+  int get id;
+}
+
+class _FamilyProviderElement extends AutoDisposeProviderElement<int>
+    with FamilyRef {
+  _FamilyProviderElement(super.provider);
+
+  @override
+  int get id => (origin as FamilyProvider).id;
 }
 
 String _$providerHash() => r'6c9184ef4c6a410a2132e1ecc13a2e646e936d37';
@@ -140,9 +185,13 @@ final providerProvider = AutoDisposeProvider<int>.internal(
   },
   allTransitiveDependencies: <ProviderOrFamily>{
     depProvider,
+    ...?depProvider.allTransitiveDependencies,
     familyProvider,
+    ...?familyProvider.allTransitiveDependencies,
     dep2Provider,
-    family2Provider
+    ...?dep2Provider.allTransitiveDependencies,
+    family2Provider,
+    ...?family2Provider.allTransitiveDependencies
   },
 );
 
@@ -164,9 +213,13 @@ final provider2Provider = AutoDisposeProvider<int>.internal(
   },
   allTransitiveDependencies: <ProviderOrFamily>{
     depProvider,
+    ...?depProvider.allTransitiveDependencies,
     familyProvider,
+    ...?familyProvider.allTransitiveDependencies,
     dep2Provider,
-    family2Provider
+    ...?dep2Provider.allTransitiveDependencies,
+    family2Provider,
+    ...?family2Provider.allTransitiveDependencies
   },
 );
 
@@ -185,10 +238,7 @@ final transitiveDependenciesProvider = AutoDisposeProvider<int>.internal(
   dependencies: <ProviderOrFamily>[providerProvider],
   allTransitiveDependencies: <ProviderOrFamily>{
     providerProvider,
-    depProvider,
-    familyProvider,
-    dep2Provider,
-    family2Provider
+    ...?providerProvider.allTransitiveDependencies
   },
 );
 
@@ -206,30 +256,82 @@ final smallTransitiveDependencyCountProvider =
       ? null
       : _$smallTransitiveDependencyCountHash,
   dependencies: <ProviderOrFamily>[depProvider, familyProvider, dep2Provider],
-  allTransitiveDependencies: <ProviderOrFamily>[
+  allTransitiveDependencies: <ProviderOrFamily>{
     depProvider,
+    ...?depProvider.allTransitiveDependencies,
     familyProvider,
-    dep2Provider
-  ],
+    ...?familyProvider.allTransitiveDependencies,
+    dep2Provider,
+    ...?dep2Provider.allTransitiveDependencies
+  },
 );
 
 typedef SmallTransitiveDependencyCountRef = AutoDisposeProviderRef<int>;
-String _$emptyDependenciesStatelessHash() =>
-    r'2415aab6f03b1cb67fa8fecc5d2af1ec5d261398';
+String _$emptyDependenciesFunctionalHash() =>
+    r'592bebd079450e2071fb12d68c3ae333d5c28359';
 
-/// See also [emptyDependenciesStateless].
-@ProviderFor(emptyDependenciesStateless)
-final emptyDependenciesStatelessProvider = AutoDisposeProvider<int>.internal(
-  emptyDependenciesStateless,
-  name: r'emptyDependenciesStatelessProvider',
+/// See also [emptyDependenciesFunctional].
+@ProviderFor(emptyDependenciesFunctional)
+final emptyDependenciesFunctionalProvider = AutoDisposeProvider<int>.internal(
+  emptyDependenciesFunctional,
+  name: r'emptyDependenciesFunctionalProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$emptyDependenciesStatelessHash,
+      : _$emptyDependenciesFunctionalHash,
   dependencies: const <ProviderOrFamily>[],
-  allTransitiveDependencies: const <ProviderOrFamily>[],
+  allTransitiveDependencies: const <ProviderOrFamily>{},
 );
 
-typedef EmptyDependenciesStatelessRef = AutoDisposeProviderRef<int>;
+typedef EmptyDependenciesFunctionalRef = AutoDisposeProviderRef<int>;
+String _$providerWithDependenciesHash() =>
+    r'beecbe7a41b647ab92367dbcc12055bcd6345af7';
+
+/// See also [providerWithDependencies].
+@ProviderFor(providerWithDependencies)
+final providerWithDependenciesProvider = AutoDisposeProvider<int>.internal(
+  providerWithDependencies,
+  name: r'providerWithDependenciesProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$providerWithDependenciesHash,
+  dependencies: <ProviderOrFamily>[_privateDepProvider, publicDepProvider],
+  allTransitiveDependencies: <ProviderOrFamily>{
+    _privateDepProvider,
+    ...?_privateDepProvider.allTransitiveDependencies,
+    publicDepProvider,
+    ...?publicDepProvider.allTransitiveDependencies
+  },
+);
+
+typedef ProviderWithDependenciesRef = AutoDisposeProviderRef<int>;
+String _$privateDepHash() => r'f610d91bd39e0dcffe6ff4e74160964a291289d9';
+
+/// See also [_privateDep].
+@ProviderFor(_privateDep)
+final _privateDepProvider = AutoDisposeProvider<int>.internal(
+  _privateDep,
+  name: r'_privateDepProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$privateDepHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _PrivateDepRef = AutoDisposeProviderRef<int>;
+String _$publicDepHash() => r'bcb69aace017c86c3c4b8eccf59fa22d010834bc';
+
+/// See also [publicDep].
+@ProviderFor(publicDep)
+final publicDepProvider = AutoDisposeProvider<int>.internal(
+  publicDep,
+  name: r'publicDepProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$publicDepHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef PublicDepRef = AutoDisposeProviderRef<int>;
 String _$dep2Hash() => r'2778537df77f6431148c2ce400724da3e2ab4b94';
 
 /// See also [Dep2].
@@ -300,8 +402,8 @@ class Family2Family extends Family {
 class Family2Provider extends AutoDisposeNotifierProviderImpl<Family2, int> {
   /// See also [Family2].
   Family2Provider(
-    this.id,
-  ) : super.internal(
+    int id,
+  ) : this._internal(
           () => Family2()..id = id,
           from: family2Provider,
           name: r'family2Provider',
@@ -311,9 +413,50 @@ class Family2Provider extends AutoDisposeNotifierProviderImpl<Family2, int> {
                   : _$family2Hash,
           dependencies: Family2Family._dependencies,
           allTransitiveDependencies: Family2Family._allTransitiveDependencies,
+          id: id,
         );
 
+  Family2Provider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.id,
+  }) : super.internal();
+
   final int id;
+
+  @override
+  int runNotifierBuild(
+    covariant Family2 notifier,
+  ) {
+    return notifier.build(
+      id,
+    );
+  }
+
+  @override
+  Override overrideWith(Family2 Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: Family2Provider._internal(
+        () => create()..id = id,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        id: id,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeNotifierProviderElement<Family2, int> createElement() {
+    return _Family2ProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -327,15 +470,19 @@ class Family2Provider extends AutoDisposeNotifierProviderImpl<Family2, int> {
 
     return _SystemHash.finish(hash);
   }
+}
+
+mixin Family2Ref on AutoDisposeNotifierProviderRef<int> {
+  /// The parameter `id` of this provider.
+  int get id;
+}
+
+class _Family2ProviderElement
+    extends AutoDisposeNotifierProviderElement<Family2, int> with Family2Ref {
+  _Family2ProviderElement(super.provider);
 
   @override
-  int runNotifierBuild(
-    covariant Family2 notifier,
-  ) {
-    return notifier.build(
-      id,
-    );
-  }
+  int get id => (origin as Family2Provider).id;
 }
 
 String _$provider3Hash() => r'dfdd6dec6cfee543c73d99593ce98d68f4db385c';
@@ -355,9 +502,13 @@ final provider3Provider = AutoDisposeNotifierProvider<Provider3, int>.internal(
   },
   allTransitiveDependencies: <ProviderOrFamily>{
     depProvider,
+    ...?depProvider.allTransitiveDependencies,
     familyProvider,
+    ...?familyProvider.allTransitiveDependencies,
     dep2Provider,
-    family2Provider
+    ...?dep2Provider.allTransitiveDependencies,
+    family2Provider,
+    ...?family2Provider.allTransitiveDependencies
   },
 );
 
@@ -412,9 +563,13 @@ class Provider4Family extends Family {
   static final Iterable<ProviderOrFamily> _allTransitiveDependencies =
       <ProviderOrFamily>{
     depProvider,
+    ...?depProvider.allTransitiveDependencies,
     familyProvider,
+    ...?familyProvider.allTransitiveDependencies,
     dep2Provider,
-    family2Provider
+    ...?dep2Provider.allTransitiveDependencies,
+    family2Provider,
+    ...?family2Provider.allTransitiveDependencies
   };
 
   @override
@@ -430,8 +585,8 @@ class Provider4Provider
     extends AutoDisposeNotifierProviderImpl<Provider4, int> {
   /// See also [Provider4].
   Provider4Provider(
-    this.id,
-  ) : super.internal(
+    int id,
+  ) : this._internal(
           () => Provider4()..id = id,
           from: provider4Provider,
           name: r'provider4Provider',
@@ -441,9 +596,50 @@ class Provider4Provider
                   : _$provider4Hash,
           dependencies: Provider4Family._dependencies,
           allTransitiveDependencies: Provider4Family._allTransitiveDependencies,
+          id: id,
         );
 
+  Provider4Provider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.id,
+  }) : super.internal();
+
   final int id;
+
+  @override
+  int runNotifierBuild(
+    covariant Provider4 notifier,
+  ) {
+    return notifier.build(
+      id,
+    );
+  }
+
+  @override
+  Override overrideWith(Provider4 Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: Provider4Provider._internal(
+        () => create()..id = id,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        id: id,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeNotifierProviderElement<Provider4, int> createElement() {
+    return _Provider4ProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -457,32 +653,38 @@ class Provider4Provider
 
     return _SystemHash.finish(hash);
   }
-
-  @override
-  int runNotifierBuild(
-    covariant Provider4 notifier,
-  ) {
-    return notifier.build(
-      id,
-    );
-  }
 }
 
-String _$emptyDependenciesStatefulHash() =>
-    r'7cd5d081bbfb866823b0d493e63bfc63b9d9c804';
+mixin Provider4Ref on AutoDisposeNotifierProviderRef<int> {
+  /// The parameter `id` of this provider.
+  int get id;
+}
 
-/// See also [EmptyDependenciesStateful].
-@ProviderFor(EmptyDependenciesStateful)
-final emptyDependenciesStatefulProvider =
-    AutoDisposeNotifierProvider<EmptyDependenciesStateful, int>.internal(
-  EmptyDependenciesStateful.new,
-  name: r'emptyDependenciesStatefulProvider',
+class _Provider4ProviderElement
+    extends AutoDisposeNotifierProviderElement<Provider4, int>
+    with Provider4Ref {
+  _Provider4ProviderElement(super.provider);
+
+  @override
+  int get id => (origin as Provider4Provider).id;
+}
+
+String _$emptyDependenciesClassBasedHash() =>
+    r'e20c18353984a81977b656e9879b3841dbaedc6c';
+
+/// See also [EmptyDependenciesClassBased].
+@ProviderFor(EmptyDependenciesClassBased)
+final emptyDependenciesClassBasedProvider =
+    AutoDisposeNotifierProvider<EmptyDependenciesClassBased, int>.internal(
+  EmptyDependenciesClassBased.new,
+  name: r'emptyDependenciesClassBasedProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$emptyDependenciesStatefulHash,
+      : _$emptyDependenciesClassBasedHash,
   dependencies: const <ProviderOrFamily>[],
-  allTransitiveDependencies: const <ProviderOrFamily>[],
+  allTransitiveDependencies: const <ProviderOrFamily>{},
 );
 
-typedef _$EmptyDependenciesStateful = AutoDisposeNotifier<int>;
-// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions
+typedef _$EmptyDependenciesClassBased = AutoDisposeNotifier<int>;
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member

@@ -1,0 +1,3 @@
+dependency_overrides:
+  # necessary for mockito
+  analyzer: ^6.0.0

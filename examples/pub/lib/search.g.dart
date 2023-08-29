@@ -31,8 +31,6 @@ class _SystemHash {
   }
 }
 
-typedef FetchPackagesRef = AutoDisposeFutureProviderRef<List<Package>>;
-
 /// See also [fetchPackages].
 @ProviderFor(fetchPackages)
 const fetchPackagesProvider = FetchPackagesFamily();
@@ -82,11 +80,11 @@ class FetchPackagesFamily extends Family {
 class FetchPackagesProvider extends AutoDisposeFutureProvider<List<Package>> {
   /// See also [fetchPackages].
   FetchPackagesProvider({
-    required this.page,
-    this.search = '',
-  }) : super.internal(
+    required int page,
+    String search = '',
+  }) : this._internal(
           (ref) => fetchPackages(
-            ref,
+            ref as FetchPackagesRef,
             page: page,
             search: search,
           ),
@@ -99,10 +97,47 @@ class FetchPackagesProvider extends AutoDisposeFutureProvider<List<Package>> {
           dependencies: FetchPackagesFamily._dependencies,
           allTransitiveDependencies:
               FetchPackagesFamily._allTransitiveDependencies,
+          page: page,
+          search: search,
         );
+
+  FetchPackagesProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.page,
+    required this.search,
+  }) : super.internal();
 
   final int page;
   final String search;
+
+  @override
+  Override overrideWith(
+    FutureOr<List<Package>> Function(FetchPackagesRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: FetchPackagesProvider._internal(
+        (ref) => create(ref as FetchPackagesRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        page: page,
+        search: search,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<List<Package>> createElement() {
+    return _FetchPackagesProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -120,4 +155,24 @@ class FetchPackagesProvider extends AutoDisposeFutureProvider<List<Package>> {
     return _SystemHash.finish(hash);
   }
 }
-// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions
+
+mixin FetchPackagesRef on AutoDisposeFutureProviderRef<List<Package>> {
+  /// The parameter `page` of this provider.
+  int get page;
+
+  /// The parameter `search` of this provider.
+  String get search;
+}
+
+class _FetchPackagesProviderElement
+    extends AutoDisposeFutureProviderElement<List<Package>>
+    with FetchPackagesRef {
+  _FetchPackagesProviderElement(super.provider);
+
+  @override
+  int get page => (origin as FetchPackagesProvider).page;
+  @override
+  String get search => (origin as FetchPackagesProvider).search;
+}
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member

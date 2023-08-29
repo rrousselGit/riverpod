@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'generator_class_extends.dart';
+part of 'notifier_extends.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -134,7 +134,7 @@ class GenericsProvider<A extends num, B>
     extends AutoDisposeNotifierProviderImpl<Generics<A, B>, int> {
   /// See also [Generics].
   GenericsProvider()
-      : super.internal(
+      : this._internal(
           Generics<A, B>.new,
           from: genericsProvider,
           name: r'genericsProvider',
@@ -145,6 +145,42 @@ class GenericsProvider<A extends num, B>
           dependencies: GenericsFamily._dependencies,
           allTransitiveDependencies: GenericsFamily._allTransitiveDependencies,
         );
+
+  GenericsProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+  }) : super.internal();
+
+  @override
+  int runNotifierBuild(
+    covariant Generics<A, B> notifier,
+  ) {
+    return notifier.build();
+  }
+
+  @override
+  Override overrideWith(Generics Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: GenericsProvider._internal(
+        () => create(),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeNotifierProviderElement<Generics<A, B>, int> createElement() {
+    return _GenericsProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -159,13 +195,14 @@ class GenericsProvider<A extends num, B>
 
     return _SystemHash.finish(hash);
   }
+}
 
-  @override
-  int runNotifierBuild(
-    covariant Generics<A, B> notifier,
-  ) {
-    return notifier.build();
-  }
+mixin GenericsRef on AutoDisposeNotifierProviderRef<int> {}
+
+class _GenericsProviderElement
+    extends AutoDisposeNotifierProviderElement<Generics<A, B>, int>
+    with GenericsRef {
+  _GenericsProviderElement(super.provider);
 }
 
 String _$noGenericsHash() => r'30d5d20092f43cb17ede1f619773757df7cecb30';
@@ -216,7 +253,7 @@ class NoGenericsProvider<A extends num, B>
     extends AutoDisposeNotifierProviderImpl<NoGenerics<A, B>, int> {
   /// See also [NoGenerics].
   NoGenericsProvider()
-      : super.internal(
+      : this._internal(
           NoGenerics<A, B>.new,
           from: noGenericsProvider,
           name: r'noGenericsProvider',
@@ -228,6 +265,42 @@ class NoGenericsProvider<A extends num, B>
           allTransitiveDependencies:
               NoGenericsFamily._allTransitiveDependencies,
         );
+
+  NoGenericsProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+  }) : super.internal();
+
+  @override
+  int runNotifierBuild(
+    covariant NoGenerics<A, B> notifier,
+  ) {
+    return notifier.build();
+  }
+
+  @override
+  Override overrideWith(NoGenerics Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: NoGenericsProvider._internal(
+        () => create(),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeNotifierProviderElement<NoGenerics<A, B>, int> createElement() {
+    return _NoGenericsProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -242,13 +315,14 @@ class NoGenericsProvider<A extends num, B>
 
     return _SystemHash.finish(hash);
   }
+}
 
-  @override
-  int runNotifierBuild(
-    covariant NoGenerics<A, B> notifier,
-  ) {
-    return notifier.build();
-  }
+mixin NoGenericsRef on AutoDisposeNotifierProviderRef<int> {}
+
+class _NoGenericsProviderElement
+    extends AutoDisposeNotifierProviderElement<NoGenerics<A, B>, int>
+    with NoGenericsRef {
+  _NoGenericsProviderElement(super.provider);
 }
 
 String _$missingGenericsHash() => r'b611c76d5fb87fdde78b5fc017912e0569762c23';
@@ -299,7 +373,7 @@ class MissingGenericsProvider<A, B>
     extends AutoDisposeNotifierProviderImpl<MissingGenerics<A, B>, int> {
   /// See also [MissingGenerics].
   MissingGenericsProvider()
-      : super.internal(
+      : this._internal(
           MissingGenerics<A, B>.new,
           from: missingGenericsProvider,
           name: r'missingGenericsProvider',
@@ -311,6 +385,43 @@ class MissingGenericsProvider<A, B>
           allTransitiveDependencies:
               MissingGenericsFamily._allTransitiveDependencies,
         );
+
+  MissingGenericsProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+  }) : super.internal();
+
+  @override
+  int runNotifierBuild(
+    covariant MissingGenerics<A, B> notifier,
+  ) {
+    return notifier.build();
+  }
+
+  @override
+  Override overrideWith(MissingGenerics Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: MissingGenericsProvider._internal(
+        () => create(),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeNotifierProviderElement<MissingGenerics<A, B>, int>
+      createElement() {
+    return _MissingGenericsProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -325,13 +436,14 @@ class MissingGenericsProvider<A, B>
 
     return _SystemHash.finish(hash);
   }
+}
 
-  @override
-  int runNotifierBuild(
-    covariant MissingGenerics<A, B> notifier,
-  ) {
-    return notifier.build();
-  }
+mixin MissingGenericsRef on AutoDisposeNotifierProviderRef<int> {}
+
+class _MissingGenericsProviderElement
+    extends AutoDisposeNotifierProviderElement<MissingGenerics<A, B>, int>
+    with MissingGenericsRef {
+  _MissingGenericsProviderElement(super.provider);
 }
 
 String _$wrongOrderHash() => r'7757670a2f67406ebc96c87edf088deb9cb248a1';
@@ -381,7 +493,7 @@ class WrongOrderProvider<A, B>
     extends AutoDisposeNotifierProviderImpl<WrongOrder<A, B>, int> {
   /// See also [WrongOrder].
   WrongOrderProvider()
-      : super.internal(
+      : this._internal(
           WrongOrder<A, B>.new,
           from: wrongOrderProvider,
           name: r'wrongOrderProvider',
@@ -393,6 +505,42 @@ class WrongOrderProvider<A, B>
           allTransitiveDependencies:
               WrongOrderFamily._allTransitiveDependencies,
         );
+
+  WrongOrderProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+  }) : super.internal();
+
+  @override
+  int runNotifierBuild(
+    covariant WrongOrder<A, B> notifier,
+  ) {
+    return notifier.build();
+  }
+
+  @override
+  Override overrideWith(WrongOrder Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: WrongOrderProvider._internal(
+        () => create(),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeNotifierProviderElement<WrongOrder<A, B>, int> createElement() {
+    return _WrongOrderProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -407,12 +555,14 @@ class WrongOrderProvider<A, B>
 
     return _SystemHash.finish(hash);
   }
-
-  @override
-  int runNotifierBuild(
-    covariant WrongOrder<A, B> notifier,
-  ) {
-    return notifier.build();
-  }
 }
-// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions
+
+mixin WrongOrderRef on AutoDisposeNotifierProviderRef<int> {}
+
+class _WrongOrderProviderElement
+    extends AutoDisposeNotifierProviderElement<WrongOrder<A, B>, int>
+    with WrongOrderRef {
+  _WrongOrderProviderElement(super.provider);
+}
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member

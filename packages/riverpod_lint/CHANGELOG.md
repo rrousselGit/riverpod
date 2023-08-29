@@ -3,6 +3,36 @@
 - Updated `stateless_ref` and `generator_class_extends` to support providers
   with generic parameters.
 
+## 2.0.3 - 2023-08-28
+
+- `riverpod` upgraded to `2.3.10`
+
+## 2.0.2 - 2023-08-28
+
+- Fixed typos in the package description (thanks to @saltedpotatos)
+
+## 2.0.1 - 2023-08-16
+
+- Support both analyzer 5.12.0 and analyzer 6.0.0
+
+## 2.0.0 - 2023-08-03
+
+- **Breaking** Renamed `generator_class_extends` to `notifier_extends`
+- **Breaking** Renamed `stateless_ref` to `functional_ref` (thanks to @AhmedLSayed9)
+- Added `avoid_ref_inside_state_dispose` (thanks to @LeonardoRosaa).
+  This warns if a `WidgetRef` is used in `State.dispose`, which would result
+  in a runtime error.
+- Support analyzer 6.0.0
+
+## 1.4.0 - 2023-07-25
+
+- `avoid_public_notifier_properties` no-longer warns against public setters (thanks to @skreborn)
+
+## 1.3.2 - 2023-05-12
+
+- Upgrade `analyzer` to 5.12.0
+- Upgrade `custom_lint_builder` to 0.4.0
+
 ## 1.3.1 - 2023-04-24
 
 - `riverpod` upgraded to `2.3.6`
@@ -64,7 +94,7 @@ Fix quick-fix for provider_dependencies
 
 ## 1.1.1
 
-- Fix false positive with `stateless_ref` lint on scoped providers
+- Fix false positive with `functional_ref` lint on scoped providers
 - Fix false positive with `provider_dependencies` lint on scoped providers
 
 ## 1.1.0
@@ -95,7 +125,7 @@ Fix quick-fix for provider_dependencies
 ## 1.0.1
 
 - Fixed an exception thrown when a file contains `fn?.call()`
-- Fix `generator_class_extends` on private classes incorrectly
+- Fix `notifier_extends` on private classes incorrectly
   expecting the generated class to be `_$_MyClass`
 - Fix `missing_provider_scope` not detecting `UncontrolledProviderScope`
 - Bump minimum riverpod_analyzer_utils version

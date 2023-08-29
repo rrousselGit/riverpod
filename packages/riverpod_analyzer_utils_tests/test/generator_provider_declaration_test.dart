@@ -79,13 +79,13 @@ Future<Raw<int>> value3(Value3Ref ref) async => 0;
 ''', (resolver) async {
     final result = await resolver.resolveRiverpodAnalyssiResult();
 
-    final value = result.statelessProviderDeclarations.singleWhere(
+    final value = result.functionalProviderDeclarations.singleWhere(
       (e) => e.name.toString() == 'value',
     );
-    final value2 = result.statelessProviderDeclarations.singleWhere(
+    final value2 = result.functionalProviderDeclarations.singleWhere(
       (e) => e.name.toString() == 'value2',
     );
-    final value3 = result.statelessProviderDeclarations.singleWhere(
+    final value3 = result.functionalProviderDeclarations.singleWhere(
       (e) => e.name.toString() == 'value3',
     );
     expect(value.createdType.toString(), 'Future<int>');
@@ -121,13 +121,13 @@ int plain(PlainRef ref) => 0;
 ''', (resolver) async {
     final result = await resolver.resolveRiverpodAnalyssiResult();
 
-    final needsOverride = result.statelessProviderDeclarations.singleWhere(
+    final needsOverride = result.functionalProviderDeclarations.singleWhere(
       (e) => e.name.toString() == 'needsOverride',
     );
-    final scoped = result.statelessProviderDeclarations.singleWhere(
+    final scoped = result.functionalProviderDeclarations.singleWhere(
       (e) => e.name.toString() == 'scoped',
     );
-    final plain = result.statelessProviderDeclarations.singleWhere(
+    final plain = result.functionalProviderDeclarations.singleWhere(
       (e) => e.name.toString() == 'plain',
     );
 
@@ -197,13 +197,13 @@ int sixth(SixthRef ref) => 0;
       errors[4].message,
       'Unsupported dependency. Only functions and classes annotated by @riverpod are supported.',
     );
-    expect(errors[4].targetElement.toString(), 'int sixth(dynamic ref)');
+    expect(errors[4].targetElement.toString(), 'int sixth(InvalidType ref)');
 
     expect(
       errors[5].message,
       'Failed to parse dependency Type (int*)',
     );
-    expect(errors[5].targetElement?.toString(), 'int sixth(dynamic ref)');
+    expect(errors[5].targetElement?.toString(), 'int sixth(InvalidType ref)');
   });
 
   testSource('Decode name', runGenerator: true, source: r'''
@@ -227,13 +227,13 @@ class Counter extends _$Counter {
     final providers = result.generatorProviderDeclarations;
 
     expect(providers, [
-      isA<StatelessProviderDeclaration>()
+      isA<FunctionalProviderDeclaration>()
           .having((e) => e.name.toString(), 'name', 'first')
           .having((e) => e.node.name.toString(), 'node.name', 'first'),
-      isA<StatelessProviderDeclaration>()
+      isA<FunctionalProviderDeclaration>()
           .having((e) => e.name.toString(), 'name', 'second')
           .having((e) => e.node.name.toString(), 'node.name', 'second'),
-      isA<StatefulProviderDeclaration>()
+      isA<ClassBasedProviderDeclaration>()
           .having((e) => e.name.toString(), 'name', 'Counter')
           .having((e) => e.node.name.toString(), 'node.name', 'Counter'),
     ]);

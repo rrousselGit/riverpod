@@ -12,3 +12,5 @@ dependency_overrides:
     path: ../../packages/riverpod_annotation
   riverpod_generator:
     path: ../../packages/riverpod_generator
+  # necessary for mockito
+  analyzer: ^6.0.0

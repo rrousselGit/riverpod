@@ -35,7 +35,7 @@ final depProvider = AutoDisposeProvider<int>.internal(
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$depHash,
   dependencies: const <ProviderOrFamily>[],
-  allTransitiveDependencies: const <ProviderOrFamily>[],
+  allTransitiveDependencies: const <ProviderOrFamily>{},
 );
 
 typedef DepRef = AutoDisposeProviderRef<int>;
@@ -50,7 +50,7 @@ final generatedScopedProvider = AutoDisposeProvider<int>.internal(
       ? null
       : _$generatedScopedHash,
   dependencies: const <ProviderOrFamily>[],
-  allTransitiveDependencies: const <ProviderOrFamily>[],
+  allTransitiveDependencies: const <ProviderOrFamily>{},
 );
 
 typedef GeneratedScopedRef = AutoDisposeProviderRef<int>;
@@ -165,7 +165,7 @@ final watchScopedButEmptyDependenciesProvider =
       ? null
       : _$watchScopedButEmptyDependenciesHash,
   dependencies: const <ProviderOrFamily>[],
-  allTransitiveDependencies: const <ProviderOrFamily>[],
+  allTransitiveDependencies: const <ProviderOrFamily>{},
 );
 
 typedef WatchScopedButEmptyDependenciesRef = AutoDisposeProviderRef<int>;
@@ -182,7 +182,7 @@ final watchGeneratedScopedButEmptyDependenciesProvider =
       ? null
       : _$watchGeneratedScopedButEmptyDependenciesHash,
   dependencies: const <ProviderOrFamily>[],
-  allTransitiveDependencies: const <ProviderOrFamily>[],
+  allTransitiveDependencies: const <ProviderOrFamily>{},
 );
 
 typedef WatchGeneratedScopedButEmptyDependenciesRef
@@ -199,7 +199,7 @@ final watchRootButEmptyDependenciesProvider = AutoDisposeProvider<int>.internal(
       ? null
       : _$watchRootButEmptyDependenciesHash,
   dependencies: const <ProviderOrFamily>[],
-  allTransitiveDependencies: const <ProviderOrFamily>[],
+  allTransitiveDependencies: const <ProviderOrFamily>{},
 );
 
 typedef WatchRootButEmptyDependenciesRef = AutoDisposeProviderRef<int>;
@@ -216,7 +216,7 @@ final watchGeneratedRootButEmptyDependenciesProvider =
       ? null
       : _$watchGeneratedRootButEmptyDependenciesHash,
   dependencies: const <ProviderOrFamily>[],
-  allTransitiveDependencies: const <ProviderOrFamily>[],
+  allTransitiveDependencies: const <ProviderOrFamily>{},
 );
 
 typedef WatchGeneratedRootButEmptyDependenciesRef = AutoDisposeProviderRef<int>;
@@ -233,7 +233,10 @@ final watchScopedButMissingDependenciesProvider =
       ? null
       : _$watchScopedButMissingDependenciesHash,
   dependencies: <ProviderOrFamily>[depProvider],
-  allTransitiveDependencies: <ProviderOrFamily>[depProvider],
+  allTransitiveDependencies: <ProviderOrFamily>{
+    depProvider,
+    ...?depProvider.allTransitiveDependencies
+  },
 );
 
 typedef WatchScopedButMissingDependenciesRef = AutoDisposeProviderRef<int>;
@@ -250,7 +253,10 @@ final watchGeneratedScopedButMissingDependenciesProvider =
       ? null
       : _$watchGeneratedScopedButMissingDependenciesHash,
   dependencies: <ProviderOrFamily>[depProvider],
-  allTransitiveDependencies: <ProviderOrFamily>[depProvider],
+  allTransitiveDependencies: <ProviderOrFamily>{
+    depProvider,
+    ...?depProvider.allTransitiveDependencies
+  },
 );
 
 typedef WatchGeneratedScopedButMissingDependenciesRef
@@ -268,7 +274,10 @@ final watchRootButMissingDependenciesProvider =
       ? null
       : _$watchRootButMissingDependenciesHash,
   dependencies: <ProviderOrFamily>[depProvider],
-  allTransitiveDependencies: <ProviderOrFamily>[depProvider],
+  allTransitiveDependencies: <ProviderOrFamily>{
+    depProvider,
+    ...?depProvider.allTransitiveDependencies
+  },
 );
 
 typedef WatchRootButMissingDependenciesRef = AutoDisposeProviderRef<int>;
@@ -285,7 +294,10 @@ final watchGeneratedRootButMissingDependenciesProvider =
       ? null
       : _$watchGeneratedRootButMissingDependenciesHash,
   dependencies: <ProviderOrFamily>[depProvider],
-  allTransitiveDependencies: <ProviderOrFamily>[depProvider],
+  allTransitiveDependencies: <ProviderOrFamily>{
+    depProvider,
+    ...?depProvider.allTransitiveDependencies
+  },
 );
 
 typedef WatchGeneratedRootButMissingDependenciesRef
@@ -303,7 +315,10 @@ final watchGeneratedScopedAndContainsDependencyProvider =
       ? null
       : _$watchGeneratedScopedAndContainsDependencyHash,
   dependencies: <ProviderOrFamily>[generatedScopedProvider],
-  allTransitiveDependencies: <ProviderOrFamily>[generatedScopedProvider],
+  allTransitiveDependencies: <ProviderOrFamily>{
+    generatedScopedProvider,
+    ...?generatedScopedProvider.allTransitiveDependencies
+  },
 );
 
 typedef WatchGeneratedScopedAndContainsDependencyRef
@@ -321,7 +336,10 @@ final watchGeneratedRootAndContainsDependencyProvider =
       ? null
       : _$watchGeneratedRootAndContainsDependencyHash,
   dependencies: <ProviderOrFamily>[generatedRootProvider],
-  allTransitiveDependencies: <ProviderOrFamily>[generatedRootProvider],
+  allTransitiveDependencies: <ProviderOrFamily>{
+    generatedRootProvider,
+    ...?generatedRootProvider.allTransitiveDependencies
+  },
 );
 
 typedef WatchGeneratedRootAndContainsDependencyRef
@@ -339,10 +357,12 @@ final specifiedDependencyButNeverUsedProvider =
       ? null
       : _$specifiedDependencyButNeverUsedHash,
   dependencies: <ProviderOrFamily>[depProvider, generatedRootProvider],
-  allTransitiveDependencies: <ProviderOrFamily>[
+  allTransitiveDependencies: <ProviderOrFamily>{
     depProvider,
-    generatedRootProvider
-  ],
+    ...?depProvider.allTransitiveDependencies,
+    generatedRootProvider,
+    ...?generatedRootProvider.allTransitiveDependencies
+  },
 );
 
 typedef SpecifiedDependencyButNeverUsedRef = AutoDisposeProviderRef<int>;
@@ -357,7 +377,10 @@ final regression2348Provider = AutoDisposeProvider<int>.internal(
       ? null
       : _$regression2348Hash,
   dependencies: <ProviderOrFamily>[generatedScopedProvider],
-  allTransitiveDependencies: <ProviderOrFamily>[generatedScopedProvider],
+  allTransitiveDependencies: <ProviderOrFamily>{
+    generatedScopedProvider,
+    ...?generatedScopedProvider.allTransitiveDependencies
+  },
 );
 
 typedef Regression2348Ref = AutoDisposeProviderRef<int>;
@@ -375,7 +398,7 @@ final classWatchGeneratedRootButMissingDependenciesProvider =
       ? null
       : _$classWatchGeneratedRootButMissingDependenciesHash,
   dependencies: const <ProviderOrFamily>[],
-  allTransitiveDependencies: const <ProviderOrFamily>[],
+  allTransitiveDependencies: const <ProviderOrFamily>{},
 );
 
 typedef _$ClassWatchGeneratedRootButMissingDependencies
@@ -394,7 +417,7 @@ final classWatchGeneratedScopedButMissingDependenciesProvider =
       ? null
       : _$classWatchGeneratedScopedButMissingDependenciesHash,
   dependencies: const <ProviderOrFamily>[],
-  allTransitiveDependencies: const <ProviderOrFamily>[],
+  allTransitiveDependencies: const <ProviderOrFamily>{},
 );
 
 typedef _$ClassWatchGeneratedScopedButMissingDependencies
@@ -411,8 +434,12 @@ final regression2417Provider =
       ? null
       : _$regression2417Hash,
   dependencies: <ProviderOrFamily>[generatedScopedProvider],
-  allTransitiveDependencies: <ProviderOrFamily>[generatedScopedProvider],
+  allTransitiveDependencies: <ProviderOrFamily>{
+    generatedScopedProvider,
+    ...?generatedScopedProvider.allTransitiveDependencies
+  },
 );
 
 typedef _$Regression2417 = AutoDisposeNotifier<int>;
-// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member

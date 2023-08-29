@@ -29,8 +29,8 @@ class ResolvedRiverpodLibraryResult extends RiverpodAst {
   final providerContainerInstanceCreationExpressions =
       <ProviderContainerInstanceCreationExpression>[];
 
-  final statelessProviderDeclarations = <StatelessProviderDeclaration>[];
-  final statefulProviderDeclarations = <StatefulProviderDeclaration>[];
+  final functionalProviderDeclarations = <FunctionalProviderDeclaration>[];
+  final classBasedProviderDeclarations = <ClassBasedProviderDeclaration>[];
 
   final legacyProviderDeclarations = <LegacyProviderDeclaration>[];
 
@@ -62,10 +62,10 @@ class ResolvedRiverpodLibraryResult extends RiverpodAst {
       declaration.accept(visitor);
     }
 
-    for (final declaration in statelessProviderDeclarations) {
+    for (final declaration in functionalProviderDeclarations) {
       declaration.accept(visitor);
     }
-    for (final declaration in statefulProviderDeclarations) {
+    for (final declaration in classBasedProviderDeclarations) {
       declaration.accept(visitor);
     }
     for (final declaration in legacyProviderDeclarations) {
@@ -203,11 +203,11 @@ class _ParseRiverpodUnitVisitor extends RecursiveAstVisitor<void>
 
   @override
   void visitClassDeclaration(ClassDeclaration node) {
-    final declaration = StatefulProviderDeclaration._parse(node, this);
+    final declaration = ClassBasedProviderDeclaration._parse(node, this);
     if (declaration != null) {
-      result.statefulProviderDeclarations.add(declaration);
+      result.classBasedProviderDeclarations.add(declaration);
       declaration._parent = result;
-      // Don't call super as StatefulProviderDeclaration should already be recursive
+      // Don't call super as ClassBasedProviderDeclaration should already be recursive
       return;
     }
 
@@ -215,7 +215,7 @@ class _ParseRiverpodUnitVisitor extends RecursiveAstVisitor<void>
     if (consumerDeclaration != null) {
       consumerDeclaration._parent = result;
       consumerDeclaration.accept(_AddConsumerDeclarationVisitor(result));
-      // Don't call super as StatefulProviderDeclaration should already be recursive
+      // Don't call super as ClassBasedProviderDeclaration should already be recursive
       return;
     }
 
@@ -224,11 +224,11 @@ class _ParseRiverpodUnitVisitor extends RecursiveAstVisitor<void>
 
   @override
   void visitFunctionDeclaration(FunctionDeclaration node) {
-    final declaration = StatelessProviderDeclaration._parse(node, this);
+    final declaration = FunctionalProviderDeclaration._parse(node, this);
     if (declaration != null) {
-      result.statelessProviderDeclarations.add(declaration);
+      result.functionalProviderDeclarations.add(declaration);
       declaration._parent = result;
-      // Don't call super as StatelessProviderDeclaration should already be recursive
+      // Don't call super as FunctionalProviderDeclaration should already be recursive
       return;
     }
 

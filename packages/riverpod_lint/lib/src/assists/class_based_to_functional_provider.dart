@@ -6,8 +6,8 @@ import '../riverpod_custom_lint.dart';
 /// But the priority above everything else
 const convertPriority = 100;
 
-class StatefulToStatelessProvider extends RiverpodAssist {
-  StatefulToStatelessProvider();
+class ClassBasedToFunctionalProvider extends RiverpodAssist {
+  ClassBasedToFunctionalProvider();
 
   @override
   void run(
@@ -16,7 +16,7 @@ class StatefulToStatelessProvider extends RiverpodAssist {
     CustomLintContext context,
     SourceRange target,
   ) {
-    riverpodRegistry(context).addStatefulProviderDeclaration((declaration) {
+    riverpodRegistry(context).addClassBasedProviderDeclaration((declaration) {
       // Select from "class" to the opening bracket
       final classHeading = sourceRangeFrom(
         start: declaration.node.classKeyword.offset,
@@ -26,7 +26,7 @@ class StatefulToStatelessProvider extends RiverpodAssist {
       if (!classHeading.intersects(target)) return;
 
       final changeBuilder = reporter.createChangeBuilder(
-        message: 'Convert to stateless provider',
+        message: 'Convert to functional provider',
         priority: convertPriority,
       );
 

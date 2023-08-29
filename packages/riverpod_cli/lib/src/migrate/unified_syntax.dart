@@ -104,7 +104,7 @@ class RiverpodProviderUsageInfo extends GeneralizingAstVisitor<void>
   void visitFunctionDeclaration(FunctionDeclaration node) {
     try {
       currentFunctionInfo = ProviderFunction(
-        name: node.name.name,
+        name: node.name.lexeme,
         path: node.declaredElement!.declaration.location!.components.join('/'),
         line: node.name.offset,
       );
@@ -121,7 +121,7 @@ class RiverpodProviderUsageInfo extends GeneralizingAstVisitor<void>
   void visitMethodDeclaration(MethodDeclaration node) {
     try {
       currentFunctionInfo = ProviderFunction(
-        name: node.name.name,
+        name: node.name.lexeme,
         path: node.declaredElement!.declaration.location!.components.join('/'),
         line: node.name.offset,
       );
@@ -226,7 +226,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
     try {
       foundProviderUsage.add(false);
       methodDecls.clear();
-      final name = node.extendsClause?.superclass.name.name;
+      final name = node.extendsClause?.superclass.name2.lexeme;
       if (name == 'StatelessWidget') {
         withinClass = ClassType.stateless;
       } else if (name == 'State') {
@@ -240,9 +240,9 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
         withinClass = ClassType.none;
       }
       if (name == 'StatefulWidget') {
-        statefulDeclarations[node.name.name] = node;
-        if (statefulNeedsMigration.contains(node.name.name)) {
-          migrateStateful(node.name.name);
+        statefulDeclarations[node.name.lexeme] = node;
+        if (statefulNeedsMigration.contains(node.name.lexeme)) {
+          migrateStateful(node.name.lexeme);
         }
       }
     } catch (e, st) {
@@ -334,8 +334,8 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
       } else if (withinClass == ClassType.stateful) {
         yieldPatch(
           'ConsumerState',
-          classDecl.extendsClause!.superclass.name.offset,
-          classDecl.extendsClause!.superclass.name.end,
+          classDecl.extendsClause!.superclass.name2.offset,
+          classDecl.extendsClause!.superclass.name2.end,
         );
 
         migrateStateful(
@@ -384,7 +384,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
           node.functionExpression.parameters!.rightParenthesis.offset,
         );
       }
-      functionDecls[node.name.name] = node;
+      functionDecls[node.name.lexeme] = node;
     } catch (e, st) {
       addError('migrating function declaration $node\n$e\n$st');
     }
@@ -405,7 +405,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
           node.parameters!.rightParenthesis.offset,
         );
       }
-      methodDecls[node.name.name] = node;
+      methodDecls[node.name.lexeme] = node;
     } catch (e, st) {
       addError('migrating function declaration $node\n$e\n$st');
     }
@@ -496,7 +496,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
   bool inAutoDisposeProvider = false;
   String providerTypeArgs = '';
   @override
-  void visitTypeName(TypeName node) {
+  void visitNamedType(NamedType node) {
     final typeName = node.type?.getDisplayString(withNullability: true);
 
     try {
@@ -506,47 +506,47 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
           case ProviderType.stream:
             yieldPatch(
               '${autoDisposePrefix}StreamProviderRef<$providerTypeArgs>',
-              node.name.offset,
-              node.name.end,
+              node.name2.offset,
+              node.name2.end,
             );
             break;
           case ProviderType.future:
             yieldPatch(
               '${autoDisposePrefix}FutureProviderRef<$providerTypeArgs>',
-              node.name.offset,
-              node.name.end,
+              node.name2.offset,
+              node.name2.end,
             );
             break;
           case ProviderType.plain:
             yieldPatch(
               '${autoDisposePrefix}ProviderRef<$providerTypeArgs>',
-              node.name.offset,
-              node.name.end,
+              node.name2.offset,
+              node.name2.end,
             );
             break;
           case ProviderType.state:
             yieldPatch(
               '${autoDisposePrefix}StateProviderRef<$providerTypeArgs>',
-              node.name.offset,
-              node.name.end,
+              node.name2.offset,
+              node.name2.end,
             );
             break;
           case ProviderType.statenotifier:
             yieldPatch(
               '${autoDisposePrefix}StateNotifierProviderRef<$providerTypeArgs>',
-              node.name.offset,
-              node.name.end,
+              node.name2.offset,
+              node.name2.end,
             );
             break;
           case ProviderType.changenotifier:
             yieldPatch(
               '${autoDisposePrefix}ChangeNotifierProviderRef<$providerTypeArgs>',
-              node.name.offset,
-              node.name.end,
+              node.name2.offset,
+              node.name2.end,
             );
             break;
           case ProviderType.none:
-            yieldPatch('Ref', node.name.offset, node.name.end);
+            yieldPatch('Ref', node.name2.offset, node.name2.end);
             break;
         }
       }
@@ -554,7 +554,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
       addError('when visiting type $typeName\n$e\n$st');
     }
 
-    super.visitTypeName(node);
+    super.visitNamedType(node);
   }
 
   void updateProviderType(String type, DartType staticType) {
@@ -785,7 +785,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
   void visitFunctionDeclaration(FunctionDeclaration node) {
     try {
       final func = ProviderFunction(
-        name: node.name.name,
+        name: node.name.lexeme,
         path: node.declaredElement!.declaration.location!.components.join('/'),
         line: node.name.offset,
       );
@@ -793,8 +793,8 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
         migrateFunctionDeclaration(node);
       }
 
-      functionDecls[node.name.name] = node;
-      migrateOnChangeFunction(node.name.name);
+      functionDecls[node.name.lexeme] = node;
+      migrateOnChangeFunction(node.name.lexeme);
     } catch (e, st) {
       addError('before visiting function declaration\n$e\n$st');
     }
@@ -804,14 +804,14 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
   @override
   void visitMethodDeclaration(MethodDeclaration node) {
     try {
-      if (node.name.name == 'build') {
+      if (node.name.lexeme == 'build') {
         buildParams = node.parameters;
         functionBody = node.body;
         if (withinClass == ClassType.consumer) {
           // Consumer should be migrated regardless if providers are watched / read or not
           migrateParams(buildParams);
         }
-      } else if (node.name.name == 'didUpdateProvider') {
+      } else if (node.name.lexeme == 'didUpdateProvider') {
         yieldPatch(
           ', ProviderContainer container',
           node.parameters!.parameters.last.end,
@@ -824,17 +824,17 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
         );
       }
       final func = ProviderFunction(
-        name: node.name.name,
+        name: node.name.lexeme,
         path: node.declaredElement!.declaration.location!.components.join('/'),
         line: node.name.offset,
       );
-      if (node.name.name != 'build' &&
+      if (node.name.lexeme != 'build' &&
           RiverpodProviderUsageInfo.shouldMigrate(func)) {
         migrateMethodDeclaration(node);
       }
 
-      methodDecls[node.name.name] = node;
-      migrateOnChangeFunction(node.name.name);
+      methodDecls[node.name.lexeme] = node;
+      migrateOnChangeFunction(node.name.lexeme);
     } catch (e, st) {
       addError('before visiting method declaration\n$e\n$st');
     }
@@ -977,7 +977,8 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
           statefulDeclaration.extendsClause!.superclass.end,
         );
         final method = statefulDeclaration.members.firstWhereOrNull(
-          (m) => m is MethodDeclaration && m.name.name.contains('createState'),
+          (m) =>
+              m is MethodDeclaration && m.name.lexeme.contains('createState'),
         ) as MethodDeclaration?;
 
         if (method != null &&

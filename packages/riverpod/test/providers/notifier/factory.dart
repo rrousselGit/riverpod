@@ -184,15 +184,7 @@ class NotifierFactory {
   final SimpleTestProviderFactoryType simpleTestProvider;
 }
 
-abstract class TestNotifierBase<T> extends NotifierBase<T> {
-  // overriding to remove the @protected
-  @override
-  T get state => super.state;
-
-  @override
-  // ignore: unnecessary_overrides, Remove protected
-  set state(T value) => super.state = value;
-}
+abstract class TestNotifierBase<T> extends NotifierBase<T> {}
 
 class TestNotifier<T> extends Notifier<T> implements TestNotifierBase<T> {
   TestNotifier(this._init, {bool Function(T prev, T next)? updateShouldNotify})

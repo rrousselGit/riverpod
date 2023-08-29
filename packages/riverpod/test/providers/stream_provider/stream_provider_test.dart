@@ -186,7 +186,7 @@ void main() {
       return Stream.value(0);
     });
 
-    container.listen(provider, listener);
+    container.listen(provider, listener.call);
     await container.read(provider.future);
 
     expect(ref.state, const AsyncData<int>(0));
@@ -254,7 +254,7 @@ void main() {
     );
 
     container.read(dep.notifier).state = controller.stream;
-    container.listen(provider, listener, fireImmediately: true);
+    container.listen(provider, listener.call, fireImmediately: true);
 
     verifyOnly(
       listener,
@@ -617,7 +617,7 @@ void main() {
     });
     final listener = Listener<AsyncValue<int>>();
 
-    container.listen(provider, listener, fireImmediately: true);
+    container.listen(provider, listener.call, fireImmediately: true);
 
     verifyOnly(listener, listener(null, const AsyncValue.loading()));
 
@@ -638,7 +638,7 @@ void main() {
     });
     final listener = Listener<Future<int>>();
 
-    container.listen(provider.future, listener, fireImmediately: true);
+    container.listen(provider.future, listener.call, fireImmediately: true);
 
     verifyOnly(listener, listener(any, any));
 
@@ -774,7 +774,7 @@ void main() {
     final provider = StreamProvider((_) => controller.stream);
     final listener = Listener<AsyncValue<int>>();
 
-    container.listen(provider, listener, fireImmediately: true);
+    container.listen(provider, listener.call, fireImmediately: true);
 
     verifyOnly(listener, listener(null, const AsyncValue<int>.loading()));
 
@@ -803,7 +803,7 @@ void main() {
     final error = Error();
     final stack = StackTrace.current;
 
-    container.listen(provider, listener, fireImmediately: true);
+    container.listen(provider, listener.call, fireImmediately: true);
 
     verifyOnly(listener, listener(null, const AsyncValue<int>.loading()));
 
@@ -837,12 +837,12 @@ void main() {
     final controller = StreamController<int>(sync: true);
     final dispose = OnDisposeMock();
     final provider = StreamProvider((ref) {
-      ref.onDispose(dispose);
+      ref.onDispose(dispose.call);
       return controller.stream;
     });
     final listener = Listener<AsyncValue<int>>();
 
-    container.listen(provider, listener, fireImmediately: true);
+    container.listen(provider, listener.call, fireImmediately: true);
 
     verifyOnly(listener, listener(null, const AsyncValue<int>.loading()));
 

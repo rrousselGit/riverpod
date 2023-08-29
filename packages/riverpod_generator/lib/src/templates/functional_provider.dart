@@ -1,11 +1,11 @@
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import '../models.dart';
 import '../riverpod_generator.dart';
-import 'stateful_provider.dart';
+import 'class_based_provider.dart';
 import 'template.dart';
 
-class StatelessProviderTemplate extends Template {
-  StatelessProviderTemplate(
+class FunctionalProviderTemplate extends Template {
+  FunctionalProviderTemplate(
     this.provider, {
     required this.refName,
     required this.hashFn,
@@ -20,7 +20,7 @@ class StatelessProviderTemplate extends Template {
     }
   }
 
-  final StatelessProviderDeclaration provider;
+  final FunctionalProviderDeclaration provider;
   final String refName;
   final String hashFn;
   final BuildYamlOptions options;
@@ -62,8 +62,8 @@ final $providerName = $providerType<${provider.valueType}>.internal(
   $createFn,
   name: r'$providerName',
   debugGetCreateSourceHash: $hashFn,
-  dependencies: ${serializeDependencies(provider.providerElement.annotation.dependencies, options)},
-  allTransitiveDependencies: ${serializeDependencies(provider.providerElement.annotation.allTransitiveDependencies, options)},
+  dependencies: ${serializeDependencies(provider.providerElement.annotation, options)},
+  allTransitiveDependencies: ${serializeAllTransitiveDependencies(provider.providerElement.annotation, options)},
 );
 
 typedef $refName = ${providerType}Ref<${provider.valueType}>;

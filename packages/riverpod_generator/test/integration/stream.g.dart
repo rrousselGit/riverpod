@@ -29,8 +29,6 @@ class _SystemHash {
   }
 }
 
-typedef GenericRef<T extends num> = AutoDisposeStreamProviderRef<List<T>>;
-
 /// See also [generic].
 @ProviderFor(generic)
 const genericProvider = GenericFamily();
@@ -72,9 +70,9 @@ class GenericProvider<T extends num>
     extends AutoDisposeStreamProvider<List<T>> {
   /// See also [generic].
   GenericProvider()
-      : super.internal(
+      : this._internal(
           (ref) => generic<T>(
-            ref,
+            ref as GenericRef<T>,
           ),
           from: genericProvider,
           name: r'genericProvider',
@@ -85,6 +83,37 @@ class GenericProvider<T extends num>
           dependencies: GenericFamily._dependencies,
           allTransitiveDependencies: GenericFamily._allTransitiveDependencies,
         );
+
+  GenericProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+  }) : super.internal();
+
+  @override
+  Override overrideWith(
+    Stream<List<T>> Function(GenericRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: GenericProvider._internal(
+        (ref) => create(ref as GenericRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeStreamProviderElement<List<T>> createElement() {
+    return _GenericProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -98,6 +127,13 @@ class GenericProvider<T extends num>
 
     return _SystemHash.finish(hash);
   }
+}
+
+mixin GenericRef on AutoDisposeStreamProviderRef<List<T>> {}
+
+class _GenericProviderElement extends AutoDisposeStreamProviderElement<List<T>>
+    with GenericRef {
+  _GenericProviderElement(super.provider);
 }
 
 String _$publicHash() => r'c5cc0eac434371901cf6ab159a81bba49c58da12';
@@ -129,7 +165,6 @@ final _privateProvider = AutoDisposeStreamProvider<String>.internal(
 
 typedef _PrivateRef = AutoDisposeStreamProviderRef<String>;
 String _$familyHash() => r'6896fac2f6e3ccd7c38ecaa0d538cbd3577936b2';
-typedef FamilyRef = AutoDisposeStreamProviderRef<String>;
 
 /// See also [family].
 @ProviderFor(family)
@@ -189,14 +224,14 @@ class FamilyFamily extends Family {
 class FamilyProvider extends AutoDisposeStreamProvider<String> {
   /// See also [family].
   FamilyProvider(
-    this.first, {
-    this.second,
-    required this.third,
-    this.fourth = true,
-    this.fifth,
-  }) : super.internal(
+    int first, {
+    String? second,
+    required double third,
+    bool fourth = true,
+    List<String>? fifth,
+  }) : this._internal(
           (ref) => family(
-            ref,
+            ref as FamilyRef,
             first,
             second: second,
             third: third,
@@ -211,13 +246,59 @@ class FamilyProvider extends AutoDisposeStreamProvider<String> {
                   : _$familyHash,
           dependencies: FamilyFamily._dependencies,
           allTransitiveDependencies: FamilyFamily._allTransitiveDependencies,
+          first: first,
+          second: second,
+          third: third,
+          fourth: fourth,
+          fifth: fifth,
         );
+
+  FamilyProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.first,
+    required this.second,
+    required this.third,
+    required this.fourth,
+    required this.fifth,
+  }) : super.internal();
 
   final int first;
   final String? second;
   final double third;
   final bool fourth;
   final List<String>? fifth;
+
+  @override
+  Override overrideWith(
+    Stream<String> Function(FamilyRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: FamilyProvider._internal(
+        (ref) => create(ref as FamilyRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        first: first,
+        second: second,
+        third: third,
+        fourth: fourth,
+        fifth: fifth,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeStreamProviderElement<String> createElement() {
+    return _FamilyProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -240,6 +321,39 @@ class FamilyProvider extends AutoDisposeStreamProvider<String> {
 
     return _SystemHash.finish(hash);
   }
+}
+
+mixin FamilyRef on AutoDisposeStreamProviderRef<String> {
+  /// The parameter `first` of this provider.
+  int get first;
+
+  /// The parameter `second` of this provider.
+  String? get second;
+
+  /// The parameter `third` of this provider.
+  double get third;
+
+  /// The parameter `fourth` of this provider.
+  bool get fourth;
+
+  /// The parameter `fifth` of this provider.
+  List<String>? get fifth;
+}
+
+class _FamilyProviderElement extends AutoDisposeStreamProviderElement<String>
+    with FamilyRef {
+  _FamilyProviderElement(super.provider);
+
+  @override
+  int get first => (origin as FamilyProvider).first;
+  @override
+  String? get second => (origin as FamilyProvider).second;
+  @override
+  double get third => (origin as FamilyProvider).third;
+  @override
+  bool get fourth => (origin as FamilyProvider).fourth;
+  @override
+  List<String>? get fifth => (origin as FamilyProvider).fifth;
 }
 
 String _$genericClassHash() => r'401ae1cfd97a4291dfd135a69ff8e1c436866e5a';
@@ -290,7 +404,7 @@ class GenericClassProvider<T extends num>
     extends AutoDisposeStreamNotifierProviderImpl<GenericClass<T>, List<T>> {
   /// See also [GenericClass].
   GenericClassProvider()
-      : super.internal(
+      : this._internal(
           GenericClass<T>.new,
           from: genericClassProvider,
           name: r'genericClassProvider',
@@ -302,6 +416,43 @@ class GenericClassProvider<T extends num>
           allTransitiveDependencies:
               GenericClassFamily._allTransitiveDependencies,
         );
+
+  GenericClassProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+  }) : super.internal();
+
+  @override
+  Stream<List<T>> runNotifierBuild(
+    covariant GenericClass<T> notifier,
+  ) {
+    return notifier.build();
+  }
+
+  @override
+  Override overrideWith(GenericClass Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: GenericClassProvider._internal(
+        () => create(),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeStreamNotifierProviderElement<GenericClass<T>, List<T>>
+      createElement() {
+    return _GenericClassProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -315,16 +466,17 @@ class GenericClassProvider<T extends num>
 
     return _SystemHash.finish(hash);
   }
-
-  @override
-  Stream<List<T>> runNotifierBuild(
-    covariant GenericClass<T> notifier,
-  ) {
-    return notifier.build();
-  }
 }
 
-String _$publicClassHash() => r'a0b49ed7018eb64309ef147c2d058a45d6092b01';
+mixin GenericClassRef on AutoDisposeStreamNotifierProviderRef<List<T>> {}
+
+class _GenericClassProviderElement
+    extends AutoDisposeStreamNotifierProviderElement<GenericClass<T>, List<T>>
+    with GenericClassRef {
+  _GenericClassProviderElement(super.provider);
+}
+
+String _$publicClassHash() => r'b1526943c8ff0aaa20642bf78e744e5833cf9d02';
 
 /// See also [PublicClass].
 @ProviderFor(PublicClass)
@@ -354,7 +506,7 @@ final _privateClassProvider =
 );
 
 typedef _$PrivateClass = AutoDisposeStreamNotifier<String>;
-String _$familyClassHash() => r'ece07693f90d6250513cdb3874ee9bfef35abd01';
+String _$familyClassHash() => r'6ec16ca23da8df4c010ecb5eed72e3e655504460';
 
 abstract class _$FamilyClass
     extends BuildlessAutoDisposeStreamNotifier<String> {
@@ -432,12 +584,12 @@ class FamilyClassProvider
     extends AutoDisposeStreamNotifierProviderImpl<FamilyClass, String> {
   /// See also [FamilyClass].
   FamilyClassProvider(
-    this.first, {
-    this.second,
-    required this.third,
-    this.fourth = true,
-    this.fifth,
-  }) : super.internal(
+    int first, {
+    String? second,
+    required double third,
+    bool fourth = true,
+    List<String>? fifth,
+  }) : this._internal(
           () => FamilyClass()
             ..first = first
             ..second = second
@@ -453,13 +605,76 @@ class FamilyClassProvider
           dependencies: FamilyClassFamily._dependencies,
           allTransitiveDependencies:
               FamilyClassFamily._allTransitiveDependencies,
+          first: first,
+          second: second,
+          third: third,
+          fourth: fourth,
+          fifth: fifth,
         );
+
+  FamilyClassProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.first,
+    required this.second,
+    required this.third,
+    required this.fourth,
+    required this.fifth,
+  }) : super.internal();
 
   final int first;
   final String? second;
   final double third;
   final bool fourth;
   final List<String>? fifth;
+
+  @override
+  Stream<String> runNotifierBuild(
+    covariant FamilyClass notifier,
+  ) {
+    return notifier.build(
+      first,
+      second: second,
+      third: third,
+      fourth: fourth,
+      fifth: fifth,
+    );
+  }
+
+  @override
+  Override overrideWith(FamilyClass Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: FamilyClassProvider._internal(
+        () => create()
+          ..first = first
+          ..second = second
+          ..third = third
+          ..fourth = fourth
+          ..fifth = fifth,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        first: first,
+        second: second,
+        third: third,
+        fourth: fourth,
+        fifth: fifth,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeStreamNotifierProviderElement<FamilyClass, String>
+      createElement() {
+    return _FamilyClassProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -482,18 +697,40 @@ class FamilyClassProvider
 
     return _SystemHash.finish(hash);
   }
+}
+
+mixin FamilyClassRef on AutoDisposeStreamNotifierProviderRef<String> {
+  /// The parameter `first` of this provider.
+  int get first;
+
+  /// The parameter `second` of this provider.
+  String? get second;
+
+  /// The parameter `third` of this provider.
+  double get third;
+
+  /// The parameter `fourth` of this provider.
+  bool get fourth;
+
+  /// The parameter `fifth` of this provider.
+  List<String>? get fifth;
+}
+
+class _FamilyClassProviderElement
+    extends AutoDisposeStreamNotifierProviderElement<FamilyClass, String>
+    with FamilyClassRef {
+  _FamilyClassProviderElement(super.provider);
 
   @override
-  Stream<String> runNotifierBuild(
-    covariant FamilyClass notifier,
-  ) {
-    return notifier.build(
-      first,
-      second: second,
-      third: third,
-      fourth: fourth,
-      fifth: fifth,
-    );
-  }
+  int get first => (origin as FamilyClassProvider).first;
+  @override
+  String? get second => (origin as FamilyClassProvider).second;
+  @override
+  double get third => (origin as FamilyClassProvider).third;
+  @override
+  bool get fourth => (origin as FamilyClassProvider).fourth;
+  @override
+  List<String>? get fifth => (origin as FamilyClassProvider).fifth;
 }
-// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member

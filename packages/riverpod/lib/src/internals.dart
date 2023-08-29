@@ -15,6 +15,7 @@ export 'notifier.dart';
 export 'provider.dart';
 export 'result.dart';
 export 'run_guarded.dart';
+export 'stack_trace.dart';
 export 'state_notifier_provider.dart';
 export 'state_provider.dart';
 export 'stream_provider.dart';

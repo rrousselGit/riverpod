@@ -7,13 +7,13 @@ import 'package:custom_lint_builder/custom_lint_builder.dart';
 import '../riverpod_custom_lint.dart';
 import 'generator_class_extends.dart';
 
-class StatelessRef extends RiverpodLintRule {
-  const StatelessRef() : super(code: _code);
+class FunctionalRef extends RiverpodLintRule {
+  const FunctionalRef() : super(code: _code);
 
   static const _code = LintCode(
-    name: 'stateless_ref',
+    name: 'functional_ref',
     problemMessage:
-        'Stateless providers must receive a ref matching the provider name as their first positional parameter.',
+        'Functional providers must receive a ref matching the provider name as their first positional parameter.',
   );
 
   @override
@@ -22,7 +22,7 @@ class StatelessRef extends RiverpodLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    riverpodRegistry(context).addStatelessProviderDeclaration((declaration) {
+    riverpodRegistry(context).addFunctionalProviderDeclaration((declaration) {
       // Scoped providers don't need a ref
       if (declaration.needsOverride) return;
 
@@ -73,10 +73,10 @@ class StatelessRef extends RiverpodLintRule {
   }
 
   @override
-  List<Fix> getFixes() => [StatelessRefFix()];
+  List<Fix> getFixes() => [FunctionalRefFix()];
 }
 
-class StatelessRefFix extends RiverpodFix {
+class FunctionalRefFix extends RiverpodFix {
   @override
   void run(
     CustomLintResolver resolver,
@@ -85,7 +85,7 @@ class StatelessRefFix extends RiverpodFix {
     AnalysisError analysisError,
     List<AnalysisError> others,
   ) {
-    riverpodRegistry(context).addStatelessProviderDeclaration((declaration) {
+    riverpodRegistry(context).addFunctionalProviderDeclaration((declaration) {
       // This provider is not the one that triggered the error
       if (!analysisError.sourceRange.intersects(declaration.node.sourceRange)) {
         return;

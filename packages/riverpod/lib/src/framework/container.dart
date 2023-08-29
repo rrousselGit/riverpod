@@ -704,7 +704,7 @@ abstract class ProviderObserver {
     ProviderContainer container,
   ) {}
 
-  /// Called my providers when they emit a notification.
+  /// Called by providers when they emit a notification.
   ///
   /// - [newValue] will be `null` if the provider threw during initialization.
   /// - [previousValue] will be `null` if the previous build threw during initialization.

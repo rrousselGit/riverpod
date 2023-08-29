@@ -30,7 +30,7 @@ void main() {
       );
 
       expect(container.read(provider(10)), 52);
-      expect(container.read(provider(10).notifier).debugState, 52);
+      expect(container.read(provider(10).notifier).state, 52);
 
       expect(root.getAllProviderElements(), isEmpty);
     });
@@ -151,7 +151,7 @@ void main() {
       // try to read provider.state before provider and see if it points to the override
       final stateSub = container.listen(
         provider(0),
-        ownerStateListener,
+        ownerStateListener.call,
         fireImmediately: true,
       );
 
@@ -160,7 +160,7 @@ void main() {
 
       final notifierSub = container.listen(
         provider(0).notifier,
-        ownerNotifierListener,
+        ownerNotifierListener.call,
         fireImmediately: true,
       );
       verifyOnly(ownerNotifierListener, ownerNotifierListener(null, notifier2));

@@ -31,7 +31,7 @@ void main() {
         return ValueNotifier(0);
       });
 
-      container.listen(provider, listener);
+      container.listen(provider, listener.call);
 
       verifyZeroInteractions(listener);
       expect(ref.notifier.value, 0);

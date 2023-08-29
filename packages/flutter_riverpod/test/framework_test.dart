@@ -22,8 +22,8 @@ void main() {
         child: Consumer(
           builder: (context, r, _) {
             ref = r;
-            ref.listen(provider(0), listener);
-            ref.listen(provider(1), listener2);
+            ref.listen(provider(0), listener.call);
+            ref.listen(provider(1), listener2.call);
             return Container();
           },
         ),
@@ -55,7 +55,7 @@ void main() {
         child: Consumer(
           builder: (context, r, _) {
             ref = r;
-            ref.listen(provider, listener);
+            ref.listen(provider, listener.call);
             return Container();
           },
         ),

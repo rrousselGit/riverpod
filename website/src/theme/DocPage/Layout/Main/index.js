@@ -1,6 +1,6 @@
-import React from "react";
-import clsx from "clsx";
 import { useDocsSidebar } from "@docusaurus/theme-common/internal";
+import clsx from "clsx";
+import React from "react";
 import styles from "./styles.module.css";
 export default function DocPageLayoutMain({
   hiddenSidebarContainer,
@@ -34,7 +34,7 @@ export default function DocPageLayoutMain({
         The documentation for version 2.0 is in progress. A preview is available
         at:{" "}
         <a
-          href="https://docs-v2.riverpod.dev"
+          href="https://docs-v2.riverpod.dev/docs/introduction/why_riverpod"
           style={{
             color: "white",
             textDecoration: "underline",

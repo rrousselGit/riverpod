@@ -45,10 +45,21 @@ int transitiveDependencies(TransitiveDependenciesRef ref) => 0;
 int smallTransitiveDependencyCount(SmallTransitiveDependencyCountRef ref) => 0;
 
 @Riverpod(dependencies: [])
-int emptyDependenciesStateless(EmptyDependenciesStatelessRef ref) => 0;
+int emptyDependenciesFunctional(EmptyDependenciesFunctionalRef ref) => 0;
 
 @Riverpod(dependencies: [])
-class EmptyDependenciesStateful extends _$EmptyDependenciesStateful {
+class EmptyDependenciesClassBased extends _$EmptyDependenciesClassBased {
   @override
   int build() => 0;
 }
+
+@Riverpod(dependencies: [_privateDep, publicDep])
+int providerWithDependencies(ProviderWithDependenciesRef ref) {
+  return 0;
+}
+
+@riverpod
+int _privateDep(_PrivateDepRef ref) => 0;
+
+@riverpod
+int publicDep(PublicDepRef ref) => 0;

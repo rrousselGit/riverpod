@@ -284,7 +284,7 @@ final alwaysAlive = Provider((ref) {
     final onDispose = OnDisposeMock();
     final dep = StateProvider((ref) => 0);
     final provider = Provider.autoDispose((ref) {
-      ref.onDispose(onDispose);
+      ref.onDispose(onDispose.call);
       return ref.watch(dep);
     });
 
@@ -372,7 +372,8 @@ final alwaysAlive = Provider((ref) {
     final root = createContainer();
     final container = createContainer(parent: root);
 
-    final sub = container.listen(provider, listener, fireImmediately: true);
+    final sub =
+        container.listen(provider, listener.call, fireImmediately: true);
 
     verifyOnly(listener, listener(null, 0));
     expect(buildCount, 1);
@@ -388,7 +389,7 @@ final alwaysAlive = Provider((ref) {
     expect(container.getAllProviderElements(), isEmpty);
 
     value = 42;
-    container.listen(provider, listener, fireImmediately: true);
+    container.listen(provider, listener.call, fireImmediately: true);
 
     expect(buildCount, 2);
     expect(disposeCount, 1);
@@ -531,12 +532,12 @@ final alwaysAlive = Provider((ref) {
     final container = createContainer();
     final aDispose = OnDisposeMock();
     final a = Provider.autoDispose((ref) {
-      ref.onDispose(aDispose);
+      ref.onDispose(aDispose.call);
       return 42;
     });
     final bDispose = OnDisposeMock();
     final b = Provider.autoDispose((ref) {
-      ref.onDispose(bDispose);
+      ref.onDispose(bDispose.call);
       ref.watch(a);
       return '42';
     });
@@ -565,17 +566,17 @@ final alwaysAlive = Provider((ref) {
     final onDispose = OnDisposeMock();
     var value = 42;
     final provider = Provider.autoDispose((ref) {
-      ref.onDispose(onDispose);
+      ref.onDispose(onDispose.call);
       return value;
     });
     final onDispose2 = OnDisposeMock();
     final provider2 = Provider.autoDispose((ref) {
-      ref.onDispose(onDispose2);
+      ref.onDispose(onDispose2.call);
       return ref.watch(provider);
     });
     final listener = Listener<int>();
 
-    var sub = container.listen(provider2, listener, fireImmediately: true);
+    var sub = container.listen(provider2, listener.call, fireImmediately: true);
 
     verify(listener(null, 42)).called(1);
     verifyNoMoreInteractions(listener);
@@ -599,7 +600,7 @@ final alwaysAlive = Provider((ref) {
     verifyNoMoreInteractions(onDispose2);
 
     value = 21;
-    sub = container.listen(provider2, listener, fireImmediately: true);
+    sub = container.listen(provider2, listener.call, fireImmediately: true);
 
     verify(listener(null, 21)).called(1);
     verifyNoMoreInteractions(listener);
@@ -611,12 +612,12 @@ final alwaysAlive = Provider((ref) {
     final container = createContainer();
     final aDispose = OnDisposeMock();
     final a = Provider.autoDispose((ref) {
-      ref.onDispose(aDispose);
+      ref.onDispose(aDispose.call);
       return 42;
     });
     final bDispose = OnDisposeMock();
     final b = Provider.autoDispose((ref) {
-      ref.onDispose(bDispose);
+      ref.onDispose(bDispose.call);
       return 42;
     });
 
@@ -648,7 +649,7 @@ final alwaysAlive = Provider((ref) {
     final container = createContainer();
     final onDispose = OnDisposeMock();
     final provider = Provider.autoDispose((ref) {
-      ref.onDispose(onDispose);
+      ref.onDispose(onDispose.call);
       return 42;
     });
 
@@ -673,7 +674,7 @@ final alwaysAlive = Provider((ref) {
     final container = createContainer();
     final onDispose = OnDisposeMock();
     final provider = Provider.autoDispose((ref) {
-      ref.onDispose(onDispose);
+      ref.onDispose(onDispose.call);
       return 42;
     });
 
@@ -702,7 +703,7 @@ final alwaysAlive = Provider((ref) {
     final container = createContainer();
     final onDispose = OnDisposeMock();
     final provider = Provider.autoDispose((ref) {
-      ref.onDispose(onDispose);
+      ref.onDispose(onDispose.call);
       return 42;
     });
 
@@ -727,7 +728,7 @@ final alwaysAlive = Provider((ref) {
       () async {
     final onDispose = OnDisposeMock();
     final provider = Provider.autoDispose((ref) {
-      ref.onDispose(onDispose);
+      ref.onDispose(onDispose.call);
       return 42;
     });
     final container = createContainer();

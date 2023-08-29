@@ -53,7 +53,7 @@ void main() {
     final provider = StateProvider((ref) => 0);
     final listener = Listener<int>();
 
-    container.listen(provider, listener, fireImmediately: true);
+    container.listen(provider, listener.call, fireImmediately: true);
 
     verifyOnly(listener, listener(null, 0));
 
@@ -66,7 +66,7 @@ void main() {
     final listener = Listener<int>();
     final container = createContainer();
     final provider = StateProvider<int>((ref) {
-      ref.listenSelf(listener);
+      ref.listenSelf(listener.call);
       return 0;
     });
 
@@ -118,7 +118,7 @@ void main() {
         return 0;
       });
 
-      container.listen<int>(provider, listener);
+      container.listen<int>(provider, listener.call);
       verifyZeroInteractions(listener);
 
       expect(ref.controller, container.read(provider.notifier));
@@ -178,11 +178,11 @@ void main() {
     final container = createContainer();
 
     expect(container.read(provider), 1);
-    expect(container.read(provider.notifier).debugState, 1);
+    expect(container.read(provider.notifier).state, 1);
 
     initialValue = 42;
 
-    expect(container.refresh(provider.notifier).debugState, 42);
+    expect(container.refresh(provider.notifier).state, 42);
     expect(container.read(provider), 42);
   });
 
@@ -196,11 +196,11 @@ void main() {
       final container = createContainer();
 
       expect(container.read(provider), 1);
-      expect(container.read(provider.notifier).debugState, 1);
+      expect(container.read(provider.notifier).state, 1);
 
       initialValue = 42;
 
-      expect(container.refresh(provider.notifier).debugState, 42);
+      expect(container.refresh(provider.notifier).state, 42);
       expect(container.read(provider), 42);
     },
   );
@@ -354,7 +354,7 @@ void main() {
     final controller = container.read(provider.notifier);
     expect(controller.state, 0);
 
-    container.listen(provider, listener, fireImmediately: true);
+    container.listen(provider, listener.call, fireImmediately: true);
     verifyOnly(listener, listener(null, 0));
 
     controller.state = 42;

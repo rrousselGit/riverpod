@@ -8,9 +8,9 @@ import 'package:source_gen/source_gen.dart';
 
 import 'models.dart';
 import 'parse_generator.dart';
+import 'templates/class_based_provider.dart';
 import 'templates/family.dart';
-import 'templates/stateful_provider.dart';
-import 'templates/stateless_provider.dart';
+import 'templates/functional_provider.dart';
 
 const riverpodTypeChecker = TypeChecker.fromRuntime(Riverpod);
 
@@ -79,7 +79,8 @@ class RiverpodGenerator extends ParserGenerator<Riverpod> {
     // Only emit the header if we actually generated something
     if (buffer.isNotEmpty) {
       buffer.write('''
-// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
 ''');
     }
 
@@ -126,10 +127,10 @@ class _SystemHash {
   }
 
   @override
-  void visitStatefulProviderDeclaration(
-    StatefulProviderDeclaration provider,
+  void visitClassBasedProviderDeclaration(
+    ClassBasedProviderDeclaration provider,
   ) {
-    super.visitStatefulProviderDeclaration(provider);
+    super.visitClassBasedProviderDeclaration(provider);
 
     final hashFunctionName = _hashFnName(provider);
     final hashFn = _hashFnIdentifier(hashFunctionName);
@@ -141,7 +142,7 @@ class _SystemHash {
           ? '_\$${provider.providerElement.name.substring(1)}'
           : '_\$${provider.providerElement.name}';
 
-      StatefulProviderTemplate(
+      ClassBasedProviderTemplate(
         provider,
         options: options,
         notifierTypedefName: notifierTypedefName,
@@ -155,7 +156,7 @@ class _SystemHash {
           : '_\$${provider.providerElement.name}';
 
       maybeEmitHashUtils();
-      FamilyTemplate.stateful(
+      FamilyTemplate.classBased(
         provider,
         options: options,
         notifierTypedefName: notifierTypedefName,
@@ -165,29 +166,27 @@ class _SystemHash {
   }
 
   @override
-  void visitStatelessProviderDeclaration(
-    StatelessProviderDeclaration provider,
+  void visitFunctionalProviderDeclaration(
+    FunctionalProviderDeclaration provider,
   ) {
-    super.visitStatelessProviderDeclaration(provider);
+    super.visitFunctionalProviderDeclaration(provider);
 
     final hashFunctionName = _hashFnName(provider);
     final hashFn = _hashFnIdentifier(hashFunctionName);
     buffer.write(_hashFn(provider, hashFunctionName));
 
-    final refName = '${provider.providerElement.name.titled}Ref';
-
     // Using >1 as functional providers always have at least one parameter: ref
     // So a provider is a "family" only if it has parameters besides the ref.
     if (provider.providerElement.isFamily) {
       maybeEmitHashUtils();
-      FamilyTemplate.stateless(
+      FamilyTemplate.functional(
         provider,
         options: options,
-        refName: refName,
         hashFn: hashFn,
       ).run(buffer);
     } else {
-      StatelessProviderTemplate(
+      final refName = '${provider.providerElement.name.titled}Ref';
+      FunctionalProviderTemplate(
         provider,
         refName: refName,
         options: options,

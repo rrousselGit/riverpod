@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'stateless_ref.dart';
+part of 'functional_ref.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -89,8 +89,6 @@ class _SystemHash {
   }
 }
 
-typedef GenericsRef<A extends num, B> = AutoDisposeProviderRef<int>;
-
 /// See also [generics].
 @ProviderFor(generics)
 const genericsProvider = GenericsFamily();
@@ -131,9 +129,9 @@ class GenericsFamily extends Family {
 class GenericsProvider<A extends num, B> extends AutoDisposeProvider<int> {
   /// See also [generics].
   GenericsProvider()
-      : super.internal(
+      : this._internal(
           (ref) => generics<A, B>(
-            ref,
+            ref as GenericsRef<A, B>,
           ),
           from: genericsProvider,
           name: r'genericsProvider',
@@ -144,6 +142,37 @@ class GenericsProvider<A extends num, B> extends AutoDisposeProvider<int> {
           dependencies: GenericsFamily._dependencies,
           allTransitiveDependencies: GenericsFamily._allTransitiveDependencies,
         );
+
+  GenericsProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+  }) : super.internal();
+
+  @override
+  Override overrideWith(
+    int Function(GenericsRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: GenericsProvider._internal(
+        (ref) => create(ref as GenericsRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<int> createElement() {
+    return _GenericsProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -160,8 +189,14 @@ class GenericsProvider<A extends num, B> extends AutoDisposeProvider<int> {
   }
 }
 
+mixin GenericsRef on AutoDisposeProviderRef<int> {}
+
+class _GenericsProviderElement extends AutoDisposeProviderElement<int>
+    with GenericsRef {
+  _GenericsProviderElement(super.provider);
+}
+
 String _$noGenericsHash() => r'449264e25990bc14ad811c0940117c8cde4d730a';
-typedef NoGenericsRef<A extends num, B> = AutoDisposeProviderRef<int>;
 
 /// See also [noGenerics].
 @ProviderFor(noGenerics)
@@ -203,9 +238,9 @@ class NoGenericsFamily extends Family {
 class NoGenericsProvider<A extends num, B> extends AutoDisposeProvider<int> {
   /// See also [noGenerics].
   NoGenericsProvider()
-      : super.internal(
+      : this._internal(
           (ref) => noGenerics<A, B>(
-            ref,
+            ref as NoGenericsRef<A, B>,
           ),
           from: noGenericsProvider,
           name: r'noGenericsProvider',
@@ -217,6 +252,37 @@ class NoGenericsProvider<A extends num, B> extends AutoDisposeProvider<int> {
           allTransitiveDependencies:
               NoGenericsFamily._allTransitiveDependencies,
         );
+
+  NoGenericsProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+  }) : super.internal();
+
+  @override
+  Override overrideWith(
+    int Function(NoGenericsRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: NoGenericsProvider._internal(
+        (ref) => create(ref as NoGenericsRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<int> createElement() {
+    return _NoGenericsProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -233,8 +299,14 @@ class NoGenericsProvider<A extends num, B> extends AutoDisposeProvider<int> {
   }
 }
 
+mixin NoGenericsRef on AutoDisposeProviderRef<int> {}
+
+class _NoGenericsProviderElement extends AutoDisposeProviderElement<int>
+    with NoGenericsRef {
+  _NoGenericsProviderElement(super.provider);
+}
+
 String _$missingGenericsHash() => r'7d8bc49e4f1e466260fbf6a61a3f9e62b4aef28f';
-typedef MissingGenericsRef<A, B> = AutoDisposeProviderRef<int>;
 
 /// See also [missingGenerics].
 @ProviderFor(missingGenerics)
@@ -276,9 +348,9 @@ class MissingGenericsFamily extends Family {
 class MissingGenericsProvider<A, B> extends AutoDisposeProvider<int> {
   /// See also [missingGenerics].
   MissingGenericsProvider()
-      : super.internal(
+      : this._internal(
           (ref) => missingGenerics<A, B>(
-            ref,
+            ref as MissingGenericsRef<A, B>,
           ),
           from: missingGenericsProvider,
           name: r'missingGenericsProvider',
@@ -290,6 +362,37 @@ class MissingGenericsProvider<A, B> extends AutoDisposeProvider<int> {
           allTransitiveDependencies:
               MissingGenericsFamily._allTransitiveDependencies,
         );
+
+  MissingGenericsProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+  }) : super.internal();
+
+  @override
+  Override overrideWith(
+    int Function(MissingGenericsRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: MissingGenericsProvider._internal(
+        (ref) => create(ref as MissingGenericsRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<int> createElement() {
+    return _MissingGenericsProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -306,8 +409,14 @@ class MissingGenericsProvider<A, B> extends AutoDisposeProvider<int> {
   }
 }
 
+mixin MissingGenericsRef on AutoDisposeProviderRef<int> {}
+
+class _MissingGenericsProviderElement extends AutoDisposeProviderElement<int>
+    with MissingGenericsRef {
+  _MissingGenericsProviderElement(super.provider);
+}
+
 String _$wrongOrderHash() => r'6732863e85b220c07f82c2d13be15c1e6f08192d';
-typedef WrongOrderRef<B, A> = AutoDisposeProviderRef<int>;
 
 /// See also [wrongOrder].
 @ProviderFor(wrongOrder)
@@ -349,9 +458,9 @@ class WrongOrderFamily extends Family {
 class WrongOrderProvider<B, A> extends AutoDisposeProvider<int> {
   /// See also [wrongOrder].
   WrongOrderProvider()
-      : super.internal(
+      : this._internal(
           (ref) => wrongOrder<B, A>(
-            ref,
+            ref as WrongOrderRef<B, A>,
           ),
           from: wrongOrderProvider,
           name: r'wrongOrderProvider',
@@ -363,6 +472,37 @@ class WrongOrderProvider<B, A> extends AutoDisposeProvider<int> {
           allTransitiveDependencies:
               WrongOrderFamily._allTransitiveDependencies,
         );
+
+  WrongOrderProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+  }) : super.internal();
+
+  @override
+  Override overrideWith(
+    int Function(WrongOrderRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: WrongOrderProvider._internal(
+        (ref) => create(ref as WrongOrderRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<int> createElement() {
+    return _WrongOrderProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -378,4 +518,12 @@ class WrongOrderProvider<B, A> extends AutoDisposeProvider<int> {
     return _SystemHash.finish(hash);
   }
 }
-// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions
+
+mixin WrongOrderRef on AutoDisposeProviderRef<int> {}
+
+class _WrongOrderProviderElement extends AutoDisposeProviderElement<int>
+    with WrongOrderRef {
+  _WrongOrderProviderElement(super.provider);
+}
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member

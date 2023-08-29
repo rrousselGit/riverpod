@@ -179,7 +179,7 @@ class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
     extends ProviderElementBase<NotifierT>
     implements ChangeNotifierProviderRef<NotifierT> {
   ChangeNotifierProviderElement._(
-    _ChangeNotifierProviderBase<NotifierT> super.provider,
+    _ChangeNotifierProviderBase<NotifierT> super._provider,
   );
 
   @override
@@ -246,7 +246,7 @@ class ChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?, Arg>
         NotifierT, ChangeNotifierProvider<NotifierT>> {
   /// The [Family] of [ChangeNotifierProvider].
   ChangeNotifierProviderFamily(
-    super.create, {
+    super._createFn, {
     super.name,
     super.dependencies,
   }) : super(

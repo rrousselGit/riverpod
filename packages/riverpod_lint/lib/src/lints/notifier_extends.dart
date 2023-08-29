@@ -47,11 +47,11 @@ String genericsDisplayStringFor(TypeParameterList? typeParameters) {
   return '<${typeParameters.typeParameters.map((e) => e.name).join(', ')}>';
 }
 
-class GeneratorClassExtends extends RiverpodLintRule {
-  const GeneratorClassExtends() : super(code: _code);
+class NotifierExtends extends RiverpodLintRule {
+  const NotifierExtends() : super(code: _code);
 
   static const _code = LintCode(
-    name: 'generator_class_extends',
+    name: 'notifier_extends',
     problemMessage: r'Classes annotated by @riverpod must extend _$ClassName',
   );
 
@@ -61,7 +61,7 @@ class GeneratorClassExtends extends RiverpodLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    riverpodRegistry(context).addStatefulProviderDeclaration((declaration) {
+    riverpodRegistry(context).addClassBasedProviderDeclaration((declaration) {
       final extendsClause = declaration.node.extendsClause;
 
       if (extendsClause == null) {
@@ -71,7 +71,7 @@ class GeneratorClassExtends extends RiverpodLintRule {
       }
 
       final expectedClassName = _generatedClassName(declaration);
-      if (extendsClause.superclass.name.name != expectedClassName) {
+      if (extendsClause.superclass.name2.lexeme != expectedClassName) {
         // No type specified. Underlining the ref name
         reporter.reportErrorForNode(_code, extendsClause.superclass);
         return;
@@ -95,10 +95,10 @@ class GeneratorClassExtends extends RiverpodLintRule {
   }
 
   @override
-  List<Fix> getFixes() => [GeneratorClassExtendsFix()];
+  List<Fix> getFixes() => [NotifierExtendsFix()];
 }
 
-class GeneratorClassExtendsFix extends RiverpodFix {
+class NotifierExtendsFix extends RiverpodFix {
   @override
   void run(
     CustomLintResolver resolver,
@@ -107,7 +107,7 @@ class GeneratorClassExtendsFix extends RiverpodFix {
     AnalysisError analysisError,
     List<AnalysisError> others,
   ) {
-    riverpodRegistry(context).addStatefulProviderDeclaration((declaration) {
+    riverpodRegistry(context).addClassBasedProviderDeclaration((declaration) {
       // This provider is not the one that triggered the error
       if (!analysisError.sourceRange.intersects(declaration.node.sourceRange)) {
         return;

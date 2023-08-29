@@ -38,11 +38,11 @@ void main() {
       late Ref<int> ref;
       final provider = Provider<int>((r) {
         ref = r;
-        ref.listenSelf(selfListener);
+        ref.listenSelf(selfListener.call);
         return 0;
       });
 
-      container.listen(provider, listener, fireImmediately: true);
+      container.listen(provider, listener.call, fireImmediately: true);
 
       verifyOnly(observer, observer.didAddProvider(provider, 0, container));
       verifyOnly(listener, listener(null, 0));
@@ -66,12 +66,12 @@ void main() {
       final listener = Listener<int>();
       final container = createContainer(observers: [observer]);
       final provider = Provider<int>((ref) {
-        ref.listenSelf(selfListener);
+        ref.listenSelf(selfListener.call);
         ref.notifyListeners();
         return 0;
       });
 
-      container.listen(provider, listener, fireImmediately: true);
+      container.listen(provider, listener.call, fireImmediately: true);
 
       verifyOnly(observer, observer.didAddProvider(provider, 0, container));
       verifyOnly(listener, listener(null, 0));
@@ -90,14 +90,14 @@ void main() {
       const secondValue = 'second';
       var result = firstValue;
       final provider = Provider<Object>((ref) {
-        ref.listenSelf(selfListener);
+        ref.listenSelf(selfListener.call);
         if (callNotifyListeners) {
           ref.notifyListeners();
         }
         return result;
       });
 
-      container.listen(provider, listener, fireImmediately: true);
+      container.listen(provider, listener.call, fireImmediately: true);
 
       verifyOnly(
         observer,
@@ -141,9 +141,9 @@ void main() {
 
       container.read(another);
 
-      container.listen(provider(0), listener, fireImmediately: true);
-      container.listen(provider(1), listener2, fireImmediately: true);
-      container.listen(unrelated, listener3, fireImmediately: true);
+      container.listen(provider(0), listener.call, fireImmediately: true);
+      container.listen(provider(1), listener2.call, fireImmediately: true);
+      container.listen(unrelated, listener3.call, fireImmediately: true);
 
       verifyOnly(listener, listener(null, '0-0'));
       verifyOnly(listener2, listener2(null, '0-1'));
@@ -180,8 +180,8 @@ void main() {
       );
 
       container.read(another);
-      root.listen(provider(0), listener, fireImmediately: true);
-      container.listen(provider(1), listener2, fireImmediately: true);
+      root.listen(provider(0), listener.call, fireImmediately: true);
+      container.listen(provider(1), listener2.call, fireImmediately: true);
 
       verifyOnly(listener, listener(null, 0));
       verifyOnly(listener2, listener2(null, 0));
@@ -209,7 +209,7 @@ void main() {
       ref = r;
     });
 
-    container.listen(provider, listener);
+    container.listen(provider, listener.call);
     container.read(another);
     verifyZeroInteractions(listener);
 
@@ -231,7 +231,7 @@ void main() {
       late Ref ref;
       final provider = Provider((r) {
         ref = r;
-        ref.onDispose(listener);
+        ref.onDispose(listener.call);
       });
 
       container.read(provider);
@@ -256,7 +256,7 @@ void main() {
         return result;
       });
 
-      container.listen(provider, listener);
+      container.listen(provider, listener.call);
       verifyZeroInteractions(listener);
 
       ref.invalidateSelf();
@@ -280,7 +280,7 @@ void main() {
         return ref.watch(dep);
       });
 
-      container.listen(provider, listener);
+      container.listen(provider, listener.call);
       verifyZeroInteractions(listener);
 
       ref.invalidateSelf();
@@ -299,7 +299,7 @@ void main() {
       final container = createContainer();
       final listener = OnRemoveListener();
       final provider = Provider((ref) {
-        ref.onRemoveListener(listener);
+        ref.onRemoveListener(listener.call);
       });
 
       container.read(provider);
@@ -312,8 +312,8 @@ void main() {
       final listener = OnRemoveListener();
       final listener2 = OnRemoveListener();
       final provider = Provider((ref) {
-        ref.onRemoveListener(listener);
-        ref.onRemoveListener(listener2);
+        ref.onRemoveListener(listener.call);
+        ref.onRemoveListener(listener2.call);
       });
 
       final sub = container.listen<void>(provider, (previous, next) {});
@@ -345,8 +345,8 @@ void main() {
       final dep = Provider(
         name: 'dep',
         (ref) {
-          ref.onRemoveListener(listener);
-          ref.onRemoveListener(listener2);
+          ref.onRemoveListener(listener.call);
+          ref.onRemoveListener(listener2.call);
         },
       );
       late Ref ref;
@@ -390,8 +390,8 @@ void main() {
       final dep = Provider(
         name: 'dep',
         (ref) {
-          ref.onRemoveListener(listener);
-          ref.onRemoveListener(listener2);
+          ref.onRemoveListener(listener.call);
+          ref.onRemoveListener(listener2.call);
         },
       );
       late Ref ref;
@@ -422,9 +422,9 @@ void main() {
       var isSecondBuild = false;
       final provider = Provider((ref) {
         if (isSecondBuild) {
-          ref.onRemoveListener(listener2);
+          ref.onRemoveListener(listener2.call);
         } else {
-          ref.onRemoveListener(listener);
+          ref.onRemoveListener(listener.call);
         }
       });
 
@@ -447,8 +447,8 @@ void main() {
       final listener2 = OnRemoveListener();
       when(listener()).thenThrow(42);
       final provider = Provider((ref) {
-        ref.onRemoveListener(listener);
-        ref.onRemoveListener(listener2);
+        ref.onRemoveListener(listener.call);
+        ref.onRemoveListener(listener2.call);
       });
 
       final sub = container.listen<void>(provider, (prev, next) {});
@@ -470,7 +470,7 @@ void main() {
       final container = createContainer();
       final listener = OnAddListener();
       final provider = Provider((ref) {
-        ref.onAddListener(listener);
+        ref.onAddListener(listener.call);
       });
 
       container.read(provider);
@@ -483,8 +483,8 @@ void main() {
       final listener = OnAddListener();
       final listener2 = OnAddListener();
       final provider = Provider((ref) {
-        ref.onAddListener(listener);
-        ref.onAddListener(listener2);
+        ref.onAddListener(listener.call);
+        ref.onAddListener(listener2.call);
       });
 
       container.listen<void>(provider, (previous, next) {});
@@ -507,8 +507,8 @@ void main() {
       final dep = Provider(
         name: 'dep',
         (ref) {
-          ref.onAddListener(listener);
-          ref.onAddListener(listener2);
+          ref.onAddListener(listener.call);
+          ref.onAddListener(listener2.call);
         },
       );
       late Ref ref;
@@ -540,8 +540,8 @@ void main() {
       final dep = Provider(
         name: 'dep',
         (ref) {
-          ref.onAddListener(listener);
-          ref.onAddListener(listener2);
+          ref.onAddListener(listener.call);
+          ref.onAddListener(listener2.call);
         },
       );
       late Ref ref;
@@ -584,9 +584,9 @@ void main() {
       var isSecondBuild = false;
       final provider = Provider((ref) {
         if (isSecondBuild) {
-          ref.onAddListener(listener2);
+          ref.onAddListener(listener2.call);
         } else {
-          ref.onAddListener(listener);
+          ref.onAddListener(listener.call);
         }
       });
 
@@ -608,8 +608,8 @@ void main() {
       final listener2 = OnAddListener();
       when(listener()).thenThrow(42);
       final provider = Provider((ref) {
-        ref.onAddListener(listener);
-        ref.onAddListener(listener2);
+        ref.onAddListener(listener.call);
+        ref.onAddListener(listener2.call);
       });
 
       runZonedGuarded(
@@ -629,7 +629,7 @@ void main() {
       final container = createContainer();
       final listener = OnResume();
       final provider = Provider((ref) {
-        ref.onResume(listener);
+        ref.onResume(listener.call);
       });
 
       container.read(provider);
@@ -644,8 +644,8 @@ void main() {
       final listener = OnResume();
       final listener2 = OnResume();
       final provider = Provider((ref) {
-        ref.onResume(listener);
-        ref.onResume(listener2);
+        ref.onResume(listener.call);
+        ref.onResume(listener2.call);
       });
 
       final sub = container.listen<void>(provider, (previous, next) {});
@@ -673,8 +673,8 @@ void main() {
       final dep = Provider(
         name: 'dep',
         (ref) {
-          ref.onResume(listener);
-          ref.onResume(listener2);
+          ref.onResume(listener.call);
+          ref.onResume(listener2.call);
         },
       );
       late Ref ref;
@@ -707,7 +707,7 @@ void main() {
       final container = createContainer();
       final listener = OnResume();
       final provider = Provider((ref) {
-        ref.onResume(listener);
+        ref.onResume(listener.call);
       });
 
       final sub = container.listen<void>(provider, (previous, next) {});
@@ -727,8 +727,8 @@ void main() {
       final dep = Provider(
         name: 'dep',
         (ref) {
-          ref.onAddListener(listener);
-          ref.onAddListener(listener2);
+          ref.onAddListener(listener.call);
+          ref.onAddListener(listener2.call);
         },
       );
       late Ref ref;
@@ -759,9 +759,9 @@ void main() {
       var isSecondBuild = false;
       final provider = Provider((ref) {
         if (isSecondBuild) {
-          ref.onResume(listener2);
+          ref.onResume(listener2.call);
         } else {
-          ref.onResume(listener);
+          ref.onResume(listener.call);
         }
       });
 
@@ -786,7 +786,7 @@ void main() {
       final container = createContainer();
       final listener = OnResume();
       final provider = Provider((ref) {
-        ref.onResume(listener);
+        ref.onResume(listener.call);
       });
 
       final sub = container.listen<void>(provider, (previous, next) {});
@@ -811,8 +811,8 @@ void main() {
       final listener2 = OnResume();
       when(listener()).thenThrow(42);
       final provider = Provider((ref) {
-        ref.onResume(listener);
-        ref.onResume(listener2);
+        ref.onResume(listener.call);
+        ref.onResume(listener2.call);
       });
 
       final sub = container.listen<void>(provider, (previous, next) {});
@@ -842,7 +842,7 @@ void main() {
         final container = createContainer();
         final onCancel = OnCancelMock();
         final dep = StateProvider((ref) {
-          ref.onCancel(onCancel);
+          ref.onCancel(onCancel.call);
           return 0;
         });
         final provider = Provider.autoDispose((ref) => ref.watch(dep));
@@ -866,8 +866,8 @@ void main() {
       final listener = OnCancelMock();
       final listener2 = OnCancelMock();
       final provider = Provider((ref) {
-        ref.onCancel(listener);
-        ref.onCancel(listener2);
+        ref.onCancel(listener.call);
+        ref.onCancel(listener2.call);
       });
 
       final sub = container.listen<void>(provider, (previous, next) {});
@@ -892,8 +892,8 @@ void main() {
       final listener = OnCancelMock();
       final listener2 = OnCancelMock();
       final dep = Provider((ref) {
-        ref.onCancel(listener);
-        ref.onCancel(listener2);
+        ref.onCancel(listener.call);
+        ref.onCancel(listener2.call);
       });
       late Ref ref;
       final provider = Provider((r) {
@@ -923,8 +923,8 @@ void main() {
       final listener = OnCancelMock();
       final listener2 = OnCancelMock();
       final dep = Provider((ref) {
-        ref.onCancel(listener);
-        ref.onCancel(listener2);
+        ref.onCancel(listener.call);
+        ref.onCancel(listener2.call);
       });
       var watching = true;
       final provider = Provider((ref) {
@@ -958,7 +958,7 @@ void main() {
       final container = createContainer();
       final listener = OnCancelMock();
       final provider = Provider((ref) {
-        ref.onCancel(listener);
+        ref.onCancel(listener.call);
       });
 
       container.read(provider);
@@ -976,8 +976,8 @@ void main() {
         final dispose = OnDisposeMock();
         final provider = StateProvider.autoDispose((ref) {
           ref.keepAlive();
-          ref.onCancel(listener);
-          ref.onDispose(dispose);
+          ref.onCancel(listener.call);
+          ref.onDispose(dispose.call);
         });
 
         container.read(provider);
@@ -995,9 +995,9 @@ void main() {
       var isSecondBuild = false;
       final provider = Provider((ref) {
         if (isSecondBuild) {
-          ref.onCancel(listener2);
+          ref.onCancel(listener2.call);
         } else {
-          ref.onCancel(listener);
+          ref.onCancel(listener.call);
         }
       });
 
@@ -1027,8 +1027,8 @@ void main() {
       final listener2 = OnCancelMock();
       when(listener()).thenThrow(42);
       final provider = Provider((ref) {
-        ref.onCancel(listener);
-        ref.onCancel(listener2);
+        ref.onCancel(listener.call);
+        ref.onCancel(listener2.call);
       });
 
       final sub = container.listen<void>(provider, (previous, next) {});
@@ -1057,7 +1057,7 @@ void main() {
     final dep = StateProvider((ref) => 0);
     final provider = Provider.autoDispose((ref) {
       ref.watch(dep);
-      ref.onDispose(onDispose);
+      ref.onDispose(onDispose.call);
     });
 
     when(onDispose()).thenAnswer((realInvocation) {
@@ -1096,7 +1096,7 @@ void main() {
     final listener = Listener<int?>();
 
     expect(container.read(dep), 10);
-    container.listen<int?>(dependent, listener, fireImmediately: true);
+    container.listen<int?>(dependent, listener.call, fireImmediately: true);
 
     verifyOnly(listener, listener(null, null));
 
@@ -1254,7 +1254,7 @@ void main() {
       return ref.state = 0;
     });
 
-    container.listen(provider, listener, fireImmediately: true);
+    container.listen(provider, listener.call, fireImmediately: true);
 
     verifyOnly(listener, listener(null, 0));
 

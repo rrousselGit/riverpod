@@ -29,6 +29,41 @@ void main() {
     expect(familyClassProvider(42, third: .42).name, 'familyClassProvider');
   });
 
+  test('Supports overriding non-family notifiers', () {
+    final container = createContainer(
+      overrides: [
+        publicClassProvider.overrideWith(() => PublicClass('Hello world')),
+      ],
+    );
+
+    final notifier = container.read(publicClassProvider.notifier);
+    expect(notifier.param, 'Hello world');
+
+    expect(notifier.ref, isNotNull);
+    expect(notifier.state, isNotNull);
+  });
+
+  test('Supports overriding family notifiers', () {
+    final container = createContainer(
+      overrides: [
+        familyClassProvider(42, third: .42)
+            .overrideWith(() => FamilyClass('Hello world')),
+      ],
+    );
+
+    final notifier =
+        container.read(familyClassProvider(42, third: .42).notifier);
+    expect(notifier.param, 'Hello world');
+    expect(notifier.first, 42);
+    expect(notifier.second, null);
+    expect(notifier.third, .42);
+    expect(notifier.fourth, true);
+    expect(notifier.fifth, null);
+
+    expect(notifier.ref, isNotNull);
+    expect(notifier.state, isNotNull);
+  });
+
   test(
       'Creates a NotifierProvider.family<T> if @riverpod is used on a synchronous function with parameters',
       () async {

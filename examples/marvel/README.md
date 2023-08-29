@@ -45,7 +45,7 @@ Where `public_key` and `private_key` are obtained from https://developer.marvel.
 Since this project uses [freezed](https://pub.dev/packages/freezed) for code generation, be sure to run the generator with the following command before attempting to build/run the application:
 
 ```sh
-flutter pub run build_runner build
+dart run build_runner build -d
 ```
 
 [riverpod]: https://github.com/rrousselGit/riverpod

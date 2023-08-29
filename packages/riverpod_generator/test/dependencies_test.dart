@@ -30,12 +30,12 @@ void main() {
     expect(transitiveDependenciesProvider.dependencies, [providerProvider]);
 
     expect(
-      emptyDependenciesStatelessProvider.dependencies,
+      emptyDependenciesFunctionalProvider.dependencies,
       same(const <ProviderOrFamily>[]),
     );
 
     expect(
-      emptyDependenciesStatefulProvider.dependencies,
+      emptyDependenciesClassBasedProvider.dependencies,
       same(const <ProviderOrFamily>[]),
     );
   });
@@ -75,13 +75,13 @@ void main() {
     );
 
     expect(
-      emptyDependenciesStatelessProvider.allTransitiveDependencies,
-      same(const <ProviderOrFamily>[]),
+      emptyDependenciesFunctionalProvider.allTransitiveDependencies,
+      same(const <ProviderOrFamily>{}),
     );
 
     expect(
-      emptyDependenciesStatefulProvider.allTransitiveDependencies,
-      same(const <ProviderOrFamily>[]),
+      emptyDependenciesClassBasedProvider.allTransitiveDependencies,
+      same(const <ProviderOrFamily>{}),
     );
   });
 
@@ -111,12 +111,12 @@ void main() {
       same(smallTransitiveDependencyCountProvider.dependencies),
     );
     expect(
-      emptyDependenciesStatelessProvider.dependencies,
-      same(emptyDependenciesStatelessProvider.dependencies),
+      emptyDependenciesFunctionalProvider.dependencies,
+      same(emptyDependenciesFunctionalProvider.dependencies),
     );
     expect(
-      emptyDependenciesStatefulProvider.dependencies,
-      same(emptyDependenciesStatefulProvider.dependencies),
+      emptyDependenciesClassBasedProvider.dependencies,
+      same(emptyDependenciesClassBasedProvider.dependencies),
     );
 
     expect(

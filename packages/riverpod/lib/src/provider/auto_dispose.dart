@@ -41,7 +41,7 @@ class AutoDisposeProvider<T> extends InternalProvider<T> {
 
   @override
   AutoDisposeProviderElement<T> createElement() {
-    return AutoDisposeProviderElement._(this);
+    return AutoDisposeProviderElement(this);
   }
 
   /// {@macro riverpod.overridewith}
@@ -68,8 +68,8 @@ class AutoDisposeProviderElement<T> extends ProviderElement<T>
     with AutoDisposeProviderElementMixin<T>
     implements AutoDisposeProviderRef<T> {
   /// The [ProviderElementBase] for [Provider]
-  AutoDisposeProviderElement._(AutoDisposeProvider<T> super.provider)
-      : super._();
+  @internal
+  AutoDisposeProviderElement(AutoDisposeProvider<T> super._provider);
 }
 
 /// The [Family] of [AutoDisposeProvider]
@@ -77,7 +77,7 @@ class AutoDisposeProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
     AutoDisposeProviderRef<R>, R, Arg, R, AutoDisposeProvider<R>> {
   /// The [Family] of [AutoDisposeProvider]
   AutoDisposeProviderFamily(
-    super.create, {
+    super._createFn, {
     super.name,
     super.dependencies,
   }) : super(

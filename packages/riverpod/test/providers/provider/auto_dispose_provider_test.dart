@@ -16,7 +16,7 @@ void main() {
           return 0;
         });
 
-        container.listen(provider, listener);
+        container.listen(provider, listener.call);
         verifyZeroInteractions(listener);
 
         expect(ref.state, 0);
@@ -105,7 +105,7 @@ void main() {
         return 0;
       });
 
-      container.listen(provider, listener, fireImmediately: true);
+      container.listen(provider, listener.call, fireImmediately: true);
 
       verifyOnly(listener, listener(null, 0));
 
@@ -124,7 +124,7 @@ void main() {
         expect(container.read(provider), 0);
         expect(container.getAllProviderElements(), [
           isA<ProviderElementBase<Object?>>()
-              .having((e) => e.origin, 'origin', provider)
+              .having((e) => e.origin, 'origin', provider),
         ]);
         expect(root.getAllProviderElements(), isEmpty);
       });
@@ -142,7 +142,7 @@ void main() {
         expect(container.read(provider), 42);
         expect(container.getAllProviderElements(), [
           isA<ProviderElementBase<Object?>>()
-              .having((e) => e.origin, 'origin', provider)
+              .having((e) => e.origin, 'origin', provider),
         ]);
         expect(root.getAllProviderElements(), isEmpty);
       });
@@ -160,7 +160,7 @@ void main() {
         expect(container.read(provider), 42);
         expect(container.getAllProviderElements(), [
           isA<ProviderElementBase<Object?>>()
-              .having((e) => e.origin, 'origin', provider)
+              .having((e) => e.origin, 'origin', provider),
         ]);
         expect(root.getAllProviderElements(), isEmpty);
       });
