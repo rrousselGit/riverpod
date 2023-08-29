@@ -354,6 +354,9 @@ class ConsumerWidgetVisitor extends RecursiveAstVisitor<void> {
   /// The consumer widget that is being visited.
   final ClassElement consumer;
 
+  /// The dictionary of local providers names.
+  final context = <String, VariableElement>{};
+
   @override
   void visitMethodInvocation(MethodInvocation node) {
     super.visitMethodInvocation(node);
@@ -366,7 +369,15 @@ class ConsumerWidgetVisitor extends RecursiveAstVisitor<void> {
       final providerExpression = node.argumentList.arguments.firstOrNull;
       if (providerExpression == null) return;
 
-      final consumedProvider = parseProviderFromExpression(providerExpression);
+      final consumedProvider =
+          parseProviderFromExpression(providerExpression, context);
+
+      // update context
+      final parent = node.parent;
+      if (parent is VariableDeclaration) {
+        context[parent.name.toString()] = consumedProvider;
+      }
+
       switch (node.methodName.name) {
         case 'watch':
           graph
@@ -422,6 +433,9 @@ class ProviderDependencyVisitor extends RecursiveAstVisitor<void> {
 
   /// The provider that is being visited.
   final VariableElement provider;
+
+  /// The dictionary of local providers names.
+  final context = <String, VariableElement>{};
 
   /// The current unit.
   final ResolvedLibraryResult unit;
@@ -629,7 +643,15 @@ class ProviderDependencyVisitor extends RecursiveAstVisitor<void> {
       final providerExpression = node.argumentList.arguments.firstOrNull;
       if (providerExpression == null) return;
 
-      final consumedProvider = parseProviderFromExpression(providerExpression);
+      final consumedProvider =
+          parseProviderFromExpression(providerExpression, context);
+
+      // update context
+      final parent = node.parent;
+      if (parent is VariableDeclaration) {
+        context[parent.name.toString()] = consumedProvider;
+      }
+
       switch (node.methodName.name) {
         case 'watch':
           graph
@@ -713,7 +735,8 @@ String? _displayDocCommentForWidget(ClassElement definition) {
 /// - `watch(family(id))`
 /// - `watch(variable.select(...))`
 /// - `watch(family(id).select(...))`
-VariableElement parseProviderFromExpression(Expression providerExpression) {
+VariableElement parseProviderFromExpression(
+    Expression providerExpression, Map<String, VariableElement> context) {
   if (providerExpression is PropertyAccess) {
     final staticElement = providerExpression.propertyName.staticElement;
     if (staticElement is PropertyAccessorElement &&
@@ -722,8 +745,21 @@ VariableElement parseProviderFromExpression(Expression providerExpression) {
       return staticElement.declaration.variable;
     }
     final target = providerExpression.realTarget;
-    return parseProviderFromExpression(target);
+    return parseProviderFromExpression(target, context);
   } else if (providerExpression is PrefixedIdentifier) {
+    if (providerExpression.name.isStartedLowerCaseLetter &&
+        !providerExpression.name.endsWith('.notifier') &&
+        !providerExpression.name.endsWith('.future')) {
+      // watch(localVariable.provider)
+      final name = providerExpression.name.split('.')[0];
+      final Object? staticElement = providerExpression.staticElement;
+      if (staticElement == null && context.containsKey(name)) {
+        return context[name]!;
+      }
+      if (staticElement is PropertyAccessorElement) {
+        return staticElement.variable;
+      }
+    }
     if (providerExpression.name.isStartedUpperCaseLetter) {
       // watch(SomeClass.provider)
       final Object? staticElement = providerExpression.staticElement;
@@ -732,7 +768,7 @@ VariableElement parseProviderFromExpression(Expression providerExpression) {
       }
     }
     // watch(provider.modifier)
-    return parseProviderFromExpression(providerExpression.prefix);
+    return parseProviderFromExpression(providerExpression.prefix, context);
   } else if (providerExpression is Identifier) {
     // watch(variable)
     final Object? staticElement = providerExpression.staticElement;
@@ -741,11 +777,11 @@ VariableElement parseProviderFromExpression(Expression providerExpression) {
     }
   } else if (providerExpression is FunctionExpressionInvocation) {
     // watch(family(id))
-    return parseProviderFromExpression(providerExpression.function);
+    return parseProviderFromExpression(providerExpression.function, context);
   } else if (providerExpression is MethodInvocation) {
     // watch(variable.select(...)) or watch(family(id).select(...))
     final target = providerExpression.realTarget;
-    if (target != null) return parseProviderFromExpression(target);
+    if (target != null) return parseProviderFromExpression(target, context);
   }
 
   throw UnsupportedError(
@@ -768,6 +804,9 @@ extension on Element {
 extension on String {
   bool get isStartedUpperCaseLetter =>
       isNotEmpty && _firstLetter == _firstLetter.toUpperCase();
+
+  bool get isStartedLowerCaseLetter =>
+      isNotEmpty && _firstLetter == _firstLetter.toLowerCase();
 
   String get _firstLetter => substring(0, 1);
 }
