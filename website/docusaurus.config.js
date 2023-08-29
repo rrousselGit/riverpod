@@ -36,7 +36,7 @@ module.exports = {
       },
       items: [
         {
-          to: "docs/why_riverpod",
+          to: "docs/introduction/why_riverpod",
           activeBasePath: "docs",
           label: "Docs",
           position: "right",
@@ -63,11 +63,11 @@ module.exports = {
           items: [
             {
               label: "Why Riverpod?",
-              to: "docs/why_riverpod",
+              to: "docs/introduction/why_riverpod",
             },
             {
               label: "Getting started",
-              to: "docs/getting_started",
+              to: "docs/introduction/getting_started",
             },
           ],
         },
@@ -93,6 +93,10 @@ module.exports = {
             {
               label: "Code of conduct",
               href: "https://github.com/rrousselGit/riverpod/blob/master/CODE_OF_CONDUCT.md",
+            },
+            {
+              label: "Contributing guide",
+              href: "https://github.com/rrousselGit/riverpod/blob/rework-flow/CONTRIBUTING.md",
             },
           ],
         },

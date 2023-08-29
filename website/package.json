@@ -3,22 +3,23 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "generate-outdated-translations.js": "node outdated_docs_generator.js",
+    "meta_generator": "node meta_generator.js",
     "docusaurus": "docusaurus",
-    "start": "docusaurus start",
-    "build": "npm run generate-outdated-translations.js && docusaurus build",
+    "start": "npm run meta_generator && docusaurus start",
+    "build": "npm run meta_generator && docusaurus build",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
     "clear": "docusaurus clear",
     "serve": "docusaurus serve",
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
-    "dev": "docusaurus start"
+    "dev": "npm run meta_generator && docusaurus start"
   },
   "dependencies": {
     "@babel/helper-get-function-arity": "^7.16.7",
     "@docusaurus/core": "^2.3.1",
     "@docusaurus/preset-classic": "^2.3.1",
+    "@docusaurus/theme-common": "^2.4.1",
     "docusaurus-plugin-sass": "^0.2.3",
     "raw-loader": "^4.0.2",
     "react": "^17.0.0",

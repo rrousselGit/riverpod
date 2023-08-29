@@ -16,23 +16,22 @@ class TodoListView extends ConsumerWidget {
     final asyncTodos = ref.watch(asyncTodosProvider);
 
     // Let's render the todos in a scrollable list view
-    return asyncTodos.when(
-      data: (todos) => ListView(
-        children: [
-          for (final todo in todos)
-            CheckboxListTile(
-              value: todo.completed,
-              // When tapping on the todo, change its completed status
-              onChanged: (value) =>
-                  ref.read(asyncTodosProvider.notifier).toggle(todo.id),
-              title: Text(todo.description),
-            ),
-        ],
-      ),
-      loading: () => const Center(
-        child: CircularProgressIndicator(),
-      ),
-      error: (err, stack) => Text('Error: $err'),
-    );
+    return switch (asyncTodos) {
+      AsyncData(:final value) => ListView(
+          children: [
+            for (final todo in value)
+              CheckboxListTile(
+                value: todo.completed,
+                // When tapping on the todo, change its completed status
+                onChanged: (value) {
+                  ref.read(asyncTodosProvider.notifier).toggle(todo.id);
+                },
+                title: Text(todo.description),
+              ),
+          ],
+        ),
+      AsyncError(:final error) => Text('Error: $error'),
+      _ => const Center(child: CircularProgressIndicator()),
+    };
   }
 }

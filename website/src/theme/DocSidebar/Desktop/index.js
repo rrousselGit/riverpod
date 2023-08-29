@@ -7,6 +7,7 @@ import Content from "@theme/DocSidebar/Desktop/Content";
 import styles from "./styles.module.css";
 import { CodegenContext, FlutterHooksContext } from "../../DocPage/Layout";
 import Translate, { translate } from "@docusaurus/Translate";
+import "./toggle.scss";
 
 function DocSidebarDesktop({ path, sidebar, onCollapse, isHidden }) {
   const {
@@ -62,7 +63,7 @@ export function SidebarHead({ direction }) {
             </label>
           }
           docsProps={{
-            href: "/docs/about_code_generation",
+            href: "/docs/concepts/about_code_generation",
             title: translate({ message: "About code generation" }),
           }}
         ></Toggle>
@@ -71,7 +72,7 @@ export function SidebarHead({ direction }) {
           onClick={() => setFlutterHooks(!flutterHooks)}
           leading={<label>flutter_hooks</label>}
           docsProps={{
-            href: "/docs/about_hooks",
+            href: "/docs/concepts/about_hooks",
             title: translate({ message: "About hooks" }),
           }}
         ></Toggle>
@@ -89,16 +90,7 @@ export function SidebarHead({ direction }) {
 
 export function Toggle({ checked, onClick, leading, docsProps }) {
   return (
-    <div
-      style={{
-        padding: "5px 16px",
-        paddingRight: 40,
-        transition: "background-color .5s",
-        borderRadius: 8,
-        fontWeight: 600,
-        fontSize: 14,
-      }}
-    >
+    <div className={clsx("toggle", checked ? "checked" : undefined)}>
       <div style={{ display: "flex", alignItems: "center" }}>
         {leading}
         <button

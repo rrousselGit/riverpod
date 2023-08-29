@@ -2,21 +2,22 @@
 title: Combining Provider States
 ---
 
-import charactersProvider from './combining_provider_states/characters_provider'
-import cityProvider from './combining_provider_states/city_provider'
-import filteredTodoListProvider from './combining_provider_states/filtered_todo_list_provider'
-import readInProvider from './combining_provider_states/read_in_provider'
-import selectAsyncProvider from './combining_provider_states/select_async_provider'
-import todoListProvider from './combining_provider_states/todo_list_provider'
-import weatherProvider from './combining_provider_states/weather_provider'
-import wholeObjectProvider from './combining_provider_states/whole_object_provider'
+import charactersProvider from "./combining_provider_states/characters_provider";
+import cityProvider from "./combining_provider_states/city_provider";
+import filteredTodoListProvider from "./combining_provider_states/filtered_todo_list_provider";
+import readInProvider from "./combining_provider_states/read_in_provider";
+import selectAsyncProvider from "./combining_provider_states/select_async_provider";
+import todoListProvider from "./combining_provider_states/todo_list_provider";
+import weatherProvider from "./combining_provider_states/weather_provider";
+import wholeObjectProvider from "./combining_provider_states/whole_object_provider";
+import { Link } from "../../src/components/Link";
 import {
   trimSnippet,
   AutoSnippet,
-  ConditionalSnippet,
+  When,
 } from "../../src/components/CodeSnippet";
 
-Make sure to [read about Providers](/docs/concepts/providers) first.  
+Make sure to <Link documentID="concepts/providers"/> first.  
 In this guide, we will learn about combining provider states.
 
 ## Combining provider states
@@ -51,7 +52,7 @@ When using [watch], Riverpod is able to detect that the value being listened to 
 and will _automatically_ re-execute the provider's creation callback when needed.
 
 This can be useful for computed states.
-For example, consider a [NotifierProvider](/docs/providers/notifier_provider) that exposes a todo-list:
+For example, consider a <Link documentID="providers/notifier_provider"/> that exposes a todo-list:
 
 <AutoSnippet language="dart" {...todoListProvider}></AutoSnippet>
 
@@ -182,11 +183,11 @@ what you need in `Configuration` (so `host`):
 
 **AVOID** listening to the entire object:
 
-<AutoSnippet language="dart" {...wholeObjectProvider}></ AutoSnippet>
+<AutoSnippet language="dart" {...wholeObjectProvider}></AutoSnippet>
 
 **PREFER** using select when you only need a single property of an object:
 
-<AutoSnippet language="dart" {...selectAsyncProvider}></ AutoSnippet>
+<AutoSnippet language="dart" {...selectAsyncProvider}></AutoSnippet>
 
 This will only rebuild the `productsProvider` when the `host` changes.
 

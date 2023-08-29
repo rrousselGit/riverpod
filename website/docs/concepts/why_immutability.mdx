@@ -8,7 +8,7 @@ import whyImmutability from "./why_immutability"
 import {
   trimSnippet,
   AutoSnippet,
-  ConditionalSnippet,
+  When,
 } from "../../src/components/CodeSnippet";
 
 ## What is Immutability?
@@ -67,7 +67,7 @@ If you just call a method that mutates an object, the reference is the same.
 
 ### Using immutable state
 
-Immutable state is best fit for using a [Notifier] <ConditionalSnippet codegen={false}> in combination with [NotifierProvider] </ConditionalSnippet>.
+Immutable state is best fit for using a [Notifier] <When codegen={false}> in combination with [NotifierProvider] </When>.
 A [Notifier] allows you to expose an interface through which you can 'mutate' the state.
 You cannot mutate the state from outside the class you define that extends [Notifier].
 This enforces a separation of concerns and keeps business logic outside of your UI.

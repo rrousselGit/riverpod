@@ -25,7 +25,7 @@ export const Banner: React.FC = () => {
         </h1>
 
         <div>
-          <Link className="banner__cta" to={useBaseUrl("docs/getting_started")}>
+          <Link className="banner__cta" to={useBaseUrl("docs/introduction/getting_started")}>
             <Translate id="home.get_started">Get Started</Translate>
           </Link>
         </div>

@@ -13,7 +13,7 @@ import {
   useDocsVersion,
 } from "@docusaurus/theme-common/internal";
 import { useDoc } from "@docusaurus/theme-common/internal";
-import outdatedDocs from "../../outdated_translations.js";
+import { outdatedTranslations } from "../../documents_meta.js";
 
 function UnreleasedVersionLabel({ siteTitle, versionMetadata }) {
   return (
@@ -123,7 +123,7 @@ function DocVersionBannerEnabled({ className, versionMetadata }) {
 function OutdatedTranslationBanner({ className }) {
   const doc = useDoc();
 
-  for (const outdatedDoc of outdatedDocs) {
+  for (const outdatedDoc of outdatedTranslations) {
     if (
       outdatedDoc.id === doc.metadata.id &&
       doc.metadata.source.startsWith(`@site/i18n/${outdatedDoc.countryCode}/`)
