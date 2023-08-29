@@ -2,6 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 /// Fake Provider
 typedef _$ExampleProvider1 = Object;
+
 /// Fake Provider
 typedef _$ExampleProvider = AutoDisposeNotifier<int>;
 
