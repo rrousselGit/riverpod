@@ -34,7 +34,7 @@ export default function DocPageLayoutMain({
         The documentation for version 2.0 is in progress. A preview is available
         at:{" "}
         <a
-          href="https://docs-v2.riverpod.dev/docs/why_riverpod"
+          href="https://docs-v2.riverpod.dev/docs/introduction/why_riverpodd"
           style={{
             color: "white",
             textDecoration: "underline",
