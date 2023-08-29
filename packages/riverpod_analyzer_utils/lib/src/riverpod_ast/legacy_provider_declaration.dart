@@ -124,10 +124,8 @@ class LegacyProviderDeclaration extends RiverpodAst
         switch (identifier.name) {
           case 'autoDispose':
             autoDisposeModifier = identifier;
-            break;
           case 'family':
             familyModifier = identifier;
-            break;
           default:
             provider = identifier;
         }

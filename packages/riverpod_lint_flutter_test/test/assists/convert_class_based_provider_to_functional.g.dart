@@ -294,10 +294,10 @@ class GenericProvider<A, B>
   }
 
   @override
-  Override overrideWith(Generic Function() create) {
+  Override overrideWith(Generic<A, B> Function() create) {
     return ProviderOverride(
       origin: this,
-      override: GenericProvider._internal(
+      override: GenericProvider<A, B>._internal(
         () => create(),
         from: from,
         name: null,
@@ -328,11 +328,11 @@ class GenericProvider<A, B>
   }
 }
 
-mixin GenericRef on AutoDisposeNotifierProviderRef<int> {}
+mixin GenericRef<A, B> on AutoDisposeNotifierProviderRef<int> {}
 
-class _GenericProviderElement
+class _GenericProviderElement<A, B>
     extends AutoDisposeNotifierProviderElement<Generic<A, B>, int>
-    with GenericRef {
+    with GenericRef<A, B> {
   _GenericProviderElement(super.provider);
 }
 // ignore_for_file: type=lint

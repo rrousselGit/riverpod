@@ -79,7 +79,7 @@ void main() {
           provider.overrideWith((ref, value) {
             ref.onDispose(onDispose.call);
             return '$value override';
-          })
+          }),
         ],
       );
       addTearDown(container.dispose);

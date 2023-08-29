@@ -163,10 +163,10 @@ class GenericsProvider<A extends num, B>
   }
 
   @override
-  Override overrideWith(Generics Function() create) {
+  Override overrideWith(Generics<A, B> Function() create) {
     return ProviderOverride(
       origin: this,
-      override: GenericsProvider._internal(
+      override: GenericsProvider<A, B>._internal(
         () => create(),
         from: from,
         name: null,
@@ -197,11 +197,11 @@ class GenericsProvider<A extends num, B>
   }
 }
 
-mixin GenericsRef on AutoDisposeNotifierProviderRef<int> {}
+mixin GenericsRef<A extends num, B> on AutoDisposeNotifierProviderRef<int> {}
 
-class _GenericsProviderElement
+class _GenericsProviderElement<A extends num, B>
     extends AutoDisposeNotifierProviderElement<Generics<A, B>, int>
-    with GenericsRef {
+    with GenericsRef<A, B> {
   _GenericsProviderElement(super.provider);
 }
 
@@ -283,10 +283,10 @@ class NoGenericsProvider<A extends num, B>
   }
 
   @override
-  Override overrideWith(NoGenerics Function() create) {
+  Override overrideWith(NoGenerics<A, B> Function() create) {
     return ProviderOverride(
       origin: this,
-      override: NoGenericsProvider._internal(
+      override: NoGenericsProvider<A, B>._internal(
         () => create(),
         from: from,
         name: null,
@@ -317,11 +317,11 @@ class NoGenericsProvider<A extends num, B>
   }
 }
 
-mixin NoGenericsRef on AutoDisposeNotifierProviderRef<int> {}
+mixin NoGenericsRef<A extends num, B> on AutoDisposeNotifierProviderRef<int> {}
 
-class _NoGenericsProviderElement
+class _NoGenericsProviderElement<A extends num, B>
     extends AutoDisposeNotifierProviderElement<NoGenerics<A, B>, int>
-    with NoGenericsRef {
+    with NoGenericsRef<A, B> {
   _NoGenericsProviderElement(super.provider);
 }
 
@@ -403,10 +403,10 @@ class MissingGenericsProvider<A, B>
   }
 
   @override
-  Override overrideWith(MissingGenerics Function() create) {
+  Override overrideWith(MissingGenerics<A, B> Function() create) {
     return ProviderOverride(
       origin: this,
-      override: MissingGenericsProvider._internal(
+      override: MissingGenericsProvider<A, B>._internal(
         () => create(),
         from: from,
         name: null,
@@ -438,11 +438,11 @@ class MissingGenericsProvider<A, B>
   }
 }
 
-mixin MissingGenericsRef on AutoDisposeNotifierProviderRef<int> {}
+mixin MissingGenericsRef<A, B> on AutoDisposeNotifierProviderRef<int> {}
 
-class _MissingGenericsProviderElement
+class _MissingGenericsProviderElement<A, B>
     extends AutoDisposeNotifierProviderElement<MissingGenerics<A, B>, int>
-    with MissingGenericsRef {
+    with MissingGenericsRef<A, B> {
   _MissingGenericsProviderElement(super.provider);
 }
 
@@ -523,10 +523,10 @@ class WrongOrderProvider<A, B>
   }
 
   @override
-  Override overrideWith(WrongOrder Function() create) {
+  Override overrideWith(WrongOrder<A, B> Function() create) {
     return ProviderOverride(
       origin: this,
-      override: WrongOrderProvider._internal(
+      override: WrongOrderProvider<A, B>._internal(
         () => create(),
         from: from,
         name: null,
@@ -557,11 +557,11 @@ class WrongOrderProvider<A, B>
   }
 }
 
-mixin WrongOrderRef on AutoDisposeNotifierProviderRef<int> {}
+mixin WrongOrderRef<A, B> on AutoDisposeNotifierProviderRef<int> {}
 
-class _WrongOrderProviderElement
+class _WrongOrderProviderElement<A, B>
     extends AutoDisposeNotifierProviderElement<WrongOrder<A, B>, int>
-    with WrongOrderRef {
+    with WrongOrderRef<A, B> {
   _WrongOrderProviderElement(super.provider);
 }
 // ignore_for_file: type=lint

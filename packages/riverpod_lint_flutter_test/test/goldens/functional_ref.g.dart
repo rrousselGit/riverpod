@@ -154,12 +154,12 @@ class GenericsProvider<A extends num, B> extends AutoDisposeProvider<int> {
 
   @override
   Override overrideWith(
-    int Function(GenericsRef provider) create,
+    int Function(GenericsRef<A, B> provider) create,
   ) {
     return ProviderOverride(
       origin: this,
-      override: GenericsProvider._internal(
-        (ref) => create(ref as GenericsRef),
+      override: GenericsProvider<A, B>._internal(
+        (ref) => create(ref as GenericsRef<A, B>),
         from: from,
         name: null,
         dependencies: null,
@@ -189,10 +189,10 @@ class GenericsProvider<A extends num, B> extends AutoDisposeProvider<int> {
   }
 }
 
-mixin GenericsRef on AutoDisposeProviderRef<int> {}
+mixin GenericsRef<A extends num, B> on AutoDisposeProviderRef<int> {}
 
-class _GenericsProviderElement extends AutoDisposeProviderElement<int>
-    with GenericsRef {
+class _GenericsProviderElement<A extends num, B>
+    extends AutoDisposeProviderElement<int> with GenericsRef<A, B> {
   _GenericsProviderElement(super.provider);
 }
 
@@ -264,12 +264,12 @@ class NoGenericsProvider<A extends num, B> extends AutoDisposeProvider<int> {
 
   @override
   Override overrideWith(
-    int Function(NoGenericsRef provider) create,
+    int Function(NoGenericsRef<A, B> provider) create,
   ) {
     return ProviderOverride(
       origin: this,
-      override: NoGenericsProvider._internal(
-        (ref) => create(ref as NoGenericsRef),
+      override: NoGenericsProvider<A, B>._internal(
+        (ref) => create(ref as NoGenericsRef<A, B>),
         from: from,
         name: null,
         dependencies: null,
@@ -299,10 +299,10 @@ class NoGenericsProvider<A extends num, B> extends AutoDisposeProvider<int> {
   }
 }
 
-mixin NoGenericsRef on AutoDisposeProviderRef<int> {}
+mixin NoGenericsRef<A extends num, B> on AutoDisposeProviderRef<int> {}
 
-class _NoGenericsProviderElement extends AutoDisposeProviderElement<int>
-    with NoGenericsRef {
+class _NoGenericsProviderElement<A extends num, B>
+    extends AutoDisposeProviderElement<int> with NoGenericsRef<A, B> {
   _NoGenericsProviderElement(super.provider);
 }
 
@@ -374,12 +374,12 @@ class MissingGenericsProvider<A, B> extends AutoDisposeProvider<int> {
 
   @override
   Override overrideWith(
-    int Function(MissingGenericsRef provider) create,
+    int Function(MissingGenericsRef<A, B> provider) create,
   ) {
     return ProviderOverride(
       origin: this,
-      override: MissingGenericsProvider._internal(
-        (ref) => create(ref as MissingGenericsRef),
+      override: MissingGenericsProvider<A, B>._internal(
+        (ref) => create(ref as MissingGenericsRef<A, B>),
         from: from,
         name: null,
         dependencies: null,
@@ -409,10 +409,10 @@ class MissingGenericsProvider<A, B> extends AutoDisposeProvider<int> {
   }
 }
 
-mixin MissingGenericsRef on AutoDisposeProviderRef<int> {}
+mixin MissingGenericsRef<A, B> on AutoDisposeProviderRef<int> {}
 
-class _MissingGenericsProviderElement extends AutoDisposeProviderElement<int>
-    with MissingGenericsRef {
+class _MissingGenericsProviderElement<A, B>
+    extends AutoDisposeProviderElement<int> with MissingGenericsRef<A, B> {
   _MissingGenericsProviderElement(super.provider);
 }
 
@@ -484,12 +484,12 @@ class WrongOrderProvider<B, A> extends AutoDisposeProvider<int> {
 
   @override
   Override overrideWith(
-    int Function(WrongOrderRef provider) create,
+    int Function(WrongOrderRef<B, A> provider) create,
   ) {
     return ProviderOverride(
       origin: this,
-      override: WrongOrderProvider._internal(
-        (ref) => create(ref as WrongOrderRef),
+      override: WrongOrderProvider<B, A>._internal(
+        (ref) => create(ref as WrongOrderRef<B, A>),
         from: from,
         name: null,
         dependencies: null,
@@ -519,10 +519,10 @@ class WrongOrderProvider<B, A> extends AutoDisposeProvider<int> {
   }
 }
 
-mixin WrongOrderRef on AutoDisposeProviderRef<int> {}
+mixin WrongOrderRef<B, A> on AutoDisposeProviderRef<int> {}
 
-class _WrongOrderProviderElement extends AutoDisposeProviderElement<int>
-    with WrongOrderRef {
+class _WrongOrderProviderElement<B, A> extends AutoDisposeProviderElement<int>
+    with WrongOrderRef<B, A> {
   _WrongOrderProviderElement(super.provider);
 }
 // ignore_for_file: type=lint

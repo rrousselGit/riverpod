@@ -103,8 +103,6 @@ class FamilyTemplate extends Template {
     });
 
     final typeParameters = provider.node.functionExpression.typeParameters;
-    final typeParametersDefinition =
-        genericDefinitionDisplayString(typeParameters);
     final typeParametersUsage = genericUsageDisplayString(typeParameters);
 
     return FamilyTemplate._(
@@ -124,12 +122,12 @@ class FamilyTemplate extends Template {
 
   @override
   Override overrideWith(
-    $createdType Function(${provider._refImplName} provider) create,
+    $createdType Function(${provider._refImplName}$typeParametersUsage provider) create,
   ) {
     return ProviderOverride(
       origin: this,
-      override: ${provider._providerImplName}._internal(
-        (ref) => create(ref as ${provider._refImplName}),
+      override: ${provider._providerImplName}$typeParametersUsage._internal(
+        (ref) => create(ref as ${provider._refImplName}$typeParametersUsage),
         from: from,
         name: null,
         dependencies: null,
@@ -223,10 +221,10 @@ abstract class $notifierTypedefName$typeParametersDefinition extends $notifierBa
   }
 
   @override
-  Override overrideWith(${provider.name} Function() create) {
+  Override overrideWith(${provider.name}$typeParametersUsage Function() create) {
     return ProviderOverride(
       origin: this,
-      override: ${provider._providerImplName}._internal(
+      override: ${provider._providerImplName}$typeParametersUsage._internal(
         () => create()$cascadePropertyInit,
         from: from,
         name: null,
@@ -373,14 +371,14 @@ $providerOther
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
 ${[
       ...parameters.map((e) => e.name),
-      ...?typeParameters?.typeParameters.map((e) => e.name)
+      ...?typeParameters?.typeParameters.map((e) => e.name),
     ].map((e) => 'hash = _SystemHash.combine(hash, $e.hashCode);').join()}
 
     return _SystemHash.finish(hash);
   }
 }
 
-mixin $refNameImpl on $refType<${provider.valueType}> {
+mixin $refNameImpl$typeParametersDefinition on $refType<${provider.valueType}> {
   ${parameters.map((e) {
       return '''
 /// The parameter `${e.name}` of this provider.
@@ -388,10 +386,10 @@ ${e.type} get ${e.name};''';
     }).join()}
 }
 
-class $elementNameImpl extends $elementType$providerGenerics with $refNameImpl {
+class $elementNameImpl$typeParametersDefinition extends $elementType$providerGenerics with $refNameImpl$typeParametersUsage {
   $elementNameImpl(super.provider);
 
-${parameters.map((e) => '@override ${e.type} get ${e.name} => (origin as $providerTypeNameImpl).${e.name};').join()}
+${parameters.map((e) => '@override ${e.type} get ${e.name} => (origin as $providerTypeNameImpl$typeParametersUsage).${e.name};').join()}
 }
 ''');
   }

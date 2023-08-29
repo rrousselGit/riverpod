@@ -94,12 +94,12 @@ class GenericProvider<T extends num> extends AutoDisposeProvider<List<T>> {
 
   @override
   Override overrideWith(
-    List<T> Function(GenericRef provider) create,
+    List<T> Function(GenericRef<T> provider) create,
   ) {
     return ProviderOverride(
       origin: this,
-      override: GenericProvider._internal(
-        (ref) => create(ref as GenericRef),
+      override: GenericProvider<T>._internal(
+        (ref) => create(ref as GenericRef<T>),
         from: from,
         name: null,
         dependencies: null,
@@ -128,10 +128,10 @@ class GenericProvider<T extends num> extends AutoDisposeProvider<List<T>> {
   }
 }
 
-mixin GenericRef on AutoDisposeProviderRef<List<T>> {}
+mixin GenericRef<T extends num> on AutoDisposeProviderRef<List<T>> {}
 
-class _GenericProviderElement extends AutoDisposeProviderElement<List<T>>
-    with GenericRef {
+class _GenericProviderElement<T extends num>
+    extends AutoDisposeProviderElement<List<T>> with GenericRef<T> {
   _GenericProviderElement(super.provider);
 }
 
@@ -224,12 +224,12 @@ class ComplexGenericProvider<T extends num, Foo extends String?>
 
   @override
   Override overrideWith(
-    List<T> Function(ComplexGenericRef provider) create,
+    List<T> Function(ComplexGenericRef<T, Foo> provider) create,
   ) {
     return ProviderOverride(
       origin: this,
-      override: ComplexGenericProvider._internal(
-        (ref) => create(ref as ComplexGenericRef),
+      override: ComplexGenericProvider<T, Foo>._internal(
+        (ref) => create(ref as ComplexGenericRef<T, Foo>),
         from: from,
         name: null,
         dependencies: null,
@@ -266,7 +266,8 @@ class ComplexGenericProvider<T extends num, Foo extends String?>
   }
 }
 
-mixin ComplexGenericRef on AutoDisposeProviderRef<List<T>> {
+mixin ComplexGenericRef<T extends num, Foo extends String?>
+    on AutoDisposeProviderRef<List<T>> {
   /// The parameter `param` of this provider.
   T get param;
 
@@ -274,14 +275,14 @@ mixin ComplexGenericRef on AutoDisposeProviderRef<List<T>> {
   Foo? get otherParam;
 }
 
-class _ComplexGenericProviderElement extends AutoDisposeProviderElement<List<T>>
-    with ComplexGenericRef {
+class _ComplexGenericProviderElement<T extends num, Foo extends String?>
+    extends AutoDisposeProviderElement<List<T>> with ComplexGenericRef<T, Foo> {
   _ComplexGenericProviderElement(super.provider);
 
   @override
-  T get param => (origin as ComplexGenericProvider).param;
+  T get param => (origin as ComplexGenericProvider<T, Foo>).param;
   @override
-  Foo? get otherParam => (origin as ComplexGenericProvider).otherParam;
+  Foo? get otherParam => (origin as ComplexGenericProvider<T, Foo>).otherParam;
 }
 
 String _$rawFutureHash() => r'5203a56065b768023770326281618e3229ccb530';
@@ -909,10 +910,10 @@ class GenericClassProvider<T extends num>
   }
 
   @override
-  Override overrideWith(GenericClass Function() create) {
+  Override overrideWith(GenericClass<T> Function() create) {
     return ProviderOverride(
       origin: this,
-      override: GenericClassProvider._internal(
+      override: GenericClassProvider<T>._internal(
         () => create(),
         from: from,
         name: null,
@@ -942,11 +943,12 @@ class GenericClassProvider<T extends num>
   }
 }
 
-mixin GenericClassRef on AutoDisposeNotifierProviderRef<List<T>> {}
+mixin GenericClassRef<T extends num>
+    on AutoDisposeNotifierProviderRef<List<T>> {}
 
-class _GenericClassProviderElement
+class _GenericClassProviderElement<T extends num>
     extends AutoDisposeNotifierProviderElement<GenericClass<T>, List<T>>
-    with GenericClassRef {
+    with GenericClassRef<T> {
   _GenericClassProviderElement(super.provider);
 }
 

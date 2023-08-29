@@ -95,12 +95,12 @@ class GenericProvider<T extends num>
 
   @override
   Override overrideWith(
-    FutureOr<List<T>> Function(GenericRef provider) create,
+    FutureOr<List<T>> Function(GenericRef<T> provider) create,
   ) {
     return ProviderOverride(
       origin: this,
-      override: GenericProvider._internal(
-        (ref) => create(ref as GenericRef),
+      override: GenericProvider<T>._internal(
+        (ref) => create(ref as GenericRef<T>),
         from: from,
         name: null,
         dependencies: null,
@@ -129,10 +129,10 @@ class GenericProvider<T extends num>
   }
 }
 
-mixin GenericRef on AutoDisposeFutureProviderRef<List<T>> {}
+mixin GenericRef<T extends num> on AutoDisposeFutureProviderRef<List<T>> {}
 
-class _GenericProviderElement extends AutoDisposeFutureProviderElement<List<T>>
-    with GenericRef {
+class _GenericProviderElement<T extends num>
+    extends AutoDisposeFutureProviderElement<List<T>> with GenericRef<T> {
   _GenericProviderElement(super.provider);
 }
 
@@ -561,10 +561,10 @@ class GenericClassProvider<T extends num>
   }
 
   @override
-  Override overrideWith(GenericClass Function() create) {
+  Override overrideWith(GenericClass<T> Function() create) {
     return ProviderOverride(
       origin: this,
-      override: GenericClassProvider._internal(
+      override: GenericClassProvider<T>._internal(
         () => create(),
         from: from,
         name: null,
@@ -595,11 +595,12 @@ class GenericClassProvider<T extends num>
   }
 }
 
-mixin GenericClassRef on AutoDisposeAsyncNotifierProviderRef<List<T>> {}
+mixin GenericClassRef<T extends num>
+    on AutoDisposeAsyncNotifierProviderRef<List<T>> {}
 
-class _GenericClassProviderElement
+class _GenericClassProviderElement<T extends num>
     extends AutoDisposeAsyncNotifierProviderElement<GenericClass<T>, List<T>>
-    with GenericClassRef {
+    with GenericClassRef<T> {
   _GenericClassProviderElement(super.provider);
 }
 

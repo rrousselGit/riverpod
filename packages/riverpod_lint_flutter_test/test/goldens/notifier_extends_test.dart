@@ -37,11 +37,11 @@ void main() {
 
   testGolden(
     'Verify that @riverpod classes extend the generated typedef',
-    'goldens/stateless_ref.json',
+    'goldens/functional_ref.json',
     () async {
       final lint = FunctionalRef();
       final fix = lint.getFixes().single as DartFix;
-      final file = File('test/goldens/stateless_ref.dart').absolute;
+      final file = File('test/goldens/functional_ref.dart').absolute;
 
       final result = await resolveFile2(path: file.path);
       result as ResolvedUnitResult;
