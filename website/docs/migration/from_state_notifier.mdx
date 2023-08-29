@@ -40,7 +40,7 @@ Let's write some simple logic with a synchronous `Notifier`:
 Notice the following design choices:
 
 - Notifiers are initialized in their `build` method, along with their reactive dependencies
-- Notifiers expose `ref` into their class, whereas their Provider don't
+- Notifiers expose `ref` into their class, whereas their provider don't
 
 ### Comparison with `StateNotifier`
 
@@ -302,7 +302,7 @@ definetively archive `StateNotifier`.
 
 ## From `ChangeNotifier` to `AsyncNotifier`
 
-`ChangeNotifier` is meant to be used to offer a smooth transitionfrom pkg:Provider.  
+`ChangeNotifier` is meant to be used to offer a smooth transitionfrom pkg:provider.  
 This paragraphs showcases a migration towards the new APIs going further than what's showcased
 in the [quickstart guide](/docs/from_provider/quickstart).
 
