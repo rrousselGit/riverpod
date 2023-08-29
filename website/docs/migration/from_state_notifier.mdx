@@ -239,6 +239,8 @@ Therefore this:
 ```dart
 class MyNotifier extends StateNotifier<int> {
   MyNotifier() : super(0);
+
+  void add() => state++;
 }
 
 final myNotifierProvider = StateNotifierProvider<MyNotifier, int>((ref) {

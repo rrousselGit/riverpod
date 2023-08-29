@@ -13,4 +13,6 @@ class MyNotifier extends _$MyNotifier {
     ref.listenSelf((_, next) => debugPrint('$next'));
     return 0;
   }
+
+  void add() => state++;
 }
