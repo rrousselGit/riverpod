@@ -1,10 +1,23 @@
-## Unreleased major
+## 2.0.3 - 2023-08-28
+
+- `riverpod` upgraded to `2.3.10`
+
+## 2.0.2 - 2023-08-28
+
+- Fixed typos in the package description (thanks to @saltedpotatos)
+
+## 2.0.1 - 2023-08-16
+
+- Support both analyzer 5.12.0 and analyzer 6.0.0
+
+## 2.0.0 - 2023-08-03
 
 - **Breaking** Renamed `generator_class_extends` to `notifier_extends`
 - **Breaking** Renamed `stateless_ref` to `functional_ref` (thanks to @AhmedLSayed9)
 - Added `avoid_ref_inside_state_dispose` (thanks to @LeonardoRosaa).
   This warns if a `WidgetRef` is used in `State.dispose`, which would result
   in a runtime error.
+- Support analyzer 6.0.0
 
 ## 1.4.0 - 2023-07-25
 

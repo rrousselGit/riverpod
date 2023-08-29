@@ -1,3 +1,32 @@
+## 2.3.1 - 2023-08-28
+
+- `riverpod_annotation` upgraded to `2.1.4`
+
+## 2.3.0 - 2023-08-28
+
+- The "ref" object now contains the provider parameters too.
+  This enabled `provider.overrideWith` to use the provider arguments:
+  ```dart
+  @riverpod
+  int example(ExampleRef ref, {int? id}) { /* */ }
+  // ...
+  exampleProvider.overrideWith(
+    (ref) {
+      print(ref.id);
+    }
+  )
+  ```
+- Fix all `provider.overrideWith` causing a cast error if the notifier
+  receives arguments.
+
+## 2.2.6 - 2023-08-16
+
+- Support both analyzer 5.12.0 and analyzer 6.0.0
+
+## 2.2.5 - 2023-08-03
+
+Support analyzer 6.0.0
+
 ## 2.2.4 - 2023-07-25
 
 Disable all lints in generated files.

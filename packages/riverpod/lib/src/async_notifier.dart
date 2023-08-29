@@ -43,6 +43,7 @@ abstract class AsyncNotifierBase<State> {
   /// Reading [state] if the provider is out of date (such as if one of its
   /// dependency has changed) will trigger [AsyncNotifier.build] to be re-executed.
   @protected
+  @visibleForTesting
   AsyncValue<State> get state {
     _element.flush();
     // ignore: invalid_use_of_protected_member
@@ -50,6 +51,7 @@ abstract class AsyncNotifierBase<State> {
   }
 
   @protected
+  @visibleForTesting
   set state(AsyncValue<State> newState) {
     _element.state = newState;
   }

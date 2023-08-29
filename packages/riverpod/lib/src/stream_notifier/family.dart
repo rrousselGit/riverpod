@@ -77,7 +77,7 @@ class FamilyStreamNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>,
 
   @override
   StreamNotifierProviderElement<NotifierT, T> createElement() {
-    return StreamNotifierProviderElement._(this);
+    return StreamNotifierProviderElement(this);
   }
 
   @override

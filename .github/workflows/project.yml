@@ -5,10 +5,6 @@ on:
     types:
       - opened
       - reopened
-  pull_request:
-    types:
-      - opened
-      - reopened
 
 jobs:
   add-to-project:

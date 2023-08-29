@@ -101,7 +101,7 @@ class StreamNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
 
   @override
   StreamNotifierProviderElement<NotifierT, T> createElement() {
-    return StreamNotifierProviderElement._(this);
+    return StreamNotifierProviderElement(this);
   }
 
   @override
@@ -112,6 +112,7 @@ class StreamNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
   }
 
   /// {@macro riverpod.overridewith}
+  @mustBeOverridden
   Override overrideWith(NotifierT Function() create) {
     return ProviderOverride(
       origin: this,
@@ -132,9 +133,11 @@ class StreamNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
 class StreamNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
     extends AsyncNotifierProviderElementBase<NotifierT, T>
     implements StreamNotifierProviderRef<T> {
-  StreamNotifierProviderElement._(
+  /// The element of [StreamNotifierProvider].
+  @internal
+  StreamNotifierProviderElement(
     StreamNotifierProviderBase<NotifierT, T> super._provider,
-  ) : super._();
+  );
 
   @override
   void create({required bool didChangeDependency}) {

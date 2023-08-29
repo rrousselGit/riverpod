@@ -57,8 +57,6 @@ class _SystemHash {
   }
 }
 
-typedef FamilyWithDependencies2Ref = AutoDisposeProviderRef<int>;
-
 /// See also [familyWithDependencies2].
 @ProviderFor(familyWithDependencies2)
 const familyWithDependencies2Provider = FamilyWithDependencies2Family();
@@ -117,10 +115,10 @@ class FamilyWithDependencies2Family extends Family<int> {
 class FamilyWithDependencies2Provider extends AutoDisposeProvider<int> {
   /// See also [familyWithDependencies2].
   FamilyWithDependencies2Provider({
-    this.id,
-  }) : super.internal(
+    int? id,
+  }) : this._internal(
           (ref) => familyWithDependencies2(
-            ref,
+            ref as FamilyWithDependencies2Ref,
             id: id,
           ),
           from: familyWithDependencies2Provider,
@@ -132,9 +130,43 @@ class FamilyWithDependencies2Provider extends AutoDisposeProvider<int> {
           dependencies: FamilyWithDependencies2Family._dependencies,
           allTransitiveDependencies:
               FamilyWithDependencies2Family._allTransitiveDependencies,
+          id: id,
         );
 
+  FamilyWithDependencies2Provider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.id,
+  }) : super.internal();
+
   final int? id;
+
+  @override
+  Override overrideWith(
+    int Function(FamilyWithDependencies2Ref provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: FamilyWithDependencies2Provider._internal(
+        (ref) => create(ref as FamilyWithDependencies2Ref),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        id: id,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<int> createElement() {
+    return _FamilyWithDependencies2ProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -148,6 +180,19 @@ class FamilyWithDependencies2Provider extends AutoDisposeProvider<int> {
 
     return _SystemHash.finish(hash);
   }
+}
+
+mixin FamilyWithDependencies2Ref on AutoDisposeProviderRef<int> {
+  /// The parameter `id` of this provider.
+  int? get id;
+}
+
+class _FamilyWithDependencies2ProviderElement
+    extends AutoDisposeProviderElement<int> with FamilyWithDependencies2Ref {
+  _FamilyWithDependencies2ProviderElement(super.provider);
+
+  @override
+  int? get id => (origin as FamilyWithDependencies2Provider).id;
 }
 
 String _$private2Hash() => r'5e0fa14ff40fb444c027ed25150a42362db3ef19';
@@ -279,8 +324,8 @@ class NotifierFamilyWithDependenciesProvider
         int> {
   /// See also [NotifierFamilyWithDependencies].
   NotifierFamilyWithDependenciesProvider({
-    this.id,
-  }) : super.internal(
+    int? id,
+  }) : this._internal(
           () => NotifierFamilyWithDependencies()..id = id,
           from: notifierFamilyWithDependenciesProvider,
           name: r'notifierFamilyWithDependenciesProvider',
@@ -291,9 +336,51 @@ class NotifierFamilyWithDependenciesProvider
           dependencies: NotifierFamilyWithDependenciesFamily._dependencies,
           allTransitiveDependencies:
               NotifierFamilyWithDependenciesFamily._allTransitiveDependencies,
+          id: id,
         );
 
+  NotifierFamilyWithDependenciesProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.id,
+  }) : super.internal();
+
   final int? id;
+
+  @override
+  int runNotifierBuild(
+    covariant NotifierFamilyWithDependencies notifier,
+  ) {
+    return notifier.build(
+      id: id,
+    );
+  }
+
+  @override
+  Override overrideWith(NotifierFamilyWithDependencies Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: NotifierFamilyWithDependenciesProvider._internal(
+        () => create()..id = id,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        id: id,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeNotifierProviderElement<NotifierFamilyWithDependencies, int>
+      createElement() {
+    return _NotifierFamilyWithDependenciesProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -307,15 +394,20 @@ class NotifierFamilyWithDependenciesProvider
 
     return _SystemHash.finish(hash);
   }
+}
+
+mixin NotifierFamilyWithDependenciesRef on AutoDisposeNotifierProviderRef<int> {
+  /// The parameter `id` of this provider.
+  int? get id;
+}
+
+class _NotifierFamilyWithDependenciesProviderElement
+    extends AutoDisposeNotifierProviderElement<NotifierFamilyWithDependencies,
+        int> with NotifierFamilyWithDependenciesRef {
+  _NotifierFamilyWithDependenciesProviderElement(super.provider);
 
   @override
-  int runNotifierBuild(
-    covariant NotifierFamilyWithDependencies notifier,
-  ) {
-    return notifier.build(
-      id: id,
-    );
-  }
+  int? get id => (origin as NotifierFamilyWithDependenciesProvider).id;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member

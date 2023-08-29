@@ -65,7 +65,7 @@ class AutoDisposeFamilyStreamNotifierProviderImpl<
 
   @override
   AutoDisposeStreamNotifierProviderElement<NotifierT, T> createElement() {
-    return AutoDisposeStreamNotifierProviderElement._(this);
+    return AutoDisposeStreamNotifierProviderElement(this);
   }
 
   @override

@@ -188,15 +188,13 @@ abstract class AsyncValue<T> {
   /// return null. While during error state, the error will be rethrown instead.
   ///
   /// If you do not want to return previous value during loading/error states,
-  /// consider using [asData]:
+  /// consider using [unwrapPrevious] with [valueOrNull]:
   ///
   /// ```dart
-  /// ref.watch(provider).asData()?.value;
+  /// ref.watch(provider).unwrapPrevious().valueOrNull;
   /// ```
   ///
   /// This will return null during loading/error states.
-  ///
-  /// See also [valueOrNull], which does not throw during error state.
   T? get value;
 
   /// The [error].
@@ -510,10 +508,10 @@ extension AsyncValueX<T> on AsyncValue<T> {
   /// This is different from [value], which will rethrow the error instead of returning null.
   ///
   /// If you do not want to return previous value during loading/error states,
-  /// consider using [asData] :
+  /// consider using [unwrapPrevious] :
   ///
   /// ```dart
-  /// ref.watch(provider).asData()?.valueOrNull;
+  /// ref.watch(provider).unwrapPrevious()?.valueOrNull;
   /// ```
   T? get valueOrNull {
     if (hasValue) return value;
@@ -551,7 +549,10 @@ extension AsyncValueX<T> on AsyncValue<T> {
   bool get hasError => error != null;
 
   /// Upcast [AsyncValue] into an [AsyncData], or return null if the [AsyncValue]
-  /// is in loading/error state.
+  /// is an [AsyncLoading]/[AsyncError].
+  ///
+  /// Note that an [AsyncData] may still be in loading/error state, such
+  /// as during a pull-to-refresh.
   AsyncData<T>? get asData {
     return map(
       data: (d) => d,
@@ -561,7 +562,10 @@ extension AsyncValueX<T> on AsyncValue<T> {
   }
 
   /// Upcast [AsyncValue] into an [AsyncError], or return null if the [AsyncValue]
-  /// is in loading/data state.
+  /// is an [AsyncLoading]/[AsyncData].
+  ///
+  /// Note that an [AsyncError] may still be in loading state, such
+  /// as during a pull-to-refresh.
   AsyncError<T>? get asError => map(
         data: (_) => null,
         error: (e) => e,
