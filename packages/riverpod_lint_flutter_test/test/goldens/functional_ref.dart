@@ -31,13 +31,13 @@ external int scoped();
 int generics<A extends num, B>(GenericsRef<A, B> ref) => 0;
 
 @riverpod
-// expect_lint: stateless_ref
+// expect_lint: functional_ref
 int noGenerics<A extends num, B>(NoGenericsRef ref) => 0;
 
 @riverpod
-// expect_lint: stateless_ref
+// expect_lint: functional_ref
 int missingGenerics<A, B>(MissingGenericsRef ref) => 0;
 
 @riverpod
-// expect_lint: stateless_ref
+// expect_lint: functional_ref
 int wrongOrder<B, A>(WrongOrderRef ref) => 0;

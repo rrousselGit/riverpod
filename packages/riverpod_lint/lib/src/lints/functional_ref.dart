@@ -5,7 +5,7 @@ import 'package:collection/collection.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
 import '../riverpod_custom_lint.dart';
-import 'generator_class_extends.dart';
+import 'notifier_extends.dart';
 
 class FunctionalRef extends RiverpodLintRule {
   const FunctionalRef() : super(code: _code);

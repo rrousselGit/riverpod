@@ -3,7 +3,7 @@ name: my_project
 
 
 packages:
-  - website/**
+  - website
   - packages/**
   - examples/**
 
