@@ -48,14 +48,14 @@ Let's compare the new APIs with the old ones; here, we implement the above examp
 
 ```dart
 class WellNotifier extends StateNotifier<int> {
-  WellNotifier(int availableToDrink) : super(availableToDrink);
+  WellNotifier(int availableWater) : super(availableWater);
 
   void drink(int liters) => state = min(state - liters, 0);
 }
 
 final wellNotifierProvider = StateNotifierProvider<WellNotifier, int>((ref) {
-  final availableToDrink = ref.watch(availableWater);
-  return WellNotifier(availableToDrink);
+  final availableWater = ref.watch(availableWaterProvider);
+  return WellNotifier(availableWater);
 });
 ```
 
@@ -63,7 +63,7 @@ Let's recap the main differences:
 
 - `StateNotifier`'s reactive dependencies are declared in its provider, whereas `Notifier`
   centralizes this logic in its `build` method
-- Indeed, `StateNotifier`'s whole initialization process is split between its provider and its constructor,
+- `StateNotifier`'s whole initialization process is split between its provider and its constructor,
   whereas `Notifier` reserves a single place to place such logic
 - Notice how, as opposed to `StateNotifier`, no logic is ever written into a `Notifier`'s constructor
 
@@ -94,40 +94,39 @@ class AsyncTodosNotifier extends StateNotifier<AsyncValue<List<Todo>>> {
 }
 ```
 
-This heavy syntax suffers from the same defects showed above.  
-`AsyncNotifer`, just like `Notifier`, brings a simple and uniform API. Here, it's easy to see
-`AsyncNotifer` as a `FutureProvider` with methods.
+As anticipated, `StateNotifier` suffers its heavy syntax.  
+Instead, `AsyncNotifer`, just like `Notifier`, brings a simple and uniform API.
+Here, it's easy to see `AsyncNotifer` as a `FutureProvider` with methods.
 
 Here's the above example, rewritten with the new `AsyncNotifier` APIs:
 
 <AutoSnippet language="dart" {...asyncNotifier}></AutoSnippet>
 
-Therefore, migrating from `StateNotifier<AsyncValue<T>>` to a `AsyncNotifer<T>` should be very straightforward:
+Therefore, migrating from `StateNotifier<AsyncValue<T>>` to a `AsyncNotifer<T>` should be a matter of:
 
 - Place the initialization logic directly into `build`: there's no need to define a `_postInit` method anymore
-- There's no need to explicitly initialize `state` with `AsyncLoading`: as long as `build` returns a `Future`,
-  this will be handled by `AsyncNotifer`, directly
-- You can evaluate an initialization synchronously, if ever needed: just avoid returning a `Future` in your `build` method,
-  i.e. let `build` be synchronous (this is the equivalent of initializing `StateNotifier` with an `AsyncData`)
+- Don't catch errors in the `build` method: they'll be converted to `AsyncError`, just like `AsyncValue.guard`
+- There's no need to explicitly initialize `state` with `AsyncLoading`: when `build` returns a `Future`,
+  its first state will be `AsyncLoading`; if it doesn't, its first state will be `AsyncData` or `AsyncError` (synchronously)
 
 Finally, `AsyncNotifer` comes with a set of utilities and getters that `StateNotifier` doesn't have, such as e.g.
 [`future`](https://pub.dev/documentation/riverpod/latest/riverpod/AutoDisposeAsyncNotifier/future.html)
 and [`update`](https://pub.dev/documentation/riverpod/latest/riverpod/AutoDisposeAsyncNotifier/update.html).
-This enables us to write much simpler logic when handling asynchronous mutations.
+This enables us to write much simpler logic when handling asynchronous mutations and
+[side-effects](/docs/essentials/side_effects).
 
 ## Explicit `.family` and `.autoDispose` modifications
 
-When a `StateNotifier` had family parameters, these were not found into its class, but they were
-defined in its provider; also, and chances are that these parameters must have been piped down its constructor, too.
+Another important difference is how families and auto dispose is handled with the new APIs.
 
-`Notifier`, instead, has its own `.family` and `.autoDispose` counterparts, such as `FamilyNotifier`
+`Notifier`, has its own `.family` and `.autoDispose` counterparts, such as `FamilyNotifier`
 and `AutoDisposeNotifier`.  
-Like any other provider, these can be combined (aka `AutoDisposeFamilyNotifier`).  
+As always, such modifications hese can be combined (aka `AutoDisposeFamilyNotifier`).  
 `AsyncNotifer` has its asynchronous equivalent, too (e.g. `AutoDisposeFamilyAsyncNotifier`).
 
-The main difference (and advantage) is that modifications and any parameters are explicitly stated inside the class;
-furthermore, they are directly injected in the `build` method, so that they're available to the initialization logic.  
-This should bring better readability, more conciseness and less mistakes.
+Modifications are explicitly stated inside the class; any parameters are directly injected in the
+`build` method, so that they're available to the initialization logic.  
+This should bring better readability, more conciseness and overall less mistakes.
 
 Take the following example, in which a `StateNotifierProvider.family` is being defined.
 
@@ -155,17 +154,16 @@ final bugsEncounteredNotifierProvider =
 });
 ```
 
-The main gotcha here is that reading `BugsEncounteredNotifier` is _not_ enough to determine wheter or
-not this `StateNotifier` has modifications (e.g. `.family` and/or `.autoDispose`).  
-To determine that, it is required to read the its provider definition.
-
-Now, let's take a look at its migrated `AsyncNotifier` counterpart:
+`BugsEncounteredNotifier` feels... heavy / hard to read.  
+Let's take a look at its migrated `AsyncNotifier` counterpart:
 
 <AutoSnippet language="dart" {...familyAndDispose}></AutoSnippet>
 
-This last snippet should showcase better readability: it's possible to immediately tell
-what modifications are being set for this Notifier.
+Its migrated counterpart should feel like a light read.
 
+:::info
+`(Async)Notifier`'s `.family` parameters are available via `this.arg` (or `this.paramName` when using codegen)
+:::
 ## Lifecycles have a different behavior
 
 Lifecycles between `Notifier`/`AsyncNotifier` and `StateNotifier`/`ChangeNotifier` differ substantially.

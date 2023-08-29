@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_this
+
 import 'dart:math';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -17,7 +19,7 @@ class BugsEncounteredNotifier extends _$BugsEncounteredNotifier {
   Future<void> fix(int amount) async {
     state = await AsyncValue.guard(() async {
       final old = state.requireValue;
-      final result = await ref.read(taskTrackerProvider).fix(id: featureId, fixed: amount);
+      final result = await ref.read(taskTrackerProvider).fix(id: this.featureId, fixed: amount);
       return max(old - result, 0);
     });
   }

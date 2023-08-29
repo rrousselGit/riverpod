@@ -13,8 +13,8 @@ part 'build_init.g.dart';
 class WellNotifier extends _$WellNotifier {
   @override
   int build() {
-    final availableToDrink = ref.watch(availableWater);
-    return availableToDrink;
+    final availableWater = ref.watch(availableWaterProvider);
+    return availableWater;
   }
 
   void drink(int liters) => state = min(state - liters, 0);

@@ -18,6 +18,6 @@ final durationProvider = Provider<Duration>((ref) {
   return Duration.zero;
 });
 
-final availableWater = Provider<int>((ref) {
+final availableWaterProvider = Provider<int>((ref) {
   return 40;
 });
