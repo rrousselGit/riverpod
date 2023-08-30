@@ -1,3 +1,9 @@
+## Unreleased minor
+
+- Added `Notifier.stateOrNull`.
+  This will return `null` if used when the notifier has yet to be initialized
+  or is in error state.
+
 ## 2.3.10 - 2023-08-28
 
 Riverpod now requires package:meta >=1.9.0

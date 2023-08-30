@@ -142,7 +142,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   ///
   /// This API is not meant for public consumption. Instead if a [Ref] needs
   /// to expose a way to update the state, the practice is to expose a getter/setter.
-  @protected
+  @internal
   void setState(State newState) {
     assert(
       () {
@@ -167,8 +167,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   ///
   /// This is not meant for public consumption. Instead, public API should use
   /// [readSelf].
-  @protected
-  @visibleForTesting
+  @internal
   Result<State>? getState() => _state;
 
   /// Read the current value of a provider and:
@@ -178,7 +177,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   ///
   /// This is not meant for public consumption. Instead, public API should use
   /// [readSelf].
-  @protected
+  @internal
   State get requireState {
     assert(
       () {
@@ -205,7 +204,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
 
   /// Called when a provider is rebuilt. Used for providers to not notify their
   /// listeners if the exposed value did not change.
-  @visibleForOverriding
+  @internal
   bool updateShouldNotify(State previous, State next);
 
   /* /STATE */
@@ -233,8 +232,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   }
 
   /// Called the first time a provider is obtained.
-  @protected
-  @mustCallSuper
+  @internal
   void mount() {
     _mounted = true;
     assert(
@@ -281,8 +279,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   /// See also:
   /// - `overrideWithValue`, which relies on [update] to handle
   ///   the scenario where the value changed.
-  @protected
-  @mustCallSuper
+  @internal
   // ignore: use_setters_to_change_properties
   void update(ProviderBase<State> newProvider) {
     _provider = newProvider;
@@ -320,6 +317,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   ///
   /// This is not meant for public consumption. Public API should hide
   /// [flush] from users, such that they don't need to care about invocing this function.
+  @internal
   void flush() {
     _maybeRebuildDependencies();
     if (_mustRecomputeState) {
@@ -402,10 +400,10 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   /// - [didChangeDependency] can be used to differentiate a rebuild caused
   ///   by [watch] from one caused by [refresh]/[invalidate].
   @visibleForOverriding
-  @protected
   void create({required bool didChangeDependency});
 
   /// Invokes [create] and handles errors.
+  @internal
   void buildState() {
     ProviderElementBase<Object?>? debugPreviouslyBuildingElement;
     final previousDidChangeDependency = _didChangeDependency;
