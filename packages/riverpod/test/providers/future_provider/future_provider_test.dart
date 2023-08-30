@@ -10,6 +10,35 @@ import '../../utils.dart';
 
 void main() {
   group('FutureProviderRef.future', () {
+    test('Does not throw assertion error in certain conditions', () async {
+      // Regression test for https://github.com/rrousselGit/riverpod/issues/2041
+
+      final container = createContainer();
+
+      final testNotifierProvider = FutureProvider.autoDispose<int>((ref) => 0);
+      final proxyProvider = FutureProvider.autoDispose<int>(
+        (ref) => ref.watch(testNotifierProvider.future),
+      );
+      final testProvider = FutureProvider.autoDispose<int>(
+        (ref) async => (await ref.watch(proxyProvider.future)) + 2,
+      );
+
+      container.listen<AsyncValue<void>>(
+        testProvider,
+        (previous, next) {
+          if (!next.isLoading && next is AsyncError) {
+            Zone.current.handleUncaughtError(next.error, next.stackTrace);
+          }
+        },
+        fireImmediately: true,
+      );
+
+      container.invalidate(testNotifierProvider);
+      container.invalidate(testProvider);
+
+      await container.pump();
+    });
+
     test('returns the pending future', () async {
       final container = createContainer();
       Future<int>? future;
