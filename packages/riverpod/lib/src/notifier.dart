@@ -23,6 +23,8 @@ abstract class NotifierBase<State> {
 
   /// The value currently exposed by this [Notifier].
   ///
+  /// If used inside [Notifier.build], may throw if the notifier is not yet initialized.
+  ///
   /// Invoking the setter will notify listeners if [updateShouldNotify] returns true.
   /// By default, this will compare the previous and new value using [identical].
   ///
@@ -34,8 +36,24 @@ abstract class NotifierBase<State> {
   @visibleForTesting
   State get state {
     _element.flush();
-    // ignore: invalid_use_of_protected_member
     return _element.requireState;
+  }
+
+  /// The value currently exposed by this [Notifier].
+  ///
+  /// If used inside [Notifier.build], may return null if the notifier is not yet initialized.
+  /// It will also return null if [Notifier.build] threw.
+  ///
+  /// Invoking the setter will notify listeners if [updateShouldNotify] returns true.
+  /// By default, this will compare the previous and new value using [identical].
+  ///
+  /// Reading [stateOrNull] if the provider is out of date (such as if one of its
+  /// dependency has changed) will trigger [Notifier.build] to be re-executed.
+  @protected
+  @visibleForTesting
+  State? get stateOrNull {
+    _element.flush();
+    return _element.getState()?.stateOrNull;
   }
 
   @protected
