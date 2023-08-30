@@ -76,9 +76,11 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   bool get hasListeners =>
       _externalDependents.isNotEmpty ||
       _subscribers.isNotEmpty ||
-      _providerDependents.isNotEmpty;
+      dependents.isNotEmpty;
 
   // TODO(rrousselGit) refactor to match ChangeNotifier
+  // TODO merge all listeners lists into a single List<ListenerBase>, with custom subclasses like WatchListener vs ListenListener vs ReadListener vs ExternalDelegateListener
+
   /// The list of [ProviderSubscription]s that are linked with this element,
   /// which aren't coming from another provider.
   ///
@@ -94,7 +96,8 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   final _listenedProviderSubscriptions = <_ProviderListener<Object?>>[];
 
   /// The element of the providers that depends on this provider.
-  final _providerDependents = <ProviderElementBase<Object?>>[];
+  @internal
+  final dependents = <ProviderElementBase<Object?>>[];
 
   /// The subscriptions associated to other providers listening to this provider.
   ///
@@ -102,7 +105,11 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   /// a provider can listen multiple times to another provider with different listeners.
   final _subscribers = <_ProviderListener<Object?>>[];
 
-  var _dependencies = HashMap<ProviderElementBase<Object?>, Object>();
+  /// The [ProviderElementBase]s that this element depends on.
+  @internal
+  HashMap<ProviderElementBase<Object?>, Object> dependencies =
+      HashMap<ProviderElementBase<Object?>, Object>();
+
   HashMap<ProviderElementBase<Object?>, Object>? _previousDependencies;
   List<void Function()>? _onDisposeListeners;
   List<void Function()>? _onResumeListeners;
@@ -347,8 +354,8 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   /// After a provider is initialized, this function takes care of unsubscribing
   /// to dependencies that are no-longer used.
   void _performBuild() {
-    _previousDependencies = _dependencies;
-    _dependencies = HashMap();
+    _previousDependencies = dependencies;
+    dependencies = HashMap();
 
     final previousStateResult = _state;
 
@@ -384,7 +391,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
     // Unsubscribe to everything that a provider no longer depends on.
     for (final sub in _previousDependencies!.entries) {
       sub.key
-        .._providerDependents.remove(this)
+        ..dependents.remove(this)
         .._onRemoveListener();
     }
     _previousDependencies = null;
@@ -566,8 +573,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       },
     );
 
-    for (var i = 0; i < _providerDependents.length; i++) {
-      _providerDependents[i]._markDependencyChanged();
+    for (var i = 0; i < dependents.length; i++) {
+      dependents[i]._markDependencyChanged();
     }
 
     for (final observer in _container._observers) {
@@ -649,12 +656,11 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
           "To fix, add $listenable to $origin's 'dependencies' parameter",
         );
 
-        final queue =
-            Queue<ProviderElementBase<Object?>>.from(_providerDependents);
+        final queue = Queue<ProviderElementBase<Object?>>.from(dependents);
 
         while (queue.isNotEmpty) {
           final current = queue.removeFirst();
-          queue.addAll(current._providerDependents);
+          queue.addAll(current.dependents);
 
           if (current.origin == listenable) {
             throw CircularDependencyError._();
@@ -711,7 +717,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     assert(_debugAssertCanDependOn(listenable), '');
 
     final element = _container.readProviderElement(listenable);
-    _dependencies.putIfAbsent(element, () {
+    dependencies.putIfAbsent(element, () {
       final previousSub = _previousDependencies?.remove(element);
       if (previousSub != null) {
         return previousSub;
@@ -731,7 +737,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
       element
         .._onListen()
-        .._providerDependents.add(this);
+        ..dependents.add(this);
 
       return Object();
     });
@@ -824,8 +830,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     required void Function(ProxyElementValueNotifier<Object?> element)
         notifierVisitor,
   }) {
-    for (var i = 0; i < _providerDependents.length; i++) {
-      elementVisitor(_providerDependents[i]);
+    for (var i = 0; i < dependents.length; i++) {
+      elementVisitor(dependents[i]);
     }
 
     for (var i = 0; i < _subscribers.length; i++) {
@@ -844,7 +850,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   void visitAncestors(
     void Function(ProviderElementBase<Object?> element) visitor,
   ) {
-    _dependencies.keys.forEach(visitor);
+    dependencies.keys.forEach(visitor);
 
     for (var i = 0; i < _listenedProviderSubscriptions.length; i++) {
       visitor(_listenedProviderSubscriptions[i].listenedElement);
@@ -870,11 +876,11 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     // TODO test invalidateSelf() then dispose() properly unlinks dependencies
     // TODO test [listen] calls are cleared
 
-    for (final sub in _dependencies.entries) {
-      sub.key._providerDependents.remove(this);
+    for (final sub in dependencies.entries) {
+      sub.key.dependents.remove(this);
       sub.key._onRemoveListener();
     }
-    _dependencies.clear();
+    dependencies.clear();
 
     _externalDependents.clear();
   }

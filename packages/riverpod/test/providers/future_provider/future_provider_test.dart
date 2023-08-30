@@ -15,12 +15,21 @@ void main() {
 
       final container = createContainer();
 
-      final testNotifierProvider = FutureProvider.autoDispose<int>((ref) => 0);
-      final proxyProvider = FutureProvider.autoDispose<int>(
-        (ref) => ref.watch(testNotifierProvider.future),
+      final testNotifierProvider = FutureProvider.autoDispose<int>((ref) {
+        print('build a');
+        return 0;
+      });
+      final proxyProvider = FutureProvider.autoDispose<Object?>(
+        (ref) async {
+          print('build b');
+          return ref.watch(testNotifierProvider.select((value) => Object()));
+        },
       );
-      final testProvider = FutureProvider.autoDispose<int>(
-        (ref) async => (await ref.watch(proxyProvider.future)) + 2,
+      final testProvider = FutureProvider.autoDispose<Object?>(
+        (ref) async {
+          print('build c');
+          return (await ref.watch(proxyProvider.select((value) => Object())));
+        },
       );
 
       container.listen<AsyncValue<void>>(
@@ -36,7 +45,33 @@ void main() {
       container.invalidate(testNotifierProvider);
       container.invalidate(testProvider);
 
+      print('\n\n\n\n\nrebuild');
       await container.pump();
+
+      final testProviderElement = container.readProviderElement(testProvider);
+      final proxyElement = container.readProviderElement(proxyProvider);
+      final testNotifierElement = container.readProviderElement(
+        testNotifierProvider,
+      );
+      print('\n\n\n $testProviderElement $proxyElement $testNotifierElement');
+    });
+
+    test('correctly updates the list of dependents/dependencies', () {
+      final container = createContainer();
+
+      final a = FutureProvider((ref) => 0);
+      final b = FutureProvider((ref) => ref.watch(a.future));
+
+      container.read(b);
+
+      final aElement = container.readProviderElement(a);
+      final bElement = container.readProviderElement(b);
+
+      expect(aElement.dependencies, isEmpty);
+      expect(bElement.dependencies.keys, [aElement]);
+
+      expect(aElement.dependents, [bElement]);
+      expect(bElement.dependents, isEmpty);
     });
 
     test('returns the pending future', () async {

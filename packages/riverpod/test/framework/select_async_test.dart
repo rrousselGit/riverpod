@@ -7,6 +7,26 @@ import 'package:test/test.dart';
 import '../utils.dart';
 
 void main() {
+  test('correctly updates the list of dependents/dependencies', () {
+    final container = createContainer();
+
+    final a = FutureProvider((ref) => 0);
+    final b = FutureProvider(
+      (ref) => ref.watch(a.selectAsync((data) => Object())),
+    );
+
+    container.read(b);
+
+    final aElement = container.readProviderElement(a);
+    final bElement = container.readProviderElement(b);
+
+    expect(aElement.dependencies, isEmpty);
+    expect(bElement.dependencies.keys, [aElement]);
+
+    expect(aElement.dependents, [bElement]);
+    expect(bElement.dependents, isEmpty);
+  });
+
   test('implements ProviderSubscription.read on AsyncData', () async {
     final container = createContainer();
     final dep = StateProvider((ref) => 0);
