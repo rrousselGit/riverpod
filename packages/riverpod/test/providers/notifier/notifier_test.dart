@@ -11,6 +11,31 @@ import 'factory.dart';
 void main() {
   for (final factory in matrix()) {
     group(factory.label, () {
+      group('.notifier', () {
+        test('correctly updates the list of dependents/dependencies', () {
+          final container = createContainer();
+
+          final a = factory.simpleTestProvider((ref) => 0);
+          final b = factory.simpleTestProvider(
+            (ref) {
+              ref.unsafeWatch(a.notifier);
+              return 0;
+            },
+          );
+
+          container.read(b);
+
+          final aElement = container.readProviderElement(a);
+          final bElement = container.readProviderElement(b);
+
+          expect(aElement.dependencies, isEmpty);
+          expect(bElement.dependencies.keys, [aElement]);
+
+          expect(aElement.dependents, [bElement]);
+          expect(bElement.dependents, isEmpty);
+        });
+      });
+
       group('Notifier.stateOrNull', () {
         test('returns null during first build until state= is set', () {
           final stateInBuild = <int?>[];

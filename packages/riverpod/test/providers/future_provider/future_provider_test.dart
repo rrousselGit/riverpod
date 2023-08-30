@@ -46,6 +46,8 @@ void main() {
       container.invalidate(testProvider);
 
       print('\n\n\n\n\nrebuild');
+      // TODO add similar test to statenotifierprovider/changenotifierprovider/stateprovider/streamprovideer
+
       await container.pump();
 
       final testProviderElement = container.readProviderElement(testProvider);

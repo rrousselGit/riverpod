@@ -1,5 +1,16 @@
 import 'package:riverpod/src/internals.dart';
 
+extension UnsafeWatch on Ref {
+  T unsafeWatch<T>(ProviderListenable<T> listenable) {
+    if (listenable is AlwaysAliveProviderListenable<T>) {
+      return watch(listenable);
+    }
+
+    final ref = this as AutoDisposeRef;
+    return ref.watch(listenable);
+  }
+}
+
 typedef NotifierProviderFactoryType = NotifierProviderBase<NotifierT, T>
     Function<NotifierT extends NotifierBase<T>, T>(
   NotifierT Function() create, {
