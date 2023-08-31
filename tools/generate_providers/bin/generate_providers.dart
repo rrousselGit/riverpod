@@ -707,7 +707,6 @@ class AutoDisposeStreamNotifierProviderFamilyBuilder {
 }
 """,
       );
-      break;
     case 'flutter_riverpod':
       matrix = Tuple3(
         DisposeType.values,
@@ -728,7 +727,6 @@ import 'package:flutter/foundation.dart';
 import 'internals.dart';
 """,
       );
-      break;
     default:
       throw UnsupportedError('Unknown package ${args.first}');
   }
