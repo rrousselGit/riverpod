@@ -246,6 +246,26 @@ void main() {
   });
 
   group('Ref.listen', () {
+    test('correctly updates the list of dependents/dependencies', () {
+      final container = createContainer();
+
+      final a = Provider((ref) => 0);
+      final b = Provider((ref) {
+        ref.listen(a, (_, __) {});
+      });
+
+      container.read(b);
+
+      final aElement = container.readProviderElement(a);
+      final bElement = container.readProviderElement(b);
+
+      expect(aElement.dependencies, isEmpty);
+      expect(bElement.dependencies.keys, [aElement]);
+
+      expect(aElement.dependents, [bElement]);
+      expect(bElement.dependents, isEmpty);
+    });
+
     test(
         'when rebuild throws identical error/stack, listeners are still notified',
         () {

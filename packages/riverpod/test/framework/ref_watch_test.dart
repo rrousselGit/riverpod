@@ -16,6 +16,24 @@ class Counter extends StateNotifier<int> {
 }
 
 void main() {
+  test('correctly updates the list of dependents/dependencies', () {
+    final container = createContainer();
+
+    final a = Provider((ref) => 0);
+    final b = Provider((ref) => ref.watch(a));
+
+    container.read(b);
+
+    final aElement = container.readProviderElement(a);
+    final bElement = container.readProviderElement(b);
+
+    expect(aElement.dependencies, isEmpty);
+    expect(bElement.dependencies.keys, [aElement]);
+
+    expect(aElement.dependents, [bElement]);
+    expect(bElement.dependents, isEmpty);
+  });
+
   test('can listen multiple providers at once', () async {
     final container = createContainer();
     final count = StateProvider((ref) => 0);
