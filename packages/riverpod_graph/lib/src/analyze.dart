@@ -358,8 +358,8 @@ class ConsumerWidgetVisitor extends RecursiveAstVisitor<void> {
   final context = <String, VariableElement>{};
 
   @override
-  void visitMethodInvocation(MethodInvocation node) {
-    super.visitMethodInvocation(node);
+  void visitMethodInvocation(MethodInvocation node, [bool isPrefetch = false]) {
+    if (!isPrefetch) super.visitMethodInvocation(node);
 
     final targetTypeElement = node.realTarget?.staticType?.element;
 
@@ -369,13 +369,27 @@ class ConsumerWidgetVisitor extends RecursiveAstVisitor<void> {
       final providerExpression = node.argumentList.arguments.firstOrNull;
       if (providerExpression == null) return;
 
+      // prefetch if needed
+      providerExpression.childEntities
+          .whereType<MethodInvocation>()
+          .forEach((element) {
+        if (!context.containsKey(element.toString()))
+          visitMethodInvocation(element, isPrefetch = true);
+      });
+
+      // get provider
       final consumedProvider =
           parseProviderFromExpression(providerExpression, context);
 
-      // update context
+      // add local variable into context
       final parent = node.parent;
       if (parent is VariableDeclaration) {
         context[parent.name.toString()] = consumedProvider;
+      }
+      // add expression into context, like: ref.watch(ref.watch(provider))
+      if (isPrefetch) {
+        context[node.toString()] = consumedProvider;
+        return;
       }
 
       switch (node.methodName.name) {
@@ -632,8 +646,8 @@ class ProviderDependencyVisitor extends RecursiveAstVisitor<void> {
   }
 
   @override
-  void visitMethodInvocation(MethodInvocation node) {
-    super.visitMethodInvocation(node);
+  void visitMethodInvocation(MethodInvocation node, [bool isPrefetch = false]) {
+    if (!isPrefetch) super.visitMethodInvocation(node);
 
     final targetTypeElement = node.realTarget?.staticType?.element;
 
@@ -643,13 +657,27 @@ class ProviderDependencyVisitor extends RecursiveAstVisitor<void> {
       final providerExpression = node.argumentList.arguments.firstOrNull;
       if (providerExpression == null) return;
 
+      // prefetch if needed
+      providerExpression.childEntities
+          .whereType<MethodInvocation>()
+          .forEach((element) {
+        if (!context.containsKey(element.toString()))
+          visitMethodInvocation(element, isPrefetch = true);
+      });
+
+      // get provider
       final consumedProvider =
           parseProviderFromExpression(providerExpression, context);
 
-      // update context
+      // add local variable into context
       final parent = node.parent;
       if (parent is VariableDeclaration) {
         context[parent.name.toString()] = consumedProvider;
+      }
+      // add expression into context, like: ref.watch(ref.watch(provider))
+      if (isPrefetch) {
+        context[node.toString()] = consumedProvider;
+        return;
       }
 
       switch (node.methodName.name) {
