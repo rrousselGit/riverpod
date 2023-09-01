@@ -812,6 +812,22 @@ VariableElement parseProviderFromExpression(
     if (target != null) return parseProviderFromExpression(target, context);
   }
 
+  if (providerExpression is SimpleIdentifier) {
+    // if local variable is used as provider, try to get actual provider
+    final block = providerExpression.thisOrAncestorOfType<Block>();
+    if (block != null) {
+      final vars = block.statements.whereType<VariableDeclarationStatement>();
+      for (final vv in vars) {
+        final element = vv.variables.variables.firstWhereOrNull(
+          (element) => element.name.toString() == providerExpression.toString(),
+        );
+        if (element != null) {
+          return element.declaredElement!;
+        }
+      }
+    }
+  }
+
   throw UnsupportedError(
     'unknown expression $providerExpression ${providerExpression.runtimeType}',
   );
