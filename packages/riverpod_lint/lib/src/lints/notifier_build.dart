@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
@@ -43,6 +44,40 @@ class NotifierBuild extends RiverpodLintRule {
       if (hasBuildMethod) return;
 
       reporter.reportErrorForToken(_code, node.name);
+    });
+  }
+
+  @override
+  List<Fix> getFixes() => [
+        AddBuildMethodFix(),
+      ];
+}
+
+class AddBuildMethodFix extends DartFix {
+  @override
+  void run(
+    CustomLintResolver resolver,
+    ChangeReporter reporter,
+    CustomLintContext context,
+    AnalysisError analysisError,
+    List<AnalysisError> others,
+  ) {
+    context.registry.addClassDeclaration((node) {
+      if (!node.sourceRange.intersects(analysisError.sourceRange)) return;
+
+      final changeBuilder = reporter.createChangeBuilder(
+        message: 'Add build method',
+        priority: 80,
+      );
+
+      changeBuilder.addDartFileEdit((builder) {
+        final offset = node.leftBracket.offset + 1;
+
+        builder.addSimpleInsertion(
+          offset,
+          '\n  @override\n  dynamic build() {\n   // TODO: implement build\n    throw UnimplementedError();\n  }\n',
+        );
+      });
     });
   }
 }
