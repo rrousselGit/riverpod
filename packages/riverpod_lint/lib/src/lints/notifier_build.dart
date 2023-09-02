@@ -75,7 +75,15 @@ class AddBuildMethodFix extends DartFix {
 
         builder.addSimpleInsertion(
           offset,
-          '\n  @override\n  dynamic build() {\n   // TODO: implement build\n    throw UnimplementedError();\n  }\n',
+          '''
+
+
+  @override
+  dynamic build() {
+    // TODO: implement build
+    throw UnimplementedError();
+  }
+  ''',
         );
       });
     });
