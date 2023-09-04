@@ -6,6 +6,21 @@ import 'package:flutter_test/flutter_test.dart';
 import 'utils.dart';
 
 void main() {
+  testWidgets('Passes key', (tester) async {
+    await tester.pumpWidget(
+      ProviderScope(
+        child: Consumer(
+          key: const Key('42'),
+          builder: (context, ref, _) {
+            return Container();
+          },
+        ),
+      ),
+    );
+
+    expect(find.byKey(const Key('42')), findsOneWidget);
+  });
+
   group('WidgetRef.exists', () {
     testWidgets('simple use-case', (tester) async {
       late WidgetRef ref;
