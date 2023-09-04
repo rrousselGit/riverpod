@@ -1,3 +1,8 @@
+## 2.4.0 - 2023-09-04
+
+- `flutter_riverpod` upgraded to `2.4.0`
+- `riverpod` upgraded to `2.4.0`
+
 ## 2.3.10 - 2023-08-28
 
 - `flutter_riverpod` upgraded to `2.3.10`

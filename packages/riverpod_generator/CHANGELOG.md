@@ -1,4 +1,4 @@
-## Unreleased patch
+## 2.3.2 - 2023-09-04
 
 - Disable `invalid_use_of_visible_for_testing_member` in generated files
 

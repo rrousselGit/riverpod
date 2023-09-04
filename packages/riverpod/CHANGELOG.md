@@ -1,4 +1,4 @@
-## Unreleased minor
+## 2.4.0 - 2023-09-04
 
 - Added `Notifier.stateOrNull`.
   This will return `null` if used when the notifier has yet to be initialized
