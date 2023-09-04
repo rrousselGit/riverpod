@@ -18,8 +18,8 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_hooks: '>=0.18.0 <0.21.0'
-  flutter_riverpod: ^2.3.10
-  riverpod: ^2.3.10
+  flutter_riverpod: 2.3.10
+  riverpod: 2.3.10
   state_notifier: ">=0.7.2 <2.0.0"
 
 dev_dependencies:
