@@ -18,11 +18,11 @@
 <img src="https://github.com/rrousselGit/riverpod/blob/master/resources/icon/Facebook%20Cover%20A.png?raw=true" width="100%" alt="Riverpod" />
 </p>
 
-<p>
+<p align="center">
 
 <span>
 <a href="https://flutter.dev/docs/development/packages-and-plugins/favorites">
-<img src="https://raw.githubusercontent.com/rrousselGit/riverpod/master/resources/flutter_favorite.png" width="200" />
+<img src="https://raw.githubusercontent.com/rrousselGit/riverpod/master/resources/flutter_favorite.png" width="200" align="left" />
 </a>
 </span>
 <span>
@@ -32,6 +32,10 @@
 <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-purple.svg" alt="License: MIT"></a>
 <a href="https://discord.gg/Bbumvej"><img src="https://img.shields.io/discord/765557403865186374.svg?logo=discord&color=blue" alt="Discord"></a>
 </span>
+
+<a href="https://www.netlify.com">
+  <img src="https://www.netlify.com/img/global/badges/netlify-color-accent.svg" alt="Deploys by Netlify" />
+</a>
 
 </p>
 
