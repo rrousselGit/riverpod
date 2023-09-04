@@ -44,18 +44,17 @@ Long story short:
 - Declare your providers as global variables:
 
   ```dart
-  final counterProvider = StateNotifierProvider((ref) {
-    return Counter();
-  });
+  final counterProvider = NotifierProvider<Counter, int>(Counter.new);
 
-  class Counter extends StateNotifier<int> {
-    Counter(): super(0);
+  class Counter extends Notifier<int> {
+    @override
+    int build() => 0;
 
     void increment() => state++;
   }
   ```
 
-- Use them inside your widgets in a compile time safe way. No runtime exceptions!
+- Use them inside your widgets in a compile time-safe way. No runtime exceptions!
 
   ```dart
   class Example extends ConsumerWidget {
