@@ -130,10 +130,6 @@ Its migrated counterpart should feel like a light read.
 
 Lifecycles between `Notifier`/`AsyncNotifier` and `StateNotifier` differ substantially.
 
-`StateNotifier` instances are indeed bound to their `StateNotifierProvider`.
-When their provider rebuilds, their exposed value, aka their `StateNotifier` instance,
-is `disposed`, and then re-created (i.e. its constructor gets invoked again).
-
 This example showcases - again - how the old API have sparse logic:
 
 <AutoSnippet language="dart" {...oldLifecyclesOld}></AutoSnippet>
