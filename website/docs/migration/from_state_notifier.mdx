@@ -2,13 +2,20 @@
 title: From `StateNotifier` and `ChangeNotifier`
 ---
 
-import buildIinit from "./from_state_notifier/build_init";
+import buildInit from "./from_state_notifier/build_init";
+import buildInitOld from "./from_state_notifier/build_init_old";
 import familyAndDispose from "./from_state_notifier/family_and_dispose";
+import familyAndDisposeOld from "./from_state_notifier/family_and_dispose_old";
 import asyncNotifier from "./from_state_notifier/async_notifier";
+import asyncNotifierOld from "./from_state_notifier/async_notifier_old";
 import addListener from "./from_state_notifier/add_listener";
+import addListenerOld from "./from_state_notifier/add_listener_old";
 import fromChangeNotifier from "./from_state_notifier/from_change_notifier";
+import fromChangeNotifierOld from "./from_state_notifier/from_change_notifier_old";
 import fromStateProvider from "./from_state_notifier/from_state_provider";
+import fromStateProviderOld from "./from_state_notifier/from_state_provider_old";
 import oldLifecycles from "./from_state_notifier/old_lifecycles";
+import oldLifecyclesOld from "./from_state_notifier/old_lifecycles_old";
 import { AutoSnippet } from "../../src/components/CodeSnippet";
 
 Along with [Riverpod 2.0](https://pub.dev/packages/flutter_riverpod/changelog#200), new classes
@@ -35,7 +42,7 @@ the new `AsyncNotifier` for asynchronous state classes.
 
 Let's write some simple logic with a synchronous `Notifier`:
 
-<AutoSnippet language="dart" {...buildIinit}></AutoSnippet>
+<AutoSnippet language="dart" {...buildInit}></AutoSnippet>
 
 Notice the following design choices:
 
@@ -46,18 +53,7 @@ Notice the following design choices:
 
 Let's compare the new APIs with the old ones; here, we implement the above example with `StateNotifier`:
 
-```dart
-class WellNotifier extends StateNotifier<int> {
-  WellNotifier(int availableWater) : super(availableWater);
-
-  void drink(int liters) => state = min(state - liters, 0);
-}
-
-final wellNotifierProvider = StateNotifierProvider<WellNotifier, int>((ref) {
-  final availableWater = ref.watch(availableWaterProvider);
-  return WellNotifier(availableWater);
-});
-```
+<AutoSnippet language="dart" {...buildInitOld}></AutoSnippet>
 
 Let's recap the main differences:
 
@@ -75,24 +71,8 @@ Let's check it out.
 The main appeal of the new API syntax is an improved DX on asynchronous states.  
 Previously, with `StateNotifier`, we would handle that like so:
 
-```dart
-class AsyncTodosNotifier extends StateNotifier<AsyncValue<List<Todo>>> {
-  AsyncTodosNotifier() : super(const AsyncLoading()) {
-    _postInit();
-  }
+<AutoSnippet language="dart" {...asyncNotifierOld}></AutoSnippet>
 
-  Future<void> _postInit() async {
-    state = await AsyncValue.guard(() async {
-    final json = await http.get('api/todos') as List;
-
-    return [...json.map(Todo.fromJson)];
-    }
-    );
-  }
-
-  // ...
-}
-```
 
 As anticipated, `StateNotifier` suffers its heavy syntax.  
 Instead, `AsyncNotifer`, just like `Notifier`, brings a simple and uniform API.
@@ -130,29 +110,7 @@ This should bring better readability, more conciseness and overall less mistakes
 
 Take the following example, in which a `StateNotifierProvider.family` is being defined.
 
-```dart
-class BugsEncounteredNotifier extends StateNotifier<AsyncValue<int>> {
-  BugsEncounteredNotifier({
-    required this.ref,
-    required this.featureId,
-  }) : super(const AsyncData(99));
-  final String featureId;
-  final Ref ref;
-
-  Future<void> fix(int amount) async {
-    state = await AsyncValue.guard(() async {
-      final old = state.requireValue;
-      final result = await ref.read(taskTrackerProvider).fix(id: featureId, fixed: amount);
-      return max(old - result, 0);
-    });
-  }
-}
-
-final bugsEncounteredNotifierProvider =
-    StateNotifierProvider.family.autoDispose<BugsEncounteredNotifier, int, String>((ref, id) {
-  return BugsEncounteredNotifier(ref: ref, featureId: id);
-});
-```
+<AutoSnippet language="dart" {...familyAndDisposeOld}></AutoSnippet>
 
 `BugsEncounteredNotifier` feels... heavy / hard to read.  
 Let's take a look at its migrated `AsyncNotifier` counterpart:
@@ -175,28 +133,7 @@ is `disposed`, and then re-created (i.e. its constructor gets invoked again).
 
 This example showcases - again - how the old API have sparse logic:
 
-```dart
-class MyNotifier extends StateNotifier<int> {
-  MyNotifier(this.period) : super(0) { // 1 init logic
-    _timer = Timer.periodic(period, (t) => update());  // 2 side effect on init
-  }
-  final Duration period;
-  late final Timer _timer;
-
-  void update() => state++;  // 3 mutation
-
-  @override
-  void dispose() {
-    _timer.cancel();  // 4 custom dispose logic
-    super.dispose();
-  }
-}
-
-final myNotifierProvider = StateNotifierProvider<MyNotifier, int>((ref) {  // 5 provider definition
-  final Duration period = ref.watch(durationProvider);   // 6 reactive dependency logic
-  return MyNotifier(period);
-});
-```
+<AutoSnippet language="dart" {...oldLifecyclesOld}></AutoSnippet>
 
 Here, if `durationProvider` updates, `MyNotifier` _disposes_: its instance is then re-instantiated
 and its internal state is then re-initialized.  
@@ -232,26 +169,8 @@ This is intentional due to the desire to reach full API uniformity with `Notifie
 Indeed, using a `Notifier` or an `AsyncNotifier` shouldn't be any different from any other provider.
 
 Therefore this:
-```dart
-class MyNotifier extends StateNotifier<int> {
-  MyNotifier() : super(0);
+<AutoSnippet language="dart" {...addListenerOld}></AutoSnippet>
 
-  void add() => state++;
-}
-
-final myNotifierProvider = StateNotifierProvider<MyNotifier, int>((ref) {
-  final notifier = MyNotifier();
-
-  final cleanup = notifier.addListener((state) => debugPrint('$state'));
-  ref.onDispose(cleanup);
-
-  // Or, equivalently:
-  // final listener = notifier.stream.listen((event) => debugPrint('$event'));
-  // ref.onDispose(listener.cancel);
-
-  return notifier;
-});
-```
 Becomes this:
 <AutoSnippet language="dart" {...addListener}></AutoSnippet>
 
@@ -280,15 +199,9 @@ Furthermore, as of now, there is not `StateProvider` equivalent for the new APIs
 Nonetheless, migrating from `StateProvider` to `Notifier` is simple.
 
 This:
-
-```dart
-final counterProvider = StateProvider<int>((ref) {
-  return 0;
-});
-```
+<AutoSnippet language="dart" {...fromStateProviderOld}></AutoSnippet>
 
 Becomes:
-
 <AutoSnippet language="dart" {...fromStateProvider}></AutoSnippet>
 
 Even though it costs us a few more LoC, migrating away from `StateProvider` enables us to
@@ -304,48 +217,7 @@ All in all, migrating from `ChangeNotifier` to `AsyncNotifer` requires a paradig
 brings great simplification with the resulting migrated code.
 
 Take this example:
-```dart
-class MyChangeNotifier extends ChangeNotifier {
-  MyChangeNotifier() {
-    _init();
-  }
-  List<Todo> todos = [];
-  bool isLoading = true;
-  bool hasError = false;
-
-  Future<void> _init() async {
-    try {
-      final json = await http.get('api/todos');
-      todos = [...json.map(Todo.fromJson)];
-    } on Exception {
-      hasError = true;
-    } finally {
-      isLoading = false;
-      notifyListeners();
-    }
-  }
-
-  Future<void> addTodo(int id) async {
-    isLoading = true;
-    notifyListeners();
-
-    try {
-      final json = await http.post('api/todos');
-      todos = [...json.map(Todo.fromJson)];
-      hasError = false;
-    } on Exception {
-      hasError = true;
-    } finally {
-      isLoading = false;
-      notifyListeners();
-    }
-  }
-}
-
-final myChangeProvider = ChangeNotifierProvider<MyChangeNotifier>((ref) {
-  return MyChangeNotifier();
-});
-```
+<AutoSnippet language="dart" {...fromChangeNotifierOld}></AutoSnippet>
 
 This implementation shows several faulty design choices such as:
 - The usage of `isLoading` and `hasError` to handle different asynchronous cases
