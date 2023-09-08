@@ -153,7 +153,7 @@ This simplifies the API and, hopefully, your DX, for two reasons:
 3. Also, the above `MyNotifier`, will _not_ dispose when `durationProvider` updates:
    only its _internal state_ will
 
-## Consuming and Mutating data with the new syntax
+## Mutations APIs are the same as before
 
 Up until now we've shown the differences between `StateNotifier` and the new APIs.  
 Instad, one thing `Notifier`, `AsyncNotifer` and `StateNotifier` share is how their states
@@ -197,12 +197,12 @@ a `Notifier` by hand).
 
 The [testing guide](/docs/cookbooks/testing) fully explains how to use `ProviderContainer.read` to do so.
 
-## From `StateProvider` to `Notifier`
+### From `StateProvider` to `Notifier`
 
-`StateProvider` was exposed by Riverpod's libraries to save a few LoC when in need of a
-simplified version of `StateNotifierProvider`.  
+`StateProvider` was exposed by Riverpod since its release, and it was made to save a few LoC for
+simplified versions of `StateNotifierProvider`.  
 Since `StateNotifierProvider` is deprecated, `StateProvider` is to be avoided, too.  
-Furthermore, as of now, there is not `StateProvider` equivalent for the new APIs.
+Furthermore, as of now, there is no `StateProvider` equivalent for the new APIs.
 
 Nonetheless, migrating from `StateProvider` to `Notifier` is simple.
 

@@ -7,7 +7,6 @@ class CounterNotifier extends Notifier<int> {
 
   @override
   set state(int newState) => super.state = newState;
-
   int update(int Function(int state) cb) => state = cb(state);
 }
 

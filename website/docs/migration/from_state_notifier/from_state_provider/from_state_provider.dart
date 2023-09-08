@@ -10,6 +10,5 @@ class CounterNotifier extends _$CounterNotifier {
 
   @override
   set state(int newState) => super.state = newState;
-
   int update(int Function(int state) cb) => state = cb(state);
 }
