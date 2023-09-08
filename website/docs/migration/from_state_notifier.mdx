@@ -20,10 +20,9 @@ import { AutoSnippet } from "../../src/components/CodeSnippet";
 
 Along with [Riverpod 2.0](https://pub.dev/packages/flutter_riverpod/changelog#200), new classes
 were introduced: `Notifier` / `AsyncNotifer`.  
-The good old `StateNotifier` / `ChangeNotifier` classes are now discouraged in favor of those new APIs.
+`StateNotifier` is now discouraged in favor of those new APIs.
 
-This page shows how to migrate from the deprecated `StateNotifier` (and from the legacy `ChangeNotifier`)
-to the new APIs.
+This page shows how to migrate from the deprecated `StateNotifier` to the new APIs.
 
 The main benefit introduced by `AsyncNotifier` is a better `async` support; indeed,
 `AsyncNotifier` can be thought as a `FutureProvider` which can expose ways to be modified from the UI..
@@ -129,11 +128,10 @@ Its migrated counterpart should feel like a light read.
 
 ## Lifecycles have a different behavior
 
-Lifecycles between `Notifier`/`AsyncNotifier` and `StateNotifier`/`ChangeNotifier` differ substantially.
+Lifecycles between `Notifier`/`AsyncNotifier` and `StateNotifier` differ substantially.
 
-`StateNotifier` and `ChangeNotifier` instances are indeed bound to their outer
-`StateNotifierProvider` and `ChangeNotifierProvider` providers.  
-When their provider rebuilds, their exposed value, aka their `StateNotifier`/`ChangeNotifier` instance,
+`StateNotifier` instances are indeed bound to their `StateNotifierProvider`.
+When their provider rebuilds, their exposed value, aka their `StateNotifier` instance,
 is `disposed`, and then re-created (i.e. its constructor gets invoked again).
 
 This example showcases - again - how the old API have sparse logic:
