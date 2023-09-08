@@ -38,24 +38,22 @@ Furthermore, the new `(Async)Notifier`s:
 Let's see how to define a `Notifier`, how it compares with `StateNotifier` and explore
 the new `AsyncNotifier` for asynchronous state classes.
 
-## The new syntax
+## A new syntax
 
-Let's write some simple logic with a synchronous `Notifier`:
+Easier done than said, let's write some example simple logic with the old `StateNotifier`:
+<AutoSnippet language="dart" {...buildInitOld}></AutoSnippet>
 
+Now, with the new `Notifier` APIs, this translates to:
 <AutoSnippet language="dart" {...buildInit}></AutoSnippet>
 
-Notice the following design choices:
+Before anything, the following `Notifier` design choices:
 
 - Notifiers are initialized in their `build` method, along with their reactive dependencies
 - Notifiers expose `ref` into their class, whereas their provider don't
 
 ### Comparison with `StateNotifier`
 
-Let's compare the new APIs with the old ones; here, we implement the above example with `StateNotifier`:
-
-<AutoSnippet language="dart" {...buildInitOld}></AutoSnippet>
-
-Let's recap the main differences:
+Comparing `Notifier` with `StateNotifier`, one can observe these main differences:
 
 - `StateNotifier`'s reactive dependencies are declared in its provider, whereas `Notifier`
   centralizes this logic in its `build` method
@@ -64,7 +62,6 @@ Let's recap the main differences:
 - Notice how, as opposed to `StateNotifier`, no logic is ever written into a `Notifier`'s constructor
 
 Similar conclusions can be made with `AsyncNotifer`, `Notifier`'s asynchronous equivalent.  
-Let's check it out.
 
 ## Better async support with `AsyncNotifier`
 
