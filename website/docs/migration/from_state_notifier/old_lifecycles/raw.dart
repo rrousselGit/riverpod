@@ -2,13 +2,10 @@ import 'dart:async';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../utils.dart';
-
-part 'old_lifecycles.g.dart';
+import '../../utils.dart';
 
 /* SNIPPET START */
-@riverpod
-class MyNotifier extends _$MyNotifier {
+class MyNotifier extends Notifier<int> {
   @override
   int build() {
     // Just read/write the code here, in one place
@@ -21,3 +18,5 @@ class MyNotifier extends _$MyNotifier {
 
   void update() => state++;
 }
+
+final myNotifierProvider = NotifierProvider<MyNotifier, int>(MyNotifier.new);

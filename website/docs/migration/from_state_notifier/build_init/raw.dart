@@ -5,7 +5,7 @@ import 'dart:math';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../utils.dart';
+import '../../utils.dart';
 
 /* SNIPPET START */
 class WellNotifier extends Notifier<int> {

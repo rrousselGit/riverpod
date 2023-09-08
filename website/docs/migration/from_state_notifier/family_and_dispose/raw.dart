@@ -5,7 +5,7 @@ import 'dart:math';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../utils.dart';
+import '../../utils.dart';
 
 /* SNIPPET START */
 class BugsEncounteredNotifier extends AutoDisposeFamilyAsyncNotifier<int, String> {
