@@ -91,6 +91,16 @@ and [`update`](https://pub.dev/documentation/riverpod/latest/riverpod/AutoDispos
 This enables us to write much simpler logic when handling asynchronous mutations and
 [side-effects](/docs/essentials/side_effects).
 
+### Advantages
+
+After these few examples, let's now highligh the main advantages of `Notifier` and `AsyncNotifer`: 
+- The new syntax should feel way simpler and more readable, especially for asynchronous state
+- New APIs are likely to have less boilerplate code in general
+- Syntax is now unified, no matter the type of provider you're writing, enabling
+[code generation](/docs/concepts/about_code_generation)
+
+Let's go further down and highlight more differences and similarities.
+
 ## Explicit `.family` and `.autoDispose` modifications
 
 Another important difference is how families and auto dispose is handled with the new APIs.
