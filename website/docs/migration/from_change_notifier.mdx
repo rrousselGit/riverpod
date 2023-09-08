@@ -1,0 +1,61 @@
+---
+title: From `ChangeNotifier`
+---
+
+import fromChangeNotifier from "./from_state_notifier/from_change_notifier";
+import fromChangeNotifierOld from "./from_state_notifier/from_change_notifier_old";
+
+import { AutoSnippet } from "../../src/components/CodeSnippet";
+
+
+Within Riverpod, `ChangeNotifierProvider` is meant to be used to offer a smooth transition from
+pkg:provider.
+
+If you've just started a migration to pkg:riverpod, make sure you read the dedicated
+[quickstart guide](/docs/from_provider/quickstart).  
+This article is meant for folks that already transitioned to riverpod, but want to move away from
+`ChangeNotifier` definetively.
+
+All in all, migrating from `ChangeNotifier` to `AsyncNotifer` requires a
+[paradigm shift](why-immutability), but it brings great simplification with the resulting migrated
+code.
+
+Take this example:
+<AutoSnippet language="dart" {...fromChangeNotifierOld}></AutoSnippet>
+
+This implementation shows several faulty design choices such as:
+- The usage of `isLoading` and `hasError` to handle different asynchronous cases
+- The need to carefully handle requests with tedious `try`/`catch`/`finally` expressions
+- The need to inkove `notifyListeners` at the right times to make this implementation work
+- The presence of inconsistent or possibly undesirable states, e.g. initialization with an empty list
+
+Note how this example has been crafted to show how `ChangeNotifier` can lead to faulty design choices
+for newbie developers; also, another takeaway is that mutable state might be way harder than it
+initially promises.
+
+`Notifier`/`AsyncNotifer`, in combination with immutable state, can lead to better design choices
+and less errors; this approach lifts the developer from several intricacies due to the nature
+of asynchronous state.
+
+With `AsyncNotifier`, the above becomes:
+<AutoSnippet language="dart" {...fromChangeNotifier}></AutoSnippet>
+
+### Migration Process
+Let's analyze the migration process applied here:
+1. We've moved the initialization from a method invoked in a constructor, directly into `build`
+2. We've removed `todos`, `isLoading` and `hasError`: `state` suffice
+3. Notice how, since `build` returns a `Future<T>`, state is implicitly initialized with `AsyncLoading`,
+waiting for the initial request to finish
+4. We've returned the result of the asynchronous request, with no try-catch-finally blocks
+5. We've then simplified `addTodo`, exploiting `AsyncValue`'s APIs
+6. Notice that, to apply mutations, we simply reassign `state` directly:
+listeners will be automatically notified about it
+
+### Advantages
+Finally, let's highlight the main advantages of the new APIs:
+- There's a lot less code, and what's left is way more simple and readable
+- Since `AsyncNotifier` implicitly uses `AsyncValue`, there's no need to manually define and handle
+ `isLoading` and `hasError`
+- There's no need to explicitly handle errors (i.e. try-catch-finally blocks), since
+`AsyncNotifier.build` converts errors into `AsyncError` and valid data into `AsyncData`
+- `AsyncValue.guard` essentialy emulates `AsyncNotifier.build`, greatly simplifying mutations
