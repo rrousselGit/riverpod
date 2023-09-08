@@ -12,4 +12,4 @@ class CounterNotifier extends Notifier<int> {
   void decrement() => state++;
 }
 
-final wellNotifierProvider = NotifierProvider<CounterNotifier, int>(CounterNotifier.new);
+final counterNotifierProvider = NotifierProvider<CounterNotifier, int>(CounterNotifier.new);

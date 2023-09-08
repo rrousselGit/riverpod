@@ -8,6 +8,6 @@ class CounterNotifier extends StateNotifier<int> {
   void decrement() => state++;
 }
 
-final wellNotifierProvider = StateNotifierProvider<CounterNotifier, int>((ref) {
+final counterNotifierProvider = StateNotifierProvider<CounterNotifier, int>((ref) {
   return CounterNotifier();
 });
