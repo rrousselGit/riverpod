@@ -16,6 +16,8 @@ import fromStateProvider from "./from_state_notifier/from_state_provider";
 import fromStateProviderOld from "./from_state_notifier/from_state_provider_old";
 import oldLifecycles from "./from_state_notifier/old_lifecycles";
 import oldLifecyclesOld from "./from_state_notifier/old_lifecycles_old";
+import consumersDontChange from "./from_state_notifier/consumers_dont_change";
+
 import { AutoSnippet } from "../../src/components/CodeSnippet";
 
 Along with [Riverpod 2.0](https://pub.dev/packages/flutter_riverpod/changelog#200), new classes
@@ -35,8 +37,8 @@ Furthermore, the new `(Async)Notifier`s:
 - Offer similar syntax between their sync and async versions
 - Move away logic from Providers and centralize it into the Notifiers themselves
 
-Let's see how to define a `Notifier`, how it compares with `StateNotifier` and explore
-the new `AsyncNotifier` for asynchronous state classes.
+Let's see how to define a `Notifier`, how it compares with `StateNotifier` and how to migrate
+the new `AsyncNotifier` for asynchronous state.
 
 ## Syntax comparison
 
@@ -116,6 +118,7 @@ Its migrated counterpart should feel like a light read.
 :::info
 `(Async)Notifier`'s `.family` parameters are available via `this.arg` (or `this.paramName` when using codegen)
 :::
+
 ## Lifecycles have a different behavior
 
 Lifecycles between `Notifier`/`AsyncNotifier` and `StateNotifier`/`ChangeNotifier` differ substantially.
@@ -149,6 +152,17 @@ This simplifies the API and, hopefully, your DX, for two reasons:
 2. There is only _one_ place to look at to understand lifecycle side-effects, its `build` method
 3. Also, the above `MyNotifier`, will _not_ dispose when `durationProvider` updates:
    only its _internal state_ will
+
+## Consuming and Mutating data with the new syntax
+
+Up until now we've shown the differences between `StateNotifier` and the new APIs.  
+Instad, one thing `Notifier`, `AsyncNotifer` and `StateNotifier` share is how their states
+can be consumed and mutated.
+
+Consumers can obtain data from these three providers with the same syntax, which is great in case
+you're migrating away from `StateNotifier`, and this applies for notifiers methods, too.
+
+<AutoSnippet language="dart" {...consumersDontChange}></AutoSnippet>
 
 ## Other migrations
 
