@@ -9,7 +9,7 @@ part of 'async_notifier.dart';
 // **************************************************************************
 
 String _$asyncTodosNotifierHash() =>
-    r'954b0a18d324fad35807140db2fcff39b5947571';
+    r'10207327c7dee180e9da8beece5bfffedcf86e98';
 
 /// See also [AsyncTodosNotifier].
 @ProviderFor(AsyncTodosNotifier)

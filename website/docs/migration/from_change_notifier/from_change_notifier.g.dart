@@ -8,7 +8,7 @@ part of 'from_change_notifier.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$myNotifierHash() => r'fa0927a77e9a6161041c5c38e9fada566bebe6bc';
+String _$myNotifierHash() => r'07dea819a5c6aec0f3623e5bd539310e98177439';
 
 /// See also [MyNotifier].
 @ProviderFor(MyNotifier)

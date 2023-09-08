@@ -9,7 +9,7 @@ part of 'family_and_dispose.dart';
 // **************************************************************************
 
 String _$bugsEncounteredNotifierHash() =>
-    r'f45903bf1c7a2b38cad33907afcdce86901b738b';
+    r'de60b48b54ac5cdaaf90685de0b307a1d23f64d5';
 
 /// Copied from Dart SDK
 class _SystemHash {

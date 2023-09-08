@@ -8,7 +8,7 @@ part of 'build_init.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$wellNotifierHash() => r'd13a501738fbba0347eb23956aed1b505f5f8eab';
+String _$wellNotifierHash() => r'1e6f4531f8f49ace3e95f58645b571920e94cbaf';
 
 /// See also [WellNotifier].
 @ProviderFor(WellNotifier)

@@ -8,7 +8,7 @@ part of 'add_listener.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$myNotifierHash() => r'773acc007ef2764a2da4ad62c101a49101ac0a2c';
+String _$myNotifierHash() => r'9acd382ed579c545ace755687b155e28eba01d22';
 
 /// See also [MyNotifier].
 @ProviderFor(MyNotifier)
