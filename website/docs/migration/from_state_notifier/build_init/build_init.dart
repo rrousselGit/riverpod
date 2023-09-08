@@ -1,21 +1,15 @@
 // ignore_for_file: avoid_print
 
-import 'dart:math';
-
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import '../../utils.dart';
 
 part 'build_init.g.dart';
 
 /* SNIPPET START */
 @riverpod
-class WellNotifier extends _$WellNotifier {
+class CounterNotifier extends _$CounterNotifier {
   @override
-  int build() {
-    final availableWater = ref.watch(availableWaterProvider);
-    return availableWater;
-  }
+  int build() => 0;
 
-  void drink(int liters) => state = min(state - liters, 0);
+  void increment() => state++;
+  void decrement() => state++;
 }

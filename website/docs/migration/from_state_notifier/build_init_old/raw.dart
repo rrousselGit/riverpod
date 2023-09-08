@@ -1,17 +1,13 @@
-import 'dart:math';
-
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../utils.dart';
-
 /* SNIPPET START */
-class WellNotifier extends StateNotifier<int> {
-  WellNotifier(super._state);
+class CounterNotifier extends StateNotifier<int> {
+  CounterNotifier() : super(0);
 
-  void drink(int liters) => state = min(state - liters, 0);
+  void increment() => state++;
+  void decrement() => state++;
 }
 
-final wellNotifierProvider = StateNotifierProvider<WellNotifier, int>((ref) {
-  final availableWater = ref.watch(availableWaterProvider);
-  return WellNotifier(availableWater);
+final wellNotifierProvider = StateNotifierProvider<CounterNotifier, int>((ref) {
+  return CounterNotifier();
 });

@@ -8,20 +8,21 @@ part of 'build_init.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$wellNotifierHash() => r'1e6f4531f8f49ace3e95f58645b571920e94cbaf';
+String _$counterNotifierHash() => r'8d4e4011da15a0ef79af9622336839a0c9e406ab';
 
-/// See also [WellNotifier].
-@ProviderFor(WellNotifier)
-final wellNotifierProvider =
-    AutoDisposeNotifierProvider<WellNotifier, int>.internal(
-  WellNotifier.new,
-  name: r'wellNotifierProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$wellNotifierHash,
+/// See also [CounterNotifier].
+@ProviderFor(CounterNotifier)
+final counterNotifierProvider =
+    AutoDisposeNotifierProvider<CounterNotifier, int>.internal(
+  CounterNotifier.new,
+  name: r'counterNotifierProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$counterNotifierHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$WellNotifier = AutoDisposeNotifier<int>;
+typedef _$CounterNotifier = AutoDisposeNotifier<int>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
