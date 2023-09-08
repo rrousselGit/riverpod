@@ -38,18 +38,17 @@ Furthermore, the new `(Async)Notifier`s:
 Let's see how to define a `Notifier`, how it compares with `StateNotifier` and explore
 the new `AsyncNotifier` for asynchronous state classes.
 
-## A new syntax
+## Syntax comparison
 
-Easier done than said, let's write some example simple logic with the old `StateNotifier`:
+Please read [how to define a `Notifier`](/docs/essentials/side_effects#defining-a-notifier) before
+diving into this comparison.
+
+Here's an example, using the old `StateNotifier`:
 <AutoSnippet language="dart" {...buildInitOld}></AutoSnippet>
 
-Now, with the new `Notifier` APIs, this translates to:
+Here's the same example, but with the new `Notifier` APIs, which this translates to:
 <AutoSnippet language="dart" {...buildInit}></AutoSnippet>
 
-Before anything, the following `Notifier` design choices:
-
-- Notifiers are initialized in their `build` method, along with their reactive dependencies
-- Notifiers expose `ref` into their class, whereas their provider don't
 
 ### Comparison with `StateNotifier`
 
@@ -63,21 +62,19 @@ Comparing `Notifier` with `StateNotifier`, one can observe these main difference
 
 Similar conclusions can be made with `AsyncNotifer`, `Notifier`'s asynchronous equivalent.  
 
-## Better async support with `AsyncNotifier`
+## Migrating asynchronous `StateNotifier`s
 
-The main appeal of the new API syntax is an improved DX on asynchronous states.  
-Previously, with `StateNotifier`, we would handle that like so:
+The main appeal of the new API syntax is an improved DX on asynchronous data.  
+Take the following example:
 
 <AutoSnippet language="dart" {...asyncNotifierOld}></AutoSnippet>
-
-
-As anticipated, `StateNotifier` suffers its heavy syntax.  
-Instead, `AsyncNotifer`, just like `Notifier`, brings a simple and uniform API.
-Here, it's easy to see `AsyncNotifer` as a `FutureProvider` with methods.
 
 Here's the above example, rewritten with the new `AsyncNotifier` APIs:
 
 <AutoSnippet language="dart" {...asyncNotifier}></AutoSnippet>
+
+`AsyncNotifer`, just like `Notifier`, brings a simpler and more uniform API.
+Here, it's easy to see `AsyncNotifer` as a `FutureProvider` with methods.
 
 Therefore, migrating from `StateNotifier<AsyncValue<T>>` to a `AsyncNotifer<T>` should be a matter of:
 
