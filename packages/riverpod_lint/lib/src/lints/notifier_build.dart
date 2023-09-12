@@ -48,12 +48,12 @@ class NotifierBuild extends RiverpodLintRule {
   }
 
   @override
-  List<Fix> getFixes() => [
+  List<RiverpodFix> getFixes() => [
         AddBuildMethodFix(),
       ];
 }
 
-class AddBuildMethodFix extends DartFix {
+class AddBuildMethodFix extends RiverpodFix {
   @override
   void run(
     CustomLintResolver resolver,
