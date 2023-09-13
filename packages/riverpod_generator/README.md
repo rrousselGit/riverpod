@@ -70,12 +70,12 @@ Consumer(
 
 This new syntax has all the power of Riverpod, but also:
 
-- solves the problem of knowing "What provider should I use?".  
+- solves the problem of knowing "What provider should I use?".
   With this new syntax, there is no such thing as `Provider` vs `FutureProvider` vs ...
-- enables stateful hot-reload for providers.  
+- enables stateful hot-reload for providers.
   When modifying the source code of a provider, on hot-reload Riverpod will re-execute
   that provider _and only that provider_.
-- fixes various flaws in the existing syntax.  
+- fixes various flaws in the existing syntax.
   For example, when passing parameters to providers by using [family], we are limited
   to a single positional parameter. But with this project, we can pass multiple parameters,
   and use all the features of function parameters. Including named parameters, optional
@@ -117,7 +117,7 @@ Don't forget to run `flutter pub get` / `dart pub get`.
 To start the code generator, run the following command:
 
 ```sh
-dart pub run build_runner watch
+dart run build_runner watch
 ```
 
 ## Defining our first "provider"
