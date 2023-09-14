@@ -1,3 +1,7 @@
+## 2.3.2 - 2023-09-04
+
+- Disable `invalid_use_of_visible_for_testing_member` in generated files
+
 ## 2.3.1 - 2023-08-28
 
 - `riverpod_annotation` upgraded to `2.1.4`
