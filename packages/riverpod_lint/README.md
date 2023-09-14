@@ -50,6 +50,7 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
   - [functional\_ref (riverpod\_generator only)](#functional_ref-riverpod_generator-only)
   - [notifier\_extends (riverpod\_generator only)](#notifier_extends-riverpod_generator-only)
   - [avoid\_ref\_inside\_state\_dispose](#avoid_ref_inside_state_dispose)
+  - [missed\_build\_method (riverpod\_generator only)](#notifier_build-riverpod_generator-only)
 - [All assists](#all-assists)
   - [Wrap widgets with a `Consumer`](#wrap-widgets-with-a-consumer)
   - [Wrap widgets with a `ProviderScope`](#wrap-widgets-with-a-providerscope)
@@ -549,6 +550,29 @@ class _MyWidgetState extends ConsumerState<MyWidget> {
 
   // ...
 }
+```
+
+### notifier_build (riverpod_generator only)
+
+Classes annotated by `@riverpod` must have the `build` method.
+
+**Good**:
+
+```dart
+@riverpod
+class Example extends _$Example {
+  
+  @overried
+  int build() => 0;
+}
+```
+
+**Bad**:
+
+```dart
+// No "build" method found
+@riverpod
+class Example extends _$Example {}
 ```
 
 ## All assists

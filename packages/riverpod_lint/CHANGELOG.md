@@ -1,3 +1,7 @@
+## Unreleased minor
+
+- Added `notifier_build`, a lint to catch when a Notifier has no `build` method (thansk to @LeonardoRosaa)
+
 ## 2.0.4 - 2023-09-04
 
 - `riverpod` upgraded to `2.4.0`
