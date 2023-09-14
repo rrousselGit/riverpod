@@ -77,13 +77,12 @@ class AddBuildMethodFix extends RiverpodFix {
           offset,
           '''
 
-
   @override
   dynamic build() {
     // TODO: implement build
     throw UnimplementedError();
   }
-  ''',
+''',
         );
       });
     });
