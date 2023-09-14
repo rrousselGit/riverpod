@@ -1,4 +1,4 @@
-## Unreleased minor
+## 2.1.0 - 2023-09-14
 
 - Added `notifier_build`, a lint to catch when a Notifier has no `build` method (thansk to @LeonardoRosaa)
 
