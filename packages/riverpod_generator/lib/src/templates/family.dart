@@ -1,3 +1,4 @@
+import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:collection/collection.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
@@ -229,6 +230,11 @@ ${parameters.map((e) => '        ${e.name}: ${e.name},\n').join()}
     });
 
     final docs = providerDocFor(provider.providerElement.element);
+    var meta = '';
+    final node = provider.node;
+    if (node is AnnotatedNode) {
+      meta = metaAnnotations(node.metadata);
+    }
     final providerName =
         providerFamilyNameFor(provider.providerElement, options);
 
@@ -242,6 +248,7 @@ $other
 
 $docs
 @ProviderFor(${provider.name})
+$meta
 const $providerName = $familyName();
 
 $docs

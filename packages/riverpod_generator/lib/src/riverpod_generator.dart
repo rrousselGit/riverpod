@@ -20,6 +20,28 @@ String providerDocFor(Element element) {
       : '${element.documentationComment}\n///\n/// Copied from [${element.name}].';
 }
 
+final metaAnnotationsTypeChecker = TypeChecker.any([
+  const TypeChecker.fromRuntime(Deprecated),
+  TypeChecker.fromRuntime(experimental.runtimeType),
+  TypeChecker.fromRuntime(visibleForTesting.runtimeType),
+  TypeChecker.fromRuntime(protected.runtimeType),
+]);
+
+String metaAnnotations(NodeList<Annotation> metadata) {
+  final buffer = StringBuffer();
+  for (final annotation in metadata) {
+    final element = annotation.element;
+    if (element == null) continue;
+    if (element is! ExecutableElement) continue;
+    if (metaAnnotationsTypeChecker.isExactlyType(element.returnType)) {
+      buffer.writeln('$annotation');
+      continue;
+    }
+  }
+
+  return buffer.toString();
+}
+
 String _hashFn(GeneratorProviderDeclaration provider, String hashName) {
   return "String $hashName() => r'${provider.computeProviderHash()}';";
 }
@@ -47,7 +69,7 @@ class RiverpodInvalidGenerationSourceError
 
   final AstNode? astNode;
 
-  // TODO overrride toString to render AST nodes.
+  // TODO override toString to render AST nodes.
 }
 
 @immutable
