@@ -33,7 +33,7 @@ String notCopiedFunctional(NotCopiedFunctionalRef ref) => 'notCopiedFunctional';
 
 @riverpod
 @doNotStore
-class NotCopiedClassBased extends _$ClassBased {
+class NotCopiedClassBased extends _$NotCopiedClassBased {
   @override
   String build() => 'NotCopiedClassBased';
 }

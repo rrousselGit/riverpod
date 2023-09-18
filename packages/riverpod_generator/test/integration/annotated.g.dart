@@ -340,7 +340,7 @@ final classBasedProvider =
 
 typedef _$ClassBased = AutoDisposeNotifier<String>;
 String _$notCopiedClassBasedHash() =>
-    r'a3d15d6c01c890e745fa2c142d7342961941feed';
+    r'd2aefd08a78e3bb4c02000d4931a3bf15c01b495';
 
 /// See also [NotCopiedClassBased].
 @ProviderFor(NotCopiedClassBased)
