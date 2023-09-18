@@ -1,0 +1,9 @@
+targets:
+  $default:
+    builders:
+      riverpod_generator:
+        generate_for:
+          exclude:
+            # Those files voluntarily have the generation fail
+            - test/goldens/fixes/notifier_build.dart
+            - test/goldens/lints/notifier_build.dart
