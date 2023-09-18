@@ -410,4 +410,4 @@ class _NotifierFamilyWithDependenciesProviderElement
   int? get id => (origin as NotifierFamilyWithDependenciesProvider).id;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
