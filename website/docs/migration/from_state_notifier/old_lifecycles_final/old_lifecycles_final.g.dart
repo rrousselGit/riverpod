@@ -2,13 +2,13 @@
 
 // ignore_for_file: non_constant_identifier_names
 
-part of 'old_lifecycles.dart';
+part of 'old_lifecycles_final.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$myNotifierHash() => r'0495c52ce893ee0304d4d5ac5648c634ed4a241e';
+String _$myNotifierHash() => r'8ea2586ea29d12306efd4b8b847142136dd20338';
 
 /// See also [MyNotifier].
 @ProviderFor(MyNotifier)

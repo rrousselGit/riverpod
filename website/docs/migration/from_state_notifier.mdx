@@ -14,6 +14,8 @@ import fromStateProvider from "./from_state_notifier/from_state_provider";
 import fromStateProviderOld from "./from_state_notifier/from_state_provider_old";
 import oldLifecycles from "./from_state_notifier/old_lifecycles";
 import oldLifecyclesOld from "./from_state_notifier/old_lifecycles_old";
+import oldLifecyclesFinal from "./from_state_notifier/old_lifecycles_final";
+
 import consumersDontChange from "./from_state_notifier/consumers_dont_change";
 
 import { AutoSnippet } from "../../src/components/CodeSnippet";
@@ -139,21 +141,52 @@ and its internal state is then re-initialized.
 Furthermore, unlike every other provider, the `dispose` callback is to be defined
 in the class, separately.  
 Finally, it is still possible to write `ref.onDispose` in its _provider_, showing once again how
-sparse the logic can be with this API; potentially, the developer might have to look into six (6!)
+sparse the logic can be with this API; potentially, the developer might have to look into eight (8!)
 different places to understand this Notifier behavior!
 
-Again, this ambiguity is solved with `Riverpod 2.0`.
-Check the above example, migrated to its `Notifier` equivalent.
+These ambiguities are solved with `Riverpod 2.0`.
+
+### Old `dispose' vs `ref.onDispose`
+`StateNotifier`'s `dispose` method refers to the dispose event of the notifier itself, aka it's a
+callback that gets called *before disposing of itself*.
+
+`(Async)Notifier`s don't have this property, since *they don't get disposed of on rebuild*; only
+their *internal state* is.  
+In the new notifiers, dispose lifecycles are taken care of in only _one_ place, via `ref.onDispose`
+(and others), just like any other provider.
+This simplifies the API, and hopefully the DX, so that there is only _one_ place to look at to
+understand lifecycle side-effects: its `build` method.
+
+Shortly: to register a callback that fires before its *internal state* rebuilds, we can use
+`ref.onDispose` like every other provider.
+
+You can migrate the above snippet like so:
 
 <AutoSnippet language="dart" {...oldLifecycles}></AutoSnippet>
 
-This simplifies the API and, hopefully, your DX, for two reasons:
+In this last snippet there sure is some simplification, but there's still an open problem: we
+are now unable to understand whether or not our notifiers are still alive while performing `update`.  
+This might arise an unwanted `StateError`s.
 
-1. There is only _one_ lifecycle to take care of, and it's managed via `ref.onDispose`
-   (and `ref.onCancel`, etc.), just like you would do with any other provider
-2. There is only _one_ place to look at to understand lifecycle side-effects, its `build` method
-3. Also, the above `MyNotifier`, will _not_ dispose when `durationProvider` updates:
-   only its _internal state_ will
+### No more `mounted`
+This happens because `(Async)Notifier`s lacks a `mounted` property, which was available on
+`StateNotifier`.  
+Considering their difference in lifecycle, this makes perfect sense; while possible, a `mounted`
+property would be misleading on the new notifiers: `mounted` would *almost always* be `true`.
+
+While it would be possible to craft a [custom workaround](https://github.com/rrousselGit/riverpod/issues/1879#issuecomment-1303189191),
+it's reccomended to work around this by canceling the asynchronous operation.
+
+Canceling an operation can be done with a custom [Completer](https://api.flutter.dev/flutter/dart-async/Completer-class.html),
+or any custom derivative.
+
+For example, if you're using `Dio` to perform network requests, consider using a [cancel token](https://pub.dev/documentation/dio/latest/dio/CancelToken-class.html).
+As explained [here](/docs/concepts/modifiers/auto_dispose#example-canceling-http-requests-when-no-longer-used),
+a `CancelToken` can be used to cancel requests.
+
+Therefore, the above example migrates to the following:
+<AutoSnippet language="dart" {...oldLifecyclesFinal}></AutoSnippet>
+
 
 ## Mutations APIs are the same as before
 

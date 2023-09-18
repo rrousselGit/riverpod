@@ -26,9 +26,10 @@ class MyNotifier extends Notifier<int> {
   }
 
   Future<void> update() async {
-    await ref.read(repositoryProvider).update(state + 1);
-    // `mounted` is no more!
-    state++; // This might throw.
+    final cancelToken = CancelToken();
+    ref.onDispose(cancelToken.cancel);
+    await ref.read(repositoryProvider).update(state + 1, token: cancelToken);
+    state++;
   }
 }
 

@@ -5,6 +5,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../utils.dart';
 
+part 'old_lifecycles_final.g.dart';
+
 final repositoryProvider = Provider<_MyRepo>((ref) {
   return _MyRepo();
 });
@@ -14,7 +16,8 @@ class _MyRepo {
 }
 
 /* SNIPPET START */
-class MyNotifier extends Notifier<int> {
+@riverpod
+class MyNotifier extends _$MyNotifier {
   @override
   int build() {
     // Just read/write the code here, in one place
@@ -26,10 +29,10 @@ class MyNotifier extends Notifier<int> {
   }
 
   Future<void> update() async {
-    await ref.read(repositoryProvider).update(state + 1);
-    // `mounted` is no more!
-    state++; // This might throw.
+    final cancelToken = CancelToken();
+    ref.onDispose(cancelToken.cancel);
+    await ref.read(repositoryProvider).update(state + 1, token: cancelToken);
+    // When `cancelToken.cancel` is invoked, a custom Exception is thrown
+    state++;
   }
 }
-
-final myNotifierProvider = NotifierProvider<MyNotifier, int>(MyNotifier.new);
