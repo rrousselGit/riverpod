@@ -25,23 +25,19 @@ class ClassBased extends _$ClassBased {
 @experimental
 @visibleForTesting
 @protected
-String familyFunctional(FamilyFunctionalRef ref, int id) =>
-    'familyFunctional $id';
+String family(FamilyRef ref, int id) => 'family $id';
 
 @riverpod
-@Deprecated('Deprecation message')
-@experimental
-@visibleForTesting
-@protected
-class FamilyClassBased extends _$FamilyClassBased {
+@doNotStore
+String notCopiedFunctional(NotCopiedFunctionalRef ref) => 'notCopiedFunctional';
+
+@riverpod
+@doNotStore
+class NotCopiedClassBased extends _$ClassBased {
   @override
-  String build(int id) => 'FamilyClassBased $id';
+  String build() => 'NotCopiedClassBased';
 }
 
 @riverpod
 @doNotStore
-String notCopied(NotCopiedRef ref) => 'not copied';
-
-@riverpod
-@doNotStore
-String notCopiedFamily(NotCopiedFamilyRef ref, int id) => 'not copied $id';
+String notCopiedFamily(NotCopiedFamilyRef ref, int id) => 'notCopiedFamily $id';

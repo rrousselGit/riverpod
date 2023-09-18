@@ -1,12 +1,90 @@
-// ignore_for_file: deprecated_member_use_from_same_package
-import 'package:riverpod/riverpod.dart';
+import 'dart:io';
+
+import 'package:analyzer/dart/analysis/results.dart';
+import 'package:analyzer/dart/analysis/utilities.dart';
+import 'package:analyzer/dart/ast/ast.dart';
+import 'package:meta/meta.dart';
 import 'package:test/test.dart';
 
-import 'integration/annotated.dart';
+void main() async {
+  final file = File('test/integration/annotated.g.dart').absolute;
+  final result = await resolveFile2(path: file.path) as ResolvedUnitResult;
+  final topLevelDeclarations = result.unit.declarations
+      .whereType<TopLevelVariableDeclaration>()
+      .toList();
 
-void main() {
-  test('Applied meta annotations to provider', () {
-    //TODO (SunlightBro): check if annotations are correctly applied.
-    expect(functionalProvider, isA<AutoDisposeProvider<String>>());
+  test('Annotations on generated functionalProvider', () async {
+    final annotations = topLevelDeclarations
+        .findNamed('functionalProvider')
+        .metadata
+        .toString();
+
+    expect(
+      annotations,
+      "[@ProviderFor(functional), @Deprecated('Deprecation message'), @experimental, @visibleForTesting, @protected]",
+    );
   });
+
+  test('Annotations on generated classBasedProvider', () async {
+    final annotations = topLevelDeclarations
+        .findNamed('classBasedProvider')
+        .metadata
+        .toString();
+
+    expect(
+      annotations,
+      "[@ProviderFor(ClassBased), @Deprecated('Deprecation message'), @experimental, @visibleForTesting, @protected]",
+    );
+  });
+
+  test('Annotations on generated familyProvider', () async {
+    final annotations =
+        topLevelDeclarations.findNamed('familyProvider').metadata.toString();
+    expect(
+      annotations,
+      "[@ProviderFor(family), @Deprecated('Deprecation message'), @experimental, @visibleForTesting, @protected]",
+    );
+  });
+
+  test('Annotations on generated notCopiedFunctionalProvider', () async {
+    final annotations = topLevelDeclarations
+        .findNamed('notCopiedFunctionalProvider')
+        .metadata
+        .toString();
+    expect(
+      annotations,
+      '[@ProviderFor(notCopiedFunctional)]',
+    );
+  });
+
+  test('Annotations on generated notCopiedClassBasedProvider', () async {
+    final annotations = topLevelDeclarations
+        .findNamed('notCopiedClassBasedProvider')
+        .metadata
+        .toString();
+    expect(
+      annotations,
+      '[@ProviderFor(NotCopiedClassBased)]',
+    );
+  });
+
+  test('Annotations on generated notCopiedFamilyProvider', () async {
+    final annotations = topLevelDeclarations
+        .findNamed('notCopiedFamilyProvider')
+        .metadata
+        .toString();
+    expect(
+      annotations,
+      '[@ProviderFor(notCopiedFamily)]',
+    );
+  });
+}
+
+extension TopLevelVariableDeclarationFindNamedX
+    on List<TopLevelVariableDeclaration> {
+  TopLevelVariableDeclaration findNamed(String name) {
+    return singleWhere((element) {
+      return element.variables.variables.first.name.lexeme == name;
+    });
+  }
 }
