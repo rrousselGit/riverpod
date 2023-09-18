@@ -230,11 +230,7 @@ ${parameters.map((e) => '        ${e.name}: ${e.name},\n').join()}
     });
 
     final docs = providerDocFor(provider.providerElement.element);
-    var meta = '';
-    final node = provider.node;
-    if (node is AnnotatedNode) {
-      meta = metaAnnotations(node.metadata);
-    }
+    final meta = metaAnnotations(provider.node.metadata);
     final providerName =
         providerFamilyNameFor(provider.providerElement, options);
 
