@@ -2,7 +2,7 @@
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'from_change_notifier.g.dart';
+part 'declaration.g.dart';
 
 class Todo {
   const Todo(this.id);
@@ -22,18 +22,8 @@ final http = Http();
 @riverpod
 class MyNotifier extends _$MyNotifier {
   @override
-  FutureOr<List<Todo>> build() async {
-    final json = await http.get('api/todos');
-
-    return [...json.map(Todo.fromJson)];
-  }
-
-  Future<void> addTodo(int id) async {
-    state = const AsyncLoading();
-    state = await AsyncValue.guard(() async {
-      final json = await http.post('api/todos');
-
-      return [...json.map(Todo.fromJson)];
-    });
+  FutureOr<List<Todo>> build() {
+    // TODO ...
+    return [];
   }
 }

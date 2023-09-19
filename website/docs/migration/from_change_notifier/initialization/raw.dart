@@ -22,17 +22,7 @@ class MyNotifier extends AutoDisposeAsyncNotifier<List<Todo>> {
   @override
   FutureOr<List<Todo>> build() async {
     final json = await http.get('api/todos');
-
     return [...json.map(Todo.fromJson)];
-  }
-
-  Future<void> addTodo(int id) async {
-    state = const AsyncLoading();
-    state = await AsyncValue.guard(() async {
-      final json = await http.post('api/todos');
-
-      return [...json.map(Todo.fromJson)];
-    });
   }
 }
 

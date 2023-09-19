@@ -1,5 +1,5 @@
 import raw from "!!raw-loader!./raw.dart";
-import codegen from "!!raw-loader!./from_change_notifier.dart";
+import codegen from "!!raw-loader!./migrated.dart";
 
 export default {
   raw,
