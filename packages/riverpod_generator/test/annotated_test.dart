@@ -20,7 +20,7 @@ void main() async {
 
     expect(
       annotations,
-      "[@ProviderFor(functional), @Deprecated('Deprecation message'), @@visibleForTesting, @protected]",
+      "[@ProviderFor(functional), @Deprecated('Deprecation message'), @visibleForTesting, @protected]",
     );
   });
 
@@ -32,7 +32,7 @@ void main() async {
 
     expect(
       annotations,
-      "[@ProviderFor(ClassBased), @Deprecated('Deprecation message'), @@visibleForTesting, @protected]",
+      "[@ProviderFor(ClassBased), @Deprecated('Deprecation message'), @visibleForTesting, @protected]",
     );
   });
 
@@ -41,7 +41,7 @@ void main() async {
         topLevelDeclarations.findNamed('familyProvider').metadata.toString();
     expect(
       annotations,
-      "[@ProviderFor(family), @Deprecated('Deprecation message'), @@visibleForTesting, @protected]",
+      "[@ProviderFor(family), @Deprecated('Deprecation message'), @visibleForTesting, @protected]",
     );
   });
 
