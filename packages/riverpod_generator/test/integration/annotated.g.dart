@@ -6,12 +6,11 @@ part of 'annotated.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$functionalHash() => r'f30c2a17e4cce470c89b082569e3f911d9e4b79f';
+String _$functionalHash() => r'69e260b1de8ba28cbeb8e24d628933366cde6b8b';
 
 /// See also [functional].
 @ProviderFor(functional)
 @Deprecated('Deprecation message')
-@experimental
 @visibleForTesting
 @protected
 final functionalProvider = AutoDisposeProvider<String>.internal(
@@ -24,7 +23,7 @@ final functionalProvider = AutoDisposeProvider<String>.internal(
 );
 
 typedef FunctionalRef = AutoDisposeProviderRef<String>;
-String _$familyHash() => r'7a3eadae2860fe8643024906c5fb53a5e5dc7d49';
+String _$familyHash() => r'd70685b83be840bfd9e79c11fb84c905d19d6e10';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -50,7 +49,6 @@ class _SystemHash {
 /// See also [family].
 @ProviderFor(family)
 @Deprecated('Deprecation message')
-@experimental
 @visibleForTesting
 @protected
 const familyProvider = FamilyFamily();
@@ -320,12 +318,11 @@ class _NotCopiedFamilyProviderElement extends AutoDisposeProviderElement<String>
   int get id => (origin as NotCopiedFamilyProvider).id;
 }
 
-String _$classBasedHash() => r'622330ee6c6b3b384dde237a3beab1006d1bfbfc';
+String _$classBasedHash() => r'f40d1a032ee264aafd7686a985cdf1937f2dc108';
 
 /// See also [ClassBased].
 @ProviderFor(ClassBased)
 @Deprecated('Deprecation message')
-@experimental
 @visibleForTesting
 @protected
 final classBasedProvider =

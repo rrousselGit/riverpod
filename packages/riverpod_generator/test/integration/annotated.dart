@@ -5,14 +5,12 @@ part 'annotated.g.dart';
 
 @riverpod
 @Deprecated('Deprecation message')
-@experimental
 @visibleForTesting
 @protected
 String functional(FunctionalRef ref) => 'functional';
 
 @riverpod
 @Deprecated('Deprecation message')
-@experimental
 @visibleForTesting
 @protected
 class ClassBased extends _$ClassBased {
@@ -22,7 +20,6 @@ class ClassBased extends _$ClassBased {
 
 @riverpod
 @Deprecated('Deprecation message')
-@experimental
 @visibleForTesting
 @protected
 String family(FamilyRef ref, int id) => 'family $id';

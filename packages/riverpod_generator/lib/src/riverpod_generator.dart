@@ -2,6 +2,7 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:meta/meta.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
+
 // ignore: implementation_imports, safe as we are the one controlling this file
 import 'package:riverpod_annotation/src/riverpod_annotation.dart';
 import 'package:source_gen/source_gen.dart';
@@ -20,20 +21,14 @@ String providerDocFor(Element element) {
       : '${element.documentationComment}\n///\n/// Copied from [${element.name}].';
 }
 
-final metaAnnotationsTypeChecker = TypeChecker.any([
-  const TypeChecker.fromRuntime(Deprecated),
-  TypeChecker.fromRuntime(experimental.runtimeType),
-  TypeChecker.fromRuntime(visibleForTesting.runtimeType),
-  TypeChecker.fromRuntime(protected.runtimeType),
-]);
-
 String metaAnnotations(NodeList<Annotation> metadata) {
   final buffer = StringBuffer();
   for (final annotation in metadata) {
-    final element = annotation.element;
+    final element = annotation.elementAnnotation;
     if (element == null) continue;
-    if (element is! ExecutableElement) continue;
-    if (metaAnnotationsTypeChecker.isExactlyType(element.returnType)) {
+    if (element.isDeprecated ||
+        element.isVisibleForTesting ||
+        element.isProtected) {
       buffer.writeln('$annotation');
       continue;
     }
@@ -69,7 +64,7 @@ class RiverpodInvalidGenerationSourceError
 
   final AstNode? astNode;
 
-  // TODO override toString to render AST nodes.
+// TODO override toString to render AST nodes.
 }
 
 @immutable
@@ -117,9 +112,11 @@ class _RiverpodGeneratorVisitor extends RecursiveRiverpodAstVisitor {
   final BuildYamlOptions options;
 
   String get suffix => options.providerNameSuffix ?? _defaultProviderNameSuffix;
+
   String get familySuffix => options.providerFamilyNameSuffix ?? suffix;
 
   var _didEmitHashUtils = false;
+
   void maybeEmitHashUtils() {
     if (_didEmitHashUtils) return;
 
