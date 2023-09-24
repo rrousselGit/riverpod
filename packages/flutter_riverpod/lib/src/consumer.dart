@@ -364,7 +364,7 @@ typedef ConsumerBuilder = Widget Function(
 /// {@endtemplate}
 @sealed
 class Consumer extends ConsumerWidget {
-  /// {@template riverpod.consumer}
+  /// {@macro riverpod.consumer}
   const Consumer({super.key, required ConsumerBuilder builder, Widget? child})
       : _child = child,
         _builder = builder;
