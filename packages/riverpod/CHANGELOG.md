@@ -1,3 +1,7 @@
+## Unreleased patch
+
+- Fix invalid Dart docs (thanks to @srawlins)
+
 ## 2.4.0 - 2023-09-04
 
 - Added `Notifier.stateOrNull`.
