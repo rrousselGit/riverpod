@@ -1,4 +1,4 @@
-## Unreleased fix
+## 2.1.1 - 2023-09-27
 
 - Fixed `provider_dependencies` lint causing false positives on providers with arguments.
 

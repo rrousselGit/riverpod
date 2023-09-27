@@ -1,4 +1,4 @@
-## Unreleased fix
+## 0.3.4 - 2023-09-27
 
 - Fixed `refInvocations` not getting parsed for generated providers with arguments.
 

@@ -1,3 +1,8 @@
+## 2.3.3 - 2023-09-27
+
+- `riverpod_analyzer_utils` upgraded to `0.3.4`
+- `riverpod_annotation` upgraded to `2.1.6`
+
 ## 2.3.2 - 2023-09-04
 
 - Disable `invalid_use_of_visible_for_testing_member` in generated files
