@@ -5,14 +5,16 @@ import 'package:custom_lint_builder/custom_lint_builder.dart';
 
 import '../riverpod_custom_lint.dart';
 
-TypeChecker buildContextType = const TypeChecker.fromName('BuildContext', packageName: 'flutter');
+TypeChecker buildContextType =
+    const TypeChecker.fromName('BuildContext', packageName: 'flutter');
 
 class AvoidPassingBuildContextToProviders extends RiverpodLintRule {
   const AvoidPassingBuildContextToProviders() : super(code: _code);
 
   static const _code = LintCode(
     name: 'avoid_passing_build_context_to_providers',
-    problemMessage: 'Passing BuildContext to providers indicates mixing UI with the business logic.',
+    problemMessage:
+        'Passing BuildContext to providers indicates mixing UI with the business logic.',
     errorSeverity: ErrorSeverity.WARNING,
   );
 
@@ -25,8 +27,11 @@ class AvoidPassingBuildContextToProviders extends RiverpodLintRule {
     riverpodRegistry(context).addFunctionalProviderDeclaration((declaration) {
       final parameters = declaration.node.functionExpression.parameters!;
 
-      final buildContextParameters = parameters.parameters
-          .where((e) => e.declaredElement?.type != null && buildContextType.isExactlyType(e.declaredElement!.type));
+      final buildContextParameters = parameters.parameters.where(
+        (e) =>
+            e.declaredElement?.type != null &&
+            buildContextType.isExactlyType(e.declaredElement!.type),
+      );
 
       for (final contextParameter in buildContextParameters) {
         reporter.reportErrorForNode(_code, contextParameter);
@@ -39,8 +44,11 @@ class AvoidPassingBuildContextToProviders extends RiverpodLintRule {
       for (final method in methods) {
         final parameters = method.parameters!;
 
-        final buildContextParameters = parameters.parameters
-            .where((e) => e.declaredElement?.type != null && buildContextType.isExactlyType(e.declaredElement!.type));
+        final buildContextParameters = parameters.parameters.where(
+          (e) =>
+              e.declaredElement?.type != null &&
+              buildContextType.isExactlyType(e.declaredElement!.type),
+        );
 
         for (final contextParameter in buildContextParameters) {
           reporter.reportErrorForNode(_code, contextParameter);
