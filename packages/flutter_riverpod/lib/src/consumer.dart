@@ -548,8 +548,15 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
     }
   }
 
+  void _assertNotDisposed() {
+    if (!context.mounted) {
+      throw StateError('Cannot use "ref" after the widget was disposed.');
+    }
+  }
+
   @override
   Res watch<Res>(ProviderListenable<Res> target) {
+    _assertNotDisposed();
     return _dependencies.putIfAbsent(target, () {
       final oldDependency = _oldDependencies?.remove(target);
 
@@ -591,6 +598,7 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
     void Function(T? previous, T value) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
   }) {
+    _assertNotDisposed();
     assert(
       debugDoingBuild,
       'ref.listen can only be used within the build method of a ConsumerWidget',
@@ -605,21 +613,25 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
 
   @override
   bool exists(ProviderBase<Object?> provider) {
+    _assertNotDisposed();
     return ProviderScope.containerOf(this, listen: false).exists(provider);
   }
 
   @override
   T read<T>(ProviderListenable<T> provider) {
+    _assertNotDisposed();
     return ProviderScope.containerOf(this, listen: false).read(provider);
   }
 
   @override
   State refresh<State>(Refreshable<State> provider) {
+    _assertNotDisposed();
     return ProviderScope.containerOf(this, listen: false).refresh(provider);
   }
 
   @override
   void invalidate(ProviderOrFamily provider) {
+    _assertNotDisposed();
     _container.invalidate(provider);
   }
 
@@ -630,6 +642,7 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
     void Function(Object error, StackTrace stackTrace)? onError,
     bool fireImmediately = false,
   }) {
+    _assertNotDisposed();
     final listeners = _manualListeners ??= [];
 
     final sub = _ListenManual(
