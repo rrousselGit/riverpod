@@ -5,7 +5,7 @@ import 'package:riverpod_lint/src/lints/notifier_build.dart';
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/analysis/utilities.dart';
 
-import '../../golden.dart';
+import '../../../golden.dart';
 
 void main() {
   testGolden(

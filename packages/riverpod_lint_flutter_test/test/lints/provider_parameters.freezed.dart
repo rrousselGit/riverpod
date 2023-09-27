@@ -36,25 +36,25 @@ class _$FreezedExampleCopyWithImpl<$Res, $Val extends FreezedExample>
 }
 
 /// @nodoc
-abstract class _$$_FreezedExampleCopyWith<$Res> {
-  factory _$$_FreezedExampleCopyWith(
-          _$_FreezedExample value, $Res Function(_$_FreezedExample) then) =
-      __$$_FreezedExampleCopyWithImpl<$Res>;
+abstract class _$$FreezedExampleImplCopyWith<$Res> {
+  factory _$$FreezedExampleImplCopyWith(_$FreezedExampleImpl value,
+          $Res Function(_$FreezedExampleImpl) then) =
+      __$$FreezedExampleImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$_FreezedExampleCopyWithImpl<$Res>
-    extends _$FreezedExampleCopyWithImpl<$Res, _$_FreezedExample>
-    implements _$$_FreezedExampleCopyWith<$Res> {
-  __$$_FreezedExampleCopyWithImpl(
-      _$_FreezedExample _value, $Res Function(_$_FreezedExample) _then)
+class __$$FreezedExampleImplCopyWithImpl<$Res>
+    extends _$FreezedExampleCopyWithImpl<$Res, _$FreezedExampleImpl>
+    implements _$$FreezedExampleImplCopyWith<$Res> {
+  __$$FreezedExampleImplCopyWithImpl(
+      _$FreezedExampleImpl _value, $Res Function(_$FreezedExampleImpl) _then)
       : super(_value, _then);
 }
 
 /// @nodoc
 
-class _$_FreezedExample implements _FreezedExample {
-  _$_FreezedExample();
+class _$FreezedExampleImpl implements _FreezedExample {
+  _$FreezedExampleImpl();
 
   @override
   String toString() {
@@ -64,7 +64,7 @@ class _$_FreezedExample implements _FreezedExample {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$_FreezedExample);
+        (other.runtimeType == runtimeType && other is _$FreezedExampleImpl);
   }
 
   @override
@@ -72,5 +72,5 @@ class _$_FreezedExample implements _FreezedExample {
 }
 
 abstract class _FreezedExample implements FreezedExample {
-  factory _FreezedExample() = _$_FreezedExample;
+  factory _FreezedExample() = _$FreezedExampleImpl;
 }

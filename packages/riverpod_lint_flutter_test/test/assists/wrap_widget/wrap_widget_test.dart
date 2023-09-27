@@ -7,7 +7,7 @@ import 'package:analyzer/source/source_range.dart';
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/analysis/utilities.dart';
 
-import '../golden.dart';
+import '../../golden.dart';
 
 void main() {
   testGolden(
@@ -15,7 +15,7 @@ void main() {
     'assists/wrap_with_consumer.json',
     () async {
       final assist = WrapWithConsumer();
-      final file = File('test/assists/wrap_widget.dart').absolute;
+      final file = File('test/assists/wrap_widget/wrap_widget.dart').absolute;
 
       final result = await resolveFile2(path: file.path);
       result as ResolvedUnitResult;
@@ -45,7 +45,7 @@ void main() {
     'assists/wrap_with_provider_scope.json',
     () async {
       final assist = WrapWithProviderScope();
-      final file = File('test/assists/wrap_widget.dart').absolute;
+      final file = File('test/assists/wrap_widget/wrap_widget.dart').absolute;
 
       final result = await resolveFile2(path: file.path);
       result as ResolvedUnitResult;

@@ -10,7 +10,7 @@ import 'package:riverpod_lint/src/assists/convert_to_widget_utils.dart';
 import 'package:riverpod_lint/src/riverpod_custom_lint.dart';
 import 'package:test/test.dart';
 
-import '../golden.dart';
+import '../../golden.dart';
 
 void main() {
   final pubspecWithDependencies = Pubspec(
@@ -117,7 +117,7 @@ void main() {
         case StatefulBaseWidgetType.consumerStatefulWidget:
         case StatefulBaseWidgetType.statefulWidget:
           goldenFilePath =
-              'assists/convert_to_${targetWidget.name.toSnakeCase()}.json';
+              'assists/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.json';
           break;
       }
 
@@ -155,7 +155,7 @@ void _runGoldenTest(
     goldenFilePath,
     () async {
       final file = File(
-        'test/assists/convert_to_widget.dart',
+        'test/assists/convert_to_widget/convert_to_widget.dart',
       ).absolute;
 
       final result = await resolveFile2(path: file.path);
