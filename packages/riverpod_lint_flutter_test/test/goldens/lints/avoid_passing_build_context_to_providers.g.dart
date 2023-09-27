@@ -168,20 +168,169 @@ class _FnProviderElement extends AutoDisposeProviderElement<int> with FnRef {
   BuildContext get context2 => (origin as FnProvider).context2;
 }
 
-String _$myNotifierHash() => r'82f0f308fc9cdfb483d40e6264e47714e81d0c79';
+String _$myNotifierHash() => r'04a0cf33dbda80e3fa80748fe46546b1c968da22';
+
+abstract class _$MyNotifier extends BuildlessAutoDisposeNotifier<int> {
+  late final BuildContext context1;
+  late final BuildContext context2;
+
+  int build(
+    BuildContext context1, {
+    required BuildContext context2,
+  });
+}
 
 /// See also [MyNotifier].
 @ProviderFor(MyNotifier)
-final myNotifierProvider =
-    AutoDisposeNotifierProvider<MyNotifier, int>.internal(
-  MyNotifier.new,
-  name: r'myNotifierProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$myNotifierHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+const myNotifierProvider = MyNotifierFamily();
 
-typedef _$MyNotifier = AutoDisposeNotifier<int>;
+/// See also [MyNotifier].
+class MyNotifierFamily extends Family<int> {
+  /// See also [MyNotifier].
+  const MyNotifierFamily();
+
+  /// See also [MyNotifier].
+  MyNotifierProvider call(
+    BuildContext context1, {
+    required BuildContext context2,
+  }) {
+    return MyNotifierProvider(
+      context1,
+      context2: context2,
+    );
+  }
+
+  @override
+  MyNotifierProvider getProviderOverride(
+    covariant MyNotifierProvider provider,
+  ) {
+    return call(
+      provider.context1,
+      context2: provider.context2,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'myNotifierProvider';
+}
+
+/// See also [MyNotifier].
+class MyNotifierProvider
+    extends AutoDisposeNotifierProviderImpl<MyNotifier, int> {
+  /// See also [MyNotifier].
+  MyNotifierProvider(
+    BuildContext context1, {
+    required BuildContext context2,
+  }) : this._internal(
+          () => MyNotifier()
+            ..context1 = context1
+            ..context2 = context2,
+          from: myNotifierProvider,
+          name: r'myNotifierProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$myNotifierHash,
+          dependencies: MyNotifierFamily._dependencies,
+          allTransitiveDependencies:
+              MyNotifierFamily._allTransitiveDependencies,
+          context1: context1,
+          context2: context2,
+        );
+
+  MyNotifierProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.context1,
+    required this.context2,
+  }) : super.internal();
+
+  final BuildContext context1;
+  final BuildContext context2;
+
+  @override
+  int runNotifierBuild(
+    covariant MyNotifier notifier,
+  ) {
+    return notifier.build(
+      context1,
+      context2: context2,
+    );
+  }
+
+  @override
+  Override overrideWith(MyNotifier Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: MyNotifierProvider._internal(
+        () => create()
+          ..context1 = context1
+          ..context2 = context2,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        context1: context1,
+        context2: context2,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeNotifierProviderElement<MyNotifier, int> createElement() {
+    return _MyNotifierProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is MyNotifierProvider &&
+        other.context1 == context1 &&
+        other.context2 == context2;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, context1.hashCode);
+    hash = _SystemHash.combine(hash, context2.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin MyNotifierRef on AutoDisposeNotifierProviderRef<int> {
+  /// The parameter `context1` of this provider.
+  BuildContext get context1;
+
+  /// The parameter `context2` of this provider.
+  BuildContext get context2;
+}
+
+class _MyNotifierProviderElement
+    extends AutoDisposeNotifierProviderElement<MyNotifier, int>
+    with MyNotifierRef {
+  _MyNotifierProviderElement(super.provider);
+
+  @override
+  BuildContext get context1 => (origin as MyNotifierProvider).context1;
+  @override
+  BuildContext get context2 => (origin as MyNotifierProvider).context2;
+}
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
