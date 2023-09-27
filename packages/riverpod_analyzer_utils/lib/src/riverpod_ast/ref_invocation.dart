@@ -14,13 +14,8 @@ abstract class RefInvocation extends RiverpodAst
     final targetType = node.realTarget?.staticType;
     if (targetType == null) return null;
 
-    // Since Ref is sealed, checking that the function is from the package:riverpod
-    // before checking its type skips iterating over the superclasses of an element
-    // if it's not from Riverpod.
-    if (!isFromRiverpod.isExactlyType(targetType) |
-        !refType.isAssignableFromType(targetType)) {
-      return null;
-    }
+    if (!isRiverpodRef(targetType)) return null;
+
     final function = node.function;
     if (function is! SimpleIdentifier) return null;
     final functionOwner = function.staticElement

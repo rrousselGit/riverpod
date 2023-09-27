@@ -1,3 +1,7 @@
+## Unreleased fix
+
+- Fixed `refInvocations` not getting parsed for generated providers with arguments.
+
 ## 0.3.3 - 2023-08-16
 
 - Support both analyzer 5.12.0 and analyzer 6.0.0
