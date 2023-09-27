@@ -15,7 +15,7 @@ void main() {
       const lint = NotifierBuild();
       final fix = lint.getFixes().single;
       final file = File(
-        'test/goldens/fixes/notifier_build.dart',
+        'test/lints/notifier_build/fix/notifier_build.dart',
       ).absolute;
 
       final result = await resolveFile2(path: file.path);

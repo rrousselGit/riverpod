@@ -16,7 +16,7 @@ void main() {
       const lint = ProviderDependencies();
       final fix = lint.getFixes().single;
       final file = File(
-        'test/goldens/fixes/provider_dependencies.dart',
+        'test/lints/provider_dependencies/provider_dependencies.dart',
       ).absolute;
 
       final result = await resolveFile2(path: file.path);

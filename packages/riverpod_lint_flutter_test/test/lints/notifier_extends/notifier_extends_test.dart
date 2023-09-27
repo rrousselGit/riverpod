@@ -17,7 +17,7 @@ void main() {
       final lint = NotifierExtends();
       final fix = lint.getFixes().single as DartFix;
       final file = File(
-        'test/goldens/notifier_extends.dart',
+        'test/lints/notifier_extends/notifier_extends.dart',
       ).absolute;
 
       final result = await resolveFile2(path: file.path);
