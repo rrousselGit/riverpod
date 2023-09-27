@@ -306,6 +306,15 @@ class NestedDependencyNotifier extends _$NestedDependencyNotifier {
   @override
   int build() => 0;
 }
+
+@Riverpod(dependencies: [empty, EmptyNotifier])
+int family(NestedDependencyRef ref) => 0;
+
+@Riverpod(dependencies: [empty, EmptyNotifier])
+class FamilyClass extends _$FamilyClass {
+  @override
+  int build() => 0;
+}
 ''', (resolver) async {
     final result = await resolver.resolveRiverpodAnalyssiResult();
     final roots = result.generatorProviderDeclarations.takeAll([
@@ -319,6 +328,8 @@ class NestedDependencyNotifier extends _$NestedDependencyNotifier {
     final providers = result.generatorProviderDeclarations.takeAll([
       'providerDependency',
       'ProviderDependencyNotifier',
+      'family',
+      'FamilyClass',
     ]);
     final nesteds = result.generatorProviderDeclarations.takeAll([
       'nestedDependency',

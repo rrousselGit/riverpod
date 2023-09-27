@@ -384,6 +384,294 @@ final regression2348Provider = AutoDisposeProvider<int>.internal(
 );
 
 typedef Regression2348Ref = AutoDisposeProviderRef<int>;
+String _$familyDepHash() => r'1c152873ed2b3e88da09d8e1fc53a33635cbe3b3';
+
+/// Copied from Dart SDK
+class _SystemHash {
+  _SystemHash._();
+
+  static int combine(int hash, int value) {
+    // ignore: parameter_assignments
+    hash = 0x1fffffff & (hash + value);
+    // ignore: parameter_assignments
+    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
+    return hash ^ (hash >> 6);
+  }
+
+  static int finish(int hash) {
+    // ignore: parameter_assignments
+    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
+    // ignore: parameter_assignments
+    hash = hash ^ (hash >> 11);
+    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
+  }
+}
+
+/// See also [familyDep].
+@ProviderFor(familyDep)
+const familyDepProvider = FamilyDepFamily();
+
+/// See also [familyDep].
+class FamilyDepFamily extends Family<int> {
+  /// See also [familyDep].
+  const FamilyDepFamily();
+
+  /// See also [familyDep].
+  FamilyDepProvider call(
+    int p,
+  ) {
+    return FamilyDepProvider(
+      p,
+    );
+  }
+
+  @override
+  FamilyDepProvider getProviderOverride(
+    covariant FamilyDepProvider provider,
+  ) {
+    return call(
+      provider.p,
+    );
+  }
+
+  static final Iterable<ProviderOrFamily> _dependencies = <ProviderOrFamily>[
+    depProvider
+  ];
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static final Iterable<ProviderOrFamily> _allTransitiveDependencies =
+      <ProviderOrFamily>{
+    depProvider,
+    ...?depProvider.allTransitiveDependencies
+  };
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'familyDepProvider';
+}
+
+/// See also [familyDep].
+class FamilyDepProvider extends AutoDisposeProvider<int> {
+  /// See also [familyDep].
+  FamilyDepProvider(
+    int p,
+  ) : this._internal(
+          (ref) => familyDep(
+            ref as FamilyDepRef,
+            p,
+          ),
+          from: familyDepProvider,
+          name: r'familyDepProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$familyDepHash,
+          dependencies: FamilyDepFamily._dependencies,
+          allTransitiveDependencies: FamilyDepFamily._allTransitiveDependencies,
+          p: p,
+        );
+
+  FamilyDepProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.p,
+  }) : super.internal();
+
+  final int p;
+
+  @override
+  Override overrideWith(
+    int Function(FamilyDepRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: FamilyDepProvider._internal(
+        (ref) => create(ref as FamilyDepRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        p: p,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<int> createElement() {
+    return _FamilyDepProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is FamilyDepProvider && other.p == p;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, p.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin FamilyDepRef on AutoDisposeProviderRef<int> {
+  /// The parameter `p` of this provider.
+  int get p;
+}
+
+class _FamilyDepProviderElement extends AutoDisposeProviderElement<int>
+    with FamilyDepRef {
+  _FamilyDepProviderElement(super.provider);
+
+  @override
+  int get p => (origin as FamilyDepProvider).p;
+}
+
+String _$familyDep2Hash() => r'd81e2e56d75dd08a695b834853a3a6cea99ea305';
+
+/// See also [familyDep2].
+@ProviderFor(familyDep2)
+const familyDep2Provider = FamilyDep2Family();
+
+/// See also [familyDep2].
+class FamilyDep2Family extends Family<int> {
+  /// See also [familyDep2].
+  const FamilyDep2Family();
+
+  /// See also [familyDep2].
+  FamilyDep2Provider call(
+    int p,
+  ) {
+    return FamilyDep2Provider(
+      p,
+    );
+  }
+
+  @override
+  FamilyDep2Provider getProviderOverride(
+    covariant FamilyDep2Provider provider,
+  ) {
+    return call(
+      provider.p,
+    );
+  }
+
+  static final Iterable<ProviderOrFamily> _dependencies = <ProviderOrFamily>[
+    familyDepProvider
+  ];
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static final Iterable<ProviderOrFamily> _allTransitiveDependencies =
+      <ProviderOrFamily>{
+    familyDepProvider,
+    ...?familyDepProvider.allTransitiveDependencies
+  };
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'familyDep2Provider';
+}
+
+/// See also [familyDep2].
+class FamilyDep2Provider extends AutoDisposeProvider<int> {
+  /// See also [familyDep2].
+  FamilyDep2Provider(
+    int p,
+  ) : this._internal(
+          (ref) => familyDep2(
+            ref as FamilyDep2Ref,
+            p,
+          ),
+          from: familyDep2Provider,
+          name: r'familyDep2Provider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$familyDep2Hash,
+          dependencies: FamilyDep2Family._dependencies,
+          allTransitiveDependencies:
+              FamilyDep2Family._allTransitiveDependencies,
+          p: p,
+        );
+
+  FamilyDep2Provider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.p,
+  }) : super.internal();
+
+  final int p;
+
+  @override
+  Override overrideWith(
+    int Function(FamilyDep2Ref provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: FamilyDep2Provider._internal(
+        (ref) => create(ref as FamilyDep2Ref),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        p: p,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<int> createElement() {
+    return _FamilyDep2ProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is FamilyDep2Provider && other.p == p;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, p.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin FamilyDep2Ref on AutoDisposeProviderRef<int> {
+  /// The parameter `p` of this provider.
+  int get p;
+}
+
+class _FamilyDep2ProviderElement extends AutoDisposeProviderElement<int>
+    with FamilyDep2Ref {
+  _FamilyDep2ProviderElement(super.provider);
+
+  @override
+  int get p => (origin as FamilyDep2Provider).p;
+}
+
 String _$classWatchGeneratedRootButMissingDependenciesHash() =>
     r'e36d7126a86ea9ded6dc66a6f33eabb2724455a9';
 

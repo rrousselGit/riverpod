@@ -185,3 +185,16 @@ class Regression2417 extends _$Regression2417 {
     ref.watch(generatedScopedProvider);
   }
 }
+
+// Regression for https://github.com/rrousselGit/riverpod/issues/2909
+@Riverpod(dependencies: [dep])
+int familyDep(FamilyDepRef ref, int p) {
+  final test = ref.watch(depProvider);
+  return test * p;
+}
+
+@Riverpod(dependencies: [familyDep])
+int familyDep2(FamilyDep2Ref ref, int p) {
+  final test = ref.watch(familyDepProvider(0));
+  return test * p;
+}
