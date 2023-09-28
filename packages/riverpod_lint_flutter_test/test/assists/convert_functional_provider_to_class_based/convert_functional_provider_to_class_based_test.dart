@@ -5,16 +5,16 @@ import 'package:analyzer/source/source_range.dart';
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/analysis/utilities.dart';
 
-import '../golden.dart';
+import '../../golden.dart';
 
 void main() {
   testGolden(
     'Convert functional providers to class-based providers',
-    'assists/convert_functional_provider_to_class_based.json',
+    'assists/convert_functional_provider_to_class_based/convert_functional_provider_to_class_based.json',
     () async {
       final assist = FunctionalToClassBasedProvider();
       final file = File(
-        'test/assists/convert_functional_provider_to_class_based.dart',
+        'test/assists/convert_functional_provider_to_class_based/convert_functional_provider_to_class_based.dart',
       ).absolute;
 
       final result = await resolveFile2(path: file.path);
