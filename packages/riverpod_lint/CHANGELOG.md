@@ -1,3 +1,7 @@
+## Unreleased minor
+
+- Added `avoid_build_context_in_providers` (thanks to @charlescyt)
+
 ## 2.1.1 - 2023-09-27
 
 - Fixed `provider_dependencies` lint causing false positives on providers with arguments.
