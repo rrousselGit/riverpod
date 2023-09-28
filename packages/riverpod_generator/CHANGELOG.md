@@ -1,3 +1,22 @@
+## Unreleased major
+
+The code generator now supports import aliases, generated types and typedefs
+as input of providers!.
+
+This comes with a few minor restrictions:
+
+- **Breaking**: Returning a Typedef or type Future/FutureOr/Stream is no-longer supported:
+
+  ```dart
+  typedef Example = Future<int>;
+
+  @riverpod
+  Example foo(FooRef ref) async => 0;
+  ```
+
+- **Breaking**: Arugments of the form `fn(void myParameter())`
+  are no-longer supported. Instead use `fn(void Function() myParameter)`.
+
 ## 2.3.3 - 2023-09-27
 
 - `riverpod_analyzer_utils` upgraded to `0.3.4`

@@ -29,23 +29,33 @@ Future<Raw<int>> value3(Value3Ref ref) async => 0;
     final value3 = result.functionalProviderDeclarations.singleWhere(
       (e) => e.name.toString() == 'value3',
     );
-    expect(value.createdType.toString(), 'Future<int>');
-    expect(value.exposedType.toString(), 'Future<int>');
-    expect(value.valueType.toString(), 'Future<int>');
-    expect(value.createdType.isRaw, true);
-    expect(value.valueType.isRaw, true);
+    expect(value.createdTypeNode.toString(), 'Future<int>');
+    expect(value.createdTypeDisplayString, 'Future<int>');
+    expect(value.exposedTypeNode.toString(), 'Future<int>');
+    expect(value.exposedTypeDisplayString, 'Future<int>');
+    expect(value.valueTypeNode.toString(), 'Future<int>');
+    expect(value.valueTypeDisplayString, 'Future<int>');
+    expect(value.createdTypeNode!.type!.isRaw, true);
+    expect(value.valueTypeNode!.type!.isRaw, true);
 
-    expect(value2.createdType.toString(), 'Future<int>');
-    expect(value2.exposedType.toString(), 'AsyncValue<int>');
-    expect(value2.valueType.toString(), 'int');
-    expect(value2.createdType.isRaw, false);
-    expect(value2.valueType.isRaw, false);
+    expect(value2.createdTypeNode.toString(), 'Future<int>');
+    expect(value2.exposedTypeNode.toString(), 'AsyncValue<int>');
+    expect(value2.valueTypeNode.toString(), 'int');
+    expect(value2.createdTypeNode!.type!.isRaw, false);
+    expect(value2.createdTypeDisplayString, 'Future<int>');
+    expect(value2.exposedTypeDisplayString, 'AsyncValue<int>');
+    expect(value2.valueTypeDisplayString, 'int');
+    expect(value2.createdTypeNode!.type!.isRaw, false);
+    expect(value2.valueTypeNode!.type!.isRaw, false);
 
-    expect(value3.createdType.toString(), 'Future<int>');
-    expect(value3.exposedType.toString(), 'AsyncValue<int>');
-    expect(value3.valueType.toString(), 'int');
-    expect(value3.createdType.isRaw, false);
-    expect(value3.valueType.isRaw, true);
+    expect(value3.createdTypeNode.toString(), 'Future<int>');
+    expect(value3.exposedTypeNode.toString(), 'AsyncValue<int>');
+    expect(value3.valueTypeNode.toString(), 'int');
+    expect(value3.createdTypeDisplayString, 'Future<int>');
+    expect(value3.exposedTypeDisplayString, 'AsyncValue<int>');
+    expect(value3.valueTypeDisplayString, 'int');
+    expect(value3.createdTypeNode!.type!.isRaw, false);
+    expect(value3.valueTypeNode!.type!.isRaw, true);
   });
 
   testSource('Decode needsOverride/isScoped', source: '''
