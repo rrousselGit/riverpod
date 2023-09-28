@@ -43,6 +43,7 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
   - [missing\_provider\_scope](#missing_provider_scope)
   - [provider\_dependencies (riverpod\_generator only)](#provider_dependencies-riverpod_generator-only)
   - [scoped\_providers\_should\_specify\_dependencies (generator only)](#scoped_providers_should_specify_dependencies-generator-only)
+  - [avoid\_generated\_classes\_as\_return\_type (riverpod\_generator only)](#avoid_generated_classes_as_return_type-riverpod_generator-only)
   - [avoid\_manual\_providers\_as\_generated\_provider\_dependency](#avoid_manual_providers_as_generated_provider_dependency)
   - [provider\_parameters](#provider_parameters)
   - [avoid\_public\_notifier\_properties](#avoid_public_notifier_properties)
@@ -314,6 +315,26 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+```
+
+### avoid_generated_classes_as_return_type (riverpod_generator only)
+
+riverpod_generator doesn't support generated classes well yet and instead emits `InvalidType`.
+
+**Good**
+
+```dart
+@riverpod
+NonGeneratedClass myProvider(MyProviderRef ref) => ...
+```
+
+**Bad**:
+
+```dart
+@riverpod
+GeneratedClass fn(MyProviderRef ref) => ...
+
+final value = ref.watch(fnProvider); // returns InvalidType
 ```
 
 ### avoid_manual_providers_as_generated_provider_dependency
