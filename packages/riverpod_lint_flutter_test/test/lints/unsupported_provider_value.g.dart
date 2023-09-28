@@ -134,7 +134,7 @@ String _$rawNotifierHash() => r'c01adc70a8e08258bf5d13024aa8e9b86359a2b2';
 
 /// See also [rawNotifier].
 @ProviderFor(rawNotifier)
-final rawNotifierProvider = AutoDisposeProvider<MyChangeNotifier>.internal(
+final rawNotifierProvider = AutoDisposeProvider<Raw<MyChangeNotifier>>.internal(
   rawNotifier,
   name: r'rawNotifierProvider',
   debugGetCreateSourceHash:
@@ -143,13 +143,13 @@ final rawNotifierProvider = AutoDisposeProvider<MyChangeNotifier>.internal(
   allTransitiveDependencies: null,
 );
 
-typedef RawNotifierRef = AutoDisposeProviderRef<MyChangeNotifier>;
+typedef RawNotifierRef = AutoDisposeProviderRef<Raw<MyChangeNotifier>>;
 String _$rawFutureNotifierHash() => r'883253dbf7ade868c44b288ec3da02be64dcfb20';
 
 /// See also [rawFutureNotifier].
 @ProviderFor(rawFutureNotifier)
 final rawFutureNotifierProvider =
-    AutoDisposeProvider<Future<MyChangeNotifier>>.internal(
+    AutoDisposeProvider<Raw<Future<MyChangeNotifier>>>.internal(
   rawFutureNotifier,
   name: r'rawFutureNotifierProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -159,13 +159,14 @@ final rawFutureNotifierProvider =
   allTransitiveDependencies: null,
 );
 
-typedef RawFutureNotifierRef = AutoDisposeProviderRef<Future<MyChangeNotifier>>;
+typedef RawFutureNotifierRef
+    = AutoDisposeProviderRef<Raw<Future<MyChangeNotifier>>>;
 String _$rawStreamNotifierHash() => r'f22f6a906e275c6245365bf029e2dc217cf3a301';
 
 /// See also [rawStreamNotifier].
 @ProviderFor(rawStreamNotifier)
 final rawStreamNotifierProvider =
-    AutoDisposeProvider<Stream<MyChangeNotifier>>.internal(
+    AutoDisposeProvider<Raw<Stream<MyChangeNotifier>>>.internal(
   rawStreamNotifier,
   name: r'rawStreamNotifierProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -175,13 +176,14 @@ final rawStreamNotifierProvider =
   allTransitiveDependencies: null,
 );
 
-typedef RawStreamNotifierRef = AutoDisposeProviderRef<Stream<MyChangeNotifier>>;
+typedef RawStreamNotifierRef
+    = AutoDisposeProviderRef<Raw<Stream<MyChangeNotifier>>>;
 String _$futureRawNotifierHash() => r'd70ca757ff2539fc698ff924c135ee5e88a98018';
 
 /// See also [futureRawNotifier].
 @ProviderFor(futureRawNotifier)
 final futureRawNotifierProvider =
-    AutoDisposeFutureProvider<MyChangeNotifier>.internal(
+    AutoDisposeFutureProvider<Raw<MyChangeNotifier>>.internal(
   futureRawNotifier,
   name: r'futureRawNotifierProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -191,13 +193,14 @@ final futureRawNotifierProvider =
   allTransitiveDependencies: null,
 );
 
-typedef FutureRawNotifierRef = AutoDisposeFutureProviderRef<MyChangeNotifier>;
+typedef FutureRawNotifierRef
+    = AutoDisposeFutureProviderRef<Raw<MyChangeNotifier>>;
 String _$streamRawNotifierHash() => r'b1075c37ef3e8a83dfb9a3d469b76bd4855c336f';
 
 /// See also [streamRawNotifier].
 @ProviderFor(streamRawNotifier)
 final streamRawNotifierProvider =
-    AutoDisposeStreamProvider<MyChangeNotifier>.internal(
+    AutoDisposeStreamProvider<Raw<MyChangeNotifier>>.internal(
   streamRawNotifier,
   name: r'streamRawNotifierProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -207,7 +210,8 @@ final streamRawNotifierProvider =
   allTransitiveDependencies: null,
 );
 
-typedef StreamRawNotifierRef = AutoDisposeStreamProviderRef<MyChangeNotifier>;
+typedef StreamRawNotifierRef
+    = AutoDisposeStreamProviderRef<Raw<MyChangeNotifier>>;
 String _$stateNotifierClassHash() =>
     r'576978be5b8a02c212afe7afbe37c733a49ecbce';
 
@@ -341,4 +345,4 @@ final asyncNotifierClassProvider =
 
 typedef _$AsyncNotifierClass = AutoDisposeNotifier<MyAsyncNotifier>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter
