@@ -12,7 +12,7 @@ import '../../golden.dart';
 void main() {
   testGolden(
     'Verify that @riverpod classes extend the generated typedef',
-    'goldens/notifier_extends.json',
+    'lints/notifier_extends/notifier_extends.json',
     () async {
       final lint = NotifierExtends();
       final fix = lint.getFixes().single as DartFix;

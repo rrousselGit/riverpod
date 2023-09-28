@@ -10,7 +10,7 @@ import '../../golden.dart';
 void main() {
   testGolden(
     'Convert functional providers to class-based providers',
-    'assists/convert_functional_provider_to_class_based.json',
+    'assists/convert_functional_provider_to_class_based/convert_functional_provider_to_class_based.json',
     () async {
       final assist = FunctionalToClassBasedProvider();
       final file = File(

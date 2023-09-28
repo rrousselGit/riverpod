@@ -10,7 +10,7 @@ import '../../../golden.dart';
 void main() {
   testGolden(
     'Verify that @riverpod classes has the build method',
-    'goldens/fixes/notifier_build.json',
+    'lints/notifier_build/fix/notifier_build.json',
     () async {
       const lint = NotifierBuild();
       final fix = lint.getFixes().single;

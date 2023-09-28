@@ -28,7 +28,7 @@ void main() {
           targetWidget: targetWidget,
         ),
         'Convert widgets to ${targetWidget.name}s with hooks_riverpod and flutter_hooks dependency',
-        'assists/convert_to_${targetWidget.name.toSnakeCase()}.json',
+        'assists/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.json',
         pubspecWithDependencies,
         targetWidget == StatelessBaseWidgetType.statelessWidget ? 6 : 9,
       );
@@ -42,7 +42,7 @@ void main() {
           targetWidget: targetWidget,
         ),
         'Convert widgets to ${targetWidget.name}s with hooks_riverpod and flutter_hooks dependency',
-        'assists/convert_to_${targetWidget.name.toSnakeCase()}.json',
+        'assists/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.json',
         pubspecWithDependencies,
         targetWidget == StatefulBaseWidgetType.statefulWidget ? 6 : 9,
       );
@@ -77,7 +77,7 @@ void main() {
         case StatelessBaseWidgetType.consumerWidget:
         case StatelessBaseWidgetType.statelessWidget:
           goldenFilePath =
-              'assists/convert_to_${targetWidget.name.toSnakeCase()}.json';
+              'assists/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.json';
           break;
       }
 

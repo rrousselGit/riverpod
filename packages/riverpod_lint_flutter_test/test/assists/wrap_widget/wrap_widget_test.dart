@@ -12,7 +12,7 @@ import '../../golden.dart';
 void main() {
   testGolden(
     'Wrap with consumer',
-    'assists/wrap_with_consumer.json',
+    'assists/wrap_widget/wrap_with_consumer.json',
     () async {
       final assist = WrapWithConsumer();
       final file = File('test/assists/wrap_widget/wrap_widget.dart').absolute;
@@ -42,7 +42,7 @@ void main() {
 
   testGolden(
     'Wrap with ProviderScope',
-    'assists/wrap_with_provider_scope.json',
+    'assists/wrap_widget/wrap_with_provider_scope.json',
     () async {
       final assist = WrapWithProviderScope();
       final file = File('test/assists/wrap_widget/wrap_widget.dart').absolute;
