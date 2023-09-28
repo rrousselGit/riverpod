@@ -11,12 +11,12 @@ import '../../golden.dart';
 void main() {
   testGolden(
     'Verify that @riverpod classes extend the generated typedef',
-    'goldens/fixes/provider_dependencies.json',
+    'lints/provider_dependencies/provider_dependencies.json',
     () async {
       const lint = ProviderDependencies();
       final fix = lint.getFixes().single;
       final file = File(
-        'test/goldens/fixes/provider_dependencies.dart',
+        'test/lints/provider_dependencies/provider_dependencies.dart',
       ).absolute;
 
       final result = await resolveFile2(path: file.path);

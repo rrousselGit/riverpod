@@ -5,5 +5,5 @@ targets:
         generate_for:
           exclude:
             # Those files voluntarily have the generation fail
-            - test/goldens/fixes/notifier_build.dart
-            - test/goldens/lints/notifier_build.dart
+            - test/lints/notifier_build/notifier_build.dart
+            - test/lints/notifier_build/fix/notifier_build.dart
