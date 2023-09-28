@@ -10,11 +10,11 @@ const TypeChecker buildContextType = TypeChecker.fromName(
   packageName: 'flutter',
 );
 
-class AvoidPassingBuildContextToProviders extends RiverpodLintRule {
-  const AvoidPassingBuildContextToProviders() : super(code: _code);
+class AvoidBuildContextInProviders extends RiverpodLintRule {
+  const AvoidBuildContextInProviders() : super(code: _code);
 
   static const _code = LintCode(
-    name: 'avoid_passing_build_context_to_providers',
+    name: 'avoid_build_context_in_providers',
     problemMessage:
         'Passing BuildContext to providers indicates mixing UI with the business logic.',
     errorSeverity: ErrorSeverity.WARNING,

@@ -44,7 +44,7 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
   - [provider\_dependencies (riverpod\_generator only)](#provider_dependencies-riverpod_generator-only)
   - [scoped\_providers\_should\_specify\_dependencies (generator only)](#scoped_providers_should_specify_dependencies-generator-only)
   - [avoid\_manual\_providers\_as\_generated\_provider\_dependency](#avoid_manual_providers_as_generated_provider_dependency)
-  - [avoid\_passing\_build\_context\_to\_providers (riverpod\_generator only)](#avoid_passing_build_context_to_providers-riverpod_generator-only)
+  - [avoid\_build\_context\_in\_providers (riverpod\_generator only)](#avoid_build_context_in_providers-riverpod_generator-only)
   - [provider\_parameters](#provider_parameters)
   - [avoid\_public\_notifier\_properties](#avoid_public_notifier_properties)
   - [unsupported\_provider\_value (riverpod\_generator only)](#unsupported_provider_value-riverpod_generator-only)
@@ -347,7 +347,7 @@ int example(ExampleRef ref) {
 }
 ```
 
-### avoid_passing_build_context_to_providers (riverpod_generator only)
+### avoid_build_context_in_providers (riverpod_generator only)
 
 Providers should not interact with `BuildContext`.
 
