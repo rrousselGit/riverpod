@@ -98,8 +98,8 @@ class ClassBasedProviderTemplate extends Template {
     var providerType = '${leading}NotifierProvider';
 
     final providerName = providerNameFor(provider.providerElement, options);
-    final returnType = provider.createdType;
-    if (!returnType.isRaw) {
+    final returnType = provider.createdTypeNode?.type;
+    if (returnType != null && !returnType.isRaw) {
       if ((returnType.isDartAsyncFutureOr) || (returnType.isDartAsyncFuture)) {
         notifierBaseType = '${leading}AsyncNotifier';
         providerType = '${leading}AsyncNotifierProvider';
@@ -112,7 +112,7 @@ class ClassBasedProviderTemplate extends Template {
     buffer.write('''
 ${providerDocFor(provider.providerElement.element)}
 @ProviderFor(${provider.name})
-final $providerName = $providerType<${provider.name}, ${provider.valueType}>.internal(
+final $providerName = $providerType<${provider.name}, ${provider.valueTypeDisplayString}>.internal(
   ${provider.providerElement.name}.new,
   name: r'$providerName',
   debugGetCreateSourceHash: $hashFn,
@@ -120,7 +120,7 @@ final $providerName = $providerType<${provider.name}, ${provider.valueType}>.int
   allTransitiveDependencies: ${serializeAllTransitiveDependencies(provider.providerElement.annotation, options)},
 );
 
-typedef $notifierTypedefName = $notifierBaseType<${provider.valueType}>;
+typedef $notifierTypedefName = $notifierBaseType<${provider.valueTypeDisplayString}>;
 ''');
   }
 }
