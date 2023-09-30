@@ -1,4 +1,4 @@
-name: Build
+name: Check code-generation
 
 on:
   pull_request:
@@ -28,6 +28,8 @@ jobs:
         run: echo "PUB_CACHE="$HOME/.pub-cache"" >> $GITHUB_ENV
       - name: Install dependencies
         run: flutter pub get
+
+      - run: dart pub global activate melos
 
       - run: dart pub run melos bootstrap
       - run: dart pub run melos run generate
