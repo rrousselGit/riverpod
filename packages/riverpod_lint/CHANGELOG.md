@@ -1,3 +1,8 @@
+## Unreleased minor
+
+- Fixed `functional_ref` throwing if a provider specifies arguments but
+  incorrectly did not specify a Ref
+
 ## 2.2.0 - 2023-10-02
 
 - Added `avoid_build_context_in_providers` (thanks to @charlescyt)

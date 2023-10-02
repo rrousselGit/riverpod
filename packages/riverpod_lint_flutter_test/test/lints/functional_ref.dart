@@ -26,3 +26,10 @@ int incorrectlyTyped(
 
 @riverpod
 external int scoped();
+
+// Regression test for https://github.com/rrousselGit/riverpod/issues/2689
+@riverpod
+// expect_lint: functional_ref
+int noRefButArgs({int a = 42}) {
+  return 0;
+}
