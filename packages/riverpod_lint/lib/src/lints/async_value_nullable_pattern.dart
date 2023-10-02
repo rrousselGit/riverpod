@@ -63,4 +63,33 @@ class AsyncValueNullablePattern extends RiverpodLintRule {
       reporter.reportErrorForNode(_code, node);
     });
   }
+
+  @override
+  List<DartFix> getFixes() => [_AddHasDataFix()];
+}
+
+class _AddHasDataFix extends DartFix {
+  @override
+  void run(
+    CustomLintResolver resolver,
+    ChangeReporter reporter,
+    CustomLintContext context,
+    AnalysisError analysisError,
+    List<AnalysisError> others,
+  ) {
+    context.registry.addNullCheckPattern((node) {
+      if (!node.sourceRange.intersects(analysisError.sourceRange)) return;
+
+      final changeBuilder = reporter.createChangeBuilder(
+        message: 'Use "hasValue: true" instead',
+        priority: 100,
+      );
+
+      changeBuilder.addDartFileEdit((builder) {
+        builder.addDeletion(node.operator.sourceRange);
+
+        builder.addSimpleInsertion(node.operator.end, ', hasValue: true');
+      });
+    });
+  }
 }
