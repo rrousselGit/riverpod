@@ -41,3 +41,10 @@ int missingGenerics<A, B>(MissingGenericsRef ref) => 0;
 @riverpod
 // expect_lint: functional_ref
 int wrongOrder<B, A>(WrongOrderRef ref) => 0;
+
+// Regression test for https://github.com/rrousselGit/riverpod/issues/2689
+@riverpod
+// expect_lint: functional_ref
+int noRefButArgs({int a = 42}) {
+  return 0;
+}

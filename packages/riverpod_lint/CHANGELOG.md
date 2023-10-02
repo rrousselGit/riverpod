@@ -1,7 +1,9 @@
 ## Unreleased minor
 
-- Updated `stateless_ref` and `generator_class_extends` to support providers
+- Updated `functional_ref` and `generator_class_extends` to support providers
   with generic parameters.
+- Fixed `functional_ref` throwing if a provider specifies arguments but
+  incorrectly did not specify a Ref
 
 ## 2.2.0 - 2023-10-02
 
