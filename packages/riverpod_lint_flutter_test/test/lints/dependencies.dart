@@ -1,4 +1,7 @@
+// ignore_for_file: unused_field
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'another.dart' as import_alias;
 
 part 'dependencies.g.dart';
 
@@ -197,4 +200,24 @@ int familyDep(FamilyDepRef ref, int p) {
 int familyDep2(FamilyDep2Ref ref, int p) {
   final test = ref.watch(familyDepProvider(0));
   return test * p;
+}
+
+// Regression test for https://github.com/rrousselGit/riverpod/issues/2935
+@riverpod
+int alias(AliasRef ref) {
+  // expect_lint: avoid_manual_providers_as_generated_provider_dependency
+  ref.watch(import_alias.aProvider);
+  ref.watch(import_alias.bProvider);
+  return 0;
+}
+
+// Regression test for https://github.com/rrousselGit/riverpod/issues/2935
+@riverpod
+class AliasClass extends _$AliasClass {
+  // expect_lint: avoid_manual_providers_as_generated_provider_dependency
+  late final int _a = ref.read(import_alias.aProvider);
+  late final int _b = ref.read(import_alias.bProvider);
+
+  @override
+  int build() => 0;
 }

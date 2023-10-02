@@ -672,6 +672,20 @@ class _FamilyDep2ProviderElement extends AutoDisposeProviderElement<int>
   int get p => (origin as FamilyDep2Provider).p;
 }
 
+String _$aliasHash() => r'871c6c7ab22e4bbed2dc46917daf42e7fc1b9d88';
+
+/// See also [alias].
+@ProviderFor(alias)
+final aliasProvider = AutoDisposeProvider<int>.internal(
+  alias,
+  name: r'aliasProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$aliasHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef AliasRef = AutoDisposeProviderRef<int>;
 String _$classWatchGeneratedRootButMissingDependenciesHash() =>
     r'e36d7126a86ea9ded6dc66a6f33eabb2724455a9';
 
@@ -729,5 +743,20 @@ final regression2417Provider =
 );
 
 typedef _$Regression2417 = AutoDisposeNotifier<int>;
+String _$aliasClassHash() => r'f5c1f43e7541638274ca7dc334a713763c9c8071';
+
+/// See also [AliasClass].
+@ProviderFor(AliasClass)
+final aliasClassProvider =
+    AutoDisposeNotifierProvider<AliasClass, int>.internal(
+  AliasClass.new,
+  name: r'aliasClassProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$aliasClassHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$AliasClass = AutoDisposeNotifier<int>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter

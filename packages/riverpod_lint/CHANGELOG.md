@@ -1,6 +1,7 @@
 ## Unreleased minor
 
 - Added `avoid_build_context_in_providers` (thanks to @charlescyt)
+- Fixed false positive with `avoid_manual_providers_as_generated_provider_dependency` when using import aliases
 
 ## 2.1.1 - 2023-09-27
 
