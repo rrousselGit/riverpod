@@ -11,15 +11,11 @@ abstract class RefInvocation extends RiverpodAst
     MethodInvocation node, {
     required void Function() superCall,
   }) {
-    print('parse ref $node');
     final targetType = node.realTarget?.staticType;
-    print('a');
     if (targetType == null) return null;
 
-    print('b');
     if (!isRiverpodRef(targetType)) return null;
 
-    print('c');
     final function = node.function;
     if (function is! SimpleIdentifier) return null;
     final functionOwner = function.staticElement
@@ -38,7 +34,6 @@ abstract class RefInvocation extends RiverpodAst
 
     switch (function.name) {
       case 'watch':
-        print('Parse watch $node');
         return RefWatchInvocation._parse(
           node,
           function,

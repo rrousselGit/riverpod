@@ -38,6 +38,10 @@ int aliased(AliasedRef ref) {
         result.refWatchInvocations.single.provider.provider?.toSource(),
         'aProvider',
       );
+      expect(
+        result.refWatchInvocations.single.provider.providerPrefix?.toSource(),
+        'alias',
+      );
     },
   );
 
