@@ -1,11 +1,10 @@
 name: my_project
 
-
-
 packages:
   - website/**
   - packages/**
   - examples/**
+  - tools/**
 
 scripts:
   # we voluntarily do not use melos inside goldens
