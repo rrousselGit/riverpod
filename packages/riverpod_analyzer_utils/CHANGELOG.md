@@ -1,4 +1,4 @@
-## Unreleased minor
+## 0.4.0 - 2023-10-02
 
 - Correctly parse import aliases when used inside `ref.watch(<...>)`
 - Fixed `refInvocations` not getting parsed for generated providers with arguments.

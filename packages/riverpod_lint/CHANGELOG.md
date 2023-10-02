@@ -1,4 +1,4 @@
-## Unreleased minor
+## 2.2.1 - 2023-10-02
 
 - Fixed `functional_ref` throwing if a provider specifies arguments but
   incorrectly did not specify a Ref
