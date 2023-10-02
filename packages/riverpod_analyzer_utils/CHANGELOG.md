@@ -1,4 +1,4 @@
-## Unreleased patch
+## 0.3.5 - 2023-10-02
 
 - Correctly parse import aliases when used inside `ref.watch(<...>)`
 

@@ -1,4 +1,4 @@
-## Unreleased major
+## 3.0.0-dev.1 - 2023-10-02
 
 The code generator now supports import aliases, generated types and typedefs
 as input of providers!.
