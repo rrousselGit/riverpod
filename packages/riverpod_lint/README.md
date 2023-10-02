@@ -637,8 +637,8 @@ switch (...) {
 
 ```dart
 switch (...) {
-  // int? is nullable, therefore we use "hasData: true"
-  case AsyncValue<int?>(:final value, hasData: true):
+  // int? is nullable, therefore we use "hasValue: true"
+  case AsyncValue<int?>(:final value, hasValue: true):
      print('data $value');
 }
 ```
