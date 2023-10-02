@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:test/test.dart';
 import 'package:path/path.dart';
 import 'package:custom_lint_core/custom_lint_core.dart';
@@ -20,6 +21,7 @@ File writeToTemporaryFile(String content) {
   return file;
 }
 
+@isTest
 void testGolden(
   String description,
   String fileName,
