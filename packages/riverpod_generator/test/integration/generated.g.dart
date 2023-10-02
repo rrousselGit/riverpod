@@ -48,7 +48,7 @@ class _SystemHash {
 const generatedFamilyProvider = GeneratedFamilyFamily();
 
 /// See also [generatedFamily].
-class GeneratedFamilyFamily extends Family<_Test> {
+class GeneratedFamilyFamily extends Family {
   /// See also [generatedFamily].
   const GeneratedFamilyFamily();
 
@@ -190,7 +190,7 @@ String _$$dynamicFamilyHash() => r'b764133af8837b8321b08814892f198d4bc1aa18';
 const $dynamicFamilyProvider = $DynamicFamilyFamily();
 
 /// See also [$dynamicFamily].
-class $DynamicFamilyFamily extends Family<Object?> {
+class $DynamicFamilyFamily extends Family {
   /// See also [$dynamicFamily].
   const $DynamicFamilyFamily();
 
@@ -318,7 +318,7 @@ String _$dynamicHash() => r'da9dc07960139fff2cf5fe584dca5c524e4f2308';
 const _dynamicProvider = _DynamicFamily();
 
 /// See also [_dynamic].
-class _DynamicFamily extends Family<Object?> {
+class _DynamicFamily extends Family {
   /// See also [_dynamic].
   const _DynamicFamily();
 
@@ -459,7 +459,7 @@ String _$aliasFamilyHash() => r'f345937d5750132f629aef41646b119a301f750b';
 const aliasFamilyProvider = AliasFamilyFamily();
 
 /// See also [aliasFamily].
-class AliasFamilyFamily extends Family<r.AsyncValue<int>> {
+class AliasFamilyFamily extends Family {
   /// See also [aliasFamily].
   const AliasFamilyFamily();
 
@@ -613,7 +613,7 @@ abstract class _$GeneratedClassFamily
 const generatedClassFamilyProvider = GeneratedClassFamilyFamily();
 
 /// See also [GeneratedClassFamily].
-class GeneratedClassFamilyFamily extends Family<_Test> {
+class GeneratedClassFamilyFamily extends Family {
   /// See also [GeneratedClassFamily].
   const GeneratedClassFamilyFamily();
 
@@ -774,7 +774,7 @@ abstract class _$$DynamicClassFamily
 const $dynamicClassFamilyProvider = $DynamicClassFamilyFamily();
 
 /// See also [$DynamicClassFamily].
-class $DynamicClassFamilyFamily extends Family<Object?> {
+class $DynamicClassFamilyFamily extends Family {
   /// See also [$DynamicClassFamily].
   const $DynamicClassFamilyFamily();
 
@@ -933,7 +933,7 @@ abstract class _$AliasClassFamily
 const aliasClassFamilyProvider = AliasClassFamilyFamily();
 
 /// See also [AliasClassFamily].
-class AliasClassFamilyFamily extends Family<r.AsyncValue<int>> {
+class AliasClassFamilyFamily extends Family {
   /// See also [AliasClassFamily].
   const AliasClassFamilyFamily();
 
