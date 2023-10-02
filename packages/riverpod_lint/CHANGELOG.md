@@ -1,3 +1,7 @@
+## Unreleased minor
+
+- Added `async_value_nullable_patttern` lint, to warn against using `AsyncValue():final value?)` in pattern match when `value` is possibly nullable.
+
 ## 2.2.1 - 2023-10-02
 
 - Fixed `functional_ref` throwing if a provider specifies arguments but

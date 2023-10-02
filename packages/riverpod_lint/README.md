@@ -51,7 +51,8 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
   - [functional\_ref (riverpod\_generator only)](#functional_ref-riverpod_generator-only)
   - [notifier\_extends (riverpod\_generator only)](#notifier_extends-riverpod_generator-only)
   - [avoid\_ref\_inside\_state\_dispose](#avoid_ref_inside_state_dispose)
-  - [missed\_build\_method (riverpod\_generator only)](#notifier_build-riverpod_generator-only)
+  - [notifier\_build (riverpod\_generator only)](#notifier_build-riverpod_generator-only)
+  - [async\_value\_nullable\_patttern](#async_value_nullable_patttern)
 - [All assists](#all-assists)
   - [Wrap widgets with a `Consumer`](#wrap-widgets-with-a-consumer)
   - [Wrap widgets with a `ProviderScope`](#wrap-widgets-with-a-providerscope)
@@ -595,7 +596,7 @@ Classes annotated by `@riverpod` must have the `build` method.
 ```dart
 @riverpod
 class Example extends _$Example {
-  
+
   @overried
   int build() => 0;
 }
@@ -607,6 +608,39 @@ class Example extends _$Example {
 // No "build" method found
 @riverpod
 class Example extends _$Example {}
+```
+
+### async_value_nullable_patttern
+
+Warn if the pattern `AsyncValue(:final value?)` is used when the data
+is possibly nullable.
+
+**Bad**:
+
+```dart
+switch (...) {
+  // int? is nullable, therefore ":final value?" should not be used
+  case AsyncValue<int?>(:final value?):
+     print('data $value');
+}
+```
+
+**Good**:
+
+```dart
+switch (...) {
+  // int is non-nullable, so using ":final value?" is fine.
+  case AsyncValue<int>(:final value?):
+     print('data $value');
+}
+```
+
+```dart
+switch (...) {
+  // int? is nullable, therefore we use "hasData: true"
+  case AsyncValue<int?>(:final value, hasData: true):
+     print('data $value');
+}
 ```
 
 ## All assists
