@@ -195,6 +195,7 @@ bool _isBuiltInRef(DartType targetType) {
 
 bool isRiverpodRef(DartType targetType) {
   final isBuiltInRef = _isBuiltInRef(targetType);
+  print('isRiverpodRef $targetType');
   if (isBuiltInRef) return true;
 
   final targetElement = targetType.element;

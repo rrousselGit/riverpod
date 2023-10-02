@@ -4,6 +4,43 @@ import 'package:test/test.dart';
 import 'analyser_test_utils.dart';
 
 void main() {
+  testSource(
+    'Parses import aliases',
+    runGenerator: true,
+    files: {
+      'file.dart': '''
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+final aProvider = Provider<int>((ref) => 0);
+''',
+    },
+    source: '''
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'file.dart' as alias;
+part 'foo.g.dart';
+
+@Riverpod(keepAlive: true)
+int aliased(AliasedRef ref) {
+  ref.watch(alias.aProvider);
+  return 0;
+}
+''',
+    (resolver) async {
+      final result = await resolver.resolveRiverpodAnalyssiResult();
+
+      expect(result.refWatchInvocations, hasLength(1));
+      expect(result.refInvocations.single.function.toSource(), 'watch');
+      expect(
+        result.refInvocations.single.node.toSource(),
+        'ref.watch(alias.aProvider)',
+      );
+
+      expect(
+        result.refWatchInvocations.single.provider.provider?.toSource(),
+        'aProvider',
+      );
+    },
+  );
+
   testSource('Decode watch expressions with syntax errors', source: '''
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
