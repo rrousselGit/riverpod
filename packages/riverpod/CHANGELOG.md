@@ -6,6 +6,16 @@
 - **Breaking**: Removed everything marked as "deprecated"
 - Bumped minimum Dart SDK to >= 3.0.0-dev
 
+## 2.4.1 - 2023-09-27
+
+- Fix invalid Dart docs (thanks to @srawlins)
+
+## 2.4.0 - 2023-09-04
+
+- Added `Notifier.stateOrNull`.
+  This will return `null` if used when the notifier has yet to be initialized
+  or is in error state.
+
 ## 2.3.10 - 2023-08-28
 
 Riverpod now requires package:meta >=1.9.0

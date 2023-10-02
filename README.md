@@ -1,22 +1,24 @@
-<p align="center">
-<a href="https://github.com/rrousselGit/riverpod/actions"><img src="https://github.com/rrousselGit/riverpod/workflows/Build/badge.svg" alt="Build Status"></a>
-<a href="https://codecov.io/gh/rrousselgit/riverpod"><img src="https://codecov.io/gh/rrousselgit/riverpod/branch/master/graph/badge.svg" alt="codecov"></a>
-<a href="https://github.com/rrousselgit/riverpod"><img src="https://img.shields.io/github/stars/rrousselgit/riverpod.svg?style=flat&logo=github&colorB=deeppink&label=stars" alt="Star on Github"></a>
-<a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-purple.svg" alt="License: MIT"></a>
-<a href="https://discord.gg/Bbumvej"><img src="https://img.shields.io/discord/765557403865186374.svg?logo=discord&color=blue" alt="Discord"></a>
+<p>
+  <a href="https://flutter.dev/docs/development/packages-and-plugins/favorites">
+    <img src="https://raw.githubusercontent.com/rrousselGit/riverpod/master/resources/flutter_favorite.png" width="100" align="left" />
+  </a>
+  <a href="https://github.com/rrousselGit/riverpod/actions"><img src="https://github.com/rrousselGit/riverpod/workflows/Build/badge.svg" alt="Build Status"></a>
+  <a href="https://codecov.io/gh/rrousselgit/riverpod"><img src="https://codecov.io/gh/rrousselgit/riverpod/branch/master/graph/badge.svg" alt="codecov"></a>
+  <a href="https://github.com/rrousselgit/riverpod"><img src="https://img.shields.io/github/stars/rrousselgit/riverpod.svg?style=flat&logo=github&colorB=deeppink&label=stars" alt="Star on Github"></a>
+  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-purple.svg" alt="License: MIT"></a>
+  <a href="https://discord.gg/Bbumvej"><img src="https://img.shields.io/discord/765557403865186374.svg?logo=discord&color=blue" alt="Discord"></a>
+
+  <p>
+    <a href="https://www.netlify.com">
+      <img src="https://www.netlify.com/img/global/badges/netlify-color-accent.svg" alt="Deploys by Netlify" />
+    </a>
+  </p>
+
 </p>
 
 <p align="center">
-<a href="https://www.netlify.com">
-  <img src="https://www.netlify.com/img/global/badges/netlify-color-accent.svg" alt="Deploys by Netlify" />
-</a>
+  <img src="https://github.com/rrousselGit/riverpod/blob/master/resources/icon/Facebook%20Cover%20A.png?raw=true" width="100%" alt="Riverpod" />
 </p>
-
-<p align="center">
-<img src="https://github.com/rrousselGit/riverpod/blob/master/resources/icon/Facebook%20Cover%20A.png?raw=true" width="100%" alt="Riverpod" />
-</p>
-
----
 
 A state-management library that:
 
@@ -42,18 +44,17 @@ Long story short:
 - Declare your providers as global variables:
 
   ```dart
-  final counterProvider = StateNotifierProvider((ref) {
-    return Counter();
-  });
+  final counterProvider = NotifierProvider<Counter, int>(Counter.new);
 
-  class Counter extends StateNotifier<int> {
-    Counter(): super(0);
+  class Counter extends Notifier<int> {
+    @override
+    int build() => 0;
 
     void increment() => state++;
   }
   ```
 
-- Use them inside your widgets in a compile time safe way. No runtime exceptions!
+- Use them inside your widgets in a compile time-safe way. No runtime exceptions!
 
   ```dart
   class Example extends ConsumerWidget {
@@ -174,7 +175,7 @@ and Riverpod could be fused.
 
 ### Will provider be deprecated/stop being supported?
 
-Maybe. 
+Maybe.
 
 Provider has numerous flaws that can't quite be fixed. At the same time,
 Riverpod has proven to fix many of those.  

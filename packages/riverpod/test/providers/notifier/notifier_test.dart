@@ -11,6 +11,109 @@ import 'factory.dart';
 void main() {
   for (final factory in matrix()) {
     group(factory.label, () {
+      group('Notifier.stateOrNull', () {
+        test('returns null during first build until state= is set', () {
+          final stateInBuild = <int?>[];
+
+          final provider = NotifierProvider<TestNotifier<int>, int>(() {
+            late TestNotifier<int> notifier;
+            return notifier = TestNotifier((ref) {
+              stateInBuild.add(notifier.stateOrNull);
+              return 0;
+            });
+          });
+          final container = createContainer();
+
+          final sub = container.listen(
+            provider.notifier,
+            (_, __) {},
+          );
+
+          expect(stateInBuild, [null]);
+
+          expect(sub.read().stateOrNull, 0);
+        });
+
+        test('returns null if Notifier.build threw', () {
+          final provider = factory.simpleTestProvider<int>(
+            (ref) => throw Exception('42'),
+          );
+          final container = createContainer();
+
+          final sub = container.listen(
+            provider.notifier,
+            (_, __) {},
+          );
+
+          expect(sub.read().stateOrNull, null);
+        });
+
+        test(
+            'returns the previous state if using inside Notifier.build '
+            'after the state was already initialized', () {
+          final stateInBuild = <int?>[];
+
+          final provider = NotifierProvider<TestNotifier<int>, int>(() {
+            late TestNotifier<int> notifier;
+            return notifier = TestNotifier((ref) {
+              stateInBuild.add(notifier.stateOrNull);
+              return 0;
+            });
+          });
+          final container = createContainer();
+
+          final sub = container.listen(
+            provider.notifier,
+            (_, __) {},
+          );
+
+          sub.read().state = 42;
+          container.refresh(provider);
+
+          expect(stateInBuild, [null, 42]);
+        });
+
+        test('Post build, returns the current state', () {
+          final provider = factory.simpleTestProvider<int>(
+            (ref) => 0,
+          );
+          final container = createContainer();
+
+          final sub = container.listen(
+            provider.notifier,
+            (_, __) {},
+          );
+
+          expect(sub.read().stateOrNull, 0);
+
+          sub.read().state = 42;
+
+          expect(sub.read().stateOrNull, 42);
+        });
+
+        test(
+            'On invalidated providers, rebuilds the notifier and return the new state',
+            () {
+          final provider = factory.simpleTestProvider<int>(
+            (ref) => 0,
+          );
+          final container = createContainer();
+
+          final sub = container.listen(
+            provider.notifier,
+            (_, __) {},
+          );
+
+          sub.read().state = 42;
+
+          expect(sub.read().stateOrNull, 42);
+
+          container.invalidate(provider);
+
+          expect(sub.read().stateOrNull, 0);
+        });
+      });
+
       test(
           'uses notifier.build as initial state and update listeners when state changes',
           () {

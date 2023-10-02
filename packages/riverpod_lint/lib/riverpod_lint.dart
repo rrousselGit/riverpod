@@ -7,11 +7,13 @@ import 'src/assists/convert_to_widget_utils.dart';
 import 'src/assists/functional_to_class_based_provider.dart';
 import 'src/assists/wrap_with_consumer.dart';
 import 'src/assists/wrap_with_provider_scope.dart';
+import 'src/lints/avoid_build_context_in_providers.dart';
 import 'src/lints/avoid_manual_providers_as_generated_provider_dependency.dart';
 import 'src/lints/avoid_public_notifier_properties.dart';
 import 'src/lints/avoid_ref_inside_state_dispose.dart';
 import 'src/lints/functional_ref.dart';
 import 'src/lints/missing_provider_scope.dart';
+import 'src/lints/notifier_build.dart';
 import 'src/lints/notifier_extends.dart';
 import 'src/lints/provider_dependencies.dart';
 import 'src/lints/provider_parameters.dart';
@@ -23,6 +25,7 @@ PluginBase createPlugin() => _RiverpodPlugin();
 class _RiverpodPlugin extends PluginBase {
   @override
   List<LintRule> getLintRules(CustomLintConfigs configs) => [
+        const AvoidBuildContextInProviders(),
         const AvoidPublicNotifierProperties(),
         const FunctionalRef(),
         const MissingProviderScope(),
@@ -33,6 +36,7 @@ class _RiverpodPlugin extends PluginBase {
         const ScopedProvidersShouldSpecifyDependencies(),
         const UnsupportedProviderValue(),
         const AvoidRefInsideStateDispose(),
+        const NotifierBuild(),
 //         const AvoidDynamicProviders(),
 // //  "Avoid passing providers as parameter to objects"
 //         const AvoidExposingProviderRef(),

@@ -144,7 +144,7 @@ class FamilyBase<RefT extends Ref<R>, R, Arg, Created,
   @override
   final Set<ProviderOrFamily>? allTransitiveDependencies;
 
-  /// {@template riverpod.create_source_hash}
+  /// {@macro riverpod.create_source_hash}
   @internal
   final DebugGetCreateSourceHash? debugGetCreateSourceHash;
 }
@@ -193,7 +193,7 @@ class AutoDisposeFamilyBase<RefT extends Ref<R>, R, Arg, Created,
   @override
   final Set<ProviderOrFamily>? allTransitiveDependencies;
 
-  /// {@template riverpod.create_source_hash}
+  /// {@macro riverpod.create_source_hash}
   @internal
   final DebugGetCreateSourceHash? debugGetCreateSourceHash;
 }
@@ -242,7 +242,7 @@ class AutoDisposeNotifierFamilyBase<RefT extends Ref<R>, R, Arg, NotifierT,
   @override
   final Set<ProviderOrFamily>? allTransitiveDependencies;
 
-  /// {@template riverpod.create_source_hash}
+  /// {@macro riverpod.create_source_hash}
   @internal
   final DebugGetCreateSourceHash? debugGetCreateSourceHash;
 }
