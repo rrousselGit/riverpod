@@ -1,3 +1,7 @@
+## Unreleased patch
+
+- Added type checkers for AsyncValue and subclasses.
+
 ## 0.4.0 - 2023-10-02
 
 - Correctly parse import aliases when used inside `ref.watch(<...>)`
