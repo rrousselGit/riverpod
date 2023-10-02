@@ -66,5 +66,19 @@ final scopedProvider = AutoDisposeProvider<int>.internal(
 );
 
 typedef ScopedRef = AutoDisposeProviderRef<int>;
+String _$noRefButArgsHash() => r'462ab15f4053f3e9592557cc8a698fbb2352bd40';
+
+/// See also [noRefButArgs].
+@ProviderFor(noRefButArgs)
+final noRefButArgsProvider = AutoDisposeProvider<int>.internal(
+  noRefButArgs,
+  name: r'noRefButArgsProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$noRefButArgsHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef NoRefButArgsRef = AutoDisposeProviderRef<int>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter
