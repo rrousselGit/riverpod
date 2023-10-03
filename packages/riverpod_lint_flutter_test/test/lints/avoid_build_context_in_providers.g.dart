@@ -49,6 +49,7 @@ class FnFamily extends Family<int> {
     );
   }
 
+  @visibleForOverriding
   @override
   FnProvider getProviderOverride(
     covariant FnProvider provider,
@@ -200,6 +201,7 @@ class MyNotifierFamily extends Family<int> {
     );
   }
 
+  @visibleForOverriding
   @override
   MyNotifierProvider getProviderOverride(
     covariant MyNotifierProvider provider,

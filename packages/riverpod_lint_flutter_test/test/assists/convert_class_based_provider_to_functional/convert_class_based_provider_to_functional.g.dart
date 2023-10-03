@@ -83,6 +83,7 @@ class ExampleFamilyFamily extends Family<int> {
     );
   }
 
+  @visibleForOverriding
   @override
   ExampleFamilyProvider getProviderOverride(
     covariant ExampleFamilyProvider provider,

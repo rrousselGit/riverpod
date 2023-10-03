@@ -47,6 +47,7 @@ class GeneratorFamily extends Family<int> {
     );
   }
 
+  @visibleForOverriding
   @override
   GeneratorProvider getProviderOverride(
     covariant GeneratorProvider provider,

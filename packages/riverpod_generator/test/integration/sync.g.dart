@@ -75,6 +75,7 @@ class RawFamilyFutureFamily extends Family<Raw<Future<String>>> {
     );
   }
 
+  @visibleForOverriding
   @override
   RawFamilyFutureProvider getProviderOverride(
     covariant RawFamilyFutureProvider provider,
@@ -204,6 +205,7 @@ class RawFamilyStreamFamily extends Family<Raw<Stream<String>>> {
     );
   }
 
+  @visibleForOverriding
   @override
   RawFamilyStreamProvider getProviderOverride(
     covariant RawFamilyStreamProvider provider,
@@ -380,6 +382,7 @@ class FamilyFamily extends Family<String> {
     );
   }
 
+  @visibleForOverriding
   @override
   FamilyProvider getProviderOverride(
     covariant FamilyProvider provider,
@@ -638,6 +641,7 @@ class RawFamilyFutureClassFamily extends Family<Raw<Future<String>>> {
     );
   }
 
+  @visibleForOverriding
   @override
   RawFamilyFutureClassProvider getProviderOverride(
     covariant RawFamilyFutureClassProvider provider,
@@ -784,6 +788,7 @@ class RawFamilyStreamClassFamily extends Family<Raw<Stream<String>>> {
     );
   }
 
+  @visibleForOverriding
   @override
   RawFamilyStreamClassProvider getProviderOverride(
     covariant RawFamilyStreamClassProvider provider,
@@ -984,6 +989,7 @@ class FamilyClassFamily extends Family<String> {
     );
   }
 
+  @visibleForOverriding
   @override
   FamilyClassProvider getProviderOverride(
     covariant FamilyClassProvider provider,

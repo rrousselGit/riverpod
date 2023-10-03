@@ -50,6 +50,7 @@ class FetchPackageDetailsFamily extends Family<AsyncValue<Package>> {
     );
   }
 
+  @visibleForOverriding
   @override
   FetchPackageDetailsProvider getProviderOverride(
     covariant FetchPackageDetailsProvider provider,
@@ -243,6 +244,7 @@ class PackageMetricsFamily extends Family<AsyncValue<PackageMetricsScore>> {
     );
   }
 
+  @visibleForOverriding
   @override
   PackageMetricsProvider getProviderOverride(
     covariant PackageMetricsProvider provider,

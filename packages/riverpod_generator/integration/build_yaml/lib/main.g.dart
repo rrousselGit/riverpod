@@ -89,6 +89,7 @@ class Count2Family extends Family<int> {
     );
   }
 
+  @visibleForOverriding
   @override
   Count2Provider getProviderOverride(
     covariant Count2Provider provider,
@@ -216,6 +217,7 @@ class CountFuture2Family extends Family<AsyncValue<int>> {
     );
   }
 
+  @visibleForOverriding
   @override
   CountFuture2Provider getProviderOverride(
     covariant CountFuture2Provider provider,
@@ -344,6 +346,7 @@ class CountStream2Family extends Family<AsyncValue<int>> {
     );
   }
 
+  @visibleForOverriding
   @override
   CountStream2Provider getProviderOverride(
     covariant CountStream2Provider provider,
@@ -530,6 +533,7 @@ class CountNotifier2Family extends Family<int> {
     );
   }
 
+  @visibleForOverriding
   @override
   CountNotifier2Provider getProviderOverride(
     covariant CountNotifier2Provider provider,
@@ -674,6 +678,7 @@ class CountAsyncNotifier2Family extends Family<AsyncValue<int>> {
     );
   }
 
+  @visibleForOverriding
   @override
   CountAsyncNotifier2Provider getProviderOverride(
     covariant CountAsyncNotifier2Provider provider,
@@ -819,6 +824,7 @@ class CountStreamNotifier2Family extends Family<AsyncValue<int>> {
     );
   }
 
+  @visibleForOverriding
   @override
   CountStreamNotifier2Provider getProviderOverride(
     covariant CountStreamNotifier2Provider provider,
