@@ -210,6 +210,18 @@ bool isRiverpodRef(DartType targetType) {
 /// Either `WidgetRef` or `Ref`
 const anyRefType = TypeChecker.any([widgetRefType, refType]);
 
+const consumerType = TypeChecker.fromName(
+  'Consumer',
+  packageName: 'flutter_riverpod',
+);
+
+const hookConsumerType = TypeChecker.fromName(
+  'HookConsumer',
+  packageName: 'hooks_riverpod',
+);
+
+const anyConsumerType = TypeChecker.any([consumerType, hookConsumerType]);
+
 /// [TypeChecker for `ConsumerWidget``
 const consumerWidgetType = TypeChecker.fromName(
   'ConsumerWidget',

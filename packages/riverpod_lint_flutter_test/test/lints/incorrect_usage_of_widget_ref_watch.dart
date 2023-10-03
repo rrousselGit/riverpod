@@ -33,7 +33,14 @@ class _ExampleState extends ConsumerState<Example> {
         // expect_lint: incorrect_usage_of_widget_ref_watch
         ref.watch(provider);
       },
-      child: Placeholder(),
+      child: Consumer(
+        builder: (context, ref, child) {
+          // using ref.watch in Consumer is fine
+          ref.watch(provider);
+          return child!;
+        },
+        child: Placeholder(),
+      ),
     );
   }
 }

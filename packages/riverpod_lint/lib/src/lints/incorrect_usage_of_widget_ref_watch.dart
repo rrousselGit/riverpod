@@ -2,6 +2,7 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
 import '../riverpod_custom_lint.dart';
 
@@ -30,6 +31,15 @@ class IncorrectUsageOfWidgetRefWatch extends RiverpodLintRule {
           .lexeme;
 
       if (functionExpression == null && methodName == 'build') return;
+
+      if (functionExpression != null) {
+        final parent = functionExpression
+            .thisOrAncestorOfType<InstanceCreationExpression>();
+        final parentType = parent?.staticType;
+        if (parentType != null && anyConsumerType.isExactlyType(parentType)) {
+          return;
+        }
+      }
 
       reporter.reportErrorForNode(code, invocation.node.methodName);
     });

@@ -33,7 +33,14 @@ class _ExampleState extends ConsumerState<Example> {
         // expect_lint: incorrect_usage_of_widget_ref_listen
         ref.listen(provider, (previous, next) {});
       },
-      child: Placeholder(),
+      child: Consumer(
+        builder: (context, ref, child) {
+          // expect_lint: incorrect_usage_of_widget_ref_listen
+          ref.listen(provider, (previous, next) {});
+          return child!;
+        },
+        child: Placeholder(),
+      ),
     );
   }
 }

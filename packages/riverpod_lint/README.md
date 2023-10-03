@@ -772,10 +772,17 @@ void initState() {
 }
 
 Widget build(ctx, ref) {
-  return Button(
+  return FilledButton(
     onPressed: () {
       ref.listen(provider, ...); // use listenManual instead
-    }
+    },
+    child: Consumer(
+      builder: (context, ref, child) {
+        ref.listen(provider, ...); // use listenManual instead
+        return child!;
+      },
+      child: Placeholder(),
+    ),
   );
 }
 ```
@@ -788,7 +795,7 @@ Warn if the `WidgetRef.read` method is used incorrectly.
 
 ```dart
 Widget build(ctx, ref) {
-  return Button(
+  return FilledButton(
     onPressed: () {
       ref.read(provider);
     }
@@ -814,7 +821,17 @@ Warn if the `WidgetRef.watch` method is used incorrectly.
 ```dart
 Widget build(ctx, ref) {
   ref.watch(provider);
-  return ...
+  return FilledButton(
+    onPressed: () {...},
+    child: Consumer(
+      builder: (context, ref, child) {
+        // using ref.watch in Consumer is fine
+        ref.watch(provider);
+        return child!;
+      },
+      child: Placeholder(),
+    ),
+  );
 }
 ```
 
@@ -822,7 +839,7 @@ Widget build(ctx, ref) {
 
 ```dart
 Widget build(ctx, ref) {
-  return Button(
+  return FilledButton(
     onPressed: () {
       ref.watch(provider); // use read instead
     }
