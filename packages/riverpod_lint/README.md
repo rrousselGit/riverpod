@@ -53,7 +53,13 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
   - [avoid\_ref\_inside\_state\_dispose](#avoid_ref_inside_state_dispose)
   - [notifier\_build (riverpod\_generator only)](#notifier_build-riverpod_generator-only)
   - [async\_value\_nullable\_patttern](#async_value_nullable_patttern)
-  - [incorrect\_usage\_of\_ref\_method](#incorrect_usage_of_ref_method)
+  - [incorrect\_usage\_of\_ref\_listen](#incorrect_usage_of_ref_listen)
+  - [incorrect\_usage\_of\_ref\_read](#incorrect_usage_of_ref_read)
+  - [incorrect\_usage\_of\_ref\_watch](#incorrect_usage_of_ref_watch)
+  - [incorrect\_usage\_of\_widget\_ref\_listen](#incorrect_usage_of_widget_ref_listen)
+  - [incorrect\_usage\_of\_widget\_ref\_listen\_manual](#incorrect_usage_of_widget_ref_listen_manual)
+  - [incorrect\_usage\_of\_widget\_ref\_read](#incorrect_usage_of_widget_ref_read)
+  - [incorrect\_usage\_of\_widget\_ref\_watch](#incorrect_usage_of_widget_ref_watch)
 - [All assists](#all-assists)
   - [Wrap widgets with a `Consumer`](#wrap-widgets-with-a-consumer)
   - [Wrap widgets with a `ProviderScope`](#wrap-widgets-with-a-providerscope)
@@ -644,48 +650,54 @@ switch (...) {
 }
 ```
 
-### incorrect_usage_of_ref_method
+### incorrect_usage_of_ref_listen
 
-Warn if the `ref.watch`/`ref.read`/`ref.listen`/`ref.listenManual` methods are used incorrectly.
+Warn if the `Ref.listen` method is used incorrectly.
 
 **Good**:
 
 ```dart
 final fnProvider = Provider<int>((ref) {
-  ref.watch(provider);
   ref.listen(provider, ...);
   return 0;
 });
 
 class MyNotifier extends Notifier<int> {
-  int get _readGetter => ref.read(provider);
-
   @override
   int build() {
-    ref.watch(provider);
     ref.listen(provider, ...);
     return 0;
   }
+}
+```
+
+**Bad**:
+
+```dart
+class MyNotifier extends Notifier<int> {]
+  @override
+  int build() {...}
+
+  void someMethod() {
+    ref.listen(provider, ...); // place listen in build instead
+  }
+}
+```
+
+### incorrect_usage_of_ref_read
+
+Warn if the `Ref.read` method is used incorrectly.
+
+**Good**:
+
+```dart
+class MyNotifier extends Notifier<int> {
+  @override
+  int build() {...}
 
   void someMethod() {
     ref.read(provider);
   }
-}
-
-void initState() {
-  ref.listenManual(provider, ...);
-}
-
-Widget build(ctx, ref) {
-  ref.watch(provider);
-  ref.listen(provider, ...);
-
-  return Button(
-    onPressed: () {
-      ref.read(provider);
-      ref.listenManual(provider, ...);
-    }
-  );
 }
 ```
 
@@ -698,32 +710,151 @@ final fnProvider = Provider<int>((ref) {
 });
 
 class MyNotifier extends Notifier<int> {
-  int get _watchGetter => ref.watch(provider); // use read instead
-
   @override
   int build() {
     ref.read(provider); // use watch instead
     return 0;
   }
+}
+```
+
+### incorrect_usage_of_ref_watch
+
+Warn if the `Ref.watch` method is used incorrectly.
+
+**Good**:
+
+```dart
+final fnProvider = Provider<int>((ref) {
+  ref.watch(provider);
+  return 0;
+});
+
+class MyNotifier extends Notifier<int> {
+  @override
+  int build() {
+    ref.watch(provider);
+    return 0;
+  }
+}
+```
+
+**Bad**:
+
+```dart
+class MyNotifier extends Notifier<int> {
+  @override
+  int build() {...}
 
   void someMethod() {
     ref.watch(provider); // use read instead
-    ref.listen(provider, ...); // place listen in build instead
   }
 }
+```
 
+### incorrect_usage_of_widget_ref_listen
+
+Warn if the `WidgetRef.listen` method is used incorrectly.
+
+**Good**:
+
+```dart
+Widget build(ctx, ref) {
+  ref.listen(provider, ...);
+  return ...
+}
+```
+
+**Bad**:
+
+```dart
 void initState() {
   ref.listen(provider, ...); // use listenManual instead
 }
 
 Widget build(ctx, ref) {
-  ref.read(provider); // use watch instead
-  ref.listenManual(provider, ...); // use listen instead
+  return Button(
+    onPressed: () {
+      ref.listen(provider, ...); // use listenManual instead
+    }
+  );
+}
+```
 
+### incorrect_usage_of_widget_ref_listen_manual
+
+Warn if the `WidgetRef.listenManual` method is used incorrectly.
+
+**Good**:
+
+```dart
+void initState() {
+  ref.listenManual(provider, ...);
+}
+
+Widget build(ctx, ref) {
+  return Button(
+    onPressed: () {
+      ref.listenManual(provider, ...);
+    }
+  );
+}
+```
+
+**Bad**:
+
+```dart
+Widget build(ctx, ref) {
+  ref.listenManual(provider, ...); // use listen instead
+  return ...
+}
+```
+
+### incorrect_usage_of_widget_ref_read
+
+Warn if the `WidgetRef.read` method is used incorrectly.
+
+**Good**:
+
+```dart
+Widget build(ctx, ref) {
+  return Button(
+    onPressed: () {
+      ref.read(provider);
+    }
+  );
+}
+```
+
+**Bad**:
+
+```dart
+Widget build(ctx, ref) {
+  ref.read(provider); // use watch instead
+  return ...
+}
+```
+
+### incorrect_usage_of_widget_ref_watch
+
+Warn if the `WidgetRef.watch` method is used incorrectly.
+
+**Good**:
+
+```dart
+Widget build(ctx, ref) {
+  ref.watch(provider);
+  return ...
+}
+```
+
+**Bad**:
+
+```dart
+Widget build(ctx, ref) {
   return Button(
     onPressed: () {
       ref.watch(provider); // use read instead
-      ref.listen(provider, ...); // use listenManual instead
     }
   );
 }
