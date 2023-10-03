@@ -57,7 +57,6 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
   - [incorrect\_usage\_of\_ref\_read](#incorrect_usage_of_ref_read)
   - [incorrect\_usage\_of\_ref\_watch](#incorrect_usage_of_ref_watch)
   - [incorrect\_usage\_of\_widget\_ref\_listen](#incorrect_usage_of_widget_ref_listen)
-  - [incorrect\_usage\_of\_widget\_ref\_listen\_manual](#incorrect_usage_of_widget_ref_listen_manual)
   - [incorrect\_usage\_of\_widget\_ref\_read](#incorrect_usage_of_widget_ref_read)
   - [incorrect\_usage\_of\_widget\_ref\_watch](#incorrect_usage_of_widget_ref_watch)
 - [All assists](#all-assists)
@@ -778,35 +777,6 @@ Widget build(ctx, ref) {
       ref.listen(provider, ...); // use listenManual instead
     }
   );
-}
-```
-
-### incorrect_usage_of_widget_ref_listen_manual
-
-Warn if the `WidgetRef.listenManual` method is used incorrectly.
-
-**Good**:
-
-```dart
-void initState() {
-  ref.listenManual(provider, ...);
-}
-
-Widget build(ctx, ref) {
-  return Button(
-    onPressed: () {
-      ref.listenManual(provider, ...);
-    }
-  );
-}
-```
-
-**Bad**:
-
-```dart
-Widget build(ctx, ref) {
-  ref.listenManual(provider, ...); // use listen instead
-  return ...
 }
 ```
 

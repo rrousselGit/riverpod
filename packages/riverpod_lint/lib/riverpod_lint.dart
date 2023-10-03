@@ -17,7 +17,6 @@ import 'src/lints/incorrect_usage_of_ref_listen.dart';
 import 'src/lints/incorrect_usage_of_ref_read.dart';
 import 'src/lints/incorrect_usage_of_ref_watch.dart';
 import 'src/lints/incorrect_usage_of_widget_ref_listen.dart';
-import 'src/lints/incorrect_usage_of_widget_ref_listen_manual.dart';
 import 'src/lints/incorrect_usage_of_widget_ref_read.dart';
 import 'src/lints/incorrect_usage_of_widget_ref_watch.dart';
 import 'src/lints/missing_provider_scope.dart';
@@ -50,7 +49,6 @@ class _RiverpodPlugin extends PluginBase {
         const IncorrectUsageOfRefRead(),
         const IncorrectUsageOfRefWatch(),
         const IncorrectUsageOfWidgetRefListen(),
-        const IncorrectUsageOfWidgetRefListenManual(),
         const IncorrectUsageOfWidgetRefRead(),
         const IncorrectUsageOfWidgetRefWatch(),
       ];
