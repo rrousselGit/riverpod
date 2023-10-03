@@ -252,6 +252,7 @@ class $familyName extends Family<${provider.exposedTypeDisplayString}> {
     return $providerTypeNameImpl($parametersPassThrough);
   }
 
+  @visibleForOverriding
   @override
   $providerTypeNameImpl getProviderOverride(
     covariant $providerTypeNameImpl provider,
