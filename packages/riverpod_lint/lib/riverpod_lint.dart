@@ -13,7 +13,13 @@ import 'src/lints/avoid_manual_providers_as_generated_provider_dependency.dart';
 import 'src/lints/avoid_public_notifier_properties.dart';
 import 'src/lints/avoid_ref_inside_state_dispose.dart';
 import 'src/lints/functional_ref.dart';
-import 'src/lints/incorrect_usage_of_ref_method.dart';
+import 'src/lints/incorrect_usage_of_ref_listen.dart';
+import 'src/lints/incorrect_usage_of_ref_read.dart';
+import 'src/lints/incorrect_usage_of_ref_watch.dart';
+import 'src/lints/incorrect_usage_of_widget_ref_listen.dart';
+import 'src/lints/incorrect_usage_of_widget_ref_listen_manual.dart';
+import 'src/lints/incorrect_usage_of_widget_ref_read.dart';
+import 'src/lints/incorrect_usage_of_widget_ref_watch.dart';
 import 'src/lints/missing_provider_scope.dart';
 import 'src/lints/notifier_build.dart';
 import 'src/lints/notifier_extends.dart';
@@ -40,7 +46,13 @@ class _RiverpodPlugin extends PluginBase {
         const AvoidRefInsideStateDispose(),
         const NotifierBuild(),
         const AsyncValueNullablePattern(),
-        const IncorrectUsageOfRefMethod(),
+        const IncorrectUsageOfRefListen(),
+        const IncorrectUsageOfRefRead(),
+        const IncorrectUsageOfRefWatch(),
+        const IncorrectUsageOfWidgetRefListen(),
+        const IncorrectUsageOfWidgetRefListenManual(),
+        const IncorrectUsageOfWidgetRefRead(),
+        const IncorrectUsageOfWidgetRefWatch(),
       ];
 
   @override

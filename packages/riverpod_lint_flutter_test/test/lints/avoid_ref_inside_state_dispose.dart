@@ -1,4 +1,4 @@
-// ignore_for_file: incorrect_usage_of_ref_method
+// ignore_for_file: incorrect_usage_of_ref_method, incorrect_usage_of_widget_ref_watch
 
 import 'package:flutter/widgets.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';

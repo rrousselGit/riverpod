@@ -1,4 +1,5 @@
-// ignore_for_file: incorrect_usage_of_ref_method
+// ignore_for_file: incorrect_usage_of_ref_read, incorrect_usage_of_widget_ref_read
+// ignore_for_file: incorrect_usage_of_widget_ref_listen_manual
 
 import 'package:flutter/widgets.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';

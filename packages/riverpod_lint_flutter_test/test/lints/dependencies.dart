@@ -1,4 +1,4 @@
-// ignore_for_file: unused_field, incorrect_usage_of_ref_method
+// ignore_for_file: unused_field, incorrect_usage_of_ref_method, incorrect_usage_of_ref_watch
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

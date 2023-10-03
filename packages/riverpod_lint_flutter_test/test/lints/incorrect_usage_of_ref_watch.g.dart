@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'incorrect_usage_of_ref_method.dart';
+part of 'incorrect_usage_of_ref_watch.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -21,7 +21,7 @@ final bProvider = AutoDisposeProvider<int>.internal(
 
 typedef BRef = AutoDisposeProviderRef<int>;
 String _$codeGenFunctionalProviderHash() =>
-    r'6fa6e5bedb8f66810d727a1adb9a5dddc09ccd2c';
+    r'5873f54272eb2a1fc7a441fef9ebca2e5047e3a8';
 
 /// See also [codeGenFunctionalProvider].
 @ProviderFor(codeGenFunctionalProvider)
@@ -36,7 +36,7 @@ final codeGenFunctionalProviderProvider = AutoDisposeProvider<int>.internal(
 );
 
 typedef CodeGenFunctionalProviderRef = AutoDisposeProviderRef<int>;
-String _$codeGenNotifierHash() => r'63ce4a996f158e222193fbc7b16c90ff5e6dc3a5';
+String _$codeGenNotifierHash() => r'83f359676e23475e68a151b9e289436af0afb70d';
 
 /// See also [CodeGenNotifier].
 @ProviderFor(CodeGenNotifier)
