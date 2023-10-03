@@ -53,6 +53,7 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
   - [avoid\_ref\_inside\_state\_dispose](#avoid_ref_inside_state_dispose)
   - [notifier\_build (riverpod\_generator only)](#notifier_build-riverpod_generator-only)
   - [async\_value\_nullable\_patttern](#async_value_nullable_patttern)
+  - [incorrect\_usage\_of\_ref\_method](#incorrect_usage_of_ref_method)
 - [All assists](#all-assists)
   - [Wrap widgets with a `Consumer`](#wrap-widgets-with-a-consumer)
   - [Wrap widgets with a `ProviderScope`](#wrap-widgets-with-a-providerscope)
@@ -640,6 +641,91 @@ switch (...) {
   // int? is nullable, therefore we use "hasValue: true"
   case AsyncValue<int?>(:final value, hasValue: true):
      print('data $value');
+}
+```
+
+### incorrect_usage_of_ref_method
+
+Warn if the `ref.watch`/`ref.read`/`ref.listen`/`ref.listenManual` methods are used incorrectly.
+
+**Good**:
+
+```dart
+final fnProvider = Provider<int>((ref) {
+  ref.watch(provider);
+  ref.listen(provider, ...);
+  return 0;
+});
+
+class MyNotifier extends Notifier<int> {
+  int get _readGetter => ref.read(provider);
+
+  @override
+  int build() {
+    ref.watch(provider);
+    ref.listen(provider, ...);
+    return 0;
+  }
+
+  void someMethod() {
+    ref.read(provider);
+  }
+}
+
+void initState() {
+  ref.listenManual(provider, ...);
+}
+
+Widget build(ctx, ref) {
+  ref.watch(provider);
+  ref.listen(provider, ...);
+
+  return Button(
+    onPressed: () {
+      ref.read(provider);
+      ref.listenManual(provider, ...);
+    }
+  );
+}
+```
+
+**Bad**:
+
+```dart
+final fnProvider = Provider<int>((ref) {
+  ref.read(provider); // use watch instead
+  return 0;
+});
+
+class MyNotifier extends Notifier<int> {
+  int get _watchGetter => ref.watch(provider); // use read instead
+
+  @override
+  int build() {
+    ref.read(provider); // use watch instead
+    return 0;
+  }
+
+  void someMethod() {
+    ref.watch(provider); // use read instead
+    ref.listen(provider, ...); // place listen in build instead
+  }
+}
+
+void initState() {
+  ref.listen(provider, ...); // use listenManual instead
+}
+
+Widget build(ctx, ref) {
+  ref.read(provider); // use watch instead
+  ref.listenManual(provider, ...); // use listen instead
+
+  return Button(
+    onPressed: () {
+      ref.watch(provider); // use read instead
+      ref.listen(provider, ...); // use listenManual instead
+    }
+  );
 }
 ```
 

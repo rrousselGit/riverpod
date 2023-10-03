@@ -13,6 +13,7 @@ import 'src/lints/avoid_manual_providers_as_generated_provider_dependency.dart';
 import 'src/lints/avoid_public_notifier_properties.dart';
 import 'src/lints/avoid_ref_inside_state_dispose.dart';
 import 'src/lints/functional_ref.dart';
+import 'src/lints/incorrect_usage_of_ref_method.dart';
 import 'src/lints/missing_provider_scope.dart';
 import 'src/lints/notifier_build.dart';
 import 'src/lints/notifier_extends.dart';
@@ -39,6 +40,7 @@ class _RiverpodPlugin extends PluginBase {
         const AvoidRefInsideStateDispose(),
         const NotifierBuild(),
         const AsyncValueNullablePattern(),
+        const IncorrectUsageOfRefMethod(),
       ];
 
   @override

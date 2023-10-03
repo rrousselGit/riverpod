@@ -1,6 +1,7 @@
-// ignore_for_file: unused_field
+// ignore_for_file: unused_field, incorrect_usage_of_ref_method
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
 import 'another.dart' as import_alias;
 
 part 'dependencies.g.dart';
