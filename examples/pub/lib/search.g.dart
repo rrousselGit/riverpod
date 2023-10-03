@@ -51,6 +51,7 @@ class FetchPackagesFamily extends Family<AsyncValue<List<Package>>> {
     );
   }
 
+  @visibleForOverriding
   @override
   FetchPackagesProvider getProviderOverride(
     covariant FetchPackagesProvider provider,

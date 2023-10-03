@@ -75,6 +75,7 @@ class FamilyOrFamily extends Family<AsyncValue<String>> {
     );
   }
 
+  @visibleForOverriding
   @override
   FamilyOrProvider getProviderOverride(
     covariant FamilyOrProvider provider,
@@ -210,6 +211,7 @@ class FamilyFamily extends Family<AsyncValue<String>> {
     );
   }
 
+  @visibleForOverriding
   @override
   FamilyProvider getProviderOverride(
     covariant FamilyProvider provider,
@@ -433,6 +435,7 @@ class FamilyOrClassFamily extends Family<AsyncValue<String>> {
     );
   }
 
+  @visibleForOverriding
   @override
   FamilyOrClassProvider getProviderOverride(
     covariant FamilyOrClassProvider provider,
@@ -592,6 +595,7 @@ class FamilyClassFamily extends Family<AsyncValue<String>> {
     );
   }
 
+  @visibleForOverriding
   @override
   FamilyClassProvider getProviderOverride(
     covariant FamilyClassProvider provider,

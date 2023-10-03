@@ -96,6 +96,7 @@ class FamilyFamily extends Family<String> {
     );
   }
 
+  @visibleForOverriding
   @override
   FamilyProvider getProviderOverride(
     covariant FamilyProvider provider,
@@ -362,6 +363,7 @@ class FamilyClassFamily extends Family<String> {
     );
   }
 
+  @visibleForOverriding
   @override
   FamilyClassProvider getProviderOverride(
     covariant FamilyClassProvider provider,

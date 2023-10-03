@@ -425,6 +425,7 @@ class FamilyDepFamily extends Family<int> {
     );
   }
 
+  @visibleForOverriding
   @override
   FamilyDepProvider getProviderOverride(
     covariant FamilyDepProvider provider,
@@ -558,6 +559,7 @@ class FamilyDep2Family extends Family<int> {
     );
   }
 
+  @visibleForOverriding
   @override
   FamilyDep2Provider getProviderOverride(
     covariant FamilyDep2Provider provider,

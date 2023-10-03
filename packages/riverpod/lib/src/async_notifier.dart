@@ -42,7 +42,6 @@ abstract class AsyncNotifierBase<State> {
   ///
   /// Reading [state] if the provider is out of date (such as if one of its
   /// dependency has changed) will trigger [AsyncNotifier.build] to be re-executed.
-  @protected
   @visibleForTesting
   AsyncValue<State> get state {
     _element.flush();
@@ -50,7 +49,6 @@ abstract class AsyncNotifierBase<State> {
     return _element.requireState;
   }
 
-  @protected
   @visibleForTesting
   set state(AsyncValue<State> newState) {
     _element.state = newState;
@@ -70,6 +68,7 @@ abstract class AsyncNotifierBase<State> {
   /// The future will fail if [state] is in error state. In which case the
   /// error will be the same as [AsyncValue.error] and its stacktrace.
   /// {@endtemplate}
+  @visibleForTesting
   Future<State> get future {
     _element.flush();
     return _element.futureNotifier.value;
@@ -89,7 +88,7 @@ abstract class AsyncNotifierBase<State> {
   /// See also:
   /// - [future], for manually awaiting the resolution of [state].
   /// - [AsyncValue.guard], and alternate way to perform asynchronous operations.
-  @protected
+  @visibleForTesting
   Future<State> update(
     FutureOr<State> Function(State) cb, {
     FutureOr<State> Function(Object err, StackTrace stackTrace)? onError,

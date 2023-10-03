@@ -61,6 +61,7 @@ class GeneratedFamilyFamily extends Family<_Test> {
     );
   }
 
+  @visibleForOverriding
   @override
   GeneratedFamilyProvider getProviderOverride(
     covariant GeneratedFamilyProvider provider,
@@ -203,6 +204,7 @@ class $DynamicFamilyFamily extends Family<Object?> {
     );
   }
 
+  @visibleForOverriding
   @override
   $DynamicFamilyProvider getProviderOverride(
     covariant $DynamicFamilyProvider provider,
@@ -331,6 +333,7 @@ class _DynamicFamily extends Family<Object?> {
     );
   }
 
+  @visibleForOverriding
   @override
   _DynamicProvider getProviderOverride(
     covariant _DynamicProvider provider,
@@ -472,6 +475,7 @@ class AliasFamilyFamily extends Family<r.AsyncValue<int>> {
     );
   }
 
+  @visibleForOverriding
   @override
   AliasFamilyProvider getProviderOverride(
     covariant AliasFamilyProvider provider,
@@ -626,6 +630,7 @@ class GeneratedClassFamilyFamily extends Family<_Test> {
     );
   }
 
+  @visibleForOverriding
   @override
   GeneratedClassFamilyProvider getProviderOverride(
     covariant GeneratedClassFamilyProvider provider,
@@ -787,6 +792,7 @@ class $DynamicClassFamilyFamily extends Family<Object?> {
     );
   }
 
+  @visibleForOverriding
   @override
   $DynamicClassFamilyProvider getProviderOverride(
     covariant $DynamicClassFamilyProvider provider,
@@ -946,6 +952,7 @@ class AliasClassFamilyFamily extends Family<r.AsyncValue<int>> {
     );
   }
 
+  @visibleForOverriding
   @override
   AliasClassFamilyProvider getProviderOverride(
     covariant AliasClassFamilyProvider provider,

@@ -1,3 +1,7 @@
+## Unreleased minor
+
+- Exports `@internal` from `pkg:meta` for the code-generator to use.
+
 ## 2.1.6 - 2023-09-27
 
 - `riverpod` upgraded to `2.4.1`

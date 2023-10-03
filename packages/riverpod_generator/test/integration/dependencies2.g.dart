@@ -75,6 +75,7 @@ class FamilyWithDependencies2Family extends Family<int> {
     );
   }
 
+  @visibleForOverriding
   @override
   FamilyWithDependencies2Provider getProviderOverride(
     covariant FamilyWithDependencies2Provider provider,
@@ -282,6 +283,7 @@ class NotifierFamilyWithDependenciesFamily extends Family<int> {
     );
   }
 
+  @visibleForOverriding
   @override
   NotifierFamilyWithDependenciesProvider getProviderOverride(
     covariant NotifierFamilyWithDependenciesProvider provider,
