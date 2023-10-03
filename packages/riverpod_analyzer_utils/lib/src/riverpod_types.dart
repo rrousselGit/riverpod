@@ -154,8 +154,10 @@ const notifierBaseType =
     TypeChecker.fromName('NotifierBase', packageName: 'riverpod');
 
 /// Either `NotifierBase` or `AsyncNotifierBase`
-const anyNotifierType =
-    TypeChecker.any([asyncNotifierBaseType, notifierBaseType]);
+const anyNotifierType = TypeChecker.any([
+  asyncNotifierBaseType,
+  notifierBaseType,
+]);
 
 /// Either `ProviderBase` or `Family`
 const providerOrFamilyType = TypeChecker.any([providerBaseType, familyType]);
