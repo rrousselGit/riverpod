@@ -53,6 +53,7 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
   - [avoid\_ref\_inside\_state\_dispose](#avoid_ref_inside_state_dispose)
   - [notifier\_build (riverpod\_generator only)](#notifier_build-riverpod_generator-only)
   - [async\_value\_nullable\_patttern](#async_value_nullable_patttern)
+- [protected\_notifier\_properties](#protected_notifier_properties)
 - [All assists](#all-assists)
   - [Wrap widgets with a `Consumer`](#wrap-widgets-with-a-consumer)
   - [Wrap widgets with a `ProviderScope`](#wrap-widgets-with-a-providerscope)
@@ -640,6 +641,58 @@ switch (...) {
   // int? is nullable, therefore we use "hasValue: true"
   case AsyncValue<int?>(:final value, hasValue: true):
      print('data $value');
+}
+```
+
+## protected_notifier_properties
+
+Notifiers should not access the state of other notifiers.
+
+This includes `.state`, `.future`, and `.ref`.
+
+**Bad**:
+
+```dart
+@riverpod
+class A extends _$A {
+  @override
+  int build() => 0;
+}
+
+@riverpod
+class B extends _$B {
+  @override
+  int build() => 0;
+
+  void doSomething() {
+    // KO: Reading protected properties
+    ref.read(aProvider.notifier).state++;
+  }
+}
+```
+
+**Good**:
+
+```dart
+@riverpod
+class A extends _$A {
+  @override
+  int build() => 0;
+
+  void increment() {
+    state++;
+  }
+}
+
+@riverpod
+class B extends _$B {
+  @override
+  int build() => 0;
+
+  void doSomething() {
+    // Only access what notifiers explicitly enables us to.
+    ref.read(aProvider.notifier).increment();
+  }
 }
 ```
 

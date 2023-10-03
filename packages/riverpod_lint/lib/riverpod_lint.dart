@@ -16,6 +16,7 @@ import 'src/lints/functional_ref.dart';
 import 'src/lints/missing_provider_scope.dart';
 import 'src/lints/notifier_build.dart';
 import 'src/lints/notifier_extends.dart';
+import 'src/lints/protected_notifier_properties.dart';
 import 'src/lints/provider_dependencies.dart';
 import 'src/lints/provider_parameters.dart';
 import 'src/lints/scoped_providers_should_specify_dependencies.dart';
@@ -39,6 +40,7 @@ class _RiverpodPlugin extends PluginBase {
         const AvoidRefInsideStateDispose(),
         const NotifierBuild(),
         const AsyncValueNullablePattern(),
+        const ProtectedNotifierProperties(),
       ];
 
   @override
