@@ -14,6 +14,7 @@ export const documentTitles = {
     "from_provider/quickstart": "Quickstart",
     "from_provider/provider_vs_riverpod": "Provider vs Riverpod",
     "from_provider/motivation/motivation": "Motivation",
+    "essentials/websockets_sync": "Websockets and synchronous execution",
     "essentials/side_effects": "Performing side effects",
     "essentials/passing_args": "Passing arguments to your requests",
     "essentials/first_request": "Make your first provider/network request",

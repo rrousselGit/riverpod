@@ -23,11 +23,7 @@ module.exports = {
         "essentials/first_request",
         "essentials/side_effects",
         "essentials/passing_args",
-        {
-          type: "link",
-          label: "Websockets and synchronous execution (WIP)",
-          href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
-        },
+        "essentials/websockets_sync",
         "essentials/combining_requests",
         "essentials/auto_dispose",
         {
