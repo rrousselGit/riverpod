@@ -63,7 +63,8 @@ abstract class NotifierBase<State> {
     _element.setState(value);
   }
 
-  /// The [Ref] from the provider associated with this [AsyncNotifier].
+  /// The [Ref] from the provider associated with this [Notifier].
+  @protected
   Ref<State> get ref;
 
   /// A method invoked when the state exposed by this [Notifier] changes.
