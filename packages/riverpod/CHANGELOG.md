@@ -1,3 +1,7 @@
+## 2.4.3 - 2023-10-06
+
+- Fixed incorrect `@visibleForTesting` warning.
+
 ## 2.4.1 - 2023-09-27
 
 - Fix invalid Dart docs (thanks to @srawlins)

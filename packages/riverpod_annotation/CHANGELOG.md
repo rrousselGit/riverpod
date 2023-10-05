@@ -1,4 +1,4 @@
-## Unreleased minor
+## 2.2.0 - 2023-10-06
 
 - Exports `@internal` from `pkg:meta` for the code-generator to use.
 
