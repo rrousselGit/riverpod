@@ -1,4 +1,4 @@
-## Unreleased patch
+## 0.4.1 - 2023-10-06
 
 - Added type checkers for AsyncValue and subclasses.
 

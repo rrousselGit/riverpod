@@ -1,3 +1,7 @@
+## 2.4.3 - 2023-10-06
+
+- Fixed incorrect `@visibleForTesting` warning.
+
 ## 2.4.2 - 2023-10-02
 
 - Improved the error message when WidgetRef is used after the associated widget got unmounted.

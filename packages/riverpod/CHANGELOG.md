@@ -1,4 +1,4 @@
-## Unreleased fix
+## 2.4.3 - 2023-10-06
 
 - Fixed incorrect `@visibleForTesting` warning.
 
