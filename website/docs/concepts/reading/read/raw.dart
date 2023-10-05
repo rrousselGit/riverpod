@@ -7,8 +7,7 @@ import '../counter/raw.dart';
 
 /* SNIPPET START */
 
-final counterProvider =
-    StateNotifierProvider<Counter, int>(Counter.new);
+final counterProvider = StateNotifierProvider<Counter, int>(Counter.new);
 
 class HomeView extends ConsumerWidget {
   const HomeView({super.key});

@@ -1,3 +1,15 @@
+## 2.4.2 - 2023-10-02
+
+- Improved the error message when WidgetRef is used after the associated widget got unmounted.
+
+## 2.4.1 - 2023-09-27
+
+- `riverpod` upgraded to `2.4.1`
+
+## 2.4.0 - 2023-09-04
+
+- `riverpod` upgraded to `2.4.0`
+
 ## 2.3.10 - 2023-08-28
 
 - `riverpod` upgraded to `2.3.10`

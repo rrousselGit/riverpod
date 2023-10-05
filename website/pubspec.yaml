@@ -24,7 +24,6 @@ dependencies:
 
 dev_dependencies:
   build_runner:
-  build_verify: ^3.0.0
   flutter_test:
     sdk: flutter
   freezed: ^2.2.0

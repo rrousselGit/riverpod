@@ -1,11 +1,11 @@
 part of '../notifier.dart';
 
-/// {@template riverpod.notifier}
+/// {@macro riverpod.notifier}
 ///
 /// {@macro riverpod.notifier_provider_modifier}
 abstract class AutoDisposeFamilyNotifier<State, Arg>
     extends BuildlessAutoDisposeNotifier<State> {
-  /// {@template riverpod.notifier.family_arg}
+  /// {@macro riverpod.notifier.family_arg}
   late final Arg arg;
 
   @override

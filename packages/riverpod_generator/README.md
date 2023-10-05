@@ -118,7 +118,7 @@ Don't forget to run `flutter pub get` / `dart pub get`.
 To start the code generator, run the following command:
 
 ```sh
-dart pub run build_runner watch
+dart run build_runner watch
 ```
 
 ## Defining our first "provider"

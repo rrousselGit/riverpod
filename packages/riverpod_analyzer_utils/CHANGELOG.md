@@ -1,3 +1,12 @@
+## Unreleased patch
+
+- Added type checkers for AsyncValue and subclasses.
+
+## 0.4.0 - 2023-10-02
+
+- Correctly parse import aliases when used inside `ref.watch(<...>)`
+- Fixed `refInvocations` not getting parsed for generated providers with arguments.
+
 ## 0.3.3 - 2023-08-16
 
 - Support both analyzer 5.12.0 and analyzer 6.0.0

@@ -44,12 +44,16 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
   - [provider\_dependencies (riverpod\_generator only)](#provider_dependencies-riverpod_generator-only)
   - [scoped\_providers\_should\_specify\_dependencies (generator only)](#scoped_providers_should_specify_dependencies-generator-only)
   - [avoid\_manual\_providers\_as\_generated\_provider\_dependency](#avoid_manual_providers_as_generated_provider_dependency)
+  - [avoid\_build\_context\_in\_providers (riverpod\_generator only)](#avoid_build_context_in_providers-riverpod_generator-only)
   - [provider\_parameters](#provider_parameters)
   - [avoid\_public\_notifier\_properties](#avoid_public_notifier_properties)
   - [unsupported\_provider\_value (riverpod\_generator only)](#unsupported_provider_value-riverpod_generator-only)
   - [functional\_ref (riverpod\_generator only)](#functional_ref-riverpod_generator-only)
   - [notifier\_extends (riverpod\_generator only)](#notifier_extends-riverpod_generator-only)
   - [avoid\_ref\_inside\_state\_dispose](#avoid_ref_inside_state_dispose)
+  - [notifier\_build (riverpod\_generator only)](#notifier_build-riverpod_generator-only)
+  - [async\_value\_nullable\_patttern](#async_value_nullable_patttern)
+- [protected\_notifier\_properties](#protected_notifier_properties)
 - [All assists](#all-assists)
   - [Wrap widgets with a `Consumer`](#wrap-widgets-with-a-consumer)
   - [Wrap widgets with a `ProviderScope`](#wrap-widgets-with-a-providerscope)
@@ -345,6 +349,39 @@ int example(ExampleRef ref) {
 }
 ```
 
+### avoid_build_context_in_providers (riverpod_generator only)
+
+Providers should not interact with `BuildContext`.
+
+**Good**:
+
+```dart
+@riverpod
+int fn(FnRef ref) => 0;
+
+@riverpod
+class MyNotifier extends _$MyNotifier {
+  int build() => 0;
+
+  void event() {}
+}
+```
+
+**Bad**:
+
+```dart
+// Providers should not receive a BuildContext as a parameter.
+int fn(FnRef ref, BuildContext context) => 0;
+
+@riverpod
+class MyNotifier extends _$MyNotifier {
+  int build() => 0;
+
+  // Notifiers should not have methods that receive a BuildContext as a parameter.
+  void event(BuildContext context) {}
+}
+```
+
 ### provider_parameters
 
 Providers' parameters should have a consistent ==. Meaning either the values should be cached, or the parameters should override ==.
@@ -548,6 +585,114 @@ class _MyWidgetState extends ConsumerState<MyWidget> {
   }
 
   // ...
+}
+```
+
+### notifier_build (riverpod_generator only)
+
+Classes annotated by `@riverpod` must have the `build` method.
+
+**Good**:
+
+```dart
+@riverpod
+class Example extends _$Example {
+
+  @overried
+  int build() => 0;
+}
+```
+
+**Bad**:
+
+```dart
+// No "build" method found
+@riverpod
+class Example extends _$Example {}
+```
+
+### async_value_nullable_patttern
+
+Warn if the pattern `AsyncValue(:final value?)` is used when the data
+is possibly nullable.
+
+**Bad**:
+
+```dart
+switch (...) {
+  // int? is nullable, therefore ":final value?" should not be used
+  case AsyncValue<int?>(:final value?):
+     print('data $value');
+}
+```
+
+**Good**:
+
+```dart
+switch (...) {
+  // int is non-nullable, so using ":final value?" is fine.
+  case AsyncValue<int>(:final value?):
+     print('data $value');
+}
+```
+
+```dart
+switch (...) {
+  // int? is nullable, therefore we use "hasValue: true"
+  case AsyncValue<int?>(:final value, hasValue: true):
+     print('data $value');
+}
+```
+
+## protected_notifier_properties
+
+Notifiers should not access the state of other notifiers.
+
+This includes `.state`, `.future`, and `.ref`.
+
+**Bad**:
+
+```dart
+@riverpod
+class A extends _$A {
+  @override
+  int build() => 0;
+}
+
+@riverpod
+class B extends _$B {
+  @override
+  int build() => 0;
+
+  void doSomething() {
+    // KO: Reading protected properties
+    ref.read(aProvider.notifier).state++;
+  }
+}
+```
+
+**Good**:
+
+```dart
+@riverpod
+class A extends _$A {
+  @override
+  int build() => 0;
+
+  void increment() {
+    state++;
+  }
+}
+
+@riverpod
+class B extends _$B {
+  @override
+  int build() => 0;
+
+  void doSomething() {
+    // Only access what notifiers explicitly enables us to.
+    ref.read(aProvider.notifier).increment();
+  }
 }
 ```
 
