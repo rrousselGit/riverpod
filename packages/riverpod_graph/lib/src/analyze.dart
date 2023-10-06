@@ -441,9 +441,9 @@ class ProviderDependencyVisitor extends RecursiveAstVisitor<void> {
         // final providerSimpleIdentifier = Provider(myMethod); // Simple identifier.
         // final providerConstructorReference= Provider(MyClass.new); // Constructor reference.
         // ```
-        final firstArgument = node.arguments.firstWhere(
-          (argument) => argument is! NamedExpression,
-        );
+        final firstArgument = node.arguments.isNotEmpty ? node.arguments.firstWhere(
+              (argument) => argument is! NamedExpression,
+        ) : null;
         if (firstArgument is SimpleIdentifier) {
           // The created provider is referencing a method defined somewhere else:
           // ```dart
