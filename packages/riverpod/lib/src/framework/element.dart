@@ -382,7 +382,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
     }
 
     // Unsubscribe to everything that a provider no longer depends on.
-    for (final sub in _previousDependencies!.entries) {
+    for (final sub in _previousDependencies?.entries ?? []) {
       sub.key
         .._providerDependents.remove(this)
         .._onRemoveListener();
