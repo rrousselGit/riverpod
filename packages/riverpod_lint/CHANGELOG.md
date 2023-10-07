@@ -22,7 +22,7 @@
 
 ## 2.1.0 - 2023-09-14
 
-- Added `notifier_build`, a lint to catch when a Notifier has no `build` method (thansk to @LeonardoRosaa)
+- Added `notifier_build`, a lint to catch when a Notifier has no `build` method (thanks to @LeonardoRosaa)
 
 ## 2.0.4 - 2023-09-04
 
@@ -136,7 +136,7 @@ Fix quick-fix for provider_dependencies
   as this would break the `provider_dependencies` lint.
 
 - Added `scoped_providers_should_specify_dependencies` lint.
-  This lint warns if a generated provider is overriden in a scoped ProviderScope/ProviderContainer and does not specifies `@Riverpod(dependencies: ...)`.
+  This lint warns if a generated provider is overridden in a scoped ProviderScope/ProviderContainer and does not specifies `@Riverpod(dependencies: ...)`.
 
 - Added `unsupported_provider_value` lint. This warns against
   using riverpod_generator to create a `StateNotifier` and other unsupported values.
