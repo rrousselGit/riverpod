@@ -1,3 +1,16 @@
 ---
 title: "Clearing cache and reacting to state disposal (WIP)"
 ---
+
+Things to talk about:
+
+- @Riverpod(keepAlive)
+- What "no-longer used" means (consumer tracking listeners)
+- ref.keepAlive (and how it's different from @Riverpod(keepAlive))
+- ref.onDispose
+- ref.onCancel
+- ref.onResume
+- ref.invalidate/refresh
+- how providers with arguments should use autoDispose to avoid leaks
+
+- showcase how to combine keepAlive+onCancel/onResume to implement features such as "keep providers alive for 5 minutes after last usage"

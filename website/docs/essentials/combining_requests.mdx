@@ -24,3 +24,7 @@ This page is a work in progress
 - [ ] A `ref` is always available when defining a provider:
   - it is either passed as parameter to the provider's function
   - or it is a property of the Notifier class.
+
+- Explain how if an async provider refreshes with ref.watch, its previous state is kept
+  until the new state is available, but under "isReloading: true".
+  If the provider rebuildt with ref.invalidate/refresh, then isRefreshing will be true instead.
