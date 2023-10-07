@@ -804,6 +804,32 @@ class MyNotifier extends Notifier<int> {
 }
 ```
 
+### incorrect_usage_of_widget_ref_listen_manual
+
+Warn if the `WidgetRef.listenManual` method is used incorrectly.
+
+**Good**:
+
+```dart
+Widget build(BuildContext context) {
+  // manually closing the subscription when using ref.listenManual in build
+  sub?.close();
+  sub = ref.listenManual(provider, (previous, next) {});
+
+  return ...
+}
+```
+
+**Bad**:
+
+```dart
+Widget build(BuildContext context) {
+  ref.listenManual(provider, (previous, next) {});
+
+  return ...
+}
+```
+
 ### incorrect_usage_of_widget_ref_listen
 
 Warn if the `WidgetRef.listen` method is used incorrectly.
