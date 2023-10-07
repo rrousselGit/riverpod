@@ -302,7 +302,7 @@ Future<void> main() async {
 
   group('When specifying "dependencies"', () {
     test(
-        'a family can read itelf, even if not present in the dependencies list',
+        'a family can read itself, even if not present in the dependencies list',
         () {
       final dep = Provider((ref) => 'foo');
       late final ProviderFamily<String, int> provider;

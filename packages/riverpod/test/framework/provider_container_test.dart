@@ -16,7 +16,7 @@ void main() {
       child.dispose();
     });
 
-    group('when unmounting providders', () {
+    group('when unmounting providers', () {
       test(
           'cleans up all the StateReaders of a provider in the entire ProviderContainer tree',
           () async {

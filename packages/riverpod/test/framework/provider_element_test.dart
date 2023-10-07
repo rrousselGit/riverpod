@@ -59,7 +59,7 @@ void main() {
     });
 
     test(
-        'can be invoked during first initialization, and does not notify listenrs',
+        'can be invoked during first initialization, and does not notify listeners',
         () {
       final observer = ProviderObserverMock();
       final selfListener = Listener<int>();
@@ -79,7 +79,7 @@ void main() {
     });
 
     test(
-        'can be invoked during a re-initialization, and does not notify listenrs',
+        'can be invoked during a re-initialization, and does not notify listeners',
         () {
       final observer = ProviderObserverMock();
       final listener = Listener<Object>();
@@ -1049,7 +1049,7 @@ void main() {
   });
 
   test(
-      'onDispose is triggered only once if within autoDispose unmount, a dependency chnaged',
+      'onDispose is triggered only once if within autoDispose unmount, a dependency changed',
       () async {
     // regression test for https://github.com/rrousselGit/riverpod/issues/1064
     final container = createContainer();
