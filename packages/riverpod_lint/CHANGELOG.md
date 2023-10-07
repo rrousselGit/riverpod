@@ -1,4 +1,4 @@
-## Unreleased minor
+## 2.3.0 - 2023-10-06
 
 - Added `async_value_nullable_patttern` lint, to warn against using `AsyncValue(:final value?)` in pattern match when `value` is possibly nullable.
 - Added `protected_notifier_state` lint, which warns against using the `Notifier.state`
