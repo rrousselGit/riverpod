@@ -75,90 +75,90 @@ module.exports = {
     //   label: "Case studies",
     //   collapsible: false,
     //   items: [
-        // {
-        //   type: "link",
-        //   label: "Pull-to-refresh (WIP)",
-        //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
-        // },
-        // {
-        //   type: "link",
-        //   label: "Infinite lists (WIP)",
-        //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
-        // },
-        // {
-        //   type: "link",
-        //   label: "Optimistic UI (WIP)",
-        //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
-        // },
-        // {
-        //   type: "link",
-        //   label: "HTTP polling (WIP)",
-        //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
-        // },
-        // {
-        //   type: "link",
-        //   label: "Debouncing requests (WIP)",
-        //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
-        // },
-        // {
-        //   type: "link",
-        //   label: "Cancelling unused network requests (WIP)",
-        //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
-        // },
-        // {
-        //   type: "link",
-        //   label: "Delaying requests until a certain value is set (WIP)",
-        //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
-        // },
-        // {
-        //   type: "link",
-        //   label: "Deduplicating network requests (WIP)",
-        //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
-        // },
-        // {
-        //   type: "link",
-        //   label: "Search as we type (WIP)",
-        //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
-        // },
-        // {
-        //   type: "link",
-        //   label: "Reading InheritedWidgets inside providers (WIP)",
-        //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
-        // },
+    // {
+    //   type: "link",
+    //   label: "Pull-to-refresh (WIP)",
+    //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
+    // },
+    // {
+    //   type: "link",
+    //   label: "Infinite lists (WIP)",
+    //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
+    // },
+    // {
+    //   type: "link",
+    //   label: "Optimistic UI (WIP)",
+    //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
+    // },
+    // {
+    //   type: "link",
+    //   label: "HTTP polling (WIP)",
+    //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
+    // },
+    // {
+    //   type: "link",
+    //   label: "Debouncing requests (WIP)",
+    //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
+    // },
+    // {
+    //   type: "link",
+    //   label: "Cancelling unused network requests (WIP)",
+    //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
+    // },
+    // {
+    //   type: "link",
+    //   label: "Delaying requests until a certain value is set (WIP)",
+    //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
+    // },
+    // {
+    //   type: "link",
+    //   label: "Deduplicating network requests (WIP)",
+    //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
+    // },
+    // {
+    //   type: "link",
+    //   label: "Search as we type (WIP)",
+    //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
+    // },
+    // {
+    //   type: "link",
+    //   label: "Reading InheritedWidgets inside providers (WIP)",
+    //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
+    // },
     //   ],
     // },
 
     // Tutorials
     // {
-      // type: "category",
-      // label: "Tutorials",
-      // collapsible: false,
-      // items: [
-        // {
-        //   type: "link",
-        //   label: "Multi-step forms (WIP)",
-        //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
-        // },
-        // {
-        //   type: "link",
-        //   label: "Building a login page (WIP)",
-        //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
-        // },
-      // ],
+    // type: "category",
+    // label: "Tutorials",
+    // collapsible: false,
+    // items: [
+    // {
+    //   type: "link",
+    //   label: "Multi-step forms (WIP)",
+    //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
     // },
-    
+    // {
+    //   type: "link",
+    //   label: "Building a login page (WIP)",
+    //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
+    // },
+    // ],
+    // },
+
     // Advanced
     // {
-      // type: "category",
-      // label: "Advanced topics",
-      // collapsible: false,
-      // items: [
-        // {
-        //   type: "link",
-        //   label: "Scoping providers (WIP)",
-        //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
-        // },
-      // ],
+    // type: "category",
+    // label: "Advanced topics",
+    // collapsible: false,
+    // items: [
+    // {
+    //   type: "link",
+    //   label: "Scoping providers (WIP)",
+    //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
+    // },
+    // ],
     // },
 
     // Concepts
@@ -323,60 +323,52 @@ module.exports = {
       ],
     },
 
-    // API reference
-    {
-      type: "link",
-      label: "All Providers (WIP)",
-      href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
-    },
     {
       type: "link",
       label: "API reference",
       href: "https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/hooks_riverpod-library.html",
     },
 
-    // {
-    //   type: "category",
-    //   label: "All Providers",
-    //   items: [
-    //     "providers/provider",
-    //     "providers/notifier_provider",
-    //     "providers/state_notifier_provider",
-    //     "providers/future_provider",
-    //     "providers/stream_provider",
-    //     "providers/state_provider",
-    //     "providers/change_notifier_provider",
-    //   ],
-    // },
+    {
+      type: "category",
+      label: "Concepts (old)",
+      items: [
+        "concepts/providers",
+        "concepts/reading",
+        "concepts/combining_providers",
+        {
+          type: "category",
+          label: "Modifiers",
+          items: [
+            "concepts/modifiers/family",
+            "concepts/modifiers/auto_dispose",
+          ],
+        },
+        "concepts/provider_observer",
+        "concepts/scopes",
+        "concepts/provider_lifecycles",
+        "concepts/why_immutability",
+      ],
+    },
 
-    // {
-    //   type: "category",
-    //   label: "Concepts",
-    //   collapsible: false,
-    //   items: [
-    //     "concepts/providers",
-    //     "concepts/reading",
-    //     "concepts/combining_providers",
-    //     {
-    //       type: "category",
-    //       label: "Modifiers",
-    //       items: [
-    //         "concepts/modifiers/family",
-    //         "concepts/modifiers/auto_dispose",
-    //       ],
-    //     },
-    //     "concepts/provider_observer",
-    //     "concepts/scopes",
-    //     "concepts/provider_lifecycles",
-    //     "concepts/why_immutability",
-    //   ],
-    // },
+    {
+      type: "category",
+      label: "All Providers (old)",
+      items: [
+        "providers/provider",
+        "providers/notifier_provider",
+        "providers/state_notifier_provider",
+        "providers/future_provider",
+        "providers/stream_provider",
+        "providers/state_provider",
+        "providers/change_notifier_provider",
+      ],
+    },
 
-    // {
-    //   type: "category",
-    //   label: "Guides",
-    //   collapsible: false,
-    //   items: ["cookbooks/testing"],
-    // },
+    {
+      type: "category",
+      label: "Guides (old)",
+      items: ["cookbooks/testing"],
+    },
   ],
 };
