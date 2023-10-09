@@ -8,6 +8,7 @@ import styles from "./styles.module.css";
 import { CodegenContext, FlutterHooksContext } from "../../DocPage/Layout";
 import Translate, { translate } from "@docusaurus/Translate";
 import "./toggle.scss";
+import useIsBrowser from "@docusaurus/useIsBrowser";
 
 function DocSidebarDesktop({ path, sidebar, onCollapse, isHidden }) {
   const {
@@ -37,8 +38,12 @@ function DocSidebarDesktop({ path, sidebar, onCollapse, isHidden }) {
 export function SidebarHead({ direction }) {
   direction ??= "vertical";
 
-  const [codegen, setCodegen] = useContext(CodegenContext);
-  const [flutterHooks, setFlutterHooks] = useContext(FlutterHooksContext);
+  const [codegen, setCodegen] = useIsBrowser()
+    ? useContext(CodegenContext)
+    : [false, () => {}];
+  const [flutterHooks, setFlutterHooks] = useIsBrowser()
+    ? useContext(FlutterHooksContext)
+    : [false, () => {}];
 
   return (
     <>

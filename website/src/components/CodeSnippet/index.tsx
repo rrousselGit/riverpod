@@ -1,9 +1,12 @@
+"use client";
+
 import React, { ReactElement, useContext, useEffect, useState } from "react";
 import CodeBlock from "@theme/CodeBlock";
 import {
   CodegenContext,
   FlutterHooksContext,
 } from "../../theme/DocPage/Layout";
+import useIsBrowser from '@docusaurus/useIsBrowser';
 
 const START_AT = "/* SNIPPET START */";
 const END_AT = "/* SNIPPET END */";
@@ -67,8 +70,12 @@ export function AutoSnippet(props: {
   raw: string | Array<string>;
   hooks?: string | Array<string>;
 }) {
-  const [codegen] = useContext(CodegenContext);
-  const [hooksEnabled] = useContext(FlutterHooksContext);
+  const [codegen] = useIsBrowser()
+    ? useContext(CodegenContext)
+    : [true];
+  const [hooksEnabled] = useIsBrowser()
+    ? useContext(FlutterHooksContext)
+    : [false];
 
   let snippet: string | Array<string>;
   if (codegen && hooksEnabled) {
@@ -96,12 +103,16 @@ export function When(props: {
   codegen?: boolean;
   children: string;
 }) {
-  const [codegen] = useContext(CodegenContext);
-  const [hooks] = useContext(FlutterHooksContext);
+  const [codegen] = useIsBrowser()
+    ? useContext(CodegenContext)
+    : [true];
+  const [hooksEnabled] = useIsBrowser()
+    ? useContext(FlutterHooksContext)
+    : [false];
 
   if (
     (props.codegen == undefined || props.codegen == codegen) &&
-    (props.hooks == undefined || props.hooks == hooks)
+    (props.hooks == undefined || props.hooks == hooksEnabled)
   ) {
     return props.children;
   }
