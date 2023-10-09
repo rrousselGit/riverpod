@@ -12,6 +12,7 @@ const START_AT = "/* SNIPPET START */";
 const END_AT = "/* SNIPPET END */";
 
 export function trimSnippet(snippet: string): string {
+  if (!snippet) return;
   const startAtIndex = snippet.indexOf(START_AT);
   if (startAtIndex < 0) return snippet;
 
