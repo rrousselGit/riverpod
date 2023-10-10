@@ -19,7 +19,7 @@ abstract class BuildlessAutoDisposeNotifier<State> extends NotifierBase<State> {
   AutoDisposeNotifierProviderRef<State> get ref => _element;
 }
 
-/// {@template riverpod.notifier}
+/// {@macro riverpod.notifier}
 ///
 /// {@macro riverpod.notifier_provider_modifier}
 abstract class AutoDisposeNotifier<State>

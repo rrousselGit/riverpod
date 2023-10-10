@@ -5,7 +5,7 @@ import 'reading_counter.dart';
 
 /* SNIPPET START */
 
-final counterProvider = StateNotifierProvider<Counter, int>((ref) => Counter(ref));
+final counterProvider = StateNotifierProvider<Counter, int>(Counter.new);
 
 final anotherProvider = Provider((ref) {
   ref.listen<int>(counterProvider, (int? previousCount, int newCount) {

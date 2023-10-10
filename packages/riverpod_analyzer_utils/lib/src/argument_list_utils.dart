@@ -1,7 +1,7 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:meta/meta.dart';
 
-/// Utilities for [ArgumentList] to help with specific argument retreival.
+/// Utilities for [ArgumentList] to help with specific argument retrieval.
 @internal
 extension ArgumentListUtils on ArgumentList {
   /// Lists the positional arguments of an argument list.

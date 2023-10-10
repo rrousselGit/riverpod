@@ -35,8 +35,8 @@ class FunctionalProviderTemplate extends Template {
 
     var providerType = '${leading}Provider';
 
-    final returnType = provider.createdType;
-    if (!returnType.isRaw) {
+    final returnType = provider.createdTypeNode?.type;
+    if (returnType != null && !returnType.isRaw) {
       if ((returnType.isDartAsyncFutureOr) || (returnType.isDartAsyncFuture)) {
         providerType = '${leading}FutureProvider';
       } else if (returnType.isDartAsyncStream) {
@@ -59,7 +59,7 @@ class FunctionalProviderTemplate extends Template {
 ${providerDocFor(provider.providerElement.element)}
 @ProviderFor(${provider.name})
 ${metaAnnotations(provider.node.metadata)}
-final $providerName = $providerType<${provider.valueType}>.internal(
+final $providerName = $providerType<${provider.valueTypeDisplayString}>.internal(
   $createFn,
   name: r'$providerName',
   debugGetCreateSourceHash: $hashFn,
@@ -67,7 +67,7 @@ final $providerName = $providerType<${provider.valueType}>.internal(
   allTransitiveDependencies: ${serializeAllTransitiveDependencies(provider.providerElement.annotation, options)},
 );
 
-typedef $refName = ${providerType}Ref<${provider.valueType}>;
+typedef $refName = ${providerType}Ref<${provider.valueTypeDisplayString}>;
 ''');
   }
 }

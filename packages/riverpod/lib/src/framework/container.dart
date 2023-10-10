@@ -291,7 +291,7 @@ class ProviderContainer implements Node {
     );
   }
 
-  /// {@template riverpod.invalidate}
+  /// {@macro riverpod.invalidate}
   void invalidate(ProviderOrFamily provider) {
     if (provider is ProviderBase) {
       final reader = _getStateReader(provider._origin);
@@ -310,7 +310,7 @@ class ProviderContainer implements Node {
     }
   }
 
-  /// {@template riverpod.refresh}
+  /// {@macro riverpod.refresh}
   State refresh<State>(Refreshable<State> provider) {
     invalidate(provider._origin);
     return read(provider);

@@ -21,6 +21,37 @@ void main() {
     expect(find.byKey(const Key('42')), findsOneWidget);
   });
 
+  testWidgets('Ref is unusable after dispose', (tester) async {
+    late WidgetRef ref;
+    await tester.pumpWidget(
+      ProviderScope(
+        child: Consumer(
+          builder: (context, r, child) {
+            ref = r;
+            return Container();
+          },
+        ),
+      ),
+    );
+
+    await tester.pumpWidget(ProviderScope(child: Container()));
+
+    final throwsDisposeError = throwsA(
+      isA<StateError>().having(
+        (e) => e.message,
+        'message',
+        'Cannot use "ref" after the widget was disposed.',
+      ),
+    );
+
+    expect(() => ref.read(_provider), throwsDisposeError);
+    expect(() => ref.watch(_provider), throwsDisposeError);
+    expect(() => ref.refresh(_provider), throwsDisposeError);
+    expect(() => ref.invalidate(_provider), throwsDisposeError);
+    expect(() => ref.listen(_provider, (_, __) {}), throwsDisposeError);
+    expect(() => ref.listenManual(_provider, (_, __) {}), throwsDisposeError);
+  });
+
   group('WidgetRef.exists', () {
     testWidgets('simple use-case', (tester) async {
       late WidgetRef ref;

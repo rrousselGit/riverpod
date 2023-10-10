@@ -29,23 +29,36 @@ Future<Raw<int>> value3(Value3Ref ref) async => 0;
     final value3 = result.functionalProviderDeclarations.singleWhere(
       (e) => e.name.toString() == 'value3',
     );
-    expect(value.createdType.toString(), 'Future<int>');
-    expect(value.exposedType.toString(), 'Future<int>');
-    expect(value.valueType.toString(), 'Future<int>');
-    expect(value.createdType.isRaw, true);
-    expect(value.valueType.isRaw, true);
+    expect(value.createdTypeNode.toString(), 'Raw<Future<int>>');
+    expect(value.createdTypeDisplayString, 'Raw<Future<int>>');
+    expect(value.exposedTypeNode.source, 'Raw<Future<int>>');
+    expect(value.exposedTypeNode.dartType.toString(), 'Future<int>');
+    expect(value.exposedTypeDisplayString, 'Raw<Future<int>>');
+    expect(value.valueTypeNode.toString(), 'Raw<Future<int>>');
+    expect(value.valueTypeDisplayString, 'Raw<Future<int>>');
+    expect(value.createdTypeNode!.type!.isRaw, true);
+    expect(value.valueTypeNode!.type!.isRaw, true);
 
-    expect(value2.createdType.toString(), 'Future<int>');
-    expect(value2.exposedType.toString(), 'AsyncValue<int>');
-    expect(value2.valueType.toString(), 'int');
-    expect(value2.createdType.isRaw, false);
-    expect(value2.valueType.isRaw, false);
+    expect(value2.createdTypeNode.toString(), 'Future<int>');
+    expect(value2.exposedTypeNode.source, 'AsyncValue<int>');
+    expect(value2.exposedTypeNode.dartType.toString(), 'AsyncValue<int>');
+    expect(value2.valueTypeNode.toString(), 'int');
+    expect(value2.createdTypeNode!.type!.isRaw, false);
+    expect(value2.createdTypeDisplayString, 'Future<int>');
+    expect(value2.exposedTypeDisplayString, 'AsyncValue<int>');
+    expect(value2.valueTypeDisplayString, 'int');
+    expect(value2.createdTypeNode!.type!.isRaw, false);
+    expect(value2.valueTypeNode!.type!.isRaw, false);
 
-    expect(value3.createdType.toString(), 'Future<int>');
-    expect(value3.exposedType.toString(), 'AsyncValue<int>');
-    expect(value3.valueType.toString(), 'int');
-    expect(value3.createdType.isRaw, false);
-    expect(value3.valueType.isRaw, true);
+    expect(value3.createdTypeNode.toString(), 'Future<Raw<int>>');
+    expect(value3.exposedTypeNode.source, 'AsyncValue<Raw<int>>');
+    expect(value3.exposedTypeNode.dartType.toString(), 'AsyncValue<int>');
+    expect(value3.valueTypeNode.toString(), 'Raw<int>');
+    expect(value3.createdTypeDisplayString, 'Future<Raw<int>>');
+    expect(value3.exposedTypeDisplayString, 'AsyncValue<Raw<int>>');
+    expect(value3.valueTypeDisplayString, 'Raw<int>');
+    expect(value3.createdTypeNode!.type!.isRaw, false);
+    expect(value3.valueTypeNode!.type!.isRaw, true);
   });
 
   testSource('Decode needsOverride/isScoped', source: '''
@@ -306,6 +319,15 @@ class NestedDependencyNotifier extends _$NestedDependencyNotifier {
   @override
   int build() => 0;
 }
+
+@Riverpod(dependencies: [empty, EmptyNotifier])
+int family(NestedDependencyRef ref) => 0;
+
+@Riverpod(dependencies: [empty, EmptyNotifier])
+class FamilyClass extends _$FamilyClass {
+  @override
+  int build() => 0;
+}
 ''', (resolver) async {
     final result = await resolver.resolveRiverpodAnalyssiResult();
     final roots = result.generatorProviderDeclarations.takeAll([
@@ -319,6 +341,8 @@ class NestedDependencyNotifier extends _$NestedDependencyNotifier {
     final providers = result.generatorProviderDeclarations.takeAll([
       'providerDependency',
       'ProviderDependencyNotifier',
+      'family',
+      'FamilyClass',
     ]);
     final nesteds = result.generatorProviderDeclarations.takeAll([
       'nestedDependency',

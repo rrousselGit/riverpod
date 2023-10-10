@@ -1,3 +1,11 @@
+## 2.4.3 - 2023-10-06
+
+- Fixed incorrect `@visibleForTesting` warning.
+
+## 2.4.1 - 2023-09-27
+
+- Fix invalid Dart docs (thanks to @srawlins)
+
 ## 2.4.0 - 2023-09-04
 
 - Added `Notifier.stateOrNull`.
@@ -528,7 +536,7 @@ Riverpod is now stable!
 ### Updated `AsyncValue`:
 
 - **Breaking** `AsyncValue.copyWith` is removed
-- **Breaking** `AsyncValue.error(..., stacktrace)` is now a named parameter instead of postional parameter.
+- **Breaking** `AsyncValue.error(..., stacktrace)` is now a named parameter instead of positional parameter.
 - Deprecated `AsyncValue.data` in favor of `AsyncValue.value`
 - Allowed `AsyncData`, `AsyncError` and `AsyncLoading` to be extended
 - Added `AsyncValue.whenOrNull`, similar to `whenOrElse` but instead of an
@@ -578,7 +586,7 @@ Fix an issue where `*Provider.autoDispose` were not able to specify the
 - During loading and error states, `FutureProvider` and `StreamProvider` now expose the
   latest value through `AsyncValue`.
   That allows UI to show the previous data while some new data is loading,
-  inatead of showing a spinner:
+  instead of showing a spinner:
 
   ```dart
   final provider = FutureProvider<User>((ref) async {
@@ -594,7 +602,7 @@ Fix an issue where `*Provider.autoDispose` were not able to specify the
       data: (user) => Text('Hello ${user.name}'),
       loading: (previous) {
         if (previous is AsyncData<User>) {
-          return Text('loading ... (previous: ${previous.value.name})'});
+          return Text('loading ... (previous: ${previous.value.name})');
         }
 
         return CircularProgressIndicator();
@@ -607,7 +615,7 @@ Fix an issue where `*Provider.autoDispose` were not able to specify the
 ### AsyncValue
 
 - **Breaking** `AsyncValue.copyWith` is removed
-- **Breaking** `AsyncValue.error(..., stacktrace)` is now a named parameter instead of postional parameter.
+- **Breaking** `AsyncValue.error(..., stacktrace)` is now a named parameter instead of positional parameter.
 - **Breaking** `AsyncValue.when(loading: )` and `AsyncValue.when(error: )` (and `when` variants)
   now receive an extra "previous" parameter.
 - Deprecated `AsyncValue.data` in favor of `AsyncValue.value`

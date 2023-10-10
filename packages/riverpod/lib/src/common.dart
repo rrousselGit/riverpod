@@ -73,7 +73,7 @@ extension AsyncTransition<T> on ProviderElementBase<AsyncValue<T>> {
 ///   // Reading .value will be throw during error and return null on "loading" states.
 ///   final User user = ref.watch(userProvider).value;
 ///
-///   // Reading .value will be throw both on loading and errorstates.
+///   // Reading .value will be throw both on loading and error states.
 ///   final User user2 = ref.watch(userProvider).requiredValue;
 ///
 ///   ...

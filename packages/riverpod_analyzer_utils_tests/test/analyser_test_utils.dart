@@ -20,6 +20,7 @@ void testSource(
   String description,
   Future<void> Function(Resolver resolver) run, {
   required String source,
+  Map<String, String> files = const {},
   bool runGenerator = false,
 }) {
   final testId = _testNumber++;
@@ -33,10 +34,19 @@ void testSource(
 
       final enclosingZone = Zone.current;
 
+      final otherSources = {
+        for (final entry in files.entries)
+          '$packageName|lib/${entry.key}':
+              'library "${entry.key}"; ${entry.value}',
+      };
+
       String? generated;
       if (runGenerator) {
         final analysisResult = await resolveSources(
-          {'$packageName|lib/foo.dart': sourceWithLibrary},
+          {
+            '$packageName|lib/foo.dart': sourceWithLibrary,
+            ...otherSources,
+          },
           (resolver) {
             return resolver.resolveRiverpodLibraryResult(
               ignoreErrors: true,
@@ -50,6 +60,7 @@ void testSource(
         '$packageName|lib/foo.dart': sourceWithLibrary,
         if (generated != null)
           '$packageName|lib/foo.g.dart': 'part of "foo.dart";$generated',
+        ...otherSources,
       }, (resolver) async {
         try {
           final originalZone = Zone.current;
