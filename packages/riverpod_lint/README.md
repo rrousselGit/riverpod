@@ -26,7 +26,7 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
 
 - Warn if `runApp` does not include a `ProviderScope` at its root
 - Warn if provider parameters do not respect [the rules of `family`](https://riverpod.dev/docs/concepts/modifiers/family#passing-multiple-parameters-to-a-family)
-- Refactor a widget to a ConsumerWidget/ConsumerStatfulWidget
+- Refactor a widget to a ConsumerWidget/ConsumerStatefulWidget
 - ...
 
 ![Convert to ConsumerStatefulWidget sample](https://raw.githubusercontent.com/rrousselGit/riverpod/master/packages/riverpod_lint/resources/convert_to_stateful_consumer.gif)
@@ -444,7 +444,7 @@ class Model {
 @riverpod
 class MyNotifier extends _$MyNotifier {
   // No public getters/fields, this is fine. Instead
-  // Everythign is available in the `state` object.
+  // Everything is available in the `state` object.
   @override
   Model build() => Model(0, 0);
 }
@@ -598,7 +598,7 @@ Classes annotated by `@riverpod` must have the `build` method.
 @riverpod
 class Example extends _$Example {
 
-  @overried
+  @override
   int build() => 0;
 }
 ```

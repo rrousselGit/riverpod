@@ -16,7 +16,7 @@
 
 ### Introduction screen
 
-- Insert a nested UncontrollerProviderScope
+- Insert a nested UncontrolledProviderScope
 - Pass it a ProviderContainer that overrides the repositories & co to use a specific data-set
 
 
