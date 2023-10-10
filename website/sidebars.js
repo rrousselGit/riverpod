@@ -32,6 +32,7 @@ module.exports = {
         //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
         // },
         "essentials/eager_initialization",
+        "essentials/testing",
         // {
         //   type: "link",
         //   label: "Testing your providers (WIP)",
