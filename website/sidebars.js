@@ -31,11 +31,7 @@ module.exports = {
         //   label: "Progress indicators and error pages (WIP)",
         //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
         // },
-        // {
-        //   type: "link",
-        //   label: "Eagerly initializing providers (WIP)",
-        //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
-        // },
+        "essentials/eager_initialization",
         // {
         //   type: "link",
         //   label: "Testing your providers (WIP)",
