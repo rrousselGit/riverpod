@@ -227,6 +227,7 @@ ${parameters.map((e) => '        ${e.name}: ${e.name},\n').join()}
     });
 
     final docs = providerDocFor(provider.providerElement.element);
+    final meta = metaAnnotations(provider.node.metadata);
     final providerName =
         providerFamilyNameFor(provider.providerElement, options);
 
@@ -240,6 +241,7 @@ $other
 
 $docs
 @ProviderFor(${provider.name})
+$meta
 const $providerName = $familyName();
 
 $docs
