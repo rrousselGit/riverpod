@@ -113,6 +113,11 @@ module.exports = {
     // },
     // {
     //   type: "link",
+    //   label: "Show snackbar on error (WIP)",
+    //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
+    // },
+    // {
+    //   type: "link",
     //   label: "Search as we type (WIP)",
     //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
     // },
