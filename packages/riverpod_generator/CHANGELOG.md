@@ -1,3 +1,8 @@
+## Unreleased 3.0.0-dev.4
+
+- Annotating a provider with `@deprecated` and a few other annotations
+  also annotate the generated code accordingly (thanks to @SunlightBro)
+
 ## 3.0.0-dev.3 - 2023-10-06
 
 - `riverpod_analyzer_utils` upgraded to `0.4.1`
