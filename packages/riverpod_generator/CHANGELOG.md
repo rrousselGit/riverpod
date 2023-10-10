@@ -1,3 +1,8 @@
+## Unreleased 3.0.0-dev.4
+
+- Annotating a provider with `@deprecated` and a few other annotations
+  also annotate the generated code accordingly (thanks to @SunlightBro)
+
 ## 3.0.0-dev.3 - 2023-10-06
 
 - `riverpod_analyzer_utils` upgraded to `0.4.1`
@@ -23,7 +28,7 @@ This comes with a few minor restrictions:
   Example foo(FooRef ref) async => 0;
   ```
 
-- **Breaking**: Arugments of the form `fn(void myParameter())`
+- **Breaking**: Arguments of the form `fn(void myParameter())`
   are no-longer supported. Instead use `fn(void Function() myParameter)`.
 
 ## 2.3.3 - 2023-09-27

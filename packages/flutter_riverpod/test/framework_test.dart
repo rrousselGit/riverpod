@@ -75,7 +75,7 @@ void main() {
     verifyOnly(listener, listener(0, 1));
   });
 
-  testWidgets('ProviderScope can receive a customn parent', (tester) async {
+  testWidgets('ProviderScope can receive a custom parent', (tester) async {
     final provider = Provider((ref) => 0);
 
     final container = createContainer(
@@ -440,7 +440,7 @@ void main() {
     expect(tester.takeException(), isAssertionError);
   });
 
-  testWidgets('overrive origin mismatch throws', (tester) async {
+  testWidgets('override origin mismatch throws', (tester) async {
     final provider = Provider((_) => 0);
     final provider2 = Provider((_) => 0);
 

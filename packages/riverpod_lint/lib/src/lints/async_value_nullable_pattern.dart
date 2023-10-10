@@ -30,7 +30,7 @@ class AsyncValueNullablePattern extends RiverpodLintRule {
       // We found the ? pattern
 
       final parent = node.parent;
-      // Paren't isn't a "final value" pattern
+      // Parent isn't a "final value" pattern
       if (parent is! PatternField || parent.effectiveName != 'value') return;
 
       final grandParent = parent.parent;
