@@ -35,11 +35,6 @@ module.exports = {
         "essentials/testing",
         // {
         //   type: "link",
-        //   label: "Awaiting for a request to be completed (WIP)",
-        //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
-        // },
-        // {
-        //   type: "link",
         //   label: "Logging and error reporting (WIP)",
         //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
         // },

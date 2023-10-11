@@ -86,6 +86,16 @@ This enables UI to either show the previous state, or a loading indicator,
 or even both.
 :::
 
+:::info
+Notice how we used `ref.watch(locationProvider.future)` instead of `ref.watch(locationProvider)`.
+That if because our `locationProvider` is asynchronous. As such, we want to
+await for an initial value to be available.
+
+If we omit that `.future`, we would receive an `AsyncValue`, which is a snapshot
+of the current state of the `locationProvider`. But if no location is available yet,
+we wouldn't be able to do anything.
+:::
+
 :::caution
 It is considered bad practice to call `ref.watch` inside code that is executed
 "imperatively". Meaning any code that is possibly not executed during the build
