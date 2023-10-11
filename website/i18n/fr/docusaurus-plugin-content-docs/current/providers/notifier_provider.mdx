@@ -1,0 +1,52 @@
+---
+title: (Async)NotifierProvider
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import todos from "./notifier_provider/todos";
+import todosConsumer from "!!raw-loader!/i18n/fr/docusaurus-plugin-content-docs/current/providers/notifier_provider/todos/todos_consumer.dart";
+import remoteTodos from "./notifier_provider/remote_todos";
+import remoteTodosConsumer from "!!raw-loader!/i18n/fr/docusaurus-plugin-content-docs/current/providers/notifier_provider/remote_todos/todos_consumer.dart";
+import { trimSnippet, AutoSnippet } from "../../../../../src/components/CodeSnippet";
+
+[NotifierProvider] est un provider qui est utilisé pour écouter et exposer un [Notifier].
+[AsyncNotifier] est un [Notifier] qui peut être initialisé de manière asynchrone.
+[AsyncNotifierProvider] est un provider qui est utilisé pour écouter et exposer un [AsyncNotifier].  
+`(Async)NotifierProvider` avec `(Async)Notifier` est la solution recommandée par Riverpod pour gérer 
+l'état qui peut changer en réaction à une interaction avec l'utilisateur.
+
+Il est généralement utilisé pour :
+
+- exposer un état qui peut changer dans le temps après avoir réagi à des événements personnalisés.
+- centraliser la logique de modification d'un état (alias "logique métier") en un seul endroit, 
+  ce qui améliore la maintenabilité dans le temps.
+
+À titre d'exemple d'utilisation, nous pourrions utiliser [NotifierProvider] pour mettre en œuvre 
+une liste de tâches (todo-list).
+Cela nous permettrait d'exposer des méthodes telles que `addTodo` pour permettre à l'interface 
+utilisateur de modifier la liste des tâches en fonction des interactions de l'utilisateur :
+
+<AutoSnippet language="dart" {...todos}></AutoSnippet>
+
+Maintenant que nous avons défini un [NotifierProvider], nous pouvons l'utiliser pour interagir avec 
+la liste des tâches dans notre interface utilisateur :
+
+<CodeBlock>{trimSnippet(todosConsumer)}</CodeBlock>
+
+À titre d'exemple d'utilisation, nous pourrions utiliser [AsyncNotifierProvider] pour mettre en œuvre une liste de tâches distante.
+Cela nous permettrait d'exposer des méthodes telles que `addTodo` pour permettre à l'interface utilisateur de modifier la liste 
+des tâches en fonction des interactions de l'utilisateur :
+
+<AutoSnippet language="dart" {...remoteTodos}></AutoSnippet>
+
+Maintenant que nous avons défini un [AsyncNotifierProvider], nous pouvons l'utiliser pour interagir avec la liste 
+des todos dans notre interface utilisateur :
+
+<CodeBlock>{trimSnippet(remoteTodosConsumer)}</CodeBlock>
+
+[notifier]: https://pub.dev/documentation/riverpod/latest/riverpod/Notifier-class.html
+[notifierprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/NotifierProvider.html
+[asyncnotifier]: https://pub.dev/documentation/riverpod/latest/riverpod/AsyncNotifier-class.html
+[asyncnotifierprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/AsyncNotifierProvider.html

@@ -6,6 +6,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'async.g.dart';
 
 class Configuration {
   Configuration.fromJson(Object? json);
@@ -15,24 +18,24 @@ class Configuration {
 
 /* SNIPPET START */
 
-final configurationsProvider = FutureProvider<Configuration>((ref) async {
+@riverpod
+Future<Configuration> configurations(ConfigurationsRef ref) async {
   final uri = Uri.parse('configs.json');
   final rawJson = await File.fromUri(uri).readAsString();
 
   return Configuration.fromJson(json.decode(rawJson));
-});
+}
 
 class Example extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final configs = ref.watch(configurationsProvider);
 
-    // Use Riverpod's built-in support
-    // for error/loading states using "when":
-    return configs.when(
-      loading: () => const CircularProgressIndicator(),
-      error: (err, stack) => Text('Error $err'),
-      data: (configs) => Text('data: ${configs.host}'),
-    );
+    // Use pattern matching to safely handle loading/error states
+    return switch (configs) {
+      AsyncData(:final value) => Text('data: ${value.host}'),
+      AsyncError(:final error) => Text('error: $error'),
+      _ => const CircularProgressIndicator(),
+    };
   }
 }

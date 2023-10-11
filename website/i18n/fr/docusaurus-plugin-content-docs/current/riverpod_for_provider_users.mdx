@@ -1,0 +1,401 @@
+---
+title: Riverpod pour les utilisateurs de Provider
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import pubspec from "./getting_started/pubspec";
+import dartHelloWorld from "./getting_started/dart_hello_world";
+import helloWorld from "./getting_started/hello_world";
+import dartPubspec from "./getting_started/dart_pubspec";
+import {
+  trimSnippet,
+  AutoSnippet,
+  When,
+} from "../../../../src/components/CodeSnippet";
+
+Cet article est destiné aux personnes qui connaissent le package [Provider] et 
+qui souhaitent ou veulent se familiariser avec Riverpod.
+
+## La relation entre Riverpod et Provider
+
+Riverpod est conçu pour être le successeur spirituel de Provider. D'où le nom "Riverpod", 
+qui est une anagramme de "Provider".
+
+Riverpod est né de la recherche de solutions aux diverses limitations techniques auxquelles
+Provider est confronté. À l'origine, Riverpod devait être une version majeure de Provider
+afin de résoudre ce problème. Mais il a été décidé de ne pas le faire, car il s'agirait d'un
+changement de rupture relativement important, et Provider est l'un des packages Flutter les plus utilisés.
+
+Pourtant, sur le plan conceptuel, Riverpod et Provider sont assez similaires.  
+Les deux paquets remplissent un rôle similaire. Ils essaient tous deux de :
+
+- de mettre en cache et de libérer de certains objets à état
+- offrir un moyen de simuler ces objets pendant les tests
+- offrir un moyen pour les Widgets d'écouter ces objets d'une manière simple.
+
+En temps, pensez à Riverpod comme ce que Provider aurait pu être si s'il avait continué à mûrir
+pendant quelques années.
+
+Riverpod corrige divers problèmes fondamentaux de Provider, tels que, mais sans s'y limiter :
+
+- Simplifier considérablement la combinaison des "providers".
+  Au lieu d'un `ProxyProvider` fastidieux et sujet à des erreurs, 
+  Riverpod expose des utilitaires simples mais puissants tels que
+  [ref.watch] et [ref.listen].
+- Permettre à plusieurs "providers" d'exposer une valeur du même type.  
+  Cela supprime la nécessité de définir des classes personnalisées alors que
+  l'exposition d'une valeur simple, de type `int` ou `String` fonctionnerait
+  tout aussi bien.
+- Suppression de la nécessité de redéfinir les providers dans les tests.
+  Avec Riverpod, les providers sont prêts à être utilisés dans les tests par défaut.
+- Réduction de la dépendance excessive sur le "scoping" pour libérer des objets en 
+  offrant d'autres moyens de libérer des objets ([autoDispose]).
+  Bien que puissant, le scoping d'un provider est assez avancé et difficile à mettre en place.
+
+... Et plus encore.
+
+Le seul véritable inconvénient de Riverpod est qu'il nécessite de changer le type de widget pour fonctionner :
+
+- Au lieu d'étendre `StatelessWidget`, avec Riverpod vous devriez étendre
+  `ConsumerWidget`.
+- Au lieu d'étendre `StatefulWidget`, avec Riverpod vous devriez étendre
+  `ConsumerStatefulWidget`.
+
+Mais ce désagrément est assez mineur dans le grand schéma des choses.
+Et cette exigence pourrait disparaître un jour.
+
+Donc, pour répondre à la question que vous vous posez probablement:  
+**Dois-je utiliser Provider ou Riverpod ?**
+
+Vous devriez probablement utiliser Riverpod.  
+Riverpod est beaucoup mieux conçu et pourrait conduire à des simplifications drastiques
+de votre logique.
+
+## La difference entre Provider et Riverpod
+
+### Définition des providers
+
+La principale différence entre les deux paquets est la façon dont les "providers" sont définis.
+
+Avec [Provider], les providers sont des widgets et sont placés en tant que tels dans l'arbre des widgets,
+typiquement dans un `MultiProvider` :
+
+```dart
+class Counter extends ChangeNotifier {
+ ...
+}
+
+void main() {
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider<Counter>(create: (context) => Counter()),
+      ],
+      child: MyApp(),
+    )
+  );
+}
+```
+
+Avec Riverpod, les providers ne sont **pas** des widgets. Ce sont plutôt des objets Dart ordinaires.  
+De même, les providers sont définis en dehors de l'arbre des widgets et sont déclarés comme des
+variables finales globales.
+
+De plus, pour que Riverpod fonctionne, il est nécessaire d'ajouter un widget `ProviderScope` au-dessus
+de l'application entière.
+Ainsi, l'équivalent de l'exemple de Provider utilisant Riverpod serait :
+
+```dart
+// Les providers sont désormais des variables de premier niveau
+final counterProvider = ChangeNotifierProvider<Counter>((ref) => Counter());
+
+void main() {
+  runApp(
+    // Ce widget active Riverpod pour l'ensemble du projet.
+    ProviderScope(
+      child: MyApp(),
+    ),
+  );
+}
+```
+
+Remarquez que la définition du provider a simplement été déplacée de quelques lignes.
+
+:::info
+Étant donné que les providers de Riverpod sont de simples objets Dart, il est possible d'utiliser
+Riverpod sans Flutter.  
+Par exemple, Riverpod peut être utilisé pour écrire des applications en ligne de commande.
+:::
+
+### Lecture de providers: BuildContext
+
+Avec Provider, une façon de lire les providers est d'utiliser le `BuildContext` d'un Widget.
+
+Par exemple, si un provider a été défini comme :
+
+```dart
+Provider<Model>(...);
+```
+
+puis sa lecture en utilisant [Provider] est effectuée avec :
+
+```dart
+class Example extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    Model model = context.watch<Model>();
+
+  }
+}
+```
+
+L'équivalent en Riverpod serait :
+
+```dart
+final modelProvider = Provider<Model>(...);
+
+class Example extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    Model model = ref.watch(modelProvider);
+
+  }
+}
+```
+
+Remarquez comment :
+
+- L'extrait Riverpod étend `ConsumerWidget` au lieu de `StatelessWidget`.
+  Ce différent type de widget ajoute un paramètre supplémentaire à notre fonction `build` :
+  `WidgetRef`.
+
+- Au lieu de `BuildContext.watch`, dans Riverpod nous faisons `WidgetRef.watch`, en utilisant
+  le `WidgetRef` que nous avons obtenu de `ConsumerWidget`.
+
+- Riverpod ne s'appuie pas sur les types génériques. Il s'appuie plutôt sur la variable
+  créée à l'aide de la définition du provider.
+
+Remarquez également la similitude des définitions. Provider et Riverpod utilisent tous deux le mot-clé
+"watch" pour décrire "ce widget doit se reconstruire lorsque la valeur change".
+
+:::info
+Riverpod utilise la même terminologie que Provider pour la lecture des providers.
+
+- `BuildContext.watch` -> `WidgetRef.watch`
+- `BuildContext.read` -> `WidgetRef.read`
+
+Les règles pour `context.watch` et `context.read` s'appliquent aussi à Riverpod :  
+Dans la méthode `build`, utilisez "watch". Dans les gestionnaires de clics et autres événements,
+utilisez "read".
+:::
+
+### Lecture de providers: Consumer
+
+Provider est livré en option avec un widget nommé `Consumer` (et des variantes telles que `Consumer2`)
+pour lire les providers.
+
+`Consumer` est utile pour optimiser les performances, en permettant des reconstructions plus granulaires
+de l'arbre des widgets - en ne mettant à jour que les widgets pertinents lorsque l'état change :
+
+Ainsi, si un provider a été défini comme :
+
+```dart
+Provider<Model>(...);
+```
+
+Provider permet de lire ce provider en utilisant `Consumer` avec :
+
+```dart
+Consumer<Model>(
+  builder: (BuildContext context, Model model, Widget? child) {
+
+  }
+)
+```
+
+Riverpod a le même principe. Riverpod, aussi, a un widget nommé `Consumer`.
+pour exactement le même but.
+
+Si nous avons défini un provider comme :
+
+```dart
+final modelProvider = Provider<Model>(...);
+```
+
+Puis en utilisant `Consumer` nous pourrions faire :
+
+```dart
+Consumer(
+  builder: (BuildContext context, WidgetRef ref, Widget? child) {
+    Model model = ref.watch(modelProvider);
+
+  }
+)
+```
+
+Remarquez comment `Consumer` nous donne un objet `WidgetRef`. C'est le même objet
+que nous avons vu dans la partie précédente concernant `ConsumerWidget`.
+
+### Combinaison de providers: ProxyProvider avec des objets stateless (sans état)
+
+Lorsque vous utilisez un provider, la manière officielle de combiner des providers.
+est d'utiliser le widget `ProxyProvider` (ou des variantes telles que `ProxyProvider2`).
+
+Par exemple, nous pouvons définir :
+
+```dart
+class UserIdNotifier extends ChangeNotifier {
+  String? userId;
+}
+
+// ...
+
+ChangeNotifierProvider<UserIdNotifier>(create: (context) => UserIdNotifier()),
+```
+
+A partir de là, nous avons deux options. Nous pouvons combiner `UserIdNotifier` afin de créer un nouveau
+provider "stateless" (typiquement une valeur immuable qui peut être surchargée ==).
+Par exemple :
+
+```dart
+ProxyProvider<UserIdNotifier, String>(
+  update: (context, userIdNotifier, _) {
+    return 'L\'identifiant de cet utilisateur est ${userIdNotifier.userId}';
+  }
+)
+```
+
+Ce provider retournera automatiquement un nouveau `String` à chaque fois que
+`UserIdNotifier.userId` change.
+
+Nous pouvons faire quelque chose de similaire dans Riverpod, mais la syntaxe est différente.  
+D'abord, dans Riverpod, la définition de notre `UserIdNotifier` serait :
+
+```dart
+class UserIdNotifier extends ChangeNotifier {
+  String? userId;
+}
+
+// ...
+
+final userIdNotifierProvider = ChangeNotifierProvider<UserIdNotifier>(
+  (ref) => UserIdNotifier(),
+),
+```
+
+De là, pour générer notre `String` basé sur le `userId`, nous pourrions faire :
+
+```dart
+final labelProvider = Provider<String>((ref) {
+  UserIdNotifier userIdNotifier = ref.watch(userIdNotifierProvider);
+  return 'L\'identifiant de cet utilisateur est ${userIdNotifier.userId}';
+});
+```
+
+Remarquez la ligne qui fait `ref.watch(userIdNotifierProvider)`.
+
+Cette ligne de code indique à Riverpod d'obtenir le contenu du `userIdNotifierProvider`
+et que chaque fois que cette valeur change, `labelProvider` sera recalculé aussi.
+Ainsi, le `String` émis par notre `labelProvider` sera automatiquement mis à jour
+chaque fois que le `userId` change.
+
+Cette ligne `ref.watch` devrait être similaire. Ce modèle a été couvert précédemment
+en expliquant [comment lire les providers dans les widgets](#lecture-de-providers-buildcontext).
+En effet, les providers sont maintenant capables d'écouter d'autres providers de la même façon
+que les widgets.
+
+### Combinaison de providers: ProxyProvider avec des objets stateful (avec état)
+
+Lorsque vous combinez des providers, une autre alternative consiste à exposer les
+objets à état, comme une instance de `ChangeNotifier`.
+
+Pour cela, on peut utiliser `ChangeNotifierProxyProvider` (ou des variantes comme `ChangeNotifierProxyProvider2`).  
+Par exemple, nous pouvons définir :
+
+```dart
+class UserIdNotifier extends ChangeNotifier {
+  String? userId;
+}
+
+// ...
+
+ChangeNotifierProvider<UserIdNotifier>(create: (context) => UserIdNotifier()),
+```
+
+Ensuite, nous pouvons définir un nouveau `ChangeNotifier` qui est basé sur `UserIdNotifier.userId`.
+Par exemple, nous pourrions faire :
+
+```dart
+class UserNotifier extends ChangeNotifier {
+  String? _userId;
+
+  void setUserId(String? userId) {
+    if (userId != _userId) {
+      print('The user ID changed from $_userId to $userId');
+      _userId = userId;
+    }
+  }
+}
+
+// ...
+
+ChangeNotifierProxyProvider<UserIdNotifier, UserNotifier>(
+  create: (context) => UserNotifier(),
+  update: (context, userIdNotifier, userNotifier) {
+    return userNotifier!
+      ..setUserId(userIdNotifier.userId);
+  },
+);
+```
+
+Ce nouveau provider crée une seule instance de `UserNotifier` (qui n'est jamais reconstruite)
+et imprime une chaîne à chaque fois que l'ID de l'utilisateur change.
+
+Faire la même chose en provider est réalisé différemment.
+D'abord, dans Riverpod, la définition de notre `UserIdNotifier` serait :
+
+```dart
+class UserIdNotifier extends ChangeNotifier {
+  String? userId;
+}
+
+// ...
+
+final userIdNotifierProvider = ChangeNotifierProvider<UserIdNotifier>(
+  (ref) => UserIdNotifier(),
+),
+```
+
+A partir de là, l'équivalent du précédent `ChangeNotifierProxyProvider` serait :
+
+```dart
+class UserNotifier extends ChangeNotifier {}
+
+final userNotfierProvider = ChangeNotifierProvider<UserNotifier>((ref) {
+  final userNotifier = UserNotifier();
+  ref.listen<UserIdNotifier>(
+    userIdNotifierProvider,
+    (previous, next) {
+      if (previous?.userId != next.userId) {
+        print('L\'ID utilisateur est passé de ${previous?.userId} à ${next.userId}');
+      }
+    },
+  );
+
+  return userNotifier;
+});
+```
+
+Le coeur de cet extrait est la ligne `ref.listen`.  
+Cette fonction `ref.listen` est un utilitaire qui permet d'écouter un provider,
+et à chaque fois que le provider change, exécute une fonction.
+
+Les paramètres `previous` et `next` de cette fonction correspondent à la
+dernière valeur avant que le provider ne change et à la nouvelle valeur après qu'il ait changé.
+
+[provider]: https://pub.dev/packages/provider
+[ref.watch]: /docs/concepts/reading#using-refwatch-to-observe-a-provider
+[ref.listen]: /docs/concepts/reading#using-reflisten-to-react-to-a-provider-change
+[autodispose]: /docs/concepts/modifiers/auto_dispose

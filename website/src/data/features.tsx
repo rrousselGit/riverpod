@@ -58,7 +58,54 @@ export const features: IFeatureProps[] = [
       </Translate>
     ),
   },
-
+  {
+    imageUrl: "img/intro/convert_to_class_provider.gif",
+    title: translate({
+      id: "home.refactors_title",
+      message: "Simplify day-to-day work with refactors",
+    }),
+    description: (
+      <Translate
+        id="home.refactors_body"
+        values={{
+          warnings: (
+            <a href="https://github.com/rrousselGit/riverpod/tree/master/packages/riverpod_lint#all-assists">
+              <Translate id="home.refactors_list_link">
+                {`list of refactorings`}
+              </Translate>
+            </a>
+          ),
+        }}
+      >
+        {`Riverpod offers various refactors, such as "Wrap widget in a Consumer" and many more.
+        See the {warnings}.`}
+      </Translate>
+    ),
+  },
+  {
+    imageUrl: "img/intro/lint.gif",
+    title: translate({
+      id: "home.lint_title",
+      message: "Keep your code maintainable with lint rules",
+    }),
+    description: (
+      <Translate
+        id="home.lint_body"
+        values={{
+          warnings: (
+            <a href="https://github.com/rrousselGit/riverpod/tree/master/packages/riverpod_lint#all-the-lints">
+              <Translate id="home.lint_rules_list_link">
+                {`list of lint rules`}
+              </Translate>
+            </a>
+          ),
+        }}
+      >
+        {`New lint-rules specific to Riverpod are implemented and more are continuously added.
+  This ensures your code stays in the best conditions. See the {warnings}.`}
+      </Translate>
+    ),
+  },
   {
     snippet: SnippetAsync,
     title: translate({

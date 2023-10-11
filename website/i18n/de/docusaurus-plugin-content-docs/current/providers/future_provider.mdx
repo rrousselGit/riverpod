@@ -1,13 +1,14 @@
 ---
 title: FutureProvider
+version: 1
 ---
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
-import configProvider from "!!raw-loader!/docs/providers/future_provider/config_provider.dart";
-import configConsumer from "!!raw-loader!/docs/providers/future_provider/config_consumer.dart";
-import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+import configProvider from "/docs/providers/future_provider/config_provider";
+import configConsumer from "/docs/providers/future_provider/config_consumer";
+import { trimSnippet,AutoSnippet} from "../../../../../src/components/CodeSnippet";
 
 `FutureProvider` ist das Äquivalent zu [Provider] aus asynchronem Code.
 
@@ -36,11 +37,11 @@ Die Erstellung der Konfiguration würde mit der typischen async/await Syntax,
 aber innerhalb des Providers.
 Unter Verwendung des Asset-Systems von Flutter würde dies wie folgt aussehen:
 
-<CodeBlock>{trimSnippet(configProvider)}</CodeBlock>
+<AutoSnippet language="dart" {...configProvider}></AutoSnippet>
 
 Dann kann die UI auf die Konfigurationen wie folgt lauschen:
 
-<CodeBlock>{trimSnippet(configConsumer)}</CodeBlock>
+<AutoSnippet language="dart" {...configConsumer}></AutoSnippet>
 
 Dadurch wird die UI automatisch neu aufgebaut, wenn das [Future] 
 abgeschlossen ist. Wenn mehrere Widgets die Konfigurationen benötigen, wird das 

@@ -1,30 +1,14 @@
 import riverpodPubspec from "!!raw-loader!../../packages/riverpod/pubspec.yaml";
 import flutterRiverpodPubspec from "!!raw-loader!../../packages/flutter_riverpod/pubspec.yaml";
 import hooksRiverpodPubspec from "!!raw-loader!../../packages/hooks_riverpod/pubspec.yaml";
+import riverpodAnnotationPubspec from "!!raw-loader!../../packages/riverpod_annotation/pubspec.yaml";
+import riverpodGeneratorPubspec from "!!raw-loader!../../packages/riverpod_generator/pubspec.yaml";
+import riverpodLintPubspec from "!!raw-loader!../../packages/riverpod_lint/pubspec.yaml";
 import { parse } from "yaml";
 
-export const riverpodVersion = `environment:
-  sdk: ">=2.12.0-0 <3.0.0"
-
-dependencies:
-  riverpod: ^${parse(riverpodPubspec).version}
-`;
-export const flutterRiverpodVersion = `environment:
-  sdk: ">=2.17.0 <3.0.0"
-  flutter: ">=3.0.0"
-
-dependencies:
-  flutter:
-    sdk: flutter
-  flutter_riverpod: ^${parse(flutterRiverpodPubspec).version}
-`;
-export const hooksRiverpodVersion = `environment:
-  sdk: ">=2.17.0 <3.0.0"
-  flutter: ">=3.0.0"
-
-dependencies:
-  flutter:
-    sdk: flutter
-  flutter_hooks: ^0.18.0
-  hooks_riverpod: ^${parse(hooksRiverpodPubspec).version}
-`;
+export const riverpodVersion = parse(riverpodPubspec).version;
+export const flutterRiverpodVersion = parse(flutterRiverpodPubspec).version;
+export const hooksRiverpodVersion = parse(hooksRiverpodPubspec).version;
+export const riverpodGeneratorVersion = parse(riverpodGeneratorPubspec).version;
+export const riverpodAnnotationVersion = parse(riverpodAnnotationPubspec).version;
+export const riverpodLintVersion = parse(riverpodLintPubspec).version;

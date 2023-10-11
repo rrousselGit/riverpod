@@ -1,0 +1,63 @@
+---
+title: コードジェネレーション
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import fetchUser from "!!raw-loader!./about_codegen/main.dart";
+import rawFetchUser from "!!raw-loader!./about_codegen/raw.dart";
+import {
+  trimSnippet,
+  CodeSnippet,
+} from "../../../../src/components/CodeSnippet";
+
+コードジェネレーションはコードを生成するツールを使うというアイディアです。  
+Dart では、コードジェネレーションはアプリケーションを「コンパイルする」という追加のステップが必要になるので欠点になります。
+Dart チームはこの問題の解決に取り組んでいるので、この問題は近い将来解決されるかもしれません。
+
+Riverpod の中では、コードジェネレーションとは「プロバイダ」を定義する文法をわずかに変更することになります。
+例えば、
+
+<CodeBlock language="dart">{trimSnippet(rawFetchUser)}</CodeBlock>
+
+と書く代わりに、コードジェネレーションを使うと次のように書けます:
+
+<CodeBlock language="dart">{trimSnippet(fetchUser)}</CodeBlock>
+
+Riverpod を使うときにコードジェネレーションを使うかどうかは完全にオプションです。
+コードジェネレーションを使わなくても Riverpod を使うことができます。  
+同時に、 Riverpod ではコードジェネレーションを活用しており、またコードジェネレーションを使うことを推奨しています。
+
+Riverpod のコードジェネレータのインストール方法や使用方法については、「[はじめに](./getting_started)」を参照してください。
+このドキュメントのサイドバーでコードジェネレーションを有効にできます。
+
+## Riverpod でコードジェネレーションを使う理由
+
+「Riverpod ではコードジェネレーションがオプションなら、なぜコードジェネレーション使うのか」と思うかもしれません。
+
+パッケージを使うと楽をすることができます。
+これは次のことを含んでいますが、制限されることはありません。
+
+- より良い文法、より読みやすい・柔軟性があり、緩やかな学習曲線
+
+  - `FutureProvider` 対 `Provider` というような対立を気にする必要がなくなります。
+    ロジックを書けば Riverpod が適切なプロバイダを選びます
+  - プロバイダに渡すパラメータが制限されなくなります。
+    制約のある [family](./concepts/modifiers/family) を使ったり、決まった位置に置かれるパラメータを渡す代わりに、あらゆる形式のパラメータを渡すことができます。
+    これは名前付きパラメータやオプションのパラメータ、デフォルト値のあるパラメータを含みます
+
+- Riverpod で書かれたコードの**状態を持ったままのホットリロード**
+- デバッガによる追加のメタデータの生成による、より良いデバッグ
+- コードジェネレーションのみで使うことができる Riverpod の機能
+
+同時に、 [Freezed](https://pub.dev/packages/freezed) や [json_serializable](https://pub.dev/packages/json_serializable) をはじめとして、
+多くのパッケージでは既にコードジェネレーションが使えるようになっています。  
+この場合では、コードジェネレーションを使う準備ができており、 Riverpod を簡単に使うことができます。
+
+[hookwidget]: https://pub.dev/documentation/flutter_hooks/latest/flutter_hooks/HookWidget-class.html
+[statefulwidget]: https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html
+[riverpod]: https://github.com/rrousselgit/riverpod
+[hooks_riverpod]: https://pub.dev/packages/hooks_riverpod
+[flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
+[flutter_hooks]: https://github.com/rrousselGit/flutter_hooks

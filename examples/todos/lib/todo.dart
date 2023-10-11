@@ -24,8 +24,13 @@ class Todo {
 }
 
 /// An object that controls a list of [Todo].
-class TodoList extends StateNotifier<List<Todo>> {
-  TodoList([List<Todo>? initialTodos]) : super(initialTodos ?? []);
+class TodoList extends Notifier<List<Todo>> {
+  @override
+  List<Todo> build() => [
+        const Todo(id: 'todo-0', description: 'Buy cookies'),
+        const Todo(id: 'todo-1', description: 'Star Riverpod'),
+        const Todo(id: 'todo-2', description: 'Have a walk'),
+      ];
 
   void add(String description) {
     state = [
