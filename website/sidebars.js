@@ -35,16 +35,6 @@ module.exports = {
         "essentials/testing",
         // {
         //   type: "link",
-        //   label: "Testing your providers (WIP)",
-        //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
-        // },
-        // {
-        //   type: "link",
-        //   label: "Optimizing performances (WIP)",
-        //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
-        // },
-        // {
-        //   type: "link",
         //   label: "Awaiting for a request to be completed (WIP)",
         //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
         // },
@@ -150,18 +140,19 @@ module.exports = {
     // },
 
     // Advanced
-    // {
-    // type: "category",
-    // label: "Advanced topics",
-    // collapsible: false,
-    // items: [
-    // {
-    //   type: "link",
-    //   label: "Scoping providers (WIP)",
-    //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
-    // },
-    // ],
-    // },
+    {
+      type: "category",
+      label: "Advanced topics",
+      collapsible: false,
+      items: [
+        // {
+        //   type: "link",
+        //   label: "Scoping providers (WIP)",
+        //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
+        // },
+        "advanced/select",
+      ],
+    },
 
     // Concepts
     {
