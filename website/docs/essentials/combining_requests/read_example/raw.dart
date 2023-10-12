@@ -10,7 +10,7 @@ final notifierProvider = NotifierProvider<MyNotifier, int>(MyNotifier.new);
 class MyNotifier extends Notifier<int> {
   @override
   int build() {
-    // Bad! Do not use "ref" here as it is not reactive
+    // Bad! Do not use "read" here as it is not reactive
     ref.read(otherProvider);
 
     return 0;
