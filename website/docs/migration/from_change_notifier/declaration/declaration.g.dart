@@ -8,7 +8,7 @@ part of 'declaration.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$myNotifierHash() => r'49807cfc2695f2852763a021857109adc1393e23';
+String _$myNotifierHash() => r'fc9a07f8ef9f792da2ac660d76ea0a809335ba18';
 
 /// See also [MyNotifier].
 @ProviderFor(MyNotifier)

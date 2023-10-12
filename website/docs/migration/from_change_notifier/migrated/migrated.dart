@@ -29,6 +29,7 @@ class MyNotifier extends _$MyNotifier {
   }
 
   Future<void> addTodo(Todo todo) async {
+    // optional: state = const AsyncLoading();
     final json = await http.post('api/todos');
     final newTodos = [...json.map(Todo.fromJson)];
     state = AsyncData(newTodos);

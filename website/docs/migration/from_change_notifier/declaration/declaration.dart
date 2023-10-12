@@ -26,4 +26,8 @@ class MyNotifier extends _$MyNotifier {
     // TODO ...
     return [];
   }
+
+  Future<void> addTodo(Todo todo) async {
+    // TODO
+  }
 }

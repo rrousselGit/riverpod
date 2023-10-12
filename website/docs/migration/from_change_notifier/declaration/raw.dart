@@ -24,6 +24,10 @@ class MyNotifier extends AutoDisposeAsyncNotifier<List<Todo>> {
     // TODO ...
     return [];
   }
+
+  Future<void> addTodo(Todo todo) async {
+    // TODO
+  }
 }
 
 final myNotifierProvider = AsyncNotifierProvider.autoDispose<MyNotifier, int>(MyNotifier.new);
