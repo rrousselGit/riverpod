@@ -20,10 +20,6 @@
   <img src="https://github.com/rrousselGit/riverpod/blob/master/resources/icon/Facebook%20Cover%20A.png?raw=true" width="100%" alt="Riverpod" />
 </p>
 
-<p align="center">
-<img src="https://github.com/rrousselGit/riverpod/blob/master/resources/icon/Facebook%20Cover%20A.png?raw=true" width="100%" alt="Riverpod" />
-</p>
-
 ---
 
 A reactive caching and data-binding framework. https://riverpod.dev  
