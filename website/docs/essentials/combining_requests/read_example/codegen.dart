@@ -11,7 +11,7 @@ final otherProvider = Provider<int>((ref) => 0);
 class MyNotifier extends _$MyNotifier {
   @override
   int build() {
-    // Bad! Do not use "ref" here as it is not reactive
+    // Bad! Do not use "read" here as it is not reactive
     ref.read(otherProvider);
 
     return 0;
