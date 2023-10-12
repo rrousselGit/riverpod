@@ -8,13 +8,14 @@ part of 'codegen.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_Todo _$$_TodoFromJson(Map<String, dynamic> json) => _$_Todo(
+_$TodoImpl _$$TodoImplFromJson(Map<String, dynamic> json) => _$TodoImpl(
       id: json['id'] as String,
       description: json['description'] as String,
       completed: json['completed'] as bool,
     );
 
-Map<String, dynamic> _$$_TodoToJson(_$_Todo instance) => <String, dynamic>{
+Map<String, dynamic> _$$TodoImplToJson(_$TodoImpl instance) =>
+    <String, dynamic>{
       'id': instance.id,
       'description': instance.description,
       'completed': instance.completed,
@@ -40,4 +41,4 @@ final asyncTodosProvider =
 
 typedef _$AsyncTodos = AutoDisposeAsyncNotifier<List<Todo>>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package

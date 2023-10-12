@@ -8,7 +8,8 @@ part of 'activity.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_Activity _$$_ActivityFromJson(Map<String, dynamic> json) => _$_Activity(
+_$ActivityImpl _$$ActivityImplFromJson(Map<String, dynamic> json) =>
+    _$ActivityImpl(
       key: json['key'] as String,
       activity: json['activity'] as String,
       type: json['type'] as String,
@@ -16,7 +17,7 @@ _$_Activity _$$_ActivityFromJson(Map<String, dynamic> json) => _$_Activity(
       price: (json['price'] as num).toDouble(),
     );
 
-Map<String, dynamic> _$$_ActivityToJson(_$_Activity instance) =>
+Map<String, dynamic> _$$ActivityImplToJson(_$ActivityImpl instance) =>
     <String, dynamic>{
       'key': instance.key,
       'activity': instance.activity,

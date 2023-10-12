@@ -1,19 +1,22 @@
+"use client";
+
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Layout from "@theme-original/DocPage/Layout";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 // import {useDoc} from '@docusaurus/theme-common/internal';
+import useIsBrowser from "@docusaurus/useIsBrowser";
 
 // Wrapping <Layout> to add custom contexts available for the entire app.
 
 export default function LayoutWrapper(props) {
+  if (!useIsBrowser()) {
+    return <Layout {...props} />;
+  }
+
   return (
-    <BrowserOnly>
-      {() => (
-        <Codegen>
-          <Layout {...props} />
-        </Codegen>
-      )}
-    </BrowserOnly>
+    <Codegen>
+      <Layout {...props} />
+    </Codegen>
   );
 }
 

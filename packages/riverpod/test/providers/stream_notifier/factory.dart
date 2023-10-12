@@ -191,19 +191,17 @@ class StreamNotifierFactory {
 abstract class StreamTestNotifierBase<T> extends AsyncNotifierBase<T> {
   // overriding to remove the @protected
   @override
-  AsyncValue<T> get state => super.state;
+  AsyncValue<T> get state;
 
   @override
-  set state(AsyncValue<T> value) => super.state = value;
+  set state(AsyncValue<T> value);
 
   // overriding to remove the @protected
   @override
   Future<T> update(
     FutureOr<T> Function(T p1) cb, {
     FutureOr<T> Function(Object err, StackTrace stackTrace)? onError,
-  }) {
-    return super.update(cb);
-  }
+  });
 }
 
 class StreamTestNotifier<T> extends StreamNotifier<T>

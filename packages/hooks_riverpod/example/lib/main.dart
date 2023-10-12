@@ -47,16 +47,21 @@ class MyHomePage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final count = ref.watch(counterProvider);
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Riverpod counter example'),
       ),
       body: Center(
-        child: Text(
-          '$count',
-          style: Theme.of(context).textTheme.headlineMedium,
+        // HookConsumer is a builder widget that allows you to read providers and utilise hooks.
+        child: HookConsumer(
+          builder: (context, ref, _) {
+            final count = ref.watch(counterProvider);
+
+            return Text(
+              '$count',
+              style: Theme.of(context).textTheme.headlineMedium,
+            );
+          },
         ),
       ),
       floatingActionButton: FloatingActionButton(

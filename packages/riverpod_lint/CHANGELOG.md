@@ -1,3 +1,33 @@
+## 2.3.0 - 2023-10-06
+
+- Added `async_value_nullable_patttern` lint, to warn against using `AsyncValue(:final value?)` in pattern match when `value` is possibly nullable.
+- Added `protected_notifier_state` lint, which warns against using the `Notifier.state`
+  property of a notifier different than the current one.
+  Aka a Notifier "A" should not directly access the `state` if a Notifier "B".
+  
+
+## 2.2.1 - 2023-10-02
+
+- Fixed `functional_ref` throwing if a provider specifies arguments but
+  incorrectly did not specify a Ref
+
+## 2.2.0 - 2023-10-02
+
+- Added `avoid_build_context_in_providers` (thanks to @charlescyt)
+- Fixed false positive with `avoid_manual_providers_as_generated_provider_dependency` when using import aliases
+
+## 2.1.1 - 2023-09-27
+
+- Fixed `provider_dependencies` lint causing false positives on providers with arguments.
+
+## 2.1.0 - 2023-09-14
+
+- Added `notifier_build`, a lint to catch when a Notifier has no `build` method (thanks to @LeonardoRosaa)
+
+## 2.0.4 - 2023-09-04
+
+- `riverpod` upgraded to `2.4.0`
+
 ## 2.0.3 - 2023-08-28
 
 - `riverpod` upgraded to `2.3.10`
@@ -106,7 +136,7 @@ Fix quick-fix for provider_dependencies
   as this would break the `provider_dependencies` lint.
 
 - Added `scoped_providers_should_specify_dependencies` lint.
-  This lint warns if a generated provider is overriden in a scoped ProviderScope/ProviderContainer and does not specifies `@Riverpod(dependencies: ...)`.
+  This lint warns if a generated provider is overridden in a scoped ProviderScope/ProviderContainer and does not specifies `@Riverpod(dependencies: ...)`.
 
 - Added `unsupported_provider_value` lint. This warns against
   using riverpod_generator to create a `StateNotifier` and other unsupported values.
