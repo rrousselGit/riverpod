@@ -8,11 +8,10 @@ part of 'item.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$ItemImpl _$$ItemImplFromJson(Map<String, dynamic> json) => _$ItemImpl(
+_$_Item _$$_ItemFromJson(Map<String, dynamic> json) => _$_Item(
       id: json['id'] as int,
     );
 
-Map<String, dynamic> _$$ItemImplToJson(_$ItemImpl instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$$_ItemToJson(_$_Item instance) => <String, dynamic>{
       'id': instance.id,
     };

@@ -63,22 +63,22 @@ class _$ThemeSettingsCopyWithImpl<$Res, $Val extends ThemeSettings>
 }
 
 /// @nodoc
-abstract class _$$ThemeSettingsImplCopyWith<$Res>
+abstract class _$$_ThemeSettingsCopyWith<$Res>
     implements $ThemeSettingsCopyWith<$Res> {
-  factory _$$ThemeSettingsImplCopyWith(
-          _$ThemeSettingsImpl value, $Res Function(_$ThemeSettingsImpl) then) =
-      __$$ThemeSettingsImplCopyWithImpl<$Res>;
+  factory _$$_ThemeSettingsCopyWith(
+          _$_ThemeSettings value, $Res Function(_$_ThemeSettings) then) =
+      __$$_ThemeSettingsCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({ThemeMode mode, Color primaryColor});
 }
 
 /// @nodoc
-class __$$ThemeSettingsImplCopyWithImpl<$Res>
-    extends _$ThemeSettingsCopyWithImpl<$Res, _$ThemeSettingsImpl>
-    implements _$$ThemeSettingsImplCopyWith<$Res> {
-  __$$ThemeSettingsImplCopyWithImpl(
-      _$ThemeSettingsImpl _value, $Res Function(_$ThemeSettingsImpl) _then)
+class __$$_ThemeSettingsCopyWithImpl<$Res>
+    extends _$ThemeSettingsCopyWithImpl<$Res, _$_ThemeSettings>
+    implements _$$_ThemeSettingsCopyWith<$Res> {
+  __$$_ThemeSettingsCopyWithImpl(
+      _$_ThemeSettings _value, $Res Function(_$_ThemeSettings) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -87,7 +87,7 @@ class __$$ThemeSettingsImplCopyWithImpl<$Res>
     Object? mode = null,
     Object? primaryColor = null,
   }) {
-    return _then(_$ThemeSettingsImpl(
+    return _then(_$_ThemeSettings(
       mode: null == mode
           ? _value.mode
           : mode // ignore: cast_nullable_to_non_nullable
@@ -102,8 +102,8 @@ class __$$ThemeSettingsImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$ThemeSettingsImpl implements _ThemeSettings {
-  const _$ThemeSettingsImpl({required this.mode, required this.primaryColor});
+class _$_ThemeSettings implements _ThemeSettings {
+  const _$_ThemeSettings({required this.mode, required this.primaryColor});
 
   @override
   final ThemeMode mode;
@@ -119,7 +119,7 @@ class _$ThemeSettingsImpl implements _ThemeSettings {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$ThemeSettingsImpl &&
+            other is _$_ThemeSettings &&
             (identical(other.mode, mode) || other.mode == mode) &&
             (identical(other.primaryColor, primaryColor) ||
                 other.primaryColor == primaryColor));
@@ -131,14 +131,14 @@ class _$ThemeSettingsImpl implements _ThemeSettings {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$ThemeSettingsImplCopyWith<_$ThemeSettingsImpl> get copyWith =>
-      __$$ThemeSettingsImplCopyWithImpl<_$ThemeSettingsImpl>(this, _$identity);
+  _$$_ThemeSettingsCopyWith<_$_ThemeSettings> get copyWith =>
+      __$$_ThemeSettingsCopyWithImpl<_$_ThemeSettings>(this, _$identity);
 }
 
 abstract class _ThemeSettings implements ThemeSettings {
   const factory _ThemeSettings(
       {required final ThemeMode mode,
-      required final Color primaryColor}) = _$ThemeSettingsImpl;
+      required final Color primaryColor}) = _$_ThemeSettings;
 
   @override
   ThemeMode get mode;
@@ -146,6 +146,6 @@ abstract class _ThemeSettings implements ThemeSettings {
   Color get primaryColor;
   @override
   @JsonKey(ignore: true)
-  _$$ThemeSettingsImplCopyWith<_$ThemeSettingsImpl> get copyWith =>
+  _$$_ThemeSettingsCopyWith<_$_ThemeSettings> get copyWith =>
       throw _privateConstructorUsedError;
 }

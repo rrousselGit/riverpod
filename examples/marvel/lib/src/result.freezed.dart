@@ -74,20 +74,20 @@ class _$ResultCopyWithImpl<T, $Res, $Val extends Result<T>>
 }
 
 /// @nodoc
-abstract class _$$ResultDataImplCopyWith<T, $Res> {
-  factory _$$ResultDataImplCopyWith(
-          _$ResultDataImpl<T> value, $Res Function(_$ResultDataImpl<T>) then) =
-      __$$ResultDataImplCopyWithImpl<T, $Res>;
+abstract class _$$_ResultDataCopyWith<T, $Res> {
+  factory _$$_ResultDataCopyWith(
+          _$_ResultData<T> value, $Res Function(_$_ResultData<T>) then) =
+      __$$_ResultDataCopyWithImpl<T, $Res>;
   @useResult
   $Res call({T value});
 }
 
 /// @nodoc
-class __$$ResultDataImplCopyWithImpl<T, $Res>
-    extends _$ResultCopyWithImpl<T, $Res, _$ResultDataImpl<T>>
-    implements _$$ResultDataImplCopyWith<T, $Res> {
-  __$$ResultDataImplCopyWithImpl(
-      _$ResultDataImpl<T> _value, $Res Function(_$ResultDataImpl<T>) _then)
+class __$$_ResultDataCopyWithImpl<T, $Res>
+    extends _$ResultCopyWithImpl<T, $Res, _$_ResultData<T>>
+    implements _$$_ResultDataCopyWith<T, $Res> {
+  __$$_ResultDataCopyWithImpl(
+      _$_ResultData<T> _value, $Res Function(_$_ResultData<T>) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -95,7 +95,7 @@ class __$$ResultDataImplCopyWithImpl<T, $Res>
   $Res call({
     Object? value = freezed,
   }) {
-    return _then(_$ResultDataImpl<T>(
+    return _then(_$_ResultData<T>(
       freezed == value
           ? _value.value
           : value // ignore: cast_nullable_to_non_nullable
@@ -106,8 +106,8 @@ class __$$ResultDataImplCopyWithImpl<T, $Res>
 
 /// @nodoc
 
-class _$ResultDataImpl<T> extends _ResultData<T> {
-  _$ResultDataImpl(this.value) : super._();
+class _$_ResultData<T> extends _ResultData<T> {
+  _$_ResultData(this.value) : super._();
 
   @override
   final T value;
@@ -121,7 +121,7 @@ class _$ResultDataImpl<T> extends _ResultData<T> {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$ResultDataImpl<T> &&
+            other is _$_ResultData<T> &&
             const DeepCollectionEquality().equals(other.value, value));
   }
 
@@ -132,8 +132,8 @@ class _$ResultDataImpl<T> extends _ResultData<T> {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$ResultDataImplCopyWith<T, _$ResultDataImpl<T>> get copyWith =>
-      __$$ResultDataImplCopyWithImpl<T, _$ResultDataImpl<T>>(this, _$identity);
+  _$$_ResultDataCopyWith<T, _$_ResultData<T>> get copyWith =>
+      __$$_ResultDataCopyWithImpl<T, _$_ResultData<T>>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -199,30 +199,30 @@ class _$ResultDataImpl<T> extends _ResultData<T> {
 }
 
 abstract class _ResultData<T> extends Result<T> {
-  factory _ResultData(final T value) = _$ResultDataImpl<T>;
+  factory _ResultData(final T value) = _$_ResultData<T>;
   _ResultData._() : super._();
 
   T get value;
   @JsonKey(ignore: true)
-  _$$ResultDataImplCopyWith<T, _$ResultDataImpl<T>> get copyWith =>
+  _$$_ResultDataCopyWith<T, _$_ResultData<T>> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$ResultErrorImplCopyWith<T, $Res> {
-  factory _$$ResultErrorImplCopyWith(_$ResultErrorImpl<T> value,
-          $Res Function(_$ResultErrorImpl<T>) then) =
-      __$$ResultErrorImplCopyWithImpl<T, $Res>;
+abstract class _$$_ResultErrorCopyWith<T, $Res> {
+  factory _$$_ResultErrorCopyWith(
+          _$_ResultError<T> value, $Res Function(_$_ResultError<T>) then) =
+      __$$_ResultErrorCopyWithImpl<T, $Res>;
   @useResult
   $Res call({Object error, StackTrace? stackTrace});
 }
 
 /// @nodoc
-class __$$ResultErrorImplCopyWithImpl<T, $Res>
-    extends _$ResultCopyWithImpl<T, $Res, _$ResultErrorImpl<T>>
-    implements _$$ResultErrorImplCopyWith<T, $Res> {
-  __$$ResultErrorImplCopyWithImpl(
-      _$ResultErrorImpl<T> _value, $Res Function(_$ResultErrorImpl<T>) _then)
+class __$$_ResultErrorCopyWithImpl<T, $Res>
+    extends _$ResultCopyWithImpl<T, $Res, _$_ResultError<T>>
+    implements _$$_ResultErrorCopyWith<T, $Res> {
+  __$$_ResultErrorCopyWithImpl(
+      _$_ResultError<T> _value, $Res Function(_$_ResultError<T>) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -231,7 +231,7 @@ class __$$ResultErrorImplCopyWithImpl<T, $Res>
     Object? error = null,
     Object? stackTrace = freezed,
   }) {
-    return _then(_$ResultErrorImpl<T>(
+    return _then(_$_ResultError<T>(
       null == error ? _value.error : error,
       freezed == stackTrace
           ? _value.stackTrace
@@ -243,8 +243,8 @@ class __$$ResultErrorImplCopyWithImpl<T, $Res>
 
 /// @nodoc
 
-class _$ResultErrorImpl<T> extends _ResultError<T> {
-  _$ResultErrorImpl(this.error, [this.stackTrace]) : super._();
+class _$_ResultError<T> extends _ResultError<T> {
+  _$_ResultError(this.error, [this.stackTrace]) : super._();
 
   @override
   final Object error;
@@ -260,7 +260,7 @@ class _$ResultErrorImpl<T> extends _ResultError<T> {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$ResultErrorImpl<T> &&
+            other is _$_ResultError<T> &&
             const DeepCollectionEquality().equals(other.error, error) &&
             (identical(other.stackTrace, stackTrace) ||
                 other.stackTrace == stackTrace));
@@ -273,9 +273,8 @@ class _$ResultErrorImpl<T> extends _ResultError<T> {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$ResultErrorImplCopyWith<T, _$ResultErrorImpl<T>> get copyWith =>
-      __$$ResultErrorImplCopyWithImpl<T, _$ResultErrorImpl<T>>(
-          this, _$identity);
+  _$$_ResultErrorCopyWith<T, _$_ResultError<T>> get copyWith =>
+      __$$_ResultErrorCopyWithImpl<T, _$_ResultError<T>>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -342,12 +341,12 @@ class _$ResultErrorImpl<T> extends _ResultError<T> {
 
 abstract class _ResultError<T> extends Result<T> {
   factory _ResultError(final Object error, [final StackTrace? stackTrace]) =
-      _$ResultErrorImpl<T>;
+      _$_ResultError<T>;
   _ResultError._() : super._();
 
   Object get error;
   StackTrace? get stackTrace;
   @JsonKey(ignore: true)
-  _$$ResultErrorImplCopyWith<T, _$ResultErrorImpl<T>> get copyWith =>
+  _$$_ResultErrorCopyWith<T, _$_ResultError<T>> get copyWith =>
       throw _privateConstructorUsedError;
 }

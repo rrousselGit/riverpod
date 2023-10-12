@@ -60,20 +60,18 @@ class _$ItemCopyWithImpl<$Res, $Val extends Item>
 }
 
 /// @nodoc
-abstract class _$$ItemImplCopyWith<$Res> implements $ItemCopyWith<$Res> {
-  factory _$$ItemImplCopyWith(
-          _$ItemImpl value, $Res Function(_$ItemImpl) then) =
-      __$$ItemImplCopyWithImpl<$Res>;
+abstract class _$$_ItemCopyWith<$Res> implements $ItemCopyWith<$Res> {
+  factory _$$_ItemCopyWith(_$_Item value, $Res Function(_$_Item) then) =
+      __$$_ItemCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({int id});
 }
 
 /// @nodoc
-class __$$ItemImplCopyWithImpl<$Res>
-    extends _$ItemCopyWithImpl<$Res, _$ItemImpl>
-    implements _$$ItemImplCopyWith<$Res> {
-  __$$ItemImplCopyWithImpl(_$ItemImpl _value, $Res Function(_$ItemImpl) _then)
+class __$$_ItemCopyWithImpl<$Res> extends _$ItemCopyWithImpl<$Res, _$_Item>
+    implements _$$_ItemCopyWith<$Res> {
+  __$$_ItemCopyWithImpl(_$_Item _value, $Res Function(_$_Item) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -81,7 +79,7 @@ class __$$ItemImplCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
   }) {
-    return _then(_$ItemImpl(
+    return _then(_$_Item(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -92,11 +90,10 @@ class __$$ItemImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$ItemImpl implements _Item {
-  const _$ItemImpl({required this.id});
+class _$_Item implements _Item {
+  const _$_Item({required this.id});
 
-  factory _$ItemImpl.fromJson(Map<String, dynamic> json) =>
-      _$$ItemImplFromJson(json);
+  factory _$_Item.fromJson(Map<String, dynamic> json) => _$$_ItemFromJson(json);
 
   @override
   final int id;
@@ -110,7 +107,7 @@ class _$ItemImpl implements _Item {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$ItemImpl &&
+            other is _$_Item &&
             (identical(other.id, id) || other.id == id));
   }
 
@@ -121,26 +118,25 @@ class _$ItemImpl implements _Item {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$ItemImplCopyWith<_$ItemImpl> get copyWith =>
-      __$$ItemImplCopyWithImpl<_$ItemImpl>(this, _$identity);
+  _$$_ItemCopyWith<_$_Item> get copyWith =>
+      __$$_ItemCopyWithImpl<_$_Item>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$ItemImplToJson(
+    return _$$_ItemToJson(
       this,
     );
   }
 }
 
 abstract class _Item implements Item {
-  const factory _Item({required final int id}) = _$ItemImpl;
+  const factory _Item({required final int id}) = _$_Item;
 
-  factory _Item.fromJson(Map<String, dynamic> json) = _$ItemImpl.fromJson;
+  factory _Item.fromJson(Map<String, dynamic> json) = _$_Item.fromJson;
 
   @override
   int get id;
   @override
   @JsonKey(ignore: true)
-  _$$ItemImplCopyWith<_$ItemImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  _$$_ItemCopyWith<_$_Item> get copyWith => throw _privateConstructorUsedError;
 }

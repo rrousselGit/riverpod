@@ -63,22 +63,22 @@ class _$CharacterPaginationCopyWithImpl<$Res, $Val extends CharacterPagination>
 }
 
 /// @nodoc
-abstract class _$$CharacterPaginationImplCopyWith<$Res>
+abstract class _$$_CharacterPaginationCopyWith<$Res>
     implements $CharacterPaginationCopyWith<$Res> {
-  factory _$$CharacterPaginationImplCopyWith(_$CharacterPaginationImpl value,
-          $Res Function(_$CharacterPaginationImpl) then) =
-      __$$CharacterPaginationImplCopyWithImpl<$Res>;
+  factory _$$_CharacterPaginationCopyWith(_$_CharacterPagination value,
+          $Res Function(_$_CharacterPagination) then) =
+      __$$_CharacterPaginationCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({int page, String? name});
 }
 
 /// @nodoc
-class __$$CharacterPaginationImplCopyWithImpl<$Res>
-    extends _$CharacterPaginationCopyWithImpl<$Res, _$CharacterPaginationImpl>
-    implements _$$CharacterPaginationImplCopyWith<$Res> {
-  __$$CharacterPaginationImplCopyWithImpl(_$CharacterPaginationImpl _value,
-      $Res Function(_$CharacterPaginationImpl) _then)
+class __$$_CharacterPaginationCopyWithImpl<$Res>
+    extends _$CharacterPaginationCopyWithImpl<$Res, _$_CharacterPagination>
+    implements _$$_CharacterPaginationCopyWith<$Res> {
+  __$$_CharacterPaginationCopyWithImpl(_$_CharacterPagination _value,
+      $Res Function(_$_CharacterPagination) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -87,7 +87,7 @@ class __$$CharacterPaginationImplCopyWithImpl<$Res>
     Object? page = null,
     Object? name = freezed,
   }) {
-    return _then(_$CharacterPaginationImpl(
+    return _then(_$_CharacterPagination(
       page: null == page
           ? _value.page
           : page // ignore: cast_nullable_to_non_nullable
@@ -102,8 +102,8 @@ class __$$CharacterPaginationImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$CharacterPaginationImpl implements _CharacterPagination {
-  _$CharacterPaginationImpl({required this.page, this.name});
+class _$_CharacterPagination implements _CharacterPagination {
+  _$_CharacterPagination({required this.page, this.name});
 
   @override
   final int page;
@@ -119,7 +119,7 @@ class _$CharacterPaginationImpl implements _CharacterPagination {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$CharacterPaginationImpl &&
+            other is _$_CharacterPagination &&
             (identical(other.page, page) || other.page == page) &&
             (identical(other.name, name) || other.name == name));
   }
@@ -130,14 +130,14 @@ class _$CharacterPaginationImpl implements _CharacterPagination {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$CharacterPaginationImplCopyWith<_$CharacterPaginationImpl> get copyWith =>
-      __$$CharacterPaginationImplCopyWithImpl<_$CharacterPaginationImpl>(
+  _$$_CharacterPaginationCopyWith<_$_CharacterPagination> get copyWith =>
+      __$$_CharacterPaginationCopyWithImpl<_$_CharacterPagination>(
           this, _$identity);
 }
 
 abstract class _CharacterPagination implements CharacterPagination {
   factory _CharacterPagination({required final int page, final String? name}) =
-      _$CharacterPaginationImpl;
+      _$_CharacterPagination;
 
   @override
   int get page;
@@ -145,7 +145,7 @@ abstract class _CharacterPagination implements CharacterPagination {
   String? get name;
   @override
   @JsonKey(ignore: true)
-  _$$CharacterPaginationImplCopyWith<_$CharacterPaginationImpl> get copyWith =>
+  _$$_CharacterPaginationCopyWith<_$_CharacterPagination> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -198,22 +198,22 @@ class _$CharacterOffsetCopyWithImpl<$Res, $Val extends CharacterOffset>
 }
 
 /// @nodoc
-abstract class _$$CharacterOffsetImplCopyWith<$Res>
+abstract class _$$_CharacterOffsetCopyWith<$Res>
     implements $CharacterOffsetCopyWith<$Res> {
-  factory _$$CharacterOffsetImplCopyWith(_$CharacterOffsetImpl value,
-          $Res Function(_$CharacterOffsetImpl) then) =
-      __$$CharacterOffsetImplCopyWithImpl<$Res>;
+  factory _$$_CharacterOffsetCopyWith(
+          _$_CharacterOffset value, $Res Function(_$_CharacterOffset) then) =
+      __$$_CharacterOffsetCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({int offset, String name});
 }
 
 /// @nodoc
-class __$$CharacterOffsetImplCopyWithImpl<$Res>
-    extends _$CharacterOffsetCopyWithImpl<$Res, _$CharacterOffsetImpl>
-    implements _$$CharacterOffsetImplCopyWith<$Res> {
-  __$$CharacterOffsetImplCopyWithImpl(
-      _$CharacterOffsetImpl _value, $Res Function(_$CharacterOffsetImpl) _then)
+class __$$_CharacterOffsetCopyWithImpl<$Res>
+    extends _$CharacterOffsetCopyWithImpl<$Res, _$_CharacterOffset>
+    implements _$$_CharacterOffsetCopyWith<$Res> {
+  __$$_CharacterOffsetCopyWithImpl(
+      _$_CharacterOffset _value, $Res Function(_$_CharacterOffset) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -222,7 +222,7 @@ class __$$CharacterOffsetImplCopyWithImpl<$Res>
     Object? offset = null,
     Object? name = null,
   }) {
-    return _then(_$CharacterOffsetImpl(
+    return _then(_$_CharacterOffset(
       offset: null == offset
           ? _value.offset
           : offset // ignore: cast_nullable_to_non_nullable
@@ -237,8 +237,8 @@ class __$$CharacterOffsetImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$CharacterOffsetImpl implements _CharacterOffset {
-  _$CharacterOffsetImpl({required this.offset, this.name = ''});
+class _$_CharacterOffset implements _CharacterOffset {
+  _$_CharacterOffset({required this.offset, this.name = ''});
 
   @override
   final int offset;
@@ -255,7 +255,7 @@ class _$CharacterOffsetImpl implements _CharacterOffset {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$CharacterOffsetImpl &&
+            other is _$_CharacterOffset &&
             (identical(other.offset, offset) || other.offset == offset) &&
             (identical(other.name, name) || other.name == name));
   }
@@ -266,14 +266,13 @@ class _$CharacterOffsetImpl implements _CharacterOffset {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$CharacterOffsetImplCopyWith<_$CharacterOffsetImpl> get copyWith =>
-      __$$CharacterOffsetImplCopyWithImpl<_$CharacterOffsetImpl>(
-          this, _$identity);
+  _$$_CharacterOffsetCopyWith<_$_CharacterOffset> get copyWith =>
+      __$$_CharacterOffsetCopyWithImpl<_$_CharacterOffset>(this, _$identity);
 }
 
 abstract class _CharacterOffset implements CharacterOffset {
   factory _CharacterOffset({required final int offset, final String name}) =
-      _$CharacterOffsetImpl;
+      _$_CharacterOffset;
 
   @override
   int get offset;
@@ -281,6 +280,6 @@ abstract class _CharacterOffset implements CharacterOffset {
   String get name;
   @override
   @JsonKey(ignore: true)
-  _$$CharacterOffsetImplCopyWith<_$CharacterOffsetImpl> get copyWith =>
+  _$$_CharacterOffsetCopyWith<_$_CharacterOffset> get copyWith =>
       throw _privateConstructorUsedError;
 }
