@@ -39,19 +39,16 @@ Furthermore, the new `(Async)Notifier`s:
 Let's see how to define a `Notifier`, how it compares with `StateNotifier` and how to migrate
 the new `AsyncNotifier` for asynchronous state.
 
-## Syntax comparison
+## New syntax comparison
 
 Please read [how to define a `Notifier`](/docs/essentials/side_effects#defining-a-notifier) before
 diving into this comparison.
 
-Here's an example, using the old `StateNotifier`:
+Let's write an example, using the old `StateNotifier` syntax:
 <AutoSnippet language="dart" {...buildInitOld}></AutoSnippet>
 
-Here's the same example, but with the new `Notifier` APIs, which this translates to:
+Here's the same example, built with the new `Notifier` APIs, which roughly translates to:
 <AutoSnippet language="dart" {...buildInit}></AutoSnippet>
-
-
-### Comparison with `StateNotifier`
 
 Comparing `Notifier` with `StateNotifier`, one can observe these main differences:
 
@@ -77,18 +74,20 @@ Here's the above example, rewritten with the new `AsyncNotifier` APIs:
 `AsyncNotifer`, just like `Notifier`, brings a simpler and more uniform API.
 Here, it's easy to see `AsyncNotifer` as a `FutureProvider` with methods.
 
-Therefore, migrating from `StateNotifier<AsyncValue<T>>` to a `AsyncNotifer<T>` should be a matter of:
-
-- Place the initialization logic directly into `build`: there's no need to define a `_postInit` method anymore
-- Don't catch errors in the `build` method: they'll be converted to `AsyncError`, just like `AsyncValue.guard`
-- There's no need to explicitly initialize `state` with `AsyncLoading`: when `build` returns a `Future`,
-  its first state will be `AsyncLoading`; if it doesn't, its first state will be `AsyncData` or `AsyncError` (synchronously)
-
-Finally, `AsyncNotifer` comes with a set of utilities and getters that `StateNotifier` doesn't have, such as e.g.
+`AsyncNotifer` comes with a set of utilities and getters that `StateNotifier` doesn't have, such as e.g.
 [`future`](https://pub.dev/documentation/riverpod/latest/riverpod/AutoDisposeAsyncNotifier/future.html)
 and [`update`](https://pub.dev/documentation/riverpod/latest/riverpod/AutoDisposeAsyncNotifier/update.html).
 This enables us to write much simpler logic when handling asynchronous mutations and
 [side-effects](/docs/essentials/side_effects).
+
+:::tip
+Migrating from `StateNotifier<AsyncValue<T>>` to a `AsyncNotifer<T>` boils down to:
+
+- Putting initialization logic into `build`
+- Removing any `catch`/`try` blocks in initialization or in side effects methods
+- Remove any `AsyncValue.guard` from `build`, as it converts `Future`s into `AsyncValue`s
+:::
+
 
 ### Advantages
 
@@ -146,7 +145,7 @@ different places to understand this Notifier behavior!
 
 These ambiguities are solved with `Riverpod 2.0`.
 
-### Old `dispose' vs `ref.onDispose`
+### Old `dispose` vs `ref.onDispose`
 `StateNotifier`'s `dispose` method refers to the dispose event of the notifier itself, aka it's a
 callback that gets called *before disposing of itself*.
 
