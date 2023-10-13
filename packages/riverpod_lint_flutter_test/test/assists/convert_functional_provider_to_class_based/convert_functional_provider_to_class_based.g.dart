@@ -162,6 +162,17 @@ class ExampleFamilyProvider extends AutoDisposeProvider<int> {
   }
 
   @override
+  ({
+    int a,
+    String b,
+  }) get argument {
+    return (
+      a: a,
+      b: b,
+    );
+  }
+
+  @override
   AutoDisposeProviderElement<int> createElement() {
     return _ExampleFamilyProviderElement(this);
   }

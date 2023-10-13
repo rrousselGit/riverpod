@@ -153,6 +153,11 @@ class RawFamilyFutureProvider extends AutoDisposeProvider<Raw<Future<String>>> {
   }
 
   @override
+  (int,) get argument {
+    return (id,);
+  }
+
+  @override
   AutoDisposeProviderElement<Raw<Future<String>>> createElement() {
     return _RawFamilyFutureProviderElement(this);
   }
@@ -280,6 +285,11 @@ class RawFamilyStreamProvider extends AutoDisposeProvider<Raw<Stream<String>>> {
         id: id,
       ),
     );
+  }
+
+  @override
+  (int,) get argument {
+    return (id,);
   }
 
   @override
@@ -487,6 +497,23 @@ class FamilyProvider extends AutoDisposeProvider<String> {
         fourth: fourth,
         fifth: fifth,
       ),
+    );
+  }
+
+  @override
+  (
+    int, {
+    String? second,
+    double third,
+    bool fourth,
+    List<String>? fifth,
+  }) get argument {
+    return (
+      first,
+      second: second,
+      third: third,
+      fourth: fourth,
+      fifth: fifth,
     );
   }
 
@@ -724,6 +751,11 @@ class RawFamilyFutureClassProvider extends AutoDisposeNotifierProviderImpl<
   }
 
   @override
+  (int,) get argument {
+    return (id,);
+  }
+
+  @override
   AutoDisposeNotifierProviderElement<RawFamilyFutureClass, Raw<Future<String>>>
       createElement() {
     return _RawFamilyFutureClassProviderElement(this);
@@ -868,6 +900,11 @@ class RawFamilyStreamClassProvider extends AutoDisposeNotifierProviderImpl<
         id: id,
       ),
     );
+  }
+
+  @override
+  (int,) get argument {
+    return (id,);
   }
 
   @override
@@ -1110,6 +1147,23 @@ class FamilyClassProvider
         fourth: fourth,
         fifth: fifth,
       ),
+    );
+  }
+
+  @override
+  (
+    int, {
+    String? second,
+    double third,
+    bool fourth,
+    List<String>? fifth,
+  }) get argument {
+    return (
+      first,
+      second: second,
+      third: third,
+      fourth: fourth,
+      fifth: fifth,
     );
   }
 

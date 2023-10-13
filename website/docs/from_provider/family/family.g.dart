@@ -135,6 +135,17 @@ class RandomProvider extends AutoDisposeProvider<int> {
   }
 
   @override
+  ({
+    int seed,
+    int max,
+  }) get argument {
+    return (
+      seed: seed,
+      max: max,
+    );
+  }
+
+  @override
   AutoDisposeProviderElement<int> createElement() {
     return _RandomProviderElement(this);
   }

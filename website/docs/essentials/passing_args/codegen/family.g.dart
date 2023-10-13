@@ -126,6 +126,11 @@ class ActivityProvider extends AutoDisposeFutureProvider<Activity> {
   }
 
   @override
+  (String,) get argument {
+    return (activityType,);
+  }
+
+  @override
   AutoDisposeFutureProviderElement<Activity> createElement() {
     return _ActivityProviderElement(this);
   }
