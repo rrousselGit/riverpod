@@ -142,6 +142,11 @@ class BugsEncounteredNotifierProvider
   }
 
   @override
+  (String,) get argument {
+    return (featureId,);
+  }
+
+  @override
   AutoDisposeAsyncNotifierProviderElement<BugsEncounteredNotifier, int>
       createElement() {
     return _BugsEncounteredNotifierProviderElement(this);
