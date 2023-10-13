@@ -176,44 +176,6 @@ module.exports = {
       label: "Migration guides",
       collapsible: false,
       items: [
-        // {
-        //   type: "link",
-        //   label: "Migrating StateNotifier/ChangeNotifier to Notifier (WIP)",
-        //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
-        // },
-
-        "migration/0.14.0_to_1.0.0",
-        "migration/0.13.0_to_0.14.0",
-      ],
-    },
-
-    // Official examples
-    {
-      type: "category",
-      label: "Concepts",
-      collapsible: false,
-      items: [
-        "concepts/about_code_generation",
-        "concepts/about_hooks",
-        {
-          type: "link",
-          label: "Provider life-cycles (WIP)",
-          href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
-        },
-        {
-          type: "link",
-          label: "Why immutability (WIP)",
-          href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
-        },
-      ],
-    },
-
-    // Migration guides
-    {
-      type: "category",
-      label: "Migration guides",
-      collapsible: false,
-      items: [
         "migration/from_state_notifier",
         "migration/from_change_notifier",
         "migration/0.14.0_to_1.0.0",
