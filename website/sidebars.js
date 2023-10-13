@@ -43,11 +43,7 @@ module.exports = {
         //   label: "FAQ (WIP)",
         //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
         // },
-        // {
-        //   type: "link",
-        //   label: "DOs/DON'Ts (WIP)",
-        //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
-        // },
+        "essentials/do_dont",
       ],
     },
 
