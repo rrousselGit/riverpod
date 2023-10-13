@@ -18,12 +18,16 @@ class SomeConsumer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final counter = ref.watch(counterNotifierProvider); // !
+    /* highlight-start */
+    final counter = ref.watch(counterNotifierProvider);
+    /* highlight-end */
     return Column(
       children: [
         Text("You've counted up until $counter, good job!"),
         TextButton(
-          onPressed: ref.read(counterNotifierProvider.notifier).increment, // !
+          /* highlight-start */
+          onPressed: ref.read(counterNotifierProvider.notifier).increment,
+          /* highlight-end */
           child: const Text('Count even more!'),
         )
       ],
