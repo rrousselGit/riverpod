@@ -16,6 +16,7 @@ import fromStateProviderOld from "!!raw-loader!./from_state_notifier/from_state_
 import oldLifecycles from "./from_state_notifier/old_lifecycles";
 import oldLifecyclesOld from "!!raw-loader!./from_state_notifier/old_lifecycles_old.dart";
 import oldLifecyclesFinal from "./from_state_notifier/old_lifecycles_final";
+import obtainNotifierOnTests from "!!raw-loader!./from_state_notifier/obtain_notifier_on_tests.dart";
 
 import { AutoSnippet } from "../../src/components/CodeSnippet";
 
@@ -238,13 +239,12 @@ interacted with by using its provider: failing to do so will *break* the notifie
 due to ref and family args not being initialized.
 :::
 
-Don't have a `Notifier` instance? No problem, you can read its provider to obtain one.  
+Don't have a `Notifier` instance?  
+No problem, you can obtain one with `ref.read`, just like you would read its exposed state:
 
-If you want to interact with `Notifier`/`AsyncNotifier` in a testing environment, there's a good
-chance you should do so just like with any other provider: by reading them directly (as opposed of
-directly instantiating a `Notifier` by hand).
+<AutoSnippet raw={obtainNotifierOnTests}/>
 
-The [testing guide](/docs/essentials/testing) fully explains how to use `ProviderContainer.read` to do so.
+Learn more about testing in its [dedicated guide](/docs/essentials/testing).
 
 ### From `StateProvider`
 
