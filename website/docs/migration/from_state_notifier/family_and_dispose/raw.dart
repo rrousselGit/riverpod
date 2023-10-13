@@ -15,11 +15,9 @@ class BugsEncounteredNotifier extends AutoDisposeFamilyAsyncNotifier<int, String
   }
 
   Future<void> fix(int amount) async {
-    state = await AsyncValue.guard(() async {
-      final old = state.requireValue;
-      final result = await ref.read(taskTrackerProvider).fix(id: this.arg, fixed: amount);
-      return max(old - result, 0);
-    });
+    final old = await future;
+    final result = await ref.read(taskTrackerProvider).fix(id: this.arg, fixed: amount);
+    state = AsyncData(max(old - result, 0));
   }
 }
 
