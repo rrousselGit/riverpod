@@ -225,15 +225,18 @@ state access from outside the class when in development mode, for testing purpos
 If you're using `.debugState` to access state in tests, chances are that you need to drop this
 approach.
 
-`Notifier` / `AsyncNotifer` don't have a `.debugState`; instead, they expose `.state`, which is
-`@visibleForTesting`.
+`Notifier` / `AsyncNotifer` don't have a `.debugState`; instead, they directly expose `.state`,
+which is `@visibleForTesting`.
 
-Nonetheless, accessing this property from tests is viable _if and only if_ you had a `Notifier` /
-`AsyncNotifer` properly instantied; then, you could access `.state` inside tests freely.
+:::danger
+AVOID accessing `.state` from tests; if you have to, do it _if and only if_ you had already have
+a `Notifier` / `AsyncNotifer` properly instantied;
+then, you could access `.state` inside tests freely.
 
-Indeed, `Notifier` / `AsyncNotifier` should _not_ be instantiated by hand: they should instead be
-interacted with by using its provider.  
-Failing to do so will *break* the notifier, due to ref and family args not being initialized.
+Indeed, `Notifier` / `AsyncNotifier` _should not_ be instantiated by hand; instead, they should be
+interacted with by using its provider: failing to do so will *break* the notifier,
+due to ref and family args not being initialized.
+:::
 
 Don't have a `Notifier` instance? No problem, you can read its provider to obtain one.  
 
