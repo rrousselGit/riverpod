@@ -61,20 +61,18 @@ class _$TodoCopyWithImpl<$Res, $Val extends Todo>
 }
 
 /// @nodoc
-abstract class _$$TodoImplCopyWith<$Res> implements $TodoCopyWith<$Res> {
-  factory _$$TodoImplCopyWith(
-          _$TodoImpl value, $Res Function(_$TodoImpl) then) =
-      __$$TodoImplCopyWithImpl<$Res>;
+abstract class _$$_TodoCopyWith<$Res> implements $TodoCopyWith<$Res> {
+  factory _$$_TodoCopyWith(_$_Todo value, $Res Function(_$_Todo) then) =
+      __$$_TodoCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String description, bool completed});
 }
 
 /// @nodoc
-class __$$TodoImplCopyWithImpl<$Res>
-    extends _$TodoCopyWithImpl<$Res, _$TodoImpl>
-    implements _$$TodoImplCopyWith<$Res> {
-  __$$TodoImplCopyWithImpl(_$TodoImpl _value, $Res Function(_$TodoImpl) _then)
+class __$$_TodoCopyWithImpl<$Res> extends _$TodoCopyWithImpl<$Res, _$_Todo>
+    implements _$$_TodoCopyWith<$Res> {
+  __$$_TodoCopyWithImpl(_$_Todo _value, $Res Function(_$_Todo) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -83,7 +81,7 @@ class __$$TodoImplCopyWithImpl<$Res>
     Object? description = null,
     Object? completed = null,
   }) {
-    return _then(_$TodoImpl(
+    return _then(_$_Todo(
       description: null == description
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
@@ -98,8 +96,8 @@ class __$$TodoImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$TodoImpl implements _Todo {
-  _$TodoImpl({required this.description, this.completed = false});
+class _$_Todo implements _Todo {
+  _$_Todo({required this.description, this.completed = false});
 
   @override
   final String description;
@@ -116,7 +114,7 @@ class _$TodoImpl implements _Todo {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$TodoImpl &&
+            other is _$_Todo &&
             (identical(other.description, description) ||
                 other.description == description) &&
             (identical(other.completed, completed) ||
@@ -129,13 +127,13 @@ class _$TodoImpl implements _Todo {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$TodoImplCopyWith<_$TodoImpl> get copyWith =>
-      __$$TodoImplCopyWithImpl<_$TodoImpl>(this, _$identity);
+  _$$_TodoCopyWith<_$_Todo> get copyWith =>
+      __$$_TodoCopyWithImpl<_$_Todo>(this, _$identity);
 }
 
 abstract class _Todo implements Todo {
   factory _Todo({required final String description, final bool completed}) =
-      _$TodoImpl;
+      _$_Todo;
 
   @override
   String get description;
@@ -143,6 +141,5 @@ abstract class _Todo implements Todo {
   bool get completed;
   @override
   @JsonKey(ignore: true)
-  _$$TodoImplCopyWith<_$TodoImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  _$$_TodoCopyWith<_$_Todo> get copyWith => throw _privateConstructorUsedError;
 }

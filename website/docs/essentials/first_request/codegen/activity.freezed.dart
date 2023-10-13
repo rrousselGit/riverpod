@@ -90,11 +90,10 @@ class _$ActivityCopyWithImpl<$Res, $Val extends Activity>
 }
 
 /// @nodoc
-abstract class _$$ActivityImplCopyWith<$Res>
-    implements $ActivityCopyWith<$Res> {
-  factory _$$ActivityImplCopyWith(
-          _$ActivityImpl value, $Res Function(_$ActivityImpl) then) =
-      __$$ActivityImplCopyWithImpl<$Res>;
+abstract class _$$_ActivityCopyWith<$Res> implements $ActivityCopyWith<$Res> {
+  factory _$$_ActivityCopyWith(
+          _$_Activity value, $Res Function(_$_Activity) then) =
+      __$$_ActivityCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -106,11 +105,11 @@ abstract class _$$ActivityImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$ActivityImplCopyWithImpl<$Res>
-    extends _$ActivityCopyWithImpl<$Res, _$ActivityImpl>
-    implements _$$ActivityImplCopyWith<$Res> {
-  __$$ActivityImplCopyWithImpl(
-      _$ActivityImpl _value, $Res Function(_$ActivityImpl) _then)
+class __$$_ActivityCopyWithImpl<$Res>
+    extends _$ActivityCopyWithImpl<$Res, _$_Activity>
+    implements _$$_ActivityCopyWith<$Res> {
+  __$$_ActivityCopyWithImpl(
+      _$_Activity _value, $Res Function(_$_Activity) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -122,7 +121,7 @@ class __$$ActivityImplCopyWithImpl<$Res>
     Object? participants = null,
     Object? price = null,
   }) {
-    return _then(_$ActivityImpl(
+    return _then(_$_Activity(
       key: null == key
           ? _value.key
           : key // ignore: cast_nullable_to_non_nullable
@@ -149,16 +148,16 @@ class __$$ActivityImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$ActivityImpl implements _Activity {
-  _$ActivityImpl(
+class _$_Activity implements _Activity {
+  _$_Activity(
       {required this.key,
       required this.activity,
       required this.type,
       required this.participants,
       required this.price});
 
-  factory _$ActivityImpl.fromJson(Map<String, dynamic> json) =>
-      _$$ActivityImplFromJson(json);
+  factory _$_Activity.fromJson(Map<String, dynamic> json) =>
+      _$$_ActivityFromJson(json);
 
   @override
   final String key;
@@ -180,7 +179,7 @@ class _$ActivityImpl implements _Activity {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$ActivityImpl &&
+            other is _$_Activity &&
             (identical(other.key, key) || other.key == key) &&
             (identical(other.activity, activity) ||
                 other.activity == activity) &&
@@ -198,12 +197,12 @@ class _$ActivityImpl implements _Activity {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$ActivityImplCopyWith<_$ActivityImpl> get copyWith =>
-      __$$ActivityImplCopyWithImpl<_$ActivityImpl>(this, _$identity);
+  _$$_ActivityCopyWith<_$_Activity> get copyWith =>
+      __$$_ActivityCopyWithImpl<_$_Activity>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$ActivityImplToJson(
+    return _$$_ActivityToJson(
       this,
     );
   }
@@ -215,10 +214,9 @@ abstract class _Activity implements Activity {
       required final String activity,
       required final String type,
       required final int participants,
-      required final double price}) = _$ActivityImpl;
+      required final double price}) = _$_Activity;
 
-  factory _Activity.fromJson(Map<String, dynamic> json) =
-      _$ActivityImpl.fromJson;
+  factory _Activity.fromJson(Map<String, dynamic> json) = _$_Activity.fromJson;
 
   @override
   String get key;
@@ -232,6 +230,6 @@ abstract class _Activity implements Activity {
   double get price;
   @override
   @JsonKey(ignore: true)
-  _$$ActivityImplCopyWith<_$ActivityImpl> get copyWith =>
+  _$$_ActivityCopyWith<_$_Activity> get copyWith =>
       throw _privateConstructorUsedError;
 }
