@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../utils.dart';
+import '../utils.dart';
 
 final repositoryProvider = Provider<_MyRepo>((ref) {
   return _MyRepo();

@@ -4,7 +4,7 @@ import 'dart:math';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../utils.dart';
+import '../utils.dart';
 
 /* SNIPPET START */
 class BugsEncounteredNotifier extends StateNotifier<AsyncValue<int>> {

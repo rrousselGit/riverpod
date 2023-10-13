@@ -3,20 +3,19 @@ title: From `StateNotifier`
 ---
 
 import buildInit from "./from_state_notifier/build_init";
-import buildInitOld from "./from_state_notifier/build_init_old";
+import buildInitOld from "!!raw-loader!./from_state_notifier/build_init_old.dart";
+import consumersDontChange from "!!raw-loader!./from_state_notifier/consumers_dont_change.dart";
 import familyAndDispose from "./from_state_notifier/family_and_dispose";
-import familyAndDisposeOld from "./from_state_notifier/family_and_dispose_old";
+import familyAndDisposeOld from "!!raw-loader!./from_state_notifier/family_and_dispose_old.dart";
 import asyncNotifier from "./from_state_notifier/async_notifier";
-import asyncNotifierOld from "./from_state_notifier/async_notifier_old";
+import asyncNotifierOld from "!!raw-loader!./from_state_notifier/async_notifier_old.dart";
 import addListener from "./from_state_notifier/add_listener";
-import addListenerOld from "./from_state_notifier/add_listener_old";
+import addListenerOld from "!!raw-loader!./from_state_notifier/add_listener_old.dart";
 import fromStateProvider from "./from_state_notifier/from_state_provider";
-import fromStateProviderOld from "./from_state_notifier/from_state_provider_old";
+import fromStateProviderOld from "!!raw-loader!./from_state_notifier/from_state_provider_old.dart";
 import oldLifecycles from "./from_state_notifier/old_lifecycles";
-import oldLifecyclesOld from "./from_state_notifier/old_lifecycles_old";
+import oldLifecyclesOld from "!!raw-loader!./from_state_notifier/old_lifecycles_old.dart";
 import oldLifecyclesFinal from "./from_state_notifier/old_lifecycles_final";
-
-import consumersDontChange from "./from_state_notifier/consumers_dont_change";
 
 import { AutoSnippet } from "../../src/components/CodeSnippet";
 
@@ -133,7 +132,7 @@ Lifecycles between `Notifier`/`AsyncNotifier` and `StateNotifier` differ substan
 
 This example showcases - again - how the old API have sparse logic:
 
-<AutoSnippet language="dart" {...oldLifecyclesOld}></AutoSnippet>
+<AutoSnippet raw={oldLifecyclesOld}/>
 
 Here, if `durationProvider` updates, `MyNotifier` _disposes_: its instance is then re-instantiated
 and its internal state is then re-initialized.  

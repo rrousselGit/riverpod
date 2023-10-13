@@ -2,7 +2,7 @@
 title: From `ChangeNotifier`
 ---
 
-import old from "./from_change_notifier/old";
+import old from "!!raw-loader!./from_change_notifier/old.dart";
 import declaration from "./from_change_notifier/declaration";
 import initialization from "./from_change_notifier/initialization";
 import migrated from "./from_change_notifier/migrated";
@@ -23,7 +23,7 @@ All in all, migrating from `ChangeNotifier` to `AsyncNotifer` requires a
 code.
 
 Take this (faulty) example:
-<AutoSnippet language="dart" {...old}></AutoSnippet>
+<AutoSnippet raw={old} />
 
 This implementation shows several weak design choices such as:
 - The usage of `isLoading` and `hasError` to handle different asynchronous cases
