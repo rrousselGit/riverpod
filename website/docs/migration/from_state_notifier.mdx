@@ -44,7 +44,7 @@ Please read [how to define a `Notifier`](/docs/essentials/side_effects#defining-
 diving into this comparison.
 
 Let's write an example, using the old `StateNotifier` syntax:
-<AutoSnippet language="dart" {...buildInitOld}></AutoSnippet>
+<AutoSnippet raw={buildInitOld}/>
 
 Here's the same example, built with the new `Notifier` APIs, which roughly translates to:
 <AutoSnippet language="dart" {...buildInit}></AutoSnippet>
@@ -64,7 +64,7 @@ Similar conclusions can be made with `AsyncNotifer`, `Notifier`'s asynchronous e
 The main appeal of the new API syntax is an improved DX on asynchronous data.  
 Take the following example:
 
-<AutoSnippet language="dart" {...asyncNotifierOld}></AutoSnippet>
+<AutoSnippet raw={asyncNotifierOld}/>
 
 Here's the above example, rewritten with the new `AsyncNotifier` APIs:
 
@@ -112,8 +112,7 @@ Modifications are explicitly stated inside the class; any parameters are directl
 This should bring better readability, more conciseness and overall less mistakes.
 
 Take the following example, in which a `StateNotifierProvider.family` is being defined.
-
-<AutoSnippet language="dart" {...familyAndDisposeOld}></AutoSnippet>
+<AutoSnippet raw={familyAndDisposeOld}/>
 
 `BugsEncounteredNotifier` feels... heavy / hard to read.  
 Let's take a look at its migrated `AsyncNotifier` counterpart:
@@ -193,9 +192,9 @@ Instad, one thing `Notifier`, `AsyncNotifer` and `StateNotifier` share is how th
 can be consumed and mutated.
 
 Consumers can obtain data from these three providers with the same syntax, which is great in case
-you're migrating away from `StateNotifier`, and this applies for notifiers methods, too.
+you're migrating away from `StateNotifier`; this applies for notifiers methods, too.
 
-<AutoSnippet language="dart" {...consumersDontChange}></AutoSnippet>
+<AutoSnippet raw={consumersDontChange}></AutoSnippet>
 
 ## Other migrations
 
@@ -210,7 +209,7 @@ This is intentional due to the desire to reach full API uniformity with `Notifie
 Indeed, using a `Notifier` or an `AsyncNotifier` shouldn't be any different from any other provider.
 
 Therefore this:
-<AutoSnippet language="dart" {...addListenerOld}></AutoSnippet>
+<AutoSnippet raw={addListenerOld}/>
 
 Becomes this:
 <AutoSnippet language="dart" {...addListener}></AutoSnippet>
@@ -254,7 +253,7 @@ Furthermore, as of now, there is no `StateProvider` equivalent for the new APIs.
 Nonetheless, migrating from `StateProvider` to `Notifier` is simple.
 
 This:
-<AutoSnippet language="dart" {...fromStateProviderOld}></AutoSnippet>
+<AutoSnippet raw={fromStateProviderOld}/>
 
 Becomes:
 <AutoSnippet language="dart" {...fromStateProvider}></AutoSnippet>
