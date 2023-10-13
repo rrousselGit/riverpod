@@ -38,11 +38,7 @@ module.exports = {
         //   label: "Logging and error reporting (WIP)",
         //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
         // },
-        // {
-        //   type: "link",
-        //   label: "FAQ (WIP)",
-        //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
-        // },
+        "essentials/faq",
         "essentials/do_dont",
       ],
     },
