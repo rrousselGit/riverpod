@@ -136,6 +136,17 @@ class FetchPackagesProvider extends AutoDisposeFutureProvider<List<Package>> {
   }
 
   @override
+  ({
+    int page,
+    String search,
+  }) get argument {
+    return (
+      page: page,
+      search: search,
+    );
+  }
+
+  @override
   AutoDisposeFutureProviderElement<List<Package>> createElement() {
     return _FetchPackagesProviderElement(this);
   }

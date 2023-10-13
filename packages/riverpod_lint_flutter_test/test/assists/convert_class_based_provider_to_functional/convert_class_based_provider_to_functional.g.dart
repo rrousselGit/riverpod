@@ -181,6 +181,17 @@ class ExampleFamilyProvider
   }
 
   @override
+  ({
+    int a,
+    String b,
+  }) get argument {
+    return (
+      a: a,
+      b: b,
+    );
+  }
+
+  @override
   AutoDisposeNotifierProviderElement<ExampleFamily, int> createElement() {
     return _ExampleFamilyProviderElement(this);
   }

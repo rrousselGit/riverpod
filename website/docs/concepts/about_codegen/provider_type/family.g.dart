@@ -126,6 +126,11 @@ class ExampleProvider extends AutoDisposeProvider<String> {
   }
 
   @override
+  (int,) get argument {
+    return (param,);
+  }
+
+  @override
   AutoDisposeProviderElement<String> createElement() {
     return _ExampleProviderElement(this);
   }

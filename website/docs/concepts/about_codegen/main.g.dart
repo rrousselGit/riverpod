@@ -126,6 +126,13 @@ class FetchUserProvider extends AutoDisposeFutureProvider<User> {
   }
 
   @override
+  ({
+    int userId,
+  }) get argument {
+    return (userId: userId,);
+  }
+
+  @override
   AutoDisposeFutureProviderElement<User> createElement() {
     return _FetchUserProviderElement(this);
   }

@@ -166,6 +166,11 @@ class Count2Provider extends AutoDisposeProvider<int> {
   }
 
   @override
+  (int,) get argument {
+    return (a,);
+  }
+
+  @override
   AutoDisposeProviderElement<int> createElement() {
     return _Count2ProviderElement(this);
   }
@@ -295,6 +300,11 @@ class CountFuture2Provider extends AutoDisposeFutureProvider<int> {
   }
 
   @override
+  (int,) get argument {
+    return (a,);
+  }
+
+  @override
   AutoDisposeFutureProviderElement<int> createElement() {
     return _CountFuture2ProviderElement(this);
   }
@@ -421,6 +431,11 @@ class CountStream2Provider extends AutoDisposeStreamProvider<int> {
         a: a,
       ),
     );
+  }
+
+  @override
+  (int,) get argument {
+    return (a,);
   }
 
   @override
@@ -616,6 +631,11 @@ class CountNotifier2Provider
   }
 
   @override
+  (int,) get argument {
+    return (a,);
+  }
+
+  @override
   AutoDisposeNotifierProviderElement<CountNotifier2, int> createElement() {
     return _CountNotifier2ProviderElement(this);
   }
@@ -758,6 +778,11 @@ class CountAsyncNotifier2Provider
         a: a,
       ),
     );
+  }
+
+  @override
+  (int,) get argument {
+    return (a,);
   }
 
   @override
@@ -904,6 +929,11 @@ class CountStreamNotifier2Provider
         a: a,
       ),
     );
+  }
+
+  @override
+  (int,) get argument {
+    return (a,);
   }
 
   @override
