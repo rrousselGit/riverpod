@@ -33,11 +33,7 @@ module.exports = {
         // },
         "essentials/eager_initialization",
         "essentials/testing",
-        // {
-        //   type: "link",
-        //   label: "Logging and error reporting (WIP)",
-        //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
-        // },
+        "essentials/provider_observer",
         "essentials/faq",
         "essentials/do_dont",
       ],
