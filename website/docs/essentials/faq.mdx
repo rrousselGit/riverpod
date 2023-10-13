@@ -7,6 +7,40 @@ import { AutoSnippet, When } from "../../src/components/CodeSnippet";
 
 Here are some commonly asked questions from the community:
 
+## What is the different between `ref.refresh` and `ref.invalidate`?
+
+You may have noticed that `ref` has two methods to force a provider to recompute,
+and wonder how they differ.
+
+It's simpler than you think: `ref.refresh` is nothing but syntax sugar for
+`invalidate` + `read`:
+
+```dart
+T refresh<T>(provider) {
+  invalidate(provider);
+  return read(provider);
+}
+```
+
+If you do not care about the new value of a provider after recomputing it,
+then `invalidate` is the way to go.  
+If you do, use `refresh` instead.
+
+:::info
+This logic is automatically enforced through lint rules.  
+If you tried to use `ref.refresh` without using the returned value,
+you would get a warning.
+:::
+
+The main difference in behavior is by reading the provider right
+after invalidating it, the provider **immediately** recomputes.  
+Whereas if we call `invalidate` but don't read it right after,
+then the update will trigger _later_.
+
+That "later" update is generally at the start of the next frame.
+Yet if invalidating a provider which is currently not listened,
+then the provider will not be updated until it is listened again.
+
 ## Why is there no shared interface between Ref and WidgetRef?
 
 Riverpod voluntarily dissociates `Ref` and `WidgetRef`.  
