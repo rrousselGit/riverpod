@@ -164,12 +164,8 @@ module.exports = {
       label: "Migration guides",
       collapsible: false,
       items: [
-        // {
-        //   type: "link",
-        //   label: "Migrating StateNotifier/ChangeNotifier to Notifier (WIP)",
-        //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
-        // },
-
+        "migration/from_state_notifier",
+        "migration/from_change_notifier",
         "migration/0.14.0_to_1.0.0",
         "migration/0.13.0_to_0.14.0",
       ],
