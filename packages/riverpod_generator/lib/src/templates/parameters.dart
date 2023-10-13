@@ -6,6 +6,7 @@ String buildParamDefinitionQuery(
   bool asSuperParameter = false,
   bool writeBrackets = true,
   bool asRequiredNamed = false,
+  bool asRecord = false,
 }) {
   assert(
     !asThisParameter || !asSuperParameter,
@@ -24,6 +25,16 @@ String buildParamDefinitionQuery(
 
   final buffer = StringBuffer();
   String encodeParameter(FormalParameter parameter) {
+    if (asRecord) {
+      final type = parameter.typeDisplayString.isEmpty
+          ? 'dynamic'
+          : parameter.typeDisplayString;
+      if (parameter.isNamed) {
+        return '$type ${parameter.name}';
+      }
+      return type;
+    }
+
     late final element = parameter.declaredElement!;
     late final leading =
         parameter.isRequiredNamed || asRequiredNamed ? 'required ' : '';
@@ -40,11 +51,11 @@ String buildParamDefinitionQuery(
     requiredPositionals.map(encodeParameter).expand((e) => [e, ',']),
   );
   if (optionalPositionals.isNotEmpty) {
-    if (writeBrackets) buffer.write('[');
+    if (writeBrackets && !asRecord) buffer.write('[');
     buffer.writeAll(
       optionalPositionals.map(encodeParameter).expand((e) => [e, ',']),
     );
-    if (writeBrackets) buffer.write(']');
+    if (writeBrackets && !asRecord) buffer.write(']');
   }
   if (named.isNotEmpty) {
     if (writeBrackets) buffer.write('{');

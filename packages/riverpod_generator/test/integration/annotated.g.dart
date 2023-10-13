@@ -144,6 +144,11 @@ class FamilyProvider extends AutoDisposeProvider<String> {
   }
 
   @override
+  (int,) get argument {
+    return (id,);
+  }
+
+  @override
   AutoDisposeProviderElement<String> createElement() {
     return _FamilyProviderElement(this);
   }
@@ -286,6 +291,11 @@ class NotCopiedFamilyProvider extends AutoDisposeProvider<String> {
         id: id,
       ),
     );
+  }
+
+  @override
+  (int,) get argument {
+    return (id,);
   }
 
   @override

@@ -152,6 +152,11 @@ class FamilyOrProvider extends AutoDisposeFutureProvider<String> {
   }
 
   @override
+  (int,) get argument {
+    return (first,);
+  }
+
+  @override
   AutoDisposeFutureProviderElement<String> createElement() {
     return _FamilyOrProviderElement(this);
   }
@@ -312,6 +317,23 @@ class FamilyProvider extends AutoDisposeFutureProvider<String> {
         fourth: fourth,
         fifth: fifth,
       ),
+    );
+  }
+
+  @override
+  (
+    int, {
+    String? second,
+    double third,
+    bool fourth,
+    List<String>? fifth,
+  }) get argument {
+    return (
+      first,
+      second: second,
+      third: third,
+      fourth: fourth,
+      fifth: fifth,
     );
   }
 
@@ -518,6 +540,11 @@ class FamilyOrClassProvider
   }
 
   @override
+  (int,) get argument {
+    return (first,);
+  }
+
+  @override
   AutoDisposeAsyncNotifierProviderElement<FamilyOrClass, String>
       createElement() {
     return _FamilyOrClassProviderElement(this);
@@ -712,6 +739,23 @@ class FamilyClassProvider
         fourth: fourth,
         fifth: fifth,
       ),
+    );
+  }
+
+  @override
+  (
+    int, {
+    String? second,
+    double third,
+    bool fourth,
+    List<String>? fifth,
+  }) get argument {
+    return (
+      first,
+      second: second,
+      third: third,
+      fourth: fourth,
+      fifth: fifth,
     );
   }
 
