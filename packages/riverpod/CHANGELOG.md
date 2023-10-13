@@ -1,3 +1,7 @@
+## Unreleased fix
+
+- Update the documentation of `provider.argument` to match the behavior of generated providers.
+
 ## 2.4.3 - 2023-10-06
 
 - Fixed incorrect `@visibleForTesting` warning.
