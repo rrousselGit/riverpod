@@ -18,6 +18,7 @@ import oldLifecyclesOld from "!!raw-loader!./from_state_notifier/old_lifecycles_
 import oldLifecyclesFinal from "./from_state_notifier/old_lifecycles_final";
 import obtainNotifierOnTests from "!!raw-loader!./from_state_notifier/obtain_notifier_on_tests.dart";
 
+import { Link } from "../../src/components/Link";
 import { AutoSnippet } from "../../src/components/CodeSnippet";
 
 Along with [Riverpod 2.0](https://pub.dev/packages/flutter_riverpod/changelog#200), new classes
@@ -41,8 +42,8 @@ the new `AsyncNotifier` for asynchronous state.
 
 ## New syntax comparison
 
-Please read [how to define a `Notifier`](/docs/essentials/side_effects#defining-a-notifier) before
-diving into this comparison.
+Be sure to know how to define a `Notifier` before diving into this comparison.
+See <Link documentID="essentials/side_effects" hash="defining-a-notifier" />.
 
 Let's write an example, using the old `StateNotifier` syntax:
 <AutoSnippet raw={buildInitOld}/>
@@ -213,8 +214,8 @@ Therefore this:
 Becomes this:
 <AutoSnippet language="dart" {...addListener}></AutoSnippet>
 
-In a nutshell: if you want to listen to a `Notifier`/`AsyncNotifer`, just use `ref.listen`,
-[as explained here](/docs/essentials/combining_requests#the-reflistenlistenself-methods).
+In a nutshell: if you want to listen to a `Notifier`/`AsyncNotifer`, just use `ref.listen`.
+See <Link documentID="essentials/combining_requests" hash="the-reflistenlistenself-methods" />.
 
 ### From `.debugState` in tests
 
