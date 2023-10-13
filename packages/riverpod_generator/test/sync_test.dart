@@ -184,7 +184,7 @@ void main() {
       second: 'x42',
       third: .42,
       fourth: false,
-      fifth: ['x42'],
+      fifth: const ['x42'],
     );
     final AutoDisposeProvider<String> futureProvider = provider;
 
@@ -209,7 +209,7 @@ void main() {
         second: 'x42',
         third: .42,
         fourth: false,
-        fifth: ['x42'],
+        fifth: const ['x42'],
       ),
     );
 
