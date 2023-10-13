@@ -131,6 +131,17 @@ class FnProvider extends AutoDisposeProvider<int> {
   }
 
   @override
+  (
+    BuildContext, {
+    BuildContext context2,
+  }) get argument {
+    return (
+      context1,
+      context2: context2,
+    );
+  }
+
+  @override
   AutoDisposeProviderElement<int> createElement() {
     return _FnProviderElement(this);
   }
@@ -291,6 +302,17 @@ class MyNotifierProvider
         context1: context1,
         context2: context2,
       ),
+    );
+  }
+
+  @override
+  (
+    BuildContext, {
+    BuildContext context2,
+  }) get argument {
+    return (
+      context1,
+      context2: context2,
     );
   }
 

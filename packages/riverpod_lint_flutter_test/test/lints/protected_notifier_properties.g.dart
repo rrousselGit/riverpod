@@ -162,6 +162,11 @@ class A3Provider extends AutoDisposeNotifierProviderImpl<A3, int> {
   }
 
   @override
+  (int,) get argument {
+    return (param,);
+  }
+
+  @override
   AutoDisposeNotifierProviderElement<A3, int> createElement() {
     return _A3ProviderElement(this);
   }
@@ -300,6 +305,11 @@ class A4Provider extends NotifierProviderImpl<A4, int> {
   }
 
   @override
+  (int,) get argument {
+    return (param,);
+  }
+
+  @override
   NotifierProviderElement<A4, int> createElement() {
     return _A4ProviderElement(this);
   }
@@ -434,6 +444,11 @@ class A5Provider extends AutoDisposeAsyncNotifierProviderImpl<A5, int> {
         param: param,
       ),
     );
+  }
+
+  @override
+  (int,) get argument {
+    return (param,);
   }
 
   @override
@@ -575,6 +590,11 @@ class A6Provider extends AsyncNotifierProviderImpl<A6, int> {
   }
 
   @override
+  (int,) get argument {
+    return (param,);
+  }
+
+  @override
   AsyncNotifierProviderElement<A6, int> createElement() {
     return _A6ProviderElement(this);
   }
@@ -713,6 +733,11 @@ class A7Provider extends AutoDisposeStreamNotifierProviderImpl<A7, int> {
   }
 
   @override
+  (int,) get argument {
+    return (param,);
+  }
+
+  @override
   AutoDisposeStreamNotifierProviderElement<A7, int> createElement() {
     return _A7ProviderElement(this);
   }
@@ -848,6 +873,11 @@ class A8Provider extends StreamNotifierProviderImpl<A8, int> {
         param: param,
       ),
     );
+  }
+
+  @override
+  (int,) get argument {
+    return (param,);
   }
 
   @override

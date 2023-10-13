@@ -139,6 +139,11 @@ class GeneratedFamilyProvider extends AutoDisposeProvider<_Test> {
   }
 
   @override
+  (_Test,) get argument {
+    return (test,);
+  }
+
+  @override
   AutoDisposeProviderElement<_Test> createElement() {
     return _GeneratedFamilyProviderElement(this);
   }
@@ -282,6 +287,11 @@ class $DynamicFamilyProvider extends AutoDisposeProvider<Object?> {
   }
 
   @override
+  (dynamic,) get argument {
+    return (test,);
+  }
+
+  @override
   AutoDisposeProviderElement<Object?> createElement() {
     return _$DynamicFamilyProviderElement(this);
   }
@@ -407,6 +417,11 @@ class _DynamicProvider extends AutoDisposeProvider<Object?> {
         test: test,
       ),
     );
+  }
+
+  @override
+  (dynamic,) get argument {
+    return (test,);
   }
 
   @override
@@ -550,6 +565,11 @@ class AliasFamilyProvider extends AutoDisposeProvider<r.AsyncValue<int>> {
         test: test,
       ),
     );
+  }
+
+  @override
+  (r.AsyncValue<int>,) get argument {
+    return (test,);
   }
 
   @override
@@ -710,6 +730,11 @@ class GeneratedClassFamilyProvider
         test: test,
       ),
     );
+  }
+
+  @override
+  (_Test,) get argument {
+    return (test,);
   }
 
   @override
@@ -875,6 +900,11 @@ class $DynamicClassFamilyProvider
   }
 
   @override
+  (dynamic,) get argument {
+    return (test,);
+  }
+
+  @override
   AutoDisposeNotifierProviderElement<$DynamicClassFamily, Object?>
       createElement() {
     return _$DynamicClassFamilyProviderElement(this);
@@ -1032,6 +1062,11 @@ class AliasClassFamilyProvider extends AutoDisposeNotifierProviderImpl<
         test: test,
       ),
     );
+  }
+
+  @override
+  (r.AsyncValue<int>,) get argument {
+    return (test,);
   }
 
   @override

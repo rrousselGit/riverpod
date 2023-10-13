@@ -153,6 +153,17 @@ class ExampleProvider extends AutoDisposeNotifierProviderImpl<Example, String> {
   }
 
   @override
+  (
+    int, {
+    String param2,
+  }) get argument {
+    return (
+      param1,
+      param2: param2,
+    );
+  }
+
+  @override
   AutoDisposeNotifierProviderElement<Example, String> createElement() {
     return _ExampleProviderElement(this);
   }

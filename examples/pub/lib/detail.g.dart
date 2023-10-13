@@ -128,6 +128,13 @@ class FetchPackageDetailsProvider extends AutoDisposeFutureProvider<Package> {
   }
 
   @override
+  ({
+    String packageName,
+  }) get argument {
+    return (packageName: packageName,);
+  }
+
+  @override
   AutoDisposeFutureProviderElement<Package> createElement() {
     return _FetchPackageDetailsProviderElement(this);
   }
@@ -336,6 +343,13 @@ class PackageMetricsProvider extends AutoDisposeAsyncNotifierProviderImpl<
         packageName: packageName,
       ),
     );
+  }
+
+  @override
+  ({
+    String packageName,
+  }) get argument {
+    return (packageName: packageName,);
   }
 
   @override

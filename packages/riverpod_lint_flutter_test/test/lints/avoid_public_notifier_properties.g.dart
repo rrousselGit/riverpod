@@ -138,6 +138,11 @@ class GeneratedNotifierProvider
   }
 
   @override
+  (int,) get argument {
+    return (param,);
+  }
+
+  @override
   AutoDisposeNotifierProviderElement<GeneratedNotifier, int> createElement() {
     return _GeneratedNotifierProviderElement(this);
   }

@@ -508,6 +508,11 @@ class FamilyDepProvider extends AutoDisposeProvider<int> {
   }
 
   @override
+  (int,) get argument {
+    return (p,);
+  }
+
+  @override
   AutoDisposeProviderElement<int> createElement() {
     return _FamilyDepProviderElement(this);
   }
@@ -640,6 +645,11 @@ class FamilyDep2Provider extends AutoDisposeProvider<int> {
         p: p,
       ),
     );
+  }
+
+  @override
+  (int,) get argument {
+    return (p,);
   }
 
   @override

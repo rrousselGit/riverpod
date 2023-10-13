@@ -205,6 +205,23 @@ class FamilyProvider extends AutoDisposeProvider<String> {
   }
 
   @override
+  (
+    int, {
+    String? second,
+    double third,
+    bool forth,
+    List<String>? fifth,
+  }) get argument {
+    return (
+      first,
+      second: second,
+      third: third,
+      forth: forth,
+      fifth: fifth,
+    );
+  }
+
+  @override
   AutoDisposeProviderElement<String> createElement() {
     return _FamilyProviderElement(this);
   }
@@ -484,6 +501,23 @@ class FamilyClassProvider
         forth: forth,
         fifth: fifth,
       ),
+    );
+  }
+
+  @override
+  (
+    int, {
+    String? second,
+    double third,
+    bool forth,
+    List<String>? fifth,
+  }) get argument {
+    return (
+      first,
+      second: second,
+      third: third,
+      forth: forth,
+      fifth: fifth,
     );
   }
 

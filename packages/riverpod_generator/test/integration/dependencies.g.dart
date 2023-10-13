@@ -138,6 +138,11 @@ class FamilyProvider extends AutoDisposeProvider<int> {
   }
 
   @override
+  (int,) get argument {
+    return (id,);
+  }
+
+  @override
   AutoDisposeProviderElement<int> createElement() {
     return _FamilyProviderElement(this);
   }
@@ -456,6 +461,11 @@ class Family2Provider extends AutoDisposeNotifierProviderImpl<Family2, int> {
   }
 
   @override
+  (int,) get argument {
+    return (id,);
+  }
+
+  @override
   AutoDisposeNotifierProviderElement<Family2, int> createElement() {
     return _Family2ProviderElement(this);
   }
@@ -637,6 +647,11 @@ class Provider4Provider
         id: id,
       ),
     );
+  }
+
+  @override
+  (int,) get argument {
+    return (id,);
   }
 
   @override

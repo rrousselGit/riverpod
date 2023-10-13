@@ -184,7 +184,7 @@ void main() {
       second: 'x42',
       third: .42,
       fourth: false,
-      fifth: ['x42'],
+      fifth: const ['x42'],
     );
     final AutoDisposeProvider<String> futureProvider = provider;
 
@@ -193,6 +193,25 @@ void main() {
     expect(provider.third, .42);
     expect(provider.fourth, false);
     expect(provider.fifth, ['x42']);
+
+    final (
+      int, {
+      String? second,
+      double third,
+      bool fourth,
+      List<String>? fifth,
+    }) argument = provider.argument;
+
+    expect(
+      argument,
+      (
+        42,
+        second: 'x42',
+        third: .42,
+        fourth: false,
+        fifth: const ['x42'],
+      ),
+    );
 
     final String result = container.read(
       familyProvider(

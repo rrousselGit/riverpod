@@ -124,6 +124,13 @@ class GeneratorProvider extends Provider<int> {
   }
 
   @override
+  ({
+    Object? value,
+  }) get argument {
+    return (value: value,);
+  }
+
+  @override
   ProviderElement<int> createElement() {
     return _GeneratorProviderElement(this);
   }
