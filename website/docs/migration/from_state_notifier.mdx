@@ -216,7 +216,7 @@ Becomes this:
 <AutoSnippet language="dart" {...addListener}></AutoSnippet>
 
 In a nutshell: if you want to listen to a `Notifier`/`AsyncNotifer`, just use `ref.listen`,
-[as explained here](/docs/concepts/reading#using-reflisten-to-react-to-a-provider-change).
+[as explained here](/docs/essentials/combining_requests#the-reflistenlistenself-methods).
 
 ### From `.debugState` in tests
 
@@ -242,7 +242,7 @@ If you want to interact with `Notifier`/`AsyncNotifier` in a testing environment
 chance you should do so just like with any other provider: by reading them directly (as opposed of
 directly instantiating a `Notifier` by hand).
 
-The [testing guide](/docs/cookbooks/testing) fully explains how to use `ProviderContainer.read` to do so.
+The [testing guide](/docs/essentials/testing) fully explains how to use `ProviderContainer.read` to do so.
 
 ### From `StateProvider`
 
