@@ -40,16 +40,12 @@ module.exports = {
     },
 
     // Case studies
-    // {
-    //   type: "category",
-    //   label: "Case studies",
-    //   collapsible: false,
-    //   items: [
-    // {
-    //   type: "link",
-    //   label: "Pull-to-refresh (WIP)",
-    //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
-    // },
+    {
+      type: "category",
+      label: "Case studies",
+      collapsible: false,
+      items: ["case_studies/pull_to_refresh"],
+    },
     // {
     //   type: "link",
     //   label: "Infinite lists (WIP)",
