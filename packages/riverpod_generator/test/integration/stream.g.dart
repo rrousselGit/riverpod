@@ -43,6 +43,7 @@ class GenericFamily extends Family {
     return GenericProvider<T>();
   }
 
+  @visibleForOverriding
   @override
   GenericProvider<num> getProviderOverride(
     covariant GenericProvider<num> provider,
@@ -108,6 +109,11 @@ class GenericProvider<T extends num>
         debugGetCreateSourceHash: null,
       ),
     );
+  }
+
+  @override
+  () get argument {
+    return ();
   }
 
   @override
@@ -192,6 +198,7 @@ class FamilyFamily extends Family {
     );
   }
 
+  @visibleForOverriding
   @override
   FamilyProvider getProviderOverride(
     covariant FamilyProvider provider,
@@ -296,6 +303,23 @@ class FamilyProvider extends AutoDisposeStreamProvider<String> {
   }
 
   @override
+  (
+    int, {
+    String? second,
+    double third,
+    bool fourth,
+    List<String>? fifth,
+  }) get argument {
+    return (
+      first,
+      second: second,
+      third: third,
+      fourth: fourth,
+      fifth: fifth,
+    );
+  }
+
+  @override
   AutoDisposeStreamProviderElement<String> createElement() {
     return _FamilyProviderElement(this);
   }
@@ -377,6 +401,7 @@ class GenericClassFamily extends Family {
     return GenericClassProvider<T>();
   }
 
+  @visibleForOverriding
   @override
   GenericClassProvider<num> getProviderOverride(
     covariant GenericClassProvider<num> provider,
@@ -446,6 +471,11 @@ class GenericClassProvider<T extends num>
         debugGetCreateSourceHash: null,
       ),
     );
+  }
+
+  @override
+  () get argument {
+    return ();
   }
 
   @override
@@ -552,6 +582,7 @@ class FamilyClassFamily extends Family {
     );
   }
 
+  @visibleForOverriding
   @override
   FamilyClassProvider getProviderOverride(
     covariant FamilyClassProvider provider,
@@ -672,6 +703,23 @@ class FamilyClassProvider
   }
 
   @override
+  (
+    int, {
+    String? second,
+    double third,
+    bool fourth,
+    List<String>? fifth,
+  }) get argument {
+    return (
+      first,
+      second: second,
+      third: third,
+      fourth: fourth,
+      fifth: fifth,
+    );
+  }
+
+  @override
   AutoDisposeStreamNotifierProviderElement<FamilyClass, String>
       createElement() {
     return _FamilyClassProviderElement(this);
@@ -734,4 +782,4 @@ class _FamilyClassProviderElement
   List<String>? get fifth => (origin as FamilyClassProvider).fifth;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package

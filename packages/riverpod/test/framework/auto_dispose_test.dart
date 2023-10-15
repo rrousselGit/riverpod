@@ -9,7 +9,7 @@ Future<void> main() async {
   final library = await Library.parseFromStacktrace();
 
   test(
-      'When a non-overriden autoDispose provider is disposed '
+      'When a non-overridden autoDispose provider is disposed '
       'and the associated ProviderContainer has a child ProviderContainer which overrides said provider, '
       'the child container keeps its override', () async {
 // Regression test for https://github.com/rrousselGit/riverpod/issues/1519

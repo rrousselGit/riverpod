@@ -50,7 +50,7 @@ abstract class ProviderOrFamily {
   ///
   /// final dependentProvider = Provider((ref) {
   ///   ref.watch(rootProvider);
-  ///   // This provider decided to spcecify "dependencies" anyway, marking
+  ///   // This provider decided to specify "dependencies" anyway, marking
   ///   // "dependentProvider" as possibly scoped.
   ///   // Since "rootProvider" is never scoped, it doesn't need to be included
   ///   // in "dependencies".

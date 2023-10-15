@@ -61,6 +61,7 @@ class GeneratedFamilyFamily extends Family {
     );
   }
 
+  @visibleForOverriding
   @override
   GeneratedFamilyProvider getProviderOverride(
     covariant GeneratedFamilyProvider provider,
@@ -138,6 +139,11 @@ class GeneratedFamilyProvider extends AutoDisposeProvider<_Test> {
   }
 
   @override
+  (_Test,) get argument {
+    return (test,);
+  }
+
+  @override
   AutoDisposeProviderElement<_Test> createElement() {
     return _GeneratedFamilyProviderElement(this);
   }
@@ -203,6 +209,7 @@ class $DynamicFamilyFamily extends Family {
     );
   }
 
+  @visibleForOverriding
   @override
   $DynamicFamilyProvider getProviderOverride(
     covariant $DynamicFamilyProvider provider,
@@ -280,6 +287,11 @@ class $DynamicFamilyProvider extends AutoDisposeProvider<Object?> {
   }
 
   @override
+  (dynamic,) get argument {
+    return (test,);
+  }
+
+  @override
   AutoDisposeProviderElement<Object?> createElement() {
     return _$DynamicFamilyProviderElement(this);
   }
@@ -331,6 +343,7 @@ class _DynamicFamily extends Family {
     );
   }
 
+  @visibleForOverriding
   @override
   _DynamicProvider getProviderOverride(
     covariant _DynamicProvider provider,
@@ -407,6 +420,11 @@ class _DynamicProvider extends AutoDisposeProvider<Object?> {
   }
 
   @override
+  (dynamic,) get argument {
+    return (test,);
+  }
+
+  @override
   AutoDisposeProviderElement<Object?> createElement() {
     return _DynamicProviderElement(this);
   }
@@ -472,6 +490,7 @@ class AliasFamilyFamily extends Family {
     );
   }
 
+  @visibleForOverriding
   @override
   AliasFamilyProvider getProviderOverride(
     covariant AliasFamilyProvider provider,
@@ -546,6 +565,11 @@ class AliasFamilyProvider extends AutoDisposeProvider<r.AsyncValue<int>> {
         test: test,
       ),
     );
+  }
+
+  @override
+  (r.AsyncValue<int>,) get argument {
+    return (test,);
   }
 
   @override
@@ -626,6 +650,7 @@ class GeneratedClassFamilyFamily extends Family {
     );
   }
 
+  @visibleForOverriding
   @override
   GeneratedClassFamilyProvider getProviderOverride(
     covariant GeneratedClassFamilyProvider provider,
@@ -708,6 +733,11 @@ class GeneratedClassFamilyProvider
   }
 
   @override
+  (_Test,) get argument {
+    return (test,);
+  }
+
+  @override
   AutoDisposeNotifierProviderElement<GeneratedClassFamily, _Test>
       createElement() {
     return _GeneratedClassFamilyProviderElement(this);
@@ -787,6 +817,7 @@ class $DynamicClassFamilyFamily extends Family {
     );
   }
 
+  @visibleForOverriding
   @override
   $DynamicClassFamilyProvider getProviderOverride(
     covariant $DynamicClassFamilyProvider provider,
@@ -869,6 +900,11 @@ class $DynamicClassFamilyProvider
   }
 
   @override
+  (dynamic,) get argument {
+    return (test,);
+  }
+
+  @override
   AutoDisposeNotifierProviderElement<$DynamicClassFamily, Object?>
       createElement() {
     return _$DynamicClassFamilyProviderElement(this);
@@ -946,6 +982,7 @@ class AliasClassFamilyFamily extends Family {
     );
   }
 
+  @visibleForOverriding
   @override
   AliasClassFamilyProvider getProviderOverride(
     covariant AliasClassFamilyProvider provider,
@@ -1028,6 +1065,11 @@ class AliasClassFamilyProvider extends AutoDisposeNotifierProviderImpl<
   }
 
   @override
+  (r.AsyncValue<int>,) get argument {
+    return (test,);
+  }
+
+  @override
   AutoDisposeNotifierProviderElement<AliasClassFamily, r.AsyncValue<int>>
       createElement() {
     return _AliasClassFamilyProviderElement(this);
@@ -1061,4 +1103,4 @@ class _AliasClassFamilyProviderElement
   r.AsyncValue<int> get test => (origin as AliasClassFamilyProvider).test;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package

@@ -1,5 +1,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'avoid_public_notifier_properties.g.dart';
 
 class MyNotifier extends Notifier<int> {
   static int get staticPublicGetter => 0;
@@ -89,4 +92,13 @@ class MyAutoDisposeFamilyAsyncNotifier
 
   @override
   Future<int> build(int param) async => 0;
+}
+
+// Regression test for https://github.com/rrousselGit/riverpod/discussions/2642
+@riverpod
+class GeneratedNotifier extends _$GeneratedNotifier {
+  @override
+  int build(int param) {
+    return 0;
+  }
 }

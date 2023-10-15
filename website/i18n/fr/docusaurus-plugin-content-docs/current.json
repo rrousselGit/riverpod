@@ -31,9 +31,9 @@
     "message": "Exemples de la communauté",
     "description": "The label for category Third party examples in sidebar Sidebar"
   },
-  "sidebar.Sidebar.category.Api references": {
-    "message": "Références Api",
-    "description": "The label for category Api references in sidebar Sidebar"
+  "sidebar.Sidebar.link.API reference": {
+    "message": "Références API",
+    "description": "The label for link Api references in sidebar Sidebar, linking to https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/hooks_riverpod-library.html"
   },
   "sidebar.Sidebar.link.Counter": {
     "message": "Compteur",
@@ -52,7 +52,7 @@
     "description": "The label for link Android Launcher in sidebar Sidebar, linking to https://github.com/lohanidamodar/fl_live_launcher"
   },
   "sidebar.Sidebar.link.Worldtime Clock": {
-    "message": "Horloge Mondiale",
+    "message": "Horloge mondiale",
     "description": "The label for link Worldtime Clock in sidebar Sidebar, linking to https://github.com/lohanidamodar/flutter_worldtime"
   },
   "sidebar.Sidebar.link.Dictionary App": {

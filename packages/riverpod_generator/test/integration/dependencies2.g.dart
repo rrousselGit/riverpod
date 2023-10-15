@@ -75,6 +75,7 @@ class FamilyWithDependencies2Family extends Family {
     );
   }
 
+  @visibleForOverriding
   @override
   FamilyWithDependencies2Provider getProviderOverride(
     covariant FamilyWithDependencies2Provider provider,
@@ -161,6 +162,13 @@ class FamilyWithDependencies2Provider extends AutoDisposeProvider<int> {
         id: id,
       ),
     );
+  }
+
+  @override
+  ({
+    int? id,
+  }) get argument {
+    return (id: id,);
   }
 
   @override
@@ -282,6 +290,7 @@ class NotifierFamilyWithDependenciesFamily extends Family {
     );
   }
 
+  @visibleForOverriding
   @override
   NotifierFamilyWithDependenciesProvider getProviderOverride(
     covariant NotifierFamilyWithDependenciesProvider provider,
@@ -377,6 +386,13 @@ class NotifierFamilyWithDependenciesProvider
   }
 
   @override
+  ({
+    int? id,
+  }) get argument {
+    return (id: id,);
+  }
+
+  @override
   AutoDisposeNotifierProviderElement<NotifierFamilyWithDependencies, int>
       createElement() {
     return _NotifierFamilyWithDependenciesProviderElement(this);
@@ -410,4 +426,4 @@ class _NotifierFamilyWithDependenciesProviderElement
   int? get id => (origin as NotifierFamilyWithDependenciesProvider).id;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package

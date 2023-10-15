@@ -1,5 +1,10 @@
 // ignore_for_file: omit_local_variable_types, unused_local_variable
 
+import 'dart:io';
+
+import 'package:analyzer/dart/analysis/results.dart';
+import 'package:analyzer/dart/analysis/utilities.dart';
+import 'package:path/path.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:test/test.dart';
 
@@ -184,6 +189,19 @@ void main() {
     expect(familyProvider(42, third: .42).name, 'familyProvider');
   });
 
+  test('Marks getProviderOverride as @visibleForOverriding', () async {
+    final file = File('test/integration/sync.dart');
+    final path = normalize(file.absolute.path);
+
+    final library = await resolveFile2(path: path);
+    library as ResolvedUnitResult;
+
+    final clazz = library.libraryElement.getClass('FamilyClassFamily')!;
+    final method = clazz.getMethod('getProviderOverride')!;
+
+    expect(method.hasVisibleForOverriding, isTrue);
+  });
+
   test(
       'Creates a Provider.family<T> if @riverpod is used on a synchronous function with parameters',
       () {
@@ -231,7 +249,7 @@ void main() {
       second: 'x42',
       third: .42,
       fourth: false,
-      fifth: ['x42'],
+      fifth: const ['x42'],
     );
     final AutoDisposeProvider<String> futureProvider = provider;
 
@@ -240,6 +258,25 @@ void main() {
     expect(provider.third, .42);
     expect(provider.fourth, false);
     expect(provider.fifth, ['x42']);
+
+    final (
+      int, {
+      String? second,
+      double third,
+      bool fourth,
+      List<String>? fifth,
+    }) argument = provider.argument;
+
+    expect(
+      argument,
+      (
+        42,
+        second: 'x42',
+        third: .42,
+        fourth: false,
+        fifth: const ['x42'],
+      ),
+    );
 
     final String result = container.read(
       familyProvider(

@@ -154,8 +154,10 @@ const notifierBaseType =
     TypeChecker.fromName('NotifierBase', packageName: 'riverpod');
 
 /// Either `NotifierBase` or `AsyncNotifierBase`
-const anyNotifierType =
-    TypeChecker.any([asyncNotifierBaseType, notifierBaseType]);
+const anyNotifierType = TypeChecker.any([
+  asyncNotifierBaseType,
+  notifierBaseType,
+]);
 
 /// Either `ProviderBase` or `Family`
 const providerOrFamilyType = TypeChecker.any([providerBaseType, familyType]);
@@ -242,3 +244,27 @@ const statefulHookConsumerStateType = TypeChecker.fromName(
 
 /// `Ref` methods that can make a provider depend on another provider.
 const refBinders = {'read', 'watch', 'listen'};
+
+/// [TypeChecker for `AsyncValue`
+const asyncValueType = TypeChecker.fromName(
+  'AsyncValue',
+  packageName: 'riverpod',
+);
+
+/// [TypeChecker for `AsyncData`
+const asyncDataType = TypeChecker.fromName(
+  'AsyncData',
+  packageName: 'riverpod',
+);
+
+/// [TypeChecker for `AsyncError`
+const asyncErrorType = TypeChecker.fromName(
+  'AsyncError',
+  packageName: 'riverpod',
+);
+
+/// [TypeChecker for `AsyncLoading`
+const asyncLoadingType = TypeChecker.fromName(
+  'AsyncLoading',
+  packageName: 'riverpod',
+);

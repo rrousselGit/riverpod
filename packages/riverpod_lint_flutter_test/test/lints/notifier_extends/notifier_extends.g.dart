@@ -107,6 +107,7 @@ class GenericsFamily extends Family {
     return GenericsProvider<A, B>();
   }
 
+  @visibleForOverriding
   @override
   GenericsProvider<num, Object?> getProviderOverride(
     covariant GenericsProvider<num, Object?> provider,
@@ -178,6 +179,11 @@ class GenericsProvider<A extends num, B>
   }
 
   @override
+  () get argument {
+    return ();
+  }
+
+  @override
   AutoDisposeNotifierProviderElement<Generics<A, B>, int> createElement() {
     return _GenericsProviderElement(this);
   }
@@ -226,6 +232,7 @@ class NoGenericsFamily extends Family {
     return NoGenericsProvider<A, B>();
   }
 
+  @visibleForOverriding
   @override
   NoGenericsProvider<num, Object?> getProviderOverride(
     covariant NoGenericsProvider<num, Object?> provider,
@@ -298,6 +305,11 @@ class NoGenericsProvider<A extends num, B>
   }
 
   @override
+  () get argument {
+    return ();
+  }
+
+  @override
   AutoDisposeNotifierProviderElement<NoGenerics<A, B>, int> createElement() {
     return _NoGenericsProviderElement(this);
   }
@@ -346,6 +358,7 @@ class MissingGenericsFamily extends Family {
     return MissingGenericsProvider<A, B>();
   }
 
+  @visibleForOverriding
   @override
   MissingGenericsProvider<Object?, Object?> getProviderOverride(
     covariant MissingGenericsProvider<Object?, Object?> provider,
@@ -418,6 +431,11 @@ class MissingGenericsProvider<A, B>
   }
 
   @override
+  () get argument {
+    return ();
+  }
+
+  @override
   AutoDisposeNotifierProviderElement<MissingGenerics<A, B>, int>
       createElement() {
     return _MissingGenericsProviderElement(this);
@@ -466,6 +484,7 @@ class WrongOrderFamily extends Family {
     return WrongOrderProvider<A, B>();
   }
 
+  @visibleForOverriding
   @override
   WrongOrderProvider<Object?, Object?> getProviderOverride(
     covariant WrongOrderProvider<Object?, Object?> provider,
@@ -538,6 +557,11 @@ class WrongOrderProvider<A, B>
   }
 
   @override
+  () get argument {
+    return ();
+  }
+
+  @override
   AutoDisposeNotifierProviderElement<WrongOrder<A, B>, int> createElement() {
     return _WrongOrderProviderElement(this);
   }
@@ -565,4 +589,4 @@ class _WrongOrderProviderElement<A, B>
   _WrongOrderProviderElement(super.provider);
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package

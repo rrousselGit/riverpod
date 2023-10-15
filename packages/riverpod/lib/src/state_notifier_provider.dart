@@ -37,7 +37,7 @@ abstract class _StateNotifierProviderBase<NotifierT extends StateNotifier<T>, T>
   ///
   /// ```dart
   /// Button(
-  ///   onTap: () => ref.read(stateNotifierProvider.notifer).increment(),
+  ///   onTap: () => ref.read(stateNotifierProvider.notifier).increment(),
   /// )
   /// ```
   ///

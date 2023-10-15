@@ -1,5 +1,8 @@
 export 'dart:async' show FutureOr;
 
+// Annotations used by code-generators
+export 'package:meta/meta.dart' show visibleForOverriding;
+
 // ignore: invalid_export_of_internal_element
 export 'package:riverpod/src/internals.dart'
     show

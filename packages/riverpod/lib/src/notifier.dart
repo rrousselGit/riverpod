@@ -31,7 +31,7 @@ abstract class NotifierBase<State> {
   /// Reading [state] if the provider is out of date (such as if one of its
   /// dependency has changed) will trigger [Notifier.build] to be re-executed.
   ///
-  /// If [Notifier.build] threw, reading [state] will rethow the exception.
+  /// If [Notifier.build] threw, reading [state] will rethrow the exception.
   @protected
   @visibleForTesting
   State get state {
@@ -63,7 +63,8 @@ abstract class NotifierBase<State> {
     _element.setState(value);
   }
 
-  /// The [Ref] from the provider associated with this [AsyncNotifier].
+  /// The [Ref] from the provider associated with this [Notifier].
+  @protected
   Ref<State> get ref;
 
   /// A method invoked when the state exposed by this [Notifier] changes.
@@ -137,7 +138,7 @@ abstract class NotifierProviderBase<NotifierT extends NotifierBase<T>, T>
   ///
   /// ```dart
   /// Button(
-  ///   onTap: () => ref.read(stateNotifierProvider.notifer).increment(),
+  ///   onTap: () => ref.read(stateNotifierProvider.notifier).increment(),
   /// )
   /// ```
   ///

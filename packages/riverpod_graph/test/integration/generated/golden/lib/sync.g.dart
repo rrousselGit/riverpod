@@ -96,6 +96,7 @@ class FamilyFamily extends Family {
     );
   }
 
+  @visibleForOverriding
   @override
   FamilyProvider getProviderOverride(
     covariant FamilyProvider provider,
@@ -200,6 +201,23 @@ class FamilyProvider extends AutoDisposeProvider<String> {
         forth: forth,
         fifth: fifth,
       ),
+    );
+  }
+
+  @override
+  (
+    int, {
+    String? second,
+    double third,
+    bool forth,
+    List<String>? fifth,
+  }) get argument {
+    return (
+      first,
+      second: second,
+      third: third,
+      forth: forth,
+      fifth: fifth,
     );
   }
 
@@ -362,6 +380,7 @@ class FamilyClassFamily extends Family {
     );
   }
 
+  @visibleForOverriding
   @override
   FamilyClassProvider getProviderOverride(
     covariant FamilyClassProvider provider,
@@ -486,6 +505,23 @@ class FamilyClassProvider
   }
 
   @override
+  (
+    int, {
+    String? second,
+    double third,
+    bool forth,
+    List<String>? fifth,
+  }) get argument {
+    return (
+      first,
+      second: second,
+      third: third,
+      forth: forth,
+      fifth: fifth,
+    );
+  }
+
+  @override
   AutoDisposeNotifierProviderElement<FamilyClass, String> createElement() {
     return _FamilyClassProviderElement(this);
   }
@@ -567,4 +603,4 @@ final supports$InClassNameProvider =
 
 typedef _$Supports$InClassName = AutoDisposeNotifier<String>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package

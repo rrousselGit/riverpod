@@ -1,11 +1,10 @@
 name: my_project
 
-
-
 packages:
   - website
   - packages/**
   - examples/**
+  - tools/**
 
 scripts:
   # we voluntarily do not use melos inside goldens
@@ -20,5 +19,5 @@ scripts:
     flutter pub get
 
   generate:
-    run: melos exec --depends-on=build_runner -- dart pub run build_runner build -d
+    run: melos exec --depends-on=build_runner -- "dart run build_runner build -d"
     description: Build all generated files for Dart & Flutter packages in this project.

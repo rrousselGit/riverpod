@@ -1,3 +1,5 @@
+// ignore_for_file: unused_element
+
 import 'package:flutter/widgets.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -29,4 +31,12 @@ class MyNotifier extends _$MyNotifier {
     // expect_lint: avoid_build_context_in_providers
     required BuildContext context4,
   }) {}
+}
+
+@riverpod
+class Regresion2959 extends _$Regresion2959 {
+  @override
+  void build() {}
+
+  bool get _valid => false;
 }

@@ -2,12 +2,13 @@
 
 - Added `GeneratorProviderDeclarationElement.isFamily`
 
-## 0.3.5 - 2023-10-02
+## 0.4.1 - 2023-10-06
+
+- Added type checkers for AsyncValue and subclasses.
+
+## 0.4.0 - 2023-10-02
 
 - Correctly parse import aliases when used inside `ref.watch(<...>)`
-
-## 0.3.4 - 2023-09-27
-
 - Fixed `refInvocations` not getting parsed for generated providers with arguments.
 
 ## 0.3.3 - 2023-08-16
@@ -60,8 +61,8 @@ the `@riverpod external int value()` syntax.
 
 - Decode generated StreamProviders.
 
-- Upcast `ClassBasedProviderDeclaratation.providerElement` &
-  `FunctionalProviderDeclaratation.providerElement` to their respective element type.
+- Upcast `ClassBasedProviderDeclaration.providerElement` &
+  `FunctionalProviderDeclaration.providerElement` to their respective element type.
 
 - Change error handling mechanism (no more exceptions)
 

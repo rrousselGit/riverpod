@@ -11,7 +11,6 @@ class PubRepository {
     _configureDio();
   }
 
-  static const _scheme = 'https';
   static const _host = 'pub.dartlang.org';
   final dio = Dio();
 
@@ -19,11 +18,10 @@ class PubRepository {
     required int page,
     CancelToken? cancelToken,
   }) async {
-    final uri = Uri(
-      scheme: _scheme,
-      host: _host,
-      path: 'api/packages',
-      queryParameters: <String, String>{'page': '$page'},
+    final uri = Uri.https(
+      _host,
+      'api/packages',
+      <String, String>{'page': '$page'},
     );
 
     final response = await dio.getUri<Map<String, Object?>>(
@@ -40,11 +38,10 @@ class PubRepository {
     required String search,
     CancelToken? cancelToken,
   }) async {
-    final uri = Uri(
-      scheme: _scheme,
-      host: _host,
-      path: 'api/search',
-      queryParameters: <String, String>{'page': '$page', 'q': search},
+    final uri = Uri.https(
+      _host,
+      'api/search',
+      <String, String>{'page': '$page', 'q': search},
     );
     // Returns {packages: [{ package: string }]}
     final response = await dio.getUri<Map<String, Object?>>(
@@ -60,11 +57,7 @@ class PubRepository {
     required String packageName,
     CancelToken? cancelToken,
   }) async {
-    final uri = Uri(
-      scheme: _scheme,
-      host: _host,
-      path: 'api/packages/$packageName',
-    );
+    final uri = Uri.https(_host, 'api/packages/$packageName');
 
     final response = await dio.getUri<Map<String, Object?>>(
       uri,
@@ -79,22 +72,14 @@ class PubRepository {
     required String packageName,
     CancelToken? cancelToken,
   }) async {
-    final uri = Uri(
-      scheme: _scheme,
-      host: _host,
-      path: 'api/packages/$packageName/metrics',
-    );
+    final uri = Uri.https(_host, 'api/packages/$packageName/metrics');
 
     final responseFuture = dio.getUri<Map<String, Object?>>(
       uri,
       cancelToken: cancelToken,
     );
 
-    final likesUri = Uri(
-      scheme: _scheme,
-      host: _host,
-      path: 'api/packages/$packageName/likes',
-    );
+    final likesUri = Uri.https(_host, 'api/packages/$packageName/likes');
 
     /// Although the metrics request does include the likes count, it seems that
     /// the server caches the response for a long period of time.
@@ -116,11 +101,7 @@ class PubRepository {
     required String packageName,
     CancelToken? cancelToken,
   }) async {
-    final uri = Uri(
-      scheme: _scheme,
-      host: _host,
-      path: 'api/account/likes/$packageName',
-    );
+    final uri = Uri.https(_host, 'api/account/likes/$packageName');
 
     await dio.putUri<void>(
       uri,
@@ -135,11 +116,7 @@ class PubRepository {
     required String packageName,
     CancelToken? cancelToken,
   }) async {
-    final uri = Uri(
-      scheme: _scheme,
-      host: _host,
-      path: 'api/account/likes/$packageName',
-    );
+    final uri = Uri.https(_host, 'api/account/likes/$packageName');
 
     await dio.deleteUri<void>(
       uri,
@@ -149,11 +126,7 @@ class PubRepository {
   }
 
   Future<List<String>> getLikedPackages({CancelToken? cancelToken}) async {
-    final uri = Uri(
-      scheme: _scheme,
-      host: _host,
-      path: 'api/account/likes',
-    );
+    final uri = Uri.https(_host, 'api/account/likes');
 
     final response = await dio.getUri<Map<String, Object?>>(
       uri,

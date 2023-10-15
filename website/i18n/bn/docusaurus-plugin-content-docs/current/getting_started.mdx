@@ -5,9 +5,8 @@ title: Getting started
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
-import helloWorldHooks from "!!raw-loader!/docs/getting_started_hello_world_hooks.dart";
-import helloWorldFlutter from "!!raw-loader!/docs/getting_started_hello_world_flutter.dart";
-import helloWorldDart from "!!raw-loader!/docs/getting_started_hello_world_dart.dart";
+import dartHelloWorld from "/docs/getting_started/dart_hello_world";
+import helloWorld from "/docs/getting_started/hello_world";
 import { trimSnippet } from "../../../../src/components/CodeSnippet";
 
 [Riverpod] এর অভ্যন্তরীণ বিষয়ে ডুব দেওয়ার আগে বেসিক দিয়ে শুরু করা যাক:
@@ -100,27 +99,19 @@ export const foo = 42;
 
 <Tabs
   groupId="riverpod"
-  defaultValue="hooks_riverpod"
+  defaultValue="flutter_riverpod"
   values={[
-    { label: "Flutter + flutter_hooks", value: "hooks_riverpod" },
     { label: "Flutter", value: "flutter_riverpod" },
     { label: "Dart only", value: "riverpod" },
   ]}
 >
-<TabItem value="hooks_riverpod">
-
-<CodeBlock title="lib/main.dart">{trimSnippet(helloWorldHooks)}</CodeBlock>
-
-যা আপনি তখন flutter run দিয়ে এক্সিকিউট করতে পারবেন।
-এটি আপনার ডিভাইসে "Hello World" রেন্ডার করবে।
-
-</TabItem>
 <TabItem value="flutter_riverpod">
 
-<CodeBlock title="lib/main.dart">{trimSnippet(helloWorldFlutter)}</CodeBlock>
-
-Which you can then execute with `flutter run`.  
-This will render "Hello world" in on your device.
+<AutoSnippet
+  title="lib/main.dart"
+  language="dart"
+  {...helloWorld}
+></AutoSnippet>
 
 যা আপনি তখন flutter run দিয়ে এক্সিকিউট করতে পারবেন।
 এটি আপনার ডিভাইসে "Hello World" রেন্ডার করবে।
@@ -128,7 +119,11 @@ This will render "Hello world" in on your device.
 </TabItem>
 <TabItem value="riverpod">
 
-<CodeBlock title="lib/main.dart">{trimSnippet(helloWorldDart)}</CodeBlock>
+<AutoSnippet
+  title="lib/main.dart"
+  language="dart"
+  {...dartHelloWorld}
+></AutoSnippet>
 
 যেটি আপনি এক্সিকিউট করতে পারবেন `dart lib/main.dart`.  
 এটি কনসোল এ "Hello world" প্রিন্ট করতে পারবে.

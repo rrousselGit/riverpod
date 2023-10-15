@@ -1,0 +1,70 @@
+---
+title: イントロダクション
+---
+
+---
+
+## Riverpod とは
+
+Riverpod（[Provider](https://pub.dev/packages/provider) のアナグラム）は Flutter/Dart のためのリアクティブなキャッシングフレームワークです。
+Riverpod はネットワークリクエストの取得やキャッシュ、結合、再計算を自動的に行い、さらにエラーの処理も行います。
+
+## モチベーション
+
+現代のアプリケーションでは UI をレンダリングするためにすべての情報を扱うことはまれです。
+その代わりにデータはサーバーから非同期に取得します。
+
+ここで問題になるのは非同期処理は難しいということです。
+Flutter には状態を保持する方法がありますが、それ以外の用途に対してはあまり適していません。
+それゆえ、以下のような多くの課題が残されています。
+
+- UI を更新する度にリクエストを送り直すのは合理的でないため、非同期のリクエストはローカルにキャッシュにする必要がある
+- キャッシュがあるため、注意しないとキャッシュが古くなっている可能性がある
+- エラーやローディング状態を扱う必要がある
+
+これらの問題を扱うのは難しく、次のような多くの機能の影響を受けます。
+
+- 引っ張って画面を更新
+- 無限リストやスクロールしながらの取得
+- 文字入力に応じた検索
+- 非同期のリクエストのデバウンス
+- 使われない非同期のリクエストのキャンセル
+- UI の最適化
+- オフラインモード
+- ...
+
+これらの機能を実装するのは難しい場合がありますが、優れたユーザー体験には必要なものです。  
+しかし、これらの問題に直接解決しようとするパッケージはほとんどなく、多くの場合手作業で行われています。
+
+そこで Riverpod の出番です。  
+Riverpod は Flutter の widget にインスパイアされた、
+新たなビジネスロジックの書き方を提供することで、これらの問題を解決しようとするものです。
+状態に関しては、 Riverpod は多くの点で widget に匹敵します。
+
+この新しいアプローチを使うことで、これらの複雑な機能を処理できます。
+あとは UI に集中するだけです。
+
+まだ疑ってますか？一つ例を示しましょう。
+以下のコードは Riverpod を使った、 [Pub.dev](https://github.com/rrousselGit/riverpod/tree/master/examples/pub) の簡単なクライアントアプリです。
+
+```dart
+// pub.dev からパッケージ一覧を取得する
+@riverpod
+Future<List<Package>> fetchPackages(
+  FetchPackagesRef ref, {
+  required int page,
+  String search = '',
+}) async {
+  final dio = Dio();
+  // API を呼ぶ。 ここでは package:dio を使っていますが、他の方法でもできます
+  final response = await dio.get(
+    'https://pub.dartlang.org/api/search?page=$page&q=${Uri.encodeQueryComponent(search)}',
+  );
+
+  // JSON レスポンスを Dart のクラスにデコードする
+  final json = response.data as List;
+  return json.map(Package.fromJson).toList();
+}
+```
+
+このコードはエラーや読み込みの状態を管理しながら「入力に応じて検索する」「引っ張って更新する」「無限リストにする」ためのビジネスロジックです。

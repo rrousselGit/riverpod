@@ -263,6 +263,7 @@ ${parameters.map((e) => '        ${e.name}: ${e.name},\n').join()}
     });
 
     final docs = providerDocFor(provider.providerElement.element);
+    final meta = metaAnnotations(provider.node.metadata);
     final providerName =
         providerFamilyNameFor(provider.providerElement, options);
 
@@ -275,12 +276,20 @@ ${parameters.map((e) => '        ${e.name}: ${e.name},\n').join()}
         genericDefinitionDisplayString(typeParameters);
     final typeParametersUsage = genericUsageDisplayString(typeParameters);
     final anyTypeParametersUsage = anyGenericUsageDisplayString(typeParameters);
+    final argumentRecordType = buildParamDefinitionQuery(
+      parameters,
+      asRecord: true,
+    );
+    final argumentsToRecord = buildParamInvocationQuery({
+      for (final parameter in parameters) parameter: parameter.name!.lexeme,
+    });
 
     buffer.write('''
 $other
 
 $docs
 @ProviderFor(${provider.name})
+$meta
 const $providerName = $familyName();
 
 $docs
@@ -293,6 +302,7 @@ class $familyName extends Family {
     return $providerTypeNameImpl$typeParametersUsage($parametersPassThrough);
   }
 
+  @visibleForOverriding
   @override
   $providerTypeNameImpl$anyTypeParametersUsage getProviderOverride(
     covariant $providerTypeNameImpl$anyTypeParametersUsage provider,
@@ -345,6 +355,11 @@ class $providerTypeNameImpl$typeParametersDefinition extends $providerType$provi
 ${parameters.map((e) => 'final ${e.typeDisplayString} ${e.name};').join()}
 
 $providerOther
+
+  @override
+  ($argumentRecordType) get argument {
+    return ($argumentsToRecord);
+  }
 
   @override
   $elementType$providerGenerics createElement() {

@@ -42,21 +42,22 @@ abstract class AsyncNotifierBase<State> {
   ///
   /// Reading [state] if the provider is out of date (such as if one of its
   /// dependency has changed) will trigger [AsyncNotifier.build] to be re-executed.
-  @protected
   @visibleForTesting
+  @protected
   AsyncValue<State> get state {
     _element.flush();
     // ignore: invalid_use_of_protected_member
     return _element.requireState;
   }
 
-  @protected
   @visibleForTesting
+  @protected
   set state(AsyncValue<State> newState) {
     _element.state = newState;
   }
 
   /// The [Ref] from the provider associated with this [AsyncNotifier].
+  @protected
   Ref<AsyncValue<State>> get ref;
 
   /// {@template riverpod.async_notifier.future}
@@ -70,6 +71,8 @@ abstract class AsyncNotifierBase<State> {
   /// The future will fail if [state] is in error state. In which case the
   /// error will be the same as [AsyncValue.error] and its stacktrace.
   /// {@endtemplate}
+  @visibleForTesting
+  @protected
   Future<State> get future {
     _element.flush();
     return _element.futureNotifier.value;
@@ -89,6 +92,7 @@ abstract class AsyncNotifierBase<State> {
   /// See also:
   /// - [future], for manually awaiting the resolution of [state].
   /// - [AsyncValue.guard], and alternate way to perform asynchronous operations.
+  @visibleForTesting
   @protected
   Future<State> update(
     FutureOr<State> Function(State) cb, {

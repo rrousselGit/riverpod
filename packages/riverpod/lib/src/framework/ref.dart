@@ -58,7 +58,7 @@ abstract class Ref<State extends Object?> {
   /// {@endtemplate}
   void invalidate(ProviderOrFamily provider);
 
-  /// Notify depedents that this provider has changed.
+  /// Notify dependents that this provider has changed.
   ///
   /// This is typically used for mutable state, such as to do:
   ///

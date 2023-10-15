@@ -89,6 +89,7 @@ class Count2Family extends Family {
     );
   }
 
+  @visibleForOverriding
   @override
   Count2Provider getProviderOverride(
     covariant Count2Provider provider,
@@ -165,6 +166,11 @@ class Count2Provider extends AutoDisposeProvider<int> {
   }
 
   @override
+  (int,) get argument {
+    return (a,);
+  }
+
+  @override
   AutoDisposeProviderElement<int> createElement() {
     return _Count2ProviderElement(this);
   }
@@ -216,6 +222,7 @@ class CountFuture2Family extends Family {
     );
   }
 
+  @visibleForOverriding
   @override
   CountFuture2Provider getProviderOverride(
     covariant CountFuture2Provider provider,
@@ -293,6 +300,11 @@ class CountFuture2Provider extends AutoDisposeFutureProvider<int> {
   }
 
   @override
+  (int,) get argument {
+    return (a,);
+  }
+
+  @override
   AutoDisposeFutureProviderElement<int> createElement() {
     return _CountFuture2ProviderElement(this);
   }
@@ -344,6 +356,7 @@ class CountStream2Family extends Family {
     );
   }
 
+  @visibleForOverriding
   @override
   CountStream2Provider getProviderOverride(
     covariant CountStream2Provider provider,
@@ -418,6 +431,11 @@ class CountStream2Provider extends AutoDisposeStreamProvider<int> {
         a: a,
       ),
     );
+  }
+
+  @override
+  (int,) get argument {
+    return (a,);
   }
 
   @override
@@ -530,6 +548,7 @@ class CountNotifier2Family extends Family {
     );
   }
 
+  @visibleForOverriding
   @override
   CountNotifier2Provider getProviderOverride(
     covariant CountNotifier2Provider provider,
@@ -612,6 +631,11 @@ class CountNotifier2Provider
   }
 
   @override
+  (int,) get argument {
+    return (a,);
+  }
+
+  @override
   AutoDisposeNotifierProviderElement<CountNotifier2, int> createElement() {
     return _CountNotifier2ProviderElement(this);
   }
@@ -674,6 +698,7 @@ class CountAsyncNotifier2Family extends Family {
     );
   }
 
+  @visibleForOverriding
   @override
   CountAsyncNotifier2Provider getProviderOverride(
     covariant CountAsyncNotifier2Provider provider,
@@ -756,6 +781,11 @@ class CountAsyncNotifier2Provider
   }
 
   @override
+  (int,) get argument {
+    return (a,);
+  }
+
+  @override
   AutoDisposeAsyncNotifierProviderElement<CountAsyncNotifier2, int>
       createElement() {
     return _CountAsyncNotifier2ProviderElement(this);
@@ -819,6 +849,7 @@ class CountStreamNotifier2Family extends Family {
     );
   }
 
+  @visibleForOverriding
   @override
   CountStreamNotifier2Provider getProviderOverride(
     covariant CountStreamNotifier2Provider provider,
@@ -901,6 +932,11 @@ class CountStreamNotifier2Provider
   }
 
   @override
+  (int,) get argument {
+    return (a,);
+  }
+
+  @override
   AutoDisposeStreamNotifierProviderElement<CountStreamNotifier2, int>
       createElement() {
     return _CountStreamNotifier2ProviderElement(this);
@@ -934,4 +970,4 @@ class _CountStreamNotifier2ProviderElement
   int get a => (origin as CountStreamNotifier2Provider).a;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package

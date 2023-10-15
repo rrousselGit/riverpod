@@ -217,7 +217,7 @@ class LegacyProviderDeclarationElement implements ProviderDeclarationElement {
           element.library!,
         )!;
         if (callFn.parameters.length != 1) {
-          stdout.writeln('Problem eleemnt: $element');
+          stdout.writeln('Problem element: $element');
         }
         final parameter = callFn.parameters.single;
 

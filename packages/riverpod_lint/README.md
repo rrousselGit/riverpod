@@ -26,7 +26,7 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
 
 - Warn if `runApp` does not include a `ProviderScope` at its root
 - Warn if provider parameters do not respect [the rules of `family`](https://riverpod.dev/docs/concepts/modifiers/family#passing-multiple-parameters-to-a-family)
-- Refactor a widget to a ConsumerWidget/ConsumerStatfulWidget
+- Refactor a widget to a ConsumerWidget/ConsumerStatefulWidget
 - ...
 
 ![Convert to ConsumerStatefulWidget sample](https://raw.githubusercontent.com/rrousselGit/riverpod/master/packages/riverpod_lint/resources/convert_to_stateful_consumer.gif)
@@ -51,7 +51,9 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
   - [functional\_ref (riverpod\_generator only)](#functional_ref-riverpod_generator-only)
   - [notifier\_extends (riverpod\_generator only)](#notifier_extends-riverpod_generator-only)
   - [avoid\_ref\_inside\_state\_dispose](#avoid_ref_inside_state_dispose)
-  - [missed\_build\_method (riverpod\_generator only)](#notifier_build-riverpod_generator-only)
+  - [notifier\_build (riverpod\_generator only)](#notifier_build-riverpod_generator-only)
+  - [async\_value\_nullable\_patttern](#async_value_nullable_patttern)
+- [protected\_notifier\_properties](#protected_notifier_properties)
 - [All assists](#all-assists)
   - [Wrap widgets with a `Consumer`](#wrap-widgets-with-a-consumer)
   - [Wrap widgets with a `ProviderScope`](#wrap-widgets-with-a-providerscope)
@@ -442,7 +444,7 @@ class Model {
 @riverpod
 class MyNotifier extends _$MyNotifier {
   // No public getters/fields, this is fine. Instead
-  // Everythign is available in the `state` object.
+  // Everything is available in the `state` object.
   @override
   Model build() => Model(0, 0);
 }
@@ -595,8 +597,8 @@ Classes annotated by `@riverpod` must have the `build` method.
 ```dart
 @riverpod
 class Example extends _$Example {
-  
-  @overried
+
+  @override
   int build() => 0;
 }
 ```
@@ -607,6 +609,91 @@ class Example extends _$Example {
 // No "build" method found
 @riverpod
 class Example extends _$Example {}
+```
+
+### async_value_nullable_patttern
+
+Warn if the pattern `AsyncValue(:final value?)` is used when the data
+is possibly nullable.
+
+**Bad**:
+
+```dart
+switch (...) {
+  // int? is nullable, therefore ":final value?" should not be used
+  case AsyncValue<int?>(:final value?):
+     print('data $value');
+}
+```
+
+**Good**:
+
+```dart
+switch (...) {
+  // int is non-nullable, so using ":final value?" is fine.
+  case AsyncValue<int>(:final value?):
+     print('data $value');
+}
+```
+
+```dart
+switch (...) {
+  // int? is nullable, therefore we use "hasValue: true"
+  case AsyncValue<int?>(:final value, hasValue: true):
+     print('data $value');
+}
+```
+
+## protected_notifier_properties
+
+Notifiers should not access the state of other notifiers.
+
+This includes `.state`, `.future`, and `.ref`.
+
+**Bad**:
+
+```dart
+@riverpod
+class A extends _$A {
+  @override
+  int build() => 0;
+}
+
+@riverpod
+class B extends _$B {
+  @override
+  int build() => 0;
+
+  void doSomething() {
+    // KO: Reading protected properties
+    ref.read(aProvider.notifier).state++;
+  }
+}
+```
+
+**Good**:
+
+```dart
+@riverpod
+class A extends _$A {
+  @override
+  int build() => 0;
+
+  void increment() {
+    state++;
+  }
+}
+
+@riverpod
+class B extends _$B {
+  @override
+  int build() => 0;
+
+  void doSomething() {
+    // Only access what notifiers explicitly enables us to.
+    ref.read(aProvider.notifier).increment();
+  }
+}
 ```
 
 ## All assists
