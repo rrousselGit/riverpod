@@ -1,4 +1,4 @@
-## Unreleased 3.0.0-dev.4
+## 3.0.0-dev.4 - 2023-10-15
 
 - Annotating a provider with `@deprecated` and a few other annotations
   also annotate the generated code accordingly (thanks to @SunlightBro)

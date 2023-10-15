@@ -1,4 +1,4 @@
-## Unreleased fix
+## 2.3.1 - 2023-10-15
 
 - Fixed a crash when a Notifier had a getter (thanks to @charlescyt)
 

@@ -1,3 +1,8 @@
+## 2.4.4 - 2023-10-15
+
+- `flutter_riverpod` upgraded to `2.4.4`
+- `riverpod` upgraded to `2.4.4`
+
 ## 2.4.3 - 2023-10-06
 
 - Fixed incorrect `@visibleForTesting` warning.
