@@ -30,3 +30,11 @@ class MyNotifier extends _$MyNotifier {
     required BuildContext context4,
   }) {}
 }
+
+@riverpod
+class Regresion2959 extends _$Regresion2959 {
+  @override
+  void build() {}
+
+  bool get valid => false;
+}
