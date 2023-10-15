@@ -356,5 +356,22 @@ class _MyNotifierProviderElement
   @override
   BuildContext get context2 => (origin as MyNotifierProvider).context2;
 }
+
+String _$regresion2959Hash() => r'bcf9a829ce75026a78569de680451d157c7d90a2';
+
+/// See also [Regresion2959].
+@ProviderFor(Regresion2959)
+final regresion2959Provider =
+    AutoDisposeNotifierProvider<Regresion2959, void>.internal(
+  Regresion2959.new,
+  name: r'regresion2959Provider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$regresion2959Hash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$Regresion2959 = AutoDisposeNotifier<void>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package
