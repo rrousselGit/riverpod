@@ -1,3 +1,5 @@
+devtools_options.yaml
+
 pubspec.lock
 
 # Ignoring native folders of the example as they can be re-generated easily using:
