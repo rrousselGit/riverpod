@@ -6,20 +6,6 @@ part of 'functional_ref.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$reflessHash() => r'45894f451ae8fab59805fce9bd8292f2b5db1618';
-
-/// See also [refless].
-@ProviderFor(refless)
-final reflessProvider = AutoDisposeProvider<int>.internal(
-  refless,
-  name: r'reflessProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$reflessHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef ReflessRef = AutoDisposeProviderRef<int>;
 String _$namelessHash() => r'1a2aa61445a64c65301051820b159c5998195606';
 
 /// See also [nameless].
@@ -34,21 +20,6 @@ final namelessProvider = AutoDisposeProvider<int>.internal(
 );
 
 typedef NamelessRef = AutoDisposeProviderRef<int>;
-String _$incorrectlyTypedHash() => r'36b38a6d23ff56629e8d18e1764a957495953ac0';
-
-/// See also [incorrectlyTyped].
-@ProviderFor(incorrectlyTyped)
-final incorrectlyTypedProvider = AutoDisposeProvider<int>.internal(
-  incorrectlyTyped,
-  name: r'incorrectlyTypedProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$incorrectlyTypedHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef IncorrectlyTypedRef = AutoDisposeProviderRef<int>;
 String _$scopedHash() => r'590f1a203323105e732397a2616fbd7dac65f0cc';
 
 /// See also [scoped].
@@ -549,20 +520,5 @@ class _WrongOrderProviderElement<B, A> extends AutoDisposeProviderElement<int>
     with WrongOrderRef<B, A> {
   _WrongOrderProviderElement(super.provider);
 }
-
-String _$noRefButArgsHash() => r'462ab15f4053f3e9592557cc8a698fbb2352bd40';
-
-/// See also [noRefButArgs].
-@ProviderFor(noRefButArgs)
-final noRefButArgsProvider = AutoDisposeProvider<int>.internal(
-  noRefButArgs,
-  name: r'noRefButArgsProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$noRefButArgsHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef NoRefButArgsRef = AutoDisposeProviderRef<int>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package
