@@ -335,7 +335,7 @@ class _MyNotifierProviderElement
   BuildContext get context2 => (origin as MyNotifierProvider).context2;
 }
 
-String _$regresion2959Hash() => r'8f4bc6a55de095cc7a7cd3d2c09b939779599e9d';
+String _$regresion2959Hash() => r'bcf9a829ce75026a78569de680451d157c7d90a2';
 
 /// See also [Regresion2959].
 @ProviderFor(Regresion2959)

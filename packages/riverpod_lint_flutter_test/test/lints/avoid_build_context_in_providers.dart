@@ -1,3 +1,5 @@
+// ignore_for_file: unused_element
+
 import 'package:flutter/widgets.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -36,5 +38,5 @@ class Regresion2959 extends _$Regresion2959 {
   @override
   void build() {}
 
-  bool get valid => false;
+  bool get _valid => false;
 }
