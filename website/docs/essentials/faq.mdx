@@ -137,3 +137,18 @@ At the same time, for simple objects, `identical` correctly does filter redundan
 
 Last but not least, you can change this behavior by overriding the method
 `updateShouldNotify` on Notifiers.
+
+## Is there a way to reset all providers at once?
+
+No, there is no way to reset all providers at once.
+
+This is on purpose, as it is considered an anti-pattern. Resetting all providers
+at once will often reset providers that you did not intend to reset.
+
+This is commonly asked by users who want to reset the state of their application
+when the user logs out.  
+If this is what you are after, instead you should have everything dependent on the
+user's state to `ref.watch` the "user" provider.
+
+Then, when the user logs out, all providers depending on it would automatically
+be reset. But everything else will stay untouched.
