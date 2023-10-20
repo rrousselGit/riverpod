@@ -5,13 +5,13 @@ export function buildDeps({
   deps?: string[];
   devDeps?: string[];
 }) {
-  var result = "dart pub add";
+  var result = "";
   for (const dep of deps) {
-    result += ` \\\n  ${dep}`;
+    result += `dart pub add ${dep}\n`;
   }
 
   for (const dep of [...devDeps, "custom_lint", "riverpod_lint"]) {
-    result += ` \\\n  dev:${dep}`;
+    result += `dart pub add dev:${dep}\n`;
   }
 
   return result;
