@@ -1,3 +1,7 @@
+## 0.4.2 - 2023-10-21
+
+- Type `provider.node` as `AnnotatedNode`
+
 ## 0.4.1 - 2023-10-06
 
 - Added type checkers for AsyncValue and subclasses.

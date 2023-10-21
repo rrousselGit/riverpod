@@ -1,3 +1,7 @@
+## 2.3.2 - 2023-10-21
+
+- `riverpod_analyzer_utils` upgraded to `0.4.2`
+
 ## 2.3.1 - 2023-10-15
 
 - Fixed a crash when a Notifier had a getter (thanks to @charlescyt)
