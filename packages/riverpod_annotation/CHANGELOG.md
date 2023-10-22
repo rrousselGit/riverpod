@@ -1,3 +1,7 @@
+## 2.2.1 - 2023-10-15
+
+- `riverpod` upgraded to `2.4.4`
+
 ## 2.2.0 - 2023-10-06
 
 - Exports `@internal` from `pkg:meta` for the code-generator to use.

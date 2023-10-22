@@ -14,13 +14,7 @@ final allFilterKey = UniqueKey();
 ///
 /// We are using [StateNotifierProvider] here as a `List<Todo>` is a complex
 /// object, with advanced business logic like how to edit a todo.
-final todoListProvider = StateNotifierProvider<TodoList, List<Todo>>((ref) {
-  return TodoList(const [
-    Todo(id: 'todo-0', description: 'hi'),
-    Todo(id: 'todo-1', description: 'hello'),
-    Todo(id: 'todo-2', description: 'bonjour'),
-  ]);
-});
+final todoListProvider = NotifierProvider<TodoList, List<Todo>>(TodoList.new);
 
 /// The different ways to filter the list of todos
 enum TodoListFilter {
@@ -70,7 +64,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +75,7 @@ class MyApp extends StatelessWidget {
 }
 
 class Home extends HookConsumerWidget {
-  const Home({Key? key}) : super(key: key);
+  const Home({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -133,8 +127,8 @@ class Home extends HookConsumerWidget {
 
 class Toolbar extends HookConsumerWidget {
   const Toolbar({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -205,7 +199,7 @@ class Toolbar extends HookConsumerWidget {
 }
 
 class Title extends StatelessWidget {
-  const Title({Key? key}) : super(key: key);
+  const Title({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -233,7 +227,7 @@ final _currentTodo = Provider<Todo>((ref) => throw UnimplementedError());
 
 /// The widget that that displays the components of an individual Todo Item
 class TodoItem extends HookConsumerWidget {
-  const TodoItem({Key? key}) : super(key: key);
+  const TodoItem({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

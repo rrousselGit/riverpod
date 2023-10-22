@@ -35,7 +35,6 @@ abstract class BuildlessAsyncNotifier<State> extends AsyncNotifierBase<State> {
 /// {@endtemplate}
 ///
 /// {@macro riverpod.async_notifier_provider_modifier}
-// TODO add usage example
 abstract class AsyncNotifier<State> extends BuildlessAsyncNotifier<State> {
   /// {@template riverpod.asyncnotifier.build}
   /// Initialize an [AsyncNotifier].

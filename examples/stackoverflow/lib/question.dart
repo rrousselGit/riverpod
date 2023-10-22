@@ -139,7 +139,6 @@ class QuestionItem extends HookConsumerWidget {
     final questionTheme = ref.watch(questionThemeProvider);
 
     return question.when(
-      // TODO(rrousselGit): improve error rendering
       error: (error, stack) => const Center(child: Text('Error')),
       loading: () => const Center(child: Text('loading')),
       data: (question) {
@@ -206,7 +205,6 @@ String _useAskedHowLongAgo(DateTime creationDate) {
   useEffect(
     () {
       void setLabel() {
-        // TODO use package:clock to make mock this value inside tests
         final now = DateTime.now();
         final diff = now.difference(creationDate);
 

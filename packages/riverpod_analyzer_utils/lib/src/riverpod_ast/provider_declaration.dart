@@ -2,6 +2,6 @@ part of '../riverpod_ast.dart';
 
 abstract class ProviderDeclaration extends RiverpodAst {
   Token get name;
-  AstNode get node;
+  AnnotatedNode get node;
   ProviderDeclarationElement get providerElement;
 }

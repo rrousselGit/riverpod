@@ -352,7 +352,7 @@ in a widget life-cycle, such as but not limited to:
 - initState
 - dispose
 - didUpdateWidget
-- didChangeDepedencies
+- didChangeDependencies
 
 Modifying a provider inside those life-cycles is not allowed, as it could
 lead to an inconsistent UI state. For example, two widgets could listen to the
@@ -364,7 +364,7 @@ To fix this problem, you have one of two solutions:
   life-cycle. For example, maybe you could update your provider inside a button's
   onPressed instead.
 
-- Delay your modification, such as by encasuplating the modification
+- Delay your modification, such as by encapsulating the modification
   in a `Future(() {...})`.
   This will perform your update after the widget tree is done building.
 ''',

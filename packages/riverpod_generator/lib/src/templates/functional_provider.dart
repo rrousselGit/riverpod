@@ -58,6 +58,7 @@ class FunctionalProviderTemplate extends Template {
     buffer.write('''
 ${providerDocFor(provider.providerElement.element)}
 @ProviderFor(${provider.name})
+${metaAnnotations(provider.node.metadata)}
 final $providerName = $providerType<${provider.valueTypeDisplayString}>.internal(
   $createFn,
   name: r'$providerName',

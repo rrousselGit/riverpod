@@ -27,7 +27,8 @@ class AvoidBuildContextInProviders extends RiverpodLintRule {
     CustomLintContext context,
   ) {
     riverpodRegistry(context).addFunctionalProviderDeclaration((declaration) {
-      final parameters = declaration.node.functionExpression.parameters!;
+      final parameters = declaration.node.functionExpression.parameters;
+      if (parameters == null) return;
       _emitWarningsForBuildContext(reporter, parameters);
     });
 
@@ -35,7 +36,8 @@ class AvoidBuildContextInProviders extends RiverpodLintRule {
       final methods = declaration.node.members.whereType<MethodDeclaration>();
 
       for (final method in methods) {
-        final parameters = method.parameters!;
+        final parameters = method.parameters;
+        if (parameters == null) continue;
         _emitWarningsForBuildContext(reporter, parameters);
       }
     });

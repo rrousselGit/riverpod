@@ -139,6 +139,11 @@ class GeneratedFamilyProvider extends AutoDisposeProvider<_Test> {
   }
 
   @override
+  (_Test,) get argument {
+    return (test,);
+  }
+
+  @override
   AutoDisposeProviderElement<_Test> createElement() {
     return _GeneratedFamilyProviderElement(this);
   }
@@ -282,6 +287,11 @@ class $DynamicFamilyProvider extends AutoDisposeProvider<Object?> {
   }
 
   @override
+  (dynamic,) get argument {
+    return (test,);
+  }
+
+  @override
   AutoDisposeProviderElement<Object?> createElement() {
     return _$DynamicFamilyProviderElement(this);
   }
@@ -407,6 +417,11 @@ class _DynamicProvider extends AutoDisposeProvider<Object?> {
         test: test,
       ),
     );
+  }
+
+  @override
+  (dynamic,) get argument {
+    return (test,);
   }
 
   @override
@@ -550,6 +565,11 @@ class AliasFamilyProvider extends AutoDisposeProvider<r.AsyncValue<int>> {
         test: test,
       ),
     );
+  }
+
+  @override
+  (r.AsyncValue<int>,) get argument {
+    return (test,);
   }
 
   @override
@@ -710,6 +730,11 @@ class GeneratedClassFamilyProvider
         test: test,
       ),
     );
+  }
+
+  @override
+  (_Test,) get argument {
+    return (test,);
   }
 
   @override
@@ -875,6 +900,11 @@ class $DynamicClassFamilyProvider
   }
 
   @override
+  (dynamic,) get argument {
+    return (test,);
+  }
+
+  @override
   AutoDisposeNotifierProviderElement<$DynamicClassFamily, Object?>
       createElement() {
     return _$DynamicClassFamilyProviderElement(this);
@@ -1035,6 +1065,11 @@ class AliasClassFamilyProvider extends AutoDisposeNotifierProviderImpl<
   }
 
   @override
+  (r.AsyncValue<int>,) get argument {
+    return (test,);
+  }
+
+  @override
   AutoDisposeNotifierProviderElement<AliasClassFamily, r.AsyncValue<int>>
       createElement() {
     return _AliasClassFamilyProviderElement(this);
@@ -1068,4 +1103,4 @@ class _AliasClassFamilyProviderElement
   r.AsyncValue<int> get test => (origin as AliasClassFamilyProvider).test;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package

@@ -162,6 +162,11 @@ class A3Provider extends AutoDisposeNotifierProviderImpl<A3, int> {
   }
 
   @override
+  (int,) get argument {
+    return (param,);
+  }
+
+  @override
   AutoDisposeNotifierProviderElement<A3, int> createElement() {
     return _A3ProviderElement(this);
   }
@@ -300,6 +305,11 @@ class A4Provider extends NotifierProviderImpl<A4, int> {
   }
 
   @override
+  (int,) get argument {
+    return (param,);
+  }
+
+  @override
   NotifierProviderElement<A4, int> createElement() {
     return _A4ProviderElement(this);
   }
@@ -434,6 +444,11 @@ class A5Provider extends AutoDisposeAsyncNotifierProviderImpl<A5, int> {
         param: param,
       ),
     );
+  }
+
+  @override
+  (int,) get argument {
+    return (param,);
   }
 
   @override
@@ -575,6 +590,11 @@ class A6Provider extends AsyncNotifierProviderImpl<A6, int> {
   }
 
   @override
+  (int,) get argument {
+    return (param,);
+  }
+
+  @override
   AsyncNotifierProviderElement<A6, int> createElement() {
     return _A6ProviderElement(this);
   }
@@ -710,6 +730,11 @@ class A7Provider extends AutoDisposeStreamNotifierProviderImpl<A7, int> {
         param: param,
       ),
     );
+  }
+
+  @override
+  (int,) get argument {
+    return (param,);
   }
 
   @override
@@ -851,6 +876,11 @@ class A8Provider extends StreamNotifierProviderImpl<A8, int> {
   }
 
   @override
+  (int,) get argument {
+    return (param,);
+  }
+
+  @override
   StreamNotifierProviderElement<A8, int> createElement() {
     return _A8ProviderElement(this);
   }
@@ -911,4 +941,4 @@ final b2Provider = AutoDisposeNotifierProvider<B2, int>.internal(
 
 typedef _$B2 = AutoDisposeNotifier<int>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package

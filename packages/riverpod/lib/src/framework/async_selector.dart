@@ -21,7 +21,7 @@ mixin AsyncSelector<Input> on ProviderListenable<AsyncValue<Input>> {
   /// // A provider which asynchronously loads configurations,
   /// // which may change over time.
   /// final configsProvider = StreamProvider<Config>((ref) async {
-  ///   // TODO fetch the configurations, such as by using Firebase
+  ///   // TO-DO fetch the configurations, such as by using Firebase
   /// });
   ///
   /// // A provider which fetches a list of products based on the configurations

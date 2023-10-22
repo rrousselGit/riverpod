@@ -1,3 +1,7 @@
+## 0.4.2 - 2023-10-21
+
+- Type `provider.node` as `AnnotatedNode`
+
 ## 0.4.1 - 2023-10-06
 
 - Added type checkers for AsyncValue and subclasses.
@@ -57,8 +61,8 @@ the `@riverpod external int value()` syntax.
 
 - Decode generated StreamProviders.
 
-- Upcast `ClassBasedProviderDeclaratation.providerElement` &
-  `FunctionalProviderDeclaratation.providerElement` to their respective element type.
+- Upcast `ClassBasedProviderDeclaration.providerElement` &
+  `FunctionalProviderDeclaration.providerElement` to their respective element type.
 
 - Change error handling mechanism (no more exceptions)
 

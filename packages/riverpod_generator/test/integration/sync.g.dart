@@ -153,6 +153,11 @@ class RawFamilyFutureProvider extends AutoDisposeProvider<Raw<Future<String>>> {
   }
 
   @override
+  (int,) get argument {
+    return (id,);
+  }
+
+  @override
   AutoDisposeProviderElement<Raw<Future<String>>> createElement() {
     return _RawFamilyFutureProviderElement(this);
   }
@@ -280,6 +285,11 @@ class RawFamilyStreamProvider extends AutoDisposeProvider<Raw<Stream<String>>> {
         id: id,
       ),
     );
+  }
+
+  @override
+  (int,) get argument {
+    return (id,);
   }
 
   @override
@@ -487,6 +497,23 @@ class FamilyProvider extends AutoDisposeProvider<String> {
         fourth: fourth,
         fifth: fifth,
       ),
+    );
+  }
+
+  @override
+  (
+    int, {
+    String? second,
+    double third,
+    bool fourth,
+    List<String>? fifth,
+  }) get argument {
+    return (
+      first,
+      second: second,
+      third: third,
+      fourth: fourth,
+      fifth: fifth,
     );
   }
 
@@ -724,6 +751,11 @@ class RawFamilyFutureClassProvider extends AutoDisposeNotifierProviderImpl<
   }
 
   @override
+  (int,) get argument {
+    return (id,);
+  }
+
+  @override
   AutoDisposeNotifierProviderElement<RawFamilyFutureClass, Raw<Future<String>>>
       createElement() {
     return _RawFamilyFutureClassProviderElement(this);
@@ -868,6 +900,11 @@ class RawFamilyStreamClassProvider extends AutoDisposeNotifierProviderImpl<
         id: id,
       ),
     );
+  }
+
+  @override
+  (int,) get argument {
+    return (id,);
   }
 
   @override
@@ -1114,6 +1151,23 @@ class FamilyClassProvider
   }
 
   @override
+  (
+    int, {
+    String? second,
+    double third,
+    bool fourth,
+    List<String>? fifth,
+  }) get argument {
+    return (
+      first,
+      second: second,
+      third: third,
+      fourth: fourth,
+      fifth: fifth,
+    );
+  }
+
+  @override
   AutoDisposeNotifierProviderElement<FamilyClass, String> createElement() {
     return _FamilyClassProviderElement(this);
   }
@@ -1193,4 +1247,4 @@ final supports$InClassNameProvider =
 
 typedef _$Supports$InClassName = AutoDisposeNotifier<String>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package

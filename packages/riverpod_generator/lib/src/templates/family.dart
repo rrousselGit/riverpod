@@ -227,6 +227,7 @@ ${parameters.map((e) => '        ${e.name}: ${e.name},\n').join()}
     });
 
     final docs = providerDocFor(provider.providerElement.element);
+    final meta = metaAnnotations(provider.node.metadata);
     final providerName =
         providerFamilyNameFor(provider.providerElement, options);
 
@@ -235,11 +236,20 @@ ${parameters.map((e) => '        ${e.name}: ${e.name},\n').join()}
             ? 'const Iterable<ProviderOrFamily>?'
             : 'final Iterable<ProviderOrFamily>';
 
+    final argumentRecordType = buildParamDefinitionQuery(
+      parameters,
+      asRecord: true,
+    );
+    final argumentsToRecord = buildParamInvocationQuery({
+      for (final parameter in parameters) parameter: parameter.name!.lexeme,
+    });
+
     buffer.write('''
 $other
 
 $docs
 @ProviderFor(${provider.name})
+$meta
 const $providerName = $familyName();
 
 $docs
@@ -305,6 +315,11 @@ class $providerTypeNameImpl extends $providerType$providerGenerics {
 ${parameters.map((e) => 'final ${e.typeDisplayString} ${e.name};').join()}
 
 $providerOther
+
+  @override
+  ($argumentRecordType) get argument {
+    return ($argumentsToRecord);
+  }
 
   @override
   $elementType$providerGenerics createElement() {
