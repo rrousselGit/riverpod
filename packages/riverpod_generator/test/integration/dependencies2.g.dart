@@ -110,6 +110,27 @@ class FamilyWithDependencies2Family extends Family<int> {
       id: provider.id,
     );
   }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(int Function(FamilyWithDependencies2Ref ref) create) {
+    return _$FamilyWithDependencies2FamilyOverride(this, create);
+  }
+}
+
+class _$FamilyWithDependencies2FamilyOverride implements FamilyOverride<int> {
+  _$FamilyWithDependencies2FamilyOverride(this.overriddenFamily, this.create);
+
+  final int Function(FamilyWithDependencies2Ref ref) create;
+
+  @override
+  final FamilyWithDependencies2Family overriddenFamily;
+
+  @override
+  FamilyWithDependencies2Provider getProviderOverride(
+    covariant FamilyWithDependencies2Provider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [familyWithDependencies2].
@@ -135,7 +156,7 @@ class FamilyWithDependencies2Provider extends AutoDisposeProvider<int> {
         );
 
   FamilyWithDependencies2Provider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -174,6 +195,20 @@ class FamilyWithDependencies2Provider extends AutoDisposeProvider<int> {
   @override
   AutoDisposeProviderElement<int> createElement() {
     return _FamilyWithDependencies2ProviderElement(this);
+  }
+
+  FamilyWithDependencies2Provider _copyWith(
+    int Function(FamilyWithDependencies2Ref ref) create,
+  ) {
+    return FamilyWithDependencies2Provider._internal(
+      (ref) => create(ref as FamilyWithDependencies2Ref),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      id: id,
+    );
   }
 
   @override
@@ -325,6 +360,29 @@ class NotifierFamilyWithDependenciesFamily extends Family<int> {
       id: provider.id,
     );
   }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(NotifierFamilyWithDependencies Function() create) {
+    return _$NotifierFamilyWithDependenciesFamilyOverride(this, create);
+  }
+}
+
+class _$NotifierFamilyWithDependenciesFamilyOverride
+    implements FamilyOverride<int> {
+  _$NotifierFamilyWithDependenciesFamilyOverride(
+      this.overriddenFamily, this.create);
+
+  final NotifierFamilyWithDependencies Function() create;
+
+  @override
+  final NotifierFamilyWithDependenciesFamily overriddenFamily;
+
+  @override
+  NotifierFamilyWithDependenciesProvider getProviderOverride(
+    covariant NotifierFamilyWithDependenciesProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [NotifierFamilyWithDependencies].
@@ -349,7 +407,7 @@ class NotifierFamilyWithDependenciesProvider
         );
 
   NotifierFamilyWithDependenciesProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -396,6 +454,20 @@ class NotifierFamilyWithDependenciesProvider
   AutoDisposeNotifierProviderElement<NotifierFamilyWithDependencies, int>
       createElement() {
     return _NotifierFamilyWithDependenciesProviderElement(this);
+  }
+
+  NotifierFamilyWithDependenciesProvider _copyWith(
+    NotifierFamilyWithDependencies Function() create,
+  ) {
+    return NotifierFamilyWithDependenciesProvider._internal(
+      () => create()..id = id,
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      id: id,
+    );
   }
 
   @override

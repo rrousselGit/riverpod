@@ -90,6 +90,27 @@ class FamilyFamily extends Family<String> {
       provider.id,
     );
   }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(String Function(FamilyRef ref) create) {
+    return _$FamilyFamilyOverride(this, create);
+  }
+}
+
+class _$FamilyFamilyOverride implements FamilyOverride<String> {
+  _$FamilyFamilyOverride(this.overriddenFamily, this.create);
+
+  final String Function(FamilyRef ref) create;
+
+  @override
+  final FamilyFamily overriddenFamily;
+
+  @override
+  FamilyProvider getProviderOverride(
+    covariant FamilyProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [family].
@@ -114,7 +135,7 @@ class FamilyProvider extends AutoDisposeProvider<String> {
         );
 
   FamilyProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -151,6 +172,20 @@ class FamilyProvider extends AutoDisposeProvider<String> {
   @override
   AutoDisposeProviderElement<String> createElement() {
     return _FamilyProviderElement(this);
+  }
+
+  FamilyProvider _copyWith(
+    String Function(FamilyRef ref) create,
+  ) {
+    return FamilyProvider._internal(
+      (ref) => create(ref as FamilyRef),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      id: id,
+    );
   }
 
   @override
@@ -239,6 +274,27 @@ class NotCopiedFamilyFamily extends Family<String> {
       provider.id,
     );
   }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(String Function(NotCopiedFamilyRef ref) create) {
+    return _$NotCopiedFamilyFamilyOverride(this, create);
+  }
+}
+
+class _$NotCopiedFamilyFamilyOverride implements FamilyOverride<String> {
+  _$NotCopiedFamilyFamilyOverride(this.overriddenFamily, this.create);
+
+  final String Function(NotCopiedFamilyRef ref) create;
+
+  @override
+  final NotCopiedFamilyFamily overriddenFamily;
+
+  @override
+  NotCopiedFamilyProvider getProviderOverride(
+    covariant NotCopiedFamilyProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [notCopiedFamily].
@@ -264,7 +320,7 @@ class NotCopiedFamilyProvider extends AutoDisposeProvider<String> {
         );
 
   NotCopiedFamilyProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -301,6 +357,20 @@ class NotCopiedFamilyProvider extends AutoDisposeProvider<String> {
   @override
   AutoDisposeProviderElement<String> createElement() {
     return _NotCopiedFamilyProviderElement(this);
+  }
+
+  NotCopiedFamilyProvider _copyWith(
+    String Function(NotCopiedFamilyRef ref) create,
+  ) {
+    return NotCopiedFamilyProvider._internal(
+      (ref) => create(ref as NotCopiedFamilyRef),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      id: id,
+    );
   }
 
   @override

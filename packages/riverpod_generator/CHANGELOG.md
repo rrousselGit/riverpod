@@ -1,3 +1,7 @@
+## Unreleased fix
+
+- Fixed `family.overrideWith` missing
+
 ## 3.0.0-dev.5 - 2023-10-21
 
 - `riverpod_analyzer_utils` upgraded to `0.4.2`

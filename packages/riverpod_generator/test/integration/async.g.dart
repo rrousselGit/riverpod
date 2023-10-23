@@ -98,6 +98,27 @@ class FamilyOrFamily extends Family<AsyncValue<String>> {
       provider.first,
     );
   }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(FutureOr<String> Function(FamilyOrRef ref) create) {
+    return _$FamilyOrFamilyOverride(this, create);
+  }
+}
+
+class _$FamilyOrFamilyOverride implements FamilyOverride<AsyncValue<String>> {
+  _$FamilyOrFamilyOverride(this.overriddenFamily, this.create);
+
+  final FutureOr<String> Function(FamilyOrRef ref) create;
+
+  @override
+  final FamilyOrFamily overriddenFamily;
+
+  @override
+  FamilyOrProvider getProviderOverride(
+    covariant FamilyOrProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [familyOr].
@@ -122,7 +143,7 @@ class FamilyOrProvider extends AutoDisposeFutureProvider<String> {
         );
 
   FamilyOrProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -159,6 +180,20 @@ class FamilyOrProvider extends AutoDisposeFutureProvider<String> {
   @override
   AutoDisposeFutureProviderElement<String> createElement() {
     return _FamilyOrProviderElement(this);
+  }
+
+  FamilyOrProvider _copyWith(
+    FutureOr<String> Function(FamilyOrRef ref) create,
+  ) {
+    return FamilyOrProvider._internal(
+      (ref) => create(ref as FamilyOrRef),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      first: first,
+    );
   }
 
   @override
@@ -243,6 +278,27 @@ class FamilyFamily extends Family<AsyncValue<String>> {
       fifth: provider.fifth,
     );
   }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(FutureOr<String> Function(FamilyRef ref) create) {
+    return _$FamilyFamilyOverride(this, create);
+  }
+}
+
+class _$FamilyFamilyOverride implements FamilyOverride<AsyncValue<String>> {
+  _$FamilyFamilyOverride(this.overriddenFamily, this.create);
+
+  final FutureOr<String> Function(FamilyRef ref) create;
+
+  @override
+  final FamilyFamily overriddenFamily;
+
+  @override
+  FamilyProvider getProviderOverride(
+    covariant FamilyProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [family].
@@ -279,7 +335,7 @@ class FamilyProvider extends AutoDisposeFutureProvider<String> {
         );
 
   FamilyProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -340,6 +396,24 @@ class FamilyProvider extends AutoDisposeFutureProvider<String> {
   @override
   AutoDisposeFutureProviderElement<String> createElement() {
     return _FamilyProviderElement(this);
+  }
+
+  FamilyProvider _copyWith(
+    FutureOr<String> Function(FamilyRef ref) create,
+  ) {
+    return FamilyProvider._internal(
+      (ref) => create(ref as FamilyRef),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      first: first,
+      second: second,
+      third: third,
+      fourth: fourth,
+      fifth: fifth,
+    );
   }
 
   @override
@@ -480,6 +554,28 @@ class FamilyOrClassFamily extends Family<AsyncValue<String>> {
       provider.first,
     );
   }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(FamilyOrClass Function() create) {
+    return _$FamilyOrClassFamilyOverride(this, create);
+  }
+}
+
+class _$FamilyOrClassFamilyOverride
+    implements FamilyOverride<AsyncValue<String>> {
+  _$FamilyOrClassFamilyOverride(this.overriddenFamily, this.create);
+
+  final FamilyOrClass Function() create;
+
+  @override
+  final FamilyOrClassFamily overriddenFamily;
+
+  @override
+  FamilyOrClassProvider getProviderOverride(
+    covariant FamilyOrClassProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [FamilyOrClass].
@@ -503,7 +599,7 @@ class FamilyOrClassProvider
         );
 
   FamilyOrClassProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -550,6 +646,20 @@ class FamilyOrClassProvider
     return _FamilyOrClassProviderElement(this);
   }
 
+  FamilyOrClassProvider _copyWith(
+    FamilyOrClass Function() create,
+  ) {
+    return FamilyOrClassProvider._internal(
+      () => create()..first = first,
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      first: first,
+    );
+  }
+
   @override
   bool operator ==(Object other) {
     return other is FamilyOrClassProvider && other.first == first;
@@ -587,7 +697,7 @@ abstract class _$FamilyClass extends BuildlessAutoDisposeAsyncNotifier<String> {
   late final bool fourth;
   late final List<String>? fifth;
 
-  Future<String> build(
+  FutureOr<String> build(
     int first, {
     String? second,
     required double third,
@@ -649,6 +759,28 @@ class FamilyClassFamily extends Family<AsyncValue<String>> {
       fifth: provider.fifth,
     );
   }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(FamilyClass Function() create) {
+    return _$FamilyClassFamilyOverride(this, create);
+  }
+}
+
+class _$FamilyClassFamilyOverride
+    implements FamilyOverride<AsyncValue<String>> {
+  _$FamilyClassFamilyOverride(this.overriddenFamily, this.create);
+
+  final FamilyClass Function() create;
+
+  @override
+  final FamilyClassFamily overriddenFamily;
+
+  @override
+  FamilyClassProvider getProviderOverride(
+    covariant FamilyClassProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [FamilyClass].
@@ -685,7 +817,7 @@ class FamilyClassProvider
         );
 
   FamilyClassProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -705,7 +837,7 @@ class FamilyClassProvider
   final List<String>? fifth;
 
   @override
-  Future<String> runNotifierBuild(
+  FutureOr<String> runNotifierBuild(
     covariant FamilyClass notifier,
   ) {
     return notifier.build(
@@ -762,6 +894,29 @@ class FamilyClassProvider
   @override
   AutoDisposeAsyncNotifierProviderElement<FamilyClass, String> createElement() {
     return _FamilyClassProviderElement(this);
+  }
+
+  FamilyClassProvider _copyWith(
+    FamilyClass Function() create,
+  ) {
+    return FamilyClassProvider._internal(
+      () => create()
+        ..first = first
+        ..second = second
+        ..third = third
+        ..fourth = fourth
+        ..fifth = fifth,
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      first: first,
+      second: second,
+      third: third,
+      fourth: fourth,
+      fifth: fifth,
+    );
   }
 
   @override

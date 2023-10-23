@@ -27,6 +27,8 @@ class FamilyTemplate extends Template {
     required this.providerCreate,
     required this.parametersPassThrough,
     required this.hashFn,
+    required this.createType,
+    required this.overrideCreate,
     this.other = '',
     this.providerOther = '',
   }) {
@@ -90,6 +92,9 @@ class FamilyTemplate extends Template {
           '(ref) => ${provider.name}(ref as ${provider._refImplName}, $parametersPassThrough)',
       providerType: providerType,
       parametersPassThrough: parametersPassThrough,
+      createType:
+          '${provider.createdTypeDisplayString} Function(${provider._refImplName} ref)',
+      overrideCreate: '(ref) => create(ref as ${provider._refImplName})',
       providerOther: '''
 
   @override
@@ -166,6 +171,8 @@ ${parameters.map((e) => '        ${e.name}: ${e.name},\n').join()}
       providerType: providerType,
       providerCreate: '() => ${provider.name}()$cascadePropertyInit',
       parametersPassThrough: parametersPassThrough,
+      createType: '${provider.name} Function()',
+      overrideCreate: '() => create()$cascadePropertyInit',
       other: '''
 abstract class $notifierTypedefName extends $notifierBaseType<${provider.valueTypeDisplayString}> {
   ${parameters.map((e) => 'late final ${e.typeDisplayString} ${e.name};').join('\n')}
@@ -212,6 +219,8 @@ ${parameters.map((e) => '        ${e.name}: ${e.name},\n').join()}
   final String providerOther;
   final String parametersPassThrough;
   final String hashFn;
+  final String createType;
+  final String overrideCreate;
 
   @override
   void run(StringBuffer buffer) {
@@ -225,6 +234,9 @@ ${parameters.map((e) => '        ${e.name}: ${e.name},\n').join()}
       for (final parameter in parameters)
         parameter: 'provider.${parameter.name}',
     });
+    final parameterThisNamedPassThrough = parameters
+        .map((parameter) => '${parameter.name}: ${parameter.name},')
+        .join();
 
     final docs = providerDocFor(provider.providerElement.element);
     final meta = metaAnnotations(provider.node.metadata);
@@ -243,6 +255,9 @@ ${parameters.map((e) => '        ${e.name}: ${e.name},\n').join()}
     final argumentsToRecord = buildParamInvocationQuery({
       for (final parameter in parameters) parameter: parameter.name!.lexeme,
     });
+
+    final familyOverrideClassName =
+        '_\$${provider.name.lexeme.titled.public}FamilyOverride';
 
     buffer.write('''
 $other
@@ -282,6 +297,27 @@ class $familyName extends Family<${provider.exposedTypeDisplayString}> {
   ) {
     return call($parameterProviderPassThrough);
   }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith($createType create) {
+    return $familyOverrideClassName(this, create);
+  }
+}
+
+class $familyOverrideClassName implements FamilyOverride<${provider.exposedTypeDisplayString}> {
+  $familyOverrideClassName(this.overriddenFamily, this.create);
+
+  final $createType create;
+
+  @override
+  final $familyName overriddenFamily;
+
+  @override
+  $providerTypeNameImpl getProviderOverride(
+    covariant $providerTypeNameImpl provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 $docs
@@ -298,7 +334,7 @@ class $providerTypeNameImpl extends $providerType$providerGenerics {
         );
 
   $providerTypeNameImpl._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -324,6 +360,20 @@ $providerOther
   @override
   $elementType$providerGenerics createElement() {
     return $elementNameImpl(this);
+  }
+
+  $providerTypeNameImpl _copyWith(
+    $createType create,
+  ) {
+    return $providerTypeNameImpl._internal(
+      $overrideCreate,
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      $parameterThisNamedPassThrough
+    );
   }
 
   @override

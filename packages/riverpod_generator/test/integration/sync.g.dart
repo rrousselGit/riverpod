@@ -98,6 +98,29 @@ class RawFamilyFutureFamily extends Family<Raw<Future<String>>> {
       provider.id,
     );
   }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(
+      Raw<Future<String>> Function(RawFamilyFutureRef ref) create) {
+    return _$RawFamilyFutureFamilyOverride(this, create);
+  }
+}
+
+class _$RawFamilyFutureFamilyOverride
+    implements FamilyOverride<Raw<Future<String>>> {
+  _$RawFamilyFutureFamilyOverride(this.overriddenFamily, this.create);
+
+  final Raw<Future<String>> Function(RawFamilyFutureRef ref) create;
+
+  @override
+  final RawFamilyFutureFamily overriddenFamily;
+
+  @override
+  RawFamilyFutureProvider getProviderOverride(
+    covariant RawFamilyFutureProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [rawFamilyFuture].
@@ -123,7 +146,7 @@ class RawFamilyFutureProvider extends AutoDisposeProvider<Raw<Future<String>>> {
         );
 
   RawFamilyFutureProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -160,6 +183,20 @@ class RawFamilyFutureProvider extends AutoDisposeProvider<Raw<Future<String>>> {
   @override
   AutoDisposeProviderElement<Raw<Future<String>>> createElement() {
     return _RawFamilyFutureProviderElement(this);
+  }
+
+  RawFamilyFutureProvider _copyWith(
+    Raw<Future<String>> Function(RawFamilyFutureRef ref) create,
+  ) {
+    return RawFamilyFutureProvider._internal(
+      (ref) => create(ref as RawFamilyFutureRef),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      id: id,
+    );
   }
 
   @override
@@ -233,6 +270,29 @@ class RawFamilyStreamFamily extends Family<Raw<Stream<String>>> {
       provider.id,
     );
   }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(
+      Raw<Stream<String>> Function(RawFamilyStreamRef ref) create) {
+    return _$RawFamilyStreamFamilyOverride(this, create);
+  }
+}
+
+class _$RawFamilyStreamFamilyOverride
+    implements FamilyOverride<Raw<Stream<String>>> {
+  _$RawFamilyStreamFamilyOverride(this.overriddenFamily, this.create);
+
+  final Raw<Stream<String>> Function(RawFamilyStreamRef ref) create;
+
+  @override
+  final RawFamilyStreamFamily overriddenFamily;
+
+  @override
+  RawFamilyStreamProvider getProviderOverride(
+    covariant RawFamilyStreamProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [rawFamilyStream].
@@ -258,7 +318,7 @@ class RawFamilyStreamProvider extends AutoDisposeProvider<Raw<Stream<String>>> {
         );
 
   RawFamilyStreamProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -295,6 +355,20 @@ class RawFamilyStreamProvider extends AutoDisposeProvider<Raw<Stream<String>>> {
   @override
   AutoDisposeProviderElement<Raw<Stream<String>>> createElement() {
     return _RawFamilyStreamProviderElement(this);
+  }
+
+  RawFamilyStreamProvider _copyWith(
+    Raw<Stream<String>> Function(RawFamilyStreamRef ref) create,
+  ) {
+    return RawFamilyStreamProvider._internal(
+      (ref) => create(ref as RawFamilyStreamRef),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      id: id,
+    );
   }
 
   @override
@@ -419,6 +493,27 @@ class FamilyFamily extends Family<String> {
       fifth: provider.fifth,
     );
   }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(String Function(FamilyRef ref) create) {
+    return _$FamilyFamilyOverride(this, create);
+  }
+}
+
+class _$FamilyFamilyOverride implements FamilyOverride<String> {
+  _$FamilyFamilyOverride(this.overriddenFamily, this.create);
+
+  final String Function(FamilyRef ref) create;
+
+  @override
+  final FamilyFamily overriddenFamily;
+
+  @override
+  FamilyProvider getProviderOverride(
+    covariant FamilyProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// This is some documentation
@@ -459,7 +554,7 @@ class FamilyProvider extends AutoDisposeProvider<String> {
         );
 
   FamilyProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -520,6 +615,24 @@ class FamilyProvider extends AutoDisposeProvider<String> {
   @override
   AutoDisposeProviderElement<String> createElement() {
     return _FamilyProviderElement(this);
+  }
+
+  FamilyProvider _copyWith(
+    String Function(FamilyRef ref) create,
+  ) {
+    return FamilyProvider._internal(
+      (ref) => create(ref as FamilyRef),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      first: first,
+      second: second,
+      third: third,
+      fourth: fourth,
+      fifth: fifth,
+    );
   }
 
   @override
@@ -691,6 +804,28 @@ class RawFamilyFutureClassFamily extends Family<Raw<Future<String>>> {
       provider.id,
     );
   }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(RawFamilyFutureClass Function() create) {
+    return _$RawFamilyFutureClassFamilyOverride(this, create);
+  }
+}
+
+class _$RawFamilyFutureClassFamilyOverride
+    implements FamilyOverride<Raw<Future<String>>> {
+  _$RawFamilyFutureClassFamilyOverride(this.overriddenFamily, this.create);
+
+  final RawFamilyFutureClass Function() create;
+
+  @override
+  final RawFamilyFutureClassFamily overriddenFamily;
+
+  @override
+  RawFamilyFutureClassProvider getProviderOverride(
+    covariant RawFamilyFutureClassProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [RawFamilyFutureClass].
@@ -714,7 +849,7 @@ class RawFamilyFutureClassProvider extends AutoDisposeNotifierProviderImpl<
         );
 
   RawFamilyFutureClassProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -759,6 +894,20 @@ class RawFamilyFutureClassProvider extends AutoDisposeNotifierProviderImpl<
   AutoDisposeNotifierProviderElement<RawFamilyFutureClass, Raw<Future<String>>>
       createElement() {
     return _RawFamilyFutureClassProviderElement(this);
+  }
+
+  RawFamilyFutureClassProvider _copyWith(
+    RawFamilyFutureClass Function() create,
+  ) {
+    return RawFamilyFutureClassProvider._internal(
+      () => create()..id = id,
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      id: id,
+    );
   }
 
   @override
@@ -843,6 +992,28 @@ class RawFamilyStreamClassFamily extends Family<Raw<Stream<String>>> {
       provider.id,
     );
   }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(RawFamilyStreamClass Function() create) {
+    return _$RawFamilyStreamClassFamilyOverride(this, create);
+  }
+}
+
+class _$RawFamilyStreamClassFamilyOverride
+    implements FamilyOverride<Raw<Stream<String>>> {
+  _$RawFamilyStreamClassFamilyOverride(this.overriddenFamily, this.create);
+
+  final RawFamilyStreamClass Function() create;
+
+  @override
+  final RawFamilyStreamClassFamily overriddenFamily;
+
+  @override
+  RawFamilyStreamClassProvider getProviderOverride(
+    covariant RawFamilyStreamClassProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [RawFamilyStreamClass].
@@ -866,7 +1037,7 @@ class RawFamilyStreamClassProvider extends AutoDisposeNotifierProviderImpl<
         );
 
   RawFamilyStreamClassProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -911,6 +1082,20 @@ class RawFamilyStreamClassProvider extends AutoDisposeNotifierProviderImpl<
   AutoDisposeNotifierProviderElement<RawFamilyStreamClass, Raw<Stream<String>>>
       createElement() {
     return _RawFamilyStreamClassProviderElement(this);
+  }
+
+  RawFamilyStreamClassProvider _copyWith(
+    RawFamilyStreamClass Function() create,
+  ) {
+    return RawFamilyStreamClassProvider._internal(
+      () => create()..id = id,
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      id: id,
+    );
   }
 
   @override
@@ -1053,6 +1238,27 @@ class FamilyClassFamily extends Family<String> {
       fifth: provider.fifth,
     );
   }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(FamilyClass Function() create) {
+    return _$FamilyClassFamilyOverride(this, create);
+  }
+}
+
+class _$FamilyClassFamilyOverride implements FamilyOverride<String> {
+  _$FamilyClassFamilyOverride(this.overriddenFamily, this.create);
+
+  final FamilyClass Function() create;
+
+  @override
+  final FamilyClassFamily overriddenFamily;
+
+  @override
+  FamilyClassProvider getProviderOverride(
+    covariant FamilyClassProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// This is some documentation
@@ -1093,7 +1299,7 @@ class FamilyClassProvider
         );
 
   FamilyClassProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -1170,6 +1376,29 @@ class FamilyClassProvider
   @override
   AutoDisposeNotifierProviderElement<FamilyClass, String> createElement() {
     return _FamilyClassProviderElement(this);
+  }
+
+  FamilyClassProvider _copyWith(
+    FamilyClass Function() create,
+  ) {
+    return FamilyClassProvider._internal(
+      () => create()
+        ..first = first
+        ..second = second
+        ..third = third
+        ..fourth = fourth
+        ..fifth = fifth,
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      first: first,
+      second: second,
+      third: third,
+      fourth: fourth,
+      fifth: fifth,
+    );
   }
 
   @override

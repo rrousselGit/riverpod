@@ -1,3 +1,7 @@
+## Unreleased minor
+
+- Exported internal `FamilyOverride` API, for use in generated code.
+
 ## 2.2.1 - 2023-10-15
 
 - `riverpod` upgraded to `2.4.4`

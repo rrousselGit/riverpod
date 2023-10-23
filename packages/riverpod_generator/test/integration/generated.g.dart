@@ -84,6 +84,27 @@ class GeneratedFamilyFamily extends Family<_Test> {
       provider.test,
     );
   }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(_Test Function(GeneratedFamilyRef ref) create) {
+    return _$GeneratedFamilyFamilyOverride(this, create);
+  }
+}
+
+class _$GeneratedFamilyFamilyOverride implements FamilyOverride<_Test> {
+  _$GeneratedFamilyFamilyOverride(this.overriddenFamily, this.create);
+
+  final _Test Function(GeneratedFamilyRef ref) create;
+
+  @override
+  final GeneratedFamilyFamily overriddenFamily;
+
+  @override
+  GeneratedFamilyProvider getProviderOverride(
+    covariant GeneratedFamilyProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [generatedFamily].
@@ -109,7 +130,7 @@ class GeneratedFamilyProvider extends AutoDisposeProvider<_Test> {
         );
 
   GeneratedFamilyProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -146,6 +167,20 @@ class GeneratedFamilyProvider extends AutoDisposeProvider<_Test> {
   @override
   AutoDisposeProviderElement<_Test> createElement() {
     return _GeneratedFamilyProviderElement(this);
+  }
+
+  GeneratedFamilyProvider _copyWith(
+    _Test Function(GeneratedFamilyRef ref) create,
+  ) {
+    return GeneratedFamilyProvider._internal(
+      (ref) => create(ref as GeneratedFamilyRef),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      test: test,
+    );
   }
 
   @override
@@ -232,6 +267,27 @@ class $DynamicFamilyFamily extends Family<Object?> {
       provider.test,
     );
   }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(Object? Function($DynamicFamilyRef ref) create) {
+    return _$$DynamicFamilyFamilyOverride(this, create);
+  }
+}
+
+class _$$DynamicFamilyFamilyOverride implements FamilyOverride<Object?> {
+  _$$DynamicFamilyFamilyOverride(this.overriddenFamily, this.create);
+
+  final Object? Function($DynamicFamilyRef ref) create;
+
+  @override
+  final $DynamicFamilyFamily overriddenFamily;
+
+  @override
+  $DynamicFamilyProvider getProviderOverride(
+    covariant $DynamicFamilyProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [$dynamicFamily].
@@ -257,7 +313,7 @@ class $DynamicFamilyProvider extends AutoDisposeProvider<Object?> {
         );
 
   $DynamicFamilyProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -294,6 +350,20 @@ class $DynamicFamilyProvider extends AutoDisposeProvider<Object?> {
   @override
   AutoDisposeProviderElement<Object?> createElement() {
     return _$DynamicFamilyProviderElement(this);
+  }
+
+  $DynamicFamilyProvider _copyWith(
+    Object? Function($DynamicFamilyRef ref) create,
+  ) {
+    return $DynamicFamilyProvider._internal(
+      (ref) => create(ref as $DynamicFamilyRef),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      test: test,
+    );
   }
 
   @override
@@ -366,6 +436,27 @@ class _DynamicFamily extends Family<Object?> {
       provider.test,
     );
   }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(Object? Function(_DynamicRef ref) create) {
+    return _$DynamicFamilyOverride(this, create);
+  }
+}
+
+class _$DynamicFamilyOverride implements FamilyOverride<Object?> {
+  _$DynamicFamilyOverride(this.overriddenFamily, this.create);
+
+  final Object? Function(_DynamicRef ref) create;
+
+  @override
+  final _DynamicFamily overriddenFamily;
+
+  @override
+  _DynamicProvider getProviderOverride(
+    covariant _DynamicProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [_dynamic].
@@ -390,7 +481,7 @@ class _DynamicProvider extends AutoDisposeProvider<Object?> {
         );
 
   _DynamicProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -427,6 +518,20 @@ class _DynamicProvider extends AutoDisposeProvider<Object?> {
   @override
   AutoDisposeProviderElement<Object?> createElement() {
     return _DynamicProviderElement(this);
+  }
+
+  _DynamicProvider _copyWith(
+    Object? Function(_DynamicRef ref) create,
+  ) {
+    return _DynamicProvider._internal(
+      (ref) => create(ref as _DynamicRef),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      test: test,
+    );
   }
 
   @override
@@ -513,6 +618,27 @@ class AliasFamilyFamily extends Family<r.AsyncValue<int>> {
       provider.test,
     );
   }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(r.AsyncValue<int> Function(AliasFamilyRef ref) create) {
+    return _$AliasFamilyFamilyOverride(this, create);
+  }
+}
+
+class _$AliasFamilyFamilyOverride implements FamilyOverride<r.AsyncValue<int>> {
+  _$AliasFamilyFamilyOverride(this.overriddenFamily, this.create);
+
+  final r.AsyncValue<int> Function(AliasFamilyRef ref) create;
+
+  @override
+  final AliasFamilyFamily overriddenFamily;
+
+  @override
+  AliasFamilyProvider getProviderOverride(
+    covariant AliasFamilyProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [aliasFamily].
@@ -538,7 +664,7 @@ class AliasFamilyProvider extends AutoDisposeProvider<r.AsyncValue<int>> {
         );
 
   AliasFamilyProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -575,6 +701,20 @@ class AliasFamilyProvider extends AutoDisposeProvider<r.AsyncValue<int>> {
   @override
   AutoDisposeProviderElement<r.AsyncValue<int>> createElement() {
     return _AliasFamilyProviderElement(this);
+  }
+
+  AliasFamilyProvider _copyWith(
+    r.AsyncValue<int> Function(AliasFamilyRef ref) create,
+  ) {
+    return AliasFamilyProvider._internal(
+      (ref) => create(ref as AliasFamilyRef),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      test: test,
+    );
   }
 
   @override
@@ -673,6 +813,27 @@ class GeneratedClassFamilyFamily extends Family<_Test> {
       provider.test,
     );
   }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(GeneratedClassFamily Function() create) {
+    return _$GeneratedClassFamilyFamilyOverride(this, create);
+  }
+}
+
+class _$GeneratedClassFamilyFamilyOverride implements FamilyOverride<_Test> {
+  _$GeneratedClassFamilyFamilyOverride(this.overriddenFamily, this.create);
+
+  final GeneratedClassFamily Function() create;
+
+  @override
+  final GeneratedClassFamilyFamily overriddenFamily;
+
+  @override
+  GeneratedClassFamilyProvider getProviderOverride(
+    covariant GeneratedClassFamilyProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [GeneratedClassFamily].
@@ -696,7 +857,7 @@ class GeneratedClassFamilyProvider
         );
 
   GeneratedClassFamilyProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -741,6 +902,20 @@ class GeneratedClassFamilyProvider
   AutoDisposeNotifierProviderElement<GeneratedClassFamily, _Test>
       createElement() {
     return _GeneratedClassFamilyProviderElement(this);
+  }
+
+  GeneratedClassFamilyProvider _copyWith(
+    GeneratedClassFamily Function() create,
+  ) {
+    return GeneratedClassFamilyProvider._internal(
+      () => create()..test = test,
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      test: test,
+    );
   }
 
   @override
@@ -840,6 +1015,27 @@ class $DynamicClassFamilyFamily extends Family<Object?> {
       provider.test,
     );
   }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith($DynamicClassFamily Function() create) {
+    return _$$DynamicClassFamilyFamilyOverride(this, create);
+  }
+}
+
+class _$$DynamicClassFamilyFamilyOverride implements FamilyOverride<Object?> {
+  _$$DynamicClassFamilyFamilyOverride(this.overriddenFamily, this.create);
+
+  final $DynamicClassFamily Function() create;
+
+  @override
+  final $DynamicClassFamilyFamily overriddenFamily;
+
+  @override
+  $DynamicClassFamilyProvider getProviderOverride(
+    covariant $DynamicClassFamilyProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [$DynamicClassFamily].
@@ -863,7 +1059,7 @@ class $DynamicClassFamilyProvider
         );
 
   $DynamicClassFamilyProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -908,6 +1104,20 @@ class $DynamicClassFamilyProvider
   AutoDisposeNotifierProviderElement<$DynamicClassFamily, Object?>
       createElement() {
     return _$DynamicClassFamilyProviderElement(this);
+  }
+
+  $DynamicClassFamilyProvider _copyWith(
+    $DynamicClassFamily Function() create,
+  ) {
+    return $DynamicClassFamilyProvider._internal(
+      () => create()..test = test,
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      test: test,
+    );
   }
 
   @override
@@ -1005,6 +1215,28 @@ class AliasClassFamilyFamily extends Family<r.AsyncValue<int>> {
       provider.test,
     );
   }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(AliasClassFamily Function() create) {
+    return _$AliasClassFamilyFamilyOverride(this, create);
+  }
+}
+
+class _$AliasClassFamilyFamilyOverride
+    implements FamilyOverride<r.AsyncValue<int>> {
+  _$AliasClassFamilyFamilyOverride(this.overriddenFamily, this.create);
+
+  final AliasClassFamily Function() create;
+
+  @override
+  final AliasClassFamilyFamily overriddenFamily;
+
+  @override
+  AliasClassFamilyProvider getProviderOverride(
+    covariant AliasClassFamilyProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [AliasClassFamily].
@@ -1028,7 +1260,7 @@ class AliasClassFamilyProvider extends AutoDisposeNotifierProviderImpl<
         );
 
   AliasClassFamilyProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -1073,6 +1305,20 @@ class AliasClassFamilyProvider extends AutoDisposeNotifierProviderImpl<
   AutoDisposeNotifierProviderElement<AliasClassFamily, r.AsyncValue<int>>
       createElement() {
     return _AliasClassFamilyProviderElement(this);
+  }
+
+  AliasClassFamilyProvider _copyWith(
+    AliasClassFamily Function() create,
+  ) {
+    return AliasClassFamilyProvider._internal(
+      () => create()..test = test,
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      test: test,
+    );
   }
 
   @override
