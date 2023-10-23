@@ -66,6 +66,20 @@ class RawFamilyFutureFamily extends Family<Raw<Future<String>>> {
   /// See also [rawFamilyFuture].
   const RawFamilyFutureFamily();
 
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'rawFamilyFutureProvider';
+
   /// See also [rawFamilyFuture].
   RawFamilyFutureProvider call(
     int id,
@@ -84,20 +98,6 @@ class RawFamilyFutureFamily extends Family<Raw<Future<String>>> {
       provider.id,
     );
   }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'rawFamilyFutureProvider';
 }
 
 /// See also [rawFamilyFuture].
@@ -201,6 +201,20 @@ class RawFamilyStreamFamily extends Family<Raw<Stream<String>>> {
   /// See also [rawFamilyStream].
   const RawFamilyStreamFamily();
 
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'rawFamilyStreamProvider';
+
   /// See also [rawFamilyStream].
   RawFamilyStreamProvider call(
     int id,
@@ -219,20 +233,6 @@ class RawFamilyStreamFamily extends Family<Raw<Stream<String>>> {
       provider.id,
     );
   }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'rawFamilyStreamProvider';
 }
 
 /// See also [rawFamilyStream].
@@ -373,6 +373,20 @@ class FamilyFamily extends Family<String> {
   /// Copied from [family].
   const FamilyFamily();
 
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'familyProvider';
+
   /// This is some documentation
   ///
   /// Copied from [family].
@@ -405,20 +419,6 @@ class FamilyFamily extends Family<String> {
       fifth: provider.fifth,
     );
   }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'familyProvider';
 }
 
 /// This is some documentation
@@ -659,6 +659,20 @@ class RawFamilyFutureClassFamily extends Family<Raw<Future<String>>> {
   /// See also [RawFamilyFutureClass].
   const RawFamilyFutureClassFamily();
 
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'rawFamilyFutureClassProvider';
+
   /// See also [RawFamilyFutureClass].
   RawFamilyFutureClassProvider call(
     int id,
@@ -677,20 +691,6 @@ class RawFamilyFutureClassFamily extends Family<Raw<Future<String>>> {
       provider.id,
     );
   }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'rawFamilyFutureClassProvider';
 }
 
 /// See also [RawFamilyFutureClass].
@@ -811,6 +811,20 @@ class RawFamilyStreamClassFamily extends Family<Raw<Stream<String>>> {
   /// See also [RawFamilyStreamClass].
   const RawFamilyStreamClassFamily();
 
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'rawFamilyStreamClassProvider';
+
   /// See also [RawFamilyStreamClass].
   RawFamilyStreamClassProvider call(
     int id,
@@ -829,20 +843,6 @@ class RawFamilyStreamClassFamily extends Family<Raw<Stream<String>>> {
       provider.id,
     );
   }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'rawFamilyStreamClassProvider';
 }
 
 /// See also [RawFamilyStreamClass].
@@ -1007,6 +1007,20 @@ class FamilyClassFamily extends Family<String> {
   /// Copied from [FamilyClass].
   const FamilyClassFamily();
 
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'familyClassProvider';
+
   /// This is some documentation
   ///
   /// Copied from [FamilyClass].
@@ -1039,20 +1053,6 @@ class FamilyClassFamily extends Family<String> {
       fifth: provider.fifth,
     );
   }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'familyClassProvider';
 }
 
 /// This is some documentation

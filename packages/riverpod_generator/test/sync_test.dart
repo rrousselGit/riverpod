@@ -228,4 +228,13 @@ void main() {
       '(first: 42, second: x42, third: 0.42, fourth: false, fifth: [x42])',
     );
   });
+
+  test('can override providers', () {
+    final container = createContainer(overrides: [
+      publicProvider.overrideWith((ref) => null),
+      publicClassProvider.overrideWith(() => null),
+      familyProvider.overrideWith((ref) => '$arg'),
+      familyClassProvider.overrideWith((ref) => '$arg'),
+    ]);
+  });
 }

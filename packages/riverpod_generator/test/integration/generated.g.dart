@@ -52,6 +52,20 @@ class GeneratedFamilyFamily extends Family<_Test> {
   /// See also [generatedFamily].
   const GeneratedFamilyFamily();
 
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'generatedFamilyProvider';
+
   /// See also [generatedFamily].
   GeneratedFamilyProvider call(
     _Test test,
@@ -70,20 +84,6 @@ class GeneratedFamilyFamily extends Family<_Test> {
       provider.test,
     );
   }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'generatedFamilyProvider';
 }
 
 /// See also [generatedFamily].
@@ -200,6 +200,20 @@ class $DynamicFamilyFamily extends Family<Object?> {
   /// See also [$dynamicFamily].
   const $DynamicFamilyFamily();
 
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'$dynamicFamilyProvider';
+
   /// See also [$dynamicFamily].
   $DynamicFamilyProvider call(
     test,
@@ -218,20 +232,6 @@ class $DynamicFamilyFamily extends Family<Object?> {
       provider.test,
     );
   }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'$dynamicFamilyProvider';
 }
 
 /// See also [$dynamicFamily].
@@ -334,6 +334,20 @@ class _DynamicFamily extends Family<Object?> {
   /// See also [_dynamic].
   const _DynamicFamily();
 
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'_dynamicProvider';
+
   /// See also [_dynamic].
   _DynamicProvider call(
     test,
@@ -352,20 +366,6 @@ class _DynamicFamily extends Family<Object?> {
       provider.test,
     );
   }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'_dynamicProvider';
 }
 
 /// See also [_dynamic].
@@ -481,6 +481,20 @@ class AliasFamilyFamily extends Family<r.AsyncValue<int>> {
   /// See also [aliasFamily].
   const AliasFamilyFamily();
 
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'aliasFamilyProvider';
+
   /// See also [aliasFamily].
   AliasFamilyProvider call(
     r.AsyncValue<int> test,
@@ -499,20 +513,6 @@ class AliasFamilyFamily extends Family<r.AsyncValue<int>> {
       provider.test,
     );
   }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'aliasFamilyProvider';
 }
 
 /// See also [aliasFamily].
@@ -641,6 +641,20 @@ class GeneratedClassFamilyFamily extends Family<_Test> {
   /// See also [GeneratedClassFamily].
   const GeneratedClassFamilyFamily();
 
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'generatedClassFamilyProvider';
+
   /// See also [GeneratedClassFamily].
   GeneratedClassFamilyProvider call(
     _Test test,
@@ -659,20 +673,6 @@ class GeneratedClassFamilyFamily extends Family<_Test> {
       provider.test,
     );
   }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'generatedClassFamilyProvider';
 }
 
 /// See also [GeneratedClassFamily].
@@ -808,6 +808,20 @@ class $DynamicClassFamilyFamily extends Family<Object?> {
   /// See also [$DynamicClassFamily].
   const $DynamicClassFamilyFamily();
 
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'$dynamicClassFamilyProvider';
+
   /// See also [$DynamicClassFamily].
   $DynamicClassFamilyProvider call(
     test,
@@ -826,20 +840,6 @@ class $DynamicClassFamilyFamily extends Family<Object?> {
       provider.test,
     );
   }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'$dynamicClassFamilyProvider';
 }
 
 /// See also [$DynamicClassFamily].
@@ -973,6 +973,20 @@ class AliasClassFamilyFamily extends Family<r.AsyncValue<int>> {
   /// See also [AliasClassFamily].
   const AliasClassFamilyFamily();
 
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'aliasClassFamilyProvider';
+
   /// See also [AliasClassFamily].
   AliasClassFamilyProvider call(
     r.AsyncValue<int> test,
@@ -991,20 +1005,6 @@ class AliasClassFamilyFamily extends Family<r.AsyncValue<int>> {
       provider.test,
     );
   }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'aliasClassFamilyProvider';
 }
 
 /// See also [AliasClassFamily].

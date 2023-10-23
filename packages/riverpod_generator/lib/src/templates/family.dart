@@ -257,6 +257,19 @@ class $familyName extends Family<${provider.exposedTypeDisplayString}> {
   $docs
   const $familyName();
 
+  static $dependenciesKeyword _dependencies = ${serializeDependencies(provider.providerElement.annotation, options)};
+
+  static $dependenciesKeyword _allTransitiveDependencies = ${serializeAllTransitiveDependencies(provider.providerElement.annotation, options)};
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies => _allTransitiveDependencies;
+
+  @override
+  String? get name => r'$providerName';
+
   $docs
   $providerTypeNameImpl call($parameterDefinition) {
     return $providerTypeNameImpl($parametersPassThrough);
@@ -269,19 +282,6 @@ class $familyName extends Family<${provider.exposedTypeDisplayString}> {
   ) {
     return call($parameterProviderPassThrough);
   }
-
-  static $dependenciesKeyword _dependencies = ${serializeDependencies(provider.providerElement.annotation, options)};
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static $dependenciesKeyword _allTransitiveDependencies = ${serializeAllTransitiveDependencies(provider.providerElement.annotation, options)};
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies => _allTransitiveDependencies;
-
-  @override
-  String? get name => r'$providerName';
 }
 
 $docs

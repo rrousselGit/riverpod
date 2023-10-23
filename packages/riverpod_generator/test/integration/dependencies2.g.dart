@@ -66,6 +66,32 @@ class FamilyWithDependencies2Family extends Family<int> {
   /// See also [familyWithDependencies2].
   const FamilyWithDependencies2Family();
 
+  static final Iterable<ProviderOrFamily> _dependencies = <ProviderOrFamily>[
+    providerWithDependenciesProvider,
+    _private2Provider,
+    public2Provider
+  ];
+
+  static final Iterable<ProviderOrFamily> _allTransitiveDependencies =
+      <ProviderOrFamily>{
+    providerWithDependenciesProvider,
+    ...?providerWithDependenciesProvider.allTransitiveDependencies,
+    _private2Provider,
+    ...?_private2Provider.allTransitiveDependencies,
+    public2Provider,
+    ...?public2Provider.allTransitiveDependencies
+  };
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'familyWithDependencies2Provider';
+
   /// See also [familyWithDependencies2].
   FamilyWithDependencies2Provider call({
     int? id,
@@ -84,32 +110,6 @@ class FamilyWithDependencies2Family extends Family<int> {
       id: provider.id,
     );
   }
-
-  static final Iterable<ProviderOrFamily> _dependencies = <ProviderOrFamily>[
-    providerWithDependenciesProvider,
-    _private2Provider,
-    public2Provider
-  ];
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static final Iterable<ProviderOrFamily> _allTransitiveDependencies =
-      <ProviderOrFamily>{
-    providerWithDependenciesProvider,
-    ...?providerWithDependenciesProvider.allTransitiveDependencies,
-    _private2Provider,
-    ...?_private2Provider.allTransitiveDependencies,
-    public2Provider,
-    ...?public2Provider.allTransitiveDependencies
-  };
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'familyWithDependencies2Provider';
 }
 
 /// See also [familyWithDependencies2].
@@ -281,6 +281,32 @@ class NotifierFamilyWithDependenciesFamily extends Family<int> {
   /// See also [NotifierFamilyWithDependencies].
   const NotifierFamilyWithDependenciesFamily();
 
+  static final Iterable<ProviderOrFamily> _dependencies = <ProviderOrFamily>[
+    providerWithDependenciesProvider,
+    _private2Provider,
+    public2Provider
+  ];
+
+  static final Iterable<ProviderOrFamily> _allTransitiveDependencies =
+      <ProviderOrFamily>{
+    providerWithDependenciesProvider,
+    ...?providerWithDependenciesProvider.allTransitiveDependencies,
+    _private2Provider,
+    ...?_private2Provider.allTransitiveDependencies,
+    public2Provider,
+    ...?public2Provider.allTransitiveDependencies
+  };
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'notifierFamilyWithDependenciesProvider';
+
   /// See also [NotifierFamilyWithDependencies].
   NotifierFamilyWithDependenciesProvider call({
     int? id,
@@ -299,32 +325,6 @@ class NotifierFamilyWithDependenciesFamily extends Family<int> {
       id: provider.id,
     );
   }
-
-  static final Iterable<ProviderOrFamily> _dependencies = <ProviderOrFamily>[
-    providerWithDependenciesProvider,
-    _private2Provider,
-    public2Provider
-  ];
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static final Iterable<ProviderOrFamily> _allTransitiveDependencies =
-      <ProviderOrFamily>{
-    providerWithDependenciesProvider,
-    ...?providerWithDependenciesProvider.allTransitiveDependencies,
-    _private2Provider,
-    ...?_private2Provider.allTransitiveDependencies,
-    public2Provider,
-    ...?public2Provider.allTransitiveDependencies
-  };
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'notifierFamilyWithDependenciesProvider';
 }
 
 /// See also [NotifierFamilyWithDependencies].

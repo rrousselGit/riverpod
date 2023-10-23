@@ -52,6 +52,20 @@ class FamilyFamily extends Family<int> {
   /// See also [family].
   const FamilyFamily();
 
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'familyProvider';
+
   /// See also [family].
   FamilyProvider call(
     int id,
@@ -70,20 +84,6 @@ class FamilyFamily extends Family<int> {
       provider.id,
     );
   }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'familyProvider';
 }
 
 /// See also [family].
@@ -371,6 +371,20 @@ class Family2Family extends Family<int> {
   /// See also [Family2].
   const Family2Family();
 
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'family2Provider';
+
   /// See also [Family2].
   Family2Provider call(
     int id,
@@ -389,20 +403,6 @@ class Family2Family extends Family<int> {
       provider.id,
     );
   }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'family2Provider';
 }
 
 /// See also [Family2].
@@ -544,6 +544,35 @@ class Provider4Family extends Family<int> {
   /// See also [Provider4].
   const Provider4Family();
 
+  static final Iterable<ProviderOrFamily> _dependencies = <ProviderOrFamily>{
+    depProvider,
+    familyProvider,
+    dep2Provider,
+    family2Provider
+  };
+
+  static final Iterable<ProviderOrFamily> _allTransitiveDependencies =
+      <ProviderOrFamily>{
+    depProvider,
+    ...?depProvider.allTransitiveDependencies,
+    familyProvider,
+    ...?familyProvider.allTransitiveDependencies,
+    dep2Provider,
+    ...?dep2Provider.allTransitiveDependencies,
+    family2Provider,
+    ...?family2Provider.allTransitiveDependencies
+  };
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'provider4Provider';
+
   /// See also [Provider4].
   Provider4Provider call(
     int id,
@@ -562,35 +591,6 @@ class Provider4Family extends Family<int> {
       provider.id,
     );
   }
-
-  static final Iterable<ProviderOrFamily> _dependencies = <ProviderOrFamily>{
-    depProvider,
-    familyProvider,
-    dep2Provider,
-    family2Provider
-  };
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static final Iterable<ProviderOrFamily> _allTransitiveDependencies =
-      <ProviderOrFamily>{
-    depProvider,
-    ...?depProvider.allTransitiveDependencies,
-    familyProvider,
-    ...?familyProvider.allTransitiveDependencies,
-    dep2Provider,
-    ...?dep2Provider.allTransitiveDependencies,
-    family2Provider,
-    ...?family2Provider.allTransitiveDependencies
-  };
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'provider4Provider';
 }
 
 /// See also [Provider4].

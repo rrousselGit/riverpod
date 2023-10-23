@@ -66,6 +66,20 @@ class FamilyOrFamily extends Family<AsyncValue<String>> {
   /// See also [familyOr].
   const FamilyOrFamily();
 
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'familyOrProvider';
+
   /// See also [familyOr].
   FamilyOrProvider call(
     int first,
@@ -84,20 +98,6 @@ class FamilyOrFamily extends Family<AsyncValue<String>> {
       provider.first,
     );
   }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'familyOrProvider';
 }
 
 /// See also [familyOr].
@@ -199,6 +199,20 @@ class FamilyFamily extends Family<AsyncValue<String>> {
   /// See also [family].
   const FamilyFamily();
 
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'familyProvider';
+
   /// See also [family].
   FamilyProvider call(
     int first, {
@@ -229,20 +243,6 @@ class FamilyFamily extends Family<AsyncValue<String>> {
       fifth: provider.fifth,
     );
   }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'familyProvider';
 }
 
 /// See also [family].
@@ -448,6 +448,20 @@ class FamilyOrClassFamily extends Family<AsyncValue<String>> {
   /// See also [FamilyOrClass].
   const FamilyOrClassFamily();
 
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'familyOrClassProvider';
+
   /// See also [FamilyOrClass].
   FamilyOrClassProvider call(
     int first,
@@ -466,20 +480,6 @@ class FamilyOrClassFamily extends Family<AsyncValue<String>> {
       provider.first,
     );
   }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'familyOrClassProvider';
 }
 
 /// See also [FamilyOrClass].
@@ -605,6 +605,20 @@ class FamilyClassFamily extends Family<AsyncValue<String>> {
   /// See also [FamilyClass].
   const FamilyClassFamily();
 
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'familyClassProvider';
+
   /// See also [FamilyClass].
   FamilyClassProvider call(
     int first, {
@@ -635,20 +649,6 @@ class FamilyClassFamily extends Family<AsyncValue<String>> {
       fifth: provider.fifth,
     );
   }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'familyClassProvider';
 }
 
 /// See also [FamilyClass].
