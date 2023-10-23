@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:collection/collection.dart';
@@ -12,7 +13,7 @@ class IncorrectUsageOfWidgetRefListenManual extends RiverpodLintRule {
   static const _code = LintCode(
     name: 'incorrect_usage_of_widget_ref_listen_manual',
     problemMessage: 'Incorrect usage of ref.listenManual.',
-    correctionMessage: 'Try canceling the subscription manually.',
+    correctionMessage: 'Try closing the returned subscription properly.',
     errorSeverity: ErrorSeverity.WARNING,
   );
 
@@ -25,48 +26,62 @@ class IncorrectUsageOfWidgetRefListenManual extends RiverpodLintRule {
     riverpodRegistry(context).addWidgetRefListenManualInvocation((invocation) {
       final functionExpression =
           invocation.node.thisOrAncestorOfType<FunctionExpression>();
-      if (functionExpression != null) return;
+      final methodDeclaration =
+          invocation.node.thisOrAncestorOfType<MethodDeclaration>();
 
-      final method = invocation.node.thisOrAncestorOfType<MethodDeclaration>();
-      if (method == null || method.name.lexeme != 'build') return;
-
-      final parent = invocation.node.parent;
-      final grandParent = parent?.parent;
-      final body = method.body;
-      if (parent is AssignmentExpression &&
-          grandParent is ExpressionStatement &&
-          parent.leftHandSide is SimpleIdentifier &&
-          body is BlockFunctionBody) {
-        final variableName = parent.leftHandSide as SimpleIdentifier;
-        final statements = body.block.statements;
-
-        final subscriptionClose =
-            statements.whereType<ExpressionStatement>().firstWhereOrNull(
-          (statement) {
-            final expression = statement.expression;
-            if (expression is! MethodInvocation) return false;
-
-            final target = expression.target;
-            if (target is! SimpleIdentifier) return false;
-
-            return target.name == variableName.name &&
-                expression.methodName.name == 'close';
-          },
-        );
-
-        if (subscriptionClose != null) {
-          final refListenManualIndex = statements.indexOf(grandParent);
-          final subscriptionCloseIndex = statements.indexOf(subscriptionClose);
-
-          if (subscriptionCloseIndex < refListenManualIndex) {
-            return;
-          }
-        }
+      if (methodDeclaration != null &&
+          methodDeclaration.name.lexeme == 'build' &&
+          functionExpression == null) {
+        if (_isSubscriptionClosed(
+          invocation: invocation.node,
+          functionBody: methodDeclaration.body,
+        )) return;
 
         reporter.reportErrorForNode(code, invocation.node.methodName);
       }
-
-      reporter.reportErrorForNode(code, invocation.node.methodName);
     });
+  }
+
+  bool _isSubscriptionClosed({
+    required MethodInvocation invocation,
+    required FunctionBody functionBody,
+  }) {
+    final parent = invocation.parent;
+    final grandParent = parent?.parent;
+
+    if (parent is AssignmentExpression &&
+        grandParent is ExpressionStatement &&
+        functionBody is BlockFunctionBody) {
+      final subscriptionElement = parent.writeElement;
+      if (subscriptionElement is! PropertyAccessorElement) return false;
+
+      final statements = functionBody.block.statements;
+      final closeSubscriptionStatement =
+          statements.whereType<ExpressionStatement>().firstWhereOrNull(
+        (statement) {
+          final expression = statement.expression;
+          if (expression is! MethodInvocation) return false;
+
+          final methodTarget = expression.realTarget;
+          if (methodTarget is! SimpleIdentifier) return false;
+
+          final methodTargetElement = methodTarget.staticElement;
+          if (methodTargetElement is! PropertyAccessorElement) return false;
+
+          return methodTargetElement.variable == subscriptionElement.variable &&
+              expression.methodName.name == 'close';
+        },
+      );
+
+      if (closeSubscriptionStatement != null) {
+        final refListenManualIndex = statements.indexOf(grandParent);
+        final closeSubscriptionIndex =
+            statements.indexOf(closeSubscriptionStatement);
+
+        if (closeSubscriptionIndex < refListenManualIndex) return true;
+      }
+    }
+
+    return false;
   }
 }

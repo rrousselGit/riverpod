@@ -18,7 +18,7 @@ class _ExampleState extends ConsumerState<Example> {
     ref.listen(provider, (previous, next) {});
   }
 
-  void someMethod() {
+  void method() {
     // expect_lint: incorrect_usage_of_widget_ref_listen
     ref.listen(provider, (previous, next) {});
   }
@@ -28,14 +28,20 @@ class _ExampleState extends ConsumerState<Example> {
     // using ref.listen in build is fine
     ref.listen(provider, (previous, next) {});
 
+    void nestedFunction() {
+      // expect_lint: incorrect_usage_of_widget_ref_listen
+      ref.listen(provider, (previous, next) {});
+    }
+
     return FilledButton(
       onPressed: () {
         // expect_lint: incorrect_usage_of_widget_ref_listen
         ref.listen(provider, (previous, next) {});
+        nestedFunction();
       },
       child: Consumer(
         builder: (context, ref, child) {
-          // expect_lint: incorrect_usage_of_widget_ref_listen
+          // using ref.listen in Consumer is fine
           ref.listen(provider, (previous, next) {});
           return child!;
         },

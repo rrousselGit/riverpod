@@ -25,24 +25,25 @@ class IncorrectUsageOfWidgetRefWatch extends RiverpodLintRule {
     riverpodRegistry(context).addWidgetRefWatchInvocation((invocation) {
       final functionExpression =
           invocation.node.thisOrAncestorOfType<FunctionExpression>();
-      final methodName = invocation.node
-          .thisOrAncestorOfType<MethodDeclaration>()
-          ?.name
-          .lexeme;
+      final methodDeclaration =
+          invocation.node.thisOrAncestorOfType<MethodDeclaration>();
 
-      if (functionExpression == null && methodName == 'build') return;
+      if (functionExpression == null &&
+          methodDeclaration?.name.lexeme == 'build') return;
 
-      if (functionExpression != null) {
-        final parent = functionExpression
-            .thisOrAncestorOfType<InstanceCreationExpression>();
-        final parentType = parent?.staticType;
-        if (parentType != null && anyConsumerType.isExactlyType(parentType)) {
-          return;
-        }
+      if (functionExpression != null && _isInsideConsumer(invocation.node)) {
+        return;
       }
 
       reporter.reportErrorForNode(code, invocation.node.methodName);
     });
+  }
+
+  bool _isInsideConsumer(AstNode node) {
+    final instanceCreationExpression =
+        node.thisOrAncestorOfType<InstanceCreationExpression>();
+    final createdType = instanceCreationExpression?.staticType;
+    return createdType != null && anyConsumerType.isExactlyType(createdType);
   }
 
   @override

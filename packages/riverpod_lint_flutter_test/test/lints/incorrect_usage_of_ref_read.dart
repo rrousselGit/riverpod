@@ -21,7 +21,7 @@ class NonCodeGenNotifier extends Notifier<int> {
     return 0;
   }
 
-  void someMethod() {
+  void method() {
     // using ref.read in methods is fine
     ref.read(aProvider);
   }
@@ -43,7 +43,7 @@ class CodeGenNotifier extends _$CodeGenNotifier {
     return 0;
   }
 
-  void someMethod() {
+  void method() {
     // using ref.read in methods is fine
     ref.read(bProvider);
   }

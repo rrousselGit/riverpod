@@ -1,3 +1,5 @@
+// ignore_for_file: unused_field
+
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -11,9 +13,9 @@ class Example extends ConsumerStatefulWidget {
 }
 
 class _ExampleState extends ConsumerState<Example> {
-  ProviderSubscription<int>? subA;
-  ProviderSubscription<int>? subB;
-  ProviderSubscription<int>? subC;
+  ProviderSubscription<int>? _subA;
+  ProviderSubscription<int>? _subB;
+  ProviderSubscription<int>? _subC;
 
   @override
   void initState() {
@@ -27,33 +29,33 @@ class _ExampleState extends ConsumerState<Example> {
 
   @override
   Widget build(BuildContext context) {
-    // closing the subscription before ref.listenManual is fine
-    subA?.close();
-    subA = ref.listenManual(provider, (previous, next) {});
+    // using ref.listenManual in build and properly closing the returned
+    // subscription is fine
+    _subA?.close();
+    _subA = ref.listenManual(provider, (previous, next) {});
 
-    // closing the subscription after ref.listenManual triggers the lint
+    // using ref.listenManual in build without closing the returned subscription
+    // properly triggers the lint
     // expect_lint: incorrect_usage_of_widget_ref_listen_manual
-    subB = ref.listenManual(provider, (previous, next) {});
-    subB?.close();
+    _subB = ref.listenManual(provider, (previous, next) {});
+    _subB?.close();
 
-    // not closing the subscription before ref.listenManual triggers the lint
     // expect_lint: incorrect_usage_of_widget_ref_listen_manual
-    subC = ref.listenManual(provider, (previous, next) {});
+    _subC = ref.listenManual(provider, (previous, next) {});
 
     // expect_lint: incorrect_usage_of_widget_ref_listen_manual
     ref.listenManual(provider, (previous, next) {});
 
+    void nestedFunction() {
+      ref.listenManual(provider, (previous, next) {});
+    }
+
     return FilledButton(
       onPressed: () {
         ref.listenManual(provider, (previous, next) {});
+        nestedFunction();
       },
-      child: Consumer(
-        builder: (context, ref, child) {
-          ref.listenManual(provider, (previous, next) {});
-          return child!;
-        },
-        child: Placeholder(),
-      ),
+      child: Placeholder(),
     );
   }
 }

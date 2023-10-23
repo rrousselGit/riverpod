@@ -715,10 +715,18 @@ final fnProvider = Provider<int>((ref) {
 });
 
 class MyNotifier extends Notifier<int> {
+  ProviderSubscription<int>? _sub;
+
   @override
   int build() {
     ref.listen(provider, ...);
     return 0;
+  }
+
+  void method(){
+    // manually closing the subscription when using ref.listen in methods
+    _sub?.close();
+    _sub = ref.listen(provider, ...);
   }
 }
 ```
@@ -730,8 +738,8 @@ class MyNotifier extends Notifier<int> {]
   @override
   int build() {...}
 
-  void someMethod() {
-    ref.listen(provider, ...); // place listen in build instead
+  void method() {
+    ref.listen(provider, ...);
   }
 }
 ```
@@ -747,7 +755,7 @@ class MyNotifier extends Notifier<int> {
   @override
   int build() {...}
 
-  void someMethod() {
+  void method() {
     ref.read(provider);
   }
 }
@@ -814,8 +822,7 @@ Warn if the `WidgetRef.listenManual` method is used incorrectly.
 Widget build(BuildContext context) {
   // manually closing the subscription when using ref.listenManual in build
   sub?.close();
-  sub = ref.listenManual(provider, (previous, next) {});
-
+  sub = ref.listenManual(provider, ...);
   return ...
 }
 ```
@@ -824,8 +831,7 @@ Widget build(BuildContext context) {
 
 ```dart
 Widget build(BuildContext context) {
-  ref.listenManual(provider, (previous, next) {});
-
+  ref.listenManual(provider, ...);
   return ...
 }
 ```
@@ -837,9 +843,19 @@ Warn if the `WidgetRef.listen` method is used incorrectly.
 **Good**:
 
 ```dart
-Widget build(ctx, ref) {
+Widget build(context, ref) {
   ref.listen(provider, ...);
-  return ...
+  return FilledButton(
+    onPressed: () {...},
+    child: Consumer(
+      builder: (context, ref, child) {
+        // using ref.listen in Consumer is fine
+        ref.listen(provider, ...);
+        return child!;
+      },
+      child: Placeholder(),
+    ),
+  );
 }
 ```
 
@@ -850,18 +866,12 @@ void initState() {
   ref.listen(provider, ...); // use listenManual instead
 }
 
-Widget build(ctx, ref) {
+Widget build(context, ref) {
   return FilledButton(
     onPressed: () {
       ref.listen(provider, ...); // use listenManual instead
     },
-    child: Consumer(
-      builder: (context, ref, child) {
-        ref.listen(provider, ...); // use listenManual instead
-        return child!;
-      },
-      child: Placeholder(),
-    ),
+    child: Placeholder(),
   );
 }
 ```
@@ -873,7 +883,7 @@ Warn if the `WidgetRef.read` method is used incorrectly.
 **Good**:
 
 ```dart
-Widget build(ctx, ref) {
+Widget build(context, ref) {
   return FilledButton(
     onPressed: () {
       ref.read(provider);
@@ -885,7 +895,7 @@ Widget build(ctx, ref) {
 **Bad**:
 
 ```dart
-Widget build(ctx, ref) {
+Widget build(context, ref) {
   ref.read(provider); // use watch instead
   return ...
 }
@@ -898,7 +908,7 @@ Warn if the `WidgetRef.watch` method is used incorrectly.
 **Good**:
 
 ```dart
-Widget build(ctx, ref) {
+Widget build(context, ref) {
   ref.watch(provider);
   return FilledButton(
     onPressed: () {...},
@@ -917,7 +927,7 @@ Widget build(ctx, ref) {
 **Bad**:
 
 ```dart
-Widget build(ctx, ref) {
+Widget build(context, ref) {
   return FilledButton(
     onPressed: () {
       ref.watch(provider); // use read instead

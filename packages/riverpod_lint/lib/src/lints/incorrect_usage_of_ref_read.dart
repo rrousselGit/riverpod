@@ -24,14 +24,12 @@ class IncorrectUsageOfRefRead extends RiverpodLintRule {
   ) {
     riverpodRegistry(context).addRefReadInvocation((invocation) {
       final parent = invocation.parent;
-      final methodName = invocation.node
-          .thisOrAncestorOfType<MethodDeclaration>()
-          ?.name
-          .lexeme;
+      final methodDeclaration =
+          invocation.node.thisOrAncestorOfType<MethodDeclaration>();
 
-      if (!(parent is LegacyProviderDeclaration ||
-          parent is FunctionalProviderDeclaration ||
-          methodName == 'build')) return;
+      if (parent is! LegacyProviderDeclaration &&
+          parent is! FunctionalProviderDeclaration &&
+          methodDeclaration?.name.lexeme != 'build') return;
 
       reporter.reportErrorForNode(code, invocation.node.methodName);
     });

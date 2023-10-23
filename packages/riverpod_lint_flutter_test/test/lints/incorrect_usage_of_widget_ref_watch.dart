@@ -18,7 +18,7 @@ class _ExampleState extends ConsumerState<Example> {
     ref.watch(provider);
   }
 
-  void someMethod() {
+  void method() {
     // expect_lint: incorrect_usage_of_widget_ref_watch
     ref.watch(provider);
   }
@@ -28,10 +28,16 @@ class _ExampleState extends ConsumerState<Example> {
     // using ref.watch in build is fine
     ref.watch(provider);
 
+    void nestedFunction() {
+      // expect_lint: incorrect_usage_of_widget_ref_watch
+      ref.watch(provider);
+    }
+
     return FilledButton(
       onPressed: () {
         // expect_lint: incorrect_usage_of_widget_ref_watch
         ref.watch(provider);
+        nestedFunction();
       },
       child: Consumer(
         builder: (context, ref, child) {

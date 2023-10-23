@@ -8,7 +8,7 @@ final aProvider = Provider<int>((ref) => 0);
 int b(BRef ref) => 0;
 
 final nonCodeGenFunctionalProvider = Provider<int>((ref) {
-  // using ref.watch in providers is fine
+  // using ref.watch in functional providers is fine
   ref.watch(aProvider);
   return 0;
 });
@@ -21,7 +21,7 @@ class NonCodeGenNotifier extends Notifier<int> {
     return 0;
   }
 
-  void someMethod() {
+  void method() {
     // expect_lint: incorrect_usage_of_ref_watch
     ref.watch(aProvider);
   }
@@ -29,7 +29,7 @@ class NonCodeGenNotifier extends Notifier<int> {
 
 @riverpod
 int codeGenFunctionalProvider(CodeGenFunctionalProviderRef ref) {
-  // using ref.watch in build is fine
+  // using ref.watch in function providers is fine
   ref.watch(bProvider);
   return 0;
 }
@@ -43,7 +43,7 @@ class CodeGenNotifier extends _$CodeGenNotifier {
     return 0;
   }
 
-  void someMethod() {
+  void method() {
     // expect_lint: incorrect_usage_of_ref_watch
     ref.watch(bProvider);
   }

@@ -24,12 +24,11 @@ class IncorrectUsageOfWidgetRefRead extends RiverpodLintRule {
     riverpodRegistry(context).addWidgetRefReadInvocation((invocation) {
       final functionExpression =
           invocation.node.thisOrAncestorOfType<FunctionExpression>();
-      final methodName = invocation.node
-          .thisOrAncestorOfType<MethodDeclaration>()
-          ?.name
-          .lexeme;
+      final methodDeclaration =
+          invocation.node.thisOrAncestorOfType<MethodDeclaration>();
 
-      if (functionExpression != null || methodName != 'build') return;
+      if (functionExpression != null ||
+          methodDeclaration?.name.lexeme != 'build') return;
 
       reporter.reportErrorForNode(code, invocation.node.methodName);
     });

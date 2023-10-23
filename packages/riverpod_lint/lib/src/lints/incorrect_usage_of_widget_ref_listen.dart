@@ -2,6 +2,7 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
 import '../riverpod_custom_lint.dart';
 
@@ -24,15 +25,25 @@ class IncorrectUsageOfWidgetRefListen extends RiverpodLintRule {
     riverpodRegistry(context).addWidgetRefListenInvocation((invocation) {
       final functionExpression =
           invocation.node.thisOrAncestorOfType<FunctionExpression>();
-      final methodName = invocation.node
-          .thisOrAncestorOfType<MethodDeclaration>()
-          ?.name
-          .lexeme;
+      final methodDeclaration =
+          invocation.node.thisOrAncestorOfType<MethodDeclaration>();
 
-      if (functionExpression == null && methodName == 'build') return;
+      if (functionExpression == null &&
+          methodDeclaration?.name.lexeme == 'build') return;
+
+      if (functionExpression != null && _isInConsumer(invocation.node)) {
+        return;
+      }
 
       reporter.reportErrorForNode(code, invocation.node.methodName);
     });
+  }
+
+  bool _isInConsumer(AstNode node) {
+    final instanceCreationExpression =
+        node.thisOrAncestorOfType<InstanceCreationExpression>();
+    final createdType = instanceCreationExpression?.staticType;
+    return createdType != null && anyConsumerType.isExactlyType(createdType);
   }
 
   @override

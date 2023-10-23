@@ -18,7 +18,7 @@ class _ExampleState extends ConsumerState<Example> {
     ref.read(provider);
   }
 
-  void someMethod() {
+  void method() {
     // using ref.read in methods is fine
     ref.read(provider);
   }
