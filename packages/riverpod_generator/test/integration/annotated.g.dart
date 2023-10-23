@@ -127,7 +127,7 @@ class FamilyProvider extends AutoDisposeProvider<String> {
 
   @override
   Override overrideWith(
-    String Function(FamilyRef provider) create,
+    String Function(FamilyRef ref) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -277,7 +277,7 @@ class NotCopiedFamilyProvider extends AutoDisposeProvider<String> {
 
   @override
   Override overrideWith(
-    String Function(NotCopiedFamilyRef provider) create,
+    String Function(NotCopiedFamilyRef ref) create,
   ) {
     return ProviderOverride(
       origin: this,

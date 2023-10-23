@@ -94,7 +94,7 @@ class FamilyTemplate extends Template {
 
   @override
   Override overrideWith(
-    $createdType Function(${provider._refImplName} provider) create,
+    $createdType Function(${provider._refImplName} ref) create,
   ) {
     return ProviderOverride(
       origin: this,

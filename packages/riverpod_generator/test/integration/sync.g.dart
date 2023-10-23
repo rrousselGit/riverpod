@@ -136,7 +136,7 @@ class RawFamilyFutureProvider extends AutoDisposeProvider<Raw<Future<String>>> {
 
   @override
   Override overrideWith(
-    Raw<Future<String>> Function(RawFamilyFutureRef provider) create,
+    Raw<Future<String>> Function(RawFamilyFutureRef ref) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -271,7 +271,7 @@ class RawFamilyStreamProvider extends AutoDisposeProvider<Raw<Stream<String>>> {
 
   @override
   Override overrideWith(
-    Raw<Stream<String>> Function(RawFamilyStreamRef provider) create,
+    Raw<Stream<String>> Function(RawFamilyStreamRef ref) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -480,7 +480,7 @@ class FamilyProvider extends AutoDisposeProvider<String> {
 
   @override
   Override overrideWith(
-    String Function(FamilyRef provider) create,
+    String Function(FamilyRef ref) create,
   ) {
     return ProviderOverride(
       origin: this,

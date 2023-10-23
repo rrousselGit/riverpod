@@ -167,7 +167,7 @@ class FamilyProvider extends AutoDisposeStreamProvider<String> {
 
   @override
   Override overrideWith(
-    Stream<String> Function(FamilyRef provider) create,
+    Stream<String> Function(FamilyRef ref) create,
   ) {
     return ProviderOverride(
       origin: this,

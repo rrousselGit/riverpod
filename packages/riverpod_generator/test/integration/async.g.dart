@@ -135,7 +135,7 @@ class FamilyOrProvider extends AutoDisposeFutureProvider<String> {
 
   @override
   Override overrideWith(
-    FutureOr<String> Function(FamilyOrRef provider) create,
+    FutureOr<String> Function(FamilyOrRef ref) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -300,7 +300,7 @@ class FamilyProvider extends AutoDisposeFutureProvider<String> {
 
   @override
   Override overrideWith(
-    FutureOr<String> Function(FamilyRef provider) create,
+    FutureOr<String> Function(FamilyRef ref) create,
   ) {
     return ProviderOverride(
       origin: this,

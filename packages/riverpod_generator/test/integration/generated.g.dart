@@ -122,7 +122,7 @@ class GeneratedFamilyProvider extends AutoDisposeProvider<_Test> {
 
   @override
   Override overrideWith(
-    _Test Function(GeneratedFamilyRef provider) create,
+    _Test Function(GeneratedFamilyRef ref) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -270,7 +270,7 @@ class $DynamicFamilyProvider extends AutoDisposeProvider<Object?> {
 
   @override
   Override overrideWith(
-    Object? Function($DynamicFamilyRef provider) create,
+    Object? Function($DynamicFamilyRef ref) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -403,7 +403,7 @@ class _DynamicProvider extends AutoDisposeProvider<Object?> {
 
   @override
   Override overrideWith(
-    Object? Function(_DynamicRef provider) create,
+    Object? Function(_DynamicRef ref) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -551,7 +551,7 @@ class AliasFamilyProvider extends AutoDisposeProvider<r.AsyncValue<int>> {
 
   @override
   Override overrideWith(
-    r.AsyncValue<int> Function(AliasFamilyRef provider) create,
+    r.AsyncValue<int> Function(AliasFamilyRef ref) create,
   ) {
     return ProviderOverride(
       origin: this,

@@ -121,7 +121,7 @@ class FamilyProvider extends AutoDisposeProvider<int> {
 
   @override
   Override overrideWith(
-    int Function(FamilyRef provider) create,
+    int Function(FamilyRef ref) create,
   ) {
     return ProviderOverride(
       origin: this,
