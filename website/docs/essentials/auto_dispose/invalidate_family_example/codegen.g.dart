@@ -40,6 +40,20 @@ class LabelFamily extends Family<String> {
   /// See also [label].
   const LabelFamily();
 
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'labelProvider';
+
   /// See also [label].
   LabelProvider call(
     String userName,
@@ -59,19 +73,26 @@ class LabelFamily extends Family<String> {
     );
   }
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(String Function(LabelRef ref) create) {
+    return _$LabelFamilyOverride(this, create);
+  }
+}
+
+class _$LabelFamilyOverride implements FamilyOverride<String> {
+  _$LabelFamilyOverride(this.overriddenFamily, this.create);
+
+  final String Function(LabelRef ref) create;
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+  final LabelFamily overriddenFamily;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'labelProvider';
+  LabelProvider getProviderOverride(
+    covariant LabelProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [label].
@@ -96,7 +117,7 @@ class LabelProvider extends AutoDisposeProvider<String> {
         );
 
   LabelProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -109,7 +130,7 @@ class LabelProvider extends AutoDisposeProvider<String> {
 
   @override
   Override overrideWith(
-    String Function(LabelRef provider) create,
+    String Function(LabelRef ref) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -133,6 +154,20 @@ class LabelProvider extends AutoDisposeProvider<String> {
   @override
   AutoDisposeProviderElement<String> createElement() {
     return _LabelProviderElement(this);
+  }
+
+  LabelProvider _copyWith(
+    String Function(LabelRef ref) create,
+  ) {
+    return LabelProvider._internal(
+      (ref) => create(ref as LabelRef),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      userName: userName,
+    );
   }
 
   @override

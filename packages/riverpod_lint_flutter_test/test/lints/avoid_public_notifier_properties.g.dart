@@ -46,6 +46,20 @@ class GeneratedNotifierFamily extends Family<int> {
   /// See also [GeneratedNotifier].
   const GeneratedNotifierFamily();
 
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'generatedNotifierProvider';
+
   /// See also [GeneratedNotifier].
   GeneratedNotifierProvider call(
     int param,
@@ -65,19 +79,26 @@ class GeneratedNotifierFamily extends Family<int> {
     );
   }
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(GeneratedNotifier Function() create) {
+    return _$GeneratedNotifierFamilyOverride(this, create);
+  }
+}
+
+class _$GeneratedNotifierFamilyOverride implements FamilyOverride<int> {
+  _$GeneratedNotifierFamilyOverride(this.overriddenFamily, this.create);
+
+  final GeneratedNotifier Function() create;
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+  final GeneratedNotifierFamily overriddenFamily;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'generatedNotifierProvider';
+  GeneratedNotifierProvider getProviderOverride(
+    covariant GeneratedNotifierProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [GeneratedNotifier].
@@ -101,7 +122,7 @@ class GeneratedNotifierProvider
         );
 
   GeneratedNotifierProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -145,6 +166,20 @@ class GeneratedNotifierProvider
   @override
   AutoDisposeNotifierProviderElement<GeneratedNotifier, int> createElement() {
     return _GeneratedNotifierProviderElement(this);
+  }
+
+  GeneratedNotifierProvider _copyWith(
+    GeneratedNotifier Function() create,
+  ) {
+    return GeneratedNotifierProvider._internal(
+      () => create()..param = param,
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      param: param,
+    );
   }
 
   @override
