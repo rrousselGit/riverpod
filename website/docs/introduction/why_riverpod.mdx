@@ -11,46 +11,53 @@ import { AutoSnippet } from "../../src/components/CodeSnippet";
 Riverpod (anagram of [Provider](https://pub.dev/packages/provider)) is a reactive
 caching framework for Flutter/Dart.
 
-Using declararive and reactive programming, Riverpod is able to take care of
-a large part of your application's logic for you. It can perform network-requests
-with built-in error handling and caching, while automatically re-fetching
-data when necessary.
+Using declarative and reactive programming, Riverpod takes care of a large part of your application's logic by significantly reducing the need for repetitive, boilerplate code. 
+
+One of its standout features is its ability to seamlessly manage network requests, complete with built-in error handling and efficient caching mechanisms. More than that,
+you don't have to manually intervene in ensuring your application stays up-to-date and responsive to changes in data sources.— it does that for you by intelligently re-fetching data as needed
 
 ## Motivation
 
 Modern applications rarely come with all the information necessary to render
-their User Interface. Instead, the data is often fetched asynchronously
-from a server.
+their User Interface. Else, the app size would be bulky and content would stay outdated
+really quickly. Instead of that, data is often fetched asynchronously from a server.
 
-The problem is, working with asynchronous code is hard. Although Flutter comes
-with some way to create state variables and refresh the UI on change, it is still
-fairly limited. A number of challenges remain unsolved:
+But that comes along with a problem: Working with asynchronous code.
 
-- Asynchronous requests need to be cached locally, as it would be unreasonable
-  to re-execute them whenever the UI updates.
-- Since we have a cache, our cache could get out of date if we're not careful.
-- We also need to handle errors and loading states
+For some reason, it's hard.
 
-Nailing those problems at scale can be difficult, and they are impacted by a large
-amount of features, such as:
+While Flutter offers ways to create state variables and update the user interface in
+response to changes, it has certain limitations. In fact, several challenges in this regard 
+still await solutions (no pun intended):
 
-- pull to refresh
-- infinite lists / fetch as we scroll
-- search as we type
-- debouncing asynchronous requests
-- cancelling asynchronous requests when no-longer used
-- optimistic UIs
-- offline mode
-- ...
+For example,
 
-These features can be tricky to implement, but are crucial for a good user experience.  
-Yet few packages try to tackle those problems directly, and a lot of the work
-has to be done manually.
+- It's impractical to repeatedly re-execute asynchronous requests whenever the UI updates. So 
+  they need to be cached.
+- With the introduction of Caches, it can get out of date real quick with extra care, and
+- Alongside managing cached data, we must also effectively address error handling and loading states.
 
-That's where Riverpod comes in.  
-Riverpod tries to solve those problems, by offering a new unique
-way of writing business logic, inspired by Flutter widgets. In
-many ways Riverpod is comparable to widgets, but for state.
+
+Solving these issues on a large scale can prove challenging as they are influenced by quite 
+a number of features regularly used in modern-day apps. They include but are not limited to:
+
+- Pull to refresh,
+- Infinite lists (fetch as we scroll),
+- Search as I type,
+- Debouncing asynchronous requests to reduce server calls,
+- Cancelling asynchronous requests when no longer used,
+- Optimistic UIs,
+- Offline mode and so on...
+
+
+These features can be tricky to implement but they are crucial for a good user experience.
+
+Yet, only a few packages try to tackle those problems directly, and you still have to 
+do a lot of manual work to get anything barely going — and that's where Riverpod comes in.
+
+Inspired by Flutter widgets, Riverpod addresses these challenges by introducing a fresh and
+unique approach to constructing business logic. So Riverpod is comparable to widgets in many
+ways but it's specifically for state. 
 
 Using this new approach, these complex features are mostly done by default. All
 that's left is to focus on your UI.
