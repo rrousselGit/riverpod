@@ -64,7 +64,7 @@
 
 ## 2.0.0
 
-- Export necessary utilites for providers returning a Stream.
+- Export necessary utilities for providers returning a Stream.
 - Upgraded riverpod dependency
 
 ## 1.2.1
