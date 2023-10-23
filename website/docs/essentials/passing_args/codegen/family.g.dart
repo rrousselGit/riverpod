@@ -40,6 +40,20 @@ class ActivityFamily extends Family<AsyncValue<Activity>> {
   /// See also [activity].
   const ActivityFamily();
 
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'activityProvider';
+
   /// See also [activity].
   ActivityProvider call(
     String activityType,
@@ -59,19 +73,26 @@ class ActivityFamily extends Family<AsyncValue<Activity>> {
     );
   }
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(FutureOr<Activity> Function(ActivityRef ref) create) {
+    return _$ActivityFamilyOverride(this, create);
+  }
+}
+
+class _$ActivityFamilyOverride implements FamilyOverride<AsyncValue<Activity>> {
+  _$ActivityFamilyOverride(this.overriddenFamily, this.create);
+
+  final FutureOr<Activity> Function(ActivityRef ref) create;
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+  final ActivityFamily overriddenFamily;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'activityProvider';
+  ActivityProvider getProviderOverride(
+    covariant ActivityProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [activity].
@@ -96,7 +117,7 @@ class ActivityProvider extends AutoDisposeFutureProvider<Activity> {
         );
 
   ActivityProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -109,7 +130,7 @@ class ActivityProvider extends AutoDisposeFutureProvider<Activity> {
 
   @override
   Override overrideWith(
-    FutureOr<Activity> Function(ActivityRef provider) create,
+    FutureOr<Activity> Function(ActivityRef ref) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -133,6 +154,20 @@ class ActivityProvider extends AutoDisposeFutureProvider<Activity> {
   @override
   AutoDisposeFutureProviderElement<Activity> createElement() {
     return _ActivityProviderElement(this);
+  }
+
+  ActivityProvider _copyWith(
+    FutureOr<Activity> Function(ActivityRef ref) create,
+  ) {
+    return ActivityProvider._internal(
+      (ref) => create(ref as ActivityRef),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      activityType: activityType,
+    );
   }
 
   @override

@@ -1,7 +1,7 @@
 import 'package:riverpod_analyzer_utils/src/riverpod_ast.dart';
 import 'package:test/test.dart';
 
-import 'analyser_test_utils.dart';
+import 'analyzer_test_utils.dart';
 
 void main() {
   testSource('Decode ConsumerWidget declarations', source: '''
@@ -20,7 +20,7 @@ class MyConsumerWidget extends ConsumerWidget {
   }
 }
 ''', (resolver) async {
-    final result = await resolver.resolveRiverpodAnalyssiResult();
+    final result = await resolver.resolveRiverpodAnalysisResult();
 
     final consumerWidget = result.consumerWidgetDeclarations.single;
     expect(consumerWidget, isA<ConsumerWidgetDeclaration>());
@@ -58,7 +58,7 @@ class MyConsumerWidget extends HookConsumerWidget {
   }
 }
 ''', (resolver) async {
-    final result = await resolver.resolveRiverpodAnalyssiResult();
+    final result = await resolver.resolveRiverpodAnalysisResult();
 
     final consumerWidget = result.hookConsumerWidgetDeclaration.single;
     expect(consumerWidget, isA<HookConsumerWidgetDeclaration>());
@@ -109,7 +109,7 @@ class MyConsumerState extends ConsumerState<MyConsumerWidget> {
   }
 }
 ''', (resolver) async {
-    final result = await resolver.resolveRiverpodAnalyssiResult();
+    final result = await resolver.resolveRiverpodAnalysisResult();
 
     final consumerWidget = result.consumerStatefulWidgetDeclarations.single;
     final consumerState = result.consumerStateDeclarations.single;
@@ -167,7 +167,7 @@ class MyConsumerState extends ConsumerState<MyConsumerWidget> {
   }
 }
 ''', (resolver) async {
-    final result = await resolver.resolveRiverpodAnalyssiResult();
+    final result = await resolver.resolveRiverpodAnalysisResult();
 
     final consumerWidget = result.statefulHookConsumerWidgetDeclaration.single;
     final consumerState = result.consumerStateDeclarations.single;

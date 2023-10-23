@@ -58,6 +58,20 @@ class FamilyFamily extends Family<String> {
   /// See also [family].
   const FamilyFamily();
 
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'familyProvider';
+
   /// See also [family].
   FamilyProvider call(
     int id,
@@ -77,19 +91,26 @@ class FamilyFamily extends Family<String> {
     );
   }
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(String Function(FamilyRef ref) create) {
+    return _$FamilyFamilyOverride(this, create);
+  }
+}
+
+class _$FamilyFamilyOverride implements FamilyOverride<String> {
+  _$FamilyFamilyOverride(this.overriddenFamily, this.create);
+
+  final String Function(FamilyRef ref) create;
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+  final FamilyFamily overriddenFamily;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'familyProvider';
+  FamilyProvider getProviderOverride(
+    covariant FamilyProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [family].
@@ -114,7 +135,7 @@ class FamilyProvider extends AutoDisposeProvider<String> {
         );
 
   FamilyProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -127,7 +148,7 @@ class FamilyProvider extends AutoDisposeProvider<String> {
 
   @override
   Override overrideWith(
-    String Function(FamilyRef provider) create,
+    String Function(FamilyRef ref) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -151,6 +172,20 @@ class FamilyProvider extends AutoDisposeProvider<String> {
   @override
   AutoDisposeProviderElement<String> createElement() {
     return _FamilyProviderElement(this);
+  }
+
+  FamilyProvider _copyWith(
+    String Function(FamilyRef ref) create,
+  ) {
+    return FamilyProvider._internal(
+      (ref) => create(ref as FamilyRef),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      id: id,
+    );
   }
 
   @override
@@ -207,6 +242,20 @@ class NotCopiedFamilyFamily extends Family<String> {
   /// See also [notCopiedFamily].
   const NotCopiedFamilyFamily();
 
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'notCopiedFamilyProvider';
+
   /// See also [notCopiedFamily].
   NotCopiedFamilyProvider call(
     int id,
@@ -226,19 +275,26 @@ class NotCopiedFamilyFamily extends Family<String> {
     );
   }
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(String Function(NotCopiedFamilyRef ref) create) {
+    return _$NotCopiedFamilyFamilyOverride(this, create);
+  }
+}
+
+class _$NotCopiedFamilyFamilyOverride implements FamilyOverride<String> {
+  _$NotCopiedFamilyFamilyOverride(this.overriddenFamily, this.create);
+
+  final String Function(NotCopiedFamilyRef ref) create;
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+  final NotCopiedFamilyFamily overriddenFamily;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'notCopiedFamilyProvider';
+  NotCopiedFamilyProvider getProviderOverride(
+    covariant NotCopiedFamilyProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [notCopiedFamily].
@@ -264,7 +320,7 @@ class NotCopiedFamilyProvider extends AutoDisposeProvider<String> {
         );
 
   NotCopiedFamilyProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -277,7 +333,7 @@ class NotCopiedFamilyProvider extends AutoDisposeProvider<String> {
 
   @override
   Override overrideWith(
-    String Function(NotCopiedFamilyRef provider) create,
+    String Function(NotCopiedFamilyRef ref) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -301,6 +357,20 @@ class NotCopiedFamilyProvider extends AutoDisposeProvider<String> {
   @override
   AutoDisposeProviderElement<String> createElement() {
     return _NotCopiedFamilyProviderElement(this);
+  }
+
+  NotCopiedFamilyProvider _copyWith(
+    String Function(NotCopiedFamilyRef ref) create,
+  ) {
+    return NotCopiedFamilyProvider._internal(
+      (ref) => create(ref as NotCopiedFamilyRef),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      id: id,
+    );
   }
 
   @override
