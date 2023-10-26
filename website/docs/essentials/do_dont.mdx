@@ -37,9 +37,11 @@ class WidgetState extends State<MyWidget> {
 }
 ```
 
-**Do**
+**CONSIDER**
 
-Often, the correct place to put such logic is in the `onPressed` of a button
+There is no "one-size fits all" solution to this problem.  
+But if your initialization logic depends on factors external to the provider,
+often, the correct place to put such logic is in the `onPressed` of a button
 triggering navigation:
 
 ```dart
