@@ -20,7 +20,7 @@ export function buildDeps({
 const raw = buildDeps({ deps: ["riverpod"] });
 
 const codegen = buildDeps({
-  deps: ["riverpod"],
+  deps: ["riverpod", "riverpod_annotation"],
   devDeps: ["riverpod_generator", "build_runner"],
 });
 
