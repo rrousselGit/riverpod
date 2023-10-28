@@ -2,13 +2,13 @@
 
 // ignore_for_file: non_constant_identifier_names
 
-part of 'main.dart';
+part of 'codegen.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$fetchUserHash() => r'ff427bbb4130a8a6994fa623ae70997f7b0f6bdb';
+String _$labelHash() => r'20aa8ce0231205540f466f91259732bd86953c64';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -31,14 +31,14 @@ class _SystemHash {
   }
 }
 
-/// See also [fetchUser].
-@ProviderFor(fetchUser)
-const fetchUserProvider = FetchUserFamily();
+/// See also [label].
+@ProviderFor(label)
+const labelProvider = LabelFamily();
 
-/// See also [fetchUser].
-class FetchUserFamily extends Family {
-  /// See also [fetchUser].
-  const FetchUserFamily();
+/// See also [label].
+class LabelFamily extends Family<String> {
+  /// See also [label].
+  const LabelFamily();
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
 
@@ -52,151 +52,149 @@ class FetchUserFamily extends Family {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'fetchUserProvider';
+  String? get name => r'labelProvider';
 
-  /// See also [fetchUser].
-  FetchUserProvider call({
-    required int userId,
-  }) {
-    return FetchUserProvider(
-      userId: userId,
+  /// See also [label].
+  LabelProvider call(
+    String userName,
+  ) {
+    return LabelProvider(
+      userName,
     );
   }
 
   @visibleForOverriding
   @override
-  FetchUserProvider getProviderOverride(
-    covariant FetchUserProvider provider,
+  LabelProvider getProviderOverride(
+    covariant LabelProvider provider,
   ) {
     return call(
-      userId: provider.userId,
+      provider.userName,
     );
   }
 
   /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(FutureOr<User> Function(FetchUserRef ref) create) {
-    return _$FetchUserFamilyOverride(this, create);
+  Override overrideWith(String Function(LabelRef ref) create) {
+    return _$LabelFamilyOverride(this, create);
   }
 }
 
-class _$FetchUserFamilyOverride implements FamilyOverride<AsyncValue<User>> {
-  _$FetchUserFamilyOverride(this.overriddenFamily, this.create);
+class _$LabelFamilyOverride implements FamilyOverride<String> {
+  _$LabelFamilyOverride(this.overriddenFamily, this.create);
 
-  final FutureOr<User> Function(FetchUserRef ref) create;
-
-  @override
-  final FetchUserFamily overriddenFamily;
+  final String Function(LabelRef ref) create;
 
   @override
-  FetchUserProvider getProviderOverride(
-    covariant FetchUserProvider provider,
+  final LabelFamily overriddenFamily;
+
+  @override
+  LabelProvider getProviderOverride(
+    covariant LabelProvider provider,
   ) {
     return provider._copyWith(create);
   }
 }
 
-/// See also [fetchUser].
-class FetchUserProvider extends AutoDisposeFutureProvider<User> {
-  /// See also [fetchUser].
-  FetchUserProvider({
-    required int userId,
-  }) : this._internal(
-          (ref) => fetchUser(
-            ref as FetchUserRef,
-            userId: userId,
+/// See also [label].
+class LabelProvider extends AutoDisposeProvider<String> {
+  /// See also [label].
+  LabelProvider(
+    String userName,
+  ) : this._internal(
+          (ref) => label(
+            ref as LabelRef,
+            userName,
           ),
-          from: fetchUserProvider,
-          name: r'fetchUserProvider',
+          from: labelProvider,
+          name: r'labelProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$fetchUserHash,
-          dependencies: FetchUserFamily._dependencies,
-          allTransitiveDependencies: FetchUserFamily._allTransitiveDependencies,
-          userId: userId,
+                  : _$labelHash,
+          dependencies: LabelFamily._dependencies,
+          allTransitiveDependencies: LabelFamily._allTransitiveDependencies,
+          userName: userName,
         );
 
-  FetchUserProvider._internal(
+  LabelProvider._internal(
     super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.from,
-    required this.userId,
+    required this.userName,
   }) : super.internal();
 
-  final int userId;
+  final String userName;
 
   @override
   Override overrideWith(
-    FutureOr<User> Function(FetchUserRef ref) create,
+    String Function(LabelRef ref) create,
   ) {
     return ProviderOverride(
       origin: this,
-      override: FetchUserProvider._internal(
-        (ref) => create(ref as FetchUserRef),
+      override: LabelProvider._internal(
+        (ref) => create(ref as LabelRef),
         from: from,
         name: null,
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
-        userId: userId,
+        userName: userName,
       ),
     );
   }
 
   @override
-  ({
-    int userId,
-  }) get argument {
-    return (userId: userId,);
+  (String,) get argument {
+    return (userName,);
   }
 
   @override
-  AutoDisposeFutureProviderElement<User> createElement() {
-    return _FetchUserProviderElement(this);
+  AutoDisposeProviderElement<String> createElement() {
+    return _LabelProviderElement(this);
   }
 
-  FetchUserProvider _copyWith(
-    FutureOr<User> Function(FetchUserRef ref) create,
+  LabelProvider _copyWith(
+    String Function(LabelRef ref) create,
   ) {
-    return FetchUserProvider._internal(
-      (ref) => create(ref as FetchUserRef),
+    return LabelProvider._internal(
+      (ref) => create(ref as LabelRef),
       name: name,
       dependencies: dependencies,
       allTransitiveDependencies: allTransitiveDependencies,
       debugGetCreateSourceHash: debugGetCreateSourceHash,
       from: from,
-      userId: userId,
+      userName: userName,
     );
   }
 
   @override
   bool operator ==(Object other) {
-    return other is FetchUserProvider && other.userId == userId;
+    return other is LabelProvider && other.userName == userName;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, userId.hashCode);
+    hash = _SystemHash.combine(hash, userName.hashCode);
 
     return _SystemHash.finish(hash);
   }
 }
 
-mixin FetchUserRef on AutoDisposeFutureProviderRef<User> {
-  /// The parameter `userId` of this provider.
-  int get userId;
+mixin LabelRef on AutoDisposeProviderRef<String> {
+  /// The parameter `userName` of this provider.
+  String get userName;
 }
 
-class _FetchUserProviderElement extends AutoDisposeFutureProviderElement<User>
-    with FetchUserRef {
-  _FetchUserProviderElement(super.provider);
+class _LabelProviderElement extends AutoDisposeProviderElement<String>
+    with LabelRef {
+  _LabelProviderElement(super.provider);
 
   @override
-  int get userId => (origin as FetchUserProvider).userId;
+  String get userName => (origin as LabelProvider).userName;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package

@@ -1,4 +1,4 @@
-## Unreleased 3.0.0-dev.0
+## Unreleased 3.0.0-dev.6
 
 - **Breaking**: `AsyncValue` is now "sealed" and `AsyncData/AsyncLoading/AsyncError`
   are "final". This means that it is no-longer possible to subclass

@@ -91,7 +91,7 @@ Migrating from `StateNotifier<AsyncValue<T>>` to a `AsyncNotifer<T>` boils down 
 
 ### Advantages
 
-After these few examples, let's now highligh the main advantages of `Notifier` and `AsyncNotifer`: 
+After these few examples, let's now highlight the main advantages of `Notifier` and `AsyncNotifer`: 
 - The new syntax should feel way simpler and more readable, especially for asynchronous state
 - New APIs are likely to have less boilerplate code in general
 - Syntax is now unified, no matter the type of provider you're writing, enabling code generation
@@ -105,7 +105,7 @@ Another important difference is how families and auto dispose is handled with th
 
 `Notifier`, has its own `.family` and `.autoDispose` counterparts, such as `FamilyNotifier`
 and `AutoDisposeNotifier`.  
-As always, such modifications hese can be combined (aka `AutoDisposeFamilyNotifier`).  
+As always, such modifications can be combined (aka `AutoDisposeFamilyNotifier`).  
 `AsyncNotifer` has its asynchronous equivalent, too (e.g. `AutoDisposeFamilyAsyncNotifier`).
 
 Modifications are explicitly stated inside the class; any parameters are directly injected in the

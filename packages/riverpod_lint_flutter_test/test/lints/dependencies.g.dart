@@ -416,6 +416,26 @@ class FamilyDepFamily extends Family {
   /// See also [familyDep].
   const FamilyDepFamily();
 
+  static final Iterable<ProviderOrFamily> _dependencies = <ProviderOrFamily>[
+    depProvider
+  ];
+
+  static final Iterable<ProviderOrFamily> _allTransitiveDependencies =
+      <ProviderOrFamily>{
+    depProvider,
+    ...?depProvider.allTransitiveDependencies
+  };
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'familyDepProvider';
+
   /// See also [familyDep].
   FamilyDepProvider call(
     int p,
@@ -435,25 +455,26 @@ class FamilyDepFamily extends Family {
     );
   }
 
-  static final Iterable<ProviderOrFamily> _dependencies = <ProviderOrFamily>[
-    depProvider
-  ];
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(int Function(FamilyDepRef ref) create) {
+    return _$FamilyDepFamilyOverride(this, create);
+  }
+}
+
+class _$FamilyDepFamilyOverride implements FamilyOverride<int> {
+  _$FamilyDepFamilyOverride(this.overriddenFamily, this.create);
+
+  final int Function(FamilyDepRef ref) create;
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static final Iterable<ProviderOrFamily> _allTransitiveDependencies =
-      <ProviderOrFamily>{
-    depProvider,
-    ...?depProvider.allTransitiveDependencies
-  };
+  final FamilyDepFamily overriddenFamily;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'familyDepProvider';
+  FamilyDepProvider getProviderOverride(
+    covariant FamilyDepProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [familyDep].
@@ -478,7 +499,7 @@ class FamilyDepProvider extends AutoDisposeProvider<int> {
         );
 
   FamilyDepProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -491,7 +512,7 @@ class FamilyDepProvider extends AutoDisposeProvider<int> {
 
   @override
   Override overrideWith(
-    int Function(FamilyDepRef provider) create,
+    int Function(FamilyDepRef ref) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -515,6 +536,20 @@ class FamilyDepProvider extends AutoDisposeProvider<int> {
   @override
   AutoDisposeProviderElement<int> createElement() {
     return _FamilyDepProviderElement(this);
+  }
+
+  FamilyDepProvider _copyWith(
+    int Function(FamilyDepRef ref) create,
+  ) {
+    return FamilyDepProvider._internal(
+      (ref) => create(ref as FamilyDepRef),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      p: p,
+    );
   }
 
   @override
@@ -555,6 +590,26 @@ class FamilyDep2Family extends Family {
   /// See also [familyDep2].
   const FamilyDep2Family();
 
+  static final Iterable<ProviderOrFamily> _dependencies = <ProviderOrFamily>[
+    familyDepProvider
+  ];
+
+  static final Iterable<ProviderOrFamily> _allTransitiveDependencies =
+      <ProviderOrFamily>{
+    familyDepProvider,
+    ...?familyDepProvider.allTransitiveDependencies
+  };
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'familyDep2Provider';
+
   /// See also [familyDep2].
   FamilyDep2Provider call(
     int p,
@@ -574,25 +629,26 @@ class FamilyDep2Family extends Family {
     );
   }
 
-  static final Iterable<ProviderOrFamily> _dependencies = <ProviderOrFamily>[
-    familyDepProvider
-  ];
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(int Function(FamilyDep2Ref ref) create) {
+    return _$FamilyDep2FamilyOverride(this, create);
+  }
+}
+
+class _$FamilyDep2FamilyOverride implements FamilyOverride<int> {
+  _$FamilyDep2FamilyOverride(this.overriddenFamily, this.create);
+
+  final int Function(FamilyDep2Ref ref) create;
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static final Iterable<ProviderOrFamily> _allTransitiveDependencies =
-      <ProviderOrFamily>{
-    familyDepProvider,
-    ...?familyDepProvider.allTransitiveDependencies
-  };
+  final FamilyDep2Family overriddenFamily;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'familyDep2Provider';
+  FamilyDep2Provider getProviderOverride(
+    covariant FamilyDep2Provider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [familyDep2].
@@ -618,7 +674,7 @@ class FamilyDep2Provider extends AutoDisposeProvider<int> {
         );
 
   FamilyDep2Provider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -631,7 +687,7 @@ class FamilyDep2Provider extends AutoDisposeProvider<int> {
 
   @override
   Override overrideWith(
-    int Function(FamilyDep2Ref provider) create,
+    int Function(FamilyDep2Ref ref) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -655,6 +711,20 @@ class FamilyDep2Provider extends AutoDisposeProvider<int> {
   @override
   AutoDisposeProviderElement<int> createElement() {
     return _FamilyDep2ProviderElement(this);
+  }
+
+  FamilyDep2Provider _copyWith(
+    int Function(FamilyDep2Ref ref) create,
+  ) {
+    return FamilyDep2Provider._internal(
+      (ref) => create(ref as FamilyDep2Ref),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      p: p,
+    );
   }
 
   @override

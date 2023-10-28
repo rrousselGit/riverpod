@@ -13,6 +13,12 @@ class ResolvedRiverpodLibraryResult extends RiverpodAst {
       errorReporter = result.errors.add;
 
       for (final unit in units) {
+        // Let's not parse generated files
+        const generatedExtensions = {'.freezed.dart', '.g.dart'};
+        final shortName = unit.declaredElement?.source.shortName ?? '';
+        if (generatedExtensions.any(shortName.endsWith)) {
+          continue;
+        }
         unit.accept(visitor);
       }
     } finally {

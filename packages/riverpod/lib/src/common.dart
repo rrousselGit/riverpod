@@ -26,10 +26,7 @@ extension AsyncTransition<T> on ProviderElementBase<AsyncValue<T>> {
     } else {
 // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
       setState(
-        newState.copyWithPrevious(
-          previous,
-          isRefresh: seamless,
-        ),
+        newState._cast<T>().copyWithPrevious(previous, isRefresh: seamless),
       );
     }
   }
@@ -204,6 +201,9 @@ sealed class AsyncValue<T> {
   StackTrace? get stackTrace;
 
   String get _displayString;
+  
+  /// Casts the [AsyncValue] to a different type.
+  AsyncValue<R> _cast<R>();
 
   /// Perform some action based on the current state of the [AsyncValue].
   ///
@@ -337,6 +337,17 @@ final class AsyncData<T> extends AsyncValue<T> {
   }) {
     return this;
   }
+
+  @override
+  AsyncValue<R> _cast<R>() {
+    if (T == R) return this as AsyncValue<R>;
+    return AsyncData<R>._(
+      value as R,
+      isLoading: isLoading,
+      error: error,
+      stackTrace: stackTrace,
+    );
+  }
 }
 
 /// {@macro asyncvalue.loading}
@@ -373,6 +384,17 @@ final class AsyncLoading<T> extends AsyncValue<T> {
 
   @override
   final StackTrace? stackTrace;
+
+  @override
+  AsyncValue<R> _cast<R>() {
+    if (T == R) return this as AsyncValue<R>;
+    return AsyncLoading<R>._(
+      hasValue: hasValue,
+      value: value as R?,
+      error: error,
+      stackTrace: stackTrace,
+    );
+  }
 
   @override
   R map<R>({
@@ -470,6 +492,18 @@ final class AsyncError<T> extends AsyncValue<T> {
 
   @override
   final StackTrace stackTrace;
+
+  @override
+  AsyncValue<R> _cast<R>() {
+    if (T == R) return this as AsyncValue<R>;
+    return AsyncError<R>._(
+      error,
+      stackTrace: stackTrace,
+      isLoading: isLoading,
+      value: _value as R?,
+      hasValue: hasValue,
+    );
+  }
 
   @override
   R map<R>({

@@ -26,7 +26,7 @@ A reactive caching and data-binding framework. https://riverpod.dev
 Riverpod makes working with asynchronous code a breeze by:
 
 - handling errors/loading states by default. No need to manually catch errors
-- natively supporting advanced scenearios, such as pull-to-refresh
+- natively supporting advanced scenarios, such as pull-to-refresh
 - separating the logic from your UI
 - ensuring your code is testable, scalable and reusable
 

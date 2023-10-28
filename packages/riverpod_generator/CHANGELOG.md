@@ -24,6 +24,10 @@
 
 - Upgraded to use Riverpod 3.0
 
+## 3.0.0-dev.5 - 2023-10-21
+
+- `riverpod_analyzer_utils` upgraded to `0.4.2`
+
 ## 3.0.0-dev.4 - 2023-10-15
 
 - Annotating a provider with `@deprecated` and a few other annotations

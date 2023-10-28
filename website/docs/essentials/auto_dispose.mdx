@@ -11,6 +11,7 @@ import invalidateExample from "!!raw-loader!./auto_dispose/invalidate_example.da
 import keepAlive from "./auto_dispose/keep_alive";
 import cacheForExtension from "!!raw-loader!./auto_dispose/cache_for_extension.dart";
 import cacheForUsage from "./auto_dispose/cache_for_usage";
+import invalidateFamilyExample from './auto_dispose/invalidate_family_example'
 
 So far, we've seen how to create/update some state.
 But we have yet to talk about when state destruction.
@@ -115,6 +116,14 @@ There are then two possible outcomes:
 :::info
 It is possible for providers to invalidate themselves by using `ref.invalidateSelf`.
 Although in this case, this will always result in a new state being created.
+:::
+
+:::tip
+When trying to invalidate a provider which receives parameters,
+it is posible to either invalidate one specific parameter combination,
+or all parameter combinations at once:
+
+<AutoSnippet {...invalidateFamilyExample} />
 :::
 
 ## Fine-tuned disposal with `ref.keepAlive`

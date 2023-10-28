@@ -70,6 +70,20 @@ class ExampleFamilyFamily extends Family {
   /// Copied from [ExampleFamily].
   const ExampleFamilyFamily();
 
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'exampleFamilyProvider';
+
   /// Some comment
   ///
   /// Copied from [ExampleFamily].
@@ -94,19 +108,26 @@ class ExampleFamilyFamily extends Family {
     );
   }
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(ExampleFamily Function() create) {
+    return _$ExampleFamilyFamilyOverride(this, create);
+  }
+}
+
+class _$ExampleFamilyFamilyOverride implements FamilyOverride<int> {
+  _$ExampleFamilyFamilyOverride(this.overriddenFamily, this.create);
+
+  final ExampleFamily Function() create;
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+  final ExampleFamilyFamily overriddenFamily;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'exampleFamilyProvider';
+  ExampleFamilyProvider getProviderOverride(
+    covariant ExampleFamilyProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// Some comment
@@ -138,7 +159,7 @@ class ExampleFamilyProvider
         );
 
   ExampleFamilyProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -194,6 +215,23 @@ class ExampleFamilyProvider
   @override
   AutoDisposeNotifierProviderElement<ExampleFamily, int> createElement() {
     return _ExampleFamilyProviderElement(this);
+  }
+
+  ExampleFamilyProvider _copyWith(
+    ExampleFamily Function() create,
+  ) {
+    return ExampleFamilyProvider._internal(
+      () => create()
+        ..a = a
+        ..b = b,
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      a: a,
+      b: b,
+    );
   }
 
   @override

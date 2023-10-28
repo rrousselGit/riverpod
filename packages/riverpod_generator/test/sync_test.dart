@@ -1,4 +1,4 @@
-// ignore_for_file: omit_local_variable_types, unused_local_variable
+// ignore_for_file: omit_local_variable_types, unused_local_variable, require_trailing_commas
 
 import 'dart:io';
 
@@ -291,6 +291,31 @@ void main() {
     expect(
       result,
       '(first: 42, second: x42, third: 0.42, fourth: false, fifth: [x42])',
+    );
+  });
+
+  test('can override providers', () {
+    final container = createContainer(overrides: [
+      publicProvider.overrideWith((ref) => 'test'),
+      publicClassProvider.overrideWith(() => PublicClass(42)),
+      familyProvider.overrideWith(
+        (ref) =>
+            'test (first: ${ref.first}, second: ${ref.second}, third: ${ref.third}, fourth: ${ref.fourth}, fifth: ${ref.fifth})',
+      ),
+      familyClassProvider.overrideWith(() => FamilyClass(42)),
+    ]);
+
+    expect(container.read(publicProvider), 'test');
+    expect(container.read(publicClassProvider.notifier).param, 42);
+    expect(
+      container.read(familyProvider(42, second: '42', third: .42)),
+      'test (first: 42, second: 42, third: 0.42, fourth: true, fifth: null)',
+    );
+    expect(
+      container
+          .read(familyClassProvider(42, second: '42', third: .42).notifier)
+          .param,
+      42,
     );
   });
 }

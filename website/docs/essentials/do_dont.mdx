@@ -37,6 +37,23 @@ class WidgetState extends State<MyWidget> {
 }
 ```
 
+**CONSIDER**
+
+There is no "one-size fits all" solution to this problem.  
+But if your initialization logic depends on factors external to the provider,
+often, the correct place to put such logic is in the `onPressed` of a button
+triggering navigation:
+
+```dart
+ElevatedButton(
+  onPressed: () {
+    ref.read(provider).init();
+    Navigator.of(context).push(...);
+  },
+  child: Text('Navigate'),
+)
+```
+
 ## AVOID using providers for local widget state.
 
 Providers are designed to be for shared business state.

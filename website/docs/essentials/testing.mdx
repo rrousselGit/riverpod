@@ -2,7 +2,7 @@
 title: Testing your providers
 ---
 
-import { AutoSnippet } from "../../src/components/CodeSnippet";
+import { AutoSnippet, When } from "../../src/components/CodeSnippet";
 import createContainer from "!!raw-loader!./testing/create_container.dart";
 import unitTest from "!!raw-loader!./testing/unit_test.dart";
 import widgetTest from "!!raw-loader!./testing/widget_test.dart";
@@ -13,6 +13,7 @@ import mockProvider from "!!raw-loader!./testing/mock_provider.dart";
 import autoDisposeListen from "!!raw-loader!./testing/auto_dispose_listen.dart";
 import listenProvider from "!!raw-loader!./testing/listen_provider.dart";
 import awaitFuture from "!!raw-loader!./testing/await_future.dart";
+import notifierMock from "./testing/notifier_mock";
 
 A core part of the Riverpod API is the ability to test your providers in isolation.
 
@@ -130,3 +131,32 @@ to be completed.
 One way to do so is to read the `.future` of a provider:
 
 <AutoSnippet raw={awaitFuture} />
+
+## Mocking Notifiers
+
+It is generally discouraged to mock Notifiers.  
+Instead, you should likely introduce a level of abstraction in the logic of your
+Notifier, such that you can mock that abstraction.
+For instance, rather than mocking a Notifier, you could mock a "repository"
+that the Notifier uses to fetch data from.
+
+If you insist on mocking a Notifier, there is a special consideration
+to create such a mock: Your mock must subclass the original Notifier
+base class: You cannot "implement" Notifier, as this would break the interface.
+
+As such, when mocking a Notifier, instead of writing the following mockito code:
+
+```dart
+class MyNotifierMock with Mock implements MyNotifier {}
+```
+
+You should instead write:
+
+<AutoSnippet {...notifierMock} />
+
+<When codegen={true}>
+
+For this to work, your mock will have to be placed in the same file as the
+Notifier you are mocking. Otherwise you would not have access to the `_$MyNotifier` class.
+
+</When>
