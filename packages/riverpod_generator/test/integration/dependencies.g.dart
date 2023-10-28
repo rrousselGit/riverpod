@@ -48,7 +48,7 @@ class _SystemHash {
 const familyProvider = FamilyFamily();
 
 /// See also [family].
-class FamilyFamily extends Family<int> {
+class FamilyFamily extends Family {
   /// See also [family].
   const FamilyFamily();
 
@@ -91,7 +91,7 @@ class FamilyFamily extends Family<int> {
   }
 }
 
-class _$FamilyFamilyOverride implements FamilyOverride<int> {
+class _$FamilyFamilyOverride implements FamilyOverride {
   _$FamilyFamilyOverride(this.overriddenFamily, this.create);
 
   final int Function(FamilyRef ref) create;
@@ -402,7 +402,7 @@ abstract class _$Family2 extends BuildlessAutoDisposeNotifier<int> {
 const family2Provider = Family2Family();
 
 /// See also [Family2].
-class Family2Family extends Family<int> {
+class Family2Family extends Family {
   /// See also [Family2].
   const Family2Family();
 
@@ -445,7 +445,7 @@ class Family2Family extends Family<int> {
   }
 }
 
-class _$Family2FamilyOverride implements FamilyOverride<int> {
+class _$Family2FamilyOverride implements FamilyOverride {
   _$Family2FamilyOverride(this.overriddenFamily, this.create);
 
   final Family2 Function() create;
@@ -610,7 +610,7 @@ abstract class _$Provider4 extends BuildlessAutoDisposeNotifier<int> {
 const provider4Provider = Provider4Family();
 
 /// See also [Provider4].
-class Provider4Family extends Family<int> {
+class Provider4Family extends Family {
   /// See also [Provider4].
   const Provider4Family();
 
@@ -668,7 +668,7 @@ class Provider4Family extends Family<int> {
   }
 }
 
-class _$Provider4FamilyOverride implements FamilyOverride<int> {
+class _$Provider4FamilyOverride implements FamilyOverride {
   _$Provider4FamilyOverride(this.overriddenFamily, this.create);
 
   final Provider4 Function() create;

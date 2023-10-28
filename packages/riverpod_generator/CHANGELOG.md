@@ -1,6 +1,28 @@
-## Unreleased fix
+## Unreleased 3.0.0-dev.6
 
-- Fixed `family.overrideWith` missing
+- Providers can now be generic:
+
+  ```dart
+  @riverpod
+  List<T> example<T extends num>(ExampleRef<T> ref) {
+    return <T>[];
+  }
+
+  @riverpod
+  class ClassExample<T> extends _$ClassExample<T> {
+    @override
+    List<T> build() => <T>[];
+  }
+  ```
+
+  Specifying type parameters works the same as specifying arguments, and
+  make the generated provider a "function":
+
+  ```dart
+  ref.watch(example<int>());
+  ```
+
+- Upgraded to use Riverpod 3.0
 
 ## 3.0.0-dev.5 - 2023-10-21
 

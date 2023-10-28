@@ -54,7 +54,7 @@ const exampleFamilyProvider = ExampleFamilyFamily();
 /// Some comment
 ///
 /// Copied from [exampleFamily].
-class ExampleFamilyFamily extends Family<int> {
+class ExampleFamilyFamily extends Family {
   /// Some comment
   ///
   /// Copied from [exampleFamily].
@@ -104,7 +104,7 @@ class ExampleFamilyFamily extends Family<int> {
   }
 }
 
-class _$ExampleFamilyFamilyOverride implements FamilyOverride<int> {
+class _$ExampleFamilyFamilyOverride implements FamilyOverride {
   _$ExampleFamilyFamilyOverride(this.overriddenFamily, this.create);
 
   final int Function(ExampleFamilyRef ref) create;

@@ -15,11 +15,32 @@ String providerFamilyNameFor(
   return '${provider.name.lowerFirst}${options.providerFamilyNameSuffix ?? options.providerNameSuffix ?? 'Provider'}';
 }
 
+String genericDefinitionDisplayString(TypeParameterList? typeParameters) {
+  return typeParameters?.toSource() ?? '';
+}
+
+String genericUsageDisplayString(TypeParameterList? typeParameterList) {
+  if (typeParameterList == null) {
+    return '';
+  }
+
+  return '<${typeParameterList.typeParameters.map((e) => e.name.lexeme).join(', ')}>';
+}
+
+String anyGenericUsageDisplayString(TypeParameterList? typeParameterList) {
+  if (typeParameterList == null) {
+    return '';
+  }
+
+  return '<${typeParameterList.typeParameters.map((e) => e.declaredElement?.bound?.toString() ?? 'Object?').join(', ')}>';
+}
+
 class FamilyTemplate extends Template {
   FamilyTemplate._(
     this.provider, {
     required this.options,
     required this.parameters,
+    required this.typeParameters,
     required this.providerType,
     required this.refType,
     required this.elementType,
@@ -32,11 +53,11 @@ class FamilyTemplate extends Template {
     this.other = '',
     this.providerOther = '',
   }) {
-    if (parameters.isEmpty) {
+    if (!provider.providerElement.isFamily) {
       throw ArgumentError.value(
-        parameters,
-        'provider',
-        'Expected a provider with parameters',
+        provider.providerElement.isFamily,
+        'provider.providerElement.isFamily',
+        'Expected a family provider',
       );
     }
   }
@@ -80,31 +101,37 @@ class FamilyTemplate extends Template {
       for (final parameter in parameters) parameter: parameter.name!.lexeme,
     });
 
+    final typeParameters = provider.node.functionExpression.typeParameters;
+    final typeParametersUsage = genericUsageDisplayString(typeParameters);
+    final typeParametersDefinition =
+        genericDefinitionDisplayString(typeParameters);
+
     return FamilyTemplate._(
       provider,
       options: options,
       parameters: parameters,
+      typeParameters: typeParameters,
       hashFn: hashFn,
       elementType: elementType,
       refType: refType,
       providerGenerics: '<${provider.valueTypeDisplayString}>',
       providerCreate:
-          '(ref) => ${provider.name}(ref as ${provider._refImplName}, $parametersPassThrough)',
+          '(ref) => ${provider.name}$typeParametersUsage(ref as ${provider._refImplName}$typeParametersUsage, $parametersPassThrough)',
       providerType: providerType,
       parametersPassThrough: parametersPassThrough,
       createType:
-          '${provider.createdTypeDisplayString} Function(${provider._refImplName} ref)',
+          '${provider.createdTypeDisplayString} Function$typeParametersDefinition(${provider._refImplName} ref)',
       overrideCreate: '(ref) => create(ref as ${provider._refImplName})',
       providerOther: '''
 
   @override
   Override overrideWith(
-    $createdType Function(${provider._refImplName} ref) create,
+    $createdType Function(${provider._refImplName}$typeParametersUsage ref) create,
   ) {
     return ProviderOverride(
       origin: this,
-      override: ${provider._providerImplName}._internal(
-        (ref) => create(ref as ${provider._refImplName}),
+      override: ${provider._providerImplName}$typeParametersUsage._internal(
+        (ref) => create(ref as ${provider._refImplName}$typeParametersUsage),
         from: from,
         name: null,
         dependencies: null,
@@ -159,22 +186,32 @@ ${parameters.map((e) => '        ${e.name}: ${e.name},\n').join()}
       for (final parameter in parameters) parameter: parameter.name!.lexeme,
     });
 
+    final typeParameters = provider.node.typeParameters;
+    final typeParametersUsage = genericUsageDisplayString(typeParameters);
+    final typeParametersDefinition =
+        genericDefinitionDisplayString(typeParameters);
+
     return FamilyTemplate._(
       provider,
       options: options,
       parameters: parameters,
+      typeParameters: typeParameters,
       hashFn: hashFn,
       elementType: elementType,
       refType: refType,
       providerGenerics:
-          '<${provider.name}, ${provider.valueTypeDisplayString}>',
+          '<${provider.name}$typeParametersUsage, ${provider.valueTypeDisplayString}>',
       providerType: providerType,
-      providerCreate: '() => ${provider.name}()$cascadePropertyInit',
+      providerCreate: parameters.isEmpty
+          // If the provider has no arguments (and therefore only generics),
+          // use tear-off constructor
+          ? '${provider.name.lexeme}$typeParametersUsage.new'
+          : '() => ${provider.name}$typeParametersUsage()$cascadePropertyInit',
       parametersPassThrough: parametersPassThrough,
       createType: '${provider.name} Function()',
       overrideCreate: '() => create()$cascadePropertyInit',
       other: '''
-abstract class $notifierTypedefName extends $notifierBaseType<${provider.valueTypeDisplayString}> {
+abstract class $notifierTypedefName$typeParametersDefinition extends $notifierBaseType<${provider.valueTypeDisplayString}> {
   ${parameters.map((e) => 'late final ${e.typeDisplayString} ${e.name};').join('\n')}
 
   ${provider.createdTypeDisplayString} build($parameterDefinition);
@@ -183,16 +220,16 @@ abstract class $notifierTypedefName extends $notifierBaseType<${provider.valueTy
       providerOther: '''
   @override
   ${provider.createdTypeDisplayString} runNotifierBuild(
-    covariant ${provider.name} notifier,
+    covariant ${provider.name}$typeParametersUsage notifier,
   ) {
     return notifier.build($parametersPassThrough);
   }
 
   @override
-  Override overrideWith(${provider.name} Function() create) {
+  Override overrideWith(${provider.name}$typeParametersUsage Function() create) {
     return ProviderOverride(
       origin: this,
-      override: ${provider._providerImplName}._internal(
+      override: ${provider._providerImplName}$typeParametersUsage._internal(
         () => create()$cascadePropertyInit,
         from: from,
         name: null,
@@ -209,6 +246,7 @@ ${parameters.map((e) => '        ${e.name}: ${e.name},\n').join()}
 
   final GeneratorProviderDeclaration provider;
   final List<FormalParameter> parameters;
+  final TypeParameterList? typeParameters;
   final BuildYamlOptions options;
   final String refType;
   final String elementType;
@@ -248,6 +286,10 @@ ${parameters.map((e) => '        ${e.name}: ${e.name},\n').join()}
             ? 'const Iterable<ProviderOrFamily>?'
             : 'final Iterable<ProviderOrFamily>';
 
+    final typeParametersDefinition =
+        genericDefinitionDisplayString(typeParameters);
+    final typeParametersUsage = genericUsageDisplayString(typeParameters);
+    final anyTypeParametersUsage = anyGenericUsageDisplayString(typeParameters);
     final argumentRecordType = buildParamDefinitionQuery(
       parameters,
       asRecord: true,
@@ -268,7 +310,7 @@ $meta
 const $providerName = $familyName();
 
 $docs
-class $familyName extends Family<${provider.exposedTypeDisplayString}> {
+class $familyName extends Family {
   $docs
   const $familyName();
 
@@ -286,14 +328,14 @@ class $familyName extends Family<${provider.exposedTypeDisplayString}> {
   String? get name => r'$providerName';
 
   $docs
-  $providerTypeNameImpl call($parameterDefinition) {
-    return $providerTypeNameImpl($parametersPassThrough);
+  $providerTypeNameImpl$typeParametersUsage call$typeParametersDefinition($parameterDefinition) {
+    return $providerTypeNameImpl$typeParametersUsage($parametersPassThrough);
   }
 
   @visibleForOverriding
   @override
-  $providerTypeNameImpl getProviderOverride(
-    covariant $providerTypeNameImpl provider,
+  $providerTypeNameImpl$anyTypeParametersUsage getProviderOverride(
+    covariant $providerTypeNameImpl$anyTypeParametersUsage provider,
   ) {
     return call($parameterProviderPassThrough);
   }
@@ -304,7 +346,7 @@ class $familyName extends Family<${provider.exposedTypeDisplayString}> {
   }
 }
 
-class $familyOverrideClassName implements FamilyOverride<${provider.exposedTypeDisplayString}> {
+class $familyOverrideClassName implements FamilyOverride {
   $familyOverrideClassName(this.overriddenFamily, this.create);
 
   final $createType create;
@@ -321,7 +363,7 @@ class $familyOverrideClassName implements FamilyOverride<${provider.exposedTypeD
 }
 
 $docs
-class $providerTypeNameImpl extends $providerType$providerGenerics {
+class $providerTypeNameImpl$typeParametersDefinition extends $providerType$providerGenerics {
   $docs
   $providerTypeNameImpl($parameterDefinition) : this._internal(
           $providerCreate,
@@ -380,6 +422,9 @@ $providerOther
   bool operator ==(Object other) {
     return ${[
       'other is $providerTypeNameImpl',
+      // If there are type parameters, check the runtimeType to check them too.
+      if (typeParameters?.typeParameters.isNotEmpty ?? false)
+        'other.runtimeType == runtimeType',
       ...parameters.map((e) => 'other.${e.name} == ${e.name}'),
     ].join(' && ')};
   }
@@ -387,13 +432,16 @@ $providerOther
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-${parameters.map((e) => 'hash = _SystemHash.combine(hash, ${e.name}.hashCode);').join()}
+${[
+      ...parameters.map((e) => e.name),
+      ...?typeParameters?.typeParameters.map((e) => e.name),
+    ].map((e) => 'hash = _SystemHash.combine(hash, $e.hashCode);').join()}
 
     return _SystemHash.finish(hash);
   }
 }
 
-mixin $refNameImpl on $refType<${provider.valueTypeDisplayString}> {
+mixin $refNameImpl$typeParametersDefinition on $refType<${provider.valueTypeDisplayString}> {
   ${parameters.map((e) {
       return '''
 /// The parameter `${e.name}` of this provider.
@@ -401,10 +449,10 @@ ${e.typeDisplayString} get ${e.name};''';
     }).join()}
 }
 
-class $elementNameImpl extends $elementType$providerGenerics with $refNameImpl {
+class $elementNameImpl$typeParametersDefinition extends $elementType$providerGenerics with $refNameImpl$typeParametersUsage {
   $elementNameImpl(super.provider);
 
-${parameters.map((e) => '@override ${e.typeDisplayString} get ${e.name} => (origin as $providerTypeNameImpl).${e.name};').join()}
+${parameters.map((e) => '@override ${e.typeDisplayString} get ${e.name} => (origin as $providerTypeNameImpl$typeParametersUsage).${e.name};').join()}
 }
 ''');
   }

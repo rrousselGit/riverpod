@@ -36,7 +36,7 @@ class _SystemHash {
 const activityProvider = ActivityFamily();
 
 /// See also [activity].
-class ActivityFamily extends Family<AsyncValue<Activity>> {
+class ActivityFamily extends Family {
   /// See also [activity].
   const ActivityFamily();
 
@@ -79,7 +79,7 @@ class ActivityFamily extends Family<AsyncValue<Activity>> {
   }
 }
 
-class _$ActivityFamilyOverride implements FamilyOverride<AsyncValue<Activity>> {
+class _$ActivityFamilyOverride implements FamilyOverride {
   _$ActivityFamilyOverride(this.overriddenFamily, this.create);
 
   final FutureOr<Activity> Function(ActivityRef ref) create;

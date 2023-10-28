@@ -76,7 +76,7 @@ class _SystemHash {
 const count2ProviderFamily = Count2Family();
 
 /// See also [count2].
-class Count2Family extends Family<int> {
+class Count2Family extends Family {
   /// See also [count2].
   const Count2Family();
 
@@ -119,7 +119,7 @@ class Count2Family extends Family<int> {
   }
 }
 
-class _$Count2FamilyOverride implements FamilyOverride<int> {
+class _$Count2FamilyOverride implements FamilyOverride {
   _$Count2FamilyOverride(this.overriddenFamily, this.create);
 
   final int Function(Count2Ref ref) create;
@@ -244,7 +244,7 @@ String _$countFuture2Hash() => r'096675b70a267f5d7c62ac7d3e7dd231ef529034';
 const countFuture2ProviderFamily = CountFuture2Family();
 
 /// See also [countFuture2].
-class CountFuture2Family extends Family<AsyncValue<int>> {
+class CountFuture2Family extends Family {
   /// See also [countFuture2].
   const CountFuture2Family();
 
@@ -287,7 +287,7 @@ class CountFuture2Family extends Family<AsyncValue<int>> {
   }
 }
 
-class _$CountFuture2FamilyOverride implements FamilyOverride<AsyncValue<int>> {
+class _$CountFuture2FamilyOverride implements FamilyOverride {
   _$CountFuture2FamilyOverride(this.overriddenFamily, this.create);
 
   final FutureOr<int> Function(CountFuture2Ref ref) create;
@@ -413,7 +413,7 @@ String _$countStream2Hash() => r'051264dd685ebc0a57e454bb676957c93cb4ae20';
 const countStream2ProviderFamily = CountStream2Family();
 
 /// See also [countStream2].
-class CountStream2Family extends Family<AsyncValue<int>> {
+class CountStream2Family extends Family {
   /// See also [countStream2].
   const CountStream2Family();
 
@@ -456,7 +456,7 @@ class CountStream2Family extends Family<AsyncValue<int>> {
   }
 }
 
-class _$CountStream2FamilyOverride implements FamilyOverride<AsyncValue<int>> {
+class _$CountStream2FamilyOverride implements FamilyOverride {
   _$CountStream2FamilyOverride(this.overriddenFamily, this.create);
 
   final Stream<int> Function(CountStream2Ref ref) create;
@@ -640,7 +640,7 @@ abstract class _$CountNotifier2 extends BuildlessAutoDisposeNotifier<int> {
 const countNotifier2ProviderFamily = CountNotifier2Family();
 
 /// See also [CountNotifier2].
-class CountNotifier2Family extends Family<int> {
+class CountNotifier2Family extends Family {
   /// See also [CountNotifier2].
   const CountNotifier2Family();
 
@@ -683,7 +683,7 @@ class CountNotifier2Family extends Family<int> {
   }
 }
 
-class _$CountNotifier2FamilyOverride implements FamilyOverride<int> {
+class _$CountNotifier2FamilyOverride implements FamilyOverride {
   _$CountNotifier2FamilyOverride(this.overriddenFamily, this.create);
 
   final CountNotifier2 Function() create;
@@ -825,7 +825,7 @@ abstract class _$CountAsyncNotifier2
 const countAsyncNotifier2ProviderFamily = CountAsyncNotifier2Family();
 
 /// See also [CountAsyncNotifier2].
-class CountAsyncNotifier2Family extends Family<AsyncValue<int>> {
+class CountAsyncNotifier2Family extends Family {
   /// See also [CountAsyncNotifier2].
   const CountAsyncNotifier2Family();
 
@@ -868,8 +868,7 @@ class CountAsyncNotifier2Family extends Family<AsyncValue<int>> {
   }
 }
 
-class _$CountAsyncNotifier2FamilyOverride
-    implements FamilyOverride<AsyncValue<int>> {
+class _$CountAsyncNotifier2FamilyOverride implements FamilyOverride {
   _$CountAsyncNotifier2FamilyOverride(this.overriddenFamily, this.create);
 
   final CountAsyncNotifier2 Function() create;
@@ -1012,7 +1011,7 @@ abstract class _$CountStreamNotifier2
 const countStreamNotifier2ProviderFamily = CountStreamNotifier2Family();
 
 /// See also [CountStreamNotifier2].
-class CountStreamNotifier2Family extends Family<AsyncValue<int>> {
+class CountStreamNotifier2Family extends Family {
   /// See also [CountStreamNotifier2].
   const CountStreamNotifier2Family();
 
@@ -1055,8 +1054,7 @@ class CountStreamNotifier2Family extends Family<AsyncValue<int>> {
   }
 }
 
-class _$CountStreamNotifier2FamilyOverride
-    implements FamilyOverride<AsyncValue<int>> {
+class _$CountStreamNotifier2FamilyOverride implements FamilyOverride {
   _$CountStreamNotifier2FamilyOverride(this.overriddenFamily, this.create);
 
   final CountStreamNotifier2 Function() create;

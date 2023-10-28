@@ -14,6 +14,71 @@ import 'utils.dart';
 void main() {
   // TODO test that the generated providers contain the docs from the annotated element
 
+  group('Supports generics', () {
+    test('checks generics in hashCode', () {
+      expect(
+        genericProvider<int>().hashCode,
+        genericProvider<int>().hashCode,
+      );
+      expect(
+        genericProvider<int>().hashCode,
+        isNot(genericProvider<double>().hashCode),
+      );
+      expect(
+        genericProvider<int>().hashCode,
+        isNot(genericProvider<num>().hashCode),
+      );
+      expect(
+        genericProvider<double>().hashCode,
+        isNot(genericProvider<num>().hashCode),
+      );
+      expect(
+        genericProvider<num>().hashCode,
+        genericProvider<num>().hashCode,
+      );
+    });
+
+    test('checks generics in ==', () {
+      expect(
+        genericProvider<int>(),
+        genericProvider<int>(),
+      );
+      expect(
+        genericProvider<int>(),
+        isNot(genericProvider<double>()),
+      );
+      expect(
+        genericProvider<int>(),
+        isNot(genericProvider<num>()),
+      );
+      expect(
+        genericProvider<double>(),
+        isNot(genericProvider<num>()),
+      );
+      expect(
+        genericProvider<num>(),
+        genericProvider<num>(),
+      );
+    });
+
+    test('in simple scenarios', () {
+      final container = createContainer();
+
+      expect(
+        container.listen(genericProvider<int>(), (p, n) {}).read(),
+        [42],
+      );
+      expect(
+        container.listen(genericProvider<double>(), (p, n) {}).read(),
+        [3.14],
+      );
+      expect(
+        container.listen(genericProvider<num>(), (p, n) {}).read(),
+        [42, 3.14],
+      );
+    });
+  });
+
   test('Supports Raw', () async {
     final container = createContainer();
 

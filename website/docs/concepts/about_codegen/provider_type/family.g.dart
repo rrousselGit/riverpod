@@ -36,7 +36,7 @@ class _SystemHash {
 const exampleProvider = ExampleFamily();
 
 /// See also [example].
-class ExampleFamily extends Family<String> {
+class ExampleFamily extends Family {
   /// See also [example].
   const ExampleFamily();
 
@@ -79,7 +79,7 @@ class ExampleFamily extends Family<String> {
   }
 }
 
-class _$ExampleFamilyOverride implements FamilyOverride<String> {
+class _$ExampleFamilyOverride implements FamilyOverride {
   _$ExampleFamilyOverride(this.overriddenFamily, this.create);
 
   final String Function(ExampleRef ref) create;

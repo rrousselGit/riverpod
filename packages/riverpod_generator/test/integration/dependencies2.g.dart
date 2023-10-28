@@ -62,7 +62,7 @@ class _SystemHash {
 const familyWithDependencies2Provider = FamilyWithDependencies2Family();
 
 /// See also [familyWithDependencies2].
-class FamilyWithDependencies2Family extends Family<int> {
+class FamilyWithDependencies2Family extends Family {
   /// See also [familyWithDependencies2].
   const FamilyWithDependencies2Family();
 
@@ -117,7 +117,7 @@ class FamilyWithDependencies2Family extends Family<int> {
   }
 }
 
-class _$FamilyWithDependencies2FamilyOverride implements FamilyOverride<int> {
+class _$FamilyWithDependencies2FamilyOverride implements FamilyOverride {
   _$FamilyWithDependencies2FamilyOverride(this.overriddenFamily, this.create);
 
   final int Function(FamilyWithDependencies2Ref ref) create;
@@ -312,7 +312,7 @@ const notifierFamilyWithDependenciesProvider =
     NotifierFamilyWithDependenciesFamily();
 
 /// See also [NotifierFamilyWithDependencies].
-class NotifierFamilyWithDependenciesFamily extends Family<int> {
+class NotifierFamilyWithDependenciesFamily extends Family {
   /// See also [NotifierFamilyWithDependencies].
   const NotifierFamilyWithDependenciesFamily();
 
@@ -367,8 +367,7 @@ class NotifierFamilyWithDependenciesFamily extends Family<int> {
   }
 }
 
-class _$NotifierFamilyWithDependenciesFamilyOverride
-    implements FamilyOverride<int> {
+class _$NotifierFamilyWithDependenciesFamilyOverride implements FamilyOverride {
   _$NotifierFamilyWithDependenciesFamilyOverride(
       this.overriddenFamily, this.create);
 

@@ -260,6 +260,10 @@ abstract class GeneratorProviderDeclarationElement
     implements ProviderDeclarationElement {
   RiverpodAnnotationElement get annotation;
 
+  /// Whether a provider has any form of parameter, be it function parameters
+  /// or type parameters.
+  bool get isFamily;
+
   bool get isScoped => annotation.dependencies != null;
 
   @override
@@ -312,6 +316,12 @@ class ClassBasedProviderDeclarationElement
   static final _cache = Expando<_Box<ClassBasedProviderDeclarationElement>>();
 
   @override
+  bool get isFamily {
+    return buildMethod.parameters.isNotEmpty ||
+        element.typeParameters.isNotEmpty;
+  }
+
+  @override
   final ClassElement element;
 
   @override
@@ -351,6 +361,14 @@ class FunctionalProviderDeclarationElement
   static final _cache = Expando<_Box<FunctionalProviderDeclarationElement>>();
 
   @override
+  bool get isScoped => super.isScoped || element.isExternal;
+
+  @override
+  bool get isFamily {
+    return element.parameters.length > 1 || element.typeParameters.isNotEmpty;
+  }
+
+  @override
   final ExecutableElement element;
 
   @override
@@ -358,9 +376,6 @@ class FunctionalProviderDeclarationElement
 
   @override
   final RiverpodAnnotationElement annotation;
-
-  @override
-  bool get isScoped => super.isScoped || element.isExternal;
 }
 
 /// An object for differentiating "no cache" from "cache but value is null".

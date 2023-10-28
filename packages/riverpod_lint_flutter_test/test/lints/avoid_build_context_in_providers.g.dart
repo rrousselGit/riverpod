@@ -34,7 +34,7 @@ class _SystemHash {
 const fnProvider = FnFamily();
 
 /// See also [fn].
-class FnFamily extends Family<int> {
+class FnFamily extends Family {
   /// See also [fn].
   const FnFamily();
 
@@ -80,7 +80,7 @@ class FnFamily extends Family<int> {
   }
 }
 
-class _$FnFamilyOverride implements FamilyOverride<int> {
+class _$FnFamilyOverride implements FamilyOverride {
   _$FnFamilyOverride(this.overriddenFamily, this.create);
 
   final int Function(FnRef ref) create;
@@ -233,7 +233,7 @@ abstract class _$MyNotifier extends BuildlessAutoDisposeNotifier<int> {
 const myNotifierProvider = MyNotifierFamily();
 
 /// See also [MyNotifier].
-class MyNotifierFamily extends Family<int> {
+class MyNotifierFamily extends Family {
   /// See also [MyNotifier].
   const MyNotifierFamily();
 
@@ -279,7 +279,7 @@ class MyNotifierFamily extends Family<int> {
   }
 }
 
-class _$MyNotifierFamilyOverride implements FamilyOverride<int> {
+class _$MyNotifierFamilyOverride implements FamilyOverride {
   _$MyNotifierFamilyOverride(this.overriddenFamily, this.create);
 
   final MyNotifier Function() create;

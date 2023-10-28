@@ -59,8 +59,6 @@ void main() {
         overrides: [dep.overrideWithValue(42)],
       );
 
-      // ignore: deprecated_member_use_from_same_package
-      await expectLater(container.read(provider.stream), emits(42));
       await expectLater(container.read(provider.future), completion(42));
       expect(container.read(provider), const AsyncData(42));
 
@@ -80,9 +78,8 @@ void main() {
       container.listen(provider, (prev, value) {});
 
       await expectLater(
-        // ignore: deprecated_member_use_from_same_package
-        container.read(provider.stream),
-        emits(42),
+        container.read(provider.future),
+        completion(42),
       );
       expect(
         container.read(provider),
@@ -106,9 +103,8 @@ void main() {
       verifyNoMoreInteractions(listener);
 
       await expectLater(
-        // ignore: deprecated_member_use_from_same_package
-        container.read(provider.stream),
-        emits(21),
+        container.read(provider.future),
+        completion(21),
       );
       expect(
         container.read(provider),
@@ -124,8 +120,6 @@ void main() {
 
       container.listen(provider, (_, __) {});
 
-      // ignore: deprecated_member_use_from_same_package
-      expect(container.read(provider.stream), emits(0));
       expect(await container.read(provider.future), 0);
       expect(container.read(provider), const AsyncValue.data(0));
 
@@ -136,8 +130,6 @@ void main() {
             .copyWithPrevious(const AsyncValue<int>.data(0)),
       );
 
-      // ignore: deprecated_member_use_from_same_package
-      expect(container.read(provider.stream), emits(1));
       expect(await container.read(provider.future), 1);
       expect(container.read(provider), const AsyncValue.data(1));
     });
@@ -155,28 +147,6 @@ void main() {
       container.listen(provider, listener.call, fireImmediately: true);
 
       verifyOnly(listener, listener(null, const AsyncValue.loading()));
-
-      container.read(dep.notifier).state++;
-      await container.pump();
-
-      verifyNoMoreInteractions(listener);
-    });
-
-    test(
-        '.stream does not update dependents if the created stream did not change',
-        () async {
-      final container = createContainer();
-      final dep = StateProvider((ref) => 0);
-      final provider = StreamProvider.autoDispose((ref) {
-        ref.watch(dep);
-        return const Stream<int>.empty();
-      });
-      final listener = Listener<Stream<int>>();
-
-      // ignore: deprecated_member_use_from_same_package
-      container.listen(provider.stream, listener.call, fireImmediately: true);
-
-      verifyOnly(listener, listener(any, any));
 
       container.read(dep.notifier).state++;
       await container.pump();
@@ -216,8 +186,6 @@ void main() {
         final root = createContainer();
         final container = createContainer(parent: root, overrides: [provider]);
 
-        // ignore: deprecated_member_use_from_same_package
-        expect(await container.read(provider.stream).first, 0);
         expect(await container.read(provider.future), 0);
         expect(container.read(provider), const AsyncValue.data(0));
         expect(root.getAllProviderElements(), isEmpty);
@@ -254,21 +222,16 @@ void main() {
       //   );
       // });
 
-      test('when using provider.overrideWithProvider', () async {
+      test('when using provider.overrideWith', () async {
         final provider = StreamProvider.autoDispose((ref) => Stream.value(0));
         final root = createContainer();
         final container = createContainer(
           parent: root,
           overrides: [
-            // ignore: deprecated_member_use_from_same_package
-            provider.overrideWithProvider(
-              StreamProvider.autoDispose((ref) => Stream.value(42)),
-            ),
+            provider.overrideWith((ref) => Stream.value(42)),
           ],
         );
 
-        // ignore: deprecated_member_use_from_same_package
-        expect(await container.read(provider.stream).first, 42);
         expect(await container.read(provider.future), 42);
         expect(container.read(provider), const AsyncValue.data(42));
         expect(root.getAllProviderElements(), isEmpty);

@@ -46,7 +46,7 @@ abstract class _$BugsEncounteredNotifier
 const bugsEncounteredNotifierProvider = BugsEncounteredNotifierFamily();
 
 /// See also [BugsEncounteredNotifier].
-class BugsEncounteredNotifierFamily extends Family<AsyncValue<int>> {
+class BugsEncounteredNotifierFamily extends Family {
   /// See also [BugsEncounteredNotifier].
   const BugsEncounteredNotifierFamily();
 
@@ -89,8 +89,7 @@ class BugsEncounteredNotifierFamily extends Family<AsyncValue<int>> {
   }
 }
 
-class _$BugsEncounteredNotifierFamilyOverride
-    implements FamilyOverride<AsyncValue<int>> {
+class _$BugsEncounteredNotifierFamilyOverride implements FamilyOverride {
   _$BugsEncounteredNotifierFamilyOverride(this.overriddenFamily, this.create);
 
   final BugsEncounteredNotifier Function() create;

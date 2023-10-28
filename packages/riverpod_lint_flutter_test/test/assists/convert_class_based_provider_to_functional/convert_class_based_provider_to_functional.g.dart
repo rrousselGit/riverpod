@@ -64,7 +64,7 @@ const exampleFamilyProvider = ExampleFamilyFamily();
 /// Some comment
 ///
 /// Copied from [ExampleFamily].
-class ExampleFamilyFamily extends Family<int> {
+class ExampleFamilyFamily extends Family {
   /// Some comment
   ///
   /// Copied from [ExampleFamily].
@@ -114,7 +114,7 @@ class ExampleFamilyFamily extends Family<int> {
   }
 }
 
-class _$ExampleFamilyFamilyOverride implements FamilyOverride<int> {
+class _$ExampleFamilyFamilyOverride implements FamilyOverride {
   _$ExampleFamilyFamilyOverride(this.overriddenFamily, this.create);
 
   final ExampleFamily Function() create;
@@ -266,6 +266,164 @@ class _ExampleFamilyProviderElement
   int get a => (origin as ExampleFamilyProvider).a;
   @override
   String get b => (origin as ExampleFamilyProvider).b;
+}
+
+String _$genericHash() => r'0a3792d7b59723aebd92715eef2c74d2f267cbd2';
+
+abstract class _$Generic<A, B> extends BuildlessAutoDisposeNotifier<int> {
+  int build();
+}
+
+/// See also [Generic].
+@ProviderFor(Generic)
+const genericProvider = GenericFamily();
+
+/// See also [Generic].
+class GenericFamily extends Family {
+  /// See also [Generic].
+  const GenericFamily();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'genericProvider';
+
+  /// See also [Generic].
+  GenericProvider<A, B> call<A, B>() {
+    return GenericProvider<A, B>();
+  }
+
+  @visibleForOverriding
+  @override
+  GenericProvider<Object?, Object?> getProviderOverride(
+    covariant GenericProvider<Object?, Object?> provider,
+  ) {
+    return call();
+  }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(Generic Function() create) {
+    return _$GenericFamilyOverride(this, create);
+  }
+}
+
+class _$GenericFamilyOverride implements FamilyOverride {
+  _$GenericFamilyOverride(this.overriddenFamily, this.create);
+
+  final Generic Function() create;
+
+  @override
+  final GenericFamily overriddenFamily;
+
+  @override
+  GenericProvider getProviderOverride(
+    covariant GenericProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
+}
+
+/// See also [Generic].
+class GenericProvider<A, B>
+    extends AutoDisposeNotifierProviderImpl<Generic<A, B>, int> {
+  /// See also [Generic].
+  GenericProvider()
+      : this._internal(
+          Generic<A, B>.new,
+          from: genericProvider,
+          name: r'genericProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$genericHash,
+          dependencies: GenericFamily._dependencies,
+          allTransitiveDependencies: GenericFamily._allTransitiveDependencies,
+        );
+
+  GenericProvider._internal(
+    super.create, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+  }) : super.internal();
+
+  @override
+  int runNotifierBuild(
+    covariant Generic<A, B> notifier,
+  ) {
+    return notifier.build();
+  }
+
+  @override
+  Override overrideWith(Generic<A, B> Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: GenericProvider<A, B>._internal(
+        () => create(),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+      ),
+    );
+  }
+
+  @override
+  () get argument {
+    return ();
+  }
+
+  @override
+  AutoDisposeNotifierProviderElement<Generic<A, B>, int> createElement() {
+    return _GenericProviderElement(this);
+  }
+
+  GenericProvider _copyWith(
+    Generic Function() create,
+  ) {
+    return GenericProvider._internal(
+      () => create(),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is GenericProvider && other.runtimeType == runtimeType;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, A.hashCode);
+    hash = _SystemHash.combine(hash, B.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin GenericRef<A, B> on AutoDisposeNotifierProviderRef<int> {}
+
+class _GenericProviderElement<A, B>
+    extends AutoDisposeNotifierProviderElement<Generic<A, B>, int>
+    with GenericRef<A, B> {
+  _GenericProviderElement(super.provider);
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package

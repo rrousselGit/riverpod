@@ -48,7 +48,7 @@ class _SystemHash {
 const generatedFamilyProvider = GeneratedFamilyFamily();
 
 /// See also [generatedFamily].
-class GeneratedFamilyFamily extends Family<_Test> {
+class GeneratedFamilyFamily extends Family {
   /// See also [generatedFamily].
   const GeneratedFamilyFamily();
 
@@ -91,7 +91,7 @@ class GeneratedFamilyFamily extends Family<_Test> {
   }
 }
 
-class _$GeneratedFamilyFamilyOverride implements FamilyOverride<_Test> {
+class _$GeneratedFamilyFamilyOverride implements FamilyOverride {
   _$GeneratedFamilyFamilyOverride(this.overriddenFamily, this.create);
 
   final _Test Function(GeneratedFamilyRef ref) create;
@@ -231,7 +231,7 @@ String _$$dynamicFamilyHash() => r'b764133af8837b8321b08814892f198d4bc1aa18';
 const $dynamicFamilyProvider = $DynamicFamilyFamily();
 
 /// See also [$dynamicFamily].
-class $DynamicFamilyFamily extends Family<Object?> {
+class $DynamicFamilyFamily extends Family {
   /// See also [$dynamicFamily].
   const $DynamicFamilyFamily();
 
@@ -274,7 +274,7 @@ class $DynamicFamilyFamily extends Family<Object?> {
   }
 }
 
-class _$$DynamicFamilyFamilyOverride implements FamilyOverride<Object?> {
+class _$$DynamicFamilyFamilyOverride implements FamilyOverride {
   _$$DynamicFamilyFamilyOverride(this.overriddenFamily, this.create);
 
   final Object? Function($DynamicFamilyRef ref) create;
@@ -400,7 +400,7 @@ String _$dynamicHash() => r'da9dc07960139fff2cf5fe584dca5c524e4f2308';
 const _dynamicProvider = _DynamicFamily();
 
 /// See also [_dynamic].
-class _DynamicFamily extends Family<Object?> {
+class _DynamicFamily extends Family {
   /// See also [_dynamic].
   const _DynamicFamily();
 
@@ -443,7 +443,7 @@ class _DynamicFamily extends Family<Object?> {
   }
 }
 
-class _$DynamicFamilyOverride implements FamilyOverride<Object?> {
+class _$DynamicFamilyOverride implements FamilyOverride {
   _$DynamicFamilyOverride(this.overriddenFamily, this.create);
 
   final Object? Function(_DynamicRef ref) create;
@@ -582,7 +582,7 @@ String _$aliasFamilyHash() => r'f345937d5750132f629aef41646b119a301f750b';
 const aliasFamilyProvider = AliasFamilyFamily();
 
 /// See also [aliasFamily].
-class AliasFamilyFamily extends Family<r.AsyncValue<int>> {
+class AliasFamilyFamily extends Family {
   /// See also [aliasFamily].
   const AliasFamilyFamily();
 
@@ -625,7 +625,7 @@ class AliasFamilyFamily extends Family<r.AsyncValue<int>> {
   }
 }
 
-class _$AliasFamilyFamilyOverride implements FamilyOverride<r.AsyncValue<int>> {
+class _$AliasFamilyFamilyOverride implements FamilyOverride {
   _$AliasFamilyFamilyOverride(this.overriddenFamily, this.create);
 
   final r.AsyncValue<int> Function(AliasFamilyRef ref) create;
@@ -777,7 +777,7 @@ abstract class _$GeneratedClassFamily
 const generatedClassFamilyProvider = GeneratedClassFamilyFamily();
 
 /// See also [GeneratedClassFamily].
-class GeneratedClassFamilyFamily extends Family<_Test> {
+class GeneratedClassFamilyFamily extends Family {
   /// See also [GeneratedClassFamily].
   const GeneratedClassFamilyFamily();
 
@@ -820,7 +820,7 @@ class GeneratedClassFamilyFamily extends Family<_Test> {
   }
 }
 
-class _$GeneratedClassFamilyFamilyOverride implements FamilyOverride<_Test> {
+class _$GeneratedClassFamilyFamilyOverride implements FamilyOverride {
   _$GeneratedClassFamilyFamilyOverride(this.overriddenFamily, this.create);
 
   final GeneratedClassFamily Function() create;
@@ -979,7 +979,7 @@ abstract class _$$DynamicClassFamily
 const $dynamicClassFamilyProvider = $DynamicClassFamilyFamily();
 
 /// See also [$DynamicClassFamily].
-class $DynamicClassFamilyFamily extends Family<Object?> {
+class $DynamicClassFamilyFamily extends Family {
   /// See also [$DynamicClassFamily].
   const $DynamicClassFamilyFamily();
 
@@ -1022,7 +1022,7 @@ class $DynamicClassFamilyFamily extends Family<Object?> {
   }
 }
 
-class _$$DynamicClassFamilyFamilyOverride implements FamilyOverride<Object?> {
+class _$$DynamicClassFamilyFamilyOverride implements FamilyOverride {
   _$$DynamicClassFamilyFamilyOverride(this.overriddenFamily, this.create);
 
   final $DynamicClassFamily Function() create;
@@ -1179,7 +1179,7 @@ abstract class _$AliasClassFamily
 const aliasClassFamilyProvider = AliasClassFamilyFamily();
 
 /// See also [AliasClassFamily].
-class AliasClassFamilyFamily extends Family<r.AsyncValue<int>> {
+class AliasClassFamilyFamily extends Family {
   /// See also [AliasClassFamily].
   const AliasClassFamilyFamily();
 
@@ -1222,8 +1222,7 @@ class AliasClassFamilyFamily extends Family<r.AsyncValue<int>> {
   }
 }
 
-class _$AliasClassFamilyFamilyOverride
-    implements FamilyOverride<r.AsyncValue<int>> {
+class _$AliasClassFamilyFamilyOverride implements FamilyOverride {
   _$AliasClassFamilyFamilyOverride(this.overriddenFamily, this.create);
 
   final AliasClassFamily Function() create;

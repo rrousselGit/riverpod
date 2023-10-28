@@ -46,7 +46,7 @@ abstract class _$Example extends BuildlessAutoDisposeNotifier<String> {
 const exampleProvider = ExampleFamily();
 
 /// See also [Example].
-class ExampleFamily extends Family<String> {
+class ExampleFamily extends Family {
   /// See also [Example].
   const ExampleFamily();
 
@@ -92,7 +92,7 @@ class ExampleFamily extends Family<String> {
   }
 }
 
-class _$ExampleFamilyOverride implements FamilyOverride<String> {
+class _$ExampleFamilyOverride implements FamilyOverride {
   _$ExampleFamilyOverride(this.overriddenFamily, this.create);
 
   final Example Function() create;

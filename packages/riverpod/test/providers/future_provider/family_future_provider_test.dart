@@ -44,15 +44,13 @@ void main() {
       expect(root.getAllProviderElements(), isEmpty);
     });
 
-    test('when using provider.overrideWithProvider', () async {
+    test('when using provider.overrideWith', () async {
       final provider = FutureProvider.family<int, int>((ref, _) async => 0);
       final root = createContainer();
       final container = createContainer(
         parent: root,
         overrides: [
-          provider.overrideWithProvider(
-            (value) => FutureProvider((ref) async => 42),
-          ),
+          provider.overrideWith((ref, value) async => 42),
         ],
       );
 

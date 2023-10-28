@@ -70,7 +70,7 @@ abstract class _$A3 extends BuildlessAutoDisposeNotifier<int> {
 const a3Provider = A3Family();
 
 /// See also [A3].
-class A3Family extends Family<int> {
+class A3Family extends Family {
   /// See also [A3].
   const A3Family();
 
@@ -113,7 +113,7 @@ class A3Family extends Family<int> {
   }
 }
 
-class _$A3FamilyOverride implements FamilyOverride<int> {
+class _$A3FamilyOverride implements FamilyOverride {
   _$A3FamilyOverride(this.overriddenFamily, this.create);
 
   final A3 Function() create;
@@ -248,7 +248,7 @@ abstract class _$A4 extends BuildlessNotifier<int> {
 const a4Provider = A4Family();
 
 /// See also [A4].
-class A4Family extends Family<int> {
+class A4Family extends Family {
   /// See also [A4].
   const A4Family();
 
@@ -291,7 +291,7 @@ class A4Family extends Family<int> {
   }
 }
 
-class _$A4FamilyOverride implements FamilyOverride<int> {
+class _$A4FamilyOverride implements FamilyOverride {
   _$A4FamilyOverride(this.overriddenFamily, this.create);
 
   final A4 Function() create;
@@ -425,7 +425,7 @@ abstract class _$A5 extends BuildlessAutoDisposeAsyncNotifier<int> {
 const a5Provider = A5Family();
 
 /// See also [A5].
-class A5Family extends Family<AsyncValue<int>> {
+class A5Family extends Family {
   /// See also [A5].
   const A5Family();
 
@@ -468,7 +468,7 @@ class A5Family extends Family<AsyncValue<int>> {
   }
 }
 
-class _$A5FamilyOverride implements FamilyOverride<AsyncValue<int>> {
+class _$A5FamilyOverride implements FamilyOverride {
   _$A5FamilyOverride(this.overriddenFamily, this.create);
 
   final A5 Function() create;
@@ -603,7 +603,7 @@ abstract class _$A6 extends BuildlessAsyncNotifier<int> {
 const a6Provider = A6Family();
 
 /// See also [A6].
-class A6Family extends Family<AsyncValue<int>> {
+class A6Family extends Family {
   /// See also [A6].
   const A6Family();
 
@@ -646,7 +646,7 @@ class A6Family extends Family<AsyncValue<int>> {
   }
 }
 
-class _$A6FamilyOverride implements FamilyOverride<AsyncValue<int>> {
+class _$A6FamilyOverride implements FamilyOverride {
   _$A6FamilyOverride(this.overriddenFamily, this.create);
 
   final A6 Function() create;
@@ -781,7 +781,7 @@ abstract class _$A7 extends BuildlessAutoDisposeStreamNotifier<int> {
 const a7Provider = A7Family();
 
 /// See also [A7].
-class A7Family extends Family<AsyncValue<int>> {
+class A7Family extends Family {
   /// See also [A7].
   const A7Family();
 
@@ -824,7 +824,7 @@ class A7Family extends Family<AsyncValue<int>> {
   }
 }
 
-class _$A7FamilyOverride implements FamilyOverride<AsyncValue<int>> {
+class _$A7FamilyOverride implements FamilyOverride {
   _$A7FamilyOverride(this.overriddenFamily, this.create);
 
   final A7 Function() create;
@@ -959,7 +959,7 @@ abstract class _$A8 extends BuildlessStreamNotifier<int> {
 const a8Provider = A8Family();
 
 /// See also [A8].
-class A8Family extends Family<AsyncValue<int>> {
+class A8Family extends Family {
   /// See also [A8].
   const A8Family();
 
@@ -1002,7 +1002,7 @@ class A8Family extends Family<AsyncValue<int>> {
   }
 }
 
-class _$A8FamilyOverride implements FamilyOverride<AsyncValue<int>> {
+class _$A8FamilyOverride implements FamilyOverride {
   _$A8FamilyOverride(this.overriddenFamily, this.create);
 
   final A8 Function() create;

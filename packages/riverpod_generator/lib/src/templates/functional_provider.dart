@@ -11,11 +11,11 @@ class FunctionalProviderTemplate extends Template {
     required this.hashFn,
     required this.options,
   }) {
-    if (provider.node.functionExpression.parameters!.parameters.length > 1) {
+    if (provider.providerElement.isFamily) {
       throw ArgumentError.value(
-        provider.node.functionExpression.parameters?.toSource(),
-        'provider',
-        'Expected a functional provider with no parameter',
+        provider.providerElement.isFamily,
+        'provider.providerElement.isFamily',
+        'Expected a non-family provider',
       );
     }
   }

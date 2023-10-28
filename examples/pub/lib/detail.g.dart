@@ -37,7 +37,7 @@ class _SystemHash {
 const fetchPackageDetailsProvider = FetchPackageDetailsFamily();
 
 /// See also [fetchPackageDetails].
-class FetchPackageDetailsFamily extends Family<AsyncValue<Package>> {
+class FetchPackageDetailsFamily extends Family {
   /// See also [fetchPackageDetails].
   const FetchPackageDetailsFamily();
 
@@ -81,8 +81,7 @@ class FetchPackageDetailsFamily extends Family<AsyncValue<Package>> {
   }
 }
 
-class _$FetchPackageDetailsFamilyOverride
-    implements FamilyOverride<AsyncValue<Package>> {
+class _$FetchPackageDetailsFamilyOverride implements FamilyOverride {
   _$FetchPackageDetailsFamilyOverride(this.overriddenFamily, this.create);
 
   final FutureOr<Package> Function(FetchPackageDetailsRef ref) create;
@@ -263,7 +262,7 @@ const packageMetricsProvider = PackageMetricsFamily();
 /// is logged-in.
 ///
 /// Copied from [PackageMetrics].
-class PackageMetricsFamily extends Family<AsyncValue<PackageMetricsScore>> {
+class PackageMetricsFamily extends Family {
   /// A provider that fetches the likes count, popularity score and pub points
   /// for a given package.
   ///
@@ -318,8 +317,7 @@ class PackageMetricsFamily extends Family<AsyncValue<PackageMetricsScore>> {
   }
 }
 
-class _$PackageMetricsFamilyOverride
-    implements FamilyOverride<AsyncValue<PackageMetricsScore>> {
+class _$PackageMetricsFamilyOverride implements FamilyOverride {
   _$PackageMetricsFamilyOverride(this.overriddenFamily, this.create);
 
   final PackageMetrics Function() create;

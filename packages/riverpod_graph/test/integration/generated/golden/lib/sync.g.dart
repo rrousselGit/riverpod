@@ -71,7 +71,7 @@ const familyProvider = FamilyFamily();
 /// A generated family provider.
 ///
 /// Copied from [family].
-class FamilyFamily extends Family<String> {
+class FamilyFamily extends Family {
   /// A generated family provider.
   ///
   /// Copied from [family].
@@ -130,7 +130,7 @@ class FamilyFamily extends Family<String> {
   }
 }
 
-class _$FamilyFamilyOverride implements FamilyOverride<String> {
+class _$FamilyFamilyOverride implements FamilyOverride {
   _$FamilyFamilyOverride(this.overriddenFamily, this.create);
 
   final String Function(FamilyRef ref) create;
@@ -394,7 +394,7 @@ const familyClassProvider = FamilyClassFamily();
 /// A generated family provider from a class.
 ///
 /// Copied from [FamilyClass].
-class FamilyClassFamily extends Family<String> {
+class FamilyClassFamily extends Family {
   /// A generated family provider from a class.
   ///
   /// Copied from [FamilyClass].
@@ -453,7 +453,7 @@ class FamilyClassFamily extends Family<String> {
   }
 }
 
-class _$FamilyClassFamilyOverride implements FamilyOverride<String> {
+class _$FamilyClassFamilyOverride implements FamilyOverride {
   _$FamilyClassFamilyOverride(this.overriddenFamily, this.create);
 
   final FamilyClass Function() create;

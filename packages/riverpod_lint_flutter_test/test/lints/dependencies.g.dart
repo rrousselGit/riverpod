@@ -412,7 +412,7 @@ class _SystemHash {
 const familyDepProvider = FamilyDepFamily();
 
 /// See also [familyDep].
-class FamilyDepFamily extends Family<int> {
+class FamilyDepFamily extends Family {
   /// See also [familyDep].
   const FamilyDepFamily();
 
@@ -461,7 +461,7 @@ class FamilyDepFamily extends Family<int> {
   }
 }
 
-class _$FamilyDepFamilyOverride implements FamilyOverride<int> {
+class _$FamilyDepFamilyOverride implements FamilyOverride {
   _$FamilyDepFamilyOverride(this.overriddenFamily, this.create);
 
   final int Function(FamilyDepRef ref) create;
@@ -586,7 +586,7 @@ String _$familyDep2Hash() => r'd81e2e56d75dd08a695b834853a3a6cea99ea305';
 const familyDep2Provider = FamilyDep2Family();
 
 /// See also [familyDep2].
-class FamilyDep2Family extends Family<int> {
+class FamilyDep2Family extends Family {
   /// See also [familyDep2].
   const FamilyDep2Family();
 
@@ -635,7 +635,7 @@ class FamilyDep2Family extends Family<int> {
   }
 }
 
-class _$FamilyDep2FamilyOverride implements FamilyOverride<int> {
+class _$FamilyDep2FamilyOverride implements FamilyOverride {
   _$FamilyDep2FamilyOverride(this.overriddenFamily, this.create);
 
   final int Function(FamilyDep2Ref ref) create;

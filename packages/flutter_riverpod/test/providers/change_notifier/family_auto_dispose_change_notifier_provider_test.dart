@@ -69,18 +69,14 @@ void main() {
         expect(root.getAllProviderElements(), isEmpty);
       });
 
-      test('when using provider.overrideWithProvider', () async {
+      test('when using provider.overrideWith', () async {
         final provider = ChangeNotifierProvider.autoDispose
             .family<ValueNotifier<int>, int>((ref, _) => ValueNotifier(0));
         final root = createContainer();
         final container = createContainer(
           parent: root,
           overrides: [
-            provider.overrideWithProvider(
-              (value) => ChangeNotifierProvider.autoDispose(
-                (ref) => ValueNotifier(42),
-              ),
-            ),
+            provider.overrideWith((ref, value) => ValueNotifier(42)),
           ],
         );
 

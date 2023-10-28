@@ -1,3 +1,8 @@
+## Unreleased minor
+
+Updated refactors to convert providers between class <> functions
+to support generics.
+
 ## 2.3.2 - 2023-10-21
 
 - `riverpod_analyzer_utils` upgraded to `0.4.2`
@@ -16,6 +21,8 @@
 
 ## 2.2.1 - 2023-10-02
 
+- Updated `functional_ref` and `generator_class_extends` to support providers
+  with generic parameters.
 - Fixed `functional_ref` throwing if a provider specifies arguments but
   incorrectly did not specify a Ref
 

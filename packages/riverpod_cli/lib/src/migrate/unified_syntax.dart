@@ -509,45 +509,38 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
               node.name2.offset,
               node.name2.end,
             );
-            break;
           case ProviderType.future:
             yieldPatch(
               '${autoDisposePrefix}FutureProviderRef<$providerTypeArgs>',
               node.name2.offset,
               node.name2.end,
             );
-            break;
           case ProviderType.plain:
             yieldPatch(
               '${autoDisposePrefix}ProviderRef<$providerTypeArgs>',
               node.name2.offset,
               node.name2.end,
             );
-            break;
           case ProviderType.state:
             yieldPatch(
               '${autoDisposePrefix}StateProviderRef<$providerTypeArgs>',
               node.name2.offset,
               node.name2.end,
             );
-            break;
           case ProviderType.statenotifier:
             yieldPatch(
               '${autoDisposePrefix}StateNotifierProviderRef<$providerTypeArgs>',
               node.name2.offset,
               node.name2.end,
             );
-            break;
           case ProviderType.changenotifier:
             yieldPatch(
               '${autoDisposePrefix}ChangeNotifierProviderRef<$providerTypeArgs>',
               node.name2.offset,
               node.name2.end,
             );
-            break;
           case ProviderType.none:
             yieldPatch('Ref', node.name2.offset, node.name2.end);
-            break;
         }
       }
     } catch (e, st) {

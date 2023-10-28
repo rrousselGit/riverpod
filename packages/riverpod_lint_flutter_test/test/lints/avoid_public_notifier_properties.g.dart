@@ -42,7 +42,7 @@ abstract class _$GeneratedNotifier extends BuildlessAutoDisposeNotifier<int> {
 const generatedNotifierProvider = GeneratedNotifierFamily();
 
 /// See also [GeneratedNotifier].
-class GeneratedNotifierFamily extends Family<int> {
+class GeneratedNotifierFamily extends Family {
   /// See also [GeneratedNotifier].
   const GeneratedNotifierFamily();
 
@@ -85,7 +85,7 @@ class GeneratedNotifierFamily extends Family<int> {
   }
 }
 
-class _$GeneratedNotifierFamilyOverride implements FamilyOverride<int> {
+class _$GeneratedNotifierFamilyOverride implements FamilyOverride {
   _$GeneratedNotifierFamilyOverride(this.overriddenFamily, this.create);
 
   final GeneratedNotifier Function() create;

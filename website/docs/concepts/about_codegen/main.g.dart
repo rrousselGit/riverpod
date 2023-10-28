@@ -36,7 +36,7 @@ class _SystemHash {
 const fetchUserProvider = FetchUserFamily();
 
 /// See also [fetchUser].
-class FetchUserFamily extends Family<AsyncValue<User>> {
+class FetchUserFamily extends Family {
   /// See also [fetchUser].
   const FetchUserFamily();
 
@@ -79,7 +79,7 @@ class FetchUserFamily extends Family<AsyncValue<User>> {
   }
 }
 
-class _$FetchUserFamilyOverride implements FamilyOverride<AsyncValue<User>> {
+class _$FetchUserFamilyOverride implements FamilyOverride {
   _$FetchUserFamilyOverride(this.overriddenFamily, this.create);
 
   final FutureOr<User> Function(FetchUserRef ref) create;

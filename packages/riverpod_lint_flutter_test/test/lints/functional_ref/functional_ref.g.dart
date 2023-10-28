@@ -1,71 +1,43 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'notifier_extends.dart';
+part of 'functional_ref.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$myNotifierHash() => r'58f5439a3b1036ba7804f63a5a6ebe0114125039';
+String _$namelessHash() => r'1a2aa61445a64c65301051820b159c5998195606';
 
-/// See also [MyNotifier].
-@ProviderFor(MyNotifier)
-final myNotifierProvider =
-    AutoDisposeNotifierProvider<MyNotifier, int>.internal(
-  MyNotifier.new,
-  name: r'myNotifierProvider',
+/// See also [nameless].
+@ProviderFor(nameless)
+final namelessProvider = AutoDisposeProvider<int>.internal(
+  nameless,
+  name: r'namelessProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$myNotifierHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : _$namelessHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$MyNotifier = AutoDisposeNotifier<int>;
-String _$noExtendsHash() => r'3f1276999a9a6d3676c628c25ed853cbefb21ce9';
+typedef NamelessRef = AutoDisposeProviderRef<int>;
+String _$scopedHash() => r'590f1a203323105e732397a2616fbd7dac65f0cc';
 
-/// See also [NoExtends].
-@ProviderFor(NoExtends)
-final noExtendsProvider = AutoDisposeNotifierProvider<NoExtends, int>.internal(
-  NoExtends.new,
-  name: r'noExtendsProvider',
+/// See also [scoped].
+@ProviderFor(scoped)
+final scopedProvider = AutoDisposeProvider<int>.internal(
+  (_) => throw UnsupportedError(
+    'The provider "scopedProvider" is expected to get overridden/scoped, '
+    'but was accessed without an override.',
+  ),
+  name: r'scopedProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$noExtendsHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : _$scopedHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$NoExtends = AutoDisposeNotifier<int>;
-String _$wrongExtendsHash() => r'6479055793af10a34e225373a67f7eaac4d7c0de';
-
-/// See also [WrongExtends].
-@ProviderFor(WrongExtends)
-final wrongExtendsProvider =
-    AutoDisposeNotifierProvider<WrongExtends, int>.internal(
-  WrongExtends.new,
-  name: r'wrongExtendsProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$wrongExtendsHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef _$WrongExtends = AutoDisposeNotifier<int>;
-String _$privateClassHash() => r'ba68a29a609566bb8bc0792391f842762356e124';
-
-/// See also [_PrivateClass].
-@ProviderFor(_PrivateClass)
-final _privateClassProvider =
-    AutoDisposeNotifierProvider<_PrivateClass, String>.internal(
-  _PrivateClass.new,
-  name: r'_privateClassProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$privateClassHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef _$PrivateClass = AutoDisposeNotifier<String>;
-String _$genericsHash() => r'0a1bf00e0610ccb1fb5615460e1bc4afb2555f69';
+typedef ScopedRef = AutoDisposeProviderRef<int>;
+String _$genericsHash() => r'b5813cf6a00581bafea48d8ab66f7d5468fff0e4';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -88,18 +60,13 @@ class _SystemHash {
   }
 }
 
-abstract class _$Generics<A extends num, B>
-    extends BuildlessAutoDisposeNotifier<int> {
-  int build();
-}
-
-/// See also [Generics].
-@ProviderFor(Generics)
+/// See also [generics].
+@ProviderFor(generics)
 const genericsProvider = GenericsFamily();
 
-/// See also [Generics].
+/// See also [generics].
 class GenericsFamily extends Family {
-  /// See also [Generics].
+  /// See also [generics].
   const GenericsFamily();
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -116,7 +83,7 @@ class GenericsFamily extends Family {
   @override
   String? get name => r'genericsProvider';
 
-  /// See also [Generics].
+  /// See also [generics].
   GenericsProvider<A, B> call<A extends num, B>() {
     return GenericsProvider<A, B>();
   }
@@ -130,7 +97,8 @@ class GenericsFamily extends Family {
   }
 
   /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(Generics Function() create) {
+  Override overrideWith(
+      int Function<A extends num, B>(GenericsRef ref) create) {
     return _$GenericsFamilyOverride(this, create);
   }
 }
@@ -138,7 +106,7 @@ class GenericsFamily extends Family {
 class _$GenericsFamilyOverride implements FamilyOverride {
   _$GenericsFamilyOverride(this.overriddenFamily, this.create);
 
-  final Generics Function() create;
+  final int Function<A extends num, B>(GenericsRef ref) create;
 
   @override
   final GenericsFamily overriddenFamily;
@@ -151,13 +119,14 @@ class _$GenericsFamilyOverride implements FamilyOverride {
   }
 }
 
-/// See also [Generics].
-class GenericsProvider<A extends num, B>
-    extends AutoDisposeNotifierProviderImpl<Generics<A, B>, int> {
-  /// See also [Generics].
+/// See also [generics].
+class GenericsProvider<A extends num, B> extends AutoDisposeProvider<int> {
+  /// See also [generics].
   GenericsProvider()
       : this._internal(
-          Generics<A, B>.new,
+          (ref) => generics<A, B>(
+            ref as GenericsRef<A, B>,
+          ),
           from: genericsProvider,
           name: r'genericsProvider',
           debugGetCreateSourceHash:
@@ -178,18 +147,13 @@ class GenericsProvider<A extends num, B>
   }) : super.internal();
 
   @override
-  int runNotifierBuild(
-    covariant Generics<A, B> notifier,
+  Override overrideWith(
+    int Function(GenericsRef<A, B> ref) create,
   ) {
-    return notifier.build();
-  }
-
-  @override
-  Override overrideWith(Generics<A, B> Function() create) {
     return ProviderOverride(
       origin: this,
       override: GenericsProvider<A, B>._internal(
-        () => create(),
+        (ref) => create(ref as GenericsRef<A, B>),
         from: from,
         name: null,
         dependencies: null,
@@ -205,15 +169,15 @@ class GenericsProvider<A extends num, B>
   }
 
   @override
-  AutoDisposeNotifierProviderElement<Generics<A, B>, int> createElement() {
+  AutoDisposeProviderElement<int> createElement() {
     return _GenericsProviderElement(this);
   }
 
   GenericsProvider _copyWith(
-    Generics Function() create,
+    int Function<A extends num, B>(GenericsRef ref) create,
   ) {
     return GenericsProvider._internal(
-      () => create(),
+      (ref) => create(ref as GenericsRef),
       name: name,
       dependencies: dependencies,
       allTransitiveDependencies: allTransitiveDependencies,
@@ -237,28 +201,22 @@ class GenericsProvider<A extends num, B>
   }
 }
 
-mixin GenericsRef<A extends num, B> on AutoDisposeNotifierProviderRef<int> {}
+mixin GenericsRef<A extends num, B> on AutoDisposeProviderRef<int> {}
 
 class _GenericsProviderElement<A extends num, B>
-    extends AutoDisposeNotifierProviderElement<Generics<A, B>, int>
-    with GenericsRef<A, B> {
+    extends AutoDisposeProviderElement<int> with GenericsRef<A, B> {
   _GenericsProviderElement(super.provider);
 }
 
-String _$noGenericsHash() => r'30d5d20092f43cb17ede1f619773757df7cecb30';
+String _$noGenericsHash() => r'449264e25990bc14ad811c0940117c8cde4d730a';
 
-abstract class _$NoGenerics<A extends num, B>
-    extends BuildlessAutoDisposeNotifier<int> {
-  int build();
-}
-
-/// See also [NoGenerics].
-@ProviderFor(NoGenerics)
+/// See also [noGenerics].
+@ProviderFor(noGenerics)
 const noGenericsProvider = NoGenericsFamily();
 
-/// See also [NoGenerics].
+/// See also [noGenerics].
 class NoGenericsFamily extends Family {
-  /// See also [NoGenerics].
+  /// See also [noGenerics].
   const NoGenericsFamily();
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -275,7 +233,7 @@ class NoGenericsFamily extends Family {
   @override
   String? get name => r'noGenericsProvider';
 
-  /// See also [NoGenerics].
+  /// See also [noGenerics].
   NoGenericsProvider<A, B> call<A extends num, B>() {
     return NoGenericsProvider<A, B>();
   }
@@ -289,7 +247,8 @@ class NoGenericsFamily extends Family {
   }
 
   /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(NoGenerics Function() create) {
+  Override overrideWith(
+      int Function<A extends num, B>(NoGenericsRef ref) create) {
     return _$NoGenericsFamilyOverride(this, create);
   }
 }
@@ -297,7 +256,7 @@ class NoGenericsFamily extends Family {
 class _$NoGenericsFamilyOverride implements FamilyOverride {
   _$NoGenericsFamilyOverride(this.overriddenFamily, this.create);
 
-  final NoGenerics Function() create;
+  final int Function<A extends num, B>(NoGenericsRef ref) create;
 
   @override
   final NoGenericsFamily overriddenFamily;
@@ -310,13 +269,14 @@ class _$NoGenericsFamilyOverride implements FamilyOverride {
   }
 }
 
-/// See also [NoGenerics].
-class NoGenericsProvider<A extends num, B>
-    extends AutoDisposeNotifierProviderImpl<NoGenerics<A, B>, int> {
-  /// See also [NoGenerics].
+/// See also [noGenerics].
+class NoGenericsProvider<A extends num, B> extends AutoDisposeProvider<int> {
+  /// See also [noGenerics].
   NoGenericsProvider()
       : this._internal(
-          NoGenerics<A, B>.new,
+          (ref) => noGenerics<A, B>(
+            ref as NoGenericsRef<A, B>,
+          ),
           from: noGenericsProvider,
           name: r'noGenericsProvider',
           debugGetCreateSourceHash:
@@ -338,18 +298,13 @@ class NoGenericsProvider<A extends num, B>
   }) : super.internal();
 
   @override
-  int runNotifierBuild(
-    covariant NoGenerics<A, B> notifier,
+  Override overrideWith(
+    int Function(NoGenericsRef<A, B> ref) create,
   ) {
-    return notifier.build();
-  }
-
-  @override
-  Override overrideWith(NoGenerics<A, B> Function() create) {
     return ProviderOverride(
       origin: this,
       override: NoGenericsProvider<A, B>._internal(
-        () => create(),
+        (ref) => create(ref as NoGenericsRef<A, B>),
         from: from,
         name: null,
         dependencies: null,
@@ -365,15 +320,15 @@ class NoGenericsProvider<A extends num, B>
   }
 
   @override
-  AutoDisposeNotifierProviderElement<NoGenerics<A, B>, int> createElement() {
+  AutoDisposeProviderElement<int> createElement() {
     return _NoGenericsProviderElement(this);
   }
 
   NoGenericsProvider _copyWith(
-    NoGenerics Function() create,
+    int Function<A extends num, B>(NoGenericsRef ref) create,
   ) {
     return NoGenericsProvider._internal(
-      () => create(),
+      (ref) => create(ref as NoGenericsRef),
       name: name,
       dependencies: dependencies,
       allTransitiveDependencies: allTransitiveDependencies,
@@ -397,28 +352,22 @@ class NoGenericsProvider<A extends num, B>
   }
 }
 
-mixin NoGenericsRef<A extends num, B> on AutoDisposeNotifierProviderRef<int> {}
+mixin NoGenericsRef<A extends num, B> on AutoDisposeProviderRef<int> {}
 
 class _NoGenericsProviderElement<A extends num, B>
-    extends AutoDisposeNotifierProviderElement<NoGenerics<A, B>, int>
-    with NoGenericsRef<A, B> {
+    extends AutoDisposeProviderElement<int> with NoGenericsRef<A, B> {
   _NoGenericsProviderElement(super.provider);
 }
 
-String _$missingGenericsHash() => r'b611c76d5fb87fdde78b5fc017912e0569762c23';
+String _$missingGenericsHash() => r'7d8bc49e4f1e466260fbf6a61a3f9e62b4aef28f';
 
-abstract class _$MissingGenerics<A, B>
-    extends BuildlessAutoDisposeNotifier<int> {
-  int build();
-}
-
-/// See also [MissingGenerics].
-@ProviderFor(MissingGenerics)
+/// See also [missingGenerics].
+@ProviderFor(missingGenerics)
 const missingGenericsProvider = MissingGenericsFamily();
 
-/// See also [MissingGenerics].
+/// See also [missingGenerics].
 class MissingGenericsFamily extends Family {
-  /// See also [MissingGenerics].
+  /// See also [missingGenerics].
   const MissingGenericsFamily();
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -435,7 +384,7 @@ class MissingGenericsFamily extends Family {
   @override
   String? get name => r'missingGenericsProvider';
 
-  /// See also [MissingGenerics].
+  /// See also [missingGenerics].
   MissingGenericsProvider<A, B> call<A, B>() {
     return MissingGenericsProvider<A, B>();
   }
@@ -449,7 +398,7 @@ class MissingGenericsFamily extends Family {
   }
 
   /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(MissingGenerics Function() create) {
+  Override overrideWith(int Function<A, B>(MissingGenericsRef ref) create) {
     return _$MissingGenericsFamilyOverride(this, create);
   }
 }
@@ -457,7 +406,7 @@ class MissingGenericsFamily extends Family {
 class _$MissingGenericsFamilyOverride implements FamilyOverride {
   _$MissingGenericsFamilyOverride(this.overriddenFamily, this.create);
 
-  final MissingGenerics Function() create;
+  final int Function<A, B>(MissingGenericsRef ref) create;
 
   @override
   final MissingGenericsFamily overriddenFamily;
@@ -470,13 +419,14 @@ class _$MissingGenericsFamilyOverride implements FamilyOverride {
   }
 }
 
-/// See also [MissingGenerics].
-class MissingGenericsProvider<A, B>
-    extends AutoDisposeNotifierProviderImpl<MissingGenerics<A, B>, int> {
-  /// See also [MissingGenerics].
+/// See also [missingGenerics].
+class MissingGenericsProvider<A, B> extends AutoDisposeProvider<int> {
+  /// See also [missingGenerics].
   MissingGenericsProvider()
       : this._internal(
-          MissingGenerics<A, B>.new,
+          (ref) => missingGenerics<A, B>(
+            ref as MissingGenericsRef<A, B>,
+          ),
           from: missingGenericsProvider,
           name: r'missingGenericsProvider',
           debugGetCreateSourceHash:
@@ -498,18 +448,13 @@ class MissingGenericsProvider<A, B>
   }) : super.internal();
 
   @override
-  int runNotifierBuild(
-    covariant MissingGenerics<A, B> notifier,
+  Override overrideWith(
+    int Function(MissingGenericsRef<A, B> ref) create,
   ) {
-    return notifier.build();
-  }
-
-  @override
-  Override overrideWith(MissingGenerics<A, B> Function() create) {
     return ProviderOverride(
       origin: this,
       override: MissingGenericsProvider<A, B>._internal(
-        () => create(),
+        (ref) => create(ref as MissingGenericsRef<A, B>),
         from: from,
         name: null,
         dependencies: null,
@@ -525,16 +470,15 @@ class MissingGenericsProvider<A, B>
   }
 
   @override
-  AutoDisposeNotifierProviderElement<MissingGenerics<A, B>, int>
-      createElement() {
+  AutoDisposeProviderElement<int> createElement() {
     return _MissingGenericsProviderElement(this);
   }
 
   MissingGenericsProvider _copyWith(
-    MissingGenerics Function() create,
+    int Function<A, B>(MissingGenericsRef ref) create,
   ) {
     return MissingGenericsProvider._internal(
-      () => create(),
+      (ref) => create(ref as MissingGenericsRef),
       name: name,
       dependencies: dependencies,
       allTransitiveDependencies: allTransitiveDependencies,
@@ -558,27 +502,22 @@ class MissingGenericsProvider<A, B>
   }
 }
 
-mixin MissingGenericsRef<A, B> on AutoDisposeNotifierProviderRef<int> {}
+mixin MissingGenericsRef<A, B> on AutoDisposeProviderRef<int> {}
 
 class _MissingGenericsProviderElement<A, B>
-    extends AutoDisposeNotifierProviderElement<MissingGenerics<A, B>, int>
-    with MissingGenericsRef<A, B> {
+    extends AutoDisposeProviderElement<int> with MissingGenericsRef<A, B> {
   _MissingGenericsProviderElement(super.provider);
 }
 
-String _$wrongOrderHash() => r'7757670a2f67406ebc96c87edf088deb9cb248a1';
+String _$wrongOrderHash() => r'6732863e85b220c07f82c2d13be15c1e6f08192d';
 
-abstract class _$WrongOrder<A, B> extends BuildlessAutoDisposeNotifier<int> {
-  int build();
-}
-
-/// See also [WrongOrder].
-@ProviderFor(WrongOrder)
+/// See also [wrongOrder].
+@ProviderFor(wrongOrder)
 const wrongOrderProvider = WrongOrderFamily();
 
-/// See also [WrongOrder].
+/// See also [wrongOrder].
 class WrongOrderFamily extends Family {
-  /// See also [WrongOrder].
+  /// See also [wrongOrder].
   const WrongOrderFamily();
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -595,9 +534,9 @@ class WrongOrderFamily extends Family {
   @override
   String? get name => r'wrongOrderProvider';
 
-  /// See also [WrongOrder].
-  WrongOrderProvider<A, B> call<A, B>() {
-    return WrongOrderProvider<A, B>();
+  /// See also [wrongOrder].
+  WrongOrderProvider<B, A> call<B, A>() {
+    return WrongOrderProvider<B, A>();
   }
 
   @visibleForOverriding
@@ -609,7 +548,7 @@ class WrongOrderFamily extends Family {
   }
 
   /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(WrongOrder Function() create) {
+  Override overrideWith(int Function<B, A>(WrongOrderRef ref) create) {
     return _$WrongOrderFamilyOverride(this, create);
   }
 }
@@ -617,7 +556,7 @@ class WrongOrderFamily extends Family {
 class _$WrongOrderFamilyOverride implements FamilyOverride {
   _$WrongOrderFamilyOverride(this.overriddenFamily, this.create);
 
-  final WrongOrder Function() create;
+  final int Function<B, A>(WrongOrderRef ref) create;
 
   @override
   final WrongOrderFamily overriddenFamily;
@@ -630,13 +569,14 @@ class _$WrongOrderFamilyOverride implements FamilyOverride {
   }
 }
 
-/// See also [WrongOrder].
-class WrongOrderProvider<A, B>
-    extends AutoDisposeNotifierProviderImpl<WrongOrder<A, B>, int> {
-  /// See also [WrongOrder].
+/// See also [wrongOrder].
+class WrongOrderProvider<B, A> extends AutoDisposeProvider<int> {
+  /// See also [wrongOrder].
   WrongOrderProvider()
       : this._internal(
-          WrongOrder<A, B>.new,
+          (ref) => wrongOrder<B, A>(
+            ref as WrongOrderRef<B, A>,
+          ),
           from: wrongOrderProvider,
           name: r'wrongOrderProvider',
           debugGetCreateSourceHash:
@@ -658,18 +598,13 @@ class WrongOrderProvider<A, B>
   }) : super.internal();
 
   @override
-  int runNotifierBuild(
-    covariant WrongOrder<A, B> notifier,
+  Override overrideWith(
+    int Function(WrongOrderRef<B, A> ref) create,
   ) {
-    return notifier.build();
-  }
-
-  @override
-  Override overrideWith(WrongOrder<A, B> Function() create) {
     return ProviderOverride(
       origin: this,
-      override: WrongOrderProvider<A, B>._internal(
-        () => create(),
+      override: WrongOrderProvider<B, A>._internal(
+        (ref) => create(ref as WrongOrderRef<B, A>),
         from: from,
         name: null,
         dependencies: null,
@@ -685,15 +620,15 @@ class WrongOrderProvider<A, B>
   }
 
   @override
-  AutoDisposeNotifierProviderElement<WrongOrder<A, B>, int> createElement() {
+  AutoDisposeProviderElement<int> createElement() {
     return _WrongOrderProviderElement(this);
   }
 
   WrongOrderProvider _copyWith(
-    WrongOrder Function() create,
+    int Function<B, A>(WrongOrderRef ref) create,
   ) {
     return WrongOrderProvider._internal(
-      () => create(),
+      (ref) => create(ref as WrongOrderRef),
       name: name,
       dependencies: dependencies,
       allTransitiveDependencies: allTransitiveDependencies,
@@ -710,18 +645,17 @@ class WrongOrderProvider<A, B>
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, A.hashCode);
     hash = _SystemHash.combine(hash, B.hashCode);
+    hash = _SystemHash.combine(hash, A.hashCode);
 
     return _SystemHash.finish(hash);
   }
 }
 
-mixin WrongOrderRef<A, B> on AutoDisposeNotifierProviderRef<int> {}
+mixin WrongOrderRef<B, A> on AutoDisposeProviderRef<int> {}
 
-class _WrongOrderProviderElement<A, B>
-    extends AutoDisposeNotifierProviderElement<WrongOrder<A, B>, int>
-    with WrongOrderRef<A, B> {
+class _WrongOrderProviderElement<B, A> extends AutoDisposeProviderElement<int>
+    with WrongOrderRef<B, A> {
   _WrongOrderProviderElement(super.provider);
 }
 // ignore_for_file: type=lint

@@ -36,7 +36,7 @@ class _SystemHash {
 const randomProvider = RandomFamily();
 
 /// See also [random].
-class RandomFamily extends Family<int> {
+class RandomFamily extends Family {
   /// See also [random].
   const RandomFamily();
 
@@ -82,7 +82,7 @@ class RandomFamily extends Family<int> {
   }
 }
 
-class _$RandomFamilyOverride implements FamilyOverride<int> {
+class _$RandomFamilyOverride implements FamilyOverride {
   _$RandomFamilyOverride(this.overriddenFamily, this.create);
 
   final int Function(RandomRef ref) create;

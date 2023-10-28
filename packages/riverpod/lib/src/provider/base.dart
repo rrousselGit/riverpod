@@ -23,12 +23,12 @@ class Provider<State> extends InternalProvider<State>
     this._createFn, {
     super.name,
     super.dependencies,
-    @Deprecated('Will be removed in 3.0.0') super.from,
-    @Deprecated('Will be removed in 3.0.0') super.argument,
-    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          from: null,
+          argument: null,
+          debugGetCreateSourceHash: null,
         );
 
   /// An implementation detail of Riverpod
@@ -81,7 +81,7 @@ class Provider<State> extends InternalProvider<State>
   ///   ProviderScope(
   ///     overrides: [
   ///       // Replace the implementation of the provider with a different one
-  ///       myService.overrideWithProvider((ref) {
+  ///       myService.overrideWith((ref) {
   ///         ref.watch('other');
   ///         return MyFakeService(),
   ///       })),

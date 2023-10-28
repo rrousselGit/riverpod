@@ -84,7 +84,7 @@ extension AsyncTransition<T> on ProviderElementBase<AsyncValue<T>> {
 /// - [AsyncValue.guard], to simplify transforming a [Future] into an [AsyncValue].
 @sealed
 @immutable
-abstract class AsyncValue<T> {
+sealed class AsyncValue<T> {
   const AsyncValue._();
 
   /// {@template asyncvalue.data}
@@ -200,6 +200,8 @@ abstract class AsyncValue<T> {
   /// The stacktrace of [error].
   StackTrace? get stackTrace;
 
+  String get _displayString;
+
   /// Casts the [AsyncValue] to a different type.
   AsyncValue<R> _cast<R>();
 
@@ -257,7 +259,7 @@ abstract class AsyncValue<T> {
       ],
     ].join(', ');
 
-    return '$runtimeType($content)';
+    return '$_displayString<$T>($content)';
   }
 
   @override
@@ -283,7 +285,7 @@ abstract class AsyncValue<T> {
 }
 
 /// {@macro asyncvalue.data}
-class AsyncData<T> extends AsyncValue<T> {
+final class AsyncData<T> extends AsyncValue<T> {
   /// {@macro asyncvalue.data}
   const AsyncData(T value)
       : this._(
@@ -301,11 +303,15 @@ class AsyncData<T> extends AsyncValue<T> {
   }) : super._();
 
   @override
-  final T value;
+  String get _displayString => 'AsyncData';
 
   @override
   bool get hasValue => true;
 
+  @override
+  final T value;
+
+  @override
   @override
   final bool isLoading;
 
@@ -345,7 +351,7 @@ class AsyncData<T> extends AsyncValue<T> {
 }
 
 /// {@macro asyncvalue.loading}
-class AsyncLoading<T> extends AsyncValue<T> {
+final class AsyncLoading<T> extends AsyncValue<T> {
   /// {@macro asyncvalue.loading}
   const AsyncLoading()
       : hasValue = false,
@@ -363,6 +369,9 @@ class AsyncLoading<T> extends AsyncValue<T> {
 
   @override
   bool get isLoading => true;
+
+  @override
+  String get _displayString => 'AsyncLoading';
 
   @override
   final bool hasValue;
@@ -439,7 +448,7 @@ class AsyncLoading<T> extends AsyncValue<T> {
 }
 
 /// {@macro asyncvalue.error_ctor}
-class AsyncError<T> extends AsyncValue<T> {
+final class AsyncError<T> extends AsyncValue<T> {
   /// {@macro asyncvalue.error_ctor}
   const AsyncError(Object error, StackTrace stackTrace)
       : this._(
@@ -458,6 +467,9 @@ class AsyncError<T> extends AsyncValue<T> {
     required this.isLoading,
   })  : _value = value,
         super._();
+
+  @override
+  String get _displayString => 'AsyncError';
 
   @override
   final bool isLoading;

@@ -36,7 +36,7 @@ class _SystemHash {
 const fetchPackagesProvider = FetchPackagesFamily();
 
 /// See also [fetchPackages].
-class FetchPackagesFamily extends Family<AsyncValue<List<Package>>> {
+class FetchPackagesFamily extends Family {
   /// See also [fetchPackages].
   const FetchPackagesFamily();
 
@@ -83,8 +83,7 @@ class FetchPackagesFamily extends Family<AsyncValue<List<Package>>> {
   }
 }
 
-class _$FetchPackagesFamilyOverride
-    implements FamilyOverride<AsyncValue<List<Package>>> {
+class _$FetchPackagesFamilyOverride implements FamilyOverride {
   _$FetchPackagesFamilyOverride(this.overriddenFamily, this.create);
 
   final FutureOr<List<Package>> Function(FetchPackagesRef ref) create;
