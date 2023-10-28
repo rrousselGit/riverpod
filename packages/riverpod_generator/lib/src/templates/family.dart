@@ -103,6 +103,8 @@ class FamilyTemplate extends Template {
 
     final typeParameters = provider.node.functionExpression.typeParameters;
     final typeParametersUsage = genericUsageDisplayString(typeParameters);
+    final typeParametersDefinition =
+        genericDefinitionDisplayString(typeParameters);
 
     return FamilyTemplate._(
       provider,
@@ -118,7 +120,7 @@ class FamilyTemplate extends Template {
       providerType: providerType,
       parametersPassThrough: parametersPassThrough,
       createType:
-          '${provider.createdTypeDisplayString} Function(${provider._refImplName} ref)',
+          '${provider.createdTypeDisplayString} Function$typeParametersDefinition(${provider._refImplName} ref)',
       overrideCreate: '(ref) => create(ref as ${provider._refImplName})',
       providerOther: '''
 
@@ -344,7 +346,7 @@ class $familyName extends Family {
   }
 }
 
-class $familyOverrideClassName implements FamilyOverride<${provider.exposedTypeDisplayString}> {
+class $familyOverrideClassName implements FamilyOverride {
   $familyOverrideClassName(this.overriddenFamily, this.create);
 
   final $createType create;
