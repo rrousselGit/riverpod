@@ -28,4 +28,4 @@ jobs:
       - name: Install "semantic_changelog"
         run: dart pub global activate -s git https://github.com/rrousselGit/semantic_changelog
 
-      - run: semantic_changelog check master
+      - run: semantic_changelog check
