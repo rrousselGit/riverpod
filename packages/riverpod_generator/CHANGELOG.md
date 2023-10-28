@@ -1,3 +1,7 @@
+## Unreleased minor
+
+- Fix typos and internal changes
+
 ## 2.3.5 - 2023-10-21
 
 - `riverpod_analyzer_utils` upgraded to `0.4.1`
