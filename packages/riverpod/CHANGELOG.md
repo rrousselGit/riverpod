@@ -391,7 +391,7 @@ Riverpod is now stable!
 - **Breaking** The return value when reading a `StateProvider` changed.
   Before, doing `ref.read(someStateProvider)` would return the `StateController` instance.
   Now, this will only return the state of the `StateController`.
-  This new behaviour matches `StateNotifierProvider`.
+  This new behavior matches `StateNotifierProvider`.
 
   For a simple migration, the old behavior is available by writing
   `ref.read(someStateProvider.state)`.
@@ -669,7 +669,7 @@ Fix an issue where `*Provider.autoDispose` were not able to specify the
 ### Bug-fixes
 
 - fixed a bug where providers were rebuilding even when not being listened to
-- fixed `ref.listen` now working when downcasting the value of a provider.
+- fixed `ref.listen` now working when downcasing the value of a provider.
 - fixed a bug where disposing a scoped `ProviderContainer` could cause other
   `ProviderContainer`s to stop working.
 - fixed an issue where conditionally depending on an "autoDispose" provider
@@ -808,7 +808,7 @@ Removed an assert that could cause issues when an application is partially migra
 
 ## 0.14.0+1
 
-- Re-added `StateProvider.overrideWithValue`/`StateProvider.overrideWithProvider` that were unvoluntarily removed.
+- Re-added `StateProvider.overrideWithValue`/`StateProvider.overrideWithProvider` that were involuntarily removed.
 
 ## 0.14.0
 
