@@ -1,3 +1,8 @@
+## Unreleased minor
+
+Updated refactors to convert providers between class <> functions
+to support generics.
+
 ## 2.3.2 - 2023-10-21
 
 - `riverpod_analyzer_utils` upgraded to `0.4.2`

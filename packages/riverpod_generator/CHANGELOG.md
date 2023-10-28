@@ -1,4 +1,4 @@
-## Unreleased 3.0.0-dev.5
+## Unreleased 3.0.0-dev.6
 
 - Providers can now be generic:
 
