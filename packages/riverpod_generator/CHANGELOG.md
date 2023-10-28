@@ -1,4 +1,4 @@
-## Unreleased fix
+## 3.0.0-dev.6 - 2023-10-28
 
 - Fixed `family.overrideWith` missing
 

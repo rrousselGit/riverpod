@@ -1,3 +1,7 @@
+## 2.4.5 - 2023-10-28
+
+- Support assigning `AsyncValue<T>` to `AsyncNotifier<void>.state`
+
 ## 2.4.4 - 2023-10-15
 
 - `riverpod` upgraded to `2.4.4`

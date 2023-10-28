@@ -1,4 +1,4 @@
-## Unreleased minor
+## 2.3.0 - 2023-10-28
 
 - Exported internal `FamilyOverride` API, for use in generated code.
 
