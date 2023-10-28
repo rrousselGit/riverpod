@@ -79,7 +79,7 @@ class FetchUserFamily extends Family {
   }
 }
 
-class _$FetchUserFamilyOverride implements FamilyOverride<AsyncValue<User>> {
+class _$FetchUserFamilyOverride implements FamilyOverride {
   _$FetchUserFamilyOverride(this.overriddenFamily, this.create);
 
   final FutureOr<User> Function(FetchUserRef ref) create;

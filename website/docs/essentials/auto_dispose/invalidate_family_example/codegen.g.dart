@@ -36,7 +36,7 @@ class _SystemHash {
 const labelProvider = LabelFamily();
 
 /// See also [label].
-class LabelFamily extends Family<String> {
+class LabelFamily extends Family {
   /// See also [label].
   const LabelFamily();
 
@@ -79,7 +79,7 @@ class LabelFamily extends Family<String> {
   }
 }
 
-class _$LabelFamilyOverride implements FamilyOverride<String> {
+class _$LabelFamilyOverride implements FamilyOverride {
   _$LabelFamilyOverride(this.overriddenFamily, this.create);
 
   final String Function(LabelRef ref) create;

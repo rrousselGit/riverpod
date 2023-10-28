@@ -114,7 +114,7 @@ class ExampleFamilyFamily extends Family {
   }
 }
 
-class _$ExampleFamilyFamilyOverride implements FamilyOverride<int> {
+class _$ExampleFamilyFamilyOverride implements FamilyOverride {
   _$ExampleFamilyFamilyOverride(this.overriddenFamily, this.create);
 
   final ExampleFamily Function() create;
@@ -283,6 +283,20 @@ class GenericFamily extends Family {
   /// See also [Generic].
   const GenericFamily();
 
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'genericProvider';
+
   /// See also [Generic].
   GenericProvider<A, B> call<A, B>() {
     return GenericProvider<A, B>();
@@ -296,19 +310,26 @@ class GenericFamily extends Family {
     return call();
   }
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(Generic Function() create) {
+    return _$GenericFamilyOverride(this, create);
+  }
+}
+
+class _$GenericFamilyOverride implements FamilyOverride {
+  _$GenericFamilyOverride(this.overriddenFamily, this.create);
+
+  final Generic Function() create;
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+  final GenericFamily overriddenFamily;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'genericProvider';
+  GenericProvider getProviderOverride(
+    covariant GenericProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [Generic].
@@ -329,7 +350,7 @@ class GenericProvider<A, B>
         );
 
   GenericProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -367,6 +388,19 @@ class GenericProvider<A, B>
   @override
   AutoDisposeNotifierProviderElement<Generic<A, B>, int> createElement() {
     return _GenericProviderElement(this);
+  }
+
+  GenericProvider _copyWith(
+    Generic Function() create,
+  ) {
+    return GenericProvider._internal(
+      () => create(),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+    );
   }
 
   @override

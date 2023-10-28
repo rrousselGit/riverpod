@@ -113,7 +113,7 @@ class A3Family extends Family {
   }
 }
 
-class _$A3FamilyOverride implements FamilyOverride<int> {
+class _$A3FamilyOverride implements FamilyOverride {
   _$A3FamilyOverride(this.overriddenFamily, this.create);
 
   final A3 Function() create;
@@ -291,7 +291,7 @@ class A4Family extends Family {
   }
 }
 
-class _$A4FamilyOverride implements FamilyOverride<int> {
+class _$A4FamilyOverride implements FamilyOverride {
   _$A4FamilyOverride(this.overriddenFamily, this.create);
 
   final A4 Function() create;
@@ -468,7 +468,7 @@ class A5Family extends Family {
   }
 }
 
-class _$A5FamilyOverride implements FamilyOverride<AsyncValue<int>> {
+class _$A5FamilyOverride implements FamilyOverride {
   _$A5FamilyOverride(this.overriddenFamily, this.create);
 
   final A5 Function() create;
@@ -646,7 +646,7 @@ class A6Family extends Family {
   }
 }
 
-class _$A6FamilyOverride implements FamilyOverride<AsyncValue<int>> {
+class _$A6FamilyOverride implements FamilyOverride {
   _$A6FamilyOverride(this.overriddenFamily, this.create);
 
   final A6 Function() create;
@@ -824,7 +824,7 @@ class A7Family extends Family {
   }
 }
 
-class _$A7FamilyOverride implements FamilyOverride<AsyncValue<int>> {
+class _$A7FamilyOverride implements FamilyOverride {
   _$A7FamilyOverride(this.overriddenFamily, this.create);
 
   final A7 Function() create;
@@ -1002,7 +1002,7 @@ class A8Family extends Family {
   }
 }
 
-class _$A8FamilyOverride implements FamilyOverride<AsyncValue<int>> {
+class _$A8FamilyOverride implements FamilyOverride {
   _$A8FamilyOverride(this.overriddenFamily, this.create);
 
   final A8 Function() create;

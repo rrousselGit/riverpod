@@ -91,7 +91,7 @@ class GeneratedFamilyFamily extends Family {
   }
 }
 
-class _$GeneratedFamilyFamilyOverride implements FamilyOverride<_Test> {
+class _$GeneratedFamilyFamilyOverride implements FamilyOverride {
   _$GeneratedFamilyFamilyOverride(this.overriddenFamily, this.create);
 
   final _Test Function(GeneratedFamilyRef ref) create;
@@ -274,7 +274,7 @@ class $DynamicFamilyFamily extends Family {
   }
 }
 
-class _$$DynamicFamilyFamilyOverride implements FamilyOverride<Object?> {
+class _$$DynamicFamilyFamilyOverride implements FamilyOverride {
   _$$DynamicFamilyFamilyOverride(this.overriddenFamily, this.create);
 
   final Object? Function($DynamicFamilyRef ref) create;
@@ -443,7 +443,7 @@ class _DynamicFamily extends Family {
   }
 }
 
-class _$DynamicFamilyOverride implements FamilyOverride<Object?> {
+class _$DynamicFamilyOverride implements FamilyOverride {
   _$DynamicFamilyOverride(this.overriddenFamily, this.create);
 
   final Object? Function(_DynamicRef ref) create;
@@ -625,7 +625,7 @@ class AliasFamilyFamily extends Family {
   }
 }
 
-class _$AliasFamilyFamilyOverride implements FamilyOverride<r.AsyncValue<int>> {
+class _$AliasFamilyFamilyOverride implements FamilyOverride {
   _$AliasFamilyFamilyOverride(this.overriddenFamily, this.create);
 
   final r.AsyncValue<int> Function(AliasFamilyRef ref) create;
@@ -820,7 +820,7 @@ class GeneratedClassFamilyFamily extends Family {
   }
 }
 
-class _$GeneratedClassFamilyFamilyOverride implements FamilyOverride<_Test> {
+class _$GeneratedClassFamilyFamilyOverride implements FamilyOverride {
   _$GeneratedClassFamilyFamilyOverride(this.overriddenFamily, this.create);
 
   final GeneratedClassFamily Function() create;
@@ -1022,7 +1022,7 @@ class $DynamicClassFamilyFamily extends Family {
   }
 }
 
-class _$$DynamicClassFamilyFamilyOverride implements FamilyOverride<Object?> {
+class _$$DynamicClassFamilyFamilyOverride implements FamilyOverride {
   _$$DynamicClassFamilyFamilyOverride(this.overriddenFamily, this.create);
 
   final $DynamicClassFamily Function() create;
@@ -1222,8 +1222,7 @@ class AliasClassFamilyFamily extends Family {
   }
 }
 
-class _$AliasClassFamilyFamilyOverride
-    implements FamilyOverride<r.AsyncValue<int>> {
+class _$AliasClassFamilyFamilyOverride implements FamilyOverride {
   _$AliasClassFamilyFamilyOverride(this.overriddenFamily, this.create);
 
   final AliasClassFamily Function() create;

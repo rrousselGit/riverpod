@@ -92,7 +92,7 @@ class ExampleFamily extends Family {
   }
 }
 
-class _$ExampleFamilyOverride implements FamilyOverride<String> {
+class _$ExampleFamilyOverride implements FamilyOverride {
   _$ExampleFamilyOverride(this.overriddenFamily, this.create);
 
   final Example Function() create;

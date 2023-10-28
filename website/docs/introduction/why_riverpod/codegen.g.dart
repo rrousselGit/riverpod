@@ -83,8 +83,7 @@ class FetchPackagesFamily extends Family {
   }
 }
 
-class _$FetchPackagesFamilyOverride
-    implements FamilyOverride<AsyncValue<List<Package>>> {
+class _$FetchPackagesFamilyOverride implements FamilyOverride {
   _$FetchPackagesFamilyOverride(this.overriddenFamily, this.create);
 
   final FutureOr<List<Package>> Function(FetchPackagesRef ref) create;

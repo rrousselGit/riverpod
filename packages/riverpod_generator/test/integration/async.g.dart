@@ -38,6 +38,20 @@ class GenericFamily extends Family {
   /// See also [generic].
   const GenericFamily();
 
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'genericProvider';
+
   /// See also [generic].
   GenericProvider<T> call<T extends num>() {
     return GenericProvider<T>();
@@ -51,19 +65,27 @@ class GenericFamily extends Family {
     return call();
   }
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(
+      FutureOr<List<T>> Function<T extends num>(GenericRef ref) create) {
+    return _$GenericFamilyOverride(this, create);
+  }
+}
+
+class _$GenericFamilyOverride implements FamilyOverride {
+  _$GenericFamilyOverride(this.overriddenFamily, this.create);
+
+  final FutureOr<List<T>> Function<T extends num>(GenericRef ref) create;
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+  final GenericFamily overriddenFamily;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'genericProvider';
+  GenericProvider getProviderOverride(
+    covariant GenericProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [generic].
@@ -86,7 +108,7 @@ class GenericProvider<T extends num>
         );
 
   GenericProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -96,7 +118,7 @@ class GenericProvider<T extends num>
 
   @override
   Override overrideWith(
-    FutureOr<List<T>> Function(GenericRef<T> provider) create,
+    FutureOr<List<T>> Function(GenericRef<T> ref) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -119,6 +141,19 @@ class GenericProvider<T extends num>
   @override
   AutoDisposeFutureProviderElement<List<T>> createElement() {
     return _GenericProviderElement(this);
+  }
+
+  GenericProvider _copyWith(
+    FutureOr<List<T>> Function<T extends num>(GenericRef ref) create,
+  ) {
+    return GenericProvider._internal(
+      (ref) => create(ref as GenericRef),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+    );
   }
 
   @override
@@ -220,7 +255,7 @@ class FamilyOrFamily extends Family {
   }
 }
 
-class _$FamilyOrFamilyOverride implements FamilyOverride<AsyncValue<String>> {
+class _$FamilyOrFamilyOverride implements FamilyOverride {
   _$FamilyOrFamilyOverride(this.overriddenFamily, this.create);
 
   final FutureOr<String> Function(FamilyOrRef ref) create;
@@ -400,7 +435,7 @@ class FamilyFamily extends Family {
   }
 }
 
-class _$FamilyFamilyOverride implements FamilyOverride<AsyncValue<String>> {
+class _$FamilyFamilyOverride implements FamilyOverride {
   _$FamilyFamilyOverride(this.overriddenFamily, this.create);
 
   final FutureOr<String> Function(FamilyRef ref) create;
@@ -591,7 +626,7 @@ String _$genericClassHash() => r'd3c4acc9cdae12f6c666fbf1f89aee212bb086db';
 
 abstract class _$GenericClass<T extends num>
     extends BuildlessAutoDisposeAsyncNotifier<List<T>> {
-  Future<List<T>> build();
+  FutureOr<List<T>> build();
 }
 
 /// See also [GenericClass].
@@ -602,6 +637,20 @@ const genericClassProvider = GenericClassFamily();
 class GenericClassFamily extends Family {
   /// See also [GenericClass].
   const GenericClassFamily();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'genericClassProvider';
 
   /// See also [GenericClass].
   GenericClassProvider<T> call<T extends num>() {
@@ -616,19 +665,26 @@ class GenericClassFamily extends Family {
     return call();
   }
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(GenericClass Function() create) {
+    return _$GenericClassFamilyOverride(this, create);
+  }
+}
+
+class _$GenericClassFamilyOverride implements FamilyOverride {
+  _$GenericClassFamilyOverride(this.overriddenFamily, this.create);
+
+  final GenericClass Function() create;
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+  final GenericClassFamily overriddenFamily;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'genericClassProvider';
+  GenericClassProvider getProviderOverride(
+    covariant GenericClassProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [GenericClass].
@@ -650,7 +706,7 @@ class GenericClassProvider<T extends num>
         );
 
   GenericClassProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -659,7 +715,7 @@ class GenericClassProvider<T extends num>
   }) : super.internal();
 
   @override
-  Future<List<T>> runNotifierBuild(
+  FutureOr<List<T>> runNotifierBuild(
     covariant GenericClass<T> notifier,
   ) {
     return notifier.build();
@@ -689,6 +745,19 @@ class GenericClassProvider<T extends num>
   AutoDisposeAsyncNotifierProviderElement<GenericClass<T>, List<T>>
       createElement() {
     return _GenericClassProviderElement(this);
+  }
+
+  GenericClassProvider _copyWith(
+    GenericClass Function() create,
+  ) {
+    return GenericClassProvider._internal(
+      () => create(),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+    );
   }
 
   @override
@@ -803,8 +872,7 @@ class FamilyOrClassFamily extends Family {
   }
 }
 
-class _$FamilyOrClassFamilyOverride
-    implements FamilyOverride<AsyncValue<String>> {
+class _$FamilyOrClassFamilyOverride implements FamilyOverride {
   _$FamilyOrClassFamilyOverride(this.overriddenFamily, this.create);
 
   final FamilyOrClass Function() create;
@@ -1008,8 +1076,7 @@ class FamilyClassFamily extends Family {
   }
 }
 
-class _$FamilyClassFamilyOverride
-    implements FamilyOverride<AsyncValue<String>> {
+class _$FamilyClassFamilyOverride implements FamilyOverride {
   _$FamilyClassFamilyOverride(this.overriddenFamily, this.create);
 
   final FamilyClass Function() create;

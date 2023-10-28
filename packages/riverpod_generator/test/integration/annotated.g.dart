@@ -97,7 +97,7 @@ class FamilyFamily extends Family {
   }
 }
 
-class _$FamilyFamilyOverride implements FamilyOverride<String> {
+class _$FamilyFamilyOverride implements FamilyOverride {
   _$FamilyFamilyOverride(this.overriddenFamily, this.create);
 
   final String Function(FamilyRef ref) create;
@@ -281,7 +281,7 @@ class NotCopiedFamilyFamily extends Family {
   }
 }
 
-class _$NotCopiedFamilyFamilyOverride implements FamilyOverride<String> {
+class _$NotCopiedFamilyFamilyOverride implements FamilyOverride {
   _$NotCopiedFamilyFamilyOverride(this.overriddenFamily, this.create);
 
   final String Function(NotCopiedFamilyRef ref) create;

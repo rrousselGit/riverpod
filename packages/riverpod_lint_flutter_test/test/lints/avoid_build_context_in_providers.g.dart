@@ -80,7 +80,7 @@ class FnFamily extends Family {
   }
 }
 
-class _$FnFamilyOverride implements FamilyOverride<int> {
+class _$FnFamilyOverride implements FamilyOverride {
   _$FnFamilyOverride(this.overriddenFamily, this.create);
 
   final int Function(FnRef ref) create;
@@ -279,7 +279,7 @@ class MyNotifierFamily extends Family {
   }
 }
 
-class _$MyNotifierFamilyOverride implements FamilyOverride<int> {
+class _$MyNotifierFamilyOverride implements FamilyOverride {
   _$MyNotifierFamilyOverride(this.overriddenFamily, this.create);
 
   final MyNotifier Function() create;

@@ -82,7 +82,7 @@ class RandomFamily extends Family {
   }
 }
 
-class _$RandomFamilyOverride implements FamilyOverride<int> {
+class _$RandomFamilyOverride implements FamilyOverride {
   _$RandomFamilyOverride(this.overriddenFamily, this.create);
 
   final int Function(RandomRef ref) create;
