@@ -40,20 +40,6 @@ class RandomFamily extends Family<int> {
   /// See also [random].
   const RandomFamily();
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'randomProvider';
-
   /// See also [random].
   RandomProvider call({
     required int seed,
@@ -65,7 +51,6 @@ class RandomFamily extends Family<int> {
     );
   }
 
-  @visibleForOverriding
   @override
   RandomProvider getProviderOverride(
     covariant RandomProvider provider,
@@ -76,26 +61,19 @@ class RandomFamily extends Family<int> {
     );
   }
 
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(int Function(RandomRef ref) create) {
-    return _$RandomFamilyOverride(this, create);
-  }
-}
-
-class _$RandomFamilyOverride implements FamilyOverride<int> {
-  _$RandomFamilyOverride(this.overriddenFamily, this.create);
-
-  final int Function(RandomRef ref) create;
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
 
   @override
-  final RandomFamily overriddenFamily;
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
 
   @override
-  RandomProvider getProviderOverride(
-    covariant RandomProvider provider,
-  ) {
-    return provider._copyWith(create);
-  }
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'randomProvider';
 }
 
 /// See also [random].
@@ -123,7 +101,7 @@ class RandomProvider extends AutoDisposeProvider<int> {
         );
 
   RandomProvider._internal(
-    super.create, {
+    super._createNotifier, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -138,7 +116,7 @@ class RandomProvider extends AutoDisposeProvider<int> {
 
   @override
   Override overrideWith(
-    int Function(RandomRef ref) create,
+    int Function(RandomRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -156,34 +134,8 @@ class RandomProvider extends AutoDisposeProvider<int> {
   }
 
   @override
-  ({
-    int seed,
-    int max,
-  }) get argument {
-    return (
-      seed: seed,
-      max: max,
-    );
-  }
-
-  @override
   AutoDisposeProviderElement<int> createElement() {
     return _RandomProviderElement(this);
-  }
-
-  RandomProvider _copyWith(
-    int Function(RandomRef ref) create,
-  ) {
-    return RandomProvider._internal(
-      (ref) => create(ref as RandomRef),
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-      seed: seed,
-      max: max,
-    );
   }
 
   @override
@@ -219,4 +171,4 @@ class _RandomProviderElement extends AutoDisposeProviderElement<int>
   int get max => (origin as RandomProvider).max;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

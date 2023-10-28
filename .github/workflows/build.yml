@@ -8,6 +8,7 @@ on:
   push:
     branches:
       - master
+      - dev
     paths-ignore:
       - "**.md"
       - "**.mdx"
