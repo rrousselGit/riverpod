@@ -557,7 +557,7 @@ abstract class _$FamilyClass extends BuildlessAutoDisposeAsyncNotifier<String> {
   late final bool fourth;
   late final List<String>? fifth;
 
-  Future<String> build(
+  FutureOr<String> build(
     int first, {
     String? second,
     required double third,
@@ -674,7 +674,7 @@ class FamilyClassProvider
   final List<String>? fifth;
 
   @override
-  Future<String> runNotifierBuild(
+  FutureOr<String> runNotifierBuild(
     covariant FamilyClass notifier,
   ) {
     return notifier.build(
