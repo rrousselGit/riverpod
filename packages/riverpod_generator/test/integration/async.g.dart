@@ -66,20 +66,6 @@ class FamilyOrFamily extends Family<AsyncValue<String>> {
   /// See also [familyOr].
   const FamilyOrFamily();
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'familyOrProvider';
-
   /// See also [familyOr].
   FamilyOrProvider call(
     int first,
@@ -89,7 +75,6 @@ class FamilyOrFamily extends Family<AsyncValue<String>> {
     );
   }
 
-  @visibleForOverriding
   @override
   FamilyOrProvider getProviderOverride(
     covariant FamilyOrProvider provider,
@@ -99,26 +84,19 @@ class FamilyOrFamily extends Family<AsyncValue<String>> {
     );
   }
 
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(FutureOr<String> Function(FamilyOrRef ref) create) {
-    return _$FamilyOrFamilyOverride(this, create);
-  }
-}
-
-class _$FamilyOrFamilyOverride implements FamilyOverride<AsyncValue<String>> {
-  _$FamilyOrFamilyOverride(this.overriddenFamily, this.create);
-
-  final FutureOr<String> Function(FamilyOrRef ref) create;
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
 
   @override
-  final FamilyOrFamily overriddenFamily;
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
 
   @override
-  FamilyOrProvider getProviderOverride(
-    covariant FamilyOrProvider provider,
-  ) {
-    return provider._copyWith(create);
-  }
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'familyOrProvider';
 }
 
 /// See also [familyOr].
@@ -143,7 +121,7 @@ class FamilyOrProvider extends AutoDisposeFutureProvider<String> {
         );
 
   FamilyOrProvider._internal(
-    super.create, {
+    super._createNotifier, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -156,7 +134,7 @@ class FamilyOrProvider extends AutoDisposeFutureProvider<String> {
 
   @override
   Override overrideWith(
-    FutureOr<String> Function(FamilyOrRef ref) create,
+    FutureOr<String> Function(FamilyOrRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -173,27 +151,8 @@ class FamilyOrProvider extends AutoDisposeFutureProvider<String> {
   }
 
   @override
-  (int,) get argument {
-    return (first,);
-  }
-
-  @override
   AutoDisposeFutureProviderElement<String> createElement() {
     return _FamilyOrProviderElement(this);
-  }
-
-  FamilyOrProvider _copyWith(
-    FutureOr<String> Function(FamilyOrRef ref) create,
-  ) {
-    return FamilyOrProvider._internal(
-      (ref) => create(ref as FamilyOrRef),
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-      first: first,
-    );
   }
 
   @override
@@ -234,20 +193,6 @@ class FamilyFamily extends Family<AsyncValue<String>> {
   /// See also [family].
   const FamilyFamily();
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'familyProvider';
-
   /// See also [family].
   FamilyProvider call(
     int first, {
@@ -265,7 +210,6 @@ class FamilyFamily extends Family<AsyncValue<String>> {
     );
   }
 
-  @visibleForOverriding
   @override
   FamilyProvider getProviderOverride(
     covariant FamilyProvider provider,
@@ -279,26 +223,19 @@ class FamilyFamily extends Family<AsyncValue<String>> {
     );
   }
 
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(FutureOr<String> Function(FamilyRef ref) create) {
-    return _$FamilyFamilyOverride(this, create);
-  }
-}
-
-class _$FamilyFamilyOverride implements FamilyOverride<AsyncValue<String>> {
-  _$FamilyFamilyOverride(this.overriddenFamily, this.create);
-
-  final FutureOr<String> Function(FamilyRef ref) create;
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
 
   @override
-  final FamilyFamily overriddenFamily;
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
 
   @override
-  FamilyProvider getProviderOverride(
-    covariant FamilyProvider provider,
-  ) {
-    return provider._copyWith(create);
-  }
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'familyProvider';
 }
 
 /// See also [family].
@@ -335,7 +272,7 @@ class FamilyProvider extends AutoDisposeFutureProvider<String> {
         );
 
   FamilyProvider._internal(
-    super.create, {
+    super._createNotifier, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -356,7 +293,7 @@ class FamilyProvider extends AutoDisposeFutureProvider<String> {
 
   @override
   Override overrideWith(
-    FutureOr<String> Function(FamilyRef ref) create,
+    FutureOr<String> Function(FamilyRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -377,43 +314,8 @@ class FamilyProvider extends AutoDisposeFutureProvider<String> {
   }
 
   @override
-  (
-    int, {
-    String? second,
-    double third,
-    bool fourth,
-    List<String>? fifth,
-  }) get argument {
-    return (
-      first,
-      second: second,
-      third: third,
-      fourth: fourth,
-      fifth: fifth,
-    );
-  }
-
-  @override
   AutoDisposeFutureProviderElement<String> createElement() {
     return _FamilyProviderElement(this);
-  }
-
-  FamilyProvider _copyWith(
-    FutureOr<String> Function(FamilyRef ref) create,
-  ) {
-    return FamilyProvider._internal(
-      (ref) => create(ref as FamilyRef),
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-      first: first,
-      second: second,
-      third: third,
-      fourth: fourth,
-      fifth: fifth,
-    );
   }
 
   @override
@@ -522,20 +424,6 @@ class FamilyOrClassFamily extends Family<AsyncValue<String>> {
   /// See also [FamilyOrClass].
   const FamilyOrClassFamily();
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'familyOrClassProvider';
-
   /// See also [FamilyOrClass].
   FamilyOrClassProvider call(
     int first,
@@ -545,7 +433,6 @@ class FamilyOrClassFamily extends Family<AsyncValue<String>> {
     );
   }
 
-  @visibleForOverriding
   @override
   FamilyOrClassProvider getProviderOverride(
     covariant FamilyOrClassProvider provider,
@@ -555,27 +442,19 @@ class FamilyOrClassFamily extends Family<AsyncValue<String>> {
     );
   }
 
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(FamilyOrClass Function() create) {
-    return _$FamilyOrClassFamilyOverride(this, create);
-  }
-}
-
-class _$FamilyOrClassFamilyOverride
-    implements FamilyOverride<AsyncValue<String>> {
-  _$FamilyOrClassFamilyOverride(this.overriddenFamily, this.create);
-
-  final FamilyOrClass Function() create;
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
 
   @override
-  final FamilyOrClassFamily overriddenFamily;
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
 
   @override
-  FamilyOrClassProvider getProviderOverride(
-    covariant FamilyOrClassProvider provider,
-  ) {
-    return provider._copyWith(create);
-  }
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'familyOrClassProvider';
 }
 
 /// See also [FamilyOrClass].
@@ -599,7 +478,7 @@ class FamilyOrClassProvider
         );
 
   FamilyOrClassProvider._internal(
-    super.create, {
+    super._createNotifier, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -636,28 +515,9 @@ class FamilyOrClassProvider
   }
 
   @override
-  (int,) get argument {
-    return (first,);
-  }
-
-  @override
   AutoDisposeAsyncNotifierProviderElement<FamilyOrClass, String>
       createElement() {
     return _FamilyOrClassProviderElement(this);
-  }
-
-  FamilyOrClassProvider _copyWith(
-    FamilyOrClass Function() create,
-  ) {
-    return FamilyOrClassProvider._internal(
-      () => create()..first = first,
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-      first: first,
-    );
   }
 
   @override
@@ -697,7 +557,7 @@ abstract class _$FamilyClass extends BuildlessAutoDisposeAsyncNotifier<String> {
   late final bool fourth;
   late final List<String>? fifth;
 
-  FutureOr<String> build(
+  Future<String> build(
     int first, {
     String? second,
     required double third,
@@ -714,20 +574,6 @@ const familyClassProvider = FamilyClassFamily();
 class FamilyClassFamily extends Family<AsyncValue<String>> {
   /// See also [FamilyClass].
   const FamilyClassFamily();
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'familyClassProvider';
 
   /// See also [FamilyClass].
   FamilyClassProvider call(
@@ -746,7 +592,6 @@ class FamilyClassFamily extends Family<AsyncValue<String>> {
     );
   }
 
-  @visibleForOverriding
   @override
   FamilyClassProvider getProviderOverride(
     covariant FamilyClassProvider provider,
@@ -760,27 +605,19 @@ class FamilyClassFamily extends Family<AsyncValue<String>> {
     );
   }
 
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(FamilyClass Function() create) {
-    return _$FamilyClassFamilyOverride(this, create);
-  }
-}
-
-class _$FamilyClassFamilyOverride
-    implements FamilyOverride<AsyncValue<String>> {
-  _$FamilyClassFamilyOverride(this.overriddenFamily, this.create);
-
-  final FamilyClass Function() create;
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
 
   @override
-  final FamilyClassFamily overriddenFamily;
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
 
   @override
-  FamilyClassProvider getProviderOverride(
-    covariant FamilyClassProvider provider,
-  ) {
-    return provider._copyWith(create);
-  }
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'familyClassProvider';
 }
 
 /// See also [FamilyClass].
@@ -817,7 +654,7 @@ class FamilyClassProvider
         );
 
   FamilyClassProvider._internal(
-    super.create, {
+    super._createNotifier, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -837,7 +674,7 @@ class FamilyClassProvider
   final List<String>? fifth;
 
   @override
-  FutureOr<String> runNotifierBuild(
+  Future<String> runNotifierBuild(
     covariant FamilyClass notifier,
   ) {
     return notifier.build(
@@ -875,48 +712,8 @@ class FamilyClassProvider
   }
 
   @override
-  (
-    int, {
-    String? second,
-    double third,
-    bool fourth,
-    List<String>? fifth,
-  }) get argument {
-    return (
-      first,
-      second: second,
-      third: third,
-      fourth: fourth,
-      fifth: fifth,
-    );
-  }
-
-  @override
   AutoDisposeAsyncNotifierProviderElement<FamilyClass, String> createElement() {
     return _FamilyClassProviderElement(this);
-  }
-
-  FamilyClassProvider _copyWith(
-    FamilyClass Function() create,
-  ) {
-    return FamilyClassProvider._internal(
-      () => create()
-        ..first = first
-        ..second = second
-        ..third = third
-        ..fourth = fourth
-        ..fifth = fifth,
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-      first: first,
-      second: second,
-      third: third,
-      fourth: fourth,
-      fifth: fifth,
-    );
   }
 
   @override
@@ -976,4 +773,4 @@ class _FamilyClassProviderElement
   List<String>? get fifth => (origin as FamilyClassProvider).fifth;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
