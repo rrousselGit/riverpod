@@ -1,11 +1,12 @@
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/ast/ast.dart';
 
 String buildParamDefinitionQuery(
-  List<ParameterElement> parameters, {
+  List<FormalParameter> parameters, {
   bool asThisParameter = false,
   bool asSuperParameter = false,
   bool writeBrackets = true,
   bool asRequiredNamed = false,
+  bool asRecord = false,
 }) {
   assert(
     !asThisParameter || !asSuperParameter,
@@ -23,25 +24,38 @@ String buildParamDefinitionQuery(
       .toList();
 
   final buffer = StringBuffer();
-  String encodeParameter(ParameterElement e) {
-    final leading = e.isRequiredNamed || asRequiredNamed ? 'required ' : '';
-    final trailing = e.defaultValueCode != null && !asRequiredNamed
-        ? '= ${e.defaultValueCode}'
+  String encodeParameter(FormalParameter parameter) {
+    if (asRecord) {
+      final type = parameter.typeDisplayString.isEmpty
+          ? 'dynamic'
+          : parameter.typeDisplayString;
+      if (parameter.isNamed) {
+        return '$type ${parameter.name}';
+      }
+      return type;
+    }
+
+    late final element = parameter.declaredElement!;
+    late final leading =
+        parameter.isRequiredNamed || asRequiredNamed ? 'required ' : '';
+    late final trailing = element.defaultValueCode != null && !asRequiredNamed
+        ? '= ${element.defaultValueCode}'
         : '';
-    if (asThisParameter) return '${leading}this.${e.name}$trailing';
-    if (asSuperParameter) return '${leading}super.${e.name}$trailing';
-    return '$leading${e.type} ${e.name}$trailing';
+    if (asThisParameter) return '${leading}this.${parameter.name}$trailing';
+    if (asSuperParameter) return '${leading}super.${parameter.name}$trailing';
+
+    return '$leading${parameter.typeDisplayString} ${parameter.name}$trailing';
   }
 
   buffer.writeAll(
     requiredPositionals.map(encodeParameter).expand((e) => [e, ',']),
   );
   if (optionalPositionals.isNotEmpty) {
-    if (writeBrackets) buffer.write('[');
+    if (writeBrackets && !asRecord) buffer.write('[');
     buffer.writeAll(
       optionalPositionals.map(encodeParameter).expand((e) => [e, ',']),
     );
-    if (writeBrackets) buffer.write(']');
+    if (writeBrackets && !asRecord) buffer.write(']');
   }
   if (named.isNotEmpty) {
     if (writeBrackets) buffer.write('{');
@@ -53,7 +67,7 @@ String buildParamDefinitionQuery(
 }
 
 String buildParamInvocationQuery(
-  Map<ParameterElement, String> parameters, {
+  Map<FormalParameter, String> parameters, {
   bool asThisParameter = false,
 }) {
   final buffer = StringBuffer();
@@ -66,4 +80,23 @@ String buildParamInvocationQuery(
   );
 
   return buffer.toString();
+}
+
+extension ParamterType on FormalParameter {
+  String get typeDisplayString {
+    final that = this;
+    switch (that) {
+      case DefaultFormalParameter():
+        return that.parameter.typeDisplayString;
+      case SimpleFormalParameter():
+        // No type, so let's just return ''
+        return that.type?.toSource() ?? '';
+      case FieldFormalParameter():
+      case FunctionTypedFormalParameter():
+      case SuperFormalParameter():
+        throw UnsupportedError(
+          'Only parameters of the form "Type name" are supported',
+        );
+    }
+  }
 }
