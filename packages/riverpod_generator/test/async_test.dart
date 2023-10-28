@@ -139,4 +139,37 @@ void main() {
       ),
     );
   });
+
+  test('can override providers', () {
+    final container = createContainer(
+      overrides: [
+        publicProvider.overrideWith((ref) {
+          const FutureOr<String> result = 'test';
+          return result;
+        }),
+        publicClassProvider.overrideWith(() => PublicClass(42)),
+        familyProvider.overrideWith(
+          (ref) {
+            final FutureOr<String> result =
+                'test (first: ${ref.first}, second: ${ref.second}, third: ${ref.third}, fourth: ${ref.fourth}, fifth: ${ref.fifth})';
+            return result;
+          },
+        ),
+        familyClassProvider.overrideWith(() => FamilyClass(42)),
+      ],
+    );
+
+    expect(container.read(publicProvider).requireValue, 'test');
+    expect(container.read(publicClassProvider.notifier).param, 42);
+    expect(
+      container.read(familyProvider(42, second: '42', third: .42)).requireValue,
+      'test (first: 42, second: 42, third: 0.42, fourth: true, fifth: null)',
+    );
+    expect(
+      container
+          .read(familyClassProvider(42, second: '42', third: .42).notifier)
+          .param,
+      42,
+    );
+  });
 }

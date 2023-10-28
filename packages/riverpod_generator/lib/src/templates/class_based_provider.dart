@@ -112,6 +112,7 @@ class ClassBasedProviderTemplate extends Template {
     buffer.write('''
 ${providerDocFor(provider.providerElement.element)}
 @ProviderFor(${provider.name})
+${metaAnnotations(provider.node.metadata)}
 final $providerName = $providerType<${provider.name}, ${provider.valueTypeDisplayString}>.internal(
   ${provider.providerElement.name}.new,
   name: r'$providerName',
