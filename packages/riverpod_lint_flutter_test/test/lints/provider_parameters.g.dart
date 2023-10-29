@@ -77,7 +77,7 @@ class GeneratorFamily extends Family {
   }
 }
 
-class _$GeneratorFamilyOverride implements FamilyOverride<int> {
+class _$GeneratorFamilyOverride implements FamilyOverride {
   _$GeneratorFamilyOverride(this.overriddenFamily, this.create);
 
   final int Function(GeneratorRef ref) create;

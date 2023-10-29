@@ -117,7 +117,7 @@ class FamilyWithDependencies2Family extends Family {
   }
 }
 
-class _$FamilyWithDependencies2FamilyOverride implements FamilyOverride<int> {
+class _$FamilyWithDependencies2FamilyOverride implements FamilyOverride {
   _$FamilyWithDependencies2FamilyOverride(this.overriddenFamily, this.create);
 
   final int Function(FamilyWithDependencies2Ref ref) create;
@@ -367,8 +367,7 @@ class NotifierFamilyWithDependenciesFamily extends Family {
   }
 }
 
-class _$NotifierFamilyWithDependenciesFamilyOverride
-    implements FamilyOverride<int> {
+class _$NotifierFamilyWithDependenciesFamilyOverride implements FamilyOverride {
   _$NotifierFamilyWithDependenciesFamilyOverride(
       this.overriddenFamily, this.create);
 

@@ -91,7 +91,7 @@ class FamilyFamily extends Family {
   }
 }
 
-class _$FamilyFamilyOverride implements FamilyOverride<int> {
+class _$FamilyFamilyOverride implements FamilyOverride {
   _$FamilyFamilyOverride(this.overriddenFamily, this.create);
 
   final int Function(FamilyRef ref) create;
@@ -445,7 +445,7 @@ class Family2Family extends Family {
   }
 }
 
-class _$Family2FamilyOverride implements FamilyOverride<int> {
+class _$Family2FamilyOverride implements FamilyOverride {
   _$Family2FamilyOverride(this.overriddenFamily, this.create);
 
   final Family2 Function() create;
@@ -668,7 +668,7 @@ class Provider4Family extends Family {
   }
 }
 
-class _$Provider4FamilyOverride implements FamilyOverride<int> {
+class _$Provider4FamilyOverride implements FamilyOverride {
   _$Provider4FamilyOverride(this.overriddenFamily, this.create);
 
   final Provider4 Function() create;

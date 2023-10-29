@@ -89,8 +89,7 @@ class BugsEncounteredNotifierFamily extends Family {
   }
 }
 
-class _$BugsEncounteredNotifierFamilyOverride
-    implements FamilyOverride<AsyncValue<int>> {
+class _$BugsEncounteredNotifierFamilyOverride implements FamilyOverride {
   _$BugsEncounteredNotifierFamilyOverride(this.overriddenFamily, this.create);
 
   final BugsEncounteredNotifier Function() create;

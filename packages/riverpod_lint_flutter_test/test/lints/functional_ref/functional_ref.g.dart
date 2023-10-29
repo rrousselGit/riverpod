@@ -69,6 +69,20 @@ class GenericsFamily extends Family {
   /// See also [generics].
   const GenericsFamily();
 
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'genericsProvider';
+
   /// See also [generics].
   GenericsProvider<A, B> call<A extends num, B>() {
     return GenericsProvider<A, B>();
@@ -82,19 +96,27 @@ class GenericsFamily extends Family {
     return call();
   }
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(
+      int Function<A extends num, B>(GenericsRef ref) create) {
+    return _$GenericsFamilyOverride(this, create);
+  }
+}
+
+class _$GenericsFamilyOverride implements FamilyOverride {
+  _$GenericsFamilyOverride(this.overriddenFamily, this.create);
+
+  final int Function<A extends num, B>(GenericsRef ref) create;
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+  final GenericsFamily overriddenFamily;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'genericsProvider';
+  GenericsProvider getProviderOverride(
+    covariant GenericsProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [generics].
@@ -116,7 +138,7 @@ class GenericsProvider<A extends num, B> extends AutoDisposeProvider<int> {
         );
 
   GenericsProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -126,7 +148,7 @@ class GenericsProvider<A extends num, B> extends AutoDisposeProvider<int> {
 
   @override
   Override overrideWith(
-    int Function(GenericsRef<A, B> provider) create,
+    int Function(GenericsRef<A, B> ref) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -149,6 +171,19 @@ class GenericsProvider<A extends num, B> extends AutoDisposeProvider<int> {
   @override
   AutoDisposeProviderElement<int> createElement() {
     return _GenericsProviderElement(this);
+  }
+
+  GenericsProvider _copyWith(
+    int Function<A extends num, B>(GenericsRef ref) create,
+  ) {
+    return GenericsProvider._internal(
+      (ref) => create(ref as GenericsRef),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+    );
   }
 
   @override
@@ -184,6 +219,20 @@ class NoGenericsFamily extends Family {
   /// See also [noGenerics].
   const NoGenericsFamily();
 
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'noGenericsProvider';
+
   /// See also [noGenerics].
   NoGenericsProvider<A, B> call<A extends num, B>() {
     return NoGenericsProvider<A, B>();
@@ -197,19 +246,27 @@ class NoGenericsFamily extends Family {
     return call();
   }
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(
+      int Function<A extends num, B>(NoGenericsRef ref) create) {
+    return _$NoGenericsFamilyOverride(this, create);
+  }
+}
+
+class _$NoGenericsFamilyOverride implements FamilyOverride {
+  _$NoGenericsFamilyOverride(this.overriddenFamily, this.create);
+
+  final int Function<A extends num, B>(NoGenericsRef ref) create;
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+  final NoGenericsFamily overriddenFamily;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'noGenericsProvider';
+  NoGenericsProvider getProviderOverride(
+    covariant NoGenericsProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [noGenerics].
@@ -232,7 +289,7 @@ class NoGenericsProvider<A extends num, B> extends AutoDisposeProvider<int> {
         );
 
   NoGenericsProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -242,7 +299,7 @@ class NoGenericsProvider<A extends num, B> extends AutoDisposeProvider<int> {
 
   @override
   Override overrideWith(
-    int Function(NoGenericsRef<A, B> provider) create,
+    int Function(NoGenericsRef<A, B> ref) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -265,6 +322,19 @@ class NoGenericsProvider<A extends num, B> extends AutoDisposeProvider<int> {
   @override
   AutoDisposeProviderElement<int> createElement() {
     return _NoGenericsProviderElement(this);
+  }
+
+  NoGenericsProvider _copyWith(
+    int Function<A extends num, B>(NoGenericsRef ref) create,
+  ) {
+    return NoGenericsProvider._internal(
+      (ref) => create(ref as NoGenericsRef),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+    );
   }
 
   @override
@@ -300,6 +370,20 @@ class MissingGenericsFamily extends Family {
   /// See also [missingGenerics].
   const MissingGenericsFamily();
 
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'missingGenericsProvider';
+
   /// See also [missingGenerics].
   MissingGenericsProvider<A, B> call<A, B>() {
     return MissingGenericsProvider<A, B>();
@@ -313,19 +397,26 @@ class MissingGenericsFamily extends Family {
     return call();
   }
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(int Function<A, B>(MissingGenericsRef ref) create) {
+    return _$MissingGenericsFamilyOverride(this, create);
+  }
+}
+
+class _$MissingGenericsFamilyOverride implements FamilyOverride {
+  _$MissingGenericsFamilyOverride(this.overriddenFamily, this.create);
+
+  final int Function<A, B>(MissingGenericsRef ref) create;
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+  final MissingGenericsFamily overriddenFamily;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'missingGenericsProvider';
+  MissingGenericsProvider getProviderOverride(
+    covariant MissingGenericsProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [missingGenerics].
@@ -348,7 +439,7 @@ class MissingGenericsProvider<A, B> extends AutoDisposeProvider<int> {
         );
 
   MissingGenericsProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -358,7 +449,7 @@ class MissingGenericsProvider<A, B> extends AutoDisposeProvider<int> {
 
   @override
   Override overrideWith(
-    int Function(MissingGenericsRef<A, B> provider) create,
+    int Function(MissingGenericsRef<A, B> ref) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -381,6 +472,19 @@ class MissingGenericsProvider<A, B> extends AutoDisposeProvider<int> {
   @override
   AutoDisposeProviderElement<int> createElement() {
     return _MissingGenericsProviderElement(this);
+  }
+
+  MissingGenericsProvider _copyWith(
+    int Function<A, B>(MissingGenericsRef ref) create,
+  ) {
+    return MissingGenericsProvider._internal(
+      (ref) => create(ref as MissingGenericsRef),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+    );
   }
 
   @override
@@ -416,6 +520,20 @@ class WrongOrderFamily extends Family {
   /// See also [wrongOrder].
   const WrongOrderFamily();
 
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'wrongOrderProvider';
+
   /// See also [wrongOrder].
   WrongOrderProvider<B, A> call<B, A>() {
     return WrongOrderProvider<B, A>();
@@ -429,19 +547,26 @@ class WrongOrderFamily extends Family {
     return call();
   }
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(int Function<B, A>(WrongOrderRef ref) create) {
+    return _$WrongOrderFamilyOverride(this, create);
+  }
+}
+
+class _$WrongOrderFamilyOverride implements FamilyOverride {
+  _$WrongOrderFamilyOverride(this.overriddenFamily, this.create);
+
+  final int Function<B, A>(WrongOrderRef ref) create;
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+  final WrongOrderFamily overriddenFamily;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'wrongOrderProvider';
+  WrongOrderProvider getProviderOverride(
+    covariant WrongOrderProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [wrongOrder].
@@ -464,7 +589,7 @@ class WrongOrderProvider<B, A> extends AutoDisposeProvider<int> {
         );
 
   WrongOrderProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -474,7 +599,7 @@ class WrongOrderProvider<B, A> extends AutoDisposeProvider<int> {
 
   @override
   Override overrideWith(
-    int Function(WrongOrderRef<B, A> provider) create,
+    int Function(WrongOrderRef<B, A> ref) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -497,6 +622,19 @@ class WrongOrderProvider<B, A> extends AutoDisposeProvider<int> {
   @override
   AutoDisposeProviderElement<int> createElement() {
     return _WrongOrderProviderElement(this);
+  }
+
+  WrongOrderProvider _copyWith(
+    int Function<B, A>(WrongOrderRef ref) create,
+  ) {
+    return WrongOrderProvider._internal(
+      (ref) => create(ref as WrongOrderRef),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+    );
   }
 
   @override

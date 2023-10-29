@@ -85,7 +85,7 @@ class GeneratedNotifierFamily extends Family {
   }
 }
 
-class _$GeneratedNotifierFamilyOverride implements FamilyOverride<int> {
+class _$GeneratedNotifierFamilyOverride implements FamilyOverride {
   _$GeneratedNotifierFamilyOverride(this.overriddenFamily, this.create);
 
   final GeneratedNotifier Function() create;

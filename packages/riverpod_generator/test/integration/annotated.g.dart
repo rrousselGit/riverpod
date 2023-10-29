@@ -54,7 +54,7 @@ class _SystemHash {
 const familyProvider = FamilyFamily();
 
 /// See also [family].
-class FamilyFamily extends Family<String> {
+class FamilyFamily extends Family {
   /// See also [family].
   const FamilyFamily();
 
@@ -97,7 +97,7 @@ class FamilyFamily extends Family<String> {
   }
 }
 
-class _$FamilyFamilyOverride implements FamilyOverride<String> {
+class _$FamilyFamilyOverride implements FamilyOverride {
   _$FamilyFamilyOverride(this.overriddenFamily, this.create);
 
   final String Function(FamilyRef ref) create;
@@ -238,7 +238,7 @@ String _$notCopiedFamilyHash() => r'6ef06ce6ebd73b476870bbe1af41c4f3fbe8ddb1';
 const notCopiedFamilyProvider = NotCopiedFamilyFamily();
 
 /// See also [notCopiedFamily].
-class NotCopiedFamilyFamily extends Family<String> {
+class NotCopiedFamilyFamily extends Family {
   /// See also [notCopiedFamily].
   const NotCopiedFamilyFamily();
 
@@ -281,7 +281,7 @@ class NotCopiedFamilyFamily extends Family<String> {
   }
 }
 
-class _$NotCopiedFamilyFamilyOverride implements FamilyOverride<String> {
+class _$NotCopiedFamilyFamilyOverride implements FamilyOverride {
   _$NotCopiedFamilyFamilyOverride(this.overriddenFamily, this.create);
 
   final String Function(NotCopiedFamilyRef ref) create;

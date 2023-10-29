@@ -119,7 +119,7 @@ class Count2Family extends Family {
   }
 }
 
-class _$Count2FamilyOverride implements FamilyOverride<int> {
+class _$Count2FamilyOverride implements FamilyOverride {
   _$Count2FamilyOverride(this.overriddenFamily, this.create);
 
   final int Function(Count2Ref ref) create;
@@ -287,7 +287,7 @@ class CountFuture2Family extends Family {
   }
 }
 
-class _$CountFuture2FamilyOverride implements FamilyOverride<AsyncValue<int>> {
+class _$CountFuture2FamilyOverride implements FamilyOverride {
   _$CountFuture2FamilyOverride(this.overriddenFamily, this.create);
 
   final FutureOr<int> Function(CountFuture2Ref ref) create;
@@ -456,7 +456,7 @@ class CountStream2Family extends Family {
   }
 }
 
-class _$CountStream2FamilyOverride implements FamilyOverride<AsyncValue<int>> {
+class _$CountStream2FamilyOverride implements FamilyOverride {
   _$CountStream2FamilyOverride(this.overriddenFamily, this.create);
 
   final Stream<int> Function(CountStream2Ref ref) create;
@@ -683,7 +683,7 @@ class CountNotifier2Family extends Family {
   }
 }
 
-class _$CountNotifier2FamilyOverride implements FamilyOverride<int> {
+class _$CountNotifier2FamilyOverride implements FamilyOverride {
   _$CountNotifier2FamilyOverride(this.overriddenFamily, this.create);
 
   final CountNotifier2 Function() create;
@@ -868,8 +868,7 @@ class CountAsyncNotifier2Family extends Family {
   }
 }
 
-class _$CountAsyncNotifier2FamilyOverride
-    implements FamilyOverride<AsyncValue<int>> {
+class _$CountAsyncNotifier2FamilyOverride implements FamilyOverride {
   _$CountAsyncNotifier2FamilyOverride(this.overriddenFamily, this.create);
 
   final CountAsyncNotifier2 Function() create;
@@ -1055,8 +1054,7 @@ class CountStreamNotifier2Family extends Family {
   }
 }
 
-class _$CountStreamNotifier2FamilyOverride
-    implements FamilyOverride<AsyncValue<int>> {
+class _$CountStreamNotifier2FamilyOverride implements FamilyOverride {
   _$CountStreamNotifier2FamilyOverride(this.overriddenFamily, this.create);
 
   final CountStreamNotifier2 Function() create;

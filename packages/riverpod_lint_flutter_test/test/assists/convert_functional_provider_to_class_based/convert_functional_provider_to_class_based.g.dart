@@ -104,7 +104,7 @@ class ExampleFamilyFamily extends Family {
   }
 }
 
-class _$ExampleFamilyFamilyOverride implements FamilyOverride<int> {
+class _$ExampleFamilyFamilyOverride implements FamilyOverride {
   _$ExampleFamilyFamilyOverride(this.overriddenFamily, this.create);
 
   final int Function(ExampleFamilyRef ref) create;

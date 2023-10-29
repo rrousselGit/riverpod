@@ -130,7 +130,7 @@ class FamilyFamily extends Family {
   }
 }
 
-class _$FamilyFamilyOverride implements FamilyOverride<String> {
+class _$FamilyFamilyOverride implements FamilyOverride {
   _$FamilyFamilyOverride(this.overriddenFamily, this.create);
 
   final String Function(FamilyRef ref) create;
@@ -453,7 +453,7 @@ class FamilyClassFamily extends Family {
   }
 }
 
-class _$FamilyClassFamilyOverride implements FamilyOverride<String> {
+class _$FamilyClassFamilyOverride implements FamilyOverride {
   _$FamilyClassFamilyOverride(this.overriddenFamily, this.create);
 
   final FamilyClass Function() create;

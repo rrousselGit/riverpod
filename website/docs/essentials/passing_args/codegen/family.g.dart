@@ -79,7 +79,7 @@ class ActivityFamily extends Family {
   }
 }
 
-class _$ActivityFamilyOverride implements FamilyOverride<AsyncValue<Activity>> {
+class _$ActivityFamilyOverride implements FamilyOverride {
   _$ActivityFamilyOverride(this.overriddenFamily, this.create);
 
   final FutureOr<Activity> Function(ActivityRef ref) create;
