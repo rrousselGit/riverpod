@@ -40,6 +40,20 @@ class FetchPackagesFamily extends Family {
   /// See also [fetchPackages].
   const FetchPackagesFamily();
 
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'fetchPackagesProvider';
+
   /// See also [fetchPackages].
   FetchPackagesProvider call({
     required int page,
@@ -51,6 +65,7 @@ class FetchPackagesFamily extends Family {
     );
   }
 
+  @visibleForOverriding
   @override
   FetchPackagesProvider getProviderOverride(
     covariant FetchPackagesProvider provider,
@@ -61,19 +76,28 @@ class FetchPackagesFamily extends Family {
     );
   }
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(
+      FutureOr<List<Package>> Function(FetchPackagesRef ref) create) {
+    return _$FetchPackagesFamilyOverride(this, create);
+  }
+}
+
+class _$FetchPackagesFamilyOverride
+    implements FamilyOverride<AsyncValue<List<Package>>> {
+  _$FetchPackagesFamilyOverride(this.overriddenFamily, this.create);
+
+  final FutureOr<List<Package>> Function(FetchPackagesRef ref) create;
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+  final FetchPackagesFamily overriddenFamily;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'fetchPackagesProvider';
+  FetchPackagesProvider getProviderOverride(
+    covariant FetchPackagesProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [fetchPackages].
@@ -102,7 +126,7 @@ class FetchPackagesProvider extends AutoDisposeFutureProvider<List<Package>> {
         );
 
   FetchPackagesProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -117,7 +141,7 @@ class FetchPackagesProvider extends AutoDisposeFutureProvider<List<Package>> {
 
   @override
   Override overrideWith(
-    FutureOr<List<Package>> Function(FetchPackagesRef provider) create,
+    FutureOr<List<Package>> Function(FetchPackagesRef ref) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -135,8 +159,34 @@ class FetchPackagesProvider extends AutoDisposeFutureProvider<List<Package>> {
   }
 
   @override
+  ({
+    int page,
+    String search,
+  }) get argument {
+    return (
+      page: page,
+      search: search,
+    );
+  }
+
+  @override
   AutoDisposeFutureProviderElement<List<Package>> createElement() {
     return _FetchPackagesProviderElement(this);
+  }
+
+  FetchPackagesProvider _copyWith(
+    FutureOr<List<Package>> Function(FetchPackagesRef ref) create,
+  ) {
+    return FetchPackagesProvider._internal(
+      (ref) => create(ref as FetchPackagesRef),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      page: page,
+      search: search,
+    );
   }
 
   @override
@@ -175,4 +225,4 @@ class _FetchPackagesProviderElement
   String get search => (origin as FetchPackagesProvider).search;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package

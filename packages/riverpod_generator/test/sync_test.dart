@@ -1,5 +1,10 @@
-// ignore_for_file: omit_local_variable_types, unused_local_variable
+// ignore_for_file: omit_local_variable_types, unused_local_variable, require_trailing_commas
 
+import 'dart:io';
+
+import 'package:analyzer/dart/analysis/results.dart';
+import 'package:analyzer/dart/analysis/utilities.dart';
+import 'package:path/path.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:test/test.dart';
 
@@ -184,6 +189,19 @@ void main() {
     expect(familyProvider(42, third: .42).name, 'familyProvider');
   });
 
+  test('Marks getProviderOverride as @visibleForOverriding', () async {
+    final file = File('test/integration/sync.dart');
+    final path = normalize(file.absolute.path);
+
+    final library = await resolveFile2(path: path);
+    library as ResolvedUnitResult;
+
+    final clazz = library.libraryElement.getClass('FamilyClassFamily')!;
+    final method = clazz.getMethod('getProviderOverride')!;
+
+    expect(method.hasVisibleForOverriding, isTrue);
+  });
+
   test(
       'Creates a Provider.family<T> if @riverpod is used on a synchronous function with parameters',
       () {
@@ -231,7 +249,7 @@ void main() {
       second: 'x42',
       third: .42,
       fourth: false,
-      fifth: ['x42'],
+      fifth: const ['x42'],
     );
     final AutoDisposeProvider<String> futureProvider = provider;
 
@@ -240,6 +258,25 @@ void main() {
     expect(provider.third, .42);
     expect(provider.fourth, false);
     expect(provider.fifth, ['x42']);
+
+    final (
+      int, {
+      String? second,
+      double third,
+      bool fourth,
+      List<String>? fifth,
+    }) argument = provider.argument;
+
+    expect(
+      argument,
+      (
+        42,
+        second: 'x42',
+        third: .42,
+        fourth: false,
+        fifth: const ['x42'],
+      ),
+    );
 
     final String result = container.read(
       familyProvider(
@@ -254,6 +291,31 @@ void main() {
     expect(
       result,
       '(first: 42, second: x42, third: 0.42, fourth: false, fifth: [x42])',
+    );
+  });
+
+  test('can override providers', () {
+    final container = createContainer(overrides: [
+      publicProvider.overrideWith((ref) => 'test'),
+      publicClassProvider.overrideWith(() => PublicClass(42)),
+      familyProvider.overrideWith(
+        (ref) =>
+            'test (first: ${ref.first}, second: ${ref.second}, third: ${ref.third}, fourth: ${ref.fourth}, fifth: ${ref.fifth})',
+      ),
+      familyClassProvider.overrideWith(() => FamilyClass(42)),
+    ]);
+
+    expect(container.read(publicProvider), 'test');
+    expect(container.read(publicClassProvider.notifier).param, 42);
+    expect(
+      container.read(familyProvider(42, second: '42', third: .42)),
+      'test (first: 42, second: 42, third: 0.42, fourth: true, fifth: null)',
+    );
+    expect(
+      container
+          .read(familyClassProvider(42, second: '42', third: .42).notifier)
+          .param,
+      42,
     );
   });
 }
