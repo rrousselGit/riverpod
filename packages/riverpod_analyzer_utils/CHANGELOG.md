@@ -1,4 +1,4 @@
-## Unreleased patch
+## 0.4.3 - 2023-10-28
 
 - Added `GeneratorProviderDeclarationElement.isFamily`
 

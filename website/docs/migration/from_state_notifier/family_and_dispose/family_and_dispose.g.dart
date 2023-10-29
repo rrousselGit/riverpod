@@ -50,20 +50,6 @@ class BugsEncounteredNotifierFamily extends Family {
   /// See also [BugsEncounteredNotifier].
   const BugsEncounteredNotifierFamily();
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'bugsEncounteredNotifierProvider';
-
   /// See also [BugsEncounteredNotifier].
   BugsEncounteredNotifierProvider call(
     String featureId,
@@ -73,7 +59,6 @@ class BugsEncounteredNotifierFamily extends Family {
     );
   }
 
-  @visibleForOverriding
   @override
   BugsEncounteredNotifierProvider getProviderOverride(
     covariant BugsEncounteredNotifierProvider provider,
@@ -83,27 +68,19 @@ class BugsEncounteredNotifierFamily extends Family {
     );
   }
 
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(BugsEncounteredNotifier Function() create) {
-    return _$BugsEncounteredNotifierFamilyOverride(this, create);
-  }
-}
-
-class _$BugsEncounteredNotifierFamilyOverride
-    implements FamilyOverride<AsyncValue<int>> {
-  _$BugsEncounteredNotifierFamilyOverride(this.overriddenFamily, this.create);
-
-  final BugsEncounteredNotifier Function() create;
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
 
   @override
-  final BugsEncounteredNotifierFamily overriddenFamily;
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
 
   @override
-  BugsEncounteredNotifierProvider getProviderOverride(
-    covariant BugsEncounteredNotifierProvider provider,
-  ) {
-    return provider._copyWith(create);
-  }
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'bugsEncounteredNotifierProvider';
 }
 
 /// See also [BugsEncounteredNotifier].
@@ -127,7 +104,7 @@ class BugsEncounteredNotifierProvider
         );
 
   BugsEncounteredNotifierProvider._internal(
-    super.create, {
+    super._createNotifier, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -164,28 +141,9 @@ class BugsEncounteredNotifierProvider
   }
 
   @override
-  (String,) get argument {
-    return (featureId,);
-  }
-
-  @override
   AutoDisposeAsyncNotifierProviderElement<BugsEncounteredNotifier, int>
       createElement() {
     return _BugsEncounteredNotifierProviderElement(this);
-  }
-
-  BugsEncounteredNotifierProvider _copyWith(
-    BugsEncounteredNotifier Function() create,
-  ) {
-    return BugsEncounteredNotifierProvider._internal(
-      () => create()..featureId = featureId,
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-      featureId: featureId,
-    );
   }
 
   @override
@@ -217,4 +175,4 @@ class _BugsEncounteredNotifierProviderElement
   String get featureId => (origin as BugsEncounteredNotifierProvider).featureId;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

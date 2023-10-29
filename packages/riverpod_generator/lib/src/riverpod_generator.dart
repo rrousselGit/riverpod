@@ -2,7 +2,6 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:meta/meta.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
-
 // ignore: implementation_imports, safe as we are the one controlling this file
 import 'package:riverpod_annotation/src/riverpod_annotation.dart';
 import 'package:source_gen/source_gen.dart';
@@ -19,22 +18,6 @@ String providerDocFor(Element element) {
   return element.documentationComment == null
       ? '/// See also [${element.name}].'
       : '${element.documentationComment}\n///\n/// Copied from [${element.name}].';
-}
-
-String metaAnnotations(NodeList<Annotation> metadata) {
-  final buffer = StringBuffer();
-  for (final annotation in metadata) {
-    final element = annotation.elementAnnotation;
-    if (element == null) continue;
-    if (element.isDeprecated ||
-        element.isVisibleForTesting ||
-        element.isProtected) {
-      buffer.writeln('$annotation');
-      continue;
-    }
-  }
-
-  return buffer.toString();
 }
 
 String _hashFn(GeneratorProviderDeclaration provider, String hashName) {
@@ -64,7 +47,7 @@ class RiverpodInvalidGenerationSourceError
 
   final AstNode? astNode;
 
-// TODO override toString to render AST nodes.
+  // TODO overrride toString to render AST nodes.
 }
 
 @immutable
@@ -97,7 +80,7 @@ class RiverpodGenerator extends ParserGenerator<Riverpod> {
     if (buffer.isNotEmpty) {
       buffer.write('''
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
 ''');
     }
 
@@ -112,11 +95,9 @@ class _RiverpodGeneratorVisitor extends RecursiveRiverpodAstVisitor {
   final BuildYamlOptions options;
 
   String get suffix => options.providerNameSuffix ?? _defaultProviderNameSuffix;
-
   String get familySuffix => options.providerFamilyNameSuffix ?? suffix;
 
   var _didEmitHashUtils = false;
-
   void maybeEmitHashUtils() {
     if (_didEmitHashUtils) return;
 

@@ -127,38 +127,4 @@ void main() {
       '(first: 42, second: x42, third: 0.42, fourth: false, fifth: [x42])',
     );
   });
-
-  test('can override providers', () {
-    final container = createContainer(
-      overrides: [
-        publicProvider.overrideWith((ref) {
-          ref.state = const AsyncData('test');
-          return const Stream.empty();
-        }),
-        publicClassProvider.overrideWith(() => PublicClass(42)),
-        familyProvider.overrideWith(
-          (ref) {
-            ref.state = AsyncData(
-              'test (first: ${ref.first}, second: ${ref.second}, third: ${ref.third}, fourth: ${ref.fourth}, fifth: ${ref.fifth})',
-            );
-            return const Stream.empty();
-          },
-        ),
-        familyClassProvider.overrideWith(() => FamilyClass(42)),
-      ],
-    );
-
-    expect(container.read(publicProvider).requireValue, 'test');
-    expect(container.read(publicClassProvider.notifier).param, 42);
-    expect(
-      container.read(familyProvider(42, second: '42', third: .42)).requireValue,
-      'test (first: 42, second: 42, third: 0.42, fourth: true, fifth: null)',
-    );
-    expect(
-      container
-          .read(familyClassProvider(42, second: '42', third: .42).notifier)
-          .param,
-      42,
-    );
-  });
 }

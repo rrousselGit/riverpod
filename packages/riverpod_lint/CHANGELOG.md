@@ -1,3 +1,8 @@
+## 2.3.3 - 2023-10-28
+
+- `riverpod` upgraded to `2.4.5`
+- `riverpod_analyzer_utils` upgraded to `0.4.3`
+
 ## 2.3.2 - 2023-10-21
 
 - `riverpod_analyzer_utils` upgraded to `0.4.2`

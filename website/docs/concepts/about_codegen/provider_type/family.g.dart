@@ -40,20 +40,6 @@ class ExampleFamily extends Family {
   /// See also [example].
   const ExampleFamily();
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'exampleProvider';
-
   /// See also [example].
   ExampleProvider call(
     int param,
@@ -63,7 +49,6 @@ class ExampleFamily extends Family {
     );
   }
 
-  @visibleForOverriding
   @override
   ExampleProvider getProviderOverride(
     covariant ExampleProvider provider,
@@ -73,26 +58,19 @@ class ExampleFamily extends Family {
     );
   }
 
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(String Function(ExampleRef ref) create) {
-    return _$ExampleFamilyOverride(this, create);
-  }
-}
-
-class _$ExampleFamilyOverride implements FamilyOverride<String> {
-  _$ExampleFamilyOverride(this.overriddenFamily, this.create);
-
-  final String Function(ExampleRef ref) create;
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
 
   @override
-  final ExampleFamily overriddenFamily;
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
 
   @override
-  ExampleProvider getProviderOverride(
-    covariant ExampleProvider provider,
-  ) {
-    return provider._copyWith(create);
-  }
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'exampleProvider';
 }
 
 /// See also [example].
@@ -117,7 +95,7 @@ class ExampleProvider extends AutoDisposeProvider<String> {
         );
 
   ExampleProvider._internal(
-    super.create, {
+    super._createNotifier, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -130,7 +108,7 @@ class ExampleProvider extends AutoDisposeProvider<String> {
 
   @override
   Override overrideWith(
-    String Function(ExampleRef ref) create,
+    String Function(ExampleRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -147,27 +125,8 @@ class ExampleProvider extends AutoDisposeProvider<String> {
   }
 
   @override
-  (int,) get argument {
-    return (param,);
-  }
-
-  @override
   AutoDisposeProviderElement<String> createElement() {
     return _ExampleProviderElement(this);
-  }
-
-  ExampleProvider _copyWith(
-    String Function(ExampleRef ref) create,
-  ) {
-    return ExampleProvider._internal(
-      (ref) => create(ref as ExampleRef),
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-      param: param,
-    );
   }
 
   @override
@@ -197,4 +156,4 @@ class _ExampleProviderElement extends AutoDisposeProviderElement<String>
   int get param => (origin as ExampleProvider).param;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

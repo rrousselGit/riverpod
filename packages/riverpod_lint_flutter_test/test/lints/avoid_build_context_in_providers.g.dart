@@ -38,20 +38,6 @@ class FnFamily extends Family {
   /// See also [fn].
   const FnFamily();
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'fnProvider';
-
   /// See also [fn].
   FnProvider call(
     BuildContext context1, {
@@ -63,7 +49,6 @@ class FnFamily extends Family {
     );
   }
 
-  @visibleForOverriding
   @override
   FnProvider getProviderOverride(
     covariant FnProvider provider,
@@ -74,26 +59,19 @@ class FnFamily extends Family {
     );
   }
 
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(int Function(FnRef ref) create) {
-    return _$FnFamilyOverride(this, create);
-  }
-}
-
-class _$FnFamilyOverride implements FamilyOverride<int> {
-  _$FnFamilyOverride(this.overriddenFamily, this.create);
-
-  final int Function(FnRef ref) create;
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
 
   @override
-  final FnFamily overriddenFamily;
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
 
   @override
-  FnProvider getProviderOverride(
-    covariant FnProvider provider,
-  ) {
-    return provider._copyWith(create);
-  }
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'fnProvider';
 }
 
 /// See also [fn].
@@ -119,7 +97,7 @@ class FnProvider extends AutoDisposeProvider<int> {
         );
 
   FnProvider._internal(
-    super.create, {
+    super._createNotifier, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -134,7 +112,7 @@ class FnProvider extends AutoDisposeProvider<int> {
 
   @override
   Override overrideWith(
-    int Function(FnRef ref) create,
+    int Function(FnRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -152,34 +130,8 @@ class FnProvider extends AutoDisposeProvider<int> {
   }
 
   @override
-  (
-    BuildContext, {
-    BuildContext context2,
-  }) get argument {
-    return (
-      context1,
-      context2: context2,
-    );
-  }
-
-  @override
   AutoDisposeProviderElement<int> createElement() {
     return _FnProviderElement(this);
-  }
-
-  FnProvider _copyWith(
-    int Function(FnRef ref) create,
-  ) {
-    return FnProvider._internal(
-      (ref) => create(ref as FnRef),
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-      context1: context1,
-      context2: context2,
-    );
   }
 
   @override
@@ -237,20 +189,6 @@ class MyNotifierFamily extends Family {
   /// See also [MyNotifier].
   const MyNotifierFamily();
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'myNotifierProvider';
-
   /// See also [MyNotifier].
   MyNotifierProvider call(
     BuildContext context1, {
@@ -262,7 +200,6 @@ class MyNotifierFamily extends Family {
     );
   }
 
-  @visibleForOverriding
   @override
   MyNotifierProvider getProviderOverride(
     covariant MyNotifierProvider provider,
@@ -273,26 +210,19 @@ class MyNotifierFamily extends Family {
     );
   }
 
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(MyNotifier Function() create) {
-    return _$MyNotifierFamilyOverride(this, create);
-  }
-}
-
-class _$MyNotifierFamilyOverride implements FamilyOverride<int> {
-  _$MyNotifierFamilyOverride(this.overriddenFamily, this.create);
-
-  final MyNotifier Function() create;
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
 
   @override
-  final MyNotifierFamily overriddenFamily;
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
 
   @override
-  MyNotifierProvider getProviderOverride(
-    covariant MyNotifierProvider provider,
-  ) {
-    return provider._copyWith(create);
-  }
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'myNotifierProvider';
 }
 
 /// See also [MyNotifier].
@@ -320,7 +250,7 @@ class MyNotifierProvider
         );
 
   MyNotifierProvider._internal(
-    super.create, {
+    super._createNotifier, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -363,36 +293,8 @@ class MyNotifierProvider
   }
 
   @override
-  (
-    BuildContext, {
-    BuildContext context2,
-  }) get argument {
-    return (
-      context1,
-      context2: context2,
-    );
-  }
-
-  @override
   AutoDisposeNotifierProviderElement<MyNotifier, int> createElement() {
     return _MyNotifierProviderElement(this);
-  }
-
-  MyNotifierProvider _copyWith(
-    MyNotifier Function() create,
-  ) {
-    return MyNotifierProvider._internal(
-      () => create()
-        ..context1 = context1
-        ..context2 = context2,
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-      context1: context1,
-      context2: context2,
-    );
   }
 
   @override
@@ -448,4 +350,4 @@ final regresion2959Provider =
 
 typedef _$Regresion2959 = AutoDisposeNotifier<void>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
