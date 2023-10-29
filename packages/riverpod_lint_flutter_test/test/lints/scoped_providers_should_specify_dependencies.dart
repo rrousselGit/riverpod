@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart' as flutter;
 import 'package:flutter/material.dart' hide runApp;
+import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -119,6 +120,21 @@ void definitelyNotAMain() {
       child: Container(),
     ),
   );
+}
+
+void someTestFunction() {
+  testWidgets('override repositoryProvider in test', (tester) async {
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          scopedProvider.overrideWith((ref) => 0),
+          unimplementedScopedProvider.overrideWith((ref) => 0),
+          rootProvider.overrideWith((ref) => 0),
+        ],
+        child: Container(),
+      ),
+    );
+  });
 }
 
 Widget fn() {

@@ -1,10 +1,9 @@
 import 'dart:io';
 
-import 'package:collection/collection.dart';
-import 'package:riverpod_lint/src/lints/provider_dependencies.dart';
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/analysis/utilities.dart';
-import 'package:test/test.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:riverpod_lint/src/lints/provider_dependencies.dart';
 
 import '../../golden.dart';
 

@@ -1,11 +1,11 @@
 import 'dart:io';
 
-import 'package:test/test.dart';
-import 'package:riverpod_lint/src/assists/wrap_with_consumer.dart';
-import 'package:riverpod_lint/src/assists/wrap_with_provider_scope.dart';
-import 'package:analyzer/source/source_range.dart';
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/analysis/utilities.dart';
+import 'package:analyzer/source/source_range.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:riverpod_lint/src/assists/wrap_with_consumer.dart';
+import 'package:riverpod_lint/src/assists/wrap_with_provider_scope.dart';
 
 import '../../golden.dart';
 

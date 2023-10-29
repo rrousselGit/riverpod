@@ -1,3 +1,6 @@
+## Unreleased patch
+- Updated `scoped_providers_should_specify_dependencies` to ignore instances of using pumpWidget in tests
+
 ## 2.3.2 - 2023-10-21
 
 - `riverpod_analyzer_utils` upgraded to `0.4.2`

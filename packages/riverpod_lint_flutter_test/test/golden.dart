@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:test/test.dart';
-import 'package:path/path.dart';
-import 'package:custom_lint_core/custom_lint_core.dart';
 import 'package:analyzer_plugin/protocol/protocol_generated.dart';
+import 'package:custom_lint_core/custom_lint_core.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:path/path.dart';
 
 @Deprecated('Do not commit')
 var goldenWrite = false;

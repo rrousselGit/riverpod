@@ -21,7 +21,8 @@ dev_dependencies:
   riverpod_lint:
     path: ../riverpod_lint
   riverpod_generator: ^2.0.0
-  test: ^1.15.0
+  flutter_test:
+    sdk: flutter
 
 dependency_overrides:
   riverpod_generator:
