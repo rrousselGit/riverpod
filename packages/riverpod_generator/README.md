@@ -86,10 +86,9 @@ over the default Riverpod syntax.
 
 - [Riverpod generator](#riverpod-generator)
 - [Getting started](#getting-started)
-  - [Installing riverpod\_generator](#installing-riverpod_generator)
+  - [Installing riverpod_generator](#installing-riverpod_generator)
   - [Starting the code generator](#starting-the-code-generator)
   - [Defining our first "provider"](#defining-our-first-provider)
-  - [Global configuration](#global-configuration)
 
 # Getting started
 
@@ -99,7 +98,7 @@ To install riverpod_generator, edit your `pubspec.yaml` and add the following:
 
 ```yaml
 dependencies:
-  # or flutter_riverpod/hooks_riverpod as per https://riverpod.dev/docs/introduction/getting_started
+  # or flutter_riverpod/hooks_riverpod as per https://riverpod.dev/docs/getting_started
   riverpod:
   # the annotation package containing @riverpod
   riverpod_annotation:

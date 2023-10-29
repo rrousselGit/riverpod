@@ -10,7 +10,7 @@ dart pub global activate melos
 Build the riverpod packages
 
 ```bash
-flutter pub get
+fluttter pub get
 ```
 
 ## Start the tests
