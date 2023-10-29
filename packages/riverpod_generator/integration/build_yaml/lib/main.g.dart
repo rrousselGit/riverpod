@@ -76,9 +76,23 @@ class _SystemHash {
 const count2ProviderFamily = Count2Family();
 
 /// See also [count2].
-class Count2Family extends Family<int> {
+class Count2Family extends Family {
   /// See also [count2].
   const Count2Family();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'count2ProviderFamily';
 
   /// See also [count2].
   Count2Provider call(
@@ -89,6 +103,7 @@ class Count2Family extends Family<int> {
     );
   }
 
+  @visibleForOverriding
   @override
   Count2Provider getProviderOverride(
     covariant Count2Provider provider,
@@ -98,19 +113,26 @@ class Count2Family extends Family<int> {
     );
   }
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(int Function(Count2Ref ref) create) {
+    return _$Count2FamilyOverride(this, create);
+  }
+}
+
+class _$Count2FamilyOverride implements FamilyOverride {
+  _$Count2FamilyOverride(this.overriddenFamily, this.create);
+
+  final int Function(Count2Ref ref) create;
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+  final Count2Family overriddenFamily;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'count2ProviderFamily';
+  Count2Provider getProviderOverride(
+    covariant Count2Provider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [count2].
@@ -135,7 +157,7 @@ class Count2Provider extends AutoDisposeProvider<int> {
         );
 
   Count2Provider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -148,7 +170,7 @@ class Count2Provider extends AutoDisposeProvider<int> {
 
   @override
   Override overrideWith(
-    int Function(Count2Ref provider) create,
+    int Function(Count2Ref ref) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -165,8 +187,27 @@ class Count2Provider extends AutoDisposeProvider<int> {
   }
 
   @override
+  (int,) get argument {
+    return (a,);
+  }
+
+  @override
   AutoDisposeProviderElement<int> createElement() {
     return _Count2ProviderElement(this);
+  }
+
+  Count2Provider _copyWith(
+    int Function(Count2Ref ref) create,
+  ) {
+    return Count2Provider._internal(
+      (ref) => create(ref as Count2Ref),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      a: a,
+    );
   }
 
   @override
@@ -203,9 +244,23 @@ String _$countFuture2Hash() => r'096675b70a267f5d7c62ac7d3e7dd231ef529034';
 const countFuture2ProviderFamily = CountFuture2Family();
 
 /// See also [countFuture2].
-class CountFuture2Family extends Family<AsyncValue<int>> {
+class CountFuture2Family extends Family {
   /// See also [countFuture2].
   const CountFuture2Family();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'countFuture2ProviderFamily';
 
   /// See also [countFuture2].
   CountFuture2Provider call(
@@ -216,6 +271,7 @@ class CountFuture2Family extends Family<AsyncValue<int>> {
     );
   }
 
+  @visibleForOverriding
   @override
   CountFuture2Provider getProviderOverride(
     covariant CountFuture2Provider provider,
@@ -225,19 +281,26 @@ class CountFuture2Family extends Family<AsyncValue<int>> {
     );
   }
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(FutureOr<int> Function(CountFuture2Ref ref) create) {
+    return _$CountFuture2FamilyOverride(this, create);
+  }
+}
+
+class _$CountFuture2FamilyOverride implements FamilyOverride {
+  _$CountFuture2FamilyOverride(this.overriddenFamily, this.create);
+
+  final FutureOr<int> Function(CountFuture2Ref ref) create;
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+  final CountFuture2Family overriddenFamily;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'countFuture2ProviderFamily';
+  CountFuture2Provider getProviderOverride(
+    covariant CountFuture2Provider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [countFuture2].
@@ -263,7 +326,7 @@ class CountFuture2Provider extends AutoDisposeFutureProvider<int> {
         );
 
   CountFuture2Provider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -276,7 +339,7 @@ class CountFuture2Provider extends AutoDisposeFutureProvider<int> {
 
   @override
   Override overrideWith(
-    FutureOr<int> Function(CountFuture2Ref provider) create,
+    FutureOr<int> Function(CountFuture2Ref ref) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -293,8 +356,27 @@ class CountFuture2Provider extends AutoDisposeFutureProvider<int> {
   }
 
   @override
+  (int,) get argument {
+    return (a,);
+  }
+
+  @override
   AutoDisposeFutureProviderElement<int> createElement() {
     return _CountFuture2ProviderElement(this);
+  }
+
+  CountFuture2Provider _copyWith(
+    FutureOr<int> Function(CountFuture2Ref ref) create,
+  ) {
+    return CountFuture2Provider._internal(
+      (ref) => create(ref as CountFuture2Ref),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      a: a,
+    );
   }
 
   @override
@@ -331,9 +413,23 @@ String _$countStream2Hash() => r'051264dd685ebc0a57e454bb676957c93cb4ae20';
 const countStream2ProviderFamily = CountStream2Family();
 
 /// See also [countStream2].
-class CountStream2Family extends Family<AsyncValue<int>> {
+class CountStream2Family extends Family {
   /// See also [countStream2].
   const CountStream2Family();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'countStream2ProviderFamily';
 
   /// See also [countStream2].
   CountStream2Provider call(
@@ -344,6 +440,7 @@ class CountStream2Family extends Family<AsyncValue<int>> {
     );
   }
 
+  @visibleForOverriding
   @override
   CountStream2Provider getProviderOverride(
     covariant CountStream2Provider provider,
@@ -353,19 +450,26 @@ class CountStream2Family extends Family<AsyncValue<int>> {
     );
   }
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(Stream<int> Function(CountStream2Ref ref) create) {
+    return _$CountStream2FamilyOverride(this, create);
+  }
+}
+
+class _$CountStream2FamilyOverride implements FamilyOverride {
+  _$CountStream2FamilyOverride(this.overriddenFamily, this.create);
+
+  final Stream<int> Function(CountStream2Ref ref) create;
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+  final CountStream2Family overriddenFamily;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'countStream2ProviderFamily';
+  CountStream2Provider getProviderOverride(
+    covariant CountStream2Provider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [countStream2].
@@ -391,7 +495,7 @@ class CountStream2Provider extends AutoDisposeStreamProvider<int> {
         );
 
   CountStream2Provider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -404,7 +508,7 @@ class CountStream2Provider extends AutoDisposeStreamProvider<int> {
 
   @override
   Override overrideWith(
-    Stream<int> Function(CountStream2Ref provider) create,
+    Stream<int> Function(CountStream2Ref ref) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -421,8 +525,27 @@ class CountStream2Provider extends AutoDisposeStreamProvider<int> {
   }
 
   @override
+  (int,) get argument {
+    return (a,);
+  }
+
+  @override
   AutoDisposeStreamProviderElement<int> createElement() {
     return _CountStream2ProviderElement(this);
+  }
+
+  CountStream2Provider _copyWith(
+    Stream<int> Function(CountStream2Ref ref) create,
+  ) {
+    return CountStream2Provider._internal(
+      (ref) => create(ref as CountStream2Ref),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      a: a,
+    );
   }
 
   @override
@@ -517,9 +640,23 @@ abstract class _$CountNotifier2 extends BuildlessAutoDisposeNotifier<int> {
 const countNotifier2ProviderFamily = CountNotifier2Family();
 
 /// See also [CountNotifier2].
-class CountNotifier2Family extends Family<int> {
+class CountNotifier2Family extends Family {
   /// See also [CountNotifier2].
   const CountNotifier2Family();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'countNotifier2ProviderFamily';
 
   /// See also [CountNotifier2].
   CountNotifier2Provider call(
@@ -530,6 +667,7 @@ class CountNotifier2Family extends Family<int> {
     );
   }
 
+  @visibleForOverriding
   @override
   CountNotifier2Provider getProviderOverride(
     covariant CountNotifier2Provider provider,
@@ -539,19 +677,26 @@ class CountNotifier2Family extends Family<int> {
     );
   }
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(CountNotifier2 Function() create) {
+    return _$CountNotifier2FamilyOverride(this, create);
+  }
+}
+
+class _$CountNotifier2FamilyOverride implements FamilyOverride {
+  _$CountNotifier2FamilyOverride(this.overriddenFamily, this.create);
+
+  final CountNotifier2 Function() create;
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+  final CountNotifier2Family overriddenFamily;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'countNotifier2ProviderFamily';
+  CountNotifier2Provider getProviderOverride(
+    covariant CountNotifier2Provider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [CountNotifier2].
@@ -575,7 +720,7 @@ class CountNotifier2Provider
         );
 
   CountNotifier2Provider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -612,8 +757,27 @@ class CountNotifier2Provider
   }
 
   @override
+  (int,) get argument {
+    return (a,);
+  }
+
+  @override
   AutoDisposeNotifierProviderElement<CountNotifier2, int> createElement() {
     return _CountNotifier2ProviderElement(this);
+  }
+
+  CountNotifier2Provider _copyWith(
+    CountNotifier2 Function() create,
+  ) {
+    return CountNotifier2Provider._internal(
+      () => create()..a = a,
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      a: a,
+    );
   }
 
   @override
@@ -661,9 +825,23 @@ abstract class _$CountAsyncNotifier2
 const countAsyncNotifier2ProviderFamily = CountAsyncNotifier2Family();
 
 /// See also [CountAsyncNotifier2].
-class CountAsyncNotifier2Family extends Family<AsyncValue<int>> {
+class CountAsyncNotifier2Family extends Family {
   /// See also [CountAsyncNotifier2].
   const CountAsyncNotifier2Family();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'countAsyncNotifier2ProviderFamily';
 
   /// See also [CountAsyncNotifier2].
   CountAsyncNotifier2Provider call(
@@ -674,6 +852,7 @@ class CountAsyncNotifier2Family extends Family<AsyncValue<int>> {
     );
   }
 
+  @visibleForOverriding
   @override
   CountAsyncNotifier2Provider getProviderOverride(
     covariant CountAsyncNotifier2Provider provider,
@@ -683,19 +862,26 @@ class CountAsyncNotifier2Family extends Family<AsyncValue<int>> {
     );
   }
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(CountAsyncNotifier2 Function() create) {
+    return _$CountAsyncNotifier2FamilyOverride(this, create);
+  }
+}
+
+class _$CountAsyncNotifier2FamilyOverride implements FamilyOverride {
+  _$CountAsyncNotifier2FamilyOverride(this.overriddenFamily, this.create);
+
+  final CountAsyncNotifier2 Function() create;
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+  final CountAsyncNotifier2Family overriddenFamily;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'countAsyncNotifier2ProviderFamily';
+  CountAsyncNotifier2Provider getProviderOverride(
+    covariant CountAsyncNotifier2Provider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [CountAsyncNotifier2].
@@ -719,7 +905,7 @@ class CountAsyncNotifier2Provider
         );
 
   CountAsyncNotifier2Provider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -756,9 +942,28 @@ class CountAsyncNotifier2Provider
   }
 
   @override
+  (int,) get argument {
+    return (a,);
+  }
+
+  @override
   AutoDisposeAsyncNotifierProviderElement<CountAsyncNotifier2, int>
       createElement() {
     return _CountAsyncNotifier2ProviderElement(this);
+  }
+
+  CountAsyncNotifier2Provider _copyWith(
+    CountAsyncNotifier2 Function() create,
+  ) {
+    return CountAsyncNotifier2Provider._internal(
+      () => create()..a = a,
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      a: a,
+    );
   }
 
   @override
@@ -806,9 +1011,23 @@ abstract class _$CountStreamNotifier2
 const countStreamNotifier2ProviderFamily = CountStreamNotifier2Family();
 
 /// See also [CountStreamNotifier2].
-class CountStreamNotifier2Family extends Family<AsyncValue<int>> {
+class CountStreamNotifier2Family extends Family {
   /// See also [CountStreamNotifier2].
   const CountStreamNotifier2Family();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'countStreamNotifier2ProviderFamily';
 
   /// See also [CountStreamNotifier2].
   CountStreamNotifier2Provider call(
@@ -819,6 +1038,7 @@ class CountStreamNotifier2Family extends Family<AsyncValue<int>> {
     );
   }
 
+  @visibleForOverriding
   @override
   CountStreamNotifier2Provider getProviderOverride(
     covariant CountStreamNotifier2Provider provider,
@@ -828,19 +1048,26 @@ class CountStreamNotifier2Family extends Family<AsyncValue<int>> {
     );
   }
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(CountStreamNotifier2 Function() create) {
+    return _$CountStreamNotifier2FamilyOverride(this, create);
+  }
+}
+
+class _$CountStreamNotifier2FamilyOverride implements FamilyOverride {
+  _$CountStreamNotifier2FamilyOverride(this.overriddenFamily, this.create);
+
+  final CountStreamNotifier2 Function() create;
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+  final CountStreamNotifier2Family overriddenFamily;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'countStreamNotifier2ProviderFamily';
+  CountStreamNotifier2Provider getProviderOverride(
+    covariant CountStreamNotifier2Provider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [CountStreamNotifier2].
@@ -864,7 +1091,7 @@ class CountStreamNotifier2Provider
         );
 
   CountStreamNotifier2Provider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -901,9 +1128,28 @@ class CountStreamNotifier2Provider
   }
 
   @override
+  (int,) get argument {
+    return (a,);
+  }
+
+  @override
   AutoDisposeStreamNotifierProviderElement<CountStreamNotifier2, int>
       createElement() {
     return _CountStreamNotifier2ProviderElement(this);
+  }
+
+  CountStreamNotifier2Provider _copyWith(
+    CountStreamNotifier2 Function() create,
+  ) {
+    return CountStreamNotifier2Provider._internal(
+      () => create()..a = a,
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      a: a,
+    );
   }
 
   @override
@@ -934,4 +1180,4 @@ class _CountStreamNotifier2ProviderElement
   int get a => (origin as CountStreamNotifier2Provider).a;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package

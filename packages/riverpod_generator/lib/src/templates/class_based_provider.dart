@@ -74,11 +74,11 @@ class ClassBasedProviderTemplate extends Template {
     required this.hashFn,
     required this.options,
   }) {
-    if (provider.buildMethod.parameters!.parameters.isNotEmpty) {
+    if (provider.providerElement.isFamily) {
       throw ArgumentError.value(
-        provider.buildMethod.parameters?.toSource(),
-        'provider',
-        'Expected a class-based provider with no parameter',
+        provider.providerElement.isFamily,
+        'provider.providerElement.isFamily',
+        'Expected a non-family provider',
       );
     }
   }
@@ -112,6 +112,7 @@ class ClassBasedProviderTemplate extends Template {
     buffer.write('''
 ${providerDocFor(provider.providerElement.element)}
 @ProviderFor(${provider.name})
+${metaAnnotations(provider.node.metadata)}
 final $providerName = $providerType<${provider.name}, ${provider.valueTypeDisplayString}>.internal(
   ${provider.providerElement.name}.new,
   name: r'$providerName',

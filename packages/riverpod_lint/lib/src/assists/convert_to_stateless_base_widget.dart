@@ -104,7 +104,6 @@ class ConvertToStatelessBaseWidget extends RiverpodAssist {
               ', WidgetRef ref',
             );
           }
-          break;
         case StatelessBaseWidgetType.hookWidget:
         case StatelessBaseWidgetType.statelessWidget:
           // If the build method has a ref, remove it
@@ -116,7 +115,6 @@ class ConvertToStatelessBaseWidget extends RiverpodAssist {
               ),
             );
           }
-          break;
       }
     });
   }
@@ -165,11 +163,9 @@ class ConvertToStatelessBaseWidget extends RiverpodAssist {
         case StatelessBaseWidgetType.consumerWidget:
         case StatelessBaseWidgetType.hookConsumerWidget:
           newBuildMethod = _buildMethodWithRef(buildMethod, source);
-          break;
         case StatelessBaseWidgetType.hookWidget:
         case StatelessBaseWidgetType.statelessWidget:
           newBuildMethod = _buildMethodWithoutRef(buildMethod, source);
-          break;
       }
 
       if (newBuildMethod == null) return;

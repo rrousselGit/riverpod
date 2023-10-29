@@ -1,12 +1,6 @@
 ## 0.4.3 - 2023-10-28
 
-- `GeneratorProviderDeclaration.createdTypeDisplayString` now always
-  return `FutureOr<value>` on asynchronous providers.
-- Fixing typos
-
-## 0.4.2 - 2023-10-21
-
-- Type `provider.node` as `AnnotatedNode`
+- Added `GeneratorProviderDeclarationElement.isFamily`
 
 ## 0.4.1 - 2023-10-06
 

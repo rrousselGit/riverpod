@@ -13,12 +13,12 @@ class AutoDisposeStreamProvider<T> extends _StreamProviderBase<T>
     this._createFn, {
     super.name,
     super.dependencies,
-    @Deprecated('Will be removed in 3.0.0') super.from,
-    @Deprecated('Will be removed in 3.0.0') super.argument,
-    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          from: null,
+          argument: null,
+          debugGetCreateSourceHash: null,
         );
 
   /// An implementation detail of Riverpod
@@ -48,13 +48,6 @@ class AutoDisposeStreamProvider<T> extends _StreamProviderBase<T>
 
   @override
   late final Refreshable<Future<T>> future = _future(this);
-
-  @Deprecated(
-    '.stream will be removed in 3.0.0. As a replacement, either listen to the '
-    'provider itself (AsyncValue) or .future.',
-  )
-  @override
-  late final Refreshable<Stream<T>> stream = _stream(this);
 
   /// {@macro riverpod.overridewith}
   Override overrideWith(

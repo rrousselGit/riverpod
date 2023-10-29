@@ -11,11 +11,11 @@ class FunctionalProviderTemplate extends Template {
     required this.hashFn,
     required this.options,
   }) {
-    if (provider.node.functionExpression.parameters!.parameters.length > 1) {
+    if (provider.providerElement.isFamily) {
       throw ArgumentError.value(
-        provider.node.functionExpression.parameters?.toSource(),
-        'provider',
-        'Expected a functional provider with no parameter',
+        provider.providerElement.isFamily,
+        'provider.providerElement.isFamily',
+        'Expected a non-family provider',
       );
     }
   }
@@ -58,6 +58,7 @@ class FunctionalProviderTemplate extends Template {
     buffer.write('''
 ${providerDocFor(provider.providerElement.element)}
 @ProviderFor(${provider.name})
+${metaAnnotations(provider.node.metadata)}
 final $providerName = $providerType<${provider.valueTypeDisplayString}>.internal(
   $createFn,
   name: r'$providerName',

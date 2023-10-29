@@ -4,6 +4,67 @@ import 'package:test/test.dart';
 import 'analyzer_test_utils.dart';
 
 void main() {
+  testSource('Parses element.isFamily', source: r'''
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+@riverpod
+T generic<T>(GenericRef ref) => throw UnimplementedError();
+
+@riverpod
+class GenericClass<T> extends _$GenericClass<T> {
+  @override
+  T build() => throw UnimplementedError();
+}
+
+@riverpod
+int value(ValueRef ref) => throw UnimplementedError();
+
+@riverpod
+class ValueClass extends _$ValueClass {
+  @override
+  int build() => throw UnimplementedError();
+}
+
+@riverpod
+int parametrized(ParametrizedRef ref, int id) => throw UnimplementedError();
+
+@riverpod
+class ParametrizedClass extends _$ParametrizedClass {
+  @override
+  int build(int id) => throw UnimplementedError();
+}
+''', (resolver) async {
+    final result = await resolver.resolveRiverpodAnalysisResult();
+
+    final generic = result.generatorProviderDeclarations.singleWhere(
+      (e) => e.name.toString() == 'generic',
+    );
+    final genericClass = result.generatorProviderDeclarations.singleWhere(
+      (e) => e.name.toString() == 'GenericClass',
+    );
+    final value = result.generatorProviderDeclarations.singleWhere(
+      (e) => e.name.toString() == 'value',
+    );
+    final valueClass = result.generatorProviderDeclarations.singleWhere(
+      (e) => e.name.toString() == 'ValueClass',
+    );
+    final parametrized = result.generatorProviderDeclarations.singleWhere(
+      (e) => e.name.toString() == 'parametrized',
+    );
+    final parametrizedClass = result.generatorProviderDeclarations.singleWhere(
+      (e) => e.name.toString() == 'ParametrizedClass',
+    );
+
+    expect(generic.providerElement.isFamily, true);
+    expect(genericClass.providerElement.isFamily, true);
+
+    expect(value.providerElement.isFamily, false);
+    expect(valueClass.providerElement.isFamily, false);
+
+    expect(parametrized.providerElement.isFamily, true);
+    expect(parametrizedClass.providerElement.isFamily, true);
+  });
+
   testSource('Parses Raw types', source: '''
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -16,9 +77,7 @@ Future<int> value2(Value2Ref ref) async => 0;
 @riverpod
 Future<Raw<int>> value3(Value3Ref ref) async => 0;
 ''', (resolver) async {
-    final result = await resolver.resolveRiverpodAnalysisResult(
-      ignoreErrors: true,
-    );
+    final result = await resolver.resolveRiverpodAnalysisResult();
 
     final value = result.functionalProviderDeclarations.singleWhere(
       (e) => e.name.toString() == 'value',
@@ -73,9 +132,7 @@ int scoped() => 0;
 @riverpod
 int plain(PlainRef ref) => 0;
 ''', (resolver) async {
-    final result = await resolver.resolveRiverpodAnalysisResult(
-      ignoreErrors: true,
-    );
+    final result = await resolver.resolveRiverpodAnalysisResult();
 
     final needsOverride = result.functionalProviderDeclarations.singleWhere(
       (e) => e.name.toString() == 'needsOverride',

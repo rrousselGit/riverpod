@@ -1,6 +1,67 @@
-## Unreleased patch
+## Unreleased 3.0.0-dev.5
 
-- Fix typos and internal changes
+- Providers can now be generic:
+
+  ```dart
+  @riverpod
+  List<T> example<T extends num>(ExampleRef<T> ref) {
+    return <T>[];
+  }
+
+  @riverpod
+  class ClassExample<T> extends _$ClassExample<T> {
+    @override
+    List<T> build() => <T>[];
+  }
+  ```
+
+  Specifying type parameters works the same as specifying arguments, and
+  make the generated provider a "function":
+
+  ```dart
+  ref.watch(example<int>());
+  ```
+
+- Upgraded to use Riverpod 3.0
+- Fixed `family.overrideWith` missing
+
+## 3.0.0-dev.5 - 2023-10-21
+
+- `riverpod_analyzer_utils` upgraded to `0.4.2`
+
+## 3.0.0-dev.4 - 2023-10-15
+
+- Annotating a provider with `@deprecated` and a few other annotations
+  also annotate the generated code accordingly (thanks to @SunlightBro)
+- `provider.argument` is now a record of all arguments in a provider.
+
+## 3.0.0-dev.3 - 2023-10-06
+
+- `riverpod_analyzer_utils` upgraded to `0.4.1`
+- `riverpod_annotation` upgraded to `2.2.0`
+
+## 3.0.0-dev.2 - 2023-10-02
+
+- `riverpod_analyzer_utils` upgraded to `0.4.0`
+
+## 3.0.0-dev.1 - 2023-10-02
+
+The code generator now supports import aliases, generated types and typedefs
+as input of providers!.
+
+This comes with a few minor restrictions:
+
+- **Breaking**: Returning a Typedef or type Future/FutureOr/Stream is no-longer supported:
+
+  ```dart
+  typedef Example = Future<int>;
+
+  @riverpod
+  Example foo(FooRef ref) async => 0;
+  ```
+
+- **Breaking**: Arguments of the form `fn(void myParameter())`
+  are no-longer supported. Instead use `fn(void Function() myParameter)`.
 
 ## 2.3.5 - 2023-10-21
 

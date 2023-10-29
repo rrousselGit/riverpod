@@ -11,7 +11,7 @@ abstract class ProviderOrFamily {
   });
 
   /// The family that this provider/family depends on.
-  Family<Object?>? get from;
+  Family? get from;
 
   /// {@template riverpod.name}
   /// A custom label for providers.

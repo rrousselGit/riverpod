@@ -5,7 +5,7 @@ ProviderBase<Object?>? _circularDependencyLock;
 class _FamilyOverrideRef {
   _FamilyOverrideRef(this.override, this.container);
 
-  FamilyOverride<Object?> override;
+  FamilyOverride override;
   final ProviderContainer container;
 }
 
@@ -141,21 +141,6 @@ class ProviderContainer implements Node {
 
   final int _debugOverridesLength;
 
-  /// A function that controls the refresh rate of providers.
-  ///
-  /// Defaults to refreshing providers at the end of the next event-loop.
-  @Deprecated('Will be removed in 3.0.0')
-  @internal
-  void Function(void Function() task) get vsync {
-    return vsyncOverride ?? _defaultVsync;
-  }
-
-  /// A way to override [vsync], used by Flutter to synchronize a container
-  /// with the widget tree.
-  @Deprecated('Will be removed in 3.0.0')
-  @internal
-  void Function(void Function() task)? vsyncOverride;
-
   /// The object that handles when providers are refreshed and disposed.
   late final _ProviderScheduler _scheduler =
       _parent?._scheduler ?? _ProviderScheduler();
@@ -176,18 +161,10 @@ class ProviderContainer implements Node {
 
   final _overrideForProvider =
       HashMap<ProviderBase<Object?>, ProviderBase<Object?>>();
-  final _overrideForFamily = HashMap<Family<Object?>, _FamilyOverrideRef>();
+  final _overrideForFamily = HashMap<Family, _FamilyOverrideRef>();
   final Map<ProviderBase<Object?>, _StateReader> _stateReaders;
 
   final List<ProviderObserver> _observers;
-
-  /// A debug utility used by `flutter_riverpod`/`hooks_riverpod` to check
-  /// if it is safe to modify a provider.
-  ///
-  /// This corresponds to all the widgets that a [Provider] is associated with.
-  @Deprecated('Will be removed in 3.0.0')
-  @internal
-  void Function()? debugCanModifyProviders;
 
   /// Whether [dispose] was called or not.
   ///

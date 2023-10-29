@@ -33,11 +33,24 @@ class FunctionalToClassBasedProvider extends RiverpodAssist {
       );
 
       changeBuilder.addDartFileEdit((builder) {
+        var typeParametersSource = '';
+        final typeParameters =
+            declaration.node.functionExpression.typeParameters;
+        if (typeParameters != null) {
+          // Remove type arguments, if any
+          builder.addDeletion(typeParameters.sourceRange);
+
+          typeParametersSource = resolver.source.contents.data.substring(
+            typeParameters.offset,
+            typeParameters.end,
+          );
+        }
+
         // Add the class name
         builder.addSimpleInsertion(
           functionStartOffset,
           '''
-class ${classNameFor(declaration)} extends ${generatedClassNameFor(declaration)} {
+class ${classNameFor(declaration)}$typeParametersSource extends ${generatedClassNameFor(declaration)}$typeParametersSource {
   @override
   ''',
         );

@@ -70,9 +70,23 @@ abstract class _$A3 extends BuildlessAutoDisposeNotifier<int> {
 const a3Provider = A3Family();
 
 /// See also [A3].
-class A3Family extends Family<int> {
+class A3Family extends Family {
   /// See also [A3].
   const A3Family();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'a3Provider';
 
   /// See also [A3].
   A3Provider call(
@@ -83,6 +97,7 @@ class A3Family extends Family<int> {
     );
   }
 
+  @visibleForOverriding
   @override
   A3Provider getProviderOverride(
     covariant A3Provider provider,
@@ -92,19 +107,26 @@ class A3Family extends Family<int> {
     );
   }
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(A3 Function() create) {
+    return _$A3FamilyOverride(this, create);
+  }
+}
+
+class _$A3FamilyOverride implements FamilyOverride {
+  _$A3FamilyOverride(this.overriddenFamily, this.create);
+
+  final A3 Function() create;
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+  final A3Family overriddenFamily;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'a3Provider';
+  A3Provider getProviderOverride(
+    covariant A3Provider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [A3].
@@ -124,7 +146,7 @@ class A3Provider extends AutoDisposeNotifierProviderImpl<A3, int> {
         );
 
   A3Provider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -161,8 +183,27 @@ class A3Provider extends AutoDisposeNotifierProviderImpl<A3, int> {
   }
 
   @override
+  (int,) get argument {
+    return (param,);
+  }
+
+  @override
   AutoDisposeNotifierProviderElement<A3, int> createElement() {
     return _A3ProviderElement(this);
+  }
+
+  A3Provider _copyWith(
+    A3 Function() create,
+  ) {
+    return A3Provider._internal(
+      () => create()..param = param,
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      param: param,
+    );
   }
 
   @override
@@ -207,9 +248,23 @@ abstract class _$A4 extends BuildlessNotifier<int> {
 const a4Provider = A4Family();
 
 /// See also [A4].
-class A4Family extends Family<int> {
+class A4Family extends Family {
   /// See also [A4].
   const A4Family();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'a4Provider';
 
   /// See also [A4].
   A4Provider call(
@@ -220,6 +275,7 @@ class A4Family extends Family<int> {
     );
   }
 
+  @visibleForOverriding
   @override
   A4Provider getProviderOverride(
     covariant A4Provider provider,
@@ -229,19 +285,26 @@ class A4Family extends Family<int> {
     );
   }
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(A4 Function() create) {
+    return _$A4FamilyOverride(this, create);
+  }
+}
+
+class _$A4FamilyOverride implements FamilyOverride {
+  _$A4FamilyOverride(this.overriddenFamily, this.create);
+
+  final A4 Function() create;
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+  final A4Family overriddenFamily;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'a4Provider';
+  A4Provider getProviderOverride(
+    covariant A4Provider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [A4].
@@ -261,7 +324,7 @@ class A4Provider extends NotifierProviderImpl<A4, int> {
         );
 
   A4Provider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -298,8 +361,27 @@ class A4Provider extends NotifierProviderImpl<A4, int> {
   }
 
   @override
+  (int,) get argument {
+    return (param,);
+  }
+
+  @override
   NotifierProviderElement<A4, int> createElement() {
     return _A4ProviderElement(this);
+  }
+
+  A4Provider _copyWith(
+    A4 Function() create,
+  ) {
+    return A4Provider._internal(
+      () => create()..param = param,
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      param: param,
+    );
   }
 
   @override
@@ -343,9 +425,23 @@ abstract class _$A5 extends BuildlessAutoDisposeAsyncNotifier<int> {
 const a5Provider = A5Family();
 
 /// See also [A5].
-class A5Family extends Family<AsyncValue<int>> {
+class A5Family extends Family {
   /// See also [A5].
   const A5Family();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'a5Provider';
 
   /// See also [A5].
   A5Provider call(
@@ -356,6 +452,7 @@ class A5Family extends Family<AsyncValue<int>> {
     );
   }
 
+  @visibleForOverriding
   @override
   A5Provider getProviderOverride(
     covariant A5Provider provider,
@@ -365,19 +462,26 @@ class A5Family extends Family<AsyncValue<int>> {
     );
   }
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(A5 Function() create) {
+    return _$A5FamilyOverride(this, create);
+  }
+}
+
+class _$A5FamilyOverride implements FamilyOverride {
+  _$A5FamilyOverride(this.overriddenFamily, this.create);
+
+  final A5 Function() create;
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+  final A5Family overriddenFamily;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'a5Provider';
+  A5Provider getProviderOverride(
+    covariant A5Provider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [A5].
@@ -397,7 +501,7 @@ class A5Provider extends AutoDisposeAsyncNotifierProviderImpl<A5, int> {
         );
 
   A5Provider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -434,8 +538,27 @@ class A5Provider extends AutoDisposeAsyncNotifierProviderImpl<A5, int> {
   }
 
   @override
+  (int,) get argument {
+    return (param,);
+  }
+
+  @override
   AutoDisposeAsyncNotifierProviderElement<A5, int> createElement() {
     return _A5ProviderElement(this);
+  }
+
+  A5Provider _copyWith(
+    A5 Function() create,
+  ) {
+    return A5Provider._internal(
+      () => create()..param = param,
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      param: param,
+    );
   }
 
   @override
@@ -480,9 +603,23 @@ abstract class _$A6 extends BuildlessAsyncNotifier<int> {
 const a6Provider = A6Family();
 
 /// See also [A6].
-class A6Family extends Family<AsyncValue<int>> {
+class A6Family extends Family {
   /// See also [A6].
   const A6Family();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'a6Provider';
 
   /// See also [A6].
   A6Provider call(
@@ -493,6 +630,7 @@ class A6Family extends Family<AsyncValue<int>> {
     );
   }
 
+  @visibleForOverriding
   @override
   A6Provider getProviderOverride(
     covariant A6Provider provider,
@@ -502,19 +640,26 @@ class A6Family extends Family<AsyncValue<int>> {
     );
   }
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(A6 Function() create) {
+    return _$A6FamilyOverride(this, create);
+  }
+}
+
+class _$A6FamilyOverride implements FamilyOverride {
+  _$A6FamilyOverride(this.overriddenFamily, this.create);
+
+  final A6 Function() create;
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+  final A6Family overriddenFamily;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'a6Provider';
+  A6Provider getProviderOverride(
+    covariant A6Provider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [A6].
@@ -534,7 +679,7 @@ class A6Provider extends AsyncNotifierProviderImpl<A6, int> {
         );
 
   A6Provider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -571,8 +716,27 @@ class A6Provider extends AsyncNotifierProviderImpl<A6, int> {
   }
 
   @override
+  (int,) get argument {
+    return (param,);
+  }
+
+  @override
   AsyncNotifierProviderElement<A6, int> createElement() {
     return _A6ProviderElement(this);
+  }
+
+  A6Provider _copyWith(
+    A6 Function() create,
+  ) {
+    return A6Provider._internal(
+      () => create()..param = param,
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      param: param,
+    );
   }
 
   @override
@@ -617,9 +781,23 @@ abstract class _$A7 extends BuildlessAutoDisposeStreamNotifier<int> {
 const a7Provider = A7Family();
 
 /// See also [A7].
-class A7Family extends Family<AsyncValue<int>> {
+class A7Family extends Family {
   /// See also [A7].
   const A7Family();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'a7Provider';
 
   /// See also [A7].
   A7Provider call(
@@ -630,6 +808,7 @@ class A7Family extends Family<AsyncValue<int>> {
     );
   }
 
+  @visibleForOverriding
   @override
   A7Provider getProviderOverride(
     covariant A7Provider provider,
@@ -639,19 +818,26 @@ class A7Family extends Family<AsyncValue<int>> {
     );
   }
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(A7 Function() create) {
+    return _$A7FamilyOverride(this, create);
+  }
+}
+
+class _$A7FamilyOverride implements FamilyOverride {
+  _$A7FamilyOverride(this.overriddenFamily, this.create);
+
+  final A7 Function() create;
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+  final A7Family overriddenFamily;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'a7Provider';
+  A7Provider getProviderOverride(
+    covariant A7Provider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [A7].
@@ -671,7 +857,7 @@ class A7Provider extends AutoDisposeStreamNotifierProviderImpl<A7, int> {
         );
 
   A7Provider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -708,8 +894,27 @@ class A7Provider extends AutoDisposeStreamNotifierProviderImpl<A7, int> {
   }
 
   @override
+  (int,) get argument {
+    return (param,);
+  }
+
+  @override
   AutoDisposeStreamNotifierProviderElement<A7, int> createElement() {
     return _A7ProviderElement(this);
+  }
+
+  A7Provider _copyWith(
+    A7 Function() create,
+  ) {
+    return A7Provider._internal(
+      () => create()..param = param,
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      param: param,
+    );
   }
 
   @override
@@ -754,9 +959,23 @@ abstract class _$A8 extends BuildlessStreamNotifier<int> {
 const a8Provider = A8Family();
 
 /// See also [A8].
-class A8Family extends Family<AsyncValue<int>> {
+class A8Family extends Family {
   /// See also [A8].
   const A8Family();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'a8Provider';
 
   /// See also [A8].
   A8Provider call(
@@ -767,6 +986,7 @@ class A8Family extends Family<AsyncValue<int>> {
     );
   }
 
+  @visibleForOverriding
   @override
   A8Provider getProviderOverride(
     covariant A8Provider provider,
@@ -776,19 +996,26 @@ class A8Family extends Family<AsyncValue<int>> {
     );
   }
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(A8 Function() create) {
+    return _$A8FamilyOverride(this, create);
+  }
+}
+
+class _$A8FamilyOverride implements FamilyOverride {
+  _$A8FamilyOverride(this.overriddenFamily, this.create);
+
+  final A8 Function() create;
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+  final A8Family overriddenFamily;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'a8Provider';
+  A8Provider getProviderOverride(
+    covariant A8Provider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [A8].
@@ -808,7 +1035,7 @@ class A8Provider extends StreamNotifierProviderImpl<A8, int> {
         );
 
   A8Provider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -845,8 +1072,27 @@ class A8Provider extends StreamNotifierProviderImpl<A8, int> {
   }
 
   @override
+  (int,) get argument {
+    return (param,);
+  }
+
+  @override
   StreamNotifierProviderElement<A8, int> createElement() {
     return _A8ProviderElement(this);
+  }
+
+  A8Provider _copyWith(
+    A8 Function() create,
+  ) {
+    return A8Provider._internal(
+      () => create()..param = param,
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      param: param,
+    );
   }
 
   @override
@@ -905,4 +1151,4 @@ final b2Provider = AutoDisposeNotifierProvider<B2, int>.internal(
 
 typedef _$B2 = AutoDisposeNotifier<int>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package

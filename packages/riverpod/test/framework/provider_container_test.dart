@@ -234,23 +234,6 @@ void main() {
     });
 
     test(
-        'when using overrideWithProvider, handles overriding with a more specific provider type',
-        () {
-      final fooProvider = Provider<Foo>((ref) => Foo());
-
-      final container = createContainer(
-        overrides: [
-          // ignore: deprecated_member_use_from_same_package
-          fooProvider.overrideWithProvider(
-            Provider<Bar>((ref) => Bar()),
-          ),
-        ],
-      );
-
-      expect(container.read(fooProvider), isA<Bar>());
-    });
-
-    test(
         'when the same provider is overridden multiple times at once, uses the latest override',
         () {
       final provider = Provider((ref) => 0);
@@ -274,8 +257,8 @@ void main() {
       final provider = Provider.family<int, int>((ref, value) => 0);
       final container = createContainer(
         overrides: [
-          provider.overrideWithProvider((value) => Provider((ref) => 21)),
-          provider.overrideWithProvider((value) => Provider((ref) => 42)),
+          provider.overrideWith((ref, value) => 21),
+          provider.overrideWith((ref, value) => 42),
         ],
       );
 
@@ -726,7 +709,3 @@ void main() {
     );
   });
 }
-
-class Foo {}
-
-class Bar extends Foo {}

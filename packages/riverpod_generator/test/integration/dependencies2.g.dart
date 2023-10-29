@@ -62,36 +62,15 @@ class _SystemHash {
 const familyWithDependencies2Provider = FamilyWithDependencies2Family();
 
 /// See also [familyWithDependencies2].
-class FamilyWithDependencies2Family extends Family<int> {
+class FamilyWithDependencies2Family extends Family {
   /// See also [familyWithDependencies2].
   const FamilyWithDependencies2Family();
-
-  /// See also [familyWithDependencies2].
-  FamilyWithDependencies2Provider call({
-    int? id,
-  }) {
-    return FamilyWithDependencies2Provider(
-      id: id,
-    );
-  }
-
-  @override
-  FamilyWithDependencies2Provider getProviderOverride(
-    covariant FamilyWithDependencies2Provider provider,
-  ) {
-    return call(
-      id: provider.id,
-    );
-  }
 
   static final Iterable<ProviderOrFamily> _dependencies = <ProviderOrFamily>[
     providerWithDependenciesProvider,
     _private2Provider,
     public2Provider
   ];
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
 
   static final Iterable<ProviderOrFamily> _allTransitiveDependencies =
       <ProviderOrFamily>{
@@ -104,11 +83,54 @@ class FamilyWithDependencies2Family extends Family<int> {
   };
 
   @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
   Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
       _allTransitiveDependencies;
 
   @override
   String? get name => r'familyWithDependencies2Provider';
+
+  /// See also [familyWithDependencies2].
+  FamilyWithDependencies2Provider call({
+    int? id,
+  }) {
+    return FamilyWithDependencies2Provider(
+      id: id,
+    );
+  }
+
+  @visibleForOverriding
+  @override
+  FamilyWithDependencies2Provider getProviderOverride(
+    covariant FamilyWithDependencies2Provider provider,
+  ) {
+    return call(
+      id: provider.id,
+    );
+  }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(int Function(FamilyWithDependencies2Ref ref) create) {
+    return _$FamilyWithDependencies2FamilyOverride(this, create);
+  }
+}
+
+class _$FamilyWithDependencies2FamilyOverride implements FamilyOverride {
+  _$FamilyWithDependencies2FamilyOverride(this.overriddenFamily, this.create);
+
+  final int Function(FamilyWithDependencies2Ref ref) create;
+
+  @override
+  final FamilyWithDependencies2Family overriddenFamily;
+
+  @override
+  FamilyWithDependencies2Provider getProviderOverride(
+    covariant FamilyWithDependencies2Provider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [familyWithDependencies2].
@@ -134,7 +156,7 @@ class FamilyWithDependencies2Provider extends AutoDisposeProvider<int> {
         );
 
   FamilyWithDependencies2Provider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -147,7 +169,7 @@ class FamilyWithDependencies2Provider extends AutoDisposeProvider<int> {
 
   @override
   Override overrideWith(
-    int Function(FamilyWithDependencies2Ref provider) create,
+    int Function(FamilyWithDependencies2Ref ref) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -164,8 +186,29 @@ class FamilyWithDependencies2Provider extends AutoDisposeProvider<int> {
   }
 
   @override
+  ({
+    int? id,
+  }) get argument {
+    return (id: id,);
+  }
+
+  @override
   AutoDisposeProviderElement<int> createElement() {
     return _FamilyWithDependencies2ProviderElement(this);
+  }
+
+  FamilyWithDependencies2Provider _copyWith(
+    int Function(FamilyWithDependencies2Ref ref) create,
+  ) {
+    return FamilyWithDependencies2Provider._internal(
+      (ref) => create(ref as FamilyWithDependencies2Ref),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      id: id,
+    );
   }
 
   @override
@@ -269,36 +312,15 @@ const notifierFamilyWithDependenciesProvider =
     NotifierFamilyWithDependenciesFamily();
 
 /// See also [NotifierFamilyWithDependencies].
-class NotifierFamilyWithDependenciesFamily extends Family<int> {
+class NotifierFamilyWithDependenciesFamily extends Family {
   /// See also [NotifierFamilyWithDependencies].
   const NotifierFamilyWithDependenciesFamily();
-
-  /// See also [NotifierFamilyWithDependencies].
-  NotifierFamilyWithDependenciesProvider call({
-    int? id,
-  }) {
-    return NotifierFamilyWithDependenciesProvider(
-      id: id,
-    );
-  }
-
-  @override
-  NotifierFamilyWithDependenciesProvider getProviderOverride(
-    covariant NotifierFamilyWithDependenciesProvider provider,
-  ) {
-    return call(
-      id: provider.id,
-    );
-  }
 
   static final Iterable<ProviderOrFamily> _dependencies = <ProviderOrFamily>[
     providerWithDependenciesProvider,
     _private2Provider,
     public2Provider
   ];
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
 
   static final Iterable<ProviderOrFamily> _allTransitiveDependencies =
       <ProviderOrFamily>{
@@ -311,11 +333,55 @@ class NotifierFamilyWithDependenciesFamily extends Family<int> {
   };
 
   @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
   Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
       _allTransitiveDependencies;
 
   @override
   String? get name => r'notifierFamilyWithDependenciesProvider';
+
+  /// See also [NotifierFamilyWithDependencies].
+  NotifierFamilyWithDependenciesProvider call({
+    int? id,
+  }) {
+    return NotifierFamilyWithDependenciesProvider(
+      id: id,
+    );
+  }
+
+  @visibleForOverriding
+  @override
+  NotifierFamilyWithDependenciesProvider getProviderOverride(
+    covariant NotifierFamilyWithDependenciesProvider provider,
+  ) {
+    return call(
+      id: provider.id,
+    );
+  }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(NotifierFamilyWithDependencies Function() create) {
+    return _$NotifierFamilyWithDependenciesFamilyOverride(this, create);
+  }
+}
+
+class _$NotifierFamilyWithDependenciesFamilyOverride implements FamilyOverride {
+  _$NotifierFamilyWithDependenciesFamilyOverride(
+      this.overriddenFamily, this.create);
+
+  final NotifierFamilyWithDependencies Function() create;
+
+  @override
+  final NotifierFamilyWithDependenciesFamily overriddenFamily;
+
+  @override
+  NotifierFamilyWithDependenciesProvider getProviderOverride(
+    covariant NotifierFamilyWithDependenciesProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [NotifierFamilyWithDependencies].
@@ -340,7 +406,7 @@ class NotifierFamilyWithDependenciesProvider
         );
 
   NotifierFamilyWithDependenciesProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -377,9 +443,30 @@ class NotifierFamilyWithDependenciesProvider
   }
 
   @override
+  ({
+    int? id,
+  }) get argument {
+    return (id: id,);
+  }
+
+  @override
   AutoDisposeNotifierProviderElement<NotifierFamilyWithDependencies, int>
       createElement() {
     return _NotifierFamilyWithDependenciesProviderElement(this);
+  }
+
+  NotifierFamilyWithDependenciesProvider _copyWith(
+    NotifierFamilyWithDependencies Function() create,
+  ) {
+    return NotifierFamilyWithDependenciesProvider._internal(
+      () => create()..id = id,
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      id: id,
+    );
   }
 
   @override
@@ -410,4 +497,4 @@ class _NotifierFamilyWithDependenciesProviderElement
   int? get id => (origin as NotifierFamilyWithDependenciesProvider).id;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package

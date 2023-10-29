@@ -28,7 +28,6 @@ jobs:
     strategy:
       matrix:
         channel:
-          - stable
           - master
         package_path:
           - examples/counter

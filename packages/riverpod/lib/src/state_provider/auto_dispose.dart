@@ -12,12 +12,12 @@ class AutoDisposeStateProvider<T> extends _StateProviderBase<T> {
     this._createFn, {
     super.name,
     super.dependencies,
-    @Deprecated('Will be removed in 3.0.0') super.from,
-    @Deprecated('Will be removed in 3.0.0') super.argument,
-    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          from: null,
+          argument: null,
+          debugGetCreateSourceHash: null,
         );
 
   /// An implementation detail of Riverpod
@@ -47,13 +47,6 @@ class AutoDisposeStateProvider<T> extends _StateProviderBase<T> {
 
   @override
   late final Refreshable<StateController<T>> notifier = _notifier(this);
-
-  @Deprecated(
-    'Will be removed in 3.0.0. '
-    'Use either `ref.watch(provider)` or `ref.read(provider.notifier)` instead',
-  )
-  @override
-  late final Refreshable<StateController<T>> state = _state(this);
 
   /// {@macro riverpod.overridewith}
   Override overrideWith(

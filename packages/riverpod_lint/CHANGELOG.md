@@ -21,6 +21,8 @@
 
 ## 2.2.1 - 2023-10-02
 
+- Updated `functional_ref` and `generator_class_extends` to support providers
+  with generic parameters.
 - Fixed `functional_ref` throwing if a provider specifies arguments but
   incorrectly did not specify a Ref
 
