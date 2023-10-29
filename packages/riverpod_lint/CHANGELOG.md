@@ -1,3 +1,7 @@
+## 3.0.0-dev.0 - 2023-10-29
+
+- `riverpod` upgraded to `3.0.0-dev.0`
+
 ## 2.3.3 - 2023-10-28
 
 - `riverpod` upgraded to `2.4.5`

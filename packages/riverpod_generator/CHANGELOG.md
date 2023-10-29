@@ -1,4 +1,4 @@
-## Unreleased 3.0.0-dev.5
+## 3.0.0-dev.7 - 2023-10-29
 
 - Providers can now be generic:
 

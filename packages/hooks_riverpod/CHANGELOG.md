@@ -1,3 +1,11 @@
+## 3.0.0-dev.0 - 2023-10-29
+
+- **Breaking**: `AsyncValue` is now "sealed" and `AsyncData/AsyncLoading/AsyncError`
+  are "final". This means that it is no-longer possible to subclass
+  `AsyncValue` or the associated classes.
+- **Breaking**: Removed everything marked as "deprecated"
+- Bumped minimum Dart SDK to >= 3.0.0-dev
+
 ## 2.4.5 - 2023-10-28
 
 - Support assigning `AsyncValue<T>` to `AsyncNotifier<void>.state`
