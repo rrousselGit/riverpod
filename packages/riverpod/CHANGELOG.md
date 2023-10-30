@@ -1,4 +1,4 @@
-## Unreleased fix
+## 2.4.5 - 2023-10-28
 
 - Support assigning `AsyncValue<T>` to `AsyncNotifier<void>.state`
 
