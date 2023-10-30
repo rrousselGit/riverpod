@@ -89,7 +89,7 @@ class _StateReader {
 
 var _debugVerifyDependenciesAreRespectedEnabled = true;
 
-/// {@template riverpod.providercontainer}
+/// {@template riverpod.provider_container}
 /// An object that stores the state of the providers and allows overriding the
 /// behavior of a specific provider.
 ///
@@ -98,7 +98,7 @@ var _debugVerifyDependenciesAreRespectedEnabled = true;
 /// {@endtemplate}
 @sealed
 class ProviderContainer implements Node {
-  /// {@macro riverpod.providercontainer}
+  /// {@macro riverpod.provider_container}
   ProviderContainer({
     ProviderContainer? parent,
     List<Override> overrides = const [],
@@ -779,7 +779,7 @@ class ProviderOverride implements Override {
   /// The provider that is overridden.
   final ProviderBase<Object?> _origin;
 
-  /// The new provider behaviour.
+  /// The new provider behavior.
   final ProviderBase<Object?> _override;
 }
 

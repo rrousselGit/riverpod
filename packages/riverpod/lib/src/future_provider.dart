@@ -25,7 +25,7 @@ ProviderElementProxy<AsyncValue<T>, Future<T>> _future<T>(
   );
 }
 
-/// {@template riverpod.futureprovider}
+/// {@template riverpod.future_provider}
 /// A provider that asynchronously creates a value.
 ///
 /// [FutureProvider] can be considered as a combination of [Provider] and

@@ -19,7 +19,7 @@ abstract class BuildlessAsyncNotifier<State> extends AsyncNotifierBase<State> {
   AsyncNotifierProviderRef<State> get ref => _element;
 }
 
-/// {@template riverpod.asyncnotifier}
+/// {@template riverpod.async_notifier}
 /// A [Notifier] implementation that is asynchronously initialized.
 ///
 /// This is similar to a [FutureProvider] but allows to perform side-effects
@@ -36,7 +36,7 @@ abstract class BuildlessAsyncNotifier<State> extends AsyncNotifierBase<State> {
 ///
 /// {@macro riverpod.async_notifier_provider_modifier}
 abstract class AsyncNotifier<State> extends BuildlessAsyncNotifier<State> {
-  /// {@template riverpod.asyncnotifier.build}
+  /// {@template riverpod.async_notifier.build}
   /// Initialize an [AsyncNotifier].
   ///
   /// It is safe to use [Ref.watch] or [Ref.listen] inside this method.
@@ -53,7 +53,7 @@ abstract class AsyncNotifier<State> extends BuildlessAsyncNotifier<State> {
   FutureOr<State> build();
 }
 
-/// {@macro riverpod.providerrefbase}
+/// {@macro riverpod.provider_ref_base}
 abstract class AsyncNotifierProviderRef<T> implements Ref<AsyncValue<T>> {}
 
 /// {@template riverpod.async_notifier_provider}
@@ -139,7 +139,7 @@ class AsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
     return (notifier as AsyncNotifier<T>).build();
   }
 
-  /// {@macro riverpod.overridewith}
+  /// {@macro riverpod.override_with}
   @mustBeOverridden
   Override overrideWith(NotifierT Function() create) {
     return ProviderOverride(

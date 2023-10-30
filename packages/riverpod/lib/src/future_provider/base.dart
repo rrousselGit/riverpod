@@ -1,6 +1,6 @@
 part of '../future_provider.dart';
 
-/// {@macro riverpod.providerrefbase}
+/// {@macro riverpod.provider_ref_base}
 /// - [state], the value currently exposed by this provider.
 abstract class FutureProviderRef<State> implements Ref<AsyncValue<State>> {
   /// Obtains the state currently exposed by this provider.
@@ -22,10 +22,10 @@ abstract class FutureProviderRef<State> implements Ref<AsyncValue<State>> {
   Future<State> get future;
 }
 
-/// {@macro riverpod.futureprovider}
+/// {@macro riverpod.future_provider}
 class FutureProvider<T> extends _FutureProviderBase<T>
     with AlwaysAliveProviderBase<AsyncValue<T>>, AlwaysAliveAsyncSelector<T> {
-  /// {@macro riverpod.futureprovider}
+  /// {@macro riverpod.future_provider}
   FutureProvider(
     this._createFn, {
     super.name,
@@ -67,7 +67,7 @@ class FutureProvider<T> extends _FutureProviderBase<T>
   @override
   FutureProviderElement<T> createElement() => FutureProviderElement(this);
 
-  /// {@macro riverpod.overridewith}
+  /// {@macro riverpod.override_with}
   Override overrideWith(Create<FutureOr<T>, FutureProviderRef<T>> create) {
     return ProviderOverride(
       origin: this,
@@ -135,7 +135,7 @@ class FutureProviderFamily<R, Arg> extends FamilyBase<FutureProviderRef<R>,
     required super.debugGetCreateSourceHash,
   }) : super(providerFactory: FutureProvider<R>.internal);
 
-  /// {@macro riverpod.overridewith}
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     FutureOr<R> Function(FutureProviderRef<R> ref, Arg arg) create,
   ) {

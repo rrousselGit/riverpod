@@ -28,7 +28,7 @@ abstract class AutoDisposeStreamNotifier<State>
   Stream<State> build();
 }
 
-/// {@macro riverpod.providerrefbase}
+/// {@macro riverpod.provider_ref_base}
 abstract class AutoDisposeStreamNotifierProviderRef<T>
     implements StreamNotifierProviderRef<T>, AutoDisposeRef<AsyncValue<T>> {}
 
@@ -93,7 +93,7 @@ class AutoDisposeStreamNotifierProviderImpl<
     return (notifier as AutoDisposeStreamNotifier<T>).build();
   }
 
-  /// {@macro riverpod.overridewith}
+  /// {@macro riverpod.override_with}
   @mustBeOverridden
   Override overrideWith(NotifierT Function() create) {
     return ProviderOverride(
