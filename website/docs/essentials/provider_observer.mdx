@@ -5,7 +5,6 @@ title: Logging and error reporting
 import { Link } from "../../src/components/Link";
 import { AutoSnippet, When } from "../../src/components/CodeSnippet";
 import providerObserver from "!!raw-loader!./provider_observer/provider_observer.dart";
-import asyncError from "!!raw-loader!./provider_observer/async_error.dart";
 
 Riverpod natively offers a way to listen to all events happening
 in the provider tree.  
@@ -26,16 +25,6 @@ It offers various methods which can be overridden to listen to events:
 - `providerDidFail`, when a synchronous provider throws an error
 
 <AutoSnippet raw={providerObserver} />
-
-:::caution
-At the moment, if an error in an asynchronous provider is thrown,
-the error will be received by the `didAddProvider`/`didUpdateProvider` methods
-instead, with an `AsyncError` as value.  
-Note that this will be changed in the version 3.0 of Riverpod.
-
-<AutoSnippet raw={asyncError} />
-
-:::
 
 ## Using a ProviderObserver
 
