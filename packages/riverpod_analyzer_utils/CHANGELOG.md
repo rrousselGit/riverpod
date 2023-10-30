@@ -1,3 +1,7 @@
+## 1.0.0-dev.0 - 2023-10-30
+
+- Added `GeneratorProviderDeclarationElement.isFamily`
+
 ## 0.4.3 - 2023-10-28
 
 - Added `GeneratorProviderDeclarationElement.isFamily`

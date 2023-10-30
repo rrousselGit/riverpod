@@ -1,3 +1,7 @@
+## 3.0.0-dev.8 - 2023-10-30
+
+- `riverpod_analyzer_utils` upgraded to `1.0.0-dev.0`
+
 ## 3.0.0-dev.7 - 2023-10-29
 
 - Providers can now be generic:
