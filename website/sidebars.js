@@ -288,6 +288,11 @@ module.exports = {
           label: "Clean Architecture demonstration with Riverpod",
           href: "https://github.com/Uuttssaavv/flutter-clean-architecture-riverpod",
         },
+        {
+          type: "link",
+          label: "Delivery App with Google Maps and Live Tracking",
+          href: "https://github.com/AhmedLSayed9/deliverzler",
+        },
       ],
     },
 
