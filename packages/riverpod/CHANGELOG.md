@@ -1,4 +1,4 @@
-## Unreleased build
+## Unreleased patch
 
 - Exceptions in asynchronous providers are now correctly received
   by `ProviderObserver.providerDidFail`.
