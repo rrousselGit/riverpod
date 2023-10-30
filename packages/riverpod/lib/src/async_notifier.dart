@@ -10,6 +10,7 @@ import 'listenable.dart';
 import 'notifier.dart';
 import 'pragma.dart';
 import 'result.dart';
+import 'run_guarded.dart';
 import 'stream_provider.dart';
 
 part 'async_notifier/auto_dispose.dart';
@@ -64,7 +65,7 @@ abstract class AsyncNotifierBase<State> {
   /// Obtains a [Future] that resolves with the first [state] value that is not
   /// [AsyncLoading].
   ///
-  /// This future will not necesserily wait for [AsyncNotifier.build] to complete.
+  /// This future will not necessarily wait for [AsyncNotifier.build] to complete.
   /// If [state] is modified before [AsyncNotifier.build] completes, then [future]
   /// will resolve with that new [state] value.
   ///
@@ -183,7 +184,7 @@ abstract class AsyncNotifierProviderBase<NotifierT extends AsyncNotifierBase<T>,
   ///
   /// ```dart
   /// Button(
-  ///   onTap: () => ref.read(stateNotifierProvider.notifer).increment(),
+  ///   onTap: () => ref.read(stateNotifierProvider.notifier).increment(),
   /// )
   /// ```
   ///

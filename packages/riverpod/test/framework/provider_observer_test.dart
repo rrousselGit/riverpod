@@ -288,8 +288,67 @@ void main() {
     });
 
     group('providerDidFail', () {
-      // is called when FutureProvider emits an error
-      // is called when StreamProvider emits an error
+      test('is called when FutureProvider emits an error', () async {
+        final observer = ObserverMock();
+        final container = createContainer(observers: [observer]);
+        final provider = FutureProvider(
+          (ref) => Future<void>.error('error', StackTrace.empty),
+        );
+
+        container.listen(provider, (_, __) {});
+        await container.read(provider.future).catchError((_) {});
+
+        verifyInOrder([
+          observer.didAddProvider(
+            provider,
+            const AsyncLoading<void>(),
+            container,
+          ),
+          observer.didUpdateProvider(
+            provider,
+            const AsyncLoading<void>(),
+            const AsyncError<void>('error', StackTrace.empty),
+            container,
+          ),
+          observer.providerDidFail(
+            provider,
+            'error',
+            StackTrace.empty,
+            container,
+          ),
+        ]);
+      });
+
+      test('is called when StreamProvider emits an error', () async {
+        final observer = ObserverMock();
+        final container = createContainer(observers: [observer]);
+        final provider = StreamProvider(
+          (ref) => Stream<void>.error('error', StackTrace.empty),
+        );
+
+        container.listen(provider, (_, __) {});
+        await container.read(provider.future).catchError((_) {});
+
+        verifyInOrder([
+          observer.didAddProvider(
+            provider,
+            const AsyncLoading<void>(),
+            container,
+          ),
+          observer.didUpdateProvider(
+            provider,
+            const AsyncLoading<void>(),
+            const AsyncError<void>('error', StackTrace.empty),
+            container,
+          ),
+          observer.providerDidFail(
+            provider,
+            'error',
+            StackTrace.empty,
+            container,
+          ),
+        ]);
+      });
 
       test('is called on uncaught error during first initialization', () {
         final observer = ObserverMock();
