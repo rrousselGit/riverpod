@@ -72,8 +72,6 @@ Long story short:
   }
   ```
 
-See the [FAQ](#FAQ) if you have questions about what this means for [provider].
-
 ## Contributing
 
 Contributions are welcome!
