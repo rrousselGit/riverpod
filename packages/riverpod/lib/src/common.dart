@@ -201,7 +201,7 @@ sealed class AsyncValue<T> {
   StackTrace? get stackTrace;
 
   String get _displayString;
-  
+
   /// Casts the [AsyncValue] to a different type.
   AsyncValue<R> _cast<R>();
 
