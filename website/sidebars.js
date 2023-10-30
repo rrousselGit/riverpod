@@ -44,7 +44,7 @@ module.exports = {
       type: "category",
       label: "Case studies",
       collapsible: false,
-      items: ["case_studies/pull_to_refresh"],
+      items: ["case_studies/pull_to_refresh", "case_studies/cancel"],
     },
     // {
     //   type: "link",
