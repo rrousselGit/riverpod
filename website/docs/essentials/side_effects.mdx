@@ -278,6 +278,29 @@ defined provider to a notifier:
 Note that the way of reading the provider inside widgets is unchanged.  
 You can still use `ref.watch(todoListProvider)` as with the previous syntax.
 
+:::caution
+Do not put logic in the constructor of your notifier.  
+Notifiers should not have a constructor, as `ref` and other properties aren't
+yet available at that point. Instead, put your logic in the `build` method.
+
+```dart
+class MyNotifier extends ... {
+  MyNotifier() {
+    // ❌ Don't do this
+    // This will throw an exception
+    state = AsyncValue.data(42);
+  }
+
+  @override
+  Result build() {
+    // ✅ Do this instead
+    state = AsyncValue.data(42);
+  }
+}
+```
+
+:::
+
 ## Exposing a method to perform a _POST_ request
 
 Now that we have a Notifier, we can start adding methods to enable
