@@ -123,6 +123,14 @@ void definitelyNotAMain() {
 }
 
 void someTestFunction() {
+  final rootContainer = ProviderContainer(
+    overrides: [
+      scopedProvider.overrideWith((ref) => 0),
+      unimplementedScopedProvider.overrideWith((ref) => 0),
+      rootProvider.overrideWith((ref) => 0),
+    ],
+  );
+
   testWidgets('override repositoryProvider in test', (tester) async {
     await tester.pumpWidget(
       ProviderScope(
@@ -132,6 +140,33 @@ void someTestFunction() {
           rootProvider.overrideWith((ref) => 0),
         ],
         child: Container(),
+      ),
+    );
+
+    await tester.pumpWidget(
+      ProviderScope(
+        parent: rootContainer,
+        overrides: [
+          scopedProvider.overrideWith((ref) => 0),
+          unimplementedScopedProvider.overrideWith((ref) => 0),
+          // expect_lint: scoped_providers_should_specify_dependencies
+          rootProvider.overrideWith((ref) => 0),
+        ],
+        child: Container(),
+      ),
+    );
+
+    await tester.pumpWidget(
+      Container(
+        child: ProviderScope(
+          overrides: [
+            scopedProvider.overrideWith((ref) => 0),
+            unimplementedScopedProvider.overrideWith((ref) => 0),
+            // expect_lint: scoped_providers_should_specify_dependencies
+            rootProvider.overrideWith((ref) => 0),
+          ],
+          child: Container(),
+        ),
       ),
     );
   });
