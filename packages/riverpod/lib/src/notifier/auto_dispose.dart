@@ -24,12 +24,12 @@ abstract class BuildlessAutoDisposeNotifier<State> extends NotifierBase<State> {
 /// {@macro riverpod.notifier_provider_modifier}
 abstract class AutoDisposeNotifier<State>
     extends BuildlessAutoDisposeNotifier<State> {
-  /// {@macro riverpod.asyncnotifier.build}
+  /// {@macro riverpod.async_notifier.build}
   @visibleForOverriding
   State build();
 }
 
-/// {@macro riverpod.providerrefbase}
+/// {@macro riverpod.provider_ref_base}
 abstract class AutoDisposeNotifierProviderRef<T>
     implements NotifierProviderRef<T>, AutoDisposeRef<T> {}
 
@@ -91,7 +91,7 @@ class AutoDisposeNotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
     return (notifier as AutoDisposeNotifier<T>).build();
   }
 
-  /// {@macro riverpod.overridewith}
+  /// {@macro riverpod.override_with}
   @mustBeOverridden
   Override overrideWith(NotifierT Function() create) {
     return ProviderOverride(

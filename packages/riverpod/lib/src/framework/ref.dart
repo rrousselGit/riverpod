@@ -1,6 +1,6 @@
 part of '../framework.dart';
 
-/// {@template riverpod.providerrefbase}
+/// {@template riverpod.provider_ref_base}
 /// An object used by providers to interact with other providers and the life-cycles
 /// of the application.
 ///

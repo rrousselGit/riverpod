@@ -49,7 +49,7 @@ class _StateReader {
       element.getState()!.map<void>(
         // ignore: avoid_types_on_closure_parameters
         data: (ResultData<Object?> data) {
-          for (final observer in container._observers) {
+          for (final observer in container.observers) {
             runTernaryGuarded(
               observer.didAddProvider,
               origin,
@@ -59,7 +59,7 @@ class _StateReader {
           }
         },
         error: (error) {
-          for (final observer in container._observers) {
+          for (final observer in container.observers) {
             runTernaryGuarded(
               observer.didAddProvider,
               origin,
@@ -67,7 +67,7 @@ class _StateReader {
               container,
             );
           }
-          for (final observer in container._observers) {
+          for (final observer in container.observers) {
             runQuaternaryGuarded(
               observer.providerDidFail,
               origin,
@@ -89,7 +89,7 @@ class _StateReader {
 
 var _debugVerifyDependenciesAreRespectedEnabled = true;
 
-/// {@template riverpod.providercontainer}
+/// {@template riverpod.provider_container}
 /// An object that stores the state of the providers and allows overriding the
 /// behavior of a specific provider.
 ///
@@ -98,7 +98,7 @@ var _debugVerifyDependenciesAreRespectedEnabled = true;
 /// {@endtemplate}
 @sealed
 class ProviderContainer implements Node {
-  /// {@macro riverpod.providercontainer}
+  /// {@macro riverpod.provider_container}
   ProviderContainer({
     ProviderContainer? parent,
     List<Override> overrides = const [],
@@ -106,9 +106,9 @@ class ProviderContainer implements Node {
   })  : _debugOverridesLength = overrides.length,
         depth = parent == null ? 0 : parent.depth + 1,
         _parent = parent,
-        _observers = [
+        observers = [
           ...?observers,
-          if (parent != null) ...parent._observers,
+          if (parent != null) ...parent.observers,
         ],
         _stateReaders = {
           if (parent != null)
@@ -164,7 +164,13 @@ class ProviderContainer implements Node {
   final _overrideForFamily = HashMap<Family, _FamilyOverrideRef>();
   final Map<ProviderBase<Object?>, _StateReader> _stateReaders;
 
-  final List<ProviderObserver> _observers;
+  /// The list of observers attached to this container.
+  ///
+  /// Observers can be useful for logging purpose.
+  ///
+  /// This list includes the observers of this container and that of its "parent"
+  /// too.
+  final List<ProviderObserver> observers;
 
   /// Whether [dispose] was called or not.
   ///
@@ -750,7 +756,7 @@ class ProviderOverride implements Override {
   /// The provider that is overridden.
   final ProviderBase<Object?> _origin;
 
-  /// The new provider behaviour.
+  /// The new provider behavior.
   final ProviderBase<Object?> _override;
 }
 

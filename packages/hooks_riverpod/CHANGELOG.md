@@ -6,6 +6,11 @@
 - **Breaking**: Removed everything marked as "deprecated"
 - Bumped minimum Dart SDK to >= 3.0.0-dev
 
+## Unreleased patch
+
+- Exceptions in asynchronous providers are now correctly received
+  by `ProviderObserver.providerDidFail`.
+
 ## 2.4.5 - 2023-10-28
 
 - Support assigning `AsyncValue<T>` to `AsyncNotifier<void>.state`
@@ -424,7 +429,7 @@ Riverpod is now stable!
 - **Breaking** The return value when reading a `StateProvider` changed.
   Before, doing `ref.read(someStateProvider)` would return the `StateController` instance.
   Now, this will only return the state of the `StateController`.
-  This new behaviour matches `StateNotifierProvider`.
+  This new behavior matches `StateNotifierProvider`.
 
   For a simple migration, the old behavior is available by writing
   `ref.read(someStateProvider.state)`.
@@ -1001,7 +1006,7 @@ Removed an assert that could cause issues when an application is partially migra
 
 ## 0.14.0+1
 
-- Re-added `StateProvider.overrideWithValue`/`StateProvider.overrideWithProvider` that were unvoluntarily removed.
+- Re-added `StateProvider.overrideWithValue`/`StateProvider.overrideWithProvider` that were involuntarily removed.
 
 ## 0.14.0
 

@@ -1,3 +1,11 @@
+## WIP
+
+
+## Unreleased patch
+
+- Exceptions in asynchronous providers are now correctly received
+  by `ProviderObserver.providerDidFail`.
+
 ## 3.0.0-dev.0 - 2023-10-29
 
 - **Breaking**: `AsyncValue` is now "sealed" and `AsyncData/AsyncLoading/AsyncError`

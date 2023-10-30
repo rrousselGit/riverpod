@@ -14,7 +14,7 @@ abstract class AutoDisposeFamilyNotifier<State, Arg>
     arg = element.origin.argument as Arg;
   }
 
-  /// {@macro riverpod.asyncnotifier.build}
+  /// {@macro riverpod.async_notifier.build}
   @visibleForOverriding
   State build(Arg arg);
 }
@@ -104,7 +104,7 @@ class AutoDisposeNotifierProviderFamily<
     required super.debugGetCreateSourceHash,
   }) : super(providerFactory: AutoDisposeFamilyNotifierProvider.internal);
 
-  /// {@macro riverpod.overridewith}
+  /// {@macro riverpod.override_with}
   Override overrideWith(NotifierT Function() create) {
     return FamilyOverrideImpl<T, Arg,
         AutoDisposeFamilyNotifierProvider<NotifierT, T, Arg>>(

@@ -1,6 +1,6 @@
 part of '../provider.dart';
 
-/// {@macro riverpod.providerrefbase}
+/// {@macro riverpod.provider_ref_base}
 /// - [state], the value currently exposed by this provider.
 abstract class ProviderRef<State> implements Ref<State> {
   /// Obtains the state currently exposed by this provider.
@@ -57,7 +57,7 @@ class Provider<State> extends InternalProvider<State>
   @override
   ProviderElement<State> createElement() => ProviderElement(this);
 
-  /// {@template riverpod.overridewith}
+  /// {@template riverpod.override_with}
   /// Override the provider with a new initialization function.
   ///
   /// This will also disable the auto-scoping mechanism, meaning that if the
@@ -369,7 +369,7 @@ class ProviderFamily<R, Arg>
     required super.debugGetCreateSourceHash,
   }) : super(providerFactory: Provider.internal);
 
-  /// {@macro riverpod.overridewith}
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     R Function(ProviderRef<R> ref, Arg arg) create,
   ) {

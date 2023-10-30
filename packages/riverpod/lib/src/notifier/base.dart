@@ -89,7 +89,7 @@ abstract class Notifier<State> extends BuildlessNotifier<State> {
   State build();
 }
 
-/// {@macro riverpod.providerrefbase}
+/// {@macro riverpod.provider_ref_base}
 abstract class NotifierProviderRef<T> implements Ref<T> {}
 
 /// {@template riverpod.notifier_provider}
@@ -160,7 +160,7 @@ class NotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
     return (notifier as Notifier<T>).build();
   }
 
-  /// {@macro riverpod.overridewith}
+  /// {@macro riverpod.override_with}
   @mustBeOverridden
   Override overrideWith(NotifierT Function() create) {
     return ProviderOverride(
