@@ -380,7 +380,6 @@ To fix this problem, you have one of two solutions:
       debugCanModifyProviders = null;
     }
 
-    // print('remove vsyncOverride');
     flutterVsyncs.remove(_flutterVsync);
 
     super.unmount();
