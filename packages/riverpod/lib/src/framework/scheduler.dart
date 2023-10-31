@@ -1,9 +1,14 @@
 part of '../framework.dart';
 
+/// A listener used to determine when providers should rebuild.
+/// This is used to synchronize provider rebuilds when widget rebuilds.
+@internal
+typedef Vsync = void Function(void Function());
+
 /// A way to override [vsync], used by Flutter to synchronize a container
 /// with the widget tree.
 @internal
-void Function(void Function() task)? vsyncOverride;
+final flutterVsyncs = <Vsync>{};
 
 void _defaultVsync(void Function() task) {
   Future(task);
@@ -14,7 +19,25 @@ void _defaultVsync(void Function() task) {
 /// Defaults to refreshing providers at the end of the next event-loop.
 @internal
 void Function(void Function()) get vsync {
-  return vsyncOverride ?? _defaultVsync;
+  if (flutterVsyncs.isNotEmpty) {
+    // Notify all InheritedWidgets of a possible rebuild.
+    // At the same time, we only execute the task once, in whichever
+    // InheritedWidget that rebuilds first.
+    return (task) {
+      var invoked = false;
+      void invoke() {
+        if (invoked) return;
+        invoked = true;
+        task();
+      }
+
+      for (final flutterVsync in flutterVsyncs) {
+        flutterVsync(invoke);
+      }
+    };
+  }
+
+  return _defaultVsync;
 }
 
 /// The object that handles when providers are refreshed and disposed.
