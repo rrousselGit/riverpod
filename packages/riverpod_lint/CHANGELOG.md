@@ -1,3 +1,7 @@
+## Unreleased patch
+
+- Updated `scoped_providers_should_specify_dependencies` to ignore instances of using pumpWidget in tests (thanks to [lockieRichter](https://github.com/lockieRichter))
+
 ## 2.3.3 - 2023-10-28
 
 - `riverpod` upgraded to `2.4.5`
