@@ -305,7 +305,7 @@ class _UncontrolledProviderScopeElement extends InheritedElement {
       debugCanModifyProviders ??= _debugCanModifyProviders;
     }
 
-    vsyncOverride ??= _flutterVsync;
+    flutterVsyncs.add(_flutterVsync);
     super.mount(parent, newSlot);
   }
 
@@ -380,9 +380,7 @@ To fix this problem, you have one of two solutions:
       debugCanModifyProviders = null;
     }
 
-    if (vsyncOverride == _flutterVsync) {
-      vsyncOverride = null;
-    }
+    flutterVsyncs.remove(_flutterVsync);
 
     super.unmount();
   }

@@ -10,6 +10,43 @@ import 'package:mockito/mockito.dart';
 import 'utils.dart';
 
 void main() {
+  testWidgets('Supports recreating ProviderScope', (tester) async {
+    final provider = Provider<String>((ref) => 'foo');
+
+    await tester.pumpWidget(
+      ProviderScope(
+        child: Consumer(
+          builder: (context, ref, _) {
+            ref.watch(provider);
+            return Consumer(
+              builder: (context, ref, _) {
+                ref.watch(provider);
+                return Container();
+              },
+            );
+          },
+        ),
+      ),
+    );
+
+    await tester.pumpWidget(
+      ProviderScope(
+        key: UniqueKey(),
+        child: Consumer(
+          builder: (context, ref, _) {
+            ref.watch(provider);
+            return Consumer(
+              builder: (context, ref, _) {
+                ref.watch(provider);
+                return Container();
+              },
+            );
+          },
+        ),
+      ),
+    );
+  });
+
   testWidgets('ref.invalidate can invalidate a family', (tester) async {
     final listener = Listener<String>();
     final listener2 = Listener<String>();
@@ -248,7 +285,7 @@ void main() {
       (tester) async {
     final container = createContainer();
 
-    expect(vsyncOverride, null);
+    expect(flutterVsyncs, isEmpty);
 
     await tester.pumpWidget(
       UncontrolledProviderScope(
@@ -257,11 +294,71 @@ void main() {
       ),
     );
 
-    expect(vsyncOverride, isNotNull);
+    expect(flutterVsyncs, hasLength(1));
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: ProviderScope(
+          child: Container(),
+        ),
+      ),
+    );
+
+    expect(flutterVsyncs, hasLength(2));
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: Container(),
+      ),
+    );
+
+    expect(flutterVsyncs, hasLength(1));
 
     await tester.pumpWidget(Container());
 
-    expect(vsyncOverride, null);
+    expect(flutterVsyncs, isEmpty);
+  });
+
+  testWidgets('When there are multiple vsyncs, rebuild providers only once',
+      (tester) async {
+    var buildCount = 0;
+    final dep = StateProvider((ref) => 0);
+    final provider = Provider((ref) {
+      buildCount++;
+      return ref.watch(dep);
+    });
+
+    await tester.pumpWidget(
+      Directionality(
+        textDirection: TextDirection.ltr,
+        child: ProviderScope(
+          child: ProviderScope(
+            child: Consumer(
+              builder: (context, ref, _) {
+                return Text('Hello ${ref.watch(provider)}');
+              },
+            ),
+          ),
+        ),
+      ),
+    );
+
+    expect(buildCount, 1);
+    expect(find.text('Hello 0'), findsOneWidget);
+    expect(find.text('Hello 1'), findsNothing);
+
+    final consumerElement = tester.element(find.byType(Consumer));
+    final container = ProviderScope.containerOf(consumerElement);
+
+    container.read(dep.notifier).state++;
+
+    await tester.pump();
+
+    expect(buildCount, 2);
+    expect(find.text('Hello 1'), findsOneWidget);
+    expect(find.text('Hello 0'), findsNothing);
   });
 
   testWidgets(
