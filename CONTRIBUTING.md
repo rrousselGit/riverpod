@@ -51,7 +51,7 @@ Feel free to look at existing pages to see how they work.
 ### Installing the website locally
 
 The docs uses [node](https://nodejs.org/fr) and [yarn](https://yarnpkg.com/).  
-You will need to install install both and run:
+You will need to install both and run:
 
 ```sh
 yarn install
