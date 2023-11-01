@@ -1,0 +1,60 @@
+---
+title: Perché Riverpod?
+version: 1
+---
+
+import whyRiverpod from "./why_riverpod";
+import { AutoSnippet } from "../../../../../src/components/CodeSnippet";
+
+## Che cos'è Riverpod?
+
+Riverpod (un anagramma di [Provider](https://pub.dev/packages/provider)) è un framework reattivo con cache per Flutter/Dart.
+
+Utilizzando la programmazione dichiarativa e reattiva, Riverpod è in grado di gestire 
+una grande parte della logica della tua applicazione per te. 
+Può effettuare richieste di rete con gestione degli errori e caching integrati, mentre ri-scarica automaticamente i dati quando necessario.
+
+## Motivazione
+
+Le applicazioni moderne raramente dispongono subito di tutte le informazioni necessarie per renderizzare la loro interfaccia utente. 
+Al contrario, i dati vengono spesso recuperati in modo asincrono da un server.
+
+Il problema è che lavorare con il codice asincrono è complesso. Anche se Flutter fornisce alcuni modi 
+per creare variabili di stato e aggiornare l'interfaccia utente in caso di modifiche, 
+le possibilità rimangono limitate. Alcune sfide rimangono irrisolte:
+
+- Le richieste asincrone devono essere memorizzate in cache localmente, 
+poiché sarebbe irragionevole eseguirle nuovamente ogni volta che l'interfaccia utente viene aggiornata.
+- Dato che disponiamo di una cache, la nostra cache potrebbe diventare obsoleta se non siamo attenti.
+- È inoltre necessario gestire errori e stati di caricamento.
+
+Affrontare tali problemi su larga scala può essere complicato e possono essere influenzati da numerose caratteristiche, come ad esempio:
+
+- aggiornamento con trascinamento verso il basso (pull to refresh)
+- liste infinite / recupero dati man mano che si scorre (infinite lists / fetch as we scroll)
+- ricerca in tempo reale mentre si digita (search as we type)
+- ritardo nella richiesta asincrona (debouncing asynchronous requests)
+- annullamento delle richieste asincrone quando non sono più necessarie
+- UI ottimistica
+- modalità offline
+- ...
+
+Queste funzionalità possono essere complesse da implementare, ma sono cruciali per una buona esperienza utente. 
+Tuttavia, pochi package cercano di affrontare direttamente questi problemi, e gran parte del lavoro 
+deve essere svolto manualmente.
+
+Ecco dove entra in gioco Riverpod.
+Riverpod cerca di risolvere questi problemi offrendo un nuovo e unico modo di scrivere la business logic, 
+ispirato ai widget di Flutter.
+In molti modi, Riverpod è paragonabile ai widget, ma per lo stato.
+
+Utilizzando questo nuovo approccio, queste funzionalità complesse sono per lo più gestite già di default.
+Tutto ciò che rimane è concentrarsi sulla tua interfaccia utente.
+
+Se sei scettico, ecco un esempio. Il seguente snippet è una semplificazione dell'applicazione client 
+[Pub.dev](https://github.com/rrousselGit/riverpod/tree/master/examples/pub) implementata con Riverpod.
+
+<AutoSnippet language="dart" {...whyRiverpod}></AutoSnippet>
+
+Questo snippet contiene tutta la business logic necessaria per una funzionalità di "ricerca in tempo reale" + 
+"aggiornamento con trascinamento verso il basso" + "lista infinita", gestendo anche gli stati di errore e caricamento.
