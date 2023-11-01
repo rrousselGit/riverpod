@@ -1,3 +1,9 @@
+## Unreleased patch
+
+- Exceptions in asynchronous providers are now correctly received
+  by `ProviderObserver.providerDidFail`.
+- Fix exception when a `ProviderScope` is rebuilt with a different `key`.
+
 ## 2.4.5 - 2023-10-28
 
 - Support assigning `AsyncValue<T>` to `AsyncNotifier<void>.state`

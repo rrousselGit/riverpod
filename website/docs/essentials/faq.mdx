@@ -152,3 +152,32 @@ user's state to `ref.watch` the "user" provider.
 
 Then, when the user logs out, all providers depending on it would automatically
 be reset. But everything else will stay untouched.
+
+## I have the error "Cannot use "ref" after the widget was disposed", what's wrong?
+
+You might also see "Bad state: No ProviderScope found", which is an older
+error message of the same issue.
+
+This error happens when you try to use `ref` in a widget that is no longer
+mounted. This generally happens after an `await`:
+
+```dart
+ElevatedButton(
+  onPressed: () async {
+    await future;
+    ref.read(...); // May throw "Cannot use "ref" after the widget was disposed"
+  }
+)
+```
+
+The solution is to, like with `BuildContext`, check `mounted` before using `ref`:
+
+```dart
+ElevatedButton(
+  onPressed: () async {
+    await future;
+    if (!context.mounted) return;
+    ref.read(...); // No longer throws
+  }
+)
+```

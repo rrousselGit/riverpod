@@ -26,7 +26,8 @@ export 'src/framework.dart'
     hide
         debugCanModifyProviders,
         vsync,
-        vsyncOverride,
+        flutterVsyncs,
+        Vsync,
         ValueProviderElement,
         ValueProvider,
         FamilyCreate,

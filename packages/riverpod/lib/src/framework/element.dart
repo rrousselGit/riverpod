@@ -316,7 +316,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   /// - a dependency of the provider has changed (such as when using [watch]).
   ///
   /// This is not meant for public consumption. Public API should hide
-  /// [flush] from users, such that they don't need to care about invocing this function.
+  /// [flush] from users, such that they don't need to care about invoking this function.
   @internal
   void flush() {
     _maybeRebuildDependencies();
@@ -570,7 +570,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       _providerDependents[i]._markDependencyChanged();
     }
 
-    for (final observer in _container._observers) {
+    for (final observer in _container.observers) {
       runQuaternaryGuarded(
         observer.didUpdateProvider,
         provider,
@@ -580,7 +580,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       );
     }
 
-    for (final observer in _container._observers) {
+    for (final observer in _container.observers) {
       newState.map(
         data: (_) {},
         error: (newState) {
@@ -931,7 +931,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
     _onDisposeListeners?.forEach(runGuarded);
 
-    for (final observer in _container._observers) {
+    for (final observer in _container.observers) {
       runBinaryGuarded(
         observer.didDisposeProvider,
         _origin,

@@ -97,7 +97,7 @@ class AutoDisposeStreamNotifierProviderFamily<
           debugGetCreateSourceHash: null,
         );
 
-  /// {@macro riverpod.overridewith}
+  /// {@macro riverpod.override_with}
   Override overrideWith(NotifierT Function() create) {
     return FamilyOverrideImpl<AsyncValue<T>, Arg,
         AutoDisposeFamilyStreamNotifierProvider<NotifierT, T, Arg>>(
