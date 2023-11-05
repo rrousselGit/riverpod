@@ -29,11 +29,11 @@ class Home extends StatelessWidget {
           /// Since network-requests are asynchronous and can fail, we need to
           /// handle both error and loading states. We can use pattern matching for this.
           /// We could alternatively use `if (activity.isLoading) { ... } else if (...)`
-          child: switch (activity) {
-            AsyncData(:final value) => Text('Activity: ${value.activity}'),
-            AsyncError() => const Text('Oops, something unexpected happened'),
-            _ => const CircularProgressIndicator(),
-          },
+          child: activity.when(
+              data: (value) => Text('Activity: ${value.activity}'),
+              error: (e, st) =>
+              const Text('Oops, something unexpected happened'),
+              loading: () =>const CircularProgressIndicator()),
         );
       },
     );
