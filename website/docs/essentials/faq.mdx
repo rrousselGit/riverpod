@@ -38,8 +38,8 @@ Whereas if we call `invalidate` but don't read it right after,
 then the update will trigger _later_.
 
 That "later" update is generally at the start of the next frame.
-Yet if invalidating a provider which is currently not listened,
-then the provider will not be updated until it is listened again.
+Yet, if a provider that is currently not being listened to is invalidated, 
+it will not be updated until it is listened to again.
 
 ## Why is there no shared interface between Ref and WidgetRef?
 
@@ -59,26 +59,26 @@ It is effectively putting your logic in the UI layer, which is not recommended.
 Such code should be refactored to **always** use `Ref`.
 
 The solution to this problem is typically to move your logic
-into a `Notifier` (see <Link documentID="essentials/side_effects" />).  
-And then have your logic be a method of that `Notifier`.
+into a `Notifier` (see <Link documentID="essentials/side_effects" />), 
+and then have your logic be a method of that `Notifier`.
 
 This way, when your widgets want to invoke this logic, they can
-write something among the line of:
+write something along the lines of:
 
 ```dart
 ref.read(yourNotifierProvider.notifier).yourMethod();
 ```
 
-And `yourMethod` would use the `Notifier`'s` `Ref` to interact with other providers.
+`yourMethod` would use the `Notifier`'s `Ref` to interact with other providers.
 
 ## Why do we need to extend ConsumerWidget instead of using the raw StatelessWidget?
 
-This is due to an unfortunate limitation in the API of `InheritedWidget`s.
+This is due to an unfortunate limitation in the API of `InheritedWidget`.
 
 There are a few problems:
 
 - It is not possible to implement an "on change" listener with `InheritedWidget`.
-  Meaning that something such as `ref.listen` cannot be used with `BuildContext`.
+  That means that something such as `ref.listen` cannot be used with `BuildContext`.
 
   `State.didChangeDependencies` is the closest thing to it, but it is not reliable.
   One issue is that the life-cycle can be triggered even if no dependency changed,
@@ -87,21 +87,21 @@ There are a few problems:
 - Widgets listening to an `InheritedWidget` never stop listening to it.
   This is usually fine for pure metadata, such as "theme" or "media query".
 
-  But for business logic, this is a problem.
+  For business logic, this is a problem.
   Say you use a provider to represent a paginated API.
-  As the page offset changes, you wouldn't want your widget to keep listening
+  When the page offset changes, you wouldn't want your widget to keep listening
   to the previously visible pages.
 
 - `InheritedWidget` has no way to track when widgets stop listening to them.
-  Riverpod sometimes rely on tracking whether a provider is listened to or not.
+  Riverpod sometimes relies on tracking whether or not a provider is being listened to.
 
-Those are crutial for both the auto dispose mechanism and the ability to
+This functionality is crucial for both the auto dispose mechanism and the ability to
 pass arguments to providers.  
-And those features are what makes Riverpod so powerful.
+Those features are what make Riverpod so powerful.
 
-Maybe in a distant future, those issues would be fixed. In that case,
+Maybe in a distant future, those issues will be fixed. In that case,
 Riverpod would migrate to using `BuildContext` instead of `Ref`.
-That would enable using `StatelessWidget` instead of `ConsumerWidget`.  
+This would enable using `StatelessWidget` instead of `ConsumerWidget`.  
 But that's for another time!
 
 ## Why doesn't hooks_riverpod exports flutter_hooks?
@@ -117,23 +117,23 @@ in one but not the other.
 Notifiers use `identical` instead of `==` to filter updates.
 
 This is because it is quite common for Riverpod users to also use a code-generator
-such as Freezed/built_value for the sake of a copyWith implementation. But they
-also override == to deeply compare objects. But a deep object comparison is quite costly.
+such as Freezed/built_value for the sake of a copyWith implementation. Those packages
+override `==` to deeply compare objects. A deep object comparison is quite costly.
 "Business logic" models tend to have lots of properties. Worse, they also have collections
-(lists/maps/...).
+such as lists, maps, and so on.
 
 At the same time, when using complex "business" objects, most `state = newState` invocations
-always result in a notification (otherwise no point in calling the setter). Generally, the main
+always result in a notification (otherwise there is no point in calling the setter). Generally, the main
 case where we call `state = newState` when the current state and new states are equal is
 for primitive objects (ints, enums, strings, but not lists/classes/...).
-But these objects are "canonicalized by default". So if such objects are equal,
+These objects are "canonicalized by default". If such objects are equal,
 they generally are also "identical".
 
-Riverpod using identical to filter updates is therefore an attempt at having
+Riverpod using `identical` to filter updates is therefore an attempt at having
 a good default for both worlds. For complex objects where we don't really care
-about filtering objects and where == may be expensive due to code-generators
+about filtering objects and where `==` may be expensive due to code-generators
 generating an `==` override by default, using `identical` provides an efficient way of notifying listeners.
-At the same time, for simple objects, `identical` correctly does filter redundant notifications.
+At the same time, for simple objects, `identical` does correctly filter redundant notifications.
 
 Last but not least, you can change this behavior by overriding the method
 `updateShouldNotify` on Notifiers.
@@ -147,11 +147,11 @@ at once will often reset providers that you did not intend to reset.
 
 This is commonly asked by users who want to reset the state of their application
 when the user logs out.  
-If this is what you are after, instead you should have everything dependent on the
+If this is what you are after, you should instead have everything dependent on the
 user's state to `ref.watch` the "user" provider.
 
 Then, when the user logs out, all providers depending on it would automatically
-be reset. But everything else will stay untouched.
+be reset but everything else would remain untouched.
 
 ## I have the error "Cannot use "ref" after the widget was disposed", what's wrong?
 

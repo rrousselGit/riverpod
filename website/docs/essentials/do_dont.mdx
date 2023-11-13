@@ -9,7 +9,7 @@ To ensure good maintainability of your code, here is a list of good practices
 you should follow when using Riverpod.
 
 This list is not exhaustive, and is subject to change.  
-If you have any suggestion, feel free to [open an issue](https://github.com/rrousselGit/riverpod/issues/new?assignees=rrousselGit&labels=documentation%2C+needs+triage&projects=&template=example_request.md&title=).
+If you have any suggestions, feel free to [open an issue](https://github.com/rrousselGit/riverpod/issues/new?assignees=rrousselGit&labels=documentation%2C+needs+triage&projects=&template=example_request.md&title=).
 
 Items in this list are not in any particular order.
 
@@ -17,7 +17,7 @@ A good portion of these recommendations can be enforced with [riverpod_lint](htt
 See <Link documentID="introduction/getting_started" hash="enabling-riverpod_lintcustom_lint"/>
 for installation instructions.
 
-## AVOID having to intialize providers in a widget
+## AVOID initializing providers in a widget
 
 Providers should initialize themselves.  
 They should not be initialized by an external element such as a widget.
@@ -40,8 +40,8 @@ class WidgetState extends State<MyWidget> {
 **CONSIDER**
 
 There is no "one-size fits all" solution to this problem.  
-But if your initialization logic depends on factors external to the provider,
-often, the correct place to put such logic is in the `onPressed` of a button
+If your initialization logic depends on factors external to the provider,
+often the correct place to put such logic is in the `onPressed` method of a button
 triggering navigation:
 
 ```dart
@@ -71,7 +71,7 @@ One reason why this is discouraged is that such state is often scoped to a route
 Failing to do so could break your app's back button, due to a new page overriding
 the state of a previous page.
 
-## DON'T perform side effects during the initialisation of a provider
+## DON'T perform side effects during the initialization of a provider
 
 Providers should generally be used to represent a "read" operation.
 You should not use them for "write" operations, such as submitting a form.
