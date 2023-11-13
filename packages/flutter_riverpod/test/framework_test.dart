@@ -47,26 +47,29 @@ void main() {
     );
   });
 
-  testWidgets('Supports multiple ProviderScopes in the same tree', (tester) async {
+  testWidgets('Supports multiple UncontrolledProviderScopes in the same tree', (tester) async {
     await tester.pumpWidget(
-      Column(
-        mainAxisSize: MainAxisSize.min,
-        children: List.generate(
-          3,
-          (index) => SizedBox(
-            width: 100,
-            height: 100,
-            child: ProviderScope(
-              child: Consumer(
-                builder: (context, ref, _) {
-                  ref.watch(multipleFutureProvider);
-                  ref.watch(multipleProviderScopeNotifierProvider);
-                  return Container();
-                },
+      ProviderScope(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: List.generate(3, (index) {
+            final container = ProviderContainer();
+            return SizedBox(
+              width: 100,
+              height: 100,
+              child: UncontrolledProviderScope(
+                container: container,
+                child: Consumer(
+                  builder: (context, ref, _) {
+                    ref.watch(multipleFutureProvider);
+                    ref.watch(multipleProviderScopeNotifierProvider);
+                    return Container();
+                  },
+                ),
               ),
-            ),
-          ),
-        ).toList(),
+            );
+          }).toList(),
+        ),
       ),
     );
   });
