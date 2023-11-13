@@ -32,6 +32,25 @@ void main() {
 
   for (final factory in matrix()) {
     group(factory.label, () {
+      test('Cannot share a Notifier instance between providers ', () {
+        final container = createContainer();
+        final notifier = factory.notifier((ref) => Stream.value(0));
+
+        final provider = factory.provider<StreamTestNotifierBase<int>, int>(
+          () => notifier,
+        );
+        final provider2 = factory.provider<StreamTestNotifierBase<int>, int>(
+          () => notifier,
+        );
+
+        container.read(provider);
+
+        expect(
+          container.read(provider2),
+          isA<AsyncError<int>>(),
+        );
+      });
+
       test('Can read state inside onDispose', () {
         final container = createContainer();
         late StreamTestNotifierBase<int> notifier;
