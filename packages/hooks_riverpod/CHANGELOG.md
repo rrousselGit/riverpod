@@ -786,7 +786,7 @@ Fix an issue where `*Provider.autoDispose` were not able to specify the
 ### Bug-fixes
 
 - fixed a bug where providers were rebuilding even when not listened to
-- fixed `ref.listen` now working when downcasting the value of a provider.
+- fixed `ref.listen` now working when downcasing the value of a provider.
 - fixed a bug where disposing a scoped `ProviderContainer` could cause other
   `ProviderContainer`s to stop working.
 - fixed an issue where conditionally depending on an "autoDispose" provider
@@ -1435,3 +1435,5 @@ The behavior is the same. Only the syntax changed.
 ## 0.1.0
 
 Initial release
+
+<!-- cSpell:ignoreRegExp @\w+ -->
