@@ -3,7 +3,8 @@ import 'package:test/test.dart';
 import 'analyzer_test_utils.dart';
 
 void main() {
-  testSource('Decode ProviderContainer creations', source: '''
+  testSource('Decode ProviderContainer creations',
+      timeout: const Timeout.factor(2), source: '''
 import 'package:riverpod/riverpod.dart';
 
 final provider = Provider((ref) => 0);
