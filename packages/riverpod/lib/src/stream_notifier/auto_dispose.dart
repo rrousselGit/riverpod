@@ -7,17 +7,25 @@ part of '../async_notifier.dart';
 abstract class BuildlessAutoDisposeStreamNotifier<State>
     extends AsyncNotifierBase<State> {
   @override
-  late final AutoDisposeStreamNotifierProviderElement<AsyncNotifierBase<State>,
-      State> _element;
+  AutoDisposeStreamNotifierProviderElement<AsyncNotifierBase<State>, State>?
+      _element;
 
   @override
-  void _setElement(ProviderElementBase<AsyncValue<State>> element) {
+  void _setElement(ProviderElementBase<AsyncValue<State>>? element) {
+    if (_element != null && element != null) {
+      throw StateError(alreadyInitializedError);
+    }
     _element = element as AutoDisposeStreamNotifierProviderElement<
-        AsyncNotifierBase<State>, State>;
+        AsyncNotifierBase<State>, State>?;
   }
 
   @override
-  AutoDisposeStreamNotifierProviderRef<State> get ref => _element;
+  AutoDisposeStreamNotifierProviderRef<State> get ref {
+    final element = _element;
+    if (element == null) throw StateError(uninitializedElementError);
+
+    return element;
+  }
 }
 
 /// {@macro riverpod.streamNotifier}

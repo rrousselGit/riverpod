@@ -6,17 +6,24 @@ part of '../async_notifier.dart';
 @internal
 abstract class BuildlessAsyncNotifier<State> extends AsyncNotifierBase<State> {
   @override
-  late final AsyncNotifierProviderElement<AsyncNotifierBase<State>, State>
-      _element;
+  AsyncNotifierProviderElement<AsyncNotifierBase<State>, State>? _element;
 
   @override
-  void _setElement(ProviderElementBase<AsyncValue<State>> element) {
+  void _setElement(ProviderElementBase<AsyncValue<State>>? element) {
+    if (_element != null && element != null) {
+      throw StateError(alreadyInitializedError);
+    }
     _element = element
-        as AsyncNotifierProviderElement<AsyncNotifierBase<State>, State>;
+        as AsyncNotifierProviderElement<AsyncNotifierBase<State>, State>?;
   }
 
   @override
-  AsyncNotifierProviderRef<State> get ref => _element;
+  AsyncNotifierProviderRef<State> get ref {
+    final element = _element;
+    if (element == null) throw StateError(uninitializedElementError);
+
+    return element;
+  }
 }
 
 /// {@template riverpod.async_notifier}
@@ -231,18 +238,16 @@ mixin FutureHandlerProviderElementMixin<T>
   /// has yet to complete.
   @internal
   void onError(AsyncError<T> value, {bool seamless = false}) {
-    if (mounted) {
-      asyncTransition(value, seamless: seamless);
+    asyncTransition(value, seamless: seamless);
 
-      for (final observer in container.observers) {
-        runQuaternaryGuarded(
-          observer.providerDidFail,
-          provider,
-          value.error,
-          value.stackTrace,
-          container,
-        );
-      }
+    for (final observer in container.observers) {
+      runQuaternaryGuarded(
+        observer.providerDidFail,
+        provider,
+        value.error,
+        value.stackTrace,
+        container,
+      );
     }
 
     final completer = _futureCompleter;
@@ -256,7 +261,7 @@ mixin FutureHandlerProviderElementMixin<T>
         );
       _futureCompleter = null;
       // TODO SynchronousFuture.error
-    } else if (mounted) {
+    } else {
       futureNotifier.result = Result.data(
         // TODO test ignore
         Future.error(
@@ -273,15 +278,13 @@ mixin FutureHandlerProviderElementMixin<T>
   /// has yet to complete.
   @internal
   void onData(AsyncData<T> value, {bool seamless = false}) {
-    if (mounted) {
-      asyncTransition(value, seamless: seamless);
-    }
+    asyncTransition(value, seamless: seamless);
 
     final completer = _futureCompleter;
     if (completer != null) {
       completer.complete(value.value);
       _futureCompleter = null;
-    } else if (mounted) {
+    } else {
       futureNotifier.result = Result.data(Future.value(value.value));
     }
   }
@@ -507,6 +510,12 @@ abstract class AsyncNotifierProviderElementBase<
     return _notifierNotifier.result?.stateOrNull
             ?.updateShouldNotify(previous, next) ??
         true;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _notifierNotifier.result?.stateOrNull?._setElement(null);
   }
 }
 

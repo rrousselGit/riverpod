@@ -12,14 +12,36 @@ part 'notifier/auto_dispose_family.dart';
 part 'notifier/base.dart';
 part 'notifier/family.dart';
 
+/// An error thrown if a Notifier is associated multiple times with a provider.
+@internal
+const alreadyInitializedError = '''
+A NotifierProvider returned a Notifier instance that is already associated
+with another provider.
+
+To fix, do not reuse the same Notifier instance multiple times.
+NotifierProviders are expected to always create a new Notifier instance.
+''';
+
+/// The error message for when a notifier is used when uninitialized.
+@internal
+const uninitializedElementError = '''
+Tried to use a notifier in an uninitialized state.
+This means that you tried to either:
+- Use ref/state inside the constructor of a notifier.
+  In this case you should move your logic inside the "build" method instead.
+- Use ref/state after the notifier was disposed.
+  In this case, consider using `ref.onDispose` earlier in your notifier's lifecycle
+  to abort any pending logic that could try to use `ref/state`.
+''';
+
 /// A base class for [NotifierBase].
 ///
 /// Not meant for public consumption.
 @internal
 abstract class NotifierBase<State> {
-  NotifierProviderElement<NotifierBase<State>, State> get _element;
+  NotifierProviderElement<NotifierBase<State>, State>? get _element;
 
-  void _setElement(ProviderElementBase<State> element);
+  void _setElement(ProviderElementBase<State>? element);
 
   /// The value currently exposed by this [Notifier].
   ///
@@ -35,8 +57,11 @@ abstract class NotifierBase<State> {
   @protected
   @visibleForTesting
   State get state {
-    _element.flush();
-    return _element.requireState;
+    final element = _element;
+    if (element == null) throw StateError(uninitializedElementError);
+
+    element.flush();
+    return element.requireState;
   }
 
   /// The value currently exposed by this [Notifier].
@@ -52,15 +77,21 @@ abstract class NotifierBase<State> {
   @protected
   @visibleForTesting
   State? get stateOrNull {
-    _element.flush();
-    return _element.getState()?.stateOrNull;
+    final element = _element;
+    if (element == null) throw StateError(uninitializedElementError);
+
+    element.flush();
+    return element.getState()?.stateOrNull;
   }
 
   @protected
   @visibleForTesting
   set state(State value) {
+    final element = _element;
+    if (element == null) throw StateError(uninitializedElementError);
+
     // ignore: invalid_use_of_protected_member
-    _element.setState(value);
+    element.setState(value);
   }
 
   /// The [Ref] from the provider associated with this [Notifier].

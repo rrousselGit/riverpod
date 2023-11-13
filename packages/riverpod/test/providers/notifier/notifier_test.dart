@@ -11,6 +11,38 @@ import 'factory.dart';
 void main() {
   for (final factory in matrix()) {
     group(factory.label, () {
+      test('Can read state inside onDispose', () {
+        final container = createContainer();
+        late TestNotifierBase<int> notifier;
+        final provider = factory.simpleTestProvider((ref) {
+          ref.onDispose(() {
+            notifier.state;
+          });
+          return 0;
+        });
+
+        container.listen(provider.notifier, (prev, next) {});
+        notifier = container.read(provider.notifier);
+
+        container.dispose();
+      });
+
+      test('Using the notifier after dispose throws', () {
+        final container = createContainer();
+        final provider = factory.simpleTestProvider((ref) => 0);
+
+        container.listen(provider.notifier, (prev, next) {});
+        final notifier = container.read(provider.notifier);
+
+        container.dispose();
+
+        expect(() => notifier.state, throwsStateError);
+        expect(() => notifier.stateOrNull, throwsStateError);
+        expect(() => notifier.state = 42, throwsStateError);
+        // ignore: invalid_use_of_protected_member
+        expect(() => notifier.ref, throwsStateError);
+      });
+
       test(
           'throws if the same Notifier instance is reused in different providers',
           () {

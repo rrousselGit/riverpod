@@ -6,17 +6,24 @@ part of '../async_notifier.dart';
 @internal
 abstract class BuildlessStreamNotifier<State> extends AsyncNotifierBase<State> {
   @override
-  late final StreamNotifierProviderElement<AsyncNotifierBase<State>, State>
-      _element;
+  StreamNotifierProviderElement<AsyncNotifierBase<State>, State>? _element;
 
   @override
-  void _setElement(ProviderElementBase<AsyncValue<State>> element) {
+  void _setElement(ProviderElementBase<AsyncValue<State>>? element) {
+    if (_element != null && element != null) {
+      throw StateError(alreadyInitializedError);
+    }
     _element = element
-        as StreamNotifierProviderElement<AsyncNotifierBase<State>, State>;
+        as StreamNotifierProviderElement<AsyncNotifierBase<State>, State>?;
   }
 
   @override
-  StreamNotifierProviderRef<State> get ref => _element;
+  StreamNotifierProviderRef<State> get ref {
+    final element = _element;
+    if (element == null) throw StateError(uninitializedElementError);
+
+    return element;
+  }
 }
 
 /// {@template riverpod.streamNotifier}

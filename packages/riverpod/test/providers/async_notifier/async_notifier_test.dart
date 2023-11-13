@@ -13,6 +13,39 @@ import 'factory.dart';
 void main() {
   for (final factory in matrix()) {
     group(factory.label, () {
+      test('Can read state inside onDispose', () {
+        final container = createContainer();
+        late AsyncTestNotifierBase<int> notifier;
+        final provider = factory.simpleTestProvider((ref) {
+          ref.onDispose(() {
+            notifier.state;
+          });
+          return 0;
+        });
+
+        container.listen(provider.notifier, (prev, next) {});
+        notifier = container.read(provider.notifier);
+
+        container.dispose();
+      });
+
+      test('Using the notifier after dispose throws', () {
+        final container = createContainer();
+        final provider = factory.simpleTestProvider((ref) => 0);
+
+        container.listen(provider.notifier, (prev, next) {});
+        final notifier = container.read(provider.notifier);
+
+        container.dispose();
+
+        expect(() => notifier.state, throwsStateError);
+        expect(() => notifier.future, throwsStateError);
+        expect(() => notifier.state = const AsyncData(42), throwsStateError);
+        // ignore: invalid_use_of_protected_member
+        expect(() => notifier.ref, throwsStateError);
+        expect(() => notifier.update((p1) => 42), throwsStateError);
+      });
+
       test('Can assign `AsyncLoading<T>` to `AsyncValue<void>`', () {
         // Regression test for https://github.com/rrousselGit/riverpod/issues/2120
         final provider = factory.simpleTestProvider<void>((ref) => 42);

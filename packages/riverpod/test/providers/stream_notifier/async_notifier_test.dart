@@ -13,6 +13,39 @@ import 'factory.dart';
 void main() {
   for (final factory in matrix()) {
     group(factory.label, () {
+      test('Can read state inside onDispose', () {
+        final container = createContainer();
+        late StreamTestNotifierBase<int> notifier;
+        final provider = factory.simpleTestProvider((ref) {
+          ref.onDispose(() {
+            notifier.state;
+          });
+          return Stream.value(0);
+        });
+
+        container.listen(provider.notifier, (prev, next) {});
+        notifier = container.read(provider.notifier);
+
+        container.dispose();
+      });
+
+      test('Using the notifier after dispose throws', () {
+        final container = createContainer();
+        final provider = factory.simpleTestProvider((ref) => Stream.value(0));
+
+        container.listen(provider.notifier, (prev, next) {});
+        final notifier = container.read(provider.notifier);
+
+        container.dispose();
+
+        expect(() => notifier.state, throwsStateError);
+        expect(() => notifier.future, throwsStateError);
+        expect(() => notifier.state = const AsyncData(42), throwsStateError);
+        // ignore: invalid_use_of_protected_member
+        expect(() => notifier.ref, throwsStateError);
+        expect(() => notifier.update((p1) => 42), throwsStateError);
+      });
+
       group('supports AsyncValue transition', () {
         test(
             'performs seamless copyWithPrevious if triggered by ref.invalidate/ref.refresh',
