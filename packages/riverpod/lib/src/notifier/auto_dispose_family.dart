@@ -9,9 +9,11 @@ abstract class AutoDisposeFamilyNotifier<State, Arg>
   late final Arg arg;
 
   @override
-  void _setElement(ProviderElementBase<State> element) {
+  void _setElement(ProviderElementBase<State>? element) {
     super._setElement(element);
-    arg = element.origin.argument as Arg;
+    if (element != null) {
+      arg = element.origin.argument as Arg;
+    }
   }
 
   /// {@macro riverpod.async_notifier.build}

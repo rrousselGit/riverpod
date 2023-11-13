@@ -6,17 +6,24 @@ part of '../notifier.dart';
 @internal
 abstract class BuildlessAutoDisposeNotifier<State> extends NotifierBase<State> {
   @override
-  late final AutoDisposeNotifierProviderElement<NotifierBase<State>, State>
-      _element;
+  AutoDisposeNotifierProviderElement<NotifierBase<State>, State>? _element;
 
   @override
-  void _setElement(ProviderElementBase<State> element) {
+  void _setElement(ProviderElementBase<State>? element) {
+    if (_element != null && element != null) {
+      throw StateError(alreadyInitializedError);
+    }
     _element = element
-        as AutoDisposeNotifierProviderElement<NotifierBase<State>, State>;
+        as AutoDisposeNotifierProviderElement<NotifierBase<State>, State>?;
   }
 
   @override
-  AutoDisposeNotifierProviderRef<State> get ref => _element;
+  AutoDisposeNotifierProviderRef<State> get ref {
+    final element = _element;
+    if (element == null) throw StateError(uninitializedElementError);
+
+    return element;
+  }
 }
 
 /// {@macro riverpod.notifier}
