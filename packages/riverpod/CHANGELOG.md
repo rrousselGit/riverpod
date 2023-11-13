@@ -1,11 +1,5 @@
 ## WIP
 
-
-## Unreleased patch
-
-- Exceptions in asynchronous providers are now correctly received
-  by `ProviderObserver.providerDidFail`.
-
 ## 3.0.0-dev.0 - 2023-10-29
 
 - **Breaking**: `AsyncValue` is now "sealed" and `AsyncData/AsyncLoading/AsyncError`
@@ -13,6 +7,12 @@
   `AsyncValue` or the associated classes.
 - **Breaking**: Removed everything marked as "deprecated"
 - Bumped minimum Dart SDK to >= 3.0.0-dev
+
+## 2.4.6 - 2023-11-13
+
+- Exceptions in asynchronous providers are now correctly received
+  by `ProviderObserver.providerDidFail`.
+- Fix exception when a `ProviderScope` is rebuilt with a different `key`.
 
 ## 2.4.4 - 2023-10-15
 

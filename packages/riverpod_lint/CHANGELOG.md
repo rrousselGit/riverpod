@@ -6,6 +6,11 @@
 
 - `riverpod` upgraded to `3.0.0-dev.0`
 
+
+## 2.3.4 - 2023-11-13
+
+- Updated `scoped_providers_should_specify_dependencies` to ignore instances of using pumpWidget in tests (thanks to [lockieRichter](https://github.com/lockieRichter))
+
 ## 2.3.3 - 2023-10-28
 
 - `riverpod` upgraded to `2.4.5`
@@ -25,7 +30,6 @@
 - Added `protected_notifier_state` lint, which warns against using the `Notifier.state`
   property of a notifier different than the current one.
   Aka a Notifier "A" should not directly access the `state` if a Notifier "B".
-  
 
 ## 2.2.1 - 2023-10-02
 

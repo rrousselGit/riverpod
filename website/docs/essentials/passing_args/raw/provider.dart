@@ -1,12 +1,26 @@
-import 'dart:convert';
+import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart' as http;
 import '../../first_request/raw/activity.dart';
 
 /* SNIPPET START */
 
+FutureOr<Activity> fetchActivity() => throw UnimplementedError();
+
+// A "functional" provider
 final activityProvider = FutureProvider.autoDispose((ref) async {
-  final response = await http.get(Uri.https('boredapi.com', '/api/activity'));
-  final json = jsonDecode(response.body) as Map<String, dynamic>;
-  return Activity.fromJson(json);
+  // TODO: perform a network request to fetch an activity
+  return fetchActivity();
 });
+
+// Or alternatively, a "notifier"
+final activityProvider2 = AsyncNotifierProvider<ActivityNotifier, Activity>(
+  ActivityNotifier.new,
+);
+
+class ActivityNotifier extends AsyncNotifier<Activity> {
+  @override
+  Future<Activity> build() async {
+    // TODO: perform a network request to fetch an activity
+    return fetchActivity();
+  }
+}

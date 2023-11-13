@@ -6,10 +6,11 @@
 - **Breaking**: Removed everything marked as "deprecated"
 - Bumped minimum Dart SDK to >= 3.0.0-dev
 
-## Unreleased patch
+## 2.4.6 - 2023-11-13
 
 - Exceptions in asynchronous providers are now correctly received
   by `ProviderObserver.providerDidFail`.
+- Fix exception when a `ProviderScope` is rebuilt with a different `key`.
 
 ## 2.4.5 - 2023-10-28
 
