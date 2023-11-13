@@ -52,23 +52,23 @@ void main() {
       ProviderScope(
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: List.generate(3, (index) {
-            final container = ProviderContainer();
-            return SizedBox(
-              width: 100,
-              height: 100,
-              child: UncontrolledProviderScope(
-                container: container,
-                child: Consumer(
-                  builder: (context, ref, _) {
-                    ref.watch(multipleFutureProvider);
-                    ref.watch(multipleProviderScopeNotifierProvider);
-                    return Container();
-                  },
+          children: [
+            for (var i = 0; i < 3; i++)
+              SizedBox(
+                width: 100,
+                height: 100,
+                child: UncontrolledProviderScope(
+                  container: ProviderContainer(),
+                  child: Consumer(
+                    builder: (context, ref, _) {
+                      ref.watch(multipleFutureProvider);
+                      ref.watch(multipleProviderScopeNotifierProvider);
+                      return Container();
+                    },
+                  ),
                 ),
-              ),
-            );
-          }).toList(),
+              )
+          ],
         ),
       ),
     );
