@@ -26,7 +26,7 @@ There are a few ways to contribute to the Riverpod ecosystem:
   on bug fixes instead.
 
 **It is highly encouraged to make an issue before creating your PR**  
-This is especially crutial for larger work.  
+This is especially crucial for larger work.  
 You do not need to spend a lot of time making that issue. The important is:
 
 - Mention that you want to contribute
