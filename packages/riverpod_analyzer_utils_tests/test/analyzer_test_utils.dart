@@ -22,10 +22,12 @@ void testSource(
   required String source,
   Map<String, String> files = const {},
   bool runGenerator = false,
+  Timeout? timeout,
 }) {
   final testId = _testNumber++;
   test(
     description,
+    timeout: timeout,
     () async {
       // Giving a unique name to the package to avoid the analyzer cache
       // messing up tests.
