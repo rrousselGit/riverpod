@@ -1,4 +1,4 @@
-## Unreleased patch
+## 2.3.4 - 2023-11-13
 
 - Updated `scoped_providers_should_specify_dependencies` to ignore instances of using pumpWidget in tests (thanks to [lockieRichter](https://github.com/lockieRichter))
 

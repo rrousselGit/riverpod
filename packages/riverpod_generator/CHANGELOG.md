@@ -1,4 +1,4 @@
-## Unreleased patch
+## 2.3.6 - 2023-11-13
 
 - Fix typos and internal changes
 
