@@ -11,9 +11,7 @@ class Package {
   }
 }
 
-/* SNIPPET START */
-
-// Fetches the list of packages from pub.dev
+/* SNIPPET START */ // 从 pub.dev 获取包列表
 @riverpod
 Future<List<Package>> fetchPackages(
   FetchPackagesRef ref, {
@@ -21,11 +19,11 @@ Future<List<Package>> fetchPackages(
   String search = '',
 }) async {
   final dio = Dio();
-  // Fetch an API. Here we're using package:dio, but we could use anything else.
+  // 获取 API。 这里我们使用 package:dio，但我们可以使用其他任何东西。
   final response = await dio.get<List<Object?>>(
     'https://pub.dartlang.org/api/search?page=$page&q=${Uri.encodeQueryComponent(search)}',
   );
 
-  // Decode the JSON response into a Dart class.
+  // 将 JSON 响应解码为 Dart 类。
   return response.data?.map(Package.fromJson).toList() ?? const [];
-}
+}/* SNIPPET END */
