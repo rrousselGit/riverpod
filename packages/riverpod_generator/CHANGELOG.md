@@ -194,7 +194,7 @@ Upgrade Riverpod to latest
 
 ## 1.1.0
 
-- The generated hash function of providers is now correctluy private (thanks to @westito)
+- The generated hash function of providers is now correctly private (thanks to @westito)
 - Allow customizing the name of the generated providers (thanks to @trejdych)
 - Update dependencies.
 
@@ -225,3 +225,5 @@ Fix version conflict with Riverpod
 ## 1.0.0
 
 Initial release
+
+<!-- cSpell:ignoreRegExp @\w+ -->

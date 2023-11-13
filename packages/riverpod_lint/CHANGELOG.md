@@ -9,7 +9,7 @@
 
 ## 2.3.4 - 2023-11-13
 
-- Updated `scoped_providers_should_specify_dependencies` to ignore instances of using pumpWidget in tests (thanks to [lockieRichter](https://github.com/lockieRichter))
+- Updated `scoped_providers_should_specify_dependencies` to ignore instances of using pumpWidget in tests (thanks to @lockieRichter)
 
 ## 2.3.3 - 2023-10-28
 
@@ -26,7 +26,7 @@
 
 ## 2.3.0 - 2023-10-06
 
-- Added `async_value_nullable_patttern` lint, to warn against using `AsyncValue(:final value?)` in pattern match when `value` is possibly nullable.
+- Added `async_value_nullable_pattern` lint, to warn against using `AsyncValue(:final value?)` in pattern match when `value` is possibly nullable.
 - Added `protected_notifier_state` lint, which warns against using the `Notifier.state`
   property of a notifier different than the current one.
   Aka a Notifier "A" should not directly access the `state` if a Notifier "B".
@@ -185,3 +185,5 @@ Fix quick-fix for provider_dependencies
 ## 1.0.0
 
 Initial release
+
+<!-- cSpell:ignoreRegExp @\w+ -->
