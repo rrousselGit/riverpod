@@ -47,7 +47,8 @@ void main() {
     );
   });
 
-  testWidgets('Supports multiple UncontrolledProviderScopes in the same tree', (tester) async {
+  testWidgets('Supports multiple UncontrolledProviderScopes in the same tree',
+      (tester) async {
     await tester.pumpWidget(
       ProviderScope(
         child: Column(
@@ -107,7 +108,8 @@ void main() {
     verifyOnly(listener2, listener2('0-1', '1-1'));
   });
 
-  testWidgets('ref.invalidate triggers a rebuild on next frame', (tester) async {
+  testWidgets('ref.invalidate triggers a rebuild on next frame',
+      (tester) async {
     final listener = Listener<int>();
     var result = 0;
     final provider = Provider((r) => result);
@@ -183,7 +185,8 @@ void main() {
     expect(tester.takeException(), isUnsupportedError);
   });
 
-  testWidgets('ref.read works with providers that returns null', (tester) async {
+  testWidgets('ref.read works with providers that returns null',
+      (tester) async {
     final nullProvider = Provider((ref) => null);
     late WidgetRef ref;
 
@@ -240,7 +243,8 @@ void main() {
     expect(ref.read(provider), 21);
   });
 
-  testWidgets('widgets cannot modify providers in their build method', (tester) async {
+  testWidgets('widgets cannot modify providers in their build method',
+      (tester) async {
     final onError = FlutterError.onError;
     Object? error;
     FlutterError.onError = (details) {
@@ -271,7 +275,8 @@ void main() {
     expect(error, isNotNull);
   });
 
-  testWidgets('ref.watch within a build method can flush providers', (tester) async {
+  testWidgets('ref.watch within a build method can flush providers',
+      (tester) async {
     final container = createContainer();
     final dep = StateProvider((ref) => 0);
     final provider = Provider((ref) => ref.watch(dep));
@@ -304,7 +309,8 @@ void main() {
     expect(find.text('1'), findsOneWidget);
   });
 
-  testWidgets('UncontrolledProviderScope gracefully handles vsync', (tester) async {
+  testWidgets('UncontrolledProviderScope gracefully handles vsync',
+      (tester) async {
     final container = createContainer();
 
     expect(flutterVsyncs, isEmpty);
@@ -343,7 +349,8 @@ void main() {
     expect(flutterVsyncs, isEmpty);
   });
 
-  testWidgets('When there are multiple vsyncs, rebuild providers only once', (tester) async {
+  testWidgets('When there are multiple vsyncs, rebuild providers only once',
+      (tester) async {
     var buildCount = 0;
     final dep = StateProvider((ref) => 0);
     final provider = Provider((ref) {
@@ -382,7 +389,9 @@ void main() {
     expect(find.text('Hello 0'), findsNothing);
   });
 
-  testWidgets('UncontrolledProviderScope gracefully handles debugCanModifyProviders', (tester) async {
+  testWidgets(
+      'UncontrolledProviderScope gracefully handles debugCanModifyProviders',
+      (tester) async {
     final container = createContainer();
 
     expect(debugCanModifyProviders, null);
@@ -425,7 +434,8 @@ void main() {
     await expectLater(ref.read(provider.future), completion(42));
   });
 
-  testWidgets('ref.refresh forces a provider of nullable type to refresh', (tester) async {
+  testWidgets('ref.refresh forces a provider of nullable type to refresh',
+      (tester) async {
     int? value = 42;
     final provider = Provider<int?>((ref) => value);
     late WidgetRef ref;
@@ -471,7 +481,8 @@ void main() {
   //   expect(ref.read(provider), const AsyncValue.data(42));
   // });
 
-  testWidgets('AlwaysAliveProviderBase.read(context) inside initState', (tester) async {
+  testWidgets('AlwaysAliveProviderBase.read(context) inside initState',
+      (tester) async {
     final provider = Provider((_) => 42);
     int? result;
 
@@ -486,7 +497,8 @@ void main() {
     expect(result, 42);
   });
 
-  testWidgets('AlwaysAliveProviderBase.read(context) inside build', (tester) async {
+  testWidgets('AlwaysAliveProviderBase.read(context) inside build',
+      (tester) async {
     final provider = Provider((_) => 42);
 
     await tester.pumpWidget(
@@ -590,7 +602,8 @@ void main() {
 
     expect(
       tester.takeException(),
-      isA<StateError>().having((e) => e.message, 'message', 'No ProviderScope found'),
+      isA<StateError>()
+          .having((e) => e.message, 'message', 'No ProviderScope found'),
     );
   });
 
@@ -745,7 +758,8 @@ void main() {
   });
 
   group('ProviderScope.containerOf', () {
-    testWidgets('throws if no container is found independently from `listen`', (tester) async {
+    testWidgets('throws if no container is found independently from `listen`',
+        (tester) async {
       await tester.pumpWidget(Container());
 
       final context = tester.element(find.byType(Container));
@@ -761,7 +775,8 @@ void main() {
     });
   });
 
-  testWidgets('autoDispose states are kept alive during pushReplacement', (tester) async {
+  testWidgets('autoDispose states are kept alive during pushReplacement',
+      (tester) async {
     var disposeCount = 0;
     final counterProvider = StateProvider.autoDispose((ref) {
       ref.onDispose(() => disposeCount++);
@@ -825,7 +840,8 @@ class MultipleProviderScopeNotifier extends AutoDisposeNotifier<String> {
   }
 }
 
-final multipleProviderScopeNotifierProvider = NotifierProvider.autoDispose<MultipleProviderScopeNotifier, String>(
+final multipleProviderScopeNotifierProvider =
+    NotifierProvider.autoDispose<MultipleProviderScopeNotifier, String>(
   MultipleProviderScopeNotifier.new,
 );
 
