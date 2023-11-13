@@ -11,6 +11,25 @@ import '../../utils.dart';
 import 'factory.dart';
 
 void main() {
+  test('Throws if using notifier properties in its constructor', () {
+    expect(
+      CtorNotifier.new,
+      throwsA(isA<StateError>()),
+    );
+    expect(
+      AutoDisposeCtorNotifier.new,
+      throwsA(isA<StateError>()),
+    );
+    expect(
+      AutoDisposeFamilyCtorNotifier.new,
+      throwsA(isA<StateError>()),
+    );
+    expect(
+      FamilyCtorNotifier.new,
+      throwsA(isA<StateError>()),
+    );
+  });
+
   for (final factory in matrix()) {
     group(factory.label, () {
       test('Can read state inside onDispose', () {
@@ -490,11 +509,11 @@ void main() {
 
           final sub = container.listen(provider.notifier, (previous, next) {});
 
-          // ignore: prefer_const_constructors, not using `const` as we voluntarility break identity to test `identical`
+          // ignore: prefer_const_constructors, not using `const` as we voluntarily break identity to test `identical`
           final newState = AsyncData(84);
-          // ignore: prefer_const_constructors, not using `const` as we voluntarility break identity to test `identical`
+          // ignore: prefer_const_constructors, not using `const` as we voluntarily break identity to test `identical`
           final newLoading = AsyncLoading<int>();
-          // ignore: prefer_const_constructors, not using `const` as we voluntarility break identity to test `identical`
+          // ignore: prefer_const_constructors, not using `const` as we voluntarily break identity to test `identical`
           final newError = AsyncError<int>(84, StackTrace.empty);
 
           sub.read().state = newState;
@@ -736,7 +755,7 @@ void main() {
           await expectLater(sub.read().future, completion(1));
         });
 
-        test('retuns a Future identical to that of .future', () {
+        test('returns a Future identical to that of .future', () {
           final listener = OnBuildMock();
           final dep = StateProvider((ref) => 0);
           final provider = factory.simpleTestProvider<int>(
@@ -838,7 +857,7 @@ void main() {
         );
       });
 
-      group('AsyncNotifer.update', () {
+      group('AsyncNotifier.update', () {
         test('passes in the latest state', () async {
           final container = createContainer();
           final provider = factory.simpleTestProvider<int>(
@@ -902,8 +921,7 @@ void main() {
           expect(container.read(provider), const AsyncData(21));
         });
 
-        test(
-            'executes immediately with current state if a state is avalailable',
+        test('executes immediately with current state if a state is available',
             () async {
           final container = createContainer();
           final provider = factory.simpleTestProvider<int>((ref) => 1);
@@ -919,8 +937,7 @@ void main() {
           expect(container.read(provider), const AsyncData(2));
         });
 
-        test(
-            'executes immediately with current state if an error is avalailable',
+        test('executes immediately with current state if an error is available',
             () async {
           final container = createContainer();
           final provider = factory.simpleTestProvider<int>(
@@ -1214,4 +1231,41 @@ class Equal<T> {
 
   @override
   int get hashCode => Object.hash(runtimeType, value);
+}
+
+class CtorNotifier extends AsyncNotifier<int> {
+  CtorNotifier() {
+    state;
+  }
+
+  @override
+  FutureOr<int> build() => 0;
+}
+
+class AutoDisposeCtorNotifier extends AutoDisposeAsyncNotifier<int> {
+  AutoDisposeCtorNotifier() {
+    state;
+  }
+
+  @override
+  FutureOr<int> build() => 0;
+}
+
+class AutoDisposeFamilyCtorNotifier
+    extends AutoDisposeFamilyAsyncNotifier<int, int> {
+  AutoDisposeFamilyCtorNotifier() {
+    state;
+  }
+
+  @override
+  FutureOr<int> build(int arg) => 0;
+}
+
+class FamilyCtorNotifier extends FamilyAsyncNotifier<int, int> {
+  FamilyCtorNotifier() {
+    state;
+  }
+
+  @override
+  FutureOr<int> build(int arg) => 0;
 }
