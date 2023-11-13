@@ -304,7 +304,7 @@ module.exports = {
 
     {
       type: "category",
-      label: "Concepts (old)",
+      label: "Concepts 🚧",
       items: [
         "concepts/providers",
         "concepts/reading",
@@ -326,7 +326,7 @@ module.exports = {
 
     {
       type: "category",
-      label: "All Providers (old)",
+      label: "All Providers 🚧",
       items: [
         "providers/provider",
         "providers/notifier_provider",
@@ -340,7 +340,7 @@ module.exports = {
 
     {
       type: "category",
-      label: "Guides (old)",
+      label: "Guides 🚧",
       items: ["cookbooks/testing"],
     },
   ],
