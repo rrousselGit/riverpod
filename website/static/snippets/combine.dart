@@ -23,7 +23,8 @@ final filterProvider = StateProvider<Filter>((ref) => Filter.all);
 @riverpod
 List<Todo> filteredTodos(FilteredTodosRef ref) {
   // Providers can consumer other providers using the "ref" object.
-  // With ref.watch, providers will automatically update if the watched values changes.
+  // With ref.watch, providers will automatically update
+  // if the watched values changes.
   final List<Todo> todos = ref.watch(todosProvider);
   final Filter filter = ref.watch(filterProvider);
 

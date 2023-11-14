@@ -18,16 +18,16 @@ class HomeViewState extends ConsumerState<HomeView> {
   @override
   void initState() {
     super.initState();
-    // “ref” 可以在 StatefulWidget 的所有的生命周期内使用。
+    // "ref" can be used in all life-cycles of a StatefulWidget.
     ref.read(counterProvider);
   }
 
   @override
   Widget build(BuildContext context) {
-    // 我们可以在builder中使用钩子如同HookConsumerWidget使用的那样
+    // Like HookConsumerWidget, we can use hooks inside the builder
     final state = useState(0);
 
-    // 我们也可以在build函数中使用“ref”监听provider
+    // We can also use "ref" to listen to a provider inside the build method
     final counter = ref.watch(counterProvider);
     return Text('$counter');
   }

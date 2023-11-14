@@ -11,12 +11,11 @@ class MyConfiguration extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watch(configProvider);
     return Scaffold(
-        body: config.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (err, stack) => Center(child: Text('Error: $err')),
-      data: (config) {
-        return Center(child: Text(config.host));
+      body: switch (config) {
+        AsyncError(:final error) => Center(child: Text('Error: $error')),
+        AsyncData(:final value) => Center(child: Text(value.host)),
+        _ => const Center(child: CircularProgressIndicator()),
       },
-    ));
+    );
   }
 }

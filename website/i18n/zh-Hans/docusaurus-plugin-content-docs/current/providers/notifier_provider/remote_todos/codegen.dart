@@ -28,11 +28,13 @@ class Todo with _$Todo {
   factory Todo.fromJson(Map<String, dynamic> json) => _$TodoFromJson(json);
 }
 
-// 这会生成一个 AsyncNotifier 和 AsyncNotifierProvider。
-// Notifier类将会被传递给我们的 AsyncNotifierProvider。
-// 这个类不应该在其“state”属性之外暴露状态，也就是说没有公共的获取属性的方法！
-// 这个类上的公共方法将允许UI修改它的状态。
-// 最后我们使用asyncTodosProvider(AsyncNotifierProvider)来允许UI与我们的Todos类进行交互。
+// This will generates a AsyncNotifier and AsyncNotifierProvider.
+// The AsyncNotifier class that will be passed to our AsyncNotifierProvider.
+// This class should not expose state outside of its "state" property, which means
+// no public getters/properties!
+// The public methods on this class will be what allow the UI to modify the state.
+// Finally, we are using asyncTodosProvider(AsyncNotifierProvider) to allow the UI to
+// interact with our Todos class.
 @riverpod
 class AsyncTodos extends _$AsyncTodos {
   Future<List<Todo>> _fetchTodo() async {
@@ -43,21 +45,21 @@ class AsyncTodos extends _$AsyncTodos {
 
   @override
   FutureOr<List<Todo>> build() async {
-    // 从远程仓库获取初始的待办清单
+    // Load initial todo list from the remote repository
     return _fetchTodo();
   }
 
   Future<void> addTodo(Todo todo) async {
-    // 将当前状态设置为加载中
+    // Set the state to loading
     state = const AsyncValue.loading();
-    //  将新的待办清单添加到远程仓库
+    // Add the new todo and reload the todo list from the remote repository
     state = await AsyncValue.guard(() async {
       await http.post('api/todos', todo.toJson());
       return _fetchTodo();
     });
   }
 
-  // 让我们允许删除待办清单
+  // Let's allow removing todos
   Future<void> removeTodo(String todoId) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
@@ -66,7 +68,7 @@ class AsyncTodos extends _$AsyncTodos {
     });
   }
 
-  // 让我们把待办清单标记为已完成
+  // Let's mark a todo as completed
   Future<void> toggle(String todoId) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {

@@ -12,10 +12,10 @@ class HomeView extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // HookConsumerWidget允许在build方法中使用钩子
+    // HookConsumerWidget allows using hooks inside the build method
     final state = useState(0);
 
-    // 我们也可以使用ref参数来监听provider。
+    // We can also use the ref parameter to listen to providers.
     final counter = ref.watch(counterProvider);
     return Text('$counter');
   }

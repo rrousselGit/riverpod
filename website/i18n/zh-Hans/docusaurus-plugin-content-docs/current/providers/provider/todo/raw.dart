@@ -10,15 +10,18 @@ class Todo {
   final String description;
 }
 
-class TodosNotifier extends StateNotifier<List<Todo>> {
-  TodosNotifier() : super([]);
+class TodosNotifier extends Notifier<List<Todo>> {
+  @override
+  List<Todo> build() {
+    return [];
+  }
 
   void addTodo(Todo todo) {
     state = [...state, todo];
   }
-  // TODO 添加其他方法，比如 “删除待办” ……
+  // TODO add other methods, such as "removeTodo", ...
 }
 
-final todosProvider = StateNotifierProvider<TodosNotifier, List<Todo>>((ref) {
+final todosProvider = NotifierProvider<TodosNotifier, List<Todo>>(() {
   return TodosNotifier();
 });

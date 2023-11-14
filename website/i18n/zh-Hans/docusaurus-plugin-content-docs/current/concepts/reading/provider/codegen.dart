@@ -14,7 +14,7 @@ Repository repository(RepositoryRef ref) => Repository();
 
 @riverpod
 String value(ValueRef ref) {
-  // 使用ref获取其他provider
+  // use ref to obtain other providers
   final repository = ref.watch(repositoryProvider);
   return repository.get();
 }
