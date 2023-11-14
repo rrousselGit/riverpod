@@ -1,4 +1,4 @@
-## Unreleased patch
+## 2.4.6 - 2023-11-13
 
 - Exceptions in asynchronous providers are now correctly received
   by `ProviderObserver.providerDidFail`.

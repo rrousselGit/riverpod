@@ -29,7 +29,6 @@ export const documentTitles = {
     "essentials/auto_dispose": "Clearing cache and reacting to state disposal",
     "cookbooks/testing": "Testing",
     "cookbooks/search_as_we_type": "Search as we type",
-    "cookbooks/refresh": "Pull-to-refresh / Retry-on-error",
     "concepts/why_immutability": "Why Immutability",
     "concepts/scopes": "Scopes",
     "concepts/reading": "Reading a Provider",
