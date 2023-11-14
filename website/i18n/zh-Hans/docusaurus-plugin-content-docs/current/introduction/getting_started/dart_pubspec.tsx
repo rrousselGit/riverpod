@@ -3,7 +3,11 @@ import {
   riverpodAnnotationVersion,
   riverpodGeneratorVersion,
   riverpodLintVersion,
+<<<<<<< HEAD:website/i18n/zh-Hans/docusaurus-plugin-content-docs/current/introduction/getting_started/dart_pubspec.tsx
 } from "../../../../../../src/versions";
+=======
+} from "../../../src/versions";
+>>>>>>> intro:website/i18n/zh-Hans/docusaurus-plugin-content-docs/current/getting_started/dart_pubspec.tsx
 
 const codegen = `name: my_app_name
 environment:

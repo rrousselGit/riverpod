@@ -4,7 +4,11 @@ import {
   riverpodAnnotationVersion,
   riverpodGeneratorVersion,
   riverpodLintVersion,
+<<<<<<< HEAD:website/i18n/zh-Hans/docusaurus-plugin-content-docs/current/introduction/getting_started/pubspec.tsx
 } from "../../../../../../src/versions";
+=======
+} from "../../../src/versions";
+>>>>>>> intro:website/i18n/zh-Hans/docusaurus-plugin-content-docs/current/getting_started/pubspec.tsx
 
 function plain(riverpod: string) {
   return `name: my_app_name
