@@ -1,26 +1,24 @@
 // ignore_for_file: use_key_in_widget_constructors, omit_local_variable_types
 
-/* SNIPPET START */
-
-import 'package:flutter/material.dart';
+/* SNIPPET START */ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// We create a "provider", which will store a value (here "Hello world").
-// By using a provider, this allows us to mock/override the value exposed.
+// 我们创建了一个 "provider"，它可以存储一个值（这里是 "Hello world"）。
+// 通过使用提供者，这可以允许我们模拟或者覆盖一个暴露的值。
 final helloWorldProvider = Provider((_) => 'Hello world');
 
 void main() {
   runApp(
-    // For widgets to be able to read providers, we need to wrap the entire
-    // application in a "ProviderScope" widget.
-    // This is where the state of our providers will be stored.
+    // 为了使小组件可以读取提供者程序，
+    // 我们需要将整个应用程序包装在“ProviderScope”小部件中。
+    // 这是我们的提供者的状态将被存储的地方。
     ProviderScope(
       child: MyApp(),
     ),
   );
 }
 
-// Extend ConsumerWidget instead of StatelessWidget, which is exposed by Riverpod
+// 继承父类使用 ConsumerWidget 替代 StatelessWidget，这样可以获取到提供者程序的引用
 class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
