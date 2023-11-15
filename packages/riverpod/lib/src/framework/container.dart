@@ -704,6 +704,9 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
       );
     }
   }
+
+  @override
+  String toString() => 'ProviderContainer#$hashCode';
 }
 
 /// An object that listens to the changes of a [ProviderContainer].
