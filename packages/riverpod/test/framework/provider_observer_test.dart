@@ -303,7 +303,7 @@ void main() {
                 Error.throwWithStackTrace('error', StackTrace.empty);
               }
               return StateController(42);
-            })
+            }),
           ],
           observers: [observer3],
         );
