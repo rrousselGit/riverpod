@@ -99,10 +99,10 @@ function decodeDocuments(documents) {
     let id = parsedDoc.data.id;
     if (!id) {
       let pathSplit;
-      if (docFile.startsWith("docs/")) {
-        pathSplit = docFile.split("/").slice(1);
-      } else if (docFile.startsWith("i18n/")) {
-        pathSplit = docFile.split("/").slice(4);
+      if (docFile.startsWith(`docs${path.sep}`)) {
+        pathSplit = docFile.split(path.sep).slice(1);
+      } else if (docFile.startsWith(`i18n${path.sep}`)) {
+        pathSplit = docFile.split(path.sep).slice(4);
       } else {
         throw new Error(`Unknown document type ${docFile}`);
       }
@@ -130,14 +130,14 @@ function decodeDocuments(documents) {
   return result;
 }
 
-function getCountryCodeForPath(path) {
-  if (path.startsWith("docs/")) return "en";
+function getCountryCodeForPath(docFile) {
+  if (docFile.startsWith(`docs${path.sep}`)) return "en";
 
-  if (!path.startsWith("i18n/")) {
-    throw new Error(`Unknown path ${path}`);
+  if (!docFile.startsWith(`i18n${path.sep}`)) {
+    throw new Error(`Unknown docFile ${docFile}`);
   }
 
-  return path.split("/")[1];
+  return docFile.split(path.sep)[1];
 }
 
 class OutdatedTranslation {
