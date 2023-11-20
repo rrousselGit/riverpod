@@ -9,7 +9,7 @@ on:
     - cron: "0 10 * * *"
 
 jobs:
-  build:
+  riverpod_lint:
     runs-on: ubuntu-latest
 
     defaults:
