@@ -1,3 +1,8 @@
+## Unreleased build
+
+- **Breaking** `LegacyProviderDeclarationElement.providerType` is now nullable.
+- Fix crash when parsing classes with a `ProviderBase` field.
+
 ## 1.0.0-dev.0 - 2023-10-30
 
 - Added `GeneratorProviderDeclarationElement.isFamily`

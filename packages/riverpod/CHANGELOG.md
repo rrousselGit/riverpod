@@ -4,6 +4,8 @@
   has been disposed.
 - The error thrown when a notifier property is used inside the constructor
   of a notifier has been improved.
+- Fix `ProviderObserver.didUpdateProvider` being called with an incorrect
+  "provider" parameter when the provider is overridden.
 
 ## 3.0.0-dev.0 - 2023-10-29
 
