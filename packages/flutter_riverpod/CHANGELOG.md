@@ -1,3 +1,7 @@
+## Unreleased fix
+
+Fix exceptions when using multiple root `ProviderContainers`/`ProviderScopes`.
+
 ## 2.4.7 - 2023-11-20
 
 - Fix `ProviderObserver.didUpdateProvider` being called with an incorrect
