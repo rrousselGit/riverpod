@@ -1,4 +1,4 @@
-## Unreleased build
+## 1.0.0-dev.1 - 2023-11-20
 
 - **Breaking** `LegacyProviderDeclarationElement.providerType` is now nullable.
 - Fix crash when parsing classes with a `ProviderBase` field.

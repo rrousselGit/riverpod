@@ -1,4 +1,4 @@
-## Unreleased build
+## 3.0.0-dev.1 - 2023-11-20
 
 - All notifier properties now throw an error if used after the notifier
   has been disposed.

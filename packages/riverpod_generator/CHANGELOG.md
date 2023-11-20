@@ -1,4 +1,4 @@
-## Unreleased build
+## 3.0.0-dev.9 - 2023-11-20
 
 - Fix crash when encountering classes with a `ProviderBase` field.
 
