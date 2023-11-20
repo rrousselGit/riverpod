@@ -71,9 +71,18 @@ This comes with a few minor restrictions:
 - **Breaking**: Arguments of the form `fn(void myParameter())`
   are no-longer supported. Instead use `fn(void Function() myParameter)`.
 
+## 2.3.8 - 2023-11-20
+
+- `riverpod_annotation` upgraded to `2.3.2`
+- `riverpod` upgraded to `2.4.8`
+
 ## 2.3.7 - 2023-11-20
 
 - Fix crash when encountering classes with a `ProviderBase` field.
+
+## 2.3.6 - 2023-11-13
+
+Fix typos and internal changes
 
 ## 2.3.5 - 2023-10-21
 

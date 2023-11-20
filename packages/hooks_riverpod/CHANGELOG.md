@@ -1,3 +1,7 @@
+## Unreleased build
+
+Fix exceptions when using multiple root `ProviderContainers`/`ProviderScopes`.
+
 ## 3.0.0-dev.1 - 2023-11-20
 
 - All notifier properties now throw an error if used after the notifier
@@ -14,6 +18,10 @@
   `AsyncValue` or the associated classes.
 - **Breaking**: Removed everything marked as "deprecated"
 - Bumped minimum Dart SDK to >= 3.0.0-dev
+
+## 2.4.8 - 2023-11-20
+
+Fix exceptions when using multiple root `ProviderContainers`/`ProviderScopes`.
 
 ## 2.4.7 - 2023-11-20
 

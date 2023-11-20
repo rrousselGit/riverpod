@@ -382,7 +382,7 @@ void main() {
 
     group('.pump', () {
       test(
-          'waits for providers to rebuild or get disposed, no matter from which container they are associated in the graph',
+          'Waits for providers associated with this container and its parents to rebuild',
           () async {
         final dep = StateProvider((ref) => 0);
         final a = Provider((ref) => ref.watch(dep));
@@ -400,7 +400,7 @@ void main() {
         verifyOnly(bListener, bListener(null, 0));
 
         root.read(dep.notifier).state++;
-        await root.pump();
+        await scoped.pump();
 
         verifyOnly(aListener, aListener(0, 1));
         verifyOnly(bListener, bListener(0, 1));
