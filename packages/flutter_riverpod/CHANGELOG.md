@@ -1,3 +1,12 @@
+## Unreleased build
+
+- All notifier properties now throw an error if used after the notifier
+  has been disposed.
+- The error thrown when a notifier property is used inside the constructor
+  of a notifier has been improved.
+- Fix `ProviderObserver.didUpdateProvider` being called with an incorrect
+  "provider" parameter when the provider is overridden.
+
 ## 3.0.0-dev.0 - 2023-10-29
 
 - **Breaking**: `AsyncValue` is now "sealed" and `AsyncData/AsyncLoading/AsyncError`
@@ -5,6 +14,11 @@
   `AsyncValue` or the associated classes.
 - **Breaking**: Removed everything marked as "deprecated"
 - Bumped minimum Dart SDK to >= 3.0.0-dev
+
+## 2.4.7 - 2023-11-20
+
+- Fix `ProviderObserver.didUpdateProvider` being called with an incorrect
+  "provider" parameter when the provider is overridden.
 
 ## 2.4.6 - 2023-11-13
 

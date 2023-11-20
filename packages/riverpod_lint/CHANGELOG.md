@@ -1,3 +1,7 @@
+## Unreleased build
+
+- Fix crash when encountering classes with a `ProviderBase` field.
+
 ## 3.0.0-dev.1 - 2023-10-30
 
 - `riverpod_analyzer_utils` upgraded to `1.0.0-dev.0`
@@ -6,6 +10,9 @@
 
 - `riverpod` upgraded to `3.0.0-dev.0`
 
+## 2.3.5 - 2023-11-20
+
+- Fix crash when encountering classes with a `ProviderBase` field.
 
 ## 2.3.4 - 2023-11-13
 

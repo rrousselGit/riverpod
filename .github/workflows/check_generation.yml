@@ -6,7 +6,7 @@ on:
       - "**.md"
 
 jobs:
-  build:
+  check_generation:
     runs-on: ubuntu-latest
 
     steps:

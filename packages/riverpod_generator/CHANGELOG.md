@@ -1,3 +1,7 @@
+## Unreleased build
+
+- Fix crash when encountering classes with a `ProviderBase` field.
+
 ## 3.0.0-dev.8 - 2023-10-30
 
 - `riverpod_analyzer_utils` upgraded to `1.0.0-dev.0`
@@ -66,6 +70,10 @@ This comes with a few minor restrictions:
 
 - **Breaking**: Arguments of the form `fn(void myParameter())`
   are no-longer supported. Instead use `fn(void Function() myParameter)`.
+
+## 2.3.7 - 2023-11-20
+
+- Fix crash when encountering classes with a `ProviderBase` field.
 
 ## 2.3.5 - 2023-10-21
 
