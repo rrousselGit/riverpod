@@ -787,11 +787,6 @@ class ProviderOverride implements Override {
 
   /// The new provider behavior.
   final ProviderBase<Object?> _override;
-
-  @override
-  String toString() {
-    return 'ProviderOverride(${_origin.name} with ${(_override as ValueProvider)._value})';
-  }
 }
 
 /// An object used by [ProviderContainer]/`ProviderScope` to override the behavior
