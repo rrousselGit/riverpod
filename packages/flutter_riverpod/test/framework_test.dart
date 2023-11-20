@@ -47,48 +47,6 @@ void main() {
     );
   });
 
-  testWidgets('Supports multiple ProviderScope roots in the same tree',
-      (tester) async {
-    final a = StateProvider((_) => 0);
-    final b = Provider((ref) => ref.watch(a));
-
-    await tester.pumpWidget(
-      // No root scope. We want to test cases where there are multiple roots
-      Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          for (var i = 0; i < 2; i++)
-            SizedBox(
-              width: 100,
-              height: 100,
-              child: ProviderScope(
-                child: Consumer(
-                  builder: (context, ref, _) {
-                    ref.watch(a);
-                    ref.watch(b);
-                    return Container();
-                  },
-                ),
-              ),
-            ),
-        ],
-      ),
-    );
-
-    final containers = tester.allElements
-        .where((e) => e.widget is Consumer)
-        .map(ProviderScope.containerOf)
-        .toList();
-
-    expect(containers, hasLength(2));
-
-    for (final container in containers) {
-      container.read(a.notifier).state++;
-    }
-
-    await tester.pump();
-  });
-
   testWidgets('ref.invalidate can invalidate a family', (tester) async {
     final listener = Listener<String>();
     final listener2 = Listener<String>();
@@ -326,9 +284,8 @@ void main() {
   testWidgets('UncontrolledProviderScope gracefully handles vsync',
       (tester) async {
     final container = createContainer();
-    final container2 = createContainer(parent: container);
 
-    expect(container.scheduler.flutterVsyncs, isEmpty);
+    expect(flutterVsyncs, isEmpty);
 
     await tester.pumpWidget(
       UncontrolledProviderScope(
@@ -337,21 +294,18 @@ void main() {
       ),
     );
 
-    expect(container.scheduler.flutterVsyncs, hasLength(1));
-    expect(container2.scheduler.flutterVsyncs, isEmpty);
+    expect(flutterVsyncs, hasLength(1));
 
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: UncontrolledProviderScope(
-          container: container2,
+        child: ProviderScope(
           child: Container(),
         ),
       ),
     );
 
-    expect(container.scheduler.flutterVsyncs, hasLength(1));
-    expect(container2.scheduler.flutterVsyncs, hasLength(1));
+    expect(flutterVsyncs, hasLength(2));
 
     await tester.pumpWidget(
       UncontrolledProviderScope(
@@ -360,13 +314,11 @@ void main() {
       ),
     );
 
-    expect(container.scheduler.flutterVsyncs, hasLength(1));
-    expect(container2.scheduler.flutterVsyncs, isEmpty);
+    expect(flutterVsyncs, hasLength(1));
 
     await tester.pumpWidget(Container());
 
-    expect(container.scheduler.flutterVsyncs, isEmpty);
-    expect(container2.scheduler.flutterVsyncs, isEmpty);
+    expect(flutterVsyncs, isEmpty);
   });
 
   testWidgets('When there are multiple vsyncs, rebuild providers only once',
@@ -673,7 +625,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          provider.overrideWithValue('rootOverride'),
+          provider.overrideWithValue('rootoverride'),
         ],
         child: ProviderScope(
           child: Consumer(
@@ -691,7 +643,7 @@ void main() {
     );
 
     expect(find.text('root root2'), findsNothing);
-    expect(find.text('rootOverride root2'), findsOneWidget);
+    expect(find.text('rootoverride root2'), findsOneWidget);
   });
 
   testWidgets('ProviderScope throws if ancestorOwner changed', (tester) async {

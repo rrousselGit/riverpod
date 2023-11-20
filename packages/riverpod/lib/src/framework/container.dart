@@ -157,8 +157,8 @@ class ProviderContainer implements Node {
   void Function(void Function() task)? vsyncOverride;
 
   /// The object that handles when providers are refreshed and disposed.
-  @internal
-  late final ProviderScheduler scheduler = ProviderScheduler();
+  late final _ProviderScheduler _scheduler =
+      _parent?._scheduler ?? _ProviderScheduler();
 
   /// How deep this [ProviderContainer] is in the graph of containers.
   ///
@@ -214,13 +214,7 @@ class ProviderContainer implements Node {
 
   /// Awaits for providers to rebuild/be disposed and for listeners to be notified.
   Future<void> pump() async {
-    final a = scheduler.pendingFuture;
-    final b = _parent?.scheduler.pendingFuture;
-
-    await Future.wait<void>([
-      if (a != null) a,
-      if (b != null) b,
-    ]);
+    return _scheduler.pendingFuture;
   }
 
   /// Reads a provider without listening to it and returns the currently
@@ -636,7 +630,7 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
       element.dispose();
     }
 
-    if (_root == null) scheduler.dispose();
+    if (_root == null) _scheduler.dispose();
   }
 
   /// Traverse the [ProviderElementBase]s associated with this [ProviderContainer].
@@ -787,11 +781,6 @@ class ProviderOverride implements Override {
 
   /// The new provider behavior.
   final ProviderBase<Object?> _override;
-
-  @override
-  String toString() {
-    return 'ProviderOverride(${_origin.name} with ${(_override as ValueProvider)._value})';
-  }
 }
 
 /// An object used by [ProviderContainer]/`ProviderScope` to override the behavior

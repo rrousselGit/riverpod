@@ -24,8 +24,9 @@ export 'src/common.dart' hide AsyncTransition;
 
 export 'src/framework.dart'
     hide
-        ProviderScheduler,
         debugCanModifyProviders,
+        vsync,
+        flutterVsyncs,
         Vsync,
         ValueProviderElement,
         ValueProvider,

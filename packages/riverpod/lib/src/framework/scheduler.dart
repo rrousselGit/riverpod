@@ -5,8 +5,39 @@ part of '../framework.dart';
 @internal
 typedef Vsync = void Function(void Function());
 
+/// A way to override [vsync], used by Flutter to synchronize a container
+/// with the widget tree.
+@internal
+final flutterVsyncs = <Vsync>{};
+
 void _defaultVsync(void Function() task) {
   Future(task);
+}
+
+/// A function that controls the refresh rate of providers.
+///
+/// Defaults to refreshing providers at the end of the next event-loop.
+@internal
+void Function(void Function()) get vsync {
+  if (flutterVsyncs.isNotEmpty) {
+    // Notify all InheritedWidgets of a possible rebuild.
+    // At the same time, we only execute the task once, in whichever
+    // InheritedWidget that rebuilds first.
+    return (task) {
+      var invoked = false;
+      void invoke() {
+        if (invoked) return;
+        invoked = true;
+        task();
+      }
+
+      for (final flutterVsync in flutterVsyncs) {
+        flutterVsync(invoke);
+      }
+    };
+  }
+
+  return _defaultVsync;
 }
 
 /// The object that handles when providers are refreshed and disposed.
@@ -15,39 +46,7 @@ void _defaultVsync(void Function() task) {
 /// notified that they wanted to rebuild.
 ///
 /// Providers are disposed if they spent at least one full frame without any listener.
-@internal
-class ProviderScheduler {
-  /// A way to override [vsync], used by Flutter to synchronize a container
-  /// with the widget tree.
-  @internal
-  final flutterVsyncs = <Vsync>{};
-
-  /// A function that controls the refresh rate of providers.
-  ///
-  /// Defaults to refreshing providers at the end of the next event-loop.
-  @internal
-  void Function(void Function()) get vsync {
-    if (flutterVsyncs.isNotEmpty) {
-      // Notify all InheritedWidgets of a possible rebuild.
-      // At the same time, we only execute the task once, in whichever
-      // InheritedWidget that rebuilds first.
-      return (task) {
-        var invoked = false;
-        void invoke() {
-          if (invoked) return;
-          invoked = true;
-          task();
-        }
-
-        for (final flutterVsync in flutterVsyncs) {
-          flutterVsync(invoke);
-        }
-      };
-    }
-
-    return _defaultVsync;
-  }
-
+class _ProviderScheduler {
   final _stateToDispose = <AutoDisposeProviderElementMixin<Object?>>[];
   final _stateToRefresh = <ProviderElementBase<Object?>>[];
 
