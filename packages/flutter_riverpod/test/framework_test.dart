@@ -47,32 +47,46 @@ void main() {
     );
   });
 
-  testWidgets('Supports multiple UncontrolledProviderScopes in the same tree',
+  testWidgets('Supports multiple ProviderScope roots in the same tree',
       (tester) async {
+    final a = StateProvider((_) => 0);
+    final b = Provider((ref) => ref.watch(a));
+
     await tester.pumpWidget(
-      ProviderScope(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            for (var i = 0; i < 3; i++)
-              SizedBox(
-                width: 100,
-                height: 100,
-                child: UncontrolledProviderScope(
-                  container: ProviderContainer(),
-                  child: Consumer(
-                    builder: (context, ref, _) {
-                      ref.watch(multipleFutureProvider);
-                      ref.watch(multipleProviderScopeNotifierProvider);
-                      return Container();
-                    },
-                  ),
+      // No root scope. We want to test cases where there are multiple roots
+      Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          for (var i = 0; i < 2; i++)
+            SizedBox(
+              width: 100,
+              height: 100,
+              child: ProviderScope(
+                child: Consumer(
+                  builder: (context, ref, _) {
+                    ref.watch(a);
+                    ref.watch(b);
+                    return Container();
+                  },
                 ),
-              )
-          ],
-        ),
+              ),
+            ),
+        ],
       ),
     );
+
+    final containers = tester.allElements
+        .where((e) => e.widget is Consumer)
+        .map(ProviderScope.containerOf)
+        .toList();
+
+    expect(containers, hasLength(2));
+
+    for (final container in containers) {
+      container.read(a.notifier).state++;
+    }
+
+    await tester.pump();
   });
 
   testWidgets('ref.invalidate can invalidate a family', (tester) async {
@@ -829,21 +843,6 @@ void main() {
     expect(find.text('new 1'), findsOneWidget);
   });
 }
-
-final multipleFutureProvider = FutureProvider<String>((ref) async => 'foo');
-
-class MultipleProviderScopeNotifier extends AutoDisposeNotifier<String> {
-  @override
-  String build() {
-    ref.refresh(multipleFutureProvider);
-    return 'bar';
-  }
-}
-
-final multipleProviderScopeNotifierProvider =
-    NotifierProvider.autoDispose<MultipleProviderScopeNotifier, String>(
-  MultipleProviderScopeNotifier.new,
-);
 
 class InitState extends ConsumerStatefulWidget {
   const InitState({super.key, required this.initState});
