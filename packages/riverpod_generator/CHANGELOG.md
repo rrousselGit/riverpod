@@ -1,3 +1,8 @@
+## 3.0.0-dev.10 - 2023-11-20
+
+- `riverpod_annotation` upgraded to `3.0.0-dev.2`
+- `riverpod` upgraded to `3.0.0-dev.2`
+
 ## 3.0.0-dev.9 - 2023-11-20
 
 - Fix crash when encountering classes with a `ProviderBase` field.

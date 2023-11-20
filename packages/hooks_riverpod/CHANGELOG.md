@@ -1,4 +1,4 @@
-## Unreleased build
+## 3.0.0-dev.2 - 2023-11-20
 
 Fix exceptions when using multiple root `ProviderContainers`/`ProviderScopes`.
 

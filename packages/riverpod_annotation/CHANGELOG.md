@@ -1,3 +1,7 @@
+## 3.0.0-dev.2 - 2023-11-20
+
+- `riverpod` upgraded to `3.0.0-dev.2`
+
 ## 3.0.0-dev.1 - 2023-11-20
 
 - `riverpod` upgraded to `3.0.0-dev.1`
