@@ -1,3 +1,8 @@
+## 2.4.7 - 2023-11-20
+
+- Fix `ProviderObserver.didUpdateProvider` being called with an incorrect
+  "provider" parameter when the provider is overridden.
+
 ## 2.4.6 - 2023-11-13
 
 - Exceptions in asynchronous providers are now correctly received
