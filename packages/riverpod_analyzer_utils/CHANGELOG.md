@@ -1,3 +1,8 @@
+## Unreleased minor
+
+- **Breaking** `LegacyProviderDeclarationElement.providerType` is now nullable.
+- Fix crash when parsing classes with a `ProviderBase` field.
+ 
 ## 0.4.3 - 2023-10-28
 
 - `GeneratorProviderDeclaration.createdTypeDisplayString` now always
