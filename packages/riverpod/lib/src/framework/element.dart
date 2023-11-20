@@ -67,7 +67,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   /// The [ProviderContainer] that owns this [ProviderElementBase].
   @override
   ProviderContainer get container => _container;
-  late ProviderContainer _container;
+  late final ProviderContainer _container;
 
   /// Whether this [ProviderElementBase] is currently listened to or not.
   ///
@@ -573,7 +573,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     for (final observer in _container.observers) {
       runQuaternaryGuarded(
         observer.didUpdateProvider,
-        provider,
+        origin,
         previousState,
         newState.stateOrNull,
         _container,
@@ -586,7 +586,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         error: (newState) {
           runQuaternaryGuarded(
             observer.providerDidFail,
-            provider,
+            origin,
             newState.error,
             newState.stackTrace,
             _container,
