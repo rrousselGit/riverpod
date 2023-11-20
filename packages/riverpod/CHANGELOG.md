@@ -1,3 +1,7 @@
+## Unreleased fix
+
+Fix exceptions when using multiple root `ProviderContainers`/`ProviderScopes`.
+
 ## 2.4.6 - 2023-11-13
 
 - Exceptions in asynchronous providers are now correctly received

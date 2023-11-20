@@ -326,8 +326,9 @@ void main() {
   testWidgets('UncontrolledProviderScope gracefully handles vsync',
       (tester) async {
     final container = createContainer();
+    final container2 = createContainer(parent: container);
 
-    expect(flutterVsyncs, isEmpty);
+    expect(container.scheduler.flutterVsyncs, isEmpty);
 
     await tester.pumpWidget(
       UncontrolledProviderScope(
@@ -336,18 +337,21 @@ void main() {
       ),
     );
 
-    expect(flutterVsyncs, hasLength(1));
+    expect(container.scheduler.flutterVsyncs, hasLength(1));
+    expect(container2.scheduler.flutterVsyncs, isEmpty);
 
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: ProviderScope(
+        child: UncontrolledProviderScope(
+          container: container2,
           child: Container(),
         ),
       ),
     );
 
-    expect(flutterVsyncs, hasLength(2));
+    expect(container.scheduler.flutterVsyncs, hasLength(1));
+    expect(container2.scheduler.flutterVsyncs, hasLength(1));
 
     await tester.pumpWidget(
       UncontrolledProviderScope(
@@ -356,11 +360,13 @@ void main() {
       ),
     );
 
-    expect(flutterVsyncs, hasLength(1));
+    expect(container.scheduler.flutterVsyncs, hasLength(1));
+    expect(container2.scheduler.flutterVsyncs, isEmpty);
 
     await tester.pumpWidget(Container());
 
-    expect(flutterVsyncs, isEmpty);
+    expect(container.scheduler.flutterVsyncs, isEmpty);
+    expect(container2.scheduler.flutterVsyncs, isEmpty);
   });
 
   testWidgets('When there are multiple vsyncs, rebuild providers only once',
@@ -667,7 +673,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          provider.overrideWithValue('rootoverride'),
+          provider.overrideWithValue('rootOverride'),
         ],
         child: ProviderScope(
           child: Consumer(
@@ -685,7 +691,7 @@ void main() {
     );
 
     expect(find.text('root root2'), findsNothing);
-    expect(find.text('rootoverride root2'), findsOneWidget);
+    expect(find.text('rootOverride root2'), findsOneWidget);
   });
 
   testWidgets('ProviderScope throws if ancestorOwner changed', (tester) async {
