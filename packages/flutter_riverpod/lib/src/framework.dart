@@ -8,7 +8,7 @@ import 'package:meta/meta.dart';
 
 import 'internals.dart';
 
-/// {@template riverpod.provider_scope}
+/// {@template riverpod.providerscope}
 /// A widget that stores the state of providers.
 ///
 /// All Flutter applications using Riverpod must contain a [ProviderScope] at
@@ -78,7 +78,7 @@ import 'internals.dart';
 /// {@endtemplate}
 @sealed
 class ProviderScope extends StatefulWidget {
-  /// {@macro riverpod.provider_scope}
+  /// {@macro riverpod.providerscope}
   const ProviderScope({
     super.key,
     this.overrides = const [],
@@ -305,7 +305,7 @@ class _UncontrolledProviderScopeElement extends InheritedElement {
       debugCanModifyProviders ??= _debugCanModifyProviders;
     }
 
-    _containerOf(widget).scheduler.flutterVsyncs.add(_flutterVsync);
+    flutterVsyncs.add(_flutterVsync);
     super.mount(parent, newSlot);
   }
 
@@ -380,7 +380,7 @@ To fix this problem, you have one of two solutions:
       debugCanModifyProviders = null;
     }
 
-    _containerOf(widget).scheduler.flutterVsyncs.remove(_flutterVsync);
+    flutterVsyncs.remove(_flutterVsync);
 
     super.unmount();
   }
