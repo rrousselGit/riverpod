@@ -1,4 +1,4 @@
-## 2.3.7 - 2023-11-20
+## 2.3.8 - 2023-11-20
 
 - `riverpod_annotation` upgraded to `2.3.2`
 - `riverpod` upgraded to `2.4.8`
