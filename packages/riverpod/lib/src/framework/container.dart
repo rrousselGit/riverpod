@@ -157,8 +157,8 @@ class ProviderContainer implements Node {
   void Function(void Function() task)? vsyncOverride;
 
   /// The object that handles when providers are refreshed and disposed.
-  late final _ProviderScheduler _scheduler =
-      _parent?._scheduler ?? _ProviderScheduler();
+  @internal
+  late final ProviderScheduler scheduler = ProviderScheduler();
 
   /// How deep this [ProviderContainer] is in the graph of containers.
   ///
@@ -214,7 +214,13 @@ class ProviderContainer implements Node {
 
   /// Awaits for providers to rebuild/be disposed and for listeners to be notified.
   Future<void> pump() async {
-    return _scheduler.pendingFuture;
+    final a = scheduler.pendingFuture;
+    final b = _parent?.scheduler.pendingFuture;
+
+    await Future.wait<void>([
+      if (a != null) a,
+      if (b != null) b,
+    ]);
   }
 
   /// Reads a provider without listening to it and returns the currently
@@ -630,7 +636,7 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
       element.dispose();
     }
 
-    if (_root == null) _scheduler.dispose();
+    if (_root == null) scheduler.dispose();
   }
 
   /// Traverse the [ProviderElementBase]s associated with this [ProviderContainer].
