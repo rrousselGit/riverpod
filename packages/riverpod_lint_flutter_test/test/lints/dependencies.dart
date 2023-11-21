@@ -56,7 +56,7 @@ int watchGeneratedRootButNoDependencies(
   return ref.watch(generatedRootProvider);
 }
 
-// Check "dependencies" specfied but missing dependency
+// Check "dependencies" specified but missing dependency
 
 @Riverpod(dependencies: [])
 int watchScopedButEmptyDependencies(WatchScopedButEmptyDependenciesRef ref) {
@@ -85,7 +85,7 @@ int watchGeneratedRootButEmptyDependencies(
   return ref.watch(generatedRootProvider);
 }
 
-// Check "dependencies" specfied but missing dependency
+// Check "dependencies" specified but missing dependency
 
 @Riverpod(dependencies: [dep])
 int watchScopedButMissingDependencies(
@@ -120,7 +120,7 @@ int watchGeneratedRootButMissingDependencies(
   return ref.watch(generatedRootProvider);
 }
 
-// Check "dependencies" specfied and contains dependency
+// Check "dependencies" specified and contains dependency
 
 @Riverpod(dependencies: [generatedScoped])
 int watchGeneratedScopedAndContainsDependency(
