@@ -3,7 +3,7 @@ import {
   riverpodAnnotationVersion,
   riverpodGeneratorVersion,
   riverpodLintVersion,
-} from "../../../../../../src/versions";
+} from "@site/src/versions";
 
 const codegen = `name: my_app_name
 environment:
