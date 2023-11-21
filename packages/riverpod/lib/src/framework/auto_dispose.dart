@@ -37,7 +37,7 @@ mixin AutoDisposeProviderElementMixin<State> on ProviderElementBase<State>
 
     // ignore: deprecated_member_use_from_same_package
     if (!maintainState && !hasListeners && (links == null || links.isEmpty)) {
-      _container._scheduler.scheduleProviderDispose(this);
+      _container.scheduler.scheduleProviderDispose(this);
     }
   }
 

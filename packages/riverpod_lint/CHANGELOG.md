@@ -1,3 +1,11 @@
+## 2.3.6 - 2023-11-20
+
+- `riverpod` upgraded to `2.4.8`
+
+## 2.3.5 - 2023-11-20
+
+- Fix crash when encountering classes with a `ProviderBase` field.
+
 ## 2.3.4 - 2023-11-13
 
 - Updated `scoped_providers_should_specify_dependencies` to ignore instances of using pumpWidget in tests (thanks to [lockieRichter](https://github.com/lockieRichter))
@@ -21,7 +29,6 @@
 - Added `protected_notifier_state` lint, which warns against using the `Notifier.state`
   property of a notifier different than the current one.
   Aka a Notifier "A" should not directly access the `state` if a Notifier "B".
-  
 
 ## 2.2.1 - 2023-10-02
 
