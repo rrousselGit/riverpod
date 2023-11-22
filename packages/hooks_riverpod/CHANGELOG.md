@@ -1,7 +1,17 @@
-## Unreleased patch
+## 2.4.8 - 2023-11-20
+
+Fix exceptions when using multiple root `ProviderContainers`/`ProviderScopes`.
+
+## 2.4.7 - 2023-11-20
+
+- Fix `ProviderObserver.didUpdateProvider` being called with an incorrect
+  "provider" parameter when the provider is overridden.
+
+## 2.4.6 - 2023-11-13
 
 - Exceptions in asynchronous providers are now correctly received
   by `ProviderObserver.providerDidFail`.
+- Fix exception when a `ProviderScope` is rebuilt with a different `key`.
 
 ## 2.4.5 - 2023-10-28
 

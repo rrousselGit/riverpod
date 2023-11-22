@@ -1,3 +1,15 @@
+## 2.3.2 - 2023-11-20
+
+- `riverpod` upgraded to `2.4.8`
+
+## 2.3.1 - 2023-11-20
+
+- `riverpod` upgraded to `2.4.7`
+
+## 2.3.1 - 2023-11-13
+
+- `riverpod` upgraded to `2.4.6`
+
 ## 2.3.0 - 2023-10-28
 
 - Exported internal `FamilyOverride` API, for use in generated code.
