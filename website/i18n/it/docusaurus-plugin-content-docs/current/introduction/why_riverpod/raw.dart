@@ -11,17 +11,17 @@ class Package {
 
 /* SNIPPET START */
 
-// Recupera l'elenco dei package da pub.dev
+// Fetches the list of packages from pub.dev
 final fetchPackagesProvider = FutureProvider.autoDispose
     .family<List<Package>, ({int page, String? search})>((ref, params) async {
   final page = params.page;
   final search = params.search ?? '';
   final dio = Dio();
-  // Effettua una richiesta API. Qui stiamo utilizzando il package 'dio', ma potremmo usare qualsiasi altro package.
+  // Fetch an API. Here we're using package:dio, but we could use anything else.
   final response = await dio.get<List<Object?>>(
     'https://pub.dartlang.org/api/search?page=$page&q=${Uri.encodeQueryComponent(search)}',
   );
 
-  // Decodifica la risposta JSON in una classe Dart.
+  // Decode the JSON response into a Dart class.
   return response.data?.map(Package.fromJson).toList() ?? const [];
 });

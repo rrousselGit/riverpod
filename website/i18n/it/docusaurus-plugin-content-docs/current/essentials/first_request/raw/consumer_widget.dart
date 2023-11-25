@@ -8,18 +8,18 @@ import 'provider.dart';
 
 /* SNIPPET START */
 
-/// Estendiamo "ConsumerWidget" al posto di "StatelessWidget".
-/// Ciò è equivalente a creare uno "StatelessWidget" e ritornare un widget "Consumer".
+/// We subclassed "ConsumerWidget" instead of "StatelessWidget".
+/// This is equivalent to making a "StatelessWidget" and retuning "Consumer".
 class Home extends ConsumerWidget {
   const Home({super.key});
 
   @override
-  // Si noti come il metodo "build" ora riceve un extra parametro: "ref"
+  // Notice how "build" now receives an extra parameter: "ref"
   Widget build(BuildContext context, WidgetRef ref) {
-    // Possiamo usare "ref.watch" dentro il nostro widget come facevamo con "Consumer"
+    // We can use "ref.watch" inside our widget like we did using "Consumer"
     final AsyncValue<Activity> activity = ref.watch(activityProvider);
 
-    // Il codice dell'interfaccia grafica rimane la stesso
+    // The rendering logic stays the same
     return Center(/* ... */);
   }
 }

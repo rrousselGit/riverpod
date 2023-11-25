@@ -12,13 +12,13 @@ class DiceRollWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ref.listen(diceRollProvider, (previous, next) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Tiro del dado! Abbiamo ottenuto: $next')),
+        SnackBar(content: Text('Dice roll! We got: $next')),
       );
     });
     return TextButton.icon(
       onPressed: () => ref.invalidate(diceRollProvider),
       icon: const Icon(Icons.casino),
-      label: const Text('Tira un dado'),
+      label: const Text('Roll a dice'),
     );
   }
 }

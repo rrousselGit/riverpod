@@ -5,9 +5,9 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'activity.freezed.dart';
 part 'activity.g.dart';
 
-/// La risposta dell'endpoint `GET /api/activity`.
+/// The response of the `GET /api/activity` endpoint.
 ///
-/// È definita utilizzando `freezed` e `json_serializable`.
+/// It is defined using `freezed` and `json_serializable`.
 @freezed
 class Activity with _$Activity {
   factory Activity({
@@ -18,7 +18,8 @@ class Activity with _$Activity {
     required double price,
   }) = _Activity;
 
-  /// Converte un oggetto JSON in un'istanza di [Activity].
-  /// Questo consente una lettura type-safe della risposta API.
-  factory Activity.fromJson(Map<String, dynamic> json) => _$ActivityFromJson(json);
+  /// Convert a JSON object into an [Activity] instance.
+  /// This enables type-safe reading of the API response.
+  factory Activity.fromJson(Map<String, dynamic> json) =>
+      _$ActivityFromJson(json);
 }

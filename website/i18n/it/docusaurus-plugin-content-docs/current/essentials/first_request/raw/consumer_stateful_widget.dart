@@ -8,8 +8,8 @@ import 'provider.dart';
 
 /* SNIPPET START */
 
-// Estendiamo "ConsumerStatefulWidget".
-// Questo è l'equivalente di usare "Consumer" in un "StatefulWidget"
+// We extend ConsumerStatefulWidget.
+// This is the equivalent of "Consumer" + "StatefulWidget".
 class Home extends ConsumerStatefulWidget {
   const Home({super.key});
 
@@ -17,25 +17,25 @@ class Home extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => _HomeState();
 }
 
-// Si noti come invece di "State", stiamo estendendo "ConsumerState".
-// Ciò usa lo stesso principio di "ConsumerWidget" al posto di "StatelessWidget"
+// Notice how instead of "State", we are extending "ConsumerState".
+// This uses the same principle as "ConsumerWidget" vs "StatelessWidget".
 class _HomeState extends ConsumerState<Home> {
   @override
   void initState() {
     super.initState();
 
-    // Anche i cicli di vita dello stato hanno accesso a "ref".
-    // Ciò consente operazioni come l'aggiunta di un listener a un provider specifico
-    // per mostrare dialoghi/snackbars.
+    // State life-cycles have access to "ref" too.
+    // This enables things such as adding a listener on a specific provider
+    // to show dialogs/snackbars.
     ref.listenManual(activityProvider, (previous, next) {
-      // TODO mostrare una snackbar/dialog
+      // TODO show a snackbar/dialog
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // "ref" non è più passato come parametro, ma è invece una proprietà di "ConsumerState".
-    // Possiamo quindi tenere "ref.watch" dentro il metodo "build".
+    // "ref" is not passed as parameter anymore, but is instead a property of "ConsumerState".
+    // We can therefore keep using "ref.watch" inside "build".
     final AsyncValue<Activity> activity = ref.watch(activityProvider);
 
     return Center(/* ... */);

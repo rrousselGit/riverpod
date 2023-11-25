@@ -5,54 +5,59 @@ title: Testing
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
-import testingOriginalTestFlutter from "!!raw-loader!/i18n/it/docusaurus-plugin-content-docs/current/cookbooks/testing_original_test_flutter.dart";
-import testingOriginalTestDart from "!!raw-loader!/i18n/it/docusaurus-plugin-content-docs/current/cookbooks/testing_original_test_dart.dart";
-import repositorySnippet from "!!raw-loader!/i18n/it/docusaurus-plugin-content-docs/current/cookbooks/testing_repository.dart";
-import testFlutter from "!!raw-loader!/i18n/it/docusaurus-plugin-content-docs/current/cookbooks/testing_flutter.dart";
-import testDart from "!!raw-loader!/i18n/it/docusaurus-plugin-content-docs/current/cookbooks/testing_dart.dart";
-import testOverrideInfo from "!!raw-loader!/i18n/it/docusaurus-plugin-content-docs/current/cookbooks/testing_override_info.dart";
-import testFull from "!!raw-loader!/i18n/it/docusaurus-plugin-content-docs/current/cookbooks/testing_full.dart";
+import testingOriginalTestFlutter from "!!raw-loader!/docs/cookbooks/testing_original_test_flutter.dart";
+import testingOriginalTestDart from "!!raw-loader!/docs/cookbooks/testing_original_test_dart.dart";
+import repositorySnippet from "!!raw-loader!/docs/cookbooks/testing_repository.dart";
+import testFlutter from "!!raw-loader!/docs/cookbooks/testing_flutter.dart";
+import testDart from "!!raw-loader!/docs/cookbooks/testing_dart.dart";
+import testFull from "!!raw-loader!/docs/cookbooks/testing_full.dart";
+import testOverrideInfo from "!!raw-loader!/docs/cookbooks/testing_override_info.dart";
 import { trimSnippet } from "../../../../../src/components/CodeSnippet";
 
-Per qualsiasi applicazione di media-grande scala è fondamentale testare l'applicazione.
+:::caution
+The content of this page may be outdated.  
+It will be updated in the future, but for now you may want to refer to the content
+in the top of the sidebar instead (introduction/essentials/case-studies/...)
+:::
 
-Per testare con successo la nostra applicazione vorremo le seguenti cose:
+For any medium to large-scale applications, it is critical to test the application.
 
-- Nessuno stato dovrebbe essere preservato tra `test`/`testWidgets`.  
-  Ciò significa che nessuno stato globale nell'applicazione o tutti gli stati 
-  globali devono essere ripristinati dopo ogni test.
+To successfully test our application, we will want the following things:
 
-- Essere in grado di forzare i nostri provider ad avere uno stato specifico,
-  mediante mocking o manipolandoli fino a raggiungere lo stato desiderato.
-   
-Vediamo caso per caso come [Riverpod] ti aiuta per i test.
+- No state should be preserved between `test`/`testWidgets`.  
+  That means no global state in the application, or all global states should reset after each test.
 
-## Nessuno stato dovrebbe essere preservato tra `test`/`testWidgets`. 
+- Being able to force our providers to have a specific state, either through
+  mocking or by manipulating them until we reach the desired state.
 
-I provider sono generalmente dichiarati come variabili globali, 
-questo potrebbe preoccuparti ed è comprensibile.
-Dopotutto, lo stato globale rende i test molto difficili 
-in quanto può richiedere lunghe funzioni `setUp`/`tearDown`.
+Let's see one by one how [Riverpod] helps you with these.
 
-Ma la realtà è diversa: mentre i provider sono dichiarati come globali,
-lo stato di un provider **non** è globale.
+## No state should be preserved between `test`/`testWidgets`.
 
-Infatti, lo stato è salvato in un oggetto chiamato [ProviderContainer],
-che potresti aver notato se hai visto gli esempi dart-only.
-Se non è così, ti basta sapere che questo oggetto è creato implicitamente
-da [ProviderScope], il widget che abilita [Riverpod] nel nostro progetto.
+Since providers are usually declared as global variables, you might worry about
+that one.  
+After all, global state makes testing very difficult, because it can require
+lengthy `setUp`/`tearDown`.
 
-Concretamente, ciò significa che due `testWidgets` che usano i provider
-non condividono nessuno stato.
-In quanto tale, non c'è bisogno di nessun metodo `setUp`/`tearDown`.
+But the reality is: While providers are declared as globals, the state of a provider
+is **not** global.
 
-Ma un esempio è sempre meglio di lunghe spiegazioni:
+Instead, it is stored in an object named [ProviderContainer], which you may have
+seen if you looked at the dart-only examples.  
+If you haven't, know that this [ProviderContainer] object is implicitly created
+by [ProviderScope], the widget that enables [Riverpod] on our project.
+
+Concretely what this means is, two `testWidgets` using providers do not share
+any state.  
+As such, there is no need for any `setUp`/`tearDown` at all.
+
+But an example is better than lengthy explanations:
 
 <Tabs
   defaultValue="testWidgets"
   values={[
     { label: 'testWidgets (Flutter)', value: 'testWidgets', },
-    { label: 'test (Solo Dart)', value: 'test', },
+    { label: 'test (Dart only)', value: 'test', },
   ]}
 >
 <TabItem value="testWidgets">
@@ -67,40 +72,41 @@ Ma un esempio è sempre meglio di lunghe spiegazioni:
 </TabItem>
 </Tabs>
 
-Come puoi vedere, `counterProvider` è stato dichiarato come globale ma
-nessuno stato è stato condiviso tra i test.
-In quanto tale, non ci dobbiamo preoccuppare che i nostri test possano comportarsi in modo
-differente se eseguiti in una cartella diversa, poichè funzionano completamente isolati.
+As you can see, while `counterProvider` was declared as a global, no state was
+shared between tests.  
+As such, we do not have to worry about our tests potentially behaving differently
+if executed in a different order, since they are running in complete isolation.
 
-## Sovrascrivere il comportamento di un provider durante i test.
+## Overriding the behavior of a provider during tests.
 
-Una comune applicazione reale può avere i seguenti oggetti:
+A common real-world application may have the following objects:
 
-- Una classe `Repository` che fornisce una semplice e 'type-safe' API per effettuare richieste HTTP.
+- It will have a `Repository` class, which provides a type-safe and simple API
+  to perform HTTP requests.
 
-- Un oggetto che gestisce lo stato dell'applicazione che usa `Repository`
-  per effettuare richieste HTTP basate su diversi fattori.
-  Questo oggetto potrebbe essere un `ChangeNotifier`, `Bloc` o anche un provider.
+- An object that manages the application state, and may use `Repository` to perform
+  HTTP requests based on different factors.
+  This may be a `ChangeNotifier`, `Bloc`, or even a provider.
 
-Usando [Riverpod], può essere rappresentato in questo modo:
+Using [Riverpod], this may be represented as follows:
 
 <CodeBlock>{trimSnippet(repositorySnippet)}</CodeBlock>
 
-In questa situazione, quando facciamo un unit/widget test, tipicamente vogliamo
-sostituire la nostra istanza `Repository` con una falsa implementazione che ritorna
-una risposta pre-definita al posto di fare una reale richiesta HTTP.
+In this situation, when making a unit/widget test, we will typically want to
+replace our `Repository` instance with a fake implementation that returns
+a pre-defined response instead of making a real HTTP request.
 
-Vogliamo poi che il nostro `todoListProvider` o l'equivalente utilizzi l'implementazione
-emulata (mocked) di `Repository`.
+We will then want our `todoListProvider` or equivalent to use the mocked implementation
+of `Repository`.
 
-Per ottenere questo, possiamo usare il parametro `overrides` di [ProviderScope]/[ProviderContainer] 
-per sovrascrivere il comportamento di `repositoryProvider`:
+To achieve this, we can use the `overrides` parameter of [ProviderScope]/[ProviderContainer]
+to override the behavior of `repositoryProvider`:
 
 <Tabs
   defaultValue="ProviderScope"
   values={[
     { label: 'ProviderScope (Flutter)', value: 'ProviderScope', },
-    { label: 'ProviderContainer (Solo Dart)', value: 'ProviderContainer', },
+    { label: 'ProviderContainer (Dart only)', value: 'ProviderContainer', },
   ]}
 >
 <TabItem value="ProviderScope">
@@ -115,28 +121,30 @@ per sovrascrivere il comportamento di `repositoryProvider`:
 </TabItem>
 </Tabs>
 
-Come puoi vedere dal codice evidenziato, [ProviderScope]/[ProviderContainer] permette
-di sostituire l'implementazione di un provider con un comportamento diverso.
+As you can see by the highlighted code, [ProviderScope]/[ProviderContainer]
+allows replacing the implementation of a provider with a different behavior.
 
 :::info
-Alcuni provider espongono modi semplificati per sovrascrivere il loro comportamento.
-Per esempio, [FutureProvider] permette di sovrascrivere il provider con un `AsyncValue`:
+Some providers expose simplified ways to override their behavior.  
+For example, [FutureProvider] allows overriding the provider with an `AsyncValue`:
 
 <CodeBlock>{trimSnippet(testOverrideInfo)}</CodeBlock>
+
+**Note**: As part of the 2.0.0 release, `overrideWithValue` methods are temporarily
+removed. They will be added back in later versions.
 
 :::
 
 :::info
-La sintassi per sovrascrivere un provider con il modificatore `family` è
-leggermente diversa.
+The syntax for overriding a provider with the `family` modifier is slightly different.
 
-Se hai usato un provider in questo modo:
+If you used a provider like this:
 
 ```dart
 final response = ref.watch(myProvider('12345'));
 ```
 
-Puoi sovrascrivere il provider come:
+You could override the provider as:
 
 ```dart
 myProvider('12345').overrideWithValue(...));
@@ -144,9 +152,9 @@ myProvider('12345').overrideWithValue(...));
 
 :::
 
-## Esempio completo di full widget test
+## Full widget test example
 
-Riassumendo, di seguito l'intero codice per il nostro Flutter test.
+Wrapping up, here is the entire full code for our Flutter test.
 
 <CodeBlock>{trimSnippet(testFull)}</CodeBlock>
 
