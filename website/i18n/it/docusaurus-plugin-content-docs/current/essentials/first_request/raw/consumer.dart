@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'activity.dart';
 import 'provider.dart';
 
-/// The homepage of our application
+/// La homepage della nostra applicazione
 class Home extends StatelessWidget {
   const Home({super.key});
 
@@ -15,20 +15,21 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
-        // Read the activityProvider. This will start the network request
-        // if it wasn't already started.
-        // By using ref.watch, this widget will rebuild whenever the
-        // the activityProvider updates. This can happen when:
-        // - The response goes from "loading" to "data/error"
-        // - The request was refreshed
-        // - The result was modified locally (such as when performing side-effects)
+        // Legge l'activityProvider. Questo avvierà la richiesta di rete
+        // se non era già in corso.
+        // Utilizzando ref.watch, questo widget si ricostruirà ogni volta che
+        // activityProvider si aggiorna. Ciò può verificarsi quando:
+        // - La risposta passa da "loading" a "data/error"
+        // - La richiesta è stata aggiornata
+        // - Il risultato è stato modificato localmente (ad esempio durante l'esecuzione di side-effects)
         // ...
         final AsyncValue<Activity> activity = ref.watch(activityProvider);
 
         return Center(
-          /// Since network-requests are asynchronous and can fail, we need to
-          /// handle both error and loading states. We can use pattern matching for this.
-          /// We could alternatively use `if (activity.isLoading) { ... } else if (...)`
+          /// Poiché le richieste di rete sono asincrone e possono fallire, è necessario
+          /// gestire sia gli stati di errore che di caricamento.
+          /// Possiamo utilizzare il pattern matching per fare ciò.
+          /// In alternativa, potremmo utilizzare `if (activity.isLoading) { ... } else if (...)`
           child: switch (activity) {
             AsyncData(:final value) => Text('Activity: ${value.activity}'),
             AsyncError() => const Text('Oops, something unexpected happened'),

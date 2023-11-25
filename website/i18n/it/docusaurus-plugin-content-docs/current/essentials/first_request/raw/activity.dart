@@ -1,6 +1,6 @@
 /* SNIPPET START */
 
-/// The response of the `GET /api/activity` endpoint.
+/// La risposta dell'endpoint `GET /api/activity`.
 class Activity {
   Activity({
     required this.key,
@@ -10,8 +10,8 @@ class Activity {
     required this.price,
   });
 
-  /// Convert a JSON object into an [Activity] instance.
-  /// This enables type-safe reading of the API response.
+  /// Converte un oggetto JSON in un'istanza di [Activity].
+  /// Questo consente una lettura type-safe della risposta API.
   factory Activity.fromJson(Map<String, dynamic> json) {
     return Activity(
       key: json['key'] as String,

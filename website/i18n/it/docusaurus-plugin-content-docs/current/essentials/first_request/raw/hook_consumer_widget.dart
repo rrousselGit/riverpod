@@ -9,18 +9,18 @@ import 'provider.dart';
 
 /* SNIPPET START */
 
-/// We subclassed "HookConsumerWidget".
-/// This combines "StatelessWidget" + "Consumer" + "HookWidget" together.
+/// Estendiamo "HookConsumerWidget".
+/// Questo combina "StatelessWidget" + "Consumer" + "HookWidget" insieme.
 class Home extends HookConsumerWidget {
   const Home({super.key});
 
   @override
-  // Notice how "build" now receives an extra parameter: "ref"
+  // Si noti come il metodo "build" ora riceve un extra parametro: "ref"
   Widget build(BuildContext context, WidgetRef ref) {
-    // It is possible to use hooks such as "useState" inside our widget
+    // È possibile usare gli hooks come "useState" all'interno del widget
     final counter = useState(0);
 
-    // We can also use read providers
+    // Possiamo anche leggere provider
     final AsyncValue<Activity> activity = ref.watch(activityProvider);
 
     return Center(/* ... */);
