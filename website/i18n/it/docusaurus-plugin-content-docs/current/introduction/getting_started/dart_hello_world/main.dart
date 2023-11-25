@@ -7,18 +7,18 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'main.g.dart';
 
-// We create a "provider", which will store a value (here "Hello world").
-// By using a provider, this allows us to mock/override the value exposed.
+// Creiamo un "provider", che conterrà un valore (qui "Hello, world").
+// Utilizzando un provider, ciò ci consente di simulare/sostituire il valore esposto.
 @riverpod
 String helloWorld(HelloWorldRef ref) {
   return 'Hello world';
 }
 
 void main() {
-  // This object is where the state of our providers will be stored.
+  // Questo oggetto è dove lo stato dei nostri provider sarà salvato.
   final container = ProviderContainer();
 
-  // Thanks to "container", we can read our provider.
+  // Grazie a "container", possiamo leggere il nostro provider.
   final value = container.read(helloWorldProvider);
 
   print(value); // Hello world

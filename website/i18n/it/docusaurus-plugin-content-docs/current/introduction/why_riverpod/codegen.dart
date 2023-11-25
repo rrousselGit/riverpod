@@ -13,7 +13,7 @@ class Package {
 
 /* SNIPPET START */
 
-// Fetches the list of packages from pub.dev
+// Recupera l'elenco dei package da pub.dev
 @riverpod
 Future<List<Package>> fetchPackages(
   FetchPackagesRef ref, {
@@ -21,11 +21,11 @@ Future<List<Package>> fetchPackages(
   String search = '',
 }) async {
   final dio = Dio();
-  // Fetch an API. Here we're using package:dio, but we could use anything else.
+  // Effettua una richiesta API. Qui stiamo utilizzando il package 'dio', ma potremmo usare qualsiasi altro package.
   final response = await dio.get<List<Object?>>(
     'https://pub.dartlang.org/api/search?page=$page&q=${Uri.encodeQueryComponent(search)}',
   );
 
-  // Decode the JSON response into a Dart class.
+  // Decodifica la risposta JSON in una classe Dart.
   return response.data?.map(Package.fromJson).toList() ?? const [];
 }
