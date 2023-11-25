@@ -6,13 +6,12 @@ part 'auto_dispose.g.dart';
 
 /* SNIPPET START */
 
-// With code gen, .autoDispose is the default
+// Con la generazione di codice, un provider è .autoDispose di default
 @riverpod
 int diceRoll(DiceRollRef ref) {
-  // Since this provider is .autoDispose, un-listening to it will dispose
-  // its current exposed state.
-  // Then, whenever this provider is listened to again,
-  // a new dice will be rolled and exposed again.
+  // Poiché questo provider è .autoDispose, smettere di ascoltarlo ne disporrà lo stato esposto attuale.
+  // Quindi, ogni volta che questo provider viene ascoltato di nuovo,
+  // verrà tirato un nuovo dado e lo stato verrà esposto di nuovo.
   final dice = Random().nextInt(10);
   return dice;
 }
@@ -21,9 +20,9 @@ int diceRoll(DiceRollRef ref) {
 int cachedDiceRoll(CachedDiceRollRef ref) {
   final coin = Random().nextInt(10);
   if (coin > 5) throw Exception('Way too large.');
-  // The above condition might fail;
-  // If it doesn't, the following instruction tells the Provider
-  // to keep its cached state, even when no one listens to it anymore.
+  // La condizione sopra potrebbe fallire;
+  // Se non lo fa, l'istruzione seguente dice al Provider
+  // di mantenere il suo stato in cache, *anche quando nessuno lo ascolta più*.
   ref.keepAlive();
   return coin;
 }

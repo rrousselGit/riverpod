@@ -2,26 +2,24 @@
 title: Quickstart
 ---
 
-This section is designed for people familiar with the [Provider] package who
-wants to learn about Riverpod.
+Questa sezione è progettata per le persone che hanno familiarità con il pacchetto [Provider] e 
+che desiderano imparare Riverpod.
 
-Before anything, read the short [getting started] article and try out the small
-[sandbox] example to test Riverpod's features out. If you like what you see there, you should then
-definitively consider a migration.
+Prima di tutto, leggi il breve articolo [getting started] e prova il piccolo esempio [sandbox] 
+per testare le funzionalità di Riverpod. Se ti piace ciò che vedi in quell'esempio, 
+dovresti sicuramente considerare una migrazione.
 
-Indeed, migrating from Provider to Riverpod can be very straightforward.  
+Infatti, la migrazione da Provider a Riverpod può essere molto semplice e diretta.
 
-Migrating basically consists in a few steps that can be done in an *incremental* way.
+La migrazione consiste principalmente in alcuni passaggi che possono essere eseguiti in modo *incrementale*.
 
-## Start with `ChangeNotifierProvider`
+## Inizia con `ChangeNotifierProvider`
+Durante la transizione verso Riverpod puoi benissimo continuare ad utilizzare `ChangeNotifier`.
 
-It's fine to keep using `ChangeNotifier` while transitioning towards Riverpod,
-and not use its latest fancy features ASAP.
-  
-Indeed, the following is perfectly fine to start with:
+Quanto segue è perfettamente accettabile per iniziare:
 
 ```dart
-// If you have this...
+// Se hai questo...
 class MyNotifier extends ChangeNotifier {
   int state = 0;
 
@@ -31,57 +29,54 @@ class MyNotifier extends ChangeNotifier {
   }
 }
 
-// ... just add this!
+// ... basta che aggiungi questo!
 final myNotifierProvider = ChangeNotifierProvider<MyNotifier>((ref) {
   return MyNotifier();
 });
 ```
+Come puoi vedere, Riverpod espone una classe [ChangeNotifierProvider], 
+che è lì appositamente per supportare le migrazioni da pkg:Provider.
 
-As you can see Riverpod exposes a [ChangeNotifierProvider] class,
-which is there precisely to support migrations from pkg:Provider.
-
-Keep in mind that this provider is not recommended when writing new code,
-and it is not the best way to use Riverpod, but it's a gentle and very easy way to start your migration.
+Tieni presente che questo provider non è raccomandato quando si scrive nuovo codice 
+e non è il modo migliore per utilizzare Riverpod, ma è un modo semplice e delicato per iniziare la tua migrazione.
 
 :::tip
-There is no rush to *immediately* try to change your `ChangeNotifier`s into the more modern [Riverpod's providers].
-Some requite a bit of a paradigm shift, so it may be difficult to do initially.  
+Non c'è bisogno di cambiare immediatamente i tuoi `ChangeNotifier` nei [provider più moderni di Riverpod]. 
+Alcuni richiedono un certo cambio di paradigma, quindi potrebbe essere difficile farlo inizialmente.
 
-Take your time, as it is important to get yourself familiar with Riverpod first;
-you'll quickly find out that *almost* all Providers from pkg:provider have a strict equivalent in pkg:riverpod.
+Prenditi il tuo tempo, poiché è importante prendere familiarità con Riverpod prima; 
+scoprirai rapidamente che *quasi* tutti i provider di pkg:provider hanno un equivalente stretto in pkg:riverpod.
 :::
 
-## Starts with *leaves*
+## Inizia con le *foglie (leaves)*
 
-Start with Providers that do not depend on anything else, i.e. start with the *leaves* in your dependency tree.  
-Once you have migrated all of the leaves, you can then move on to the providers that depend on leaves.
+Inizia con i provider che non dipendono da nessun altro provider, cioè inizia con le *foglie* nel tuo albero delle dipendenze. 
+Una volta che hai migrato tutte le foglie, puoi passare ai provider che dipendono dalle foglie.
 
-In other words, avoid migrating `ProxyProvider`s at first; tackle them once all of their dependencies have been migrated.
+In altre parole, evita di migrare ProxyProvider all'inizio; affrontali una volta che tutte le loro dipendenze sono state migrate.
 
-This should boost and simplify the migration process, while also minimizing / tracking down any errors.
+Questo dovrebbe accelerare e semplificare il processo di migrazione, mentre allo stesso tempo ridurre al minimo e tracciare eventuali errori.
 
+## Riverpod e Provider possono coesistere
+*Tieni presente che è del tutto possibile utilizzare contemporaneamente sia Provider che Riverpod.*
 
-## Riverpod and Provider can coexist
-*Keep in mind that it is entirely possible to use both Provider and Riverpod at the same time.*
+Infatti, utilizzando alias di importazione, è possibile utilizzare entrambe le API insieme.
+Questo è anche ottimo per la leggibilità e rimuove qualsiasi uso ambiguo dell'API.
 
-Indeed, using import aliases, it is possible to use the two APIs altogheter.  
-This is also great for readibilty and it removes any ambiguous API usage.
-
-If you plan on doing this, consider using import aliases for each Provider import in your codebase.
+Se hai intenzione di farlo, considera l'uso di alias di importazione per ciascuna importazione di Provider nel tuo codice.
 
 :::info
-A full guide onto how to effectively implement import aliases is incoming soon.
+Una guida completa su come implementare efficacemente alias di importazione sarà presto disponibile.
 :::
 
+## Non è *necessario* utilizzare `Consumer` immediatamente.
+È importante tenere a mente che non c'è bisogno di utilizzare *immediatamente* le API di [Consumer di Riverpod]. 
+Se hai appena iniziato la migrazione, [come già menzionato], probabilmente dovresti iniziare con `ChangeNotifierProvider`.
 
-## You don't *have to* use `Consumer` right away
+Considera `myNotifierProvider`, definito precedentemente.
 
-It's important to keep in mind that there is no need to *immediately* use [Riverpod's `Consumer` APIs].  
-If you've just started the migration, [as mentioned above], you should probably start with `ChangeNotifierProvider`.
+Dato che il tuo codice interno probabilmente dipende dalle API di pkg:Provider, usa quanto segue per iniziare a consumare `ChangeNotifier` con pkg:Riverpod.
 
-Consider `myNotifierProvider`, defined above.
-
-Since your inner code is probably depending on pkg:Provider's APIs, use the following to start consuming `ChangeNotifier`s with pkg:Riverpod.
 ```dart
 MultiProvider(
   providers: [
@@ -90,20 +85,16 @@ MultiProvider(
 )
 ```
 
-This way, only the root Widget has to be initially converted into a `ConsumerWidget`.  
-This should ease the migration towards pkg:Riverpod even more.
+In questo modo, solo il Widget radice deve essere inizialmente convertito in un `ConsumerWidget`.
+Ciò dovrebbe semplificare ulteriormente la migrazione verso pkg:Riverpod.
 
+## Migrare un Provider alla volta
+Se hai già un'applicazione esistente, non cercare di migrare tutti i tuoi provider contemporaneamente!
 
+Anche se dovresti lavorare per spostare gradualmente tutta la tua applicazione su Riverpod nel lungo termine, **non esagerare**. 
+Fallo un provider alla volta.
 
-## Migrate one Provider at a time
-
-If you have an existing app, don't try to migrate all your providers at once!
-
-While you should strive toward moving all your application to Riverpod in the long-run, 
-**don't burn yourself out**.  
-Do it one provider at a time.  
-
-Take the above example. **Fully** migrating that `myNotifierProvider` to Riverpod means writing the following:
+Prendi l'esempio precedente. Migrare completamente quel `myNotifierProvider` a Riverpod significa scrivere quanto segue:
 
 ```dart
 class MyNotifier extends Notifier<int> {
@@ -116,41 +107,40 @@ class MyNotifier extends Notifier<int> {
 final myNotifierProvider = NotifierProvider<MyNotifier, int>(MyNotifier.new);
 ```
 
-.. and it's _also_ needed to change how that provider is consumed, i.e. writing `ref.watch` in the place of each `context.watch` for this provider.
+.. ed è _anche_ necessario cambiare in che modo quel provider viene consumato, ovvero scrivere `ref.watch` al posto di `context.watch` per questo provider.
 
-This operation might take some time and might lead to some errors, so don't rush doing this all at once.
+Questa operazione potrebbe richiedere del tempo e potrebbe causare alcuni errori, quindi non affrettarti a farlo tutto in una volta.
 
-## Migrating `ProxyProvider`s
-Within pkg:Provider, `ProxyProvider` is used to combine values from other Providers;
-its build depends on the value of other providers, reactively.
+## Migrare i `ProxyProvider`
+In pkg:Provider, `ProxyProvider` viene utilizzato per combinare i valori di altri Provider; 
+la sua costruzione dipende dal valore di altri provider in modo reattivo.
 
-With Riverpod, instead, Providers [are composable by default]; therefore, when migrating a `ProxyProvider`
-you'll simply need to write `ref.watch` if you want to declare a direct dependency from a Provider to another.
+Con Riverpod, invece, i provider [sono componibili di default]; pertanto, quando migri un `ProxyProvider`, 
+dovrai semplicemente scrivere `ref.watch` se desideri dichiarare una dipendenza diretta da un Provider ad un altro.
 
-If anything, combining values with Riverpod should feel simpler and straightforward; thus, the migration should greatly
-simplify your code.
+Al contempo, combinare valori con Riverpod dovrebbe risultare più semplice e diretto; 
+di conseguenza, la migrazione dovrebbe semplificare notevolmente il tuo codice.
 
-Furthermore, there are no shanenigans about combining more than two providers together:
-just add another `ref.watch` and you'll be good to go.
+Inoltre, non ci sono trucchi per combinare più di due provider insieme: 
+aggiungi semplicemente un altro `ref.watch` e sarai pronto a procedere.
 
-## Eager initialization
+## Inizializzazione anticipata
+Poiché i provider di Riverpod sono variabili globali *final*, sono [lazy di default].
 
-Since Riverpod's providers are final global variables, they are [lazy by default].
+Se hai bisogno di inizializzare alcuni dati o un servizio di utilità in fase di avvio, 
+il modo migliore per farlo è leggere il tuo provider nel punto in cui di solito inserivi `MultiProvider`.
 
-If you need to initialize some warm-up data or a useful service on startup,
-the best way to do it is to first read your provider in the place where you used to put `MultiProvider`.
+In altre parole, poiché Riverpod non può essere forzato a essere inizializzato anticipatamente, i provider
+possono essere letti e memorizzati nella tua fase di avvio, in modo che siano pronti e caricati quando necessario nel resto della tua applicazione.
 
-In other words, since Riverpod can't be forced to be eager initialized, they can be read and cached
-in your startup phase, so that they're warm and ready when needed inside the rest of your application.
+Una guida completa sull'inizializzazione anticipata dei provider di pkg:Riverpod è [disponibile qui].
 
-A full guide about eager initialization of pkg:Riverpod's providers [is available here].
+## Generazione di codice
+La [generazione di codice] è consigliata per utilizzare Riverpod in modo *future-proof*.
+A tal proposito, è probabile che quando la metaprogrammazione diventerà una cosa comune, la generazione di codice sarà predefinita per Riverpod.
 
-## Code Generation
-[Code generation] is recommended to use Riverpod the *future-proof* way.  
-As a side note, chances are that when metaprogramming will be a thing, codegen will be default for Riverpod.
-
-Unluckily, `@riverpod` can't generate code for `ChangeNotifierProvider`.  
-To overcome this, you can use the following utility extesion method:
+Sfortunatamente, `@riverpod` non può generare codice per `ChangeNotifierProvider`.
+Per superare questo problema, puoi utilizzare il seguente metodo di estensione di utilità:
 ```dart
 extension ChangeNotifierWithCodeGenExtension on Ref {
   T listenAndDisposeChangeNotifier<T extends ChangeNotifier>(T notifier) {
@@ -162,7 +152,7 @@ extension ChangeNotifierWithCodeGenExtension on Ref {
 }
 ```
 
-And then, you can expose your `ChangeNotifier` with the following codegen syntax:
+Successivamente, puoi esporre il tuo `ChangeNotifier` con la seguente sintassi codegen:
 ```dart
 // ignore_for_file: unsupported_provider_value
 @riverpod
@@ -171,9 +161,9 @@ MyNotifier example(ExampleRef ref) {
 }
 ```
 
-Once the "base" migration is done, you can change your `ChangeNotifier` to `Notifier`,
-thus eliminating the need for temporary extensions.  
-Taking up the previous examples, a "fully migrated" `Notifier` becomes:
+Una volta completata la migrazione "base", puoi cambiare il tuo `ChangeNotifier` in `Notifier`, 
+eliminando così la necessità di estensioni temporanee.
+Riprendendo gli esempi precedenti, un `Notifier` "completamente migrato" diventa:
 
 ```dart
 @riverpod
@@ -185,23 +175,22 @@ class MyNotifier extends _$MyNotifier {
 }
 ```
 
-Once this is done, and you're positive that there are no more `ChangeNotifierProvider`s 
-in your codebase, you can get rid of the temporary extension definitively.
+Una volta fatto ciò, e sei sicuro che non ci siano più `ChangeNotifierProvider` nel tuo codice, 
+puoi eliminare definitivamente l'estensione temporanea.
 
-Keep in mind that, while being recommended, codegen is not *mandatory*.  
-It's good to reason about migrations incrementally:
-if you feel like that implementing this migration *while* transitioning to
-the code generation syntax in one single take might be too much, *that's fine*.
+Tieni presente che, sebbene sia consigliato, la generazione di codice non è *obbligatoria*.
+È importante ragionare sulle migrazioni in modo incrementale:
+quindi, è normale sentire che sia troppo pesante implementare sia la migrazione che la transizione alla sintassi di codice generato.
 
-Following this guide, you *can* migrate towards codegen as a further step forward, later on.
+Seguendo questa guida, potrai migrare alla generazione di codice come ulteriore passo avanti in seguito.
 
 [getting started]: /docs/introduction/getting_started
 [sandbox]: https://dartpad.dev/?null_safety=true&id=ef06ab3ce0b822e6cc5db0575248e6e2
 [provider]: https://pub.dev/packages/provider
 [ChangeNotifierProvider]: /docs/providers/change_notifier_provider
-[Code generation]: /docs/concepts/about_code_generation
-[Riverpod's providers]: /docs/providers/notifier_provider
-[are composable by default]: /docs/from_provider/motivation#combining-providers-is-hard-and-error-prone
-[as mentioned above]: /docs/from_provider/quickstart#start-with-changenotifierprovider
-[Riverpod's `Consumer` APIs]: /docs/concepts/reading
-[lazy by default]: /docs/concepts/provider_lifecycles
+[generazione di codice]: /docs/concepts/about_code_generation
+[provider più moderni di Riverpod]: /docs/providers/notifier_provider
+[sono componibili di default]: /docs/from_provider/motivation#combinare-i-provider-è-difficile-e-soggetto-a-errori
+[come già menzionato]: /docs/from_provider/quickstart#start-with-changenotifierprovider
+[Consumer di Riverpod]: /docs/concepts/reading
+[lazy di default]: /docs/concepts/provider_lifecycles

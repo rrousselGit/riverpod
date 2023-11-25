@@ -7,6 +7,10 @@
     "message": "Introduzione",
     "description": "The label for category Introduction in sidebar Sidebar"
   },
+  "sidebar.Sidebar.category.Riverpod for Provider Users": {
+    "message": "Riverpod per utenti di Provider",
+    "description": "The label for category Riverpod for Providers Users in sidebar Sidebar"
+  },
   "sidebar.Sidebar.category.Guides": {
     "message": "Guide",
     "description": "The label for category Guides in sidebar Sidebar"
