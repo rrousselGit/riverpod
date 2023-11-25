@@ -10,8 +10,8 @@ import 'activity.dart';
 // Necessario affinché la generazione del codice funzioni
 part 'provider.g.dart';
 
-/// Questo creerà un provider chiamato `activityProvider`
-/// che memorizzerà come cache il risultato di questa funzione.
+/// This will create a provider named `activityProvider`
+/// which will cache the result of this function.
 @riverpod
 Future<Activity> activity(ActivityRef ref) async {
   // Usando il package http, otteniamo un'attività casuale dalle Bored API
