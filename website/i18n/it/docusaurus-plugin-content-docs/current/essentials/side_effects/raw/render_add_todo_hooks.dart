@@ -26,37 +26,37 @@ class Example extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // The pending addTodo operation. Or null if none is pending.
+    // L'operazione addTodo in sospeso. O null se nessuna è in attesa.
     final pendingAddTodo = useState<Future<void>?>(null);
-    // We listen to the pending operation, to update the UI accordingly.
+
+    // Ascoltiamo l'operazione in sospeso per aggiornare l'interfaccia utente di conseguenza.
     final snapshot = useFuture(pendingAddTodo.value);
 
-    // Compute whether there is an error state or not.
-    // The connectionState check is here to handle when the operation is retried.
-    final isErrored = snapshot.hasError &&
-        snapshot.connectionState != ConnectionState.waiting;
+    // Calcoliamo se c'è uno stato di errore o meno.
+    // Controlliamo qui lo stato di ConnectionState per gestire quando l'operazione viene ripetuta.
+    final isErrored = snapshot.hasError && snapshot.connectionState != ConnectionState.waiting;
 
     return Row(
       children: [
         ElevatedButton(
           style: ButtonStyle(
-            // If there is an error, we show the button in red
+            // Se c'è stato un errore mostriamo il bottone in rosso
             backgroundColor: MaterialStateProperty.all(
               isErrored ? Colors.red : null,
             ),
           ),
           onPressed: () async {
-            // We keep the future returned by addTodo in a variable
+            // Assegniamo il future ritornato da 'addTodo' in una variabile
             final future = ref
                 .read(todoListProvider.notifier)
                 .addTodo(Todo(description: 'This is a new todo'));
 
-            // We store that future in the local state
+            // Immagazziniamo il future nello stato locale
             pendingAddTodo.value = future;
           },
           child: const Text('Add todo'),
         ),
-        // The operation is pending, let's show a progress indicator
+        // L'operazione è in sospeso, mostriamo un indicatore di progresso
         if (snapshot.connectionState == ConnectionState.waiting) ...[
           const SizedBox(width: 8),
           const CircularProgressIndicator(),

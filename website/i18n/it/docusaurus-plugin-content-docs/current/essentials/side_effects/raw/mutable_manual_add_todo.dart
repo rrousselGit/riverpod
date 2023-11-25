@@ -7,8 +7,7 @@ import 'package:http/http.dart' as http;
 
 import 'todo_list_notifier.dart';
 
-final todoListProvider =
-    AsyncNotifierProvider.autoDispose<TodoList, List<Todo>>(
+final todoListProvider = AsyncNotifierProvider.autoDispose<TodoList, List<Todo>>(
   TodoList.new,
 );
 
@@ -17,7 +16,7 @@ class TodoList extends AutoDisposeAsyncNotifier<List<Todo>> {
   Future<List<Todo>> build() async => [/* ... */];
 
   Future<void> addTodo(Todo todo) async {
-    // We don't care about the API response
+    // Non ci importa della risposta dell'API
     await http.post(
       Uri.https('your_api.com', '/todos'),
       headers: {'Content-Type': 'application/json'},
@@ -26,10 +25,10 @@ class TodoList extends AutoDisposeAsyncNotifier<List<Todo>> {
 
     /* SNIPPET START */
     final previousState = await future;
-    // Mutable the previous list of todos.
+    // Modifica la lista dei todo in modo mutabile.
     previousState.add(todo);
-    // Manually notify listeners.
+    // Notifica manualmente i listener.
     ref.notifyListeners();
-/* SNIPPET END */
+    /* SNIPPET END */
   }
 }

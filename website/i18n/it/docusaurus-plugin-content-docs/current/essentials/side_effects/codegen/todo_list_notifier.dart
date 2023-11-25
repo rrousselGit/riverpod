@@ -19,7 +19,7 @@ class Todo with _$Todo {
 class TodoList extends _$TodoList {
   @override
   Future<List<Todo>> build() async {
-    // The logic we previously had in our FutureProvider is now in the build method.
+    // La logica che precedentemente avevamo nel nostro FutureProvider è ora nel metodo 'build'.
     return [
       Todo(description: 'Learn Flutter', completed: true),
       Todo(description: 'Learn Riverpod'),

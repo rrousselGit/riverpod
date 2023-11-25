@@ -12,14 +12,12 @@ class Example extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return ElevatedButton(
       onPressed: () {
-        // Using "ref.read" combined with "myProvider.notifier", we can
-        // obtain the class instance of our notifier. This enables us
-        // to call the "addTodo" method.
-        ref
-            .read(todoListProvider.notifier)
-            .addTodo(Todo(description: 'This is a new todo'));
+        // Usando "ref.read" combinato con "myProvider.notifier" possiamo
+        // ottenere l'istanza della classe del nostro notifier. Ciò ci permette di
+        // chiamare il metodo "addTodo".
+        ref.read(todoListProvider.notifier).addTodo(Todo(description: 'Questo è un nuovo todo'));
       },
-      child: const Text('Add todo'),
+      child: const Text('Aggiungi todo'),
     );
   }
 }

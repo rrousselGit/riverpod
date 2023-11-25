@@ -1,5 +1,5 @@
 ---
-title: Performing side effects
+title: Eseguire side effects
 version: 1
 ---
 
@@ -16,38 +16,37 @@ import manualAddTodo from "!!raw-loader!./side_effects/raw/manual_add_todo.dart"
 import mutableManualAddTodo from "!!raw-loader!./side_effects/raw/mutable_manual_add_todo.dart";
 import renderAddTodo from "./side_effects/render_add_todo";
 
-So far, we've only seen how to fetch data (aka perform a _GET_ HTTP request).  
-But what about side-effects, such as a _POST_ request?
+Fino ad ora, abbiamo visto solo come ottenere dati (cioè eseguire una richiesta HTTP _GET_).  
+Ma cosa succede con i side-effects, come una richiesta _POST_?
 
-Applications often implement a CRUD (Create, Read, Update, Delete) API.  
-When doing so, it is common that an update request (typically a _POST_) should
-also update the local cache to have the UI reflect the new state.
+Le applicazioni spesso implementano API CRUD (Create, Read, Update, Delete).  
+Quando lo fanno, è comune che una richiesta di aggiornamento (tipicamente una _POST_) debba
+aggiornare anche la cache locale in modo che l'interfaccia utente rifletta il nuovo stato.
 
-The problem is, how do we update the state of a provider from within a consumer?  
-Naturally, providers do not expose a way to modify their state.
-This is by design, to ensure that the state is only modified in a controlled way
-and promote separation of concerns.  
-Instead, providers have to explicitly expose a way to modify their state.
+Il problema è: come aggiorniamo lo stato di un provider da dentro un consumer?  
+Di natura, i provider non espongono un modo per modificare il loro stato.
+Questo è fatto apposta, per garantire che lo stato venga modificato in modo controllato
+e promuovere la separazione delle responsabilità.  
+Invece, i provider devono esplicitamente esporre un modo per modificare il loro stato.
 
-To do that, we will use a new concept: Notifiers.  
-To showcase this new concept, let's use a more advanced example: A to-do list.
+Per fare ciò, useremo un nuovo concetto: i Notifiers.  
+Per illustrare questo nuovo concetto, utilizziamo un esempio più avanzato: una lista di cose da fare (to-do list).
 
-## Defining a Notifier
+## Definire un Notifier
 
-Let's start with what we already know by this point: A plain simple _GET_ request.
-As saw previously in <Link documentID="essentials/first_request" />, we could
-fetch a list of todos by writing:
+Cominciamo con quello che sappiamo fino a questo punto: una semplice richiesta _GET_.
+Come visto precedentemente in <Link documentID="essentials/first_request" />, potremmo
+ottenere una to-do list scrivendo:
 
 <AutoSnippet {...todoListProvider} />
 
-Now that we've fetch a list of todos, let's see how we can add a new todos.  
-For this, we will need to modify our provider such that they expose a public API
-for modifying their state. This is done by converting our provider into what
-we call a "notifier".
+Ora che abbiamo ottenuto una to-do list, vediamo come possiamo aggiungere nuovi elementi.
+Per fare questo, dovremo modificare i nostri provider in modo che espongano un'API pubblica
+per modificare il loro stato. Questo si fa convertendo il nostro provider in quello che chiamiamo un "notifier".
 
-Notifiers are the "stateful widget" of providers. They require a slight tweak to
-the syntax for defining a provider.  
-This new syntax is as follows:
+I notifiers sono il "widget stateful" dei provider. Richiedono una piccola modifica alla sintassi
+per la definizione di un provider.
+La nuova sintassi è la seguente:
 
 <When codegen={false}>
 <Legend
@@ -65,30 +64,30 @@ class MyNotifier extends SomeNotifier<Result> {
     {
       offset: 6,
       length: 4,
-      label: "The provider variable",
+      label: "La variabile del provider",
        description: <>
 
-This variable is what will be used to interact with our provider.  
-The variable must be final and "top-level" (global).
+Questa variabile è ciò che verrà utilizzato per interagire con il nostro provider.  
+La variabile deve essere `final` e di livello superiore (globale).
 
 </>
     },
     {
       offset: 13,
       length: 20,
-      label: "The provider type",
+      label: "Il tipo del provider",
        description: <>
 
-Generally either `NotifierProvider`, `AsyncNotifierProvider` or `StreamNotifierProvider`.  
-The type of provider used depends on the return value of your function.
-For example, to create a `Future<Activity>`, you'll want a `AsyncNotifierProvider<Activity>`.
+In generale, si utilizzano `NotifierProvider`, `AsyncNotifierProvider` o `StreamNotifierProvider`.  
+Il tipo di provider da utilizzare dipende dal valore restituito dalla tua funzione.
+Ad esempio, per creare un `Future<Activity>`, vorrai utilizzare `AsyncNotifierProvider<Activity>`.
 
-`AsyncNotifierProvider` is the one you'll want to use the most.
+`AsyncNotifierProvider` è quello che userai più frequentemente.
 
 :::tip
-Don't think in terms of "Which provider should I pick".
-Instead, think in terms of "What do I want to return". The provider type
-will follow naturally.
+Non pensare in termini di "Quale provider dovrei scegliere".
+Invece, pensa in termini di "Cosa voglio restituire". Il tipo di provider
+seguirà naturalmente.
 :::
 
 </>
@@ -96,50 +95,49 @@ will follow naturally.
     {
       offset: 33,
       length: 13,
-      label: "Modifiers (optional)",
+      label: "Modificatori (opzionale)",
       description: <>
 
-Often, after the type of the provider you may see a "modifier".  
-Modifiers are optional, and are used to tweak the behavior of the provider
-in a way that is type-safe.
+Spesso, dopo il tipo del provider potresti vedere un "modifier" (modificatore).
+I modificatori sono opzionali e vengono utilizzati per regolare il comportamento del provider
+in modo che sia type-safe.
 
-There are currently two modifiers available:
+Al momento ci sono due modifiers disponibili:
 
-- `autoDispose`, which will automatically clear the cache when the provider
-  stops being used.  
-  See also <Link documentID="essentials/auto_dispose" />
-- `family`, which enables passing arguments to your provider.  
-  See also <Link documentID="essentials/passing_args" />.
+- `autoDispose`, il quale cancellerà automaticamente la cache quando il provider smetterà di essere usato.  
+  Vedi anche <Link documentID="essentials/auto_dispose" />
+- `family`, il quale abilita il passaggio di parametri al tuo provider.  
+  Vedi anche <Link documentID="essentials/passing_args" />.
 
 </>
     },
     {
       offset: 67,
       length: 14,
-      label: "The Notifier's constructor",
+      label: "Il costruttore del Notifier",
       description: <>
 
-The parameter of "notifier providers" is a function which is expected
-to instantiate the "notifier".  
-It generally should be a "constructor tear-off".
+Il parametro dei "notifier providers" è una funzione che dovrebbe
+istanziare il "notifier".
+In genere dovrebbe essere un "constructor tear-off".
 
 </>
     },
     {
       offset: 86,
       length: 16,
-      label: "The Notifier",
+      label: "Il Notifier",
       description: <>
 
-If `NotifierProvider` is the "StatefulWidget" class, then this part is
-the `State` class.
+Se `NotifierProvider` è la classe "StatefulWidget", allora questa parte è
+la classe `State`.
 
-This class is responsible for exposing ways to modify the state of the provider.  
-Public methods on this class are accessible to consumers using `ref.read(yourProvider.notifier).yourMethod()`.
+Questa classe è responsabile di esporre modi per modificare lo stato del provider.
+I metodi pubblici di questa classe sono accessibili ai consumer usando `ref.read(tuoProvider.notifier).tuoMetodo()`.
 
 :::note
-Notifiers should not have public properties besides the built-in `state`, as the UI
-would have no mean to know that state has changed.
+I Notifiers non dovrebbero avere proprietà pubbliche oltre allo `state` integrato, in quanto l'interfaccia utente
+non avrebbe modo di sapere che lo stato è cambiato.
 :::
 
 </>
@@ -147,11 +145,11 @@ would have no mean to know that state has changed.
     {
       offset: 111,
       length: 12,
-      label: "The Notifier type",
+      label: "Il tipo del Notifier",
       description: <>
 
-The base class extended by your notifier should match that of the provider + modifiers.
-Some examples would be:
+La classe di base estesa dal tuo notifier dovrebbe corrispondere a quella del provider + modificatori.
+Di seguito alcuni esempi:
 
 - <span style={{ color: colors[0] }}>Notifier</span>Provider -> <span style={{ color: colors[0] }}>Notifier</span>
 - <span style={{ color: colors[0] }}>AsyncNotifier</span>Provider -> <span style={{ color: colors[0] }}>AsyncNotifier</span>
@@ -171,22 +169,22 @@ Some examples would be:
   <span style={{ color: colors[2] }}>Family</span>
   <span style={{ color: colors[0] }}>AsyncNotifier</span>
 
-To make this simpler, it is recommended to use the code generator, as it
-automatically infers the correct type.
+Per semplificare questo processo, è consigliato utilizzare il generatore di codice, poiché
+deduce automaticamente il tipo corretto.
 
 </>
     },
     {
       offset: 136,
       length: 54,
-      label: "The build method",
+      label: "Il metodo build",
       description: <>
 
-All notifiers must override the `build` method.  
-This method is equivalent to the place where you would normally put your
-logic in a non-notifier provider.
+Tutti i notifiers devono sovrascrivere il metodo `build`.  
+Questo metodo è equivalente al punto in cui normalmente inseriresti la tua
+logica in un provider non-notifier.
 
-This method should not be called directly.
+Questo metodo non dovrebbe essere chiamato direttamente.
 
 </>
     },
@@ -211,33 +209,32 @@ class MyNotifier extends _$MyNotifier {
     {
       offset: 0,
       length: 9,
-      label: "The annotation",
+      label: "L'annotazione",
       description: <>
 
-All providers must be annotated with `@riverpod` or `@Riverpod()`.
-This annotation can be placed on global functions or classes.  
-Through this annotation, it is possible to configure the provider.
+Tutti i provider devono essere annotati con `@riverpod` o `@Riverpod()`.
+Questa annotazione può essere posta su funzioni globali o classi.  
+Attraverso questa annotazione, è possibile configurare il provider.
 
-For example, we can disable "auto-dispose" (which we will see later) by writing `@Riverpod(keepAlive: true)`.
+Per esempio, possiamo disabilitare "auto-dispose" (che vedremo più avanti) scrivendo `@Riverpod(keepAlive: true)`.
 
 </>
     },
     {
       offset: 10,
       length: 16,
-      label: "The Notifier",
+      label: "Il Notifier",
        description: <>
 
-When a `@riverpod` annotation is placed on a class, that class is called
-a "Notifier".  
-The class must extend `_$NotifierName`, where `NotifierName` is class name.
+Quando un'annotazione `@riverpod` è posta su una classe, quella classe viene chiamata "Notifier".  
+La classe deve estendere `_$NotifierName`, dove `NotifierName` è il nome della classe.
 
-Notifiers are responsible for exposing ways to modify the state of the provider.  
-Public methods on this class are accessible to consumers using `ref.read(yourProvider.notifier).yourMethod()`.
+I Notifiers sono responsabili di esporre modalità per modificare lo stato del provider.  
+I metodi pubblici di questa classe sono accessibili ai consumer usando `ref.read(yourProvider.notifier).tuoMetodo()`.
 
 :::note
-Notifiers should not have public properties besides the built-in `state`, as the UI
-would have no mean to know that state has changed.
+I Notifiers non dovrebbero avere proprietà pubbliche oltre alla proprietà built-in `state`, poiché l'interfaccia utente
+non avrebbe modo di sapere che lo stato è cambiato.
 :::
 
 </>
@@ -245,14 +242,14 @@ would have no mean to know that state has changed.
     {
       offset: 52,
       length: 54,
-      label: "The build method",
+      label: "Il metodo build",
       description: <>
 
-All notifiers must override the `build` method.  
-This method is equivalent to the place where you would normally put your
-logic in a non-notifier provider.
+Tutti i notifiers devono sovrascrivere il metodo `build`.  
+Questo metodo è equivalente al punto in cui normalmente inseriresti la tua
+logica in un provider non-notifier.
 
-This method should not be called directly.
+Questo metodo non dovrebbe essere chiamato direttamente.
 
 </>
     },
@@ -260,40 +257,38 @@ This method should not be called directly.
 />
 </When>
 
-For reference, you might want to check <Link documentID="essentials/first_request" />
-to compare this new syntax with the previously seen syntax.
+Per ulteriori informazioni, potresti voler consultare <Link documentID="essentials/first_request" />
+per confrontare questa nuova sintassi con quella vista in precedenza.
 
 :::info
-A Notifier with no method outside of `build` is identical to using the
-previously seen syntax.  
-The syntax shown in <Link documentID="essentials/first_request" /> can be considered
-as a shorthand for notifiers with no way to be modified from the UI.
+Un Notifier senza metodi al di fuori di `build` è identico all'utilizzo della sintassi vista in precedenza.
+La sintassi mostrata in <Link documentID="essentials/first_request" /> può essere considerata
+come una scorciatoia per i notifiers senza possibilità di essere modificati dall'interfaccia utente.
 :::
 
-Now that we've seen the syntax, let's see how to convert our previously
-defined provider to a notifier:
+Ora che abbiamo visto la sintassi, vediamo come convertire il nostro provider precedentemente definito in un notifier:
 
 <AutoSnippet {...todoListNotifier} />
 
-Note that the way of reading the provider inside widgets is unchanged.  
-You can still use `ref.watch(todoListProvider)` as with the previous syntax.
+Notiamo che il modo di leggere il provider all'interno dei widget non è cambiato.  
+Puoi ancora usare `ref.watch(todoListProvider)` come nella sintassi precedente.
 
 :::caution
-Do not put logic in the constructor of your notifier.  
-Notifiers should not have a constructor, as `ref` and other properties aren't
-yet available at that point. Instead, put your logic in the `build` method.
+Non inserire la logica nel costruttore del tuo notifier.  
+I notifiers non dovrebbero avere un costruttore, poiché `ref` e altre proprietà 
+non sono ancora disponibili in quel momento. Invece, inserisci la tua logica nel metodo `build`.
 
 ```dart
 class MyNotifier extends ... {
   MyNotifier() {
-    // ❌ Don't do this
-    // This will throw an exception
+    // ❌ Non fare questo
+    // Causerà un'eccezione
     state = AsyncValue.data(42);
   }
 
   @override
   Result build() {
-    // ✅ Do this instead
+    // ✅ Fare questo invece
     state = AsyncValue.data(42);
   }
 }
@@ -301,139 +296,131 @@ class MyNotifier extends ... {
 
 :::
 
-## Exposing a method to perform a _POST_ request
+## Esporre un metodo per effettuare una richiesta _POST_
 
-Now that we have a Notifier, we can start adding methods to enable
-performing side-effects.
-One such side-effect would be to have the client _POST_ a new todo.
-We could do so by adding an `addTodo` method on our notifier:
+Ora che abbiamo un Notifier, possiamo iniziare ad aggiungere metodi per abilitare i side-effects.
+Un side-effect del genere potrebbe essere quello di far eseguire al client una richiesta _POST_ 
+per aggiungere un nuovo elemento todo.
+Possiamo farlo aggiungendo un metodo `addTodo` al nostro notifier:
 
 <AutoSnippet {...todoListNotifierAddTodo} />
 
-Then, we can invoke this method in our UI using the same `Consumer`/`ConsumerWidget`
-we saw in <Link documentID="essentials/first_request" />:
-
-<AutoSnippet raw={consumerAddTodoCall} />
-
 :::info
-Notice how we are using `ref.read` instead of `ref.watch` to invoke our method.  
-Although `ref.watch` could technically work, it is recommended to use `ref.read`
-when logic is performed in event handlers such as "onPressed".
+Nota come stiamo usando `ref.read` invece di `ref.watch` per invocare il nostro metodo.
+Anche se `ref.watch` potrebbe funzionare tecnicamente, si consiglia di utilizzare `ref.read`
+quando si esegue la logica negli event handlers come "onPressed".
 :::
 
-We now have a button which makes a _POST_ request when pressed.  
-However, at the moment, our UI does not update to reflect the new todo list.
-We will want our local cache to match the server's state.
+Abbiamo ora un pulsante che effettua una richiesta _POST_ quando premuto. 
+Tuttavia, al momento, la nostra interfaccia utente non si aggiorna per riflettere la nuova to-do list. 
+Vogliamo che la nostra cache locale corrisponda allo stato del server.
 
-There are a few ways to do so with their pros and cons.
+Esistono diversi modi per farlo, ognuno con i suoi vantaggi e svantaggi.
 
-### Updating our local cache to match the API response
+### Aggiornare la cache locale per riflettere la risposta dell'API
 
-A common backend practice is to have the _POST_ request return the new
-state of the resource.  
-In particular, our API would return the new list of todos after adding
-a new todo. One way of doing this is by writing `state = AsyncData(response)`:
+Una pratica comune lato server è fare sì che la richiesta _POST_ restituisca il nuovo stato della risorsa. 
+In particolare, la nostra API restituirebbe la nuova lista to-do dopo l'aggiunta di un nuovo to-do. 
+Un modo per farlo è scrivere `state = AsyncData(response)`:
 
 <AutoSnippet raw={restAddTodo} />
 
-:::tip pros
+:::tip pro
 
-- The UI will have the most up-to-date state possible.
-  If another user added a todo, we will see it too.
-- The server is the source of truth.
-  With this approach, the client doesn't need to know where the new todo
-  needs to be inserted in the list of todos.
-- Only a single network-request is needed.
-
-:::
-
-:::danger cons
-
-- This approach will only work if the server is implemented in a specific way.
-  If the server does not return the new state, this approach will not work.
-- May still not be doable if the associated _GET_ request is more complex,
-  such as if it has filters/sorting.
+- L'interfaccia utente avrà lo stato più aggiornato possibile. 
+  Se un altro utente ha aggiunto un to-do, la vedremo anche noi.
+- Il server è la fonte di verità. Con questo approccio, 
+  il client non ha bisogno di sapere dove il nuovo to-do deve essere inserito nella list to-do.
+- È necessaria solo una singola richiesta di rete.
 
 :::
 
-### Using `ref.invalidateSelf()` to refresh the provider.
+:::danger contro
 
-One option is to have our provider re-execute the _GET_ request.  
-This can be done by calling `ref.invalidateSelf()` after the _POST_ request:
+- Questo approccio funzionerà solo se il server è implementato in un modo specifico. 
+  Se il server non restituisce il nuovo stato, questo approccio non funzionerà.
+- Potrebbe ancora non essere fattibile se la richiesta _GET_ associata è più complessa, 
+  ad esempio se ha filtri/ordinamenti.
+
+:::
+
+### Usare `ref.invalidateSelf()` per ricaricare il provider.
+
+Un'opzione è far eseguire nuovamente la richiesta _GET_ al nostro provider.  
+Questo può essere fatto chiamando `ref.invalidateSelf()` dopo la richiesta _POST_:
 
 <AutoSnippet raw={invalidateSelfAddTodo} />
 
-:::tip pros
+:::tip pro
 
-- The UI will have the most up-to-date state possible.
-  If another user added a todo, we will see it too.
-- The server is the source of truth.
-  With this approach, the client doesn't need to know where the new todo
-  needs to be inserted in the list of todos.
-- This approach should work regarless of the server implementation.
-  It can be especially useful if your _GET_ request is more complex,
-  such as if it has filters/sorting.
-
-:::
-
-:::danger cons
-
-- This approach will perform an extra _GET_ request, which may be
-  inefficient.
+- L'interfaccia utente avrà lo stato più aggiornato possibile.
+  Se un altro utente ha aggiunto un nuovo to-do, lo vedremo anche noi.
+- Il server è la fonte di verità.
+  Con questo approccio, il client non ha bisogno di sapere dove inserire il nuovo to-do
+  nella lista dei to-do.
+- Questo approccio dovrebbe funzionare indipendentemente dall'implementazione del server.
+  Può essere particolarmente utile se la tua richiesta _GET_ è più complessa,
+  ad esempio se ha filtri/ordinamenti.
 
 :::
 
-### Updating the local cache manually
+:::danger contro
 
-Another option is to update the local cache manually.  
-This would involve trying to mimick the backend's behavior.
-For instance, we would need to know whether the backend inserts new items
-at the start or at the end.
+- Questo approccio eseguirà una richiesta _GET_ aggiuntiva, il che potrebbe
+  essere inefficiente.
+
+:::
+
+### Aggiornare la cache locale manualmente
+
+Un'altra opzione è quella di aggiornare manualmente la cache locale.
+Ciò implicherebbe cercare di imitare il comportamento del backend.
+Ad esempio, dovremmo sapere se il backend inserisce nuovi elementi
+all'inizio o alla fine.
 
 <AutoSnippet raw={manualAddTodo} />
 
 :::info
-This example uses immutable state. This is not required, but recommended.
-See <Link documentID="concepts/why_immutability" /> for more details.  
-If you want to use mutable state instead, you can alternatively do:
+Questo esempio utilizza uno stato immutabile. Non è obbligatorio, ma consigliato.
+Consulta <Link documentID="concepts/why_immutability" /> per ulteriori dettagli.
+Se desideri utilizzare uno stato mutabile, puoi fare in alternativa:
 
 <AutoSnippet raw={mutableManualAddTodo} />
 
 :::
 
-:::tip pros
+:::tip pro
 
-- This approach should work regarless of the server implementation.
-- Only a single network-request is needed.
-
-:::
-
-:::danger cons
-
-- The local cache may not match the server's state.
-  If another user added a todo, we will not see it.
-- This approach may be more complex to implement and effectively
-  duplicate the backend's logic.
+- Questo approccio dovrebbe funzionare indipendentemente dall'implementazione del server.
+- È necessaria solo una singola richiesta di rete.
 
 :::
 
-## Going further: Showing a spinner & error handling
+:::danger contro
 
-With all we've seen so far, we have a button which makes a _POST_ request
-when pressed; and when the request is done, the UI updates to reflect
-changes.  
-But at the moment, there is no indication that the request is being
-performed, nor any information if failed.
+- La cache locale potrebbe non corrispondere allo stato del server.
+  Se un altro utente ha aggiunto un to-do, non lo vedremo.
+- Questo approccio potrebbe essere più complesso da implementare ed in realtà
+  duplicare la logica del backend.
 
-One way to do so is to store the Future returned by `addTodo`
-in the local widget state, and then listen to that future to show
-a snipper or error message.  
-This is one scenario where [flutter_hooks](https://pub.dev/packages/flutter_hooks)
-comes in handy. But of course, you can also use a `StatefulWidget` instead.
+:::
 
-The following snippet shows a progress indicator while
-and operation is pending. And if it failed, renders the button as red:
+## Andando oltre: Mostrare uno spinner e gestione dell'errore
 
-![A button which turns red when the operation failed](/img/essentials/side_effects/spinner.gif)
+Con tutto ciò che abbiamo visto finora, abbiamo un pulsante che effettua una richiesta _POST_
+quando viene premuto; e quando la richiesta è completata, l'interfaccia utente si aggiorna per riflettere
+le modifiche. Ma al momento, non c'è alcuna indicazione che la richiesta stia avvenendo,
+né alcuna informazione in caso di fallimento.
+
+Un modo per farlo è memorizzare il Future restituito da `addTodo`
+nello stato locale del widget e quindi ascoltare quel future per mostrare
+un indicatore di caricamento o un messaggio di errore. Questo è uno scenario in cui
+[flutter_hooks](https://pub.dev/packages/flutter_hooks) risulta utile. Ma naturalmente,
+è possibile utilizzare anche un `StatefulWidget` al suo posto.
+
+Il seguente snippet mostra un indicatore di avanzamento mentre
+un'operazione è in corso. Se fallisce, rende il pulsante di colore rosso:
+
+![Un bottone che diventa rosso quando l'operazione fallisce](/img/essentials/side_effects/spinner.gif)
 
 <AutoSnippet {...renderAddTodo} />

@@ -7,8 +7,7 @@ import 'package:http/http.dart' as http;
 
 import 'todo_list_notifier.dart';
 
-final todoListProvider =
-    AsyncNotifierProvider.autoDispose<TodoList, List<Todo>>(
+final todoListProvider = AsyncNotifierProvider.autoDispose<TodoList, List<Todo>>(
   TodoList.new,
 );
 
@@ -18,23 +17,23 @@ class TodoList extends AutoDisposeAsyncNotifier<List<Todo>> {
 
   /* SNIPPET START */
   Future<void> addTodo(Todo todo) async {
-    // We don't care about the API response
+    // Non ci importa della risposta dell'API
     await http.post(
       Uri.https('your_api.com', '/todos'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(todo.toJson()),
     );
 
-    // We can then manually update the local cache. For this, we'll need to
-    // obtain the previous state.
-    // Caution: The previous state may still be loading or in error state.
-    // A graceful way of handling this would be to read `this.future` instead
-    // of `this.state`, which would enable awaiting the loading state, and
-    // throw an error if the state is in error state.
+    // Possiamo quindi aggiornare manualmente la cache locale. Per fare ciò, avremo bisogno
+    // di ottenere lo stato precedente.
+    // Attenzione: lo stato precedente potrebbe essere anche in stato di loading o di errore.
+    // Un modo elegante di gestirlo sarebbe leggere `this.future` invece
+    // di `this.state`, il che consentirebbe di attendere lo stato di loading e
+    // generare un errore se lo stato è in uno stato di errore.
     final previousState = await future;
 
-    // We can then update the state, by creating a new state object.
-    // This will notify all listeners.
+    // Possiamo quindi aggiornare lo stato, creando un nuovo oggetto di stato.
+    // Ciò notificherà i suoi listener.
     state = AsyncData([...previousState, todo]);
   }
 /* SNIPPET END */

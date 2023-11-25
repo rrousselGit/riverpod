@@ -15,7 +15,7 @@ class Todo with _$Todo {
 /* SNIPPET START */
 @riverpod
 Future<List<Todo>> todoList(TodoListRef ref) async {
-  // Simulate a network request. This would normally come from a real API
+  // Simula una richiesta di rete. Normalmente il risultato dovrebbe venire da una API reale
   return [
     Todo(description: 'Learn Flutter', completed: true),
     Todo(description: 'Learn Riverpod'),

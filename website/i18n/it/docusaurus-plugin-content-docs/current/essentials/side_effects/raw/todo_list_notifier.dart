@@ -23,19 +23,18 @@ class Todo {
 }
 
 /* SNIPPET START */
-// We now use AsyncNotifierProvider instead of FutureProvider
-final todoListProvider =
-    AsyncNotifierProvider.autoDispose<TodoList, List<Todo>>(
+// Ora usiamo AsyncNotifierProvider invece di FutureProvider
+final todoListProvider = AsyncNotifierProvider.autoDispose<TodoList, List<Todo>>(
   TodoList.new,
 );
 
-// We use an AsyncNotifier because our logic is asynchronous.
-// More specifically, we'll need AutoDisposeAsyncNotifier because
-// of the "autoDispose" modifier.
+// Usiamo un AsyncNotifier perché la nostra logica è asincrona.
+// Più nello specifico, avremo di AutoDisposeAsyncNotifier
+// per fruire del modificatore "autoDispose".
 class TodoList extends AutoDisposeAsyncNotifier<List<Todo>> {
   @override
   Future<List<Todo>> build() async {
-    // The logic we previously had in our FutureProvider is now in the build method.
+    // La logica che in precedenza avevamo nel nostro FutureProvider ora è nel metodo di build.
     return [
       Todo(description: 'Learn Flutter', completed: true),
       Todo(description: 'Learn Riverpod'),
