@@ -81,7 +81,7 @@ abstract class ProviderOrFamily implements ProviderListenableOrFamily {
   final Iterable<ProviderOrFamily>? allTransitiveDependencies;
 }
 
-@internal
+/// A shared interface between [ProviderListenable] and [Family].
 abstract class ProviderListenableOrFamily {}
 
 /// Computes the list of all dependencies of a provider.
