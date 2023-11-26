@@ -243,7 +243,7 @@ class ProviderContainer implements Node {
 
   /// {@macro riverpod.exists}
   bool exists(ProviderBase<Object?> provider) {
-    final element = _stateReaders[provider]?._element;
+    final element = _getOrNull(provider)?._element;
 
     return element != null;
   }
@@ -306,9 +306,9 @@ class ProviderContainer implements Node {
   /// {@macro riverpod.invalidate}
   void invalidate(ProviderOrFamily provider) {
     if (provider is ProviderBase) {
-      final reader = _getStateReader(provider._origin);
+      final reader = _getOrNull(provider);
 
-      reader._element?.invalidateSelf();
+      reader?._element?.invalidateSelf();
     } else {
       provider as Family;
 
@@ -329,18 +329,21 @@ class ProviderContainer implements Node {
   }
 
   void _disposeProvider(ProviderBase<Object?> provider) {
-    final element = readProviderElement(provider);
-    element.dispose();
+    final reader = _getOrNull(provider);
+    // The provider is already disposed, so we don't need to do anything
+    if (reader == null) return;
 
-    final reader = _stateReaders[element._origin]!;
+    reader._element?.dispose();
 
     if (reader.isDynamicallyCreated) {
       // Since the StateReader is implicitly created, we don't keep it
       // on provider dispose, to avoid memory leak
 
       void removeStateReaderFrom(ProviderContainer container) {
-        if (container._stateReaders[element._origin] == reader) {
-          container._stateReaders.remove(element._origin);
+        /// Checking if the reader is the same instance is important,
+        /// as it is possible that the provider was overridden.
+        if (container._stateReaders[provider] == reader) {
+          container._stateReaders.remove(provider);
         }
         container._children.forEach(removeStateReaderFrom);
       }
@@ -439,7 +442,7 @@ class ProviderContainer implements Node {
       );
     }
 
-    final reader = _getStateReader(provider);
+    final reader = _putIfAbsent(provider);
 
     assert(
       () {
@@ -493,7 +496,20 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
     return reader.getElement() as ProviderElementBase<State>;
   }
 
-  _StateReader _getStateReader(ProviderBase<Object?> provider) {
+  /// Obtains a [_StateReader] for a provider, but do not create it if it does
+  /// not exist.
+  _StateReader? _getOrNull(ProviderBase<Object?> provider) {
+    return _stateReaders[provider] ??
+
+        /// No need to check "parent". We can directly check "root", because
+        /// if the provider is not in the root, it must have been overridden.
+        /// In which case, it is guaranteed to be in the current container already.
+        _root?._getOrNull(provider);
+  }
+
+  /// Create a [_StateReader] for a provider if it does not exist.
+  /// If one already exists, returns it.
+  _StateReader _putIfAbsent(ProviderBase<Object?> provider) {
     final currentReader = _stateReaders[provider];
     if (currentReader != null) return currentReader;
 
