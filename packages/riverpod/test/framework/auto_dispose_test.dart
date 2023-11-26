@@ -47,6 +47,38 @@ Future<void> main() async {
   });
 
   group('ref.keepAlive', () {
+    test('Does not cause an infinite loop if aborted directly in the callback',
+        () async {
+      final container = createContainer();
+      var buildCount = 0;
+      var disposeCount = 0;
+      final provider = Provider.autoDispose<String>((ref) {
+        buildCount++;
+        ref.onDispose(() => disposeCount++);
+        final link = ref.keepAlive();
+        link.close();
+        return 'value';
+      });
+
+      container.read(provider);
+
+      expect(buildCount, 1);
+      expect(disposeCount, 0);
+      expect(
+        container.getAllProviderElements().map((e) => e.provider),
+        [provider],
+      );
+
+      await container.pump();
+
+      expect(buildCount, 1);
+      expect(disposeCount, 1);
+      expect(
+        container.getAllProviderElements().map((e) => e.provider),
+        isEmpty,
+      );
+    });
+
     test('when the provider rebuilds, links are cleared', () async {
       final container = createContainer();
       final dep = StateProvider((ref) => 0);
@@ -320,14 +352,14 @@ final alwaysAlive = Provider((ref) {
         return 0;
       },
     );
-    final isDependendingOnDependency = StateProvider(
-      name: 'isDependendingOnDependency',
+    final isDependingOnDependency = StateProvider(
+      name: 'isDependingOnDependency',
       (ref) => true,
     );
     final provider = Provider.autoDispose(
       name: 'provider',
       (ref) {
-        if (ref.watch(isDependendingOnDependency)) {
+        if (ref.watch(isDependingOnDependency)) {
           ref.watch(dependency);
         }
       },
@@ -341,11 +373,11 @@ final alwaysAlive = Provider((ref) {
       unorderedEquals(<Object>[
         dependency,
         provider,
-        isDependendingOnDependency,
+        isDependingOnDependency,
       ]),
     );
 
-    container.read(isDependendingOnDependency.notifier).state = false;
+    container.read(isDependingOnDependency.notifier).state = false;
     await container.pump();
 
     expect(dependencyDisposeCount, 1);
@@ -353,7 +385,7 @@ final alwaysAlive = Provider((ref) {
       container.getAllProviderElements().map((e) => e.provider),
       unorderedEquals(<Object>[
         provider,
-        isDependendingOnDependency,
+        isDependingOnDependency,
       ]),
     );
   });

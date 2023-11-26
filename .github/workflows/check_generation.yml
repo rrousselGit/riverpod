@@ -4,6 +4,10 @@ on:
   pull_request:
     paths-ignore:
       - "**.md"
+  push:
+    branches:
+      - master
+      - dev
 
 jobs:
   check_generation:

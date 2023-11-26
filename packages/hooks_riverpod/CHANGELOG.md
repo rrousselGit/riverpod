@@ -1,3 +1,11 @@
+## Unreleased build
+
+- Fix "pending timer" issue inside tests when using `ref.keepAlive()`.
+- Fix `Ref.invalidate`/`Ref.refresh` not throwing on circular dependency.
+- Fix an infinite loop caused by `ref.keepAlive` if the `KeepAliveLink` is immediately closed.
+- Fix `container.exists(provider)` on nested containers not checking their
+  parent containers.
+
 ## 3.0.0-dev.2 - 2023-11-20
 
 Fix exceptions when using multiple root `ProviderContainers`/`ProviderScopes`.
@@ -18,6 +26,14 @@ Fix exceptions when using multiple root `ProviderContainers`/`ProviderScopes`.
   `AsyncValue` or the associated classes.
 - **Breaking**: Removed everything marked as "deprecated"
 - Bumped minimum Dart SDK to >= 3.0.0-dev
+
+## 2.4.9 - 2023-11-27
+
+- Fix "pending timer" issue inside tests when using `ref.keepAlive()`.
+- Fix `Ref.invalidate`/`Ref.refresh` not throwing on circular dependency.
+- Fix an infinite loop caused by `ref.keepAlive` if the `KeepAliveLink` is immediately closed.
+- Fix `container.exists(provider)` on nested containers not checking their
+  parent containers.
 
 ## 2.4.8 - 2023-11-20
 

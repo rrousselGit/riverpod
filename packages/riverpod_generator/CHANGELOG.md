@@ -76,6 +76,11 @@ This comes with a few minor restrictions:
 - **Breaking**: Arguments of the form `fn(void myParameter())`
   are no-longer supported. Instead use `fn(void Function() myParameter)`.
 
+## 2.3.9 - 2023-11-27
+
+- `riverpod_annotation` upgraded to `2.3.3`
+- `riverpod` upgraded to `2.4.9`
+
 ## 2.3.8 - 2023-11-20
 
 - `riverpod_annotation` upgraded to `2.3.2`

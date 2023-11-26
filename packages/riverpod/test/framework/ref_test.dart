@@ -66,8 +66,6 @@ void main() {
       });
     });
 
-    test('ref.read should keep providers alive', () {}, skip: true);
-
     group('listen', () {
       test('ref.listen on outdated provider causes it to rebuild', () {
         final dep = StateProvider((ref) => 0);
