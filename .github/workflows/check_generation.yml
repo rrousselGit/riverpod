@@ -2,14 +2,10 @@ name: Check code-generation
 
 on:
   pull_request:
-    paths-ignore:
-      - "**.md"
   push:
     branches:
       - master
       - dev
-    paths-ignore:
-      - "**.md"
 
 jobs:
   check_generation:

@@ -624,19 +624,16 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
   /// This will destroy the state of all providers associated with this
   /// [ProviderContainer] and call [Ref.onDispose] listeners.
   void dispose() {
-    if (_disposed) {
-      return;
-    }
-
-    _parent?._children.remove(this);
+    if (_disposed) return;
 
     _disposed = true;
+    _parent?._children.remove(this);
+
+    if (_root == null) scheduler.dispose();
 
     for (final element in getAllProviderElementsInOrder().toList().reversed) {
       element.dispose();
     }
-
-    if (_root == null) scheduler.dispose();
   }
 
   /// Traverse the [ProviderElementBase]s associated with this [ProviderContainer].
