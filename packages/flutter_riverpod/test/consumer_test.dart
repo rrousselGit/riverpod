@@ -7,6 +7,8 @@ import 'utils.dart';
 
 void main() {
   testWidgets('Riverpod test', (tester) async {
+    // Regression test for https://github.com/rrousselGit/riverpod/pull/3156
+
     final streamProvider = StreamProvider.autoDispose((ref) async* {});
     final provider1 = Provider.autoDispose((ref) {
       ref.keepAlive();
