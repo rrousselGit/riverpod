@@ -2,6 +2,9 @@
 
 - Fix "pending timer" issue inside tests when using `ref.keepAlive()`.
 - Fix `Ref.invalidate`/`Ref.refresh` not throwing on circular dependency.
+- Fix an infinite loop caused by `ref.keepAlive` if the `KeepAliveLink` is immediately closed.
+- Fix `container.exists(provider)` on nested containers not checking their
+  parent containers.
 
 ## 2.4.8 - 2023-11-20
 

@@ -8,6 +8,17 @@ import '../utils.dart';
 
 void main() {
   group('Ref.exists', () {
+    test('Returns true if available on ancestor container', () {
+      final root = createContainer();
+      final container = createContainer(parent: root);
+      final provider = Provider((ref) => 0);
+
+      root.read(provider);
+
+      expect(container.exists(provider), true);
+      expect(root.exists(provider), true);
+    });
+
     test('simple use-case', () {
       final container = createContainer();
       final provider = Provider((ref) => 0);
