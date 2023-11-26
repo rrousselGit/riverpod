@@ -6,6 +6,27 @@ import 'package:flutter_test/flutter_test.dart';
 import 'utils.dart';
 
 void main() {
+  testWidgets('Riverpod test', (tester) async {
+    final streamProvider = StreamProvider.autoDispose((ref) async* {});
+    final provider1 = Provider.autoDispose((ref) {
+      ref.keepAlive();
+
+      ref.watch(streamProvider);
+    });
+
+    await tester.pumpWidget(
+      ProviderScope(
+        child: Consumer(
+          builder: (context, ref, child) {
+            ref.watch(provider1);
+
+            return const SizedBox();
+          },
+        ),
+      ),
+    );
+  });
+
   testWidgets('Passes key', (tester) async {
     await tester.pumpWidget(
       ProviderScope(

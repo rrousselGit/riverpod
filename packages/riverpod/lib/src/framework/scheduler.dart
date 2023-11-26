@@ -17,6 +17,8 @@ void _defaultVsync(void Function() task) {
 /// Providers are disposed if they spent at least one full frame without any listener.
 @internal
 class ProviderScheduler {
+  var _disposed = false;
+
   /// A way to override [vsync], used by Flutter to synchronize a container
   /// with the widget tree.
   @internal
@@ -61,7 +63,13 @@ class ProviderScheduler {
   }
 
   void _scheduleTask() {
-    if (_pendingTaskCompleter != null) return;
+    // Don't schedule a task if there is already one pending or if the scheduler
+    // is disposed.
+    // It is possible that during disposal of a ProviderContainer, if a provider
+    // uses ref.keepAlive(), the keepAlive closure will try to schedule a task.
+    // In this case, we don't want to schedule a task as the container is already
+    // disposed.
+    if (_pendingTaskCompleter != null || _disposed) return;
     _pendingTaskCompleter = Completer<void>();
     vsync(_task);
   }
@@ -122,6 +130,7 @@ class ProviderScheduler {
   }
 
   void dispose() {
+    _disposed = true;
     _pendingTaskCompleter?.complete();
     _pendingTaskCompleter = null;
   }
