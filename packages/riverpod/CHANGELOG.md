@@ -1,3 +1,7 @@
+## Unreleased fix
+
+- Fix `Ref.invalidate`/`Ref.refresh` not throwing on circular dependency.
+
 ## 2.4.8 - 2023-11-20
 
 Fix exceptions when using multiple root `ProviderContainers`/`ProviderScopes`.
