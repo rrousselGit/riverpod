@@ -1,5 +1,10 @@
 ## Unreleased build
 
+- **Breaking**: Removed all "AutoDisposeSomething"/"AlwaysAliveSomething" in favour
+  of a unique "Something".
+
+## Unreleased build
+
 - Fix "pending timer" issue inside tests when using `ref.keepAlive()`.
 - Fix `Ref.invalidate`/`Ref.refresh` not throwing on circular dependency.
 - Fix an infinite loop caused by `ref.keepAlive` if the `KeepAliveLink` is immediately closed.

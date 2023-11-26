@@ -93,8 +93,7 @@ typedef AsyncNotifierProvider<NotifierT extends AsyncNotifier<T>, T>
 @visibleForTesting
 @internal
 class AsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
-    extends AsyncNotifierProviderBase<NotifierT, T>
-    with AlwaysAliveProviderBase<AsyncValue<T>>, AlwaysAliveAsyncSelector<T> {
+    extends AsyncNotifierProviderBase<NotifierT, T> with AsyncSelector<T> {
   /// {@macro riverpod.async_notifier_provider}
   ///
   /// {@macro riverpod.async_notifier_provider_modifier}
@@ -129,11 +128,11 @@ class AsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
   static const family = AsyncNotifierProviderFamilyBuilder();
 
   @override
-  late final AlwaysAliveRefreshable<NotifierT> notifier =
+  late final Refreshable<NotifierT> notifier =
       _asyncNotifier<NotifierT, T>(this);
 
   @override
-  late final AlwaysAliveRefreshable<Future<T>> future = _asyncFuture<T>(this);
+  late final Refreshable<Future<T>> future = _asyncFuture<T>(this);
 
   @override
   AsyncNotifierProviderElement<NotifierT, T> createElement() {

@@ -7,7 +7,6 @@ import 'package:meta/meta.dart';
 import 'package:state_notifier/state_notifier.dart';
 import 'internals.dart';
 
-part 'framework/always_alive.dart';
 part 'framework/auto_dispose.dart';
 part 'framework/async_selector.dart';
 part 'framework/provider_base.dart';

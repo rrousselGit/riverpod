@@ -21,10 +21,6 @@ abstract class Refreshable<T> implements ProviderListenable<T> {
   ProviderBase<Object?> get _origin;
 }
 
-/// {@macro riverpod.refreshable}
-abstract class AlwaysAliveRefreshable<T>
-    implements Refreshable<T>, AlwaysAliveProviderListenable<T> {}
-
 /// A debug utility used by `flutter_riverpod`/`hooks_riverpod` to check
 /// if it is safe to modify a provider.
 ///

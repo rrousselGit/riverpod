@@ -66,8 +66,7 @@ typedef StreamNotifierProvider<NotifierT extends StreamNotifier<T>, T>
 @visibleForTesting
 @internal
 class StreamNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
-    extends StreamNotifierProviderBase<NotifierT, T>
-    with AlwaysAliveProviderBase<AsyncValue<T>>, AlwaysAliveAsyncSelector<T> {
+    extends StreamNotifierProviderBase<NotifierT, T> with AsyncSelector<T> {
   /// {@macro riverpod.streamNotifier}
   StreamNotifierProviderImpl(
     super._createNotifier, {
@@ -100,11 +99,11 @@ class StreamNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
   static const family = StreamNotifierProviderFamilyBuilder();
 
   @override
-  late final AlwaysAliveRefreshable<NotifierT> notifier =
+  late final Refreshable<NotifierT> notifier =
       _streamNotifier<NotifierT, T>(this);
 
   @override
-  late final AlwaysAliveRefreshable<Future<T>> future = _streamFuture<T>(this);
+  late final Refreshable<Future<T>> future = _streamFuture<T>(this);
 
   @override
   StreamNotifierProviderElement<NotifierT, T> createElement() {

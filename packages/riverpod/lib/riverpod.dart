@@ -41,7 +41,6 @@ export 'src/framework.dart'
         AutoDisposeNotifierFamilyBase,
         ProviderOverride,
         AutoDisposeFamilyBase,
-        AlwaysAliveAsyncSelector,
         handleFireImmediately,
         DebugGetCreateSourceHash,
         ProviderNotifierCreate,

@@ -1067,16 +1067,8 @@ void main() {
   });
 
   group('modifiers', () {
-    void canBeAssignedToAlwaysAliveRefreshable<T>(
-      AlwaysAliveRefreshable<T> provider,
-    ) {}
-
     void canBeAssignedToRefreshable<T>(
       Refreshable<T> provider,
-    ) {}
-
-    void canBeAssignedToAlwaysAliveListenable<T>(
-      AlwaysAliveProviderListenable<T> provider,
     ) {}
 
     void canBeAssignedToProviderListenable<T>(
@@ -1094,21 +1086,13 @@ void main() {
       provider.selectAsync((int value) => 0);
 
       canBeAssignedToProviderListenable<AsyncValue<int>>(provider);
-      canBeAssignedToAlwaysAliveListenable<AsyncValue<int>>(provider);
       canBeAssignedToRefreshable<AsyncValue<int>>(provider);
-      canBeAssignedToAlwaysAliveRefreshable<AsyncValue<int>>(provider);
 
       canBeAssignedToProviderListenable<Future<int>>(provider.future);
-      canBeAssignedToAlwaysAliveListenable<Future<int>>(provider.future);
       canBeAssignedToRefreshable<Future<int>>(provider.future);
-      canBeAssignedToAlwaysAliveRefreshable<Future<int>>(provider.future);
 
       canBeAssignedToProviderListenable<AsyncNotifier<int>>(provider.notifier);
-      canBeAssignedToAlwaysAliveListenable<AsyncNotifier<int>>(
-        provider.notifier,
-      );
-      canBeAssignedToRefreshable<AsyncNotifier<int>>(provider.notifier);
-      canBeAssignedToAlwaysAliveRefreshable<AsyncNotifier<int>>(
+      canBeAssignedToRefreshable<AsyncNotifier<int>>(
         provider.notifier,
       );
     });
@@ -1125,12 +1109,12 @@ void main() {
       canBeAssignedToProviderListenable<AsyncValue<int>>(autoDispose);
       // canBeAssignedToAlwaysAliveListenable<AsyncValue<int>>(autoDispose);
       canBeAssignedToRefreshable<AsyncValue<int>>(autoDispose);
-      // canBeAssignedToAlwaysAliveRefreshable<AsyncValue<int>>(autoDispose);
+      // canBeAssignedToRefreshable<AsyncValue<int>>(autoDispose);
 
       canBeAssignedToProviderListenable<Future<int>>(autoDispose.future);
       // canBeAssignedToAlwaysAliveListenable<Future<int>>(autoDispose.future);
       canBeAssignedToRefreshable<Future<int>>(autoDispose.future);
-      // canBeAssignedToAlwaysAliveRefreshable<Future<int>>(autoDispose.future);
+      // canBeAssignedToRefreshable<Future<int>>(autoDispose.future);
 
       canBeAssignedToProviderListenable<AutoDisposeAsyncNotifier<int>>(
         autoDispose.notifier,
@@ -1141,7 +1125,7 @@ void main() {
       canBeAssignedToRefreshable<AutoDisposeAsyncNotifier<int>>(
         autoDispose.notifier,
       );
-      // canBeAssignedToAlwaysAliveRefreshable<AutoDisposeAsyncNotifier<int>>(
+      // canBeAssignedToRefreshable<AutoDisposeAsyncNotifier<int>>(
       //   autoDispose.notifier,
       // );
     });
@@ -1156,25 +1140,15 @@ void main() {
       family(0).selectAsync((String value) => 0);
 
       canBeAssignedToProviderListenable<AsyncValue<String>>(family(0));
-      canBeAssignedToAlwaysAliveListenable<AsyncValue<String>>(family(0));
       canBeAssignedToRefreshable<AsyncValue<String>>(family(0));
-      canBeAssignedToAlwaysAliveRefreshable<AsyncValue<String>>(family(0));
 
       canBeAssignedToProviderListenable<Future<String>>(family(0).future);
-      canBeAssignedToAlwaysAliveListenable<Future<String>>(family(0).future);
       canBeAssignedToRefreshable<Future<String>>(family(0).future);
-      canBeAssignedToAlwaysAliveRefreshable<Future<String>>(family(0).future);
 
       canBeAssignedToProviderListenable<FamilyAsyncNotifier<String, int>>(
         family(0).notifier,
       );
-      canBeAssignedToAlwaysAliveListenable<FamilyAsyncNotifier<String, int>>(
-        family(0).notifier,
-      );
       canBeAssignedToRefreshable<FamilyAsyncNotifier<String, int>>(
-        family(0).notifier,
-      );
-      canBeAssignedToAlwaysAliveRefreshable<FamilyAsyncNotifier<String, int>>(
         family(0).notifier,
       );
     });
@@ -1202,7 +1176,7 @@ void main() {
       canBeAssignedToRefreshable<AsyncValue<String>>(
         autoDisposeFamily(0),
       );
-      // canBeAssignedToAlwaysAliveRefreshable<AsyncValue<String>>(
+      // canBeAssignedToRefreshable<AsyncValue<String>>(
       //   autoDisposeFamily(0),
       // );
 
@@ -1215,7 +1189,7 @@ void main() {
       canBeAssignedToRefreshable<Future<String>>(
         autoDisposeFamily(0).future,
       );
-      // canBeAssignedToAlwaysAliveRefreshable<Future<String>>(
+      // canBeAssignedToRefreshable<Future<String>>(
       //   autoDisposeFamily(0).future,
       // );
 
@@ -1230,7 +1204,7 @@ void main() {
       canBeAssignedToRefreshable<AutoDisposeFamilyAsyncNotifier<String, int>>(
         autoDisposeFamily(0).notifier,
       );
-      // canBeAssignedToAlwaysAliveRefreshable<
+      // canBeAssignedToRefreshable<
       //     AutoDisposeFamilyAsyncNotifier<String, int>>(
       //   autoDisposeFamily(0).notifier,
       // );

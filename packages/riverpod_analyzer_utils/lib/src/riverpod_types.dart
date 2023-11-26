@@ -36,38 +36,20 @@ const uncontrolledProviderScopeType = TypeChecker.fromName(
   packageName: 'flutter_riverpod',
 );
 
-/// [TypeChecker] for `AlwaysAliveProviderListenable`
-const alwaysAliveProviderListenableType = TypeChecker.any([
-  TypeChecker.fromName(
-    'AlwaysAliveProviderListenable',
-    packageName: 'riverpod',
-  ),
-]);
-
 /// Either FutureProvider or AutoDisposeFutureProvider
 const anyFutureProviderType = TypeChecker.any([
   TypeChecker.fromName('FutureProvider', packageName: 'riverpod'),
-  TypeChecker.fromName('AutoDisposeFutureProvider', packageName: 'riverpod'),
 ]);
 
 /// Either StreamProvider or AutoDisposeStreamProvider
 const anyStreamProviderType = TypeChecker.any([
   TypeChecker.fromName('StreamProvider', packageName: 'riverpod'),
-  TypeChecker.fromName('AutoDisposeStreamProvider', packageName: 'riverpod'),
 ]);
 
 /// Either NotifierProvider or AutoDisposeNotifierProvider or their family form
 const anyNotifierProviderType = TypeChecker.any([
   TypeChecker.fromName('NotifierProviderImpl', packageName: 'riverpod'),
   TypeChecker.fromName('FamilyNotifierProviderImpl', packageName: 'riverpod'),
-  TypeChecker.fromName(
-    'AutoDisposeNotifierProviderImpl',
-    packageName: 'riverpod',
-  ),
-  TypeChecker.fromName(
-    'AutoDisposeFamilyNotifierProviderImpl',
-    packageName: 'riverpod',
-  ),
 ]);
 
 /// Either AsyncNotifierProvider or AutoDisposeAsyncNotifierProvider or their family form
@@ -75,14 +57,6 @@ const anyAsyncNotifierProviderType = TypeChecker.any([
   TypeChecker.fromName('AsyncNotifierProviderImpl', packageName: 'riverpod'),
   TypeChecker.fromName(
     'FamilyAsyncNotifierProviderImpl',
-    packageName: 'riverpod',
-  ),
-  TypeChecker.fromName(
-    'AutoDisposeAsyncNotifierProviderImpl',
-    packageName: 'riverpod',
-  ),
-  TypeChecker.fromName(
-    'AutoDisposeFamilyAsyncNotifierProviderImpl',
     packageName: 'riverpod',
   ),
 ]);
@@ -93,19 +67,11 @@ const anyChangeNotifierProviderType = TypeChecker.any([
     'ChangeNotifierProvider',
     packageName: 'flutter_riverpod',
   ),
-  TypeChecker.fromName(
-    'AutoDisposeChangeNotifierProvider',
-    packageName: 'flutter_riverpod',
-  ),
 ]);
 
 /// Either StateNotifierProvider or AutoDisposeStateNotifierProvider
 const anyStateNotifierProviderType = TypeChecker.any([
   TypeChecker.fromName('StateNotifierProvider', packageName: 'riverpod'),
-  TypeChecker.fromName(
-    'AutoDisposeStateNotifierProvider',
-    packageName: 'riverpod',
-  ),
 ]);
 
 /// [TypeChecker] for `StateNotifier`
@@ -123,13 +89,11 @@ const changeNotifierType = TypeChecker.fromName(
 /// Either StateProvider or AutoDisposeStateProvider
 const anyStateProviderType = TypeChecker.any([
   TypeChecker.fromName('StateProvider', packageName: 'riverpod'),
-  TypeChecker.fromName('AutoDisposeStateProvider', packageName: 'riverpod'),
 ]);
 
 /// Either Provider or AutoDisposeProvider
 const anyProviderType = TypeChecker.any([
   TypeChecker.fromName('Provider', packageName: 'riverpod'),
-  TypeChecker.fromName('AutoDisposeProvider', packageName: 'riverpod'),
 ]);
 
 /// [TypeChecker] for `Family`

@@ -119,7 +119,7 @@ typedef NotifierProvider<NotifierT extends Notifier<T>, T>
 /// [AutoDisposeNotifierProvider] at the same time.
 @internal
 class NotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
-    extends NotifierProviderBase<NotifierT, T> with AlwaysAliveProviderBase<T> {
+    extends NotifierProviderBase<NotifierT, T> {
   /// {@macro riverpod.notifier_provider}
   ///
   /// {@macro riverpod.notifier_provider_modifier}
@@ -159,8 +159,7 @@ class NotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
   }
 
   @override
-  late final AlwaysAliveRefreshable<NotifierT> notifier =
-      _notifier<NotifierT, T>(this);
+  late final Refreshable<NotifierT> notifier = _notifier<NotifierT, T>(this);
 
   @override
   @mustBeOverridden

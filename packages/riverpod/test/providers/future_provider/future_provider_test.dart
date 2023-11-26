@@ -562,12 +562,6 @@ void main() {
     // No errors are reported to the zone
   });
 
-  test('is AlwaysAliveProviderBase', () {
-    final provider = FutureProvider((_) async => 42);
-
-    expect(provider, isA<AlwaysAliveProviderBase<AsyncValue<int>>>());
-  });
-
   group('FutureProvider().future', () {
     test('does not update dependents when the future completes', () async {
       final completer = Completer<int>.sync();

@@ -38,41 +38,12 @@ mixin AsyncSelector<Input> on ProviderListenable<AsyncValue<Input>> {
   ProviderListenable<Future<Output>> selectAsync<Output>(
     Output Function(Input data) selector,
   ) {
-    return _AlwaysAliveAsyncSelector(
+    return _AsyncSelector(
       selector: selector,
       provider: this,
       future: future,
     );
   }
-}
-
-/// Adds [selectAsync] to [AlwaysAliveProviderListenable]
-@internal
-mixin AlwaysAliveAsyncSelector<Input>
-    on AlwaysAliveProviderListenable<AsyncValue<Input>> {
-  /// The future that [selectAsync] will query
-  AlwaysAliveRefreshable<Future<Input>> get future;
-
-  /// {@macro riverpod.async_select}
-  AlwaysAliveProviderListenable<Future<Output>> selectAsync<Output>(
-    Output Function(Input data) selector,
-  ) {
-    return _AlwaysAliveAsyncSelector(
-      selector: selector,
-      provider: this,
-      future: future,
-    );
-  }
-}
-
-class _AlwaysAliveAsyncSelector<Input, Output>
-    extends _AsyncSelector<Input, Output>
-    with AlwaysAliveProviderListenable<Future<Output>> {
-  _AlwaysAliveAsyncSelector({
-    required super.provider,
-    required super.future,
-    required super.selector,
-  });
 }
 
 /// An internal class for `ProviderBase.selectAsync`.

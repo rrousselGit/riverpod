@@ -211,7 +211,7 @@ class _ProviderListener<State> implements ProviderSubscription<State> {
 // TODO merge with Provider directy
 mixin OverrideWithValueMixin<State> on ProviderBase<State> {
   /// {@template riverpod.overrridewithvalue}
-  /// Overrides a provider with a value, ejecting the default behaviour.
+  /// Overrides a provider with a value, ejecting the default behavior.
   ///
   /// This will also disable the auto-scoping mechanism, meaning that if the
   /// overridden provider specified [dependencies], it will have no effect.
