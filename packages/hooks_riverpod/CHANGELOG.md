@@ -1,4 +1,4 @@
-## Unreleased fix
+## 2.4.9 - 2023-11-27
 
 - Fix "pending timer" issue inside tests when using `ref.keepAlive()`.
 - Fix `Ref.invalidate`/`Ref.refresh` not throwing on circular dependency.
