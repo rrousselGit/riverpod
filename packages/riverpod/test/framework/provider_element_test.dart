@@ -125,7 +125,62 @@ void main() {
     });
   });
 
-  test('ref.invalidate', () {
+  group('ref.refresh', () {
+    test('Throws if a circular dependency is detected', () {
+      // Regression test for https://github.com/rrousselGit/riverpod/issues/2336
+      late Ref ref;
+      final a = Provider((r) {
+        ref = r;
+        return 0;
+      });
+      final b = Provider((r) => r.watch(a));
+      final container = createContainer();
+
+      container.read(b);
+
+      expect(
+        () => ref.refresh(b),
+        throwsA(isA<CircularDependencyError>()),
+      );
+    });
+  });
+
+  group('ref.invalidate', () {
+    test('Throws if a circular dependency is detected', () {
+      // Regression test for https://github.com/rrousselGit/riverpod/issues/2336
+      late Ref ref;
+      final a = Provider((r) {
+        ref = r;
+        return 0;
+      });
+      final b = Provider((r) => r.watch(a));
+      final container = createContainer();
+
+      container.read(b);
+
+      expect(
+        () => ref.invalidate(b),
+        throwsA(isA<CircularDependencyError>()),
+      );
+    });
+
+    test('Circular dependency ignores families', () {
+      late Ref ref;
+      final a = Provider((r) {
+        ref = r;
+        return 0;
+      });
+      final b = Provider.family<int, int>((r, id) => r.watch(a));
+      final container = createContainer();
+
+      container.read(b(0));
+
+      expect(
+        () => ref.invalidate(b),
+        returnsNormally,
+      );
+    });
+
     test('triggers a rebuild on next frame', () async {
       final container = createContainer();
       final listener = Listener<int>();

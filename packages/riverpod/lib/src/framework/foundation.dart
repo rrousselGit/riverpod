@@ -2,7 +2,7 @@ part of '../framework.dart';
 
 /// A common interface shared by [ProviderBase] and [Family]
 @sealed
-abstract class ProviderOrFamily {
+abstract class ProviderOrFamily implements ProviderListenableOrFamily {
   /// A common interface shared by [ProviderBase] and [Family]
   const ProviderOrFamily({
     required this.name,
@@ -81,6 +81,9 @@ abstract class ProviderOrFamily {
   final Iterable<ProviderOrFamily>? allTransitiveDependencies;
 }
 
+@internal
+abstract class ProviderListenableOrFamily {}
+
 /// Computes the list of all dependencies of a provider.
 @internal
 Set<ProviderOrFamily>? computeAllTransitiveDependencies(
@@ -132,7 +135,7 @@ String shortHash(Object? object) {
 ///
 /// Should override ==/hashCode when possible
 @immutable
-mixin ProviderListenable<State> {
+mixin ProviderListenable<State> implements ProviderListenableOrFamily {
   /// Starts listening to this transformer
   ProviderSubscription<State> addListener(
     Node node,
