@@ -1,6 +1,7 @@
 name: Check code-generation
 
 on:
+  pull_request:
   push:
     branches:
       - master
