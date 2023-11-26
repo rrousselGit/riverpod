@@ -1,18 +1,20 @@
 import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../first_request/raw/activity.dart';
 
 /* SNIPPET START */
 
 FutureOr<Activity> fetchActivity() => throw UnimplementedError();
 
-// A "functional" provider
+// Un provider "funzionale"
 final activityProvider = FutureProvider.autoDispose((ref) async {
-  // TODO: perform a network request to fetch an activity
+  // TODO: eseguire una richiesta di rete per ottenere un'attività.
   return fetchActivity();
 });
 
-// Or alternatively, a "notifier"
+// O in alternativa, un "notifier"
 final activityProvider2 = AsyncNotifierProvider<ActivityNotifier, Activity>(
   ActivityNotifier.new,
 );
@@ -20,7 +22,7 @@ final activityProvider2 = AsyncNotifierProvider<ActivityNotifier, Activity>(
 class ActivityNotifier extends AsyncNotifier<Activity> {
   @override
   Future<Activity> build() async {
-    // TODO: perform a network request to fetch an activity
+    // TODO: eseguire una richiesta di rete per ottenere un'attività.
     return fetchActivity();
   }
 }

@@ -245,7 +245,7 @@ export const documentTitles = {
     "essentials/testing": "Testing your providers",
     "essentials/side_effects": "Eseguire side effects",
     "essentials/provider_observer": "Logging and error reporting",
-    "essentials/passing_args": "Passing arguments to your requests",
+    "essentials/passing_args": "Passare parametri alle tue richieste",
     "essentials/first_request": "Effettua la tua prima richiesta di provider/rete",
     "essentials/faq": "FAQ",
     "essentials/eager_initialization": "Eager initialization of providers",

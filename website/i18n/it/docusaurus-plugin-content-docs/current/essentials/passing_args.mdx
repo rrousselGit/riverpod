@@ -1,5 +1,5 @@
 ---
-title: Passing arguments to your requests
+title: Passare parametri alle tue richieste
 version: 1
 ---
 
@@ -15,33 +15,34 @@ import multipleConsumerFamily from "!!raw-loader!./passing_args/raw/multiple_con
 import tupleFamily from "!!raw-loader!./passing_args/raw/tuple_family.dart";
 import consumerTupleFamily from "!!raw-loader!./passing_args/raw/consumer_tuple_family.dart";
 
-In a previous article, we saw how we could define a "provider" to make
-a simple _GET_ HTTP request.  
-But often, HTTP requests depend on external parameters.
+In un articolo precedente abbiamo visto come possiamo definire un "provider" per 
+effettuare una semplice richiesta _GET_.
+Spesso però, le richieste HTTP dipendono da parametri esterni.
 
-For example, previously we used the [Bored API](https://boredapi.com/)
-to suggest a random activity to users.
-But maybe users would want to filter the type of activity they want to do,
-or have price requirements, etc...  
-These parameters are not known in advance. So we need a way to pass
-these parameters from our UI to our providers.
+Per esempio, in precedenza abbiamo usato le [Bored API](https://boredapi.com/)
+per consigliare un'attività casuale agli utenti.
+Ma probabilmente gli utenti vorrebbero avere il modo di filtrare il tipo di attività 
+che vogliono fare, o avere dei requisiti di prezzo, etc...
+Questi parametri non sono conosciuti in anticipo. Abbiamo quindi bisogno di un modo 
+per passare questi parametri dalla nostra UI ai nostri provider.
 
-## Updating our providers to accept arguments
+## Aggiornare i provider per accettare parametri
 
-As a reminder, previously we defined our provider like this:
+Come promemoria, in precedenza abbiamo definito il nostro provider in questo modo:
 
 <AutoSnippet {...noArgProvider} />
 
 <When codegen={false}>
 
-When not relying on code-generation, we need to tweak the syntax for defining
-our providers a bit to support passing arguments. This is done by relying on
-the "modifier" called "family".
+Quando non si fa affidamento sulla generazione automatica del codice, è necessario 
+modificare leggermente la sintassi per definire i nostri provider al fine di 
+supportare il passaggio di parametri. 
+Ciò viene fatto utilizzando il modificatore chiamato "family".
 
-In short, we need to add `.family` after the type of our provider, and
-an extra type parameter corresponding to the argument type.
-For example, we could update our provider to accept a `String` argument
-corresponding to the type of activity desired:
+In breve, dobbiamo aggiungere `.family` dopo il tipo del nostro provider e 
+un extra parametro corrispondente al tipo del parametro.
+Per esempio, potremmo aggiornare il nostro provider per accettare un parametro `String` 
+che corrisponde alla tipologia dell'attività desiderata:
 
 <AutoSnippet raw={family} />
 
@@ -49,110 +50,105 @@ corresponding to the type of activity desired:
 
 <When codegen={true}>
 
-To pass parameters to our providers, we can simply add our parameters
-on the annotated function itself.  
-For example, we could update our provider to accept a `String` argument
-corresponding to the type of activity desired:
+Per passare parametri ai nostri provider, possiamo semplicemente aggiungere 
+i nostri parametri alla funzione annotata stessa.
+Per esempio, potremmo aggiornare il nostro provider per accettare un parametro `String` 
+che corrisponde alla tipologia dell'attività desiderata:
 
 <AutoSnippet raw={codegenFamily} />
 
 </When>
 
 :::caution
-When passing arguments to providers, it is highly encouraged to
-enable "autoDispose" on the provider.  
-Failing to do so may result in memory leaks.  
-See <Link documentID="essentials/auto_dispose" /> for more details.
+Quando si passano parametri ai provider è fortemente incoraggiato 
+abilitare "autoDispose" sul provider.
+Consulta <Link documentID="essentials/auto_dispose" /> per più dettagli.
 :::
 
-## Updating our UI to pass arguments
+## Aggiornare l'UI per passare i parametri
 
-Previously, widgets consumed our provider like this:
+Precedentemente, i widget consumavano i nostri provider in questo modo:
 
 <AutoSnippet raw={consumerProvider} />
 
-But now that our provider receives arguments, the syntax to consume it is slightly
-different. The provider is now a function, which needs to be invoked with the parameters
-requested.  
-We could update our UI to pass a hard-coded type of activity like this:
+Tuttavia, ora, dato che il nostro provider riceve dei parametri, la sintassi per consumarlo 
+è leggermente differente. Il provider ora è una funzione, che ha bisogno di essere invocata 
+con i parametri richiesti.
+Potremmo aggiornare la nostra UI per passare un valore di attività hard-coded in questo modo:
 
 <AutoSnippet raw={consumerFamily} />
 
 <When codegen={true}>
 
-The parameters passed to the provider corresponds to the parameters
-of the annotated function, minus the "ref" parameter.
+I parametri passati al provider corrispondono ai parametri della funzione annotata, 
+meno il parametro "ref".
 
 </When>
 
 :::info
-It is entirely possible to listen to the same provider with different arguments
-simultaneously.  
-For example, our UI could render both "recreational" _and_ "cooking" activities:
+È interamente possibile ascoltare lo stesso provider con parametri differenti simultaneamente.
+Per esempio, la nostra UI potrebbe visualizzare entrambe le attività "recreational" e "cooking":
 
 <AutoSnippet raw={multipleConsumerFamily} />
 
 <When codegen={false}>
 
-This is the reason why the modifier is called "family": Because passing
-parameters to a provider effectively transforms the provider in a group of
-states with the same logic under the hood.
+Questa è la ragione per cui il modificatore è chiamato "family": perché passare 
+parametri ad un provider trasforma effettivamente il provider in un gruppo di 
+stati con la stessa logica sottostante.
 
 </When>
 :::
 
-## Caching considerations and parameter restrictions
+## Considerazioni riguardo la cache e restrizioni dei parametri
 
-When passing parameters to providers, the computation is still cached.
-The difference is that the computation is now cached per-argument.
+Quando si passano parametri ai provider, la computazione è comunque memorizzata (cachata).
+La differenza è che la computazione è ora memorizzata per argomento.
 
-This means that if two widgets consumes the same provider with the same
-parameters, only a single network request will be made.  
-But if two widgets consumes the same provider with different parameters,
-two network requests will be made.
+Questo significa che se due widget consumano lo stesso provider con gli stessi parametri, 
+solo una singola richiesta di rete verrà eseguita.
+Tuttavia, se due widget consumano lo stesso provider ma con parametri differenti, 
+verranno effettuate due richieste di rete.
 
-For this to work, Riverpod relies on the `==` operator of the parameters.  
-As such, it is important that the parameters passed to the provider
-have consistent equality.
+Affinché ciò funzioni, Riverpod si affida all'operatore `==` dei parametri.
+Pertanto, è importante che i parametri passati al provider abbiano un'uguaglianza costante.
 
 :::caution
-A common mistake is to directly instantiate a new object as the parameter
-of a provider, when that object does not override `==`.  
-For example, you may be tempted to pass a `List` like so:
+Un errore comune è di istanziare direttamente un nuovo oggetto come parametro 
+di un provider quando quell'oggetto non sovrascrive `==`.
+Per esempio, potresti essere tentato di passare una `List` come in questo caso:
 
 <AutoSnippet raw={consumerListFamily} />
 
-The problem with this code is that `['recreational', 'cooking'] == ['recreational', 'cooking']` is `false`.
-As such, Riverpod will consider that the two parameters are different,
-and attempt to make a new network request.  
-This would result in an infinite loop of network requests, permanently
-showing a progress indicator to the user.
+Il problema con questo codice è che `['recreational', 'cooking'] == ['recreational', 'cooking']` è `false`.
+Pertanto, Riverpod considererà quei due parametri differenti e tenterà di effettuare 
+una nuova richiesta di rete.
+Ciò potrebbe risultare in un loop infinito di richieste di rete, facendo vedere 
+in modo permanente un indicatore di progresso all'utente.
 
-To fix this, you could either use a `const` list (`const ['recreational', 'cooking']`)
-or use a custom list implementation that overrides `==`.
+Per correggere questo, potresti usare sia una lista `const` (`const ['recreational', 'cooking']`) 
+oppure usare un'implementazione di lista personalizzata che sovrascrive`==`.
 
-To help spot this mistake, it is recommended to use the [riverpod_lint](https://pub.dev/packages/riverpod_lint)
-and enable the [provider_parameters](https://github.com/rrousselGit/riverpod/tree/master/packages/riverpod_lint#provider_parameters)
-lint rule. Then, the previous snippet would show a warning.
-See <Link documentID="introduction/getting_started" hash="enabling-riverpod_lintcustom_lint" /> for installation steps.
+Per facilitare l'individuazione dell'errore, è consigliato usare [riverpod_lint](https://pub.dev/packages/riverpod_lint) 
+ed abilitare la regola lint [provider_parameters](https://github.com/rrousselGit/riverpod/tree/master/packages/riverpod_lint#provider_parameters).
+Fatto ciò, lo snippet precedente mostrerebbe un warning.
+Consulta <Link documentID="introduction/getting_started" hash="abilitare-riverpod_lintcustom_lint" /> per i passaggi di installazione.
 :::
 
 <When codegen={false}>
 
-With that in mind, you may wonder how to pass multiple parameters to a provider.  
-The recommended solution is either to:
+Con questo in mente, potresti chiederti come passare più parametri a un provider.  
+La soluzione consigliata è:
 
-- Switch to code-generation, which enables passing any number of parameters
-- Use Dart 3's records
+- Passare alla generazione di codice, che consente di passare qualsiasi numero di parametri
+- Utilizzare i record di Dart 3
 
-The reason why Dart 3's records come in handy is because they
-naturally override `==` and have a convenient syntax.  
-As an example, we could update our provider to accept both a type of activity
-and a maximum price:
+Il motivo per cui i record di Dart sono utili è perché sovrascrivono naturalmente `==` e hanno una sintassi conveniente.  
+Come esempio, potremmo aggiornare il nostro provider per accettare sia un tipo di attività che un prezzo massimo:
 
 <AutoSnippet raw={tupleFamily} />
 
-We can then consume this provider like so:
+Possiamo quindi consumare il provider in questo modo:
 
 <AutoSnippet raw={consumerTupleFamily} />
 

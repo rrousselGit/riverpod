@@ -9,12 +9,12 @@ import '../../first_request/raw/activity.dart';
 
 /* SNIPPET START */
 
-// We define a record representing the parameters we want to pass to the provider.
-// Making a typedef is optional but can make the code more readable.
+// Definiamo un record che rappresenta gli argomenti che vogliamo passare al provider.
+// Renderlo un typedef è opzionale ma può rendere il codice più leggibile.
 typedef ActivityParameters = ({String type, int maxPrice});
 
 final activityProvider = FutureProvider.autoDispose
-    // We now use the newly defined record as the argument type.
+    // Possiamo usare il record definito prima come tipo degli argomenti.
     .family<Activity, ActivityParameters>((ref, arguments) async {
   final response = await http.get(
     Uri(
@@ -22,7 +22,7 @@ final activityProvider = FutureProvider.autoDispose
       host: 'boredapi.com',
       path: '/api/activity',
       queryParameters: {
-        // Lastly, we can use the arguments to update our query parameters.
+        // Infine, possiamo usare gli argomenti per aggiornare i nostri parametri di query.
         'type': arguments.type,
         'price': arguments.maxPrice,
       },

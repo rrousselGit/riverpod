@@ -1,42 +1,41 @@
 // ignore_for_file: unnecessary_this, avoid_print
 
 import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../first_request/raw/activity.dart';
 
-FutureOr<Activity> fetchActivity(String activityType) =>
-    throw UnimplementedError();
+FutureOr<Activity> fetchActivity(String activityType) => throw UnimplementedError();
 
 /* SNIPPET START */
-// A "functional" provider
+// Un provider "funzionale"
 final activityProvider = FutureProvider.autoDispose
-    // We use the ".family" modifier.
-    // The "String" generic type corresponds to the argument type.
-    // Our provider now receives an extra argument on top of "ref": the activity type.
+    // Usiamo il modificatore ".family"
+    // Il tipo generico "String" corrisponde al tipo di argomento.
+    // Il nostro provider ora riceve un argomento extra oltre "ref": la tipologia di attività.
     .family<Activity, String>((ref, activityType) async {
-  // TODO: perform a network request to fetch an activity using "activityType"
+  // TODO: eseguire una richiesta di rete per ottenere un'attività.
   return fetchActivity(activityType);
 });
 
-// A "notifier" provider
+// Un provider "notifier"
 final activityProvider2 = AsyncNotifierProvider.autoDispose
-    // Again, we use the ".family" modifier, and specify the argument as type "String".
+    // Di nuovo, usiamo il modificatore ".family" e specifichiamo "String" come tipo di argomento.
     .family<ActivityNotifier, Activity, String>(
   ActivityNotifier.new,
 );
 
-// When using ".family" with notifiers, we need to change the notifier subclass:
+// Quando si usa ".family" con i notifier abbiamo bisogno di cambiare la sottoclasse del notifier:
 // AsyncNotifier -> FamilyAsyncNotifier
 // AutoDisposeAsyncNotifier -> AutoDisposeFamilyAsyncNotifier
-class ActivityNotifier
-    extends AutoDisposeFamilyAsyncNotifier<Activity, String> {
-  /// Family arguments are passed to the build method and accessible with this.arg
+class ActivityNotifier extends AutoDisposeFamilyAsyncNotifier<Activity, String> {
+  /// Gli argomenti della famiglia sono passati al metodo build e accessibili tramite this.arg
   @override
   Future<Activity> build(String activityType) async {
-    // Arguments are also available with "this.arg"
     print(this.arg);
 
-    // TODO: perform a network request to fetch an activity
+    // TODO: eseguire una richiesta di rete per ottenere un'attività.
     return fetchActivity(activityType);
   }
 }

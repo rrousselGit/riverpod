@@ -12,8 +12,8 @@ class Example extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     AsyncValue<Activity> activity = ref.watch(
-      // The provider is now a function expecting the activity type.
-      // Let's pass a constant string for now, for the sake of simplicity.
+      // Il provider è ora una funzione che si aspetta il tipo dell'attività
+      // Passiamo una costante stringa per ora, per semplicità.
       activityProvider('recreational'),
     );
     /* SNIPPET START */
@@ -22,8 +22,8 @@ class Example extends ConsumerWidget {
         final recreational = ref.watch(activityProvider('recreational'));
         final cooking = ref.watch(activityProvider('cooking'));
 
-        // We can then render both activities.
-        // Both requests will happen in parallel and correctly be cached.
+        // Possiamo quindi visualizzare entrambe le attività.
+        // Entrambe le richieste avverranno in parallelo e verranno correttamente cachate.
         return Column(
           children: [
             Text(recreational.valueOrNull?.activity ?? ''),

@@ -12,9 +12,9 @@ class Example extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
 /* SNIPPET START */
     ref.watch(
-      // Using a Record, we can pass our parameters.
-      // It is fine to create the record directly
-      // in the watch call as records override ==.
+      // Usando un Record possiamo passare i nostri parametri.
+      // È possibile creare direttamente il record nella chiamata watch
+      // poiché i record sovrascrivono ==.
       activityProvider((type: 'recreational', maxPrice: 40)),
     );
 /* SNIPPET END */
