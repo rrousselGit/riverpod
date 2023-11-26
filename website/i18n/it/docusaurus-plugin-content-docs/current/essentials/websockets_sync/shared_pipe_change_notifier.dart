@@ -8,12 +8,12 @@ part 'shared_pipe_change_notifier.g.dart';
 
 /* SNIPPET START */
 extension on Ref {
-  // We can move the previous logic to a Ref extension.
-  // This enables reusing the logic between providers
+  // Possiamo spostare la logica precedente in una estensione Ref.
+  // Questo abilita il riutilizzo della logica
   T disposeAndListenChangeNotifier<T extends ChangeNotifier>(T notifier) {
     onDispose(notifier.dispose);
     notifier.addListener(notifyListeners);
-    // We return the notifier to ease the usage a bit
+    // Restituiamo il notifier per facilitarne di un poco l'utilizzo
     return notifier;
   }
 }

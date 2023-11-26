@@ -9,16 +9,16 @@ part 'raw_usage.g.dart';
 /* SNIPPET START */
 @riverpod
 Raw<Stream<int>> rawStream(RawStreamRef ref) {
-  // "Raw" is a typedef. No need to wrap the return
-  // value in a "Raw" constructor.
+  // "Raw" è un typedef. Non c'è bisogno di wrappare
+  // il valore di ritorno in un costruttore "Raw".
   return const Stream<int>.empty();
 }
 
 class Consumer extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // The value is no-longer converted to AsyncValue,
-    // and the created stream is returned as is.
+    // Il valore non è più convertito in AsyncValue
+    // e lo stream creato è ritornato come tale.
     Stream<int> stream = ref.watch(rawStreamProvider);
     return StreamBuilder<int>(
       stream: stream,

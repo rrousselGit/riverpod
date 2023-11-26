@@ -1,9 +1,8 @@
 ---
-title: Websockets and synchronous execution
+title: Websocket ed esecuzione sincrona
 ---
 
 import {
-  trimSnippet,
   AutoSnippet,
   When,
 } from "../../../../../src/components/CodeSnippet";
@@ -15,52 +14,49 @@ import pipeChangeNotifier from "!!raw-loader!./websockets_sync/pipe_change_notif
 import sharedPipeChangeNotifier from "!!raw-loader!./websockets_sync/shared_pipe_change_notifier.dart";
 import changeNotifierProvider from "!!raw-loader!./websockets_sync/change_notifier_provider.dart";
 
-So far, we've only covered on how to create a `Future`.  
-This is on purpose, as `Future`s are the core of how Riverpod applications
-should be built. _But_, Riverpod also supports other formats if necessary.
+Fino ad ora abbiamo solo coperto come creare un `Future`.
+Abbiamo fatto ciò apposta, dato che i `Future`s sono una parte fondamentale di come 
+le applicazioni che usano Riverpod dovrebbero essere costruite.
+_Ma_, Riverpod supporta anche altri formati se necessario.
 
-In particular, instead of a `Future`, providers are free to:
+In particolare, invece di un `Future`, i provider sono liberi di:
 
-- Synchronously return an object, such as to create a "Repository".
-- Return a `Stream`, such as to listen to websockets.
+- Ritornare in modo sincrono un oggetto, come creare un "Repository".
+- Ritornare uno `Stream`, come ascoltare i websocket.
 
-Returning a `Future` and returning a `Stream` or an object
-is quite similar overall. Think of this page as
-an explanation of subtle differences and various tips for those use-cases.
+Restituire un `Future` e restituire uno `Stream` o un oggetto è abbastanza simile nel complesso.
+Considera questa pagina come una spiegazione delle sottili differenze e de vari 
+suggerimenti per questi casi d'uso.
 
-## Synchronously returning an object
+## Restituire un oggetto in modo sincrono
 
-To synchronously create an object, make sure that your
-provider does not return a Future:
+Per creare un oggetto in modo sincrono, assicurati che il tuo provider non ritorni un Future:
 
 <AutoSnippet {...syncDefinition} />
 
-When a provider synchronously creates an object,
-this impacts how the object is consumed.
-In particular, synchronous values are not wrapped
-in an "AsyncValue":
+Quando un provider crea un oggetto in modo sincrono, questo impatta come quell'oggetto verrà consumato.
+In particolare, i valori sincroni non sono contenuti in un "AsyncValue":
 
 <AutoSnippet raw={syncConsumer} />
 
-The consequence of this difference is that if your provider
-throws, trying to read the value will rethrow the error.
-Alternatively, when using `ref.listen`, the "onError" callback
-will be invoked.
+La conseguenza di questa differenza è che se il tuo provider lancia un'eccezione, 
+provare a leggere il valore ricauserà l'errore.
+In alternativa, quando si usa `ref.listen`, la callback "onError" sarà invocata.
 
-### Listenable objects considerations
+### Considerazioni sugli oggetti "Listenable"
 
 <When codegen={true}>
 
-Listenable objects such as `ChangeNotifier` or `StateNotifier` are not supported.  
-If, for compatibility reasons, you need to interact with one of such objects,
-one workaround is to pipe their notification mechanism to Riverpod.
+Gli oggetti Listenable come `ChangeNotifier` or `StateNotifier` non sono supportati.
+Se, per motivi di compatibilità, è necessario interagire con uno di questi oggetti, 
+un workaround consiste nel collegare il loro meccanismo di notifica a Riverpod.
 
 <AutoSnippet raw={pipeChangeNotifier} />
 
 :::info
-In case you need such logic many times, it is worth noting that
-the logic shared! The "ref" object is designed to be composable.
-This enables extracting the dispose/listening logic out of the provider:
+Nel caso in cui tu abbia bisogno di questa logica molte volte, è importante notare che 
+la logica è condivisa! L'oggetto "ref" è progettato per essere componibile. 
+Ciò consente di estrarre la logica di dispose/ascolto dal provider:
 
 <AutoSnippet raw={sharedPipeChangeNotifier} />
 :::
@@ -69,47 +65,44 @@ This enables extracting the dispose/listening logic out of the provider:
 
 <When codegen={false}>
 
-When not using code-generation, Riverpod offers "legacy" providers
-to support `ChangeNotifier` and `StateNotifier` out of the box:
-`ChangeNotifierProvider` and `StateNotifierProvider`. Using them is
-similar to using other kinds of providers. The main difference is
-that they will both listen and dispose of the returned object automatically.
+Quando non si utilizza la generazione di codice, Riverpod offre provider "legacy" 
+per supportare `ChangeNotifier` e `StateNotifier` direttamente: `ChangeNotifierProvider` and `StateNotifierProvider`.
+Usarli è simile ad usare altri tipi di provider. La differenza principale è 
+che entrambi ascolteranno e smaltiranno automaticamente dell'oggetto restituito.
 
-These providers are not recommended for new business logic.
-But they can be helpful when interacting with legacy code,
-such as when migrating from `pkg:provider` to Riverpod.
+Questi provider non sono consigliati per nuova logica di business.
+Ma possono essere d'aiuto quando si interagisce con codice vecchio, come 
+durante una migrazione da `pkg:provider` a Riverpod.
 
 <AutoSnippet raw={changeNotifierProvider} />
 
 </When>
 
-## Listening to a Stream
+## Ascoltare uno Stream
 
-A common use-case of modern applications is to interact with websockets,
-such as with Firebase or GraphQL subscriptions.  
-Interacting with those APIs is often done by listening to a `Stream`.
+Un caso d'uso comune delle moderne applicazioni è interagire con websockets, 
+come Firbase o GraphQL subscriptions.
+Interagire con queste API è spesso fatto ascoltando uno `Stream`.
 
-To help with that, Riverpod naturally supports `Stream` objects.
-Like with `Future`s, the object will be converted to an `AsyncValue`:
+Per aiutarci in tale scopo, Riverpod supporta di natura gli oggetti `Stream`.
+Come con i `Future`, l'oggetto verrà convertito in un `AsyncValue`:
 
 <AutoSnippet {...streamProvider} />
 
 :::info
-Riverpod is not aware of custom `Stream` implementations, such as
-RX's `BehaviorSubject`.
-As such, returning a `BehaviorSubject` will not expose the `value`
-synchronously to widgets, even if already available on creation.
+Riverpod non è consapevole delle implementazioni personalizzate di `Stream`, 
+come ad esempio `BehaviorSubject` di RX.
+Pertanto, restituire un `BehaviorSubject` non esporrà il valore 
+in modo sincrono ai widget, anche se è già disponibile alla creazione.
 :::
-
-## Disabling conversion of `Stream`s/`Future`s to `AsyncValue`
-
-By default, Riverpod will convert `Stream`s and `Future`s to `AsyncValue`.
-Although rarely needed, it is possible to disable this behavior by wrapping
-the return type in a `Raw` typedef.
+ 
+Di default, Riverpod convertirà `Stream` e `Future` in `AsyncValue`.
+Anche se raramente necessario, è possibile disattivare questo comportamento 
+wrappando il tipo del valore di ritorno in un typedef `Raw`.
 
 :::caution
-It is generally discouraged to disable the `AsyncValue` conversion.
-Do so only if you know what you are doing.
+È generalmente sconsigliato disabilitare la conversione in `AsyncValue`.
+Fallo solo se sai quello che stai facendo.
 :::
 
 <AutoSnippet raw={rawUsage} />

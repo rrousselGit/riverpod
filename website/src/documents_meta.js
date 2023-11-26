@@ -241,7 +241,7 @@ export const documentTitles = {
     "from_provider/quickstart": "Quickstart",
     "from_provider/provider_vs_riverpod": "Provider vs Riverpod",
     "from_provider/motivation/motivation": "Motivazione",
-    "essentials/websockets_sync": "Websockets and synchronous execution",
+    "essentials/websockets_sync": "Websocket ed esecuzione sincrona",
     "essentials/testing": "Testing your providers",
     "essentials/side_effects": "Eseguire side effects",
     "essentials/provider_observer": "Logging and error reporting",

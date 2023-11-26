@@ -12,10 +12,10 @@ part 'pipe_change_notifier.g.dart';
 ValueNotifier<int> myListenable(MyListenableRef ref) {
   final notifier = ValueNotifier(0);
 
-  // Dispose of the notifier when the provider is destroyed
+  // Smaltiamo il notifier quando il provider viene distrutto
   ref.onDispose(notifier.dispose);
 
-  // Notify listeners of this provider whenever the ValueNotifier updates.
+  // Notifica i listener di questo provider ogni volta che il ValueNotifier si aggiorna.
   notifier.addListener(ref.notifyListeners);
 
   return notifier;

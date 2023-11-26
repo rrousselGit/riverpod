@@ -9,7 +9,7 @@ void main() {
 /* SNIPPET START */
   Consumer(
     builder: (context, ref, child) {
-      // The value is not wrapped in an "AsyncValue"
+      // Il valore non è contenuto in un "AsyncValue"
       int value = ref.watch(synchronousExampleProvider);
 
       return Text('$value');
