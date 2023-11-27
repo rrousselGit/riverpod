@@ -1,3 +1,8 @@
+## 3.0.0-dev.11 - 2023-11-27
+
+- `riverpod_annotation` upgraded to `3.0.0-dev.3`
+- `riverpod` upgraded to `3.0.0-dev.3`
+
 ## 3.0.0-dev.10 - 2023-11-20
 
 - `riverpod_annotation` upgraded to `3.0.0-dev.2`

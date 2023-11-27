@@ -2,7 +2,7 @@ name: riverpod
 description: >
   A simple way to access state from anywhere in your application while robust
   and testable.
-version: 3.0.0-dev.2
+version: 3.0.0-dev.3
 homepage: https://riverpod.dev
 repository: https://github.com/rrousselGit/riverpod
 issue_tracker: https://github.com/rrousselGit/riverpod/issues
