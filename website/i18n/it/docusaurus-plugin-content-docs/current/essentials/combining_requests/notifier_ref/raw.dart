@@ -10,7 +10,7 @@ final provider = NotifierProvider<MyNotifier, int>(MyNotifier.new);
 class MyNotifier extends Notifier<int> {
   @override
   int build() {
-    // "Ref" can be used here to read other providers
+    // "Ref" può essere usato qui per leggere altri provider
     final otherValue = ref.watch(otherProvider);
 
     return 0;

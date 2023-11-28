@@ -11,13 +11,13 @@ final otherProvider = Provider<int>((ref) => 0);
 class MyNotifier extends _$MyNotifier {
   @override
   int build() {
-    // Bad! Do not use "read" here as it is not reactive
+    // Non buono! Non usare "read" qui dato che non è reattivo
     ref.read(otherProvider);
 
     return 0;
   }
 
   void increment() {
-    ref.read(otherProvider); // Using "read" here is fine
+    ref.read(otherProvider); // Usare "read" qui va bene
   }
 }

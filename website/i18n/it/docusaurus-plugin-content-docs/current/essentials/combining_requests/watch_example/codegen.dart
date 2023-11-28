@@ -14,19 +14,19 @@ const someStream = Stream<({double longitude, double latitude})>.empty();
 /* SNIPPET START */
 @riverpod
 Stream<({double longitude, double latitude})> location(LocationRef ref) {
-  // TO-DO: Return a stream which obtains the current location
+  // TO-DO: Restituire uno stream che ottiene la posizione corrente
   return someStream;
 }
 
 @riverpod
 Future<List<String>> restaurantsNearMe(RestaurantsNearMeRef ref) async {
-  // We use "ref.watch" to obtain the latest location.
-  // By specifying that ".future" after the provider, our code will wait
-  // for at least one location to be available.
+  // Usiamo "ref.watch" per ottenere l'ultima posizione.
+  // Specificando ".future" dopo il provider il nostro codice aspetterà
+  // che almeno una posizione sia disponibile
   final location = await ref.watch(locationProvider.future);
 
-  // We can now make a network request based on that location.
-  // For example, we could use the Google Map API:
+  // Possiamo quindi fare una richiesta di rete basata su questa posizione.
+  // Per esempio potremmo usare le API di Google Map:
   // https://developers.google.com/maps/documentation/places/web-service/search-nearby
   final response = await http.get(
     Uri.https('maps.googleapis.com', 'maps/api/place/nearbysearch/json', {
@@ -36,7 +36,7 @@ Future<List<String>> restaurantsNearMe(RestaurantsNearMeRef ref) async {
       'key': '<your api key>',
     }),
   );
-  // Obtain the restaurant names from the JSON
+  // Ottiene i nomi dei ristoranti dal JSON
   final json = jsonDecode(response.body) as Map;
   final results = (json['results'] as List).cast<Map<Object?, Object?>>();
   return results.map((e) => e['name']! as String).toList();

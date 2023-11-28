@@ -6,7 +6,7 @@ final otherProvider = Provider<int>((ref) => 0);
 
 /* SNIPPET START */
 final provider = Provider<int>((ref) {
-  // "Ref" can be used here to read other providers
+  // "Ref" può essere usato qui per leggere altri provider
   final otherValue = ref.watch(otherProvider);
 
   return 0;

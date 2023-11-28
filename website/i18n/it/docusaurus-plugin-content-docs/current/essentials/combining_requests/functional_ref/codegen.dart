@@ -10,7 +10,7 @@ int other(OtherRef ref) => 0;
 /* SNIPPET START */
 @riverpod
 int example(ExampleRef ref) {
-  // "Ref" can be used here to read other providers
+  // "Ref" può essere usato qui per leggere altri provider
   final otherValue = ref.watch(otherProvider);
 
   return 0;

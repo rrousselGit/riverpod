@@ -1,5 +1,5 @@
 ---
-title: Combining requests
+title: Combinare richieste
 version: 1
 ---
 
@@ -10,136 +10,131 @@ import notifierRef from "./combining_requests/notifier_ref";
 import watchExample from "./combining_requests/watch_example";
 import watchPlacement from "./combining_requests/watch_placement";
 import listenExample from "./combining_requests/listen_example";
-import readExample from './combining_requests/read_example'
+import readExample from './combining_requests/read_example';
 
-Up till now, we've only seens cases were requests are independent from each
-other. But a common use-case is to have to trigger a request based on the
-result of another request.
+Finora abbiamo visto solo casi in cui le richieste sono indipendenti l'una dall'altra. 
+Tuttavia, un caso d'uso comune è dover eseguire una richiesta in base al risultato di un'altra.
 
-We _could_ be using the <Link documentID="essentials/passing_args" /> mechanism to
-do that, by passing the result of a provider as parameter to another a provider.
+Potremmo usare il meccanismo di <Link documentID="essentials/passing_args" /> passando 
+il risultato di un provider come parametro ad un altro provider.
 
-But this approach has a few downsides:
+Ma questo approccio ha alcuni aspetti negativi:
 
-- This leaks implementation details.
-  Now, your UI needs to know about all the providers that are used
-  your other provider.
-- Whenever the parameter change, a brand new state will be made.
-  By passing parameters, there are no way to keep the previous state
-  when the parameter changes.
-- It makes combining requests harder.
-- This makes tooling less useful. A devtool wouldn't
-  know about the relationship between providers.
+- Ciò rende pubblici dettagli implementativi.
+  Ora, la tua UI deve conoscere tutti i provider che sono utilizzati dal tuo altro provider.
+- Ogni volta che il parametro cambia, viene creato uno stato completamente nuovo. 
+  Passando i parametri, non c'è modo di mantenere lo stato precedente quando il parametro cambia.
+- Rende combinare richieste più difficile.
+- Rende usare strumenti esterni meno utile. Un dev-tool non sarebbe a conoscenza
+  delle relazioni tra i provider.
 
-To improve this, Riverpod offers a different approach to combine requests.
+Per ovviare a questi aspetti, Riverpod offre un approcco differente per combinare le richieste.
 
-## The basics: Obtaining a "ref"
+## Le basi: ottenere un "ref"
 
-All possible ways of combining requests have one thing in common:
-They are all based on the `Ref` object.
+Tutti i modi possibili per combinare richieste hanno una cosa in comune:
+Sono tutti basati sull'oggetto `Ref`.
 
-The `Ref` object is an object which all providers have access to.
-It grants them access to various life-cycle listeners, but also
-various methods to combine providers.
+L'oggetto `Ref` è un oggetto a cui tutti i provider hanno accesso.
+Ciò concede loro l'accesso a vari listener del ciclo di vita, ma anche
+vari metodi per combinare i provider.
 
-The place where `Ref` can be obtained depends on the type of provider.
+Il posto dove `Ref` può essere ottenuto dipende dal tipo di provider.
 
-In functional providers, the `Ref` is passed as parameter to the
-provider's function:
+Nei provider funzionali, `Ref` è passato come parametro alla funzione del provider:
 
 <AutoSnippet {...functionalRef} />
 
-In class variants, the `Ref` is a property of the Notifier class:
+Nella varianti con classi, `Ref` è una proprietà della classe Notifier:
 
 <AutoSnippet {...notifierRef} />
 
-## Using ref to read a provider.
+## Usare Ref per leggere un provider.
 
-## The `ref.watch` method.
+## Il metodo `ref.watch`
 
-Now that we've obtained a `Ref`, we can use it to combine requests.
-The main way to do so is by using `ref.watch`.  
-It is generally recommended to architecture your code such that you
-can use `ref.watch` over other options, as it is generally easier to maintain.
+Ora che abbiamo ottenuto un `Ref`, possiamo usarlo per combinare richieste.
+Il modo principale per farlo è usare `ref.watch`.
+È generalmente consigliato architettare il tuo codice in modo tale che tu possa 
+usare `ref.watch` al posto di altre opzioni, dato che è in genere più facile da mantenere.
 
-The `ref.watch` method takes a provider, and returns its current state.
-Then, whenever the listened provider changes, our provider will be
-invalidated and rebuilt next frame or on next read.
+Il metodo `ref.watch` prende un provider e ne ritorna il suo stato.
+Successivamente, ogni qualvolta che il provider ascoltato cambia, il nostro 
+provider verrà invalidato e ricostruito il prossimo frame o alla prossima lettura.
 
-By using `ref.watch`, your logic becomes both "reactive" and "declarative".  
-Meaning that your logic will automatically recompute when needed.
-And that the update mechanism doesn't rely on side-effects, such as an "on change".
-This is similar to how StatelessWidgets behave.
+Usando `ref.watch`, la tua logica diventa sia "reattiva" che "dichiarativa".
+Ciò significa che la tua logica verrà automaticamente ricalcolata quando necessario.
+E che il meccanismo di aggiornamento non dipende da effetti collaterali, come un "on change".
+Ciò è simile al comportamento di StatelessWidget.
 
-As an example, we could define a provider that listens to the user's location.
-Then, we could use this location to fetch the list of restaurants near the user.
+Come esempio, potremmo definire un provider che ascolta la posizione dell'utente.
+Poi, potremmo utilizzare questa posizione per ottenere la lista dei ristoranti vicini all'utente.
 
 <AutoSnippet {...watchExample} />
 
 :::info
-When the listened provider changes and our request recomputes, the previous
-state is kept until the new request completes.  
-At the same time, while the request is pending, the "isLoading" and "isReloading"
-flags will be set.
+Quando il provider ascoltato cambia e la nostra richiesta viene rifatta, lo stato 
+precedente è mantenuto finché la nuova richiesta non è completata.
+Allo stesso tempo, mentre la richiesta è in attesa, i flag "isLoading" and "isReloading" 
+saranno impostati a true.
 
-This enables UI to either show the previous state, or a loading indicator,
-or even both.
+Ciò consente all'interfaccia utente di mostrare lo stato precedente, 
+o un indicatore di caricamento, o anche entrambi.
 :::
 
 :::info
-Notice how we used `ref.watch(locationProvider.future)` instead of `ref.watch(locationProvider)`.
-That is because our `locationProvider` is asynchronous. As such, we want to
-await for an initial value to be available.
+Fai attenzione a come abbiamo usato `ref.watch(locationProvider.future)` invece di `ref.watch(locationProvider)`. 
+Questo perché il nostro `locationProvider` è asincrono. Pertanto, vogliamo attendere 
+che un valore iniziale sia disponibile.
 
-If we omit that `.future`, we would receive an `AsyncValue`, which is a snapshot
-of the current state of the `locationProvider`. But if no location is available yet,
-we wouldn't be able to do anything.
+Se omettiamo quel `.future`, riceveremmo un `AsyncValue`, che è uno snapshot 
+dello stato corrente del `locationProvider`. Ma se ancora non è disponibile alcuna posizione, 
+non potremmo fare nulla.
 :::
 
 :::caution
-It is considered bad practice to call `ref.watch` inside code that is executed
-"imperatively". Meaning any code that is possibly not executed during the build
-phase of the provider. This includes "listener" callbacks or methods on Notifiers:
+È considerata una cattiva pratica chiamare `ref.watch` all'interno di codice eseguito 
+"imperativamente". Il che significa qualsiasi codice che potrebbe non essere eseguito durante la fase di build 
+del provider. Questo include le callback degli "ascoltatori/listener" o i metodi sui Notifier:
 
 <AutoSnippet {...watchPlacement} />
 :::
 
-## The `ref.listen`/`listenSelf` methods.
+## I metodi `ref.listen`/`listenSelf`
 
-The `ref.listen` method is an alternative to `ref.watch`.  
-It is similar to your traditional "listen"/"addListener" method. It takes a provider
-and a callback, and will invoke said callback whenever the content of the provider
-changes.
+Il metodo `ref.listen` è un alternativa a `ref.watch`.
+È simile al tradizionale metodo "listen/addListener". Accetta un provider e una callback 
+ed invocherà la callback data ogni qualvolta che il contenuto del provider cambia.
 
-Refactoring your code such that you can use `ref.watch` instead of `ref.listen`
-is generally recommended, as the latter is more error-prone due to its imperative nature.  
-But `ref.listen` can be helpful to add some quick logic without having to do
-significant refactor.
+Rifattorizzare il codice in modo da poter utilizzare `ref.watch` invece di `ref.listen` 
+è generalmente consigliato, poiché il secondo è più soggetto a errori a causa della sua natura imperativa. 
+Tuttavia, `ref.listen` può essere utile per aggiungere rapidamente della logica senza dover fare 
+refactoring significativi.
 
-We could rewrite the `ref.watch` example to use `ref.listen` instead
+Potremmo riscrivere l'esempio di `ref.watch` usando `ref.listen`:
 
 <AutoSnippet {...listenExample} />
 
 :::info
-It is entirely safe to use `ref.listen` during the build phase of a provider.
-If the provider somehow is recomputed, previous listeners will be removed.
+È totalmente sicuro usare `ref.listen` durante la fase di build di un provider.
+Se il provider viene in qualche modo ricalcolato, i precedenti listener saranno rimossi.
 
-Alternatively, you can use the return value of `ref.listen` to remove the listener
-manually when you wish.
+In alternativa, puoi usare il valore restituito da `ref.listen` per rimuovere il listener 
+manualmente quando lo desideri.
 :::
 
-## The `ref.read` method.
+## Il metodo `ref.read`
 
-The last option available is `ref.read`.
-It is similar to `ref.watch` in that it returns the current state of a provider.
-But unlike `ref.watch`, it doesn't listen to the provider.
+L'ultima opzione disponibile è `ref.read`.
+È simile a `ref.watch` nel senso che restituisce lo stato corrente di un provider.
+Ma a differenza di `ref.watch` non resta in ascolto del provider.
 
-As such, `ref.read` should be only be used in placed where you can't use
-`ref.watch`, such as inside methods of Notifiers.
+Pertanto, `ref.read` dovrebbe usato solo in posti dove non puoi usare 
+`ref.watch`, come all'interno dei metodi di un Notifier.
 
 <AutoSnippet {...readExample} />
 
 :::caution
-Be careful when using `ref.read` on a provider as, since it doesn't listen to the
-provider, said provider may decide to destroy its state if it isn't listened.
+Fai attenzione quando utilizzi `ref.read` su un provider, poiché, dato che non ascolta il provider, 
+quest'ultimo potrebbe decidere di distruggere il suo stato se non viene ascoltato.
 :::
