@@ -10,8 +10,8 @@ part of 'provider.dart';
 
 String _$activityHash() => r'636cd5510e09cbfc46f31b74a70d9e98c89e95a4';
 
-/// This will create a provider named `activityProvider`
-/// which will cache the result of this function.
+/// 这将创建一个名为 `activityProvider` 的提供者程序
+/// 它可以缓存函数执行的结果
 ///
 /// Copied from [activity].
 @ProviderFor(activity)
