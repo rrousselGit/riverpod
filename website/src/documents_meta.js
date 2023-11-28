@@ -66,7 +66,7 @@ export const documentTitles = {
     "essentials/side_effects": "Performing side effects",
     "essentials/provider_observer": "Logging and error reporting",
     "essentials/passing_args": "Passing arguments to your requests",
-    "essentials/first_request": "Make your first provider/network request",
+    "essentials/first_request": "开始你的第一次 provider/network 请求",
     "essentials/faq": "FAQ",
     "essentials/eager_initialization": "Eager initialization of providers",
     "essentials/do_dont": "DO/DON'T",

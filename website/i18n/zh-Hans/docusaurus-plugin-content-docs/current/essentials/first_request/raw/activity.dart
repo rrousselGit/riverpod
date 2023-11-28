@@ -1,6 +1,4 @@
-/* SNIPPET START */
-
-/// The response of the `GET /api/activity` endpoint.
+/* SNIPPET START */ /// `GET /api/activity` 请求的响应。
 class Activity {
   Activity({
     required this.key,
@@ -10,8 +8,8 @@ class Activity {
     required this.price,
   });
 
-  /// Convert a JSON object into an [Activity] instance.
-  /// This enables type-safe reading of the API response.
+  /// 将 JSON 对象转换为 [Activity] 实例。
+  /// 这可以实现 API 响应的类型安全读取。
   factory Activity.fromJson(Map<String, dynamic> json) {
     return Activity(
       key: json['key'] as String,

@@ -7,20 +7,18 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'activity.dart';
 import 'provider.dart';
 
-/* SNIPPET START */
-
-/// We subclassed "HookConsumerWidget".
-/// This combines "StatelessWidget" + "Consumer" + "HookWidget" together.
+/* SNIPPET START */ /// 我们子类化了 "HookConsumerWidget"。
+/// 这同时组合了 "StatelessWidget"、"Consumer"、"HookWidget"。
 class Home extends HookConsumerWidget {
   const Home({super.key});
 
   @override
-  // Notice how "build" now receives an extra parameter: "ref"
+  // 请注意“build”现在如何接收一个额外的参数：“ref”
   Widget build(BuildContext context, WidgetRef ref) {
-    // It is possible to use hooks such as "useState" inside our widget
+    // 可以在我们的小部件中使用诸如“useState”之类的钩子
     final counter = useState(0);
 
-    // We can also use read providers
+    // 我们还可以使用读取提供者程序
     final AsyncValue<Activity> activity = ref.watch(activityProvider);
 
     return Center(/* ... */);

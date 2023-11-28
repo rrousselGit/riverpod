@@ -1,13 +1,11 @@
-/* SNIPPET START */
-
-import 'package:freezed_annotation/freezed_annotation.dart';
+/* SNIPPET START */ import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'activity.freezed.dart';
 part 'activity.g.dart';
 
-/// The response of the `GET /api/activity` endpoint.
+/// `GET /api/activity` 请求的响应。
 ///
-/// It is defined using `freezed` and `json_serializable`.
+/// 这个定义使用了 `freezed` 和 `json_serializable`。
 @freezed
 class Activity with _$Activity {
   factory Activity({
@@ -18,8 +16,8 @@ class Activity with _$Activity {
     required double price,
   }) = _Activity;
 
-  /// Convert a JSON object into an [Activity] instance.
-  /// This enables type-safe reading of the API response.
+  /// 将 JSON 对象转换为 [Activity] 实例。
+  /// 这可以实现 API 响应的类型安全读取。
   factory Activity.fromJson(Map<String, dynamic> json) =>
       _$ActivityFromJson(json);
 }

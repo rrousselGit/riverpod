@@ -6,20 +6,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'activity.dart';
 import 'provider.dart';
 
-/* SNIPPET START */
-
-/// We subclassed "ConsumerWidget" instead of "StatelessWidget".
-/// This is equivalent to making a "StatelessWidget" and retuning "Consumer".
+/* SNIPPET START */ /// 我们将“ConsumerWidget”替代“StatelessWidget”进行子类化。
+/// 这相当于使用“StatelessWidget”并返回“Consumer”小组件。
 class Home extends ConsumerWidget {
   const Home({super.key});
 
   @override
-  // Notice how "build" now receives an extra parameter: "ref"
+  // 请注意“build”现在如何接收一个额外的参数：“ref”
   Widget build(BuildContext context, WidgetRef ref) {
-    // We can use "ref.watch" inside our widget like we did using "Consumer"
+    // 我们可以像使用“Consumer”一样，在小部件中使用“ref.watch”
     final AsyncValue<Activity> activity = ref.watch(activityProvider);
 
-    // The rendering logic stays the same
+    // 渲染逻辑保持不变
     return Center(/* ... */);
   }
 }
