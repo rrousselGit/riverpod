@@ -370,7 +370,7 @@ This can be done by calling `ref.invalidateSelf()` after the _POST_ request:
 - The server is the source of truth.
   With this approach, the client doesn't need to know where the new todo
   needs to be inserted in the list of todos.
-- This approach should work regarless of the server implementation.
+- This approach should work regardless of the server implementation.
   It can be especially useful if your _GET_ request is more complex,
   such as if it has filters/sorting.
 
@@ -403,7 +403,7 @@ If you want to use mutable state instead, you can alternatively do:
 
 :::tip pros
 
-- This approach should work regarless of the server implementation.
+- This approach should work regardless of the server implementation.
 - Only a single network-request is needed.
 
 :::

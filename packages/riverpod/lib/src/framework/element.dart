@@ -287,6 +287,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
 
   @override
   void invalidate(ProviderOrFamily provider) {
+    assert(_debugAssertCanDependOn(provider), '');
     _container.invalidate(provider);
   }
 
@@ -615,7 +616,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     );
   }
 
-  bool _debugAssertCanDependOn(ProviderListenable<Object?> listenable) {
+  bool _debugAssertCanDependOn(ProviderListenableOrFamily listenable) {
     assert(
       () {
         if (listenable is! ProviderBase<Object?>) return true;
@@ -678,6 +679,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   @override
   T refresh<T>(Refreshable<T> provider) {
     _assertNotOutdated();
+    assert(_debugAssertCanDependOn(provider), '');
     return _container.refresh(provider);
   }
 
