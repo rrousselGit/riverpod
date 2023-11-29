@@ -63,7 +63,7 @@ export const documentTitles = {
     "from_provider/motivation/motivation": "动机",
     "essentials/websockets_sync": "Websockets and synchronous execution",
     "essentials/testing": "Testing your providers",
-    "essentials/side_effects": "Performing side effects",
+    "essentials/side_effects": "执行副作用",
     "essentials/provider_observer": "Logging and error reporting",
     "essentials/passing_args": "Passing arguments to your requests",
     "essentials/first_request": "开始你的第一次 provider/network 请求",
