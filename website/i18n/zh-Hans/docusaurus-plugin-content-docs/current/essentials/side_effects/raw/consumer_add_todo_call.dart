@@ -12,9 +12,9 @@ class Example extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return ElevatedButton(
       onPressed: () {
-        // Using "ref.read" combined with "myProvider.notifier", we can
-        // obtain the class instance of our notifier. This enables us
-        // to call the "addTodo" method.
+        // 使用“ref.read”与“myProvider.notifier”结合，
+        // 我们可以获得通知者程序的类实例。
+        // 这使我们能够调用“addTodo”方法。
         ref
             .read(todoListProvider.notifier)
             .addTodo(Todo(description: 'This is a new todo'));

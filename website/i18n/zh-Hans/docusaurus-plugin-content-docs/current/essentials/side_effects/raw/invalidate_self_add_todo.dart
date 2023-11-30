@@ -18,20 +18,20 @@ class TodoList extends AutoDisposeAsyncNotifier<List<Todo>> {
 
   /* SNIPPET START */
   Future<void> addTodo(Todo todo) async {
-    // We don't care about the API response
+    // 我们不关心 API 响应
     await http.post(
       Uri.https('your_api.com', '/todos'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(todo.toJson()),
     );
 
-    // Once the post request is done, we can mark the local cache as dirty.
-    // This will cause "build" on our notifier to asynchronously be called again,
-    // and will notify listeners when doing so.
+    // 一旦post请求完成，我们就可以将本地缓存标记为脏。
+    // 这将导致我们的通知程序上的“build”再次异步调用，
+    // 并在执行此操作时通知监听者。
     ref.invalidateSelf();
 
-    // (Optional) We can then wait for the new state to be computed.
-    // This ensures "addTodo" does not complete until the new state is available.
+    // （可选）然后我们可以等待新状态的计算。
+    // 这确保了“addTodo”在新状态可用之前不会完成。
     await future;
   }
 /* SNIPPET END */

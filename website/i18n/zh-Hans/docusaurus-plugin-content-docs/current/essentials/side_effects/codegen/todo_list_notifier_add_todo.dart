@@ -18,7 +18,7 @@ class TodoList extends _$TodoList {
   Future<void> addTodo(Todo todo) async {
     await http.post(
       Uri.https('your_api.com', '/todos'),
-      // We serialize our Todo object and POST it to the server.
+      // 我们序列化 Todo 对象并将其 POST 到服务器。
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(todo.toJson()),
     );

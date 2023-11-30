@@ -26,13 +26,13 @@ class Example extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // The pending addTodo operation. Or null if none is pending.
+    // 待处理的 addTodo 操作。如果没有待处理的，则为 null。
     final pendingAddTodo = useState<Future<void>?>(null);
-    // We listen to the pending operation, to update the UI accordingly.
+    // 我们监听待处理的操作，以相应地更新 UI。
     final snapshot = useFuture(pendingAddTodo.value);
 
-    // Compute whether there is an error state or not.
-    // The connectionState check is here to handle when the operation is retried.
+    // 计算是否存在错误状态。
+    // 检查 connectionState 用于在重试操作时进行处理。
     final isErrored = snapshot.hasError &&
         snapshot.connectionState != ConnectionState.waiting;
 
@@ -40,23 +40,23 @@ class Example extends HookConsumerWidget {
       children: [
         ElevatedButton(
           style: ButtonStyle(
-            // If there is an error, we show the button in red
+            // 如果出现错误，我们会将该按钮显示为红色
             backgroundColor: MaterialStateProperty.all(
               isErrored ? Colors.red : null,
             ),
           ),
           onPressed: () async {
-            // We keep the future returned by addTodo in a variable
+            // 我们将 addTodo 返回的 future 保存在变量中
             final future = ref
                 .read(todoListProvider.notifier)
                 .addTodo(Todo(description: 'This is a new todo'));
 
-            // We store that future in the local state
+            // 我们将这个 future 存储在本地的状态中
             pendingAddTodo.value = future;
           },
           child: const Text('Add todo'),
         ),
-        // The operation is pending, let's show a progress indicator
+        // 操作正在等待，让我们显示一个进度指示器
         if (snapshot.connectionState == ConnectionState.waiting) ...[
           const SizedBox(width: 8),
           const CircularProgressIndicator(),

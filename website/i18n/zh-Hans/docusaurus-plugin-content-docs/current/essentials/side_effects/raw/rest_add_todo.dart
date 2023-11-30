@@ -18,21 +18,21 @@ class TodoList extends AutoDisposeAsyncNotifier<List<Todo>> {
 
   /* SNIPPET START */
   Future<void> addTodo(Todo todo) async {
-    // The POST request will return a List<Todo> matching the new application state
+    // POST 请求将返回与新应用程序状态匹配的 List<Todo>
     final response = await http.post(
       Uri.https('your_api.com', '/todos'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(todo.toJson()),
     );
 
-    // We decode the API response and convert it to a List<Todo>
+    // 我们解码 API 响应并将其转换为 List<Todo>
     List<Todo> newTodos = (jsonDecode(response.body) as List)
         .cast<Map<String, Object?>>()
         .map(Todo.fromJson)
         .toList();
 
-    // We update the local cache to match the new state.
-    // This will notify all listeners.
+    // 我们更新本地缓存以匹配新状态。
+    // 这将通知所有的监听程序。
     state = AsyncData(newTodos);
   }
 /* SNIPPET END */

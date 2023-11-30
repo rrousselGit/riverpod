@@ -4,6 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'todo_list_provider.freezed.dart';
 part 'todo_list_provider.g.dart';
 
+/* SNIPPET START */
 @freezed
 class Todo with _$Todo {
   factory Todo({
@@ -12,10 +13,9 @@ class Todo with _$Todo {
   }) = _Todo;
 }
 
-/* SNIPPET START */
 @riverpod
 Future<List<Todo>> todoList(TodoListRef ref) async {
-  // Simulate a network request. This would normally come from a real API
+  // 模拟一个网络请求。这通常来自真实的 API
   return [
     Todo(description: 'Learn Flutter', completed: true),
     Todo(description: 'Learn Riverpod'),

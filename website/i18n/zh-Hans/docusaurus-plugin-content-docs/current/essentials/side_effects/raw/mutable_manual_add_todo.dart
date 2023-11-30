@@ -26,9 +26,9 @@ class TodoList extends AutoDisposeAsyncNotifier<List<Todo>> {
 
     /* SNIPPET START */
     final previousState = await future;
-    // Mutable the previous list of todos.
+    // 改变之前的待办事项列表。
     previousState.add(todo);
-    // Manually notify listeners.
+    // 手动通知监听者。
     ref.notifyListeners();
 /* SNIPPET END */
   }
