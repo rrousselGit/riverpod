@@ -17,7 +17,7 @@ dependencies:
   # TODO: https://github.com/flutter/devtools/issues/4569 - unpin this version
   flutter_riverpod: 2.0.0-dev.9
   logging: ^1.1.1
-  vm_service: ^11.9.0
+  vm_service: ^13.0.0
 
 dev_dependencies:
   flutter_driver:
