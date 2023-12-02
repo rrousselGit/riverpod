@@ -16,9 +16,9 @@ String label(LabelRef ref, String userName) {
 // ...
 
 void onTap() {
-  // Invalidate all possible parameter combinations of this provider.
+  // Invalida tutte le possibili combinazioni di paramatri di questo provider.
   ref.invalidate(labelProvider);
-  // Invalidate a specific combination only
+  // Invalida una sola specifica combinazione
   ref.invalidate(labelProvider('John'));
 }
 /* SNIPPET END */

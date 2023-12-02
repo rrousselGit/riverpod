@@ -4,15 +4,15 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 /* SNIPPET START */
 extension CacheForExtension on AutoDisposeRef<Object?> {
-  /// Keeps the provider alive for [duration].
+  /// Mantiene il provider in vita per [duration].
   void cacheFor(Duration duration) {
-    // Immediately prevent the state from getting destroyed.
+    // Previene subito lo stato dal essere distrutto.
     final link = keepAlive();
-    // After duration has elapsed, we re-enable automatic disposal.
+    // Dopo che la durata è terminata, riabilitiamo la rimozione automatica
     final timer = Timer(duration, link.close);
 
-    // Optional: when the provider is recomputed (such as with ref.watch),
-    // we cancel the pending timer.
+    // Opzionale: quando il provider viene ricomputato (come con ref.watch),
+    // cancelliamo il timer rimasto attivo.
     onDispose(timer.cancel);
   }
 }

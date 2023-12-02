@@ -9,12 +9,12 @@ part 'codegen.g.dart';
 @riverpod
 Future<String> example(ExampleRef ref) async {
   final response = await http.get(Uri.parse('https://example.com'));
-  // We keep the provider alive only after the request has successfully completed.
-  // If the request failed (and threw), then when the provider stops being
-  // listened, the state will be destroyed.
+  // Manteniamo il provider in vita solo se la richiesta è stata completata correttamente.
+  // Se la richiesta ha fallito, quando il provider verrà smesso di essere ascoltato,
+  // lo stato verrà distrutto.
   ref.keepAlive();
 
-  // We can use the `link` to restore the auto-dispose behavior with:
+  // Possiamo usare il `link` per ristabilire il comportamento di auto-rimozione con:
   // link.close();
 
   return response.body;

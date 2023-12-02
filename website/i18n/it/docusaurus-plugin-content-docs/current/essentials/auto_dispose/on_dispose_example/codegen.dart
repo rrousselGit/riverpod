@@ -14,10 +14,10 @@ int other(OtherRef ref) => 0;
 Stream<int> example(ExampleRef ref) {
   final controller = StreamController<int>();
 
-  // When the state is destroyed, we close the StreamController.
+  // Quando lo stato viene distrutto chiudiamo lo StreamController.
   ref.onDispose(controller.close);
 
-  // TO-DO: Push some values in the StreamController
+  // TO-DO: Aggiungere dei valori nello StreamController
   return controller.stream;
 }
 /* SNIPPET END */

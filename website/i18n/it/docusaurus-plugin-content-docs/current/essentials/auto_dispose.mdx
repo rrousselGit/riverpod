@@ -1,5 +1,5 @@
 ---
-title: "Clearing cache and reacting to state disposal"
+title: Svuotare la cache e reagire alla cancellazione dello stato
 ---
 
 import { AutoSnippet, When } from "../../../../../src/components/CodeSnippet";
@@ -12,24 +12,23 @@ import cacheForExtension from "!!raw-loader!./auto_dispose/cache_for_extension.d
 import cacheForUsage from "./auto_dispose/cache_for_usage";
 import invalidateFamilyExample from './auto_dispose/invalidate_family_example'
 
-So far, we've seen how to create/update some state.
-But we have yet to talk about when state destruction occurs.
+Fino ad ora, abbiamo visto come creare/aggiornare lo stato dell'applicazione. 
+Ma non abbiamo ancora parlato di quando avviene la distruzione dello stato.
 
-Riverpod offers various ways to interact with state disposal.
-This ranges from delaying the disposal of state to reacting to destruction.
+Riverpod offre vari modi per interagire con la cancellazione dello stato. 
+Questo va dal ritardare la cancellazione dello stato a reagire alla distruzione.
 
-## When is state destroyed and how to change this?
+## Quando lo stato è distrutto e come cambiare questo?
 
 <When codegen={true}>
 
-When using code-generation, by default, the state is destroyed when
-the provider stops being listened to.  
-This happens when a listener has no active listener for a full frame.
-When that happens, the state is destroyed.
+Se si usa la generazione di codice, di default, lo stato è distrutto quando 
+il provider non viene più ascoltato.
+Questo accade quando un listener non ha nessun listener attivo per un intero frame.
+Qunado questo accade, lo stato viene distrutto.
 
-This behavior can be opted out by using `keepAlive: true`.  
-Doing so will prevent the state from getting destroyed when all listeners
-are removed.
+È possibile disattivare questo comportamento utilizzando `keepAlive: true`.
+Fare ciò impedirà che lo stato venga distrutto quando tutti i listener vengono rimossi.
 
 <AutoSnippet raw={codegenKeepAlive} />
 
@@ -37,130 +36,131 @@ are removed.
 
 <When codegen={false}>
 
-When not using code-generation, by default the state isn't destroyed
-when the provider stops being listened.
+Non usando la generazione di codice, di default lo stato non viene distrutto 
+quando il provider non viene più ascoltato.
 
-You can optionally change this behavior and use automatic disposal.
-When doing so, Riverpod will track whether a provider has listeners or not.
-Then, if the provider has no listeners for a full frame, the state will be destroyed.
+Inoltre, puoi opzionalmente cambiare questo comportamento e utilizzare la distruzione automatica. 
+In tal caso, Riverpod traccerà se un provider ha ascoltatori o meno. 
+Quindi, se il provider non ha ascoltatori per un intero frame, lo stato verrà distrutto.
 
-To enable automatic disposal, you can use `.autoDispose` next to the provider type:
+Per abilitare la rimozione automatica puoi usare `.autoDispose` vicino al tipo del provider:
 
 <AutoSnippet raw={rawAutoDispose} />
 
 </When>
 
 :::note
-Enabling/disabling automatic disposal has no impact on whether or not
-the state is destroyed when the provider is recomputed.  
-The state will always be destroyed when the provider is recomputed.
+Abilitare/disabilitare la rimozione automatica non ha alcun impatto su quando lo stato viene 
+distrutto quando il provider viene ricomputato.
+Lo stato sarà sempre distrutto quando il provider viene ricomputato.
 :::
 
 :::caution
-When providers receive parameters, it is recommended to enable automatic disposal.
-That is because otherwise, one state per parameter combination will be created,
-which can lead to memory leaks.
+Quando i provider ricevono dei parametri è consigliato abilitare la rimozione automatica.
+Questo perché, in caso contrario, verrà creato uno stato per ogni combinazione di parametri, 
+il che potrebbe causare perdite di memoria.
 :::
 
-## Reacting to state disposal
+## Reagire alla rimozione dello stato
 
-In Riverpod, there are a few built-in ways for state to be destroyed:
+In Riverpod, ci sono alcuni modi integrati per distruggere lo stato:
 
-- The provider is no longer used and is in "auto dispose" mode (more on that later).
-  In this case, all associated state with the provider is destroyed.
-- The provider is recomputed, such as with `ref.watch`.
-  In that case, the previous state is disposed, and a new state is created.
+- Il provider non è più usato ed nella modalità "auto rimozione" (ne parleremo più avanti)
+  In questo caso, tutto lo stato associato con il provider verrà distrutto.
+- Il provider è ricomputato, come con `ref.watch`.
+  In questo caso, lo stato precedente è rimosso ed un nuovo stato viene creato.
 
-In both cases. you may want to execute some logic when that happens.  
-This can be achieved with `ref.onDispose`. This methods enables
-registering a listener to whenever the state is destroyed.
+In entrambi casi potresti voler eseguire della logica quando questo accade.
+Questo può essere realizzato con `ref.onDispose`. Questo metodo consente di 
+registrare un listener ogni volta che lo stato viene distrutto.
 
-For example, you may want use it to close any active `StreamController`:
+Per esempio, potresti voler usarlo per chiudere qualsiasi `StreamController` attivo:
 
 <AutoSnippet {...onDisposeExample} />
 
 :::caution
-The callback of `ref.onDispose` must not trigger side-effects.
-Modifying providers inside `onDispose` could lead to unexpected behavior.
+La callback di `ref.onDispose` non deve provocare side-effects.
+Modificare i provider dentro `onDispose` potrebbe condurre a comportamenti inaspettati.
 :::
 
 :::info
-There are other useful life-cycles such as:
+Ci sono altri cicli di vita utili, come:
 
-- `ref.onCancel` which is called when the last listener of a provider is removed.
-- `ref.onResume` which is called when a new listener is added after `onCancel` was invoked.
+- `ref.onCancel` il quale è chiamato quando l'ultimo listenere di un provider viene rimosso.
+- `ref.onResume` il quale è chiamato quando un nuovo listener viene aggiunto dopo che `onCancel` è stato invocato.
 
 :::
 
 :::info
-You can call `ref.onDispose` as many times as you wish.
-Feel free to call it once per disposable object in your provider. This practice
-makes it easier to spot when we forget to dispose of something.
+Puoi chiamare `ref.onDispose` quante volte desideri.
+Sentiti libero di chiamarlo una volta per ogni oggetto eliminabile nel tuo provider. Questa pratica 
+rende più facile individuare quando dimentichiamo di eliminare qualcosa.
 :::
 
-## Manually forcing the destruction of a provider, using `ref.invalidate`
+## Forzare manualmente la distruzione di un provider usando `ref.invalidate`
 
-Sometimes, you may want to force the destruction of a provider.
-This can be done by using `ref.invalidate`, which can be called from another
-provider or from a widget.
+Alcune volte potresti voler forzare la distruzione di un provider.
+Questo può essere fatto usando `ref.invalidate`, il quale può essere chiamato da 
+un altro provider o da un widget.
 
-Using `ref.invalidate` will destroy the current provider state.
-There are then two possible outcomes:
+Usare `ref.invalidate` distruggerà lo stato corrente del provider.
+Ci sono due possibili risultati:
 
-- If the provider is listened, a new state will be created.
-- If the provider is not listened, the provider will be fully destroyed.
+- Se il provider è ascoltato, un nuovo stato sarà creato.
+- Se il provider non è ascoltato, il provider sarà completamente distrutto.
 
 <AutoSnippet raw={invalidateExample} />
 
 :::info
-It is possible for providers to invalidate themselves by using `ref.invalidateSelf`.
-Although in this case, this will always result in a new state being created.
+È possibile per i provider invalidare se stessi usando `ref.invalidateSelf`.
+Anche se in questo caso, ciò risulterà sempre nella creazione di un nuovo stato.
 :::
 
 :::tip
-When trying to invalidate a provider which receives parameters,
-it is posible to either invalidate one specific parameter combination,
-or all parameter combinations at once:
+Quando si prova ad invalidare un provider che riceve dei parametri, 
+è possible sia invalidare una specifica combinazione di parametri, 
+sia tutte le combinazioni in una volta sola:
 
 <AutoSnippet {...invalidateFamilyExample} />
 :::
 
-## Fine-tuned disposal with `ref.keepAlive`
+## Rimozione ottimizzata con `ref.keepAlive`
 
-As mentioned above, when automatic disposal is enabled, the state is destroyed
-when the provider has no listeners for a full frame.
+Come menzionato prima, quando la rimozione automatica è abilitata, lo stato 
+viene distrutto quando il provider non ha più ascoltatori per un intero frame.
 
-But you may want to have more control over this behavior. For instance,
-you may want to keep the state of successful network requests,
-but not cache failed requests.
+Ma potresti voler avere maggiore controllo su questo comportamento. Per esempio, 
+potresti voler mantenere lo stato delle richieste di rete completate, 
+ma non memorizzare quelle invece fallite.
 
-This can be achieved with `ref.keepAlive`, after enabling automatic disposal.
-Using it, you can decide _when_ the state stops being automatically disposed.
+Questo può essere ottenuto con `ref.keepAlive`, dopo aver abilitato la rimozione automatica.
+Usandolo, puoi decidere _quando_ lo stato smette di essere rimosso automaticamente.
 
 <AutoSnippet {...keepAlive} />
 
 :::note
-If the provider is recomputed, automatic disposal will be re-enabled.
+Se il provider viene ricomputato la rimozione automatica sarà riabilitata.
 
-It is also possible to use the return value of `ref.keepAlive` to
-revert to automatic disposal.
+È anche possibile utilizzare il valore restituito da `ref.keepAlive` per
+tornare alla rimozione automatico.
 :::
 
-## Example: keeping state alive for a specific amount of time
+## Esempio: mantenere lo stato in vita per una specifica quantità di tempo
 
-Currently, Riverpod does not offer a built-in way to keep state alive
-for a specific amount of time.  
-But implementing such a feature is easy and reusable with the tools we've seen so far.
+Attualmente, Riverpod non offre un modo integrato per mantere lo stato in vita per 
+una specifica quantità di tempo.
+Tuttavia possiamo implementare tale feature facilmente e in modo riutilizzabile con gli 
+strumenti che abbiamo visto fino ad ora.
 
-By using a `Timer` + `ref.keepAlive`, we can keep the state alive for a specific amount of time.
-To make this logic reusable, we could implement it in an extension method:
+Usando un `Timer` + `ref.keepAlive`, possiamo mantenere lo stato attivo per una specifica quantità di tempo.
+Per rendere questa logica riutilizzabile, potremmo implementarla come metodo di una estensione.
 
 <AutoSnippet raw={cacheForExtension} />
 
-Then, we can use it like so:
+Infine, possiamo usarlo in questo modo:
 
 <AutoSnippet {...cacheForUsage} />
 
-This logic can be tweaked to fit your needs. 
-For example, you could use `ref.onCancel`/`ref.onResume` to destroy the state
-only if a provider hasn't been listened to for a specific amount of time.
+Questa logica può essere affinata a seconda delle tue necessità.
+Per esempio, potresti usare `ref.onCancel`/`ref.onResume` per distruggere lo stato 
+solo se un provider non è stato ascoltato per un determinato periodo di tempo.

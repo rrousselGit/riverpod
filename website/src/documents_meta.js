@@ -251,7 +251,7 @@ export const documentTitles = {
     "essentials/eager_initialization": "Eager initialization of providers",
     "essentials/do_dont": "DO/DON'T",
     "essentials/combining_requests": "Combinare richieste",
-    "essentials/auto_dispose": "Clearing cache and reacting to state disposal",
+    "essentials/auto_dispose": "Svuotare la cache e reagire alla cancellazione dello stato",
     "concepts/about_hooks": "About hooks",
     "concepts/about_code_generation": "About code generation",
     "case_studies/pull_to_refresh": "Pull to refresh",

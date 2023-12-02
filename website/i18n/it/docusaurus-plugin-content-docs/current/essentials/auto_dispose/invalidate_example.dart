@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-// We can specify autoDispose to enable automatic state destruction.
+// Possiamo specificare autoDispose per abilitare la distruzione automatica dello stato.
 final someProvider = Provider.autoDispose<int>((ref) {
   return 0;
 });
@@ -14,7 +14,7 @@ class MyWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return ElevatedButton(
       onPressed: () {
-        // On click, destroy the provider.
+        // Sul click, distruggiamo il provider.
         ref.invalidate(someProvider);
       },
       child: const Text('dispose a provider'),
