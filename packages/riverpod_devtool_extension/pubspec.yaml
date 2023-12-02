@@ -18,7 +18,7 @@ dependencies:
   # the extension is using the same contract version.
   hooks_riverpod: 3.0.0-dev.3
   flutter_riverpod: 3.0.0-dev.3
-  riverpod_riverpod: 3.0.0-dev.3
+  riverpod: 3.0.0-dev.3
   logging: ^1.1.1
   vm_service: ^13.0.0
 
