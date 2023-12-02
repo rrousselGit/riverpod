@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import '../framework.dart';
 import 'sync_provider.dart';
 

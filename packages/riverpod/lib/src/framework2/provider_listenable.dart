@@ -2,11 +2,13 @@ part of 'framework.dart';
 
 @immutable
 mixin ProviderListenable<StateT> implements ProviderListenableOrFamily {
+  @visibleForOverriding
   ProviderSubscription<StateT> addListener(
     ProviderContainer container,
     void Function(StateT? previous, StateT next) listener, {
-    bool fireImmediately = false,
-    void Function(Object error, StackTrace stackTrace)? onError,
+    required bool fireImmediately,
+    required void Function(Object error, StackTrace stackTrace)? onError,
+    required DebugDependentSource? debugDependentSource,
   });
 
   ProviderListenable<T> select<T>(T Function(StateT value) selector) {}

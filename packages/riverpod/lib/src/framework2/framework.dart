@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:meta/meta.dart';
+import 'package:test/test.dart' as test;
 
 import '../result.dart';
 
@@ -12,6 +14,9 @@ part 'provider.dart';
 part 'ref.dart';
 part 'override.dart';
 part 'node.dart';
+part 'dependency_sources/consumer.dart';
+part 'dependency_sources/container.dart';
+part 'dependency_sources/provider.dart';
 
 @internal
 typedef OnError = void Function(Object error, StackTrace stackTrace);
