@@ -6,15 +6,23 @@ part of '../notifier.dart';
 @internal
 abstract class BuildlessNotifier<State> extends NotifierBase<State> {
   @override
-  late final NotifierProviderElement<NotifierBase<State>, State> _element;
+  NotifierProviderElement<NotifierBase<State>, State>? _element;
 
   @override
-  void _setElement(ProviderElementBase<State> element) {
-    _element = element as NotifierProviderElement<NotifierBase<State>, State>;
+  void _setElement(ProviderElementBase<State>? element) {
+    if (_element != null && element != null) {
+      throw StateError(alreadyInitializedError);
+    }
+    _element = element as NotifierProviderElement<NotifierBase<State>, State>?;
   }
 
   @override
-  NotifierProviderRef<State> get ref => _element;
+  NotifierProviderRef<State> get ref {
+    final element = _element;
+    if (element == null) throw StateError(uninitializedElementError);
+
+    return element;
+  }
 }
 
 /// {@template riverpod.notifier}
@@ -89,7 +97,7 @@ abstract class Notifier<State> extends BuildlessNotifier<State> {
   State build();
 }
 
-/// {@macro riverpod.providerrefbase}
+/// {@macro riverpod.provider_ref_base}
 abstract class NotifierProviderRef<T> implements Ref<T> {}
 
 /// {@template riverpod.notifier_provider}
@@ -119,12 +127,12 @@ class NotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
     super._createNotifier, {
     super.name,
     super.dependencies,
-    @Deprecated('Will be removed in 3.0.0') super.from,
-    @Deprecated('Will be removed in 3.0.0') super.argument,
-    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          from: null,
+          argument: null,
+          debugGetCreateSourceHash: null,
         );
 
   /// An implementation detail of Riverpod
@@ -160,7 +168,7 @@ class NotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
     return (notifier as Notifier<T>).build();
   }
 
-  /// {@macro riverpod.overridewith}
+  /// {@macro riverpod.override_with}
   @mustBeOverridden
   Override overrideWith(NotifierT Function() create) {
     return ProviderOverride(
@@ -221,5 +229,11 @@ class NotifierProviderElement<NotifierT extends NotifierBase<T>, T>
     return _notifierNotifier.result?.stateOrNull
             ?.updateShouldNotify(previous, next) ??
         true;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _notifierNotifier.result?.stateOrNull?._setElement(null);
   }
 }

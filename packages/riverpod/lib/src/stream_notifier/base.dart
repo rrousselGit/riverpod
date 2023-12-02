@@ -6,17 +6,24 @@ part of '../async_notifier.dart';
 @internal
 abstract class BuildlessStreamNotifier<State> extends AsyncNotifierBase<State> {
   @override
-  late final StreamNotifierProviderElement<AsyncNotifierBase<State>, State>
-      _element;
+  StreamNotifierProviderElement<AsyncNotifierBase<State>, State>? _element;
 
   @override
-  void _setElement(ProviderElementBase<AsyncValue<State>> element) {
+  void _setElement(ProviderElementBase<AsyncValue<State>>? element) {
+    if (_element != null && element != null) {
+      throw StateError(alreadyInitializedError);
+    }
     _element = element
-        as StreamNotifierProviderElement<AsyncNotifierBase<State>, State>;
+        as StreamNotifierProviderElement<AsyncNotifierBase<State>, State>?;
   }
 
   @override
-  StreamNotifierProviderRef<State> get ref => _element;
+  StreamNotifierProviderRef<State> get ref {
+    final element = _element;
+    if (element == null) throw StateError(uninitializedElementError);
+
+    return element;
+  }
 }
 
 /// {@template riverpod.streamNotifier}
@@ -39,12 +46,12 @@ abstract class BuildlessStreamNotifier<State> extends AsyncNotifierBase<State> {
 ///
 /// {@endtemplate}
 abstract class StreamNotifier<State> extends BuildlessStreamNotifier<State> {
-  /// {@macro riverpod.asyncnotifier.build}
+  /// {@macro riverpod.async_notifier.build}
   @visibleForOverriding
   Stream<State> build();
 }
 
-/// {@macro riverpod.providerrefbase}
+/// {@macro riverpod.provider_ref_base}
 abstract class StreamNotifierProviderRef<T> implements Ref<AsyncValue<T>> {}
 
 /// {@macro riverpod.streamNotifier}
@@ -111,7 +118,7 @@ class StreamNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
     return (notifier as StreamNotifier<T>).build();
   }
 
-  /// {@macro riverpod.overridewith}
+  /// {@macro riverpod.override_with}
   @mustBeOverridden
   Override overrideWith(NotifierT Function() create) {
     return ProviderOverride(

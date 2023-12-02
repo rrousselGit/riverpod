@@ -9,8 +9,78 @@ import '../../utils.dart';
 import 'factory.dart';
 
 void main() {
+  test('Throws if using notifier properties in its constructor', () {
+    expect(
+      CtorNotifier.new,
+      throwsA(isA<StateError>()),
+    );
+    expect(
+      AutoDisposeCtorNotifier.new,
+      throwsA(isA<StateError>()),
+    );
+    expect(
+      AutoDisposeFamilyCtorNotifier.new,
+      throwsA(isA<StateError>()),
+    );
+    expect(
+      FamilyCtorNotifier.new,
+      throwsA(isA<StateError>()),
+    );
+  });
+
   for (final factory in matrix()) {
     group(factory.label, () {
+      test('Cannot share a Notifier instance between providers ', () {
+        final container = createContainer();
+        final notifier = factory.notifier((ref) => 0);
+
+        final provider = factory.provider<TestNotifierBase<int>, int>(
+          () => notifier,
+        );
+        final provider2 = factory.provider<TestNotifierBase<int>, int>(
+          () => notifier,
+        );
+
+        container.read(provider);
+
+        expect(
+          () => container.read(provider2),
+          throwsA(isA<StateError>()),
+        );
+      });
+
+      test('Can read state inside onDispose', () {
+        final container = createContainer();
+        late TestNotifierBase<int> notifier;
+        final provider = factory.simpleTestProvider((ref) {
+          ref.onDispose(() {
+            notifier.state;
+          });
+          return 0;
+        });
+
+        container.listen(provider.notifier, (prev, next) {});
+        notifier = container.read(provider.notifier);
+
+        container.dispose();
+      });
+
+      test('Using the notifier after dispose throws', () {
+        final container = createContainer();
+        final provider = factory.simpleTestProvider((ref) => 0);
+
+        container.listen(provider.notifier, (prev, next) {});
+        final notifier = container.read(provider.notifier);
+
+        container.dispose();
+
+        expect(() => notifier.state, throwsStateError);
+        expect(() => notifier.stateOrNull, throwsStateError);
+        expect(() => notifier.state = 42, throwsStateError);
+        // ignore: invalid_use_of_protected_member
+        expect(() => notifier.ref, throwsStateError);
+      });
+
       test(
           'throws if the same Notifier instance is reused in different providers',
           () {
@@ -294,7 +364,7 @@ void main() {
       });
 
       test(
-          'Reading the state inside the notifier rethrows initilization error, if any',
+          'Reading the state inside the notifier rethrows initialization error, if any',
           () {
         final provider = factory
             .simpleTestProvider<int>((ref) => throw UnimplementedError());
@@ -686,4 +756,41 @@ class Equal<T> {
 
   @override
   int get hashCode => Object.hash(runtimeType, value);
+}
+
+class CtorNotifier extends Notifier<int> {
+  CtorNotifier() {
+    state;
+  }
+
+  @override
+  int build() => 0;
+}
+
+class AutoDisposeCtorNotifier extends AutoDisposeNotifier<int> {
+  AutoDisposeCtorNotifier() {
+    state;
+  }
+
+  @override
+  int build() => 0;
+}
+
+class AutoDisposeFamilyCtorNotifier
+    extends AutoDisposeFamilyNotifier<int, int> {
+  AutoDisposeFamilyCtorNotifier() {
+    state;
+  }
+
+  @override
+  int build(int arg) => 0;
+}
+
+class FamilyCtorNotifier extends FamilyNotifier<int, int> {
+  FamilyCtorNotifier() {
+    state;
+  }
+
+  @override
+  int build(int arg) => 0;
 }

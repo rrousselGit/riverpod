@@ -50,12 +50,28 @@ class ClassBasedToFunctionalProvider extends RiverpodAssist {
           declaration.node.name.lexeme.lowerFirst,
         );
 
+        var typeParametersSource = '';
+        final typeParameters = declaration.node.typeParameters;
+        if (typeParameters != null) {
+          // Obtain the source of type parameters
+          typeParametersSource = resolver.source.contents.data.substring(
+            typeParameters.offset,
+            typeParameters.end,
+          );
+
+          // Make the function generic if the class was generic
+          builder.addSimpleInsertion(
+            declaration.buildMethod.name.end,
+            typeParametersSource,
+          );
+        }
+
         final parameters = declaration.buildMethod.parameters!;
         final trailingRefParameter = parameters.parameters.isEmpty ? '' : ', ';
         // Add ref parameter to the build method
         builder.addSimpleInsertion(
           parameters.leftParenthesis.end,
-          '${refNameFor(declaration)} ref$trailingRefParameter',
+          '${refNameFor(declaration)}$typeParametersSource ref$trailingRefParameter',
         );
 
         // Remove anything after the build method

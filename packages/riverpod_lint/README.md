@@ -219,13 +219,13 @@ int example(ExampleRef ref) => 0;
 int example(ExampleRef ref) => 0;
 
 @riverpod
-int example(ExampleRef ref) {
+void example(ExampleRef ref) {
   // rootProvider is not scoped, no need to specify it as "dependencies"
   ref.watch(rootProvider);
 }
 
 @Riverpod(dependencies: [scoped])
-int example(ExampleRef ref) {
+void example(ExampleRef ref) {
   // scopedProvider is scoped and as such specifying "dependencies" is required.
   ref.watch(scopedProvider);
 }
@@ -239,13 +239,13 @@ int example(ExampleRef ref) {
 int example(ExampleRef ref) => 0;
 
 @Riverpod(dependencies: [])
-int example(ExampleRef ref) {
+void example(ExampleRef ref) {
   // scopedProvider is used but not present in the list of dependencies
   ref.watch(scopedProvider);
 }
 
 @Riverpod(dependencies: [root])
-int example(ExampleRef ref) {
+void example(ExampleRef ref) {
   // rootProvider is not a scoped provider. As such it shouldn't be listed in "dependencies"
   ref.watch(rootProvider);
 }
@@ -331,7 +331,7 @@ Failing to do so would break the [provider_dependencies](#provider_dependencies-
 int dep(DepRef ref) => 0;
 
 @riverpod
-int example(ExampleRef ref) {
+void example(ExampleRef ref) {
   /// Generated providers can depend on other generated providers
   ref.watch(depProvider);
 }
@@ -343,7 +343,7 @@ int example(ExampleRef ref) {
 final depProvider = Provider((ref) => 0);
 
 @riverpod
-int example(ExampleRef ref) {
+void example(ExampleRef ref) {
   // Generated providers should not depend on non-generated providers
   ref.watch(depProvider);
 }

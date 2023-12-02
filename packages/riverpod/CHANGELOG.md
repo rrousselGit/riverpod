@@ -1,3 +1,55 @@
+## 3.0.0-dev.3 - 2023-11-27
+
+- Fix "pending timer" issue inside tests when using `ref.keepAlive()`.
+- Fix `Ref.invalidate`/`Ref.refresh` not throwing on circular dependency.
+- Fix an infinite loop caused by `ref.keepAlive` if the `KeepAliveLink` is immediately closed.
+- Fix `container.exists(provider)` on nested containers not checking their
+  parent containers.
+
+## 3.0.0-dev.2 - 2023-11-20
+
+Fix exceptions when using multiple root `ProviderContainers`/`ProviderScopes`.
+
+## 3.0.0-dev.1 - 2023-11-20
+
+- All notifier properties now throw an error if used after the notifier
+  has been disposed.
+- The error thrown when a notifier property is used inside the constructor
+  of a notifier has been improved.
+- Fix `ProviderObserver.didUpdateProvider` being called with an incorrect
+  "provider" parameter when the provider is overridden.
+
+## 3.0.0-dev.0 - 2023-10-29
+
+- **Breaking**: `AsyncValue` is now "sealed" and `AsyncData/AsyncLoading/AsyncError`
+  are "final". This means that it is no-longer possible to subclass
+  `AsyncValue` or the associated classes.
+- **Breaking**: Removed everything marked as "deprecated"
+- Bumped minimum Dart SDK to >= 3.0.0-dev
+
+## 2.4.9 - 2023-11-27
+
+- Fix "pending timer" issue inside tests when using `ref.keepAlive()`.
+- Fix `Ref.invalidate`/`Ref.refresh` not throwing on circular dependency.
+- Fix an infinite loop caused by `ref.keepAlive` if the `KeepAliveLink` is immediately closed.
+- Fix `container.exists(provider)` on nested containers not checking their
+  parent containers.
+
+## 2.4.8 - 2023-11-20
+
+Fix exceptions when using multiple root `ProviderContainers`/`ProviderScopes`.
+
+## 2.4.7 - 2023-11-20
+
+- Fix `ProviderObserver.didUpdateProvider` being called with an incorrect
+  "provider" parameter when the provider is overridden.
+
+## 2.4.6 - 2023-11-13
+
+- Exceptions in asynchronous providers are now correctly received
+  by `ProviderObserver.providerDidFail`.
+- Fix exception when a `ProviderScope` is rebuilt with a different `key`.
+
 ## 2.4.4 - 2023-10-15
 
 - Update the documentation of `provider.argument` to match the behavior of generated providers.
@@ -383,7 +435,7 @@ Riverpod is now stable!
 - **Breaking** The return value when reading a `StateProvider` changed.
   Before, doing `ref.read(someStateProvider)` would return the `StateController` instance.
   Now, this will only return the state of the `StateController`.
-  This new behaviour matches `StateNotifierProvider`.
+  This new behavior matches `StateNotifierProvider`.
 
   For a simple migration, the old behavior is available by writing
   `ref.read(someStateProvider.state)`.
@@ -661,7 +713,7 @@ Fix an issue where `*Provider.autoDispose` were not able to specify the
 ### Bug-fixes
 
 - fixed a bug where providers were rebuilding even when not being listened to
-- fixed `ref.listen` now working when downcasting the value of a provider.
+- fixed `ref.listen` now working when downcasing the value of a provider.
 - fixed a bug where disposing a scoped `ProviderContainer` could cause other
   `ProviderContainer`s to stop working.
 - fixed an issue where conditionally depending on an "autoDispose" provider
@@ -800,7 +852,7 @@ Removed an assert that could cause issues when an application is partially migra
 
 ## 0.14.0+1
 
-- Re-added `StateProvider.overrideWithValue`/`StateProvider.overrideWithProvider` that were unvoluntarily removed.
+- Re-added `StateProvider.overrideWithValue`/`StateProvider.overrideWithProvider` that were involuntarily removed.
 
 ## 0.14.0
 
@@ -1137,3 +1189,5 @@ The behavior is the same. Only the syntax changed.
 ## 0.1.0
 
 Initial release
+
+<!-- cSpell:ignoreRegExp @\w+ -->

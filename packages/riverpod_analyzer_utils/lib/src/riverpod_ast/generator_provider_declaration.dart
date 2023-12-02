@@ -64,8 +64,17 @@ abstract class GeneratorProviderDeclaration extends ProviderDeclaration {
 
   String get valueTypeDisplayString => valueTypeNode?.toSource() ?? 'Object?';
   String get exposedTypeDisplayString => exposedTypeNode?.source ?? 'Object?';
-  String get createdTypeDisplayString =>
-      createdTypeNode?.toSource() ?? 'Object?';
+  String get createdTypeDisplayString {
+    final type = createdTypeNode?.type;
+
+    if (type != null &&
+        !type.isRaw &&
+        (type.isDartAsyncFuture || type.isDartAsyncFutureOr)) {
+      return 'FutureOr<$valueTypeDisplayString>';
+    }
+
+    return createdTypeNode?.toSource() ?? 'Object?';
+  }
 
   TypeAnnotation? get valueTypeNode;
   SourcedType? get exposedTypeNode;

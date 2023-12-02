@@ -1,9 +1,10 @@
 import 'package:test/test.dart';
 
-import 'analyser_test_utils.dart';
+import 'analyzer_test_utils.dart';
 
 void main() {
-  testSource('Decode ProviderContainer creations', source: '''
+  testSource('Decode ProviderContainer creations',
+      timeout: const Timeout.factor(4), source: '''
 import 'package:riverpod/riverpod.dart';
 
 final provider = Provider((ref) => 0);
@@ -33,7 +34,7 @@ void main() {
   );
 }
 ''', (resolver) async {
-    final result = await resolver.resolveRiverpodAnalyssiResult();
+    final result = await resolver.resolveRiverpodAnalysisResult();
 
     final provider =
         result.legacyProviderDeclarations.takeAll(['provider']).values.single;

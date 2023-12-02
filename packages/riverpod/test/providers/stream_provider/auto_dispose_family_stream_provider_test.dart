@@ -21,8 +21,6 @@ void main() {
         final root = createContainer();
         final container = createContainer(parent: root, overrides: [provider]);
 
-        // ignore: deprecated_member_use_from_same_package
-        expect(await container.read(provider(0).stream).first, 0);
         expect(await container.read(provider(0).future), 0);
         expect(container.read(provider(0)), const AsyncData(0));
         expect(root.getAllProviderElements(), isEmpty);
@@ -55,15 +53,13 @@ void main() {
       );
     });
 
-    test('overrideWithProvider', () async {
+    test('overrideWith', () async {
       final provider = StreamProvider.autoDispose.family<int, int>((ref, a) {
         return Stream.value(a * 2);
       });
       final container = ProviderContainer(
         overrides: [
-          provider.overrideWithProvider((a) {
-            return StreamProvider.autoDispose((ref) => Stream.value(a * 4));
-          }),
+          provider.overrideWith((ref, a) => Stream.value(a * 4)),
         ],
       );
       final listener = Listener<AsyncValue<int>>();
@@ -95,8 +91,6 @@ void main() {
         overrides: [dep.overrideWithValue(42)],
       );
 
-      // ignore: deprecated_member_use_from_same_package
-      await expectLater(container.read(provider(10).stream), emits(52));
       await expectLater(container.read(provider(10).future), completion(52));
       expect(container.read(provider(10)), const AsyncData(52));
 

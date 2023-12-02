@@ -1,6 +1,6 @@
 part of '../async_notifier.dart';
 
-/// {@macro riverpod.asyncnotifier}
+/// {@macro riverpod.async_notifier}
 ///
 /// {@macro riverpod.async_notifier_provider_modifier}
 abstract class FamilyAsyncNotifier<State, Arg>
@@ -19,12 +19,14 @@ abstract class FamilyAsyncNotifier<State, Arg>
   late final Arg arg;
 
   @override
-  void _setElement(ProviderElementBase<AsyncValue<State>> element) {
+  void _setElement(ProviderElementBase<AsyncValue<State>>? element) {
     super._setElement(element);
-    arg = element.origin.argument as Arg;
+    if (element != null) {
+      arg = element.origin.argument as Arg;
+    }
   }
 
-  /// {@macro riverpod.asyncnotifier.build}
+  /// {@macro riverpod.async_notifier.build}
   @visibleForOverriding
   FutureOr<State> build(Arg arg);
 }
@@ -49,12 +51,12 @@ class FamilyAsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T,
     super._createNotifier, {
     super.name,
     super.dependencies,
-    @Deprecated('Will be removed in 3.0.0') super.from,
-    @Deprecated('Will be removed in 3.0.0') super.argument,
-    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          from: null,
+          argument: null,
+          debugGetCreateSourceHash: null,
         );
 
   /// An implementation detail of Riverpod
@@ -109,7 +111,7 @@ class AsyncNotifierProviderFamily<NotifierT extends FamilyAsyncNotifier<T, Arg>,
           debugGetCreateSourceHash: null,
         );
 
-  /// {@macro riverpod.overridewith}
+  /// {@macro riverpod.override_with}
   Override overrideWith(NotifierT Function() create) {
     return FamilyOverrideImpl<AsyncValue<T>, Arg,
         AsyncNotifierFamilyProvider<NotifierT, T, Arg>>(

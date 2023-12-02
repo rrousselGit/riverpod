@@ -199,14 +199,13 @@ void main() {
         expect(root.getAllProviderElements(), isEmpty);
       });
 
-      test('when using provider.overrideWithProvider', () {
+      test('when using provider.overrideWith', () {
         final provider = Provider((ref) => 0);
         final root = createContainer();
         final container = createContainer(
           parent: root,
           overrides: [
-            // ignore: deprecated_member_use_from_same_package
-            provider.overrideWithProvider(Provider((ref) => 42)),
+            provider.overrideWith((ref) => 42),
           ],
         );
 

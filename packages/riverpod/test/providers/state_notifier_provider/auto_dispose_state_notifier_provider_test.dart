@@ -268,7 +268,7 @@ void main() {
     expect(callCount, 1);
   });
 
-  test('overrideWithProvider preserves the state across update', () async {
+  test('overrideWith preserves the state across update', () async {
     final provider = StateNotifierProvider.autoDispose<TestNotifier, int>((_) {
       return TestNotifier();
     });
@@ -276,12 +276,7 @@ void main() {
     final notifier2 = TestNotifier(21);
     final container = createContainer(
       overrides: [
-        // ignore: deprecated_member_use_from_same_package
-        provider.overrideWithProvider(
-          StateNotifierProvider.autoDispose<TestNotifier, int>((_) {
-            return notifier;
-          }),
-        ),
+        provider.overrideWith((_) => notifier),
       ],
     );
     addTearDown(container.dispose);
@@ -298,12 +293,7 @@ void main() {
     verifyOnly(listener, listener(42, 43));
 
     container.updateOverrides([
-      // ignore: deprecated_member_use_from_same_package
-      provider.overrideWithProvider(
-        StateNotifierProvider.autoDispose<TestNotifier, int>((_) {
-          return notifier2;
-        }),
-      ),
+      provider.overrideWith((_) => notifier2),
     ]);
 
     await container.pump();

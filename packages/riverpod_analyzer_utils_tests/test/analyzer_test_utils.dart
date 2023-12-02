@@ -22,10 +22,12 @@ void testSource(
   required String source,
   Map<String, String> files = const {},
   bool runGenerator = false,
+  Timeout? timeout,
 }) {
   final testId = _testNumber++;
   test(
     description,
+    timeout: timeout,
     () async {
       // Giving a unique name to the package to avoid the analyzer cache
       // messing up tests.
@@ -96,7 +98,7 @@ extension MapTake<Key, Value> on Map<Key, Value> {
 }
 
 extension ResolverX on Resolver {
-  Future<RiverpodAnalysisResult> resolveRiverpodAnalyssiResult({
+  Future<RiverpodAnalysisResult> resolveRiverpodAnalysisResult({
     String libraryName = 'foo',
     bool ignoreErrors = false,
   }) async {
@@ -535,20 +537,20 @@ class RiverpodAnalysisResult extends RecursiveRiverpodAstVisitor {
     legacyProviderDeclarations.add(declaration);
   }
 
-  final legacyProviderDependenciess = <LegacyProviderDependencies>[];
+  final legacyProviderDependencies = <LegacyProviderDependencies>[];
   @override
   void visitLegacyProviderDependencies(
     LegacyProviderDependencies dependencies,
   ) {
     super.visitLegacyProviderDependencies(dependencies);
-    legacyProviderDependenciess.add(dependencies);
+    legacyProviderDependencies.add(dependencies);
   }
 
-  final legacyProviderDependencys = <LegacyProviderDependency>[];
+  final legacyProviderDependencyList = <LegacyProviderDependency>[];
   @override
   void visitLegacyProviderDependency(LegacyProviderDependency dependency) {
     super.visitLegacyProviderDependency(dependency);
-    legacyProviderDependencys.add(dependency);
+    legacyProviderDependencyList.add(dependency);
   }
 
   final providerListenableExpressions = <ProviderListenableExpression>[];
@@ -599,13 +601,13 @@ class RiverpodAnalysisResult extends RecursiveRiverpodAstVisitor {
     riverpodAnnotations.add(annotation);
   }
 
-  final riverpodAnnotationDependencys = <RiverpodAnnotationDependency>[];
+  final riverpodAnnotationDependencyList = <RiverpodAnnotationDependency>[];
   @override
   void visitRiverpodAnnotationDependency(
     RiverpodAnnotationDependency dependency,
   ) {
     super.visitRiverpodAnnotationDependency(dependency);
-    riverpodAnnotationDependencys.add(dependency);
+    riverpodAnnotationDependencyList.add(dependency);
   }
 
   final riverpodAnnotationDependencies = <RiverpodAnnotationDependencies>[];

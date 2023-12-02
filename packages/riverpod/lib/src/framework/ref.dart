@@ -1,6 +1,6 @@
 part of '../framework.dart';
 
-/// {@template riverpod.providerrefbase}
+/// {@template riverpod.provider_ref_base}
 /// An object used by providers to interact with other providers and the life-cycles
 /// of the application.
 ///
@@ -314,18 +314,6 @@ abstract class Ref<State extends Object?> {
 /// [keepAlive] function to help determine if the state can be destroyed
 ///  or not.
 abstract class AutoDisposeRef<State> extends Ref<State> {
-  /// Whether to destroy the state of the provider when all listeners are removed or not.
-  ///
-  /// Can be changed at any time, in which case when setting it to `false`,
-  /// may destroy the provider state if it currently has no listeners.
-  ///
-  /// Defaults to `false`.
-  @Deprecated('use keepAlive() instead')
-  bool get maintainState;
-
-  @Deprecated('use keepAlive() instead')
-  set maintainState(bool value);
-
   /// Requests for the state of a provider to not be disposed when all the
   /// listeners of the provider are removed.
   ///

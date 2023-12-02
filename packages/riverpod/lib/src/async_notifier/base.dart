@@ -6,20 +6,27 @@ part of '../async_notifier.dart';
 @internal
 abstract class BuildlessAsyncNotifier<State> extends AsyncNotifierBase<State> {
   @override
-  late final AsyncNotifierProviderElement<AsyncNotifierBase<State>, State>
-      _element;
+  AsyncNotifierProviderElement<AsyncNotifierBase<State>, State>? _element;
 
   @override
-  void _setElement(ProviderElementBase<AsyncValue<State>> element) {
+  void _setElement(ProviderElementBase<AsyncValue<State>>? element) {
+    if (_element != null && element != null) {
+      throw StateError(alreadyInitializedError);
+    }
     _element = element
-        as AsyncNotifierProviderElement<AsyncNotifierBase<State>, State>;
+        as AsyncNotifierProviderElement<AsyncNotifierBase<State>, State>?;
   }
 
   @override
-  AsyncNotifierProviderRef<State> get ref => _element;
+  AsyncNotifierProviderRef<State> get ref {
+    final element = _element;
+    if (element == null) throw StateError(uninitializedElementError);
+
+    return element;
+  }
 }
 
-/// {@template riverpod.asyncnotifier}
+/// {@template riverpod.async_notifier}
 /// A [Notifier] implementation that is asynchronously initialized.
 ///
 /// This is similar to a [FutureProvider] but allows to perform side-effects
@@ -35,9 +42,8 @@ abstract class BuildlessAsyncNotifier<State> extends AsyncNotifierBase<State> {
 /// {@endtemplate}
 ///
 /// {@macro riverpod.async_notifier_provider_modifier}
-// TODO add usage example
 abstract class AsyncNotifier<State> extends BuildlessAsyncNotifier<State> {
-  /// {@template riverpod.asyncnotifier.build}
+  /// {@template riverpod.async_notifier.build}
   /// Initialize an [AsyncNotifier].
   ///
   /// It is safe to use [Ref.watch] or [Ref.listen] inside this method.
@@ -54,7 +60,7 @@ abstract class AsyncNotifier<State> extends BuildlessAsyncNotifier<State> {
   FutureOr<State> build();
 }
 
-/// {@macro riverpod.providerrefbase}
+/// {@macro riverpod.provider_ref_base}
 abstract class AsyncNotifierProviderRef<T> implements Ref<AsyncValue<T>> {}
 
 /// {@template riverpod.async_notifier_provider}
@@ -96,12 +102,12 @@ class AsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
     super._createNotifier, {
     super.name,
     super.dependencies,
-    @Deprecated('Will be removed in 3.0.0') super.from,
-    @Deprecated('Will be removed in 3.0.0') super.argument,
-    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          from: null,
+          argument: null,
+          debugGetCreateSourceHash: null,
         );
 
   /// An implementation detail of Riverpod
@@ -140,7 +146,7 @@ class AsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
     return (notifier as AsyncNotifier<T>).build();
   }
 
-  /// {@macro riverpod.overridewith}
+  /// {@macro riverpod.override_with}
   @mustBeOverridden
   Override overrideWith(NotifierT Function() create) {
     return ProviderOverride(
@@ -158,7 +164,7 @@ class AsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
   }
 }
 
-/// Internal typedef for cancelling the subsription to an async operation
+/// Internal typedef for cancelling the subscription to an async operation
 @internal
 typedef CancelAsyncSubscription = void Function();
 
@@ -228,12 +234,20 @@ mixin FutureHandlerProviderElementMixin<T>
 
   /// Life-cycle for when an error from the provider's "build" method is received.
   ///
-  /// Might be invokved after the element is disposed in the case where `provider.future`
+  /// Might be invoked after the element is disposed in the case where `provider.future`
   /// has yet to complete.
   @internal
   void onError(AsyncError<T> value, {bool seamless = false}) {
-    if (mounted) {
-      asyncTransition(value, seamless: seamless);
+    asyncTransition(value, seamless: seamless);
+
+    for (final observer in container.observers) {
+      runQuaternaryGuarded(
+        observer.providerDidFail,
+        provider,
+        value.error,
+        value.stackTrace,
+        container,
+      );
     }
 
     final completer = _futureCompleter;
@@ -247,7 +261,7 @@ mixin FutureHandlerProviderElementMixin<T>
         );
       _futureCompleter = null;
       // TODO SynchronousFuture.error
-    } else if (mounted) {
+    } else {
       futureNotifier.result = Result.data(
         // TODO test ignore
         Future.error(
@@ -260,19 +274,17 @@ mixin FutureHandlerProviderElementMixin<T>
 
   /// Life-cycle for when a data from the provider's "build" method is received.
   ///
-  /// Might be invokved after the element is disposed in the case where `provider.future`
+  /// Might be invoked after the element is disposed in the case where `provider.future`
   /// has yet to complete.
   @internal
   void onData(AsyncData<T> value, {bool seamless = false}) {
-    if (mounted) {
-      asyncTransition(value, seamless: seamless);
-    }
+    asyncTransition(value, seamless: seamless);
 
     final completer = _futureCompleter;
     if (completer != null) {
       completer.complete(value.value);
       _futureCompleter = null;
-    } else if (mounted) {
+    } else {
       futureNotifier.result = Result.data(Future.value(value.value));
     }
   }
@@ -499,6 +511,12 @@ abstract class AsyncNotifierProviderElementBase<
             ?.updateShouldNotify(previous, next) ??
         true;
   }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _notifierNotifier.result?.stateOrNull?._setElement(null);
+  }
 }
 
 /// The element of [AsyncNotifierProvider].
@@ -556,7 +574,7 @@ extension<T> on Stream<T> {
           result!.map(
             data: (result) => completer.complete(result.state),
             error: (result) {
-              // TODO: shoould this be reported to the zone?
+              // TODO: should this be reported to the zone?
               completer.future.ignore();
               completer.completeError(result.error, result.stackTrace);
             },

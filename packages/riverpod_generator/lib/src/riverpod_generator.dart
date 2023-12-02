@@ -151,14 +151,11 @@ class _SystemHash {
   ) {
     super.visitClassBasedProviderDeclaration(provider);
 
-    final parameters = provider.buildMethod.parameters?.parameters;
-    if (parameters == null) return;
-
     final hashFunctionName = _hashFnName(provider);
     final hashFn = _hashFnIdentifier(hashFunctionName);
     buffer.write(_hashFn(provider, hashFunctionName));
 
-    if (parameters.isEmpty) {
+    if (!provider.providerElement.isFamily) {
       final providerName = '${provider.providerElement.name.lowerFirst}$suffix';
       final notifierTypedefName = providerName.startsWith('_')
           ? '_\$${provider.providerElement.name.substring(1)}'
@@ -193,16 +190,13 @@ class _SystemHash {
   ) {
     super.visitFunctionalProviderDeclaration(provider);
 
-    final parameters = provider.node.functionExpression.parameters?.parameters;
-    if (parameters == null) return;
-
     final hashFunctionName = _hashFnName(provider);
     final hashFn = _hashFnIdentifier(hashFunctionName);
     buffer.write(_hashFn(provider, hashFunctionName));
 
     // Using >1 as functional providers always have at least one parameter: ref
     // So a provider is a "family" only if it has parameters besides the ref.
-    if (parameters.length > 1) {
+    if (provider.providerElement.isFamily) {
       maybeEmitHashUtils();
       FamilyTemplate.functional(
         provider,

@@ -24,7 +24,7 @@ void main() {
       result as ResolvedUnitResult;
 
       final errors = await lint.testRun(result);
-      expect(errors, hasLength(2));
+      expect(errors, hasLength(5));
 
       final changes = await Future.wait([
         for (final error in errors) fix.testRun(result, error, errors),

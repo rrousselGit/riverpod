@@ -1,6 +1,6 @@
 part of '../state_provider.dart';
 
-/// {@macro riverpod.providerrefbase}
+/// {@macro riverpod.provider_ref_base}
 /// - [controller], the [StateController] currently exposed by this provider.
 abstract class StateProviderRef<State> implements Ref<State> {
   /// The [StateController] currently exposed by this provider.
@@ -49,12 +49,12 @@ class StateProvider<T> extends _StateProviderBase<T>
     this._createFn, {
     super.name,
     super.dependencies,
-    @Deprecated('Will be removed in 3.0.0') super.from,
-    @Deprecated('Will be removed in 3.0.0') super.argument,
-    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          from: null,
+          argument: null,
+          debugGetCreateSourceHash: null,
         );
 
   /// An implementation detail of Riverpod
@@ -87,14 +87,7 @@ class StateProvider<T> extends _StateProviderBase<T>
   late final AlwaysAliveRefreshable<StateController<T>> notifier =
       _notifier(this);
 
-  @Deprecated(
-    'Will be removed in 3.0.0. '
-    'Use either `ref.watch(provider)` or `ref.read(provider.notifier)` instead',
-  )
-  @override
-  late final AlwaysAliveRefreshable<StateController<T>> state = _state(this);
-
-  /// {@macro riverpod.overridewith}
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     Create<T, StateProviderRef<T>> create,
   ) {
@@ -189,7 +182,7 @@ class StateProviderFamily<R, Arg>
               computeAllTransitiveDependencies(dependencies),
         );
 
-  /// {@macro riverpod.overridewith}
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     R Function(StateProviderRef<R> ref, Arg arg) create,
   ) {

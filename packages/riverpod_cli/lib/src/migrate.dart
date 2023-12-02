@@ -43,7 +43,7 @@ class MigrateCommand extends Command<void> {
 
   @override
   String get description =>
-      'Analyse a project using Riverpod and migrate it to the latest version available';
+      'Analyze a project using Riverpod and migrate it to the latest version available';
 
   @override
   Future<void> run() async {

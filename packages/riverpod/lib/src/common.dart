@@ -26,10 +26,7 @@ extension AsyncTransition<T> on ProviderElementBase<AsyncValue<T>> {
     } else {
 // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
       setState(
-        newState.copyWithPrevious(
-          previous,
-          isRefresh: seamless,
-        ),
+        newState._cast<T>().copyWithPrevious(previous, isRefresh: seamless),
       );
     }
   }
@@ -87,7 +84,7 @@ extension AsyncTransition<T> on ProviderElementBase<AsyncValue<T>> {
 /// - [AsyncValue.guard], to simplify transforming a [Future] into an [AsyncValue].
 @sealed
 @immutable
-abstract class AsyncValue<T> {
+sealed class AsyncValue<T> {
   const AsyncValue._();
 
   /// {@template asyncvalue.data}
@@ -203,6 +200,11 @@ abstract class AsyncValue<T> {
   /// The stacktrace of [error].
   StackTrace? get stackTrace;
 
+  String get _displayString;
+
+  /// Casts the [AsyncValue] to a different type.
+  AsyncValue<R> _cast<R>();
+
   /// Perform some action based on the current state of the [AsyncValue].
   ///
   /// This allows reading the content of an [AsyncValue] in a type-safe way,
@@ -257,7 +259,7 @@ abstract class AsyncValue<T> {
       ],
     ].join(', ');
 
-    return '$runtimeType($content)';
+    return '$_displayString<$T>($content)';
   }
 
   @override
@@ -283,7 +285,7 @@ abstract class AsyncValue<T> {
 }
 
 /// {@macro asyncvalue.data}
-class AsyncData<T> extends AsyncValue<T> {
+final class AsyncData<T> extends AsyncValue<T> {
   /// {@macro asyncvalue.data}
   const AsyncData(T value)
       : this._(
@@ -301,11 +303,15 @@ class AsyncData<T> extends AsyncValue<T> {
   }) : super._();
 
   @override
-  final T value;
+  String get _displayString => 'AsyncData';
 
   @override
   bool get hasValue => true;
 
+  @override
+  final T value;
+
+  @override
   @override
   final bool isLoading;
 
@@ -331,10 +337,21 @@ class AsyncData<T> extends AsyncValue<T> {
   }) {
     return this;
   }
+
+  @override
+  AsyncValue<R> _cast<R>() {
+    if (T == R) return this as AsyncValue<R>;
+    return AsyncData<R>._(
+      value as R,
+      isLoading: isLoading,
+      error: error,
+      stackTrace: stackTrace,
+    );
+  }
 }
 
 /// {@macro asyncvalue.loading}
-class AsyncLoading<T> extends AsyncValue<T> {
+final class AsyncLoading<T> extends AsyncValue<T> {
   /// {@macro asyncvalue.loading}
   const AsyncLoading()
       : hasValue = false,
@@ -354,6 +371,9 @@ class AsyncLoading<T> extends AsyncValue<T> {
   bool get isLoading => true;
 
   @override
+  String get _displayString => 'AsyncLoading';
+
+  @override
   final bool hasValue;
 
   @override
@@ -364,6 +384,17 @@ class AsyncLoading<T> extends AsyncValue<T> {
 
   @override
   final StackTrace? stackTrace;
+
+  @override
+  AsyncValue<R> _cast<R>() {
+    if (T == R) return this as AsyncValue<R>;
+    return AsyncLoading<R>._(
+      hasValue: hasValue,
+      value: value as R?,
+      error: error,
+      stackTrace: stackTrace,
+    );
+  }
 
   @override
   R map<R>({
@@ -417,7 +448,7 @@ class AsyncLoading<T> extends AsyncValue<T> {
 }
 
 /// {@macro asyncvalue.error_ctor}
-class AsyncError<T> extends AsyncValue<T> {
+final class AsyncError<T> extends AsyncValue<T> {
   /// {@macro asyncvalue.error_ctor}
   const AsyncError(Object error, StackTrace stackTrace)
       : this._(
@@ -436,6 +467,9 @@ class AsyncError<T> extends AsyncValue<T> {
     required this.isLoading,
   })  : _value = value,
         super._();
+
+  @override
+  String get _displayString => 'AsyncError';
 
   @override
   final bool isLoading;
@@ -458,6 +492,18 @@ class AsyncError<T> extends AsyncValue<T> {
 
   @override
   final StackTrace stackTrace;
+
+  @override
+  AsyncValue<R> _cast<R>() {
+    if (T == R) return this as AsyncValue<R>;
+    return AsyncError<R>._(
+      error,
+      stackTrace: stackTrace,
+      isLoading: isLoading,
+      value: _value as R?,
+      hasValue: hasValue,
+    );
+  }
 
   @override
   R map<R>({

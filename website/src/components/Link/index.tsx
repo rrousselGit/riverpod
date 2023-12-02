@@ -14,6 +14,10 @@ export function Link(props: LinkProps) {
     ? doc.metadata.source.split("/")[2]
     : "en";
 
+  const prefix = countryCode === "en"
+    ? ""
+    : `/${countryCode}`;
+
   const docTitle = documentTitles[countryCode][props.documentID];
 
   if (!docTitle) {
@@ -24,5 +28,5 @@ export function Link(props: LinkProps) {
 
   const trailing = props.hash ? `#${props.hash}` : "";
 
-  return <a href={`/docs/${props.documentID}${trailing}`}>{docTitle}</a>;
+  return <a href={`${prefix}/docs/${props.documentID}${trailing}`}>{docTitle}</a>;
 }

@@ -14,7 +14,7 @@ initialized when it is first used. This is useful for providers that are only
 used in certain parts of the application.
 
 Unfortunately, there is no way to flag a provider as needing to be eagerly initialized due
-to how Dart works (for tree shaking purposes). One solution howerver is to forcibly
+to how Dart works (for tree shaking purposes). One solution, however, is to forcibly
 read the providers you want to eagerly initialize at the root of your application.
 
 The recommended approach is to simply "watch" a provider in a Consumer placed right under your `ProviderScope`:
@@ -36,15 +36,14 @@ is a separate widget, which does nothing but return a `child`.
 
 The key part is that it returns a `child`, rather than instantiating `MaterialApp` itself.
 This means that if `_EagerInitialization` ever rebuilds, the `child` variable
-will be not have changed. And when a widget doesn't change, Flutter doesn't rebuild it.
+will not have changed. And when a widget doesn't change, Flutter doesn't rebuild it.
 
-As such, `_EagerInitialization` will rebuild but nothing else (unless another widget
-listens to that provider, of course).
+As such, only `_EagerInitialization` will rebuild, unless another widget is also listening to that provider.
 
 #### Using this approach, how can I handle loading and error states?
 
 You can handle loading/error states as you normally would in a `Consumer`.
-Your `_EagerInitialization` could check if a provider is in "loading" state,
+Your `_EagerInitialization` could check if a provider is in a "loading" state,
 and if so, return a `CircularProgressIndicator` instead of the `child`:
 
 <AutoSnippet raw={asyncConsumerExample} />

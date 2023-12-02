@@ -6,17 +6,24 @@ part of '../notifier.dart';
 @internal
 abstract class BuildlessAutoDisposeNotifier<State> extends NotifierBase<State> {
   @override
-  late final AutoDisposeNotifierProviderElement<NotifierBase<State>, State>
-      _element;
+  AutoDisposeNotifierProviderElement<NotifierBase<State>, State>? _element;
 
   @override
-  void _setElement(ProviderElementBase<State> element) {
+  void _setElement(ProviderElementBase<State>? element) {
+    if (_element != null && element != null) {
+      throw StateError(alreadyInitializedError);
+    }
     _element = element
-        as AutoDisposeNotifierProviderElement<NotifierBase<State>, State>;
+        as AutoDisposeNotifierProviderElement<NotifierBase<State>, State>?;
   }
 
   @override
-  AutoDisposeNotifierProviderRef<State> get ref => _element;
+  AutoDisposeNotifierProviderRef<State> get ref {
+    final element = _element;
+    if (element == null) throw StateError(uninitializedElementError);
+
+    return element;
+  }
 }
 
 /// {@macro riverpod.notifier}
@@ -24,12 +31,12 @@ abstract class BuildlessAutoDisposeNotifier<State> extends NotifierBase<State> {
 /// {@macro riverpod.notifier_provider_modifier}
 abstract class AutoDisposeNotifier<State>
     extends BuildlessAutoDisposeNotifier<State> {
-  /// {@macro riverpod.asyncnotifier.build}
+  /// {@macro riverpod.async_notifier.build}
   @visibleForOverriding
   State build();
 }
 
-/// {@macro riverpod.providerrefbase}
+/// {@macro riverpod.provider_ref_base}
 abstract class AutoDisposeNotifierProviderRef<T>
     implements NotifierProviderRef<T>, AutoDisposeRef<T> {}
 
@@ -54,12 +61,12 @@ class AutoDisposeNotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
     super._createNotifier, {
     super.name,
     super.dependencies,
-    @Deprecated('Will be removed in 3.0.0') super.from,
-    @Deprecated('Will be removed in 3.0.0') super.argument,
-    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          from: null,
+          argument: null,
+          debugGetCreateSourceHash: null,
         );
 
   /// An implementation detail of Riverpod
@@ -91,7 +98,7 @@ class AutoDisposeNotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
     return (notifier as AutoDisposeNotifier<T>).build();
   }
 
-  /// {@macro riverpod.overridewith}
+  /// {@macro riverpod.override_with}
   @mustBeOverridden
   Override overrideWith(NotifierT Function() create) {
     return ProviderOverride(

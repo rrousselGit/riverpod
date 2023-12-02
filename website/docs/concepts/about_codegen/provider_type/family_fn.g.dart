@@ -36,9 +36,23 @@ class _SystemHash {
 const exampleProvider = ExampleFamily();
 
 /// See also [example].
-class ExampleFamily extends Family<String> {
+class ExampleFamily extends Family {
   /// See also [example].
   const ExampleFamily();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'exampleProvider';
 
   /// See also [example].
   ExampleProvider call(
@@ -62,19 +76,26 @@ class ExampleFamily extends Family<String> {
     );
   }
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(String Function(ExampleRef ref) create) {
+    return _$ExampleFamilyOverride(this, create);
+  }
+}
+
+class _$ExampleFamilyOverride implements FamilyOverride {
+  _$ExampleFamilyOverride(this.overriddenFamily, this.create);
+
+  final String Function(ExampleRef ref) create;
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+  final ExampleFamily overriddenFamily;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'exampleProvider';
+  ExampleProvider getProviderOverride(
+    covariant ExampleProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [example].
@@ -102,7 +123,7 @@ class ExampleProvider extends AutoDisposeProvider<String> {
         );
 
   ExampleProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -117,7 +138,7 @@ class ExampleProvider extends AutoDisposeProvider<String> {
 
   @override
   Override overrideWith(
-    String Function(ExampleRef provider) create,
+    String Function(ExampleRef ref) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -148,6 +169,21 @@ class ExampleProvider extends AutoDisposeProvider<String> {
   @override
   AutoDisposeProviderElement<String> createElement() {
     return _ExampleProviderElement(this);
+  }
+
+  ExampleProvider _copyWith(
+    String Function(ExampleRef ref) create,
+  ) {
+    return ExampleProvider._internal(
+      (ref) => create(ref as ExampleRef),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      param1: param1,
+      param2: param2,
+    );
   }
 
   @override

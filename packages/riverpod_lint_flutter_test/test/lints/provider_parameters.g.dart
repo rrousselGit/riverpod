@@ -34,9 +34,23 @@ class _SystemHash {
 const generatorProvider = GeneratorFamily();
 
 /// See also [generator].
-class GeneratorFamily extends Family<int> {
+class GeneratorFamily extends Family {
   /// See also [generator].
   const GeneratorFamily();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'generatorProvider';
 
   /// See also [generator].
   GeneratorProvider call({
@@ -57,19 +71,26 @@ class GeneratorFamily extends Family<int> {
     );
   }
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(int Function(GeneratorRef ref) create) {
+    return _$GeneratorFamilyOverride(this, create);
+  }
+}
+
+class _$GeneratorFamilyOverride implements FamilyOverride {
+  _$GeneratorFamilyOverride(this.overriddenFamily, this.create);
+
+  final int Function(GeneratorRef ref) create;
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+  final GeneratorFamily overriddenFamily;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'generatorProvider';
+  GeneratorProvider getProviderOverride(
+    covariant GeneratorProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [generator].
@@ -94,7 +115,7 @@ class GeneratorProvider extends Provider<int> {
         );
 
   GeneratorProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -107,7 +128,7 @@ class GeneratorProvider extends Provider<int> {
 
   @override
   Override overrideWith(
-    int Function(GeneratorRef provider) create,
+    int Function(GeneratorRef ref) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -133,6 +154,20 @@ class GeneratorProvider extends Provider<int> {
   @override
   ProviderElement<int> createElement() {
     return _GeneratorProviderElement(this);
+  }
+
+  GeneratorProvider _copyWith(
+    int Function(GeneratorRef ref) create,
+  ) {
+    return GeneratorProvider._internal(
+      (ref) => create(ref as GeneratorRef),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      value: value,
+    );
   }
 
   @override
