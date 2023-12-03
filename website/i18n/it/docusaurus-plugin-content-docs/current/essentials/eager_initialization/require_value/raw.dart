@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 /* SNIPPET START */
-// An eagerly initialized provider.
+// Un provider inizializzato anticipatamente.
 final exampleProvider = FutureProvider<String>((ref) async => 'Hello world');
 
 class MyConsumer extends ConsumerWidget {
@@ -12,8 +12,8 @@ class MyConsumer extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final result = ref.watch(exampleProvider);
 
-    /// If the provider was correctly eagerly initialized, then we can
-    /// directly read the data with "requireValue".
+    // Se il provider è stato correttamente inizializzato anticipatamente, allora puoi
+    // direttamente leggere il dato con "requireValue".
     return Text(result.requireValue);
   }
 }

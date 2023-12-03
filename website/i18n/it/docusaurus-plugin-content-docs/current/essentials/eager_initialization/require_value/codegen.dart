@@ -7,7 +7,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'codegen.g.dart';
 
 /* SNIPPET START */
-// An eagerly initialized provider.
+// Un provider inizializzato anticipatamente.
 @riverpod
 Future<String> example(ExampleRef ref) async => 'Hello world';
 
@@ -16,8 +16,8 @@ class MyConsumer extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final result = ref.watch(exampleProvider);
 
-    /// If the provider was correctly eagerly initialized, then we can
-    /// directly read the data with "requireValue".
+    // Se il provider è stato correttamente inizializzato anticipatamente, allora puoi
+    // direttamente leggere il dato con "requireValue".
     return Text(result.requireValue);
   }
 }

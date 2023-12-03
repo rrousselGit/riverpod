@@ -248,7 +248,7 @@ export const documentTitles = {
     "essentials/passing_args": "Passare parametri alle tue richieste",
     "essentials/first_request": "Effettua la tua prima richiesta di provider/rete",
     "essentials/faq": "FAQ",
-    "essentials/eager_initialization": "Eager initialization of providers",
+    "essentials/eager_initialization": "Inizializzazione anticipata dei provider",
     "essentials/do_dont": "DO/DON'T",
     "essentials/combining_requests": "Combinare richieste",
     "essentials/auto_dispose": "Svuotare la cache e reagire alla cancellazione dello stato",
