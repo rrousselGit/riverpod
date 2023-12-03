@@ -284,29 +284,7 @@ class _ParentRiverpodVisitor extends RecursiveRiverpodAstVisitor {
   }
 
   @override
-  void visitRefListenInvocation(RefListenInvocation invocation) {
-    expect(
-      invocation.parent,
-      expectedParent,
-      reason:
-          'Node ${invocation.runtimeType} should have $expectedParent as parent',
-    );
-    invocation.visitChildren(_ParentRiverpodVisitor(invocation));
-  }
-
-  @override
-  void visitRefReadInvocation(RefReadInvocation invocation) {
-    expect(
-      invocation.parent,
-      expectedParent,
-      reason:
-          'Node ${invocation.runtimeType} should have $expectedParent as parent',
-    );
-    invocation.visitChildren(_ParentRiverpodVisitor(invocation));
-  }
-
-  @override
-  void visitRefWatchInvocation(RefWatchInvocation invocation) {
+  void visitRefInvocation(RefInvocation invocation) {
     expect(
       invocation.parent,
       expectedParent,
@@ -404,42 +382,7 @@ class _ParentRiverpodVisitor extends RecursiveRiverpodAstVisitor {
   }
 
   @override
-  void visitWidgetRefListenInvocation(WidgetRefListenInvocation invocation) {
-    expect(
-      invocation.parent,
-      expectedParent,
-      reason:
-          'Node ${invocation.runtimeType} should have $expectedParent as parent',
-    );
-    invocation.visitChildren(_ParentRiverpodVisitor(invocation));
-  }
-
-  @override
-  void visitWidgetRefListenManualInvocation(
-    WidgetRefListenManualInvocation invocation,
-  ) {
-    expect(
-      invocation.parent,
-      expectedParent,
-      reason:
-          'Node ${invocation.runtimeType} should have $expectedParent as parent',
-    );
-    invocation.visitChildren(_ParentRiverpodVisitor(invocation));
-  }
-
-  @override
-  void visitWidgetRefReadInvocation(WidgetRefReadInvocation invocation) {
-    expect(
-      invocation.parent,
-      expectedParent,
-      reason:
-          'Node ${invocation.runtimeType} should have $expectedParent as parent',
-    );
-    invocation.visitChildren(_ParentRiverpodVisitor(invocation));
-  }
-
-  @override
-  void visitWidgetRefWatchInvocation(WidgetRefWatchInvocation invocation) {
+  void visitWidgetRefInvocation(WidgetRefInvocation invocation) {
     expect(
       invocation.parent,
       expectedParent,
@@ -563,28 +506,10 @@ class RiverpodAnalysisResult extends RecursiveRiverpodAstVisitor {
   }
 
   final refInvocations = <RefInvocation>[];
-  final refListenInvocations = <RefListenInvocation>[];
   @override
-  void visitRefListenInvocation(RefListenInvocation invocation) {
-    super.visitRefListenInvocation(invocation);
+  void visitRefInvocation(RefInvocation invocation) {
+    super.visitRefInvocation(invocation);
     refInvocations.add(invocation);
-    refListenInvocations.add(invocation);
-  }
-
-  final refReadInvocations = <RefReadInvocation>[];
-  @override
-  void visitRefReadInvocation(RefReadInvocation invocation) {
-    super.visitRefReadInvocation(invocation);
-    refInvocations.add(invocation);
-    refReadInvocations.add(invocation);
-  }
-
-  final refWatchInvocations = <RefWatchInvocation>[];
-  @override
-  void visitRefWatchInvocation(RefWatchInvocation invocation) {
-    super.visitRefWatchInvocation(invocation);
-    refInvocations.add(invocation);
-    refWatchInvocations.add(invocation);
   }
 
   final resolvedRiverpodLibraryResults = <ResolvedRiverpodLibraryResult>[];
@@ -651,38 +576,10 @@ class RiverpodAnalysisResult extends RecursiveRiverpodAstVisitor {
   }
 
   final widgetRefInvocations = <WidgetRefInvocation>[];
-  final widgetRefListenInvocations = <WidgetRefListenInvocation>[];
   @override
-  void visitWidgetRefListenInvocation(WidgetRefListenInvocation invocation) {
-    super.visitWidgetRefListenInvocation(invocation);
+  void visitWidgetRefInvocation(WidgetRefInvocation invocation) {
+    super.visitWidgetRefInvocation(invocation);
     widgetRefInvocations.add(invocation);
-    widgetRefListenInvocations.add(invocation);
-  }
-
-  final widgetRefListenManualInvocations = <WidgetRefListenManualInvocation>[];
-  @override
-  void visitWidgetRefListenManualInvocation(
-    WidgetRefListenManualInvocation invocation,
-  ) {
-    super.visitWidgetRefListenManualInvocation(invocation);
-    widgetRefInvocations.add(invocation);
-    widgetRefListenManualInvocations.add(invocation);
-  }
-
-  final widgetRefReadInvocations = <WidgetRefReadInvocation>[];
-  @override
-  void visitWidgetRefReadInvocation(WidgetRefReadInvocation invocation) {
-    super.visitWidgetRefReadInvocation(invocation);
-    widgetRefInvocations.add(invocation);
-    widgetRefReadInvocations.add(invocation);
-  }
-
-  final widgetRefWatchInvocations = <WidgetRefWatchInvocation>[];
-  @override
-  void visitWidgetRefWatchInvocation(WidgetRefWatchInvocation invocation) {
-    super.visitWidgetRefWatchInvocation(invocation);
-    widgetRefInvocations.add(invocation);
-    widgetRefWatchInvocations.add(invocation);
   }
 }
 

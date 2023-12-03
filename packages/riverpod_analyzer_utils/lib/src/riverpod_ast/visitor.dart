@@ -48,16 +48,9 @@ abstract class RiverpodAstVisitor {
     ProviderListenableExpression expression,
   );
 
-  void visitRefWatchInvocation(RefWatchInvocation invocation);
-  void visitRefListenInvocation(RefListenInvocation invocation);
-  void visitRefReadInvocation(RefReadInvocation invocation);
+  void visitRefInvocation(RefInvocation invocation);
 
-  void visitWidgetRefReadInvocation(WidgetRefReadInvocation invocation);
-  void visitWidgetRefWatchInvocation(WidgetRefWatchInvocation invocation);
-  void visitWidgetRefListenInvocation(WidgetRefListenInvocation invocation);
-  void visitWidgetRefListenManualInvocation(
-    WidgetRefListenManualInvocation invocation,
-  );
+  void visitWidgetRefInvocation(WidgetRefInvocation invocation);
 
   void visitConsumerWidgetDeclaration(ConsumerWidgetDeclaration declaration);
   void visitHookConsumerWidgetDeclaration(
@@ -136,17 +129,7 @@ class RecursiveRiverpodAstVisitor extends RiverpodAstVisitor {
   }
 
   @override
-  void visitRefListenInvocation(RefListenInvocation invocation) {
-    invocation.visitChildren(this);
-  }
-
-  @override
-  void visitRefReadInvocation(RefReadInvocation invocation) {
-    invocation.visitChildren(this);
-  }
-
-  @override
-  void visitRefWatchInvocation(RefWatchInvocation invocation) {
+  void visitRefInvocation(RefInvocation invocation) {
     invocation.visitChildren(this);
   }
 
@@ -196,24 +179,7 @@ class RecursiveRiverpodAstVisitor extends RiverpodAstVisitor {
   }
 
   @override
-  void visitWidgetRefListenInvocation(WidgetRefListenInvocation invocation) {
-    invocation.visitChildren(this);
-  }
-
-  @override
-  void visitWidgetRefListenManualInvocation(
-    WidgetRefListenManualInvocation invocation,
-  ) {
-    invocation.visitChildren(this);
-  }
-
-  @override
-  void visitWidgetRefReadInvocation(WidgetRefReadInvocation invocation) {
-    invocation.visitChildren(this);
-  }
-
-  @override
-  void visitWidgetRefWatchInvocation(WidgetRefWatchInvocation invocation) {
+  void visitWidgetRefInvocation(WidgetRefInvocation invocation) {
     invocation.visitChildren(this);
   }
 
@@ -286,13 +252,7 @@ class SimpleRiverpodAstVisitor extends RiverpodAstVisitor {
   ) {}
 
   @override
-  void visitRefListenInvocation(RefListenInvocation invocation) {}
-
-  @override
-  void visitRefReadInvocation(RefReadInvocation invocation) {}
-
-  @override
-  void visitRefWatchInvocation(RefWatchInvocation invocation) {}
+  void visitRefInvocation(RefInvocation invocation) {}
 
   @override
   void visitResolvedRiverpodUnit(ResolvedRiverpodLibraryResult result) {}
@@ -326,18 +286,7 @@ class SimpleRiverpodAstVisitor extends RiverpodAstVisitor {
   ) {}
 
   @override
-  void visitWidgetRefListenInvocation(WidgetRefListenInvocation invocation) {}
-
-  @override
-  void visitWidgetRefListenManualInvocation(
-    WidgetRefListenManualInvocation invocation,
-  ) {}
-
-  @override
-  void visitWidgetRefReadInvocation(WidgetRefReadInvocation invocation) {}
-
-  @override
-  void visitWidgetRefWatchInvocation(WidgetRefWatchInvocation invocation) {}
+  void visitWidgetRefInvocation(WidgetRefInvocation invocation) {}
 }
 
 class UnimplementedRiverpodAstVisitor extends RiverpodAstVisitor {
@@ -428,18 +377,8 @@ class UnimplementedRiverpodAstVisitor extends RiverpodAstVisitor {
   }
 
   @override
-  void visitRefListenInvocation(RefListenInvocation invocation) {
-    throw UnimplementedError('implement visitRefListenInvocation');
-  }
-
-  @override
-  void visitRefReadInvocation(RefReadInvocation invocation) {
-    throw UnimplementedError('implement visitRefReadInvocation');
-  }
-
-  @override
-  void visitRefWatchInvocation(RefWatchInvocation invocation) {
-    throw UnimplementedError('implement visitRefWatchInvocation');
+  void visitRefInvocation(RefInvocation invocation) {
+    throw UnimplementedError('implement visitRefInvocation');
   }
 
   @override
@@ -490,25 +429,8 @@ class UnimplementedRiverpodAstVisitor extends RiverpodAstVisitor {
   }
 
   @override
-  void visitWidgetRefListenInvocation(WidgetRefListenInvocation invocation) {
-    throw UnimplementedError('implement visitWidgetRefListenInvocation');
-  }
-
-  @override
-  void visitWidgetRefListenManualInvocation(
-    WidgetRefListenManualInvocation invocation,
-  ) {
-    throw UnimplementedError('implement visitWidgetRefListenManualInvocation');
-  }
-
-  @override
-  void visitWidgetRefReadInvocation(WidgetRefReadInvocation invocation) {
-    throw UnimplementedError('implement visitWidgetRefReadInvocation');
-  }
-
-  @override
-  void visitWidgetRefWatchInvocation(WidgetRefWatchInvocation invocation) {
-    throw UnimplementedError('implement visitWidgetRefWatchInvocation');
+  void visitWidgetRefInvocation(WidgetRefInvocation invocation) {
+    throw UnimplementedError('implement visitWidgetRefInvocation');
   }
 }
 
@@ -613,27 +535,6 @@ class RiverpodAstRegistry {
     _onRefInvocation.add(cb);
   }
 
-  final _onRefWatchInvocation = <void Function(RefWatchInvocation)>[];
-  void addRefWatchInvocation(
-    void Function(RefWatchInvocation) cb,
-  ) {
-    _onRefWatchInvocation.add(cb);
-  }
-
-  final _onRefListenInvocation = <void Function(RefListenInvocation)>[];
-  void addRefListenInvocation(
-    void Function(RefListenInvocation) cb,
-  ) {
-    _onRefListenInvocation.add(cb);
-  }
-
-  final _onRefReadInvocation = <void Function(RefReadInvocation)>[];
-  void addRefReadInvocation(
-    void Function(RefReadInvocation) cb,
-  ) {
-    _onRefReadInvocation.add(cb);
-  }
-
   // WidgetRef life-cycle visitors
 
   final _onWidgetRefInvocation = <void Function(WidgetRefInvocation)>[];
@@ -641,37 +542,6 @@ class RiverpodAstRegistry {
     void Function(WidgetRefInvocation) cb,
   ) {
     _onWidgetRefInvocation.add(cb);
-  }
-
-  final _onWidgetRefWatchInvocation =
-      <void Function(WidgetRefWatchInvocation)>[];
-  void addWidgetRefWatchInvocation(
-    void Function(WidgetRefWatchInvocation) cb,
-  ) {
-    _onWidgetRefWatchInvocation.add(cb);
-  }
-
-  final _onWidgetRefReadInvocation = <void Function(WidgetRefReadInvocation)>[];
-  void addWidgetRefReadInvocation(
-    void Function(WidgetRefReadInvocation) cb,
-  ) {
-    _onWidgetRefReadInvocation.add(cb);
-  }
-
-  final _onWidgetRefListenInvocation =
-      <void Function(WidgetRefListenInvocation)>[];
-  void addWidgetRefListenInvocation(
-    void Function(WidgetRefListenInvocation) cb,
-  ) {
-    _onWidgetRefListenInvocation.add(cb);
-  }
-
-  final _onWidgetRefListenManualInvocation =
-      <void Function(WidgetRefListenManualInvocation)>[];
-  void addWidgetRefListenManualInvocation(
-    void Function(WidgetRefListenManualInvocation) cb,
-  ) {
-    _onWidgetRefListenManualInvocation.add(cb);
   }
 
   // Ref misc
@@ -848,21 +718,9 @@ class _RiverpodAstRegistryVisitor extends RiverpodAstVisitor {
   }
 
   @override
-  void visitRefListenInvocation(RefListenInvocation invocation) {
+  void visitRefInvocation(RefInvocation invocation) {
     invocation.visitChildren(this);
-    _runSubscriptions(invocation, _registry._onRefListenInvocation);
-  }
-
-  @override
-  void visitRefReadInvocation(RefReadInvocation invocation) {
-    invocation.visitChildren(this);
-    _runSubscriptions(invocation, _registry._onRefReadInvocation);
-  }
-
-  @override
-  void visitRefWatchInvocation(RefWatchInvocation invocation) {
-    invocation.visitChildren(this);
-    _runSubscriptions(invocation, _registry._onRefWatchInvocation);
+    _runSubscriptions(invocation, _registry._onRefInvocation);
   }
 
   @override
@@ -927,29 +785,9 @@ class _RiverpodAstRegistryVisitor extends RiverpodAstVisitor {
   }
 
   @override
-  void visitWidgetRefListenInvocation(WidgetRefListenInvocation invocation) {
+  void visitWidgetRefInvocation(WidgetRefInvocation invocation) {
     invocation.visitChildren(this);
-    _runSubscriptions(invocation, _registry._onWidgetRefListenInvocation);
-  }
-
-  @override
-  void visitWidgetRefListenManualInvocation(
-    WidgetRefListenManualInvocation invocation,
-  ) {
-    invocation.visitChildren(this);
-    _runSubscriptions(invocation, _registry._onWidgetRefListenManualInvocation);
-  }
-
-  @override
-  void visitWidgetRefReadInvocation(WidgetRefReadInvocation invocation) {
-    invocation.visitChildren(this);
-    _runSubscriptions(invocation, _registry._onWidgetRefReadInvocation);
-  }
-
-  @override
-  void visitWidgetRefWatchInvocation(WidgetRefWatchInvocation invocation) {
-    invocation.visitChildren(this);
-    _runSubscriptions(invocation, _registry._onWidgetRefWatchInvocation);
+    _runSubscriptions(invocation, _registry._onWidgetRefInvocation);
   }
 
   void _runSubscriptions<R>(

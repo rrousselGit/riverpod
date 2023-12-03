@@ -9,9 +9,13 @@ class ProviderListenableExpression extends RiverpodAst {
     required this.providerPrefix,
     required this.providerElement,
     required this.familyArguments,
+    required this.unit,
   });
 
-  static ProviderListenableExpression? _parse(Expression? expression) {
+  static ProviderListenableExpression? _parse(
+    Expression? expression, {
+    required CompilationUnit unit,
+  }) {
     if (expression == null) return null;
 
     SimpleIdentifier? provider;
@@ -77,6 +81,7 @@ class ProviderListenableExpression extends RiverpodAst {
       providerElement: providerElement,
       // Make sure `(){}()` doesn't report an argument list even though it's not a provider
       familyArguments: provider == null ? null : familyArguments,
+      unit: unit,
     );
   }
 
@@ -104,6 +109,8 @@ class ProviderListenableExpression extends RiverpodAst {
     }
   }
 
+  @override
+  final CompilationUnit unit;
   final Expression node;
   final SimpleIdentifier? providerPrefix;
   final SimpleIdentifier? provider;

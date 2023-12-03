@@ -92,6 +92,12 @@ class PackageMetrics extends _$PackageMetrics {
   }
 }
 
+extension on WidgetRef {
+  T myRefresh<T>(Refreshable<T> provider) {
+    return refresh(provider);
+  }
+}
+
 /// The detail page of a package, typically reached by clicking on a package from [SearchPage].
 class PackageDetailPage extends ConsumerWidget {
   const PackageDetailPage({super.key, required this.packageName});
@@ -118,7 +124,7 @@ class PackageDetailPage extends ConsumerWidget {
           return RefreshIndicator(
             onRefresh: () {
               return Future.wait([
-                ref.refresh(
+                ref.myRefresh(
                   packageMetricsProvider(packageName: packageName).future,
                 ),
                 ref.refresh(

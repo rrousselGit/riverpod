@@ -4,8 +4,11 @@ class RiverpodAnnotationDependency extends RiverpodAst {
   RiverpodAnnotationDependency._({
     required this.node,
     required this.provider,
+    required this.unit,
   });
 
+  @override
+  final CompilationUnit unit;
   final Expression node;
   final GeneratorProviderDeclarationElement provider;
 
@@ -22,8 +25,11 @@ class RiverpodAnnotationDependencies extends RiverpodAst {
   RiverpodAnnotationDependencies._({
     required this.node,
     required this.dependencies,
+    required this.unit,
   });
 
+  @override
+  final CompilationUnit unit;
   final NamedExpression node;
   final List<RiverpodAnnotationDependency>? dependencies;
 
@@ -49,11 +55,13 @@ class RiverpodAnnotation extends RiverpodAst {
     required this.element,
     required this.keepAliveNode,
     required this.dependencies,
+    required this.unit,
   });
 
   static RiverpodAnnotation? _parse(
-    Declaration node,
-  ) {
+    Declaration node, {
+    required CompilationUnit unit,
+  }) {
     final annotatedElement = node.declaredElement;
     if (annotatedElement == null) return null;
 
@@ -89,13 +97,14 @@ class RiverpodAnnotation extends RiverpodAst {
           RiverpodAnnotationElement.parse(annotatedElement);
       if (riverpodAnnotationElement == null) return null;
 
-      final dependencies = _parseDependencies(dependenciesNode);
+      final dependencies = _parseDependencies(dependenciesNode, unit: unit);
 
       final riverpodAnnotation = RiverpodAnnotation._(
         annotation: annotation,
         element: riverpodAnnotationElement,
         keepAliveNode: keepAliveNode,
         dependencies: dependencies,
+        unit: unit,
       );
       dependencies?._parent = riverpodAnnotation;
 
@@ -106,8 +115,9 @@ class RiverpodAnnotation extends RiverpodAst {
   }
 
   static RiverpodAnnotationDependencies? _parseDependencies(
-    NamedExpression? dependenciesNode,
-  ) {
+    NamedExpression? dependenciesNode, {
+    required CompilationUnit unit,
+  }) {
     if (dependenciesNode == null) return null;
     final dependenciesNodeValue = dependenciesNode.expression;
     // TODO handle Riverpod(dependencies:null)
@@ -163,6 +173,7 @@ class RiverpodAnnotation extends RiverpodAst {
             RiverpodAnnotationDependency._(
               node: dependency,
               provider: dependencyProvider,
+              unit: unit,
             ),
           );
         } else if (dependencyElement is ClassElement) {
@@ -184,6 +195,7 @@ class RiverpodAnnotation extends RiverpodAst {
             RiverpodAnnotationDependency._(
               node: dependency,
               provider: dependencyProvider,
+              unit: unit,
             ),
           );
         } else {
@@ -200,6 +212,7 @@ class RiverpodAnnotation extends RiverpodAst {
     final riverpodAnnotationDependencies = RiverpodAnnotationDependencies._(
       node: dependenciesNode,
       dependencies: dependencies,
+      unit: unit,
     );
 
     for (final dependency in dependencies) {
@@ -209,6 +222,8 @@ class RiverpodAnnotation extends RiverpodAst {
     return riverpodAnnotationDependencies;
   }
 
+  @override
+  final CompilationUnit unit;
   final Annotation annotation;
   final RiverpodAnnotationElement element;
   final NamedExpression? keepAliveNode;

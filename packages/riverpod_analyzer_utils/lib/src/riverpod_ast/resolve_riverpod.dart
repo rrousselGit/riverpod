@@ -7,7 +7,6 @@ class ResolvedRiverpodLibraryResult extends RiverpodAst {
     List<CompilationUnit> units,
   ) {
     final result = ResolvedRiverpodLibraryResult._();
-    final visitor = _ParseRiverpodUnitVisitor(result);
 
     try {
       errorReporter = result.errors.add;
@@ -19,7 +18,7 @@ class ResolvedRiverpodLibraryResult extends RiverpodAst {
         if (generatedExtensions.any(shortName.endsWith)) {
           continue;
         }
-        unit.accept(visitor);
+        unit.accept(_ParseRiverpodUnitVisitor(result, unit: unit));
       }
     } finally {
       errorReporter = null;
@@ -27,6 +26,9 @@ class ResolvedRiverpodLibraryResult extends RiverpodAst {
 
     return result;
   }
+
+  @override
+  CompilationUnit? get unit => null;
 
   final errors = <RiverpodAnalysisError>[];
 
@@ -103,19 +105,21 @@ class ResolvedRiverpodLibraryResult extends RiverpodAst {
 }
 
 mixin _ParseRefInvocationMixin on RecursiveAstVisitor<void> {
+  CompilationUnit get unit;
+
   @override
   void visitMethodInvocation(MethodInvocation node) {
-    void superCall() => super.visitMethodInvocation(node);
-
-    final refInvocation = RefInvocation._parse(node, superCall: superCall);
+    final refInvocation = RefInvocation._parse(node, unit: unit);
     if (refInvocation != null) {
       visitRefInvocation(refInvocation);
       // Don't call super as RefInvocation should already be recursive
       return;
     }
 
-    final widgetRefInvocation =
-        WidgetRefInvocation._parse(node, superCall: superCall);
+    final widgetRefInvocation = WidgetRefInvocation._parse(
+      node,
+      unit: unit,
+    );
     if (widgetRefInvocation != null) {
       visitWidgetRefInvocation(widgetRefInvocation);
       // Don't call super as WidgetRefInvocation should already be recursive
@@ -128,7 +132,10 @@ mixin _ParseRefInvocationMixin on RecursiveAstVisitor<void> {
   @override
   void visitInstanceCreationExpression(InstanceCreationExpression node) {
     final providerScopeInstanceCreationExpression =
-        ProviderScopeInstanceCreationExpression._parse(node);
+        ProviderScopeInstanceCreationExpression._parse(
+      node,
+      unit: unit,
+    );
     if (providerScopeInstanceCreationExpression != null) {
       visitProviderScopeInstanceCreationExpression(
         providerScopeInstanceCreationExpression,
@@ -139,7 +146,7 @@ mixin _ParseRefInvocationMixin on RecursiveAstVisitor<void> {
     }
 
     final providerContainerInstanceCreationExpression =
-        ProviderContainerInstanceCreationExpression._parse(node);
+        ProviderContainerInstanceCreationExpression._parse(node, unit: unit);
     if (providerContainerInstanceCreationExpression != null) {
       visitProviderContainerInstanceCreationExpression(
         providerContainerInstanceCreationExpression,
@@ -203,13 +210,21 @@ class _AddConsumerDeclarationVisitor extends UnimplementedRiverpodAstVisitor {
 
 class _ParseRiverpodUnitVisitor extends RecursiveAstVisitor<void>
     with _ParseRefInvocationMixin {
-  _ParseRiverpodUnitVisitor(this.result);
+  _ParseRiverpodUnitVisitor(
+    this.result, {
+    required this.unit,
+  });
 
+  final CompilationUnit unit;
   final ResolvedRiverpodLibraryResult result;
 
   @override
   void visitClassDeclaration(ClassDeclaration node) {
-    final declaration = ClassBasedProviderDeclaration._parse(node, this);
+    final declaration = ClassBasedProviderDeclaration._parse(
+      node,
+      this,
+      unit: unit,
+    );
     if (declaration != null) {
       result.classBasedProviderDeclarations.add(declaration);
       declaration._parent = result;
@@ -217,7 +232,11 @@ class _ParseRiverpodUnitVisitor extends RecursiveAstVisitor<void>
       return;
     }
 
-    final consumerDeclaration = ConsumerDeclaration._parse(node, this);
+    final consumerDeclaration = ConsumerDeclaration._parse(
+      node,
+      this,
+      unit: unit,
+    );
     if (consumerDeclaration != null) {
       consumerDeclaration._parent = result;
       consumerDeclaration.accept(_AddConsumerDeclarationVisitor(result));
@@ -230,7 +249,11 @@ class _ParseRiverpodUnitVisitor extends RecursiveAstVisitor<void>
 
   @override
   void visitFunctionDeclaration(FunctionDeclaration node) {
-    final declaration = FunctionalProviderDeclaration._parse(node, this);
+    final declaration = FunctionalProviderDeclaration._parse(
+      node,
+      this,
+      unit: unit,
+    );
     if (declaration != null) {
       result.functionalProviderDeclarations.add(declaration);
       declaration._parent = result;
@@ -243,7 +266,11 @@ class _ParseRiverpodUnitVisitor extends RecursiveAstVisitor<void>
 
   @override
   void visitVariableDeclaration(VariableDeclaration node) {
-    final declaration = LegacyProviderDeclaration._parse(node, this);
+    final declaration = LegacyProviderDeclaration._parse(
+      node,
+      this,
+      unit: unit,
+    );
     if (declaration != null) {
       result.legacyProviderDeclarations.add(declaration);
       declaration._parent = result;

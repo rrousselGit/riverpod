@@ -59,6 +59,9 @@ extension on LibraryElement {
 
 abstract class GeneratorProviderDeclaration extends ProviderDeclaration {
   @override
+  CompilationUnit get unit;
+
+  @override
   GeneratorProviderDeclarationElement get providerElement;
   RiverpodAnnotation get annotation;
 
@@ -187,15 +190,17 @@ class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration {
     required this.createdTypeNode,
     required this.exposedTypeNode,
     required this.valueTypeNode,
+    required this.unit,
   });
 
   static ClassBasedProviderDeclaration? _parse(
     ClassDeclaration node,
-    _ParseRefInvocationMixin parent,
-  ) {
+    _ParseRefInvocationMixin parent, {
+    required CompilationUnit unit,
+  }) {
     final element = node.declaredElement;
     if (element == null) return null;
-    final riverpodAnnotation = RiverpodAnnotation._parse(node);
+    final riverpodAnnotation = RiverpodAnnotation._parse(node, unit: unit);
     if (riverpodAnnotation == null) return null;
 
     final buildMethod = node.members
@@ -237,15 +242,22 @@ class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration {
       createdTypeNode: createdTypeNode,
       exposedTypeNode: exposedTypeNode,
       valueTypeNode: valueTypeNode,
+      unit: unit,
     );
     riverpodAnnotation._parent = classBasedProviderDeclaration;
     node.accept(
-      _GeneratorRefInvocationVisitor(classBasedProviderDeclaration, parent),
+      _GeneratorRefInvocationVisitor(
+        classBasedProviderDeclaration,
+        parent,
+        unit: unit,
+      ),
     );
 
     return classBasedProviderDeclaration;
   }
 
+  @override
+  final CompilationUnit unit;
   @override
   final Token name;
   @override
@@ -276,7 +288,14 @@ class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration {
 
 class _GeneratorRefInvocationVisitor extends RecursiveAstVisitor<void>
     with _ParseRefInvocationMixin {
-  _GeneratorRefInvocationVisitor(this.declaration, this.parent);
+  _GeneratorRefInvocationVisitor(
+    this.declaration,
+    this.parent, {
+    required this.unit,
+  });
+
+  @override
+  final CompilationUnit unit;
 
   final GeneratorProviderDeclaration declaration;
   final _ParseRefInvocationMixin parent;
@@ -316,15 +335,20 @@ class FunctionalProviderDeclaration extends GeneratorProviderDeclaration {
     required this.createdTypeNode,
     required this.exposedTypeNode,
     required this.valueTypeNode,
+    required this.unit,
   });
 
   static FunctionalProviderDeclaration? _parse(
     FunctionDeclaration node,
-    _ParseRefInvocationMixin parent,
-  ) {
+    _ParseRefInvocationMixin parent, {
+    required CompilationUnit unit,
+  }) {
     final element = node.declaredElement;
     if (element == null) return null;
-    final riverpodAnnotation = RiverpodAnnotation._parse(node);
+    final riverpodAnnotation = RiverpodAnnotation._parse(
+      node,
+      unit: unit,
+    );
     if (riverpodAnnotation == null) return null;
 
     final providerElement = FunctionalProviderDeclarationElement.parse(
@@ -349,17 +373,23 @@ class FunctionalProviderDeclaration extends GeneratorProviderDeclaration {
       createdTypeNode: createdTypeNode,
       exposedTypeNode: exposedTypeNode,
       valueTypeNode: _getValueType(createdTypeNode, element.library),
+      unit: unit,
     );
     riverpodAnnotation._parent = functionalProviderDeclaration;
     node.accept(
-      _GeneratorRefInvocationVisitor(functionalProviderDeclaration, parent),
+      _GeneratorRefInvocationVisitor(
+        functionalProviderDeclaration,
+        parent,
+        unit: unit,
+      ),
     );
     return functionalProviderDeclaration;
   }
 
   @override
+  final CompilationUnit unit;
+  @override
   final Token name;
-
   @override
   final FunctionDeclaration node;
   @override

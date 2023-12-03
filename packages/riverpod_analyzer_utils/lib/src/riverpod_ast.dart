@@ -36,6 +36,9 @@ abstract class RiverpodAst {
   RiverpodAst? _parent;
   RiverpodAst? get parent => _parent;
 
+  /// The [CompilationUnit] that contains this node, if any.
+  CompilationUnit? get unit;
+
   void accept(RiverpodAstVisitor visitor);
 
   @mustCallSuper

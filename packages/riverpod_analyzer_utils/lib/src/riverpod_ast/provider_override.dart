@@ -6,15 +6,22 @@ class ProviderOverrideExpression extends RiverpodAst {
     required this.providerElement,
     required this.provider,
     required this.familyArguments,
+    required this.unit,
   });
 
   // ignore: prefer_constructors_over_static_methods
-  static ProviderOverrideExpression _parse(CollectionElement expression) {
+  static ProviderOverrideExpression _parse(
+    CollectionElement expression, {
+    required CompilationUnit unit,
+  }) {
     SimpleIdentifier? provider;
     ProviderDeclarationElement? providerElement;
     ArgumentList? familyArguments;
     if (expression is Expression) {
-      final listenable = ProviderListenableExpression._parse(expression);
+      final listenable = ProviderListenableExpression._parse(
+        expression,
+        unit: unit,
+      );
       provider = listenable?.provider;
       providerElement = listenable?.providerElement;
       familyArguments = listenable?.familyArguments;
@@ -25,9 +32,12 @@ class ProviderOverrideExpression extends RiverpodAst {
       providerElement: providerElement,
       familyArguments: familyArguments,
       provider: provider,
+      unit: unit,
     );
   }
 
+  @override
+  final CompilationUnit unit;
   final CollectionElement expression;
   final ProviderDeclarationElement? providerElement;
   final SimpleIdentifier? provider;
@@ -49,22 +59,27 @@ class ProviderOverrideList extends RiverpodAst {
   ProviderOverrideList._({
     required this.node,
     required this.overrides,
+    required this.unit,
   });
 
-  static ProviderOverrideList? _parse(NamedExpression? expression) {
+  static ProviderOverrideList? _parse(
+    NamedExpression? expression, {
+    required CompilationUnit unit,
+  }) {
     if (expression == null) return null;
     final expressionValue = expression.expression;
 
     List<ProviderOverrideExpression>? overrides;
     if (expressionValue is ListLiteral) {
       overrides = expressionValue.elements
-          .map(ProviderOverrideExpression._parse)
+          .map((e) => ProviderOverrideExpression._parse(e, unit: unit))
           .toList();
     }
 
     final providerOverrideList = ProviderOverrideList._(
       node: expression,
       overrides: overrides,
+      unit: unit,
     );
 
     overrides?.forEach((e) => e._parent = providerOverrideList);
@@ -72,6 +87,8 @@ class ProviderOverrideList extends RiverpodAst {
     return providerOverrideList;
   }
 
+  @override
+  final CompilationUnit unit;
   final NamedExpression node;
   final List<ProviderOverrideExpression>? overrides;
 

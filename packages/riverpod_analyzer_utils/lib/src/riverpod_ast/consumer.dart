@@ -3,41 +3,46 @@ part of '../riverpod_ast.dart';
 abstract class ConsumerDeclaration extends RiverpodAst {
   static ConsumerDeclaration? _parse(
     ClassDeclaration node,
-    _ParseRefInvocationMixin parent,
-  ) {
+    _ParseRefInvocationMixin parent, {
+    required CompilationUnit unit,
+  }) {
     final extendsClause = node.extendsClause;
     if (extendsClause == null) return null;
     final extendsType = extendsClause.superclass.type;
     if (extendsType == null) return null;
 
     if (consumerWidgetType.isExactlyType(extendsType)) {
-      return ConsumerWidgetDeclaration._parse(node, parent);
+      return ConsumerWidgetDeclaration._parse(node, parent, unit: unit);
     } else if (hookConsumerWidgetType.isExactlyType(extendsType)) {
-      return HookConsumerWidgetDeclaration._parse(node, parent);
+      return HookConsumerWidgetDeclaration._parse(node, parent, unit: unit);
     } else if (consumerStatefulWidgetType.isExactlyType(extendsType)) {
-      return ConsumerStatefulWidgetDeclaration.parse(node);
+      return ConsumerStatefulWidgetDeclaration.parse(node, unit: unit);
     } else if (statefulHookConsumerStateType.isExactlyType(extendsType)) {
-      return StatefulHookConsumerWidgetDeclaration.parse(node);
+      return StatefulHookConsumerWidgetDeclaration.parse(node, unit: unit);
     } else if (consumerStateType.isExactlyType(extendsType)) {
-      return ConsumerStateDeclaration._parse(node, parent);
+      return ConsumerStateDeclaration._parse(node, parent, unit: unit);
     }
 
     return null;
   }
 
   ClassDeclaration get node;
+  @override
+  CompilationUnit get unit;
 }
 
 class ConsumerWidgetDeclaration extends ConsumerDeclaration {
   ConsumerWidgetDeclaration._({
     required this.buildMethod,
     required this.node,
+    required this.unit,
   });
 
   static ConsumerWidgetDeclaration? _parse(
     ClassDeclaration node,
-    _ParseRefInvocationMixin parent,
-  ) {
+    _ParseRefInvocationMixin parent, {
+    required CompilationUnit unit,
+  }) {
     final buildMethod = node.members
         .whereType<MethodDeclaration>()
         .firstWhereOrNull((e) => e.name.lexeme == 'build');
@@ -45,12 +50,14 @@ class ConsumerWidgetDeclaration extends ConsumerDeclaration {
     final consumerWidgetDeclaration = ConsumerWidgetDeclaration._(
       buildMethod: buildMethod,
       node: node,
+      unit: unit,
     );
     final visitor = _ParseConsumerRefInvocationVisitor(
       consumerWidgetDeclaration,
       consumerWidgetDeclaration.widgetRefInvocations,
       consumerWidgetDeclaration.providerScopeInstanceCreateExpressions,
       parent,
+      unit: unit,
     );
 
     buildMethod?.accept(visitor);
@@ -58,6 +65,8 @@ class ConsumerWidgetDeclaration extends ConsumerDeclaration {
     return consumerWidgetDeclaration;
   }
 
+  @override
+  final CompilationUnit unit;
   final MethodDeclaration? buildMethod;
   final List<WidgetRefInvocation> widgetRefInvocations = [];
   final List<ProviderScopeInstanceCreationExpression>
@@ -88,9 +97,12 @@ class _ParseConsumerRefInvocationVisitor extends RecursiveAstVisitor<void>
     this.parent,
     this.widgetRefInvocations,
     this.providerScopeInstanceCreateExpressions,
-    this.parentVisitor,
-  );
+    this.parentVisitor, {
+    required this.unit,
+  });
 
+  @override
+  final CompilationUnit unit;
   final RiverpodAst parent;
   final List<WidgetRefInvocation> widgetRefInvocations;
   final List<ProviderScopeInstanceCreationExpression>
@@ -129,12 +141,14 @@ class HookConsumerWidgetDeclaration extends ConsumerDeclaration {
   HookConsumerWidgetDeclaration({
     required this.buildMethod,
     required this.node,
+    required this.unit,
   });
 
   static HookConsumerWidgetDeclaration? _parse(
     ClassDeclaration node,
-    _ParseRefInvocationMixin parent,
-  ) {
+    _ParseRefInvocationMixin parent, {
+    required CompilationUnit unit,
+  }) {
     final buildMethod = node.members
         .whereType<MethodDeclaration>()
         .firstWhereOrNull((e) => e.name.lexeme == 'build');
@@ -142,12 +156,14 @@ class HookConsumerWidgetDeclaration extends ConsumerDeclaration {
     final consumerWidgetDeclaration = HookConsumerWidgetDeclaration(
       buildMethod: buildMethod,
       node: node,
+      unit: unit,
     );
     final visitor = _ParseConsumerRefInvocationVisitor(
       consumerWidgetDeclaration,
       consumerWidgetDeclaration.widgetRefInvocations,
       consumerWidgetDeclaration.providerScopeInstanceCreateExpressions,
       parent,
+      unit: unit,
     );
 
     buildMethod?.accept(visitor);
@@ -155,6 +171,8 @@ class HookConsumerWidgetDeclaration extends ConsumerDeclaration {
     return consumerWidgetDeclaration;
   }
 
+  @override
+  final CompilationUnit unit;
   final MethodDeclaration? buildMethod;
   final List<WidgetRefInvocation> widgetRefInvocations = [];
   final List<ProviderScopeInstanceCreationExpression>
@@ -180,11 +198,18 @@ class HookConsumerWidgetDeclaration extends ConsumerDeclaration {
 }
 
 class ConsumerStatefulWidgetDeclaration extends ConsumerDeclaration {
-  ConsumerStatefulWidgetDeclaration._({required this.node});
+  ConsumerStatefulWidgetDeclaration._({
+    required this.node,
+    required this.unit,
+  });
 
-  ConsumerStatefulWidgetDeclaration.parse(ClassDeclaration node)
-      : this._(node: node);
+  ConsumerStatefulWidgetDeclaration.parse(
+    ClassDeclaration node, {
+    required CompilationUnit unit,
+  }) : this._(node: node, unit: unit);
 
+  @override
+  final CompilationUnit unit;
   @override
   final ClassDeclaration node;
 
@@ -198,11 +223,18 @@ class ConsumerStatefulWidgetDeclaration extends ConsumerDeclaration {
 }
 
 class StatefulHookConsumerWidgetDeclaration extends ConsumerDeclaration {
-  StatefulHookConsumerWidgetDeclaration._({required this.node});
+  StatefulHookConsumerWidgetDeclaration._({
+    required this.node,
+    required this.unit,
+  });
 
-  StatefulHookConsumerWidgetDeclaration.parse(ClassDeclaration node)
-      : this._(node: node);
+  StatefulHookConsumerWidgetDeclaration.parse(
+    ClassDeclaration node, {
+    required CompilationUnit unit,
+  }) : this._(node: node, unit: unit);
 
+  @override
+  final CompilationUnit unit;
   @override
   final ClassDeclaration node;
 
@@ -218,20 +250,24 @@ class StatefulHookConsumerWidgetDeclaration extends ConsumerDeclaration {
 class ConsumerStateDeclaration extends ConsumerDeclaration {
   ConsumerStateDeclaration._({
     required this.node,
+    required this.unit,
   });
 
   static ConsumerStateDeclaration? _parse(
     ClassDeclaration node,
-    _ParseRefInvocationMixin parent,
-  ) {
+    _ParseRefInvocationMixin parent, {
+    required CompilationUnit unit,
+  }) {
     final consumerWidgetDeclaration = ConsumerStateDeclaration._(
       node: node,
+      unit: unit,
     );
     final visitor = _ParseConsumerRefInvocationVisitor(
       consumerWidgetDeclaration,
       consumerWidgetDeclaration.widgetRefInvocations,
       consumerWidgetDeclaration.providerScopeInstanceCreateExpressions,
       parent,
+      unit: unit,
     );
 
     node.accept(visitor);
@@ -239,6 +275,8 @@ class ConsumerStateDeclaration extends ConsumerDeclaration {
     return consumerWidgetDeclaration;
   }
 
+  @override
+  final CompilationUnit unit;
   final List<WidgetRefInvocation> widgetRefInvocations = [];
   final List<ProviderScopeInstanceCreationExpression>
       providerScopeInstanceCreateExpressions = [];

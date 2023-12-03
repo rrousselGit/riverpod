@@ -4,11 +4,13 @@ class ProviderScopeInstanceCreationExpression extends RiverpodAst {
   ProviderScopeInstanceCreationExpression._({
     required this.node,
     required this.overrides,
+    required this.unit,
   });
 
   static ProviderScopeInstanceCreationExpression? _parse(
-    InstanceCreationExpression node,
-  ) {
+    InstanceCreationExpression node, {
+    required CompilationUnit unit,
+  }) {
     final createdType = node.constructorName.type.type;
     if (createdType == null || !providerScopeType.isExactlyType(createdType)) {
       return null;
@@ -20,10 +22,13 @@ class ProviderScopeInstanceCreationExpression extends RiverpodAst {
 
     return ProviderScopeInstanceCreationExpression._(
       node: node,
-      overrides: ProviderOverrideList._parse(overrides),
+      overrides: ProviderOverrideList._parse(overrides, unit: unit),
+      unit: unit,
     );
   }
 
+  @override
+  final CompilationUnit unit;
   final InstanceCreationExpression node;
   final ProviderOverrideList? overrides;
 

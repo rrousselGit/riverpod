@@ -1,15 +1,20 @@
 part of '../riverpod_ast.dart';
 
-abstract class WidgetRefInvocation extends RiverpodAst
+/// A `WidgetRef` invocation.
+///
+/// This can be any method, including custom user-defined extension methods.
+class WidgetRefInvocation extends RiverpodAst
     implements ProviderListenableExpressionParent {
   WidgetRefInvocation._({
     required this.node,
     required this.function,
+    required this.providers,
+    required this.unit,
   });
 
   static WidgetRefInvocation? _parse(
     MethodInvocation node, {
-    required void Function() superCall,
+    required CompilationUnit unit,
   }) {
     final targetType = node.realTarget?.staticType;
     if (targetType == null) return null;
@@ -23,241 +28,61 @@ abstract class WidgetRefInvocation extends RiverpodAst
     }
     final function = node.function;
     if (function is! SimpleIdentifier) return null;
+
     final functionOwner = function.staticElement
         .cast<MethodElement>()
         ?.declaration
         .enclosingElement;
 
-    if (functionOwner == null ||
-        // Since Ref is sealed, checking that the function is from the package:riverpod
+    if (functionOwner == null) return null;
+
+    final isRiverpodMethod = // Since WidgetRef is sealed, checking that the function is from the package:riverpod
         // before checking its type skips iterating over the superclasses of an element
         // if it's not from Riverpod.
-        !isFromFlutterRiverpod.isExactly(functionOwner) ||
-        !widgetRefType.isAssignableFrom(functionOwner)) {
-      return null;
-    }
+        isFromFlutterRiverpod.isExactly(functionOwner) &&
+            widgetRefType.isAssignableFrom(functionOwner);
 
-    switch (function.name) {
-      case 'watch':
-        return WidgetRefWatchInvocation._parse(
-          node,
-          function,
-          superCall: superCall,
-        );
-      case 'read':
-        return WidgetRefReadInvocation._parse(
-          node,
-          function,
-          superCall: superCall,
-        );
-      case 'listen':
-        return WidgetRefListenInvocation._parse(
-          node,
-          function,
-          superCall: superCall,
-        );
-      case 'listenManual':
-        return WidgetRefListenManualInvocation._parse(
-          node,
-          function,
-          superCall: superCall,
-        );
+    final isExtensionOnRef = functionOwner is ExtensionElement &&
+        widgetRefType.isAssignableFromType(functionOwner.extendedType);
 
-      default:
-        return null;
-    }
+    if (!isRiverpodMethod && !isExtensionOnRef) return null;
+
+    final providers = node.argumentList.arguments
+        .map((e) => ProviderListenableExpression._parse(e, unit: unit))
+        .whereNotNull()
+        .toList();
+
+    return WidgetRefInvocation._(
+      node: node,
+      function: function,
+      providers: providers,
+      unit: unit,
+    );
   }
 
+  @override
+  final CompilationUnit unit;
+
+  /// The method invoked. Can point to a custom extension method.
   final MethodInvocation node;
+
+  /// The function being invoked.
   final SimpleIdentifier function;
-}
 
-class WidgetRefWatchInvocation extends WidgetRefInvocation {
-  WidgetRefWatchInvocation._({
-    required super.node,
-    required super.function,
-    required this.provider,
-  }) : super._();
-
-  static WidgetRefWatchInvocation? _parse(
-    MethodInvocation node,
-    SimpleIdentifier function, {
-    required void Function() superCall,
-  }) {
-    assert(
-      function.name == 'watch',
-      'Argument error, function is not a ref.watch function',
-    );
-
-    final providerListenableExpression = ProviderListenableExpression._parse(
-      node.argumentList.positionalArguments().singleOrNull,
-    );
-    if (providerListenableExpression == null) return null;
-
-    final widgetRefWatchInvocation = WidgetRefWatchInvocation._(
-      node: node,
-      function: function,
-      provider: providerListenableExpression,
-    );
-    providerListenableExpression._parent = widgetRefWatchInvocation;
-    return widgetRefWatchInvocation;
-  }
-
-  final ProviderListenableExpression provider;
+  /// The providers that are listened to by this invocation.
+  ///
+  /// May be empty if the invocation does not receive providers as arguments
+  final List<ProviderListenableExpression> providers;
 
   @override
   void accept(RiverpodAstVisitor visitor) {
-    visitor.visitWidgetRefWatchInvocation(this);
+    visitor.visitWidgetRefInvocation(this);
   }
 
   @override
   void visitChildren(RiverpodAstVisitor visitor) {
-    provider.accept(visitor);
-  }
-}
-
-class WidgetRefReadInvocation extends WidgetRefInvocation {
-  WidgetRefReadInvocation._({
-    required super.node,
-    required super.function,
-    required this.provider,
-  }) : super._();
-
-  static WidgetRefReadInvocation? _parse(
-    MethodInvocation node,
-    SimpleIdentifier function, {
-    required void Function() superCall,
-  }) {
-    assert(
-      function.name == 'read',
-      'Argument error, function is not a ref.read function',
-    );
-
-    final providerListenableExpression = ProviderListenableExpression._parse(
-      node.argumentList.positionalArguments().singleOrNull,
-    );
-    if (providerListenableExpression == null) return null;
-
-    final widgetRefReadInvocation = WidgetRefReadInvocation._(
-      node: node,
-      function: function,
-      provider: providerListenableExpression,
-    );
-    providerListenableExpression._parent = widgetRefReadInvocation;
-    return widgetRefReadInvocation;
-  }
-
-  final ProviderListenableExpression provider;
-
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitWidgetRefReadInvocation(this);
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    provider.accept(visitor);
-  }
-}
-
-class WidgetRefListenInvocation extends WidgetRefInvocation {
-  WidgetRefListenInvocation._({
-    required super.node,
-    required super.function,
-    required this.provider,
-    required this.listener,
-  }) : super._();
-
-  static WidgetRefListenInvocation? _parse(
-    MethodInvocation node,
-    SimpleIdentifier function, {
-    required void Function() superCall,
-  }) {
-    assert(
-      function.name == 'listen',
-      'Argument error, function is not a ref.listen function',
-    );
-
-    final positionalArgs = node.argumentList.positionalArguments().toList();
-    final listener = positionalArgs.elementAtOrNull(1);
-    if (listener == null) return null;
-
-    final providerListenableExpression = ProviderListenableExpression._parse(
-      positionalArgs.firstOrNull,
-    );
-    if (providerListenableExpression == null) return null;
-
-    final widgetRefListenInvocation = WidgetRefListenInvocation._(
-      node: node,
-      function: function,
-      provider: providerListenableExpression,
-      listener: listener,
-    );
-    providerListenableExpression._parent = widgetRefListenInvocation;
-    return widgetRefListenInvocation;
-  }
-
-  final ProviderListenableExpression provider;
-  final Expression listener;
-
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitWidgetRefListenInvocation(this);
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    provider.accept(visitor);
-  }
-}
-
-class WidgetRefListenManualInvocation extends WidgetRefInvocation {
-  WidgetRefListenManualInvocation._({
-    required super.node,
-    required super.function,
-    required this.provider,
-    required this.listener,
-  }) : super._();
-
-  static WidgetRefListenManualInvocation? _parse(
-    MethodInvocation node,
-    SimpleIdentifier function, {
-    required void Function() superCall,
-  }) {
-    assert(
-      function.name == 'listenManual',
-      'Argument error, function is not a ref.listen function',
-    );
-
-    final positionalArgs = node.argumentList.positionalArguments().toList();
-    final listener = positionalArgs.elementAtOrNull(1);
-    if (listener == null) return null;
-
-    final providerListenableExpression = ProviderListenableExpression._parse(
-      positionalArgs.firstOrNull,
-    );
-    if (providerListenableExpression == null) return null;
-
-    final widgetRefListenManualInvocation = WidgetRefListenManualInvocation._(
-      node: node,
-      function: function,
-      provider: providerListenableExpression,
-      listener: listener,
-    );
-    providerListenableExpression._parent = widgetRefListenManualInvocation;
-    return widgetRefListenManualInvocation;
-  }
-
-  final ProviderListenableExpression provider;
-  final Expression listener;
-
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitWidgetRefListenManualInvocation(this);
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    provider.accept(visitor);
+    for (final provider in providers) {
+      provider.accept(visitor);
+    }
   }
 }

@@ -4,6 +4,14 @@ import 'package:test/test.dart';
 import 'analyzer_test_utils.dart';
 
 void main() {
+  test('Supports extensions', () {
+    ref.custom();
+  });
+
+  test('Supports nested invocations', () {
+    ref.watch(family(ref.watch(provider)));
+  });
+
   testSource(
     'Parses import aliases',
     runGenerator: true,

@@ -31,20 +31,18 @@ class ProviderWidget<T> extends ConsumerWidget {
     );
 
     expect(consumerWidget.widgetRefInvocations, [
-      isA<WidgetRefWatchInvocation>()
+      isA<WidgetRefInvocation>()
           .having((e) => e.node.toSource(), 'node', 'ref.watch(provider)')
-          .having(
-            (e) => e.provider,
-            'provider',
-            isA<ProviderListenableExpression>()
-                .having((e) => e.node.toSource(), 'node', 'provider')
-                .having(
-                  (e) => e.providerElement,
-                  'providerElement',
-                  isA<LegacyProviderDeclarationElement>()
-                      .having((e) => e.providerType, 'providerType', null),
-                ),
-          ),
+          .having((e) => e.providers, 'providers', [
+        isA<ProviderListenableExpression>()
+            .having((e) => e.node.toSource(), 'node', 'provider')
+            .having(
+              (e) => e.providerElement,
+              'providerElement',
+              isA<LegacyProviderDeclarationElement>()
+                  .having((e) => e.providerType, 'providerType', null),
+            ),
+      ]),
     ]);
 
     expect(

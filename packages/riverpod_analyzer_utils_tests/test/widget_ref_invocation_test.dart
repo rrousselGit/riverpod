@@ -3,6 +3,14 @@ import 'package:test/test.dart';
 import 'analyzer_test_utils.dart';
 
 void main() {
+  test('Supports extensions', () {
+    ref.custom();
+  });
+
+  test('Supports nested invocations', () {
+    ref.watch(family(ref.watch(provider)));
+  });
+
   testSource('Decode watch expressions with syntax errors', source: '''
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

@@ -7,6 +7,7 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:path/path.dart' as path;
 import 'package:riverpod_graph/src/analyze.dart';
+import 'package:riverpod_graph/src/analyze2.dart';
 
 Future<void> main(List<String> args) {
   final parser = ArgParser();
@@ -25,5 +26,5 @@ Future<void> main(List<String> args) {
 
   final format = SupportFormat.values.byName(parsedArgs['format'].toString());
 
-  return analyze(rootDirectory, format: format);
+  return analyze2(rootDirectory, format: format);
 }

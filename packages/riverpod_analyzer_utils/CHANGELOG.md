@@ -1,8 +1,14 @@
+## Unreleased minor
+
+- **Breaking** Removed all `WidgetRef*Invocation` in favour of a single `WidgetRefInvocation`.
+- **Breaking** Removed all `Ref*Invocation` in favour of a single `RefInvocation`.
+- Now, custom extension methods on `Ref`/`WidgetRef` are also parsed as their respective `RefInvocation`.
+
 ## 0.5.0 - 2023-11-20
 
 - **Breaking** `LegacyProviderDeclarationElement.providerType` is now nullable.
 - Fix crash when parsing classes with a `ProviderBase` field.
- 
+
 ## 0.4.3 - 2023-10-28
 
 - `GeneratorProviderDeclaration.createdTypeDisplayString` now always
