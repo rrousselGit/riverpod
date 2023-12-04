@@ -13,8 +13,8 @@ class Example extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
 /* SNIPPET START */
-    // We could update activityProvider to accept a list of strings instead.
-    // Then be tempted to create that list directly in the watch call.
+    // 我们可以更新 ActivityProvider 接受字符串列表以替换之前的代码。
+    // 然后尝试直接在 watch 调用中创建该列表。
     ref.watch(activityProvider(['recreational', 'cooking']));
 /* SNIPPET END */
 

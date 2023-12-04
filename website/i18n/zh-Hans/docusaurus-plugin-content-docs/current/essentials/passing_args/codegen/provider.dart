@@ -9,24 +9,24 @@ part 'provider.g.dart';
 FutureOr<Activity> fetchActivity() => throw UnimplementedError();
 
 /* SNIPPET START */
-// A "functional" provider
+// “函数型”提供商
 @riverpod
 Future<Activity> activity(ActivityRef ref) async {
-  // TODO: perform a network request to fetch an activity
+  // TODO: 执行网络请求以获取活动
   return fetchActivity();
 }
 
-// Or alternatively, a "notifier"
+// 或者替代方案，“通知者”
 @riverpod
 class ActivityNotifier2 extends _$ActivityNotifier2 {
-  /// Notifier arguments are specified on the build method.
-  /// There can be as many as you want, have any name, and even be optional/named.
+  /// 通知程序参数在构建方法上指定。
+  /// 可以有任意数量的通知程序参数，可以是任意的变量名称，甚至可以是可选/命名的参数。
   @override
   Future<Activity> build(String activityType) async {
-    // Arguments are also available with "this.<argumentName>"
+    // 参数也可通过 "this.<argumentName>" 使用
     print(this.activityType);
 
-    // TODO: perform a network request to fetch an activity
+    // TODO: 执行网络请求以获取活动
     return fetchActivity();
   }
 }

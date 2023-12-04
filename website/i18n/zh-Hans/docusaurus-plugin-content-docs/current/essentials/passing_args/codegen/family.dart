@@ -9,18 +9,18 @@ part 'family.g.dart';
 @riverpod
 Future<Activity> activity(
   ActivityRef ref,
-  // We can add arguments to the provider.
-  // The type of the parameter can be whatever you wish.
+  // 我们可以向提供者添加参数。
+  // 参数的类型可以是您想要的任何类型。
   String activityType,
 ) async {
-  // We can use the "activityType" argument to build the URL.
-  // This will point to "https://boredapi.com/api/activity?type=<activityType>"
+  // 我们可以使用“activityType”参数来构建 URL。
+  // 这将指向 "https://boredapi.com/api/activity?type=<activityType>"
   final response = await http.get(
     Uri(
       scheme: 'https',
       host: 'boredapi.com',
       path: '/api/activity',
-      // No need to manually encode the query parameters, the "Uri" class does it for us.
+      // 无需手动编码查询参数，“Uri”类为我们完成了这一工作。
       queryParameters: {'type': activityType},
     ),
   );

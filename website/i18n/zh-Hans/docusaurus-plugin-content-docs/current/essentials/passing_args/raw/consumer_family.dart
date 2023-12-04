@@ -13,8 +13,8 @@ class Example extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
 /* SNIPPET START */
     AsyncValue<Activity> activity = ref.watch(
-      // The provider is now a function expecting the activity type.
-      // Let's pass a constant string for now, for the sake of simplicity.
+      // 提供者现在是一个需要活动类型的函数。
+      // 为了简单起见，我们现在传递一个常量字符串。
       activityProvider('recreational'),
     );
 /* SNIPPET END */

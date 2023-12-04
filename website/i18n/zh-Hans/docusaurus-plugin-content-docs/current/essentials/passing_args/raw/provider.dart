@@ -6,13 +6,13 @@ import '../../first_request/raw/activity.dart';
 
 FutureOr<Activity> fetchActivity() => throw UnimplementedError();
 
-// A "functional" provider
+// “函数型”提供商
 final activityProvider = FutureProvider.autoDispose((ref) async {
-  // TODO: perform a network request to fetch an activity
+  // TODO: 执行网络请求以获取活动
   return fetchActivity();
 });
 
-// Or alternatively, a "notifier"
+// 或者替代方案，“通知者”
 final activityProvider2 = AsyncNotifierProvider<ActivityNotifier, Activity>(
   ActivityNotifier.new,
 );
@@ -20,7 +20,7 @@ final activityProvider2 = AsyncNotifierProvider<ActivityNotifier, Activity>(
 class ActivityNotifier extends AsyncNotifier<Activity> {
   @override
   Future<Activity> build() async {
-    // TODO: perform a network request to fetch an activity
+    // TODO: 执行网络请求以获取活动
     return fetchActivity();
   }
 }

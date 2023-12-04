@@ -12,9 +12,8 @@ class Example extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
 /* SNIPPET START */
     ref.watch(
-      // Using a Record, we can pass our parameters.
-      // It is fine to create the record directly
-      // in the watch call as records override ==.
+      // 使用记录，我们可以传递参数。
+      // 在 watch 调用中，可以实现直接创建带有覆盖 == 功能的记录。
       activityProvider((type: 'recreational', maxPrice: 40)),
     );
 /* SNIPPET END */
