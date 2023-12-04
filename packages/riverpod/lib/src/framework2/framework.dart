@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:collection';
+import 'dart:math' as math;
 
 import 'package:meta/meta.dart';
 import 'package:test/test.dart' as test;
 
-import '../result.dart';
+import '../common.dart';
+import '../tenable.dart';
 
 part 'provider_container.dart';
 part 'provider_observer.dart';
@@ -26,6 +28,17 @@ typedef ProviderListener<StateT> = void Function(
   StateT? previous,
   StateT next,
 );
+
+@internal
+typedef OnAddListener = VoidCallback;
+@internal
+typedef OnRemoveListener = VoidCallback;
+@internal
+typedef OnResume = VoidCallback;
+@internal
+typedef OnCancel = VoidCallback;
+@internal
+typedef OnDispose = VoidCallback;
 
 @internal
 typedef VoidCallback = void Function();

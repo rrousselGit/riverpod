@@ -197,10 +197,11 @@ class ProviderContainer {
 
   ProviderSubscription<StateT> listen<StateT>(
     ProviderListenable<StateT> provider,
-    void Function(StateT? previous, StateT next) listener, {
+    ProviderListener<StateT> listener, {
     bool fireImmediately = false,
-    void Function(Object error, StackTrace stackTrace)? onError,
-    @internal DebugDependentSource? debugDependentSource,
+    OnError? onError,
+    DebugDependentSource? debugDependentSource,
+    OnCancel? onCancel,
   }) {
     provider.addListener(
       this,

@@ -21,11 +21,11 @@ class Ref<StateT> {
 
   void notifyListeners();
 
-  void onAddListener(VoidCallback cb);
-  void onRemoveListener(VoidCallback cb);
-  void onResume(VoidCallback cb);
-  void onCancel(VoidCallback cb);
-  void onDispose(VoidCallback cb);
+  void onAddListener(OnAddListener cb);
+  void onRemoveListener(OnRemoveListener cb);
+  void onResume(OnResume cb);
+  void onCancel(OnCancel cb);
+  void onDispose(OnDispose cb);
 
   bool exists(Provider<Object?> provider);
 
@@ -40,7 +40,6 @@ class Ref<StateT> {
 
   T watch<T>(ProviderListenable<T> provider) {
     final subscription = listen<T>(provider, (_, value) => reloadSelf());
-    onDispose(subscription.close);
 
     return subscription.read();
   }
@@ -49,8 +48,21 @@ class Ref<StateT> {
     ProviderListenable<T> provider,
     ProviderListener<T> listener, {
     OnError? onError,
+    VoidCallback? onCancel,
     bool fireImmediately = false,
-  });
+  }) {
+    final subscription = provider.addListener(
+      container,
+      listener,
+      fireImmediately: fireImmediately,
+      onError: onError,
+      onCancel: onCancel,
+      dependent: _element,
+    );
+
+    return subscription;
+  }
+
   void listenSelf(
     ProviderListener<StateT> listener, {
     OnError? onError,

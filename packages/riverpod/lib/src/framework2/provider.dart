@@ -128,15 +128,18 @@ abstract base class Provider<StateT>
     required bool fireImmediately,
     required void Function(Object error, StackTrace stackTrace)? onError,
     required DebugDependentSource? debugDependentSource,
+    required ProviderElement<Object?>? dependent,
+    required void Function()? onCancel,
   }) {
     final element = getElement(container);
 
     final subscription = element.addListener(
-      container,
       listener,
       fireImmediately: fireImmediately,
       onError: onError,
       debugDependentSource: debugDependentSource,
+      dependent: dependent,
+      onCancel: onCancel,
     );
 
     return ProviderSubscription<StateT>._(subscription, element);

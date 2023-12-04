@@ -1,5 +1,10 @@
 part of 'framework.dart';
 
+enum _DirtyType {
+  reload,
+  refresh,
+}
+
 /// The element of a provider is a class responsible for managing the state
 /// of a provider.
 ///
@@ -16,29 +21,258 @@ abstract class ProviderElement<StateT> {
   /// The container where this [ProviderElement] is attached to.
   final ProviderContainer container;
 
-  Result<StateT>? _result;
+  _DirtyType? _dirty;
 
-  /// The current state of this provider.
+  /// What this provider is currently listening to.
+  List<ProviderSubscription<Object?>> _subscriptions = [];
+
+  /// The listeners listening to this provider.
+  List<ProviderSubscription<Object?>> _listeners = [];
+
+  // The various life-cycles listeners of a provider.
+  // We store them in the element instead of Ref for performance reasons.
+  // This avoids having to create a new list for each Ref and is less DC intensive.
+  final _onDispose = VoidNotifier();
+  final _onAddListener = VoidNotifier();
+  final _onRemoveListener = VoidNotifier();
+  final _onResume = VoidNotifier();
+  final _onPause = VoidNotifier();
+
+  Ref<StateT>? _ref;
+  AsyncValue<StateT>? _result;
+
+  AsyncValue<StateT> requestState() {
+    container.scheduler.performRebuilds();
+
+    final result = _result;
+    if (result != null) return result;
+  }
+
+  void _runProviderBuild() {
+    assert(_dirty != null);
+
+    _dirty = null;
+
+    setLoading();
+    final ref = _ref = Ref<StateT>._(this);
+
+    List<ProviderSubscription<Object?>>? previousSubscriptions = _subscriptions;
+    _subscriptions = [];
+
+    void closePreviousSubscriptions() {
+      for (final subscription in previousSubscriptions!) {
+        subscription.close();
+      }
+      previousSubscriptions = null;
+    }
+
+    // Prevent listeners from being notified while we are building.
+    assert(_lockNotifyListeners());
+
+    final tenable = Tenable.fromFutureOr(() => build(ref));
+
+    // Once "build" has completed, we fully close previous subscriptions.
+    tenable.whenComplete(closePreviousSubscriptions);
+
+    // If "build" completed synchronously, subscriptions should already be closed.
+    // No need to pause them.
+    // We pause subscriptions _after_ starting build, for the sake of efficiency.
+    // This avoids both pausing and closing subscriptions in a quick succession.
+    if (previousSubscriptions != null) {
+      // Pause previous subscriptions to disable them while "build" is running.
+      // This avoids unnecessary work in providers that may not be used anymore.
+      for (final subscription in previousSubscriptions!) {
+        subscription.pause();
+      }
+    }
+
+    assert(_unlockNotifyListeners());
+    assert(_result != null);
+    // We notify listeners after "build" has completed.
+    // This avoids notifying listeners multiple times if multiple state change
+    // operations are performed at once.
+    _notifyListeners();
+  }
+
+  void setLoading();
+  void setError(Object error, StackTrace stackTrace);
+  void setDats(StateT value);
+
+  ProviderSubscription<StateT> addListener(
+    ProviderListener<StateT> listener, {
+    required bool fireImmediately,
+    required OnError? onError,
+    required DebugDependentSource? debugDependentSource,
+    required ProviderElement<Object?>? dependent,
+    required OnCancel? onCancel,
+  }) {
+    final subscription = _ProviderSubscription<StateT>(
+      this,
+      listener,
+      fireImmediately: fireImmediately,
+      onError: onError,
+      debugDependentSource: debugDependentSource,
+      dependent: dependent,
+      originalDependentSubscriptions: _subscriptions,
+      onCancel: onCancel,
+    );
+
+    _listeners.add(subscription);
+
+    if (dependent != null) {
+      dependent._subscriptions.add(subscription);
+    }
+
+    return subscription;
+  }
+
+  /// Invoke the "create" method of a provider.
   ///
-  /// This is `null` until the provider has been initialized.
-  /// The state may be in error state, which can be checked using [Result].
-  Result<StateT>? get result => _result;
-
-  /// Set the current state of this provider.
-  ///
-  /// This will notify listeners if:
-  /// - invoked after the provider has finished initializing
-  /// - and if the new state is different from the previous one
-  set result(Result<StateT>? value) => _result = value;
-
+  /// Should not notify listeners during the synchronous execution of the build
+  /// method.
   @visibleForOverriding
   FutureOr<void> build(Ref<StateT> ref);
 
-  void markNeedsReload() {
-    throw UnimplementedError();
+  void markNeedsRebuild({bool isReload = false}) {
+    if (_dirty != null) {
+      // If at least one rebuild request asks for a "reload", then we reload.
+      // Otherwise we "refresh".
+      if (isReload) _dirty = _DirtyType.reload;
+
+      return;
+    }
+
+    _dirty = isReload ? _DirtyType.reload : _DirtyType.refresh;
+
+    container.scheduler.scheduleBuildFor(this);
   }
 
-  void markNeedsRefresh() {
-    throw UnimplementedError();
+  void _runDispose() {
+    // By disposing the "ref" before invoking "onDispose",
+    // then we ensure that "onDispose" cannot call "ref.state=" & co.
+    _ref?._dispose();
+    _ref = null;
+
+    _onDispose
+      ..notifyListeners()
+      ..clear();
+  }
+
+  @mustCallSuper
+  void unmount() {
+    _runDispose();
+
+    // Clearing the subscriptions before closing them, for efficiency.
+    // This avoids having to remove the subscriptions from the list.
+    // Cf _ProviderSubscription._originalDependentSubscriptions.
+    final subscriptions = _subscriptions;
+    final listeners = _listeners;
+    _listeners = [];
+    _subscriptions = [];
+
+    for (final subscription in subscriptions) {
+      subscription.close();
+    }
+    for (final listener in listeners) {
+      listener.close();
+    }
+
+    _ref = null;
+    _result = null;
+  }
+}
+
+class _ProviderSubscription<StateT> implements ProviderSubscription<StateT> {
+  _ProviderSubscription(
+    this._element,
+    this._listener, {
+    required bool fireImmediately,
+    required void Function(Object error, StackTrace stackTrace)? onError,
+    required DebugDependentSource? debugDependentSource,
+    required ProviderElement<Object?>? dependent,
+    required List<ProviderSubscription<Object?>> originalDependentSubscriptions,
+    required void Function()? onCancel,
+  })  : _fireImmediately = fireImmediately,
+        _onError = onError,
+        _debugDependentSource = debugDependentSource,
+        _dependent = dependent,
+        _originalDependentSubscriptions = originalDependentSubscriptions,
+        _onCancel = onCancel;
+
+  final ProviderElement<StateT> _element;
+  final void Function(StateT? previous, StateT next) _listener;
+  final bool _fireImmediately;
+  final void Function(Object error, StackTrace stackTrace)? _onError;
+  final DebugDependentSource? _debugDependentSource;
+  final ProviderElement<Object?>? _dependent;
+  final void Function()? _onCancel;
+
+  /// [ProvidElement._subscriptions] at the time this subscription was created.
+  ///
+  /// Used to optimize the removal of this subscription from the list when the
+  /// provider's state was refreshed.
+  final List<ProviderSubscription<Object?>> _originalDependentSubscriptions;
+
+  bool _closed = false;
+  int _pauseCount = 0;
+
+  @override
+  StateT read() {
+    if (_closed) {
+      throw StateError('Cannot read from a closed subscription');
+    }
+    if (_pauseCount > 0) {
+      throw StateError('Cannot read from a paused subscription');
+    }
+
+    return _element.requestState().data!.value;
+  }
+
+  @override
+  void pause() {
+    if (_closed) {
+      throw StateError('Cannot pause a closed subscription');
+    }
+
+    // If this is the first pause, pause the provider too.
+    if (_pauseCount == 0) _element.pause();
+
+    _pauseCount++;
+  }
+
+  @override
+  void resume() {
+    if (_closed) {
+      throw StateError('Cannot resume a closed subscription');
+    }
+
+    // Noop if not paused.
+    if (_pauseCount == 0) return;
+
+    // If this is the last resume, unpause the provider too.
+    if (_pauseCount == 1) _element.resume();
+
+    _pauseCount--;
+  }
+
+  @override
+  void close() {
+    if (_closed) {
+      throw StateError('Cannot close a closed subscription');
+    }
+
+    _closed = true;
+
+    // If closing a paused subscription, unpause the provider too.
+    if (_pauseCount > 0) _element.resume();
+
+    _onCancel?.call();
+
+    _element._listeners.remove(this);
+
+    if (_dependent != null &&
+        _dependent._subscriptions == _originalDependentSubscriptions) {
+      _dependent._subscriptions.remove(this);
+    }
   }
 }
