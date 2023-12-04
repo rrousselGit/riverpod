@@ -1,11 +1,11 @@
 name: provider_devtools_extension
-description: "The Flutter web app for the package:provider DevTools extension."
-publish_to: 'none'
+description: "The Flutter web app for the package:riverpod DevTools extension."
+publish_to: "none"
 
 version: 0.0.1
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -14,8 +14,11 @@ dependencies:
   collection: ^1.15.0
   devtools_extensions: ^0.0.6
   devtools_app_shared: ^0.0.4
-  # TODO: https://github.com/flutter/devtools/issues/4569 - unpin this version
-  flutter_riverpod: 2.0.0-dev.9
+  # Pinning to a specific version of riverpod, to ensure that
+  # the extension is using the same contract version.
+  hooks_riverpod: 3.0.0-dev.3
+  flutter_riverpod: 3.0.0-dev.3
+  riverpod: 3.0.0-dev.3
   logging: ^1.1.1
   vm_service: ^13.0.0
 
