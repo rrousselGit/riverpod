@@ -1,6 +1,6 @@
 part of '../provider.dart';
 
-/// {@macro riverpod.providerrefbase}
+/// {@macro riverpod.provider_ref_base}
 /// - [state], the value currently exposed by this provider.
 abstract class ProviderRef<State> implements Ref<State> {
   /// Obtains the state currently exposed by this provider.
@@ -23,12 +23,12 @@ class Provider<State> extends InternalProvider<State>
     this._createFn, {
     super.name,
     super.dependencies,
-    @Deprecated('Will be removed in 3.0.0') super.from,
-    @Deprecated('Will be removed in 3.0.0') super.argument,
-    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          from: null,
+          argument: null,
+          debugGetCreateSourceHash: null,
         );
 
   /// An implementation detail of Riverpod
@@ -57,7 +57,7 @@ class Provider<State> extends InternalProvider<State>
   @override
   ProviderElement<State> createElement() => ProviderElement(this);
 
-  /// {@template riverpod.overridewith}
+  /// {@template riverpod.override_with}
   /// Override the provider with a new initialization function.
   ///
   /// This will also disable the auto-scoping mechanism, meaning that if the
@@ -81,7 +81,7 @@ class Provider<State> extends InternalProvider<State>
   ///   ProviderScope(
   ///     overrides: [
   ///       // Replace the implementation of the provider with a different one
-  ///       myService.overrideWithProvider((ref) {
+  ///       myService.overrideWith((ref) {
   ///         ref.watch('other');
   ///         return MyFakeService(),
   ///       })),
@@ -369,7 +369,7 @@ class ProviderFamily<R, Arg>
     required super.debugGetCreateSourceHash,
   }) : super(providerFactory: Provider.internal);
 
-  /// {@macro riverpod.overridewith}
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     R Function(ProviderRef<R> ref, Arg arg) create,
   ) {

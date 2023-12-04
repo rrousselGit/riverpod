@@ -62,9 +62,35 @@ class _SystemHash {
 const familyWithDependencies2Provider = FamilyWithDependencies2Family();
 
 /// See also [familyWithDependencies2].
-class FamilyWithDependencies2Family extends Family<int> {
+class FamilyWithDependencies2Family extends Family {
   /// See also [familyWithDependencies2].
   const FamilyWithDependencies2Family();
+
+  static final Iterable<ProviderOrFamily> _dependencies = <ProviderOrFamily>[
+    providerWithDependenciesProvider,
+    _private2Provider,
+    public2Provider
+  ];
+
+  static final Iterable<ProviderOrFamily> _allTransitiveDependencies =
+      <ProviderOrFamily>{
+    providerWithDependenciesProvider,
+    ...?providerWithDependenciesProvider.allTransitiveDependencies,
+    _private2Provider,
+    ...?_private2Provider.allTransitiveDependencies,
+    public2Provider,
+    ...?public2Provider.allTransitiveDependencies
+  };
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'familyWithDependencies2Provider';
 
   /// See also [familyWithDependencies2].
   FamilyWithDependencies2Provider call({
@@ -85,31 +111,26 @@ class FamilyWithDependencies2Family extends Family<int> {
     );
   }
 
-  static final Iterable<ProviderOrFamily> _dependencies = <ProviderOrFamily>[
-    providerWithDependenciesProvider,
-    _private2Provider,
-    public2Provider
-  ];
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(int Function(FamilyWithDependencies2Ref ref) create) {
+    return _$FamilyWithDependencies2FamilyOverride(this, create);
+  }
+}
+
+class _$FamilyWithDependencies2FamilyOverride implements FamilyOverride {
+  _$FamilyWithDependencies2FamilyOverride(this.overriddenFamily, this.create);
+
+  final int Function(FamilyWithDependencies2Ref ref) create;
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static final Iterable<ProviderOrFamily> _allTransitiveDependencies =
-      <ProviderOrFamily>{
-    providerWithDependenciesProvider,
-    ...?providerWithDependenciesProvider.allTransitiveDependencies,
-    _private2Provider,
-    ...?_private2Provider.allTransitiveDependencies,
-    public2Provider,
-    ...?public2Provider.allTransitiveDependencies
-  };
+  final FamilyWithDependencies2Family overriddenFamily;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'familyWithDependencies2Provider';
+  FamilyWithDependencies2Provider getProviderOverride(
+    covariant FamilyWithDependencies2Provider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [familyWithDependencies2].
@@ -135,7 +156,7 @@ class FamilyWithDependencies2Provider extends AutoDisposeProvider<int> {
         );
 
   FamilyWithDependencies2Provider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -148,7 +169,7 @@ class FamilyWithDependencies2Provider extends AutoDisposeProvider<int> {
 
   @override
   Override overrideWith(
-    int Function(FamilyWithDependencies2Ref provider) create,
+    int Function(FamilyWithDependencies2Ref ref) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -174,6 +195,20 @@ class FamilyWithDependencies2Provider extends AutoDisposeProvider<int> {
   @override
   AutoDisposeProviderElement<int> createElement() {
     return _FamilyWithDependencies2ProviderElement(this);
+  }
+
+  FamilyWithDependencies2Provider _copyWith(
+    int Function(FamilyWithDependencies2Ref ref) create,
+  ) {
+    return FamilyWithDependencies2Provider._internal(
+      (ref) => create(ref as FamilyWithDependencies2Ref),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      id: id,
+    );
   }
 
   @override
@@ -277,9 +312,35 @@ const notifierFamilyWithDependenciesProvider =
     NotifierFamilyWithDependenciesFamily();
 
 /// See also [NotifierFamilyWithDependencies].
-class NotifierFamilyWithDependenciesFamily extends Family<int> {
+class NotifierFamilyWithDependenciesFamily extends Family {
   /// See also [NotifierFamilyWithDependencies].
   const NotifierFamilyWithDependenciesFamily();
+
+  static final Iterable<ProviderOrFamily> _dependencies = <ProviderOrFamily>[
+    providerWithDependenciesProvider,
+    _private2Provider,
+    public2Provider
+  ];
+
+  static final Iterable<ProviderOrFamily> _allTransitiveDependencies =
+      <ProviderOrFamily>{
+    providerWithDependenciesProvider,
+    ...?providerWithDependenciesProvider.allTransitiveDependencies,
+    _private2Provider,
+    ...?_private2Provider.allTransitiveDependencies,
+    public2Provider,
+    ...?public2Provider.allTransitiveDependencies
+  };
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'notifierFamilyWithDependenciesProvider';
 
   /// See also [NotifierFamilyWithDependencies].
   NotifierFamilyWithDependenciesProvider call({
@@ -300,31 +361,27 @@ class NotifierFamilyWithDependenciesFamily extends Family<int> {
     );
   }
 
-  static final Iterable<ProviderOrFamily> _dependencies = <ProviderOrFamily>[
-    providerWithDependenciesProvider,
-    _private2Provider,
-    public2Provider
-  ];
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(NotifierFamilyWithDependencies Function() create) {
+    return _$NotifierFamilyWithDependenciesFamilyOverride(this, create);
+  }
+}
+
+class _$NotifierFamilyWithDependenciesFamilyOverride implements FamilyOverride {
+  _$NotifierFamilyWithDependenciesFamilyOverride(
+      this.overriddenFamily, this.create);
+
+  final NotifierFamilyWithDependencies Function() create;
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static final Iterable<ProviderOrFamily> _allTransitiveDependencies =
-      <ProviderOrFamily>{
-    providerWithDependenciesProvider,
-    ...?providerWithDependenciesProvider.allTransitiveDependencies,
-    _private2Provider,
-    ...?_private2Provider.allTransitiveDependencies,
-    public2Provider,
-    ...?public2Provider.allTransitiveDependencies
-  };
+  final NotifierFamilyWithDependenciesFamily overriddenFamily;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'notifierFamilyWithDependenciesProvider';
+  NotifierFamilyWithDependenciesProvider getProviderOverride(
+    covariant NotifierFamilyWithDependenciesProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [NotifierFamilyWithDependencies].
@@ -349,7 +406,7 @@ class NotifierFamilyWithDependenciesProvider
         );
 
   NotifierFamilyWithDependenciesProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -396,6 +453,20 @@ class NotifierFamilyWithDependenciesProvider
   AutoDisposeNotifierProviderElement<NotifierFamilyWithDependencies, int>
       createElement() {
     return _NotifierFamilyWithDependenciesProviderElement(this);
+  }
+
+  NotifierFamilyWithDependenciesProvider _copyWith(
+    NotifierFamilyWithDependencies Function() create,
+  ) {
+    return NotifierFamilyWithDependenciesProvider._internal(
+      () => create()..id = id,
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      id: id,
+    );
   }
 
   @override

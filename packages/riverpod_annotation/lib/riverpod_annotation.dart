@@ -12,6 +12,8 @@ export 'package:riverpod/src/internals.dart'
         Override,
         // ignore: invalid_use_of_internal_member, Used by notifiers for overriding overrideWith
         ProviderOverride,
+        // ignore: invalid_use_of_internal_member, used by families for overrideWith
+        FamilyOverride,
 
         // Provider
         Provider,

@@ -111,17 +111,14 @@ void main() {
       //   expect(root.getAllProviderElements(), isEmpty);
       // });
 
-      test('when using provider.overrideWithProvider', () {
+      test('when using provider.overrideWith', () {
         final provider =
             ChangeNotifierProvider.autoDispose((ref) => ValueNotifier(0));
         final root = createContainer();
         final container = createContainer(
           parent: root,
           overrides: [
-            // ignore: deprecated_member_use
-            provider.overrideWithProvider(
-              ChangeNotifierProvider.autoDispose((ref) => ValueNotifier(42)),
-            ),
+            provider.overrideWith((ref) => ValueNotifier(42)),
           ],
         );
 

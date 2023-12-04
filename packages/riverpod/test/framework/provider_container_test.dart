@@ -234,23 +234,6 @@ void main() {
     });
 
     test(
-        'when using overrideWithProvider, handles overriding with a more specific provider type',
-        () {
-      final fooProvider = Provider<Foo>((ref) => Foo());
-
-      final container = createContainer(
-        overrides: [
-          // ignore: deprecated_member_use_from_same_package
-          fooProvider.overrideWithProvider(
-            Provider<Bar>((ref) => Bar()),
-          ),
-        ],
-      );
-
-      expect(container.read(fooProvider), isA<Bar>());
-    });
-
-    test(
         'when the same provider is overridden multiple times at once, uses the latest override',
         () {
       final provider = Provider((ref) => 0);
@@ -274,8 +257,8 @@ void main() {
       final provider = Provider.family<int, int>((ref, value) => 0);
       final container = createContainer(
         overrides: [
-          provider.overrideWithProvider((value) => Provider((ref) => 21)),
-          provider.overrideWithProvider((value) => Provider((ref) => 42)),
+          provider.overrideWith((ref, value) => 21),
+          provider.overrideWith((ref, value) => 42),
         ],
       );
 
@@ -399,7 +382,7 @@ void main() {
 
     group('.pump', () {
       test(
-          'waits for providers to rebuild or get disposed, no matter from which container they are associated in the graph',
+          'Waits for providers associated with this container and its parents to rebuild',
           () async {
         final dep = StateProvider((ref) => 0);
         final a = Provider((ref) => ref.watch(dep));
@@ -417,7 +400,7 @@ void main() {
         verifyOnly(bListener, bListener(null, 0));
 
         root.read(dep.notifier).state++;
-        await root.pump();
+        await scoped.pump();
 
         verifyOnly(aListener, aListener(0, 1));
         verifyOnly(bListener, bListener(0, 1));
@@ -726,7 +709,3 @@ void main() {
     );
   });
 }
-
-class Foo {}
-
-class Bar extends Foo {}

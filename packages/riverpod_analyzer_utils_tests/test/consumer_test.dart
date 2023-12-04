@@ -1,9 +1,58 @@
-import 'package:riverpod_analyzer_utils/src/riverpod_ast.dart';
+import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import 'package:test/test.dart';
 
-import 'analyser_test_utils.dart';
+import 'analyzer_test_utils.dart';
 
 void main() {
+  testSource('Handles consumers with a ProviderBase inside', source: '''
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/material.dart';
+
+class ProviderWidget<T> extends ConsumerWidget {
+  const ProviderWidget({super.key, required this.provider});
+
+  final ProviderBase<AsyncValue<T>> provider;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(provider);
+    return Container();
+  }
+}
+''', (resolver) async {
+    final result = await resolver.resolveRiverpodAnalysisResult();
+
+    final consumerWidget = result.consumerWidgetDeclarations.single;
+    expect(consumerWidget, isA<ConsumerWidgetDeclaration>());
+    expect(consumerWidget.node.name.toString(), 'ProviderWidget');
+    expect(
+      consumerWidget.buildMethod!.toSource(),
+      '@override Widget build(BuildContext context, WidgetRef ref) {ref.watch(provider); return Container();}',
+    );
+
+    expect(consumerWidget.widgetRefInvocations, [
+      isA<WidgetRefWatchInvocation>()
+          .having((e) => e.node.toSource(), 'node', 'ref.watch(provider)')
+          .having(
+            (e) => e.provider,
+            'provider',
+            isA<ProviderListenableExpression>()
+                .having((e) => e.node.toSource(), 'node', 'provider')
+                .having(
+                  (e) => e.providerElement,
+                  'providerElement',
+                  isA<LegacyProviderDeclarationElement>()
+                      .having((e) => e.providerType, 'providerType', null),
+                ),
+          ),
+    ]);
+
+    expect(
+      result.resolvedRiverpodLibraryResults.single.unknownWidgetRefInvocations,
+      isEmpty,
+    );
+  });
+
   testSource('Decode ConsumerWidget declarations', source: '''
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -20,7 +69,7 @@ class MyConsumerWidget extends ConsumerWidget {
   }
 }
 ''', (resolver) async {
-    final result = await resolver.resolveRiverpodAnalyssiResult();
+    final result = await resolver.resolveRiverpodAnalysisResult();
 
     final consumerWidget = result.consumerWidgetDeclarations.single;
     expect(consumerWidget, isA<ConsumerWidgetDeclaration>());
@@ -58,7 +107,7 @@ class MyConsumerWidget extends HookConsumerWidget {
   }
 }
 ''', (resolver) async {
-    final result = await resolver.resolveRiverpodAnalyssiResult();
+    final result = await resolver.resolveRiverpodAnalysisResult();
 
     final consumerWidget = result.hookConsumerWidgetDeclaration.single;
     expect(consumerWidget, isA<HookConsumerWidgetDeclaration>());
@@ -109,7 +158,7 @@ class MyConsumerState extends ConsumerState<MyConsumerWidget> {
   }
 }
 ''', (resolver) async {
-    final result = await resolver.resolveRiverpodAnalyssiResult();
+    final result = await resolver.resolveRiverpodAnalysisResult();
 
     final consumerWidget = result.consumerStatefulWidgetDeclarations.single;
     final consumerState = result.consumerStateDeclarations.single;
@@ -167,7 +216,7 @@ class MyConsumerState extends ConsumerState<MyConsumerWidget> {
   }
 }
 ''', (resolver) async {
-    final result = await resolver.resolveRiverpodAnalyssiResult();
+    final result = await resolver.resolveRiverpodAnalysisResult();
 
     final consumerWidget = result.statefulHookConsumerWidgetDeclaration.single;
     final consumerState = result.consumerStateDeclarations.single;

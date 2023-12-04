@@ -1,9 +1,70 @@
 import 'package:riverpod_analyzer_utils/src/riverpod_ast.dart';
 import 'package:test/test.dart';
 
-import 'analyser_test_utils.dart';
+import 'analyzer_test_utils.dart';
 
 void main() {
+  testSource('Parses element.isFamily', source: r'''
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+@riverpod
+T generic<T>(GenericRef ref) => throw UnimplementedError();
+
+@riverpod
+class GenericClass<T> extends _$GenericClass<T> {
+  @override
+  T build() => throw UnimplementedError();
+}
+
+@riverpod
+int value(ValueRef ref) => throw UnimplementedError();
+
+@riverpod
+class ValueClass extends _$ValueClass {
+  @override
+  int build() => throw UnimplementedError();
+}
+
+@riverpod
+int parametrized(ParametrizedRef ref, int id) => throw UnimplementedError();
+
+@riverpod
+class ParametrizedClass extends _$ParametrizedClass {
+  @override
+  int build(int id) => throw UnimplementedError();
+}
+''', (resolver) async {
+    final result = await resolver.resolveRiverpodAnalysisResult();
+
+    final generic = result.generatorProviderDeclarations.singleWhere(
+      (e) => e.name.toString() == 'generic',
+    );
+    final genericClass = result.generatorProviderDeclarations.singleWhere(
+      (e) => e.name.toString() == 'GenericClass',
+    );
+    final value = result.generatorProviderDeclarations.singleWhere(
+      (e) => e.name.toString() == 'value',
+    );
+    final valueClass = result.generatorProviderDeclarations.singleWhere(
+      (e) => e.name.toString() == 'ValueClass',
+    );
+    final parametrized = result.generatorProviderDeclarations.singleWhere(
+      (e) => e.name.toString() == 'parametrized',
+    );
+    final parametrizedClass = result.generatorProviderDeclarations.singleWhere(
+      (e) => e.name.toString() == 'ParametrizedClass',
+    );
+
+    expect(generic.providerElement.isFamily, true);
+    expect(genericClass.providerElement.isFamily, true);
+
+    expect(value.providerElement.isFamily, false);
+    expect(valueClass.providerElement.isFamily, false);
+
+    expect(parametrized.providerElement.isFamily, true);
+    expect(parametrizedClass.providerElement.isFamily, true);
+  });
+
   testSource('Parses Raw types', source: '''
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -16,9 +77,7 @@ Future<int> value2(Value2Ref ref) async => 0;
 @riverpod
 Future<Raw<int>> value3(Value3Ref ref) async => 0;
 ''', (resolver) async {
-    final result = await resolver.resolveRiverpodAnalyssiResult(
-      ignoreErrors: true,
-    );
+    final result = await resolver.resolveRiverpodAnalysisResult();
 
     final value = result.functionalProviderDeclarations.singleWhere(
       (e) => e.name.toString() == 'value',
@@ -44,7 +103,7 @@ Future<Raw<int>> value3(Value3Ref ref) async => 0;
     expect(value2.exposedTypeNode.dartType.toString(), 'AsyncValue<int>');
     expect(value2.valueTypeNode.toString(), 'int');
     expect(value2.createdTypeNode!.type!.isRaw, false);
-    expect(value2.createdTypeDisplayString, 'Future<int>');
+    expect(value2.createdTypeDisplayString, 'FutureOr<int>');
     expect(value2.exposedTypeDisplayString, 'AsyncValue<int>');
     expect(value2.valueTypeDisplayString, 'int');
     expect(value2.createdTypeNode!.type!.isRaw, false);
@@ -54,7 +113,7 @@ Future<Raw<int>> value3(Value3Ref ref) async => 0;
     expect(value3.exposedTypeNode.source, 'AsyncValue<Raw<int>>');
     expect(value3.exposedTypeNode.dartType.toString(), 'AsyncValue<int>');
     expect(value3.valueTypeNode.toString(), 'Raw<int>');
-    expect(value3.createdTypeDisplayString, 'Future<Raw<int>>');
+    expect(value3.createdTypeDisplayString, 'FutureOr<Raw<int>>');
     expect(value3.exposedTypeDisplayString, 'AsyncValue<Raw<int>>');
     expect(value3.valueTypeDisplayString, 'Raw<int>');
     expect(value3.createdTypeNode!.type!.isRaw, false);
@@ -73,9 +132,7 @@ int scoped() => 0;
 @riverpod
 int plain(PlainRef ref) => 0;
 ''', (resolver) async {
-    final result = await resolver.resolveRiverpodAnalyssiResult(
-      ignoreErrors: true,
-    );
+    final result = await resolver.resolveRiverpodAnalysisResult();
 
     final needsOverride = result.functionalProviderDeclarations.singleWhere(
       (e) => e.name.toString() == 'needsOverride',
@@ -116,7 +173,7 @@ int fifth(FifthRef ref) => 0;
 @Riverpod(dependencies: [int])
 int sixth(SixthRef ref) => 0;
 ''', (resolver) async {
-    final result = await resolver.resolveRiverpodAnalyssiResult(
+    final result = await resolver.resolveRiverpodAnalysisResult(
       ignoreErrors: true,
     );
 
@@ -179,7 +236,7 @@ class Counter extends _$Counter {
   int build() => 0;
 }
 ''', (resolver) async {
-    final result = await resolver.resolveRiverpodAnalyssiResult();
+    final result = await resolver.resolveRiverpodAnalysisResult();
     final providers = result.generatorProviderDeclarations;
 
     expect(providers, [
@@ -227,7 +284,7 @@ class KeepAliveNotifier extends _$KeepAliveNotifier {
   int build() => 0;
 }
 ''', (resolver) async {
-    final result = await resolver.resolveRiverpodAnalyssiResult();
+    final result = await resolver.resolveRiverpodAnalysisResult();
     final autoDispose = result.generatorProviderDeclarations.takeAll([
       'autoDispose',
       'AutoDisposeNotifierTest',
@@ -329,7 +386,7 @@ class FamilyClass extends _$FamilyClass {
   int build() => 0;
 }
 ''', (resolver) async {
-    final result = await resolver.resolveRiverpodAnalyssiResult();
+    final result = await resolver.resolveRiverpodAnalysisResult();
     final roots = result.generatorProviderDeclarations.takeAll([
       'root',
       'RootNotifier',

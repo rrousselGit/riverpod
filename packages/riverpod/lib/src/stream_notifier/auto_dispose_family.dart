@@ -7,9 +7,11 @@ abstract class AutoDisposeFamilyStreamNotifier<State, Arg>
   late final Arg arg;
 
   @override
-  void _setElement(ProviderElementBase<AsyncValue<State>> element) {
+  void _setElement(ProviderElementBase<AsyncValue<State>>? element) {
     super._setElement(element);
-    arg = element.origin.argument as Arg;
+    if (element != null) {
+      arg = element.origin.argument as Arg;
+    }
   }
 
   /// {@macro riverpod.StreamNotifier.build}
@@ -97,7 +99,7 @@ class AutoDisposeStreamNotifierProviderFamily<
           debugGetCreateSourceHash: null,
         );
 
-  /// {@macro riverpod.overridewith}
+  /// {@macro riverpod.override_with}
   Override overrideWith(NotifierT Function() create) {
     return FamilyOverrideImpl<AsyncValue<T>, Arg,
         AutoDisposeFamilyStreamNotifierProvider<NotifierT, T, Arg>>(

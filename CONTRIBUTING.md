@@ -26,7 +26,7 @@ There are a few ways to contribute to the Riverpod ecosystem:
   on bug fixes instead.
 
 **It is highly encouraged to make an issue before creating your PR**  
-This is especially crutial for larger work.  
+This is especially crucial for larger work.  
 You do not need to spend a lot of time making that issue. The important is:
 
 - Mention that you want to contribute
@@ -44,14 +44,14 @@ Riverpod's documentation uses [Docusaurus](https://docusaurus.io/fr/docs).
 This framework is responsible for various features of the website. Check out
 its documentation, as it may have the answer to your questions.
 
-Documentations are written in "mdx", which is a combination of Markdown and JSX.  
+Documentation is written in "mdx", which is a combination of Markdown and JSX.  
 If you are familiar with Markdown, this should be reasonably easy to pick up.
 Feel free to look at existing pages to see how they work.
 
 ### Installing the website locally
 
 The docs uses [node](https://nodejs.org/fr) and [yarn](https://yarnpkg.com/).  
-You will need to install install both and run:
+You will need to install both and run:
 
 ```sh
 yarn install
@@ -71,20 +71,20 @@ Riverpod supports multiple languages.
 To add new languages, it is recommended to follow the [i18n](https://docusaurus.io/fr/docs/i18n/introduction)
 documentation of Docusaurus.
 
-The english documentation is hosted in [`/website/docs`](https://github.com/rrousselGit/riverpod/tree/master/website/docs).  
+The English documentation is hosted in [`/website/docs`](https://github.com/rrousselGit/riverpod/tree/master/website/docs).  
 Translations are hosted in [`/website/i18n`](https://github.com/rrousselGit/riverpod/tree/master/website/i18n).
 
 ### Working on packages
 
-### Updating english docs
+### Updating English docs
 
 English docs are the source of truth for Riverpod docs. As such, translations
 may get "out of date" for a period of time.  
 To make it obvious for users that a translated page may be out of date, Riverpod's
 website supports showing a warning banner at the top of the translation pages.
 
-To support in a maintainable way, when editing english docs in a way that requires
-translations to be updated, the english's "version number" needs to be bumped.  
+To support in a maintainable way, when editing English docs in a way that requires
+translations to be updated, the English's "version number" needs to be bumped.  
 **This does not need to be done when fixing typos**
 
 To bump the version number of a page, you should either add or update

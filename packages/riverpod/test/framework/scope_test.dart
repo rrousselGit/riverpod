@@ -74,7 +74,7 @@ Future<void> main() async {
     final mid = createContainer(
       parent: root,
       overrides: [
-        a.overrideWithProvider((argument) => Provider((ref) => argument + 10)),
+        a.overrideWith((ref, argument) => argument + 10),
       ],
     );
 
@@ -83,7 +83,7 @@ Future<void> main() async {
     final child = createContainer(
       parent: mid,
       overrides: [
-        a.overrideWithProvider((argument) => Provider((ref) => argument + 20)),
+        a.overrideWith((ref, argument) => argument + 20),
       ],
     );
 
@@ -100,14 +100,14 @@ Future<void> main() async {
     final mid = createContainer(
       parent: root,
       overrides: [
-        a.overrideWithProvider((argument) => Provider((ref) => argument + 10)),
+        a.overrideWith((ref, argument) => argument + 10),
       ],
     );
 
     final child = createContainer(
       parent: mid,
       overrides: [
-        a.overrideWithProvider((argument) => Provider((ref) => argument + 20)),
+        a.overrideWith((ref, argument) => argument + 20),
       ],
     );
 
@@ -125,11 +125,9 @@ Future<void> main() async {
     final mid = createContainer(
       parent: root,
       overrides: [
-        a.overrideWithProvider((argument) {
-          return Provider((ref) {
-            overrideBuildCount++;
-            return argument + 10;
-          });
+        a.overrideWith((ref, argument) {
+          overrideBuildCount++;
+          return argument + 10;
         }),
       ],
     );
@@ -774,21 +772,6 @@ final b = Provider(
     });
   });
 
-  test(
-      'throw if non-family overrideWithProvider returns a provider with dependencies',
-      () {
-    final provider = Provider<int>((ref) => 0);
-    final a = Provider((ref) => 0);
-
-    expect(
-      // ignore: deprecated_member_use_from_same_package
-      () => provider.overrideWithProvider(
-        Provider((ref) => 0, dependencies: [a]),
-      ),
-      throwsA(isA<AssertionError>()),
-    );
-  });
-
   test('does not auto-scope provider overrides', () {
     final a = Provider((ref) => 0);
     final another = Provider((ref) => 42);
@@ -798,8 +781,7 @@ final b = Provider(
     final root = createContainer(
       overrides: [
         b.overrideWithValue(21),
-        // ignore: deprecated_member_use_from_same_package
-        c.overrideWithProvider(Provider((ref) => ref.watch(another) + 10)),
+        c.overrideWith((ref) => ref.watch(another) + 10),
       ],
     );
     final container = createContainer(
@@ -825,8 +807,8 @@ final b = Provider(
 
     final root = createContainer(
       overrides: [
-        b.overrideWithProvider(
-          (value) => Provider((ref) => ref.watch(another) + value),
+        b.overrideWith(
+          (ref, value) => ref.watch(another) + value,
         ),
       ],
     );

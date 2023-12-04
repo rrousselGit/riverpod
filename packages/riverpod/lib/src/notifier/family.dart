@@ -8,12 +8,14 @@ abstract class FamilyNotifier<State, Arg> extends BuildlessNotifier<State> {
   late final Arg arg;
 
   @override
-  void _setElement(ProviderElementBase<State> element) {
+  void _setElement(ProviderElementBase<State>? element) {
     super._setElement(element);
-    arg = element.origin.argument as Arg;
+    if (element != null) {
+      arg = element.origin.argument as Arg;
+    }
   }
 
-  /// {@macro riverpod.asyncnotifier.build}
+  /// {@macro riverpod.async_notifier.build}
   @visibleForOverriding
   State build(Arg arg);
 }
@@ -36,12 +38,12 @@ class FamilyNotifierProviderImpl<NotifierT extends NotifierBase<T>, T, Arg>
     super._createNotifier, {
     super.name,
     super.dependencies,
-    @Deprecated('Will be removed in 3.0.0') super.from,
-    @Deprecated('Will be removed in 3.0.0') super.argument,
-    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          from: null,
+          argument: null,
+          debugGetCreateSourceHash: null,
         );
 
   /// An implementation detail of Riverpod
@@ -106,7 +108,7 @@ class NotifierProviderFamily<NotifierT extends FamilyNotifier<T, Arg>, T, Arg>
     required super.debugGetCreateSourceHash,
   }) : super(providerFactory: NotifierFamilyProvider.internal);
 
-  /// {@macro riverpod.overridewith}
+  /// {@macro riverpod.override_with}
   Override overrideWith(NotifierT Function() create) {
     return FamilyOverrideImpl<T, Arg,
         NotifierFamilyProvider<NotifierT, T, Arg>>(

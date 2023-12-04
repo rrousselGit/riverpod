@@ -1,6 +1,6 @@
 part of '../state_notifier_provider.dart';
 
-/// {@macro riverpod.providerrefbase}
+/// {@macro riverpod.provider_ref_base}
 abstract class StateNotifierProviderRef<NotifierT extends StateNotifier<T>, T>
     implements Ref<T> {
   /// The [StateNotifier] currently exposed by this provider.
@@ -81,12 +81,12 @@ class StateNotifierProvider<NotifierT extends StateNotifier<T>, T>
     this._createFn, {
     super.name,
     super.dependencies,
-    @Deprecated('Will be removed in 3.0.0') super.from,
-    @Deprecated('Will be removed in 3.0.0') super.argument,
-    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          from: null,
+          argument: null,
+          debugGetCreateSourceHash: null,
         );
 
   /// An implementation detail of Riverpod
@@ -123,7 +123,7 @@ class StateNotifierProvider<NotifierT extends StateNotifier<T>, T>
   @override
   late final AlwaysAliveRefreshable<NotifierT> notifier = _notifier(this);
 
-  /// {@macro riverpod.overridewith}
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     Create<NotifierT, StateNotifierProviderRef<NotifierT, T>> create,
   ) {
@@ -222,7 +222,7 @@ class StateNotifierProviderFamily<NotifierT extends StateNotifier<T>, T, Arg>
           debugGetCreateSourceHash: null,
         );
 
-  /// {@macro riverpod.overridewith}
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     NotifierT Function(StateNotifierProviderRef<NotifierT, T> ref, Arg arg)
         create,

@@ -1,3 +1,39 @@
+## 3.0.0-dev.3 - 2023-11-27
+
+- `riverpod` upgraded to `3.0.0-dev.3`
+
+## 3.0.0-dev.2 - 2023-11-20
+
+- `riverpod` upgraded to `3.0.0-dev.2`
+
+## 3.0.0-dev.1 - 2023-11-20
+
+- `riverpod` upgraded to `3.0.0-dev.1`
+
+## 3.0.0-dev.0 - 2023-10-29
+
+- `riverpod` upgraded to `3.0.0-dev.0`
+
+## 2.3.3 - 2023-11-27
+
+- `riverpod` upgraded to `2.4.9`
+
+## 2.3.2 - 2023-11-20
+
+- `riverpod` upgraded to `2.4.8`
+
+## 2.3.1 - 2023-11-20
+
+- `riverpod` upgraded to `2.4.7`
+
+## 2.3.1 - 2023-11-13
+
+- `riverpod` upgraded to `2.4.6`
+
+## 2.3.0 - 2023-10-28
+
+- Exported internal `FamilyOverride` API, for use in generated code.
+
 ## 2.2.1 - 2023-10-15
 
 - `riverpod` upgraded to `2.4.4`
@@ -60,7 +96,7 @@
 
 ## 2.0.0
 
-- Export necessary utilites for providers returning a Stream.
+- Export necessary utilities for providers returning a Stream.
 - Upgraded riverpod dependency
 
 ## 1.2.1

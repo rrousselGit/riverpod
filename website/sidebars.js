@@ -44,7 +44,7 @@ module.exports = {
       type: "category",
       label: "Case studies",
       collapsible: false,
-      items: ["case_studies/pull_to_refresh"],
+      items: ["case_studies/pull_to_refresh", "case_studies/cancel"],
     },
     // {
     //   type: "link",
@@ -288,6 +288,11 @@ module.exports = {
           label: "Clean Architecture demonstration with Riverpod",
           href: "https://github.com/Uuttssaavv/flutter-clean-architecture-riverpod",
         },
+        {
+          type: "link",
+          label: "Delivery App with Google Maps and Live Tracking",
+          href: "https://github.com/AhmedLSayed9/deliverzler",
+        },
       ],
     },
 
@@ -299,7 +304,7 @@ module.exports = {
 
     {
       type: "category",
-      label: "Concepts (old)",
+      label: "Concepts 🚧",
       items: [
         "concepts/providers",
         "concepts/reading",
@@ -321,7 +326,7 @@ module.exports = {
 
     {
       type: "category",
-      label: "All Providers (old)",
+      label: "All Providers 🚧",
       items: [
         "providers/provider",
         "providers/notifier_provider",
@@ -335,7 +340,7 @@ module.exports = {
 
     {
       type: "category",
-      label: "Guides (old)",
+      label: "Guides 🚧",
       items: ["cookbooks/testing"],
     },
   ],

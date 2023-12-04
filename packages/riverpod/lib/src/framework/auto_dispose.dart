@@ -6,16 +6,6 @@ mixin AutoDisposeProviderElementMixin<State> on ProviderElementBase<State>
     implements AutoDisposeRef<State> {
   List<KeepAliveLink>? _keepAliveLinks;
 
-  bool _maintainState = false;
-  @Deprecated('Use `keepAlive()` instead')
-  @override
-  bool get maintainState => _maintainState;
-  @override
-  set maintainState(bool value) {
-    _maintainState = value;
-    if (!value) mayNeedDispose();
-  }
-
   @override
   KeepAliveLink keepAlive() {
     final links = _keepAliveLinks ??= [];
@@ -35,9 +25,8 @@ mixin AutoDisposeProviderElementMixin<State> on ProviderElementBase<State>
   void mayNeedDispose() {
     final links = _keepAliveLinks;
 
-    // ignore: deprecated_member_use_from_same_package
-    if (!maintainState && !hasListeners && (links == null || links.isEmpty)) {
-      _container._scheduler.scheduleProviderDispose(this);
+    if (!hasListeners && (links == null || links.isEmpty)) {
+      _container.scheduler.scheduleProviderDispose(this);
     }
   }
 

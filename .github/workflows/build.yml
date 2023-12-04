@@ -5,12 +5,6 @@ on:
     paths-ignore:
       - "**.md"
       - "**.mdx"
-  push:
-    branches:
-      - master
-    paths-ignore:
-      - "**.md"
-      - "**.mdx"
 
   schedule:
     # runs the CI everyday at 10AM
@@ -27,7 +21,6 @@ jobs:
     strategy:
       matrix:
         channel:
-          - stable
           - master
         package_path:
           - examples/counter

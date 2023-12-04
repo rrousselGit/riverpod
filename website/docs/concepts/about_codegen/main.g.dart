@@ -36,9 +36,23 @@ class _SystemHash {
 const fetchUserProvider = FetchUserFamily();
 
 /// See also [fetchUser].
-class FetchUserFamily extends Family<AsyncValue<User>> {
+class FetchUserFamily extends Family {
   /// See also [fetchUser].
   const FetchUserFamily();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'fetchUserProvider';
 
   /// See also [fetchUser].
   FetchUserProvider call({
@@ -59,19 +73,26 @@ class FetchUserFamily extends Family<AsyncValue<User>> {
     );
   }
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(FutureOr<User> Function(FetchUserRef ref) create) {
+    return _$FetchUserFamilyOverride(this, create);
+  }
+}
+
+class _$FetchUserFamilyOverride implements FamilyOverride {
+  _$FetchUserFamilyOverride(this.overriddenFamily, this.create);
+
+  final FutureOr<User> Function(FetchUserRef ref) create;
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+  final FetchUserFamily overriddenFamily;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'fetchUserProvider';
+  FetchUserProvider getProviderOverride(
+    covariant FetchUserProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [fetchUser].
@@ -96,7 +117,7 @@ class FetchUserProvider extends AutoDisposeFutureProvider<User> {
         );
 
   FetchUserProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -109,7 +130,7 @@ class FetchUserProvider extends AutoDisposeFutureProvider<User> {
 
   @override
   Override overrideWith(
-    FutureOr<User> Function(FetchUserRef provider) create,
+    FutureOr<User> Function(FetchUserRef ref) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -135,6 +156,20 @@ class FetchUserProvider extends AutoDisposeFutureProvider<User> {
   @override
   AutoDisposeFutureProviderElement<User> createElement() {
     return _FetchUserProviderElement(this);
+  }
+
+  FetchUserProvider _copyWith(
+    FutureOr<User> Function(FetchUserRef ref) create,
+  ) {
+    return FetchUserProvider._internal(
+      (ref) => create(ref as FetchUserRef),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      userId: userId,
+    );
   }
 
   @override

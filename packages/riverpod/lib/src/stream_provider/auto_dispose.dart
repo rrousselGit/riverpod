@@ -1,24 +1,24 @@
 part of '../stream_provider.dart';
 
-/// {@macro riverpod.providerrefbase}
+/// {@macro riverpod.provider_ref_base}
 abstract class AutoDisposeStreamProviderRef<State>
     extends StreamProviderRef<State>
     implements AutoDisposeRef<AsyncValue<State>> {}
 
-/// {@macro riverpod.streamprovider}
+/// {@macro riverpod.stream_provider}
 class AutoDisposeStreamProvider<T> extends _StreamProviderBase<T>
     with AsyncSelector<T> {
-  /// {@macro riverpod.streamprovider}
+  /// {@macro riverpod.stream_provider}
   AutoDisposeStreamProvider(
     this._createFn, {
     super.name,
     super.dependencies,
-    @Deprecated('Will be removed in 3.0.0') super.from,
-    @Deprecated('Will be removed in 3.0.0') super.argument,
-    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          from: null,
+          argument: null,
+          debugGetCreateSourceHash: null,
         );
 
   /// An implementation detail of Riverpod
@@ -49,14 +49,7 @@ class AutoDisposeStreamProvider<T> extends _StreamProviderBase<T>
   @override
   late final Refreshable<Future<T>> future = _future(this);
 
-  @Deprecated(
-    '.stream will be removed in 3.0.0. As a replacement, either listen to the '
-    'provider itself (AsyncValue) or .future.',
-  )
-  @override
-  late final Refreshable<Stream<T>> stream = _stream(this);
-
-  /// {@macro riverpod.overridewith}
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     Create<Stream<T>, AutoDisposeStreamProviderRef<T>> create,
   ) {
@@ -104,7 +97,7 @@ class AutoDisposeStreamProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
           debugGetCreateSourceHash: null,
         );
 
-  /// {@macro riverpod.overridewith}
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     Stream<R> Function(AutoDisposeStreamProviderRef<R> ref, Arg arg) create,
   ) {

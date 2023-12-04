@@ -7,3 +7,4 @@ targets:
             # Those files voluntarily have the generation fail
             - test/lints/notifier_build/notifier_build.dart
             - test/lints/notifier_build/fix/notifier_build.dart
+            - test/lints/functional_ref/failing_functional_ref.dart

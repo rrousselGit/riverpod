@@ -1,3 +1,52 @@
+## 3.0.0-dev.11 - 2023-11-27
+
+- `riverpod_annotation` upgraded to `3.0.0-dev.3`
+- `riverpod` upgraded to `3.0.0-dev.3`
+
+## 3.0.0-dev.10 - 2023-11-20
+
+- `riverpod_annotation` upgraded to `3.0.0-dev.2`
+- `riverpod` upgraded to `3.0.0-dev.2`
+
+## 3.0.0-dev.9 - 2023-11-20
+
+- Fix crash when encountering classes with a `ProviderBase` field.
+
+## 3.0.0-dev.8 - 2023-10-30
+
+- `riverpod_analyzer_utils` upgraded to `1.0.0-dev.0`
+
+## 3.0.0-dev.7 - 2023-10-29
+
+- Providers can now be generic:
+
+  ```dart
+  @riverpod
+  List<T> example<T extends num>(ExampleRef<T> ref) {
+    return <T>[];
+  }
+
+  @riverpod
+  class ClassExample<T> extends _$ClassExample<T> {
+    @override
+    List<T> build() => <T>[];
+  }
+  ```
+
+  Specifying type parameters works the same as specifying arguments, and
+  make the generated provider a "function":
+
+  ```dart
+  ref.watch(example<int>());
+  ```
+
+- Upgraded to use Riverpod 3.0
+- Fixed `family.overrideWith` missing
+
+## 3.0.0-dev.5 - 2023-10-21
+
+- `riverpod_analyzer_utils` upgraded to `0.4.2`
+
 ## 3.0.0-dev.4 - 2023-10-15
 
 - Annotating a provider with `@deprecated` and a few other annotations
@@ -31,6 +80,32 @@ This comes with a few minor restrictions:
 
 - **Breaking**: Arguments of the form `fn(void myParameter())`
   are no-longer supported. Instead use `fn(void Function() myParameter)`.
+
+## 2.3.9 - 2023-11-27
+
+- `riverpod_annotation` upgraded to `2.3.3`
+- `riverpod` upgraded to `2.4.9`
+
+## 2.3.8 - 2023-11-20
+
+- `riverpod_annotation` upgraded to `2.3.2`
+- `riverpod` upgraded to `2.4.8`
+
+## 2.3.7 - 2023-11-20
+
+- Fix crash when encountering classes with a `ProviderBase` field.
+
+## 2.3.6 - 2023-11-13
+
+Fix typos and internal changes
+
+## 2.3.5 - 2023-10-21
+
+- `riverpod_analyzer_utils` upgraded to `0.4.1`
+
+## 2.3.4 - 2023-10-19 (retracted)
+
+- `riverpod_analyzer_utils` upgraded to `0.4.1`
 
 ## 2.3.3 - 2023-09-27
 
@@ -151,7 +226,7 @@ Upgrade Riverpod to latest
 
 ## 1.1.0
 
-- The generated hash function of providers is now correctluy private (thanks to @westito)
+- The generated hash function of providers is now correctly private (thanks to @westito)
 - Allow customizing the name of the generated providers (thanks to @trejdych)
 - Update dependencies.
 
@@ -182,3 +257,5 @@ Fix version conflict with Riverpod
 ## 1.0.0
 
 Initial release
+
+<!-- cSpell:ignoreRegExp @\w+ -->

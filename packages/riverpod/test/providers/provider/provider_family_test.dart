@@ -26,14 +26,12 @@ void main() {
         expect(root.getAllProviderElements(), isEmpty);
       });
 
-      test('when using provider.overrideWithProvider', () {
+      test('when using provider.overrideWith', () {
         final provider = Provider.family<int, int>((ref, _) => 0);
         final root = createContainer();
         final container = createContainer(
           parent: root,
-          overrides: [
-            provider.overrideWithProvider((value) => Provider((ref) => 42)),
-          ],
+          overrides: [provider.overrideWith((ref, value) => 42)],
         );
 
         expect(root.getAllProviderElements(), isEmpty);

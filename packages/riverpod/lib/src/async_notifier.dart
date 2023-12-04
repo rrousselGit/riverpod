@@ -10,6 +10,7 @@ import 'listenable.dart';
 import 'notifier.dart';
 import 'pragma.dart';
 import 'result.dart';
+import 'run_guarded.dart';
 import 'stream_provider.dart';
 
 part 'async_notifier/auto_dispose.dart';
@@ -27,10 +28,10 @@ part 'stream_notifier/family.dart';
 /// Not meant for public consumption.
 @internal
 abstract class AsyncNotifierBase<State> {
-  AsyncNotifierProviderElementBase<AsyncNotifierBase<State>, State>
+  AsyncNotifierProviderElementBase<AsyncNotifierBase<State>, State>?
       get _element;
 
-  void _setElement(ProviderElementBase<AsyncValue<State>> element);
+  void _setElement(ProviderElementBase<AsyncValue<State>>? element);
 
   /// The value currently exposed by this [AsyncNotifier].
   ///
@@ -45,15 +46,21 @@ abstract class AsyncNotifierBase<State> {
   @visibleForTesting
   @protected
   AsyncValue<State> get state {
-    _element.flush();
+    final element = _element;
+    if (element == null) throw StateError(uninitializedElementError);
+
+    element.flush();
     // ignore: invalid_use_of_protected_member
-    return _element.requireState;
+    return element.requireState;
   }
 
   @visibleForTesting
   @protected
   set state(AsyncValue<State> newState) {
-    _element.state = newState;
+    final element = _element;
+    if (element == null) throw StateError(uninitializedElementError);
+
+    element.state = newState;
   }
 
   /// The [Ref] from the provider associated with this [AsyncNotifier].
@@ -64,7 +71,7 @@ abstract class AsyncNotifierBase<State> {
   /// Obtains a [Future] that resolves with the first [state] value that is not
   /// [AsyncLoading].
   ///
-  /// This future will not necesserily wait for [AsyncNotifier.build] to complete.
+  /// This future will not necessarily wait for [AsyncNotifier.build] to complete.
   /// If [state] is modified before [AsyncNotifier.build] completes, then [future]
   /// will resolve with that new [state] value.
   ///
@@ -74,8 +81,11 @@ abstract class AsyncNotifierBase<State> {
   @visibleForTesting
   @protected
   Future<State> get future {
-    _element.flush();
-    return _element.futureNotifier.value;
+    final element = _element;
+    if (element == null) throw StateError(uninitializedElementError);
+
+    element.flush();
+    return element.futureNotifier.value;
   }
 
   /// A function to update [state] from its previous value, while
@@ -95,7 +105,7 @@ abstract class AsyncNotifierBase<State> {
   @visibleForTesting
   @protected
   Future<State> update(
-    FutureOr<State> Function(State) cb, {
+    FutureOr<State> Function(State previousState) cb, {
     FutureOr<State> Function(Object err, StackTrace stackTrace)? onError,
   }) async {
     // TODO cancel on rebuild?
@@ -183,7 +193,7 @@ abstract class AsyncNotifierProviderBase<NotifierT extends AsyncNotifierBase<T>,
   ///
   /// ```dart
   /// Button(
-  ///   onTap: () => ref.read(stateNotifierProvider.notifer).increment(),
+  ///   onTap: () => ref.read(stateNotifierProvider.notifier).increment(),
   /// )
   /// ```
   ///

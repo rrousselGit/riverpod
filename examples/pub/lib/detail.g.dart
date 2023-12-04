@@ -37,9 +37,23 @@ class _SystemHash {
 const fetchPackageDetailsProvider = FetchPackageDetailsFamily();
 
 /// See also [fetchPackageDetails].
-class FetchPackageDetailsFamily extends Family<AsyncValue<Package>> {
+class FetchPackageDetailsFamily extends Family {
   /// See also [fetchPackageDetails].
   const FetchPackageDetailsFamily();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'fetchPackageDetailsProvider';
 
   /// See also [fetchPackageDetails].
   FetchPackageDetailsProvider call({
@@ -60,19 +74,27 @@ class FetchPackageDetailsFamily extends Family<AsyncValue<Package>> {
     );
   }
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(
+      FutureOr<Package> Function(FetchPackageDetailsRef ref) create) {
+    return _$FetchPackageDetailsFamilyOverride(this, create);
+  }
+}
+
+class _$FetchPackageDetailsFamilyOverride implements FamilyOverride {
+  _$FetchPackageDetailsFamilyOverride(this.overriddenFamily, this.create);
+
+  final FutureOr<Package> Function(FetchPackageDetailsRef ref) create;
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+  final FetchPackageDetailsFamily overriddenFamily;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'fetchPackageDetailsProvider';
+  FetchPackageDetailsProvider getProviderOverride(
+    covariant FetchPackageDetailsProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [fetchPackageDetails].
@@ -98,7 +120,7 @@ class FetchPackageDetailsProvider extends AutoDisposeFutureProvider<Package> {
         );
 
   FetchPackageDetailsProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -111,7 +133,7 @@ class FetchPackageDetailsProvider extends AutoDisposeFutureProvider<Package> {
 
   @override
   Override overrideWith(
-    FutureOr<Package> Function(FetchPackageDetailsRef provider) create,
+    FutureOr<Package> Function(FetchPackageDetailsRef ref) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -137,6 +159,20 @@ class FetchPackageDetailsProvider extends AutoDisposeFutureProvider<Package> {
   @override
   AutoDisposeFutureProviderElement<Package> createElement() {
     return _FetchPackageDetailsProviderElement(this);
+  }
+
+  FetchPackageDetailsProvider _copyWith(
+    FutureOr<Package> Function(FetchPackageDetailsRef ref) create,
+  ) {
+    return FetchPackageDetailsProvider._internal(
+      (ref) => create(ref as FetchPackageDetailsRef),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      packageName: packageName,
+    );
   }
 
   @override
@@ -204,7 +240,7 @@ abstract class _$PackageMetrics
     extends BuildlessAutoDisposeAsyncNotifier<PackageMetricsScore> {
   late final String packageName;
 
-  Future<PackageMetricsScore> build({
+  FutureOr<PackageMetricsScore> build({
     required String packageName,
   });
 }
@@ -226,7 +262,7 @@ const packageMetricsProvider = PackageMetricsFamily();
 /// is logged-in.
 ///
 /// Copied from [PackageMetrics].
-class PackageMetricsFamily extends Family<AsyncValue<PackageMetricsScore>> {
+class PackageMetricsFamily extends Family {
   /// A provider that fetches the likes count, popularity score and pub points
   /// for a given package.
   ///
@@ -235,6 +271,20 @@ class PackageMetricsFamily extends Family<AsyncValue<PackageMetricsScore>> {
   ///
   /// Copied from [PackageMetrics].
   const PackageMetricsFamily();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'packageMetricsProvider';
 
   /// A provider that fetches the likes count, popularity score and pub points
   /// for a given package.
@@ -261,19 +311,26 @@ class PackageMetricsFamily extends Family<AsyncValue<PackageMetricsScore>> {
     );
   }
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(PackageMetrics Function() create) {
+    return _$PackageMetricsFamilyOverride(this, create);
+  }
+}
+
+class _$PackageMetricsFamilyOverride implements FamilyOverride {
+  _$PackageMetricsFamilyOverride(this.overriddenFamily, this.create);
+
+  final PackageMetrics Function() create;
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+  final PackageMetricsFamily overriddenFamily;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'packageMetricsProvider';
+  PackageMetricsProvider getProviderOverride(
+    covariant PackageMetricsProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// A provider that fetches the likes count, popularity score and pub points
@@ -309,7 +366,7 @@ class PackageMetricsProvider extends AutoDisposeAsyncNotifierProviderImpl<
         );
 
   PackageMetricsProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -321,7 +378,7 @@ class PackageMetricsProvider extends AutoDisposeAsyncNotifierProviderImpl<
   final String packageName;
 
   @override
-  Future<PackageMetricsScore> runNotifierBuild(
+  FutureOr<PackageMetricsScore> runNotifierBuild(
     covariant PackageMetrics notifier,
   ) {
     return notifier.build(
@@ -356,6 +413,20 @@ class PackageMetricsProvider extends AutoDisposeAsyncNotifierProviderImpl<
   AutoDisposeAsyncNotifierProviderElement<PackageMetrics, PackageMetricsScore>
       createElement() {
     return _PackageMetricsProviderElement(this);
+  }
+
+  PackageMetricsProvider _copyWith(
+    PackageMetrics Function() create,
+  ) {
+    return PackageMetricsProvider._internal(
+      () => create()..packageName = packageName,
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      packageName: packageName,
+    );
   }
 
   @override

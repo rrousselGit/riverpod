@@ -6,6 +6,379 @@ part of 'sync.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+String _$genericHash() => r'0fda19dd377694315cdffd7414d53f98569c655c';
+
+/// Copied from Dart SDK
+class _SystemHash {
+  _SystemHash._();
+
+  static int combine(int hash, int value) {
+    // ignore: parameter_assignments
+    hash = 0x1fffffff & (hash + value);
+    // ignore: parameter_assignments
+    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
+    return hash ^ (hash >> 6);
+  }
+
+  static int finish(int hash) {
+    // ignore: parameter_assignments
+    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
+    // ignore: parameter_assignments
+    hash = hash ^ (hash >> 11);
+    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
+  }
+}
+
+/// See also [generic].
+@ProviderFor(generic)
+const genericProvider = GenericFamily();
+
+/// See also [generic].
+class GenericFamily extends Family {
+  /// See also [generic].
+  const GenericFamily();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'genericProvider';
+
+  /// See also [generic].
+  GenericProvider<T> call<T extends num>() {
+    return GenericProvider<T>();
+  }
+
+  @visibleForOverriding
+  @override
+  GenericProvider<num> getProviderOverride(
+    covariant GenericProvider<num> provider,
+  ) {
+    return call();
+  }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(
+      List<T> Function<T extends num>(GenericRef ref) create) {
+    return _$GenericFamilyOverride(this, create);
+  }
+}
+
+class _$GenericFamilyOverride implements FamilyOverride {
+  _$GenericFamilyOverride(this.overriddenFamily, this.create);
+
+  final List<T> Function<T extends num>(GenericRef ref) create;
+
+  @override
+  final GenericFamily overriddenFamily;
+
+  @override
+  GenericProvider getProviderOverride(
+    covariant GenericProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
+}
+
+/// See also [generic].
+class GenericProvider<T extends num> extends AutoDisposeProvider<List<T>> {
+  /// See also [generic].
+  GenericProvider()
+      : this._internal(
+          (ref) => generic<T>(
+            ref as GenericRef<T>,
+          ),
+          from: genericProvider,
+          name: r'genericProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$genericHash,
+          dependencies: GenericFamily._dependencies,
+          allTransitiveDependencies: GenericFamily._allTransitiveDependencies,
+        );
+
+  GenericProvider._internal(
+    super.create, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+  }) : super.internal();
+
+  @override
+  Override overrideWith(
+    List<T> Function(GenericRef<T> ref) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: GenericProvider<T>._internal(
+        (ref) => create(ref as GenericRef<T>),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+      ),
+    );
+  }
+
+  @override
+  () get argument {
+    return ();
+  }
+
+  @override
+  AutoDisposeProviderElement<List<T>> createElement() {
+    return _GenericProviderElement(this);
+  }
+
+  GenericProvider _copyWith(
+    List<T> Function<T extends num>(GenericRef ref) create,
+  ) {
+    return GenericProvider._internal(
+      (ref) => create(ref as GenericRef),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is GenericProvider && other.runtimeType == runtimeType;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, T.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin GenericRef<T extends num> on AutoDisposeProviderRef<List<T>> {}
+
+class _GenericProviderElement<T extends num>
+    extends AutoDisposeProviderElement<List<T>> with GenericRef<T> {
+  _GenericProviderElement(super.provider);
+}
+
+String _$complexGenericHash() => r'a5254e5552cd61bb8d65c018539ff2d8edfd5822';
+
+/// See also [complexGeneric].
+@ProviderFor(complexGeneric)
+const complexGenericProvider = ComplexGenericFamily();
+
+/// See also [complexGeneric].
+class ComplexGenericFamily extends Family {
+  /// See also [complexGeneric].
+  const ComplexGenericFamily();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'complexGenericProvider';
+
+  /// See also [complexGeneric].
+  ComplexGenericProvider<T, Foo> call<T extends num, Foo extends String?>({
+    required T param,
+    Foo? otherParam,
+  }) {
+    return ComplexGenericProvider<T, Foo>(
+      param: param,
+      otherParam: otherParam,
+    );
+  }
+
+  @visibleForOverriding
+  @override
+  ComplexGenericProvider<num, String?> getProviderOverride(
+    covariant ComplexGenericProvider<num, String?> provider,
+  ) {
+    return call(
+      param: provider.param,
+      otherParam: provider.otherParam,
+    );
+  }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(
+      List<T> Function<T extends num, Foo extends String?>(
+              ComplexGenericRef ref)
+          create) {
+    return _$ComplexGenericFamilyOverride(this, create);
+  }
+}
+
+class _$ComplexGenericFamilyOverride implements FamilyOverride {
+  _$ComplexGenericFamilyOverride(this.overriddenFamily, this.create);
+
+  final List<T> Function<T extends num, Foo extends String?>(
+      ComplexGenericRef ref) create;
+
+  @override
+  final ComplexGenericFamily overriddenFamily;
+
+  @override
+  ComplexGenericProvider getProviderOverride(
+    covariant ComplexGenericProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
+}
+
+/// See also [complexGeneric].
+class ComplexGenericProvider<T extends num, Foo extends String?>
+    extends AutoDisposeProvider<List<T>> {
+  /// See also [complexGeneric].
+  ComplexGenericProvider({
+    required T param,
+    Foo? otherParam,
+  }) : this._internal(
+          (ref) => complexGeneric<T, Foo>(
+            ref as ComplexGenericRef<T, Foo>,
+            param: param,
+            otherParam: otherParam,
+          ),
+          from: complexGenericProvider,
+          name: r'complexGenericProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$complexGenericHash,
+          dependencies: ComplexGenericFamily._dependencies,
+          allTransitiveDependencies:
+              ComplexGenericFamily._allTransitiveDependencies,
+          param: param,
+          otherParam: otherParam,
+        );
+
+  ComplexGenericProvider._internal(
+    super.create, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.param,
+    required this.otherParam,
+  }) : super.internal();
+
+  final T param;
+  final Foo? otherParam;
+
+  @override
+  Override overrideWith(
+    List<T> Function(ComplexGenericRef<T, Foo> ref) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: ComplexGenericProvider<T, Foo>._internal(
+        (ref) => create(ref as ComplexGenericRef<T, Foo>),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        param: param,
+        otherParam: otherParam,
+      ),
+    );
+  }
+
+  @override
+  ({
+    T param,
+    Foo? otherParam,
+  }) get argument {
+    return (
+      param: param,
+      otherParam: otherParam,
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<List<T>> createElement() {
+    return _ComplexGenericProviderElement(this);
+  }
+
+  ComplexGenericProvider _copyWith(
+    List<T> Function<T extends num, Foo extends String?>(ComplexGenericRef ref)
+        create,
+  ) {
+    return ComplexGenericProvider._internal(
+      (ref) => create(ref as ComplexGenericRef),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      param: param,
+      otherParam: otherParam,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ComplexGenericProvider &&
+        other.runtimeType == runtimeType &&
+        other.param == param &&
+        other.otherParam == otherParam;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, param.hashCode);
+    hash = _SystemHash.combine(hash, otherParam.hashCode);
+    hash = _SystemHash.combine(hash, T.hashCode);
+    hash = _SystemHash.combine(hash, Foo.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin ComplexGenericRef<T extends num, Foo extends String?>
+    on AutoDisposeProviderRef<List<T>> {
+  /// The parameter `param` of this provider.
+  T get param;
+
+  /// The parameter `otherParam` of this provider.
+  Foo? get otherParam;
+}
+
+class _ComplexGenericProviderElement<T extends num, Foo extends String?>
+    extends AutoDisposeProviderElement<List<T>> with ComplexGenericRef<T, Foo> {
+  _ComplexGenericProviderElement(super.provider);
+
+  @override
+  T get param => (origin as ComplexGenericProvider<T, Foo>).param;
+  @override
+  Foo? get otherParam => (origin as ComplexGenericProvider<T, Foo>).otherParam;
+}
+
 String _$rawFutureHash() => r'5203a56065b768023770326281618e3229ccb530';
 
 /// See also [rawFuture].
@@ -36,35 +409,28 @@ final rawStreamProvider = AutoDisposeProvider<Raw<Stream<String>>>.internal(
 typedef RawStreamRef = AutoDisposeProviderRef<Raw<Stream<String>>>;
 String _$rawFamilyFutureHash() => r'485f59512081852e51279658facc015309743864';
 
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
 /// See also [rawFamilyFuture].
 @ProviderFor(rawFamilyFuture)
 const rawFamilyFutureProvider = RawFamilyFutureFamily();
 
 /// See also [rawFamilyFuture].
-class RawFamilyFutureFamily extends Family<Raw<Future<String>>> {
+class RawFamilyFutureFamily extends Family {
   /// See also [rawFamilyFuture].
   const RawFamilyFutureFamily();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'rawFamilyFutureProvider';
 
   /// See also [rawFamilyFuture].
   RawFamilyFutureProvider call(
@@ -85,19 +451,27 @@ class RawFamilyFutureFamily extends Family<Raw<Future<String>>> {
     );
   }
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(
+      Raw<Future<String>> Function(RawFamilyFutureRef ref) create) {
+    return _$RawFamilyFutureFamilyOverride(this, create);
+  }
+}
+
+class _$RawFamilyFutureFamilyOverride implements FamilyOverride {
+  _$RawFamilyFutureFamilyOverride(this.overriddenFamily, this.create);
+
+  final Raw<Future<String>> Function(RawFamilyFutureRef ref) create;
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+  final RawFamilyFutureFamily overriddenFamily;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'rawFamilyFutureProvider';
+  RawFamilyFutureProvider getProviderOverride(
+    covariant RawFamilyFutureProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [rawFamilyFuture].
@@ -123,7 +497,7 @@ class RawFamilyFutureProvider extends AutoDisposeProvider<Raw<Future<String>>> {
         );
 
   RawFamilyFutureProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -136,7 +510,7 @@ class RawFamilyFutureProvider extends AutoDisposeProvider<Raw<Future<String>>> {
 
   @override
   Override overrideWith(
-    Raw<Future<String>> Function(RawFamilyFutureRef provider) create,
+    Raw<Future<String>> Function(RawFamilyFutureRef ref) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -160,6 +534,20 @@ class RawFamilyFutureProvider extends AutoDisposeProvider<Raw<Future<String>>> {
   @override
   AutoDisposeProviderElement<Raw<Future<String>>> createElement() {
     return _RawFamilyFutureProviderElement(this);
+  }
+
+  RawFamilyFutureProvider _copyWith(
+    Raw<Future<String>> Function(RawFamilyFutureRef ref) create,
+  ) {
+    return RawFamilyFutureProvider._internal(
+      (ref) => create(ref as RawFamilyFutureRef),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      id: id,
+    );
   }
 
   @override
@@ -197,9 +585,23 @@ String _$rawFamilyStreamHash() => r'e778e5cfcb8ab381e2412f5c73213aaa03b93012';
 const rawFamilyStreamProvider = RawFamilyStreamFamily();
 
 /// See also [rawFamilyStream].
-class RawFamilyStreamFamily extends Family<Raw<Stream<String>>> {
+class RawFamilyStreamFamily extends Family {
   /// See also [rawFamilyStream].
   const RawFamilyStreamFamily();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'rawFamilyStreamProvider';
 
   /// See also [rawFamilyStream].
   RawFamilyStreamProvider call(
@@ -220,19 +622,27 @@ class RawFamilyStreamFamily extends Family<Raw<Stream<String>>> {
     );
   }
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(
+      Raw<Stream<String>> Function(RawFamilyStreamRef ref) create) {
+    return _$RawFamilyStreamFamilyOverride(this, create);
+  }
+}
+
+class _$RawFamilyStreamFamilyOverride implements FamilyOverride {
+  _$RawFamilyStreamFamilyOverride(this.overriddenFamily, this.create);
+
+  final Raw<Stream<String>> Function(RawFamilyStreamRef ref) create;
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+  final RawFamilyStreamFamily overriddenFamily;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'rawFamilyStreamProvider';
+  RawFamilyStreamProvider getProviderOverride(
+    covariant RawFamilyStreamProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [rawFamilyStream].
@@ -258,7 +668,7 @@ class RawFamilyStreamProvider extends AutoDisposeProvider<Raw<Stream<String>>> {
         );
 
   RawFamilyStreamProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -271,7 +681,7 @@ class RawFamilyStreamProvider extends AutoDisposeProvider<Raw<Stream<String>>> {
 
   @override
   Override overrideWith(
-    Raw<Stream<String>> Function(RawFamilyStreamRef provider) create,
+    Raw<Stream<String>> Function(RawFamilyStreamRef ref) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -295,6 +705,20 @@ class RawFamilyStreamProvider extends AutoDisposeProvider<Raw<Stream<String>>> {
   @override
   AutoDisposeProviderElement<Raw<Stream<String>>> createElement() {
     return _RawFamilyStreamProviderElement(this);
+  }
+
+  RawFamilyStreamProvider _copyWith(
+    Raw<Stream<String>> Function(RawFamilyStreamRef ref) create,
+  ) {
+    return RawFamilyStreamProvider._internal(
+      (ref) => create(ref as RawFamilyStreamRef),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      id: id,
+    );
   }
 
   @override
@@ -367,11 +791,25 @@ const familyProvider = FamilyFamily();
 /// This is some documentation
 ///
 /// Copied from [family].
-class FamilyFamily extends Family<String> {
+class FamilyFamily extends Family {
   /// This is some documentation
   ///
   /// Copied from [family].
   const FamilyFamily();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'familyProvider';
 
   /// This is some documentation
   ///
@@ -406,19 +844,26 @@ class FamilyFamily extends Family<String> {
     );
   }
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(String Function(FamilyRef ref) create) {
+    return _$FamilyFamilyOverride(this, create);
+  }
+}
+
+class _$FamilyFamilyOverride implements FamilyOverride {
+  _$FamilyFamilyOverride(this.overriddenFamily, this.create);
+
+  final String Function(FamilyRef ref) create;
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+  final FamilyFamily overriddenFamily;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'familyProvider';
+  FamilyProvider getProviderOverride(
+    covariant FamilyProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// This is some documentation
@@ -459,7 +904,7 @@ class FamilyProvider extends AutoDisposeProvider<String> {
         );
 
   FamilyProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -480,7 +925,7 @@ class FamilyProvider extends AutoDisposeProvider<String> {
 
   @override
   Override overrideWith(
-    String Function(FamilyRef provider) create,
+    String Function(FamilyRef ref) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -520,6 +965,24 @@ class FamilyProvider extends AutoDisposeProvider<String> {
   @override
   AutoDisposeProviderElement<String> createElement() {
     return _FamilyProviderElement(this);
+  }
+
+  FamilyProvider _copyWith(
+    String Function(FamilyRef ref) create,
+  ) {
+    return FamilyProvider._internal(
+      (ref) => create(ref as FamilyRef),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      first: first,
+      second: second,
+      third: third,
+      fourth: fourth,
+      fifth: fifth,
+    );
   }
 
   @override
@@ -606,6 +1069,166 @@ final generatedProvider = AutoDisposeProvider<String>.internal(
 );
 
 typedef GeneratedRef = AutoDisposeProviderRef<String>;
+String _$genericClassHash() => r'671e348a5abf8e00ab06c5f247defbca8af9677b';
+
+abstract class _$GenericClass<T extends num>
+    extends BuildlessAutoDisposeNotifier<List<T>> {
+  List<T> build();
+}
+
+/// See also [GenericClass].
+@ProviderFor(GenericClass)
+const genericClassProvider = GenericClassFamily();
+
+/// See also [GenericClass].
+class GenericClassFamily extends Family {
+  /// See also [GenericClass].
+  const GenericClassFamily();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'genericClassProvider';
+
+  /// See also [GenericClass].
+  GenericClassProvider<T> call<T extends num>() {
+    return GenericClassProvider<T>();
+  }
+
+  @visibleForOverriding
+  @override
+  GenericClassProvider<num> getProviderOverride(
+    covariant GenericClassProvider<num> provider,
+  ) {
+    return call();
+  }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(GenericClass Function() create) {
+    return _$GenericClassFamilyOverride(this, create);
+  }
+}
+
+class _$GenericClassFamilyOverride implements FamilyOverride {
+  _$GenericClassFamilyOverride(this.overriddenFamily, this.create);
+
+  final GenericClass Function() create;
+
+  @override
+  final GenericClassFamily overriddenFamily;
+
+  @override
+  GenericClassProvider getProviderOverride(
+    covariant GenericClassProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
+}
+
+/// See also [GenericClass].
+class GenericClassProvider<T extends num>
+    extends AutoDisposeNotifierProviderImpl<GenericClass<T>, List<T>> {
+  /// See also [GenericClass].
+  GenericClassProvider()
+      : this._internal(
+          GenericClass<T>.new,
+          from: genericClassProvider,
+          name: r'genericClassProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$genericClassHash,
+          dependencies: GenericClassFamily._dependencies,
+          allTransitiveDependencies:
+              GenericClassFamily._allTransitiveDependencies,
+        );
+
+  GenericClassProvider._internal(
+    super.create, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+  }) : super.internal();
+
+  @override
+  List<T> runNotifierBuild(
+    covariant GenericClass<T> notifier,
+  ) {
+    return notifier.build();
+  }
+
+  @override
+  Override overrideWith(GenericClass<T> Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: GenericClassProvider<T>._internal(
+        () => create(),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+      ),
+    );
+  }
+
+  @override
+  () get argument {
+    return ();
+  }
+
+  @override
+  AutoDisposeNotifierProviderElement<GenericClass<T>, List<T>> createElement() {
+    return _GenericClassProviderElement(this);
+  }
+
+  GenericClassProvider _copyWith(
+    GenericClass Function() create,
+  ) {
+    return GenericClassProvider._internal(
+      () => create(),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is GenericClassProvider && other.runtimeType == runtimeType;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, T.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin GenericClassRef<T extends num>
+    on AutoDisposeNotifierProviderRef<List<T>> {}
+
+class _GenericClassProviderElement<T extends num>
+    extends AutoDisposeNotifierProviderElement<GenericClass<T>, List<T>>
+    with GenericClassRef<T> {
+  _GenericClassProviderElement(super.provider);
+}
+
 String _$rawFutureClassHash() => r'bf66f1cdbd99118b8845d206e6a2611b3101f45c';
 
 /// See also [RawFutureClass].
@@ -655,9 +1278,23 @@ abstract class _$RawFamilyFutureClass
 const rawFamilyFutureClassProvider = RawFamilyFutureClassFamily();
 
 /// See also [RawFamilyFutureClass].
-class RawFamilyFutureClassFamily extends Family<Raw<Future<String>>> {
+class RawFamilyFutureClassFamily extends Family {
   /// See also [RawFamilyFutureClass].
   const RawFamilyFutureClassFamily();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'rawFamilyFutureClassProvider';
 
   /// See also [RawFamilyFutureClass].
   RawFamilyFutureClassProvider call(
@@ -678,19 +1315,26 @@ class RawFamilyFutureClassFamily extends Family<Raw<Future<String>>> {
     );
   }
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(RawFamilyFutureClass Function() create) {
+    return _$RawFamilyFutureClassFamilyOverride(this, create);
+  }
+}
+
+class _$RawFamilyFutureClassFamilyOverride implements FamilyOverride {
+  _$RawFamilyFutureClassFamilyOverride(this.overriddenFamily, this.create);
+
+  final RawFamilyFutureClass Function() create;
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+  final RawFamilyFutureClassFamily overriddenFamily;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'rawFamilyFutureClassProvider';
+  RawFamilyFutureClassProvider getProviderOverride(
+    covariant RawFamilyFutureClassProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [RawFamilyFutureClass].
@@ -714,7 +1358,7 @@ class RawFamilyFutureClassProvider extends AutoDisposeNotifierProviderImpl<
         );
 
   RawFamilyFutureClassProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -759,6 +1403,20 @@ class RawFamilyFutureClassProvider extends AutoDisposeNotifierProviderImpl<
   AutoDisposeNotifierProviderElement<RawFamilyFutureClass, Raw<Future<String>>>
       createElement() {
     return _RawFamilyFutureClassProviderElement(this);
+  }
+
+  RawFamilyFutureClassProvider _copyWith(
+    RawFamilyFutureClass Function() create,
+  ) {
+    return RawFamilyFutureClassProvider._internal(
+      () => create()..id = id,
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      id: id,
+    );
   }
 
   @override
@@ -807,9 +1465,23 @@ abstract class _$RawFamilyStreamClass
 const rawFamilyStreamClassProvider = RawFamilyStreamClassFamily();
 
 /// See also [RawFamilyStreamClass].
-class RawFamilyStreamClassFamily extends Family<Raw<Stream<String>>> {
+class RawFamilyStreamClassFamily extends Family {
   /// See also [RawFamilyStreamClass].
   const RawFamilyStreamClassFamily();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'rawFamilyStreamClassProvider';
 
   /// See also [RawFamilyStreamClass].
   RawFamilyStreamClassProvider call(
@@ -830,19 +1502,26 @@ class RawFamilyStreamClassFamily extends Family<Raw<Stream<String>>> {
     );
   }
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(RawFamilyStreamClass Function() create) {
+    return _$RawFamilyStreamClassFamilyOverride(this, create);
+  }
+}
+
+class _$RawFamilyStreamClassFamilyOverride implements FamilyOverride {
+  _$RawFamilyStreamClassFamilyOverride(this.overriddenFamily, this.create);
+
+  final RawFamilyStreamClass Function() create;
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+  final RawFamilyStreamClassFamily overriddenFamily;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'rawFamilyStreamClassProvider';
+  RawFamilyStreamClassProvider getProviderOverride(
+    covariant RawFamilyStreamClassProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [RawFamilyStreamClass].
@@ -866,7 +1545,7 @@ class RawFamilyStreamClassProvider extends AutoDisposeNotifierProviderImpl<
         );
 
   RawFamilyStreamClassProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -911,6 +1590,20 @@ class RawFamilyStreamClassProvider extends AutoDisposeNotifierProviderImpl<
   AutoDisposeNotifierProviderElement<RawFamilyStreamClass, Raw<Stream<String>>>
       createElement() {
     return _RawFamilyStreamClassProviderElement(this);
+  }
+
+  RawFamilyStreamClassProvider _copyWith(
+    RawFamilyStreamClass Function() create,
+  ) {
+    return RawFamilyStreamClassProvider._internal(
+      () => create()..id = id,
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      id: id,
+    );
   }
 
   @override
@@ -1001,11 +1694,25 @@ const familyClassProvider = FamilyClassFamily();
 /// This is some documentation
 ///
 /// Copied from [FamilyClass].
-class FamilyClassFamily extends Family<String> {
+class FamilyClassFamily extends Family {
   /// This is some documentation
   ///
   /// Copied from [FamilyClass].
   const FamilyClassFamily();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'familyClassProvider';
 
   /// This is some documentation
   ///
@@ -1040,19 +1747,26 @@ class FamilyClassFamily extends Family<String> {
     );
   }
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(FamilyClass Function() create) {
+    return _$FamilyClassFamilyOverride(this, create);
+  }
+}
+
+class _$FamilyClassFamilyOverride implements FamilyOverride {
+  _$FamilyClassFamilyOverride(this.overriddenFamily, this.create);
+
+  final FamilyClass Function() create;
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+  final FamilyClassFamily overriddenFamily;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'familyClassProvider';
+  FamilyClassProvider getProviderOverride(
+    covariant FamilyClassProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// This is some documentation
@@ -1093,7 +1807,7 @@ class FamilyClassProvider
         );
 
   FamilyClassProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -1170,6 +1884,29 @@ class FamilyClassProvider
   @override
   AutoDisposeNotifierProviderElement<FamilyClass, String> createElement() {
     return _FamilyClassProviderElement(this);
+  }
+
+  FamilyClassProvider _copyWith(
+    FamilyClass Function() create,
+  ) {
+    return FamilyClassProvider._internal(
+      () => create()
+        ..first = first
+        ..second = second
+        ..third = third
+        ..fourth = fourth
+        ..fifth = fifth,
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      first: first,
+      second: second,
+      third: third,
+      fourth: fourth,
+      fifth: fifth,
+    );
   }
 
   @override

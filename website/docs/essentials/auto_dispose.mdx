@@ -11,9 +11,10 @@ import invalidateExample from "!!raw-loader!./auto_dispose/invalidate_example.da
 import keepAlive from "./auto_dispose/keep_alive";
 import cacheForExtension from "!!raw-loader!./auto_dispose/cache_for_extension.dart";
 import cacheForUsage from "./auto_dispose/cache_for_usage";
+import invalidateFamilyExample from './auto_dispose/invalidate_family_example'
 
 So far, we've seen how to create/update some state.
-But we have yet to talk about when state destruction.
+But we have yet to talk about when state destruction occurs.
 
 Riverpod offers various ways to interact with state disposal.
 This ranges from delaying the disposal of state to reacting to destruction.
@@ -23,7 +24,7 @@ This ranges from delaying the disposal of state to reacting to destruction.
 <When codegen={true}>
 
 When using code-generation, by default, the state is destroyed when
-the provider stops being listened.  
+the provider stops being listened to.  
 This happens when a listener has no active listener for a full frame.
 When that happens, the state is destroyed.
 
@@ -42,7 +43,7 @@ when the provider stops being listened.
 
 You can optionally change this behavior and use automatic disposal.
 When doing so, Riverpod will track whether a provider has listeners or not.
-Then, if for a full frame the provider has no listeners, the state will be destroyed.
+Then, if the provider has no listeners for a full frame, the state will be destroyed.
 
 To enable automatic disposal, you can use `.autoDispose` next to the provider type:
 
@@ -57,7 +58,7 @@ The state will always be destroyed when the provider is recomputed.
 :::
 
 :::caution
-When providers receive parameters, it is recommended to enable the automatic disposal.
+When providers receive parameters, it is recommended to enable automatic disposal.
 That is because otherwise, one state per parameter combination will be created,
 which can lead to memory leaks.
 :::
@@ -95,7 +96,7 @@ There are other useful life-cycles such as:
 :::info
 You can call `ref.onDispose` as many times as you wish.
 Feel free to call it once per disposable object in your provider. This practice
-makes it easier to spot when we forgot to dispose of something.
+makes it easier to spot when we forget to dispose of something.
 :::
 
 ## Manually forcing the destruction of a provider, using `ref.invalidate`
@@ -115,6 +116,14 @@ There are then two possible outcomes:
 :::info
 It is possible for providers to invalidate themselves by using `ref.invalidateSelf`.
 Although in this case, this will always result in a new state being created.
+:::
+
+:::tip
+When trying to invalidate a provider which receives parameters,
+it is posible to either invalidate one specific parameter combination,
+or all parameter combinations at once:
+
+<AutoSnippet {...invalidateFamilyExample} />
 :::
 
 ## Fine-tuned disposal with `ref.keepAlive`
@@ -153,6 +162,6 @@ Then, we can use it like so:
 
 <AutoSnippet {...cacheForUsage} />
 
-This logic can be tweaked to fit your needs. For instance.  
-For example you could use `ref.onCancel`/`ref.onResume` to destroy the state
-only if a provider hasn't been listened for a specific amount of time.
+This logic can be tweaked to fit your needs. 
+For example, you could use `ref.onCancel`/`ref.onResume` to destroy the state
+only if a provider hasn't been listened to for a specific amount of time.

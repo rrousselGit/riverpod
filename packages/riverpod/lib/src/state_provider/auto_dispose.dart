@@ -1,6 +1,6 @@
 part of '../state_provider.dart';
 
-/// {@macro riverpod.providerrefbase}
+/// {@macro riverpod.provider_ref_base}
 /// - [controller], the [StateController] currently exposed by this provider.
 abstract class AutoDisposeStateProviderRef<State>
     extends StateProviderRef<State> implements AutoDisposeRef<State> {}
@@ -12,12 +12,12 @@ class AutoDisposeStateProvider<T> extends _StateProviderBase<T> {
     this._createFn, {
     super.name,
     super.dependencies,
-    @Deprecated('Will be removed in 3.0.0') super.from,
-    @Deprecated('Will be removed in 3.0.0') super.argument,
-    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          from: null,
+          argument: null,
+          debugGetCreateSourceHash: null,
         );
 
   /// An implementation detail of Riverpod
@@ -48,14 +48,7 @@ class AutoDisposeStateProvider<T> extends _StateProviderBase<T> {
   @override
   late final Refreshable<StateController<T>> notifier = _notifier(this);
 
-  @Deprecated(
-    'Will be removed in 3.0.0. '
-    'Use either `ref.watch(provider)` or `ref.read(provider.notifier)` instead',
-  )
-  @override
-  late final Refreshable<StateController<T>> state = _state(this);
-
-  /// {@macro riverpod.overridewith}
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     Create<T, AutoDisposeStateProviderRef<T>> create,
   ) {
@@ -98,7 +91,7 @@ class AutoDisposeStateProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
               computeAllTransitiveDependencies(dependencies),
         );
 
-  /// {@macro riverpod.overridewith}
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     R Function(AutoDisposeStateProviderRef<R> ref, Arg arg) create,
   ) {
