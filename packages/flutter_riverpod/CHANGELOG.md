@@ -1,3 +1,7 @@
+## Unreleased fix
+
+- Fix out of date `pub.dev` description
+
 ## 2.4.9 - 2023-11-27
 
 - Fix "pending timer" issue inside tests when using `ref.keepAlive()`.
