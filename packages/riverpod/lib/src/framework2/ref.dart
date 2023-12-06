@@ -7,15 +7,15 @@ class Ref<StateT> {
 
   ProviderContainer get container => _element.container;
 
-  // Explain that calling `state=` while the provider is synchronously building will not notify listeners
-  // And that if no state= is called, then after the synchronous execution has completed, the current state will be emitted
-  abstract StateT state;
+  // TODO deprecate state=
+  StateT get state;
 
   FutureOr<StateT> get future;
 
   @useResult
   T refresh<T>(Refreshable<T> provider);
   void invalidate(ProviderOrFamily provider);
+  void reload(ProviderOrFamily provider);
   void invalidateSelf() => _element.markNeedsRefresh();
   void reloadSelf() => _element.markNeedsReload();
 
@@ -30,7 +30,16 @@ class Ref<StateT> {
   bool exists(Provider<Object?> provider);
 
   T read<T>(ProviderListenable<T> provider) {
-    final subscription = listen<T>(provider, (_, value) {});
+    final subscription = _listen<T>(
+      provider,
+      (_, value) {},
+      onError: null,
+      onCancel: null,
+      fireImmediately: false,
+      debugDependentSource: kDebugMode
+          ? DebugRefReadDependentSource(provider: _element.provider)
+          : null,
+    );
     try {
       return subscription.read();
     } finally {
@@ -39,9 +48,37 @@ class Ref<StateT> {
   }
 
   T watch<T>(ProviderListenable<T> provider) {
-    final subscription = listen<T>(provider, (_, value) => reloadSelf());
+    final subscription = _listen<T>(
+      provider,
+      (_, value) => reloadSelf(),
+      onError: null,
+      onCancel: null,
+      fireImmediately: false,
+      debugDependentSource: kDebugMode
+          ? DebugRefWatchDependentSource(provider: _element.provider)
+          : null,
+    );
 
     return subscription.read();
+  }
+
+  ProviderSubscription<T> _listen<T>(
+    ProviderListenable<T> provider,
+    ProviderListener<T> listener, {
+    required OnError? onError,
+    required VoidCallback? onCancel,
+    required bool fireImmediately,
+    required DebugDependentSource? debugDependentSource,
+  }) {
+    return provider.addListener(
+      container,
+      listener,
+      fireImmediately: fireImmediately,
+      onError: onError,
+      onCancel: onCancel,
+      dependent: _element,
+      debugDependentSource: debugDependentSource,
+    );
   }
 
   ProviderSubscription<T> listen<T>(
@@ -51,16 +88,16 @@ class Ref<StateT> {
     VoidCallback? onCancel,
     bool fireImmediately = false,
   }) {
-    final subscription = provider.addListener(
-      container,
+    return _listen(
+      provider,
       listener,
-      fireImmediately: fireImmediately,
       onError: onError,
       onCancel: onCancel,
-      dependent: _element,
+      fireImmediately: fireImmediately,
+      debugDependentSource: kDebugMode
+          ? DebugRefListenDependentSource(provider: _element.provider)
+          : null,
     );
-
-    return subscription;
   }
 
   void listenSelf(

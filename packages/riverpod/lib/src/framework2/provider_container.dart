@@ -154,6 +154,11 @@ class ProviderContainer {
 
   void debugReassemble();
 
+  void reload(
+    ProviderOrFamily provider, {
+    @internal DebugDependentSource? debugDependentSource,
+  });
+
   void invalidate(
     ProviderOrFamily provider, {
     @internal DebugDependentSource? debugDependentSource,
@@ -186,7 +191,10 @@ class ProviderContainer {
     final subscription = listen<StateT>(
       provider,
       (_, value) {},
-      debugDependentSource: debugDependentSource ?? DebugRead,
+      debugDependentSource: kDebugMode
+          ? (debugDependentSource ??
+              DebugProviderContainerReadDependentSource(container: this))
+          : null,
     );
     try {
       return subscription.read();
@@ -200,17 +208,19 @@ class ProviderContainer {
     ProviderListener<StateT> listener, {
     bool fireImmediately = false,
     OnError? onError,
-    DebugDependentSource? debugDependentSource,
+    @internal DebugDependentSource? debugDependentSource,
     OnCancel? onCancel,
   }) {
-    provider.addListener(
+    return provider.addListener(
       this,
       listener,
       fireImmediately: fireImmediately,
       onError: onError,
+      onCancel: onCancel,
+      dependent: null,
       debugDependentSource: kDebugMode
-          ? debugDependentSource ??
-              DebugProviderContainerListenDependentSource(container: this)
+          ? (debugDependentSource ??
+              DebugProviderContainerListenDependentSource(container: this))
           : null,
     );
   }

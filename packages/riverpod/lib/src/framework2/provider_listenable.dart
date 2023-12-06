@@ -8,7 +8,7 @@ mixin ProviderListenable<StateT> implements ProviderListenableOrFamily {
     void Function(StateT? previous, StateT next) listener, {
     required bool fireImmediately,
     required void Function(Object error, StackTrace stackTrace)? onError,
-    required DebugDependentSource? debugDependentSource,
+    required DebugProviderSource? debugDependentSource,
     required ProviderElement<Object?>? dependent,
     required void Function()? onCancel,
   });

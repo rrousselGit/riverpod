@@ -115,25 +115,23 @@ abstract base class Provider<StateT>
   /// the [ProviderElement] in a static field.
   @visibleForOverriding
   ProviderElement<StateT> getElement(ProviderContainer container) {
-    if (dependencies == null) {
-      container.root._readProviderElement(this);
-    }
-    return container._readProviderElement(this);
+    return container._insertProvider(this);
   }
 
+  @visibleForOverriding
   @override
   ProviderSubscription<StateT> addListener(
     ProviderContainer container,
     void Function(StateT? previous, StateT next) listener, {
     required bool fireImmediately,
     required void Function(Object error, StackTrace stackTrace)? onError,
-    required DebugDependentSource? debugDependentSource,
+    required DebugProviderSource? debugDependentSource,
     required ProviderElement<Object?>? dependent,
     required void Function()? onCancel,
   }) {
     final element = getElement(container);
 
-    final subscription = element.addListener(
+    return element.addListener(
       listener,
       fireImmediately: fireImmediately,
       onError: onError,
@@ -141,7 +139,5 @@ abstract base class Provider<StateT>
       dependent: dependent,
       onCancel: onCancel,
     );
-
-    return ProviderSubscription<StateT>._(subscription, element);
   }
 }

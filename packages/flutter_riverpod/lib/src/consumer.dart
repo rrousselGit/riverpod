@@ -236,6 +236,8 @@ abstract class WidgetRef {
   ///
   /// If used on a provider which is not initialized, this method will have no effect.
   void invalidate(ProviderOrFamily provider);
+
+  void reload(ProviderOrFamily provider);
 }
 
 /// A function that can also listen to providers

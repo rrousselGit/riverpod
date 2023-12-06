@@ -21,6 +21,16 @@ abstract class ProviderElement<StateT> {
   /// The container where this [ProviderElement] is attached to.
   final ProviderContainer container;
 
+  /// Whether this provider is currently paused.
+  ///
+  /// A provider is paused when if:
+  /// - It has no listeners
+  /// - All of its listeners are paused
+  /// - The provider was manually using [pause].
+  bool get paused =>
+      _subscriptions.isEmpty || _pauseCount > 0 || _pausedListenerCount > 0;
+
+  bool _disposed = false;
   _DirtyType? _dirty;
 
   /// What this provider is currently listening to.
@@ -28,6 +38,9 @@ abstract class ProviderElement<StateT> {
 
   /// The listeners listening to this provider.
   List<ProviderSubscription<Object?>> _listeners = [];
+
+  var _pauseCount = 0;
+  var _pausedListenerCount = 0;
 
   // The various life-cycles listeners of a provider.
   // We store them in the element instead of Ref for performance reasons.
@@ -133,7 +146,28 @@ abstract class ProviderElement<StateT> {
   @visibleForOverriding
   FutureOr<void> build(Ref<StateT> ref);
 
-  void markNeedsRebuild({bool isReload = false}) {
+  @override
+  void pause() {
+    if (_disposed) throw StateError('Cannot pause a disposed ProviderElement');
+
+    _pauseCount++;
+  }
+
+  @override
+  void resume() {
+    if (_disposed) throw StateError('Cannot resume a disposed ProviderElement');
+
+    // Noop if not paused.
+    if (_pauseCount == 0) return;
+
+    _pauseCount--;
+  }
+
+  void markNeedsReload() => _markNeedsRebuild(isReload: true);
+
+  void markNeedsRefresh() => _markNeedsRebuild();
+
+  void _markNeedsRebuild({bool isReload = false}) {
     if (_dirty != null) {
       // If at least one rebuild request asks for a "reload", then we reload.
       // Otherwise we "refresh".
@@ -161,6 +195,8 @@ abstract class ProviderElement<StateT> {
   @mustCallSuper
   void unmount() {
     _runDispose();
+
+    _disposed = true;
 
     // Clearing the subscriptions before closing them, for efficiency.
     // This avoids having to remove the subscriptions from the list.
@@ -235,7 +271,7 @@ class _ProviderSubscription<StateT> implements ProviderSubscription<StateT> {
     }
 
     // If this is the first pause, pause the provider too.
-    if (_pauseCount == 0) _element.pause();
+    if (_pauseCount == 0) _element._pausedListenerCount++;
 
     _pauseCount++;
   }
@@ -250,7 +286,7 @@ class _ProviderSubscription<StateT> implements ProviderSubscription<StateT> {
     if (_pauseCount == 0) return;
 
     // If this is the last resume, unpause the provider too.
-    if (_pauseCount == 1) _element.resume();
+    if (_pauseCount == 1) _element._pausedListenerCount--;
 
     _pauseCount--;
   }
@@ -264,7 +300,7 @@ class _ProviderSubscription<StateT> implements ProviderSubscription<StateT> {
     _closed = true;
 
     // If closing a paused subscription, unpause the provider too.
-    if (_pauseCount > 0) _element.resume();
+    if (_pauseCount > 0) _element._pausedListenerCount--;
 
     _onCancel?.call();
 
