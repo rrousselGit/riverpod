@@ -472,9 +472,6 @@ abstract class ConsumerWidget extends ConsumerStatefulWidget {
 
 class _ConsumerState extends ConsumerState<ConsumerWidget> {
   @override
-  WidgetRef get ref => context as WidgetRef;
-
-  @override
   Widget build(BuildContext context) {
     return widget.build(context, ref);
   }
