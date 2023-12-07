@@ -91,9 +91,9 @@
     "message": "Application Todo avec fonction de sauvegarde et de restauration",
     "description": "The label for link Todo App with Backup and Restore feature in sidebar Sidebar, linking to https://github.com/TheAlphaApp/flutter_riverpod_todo_app"
   },
-  "sidebar.Sidebar.link.Integrating Hive database with Riverpod (simple example)": {
-    "message": "Integration d'une base de donnée Hive avec Riverpod (exemple simple)",
-    "description": "The label for link Integrating Hive database with Riverpod (simple example) in sidebar Sidebar, linking to https://github.com/GitGud31/theme_riverpod_hive"
+  "sidebar.Sidebar.link.Integrating Hive database with Riverpod": {
+    "message": "Integration d'une base de donnée Hive avec Riverpod",
+    "description": "The label for link Integrating Hive database with Riverpod in sidebar Sidebar, linking to https://github.com/GitGud31/flutter_theme_riverpod_hive"
   },
   "sidebar.Sidebar.link.Browser App with Riverpod": {
     "message": "Application navigateur avec Riverpod",
