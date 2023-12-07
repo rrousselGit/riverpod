@@ -13,28 +13,28 @@ void main() {
       const ProviderScope(child: YourWidgetYouWantToTest()),
     );
     /* SNIPPET START */
-    // In unit tests, by reusing our previous "createContainer" utility.
+    // Nei test unitari, riutilizzando la nostra precedente utilità "createContainer".
     final container = createContainer(
-      // We can specify a list of providers to mock:
+      // Possiamo specificare una lista di provider da emulare:
       overrides: [
-        // In this case, we are mocking "exampleProvider".
+        // In questo caso, stiamo imitando "exampleProvider".
         exampleProvider.overrideWith((ref) {
-          // This function is the typical initialization function of a provider.
-          // This is where you normally call "ref.watch" and return the initial state.
+          // Questa funzione è la tipica funzione di inizializzazione di un provider.
+          // Qui è dove normalmente chiamaresti "ref.watch" e restituiresti lo stato iniziale.
 
-          // Let's replace the default "Hello world" with a custom value.
-          // Then, interacting with `exampleProvider` will return this value.
+          // Sostituiamo il valore di default "Hello world" con un valore custom.
+          // Infine, quando interagiremo con `exampleProvider`, ci ritornerà questo valore.
           return 'Hello from tests';
         }),
       ],
     );
 
-    // We can also do the same thing in widget tests using ProviderScope:
+    // Possiamo anche fare lo stesso nei test di widget usando ProviderScope:
     await tester.pumpWidget(
       ProviderScope(
-        // ProviderScopes have the exact same "overrides" parameter
+        // I ProviderScope hanno lo stesso esatto parametro "overrides"
         overrides: [
-          // Same as before
+          // Uguale a prima
           exampleProvider.overrideWith((ref) => 'Hello from tests'),
         ],
         child: const YourWidgetYouWantToTest(),

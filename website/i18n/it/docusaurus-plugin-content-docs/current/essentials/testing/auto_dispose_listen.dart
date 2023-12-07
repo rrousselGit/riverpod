@@ -14,8 +14,8 @@ void main() {
     final subscription = container.listen<String>(provider, (_, __) {});
 
     expect(
-      // Equivalent to `container.read(provider)`
-      // But the provider will not be disposed unless "subscription" is disposed.
+      // Equivalente di `container.read(provider)`
+      // Ma il provider non verrà distrutto a meno che "subscription" non venga distrutta.
       subscription.read(),
       'Some value',
     );

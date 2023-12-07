@@ -1,6 +1,6 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 /* SNIPPET START */
-// An eagerly initialized provider.
+// Un provider inizializzato anticipatamente
 final exampleProvider = FutureProvider<String>((ref) async => 'Hello world');
 /* SNIPPET END */

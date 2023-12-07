@@ -10,11 +10,11 @@ final provider = Provider((_) => 42);
 /* SNIPPET START */
 void main() {
   test('Some description', () {
-    // Create a ProviderContainer for this test.
-    // DO NOT share ProviderContainers between tests.
+    // Crea un ProviderContainer per questo test.
+    // NON condividere dei ProviderContainer tra i test.
     final container = createContainer();
 
-    // TODO: use the container to test your application.
+    // TODO: usare il container per testare la tua applicazione.
     expect(
       container.read(provider),
       equals('some value'),

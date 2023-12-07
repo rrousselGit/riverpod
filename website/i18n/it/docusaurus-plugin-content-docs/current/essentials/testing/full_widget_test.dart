@@ -23,7 +23,7 @@ void main() {
     final element = tester.element(find.byType(YourWidgetYouWantToTest));
     final container = ProviderScope.containerOf(element);
 
-    // TODO interact with your providers
+    // TODO interagire con i tuoi provider
     expect(
       container.read(provider),
       'some value',

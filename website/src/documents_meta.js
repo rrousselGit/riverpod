@@ -242,7 +242,7 @@ export const documentTitles = {
     "from_provider/provider_vs_riverpod": "Provider vs Riverpod",
     "from_provider/motivation/motivation": "Motivazione",
     "essentials/websockets_sync": "Websocket ed esecuzione sincrona",
-    "essentials/testing": "Testing your providers",
+    "essentials/testing": "Testare i tuoi provider",
     "essentials/side_effects": "Eseguire side effects",
     "essentials/provider_observer": "Logging and error reporting",
     "essentials/passing_args": "Passare parametri alle tue richieste",

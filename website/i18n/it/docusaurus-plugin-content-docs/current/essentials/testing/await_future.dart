@@ -9,20 +9,20 @@ final provider = FutureProvider((_) async => 42);
 
 void main() {
   test('Some description', () async {
-    // Create a ProviderContainer for this test.
-    // DO NOT share ProviderContainers between tests.
+    // Crea un ProviderContainer per questo test.
+    // NON condivedere i ProviderContainer tra i vari test.
     final container = createContainer();
 
     /* SNIPPET START */
-    // TODO: use the container to test your application.
-    // Our expectation is asynchronous, so we should use "expectLater"
+    // TODO: usa il container per testare la tua applicazione.
+    // Il valore atteso è asincrono, quindi dovremmo usare "expectLater"
     await expectLater(
-      // We read "provider.future" instead of "provider".
-      // This is possible on asynchronous providers, and returns a future
-      // which will resolve with the value of the provider.
+      // Leggiamo "provider.future" invece di "provider".
+      // Questo è possibile su provider asincroni e restituisce un future
+      // che si risolverà con il valore del provider.
       container.read(provider.future),
-      // We can verify that the future resolves with the expected value.
-      // Alternatively we can use "throwsA" for errors.
+      // Possiamo verificare che quel future si risolva con il valore atteso.
+      // In alternativa possiamo usare "throwsA" per gli errori.
       completion('some value'),
     );
     /* SNIPPET END */
