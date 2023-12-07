@@ -1,0 +1,133 @@
+---
+titre : Recherche au fur et à mesure de la frappe
+---
+Un exemple concret pourrait être l'utilisation de `FutureProvider` pour implémenter une barre de recherche.
+
+## Exemple d'utilisation : Barre de recherche "Search as we type" (recherche au fur et à mesure de la frappe)
+
+La mise en œuvre d'une "recherche au fil de la frappe" peut sembler décourageante au début si l'on utilise des moyens conventionnels.  
+Il y a beaucoup d'éléments en jeu, tels que
+
+- le traitement des erreurs.
+- le débouclage (debouncing) de l'entrée de l'utilisateur afin d'éviter de faire des demandes de réseau à chaque frappe.
+- l'annulation des demandes de réseau en attente lorsque le champ de recherche change.
+
+Mais la combinaison de `FutureProvider` et de la puissance de [ref.watch] peut considérablement simplifier cette tâche.
+
+Un schéma courant pour effectuer des requêtes asynchrones est de la diviser en plusieurs providers :
+
+- un [StateNotifierProvider] ou `StateProvider` pour les paramètres de votre requête (ou alternativement utiliser [family])
+- un `FutureProvider`, qui effectuera la requête en lisant les paramètres des autres providers/[family].
+
+La première étape consiste à stocker l'entrée de l'utilisateur quelque part. Pour cet exemple, nous utiliserons `StateProvider` (puisque l'état de la recherche n'est qu'une simple `chaîne`) :
+
+```dart
+final searchInputProvider = StateProvider<String>((ref) => '');
+```
+
+Nous pouvons ensuite connecter ce provider à un [TextField] en faisant :
+
+```dart
+Consumer(
+  builder: (context, ref, child) {
+    return TextField(
+      onChanged: (value) => ref.read(searchInputProvider.notifier).state = value,
+    );
+  },
+)
+```
+
+Ensuite, nous pouvons créer notre `FutureProvider` qui s'occupera de la requête :
+
+```dart
+final searchProvider = FutureProvider<
+
+
+<!--
+// Copyright (c) 2019, the Dart project authors.  Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.
+
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+final searchFieldProvider = StateProvider<String>((ref) => '');
+final questionsProvider = FutureProvider<List>((ref) async {
+  final client = http.Client();
+  ref.onDispose(client.close);
+
+  final search = ref.watch(searchFieldProvider);
+
+  Uri uri;
+
+  if (search.isEmpty) {
+    uri = Uri.parse(
+      'https://api.stackexchange.com/2.3/questions?order=desc&sort=activity&site=stackoverflow',
+    );
+  } else {
+    final encodedQuery = Uri.encodeComponent(search);
+    uri = Uri.parse(
+      'https://api.stackexchange.com/2.3/search?order=desc&sort=activity&intitle=$encodedQuery&site=stackoverflow',
+    );
+  }
+
+  final response = await client.get(uri);
+  final questions = jsonDecode(response.body);
+
+  return questions['items'].map((question) => question['title']).toList();
+});
+
+void main() => runApp(const ProviderScope(child: MyApp()));
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(home: MyHomePage());
+  }
+}
+
+class MyHomePage extends ConsumerWidget {
+  const MyHomePage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final questions = ref.watch(questionsProvider);
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('Questions')),
+      body: Column(
+        children: [
+          TextField(
+            onChanged: (value) =>
+                ref.read(searchFieldProvider.notifier).state = value,
+          ),
+          Expanded(
+            child: questions.when(
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (error, stack) => Center(child: Text('Error $error')),
+              data: (questions) {
+                return ListView.builder(
+                  itemCount: questions.length,
+                  itemBuilder: (context, index) {
+                    final question = questions[index];
+
+                    return ListTile(
+                      title: Text(
+                        question.toString(),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+```
