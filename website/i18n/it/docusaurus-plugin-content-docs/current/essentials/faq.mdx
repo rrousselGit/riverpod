@@ -4,15 +4,15 @@ title: FAQ
 
 import { Link } from "../../../../../src/components/Link";
 
-Here are some commonly asked questions from the community:
+In questa pagina sono elencate le domande più frequenti della community:
 
-## What is the different between `ref.refresh` and `ref.invalidate`?
+## Qual è la differenza tra `ref.refresh` e `ref.invalidate`?
 
-You may have noticed that `ref` has two methods to force a provider to recompute,
-and wonder how they differ.
+Potresti aver notato che `ref` ha due metodi per forzare la ricomputazione di un provider,
+e ti starai chiedendo in che cosa i due differiscono.
 
-It's simpler than you think: `ref.refresh` is nothing but syntax sugar for
-`invalidate` + `read`:
+È più semplice di quanto pensi, `ref.refresh` è abbreviazione di sintassi per 
+la combo `invalidate` + `read`.
 
 ```dart
 T refresh<T>(provider) {
@@ -21,162 +21,163 @@ T refresh<T>(provider) {
 }
 ```
 
-If you do not care about the new value of a provider after recomputing it,
-then `invalidate` is the way to go.  
-If you do, use `refresh` instead.
+Se non ti importa del nuovo valore di un provider dopo averlo ricomputato, 
+allora `invalidate` è più opportuno.
+Se invece necessiti del valore, usa `refresh`.
 
 :::info
-This logic is automatically enforced through lint rules.  
-If you tried to use `ref.refresh` without using the returned value,
-you would get a warning.
+Questa logica viene applicata automaticamente tramite le regole di lint.
+Se hai provato ad usare `ref.refresh` senza usare il valore restituito, 
+otterrai un warning.
 :::
 
-The main difference in behavior is by reading the provider right
-after invalidating it, the provider **immediately** recomputes.  
-Whereas if we call `invalidate` but don't read it right after,
-then the update will trigger _later_.
+La principale differenza di comportamento è che leggendo il provider subito 
+dopo averlo invalidato, il provider ricomputa **immediatamente**.
+Mentre se chiamiamo `invalidate` ma non lo leggiamo subito dopo, 
+l'aggiornamento verrà attivato _più tardi_.
 
-That "later" update is generally at the start of the next frame.
-Yet, if a provider that is currently not being listened to is invalidated, 
-it will not be updated until it is listened to again.
+L'aggiornamento "tardivo" è generalmente all'inizio del frame successivo.
+Tuttavia, se un provider attualmente non in ascolto viene invalidato, 
+non verrà aggiornato finché non verrà nuovamente ascoltato.
 
-## Why is there no shared interface between Ref and WidgetRef?
+## Perchè non c'è nessun interfaccia condivisa tra Ref e WidgetRef?
 
-Riverpod voluntarily dissociates `Ref` and `WidgetRef`.  
-This is done on purpose to avoid writing code which conditionally
-depends on one or the other.
+Riverpod dissocia volontariamente `Ref` e `WidgetRef`.
+Questo viene fatto di proposito per evitare di scrivere codice che dipende 
+condizionatamente dall'uno o dall'altro.
 
-One issue is that `Ref` and `WidgetRef`, although similar looking,
-have suble differences.  
-Code relying on both would be unreliable in ways that are difficult to spot.
+Un problema è che `Ref` e `WidgetRef`, nonostanze sembrino simili,
+hanno sottili differenze.
+Il codice che si basa su entrambi provocherebbe instabilità che sarebbero difficili da individuare.
 
-At the same time, relying on `WidgetRef` is equivalent to relying on `BuildContext`.
-It is effectively putting your logic in the UI layer, which is not recommended.
+Allo stesso tempo, basarsi su `WidgetRef` è l'equivalente di basarsi su `BuildContext`.
+Si sta mettendo la logica nel layer di UI, che non è consigliato.
 
 ---
 
-Such code should be refactored to **always** use `Ref`.
+Tale codice dovrebbe essere riscritto per usare **sempre** `Ref`.
 
-The solution to this problem is typically to move your logic
-into a `Notifier` (see <Link documentID="essentials/side_effects" />), 
-and then have your logic be a method of that `Notifier`.
+La soluzione a questo problema è tipicamente muovere la tua logica in 
+un `Notifier` (vedere <Link documentID="essentials/side_effects" />), 
+e quindi fare in modo che la logica sia un metodo di quel `Notifier`.
 
-This way, when your widgets want to invoke this logic, they can
-write something along the lines of:
+In questo modo, quando vorrai che i tuoi widget invochino questa logica, 
+puoi scrivere qualcosa sulla falsariga di:
 
 ```dart
 ref.read(yourNotifierProvider.notifier).yourMethod();
 ```
 
-`yourMethod` would use the `Notifier`'s `Ref` to interact with other providers.
+`yourMethod` dovrebbe usare il `Ref` del `Notifier` per interagire con altri provider.
 
-## Why do we need to extend ConsumerWidget instead of using the raw StatelessWidget?
+## Perchè abbiamo bisogno di estendere ConsumerWidget invece di usare StatelessWidget?
 
-This is due to an unfortunate limitation in the API of `InheritedWidget`.
+Questo è dovuto ad una sfortunata limitazione nell'API di `InheritedWidget`.
 
-There are a few problems:
+Esistono alcuni problemi:
 
-- It is not possible to implement an "on change" listener with `InheritedWidget`.
-  That means that something such as `ref.listen` cannot be used with `BuildContext`.
+- Non è possibile implementare un "on change" listener con `InheritedWidget`.
+  Ciò significa che un API come `ref.listen` non può essere usata con `BuildContext`.
 
-  `State.didChangeDependencies` is the closest thing to it, but it is not reliable.
-  One issue is that the life-cycle can be triggered even if no dependency changed,
-  especially if your widget tree uses GlobalKeys (and some Flutter widgets already do so internally).
+  `State.didChangeDependencies` è la cosa più vicina, ma non è affidabile.
+  Un problema è che il ciclo di vita può essere triggerato anche se nessuna dipendenza è cambiata, 
+  specialmente se il tuo albero dei widget utilizza GlobalKeys (alcuni widget di Flutter lo fanno già internamente).
 
-- Widgets listening to an `InheritedWidget` never stop listening to it.
-  This is usually fine for pure metadata, such as "theme" or "media query".
+- I widget in ascolto di un `InheritedWidget` non smettono mai di ascoltarlo.
+  Questo va comunemente bene per i metadata puri, come per "theme" o "media query".
 
-  For business logic, this is a problem.
-  Say you use a provider to represent a paginated API.
-  When the page offset changes, you wouldn't want your widget to keep listening
-  to the previously visible pages.
+  Per la bussiness logic, invece, è un problema.
+  Mettiamo caso che stai utilizzando un provider per rappresentare un API paginata.
+  Quando l'offset della pagina cambia, non vorresti che il tuo widget resti in ascolto 
+  delle pagine precedentemente visibili.
 
-- `InheritedWidget` has no way to track when widgets stop listening to them.
-  Riverpod sometimes relies on tracking whether or not a provider is being listened to.
+- `InheritedWidget` non ha nessun modo di tracciare quando i widget smettono di ascoltarlo.
+  Riverpod sometimes relies on tracking whether or not a provider is being listened to. (TO translate, meaning is not clear)
 
-This functionality is crucial for both the auto dispose mechanism and the ability to
-pass arguments to providers.  
-Those features are what make Riverpod so powerful.
+Questa funzionalità è cruciale per, sia il meccanismo di auto dispose, sia per l'abilità 
+di passare parametri ai provider.
+Queste sono le caratteristiche che rendono Riverpod così potente.
 
-Maybe in a distant future, those issues will be fixed. In that case,
-Riverpod would migrate to using `BuildContext` instead of `Ref`.
-This would enable using `StatelessWidget` instead of `ConsumerWidget`.  
-But that's for another time!
+Probabilmente, in un futuro distante, questi problemi saranno risolti. In quel caso, 
+Riverpod migrerebbe sull'utilizzare `BuildContext` invece di `Ref`.
+Ciò abiliterebbe usare `StatelessWidget` invece di `ConsumerWidget`.
+Ma questo sarà per un'altra volta!
 
-## Why doesn't hooks_riverpod exports flutter_hooks?
+## Perchè hooks_riverpod non esporta flutter_hooks?
 
-This is to respect good versioning practices.
+Questo è per rispettare buone pratiche di versionamento.
 
-While you cannot use `hooks_riverpod` without `flutter_hooks`,
-both packages are versioned independently. A breaking change could happen
-in one but not the other.
+Sebben non sia possibile usare `hooks_riverpod` senza `flutter_hooks`, 
+entrambi i pacchetti sono versionati indipendentemente. Una breaking chance potrebbe 
+comparire in uno ma non nell'altro.
 
-## Why does Riverpod uses `identical` instead of `==` to filter updates in some cases?
+## Perchè Riverpod utilizza `identical` invece di `==` per filtrare gli aggiornamenti in alcuni casi?
 
-Notifiers use `identical` instead of `==` to filter updates.
+I Notifier utilizzano `identical` invece di ``==`` per filtrare gli aggiornamenti.
 
-This is because it is quite common for Riverpod users to also use a code-generator
-such as Freezed/built_value for the sake of a copyWith implementation. Those packages
-override `==` to deeply compare objects. A deep object comparison is quite costly.
-"Business logic" models tend to have lots of properties. Worse, they also have collections
-such as lists, maps, and so on.
+Questo perchè è abbastanza comune per gli utenti di Riverpod utilizzare anche altre dipendenze 
+che sfruttano la generazione automatica del codice, come Freezed o built_value per la comodità di usare 
+un'implementazione con 'copyWith'.
+Questi pacchetti sovrascrivono `==` per confrontare in modo preciso gli oggetti. Un confronto preciso di un oggetto 
+è piuttosto costoso ed i modelli di "business logic" tendono ad avere molte proprietà. 
+Ancora peggio quando hanno collezioni come liste, mappe e via dicendo.
 
-At the same time, when using complex "business" objects, most `state = newState` invocations
-always result in a notification (otherwise there is no point in calling the setter). Generally, the main
-case where we call `state = newState` when the current state and new states are equal is
-for primitive objects (ints, enums, strings, but not lists/classes/...).
-These objects are "canonicalized by default". If such objects are equal,
-they generally are also "identical".
+Allo stesso tempo, quando si usano oggetti "business" complessi, la maggior parte delle invocazioni `state = newState` 
+risultano sempre in una notifica (altrimenti non c'è nessun motivo nel chiamare il setter). In generale, 
+il caso principale in cui chiamiamo `state = newState` quando lo stato corrente e i nuovi stati sono uguali è 
+per oggetti primitivi (int, enum, stringhe, ma non liste/classi/...).
+Questi oggetti sono "canonicalizzati di default". 
+Se tali oggetti sono uguali, generalmente sono anche "identici".
 
-Riverpod using `identical` to filter updates is therefore an attempt at having
-a good default for both worlds. For complex objects where we don't really care
-about filtering objects and where `==` may be expensive due to code-generators
-generating an `==` override by default, using `identical` provides an efficient way of notifying listeners.
-At the same time, for simple objects, `identical` does correctly filter redundant notifications.
+L'utilizzo di `identical` da parte di Riverpod per filtrare gli aggiornamenti è un tentativo 
+di avere un buon default per entrambi i mondi. Per oggetti complessi di cui non ci interessa davvero 
+filtrare degli oggetti e dove `==` può essere costoso a causa dei generatori di codice che generano 
+un override `==` per impostazione predefinit, usare `identical` fornisce un modo efficiente per notificare i listener.
+Allo stesso tempo, per oggetti semplici, `identical` filtra correttamente notifiche ridondanti.
 
-Last but not least, you can change this behavior by overriding the method
-`updateShouldNotify` on Notifiers.
+Ultimo, ma non per importanza: puoi cambiare questo comportamento sovrascrivendo il metodo 
+`updateShouldNotify` sui Notifier.
 
-## Is there a way to reset all providers at once?
+## Esiste un modo per resettare tutti i provider contemporaneamente?
 
-No, there is no way to reset all providers at once.
+No, non c'è nessun modo per resettare tutti i provider nello stesso momento.
 
-This is on purpose, as it is considered an anti-pattern. Resetting all providers
-at once will often reset providers that you did not intend to reset.
+Questo di proposito, dato che è considerato anti-pattern. Resettare tutti i provider 
+in una volta sola resetterà spesso provider che non intendevi resettare.
 
-This is commonly asked by users who want to reset the state of their application
-when the user logs out.  
-If this is what you are after, you should instead have everything dependent on the
-user's state to `ref.watch` the "user" provider.
+Questo è comunemente chiesto da utenti che vogliono resettare lo stato della loro applicazione 
+quando l'utente effettua il log out.
+Se è questo ciò che stai cercando, dovresti invece fare in modo che tutto dipenda dallo stato 
+dell'utente e utilizzare `ref.watch` per osservare il provider "user".
 
-Then, when the user logs out, all providers depending on it would automatically
-be reset but everything else would remain untouched.
+Successivamente, quando l'utente farà log out, tutti i provider che dipendono da esso 
+saranno automaticamente resettati, ma tutto il resto rimarrebbe invariato.
 
-## I have the error "Cannot use "ref" after the widget was disposed", what's wrong?
+## Ho l'errore "Cannot use "ref" after the widget was disposed", cosa c'è di sbagliato?
 
-You might also see "Bad state: No ProviderScope found", which is an older
-error message of the same issue.
+Potresti anche vedere "Bad state: No ProviderScope found", che è un vecchio 
+messaggio di errore dello stesso problema.
 
-This error happens when you try to use `ref` in a widget that is no longer
-mounted. This generally happens after an `await`:
+Questo errore succede quando provi ad utilizzare `ref` in un widget che non 
+è più mounted. Ciò succede generalmente dopo un `await`:
 
 ```dart
 ElevatedButton(
   onPressed: () async {
     await future;
-    ref.read(...); // May throw "Cannot use "ref" after the widget was disposed"
+    ref.read(...); // Potrebbe tirare l'eccezione "Cannot use "ref" after the widget was disposed"
   }
 )
 ```
 
-The solution is to, like with `BuildContext`, check `mounted` before using `ref`:
+La soluzione è di, come con `BuildContext`, controllare `mounted` prima di usare `ref`:
 
 ```dart
 ElevatedButton(
   onPressed: () async {
     await future;
     if (!context.mounted) return;
-    ref.read(...); // No longer throws
+    ref.read(...); // Non tirerà più un'eccezione
   }
 )
 ```
