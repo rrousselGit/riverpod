@@ -1,8 +1,8 @@
 ---
-title: Pull to refresh
+title: Pull to refresh (trascina per aggiornare)
 ---
 
-import { AutoSnippet, When } from "../../../../../src/components/CodeSnippet";
+import { AutoSnippet } from "../../../../../src/components/CodeSnippet";
 import activity from "./pull_to_refresh/activity";
 import fetchActivity from "./pull_to_refresh/fetch_activity";
 import displayActivity from "!!raw-loader!./pull_to_refresh/display_activity.dart";
@@ -11,120 +11,117 @@ import displayActivity3 from "!!raw-loader!./pull_to_refresh/display_activity3.d
 import displayActivity4 from "!!raw-loader!./pull_to_refresh/display_activity4.dart";
 import fullApp from "./pull_to_refresh/full_app";
 
-Riverpod natively supports pull-to-refresh thanks to its declarative nature.
+Riverpod supporta nativamente il meccanismo di pull-to-refresh grazie alla sua natura dichiarativa.
 
-In general, pull-to-refreshes can be complex due as there are multiple
-problems to solve:
+In generale, un meccanismo di pull-to-refresh può essere complesso a causa di diversi 
+problemi da risolvere:
 
-- Upon first entering a page, we want to show a spinner.
-  But during refresh, we want to show the refresh indicator instead.
-  We shouldn't show both the refresh indicator _and_ spinner.
-- While a refresh is pending, we want to show the previous data/error.
-- We need to show the refresh indicator for as long as the refresh is happening.
+- Al primo accesso in una pagina, vogliamo mostrare uno spinner.
+  Ma durante l'aggiornamento, vogliamo invece mostrare l'indicatore di aggiornamento.
+  Non dovremmo far vedere sia l'indicatore che lo spinner.
+- Mentre un aggiornamento è in attesa, vogliamo mostrare il dato/errore precedente.
+- Dobbiamo mostrare l'indicatore di aggiornamento per tutto il tempo in cui l'aggiornamento è in corso.
 
-Let's see how to solve this using Riverpod.  
-For this, we will make a simple example which recommands a random activity to users.  
-And doing a pull-to-refresh will trigger a new suggestion:
+Vediamo come risolvere questo usando Riverpod.
+Faremo un semplice esempio che consiglia un'attività casuale agli utenti.
+E facendo un pull-to-refresh attiveremo un nuovo suggerimento:
 
 <img
   alt="A gif of the previously described application working"
   src="/img/case_studies/pull_to_refresh/app.gif"
 />
+n.
+## Realizzare un'applicazione semplice.
 
-## Making a bare-bones application.
+Prima di implementare un meccanismo di pull-to-refresh, abbiamo bisogno qualcosa da aggiornare.
+Possiamo fare una semplice applicazione che usa le [Bored API](https://www.boredapi.com/) 
+per consigliare un'attività casuale agli utenti.
 
-Before implement a pull-to-refresh, we first need something to refresh.  
-We can make a simple application which uses [Bored API](https://www.boredapi.com/)
-to suggests a random activity to users.
-
-First, let's define an `Activity` class:
+Per prima cosa, definiamo una classe `Activity`
 
 <AutoSnippet {...activity} />
 
-That class will be responsible for representing a suggested activity
-in a type-safe manner, and handle JSON encoding/decoding.  
-Using Freezed/json_serializable is not required, but it is recommended.
+Questa classe rappresenterà un'attività consigliata in un modo type-safe, 
+e di gestire la codifica/decodifica JSON.
+Usare Freezed/json_serializable non è richiesto ma consigliato.
 
-Now, we'll want to define a provider making a HTTP GET request to fetch
-a single activity:
+Ora, vogliamo definire un provider che effettua una richiesta HTTP GET per 
+ottenere una singola attività.
 
 <AutoSnippet {...fetchActivity} />
 
-We can now use this provider to display a random activity.  
-For now, we will not handle the loading/error state, and simply
-display the activity when available:
+Possiamo quindi utilizzare questo provider per mostrare un'attività casuale.
+Per ora, non gestiremo lo stato di caricamento/errore ma mostreremo l'attività appena disponibile:
 
 <AutoSnippet raw={displayActivity} />
 
-## Adding `RefreshIndicator`
+## Aggiungere un `RefreshIndicator`
 
-Now that we have a simple application, we can add a `RefreshIndicator` to it.  
-That widget is an official Material widget responsible for displaying a refresh indicator
-when the user pulls down the screen.
+Ora che abbiamo una semplice applicazione, possiamo aggiungerci un `RefreshIndicator`.
+Questo widget è un widget Material ufficiale responsabile di mostrare un indicatore di aggiornamento 
+quando l'utente trascina in basso lo schermo.
 
-Using `RefreshIndicator` requires a scrollable surface. But so far, we don't have
-any. We can fix that by using a `ListView`/`GridView`/`SingleChildScrollView`/etc:
+Usare `RefreshIndicator` richiede una superficie scrollabile. Ma fino ad adesso non ne abbiamo alcuna.
+Possiamo risolvere usando una `ListView`/`GridView`/`SingleChildScrollView`/etc:
 
 <AutoSnippet raw={displayActivity2} />
 
-Users can now pull down the screen. But our data isn't refreshed yet.
+Gli utenti ora possono trascinare in basso lo schermo. Ma il nostro dato non è ancora aggiornato.
 
-## Adding the refresh logic
+## Aggiungere la logica di aggiornamento
 
-When users pull down the screen, `RefreshIndicator` will invoke
-the `onRefresh` callback. We can use that callback to refresh our data.
-In there, we can use `ref.refresh` to refresh the provider of our choice.
+Quando gli utenti trascinano in basso lo schermo, `RefreshIndicator` invocherà 
+la callback `onRefresh`. Possiamo usare questa callback per aggiornare il nostro dato. 
+All'interno, possiamo usare `ref.refresh` per aggiornare il provider di nostra scelta.
 
-**Note**: `onRefresh` is expected to return a `Future`.
-And it is important for that future to complete when the refresh is done.
+**Nota**: si prevede che `onRefresh` restituisca un `Future`.
+È importante che questo future venga completato una volta terminato l'aggiornamento.
 
-To obtain such a future, we can read our provider's `.future` property.
-This will return a future which completes when our provider has resolved.
+Per ottenere tale future, possiamo leggere la proprietà `.future` del nostro provider.
+Ciò restituirà un future che si completa quando il nostro provider viene risolto.
 
-We can therefore update our `RefreshIndicator` to look like this:
+Possiamo quindi aggiornare il nostro `RefreshIndicator` in questo modo:
 
 <AutoSnippet raw={displayActivity3} />
 
-## Showing a spinner only during initial load and handling errors.
+## Mostrare uno spinner solo durante il caricamento iniziale e gestire gli errori.
 
-At the moment, our UI does not handle the error/loading states.  
-Instead the data magically pops up when the loading/refresh is done.
+Al momento, la nostra UI non gestisce gli stati di errore/caricamento.
+Al contrario, il dato compare magicamente quando il caricamento/aggiornamento è terminato.
 
-Let's change this by gracefully handling those states. There are two
-cases:
+Cambiamo questo comportamento gestendo con dettaglio quegli stati. Ci sono due
+casi:
 
-- During the initial load, we want to show a full-screen spinner.
-- During a refresh, we want to show the refresh indicator
-  and the previous data/error.
+- Durante il primo caricamento, vogliamo mostrare uno spinner a tutto schermo.
+- Durante un aggiornamento, vogliamo mostrare l'indicatore di aggiornamento
+  e il precedente dato/errore
 
-Fortunately, when listening to an asynchronous provider in Riverpod,
-Riverpod gives us an `AsyncValue`, which offers everything we need.
+Fortunatamente, quando si ascolta un provider asincrono in Riverpod, 
+Riverpod ci fornisce un `AsyncValue`, che offre tutto ciò di cui abbiamo bisogno.
 
-That `AsyncValue` can then be combined with Dart 3.0's pattern matching
-as followed:
+Questo `AsyncValue` può inoltre essere combinato con il pattern matching di Dart 3.0 come segue:
 
 <AutoSnippet raw={displayActivity4} />
 
 :::caution
-We use `valueOrNull` here, as currently, using `value` throws
-if in error/loading state.
+Usiamo `valueOrNull` siccome al momento, usare `value` tira un'eccezione 
+se siamo negli stati di errore/caricamento.
 
-Riverpod 3.0 will change this to have `value` behave like `valueOrNull`.
-But for now, let's stick to `valueOrNull`.
+Con Riverpod 3.0 `value` si comporterà come `valueOrNull`.
+Ma per ora, rimaniamo con `valueOrNull`.
 :::
 
 :::tip
-Notice the usage of the `:final valueOrNull?` syntax in our pattern matching.
-This syntax can be used only because `activityProvider` returns a non-nullable
-`Activity`.
+Si noti l'uso della sintassi `:final valueOrNull?` nel nostro pattern matching.
+Questa sintassi può essere utilizzata solo perché `activityProvider` restituisce 
+un'`Activity` non nullabile.
 
-If your data can be `null`, you can instead use `AsyncValue(hasData: true, :final valueOrNull)`.
-This will correctly handle cases where the data is `null`, at the cost of
-a few extra characters.
+Se il tuo dato può essere `null`, puoi invece utilizzare `AsyncValue(hasData: true, :final valueOrNull)`.
+Ciò gestirà in modo corretto i casi dove il dato è `null`, al costo di qualche carattere in più.
 :::
 
-## Wrapping up: full application
+## Riassumendo: applicazione completa
 
-Here is the combined source of everything we've covered so far:
+Di seguito il codice combinato con tutte ciò che abbiamo visto fino ad ora.
 
 <AutoSnippet {...fullApp} />

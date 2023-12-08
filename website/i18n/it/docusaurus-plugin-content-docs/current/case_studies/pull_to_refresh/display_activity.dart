@@ -14,7 +14,7 @@ class ActivityView extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Pull to refresh')),
       body: Center(
-        // If we have an activity, display it, otherwise wait
+        // Se abbiamo un'attività, la mostriamo, altrimenti aspettiamo
         child: Text(activity.valueOrNull?.activity ?? ''),
       ),
     );

@@ -254,7 +254,7 @@ export const documentTitles = {
     "essentials/auto_dispose": "Svuotare la cache e reagire alla cancellazione dello stato",
     "concepts/about_hooks": "About hooks",
     "concepts/about_code_generation": "About code generation",
-    "case_studies/pull_to_refresh": "Pull to refresh",
+    "case_studies/pull_to_refresh": "Pull to refresh (trascina per aggiornare)",
     "case_studies/cancel": "Debouncing/Cancelling network requests",
     "advanced/select": "Optimizing performance",
   },
