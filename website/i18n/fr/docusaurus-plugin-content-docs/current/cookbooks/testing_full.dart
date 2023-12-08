@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -22,7 +21,7 @@ class Todo {
 // Nous exposons notre instance de référentiel dans un provider
 final repositoryProvider = Provider((ref) => Repository());
 
-/// La liste des todos. Ici, nous les récupérons simplement sur 
+/// La liste des todos. Ici, nous les récupérons simplement sur
 /// le serveur en utilisant [Repository] et ne faisons rien d'autre.
 final todoListProvider = FutureProvider((ref) async {
   // Obtention de l'instance Repository
@@ -43,7 +42,7 @@ class FakeRepository implements Repository {
 }
 
 class TodoItem extends StatelessWidget {
-  const TodoItem({Key? key, required this.todo}) : super(key: key);
+  const TodoItem({super.key, required this.todo});
   final Todo todo;
   @override
   Widget build(BuildContext context) {
@@ -56,9 +55,9 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          repositoryProvider.overrideWithValue(FakeRepository())
+          repositoryProvider.overrideWithValue(FakeRepository()),
         ],
-        // Notre application, qui lira le todoListProvider pour afficher la liste des todos à faire. 
+        // Notre application, qui lira le todoListProvider pour afficher la liste des todos à faire.
         // Vous pouvez l'extraire dans un widget MyApp
         child: MaterialApp(
           home: Scaffold(

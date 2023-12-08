@@ -8,7 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 // Un compteur implémenté et testé avec Flutter
 
-// Nous avons déclaré un provider globalement, et nous allons l'utiliser dans deux tests, 
+// Nous avons déclaré un provider globalement, et nous allons l'utiliser dans deux tests,
 // pour voir si l'état se réinitialise correctement à `0` entre les tests.
 
 final counterProvider = StateProvider((ref) => 0);

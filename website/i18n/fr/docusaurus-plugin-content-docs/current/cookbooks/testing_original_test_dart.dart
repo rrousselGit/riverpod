@@ -13,12 +13,13 @@ final counterProvider = StateProvider((ref) => 0);
 
 // Utilisation de mockito pour garder une trace du moment où un provider notifie ses listeners
 class Listener extends Mock {
+  // ignore: unreachable_from_main
   void call(int? previous, int value);
 }
 
 void main() {
   test('defaults to 0 and notify listeners when value changes', () {
-    // Un objet qui nous permettra de lire les providers 
+    // Un objet qui nous permettra de lire les providers
     // Ne le partagez pas entre les tests.
     final container = ProviderContainer();
     addTearDown(container.dispose);
@@ -27,7 +28,7 @@ void main() {
     // Observer un provider et suivre les changements.
     container.listen<int>(
       counterProvider,
-      listener,
+      listener.call,
       fireImmediately: true,
     );
 
@@ -52,7 +53,7 @@ void main() {
 
     container.listen<int>(
       counterProvider,
-      listener,
+      listener.call,
       fireImmediately: true,
     );
 

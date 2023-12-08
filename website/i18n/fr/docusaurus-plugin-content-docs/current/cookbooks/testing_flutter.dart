@@ -3,8 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class MyApp extends StatelessWidget {
-  // ignore: prefer_const_constructors_in_immutables
-  MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +30,7 @@ void main() {
           // Il n'est pas nécessaire de surcharger `todoListProvider`,
           // il utilisera automatiquement le repositoryProvider surchargé.
         ],
-        child: MyApp(),
+        child: const MyApp(),
       ),
     );
   });
