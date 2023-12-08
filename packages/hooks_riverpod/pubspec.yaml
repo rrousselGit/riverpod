@@ -1,7 +1,7 @@
 name: hooks_riverpod
 description: >
-  A simple way to access state from anywhere in your application
-  while robust and testable.
+  A reactive caching and data-binding framework.
+  Riverpod makes working with asynchronous code a breeze.
 version: 2.4.9
 homepage: https://riverpod.dev
 repository: https://github.com/rrousselGit/riverpod
