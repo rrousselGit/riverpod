@@ -249,7 +249,7 @@ export const documentTitles = {
     "essentials/first_request": "Effettua la tua prima richiesta di provider/rete",
     "essentials/faq": "FAQ",
     "essentials/eager_initialization": "Inizializzazione anticipata dei provider",
-    "essentials/do_dont": "DO/DON'T",
+    "essentials/do_dont": "FARE/NON FARE",
     "essentials/combining_requests": "Combinare richieste",
     "essentials/auto_dispose": "Svuotare la cache e reagire alla cancellazione dello stato",
     "concepts/about_hooks": "About hooks",
