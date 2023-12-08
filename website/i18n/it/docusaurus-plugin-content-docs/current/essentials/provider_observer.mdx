@@ -1,34 +1,33 @@
 ---
-title: Logging and error reporting
+title: Logging e segnalazione degli errori
 ---
 
-import { AutoSnippet, When } from "../../../../../src/components/CodeSnippet";
+import { AutoSnippet } from "../../../../../src/components/CodeSnippet";
 import providerObserver from "!!raw-loader!./provider_observer/provider_observer.dart";
 
-Riverpod natively offers a way to listen to all events happening
-in the provider tree.  
-This can be used to log all the events, or to report errors to a
-remote service.
+Riverpod offre nativamente un modo per ascoltare tutti gli eventi che 
+succedono nell'albero dei provider.
+Questo può essere usato per loggare tutti gli eventi, o riportare gli errori 
+ad un servizio remoto.
 
-This is achieved by using the `ProviderObserver` class,
-and passing it to `ProviderScope`/`ProviderContainer`.
+Ciò è possibile usando la classe `ProviderObserver`, 
+che viene passata a `ProviderScope`/`ProviderContainer`.
 
-## Defining a ProviderObserver
+## Definire un ProviderObserver
 
-A `ProviderObserver` is a class that should be extended.  
-It offers various methods which can be overridden to listen to events:
+Un `ProviderObserver` è una classe che dovrebbe essere estesa.
+Offre vari metodi che possono essere sovrascritti per ascoltare gli eventi:
 
-- `didAddProvider`, called when a provider is added to the tree
-- `didUpdateProvider`, called when a provider is updated
-- `didDisposeProvider`, called when a provider is disposed
-- `providerDidFail`, when a synchronous provider throws an error
+- `didAddProvider`, chiamato quando un provider è aggiunto all'albero
+- `didUpdateProvider`, chiamato quando un provider viene aggiornato
+- `didDisposeProvider`, chiamato quando un provider viene distrutto
+- `providerDidFail`, quando un provider sincrono tira un errore
 
 <AutoSnippet raw={providerObserver} />
 
-## Using a ProviderObserver
+## Usare un ProviderObserver
 
-Now that we've defined an observer, we need to use it.  
-To do so, we should pass it to either `ProviderScope` or `ProviderContainer`:
+Per utilizzare il nostro observer appena definito dovremmo passarlo a `ProviderScope` o a `ProviderContainer`:
 
 ```dart
 runApp(

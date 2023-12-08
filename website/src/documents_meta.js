@@ -244,7 +244,7 @@ export const documentTitles = {
     "essentials/websockets_sync": "Websocket ed esecuzione sincrona",
     "essentials/testing": "Testare i tuoi provider",
     "essentials/side_effects": "Eseguire side effects",
-    "essentials/provider_observer": "Logging and error reporting",
+    "essentials/provider_observer": "Logging e segnalazione degli errori",
     "essentials/passing_args": "Passare parametri alle tue richieste",
     "essentials/first_request": "Effettua la tua prima richiesta di provider/rete",
     "essentials/faq": "FAQ",
