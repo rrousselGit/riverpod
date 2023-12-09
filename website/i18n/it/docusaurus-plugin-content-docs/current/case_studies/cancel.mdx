@@ -1,9 +1,9 @@
 ---
-title: Debouncing/Cancelling network requests
+title: Respingere (Debouncing)/Cancellare richieste di rete
 ---
 
 import { Link } from "../../../../../src/components/Link";
-import { AutoSnippet, When } from "../../../../../src/components/CodeSnippet";
+import { AutoSnippet } from "../../../../../src/components/CodeSnippet";
 import homeScreen from "!raw-loader!./cancel/home_screen.dart";
 import extension from "!raw-loader!./cancel/extension.dart";
 import detailScreen from "./cancel/detail_screen";
@@ -11,131 +11,129 @@ import detailScreenCancel from "./cancel/detail_screen_cancel";
 import detailScreenDebounce from "./cancel/detail_screen_debounce";
 import providerWithExtension from "./cancel/provider_with_extension";
 
-As applications grow in complexity, it's common to have multiple network requests
-in flight at the same time. For example, a user might be typing in a search box
-and triggering a new request for each keystroke. If the user types quickly, the
-application might have many requests in flight at the same time.
+Man mano che le applicazioni diventano più complesse, è comune avere più richieste di rete
+attive contemporaneamente. Per esempio, un utente potrebbe digitare in una casella di testo 
+e triggerare una nuova richiesta per ogni tasto premuto. Se l'utente digita velocemente, 
+l'applicazione potrebbe avere tante richieste attive in parallelo.
 
-Alternatively, a user might trigger a request, then navigate to a different page
-before the request completes. In this case, the application might have a request
-in flight that is no longer needed.
+Oppure, un utente potrebbe causare una richiesta, per poi navigare in una 
+pagina differente prima che la richiesta sia completata. In questo caso, l'applicazione 
+potrebbe avere una richiesta attiva di cui non abbiamo più bisogno.
 
-To optimize performance in those situations, there are a few techniques you can
-use:
+Per ottimizzare le performance in queste situazioni ci sono delle tecniche che 
+puoi usare:
 
-- "Debouncing" requests. This means that you wait until the user has stopped
-  typing for a certain amount of time before sending the request. This ensures
-  that you only send one request for a given input, even if the user types
-  quickly.
-- "Cancelling" requests. This means that you cancel a request if the user
-  navigates away from the page before the request completes. This ensures that
-  you don't waste time processing a response that the user will never see.
+- "Respingere" (Debouncing) le richieste. Significa che si aspetta finchè l'utente non ha terminato 
+  di digitare per un certo periodo di tempo prima di inviare la richiesta. Questo assicura 
+  di inviare una sola richiesta per un input fornito, anche se l'utente digita velocemente.
+- "Cancellare" le richieste. Significa che puoi cancellare una richiesta se l'utente 
+  esce dalla pagina prima che la richiesta sia completata. Questo assicura di 
+  non sprecare tempo nel processare una risposta che l'utente non vedrà mai.
 
-In Riverpod, both of these techniques are can be implemented in a similar way.
-The key is to use `ref.onDispose` combined with "automatic disposal" or `ref.watch`
-to achieve the desired behavior.
+In Riverpod, entrambe le tecniche possono essere implementate in modo simile.
+La chiave è utilizzare `ref.onDispose` insieme al meccansimo di "distruzione automatica" o 
+`ref.watch` per ottenere il comportamento desiderato.
 
-To showcase this, we will make a simple application with two pages:
+Per dimostrarlo, creeremo una semplice applicazione con due pagine:
 
-- A home screen, with a button which opens a new page
-- A detail page, which displays a random activity from the [Bored API](https://www.boredapi.com/),
-  with the ability to refresh the activity.  
-  See <Link documentID="case_studies/pull_to_refresh" /> for information
-  on how to implement pull-to-refresh.
+- Un pagina home, con un bottone che apre una nuova pagina
+- Una pagina di dettaglio, che mostra un'attività casuale dalle [Bored API](https://www.boredapi.com/),
+  con la possibilità di aggiornare l'attività.
+  Consulta <Link documentID="case_studies/pull_to_refresh" /> per informazioni riguardo a come implementare 
+  un meccanismo di pull-to-refresh.
 
-We will then implement the following behaviors:
+Implementeremo poi i seguenti comportamenti:
 
-- If the user opens the detail page and then navigates back immediately,
-  we will cancel the request for the activity.
-- If the user refreshes the activity multiple times in a row, we will debounce
-  the requests so that we only send one request after the user stops refreshing.
+- Se l'utente apre la pagina di dettaglio e poi naviga indietro immediatamente, 
+  cancelleremo la richiesta dell'attività.
+- Se l'utente riaggiorna l'attività molte volte di fila, respingeremo le richieste 
+  in modo tale di mandare una sola richiesta dopo che l'utente smette di riaggiornare.
 
-## The application
+## L'applicazione
 
 <img
   src="/img/case_studies/cancel/app.gif"
   alt="Gif showcasing the application, opening the detail page and refreshing the activity."
 />
 
-First, let's create the application, without any debouncing or cancelling.  
-We won't use anything fancy here, and stick to a plain `FloatingActionButton` with
-a `Navigator.push` to open the detail page.
+Per prima cosa, creiamo l'applicazione senza nessun meccanismo di debouncing o di cancellazione.
+Non useremo niente di particolare in questo caso e ci atterremo ad un semplice `FloatingActionButton` 
+con un `Navigator.push` per aprire la pagina di dettaglio.
 
-First, let's start with defining our home screen. As usual,
-let's not forget to specify a `ProviderScope` at the root of our application.
+Cominciamo col definire la nostra pagina di home. Come sempre, 
+non ci dimentichiamo di specificare `ProviderScope` alla radice della nostra applicazione.
 
 <AutoSnippet title="lib/src/main.dart" raw={homeScreen} />
 
-Then, let's define our detail page.
-To fetch the activity and implement pull-to-refresh, refer
-to the <Link documentID="case_studies/pull_to_refresh" /> case study.
+Successivamente, definiamo la nosta pagina di dettaglio.
+Per ottenere l'attività ed implementare il meccanismo di pull-to-refresh, 
+riferirsi all'argomento di studio <Link documentID="case_studies/pull_to_refresh" />.
 
 <AutoSnippet title="lib/src/detail_screen.dart" {...detailScreen} />
 
-## Cancelling requests
+## Cancellare le richieste
 
-Now that we have a working application, let's implement the cancellation logic.
+Ora che abbiamo un applicazione funzionante, implementiamo la logica di cancellazione.
 
-To do so, we will use `ref.onDispose` to cancel the request when the user
-navigates away from the page. For this to work, it is important that the
-automatic disposal of providers is enabled.
+Per fare ciò, useremo `ref.onDispose` per cancellare la richiesta quando l'utente 
+esce dalla pagina. Perché funzioni, è importante che la distruzione automatica dei provider 
+sia abilitata.
 
-The exact code needed to cancel the request will depend on the HTTP client.
-In this example, we will use `package:http`, but the same principle applies
-to other clients.
+L'esatto codice necessario per cancellare la richiesta dipenderà dal client HTTP.
+In questo esempio useremo `package:http`, ma lo stesso principio si applica 
+agli altri client.
 
-The key here that `ref.onDispose` will be called when the user navigates away.
-That is because our provider is no-longer used, and therefore disposed
-thanks to automatic disposal.  
-We can therefore use this callback to cancel the request. When using `package:http`,
-this can be done by closing our HTTP client.
+La chiave qui è che `ref.onDispose` verrà chiamato quando l'utente naviga al di fuori.
+Questo perchè il nostro provider non è più usato e quindi distrutto grazie alla distruzione automatica.
+Perciò possiamo utilizzare questa callback per cancellare la richiesta. Se usiamo `package:http`, 
+possiamo chiudere il nostro client HTTP.
 
 <AutoSnippet {...detailScreenCancel} />
 
-## Debouncing requests
+## Respingere (Debouncing) le richieste
 
-Now that we have implemented cancellation, let's implement debouncing.  
-At the moment, if the user refreshes the activity multiple times in a row,
-we will send a request for each refresh.
+Ora che abbiamo implementato la cancellazione, implementiamo il meccanismo di debouncing.
+Al momento, se l'utente riaggiorna l'attività diverse volte di fila, manderemo una 
+richiesta per ogni aggiornamento richiesto.
 
-Technically speaking, now that we have implemented cancellation, this is not
-a problem. If the user refreshes the activity multiple times in a row,
-the previous request will be cancelled, when a new request is made.
+Tecnicamente parlando, ora che abbiamo implementato la cancellazione, questo 
+non è un problema. Poichè, se l'utente riaggiorna l'attività molte volte di fila, 
+la richiesta precedente sarà cancellata quando una nuova richiesta verrà eseguita.
 
-However, this is not ideal. We are still sending multiple requests, and
-wasting bandwidth and server resources.  
-What we could instead do is delay our requests until the user stops refreshing
-the activity for a fixed amount of time.
+Tuttavia, questo non è l'ideale. Stiamo comunque mandando richieste multiple e 
+sprecando banda e risorse del server.
+Ciò che potremmo fare invece è ritardare le nostre richieste finché l'utente non smette 
+di aggiornare l'attività per un periodo di tempo prestabilito.
 
-The logic here is very similar to the cancellation logic. We will again
-use `ref.onDispose`. However, the idea here is that instead of
-closing an HTTP client, we will rely on `onDispose` to abort the request
-before it starts.  
-We will then arbitrarily wait for 500ms before sending the request.
-Then, if the user refreshes the activity again before the 500ms have elapsed,
-`onDispose` will be invoked, aborting the request.
+La logica qui è molto simile a quella della cancellazione. Useremo di nuovo 
+`ref.onDispose`. Tuttavia, l'idea in questo caso è, invece di chiudere il client HTTP, 
+di affidarci alla callback `onDispose` per abortire la richiesta prima ancora che parta.
+Aspetteremo poi arbitrariamente 500ms prima di inviare la richiesta.
+Quindi, se l'utente riaggiorna l'attività di nuovo prima che i 500ms siano trascorsi, 
+`onDispose` sarà invocata, abortendo la richiesta.
 
 :::info
-To abort requests, a common practice is to voluntarily throw.  
-It is safe to throw inside providers after the provider has been disposed.
-The exception will naturally be caught by Riverpod and be ignored.
+Per abortire le richieste, una pratica comune è di generare volontariamente un'eccezione.
+È sicuro generare un'eccezione all'interno dei provider dopo che il provider è stato distrutto.
+L'eccezione sarà catturata da Riverpod ed ignorata.
 :::
 
 <AutoSnippet {...detailScreenDebounce} />
 
-## Going further: Doing both at once
+## Andando oltre: fare entrambe le cose contemporaneamente
 
-We now know how to debounce and cancel requests.  
-But currently, if we want to do another request, we need to copy-paste
-the same logic in multiple places. This is not ideal.
+Ora sappiamo come usare il debounce e cancellare le richieste.
+Ma al momento, se vogliamo effettuare un'altra richiesta, abbiamo bisogno di 
+copiare e incollare la stessa logica in posti diversi. E questo non è l'ideale.
 
-However, we can go further and implement a reusable utility to do both at once.
+Niente panico, possiamo andare avanti ed implementare un'utilità riutilizzabile 
+per fare entrambe le cose in un momento solo.
 
-The idea here is to implement an extension method on `Ref` that will
-handle both cancellation and debouncing in a single method.
+L'idea è di implementare un metodo di estensione su `Ref` che 
+gestirà sia la cancellazione che il debouncing in un singolo metodo.
 
 <AutoSnippet raw={extension} />
 
-We can then use this extension method in our providers as followed:
+Possiamo infine utilizzare questo metodo di estensione nei nostri provider come segue:
 
 <AutoSnippet {...providerWithExtension} />
