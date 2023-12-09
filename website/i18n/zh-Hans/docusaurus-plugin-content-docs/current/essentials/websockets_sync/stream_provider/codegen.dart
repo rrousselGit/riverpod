@@ -9,8 +9,8 @@ part 'codegen.g.dart';
 /* SNIPPET START */
 @riverpod
 Stream<int> streamExample(StreamExampleRef ref) async* {
-  // Every 1 second, yield a number from 0 to 41.
-  // This could be replaced with a Stream from Firestore or GraphQL or anything else.
+  // 每 1 秒产生一个 0 到 41 之间的数字。
+  // 这可以替换为来自 Firestore 或 GraphQL 或其他任何东西的 Stream。
   for (var i = 0; i < 42; i++) {
     yield i;
     await Future<void>.delayed(const Duration(seconds: 1));
@@ -20,10 +20,10 @@ Stream<int> streamExample(StreamExampleRef ref) async* {
 class Consumer extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // The stream is listened to and converted to an AsyncValue.
+    // 该流被监听并转换为 AsyncValue。
     AsyncValue<int> value = ref.watch(streamExampleProvider);
 
-    // We can use the AsyncValue to handle loading/error states and show the data.
+    // 我们可以使用 AsyncValue 来处理加载/错误状态并显示数据。
     return switch (value) {
       AsyncValue(:final error?) => Text('Error: $error'),
       AsyncValue(:final valueOrNull?) => Text('$valueOrNull'),

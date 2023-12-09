@@ -61,7 +61,7 @@ export const documentTitles = {
     "from_provider/quickstart": "快速开始",
     "from_provider/provider_vs_riverpod": "Provider 对比 Riverpod",
     "from_provider/motivation/motivation": "动机",
-    "essentials/websockets_sync": "Websockets and synchronous execution",
+    "essentials/websockets_sync": "Websocket 和同步执行",
     "essentials/testing": "Testing your providers",
     "essentials/side_effects": "执行副作用",
     "essentials/provider_observer": "Logging and error reporting",

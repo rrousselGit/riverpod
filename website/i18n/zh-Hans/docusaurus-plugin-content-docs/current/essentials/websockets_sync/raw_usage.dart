@@ -9,16 +9,16 @@ part 'raw_usage.g.dart';
 /* SNIPPET START */
 @riverpod
 Raw<Stream<int>> rawStream(RawStreamRef ref) {
-  // "Raw" is a typedef. No need to wrap the return
-  // value in a "Raw" constructor.
+  // “Raw”是一个 typedef。
+  // 无需包装返回值的“原始”构造函数中的值。
   return const Stream<int>.empty();
 }
 
 class Consumer extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // The value is no-longer converted to AsyncValue,
-    // and the created stream is returned as is.
+    // 该值不再转换为 AsyncValue，
+    // 并且按原样返回创建的流。
     Stream<int> stream = ref.watch(rawStreamProvider);
     return StreamBuilder<int>(
       stream: stream,

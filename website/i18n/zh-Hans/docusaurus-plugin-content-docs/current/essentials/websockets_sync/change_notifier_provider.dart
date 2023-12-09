@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /* SNIPPET START */
 final myProvider = ChangeNotifierProvider<ValueNotifier<int>>((ref) {
-  // Will listen to and dispose of the ValueNotifier.
-  // Widgets can then "ref.watch" this provider to listen to updates.
+  // 将监听并处置 ValueNotifier。
+  // 然后，小部件可以使用 "ref.watch" 对提供程序侦听更新。
   return ValueNotifier(0);
 });
