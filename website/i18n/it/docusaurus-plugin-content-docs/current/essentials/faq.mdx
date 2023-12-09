@@ -165,7 +165,7 @@ Questo errore succede quando provi ad utilizzare `ref` in un widget che non
 ElevatedButton(
   onPressed: () async {
     await future;
-    ref.read(...); // Potrebbe tirare l'eccezione "Cannot use "ref" after the widget was disposed"
+    ref.read(...); // Potrebbe generare l'eccezione "Cannot use "ref" after the widget was disposed"
   }
 )
 ```
