@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 
 /* SNIPPET START */
 extension DebounceAndCancelExtension on Ref {
-  /// Aspetta per la [duration] (di default a 500ms) e poi ritorna un [Http.Client]
+  /// Aspetta per la [duration] (di default a 500ms) e poi ritorna un [http.Client]
   /// con il quale possiamo effettuare una richiesta.
   ///
   /// Il client sarà chiuso automaticamente quando il provider verrà distrutto.
