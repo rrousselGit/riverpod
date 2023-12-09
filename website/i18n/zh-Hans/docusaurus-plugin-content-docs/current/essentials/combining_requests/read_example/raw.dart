@@ -10,13 +10,13 @@ final notifierProvider = NotifierProvider<MyNotifier, int>(MyNotifier.new);
 class MyNotifier extends Notifier<int> {
   @override
   int build() {
-    // Bad! Do not use "read" here as it is not reactive
+    // 糟糕的！不要在这里使用 "read"，因为它不是反应性的
     ref.read(otherProvider);
 
     return 0;
   }
 
   void increment() {
-    ref.read(otherProvider); // Using "read" here is fine
+    ref.read(otherProvider); // 这里使用 "read" 就可以了
   }
 }

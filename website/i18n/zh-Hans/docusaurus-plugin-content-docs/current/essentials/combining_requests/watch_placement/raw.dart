@@ -7,12 +7,12 @@ final otherProvider = Provider<int>((ref) => 0);
 
 /* SNIPPET START */
 final provider = Provider<int>((ref) {
-  ref.watch(otherProvider); // Good!
-  ref.onDispose(() => ref.watch(otherProvider)); // Bad!
+  ref.watch(otherProvider); // 好！
+  ref.onDispose(() => ref.watch(otherProvider)); // 糟糕！
 
   final someListenable = ValueNotifier(0);
   someListenable.addListener(() {
-    ref.watch(otherProvider); // Bad!
+    ref.watch(otherProvider); // 糟糕！
   });
 
   return 0;
@@ -23,13 +23,13 @@ final notifierProvider = NotifierProvider<MyNotifier, int>(MyNotifier.new);
 class MyNotifier extends Notifier<int> {
   @override
   int build() {
-    ref.watch(otherProvider); // Good!
-    ref.onDispose(() => ref.watch(otherProvider)); // Bad!
+    ref.watch(otherProvider); // 好！
+    ref.onDispose(() => ref.watch(otherProvider)); // 糟糕！
 
     return 0;
   }
 
   void increment() {
-    ref.watch(otherProvider); // Bad!
+    ref.watch(otherProvider); // 糟糕！
   }
 }

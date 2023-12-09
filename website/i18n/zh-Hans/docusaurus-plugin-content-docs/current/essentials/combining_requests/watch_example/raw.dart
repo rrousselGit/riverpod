@@ -12,18 +12,18 @@ const someStream = Stream<({double longitude, double latitude})>.empty();
 /* SNIPPET START */
 final locationProvider =
     StreamProvider<({double longitude, double latitude})>((ref) {
-  // TO-DO: Return a stream which obtains the current location
+  // TO-DO: 返回获取当前位置的流
   return someStream;
 });
 
 final restaurantsNearMeProvider = FutureProvider<List<String>>((ref) async {
-  // We use "ref.watch" to obtain the latest location.
-  // By specifying that ".future" after the provider, our code will wait
-  // for at least one location to be available.
+  // 我们使用 "ref.watch" 来获取最新位置。
+  // 通过在提供程序之后指定 ".future"，
+  // 我们的代码将在等待到至少一个位置信息后可用。
   final location = await ref.watch(locationProvider.future);
 
-  // We can now make a network request based on that location.
-  // For example, we could use the Google Map API:
+  // 我们现在可以根据该位置发出网络请求。
+  // 例如，我们可以使用 Google Map API：
   // https://developers.google.com/maps/documentation/places/web-service/search-nearby
   final response = await http.get(
     Uri.https('maps.googleapis.com', 'maps/api/place/nearbysearch/json', {
@@ -33,7 +33,7 @@ final restaurantsNearMeProvider = FutureProvider<List<String>>((ref) async {
       'key': '<your api key>',
     }),
   );
-  // Obtain the restaurant names from the JSON
+  // 从 JSON 中获取餐厅名称
   final json = jsonDecode(response.body) as Map;
   final results = (json['results'] as List).cast<Map<Object?, Object?>>();
   return results.map((e) => e['name']! as String).toList();

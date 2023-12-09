@@ -12,7 +12,7 @@ int other(OtherRef ref) => 0;
 class Example extends _$Example {
   @override
   int build() {
-    // "Ref" can be used here to read other providers
+    // "Ref" 可以在这里用来阅读其他提供商
     final otherValue = ref.watch(otherProvider);
 
     return 0;

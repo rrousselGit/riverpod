@@ -10,12 +10,12 @@ final otherProvider = Provider<int>((ref) => 0);
 /* SNIPPET START */
 @riverpod
 int example(ExampleRef ref) {
-  ref.watch(otherProvider); // Good!
-  ref.onDispose(() => ref.watch(otherProvider)); // Bad!
+  ref.watch(otherProvider); // 好！
+  ref.onDispose(() => ref.watch(otherProvider)); // 糟糕！
 
   final someListenable = ValueNotifier(0);
   someListenable.addListener(() {
-    ref.watch(otherProvider); // Bad!
+    ref.watch(otherProvider); // 糟糕！
   });
 
   return 0;
@@ -25,13 +25,13 @@ int example(ExampleRef ref) {
 class MyNotifier extends _$MyNotifier {
   @override
   int build() {
-    ref.watch(otherProvider); // Good!
-    ref.onDispose(() => ref.watch(otherProvider)); // Bad!
+    ref.watch(otherProvider); // 好！
+    ref.onDispose(() => ref.watch(otherProvider)); // 糟糕！
 
     return 0;
   }
 
   void increment() {
-    ref.watch(otherProvider); // Bad!
+    ref.watch(otherProvider); // 糟糕！
   }
 }

@@ -70,7 +70,7 @@ export const documentTitles = {
     "essentials/faq": "FAQ",
     "essentials/eager_initialization": "Eager initialization of providers",
     "essentials/do_dont": "DO/DON'T",
-    "essentials/combining_requests": "Combining requests",
+    "essentials/combining_requests": "组合请求",
     "essentials/auto_dispose": "Clearing cache and reacting to state disposal",
     "cookbooks/testing": "Testing",
     "cookbooks/search_as_we_type": "Search as we type",
