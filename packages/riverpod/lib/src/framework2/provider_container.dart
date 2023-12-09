@@ -25,17 +25,19 @@ class _ProviderPointer {
 /// share the same state.
 class _ProviderPointers {
   _ProviderPointers()
-      : orphanPointers = HashMap(),
-        familyPointers = HashMap();
+      : _orphanPointers = HashMap(),
+        _familyPointers = HashMap();
 
   _ProviderPointers.from(ProviderContainer parent)
-      : orphanPointers = HashMap.from(parent._providerPointers.orphanPointers),
-        familyPointers = HashMap.from(parent._providerPointers.familyPointers);
+      : _orphanPointers =
+            HashMap.from(parent._providerPointers._orphanPointers),
+        _familyPointers =
+            HashMap.from(parent._providerPointers._familyPointers);
 
   late final ProviderContainer container;
-  final HashMap<Provider<Object?>, _ProviderPointer> orphanPointers;
+  final HashMap<Provider<Object?>, _ProviderPointer> _orphanPointers;
   final HashMap<Family, HashMap<Provider<Object?>, _ProviderPointer>>
-      familyPointers;
+      _familyPointers;
 
   /// Obtain and possibly mount the [ProviderElement] for a provider.
   ProviderElement<Object?> add(
@@ -49,18 +51,24 @@ class _ProviderPointers {
       final pointer = _ProviderPointer(isFromOverride: isFromOverride);
       final element = provider.createElement(container);
       pointer.element = element;
+
       return pointer;
     }
 
     if (from == null) {
-      final pointer = orphanPointers.putIfAbsent(provider, mount);
+      final pointer = _orphanPointers.putIfAbsent(provider, mount);
+      final element = pointer.element!;
+      // TODO debugAddDependency(element, debugDependentSource: debugDependentSource);
 
-      return pointer.element!;
+      return element;
     } else {
-      final familyPointers = this.familyPointers.putIfAbsent(from, HashMap.new);
-      final pointer = familyPointers.putIfAbsent(provider, mount);
+      final _familyPointers =
+          this._familyPointers.putIfAbsent(from, HashMap.new);
+      final pointer = _familyPointers.putIfAbsent(provider, mount);
+      final element = pointer.element!;
+      // TODO   debugAddDependency(element, debugDependentSource: debugDependentSource);
 
-      return pointer.element!;
+      return element;
     }
   }
 
@@ -69,9 +77,9 @@ class _ProviderPointers {
     final from = provider.from;
 
     if (from == null) {
-      return orphanPointers[provider];
+      return _orphanPointers[provider];
     } else {
-      return familyPointers[from]?[provider];
+      return _familyPointers[from]?[provider];
     }
   }
 
@@ -80,7 +88,26 @@ class _ProviderPointers {
     Provider<Object?> provider, {
     required DebugDependentSource? debugDependentSource,
   }) {
-    return _readPointer(provider)?.element;
+    final element = _readPointer(provider)?.element;
+// TODO    debugAddDependency(element, debugDependentSource: debugDependentSource);
+
+    return element;
+  }
+
+  /// Read the [ProviderElement] for a provider, without creating it if it doesn't exist.
+  Iterable<ProviderElement<Object?>> readFamily(
+    Family family, {
+    required DebugDependentSource? debugDependentSource,
+  }) {
+    final _familyPointers = this._familyPointers[family];
+    if (_familyPointers == null) return const [];
+
+    return _familyPointers.values.map((e) {
+      final element = e.element;
+      // TODO debugAddDependency(element, debugDependentSource: debugDependentSource);
+
+      return element;
+    }).whereNotNull();
   }
 
   /// Remove a provider from this container.
@@ -96,9 +123,9 @@ class _ProviderPointers {
     final from = provider.from;
 
     if (from == null) {
-      orphanPointers.remove(provider);
+      _orphanPointers.remove(provider);
     } else {
-      final familyPointer = familyPointers[from];
+      final familyPointer = _familyPointers[from];
 
       // Nothing to remove
       if (familyPointer == null) return;
@@ -111,12 +138,12 @@ class _ProviderPointers {
       // The family is empty, remove it.
       // It should be guaranteed that there this won't remove scoped provider pointers
       // as there's a "isFromOverride" check at the beginning of this method.
-      familyPointers.remove(from);
+      _familyPointers.remove(from);
     }
   }
 }
 
-class ProviderContainer {
+final class ProviderContainer {
   ProviderContainer({
     this.parent,
     List<Override> overrides = const [],
@@ -126,7 +153,6 @@ class ProviderContainer {
             ? _ProviderPointers.from(parent)
             : _ProviderPointers() {
     _providerPointers.container = this;
-    _initializeOverrides(overrides);
   }
 
   @visibleForTesting
@@ -150,38 +176,73 @@ class ProviderContainer {
   final _children = <ProviderContainer>[];
   final _ProviderPointers _providerPointers;
 
-  void updateOverrides(List<Override> overrides);
+  final _scheduler = SchedulerBinding();
 
-  void debugReassemble();
+  // TODO void updateOverrides(List<Override> overrides);
 
-  void reload(
-    ProviderOrFamily provider, {
-    @internal DebugDependentSource? debugDependentSource,
-  });
+  // TODO void debugReassemble();
 
   void invalidate(
     ProviderOrFamily provider, {
+    bool asReload = false,
     @internal DebugDependentSource? debugDependentSource,
   }) {
-    _providerPointers.read(provider)?.markNeedsRefresh();
-    _addDependency(provider, StackTrace.current);
+    switch (provider) {
+      case Provider<Object?>():
+        _providerPointers
+            .read(
+              provider,
+              debugDependentSource: kDebugMode
+                  ? (debugDependentSource ??
+                      DebugProviderContainerInvalidateDependentSource(
+                        container: this,
+                      ))
+                  : null,
+            )
+            ?.markNeedsRebuild(asReload: asReload);
+      case Family():
+        final elements = _providerPointers.readFamily(
+          provider,
+          debugDependentSource: debugDependentSource,
+        );
+        for (final element in elements) {
+          element.markNeedsRebuild(asReload: asReload);
+        }
+    }
   }
 
   StateT refresh<StateT>(
     Refreshable<StateT> provider, {
     @internal DebugDependentSource? debugDependentSource,
   }) {
-    invalidate(provider, debugDependentSource: debugDependentSource);
-    _addDependency(provider, StackTrace.current);
+    invalidate(
+      provider._refreshed,
+      debugDependentSource: kDebugMode
+          ? (debugDependentSource ??
+              DebugProviderContainerRefreshDependentSource(container: this))
+          : null,
+    );
+
+    return read(
+      provider,
+      debugDependentSource: kDebugMode
+          ? (debugDependentSource ??
+              DebugProviderContainerRefreshDependentSource(container: this))
+          : null,
+    );
   }
 
-  ProviderElement<T> _insertProvider<T>(Provider<T> provider) {
+  ProviderElement<Object?> _insertProvider(
+    Provider<Object?> provider, {
+    required DebugDependentSource? debugDependentSource,
+  }) {
     return _providerPointers.add(
       provider,
       // If the provider points to an override, a pointer should already be set.
       // So always using `false` isn't an issue.
       isFromOverride: false,
-    ) as ProviderElement<T>;
+      debugDependentSource: debugDependentSource,
+    );
   }
 
   StateT read<StateT>(
@@ -229,10 +290,17 @@ class ProviderContainer {
     Provider<Object?> provider, {
     @internal DebugDependentSource? debugDependentSource,
   }) {
-    return _providerPointers.read(provider) != null;
+    return _providerPointers.read(
+          provider,
+          debugDependentSource: kDebugMode
+              ? (debugDependentSource ??
+                  DebugProviderContainerExistsDependentSource(container: this))
+              : null,
+        ) !=
+        null;
   }
 
-  Future<void> pump();
+  // TODO Future<void> pump();
 
   void dispose() {
     parent?._children.remove(this);

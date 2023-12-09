@@ -46,10 +46,6 @@ class DebugProviderSource {
 @deprecated
 const renameProviderBaseToPRovider = Object();
 
-abstract class NotifierProvider<NotifierT, StateT> {
-  Refreshable<NotifierT> get notifier;
-}
-
 @immutable
 @renameProviderBaseToPRovider
 abstract base class Provider<StateT>
@@ -102,9 +98,13 @@ abstract base class Provider<StateT>
   final List<ProviderOrFamily>? dependencies;
   final List<ProviderOrFamily>? allTransitiveDependencies;
 
+  Refreshable<FutureOr<Object?>> get future;
+  Refreshable<Future<Object?>> get syncFuture;
+  Refreshable<Object?> get notifier;
+
   /// A method that always create a new [ProviderElement].
   @visibleForOverriding
-  ProviderElement<StateT> createElement(ProviderContainer container);
+  ProviderElement<Object?> createElement(ProviderContainer container);
 
   /// A method for fast lookup of the [ProviderElement] associated to this provider.
   ///
@@ -113,9 +113,15 @@ abstract base class Provider<StateT>
   ///
   /// Providers may override this for even faster lookup, such as by caching
   /// the [ProviderElement] in a static field.
-  @visibleForOverriding
-  ProviderElement<StateT> getElement(ProviderContainer container) {
-    return container._insertProvider(this);
+  @protected
+  ProviderElement<Object?> getElement(
+    ProviderContainer container, {
+    required DebugDependentSource? debugDependentSource,
+  }) {
+    return container._insertProvider(
+      this,
+      debugDependentSource: debugDependentSource,
+    );
   }
 
   @visibleForOverriding
@@ -125,19 +131,8 @@ abstract base class Provider<StateT>
     void Function(StateT? previous, StateT next) listener, {
     required bool fireImmediately,
     required void Function(Object error, StackTrace stackTrace)? onError,
-    required DebugProviderSource? debugDependentSource,
+    required DebugDependentSource? debugDependentSource,
     required ProviderElement<Object?>? dependent,
     required void Function()? onCancel,
-  }) {
-    final element = getElement(container);
-
-    return element.addListener(
-      listener,
-      fireImmediately: fireImmediately,
-      onError: onError,
-      debugDependentSource: debugDependentSource,
-      dependent: dependent,
-      onCancel: onCancel,
-    );
-  }
+  });
 }

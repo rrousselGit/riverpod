@@ -16,7 +16,7 @@ abstract class ProviderElement<StateT> {
   ProviderElement(this.container);
 
   /// The provider associated with this [ProviderElement].
-  Provider<StateT> get provider;
+  Provider<Object?> get provider;
 
   /// The container where this [ProviderElement] is attached to.
   final ProviderContainer container;
@@ -30,7 +30,9 @@ abstract class ProviderElement<StateT> {
   bool get paused =>
       _subscriptions.isEmpty || _pauseCount > 0 || _pausedListenerCount > 0;
 
+  bool get disposed => _disposed;
   bool _disposed = false;
+
   _DirtyType? _dirty;
 
   /// What this provider is currently listening to.
@@ -42,23 +44,33 @@ abstract class ProviderElement<StateT> {
   var _pauseCount = 0;
   var _pausedListenerCount = 0;
 
-  // The various life-cycles listeners of a provider.
-  // We store them in the element instead of Ref for performance reasons.
-  // This avoids having to create a new list for each Ref and is less DC intensive.
-  final _onDispose = VoidNotifier();
-  final _onAddListener = VoidNotifier();
-  final _onRemoveListener = VoidNotifier();
-  final _onResume = VoidNotifier();
-  final _onPause = VoidNotifier();
+  // // The various life-cycles listeners of a provider.
+  // // We store them in the element instead of Ref for performance reasons.
+  // // This avoids having to create a new list for each Ref and is less DC intensive.
+  // TODO
+  // final _onDispose = VoidNotifier();
+  // final _onAddListener = VoidNotifier();
+  // final _onRemoveListener = VoidNotifier();
+  // final _onResume = VoidNotifier();
+  // final _onPause = VoidNotifier();
 
   Ref<StateT>? _ref;
+
+  AsyncValue<StateT>? get result => _result;
   AsyncValue<StateT>? _result;
 
-  AsyncValue<StateT> requestState() {
-    container.scheduler.performRebuilds();
+  int get depthApproximation => _depthApproximation;
+  int _depthApproximation = 0;
 
-    final result = _result;
+  AsyncValue<StateT> requestState() {
+    container._scheduler.scheduleBuildFor(this);
+
+    final result = this.result;
     if (result != null) return result;
+
+    throw StateError(
+      'Cannot request state while the provider is not built',
+    );
   }
 
   void _runProviderBuild() {
@@ -80,7 +92,7 @@ abstract class ProviderElement<StateT> {
     }
 
     // Prevent listeners from being notified while we are building.
-    assert(_lockNotifyListeners());
+    // TODO assert(_lockNotifyListeners());
 
     final tenable = Tenable.fromFutureOr(() => build(ref));
 
@@ -99,29 +111,39 @@ abstract class ProviderElement<StateT> {
       }
     }
 
-    assert(_unlockNotifyListeners());
-    assert(_result != null);
+    // TODO assert(_unlockNotifyListeners());
+    assert(result != null);
     // We notify listeners after "build" has completed.
     // This avoids notifying listeners multiple times if multiple state change
     // operations are performed at once.
-    _notifyListeners();
+    // TODO _notifyListeners();
   }
 
-  void setLoading();
-  void setError(Object error, StackTrace stackTrace);
-  void setDats(StateT value);
+  void setLoading() {
+    // TODO
+  }
 
-  ProviderSubscription<StateT> addListener(
-    ProviderListener<StateT> listener, {
+  void setError(Object error, StackTrace stackTrace) {
+    // TODO
+  }
+
+  void setData(StateT value) {
+    // TODO
+  }
+
+  ProviderSubscription<ResultT> addListener<ResultT>(
+    ProviderListener<ResultT> listener, {
     required bool fireImmediately,
     required OnError? onError,
+    required ResultT Function(AsyncValue<StateT> value) convert,
     required DebugDependentSource? debugDependentSource,
     required ProviderElement<Object?>? dependent,
     required OnCancel? onCancel,
   }) {
-    final subscription = _ProviderSubscription<StateT>(
+    final subscription = _ProviderSubscription<ResultT, StateT>(
       this,
       listener,
+      convert: convert,
       fireImmediately: fireImmediately,
       onError: onError,
       debugDependentSource: debugDependentSource,
@@ -146,14 +168,12 @@ abstract class ProviderElement<StateT> {
   @visibleForOverriding
   FutureOr<void> build(Ref<StateT> ref);
 
-  @override
   void pause() {
     if (_disposed) throw StateError('Cannot pause a disposed ProviderElement');
 
     _pauseCount++;
   }
 
-  @override
   void resume() {
     if (_disposed) throw StateError('Cannot resume a disposed ProviderElement');
 
@@ -163,22 +183,18 @@ abstract class ProviderElement<StateT> {
     _pauseCount--;
   }
 
-  void markNeedsReload() => _markNeedsRebuild(isReload: true);
-
-  void markNeedsRefresh() => _markNeedsRebuild();
-
-  void _markNeedsRebuild({bool isReload = false}) {
+  void markNeedsRebuild({bool asReload = false}) {
     if (_dirty != null) {
       // If at least one rebuild request asks for a "reload", then we reload.
       // Otherwise we "refresh".
-      if (isReload) _dirty = _DirtyType.reload;
+      if (asReload) _dirty = _DirtyType.reload;
 
       return;
     }
 
-    _dirty = isReload ? _DirtyType.reload : _DirtyType.refresh;
+    _dirty = asReload ? _DirtyType.reload : _DirtyType.refresh;
 
-    container.scheduler.scheduleBuildFor(this);
+    container._scheduler.scheduleBuildFor(this);
   }
 
   void _runDispose() {
@@ -187,9 +203,9 @@ abstract class ProviderElement<StateT> {
     _ref?._dispose();
     _ref = null;
 
-    _onDispose
-      ..notifyListeners()
-      ..clear();
+    // TODO _onDispose
+    //   ..notifyListeners()
+    //   ..clear();
   }
 
   @mustCallSuper
@@ -218,10 +234,12 @@ abstract class ProviderElement<StateT> {
   }
 }
 
-class _ProviderSubscription<StateT> implements ProviderSubscription<StateT> {
+class _ProviderSubscription<ResultT, StateT>
+    implements ProviderSubscription<ResultT> {
   _ProviderSubscription(
     this._element,
     this._listener, {
+    required ResultT Function(AsyncValue<StateT> value) convert,
     required bool fireImmediately,
     required void Function(Object error, StackTrace stackTrace)? onError,
     required DebugDependentSource? debugDependentSource,
@@ -230,13 +248,15 @@ class _ProviderSubscription<StateT> implements ProviderSubscription<StateT> {
     required void Function()? onCancel,
   })  : _fireImmediately = fireImmediately,
         _onError = onError,
+        _convert = convert,
         _debugDependentSource = debugDependentSource,
         _dependent = dependent,
         _originalDependentSubscriptions = originalDependentSubscriptions,
         _onCancel = onCancel;
 
   final ProviderElement<StateT> _element;
-  final void Function(StateT? previous, StateT next) _listener;
+  final ResultT Function(AsyncValue<StateT>) _convert;
+  final void Function(ResultT? previous, ResultT next) _listener;
   final bool _fireImmediately;
   final void Function(Object error, StackTrace stackTrace)? _onError;
   final DebugDependentSource? _debugDependentSource;
@@ -253,7 +273,7 @@ class _ProviderSubscription<StateT> implements ProviderSubscription<StateT> {
   int _pauseCount = 0;
 
   @override
-  StateT read() {
+  ResultT read() {
     if (_closed) {
       throw StateError('Cannot read from a closed subscription');
     }
@@ -261,7 +281,7 @@ class _ProviderSubscription<StateT> implements ProviderSubscription<StateT> {
       throw StateError('Cannot read from a paused subscription');
     }
 
-    return _element.requestState().data!.value;
+    return _convert(_element.requestState());
   }
 
   @override

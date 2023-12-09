@@ -8,12 +8,12 @@ mixin ProviderListenable<StateT> implements ProviderListenableOrFamily {
     void Function(StateT? previous, StateT next) listener, {
     required bool fireImmediately,
     required void Function(Object error, StackTrace stackTrace)? onError,
-    required DebugProviderSource? debugDependentSource,
+    required DebugDependentSource? debugDependentSource,
     required ProviderElement<Object?>? dependent,
     required void Function()? onCancel,
   });
 
-  ProviderListenable<T> select<T>(T Function(StateT value) selector) {}
+  // TODO select
 }
 
 abstract class ProviderSubscription<StateT> {
@@ -48,4 +48,6 @@ abstract class ProviderSubscription<StateT> {
   void close();
 }
 
-mixin Refreshable<StateT> on ProviderListenable<StateT> {}
+mixin Refreshable<StateT> on ProviderListenable<StateT> {
+  Provider<StateT> get _refreshed;
+}

@@ -3,39 +3,114 @@ part of 'framework.dart';
 class Ref<StateT> {
   Ref._(this._element);
 
-  final ProviderElement<StateT> _element;
+  bool get mounted => !_element.disposed;
+  var _mounted = false;
 
-  ProviderContainer get container => _element.container;
+  ProviderContainer get container {
+    _assertNotDisposed();
+    return _element.container;
+  }
 
   // TODO deprecate state=
-  StateT get state;
+  // StateT get state {
+  //   _assertNotDisposed();
+  // }
 
-  FutureOr<StateT> get future;
+  // TODO
+  // FutureOr<StateT> get future {
+  //   _assertNotDisposed();
+  // }
+
+  final ProviderElement<StateT> _element;
+
+  void _assertNotDisposed() {
+    assert(
+      !_mounted,
+      '''
+Cannot use a disposed "ref". This may happen is:
+- You are using a "ref" on a provider that was disposed (such as because it was no-longer listened).
+- Your provider rebuilt, and therefore a more up-to-date "ref" is available.
+''',
+    );
+  }
 
   @useResult
-  T refresh<T>(Refreshable<T> provider);
-  void invalidate(ProviderOrFamily provider);
-  void reload(ProviderOrFamily provider);
-  void invalidateSelf() => _element.markNeedsRefresh();
-  void reloadSelf() => _element.markNeedsReload();
+  T refresh<T>(Refreshable<T> provider) {
+    _assertNotDisposed();
+    return container.refresh(
+      provider,
+      debugDependentSource: kDebugMode
+          ? DebugRefRefreshDependentSource(provider: _element.provider)
+          : null,
+    );
+  }
 
-  void notifyListeners();
+  void invalidate(ProviderOrFamily provider, {bool asReload = false}) {
+    _assertNotDisposed();
+    container.invalidate(
+      provider,
+      asReload: asReload,
+      debugDependentSource: kDebugMode
+          ? DebugRefInvalidateDependentSource(provider: _element.provider)
+          : null,
+    );
+  }
 
-  void onAddListener(OnAddListener cb);
-  void onRemoveListener(OnRemoveListener cb);
-  void onResume(OnResume cb);
-  void onCancel(OnCancel cb);
-  void onDispose(OnDispose cb);
+  // TODO remove Reload dependent source
 
-  bool exists(Provider<Object?> provider);
+  bool exists(Provider<Object?> provider) {
+    _assertNotDisposed();
+    return container.exists(
+      provider,
+      debugDependentSource: kDebugMode
+          ? DebugRefExistsDependentSource(provider: _element.provider)
+          : null,
+    );
+  }
+
+  void invalidateSelf() {
+    _assertNotDisposed();
+    _element.markNeedsRebuild();
+  }
+
+  void reloadSelf() {
+    _assertNotDisposed();
+    _element.markNeedsRebuild(asReload: true);
+  }
+
+  // TODO
+  // void notifyListeners() => _element.notifyListeners();
+
+  // void onAddListener(OnAddListener cb) {
+  //   _assertNotDisposed();
+  //   _element.onAddListener(cb);
+  // }
+
+  // void onRemoveListener(OnRemoveListener cb) {
+  //   _assertNotDisposed();
+  //   _element.onRemoveListener(cb);
+  // }
+
+  // void onResume(OnResume cb) {
+  //   _assertNotDisposed();
+  //   _element.onResume(cb);
+  // }
+
+  // void onCancel(OnCancel cb) {
+  //   _assertNotDisposed();
+  //   _element.onCancel(cb);
+  // }
+
+  // void onDispose(OnDispose cb) {
+  //   _assertNotDisposed();
+  //   _element.onDispose(cb);
+  // }
 
   T read<T>(ProviderListenable<T> provider) {
-    final subscription = _listen<T>(
+    _assertNotDisposed();
+    final subscription = container.listen<T>(
       provider,
       (_, value) {},
-      onError: null,
-      onCancel: null,
-      fireImmediately: false,
       debugDependentSource: kDebugMode
           ? DebugRefReadDependentSource(provider: _element.provider)
           : null,
@@ -48,37 +123,15 @@ class Ref<StateT> {
   }
 
   T watch<T>(ProviderListenable<T> provider) {
-    final subscription = _listen<T>(
+    final subscription = container.listen<T>(
       provider,
       (_, value) => reloadSelf(),
-      onError: null,
-      onCancel: null,
-      fireImmediately: false,
       debugDependentSource: kDebugMode
           ? DebugRefWatchDependentSource(provider: _element.provider)
           : null,
     );
 
     return subscription.read();
-  }
-
-  ProviderSubscription<T> _listen<T>(
-    ProviderListenable<T> provider,
-    ProviderListener<T> listener, {
-    required OnError? onError,
-    required VoidCallback? onCancel,
-    required bool fireImmediately,
-    required DebugDependentSource? debugDependentSource,
-  }) {
-    return provider.addListener(
-      container,
-      listener,
-      fireImmediately: fireImmediately,
-      onError: onError,
-      onCancel: onCancel,
-      dependent: _element,
-      debugDependentSource: debugDependentSource,
-    );
   }
 
   ProviderSubscription<T> listen<T>(
@@ -88,7 +141,8 @@ class Ref<StateT> {
     VoidCallback? onCancel,
     bool fireImmediately = false,
   }) {
-    return _listen(
+    _assertNotDisposed();
+    return container.listen(
       provider,
       listener,
       onError: onError,
@@ -100,8 +154,14 @@ class Ref<StateT> {
     );
   }
 
-  void listenSelf(
-    ProviderListener<StateT> listener, {
-    OnError? onError,
-  });
+  // Mention bout listening to self does not cause a provider to be "unpaused".
+  // TODO void listenSelf(
+  //   ProviderListener<StateT> listener, {
+  //   OnError? onError,
+  // }) {
+  //   _assertNotDisposed();
+  //   _element._listenSelf(listener, onError);
+  // }
+
+  void _dispose() => _mounted = true;
 }

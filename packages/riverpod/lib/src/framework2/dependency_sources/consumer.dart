@@ -4,6 +4,7 @@ part of '../framework.dart';
 sealed class DebugConsumerDependentSource extends DebugDependentSource {
   DebugConsumerDependentSource({required this.consumer, required this.element});
 
-  final Consumer consumer;
+  // TODO
+  final Object consumer;
   final Element element;
 }

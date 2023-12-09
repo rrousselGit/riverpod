@@ -1,6 +1,9 @@
 part of '../framework.dart';
 
 @internal
+abstract class DebugDependentSource {}
+
+@internal
 sealed class DebugProviderDependentSource extends DebugDependentSource {
   DebugProviderDependentSource._({required this.provider});
 
@@ -32,4 +35,14 @@ final class DebugRefInvalidateDependentSource
 final class DebugRefRefreshDependentSource
     extends DebugProviderDependentSource {
   DebugRefRefreshDependentSource({required super.provider}) : super._();
+}
+
+@internal
+final class DebugRefReloadDependentSource extends DebugProviderDependentSource {
+  DebugRefReloadDependentSource({required super.provider}) : super._();
+}
+
+@internal
+final class DebugRefExistsDependentSource extends DebugProviderDependentSource {
+  DebugRefExistsDependentSource({required super.provider}) : super._();
 }

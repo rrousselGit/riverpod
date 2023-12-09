@@ -1,4 +1,6 @@
-import '../../result.dart';
+import 'package:meta/meta.dart';
+
+import '../../common.dart';
 import '../framework.dart';
 
 abstract base class SyncProvider<StateT> extends Provider<StateT> {
@@ -7,8 +9,12 @@ abstract base class SyncProvider<StateT> extends Provider<StateT> {
     required super.from,
     required super.arguments,
     required super.debugSource,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.isAlwaysAlive,
   });
 
+  @internal
   StateT build(Ref<StateT> ref);
 
   Override overrideWith(Build<StateT, Ref<StateT>> create);
@@ -16,20 +22,49 @@ abstract base class SyncProvider<StateT> extends Provider<StateT> {
   Override overrideWithValue(StateT value);
 
   @override
-  SyncProviderElement<StateT> createElement() => SyncProviderElement(this);
+  ProviderElement<StateT> createElement(ProviderContainer container) {
+    return SyncProviderElement(this, container);
+  }
+
+  @visibleForOverriding
+  @override
+  ProviderSubscription<StateT> addListener(
+    ProviderContainer container,
+    void Function(StateT? previous, StateT next) listener, {
+    required bool fireImmediately,
+    required void Function(Object error, StackTrace stackTrace)? onError,
+    required DebugDependentSource? debugDependentSource,
+    required ProviderElement<Object?>? dependent,
+    required void Function()? onCancel,
+  }) {
+    final element = getElement(
+      container,
+      debugDependentSource: debugDependentSource,
+    ) as SyncProviderElement<StateT>;
+
+    return element.addListener(
+      listener,
+      convert: (value) => value.requireValue,
+      fireImmediately: fireImmediately,
+      onError: onError,
+      debugDependentSource: debugDependentSource,
+      dependent: dependent,
+      onCancel: onCancel,
+    );
+  }
 }
 
 class SyncProviderElement<StateT> extends ProviderElement<StateT> {
-  SyncProviderElement(this.provider);
+  SyncProviderElement(this.provider, super.container);
 
   final SyncProvider<StateT> provider;
 
   @override
   void build(Ref<StateT> ref) {
     try {
-      result = Result.data(provider.build(ref));
+      setData(provider.build(ref));
     } catch (err, stack) {
-      result = Result.error(err, stack);
+      setError(err, stack);
     }
   }
 }
