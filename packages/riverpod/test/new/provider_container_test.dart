@@ -409,6 +409,23 @@ void main() {
       expect(c.depth, 2);
     });
 
+    group('updateOverrides', () {
+      test('is not allowed to remove overrides ', () {
+        final provider = Provider((_) => 0);
+
+        final container = ProviderContainer.test(
+          overrides: [provider.overrideWithValue(42)],
+        );
+
+        expect(container.read(provider), 42);
+
+        expect(
+          () => container.updateOverrides([]),
+          throwsA(isAssertionError),
+        );
+      });
+    });
+
     group('listen', () {
       test('can downcast the listener value', () {
         final container = ProviderContainer.test();

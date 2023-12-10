@@ -182,22 +182,6 @@ void main() {
       });
     });
 
-    group('updateOverrides', () {
-      test('is not allowed to remove overrides ', () {
-        final provider = Provider((_) => 0);
-
-        final container =
-            createContainer(overrides: [provider.overrideWithValue(42)]);
-
-        expect(container.read(provider), 42);
-
-        expect(
-          () => container.updateOverrides([]),
-          throwsA(isAssertionError),
-        );
-      });
-    });
-
     test(
         'flushes listened-to providers even if they have no external listeners',
         () async {

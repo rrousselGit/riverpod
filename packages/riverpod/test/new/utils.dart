@@ -1,4 +1,5 @@
 import 'package:mockito/mockito.dart';
+import 'package:test/test.dart';
 
 class OnDisposeMock extends Mock {
   void call();
@@ -29,3 +30,5 @@ typedef VerifyOnly = VerificationResult Function<T>(
 class Listener<T> extends Mock {
   void call(T? previous, T? next);
 }
+
+final isAssertionError = isA<AssertionError>();
