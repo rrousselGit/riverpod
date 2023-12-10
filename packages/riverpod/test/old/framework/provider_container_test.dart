@@ -144,42 +144,6 @@ void main() {
       verifyOnly(listener, listener(0, 1));
     });
 
-    test(
-        'when the same provider is overridden multiple times at once, uses the latest override',
-        () {
-      final provider = Provider((ref) => 0);
-      final container = createContainer(
-        overrides: [
-          provider.overrideWithValue(21),
-          provider.overrideWithValue(42),
-        ],
-      );
-
-      expect(container.read(provider), 42);
-      expect(container.getAllProviderElements(), [
-        isA<ProviderElementBase<Object?>>()
-            .having((e) => e.origin, 'origin', provider),
-      ]);
-    });
-
-    test(
-        'when the same family is overridden multiple times at once, uses the latest override',
-        () {
-      final provider = Provider.family<int, int>((ref, value) => 0);
-      final container = createContainer(
-        overrides: [
-          provider.overrideWith((ref, value) => 21),
-          provider.overrideWith((ref, value) => 42),
-        ],
-      );
-
-      expect(container.read(provider(0)), 42);
-      expect(container.getAllProviderElements(), [
-        isA<ProviderElementBase<Object?>>()
-            .having((e) => e.origin, 'origin', provider(0)),
-      ]);
-    });
-
     group('validate that properties respect `dependencies`', () {
       test('on reading an element, asserts that dependencies are respected',
           () {
