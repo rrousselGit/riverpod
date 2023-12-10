@@ -75,6 +75,11 @@ abstract class ProviderOrFamily implements ProviderListenableOrFamily {
   ///
   /// In that scenario, the `dependencies` parameter is required and it must
   /// include `scopedProvider`.
+  ///
+  /// See also:
+  /// - [provider_dependencies](https://github.com/rrousselGit/riverpod/tree/master/packages/riverpod_lint#provider_dependencies-riverpod_generator-only)
+  ///   and [scoped_providers_should_specify_dependencies](https://github.com/rrousselGit/riverpod/tree/master/packages/riverpod_lint#scoped_providers_should_specify_dependencies-generator-only).\
+  ///   These are lint rules that will warn about incorrect `dependencies` usages.
   final Iterable<ProviderOrFamily>? dependencies;
 
   /// All the dependencies of a provider and their dependencies too.
