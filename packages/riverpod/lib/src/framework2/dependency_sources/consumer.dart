@@ -6,5 +6,6 @@ sealed class DebugConsumerDependentSource extends DebugDependentSource {
 
   // TODO
   final Object consumer;
-  final Element element;
+  // TODO
+  final Object? element;
 }

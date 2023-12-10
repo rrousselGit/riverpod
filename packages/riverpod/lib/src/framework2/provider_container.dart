@@ -175,7 +175,7 @@ final class ProviderContainer {
   final ProviderContainer? parent;
   final _children = <ProviderContainer>[];
   final _ProviderPointers _providerPointers;
-
+  var _disposed = false;
   final _scheduler = SchedulerBinding();
 
   // TODO void updateOverrides(List<Override> overrides);
@@ -303,6 +303,14 @@ final class ProviderContainer {
   // TODO Future<void> pump();
 
   void dispose() {
+    if (_disposed) return;
+
+    _disposed = true;
     parent?._children.remove(this);
   }
+}
+
+@internal
+extension ProviderContainerTest on ProviderContainer {
+  bool get disposed => _disposed;
 }
