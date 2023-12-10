@@ -45,6 +45,3 @@ typedef VoidCallback = void Function();
 
 @internal
 typedef Build<T, RefT extends Ref<T>> = T Function(RefT ref);
-
-@internal
-const kDebugMode = bool.fromEnvironment('dart.vm.product');

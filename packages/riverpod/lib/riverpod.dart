@@ -50,7 +50,8 @@ export 'src/framework.dart'
         Create,
         Node,
         ProviderElementProxy,
-        OnError;
+        OnError,
+        ProviderContainerTest;
 
 export 'src/future_provider.dart';
 

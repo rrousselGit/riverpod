@@ -5,6 +5,7 @@ import 'dart:collection';
 
 import 'package:meta/meta.dart';
 import 'package:state_notifier/state_notifier.dart';
+import 'package:test/test.dart' as test;
 import 'internals.dart';
 
 part 'framework/always_alive.dart';

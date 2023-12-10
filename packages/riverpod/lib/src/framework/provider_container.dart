@@ -95,6 +95,9 @@ var _debugVerifyDependenciesAreRespectedEnabled = true;
 ///
 /// If you are using Flutter, you do not need to care about this object
 /// (outside of testing), as it is implicitly created for you by `ProviderScope`.
+///
+/// Inside tests, consider using [ProviderContainer.test].
+/// This will automatically dispose the container at the end of the test.
 /// {@endtemplate}
 @sealed
 class ProviderContainer implements Node {
@@ -117,6 +120,12 @@ class ProviderContainer implements Node {
         },
         _root = parent?._root ?? parent {
     if (parent != null) {
+      if (parent.disposed) {
+        throw StateError(
+          'Cannot create a ProviderContainer that has a disposed parent',
+        );
+      }
+
       parent._children.add(this);
       _overrideForFamily.addAll(parent._overrideForFamily);
     }
@@ -137,6 +146,27 @@ class ProviderContainer implements Node {
         );
       }
     }
+  }
+
+  /// An automatically disposed [ProviderContainer].
+  ///
+  /// This constructor works only inside tests, by relying on `package:test`'s
+  /// `addTearDown`.
+  @visibleForTesting
+  factory ProviderContainer.test({
+    ProviderContainer? parent,
+    List<Override> overrides = const [],
+    List<ProviderObserver>? observers,
+  }) {
+    // TODO changelog
+    final container = ProviderContainer(
+      parent: parent,
+      overrides: overrides,
+      observers: observers,
+    );
+    test.addTearDown(container.dispose);
+
+    return container;
   }
 
   final int _debugOverridesLength;
@@ -619,6 +649,12 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
   void dispose() {
     if (_disposed) return;
 
+    if (children.any((child) => !child._disposed)) {
+      throw StateError(
+        'Cannot dispose a ProviderContainer that still has children',
+      );
+    }
+
     _disposed = true;
     _parent?._children.remove(this);
 
@@ -700,6 +736,16 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
       );
     }
   }
+}
+
+@internal
+extension ProviderContainerTest on ProviderContainer {
+  bool get disposed => _disposed;
+
+  ProviderContainer? get root => _root;
+  ProviderContainer? get parent => _parent;
+
+  List<ProviderContainer> get children => _children;
 }
 
 /// An object that listens to the changes of a [ProviderContainer].
