@@ -51,7 +51,8 @@ export 'src/framework.dart'
         Node,
         ProviderElementProxy,
         OnError,
-        ProviderContainerTest;
+        ProviderContainerTest,
+        DebugRiverpodDevtoolBiding;
 
 export 'src/future_provider.dart';
 

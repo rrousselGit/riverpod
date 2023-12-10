@@ -6,8 +6,20 @@ import 'package:test/test.dart';
 import 'utils.dart';
 
 void main() {
+  tearDown(() {
+    // Verifies that there is no container leak.
+    expect(DebugRiverpodDevtoolBiding.containers, isEmpty);
+  });
+
   group('ProviderContainer', () {
     group('constructor', () {
+      test('registers itself in the container list', () {
+        final container = ProviderContainer();
+        addTearDown(container.dispose);
+
+        expect(DebugRiverpodDevtoolBiding.containers, [container]);
+      });
+
       test('throws if "parent" is disposed', () {
         // TODO changelog
 
@@ -17,6 +29,17 @@ void main() {
         expect(
           () => ProviderContainer(parent: root),
           throwsStateError,
+        );
+
+        expect(
+          root.children,
+          isEmpty,
+          reason: 'Invalid containers should not be added as children',
+        );
+        expect(
+          DebugRiverpodDevtoolBiding.containers,
+          isEmpty,
+          reason: 'Invalid containers should not be added to the global list',
         );
       });
 
@@ -53,6 +76,65 @@ void main() {
 
         expect(root.children, [container]);
       });
+
+      group('overrides', () {
+        test(
+            'throws if the same provider is overridden twice in the same container',
+            () {
+          // TODO changelog
+          final provider = Provider((ref) => 0);
+
+          expect(
+            () => ProviderContainer(
+              overrides: [
+                provider.overrideWithValue(42),
+                provider.overrideWithValue(21),
+              ],
+            ),
+            throwsStateError,
+          );
+        });
+
+        test(
+            'throws if the same family is overridden twice in the same container',
+            () {
+          // TODO changelog
+          final provider = Provider.family<int, int>((ref, id) => 0);
+
+          expect(
+            () => ProviderContainer(
+              overrides: [
+                provider.overrideWith((ref, arg) => arg),
+                provider.overrideWith((ref, arg) => arg),
+              ],
+            ),
+            throwsStateError,
+          );
+        });
+
+        test(
+            'supports overriding an already overridden provider/family in a different container',
+            () {
+          final provider = Provider((ref) => 0);
+          final family = Provider.family<int, int>((ref, id) => 0);
+          final root = ProviderContainer(
+            overrides: [
+              provider.overrideWithValue(42),
+              family.overrideWith((ref, arg) => arg),
+            ],
+          );
+          addTearDown(root.dispose);
+
+          final container = ProviderContainer(
+            parent: root,
+            overrides: [
+              provider.overrideWithValue(21),
+              family.overrideWith((ref, arg) => arg * 2),
+            ],
+          );
+          addTearDown(container.dispose);
+        });
+      });
     });
 
     group('.test', () {
@@ -86,6 +168,17 @@ void main() {
     });
 
     group('dispose', () {
+      test('unregisters itself from the container list', () {
+        final container = ProviderContainer();
+        addTearDown(container.dispose);
+
+        expect(DebugRiverpodDevtoolBiding.containers, [container]);
+
+        container.dispose();
+
+        expect(DebugRiverpodDevtoolBiding.containers, isEmpty);
+      });
+
       test('Disposes its children first', () {
         final rootOnDispose = OnDisposeMock();
         final childOnDispose = OnDisposeMock();

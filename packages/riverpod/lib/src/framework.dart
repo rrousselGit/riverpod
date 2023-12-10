@@ -6,6 +6,7 @@ import 'dart:collection';
 import 'package:meta/meta.dart';
 import 'package:state_notifier/state_notifier.dart';
 import 'package:test/test.dart' as test;
+import 'env.dart';
 import 'internals.dart';
 
 part 'framework/always_alive.dart';
@@ -22,3 +23,4 @@ part 'framework/ref.dart';
 part 'framework/selector.dart';
 part 'framework/scheduler.dart';
 part 'framework/value_provider.dart';
+part 'framework/devtool.dart';

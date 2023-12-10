@@ -126,12 +126,19 @@ class ProviderContainer implements Node {
         );
       }
 
-      parent._children.add(this);
       _overrideForFamily.addAll(parent._overrideForFamily);
     }
 
     for (final override in overrides) {
       if (override is ProviderOverride) {
+        final previousReader = _stateReaders[override._origin];
+        if (previousReader != null && previousReader.container == this) {
+          // The provider was already overridden in this container.
+          throw StateError(
+            'Cannot override a provider twice within the same container: ${override._origin}',
+          );
+        }
+
         _overrideForProvider[override._origin] = override._override;
         _stateReaders[override._origin] = _StateReader(
           origin: override._origin,
@@ -140,12 +147,25 @@ class ProviderContainer implements Node {
           isDynamicallyCreated: false,
         );
       } else if (override is FamilyOverride) {
+        final previousOverride = _overrideForFamily[override.overriddenFamily];
+        if (previousOverride != null && previousOverride.container == this) {
+          throw StateError(
+            'Cannot override a family twice within the same container: ${override.overriddenFamily}',
+          );
+        }
+
         _overrideForFamily[override.overriddenFamily] = _FamilyOverrideRef(
           override,
           this,
         );
       }
     }
+
+    // Mutate the parent & global state only at the very end.
+    // This ensures that if an error is thrown, the parent & global state
+    // are not affected.
+    parent?._children.add(this);
+    if (kDebugMode) DebugRiverpodDevtoolBiding.addContainer(this);
   }
 
   /// An automatically disposed [ProviderContainer].
@@ -665,6 +685,10 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
 
     for (final element in getAllProviderElementsInOrder().toList().reversed) {
       element.dispose();
+    }
+
+    if (kDebugMode) {
+      DebugRiverpodDevtoolBiding.removeContainer(this);
     }
   }
 
