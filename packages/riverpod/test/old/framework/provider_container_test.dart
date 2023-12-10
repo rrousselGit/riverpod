@@ -199,27 +199,6 @@ void main() {
     });
 
     test(
-        'after a child container is disposed, ref.watch keeps working on providers associated with the ancestor container',
-        () async {
-      final container = createContainer();
-      final dep = StateProvider((ref) => 0);
-      final provider = Provider((ref) => ref.watch(dep));
-      final listener = Listener<int>();
-      final child = createContainer(parent: container);
-
-      container.listen<int>(provider, listener.call, fireImmediately: true);
-
-      verifyOnly(listener, listener(null, 0));
-
-      child.dispose();
-
-      container.read(dep.notifier).state++;
-      await container.pump();
-
-      verifyOnly(listener, listener(0, 1));
-    });
-
-    test(
         'flushes listened-to providers even if they have no external listeners',
         () async {
       final dep = StateProvider((ref) => 0);

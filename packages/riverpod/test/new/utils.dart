@@ -25,3 +25,7 @@ typedef VerifyOnly = VerificationResult Function<T>(
   Mock mock,
   T matchingInvocations,
 );
+
+class Listener<T> extends Mock {
+  void call(T? previous, T? next);
+}
