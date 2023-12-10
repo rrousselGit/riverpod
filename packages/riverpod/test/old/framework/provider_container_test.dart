@@ -234,21 +234,6 @@ void main() {
       expect(container.read(another), 1);
     });
 
-    test('depth', () {
-      final root = createContainer();
-      final a = createContainer(parent: root);
-      final b = createContainer(parent: a);
-      final c = createContainer(parent: a);
-
-      final root2 = createContainer();
-
-      expect(root.depth, 0);
-      expect(root2.depth, 0);
-      expect(a.depth, 1);
-      expect(b.depth, 2);
-      expect(c.depth, 2);
-    });
-
     group('getAllProviderElements', () {
       test('list scoped providers that depends on nothing', () {
         final scopedProvider = Provider<int>((ref) => 0);

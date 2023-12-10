@@ -393,6 +393,21 @@ void main() {
         verifyOnly(bListener, bListener(1, 2));
       });
     });
+
+    test('depth', () {
+      final root = ProviderContainer.test();
+      final a = ProviderContainer.test(parent: root);
+      final b = ProviderContainer.test(parent: a);
+      final c = ProviderContainer.test(parent: a);
+
+      final root2 = ProviderContainer.test();
+
+      expect(root.depth, 0);
+      expect(root2.depth, 0);
+      expect(a.depth, 1);
+      expect(b.depth, 2);
+      expect(c.depth, 2);
+    });
   });
 }
 

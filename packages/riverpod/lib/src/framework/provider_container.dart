@@ -198,6 +198,7 @@ class ProviderContainer implements Node {
   /// How deep this [ProviderContainer] is in the graph of containers.
   ///
   /// Starts at 0.
+  /// TODO check this is still used after refactoring
   final int depth;
   final ProviderContainer? _root;
   final ProviderContainer? _parent;
