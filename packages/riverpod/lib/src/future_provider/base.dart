@@ -65,7 +65,9 @@ class FutureProvider<T> extends _FutureProviderBase<T>
   FutureOr<T> _create(FutureProviderElement<T> ref) => _createFn(ref);
 
   @override
-  FutureProviderElement<T> createElement() => FutureProviderElement(this);
+  FutureProviderElement<T> createElement(ProviderContainer container) {
+    return FutureProviderElement(this, container);
+  }
 
   /// {@macro riverpod.override_with}
   Override overrideWith(Create<FutureOr<T>, FutureProviderRef<T>> create) {
@@ -90,8 +92,11 @@ class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
     implements FutureProviderRef<T> {
   /// The element of a [FutureProvider]
   @internal
-  // ignore: library_private_types_in_public_api
-  FutureProviderElement(_FutureProviderBase<T> super._provider);
+  FutureProviderElement(
+    // ignore: library_private_types_in_public_api
+    _FutureProviderBase<T> super._provider,
+    super.container,
+  );
 
   @override
   Future<T> get future {

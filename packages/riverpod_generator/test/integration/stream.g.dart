@@ -139,8 +139,10 @@ class GenericProvider<T extends num>
   }
 
   @override
-  AutoDisposeStreamProviderElement<List<T>> createElement() {
-    return _GenericProviderElement(this);
+  AutoDisposeStreamProviderElement<List<T>> createElement(
+    ProviderContainer container,
+  ) {
+    return _GenericProviderElement(this, container);
   }
 
   GenericProvider _copyWith(
@@ -174,7 +176,7 @@ mixin GenericRef<T extends num> on AutoDisposeStreamProviderRef<List<T>> {}
 
 class _GenericProviderElement<T extends num>
     extends AutoDisposeStreamProviderElement<List<T>> with GenericRef<T> {
-  _GenericProviderElement(super.provider);
+  _GenericProviderElement(super.provider, super.container);
 }
 
 String _$publicHash() => r'c5cc0eac434371901cf6ab159a81bba49c58da12';
@@ -376,8 +378,10 @@ class FamilyProvider extends AutoDisposeStreamProvider<String> {
   }
 
   @override
-  AutoDisposeStreamProviderElement<String> createElement() {
-    return _FamilyProviderElement(this);
+  AutoDisposeStreamProviderElement<String> createElement(
+    ProviderContainer container,
+  ) {
+    return _FamilyProviderElement(this, container);
   }
 
   FamilyProvider _copyWith(
@@ -440,7 +444,7 @@ mixin FamilyRef on AutoDisposeStreamProviderRef<String> {
 
 class _FamilyProviderElement extends AutoDisposeStreamProviderElement<String>
     with FamilyRef {
-  _FamilyProviderElement(super.provider);
+  _FamilyProviderElement(super.provider, super.container);
 
   @override
   int get first => (origin as FamilyProvider).first;
@@ -575,8 +579,10 @@ class GenericClassProvider<T extends num>
 
   @override
   AutoDisposeStreamNotifierProviderElement<GenericClass<T>, List<T>>
-      createElement() {
-    return _GenericClassProviderElement(this);
+      createElement(
+    ProviderContainer container,
+  ) {
+    return _GenericClassProviderElement(this, container);
   }
 
   GenericClassProvider _copyWith(
@@ -612,7 +618,7 @@ mixin GenericClassRef<T extends num>
 class _GenericClassProviderElement<T extends num>
     extends AutoDisposeStreamNotifierProviderElement<GenericClass<T>, List<T>>
     with GenericClassRef<T> {
-  _GenericClassProviderElement(super.provider);
+  _GenericClassProviderElement(super.provider, super.container);
 }
 
 String _$publicClassHash() => r'b1526943c8ff0aaa20642bf78e744e5833cf9d02';
@@ -849,9 +855,10 @@ class FamilyClassProvider
   }
 
   @override
-  AutoDisposeStreamNotifierProviderElement<FamilyClass, String>
-      createElement() {
-    return _FamilyClassProviderElement(this);
+  AutoDisposeStreamNotifierProviderElement<FamilyClass, String> createElement(
+    ProviderContainer container,
+  ) {
+    return _FamilyClassProviderElement(this, container);
   }
 
   FamilyClassProvider _copyWith(
@@ -920,7 +927,7 @@ mixin FamilyClassRef on AutoDisposeStreamNotifierProviderRef<String> {
 class _FamilyClassProviderElement
     extends AutoDisposeStreamNotifierProviderElement<FamilyClass, String>
     with FamilyClassRef {
-  _FamilyClassProviderElement(super.provider);
+  _FamilyClassProviderElement(super.provider, super.container);
 
   @override
   int get first => (origin as FamilyClassProvider).first;

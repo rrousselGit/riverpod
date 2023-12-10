@@ -301,6 +301,8 @@ ${parameters.map((e) => '        ${e.name}: ${e.name},\n').join()}
     final familyOverrideClassName =
         '_\$${provider.name.lexeme.titled.public}FamilyOverride';
 
+    // TODO changelog updated to support createElement prototype change
+
     buffer.write('''
 $other
 
@@ -400,8 +402,8 @@ $providerOther
   }
 
   @override
-  $elementType$providerGenerics createElement() {
-    return $elementNameImpl(this);
+  $elementType$providerGenerics createElement(ProviderContainer container,) {
+    return $elementNameImpl(this, container);
   }
 
   $providerTypeNameImpl _copyWith(
@@ -450,7 +452,7 @@ ${e.typeDisplayString} get ${e.name};''';
 }
 
 class $elementNameImpl$typeParametersDefinition extends $elementType$providerGenerics with $refNameImpl$typeParametersUsage {
-  $elementNameImpl(super.provider);
+  $elementNameImpl(super.provider, super.container);
 
 ${parameters.map((e) => '@override ${e.typeDisplayString} get ${e.name} => (origin as $providerTypeNameImpl$typeParametersUsage).${e.name};').join()}
 }

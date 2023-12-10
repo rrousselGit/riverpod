@@ -152,8 +152,10 @@ class ActivityProvider extends AutoDisposeFutureProvider<Activity> {
   }
 
   @override
-  AutoDisposeFutureProviderElement<Activity> createElement() {
-    return _ActivityProviderElement(this);
+  AutoDisposeFutureProviderElement<Activity> createElement(
+    ProviderContainer container,
+  ) {
+    return _ActivityProviderElement(this, container);
   }
 
   ActivityProvider _copyWith(
@@ -191,7 +193,7 @@ mixin ActivityRef on AutoDisposeFutureProviderRef<Activity> {
 
 class _ActivityProviderElement
     extends AutoDisposeFutureProviderElement<Activity> with ActivityRef {
-  _ActivityProviderElement(super.provider);
+  _ActivityProviderElement(super.provider, super.container);
 
   @override
   String get activityType => (origin as ActivityProvider).activityType;

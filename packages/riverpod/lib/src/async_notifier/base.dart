@@ -136,8 +136,10 @@ class AsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
   late final AlwaysAliveRefreshable<Future<T>> future = _asyncFuture<T>(this);
 
   @override
-  AsyncNotifierProviderElement<NotifierT, T> createElement() {
-    return AsyncNotifierProviderElement(this);
+  AsyncNotifierProviderElement<NotifierT, T> createElement(
+    ProviderContainer container,
+  ) {
+    return AsyncNotifierProviderElement(this, container);
   }
 
   @override
@@ -488,7 +490,7 @@ abstract class AsyncNotifierProviderElementBase<
     with FutureHandlerProviderElementMixin<T> {
   /// The element of [AsyncNotifierProvider].
   @internal
-  AsyncNotifierProviderElementBase(super._provider);
+  AsyncNotifierProviderElementBase(super._provider, super.container);
 
   final _notifierNotifier = ProxyElementValueNotifier<NotifierT>();
 
@@ -527,6 +529,7 @@ class AsyncNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
   @internal
   AsyncNotifierProviderElement(
     AsyncNotifierProviderBase<NotifierT, T> super._provider,
+    super.container,
   );
 
   @override

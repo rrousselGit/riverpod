@@ -47,8 +47,10 @@ class AutoDisposeStateNotifierProvider<NotifierT extends StateNotifier<T>, T>
   }
 
   @override
-  AutoDisposeStateNotifierProviderElement<NotifierT, T> createElement() {
-    return AutoDisposeStateNotifierProviderElement._(this);
+  AutoDisposeStateNotifierProviderElement<NotifierT, T> createElement(
+    ProviderContainer container,
+  ) {
+    return AutoDisposeStateNotifierProviderElement._(this, container);
   }
 
   @override
@@ -82,6 +84,7 @@ class AutoDisposeStateNotifierProviderElement<
   /// The [ProviderElementBase] for [StateNotifierProvider]
   AutoDisposeStateNotifierProviderElement._(
     AutoDisposeStateNotifierProvider<NotifierT, T> super._provider,
+    super.container,
   ) : super._();
 }
 

@@ -163,8 +163,10 @@ class FnProvider extends AutoDisposeProvider<int> {
   }
 
   @override
-  AutoDisposeProviderElement<int> createElement() {
-    return _FnProviderElement(this);
+  AutoDisposeProviderElement<int> createElement(
+    ProviderContainer container,
+  ) {
+    return _FnProviderElement(this, container);
   }
 
   FnProvider _copyWith(
@@ -208,7 +210,7 @@ mixin FnRef on AutoDisposeProviderRef<int> {
 }
 
 class _FnProviderElement extends AutoDisposeProviderElement<int> with FnRef {
-  _FnProviderElement(super.provider);
+  _FnProviderElement(super.provider, super.container);
 
   @override
   BuildContext get context1 => (origin as FnProvider).context1;
@@ -374,8 +376,10 @@ class MyNotifierProvider
   }
 
   @override
-  AutoDisposeNotifierProviderElement<MyNotifier, int> createElement() {
-    return _MyNotifierProviderElement(this);
+  AutoDisposeNotifierProviderElement<MyNotifier, int> createElement(
+    ProviderContainer container,
+  ) {
+    return _MyNotifierProviderElement(this, container);
   }
 
   MyNotifierProvider _copyWith(
@@ -423,7 +427,7 @@ mixin MyNotifierRef on AutoDisposeNotifierProviderRef<int> {
 class _MyNotifierProviderElement
     extends AutoDisposeNotifierProviderElement<MyNotifier, int>
     with MyNotifierRef {
-  _MyNotifierProviderElement(super.provider);
+  _MyNotifierProviderElement(super.provider, super.container);
 
   @override
   BuildContext get context1 => (origin as MyNotifierProvider).context1;

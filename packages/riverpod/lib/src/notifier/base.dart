@@ -154,8 +154,10 @@ class NotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
   static const family = NotifierProviderFamilyBuilder();
 
   @override
-  NotifierProviderElement<NotifierT, T> createElement() {
-    return NotifierProviderElement(this);
+  NotifierProviderElement<NotifierT, T> createElement(
+    ProviderContainer container,
+  ) {
+    return NotifierProviderElement(this, container);
   }
 
   @override
@@ -191,7 +193,10 @@ class NotifierProviderElement<NotifierT extends NotifierBase<T>, T>
     extends ProviderElementBase<T> implements NotifierProviderRef<T> {
   /// The element of [NotifierProvider].
   @internal
-  NotifierProviderElement(NotifierProviderBase<NotifierT, T> super._provider);
+  NotifierProviderElement(
+    NotifierProviderBase<NotifierT, T> super._provider,
+    super.container,
+  );
 
   final _notifierNotifier = ProxyElementValueNotifier<NotifierT>();
 

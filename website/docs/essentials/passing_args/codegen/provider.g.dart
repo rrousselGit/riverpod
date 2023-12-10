@@ -182,8 +182,10 @@ class ActivityNotifier2Provider
 
   @override
   AutoDisposeAsyncNotifierProviderElement<ActivityNotifier2, Activity>
-      createElement() {
-    return _ActivityNotifier2ProviderElement(this);
+      createElement(
+    ProviderContainer container,
+  ) {
+    return _ActivityNotifier2ProviderElement(this, container);
   }
 
   ActivityNotifier2Provider _copyWith(
@@ -223,7 +225,7 @@ mixin ActivityNotifier2Ref on AutoDisposeAsyncNotifierProviderRef<Activity> {
 class _ActivityNotifier2ProviderElement
     extends AutoDisposeAsyncNotifierProviderElement<ActivityNotifier2, Activity>
     with ActivityNotifier2Ref {
-  _ActivityNotifier2ProviderElement(super.provider);
+  _ActivityNotifier2ProviderElement(super.provider, super.container);
 
   @override
   String get activityType => (origin as ActivityNotifier2Provider).activityType;

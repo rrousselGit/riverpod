@@ -42,8 +42,10 @@ class AutoDisposeStreamProvider<T> extends _StreamProviderBase<T>
   Stream<T> _create(AutoDisposeStreamProviderElement<T> ref) => _createFn(ref);
 
   @override
-  AutoDisposeStreamProviderElement<T> createElement() {
-    return AutoDisposeStreamProviderElement(this);
+  AutoDisposeStreamProviderElement<T> createElement(
+    ProviderContainer container,
+  ) {
+    return AutoDisposeStreamProviderElement(this, container);
   }
 
   @override
@@ -75,6 +77,7 @@ class AutoDisposeStreamProviderElement<T> extends StreamProviderElement<T>
   /// The [ProviderElementBase] for [StreamProvider]
   AutoDisposeStreamProviderElement(
     AutoDisposeStreamProvider<T> super._provider,
+    super.container,
   );
 }
 

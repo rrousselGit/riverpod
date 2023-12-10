@@ -71,8 +71,10 @@ class AutoDisposeFamilyAsyncNotifierProviderImpl<
   late final Refreshable<Future<T>> future = _asyncFuture<T>(this);
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<NotifierT, T> createElement() {
-    return AutoDisposeAsyncNotifierProviderElement(this);
+  AutoDisposeAsyncNotifierProviderElement<NotifierT, T> createElement(
+    ProviderContainer container,
+  ) {
+    return AutoDisposeAsyncNotifierProviderElement(this, container);
   }
 
   @override

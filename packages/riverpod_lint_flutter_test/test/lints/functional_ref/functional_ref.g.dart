@@ -169,8 +169,10 @@ class GenericsProvider<A extends num, B> extends AutoDisposeProvider<int> {
   }
 
   @override
-  AutoDisposeProviderElement<int> createElement() {
-    return _GenericsProviderElement(this);
+  AutoDisposeProviderElement<int> createElement(
+    ProviderContainer container,
+  ) {
+    return _GenericsProviderElement(this, container);
   }
 
   GenericsProvider _copyWith(
@@ -205,7 +207,7 @@ mixin GenericsRef<A extends num, B> on AutoDisposeProviderRef<int> {}
 
 class _GenericsProviderElement<A extends num, B>
     extends AutoDisposeProviderElement<int> with GenericsRef<A, B> {
-  _GenericsProviderElement(super.provider);
+  _GenericsProviderElement(super.provider, super.container);
 }
 
 String _$noGenericsHash() => r'449264e25990bc14ad811c0940117c8cde4d730a';
@@ -320,8 +322,10 @@ class NoGenericsProvider<A extends num, B> extends AutoDisposeProvider<int> {
   }
 
   @override
-  AutoDisposeProviderElement<int> createElement() {
-    return _NoGenericsProviderElement(this);
+  AutoDisposeProviderElement<int> createElement(
+    ProviderContainer container,
+  ) {
+    return _NoGenericsProviderElement(this, container);
   }
 
   NoGenericsProvider _copyWith(
@@ -356,7 +360,7 @@ mixin NoGenericsRef<A extends num, B> on AutoDisposeProviderRef<int> {}
 
 class _NoGenericsProviderElement<A extends num, B>
     extends AutoDisposeProviderElement<int> with NoGenericsRef<A, B> {
-  _NoGenericsProviderElement(super.provider);
+  _NoGenericsProviderElement(super.provider, super.container);
 }
 
 String _$missingGenericsHash() => r'7d8bc49e4f1e466260fbf6a61a3f9e62b4aef28f';
@@ -470,8 +474,10 @@ class MissingGenericsProvider<A, B> extends AutoDisposeProvider<int> {
   }
 
   @override
-  AutoDisposeProviderElement<int> createElement() {
-    return _MissingGenericsProviderElement(this);
+  AutoDisposeProviderElement<int> createElement(
+    ProviderContainer container,
+  ) {
+    return _MissingGenericsProviderElement(this, container);
   }
 
   MissingGenericsProvider _copyWith(
@@ -506,7 +512,7 @@ mixin MissingGenericsRef<A, B> on AutoDisposeProviderRef<int> {}
 
 class _MissingGenericsProviderElement<A, B>
     extends AutoDisposeProviderElement<int> with MissingGenericsRef<A, B> {
-  _MissingGenericsProviderElement(super.provider);
+  _MissingGenericsProviderElement(super.provider, super.container);
 }
 
 String _$wrongOrderHash() => r'6732863e85b220c07f82c2d13be15c1e6f08192d';
@@ -620,8 +626,10 @@ class WrongOrderProvider<B, A> extends AutoDisposeProvider<int> {
   }
 
   @override
-  AutoDisposeProviderElement<int> createElement() {
-    return _WrongOrderProviderElement(this);
+  AutoDisposeProviderElement<int> createElement(
+    ProviderContainer container,
+  ) {
+    return _WrongOrderProviderElement(this, container);
   }
 
   WrongOrderProvider _copyWith(
@@ -656,7 +664,7 @@ mixin WrongOrderRef<B, A> on AutoDisposeProviderRef<int> {}
 
 class _WrongOrderProviderElement<B, A> extends AutoDisposeProviderElement<int>
     with WrongOrderRef<B, A> {
-  _WrongOrderProviderElement(super.provider);
+  _WrongOrderProviderElement(super.provider, super.container);
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package

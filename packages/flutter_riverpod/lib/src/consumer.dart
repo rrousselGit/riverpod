@@ -86,7 +86,7 @@ abstract class WidgetRef {
   /// As opposed to [listen], [listenManual] is not safe to use within the `build`
   /// method of a widget.
   /// Instead, [listenManual] is designed to be used inside [State.initState] or
-  /// other [State] lifecycles.
+  /// other [State] lifecycle.
   ///
   /// [listenManual] returns a [ProviderSubscription] which can be used to stop
   /// listening to the provider, or to read the current value exposed by
@@ -237,7 +237,7 @@ abstract class WidgetRef {
   /// If used on a provider which is not initialized, this method will have no effect.
   void invalidate(ProviderOrFamily provider);
 
-  void reload(ProviderOrFamily provider);
+  // TODO reload
 }
 
 /// A function that can also listen to providers

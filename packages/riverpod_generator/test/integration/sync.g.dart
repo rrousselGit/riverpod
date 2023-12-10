@@ -138,8 +138,10 @@ class GenericProvider<T extends num> extends AutoDisposeProvider<List<T>> {
   }
 
   @override
-  AutoDisposeProviderElement<List<T>> createElement() {
-    return _GenericProviderElement(this);
+  AutoDisposeProviderElement<List<T>> createElement(
+    ProviderContainer container,
+  ) {
+    return _GenericProviderElement(this, container);
   }
 
   GenericProvider _copyWith(
@@ -173,7 +175,7 @@ mixin GenericRef<T extends num> on AutoDisposeProviderRef<List<T>> {}
 
 class _GenericProviderElement<T extends num>
     extends AutoDisposeProviderElement<List<T>> with GenericRef<T> {
-  _GenericProviderElement(super.provider);
+  _GenericProviderElement(super.provider, super.container);
 }
 
 String _$complexGenericHash() => r'a5254e5552cd61bb8d65c018539ff2d8edfd5822';
@@ -320,8 +322,10 @@ class ComplexGenericProvider<T extends num, Foo extends String?>
   }
 
   @override
-  AutoDisposeProviderElement<List<T>> createElement() {
-    return _ComplexGenericProviderElement(this);
+  AutoDisposeProviderElement<List<T>> createElement(
+    ProviderContainer container,
+  ) {
+    return _ComplexGenericProviderElement(this, container);
   }
 
   ComplexGenericProvider _copyWith(
@@ -371,7 +375,7 @@ mixin ComplexGenericRef<T extends num, Foo extends String?>
 
 class _ComplexGenericProviderElement<T extends num, Foo extends String?>
     extends AutoDisposeProviderElement<List<T>> with ComplexGenericRef<T, Foo> {
-  _ComplexGenericProviderElement(super.provider);
+  _ComplexGenericProviderElement(super.provider, super.container);
 
   @override
   T get param => (origin as ComplexGenericProvider<T, Foo>).param;
@@ -532,8 +536,10 @@ class RawFamilyFutureProvider extends AutoDisposeProvider<Raw<Future<String>>> {
   }
 
   @override
-  AutoDisposeProviderElement<Raw<Future<String>>> createElement() {
-    return _RawFamilyFutureProviderElement(this);
+  AutoDisposeProviderElement<Raw<Future<String>>> createElement(
+    ProviderContainer container,
+  ) {
+    return _RawFamilyFutureProviderElement(this, container);
   }
 
   RawFamilyFutureProvider _copyWith(
@@ -572,7 +578,7 @@ mixin RawFamilyFutureRef on AutoDisposeProviderRef<Raw<Future<String>>> {
 class _RawFamilyFutureProviderElement
     extends AutoDisposeProviderElement<Raw<Future<String>>>
     with RawFamilyFutureRef {
-  _RawFamilyFutureProviderElement(super.provider);
+  _RawFamilyFutureProviderElement(super.provider, super.container);
 
   @override
   int get id => (origin as RawFamilyFutureProvider).id;
@@ -703,8 +709,10 @@ class RawFamilyStreamProvider extends AutoDisposeProvider<Raw<Stream<String>>> {
   }
 
   @override
-  AutoDisposeProviderElement<Raw<Stream<String>>> createElement() {
-    return _RawFamilyStreamProviderElement(this);
+  AutoDisposeProviderElement<Raw<Stream<String>>> createElement(
+    ProviderContainer container,
+  ) {
+    return _RawFamilyStreamProviderElement(this, container);
   }
 
   RawFamilyStreamProvider _copyWith(
@@ -743,7 +751,7 @@ mixin RawFamilyStreamRef on AutoDisposeProviderRef<Raw<Stream<String>>> {
 class _RawFamilyStreamProviderElement
     extends AutoDisposeProviderElement<Raw<Stream<String>>>
     with RawFamilyStreamRef {
-  _RawFamilyStreamProviderElement(super.provider);
+  _RawFamilyStreamProviderElement(super.provider, super.container);
 
   @override
   int get id => (origin as RawFamilyStreamProvider).id;
@@ -963,8 +971,10 @@ class FamilyProvider extends AutoDisposeProvider<String> {
   }
 
   @override
-  AutoDisposeProviderElement<String> createElement() {
-    return _FamilyProviderElement(this);
+  AutoDisposeProviderElement<String> createElement(
+    ProviderContainer container,
+  ) {
+    return _FamilyProviderElement(this, container);
   }
 
   FamilyProvider _copyWith(
@@ -1027,7 +1037,7 @@ mixin FamilyRef on AutoDisposeProviderRef<String> {
 
 class _FamilyProviderElement extends AutoDisposeProviderElement<String>
     with FamilyRef {
-  _FamilyProviderElement(super.provider);
+  _FamilyProviderElement(super.provider, super.container);
 
   @override
   int get first => (origin as FamilyProvider).first;
@@ -1189,8 +1199,10 @@ class GenericClassProvider<T extends num>
   }
 
   @override
-  AutoDisposeNotifierProviderElement<GenericClass<T>, List<T>> createElement() {
-    return _GenericClassProviderElement(this);
+  AutoDisposeNotifierProviderElement<GenericClass<T>, List<T>> createElement(
+    ProviderContainer container,
+  ) {
+    return _GenericClassProviderElement(this, container);
   }
 
   GenericClassProvider _copyWith(
@@ -1226,7 +1238,7 @@ mixin GenericClassRef<T extends num>
 class _GenericClassProviderElement<T extends num>
     extends AutoDisposeNotifierProviderElement<GenericClass<T>, List<T>>
     with GenericClassRef<T> {
-  _GenericClassProviderElement(super.provider);
+  _GenericClassProviderElement(super.provider, super.container);
 }
 
 String _$rawFutureClassHash() => r'bf66f1cdbd99118b8845d206e6a2611b3101f45c';
@@ -1401,8 +1413,10 @@ class RawFamilyFutureClassProvider extends AutoDisposeNotifierProviderImpl<
 
   @override
   AutoDisposeNotifierProviderElement<RawFamilyFutureClass, Raw<Future<String>>>
-      createElement() {
-    return _RawFamilyFutureClassProviderElement(this);
+      createElement(
+    ProviderContainer container,
+  ) {
+    return _RawFamilyFutureClassProviderElement(this, container);
   }
 
   RawFamilyFutureClassProvider _copyWith(
@@ -1442,7 +1456,7 @@ mixin RawFamilyFutureClassRef
 class _RawFamilyFutureClassProviderElement
     extends AutoDisposeNotifierProviderElement<RawFamilyFutureClass,
         Raw<Future<String>>> with RawFamilyFutureClassRef {
-  _RawFamilyFutureClassProviderElement(super.provider);
+  _RawFamilyFutureClassProviderElement(super.provider, super.container);
 
   @override
   int get id => (origin as RawFamilyFutureClassProvider).id;
@@ -1588,8 +1602,10 @@ class RawFamilyStreamClassProvider extends AutoDisposeNotifierProviderImpl<
 
   @override
   AutoDisposeNotifierProviderElement<RawFamilyStreamClass, Raw<Stream<String>>>
-      createElement() {
-    return _RawFamilyStreamClassProviderElement(this);
+      createElement(
+    ProviderContainer container,
+  ) {
+    return _RawFamilyStreamClassProviderElement(this, container);
   }
 
   RawFamilyStreamClassProvider _copyWith(
@@ -1629,7 +1645,7 @@ mixin RawFamilyStreamClassRef
 class _RawFamilyStreamClassProviderElement
     extends AutoDisposeNotifierProviderElement<RawFamilyStreamClass,
         Raw<Stream<String>>> with RawFamilyStreamClassRef {
-  _RawFamilyStreamClassProviderElement(super.provider);
+  _RawFamilyStreamClassProviderElement(super.provider, super.container);
 
   @override
   int get id => (origin as RawFamilyStreamClassProvider).id;
@@ -1882,8 +1898,10 @@ class FamilyClassProvider
   }
 
   @override
-  AutoDisposeNotifierProviderElement<FamilyClass, String> createElement() {
-    return _FamilyClassProviderElement(this);
+  AutoDisposeNotifierProviderElement<FamilyClass, String> createElement(
+    ProviderContainer container,
+  ) {
+    return _FamilyClassProviderElement(this, container);
   }
 
   FamilyClassProvider _copyWith(
@@ -1952,7 +1970,7 @@ mixin FamilyClassRef on AutoDisposeNotifierProviderRef<String> {
 class _FamilyClassProviderElement
     extends AutoDisposeNotifierProviderElement<FamilyClass, String>
     with FamilyClassRef {
-  _FamilyClassProviderElement(super.provider);
+  _FamilyClassProviderElement(super.provider, super.container);
 
   @override
   int get first => (origin as FamilyClassProvider).first;

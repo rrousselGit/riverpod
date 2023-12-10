@@ -164,8 +164,10 @@ class GeneratedNotifierProvider
   }
 
   @override
-  AutoDisposeNotifierProviderElement<GeneratedNotifier, int> createElement() {
-    return _GeneratedNotifierProviderElement(this);
+  AutoDisposeNotifierProviderElement<GeneratedNotifier, int> createElement(
+    ProviderContainer container,
+  ) {
+    return _GeneratedNotifierProviderElement(this, container);
   }
 
   GeneratedNotifierProvider _copyWith(
@@ -204,7 +206,7 @@ mixin GeneratedNotifierRef on AutoDisposeNotifierProviderRef<int> {
 class _GeneratedNotifierProviderElement
     extends AutoDisposeNotifierProviderElement<GeneratedNotifier, int>
     with GeneratedNotifierRef {
-  _GeneratedNotifierProviderElement(super.provider);
+  _GeneratedNotifierProviderElement(super.provider, super.container);
 
   @override
   int get param => (origin as GeneratedNotifierProvider).param;

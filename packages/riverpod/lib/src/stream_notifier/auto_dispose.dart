@@ -90,8 +90,10 @@ class AutoDisposeStreamNotifierProviderImpl<
   late final Refreshable<Future<T>> future = _streamFuture<T>(this);
 
   @override
-  AutoDisposeStreamNotifierProviderElement<NotifierT, T> createElement() {
-    return AutoDisposeStreamNotifierProviderElement(this);
+  AutoDisposeStreamNotifierProviderElement<NotifierT, T> createElement(
+    ProviderContainer container,
+  ) {
+    return AutoDisposeStreamNotifierProviderElement(this, container);
   }
 
   @override
@@ -127,5 +129,5 @@ class AutoDisposeStreamNotifierProviderElement<
     implements AutoDisposeStreamNotifierProviderRef<T> {
   /// The [ProviderElementBase] for [StreamNotifierProvider]
   @internal
-  AutoDisposeStreamNotifierProviderElement(super._provider);
+  AutoDisposeStreamNotifierProviderElement(super._provider, super.container);
 }

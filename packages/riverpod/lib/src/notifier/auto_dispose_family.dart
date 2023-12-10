@@ -67,8 +67,10 @@ class AutoDisposeFamilyNotifierProviderImpl<NotifierT extends NotifierBase<T>,
   late final Refreshable<NotifierT> notifier = _notifier<NotifierT, T>(this);
 
   @override
-  AutoDisposeNotifierProviderElement<NotifierT, T> createElement() {
-    return AutoDisposeNotifierProviderElement(this);
+  AutoDisposeNotifierProviderElement<NotifierT, T> createElement(
+    ProviderContainer container,
+  ) {
+    return AutoDisposeNotifierProviderElement(this, container);
   }
 
   @override

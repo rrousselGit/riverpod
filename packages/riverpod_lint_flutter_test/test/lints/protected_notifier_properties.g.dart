@@ -188,8 +188,10 @@ class A3Provider extends AutoDisposeNotifierProviderImpl<A3, int> {
   }
 
   @override
-  AutoDisposeNotifierProviderElement<A3, int> createElement() {
-    return _A3ProviderElement(this);
+  AutoDisposeNotifierProviderElement<A3, int> createElement(
+    ProviderContainer container,
+  ) {
+    return _A3ProviderElement(this, container);
   }
 
   A3Provider _copyWith(
@@ -227,7 +229,7 @@ mixin A3Ref on AutoDisposeNotifierProviderRef<int> {
 
 class _A3ProviderElement extends AutoDisposeNotifierProviderElement<A3, int>
     with A3Ref {
-  _A3ProviderElement(super.provider);
+  _A3ProviderElement(super.provider, super.container);
 
   @override
   int get param => (origin as A3Provider).param;
@@ -366,8 +368,10 @@ class A4Provider extends NotifierProviderImpl<A4, int> {
   }
 
   @override
-  NotifierProviderElement<A4, int> createElement() {
-    return _A4ProviderElement(this);
+  NotifierProviderElement<A4, int> createElement(
+    ProviderContainer container,
+  ) {
+    return _A4ProviderElement(this, container);
   }
 
   A4Provider _copyWith(
@@ -404,7 +408,7 @@ mixin A4Ref on NotifierProviderRef<int> {
 }
 
 class _A4ProviderElement extends NotifierProviderElement<A4, int> with A4Ref {
-  _A4ProviderElement(super.provider);
+  _A4ProviderElement(super.provider, super.container);
 
   @override
   int get param => (origin as A4Provider).param;
@@ -543,8 +547,10 @@ class A5Provider extends AutoDisposeAsyncNotifierProviderImpl<A5, int> {
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<A5, int> createElement() {
-    return _A5ProviderElement(this);
+  AutoDisposeAsyncNotifierProviderElement<A5, int> createElement(
+    ProviderContainer container,
+  ) {
+    return _A5ProviderElement(this, container);
   }
 
   A5Provider _copyWith(
@@ -582,7 +588,7 @@ mixin A5Ref on AutoDisposeAsyncNotifierProviderRef<int> {
 
 class _A5ProviderElement
     extends AutoDisposeAsyncNotifierProviderElement<A5, int> with A5Ref {
-  _A5ProviderElement(super.provider);
+  _A5ProviderElement(super.provider, super.container);
 
   @override
   int get param => (origin as A5Provider).param;
@@ -721,8 +727,10 @@ class A6Provider extends AsyncNotifierProviderImpl<A6, int> {
   }
 
   @override
-  AsyncNotifierProviderElement<A6, int> createElement() {
-    return _A6ProviderElement(this);
+  AsyncNotifierProviderElement<A6, int> createElement(
+    ProviderContainer container,
+  ) {
+    return _A6ProviderElement(this, container);
   }
 
   A6Provider _copyWith(
@@ -760,7 +768,7 @@ mixin A6Ref on AsyncNotifierProviderRef<int> {
 
 class _A6ProviderElement extends AsyncNotifierProviderElement<A6, int>
     with A6Ref {
-  _A6ProviderElement(super.provider);
+  _A6ProviderElement(super.provider, super.container);
 
   @override
   int get param => (origin as A6Provider).param;
@@ -899,8 +907,10 @@ class A7Provider extends AutoDisposeStreamNotifierProviderImpl<A7, int> {
   }
 
   @override
-  AutoDisposeStreamNotifierProviderElement<A7, int> createElement() {
-    return _A7ProviderElement(this);
+  AutoDisposeStreamNotifierProviderElement<A7, int> createElement(
+    ProviderContainer container,
+  ) {
+    return _A7ProviderElement(this, container);
   }
 
   A7Provider _copyWith(
@@ -938,7 +948,7 @@ mixin A7Ref on AutoDisposeStreamNotifierProviderRef<int> {
 
 class _A7ProviderElement
     extends AutoDisposeStreamNotifierProviderElement<A7, int> with A7Ref {
-  _A7ProviderElement(super.provider);
+  _A7ProviderElement(super.provider, super.container);
 
   @override
   int get param => (origin as A7Provider).param;
@@ -1077,8 +1087,10 @@ class A8Provider extends StreamNotifierProviderImpl<A8, int> {
   }
 
   @override
-  StreamNotifierProviderElement<A8, int> createElement() {
-    return _A8ProviderElement(this);
+  StreamNotifierProviderElement<A8, int> createElement(
+    ProviderContainer container,
+  ) {
+    return _A8ProviderElement(this, container);
   }
 
   A8Provider _copyWith(
@@ -1116,7 +1128,7 @@ mixin A8Ref on StreamNotifierProviderRef<int> {
 
 class _A8ProviderElement extends StreamNotifierProviderElement<A8, int>
     with A8Ref {
-  _A8ProviderElement(super.provider);
+  _A8ProviderElement(super.provider, super.container);
 
   @override
   int get param => (origin as A8Provider).param;

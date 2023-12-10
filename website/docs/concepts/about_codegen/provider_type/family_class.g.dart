@@ -185,8 +185,10 @@ class ExampleProvider extends AutoDisposeNotifierProviderImpl<Example, String> {
   }
 
   @override
-  AutoDisposeNotifierProviderElement<Example, String> createElement() {
-    return _ExampleProviderElement(this);
+  AutoDisposeNotifierProviderElement<Example, String> createElement(
+    ProviderContainer container,
+  ) {
+    return _ExampleProviderElement(this, container);
   }
 
   ExampleProvider _copyWith(
@@ -234,7 +236,7 @@ mixin ExampleRef on AutoDisposeNotifierProviderRef<String> {
 class _ExampleProviderElement
     extends AutoDisposeNotifierProviderElement<Example, String>
     with ExampleRef {
-  _ExampleProviderElement(super.provider);
+  _ExampleProviderElement(super.provider, super.container);
 
   @override
   int get param1 => (origin as ExampleProvider).param1;

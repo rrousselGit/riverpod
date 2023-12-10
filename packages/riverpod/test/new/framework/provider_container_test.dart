@@ -591,6 +591,16 @@ void main() {
 
         verifyOnly(listener, listener(42, 21));
       });
+
+      test('throws if used on a disposed container', () {
+        final container = ProviderContainer.test();
+        container.dispose();
+
+        expect(
+          () => container.updateOverrides([]),
+          throwsStateError,
+        );
+      });
     });
 
     group('listen', () {

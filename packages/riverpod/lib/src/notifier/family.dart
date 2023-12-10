@@ -70,8 +70,10 @@ class FamilyNotifierProviderImpl<NotifierT extends NotifierBase<T>, T, Arg>
       _notifier<NotifierT, T>(this);
 
   @override
-  NotifierProviderElement<NotifierT, T> createElement() {
-    return NotifierProviderElement(this);
+  NotifierProviderElement<NotifierT, T> createElement(
+    ProviderContainer container,
+  ) {
+    return NotifierProviderElement(this, container);
   }
 
   @override

@@ -44,8 +44,10 @@ class AutoDisposeFutureProvider<T> extends _FutureProviderBase<T>
       _createFn(ref);
 
   @override
-  AutoDisposeFutureProviderElement<T> createElement() {
-    return AutoDisposeFutureProviderElement(this);
+  AutoDisposeFutureProviderElement<T> createElement(
+    ProviderContainer container,
+  ) {
+    return AutoDisposeFutureProviderElement(this, container);
   }
 
   @override
@@ -78,6 +80,7 @@ class AutoDisposeFutureProviderElement<T> extends FutureProviderElement<T>
   @internal
   AutoDisposeFutureProviderElement(
     AutoDisposeFutureProvider<T> super._provider,
+    super.container,
   ) : super();
 }
 

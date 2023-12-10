@@ -152,8 +152,10 @@ class LabelProvider extends AutoDisposeProvider<String> {
   }
 
   @override
-  AutoDisposeProviderElement<String> createElement() {
-    return _LabelProviderElement(this);
+  AutoDisposeProviderElement<String> createElement(
+    ProviderContainer container,
+  ) {
+    return _LabelProviderElement(this, container);
   }
 
   LabelProvider _copyWith(
@@ -191,7 +193,7 @@ mixin LabelRef on AutoDisposeProviderRef<String> {
 
 class _LabelProviderElement extends AutoDisposeProviderElement<String>
     with LabelRef {
-  _LabelProviderElement(super.provider);
+  _LabelProviderElement(super.provider, super.container);
 
   @override
   String get userName => (origin as LabelProvider).userName;

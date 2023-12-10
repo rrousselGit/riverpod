@@ -152,8 +152,10 @@ class ExampleProvider extends AutoDisposeProvider<String> {
   }
 
   @override
-  AutoDisposeProviderElement<String> createElement() {
-    return _ExampleProviderElement(this);
+  AutoDisposeProviderElement<String> createElement(
+    ProviderContainer container,
+  ) {
+    return _ExampleProviderElement(this, container);
   }
 
   ExampleProvider _copyWith(
@@ -191,7 +193,7 @@ mixin ExampleRef on AutoDisposeProviderRef<String> {
 
 class _ExampleProviderElement extends AutoDisposeProviderElement<String>
     with ExampleRef {
-  _ExampleProviderElement(super.provider);
+  _ExampleProviderElement(super.provider, super.container);
 
   @override
   int get param => (origin as ExampleProvider).param;

@@ -26,7 +26,7 @@ mixin AutoDisposeProviderElementMixin<State> on ProviderElementBase<State>
     final links = _keepAliveLinks;
 
     if (!hasListeners && (links == null || links.isEmpty)) {
-      _container.scheduler.scheduleProviderDispose(this);
+      container.scheduler.scheduleProviderDispose(this);
     }
   }
 

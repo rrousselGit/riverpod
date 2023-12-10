@@ -167,8 +167,10 @@ class RandomProvider extends AutoDisposeProvider<int> {
   }
 
   @override
-  AutoDisposeProviderElement<int> createElement() {
-    return _RandomProviderElement(this);
+  AutoDisposeProviderElement<int> createElement(
+    ProviderContainer container,
+  ) {
+    return _RandomProviderElement(this, container);
   }
 
   RandomProvider _copyWith(
@@ -211,7 +213,7 @@ mixin RandomRef on AutoDisposeProviderRef<int> {
 
 class _RandomProviderElement extends AutoDisposeProviderElement<int>
     with RandomRef {
-  _RandomProviderElement(super.provider);
+  _RandomProviderElement(super.provider, super.container);
 
   @override
   int get seed => (origin as RandomProvider).seed;

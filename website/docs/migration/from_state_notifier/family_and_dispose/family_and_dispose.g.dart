@@ -169,8 +169,10 @@ class BugsEncounteredNotifierProvider
 
   @override
   AutoDisposeAsyncNotifierProviderElement<BugsEncounteredNotifier, int>
-      createElement() {
-    return _BugsEncounteredNotifierProviderElement(this);
+      createElement(
+    ProviderContainer container,
+  ) {
+    return _BugsEncounteredNotifierProviderElement(this, container);
   }
 
   BugsEncounteredNotifierProvider _copyWith(
@@ -210,7 +212,7 @@ mixin BugsEncounteredNotifierRef on AutoDisposeAsyncNotifierProviderRef<int> {
 class _BugsEncounteredNotifierProviderElement
     extends AutoDisposeAsyncNotifierProviderElement<BugsEncounteredNotifier,
         int> with BugsEncounteredNotifierRef {
-  _BugsEncounteredNotifierProviderElement(super.provider);
+  _BugsEncounteredNotifierProviderElement(super.provider, super.container);
 
   @override
   String get featureId => (origin as BugsEncounteredNotifierProvider).featureId;

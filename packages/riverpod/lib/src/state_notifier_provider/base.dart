@@ -116,8 +116,10 @@ class StateNotifierProvider<NotifierT extends StateNotifier<T>, T>
   }
 
   @override
-  StateNotifierProviderElement<NotifierT, T> createElement() {
-    return StateNotifierProviderElement._(this);
+  StateNotifierProviderElement<NotifierT, T> createElement(
+    ProviderContainer container,
+  ) {
+    return StateNotifierProviderElement._(this, container);
   }
 
   @override
@@ -148,6 +150,7 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<T>, T>
     implements StateNotifierProviderRef<NotifierT, T> {
   StateNotifierProviderElement._(
     _StateNotifierProviderBase<NotifierT, T> super._provider,
+    super.container,
   );
 
   @override

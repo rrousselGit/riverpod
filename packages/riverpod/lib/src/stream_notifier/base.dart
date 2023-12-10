@@ -107,8 +107,10 @@ class StreamNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
   late final AlwaysAliveRefreshable<Future<T>> future = _streamFuture<T>(this);
 
   @override
-  StreamNotifierProviderElement<NotifierT, T> createElement() {
-    return StreamNotifierProviderElement(this);
+  StreamNotifierProviderElement<NotifierT, T> createElement(
+    ProviderContainer container,
+  ) {
+    return StreamNotifierProviderElement(this, container);
   }
 
   @override
@@ -144,6 +146,7 @@ class StreamNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
   @internal
   StreamNotifierProviderElement(
     StreamNotifierProviderBase<NotifierT, T> super._provider,
+    super.container,
   );
 
   @override

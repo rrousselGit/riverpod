@@ -41,8 +41,10 @@ class AutoDisposeStateProvider<T> extends _StateProviderBase<T> {
   T _create(AutoDisposeStateProviderElement<T> ref) => _createFn(ref);
 
   @override
-  AutoDisposeStateProviderElement<T> createElement() {
-    return AutoDisposeStateProviderElement._(this);
+  AutoDisposeStateProviderElement<T> createElement(
+    ProviderContainer container,
+  ) {
+    return AutoDisposeStateProviderElement._(this, container);
   }
 
   @override
@@ -72,8 +74,10 @@ class AutoDisposeStateProviderElement<T> extends StateProviderElement<T>
     with AutoDisposeProviderElementMixin<T>
     implements AutoDisposeStateProviderRef<T> {
   /// The [ProviderElementBase] for [StateProvider]
-  AutoDisposeStateProviderElement._(AutoDisposeStateProvider<T> super._provider)
-      : super._();
+  AutoDisposeStateProviderElement._(
+    AutoDisposeStateProvider<T> super._provider,
+    super.container,
+  ) : super._();
 }
 
 /// The [Family] of [StateProvider].

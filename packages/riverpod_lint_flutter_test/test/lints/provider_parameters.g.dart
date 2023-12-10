@@ -152,8 +152,10 @@ class GeneratorProvider extends Provider<int> {
   }
 
   @override
-  ProviderElement<int> createElement() {
-    return _GeneratorProviderElement(this);
+  ProviderElement<int> createElement(
+    ProviderContainer container,
+  ) {
+    return _GeneratorProviderElement(this, container);
   }
 
   GeneratorProvider _copyWith(
@@ -190,7 +192,7 @@ mixin GeneratorRef on ProviderRef<int> {
 }
 
 class _GeneratorProviderElement extends ProviderElement<int> with GeneratorRef {
-  _GeneratorProviderElement(super.provider);
+  _GeneratorProviderElement(super.provider, super.container);
 
   @override
   Object? get value => (origin as GeneratorProvider).value;

@@ -40,10 +40,9 @@ class _StateReader {
     }
     _circularDependencyLock ??= origin;
     try {
-      final element = override.createElement()
+      final element = override.createElement(container)
         .._provider = override
         .._origin = origin
-        .._container = container
         ..mount();
 
       element.getState()!.map<void>(
@@ -734,7 +733,7 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
       element.visitAncestors((element) {
         // We ignore dependencies that are defined in another container, as
         // they are in a separate graph
-        if (element._container == this) {
+        if (element.container == this) {
           hasAncestorsInContainer = true;
         }
       });
@@ -764,7 +763,7 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
             // All the parents of a node must have been visited before a node is visited
             var areAllAncestorsAlreadyVisited = true;
             dependent.visitAncestors((e) {
-              if (e._container == this && !visitedNodes.contains(e)) {
+              if (e.container == this && !visitedNodes.contains(e)) {
                 areAllAncestorsAlreadyVisited = false;
               }
             });

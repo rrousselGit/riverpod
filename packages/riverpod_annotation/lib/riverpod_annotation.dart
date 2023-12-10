@@ -7,6 +7,8 @@ export 'package:meta/meta.dart' show visibleForOverriding;
 export 'package:riverpod/src/internals.dart'
     show
         // General stuff
+        // TODO changelog exported ProviderContainer,
+        ProviderContainer,
         Family,
         ProviderOrFamily,
         Override,

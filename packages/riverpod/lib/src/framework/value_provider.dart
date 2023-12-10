@@ -27,8 +27,8 @@ class ValueProvider<State> extends ProviderBase<State>
   Set<ProviderOrFamily>? get allTransitiveDependencies => null;
 
   @override
-  ValueProviderElement<State> createElement() {
-    return ValueProviderElement(this);
+  ValueProviderElement<State> createElement(ProviderContainer container) {
+    return ValueProviderElement(this, container);
   }
 }
 
@@ -37,7 +37,7 @@ class ValueProvider<State> extends ProviderBase<State>
 @internal
 class ValueProviderElement<State> extends ProviderElementBase<State> {
   /// The [ProviderElementBase] of a [ValueProvider]
-  ValueProviderElement(ValueProvider<State> super._provider);
+  ValueProviderElement(ValueProvider<State> super._provider, super.container);
 
   /// A custom listener called when `overrideWithValue` changes
   /// with a different value.

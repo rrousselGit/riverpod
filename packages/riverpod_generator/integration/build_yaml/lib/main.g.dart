@@ -192,8 +192,10 @@ class Count2Provider extends AutoDisposeProvider<int> {
   }
 
   @override
-  AutoDisposeProviderElement<int> createElement() {
-    return _Count2ProviderElement(this);
+  AutoDisposeProviderElement<int> createElement(
+    ProviderContainer container,
+  ) {
+    return _Count2ProviderElement(this, container);
   }
 
   Count2Provider _copyWith(
@@ -231,7 +233,7 @@ mixin Count2Ref on AutoDisposeProviderRef<int> {
 
 class _Count2ProviderElement extends AutoDisposeProviderElement<int>
     with Count2Ref {
-  _Count2ProviderElement(super.provider);
+  _Count2ProviderElement(super.provider, super.container);
 
   @override
   int get a => (origin as Count2Provider).a;
@@ -361,8 +363,10 @@ class CountFuture2Provider extends AutoDisposeFutureProvider<int> {
   }
 
   @override
-  AutoDisposeFutureProviderElement<int> createElement() {
-    return _CountFuture2ProviderElement(this);
+  AutoDisposeFutureProviderElement<int> createElement(
+    ProviderContainer container,
+  ) {
+    return _CountFuture2ProviderElement(this, container);
   }
 
   CountFuture2Provider _copyWith(
@@ -400,7 +404,7 @@ mixin CountFuture2Ref on AutoDisposeFutureProviderRef<int> {
 
 class _CountFuture2ProviderElement extends AutoDisposeFutureProviderElement<int>
     with CountFuture2Ref {
-  _CountFuture2ProviderElement(super.provider);
+  _CountFuture2ProviderElement(super.provider, super.container);
 
   @override
   int get a => (origin as CountFuture2Provider).a;
@@ -530,8 +534,10 @@ class CountStream2Provider extends AutoDisposeStreamProvider<int> {
   }
 
   @override
-  AutoDisposeStreamProviderElement<int> createElement() {
-    return _CountStream2ProviderElement(this);
+  AutoDisposeStreamProviderElement<int> createElement(
+    ProviderContainer container,
+  ) {
+    return _CountStream2ProviderElement(this, container);
   }
 
   CountStream2Provider _copyWith(
@@ -569,7 +575,7 @@ mixin CountStream2Ref on AutoDisposeStreamProviderRef<int> {
 
 class _CountStream2ProviderElement extends AutoDisposeStreamProviderElement<int>
     with CountStream2Ref {
-  _CountStream2ProviderElement(super.provider);
+  _CountStream2ProviderElement(super.provider, super.container);
 
   @override
   int get a => (origin as CountStream2Provider).a;
@@ -762,8 +768,10 @@ class CountNotifier2Provider
   }
 
   @override
-  AutoDisposeNotifierProviderElement<CountNotifier2, int> createElement() {
-    return _CountNotifier2ProviderElement(this);
+  AutoDisposeNotifierProviderElement<CountNotifier2, int> createElement(
+    ProviderContainer container,
+  ) {
+    return _CountNotifier2ProviderElement(this, container);
   }
 
   CountNotifier2Provider _copyWith(
@@ -802,7 +810,7 @@ mixin CountNotifier2Ref on AutoDisposeNotifierProviderRef<int> {
 class _CountNotifier2ProviderElement
     extends AutoDisposeNotifierProviderElement<CountNotifier2, int>
     with CountNotifier2Ref {
-  _CountNotifier2ProviderElement(super.provider);
+  _CountNotifier2ProviderElement(super.provider, super.container);
 
   @override
   int get a => (origin as CountNotifier2Provider).a;
@@ -948,8 +956,10 @@ class CountAsyncNotifier2Provider
 
   @override
   AutoDisposeAsyncNotifierProviderElement<CountAsyncNotifier2, int>
-      createElement() {
-    return _CountAsyncNotifier2ProviderElement(this);
+      createElement(
+    ProviderContainer container,
+  ) {
+    return _CountAsyncNotifier2ProviderElement(this, container);
   }
 
   CountAsyncNotifier2Provider _copyWith(
@@ -988,7 +998,7 @@ mixin CountAsyncNotifier2Ref on AutoDisposeAsyncNotifierProviderRef<int> {
 class _CountAsyncNotifier2ProviderElement
     extends AutoDisposeAsyncNotifierProviderElement<CountAsyncNotifier2, int>
     with CountAsyncNotifier2Ref {
-  _CountAsyncNotifier2ProviderElement(super.provider);
+  _CountAsyncNotifier2ProviderElement(super.provider, super.container);
 
   @override
   int get a => (origin as CountAsyncNotifier2Provider).a;
@@ -1134,8 +1144,10 @@ class CountStreamNotifier2Provider
 
   @override
   AutoDisposeStreamNotifierProviderElement<CountStreamNotifier2, int>
-      createElement() {
-    return _CountStreamNotifier2ProviderElement(this);
+      createElement(
+    ProviderContainer container,
+  ) {
+    return _CountStreamNotifier2ProviderElement(this, container);
   }
 
   CountStreamNotifier2Provider _copyWith(
@@ -1174,7 +1186,7 @@ mixin CountStreamNotifier2Ref on AutoDisposeStreamNotifierProviderRef<int> {
 class _CountStreamNotifier2ProviderElement
     extends AutoDisposeStreamNotifierProviderElement<CountStreamNotifier2, int>
     with CountStreamNotifier2Ref {
-  _CountStreamNotifier2ProviderElement(super.provider);
+  _CountStreamNotifier2ProviderElement(super.provider, super.container);
 
   @override
   int get a => (origin as CountStreamNotifier2Provider).a;

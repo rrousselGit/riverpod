@@ -110,7 +110,7 @@ abstract class ProviderBase<State> extends ProviderOrFamily
 
   /// An internal method that defines how a provider behaves.
   @visibleForOverriding
-  ProviderElementBase<State> createElement();
+  ProviderElementBase<State> createElement(ProviderContainer container);
 
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes

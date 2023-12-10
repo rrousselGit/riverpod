@@ -112,7 +112,11 @@ class StreamProvider<T> extends _StreamProviderBase<T>
   Stream<T> _create(StreamProviderElement<T> ref) => _createFn(ref);
 
   @override
-  StreamProviderElement<T> createElement() => StreamProviderElement(this);
+  StreamProviderElement<T> createElement(
+    ProviderContainer container,
+  ) {
+    return StreamProviderElement(this, container);
+  }
 
   /// {@macro riverpod.override_with}
   @mustBeOverridden
@@ -138,8 +142,11 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
     implements StreamProviderRef<T> {
   /// The element of [StreamProvider].
   @internal
-  // ignore: library_private_types_in_public_api
-  StreamProviderElement(_StreamProviderBase<T> super._provider);
+  StreamProviderElement(
+    // ignore: library_private_types_in_public_api
+    _StreamProviderBase<T> super._provider,
+    super.container,
+  );
 
   final _streamNotifier = ProxyElementValueNotifier<Stream<T>>();
   final StreamController<T> _streamController = StreamController<T>.broadcast();

@@ -81,7 +81,11 @@ class StateProvider<T> extends _StateProviderBase<T>
   T _create(StateProviderElement<T> ref) => _createFn(ref);
 
   @override
-  StateProviderElement<T> createElement() => StateProviderElement._(this);
+  StateProviderElement<T> createElement(
+    ProviderContainer container,
+  ) {
+    return StateProviderElement._(this, container);
+  }
 
   @override
   late final AlwaysAliveRefreshable<StateController<T>> notifier =
@@ -109,7 +113,10 @@ class StateProvider<T> extends _StateProviderBase<T>
 /// The element of [StateProvider].
 class StateProviderElement<T> extends ProviderElementBase<T>
     implements StateProviderRef<T> {
-  StateProviderElement._(_StateProviderBase<T> super._provider);
+  StateProviderElement._(
+    _StateProviderBase<T> super._provider,
+    super.container,
+  );
 
   @override
   StateController<T> get controller => _controllerNotifier.value;

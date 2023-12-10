@@ -114,8 +114,10 @@ class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
   }
 
   @override
-  ChangeNotifierProviderElement<NotifierT> createElement() {
-    return ChangeNotifierProviderElement<NotifierT>._(this);
+  ChangeNotifierProviderElement<NotifierT> createElement(
+    ProviderContainer container,
+  ) {
+    return ChangeNotifierProviderElement<NotifierT>._(this, container);
   }
 
   @override
@@ -180,6 +182,7 @@ class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
     implements ChangeNotifierProviderRef<NotifierT> {
   ChangeNotifierProviderElement._(
     _ChangeNotifierProviderBase<NotifierT> super._provider,
+    super.container,
   );
 
   @override

@@ -170,8 +170,10 @@ class FamilyProvider extends AutoDisposeProvider<String> {
   }
 
   @override
-  AutoDisposeProviderElement<String> createElement() {
-    return _FamilyProviderElement(this);
+  AutoDisposeProviderElement<String> createElement(
+    ProviderContainer container,
+  ) {
+    return _FamilyProviderElement(this, container);
   }
 
   FamilyProvider _copyWith(
@@ -209,7 +211,7 @@ mixin FamilyRef on AutoDisposeProviderRef<String> {
 
 class _FamilyProviderElement extends AutoDisposeProviderElement<String>
     with FamilyRef {
-  _FamilyProviderElement(super.provider);
+  _FamilyProviderElement(super.provider, super.container);
 
   @override
   int get id => (origin as FamilyProvider).id;
@@ -355,8 +357,10 @@ class NotCopiedFamilyProvider extends AutoDisposeProvider<String> {
   }
 
   @override
-  AutoDisposeProviderElement<String> createElement() {
-    return _NotCopiedFamilyProviderElement(this);
+  AutoDisposeProviderElement<String> createElement(
+    ProviderContainer container,
+  ) {
+    return _NotCopiedFamilyProviderElement(this, container);
   }
 
   NotCopiedFamilyProvider _copyWith(
@@ -394,7 +398,7 @@ mixin NotCopiedFamilyRef on AutoDisposeProviderRef<String> {
 
 class _NotCopiedFamilyProviderElement extends AutoDisposeProviderElement<String>
     with NotCopiedFamilyRef {
-  _NotCopiedFamilyProviderElement(super.provider);
+  _NotCopiedFamilyProviderElement(super.provider, super.container);
 
   @override
   int get id => (origin as NotCopiedFamilyProvider).id;

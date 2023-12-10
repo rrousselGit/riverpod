@@ -164,8 +164,10 @@ class FamilyProvider extends AutoDisposeProvider<int> {
   }
 
   @override
-  AutoDisposeProviderElement<int> createElement() {
-    return _FamilyProviderElement(this);
+  AutoDisposeProviderElement<int> createElement(
+    ProviderContainer container,
+  ) {
+    return _FamilyProviderElement(this, container);
   }
 
   FamilyProvider _copyWith(
@@ -203,7 +205,7 @@ mixin FamilyRef on AutoDisposeProviderRef<int> {
 
 class _FamilyProviderElement extends AutoDisposeProviderElement<int>
     with FamilyRef {
-  _FamilyProviderElement(super.provider);
+  _FamilyProviderElement(super.provider, super.container);
 
   @override
   int get id => (origin as FamilyProvider).id;
@@ -522,8 +524,10 @@ class Family2Provider extends AutoDisposeNotifierProviderImpl<Family2, int> {
   }
 
   @override
-  AutoDisposeNotifierProviderElement<Family2, int> createElement() {
-    return _Family2ProviderElement(this);
+  AutoDisposeNotifierProviderElement<Family2, int> createElement(
+    ProviderContainer container,
+  ) {
+    return _Family2ProviderElement(this, container);
   }
 
   Family2Provider _copyWith(
@@ -561,7 +565,7 @@ mixin Family2Ref on AutoDisposeNotifierProviderRef<int> {
 
 class _Family2ProviderElement
     extends AutoDisposeNotifierProviderElement<Family2, int> with Family2Ref {
-  _Family2ProviderElement(super.provider);
+  _Family2ProviderElement(super.provider, super.container);
 
   @override
   int get id => (origin as Family2Provider).id;
@@ -746,8 +750,10 @@ class Provider4Provider
   }
 
   @override
-  AutoDisposeNotifierProviderElement<Provider4, int> createElement() {
-    return _Provider4ProviderElement(this);
+  AutoDisposeNotifierProviderElement<Provider4, int> createElement(
+    ProviderContainer container,
+  ) {
+    return _Provider4ProviderElement(this, container);
   }
 
   Provider4Provider _copyWith(
@@ -786,7 +792,7 @@ mixin Provider4Ref on AutoDisposeNotifierProviderRef<int> {
 class _Provider4ProviderElement
     extends AutoDisposeNotifierProviderElement<Provider4, int>
     with Provider4Ref {
-  _Provider4ProviderElement(super.provider);
+  _Provider4ProviderElement(super.provider, super.container);
 
   @override
   int get id => (origin as Provider4Provider).id;

@@ -154,8 +154,10 @@ class FetchUserProvider extends AutoDisposeFutureProvider<User> {
   }
 
   @override
-  AutoDisposeFutureProviderElement<User> createElement() {
-    return _FetchUserProviderElement(this);
+  AutoDisposeFutureProviderElement<User> createElement(
+    ProviderContainer container,
+  ) {
+    return _FetchUserProviderElement(this, container);
   }
 
   FetchUserProvider _copyWith(
@@ -193,7 +195,7 @@ mixin FetchUserRef on AutoDisposeFutureProviderRef<User> {
 
 class _FetchUserProviderElement extends AutoDisposeFutureProviderElement<User>
     with FetchUserRef {
-  _FetchUserProviderElement(super.provider);
+  _FetchUserProviderElement(super.provider, super.container);
 
   @override
   int get userId => (origin as FetchUserProvider).userId;

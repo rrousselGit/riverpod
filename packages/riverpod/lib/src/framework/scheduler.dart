@@ -120,10 +120,10 @@ class ProviderScheduler {
 
       if ((links != null && links.isNotEmpty) ||
           element.hasListeners ||
-          element._container._disposed) {
+          element.container._disposed) {
         continue;
       }
-      element._container._disposeProvider(element._origin);
+      element.container._disposeProvider(element._origin);
     }
   }
 

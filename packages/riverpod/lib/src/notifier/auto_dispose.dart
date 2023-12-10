@@ -88,8 +88,10 @@ class AutoDisposeNotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
   late final Refreshable<NotifierT> notifier = _notifier<NotifierT, T>(this);
 
   @override
-  AutoDisposeNotifierProviderElement<NotifierT, T> createElement() {
-    return AutoDisposeNotifierProviderElement(this);
+  AutoDisposeNotifierProviderElement<NotifierT, T> createElement(
+    ProviderContainer container,
+  ) {
+    return AutoDisposeNotifierProviderElement(this, container);
   }
 
   @override
@@ -123,5 +125,5 @@ class AutoDisposeNotifierProviderElement<NotifierT extends NotifierBase<T>, T>
     implements AutoDisposeNotifierProviderRef<T> {
   /// The [ProviderElementBase] for [NotifierProvider]
   @internal
-  AutoDisposeNotifierProviderElement(super._provider);
+  AutoDisposeNotifierProviderElement(super._provider, super.container);
 }

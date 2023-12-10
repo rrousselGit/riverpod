@@ -169,8 +169,10 @@ class FetchPackagesProvider extends AutoDisposeFutureProvider<List<Package>> {
   }
 
   @override
-  AutoDisposeFutureProviderElement<List<Package>> createElement() {
-    return _FetchPackagesProviderElement(this);
+  AutoDisposeFutureProviderElement<List<Package>> createElement(
+    ProviderContainer container,
+  ) {
+    return _FetchPackagesProviderElement(this, container);
   }
 
   FetchPackagesProvider _copyWith(
@@ -216,7 +218,7 @@ mixin FetchPackagesRef on AutoDisposeFutureProviderRef<List<Package>> {
 class _FetchPackagesProviderElement
     extends AutoDisposeFutureProviderElement<List<Package>>
     with FetchPackagesRef {
-  _FetchPackagesProviderElement(super.provider);
+  _FetchPackagesProviderElement(super.provider, super.container);
 
   @override
   int get page => (origin as FetchPackagesProvider).page;

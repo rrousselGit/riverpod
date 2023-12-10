@@ -193,8 +193,10 @@ class FamilyWithDependencies2Provider extends AutoDisposeProvider<int> {
   }
 
   @override
-  AutoDisposeProviderElement<int> createElement() {
-    return _FamilyWithDependencies2ProviderElement(this);
+  AutoDisposeProviderElement<int> createElement(
+    ProviderContainer container,
+  ) {
+    return _FamilyWithDependencies2ProviderElement(this, container);
   }
 
   FamilyWithDependencies2Provider _copyWith(
@@ -232,7 +234,7 @@ mixin FamilyWithDependencies2Ref on AutoDisposeProviderRef<int> {
 
 class _FamilyWithDependencies2ProviderElement
     extends AutoDisposeProviderElement<int> with FamilyWithDependencies2Ref {
-  _FamilyWithDependencies2ProviderElement(super.provider);
+  _FamilyWithDependencies2ProviderElement(super.provider, super.container);
 
   @override
   int? get id => (origin as FamilyWithDependencies2Provider).id;
@@ -451,8 +453,10 @@ class NotifierFamilyWithDependenciesProvider
 
   @override
   AutoDisposeNotifierProviderElement<NotifierFamilyWithDependencies, int>
-      createElement() {
-    return _NotifierFamilyWithDependenciesProviderElement(this);
+      createElement(
+    ProviderContainer container,
+  ) {
+    return _NotifierFamilyWithDependenciesProviderElement(this, container);
   }
 
   NotifierFamilyWithDependenciesProvider _copyWith(
@@ -491,7 +495,8 @@ mixin NotifierFamilyWithDependenciesRef on AutoDisposeNotifierProviderRef<int> {
 class _NotifierFamilyWithDependenciesProviderElement
     extends AutoDisposeNotifierProviderElement<NotifierFamilyWithDependencies,
         int> with NotifierFamilyWithDependenciesRef {
-  _NotifierFamilyWithDependenciesProviderElement(super.provider);
+  _NotifierFamilyWithDependenciesProviderElement(
+      super.provider, super.container);
 
   @override
   int? get id => (origin as NotifierFamilyWithDependenciesProvider).id;

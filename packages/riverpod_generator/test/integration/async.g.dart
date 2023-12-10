@@ -139,8 +139,10 @@ class GenericProvider<T extends num>
   }
 
   @override
-  AutoDisposeFutureProviderElement<List<T>> createElement() {
-    return _GenericProviderElement(this);
+  AutoDisposeFutureProviderElement<List<T>> createElement(
+    ProviderContainer container,
+  ) {
+    return _GenericProviderElement(this, container);
   }
 
   GenericProvider _copyWith(
@@ -174,7 +176,7 @@ mixin GenericRef<T extends num> on AutoDisposeFutureProviderRef<List<T>> {}
 
 class _GenericProviderElement<T extends num>
     extends AutoDisposeFutureProviderElement<List<T>> with GenericRef<T> {
-  _GenericProviderElement(super.provider);
+  _GenericProviderElement(super.provider, super.container);
 }
 
 String _$publicHash() => r'9d99b79c013da13926d4ad89c72ebca4fc1cc257';
@@ -328,8 +330,10 @@ class FamilyOrProvider extends AutoDisposeFutureProvider<String> {
   }
 
   @override
-  AutoDisposeFutureProviderElement<String> createElement() {
-    return _FamilyOrProviderElement(this);
+  AutoDisposeFutureProviderElement<String> createElement(
+    ProviderContainer container,
+  ) {
+    return _FamilyOrProviderElement(this, container);
   }
 
   FamilyOrProvider _copyWith(
@@ -367,7 +371,7 @@ mixin FamilyOrRef on AutoDisposeFutureProviderRef<String> {
 
 class _FamilyOrProviderElement extends AutoDisposeFutureProviderElement<String>
     with FamilyOrRef {
-  _FamilyOrProviderElement(super.provider);
+  _FamilyOrProviderElement(super.provider, super.container);
 
   @override
   int get first => (origin as FamilyOrProvider).first;
@@ -544,8 +548,10 @@ class FamilyProvider extends AutoDisposeFutureProvider<String> {
   }
 
   @override
-  AutoDisposeFutureProviderElement<String> createElement() {
-    return _FamilyProviderElement(this);
+  AutoDisposeFutureProviderElement<String> createElement(
+    ProviderContainer container,
+  ) {
+    return _FamilyProviderElement(this, container);
   }
 
   FamilyProvider _copyWith(
@@ -608,7 +614,7 @@ mixin FamilyRef on AutoDisposeFutureProviderRef<String> {
 
 class _FamilyProviderElement extends AutoDisposeFutureProviderElement<String>
     with FamilyRef {
-  _FamilyProviderElement(super.provider);
+  _FamilyProviderElement(super.provider, super.container);
 
   @override
   int get first => (origin as FamilyProvider).first;
@@ -743,8 +749,10 @@ class GenericClassProvider<T extends num>
 
   @override
   AutoDisposeAsyncNotifierProviderElement<GenericClass<T>, List<T>>
-      createElement() {
-    return _GenericClassProviderElement(this);
+      createElement(
+    ProviderContainer container,
+  ) {
+    return _GenericClassProviderElement(this, container);
   }
 
   GenericClassProvider _copyWith(
@@ -780,7 +788,7 @@ mixin GenericClassRef<T extends num>
 class _GenericClassProviderElement<T extends num>
     extends AutoDisposeAsyncNotifierProviderElement<GenericClass<T>, List<T>>
     with GenericClassRef<T> {
-  _GenericClassProviderElement(super.provider);
+  _GenericClassProviderElement(super.provider, super.container);
 }
 
 String _$publicClassHash() => r'e9bc69e44b72e8ed77d423524c0d74ad460d629d';
@@ -951,9 +959,10 @@ class FamilyOrClassProvider
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<FamilyOrClass, String>
-      createElement() {
-    return _FamilyOrClassProviderElement(this);
+  AutoDisposeAsyncNotifierProviderElement<FamilyOrClass, String> createElement(
+    ProviderContainer container,
+  ) {
+    return _FamilyOrClassProviderElement(this, container);
   }
 
   FamilyOrClassProvider _copyWith(
@@ -992,7 +1001,7 @@ mixin FamilyOrClassRef on AutoDisposeAsyncNotifierProviderRef<String> {
 class _FamilyOrClassProviderElement
     extends AutoDisposeAsyncNotifierProviderElement<FamilyOrClass, String>
     with FamilyOrClassRef {
-  _FamilyOrClassProviderElement(super.provider);
+  _FamilyOrClassProviderElement(super.provider, super.container);
 
   @override
   int get first => (origin as FamilyOrClassProvider).first;
@@ -1201,8 +1210,10 @@ class FamilyClassProvider
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<FamilyClass, String> createElement() {
-    return _FamilyClassProviderElement(this);
+  AutoDisposeAsyncNotifierProviderElement<FamilyClass, String> createElement(
+    ProviderContainer container,
+  ) {
+    return _FamilyClassProviderElement(this, container);
   }
 
   FamilyClassProvider _copyWith(
@@ -1271,7 +1282,7 @@ mixin FamilyClassRef on AutoDisposeAsyncNotifierProviderRef<String> {
 class _FamilyClassProviderElement
     extends AutoDisposeAsyncNotifierProviderElement<FamilyClass, String>
     with FamilyClassRef {
-  _FamilyClassProviderElement(super.provider);
+  _FamilyClassProviderElement(super.provider, super.container);
 
   @override
   int get first => (origin as FamilyClassProvider).first;

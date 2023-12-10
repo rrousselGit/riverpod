@@ -43,9 +43,11 @@ void Function()? debugCanModifyProviders;
 /// of providers.
 /// Do not use.
 /// {@endtemplate}
+// TODO rename to ProviderElement
 abstract class ProviderElementBase<State> implements Ref<State>, Node {
   /// {@macro riverpod.provider_element_base}
-  ProviderElementBase(this._provider);
+  // TODO changelog: ProviderElement no-longer takes a provider as parameter but takes a ProviderContainer
+  ProviderElementBase(this._provider, this.container);
 
   static ProviderElementBase<Object?>? _debugCurrentlyBuildingElement;
 
@@ -60,14 +62,14 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   ProviderBase<Object?> get origin => _origin;
   late ProviderBase<Object?> _origin;
 
+  // TODO changelog ProviderElement.provider is now abstract
   /// The provider associated with this [ProviderElementBase], after applying overrides.
   ProviderBase<State> get provider => _provider;
   ProviderBase<State> _provider;
 
   /// The [ProviderContainer] that owns this [ProviderElementBase].
   @override
-  ProviderContainer get container => _container;
-  late final ProviderContainer _container;
+  final ProviderContainer container;
 
   /// Whether this [ProviderElementBase] is currently listened to or not.
   ///
@@ -288,7 +290,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   @override
   void invalidate(ProviderOrFamily provider) {
     assert(_debugAssertCanDependOn(provider), '');
-    _container.invalidate(provider);
+    container.invalidate(provider);
   }
 
   @override
@@ -297,7 +299,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
 
     _mustRecomputeState = true;
     runOnDispose();
-    _container.scheduler.scheduleProviderRefresh(this);
+    container.scheduler.scheduleProviderRefresh(this);
 
     // We don't call this._markDependencyMayHaveChanged here because we voluntarily
     // do not want to set the _dependencyMayHaveChanged flag to true.
@@ -571,17 +573,17 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       _providerDependents[i]._markDependencyChanged();
     }
 
-    for (final observer in _container.observers) {
+    for (final observer in container.observers) {
       runQuaternaryGuarded(
         observer.didUpdateProvider,
         origin,
         previousState,
         newState.stateOrNull,
-        _container,
+        container,
       );
     }
 
-    for (final observer in _container.observers) {
+    for (final observer in container.observers) {
       newState.map(
         data: (_) {},
         error: (newState) {
@@ -590,7 +592,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
             origin,
             newState.error,
             newState.stackTrace,
-            _container,
+            container,
           );
         },
       );
@@ -623,7 +625,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
         try {
           // Initializing the provider, to make sure its dependencies are setup.
-          _container.readProviderElement(listenable);
+          container.readProviderElement(listenable);
         } catch (err) {
           // We don't care whether the provider is in error or not. We're just
           // checking whether we're not in a circular dependency.
@@ -680,7 +682,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   T refresh<T>(Refreshable<T> provider) {
     _assertNotOutdated();
     assert(_debugAssertCanDependOn(provider), '');
-    return _container.refresh(provider);
+    return container.refresh(provider);
   }
 
   @override
@@ -688,11 +690,11 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     _assertNotOutdated();
     assert(!_debugIsRunningSelector, 'Cannot call ref.read inside a selector');
     assert(_debugAssertCanDependOn(provider), '');
-    return _container.read(provider);
+    return container.read(provider);
   }
 
   @override
-  bool exists(ProviderBase<Object?> provider) => _container.exists(provider);
+  bool exists(ProviderBase<Object?> provider) => container.exists(provider);
 
   @override
   T watch<T>(ProviderListenable<T> listenable) {
@@ -712,7 +714,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
     assert(_debugAssertCanDependOn(listenable), '');
 
-    final element = _container.readProviderElement(listenable);
+    final element = container.readProviderElement(listenable);
     _dependencies.putIfAbsent(element, () {
       final previousSub = _previousDependencies?.remove(element);
       if (previousSub != null) {
@@ -743,7 +745,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
   @override
   ProviderElementBase<T> readProviderElement<T>(ProviderBase<T> provider) {
-    return _container.readProviderElement(provider);
+    return container.readProviderElement(provider);
   }
 
   @override
@@ -933,11 +935,11 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
     _onDisposeListeners?.forEach(runGuarded);
 
-    for (final observer in _container.observers) {
+    for (final observer in container.observers) {
       runBinaryGuarded(
         observer.didDisposeProvider,
         _origin,
-        _container,
+        container,
       );
     }
 

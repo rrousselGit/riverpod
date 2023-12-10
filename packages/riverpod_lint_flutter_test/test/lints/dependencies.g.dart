@@ -534,8 +534,10 @@ class FamilyDepProvider extends AutoDisposeProvider<int> {
   }
 
   @override
-  AutoDisposeProviderElement<int> createElement() {
-    return _FamilyDepProviderElement(this);
+  AutoDisposeProviderElement<int> createElement(
+    ProviderContainer container,
+  ) {
+    return _FamilyDepProviderElement(this, container);
   }
 
   FamilyDepProvider _copyWith(
@@ -573,7 +575,7 @@ mixin FamilyDepRef on AutoDisposeProviderRef<int> {
 
 class _FamilyDepProviderElement extends AutoDisposeProviderElement<int>
     with FamilyDepRef {
-  _FamilyDepProviderElement(super.provider);
+  _FamilyDepProviderElement(super.provider, super.container);
 
   @override
   int get p => (origin as FamilyDepProvider).p;
@@ -709,8 +711,10 @@ class FamilyDep2Provider extends AutoDisposeProvider<int> {
   }
 
   @override
-  AutoDisposeProviderElement<int> createElement() {
-    return _FamilyDep2ProviderElement(this);
+  AutoDisposeProviderElement<int> createElement(
+    ProviderContainer container,
+  ) {
+    return _FamilyDep2ProviderElement(this, container);
   }
 
   FamilyDep2Provider _copyWith(
@@ -748,7 +752,7 @@ mixin FamilyDep2Ref on AutoDisposeProviderRef<int> {
 
 class _FamilyDep2ProviderElement extends AutoDisposeProviderElement<int>
     with FamilyDep2Ref {
-  _FamilyDep2ProviderElement(super.provider);
+  _FamilyDep2ProviderElement(super.provider, super.container);
 
   @override
   int get p => (origin as FamilyDep2Provider).p;

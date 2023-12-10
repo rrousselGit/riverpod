@@ -157,8 +157,10 @@ class FetchPackageDetailsProvider extends AutoDisposeFutureProvider<Package> {
   }
 
   @override
-  AutoDisposeFutureProviderElement<Package> createElement() {
-    return _FetchPackageDetailsProviderElement(this);
+  AutoDisposeFutureProviderElement<Package> createElement(
+    ProviderContainer container,
+  ) {
+    return _FetchPackageDetailsProviderElement(this, container);
   }
 
   FetchPackageDetailsProvider _copyWith(
@@ -198,7 +200,7 @@ mixin FetchPackageDetailsRef on AutoDisposeFutureProviderRef<Package> {
 class _FetchPackageDetailsProviderElement
     extends AutoDisposeFutureProviderElement<Package>
     with FetchPackageDetailsRef {
-  _FetchPackageDetailsProviderElement(super.provider);
+  _FetchPackageDetailsProviderElement(super.provider, super.container);
 
   @override
   String get packageName => (origin as FetchPackageDetailsProvider).packageName;
@@ -411,8 +413,10 @@ class PackageMetricsProvider extends AutoDisposeAsyncNotifierProviderImpl<
 
   @override
   AutoDisposeAsyncNotifierProviderElement<PackageMetrics, PackageMetricsScore>
-      createElement() {
-    return _PackageMetricsProviderElement(this);
+      createElement(
+    ProviderContainer container,
+  ) {
+    return _PackageMetricsProviderElement(this, container);
   }
 
   PackageMetricsProvider _copyWith(
@@ -452,7 +456,7 @@ mixin PackageMetricsRef
 class _PackageMetricsProviderElement
     extends AutoDisposeAsyncNotifierProviderElement<PackageMetrics,
         PackageMetricsScore> with PackageMetricsRef {
-  _PackageMetricsProviderElement(super.provider);
+  _PackageMetricsProviderElement(super.provider, super.container);
 
   @override
   String get packageName => (origin as PackageMetricsProvider).packageName;

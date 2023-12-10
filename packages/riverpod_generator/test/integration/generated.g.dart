@@ -165,8 +165,10 @@ class GeneratedFamilyProvider extends AutoDisposeProvider<_Test> {
   }
 
   @override
-  AutoDisposeProviderElement<_Test> createElement() {
-    return _GeneratedFamilyProviderElement(this);
+  AutoDisposeProviderElement<_Test> createElement(
+    ProviderContainer container,
+  ) {
+    return _GeneratedFamilyProviderElement(this, container);
   }
 
   GeneratedFamilyProvider _copyWith(
@@ -204,7 +206,7 @@ mixin GeneratedFamilyRef on AutoDisposeProviderRef<_Test> {
 
 class _GeneratedFamilyProviderElement extends AutoDisposeProviderElement<_Test>
     with GeneratedFamilyRef {
-  _GeneratedFamilyProviderElement(super.provider);
+  _GeneratedFamilyProviderElement(super.provider, super.container);
 
   @override
   _Test get test => (origin as GeneratedFamilyProvider).test;
@@ -348,8 +350,10 @@ class $DynamicFamilyProvider extends AutoDisposeProvider<Object?> {
   }
 
   @override
-  AutoDisposeProviderElement<Object?> createElement() {
-    return _$DynamicFamilyProviderElement(this);
+  AutoDisposeProviderElement<Object?> createElement(
+    ProviderContainer container,
+  ) {
+    return _$DynamicFamilyProviderElement(this, container);
   }
 
   $DynamicFamilyProvider _copyWith(
@@ -387,7 +391,7 @@ mixin $DynamicFamilyRef on AutoDisposeProviderRef<Object?> {
 
 class _$DynamicFamilyProviderElement extends AutoDisposeProviderElement<Object?>
     with $DynamicFamilyRef {
-  _$DynamicFamilyProviderElement(super.provider);
+  _$DynamicFamilyProviderElement(super.provider, super.container);
 
   @override
   get test => (origin as $DynamicFamilyProvider).test;
@@ -516,8 +520,10 @@ class _DynamicProvider extends AutoDisposeProvider<Object?> {
   }
 
   @override
-  AutoDisposeProviderElement<Object?> createElement() {
-    return _DynamicProviderElement(this);
+  AutoDisposeProviderElement<Object?> createElement(
+    ProviderContainer container,
+  ) {
+    return _DynamicProviderElement(this, container);
   }
 
   _DynamicProvider _copyWith(
@@ -555,7 +561,7 @@ mixin _DynamicRef on AutoDisposeProviderRef<Object?> {
 
 class _DynamicProviderElement extends AutoDisposeProviderElement<Object?>
     with _DynamicRef {
-  _DynamicProviderElement(super.provider);
+  _DynamicProviderElement(super.provider, super.container);
 
   @override
   get test => (origin as _DynamicProvider).test;
@@ -699,8 +705,10 @@ class AliasFamilyProvider extends AutoDisposeProvider<r.AsyncValue<int>> {
   }
 
   @override
-  AutoDisposeProviderElement<r.AsyncValue<int>> createElement() {
-    return _AliasFamilyProviderElement(this);
+  AutoDisposeProviderElement<r.AsyncValue<int>> createElement(
+    ProviderContainer container,
+  ) {
+    return _AliasFamilyProviderElement(this, container);
   }
 
   AliasFamilyProvider _copyWith(
@@ -738,7 +746,7 @@ mixin AliasFamilyRef on AutoDisposeProviderRef<r.AsyncValue<int>> {
 
 class _AliasFamilyProviderElement
     extends AutoDisposeProviderElement<r.AsyncValue<int>> with AliasFamilyRef {
-  _AliasFamilyProviderElement(super.provider);
+  _AliasFamilyProviderElement(super.provider, super.container);
 
   @override
   r.AsyncValue<int> get test => (origin as AliasFamilyProvider).test;
@@ -899,9 +907,10 @@ class GeneratedClassFamilyProvider
   }
 
   @override
-  AutoDisposeNotifierProviderElement<GeneratedClassFamily, _Test>
-      createElement() {
-    return _GeneratedClassFamilyProviderElement(this);
+  AutoDisposeNotifierProviderElement<GeneratedClassFamily, _Test> createElement(
+    ProviderContainer container,
+  ) {
+    return _GeneratedClassFamilyProviderElement(this, container);
   }
 
   GeneratedClassFamilyProvider _copyWith(
@@ -940,7 +949,7 @@ mixin GeneratedClassFamilyRef on AutoDisposeNotifierProviderRef<_Test> {
 class _GeneratedClassFamilyProviderElement
     extends AutoDisposeNotifierProviderElement<GeneratedClassFamily, _Test>
     with GeneratedClassFamilyRef {
-  _GeneratedClassFamilyProviderElement(super.provider);
+  _GeneratedClassFamilyProviderElement(super.provider, super.container);
 
   @override
   _Test get test => (origin as GeneratedClassFamilyProvider).test;
@@ -1102,8 +1111,10 @@ class $DynamicClassFamilyProvider
 
   @override
   AutoDisposeNotifierProviderElement<$DynamicClassFamily, Object?>
-      createElement() {
-    return _$DynamicClassFamilyProviderElement(this);
+      createElement(
+    ProviderContainer container,
+  ) {
+    return _$DynamicClassFamilyProviderElement(this, container);
   }
 
   $DynamicClassFamilyProvider _copyWith(
@@ -1142,7 +1153,7 @@ mixin $DynamicClassFamilyRef on AutoDisposeNotifierProviderRef<Object?> {
 class _$DynamicClassFamilyProviderElement
     extends AutoDisposeNotifierProviderElement<$DynamicClassFamily, Object?>
     with $DynamicClassFamilyRef {
-  _$DynamicClassFamilyProviderElement(super.provider);
+  _$DynamicClassFamilyProviderElement(super.provider, super.container);
 
   @override
   get test => (origin as $DynamicClassFamilyProvider).test;
@@ -1302,8 +1313,10 @@ class AliasClassFamilyProvider extends AutoDisposeNotifierProviderImpl<
 
   @override
   AutoDisposeNotifierProviderElement<AliasClassFamily, r.AsyncValue<int>>
-      createElement() {
-    return _AliasClassFamilyProviderElement(this);
+      createElement(
+    ProviderContainer container,
+  ) {
+    return _AliasClassFamilyProviderElement(this, container);
   }
 
   AliasClassFamilyProvider _copyWith(
@@ -1342,7 +1355,7 @@ mixin AliasClassFamilyRef on AutoDisposeNotifierProviderRef<r.AsyncValue<int>> {
 class _AliasClassFamilyProviderElement
     extends AutoDisposeNotifierProviderElement<AliasClassFamily,
         r.AsyncValue<int>> with AliasClassFamilyRef {
-  _AliasClassFamilyProviderElement(super.provider);
+  _AliasClassFamilyProviderElement(super.provider, super.container);
 
   @override
   r.AsyncValue<int> get test => (origin as AliasClassFamilyProvider).test;

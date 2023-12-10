@@ -194,8 +194,10 @@ class ExampleFamilyProvider extends AutoDisposeProvider<int> {
   }
 
   @override
-  AutoDisposeProviderElement<int> createElement() {
-    return _ExampleFamilyProviderElement(this);
+  AutoDisposeProviderElement<int> createElement(
+    ProviderContainer container,
+  ) {
+    return _ExampleFamilyProviderElement(this, container);
   }
 
   ExampleFamilyProvider _copyWith(
@@ -238,7 +240,7 @@ mixin ExampleFamilyRef on AutoDisposeProviderRef<int> {
 
 class _ExampleFamilyProviderElement extends AutoDisposeProviderElement<int>
     with ExampleFamilyRef {
-  _ExampleFamilyProviderElement(super.provider);
+  _ExampleFamilyProviderElement(super.provider, super.container);
 
   @override
   int get a => (origin as ExampleFamilyProvider).a;
