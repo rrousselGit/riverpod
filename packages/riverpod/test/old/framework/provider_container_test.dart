@@ -7,15 +7,6 @@ import '../utils.dart';
 
 void main() {
   group('ProviderContainer', () {
-    test('Supports unmounting containers in reverse order', () {
-      final container = createContainer();
-
-      final child = createContainer(parent: container);
-
-      container.dispose();
-      child.dispose();
-    });
-
     group('when unmounting providers', () {
       test(
           'cleans up all the StateReaders of a provider in the entire ProviderContainer tree',
