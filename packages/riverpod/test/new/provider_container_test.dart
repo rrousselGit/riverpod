@@ -360,6 +360,39 @@ void main() {
         expect(root.getAllProviderElements().map((e) => e.origin), [provider]);
       });
     });
+
+    group('.pump', () {
+      test(
+          'Waits for providers associated with this container and its parents to rebuild',
+          () async {
+        final dep = StateProvider((ref) => 0);
+        final a = Provider((ref) => ref.watch(dep));
+        final b = Provider((ref) => ref.watch(dep));
+        final aListener = Listener<int>();
+        final bListener = Listener<int>();
+
+        final root = ProviderContainer.test();
+        final scoped = ProviderContainer.test(parent: root, overrides: [b]);
+
+        scoped.listen(a, aListener.call, fireImmediately: true);
+        scoped.listen(b, bListener.call, fireImmediately: true);
+
+        verifyOnly(aListener, aListener(null, 0));
+        verifyOnly(bListener, bListener(null, 0));
+
+        root.read(dep.notifier).state++;
+        await scoped.pump();
+
+        verifyOnly(aListener, aListener(0, 1));
+        verifyOnly(bListener, bListener(0, 1));
+
+        scoped.read(dep.notifier).state++;
+        await scoped.pump();
+
+        verifyOnly(aListener, aListener(1, 2));
+        verifyOnly(bListener, bListener(1, 2));
+      });
+    });
   });
 }
 
