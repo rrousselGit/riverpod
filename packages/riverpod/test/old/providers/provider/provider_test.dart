@@ -218,49 +218,6 @@ void main() {
       });
     });
 
-    group('override', () {
-      test('does not notify listeners if updated with the same value', () {
-        final provider = Provider((ref) => 0);
-        final container = createContainer(
-          overrides: [provider.overrideWithValue(42)],
-        );
-        final listener = Listener<int>();
-
-        addTearDown(container.dispose);
-
-        container.listen(provider, listener.call, fireImmediately: true);
-
-        verifyOnly(listener, listener(null, 42));
-
-        container.updateOverrides([
-          provider.overrideWithValue(42),
-        ]);
-
-        expect(container.read(provider), 42);
-        verifyNoMoreInteractions(listener);
-      });
-
-      test('notify listeners when value changes', () {
-        final provider = Provider((ref) => 0);
-        final container = createContainer(
-          overrides: [provider.overrideWithValue(42)],
-        );
-        final listener = Listener<int>();
-
-        addTearDown(container.dispose);
-
-        container.listen(provider, listener.call, fireImmediately: true);
-
-        verifyOnly(listener, listener(null, 42));
-
-        container.updateOverrides([
-          provider.overrideWithValue(21),
-        ]);
-
-        verifyOnly(listener, listener(42, 21));
-      });
-    });
-
     test('can specify name', () {
       final provider = Provider(
         (_) => 0,

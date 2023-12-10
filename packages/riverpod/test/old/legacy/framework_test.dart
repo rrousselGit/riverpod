@@ -50,17 +50,6 @@ void main() {
     ]);
   });
 
-  test('changing the override type at a given index throws', () {
-    final provider = Provider((ref) => 0);
-    final family = Provider.family<int, int>((ref, value) => 0);
-    final container = createContainer(overrides: [family]);
-
-    expect(
-      () => container.updateOverrides([provider]),
-      throwsA(isA<AssertionError>()),
-    );
-  });
-
   test("can't call onDispose inside onDispose", () {
     final provider = Provider((ref) {
       ref.onDispose(() {
@@ -136,27 +125,6 @@ void main() {
     expect(value21, value22);
     expect(value21, isNot(value1));
     expect(value21, 1);
-  });
-
-  test(
-      "updating overrides / dispose don't compute provider states if not loaded yet",
-      () {
-    var callCount = 0;
-    final provider = Provider((_) => callCount++);
-
-    final container = createContainer(
-      overrides: [provider],
-    );
-
-    expect(callCount, 0);
-
-    container.updateOverrides([provider]);
-
-    expect(callCount, 0);
-
-    container.dispose();
-
-    expect(callCount, 0);
   });
 
   test('circular dependencies (sync)', () {

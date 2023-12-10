@@ -190,6 +190,19 @@ void main() {
         verifyOnly(listener, listener(0, 1));
       });
 
+      test('does not compute provider states if not loaded yet', () {
+        var callCount = 0;
+        final provider = Provider((_) => callCount++);
+
+        final container = ProviderContainer.test(
+          overrides: [provider],
+        );
+
+        container.dispose();
+
+        expect(callCount, 0);
+      });
+
       test('unregister itself from the container list', () {
         final container = ProviderContainer();
         addTearDown(container.dispose);
@@ -423,6 +436,160 @@ void main() {
           () => container.updateOverrides([]),
           throwsA(isAssertionError),
         );
+      });
+
+      test('changing the override type at a given index throws', () {
+        final provider = Provider((ref) => 0);
+        final family = Provider.family<int, int>((ref, value) => 0);
+        final container = ProviderContainer.test(overrides: [family]);
+
+        expect(
+          () => container.updateOverrides([provider]),
+          throwsA(isA<AssertionError>()),
+        );
+      });
+
+      test('does not compute provider states if not loaded yet', () {
+        var callCount = 0;
+        final provider = Provider((_) => callCount++);
+
+        final container = ProviderContainer.test(
+          overrides: [provider],
+        );
+
+        container.updateOverrides([provider]);
+
+        expect(callCount, 0);
+
+        container.dispose();
+
+        expect(callCount, 0);
+      });
+
+      test('does not notify listeners if updated with the same value', () {
+        final provider = Provider((ref) => 0);
+        final container = ProviderContainer.test(
+          overrides: [provider.overrideWithValue(42)],
+        );
+        final listener = Listener<int>();
+
+        addTearDown(container.dispose);
+
+        container.listen(provider, listener.call, fireImmediately: true);
+
+        verifyOnly(listener, listener(null, 42));
+
+        container.updateOverrides([
+          provider.overrideWithValue(42),
+        ]);
+
+        expect(container.read(provider), 42);
+        verifyNoMoreInteractions(listener);
+      });
+
+      test('notify listeners when value changes', () {
+        final provider = Provider((ref) => 0);
+        final container = ProviderContainer.test(
+          overrides: [provider.overrideWithValue(42)],
+        );
+        final listener = Listener<int>();
+
+        addTearDown(container.dispose);
+
+        container.listen(provider, listener.call, fireImmediately: true);
+
+        verifyOnly(listener, listener(null, 42));
+
+        container.updateOverrides([
+          provider.overrideWithValue(21),
+        ]);
+
+        verifyOnly(listener, listener(42, 21));
+      });
+
+      test('updating parent override when there is a child override is no-op',
+          () async {
+        final provider = Provider((ref) => 0);
+        final root = ProviderContainer.test(
+          overrides: [provider.overrideWithValue(21)],
+        );
+        final container = ProviderContainer.test(
+          parent: root,
+          overrides: [provider.overrideWithValue(42)],
+        );
+        final listener = Listener<int>();
+
+        container.listen(provider, listener.call, fireImmediately: true);
+
+        verifyOnly(listener, listener(null, 42));
+
+        root.updateOverrides([
+          provider.overrideWithValue(22),
+        ]);
+
+        await container.pump();
+
+        verifyNoMoreInteractions(listener);
+      });
+
+      test('can update multiple ScopeProviders at once', () {
+        final provider = Provider<int>((ref) => -1);
+        final provider2 = Provider<int>((ref) => -1);
+
+        final container = ProviderContainer.test(
+          overrides: [
+            provider.overrideWithValue(21),
+            provider2.overrideWithValue(42),
+          ],
+        );
+
+        final listener = Listener<int>();
+        final listener2 = Listener<int>();
+
+        container.listen(provider, listener.call, fireImmediately: true);
+        container.listen(provider2, listener2.call, fireImmediately: true);
+
+        verifyOnly(listener, listener(null, 21));
+        verifyOnly(listener2, listener2(null, 42));
+
+        container.updateOverrides([
+          provider.overrideWithValue(22),
+          provider2.overrideWithValue(43),
+        ]);
+
+        verifyInOrder([
+          listener(21, 22),
+          listener2(42, 43),
+        ]);
+        verifyNoMoreInteractions(listener);
+        verifyNoMoreInteractions(listener2);
+      });
+
+      test(
+          'if listened from a child container, '
+          'updating the parent override correctly notifies listeners', () {
+        final provider = Provider((ref) => 0);
+        final root = ProviderContainer.test(
+          overrides: [provider.overrideWithValue(1)],
+        );
+        final mid = ProviderContainer.test(
+          parent: root,
+          overrides: [
+            provider.overrideWithValue(42),
+          ],
+        );
+        final container = ProviderContainer.test(parent: mid);
+        final listener = Listener<int>();
+
+        container.listen(provider, listener.call, fireImmediately: true);
+
+        verifyOnly(listener, listener(null, 42));
+
+        mid.updateOverrides([
+          provider.overrideWithValue(21),
+        ]);
+
+        verifyOnly(listener, listener(42, 21));
       });
     });
 
