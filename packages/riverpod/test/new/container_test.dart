@@ -1,6 +1,9 @@
+import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/framework.dart';
 import 'package:test/test.dart';
+
+import 'utils.dart';
 
 void main() {
   group('ProviderContainer', () {
@@ -83,11 +86,56 @@ void main() {
     });
 
     group('dispose', () {
-      test('throws if a child is not disposed', () {
-        final root = ProviderContainer.test();
-        ProviderContainer.test(parent: root);
+      test('Disposes its children first', () {
+        final rootOnDispose = OnDisposeMock();
+        final childOnDispose = OnDisposeMock();
+        final child2OnDispose = OnDisposeMock();
+        final provider = Provider((ref) {
+          ref.onDispose(rootOnDispose.call);
+          return 0;
+        });
 
-        expect(root.dispose, throwsStateError);
+        final root = ProviderContainer.test();
+        final container = ProviderContainer.test(
+          parent: root,
+          overrides: [
+            provider.overrideWith((ref) {
+              ref.onDispose(childOnDispose.call);
+              return 0;
+            }),
+          ],
+        );
+        final container2 = ProviderContainer.test(
+          parent: root,
+          overrides: [
+            provider.overrideWith((ref) {
+              ref.onDispose(child2OnDispose.call);
+              return 0;
+            }),
+          ],
+        );
+
+        root.listen(provider, (previous, next) {});
+        container.listen(provider, (previous, next) {});
+        container2.listen(provider, (previous, next) {});
+
+        container2.dispose();
+
+        verifyOnly(child2OnDispose, child2OnDispose.call());
+        verifyZeroInteractions(childOnDispose);
+        verifyZeroInteractions(rootOnDispose);
+        expect(container.disposed, false);
+        expect(root.disposed, false);
+
+        root.dispose();
+
+        verifyInOrder([
+          childOnDispose.call(),
+          rootOnDispose.call(),
+        ]);
+
+        expect(container.disposed, true);
+        expect(root.disposed, true);
       });
 
       test('removes "this" from "root.children"', () {

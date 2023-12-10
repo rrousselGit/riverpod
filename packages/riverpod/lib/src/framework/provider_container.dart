@@ -642,21 +642,24 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
     return _stateReaders[provider] = getReader();
   }
 
-  /// Release all the resources associated with this [ProviderContainer].
-  ///
-  /// This will destroy the state of all providers associated with this
-  /// [ProviderContainer] and call [Ref.onDispose] listeners.
-  void dispose() {
+  void _dispose({
+    // A flag to optimize recursive dispose calls.
+    // When disposing a graph of containers, there is no need to call `children.remove`
+    // individually, as all children will be disposed at once.
+    required bool updateChildren,
+  }) {
     if (_disposed) return;
 
-    if (children.any((child) => !child._disposed)) {
-      throw StateError(
-        'Cannot dispose a ProviderContainer that still has children',
-      );
+    // We dispose children before disposing "this"
+    // This is important to dispose providers from leaves to roots.
+    // We can safely iterate over "children" without using "toList" thanks to
+    // the "updateChildren" flag.
+    for (final child in _children) {
+      child._dispose(updateChildren: false);
     }
 
     _disposed = true;
-    _parent?._children.remove(this);
+    if (updateChildren) _parent?._children.remove(this);
 
     if (_root == null) scheduler.dispose();
 
@@ -664,6 +667,19 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
       element.dispose();
     }
   }
+
+  /// Release all the resources associated with this [ProviderContainer].
+  ///
+  /// This will destroy the state of all providers associated with this
+  /// [ProviderContainer] and call [Ref.onDispose] listeners.
+  ///
+  /// It is safe to call this method multiple times. Subsequent calls will be no-op.
+  ///
+  /// TODO changelog
+  /// If this container has non-disposed child [ProviderContainer]s (cf `parent`),
+  /// then this method will dispose those children first.
+  /// Therefore, disposing the root [ProviderContainer] the entire graph.
+  void dispose() => _dispose(updateChildren: true);
 
   /// Traverse the [ProviderElementBase]s associated with this [ProviderContainer].
   Iterable<ProviderElementBase<Object?>> getAllProviderElements() sync* {
