@@ -1,69 +1,65 @@
 ---
-title: Optimizing performance
+title: Ottimizzare le performance
 ---
 
-import { AutoSnippet } from "../../../../..//src/components/CodeSnippet";
+import { AutoSnippet } from "../../../../../src/components/CodeSnippet";
 import select from "./select/select";
 
 import selectAsync from "./select/select_async";
 
-With everything we've seen so far, we can already build a fully functional
-application. However, you may have questions regarding performance.
+Con tutto ciò che abbiamo visto fino ad ora, possiamo già costruire un'applicazione 
+completamente funzionante. Tuttavia, potresti avere delle domande riguardo alle performance.
 
-In this page, we will cover a few tips and tricks to possibly optimize your code.
+In questa pagina copriremo alcuni consigli e trucchi per ottimizzare possibilmente il tuo codice.
 
 :::caution
-Before doing any optimization, make sure to benchmark your application.
-The added complexity of the optimizations may not be worth minor gains.
+Prima di fare qualsiasi ottimizzazione, assicurati di misurare le prestazioni della tua applicazione. 
+Potrebbe non essere conveniente affrontare la complessità delle ottimizzazioni se i benefici ottenuti sono limitati.
 :::
 
-## Filtering widget/provider rebuild using "select".
+## Filtrare i rebuild dei widget/provider usando "select".
 
-You have have noticed that, by default, using `ref.watch` causes
-consumers/providers to rebuild whenever _any_ of the properties of an
-object changes.  
-For instance, watching a `User` and only using its "name" will still cause
-the consumer to rebuild if the "age" changes.
+Avrai notato che, di default, usare `ref.watch` provoca la ricostruzione 
+dei consumer/provider ogni volta che _qualsiasi_ delle proprietà di un oggetto cambia.
+Per fare un esempio, osservare un oggetto `User` ed usare solo la sua proprietà "name" 
+causerà la ricostruzione del consumer anche se è solo la proprietà "age" a cambiare.
 
-But in case you have a consumer using only a subset of the properties,
-you want to avoid rebuilding the widget when the other properties change.
+Ma nel caso tu abbia un consumer che usa solo un subset di proprietà, vuoi 
+evitare di ricostruire il widget quando altre proprietà cambiano.
 
-This can be achieved by using the `select` functionality of providers.  
-When doing so, `ref.watch` will no-longer return the full object,
-but rather the selected properties.  
-And your consumers/providers will now rebuild only if those selected
-properties change.
+Questo comportamento può essere ottenuto usando la funzionalità `select` dei provider.
+Quando lo si usa, `ref.watch` non restituirà più l'oggetto completo ma le proprietà selezionate.
+Ora i tuoi consumer/provider si ricostruiranno solo se quelle proprietà selezionate cambieranno.
 
 <AutoSnippet {...select} />
 
 :::info
-It is possible to call `select` as many times as you wish.
-You are free to call it once per property you desire.
+È possibile chiamare `select` quante volte si desidera.
+Sei libero di chiamarlo una volta per la proprietà che desideri.
 :::
 
 :::caution
-The selected properties are expected to be immutable.
-Returning a `List` and then mutating that list will not trigger a rebuild.
+Si prevede che le proprietà selezionate siano immutabili.
+Restituire una `List` per poi mutarla non azionerà un rebuild.
 :::
 
 :::caution
-Using `select` slightly slows down invididual read operations and
-increase a tiny bit the complexity of your code.  
-It may not be worth using it if those "other properties"
-rarely change.
+Usare `select` rallenta leggermente le singole operazioni di lettura ed 
+aumenterà di poco la complessità del tuo codice.
+Potrebbe non valere la pena usarlo se quelle "altre proprietà" cambiano raramente.
 :::
 
-### Selecting asynchronous properties
+### Selezionare proprietà asincrone
 
-In case you are trying to optimize a provider listening to another provider,
-chances are that other provider is asynchronous.
+Nel caso tu stia provando ad ottimizzare un provider che ascolta un altro provider, 
+potrebbe capitare che l'altro provider sia asincrono.
 
-Normally, you would `ref.watch(anotherProvider.future)` to get the value.  
-The issue is, `select` will apply on an `AsyncValue` – which is not something
-you can await.
+Normalmente, useresti `ref.watch(anotherProvider.future)` per ottenere il valore.
+Il problema è che, `select` si applicherà solo su `AsyncValue`, il quale non è qualcosa 
+che puoi aspettare.
 
-For this purpose, you can instead use `selectAsync`. It is unique to asynchronous
-code, and enables performing a `select` operation on the data emitted by a provider.  
-Its usage is similar to that of `select`, but returns a `Future` instead:
+A questo scopo è possibile utilizzare invece `selectAsync`. È unicamente per il 
+codice asincrono e permette di eseguire un'operazione `select` sul dato emesso da un provider.
+Il suo utilizzo è simile a quello di `select` ma restituisce un `Future`:
 
 <AutoSnippet {...selectAsync} />

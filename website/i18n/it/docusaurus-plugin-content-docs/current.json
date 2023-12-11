@@ -19,6 +19,10 @@
     "message": "Argomenti di studio",
     "description": "The label for category Case studies in sidebar Sidebar"
   },
+  "sidebar.Sidebar.category.Advanced topics": {
+    "message": "Argomenti avanzati",
+    "description": "The label for category Case studies in sidebar Advanced topics"
+  },
   "sidebar.Sidebar.category.Guides": {
     "message": "Guide",
     "description": "The label for category Guides in sidebar Sidebar"

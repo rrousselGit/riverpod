@@ -13,11 +13,11 @@ final userProvider = FutureProvider(
 );
 /* SNIPPET START */
 final provider = FutureProvider((ref) async {
-  // Wait for a user to be available, and listen to only the "firstName" property
+  // Aspetta che un utente sia disponibile, ed ascolta solo la proprietà "firstName"
   final firstName = await ref.watch(
     userProvider.selectAsync((it) => it.firstName),
   );
 
-  // TODO use "firstName" to fetch something else
+  // TODO usa "firstName" per ottenere qualcos'altro
 });
 /* SNIPPET END */
