@@ -198,7 +198,7 @@ class _$PackageMetricsScoreImpl
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$PackageMetricsScoreImpl &&
@@ -385,7 +385,7 @@ class _$PackageMetricsResponseImpl
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$PackageMetricsResponseImpl &&
@@ -547,7 +547,7 @@ class _$PackageDetailsImpl
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$PackageDetailsImpl &&
@@ -721,7 +721,7 @@ class _$PackageImpl with DiagnosticableTreeMixin implements _Package {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$PackageImpl &&
@@ -883,7 +883,7 @@ class _$LikedPackageImpl with DiagnosticableTreeMixin implements _LikedPackage {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$LikedPackageImpl &&
@@ -1044,7 +1044,7 @@ class _$LikesPackagesResponseImpl
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$LikesPackagesResponseImpl &&
@@ -1201,7 +1201,7 @@ class _$PubPackagesResponseImpl
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$PubPackagesResponseImpl &&
@@ -1350,7 +1350,7 @@ class _$SearchPackageImpl
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$SearchPackageImpl &&
@@ -1502,7 +1502,7 @@ class _$PubSearchResponseImpl
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$PubSearchResponseImpl &&

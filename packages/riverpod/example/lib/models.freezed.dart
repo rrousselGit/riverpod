@@ -125,7 +125,7 @@ class _$ConfigurationImpl implements _Configuration {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$ConfigurationImpl &&
@@ -281,7 +281,7 @@ class _$MarvelResponseImpl implements _MarvelResponse {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$MarvelResponseImpl &&
@@ -424,7 +424,7 @@ class _$MarvelDataImpl implements _MarvelData {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$MarvelDataImpl &&
@@ -572,7 +572,7 @@ class _$ComicImpl implements _Comic {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$ComicImpl &&

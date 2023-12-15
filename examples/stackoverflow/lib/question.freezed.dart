@@ -132,7 +132,7 @@ class _$QuestionsResponseImpl implements _QuestionsResponse {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$QuestionsResponseImpl &&
@@ -476,7 +476,7 @@ class _$QuestionImpl implements _Question {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$QuestionImpl &&
@@ -683,7 +683,7 @@ class _$QuestionThemeImpl implements _QuestionTheme {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$QuestionThemeImpl &&
