@@ -72,6 +72,7 @@ typedef SetupFamilyOverride<Arg> = void Function(
 @internal
 abstract class FamilyOverride implements Override {
   /// The family that was overridden.
+  // TODO make all fields private
   Family get overriddenFamily;
 
   /// Obtains the new behavior for a provider associated to the overridden family.

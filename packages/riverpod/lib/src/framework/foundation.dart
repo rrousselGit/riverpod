@@ -2,7 +2,7 @@ part of '../framework.dart';
 
 /// A common interface shared by [ProviderBase] and [Family]
 @sealed
-abstract class ProviderOrFamily implements ProviderListenableOrFamily {
+sealed class ProviderOrFamily implements ProviderListenableOrFamily {
   /// A common interface shared by [ProviderBase] and [Family]
   const ProviderOrFamily({
     required this.name,
