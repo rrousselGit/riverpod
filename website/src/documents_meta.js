@@ -256,7 +256,7 @@ export const documentTitles = {
     "concepts/about_code_generation": "About code generation",
     "case_studies/pull_to_refresh": "Pull to refresh (trascina per aggiornare)",
     "case_studies/cancel": "Respingere (Debouncing)/Cancellare richieste di rete",
-    "advanced/select": "Optimizing performance",
+    "advanced/select": "Ottimizzare le performance",
   },
 };
 export const outdatedTranslations = [

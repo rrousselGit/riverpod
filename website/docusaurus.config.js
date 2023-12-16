@@ -9,7 +9,7 @@ module.exports = {
   trailingSlash: false,
   i18n: {
     defaultLocale: "en",
-    locales: ["en", "it"],
+    locales: ["en", "fr", "ko", "ja", "es", "bn", "de", "it", "ru", "zh-Hans"],
   },
   themeConfig: {
     algolia: {
