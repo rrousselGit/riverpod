@@ -31,7 +31,7 @@ use:
   navigates away from the page before the request completes. This ensures that
   you don't waste time processing a response that the user will never see.
 
-In Riverpod, both of these techniques are can be implemented in a similar way.
+In Riverpod, both of these techniques can be implemented in a similar way.
 The key is to use `ref.onDispose` combined with "automatic disposal" or `ref.watch`
 to achieve the desired behavior.
 

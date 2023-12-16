@@ -1,3 +1,10 @@
+## Unreleased patch
+
+- Improved error handling if:
+  - a Notifier has no default constructor
+  - a Notifier has has a default constructor but with required parameters
+  - a Notifier is abstract
+
 ## 2.3.9 - 2023-11-27
 
 - `riverpod_annotation` upgraded to `2.3.3`

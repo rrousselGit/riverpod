@@ -1,5 +1,6 @@
 ## Unreleased fix
 
+- Improved `Provider(dependencies: [...])` documentation.
 - Fix out of date `pub.dev` description
 
 ## 2.4.9 - 2023-11-27
