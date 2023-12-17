@@ -92,12 +92,12 @@ class FamilyFamily extends Family {
 }
 
 class _$FamilyFamilyOverride implements FamilyOverride {
-  _$FamilyFamilyOverride(this.overriddenFamily, this.create);
+  _$FamilyFamilyOverride(this.from, this.create);
 
   final int Function(FamilyRef ref) create;
 
   @override
-  final FamilyFamily overriddenFamily;
+  final FamilyFamily from;
 
   @override
   FamilyProvider getProviderOverride(
@@ -146,7 +146,7 @@ class FamilyProvider extends AutoDisposeProvider<int> {
   ) {
     return ProviderOverride(
       origin: this,
-      override: FamilyProvider._internal(
+      providerOverride: FamilyProvider._internal(
         (ref) => create(ref as FamilyRef),
         from: from,
         name: null,
@@ -448,12 +448,12 @@ class Family2Family extends Family {
 }
 
 class _$Family2FamilyOverride implements FamilyOverride {
-  _$Family2FamilyOverride(this.overriddenFamily, this.create);
+  _$Family2FamilyOverride(this.from, this.create);
 
   final Family2 Function() create;
 
   @override
-  final Family2Family overriddenFamily;
+  final Family2Family from;
 
   @override
   Family2Provider getProviderOverride(
@@ -506,7 +506,7 @@ class Family2Provider extends AutoDisposeNotifierProviderImpl<Family2, int> {
   Override overrideWith(Family2 Function() create) {
     return ProviderOverride(
       origin: this,
-      override: Family2Provider._internal(
+      providerOverride: Family2Provider._internal(
         () => create()..id = id,
         from: from,
         name: null,
@@ -673,12 +673,12 @@ class Provider4Family extends Family {
 }
 
 class _$Provider4FamilyOverride implements FamilyOverride {
-  _$Provider4FamilyOverride(this.overriddenFamily, this.create);
+  _$Provider4FamilyOverride(this.from, this.create);
 
   final Provider4 Function() create;
 
   @override
-  final Provider4Family overriddenFamily;
+  final Provider4Family from;
 
   @override
   Provider4Provider getProviderOverride(
@@ -732,7 +732,7 @@ class Provider4Provider
   Override overrideWith(Provider4 Function() create) {
     return ProviderOverride(
       origin: this,
-      override: Provider4Provider._internal(
+      providerOverride: Provider4Provider._internal(
         () => create()..id = id,
         from: from,
         name: null,

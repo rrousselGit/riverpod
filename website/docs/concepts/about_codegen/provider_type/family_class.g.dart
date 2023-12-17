@@ -93,12 +93,12 @@ class ExampleFamily extends Family {
 }
 
 class _$ExampleFamilyOverride implements FamilyOverride {
-  _$ExampleFamilyOverride(this.overriddenFamily, this.create);
+  _$ExampleFamilyOverride(this.from, this.create);
 
   final Example Function() create;
 
   @override
-  final ExampleFamily overriddenFamily;
+  final ExampleFamily from;
 
   @override
   ExampleProvider getProviderOverride(
@@ -158,7 +158,7 @@ class ExampleProvider extends AutoDisposeNotifierProviderImpl<Example, String> {
   Override overrideWith(Example Function() create) {
     return ProviderOverride(
       origin: this,
-      override: ExampleProvider._internal(
+      providerOverride: ExampleProvider._internal(
         () => create()
           ..param1 = param1
           ..param2 = param2,

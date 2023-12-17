@@ -62,7 +62,7 @@ class AutoDisposeStateNotifierProvider<NotifierT extends StateNotifier<T>, T>
   ) {
     return ProviderOverride(
       origin: this,
-      override: AutoDisposeStateNotifierProvider<NotifierT, T>.internal(
+      providerOverride: AutoDisposeStateNotifierProvider<NotifierT, T>.internal(
         create,
         from: from,
         argument: argument,

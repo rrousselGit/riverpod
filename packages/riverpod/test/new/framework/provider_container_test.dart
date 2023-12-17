@@ -23,7 +23,7 @@ TypeMatcher<ProviderPointer> isPointer({
   }
 
   if (container != _sentinel) {
-    matcher = matcher.having((p) => p.container, 'container', container);
+    matcher = matcher.having((p) => p.mountedContainer, 'container', container);
   }
 
   return matcher;
@@ -45,7 +45,7 @@ TypeMatcher<ProviderDirectory> isProviderDirectory({
   }
 
   if (container != _sentinel) {
-    matcher = matcher.having((p) => p.container, 'container', container);
+    matcher = matcher.having((p) => p.mountedContainer, 'container', container);
   }
 
   return matcher;
@@ -506,7 +506,7 @@ void main() {
         test('orphansPointers.container points to the root', () {
           final root = ProviderContainer.test();
 
-          expect(root.pointerManager.orphanPointers.container, root);
+          expect(root.pointerManager.orphanPointers.mountedContainer, root);
         });
       });
 
@@ -684,8 +684,9 @@ void main() {
             overrides: [provider],
           );
 
-          expect(root.pointerManager.orphanPointers.container, root);
-          expect(container.pointerManager.orphanPointers.container, root);
+          expect(root.pointerManager.orphanPointers.mountedContainer, root);
+          expect(
+              container.pointerManager.orphanPointers.mountedContainer, root);
 
           expect(
             container.pointerManager.orphanPointers.pointers,

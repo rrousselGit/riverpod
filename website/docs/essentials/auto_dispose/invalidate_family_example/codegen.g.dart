@@ -80,12 +80,12 @@ class LabelFamily extends Family {
 }
 
 class _$LabelFamilyOverride implements FamilyOverride {
-  _$LabelFamilyOverride(this.overriddenFamily, this.create);
+  _$LabelFamilyOverride(this.from, this.create);
 
   final String Function(LabelRef ref) create;
 
   @override
-  final LabelFamily overriddenFamily;
+  final LabelFamily from;
 
   @override
   LabelProvider getProviderOverride(
@@ -134,7 +134,7 @@ class LabelProvider extends AutoDisposeProvider<String> {
   ) {
     return ProviderOverride(
       origin: this,
-      override: LabelProvider._internal(
+      providerOverride: LabelProvider._internal(
         (ref) => create(ref as LabelRef),
         from: from,
         name: null,

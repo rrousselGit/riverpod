@@ -278,7 +278,7 @@ abstract class Ref<State extends Object?> {
   /// - if multiple widgets depends on `sortedTodosProvider` the list will be
   ///   sorted only once.
   /// - if nothing is listening to `sortedTodosProvider`, then no sort is performed.
-  T watch<T>(AlwaysAliveProviderListenable<T> provider);
+  T watch<T>(ProviderListenable<T> provider);
 
   /// {@template riverpod.listen}
   /// Listen to a provider and call [listener] whenever its value changes.
@@ -300,7 +300,7 @@ abstract class Ref<State extends Object?> {
   /// Instead the listener will receive an [AsyncError].
   /// {@endtemplate}
   ProviderSubscription<T> listen<T>(
-    AlwaysAliveProviderListenable<T> provider,
+    ProviderListenable<T> provider,
     void Function(T? previous, T next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
     bool fireImmediately,

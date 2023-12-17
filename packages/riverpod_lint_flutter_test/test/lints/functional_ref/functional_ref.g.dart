@@ -104,12 +104,12 @@ class GenericsFamily extends Family {
 }
 
 class _$GenericsFamilyOverride implements FamilyOverride {
-  _$GenericsFamilyOverride(this.overriddenFamily, this.create);
+  _$GenericsFamilyOverride(this.from, this.create);
 
   final int Function<A extends num, B>(GenericsRef ref) create;
 
   @override
-  final GenericsFamily overriddenFamily;
+  final GenericsFamily from;
 
   @override
   GenericsProvider getProviderOverride(
@@ -152,7 +152,7 @@ class GenericsProvider<A extends num, B> extends AutoDisposeProvider<int> {
   ) {
     return ProviderOverride(
       origin: this,
-      override: GenericsProvider<A, B>._internal(
+      providerOverride: GenericsProvider<A, B>._internal(
         (ref) => create(ref as GenericsRef<A, B>),
         from: from,
         name: null,
@@ -256,12 +256,12 @@ class NoGenericsFamily extends Family {
 }
 
 class _$NoGenericsFamilyOverride implements FamilyOverride {
-  _$NoGenericsFamilyOverride(this.overriddenFamily, this.create);
+  _$NoGenericsFamilyOverride(this.from, this.create);
 
   final int Function<A extends num, B>(NoGenericsRef ref) create;
 
   @override
-  final NoGenericsFamily overriddenFamily;
+  final NoGenericsFamily from;
 
   @override
   NoGenericsProvider getProviderOverride(
@@ -305,7 +305,7 @@ class NoGenericsProvider<A extends num, B> extends AutoDisposeProvider<int> {
   ) {
     return ProviderOverride(
       origin: this,
-      override: NoGenericsProvider<A, B>._internal(
+      providerOverride: NoGenericsProvider<A, B>._internal(
         (ref) => create(ref as NoGenericsRef<A, B>),
         from: from,
         name: null,
@@ -408,12 +408,12 @@ class MissingGenericsFamily extends Family {
 }
 
 class _$MissingGenericsFamilyOverride implements FamilyOverride {
-  _$MissingGenericsFamilyOverride(this.overriddenFamily, this.create);
+  _$MissingGenericsFamilyOverride(this.from, this.create);
 
   final int Function<A, B>(MissingGenericsRef ref) create;
 
   @override
-  final MissingGenericsFamily overriddenFamily;
+  final MissingGenericsFamily from;
 
   @override
   MissingGenericsProvider getProviderOverride(
@@ -457,7 +457,7 @@ class MissingGenericsProvider<A, B> extends AutoDisposeProvider<int> {
   ) {
     return ProviderOverride(
       origin: this,
-      override: MissingGenericsProvider<A, B>._internal(
+      providerOverride: MissingGenericsProvider<A, B>._internal(
         (ref) => create(ref as MissingGenericsRef<A, B>),
         from: from,
         name: null,
@@ -560,12 +560,12 @@ class WrongOrderFamily extends Family {
 }
 
 class _$WrongOrderFamilyOverride implements FamilyOverride {
-  _$WrongOrderFamilyOverride(this.overriddenFamily, this.create);
+  _$WrongOrderFamilyOverride(this.from, this.create);
 
   final int Function<B, A>(WrongOrderRef ref) create;
 
   @override
-  final WrongOrderFamily overriddenFamily;
+  final WrongOrderFamily from;
 
   @override
   WrongOrderProvider getProviderOverride(
@@ -609,7 +609,7 @@ class WrongOrderProvider<B, A> extends AutoDisposeProvider<int> {
   ) {
     return ProviderOverride(
       origin: this,
-      override: WrongOrderProvider<B, A>._internal(
+      providerOverride: WrongOrderProvider<B, A>._internal(
         (ref) => create(ref as WrongOrderRef<B, A>),
         from: from,
         name: null,

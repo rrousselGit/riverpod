@@ -81,12 +81,12 @@ class FnFamily extends Family {
 }
 
 class _$FnFamilyOverride implements FamilyOverride {
-  _$FnFamilyOverride(this.overriddenFamily, this.create);
+  _$FnFamilyOverride(this.from, this.create);
 
   final int Function(FnRef ref) create;
 
   @override
-  final FnFamily overriddenFamily;
+  final FnFamily from;
 
   @override
   FnProvider getProviderOverride(
@@ -138,7 +138,7 @@ class FnProvider extends AutoDisposeProvider<int> {
   ) {
     return ProviderOverride(
       origin: this,
-      override: FnProvider._internal(
+      providerOverride: FnProvider._internal(
         (ref) => create(ref as FnRef),
         from: from,
         name: null,
@@ -282,12 +282,12 @@ class MyNotifierFamily extends Family {
 }
 
 class _$MyNotifierFamilyOverride implements FamilyOverride {
-  _$MyNotifierFamilyOverride(this.overriddenFamily, this.create);
+  _$MyNotifierFamilyOverride(this.from, this.create);
 
   final MyNotifier Function() create;
 
   @override
-  final MyNotifierFamily overriddenFamily;
+  final MyNotifierFamily from;
 
   @override
   MyNotifierProvider getProviderOverride(
@@ -349,7 +349,7 @@ class MyNotifierProvider
   Override overrideWith(MyNotifier Function() create) {
     return ProviderOverride(
       origin: this,
-      override: MyNotifierProvider._internal(
+      providerOverride: MyNotifierProvider._internal(
         () => create()
           ..context1 = context1
           ..context2 = context2,

@@ -32,7 +32,7 @@ ProviderElementProxy<AsyncValue<T>, Future<T>> _streamFuture<T>(
 @internal
 abstract class StreamNotifierProviderBase<
     NotifierT extends AsyncNotifierBase<T>,
-    T> extends ProviderBase<AsyncValue<T>> {
+    T> extends ProviderBase<AsyncValue<T>> with AsyncSelector<T> {
   /// A base class for [StreamNotifierProvider]
   ///
   /// Not meant for public consumption

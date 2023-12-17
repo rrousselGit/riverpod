@@ -93,7 +93,8 @@ ProviderElementProxy<AsyncValue<T>, Future<T>> _future<T>(
 /// - [FutureProvider.family], to create a [FutureProvider] from external parameters
 /// - [FutureProvider.autoDispose], to destroy the state of a [FutureProvider] when no longer needed.
 /// {@endtemplate}
-abstract class _FutureProviderBase<T> extends ProviderBase<AsyncValue<T>> {
+abstract class _FutureProviderBase<T> extends ProviderBase<AsyncValue<T>>
+    with AsyncSelector<T> {
   const _FutureProviderBase({
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -102,27 +103,6 @@ abstract class _FutureProviderBase<T> extends ProviderBase<AsyncValue<T>> {
     required super.argument,
     required super.debugGetCreateSourceHash,
   });
-
-  /// Obtains the [Future] associated with a [FutureProvider].
-  ///
-  /// The instance of [Future] obtained may change over time, if the provider
-  /// was recreated (such as when using [Ref.watch]).
-  ///
-  /// This provider allows using `async`/`await` to easily combine
-  /// [FutureProvider] together:
-  ///
-  /// ```dart
-  /// final configsProvider = FutureProvider((ref) async => Configs());
-  ///
-  /// final productsProvider = FutureProvider((ref) async {
-  ///   // Wait for the configurations to resolve
-  ///   final configs = await ref.watch(configsProvider.future);
-  ///
-  ///   // Do something with the result
-  ///   return await http.get('${configs.host}/products');
-  /// });
-  /// ```
-  Refreshable<Future<T>> get future;
 
   FutureOr<T> _create(covariant FutureProviderElement<T> ref);
 }

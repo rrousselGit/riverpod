@@ -186,13 +186,3 @@ class _SelectorSubscription<Input, Output>
     return _read();
   }
 }
-
-class _AlwaysAliveProviderSelector<Input, Output>
-    extends _ProviderSelector<Input, Output>
-    with AlwaysAliveProviderListenable<Output> {
-  /// An internal class for `ProviderBase.select`.
-  _AlwaysAliveProviderSelector({
-    required super.provider,
-    required super.selector,
-  });
-}

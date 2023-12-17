@@ -5,13 +5,11 @@ import 'dart:collection';
 
 import 'package:collection/collection.dart';
 import 'package:meta/meta.dart';
-import 'package:meta/meta.dart' as meta;
 import 'package:state_notifier/state_notifier.dart';
 import 'package:test/test.dart' as test;
 import 'env.dart';
 import 'internals.dart';
 
-part 'framework/always_alive.dart';
 part 'framework/auto_dispose.dart';
 part 'framework/async_selector.dart';
 part 'framework/provider_base.dart';
@@ -25,4 +23,5 @@ part 'framework/ref.dart';
 part 'framework/selector.dart';
 part 'framework/scheduler.dart';
 part 'framework/value_provider.dart';
+part 'framework/override.dart';
 part 'framework/devtool.dart';

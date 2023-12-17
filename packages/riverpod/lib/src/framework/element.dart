@@ -16,14 +16,11 @@ part of '../framework.dart';
 /// ref.watch(provider.select((value) => value));
 /// ```
 /// {@endtemplate}
-abstract class Refreshable<T> implements ProviderListenable<T> {
-  /// The provider that is being refreshed.
-  ProviderBase<Object?> get _origin;
-}
+sealed class Refreshable<T> implements ProviderListenable<T> {}
 
-/// {@macro riverpod.refreshable}
-abstract class AlwaysAliveRefreshable<T>
-    implements Refreshable<T>, AlwaysAliveProviderListenable<T> {}
+mixin _ProviderRefreshable<T> implements Refreshable<T> {
+  ProviderBase<Object?> get provider;
+}
 
 /// A debug utility used by `flutter_riverpod`/`hooks_riverpod` to check
 /// if it is safe to modify a provider.
@@ -632,7 +629,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         }
 
         assert(
-          listenable._origin != origin,
+          listenable != origin,
           'A provider cannot depend on itself',
         );
 

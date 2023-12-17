@@ -52,7 +52,7 @@ class AutoDisposeProvider<T> extends InternalProvider<T> {
   ) {
     return ProviderOverride(
       origin: this,
-      override: AutoDisposeProvider<T>.internal(
+      providerOverride: AutoDisposeProvider<T>.internal(
         create,
         from: from,
         argument: argument,

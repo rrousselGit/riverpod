@@ -84,12 +84,12 @@ class FetchPackagesFamily extends Family {
 }
 
 class _$FetchPackagesFamilyOverride implements FamilyOverride {
-  _$FetchPackagesFamilyOverride(this.overriddenFamily, this.create);
+  _$FetchPackagesFamilyOverride(this.from, this.create);
 
   final FutureOr<List<Package>> Function(FetchPackagesRef ref) create;
 
   @override
-  final FetchPackagesFamily overriddenFamily;
+  final FetchPackagesFamily from;
 
   @override
   FetchPackagesProvider getProviderOverride(
@@ -144,7 +144,7 @@ class FetchPackagesProvider extends AutoDisposeFutureProvider<List<Package>> {
   ) {
     return ProviderOverride(
       origin: this,
-      override: FetchPackagesProvider._internal(
+      providerOverride: FetchPackagesProvider._internal(
         (ref) => create(ref as FetchPackagesRef),
         from: from,
         name: null,

@@ -78,12 +78,12 @@ class GeneratorFamily extends Family {
 }
 
 class _$GeneratorFamilyOverride implements FamilyOverride {
-  _$GeneratorFamilyOverride(this.overriddenFamily, this.create);
+  _$GeneratorFamilyOverride(this.from, this.create);
 
   final int Function(GeneratorRef ref) create;
 
   @override
-  final GeneratorFamily overriddenFamily;
+  final GeneratorFamily from;
 
   @override
   GeneratorProvider getProviderOverride(
@@ -132,7 +132,7 @@ class GeneratorProvider extends Provider<int> {
   ) {
     return ProviderOverride(
       origin: this,
-      override: GeneratorProvider._internal(
+      providerOverride: GeneratorProvider._internal(
         (ref) => create(ref as GeneratorRef),
         from: from,
         name: null,

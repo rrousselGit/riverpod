@@ -90,12 +90,12 @@ class BugsEncounteredNotifierFamily extends Family {
 }
 
 class _$BugsEncounteredNotifierFamilyOverride implements FamilyOverride {
-  _$BugsEncounteredNotifierFamilyOverride(this.overriddenFamily, this.create);
+  _$BugsEncounteredNotifierFamilyOverride(this.from, this.create);
 
   final BugsEncounteredNotifier Function() create;
 
   @override
-  final BugsEncounteredNotifierFamily overriddenFamily;
+  final BugsEncounteredNotifierFamily from;
 
   @override
   BugsEncounteredNotifierProvider getProviderOverride(
@@ -150,7 +150,7 @@ class BugsEncounteredNotifierProvider
   Override overrideWith(BugsEncounteredNotifier Function() create) {
     return ProviderOverride(
       origin: this,
-      override: BugsEncounteredNotifierProvider._internal(
+      providerOverride: BugsEncounteredNotifierProvider._internal(
         () => create()..featureId = featureId,
         from: from,
         name: null,

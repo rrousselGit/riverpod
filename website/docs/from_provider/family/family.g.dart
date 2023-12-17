@@ -83,12 +83,12 @@ class RandomFamily extends Family {
 }
 
 class _$RandomFamilyOverride implements FamilyOverride {
-  _$RandomFamilyOverride(this.overriddenFamily, this.create);
+  _$RandomFamilyOverride(this.from, this.create);
 
   final int Function(RandomRef ref) create;
 
   @override
-  final RandomFamily overriddenFamily;
+  final RandomFamily from;
 
   @override
   RandomProvider getProviderOverride(
@@ -142,7 +142,7 @@ class RandomProvider extends AutoDisposeProvider<int> {
   ) {
     return ProviderOverride(
       origin: this,
-      override: RandomProvider._internal(
+      providerOverride: RandomProvider._internal(
         (ref) => create(ref as RandomRef),
         from: from,
         name: null,

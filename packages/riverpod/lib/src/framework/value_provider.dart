@@ -5,10 +5,9 @@ part of '../framework.dart';
 /// This is an implementation detail of `overrideWithValue`.
 @sealed
 @internal
-class ValueProvider<State> extends ProviderBase<State>
-    with AlwaysAliveProviderBase<State> {
+class ValueProvider<State> extends ProviderBase<State> {
   /// Creates a [ValueProvider].
-  ValueProvider(this._value)
+  const ValueProvider(this._value)
       : super(
           name: null,
           from: null,

@@ -92,12 +92,12 @@ class GeneratedFamilyFamily extends Family {
 }
 
 class _$GeneratedFamilyFamilyOverride implements FamilyOverride {
-  _$GeneratedFamilyFamilyOverride(this.overriddenFamily, this.create);
+  _$GeneratedFamilyFamilyOverride(this.from, this.create);
 
   final _Test Function(GeneratedFamilyRef ref) create;
 
   @override
-  final GeneratedFamilyFamily overriddenFamily;
+  final GeneratedFamilyFamily from;
 
   @override
   GeneratedFamilyProvider getProviderOverride(
@@ -147,7 +147,7 @@ class GeneratedFamilyProvider extends AutoDisposeProvider<_Test> {
   ) {
     return ProviderOverride(
       origin: this,
-      override: GeneratedFamilyProvider._internal(
+      providerOverride: GeneratedFamilyProvider._internal(
         (ref) => create(ref as GeneratedFamilyRef),
         from: from,
         name: null,
@@ -277,12 +277,12 @@ class $DynamicFamilyFamily extends Family {
 }
 
 class _$$DynamicFamilyFamilyOverride implements FamilyOverride {
-  _$$DynamicFamilyFamilyOverride(this.overriddenFamily, this.create);
+  _$$DynamicFamilyFamilyOverride(this.from, this.create);
 
   final Object? Function($DynamicFamilyRef ref) create;
 
   @override
-  final $DynamicFamilyFamily overriddenFamily;
+  final $DynamicFamilyFamily from;
 
   @override
   $DynamicFamilyProvider getProviderOverride(
@@ -332,7 +332,7 @@ class $DynamicFamilyProvider extends AutoDisposeProvider<Object?> {
   ) {
     return ProviderOverride(
       origin: this,
-      override: $DynamicFamilyProvider._internal(
+      providerOverride: $DynamicFamilyProvider._internal(
         (ref) => create(ref as $DynamicFamilyRef),
         from: from,
         name: null,
@@ -448,12 +448,12 @@ class _DynamicFamily extends Family {
 }
 
 class _$DynamicFamilyOverride implements FamilyOverride {
-  _$DynamicFamilyOverride(this.overriddenFamily, this.create);
+  _$DynamicFamilyOverride(this.from, this.create);
 
   final Object? Function(_DynamicRef ref) create;
 
   @override
-  final _DynamicFamily overriddenFamily;
+  final _DynamicFamily from;
 
   @override
   _DynamicProvider getProviderOverride(
@@ -502,7 +502,7 @@ class _DynamicProvider extends AutoDisposeProvider<Object?> {
   ) {
     return ProviderOverride(
       origin: this,
-      override: _DynamicProvider._internal(
+      providerOverride: _DynamicProvider._internal(
         (ref) => create(ref as _DynamicRef),
         from: from,
         name: null,
@@ -632,12 +632,12 @@ class AliasFamilyFamily extends Family {
 }
 
 class _$AliasFamilyFamilyOverride implements FamilyOverride {
-  _$AliasFamilyFamilyOverride(this.overriddenFamily, this.create);
+  _$AliasFamilyFamilyOverride(this.from, this.create);
 
   final r.AsyncValue<int> Function(AliasFamilyRef ref) create;
 
   @override
-  final AliasFamilyFamily overriddenFamily;
+  final AliasFamilyFamily from;
 
   @override
   AliasFamilyProvider getProviderOverride(
@@ -687,7 +687,7 @@ class AliasFamilyProvider extends AutoDisposeProvider<r.AsyncValue<int>> {
   ) {
     return ProviderOverride(
       origin: this,
-      override: AliasFamilyProvider._internal(
+      providerOverride: AliasFamilyProvider._internal(
         (ref) => create(ref as AliasFamilyRef),
         from: from,
         name: null,
@@ -829,12 +829,12 @@ class GeneratedClassFamilyFamily extends Family {
 }
 
 class _$GeneratedClassFamilyFamilyOverride implements FamilyOverride {
-  _$GeneratedClassFamilyFamilyOverride(this.overriddenFamily, this.create);
+  _$GeneratedClassFamilyFamilyOverride(this.from, this.create);
 
   final GeneratedClassFamily Function() create;
 
   @override
-  final GeneratedClassFamilyFamily overriddenFamily;
+  final GeneratedClassFamilyFamily from;
 
   @override
   GeneratedClassFamilyProvider getProviderOverride(
@@ -889,7 +889,7 @@ class GeneratedClassFamilyProvider
   Override overrideWith(GeneratedClassFamily Function() create) {
     return ProviderOverride(
       origin: this,
-      override: GeneratedClassFamilyProvider._internal(
+      providerOverride: GeneratedClassFamilyProvider._internal(
         () => create()..test = test,
         from: from,
         name: null,
@@ -1032,12 +1032,12 @@ class $DynamicClassFamilyFamily extends Family {
 }
 
 class _$$DynamicClassFamilyFamilyOverride implements FamilyOverride {
-  _$$DynamicClassFamilyFamilyOverride(this.overriddenFamily, this.create);
+  _$$DynamicClassFamilyFamilyOverride(this.from, this.create);
 
   final $DynamicClassFamily Function() create;
 
   @override
-  final $DynamicClassFamilyFamily overriddenFamily;
+  final $DynamicClassFamilyFamily from;
 
   @override
   $DynamicClassFamilyProvider getProviderOverride(
@@ -1092,7 +1092,7 @@ class $DynamicClassFamilyProvider
   Override overrideWith($DynamicClassFamily Function() create) {
     return ProviderOverride(
       origin: this,
-      override: $DynamicClassFamilyProvider._internal(
+      providerOverride: $DynamicClassFamilyProvider._internal(
         () => create()..test = test,
         from: from,
         name: null,
@@ -1234,12 +1234,12 @@ class AliasClassFamilyFamily extends Family {
 }
 
 class _$AliasClassFamilyFamilyOverride implements FamilyOverride {
-  _$AliasClassFamilyFamilyOverride(this.overriddenFamily, this.create);
+  _$AliasClassFamilyFamilyOverride(this.from, this.create);
 
   final AliasClassFamily Function() create;
 
   @override
-  final AliasClassFamilyFamily overriddenFamily;
+  final AliasClassFamilyFamily from;
 
   @override
   AliasClassFamilyProvider getProviderOverride(
@@ -1294,7 +1294,7 @@ class AliasClassFamilyProvider extends AutoDisposeNotifierProviderImpl<
   Override overrideWith(AliasClassFamily Function() create) {
     return ProviderOverride(
       origin: this,
-      override: AliasClassFamilyProvider._internal(
+      providerOverride: AliasClassFamilyProvider._internal(
         () => create()..test = test,
         from: from,
         name: null,

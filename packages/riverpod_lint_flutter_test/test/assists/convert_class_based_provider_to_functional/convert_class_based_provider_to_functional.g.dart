@@ -115,12 +115,12 @@ class ExampleFamilyFamily extends Family {
 }
 
 class _$ExampleFamilyFamilyOverride implements FamilyOverride {
-  _$ExampleFamilyFamilyOverride(this.overriddenFamily, this.create);
+  _$ExampleFamilyFamilyOverride(this.from, this.create);
 
   final ExampleFamily Function() create;
 
   @override
-  final ExampleFamilyFamily overriddenFamily;
+  final ExampleFamilyFamily from;
 
   @override
   ExampleFamilyProvider getProviderOverride(
@@ -186,7 +186,7 @@ class ExampleFamilyProvider
   Override overrideWith(ExampleFamily Function() create) {
     return ProviderOverride(
       origin: this,
-      override: ExampleFamilyProvider._internal(
+      providerOverride: ExampleFamilyProvider._internal(
         () => create()
           ..a = a
           ..b = b,
@@ -319,12 +319,12 @@ class GenericFamily extends Family {
 }
 
 class _$GenericFamilyOverride implements FamilyOverride {
-  _$GenericFamilyOverride(this.overriddenFamily, this.create);
+  _$GenericFamilyOverride(this.from, this.create);
 
   final Generic Function() create;
 
   @override
-  final GenericFamily overriddenFamily;
+  final GenericFamily from;
 
   @override
   GenericProvider getProviderOverride(
@@ -371,7 +371,7 @@ class GenericProvider<A, B>
   Override overrideWith(Generic<A, B> Function() create) {
     return ProviderOverride(
       origin: this,
-      override: GenericProvider<A, B>._internal(
+      providerOverride: GenericProvider<A, B>._internal(
         () => create(),
         from: from,
         name: null,

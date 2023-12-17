@@ -73,12 +73,12 @@ class GenericFamily extends Family {
 }
 
 class _$GenericFamilyOverride implements FamilyOverride {
-  _$GenericFamilyOverride(this.overriddenFamily, this.create);
+  _$GenericFamilyOverride(this.from, this.create);
 
   final Stream<List<T>> Function<T extends num>(GenericRef ref) create;
 
   @override
-  final GenericFamily overriddenFamily;
+  final GenericFamily from;
 
   @override
   GenericProvider getProviderOverride(
@@ -122,7 +122,7 @@ class GenericProvider<T extends num>
   ) {
     return ProviderOverride(
       origin: this,
-      override: GenericProvider<T>._internal(
+      providerOverride: GenericProvider<T>._internal(
         (ref) => create(ref as GenericRef<T>),
         from: from,
         name: null,
@@ -270,12 +270,12 @@ class FamilyFamily extends Family {
 }
 
 class _$FamilyFamilyOverride implements FamilyOverride {
-  _$FamilyFamilyOverride(this.overriddenFamily, this.create);
+  _$FamilyFamilyOverride(this.from, this.create);
 
   final Stream<String> Function(FamilyRef ref) create;
 
   @override
-  final FamilyFamily overriddenFamily;
+  final FamilyFamily from;
 
   @override
   FamilyProvider getProviderOverride(
@@ -344,7 +344,7 @@ class FamilyProvider extends AutoDisposeStreamProvider<String> {
   ) {
     return ProviderOverride(
       origin: this,
-      override: FamilyProvider._internal(
+      providerOverride: FamilyProvider._internal(
         (ref) => create(ref as FamilyRef),
         from: from,
         name: null,
@@ -508,12 +508,12 @@ class GenericClassFamily extends Family {
 }
 
 class _$GenericClassFamilyOverride implements FamilyOverride {
-  _$GenericClassFamilyOverride(this.overriddenFamily, this.create);
+  _$GenericClassFamilyOverride(this.from, this.create);
 
   final GenericClass Function() create;
 
   @override
-  final GenericClassFamily overriddenFamily;
+  final GenericClassFamily from;
 
   @override
   GenericClassProvider getProviderOverride(
@@ -561,7 +561,7 @@ class GenericClassProvider<T extends num>
   Override overrideWith(GenericClass<T> Function() create) {
     return ProviderOverride(
       origin: this,
-      override: GenericClassProvider<T>._internal(
+      providerOverride: GenericClassProvider<T>._internal(
         () => create(),
         from: from,
         name: null,
@@ -731,12 +731,12 @@ class FamilyClassFamily extends Family {
 }
 
 class _$FamilyClassFamilyOverride implements FamilyOverride {
-  _$FamilyClassFamilyOverride(this.overriddenFamily, this.create);
+  _$FamilyClassFamilyOverride(this.from, this.create);
 
   final FamilyClass Function() create;
 
   @override
-  final FamilyClassFamily overriddenFamily;
+  final FamilyClassFamily from;
 
   @override
   FamilyClassProvider getProviderOverride(
@@ -816,7 +816,7 @@ class FamilyClassProvider
   Override overrideWith(FamilyClass Function() create) {
     return ProviderOverride(
       origin: this,
-      override: FamilyClassProvider._internal(
+      providerOverride: FamilyClassProvider._internal(
         () => create()
           ..first = first
           ..second = second

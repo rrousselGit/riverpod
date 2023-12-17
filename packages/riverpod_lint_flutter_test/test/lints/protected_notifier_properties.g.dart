@@ -114,12 +114,12 @@ class A3Family extends Family {
 }
 
 class _$A3FamilyOverride implements FamilyOverride {
-  _$A3FamilyOverride(this.overriddenFamily, this.create);
+  _$A3FamilyOverride(this.from, this.create);
 
   final A3 Function() create;
 
   @override
-  final A3Family overriddenFamily;
+  final A3Family from;
 
   @override
   A3Provider getProviderOverride(
@@ -170,7 +170,7 @@ class A3Provider extends AutoDisposeNotifierProviderImpl<A3, int> {
   Override overrideWith(A3 Function() create) {
     return ProviderOverride(
       origin: this,
-      override: A3Provider._internal(
+      providerOverride: A3Provider._internal(
         () => create()..param = param,
         from: from,
         name: null,
@@ -294,12 +294,12 @@ class A4Family extends Family {
 }
 
 class _$A4FamilyOverride implements FamilyOverride {
-  _$A4FamilyOverride(this.overriddenFamily, this.create);
+  _$A4FamilyOverride(this.from, this.create);
 
   final A4 Function() create;
 
   @override
-  final A4Family overriddenFamily;
+  final A4Family from;
 
   @override
   A4Provider getProviderOverride(
@@ -350,7 +350,7 @@ class A4Provider extends NotifierProviderImpl<A4, int> {
   Override overrideWith(A4 Function() create) {
     return ProviderOverride(
       origin: this,
-      override: A4Provider._internal(
+      providerOverride: A4Provider._internal(
         () => create()..param = param,
         from: from,
         name: null,
@@ -473,12 +473,12 @@ class A5Family extends Family {
 }
 
 class _$A5FamilyOverride implements FamilyOverride {
-  _$A5FamilyOverride(this.overriddenFamily, this.create);
+  _$A5FamilyOverride(this.from, this.create);
 
   final A5 Function() create;
 
   @override
-  final A5Family overriddenFamily;
+  final A5Family from;
 
   @override
   A5Provider getProviderOverride(
@@ -529,7 +529,7 @@ class A5Provider extends AutoDisposeAsyncNotifierProviderImpl<A5, int> {
   Override overrideWith(A5 Function() create) {
     return ProviderOverride(
       origin: this,
-      override: A5Provider._internal(
+      providerOverride: A5Provider._internal(
         () => create()..param = param,
         from: from,
         name: null,
@@ -653,12 +653,12 @@ class A6Family extends Family {
 }
 
 class _$A6FamilyOverride implements FamilyOverride {
-  _$A6FamilyOverride(this.overriddenFamily, this.create);
+  _$A6FamilyOverride(this.from, this.create);
 
   final A6 Function() create;
 
   @override
-  final A6Family overriddenFamily;
+  final A6Family from;
 
   @override
   A6Provider getProviderOverride(
@@ -709,7 +709,7 @@ class A6Provider extends AsyncNotifierProviderImpl<A6, int> {
   Override overrideWith(A6 Function() create) {
     return ProviderOverride(
       origin: this,
-      override: A6Provider._internal(
+      providerOverride: A6Provider._internal(
         () => create()..param = param,
         from: from,
         name: null,
@@ -833,12 +833,12 @@ class A7Family extends Family {
 }
 
 class _$A7FamilyOverride implements FamilyOverride {
-  _$A7FamilyOverride(this.overriddenFamily, this.create);
+  _$A7FamilyOverride(this.from, this.create);
 
   final A7 Function() create;
 
   @override
-  final A7Family overriddenFamily;
+  final A7Family from;
 
   @override
   A7Provider getProviderOverride(
@@ -889,7 +889,7 @@ class A7Provider extends AutoDisposeStreamNotifierProviderImpl<A7, int> {
   Override overrideWith(A7 Function() create) {
     return ProviderOverride(
       origin: this,
-      override: A7Provider._internal(
+      providerOverride: A7Provider._internal(
         () => create()..param = param,
         from: from,
         name: null,
@@ -1013,12 +1013,12 @@ class A8Family extends Family {
 }
 
 class _$A8FamilyOverride implements FamilyOverride {
-  _$A8FamilyOverride(this.overriddenFamily, this.create);
+  _$A8FamilyOverride(this.from, this.create);
 
   final A8 Function() create;
 
   @override
-  final A8Family overriddenFamily;
+  final A8Family from;
 
   @override
   A8Provider getProviderOverride(
@@ -1069,7 +1069,7 @@ class A8Provider extends StreamNotifierProviderImpl<A8, int> {
   Override overrideWith(A8 Function() create) {
     return ProviderOverride(
       origin: this,
-      override: A8Provider._internal(
+      providerOverride: A8Provider._internal(
         () => create()..param = param,
         from: from,
         name: null,

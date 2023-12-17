@@ -38,8 +38,10 @@ class _ProxySubscription<T> extends ProviderSubscription<T> {
 /// This API is not meant for public consumption.
 @internal
 class ProviderElementProxy<Input, Output>
-    with ProviderListenable<Output>, AlwaysAliveProviderListenable<Output>
-    implements AlwaysAliveRefreshable<Output> {
+    with
+        ProviderListenable<Output>,
+        ProviderListenable<Output>,
+        _ProviderRefreshable<Output> {
   /// An internal utility for reading alternate values of a provider.
   ///
   /// For example, this is used by [FutureProvider] to differentiate:
@@ -55,10 +57,10 @@ class ProviderElementProxy<Input, Output>
   /// ```
   ///
   /// This API is not meant for public consumption.
-  const ProviderElementProxy(this._origin, this._lense);
+  const ProviderElementProxy(this.provider, this._lense);
 
   @override
-  final ProviderBase<Input> _origin;
+  final ProviderBase<Input> provider;
   final ProxyElementValueNotifier<Output> Function(
     ProviderElementBase<Input> element,
   ) _lense;
@@ -71,7 +73,7 @@ class ProviderElementProxy<Input, Output>
     required void Function()? onDependencyMayHaveChanged,
     required bool fireImmediately,
   }) {
-    final element = node.readProviderElement(_origin);
+    final element = node.readProviderElement(provider);
 
     // TODO does this need a "flush"?
     // element.flush();
@@ -111,7 +113,7 @@ class ProviderElementProxy<Input, Output>
 
   @override
   Output read(Node node) {
-    final element = node.readProviderElement(_origin);
+    final element = node.readProviderElement(provider);
     element.flush();
     element.mayNeedDispose();
     return _lense(element).value;
@@ -119,8 +121,9 @@ class ProviderElementProxy<Input, Output>
 
   @override
   bool operator ==(Object other) =>
-      other is ProviderElementProxy<Input, Output> && other._origin == _origin;
+      other is ProviderElementProxy<Input, Output> &&
+      other.provider == provider;
 
   @override
-  int get hashCode => _origin.hashCode;
+  int get hashCode => provider.hashCode;
 }

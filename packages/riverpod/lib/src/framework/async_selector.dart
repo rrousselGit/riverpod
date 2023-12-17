@@ -3,7 +3,25 @@ part of '../framework.dart';
 /// Adds [selectAsync] to [ProviderListenable]
 @internal
 mixin AsyncSelector<Input> on ProviderListenable<AsyncValue<Input>> {
-  /// The future that [selectAsync] will query
+  /// Obtains the [Future] associated with a [FutureProvider].
+  ///
+  /// The instance of [Future] obtained may change over time, if the provider
+  /// was recreated (such as when using [Ref.watch]).
+  ///
+  /// This provider allows using `async`/`await` to easily combine
+  /// [FutureProvider] together:
+  ///
+  /// ```dart
+  /// final configsProvider = FutureProvider((ref) async => Configs());
+  ///
+  /// final productsProvider = FutureProvider((ref) async {
+  ///   // Wait for the configurations to resolve
+  ///   final configs = await ref.watch(configsProvider.future);
+  ///
+  ///   // Do something with the result
+  ///   return await http.get('${configs.host}/products');
+  /// });
+  /// ```
   Refreshable<Future<Input>> get future;
 
   /// {@template riverpod.async_select}
@@ -38,41 +56,12 @@ mixin AsyncSelector<Input> on ProviderListenable<AsyncValue<Input>> {
   ProviderListenable<Future<Output>> selectAsync<Output>(
     Output Function(Input data) selector,
   ) {
-    return _AlwaysAliveAsyncSelector(
+    return _AsyncSelector(
       selector: selector,
       provider: this,
       future: future,
     );
   }
-}
-
-/// Adds [selectAsync] to [AlwaysAliveProviderListenable]
-@internal
-mixin AlwaysAliveAsyncSelector<Input>
-    on AlwaysAliveProviderListenable<AsyncValue<Input>> {
-  /// The future that [selectAsync] will query
-  AlwaysAliveRefreshable<Future<Input>> get future;
-
-  /// {@macro riverpod.async_select}
-  AlwaysAliveProviderListenable<Future<Output>> selectAsync<Output>(
-    Output Function(Input data) selector,
-  ) {
-    return _AlwaysAliveAsyncSelector(
-      selector: selector,
-      provider: this,
-      future: future,
-    );
-  }
-}
-
-class _AlwaysAliveAsyncSelector<Input, Output>
-    extends _AsyncSelector<Input, Output>
-    with AlwaysAliveProviderListenable<Future<Output>> {
-  _AlwaysAliveAsyncSelector({
-    required super.provider,
-    required super.future,
-    required super.selector,
-  });
 }
 
 /// An internal class for `ProviderBase.selectAsync`.

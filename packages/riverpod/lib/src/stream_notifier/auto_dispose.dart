@@ -108,7 +108,8 @@ class AutoDisposeStreamNotifierProviderImpl<
   Override overrideWith(NotifierT Function() create) {
     return ProviderOverride(
       origin: this,
-      override: AutoDisposeStreamNotifierProviderImpl<NotifierT, T>.internal(
+      providerOverride:
+          AutoDisposeStreamNotifierProviderImpl<NotifierT, T>.internal(
         create,
         from: from,
         argument: argument,

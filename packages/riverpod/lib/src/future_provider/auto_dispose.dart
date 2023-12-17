@@ -59,7 +59,7 @@ class AutoDisposeFutureProvider<T> extends _FutureProviderBase<T>
   ) {
     return ProviderOverride(
       origin: this,
-      override: AutoDisposeFutureProvider.internal(
+      providerOverride: AutoDisposeFutureProvider.internal(
         create,
         from: from,
         argument: argument,

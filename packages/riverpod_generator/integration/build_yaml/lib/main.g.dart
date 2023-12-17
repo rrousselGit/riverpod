@@ -120,12 +120,12 @@ class Count2Family extends Family {
 }
 
 class _$Count2FamilyOverride implements FamilyOverride {
-  _$Count2FamilyOverride(this.overriddenFamily, this.create);
+  _$Count2FamilyOverride(this.from, this.create);
 
   final int Function(Count2Ref ref) create;
 
   @override
-  final Count2Family overriddenFamily;
+  final Count2Family from;
 
   @override
   Count2Provider getProviderOverride(
@@ -174,7 +174,7 @@ class Count2Provider extends AutoDisposeProvider<int> {
   ) {
     return ProviderOverride(
       origin: this,
-      override: Count2Provider._internal(
+      providerOverride: Count2Provider._internal(
         (ref) => create(ref as Count2Ref),
         from: from,
         name: null,
@@ -290,12 +290,12 @@ class CountFuture2Family extends Family {
 }
 
 class _$CountFuture2FamilyOverride implements FamilyOverride {
-  _$CountFuture2FamilyOverride(this.overriddenFamily, this.create);
+  _$CountFuture2FamilyOverride(this.from, this.create);
 
   final FutureOr<int> Function(CountFuture2Ref ref) create;
 
   @override
-  final CountFuture2Family overriddenFamily;
+  final CountFuture2Family from;
 
   @override
   CountFuture2Provider getProviderOverride(
@@ -345,7 +345,7 @@ class CountFuture2Provider extends AutoDisposeFutureProvider<int> {
   ) {
     return ProviderOverride(
       origin: this,
-      override: CountFuture2Provider._internal(
+      providerOverride: CountFuture2Provider._internal(
         (ref) => create(ref as CountFuture2Ref),
         from: from,
         name: null,
@@ -461,12 +461,12 @@ class CountStream2Family extends Family {
 }
 
 class _$CountStream2FamilyOverride implements FamilyOverride {
-  _$CountStream2FamilyOverride(this.overriddenFamily, this.create);
+  _$CountStream2FamilyOverride(this.from, this.create);
 
   final Stream<int> Function(CountStream2Ref ref) create;
 
   @override
-  final CountStream2Family overriddenFamily;
+  final CountStream2Family from;
 
   @override
   CountStream2Provider getProviderOverride(
@@ -516,7 +516,7 @@ class CountStream2Provider extends AutoDisposeStreamProvider<int> {
   ) {
     return ProviderOverride(
       origin: this,
-      override: CountStream2Provider._internal(
+      providerOverride: CountStream2Provider._internal(
         (ref) => create(ref as CountStream2Ref),
         from: from,
         name: null,
@@ -690,12 +690,12 @@ class CountNotifier2Family extends Family {
 }
 
 class _$CountNotifier2FamilyOverride implements FamilyOverride {
-  _$CountNotifier2FamilyOverride(this.overriddenFamily, this.create);
+  _$CountNotifier2FamilyOverride(this.from, this.create);
 
   final CountNotifier2 Function() create;
 
   @override
-  final CountNotifier2Family overriddenFamily;
+  final CountNotifier2Family from;
 
   @override
   CountNotifier2Provider getProviderOverride(
@@ -750,7 +750,7 @@ class CountNotifier2Provider
   Override overrideWith(CountNotifier2 Function() create) {
     return ProviderOverride(
       origin: this,
-      override: CountNotifier2Provider._internal(
+      providerOverride: CountNotifier2Provider._internal(
         () => create()..a = a,
         from: from,
         name: null,
@@ -877,12 +877,12 @@ class CountAsyncNotifier2Family extends Family {
 }
 
 class _$CountAsyncNotifier2FamilyOverride implements FamilyOverride {
-  _$CountAsyncNotifier2FamilyOverride(this.overriddenFamily, this.create);
+  _$CountAsyncNotifier2FamilyOverride(this.from, this.create);
 
   final CountAsyncNotifier2 Function() create;
 
   @override
-  final CountAsyncNotifier2Family overriddenFamily;
+  final CountAsyncNotifier2Family from;
 
   @override
   CountAsyncNotifier2Provider getProviderOverride(
@@ -937,7 +937,7 @@ class CountAsyncNotifier2Provider
   Override overrideWith(CountAsyncNotifier2 Function() create) {
     return ProviderOverride(
       origin: this,
-      override: CountAsyncNotifier2Provider._internal(
+      providerOverride: CountAsyncNotifier2Provider._internal(
         () => create()..a = a,
         from: from,
         name: null,
@@ -1065,12 +1065,12 @@ class CountStreamNotifier2Family extends Family {
 }
 
 class _$CountStreamNotifier2FamilyOverride implements FamilyOverride {
-  _$CountStreamNotifier2FamilyOverride(this.overriddenFamily, this.create);
+  _$CountStreamNotifier2FamilyOverride(this.from, this.create);
 
   final CountStreamNotifier2 Function() create;
 
   @override
-  final CountStreamNotifier2Family overriddenFamily;
+  final CountStreamNotifier2Family from;
 
   @override
   CountStreamNotifier2Provider getProviderOverride(
@@ -1125,7 +1125,7 @@ class CountStreamNotifier2Provider
   Override overrideWith(CountStreamNotifier2 Function() create) {
     return ProviderOverride(
       origin: this,
-      override: CountStreamNotifier2Provider._internal(
+      providerOverride: CountStreamNotifier2Provider._internal(
         () => create()..a = a,
         from: from,
         name: null,

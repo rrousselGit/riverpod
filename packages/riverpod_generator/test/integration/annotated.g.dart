@@ -98,12 +98,12 @@ class FamilyFamily extends Family {
 }
 
 class _$FamilyFamilyOverride implements FamilyOverride {
-  _$FamilyFamilyOverride(this.overriddenFamily, this.create);
+  _$FamilyFamilyOverride(this.from, this.create);
 
   final String Function(FamilyRef ref) create;
 
   @override
-  final FamilyFamily overriddenFamily;
+  final FamilyFamily from;
 
   @override
   FamilyProvider getProviderOverride(
@@ -152,7 +152,7 @@ class FamilyProvider extends AutoDisposeProvider<String> {
   ) {
     return ProviderOverride(
       origin: this,
-      override: FamilyProvider._internal(
+      providerOverride: FamilyProvider._internal(
         (ref) => create(ref as FamilyRef),
         from: from,
         name: null,
@@ -284,12 +284,12 @@ class NotCopiedFamilyFamily extends Family {
 }
 
 class _$NotCopiedFamilyFamilyOverride implements FamilyOverride {
-  _$NotCopiedFamilyFamilyOverride(this.overriddenFamily, this.create);
+  _$NotCopiedFamilyFamilyOverride(this.from, this.create);
 
   final String Function(NotCopiedFamilyRef ref) create;
 
   @override
-  final NotCopiedFamilyFamily overriddenFamily;
+  final NotCopiedFamilyFamily from;
 
   @override
   NotCopiedFamilyProvider getProviderOverride(
@@ -339,7 +339,7 @@ class NotCopiedFamilyProvider extends AutoDisposeProvider<String> {
   ) {
     return ProviderOverride(
       origin: this,
-      override: NotCopiedFamilyProvider._internal(
+      providerOverride: NotCopiedFamilyProvider._internal(
         (ref) => create(ref as NotCopiedFamilyRef),
         from: from,
         name: null,

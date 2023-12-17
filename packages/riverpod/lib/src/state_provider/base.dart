@@ -42,8 +42,7 @@ abstract class StateProviderRef<State> implements Ref<State> {
 /// }
 /// ```
 /// {@endtemplate}
-class StateProvider<T> extends _StateProviderBase<T>
-    with AlwaysAliveProviderBase<T> {
+class StateProvider<T> extends _StateProviderBase<T> {
   /// {@macro riverpod.stateprovider}
   StateProvider(
     this._createFn, {
@@ -88,8 +87,7 @@ class StateProvider<T> extends _StateProviderBase<T>
   }
 
   @override
-  late final AlwaysAliveRefreshable<StateController<T>> notifier =
-      _notifier(this);
+  late final Refreshable<StateController<T>> notifier = _notifier(this);
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
@@ -97,7 +95,7 @@ class StateProvider<T> extends _StateProviderBase<T>
   ) {
     return ProviderOverride(
       origin: this,
-      override: StateProvider<T>.internal(
+      providerOverride: StateProvider<T>.internal(
         create,
         from: from,
         argument: argument,

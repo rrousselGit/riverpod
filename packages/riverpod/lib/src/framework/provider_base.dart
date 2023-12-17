@@ -27,7 +27,7 @@ typedef DebugGetCreateSourceHash = String Function();
 @immutable
 abstract class ProviderBase<State> extends ProviderOrFamily
     with ProviderListenable<State>
-    implements ProviderOverride, Refreshable<State> {
+    implements Refreshable<State>, ProviderOverride {
   /// A base class for _all_ providers.
   const ProviderBase({
     required super.name,
@@ -38,14 +38,8 @@ abstract class ProviderBase<State> extends ProviderOrFamily
     required super.allTransitiveDependencies,
   });
 
-  @override
-  ProviderBase<Object?> get _origin => this;
-
-  @override
-  ProviderBase<Object?> get _override => this;
-
   /// {@template riverpod.create_source_hash}
-  /// A debug-only fucntion for obtaining a hash of the source code of the
+  /// A debug-only function for obtaining a hash of the source code of the
   /// initialization function.
   ///
   /// If after a hot-reload this function returns a different result, the
@@ -244,7 +238,7 @@ mixin OverrideWithValueMixin<State> on ProviderBase<State> {
   Override overrideWithValue(State value) {
     return ProviderOverride(
       origin: this,
-      override: ValueProvider<State>(value),
+      providerOverride: ValueProvider<State>(value),
     );
   }
 }

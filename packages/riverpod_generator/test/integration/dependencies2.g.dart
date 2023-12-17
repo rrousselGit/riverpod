@@ -118,12 +118,12 @@ class FamilyWithDependencies2Family extends Family {
 }
 
 class _$FamilyWithDependencies2FamilyOverride implements FamilyOverride {
-  _$FamilyWithDependencies2FamilyOverride(this.overriddenFamily, this.create);
+  _$FamilyWithDependencies2FamilyOverride(this.from, this.create);
 
   final int Function(FamilyWithDependencies2Ref ref) create;
 
   @override
-  final FamilyWithDependencies2Family overriddenFamily;
+  final FamilyWithDependencies2Family from;
 
   @override
   FamilyWithDependencies2Provider getProviderOverride(
@@ -173,7 +173,7 @@ class FamilyWithDependencies2Provider extends AutoDisposeProvider<int> {
   ) {
     return ProviderOverride(
       origin: this,
-      override: FamilyWithDependencies2Provider._internal(
+      providerOverride: FamilyWithDependencies2Provider._internal(
         (ref) => create(ref as FamilyWithDependencies2Ref),
         from: from,
         name: null,
@@ -370,13 +370,12 @@ class NotifierFamilyWithDependenciesFamily extends Family {
 }
 
 class _$NotifierFamilyWithDependenciesFamilyOverride implements FamilyOverride {
-  _$NotifierFamilyWithDependenciesFamilyOverride(
-      this.overriddenFamily, this.create);
+  _$NotifierFamilyWithDependenciesFamilyOverride(this.from, this.create);
 
   final NotifierFamilyWithDependencies Function() create;
 
   @override
-  final NotifierFamilyWithDependenciesFamily overriddenFamily;
+  final NotifierFamilyWithDependenciesFamily from;
 
   @override
   NotifierFamilyWithDependenciesProvider getProviderOverride(
@@ -432,7 +431,7 @@ class NotifierFamilyWithDependenciesProvider
   Override overrideWith(NotifierFamilyWithDependencies Function() create) {
     return ProviderOverride(
       origin: this,
-      override: NotifierFamilyWithDependenciesProvider._internal(
+      providerOverride: NotifierFamilyWithDependenciesProvider._internal(
         () => create()..id = id,
         from: from,
         name: null,

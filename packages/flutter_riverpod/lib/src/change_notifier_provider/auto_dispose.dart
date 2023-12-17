@@ -67,7 +67,7 @@ class AutoDisposeChangeNotifierProvider<NotifierT extends ChangeNotifier?>
   ) {
     return ProviderOverride(
       origin: this,
-      override: AutoDisposeChangeNotifierProvider<NotifierT>.internal(
+      providerOverride: AutoDisposeChangeNotifierProvider<NotifierT>.internal(
         create,
         from: from,
         argument: argument,

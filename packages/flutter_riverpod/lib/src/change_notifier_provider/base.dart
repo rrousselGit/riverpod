@@ -73,8 +73,7 @@ abstract class ChangeNotifierProviderRef<NotifierT extends ChangeNotifier?>
 /// ```
 /// {@endtemplate}
 class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
-    extends _ChangeNotifierProviderBase<NotifierT>
-    with AlwaysAliveProviderBase<NotifierT> {
+    extends _ChangeNotifierProviderBase<NotifierT> {
   /// {@macro riverpod.change_notifier_provider}
   ChangeNotifierProvider(
     this._createFn, {
@@ -121,8 +120,7 @@ class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
   }
 
   @override
-  late final AlwaysAliveRefreshable<NotifierT> notifier =
-      _notifier<NotifierT>(this);
+  late final Refreshable<NotifierT> notifier = _notifier<NotifierT>(this);
 
   /// {@template riverpod.override_with}
   /// Override the provider with a new initialization function.
@@ -163,7 +161,7 @@ class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
   ) {
     return ProviderOverride(
       origin: this,
-      override: ChangeNotifierProvider<NotifierT>.internal(
+      providerOverride: ChangeNotifierProvider<NotifierT>.internal(
         create,
         from: from,
         argument: argument,

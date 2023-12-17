@@ -105,12 +105,12 @@ class ExampleFamilyFamily extends Family {
 }
 
 class _$ExampleFamilyFamilyOverride implements FamilyOverride {
-  _$ExampleFamilyFamilyOverride(this.overriddenFamily, this.create);
+  _$ExampleFamilyFamilyOverride(this.from, this.create);
 
   final int Function(ExampleFamilyRef ref) create;
 
   @override
-  final ExampleFamilyFamily overriddenFamily;
+  final ExampleFamilyFamily from;
 
   @override
   ExampleFamilyProvider getProviderOverride(
@@ -169,7 +169,7 @@ class ExampleFamilyProvider extends AutoDisposeProvider<int> {
   ) {
     return ProviderOverride(
       origin: this,
-      override: ExampleFamilyProvider._internal(
+      providerOverride: ExampleFamilyProvider._internal(
         (ref) => create(ref as ExampleFamilyRef),
         from: from,
         name: null,

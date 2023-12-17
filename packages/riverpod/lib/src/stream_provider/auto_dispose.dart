@@ -57,7 +57,7 @@ class AutoDisposeStreamProvider<T> extends _StreamProviderBase<T>
   ) {
     return ProviderOverride(
       origin: this,
-      override: AutoDisposeStreamProvider<T>.internal(
+      providerOverride: AutoDisposeStreamProvider<T>.internal(
         create,
         from: from,
         argument: argument,

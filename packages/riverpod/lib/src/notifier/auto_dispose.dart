@@ -105,7 +105,7 @@ class AutoDisposeNotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
   Override overrideWith(NotifierT Function() create) {
     return ProviderOverride(
       origin: this,
-      override: AutoDisposeNotifierProviderImpl<NotifierT, T>.internal(
+      providerOverride: AutoDisposeNotifierProviderImpl<NotifierT, T>.internal(
         create,
         from: from,
         argument: argument,

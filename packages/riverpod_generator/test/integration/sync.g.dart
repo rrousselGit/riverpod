@@ -73,12 +73,12 @@ class GenericFamily extends Family {
 }
 
 class _$GenericFamilyOverride implements FamilyOverride {
-  _$GenericFamilyOverride(this.overriddenFamily, this.create);
+  _$GenericFamilyOverride(this.from, this.create);
 
   final List<T> Function<T extends num>(GenericRef ref) create;
 
   @override
-  final GenericFamily overriddenFamily;
+  final GenericFamily from;
 
   @override
   GenericProvider getProviderOverride(
@@ -121,7 +121,7 @@ class GenericProvider<T extends num> extends AutoDisposeProvider<List<T>> {
   ) {
     return ProviderOverride(
       origin: this,
-      override: GenericProvider<T>._internal(
+      providerOverride: GenericProvider<T>._internal(
         (ref) => create(ref as GenericRef<T>),
         from: from,
         name: null,
@@ -235,13 +235,13 @@ class ComplexGenericFamily extends Family {
 }
 
 class _$ComplexGenericFamilyOverride implements FamilyOverride {
-  _$ComplexGenericFamilyOverride(this.overriddenFamily, this.create);
+  _$ComplexGenericFamilyOverride(this.from, this.create);
 
   final List<T> Function<T extends num, Foo extends String?>(
       ComplexGenericRef ref) create;
 
   @override
-  final ComplexGenericFamily overriddenFamily;
+  final ComplexGenericFamily from;
 
   @override
   ComplexGenericProvider getProviderOverride(
@@ -297,7 +297,7 @@ class ComplexGenericProvider<T extends num, Foo extends String?>
   ) {
     return ProviderOverride(
       origin: this,
-      override: ComplexGenericProvider<T, Foo>._internal(
+      providerOverride: ComplexGenericProvider<T, Foo>._internal(
         (ref) => create(ref as ComplexGenericRef<T, Foo>),
         from: from,
         name: null,
@@ -463,12 +463,12 @@ class RawFamilyFutureFamily extends Family {
 }
 
 class _$RawFamilyFutureFamilyOverride implements FamilyOverride {
-  _$RawFamilyFutureFamilyOverride(this.overriddenFamily, this.create);
+  _$RawFamilyFutureFamilyOverride(this.from, this.create);
 
   final Raw<Future<String>> Function(RawFamilyFutureRef ref) create;
 
   @override
-  final RawFamilyFutureFamily overriddenFamily;
+  final RawFamilyFutureFamily from;
 
   @override
   RawFamilyFutureProvider getProviderOverride(
@@ -518,7 +518,7 @@ class RawFamilyFutureProvider extends AutoDisposeProvider<Raw<Future<String>>> {
   ) {
     return ProviderOverride(
       origin: this,
-      override: RawFamilyFutureProvider._internal(
+      providerOverride: RawFamilyFutureProvider._internal(
         (ref) => create(ref as RawFamilyFutureRef),
         from: from,
         name: null,
@@ -636,12 +636,12 @@ class RawFamilyStreamFamily extends Family {
 }
 
 class _$RawFamilyStreamFamilyOverride implements FamilyOverride {
-  _$RawFamilyStreamFamilyOverride(this.overriddenFamily, this.create);
+  _$RawFamilyStreamFamilyOverride(this.from, this.create);
 
   final Raw<Stream<String>> Function(RawFamilyStreamRef ref) create;
 
   @override
-  final RawFamilyStreamFamily overriddenFamily;
+  final RawFamilyStreamFamily from;
 
   @override
   RawFamilyStreamProvider getProviderOverride(
@@ -691,7 +691,7 @@ class RawFamilyStreamProvider extends AutoDisposeProvider<Raw<Stream<String>>> {
   ) {
     return ProviderOverride(
       origin: this,
-      override: RawFamilyStreamProvider._internal(
+      providerOverride: RawFamilyStreamProvider._internal(
         (ref) => create(ref as RawFamilyStreamRef),
         from: from,
         name: null,
@@ -859,12 +859,12 @@ class FamilyFamily extends Family {
 }
 
 class _$FamilyFamilyOverride implements FamilyOverride {
-  _$FamilyFamilyOverride(this.overriddenFamily, this.create);
+  _$FamilyFamilyOverride(this.from, this.create);
 
   final String Function(FamilyRef ref) create;
 
   @override
-  final FamilyFamily overriddenFamily;
+  final FamilyFamily from;
 
   @override
   FamilyProvider getProviderOverride(
@@ -937,7 +937,7 @@ class FamilyProvider extends AutoDisposeProvider<String> {
   ) {
     return ProviderOverride(
       origin: this,
-      override: FamilyProvider._internal(
+      providerOverride: FamilyProvider._internal(
         (ref) => create(ref as FamilyRef),
         from: from,
         name: null,
@@ -1129,12 +1129,12 @@ class GenericClassFamily extends Family {
 }
 
 class _$GenericClassFamilyOverride implements FamilyOverride {
-  _$GenericClassFamilyOverride(this.overriddenFamily, this.create);
+  _$GenericClassFamilyOverride(this.from, this.create);
 
   final GenericClass Function() create;
 
   @override
-  final GenericClassFamily overriddenFamily;
+  final GenericClassFamily from;
 
   @override
   GenericClassProvider getProviderOverride(
@@ -1182,7 +1182,7 @@ class GenericClassProvider<T extends num>
   Override overrideWith(GenericClass<T> Function() create) {
     return ProviderOverride(
       origin: this,
-      override: GenericClassProvider<T>._internal(
+      providerOverride: GenericClassProvider<T>._internal(
         () => create(),
         from: from,
         name: null,
@@ -1334,12 +1334,12 @@ class RawFamilyFutureClassFamily extends Family {
 }
 
 class _$RawFamilyFutureClassFamilyOverride implements FamilyOverride {
-  _$RawFamilyFutureClassFamilyOverride(this.overriddenFamily, this.create);
+  _$RawFamilyFutureClassFamilyOverride(this.from, this.create);
 
   final RawFamilyFutureClass Function() create;
 
   @override
-  final RawFamilyFutureClassFamily overriddenFamily;
+  final RawFamilyFutureClassFamily from;
 
   @override
   RawFamilyFutureClassProvider getProviderOverride(
@@ -1394,7 +1394,7 @@ class RawFamilyFutureClassProvider extends AutoDisposeNotifierProviderImpl<
   Override overrideWith(RawFamilyFutureClass Function() create) {
     return ProviderOverride(
       origin: this,
-      override: RawFamilyFutureClassProvider._internal(
+      providerOverride: RawFamilyFutureClassProvider._internal(
         () => create()..id = id,
         from: from,
         name: null,
@@ -1523,12 +1523,12 @@ class RawFamilyStreamClassFamily extends Family {
 }
 
 class _$RawFamilyStreamClassFamilyOverride implements FamilyOverride {
-  _$RawFamilyStreamClassFamilyOverride(this.overriddenFamily, this.create);
+  _$RawFamilyStreamClassFamilyOverride(this.from, this.create);
 
   final RawFamilyStreamClass Function() create;
 
   @override
-  final RawFamilyStreamClassFamily overriddenFamily;
+  final RawFamilyStreamClassFamily from;
 
   @override
   RawFamilyStreamClassProvider getProviderOverride(
@@ -1583,7 +1583,7 @@ class RawFamilyStreamClassProvider extends AutoDisposeNotifierProviderImpl<
   Override overrideWith(RawFamilyStreamClass Function() create) {
     return ProviderOverride(
       origin: this,
-      override: RawFamilyStreamClassProvider._internal(
+      providerOverride: RawFamilyStreamClassProvider._internal(
         () => create()..id = id,
         from: from,
         name: null,
@@ -1770,12 +1770,12 @@ class FamilyClassFamily extends Family {
 }
 
 class _$FamilyClassFamilyOverride implements FamilyOverride {
-  _$FamilyClassFamilyOverride(this.overriddenFamily, this.create);
+  _$FamilyClassFamilyOverride(this.from, this.create);
 
   final FamilyClass Function() create;
 
   @override
-  final FamilyClassFamily overriddenFamily;
+  final FamilyClassFamily from;
 
   @override
   FamilyClassProvider getProviderOverride(
@@ -1859,7 +1859,7 @@ class FamilyClassProvider
   Override overrideWith(FamilyClass Function() create) {
     return ProviderOverride(
       origin: this,
-      override: FamilyClassProvider._internal(
+      providerOverride: FamilyClassProvider._internal(
         () => create()
           ..first = first
           ..second = second

@@ -74,8 +74,7 @@ abstract class StateNotifierProviderRef<NotifierT extends StateNotifier<T>, T>
 /// ```
 /// {@endtemplate}
 class StateNotifierProvider<NotifierT extends StateNotifier<T>, T>
-    extends _StateNotifierProviderBase<NotifierT, T>
-    with AlwaysAliveProviderBase<T> {
+    extends _StateNotifierProviderBase<NotifierT, T> {
   /// {@macro riverpod.statenotifierprovider}
   StateNotifierProvider(
     this._createFn, {
@@ -123,7 +122,7 @@ class StateNotifierProvider<NotifierT extends StateNotifier<T>, T>
   }
 
   @override
-  late final AlwaysAliveRefreshable<NotifierT> notifier = _notifier(this);
+  late final Refreshable<NotifierT> notifier = _notifier(this);
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
@@ -131,7 +130,7 @@ class StateNotifierProvider<NotifierT extends StateNotifier<T>, T>
   ) {
     return ProviderOverride(
       origin: this,
-      override: StateNotifierProvider<NotifierT, T>.internal(
+      providerOverride: StateNotifierProvider<NotifierT, T>.internal(
         create,
         from: from,
         argument: argument,

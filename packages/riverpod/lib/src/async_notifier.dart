@@ -172,7 +172,7 @@ ProviderElementProxy<AsyncValue<T>, Future<T>> _asyncFuture<T>(
 @visibleForTesting
 @internal
 abstract class AsyncNotifierProviderBase<NotifierT extends AsyncNotifierBase<T>,
-    T> extends ProviderBase<AsyncValue<T>> {
+    T> extends ProviderBase<AsyncValue<T>> with AsyncSelector<T> {
   /// A base class for [AsyncNotifierProvider]
   ///
   /// Not meant for public consumption

@@ -23,8 +23,7 @@ abstract class FutureProviderRef<State> implements Ref<AsyncValue<State>> {
 }
 
 /// {@macro riverpod.future_provider}
-class FutureProvider<T> extends _FutureProviderBase<T>
-    with AlwaysAliveProviderBase<AsyncValue<T>>, AlwaysAliveAsyncSelector<T> {
+class FutureProvider<T> extends _FutureProviderBase<T> {
   /// {@macro riverpod.future_provider}
   FutureProvider(
     this._createFn, {
@@ -59,7 +58,7 @@ class FutureProvider<T> extends _FutureProviderBase<T>
   final Create<FutureOr<T>, FutureProviderRef<T>> _createFn;
 
   @override
-  late final AlwaysAliveRefreshable<Future<T>> future = _future(this);
+  late final Refreshable<Future<T>> future = _future(this);
 
   @override
   FutureOr<T> _create(FutureProviderElement<T> ref) => _createFn(ref);
@@ -73,7 +72,7 @@ class FutureProvider<T> extends _FutureProviderBase<T>
   Override overrideWith(Create<FutureOr<T>, FutureProviderRef<T>> create) {
     return ProviderOverride(
       origin: this,
-      override: FutureProvider.internal(
+      providerOverride: FutureProvider.internal(
         create,
         from: from,
         argument: argument,

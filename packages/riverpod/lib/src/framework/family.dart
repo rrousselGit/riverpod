@@ -36,10 +36,7 @@ abstract class Family implements FamilyOverride, ProviderOrFamily {
   const Family();
 
   @override
-  Family? get from => null;
-
-  @override
-  Family get overriddenFamily => this;
+  Family get from => this;
 }
 
 mixin _FamilyMixin<State, Arg, FamilyProvider extends ProviderBase<State>>
@@ -66,41 +63,6 @@ typedef SetupFamilyOverride<Arg> = void Function(
     required ProviderBase<Object?> override,
   }),
 );
-
-/// Do not use: Internal object to used by [ProviderContainer]/`ProviderScope`
-/// to override the behavior of a "family" for part of the application.
-@internal
-abstract class FamilyOverride implements Override {
-  /// The family that was overridden.
-  // TODO make all fields private
-  Family get overriddenFamily;
-
-  /// Obtains the new behavior for a provider associated to the overridden family.
-  @visibleForOverriding
-  ProviderBase<Object?> getProviderOverride(ProviderBase<Object?> provider);
-}
-
-/// An [Override] for families
-@internal
-class FamilyOverrideImpl<State, Arg, FamilyProvider extends ProviderBase<State>>
-    implements FamilyOverride {
-  /// An [Override] for families
-  // ignore: library_private_types_in_public_api
-  FamilyOverrideImpl(this.overriddenFamily, this._newCreate);
-
-  final FamilyProvider Function(Arg arg) _newCreate;
-
-  @override
-  // ignore: library_private_types_in_public_api
-  final _FamilyMixin<State, Arg, FamilyProvider> overriddenFamily;
-
-  @visibleForOverriding
-  @override
-  ProviderBase<Object?> getProviderOverride(ProviderBase<Object?> provider) {
-    final arg = provider.argument as Arg;
-    return _newCreate(arg);
-  }
-}
 
 /// A base implementation for [Family], used by the various providers to
 /// help them define a [Family].

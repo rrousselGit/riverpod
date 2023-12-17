@@ -25,7 +25,8 @@ ProviderElementProxy<AsyncValue<T>, Future<T>> _future<T>(
   );
 }
 
-abstract class _StreamProviderBase<T> extends ProviderBase<AsyncValue<T>> {
+abstract class _StreamProviderBase<T> extends ProviderBase<AsyncValue<T>>
+    with AsyncSelector<T> {
   const _StreamProviderBase({
     required super.allTransitiveDependencies,
     required super.dependencies,
@@ -34,8 +35,6 @@ abstract class _StreamProviderBase<T> extends ProviderBase<AsyncValue<T>> {
     required super.argument,
     required super.debugGetCreateSourceHash,
   });
-
-  ProviderListenable<Future<T>> get future;
 
   Stream<T> _create(covariant StreamProviderElement<T> ref);
 }

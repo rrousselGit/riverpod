@@ -56,7 +56,7 @@ class AutoDisposeStateProvider<T> extends _StateProviderBase<T> {
   ) {
     return ProviderOverride(
       origin: this,
-      override: AutoDisposeStateProvider<T>.internal(
+      providerOverride: AutoDisposeStateProvider<T>.internal(
         create,
         from: from,
         argument: argument,

@@ -70,8 +70,7 @@ abstract class StreamProviderRef<State> implements Ref<AsyncValue<State>> {
 /// - [StreamProvider.family], to create a [StreamProvider] from external parameters
 /// - [StreamProvider.autoDispose], to destroy the state of a [StreamProvider] when no longer needed.
 /// {@endtemplate}
-class StreamProvider<T> extends _StreamProviderBase<T>
-    with AlwaysAliveProviderBase<AsyncValue<T>>, AlwaysAliveAsyncSelector<T> {
+class StreamProvider<T> extends _StreamProviderBase<T> {
   /// {@macro riverpod.stream_provider}
   StreamProvider(
     this._createFn, {
@@ -106,7 +105,7 @@ class StreamProvider<T> extends _StreamProviderBase<T>
   final Stream<T> Function(StreamProviderRef<T> ref) _createFn;
 
   @override
-  late final AlwaysAliveRefreshable<Future<T>> future = _future(this);
+  late final Refreshable<Future<T>> future = _future(this);
 
   @override
   Stream<T> _create(StreamProviderElement<T> ref) => _createFn(ref);
@@ -123,7 +122,7 @@ class StreamProvider<T> extends _StreamProviderBase<T>
   Override overrideWith(Create<Stream<T>, StreamProviderRef<T>> create) {
     return ProviderOverride(
       origin: this,
-      override: StreamProvider<T>.internal(
+      providerOverride: StreamProvider<T>.internal(
         create,
         from: from,
         argument: argument,

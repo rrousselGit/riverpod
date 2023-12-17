@@ -112,7 +112,8 @@ class AutoDisposeAsyncNotifierProviderImpl<
   Override overrideWith(NotifierT Function() create) {
     return ProviderOverride(
       origin: this,
-      override: AutoDisposeAsyncNotifierProviderImpl<NotifierT, T>.internal(
+      providerOverride:
+          AutoDisposeAsyncNotifierProviderImpl<NotifierT, T>.internal(
         create,
         from: from,
         argument: argument,

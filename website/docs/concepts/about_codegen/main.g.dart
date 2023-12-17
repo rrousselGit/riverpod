@@ -80,12 +80,12 @@ class FetchUserFamily extends Family {
 }
 
 class _$FetchUserFamilyOverride implements FamilyOverride {
-  _$FetchUserFamilyOverride(this.overriddenFamily, this.create);
+  _$FetchUserFamilyOverride(this.from, this.create);
 
   final FutureOr<User> Function(FetchUserRef ref) create;
 
   @override
-  final FetchUserFamily overriddenFamily;
+  final FetchUserFamily from;
 
   @override
   FetchUserProvider getProviderOverride(
@@ -134,7 +134,7 @@ class FetchUserProvider extends AutoDisposeFutureProvider<User> {
   ) {
     return ProviderOverride(
       origin: this,
-      override: FetchUserProvider._internal(
+      providerOverride: FetchUserProvider._internal(
         (ref) => create(ref as FetchUserRef),
         from: from,
         name: null,
