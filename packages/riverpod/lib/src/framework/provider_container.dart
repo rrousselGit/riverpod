@@ -560,6 +560,7 @@ void Function() providerContainerTestTeardown(ProviderContainer container) {
       test.expect(
         DebugRiverpodDevtoolBiding.containers,
         test.isEmpty,
+        reason: 'All ProviderContainers must be disposed at the end of tests.',
       );
     }
 
