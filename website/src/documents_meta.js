@@ -254,7 +254,7 @@ export const documentTitles = {
     "essentials/do_dont": "FARE/NON FARE",
     "essentials/combining_requests": "Combinare richieste",
     "essentials/auto_dispose": "Svuotare la cache e reagire alla cancellazione dello stato",
-    "concepts/about_hooks": "About hooks",
+    "concepts/about_hooks": "Informazioni sugli hook",
     "concepts/about_code_generation": "Informazioni sulla generazione del codice",
     "case_studies/pull_to_refresh": "Pull to refresh (trascina per aggiornare)",
     "case_studies/cancel": "Respingere (Debouncing)/Cancellare richieste di rete",

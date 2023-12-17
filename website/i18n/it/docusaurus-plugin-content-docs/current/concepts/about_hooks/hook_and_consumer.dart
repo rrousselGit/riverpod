@@ -13,7 +13,7 @@ class MyValue {}
 class Example extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // We can use the builders provided by both packages
+    // Possiamo utilizzare i builder forniti da entrambi i pacchetti
     return Consumer(
       builder: (context, ref, child) {
         return HookBuilder(builder: (context) {
