@@ -1,12 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /* SNIPPET START */
-// autoDispose provider
+// Provider autoDispose
 final example1Provider = Provider.autoDispose<String>((ref) {
   return 'foo';
 });
 
-// non autoDispose provider
+// Provider non autoDispose
 final example2Provider = Provider<String>((ref) {
   return 'foo';
 });

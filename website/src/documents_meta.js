@@ -118,6 +118,8 @@ export const documentTitles = {
     "concepts/modifiers/auto_dispose": ".autoDispose",
     "migration/0.14.0_to_1.0.0": "^0.14.0 vers ^1.0.0",
     "migration/0.13.0_to_0.14.0": "^0.13.0 vers ^0.14.0",
+    "cookbooks/search_as_we_type": undefined,
+    "cookbooks/refresh": "Pull-to-refresh / Retry-on-error",
   },
   'ja': {
     "introduction": "イントロダクション",
@@ -253,7 +255,7 @@ export const documentTitles = {
     "essentials/combining_requests": "Combinare richieste",
     "essentials/auto_dispose": "Svuotare la cache e reagire alla cancellazione dello stato",
     "concepts/about_hooks": "About hooks",
-    "concepts/about_code_generation": "About code generation",
+    "concepts/about_code_generation": "Informazioni sulla generazione del codice",
     "case_studies/pull_to_refresh": "Pull to refresh (trascina per aggiornare)",
     "case_studies/cancel": "Respingere (Debouncing)/Cancellare richieste di rete",
     "advanced/select": "Ottimizzare le performance",

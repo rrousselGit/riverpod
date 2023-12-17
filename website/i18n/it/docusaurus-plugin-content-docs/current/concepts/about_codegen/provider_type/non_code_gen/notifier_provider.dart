@@ -11,5 +11,5 @@ class ExampleNotifier extends AutoDisposeNotifier<String> {
     return 'foo';
   }
 
-  // Add methods to mutate the state
+  // Aggiungere i metodi per mutare lo stato
 }
