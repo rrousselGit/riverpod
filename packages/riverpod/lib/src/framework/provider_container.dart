@@ -163,21 +163,24 @@ class ProviderDirectory implements _PointerBase {
   ///
   /// Non-overridden providers are mounted in the root container.
   ProviderPointer mount(
-    ProviderBase<Object?> provider, {
+    ProviderBase<Object?> origin, {
     required ProviderContainer currentContainer,
   }) {
     final pointer = upsertPointer(
-      provider,
+      origin,
       currentContainer: currentContainer,
     );
 
     if (pointer.element == null) {
+      final overrideProvider =
+          pointer.providerOverride?.providerOverride ?? origin;
+
       // TODO test family(42) overrides on nested containers receive the correct container
-      final element = provider.createElement(pointer.targetContainer)
+      final element = overrideProvider.createElement(pointer.targetContainer)
         // TODO remove
-        .._provider = pointer.providerOverride?.providerOverride ?? provider
+        .._provider = overrideProvider
         // TODO remove
-        .._origin = provider
+        .._origin = origin
         // TODO make this optional
         ..mount();
       pointer.element = element;
