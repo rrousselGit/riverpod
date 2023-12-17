@@ -16,9 +16,9 @@ String label(LabelRef ref, String userName) {
 // ...
 
 void onTap() {
-  // Invalidate all possible parameter combinations of this provider.
+  // 使该提供程序所有可能的参数组合无效。
   ref.invalidate(labelProvider);
-  // Invalidate a specific combination only
+  // 仅使特定组合无效
   ref.invalidate(labelProvider('John'));
 }
 /* SNIPPET END */

@@ -7,7 +7,7 @@ import '../cache_for_extension.dart';
 
 /* SNIPPET START */
 final provider = FutureProvider.autoDispose<Object>((ref) async {
-  /// Keeps the state alive for 5 minutes
+  /// 保持状态 5 分钟
   ref.cacheFor(const Duration(minutes: 5));
 
   return http.get(Uri.https('example.com'));

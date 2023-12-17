@@ -71,7 +71,7 @@ export const documentTitles = {
     "essentials/eager_initialization": "Eager initialization of providers",
     "essentials/do_dont": "DO/DON'T",
     "essentials/combining_requests": "组合请求",
-    "essentials/auto_dispose": "Clearing cache and reacting to state disposal",
+    "essentials/auto_dispose": "清除缓存并对状态处置做出反应",
     "cookbooks/testing": "Testing",
     "cookbooks/search_as_we_type": "Search as we type",
     "concepts/why_immutability": "Why Immutability",

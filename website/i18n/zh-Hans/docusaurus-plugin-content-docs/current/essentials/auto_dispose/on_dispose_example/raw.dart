@@ -8,10 +8,10 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 final provider = StreamProvider<int>((ref) {
   final controller = StreamController<int>();
 
-  // When the state is destroyed, we close the StreamController.
+  // 当状态被销毁时，我们关闭 StreamController。
   ref.onDispose(controller.close);
 
-  // TO-DO: Push some values in the StreamController
+  // TO-DO: 在 StreamController 中推送一些值
   return controller.stream;
 });
 /* SNIPPET END */

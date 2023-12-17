@@ -10,7 +10,7 @@ part 'codegen.g.dart';
 /* SNIPPET START */
 @riverpod
 Future<Object> example(ExampleRef ref) async {
-  /// Keeps the state alive for 5 minutes
+  /// 保持状态 5 分钟
   ref.cacheFor(const Duration(minutes: 5));
 
   return http.get(Uri.https('example.com'));

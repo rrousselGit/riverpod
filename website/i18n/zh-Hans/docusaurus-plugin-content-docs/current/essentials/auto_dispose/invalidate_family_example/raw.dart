@@ -12,9 +12,9 @@ final provider = Provider.autoDispose.family<String, String>((ref, name) {
 // ...
 
 void onTap() {
-  // Invalidate all possible parameter combinations of this provider.
+  // 使该提供程序所有可能的参数组合无效。
   ref.invalidate(provider);
-  // Invalidate a specific combination only
+  // 仅使特定组合无效
   ref.invalidate(provider('John'));
 }
 /* SNIPPET END */

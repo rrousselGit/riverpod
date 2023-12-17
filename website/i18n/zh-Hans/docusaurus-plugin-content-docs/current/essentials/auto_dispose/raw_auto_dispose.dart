@@ -1,7 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 /* SNIPPET START */
-// We can specify autoDispose to enable automatic state destruction.
+// 我们可以指定 autoDispose 来启用状态自动销毁功能。
 final provider = Provider.autoDispose<int>((ref) {
   return 0;
 });
