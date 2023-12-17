@@ -73,7 +73,14 @@ void main() {
 
       test('returns false if the provider is not mounted', () {
         final root = ProviderContainer.test();
-        final container = ProviderContainer.test(parent: root);
+        final container = ProviderContainer.test(
+          parent: root,
+          overrides: [
+            // An unrelated override, added to avoid the container optimizing
+            // pointers away.
+            Provider((ref) => null),
+          ],
+        );
 
         expect(container.pointerManager.isLocallyMounted(a), false);
         expect(container.pointerManager.isLocallyMounted(b), false);
@@ -88,7 +95,14 @@ void main() {
         root.read(c);
 
         // Creating after reads, to inherit elements from root
-        final container = ProviderContainer.test(parent: root);
+        final container = ProviderContainer.test(
+          parent: root,
+          overrides: [
+            // An unrelated override, added to avoid the container optimizing
+            // pointers away.
+            Provider((ref) => null),
+          ],
+        );
 
         expect(container.pointerManager.isLocallyMounted(a), false);
         expect(container.pointerManager.isLocallyMounted(b), false);
@@ -195,7 +209,7 @@ void main() {
 
         expect(
           container.pointerManager.orphanPointers,
-          same(root.pointerManager.orphanPointers),
+          isNot(root.pointerManager.orphanPointers),
         );
 
         final directory = container.pointerManager.upsertDirectory(provider);
@@ -855,6 +869,27 @@ void main() {
         container = ProviderContainer.test();
 
         addTearDown(() => expect(container.disposed, false));
+      });
+
+      test(
+          'last addTearDown throws if there are some remaining undisposed containers',
+          () async {
+        final container = ProviderContainer();
+        addTearDown(container.dispose);
+        final container2 = ProviderContainer();
+        addTearDown(container.dispose);
+
+        var cb = providerContainerTestTeardown(container);
+
+        expect(
+          cb,
+          throwsA(isA<TestFailure>()),
+          reason: 'container2 is not disposed',
+        );
+
+        cb = providerContainerTestTeardown(container2);
+
+        expect(cb, returnsNormally);
       });
 
       test('Passes parameters', () {

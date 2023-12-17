@@ -81,14 +81,21 @@ extension<PointerT extends _PointerBase, ProviderT extends ProviderOrFamily>
       return scope(override: provider);
     }
 
-    return inherit(
-      /// If scoped, mount in the scope.
-      pointer?.mountedContainer ??
-          // If not scoped and in a child container, mount in the root
-          currentContainer._root ??
-          // We are in the root, mount here directly
-          currentContainer,
-    );
+    // Where the provider should be mounted
+    final target =
+
+        /// If scoped, mount in the scope.
+        pointer?.mountedContainer ??
+            // If not scoped and in a child container, mount in the root
+            currentContainer._root ??
+            // We are in the root, mount here directly
+            currentContainer;
+
+    if (target == currentContainer) {
+      return scope();
+    }
+
+    return inherit(target);
   }
 }
 
@@ -244,6 +251,8 @@ class ProviderPointerManager {
     List<Override> overrides, {
     required ProviderContainer container,
   }) {
+    if (overrides.isEmpty) return parent._pointerManager;
+
     return ProviderPointerManager(
       overrides,
       container: container,
@@ -252,29 +261,25 @@ class ProviderPointerManager {
       // We do so only if an override is present, for performance's sake.
       // We have to always clone both types if any override is present because
       // of the possibility of providers being overridden transitively.
-      orphanPointers: overrides.isNotEmpty
-          ? ProviderDirectory.from(
-              parent._pointerManager.orphanPointers,
-              ownerContainer: container,
-            )
-          : parent._pointerManager.orphanPointers,
+      orphanPointers: ProviderDirectory.from(
+        parent._pointerManager.orphanPointers,
+        ownerContainer: container,
+      ),
 
-      familyPointers: overrides.isNotEmpty
-          ? HashMap.fromEntries(
-              parent._pointerManager.familyPointers.entries.map(
-                (e) {
-                  if (e.key.allTransitiveDependencies == null) return e;
+      familyPointers: HashMap.fromEntries(
+        parent._pointerManager.familyPointers.entries.map(
+          (e) {
+            if (e.key.allTransitiveDependencies == null) return e;
 
-                  if (e.value.familyOverride != null) return e;
+            if (e.value.familyOverride != null) return e;
 
-                  return MapEntry(
-                    e.key,
-                    ProviderDirectory.from(e.value, ownerContainer: container),
-                  );
-                },
-              ),
-            )
-          : parent._pointerManager.familyPointers,
+            return MapEntry(
+              e.key,
+              ProviderDirectory.from(e.value, ownerContainer: container),
+            );
+          },
+        ),
+      ),
     );
   }
 
@@ -465,7 +470,7 @@ class ProviderPointerManager {
         );
   }
 
-  /// Read the [ProviderElement] for a provider, without creating it if it doesn't exist.
+  /// Read the [ProviderElementBase] for a provider, without creating it if it doesn't exist.
   Iterable<ProviderElementBase<Object?>> listFamily(Family family) {
     final _familyPointers = familyPointers[family];
     if (_familyPointers == null) return const [];
@@ -541,6 +546,27 @@ class ProviderPointerManager {
 
 var _debugVerifyDependenciesAreRespectedEnabled = true;
 
+int _tearDownCount = 0;
+
+/// A callback that disposes a [ProviderContainer] inside tests
+@internal
+void Function() providerContainerTestTeardown(ProviderContainer container) {
+  _tearDownCount++;
+
+  return () {
+    container.dispose();
+
+    if (kDebugMode && _tearDownCount == 1) {
+      test.expect(
+        DebugRiverpodDevtoolBiding.containers,
+        test.isEmpty,
+      );
+    }
+
+    _tearDownCount--;
+  };
+}
+
 /// {@template riverpod.provider_container}
 /// An object that stores the state of the providers and allows overriding the
 /// behavior of a specific provider.
@@ -591,6 +617,9 @@ class ProviderContainer implements Node {
 
   /// An automatically disposed [ProviderContainer].
   ///
+  /// This also adds an internal check at the end of tests that verifies
+  /// that all containers were disposed.
+  ///
   /// This constructor works only inside tests, by relying on `package:test`'s
   /// `addTearDown`.
   @visibleForTesting
@@ -605,7 +634,7 @@ class ProviderContainer implements Node {
       overrides: overrides,
       observers: observers,
     );
-    test.addTearDown(container.dispose);
+    test.addTearDown(providerContainerTestTeardown(container));
 
     return container;
   }
