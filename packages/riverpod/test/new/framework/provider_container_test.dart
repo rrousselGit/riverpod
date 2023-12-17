@@ -10,7 +10,7 @@ const _sentinel = Object();
 TypeMatcher<ProviderPointer> isPointer({
   Object? override = _sentinel,
   Object? element = _sentinel,
-  Object? container = _sentinel,
+  Object? targetContainer = _sentinel,
 }) {
   var matcher = isA<ProviderPointer>();
 
@@ -22,17 +22,34 @@ TypeMatcher<ProviderPointer> isPointer({
     matcher = matcher.having((p) => p.element, 'element', element);
   }
 
-  if (container != _sentinel) {
-    matcher = matcher.having((p) => p.mountedContainer, 'container', container);
+  if (targetContainer != _sentinel) {
+    matcher = matcher.having(
+      (p) => p.targetContainer,
+      'targetContainer',
+      targetContainer,
+    );
   }
 
   return matcher;
 }
 
+TypeMatcher<TransitiveFamilyOverride> isTransitiveFamilyOverride(
+  Object? family,
+) {
+  return isA<TransitiveFamilyOverride>().having((f) => f.from, 'from', family);
+}
+
+TypeMatcher<TransitiveProviderOverride> isTransitiveProviderOverride(
+  Object? provider,
+) {
+  return isA<TransitiveProviderOverride>()
+      .having((f) => f.origin, 'origin', provider);
+}
+
 TypeMatcher<ProviderDirectory> isProviderDirectory({
   Object? override = _sentinel,
   Object? pointers = _sentinel,
-  Object? container = _sentinel,
+  Object? targetContainer = _sentinel,
 }) {
   var matcher = isA<ProviderDirectory>();
 
@@ -44,8 +61,12 @@ TypeMatcher<ProviderDirectory> isProviderDirectory({
     matcher = matcher.having((p) => p.pointers, 'pointers', pointers);
   }
 
-  if (container != _sentinel) {
-    matcher = matcher.having((p) => p.mountedContainer, 'container', container);
+  if (targetContainer != _sentinel) {
+    matcher = matcher.having(
+      (p) => p.targetContainer,
+      'targetContainer',
+      targetContainer,
+    );
   }
 
   return matcher;
@@ -58,7 +79,7 @@ void main() {
   });
 
   group('ProviderPointerManager', () {
-    group('hasLocallyOverriddenDependency', () {
+    group('isLocallyMounted', () {
       final a = Provider((_) => 0);
       final b = Provider.family<int, int>((_, __) => 0);
       final c = Provider.family<int, int>((_, __) => 0)(42);
@@ -139,7 +160,13 @@ void main() {
       test('always returns false if has no dependency', () {
         final provider = Provider((_) => 0);
         final root = ProviderContainer.test();
-        final container = ProviderContainer.test(parent: root);
+        final container = ProviderContainer.test(
+          parent: root,
+          overrides: [
+            // Unrelated override, to avoid the container optimizing the pointer away
+            Provider((ref) => null),
+          ],
+        );
 
         expect(
           container.pointerManager.hasLocallyOverriddenDependency(provider),
@@ -196,51 +223,44 @@ void main() {
     });
 
     group('upsertDirectory', () {
-      test('on orphan with a family dependency, forks the directory', () {
-        final dependency = Provider.family<int, int>((ref, id) => 0);
-        final provider = Provider((ref) => 0, dependencies: [dependency]);
+      test('handles auto-scoping', () {
+        final dep = Provider((_) => 0);
+        final family = Provider.family<int, int>(
+          (ref, id) => 0,
+          dependencies: [dep],
+        );
         final root = ProviderContainer.test();
         final container = ProviderContainer.test(
           parent: root,
-          overrides: [
-            dependency.overrideWith((ref, arg) => 0),
-          ],
+          overrides: [dep.overrideWithValue(42)],
         );
 
-        expect(
-          container.pointerManager.orphanPointers,
-          isNot(root.pointerManager.orphanPointers),
-        );
-
-        final directory = container.pointerManager.upsertDirectory(provider);
-
-        expect(
-          container.pointerManager.orphanPointers,
-          isNot(root.pointerManager.orphanPointers),
-        );
-        expect(container.pointerManager.orphanPointers, directory);
+        final directory = container.pointerManager.upsertDirectory(family(42));
 
         expect(
           directory,
           isProviderDirectory(
-            container: root,
-            override: null,
-            pointers: {
-              dependency(42): isPointer(
-                container: container,
-                override: null,
-                element: null,
-              ),
-            },
+            targetContainer: container,
+            override: isTransitiveFamilyOverride(family),
+            pointers: isEmpty,
           ),
         );
-      });
 
-      test(
-        'on family with orphan dependency, forks the directory',
-        () {},
-        skip: 'TODO',
-      );
+        expect(
+          container.pointerManager.familyPointers,
+          {family: directory},
+        );
+
+        // Check that the root was unaffected
+        expect(
+          root.pointerManager.familyPointers,
+          isEmpty,
+        );
+        expect(
+          root.pointerManager.orphanPointers.pointers,
+          isEmpty,
+        );
+      });
 
       test('on orphans, return orphanPointers', () {
         final provider = Provider((_) => 0);
@@ -253,7 +273,7 @@ void main() {
         expect(
           directory,
           isProviderDirectory(
-            container: container,
+            targetContainer: container,
             override: null,
             pointers: isEmpty,
           ),
@@ -276,7 +296,7 @@ void main() {
         expect(
           directory,
           isProviderDirectory(
-            container: container,
+            targetContainer: container,
             override: null,
             pointers: isEmpty,
           ),
@@ -313,7 +333,7 @@ void main() {
         expect(
           directory,
           isProviderDirectory(
-            container: container,
+            targetContainer: container,
             override: isNotNull,
             pointers: isEmpty,
           ),
@@ -322,6 +342,106 @@ void main() {
     });
 
     group('upsertPointer', () {
+      test('handles auto-scoping', () {
+        final dep = Provider((_) => 0);
+        final family = Provider.family<int, int>(
+          (ref, id) => 0,
+          dependencies: [dep],
+        );
+        final provider = Provider((_) => 0, dependencies: [dep]);
+        final root = ProviderContainer.test();
+        final container = ProviderContainer.test(
+          parent: root,
+          overrides: [dep.overrideWithValue(42)],
+        );
+
+        final pointer = container.pointerManager.upsertPointer(family(42));
+        final pointer2 = container.pointerManager.upsertPointer(provider);
+
+        expect(
+          pointer,
+          isPointer(
+            targetContainer: container,
+            override: isTransitiveProviderOverride(family(42)),
+          ),
+        );
+        expect(
+          pointer2,
+          isPointer(
+            targetContainer: container,
+            override: isTransitiveProviderOverride(provider),
+          ),
+        );
+
+        expect(
+          container.pointerManager.familyPointers,
+          {
+            family: isProviderDirectory(
+              targetContainer: container,
+              override: isTransitiveFamilyOverride(family),
+              pointers: {
+                family(42): pointer,
+              },
+            ),
+          },
+        );
+        expect(
+          container.pointerManager.orphanPointers,
+          isProviderDirectory(
+            targetContainer: root,
+            override: null,
+            pointers: {
+              provider: pointer2,
+              dep: isNotNull,
+            },
+          ),
+        );
+
+        // Check that the root was unaffected
+        expect(
+          root.pointerManager.familyPointers,
+          isEmpty,
+        );
+        expect(
+          root.pointerManager.orphanPointers.pointers,
+          isEmpty,
+        );
+      });
+
+      test(
+          'have ancestors and children share their pointers when not overridden',
+          () {
+        final root = ProviderContainer.test();
+        final container = ProviderContainer.test(
+          parent: root,
+          overrides: [
+            // An unrelated override, added to avoid the container optimizing
+            Provider((_) => 0),
+          ],
+        );
+        final provider = Provider((ref) => 0);
+        final family = Provider.family<int, int>((ref, id) => 0);
+
+        root.read(provider);
+        root.read(family(42));
+        container.read(provider);
+        container.read(family(42));
+
+        expect(
+          container.pointerManager.orphanPointers.pointers[provider],
+          same(root.pointerManager.orphanPointers.pointers[provider]),
+        );
+
+        expect(
+          container.pointerManager.familyPointers[family]!.pointers,
+          {
+            family(42): same(
+              root.pointerManager.familyPointers[family]!.pointers[family(42)],
+            ),
+          },
+        );
+      });
+
       test('on orphans, insert in orphanPointers', () {
         final provider = Provider((_) => 0);
         final container = ProviderContainer.test();
@@ -336,7 +456,7 @@ void main() {
         expect(
           pointer,
           isPointer(
-            container: container,
+            targetContainer: container,
             override: null,
             element: isNotNull,
           ),
@@ -359,7 +479,7 @@ void main() {
         expect(
           pointer,
           isPointer(
-            container: container,
+            targetContainer: container,
             override: null,
             element: isNotNull,
           ),
@@ -442,13 +562,13 @@ void main() {
           final provider = Provider((ref) => 0);
 
           expect(
-            () => ProviderContainer(
+            () => ProviderContainer.test(
               overrides: [
                 provider.overrideWithValue(42),
                 provider.overrideWithValue(21),
               ],
             ),
-            throwsStateError,
+            throwsA(isA<AssertionError>()),
           );
         });
 
@@ -459,13 +579,13 @@ void main() {
           final provider = Provider.family<int, int>((ref, id) => 0);
 
           expect(
-            () => ProviderContainer(
+            () => ProviderContainer.test(
               overrides: [
                 provider.overrideWith((ref, arg) => arg),
                 provider.overrideWith((ref, arg) => arg),
               ],
             ),
-            throwsStateError,
+            throwsA(isA<AssertionError>()),
           );
         });
 
@@ -510,7 +630,10 @@ void main() {
     group('pointers', () {
       test('has "container" pointing to "this"', () {
         final root = ProviderContainer.test();
-        final container = ProviderContainer.test(parent: root);
+        final container = ProviderContainer.test(parent: root, overrides: [
+          // An unrelated override, added to avoid the container optimizing
+          Provider((_) => 0),
+        ]);
 
         expect(root.pointerManager.container, root);
         expect(container.pointerManager.container, container);
@@ -520,70 +643,30 @@ void main() {
         test('orphansPointers.container points to the root', () {
           final root = ProviderContainer.test();
 
-          expect(root.pointerManager.orphanPointers.mountedContainer, root);
+          expect(root.pointerManager.orphanPointers.targetContainer, root);
         });
       });
 
       group('on scoped containers', () {
-        test('reuses orphanPointers instance if there are no orphan overrides',
-            () {
-          final family = Provider.family<int, int>((ref, id) => 0);
-          final root = ProviderContainer.test();
-          final container = ProviderContainer.test(
-            parent: root,
-            overrides: [
-              family.overrideWith((ref, arg) => arg),
-              family(42).overrideWith((ref) => 42),
-            ],
-          );
-
-          expect(
-            container.pointerManager.orphanPointers,
-            same(root.pointerManager.orphanPointers),
-          );
-
-          expect(
-            container.pointerManager.familyPointers,
-            isNot(root.pointerManager.familyPointers),
-          );
-        });
-
-        test('reuses familyPointers instance if there are no family overrides',
-            () {
-          final provider = Provider((_) => 0);
-          final root = ProviderContainer.test();
-          final container = ProviderContainer.test(
-            parent: root,
-            overrides: [provider.overrideWith((ref) => 0)],
-          );
-
-          expect(
-            container.pointerManager.familyPointers,
-            same(root.pointerManager.familyPointers),
-          );
-
-          expect(
-            container.pointerManager.orphanPointers,
-            isNot(root.pointerManager.orphanPointers),
-          );
-        });
-
         test('inherits overrides from its parents', () {
-          final a = Provider((_) => 0);
+          final a = Provider((_) => 0, name: 'a');
           final aOverride = a.overrideWithValue(1);
-          final b = Provider((_) => 0);
+          final b = Provider((_) => 0, name: 'b');
           final bOverride = b.overrideWithValue(2);
-          final c = Provider((_) => 0);
+          final c = Provider((_) => 0, name: 'c');
           final cOverride = c.overrideWithValue(3);
-          final aFamily = Provider.family<int, int>((_, __) => 0);
+          final aFamily =
+              Provider.family<int, int>((_, __) => 0, name: 'aFamily');
           final aFamilyOverride = aFamily.overrideWith((_, __) => 1);
-          final aValueOverride = aFamily(42).overrideWith((_) => 2);
-          final bFamily = Provider.family<int, int>((_, __) => 0);
+          final aValueOverride = aFamily(1).overrideWith((_) => 2);
+          final bFamily =
+              Provider.family<int, int>((_, __) => 0, name: 'bFamily');
           final bFamilyOverride = bFamily.overrideWith((_, __) => 2);
-          final bValueOverride = bFamily(42).overrideWith((_) => 3);
-          final cFamily = Provider.family<int, int>((_, __) => 0);
+          final bValueOverride = bFamily(2).overrideWith((_) => 3);
+          final cFamily =
+              Provider.family<int, int>((_, __) => 0, name: 'cFamily');
           final cFamilyOverride = cFamily.overrideWith((_, __) => 3);
-          final cValueOverride = cFamily(42).overrideWith((_) => 4);
+          final cValueOverride = cFamily(3).overrideWith((_) => 4);
 
           final root = ProviderContainer.test(
             overrides: [aOverride, aFamilyOverride, aValueOverride],
@@ -602,33 +685,33 @@ void main() {
             {
               aFamily: isProviderDirectory(
                 override: aFamilyOverride,
-                container: root,
+                targetContainer: root,
                 pointers: {
-                  aFamily(42): isPointer(
+                  aFamily(1): isPointer(
                     override: aValueOverride,
-                    container: root,
+                    targetContainer: root,
                     element: null,
                   ),
                 },
               ),
               bFamily: isProviderDirectory(
                 override: bFamilyOverride,
-                container: mid,
+                targetContainer: mid,
                 pointers: {
-                  bFamily(42): isPointer(
+                  bFamily(2): isPointer(
                     override: bValueOverride,
-                    container: mid,
+                    targetContainer: mid,
                     element: null,
                   ),
                 },
               ),
               cFamily: isProviderDirectory(
                 override: cFamilyOverride,
-                container: container,
+                targetContainer: container,
                 pointers: {
-                  cFamily(42): isPointer(
+                  cFamily(3): isPointer(
                     override: cValueOverride,
-                    container: container,
+                    targetContainer: container,
                     element: null,
                   ),
                 },
@@ -639,22 +722,22 @@ void main() {
           expect(
             container.pointerManager.orphanPointers,
             isProviderDirectory(
-              container: root,
+              targetContainer: root,
               override: null,
               pointers: {
                 a: isPointer(
                   override: aOverride,
-                  container: root,
+                  targetContainer: root,
                   element: null,
                 ),
                 b: isPointer(
                   override: bOverride,
-                  container: mid,
+                  targetContainer: mid,
                   element: null,
                 ),
                 c: isPointer(
                   override: cOverride,
-                  container: container,
+                  targetContainer: container,
                   element: null,
                 ),
               },
@@ -690,7 +773,9 @@ void main() {
           );
         });
 
-        test('orphanPointers.container is always equal to root', () {
+        // TODO throw if trying to scope a provider/family with no dependencies
+
+        test('orphanPointers.containers are always equal to root', () {
           final root = ProviderContainer.test();
           final provider = Provider((_) => 0);
           final container = ProviderContainer.test(
@@ -698,15 +783,17 @@ void main() {
             overrides: [provider],
           );
 
-          expect(root.pointerManager.orphanPointers.mountedContainer, root);
+          expect(root.pointerManager.orphanPointers.targetContainer, root);
           expect(
-              container.pointerManager.orphanPointers.mountedContainer, root);
+            container.pointerManager.orphanPointers.targetContainer,
+            root,
+          );
 
           expect(
             container.pointerManager.orphanPointers.pointers,
             {
               provider: isPointer(
-                container: container,
+                targetContainer: container,
                 override: provider,
                 element: null,
               ),
@@ -730,11 +817,11 @@ void main() {
         expect(
           root.pointerManager.orphanPointers,
           isProviderDirectory(
-            container: root,
+            targetContainer: root,
             override: null,
             pointers: {
               provider: isPointer(
-                container: root,
+                targetContainer: root,
                 override: override,
                 element: null,
               ),
@@ -749,11 +836,11 @@ void main() {
         expect(
           container.pointerManager.orphanPointers,
           isProviderDirectory(
-            container: root2,
+            targetContainer: root2,
             override: null,
             pointers: {
               provider: isPointer(
-                container: container,
+                targetContainer: container,
                 override: override,
                 element: null,
               ),
@@ -779,7 +866,7 @@ void main() {
           {
             provider: isProviderDirectory(
               override: override,
-              container: root,
+              targetContainer: root,
               pointers: isEmpty,
             ),
           },
@@ -794,7 +881,7 @@ void main() {
           {
             provider: isProviderDirectory(
               override: override,
-              container: container,
+              targetContainer: container,
               pointers: isEmpty,
             ),
           },
@@ -819,10 +906,10 @@ void main() {
           {
             provider: isProviderDirectory(
               override: null,
-              container: root,
+              targetContainer: root,
               pointers: {
                 provider(42): isPointer(
-                  container: root,
+                  targetContainer: root,
                   override: override,
                   element: null,
                 ),
@@ -846,10 +933,10 @@ void main() {
           {
             provider: isProviderDirectory(
               override: null,
-              container: container,
+              targetContainer: root2,
               pointers: {
                 provider(42): isPointer(
-                  container: container,
+                  targetContainer: container,
                   override: override,
                   element: null,
                 ),

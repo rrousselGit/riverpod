@@ -11,19 +11,19 @@ ProviderBase<Object?>? _circularDependencyLock;
 
 abstract class _PointerBase {
   /// The container in which the element of this provider will be mounted.
-  ProviderContainer get mountedContainer;
+  ProviderContainer get targetContainer;
 
-  /// The container that owns this pointer.
-  /// May be equal to [mountedContainer] or one of its children.
-  ProviderContainer get ownerContainer;
+  // /// The container that owns this pointer.
+  // /// May be equal to [targetContainer] or one of its children.
+  // ProviderContainer get ownerContainer;
 }
 
 @internal
 class ProviderPointer implements _PointerBase {
   ProviderPointer({
     required this.providerOverride,
-    required this.mountedContainer,
-    required this.ownerContainer,
+    required this.targetContainer,
+    // required this.ownerContainer,
   });
 
   /// The override associated with this provider, if any.
@@ -34,16 +34,17 @@ class ProviderPointer implements _PointerBase {
   ProviderOverride? providerOverride;
   ProviderElementBase<Object?>? element;
   @override
-  final ProviderContainer mountedContainer;
-  @override
-  final ProviderContainer ownerContainer;
+  final ProviderContainer targetContainer;
+  // @override
+  // final ProviderContainer ownerContainer;
 
   @override
   String toString() {
     final buffer = StringBuffer();
     buffer.writeln('ProviderPointer$hashCode(');
 
-    buffer.writeln('  container: $mountedContainer');
+    buffer.writeln('  targetContainer: $targetContainer');
+    // buffer.writeln('  ownerContainer: $ownerContainer');
     buffer.writeln('  override: $providerOverride');
     buffer.writeln('  element: $element');
 
@@ -69,7 +70,7 @@ extension<PointerT extends _PointerBase, ProviderT extends ProviderOrFamily>
         // The provider is not scoped, so can never be transitively overridden
         return pointer;
       }
-      if (pointer.mountedContainer == currentContainer) {
+      if (pointer.targetContainer == currentContainer) {
         // The pointer isn't inherited but rather local to the current container,
         // so no need to check for transitive overrides.
         return pointer;
@@ -78,24 +79,24 @@ extension<PointerT extends _PointerBase, ProviderT extends ProviderOrFamily>
 
     if (currentContainer._pointerManager
         .hasLocallyOverriddenDependency(provider)) {
-      return scope(override: provider);
+      return this[provider] = scope(override: provider);
     }
 
     // Where the provider should be mounted
     final target =
 
         /// If scoped, mount in the scope.
-        pointer?.mountedContainer ??
+        pointer?.targetContainer ??
             // If not scoped and in a child container, mount in the root
             currentContainer._root ??
             // We are in the root, mount here directly
             currentContainer;
 
     if (target == currentContainer) {
-      return scope();
+      return this[provider] = scope();
     }
 
-    return inherit(target);
+    return this[provider] = inherit(target);
   }
 }
 
@@ -105,22 +106,13 @@ class ProviderDirectory implements _PointerBase {
     ProviderContainer container, {
     required this.familyOverride,
   })  : pointers = HashMap(),
-        mountedContainer = container,
-        ownerContainer = container;
+        targetContainer = container;
 
   ProviderDirectory.from(
-    ProviderDirectory pointer, {
-    required this.ownerContainer,
-  })  : familyOverride = pointer.familyOverride,
-        mountedContainer = pointer.mountedContainer,
-        pointers = HashMap.fromEntries(
-          pointer.pointers.entries.where((e) {
-            if (e.key.allTransitiveDependencies == null) return true;
-            if (e.value.providerOverride != null) return true;
-
-            return false;
-          }),
-        );
+    ProviderDirectory pointer,
+  )   : familyOverride = pointer.familyOverride,
+        targetContainer = pointer.targetContainer,
+        pointers = HashMap.of(pointer.pointers);
 
   /// The override associated with this provider, if any.
   ///
@@ -130,44 +122,36 @@ class ProviderDirectory implements _PointerBase {
   FamilyOverride? familyOverride;
   final HashMap<ProviderBase<Object?>, ProviderPointer> pointers;
   @override
-  final ProviderContainer mountedContainer;
-  @override
-  final ProviderContainer ownerContainer;
+  final ProviderContainer targetContainer;
 
   void addProviderOverride(
-    ProviderOverride override,
-  ) {
+    ProviderOverride override, {
+    required ProviderContainer targetContainer,
+  }) {
     final origin = override.origin;
-    final previousPointer = pointers[origin];
-
-    if (previousPointer != null &&
-        previousPointer.ownerContainer == ownerContainer) {
-      throw StateError(
-        'Cannot override a provider twice within the same container: $origin',
-      );
-    }
 
     pointers[origin] = ProviderPointer(
-      mountedContainer: ownerContainer,
-      ownerContainer: ownerContainer,
+      targetContainer: targetContainer,
       providerOverride: override,
     );
   }
 
-  ProviderPointer upsertPointer(ProviderBase<Object?> provider) {
+  ProviderPointer upsertPointer(
+    ProviderBase<Object?> provider, {
+    required ProviderContainer currentContainer,
+  }) {
     // TODO changelog that provider which don't specify depencies can't be scoped
     // TODO throw if a provider is overridden but does not specify dependencies
 
     return pointers._upsert(
       provider,
-      currentContainer: ownerContainer,
+      currentContainer: currentContainer,
       inherit: (target) => target._pointerManager.upsertPointer(provider),
       scope: ({override}) => ProviderPointer(
-        mountedContainer: ownerContainer,
-        ownerContainer: ownerContainer,
+        targetContainer: currentContainer,
         providerOverride: override == null //
             ? null
-            : _TransitiveProviderOverride(override),
+            : TransitiveProviderOverride(override),
       ),
     );
   }
@@ -178,11 +162,18 @@ class ProviderDirectory implements _PointerBase {
   /// are mounted in the current container.
   ///
   /// Non-overridden providers are mounted in the root container.
-  ProviderPointer mount(ProviderBase<Object?> provider) {
-    final pointer = upsertPointer(provider);
+  ProviderPointer mount(
+    ProviderBase<Object?> provider, {
+    required ProviderContainer currentContainer,
+  }) {
+    final pointer = upsertPointer(
+      provider,
+      currentContainer: currentContainer,
+    );
 
     if (pointer.element == null) {
-      final element = provider.createElement(mountedContainer)
+      // TODO test family(42) overrides on nested containers receive the correct container
+      final element = provider.createElement(pointer.targetContainer)
         // TODO remove
         .._provider = pointer.providerOverride?.providerOverride ?? provider
         // TODO remove
@@ -201,7 +192,7 @@ class ProviderDirectory implements _PointerBase {
     final buffer = StringBuffer();
     buffer.writeln('ProviderDirectory$hashCode(');
 
-    buffer.writeln('  container: $mountedContainer');
+    buffer.writeln('  targetContainer: $targetContainer');
     buffer.writeln('  override: $familyOverride');
 
     buffer.write('  pointers: {');
@@ -256,14 +247,9 @@ class ProviderPointerManager {
     return ProviderPointerManager(
       overrides,
       container: container,
-      // Cloning the parent's pointers, so that we can add new pointers without
-      // affecting the parent.
-      // We do so only if an override is present, for performance's sake.
-      // We have to always clone both types if any override is present because
-      // of the possibility of providers being overridden transitively.
+      // Always folks orphan pointers, because of possible transitive overrides.
       orphanPointers: ProviderDirectory.from(
         parent._pointerManager.orphanPointers,
-        ownerContainer: container,
       ),
 
       familyPointers: HashMap.fromEntries(
@@ -271,12 +257,9 @@ class ProviderPointerManager {
           (e) {
             if (e.key.allTransitiveDependencies == null) return e;
 
-            if (e.value.familyOverride != null) return e;
+            // TODO don't fork a family if no family(42) is overridden
 
-            return MapEntry(
-              e.key,
-              ProviderDirectory.from(e.value, ownerContainer: container),
-            );
+            return MapEntry(e.key, ProviderDirectory.from(e.value));
           },
         ),
       ),
@@ -284,83 +267,95 @@ class ProviderPointerManager {
   }
 
   final ProviderContainer container;
-  ProviderDirectory orphanPointers;
+  final ProviderDirectory orphanPointers;
   final HashMap<Family, ProviderDirectory> familyPointers;
 
-  /// Creates a local pointer for a [Family], while preserving parent state.
-  ProviderDirectory _scopeProviderDirectory(
-    Family? family, {
-    FamilyOverride? override,
-  }) {
-    final pointer = family == null ? orphanPointers : familyPointers[family];
+  // /// Creates a local pointer for a [Family], while preserving parent state.
+  // ProviderDirectory _scopeProviderDirectory(
+  //   Family? family, {
+  //   FamilyOverride? override,
+  // }) {
+  //   final pointer = family == null ? orphanPointers : familyPointers[family];
 
-    ProviderDirectory? newDirectory;
-    if (pointer != null) {
-      // The family is already overridden in this container. No need to fork.
-      // This is purely an optimization.
-      if (pointer.mountedContainer == container) return pointer;
+  //   ProviderDirectory? newDirectory;
+  //   if (pointer != null) {
+  //     // The family is already overridden in this container. No need to fork.
+  //     // This is purely an optimization.
+  //     if (pointer.targetContainer == container) return pointer;
 
-      if (override == null) {
-        // Fork a parent pointer, to keep its state but allow local modifications.
-        newDirectory = ProviderDirectory.from(
-          pointer,
-          ownerContainer: container,
-        );
-      }
-    }
+  //     if (override == null) {
+  //       // Fork a parent pointer, to keep its state but allow local modifications.
+  //       newDirectory = ProviderDirectory.from(
+  //         pointer,
+  //         ownerContainer: container,
+  //       );
+  //     }
+  //   }
 
-    newDirectory ??= ProviderDirectory.empty(
-      container,
-      familyOverride: override,
-    );
+  //   newDirectory ??= ProviderDirectory.empty(
+  //     container,
+  //     familyOverride: override,
+  //   );
 
-    if (family == null) {
-      orphanPointers = newDirectory;
-    } else {
-      familyPointers[family] = newDirectory;
-    }
+  //   if (family == null) {
+  //     orphanPointers = newDirectory;
+  //   } else {
+  //     familyPointers[family] = newDirectory;
+  //   }
 
-    return newDirectory;
-  }
+  //   return newDirectory;
+  // }
 
   void _initializeProviderOverride(
     ProviderOverride override,
   ) {
-    // Overriding a provider from a family, but not the whole family.
-    // We don't want to modify the parent's family pointers,
-    // therefore we need to fork the inherited family pointers.
-    _scopeProviderDirectory(override.origin.from).addProviderOverride(override);
-    // TODO: test that scoping a family provider does not impact the parent
-    // TODO test that scoping a family provider does not impact other non-overridden providers from that family
+    final from = override.origin.from;
+
+    if (from == null) {
+      orphanPointers.addProviderOverride(
+        override,
+        targetContainer: container,
+      );
+      return;
+    }
+
+    final familyPointer = familyPointers[from] ??= ProviderDirectory.empty(
+      // TODO use rootOrSelf
+      container._root ?? container,
+      familyOverride: null,
+    );
+
+    familyPointer.addProviderOverride(
+      override,
+      targetContainer: container,
+    );
   }
 
   void _initializeOverrides(List<Override> overrides) {
     for (final override in overrides) {
       switch (override) {
-        case ProviderBase():
-          _initializeProviderOverride(
-            _ManualScopeProviderOverride(override),
-          );
         case ProviderOverride():
           _initializeProviderOverride(override);
         case FamilyOverride():
           final overriddenFamily = override.from;
 
           final previousPointer = familyPointers[overriddenFamily];
-          if (previousPointer != null &&
-              previousPointer.mountedContainer == container &&
-              previousPointer.familyOverride != null) {
-            throw StateError(
-              'Cannot override a family twice within the same container: $overriddenFamily',
+          if (previousPointer != null) {
+            /// A provider from that family was overridden first.
+            /// We override the family but preserve the provider override too.
+
+            previousPointer.familyOverride = override;
+            // Remove inherited family values and keep only local ones
+            previousPointer.pointers.removeWhere(
+              (key, value) => value.targetContainer != container,
             );
+            return;
           }
 
-          final pointer = _scopeProviderDirectory(
-            overriddenFamily,
-            override: override,
+          familyPointers[overriddenFamily] = ProviderDirectory.empty(
+            container,
+            familyOverride: override,
           );
-
-          pointer.familyOverride = override;
       }
     }
   }
@@ -374,10 +369,10 @@ class ProviderPointerManager {
 
     switch (provider) {
       case ProviderBase<Object?>():
-        container = readPointer(provider)?.mountedContainer ??
-            readDirectory(provider)?.mountedContainer;
+        container = readPointer(provider)?.targetContainer ??
+            readDirectory(provider)?.targetContainer;
       case Family():
-        container = familyPointers[provider]?.mountedContainer;
+        container = familyPointers[provider]?.targetContainer;
     }
 
     return container == this.container;
@@ -409,15 +404,12 @@ class ProviderPointerManager {
     return familyPointers._upsert(
       family,
       currentContainer: container,
-      inherit: (target) => ProviderDirectory.from(
-        target._pointerManager._mountFamily(family),
-        ownerContainer: target,
-      ),
+      inherit: (target) => target._pointerManager._mountFamily(family),
       scope: ({override}) => ProviderDirectory.empty(
         container,
         familyOverride: override == null //
             ? null
-            : _TransitiveFamilyOverride(override),
+            : TransitiveFamilyOverride(override),
       ),
     );
   }
@@ -452,7 +444,10 @@ class ProviderPointerManager {
   }
 
   ProviderPointer upsertPointer(ProviderBase<Object?> provider) {
-    return upsertDirectory(provider).mount(provider);
+    return upsertDirectory(provider).mount(
+      provider,
+      currentContainer: container,
+    );
   }
 
   ProviderElementBase<Object?> upsertElement(ProviderBase<Object?> provider) {
@@ -462,10 +457,10 @@ class ProviderPointerManager {
   /// Traverse the [ProviderElementBase]s associated with this [ProviderContainer].
   Iterable<ProviderPointer> listProviderPointers() {
     return orphanPointers.pointers.values
-        .where((pointer) => pointer.mountedContainer == container)
+        .where((pointer) => pointer.targetContainer == container)
         .followedBy(
           familyPointers.values
-              .where((pointer) => pointer.mountedContainer == container)
+              .where((pointer) => pointer.targetContainer == container)
               .expand((e) => e.pointers.values),
         );
   }
@@ -601,6 +596,26 @@ class ProviderContainer implements Node {
       }
     }
 
+    if (kDebugMode) {
+      final overrideOrigins = <Object?>{};
+      for (final override in overrides) {
+        switch (override) {
+          case ProviderOverride():
+            if (!overrideOrigins.add(override.origin)) {
+              throw AssertionError(
+                'Tried to override a provider twice within the same container: ${override.origin}',
+              );
+            }
+          case FamilyOverride():
+            if (!overrideOrigins.add(override.from)) {
+              throw AssertionError(
+                'Tried to override a family twice within the same container: ${override.from}',
+              );
+            }
+        }
+      }
+    }
+
     _pointerManager = parent != null
         ? ProviderPointerManager.from(parent, overrides, container: this)
         : ProviderPointerManager(
@@ -713,7 +728,11 @@ class ProviderContainer implements Node {
 
   /// {@macro riverpod.exists}
   bool exists(ProviderBase<Object?> provider) {
-    return _pointerManager.readDirectory(provider)?.pointers[provider] != null;
+    return _pointerManager
+            .readDirectory(provider)
+            ?.pointers[provider]
+            ?.element !=
+        null;
   }
 
   /// Executes [ProviderElementBase.debugReassemble] on all the providers.
@@ -856,7 +875,7 @@ class ProviderContainer implements Node {
           if (kDebugMode) {
             debugValidateOverride(
               pointer?.providerOverride,
-              override.providerOverride.runtimeType,
+              override.runtimeType,
             );
           }
 
@@ -1010,7 +1029,7 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
 
     // get providers that don't depend on other providers from this container
     for (final pointer in _pointerManager.listProviderPointers()) {
-      if (pointer.mountedContainer != this) continue;
+      if (pointer.targetContainer != this) continue;
       final element = pointer.element;
       if (element == null) continue;
 

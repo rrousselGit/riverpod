@@ -4,7 +4,11 @@ part of '../framework.dart';
 /// of a provider/family for part of the application.
 ///
 /// Do not extend or implement.
-sealed class Override {}
+sealed class Override {
+  @mustBeOverridden
+  @override
+  String toString();
+}
 
 /// An object used by [ProviderContainer] to override the behavior of a provider
 /// for a part of the application.
@@ -37,20 +41,10 @@ class _ProviderOverrideBase implements ProviderOverride {
   final ProviderBase<Object?> providerOverride;
 }
 
-/// When users pass `overrides: [provider]` to a container.
-class _ManualScopeProviderOverride implements _ProviderOverrideBase {
-  _ManualScopeProviderOverride(this.origin);
-
-  @override
-  final ProviderBase<Object?> origin;
-
-  @override
-  ProviderBase<Object?> get providerOverride => origin;
-}
-
 /// When a provider is automatically scoped due to specifying `dependencies`.
-class _TransitiveProviderOverride implements _ProviderOverrideBase {
-  _TransitiveProviderOverride(this.origin);
+@internal
+class TransitiveProviderOverride implements _ProviderOverrideBase {
+  TransitiveProviderOverride(this.origin);
 
   @override
   final ProviderBase<Object?> origin;
@@ -92,8 +86,9 @@ abstract class FamilyOverride implements Override {
   ProviderBase<Object?> getProviderOverride(ProviderBase<Object?> provider);
 }
 
-class _TransitiveFamilyOverride implements FamilyOverride {
-  _TransitiveFamilyOverride(this.from);
+@internal
+class TransitiveFamilyOverride implements FamilyOverride {
+  TransitiveFamilyOverride(this.from);
 
   @override
   final Family from;
