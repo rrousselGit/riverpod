@@ -20,7 +20,7 @@ class _MyRepo {
 class MyNotifier extends _$MyNotifier {
   @override
   int build() {
-    // Just read/write the code here, in one place
+    // Basta leggere/scrivere il codice qui, in un posto
     final period = ref.watch(durationProvider);
     final timer = Timer.periodic(period, (t) => update());
     ref.onDispose(timer.cancel);
@@ -30,7 +30,7 @@ class MyNotifier extends _$MyNotifier {
 
   Future<void> update() async {
     await ref.read(repositoryProvider).update(state + 1);
-    // `mounted` is no more!
+    // `mounted` non è più necessario!
     state++; // This might throw.
   }
 }

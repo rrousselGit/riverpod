@@ -20,7 +20,7 @@ class _MyRepo {
 class MyNotifier extends _$MyNotifier {
   @override
   int build() {
-    // Just read/write the code here, in one place
+    // Legge/scrive il codice solamente qui, in un posto unico
     final period = ref.watch(durationProvider);
     final timer = Timer.periodic(period, (t) => update());
     ref.onDispose(timer.cancel);
@@ -32,7 +32,7 @@ class MyNotifier extends _$MyNotifier {
     final cancelToken = CancelToken();
     ref.onDispose(cancelToken.cancel);
     await ref.read(repositoryProvider).update(state + 1, token: cancelToken);
-    // When `cancelToken.cancel` is invoked, a custom Exception is thrown
+    // Quando `cancelToken.cancel` è invocato, una Exception personalizzata viene generata
     state++;
   }
 }

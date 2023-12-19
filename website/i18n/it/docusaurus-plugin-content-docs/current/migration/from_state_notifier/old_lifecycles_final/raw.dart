@@ -17,7 +17,7 @@ class _MyRepo {
 class MyNotifier extends Notifier<int> {
   @override
   int build() {
-    // Just read/write the code here, in one place
+    // Legge/scrive il codice solamente qui, in un posto unico
     final period = ref.watch(durationProvider);
     final timer = Timer.periodic(period, (t) => update());
     ref.onDispose(timer.cancel);

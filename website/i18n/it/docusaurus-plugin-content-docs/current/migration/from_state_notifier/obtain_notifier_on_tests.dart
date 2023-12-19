@@ -18,16 +18,16 @@ void main(List<String> args) {
     final container = ProviderContainer();
     addTearDown(container.dispose);
 
-    // Obtaining a notifier
+    // Ottenendo un notifier
     /* highlight-start */
     final AutoDisposeNotifier<int> notifier = container.read(myNotifierProvider.notifier);
     /* highlight-end */
 
-    // Obtaining its exposed state
+    // Ottenendo il suo stato esposto
     /* highlight-start */
     final int state = container.read(myNotifierProvider);
     /* highlight-end */
 
-    // TODO write your tests
+    // TODO scrivi i tuoi test
   });
 }

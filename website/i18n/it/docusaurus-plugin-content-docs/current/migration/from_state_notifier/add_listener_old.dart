@@ -16,7 +16,7 @@ final myNotifierProvider = StateNotifierProvider<MyNotifier, int>((ref) {
   final cleanup = notifier.addListener((state) => debugPrint('$state'));
   ref.onDispose(cleanup);
 
-  // Or, equivalently:
+  // O in modo equivalente:
   // final listener = notifier.stream.listen((event) => debugPrint('$event'));
   // ref.onDispose(listener.cancel);
 
