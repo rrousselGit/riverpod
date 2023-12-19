@@ -14,7 +14,7 @@ class _EagerInitialization extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final result = ref.watch(myProvider);
 
-    // Handle error states and loading states
+    // 处理错误状态和加载状态
     if (result.isLoading) {
       return const CircularProgressIndicator();
     } else if (result.hasError) {

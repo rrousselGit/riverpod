@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const _EagerInitialization(
-      // TODO: Render your app here
+      // TODO: 在这里渲染你的 APP
       child: MaterialApp(),
     );
   }
@@ -26,8 +26,8 @@ class _EagerInitialization extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Eagerly initialize providers by watching them.
-    // By using "watch", the provider will stay alive and not be disposed.
+    // 通过观察提供者程序，来初始化提供程序。
+    // 通过使用 "watch"，提供程序将保持存活，不会被处置。
     ref.watch(myProvider);
     return child;
   }

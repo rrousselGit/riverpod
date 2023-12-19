@@ -68,7 +68,7 @@ export const documentTitles = {
     "essentials/passing_args": "将参数传递给您的请求",
     "essentials/first_request": "开始你的第一次 provider/network 请求",
     "essentials/faq": "FAQ",
-    "essentials/eager_initialization": "Eager initialization of providers",
+    "essentials/eager_initialization": "急于初始化提供者",
     "essentials/do_dont": "DO/DON'T",
     "essentials/combining_requests": "组合请求",
     "essentials/auto_dispose": "清除缓存并对状态处置做出反应",
