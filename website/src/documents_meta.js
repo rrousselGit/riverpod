@@ -64,7 +64,7 @@ export const documentTitles = {
     "essentials/websockets_sync": "Websocket 和同步执行",
     "essentials/testing": "测试你的提供者程序",
     "essentials/side_effects": "执行副作用",
-    "essentials/provider_observer": "Logging and error reporting",
+    "essentials/provider_observer": "日志和错误报告",
     "essentials/passing_args": "将参数传递给您的请求",
     "essentials/first_request": "开始你的第一次 provider/network 请求",
     "essentials/faq": "FAQ",
