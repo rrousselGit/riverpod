@@ -9,7 +9,6 @@ class MyNotifier extends Notifier<int> {
   int build() => throw UnimplementedError();
 }
 
-// Your mock needs to subclass the Notifier base-class corresponding
-// to whatever your notifier uses
+// 您的模拟类需要作为 Notifier 的子类，与您的通知者程序使用的基类相对应
 class MyNotifierMock extends Notifier<int> with Mock implements MyNotifier {}
 /* SNIPPET END */
