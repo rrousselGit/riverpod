@@ -493,19 +493,23 @@ class ProviderPointerManager {
     if (directory == null) return null;
 
     final pointer = directory.pointers[provider];
-    // If null, nothing to remove. If from an override, must not be removed.
-    if (pointer == null || pointer.providerOverride != null) {
+    // If null, nothing to remove.
+    if (pointer == null) return null;
+    // If from an override, must not be removed unless it is a transitive override
+    if (pointer.providerOverride != null &&
+        pointer.providerOverride is! TransitiveProviderOverride) {
       return pointer;
     }
 
     directory.pointers.remove(provider);
 
     final from = provider.from;
-    if (from != null) {
-      // Cleanup family if empty.
-      // We do so only if it isn't from an override, as overrides are
-      // must never be removed.
-      if (directory.pointers.isEmpty && directory.familyOverride == null) {
+    // Cleanup family if empty.
+    // We do so only if it isn't from an override, as overrides are
+    // must never be removed.
+    if (from != null && directory.pointers.isEmpty) {
+      if (directory.familyOverride == null ||
+          directory.familyOverride is TransitiveFamilyOverride) {
         familyPointers.remove(from);
       }
     }
@@ -604,12 +608,27 @@ class ProviderContainer implements Node {
       for (final override in overrides) {
         switch (override) {
           case ProviderOverride():
+            if (parent != null &&
+                override.origin.allTransitiveDependencies == null &&
+                override.origin.from?.allTransitiveDependencies == null) {
+              throw AssertionError(
+                'Tried to scope a provider that did not specify "dependencies": ${override.origin}',
+              );
+            }
+
             if (!overrideOrigins.add(override.origin)) {
               throw AssertionError(
                 'Tried to override a provider twice within the same container: ${override.origin}',
               );
             }
           case FamilyOverride():
+            if (parent != null &&
+                override.from.allTransitiveDependencies == null) {
+              throw AssertionError(
+                'Tried to scope a family that did not specify "dependencies": ${override.from}',
+              );
+            }
+
             if (!overrideOrigins.add(override.from)) {
               throw AssertionError(
                 'Tried to override a family twice within the same container: ${override.from}',
@@ -822,6 +841,14 @@ class ProviderContainer implements Node {
   }
 
   void _disposeProvider(ProviderBase<Object?> provider) {
+    if (provider.allTransitiveDependencies != null) {
+      /// Recursively removes the pointer in all containers if the provider
+      /// can be scoped.
+      for (final child in _children) {
+        child._disposeProvider(provider);
+      }
+    }
+
     final pointer = _pointerManager.remove(provider);
 
     // The provider is already disposed, so we don't need to do anything
