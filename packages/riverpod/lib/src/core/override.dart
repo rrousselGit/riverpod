@@ -39,6 +39,11 @@ class _ProviderOverrideBase implements ProviderOverride {
 
   /// The new provider behavior.
   final ProviderBase<Object?> providerOverride;
+
+  @override
+  String toString() {
+    return 'ProviderOverride($origin, $providerOverride)';
+  }
 }
 
 /// When a provider is automatically scoped due to specifying `dependencies`.

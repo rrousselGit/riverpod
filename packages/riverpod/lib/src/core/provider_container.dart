@@ -352,7 +352,7 @@ class ProviderPointerManager {
             previousPointer.pointers.removeWhere(
               (key, value) => value.targetContainer != container,
             );
-            return;
+            continue;
           }
 
           familyPointers[overriddenFamily] = ProviderDirectory.empty(

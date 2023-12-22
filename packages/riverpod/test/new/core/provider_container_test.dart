@@ -630,10 +630,13 @@ void main() {
     group('pointers', () {
       test('has "container" pointing to "this"', () {
         final root = ProviderContainer.test();
-        final container = ProviderContainer.test(parent: root, overrides: [
-          // An unrelated override, added to avoid the container optimizing
-          Provider((_) => 0),
-        ],);
+        final container = ProviderContainer.test(
+          parent: root,
+          overrides: [
+            // An unrelated override, added to avoid the container optimizing
+            Provider((_) => 0),
+          ],
+        );
 
         expect(root.pointerManager.container, root);
         expect(container.pointerManager.container, container);
@@ -944,6 +947,42 @@ void main() {
             ),
           },
         );
+      });
+
+      test(
+          'can override a family and a provider from that family in the same container',
+          () {
+        final family = Provider.family<String, int>((ref, a) => 'Hello $a');
+        final familyOverride = family.overrideWith((ref, a) => 'Hi $a');
+        final beforeOverride = family(42).overrideWithValue('Bonjour 42');
+        final afterOverride = family(21).overrideWithValue('Ola 42');
+
+        final container = ProviderContainer.test(
+          overrides: [
+            beforeOverride,
+            familyOverride,
+            afterOverride,
+          ],
+        );
+
+        expect(container.pointerManager.familyPointers, {
+          family: isProviderDirectory(
+            override: familyOverride,
+            targetContainer: container,
+            pointers: {
+              family(42): isPointer(
+                override: beforeOverride,
+                targetContainer: container,
+                element: null,
+              ),
+              family(21): isPointer(
+                override: afterOverride,
+                targetContainer: container,
+                element: null,
+              ),
+            },
+          ),
+        });
       });
     });
 
