@@ -841,15 +841,21 @@ class ProviderContainer implements Node {
   }
 
   void _disposeProvider(ProviderBase<Object?> provider) {
+    final pointer = _pointerManager.remove(provider);
+
     if (provider.allTransitiveDependencies != null) {
       /// Recursively removes the pointer in all containers if the provider
       /// can be scoped.
       for (final child in _children) {
+        final childPointer = child._pointerManager.readPointer(provider);
+
+        // The child container uses a different instance for this provider.
+        // We don't need to dispose it.
+        if (childPointer != null && childPointer != pointer) continue;
+
         child._disposeProvider(provider);
       }
     }
-
-    final pointer = _pointerManager.remove(provider);
 
     // The provider is already disposed, so we don't need to do anything
     if (pointer == null) return;
