@@ -1,8 +1,8 @@
 import 'package:meta/meta.dart';
 
+import '../common/stack_trace.dart';
 import '../framework.dart';
 import '../legacy_providers/future_provider.dart' show FutureProvider;
-import '../common/stack_trace.dart';
 import '../legacy_providers/stream_provider.dart' show StreamProvider;
 
 /// An extension for [asyncTransition].

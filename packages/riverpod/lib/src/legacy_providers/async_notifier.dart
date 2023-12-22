@@ -2,15 +2,15 @@ import 'dart:async';
 
 import 'package:meta/meta.dart';
 
-import 'builders.dart';
+import '../common/listenable.dart';
+import '../common/pragma.dart';
+import '../common/result.dart';
 import '../common/run_guarded.dart';
 import '../core/async_value.dart';
 import '../framework.dart';
+import 'builders.dart';
 import 'future_provider.dart' show FutureProvider;
-import '../common/listenable.dart';
 import 'notifier.dart';
-import '../common/pragma.dart';
-import '../common/result.dart';
 import 'stream_provider.dart';
 
 part 'async_notifier/auto_dispose.dart';
@@ -208,6 +208,7 @@ abstract class AsyncNotifierProviderBase<NotifierT extends AsyncNotifierBase<T>,
   /// Listening to this using [Ref.watch] will rebuild the widget/provider
   /// when the [AsyncNotifier] emits a new value.
   /// This will then return a new [Future] that resoles with the latest "state".
+  @override
   Refreshable<Future<T>> get future;
 
   final NotifierT Function() _createNotifier;

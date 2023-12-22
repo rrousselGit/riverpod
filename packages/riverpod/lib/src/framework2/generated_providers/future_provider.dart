@@ -61,6 +61,7 @@ abstract base class AsyncProvider<StateT> extends Provider<AsyncValue<StateT>> {
 class AsyncProviderElement<StateT> extends ProviderElement<StateT> {
   AsyncProviderElement(this.provider, super.container);
 
+  @override
   final AsyncProvider<StateT> provider;
 
   @override

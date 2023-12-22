@@ -2,14 +2,14 @@ import 'dart:async';
 
 import 'package:meta/meta.dart';
 
-import 'async_notifier.dart';
-import 'builders.dart';
+import '../common/listenable.dart';
+import '../common/result.dart';
 import '../core/async_value.dart';
 import '../framework.dart';
+import 'async_notifier.dart';
+import 'builders.dart';
 import 'future_provider.dart' show FutureProvider;
-import '../common/listenable.dart';
 import 'provider.dart' show Provider;
-import '../common/result.dart';
 
 part 'stream_provider/auto_dispose.dart';
 part 'stream_provider/base.dart';

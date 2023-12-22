@@ -633,7 +633,7 @@ void main() {
         final container = ProviderContainer.test(parent: root, overrides: [
           // An unrelated override, added to avoid the container optimizing
           Provider((_) => 0),
-        ]);
+        ],);
 
         expect(root.pointerManager.container, root);
         expect(container.pointerManager.container, container);

@@ -32,7 +32,7 @@ class Provider<State> extends InternalProvider<State> {
 
   /// An implementation detail of Riverpod
   @internal
-  Provider.internal(
+  const Provider.internal(
     this._createFn, {
     required super.name,
     required super.dependencies,

@@ -57,6 +57,7 @@ abstract base class SyncProvider<StateT> extends Provider<StateT> {
 class SyncProviderElement<StateT> extends ProviderElement<StateT> {
   SyncProviderElement(this.provider, super.container);
 
+  @override
   final SyncProvider<StateT> provider;
 
   @override

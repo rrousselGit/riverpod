@@ -1,9 +1,7 @@
 import 'dart:async';
 
-import 'package:meta/meta.dart';
-import 'package:riverpod/src/framework2/generated_providers/future_provider.dart';
-
 import '../framework.dart';
+import 'future_provider.dart';
 import 'sync_provider.dart';
 
 part 'examples.g.dart';

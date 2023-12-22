@@ -68,6 +68,7 @@ abstract class StreamNotifierProviderBase<
   /// Listening to this using [Ref.watch] will rebuild the widget/provider
   /// when the [StreamNotifier] emits a new value.
   /// This will then return a new [Future] that resoles with the latest "state".
+  @override
   Refreshable<Future<T>> get future;
 
   final NotifierT Function() _createNotifier;

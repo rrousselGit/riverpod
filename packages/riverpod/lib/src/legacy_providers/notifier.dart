@@ -1,11 +1,11 @@
 import 'package:meta/meta.dart';
 
+import '../common/listenable.dart';
+import '../common/result.dart';
+import '../framework.dart';
 import 'async_notifier.dart';
 import 'builders.dart';
-import '../framework.dart';
-import '../common/listenable.dart';
 import 'provider.dart';
-import '../common/result.dart';
 
 part 'notifier/auto_dispose.dart';
 part 'notifier/auto_dispose_family.dart';
