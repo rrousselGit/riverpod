@@ -22,8 +22,8 @@ void main() {
         (ref, i) => StateController(ref.watch(dep) + i),
         dependencies: [dep],
       );
-      final root = createContainer();
-      final container = createContainer(
+      final root = ProviderContainer.test();
+      final container = ProviderContainer.test(
         parent: root,
         overrides: [dep.overrideWithValue(42)],
       );
@@ -41,8 +41,9 @@ void main() {
             .family<StateController<int>, int, int>(
           (ref, _) => controller,
         );
-        final root = createContainer();
-        final container = createContainer(parent: root, overrides: [provider]);
+        final root = ProviderContainer.test();
+        final container =
+            ProviderContainer.test(parent: root, overrides: [provider]);
 
         expect(container.read(provider(0).notifier), controller);
         expect(container.read(provider(0)), 0);
@@ -60,9 +61,9 @@ void main() {
         final controller = StateController(0);
         final provider = StateNotifierProvider.autoDispose
             .family<StateController<int>, int, int>((ref, _) => controller);
-        final root = createContainer();
+        final root = ProviderContainer.test();
         final controllerOverride = StateController(42);
-        final container = createContainer(
+        final container = ProviderContainer.test(
           parent: root,
           overrides: [
             provider.overrideWith((ref, value) => controllerOverride),

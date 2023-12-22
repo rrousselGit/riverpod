@@ -15,8 +15,9 @@ void main() {
     group('scoping an override overrides all the associated subproviders', () {
       test('when passing the provider itself', () {
         final provider = Provider.family<int, int>((ref, _) => 0);
-        final root = createContainer();
-        final container = createContainer(parent: root, overrides: [provider]);
+        final root = ProviderContainer.test();
+        final container =
+            ProviderContainer.test(parent: root, overrides: [provider]);
 
         expect(container.read(provider(0)), 0);
         expect(container.getAllProviderElements(), [
@@ -28,8 +29,8 @@ void main() {
 
       test('when using provider.overrideWith', () {
         final provider = Provider.family<int, int>((ref, _) => 0);
-        final root = createContainer();
-        final container = createContainer(
+        final root = ProviderContainer.test();
+        final container = ProviderContainer.test(
           parent: root,
           overrides: [provider.overrideWith((ref, value) => 42)],
         );
@@ -49,8 +50,8 @@ void main() {
         (ref, i) => ref.watch(dep) + i,
         dependencies: [dep],
       );
-      final root = createContainer();
-      final container = createContainer(
+      final root = ProviderContainer.test();
+      final container = ProviderContainer.test(
         parent: root,
         overrides: [dep.overrideWithValue(42)],
       );

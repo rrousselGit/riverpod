@@ -14,7 +14,7 @@ void main() {
     final autoDispose = StateProvider.autoDispose<int>(
       (ref) => 0,
     );
-    final container = createContainer(
+    final container = ProviderContainer.test(
       overrides: [
         provider.overrideWith((StateProviderRef<int> ref) => 42),
         autoDispose.overrideWith((AutoDisposeStateProviderRef<int> ref) => 84),
@@ -30,7 +30,7 @@ void main() {
     final autoDisposeFamily = StateProvider.autoDispose.family<String, int>(
       (ref, arg) => '0 $arg',
     );
-    final container = createContainer(
+    final container = ProviderContainer.test(
       overrides: [
         family.overrideWith(
           (StateProviderRef<String> ref, int arg) => '42 $arg',
@@ -49,7 +49,7 @@ void main() {
       'on refresh, does not notify listeners if the new value is identical to the previous one',
       () {
     // regression test for https://github.com/rrousselGit/riverpod/issues/1560
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final provider = StateProvider((ref) => 0);
     final listener = Listener<int>();
 
@@ -64,7 +64,7 @@ void main() {
 
   test('ref.listenSelf listens to state changes', () {
     final listener = Listener<int>();
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final provider = StateProvider<int>((ref) {
       ref.listenSelf(listener.call);
       return 0;
@@ -96,8 +96,8 @@ void main() {
       (ref) => ref.watch(dep),
       dependencies: [dep],
     );
-    final root = createContainer();
-    final container = createContainer(
+    final root = ProviderContainer.test();
+    final container = ProviderContainer.test(
       parent: root,
       overrides: [dep.overrideWithValue(42)],
     );
@@ -110,7 +110,7 @@ void main() {
 
   group('ref.controller', () {
     test('can read and change current value', () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = Listener<int>();
       late StateProviderRef<int> ref;
       final provider = StateProvider<int>((r) {
@@ -131,7 +131,7 @@ void main() {
     });
 
     test('fails if trying to read the state before it was set', () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       Object? err;
       final provider = StateProvider<int>((ref) {
         try {
@@ -149,7 +149,7 @@ void main() {
     test('on rebuild, still fails if trying to read the state before was built',
         () {
       final dep = StateProvider((ref) => false);
-      final container = createContainer();
+      final container = ProviderContainer.test();
       Object? err;
       final provider = StateProvider<int>((ref) {
         if (ref.watch(dep)) {
@@ -175,7 +175,7 @@ void main() {
   test('can refresh .notifier', () async {
     var initialValue = 1;
     final provider = StateProvider<int>((ref) => initialValue);
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     expect(container.read(provider), 1);
     expect(container.read(provider.notifier).state, 1);
@@ -193,7 +193,7 @@ void main() {
       // TODO fix this test
       var initialValue = 1;
       final provider = StateProvider<int>((ref) => initialValue);
-      final container = createContainer();
+      final container = ProviderContainer.test();
 
       expect(container.read(provider), 1);
       expect(container.read(provider.notifier).state, 1);
@@ -207,7 +207,7 @@ void main() {
 
   test('can be refreshed', () async {
     var result = 0;
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final provider = StateProvider<int>((ref) => result);
 
     final notifier = container.read(provider.notifier);
@@ -225,8 +225,9 @@ void main() {
   group('scoping an override overrides all the associated subproviders', () {
     test('when passing the provider itself', () async {
       final provider = StateProvider<int>((ref) => 0);
-      final root = createContainer();
-      final container = createContainer(parent: root, overrides: [provider]);
+      final root = ProviderContainer.test();
+      final container =
+          ProviderContainer.test(parent: root, overrides: [provider]);
 
       expect(container.read(provider.notifier).state, 0);
       expect(container.read(provider), 0);
@@ -242,8 +243,8 @@ void main() {
 
     // test('when using provider.overrideWithValue', () async {
     //   final provider = StateProvider<int>((ref) => 0);
-    //   final root = createContainer();
-    //   final container = createContainer(parent: root, overrides: [
+    //   final root = ProviderContainer.test();
+    //   final container = ProviderContainer.test(parent: root, overrides: [
     //     provider.overrideWithValue(StateController(42)),
     //   ]);
 
@@ -263,8 +264,8 @@ void main() {
 
     test('when using provider.overrideWith', () async {
       final provider = StateProvider<int>((ref) => 0);
-      final root = createContainer();
-      final container = createContainer(
+      final root = ProviderContainer.test();
+      final container = ProviderContainer.test(
         parent: root,
         overrides: [
           provider.overrideWith((ref) => 42),
@@ -288,7 +289,7 @@ void main() {
   //   'overrideWithValue listens to the new StateController and support controller changes',
   //   () {
   //     final provider = StateProvider((ref) => 0);
-  //     final container = createContainer(overrides: [
+  //     final container = ProviderContainer.test(overrides: [
   //       provider.overrideWithValue(StateController(42)),
   //     ]);
   //     final listener = Listener<int>();
@@ -311,7 +312,7 @@ void main() {
     // test('listens to state changes', () {
     //   final override = StateController(21);
     //   final provider = StateProvider((ref) => 0);
-    //   final container = createContainer(overrides: [
+    //   final container = ProviderContainer.test(overrides: [
     //     provider.overrideWithValue(override),
     //   ]);
     //   addTearDown(container.dispose);
@@ -330,7 +331,7 @@ void main() {
     test(
       'properly disposes of the StateController when the provider is disposed',
       () async {
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final provider = StateProvider.autoDispose((ref) => 0);
 
         final notifier = container.read(provider.notifier);
@@ -347,7 +348,7 @@ void main() {
   });
 
   test('Expose a state and allows modifying it', () {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final provider = StateProvider((ref) => 0);
     final listener = Listener<int>();
 
@@ -363,7 +364,7 @@ void main() {
   });
 
   test('disposes the controller when the container is disposed', () {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final provider = StateProvider((ref) => 0);
 
     final controller = container.read(provider.notifier);
@@ -376,7 +377,7 @@ void main() {
   });
 
   test('disposes the controller when the provider is re-evaluated', () {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final other = StateProvider((ref) => 0);
     final provider = StateProvider((ref) => ref.watch(other) * 2);
 
@@ -399,7 +400,7 @@ void main() {
 
   group('StateProvider', () {
     test('.notifier obtains the controller without listening to it', () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final dep = StateProvider((ref) => 0);
       final provider = StateProvider((ref) {
         ref.watch(dep);
@@ -435,7 +436,7 @@ void main() {
 
   group('StateProvider.autoDispose', () {
     test('.notifier obtains the controller without listening to it', () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final dep = StateProvider((ref) => 0);
       final provider = StateProvider.autoDispose((ref) {
         ref.watch(dep);
@@ -469,7 +470,7 @@ void main() {
     });
 
     test('creates a new controller when no longer listened to', () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final provider = StateProvider.autoDispose((ref) => 0);
 
       final sub = container.listen(provider.notifier, (_, __) {});
@@ -493,7 +494,7 @@ void main() {
 
   group('StateProvider.family.autoDispose', () {
     test('creates a new controller when no longer listened to', () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
 
       StateProvider.family.autoDispose<int, String>((ref, id) {
         return 42;

@@ -11,7 +11,7 @@ void main() {
   final didChange = Listener<int>();
 
   setUp(() {
-    container = createContainer();
+    container = ProviderContainer.test();
   });
 
   tearDown(() {
@@ -20,22 +20,22 @@ void main() {
   });
 
   test('ProviderContainer.children', () {
-    final root = createContainer();
+    final root = ProviderContainer.test();
 
     expect(root.debugChildren, isEmpty);
 
-    final mid = createContainer(parent: root);
+    final mid = ProviderContainer.test(parent: root);
 
     expect(root.debugChildren, containsAll(<ProviderContainer>[mid]));
     expect(mid.debugChildren, isEmpty);
 
-    final mid2 = createContainer(parent: root);
+    final mid2 = ProviderContainer.test(parent: root);
 
     expect(root.debugChildren, containsAll(<ProviderContainer>[mid, mid2]));
     expect(mid.debugChildren, isEmpty);
     expect(mid2.debugChildren, isEmpty);
 
-    final leaf = createContainer(parent: mid);
+    final leaf = ProviderContainer.test(parent: mid);
 
     expect(root.debugChildren, containsAll(<ProviderContainer>[mid, mid2]));
     expect(mid.debugChildren, containsAll(<ProviderContainer>[leaf]));
@@ -61,8 +61,8 @@ void main() {
   });
 
   test('Ref.container exposes the root container', () {
-    final root = createContainer();
-    final container = createContainer(parent: root);
+    final root = ProviderContainer.test();
+    final container = ProviderContainer.test(parent: root);
     final provider = Provider((ref) => ref);
 
     expect(container.read(provider).container, root);
@@ -168,7 +168,7 @@ void main() {
         buildCount++;
         ref.onDispose(onDispose.call);
       });
-      final container = createContainer();
+      final container = ProviderContainer.test();
 
       container.read(provider);
 
@@ -188,8 +188,8 @@ void main() {
   });
 
   test('disposing child container does not dispose the providers', () {
-    final container = createContainer();
-    final child = createContainer(parent: container);
+    final container = ProviderContainer.test();
+    final child = ProviderContainer.test(parent: container);
     var disposed = false;
     final provider = Provider((ref) {
       ref.onDispose(() => disposed = true);
@@ -209,10 +209,10 @@ void main() {
 
   test('child container uses root overrides', () {
     final provider = Provider((ref) => 0);
-    final container = createContainer(
+    final container = ProviderContainer.test(
       overrides: [provider.overrideWithValue(42)],
     );
-    final child = createContainer(parent: container);
+    final child = ProviderContainer.test(parent: container);
 
     expect(child.read(provider), 42);
   });
@@ -296,7 +296,7 @@ void main() {
   //       callCount++;
   //       return 0;
   //     });
-  //     final container = createContainer(overrides: [
+  //     final container = ProviderContainer.test(overrides: [
   //       provider.overrideWithValue(const AsyncValue.data(42)),
   //     ]);
 
@@ -497,8 +497,8 @@ void main() {
 
   group('container.refresh', () {
     test('still refresh providers on non-root containers', () {
-      final root = createContainer();
-      final container = createContainer(parent: root);
+      final root = ProviderContainer.test();
+      final container = ProviderContainer.test(parent: root);
       var callCount = 0;
       late Ref providerReference;
       var result = 0;
@@ -528,7 +528,7 @@ void main() {
         callCount++;
         return future;
       });
-      final container = createContainer();
+      final container = ProviderContainer.test();
 
       await expectLater(container.read(provider.future), completion(42));
 
@@ -562,7 +562,7 @@ void main() {
         callCount++;
         return Future.value(42);
       });
-      final container = createContainer();
+      final container = ProviderContainer.test();
 
       expect(callCount, 0);
       expect(
@@ -589,7 +589,7 @@ void main() {
         ref.watch(dep);
         return future;
       });
-      final container = createContainer();
+      final container = ProviderContainer.test();
 
       container.refresh(provider);
 

@@ -10,7 +10,7 @@ import '../utils.dart';
 void main() {
   group('Ref.listenSelf', () {
     test('does not break autoDispose', () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final provider = Provider.autoDispose((ref) {
         ref.listenSelf((previous, next) {});
       });
@@ -24,7 +24,7 @@ void main() {
     });
 
     test('listens to mutations post build', () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = Listener<int>();
       final listener2 = Listener<int>();
 
@@ -57,7 +57,7 @@ void main() {
     });
 
     test('listens to rebuild', () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = Listener<int>();
       final listener2 = Listener<int>();
       var result = 0;
@@ -89,7 +89,7 @@ void main() {
     });
 
     test('notify listeners independently from updateShouldNotify', () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = Listener<int>();
       final listener2 = Listener<int>();
       final provider = Provider<int>((ref) {
@@ -119,7 +119,7 @@ void main() {
     });
 
     test('clears state listeners on rebuild', () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = Listener<int>();
       final listener2 = Listener<int>();
       var result = 0;
@@ -148,7 +148,7 @@ void main() {
     });
 
     test('listens to errors', () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = Listener<int>();
       final errorListener = ErrorListener();
       final errorListener2 = ErrorListener();
@@ -184,7 +184,7 @@ void main() {
     });
 
     test('executes error listener before other listeners', () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final errorListener = ErrorListener();
       final errorListener2 = ErrorListener();
       Exception? error;
@@ -213,7 +213,7 @@ void main() {
     });
 
     test('executes state listener before other listeners', () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = Listener<int>();
       final listener2 = Listener<int>();
       var result = 0;
@@ -249,7 +249,7 @@ void main() {
     test(
         'when rebuild throws identical error/stack, listeners are still notified',
         () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       const stack = StackTrace.empty;
       final listener = Listener<int>();
       final errorListener = ErrorListener();
@@ -274,7 +274,7 @@ void main() {
     });
 
     test('cannot listen itself', () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = Listener<int>();
       late ProviderRef<int> ref;
       late Provider<int> provider;
@@ -292,7 +292,7 @@ void main() {
     });
 
     test('expose previous and new value on change', () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final dep = StateNotifierProvider<StateController<int>, int>(
         (ref) => StateController(0),
       );
@@ -313,7 +313,7 @@ void main() {
     test(
         'calling ref.listen on a provider with an outdated dependency flushes it, then add the listener',
         () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       var buildCount = 0;
       final dep2 = StateNotifierProvider<StateController<int>, int>(
         (ref) => StateController(0),
@@ -342,7 +342,7 @@ void main() {
     test(
         'when using selectors, `previous` is the latest notification instead of latest event',
         () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final dep = StateNotifierProvider<StateController<int>, int>(
         (ref) => StateController(0),
       );
@@ -369,7 +369,7 @@ void main() {
 
     test('when no onError is specified, fallbacks to handleUncaughtError',
         () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final isErrored = StateProvider((ref) => false);
       final dep = Provider<int>((ref) {
         if (ref.watch(isErrored)) throw UnimplementedError();
@@ -400,7 +400,7 @@ void main() {
     test(
         'when no onError is specified, selectors fallbacks to handleUncaughtError',
         () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final isErrored = StateProvider((ref) => false);
       final dep = Provider<int>((ref) {
         if (ref.watch(isErrored)) throw UnimplementedError();
@@ -429,7 +429,7 @@ void main() {
     });
 
     test('when rebuild throws, calls onError', () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final dep = StateProvider((ref) => 0);
       final provider = Provider((ref) {
         if (ref.watch(dep) != 0) {
@@ -460,7 +460,7 @@ void main() {
     });
 
     test('when rebuild throws on selector, calls onError', () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final dep = StateProvider((ref) => 0);
       final provider = Provider((ref) {
         if (ref.watch(dep) != 0) {
@@ -497,7 +497,7 @@ void main() {
     group('fireImmediately', () {
       test('when no onError is specified, fallbacks to handleUncaughtError',
           () {
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final dep = Provider<int>((ref) => throw UnimplementedError());
         final listener = Listener<int>();
         final errors = <Object>[];
@@ -525,7 +525,7 @@ void main() {
       test(
           'when no onError is specified on selectors, fallbacks to handleUncaughtError',
           () {
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final dep = Provider<int>((ref) => throw UnimplementedError());
         final listener = Listener<int>();
         final errors = <Object>[];
@@ -551,7 +551,7 @@ void main() {
       });
 
       test('on provider that threw, fireImmediately calls onError', () {
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final dep = Provider<int>((ref) => throw UnimplementedError());
         final listener = Listener<int>();
         final errorListener = ErrorListener();
@@ -575,7 +575,7 @@ void main() {
 
       test('when selecting provider that threw, fireImmediately calls onError',
           () {
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final dep = Provider<String>((ref) => throw UnimplementedError());
         final listener = Listener<int>();
         final errorListener = ErrorListener();
@@ -602,7 +602,7 @@ void main() {
         final listener = Listener<int>();
         var isFirstCall = true;
 
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final errors = <Object>[];
 
         ProviderSubscription<int>? sub;
@@ -639,7 +639,7 @@ void main() {
         final listener = Listener<int>();
         var isFirstCall = true;
 
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final errors = <Object>[];
 
         ProviderSubscription<int>? sub;
@@ -685,7 +685,7 @@ void main() {
         final errorListener = ErrorListener();
         var isFirstCall = true;
 
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final errors = <Object>[];
 
         ProviderSubscription<int>? sub;
@@ -739,7 +739,7 @@ void main() {
         final errorListener = ErrorListener();
         var isFirstCall = true;
 
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final errors = <Object>[];
 
         ProviderSubscription<int>? sub;
@@ -784,7 +784,7 @@ void main() {
   group('ProviderContainer.listen', () {
     test('when no onError is specified, fallbacks to handleUncaughtError',
         () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final isErrored = StateProvider((ref) => false);
       final dep = Provider<int>((ref) {
         if (ref.watch(isErrored)) throw UnimplementedError();
@@ -812,7 +812,7 @@ void main() {
     test(
         'when no onError is specified, selectors fallbacks to handleUncaughtError',
         () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final isErrored = StateProvider((ref) => false);
       final dep = Provider<int>((ref) {
         if (ref.watch(isErrored)) throw UnimplementedError();
@@ -838,7 +838,7 @@ void main() {
     });
 
     test('when rebuild throws, calls onError', () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final dep = StateProvider((ref) => 0);
       final provider = Provider((ref) {
         if (ref.watch(dep) != 0) {
@@ -865,7 +865,7 @@ void main() {
     });
 
     test('when rebuild throws on selector, calls onError', () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final dep = StateProvider((ref) => 0);
       final provider = Provider((ref) {
         if (ref.watch(dep) != 0) {
@@ -898,7 +898,7 @@ void main() {
     test(
         'when using selectors, `previous` is the latest notification instead of latest event',
         () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final provider = StateNotifierProvider<StateController<int>, int>(
         (ref) => StateController(0),
       );
@@ -922,7 +922,7 @@ void main() {
     });
 
     test('expose previous and new value on change', () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final provider = StateNotifierProvider<StateController<int>, int>(
         (ref) => StateController(0),
       );
@@ -941,7 +941,7 @@ void main() {
       final listener = Listener<num>();
       final dep = StateProvider((ref) => 0);
 
-      final container = createContainer();
+      final container = ProviderContainer.test();
 
       container.listen<num>(dep, listener.call);
 
@@ -957,7 +957,7 @@ void main() {
         'if a listener adds a container.listen, the new listener is not called immediately',
         () {
       final provider = StateProvider((ref) => 0);
-      final container = createContainer();
+      final container = ProviderContainer.test();
 
       final listener = Listener<int>();
 
@@ -981,7 +981,7 @@ void main() {
         'if a listener removes another provider.listen, the removed listener is still called',
         () {
       final provider = StateProvider((ref) => 0);
-      final container = createContainer();
+      final container = ProviderContainer.test();
 
       final listener = Listener<int>();
       final listener2 = Listener<int>();
@@ -1019,7 +1019,7 @@ void main() {
       skip: true,
       () {
         final provider = StateProvider((ref) => 0);
-        final container = createContainer();
+        final container = ProviderContainer.test();
 
         final listener = Listener<int>();
         final listener2 = Listener<int>();
@@ -1063,7 +1063,7 @@ void main() {
         'if a listener adds a provider.listen, the new listener is not called immediately',
         () {
       final provider = StateProvider((ref) => 0);
-      final container = createContainer();
+      final container = ProviderContainer.test();
 
       final listener = Listener<int>();
 
@@ -1091,7 +1091,7 @@ void main() {
       skip: true,
       () {
         final provider = StateProvider((ref) => 0);
-        final container = createContainer();
+        final container = ProviderContainer.test();
 
         final listener = Listener<int>();
         final listener2 = Listener<int>();
@@ -1132,7 +1132,7 @@ void main() {
         'if a listener removes another container.listen, the removed listener is still called',
         () {
       final provider = StateProvider((ref) => 0);
-      final container = createContainer();
+      final container = ProviderContainer.test();
 
       final listener = Listener<int>();
       final listener2 = Listener<int>();
@@ -1165,7 +1165,7 @@ void main() {
     group('fireImmediately', () {
       test('when no onError is specified, fallbacks to handleUncaughtError',
           () {
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final dep = Provider<int>((ref) => throw UnimplementedError());
         final listener = Listener<int>();
         final errors = <Object>[];
@@ -1190,7 +1190,7 @@ void main() {
       test(
           'when no onError is specified on selectors, fallbacks to handleUncaughtError',
           () {
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final dep = Provider<int>((ref) => throw UnimplementedError());
         final listener = Listener<int>();
         final errors = <Object>[];
@@ -1213,7 +1213,7 @@ void main() {
       });
 
       test('on provider that threw, fireImmediately calls onError', () {
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final provider = Provider<int>((ref) => throw UnimplementedError());
         final listener = Listener<int>();
         final errorListener = ErrorListener();
@@ -1233,7 +1233,7 @@ void main() {
       });
 
       test('supports selectors', () {
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final provider =
             StateNotifierProvider<Counter, int>((ref) => Counter());
         final listener = Listener<bool>();
@@ -1259,7 +1259,7 @@ void main() {
         final provider = StateProvider((ref) => 0);
         final listener = Listener<int>();
 
-        final container = createContainer();
+        final container = ProviderContainer.test();
 
         container.listen<int>(provider, listener.call);
 
@@ -1280,7 +1280,7 @@ void main() {
         final errorListener = ErrorListener();
         var isFirstCall = true;
 
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final errors = <Object>[];
 
         final sub = runZonedGuarded(
@@ -1330,7 +1330,7 @@ void main() {
         final errorListener = ErrorListener();
         var isFirstCall = true;
 
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final errors = <Object>[];
 
         final sub = runZonedGuarded(
@@ -1371,7 +1371,7 @@ void main() {
         final listener = Listener<int>();
         var isFirstCall = true;
 
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final errors = <Object>[];
 
         final sub = runZonedGuarded(
@@ -1403,7 +1403,7 @@ void main() {
         final listener = Listener<int>();
         var isFirstCall = true;
 
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final errors = <Object>[];
 
         final sub = runZonedGuarded(
@@ -1435,7 +1435,7 @@ void main() {
         final listener = Listener<int>();
         var isFirstCall = true;
 
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final errors = <Object>[];
 
         final sub = runZonedGuarded(
@@ -1466,7 +1466,7 @@ void main() {
     test('.read on closed subscription throws', () {
       final notifier = Counter();
       final provider = StateNotifierProvider<Counter, int>((_) => notifier);
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = Listener<int>();
 
       final sub =
@@ -1486,7 +1486,7 @@ void main() {
     test('.read on closed selector subscription throws', () {
       final notifier = Counter();
       final provider = StateNotifierProvider<Counter, int>((_) => notifier);
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = Listener<int>();
 
       final sub = container.listen(
@@ -1506,7 +1506,7 @@ void main() {
     });
 
     test("doesn't trow when creating a provider that failed", () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final provider = Provider((ref) {
         throw Error();
       });
@@ -1517,7 +1517,7 @@ void main() {
     });
 
     test('selectors can close listeners', () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final provider = StateNotifierProvider<Counter, int>((ref) => Counter());
 
       expect(container.readProviderElement(provider).hasListeners, false);
@@ -1535,7 +1535,7 @@ void main() {
     });
 
     test('can watch selectors', () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final provider = StateNotifierProvider<Counter, int>((ref) => Counter());
       final isAdultSelector = Selector<int, bool>(false, (c) => c >= 18);
       final isAdultListener = Listener<bool>();
@@ -1570,7 +1570,7 @@ void main() {
       final provider = Provider((ref) => 0);
       final listener = Listener<int>();
 
-      final container = createContainer();
+      final container = ProviderContainer.test();
 
       container.listen(provider, listener.call, fireImmediately: true);
 
@@ -1580,7 +1580,7 @@ void main() {
     test('call listener when provider rebuilds', () async {
       final controller = StreamController<int>();
       addTearDown(controller.close);
-      final container = createContainer();
+      final container = ProviderContainer.test();
 
       final count = StateProvider((ref) => 0);
       final provider = Provider((ref) => ref.watch(count));
@@ -1600,7 +1600,7 @@ void main() {
     });
 
     test('call listener when provider emits an update', () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
 
       final count = StateProvider((ref) => 0);
       final listener = Listener<int>();
@@ -1617,7 +1617,7 @@ void main() {
     });
 
     test('supports selectors', () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
 
       final count = StateProvider((ref) => 0);
       final listener = Listener<bool>();

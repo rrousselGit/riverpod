@@ -17,8 +17,9 @@ void main() {
       test('when passing the provider itself', () async {
         final provider =
             StreamProvider.family<int, int>((ref, _) => Stream.value(0));
-        final root = createContainer();
-        final container = createContainer(parent: root, overrides: [provider]);
+        final root = ProviderContainer.test();
+        final container =
+            ProviderContainer.test(parent: root, overrides: [provider]);
 
         expect(await container.read(provider(0).future), 0);
         expect(container.read(provider(0)), const AsyncData(0));
@@ -35,8 +36,8 @@ void main() {
       test('when using provider.overrideWith', () async {
         final provider =
             StreamProvider.family<int, int>((ref, _) => Stream.value(0));
-        final root = createContainer();
-        final container = createContainer(
+        final root = ProviderContainer.test();
+        final container = ProviderContainer.test(
           parent: root,
           overrides: [
             provider.overrideWith((ref, value) => Stream.value(42)),
@@ -62,8 +63,8 @@ void main() {
         (ref, i) => Stream.value(ref.watch(dep) + i),
         dependencies: [dep],
       );
-      final root = createContainer();
-      final container = createContainer(
+      final root = ProviderContainer.test();
+      final container = ProviderContainer.test(
         parent: root,
         overrides: [dep.overrideWithValue(42)],
       );

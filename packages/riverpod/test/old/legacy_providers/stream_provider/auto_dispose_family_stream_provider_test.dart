@@ -18,8 +18,9 @@ void main() {
       test('when passing the provider itself', () async {
         final provider = StreamProvider.autoDispose
             .family<int, int>((ref, _) => Stream.value(0));
-        final root = createContainer();
-        final container = createContainer(parent: root, overrides: [provider]);
+        final root = ProviderContainer.test();
+        final container =
+            ProviderContainer.test(parent: root, overrides: [provider]);
 
         expect(await container.read(provider(0).future), 0);
         expect(container.read(provider(0)), const AsyncData(0));
@@ -38,7 +39,7 @@ void main() {
       final provider = StreamProvider.autoDispose.family<int, int>((ref, a) {
         return Stream.value(a * 2);
       });
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = Listener<AsyncValue<int>>();
 
       container.listen(provider(21), listener.call, fireImmediately: true);
@@ -85,8 +86,8 @@ void main() {
         (ref, i) => Stream.value(ref.watch(dep) + i),
         dependencies: [dep],
       );
-      final root = createContainer();
-      final container = createContainer(
+      final root = ProviderContainer.test();
+      final container = ProviderContainer.test(
         parent: root,
         overrides: [dep.overrideWithValue(42)],
       );

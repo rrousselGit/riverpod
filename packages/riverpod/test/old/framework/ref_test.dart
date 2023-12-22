@@ -10,7 +10,7 @@ void main() {
       'cannot call ref.watch/ref.read/ref.listen/ref.onDispose after a dependency changed',
       () {
         late Ref ref;
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final dep = StateProvider((ref) => 0);
         final provider = Provider((r) {
           r.watch(dep);
@@ -54,7 +54,7 @@ void main() {
         final provider = Provider((r) {
           ref = r;
         });
-        final container = createContainer();
+        final container = ProviderContainer.test();
 
         container.read(provider);
 
@@ -78,7 +78,7 @@ void main() {
         final another = Provider((ref) {
           ref.listen<int>(provider, listener.call, fireImmediately: true);
         });
-        final container = createContainer();
+        final container = ProviderContainer.test();
 
         expect(container.read(provider), 0);
         expect(buildCount, 1);
@@ -100,7 +100,7 @@ void main() {
           ref.listen<num>(dep, listener.call);
         });
 
-        final container = createContainer();
+        final container = ProviderContainer.test();
         container.read(provider);
 
         verifyZeroInteractions(listener);
@@ -112,7 +112,7 @@ void main() {
       });
 
       test('can listen selectors', () async {
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final provider =
             StateNotifierProvider<StateController<int>, int>((ref) {
           return StateController(0);
@@ -157,7 +157,7 @@ void main() {
       });
 
       test('listen on selectors supports fireImmediately', () async {
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final provider =
             StateNotifierProvider<StateController<int>, int>((ref) {
           return StateController(0);
@@ -325,7 +325,7 @@ void main() {
 
     group('mounted', () {
       test('is false during onDispose caused by ref.watch', () {
-        final container = createContainer();
+        final container = ProviderContainer.test();
         bool? mounted;
         late ProviderElementBase<Object?> element;
         final dep = StateProvider((ref) => 0);
@@ -344,7 +344,7 @@ void main() {
       });
 
       test('is false during onDispose caused by container dispose', () {
-        final container = createContainer();
+        final container = ProviderContainer.test();
         bool? mounted;
         late ProviderElementBase<Object?> element;
         final dep = StateProvider((ref) => 0);
@@ -363,7 +363,7 @@ void main() {
       });
 
       test('is false in between rebuilds', () {
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final dep = StateProvider((ref) => 0);
         late ProviderElementBase<Object?> element;
         final provider = Provider((ref) {

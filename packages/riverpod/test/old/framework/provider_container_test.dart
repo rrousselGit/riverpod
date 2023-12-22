@@ -11,14 +11,14 @@ void main() {
           'cleans up all the StateReaders of a provider in the entire ProviderContainer tree',
           () async {
         // Regression test for https://github.com/rrousselGit/riverpod/issues/1943
-        final a = createContainer();
+        final a = ProviderContainer.test();
         // b/c voluntarily do not use the Provider, but a/d do. This is to test
         // that the disposal logic correctly cleans up the StateReaders
         // in all ProviderContainers associated with the provider, even if
         // some links between two ProviderContainers are not using the provider.
-        final b = createContainer(parent: a);
-        final c = createContainer(parent: b);
-        final d = createContainer(parent: c);
+        final b = ProviderContainer.test(parent: a);
+        final c = ProviderContainer.test(parent: b);
+        final d = ProviderContainer.test(parent: c);
 
         final provider = Provider.autoDispose((ref) => 3);
 
@@ -124,7 +124,7 @@ void main() {
     });
 
     test('invalidate triggers a rebuild on next frame', () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = Listener<int>();
       var result = 0;
       final provider = Provider((r) => result);
@@ -149,8 +149,8 @@ void main() {
         final dep = Provider((ref) => 0);
         final provider = Provider((ref) => ref.watch(dep));
 
-        final root = createContainer();
-        final container = createContainer(
+        final root = ProviderContainer.test();
+        final container = ProviderContainer.test(
           parent: root,
           overrides: [dep.overrideWithValue(42)],
         );
@@ -168,8 +168,8 @@ void main() {
         final dep = Provider((ref) => ref.watch(transitiveDep));
         final provider = Provider((ref) => ref.watch(dep));
 
-        final root = createContainer();
-        final container = createContainer(
+        final root = ProviderContainer.test();
+        final container = ProviderContainer.test(
           parent: root,
           overrides: [transitiveDep.overrideWithValue(42)],
         );
@@ -190,7 +190,7 @@ void main() {
         ref.listen(provider, (prev, value) => ref.controller.state++);
         return 0;
       });
-      final container = createContainer();
+      final container = ProviderContainer.test();
 
       expect(container.read(another), 0);
 
@@ -208,7 +208,7 @@ void main() {
         ref.listen(provider, (prev, value) => ref.controller.state++);
         return 0;
       });
-      final container = createContainer();
+      final container = ProviderContainer.test();
 
       expect(container.read(another), 0);
 
@@ -220,8 +220,8 @@ void main() {
     group('getAllProviderElements', () {
       test('list scoped providers that depends on nothing', () {
         final scopedProvider = Provider<int>((ref) => 0);
-        final parent = createContainer();
-        final child = createContainer(
+        final parent = ProviderContainer.test();
+        final child = ProviderContainer.test(
           parent: parent,
           overrides: [scopedProvider],
         );
@@ -240,8 +240,8 @@ void main() {
           () {
         final dependency = Provider((ref) => 0);
         final scopedProvider = Provider<int>((ref) => ref.watch(dependency));
-        final parent = createContainer();
-        final child = createContainer(
+        final parent = ProviderContainer.test();
+        final child = ProviderContainer.test(
           parent: parent,
           overrides: [scopedProvider],
         );
@@ -261,9 +261,11 @@ void main() {
         final provider = Provider((ref) => 0);
         final provider2 = Provider((ref) => 0);
         final provider3 = Provider((ref) => 0);
-        final root = createContainer();
-        final mid = createContainer(parent: root, overrides: [provider2]);
-        final leaf = createContainer(parent: mid, overrides: [provider3]);
+        final root = ProviderContainer.test();
+        final mid =
+            ProviderContainer.test(parent: root, overrides: [provider2]);
+        final leaf =
+            ProviderContainer.test(parent: mid, overrides: [provider3]);
 
         leaf.read(provider);
         leaf.read(provider2);
@@ -325,8 +327,8 @@ void main() {
     group('getAllProviderElementsInOrder', () {
       test('list scoped providers that depends on nothing', () {
         final scopedProvider = Provider<int>((ref) => 0);
-        final parent = createContainer();
-        final child = createContainer(
+        final parent = ProviderContainer.test();
+        final child = ProviderContainer.test(
           parent: parent,
           overrides: [scopedProvider],
         );
@@ -345,8 +347,8 @@ void main() {
           () {
         final dependency = Provider((ref) => 0);
         final scopedProvider = Provider<int>((ref) => ref.watch(dependency));
-        final parent = createContainer();
-        final child = createContainer(
+        final parent = ProviderContainer.test();
+        final child = ProviderContainer.test(
           parent: parent,
           overrides: [scopedProvider],
         );
@@ -364,9 +366,9 @@ void main() {
     test(
         'does not re-initialize a provider if read by a child container after the provider was initialized',
         () {
-      final root = createContainer();
+      final root = ProviderContainer.test();
       // the child must be created before the provider is initialized
-      final child = createContainer(parent: root);
+      final child = ProviderContainer.test(parent: root);
 
       var buildCount = 0;
       final provider = Provider((ref) {
@@ -385,7 +387,7 @@ void main() {
 
     test('builds providers at most once per container', () {
       var result = 42;
-      final container = createContainer();
+      final container = ProviderContainer.test();
       var callCount = 0;
       final provider = Provider((_) {
         callCount++;
@@ -398,7 +400,7 @@ void main() {
       expect(container.read(provider), 42);
       expect(callCount, 1);
 
-      final container2 = createContainer();
+      final container2 = ProviderContainer.test();
 
       result = 21;
       expect(container2.read(provider), 21);
@@ -411,7 +413,7 @@ void main() {
     test(
       'does not refresh providers if their dependencies changes but they have no active listeners',
       () async {
-        final container = createContainer();
+        final container = ProviderContainer.test();
 
         var buildCount = 0;
         final dep = StateProvider((ref) => 0);
