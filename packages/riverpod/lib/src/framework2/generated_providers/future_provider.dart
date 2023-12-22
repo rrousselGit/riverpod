@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:meta/meta.dart';
 
-import '../../common.dart';
+import '../../core/async_value.dart';
 import '../framework.dart';
 
 abstract base class AsyncProvider<StateT> extends Provider<AsyncValue<StateT>> {

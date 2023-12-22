@@ -5,7 +5,7 @@ import 'package:collection/collection.dart';
 import 'package:meta/meta.dart';
 import 'package:test/test.dart' as test;
 
-import '../common.dart';
+import '../core/async_value.dart';
 import '../tenable.dart';
 
 part 'provider_container.dart';

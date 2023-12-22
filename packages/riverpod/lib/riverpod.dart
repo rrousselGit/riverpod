@@ -1,6 +1,6 @@
 export 'package:state_notifier/state_notifier.dart' hide Listener, LocatorMixin;
 
-export 'src/async_notifier.dart'
+export 'src/legacy_providers/async_notifier.dart'
     hide
         AsyncNotifierProviderImpl,
         AutoDisposeAsyncNotifierProviderImpl,
@@ -20,7 +20,7 @@ export 'src/async_notifier.dart'
         BuildlessAutoDisposeStreamNotifier,
         BuildlessStreamNotifier;
 
-export 'src/common.dart' hide AsyncTransition;
+export 'src/core/async_value.dart' hide AsyncTransition;
 
 export 'src/framework.dart'
     hide
@@ -54,9 +54,9 @@ export 'src/framework.dart'
         ProviderContainerTest,
         DebugRiverpodDevtoolBiding;
 
-export 'src/future_provider.dart';
+export 'src/legacy_providers/future_provider.dart';
 
-export 'src/notifier.dart'
+export 'src/legacy_providers/notifier.dart'
     hide
         NotifierBase,
         NotifierProviderBase,
@@ -67,8 +67,8 @@ export 'src/notifier.dart'
         BuildlessAutoDisposeNotifier,
         BuildlessNotifier;
 
-export 'src/provider.dart' hide InternalProvider;
-export 'src/state_controller.dart';
-export 'src/state_notifier_provider.dart';
-export 'src/state_provider.dart';
-export 'src/stream_provider.dart';
+export 'src/legacy_providers/provider.dart' hide InternalProvider;
+export 'src/legacy_providers/deprecated/state_controller.dart';
+export 'src/legacy_providers/deprecated/state_notifier_provider.dart';
+export 'src/legacy_providers/deprecated/state_provider.dart';
+export 'src/legacy_providers/stream_provider.dart';

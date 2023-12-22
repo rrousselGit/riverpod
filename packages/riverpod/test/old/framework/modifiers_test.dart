@@ -1,6 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/builders.dart';
+import 'package:riverpod/src/legacy_providers/builders.dart';
 import 'package:test/test.dart';
 
 void main() {

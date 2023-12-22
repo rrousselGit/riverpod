@@ -1,6 +1,6 @@
 import 'package:meta/meta.dart';
 
-import '../../common.dart';
+import '../../core/async_value.dart';
 import '../framework.dart';
 
 abstract base class SyncProvider<StateT> extends Provider<StateT> {

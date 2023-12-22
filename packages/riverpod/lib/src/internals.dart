@@ -5,17 +5,17 @@
 /// It is used by the flutter and hooks implementation, but is not stable.
 library internals;
 
-export 'async_notifier.dart';
-export 'builders.dart';
-export 'common.dart';
+export 'legacy_providers/builders.dart';
+export 'common/listenable.dart';
+export 'common/result.dart';
+export 'common/run_guarded.dart';
+export 'common/stack_trace.dart';
+export 'core/async_value.dart';
 export 'framework.dart';
-export 'future_provider.dart';
-export 'listenable.dart';
-export 'notifier.dart';
-export 'provider.dart';
-export 'result.dart';
-export 'run_guarded.dart';
-export 'stack_trace.dart';
-export 'state_notifier_provider.dart';
-export 'state_provider.dart';
-export 'stream_provider.dart';
+export 'legacy_providers/async_notifier.dart';
+export 'legacy_providers/deprecated/state_notifier_provider.dart';
+export 'legacy_providers/deprecated/state_provider.dart';
+export 'legacy_providers/future_provider.dart';
+export 'legacy_providers/notifier.dart';
+export 'legacy_providers/provider.dart';
+export 'legacy_providers/stream_provider.dart';

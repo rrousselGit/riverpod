@@ -4,12 +4,12 @@ import 'package:meta/meta.dart';
 
 import 'async_notifier.dart';
 import 'builders.dart';
-import 'common.dart';
-import 'framework.dart';
+import '../core/async_value.dart';
+import '../framework.dart';
 import 'future_provider.dart' show FutureProvider;
-import 'listenable.dart';
+import '../common/listenable.dart';
 import 'provider.dart' show Provider;
-import 'result.dart';
+import '../common/result.dart';
 
 part 'stream_provider/auto_dispose.dart';
 part 'stream_provider/base.dart';

@@ -11,7 +11,7 @@
 import 'dart:async';
 import 'package:state_notifier/state_notifier.dart';
 
-import 'internals.dart';
+import '../internals.dart';
 
 /// Builds a [AsyncNotifierProvider].
 class AsyncNotifierProviderBuilder {

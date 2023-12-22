@@ -11,7 +11,7 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 import 'package:flutter/foundation.dart';
-import 'internals.dart';
+import '../../internals.dart';
 
 /// Builds a [ChangeNotifierProvider].
 class ChangeNotifierProviderBuilder {

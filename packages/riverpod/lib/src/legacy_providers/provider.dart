@@ -1,8 +1,8 @@
 import 'package:meta/meta.dart';
 
 import 'builders.dart';
-import 'framework.dart';
-import 'state_notifier_provider.dart' show StateNotifierProvider;
+import '../framework.dart';
+import 'deprecated/state_notifier_provider.dart' show StateNotifierProvider;
 import 'stream_provider.dart' show StreamProvider;
 
 part 'provider/auto_dispose.dart';

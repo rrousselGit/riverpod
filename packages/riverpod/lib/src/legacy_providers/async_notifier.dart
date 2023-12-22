@@ -3,14 +3,14 @@ import 'dart:async';
 import 'package:meta/meta.dart';
 
 import 'builders.dart';
-import 'common.dart';
-import 'framework.dart';
+import '../common/run_guarded.dart';
+import '../core/async_value.dart';
+import '../framework.dart';
 import 'future_provider.dart' show FutureProvider;
-import 'listenable.dart';
+import '../common/listenable.dart';
 import 'notifier.dart';
-import 'pragma.dart';
-import 'result.dart';
-import 'run_guarded.dart';
+import '../common/pragma.dart';
+import '../common/result.dart';
 import 'stream_provider.dart';
 
 part 'async_notifier/auto_dispose.dart';
