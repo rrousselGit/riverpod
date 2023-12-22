@@ -131,7 +131,7 @@ class _ProviderSelector<Input, Output> with ProviderListenable<Output> {
     lastSelectedValue = _select(Result.guard(sub.read));
 
     if (fireImmediately) {
-      handleFireImmediately(
+      _handleFireImmediately(
         lastSelectedValue,
         listener: listener,
         onError: onError,

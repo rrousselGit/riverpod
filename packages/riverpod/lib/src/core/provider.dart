@@ -74,7 +74,7 @@ abstract class ProviderBase<State> extends ProviderOrFamily
 
     element.flush();
     if (fireImmediately) {
-      handleFireImmediately(
+      _handleFireImmediately(
         element.getState()!,
         listener: listener,
         onError: onError,
@@ -174,71 +174,15 @@ class _ExternalProviderSubscription<State>
   }
 }
 
-/// When a provider listens to another provider using `listen`
-class _ProviderListener<State> implements ProviderSubscription<State> {
-  _ProviderListener._({
-    required this.listenedElement,
-    required this.dependentElement,
-    required this.listener,
-    required this.onError,
-  });
-
-// TODO can't we type it properly?
-  final void Function(Object? prev, Object? state) listener;
-  final ProviderElementBase<Object?> dependentElement;
-  final ProviderElementBase<State> listenedElement;
-  final OnError onError;
-
-  @override
-  void close() {
-    dependentElement._listenedProviderSubscriptions.remove(this);
-    listenedElement
-      .._subscribers.remove(this)
-      .._onRemoveListener();
-  }
-
-  @override
-  State read() => listenedElement.readSelf();
-}
-
-/// A mixin to add [overrideWithValue] capability to a provider.
-// TODO merge with Provider directy
-mixin OverrideWithValueMixin<State> on ProviderBase<State> {
-  /// {@template riverpod.overrridewithvalue}
-  /// Overrides a provider with a value, ejecting the default behaviour.
-  ///
-  /// This will also disable the auto-scoping mechanism, meaning that if the
-  /// overridden provider specified [dependencies], it will have no effect.
-  ///
-  /// Some common use-cases are:
-  /// - testing, by replacing a service with a fake implementation, or to reach
-  ///   a very specific state easily.
-  /// - multiple environments, by changing the implementation of a class
-  ///   based on the platform or other parameters.
-  ///
-  /// This function should be used in combination with `ProviderScope.overrides`
-  /// or `ProviderContainer.overrides`:
-  ///
-  /// ```dart
-  /// final myService = Provider((ref) => MyService());
-  ///
-  /// runApp(
-  ///   ProviderScope(
-  ///     overrides: [
-  ///       myService.overrideWithValue(
-  ///         // Replace the implementation of MyService with a fake implementation
-  ///         MyFakeService(),
-  ///       ),
-  ///     ],
-  ///     child: MyApp(),
-  ///   ),
-  /// );
-  /// ```
-  /// {@endtemplate}
-  Override overrideWithValue(State value) {
-    return ProviderOverride(
-      origin: this,
-      providerOverride: ValueProvider<State>(value),
-    );
-  }
+/// Deals with the internals of synchronously calling the listeners
+/// when using `fireImmediately: true`
+void _handleFireImmediately<State>(
+  Result<State> currentState, {
+  required void Function(State? previous, State current) listener,
+  required void Function(Object error, StackTrace stackTrace) onError,
+}) {
+  currentState.map(
+    data: (data) => runBinaryGuarded(listener, null, data.state),
+    error: (error) => runBinaryGuarded(onError, error.error, error.stackTrace),
+  );
 }
