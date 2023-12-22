@@ -287,37 +287,6 @@ final alwaysAlive = Provider((ref) {
   });
 
   test(
-      'if a dependency changed, the element is still disposed, '
-      'but without calling ref.onDispose again', () async {
-    final container = ProviderContainer.test();
-    final onDispose = OnDisposeMock();
-    final dep = StateProvider((ref) => 0);
-    final provider = Provider.autoDispose((ref) {
-      ref.onDispose(onDispose.call);
-      return ref.watch(dep);
-    });
-
-    container.read(provider);
-
-    verifyZeroInteractions(onDispose);
-    expect(
-      container.getAllProviderElements().map((e) => e.origin),
-      contains(provider),
-    );
-
-    container.read(dep.notifier).state++;
-
-    await container.pump();
-
-    verify(onDispose()).called(1);
-
-    expect(
-      container.getAllProviderElements().map((e) => e.origin),
-      isNot(contains(provider)),
-    );
-  });
-
-  test(
       'when a provider conditionally depends on another provider, rebuilding without the dependency can dispose the dependency',
       () async {
     final container = ProviderContainer.test();

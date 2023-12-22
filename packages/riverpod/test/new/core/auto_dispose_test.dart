@@ -1,7 +1,9 @@
+import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/framework.dart';
 import 'package:test/test.dart';
 
+import '../utils.dart';
 import 'provider_container_test.dart';
 
 void main() {
@@ -69,6 +71,35 @@ void main() {
         child.pointerManager.readPointer(provider),
         isPointer(override: isNotNull, element: isNotNull),
       );
+    });
+
+    group('on unused providers', () {
+      test(
+          'if a dependency changed, the element is still disposed, '
+          'but without calling ref.onDispose again', () async {
+        final container = ProviderContainer.test();
+        final onDispose = OnDisposeMock();
+        final dep = StateProvider((ref) => 0);
+        final provider = Provider.autoDispose((ref) {
+          ref.onDispose(onDispose.call);
+          return ref.watch(dep);
+        });
+
+        container.read(provider);
+        verifyZeroInteractions(onDispose);
+        container.read(dep.notifier).state++;
+
+        expect(
+          container.pointerManager.readPointer(provider),
+          isNotNull,
+        );
+
+        await container.pump();
+
+        verify(onDispose()).called(1);
+
+        expect(container.pointerManager.readPointer(provider), isNull);
+      });
     });
   });
 }
