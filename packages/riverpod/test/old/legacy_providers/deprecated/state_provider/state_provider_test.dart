@@ -91,7 +91,10 @@ void main() {
   });
 
   test('can be auto-scoped', () async {
-    final dep = Provider((ref) => 0);
+    final dep = Provider(
+      (ref) => 0,
+      dependencies: const [],
+    );
     final provider = StateProvider(
       (ref) => ref.watch(dep),
       dependencies: [dep],
@@ -224,10 +227,15 @@ void main() {
 
   group('scoping an override overrides all the associated subproviders', () {
     test('when passing the provider itself', () async {
-      final provider = StateProvider<int>((ref) => 0);
+      final provider = StateProvider<int>(
+        (ref) => 0,
+        dependencies: const [],
+      );
       final root = ProviderContainer.test();
-      final container =
-          ProviderContainer.test(parent: root, overrides: [provider]);
+      final container = ProviderContainer.test(
+        parent: root,
+        overrides: [provider],
+      );
 
       expect(container.read(provider.notifier).state, 0);
       expect(container.read(provider), 0);
@@ -263,7 +271,10 @@ void main() {
     // });
 
     test('when using provider.overrideWith', () async {
-      final provider = StateProvider<int>((ref) => 0);
+      final provider = StateProvider<int>(
+        (ref) => 0,
+        dependencies: const [],
+      );
       final root = ProviderContainer.test();
       final container = ProviderContainer.test(
         parent: root,

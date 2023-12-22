@@ -110,7 +110,10 @@ void main() {
   });
 
   test('can be auto-scoped', () async {
-    final dep = Provider((ref) => 0);
+    final dep = Provider(
+      (ref) => 0,
+      dependencies: const [],
+    );
     final provider = StateNotifierProvider<StateController<int>, int>(
       (ref) => StateController(ref.watch(dep)),
       dependencies: [dep],
@@ -164,10 +167,13 @@ void main() {
         final controller = StateController(0);
         final provider = StateNotifierProvider<StateController<int>, int>(
           (ref) => controller,
+          dependencies: const [],
         );
         final root = ProviderContainer.test();
-        final container =
-            ProviderContainer.test(parent: root, overrides: [provider]);
+        final container = ProviderContainer.test(
+          parent: root,
+          overrides: [provider],
+        );
 
         expect(container.read(provider.notifier), controller);
         expect(container.read(provider), 0);
@@ -210,6 +216,7 @@ void main() {
         final provider =
             StateNotifierProvider.autoDispose<StateController<int>, int>(
           (ref) => controller,
+          dependencies: const [],
         );
         final root = ProviderContainer.test();
         final controllerOverride = StateController(42);

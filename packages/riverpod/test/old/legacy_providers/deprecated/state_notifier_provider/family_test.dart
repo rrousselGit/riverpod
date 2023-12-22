@@ -17,7 +17,10 @@ void main() {
     });
 
     test('can be auto-scoped', () async {
-      final dep = Provider((ref) => 0);
+      final dep = Provider(
+        (ref) => 0,
+        dependencies: const [],
+      );
       final provider =
           StateNotifierProvider.family<StateController<int>, int, int>(
         (ref, i) => StateController(ref.watch(dep) + i),
@@ -41,10 +44,13 @@ void main() {
         final provider =
             StateNotifierProvider.family<StateController<int>, int, int>(
           (ref, _) => controller,
+          dependencies: const [],
         );
         final root = ProviderContainer.test();
-        final container =
-            ProviderContainer.test(parent: root, overrides: [provider]);
+        final container = ProviderContainer.test(
+          parent: root,
+          overrides: [provider],
+        );
 
         expect(container.read(provider(0).notifier), controller);
         expect(container.read(provider(0)), 0);
@@ -63,6 +69,7 @@ void main() {
         final provider =
             StateNotifierProvider.family<StateController<int>, int, int>(
           (ref, _) => controller,
+          dependencies: const [],
         );
         final root = ProviderContainer.test();
         final controllerOverride = StateController(42);
@@ -118,10 +125,13 @@ void main() {
       () {
         final family = StateNotifierProvider.family<Counter, int, String>(
           (ref, id) => Counter(),
+          dependencies: const [],
         );
         final root = ProviderContainer.test();
-        final container =
-            ProviderContainer.test(parent: root, overrides: [family]);
+        final container = ProviderContainer.test(
+          parent: root,
+          overrides: [family],
+        );
 
         expect(container.read(family('0')), 0);
         expect(container.read(family('0').notifier), isA<Counter>());

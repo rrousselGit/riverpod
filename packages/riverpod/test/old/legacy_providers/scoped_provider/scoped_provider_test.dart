@@ -19,7 +19,10 @@ void main() {
 
   group('scoping mechanism', () {
     test('use the deepest override', () {
-      final provider = Provider((ref) => 0);
+      final provider = Provider(
+        (ref) => 0,
+        dependencies: const [],
+      );
       final root = ProviderContainer.test(
         overrides: [provider.overrideWithValue(1)],
       );
@@ -43,7 +46,10 @@ void main() {
     });
 
     test('can read both parent and child simultaneously', () async {
-      final provider = Provider((ref) => 0);
+      final provider = Provider(
+        (ref) => 0,
+        dependencies: const [],
+      );
       final root = ProviderContainer.test(
         overrides: [provider.overrideWithValue(21)],
       );
@@ -79,7 +85,10 @@ void main() {
     });
 
     test('are disposed on nested containers', () {
-      final provider = Provider((ref) => 0);
+      final provider = Provider(
+        (ref) => 0,
+        dependencies: const [],
+      );
       final root = ProviderContainer.test(
         overrides: [provider.overrideWithValue(1)],
       );
@@ -100,7 +109,10 @@ void main() {
     });
 
     test('can be overridden on non-root container', () {
-      final provider = Provider((ref) => 0);
+      final provider = Provider(
+        (ref) => 0,
+        dependencies: const [],
+      );
       final root = ProviderContainer.test();
       final container = ProviderContainer.test(
         parent: root,
@@ -112,10 +124,14 @@ void main() {
 
     test('can listen to other scoped providers', () async {
       final listener = Listener<int>();
-      final provider = Provider((ref) => 0);
-      final provider2 = Provider((ref) {
-        return ref.watch(provider) * 2;
-      });
+      final provider = Provider(
+        (ref) => 0,
+        dependencies: const [],
+      );
+      final provider2 = Provider(
+        (ref) => ref.watch(provider) * 2,
+        dependencies: const [],
+      );
       final root = ProviderContainer.test();
       final container = ProviderContainer.test(
         parent: root,
@@ -142,12 +158,15 @@ void main() {
     test('can listen to other normal providers', () async {
       final listener = Listener<int>();
       final provider = StateProvider((ref) => 1);
-      final provider2 = Provider((ref) {
-        return ref.watch(provider) * 2;
-      });
+      final provider2 = Provider(
+        (ref) => ref.watch(provider) * 2,
+        dependencies: const [],
+      );
       final root = ProviderContainer.test();
-      final container =
-          ProviderContainer.test(parent: root, overrides: [provider2]);
+      final container = ProviderContainer.test(
+        parent: root,
+        overrides: [provider2],
+      );
 
       container.listen(provider2, listener.call, fireImmediately: true);
 

@@ -15,11 +15,15 @@ void main() {
 
     group('scoping an override overrides all the associated subproviders', () {
       test('when passing the provider itself', () async {
-        final provider =
-            StreamProvider.family<int, int>((ref, _) => Stream.value(0));
+        final provider = StreamProvider.family<int, int>(
+          (ref, _) => Stream.value(0),
+          dependencies: const [],
+        );
         final root = ProviderContainer.test();
-        final container =
-            ProviderContainer.test(parent: root, overrides: [provider]);
+        final container = ProviderContainer.test(
+          parent: root,
+          overrides: [provider],
+        );
 
         expect(await container.read(provider(0).future), 0);
         expect(container.read(provider(0)), const AsyncData(0));
@@ -34,8 +38,10 @@ void main() {
       });
 
       test('when using provider.overrideWith', () async {
-        final provider =
-            StreamProvider.family<int, int>((ref, _) => Stream.value(0));
+        final provider = StreamProvider.family<int, int>(
+          (ref, _) => Stream.value(0),
+          dependencies: const [],
+        );
         final root = ProviderContainer.test();
         final container = ProviderContainer.test(
           parent: root,
@@ -58,7 +64,10 @@ void main() {
     });
 
     test('can be auto-scoped', () async {
-      final dep = Provider((ref) => 0);
+      final dep = Provider(
+        (ref) => 0,
+        dependencies: const [],
+      );
       final provider = StreamProvider.family<int, int>(
         (ref, i) => Stream.value(ref.watch(dep) + i),
         dependencies: [dep],

@@ -15,10 +15,15 @@ void main() {
 
     group('scoping an override overrides all the associated subproviders', () {
       test('when passing the provider itself', () {
-        final provider = Provider.autoDispose.family<int, int>((ref, _) => 0);
+        final provider = Provider.autoDispose.family<int, int>(
+          (ref, _) => 0,
+          dependencies: const [],
+        );
         final root = ProviderContainer.test();
-        final container =
-            ProviderContainer.test(parent: root, overrides: [provider]);
+        final container = ProviderContainer.test(
+          parent: root,
+          overrides: [provider],
+        );
 
         expect(container.read(provider(0)), 0);
         expect(container.getAllProviderElements(), [
@@ -30,7 +35,10 @@ void main() {
     });
 
     test('can be auto-scoped', () async {
-      final dep = Provider((ref) => 0);
+      final dep = Provider(
+        (ref) => 0,
+        dependencies: const [],
+      );
       final provider = Provider.family.autoDispose<int, int>(
         (ref, i) => ref.watch(dep) + i,
         dependencies: [dep],
