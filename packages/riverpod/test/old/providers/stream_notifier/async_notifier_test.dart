@@ -1007,16 +1007,8 @@ void main() {
   });
 
   group('modifiers', () {
-    void canBeAssignedToAlwaysAliveRefreshable<T>(
-      AlwaysAliveRefreshable<T> provider,
-    ) {}
-
     void canBeAssignedToRefreshable<T>(
       Refreshable<T> provider,
-    ) {}
-
-    void canBeAssignedToAlwaysAliveListenable<T>(
-      AlwaysAliveProviderListenable<T> provider,
     ) {}
 
     void canBeAssignedToProviderListenable<T>(
@@ -1034,23 +1026,13 @@ void main() {
       provider.selectAsync((int value) => 0);
 
       canBeAssignedToProviderListenable<AsyncValue<int>>(provider);
-      canBeAssignedToAlwaysAliveListenable<AsyncValue<int>>(provider);
       canBeAssignedToRefreshable<AsyncValue<int>>(provider);
-      canBeAssignedToAlwaysAliveRefreshable<AsyncValue<int>>(provider);
 
       canBeAssignedToProviderListenable<Future<int>>(provider.future);
-      canBeAssignedToAlwaysAliveListenable<Future<int>>(provider.future);
       canBeAssignedToRefreshable<Future<int>>(provider.future);
-      canBeAssignedToAlwaysAliveRefreshable<Future<int>>(provider.future);
 
       canBeAssignedToProviderListenable<StreamNotifier<int>>(provider.notifier);
-      canBeAssignedToAlwaysAliveListenable<StreamNotifier<int>>(
-        provider.notifier,
-      );
       canBeAssignedToRefreshable<StreamNotifier<int>>(provider.notifier);
-      canBeAssignedToAlwaysAliveRefreshable<StreamNotifier<int>>(
-        provider.notifier,
-      );
     });
 
     test('autoDispose', () {
@@ -1096,25 +1078,15 @@ void main() {
       family(0).selectAsync((String value) => 0);
 
       canBeAssignedToProviderListenable<AsyncValue<String>>(family(0));
-      canBeAssignedToAlwaysAliveListenable<AsyncValue<String>>(family(0));
       canBeAssignedToRefreshable<AsyncValue<String>>(family(0));
-      canBeAssignedToAlwaysAliveRefreshable<AsyncValue<String>>(family(0));
 
       canBeAssignedToProviderListenable<Future<String>>(family(0).future);
-      canBeAssignedToAlwaysAliveListenable<Future<String>>(family(0).future);
       canBeAssignedToRefreshable<Future<String>>(family(0).future);
-      canBeAssignedToAlwaysAliveRefreshable<Future<String>>(family(0).future);
 
       canBeAssignedToProviderListenable<FamilyStreamNotifier<String, int>>(
         family(0).notifier,
       );
-      canBeAssignedToAlwaysAliveListenable<FamilyStreamNotifier<String, int>>(
-        family(0).notifier,
-      );
       canBeAssignedToRefreshable<FamilyStreamNotifier<String, int>>(
-        family(0).notifier,
-      );
-      canBeAssignedToAlwaysAliveRefreshable<FamilyStreamNotifier<String, int>>(
         family(0).notifier,
       );
     });

@@ -606,16 +606,8 @@ void main() {
   });
 
   group('modifiers', () {
-    void canBeAssignedToAlwaysAliveRefreshable<T>(
-      AlwaysAliveRefreshable<T> provider,
-    ) {}
-
     void canBeAssignedToRefreshable<T>(
       Refreshable<T> provider,
-    ) {}
-
-    void canBeAssignedToAlwaysAliveListenable<T>(
-      AlwaysAliveProviderListenable<T> provider,
     ) {}
 
     void canBeAssignedToProviderListenable<T>(
@@ -632,18 +624,10 @@ void main() {
       provider.select((int value) => 0);
 
       canBeAssignedToProviderListenable<int>(provider);
-      canBeAssignedToAlwaysAliveListenable<int>(provider);
       canBeAssignedToRefreshable<int>(provider);
-      canBeAssignedToAlwaysAliveRefreshable<int>(provider);
 
       canBeAssignedToProviderListenable<Notifier<int>>(provider.notifier);
-      canBeAssignedToAlwaysAliveListenable<Notifier<int>>(
-        provider.notifier,
-      );
       canBeAssignedToRefreshable<Notifier<int>>(provider.notifier);
-      canBeAssignedToAlwaysAliveRefreshable<Notifier<int>>(
-        provider.notifier,
-      );
     });
 
     test('autoDispose', () {
@@ -655,22 +639,14 @@ void main() {
       autoDispose.select((int value) => 0);
 
       canBeAssignedToProviderListenable<int>(autoDispose);
-      // canBeAssignedToAlwaysAliveListenable<int>(autoDispose);
       canBeAssignedToRefreshable<int>(autoDispose);
-      // canBeAssignedToAlwaysAliveRefreshable<int>(autoDispose);
 
       canBeAssignedToProviderListenable<AutoDisposeNotifier<int>>(
         autoDispose.notifier,
       );
-      // canBeAssignedToAlwaysAliveListenable<AutoDisposeNotifier<int>>(
-      //   autoDispose.notifier,
-      // );
       canBeAssignedToRefreshable<AutoDisposeNotifier<int>>(
         autoDispose.notifier,
       );
-      // canBeAssignedToAlwaysAliveRefreshable<AutoDisposeNotifier<int>>(
-      //   autoDispose.notifier,
-      // );
     });
 
     test('family', () {
@@ -682,20 +658,12 @@ void main() {
       family(0).select((String value) => 0);
 
       canBeAssignedToProviderListenable<String>(family(0));
-      canBeAssignedToAlwaysAliveListenable<String>(family(0));
       canBeAssignedToRefreshable<String>(family(0));
-      canBeAssignedToAlwaysAliveRefreshable<String>(family(0));
 
       canBeAssignedToProviderListenable<FamilyNotifier<String, int>>(
         family(0).notifier,
       );
-      canBeAssignedToAlwaysAliveListenable<FamilyNotifier<String, int>>(
-        family(0).notifier,
-      );
       canBeAssignedToRefreshable<FamilyNotifier<String, int>>(
-        family(0).notifier,
-      );
-      canBeAssignedToAlwaysAliveRefreshable<FamilyNotifier<String, int>>(
         family(0).notifier,
       );
     });
@@ -716,30 +684,16 @@ void main() {
       canBeAssignedToProviderListenable<String>(
         autoDisposeFamily(0),
       );
-      // canBeAssignedToAlwaysAliveListenable<String>(
-      //   autoDisposeFamily(0),
-      // );
       canBeAssignedToRefreshable<String>(
         autoDisposeFamily(0),
       );
-      // canBeAssignedToAlwaysAliveRefreshable<String>(
-      //   autoDisposeFamily(0),
-      // );
 
       canBeAssignedToProviderListenable<AutoDisposeFamilyNotifier<String, int>>(
         autoDisposeFamily(0).notifier,
       );
-      // canBeAssignedToAlwaysAliveListenable<
-      //     AutoDisposeFamilyNotifier<String, int>>(
-      //   autoDisposeFamily(0).notifier,
-      // );
       canBeAssignedToRefreshable<AutoDisposeFamilyNotifier<String, int>>(
         autoDisposeFamily(0).notifier,
       );
-      // canBeAssignedToAlwaysAliveRefreshable<
-      //     AutoDisposeFamilyNotifier<String, int>>(
-      //   autoDisposeFamily(0).notifier,
-      // );
     });
   });
 }

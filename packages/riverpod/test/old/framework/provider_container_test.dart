@@ -29,24 +29,24 @@ void main() {
           fireImmediately: true,
         );
 
-        expect(a.hasStateReaderFor(provider), true);
-        expect(b.hasStateReaderFor(provider), false);
-        expect(c.hasStateReaderFor(provider), false);
-        expect(d.hasStateReaderFor(provider), true);
+        expect(a.pointerManager.isLocallyMounted(provider), true);
+        expect(b.pointerManager.isLocallyMounted(provider), false);
+        expect(c.pointerManager.isLocallyMounted(provider), false);
+        expect(d.pointerManager.isLocallyMounted(provider), true);
 
         subscription.close();
 
-        expect(a.hasStateReaderFor(provider), true);
-        expect(b.hasStateReaderFor(provider), false);
-        expect(c.hasStateReaderFor(provider), false);
-        expect(d.hasStateReaderFor(provider), true);
+        expect(a.pointerManager.isLocallyMounted(provider), true);
+        expect(b.pointerManager.isLocallyMounted(provider), false);
+        expect(c.pointerManager.isLocallyMounted(provider), false);
+        expect(d.pointerManager.isLocallyMounted(provider), true);
 
         await a.pump();
 
-        expect(a.hasStateReaderFor(provider), false);
-        expect(b.hasStateReaderFor(provider), false);
-        expect(c.hasStateReaderFor(provider), false);
-        expect(d.hasStateReaderFor(provider), false);
+        expect(a.pointerManager.isLocallyMounted(provider), false);
+        expect(b.pointerManager.isLocallyMounted(provider), false);
+        expect(c.pointerManager.isLocallyMounted(provider), false);
+        expect(d.pointerManager.isLocallyMounted(provider), false);
 
         d.listen(
           provider,
@@ -54,10 +54,10 @@ void main() {
           fireImmediately: true,
         );
 
-        expect(a.hasStateReaderFor(provider), true);
-        expect(b.hasStateReaderFor(provider), false);
-        expect(c.hasStateReaderFor(provider), false);
-        expect(d.hasStateReaderFor(provider), true);
+        expect(a.pointerManager.isLocallyMounted(provider), true);
+        expect(b.pointerManager.isLocallyMounted(provider), false);
+        expect(c.pointerManager.isLocallyMounted(provider), false);
+        expect(d.pointerManager.isLocallyMounted(provider), true);
       });
     });
 

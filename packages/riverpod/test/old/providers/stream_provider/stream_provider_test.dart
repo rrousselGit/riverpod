@@ -761,12 +761,6 @@ void main() {
     expect(provider2.name, isNull);
   });
 
-  test('is AlwaysAliveProviderBase', () {
-    final provider = StreamProvider<int>((_) async* {});
-
-    expect(provider, isA<AlwaysAliveProviderBase<AsyncValue<int>>>());
-  });
-
   test('subscribe exposes loading synchronously then value on change',
       () async {
     final container = createContainer();

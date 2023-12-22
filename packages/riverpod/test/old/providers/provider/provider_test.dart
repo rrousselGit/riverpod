@@ -230,11 +230,6 @@ void main() {
 
       expect(provider2.name, isNull);
     });
-
-    test('is AlwaysAliveProviderBase', () {
-      // ignore: unused_local_variable, testing that Provider can be assigned to AlwaysAliveProviderBase
-      final AlwaysAliveProviderBase<int> provider = Provider<int>((_) => 42);
-    });
   });
 
   test('dispose', () {
