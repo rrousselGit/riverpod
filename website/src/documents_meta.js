@@ -67,7 +67,7 @@ export const documentTitles = {
     "essentials/provider_observer": "日志和错误报告",
     "essentials/passing_args": "将参数传递给您的请求",
     "essentials/first_request": "开始你的第一次 provider/network 请求",
-    "essentials/faq": "FAQ",
+    "essentials/faq": "FAQ 常见问题",
     "essentials/eager_initialization": "急切的初始化提供者程序",
     "essentials/do_dont": "DO/DON'T",
     "essentials/combining_requests": "组合请求",
