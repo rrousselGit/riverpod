@@ -7,21 +7,21 @@ import '../detail_screen/codegen.dart';
 
 /* SNIPPET START */
 final activityProvider = FutureProvider.autoDispose<Activity>((ref) async {
-  // We capture whether the provider is currently disposed or not.
+  // 我们会捕捉提供商目前是否已被处置。
   var didDispose = false;
   ref.onDispose(() => didDispose = true);
 
-  // We delay the request by 500ms, to wait for the user to stop refreshing.
+  // 我们将请求延迟 500 毫秒，以等待用户停止刷新。
   await Future<void>.delayed(const Duration(milliseconds: 500));
 
-  // If the provider was disposed during the delay, it means that the user
-  // refreshed again. We throw an exception to cancel the request.
-  // It is safe to use an exception here, as it will be caught by Riverpod.
+  // 如果在延迟期间处理了提供程序，则意味着用户再次刷新了请求。
+  // 我们会抛出一个异常来取消请求。
+  // 在这里使用异常是安全的，因为它会被 Riverpod 捕捉到。
   if (didDispose) {
     throw Exception('Cancelled');
   }
 
-  // The following code is unchanged from the previous snippet
+  // 以下代码与之前的代码片段保持不变
   final client = http.Client();
   ref.onDispose(client.close);
 

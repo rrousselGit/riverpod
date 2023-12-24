@@ -3,30 +3,30 @@ import 'package:http/http.dart' as http;
 
 /* SNIPPET START */
 extension DebounceAndCancelExtension on Ref {
-  /// Wait for [duration] (defaults to 500ms), and then return a [http.Client]
-  /// which can be used to make a request.
-  ///
-  /// That client will automatically be closed when the provider is disposed.
+  /// 等待 [duration]（默认为 500ms），
+  /// 然后返回一个 [http.Client]，用于发出请求。
+  /// 
+  /// 当提供者被处置时，该客户端将自动关闭。
   Future<http.Client> getDebouncedHttpClient([Duration? duration]) async {
-    // First, we handle debouncing.
+    // 首先，我们要处理去抖问题。
     var didDispose = false;
     onDispose(() => didDispose = true);
 
-    // We delay the request by 500ms, to wait for the user to stop refreshing.
+    // 我们将请求延迟 500 毫秒，以等待用户停止刷新。
     await Future<void>.delayed(duration ?? const Duration(milliseconds: 500));
 
-    // If the provider was disposed during the delay, it means that the user
-    // refreshed again. We throw an exception to cancel the request.
-    // It is safe to use an exception here, as it will be caught by Riverpod.
+    // 如果在延迟期间处理了提供程序，则意味着用户再次刷新了请求。
+    // 我们会抛出一个异常来取消请求。
+    // 在这里使用异常是安全的，因为它会被 Riverpod 捕捉到。
     if (didDispose) {
       throw Exception('Cancelled');
     }
 
-    // We now create the client and close it when the provider is disposed.
+    // 现在我们创建客户端，并在处理提供程序时关闭客户端。
     final client = http.Client();
     onDispose(client.close);
 
-    // Finally, we return the client to allow our provider to make the request.
+    // 最后，我们返回客户端，让我们的提供商提出请求。
     return client;
   }
 }
