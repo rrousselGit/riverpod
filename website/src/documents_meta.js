@@ -85,7 +85,7 @@ export const documentTitles = {
     "concepts/about_code_generation": "About code generation",
     "concepts/modifiers/family": ".family",
     "concepts/modifiers/auto_dispose": ".autoDispose",
-    "case_studies/pull_to_refresh": "Pull to refresh",
+    "case_studies/pull_to_refresh": "下拉刷新",
     "case_studies/cancel": "Debouncing/Cancelling network requests",
     "advanced/select": "Optimizing performance",
   },

@@ -14,9 +14,8 @@ class ActivityView extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Pull to refresh')),
       body: RefreshIndicator(
-        // By refreshing "activityProvider.future", and returning that result,
-        // the refresh indicator will keep showing until the new activity is
-        // fetched.
+        // 通过重刷新调用 "activityProvider.future" 并返回结果，
+        // 刷新指示器将一直显示，直到获取到新的活动。
         /* highlight-start */
         onRefresh: () => ref.refresh(activityProvider.future),
         /* highlight-end */
