@@ -1,0 +1,140 @@
+---
+title: Combinare richieste
+version: 1
+---
+
+import { Link } from "../../../../../src/components/Link";
+import { AutoSnippet } from "../../../../../src/components/CodeSnippet";
+import functionalRef from "./combining_requests/functional_ref";
+import notifierRef from "./combining_requests/notifier_ref";
+import watchExample from "./combining_requests/watch_example";
+import watchPlacement from "./combining_requests/watch_placement";
+import listenExample from "./combining_requests/listen_example";
+import readExample from './combining_requests/read_example';
+
+Finora abbiamo visto solo casi in cui le richieste sono indipendenti l'una dall'altra. 
+Tuttavia, un caso d'uso comune è dover eseguire una richiesta in base al risultato di un'altra.
+
+Potremmo usare il meccanismo di <Link documentID="essentials/passing_args" /> passando 
+il risultato di un provider come parametro ad un altro provider.
+
+Ma questo approccio ha alcuni aspetti negativi:
+
+- Ciò rende pubblici dettagli implementativi.
+  Ora, la tua UI deve conoscere tutti i provider che sono utilizzati dal tuo altro provider.
+- Ogni volta che il parametro cambia, viene creato uno stato completamente nuovo. 
+  Passando i parametri, non c'è modo di mantenere lo stato precedente quando il parametro cambia.
+- Rende combinare richieste più difficile.
+- Rende usare strumenti esterni meno utile. Un dev-tool non sarebbe a conoscenza
+  delle relazioni tra i provider.
+
+Per ovviare a questi aspetti, Riverpod offre un approcco differente per combinare le richieste.
+
+## Le basi: ottenere un "ref"
+
+Tutti i modi possibili per combinare richieste hanno una cosa in comune:
+Sono tutti basati sull'oggetto `Ref`.
+
+L'oggetto `Ref` è un oggetto a cui tutti i provider hanno accesso.
+Ciò concede loro l'accesso a vari listener del ciclo di vita, ma anche
+vari metodi per combinare i provider.
+
+Il posto dove `Ref` può essere ottenuto dipende dal tipo di provider.
+
+Nei provider funzionali, `Ref` è passato come parametro alla funzione del provider:
+
+<AutoSnippet {...functionalRef} />
+
+Nella varianti con classi, `Ref` è una proprietà della classe Notifier:
+
+<AutoSnippet {...notifierRef} />
+
+## Usare Ref per leggere un provider.
+
+## Il metodo `ref.watch`
+
+Ora che abbiamo ottenuto un `Ref`, possiamo usarlo per combinare richieste.
+Il modo principale per farlo è usare `ref.watch`.
+È generalmente consigliato architettare il tuo codice in modo tale che tu possa 
+usare `ref.watch` al posto di altre opzioni, dato che è in genere più facile da mantenere.
+
+Il metodo `ref.watch` prende un provider e ne ritorna il suo stato.
+Successivamente, ogni qualvolta che il provider ascoltato cambia, il nostro 
+provider verrà invalidato e ricostruito il prossimo frame o alla prossima lettura.
+
+Usando `ref.watch`, la tua logica diventa sia "reattiva" che "dichiarativa".
+Ciò significa che la tua logica verrà automaticamente ricalcolata quando necessario.
+E che il meccanismo di aggiornamento non dipende da effetti collaterali, come un "on change".
+Ciò è simile al comportamento di StatelessWidget.
+
+Come esempio, potremmo definire un provider che ascolta la posizione dell'utente.
+Poi, potremmo utilizzare questa posizione per ottenere la lista dei ristoranti vicini all'utente.
+
+<AutoSnippet {...watchExample} />
+
+:::info
+Quando il provider ascoltato cambia e la nostra richiesta viene rifatta, lo stato 
+precedente è mantenuto finché la nuova richiesta non è completata.
+Allo stesso tempo, mentre la richiesta è in attesa, i flag "isLoading" and "isReloading" 
+saranno impostati a true.
+
+Ciò consente all'interfaccia utente di mostrare lo stato precedente, 
+o un indicatore di caricamento, o anche entrambi.
+:::
+
+:::info
+Fai attenzione a come abbiamo usato `ref.watch(locationProvider.future)` invece di `ref.watch(locationProvider)`. 
+Questo perché il nostro `locationProvider` è asincrono. Pertanto, vogliamo attendere 
+che un valore iniziale sia disponibile.
+
+Se omettiamo quel `.future`, riceveremmo un `AsyncValue`, che è uno snapshot 
+dello stato corrente del `locationProvider`. Ma se ancora non è disponibile alcuna posizione, 
+non potremmo fare nulla.
+:::
+
+:::caution
+È considerata una cattiva pratica chiamare `ref.watch` all'interno di codice eseguito 
+"imperativamente". Il che significa qualsiasi codice che potrebbe non essere eseguito durante la fase di build 
+del provider. Questo include le callback degli "ascoltatori/listener" o i metodi sui Notifier:
+
+<AutoSnippet {...watchPlacement} />
+:::
+
+## I metodi `ref.listen`/`listenSelf`
+
+Il metodo `ref.listen` è un alternativa a `ref.watch`.
+È simile al tradizionale metodo "listen/addListener". Accetta un provider e una callback 
+ed invocherà la callback data ogni qualvolta che il contenuto del provider cambia.
+
+Rifattorizzare il codice in modo da poter utilizzare `ref.watch` invece di `ref.listen` 
+è generalmente consigliato, poiché il secondo è più soggetto a errori a causa della sua natura imperativa. 
+Tuttavia, `ref.listen` può essere utile per aggiungere rapidamente della logica senza dover fare 
+refactoring significativi.
+
+Potremmo riscrivere l'esempio di `ref.watch` usando `ref.listen`:
+
+<AutoSnippet {...listenExample} />
+
+:::info
+È totalmente sicuro usare `ref.listen` durante la fase di build di un provider.
+Se il provider viene in qualche modo ricalcolato, i precedenti listener saranno rimossi.
+
+In alternativa, puoi usare il valore restituito da `ref.listen` per rimuovere il listener 
+manualmente quando lo desideri.
+:::
+
+## Il metodo `ref.read`
+
+L'ultima opzione disponibile è `ref.read`.
+È simile a `ref.watch` nel senso che restituisce lo stato corrente di un provider.
+Ma a differenza di `ref.watch` non resta in ascolto del provider.
+
+Pertanto, `ref.read` dovrebbe usato solo in posti dove non puoi usare 
+`ref.watch`, come all'interno dei metodi di un Notifier.
+
+<AutoSnippet {...readExample} />
+
+:::caution
+Fai attenzione quando utilizzi `ref.read` su un provider, poiché, dato che non ascolta il provider, 
+quest'ultimo potrebbe decidere di distruggere il suo stato se non viene ascoltato.
+:::

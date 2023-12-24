@@ -3,6 +3,26 @@
     "message": "Prossimo",
     "description": "The label for version current"
   },
+  "sidebar.Sidebar.category.Introduction": {
+    "message": "Introduzione",
+    "description": "The label for category Introduction in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.Riverpod for Provider Users": {
+    "message": "Riverpod per utenti di Provider",
+    "description": "The label for category Riverpod for Providers Users in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.Essentials": {
+    "message": "Fondamentali",
+    "description": "The label for category Essentials in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.Case studies": {
+    "message": "Argomenti di studio",
+    "description": "The label for category Case studies in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.Advanced topics": {
+    "message": "Argomenti avanzati",
+    "description": "The label for category Case studies in sidebar Advanced topics"
+  },
   "sidebar.Sidebar.category.Guides": {
     "message": "Guide",
     "description": "The label for category Guides in sidebar Sidebar"

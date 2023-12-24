@@ -1,0 +1,333 @@
+---
+title: Effettua la tua prima richiesta di provider/rete
+pagination_prev: introduction/getting_started
+version: 1
+---
+
+import { Link } from "../../../../../src/components/Link";
+import { AutoSnippet, When } from "../../../../../src/components/CodeSnippet";
+import activity from "./first_request/activity";
+import provider from "./first_request/provider";
+import consumer from "./first_request/consumer";
+import consumerWidget from "./first_request/consumer_widget";
+import consumerStatefulWidget from "./first_request/consumer_stateful_widget";
+import hookConsumerWidget from "./first_request/hook_consumer_widget";
+import Legend from "./first_request/legend/legend";
+
+Le richieste di rete sono il nucleo di qualsiasi applicazione. 
+Tuttavia, ci sono molte cose da considerare quando si effettua una richiesta di rete:
+
+- L'interfaccia utente dovrebbe visualizzare uno stato di caricamento durante la richiesta
+- Gli errori dovrebbero essere gestiti in modo adeguato
+- La richiesta dovrebbe essere memorizzata nella cache se possibile
+
+In questa sezione, vedremo come Riverpod può aiutarci a gestire tutto ciò in modo naturale.
+
+## Impostare `ProviderScope`
+
+Prima di iniziare a effettuare richieste di rete, assicurati che `ProviderScope` sia aggiunto 
+alla radice dell'applicazione.
+
+```dart
+void main() {
+  runApp(
+    // Per installare Riverpod dobbiamo aggiungere questo widget al di sopra di tutto.
+    // Questo widget non dovrebbe essere dentro "MyApp" ma direttamente come parametro di "runApp"
+    ProviderScope(
+      child: MyApp(),
+    ),
+  );
+}
+```
+
+Farlo abiliterà Riverpod per l'intera applicazione.
+
+:::note
+Per i passaggi completi di installazione (come l'installazione di [riverpod_lint](https://pub.dev/packages/riverpod_lint)
+e l'esecuzione del generatore di codice), dai un'occhiata a <Link documentID="introduction/getting_started" />.
+:::
+
+## Eseguire la tua richiesta di rete in un "provider"
+
+Eseguire una richiesta di rete è generalmente ciò che chiamiamo "business logic". 
+In Riverpod, la business logic è collocata all'interno dei "provider".
+Un provider è una funzione super potenziata.
+Si comportano come funzioni normali, con i vantaggi aggiuntivi di:
+
+- essere cachati
+- offrire una gestione degli errori/caricamenti di default
+- essere ascoltabili
+- eseguirsi automaticamente quando alcuni dati cambiano
+
+Questo rende i provider perfetti per le richieste di rete _GET_ (per le richieste _POST/etc_, consulta <Link documentID="essentials/side_effects" />).
+
+Come esempio, creiamo una semplice applicazione  che suggerisce un'attività casuale da fare quando si è annoiati.
+Per farlo, utilizzeremo il [Bored API](https://boredapi.com/). In particolare,
+effettueremo una richiesta _GET_ all'endpoint `/api/activity`. Questo restituisce un oggetto JSON,
+che convertiremo in un'istanza di una classe Dart.
+Il passo successivo sarebbe quindi quello di visualizzare questa attività nell'interfaccia utente. 
+Ci assicureremo anche di visualizzare uno stato di caricamento durante la richiesta e di gestire gli errori in modo opportuno.
+
+Sembra fantastico? Facciamolo!
+
+### Definizione del modello
+
+Prima di iniziare, dobbiamo definire il modello dei dati che riceveremo dall'API. 
+Questo modello avrà anche bisogno di un modo per convertire l'oggetto JSON in un'istanza di classe Dart.
+
+In generale, è consigliato utilizzare un code-generator come [Freezed](https://pub.dev/packages/freezed) 
+o [json_serializable](https://pub.dev/packages/json_serializable) per gestire la decodifica JSON. 
+Ma naturalmente, è anche possibile farlo manualmente.
+
+Ecco il nostro modello:
+
+<AutoSnippet title="activity.dart" {...activity} />
+
+### Creazione del provider
+
+Ora che abbiamo il nostro modello, possiamo cominciare ad interrogare l'API.
+Per fare ciò avremo bisogno di creare il nostro primo provider.
+
+La sintassi per definire un provider è come segue:
+
+<When codegen={false}>
+<Legend
+  code={`final name = SomeProvider.someModifier<Result>((ref) {
+  <your logic here>
+});
+`}
+  annotations={[
+    {
+      offset: 6,
+      length: 4,
+      label: "La variabile del provider",
+       description: <>
+
+Questa variabile verrà usata per interagire col nostro provider.
+La variabile deve essere 'final' e globale.
+
+</>
+    },
+    {
+      offset: 13,
+      length: 12,
+      label: "Il tipo del provider",
+      description: <>
+
+In generale, si utilizza uno tra `Provider`, `FutureProvider` o `StreamProvider`.
+Il tipo di provider da utilizzare dipende dal valore restituito dalla tua funzione.
+Per esempio, per creare un `Future<Activity>`, vorrai utilizzare un `FutureProvider<Activity>`.
+
+`FutureProvider` è la tipologia di provider che utilizzerai di più.
+
+:::tip
+Non pensare in termini di "Quale provider dovrei scegliere".
+Invece, pensa in termini di "Cosa voglio ritornare". Il tipo di provider verrà naturalmente.
+:::
+
+</>
+    },
+    {
+      offset: 25,
+      length: 13,
+      label: "Modifiers (opzionale)",
+      description: <>
+
+Spesso, dopo il tipo del provider potresti vedere un "modifier" (modificatore).
+I modificatori sono opzionali e vengono utilizzati per regolare il comportamento del provider
+in modo che sia type-safe.
+
+Al momento ci sono due modifiers disponibili:
+
+- `autoDispose`, il quale cancellerà automaticamente la cache quando il provider smetterà di essere usato.  
+  Vedi anche <Link documentID="essentials/auto_dispose" />
+- `family`, il quale abilita il passaggio di parametri al tuo provider.  
+  Vedi anche <Link documentID="essentials/passing_args" />.
+
+</>
+    },
+    {
+      offset: 48,
+      length: 3,
+      label: "Ref",
+      description: <>
+
+Un oggetto usato per interagire con gli altri provider.
+Tutti i provider ne hanno uno; o come parametro della funzione del provider,
+o come proprietà di un Notifier.
+
+</>
+    },
+    {
+      offset: 57,
+      length: 17,
+      label: "La funzione del provider",
+      description: <>
+
+Qui è dove risiede la logica dei nostri provider.
+Questa funzione sarà chiamata quando il provider viene letto la prima volta.
+Le letture successive non chiameranno nuovamente la funzione, ma restituiranno invece il valore memorizzato nella cache.
+
+</>
+    },
+]}
+/>
+</When>
+
+<When codegen={true}>
+<Legend
+  code={`@riverpod
+Result myFunction(MyFunctionRef ref) {
+  <your logic here>
+}
+`}
+  annotations={[
+    {
+      offset: 0,
+      length: 9,
+      label: "L'annotazione",
+       description: <>
+
+Tutti i provider devono essere annotati con `@riverpod` or `@Riverpod()`.
+Questa annotazione può essere posizionata su funzioni globali o classi.
+Mediante quest'annotazione è possibile configurare il provider.
+
+Per esempio, possiamo disabilitare "auto-dispose" (che vedremo più tardi) scrivendo `@Riverpod(keepAlive: true)`.
+
+</>
+    },
+    {
+      offset: 17,
+      length: 10,
+      label: "La funzione annotata",
+       description: <>
+  
+Il nome della funzione annotata determina come verrà interagito con il provider.
+Data una funzione `myFunction`, una variabile `myFunctionProvider` verrà generata.
+
+Le funzioni annotate **devono** specificare "ref" come primo parametro.
+Oltre a ciò, la funzione può avere un qualsiasi numero di parametri, compresi i generici. 
+La funzione è libera di restituire un `Future`/`Stream` se lo desidera.
+
+Questa funzione sarà chiamata quando il provider viene letto la prima volta.
+Le letture successive non chiameranno nuovamente la funzione, ma restituiranno invece il valore memorizzato nella cache.
+
+</>
+    },
+    {
+      offset: 28,
+      length: 17,
+      label: "Ref",
+      description: <>
+
+Un oggetto usato per interagire con gli altri provider.
+Tutti i provider ne hanno uno; o come parametro della funzione del provider,
+o come proprietà di un Notifier.
+Il tipo di questo oggetto è determinato dal nome della funzione/classe.
+
+</>
+    },
+]}
+/>
+</When>
+
+
+Nel nostro caso vogliamo _ottenere_ (_GET_) un attività dall'API.
+Dato che una _GET_ è un'operazione sincrona vorremo creare un `Future<Activity>`.
+
+Usando la sintassi descritta precedentemente, possiamo quindi definire il nostro provider come segue:
+
+<AutoSnippet title="provider.dart" {...provider} />
+
+In questo snippet, abbiamo definito un provider chiamato `activityProvider` che potrà 
+essere usato dalla nostra UI per ottenere un'attività casuale. 
+Vale la pena notare che:
+
+- La richiesta di rete non verrà eseguita fino a quando l'UI non leggerà il provider almeno una volta.
+- Le letture successive non ri-eseguiranno la richiesta di rete, ma restituiranno invece l'attività precedentemente recuperata.
+- Se l'UI smette di utilizzare questo provider, la cache verrà distrutta.
+  Quindi, se l'UI utilizza nuovamente il provider, verrà effettuata una nuova richiesta di rete.
+- Non abbiamo gestito gli errori. Questo è intenzionale, poiché i provider gestiscono nativamente gli errori.
+  Se la richiesta di rete o il parsing JSON solleva un'eccezione, l'errore verrà catturato da Riverpod. 
+  Quindi, l'interfaccia utente avrà automaticamente le informazioni necessarie per visualizzare una pagina di errore.
+
+:::info
+I provider sono "pigri" (lazy). Definire un provider non eseguirà la richiesta di rete.
+Invece, la richiesta verrà eseguita alla prima lettura del provider.
+:::
+
+### Visualizzare la risposta della richiesta di rete nell'UI
+
+Ora che abbiamo definito un provider possiamo iniziare ad utilizzarlo dentro la nostra interfaccia utente
+per mostrare l'attività.
+
+Per interagire con un provider abbiamo bisogno di un oggetto chiamato "ref". Potresti averlo 
+visto precedentemente nella definizione del provider, dato che i provider posseggono di natura 
+l'accesso all'oggetto "ref".
+Nel nostro caso però non siamo in un provider, ma in un widget. Quindi come possiamo ottenere un "ref"?
+
+La soluzione è utilizzare un widget personalizzato chiamato `Consumer`. Un `Consumer` è un widget 
+simile a `Builder` ma con il beneficio aggiunto di offrirci un oggetto "ref". Ciò permette alla nostra UI di leggere i provider.
+L'esempio seguente mostra come usare un `Consumer`.
+
+<AutoSnippet title="consumer.dart" {...consumer} />
+
+In questo snippet abbiamo usato un `Consumer` per leggere il nostro `activityProvider` e visualizzare l'attività.
+Abbiamo anche gestito in modo elegante gli stati di caricamento/errore.
+Si noti come l'UI è stata in grado di gestire gli stati di caricamento/errore senza dover fare qualcosa di speciale
+nel provider.
+Allo stesso tempo, se il widget dovesse ricostruirsi, la richiesta di rete 
+non verrebbe correttamente eseguita nuovamente. Anche altri widget potrebbero accedere allo stesso provider 
+senza rieseguire la richiesta di rete.
+
+:::info
+I widget possono ascoltare quanti provider vogliono. Per fare ciò, basta aggiungere più chiamate `ref.watch`.
+:::
+
+:::tip
+Assicurati di installare il linter. Permetterà al tuo IDE di fornirti opzioni di refactoring 
+per aggiungere automaticamente un `Consumer` o convertire uno `StatelessWidget` in un `ConsumerWidget`.
+
+Vedere <Link documentID="introduction/getting_started" hash="abilitare-riverpod_lintcustom_lint" /> per i passaggi di installazione.
+:::
+
+## Andando oltre: Rimuovere l'indentazione usando `ConsumerWidget` invece di `Consumer`.
+
+Nell'esempio precedente abbiamo usato un `Consumer` per leggere il nostro provider.
+Nonostante non ci sia nulla di sbagliato in questo approccio, l'indentazione aggiunta può 
+rendere più difficile la lettura del codice.
+
+Riverpod offre un modo alternativo per ottenere lo stesso risultato:
+Invece di scrivere uno `StatelessWidget`/`StatefulWidget` che ritorna un `Consumer`, 
+possiamo definire un `ConsumerWidget`/`ConsumerStatefulWidget`.
+`ConsumerWidget` e `ConsumerStatefulWidget` sono in pratica la fusione di uno `StatelessWidget`/`StatefulWidget` e 
+di un `Consumer`. Si comportano allo stesso modo delle loro controparti originali ma con il beneficio aggiunto 
+di offrire un "ref".
+
+Possiamo riscrivere gli esempi precedenti per usare `ConsumerWidget` come segue:
+
+<AutoSnippet {...consumerWidget} />
+
+Per quanto riguarda `ConsumerStatefulWidget` scriveremo invece:
+
+<AutoSnippet {...consumerStatefulWidget} />
+
+### Considerazioni su flutter_hooks: combinare `HookWidget` e `ConsumerWidget`
+
+:::caution
+Se non hai mai sentito parlare di "hooks" prima sentiti libero di saltare questa sezione.
+[Flutter_hooks](https://pub.dev/packages/flutter_hooks) è un package indipendente da Riverpod ma spesso usato insieme.
+Se sei nuovo a Riverpod, l'uso degli "hooks" è sconsigliato. Vedi di più in <Link documentID="concepts/about_hooks"/>.
+:::
+
+Se stai usando `flutter_hooks`, ti starai chiedendo come combinare `HookWidget` e `ConsumerWidget`.
+Dopo tutto, entrambi comportano modificare la classe widget estesa.
+
+Riverpod offre una soluzione per questo problema: `HookConsumerWidget` e `StatefulHookConsumerWidget`. 
+In modo simile a come `ConsumerWidget` e `ConsumerStatefulWidget` sono la fusione di `Consumer` e `StatelessWidget`/`StatefulWidget`, 
+`HookConsumerWidget` and `StatefulHookConsumerWidget` sono la fusione di `Consumer` e `HookWidget`/`HookStatefulWidget`.
+Come tali, permettono di usare sia gli hooks che i provider nello stesso widget.
+
+Per illustrarlo, potremmo riscrivere ancora una volta l'esempio precedente:
+
+<AutoSnippet {...hookConsumerWidget} />

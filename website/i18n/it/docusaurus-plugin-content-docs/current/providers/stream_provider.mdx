@@ -2,35 +2,52 @@
 title: StreamProvider
 ---
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
-import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+import { trimSnippet,AutoSnippet } from "../../../../../src/components/CodeSnippet";
+import streamProvider from "./stream_provider/live_stream_chat_provider";
+import streamConsumer from "!!raw-loader!/docs/providers/stream_provider/live_stream_chat_consumer.dart";
 
-`StreamProvider` è simile a [FutureProvider] ma finalizzato per gli [Stream]s
-invece che per i [Future]s.
+:::caution
+The content of this page may be outdated.  
+It will be updated in the future, but for now you may want to refer to the content
+in the top of the sidebar instead (introduction/essentials/case-studies/...)
+:::
 
-`StreamProvider` è solitamente usato per:
+`StreamProvider` is similar to [FutureProvider] but for [Stream]s instead of
+[Future]s.
 
-- stare in ascolto di Firebase o web-sockets
-- ricostruire un altro provider ogni pochi secondi
+`StreamProvider` is usually used for:
 
-Dato che gli [Stream]s espongono naturalmente un modo per stare in ascolto degli aggiornamenti,
-alcuni potrebbero pensare che l'utilizzo di `StreamProvider` abbia poco valore.
-In particolare, potresti credere che [StreamBuilder] di Flutter funzioni altrettanto bene per ascoltare uno [Stream], ma questo è un errore
+- listening to Firebase or web-sockets
+- rebuilding another provider every few seconds
 
-Usare `StreamProvider` al posto di [StreamBuilder] ha numerosi vantaggi:
+Since [Stream]s naturally expose a way for listening to updates, some may think
+that using `StreamProvider` has a low value. In particular, you may believe that
+Flutter's [StreamBuilder] would work just as well for listening to a [Stream], but
+this is a mistake.
 
-- permette ad altri provider di stare in ascolto dello stream usando [ref.watch].
-- assicura una corretta gestione dei casi di caricamento/errore, grazie ad [AsyncValue].
-- rimuove la necessità di differenziare gli streams di trasmissione (broadcast streams)
-  con gli stream normali.
-- memorizza l'ultimo valore emesso dallo stream, assicurandosi che se un
-  listener viene aggiunto dopo l'emissione di un evento, il listener avrà comunque
-  accesso immediato all'evento più recente/aggiornato.
-- facilita la finzione dello stream durante i test sovrascrivendo lo `StreamProvider`.
+Using `StreamProvider` over [StreamBuilder] has numerous benefits:
 
-[ref.watch]: ../concepts/reading#usare-refwatch-per-osservare-un-provider
+- it allows other providers to listen to the stream using [ref.watch].
+- it ensures that loading and error cases are properly handled, thanks to [AsyncValue].
+- it removes the need for having to differentiate broadcast streams vs normal streams.
+- it caches the latest value emitted by the stream, ensuring that if a
+  listener is added after an event is emitted, the listener will still have
+  immediate access to the most up-to-date event.
+- it allows easily mocking the stream during tests by overriding the `StreamProvider`.
+
+## Usage example: live chat using sockets
+
+`StreamProvider` is used in when we handle stream of asynchronous data
+such as Video Streaming, Weather broadcasting Apis or Live chat as follows:
+
+<AutoSnippet language="dart" {...streamProvider}></AutoSnippet>
+
+Then, the UI can listen to live streaming chats like so:
+
+<CodeBlock>{trimSnippet(streamConsumer)}</CodeBlock>
+
+[ref.watch]: ../concepts/reading#using-refwatch-to-observe-a-provider
 [statenotifierprovider]: ./state_notifier_provider
 [provider]: ./provider
 [futureprovider]: ./future_provider

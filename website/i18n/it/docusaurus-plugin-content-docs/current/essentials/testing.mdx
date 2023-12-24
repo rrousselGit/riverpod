@@ -1,0 +1,160 @@
+---
+title: Testare i tuoi provider
+---
+
+import { AutoSnippet, When } from "../../../../../src/components/CodeSnippet";
+import createContainer from "!!raw-loader!./testing/create_container.dart";
+import unitTest from "!!raw-loader!./testing/unit_test.dart";
+import widgetTest from "!!raw-loader!./testing/widget_test.dart";
+import fullWidgetTest from "!!raw-loader!./testing/full_widget_test.dart";
+import widgetContainerOf from "!!raw-loader!./testing/widget_container_of.dart";
+import providerToMock from "./testing/provider_to_mock";
+import mockProvider from "!!raw-loader!./testing/mock_provider.dart";
+import autoDisposeListen from "!!raw-loader!./testing/auto_dispose_listen.dart";
+import listenProvider from "!!raw-loader!./testing/listen_provider.dart";
+import awaitFuture from "!!raw-loader!./testing/await_future.dart";
+import notifierMock from "./testing/notifier_mock";
+
+Una parte fondamentale delle API di Riverpod è l'abilità di testare i tuoi provider in modo isolato.
+
+Per una suite di test adeguata, ci sono alcune sfide da superare:
+
+- I test non dovrebbero condividere lo stato. Ciò significa che nuovi test 
+  non dovrebbero essere influenzati dai test precedenti.
+- I test dovrebbero darci l'abilità di emulare certe funzionalità 
+  per ottenere lo stato desiderato.
+- L'ambiente di test dovrebbe essere il più vicino possibile all'ambiente reale.
+
+Fortunatamente, Riverpod semplifica il raggiungimento di tutti questi obiettivi.
+
+## Impostare un test
+
+Quando si definisce un test con Riverpod, ci sono due scenari principali:
+
+- Test unitari, di solito senza dipendenze di Flutter.
+  Possono essere utili per testare il comportamento di un provider isolamente.
+- Test di widget, di solito con dipendenze di Flutter.
+  Possono essere utili per testare il comportamento di un widget che utilizza un provider.
+
+### Test unitari
+
+I test unitari sono definit usando la funzione `test` da [package:test](https://pub.dev/packages/test)
+
+La differenza principale con qualsiasi altro test è che creeremo un oggetto
+`ProviderContainer`. Questo oggetto permetterà al nostro test di interagire con i provider
+
+Si consiglia di creare un'utilità di test sia per la creazione che per l'eliminazione 
+di un oggetto `ProviderContainer`:
+
+<AutoSnippet raw={createContainer} />
+
+Successivamente, possiamo definire un `test` utilizzando questa utilità:
+
+<AutoSnippet raw={unitTest} />
+
+Ora che abbiamo un ProviderContainer possiamo utilizzarlo per leggere i provider usando:
+
+- `container.read`, per leggere il valore corrente di un provider.
+- `container.listen`, per restare in ascolto di un provider ed essere notificato dei suoi cambiamenti.
+
+:::caution
+Fai attenzione quando usi `container.read` quando i provider sono distrutti automaticamente.
+Se il tuo provider non è ascoltato, ci sono chances che il suo stato verrà distrutto nel mezzo 
+del nostro test.
+
+In quel caso, considera utilizzare `container.listen`.
+Il suo valore di ritorno permette comunque di leggere il valore corrente del provider, 
+ma si assicurerà anche che il provider non venga distrutto nel mezzo del tuo test:
+
+<AutoSnippet raw={autoDisposeListen} />
+:::
+
+### Test di widget
+
+I test dei widget sono definiti usando la funzione `testWidgets` da [package:flutter_test](https://pub.dev/packages/flutter_test).
+
+In questo caso, la differenza principale con i normali test di widget è che dobbiamo 
+aggiungere un widget `ProviderScope` alla radice di `tester.pumpWidget`.
+
+<AutoSnippet raw={widgetTest} />
+
+Questo è simile a quello che facciamo quando abilitiamo Riverpod nella nostra app Flutter.
+
+Successivamente, possiamo usare `tester` per interagire col nostro widget.
+In alternativa, se vuoi interagire coi tuoi provider, puoi ottenere 
+un `ProviderContainer`.
+Un oggetto `ProviderContainer` può essere ottenuto usando `ProviderScope.containerOf(buildContext)`.
+Usando `tester` possiamo quindi scrivere quanto segue:
+
+<AutoSnippet raw={widgetContainerOf} />
+
+Possiamo quindi usarlo per leggere i provider. Di seguito un esempio completo:
+
+<AutoSnippet raw={fullWidgetTest} />
+
+## Mock/Imitare provider
+
+Fino ad ora abbiamo visto come impostare un test ed interagire in modo semplice con i provider.
+Tuttavia, in alcuni casi, potremmo voler imitare un provider.
+
+La parte interessante: tutti i provider possono essere imitati di default, senza nessun impostazione aggiuntiva. 
+Questo è possibile specificando il parametro `overrides` su `ProviderScope` o `ProviderContainer`.
+
+Consideriamo il provider seguente:
+
+<AutoSnippet {...providerToMock} />
+
+Possiamo imitarlo usando:
+
+<AutoSnippet raw={mockProvider} />
+
+## Spiare i cambiamenti in un provider
+
+Dato che abbiamo ottenuto un `ProviderContainer` nei nostri test, è possibile 
+usarlo per "ascoltare" un provider:
+
+<AutoSnippet raw={listenProvider} />
+
+Puoi combinare questo con pacchetti come [mockito](https://pub.dev/packages/mockito) o 
+[mocktail](https://pub.dev/packages/mocktail) per usare la loro API `verify`.
+O più semplicemente, puoi aggiungere tutti i cambiamenti in una lista e controllarli tramite 'assert'.
+
+## Aspettare provider asincroni
+
+In Riverpod è molto comune per i provider restituire un Future/Stream.
+In questo caso, ci sono chances che i nostri test abbiano bisogno di aspettare che 
+quelle operazioni asincrone siano completate.
+
+Un modo per farlo è leggere il `.future` di un provider:
+
+<AutoSnippet raw={awaitFuture} />
+
+## Imitare i Notifier
+
+È generalmente sconsigliato imitare i Notifier.
+Invece, dovresti probabilmente introdurre un livello di astrazione nella logica del tuo 
+Notifier, in modo tale da poter imitare tale astrazione.
+Per esempio, al posto di imitare un Notifier, potresti imitare un "repository" 
+che il Notifier usa per ottenere i dati.
+
+Se vuoi insistere nell'imitare un Notifier, esiste una considerazione speciale 
+per creare un mock di questo tipo: il tuo mock deve essere una subclass della classe 
+base del Notifier: non puoi implementare (via "implements") un Notifier, poichè 
+romperebbe l'interfaccia.
+
+Pertanto, quando si imita un Notifier, invece di scrivere il codice mockito seguente:
+
+```dart
+class MyNotifierMock with Mock implements MyNotifier {}
+```
+
+Dovresti invece scrivere:
+
+<AutoSnippet {...notifierMock} />
+
+<When codegen={true}>
+
+Per far sì che funzioni, il tuo mock deve essere posto nello stesso file del Notifier 
+che stai imitando. Altrimenti, non avresti accesso alla classe `_$MyNotifier`.
+
+</When>

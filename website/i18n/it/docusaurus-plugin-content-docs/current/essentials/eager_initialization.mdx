@@ -1,0 +1,64 @@
+---
+title: Inizializzazione anticipata dei provider
+version: 1
+---
+
+import { AutoSnippet } from "../../../../../src/components/CodeSnippet";
+import consumerExample from "!!raw-loader!./eager_initialization/consumer_example.dart";
+import asyncConsumerExample from "!!raw-loader!./eager_initialization/async_consumer_example.dart";
+import requireValue from "./eager_initialization/require_value";
+
+Tutti i provider sono inizializzati in modo lazy di default. Questo significa che il provider 
+è inizializzato solo quando viene usato per la prima volta. Tale comportamento è utile per provider che sono 
+utilizzati solo in certe parti dell'applicazione.
+
+Sfortunatamente, non c'è nessun modo per marcare un provider che necessita di essere inizializzato 
+anticipatamente a causa del funzionamento di Dart (per scopi di tree shaking).
+Una soluzione, tuttavia, è forzare la lettura dei provider che vuoi inizializzare subito alla radice 
+della tua applicazione.
+
+L'approccio consigliato è di semplicemente "osservare" un provider in un Consumer posto proprio sotto `ProviderScope`:
+
+<AutoSnippet raw={consumerExample} />
+
+:::note
+Considera mettere il consumer di inizializzazione nel tuo widget "MyApp" o in un widget pubblico.
+Ciò permette ai tuoi test di utilizzare lo stesso comportamento, rimuovendo la logica dal tuo metodo 'main'.
+:::
+
+### FAQ
+
+#### Fare questo non provocherà la ricostruzione dell'intera applicazione quando il provider cambia?
+
+No, non in questo caso.
+Nell'esempio mostrato sopra, il consumer responsabile per l'inizializzazione anticipata 
+è un widget separato, che non fa nulla a parte ritornare un `child`.
+
+La parte chiave è che ritorna un `child`, anziché istanziare la stessa `MaterialApp`.
+Ciò significa che se `_EagerInitialization` viene ricostruito, la variabile `child` 
+non sarà cambiata. E quando un widget non cambia, Flutter non lo ricostruisce.
+
+Pertanto, solo `_EagerInitialization` verrà ricostruito, a meno che un altro widget starà anch'esso ascoltando quel provider.
+
+#### Usando questo approccio, come posso gestire gli stati di errore e caricamento?
+
+Puoi gestire gli stati di errore/caricamento come faresti normalmente in un `Consumer`.
+Il tuo `_EagerInitialization` potrebbe controllare se un provider è nello stato di caricamento, 
+se sì, restituire un `CircularProgressIndicator` invece del `child`:
+
+<AutoSnippet raw={asyncConsumerExample} />
+
+#### Ho gestito gli stati di errore/caricamento, ma altri Consumer continuano a ricevere un AsyncValue! C'è un modo per non dover gestire gli stati di errore/caricamento in ogni widget?
+
+Piuttosto che cercare di non fare esporre un `AsyncValue` al tuo provider, potresti 
+invece utilizzare `AsyncValue.requireValue` nei tuoi widget.
+Questo leggerà il dato senza dover fare pattern matching. E nel caso un bug spunti fuori, 
+tirerà un eccezione con un messaggio chiaro.
+
+<AutoSnippet {...requireValue} />
+
+:::note
+Nonostante ci siano dei modi per non esporre gli stati di caricamento/errore in questi casi, 
+è generalmente sconsigliato farlo.
+La complessità aggiuntiva derivante dalla creazione di due provider e dall'utilizzo degli override non vale la pena.
+:::

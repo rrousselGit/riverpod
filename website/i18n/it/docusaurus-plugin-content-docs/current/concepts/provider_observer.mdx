@@ -3,27 +3,32 @@ title: ProviderObserver
 ---
 
 import CodeBlock from "@theme/CodeBlock";
-import logger from "!!raw-loader!/i18n/it/docusaurus-plugin-content-docs/current/concepts/provider_observer_logger.dart";
+import logger from "!!raw-loader!/docs/concepts/provider_observer_logger.dart";
 import { trimSnippet } from "../../../../../src/components/CodeSnippet";
 
-[ProviderObserver] ascolta i cambiamenti di un ProviderContainer.
+:::caution
+The content of this page may be outdated.  
+It will be updated in the future, but for now you may want to refer to the content
+in the top of the sidebar instead (introduction/essentials/case-studies/...)
+:::
 
-Per poter usarlo, estendi la classe ProviderObserver e sovrascrivi il metodo che vuoi usare.
+[ProviderObserver] listens to the changes of a ProviderContainer.
 
-[ProviderObserver] ha tre metodi:
+To use it, extend the class ProviderObserver and override the method you want to use.
 
-- `didAddProvider` viene chiamato ogni volta che un provider è inizializzato. Il valore esposto è `value`.
-- `didDisposeProvider` viene chiamato ogni volta che un provider è stato eliminato.
-- `didUpdateProvider` viene chiamato ogni volta dai provider quando emettono una notifica.
+[ProviderObserver] has three methods :
 
-### Uso: 
+- `didAddProvider` is called every time a provider was initialized, and the value exposed is `value`.
+- `didDisposeProvider` is called every time a provider was disposed.
+- `didUpdateProvider` is called every time by providers when they emit a notification.
 
-Un semplice caso d'uso per [ProviderObserver] è loggare i cambiamenti nei provider 
-sovrascrivendo il metodo `didUpdateProvider`.
+### Usage :
+
+A simple use case for [ProviderObserver] is to log the changes in providers by overriding the `didUpdateProvider` method.
 
 <CodeBlock>{trimSnippet(logger)}</CodeBlock>
 
-Ora, ogni volta che il valore del nostro provider si aggiorna, il logger lo registrerà:
+Now, every time the value of our provider is updated, the logger will log it:
 
 ```
 I/flutter (16783): {
@@ -32,11 +37,11 @@ I/flutter (16783):   "newValue": "1"
 I/flutter (16783): }
 ```
 
-:::note NOTA
-Per stati mutabili come [StateController] (lo stato di [StateProvider.state]) e 
-[ChangeNotifier] il valore precedente (previousValue) e quello nuovo (newValue) saranno gli stessi
+:::note:
+For states that are mutable such as [StateController] (the state of [StateProvider.state]) and
+[ChangeNotifier] the previousValue and newValue will be the same
 :::
-siccome referenziano lo stesso `StateController` / `ChangeNotifier`.
+since they reference the same `StateController` / `ChangeNotifier`.
 
 [providerobserver]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderObserver-class.html
 [statecontroller]: https://pub.dev/documentation/riverpod/latest/riverpod/StateController-class.html

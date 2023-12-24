@@ -7,7 +7,7 @@ import 'full.dart';
 
 /* SNIPPET START */
 
-// Un enum rappresentante il tipo di filtro
+// An enum representing the filter type
 enum ProductSortType {
   name,
   price,
