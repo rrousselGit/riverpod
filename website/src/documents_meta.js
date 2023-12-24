@@ -69,7 +69,7 @@ export const documentTitles = {
     "essentials/first_request": "开始你的第一次 provider/network 请求",
     "essentials/faq": "FAQ 常见问题",
     "essentials/eager_initialization": "急切的初始化提供者程序",
-    "essentials/do_dont": "DO/DON'T",
+    "essentials/do_dont": "最佳实践",
     "essentials/combining_requests": "组合请求",
     "essentials/auto_dispose": "清除缓存并对状态处置做出反应",
     "cookbooks/testing": "Testing",
