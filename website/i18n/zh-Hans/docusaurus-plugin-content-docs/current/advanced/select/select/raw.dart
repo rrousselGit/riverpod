@@ -17,11 +17,11 @@ final provider = Provider(
 class ConsumerExample extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Instead of writing:
+    // 替代这种写法：
     // String name = ref.watch(provider).firstName!;
-    // We can write:
+    // 我们可以写：
     String name = ref.watch(provider.select((it) => it.firstName));
-    // This will cause the widget to only listen to changes on "firstName".
+    // 这将导致 widget 只监听 "firstName" 上的更改。
 
     return Text('Hello $name');
   }

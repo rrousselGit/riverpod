@@ -87,7 +87,7 @@ export const documentTitles = {
     "concepts/modifiers/auto_dispose": ".autoDispose",
     "case_studies/pull_to_refresh": "下拉刷新",
     "case_studies/cancel": "网络请求的去抖动或取消",
-    "advanced/select": "Optimizing performance",
+    "advanced/select": "性能优化",
   },
   'ru': {
     "providers/stream_provider": "StreamProvider",

@@ -16,11 +16,11 @@ final userProvider = FutureProvider(
 /* SNIPPET START */
 @riverpod
 Object? example(ExampleRef ref) async {
-  // Wait for a user to be available, and listen to only the "firstName" property
+  // 等待 user 可用，并只监听 "firstName" 属性
   final firstName = await ref.watch(
     userProvider.selectAsync((it) => it.firstName),
   );
 
-  // TODO use "firstName" to fetch something else
+  // TODO 使用 "firstName" 获取其他信息
 }
 /* SNIPPET END */
