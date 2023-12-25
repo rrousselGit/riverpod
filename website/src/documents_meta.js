@@ -82,7 +82,7 @@ export const documentTitles = {
     "concepts/providers": "Providers",
     "concepts/combining_providers": "Combining Provider States",
     "concepts/about_hooks": "About hooks",
-    "concepts/about_code_generation": "About code generation",
+    "concepts/about_code_generation": "关于代码生成",
     "concepts/modifiers/family": ".family",
     "concepts/modifiers/auto_dispose": ".autoDispose",
     "case_studies/pull_to_refresh": "下拉刷新",

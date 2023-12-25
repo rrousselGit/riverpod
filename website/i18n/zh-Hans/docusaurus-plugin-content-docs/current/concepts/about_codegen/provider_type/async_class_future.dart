@@ -10,5 +10,5 @@ class Example extends _$Example {
     return Future.value('foo');
   }
 
-  // Add methods to mutate the state
+  // 添加改变状态的方法
 }
