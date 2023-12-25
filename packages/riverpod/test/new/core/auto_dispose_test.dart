@@ -53,7 +53,7 @@ void main() {
           provider.overrideWith((ref) {
             ref.keepAlive();
             return 42;
-          })
+          }),
         ],
       );
 

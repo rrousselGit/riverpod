@@ -4,7 +4,6 @@ import 'package:expect_error/expect_error.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
-import '../utils.dart';
 
 Future<void> main() async {
   final library = await Library.parseFromStacktrace();

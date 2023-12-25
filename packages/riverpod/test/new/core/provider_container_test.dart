@@ -751,7 +751,7 @@ void main() {
             dep: isPointer(override: dep),
             provider: isPointer(
               override: isTransitiveProviderOverride(provider),
-            )
+            ),
           },
         );
 

@@ -1,7 +1,6 @@
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
-import '../../utils.dart';
 
 void main() {
   test('specifies `from` & `argument` for related providers', () {
