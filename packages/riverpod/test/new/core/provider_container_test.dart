@@ -1381,27 +1381,6 @@ void main() {
         addTearDown(() => expect(container.disposed, false));
       });
 
-      test(
-          'last addTearDown throws if there are some remaining undisposed containers',
-          () async {
-        final container = ProviderContainer();
-        addTearDown(container.dispose);
-        final container2 = ProviderContainer();
-        addTearDown(container.dispose);
-
-        var cb = providerContainerTestTeardown(container);
-
-        expect(
-          cb,
-          throwsA(isA<TestFailure>()),
-          reason: 'container2 is not disposed',
-        );
-
-        cb = providerContainerTestTeardown(container2);
-
-        expect(cb, returnsNormally);
-      });
-
       test('Passes parameters', () {
         final provider = Provider(
           (ref) => 0,

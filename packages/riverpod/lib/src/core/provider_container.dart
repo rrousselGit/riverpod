@@ -512,28 +512,6 @@ class ProviderPointerManager {
 
 var _debugVerifyDependenciesAreRespectedEnabled = true;
 
-int _tearDownCount = 0;
-
-/// A callback that disposes a [ProviderContainer] inside tests
-@internal
-void Function() providerContainerTestTeardown(ProviderContainer container) {
-  _tearDownCount++;
-
-  return () {
-    container.dispose();
-
-    if (kDebugMode && _tearDownCount == 1) {
-      test.expect(
-        DebugRiverpodDevtoolBiding.containers,
-        test.isEmpty,
-        reason: 'All ProviderContainers must be disposed at the end of tests.',
-      );
-    }
-
-    _tearDownCount--;
-  };
-}
-
 /// {@template riverpod.provider_container}
 /// An object that stores the state of the providers and allows overriding the
 /// behavior of a specific provider.
@@ -636,7 +614,7 @@ class ProviderContainer implements Node {
       overrides: overrides,
       observers: observers,
     );
-    test.addTearDown(providerContainerTestTeardown(container));
+    test.addTearDown(container.dispose);
 
     return container;
   }
