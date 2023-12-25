@@ -256,6 +256,15 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
             );
           }
         }
+
+        for (final observer in container.observers) {
+          runTernaryGuarded(
+            observer.didAddProvider,
+            origin,
+            newState.state,
+            container,
+          );
+        }
       },
       error: (newState) {
         final onErrorSelfListeners = _onErrorSelfListeners;
@@ -267,6 +276,24 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
               newState.stackTrace,
             );
           }
+        }
+
+        for (final observer in container.observers) {
+          runTernaryGuarded(
+            observer.didAddProvider,
+            origin,
+            null,
+            container,
+          );
+        }
+        for (final observer in container.observers) {
+          runQuaternaryGuarded(
+            observer.providerDidFail,
+            origin,
+            newState.error,
+            newState.stackTrace,
+            container,
+          );
         }
       },
     );
