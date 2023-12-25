@@ -13,7 +13,7 @@ class MyValue {}
 class Example extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // Equivalent to using both Consumer and HookBuilder.
+    // 相当于同时使用 Consumer 和 HookBuilder。
     return HookConsumer(
       builder: (context, ref, child) {
         final counter = useState(0);

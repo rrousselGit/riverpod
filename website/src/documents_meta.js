@@ -81,7 +81,7 @@ export const documentTitles = {
     "concepts/provider_lifecycles": "Provider Lifecycles",
     "concepts/providers": "Providers",
     "concepts/combining_providers": "Combining Provider States",
-    "concepts/about_hooks": "About hooks",
+    "concepts/about_hooks": "关于 Hooks（钩子）",
     "concepts/about_code_generation": "关于代码生成",
     "concepts/modifiers/family": ".family",
     "concepts/modifiers/auto_dispose": ".autoDispose",

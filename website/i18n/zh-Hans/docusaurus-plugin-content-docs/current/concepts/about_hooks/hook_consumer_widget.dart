@@ -10,11 +10,11 @@ class MyValue {}
 
 /* SNIPPET START */
 
-// We extend HookConsumerWidget instead of HookWidget
+// 我们扩展了 HookConsumerWidget，而不是 HookWidget
 class Example extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // We can use both hooks and providers here
+    // 我们可以在这里同时使用钩子和提供者程序
     final counter = useState(0);
     final value = ref.watch(myProvider);
 
