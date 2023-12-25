@@ -360,6 +360,45 @@ void main() {
     });
 
     group('upsertPointer', () {
+      test('on scoped providers, has no impact on the ancestor container', () {
+        final provider = Provider((_) => 0, dependencies: const []);
+        final family = Provider.family<int, int>(
+          (ref, id) => 0,
+          dependencies: const [],
+        );
+        final root = ProviderContainer.test();
+        final container = ProviderContainer.test(
+          parent: root,
+          overrides: [provider, family],
+        );
+
+        container.pointerManager.upsertPointer(provider);
+        container.pointerManager.upsertPointer(family(42));
+
+        expect(root.pointerManager.familyPointers, isEmpty);
+        expect(root.pointerManager.orphanPointers.pointers, isEmpty);
+
+        expect(
+          container.pointerManager.orphanPointers.pointers,
+          {
+            provider: isPointer(
+              targetContainer: container,
+              override: provider,
+            ),
+          },
+        );
+        expect(
+          container.pointerManager.familyPointers,
+          {
+            family: isProviderDirectory(
+              targetContainer: container,
+              override: family,
+              pointers: {family(42): isPointer(targetContainer: container)},
+            ),
+          },
+        );
+      });
+
       test('handles auto-scoping', () {
         final dep = Provider(
           (_) => 0,
@@ -943,6 +982,8 @@ void main() {
         });
       });
     });
+
+    // TODO test that reading a provider with deps does not mount those deps if unused by the provider
 
     group('pointers', () {
       test('has "container" pointing to "this"', () {

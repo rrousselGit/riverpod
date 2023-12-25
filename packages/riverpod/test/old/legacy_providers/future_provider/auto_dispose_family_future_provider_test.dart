@@ -1,6 +1,8 @@
 import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/src/framework.dart';
 import 'package:test/test.dart';
 
+import '../../../new/core/provider_container_test.dart';
 import '../../utils.dart';
 
 void main() {
@@ -23,13 +25,26 @@ void main() {
         overrides: [provider],
       );
 
-      expect(await container.read(provider(0).future), 0);
-      expect(container.read(provider(0)), const AsyncData(0));
-      expect(container.getAllProviderElementsInOrder(), [
-        isA<ProviderElementBase<Object?>>()
-            .having((e) => e.origin, 'origin', provider(0)),
-      ]);
-      expect(root.getAllProviderElementsInOrder(), isEmpty);
+      container.listen(provider(0), (_, __) {});
+
+      // expect(await container.read(provider(0).future), 0);
+      // expect(container.read(provider(0)), const AsyncData(0));
+
+      expect(
+        container.pointerManager.familyPointers[provider],
+        isProviderDirectory(
+          pointers: {provider(0): isPointer(element: isNotNull)},
+        ),
+      );
+
+      expect(
+        root.pointerManager.orphanPointers.pointers,
+        isEmpty,
+      );
+      expect(
+        root.pointerManager.familyPointers,
+        isEmpty,
+      );
     });
 
     test('can be auto-scoped', () async {

@@ -60,12 +60,14 @@ extension<PointerT extends _PointerBase, ProviderT extends ProviderOrFamily>
   PointerT _upsert(
     ProviderT provider, {
     required ProviderContainer currentContainer,
+    required ProviderContainer? targetContainer,
     required PointerT Function(ProviderContainer) inherit,
     required PointerT Function({ProviderT? override}) scope,
   }) {
     final pointer = this[provider];
 
     if (pointer != null) {
+      // TODO what about family(42) overrides on nested containers?
       if (provider.allTransitiveDependencies == null) {
         // The provider is not scoped, so can never be transitively overridden
         return pointer;
@@ -83,14 +85,10 @@ extension<PointerT extends _PointerBase, ProviderT extends ProviderOrFamily>
     }
 
     // Where the provider should be mounted
-    final target =
-
-        /// If scoped, mount in the scope.
-        pointer?.targetContainer ??
-            // If not scoped and in a child container, mount in the root
-            currentContainer._root ??
-            // We are in the root, mount here directly
-            currentContainer;
+    final target = pointer?.targetContainer ??
+        targetContainer ??
+        currentContainer._root ??
+        currentContainer;
 
     if (target == currentContainer) {
       return this[provider] = scope();
@@ -146,6 +144,7 @@ class ProviderDirectory implements _PointerBase {
     return pointers._upsert(
       provider,
       currentContainer: currentContainer,
+      targetContainer: targetContainer,
       inherit: (target) => target._pointerManager.upsertPointer(provider),
       scope: ({override}) => ProviderPointer(
         targetContainer: currentContainer,
@@ -273,42 +272,6 @@ class ProviderPointerManager {
   final ProviderDirectory orphanPointers;
   final HashMap<Family, ProviderDirectory> familyPointers;
 
-  // /// Creates a local pointer for a [Family], while preserving parent state.
-  // ProviderDirectory _scopeProviderDirectory(
-  //   Family? family, {
-  //   FamilyOverride? override,
-  // }) {
-  //   final pointer = family == null ? orphanPointers : familyPointers[family];
-
-  //   ProviderDirectory? newDirectory;
-  //   if (pointer != null) {
-  //     // The family is already overridden in this container. No need to fork.
-  //     // This is purely an optimization.
-  //     if (pointer.targetContainer == container) return pointer;
-
-  //     if (override == null) {
-  //       // Fork a parent pointer, to keep its state but allow local modifications.
-  //       newDirectory = ProviderDirectory.from(
-  //         pointer,
-  //         ownerContainer: container,
-  //       );
-  //     }
-  //   }
-
-  //   newDirectory ??= ProviderDirectory.empty(
-  //     container,
-  //     familyOverride: override,
-  //   );
-
-  //   if (family == null) {
-  //     orphanPointers = newDirectory;
-  //   } else {
-  //     familyPointers[family] = newDirectory;
-  //   }
-
-  //   return newDirectory;
-  // }
-
   void _initializeProviderOverride(
     ProviderOverride override,
   ) {
@@ -407,6 +370,7 @@ class ProviderPointerManager {
     return familyPointers._upsert(
       family,
       currentContainer: container,
+      targetContainer: null,
       inherit: (target) => target._pointerManager._mountFamily(family),
       scope: ({override}) => ProviderDirectory.empty(
         container,
