@@ -258,11 +258,15 @@ void main() {
 
       test('clears only on the closest family override', () async {
         late Ref ref;
-        final another = Provider((r) {
-          ref = r;
-        });
+        final another = Provider(
+          (r) => ref = r,
+          dependencies: const [],
+        );
         var result = 0;
-        final provider = Provider.family<int, int>((r, i) => result);
+        final provider = Provider.family<int, int>(
+          (r, i) => result,
+          dependencies: const [],
+        );
         final listener = Listener<int>();
         final listener2 = Listener<int>();
         final root = ProviderContainer.test();

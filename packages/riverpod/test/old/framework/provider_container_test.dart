@@ -146,7 +146,10 @@ void main() {
     group('validate that properties respect `dependencies`', () {
       test('on reading an element, asserts that dependencies are respected',
           () {
-        final dep = Provider((ref) => 0);
+        final dep = Provider(
+          (ref) => 0,
+          dependencies: const [],
+        );
         final provider = Provider((ref) => ref.watch(dep));
 
         final root = ProviderContainer.test();
@@ -164,7 +167,10 @@ void main() {
       test(
           'on reading an element, asserts that transitive dependencies are also respected',
           () {
-        final transitiveDep = Provider((ref) => 0);
+        final transitiveDep = Provider(
+          (ref) => 0,
+          dependencies: const [],
+        );
         final dep = Provider((ref) => ref.watch(transitiveDep));
         final provider = Provider((ref) => ref.watch(dep));
 
@@ -219,7 +225,10 @@ void main() {
 
     group('getAllProviderElements', () {
       test('list scoped providers that depends on nothing', () {
-        final scopedProvider = Provider<int>((ref) => 0);
+        final scopedProvider = Provider<int>(
+          (ref) => 0,
+          dependencies: const [],
+        );
         final parent = ProviderContainer.test();
         final child = ProviderContainer.test(
           parent: parent,
@@ -239,7 +248,10 @@ void main() {
           'list scoped providers that depends on providers from another container',
           () {
         final dependency = Provider((ref) => 0);
-        final scopedProvider = Provider<int>((ref) => ref.watch(dependency));
+        final scopedProvider = Provider<int>(
+          (ref) => ref.watch(dependency),
+          dependencies: const [],
+        );
         final parent = ProviderContainer.test();
         final child = ProviderContainer.test(
           parent: parent,
@@ -259,13 +271,23 @@ void main() {
           'list only elements associated with the container (ignoring inherited and descendent elements)',
           () {
         final provider = Provider((ref) => 0);
-        final provider2 = Provider((ref) => 0);
-        final provider3 = Provider((ref) => 0);
+        final provider2 = Provider(
+          (ref) => 0,
+          dependencies: const [],
+        );
+        final provider3 = Provider(
+          (ref) => 0,
+          dependencies: const [],
+        );
         final root = ProviderContainer.test();
-        final mid =
-            ProviderContainer.test(parent: root, overrides: [provider2]);
-        final leaf =
-            ProviderContainer.test(parent: mid, overrides: [provider3]);
+        final mid = ProviderContainer.test(
+          parent: root,
+          overrides: [provider2],
+        );
+        final leaf = ProviderContainer.test(
+          parent: mid,
+          overrides: [provider3],
+        );
 
         leaf.read(provider);
         leaf.read(provider2);
@@ -326,7 +348,10 @@ void main() {
 
     group('getAllProviderElementsInOrder', () {
       test('list scoped providers that depends on nothing', () {
-        final scopedProvider = Provider<int>((ref) => 0);
+        final scopedProvider = Provider<int>(
+          (ref) => 0,
+          dependencies: const [],
+        );
         final parent = ProviderContainer.test();
         final child = ProviderContainer.test(
           parent: parent,
@@ -346,7 +371,10 @@ void main() {
           'list scoped providers that depends on providers from another container',
           () {
         final dependency = Provider((ref) => 0);
-        final scopedProvider = Provider<int>((ref) => ref.watch(dependency));
+        final scopedProvider = Provider<int>(
+          (ref) => ref.watch(dependency),
+          dependencies: const [],
+        );
         final parent = ProviderContainer.test();
         final child = ProviderContainer.test(
           parent: parent,

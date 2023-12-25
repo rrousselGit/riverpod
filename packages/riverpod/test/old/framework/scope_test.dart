@@ -23,7 +23,10 @@ Future<void> main() async {
       'reading a provider from a scoped container, '
       'then adding a new container with an override, '
       'then reading from the new container correctly auto-scope again', () {
-    final a = Provider((ref) => 0);
+    final a = Provider(
+      (ref) => 0,
+      dependencies: const [],
+    );
     final b = Provider((ref) => ref.watch(a) + 10, dependencies: [a]);
 
     final root = ProviderContainer.test();
@@ -46,7 +49,10 @@ Future<void> main() async {
       'reading a provider from a scoped container, '
       'then reading from container further down the tree correctly auto-scope again',
       () {
-    final a = Provider((ref) => 0);
+    final a = Provider(
+      (ref) => 0,
+      dependencies: const [],
+    );
     final b = Provider((ref) => ref.watch(a) + 10, dependencies: [a]);
 
     final root = ProviderContainer.test();
@@ -68,7 +74,10 @@ Future<void> main() async {
       'then adding a new container with the same family overridden again, '
       'then reading from the new container correctly obtains the new override',
       () {
-    final a = Provider.family<int, int>((ref, id) => id);
+    final a = Provider.family<int, int>(
+      (ref, id) => id,
+      dependencies: const [],
+    );
 
     final root = ProviderContainer.test();
     final mid = ProviderContainer.test(
@@ -94,7 +103,10 @@ Future<void> main() async {
       'reading a family override from a scoped container, '
       'then reading from container further down the tree correctly uses the deepest override',
       () {
-    final a = Provider.family<int, int>((ref, id) => id);
+    final a = Provider.family<int, int>(
+      (ref, id) => id,
+      dependencies: const [],
+    );
 
     final root = ProviderContainer.test();
     final mid = ProviderContainer.test(
@@ -119,7 +131,10 @@ Future<void> main() async {
       'reading a family override from a scoped container, '
       'then reading from container further down the tree reuse the provider state when possible',
       () {
-    final a = Provider.family<int, int>((ref, id) => id);
+    final a = Provider.family<int, int>(
+      (ref, id) => id,
+      dependencies: const [],
+    );
     var overrideBuildCount = 0;
     final root = ProviderContainer.test();
     final mid = ProviderContainer.test(
@@ -159,7 +174,10 @@ Future<void> main() async {
     });
 
     test('use latest override on mount', () {
-      final provider = Provider((ref) => 0);
+      final provider = Provider(
+        (ref) => 0,
+        dependencies: const [],
+      );
       final root = ProviderContainer.test();
       final container = ProviderContainer.test(
         parent: root,
@@ -174,7 +192,10 @@ Future<void> main() async {
     });
 
     test('updating scoped override does not mount the provider', () {
-      final provider = Provider((ref) => 0);
+      final provider = Provider(
+        (ref) => 0,
+        dependencies: const [],
+      );
       final root = ProviderContainer.test();
       final container = ProviderContainer.test(
         parent: root,
@@ -193,10 +214,13 @@ Future<void> main() async {
         'does not re-initialize a provider if read by an intermediary container',
         () {
       var callCount = 0;
-      final provider = Provider((ref) {
-        callCount++;
-        return 42;
-      });
+      final provider = Provider(
+        (ref) {
+          callCount++;
+          return 42;
+        },
+        dependencies: const [],
+      );
       final root = ProviderContainer.test();
       final mid = ProviderContainer.test(parent: root, overrides: [provider]);
       final container = ProviderContainer.test(parent: mid);
@@ -213,9 +237,13 @@ Future<void> main() async {
 
   group('Scoping family', () {
     test('use latest override on mount', () {
-      final dep = Provider((ref) => 0);
+      final dep = Provider(
+        (ref) => 0,
+        dependencies: const [],
+      );
       final provider = Provider.family<String, int>(
         (ref, value) => '$value ${ref.watch(dep)}',
+        dependencies: const [],
       );
       final root = ProviderContainer.test();
       final container = ProviderContainer.test(
@@ -235,9 +263,13 @@ Future<void> main() async {
     });
 
     test('updating scoped override does not mount the provider', () {
-      final dep = Provider((ref) => 0);
+      final dep = Provider(
+        (ref) => 0,
+        dependencies: const [],
+      );
       final provider = Provider.family<String, int>(
         (ref, value) => '$value ${ref.watch(dep)}',
+        dependencies: const [],
       );
       final root = ProviderContainer.test();
       final container = ProviderContainer.test(
@@ -274,12 +306,18 @@ Future<void> main() async {
     test(
         'does not re-initialize a provider if read by an intermediary container',
         () {
-      final dep = Provider((ref) => 0);
+      final dep = Provider(
+        (ref) => 0,
+        dependencies: const [],
+      );
       var callCount = 0;
-      final provider = Provider.family<String, int>((ref, value) {
-        callCount++;
-        return '$value ${ref.watch(dep)}';
-      });
+      final provider = Provider.family<String, int>(
+        (ref, value) {
+          callCount++;
+          return '$value ${ref.watch(dep)}';
+        },
+        dependencies: const [],
+      );
       final root = ProviderContainer.test();
       final mid = ProviderContainer.test(
         parent: root,
@@ -317,7 +355,11 @@ Future<void> main() async {
     });
 
     test('auto scope direct provider dependencies', () {
-      final dep = Provider((ref) => 0, name: 'dep');
+      final dep = Provider(
+        (ref) => 0,
+        name: 'dep',
+        dependencies: const [],
+      );
       var buildCount = 0;
       final provider = Provider(
         name: 'provider',
@@ -354,7 +396,11 @@ Future<void> main() async {
     test(
         'auto scope still works if the first read of the auto-override is through a child container',
         () {
-      final dep = Provider((ref) => 0, name: 'dep');
+      final dep = Provider(
+        (ref) => 0,
+        name: 'dep',
+        dependencies: const [],
+      );
       var buildCount = 0;
       final provider = Provider(
         dependencies: [dep],
@@ -390,6 +436,7 @@ Future<void> main() async {
           depBuildCount++;
           return 0;
         },
+        dependencies: const [],
       );
       var dep2BuildCount = 0;
       final dep2 = Provider.family<int, int>(
@@ -476,8 +523,16 @@ Future<void> main() async {
     test(
         'when provider depends on multiple overrides, is placed on the deepest container',
         () {
-      final dep = Provider((ref) => 0, name: 'dep');
-      final dep2 = Provider((ref) => 0, name: 'dep2');
+      final dep = Provider(
+        (ref) => 0,
+        name: 'dep',
+        dependencies: const [],
+      );
+      final dep2 = Provider(
+        (ref) => 0,
+        name: 'dep2',
+        dependencies: const [],
+      );
       final a = Provider(
         (ref) => ref.watch(dep) + ref.watch(dep2),
         dependencies: [dep, dep2],
@@ -526,8 +581,16 @@ Future<void> main() async {
 
     test('skips containers with overrides that do not match the "dependencies"',
         () {
-      final dep = Provider((ref) => 0, name: 'dep');
-      final dep2 = Provider((ref) => 0, name: 'dep2');
+      final dep = Provider(
+        (ref) => 0,
+        name: 'dep',
+        dependencies: const [],
+      );
+      final dep2 = Provider(
+        (ref) => 0,
+        name: 'dep2',
+        dependencies: const [],
+      );
       final a = Provider(
         (ref) => ref.watch(dep),
         dependencies: [dep],
@@ -564,7 +627,10 @@ Future<void> main() async {
         'when a provider with dependencies is overridden with a value, '
         'it is no longer automatically overridden if a lower container overrides a dependency',
         () {
-      final dep = Provider((ref) => 0);
+      final dep = Provider(
+        (ref) => 0,
+        dependencies: const [],
+      );
       final provider = Provider((ref) => ref.watch(dep), dependencies: [dep]);
       final root = ProviderContainer.test();
       final mid = ProviderContainer.test(
@@ -590,7 +656,10 @@ Future<void> main() async {
     });
 
     test('auto scope direct family dependencies', () {
-      final family = Provider.family<int, int>((ref, id) => id * 2);
+      final family = Provider.family<int, int>(
+        (ref, id) => id * 2,
+        dependencies: const [],
+      );
       final provider = Provider(
         (ref) => ref.watch(family(21)),
         dependencies: [family],
@@ -649,7 +718,10 @@ Future<void> main() async {
     });
 
     test('can auto-scope autoDispose providers', () async {
-      final dep = Provider((ref) => 0);
+      final dep = Provider(
+        (ref) => 0,
+        dependencies: const [],
+      );
       final provider = Provider.autoDispose(
         (ref) => ref.watch(dep),
         dependencies: [dep],
@@ -773,8 +845,14 @@ final b = Provider(
   });
 
   test('does not auto-scope provider overrides', () {
-    final a = Provider((ref) => 0);
-    final another = Provider((ref) => 42);
+    final a = Provider(
+      (ref) => 0,
+      dependencies: const [],
+    );
+    final another = Provider(
+      (ref) => 42,
+      dependencies: const [],
+    );
     final b = Provider((ref) => ref.watch(a), dependencies: [a]);
     final c = Provider((ref) => ref.watch(a), dependencies: [a]);
 
@@ -798,8 +876,14 @@ final b = Provider(
   });
 
   test('does not auto-scope family overrides', () {
-    final a = Provider((ref) => 0);
-    final another = Provider((ref) => 42);
+    final a = Provider(
+      (ref) => 0,
+      dependencies: const [],
+    );
+    final another = Provider(
+      (ref) => 42,
+      dependencies: const [],
+    );
     final b = Provider.family<int, int>(
       (ref, _) => ref.watch(a),
       dependencies: [a],

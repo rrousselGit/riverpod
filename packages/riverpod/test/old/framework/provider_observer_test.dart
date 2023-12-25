@@ -75,6 +75,7 @@ void main() {
           () {
         final provider = StateNotifierProvider<StateController<int>, int>(
           (ref) => StateController(0),
+          dependencies: const [],
         );
         final observer = ObserverMock('a');
         final observer2 = ObserverMock('b');
@@ -286,6 +287,7 @@ void main() {
         final dep = StateProvider((ref) => 0);
         final provider = StateNotifierProvider<StateController<int>, int>(
           (ref) => StateController(0),
+          dependencies: const [],
         );
         final observer = ObserverMock('a');
         final observer2 = ObserverMock('b');
@@ -503,7 +505,10 @@ void main() {
       test(
           'on scoped ProviderContainer, applies both child and ancestors observers',
           () {
-        final provider = Provider((ref) => 0);
+        final provider = Provider(
+          (ref) => 0,
+          dependencies: const [],
+        );
         final observer = ObserverMock();
         final observer2 = ObserverMock();
         final observer3 = ObserverMock();

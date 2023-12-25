@@ -31,12 +31,17 @@ void main() {
     final family = Provider.family<String, int>((ref, value) {
       return '$value';
     });
-    final family2 = Provider.family<String, int>((ref, value) {
-      return '$value 2';
-    });
+    final family2 = Provider.family<String, int>(
+      (ref, value) {
+        return '$value 2';
+      },
+      dependencies: const [],
+    );
     final root = ProviderContainer.test();
-    final container =
-        ProviderContainer.test(parent: root, overrides: [family2]);
+    final container = ProviderContainer.test(
+      parent: root,
+      overrides: [family2],
+    );
 
     expect(container.read(family(0)), '0');
     expect(container.read(family2(0)), '0 2');

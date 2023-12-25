@@ -12,10 +12,15 @@ Future<void> main() async {
       'Handles cases where the ProviderContainer is disposed yet Scheduler.performDispose is invoked anyway',
       () async {
     // regression test for https://github.com/rrousselGit/riverpod/issues/1400
-    final provider = Provider.autoDispose((ref) => 0);
+    final provider = Provider.autoDispose(
+      (ref) => 0,
+      dependencies: const [],
+    );
     final root = ProviderContainer.test();
-    final container =
-        ProviderContainer.test(parent: root, overrides: [provider]);
+    final container = ProviderContainer.test(
+      parent: root,
+      overrides: [provider],
+    );
 
     container.read(provider);
     container.dispose();
@@ -376,11 +381,16 @@ final alwaysAlive = Provider((ref) {
 
   test('scoped autoDispose override preserve the override after one disposal',
       () async {
-    final provider = Provider.autoDispose((ref) => 0);
+    final provider = Provider.autoDispose(
+      (ref) => 0,
+      dependencies: const [],
+    );
 
     final root = ProviderContainer.test();
-    final container =
-        ProviderContainer.test(parent: root, overrides: [provider]);
+    final container = ProviderContainer.test(
+      parent: root,
+      overrides: [provider],
+    );
 
     container.read(provider);
     expect(root.getAllProviderElements(), isEmpty);
@@ -400,7 +410,10 @@ final alwaysAlive = Provider((ref) {
   test(
       'scoped autoDispose override  through intermediary unused container preserve the override after one disposal',
       () async {
-    final provider = Provider.autoDispose((ref) => 0);
+    final provider = Provider.autoDispose(
+      (ref) => 0,
+      dependencies: const [],
+    );
 
     final root = ProviderContainer.test();
     final mid = ProviderContainer.test(parent: root, overrides: [provider]);
@@ -427,11 +440,16 @@ final alwaysAlive = Provider((ref) {
   test(
       'scoped autoDispose override preserve family override after one disposal',
       () async {
-    final provider = Provider.autoDispose.family<int, int>((ref, _) => 0);
+    final provider = Provider.autoDispose.family<int, int>(
+      (ref, _) => 0,
+      dependencies: const [],
+    );
 
     final root = ProviderContainer.test();
-    final container =
-        ProviderContainer.test(parent: root, overrides: [provider]);
+    final container = ProviderContainer.test(
+      parent: root,
+      overrides: [provider],
+    );
 
     container.read(provider(0));
     expect(root.getAllProviderElements(), isEmpty);
@@ -451,7 +469,10 @@ final alwaysAlive = Provider((ref) {
   test(
       'scoped autoDispose override through intermediary unused container preserve family  override after one disposal',
       () async {
-    final provider = Provider.autoDispose.family<int, int>((ref, _) => 0);
+    final provider = Provider.autoDispose.family<int, int>(
+      (ref, _) => 0,
+      dependencies: const [],
+    );
 
     final root = ProviderContainer.test();
     final mid = ProviderContainer.test(parent: root, overrides: [provider]);

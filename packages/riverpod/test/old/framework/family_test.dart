@@ -33,10 +33,13 @@ void main() {
       'does not re-initialize a scoped family if read by a child container after the provider was initialized',
       () {
     var buildCount = 0;
-    final provider = Provider.family<int, int>((ref, param) {
-      buildCount++;
-      return 42;
-    });
+    final provider = Provider.family<int, int>(
+      (ref, param) {
+        buildCount++;
+        return 42;
+      },
+      dependencies: const [],
+    );
 
     final root = ProviderContainer.test();
     final scope = ProviderContainer.test(parent: root, overrides: [provider]);
