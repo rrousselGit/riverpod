@@ -6,60 +6,6 @@ import '../utils.dart';
 
 void main() {
   group('ProviderContainer', () {
-    group('when unmounting providers', () {
-      test(
-          'cleans up all the StateReaders of a provider in the entire ProviderContainer tree',
-          () async {
-        // Regression test for https://github.com/rrousselGit/riverpod/issues/1943
-        final a = ProviderContainer.test();
-        // b/c voluntarily do not use the Provider, but a/d do. This is to test
-        // that the disposal logic correctly cleans up the StateReaders
-        // in all ProviderContainers associated with the provider, even if
-        // some links between two ProviderContainers are not using the provider.
-        final b = ProviderContainer.test(parent: a);
-        final c = ProviderContainer.test(parent: b);
-        final d = ProviderContainer.test(parent: c);
-
-        final provider = Provider.autoDispose((ref) => 3);
-
-        final subscription = d.listen(
-          provider,
-          (previous, next) {},
-          fireImmediately: true,
-        );
-
-        expect(a.pointerManager.isLocallyMounted(provider), true);
-        expect(b.pointerManager.isLocallyMounted(provider), false);
-        expect(c.pointerManager.isLocallyMounted(provider), false);
-        expect(d.pointerManager.isLocallyMounted(provider), true);
-
-        subscription.close();
-
-        expect(a.pointerManager.isLocallyMounted(provider), true);
-        expect(b.pointerManager.isLocallyMounted(provider), false);
-        expect(c.pointerManager.isLocallyMounted(provider), false);
-        expect(d.pointerManager.isLocallyMounted(provider), true);
-
-        await a.pump();
-
-        expect(a.pointerManager.isLocallyMounted(provider), false);
-        expect(b.pointerManager.isLocallyMounted(provider), false);
-        expect(c.pointerManager.isLocallyMounted(provider), false);
-        expect(d.pointerManager.isLocallyMounted(provider), false);
-
-        d.listen(
-          provider,
-          (previous, next) {},
-          fireImmediately: true,
-        );
-
-        expect(a.pointerManager.isLocallyMounted(provider), true);
-        expect(b.pointerManager.isLocallyMounted(provider), false);
-        expect(c.pointerManager.isLocallyMounted(provider), false);
-        expect(d.pointerManager.isLocallyMounted(provider), true);
-      });
-    });
-
     group('debugReassemble', () {
       test(
           'reload providers if the debugGetCreateSourceHash of a provider returns a different value',
