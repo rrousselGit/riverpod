@@ -52,7 +52,7 @@ export const documentTitles = {
     "providers/notifier_provider": "(Async)NotifierProvider",
     "providers/future_provider": "FutureProvider",
     "providers/change_notifier_provider": "ChangeNotifierProvider",
-    "migration/from_state_notifier": "From `StateNotifier`",
+    "migration/from_state_notifier": "从 `StateNotifier` 迁移",
     "migration/from_change_notifier": "From `ChangeNotifier`",
     "migration/0.14.0_to_1.0.0": "^0.14.0 to ^1.0.0",
     "migration/0.13.0_to_0.14.0": "^0.13.0 to ^0.14.0",

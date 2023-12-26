@@ -17,7 +17,7 @@ class _MyRepo {
 class MyNotifier extends Notifier<int> {
   @override
   int build() {
-    // Just read/write the code here, in one place
+    // 只需在此处读取/写入代码，一目了然
     final period = ref.watch(durationProvider);
     final timer = Timer.periodic(period, (t) => update());
     ref.onDispose(timer.cancel);
@@ -29,6 +29,7 @@ class MyNotifier extends Notifier<int> {
     final cancelToken = CancelToken();
     ref.onDispose(cancelToken.cancel);
     await ref.read(repositoryProvider).update(state + 1, token: cancelToken);
+    // 调用 `cancelToken.cancel` 时，会抛出一个自定义异常
     state++;
   }
 }
