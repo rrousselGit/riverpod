@@ -10,6 +10,6 @@ part 'completed_todos.g.dart';
 List<Todo> completedTodos(CompletedTodosRef ref) {
   final todos = ref.watch(todosProvider);
 
-  // 我们只返回完成的待办事项
+  // we return only the completed todos
   return todos.where((todo) => todo.isCompleted).toList();
 }

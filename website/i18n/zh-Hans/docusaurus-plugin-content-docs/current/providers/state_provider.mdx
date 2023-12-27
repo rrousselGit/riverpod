@@ -2,8 +2,6 @@
 title: StateProvider
 ---
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
 import product from "!!raw-loader!/docs/providers/state_provider/product.dart";
 import productListView from "!!raw-loader!/docs/providers/state_provider/product_list_view.dart";
@@ -13,105 +11,125 @@ import connectedDropdown from "!!raw-loader!/docs/providers/state_provider/conne
 import sortedProductProvider from "!!raw-loader!/docs/providers/state_provider/sorted_product_provider.dart";
 import updateReadTwice from "!!raw-loader!/docs/providers/state_provider/update_read_twice.dart";
 import updateReadOnce from "!!raw-loader!/docs/providers/state_provider/update_read_once.dart";
-import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+import { trimSnippet } from "@site/src/components/CodeSnippet";
 
-StateProvider是一个公开了一种修改其状态的方法的provider。
-它是 [StateNotifierProvider] 的简化版，旨在避免为非常简单的用例编写 [StateNotifier] 类。
+:::caution
+<!---
+The content of this page may be outdated.  
+It will be updated in the future, but for now you may want to refer to the content
+in the top of the sidebar instead (introduction/essentials/case-studies/...)
+-->
+本页内容可能已经过时。  
+今后会进行更新，但目前您可能需要参考侧边栏顶部的内容（介绍/要点/应用案例/......）。
+:::
 
-`StateProvider` 的存在主要是为了允许用户界面对**简单**的变量进行修改。
-所以`StateProvider` 的状态通常为：
+`StateProvider` is a provider that exposes a way to modify its state.
+It is a simplification of [NotifierProvider], designed to avoid
+having to write a [Notifier] class for very simple use-cases.
 
-- 枚举类型，例如筛选器类型
-- 一段字符串(String)，通常是输入框的原始内容
-- 用于复选框的布尔类型
-- 用于分页或年龄表单字段的数字
+`StateProvider` exists primarily to allow the modification of
+**simple** variables by the User Interface.  
+The state of a `StateProvider` is typically one of:
 
-你不应该使用 `StateProvider` 如果：
+- an enum, such as a filter type
+- a String, typically the raw content of a text field
+- a boolean, for checkboxes
+- a number, for pagination or age form fields
 
-- 你的状态需要验证逻辑
-- 你的状态是一个复杂的对象 (比如自定义的类, 集合……)
-- 修改状态的逻辑比简单的 `count++` 更复杂
+You should not use `StateProvider` if:
 
-对于更复杂的情况，可以考虑使用 [StateNotifierProvider] ，并创建一个 [StateNotifier] 类。
-虽然最初的样板文件会有点大，
-但有一个自定义的 [StateNotifier] 类对于项目的长期可维护性是至关重要的，
-因为它将状态的业务逻辑集中在了一个地方。
+- your state needs validation logic
+- your state is a complex object (such as a custom class, a list/map, ...)
+- the logic for modifying your state is more advanced than a simple `count++`.
 
-## 使用示例：使用下拉菜单更改筛选类型
+For more advanced cases, consider using [NotifierProvider] instead and
+create a [Notifier] class.  
+While the initial boilerplate will be a bit larger, having a custom
+[Notifier] class is critical for the long-term maintainability of your
+project – as it centralizes the business logic of your state in a single place.
 
-`StateProvider` 的一个真实的用例是管理简单表单组件的状态，比如下拉菜单/输入框/复选框。
-特别来说，我们将看到如何使用 `StateProvider` 实现一个下拉菜单，
-该下拉菜单允许更改产品列表的排序方式。
+## Usage example: Changing the filter type using a dropdown
 
-为了简单起见，我们将在应用中直接构建将获得的产品列表，如下所示：
+A real-world use-case of `StateProvider` would be to manage the state of
+simple form components like dropdowns/text fields/checkboxes.  
+In particular, we will see how to use `StateProvider` to implement a dropdown
+that allows changing how a list of products is sorted.
+
+For the sake of simplicity, the list of products that we will obtain
+will be built directly in the application and will be as follows:
 
 <CodeBlock>{trimSnippet(product)}</CodeBlock>
 
-在真实的应用程序中，我们通常会使用 [FutureProvider] 通过网络请求来获得该列表。
+In a real-world application, this list would typically be obtained using
+[FutureProvider] by making a network request.
 
-然后，可以在用户界面上通过下面的操作来显示产品列表：
+The User Interface could then show the list of products by doing:
 
 <CodeBlock>{trimSnippet(productListView)}</CodeBlock>
 
-现在我们已经完成了基础，我们可以添加一个下拉菜单，
-它将按价格或名称过滤我们的产品。
-为此，我们将使用[DropDownButton](https://api.flutter.dev/flutter/material/DropdownButton-class.html)。
+Now that we're done with the base, we can add a dropdown, which will
+allow filtering our products either by price or by name.  
+For that, we will use [DropDownButton](https://api.flutter.dev/flutter/material/DropdownButton-class.html).
 
 <CodeBlock>{trimSnippet(dropdown)}</CodeBlock>
 
-现在我们有了一个下拉列表，
-让我们创建一个 `StateProvider` 并将下拉菜单的状态与我们的provider同步。
+Now that we have a dropdown, let's create a `StateProvider` and
+synchronize the state of the dropdown with our provider.
 
-首先，让我们创建一个 `StateProvider`：
+First, let's create the `StateProvider`:
 
 <CodeBlock>{trimSnippet(sortProvider)}</CodeBlock>
 
-然后，我们可以通过下面的操作将这个provider与我们的下拉菜单连接起来：
+Then, we can connect this provider with our dropdown by doing:
 
 <CodeBlock>{trimSnippet(connectedDropdown)}</CodeBlock>
 
-有了这些，我们现在应该能够更改筛选的类型。
-不过它对产品列表没有影响！
-现在是最后一部分：更新我们的 `productsProvider` 以对产品列表进行排序。
+With this, we should now be able to change the sort type.  
+It has no impact on the list of products yet though! It's now time for the
+final part: Updating our `productsProvider` to sort the list of products.
 
-实现这一点的关键是使用 [ref.watch]，
-让我们的 `productsProvider` 获得排序类型，
-并在排序类型更改时重新计算产品列表。
+A key component of implementing this is to use [ref.watch], to have
+our `productsProvider` obtain the sort type and recompute the list of
+products whenever the sort type changes.
 
-代码实现会是：
+The implementation would be:
 
 <CodeBlock>{trimSnippet(sortedProductProvider)}</CodeBlock>
 
-就是这样！这个变改足以让用户界面在排序类型更改时自动重绘产品列表。
+That's all! This change is enough for the User Interface to automatically
+re-render the list of products when the sort type changes.
 
-下面是在Dartpad上完整的例子：
+Here is the complete example on Dartpad:
 
 <iframe
   src="https://dartpad.dev/embed-flutter.html?gh_owner=rrousselGit&gh_repo=riverpod&gh_path=website%2Fdocs%2Fproviders%2Fstate_provider"
   style={{ border: 0, width: "100%", aspectRatio: "2/1.5" }}
 ></iframe>
 
-## 如何在不读取provider两次的情况下根据之前的值更新状态
+## How to update the state based on the previous value without reading the provider twice
 
-有时你希望根据之前的值更新 `StateProvider` 的状态。
-自然而然，你可能会这样写：
+Sometimes, you want to update the state of a `StateProvider` based on the previous value.
+Naturally, you may end-up writing:
 
 <CodeBlock>{trimSnippet(updateReadTwice)}</CodeBlock>
 
-虽然这段代码没有什么特别的错误，但是语法上着实有点不太方便。
+While there's nothing particularly wrong with this snippet, the syntax is a bit inconvenient.
 
-为了更方便地使用，我们可以使用 `update` 函数。
-这个函数将接受一个回调函数，该回调函数将接收当前状态并返回新状态。
-我们可以使用它来重构之前的代码：
+To make the syntax a bit better, we can use the `update` function.
+This function will take a callback that will receive the current state and is expected
+to return the new state.  
+We can use it to refactor our previous code to:
 
 <CodeBlock>{trimSnippet(updateReadOnce)}</CodeBlock>
 
-这样就实现了相同的效果，而且使语法更好一些。
+This change achieves the same effect while making the syntax a bit better.
 
 [ref.watch]: ../concepts/reading#using-refwatch-to-observe-a-provider
 [ref.read]: ../concepts/reading#using-refread-to-obtain-the-state-of-a-provider-once
 [statenotifierprovider]: ./state_notifier_provider
+[notifierprovider]: ./notifier_provider
 [futureprovider]: ./future_provider
+[notifier]: https://pub.dev/documentation/riverpod/latest/riverpod/Notifier-class.html
 [statenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/StateNotifier-class.html
 [provider]: ./provider
 [asyncvalue]: https://pub.dev/documentation/riverpod/latest/riverpod/AsyncValue-class.html

@@ -4,25 +4,35 @@ title: ProviderObserver
 
 import CodeBlock from "@theme/CodeBlock";
 import logger from "!!raw-loader!/docs/concepts/provider_observer_logger.dart";
-import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+import { trimSnippet } from "@site/src/components/CodeSnippet";
 
-[ProviderObserver] 可以监听ProviderContainer的变更。
+:::caution
+<!---
+The content of this page may be outdated.  
+It will be updated in the future, but for now you may want to refer to the content
+in the top of the sidebar instead (introduction/essentials/case-studies/...)
+-->
+本页内容可能已经过时。  
+今后会进行更新，但目前您可能需要参考侧边栏顶部的内容（介绍/要点/应用案例/......）。
+:::
 
-要使用它，请扩展ProviderObserver类并重写要使用的方法。
+[ProviderObserver] listens to the changes of a ProviderContainer.
 
-[ProviderObserver] 有三种方法：
+To use it, extend the class ProviderObserver and override the method you want to use.
 
-- 每次初始化provider时都会调用 `didAddProvider`，并且将值暴露为 `value`。
-- 每次销毁provider时都会调用 `didDisposeProvider`。
-- 每当provider发出通知时，都会调用 `didUpdateProvider`。
+[ProviderObserver] has three methods :
 
-### 用法
+- `didAddProvider` is called every time a provider was initialized, and the value exposed is `value`.
+- `didDisposeProvider` is called every time a provider was disposed.
+- `didUpdateProvider` is called every time by providers when they emit a notification.
 
-[ProviderObserver] 的一个简单用例是通过重写 `didUpdateProvider` 方法来记录provider中的更改。
+### Usage :
+
+A simple use case for [ProviderObserver] is to log the changes in providers by overriding the `didUpdateProvider` method.
 
 <CodeBlock>{trimSnippet(logger)}</CodeBlock>
 
-现在，每当我们的provider的值被更新时，记录器都会记录它：
+Now, every time the value of our provider is updated, the logger will log it:
 
 ```
 I/flutter (16783): {
@@ -31,12 +41,11 @@ I/flutter (16783):   "newValue": "1"
 I/flutter (16783): }
 ```
 
-:::note
-对于可变的状态，例如 [StateController] ([StateProvider.state] 的状态)和[ChangeNotifier]， 
-新旧值将会是相同的。
+:::note:
+For states that are mutable such as [StateController] (the state of [StateProvider.state]) and
+[ChangeNotifier] the previousValue and newValue will be the same
 :::
 since they reference the same `StateController` / `ChangeNotifier`.
-由于他们引用了相同的`StateController` / `ChangeNotifier`。
 
 [providerobserver]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderObserver-class.html
 [statecontroller]: https://pub.dev/documentation/riverpod/latest/riverpod/StateController-class.html

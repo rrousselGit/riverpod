@@ -13,7 +13,7 @@ final repositoryProvider = Provider((ref) {
 /* SNIPPET START */
 
 final valueProvider = Provider((ref) {
-  // 使用ref获取其他provider
+  // use ref to obtain other providers
   final repository = ref.watch(repositoryProvider);
   return repository.get();
 });

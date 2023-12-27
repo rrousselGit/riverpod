@@ -4,23 +4,31 @@ title: .family
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import { Link } from "@site/src/components/Link";
 
-在阅读本文之前，请考虑阅读有关 [providers](/docs/concepts/providers) 的内容以及 [如何读取provider](/docs/concepts/reading)。
-在本部分中，我们将详细讨论`.family`修饰符。
+:::caution
+The content of this page may be outdated.  
+It will be updated in the future, but for now you may want to refer to the content
+in the top of the sidebar instead (introduction/essentials/case-studies/...)
+:::
 
-`.family`  修饰符有一个目的：根据外部参数获取唯一的provider。
+Before reading this, consider reading about <Link documentID="concepts/providers"/> and <Link documentID="concepts/reading"/>.
+In this part, we will talk in detail about the `.family` provider modifier.
 
-比如`family`的一些常用的使用场景：
+The `.family` modifier has one purpose: Getting a unique provider based on external parameters.
 
-- 结合 [FutureProvider] 和 `.family` 通过它的ID来获取一条 `消息`。
-- 将当前 `区域` 传递给provider，以便让我们可以处理翻译相关的内容。
+Some common use-cases for `family` would be:
 
-## 用法
+- Combining [FutureProvider] with `.family` to fetch a `Message` from its ID
+- Passing the current `Locale` to a provider, so that we can handle translations
 
-family的工作方式是向provider添加一个额外的参数。
-然后可以在我们的provider中自由地使用这个参数来创建一些状态。
+## Usage
 
-比如说，我们可以组合 `family` 和 [FutureProvider] 通过它的ID来获取一条 `消息` ：
+The way families works is by adding an extra parameter to the provider.
+This parameter can then be freely used in our provider to create some state.
+
+For example, we can combine `family` with [FutureProvider] to fetch
+a `Message` from its ID:
 
 ```dart
 final messagesFamily = FutureProvider.family<Message, String>((ref, id) async {
@@ -28,8 +36,8 @@ final messagesFamily = FutureProvider.family<Message, String>((ref, id) async {
 });
 ```
 
-在使用 `messagesFamily` provider时，语法略有不同。  
-通常的语法将不能使用：
+When using our `messagesFamily` provider, the syntax is slightly different.  
+The usual syntax will not work anymore:
 
 ```dart
 Widget build(BuildContext context, WidgetRef ref) {
@@ -38,7 +46,7 @@ Widget build(BuildContext context, WidgetRef ref) {
 }
 ```
 
-相反，我们需要将一个参数传递给 `messagesFamily`：
+Instead, we need to pass a parameter to `messagesFamily`:
 
 ```dart
 Widget build(BuildContext context, WidgetRef ref) {
@@ -47,8 +55,9 @@ Widget build(BuildContext context, WidgetRef ref) {
 ```
 
 :::info
-可以同时使用具有不同参数的 family。  
-比如，我们可以使用`titleFamily`同时读取法语和英语的翻译：
+It is possible to use a family with different parameters simultaneously.  
+For example, we could use a `titleFamily` to read both the French and English
+translations at the same time:
 
 ```dart
 @override
@@ -62,20 +71,22 @@ Widget build(BuildContext context, WidgetRef ref) {
 
 :::
 
-## 参数限制
+## Parameter restrictions
 
-为了让family正常工作，传递给provider的参数必须具有一致的 `hashCode` 和 `==`。
+For families to work correctly, it is critical for the parameter passed to
+a provider to have a consistent `hashCode` and `==`.
 
+Ideally, the parameter should either be a primitive (bool/int/double/String),
+a constant (providers), or an immutable object that overrides `==` and `hashCode`.
 
-理想情况下，参数应该是基础类型(bool/int/double/String)、常量(providers)或重载 `==` 和 `hashCode` 的不可变对象。
+### _PREFER_ using `autoDispose` when the parameter is not constant:
 
-### 当参数不是常量时_最好_使用`autoDispose`:
+You may want to use families to pass the input of a search field to your provider.
+But that value can change often and never be reused.  
+This could cause memory leaks as, by default, a provider is never destroyed even
+if no longer used.
 
-你可能希望使用family将搜索内容传递给你的provider。
-但是这个值经常会改变，并且永远不会被重用。  
-这可能会导致内存泄漏，因为默认情况下，即使不再使用provider也不会销毁。
-
-同时使用 `.family` 和 `.autoDispose` 可以解决内存泄漏的问题：
+Using both `.family` and `.autoDispose` fixes that memory leak:
 
 ```dart
 final characters = FutureProvider.autoDispose.family<List<Character>, String>((ref, filter) async {
@@ -83,21 +94,21 @@ final characters = FutureProvider.autoDispose.family<List<Character>, String>((r
 });
 ```
 
-## 将多个参数传递给family
+## Passing multiple parameters to a family
 
-family不支持将多个值传递给provider。
+Families have no built-in support for passing multiple values to a provider.
 
 On the other hand, that value could be _anything_ (as long as it matches with
 the restrictions mentioned previously).
-另一方面，该值可以是任何东西(只要它在前面提到的限制当中)。
 
-这包括：
+This includes:
 
-- 一个元组 [tuple](http://pub.dev/packages/tuple)
-- 使用[Freezed] 或 [built_value](https://pub.dev/packages/built_value) 生成的对象
-- 使用 [equatable](https://pub.dev/packages/equatable) 的对象
+- A tuple from [tuple](http://pub.dev/packages/tuple)
+- Objects generated with [Freezed] or [built_value](https://pub.dev/packages/built_value)
+- Objects using [equatable](https://pub.dev/packages/equatable)
 
-下面是使用 [Freezed] 或 [equatable] 来传递多个参数的示例：
+Here's an example of using [Freezed] or [equatable] for multiple parameters:
+
 <Tabs
   groupId="family"
   defaultValue="freezed"

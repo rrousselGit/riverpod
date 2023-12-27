@@ -2,86 +2,108 @@
 title: Provider
 ---
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
 import todo from "./provider/todo";
 import completedTodos from "./provider/completed_todos";
 import todosConsumer from "!!raw-loader!/docs/providers/provider/todos_consumer.dart";
 import unoptimizedPreviousButton from "./provider/unoptimized_previous_button";
 import optimizedPreviousButton from "./provider/optimized_previous_button";
-import { trimSnippet, AutoSnippet } from "../../../../../src/components/CodeSnippet";
+import { trimSnippet, AutoSnippet } from "@site/src/components/CodeSnippet";
 
-在所有的provider中 `Provider` 是最基础的。它创造了一个值……差不多就是这样。
+:::caution
+<!---
+The content of this page may be outdated.  
+It will be updated in the future, but for now you may want to refer to the content
+in the top of the sidebar instead (introduction/essentials/case-studies/...)
+-->
+本页内容可能已经过时。  
+今后会进行更新，但目前您可能需要参考侧边栏顶部的内容（介绍/要点/应用案例/......）。
+:::
 
-`Provider` 一般用在：
+`Provider` is the most basic of all providers. It creates a value... And that's about it.
 
-- 缓存计算。
-- 向其他provider(比如`Repository`/`HttpClient`)暴露一个值。
-- 为测试或widget提供重写值的方法。
-- 减少 provider/widget 的重新构建，不必使用 `select`。
+`Provider` is typically used for:
 
-## 使用 `Provider` 缓存计算
+- caching computations
+- exposing a value to other providers (such as a `Repository`/`HttpClient`).
+- offering a way for tests or widgets to override a value.
+- reducing rebuilds of providers/widgets without having to use `select`.
 
-`Provider` 是与 [ref.watch] 结合使用时用于缓存同步操作的强大的工具。
+## Using `Provider` to cache computations
 
-例如筛选待办清单。
-由于筛选列表的性能开销可能略高，所以理想情况下，当应用重新渲染时我们不希望再筛选一遍待办列表。
-在这种情况，我们可以使用 `Provider` 为我们进行筛选。
+`Provider` is a powerful tool for caching synchronous operations when combined
+with [ref.watch].
 
-为此，假设我们的应用程序有一个 [StateNotifierProvider] ，它操作待办清单的列表：
+An example would be filtering a list of todos.
+Since filtering a list could be slightly expensive, we ideally do not want to
+filter our list of todos whenever our application re-renders.
+In this situation, we could use `Provider` to do the filtering for us.
+
+For that, assume that our application has an existing [NotifierProvider]
+which manipulates a list of todos:
 
 <AutoSnippet language="dart" {...todo}></AutoSnippet>
 
-接着，我们可以使用 `Provider` 暴露经过筛选的待办清单列表，只显示完成的待办事项：
+From there, we can use `Provider` to expose the filtered list of todos, showing
+only the completed todos:
 
 <AutoSnippet language="dart" {...completedTodos}></AutoSnippet>
 
-使用这段代码，我们的UI现在可以通过监听 `completedTodosProvider` 来显示完成的待办清单列表：
+With this code, our UI is now able to show the list of the completed todos
+by listening to `completedTodosProvider`:
 
 <CodeBlock>{trimSnippet(todosConsumer)}</CodeBlock>
 
-有趣的是，这个筛选列表现在被缓存起来了。
+The interesting part is, the list filtering is now cached.
 
-这也就意味着不管我们阅读多少次已经完成的待办清单，只要在添加/删除/更新待办清单之前，
-这个筛选的列表也不会被重新计算。
+Meaning that the list of completed todos will not be recomputed until
+todos are added/removed/updated, even if we are reading the list of completed
+todos multiple times.
 
-注意，当待办清单列表发生更改时我们不需要手动使缓存失效。多亏了 [ref.watch] ，
-`Provider`能够自动知道什么时候应该重新计算结果。
+Note how we do not need to manually invalidate the cache when the list of todos
+changes. `Provider` is automatically able to know when the result must be recomputed
+thanks to [ref.watch].
 
-## 使用`Provider` 减少provider/widget的重新构建
+## Reducing provider/widget rebuilds by using `Provider`
 
-`Provider` 独特的地方在于，就算在重新计算 `Provider` 时(通常在使用[ref.watch]时)，
-它也不会更新监听它的widget/provider，除非当中的值发生了变化。
+A unique aspect of `Provider` is that even when `Provider` is recomputed
+(typically when using [ref.watch]), it will not update the widgets/providers
+that listen to it unless the value changed.
 
-一个真实的例子是启用/禁用分页视图中的上一个/下一个按钮：
+A real world example would be for enabling/disabling previous/next buttons
+of a paginated view:
 
 ![stepper example](https://user-images.githubusercontent.com/134939/47580830-31263a00-d950-11e8-9b61-0eaddab2709e.png)
 
-在这个例子中，我们特别关注在这个“previous”按钮。
-这个按钮将用widget实现，它获取当前页面的索引，如果索引为0时，我们将禁用这个按钮。
+In our case, we will focus specifically on the "previous" button.
+A naive implementation of such button would be a widget which obtains the
+current page index, and if that index is equal to 0, we would disable the button.
 
-这段代码可以是：
+This code could be:
 
 <AutoSnippet language="dart" {...unoptimizedPreviousButton}></AutoSnippet>
 
-这段代码的问题是，每当我们更改当前页面时，“previous”按钮将重新构建。
-在理想情况下，我们希望按钮仅在激活和停用之间更改时重新构建。
+The issue with this code is that whenever we change the current page, the "previous"
+button will rebuild.  
+In the ideal world, we would want the button to rebuild only when changing between
+activated and deactivated.
 
-但问题的根源在于我们在build函数内计算是否允许用户在“previous”按钮内直接转到上一页。
+The root of the issue here is that we are computing whether the user is
+allowed to go to the previous page directly within the "previous" button.
 
-为了解决这个问题，我们将这个逻辑从widget中提取出来放到provider里面：
+A way to solve this is to extract this logic outside of the widget and into a `Provider`:
 
 <AutoSnippet language="dart" {...optimizedPreviousButton}></AutoSnippet>
 
-通过这样的小重构，多亏了 `Provider` 我们的 `PreviousButton` widget 当页面索引变化时将不再重新构建。
+By doing this small refactoring, our `PreviousButton` widget will no longer
+rebuild when the page index changes thanks to `Provider`.
 
-从现在开始，当页面索引改变时，我们的 `canGoToPreviousPageProvider` 将被重新计算。
-但是如果provider暴露的值没有改变，那么 `PreviousButton` 将不会重新构建。
+From now on when the page index changes, our `canGoToPreviousPageProvider` provider
+will be recomputed. But if the value exposed by the provider does not change,
+then `PreviousButton` will not rebuild.
 
 This change both improved the performance of our button and had the interesting
 benefit of extracting the logic outside of our widget.
-这一更改提高了按钮的性能，还有一个有趣的好处，就是将逻辑抽离到widget之外。
 
 [ref.watch]: ../concepts/reading#using-refwatch-to-observe-a-provider
-[statenotifierprovider]: ./state_notifier_provider
+[notifierprovider]: ./notifier_provider

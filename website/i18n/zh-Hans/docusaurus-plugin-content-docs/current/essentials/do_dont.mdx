@@ -1,0 +1,260 @@
+---
+title: 最佳实践
+---
+
+import { Link } from "@site/src/components/Link";
+import { AutoSnippet, When } from "@site/src/components/CodeSnippet";
+
+<!---
+To ensure good maintainability of your code, here is a list of good practices
+you should follow when using Riverpod.
+-->
+为了确保代码具有良好的可维护性，
+这里列出了您在使用 Riverpod 时应遵循的良好实践。
+
+<!---
+This list is not exhaustive, and is subject to change.  
+If you have any suggestions, feel free to [open an issue](https://github.com/rrousselGit/riverpod/issues/new?assignees=rrousselGit&labels=documentation%2C+needs+triage&projects=&template=example_request.md&title=).
+-->
+此列表并不详尽，并且可能会发生变化。  
+如果您有任何建议，请随时[提出问题](https://github.com/rrousselGit/riverpod/issues/new?assignees=rrousselGit&labels=documentation%2C+needs+triage&projects=&template=example_request.md&title=)。
+
+<!---
+Items in this list are not in any particular order.
+-->
+此列表中的项目没有任何特定的顺序。
+
+<!---
+A good portion of these recommendations can be enforced with [riverpod_lint](https://pub.dev/packages/riverpod_lint).
+See <Link documentID="introduction/getting_started" hash="enabling-riverpod_lintcustom_lint"/>
+for installation instructions.
+-->
+这些建议的很大一部分可以通过 [riverpod_lint](https://pub.dev/packages/riverpod_lint) 来执行。
+请参阅<Link documentID="introduction/getting_started" hash="enabling-riverpod_lintcustom_lint"/>了解安装说明。
+
+<!---
+## AVOID initializing providers in a widget
+-->
+## 避免！在小部件中初始化提供者程序​
+
+<!---
+Providers should initialize themselves.  
+They should not be initialized by an external element such as a widget.
+-->
+提供者程序应自行初始化。  
+它们不应由外部元素（例如小部件）初始化。
+
+<!---
+Failing to do so could cause possible race conditions and unexpected behaviors.
+-->
+如果不这样做可能会导致可能的竞争条件和意外行为。
+
+<!---
+**DON'T**
+-->
+**不要**
+
+```dart
+class WidgetState extends State<MyWidget> {
+  @override
+  void initState() {
+    super.initState();
+    // 坏的：提供者程序应该自己初始化自己
+    ref.read(provider).init();
+  }
+}
+```
+
+<!---
+**CONSIDER**
+-->
+**考虑**
+
+<!---
+There is no "one-size fits all" solution to this problem.  
+If your initialization logic depends on factors external to the provider,
+often the correct place to put such logic is in the `onPressed` method of a button
+triggering navigation:
+-->
+对于这个问题，没有“一刀切”的解决方案。  
+如果您的初始化逻辑取决于提供者程序的外部因素，
+则放置此类逻辑的正确位置通常是触发导航的按钮的 `onPressed` 方法中：
+
+```dart
+ElevatedButton(
+  onPressed: () {
+    ref.read(provider).init();
+    Navigator.of(context).push(...);
+  },
+  child: Text('Navigate'),
+)
+```
+
+<!---
+## AVOID using providers for local widget state.
+-->
+## 避免！使用本地小部件状态的提供者程序。
+
+<!---
+Providers are designed to be for shared business state.
+They are not meant to be used for local widget state, such as for:
+-->
+提供者程序被设计为共享业务状态。
+它们不适合用于本地小部件状态，例如：
+
+<!---
+- storing form state
+- currently selected item
+- animations
+- generally everything that Flutter deals with a "controller" (e.g. `TextEditingController`)
+-->
+- 存储表单状态
+- 当前选择的项目
+- 动画
+- Flutter 处理常见的 "controller" 相关的所有内容（例如 `TextEditingController` ）
+
+<!---
+If you are looking for a way to handle local widget state, consider using
+[flutter_hooks](https://pub.dev/packages/flutter_hooks) instead.
+-->
+如果您正在寻找一种处理本地小部件状态的方法，请考虑使用
+[flutter_hooks](https://pub.dev/packages/flutter_hooks) 代替。
+
+<!---
+One reason why this is discouraged is that such state is often scoped to a route.  
+Failing to do so could break your app's back button, due to a new page overriding
+the state of a previous page.
+-->
+不鼓励这样做的一个原因是这种状态通常仅限于一条路由。  
+如果不这样做，可能会破坏应用程序的后退按钮，因为新页面会覆盖上一页的状态。
+
+<!---
+## DON'T perform side effects during the initialization of a provider
+-->
+## 不要！在提供者程序初始化期间执行副作用​
+
+<!---
+Providers should generally be used to represent a "read" operation.
+You should not use them for "write" operations, such as submitting a form.
+-->
+提供者程序通常应用于表示“读”操作。
+您不应该将它们用于“写”操作，例如提交表单。
+
+<!---
+Using providers for such operations could have unexpected behaviors, such as
+skipping a side-effect if a previous one was performed.
+-->
+使用提供者程序进行此类操作可能会产生意外行为，例如
+如果执行了前一个操作，则跳过副作用。
+
+<!---
+If you are looking at a way to handle loading/error states of a side-effect,
+see <Link documentID="essentials/side_effects"/>.
+-->
+如果您正在寻找一种处理副作用的加载/错误状态的方法，
+请参阅<Link documentID="essentials/side_effects"/>。
+
+<!---
+**DON'T**:
+-->
+**不要**：
+
+```dart
+final submitProvider = FutureProvider((ref) async {
+  final formState = ref.watch(formState);
+
+  // 坏的：提供者程序不应用于“写”操作。
+  return http.post('https://my-api.com', body: formState.toJson());
+});
+```
+
+<!---
+## PREFER ref.watch/read/listen (and similar APIs) with statically known providers
+-->
+## 首选！ref.watch/read/listen（和类似的 API）以及静态已知的提供者程序​
+
+<!---
+Riverpod strongly recommends enabling lint rules (via `riverpod_lint`).  
+But for lints to be effective, your code should be written in a way that is
+statically analysable.
+-->
+Riverpod 强烈建议启用 lint 规则（通过 riverpod_lint）。  
+但为了使 lint 发挥作用，您的代码应该以可静态分析的方式编写。
+
+<!---
+Failing to do so could make it harder to spot bugs or cause
+false positives with lints.
+-->
+如果不这样做，可能会更难发现错误或导致 lints 误报。
+
+<!---
+**Do**:
+-->
+**应该**：
+
+```dart
+final provider = Provider((ref) => 42);
+
+...
+
+// 好的，因为提供者程序是静态已知的
+ref.watch(provider);
+```
+
+<!---
+**Don't**:
+-->
+**不要**：
+
+```dart
+class Example extends ConsumerWidget {
+  Example({required this.provider});
+  final Provider<int> provider;
+
+  @override
+  Widget build(context, ref) {
+    // 不好，因为静态分析无法知道 `provider` 是什么
+    ref.watch(provider);
+  }
+}
+```
+
+<!---
+## AVOID dynamically creating providers
+-->
+## 避免！动态创建提供者程序​
+
+<!---
+Providers should exclusively be top-level final variables.
+-->
+提供者程序应该专门是顶级 final 变量。
+
+<!---
+**Do**:
+-->
+**应该**：
+
+```dart
+final provider = Provider<String>((ref) => 'Hello world');
+```
+
+<!---
+**Don't**:
+-->
+**不要**：
+
+```dart
+class Example {
+  // 不支持的操作。可能导致内存泄漏和意外行为。
+  final provider = Provider<String>((ref) => 'Hello world');
+}
+```
+
+:::info
+<!---
+Creating providers as static final variables is allowed,
+but not supported by the code-generator.
+-->
+允许将提供者程序创建为 static final 变量，
+但代码生成器不支持。
+:::

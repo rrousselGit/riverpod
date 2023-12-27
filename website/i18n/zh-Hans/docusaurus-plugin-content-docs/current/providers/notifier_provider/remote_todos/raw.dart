@@ -14,8 +14,8 @@ final http = Http();
 
 /* SNIPPET START */
 
-// 最好使用不可变状态。
-// 我们还可以使用像 freezed 这样的package来帮助实现不可变。
+// An immutable state is preferred.
+// We could also use packages like Freezed to help with the implementation.
 @immutable
 class Todo {
   const Todo({
@@ -32,7 +32,7 @@ class Todo {
     );
   }
 
-  // 在我们的类中所有的属性都应该是 `final` 的。
+  // All properties should be `final` on our class.
   final String id;
   final String description;
   final bool completed;
@@ -44,9 +44,10 @@ class Todo {
       };
 }
 
-// Notifier类将会被传递给我们的NotifierProvider。
-// 这个类不应该在其“state”属性之外暴露状态，也就是说没有公共的获取属性的方法！
-// 这个类上的公共方法将允许UI修改它的状态。
+// The Notifier class that will be passed to our NotifierProvider.
+// This class should not expose state outside of its "state" property, which means
+// no public getters/properties!
+// The public methods on this class will be what allow the UI to modify the state.
 class AsyncTodosNotifier extends AsyncNotifier<List<Todo>> {
   Future<List<Todo>> _fetchTodo() async {
     final json = await http.get('api/todos');
@@ -56,21 +57,21 @@ class AsyncTodosNotifier extends AsyncNotifier<List<Todo>> {
 
   @override
   Future<List<Todo>> build() async {
-    // 从远程仓库获取初始的待办清单
+    // Load initial todo list from the remote repository
     return _fetchTodo();
   }
 
   Future<void> addTodo(Todo todo) async {
-    // 将当前状态设置为加载中
+    // Set the state to loading
     state = const AsyncValue.loading();
-    // 将新的待办清单添加到远程仓库
+    // Add the new todo and reload the todo list from the remote repository
     state = await AsyncValue.guard(() async {
       await http.post('api/todos', todo.toJson());
       return _fetchTodo();
     });
   }
 
-  // 让我们允许删除待办清单
+  // Let's allow removing todos
   Future<void> removeTodo(String todoId) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
@@ -79,7 +80,7 @@ class AsyncTodosNotifier extends AsyncNotifier<List<Todo>> {
     });
   }
 
-  // 让我们把待办清单标记为已完成
+  // Let's mark a todo as completed
   Future<void> toggle(String todoId) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
@@ -92,7 +93,8 @@ class AsyncTodosNotifier extends AsyncNotifier<List<Todo>> {
   }
 }
 
-// 最后，我们使用NotifierProvider来允许UI与我们的TodosNotifier类交互。
+// Finally, we are using NotifierProvider to allow the UI to interact with
+// our TodosNotifier class.
 final asyncTodosProvider =
     AsyncNotifierProvider<AsyncTodosNotifier, List<Todo>>(() {
   return AsyncTodosNotifier();

@@ -2,30 +2,43 @@
 title: StateNotifierProvider
 ---
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
 import todos from "!!raw-loader!/docs/providers/state_notifier_provider/todos.dart";
 import todosConsumer from "!!raw-loader!/docs/providers/state_notifier_provider/todos_consumer.dart";
-import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+import { trimSnippet } from "@site/src/components/CodeSnippet";
 
-`StateNotifierProvider` 是一个用于监听和公开StateNotifier的provider(来自 [state_notifier] package，由Riverpod重新分发)。
-
-它一般用于：
-
-- 暴露一个 **不可变** 的状态，在对自定义事件做出反应后可以随时间改变。
-- 修改某些状态的逻辑(又名“业务逻辑”)集中在一个地方，随着时间的推移也能提高可维护性。
-
-:::info
-首选 [NotifierProvider] 。  
+:::caution
+<!---
+The content of this page may be outdated.  
+It will be updated in the future, but for now you may want to refer to the content
+in the top of the sidebar instead (introduction/essentials/case-studies/...)
+-->
+本页内容可能已经过时。  
+今后会进行更新，但目前您可能需要参考侧边栏顶部的内容（介绍/要点/应用案例/......）。
 :::
 
-我们可以使用 `StateNotifierProvider` 来实现一个待办清单列表。
-这样做将允许我们公开 `addTodo` 等方法，让UI在用户交互时修改todo列表，下面是示例：
+`StateNotifierProvider` is a provider that is used to listen to and expose a
+[StateNotifier] (from the package [state_notifier], which Riverpod re-exports).
+
+It is typically used for:
+
+- exposing an **immutable** state which can change over time after reacting to
+  custom events.
+- centralizing the logic for modifying some state (aka "business logic") in a
+  single place, improving maintainability over time.
+
+:::info
+Prefer using [NotifierProvider] instead.  
+:::
+
+As a usage example, we could use `StateNotifierProvider` to implement a todo-list.
+Doing so would allow us to expose methods such as `addTodo` to let the UI
+modify the list of todos on user interactions:
 
 <CodeBlock>{trimSnippet(todos)}</CodeBlock>
 
-现在我们已经定义了 `StateNotifierProvider` ，我们可以使用它来与UI中的待办清单列表交互：
+Now that we have defined a `StateNotifierProvider`, we can use it to interact
+with the list of todos in our UI:
 
 <CodeBlock>{trimSnippet(todosConsumer)}</CodeBlock>
 

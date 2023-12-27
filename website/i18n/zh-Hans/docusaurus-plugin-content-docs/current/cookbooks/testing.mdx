@@ -1,5 +1,5 @@
 ---
-title: 测试
+title: Testing
 ---
 
 import Tabs from "@theme/Tabs";
@@ -12,35 +12,50 @@ import testFlutter from "!!raw-loader!/docs/cookbooks/testing_flutter.dart";
 import testDart from "!!raw-loader!/docs/cookbooks/testing_dart.dart";
 import testFull from "!!raw-loader!/docs/cookbooks/testing_full.dart";
 import testOverrideInfo from "!!raw-loader!/docs/cookbooks/testing_override_info.dart";
-import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+import { trimSnippet } from "@site/src/components/CodeSnippet";
 
-对任何中型到大型应用，测试应用都是至关重要的。
+:::caution
+<!---
+The content of this page may be outdated.  
+It will be updated in the future, but for now you may want to refer to the content
+in the top of the sidebar instead (introduction/essentials/case-studies/...)
+-->
+本页内容可能已经过时。  
+今后会进行更新，但目前您可能需要参考侧边栏顶部的内容（介绍/要点/应用案例/......）。
+:::
 
-为了成功地测试我们的应用，我们需要以下东西：
+For any medium to large-scale applications, it is critical to test the application.
 
-- `test` 和`testWidgets` 之间不应该保留任何状态。
-  这意味着应用中没有全局状态，或者所有的全局状态都应该在每次测试后重置。
+To successfully test our application, we will want the following things:
 
-- 能够强制我们的provider具有特定的状态，无论是通过模拟还是通过操纵它们直到我们达到所需的状态。
+- No state should be preserved between `test`/`testWidgets`.  
+  That means no global state in the application, or all global states should reset after each test.
 
-让我们来逐个看看 [Riverpod] 是如何帮助你处理这些问题的。
+- Being able to force our providers to have a specific state, either through
+  mocking or by manipulating them until we reach the desired state.
 
-## `test` 和`testWidgets` 之间不应该保留任何状态。
+Let's see one by one how [Riverpod] helps you with these.
 
-由于provider通常声明为全局变量，你可能会担心这一点。
-毕竟，全局状态使得测试非常困难，因为它可能需要漫长的 `配置(setUp)` 和 `销毁(tearDown)`。
+## No state should be preserved between `test`/`testWidgets`.
 
-但实际情况是虽然provider声明为全局的，但provider的状态却**不是**全局的。
+Since providers are usually declared as global variables, you might worry about
+that one.  
+After all, global state makes testing very difficult, because it can require
+lengthy `setUp`/`tearDown`.
 
-相反，它存储在一个名为 [ProviderContainer] 的对象中，
-如果你查看Dart的示例，你可能已经看到了这个对象。
-如果你还没有看，请了解这个 [ProviderContainer] 对象是由 [ProviderScope] 隐式创建的，
-这个widget可以让我们在Flutter项目中启用 [Riverpod]。
+But the reality is: While providers are declared as globals, the state of a provider
+is **not** global.
 
-具体来说，这意味着两个使用provider的 `testWidgets` 不共享任何状态。  
-因此，根本不需要任何 `配置(setUp)` 和 `销毁(tearDown)`。
+Instead, it is stored in an object named [ProviderContainer], which you may have
+seen if you looked at the dart-only examples.  
+If you haven't, know that this [ProviderContainer] object is implicitly created
+by [ProviderScope], the widget that enables [Riverpod] on our project.
 
-解释这么多不如来一个例子：
+Concretely what this means is, two `testWidgets` using providers do not share
+any state.  
+As such, there is no need for any `setUp`/`tearDown` at all.
+
+But an example is better than lengthy explanations:
 
 <Tabs
   defaultValue="testWidgets"
@@ -61,27 +76,35 @@ import { trimSnippet } from "../../../../../src/components/CodeSnippet";
 </TabItem>
 </Tabs>
 
-可以看到，虽然 `counterProvider` 被声明为全局变量，但测试间没有共享任何状态。  
-因此，如果以不同的顺序执行，我们不必担心我们的测试可能表现不同，因为它们是在完全隔离的情况下运行的。
+As you can see, while `counterProvider` was declared as a global, no state was
+shared between tests.  
+As such, we do not have to worry about our tests potentially behaving differently
+if executed in a different order, since they are running in complete isolation.
 
-## 在测试期间重写provider的行为
+## Overriding the behavior of a provider during tests.
 
-现实中，一个常见的应用可能有以下对象：
+A common real-world application may have the following objects:
 
-- 它将有一个 `Repository` 类，该类提供类型安全且简单的API来执行HTTP请求。
-- 一个管理应用程序状态的对象，可以使用 `Repository` 根据不同的因素来执行HTTP请求。
-  这可能是一个 `ChangeNotifier`， `Bloc`，甚至是一个provider。
+- It will have a `Repository` class, which provides a type-safe and simple API
+  to perform HTTP requests.
 
-使用 [Riverpod]，可以这样表示：
+- An object that manages the application state, and may use `Repository` to perform
+  HTTP requests based on different factors.
+  This may be a `ChangeNotifier`, `Bloc`, or even a provider.
+
+Using [Riverpod], this may be represented as follows:
 
 <CodeBlock>{trimSnippet(repositorySnippet)}</CodeBlock>
 
-在这种情况下，当进行单元测试或widget测试时，
-我们一般希望用一个返回预定义响应的伪实现来替换 `Repository` 实例，而不是发出真正的HTTP请求。
+In this situation, when making a unit/widget test, we will typically want to
+replace our `Repository` instance with a fake implementation that returns
+a pre-defined response instead of making a real HTTP request.
 
-然后，我们希望我们的 `todoListProvider` 或类似的组件使用 `Repository` 的模拟实现。
+We will then want our `todoListProvider` or equivalent to use the mocked implementation
+of `Repository`.
 
-为了实现这一点，我们可以使用[ProviderScope] 或 [ProviderContainer]的 `overrides` 参数来覆盖 `repositoryProvider` 的行为：
+To achieve this, we can use the `overrides` parameter of [ProviderScope]/[ProviderContainer]
+to override the behavior of `repositoryProvider`:
 
 <Tabs
   defaultValue="ProviderScope"
@@ -102,29 +125,30 @@ import { trimSnippet } from "../../../../../src/components/CodeSnippet";
 </TabItem>
 </Tabs>
 
-正如您可以从高亮的代码中看到的，[ProviderScope]/[ProviderContainer] 允许用不同的行为替换provider的实现。
+As you can see by the highlighted code, [ProviderScope]/[ProviderContainer]
+allows replacing the implementation of a provider with a different behavior.
 
 :::info
-一些provider暴露了重写其行为的简化方法。  
-例如，[FutureProvider] 允许使用 `AsyncValue` 重写provider：
+Some providers expose simplified ways to override their behavior.  
+For example, [FutureProvider] allows overriding the provider with an `AsyncValue`:
 
 <CodeBlock>{trimSnippet(testOverrideInfo)}</CodeBlock>
 
-**注意**：作为2.0.0版本的一部分， `overrideWithValue` 方法被暂时移除。
-它们将在未来的版本中重新添加。
+**Note**: As part of the 2.0.0 release, `overrideWithValue` methods are temporarily
+removed. They will be added back in later versions.
 
 :::
 
 :::info
-使用 `family` 修饰符覆盖provider的语法略有不同。
+The syntax for overriding a provider with the `family` modifier is slightly different.
 
-如果你像这样使用provider：
+If you used a provider like this:
 
 ```dart
 final response = ref.watch(myProvider('12345'));
 ```
 
-你可以这样覆盖provider：
+You could override the provider as:
 
 ```dart
 myProvider('12345').overrideWithValue(...));
@@ -132,9 +156,9 @@ myProvider('12345').overrideWithValue(...));
 
 :::
 
-## 完整的widget测试用例
+## Full widget test example
 
-最后，这里是我们Flutter测试的完整代码。
+Wrapping up, here is the entire full code for our Flutter test.
 
 <CodeBlock>{trimSnippet(testFull)}</CodeBlock>
 

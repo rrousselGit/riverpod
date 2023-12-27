@@ -1,0 +1,129 @@
+---
+title: 性能优化
+---
+
+import { AutoSnippet } from "@site/src/components/CodeSnippet";
+import select from "./select/select";
+
+import selectAsync from "./select/select_async";
+
+<!---
+With everything we've seen so far, we can already build a fully functional
+application. However, you may have questions regarding performance.
+-->
+通过到目前为止我们所看到的一切，我们已经可以构建一个功能齐全的应用程序。
+但是，您可能对性能有疑问。
+
+<!---
+In this page, we will cover a few tips and tricks to possibly optimize your code.
+-->
+在本页中，我们将介绍一些可能优化代码的提示和技巧。
+
+:::caution
+<!---
+Before doing any optimization, make sure to benchmark your application.
+The added complexity of the optimizations may not be worth minor gains.
+-->
+在进行任何优化之前，请确保对您的应用程序进行基准测试。
+优化所增加的复杂性可能不值得微小的收益。
+:::
+
+<!---
+## Filtering widget/provider rebuild using "select".
+-->
+## 使用 "select" 过滤小部件或提供者程序的重建。
+
+<!---
+You have have noticed that, by default, using `ref.watch` causes
+consumers/providers to rebuild whenever _any_ of the properties of an
+object changes.  
+For instance, watching a `User` and only using its "name" will still cause
+the consumer to rebuild if the "age" changes.
+-->
+您已经注意到，默认情况下，只要对象的任何属性发生更改，
+使用 `ref.watch` 都会导致消费者程序或提供者程序进行重建。  
+例如，观察 `User` 并仅使用其 "name"，
+如果 "age" 发生变化，仍然会导致消费者程序重建。
+
+<!---
+But in case you have a consumer using only a subset of the properties,
+you want to avoid rebuilding the widget when the other properties change.
+-->
+但如果您的使用者仅使用属性的子集，
+您希望避免在其他属性更改时重建小部件。
+
+<!---
+This can be achieved by using the `select` functionality of providers.  
+When doing so, `ref.watch` will no-longer return the full object,
+but rather the selected properties.  
+And your consumers/providers will now rebuild only if those selected
+properties change.
+-->
+这可以通过使用提供者程序的 `select` 功能来实现。  
+这样做时，`ref.watch` 将不再返回完整对象，
+而是返回选定的属性。  
+现在，仅当这些选定的属性发生变化时，
+您的消费者程序或提供者程序才会重建。
+
+<AutoSnippet {...select} />
+
+:::info
+<!---
+It is possible to call `select` as many times as you wish.
+You are free to call it once per property you desire.
+-->
+您可以根据需要多次调用 `select`。
+您可以为您想要的每个属性自由调用一次。
+:::
+
+:::caution
+<!---
+The selected properties are expected to be immutable.
+Returning a `List` and then mutating that list will not trigger a rebuild.
+-->
+所选属性希望是不可变的对象。
+返回 `List` 然后改变该列表不会触发重建。
+:::
+
+:::caution
+<!---
+Using `select` slightly slows down invididual read operations and
+increase a tiny bit the complexity of your code.  
+It may not be worth using it if those "other properties"
+rarely change.
+-->
+使用 `select` 会稍微减慢单个读取操作的速度，
+并稍微增加代码的复杂性。  
+如果那些“其他属性”很少改变，那么可能不值得使用它。
+:::
+
+<!---
+### Selecting asynchronous properties
+-->
+### 选择异步属性​
+
+<!---
+In case you are trying to optimize a provider listening to another provider,
+chances are that other provider is asynchronous.
+-->
+考虑一种情况，如果您尝试优化一个监听其他提供者程序的提供者程序，
+其他提供者程序很可能是异步的。
+
+<!---
+Normally, you would `ref.watch(anotherProvider.future)` to get the value.  
+The issue is, `select` will apply on an `AsyncValue` – which is not something
+you can await.
+-->
+通常，您可以使用 `ref.watch(anotherProvider.future)` 来获取该值。  
+问题是，`select` 将应用于 `AsyncValue` - 这不是您可以等待的事情。
+
+<!---
+For this purpose, you can instead use `selectAsync`. It is unique to asynchronous
+code, and enables performing a `select` operation on the data emitted by a provider.  
+Its usage is similar to that of `select`, but returns a `Future` instead:
+-->
+为此，您可以使用 `selectAsync`。它是异步代码所独有的，
+并且允许对提供者程序发出的数据执行 `select` 操作。  
+它的用法与 `select` 类似，但返回一个 `Future` 类型：
+
+<AutoSnippet {...selectAsync} />

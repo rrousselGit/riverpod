@@ -5,9 +5,9 @@ import '../todo/raw.dart';
 /* SNIPPET START */
 
 final completedTodosProvider = Provider<List<Todo>>((ref) {
-  // 我们从todosProvider获取所有待办清单
+  // We obtain the list of all todos from the todosProvider
   final todos = ref.watch(todosProvider);
 
-  // // 我们只返回完成的待办事项
+  // we return only the completed todos
   return todos.where((todo) => todo.isCompleted).toList();
 });

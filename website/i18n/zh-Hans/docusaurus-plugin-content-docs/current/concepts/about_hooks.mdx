@@ -1,0 +1,570 @@
+---
+title: 关于 Hooks（钩子）
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import hookAndConsumer from "!!raw-loader!./about_hooks/hook_and_consumer.dart";
+import hookConsumer from "!!raw-loader!./about_hooks/hook_consumer.dart";
+import hookConsumerWidget from "!!raw-loader!./about_hooks/hook_consumer_widget.dart";
+import { CodeSnippet } from "@site/src/components/CodeSnippet";
+import { Link } from "@site/src/components/Link";
+
+<!---
+This page explains what are hooks and how they are related to Riverpod.
+-->
+本页介绍了什么是 Hooks 以及它们与 Riverpod 的关系。
+
+<!---
+"Hooks" are utilities common from a separate package, independent from Riverpod:
+[flutter_hooks].  
+Although [flutter_hooks] is a completely separate package and does not have anything
+to do with Riverpod (at least directly), it is common to pair Riverpod
+and [flutter_hooks] together.
+-->
+"Hooks" 是独立于 Riverpod 的单独包中常见的实用程序：[flutter_hooks]。  
+虽然 [flutter_hooks] 是一个完全独立的包，
+并且与 Riverpod 没有任何关系（至少没有直接关系），
+但通常将 Riverpod 和 [flutter_hooks] 配对在一起。
+
+<!---
+## Should you use hooks?
+-->
+## 你应该使用 hooks 吗？​
+
+<!---
+Hooks are a powerful tool, but they are not for everyone.  
+If you are a newcomer to Riverpod, you should probably avoid using hooks.
+-->
+Hooks 是一个强大的工具，但并不适合所有人。  
+如果您是 Riverpod 的新手，您可能应该避免使用 hooks。
+
+<!---
+Although useful, hooks are not necessary for Riverpod.  
+You shouldn't start using hooks because of Riverpod. Rather, you should start
+using hooks because you want to use hooks.
+-->
+虽然 hooks 很有用，但对于 Riverpod 来说并不是必需的。  
+您不应该为了 Riverpod 开始使用 hooks。
+相反，您开始使用 hooks，是因为您想使用 hooks。
+
+<!---
+Using hooks is a tradeoff. They can be great for producing robust and reusable
+code, but they are also a new concept to learn, and they can be confusing at first.
+Hooks aren't a core Flutter concept. As such, they will feel out of place in Flutter/Dart.
+-->
+使用 hooks 是一种权衡。它们非常适合生成健壮且可重用的代码，
+但它们也是一个需要学习的新概念，一开始可能会令人困惑。
+Hooks 不是 Flutter 的核心概念。因此，它们在 Flutter/Dart 中会感觉格格不入。
+
+<!---
+## What are hooks?
+-->
+## 什么是 Hooks？​
+
+<!---
+Hooks are functions used inside widgets. They are designed as an alternative
+to [StatefulWidget]s, to make logic more reusable and composable.
+-->
+Hooks 是小部件内部使用的函数。它们被设计为 [StatefulWidget] 的替代品，
+以使逻辑更加可重用和可组合。
+
+<!---
+Hooks are a concept coming from [React](https://reactjs.org/), and [flutter_hooks]
+is merely a port of the React implementation to Flutter.  
+As such, yes, hooks may feel a bit out of place in Flutter. Ideally,
+in the future we would have a solution to the problem that hooks solves,
+designed specifically for Flutter.
+-->
+Hooks 是来自 [React](https://reactjs.org/) 的一个概念，[flutter_hooks]
+只是 React 实现到 Flutter 的一个端口。  
+因此，是的，hooks 在 Flutter 中可能感觉有点不合适。理想情况下，
+未来我们会有一个专门为 Flutter 设计的 Hooks 解决问题的解决方案。
+
+<!---
+If Riverpod's providers are for "global" application state, hooks are for
+local widget state. Hooks are typically used for dealing with stateful UI objects,
+such as [TextEditingController](https://api.flutter.dev/flutter/widgets/TextEditingController-class.html),
+[AnimationController](https://api.flutter.dev/flutter/animation/AnimationController-class.html).  
+They can also serve as a replacement to the "builder" pattern, replacing widgets
+such as [FutureBuilder](https://api.flutter.dev/flutter/widgets/FutureBuilder-class.html)/[TweenAnimatedBuilder](https://api.flutter.dev/flutter/widgets/TweenAnimationBuilder-class.html)
+by an alterative that does not invole "nesting" – drastically improving readability.
+-->
+如果 Riverpod 的提供者程序用于“全局”应用程序状态，则 Hooks 用于本地小部件状态。
+Hooks 通常用于处理有状态的 UI 对象，例如 [TextEditingController](https://api.flutter.dev/flutter/widgets/TextEditingController-class.html)、
+[AnimationController](https://api.flutter.dev/flutter/animation/AnimationController-class.html)。  
+它们还可以作为“构建器”模式的替代品，用不涉及“嵌套”的替代方案替换诸如
+[FutureBuilder](https://api.flutter.dev/flutter/widgets/FutureBuilder-class.html)/[TweenAnimatedBuilder](https://api.flutter.dev/flutter/widgets/TweenAnimationBuilder-class.html)
+之类的小部件，从而大大提高可读性。
+
+<!---
+In general, hooks are helpful for:
+-->
+一般来说，钩子有助于：
+
+<!---
+- forms
+- animations
+- reacting to user events
+- ...
+-->
+- 表单
+- 动画
+- 对用户事件做出反应
+- ……
+
+<!---
+As an example, we could use hooks to manually implement a fade-in animation,
+where a widget starts invisible and slowly appears.
+-->
+例如，我们可以使用钩子手动实现淡入动画，其中小部件开始不可见并慢慢出现。
+
+<!---
+If we were to use [StatefulWidget], the code would look like this:
+-->
+如果我们使用 [StatefulWidget]，代码将如下所示：
+
+```dart
+class FadeIn extends StatefulWidget {
+  const FadeIn({Key? key, required this.child}) : super(key: key);
+
+  final Widget child;
+
+  @override
+  State<FadeIn> createState() => _FadeInState();
+}
+
+class _FadeInState extends State<FadeIn> with SingleTickerProviderStateMixin {
+  late final AnimationController animationController = AnimationController(
+    vsync: this,
+    duration: const Duration(seconds: 2),
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    animationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: animationController,
+      builder: (context, child) {
+        return Opacity(
+          opacity: animationController.value,
+          child: widget.child,
+        );
+      },
+    );
+  }
+}
+```
+
+<!---
+Using hooks, the equivalent would be:
+-->
+使用 hooks，相当于：
+
+```dart
+class FadeIn extends HookWidget {
+  const FadeIn({Key? key, required this.child}) : super(key: key);
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    // 创建一个 AnimationController。
+    // 卸载 widget 时，控制器将自动处置。
+    final animationController = useAnimationController(
+      duration: const Duration(seconds: 2),
+    );
+
+    // useEffect 相当于 initState + didUpdateWidget + dispose。
+    // 传给 useEffect 的回调会在第一次调用钩子时执行，
+    // 然后每当作为第二个参数传递的列表发生变化时也会执行。
+    // 由于我们在这里传递的是一个空的常量列表，
+    // 因此严格意义上等同于 `initState`。
+    useEffect(() {
+      // 在首次呈现 widget 时启动动画。
+      animationController.forward();
+      // 我们可以选择在这里返回一些“处置”逻辑
+      return null;
+    }, const []);
+
+    // 告诉 Flutter 在动画更新时重建此部件。
+    // 这相当于 AnimatedBuilder
+    useAnimation(animationController);
+
+    return Opacity(
+      opacity: animationController.value,
+      child: child,
+    );
+  }
+}
+```
+
+<!---
+There are a few interesting things to note in this code:
+-->
+这段代码中有一些有趣的事情需要注意：
+
+<!---
+- There is no memory leak. This code does not recreate a new `AnimationController` whenever the
+  widget rebuild, and the controller is correctly released when the widget is unmounted.
+-->
+- 不存在内存泄漏。每当小部件重建时，此代码都不会重新创建新的 `AnimationController`，
+  并且在卸载小部件时正确处置控制器。
+
+<!---
+- It is possible to use hooks as many time as we want within the same widget.
+  As such, we can create multiple `AnimationController` if we want:
+
+  ```dart
+  @override
+  Widget build(BuildContext context) {
+    final animationController = useAnimationController(
+      duration: const Duration(seconds: 2),
+    );
+    final anotherController = useAnimationController(
+      duration: const Duration(seconds: 2),
+    );
+
+    ...
+  }
+  ```
+
+  This creates two controllers, without any sort of negative consequence.
+-->
+- 在同一个小部件中可以根据需要多次使用钩子。
+  因此，如果我们愿意，我们可以创建多个 `AnimationController`：
+
+  ```dart
+  @override
+  Widget build(BuildContext context) {
+    final animationController = useAnimationController(
+      duration: const Duration(seconds: 2),
+    );
+    final anotherController = useAnimationController(
+      duration: const Duration(seconds: 2),
+    );
+
+    ...
+  }
+  ```
+
+  这会创建两个控制器，不会产生任何负面后果。
+
+<!---
+- If we wanted, we could refactor this logic into a separate reusable function:
+
+  ```dart
+  double useFadeIn() {
+    final animationController = useAnimationController(
+      duration: const Duration(seconds: 2),
+    );
+    useEffect(() {
+      animationController.forward();
+      return null;
+    }, const []);
+    useAnimation(animationController);
+    return animationController.value;
+  }
+  ```
+
+  We could then use this function inside our widgets, as long as that widget is a [HookWidget]:
+
+  ```dart
+  class FadeIn extends HookWidget {
+    const FadeIn({Key? key, required this.child}) : super(key: key);
+
+    final Widget child;
+
+    @override
+    Widget build(BuildContext context) {
+      final fade = useFadeIn();
+
+      return Opacity(opacity: fade, child: child);
+    }
+  }
+  ```
+
+  Note how our `useFadeIn` function is completely independent from our
+  `FadeIn` widget.  
+  If we wanted, we could use that `useFadeIn` function in a completely different
+  widget, and it would still work!
+-->
+- 如果我们愿意，我们可以将此逻辑重构为一个单独的可重用函数：
+
+  ```dart
+  double useFadeIn() {
+    final animationController = useAnimationController(
+      duration: const Duration(seconds: 2),
+    );
+    useEffect(() {
+      animationController.forward();
+      return null;
+    }, const []);
+    useAnimation(animationController);
+    return animationController.value;
+  }
+  ```
+
+  然后我们可以在我们的小部件中使用这个函数，只要该小部件是 [HookWidget]：
+
+  ```dart
+  class FadeIn extends HookWidget {
+    const FadeIn({Key? key, required this.child}) : super(key: key);
+
+    final Widget child;
+
+    @override
+    Widget build(BuildContext context) {
+      final fade = useFadeIn();
+
+      return Opacity(opacity: fade, child: child);
+    }
+  }
+  ```
+
+  请注意我们的 `useFadeIn` 函数是如何完全独立于我们的 `FadeIn` 小部件的。  
+  如果我们愿意，我们可以在完全不同的小部件中使用该 `useFadeIn` 函数，并且它仍然可以工作！
+
+<!---
+## The rules of hooks
+-->
+## hooks 的规则​
+
+<!---
+Hooks comes with unique constraints:
+-->
+Hooks 具有独特的约束：
+
+<!---
+- They can only be used within the `build` method of a widget that extends [HookWidget]:
+
+  **Good**:
+
+  ```dart
+  class Example extends HookWidget {
+    @override
+    Widget build(BuildContext context) {
+      final controller = useAnimationController();
+      ...
+    }
+  }
+  ```
+
+  **Bad**:
+
+  ```dart
+  // Not a HookWidget
+  class Example extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      final controller = useAnimationController();
+      ...
+    }
+  }
+  ```
+
+  **Bad**:
+
+  ```dart
+  class Example extends HookWidget {
+    @override
+    Widget build(BuildContext context) {
+      return ElevatedButton(
+        onPressed: () {
+          // Not _actually_ inside the "build" method, but instead inside
+          // a user interaction lifecycle (here "on pressed").
+          final controller = useAnimationController();
+        },
+        child: Text('click me'),
+      );
+    }
+  }
+  ```
+-->
+- 它们只能在扩展 [HookWidget] 的小部件的 `build` 方法中使用：
+
+  **好**:
+
+  ```dart
+  class Example extends HookWidget {
+    @override
+    Widget build(BuildContext context) {
+      final controller = useAnimationController();
+      ...
+    }
+  }
+  ```
+
+  **坏**:
+
+  ```dart
+  // 不是 HookWidget
+  class Example extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      final controller = useAnimationController();
+      ...
+    }
+  }
+  ```
+
+  **坏**:
+
+  ```dart
+  class Example extends HookWidget {
+    @override
+    Widget build(BuildContext context) {
+      return ElevatedButton(
+        onPressed: () {
+          // _实际上_不是在 "build" 方法中，
+          // 而是在用户交互生命周期中（这里是 "按下时"）。
+          final controller = useAnimationController();
+        },
+        child: Text('click me'),
+      );
+    }
+  }
+  ```
+
+<!---
+- They cannot be used conditionally or in a loop.
+
+  **Bad**:
+
+  ```dart
+  class Example extends HookWidget {
+    const Example({required this.condition, super.key});
+    final bool condition;
+    @override
+    Widget build(BuildContext context) {
+      if (condition) {
+        // Hooks should not be used inside "if"s/"for"s, ...
+        final controller = useAnimationController();
+      }
+      ...
+    }
+  }
+  ```
+-->
+- 它们不能在条件语句或在循环语句中使用。
+
+  **坏**:
+
+  ```dart
+  class Example extends HookWidget {
+    const Example({required this.condition, super.key});
+    final bool condition;
+    @override
+    Widget build(BuildContext context) {
+      if (condition) {
+        // 不应该在 "if"/"for"/... 中使用 Hooks
+        final controller = useAnimationController();
+      }
+      ...
+    }
+  }
+  ```
+
+<!---
+For more information about hooks, see [flutter_hooks].
+-->
+有关钩子的更多信息，请参阅 [flutter_hooks]。
+
+<!---
+## Hooks and Riverpod
+-->
+## Hooks 和 Riverpod
+
+<!---
+### Installation
+-->
+### 安装
+
+<!---
+Since hooks are independent from Riverpod, it is necessary to install hooks
+separately. If you want to use them, installing [hooks_riverpod] is not
+enough. You will still need to add [flutter_hooks] to your dependencies.
+See <Link documentID="introduction/getting_started" hash="installing-the-package" />) for more information.
+-->
+由于 Hooks 与 Riverpod 是独立的，因此需要单独安装 Hooks。
+如果你想使用它们，安装 [hooks_riverpod] 是不够的。
+您仍然需要将 [flutter_hooks] 添加到您的依赖项中。
+请参阅 <Link documentID="introduction/getting_started" hash="installing-the-package" /> 了解更多信息。
+
+<!---
+### Usage
+-->
+### 用途​
+
+<!---
+In some cases, you may want to write a Widget that uses both hooks and Riverpod.
+But as you may have already noticed, both hooks and Riverpod provide their
+own custom widget base type: [HookWidget] and [ConsumerWidget].  
+But classes can only extend one superclass at a time.
+-->
+在某些情况下，您可能想要编写一个同时使用 hooks 和 Riverpod 的 Widget。
+但您可能已经注意到，Hooks 和 Riverpod 都提供了自己的
+自定义小部件基本类型：[HookWidget] 和 [ConsumerWidget]。  
+但类一次只能扩展一个父类。
+
+<!---
+To solve this problem, you can use the [hooks_riverpod] package.
+This package provides a [HookConsumerWidget] class that combines both
+[HookWidget] and [ConsumerWidget] into a single type.  
+You can therefore subclass [HookConsumerWidget] instead of [HookWidget]:
+-->
+为了解决这个问题，你可以使用 [hooks_riverpod] 包。
+该包提供了一个 [HookConsumerWidget] 类，
+它将 [HookWidget] 和 [ConsumerWidget] 组合成一个类型。  
+因此，您可以继承 [HookConsumerWidget] 而不是 [HookWidget]：
+
+<CodeSnippet snippet={hookConsumerWidget}></CodeSnippet>
+
+<!---
+Alternatively, you can use the "builders" provided by both packages.  
+For example, we could stick to using `StatelessWidget`, and use both
+`HookBuilder` and `Consumer`.
+-->
+或者，您可以使用两个包提供的“构建器 builder”。  
+例如，我们可以坚持使用 `StatelessWidget`，
+并同时使用 `HookBuilder` 和 `Consumer`。
+
+<CodeSnippet snippet={hookAndConsumer}></CodeSnippet>
+
+:::note
+<!---
+This approach would work without using [hooks_riverpod]. Only [flutter_riverpod]
+is needed.
+-->
+这种方法无需使用 `hooks_riverpod` 即可工作。只需要 `flutter_riverpod`。
+:::
+
+<!---
+If you like this approach, [hooks_riverpod] streamlines it by providing [HookConsumer],
+which is the combination of both builders in one:
+-->
+如果您喜欢这种方法，[hooks_riverpod] 通过提供 [HookConsumer] 来简化它，
+它是两个构建器的组合：
+
+<CodeSnippet snippet={hookConsumer}></CodeSnippet>
+
+[hookwidget]: https://pub.dev/documentation/flutter_hooks/latest/flutter_hooks/HookWidget-class.html
+[hookconsumer]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/HookConsumer-class.html
+[hookconsumerwidget]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/HookConsumerWidget-class.html
+[consumerwidget]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ConsumerWidget-class.html
+[statefulwidget]: https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html
+[riverpod]: https://github.com/rrousselgit/riverpod
+[hooks_riverpod]: https://pub.dev/packages/hooks_riverpod
+[flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
+[flutter_hooks]: https://github.com/rrousselGit/flutter_hooks

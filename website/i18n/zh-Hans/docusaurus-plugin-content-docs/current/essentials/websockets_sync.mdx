@@ -1,0 +1,197 @@
+---
+title: Websocket 和同步执行
+---
+
+import {
+  trimSnippet,
+  AutoSnippet,
+  When,
+} from "@site/src/components/CodeSnippet";
+import syncDefinition from "./websockets_sync/sync_definition";
+import streamProvider from "./websockets_sync/stream_provider";
+import syncConsumer from "!!raw-loader!./websockets_sync/sync_consumer.dart";
+import rawUsage from "!!raw-loader!./websockets_sync/raw_usage.dart";
+import pipeChangeNotifier from "!!raw-loader!./websockets_sync/pipe_change_notifier.dart";
+import sharedPipeChangeNotifier from "!!raw-loader!./websockets_sync/shared_pipe_change_notifier.dart";
+import changeNotifierProvider from "!!raw-loader!./websockets_sync/change_notifier_provider.dart";
+
+<!---
+So far, we've only covered on how to create a `Future`.  
+This is on purpose, as `Future`s are the core of how Riverpod applications
+should be built. _But_, Riverpod also supports other formats if necessary.
+-->
+到目前为止，我们只介绍了如何创建一个 `Future`。  
+这是有意为之的，因为 `Future` 是 Riverpod 应用程序构建方式的核心。
+_但是_，如有必要，Riverpod 还支持其他格式。
+
+<!---
+In particular, instead of a `Future`, providers are free to:
+-->
+特别是，除了 `Future` 类型的提供者程序，还存在灵活的类型：
+
+<!---
+- Synchronously return an object, such as to create a "Repository".
+- Return a `Stream`, such as to listen to websockets.
+-->
+- 同步返回一个对象，例如创建“存储库”。
+- 返回一个 `Stream`，例如监听 websockets。
+
+<!---
+Returning a `Future` and returning a `Stream` or an object
+is quite similar overall. Think of this page as
+an explanation of subtle differences and various tips for those use-cases.
+-->
+返回 `Future` 和返回 `Stream` 或 object 总体上非常相似。
+本页将解释这些用例的细微差别和各种提示。
+
+<!---
+## Synchronously returning an object
+-->
+## 同步返回对象
+
+<!---
+To synchronously create an object, make sure that your
+provider does not return a Future:
+-->
+若要同步创建对象，请确保提供者程序不返回 Future：
+
+<AutoSnippet {...syncDefinition} />
+
+<!---
+When a provider synchronously creates an object,
+this impacts how the object is consumed.
+In particular, synchronous values are not wrapped
+in an "AsyncValue":
+-->
+当提供者程序同步创建对象时，这会影响对象的使用方式。
+具体而言，同步值不会被包装在“AsyncValue”中：
+
+<AutoSnippet raw={syncConsumer} />
+
+<!---
+The consequence of this difference is that if your provider
+throws, trying to read the value will rethrow the error.
+Alternatively, when using `ref.listen`, the "onError" callback
+will be invoked.
+-->
+这种差异的后果是，如果提供者程序抛出异常，尝试读取该值会重新抛出错误。
+或者，当使用 `ref.listen` 时，将调用 “onError” 回调。
+
+<!---
+### Listenable objects considerations
+-->
+### 可监听对象的注意事项
+
+<When codegen={true}>
+
+<!---
+Listenable objects such as `ChangeNotifier` or `StateNotifier` are not supported.  
+If, for compatibility reasons, you need to interact with one of such objects,
+one workaround is to pipe their notification mechanism to Riverpod.
+-->
+可监听对象，例如 `ChangeNotifier` 或 `StateNotifier` 是不受支持的。  
+如果出于兼容性原因，您需要与其中一个对象进行交互，
+一种解决方法是将其通知机制通过管道传递给 Riverpod。
+
+<AutoSnippet raw={pipeChangeNotifier} />
+
+:::info
+<!---
+In case you need such logic many times, it is worth noting that
+the logic shared! The "ref" object is designed to be composable.
+This enables extracting the dispose/listening logic out of the provider:
+-->
+如果你多次需要这样的逻辑，值得注意的是，
+逻辑是共享的！"ref" 对象被设计为可组合的。
+这样就可以从提供者程序中提取处置/监听逻辑：
+
+<AutoSnippet raw={sharedPipeChangeNotifier} />
+:::
+
+</When>
+
+<When codegen={false}>
+
+<!---
+When not using code-generation, Riverpod offers "legacy" providers
+to support `ChangeNotifier` and `StateNotifier` out of the box:
+`ChangeNotifierProvider` and `StateNotifierProvider`. Using them is
+similar to using other kinds of providers. The main difference is
+that they will both listen and dispose of the returned object automatically.
+-->
+当不使用代码生成时，Riverpod 提供了“传统”的提供者程序来支持
+`ChangeNotifier` 和 `StateNotifier` 开箱即用：
+`ChangeNotifierProvider` 和 `StateNotifierProvider`。
+使用它们就像使用其他类型的提供者程序一样。
+主要区别在于它们将自动监听和处置返回的对象。
+
+<!---
+These providers are not recommended for new business logic.
+But they can be helpful when interacting with legacy code,
+such as when migrating from `pkg:provider` to Riverpod.
+-->
+不建议将这些提供者程序用于新的业务逻辑。
+但是，在与旧代码混合编写时（例如从 `pkg:provider` 迁移到 Riverpod 时），
+它们可能会有所帮助。
+
+<AutoSnippet raw={changeNotifierProvider} />
+
+</When>
+
+<!---
+## Listening to a Stream
+-->
+## 监听一个流
+
+<!---
+A common use-case of modern applications is to interact with websockets,
+such as with Firebase or GraphQL subscriptions.  
+Interacting with those APIs is often done by listening to a `Stream`.
+-->
+现代应用程序的一个常见用例是与 Websocket 交互，
+例如与 Firebase 或 GraphQL 订阅进行交互。  
+与这些 API 的交互通常是通过监听一个 `Stream`。
+
+<!---
+To help with that, Riverpod naturally supports `Stream` objects.
+Like with `Future`s, the object will be converted to an `AsyncValue`:
+-->
+为了帮助实现这一点，Riverpod 自然地支持 `Stream` 对象。
+与 `Future` 一样，该对象将转换为 `AsyncValue`：
+
+<AutoSnippet {...streamProvider} />
+
+:::info
+<!---
+Riverpod is not aware of custom `Stream` implementations, such as
+RX's `BehaviorSubject`.
+As such, returning a `BehaviorSubject` will not expose the `value`
+synchronously to widgets, even if already available on creation.
+-->
+Riverpod 不知道自定义 `Stream` 实现，例如 RX 的 `BehaviorSubject`。
+因此，返回 `BehaviorSubject` 不会同步向小部件公开，`value` 即使在创建时已经可用。
+:::
+
+<!---
+## Disabling conversion of `Stream`s/`Future`s to `AsyncValue`
+-->
+## 禁用从 `Stream` / `Future` 转换到 `AsyncValue`
+
+<!---
+By default, Riverpod will convert `Stream`s and `Future`s to `AsyncValue`.
+Although rarely needed, it is possible to disable this behavior by wrapping
+the return type in a `Raw` typedef.
+-->
+默认情况下，Riverpod 会将 `Stream` 和 `Future` 转换为 `AsyncValue`。
+尽管很少需要，但可以通过将返回类型包装在 `Raw` 泛型中来禁用此行为。
+
+:::caution
+<!---
+It is generally discouraged to disable the `AsyncValue` conversion.
+Do so only if you know what you are doing.
+-->
+通常不建议禁用转换 `AsyncValue`。
+只有当您知道自己在做什么时才这样做。
+:::
+
+<AutoSnippet raw={rawUsage} />

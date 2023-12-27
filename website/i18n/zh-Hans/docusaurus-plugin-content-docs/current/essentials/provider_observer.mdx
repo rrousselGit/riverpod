@@ -1,0 +1,79 @@
+---
+title: 日志和错误报告
+---
+
+import { Link } from "@site/src/components/Link";
+import { AutoSnippet, When } from "@site/src/components/CodeSnippet";
+import providerObserver from "!!raw-loader!./provider_observer/provider_observer.dart";
+
+<!---
+Riverpod natively offers a way to listen to all events happening
+in the provider tree.  
+This can be used to log all the events, or to report errors to a
+remote service.
+-->
+Riverpod 本身提供了一种监听提供者程序树中发生的所有事件的方法。  
+这可用于记录所有事件，或向远程服务报告错误。
+
+<!---
+This is achieved by using the `ProviderObserver` class,
+and passing it to `ProviderScope`/`ProviderContainer`.
+-->
+这是通过使用 `ProviderObserver` 类并将其传递给
+`ProviderScope`/`ProviderContainer` 来实现的。
+
+<!---
+## Defining a ProviderObserver
+-->
+## 定义 ProviderObserver ​
+
+<!---
+A `ProviderObserver` is a class that should be extended.  
+It offers various methods which can be overridden to listen to events:
+-->
+ProviderObserver 是一个应该被扩展的类。  
+它提供了各种可以重写的方法来监听事件：
+
+<!---
+- `didAddProvider`, called when a provider is added to the tree
+- `didUpdateProvider`, called when a provider is updated
+- `didDisposeProvider`, called when a provider is disposed
+- `providerDidFail`, when a synchronous provider throws an error
+-->
+- `didAddProvider`，当提供者程序被添加到组件树时调用
+- `didUpdateProvider`，当提供者程序更新时调用
+- `didDisposeProvider`，当提供者程序被处置时调用
+- `providerDidFail`，当同步的提供者程序抛出错误时
+
+<AutoSnippet raw={providerObserver} />
+
+<!---
+## Using a ProviderObserver
+-->
+## 使用 ProviderObserver​
+
+<!---
+Now that we've defined an observer, we need to use it.  
+To do so, we should pass it to either `ProviderScope` or `ProviderContainer`:
+-->
+现在我们已经定义了观察者，我们需要使用它。  
+为此，我们应该将其传递给 `ProviderScope` 或 `ProviderContainer` ：
+
+```dart
+runApp(
+  ProviderScope(
+    observers: [
+      MyObserver(),
+    ],
+    child: MyApp(),
+  )
+);
+```
+
+```dart
+final container = ProviderContainer(
+  observers: [
+    MyObserver(),
+  ],
+);
+```

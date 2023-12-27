@@ -1,8 +1,6 @@
 // ignore_for_file: use_key_in_widget_constructors, omit_local_variable_types
 
-/* SNIPPET START */
-
-import 'package:flutter/material.dart';
+/* SNIPPET START */ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
