@@ -136,12 +136,12 @@ class GenericsFamily extends Family {
 }
 
 class _$GenericsFamilyOverride implements FamilyOverride {
-  _$GenericsFamilyOverride(this.overriddenFamily, this.create);
+  _$GenericsFamilyOverride(this.from, this.create);
 
   final Generics Function() create;
 
   @override
-  final GenericsFamily overriddenFamily;
+  final GenericsFamily from;
 
   @override
   GenericsProvider getProviderOverride(
@@ -188,7 +188,7 @@ class GenericsProvider<A extends num, B>
   Override overrideWith(Generics<A, B> Function() create) {
     return ProviderOverride(
       origin: this,
-      override: GenericsProvider<A, B>._internal(
+      providerOverride: GenericsProvider<A, B>._internal(
         () => create(),
         from: from,
         name: null,
@@ -297,12 +297,12 @@ class NoGenericsFamily extends Family {
 }
 
 class _$NoGenericsFamilyOverride implements FamilyOverride {
-  _$NoGenericsFamilyOverride(this.overriddenFamily, this.create);
+  _$NoGenericsFamilyOverride(this.from, this.create);
 
   final NoGenerics Function() create;
 
   @override
-  final NoGenericsFamily overriddenFamily;
+  final NoGenericsFamily from;
 
   @override
   NoGenericsProvider getProviderOverride(
@@ -350,7 +350,7 @@ class NoGenericsProvider<A extends num, B>
   Override overrideWith(NoGenerics<A, B> Function() create) {
     return ProviderOverride(
       origin: this,
-      override: NoGenericsProvider<A, B>._internal(
+      providerOverride: NoGenericsProvider<A, B>._internal(
         () => create(),
         from: from,
         name: null,
@@ -459,12 +459,12 @@ class MissingGenericsFamily extends Family {
 }
 
 class _$MissingGenericsFamilyOverride implements FamilyOverride {
-  _$MissingGenericsFamilyOverride(this.overriddenFamily, this.create);
+  _$MissingGenericsFamilyOverride(this.from, this.create);
 
   final MissingGenerics Function() create;
 
   @override
-  final MissingGenericsFamily overriddenFamily;
+  final MissingGenericsFamily from;
 
   @override
   MissingGenericsProvider getProviderOverride(
@@ -512,7 +512,7 @@ class MissingGenericsProvider<A, B>
   Override overrideWith(MissingGenerics<A, B> Function() create) {
     return ProviderOverride(
       origin: this,
-      override: MissingGenericsProvider<A, B>._internal(
+      providerOverride: MissingGenericsProvider<A, B>._internal(
         () => create(),
         from: from,
         name: null,
@@ -620,12 +620,12 @@ class WrongOrderFamily extends Family {
 }
 
 class _$WrongOrderFamilyOverride implements FamilyOverride {
-  _$WrongOrderFamilyOverride(this.overriddenFamily, this.create);
+  _$WrongOrderFamilyOverride(this.from, this.create);
 
   final WrongOrder Function() create;
 
   @override
-  final WrongOrderFamily overriddenFamily;
+  final WrongOrderFamily from;
 
   @override
   WrongOrderProvider getProviderOverride(
@@ -673,7 +673,7 @@ class WrongOrderProvider<A, B>
   Override overrideWith(WrongOrder<A, B> Function() create) {
     return ProviderOverride(
       origin: this,
-      override: WrongOrderProvider<A, B>._internal(
+      providerOverride: WrongOrderProvider<A, B>._internal(
         () => create(),
         from: from,
         name: null,

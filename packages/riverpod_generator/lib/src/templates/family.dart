@@ -130,7 +130,7 @@ class FamilyTemplate extends Template {
   ) {
     return ProviderOverride(
       origin: this,
-      override: ${provider._providerImplName}$typeParametersUsage._internal(
+      providerOverride: ${provider._providerImplName}$typeParametersUsage._internal(
         (ref) => create(ref as ${provider._refImplName}$typeParametersUsage),
         from: from,
         name: null,
@@ -229,7 +229,7 @@ abstract class $notifierTypedefName$typeParametersDefinition extends $notifierBa
   Override overrideWith(${provider.name}$typeParametersUsage Function() create) {
     return ProviderOverride(
       origin: this,
-      override: ${provider._providerImplName}$typeParametersUsage._internal(
+      providerOverride: ${provider._providerImplName}$typeParametersUsage._internal(
         () => create()$cascadePropertyInit,
         from: from,
         name: null,
@@ -349,12 +349,12 @@ class $familyName extends Family {
 }
 
 class $familyOverrideClassName implements FamilyOverride {
-  $familyOverrideClassName(this.overriddenFamily, this.create);
+  $familyOverrideClassName(this.from, this.create);
 
   final $createType create;
 
   @override
-  final $familyName overriddenFamily;
+  final $familyName from;
 
   @override
   $providerTypeNameImpl getProviderOverride(

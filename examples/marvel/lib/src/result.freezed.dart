@@ -118,7 +118,7 @@ class _$ResultDataImpl<T> extends _ResultData<T> {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$ResultDataImpl<T> &&
@@ -257,7 +257,7 @@ class _$ResultErrorImpl<T> extends _ResultError<T> {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$ResultErrorImpl<T> &&

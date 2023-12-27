@@ -116,7 +116,7 @@ class _$CharacterPaginationImpl implements _CharacterPagination {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$CharacterPaginationImpl &&
@@ -252,7 +252,7 @@ class _$CharacterOffsetImpl implements _CharacterOffset {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$CharacterOffsetImpl &&
