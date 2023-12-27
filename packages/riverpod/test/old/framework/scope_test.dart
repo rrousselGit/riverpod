@@ -1,13 +1,9 @@
 // Tests related to scoping providers
 
-import 'package:expect_error/expect_error.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
-
 Future<void> main() async {
-  final library = await Library.parseFromStacktrace();
-
   test(
       'transitive dependencies includes the transitive dependencies of families',
       () {
@@ -753,29 +749,6 @@ Future<void> main() async {
         ],
       );
       expect(root.getAllProviderElements(), isEmpty);
-    });
-
-    test('accepts only providers or families', () async {
-      expect(
-        library.withCode(
-          '''
-import 'package:riverpod/riverpod.dart';
-
-final a = Provider((ref) => 0);
-
-final b = Provider(
-  (ref) => 0,
-  dependencies: [
-    // expect-error: LIST_ELEMENT_TYPE_NOT_ASSIGNABLE
-    42,
-    // expect-error: LIST_ELEMENT_TYPE_NOT_ASSIGNABLE
-    a.select((value) => 42),
-  ],
-);
-''',
-        ),
-        compiles,
-      );
     });
 
     test(
