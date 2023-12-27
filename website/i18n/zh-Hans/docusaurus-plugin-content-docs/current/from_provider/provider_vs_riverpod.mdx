@@ -554,7 +554,7 @@ In pkg:Provider, scoping was used for two things:
   - having custom state per page
 -->
 在 pkg:Provider 中，作用域用于两件事：
-  - 离开页面时销毁状态
+  - 离开页面时处置状态
   - 每页具有自定义状态
 
 <!---
@@ -565,7 +565,7 @@ This doesn't allow for multiple caches to be active over different pages.
 -->
 仅使用作用域来破坏状态并不理想。  
 问题在于，作用域在大型应用程序上效果不佳。  
-例如，状态通常在一个页面中创建，但在导航后稍后在另一个页面中销毁。  
+例如，状态通常在一个页面中创建，但在导航后稍后在另一个页面中处置。  
 这不允许多个缓存在不同的页面上处于活动状态。
 
 <!---
@@ -589,8 +589,8 @@ Within Riverpod, Providers marked as `.autoDispose` automatically destroy their 
 When the last widget removing a provider is unmounted, Riverpod will detect this and destroy the provider.  
 Try using these two lifecycle methods in a provider to test this behavior:
 -->
-在 Riverpod 中，当一个提供者程序标记为 `.autoDispose` 在不再使用时会自动销毁的状态。  
-当卸载最后一个删除提供者程序的小部件时，Riverpod 将检测到卸载并销毁提供者程序。  
+在 Riverpod 中，当一个提供者程序标记为 `.autoDispose` 在不再使用时会自动处置的状态。  
+当卸载最后一个删除提供者程序的小部件时，Riverpod 将检测到卸载并处置提供者程序。  
 尝试在提供者程序中使用以下两种生命周期方法来测试此行为：
 
 ```dart
@@ -598,7 +598,7 @@ ref.onCancel((){
   print("我一个监听程序都没有了！");
 });
 ref.onDispose((){
-  print("如果我已经被定义为 `.autoDispose`，我将被销毁！");
+  print("如果我已经被定义为 `.autoDispose`，我将被处置！");
 });
 ```
 
@@ -630,7 +630,7 @@ Instead, if a different page tries to access the same state, such page will be a
 In many ways, passing parameters to providers is equivalent to a Map key.  
 If the key is the same, the value obtained is the same. If it's a different key, a different state will be obtained.
 -->
-在许多方面，将参数传递给提供程序等同于 Map 的键。  
+在许多方面，将参数传递给提供者程序等同于 Map 的键。  
 如果键相同，则获取的值相同。如果是不同的键，则将获得不同的状态。
 
 [provider]: https://pub.dev/packages/provider

@@ -16,7 +16,7 @@ class MyConsumer extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final result = ref.watch(exampleProvider);
 
-    /// 如果提供者被正确的急切初始化了，
+    /// 如果提供者程序被正确的急切初始化了，
     /// 那么我们可以使用 "requireValue" 直接读取数据。
     return Text(result.requireValue);
   }

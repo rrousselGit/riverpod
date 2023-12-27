@@ -14,7 +14,7 @@ class MyWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return ElevatedButton(
       onPressed: () {
-        // 点击后，销毁提供者。
+        // 点击后，处置提供者程序。
         ref.invalidate(someProvider);
       },
       child: const Text('dispose a provider'),

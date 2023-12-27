@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 import '../../first_request/raw/activity.dart';
 
 /* SNIPPET START */
-// 我们定义一条记录，表示我们想要传递给提供者的参数。
+// 我们定义一条记录，表示我们想要传递给提供者程序的参数。
 // 创建 typedef 是可选的，但可以使代码更具可读性。
 typedef ActivityParameters = ({String type, int maxPrice});
 

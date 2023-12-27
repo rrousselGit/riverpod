@@ -21,7 +21,7 @@ Stream<({double longitude, double latitude})> location(LocationRef ref) {
 @riverpod
 Future<List<String>> restaurantsNearMe(RestaurantsNearMeRef ref) async {
   // 我们使用 "ref.watch" 来获取最新位置。
-  // 通过在提供程序之后指定 ".future"，
+  // 通过在提供者程序之后指定 ".future"，
   // 我们的代码将在等待到至少一个位置信息后可用。
   final location = await ref.watch(locationProvider.future);
 

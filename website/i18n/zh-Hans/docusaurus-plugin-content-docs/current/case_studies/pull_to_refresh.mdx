@@ -89,7 +89,7 @@ Using Freezed/json_serializable is not required, but it is recommended.
 Now, we'll want to define a provider making a HTTP GET request to fetch
 a single activity:
 -->
-现在，我们要定义一个提供者发出 HTTP GET 请求来获取单个活动：
+现在，我们要定义一个提供者程序发出 HTTP GET 请求来获取单个活动：
 
 <AutoSnippet {...fetchActivity} />
 
@@ -98,7 +98,7 @@ We can now use this provider to display a random activity.
 For now, we will not handle the loading/error state, and simply
 display the activity when available:
 -->
-我们现在可以使用此提供程序来显示随机活动。  
+我们现在可以使用此提供者程序来显示随机活动。  
 目前，我们不会处理加载/错误状态，而只是在可用时显示活动：
 
 <AutoSnippet raw={displayActivity} />
@@ -142,7 +142,7 @@ In there, we can use `ref.refresh` to refresh the provider of our choice.
 -->
 当用户下拉屏幕时，`RefreshIndicator` 将调用
 `onRefresh` 回调。我们可以使用该回调来刷新我们的数据。
-在那里，我们可以使用 `ref.refresh` 刷新我们选择的提供程序。
+在那里，我们可以使用 `ref.refresh` 刷新我们选择的提供者程序。
 
 <!---
 **Note**: `onRefresh` is expected to return a `Future`.
@@ -155,8 +155,8 @@ And it is important for that future to complete when the refresh is done.
 To obtain such a future, we can read our provider's `.future` property.
 This will return a future which completes when our provider has resolved.
 -->
-为了获得这样的 future，我们可以读取提供者的 `.future` 属性。
-这将返回一个 future，该 future 在我们的提供者解决后完成。
+为了获得这样的 future，我们可以读取提供者程序的 `.future` 属性。
+这将返回一个 future，该 future 在我们的提供者程序解决后完成。
 
 <!---
 We can therefore update our `RefreshIndicator` to look like this:
@@ -195,7 +195,7 @@ cases:
 Fortunately, when listening to an asynchronous provider in Riverpod,
 Riverpod gives us an `AsyncValue`, which offers everything we need.
 -->
-幸运的是，当在 Riverpod 中监听异步提供程序时，
+幸运的是，当在 Riverpod 中监听异步提供者程序时，
 Riverpod 为我们提供了一个 `AsyncValue` ，它提供了我们需要的一切。
 
 <!---

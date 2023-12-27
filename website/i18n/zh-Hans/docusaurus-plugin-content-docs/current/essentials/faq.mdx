@@ -19,7 +19,7 @@ Here are some commonly asked questions from the community:
 You may have noticed that `ref` has two methods to force a provider to recompute,
 and wonder how they differ.
 -->
-您可能已经注意到 `ref` 有两种方法可以强制提供程序重新计算，并且想知道它们有何不同。
+您可能已经注意到 `ref` 有两种方法可以强制提供者程序重新计算，并且想知道它们有何不同。
 
 <!---
 It's simpler than you think: `ref.refresh` is nothing but syntax sugar for
@@ -39,7 +39,7 @@ If you do not care about the new value of a provider after recomputing it,
 then `invalidate` is the way to go.  
 If you do, use `refresh` instead.
 -->
-如果您在重新计算后不关心提供程序的新值，
+如果您在重新计算后不关心提供者程序的新值，
 那么 `invalidate` 就是正确的选择。  
 如果这样做，请改用 `refresh`。
 
@@ -59,7 +59,7 @@ after invalidating it, the provider **immediately** recomputes.
 Whereas if we call `invalidate` but don't read it right after,
 then the update will trigger _later_.
 -->
-行为上的主要区别在于，通过在使提供程序失效后，
+行为上的主要区别在于，通过在使提供者程序失效后，
 提供者程序会**立即**重新计算。  
 然而，如果我们调用 `invalidate` 但没有立即读取它，
 那么更新将稍后触发。
@@ -130,7 +130,7 @@ ref.read(yourNotifierProvider.notifier).yourMethod();
 <!---
 `yourMethod` would use the `Notifier`'s `Ref` to interact with other providers.
 -->
-`yourMethod` 将使用 `Notifier` 的 `Ref` 与其他提供者交互。
+`yourMethod` 将使用 `Notifier` 的 `Ref` 与其他提供者程序交互。
 
 <!---
 ## Why do we need to extend ConsumerWidget instead of using the raw StatelessWidget?
@@ -155,7 +155,7 @@ There are a few problems:
   One issue is that the life-cycle can be triggered even if no dependency changed,
   especially if your widget tree uses GlobalKeys (and some Flutter widgets already do so internally).
 -->
-- 无法使用 `InheritedWidget` 实现侦听器的“当更改时”。
+- 无法使用 `InheritedWidget` 实现监听器的“当更改时”。
   这意味着诸如 `ref.listen` 之类的内容不能与 `BuildContext` 一起使用。
 
   `State.didChangeDependencies` 是最接近它的东西，但它并不可靠。
@@ -176,8 +176,8 @@ There are a few problems:
   这通常适用于纯元数据，例如 "theme" 或 "media query"。
 
   对于业务逻辑来说，这是一个问题。
-  假设您使用提供程序来表示分页 API。
-  当页面偏移量发生变化时，您不希望小部件继续侦听先前可见的页面。
+  假设您使用提供者程序来表示分页 API。
+  当页面偏移量发生变化时，您不希望小部件继续监听先前可见的页面。
 
 <!---
 - `InheritedWidget` has no way to track when widgets stop listening to them.
@@ -191,7 +191,7 @@ This functionality is crucial for both the auto dispose mechanism and the abilit
 pass arguments to providers.  
 Those features are what make Riverpod so powerful.
 -->
-此功能对于自动处置机制和将参数传递给提供者的能力至关重要。  
+此功能对于自动处置机制和将参数传递给提供者程序的能力至关重要。  
 这些功能使 Riverpod 如此强大。
 
 <!---
@@ -232,7 +232,7 @@ in one but not the other.
 <!---
 Notifiers use `identical` instead of `==` to filter updates.
 -->
-通知程序使用 `identical` 而不是 `==` 来过滤更新。
+通知者程序使用 `identical` 而不是 `==` 来过滤更新。
 
 <!---
 This is because it is quite common for Riverpod users to also use a code-generator
@@ -278,24 +278,24 @@ At the same time, for simple objects, `identical` does correctly filter redundan
 Last but not least, you can change this behavior by overriding the method
 `updateShouldNotify` on Notifiers.
 -->
-最后且同样重要的一点是，您可以通过重写通知程序上的方法 `updateShouldNotify` 来更改此行为。
+最后且同样重要的一点是，您可以通过重写通知者程序上的方法 `updateShouldNotify` 来更改此行为。
 
 <!---
 ## Is there a way to reset all providers at once?
 -->
-## 有没有办法一次性重置所有提供商
+## 有没有办法一次性重置所有提供者程序
 
 <!---
 No, there is no way to reset all providers at once.
 -->
-不，没有办法立即重置所有提供者。
+不，没有办法立即重置所有提供者程序。
 
 <!---
 This is on purpose, as it is considered an anti-pattern. Resetting all providers
 at once will often reset providers that you did not intend to reset.
 -->
 这是故意的，因为它被认为是反模式。
-立即重置所有提供程序通常会重置您不打算重置的提供程序。
+立即重置所有提供者程序通常会重置您不打算重置的提供者程序。
 
 <!---
 This is commonly asked by users who want to reset the state of their application
@@ -305,13 +305,13 @@ user's state to `ref.watch` the "user" provider.
 -->
 当用户注销时想要重置应用程序状态的用户通常会询问此问题。  
 如果这就是您所希望的，那么您应该将所有内容都
-通过 `ref.watch` 依赖于 "user" 提供者的用户状态。
+通过 `ref.watch` 依赖于 "user" 提供者程序的用户状态。
 
 <!---
 Then, when the user logs out, all providers depending on it would automatically
 be reset but everything else would remain untouched.
 -->
-然后，当用户注销时，依赖于它的所有提供程序将自动重置，但其他所有内容都将保持不变。
+然后，当用户注销时，依赖于它的所有提供者程序将自动重置，但其他所有内容都将保持不变。
 
 <!---
 ## I have the error "Cannot use "ref" after the widget was disposed", what's wrong?

@@ -9,7 +9,7 @@ part 'family.g.dart';
 @riverpod
 Future<Activity> activity(
   ActivityRef ref,
-  // 我们可以向提供者添加参数。
+  // 我们可以向提供者程序添加参数。
   // 参数的类型可以是您想要的任何类型。
   String activityType,
 ) async {

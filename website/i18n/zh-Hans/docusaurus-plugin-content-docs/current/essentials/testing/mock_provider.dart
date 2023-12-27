@@ -15,7 +15,7 @@ void main() {
     /* SNIPPET START */
     // 在单元测试中，重用我们之前的 "createContainer "工具。
     final container = createContainer(
-      // 我们可以指定要模拟的提供商列表：
+      // 我们可以指定要模拟的提供者程序列表：
       overrides: [
         // 在本例中，我们模拟的是 "exampleProvider"。
         exampleProvider.overrideWith((ref) {

@@ -56,7 +56,7 @@ Furthermore, the new `(Async)Notifier`s:
 - 在其类中公开 `Ref` 对象
 - 在代码生成和非代码生成方法之间提供类似的语法
 - 在同步和异步版本之间提供类似的语法
-- 将逻辑从提供者中移开，并将其集中到通知者本身中
+- 将逻辑从提供者程序中移开，并将其集中到通知者程序本身中
 
 <!---
 Let's see how to define a `Notifier`, how it compares with `StateNotifier` and how to migrate
@@ -101,9 +101,9 @@ Comparing `Notifier` with `StateNotifier`, one can observe these main difference
   whereas `Notifier` reserves a single place to place such logic
 - Notice how, as opposed to `StateNotifier`, no logic is ever written into a `Notifier`'s constructor
 -->
-- `StateNotifier` 的反应式依赖项在其提供程序中声明，而 `Notifier`
+- `StateNotifier` 的反应式依赖项在其提供者程序中声明，而 `Notifier`
   将此逻辑集中在其 `build` 方法中
-- `StateNotifier` 的整个初始化过程分为其提供者和构造函数，
+- `StateNotifier` 的整个初始化过程分为其提供者程序和构造函数，
   而 `Notifier` 保留一个位置来放置此类逻辑
 - 请注意，与 `StateNotifier` 不同，没有任何逻辑被写入 `Notifier` 的构造函数中
 
@@ -183,7 +183,7 @@ After these few examples, let's now highlight the main advantages of `Notifier` 
 在这几个示例之后，现在让我们重点介绍 `Notifier` 和 `AsyncNotifer` 的主要优点：
 - 新语法应该感觉更简单、更具可读性，特别是对于异步状态
 - 一般来说，新 API 的样板代码可能会更少
-- 无论您正在编写哪种类型的提供程序，语法现在都是统一的，从而支持代码生成
+- 无论您正在编写哪种类型的提供者程序，语法现在都是统一的，从而支持代码生成
   （请参阅<Link documentID="concepts/about_code_generation" />）
 
 <!---
@@ -275,10 +275,10 @@ different places to understand this Notifier behavior!
 -->
 在这里，如果 `durationProvider` 更新，`MyNotifier` 会进行处置：
 然后重新实例化其实例，然后重新初始化其内部状态。  
-此外，与其他提供程序不同的是，`dispose` 回调将在类中单独定义。  
+此外，与其他提供者程序不同的是，`dispose` 回调将在类中单独定义。  
 最后，仍然可以在其 _provider_ 中编写 `ref.onDispose`，
 再次显示此 API 的逻辑是多么稀疏；潜在地，开发人员可能必须研究八 (8!)
-个不同的地方才能理解此通知程序行为！
+个不同的地方才能理解此通知者程序行为！
 
 <!---
 These ambiguities are solved with `Riverpod 2.0`.
@@ -293,7 +293,7 @@ These ambiguities are solved with `Riverpod 2.0`.
 `StateNotifier`'s `dispose` method refers to the dispose event of the notifier itself, aka it's a
 callback that gets called *before disposing of itself*.
 -->
-`StateNotifier` 的 `dispose` 方法指的是通知程序本身的 dispose 事件，
+`StateNotifier` 的 `dispose` 方法指的是通知者程序本身的 dispose 事件，
 也就是*在自行处置之前*调用的回调。
 
 <!---
@@ -305,8 +305,8 @@ This simplifies the API, and hopefully the DX, so that there is only _one_ place
 understand lifecycle side-effects: its `build` method.
 -->
 `(Async)Notifier` 没有此属性，因为*它们在重建时不会被处置*；只有他们的内部状态是。  
-在新的通知程序中，处置生命周期仅在_一个_地方处理，通过 `ref.onDispose`
-（和其他），就像任何其他提供程序一样。
+在新的通知者程序中，处置生命周期仅在_一个_地方处理，通过 `ref.onDispose`
+（和其他），就像任何其他提供者程序一样。
 这简化了 API，希望也提高了开发体验，这样只需查看_一个_地方
 即可了解生命周期的副作用：它的 `build` 方法。
 
@@ -315,7 +315,7 @@ Shortly: to register a callback that fires before its *internal state* rebuilds,
 `ref.onDispose` like every other provider.
 -->
 简而言之：要注册在*内部状态*重建之前触发的回调，
-我们可以像其他提供者一样使用 `ref.onDispose`。
+我们可以像其他提供者程序一样使用 `ref.onDispose`。
 
 <!---
 You can migrate the above snippet like so:
@@ -330,7 +330,7 @@ are now unable to understand whether or not our notifiers are still alive while 
 This might arise an unwanted `StateError`s.
 -->
 在最后一个片段中，肯定有一些简化，但仍然存在一个未解决的问题：
-我们现在无法了解我们的通知程序在执行 `update` 时是否仍然存在。  
+我们现在无法了解我们的通知者程序在执行 `update` 时是否仍然存在。  
 这可能会出现不需要的 `StateError`。
 
 <!---
@@ -346,7 +346,7 @@ property would be misleading on the new notifiers: `mounted` would *almost alway
 发生这种情况是因为 `(Async)Notifier` 缺少 `mounted` 属性，
 而该属性在 `StateNotifier` 上可用。  
 考虑到它们生命周期的差异，这是完全有道理的；尽管只是可能，`mounted`
-属性可能会误导新通知程序：`mounted` *几乎总是* `true` 。
+属性可能会误导新通知者程序：`mounted` *几乎总是* `true` 。
 
 <!---
 While it would be possible to craft a [custom workaround](https://github.com/rrousselGit/riverpod/issues/1879#issuecomment-1303189191),
@@ -394,8 +394,8 @@ can be consumed and mutated.
 Consumers can obtain data from these three providers with the same syntax, which is great in case
 you're migrating away from `StateNotifier`; this applies for notifiers methods, too.
 -->
-消费者可以使用相同的语法从这三个提供者获取数据，
-这在您从 `StateNotifier` 迁移时非常有用；这也适用于通知程序方法。
+消费者程序可以使用相同的语法从这三个提供者程序获取数据，
+这在您从 `StateNotifier` 迁移时非常有用；这也适用于通知者程序方法。
 
 <AutoSnippet raw={consumersDontChange}></AutoSnippet>
 
@@ -425,8 +425,8 @@ These two APIs are now to be considered outdated.
 This is intentional due to the desire to reach full API uniformity with `Notifier`, `AsyncNotifier` and other providers.  
 Indeed, using a `Notifier` or an `AsyncNotifier` shouldn't be any different from any other provider.
 -->
-这是有意为之，因为我们希望与 `Notifier`、`AsyncNotifier` 和其他提供程序实现完全的 API 统一。  
-事实上，使用 `Notifier` 或 `AsyncNotifier` 应该与任何其他提供程序没有任何不同。
+这是有意为之，因为我们希望与 `Notifier`、`AsyncNotifier` 和其他提供者程序实现完全的 API 统一。  
+事实上，使用 `Notifier` 或 `AsyncNotifier` 应该与任何其他提供者程序没有任何不同。
 
 <!---
 Therefore this:
@@ -488,7 +488,7 @@ interacted with by using its provider: failing to do so will *break* the notifie
 due to ref and family args not being initialized.
 -->
 事实上，`Notifier`/`AsyncNotifier` _不应该_手动实例化；相反，
-它们应该通过使用其提供者进行交互：如果不这样做将会*破坏*通知程序，
+它们应该通过使用其提供者程序进行交互：如果不这样做将会*破坏*通知者程序，
 因为 ref 和 family 参数没有被初始化。
 :::
 

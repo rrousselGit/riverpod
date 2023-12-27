@@ -90,7 +90,7 @@ They can also serve as a replacement to the "builder" pattern, replacing widgets
 such as [FutureBuilder](https://api.flutter.dev/flutter/widgets/FutureBuilder-class.html)/[TweenAnimatedBuilder](https://api.flutter.dev/flutter/widgets/TweenAnimationBuilder-class.html)
 by an alterative that does not invole "nesting" – drastically improving readability.
 -->
-如果 Riverpod 的提供程序用于“全局”应用程序状态，则 Hooks 用于本地小部件状态。
+如果 Riverpod 的提供者程序用于“全局”应用程序状态，则 Hooks 用于本地小部件状态。
 Hooks 通常用于处理有状态的 UI 对象，例如 [TextEditingController](https://api.flutter.dev/flutter/widgets/TextEditingController-class.html)、
 [AnimationController](https://api.flutter.dev/flutter/animation/AnimationController-class.html)。  
 它们还可以作为“构建器”模式的替代品，用不涉及“嵌套”的替代方案替换诸如
@@ -220,7 +220,7 @@ There are a few interesting things to note in this code:
   widget rebuild, and the controller is correctly released when the widget is unmounted.
 -->
 - 不存在内存泄漏。每当小部件重建时，此代码都不会重新创建新的 `AnimationController`，
-  并且在卸载小部件时正确释放控制器。
+  并且在卸载小部件时正确处置控制器。
 
 <!---
 - It is possible to use hooks as many time as we want within the same widget.
