@@ -21,4 +21,5 @@ class Todos extends _$Todos {
   void addTodo(Todo todo) {
     state = [...state, todo];
   }
+  // TODO add other methods, such as "removeTodo", ...
 }

@@ -2,22 +2,27 @@
 title: .autoDispose
 ---
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
+:::caution
+The content of this page may be outdated.  
+It will be updated in the future, but for now you may want to refer to the content
+in the top of the sidebar instead (introduction/essentials/case-studies/...)
+:::
 
-一个常见的用例是当不再使用provider时销毁它的状态。
+A common use case is to destroy the state of a provider
+when it is no-longer used.
 
-这么做有很多原因，比如：
+There are multiple reasons for doing so, such as:
 
-- 使用Firebase时，关闭连接，避免不必要的开销。
-- 当用户离开页面并重新进入时重置状态。
+- When using Firebase, to close the connection and avoid unnecessary cost.
+- To reset the state when the user leaves a screen and re-enters it.
 
-Provider内置了 `.autoDispose` 修饰符来支持这些功能。
+Providers come with built-in support for this use case, through the `.autoDispose`
+modifier.
 
-## 用法
+## Usage
 
-要告诉Riverpod在provider不再使用时销毁它的状态，
-只需将 `.autoDispose` 附加到你的provider上：
+To tell Riverpod to destroy the state of a provider when it is no longer used,
+simply append `.autoDispose` to your provider:
 
 ```dart
 final userProvider = StreamProvider.autoDispose<User>((ref) {
@@ -25,12 +30,14 @@ final userProvider = StreamProvider.autoDispose<User>((ref) {
 });
 ```
 
-就是这样。当不再使用 `userProvider` 时，它的状态将自动被销毁。
+That's it. Now, the state of `userProvider` will automatically be destroyed
+when it is no longer used.
 
-注意泛型参数是在`autoDispose`之后而不是之前传递的 —— `autoDispose` 不是一个命名构造器。
+Note how the generic parameters are passed after `autoDispose` instead of before –
+`autoDispose` is not a named constructor.
 
 :::note
-如果你想，你也可以结合 `.autoDispose` 和其他修饰符：
+You can combine `.autoDispose` with other modifiers if you need to:
 
 ```dart
 final userProvider = StreamProvider.autoDispose.family<User, String>((ref, id) {
@@ -42,11 +49,13 @@ final userProvider = StreamProvider.autoDispose.family<User, String>((ref, id) {
 
 ### ref.keepAlive
 
-使用 `autoDispose` 的 provider还会添加一个额外的方法到 `ref` 上：  `keepAlive`。
+Marking a provider with `autoDispose` also adds an extra method on `ref`: `keepAlive`.
 
-`keepAlive` 函数用于告诉Riverpod即使不再监听provider的状态也应该保留。
+The `keepAlive` function is used to tell Riverpod that the state of the provider
+should be preserved even if no longer listened to.
 
-一个用例是在HTTP请求完成后将此标志设置为 `true`：
+A use-case would be to set this flag to `true` after an HTTP request has
+completed:
 
 ```dart
 final myProvider = FutureProvider.autoDispose((ref) async {
@@ -56,51 +65,56 @@ final myProvider = FutureProvider.autoDispose((ref) async {
 });
 ```
 
-这样，如果请求失败，用户离开页面，然后重新进入，那么请求将再次执行。
-但是如果请求成功完成，状态将被保留，重新进入就不会触发新的请求。
+This way, if the request fails and the user leaves the screen then re-enters
+it, then the request will be performed again.
+But if the request completed successfully, the state will be preserved
+and re-entering the screen will not trigger a new request.
 
 :::info
-在1.0.x的版本中， `maintainState` 属性等价于 `keepAlive`。
+In version 1.0.x, the equivalent of `keepAlive` is the property called `maintainState`.
 :::
 
-## 示例:取消不再使用的HTTP请求
+## Example: Canceling HTTP requests when no longer used
 
-`autoDispose` 修饰符可以与 [FutureProvider] 和 `ref.onDispose` 结合使用，
-以便在不再需要HTTP请求时轻松取消它们。
+The `autoDispose` modifier could be combined with [FutureProvider] and `ref.onDispose`
+to easily cancel HTTP requests when they are no longer needed.
 
-目标:
+The goal is:
 
-- 当用户进入一个页面时启动一个HTTP请求
-- 如果用户在请求完成前离开页面，则取消HTTP请求
-- 如果请求成功，离开并重新进入页面则不会开始新的请求
+- Start an HTTP request when the user enters a screen
+- if the user leaves the screen before the request completed, cancel the HTTP request
+- if the request succeeded, leaving and re-entering the screen does not start a new request
 
-下面是代码示例：
+In code, this would be:
 
 ```dart
 final myProvider = FutureProvider.autoDispose((ref) async {
-  // 来自package:dio的一个对象，允许取消http请求
+  // An object from package:dio that allows cancelling http requests
   final cancelToken = CancelToken();
-  // 当provider被销毁时，取消http请求
+  // When the provider is destroyed, cancel the http request
   ref.onDispose(() => cancelToken.cancel());
 
-  // 获取我们的数据并传递“cancelToken”来取消工作
+  // Fetch our data and pass our `cancelToken` for cancellation to work
   final response = await dio.get('path', cancelToken: cancelToken);
-  // 如果请求成功完成，则保持该状态
+  // If the request completed successfully, keep the state
   ref.keepAlive();
   return response;
 });
 ```
 
-## 参数类型 'AutoDisposeProvider' 不能被赋值给参数类型 'AlwaysAliveProviderBase'
+## The argument type 'AutoDisposeProvider' can't be assigned to the parameter type 'AlwaysAliveProviderBase'
 
-当使用 `.autoDispose` 时，你可能会发现你的应用在编译时出现类似错误：
+When using `.autoDispose`, you may find yourself in a situation where your
+application does not compile with an error similar to:
 
 > The argument type 'AutoDisposeProvider' can't be assigned to the parameter
 > type 'AlwaysAliveProviderBase'
 
-不要担心！这个错误是正常的。发生这种情况是因为你很可能编写了一个bug：
+Don't worry! This error is voluntary. It happens because you most likely
+have a bug:
 
-你试图在未标记 `.autoDispose` 的provider中监听标记了 `.autoDispose` 的provider，例如：
+You tried to listen to a provider marked with `.autoDispose` in a provider that
+is **not** marked with `.autoDispose`, such as:
 
 ```dart
 final firstProvider = Provider.autoDispose((ref) => 0);
@@ -112,9 +126,9 @@ final secondProvider = Provider((ref) {
 });
 ```
 
-我们不希望这样，因为它将导致 `firstProvider` 永远不会被销毁。
+This is undesired, as it would cause `firstProvider` to never be disposed.
 
-要解决这个问题，可以考虑用 `.autoDispose` 标记 `secondProvider`:
+To fix this, consider marking `secondProvider` with `.autoDispose` too:
 
 ```dart
 final firstProvider = Provider.autoDispose((ref) => 0);

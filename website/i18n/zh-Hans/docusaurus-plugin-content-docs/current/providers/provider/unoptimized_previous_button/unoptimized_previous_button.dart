@@ -24,7 +24,7 @@ class PreviousButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // 如果不是第一页，那么前一页按钮可用
+    // if not on first page, the previous button is active
     final canGoToPreviousPage = ref.watch(pageIndexProvider) != 0;
 
     void goToPreviousPage() {

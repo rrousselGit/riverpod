@@ -19,7 +19,7 @@ class PageIndex extends _$PageIndex {
   }
 }
 
-// 一个计算是否允许用户跳转到上一页的provider
+// A provider which computes whether the user is allowed to go to the previous page
 @riverpod
 /* highlight-start */
 bool canGoToPreviousPage(CanGoToPreviousPageRef ref) {
@@ -32,8 +32,8 @@ class PreviousButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // 现在我们观察我们新的provider，
-    // 当我们跳转到前一页时我们的widget不再需要计算。
+    // We are now watching our new Provider
+    // Our widget is no longer calculating whether we can go to the previous page.
 /* highlight-start */
     final canGoToPreviousPage = ref.watch(canGoToPreviousPageProvider);
 /* highlight-end */

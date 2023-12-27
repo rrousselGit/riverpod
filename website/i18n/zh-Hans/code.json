@@ -1,46 +1,67 @@
 {
   "home.shared_state_title": {
-    "message": "任意位置声明共享状态"
+    "message": "随处声明共享状态"
   },
   "home.shared_state_body": {
-    "message": "不再需要在你的 {main} 和UI文件之间来回跳转。 {br} 将共享状态的代码放在它所属的位置上，无论是放在独立的package中还是放在需要它的Widget旁边，都不会丢失它的可测试性。",
+    "message": "无需在 {main} 和 UI 文件之间来回切换。 {br}{br} 只要将共享状态的代码放在它所属位置上，无论是放在独立的 package 中，还是需要它的 widget 旁，都不会丢失可测试性。",
     "description": "The homepage input placeholder"
   },
   "home.recompute_title": {
-    "message": "最小粒度更新UI和重新计算状态"
+    "message": "按需更新状态和重绘 UI"
   },
   "home.recompute_body": {
-    "message": "我们无需在 {build} 中对列表进行排序或过滤，也不必依赖高级的缓存机制。 {br}{br} 使用 {Provider} 和 {families} 修饰符，那么它只会在你真正需要的时候才发起HTTP请求或整理你的列表。"
+    "message": "不必在 {build} 方法中执行列表排序或过滤，也不必依赖高级的缓存机制。{br} {br} 使用组合提供者 {Provider} 和 {families} 方法，在你真正需要的时候才去发起 HTTP 请求或者排序列表。"
+  },
+  "home.refactors_title": {
+    "message": "通过重构简化日常工作"
+  },
+  "home.refactors_body": {
+    "message": "Riverpod 提供了多种重构提示, 例如 \"Wrap widget in a Consumer\" 等等。 请参阅 {warnings}."
+  },
+  "home.refactors_list_link": {
+    "message": "重构提示列表"
+  },
+  "home.lint_title": {
+    "message": "使用 lint 规则保持代码可维护"
+  },
+  "home.lint_body": {
+    "message": "实现了 Riverpod 定制的 lint 新规则，并且还会不断添加更多规则。这可确保您的代码保持最佳状态。请参阅 {warnings}。"
+  },
+  "home.lint_rules_list_link": {
+    "message": "lint 规则列表"
   },
   "home.safe_read_title": {
-    "message": "安全使用Provider"
+    "message": "安全的读取 providers"
   },
   "home.safe_read_body": {
-    "message": "使用provider不再导致错误的状态。恰当地使用provider，你可以始终获得一个可靠的结果。 {br}{br} 这在异步操作中也是如此，Riverpod可以让你简洁地处理loading/error状态。"
+    "message": "读取 provider 永远不会导致异常的状态。如果你编写了读取一个 provider 所需的代码，你将得到一个符合预期的值。 {br} {br}这甚至适用于异步加载的值。与 provider 相反，Riverpod 允许简洁地处理 loading/error 状态。"
   },
   "home.devtool_title": {
-    "message": "在DevTools中检查状态"
+    "message": "在 DevTools 中检查你的状态"
   },
   "home.devtool_body": {
-    "message": "你可以在Flutter的开发工具中一目了然地看到Riverpod的各种状态。 {br} 此外，一款功能更全面的状态检查工具正在开发中。"
+    "message": "使用了 Riverpod，你的状态将可以在 Flutter 自带的 DevTools 中一目了然。 {br} {br} 此外，一款全面的状态检查工具正在开发中……"
   },
-  "homepage.compile_safe_title": {
-    "message": "编译安全"
+  "homepage.declarative_title": {
+    "message": "声明式编程"
   },
-  "homepage.compile_safe_body": {
-    "message": "不再需要关心{ProviderNotFound}或忘记处理加载中的状态。使用Riverpod，你的代码如果能够通过编译，那么就可以使用。"
+  "homepage.declarative_body": {
+    "message": "以类似于无状态小部件的方式编写业务逻辑。{br} 让您的网络请求在必要时自动重新计算，并使您的逻辑易于重用、组合、维护。"
   },
-  "homepage.unlimited_provider_title": {
-    "message": "没有限制的Provider"
+  "homepage.common_ui_patterns_title": {
+    "message": "轻松实现常见的 UI 模式"
   },
-  "homepage.unlimited_provider_body": {
-    "message": "Riverpod的灵感来自于Provider，且解决一些关键的问题：比如支持多个同类型的provider、异步的provider、在任意地方添加各种provider……"
+  "homepage.common_ui_patterns_body": {
+    "message": "使用 Riverpod，只需几行代码即可实现常见但复杂的 UI 模式，例如“下拉刷新”、“实时搜索”等。"
   },
-  "homepage.no_flutter_dependency_title": {
-    "message": "不依赖于Flutter"
+  "homepage.tooling_ready_title": {
+    "message": "工具准备就绪"
   },
-  "homepage.no_flutter_dependency_body": {
-    "message": "Riverpod可以在不依赖Flutter的情况下创建、共享和测试Provider。你不需要{BuildContext}就能监听Provider。"
+  "homepage.tooling_ready_body": {
+    "message": "Riverpod 通过将常见错误作为编译错误来增强编译器。 它还提供自定义 lint 规则和重构选项。 它甚至有一个用于生成文档的命令行。"
+  },
+  "homepage.features_title": {
+    "message": "特性"
   },
   "home.tagline": {
     "message": "响应式缓存和数据绑定框架"
@@ -90,10 +111,6 @@
   "theme.ErrorPageContent.title": {
     "message": "页面已崩溃。",
     "description": "The title of the fallback page when the page crashed"
-  },
-  "theme.ErrorPageContent.tryAgain": {
-    "message": "重试",
-    "description": "The label of the button to try again when the page crashed"
   },
   "theme.NotFound.title": {
     "message": "找不到页面",
@@ -187,10 +204,6 @@
     "message": "浅色模式",
     "description": "The name for the light color mode"
   },
-  "theme.docs.breadcrumbs.home": {
-    "message": "主页面",
-    "description": "The ARIA label for the home page in the breadcrumbs"
-  },
   "theme.docs.breadcrumbs.navAriaLabel": {
     "message": "页面路径",
     "description": "The ARIA label for the breadcrumbs"
@@ -216,7 +229,7 @@
     "description": "Pluralized label for \"{count} docs tagged\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
   },
   "theme.docs.tagDocListPageTitle": {
-    "message": "{nDocsTagged}「{tagName}」",
+    "message": "{nDocsTagged} 带 “{tagName}”",
     "description": "The title of the page for a docs tag"
   },
   "theme.docs.versionBadge.label": {
@@ -227,19 +240,19 @@
     "description": "The link label to edit the current page"
   },
   "theme.common.headingLinkTitle": {
-    "message": "标题的直接链接",
+    "message": "跳转到 {heading}",
     "description": "Title for link to heading"
   },
   "theme.lastUpdated.atDate": {
-    "message": "于 {date} ",
+    "message": "于 {date}",
     "description": "The words used to describe on which date a page has been last updated"
   },
   "theme.lastUpdated.byUser": {
-    "message": "由 {user} ",
+    "message": "由 {user}",
     "description": "The words used to describe by who the page has been last updated"
   },
   "theme.lastUpdated.lastUpdatedAtBy": {
-    "message": "最后{byUser}{atDate}更新",
+    "message": "最后由 {byUser} 在 {atDate} 更新",
     "description": "The sentence used to display when a page has been last updated, and by who"
   },
   "theme.navbar.mobileVersionsDropdown.label": {
@@ -255,7 +268,7 @@
     "description": "The ARIA label for close button of announcement bar"
   },
   "theme.blog.sidebar.navAriaLabel": {
-    "message": "最近博文导航",
+    "message": "博客最近帖子的导航",
     "description": "The ARIA label for recent posts in the blog sidebar"
   },
   "theme.CodeBlock.copied": {
@@ -275,20 +288,20 @@
     "description": "The title attribute for toggle word wrapping button of code block lines"
   },
   "theme.DocSidebarItem.toggleCollapsedCategoryAriaLabel": {
-    "message": "打开/收起侧边栏菜单「{label}」",
+    "message": "打开/关闭侧边栏菜单“{label}”",
     "description": "The ARIA label to toggle the collapsible sidebar category"
+  },
+  "theme.NavBar.navAriaLabel": {
+    "message": "主导航",
+    "description": "The ARIA label for the main navigation"
   },
   "theme.navbar.mobileLanguageDropdown.label": {
     "message": "选择语言",
     "description": "The label for the mobile language switcher dropdown"
   },
   "theme.TOCCollapsible.toggleButtonLabel": {
-    "message": "本页总览",
+    "message": "目录",
     "description": "The label used by the button on the collapsible TOC component"
-  },
-  "theme.blog.post.readingTime.plurals": {
-    "message": "阅读需 {readingTime} 分钟",
-    "description": "Pluralized label for \"{readingTime} min read\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
   },
   "theme.blog.post.readMore": {
     "message": "阅读更多",
@@ -298,6 +311,14 @@
     "message": "阅读 {title} 的全文",
     "description": "The ARIA label for the link to full blog posts from excerpts"
   },
+  "theme.blog.post.readingTime.plurals": {
+    "message": "阅读至少需要 {readingTime} 分钟",
+    "description": "Pluralized label for \"{readingTime} min read\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
+  },
+  "theme.docs.breadcrumbs.home": {
+    "message": "主页",
+    "description": "The ARIA label for the home page in the breadcrumbs"
+  },
   "theme.docs.sidebar.collapseButtonTitle": {
     "message": "收起侧边栏",
     "description": "The title attribute for collapse button of doc sidebar"
@@ -305,6 +326,10 @@
   "theme.docs.sidebar.collapseButtonAriaLabel": {
     "message": "收起侧边栏",
     "description": "The title attribute for collapse button of doc sidebar"
+  },
+  "theme.docs.sidebar.navAriaLabel": {
+    "message": "文档侧边栏",
+    "description": "The ARIA label for the sidebar navigation"
   },
   "theme.docs.sidebar.closeSidebarButtonAriaLabel": {
     "message": "关闭导航栏",
@@ -325,6 +350,9 @@
   "theme.docs.sidebar.expandButtonAriaLabel": {
     "message": "展开侧边栏",
     "description": "The ARIA label and title attribute for expand button of doc sidebar"
+  },
+  "theme.SearchBar.seeAll": {
+    "message": "查看所有 {count} 条结果"
   },
   "theme.SearchBar.label": {
     "message": "搜索",
@@ -379,7 +407,7 @@
     "description": "The ARIA label for the Enter key button that makes the selection"
   },
   "theme.SearchModal.footer.navigateText": {
-    "message": "导航",
+    "message": "选择",
     "description": "The explanatory text of the action for the Arrow up and Arrow down key"
   },
   "theme.SearchModal.footer.navigateUpKeyAriaLabel": {
@@ -427,7 +455,7 @@
     "description": "Pluralized label for \"{count} documents found\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
   },
   "theme.SearchPage.existingResultsTitle": {
-    "message": "「{query}」的搜索结果",
+    "message": "“{query}”的搜索结果",
     "description": "The search page title for non-empty query"
   },
   "theme.SearchPage.emptyResultsTitle": {
@@ -454,8 +482,9 @@
     "message": "正在获取新的搜索结果...",
     "description": "The paragraph for fetching new search results"
   },
-  "theme.SearchBar.seeAll": {
-    "message": "查看全部 {count} 个结果"
+  "theme.ErrorPageContent.tryAgain": {
+    "message": "再试一次",
+    "description": "The label of the button to try again rendering when the React error boundary captures an error"
   },
   "theme.common.skipToMainContent": {
     "message": "跳到主要内容",
