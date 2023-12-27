@@ -9,9 +9,9 @@ part 'codegen.g.dart';
 @riverpod
 Future<String> example(ExampleRef ref) async {
   final response = await http.get(Uri.parse('https://example.com'));
-  // 只有在请求成功完成后，我们才会让提供程序存活。
-  // 如果请求失败（并抛出异常），那么当提供程序停止被监听时，
-  // 状态就会被销毁。
+  // 只有在请求成功完成后，我们才会让提供者程序存活。
+  // 如果请求失败（并抛出异常），那么当提供者程序停止被监听时，
+  // 状态就会被处置。
   ref.keepAlive();
 
   // 我们可以使用 `link` 恢复自动处置行为：

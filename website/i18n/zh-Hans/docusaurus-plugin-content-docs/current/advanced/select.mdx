@@ -31,7 +31,7 @@ The added complexity of the optimizations may not be worth minor gains.
 <!---
 ## Filtering widget/provider rebuild using "select".
 -->
-## 使用 "select" 过滤小部件或提供程序的重建。
+## 使用 "select" 过滤小部件或提供者程序的重建。
 
 <!---
 You have have noticed that, by default, using `ref.watch` causes
@@ -59,7 +59,7 @@ but rather the selected properties.
 And your consumers/providers will now rebuild only if those selected
 properties change.
 -->
-这可以通过使用提供者的 `select` 功能来实现。  
+这可以通过使用提供者程序的 `select` 功能来实现。  
 这样做时，`ref.watch` 将不再返回完整对象，
 而是返回选定的属性。  
 现在，仅当这些选定的属性发生变化时，
@@ -106,8 +106,8 @@ rarely change.
 In case you are trying to optimize a provider listening to another provider,
 chances are that other provider is asynchronous.
 -->
-考虑一种情况，如果您尝试优化一个监听其他提供程序的提供程序，
-其他提供程序很可能是异步的。
+考虑一种情况，如果您尝试优化一个监听其他提供者程序的提供者程序，
+其他提供者程序很可能是异步的。
 
 <!---
 Normally, you would `ref.watch(anotherProvider.future)` to get the value.  
@@ -123,7 +123,7 @@ code, and enables performing a `select` operation on the data emitted by a provi
 Its usage is similar to that of `select`, but returns a `Future` instead:
 -->
 为此，您可以使用 `selectAsync`。它是异步代码所独有的，
-并且允许对提供程序发出的数据执行 `select` 操作。  
+并且允许对提供者程序发出的数据执行 `select` 操作。  
 它的用法与 `select` 类似，但返回一个 `Future` 类型：
 
 <AutoSnippet {...selectAsync} />

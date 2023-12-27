@@ -38,7 +38,7 @@ This is by design, to ensure that the state is only modified in a controlled way
 and promote separation of concerns.  
 Instead, providers have to explicitly expose a way to modify their state.
 -->
-问题是，我们如何从消费者程序内部更新提供者的状态？  
+问题是，我们如何从消费者程序内部更新提供者程序的状态？  
 理所当然的，提供者程序不会公开修改其状态的方法。
 这是设计使然，以确保仅以受控方式修改状态并促进关注点分离。  
 相反，提供者程序必须显式公开修改其状态的方法。
@@ -74,7 +74,7 @@ we call a "notifier".
 -->
 现在我们已经获取了待办事项列表，让我们看看如何添加新的待办事项。  
 为此，我们需要修改我们的提供者程序，以便它们公开一个公共 API 来修改其状态。
-这是通过将我们的提供者程序转换为我们所说的“通知者”来完成的。
+这是通过将我们的提供者程序转换为我们所说的“通知者程序”来完成的。
 
 <!---
 Notifiers are the "stateful widget" of providers. They require a slight tweak to
@@ -225,7 +225,7 @@ would have no mean to know that state has changed.
     {
       offset: 111,
       length: 12,
-      label: "通知者类型",
+      label: "通知者程序类型",
       description: <>
 
 <!---
@@ -450,7 +450,7 @@ We could do so by adding an `addTodo` method on our notifier:
 -->
 现在我们有了通知者程序，我们可以开始添加方法来执行副作用。
 其中一个副作用是让客户端 _POST_ 一个新的待办事项。
-我们可以通过在通知器上添加一个 `addTodo` 方法来做到这一点：
+我们可以通过在通知者程序上添加一个 `addTodo` 方法来做到这一点：
 
 <AutoSnippet {...todoListNotifierAddTodo} />
 

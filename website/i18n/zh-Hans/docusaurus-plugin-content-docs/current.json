@@ -48,7 +48,7 @@
     "description": "The label for category Modifiers in sidebar Sidebar"
   },
   "sidebar.Sidebar.category.All Providers (old)": {
-    "message": "提供者类型（旧）",
+    "message": "提供者程序类型（旧）",
     "description": "The label for category All Providers (old) in sidebar Sidebar"
   },
   "sidebar.Sidebar.category.Guides (old)": {

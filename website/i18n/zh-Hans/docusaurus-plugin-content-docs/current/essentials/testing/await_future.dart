@@ -18,8 +18,8 @@ void main() {
     // 我们的期望是异步的，所以应该使用 "expectLater"（期望稍后）。
     await expectLater(
       // 我们读取的是 "provider.future"，而不是 "provider"。
-      // 这在异步提供程序上是可能发生的，
-      // 并返回一个携带了提供程序的值的 Future。
+      // 这在异步提供者程序上是可能发生的，
+      // 并返回一个携带了提供者程序的值的 Future。
       container.read(provider.future),
       // We can verify that the future resolves with the expected value.
       // Alternatively we can use "throwsA" for errors.

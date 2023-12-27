@@ -188,9 +188,9 @@ This includes but is not limited to:
 - some Riverpod features will be available only with code generation.
 -->
 - 更好的语法，更具可读性/灵活性，并且学习曲线更短。
-  - 无需担心提供商的类型。写下您的逻辑，Riverpod 将为您选择最合适的提供商。
+  - 无需担心提供者程序的类型。写下您的逻辑，Riverpod 将为您选择最合适的提供者程序。
   - 语法看起来不再像我们定义了“肮脏的全局变量”。相反，我们定义了一个自定义函数/类。
-  - 向提供者传递参数现在不受限制。
+  - 向提供者程序传递参数现在不受限制。
     您现在可以传递任何参数，而不是仅限于使用 `.family` 并传递单个位置参数。
     这包括命名参数、可选参数，甚至默认值。
 - 用 Riverpod 编写的代码的**有状态热重载**。
@@ -205,12 +205,12 @@ This includes but is not limited to:
 <!---
 ### Defining a provider:
 -->
-### 定义提供者：​
+### 定义提供者程序：​
 
 <!---
 When defining a provider using code generation, it is helpful to keep in mind the following points:
 -->
-使用代码生成定义提供程序时，记住以下几点会很有帮助：
+使用代码生成定义提供者程序时，记住以下几点会很有帮助：
 
 <!---
 - Providers can be defined either as an annotated <span style={BLUE_STYLE}>function</span> or
@@ -223,15 +223,15 @@ When defining a provider using code generation, it is helpful to keep in mind th
 - When a function is marked as <span style={RED_STYLE}>async</span>, the provider automatically handles
   errors/loading states and exposes an AsyncValue.
 -->
-- 提供者可以定义为带注释的<span style={BLUE_STYLE}>函数</span>或
+- 提供者程序可以定义为带注释的<span style={BLUE_STYLE}>函数</span>或
   带注释的<span style={BLUE_STYLE}>类</span>。它们几乎相同，
-  但基于类的提供程序的优点是包含公共方法，使
-  外部对象能够修改提供程序的状态（副作用）。
-  函数提供程序是用于编写基于类的提供程序的语法糖，只有 `build` 方法，
+  但基于类的提供者程序的优点是包含公共方法，使
+  外部对象能够修改提供者程序的状态（副作用）。
+  函数提供者程序是用于编写基于类的提供者程序的语法糖，只有 `build` 方法，
   因此不能由 UI 修改。
 - 支持所有 Dart <span style={RED_STYLE}>异步</span>原语（Future、FutureOr 和 Stream）。
 - 当函数被标记为<span style={RED_STYLE}>async</span>时，
-  提供程序会自动处理错误/加载状态并公开 AsyncValue。
+  提供者程序会自动处理错误/加载状态并公开 AsyncValue。
 
 <table>
   <colgroup></colgroup>
@@ -300,7 +300,7 @@ dispose of themselves when there are no listeners attached to them (ref.watch/re
 This default setting better aligns with Riverpod's philosophy. Initially with the non-code generation variant,
 autoDispose was off by default to accommodate users migrating from `package:provider`.
 -->
-使用代码生成时，提供程序默认为 autoDispose。
+使用代码生成时，提供者程序默认为 autoDispose。
 这意味着当没有监听器附加到它们（ref.watch/ref.listen）时，它们会自动处理掉自己。  
 此默认设置更符合 Riverpod 的理念。
 最初没有使用代码生成变体时，默认情况下 autoDispose 处于关闭状态，
@@ -316,7 +316,7 @@ If you want to disable autoDispose, you can do so by passing `keepAlive: true` t
 <!---
 ### Passing parameters to a provider (family):
 -->
-### 将参数传递给提供者（family）：​
+### 将参数传递给提供者程序（family）：​
 
 <!---
 When using code generation, we no-longer need to rely on the `family` modifier to pass parameters to a provider.
@@ -324,8 +324,8 @@ Instead, the main function of our provider can accept any number of parameters, 
 Do note however that these parameters should have still have a consistent ==.
 Meaning either the values should be cached, or the parameters should override ==.
 -->
-使用代码生成时，我们不再需要依赖 `family` 修饰符将参数传递给提供者。
-相反，我们的提供程序的主函数可以接受任意数量的参数，包括命名、可选或默认值。  
+使用代码生成时，我们不再需要依赖 `family` 修饰符将参数传递给提供者程序。
+相反，我们的提供者程序的主函数可以接受任意数量的参数，包括命名、可选或默认值。  
 但请注意，这些参数应该仍然具有 == 的一致性。
 这意味着要么应该缓存值，要么应该覆盖 == 参数。
 
@@ -361,7 +361,7 @@ Meaning either the values should be cached, or the parameters should override ==
 When using non-code-generation variant, it is necessary to manually determine the type of your provider.
 The following are the corresponding options for transitioning into code-generation variant:
 -->
-使用非代码生成变体时，需要手动确定提供程序的类型。
+使用非代码生成变体时，需要手动确定提供者程序的类型。
 以下是转换为代码生成变体的相应选项：
 
 <table>

@@ -10,7 +10,8 @@ class MyNotifier extends AutoDisposeNotifier<int> {
   }
 }
 
-final myNotifierProvider = NotifierProvider.autoDispose<MyNotifier, int>(MyNotifier.new);
+final myNotifierProvider =
+    NotifierProvider.autoDispose<MyNotifier, int>(MyNotifier.new);
 
 /* SNIPPET START */
 void main(List<String> args) {
@@ -18,9 +19,10 @@ void main(List<String> args) {
     final container = ProviderContainer();
     addTearDown(container.dispose);
 
-    // 获取通知程序
+    // 获取通知者程序
     /* highlight-start */
-    final AutoDisposeNotifier<int> notifier = container.read(myNotifierProvider.notifier);
+    final AutoDisposeNotifier<int> notifier =
+        container.read(myNotifierProvider.notifier);
     /* highlight-end */
 
     // 获取其暴露状态

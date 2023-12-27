@@ -84,7 +84,7 @@ Let's see how to migrate the above snippet, one step at a time, towards the newe
 First, we should declare the new provider / notifier: this requires some thought process which
 depends on your unique business logic.
 -->
-首先，我们应该声明新的提供者/通知者：这需要一些思维过程，这取决于您独特的业务逻辑。
+首先，我们应该声明新的提供者程序/通知者程序：这需要一些思维过程，这取决于您独特的业务逻辑。
 
 <!---
 Let's summarize the above requirements:
@@ -161,7 +161,7 @@ such variable is `state`, which is implicitly loaded with `build`.
 <!---
 Indeed, riverpod's notifiers can expose *one* entity at a time.
 -->
-事实上，Riverpod 的通知程序一次可以暴露*一个*实体。
+事实上，Riverpod 的通知者程序一次可以暴露*一个*实体。
 
 :::tip
 <!---
@@ -183,7 +183,7 @@ Riverpod 的 API 是细粒度的；尽管如此，在迁移时，
 Initalizing a notifier is easy: just write initialization logic inside `build`.  
 We can now get rid of the old `_init` function.
 -->
-初始化通知程序很简单：只需在 `build` 内编写初始化逻辑即可。  
+初始化通知者程序很简单：只需在 `build` 内编写初始化逻辑即可。  
 我们现在可以摆脱旧的 `_init` 函数。
 
 <AutoSnippet language="dart" {...initialization}></AutoSnippet>
@@ -199,7 +199,7 @@ initialize variables such as `isLoading` or `hasError` anymore.
 Riverpod will automatically translate any asynchronous provider, via exposing an `AsyncValue<List<Todo>>`
 and handles the intricacies of asynchronous state way better than what two simple boolean flags can do.
 -->
-Riverpod 将通过公开 `AsyncValue<List<Todo>>` 自动转换任何异步提供程序，
+Riverpod 将通过公开 `AsyncValue<List<Todo>>` 自动转换任何异步提供者程序，
 并比两个简单的布尔标志更好地处理异步状态的复杂性。
 
 <!---

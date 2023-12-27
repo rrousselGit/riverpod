@@ -13,7 +13,7 @@ class Example extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
 /* SNIPPET START */
     AsyncValue<Activity> activity = ref.watch(
-      // 提供者现在是一个需要活动类型的函数。
+      // 提供者程序现在是一个需要活动类型的函数。
       // 为了简单起见，我们现在传递一个常量字符串。
       activityProvider('recreational'),
     );

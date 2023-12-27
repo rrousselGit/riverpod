@@ -133,7 +133,7 @@ to the <Link documentID="case_studies/pull_to_refresh" /> case study.
 -->
 然后，让我们定义我们的详细信息页面。
 要获取活动并实施下拉刷新，
-请参阅<Link documentID="case_studies/pull_to_refresh" />案例研究。
+请参阅<Link documentID="case_studies/pull_to_refresh" />应用案例。
 
 <AutoSnippet title="lib/src/detail_screen.dart" {...detailScreen} />
 
@@ -153,7 +153,7 @@ navigates away from the page. For this to work, it is important that the
 automatic disposal of providers is enabled.
 -->
 为此，我们将在用户离开页面时使用 `ref.onDispose` 取消请求。
-为了使其运作，启用提供程序的自动处置非常重要。
+为了使其运作，启用提供者程序的自动处置非常重要。
 
 <!---
 The exact code needed to cancel the request will depend on the HTTP client.
@@ -172,7 +172,7 @@ We can therefore use this callback to cancel the request. When using `package:ht
 this can be done by closing our HTTP client.
 -->
 这里的关键点是当用户离开时将调用 `ref.onDispose`。
-这是因为我们的提供商不再使用，因此通过自动处置进行了处置。  
+这是因为我们的提供者程序不再使用，因此通过自动处置进行了处置。  
 因此，我们可以使用此回调来取消请求。
 当使用 `package:http` 时，可以通过关闭 HTTP 客户端来完成。
 
@@ -236,7 +236,7 @@ It is safe to throw inside providers after the provider has been disposed.
 The exception will naturally be caught by Riverpod and be ignored.
 -->
 要中止请求，常见的做法是主动抛出。  
-在提供者被处置后，将提供者内部抛出异常是安全的。
+在提供者程序被处置后，将提供者程序内部抛出异常是安全的。
 该异常自然会被 Riverpod 捕获并被忽略。
 :::
 
@@ -273,6 +273,6 @@ handle both cancellation and debouncing in a single method.
 <!---
 We can then use this extension method in our providers as followed:
 -->
-然后我们可以在我们的提供程序中使用此扩展方法，如下所示：
+然后我们可以在我们的提供者程序中使用此扩展方法，如下所示：
 
 <AutoSnippet {...providerWithExtension} />

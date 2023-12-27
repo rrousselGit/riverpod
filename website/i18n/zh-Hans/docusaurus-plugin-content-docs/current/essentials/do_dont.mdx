@@ -35,13 +35,13 @@ for installation instructions.
 <!---
 ## AVOID initializing providers in a widget
 -->
-## 避免！在小部件中初始化提供程序​
+## 避免！在小部件中初始化提供者程序​
 
 <!---
 Providers should initialize themselves.  
 They should not be initialized by an external element such as a widget.
 -->
-提供者应自行初始化。  
+提供者程序应自行初始化。  
 它们不应由外部元素（例如小部件）初始化。
 
 <!---
@@ -77,7 +77,7 @@ often the correct place to put such logic is in the `onPressed` method of a butt
 triggering navigation:
 -->
 对于这个问题，没有“一刀切”的解决方案。  
-如果您的初始化逻辑取决于提供程序的外部因素，
+如果您的初始化逻辑取决于提供者程序的外部因素，
 则放置此类逻辑的正确位置通常是触发导航的按钮的 `onPressed` 方法中：
 
 ```dart
@@ -93,13 +93,13 @@ ElevatedButton(
 <!---
 ## AVOID using providers for local widget state.
 -->
-## 避免！使用本地小部件状态的提供程序。
+## 避免！使用本地小部件状态的提供者程序。
 
 <!---
 Providers are designed to be for shared business state.
 They are not meant to be used for local widget state, such as for:
 -->
-提供者被设计为共享业务状态。
+提供者程序被设计为共享业务状态。
 它们不适合用于本地小部件状态，例如：
 
 <!---
@@ -131,20 +131,20 @@ the state of a previous page.
 <!---
 ## DON'T perform side effects during the initialization of a provider
 -->
-## 不要！在提供者初始化期间执行副作用​
+## 不要！在提供者程序初始化期间执行副作用​
 
 <!---
 Providers should generally be used to represent a "read" operation.
 You should not use them for "write" operations, such as submitting a form.
 -->
-提供程序通常应用于表示“读”操作。
+提供者程序通常应用于表示“读”操作。
 您不应该将它们用于“写”操作，例如提交表单。
 
 <!---
 Using providers for such operations could have unexpected behaviors, such as
 skipping a side-effect if a previous one was performed.
 -->
-使用提供程序进行此类操作可能会产生意外行为，例如
+使用提供者程序进行此类操作可能会产生意外行为，例如
 如果执行了前一个操作，则跳过副作用。
 
 <!---
@@ -163,7 +163,7 @@ see <Link documentID="essentials/side_effects"/>.
 final submitProvider = FutureProvider((ref) async {
   final formState = ref.watch(formState);
 
-  // 坏的：提供程序不应用于“写”操作。
+  // 坏的：提供者程序不应用于“写”操作。
   return http.post('https://my-api.com', body: formState.toJson());
 });
 ```
@@ -171,7 +171,7 @@ final submitProvider = FutureProvider((ref) async {
 <!---
 ## PREFER ref.watch/read/listen (and similar APIs) with statically known providers
 -->
-## 首选！ref.watch/read/listen（和类似的 API）以及静态已知的提供者​
+## 首选！ref.watch/read/listen（和类似的 API）以及静态已知的提供者程序​
 
 <!---
 Riverpod strongly recommends enabling lint rules (via `riverpod_lint`).  
@@ -197,7 +197,7 @@ final provider = Provider((ref) => 42);
 
 ...
 
-// 好的，因为提供者是静态已知的
+// 好的，因为提供者程序是静态已知的
 ref.watch(provider);
 ```
 
@@ -222,12 +222,12 @@ class Example extends ConsumerWidget {
 <!---
 ## AVOID dynamically creating providers
 -->
-## 避免！动态创建提供者​
+## 避免！动态创建提供者程序​
 
 <!---
 Providers should exclusively be top-level final variables.
 -->
-提供者应该专门是顶级 final 变量。
+提供者程序应该专门是顶级 final 变量。
 
 <!---
 **Do**:
@@ -255,6 +255,6 @@ class Example {
 Creating providers as static final variables is allowed,
 but not supported by the code-generator.
 -->
-允许将提供程序创建为 static final 变量，
+允许将提供者程序创建为 static final 变量，
 但代码生成器不支持。
 :::

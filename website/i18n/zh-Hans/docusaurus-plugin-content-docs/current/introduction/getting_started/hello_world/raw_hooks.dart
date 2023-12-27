@@ -5,14 +5,14 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // 我们创建了一个 "provider"，它可以存储一个值（这里是 "Hello world"）。
-// 通过使用提供者，这可以允许我们模拟或者覆盖一个暴露的值。
+// 通过使用提供者程序，这可以允许我们模拟或者覆盖一个暴露的值。
 final helloWorldProvider = Provider((_) => 'Hello world');
 
 void main() {
   runApp(
     // 为了使小组件可以读取提供者程序，
     // 我们需要将整个应用程序包装在“ProviderScope”小部件中。
-    // 这是我们的提供者的状态将被存储的地方。
+    // 这是我们的提供者程序的状态将被存储的地方。
     ProviderScope(
       child: MyApp(),
     ),

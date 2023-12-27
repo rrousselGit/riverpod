@@ -10,7 +10,7 @@ part of 'pipe_change_notifier.dart';
 
 String _$myListenableHash() => r'4cc07df2f47050c4aa761e5467f341ab6c312d09';
 
-/// 一个提供程序，它创建 ValueNotifier 并在值更改时更新其侦听器。
+/// 一个提供者程序，它创建 ValueNotifier 并在值更改时更新其监听器。
 ///
 /// Copied from [myListenable].
 @ProviderFor(myListenable)

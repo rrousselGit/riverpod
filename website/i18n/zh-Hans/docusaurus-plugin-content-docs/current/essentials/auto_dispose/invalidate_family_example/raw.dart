@@ -12,7 +12,7 @@ final provider = Provider.autoDispose.family<String, String>((ref, name) {
 // ...
 
 void onTap() {
-  // 使该提供程序所有可能的参数组合无效。
+  // 使该提供者程序所有可能的参数组合无效。
   ref.invalidate(provider);
   // 仅使特定组合无效
   ref.invalidate(provider('John'));

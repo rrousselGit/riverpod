@@ -10,14 +10,14 @@ part 'codegen.g.dart';
 /* SNIPPET START */
 @riverpod
 Future<Activity> activity(ActivityRef ref) async {
-  // 我们会捕捉提供商目前是否已被处置。
+  // 我们会捕捉提供者程序目前是否已被处置。
   var didDispose = false;
   ref.onDispose(() => didDispose = true);
 
   // 我们将请求延迟 500 毫秒，以等待用户停止刷新。
   await Future<void>.delayed(const Duration(milliseconds: 500));
 
-  // 如果在延迟期间处理了提供程序，则意味着用户再次刷新了请求。
+  // 如果在延迟期间处理了提供者程序，则意味着用户再次刷新了请求。
   // 我们会抛出一个异常来取消请求。
   // 在这里使用异常是安全的，因为它会被 Riverpod 捕捉到。
   if (didDispose) {

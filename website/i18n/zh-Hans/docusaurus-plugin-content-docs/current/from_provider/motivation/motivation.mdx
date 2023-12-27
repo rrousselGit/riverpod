@@ -71,12 +71,12 @@ Provider 只是一个 InheritedWidget 包装器，因此它受到它的限制。
 <!---
 Here's a list of known Provider issues.
 -->
-下面是已知的提供程序问题列表。
+下面是已知的提供者程序问题列表。
 
 <!---
 ### Provider can't keep two (or more) providers of the same "type"
 -->
-### 提供程序不能保留两个（或多个）相同“类型”的提供程序
+### 提供者程序不能保留两个（或多个）相同“类型”的提供者程序
 
 <!---
 Declaring two `Provider<Item>` will result into unreliable behavior: `InheritedWidget`'s API will 
@@ -99,7 +99,7 @@ By removing this limitation, we can freely split logic into tiny pieces, like so
 <!---
 ### Providers reasonably emit only one value at a time
 -->
-### 提供程序一次合理地只发出一个值
+### 提供者程序一次合理地只发出一个值
 
 <!---
 When reading an external RESTful API, it's quite common to show 
@@ -124,7 +124,7 @@ In the previous snippet, watching `evenItemsProvider` will produce the following
 1. 最初，正在发出请求。我们得到一个空列表；
 1. 然后，假设发生错误。我们获得 `[Item(id: -1)]`；
 1. 然后，我们使用拉取刷新逻辑重试请求（例如，通过 `ref.invalidate`）；
-1. 当我们重新加载第一个提供程序时，第二个提供程序仍然公开 `[Item(id: -1)]`；
+1. 当我们重新加载第一个提供者程序时，第二个提供者程序仍然公开 `[Item(id: -1)]`；
 1. 这一次，一些解析后的数据被正确接收：我们的偶数项被正确返回。
 
 <!---
@@ -135,7 +135,7 @@ With Provider, the above features aren't remotely achievable, and even less easy
 <!---
 ### Combining providers is hard and error prone
 -->
-### 合并提供程序很困难且容易出错
+### 合并提供者程序很困难且容易出错
 
 <!---
 With Provider we may be tempted to use `context.watch` inside provider's `create`.  
@@ -194,9 +194,9 @@ to automatically destroy its providers' state when they're no-longer used.
 With Provider, [we have to] rely on scoping providers to dispose the state when it stops being used.  
 But this isn't easy, as it gets tricky when state is shared between pages.
 -->
-`InheritedWidget` [无法对消费者停止监听他们的情况做出反应]。  
-这可以防止提供程序在不再使用时自动销毁其提供程序的状态。  
-在使用 Provider 的情况下，[我们必须]依靠作用域提供程序在停止使用状态时对其进行处置。  
+`InheritedWidget` [无法对消费者程序停止监听他们的情况做出反应]。  
+这可以防止提供者程序在不再使用时自动处置其提供者程序的状态。  
+在使用 Provider 的情况下，[我们必须]依靠作用域提供者程序在停止使用状态时对其进行处置。  
 但这并不容易，因为当在页面之间共享状态时，它会变得棘手。
 
 <!---
@@ -224,7 +224,7 @@ Riverpod allows its user to declare "parametrized" Providers with the [.family m
 Indeed, `.family` is one of Riverpod's most powerful feature and it is core to its innovations, 
 e.g. it enables enormous [simplification of logic]. 
 -->
-Riverpod 允许其用户使用 [`.family` 修饰符]声明“参数化”提供程序。  
+Riverpod 允许其用户使用 [`.family` 修饰符]声明“参数化”提供者程序。  
 事实上，这是 Riverpod 最强大的功能之一，也是其创新的核心，
 例如，`.family` 它能够极大地[简化逻辑]。
 
@@ -249,8 +249,8 @@ to a build a Provider, which is exactly what `.family` does.
 Thus, obtaining a `.family` equivalent for Provider is fundamentally impossible at the moment in time.
 -->
 最后，如前所述，[事实证明]，小部件*永远*不会停止收听 `InheritedWidget`。  
-这意味着如果某些提供程序状态是“动态挂载”的，
-即当使用参数构建提供程序时，则会出现严重的内存泄漏，而这正是 `.family` 这样做的。  
+这意味着如果某些提供者程序状态是“动态挂载”的，
+即当使用参数构建提供者程序时，则会出现严重的内存泄漏，而这正是 `.family` 这样做的。  
 因此，目前从根本上不可能获得 Provider 的 `.family` 等价物。
 
 <!---
@@ -261,14 +261,14 @@ Thus, obtaining a `.family` equivalent for Provider is fundamentally impossible 
 <!---
 To be able to write a test, you *have to* re-define providers inside each test.
 -->
-为了能够编写测试，您*必须*在每个测试中重新定义提供程序。
+为了能够编写测试，您*必须*在每个测试中重新定义提供者程序。
 
 <!---
 With Riverpod, providers are ready to use inside tests, by default. Furthermore, Riverpod exposes a 
 handy collection of "overriding" utilites that are crucial when mocking Providers.
 -->
-默认情况下，借助 Riverpod，提供程序已准备好在内部测试中使用。
-此外，Riverpod 还公开了一组方便的“覆盖”的工具，这些实用程序在模拟提供程序时至关重要。
+默认情况下，借助 Riverpod，提供者程序已准备好在内部测试中使用。
+此外，Riverpod 还公开了一组方便的“覆盖”的工具，这些实用程序在模拟提供者程序时至关重要。
 
 <!---
 Testing the combined state snippet above would be as simple as the following:
@@ -319,7 +319,7 @@ Both packages fill a similar role. Both try to:
 - offer a way to mock those objects during tests;
 - offer a way for Widgets to listen to those objects in a simple way.
 -->
-- 缓存和释放一些有状态对象；
+- 缓存和处置一些有状态对象；
 - 提供一种在测试期间模拟这些对象的方法；
 - 为 Widget 提供了一种以简单的方式监听这些对象的方法。
 
@@ -354,7 +354,7 @@ Creating a separate package enabled:
 启用创建单独的包：
   - 通过*同时*临时使用这两种方法，为任何想要迁移的人提供便利；
   - 如果人们原则上不喜欢 Riverpod，或者他们觉得它还不可靠，请允许他们坚持使用 Provider；
-  - 实验，允许 Riverpod 搜索生产就绪的解决方案，以应对各种提供商的技术限制。
+  - 实验，允许 Riverpod 搜索生产就绪的解决方案，以应对各种提供者程序的技术限制。
 
 <!---
 Indeed, Riverpod is designed to be the spiritual successor of Provider. Hence the name "Riverpod" (which is an anagram of "Provider").
@@ -424,7 +424,7 @@ Riverpod 总体上设计得更好，可以大大简化您的逻辑。
 [integrates well with Flutter]: /docs/concepts/reading#using-reflisten-to-react-to-a-provider-change
 
 [解决方法]: https://pub.dev/packages/provider#can-i-obtain-two-different-providers-using-the-same-type
-[无法对消费者停止监听他们的情况做出反应]: https://github.com/flutter/flutter/issues/106546
+[无法对消费者程序停止监听他们的情况做出反应]: https://github.com/flutter/flutter/issues/106546
 [我们必须]: https://github.com/flutter/flutter/issues/128432
 [简化逻辑]: /docs/concepts/modifiers/family#usage
 [`.family` 修饰符]: /docs/concepts/modifiers/family

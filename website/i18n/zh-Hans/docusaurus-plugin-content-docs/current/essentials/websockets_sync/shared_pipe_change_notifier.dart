@@ -9,11 +9,11 @@ part 'shared_pipe_change_notifier.g.dart';
 /* SNIPPET START */
 extension on Ref {
   // 我们可以将之前的逻辑移至 Ref 扩展。
-  // 这使得能够重用提供者之间的逻辑
+  // 这使得能够重用提供者程序之间的逻辑
   T disposeAndListenChangeNotifier<T extends ChangeNotifier>(T notifier) {
     onDispose(notifier.dispose);
     notifier.addListener(notifyListeners);
-    // 我们返回通知程序以稍微简化使用
+    // 我们返回通知者程序以稍微简化使用
     return notifier;
   }
 }

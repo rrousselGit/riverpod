@@ -18,7 +18,7 @@ import notifierMock from "./testing/notifier_mock";
 <!---
 A core part of the Riverpod API is the ability to test your providers in isolation.
 -->
-Riverpod API 的核心部分是能够单独测试提供程序。
+Riverpod API 的核心部分是能够单独测试提供者程序。
 
 <!---
 For a proper test suite, there are a few challenges to overcome:
@@ -59,9 +59,9 @@ When defining a test with Riverpod, there are two main scenarios:
   This can be useful for testing the behavior of a widget that uses a provider.
 -->
 - 单元测试，通常没有 Flutter 依赖。
-  这对于单独测试提供程序的行为非常有用。
+  这对于单独测试提供者程序的行为非常有用。
 - Widget 测试，通常带有 Flutter 依赖项。
-  这对于测试使用提供程序的小部件的行为非常有用。
+  这对于测试使用提供者程序的小部件的行为非常有用。
 
 <!---
 ### Unit tests
@@ -79,13 +79,13 @@ a `ProviderContainer` object. This object will enable our test to interact
 with providers.
 -->
 与任何其他测试的主要区别在于，我们想要创建一个 `ProviderContainer` 对象。
-此对象将使我们的测试能够与提供程序进行交互。
+此对象将使我们的测试能够与提供者程序进行交互。
 
 <!---
 It encouraged to make a testing utility for both creating and disposing
 of a `ProviderContainer` object:
 -->
-建议创建一个测试实用程序来创建和释放对象 `ProviderContainer`：
+建议创建一个测试实用程序来创建和处置对象 `ProviderContainer`：
 
 <AutoSnippet raw={createContainer} />
 
@@ -99,13 +99,13 @@ Then, we can define a `test` using this utility:
 <!---
 Now that we have a ProviderContainer, we can use it to read providers using:
 -->
-现在我们有了 ProviderContainer，我们可以使用它来读取提供程序，使用：
+现在我们有了 ProviderContainer，我们可以使用它来读取提供者程序，使用：
 
 <!---
 - `container.read`, to read the current value of a provider.
 - `container.listen`, to listen to a provider and be notified of changes.
 -->
-- `container.read`，以读取提供程序的当前值。
+- `container.read`，以读取提供者程序的当前值。
 - `container.listen`，以监听提供者程序并接收更改的通知。
 
 :::caution
@@ -114,8 +114,8 @@ Be careful when using `container.read` when providers are automatically disposed
 If your provider is not listened to, chances are that its state will get destroyed
 in the middle of your test.
 -->
-在自动释放提供程序时使用 `container.read` 时要小心。  
-如果您的提供商没有被监听，其状态可能会在测试过程中被破坏。
+在自动处置提供者程序时使用 `container.read` 时要小心。  
+如果您的提供者程序没有被监听，其状态可能会在测试过程中被破坏。
 
 <!---
 In that case, consider using `container.listen`.  
@@ -123,8 +123,8 @@ Its return value enables reading the current value of provider anyway,
 but will also ensure that the provider is not disposed in the middle of your test:
 -->
 在这种情况下，请考虑使用 `container.listen`。  
-无论如何，它的返回值都能读取提供程序的当前值，
-同时还能确保提供程序不会在测试过程中被弃置：
+无论如何，它的返回值都能读取提供者程序的当前值，
+同时还能确保提供者程序不会在测试过程中被弃置：
 
 <AutoSnippet raw={autoDisposeListen} />
 :::
@@ -161,7 +161,7 @@ One can be obtained using `ProviderScope.containerOf(buildContext)`.
 By using `tester`, we can therefore write the following:
 -->
 然后，我们可以用 `tester` 来与我们的小部件进行交互。
-或者，如果要与提供程序交互，可以获取 `ProviderContainer`。
+或者，如果要与提供者程序交互，可以获取 `ProviderContainer`。
 也可以使用 `ProviderScope.containerOf(buildContext)` 获得一个。  
 因此，通过使用 `tester` ，我们可以编写以下内容：
 
@@ -170,34 +170,34 @@ By using `tester`, we can therefore write the following:
 <!---
 We can then use it to read providers. Here's a full example:
 -->
-然后，我们可以使用它来读取提供程序。下面是一个完整的示例：
+然后，我们可以使用它来读取提供者程序。下面是一个完整的示例：
 
 <AutoSnippet raw={fullWidgetTest} />
 
 <!---
 ## Mocking providers
 -->
-## 模拟提供程序
+## 模拟提供者程序
 
 <!---
 So far, we've seen how to set up a test and basic interactions with providers.
 However, in some cases, we may want to mock a provider.
 -->
 到目前为止，我们已经了解了如何设置测试以及与提供者程序的基本交互。
-但是，在某些情况下，我们可能想要模拟一个提供商。
+但是，在某些情况下，我们可能想要模拟一个提供者程序。
 
 <!---
 The cool part: All providers can be mocked by default, without any additional setup.  
 This is possible by specifying the `overrides` parameter on either
 `ProviderScope` or `ProviderContainer`.
 -->
-很酷的部分：默认情况下可以模拟所有提供程序，无需任何额外设置。  
+很酷的部分：默认情况下可以模拟所有提供者程序，无需任何额外设置。  
 这可以通过在 `ProviderScope` 或 `ProviderContainer` 上指定 `overrides` 参数来实现。
 
 <!---
 Consider the following provider:
 -->
-请考虑以下提供程序：
+请考虑以下提供者程序：
 
 <AutoSnippet {...providerToMock} />
 
@@ -211,13 +211,13 @@ We can mock it using:
 <!---
 ## Spying on changes in a provider
 -->
-## 监视提供程序中的更改
+## 监视提供者程序中的更改
 
 <!---
 Since we obtained a `ProviderContainer` in our tests, it is possible to
 use it to "listen" to a provider:
 -->
-由于我们在测试中获得了一个 `ProviderContainer`，因此可以使用它来“监听”提供程序：
+由于我们在测试中获得了一个 `ProviderContainer`，因此可以使用它来“监听”提供者程序：
 
 <AutoSnippet raw={listenProvider} />
 
@@ -233,27 +233,27 @@ Or more simply, you can add all changes in a list and assert on it.
 <!---
 ## Awaiting asynchronous providers
 -->
-## 等待异步提供程序
+## 等待异步提供者程序
 
 <!---
 In Riverpod, it is very common for providers to return a Future/Stream.  
 In that case, chances are that our tests need to await for that asynchronous operation
 to be completed.
 -->
-在 Riverpod 中，提供程序返回 Future/Stream 是很常见的。  
+在 Riverpod 中，提供者程序返回 Future/Stream 是很常见的。  
 在这种情况下，我们的测试可能需要等待异步操作完成。
 
 <!---
 One way to do so is to read the `.future` of a provider:
 -->
-一种方法是读取提供程序的 `.future`： 
+一种方法是读取提供者程序的 `.future`： 
 
 <AutoSnippet raw={awaitFuture} />
 
 <!---
 ## Mocking Notifiers
 -->
-## 模拟通知程序
+## 模拟通知者程序
 
 <!---
 It is generally discouraged to mock Notifiers.  
@@ -262,7 +262,7 @@ Notifier, such that you can mock that abstraction.
 For instance, rather than mocking a Notifier, you could mock a "repository"
 that the Notifier uses to fetch data from.
 -->
-通常不鼓励嘲笑通知者。  
+通常不鼓励嘲笑通知者程序。  
 相反，您可能应该在通告程序的逻辑中引入一个抽象级别，以便您可以模拟该抽象。
 例如，与其模拟通告程序，不如模拟通告程序用来从中获取数据的“存储库”。
 
@@ -297,7 +297,7 @@ You should instead write:
 For this to work, your mock will have to be placed in the same file as the
 Notifier you are mocking. Otherwise you would not have access to the `_$MyNotifier` class.
 -->
-为此，您的模拟必须与您模拟的通知程序放在同一个文件中。
+为此，您的模拟必须与您模拟的通知者程序放在同一个文件中。
 否则，您将无法访问该 `_$MyNotifier` 类。
 
 </When>
