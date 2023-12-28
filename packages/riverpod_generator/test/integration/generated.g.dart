@@ -89,6 +89,9 @@ class GeneratedFamilyFamily extends Family {
   Override overrideWith(_Test Function(GeneratedFamilyRef ref) create) {
     return _$GeneratedFamilyFamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'generatedFamilyProvider';
 }
 
 class _$GeneratedFamilyFamilyOverride implements FamilyOverride {
@@ -105,6 +108,9 @@ class _$GeneratedFamilyFamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'generatedFamilyProvider.overrideWith($create)';
 }
 
 /// See also [generatedFamily].
@@ -197,6 +203,9 @@ class GeneratedFamilyProvider extends AutoDisposeProvider<_Test> {
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'generatedFamilyProvider$argument';
 }
 
 mixin GeneratedFamilyRef on AutoDisposeProviderRef<_Test> {
@@ -274,6 +283,9 @@ class $DynamicFamilyFamily extends Family {
   Override overrideWith(Object? Function($DynamicFamilyRef ref) create) {
     return _$$DynamicFamilyFamilyOverride(this, create);
   }
+
+  @override
+  String toString() => '\$dynamicFamilyProvider';
 }
 
 class _$$DynamicFamilyFamilyOverride implements FamilyOverride {
@@ -290,6 +302,9 @@ class _$$DynamicFamilyFamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => '\$dynamicFamilyProvider.overrideWith($create)';
 }
 
 /// See also [$dynamicFamily].
@@ -382,6 +397,9 @@ class $DynamicFamilyProvider extends AutoDisposeProvider<Object?> {
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => '\$dynamicFamilyProvider$argument';
 }
 
 mixin $DynamicFamilyRef on AutoDisposeProviderRef<Object?> {
@@ -445,6 +463,9 @@ class _DynamicFamily extends Family {
   Override overrideWith(Object? Function(_DynamicRef ref) create) {
     return _$DynamicFamilyOverride(this, create);
   }
+
+  @override
+  String toString() => '_dynamicProvider';
 }
 
 class _$DynamicFamilyOverride implements FamilyOverride {
@@ -461,6 +482,9 @@ class _$DynamicFamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => '_dynamicProvider.overrideWith($create)';
 }
 
 /// See also [_dynamic].
@@ -552,6 +576,9 @@ class _DynamicProvider extends AutoDisposeProvider<Object?> {
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => '_dynamicProvider$argument';
 }
 
 mixin _DynamicRef on AutoDisposeProviderRef<Object?> {
@@ -629,6 +656,9 @@ class AliasFamilyFamily extends Family {
   Override overrideWith(r.AsyncValue<int> Function(AliasFamilyRef ref) create) {
     return _$AliasFamilyFamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'aliasFamilyProvider';
 }
 
 class _$AliasFamilyFamilyOverride implements FamilyOverride {
@@ -645,6 +675,9 @@ class _$AliasFamilyFamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'aliasFamilyProvider.overrideWith($create)';
 }
 
 /// See also [aliasFamily].
@@ -737,6 +770,9 @@ class AliasFamilyProvider extends AutoDisposeProvider<r.AsyncValue<int>> {
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'aliasFamilyProvider$argument';
 }
 
 mixin AliasFamilyRef on AutoDisposeProviderRef<r.AsyncValue<int>> {
@@ -826,6 +862,9 @@ class GeneratedClassFamilyFamily extends Family {
   Override overrideWith(GeneratedClassFamily Function() create) {
     return _$GeneratedClassFamilyFamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'generatedClassFamilyProvider';
 }
 
 class _$GeneratedClassFamilyFamilyOverride implements FamilyOverride {
@@ -842,6 +881,9 @@ class _$GeneratedClassFamilyFamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'generatedClassFamilyProvider.overrideWith($create)';
 }
 
 /// See also [GeneratedClassFamily].
@@ -939,6 +981,9 @@ class GeneratedClassFamilyProvider
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'generatedClassFamilyProvider$argument';
 }
 
 mixin GeneratedClassFamilyRef on AutoDisposeNotifierProviderRef<_Test> {
@@ -1029,6 +1074,9 @@ class $DynamicClassFamilyFamily extends Family {
   Override overrideWith($DynamicClassFamily Function() create) {
     return _$$DynamicClassFamilyFamilyOverride(this, create);
   }
+
+  @override
+  String toString() => '\$dynamicClassFamilyProvider';
 }
 
 class _$$DynamicClassFamilyFamilyOverride implements FamilyOverride {
@@ -1045,6 +1093,9 @@ class _$$DynamicClassFamilyFamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => '\$dynamicClassFamilyProvider.overrideWith($create)';
 }
 
 /// See also [$DynamicClassFamily].
@@ -1143,6 +1194,9 @@ class $DynamicClassFamilyProvider
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => '\$dynamicClassFamilyProvider$argument';
 }
 
 mixin $DynamicClassFamilyRef on AutoDisposeNotifierProviderRef<Object?> {
@@ -1231,6 +1285,9 @@ class AliasClassFamilyFamily extends Family {
   Override overrideWith(AliasClassFamily Function() create) {
     return _$AliasClassFamilyFamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'aliasClassFamilyProvider';
 }
 
 class _$AliasClassFamilyFamilyOverride implements FamilyOverride {
@@ -1247,6 +1304,9 @@ class _$AliasClassFamilyFamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'aliasClassFamilyProvider.overrideWith($create)';
 }
 
 /// See also [AliasClassFamily].
@@ -1345,6 +1405,9 @@ class AliasClassFamilyProvider extends AutoDisposeNotifierProviderImpl<
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'aliasClassFamilyProvider$argument';
 }
 
 mixin AliasClassFamilyRef on AutoDisposeNotifierProviderRef<r.AsyncValue<int>> {

@@ -112,6 +112,9 @@ class ExampleFamilyFamily extends Family {
   Override overrideWith(ExampleFamily Function() create) {
     return _$ExampleFamilyFamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'exampleFamilyProvider';
 }
 
 class _$ExampleFamilyFamilyOverride implements FamilyOverride {
@@ -128,6 +131,9 @@ class _$ExampleFamilyFamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'exampleFamilyProvider.overrideWith($create)';
 }
 
 /// Some comment
@@ -249,6 +255,9 @@ class ExampleFamilyProvider
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'exampleFamilyProvider$argument';
 }
 
 mixin ExampleFamilyRef on AutoDisposeNotifierProviderRef<int> {
@@ -316,6 +325,9 @@ class GenericFamily extends Family {
   Override overrideWith(Generic Function() create) {
     return _$GenericFamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'genericProvider';
 }
 
 class _$GenericFamilyOverride implements FamilyOverride {
@@ -332,6 +344,9 @@ class _$GenericFamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'genericProvider.overrideWith($create)';
 }
 
 /// See also [Generic].
@@ -420,6 +435,9 @@ class GenericProvider<A, B>
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'genericProvider<$A,$B>$argument';
 }
 
 mixin GenericRef<A, B> on AutoDisposeNotifierProviderRef<int> {}

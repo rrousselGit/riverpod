@@ -80,6 +80,9 @@ class RandomFamily extends Family {
   Override overrideWith(int Function(RandomRef ref) create) {
     return _$RandomFamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'randomProvider';
 }
 
 class _$RandomFamilyOverride implements FamilyOverride {
@@ -96,6 +99,9 @@ class _$RandomFamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'randomProvider.overrideWith($create)';
 }
 
 /// See also [random].
@@ -201,6 +207,9 @@ class RandomProvider extends AutoDisposeProvider<int> {
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'randomProvider$argument';
 }
 
 mixin RandomRef on AutoDisposeProviderRef<int> {

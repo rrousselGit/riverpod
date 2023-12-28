@@ -79,6 +79,9 @@ class FetchPackageDetailsFamily extends Family {
       FutureOr<Package> Function(FetchPackageDetailsRef ref) create) {
     return _$FetchPackageDetailsFamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'fetchPackageDetailsProvider';
 }
 
 class _$FetchPackageDetailsFamilyOverride implements FamilyOverride {
@@ -95,6 +98,9 @@ class _$FetchPackageDetailsFamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'fetchPackageDetailsProvider.overrideWith($create)';
 }
 
 /// See also [fetchPackageDetails].
@@ -190,6 +196,9 @@ class FetchPackageDetailsProvider extends AutoDisposeFutureProvider<Package> {
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'fetchPackageDetailsProvider$argument';
 }
 
 mixin FetchPackageDetailsRef on AutoDisposeFutureProviderRef<Package> {
@@ -317,6 +326,9 @@ class PackageMetricsFamily extends Family {
   Override overrideWith(PackageMetrics Function() create) {
     return _$PackageMetricsFamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'packageMetricsProvider';
 }
 
 class _$PackageMetricsFamilyOverride implements FamilyOverride {
@@ -333,6 +345,9 @@ class _$PackageMetricsFamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'packageMetricsProvider.overrideWith($create)';
 }
 
 /// A provider that fetches the likes count, popularity score and pub points
@@ -445,6 +460,9 @@ class PackageMetricsProvider extends AutoDisposeAsyncNotifierProviderImpl<
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'packageMetricsProvider$argument';
 }
 
 mixin PackageMetricsRef

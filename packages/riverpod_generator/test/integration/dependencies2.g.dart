@@ -115,6 +115,9 @@ class FamilyWithDependencies2Family extends Family {
   Override overrideWith(int Function(FamilyWithDependencies2Ref ref) create) {
     return _$FamilyWithDependencies2FamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'familyWithDependencies2Provider';
 }
 
 class _$FamilyWithDependencies2FamilyOverride implements FamilyOverride {
@@ -131,6 +134,9 @@ class _$FamilyWithDependencies2FamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'familyWithDependencies2Provider.overrideWith($create)';
 }
 
 /// See also [familyWithDependencies2].
@@ -225,6 +231,9 @@ class FamilyWithDependencies2Provider extends AutoDisposeProvider<int> {
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'familyWithDependencies2Provider$argument';
 }
 
 mixin FamilyWithDependencies2Ref on AutoDisposeProviderRef<int> {
@@ -367,6 +376,9 @@ class NotifierFamilyWithDependenciesFamily extends Family {
   Override overrideWith(NotifierFamilyWithDependencies Function() create) {
     return _$NotifierFamilyWithDependenciesFamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'notifierFamilyWithDependenciesProvider';
 }
 
 class _$NotifierFamilyWithDependenciesFamilyOverride implements FamilyOverride {
@@ -383,6 +395,10 @@ class _$NotifierFamilyWithDependenciesFamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() =>
+      'notifierFamilyWithDependenciesProvider.overrideWith($create)';
 }
 
 /// See also [NotifierFamilyWithDependencies].
@@ -484,6 +500,9 @@ class NotifierFamilyWithDependenciesProvider
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'notifierFamilyWithDependenciesProvider$argument';
 }
 
 mixin NotifierFamilyWithDependenciesRef on AutoDisposeNotifierProviderRef<int> {

@@ -77,6 +77,9 @@ class LabelFamily extends Family {
   Override overrideWith(String Function(LabelRef ref) create) {
     return _$LabelFamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'labelProvider';
 }
 
 class _$LabelFamilyOverride implements FamilyOverride {
@@ -93,6 +96,9 @@ class _$LabelFamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'labelProvider.overrideWith($create)';
 }
 
 /// See also [label].
@@ -184,6 +190,9 @@ class LabelProvider extends AutoDisposeProvider<String> {
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'labelProvider$argument';
 }
 
 mixin LabelRef on AutoDisposeProviderRef<String> {

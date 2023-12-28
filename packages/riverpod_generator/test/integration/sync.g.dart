@@ -70,6 +70,9 @@ class GenericFamily extends Family {
       List<T> Function<T extends num>(GenericRef ref) create) {
     return _$GenericFamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'genericProvider';
 }
 
 class _$GenericFamilyOverride implements FamilyOverride {
@@ -86,6 +89,9 @@ class _$GenericFamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'genericProvider.overrideWith($create)';
 }
 
 /// See also [generic].
@@ -169,6 +175,9 @@ class GenericProvider<T extends num> extends AutoDisposeProvider<List<T>> {
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'genericProvider<$T>$argument';
 }
 
 mixin GenericRef<T extends num> on AutoDisposeProviderRef<List<T>> {}
@@ -232,6 +241,9 @@ class ComplexGenericFamily extends Family {
           create) {
     return _$ComplexGenericFamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'complexGenericProvider';
 }
 
 class _$ComplexGenericFamilyOverride implements FamilyOverride {
@@ -249,6 +261,9 @@ class _$ComplexGenericFamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'complexGenericProvider.overrideWith($create)';
 }
 
 /// See also [complexGeneric].
@@ -362,6 +377,9 @@ class ComplexGenericProvider<T extends num, Foo extends String?>
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'complexGenericProvider<$T,$Foo>$argument';
 }
 
 mixin ComplexGenericRef<T extends num, Foo extends String?>
@@ -460,6 +478,9 @@ class RawFamilyFutureFamily extends Family {
       Raw<Future<String>> Function(RawFamilyFutureRef ref) create) {
     return _$RawFamilyFutureFamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'rawFamilyFutureProvider';
 }
 
 class _$RawFamilyFutureFamilyOverride implements FamilyOverride {
@@ -476,6 +497,9 @@ class _$RawFamilyFutureFamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'rawFamilyFutureProvider.overrideWith($create)';
 }
 
 /// See also [rawFamilyFuture].
@@ -568,6 +592,9 @@ class RawFamilyFutureProvider extends AutoDisposeProvider<Raw<Future<String>>> {
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'rawFamilyFutureProvider$argument';
 }
 
 mixin RawFamilyFutureRef on AutoDisposeProviderRef<Raw<Future<String>>> {
@@ -633,6 +660,9 @@ class RawFamilyStreamFamily extends Family {
       Raw<Stream<String>> Function(RawFamilyStreamRef ref) create) {
     return _$RawFamilyStreamFamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'rawFamilyStreamProvider';
 }
 
 class _$RawFamilyStreamFamilyOverride implements FamilyOverride {
@@ -649,6 +679,9 @@ class _$RawFamilyStreamFamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'rawFamilyStreamProvider.overrideWith($create)';
 }
 
 /// See also [rawFamilyStream].
@@ -741,6 +774,9 @@ class RawFamilyStreamProvider extends AutoDisposeProvider<Raw<Stream<String>>> {
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'rawFamilyStreamProvider$argument';
 }
 
 mixin RawFamilyStreamRef on AutoDisposeProviderRef<Raw<Stream<String>>> {
@@ -856,6 +892,9 @@ class FamilyFamily extends Family {
   Override overrideWith(String Function(FamilyRef ref) create) {
     return _$FamilyFamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'familyProvider';
 }
 
 class _$FamilyFamilyOverride implements FamilyOverride {
@@ -872,6 +911,9 @@ class _$FamilyFamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'familyProvider.overrideWith($create)';
 }
 
 /// This is some documentation
@@ -1016,6 +1058,9 @@ class FamilyProvider extends AutoDisposeProvider<String> {
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'familyProvider$argument';
 }
 
 mixin FamilyRef on AutoDisposeProviderRef<String> {
@@ -1126,6 +1171,9 @@ class GenericClassFamily extends Family {
   Override overrideWith(GenericClass Function() create) {
     return _$GenericClassFamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'genericClassProvider';
 }
 
 class _$GenericClassFamilyOverride implements FamilyOverride {
@@ -1142,6 +1190,9 @@ class _$GenericClassFamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'genericClassProvider.overrideWith($create)';
 }
 
 /// See also [GenericClass].
@@ -1230,6 +1281,9 @@ class GenericClassProvider<T extends num>
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'genericClassProvider<$T>$argument';
 }
 
 mixin GenericClassRef<T extends num>
@@ -1331,6 +1385,9 @@ class RawFamilyFutureClassFamily extends Family {
   Override overrideWith(RawFamilyFutureClass Function() create) {
     return _$RawFamilyFutureClassFamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'rawFamilyFutureClassProvider';
 }
 
 class _$RawFamilyFutureClassFamilyOverride implements FamilyOverride {
@@ -1347,6 +1404,9 @@ class _$RawFamilyFutureClassFamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'rawFamilyFutureClassProvider.overrideWith($create)';
 }
 
 /// See also [RawFamilyFutureClass].
@@ -1445,6 +1505,9 @@ class RawFamilyFutureClassProvider extends AutoDisposeNotifierProviderImpl<
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'rawFamilyFutureClassProvider$argument';
 }
 
 mixin RawFamilyFutureClassRef
@@ -1520,6 +1583,9 @@ class RawFamilyStreamClassFamily extends Family {
   Override overrideWith(RawFamilyStreamClass Function() create) {
     return _$RawFamilyStreamClassFamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'rawFamilyStreamClassProvider';
 }
 
 class _$RawFamilyStreamClassFamilyOverride implements FamilyOverride {
@@ -1536,6 +1602,9 @@ class _$RawFamilyStreamClassFamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'rawFamilyStreamClassProvider.overrideWith($create)';
 }
 
 /// See also [RawFamilyStreamClass].
@@ -1634,6 +1703,9 @@ class RawFamilyStreamClassProvider extends AutoDisposeNotifierProviderImpl<
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'rawFamilyStreamClassProvider$argument';
 }
 
 mixin RawFamilyStreamClassRef
@@ -1767,6 +1839,9 @@ class FamilyClassFamily extends Family {
   Override overrideWith(FamilyClass Function() create) {
     return _$FamilyClassFamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'familyClassProvider';
 }
 
 class _$FamilyClassFamilyOverride implements FamilyOverride {
@@ -1783,6 +1858,9 @@ class _$FamilyClassFamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'familyClassProvider.overrideWith($create)';
 }
 
 /// This is some documentation
@@ -1948,6 +2026,9 @@ class FamilyClassProvider
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'familyClassProvider$argument';
 }
 
 mixin FamilyClassRef on AutoDisposeNotifierProviderRef<String> {

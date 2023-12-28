@@ -302,6 +302,13 @@ ${parameters.map((e) => '        ${e.name}: ${e.name},\n').join()}
         '_\$${provider.name.lexeme.titled.public}FamilyOverride';
 
     // TODO changelog updated to support createElement prototype change
+    // TODO changelog toString()
+    // TODO handle generics with $ in their name
+
+    final encodedProviderName = providerName.encoded;
+    final encodedGenerics = typeParameters == null
+        ? ''
+        : '<${typeParameters!.typeParameters.map((e) => '\$${e.name.lexeme.encoded}').join(',')}>';
 
     buffer.write('''
 $other
@@ -346,6 +353,9 @@ class $familyName extends Family {
   Override overrideWith($createType create) {
     return $familyOverrideClassName(this, create);
   }
+
+  @override
+  String toString() => '$encodedProviderName';
 }
 
 class $familyOverrideClassName implements FamilyOverride {
@@ -362,6 +372,9 @@ class $familyOverrideClassName implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => '$encodedProviderName.overrideWith(\$create)';
 }
 
 $docs
@@ -441,6 +454,9 @@ ${[
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => '$encodedProviderName$encodedGenerics\$argument';
 }
 
 mixin $refNameImpl$typeParametersDefinition on $refType<${provider.valueTypeDisplayString}> {

@@ -133,6 +133,9 @@ class GenericsFamily extends Family {
   Override overrideWith(Generics Function() create) {
     return _$GenericsFamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'genericsProvider';
 }
 
 class _$GenericsFamilyOverride implements FamilyOverride {
@@ -149,6 +152,9 @@ class _$GenericsFamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'genericsProvider.overrideWith($create)';
 }
 
 /// See also [Generics].
@@ -237,6 +243,9 @@ class GenericsProvider<A extends num, B>
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'genericsProvider<$A,$B>$argument';
 }
 
 mixin GenericsRef<A extends num, B> on AutoDisposeNotifierProviderRef<int> {}
@@ -294,6 +303,9 @@ class NoGenericsFamily extends Family {
   Override overrideWith(NoGenerics Function() create) {
     return _$NoGenericsFamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'noGenericsProvider';
 }
 
 class _$NoGenericsFamilyOverride implements FamilyOverride {
@@ -310,6 +322,9 @@ class _$NoGenericsFamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'noGenericsProvider.overrideWith($create)';
 }
 
 /// See also [NoGenerics].
@@ -399,6 +414,9 @@ class NoGenericsProvider<A extends num, B>
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'noGenericsProvider<$A,$B>$argument';
 }
 
 mixin NoGenericsRef<A extends num, B> on AutoDisposeNotifierProviderRef<int> {}
@@ -456,6 +474,9 @@ class MissingGenericsFamily extends Family {
   Override overrideWith(MissingGenerics Function() create) {
     return _$MissingGenericsFamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'missingGenericsProvider';
 }
 
 class _$MissingGenericsFamilyOverride implements FamilyOverride {
@@ -472,6 +493,9 @@ class _$MissingGenericsFamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'missingGenericsProvider.overrideWith($create)';
 }
 
 /// See also [MissingGenerics].
@@ -561,6 +585,9 @@ class MissingGenericsProvider<A, B>
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'missingGenericsProvider<$A,$B>$argument';
 }
 
 mixin MissingGenericsRef<A, B> on AutoDisposeNotifierProviderRef<int> {}
@@ -617,6 +644,9 @@ class WrongOrderFamily extends Family {
   Override overrideWith(WrongOrder Function() create) {
     return _$WrongOrderFamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'wrongOrderProvider';
 }
 
 class _$WrongOrderFamilyOverride implements FamilyOverride {
@@ -633,6 +663,9 @@ class _$WrongOrderFamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'wrongOrderProvider.overrideWith($create)';
 }
 
 /// See also [WrongOrder].
@@ -722,6 +755,9 @@ class WrongOrderProvider<A, B>
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'wrongOrderProvider<$A,$B>$argument';
 }
 
 mixin WrongOrderRef<A, B> on AutoDisposeNotifierProviderRef<int> {}

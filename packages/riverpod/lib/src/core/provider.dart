@@ -132,12 +132,14 @@ abstract class ProviderBase<State> extends ProviderOrFamily
       leading = '($argument)';
     }
 
-    var trailing = '';
-    if (name != null) {
-      trailing = '$name:';
+    String label;
+    if (name case final name?) {
+      label = name;
+    } else {
+      label = describeIdentity(this);
     }
 
-    return '$trailing${describeIdentity(this)}$leading';
+    return '$label$leading';
   }
 }
 

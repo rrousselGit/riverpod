@@ -128,6 +128,9 @@ class FamilyFamily extends Family {
   Override overrideWith(String Function(FamilyRef ref) create) {
     return _$FamilyFamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'familyProvider';
 }
 
 class _$FamilyFamilyOverride implements FamilyOverride {
@@ -144,6 +147,9 @@ class _$FamilyFamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'familyProvider.overrideWith($create)';
 }
 
 /// A generated family provider.
@@ -288,6 +294,9 @@ class FamilyProvider extends AutoDisposeProvider<String> {
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'familyProvider$argument';
 }
 
 mixin FamilyRef on AutoDisposeProviderRef<String> {
@@ -453,6 +462,9 @@ class FamilyClassFamily extends Family {
   Override overrideWith(FamilyClass Function() create) {
     return _$FamilyClassFamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'familyClassProvider';
 }
 
 class _$FamilyClassFamilyOverride implements FamilyOverride {
@@ -469,6 +481,9 @@ class _$FamilyClassFamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'familyClassProvider.overrideWith($create)';
 }
 
 /// A generated family provider from a class.
@@ -634,6 +649,9 @@ class FamilyClassProvider
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'familyClassProvider$argument';
 }
 
 mixin FamilyClassRef on AutoDisposeNotifierProviderRef<String> {

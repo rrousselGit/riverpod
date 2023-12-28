@@ -87,6 +87,9 @@ class BugsEncounteredNotifierFamily extends Family {
   Override overrideWith(BugsEncounteredNotifier Function() create) {
     return _$BugsEncounteredNotifierFamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'bugsEncounteredNotifierProvider';
 }
 
 class _$BugsEncounteredNotifierFamilyOverride implements FamilyOverride {
@@ -103,6 +106,9 @@ class _$BugsEncounteredNotifierFamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'bugsEncounteredNotifierProvider.overrideWith($create)';
 }
 
 /// See also [BugsEncounteredNotifier].
@@ -202,6 +208,9 @@ class BugsEncounteredNotifierProvider
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'bugsEncounteredNotifierProvider$argument';
 }
 
 mixin BugsEncounteredNotifierRef on AutoDisposeAsyncNotifierProviderRef<int> {

@@ -78,6 +78,9 @@ class FnFamily extends Family {
   Override overrideWith(int Function(FnRef ref) create) {
     return _$FnFamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'fnProvider';
 }
 
 class _$FnFamilyOverride implements FamilyOverride {
@@ -94,6 +97,9 @@ class _$FnFamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'fnProvider.overrideWith($create)';
 }
 
 /// See also [fn].
@@ -199,6 +205,9 @@ class FnProvider extends AutoDisposeProvider<int> {
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'fnProvider$argument';
 }
 
 mixin FnRef on AutoDisposeProviderRef<int> {
@@ -279,6 +288,9 @@ class MyNotifierFamily extends Family {
   Override overrideWith(MyNotifier Function() create) {
     return _$MyNotifierFamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'myNotifierProvider';
 }
 
 class _$MyNotifierFamilyOverride implements FamilyOverride {
@@ -295,6 +307,9 @@ class _$MyNotifierFamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'myNotifierProvider.overrideWith($create)';
 }
 
 /// See also [MyNotifier].
@@ -414,6 +429,9 @@ class MyNotifierProvider
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'myNotifierProvider$argument';
 }
 
 mixin MyNotifierRef on AutoDisposeNotifierProviderRef<int> {

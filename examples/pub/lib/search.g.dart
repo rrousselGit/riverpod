@@ -81,6 +81,9 @@ class FetchPackagesFamily extends Family {
       FutureOr<List<Package>> Function(FetchPackagesRef ref) create) {
     return _$FetchPackagesFamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'fetchPackagesProvider';
 }
 
 class _$FetchPackagesFamilyOverride implements FamilyOverride {
@@ -97,6 +100,9 @@ class _$FetchPackagesFamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'fetchPackagesProvider.overrideWith($create)';
 }
 
 /// See also [fetchPackages].
@@ -205,6 +211,9 @@ class FetchPackagesProvider extends AutoDisposeFutureProvider<List<Package>> {
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'fetchPackagesProvider$argument';
 }
 
 mixin FetchPackagesRef on AutoDisposeFutureProviderRef<List<Package>> {

@@ -77,6 +77,9 @@ class FetchUserFamily extends Family {
   Override overrideWith(FutureOr<User> Function(FetchUserRef ref) create) {
     return _$FetchUserFamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'fetchUserProvider';
 }
 
 class _$FetchUserFamilyOverride implements FamilyOverride {
@@ -93,6 +96,9 @@ class _$FetchUserFamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'fetchUserProvider.overrideWith($create)';
 }
 
 /// See also [fetchUser].
@@ -186,6 +192,9 @@ class FetchUserProvider extends AutoDisposeFutureProvider<User> {
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'fetchUserProvider$argument';
 }
 
 mixin FetchUserRef on AutoDisposeFutureProviderRef<User> {

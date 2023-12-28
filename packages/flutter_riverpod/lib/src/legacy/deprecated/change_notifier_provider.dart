@@ -60,4 +60,8 @@ abstract class _ChangeNotifierProviderBase<NotifierT extends ChangeNotifier?>
   ProviderListenable<NotifierT> get notifier;
 
   NotifierT _create(covariant ChangeNotifierProviderElement<NotifierT> ref);
+
+  // Specified by ProviderBase
+  @override
+  String toString();
 }

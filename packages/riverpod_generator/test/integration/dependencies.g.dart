@@ -89,6 +89,9 @@ class FamilyFamily extends Family {
   Override overrideWith(int Function(FamilyRef ref) create) {
     return _$FamilyFamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'familyProvider';
 }
 
 class _$FamilyFamilyOverride implements FamilyOverride {
@@ -105,6 +108,9 @@ class _$FamilyFamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'familyProvider.overrideWith($create)';
 }
 
 /// See also [family].
@@ -196,6 +202,9 @@ class FamilyProvider extends AutoDisposeProvider<int> {
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'familyProvider$argument';
 }
 
 mixin FamilyRef on AutoDisposeProviderRef<int> {
@@ -445,6 +454,9 @@ class Family2Family extends Family {
   Override overrideWith(Family2 Function() create) {
     return _$Family2FamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'family2Provider';
 }
 
 class _$Family2FamilyOverride implements FamilyOverride {
@@ -461,6 +473,9 @@ class _$Family2FamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'family2Provider.overrideWith($create)';
 }
 
 /// See also [Family2].
@@ -556,6 +571,9 @@ class Family2Provider extends AutoDisposeNotifierProviderImpl<Family2, int> {
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'family2Provider$argument';
 }
 
 mixin Family2Ref on AutoDisposeNotifierProviderRef<int> {
@@ -670,6 +688,9 @@ class Provider4Family extends Family {
   Override overrideWith(Provider4 Function() create) {
     return _$Provider4FamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'provider4Provider';
 }
 
 class _$Provider4FamilyOverride implements FamilyOverride {
@@ -686,6 +707,9 @@ class _$Provider4FamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'provider4Provider.overrideWith($create)';
 }
 
 /// See also [Provider4].
@@ -782,6 +806,9 @@ class Provider4Provider
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'provider4Provider$argument';
 }
 
 mixin Provider4Ref on AutoDisposeNotifierProviderRef<int> {

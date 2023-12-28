@@ -459,6 +459,9 @@ class FamilyDepFamily extends Family {
   Override overrideWith(int Function(FamilyDepRef ref) create) {
     return _$FamilyDepFamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'familyDepProvider';
 }
 
 class _$FamilyDepFamilyOverride implements FamilyOverride {
@@ -475,6 +478,9 @@ class _$FamilyDepFamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'familyDepProvider.overrideWith($create)';
 }
 
 /// See also [familyDep].
@@ -566,6 +572,9 @@ class FamilyDepProvider extends AutoDisposeProvider<int> {
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'familyDepProvider$argument';
 }
 
 mixin FamilyDepRef on AutoDisposeProviderRef<int> {
@@ -635,6 +644,9 @@ class FamilyDep2Family extends Family {
   Override overrideWith(int Function(FamilyDep2Ref ref) create) {
     return _$FamilyDep2FamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'familyDep2Provider';
 }
 
 class _$FamilyDep2FamilyOverride implements FamilyOverride {
@@ -651,6 +663,9 @@ class _$FamilyDep2FamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'familyDep2Provider.overrideWith($create)';
 }
 
 /// See also [familyDep2].
@@ -743,6 +758,9 @@ class FamilyDep2Provider extends AutoDisposeProvider<int> {
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'familyDep2Provider$argument';
 }
 
 mixin FamilyDep2Ref on AutoDisposeProviderRef<int> {

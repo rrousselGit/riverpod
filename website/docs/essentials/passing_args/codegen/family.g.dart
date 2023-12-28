@@ -77,6 +77,9 @@ class ActivityFamily extends Family {
   Override overrideWith(FutureOr<Activity> Function(ActivityRef ref) create) {
     return _$ActivityFamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'activityProvider';
 }
 
 class _$ActivityFamilyOverride implements FamilyOverride {
@@ -93,6 +96,9 @@ class _$ActivityFamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'activityProvider.overrideWith($create)';
 }
 
 /// See also [activity].
@@ -184,6 +190,9 @@ class ActivityProvider extends AutoDisposeFutureProvider<Activity> {
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'activityProvider$argument';
 }
 
 mixin ActivityRef on AutoDisposeFutureProviderRef<Activity> {

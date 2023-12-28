@@ -100,6 +100,9 @@ class ActivityNotifier2Family extends Family {
   Override overrideWith(ActivityNotifier2 Function() create) {
     return _$ActivityNotifier2FamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'activityNotifier2Provider';
 }
 
 class _$ActivityNotifier2FamilyOverride implements FamilyOverride {
@@ -116,6 +119,9 @@ class _$ActivityNotifier2FamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'activityNotifier2Provider.overrideWith($create)';
 }
 
 /// See also [ActivityNotifier2].
@@ -215,6 +221,9 @@ class ActivityNotifier2Provider
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'activityNotifier2Provider$argument';
 }
 
 mixin ActivityNotifier2Ref on AutoDisposeAsyncNotifierProviderRef<Activity> {

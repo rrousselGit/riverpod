@@ -4,11 +4,7 @@ part of '../framework.dart';
 /// of a provider/family for part of the application.
 ///
 /// Do not extend or implement.
-sealed class Override {
-  @mustBeOverridden
-  @override
-  String toString();
-}
+sealed class Override {}
 
 /// An object used by [ProviderContainer] to override the behavior of a provider
 /// for a part of the application.
@@ -40,9 +36,10 @@ class _ProviderOverrideBase implements ProviderOverride {
   /// The new provider behavior.
   final ProviderBase<Object?> providerOverride;
 
+  @mustBeOverridden
   @override
   String toString() {
-    return 'ProviderOverride($origin, $providerOverride)';
+    return '$origin.overrideWith($providerOverride)';
   }
 }
 
@@ -89,6 +86,10 @@ abstract class FamilyOverride implements Override {
   /// Obtains the new behavior for a provider associated to the overridden family.
   @visibleForOverriding
   ProviderBase<Object?> getProviderOverride(ProviderBase<Object?> provider);
+
+  @mustBeOverridden
+  @override
+  String toString();
 }
 
 @internal

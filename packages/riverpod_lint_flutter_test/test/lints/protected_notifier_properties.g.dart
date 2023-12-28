@@ -111,6 +111,9 @@ class A3Family extends Family {
   Override overrideWith(A3 Function() create) {
     return _$A3FamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'a3Provider';
 }
 
 class _$A3FamilyOverride implements FamilyOverride {
@@ -127,6 +130,9 @@ class _$A3FamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'a3Provider.overrideWith($create)';
 }
 
 /// See also [A3].
@@ -220,6 +226,9 @@ class A3Provider extends AutoDisposeNotifierProviderImpl<A3, int> {
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'a3Provider$argument';
 }
 
 mixin A3Ref on AutoDisposeNotifierProviderRef<int> {
@@ -291,6 +300,9 @@ class A4Family extends Family {
   Override overrideWith(A4 Function() create) {
     return _$A4FamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'a4Provider';
 }
 
 class _$A4FamilyOverride implements FamilyOverride {
@@ -307,6 +319,9 @@ class _$A4FamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'a4Provider.overrideWith($create)';
 }
 
 /// See also [A4].
@@ -400,6 +415,9 @@ class A4Provider extends NotifierProviderImpl<A4, int> {
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'a4Provider$argument';
 }
 
 mixin A4Ref on NotifierProviderRef<int> {
@@ -470,6 +488,9 @@ class A5Family extends Family {
   Override overrideWith(A5 Function() create) {
     return _$A5FamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'a5Provider';
 }
 
 class _$A5FamilyOverride implements FamilyOverride {
@@ -486,6 +507,9 @@ class _$A5FamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'a5Provider.overrideWith($create)';
 }
 
 /// See also [A5].
@@ -579,6 +603,9 @@ class A5Provider extends AutoDisposeAsyncNotifierProviderImpl<A5, int> {
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'a5Provider$argument';
 }
 
 mixin A5Ref on AutoDisposeAsyncNotifierProviderRef<int> {
@@ -650,6 +677,9 @@ class A6Family extends Family {
   Override overrideWith(A6 Function() create) {
     return _$A6FamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'a6Provider';
 }
 
 class _$A6FamilyOverride implements FamilyOverride {
@@ -666,6 +696,9 @@ class _$A6FamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'a6Provider.overrideWith($create)';
 }
 
 /// See also [A6].
@@ -759,6 +792,9 @@ class A6Provider extends AsyncNotifierProviderImpl<A6, int> {
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'a6Provider$argument';
 }
 
 mixin A6Ref on AsyncNotifierProviderRef<int> {
@@ -830,6 +866,9 @@ class A7Family extends Family {
   Override overrideWith(A7 Function() create) {
     return _$A7FamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'a7Provider';
 }
 
 class _$A7FamilyOverride implements FamilyOverride {
@@ -846,6 +885,9 @@ class _$A7FamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'a7Provider.overrideWith($create)';
 }
 
 /// See also [A7].
@@ -939,6 +981,9 @@ class A7Provider extends AutoDisposeStreamNotifierProviderImpl<A7, int> {
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'a7Provider$argument';
 }
 
 mixin A7Ref on AutoDisposeStreamNotifierProviderRef<int> {
@@ -1010,6 +1055,9 @@ class A8Family extends Family {
   Override overrideWith(A8 Function() create) {
     return _$A8FamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'a8Provider';
 }
 
 class _$A8FamilyOverride implements FamilyOverride {
@@ -1026,6 +1074,9 @@ class _$A8FamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'a8Provider.overrideWith($create)';
 }
 
 /// See also [A8].
@@ -1119,6 +1170,9 @@ class A8Provider extends StreamNotifierProviderImpl<A8, int> {
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'a8Provider$argument';
 }
 
 mixin A8Ref on StreamNotifierProviderRef<int> {

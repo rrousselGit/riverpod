@@ -83,6 +83,9 @@ class GeneratedNotifierFamily extends Family {
   Override overrideWith(GeneratedNotifier Function() create) {
     return _$GeneratedNotifierFamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'generatedNotifierProvider';
 }
 
 class _$GeneratedNotifierFamilyOverride implements FamilyOverride {
@@ -99,6 +102,9 @@ class _$GeneratedNotifierFamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'generatedNotifierProvider.overrideWith($create)';
 }
 
 /// See also [GeneratedNotifier].
@@ -196,6 +202,9 @@ class GeneratedNotifierProvider
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'generatedNotifierProvider$argument';
 }
 
 mixin GeneratedNotifierRef on AutoDisposeNotifierProviderRef<int> {

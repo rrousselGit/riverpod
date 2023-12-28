@@ -20,7 +20,6 @@ export 'src/framework.dart'
         AutoDisposeNotifierFamilyBase,
         ProviderOverride,
         AutoDisposeFamilyBase,
-        AlwaysAliveAsyncSelector,
         DebugGetCreateSourceHash,
         ProviderNotifierCreate,
         ProviderCreate,
@@ -30,7 +29,13 @@ export 'src/framework.dart'
         ProviderElementProxy,
         OnError,
         ProviderContainerTest,
-        DebugRiverpodDevtoolBiding;
+        DebugRiverpodDevtoolBiding,
+        TransitiveFamilyOverride,
+        TransitiveProviderOverride,
+        ProviderPointer,
+        ProviderPointerManager,
+        ProviderDirectory;
+
 export 'src/legacy_providers/async_notifier.dart'
     hide
         AsyncNotifierProviderImpl,

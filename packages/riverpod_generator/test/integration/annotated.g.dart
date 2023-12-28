@@ -95,6 +95,9 @@ class FamilyFamily extends Family {
   Override overrideWith(String Function(FamilyRef ref) create) {
     return _$FamilyFamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'familyProvider';
 }
 
 class _$FamilyFamilyOverride implements FamilyOverride {
@@ -111,6 +114,9 @@ class _$FamilyFamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'familyProvider.overrideWith($create)';
 }
 
 /// See also [family].
@@ -202,6 +208,9 @@ class FamilyProvider extends AutoDisposeProvider<String> {
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'familyProvider$argument';
 }
 
 mixin FamilyRef on AutoDisposeProviderRef<String> {
@@ -281,6 +290,9 @@ class NotCopiedFamilyFamily extends Family {
   Override overrideWith(String Function(NotCopiedFamilyRef ref) create) {
     return _$NotCopiedFamilyFamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'notCopiedFamilyProvider';
 }
 
 class _$NotCopiedFamilyFamilyOverride implements FamilyOverride {
@@ -297,6 +309,9 @@ class _$NotCopiedFamilyFamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'notCopiedFamilyProvider.overrideWith($create)';
 }
 
 /// See also [notCopiedFamily].
@@ -389,6 +404,9 @@ class NotCopiedFamilyProvider extends AutoDisposeProvider<String> {
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'notCopiedFamilyProvider$argument';
 }
 
 mixin NotCopiedFamilyRef on AutoDisposeProviderRef<String> {

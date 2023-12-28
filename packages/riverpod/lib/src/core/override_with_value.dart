@@ -4,7 +4,7 @@ part of '../framework.dart';
 // TODO merge with Provider directy
 mixin OverrideWithValueMixin<State> on ProviderBase<State> {
   /// {@template riverpod.overrridewithvalue}
-  /// Overrides a provider with a value, ejecting the default behaviour.
+  /// Overrides a provider with a value, ejecting the default behavior.
   ///
   /// This will also disable the auto-scoping mechanism, meaning that if the
   /// overridden provider specified [dependencies], it will have no effect.
@@ -40,6 +40,10 @@ mixin OverrideWithValueMixin<State> on ProviderBase<State> {
       providerOverride: ValueProvider<State>(value),
     );
   }
+
+  @mustBeOverridden
+  @override
+  String toString();
 }
 
 /// A provider that is driven by a value instead of a function.

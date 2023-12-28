@@ -117,6 +117,9 @@ class Count2Family extends Family {
   Override overrideWith(int Function(Count2Ref ref) create) {
     return _$Count2FamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'count2ProviderFamily';
 }
 
 class _$Count2FamilyOverride implements FamilyOverride {
@@ -133,6 +136,9 @@ class _$Count2FamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'count2ProviderFamily.overrideWith($create)';
 }
 
 /// See also [count2].
@@ -224,6 +230,9 @@ class Count2Provider extends AutoDisposeProvider<int> {
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'count2ProviderFamily$argument';
 }
 
 mixin Count2Ref on AutoDisposeProviderRef<int> {
@@ -287,6 +296,9 @@ class CountFuture2Family extends Family {
   Override overrideWith(FutureOr<int> Function(CountFuture2Ref ref) create) {
     return _$CountFuture2FamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'countFuture2ProviderFamily';
 }
 
 class _$CountFuture2FamilyOverride implements FamilyOverride {
@@ -303,6 +315,9 @@ class _$CountFuture2FamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'countFuture2ProviderFamily.overrideWith($create)';
 }
 
 /// See also [countFuture2].
@@ -395,6 +410,9 @@ class CountFuture2Provider extends AutoDisposeFutureProvider<int> {
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'countFuture2ProviderFamily$argument';
 }
 
 mixin CountFuture2Ref on AutoDisposeFutureProviderRef<int> {
@@ -458,6 +476,9 @@ class CountStream2Family extends Family {
   Override overrideWith(Stream<int> Function(CountStream2Ref ref) create) {
     return _$CountStream2FamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'countStream2ProviderFamily';
 }
 
 class _$CountStream2FamilyOverride implements FamilyOverride {
@@ -474,6 +495,9 @@ class _$CountStream2FamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'countStream2ProviderFamily.overrideWith($create)';
 }
 
 /// See also [countStream2].
@@ -566,6 +590,9 @@ class CountStream2Provider extends AutoDisposeStreamProvider<int> {
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'countStream2ProviderFamily$argument';
 }
 
 mixin CountStream2Ref on AutoDisposeStreamProviderRef<int> {
@@ -687,6 +714,9 @@ class CountNotifier2Family extends Family {
   Override overrideWith(CountNotifier2 Function() create) {
     return _$CountNotifier2FamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'countNotifier2ProviderFamily';
 }
 
 class _$CountNotifier2FamilyOverride implements FamilyOverride {
@@ -703,6 +733,9 @@ class _$CountNotifier2FamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'countNotifier2ProviderFamily.overrideWith($create)';
 }
 
 /// See also [CountNotifier2].
@@ -800,6 +833,9 @@ class CountNotifier2Provider
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'countNotifier2ProviderFamily$argument';
 }
 
 mixin CountNotifier2Ref on AutoDisposeNotifierProviderRef<int> {
@@ -874,6 +910,9 @@ class CountAsyncNotifier2Family extends Family {
   Override overrideWith(CountAsyncNotifier2 Function() create) {
     return _$CountAsyncNotifier2FamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'countAsyncNotifier2ProviderFamily';
 }
 
 class _$CountAsyncNotifier2FamilyOverride implements FamilyOverride {
@@ -890,6 +929,10 @@ class _$CountAsyncNotifier2FamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() =>
+      'countAsyncNotifier2ProviderFamily.overrideWith($create)';
 }
 
 /// See also [CountAsyncNotifier2].
@@ -988,6 +1031,9 @@ class CountAsyncNotifier2Provider
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'countAsyncNotifier2ProviderFamily$argument';
 }
 
 mixin CountAsyncNotifier2Ref on AutoDisposeAsyncNotifierProviderRef<int> {
@@ -1062,6 +1108,9 @@ class CountStreamNotifier2Family extends Family {
   Override overrideWith(CountStreamNotifier2 Function() create) {
     return _$CountStreamNotifier2FamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'countStreamNotifier2ProviderFamily';
 }
 
 class _$CountStreamNotifier2FamilyOverride implements FamilyOverride {
@@ -1078,6 +1127,10 @@ class _$CountStreamNotifier2FamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() =>
+      'countStreamNotifier2ProviderFamily.overrideWith($create)';
 }
 
 /// See also [CountStreamNotifier2].
@@ -1176,6 +1229,9 @@ class CountStreamNotifier2Provider
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'countStreamNotifier2ProviderFamily$argument';
 }
 
 mixin CountStreamNotifier2Ref on AutoDisposeStreamNotifierProviderRef<int> {

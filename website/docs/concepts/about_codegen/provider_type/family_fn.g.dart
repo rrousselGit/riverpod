@@ -80,6 +80,9 @@ class ExampleFamily extends Family {
   Override overrideWith(String Function(ExampleRef ref) create) {
     return _$ExampleFamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'exampleProvider';
 }
 
 class _$ExampleFamilyOverride implements FamilyOverride {
@@ -96,6 +99,9 @@ class _$ExampleFamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'exampleProvider.overrideWith($create)';
 }
 
 /// See also [example].
@@ -203,6 +209,9 @@ class ExampleProvider extends AutoDisposeProvider<String> {
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'exampleProvider$argument';
 }
 
 mixin ExampleRef on AutoDisposeProviderRef<String> {

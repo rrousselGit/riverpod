@@ -75,6 +75,9 @@ class GeneratorFamily extends Family {
   Override overrideWith(int Function(GeneratorRef ref) create) {
     return _$GeneratorFamilyOverride(this, create);
   }
+
+  @override
+  String toString() => 'generatorProvider';
 }
 
 class _$GeneratorFamilyOverride implements FamilyOverride {
@@ -91,6 +94,9 @@ class _$GeneratorFamilyOverride implements FamilyOverride {
   ) {
     return provider._copyWith(create);
   }
+
+  @override
+  String toString() => 'generatorProvider.overrideWith($create)';
 }
 
 /// See also [generator].
@@ -184,6 +190,9 @@ class GeneratorProvider extends Provider<int> {
 
     return _SystemHash.finish(hash);
   }
+
+  @override
+  String toString() => 'generatorProvider$argument';
 }
 
 mixin GeneratorRef on ProviderRef<int> {
