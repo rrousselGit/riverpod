@@ -224,17 +224,21 @@ class StreamProviderFamily<R, Arg> extends FamilyBase<StreamProviderRef<R>,
   Override overrideWith(
     Stream<R> Function(StreamProviderRef<R> ref, Arg arg) create,
   ) {
-    return FamilyOverrideImpl<AsyncValue<R>, Arg, StreamProvider<R>>(
-      this,
-      (arg) => StreamProvider<R>.internal(
-        (ref) => create(ref, arg),
-        from: from,
-        argument: arg,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        name: null,
-      ),
+    return FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as StreamProvider<R>;
+
+        return StreamProvider<R>.internal(
+          (ref) => create(ref, provider.argument as Arg),
+          from: provider.from,
+          argument: provider.argument,
+          dependencies: null,
+          allTransitiveDependencies: null,
+          debugGetCreateSourceHash: null,
+          name: null,
+        ).createElement(container);
+      },
     );
   }
 }

@@ -61,16 +61,6 @@ class GeneratorFamily extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  GeneratorProvider getProviderOverride(
-    covariant GeneratorProvider provider,
-  ) {
-    return call(
-      value: provider.value,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(int Function(GeneratorRef ref) create) {
     return _$GeneratorFamilyOverride(this, create);
@@ -89,10 +79,11 @@ class _$GeneratorFamilyOverride implements FamilyOverride {
   final GeneratorFamily from;
 
   @override
-  GeneratorProvider getProviderOverride(
+  _GeneratorProviderElement createElement(
+    ProviderContainer container,
     covariant GeneratorProvider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -158,7 +149,7 @@ class GeneratorProvider extends Provider<int> {
   }
 
   @override
-  ProviderElement<int> createElement(
+  _GeneratorProviderElement createElement(
     ProviderContainer container,
   ) {
     return _GeneratorProviderElement(this, container);

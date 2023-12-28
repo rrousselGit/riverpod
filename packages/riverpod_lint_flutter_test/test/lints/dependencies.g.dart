@@ -445,16 +445,6 @@ class FamilyDepFamily extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  FamilyDepProvider getProviderOverride(
-    covariant FamilyDepProvider provider,
-  ) {
-    return call(
-      provider.p,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(int Function(FamilyDepRef ref) create) {
     return _$FamilyDepFamilyOverride(this, create);
@@ -473,10 +463,11 @@ class _$FamilyDepFamilyOverride implements FamilyOverride {
   final FamilyDepFamily from;
 
   @override
-  FamilyDepProvider getProviderOverride(
+  _FamilyDepProviderElement createElement(
+    ProviderContainer container,
     covariant FamilyDepProvider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -540,7 +531,7 @@ class FamilyDepProvider extends AutoDisposeProvider<int> {
   }
 
   @override
-  AutoDisposeProviderElement<int> createElement(
+  _FamilyDepProviderElement createElement(
     ProviderContainer container,
   ) {
     return _FamilyDepProviderElement(this, container);
@@ -630,16 +621,6 @@ class FamilyDep2Family extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  FamilyDep2Provider getProviderOverride(
-    covariant FamilyDep2Provider provider,
-  ) {
-    return call(
-      provider.p,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(int Function(FamilyDep2Ref ref) create) {
     return _$FamilyDep2FamilyOverride(this, create);
@@ -658,10 +639,11 @@ class _$FamilyDep2FamilyOverride implements FamilyOverride {
   final FamilyDep2Family from;
 
   @override
-  FamilyDep2Provider getProviderOverride(
+  _FamilyDep2ProviderElement createElement(
+    ProviderContainer container,
     covariant FamilyDep2Provider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -726,7 +708,7 @@ class FamilyDep2Provider extends AutoDisposeProvider<int> {
   }
 
   @override
-  AutoDisposeProviderElement<int> createElement(
+  _FamilyDep2ProviderElement createElement(
     ProviderContainer container,
   ) {
     return _FamilyDep2ProviderElement(this, container);

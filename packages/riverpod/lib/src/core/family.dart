@@ -31,27 +31,12 @@ typedef ProviderNotifierCreate<ProviderT, Created, RefT extends Ref> = ProviderT
 typedef FamilyCreate<T, R extends Ref, Arg> = T Function(R ref, Arg arg);
 
 /// A base class for all families
-abstract class Family implements FamilyOverride, ProviderOrFamily {
+abstract class Family implements _FamilyOverride, ProviderOrFamily {
   /// A base class for all families
   const Family();
 
   @override
   Family get from => this;
-}
-
-mixin _FamilyMixin<State, Arg, FamilyProvider extends ProviderBase<State>>
-    on Family {
-  /// Create a provider from an external value.
-  ///
-  /// That external value should be immutable and preferably override `==`/`hashCode`.
-  /// See the documentation of [Provider.family] for more information.
-  FamilyProvider call(Arg argument);
-
-  @visibleForOverriding
-  @override
-  ProviderBase<Object?> getProviderOverride(ProviderBase<Object?> provider) {
-    return call(provider.argument as Arg);
-  }
 }
 
 /// Setup how a family is overridden
@@ -70,8 +55,7 @@ typedef SetupFamilyOverride<Arg> = void Function(
 /// This API is not meant for public consumption.
 @internal
 class FamilyBase<RefT extends Ref<R>, R, Arg, Created,
-        ProviderT extends ProviderBase<R>> extends Family
-    with _FamilyMixin<R, Arg, ProviderT> {
+    ProviderT extends ProviderBase<R>> extends Family {
   /// A base implementation for [Family], used by the various providers to
   /// help them define a [Family].
   ///
@@ -89,16 +73,23 @@ class FamilyBase<RefT extends Ref<R>, R, Arg, Created,
 
   final Created Function(RefT ref, Arg arg) _createFn;
 
-  @override
-  ProviderT call(Arg argument) => _providerFactory(
-        (ref) => _createFn(ref, argument),
-        name: name,
-        from: this,
-        argument: argument,
-        dependencies: dependencies,
-        allTransitiveDependencies: allTransitiveDependencies,
-        debugGetCreateSourceHash: debugGetCreateSourceHash,
-      );
+  /// {@template family.call}
+  /// Create a provider from an external value.
+  ///
+  /// That external value should be immutable and preferably override `==`/`hashCode`.
+  /// See the documentation of [Provider.family] for more information.
+  /// {@endtemplate}
+  ProviderT call(Arg argument) {
+    return _providerFactory(
+      (ref) => _createFn(ref, argument),
+      name: name,
+      from: this,
+      argument: argument,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+    );
+  }
 
   @override
   final String? name;
@@ -119,8 +110,7 @@ class FamilyBase<RefT extends Ref<R>, R, Arg, Created,
 
 @internal
 class AutoDisposeFamilyBase<RefT extends Ref<R>, R, Arg, Created,
-        ProviderT extends ProviderBase<R>> extends Family
-    with _FamilyMixin<R, Arg, ProviderT> {
+    ProviderT extends ProviderBase<R>> extends Family {
   /// A base implementation for [Family], used by the various providers to
   /// help them define a [Family].
   ///
@@ -138,16 +128,18 @@ class AutoDisposeFamilyBase<RefT extends Ref<R>, R, Arg, Created,
 
   final Created Function(RefT ref, Arg arg) _createFn;
 
-  @override
-  ProviderT call(Arg argument) => _providerFactory(
-        (ref) => _createFn(ref, argument),
-        name: name,
-        from: this,
-        argument: argument,
-        dependencies: dependencies,
-        allTransitiveDependencies: allTransitiveDependencies,
-        debugGetCreateSourceHash: debugGetCreateSourceHash,
-      );
+  /// {@macro family.call}
+  ProviderT call(Arg argument) {
+    return _providerFactory(
+      (ref) => _createFn(ref, argument),
+      name: name,
+      from: this,
+      argument: argument,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+    );
+  }
 
   @override
   final String? name;
@@ -168,8 +160,7 @@ class AutoDisposeFamilyBase<RefT extends Ref<R>, R, Arg, Created,
 /// This API is not meant for public consumption.
 @internal
 class AutoDisposeNotifierFamilyBase<RefT extends Ref<R>, R, Arg, NotifierT,
-        ProviderT extends ProviderBase<R>> extends Family
-    with _FamilyMixin<R, Arg, ProviderT> {
+    ProviderT extends ProviderBase<R>> extends Family {
   /// A base implementation for [Family], used by the various providers to
   /// help them define a [Family].
   ///
@@ -187,16 +178,18 @@ class AutoDisposeNotifierFamilyBase<RefT extends Ref<R>, R, Arg, NotifierT,
 
   final NotifierT Function() _createFn;
 
-  @override
-  ProviderT call(Arg argument) => _providerFactory(
-        _createFn,
-        name: name,
-        from: this,
-        argument: argument,
-        dependencies: dependencies,
-        allTransitiveDependencies: allTransitiveDependencies,
-        debugGetCreateSourceHash: debugGetCreateSourceHash,
-      );
+  /// {@macro family.call}
+  ProviderT call(Arg argument) {
+    return _providerFactory(
+      _createFn,
+      name: name,
+      from: this,
+      argument: argument,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+    );
+  }
 
   @override
   final String? name;
@@ -217,8 +210,7 @@ class AutoDisposeNotifierFamilyBase<RefT extends Ref<R>, R, Arg, NotifierT,
 /// This API is not meant for public consumption.
 @internal
 class NotifierFamilyBase<RefT extends Ref<R>, R, Arg, NotifierT,
-        ProviderT extends ProviderBase<R>> extends Family
-    with _FamilyMixin<R, Arg, ProviderT> {
+    ProviderT extends ProviderBase<R>> extends Family {
   /// A base implementation for [Family], used by the various providers to
   /// help them define a [Family].
   ///
@@ -236,16 +228,18 @@ class NotifierFamilyBase<RefT extends Ref<R>, R, Arg, NotifierT,
 
   final NotifierT Function() _createFn;
 
-  @override
-  ProviderT call(Arg argument) => _providerFactory(
-        _createFn,
-        name: name,
-        from: this,
-        argument: argument,
-        dependencies: dependencies,
-        allTransitiveDependencies: allTransitiveDependencies,
-        debugGetCreateSourceHash: debugGetCreateSourceHash,
-      );
+  /// {@macro family.call}
+  ProviderT call(Arg argument) {
+    return _providerFactory(
+      _createFn,
+      name: name,
+      from: this,
+      argument: argument,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+    );
+  }
 
   @override
   final String? name;

@@ -87,17 +87,6 @@ class ExampleFamilyFamily extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  ExampleFamilyProvider getProviderOverride(
-    covariant ExampleFamilyProvider provider,
-  ) {
-    return call(
-      a: provider.a,
-      b: provider.b,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(int Function(ExampleFamilyRef ref) create) {
     return _$ExampleFamilyFamilyOverride(this, create);
@@ -116,10 +105,11 @@ class _$ExampleFamilyFamilyOverride implements FamilyOverride {
   final ExampleFamilyFamily from;
 
   @override
-  ExampleFamilyProvider getProviderOverride(
+  _ExampleFamilyProviderElement createElement(
+    ProviderContainer container,
     covariant ExampleFamilyProvider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -200,7 +190,7 @@ class ExampleFamilyProvider extends AutoDisposeProvider<int> {
   }
 
   @override
-  AutoDisposeProviderElement<int> createElement(
+  _ExampleFamilyProviderElement createElement(
     ProviderContainer container,
   ) {
     return _ExampleFamilyProviderElement(this, container);

@@ -103,19 +103,22 @@ class AutoDisposeStreamNotifierProviderFamily<
 
   /// {@macro riverpod.override_with}
   Override overrideWith(NotifierT Function() create) {
-    return FamilyOverrideImpl<AsyncValue<T>, Arg,
-        AutoDisposeFamilyStreamNotifierProvider<NotifierT, T, Arg>>(
-      this,
-      (arg) =>
-          AutoDisposeFamilyStreamNotifierProvider<NotifierT, T, Arg>.internal(
-        create,
-        from: from,
-        argument: arg,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        name: null,
-      ),
+    return FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as AutoDisposeFamilyStreamNotifierProvider<NotifierT, T, Arg>;
+
+        return AutoDisposeFamilyStreamNotifierProvider<NotifierT, T,
+            Arg>.internal(
+          create,
+          from: provider.from,
+          argument: provider.argument,
+          dependencies: null,
+          allTransitiveDependencies: null,
+          debugGetCreateSourceHash: null,
+          name: null,
+        ).createElement(container);
+      },
     );
   }
 }

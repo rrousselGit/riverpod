@@ -27,14 +27,6 @@ String genericUsageDisplayString(TypeParameterList? typeParameterList) {
   return '<${typeParameterList.typeParameters.map((e) => e.name.lexeme).join(', ')}>';
 }
 
-String anyGenericUsageDisplayString(TypeParameterList? typeParameterList) {
-  if (typeParameterList == null) {
-    return '';
-  }
-
-  return '<${typeParameterList.typeParameters.map((e) => e.declaredElement?.bound?.toString() ?? 'Object?').join(', ')}>';
-}
-
 class FamilyTemplate extends Template {
   FamilyTemplate._(
     this.provider, {
@@ -268,10 +260,6 @@ ${parameters.map((e) => '        ${e.name}: ${e.name},\n').join()}
     final familyName = '${provider.providerElement.name.titled}Family';
 
     final parameterDefinition = buildParamDefinitionQuery(parameters);
-    final parameterProviderPassThrough = buildParamInvocationQuery({
-      for (final parameter in parameters)
-        parameter: 'provider.${parameter.name}',
-    });
     final parameterThisNamedPassThrough = parameters
         .map((parameter) => '${parameter.name}: ${parameter.name},')
         .join();
@@ -289,7 +277,6 @@ ${parameters.map((e) => '        ${e.name}: ${e.name},\n').join()}
     final typeParametersDefinition =
         genericDefinitionDisplayString(typeParameters);
     final typeParametersUsage = genericUsageDisplayString(typeParameters);
-    final anyTypeParametersUsage = anyGenericUsageDisplayString(typeParameters);
     final argumentRecordType = buildParamDefinitionQuery(
       parameters,
       asRecord: true,
@@ -341,14 +328,6 @@ class $familyName extends Family {
     return $providerTypeNameImpl$typeParametersUsage($parametersPassThrough);
   }
 
-  @visibleForOverriding
-  @override
-  $providerTypeNameImpl$anyTypeParametersUsage getProviderOverride(
-    covariant $providerTypeNameImpl$anyTypeParametersUsage provider,
-  ) {
-    return call($parameterProviderPassThrough);
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith($createType create) {
     return $familyOverrideClassName(this, create);
@@ -367,10 +346,11 @@ class $familyOverrideClassName implements FamilyOverride {
   final $familyName from;
 
   @override
-  $providerTypeNameImpl getProviderOverride(
+  $elementNameImpl createElement(
+    ProviderContainer container,
     covariant $providerTypeNameImpl provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -415,7 +395,7 @@ $providerOther
   }
 
   @override
-  $elementType$providerGenerics createElement(ProviderContainer container,) {
+  $elementNameImpl$typeParametersUsage createElement(ProviderContainer container,) {
     return $elementNameImpl(this, container);
   }
 

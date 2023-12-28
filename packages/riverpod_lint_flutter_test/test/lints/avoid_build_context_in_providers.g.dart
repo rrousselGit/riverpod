@@ -63,17 +63,6 @@ class FnFamily extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  FnProvider getProviderOverride(
-    covariant FnProvider provider,
-  ) {
-    return call(
-      provider.context1,
-      context2: provider.context2,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(int Function(FnRef ref) create) {
     return _$FnFamilyOverride(this, create);
@@ -92,10 +81,11 @@ class _$FnFamilyOverride implements FamilyOverride {
   final FnFamily from;
 
   @override
-  FnProvider getProviderOverride(
+  _FnProviderElement createElement(
+    ProviderContainer container,
     covariant FnProvider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -169,7 +159,7 @@ class FnProvider extends AutoDisposeProvider<int> {
   }
 
   @override
-  AutoDisposeProviderElement<int> createElement(
+  _FnProviderElement createElement(
     ProviderContainer container,
   ) {
     return _FnProviderElement(this, container);
@@ -273,17 +263,6 @@ class MyNotifierFamily extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  MyNotifierProvider getProviderOverride(
-    covariant MyNotifierProvider provider,
-  ) {
-    return call(
-      provider.context1,
-      context2: provider.context2,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(MyNotifier Function() create) {
     return _$MyNotifierFamilyOverride(this, create);
@@ -302,10 +281,11 @@ class _$MyNotifierFamilyOverride implements FamilyOverride {
   final MyNotifierFamily from;
 
   @override
-  MyNotifierProvider getProviderOverride(
+  _MyNotifierProviderElement createElement(
+    ProviderContainer container,
     covariant MyNotifierProvider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -391,7 +371,7 @@ class MyNotifierProvider
   }
 
   @override
-  AutoDisposeNotifierProviderElement<MyNotifier, int> createElement(
+  _MyNotifierProviderElement createElement(
     ProviderContainer container,
   ) {
     return _MyNotifierProviderElement(this, container);

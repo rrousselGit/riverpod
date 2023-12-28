@@ -101,16 +101,6 @@ class FamilyWithDependencies2Family extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  FamilyWithDependencies2Provider getProviderOverride(
-    covariant FamilyWithDependencies2Provider provider,
-  ) {
-    return call(
-      id: provider.id,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(int Function(FamilyWithDependencies2Ref ref) create) {
     return _$FamilyWithDependencies2FamilyOverride(this, create);
@@ -129,10 +119,11 @@ class _$FamilyWithDependencies2FamilyOverride implements FamilyOverride {
   final FamilyWithDependencies2Family from;
 
   @override
-  FamilyWithDependencies2Provider getProviderOverride(
+  _FamilyWithDependencies2ProviderElement createElement(
+    ProviderContainer container,
     covariant FamilyWithDependencies2Provider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -199,7 +190,7 @@ class FamilyWithDependencies2Provider extends AutoDisposeProvider<int> {
   }
 
   @override
-  AutoDisposeProviderElement<int> createElement(
+  _FamilyWithDependencies2ProviderElement createElement(
     ProviderContainer container,
   ) {
     return _FamilyWithDependencies2ProviderElement(this, container);
@@ -362,16 +353,6 @@ class NotifierFamilyWithDependenciesFamily extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  NotifierFamilyWithDependenciesProvider getProviderOverride(
-    covariant NotifierFamilyWithDependenciesProvider provider,
-  ) {
-    return call(
-      id: provider.id,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(NotifierFamilyWithDependencies Function() create) {
     return _$NotifierFamilyWithDependenciesFamilyOverride(this, create);
@@ -390,10 +371,11 @@ class _$NotifierFamilyWithDependenciesFamilyOverride implements FamilyOverride {
   final NotifierFamilyWithDependenciesFamily from;
 
   @override
-  NotifierFamilyWithDependenciesProvider getProviderOverride(
+  _NotifierFamilyWithDependenciesProviderElement createElement(
+    ProviderContainer container,
     covariant NotifierFamilyWithDependenciesProvider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -467,8 +449,7 @@ class NotifierFamilyWithDependenciesProvider
   }
 
   @override
-  AutoDisposeNotifierProviderElement<NotifierFamilyWithDependencies, int>
-      createElement(
+  _NotifierFamilyWithDependenciesProviderElement createElement(
     ProviderContainer container,
   ) {
     return _NotifierFamilyWithDependenciesProviderElement(this, container);

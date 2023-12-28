@@ -110,20 +110,6 @@ class FamilyFamily extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  FamilyProvider getProviderOverride(
-    covariant FamilyProvider provider,
-  ) {
-    return call(
-      provider.first,
-      second: provider.second,
-      third: provider.third,
-      forth: provider.forth,
-      fifth: provider.fifth,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(String Function(FamilyRef ref) create) {
     return _$FamilyFamilyOverride(this, create);
@@ -142,10 +128,11 @@ class _$FamilyFamilyOverride implements FamilyOverride {
   final FamilyFamily from;
 
   @override
-  FamilyProvider getProviderOverride(
+  _FamilyProviderElement createElement(
+    ProviderContainer container,
     covariant FamilyProvider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -249,7 +236,7 @@ class FamilyProvider extends AutoDisposeProvider<String> {
   }
 
   @override
-  AutoDisposeProviderElement<String> createElement(
+  _FamilyProviderElement createElement(
     ProviderContainer container,
   ) {
     return _FamilyProviderElement(this, container);
@@ -444,20 +431,6 @@ class FamilyClassFamily extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  FamilyClassProvider getProviderOverride(
-    covariant FamilyClassProvider provider,
-  ) {
-    return call(
-      provider.first,
-      second: provider.second,
-      third: provider.third,
-      forth: provider.forth,
-      fifth: provider.fifth,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(FamilyClass Function() create) {
     return _$FamilyClassFamilyOverride(this, create);
@@ -476,10 +449,11 @@ class _$FamilyClassFamilyOverride implements FamilyOverride {
   final FamilyClassFamily from;
 
   @override
-  FamilyClassProvider getProviderOverride(
+  _FamilyClassProviderElement createElement(
+    ProviderContainer container,
     covariant FamilyClassProvider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -599,7 +573,7 @@ class FamilyClassProvider
   }
 
   @override
-  AutoDisposeNotifierProviderElement<FamilyClass, String> createElement(
+  _FamilyClassProviderElement createElement(
     ProviderContainer container,
   ) {
     return _FamilyClassProviderElement(this, container);

@@ -117,17 +117,21 @@ class AutoDisposeFutureProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
   Override overrideWith(
     FutureOr<R> Function(AutoDisposeFutureProviderRef<R> ref, Arg arg) create,
   ) {
-    return FamilyOverrideImpl<AsyncValue<R>, Arg, AutoDisposeFutureProvider<R>>(
-      this,
-      (arg) => AutoDisposeFutureProvider<R>.internal(
-        (ref) => create(ref, arg),
-        from: from,
-        argument: arg,
-        debugGetCreateSourceHash: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        name: null,
-      ),
+    return FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as AutoDisposeFutureProvider<R>;
+
+        return AutoDisposeFutureProvider<R>.internal(
+          (ref) => create(ref, provider.argument as Arg),
+          from: provider.from,
+          argument: provider.argument,
+          dependencies: null,
+          allTransitiveDependencies: null,
+          debugGetCreateSourceHash: null,
+          name: null,
+        ).createElement(container);
+      },
     );
   }
 }

@@ -262,18 +262,21 @@ class ChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?, Arg>
     NotifierT Function(ChangeNotifierProviderRef<NotifierT> ref, Arg arg)
         create,
   ) {
-    return FamilyOverrideImpl<NotifierT, Arg,
-        ChangeNotifierProvider<NotifierT>>(
-      this,
-      (arg) => ChangeNotifierProvider<NotifierT>.internal(
-        (ref) => create(ref, arg),
-        from: from,
-        argument: arg,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-      ),
+    return FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as ChangeNotifierProvider<NotifierT>;
+
+        return ChangeNotifierProvider<NotifierT>.internal(
+          (ref) => create(ref, provider.argument as Arg),
+          from: provider.from,
+          argument: provider.argument,
+          dependencies: null,
+          allTransitiveDependencies: null,
+          debugGetCreateSourceHash: null,
+          name: null,
+        ).createElement(container);
+      },
     );
   }
 }

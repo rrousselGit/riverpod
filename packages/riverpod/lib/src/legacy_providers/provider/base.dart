@@ -376,17 +376,21 @@ class ProviderFamily<R, Arg>
   Override overrideWith(
     R Function(ProviderRef<R> ref, Arg arg) create,
   ) {
-    return FamilyOverrideImpl<R, Arg, Provider<R>>(
-      this,
-      (arg) => Provider<R>.internal(
-        (ref) => create(ref, arg),
-        from: from,
-        argument: arg,
-        name: name,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-      ),
+    return FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as Provider<R>;
+
+        return Provider<R>.internal(
+          (ref) => create(ref, provider.argument as Arg),
+          from: provider.from,
+          argument: provider.argument,
+          dependencies: null,
+          allTransitiveDependencies: null,
+          debugGetCreateSourceHash: null,
+          name: null,
+        ).createElement(container);
+      },
     );
   }
 }

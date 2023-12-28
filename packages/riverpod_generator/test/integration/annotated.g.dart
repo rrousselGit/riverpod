@@ -81,16 +81,6 @@ class FamilyFamily extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  FamilyProvider getProviderOverride(
-    covariant FamilyProvider provider,
-  ) {
-    return call(
-      provider.id,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(String Function(FamilyRef ref) create) {
     return _$FamilyFamilyOverride(this, create);
@@ -109,10 +99,11 @@ class _$FamilyFamilyOverride implements FamilyOverride {
   final FamilyFamily from;
 
   @override
-  FamilyProvider getProviderOverride(
+  _FamilyProviderElement createElement(
+    ProviderContainer container,
     covariant FamilyProvider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -176,7 +167,7 @@ class FamilyProvider extends AutoDisposeProvider<String> {
   }
 
   @override
-  AutoDisposeProviderElement<String> createElement(
+  _FamilyProviderElement createElement(
     ProviderContainer container,
   ) {
     return _FamilyProviderElement(this, container);
@@ -276,16 +267,6 @@ class NotCopiedFamilyFamily extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  NotCopiedFamilyProvider getProviderOverride(
-    covariant NotCopiedFamilyProvider provider,
-  ) {
-    return call(
-      provider.id,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(String Function(NotCopiedFamilyRef ref) create) {
     return _$NotCopiedFamilyFamilyOverride(this, create);
@@ -304,10 +285,11 @@ class _$NotCopiedFamilyFamilyOverride implements FamilyOverride {
   final NotCopiedFamilyFamily from;
 
   @override
-  NotCopiedFamilyProvider getProviderOverride(
+  _NotCopiedFamilyProviderElement createElement(
+    ProviderContainer container,
     covariant NotCopiedFamilyProvider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -372,7 +354,7 @@ class NotCopiedFamilyProvider extends AutoDisposeProvider<String> {
   }
 
   @override
-  AutoDisposeProviderElement<String> createElement(
+  _NotCopiedFamilyProviderElement createElement(
     ProviderContainer container,
   ) {
     return _NotCopiedFamilyProviderElement(this, container);

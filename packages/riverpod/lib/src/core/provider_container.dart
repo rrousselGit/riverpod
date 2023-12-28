@@ -12,10 +12,6 @@ ProviderBase<Object?>? _circularDependencyLock;
 abstract class _PointerBase {
   /// The container in which the element of this provider will be mounted.
   ProviderContainer get targetContainer;
-
-  // /// The container that owns this pointer.
-  // /// May be equal to [targetContainer] or one of its children.
-  // ProviderContainer get ownerContainer;
 }
 
 @internal
@@ -23,7 +19,6 @@ class ProviderPointer implements _PointerBase {
   ProviderPointer({
     required this.providerOverride,
     required this.targetContainer,
-    // required this.ownerContainer,
   });
 
   /// The override associated with this provider, if any.
@@ -31,12 +26,10 @@ class ProviderPointer implements _PointerBase {
   /// If non-null, this pointer should **never** be removed.
   ///
   /// This override may be implicitly created by [ProviderOrFamily.allTransitiveDependencies].
-  ProviderOverride? providerOverride;
+  _ProviderOverride? providerOverride;
   ProviderElementBase<Object?>? element;
   @override
   final ProviderContainer targetContainer;
-  // @override
-  // final ProviderContainer ownerContainer;
 
   @override
   String toString() {
@@ -44,7 +37,6 @@ class ProviderPointer implements _PointerBase {
     buffer.writeln('ProviderPointer$hashCode(');
 
     buffer.writeln('  targetContainer: $targetContainer');
-    // buffer.writeln('  ownerContainer: $ownerContainer');
     buffer.writeln('  override: $providerOverride');
     buffer.writeln('  element: $element');
 
@@ -117,13 +109,13 @@ class ProviderDirectory implements _PointerBase {
   /// If non-null, this pointer should **never** be removed.
   ///
   /// This override may be implicitly created by [ProviderOrFamily.allTransitiveDependencies].
-  FamilyOverride? familyOverride;
+  _FamilyOverride? familyOverride;
   final HashMap<ProviderBase<Object?>, ProviderPointer> pointers;
   @override
   final ProviderContainer targetContainer;
 
   void addProviderOverride(
-    ProviderOverride override, {
+    _ProviderOverride override, {
     required ProviderContainer targetContainer,
   }) {
     final origin = override.origin;
@@ -171,11 +163,25 @@ class ProviderDirectory implements _PointerBase {
     );
 
     if (pointer.element == null) {
+      ProviderElementBase<Object?>? element;
+
+      switch ((pointer.providerOverride, familyOverride)) {
+        case (final override?, _):
+          element =
+              override.providerOverride.createElement(pointer.targetContainer);
+
+        case (null, final FamilyOverride override):
+          element = override.createElement(pointer.targetContainer, origin);
+
+        case (null, _FamilyOverride() || null):
+          element = origin.createElement(pointer.targetContainer);
+      }
+
       final overrideProvider =
           pointer.providerOverride?.providerOverride ?? origin;
 
       // TODO test family(42) overrides on nested containers receive the correct container
-      final element = overrideProvider.createElement(pointer.targetContainer)
+      element
         // TODO remove
         .._provider = overrideProvider
         // TODO remove
@@ -273,7 +279,7 @@ class ProviderPointerManager {
   final HashMap<Family, ProviderDirectory> familyPointers;
 
   void _initializeProviderOverride(
-    ProviderOverride override,
+    _ProviderOverride override,
   ) {
     final from = override.origin.from;
 
@@ -300,9 +306,9 @@ class ProviderPointerManager {
   void _initializeOverrides(List<Override> overrides) {
     for (final override in overrides) {
       switch (override) {
-        case ProviderOverride():
+        case _ProviderOverride():
           _initializeProviderOverride(override);
-        case FamilyOverride():
+        case _FamilyOverride():
           final overriddenFamily = override.from;
 
           final previousPointer = familyPointers[overriddenFamily];
@@ -549,7 +555,7 @@ class ProviderContainer implements Node {
       final overrideOrigins = <Object?>{};
       for (final override in overrides) {
         switch (override) {
-          case ProviderOverride():
+          case _ProviderOverride():
             if (parent != null &&
                 override.origin.allTransitiveDependencies == null &&
                 override.origin.from?.allTransitiveDependencies == null) {
@@ -563,7 +569,7 @@ class ProviderContainer implements Node {
                 'Tried to override a provider twice within the same container: ${override.origin}',
               );
             }
-          case FamilyOverride():
+          case _FamilyOverride():
             if (parent != null &&
                 override.from.allTransitiveDependencies == null) {
               throw AssertionError(
@@ -852,7 +858,7 @@ class ProviderContainer implements Node {
       }
 
       switch (override) {
-        case ProviderOverride():
+        case _ProviderOverride():
           final pointer = _pointerManager.readPointer(override.origin);
 
           if (kDebugMode) {
@@ -869,7 +875,7 @@ class ProviderContainer implements Node {
 
           runUnaryGuarded(element.update, override.providerOverride);
 
-        case FamilyOverride():
+        case _FamilyOverride():
           // TODO assert family override did not change
 
           final pointer = _pointerManager.familyPointers[override.from];

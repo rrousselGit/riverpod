@@ -103,16 +103,6 @@ class Count2Family extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  Count2Provider getProviderOverride(
-    covariant Count2Provider provider,
-  ) {
-    return call(
-      provider.a,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(int Function(Count2Ref ref) create) {
     return _$Count2FamilyOverride(this, create);
@@ -131,10 +121,11 @@ class _$Count2FamilyOverride implements FamilyOverride {
   final Count2Family from;
 
   @override
-  Count2Provider getProviderOverride(
+  _Count2ProviderElement createElement(
+    ProviderContainer container,
     covariant Count2Provider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -198,7 +189,7 @@ class Count2Provider extends AutoDisposeProvider<int> {
   }
 
   @override
-  AutoDisposeProviderElement<int> createElement(
+  _Count2ProviderElement createElement(
     ProviderContainer container,
   ) {
     return _Count2ProviderElement(this, container);
@@ -282,16 +273,6 @@ class CountFuture2Family extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  CountFuture2Provider getProviderOverride(
-    covariant CountFuture2Provider provider,
-  ) {
-    return call(
-      provider.a,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(FutureOr<int> Function(CountFuture2Ref ref) create) {
     return _$CountFuture2FamilyOverride(this, create);
@@ -310,10 +291,11 @@ class _$CountFuture2FamilyOverride implements FamilyOverride {
   final CountFuture2Family from;
 
   @override
-  CountFuture2Provider getProviderOverride(
+  _CountFuture2ProviderElement createElement(
+    ProviderContainer container,
     covariant CountFuture2Provider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -378,7 +360,7 @@ class CountFuture2Provider extends AutoDisposeFutureProvider<int> {
   }
 
   @override
-  AutoDisposeFutureProviderElement<int> createElement(
+  _CountFuture2ProviderElement createElement(
     ProviderContainer container,
   ) {
     return _CountFuture2ProviderElement(this, container);
@@ -462,16 +444,6 @@ class CountStream2Family extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  CountStream2Provider getProviderOverride(
-    covariant CountStream2Provider provider,
-  ) {
-    return call(
-      provider.a,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(Stream<int> Function(CountStream2Ref ref) create) {
     return _$CountStream2FamilyOverride(this, create);
@@ -490,10 +462,11 @@ class _$CountStream2FamilyOverride implements FamilyOverride {
   final CountStream2Family from;
 
   @override
-  CountStream2Provider getProviderOverride(
+  _CountStream2ProviderElement createElement(
+    ProviderContainer container,
     covariant CountStream2Provider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -558,7 +531,7 @@ class CountStream2Provider extends AutoDisposeStreamProvider<int> {
   }
 
   @override
-  AutoDisposeStreamProviderElement<int> createElement(
+  _CountStream2ProviderElement createElement(
     ProviderContainer container,
   ) {
     return _CountStream2ProviderElement(this, container);
@@ -700,16 +673,6 @@ class CountNotifier2Family extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  CountNotifier2Provider getProviderOverride(
-    covariant CountNotifier2Provider provider,
-  ) {
-    return call(
-      provider.a,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(CountNotifier2 Function() create) {
     return _$CountNotifier2FamilyOverride(this, create);
@@ -728,10 +691,11 @@ class _$CountNotifier2FamilyOverride implements FamilyOverride {
   final CountNotifier2Family from;
 
   @override
-  CountNotifier2Provider getProviderOverride(
+  _CountNotifier2ProviderElement createElement(
+    ProviderContainer container,
     covariant CountNotifier2Provider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -801,7 +765,7 @@ class CountNotifier2Provider
   }
 
   @override
-  AutoDisposeNotifierProviderElement<CountNotifier2, int> createElement(
+  _CountNotifier2ProviderElement createElement(
     ProviderContainer container,
   ) {
     return _CountNotifier2ProviderElement(this, container);
@@ -896,16 +860,6 @@ class CountAsyncNotifier2Family extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  CountAsyncNotifier2Provider getProviderOverride(
-    covariant CountAsyncNotifier2Provider provider,
-  ) {
-    return call(
-      provider.a,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(CountAsyncNotifier2 Function() create) {
     return _$CountAsyncNotifier2FamilyOverride(this, create);
@@ -924,10 +878,11 @@ class _$CountAsyncNotifier2FamilyOverride implements FamilyOverride {
   final CountAsyncNotifier2Family from;
 
   @override
-  CountAsyncNotifier2Provider getProviderOverride(
+  _CountAsyncNotifier2ProviderElement createElement(
+    ProviderContainer container,
     covariant CountAsyncNotifier2Provider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -998,8 +953,7 @@ class CountAsyncNotifier2Provider
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<CountAsyncNotifier2, int>
-      createElement(
+  _CountAsyncNotifier2ProviderElement createElement(
     ProviderContainer container,
   ) {
     return _CountAsyncNotifier2ProviderElement(this, container);
@@ -1094,16 +1048,6 @@ class CountStreamNotifier2Family extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  CountStreamNotifier2Provider getProviderOverride(
-    covariant CountStreamNotifier2Provider provider,
-  ) {
-    return call(
-      provider.a,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(CountStreamNotifier2 Function() create) {
     return _$CountStreamNotifier2FamilyOverride(this, create);
@@ -1122,10 +1066,11 @@ class _$CountStreamNotifier2FamilyOverride implements FamilyOverride {
   final CountStreamNotifier2Family from;
 
   @override
-  CountStreamNotifier2Provider getProviderOverride(
+  _CountStreamNotifier2ProviderElement createElement(
+    ProviderContainer container,
     covariant CountStreamNotifier2Provider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -1196,8 +1141,7 @@ class CountStreamNotifier2Provider
   }
 
   @override
-  AutoDisposeStreamNotifierProviderElement<CountStreamNotifier2, int>
-      createElement(
+  _CountStreamNotifier2ProviderElement createElement(
     ProviderContainer container,
   ) {
     return _CountStreamNotifier2ProviderElement(this, container);

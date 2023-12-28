@@ -75,16 +75,6 @@ class GeneratedFamilyFamily extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  GeneratedFamilyProvider getProviderOverride(
-    covariant GeneratedFamilyProvider provider,
-  ) {
-    return call(
-      provider.test,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(_Test Function(GeneratedFamilyRef ref) create) {
     return _$GeneratedFamilyFamilyOverride(this, create);
@@ -103,10 +93,11 @@ class _$GeneratedFamilyFamilyOverride implements FamilyOverride {
   final GeneratedFamilyFamily from;
 
   @override
-  GeneratedFamilyProvider getProviderOverride(
+  _GeneratedFamilyProviderElement createElement(
+    ProviderContainer container,
     covariant GeneratedFamilyProvider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -171,7 +162,7 @@ class GeneratedFamilyProvider extends AutoDisposeProvider<_Test> {
   }
 
   @override
-  AutoDisposeProviderElement<_Test> createElement(
+  _GeneratedFamilyProviderElement createElement(
     ProviderContainer container,
   ) {
     return _GeneratedFamilyProviderElement(this, container);
@@ -269,16 +260,6 @@ class $DynamicFamilyFamily extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  $DynamicFamilyProvider getProviderOverride(
-    covariant $DynamicFamilyProvider provider,
-  ) {
-    return call(
-      provider.test,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(Object? Function($DynamicFamilyRef ref) create) {
     return _$$DynamicFamilyFamilyOverride(this, create);
@@ -297,10 +278,11 @@ class _$$DynamicFamilyFamilyOverride implements FamilyOverride {
   final $DynamicFamilyFamily from;
 
   @override
-  $DynamicFamilyProvider getProviderOverride(
+  _$DynamicFamilyProviderElement createElement(
+    ProviderContainer container,
     covariant $DynamicFamilyProvider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -365,7 +347,7 @@ class $DynamicFamilyProvider extends AutoDisposeProvider<Object?> {
   }
 
   @override
-  AutoDisposeProviderElement<Object?> createElement(
+  _$DynamicFamilyProviderElement createElement(
     ProviderContainer container,
   ) {
     return _$DynamicFamilyProviderElement(this, container);
@@ -449,16 +431,6 @@ class _DynamicFamily extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  _DynamicProvider getProviderOverride(
-    covariant _DynamicProvider provider,
-  ) {
-    return call(
-      provider.test,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(Object? Function(_DynamicRef ref) create) {
     return _$DynamicFamilyOverride(this, create);
@@ -477,10 +449,11 @@ class _$DynamicFamilyOverride implements FamilyOverride {
   final _DynamicFamily from;
 
   @override
-  _DynamicProvider getProviderOverride(
+  _DynamicProviderElement createElement(
+    ProviderContainer container,
     covariant _DynamicProvider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -544,7 +517,7 @@ class _DynamicProvider extends AutoDisposeProvider<Object?> {
   }
 
   @override
-  AutoDisposeProviderElement<Object?> createElement(
+  _DynamicProviderElement createElement(
     ProviderContainer container,
   ) {
     return _DynamicProviderElement(this, container);
@@ -642,16 +615,6 @@ class AliasFamilyFamily extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  AliasFamilyProvider getProviderOverride(
-    covariant AliasFamilyProvider provider,
-  ) {
-    return call(
-      provider.test,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(r.AsyncValue<int> Function(AliasFamilyRef ref) create) {
     return _$AliasFamilyFamilyOverride(this, create);
@@ -670,10 +633,11 @@ class _$AliasFamilyFamilyOverride implements FamilyOverride {
   final AliasFamilyFamily from;
 
   @override
-  AliasFamilyProvider getProviderOverride(
+  _AliasFamilyProviderElement createElement(
+    ProviderContainer container,
     covariant AliasFamilyProvider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -738,7 +702,7 @@ class AliasFamilyProvider extends AutoDisposeProvider<r.AsyncValue<int>> {
   }
 
   @override
-  AutoDisposeProviderElement<r.AsyncValue<int>> createElement(
+  _AliasFamilyProviderElement createElement(
     ProviderContainer container,
   ) {
     return _AliasFamilyProviderElement(this, container);
@@ -848,16 +812,6 @@ class GeneratedClassFamilyFamily extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  GeneratedClassFamilyProvider getProviderOverride(
-    covariant GeneratedClassFamilyProvider provider,
-  ) {
-    return call(
-      provider.test,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(GeneratedClassFamily Function() create) {
     return _$GeneratedClassFamilyFamilyOverride(this, create);
@@ -876,10 +830,11 @@ class _$GeneratedClassFamilyFamilyOverride implements FamilyOverride {
   final GeneratedClassFamilyFamily from;
 
   @override
-  GeneratedClassFamilyProvider getProviderOverride(
+  _GeneratedClassFamilyProviderElement createElement(
+    ProviderContainer container,
     covariant GeneratedClassFamilyProvider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -949,7 +904,7 @@ class GeneratedClassFamilyProvider
   }
 
   @override
-  AutoDisposeNotifierProviderElement<GeneratedClassFamily, _Test> createElement(
+  _GeneratedClassFamilyProviderElement createElement(
     ProviderContainer container,
   ) {
     return _GeneratedClassFamilyProviderElement(this, container);
@@ -1060,16 +1015,6 @@ class $DynamicClassFamilyFamily extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  $DynamicClassFamilyProvider getProviderOverride(
-    covariant $DynamicClassFamilyProvider provider,
-  ) {
-    return call(
-      provider.test,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith($DynamicClassFamily Function() create) {
     return _$$DynamicClassFamilyFamilyOverride(this, create);
@@ -1088,10 +1033,11 @@ class _$$DynamicClassFamilyFamilyOverride implements FamilyOverride {
   final $DynamicClassFamilyFamily from;
 
   @override
-  $DynamicClassFamilyProvider getProviderOverride(
+  _$DynamicClassFamilyProviderElement createElement(
+    ProviderContainer container,
     covariant $DynamicClassFamilyProvider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -1161,8 +1107,7 @@ class $DynamicClassFamilyProvider
   }
 
   @override
-  AutoDisposeNotifierProviderElement<$DynamicClassFamily, Object?>
-      createElement(
+  _$DynamicClassFamilyProviderElement createElement(
     ProviderContainer container,
   ) {
     return _$DynamicClassFamilyProviderElement(this, container);
@@ -1271,16 +1216,6 @@ class AliasClassFamilyFamily extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  AliasClassFamilyProvider getProviderOverride(
-    covariant AliasClassFamilyProvider provider,
-  ) {
-    return call(
-      provider.test,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(AliasClassFamily Function() create) {
     return _$AliasClassFamilyFamilyOverride(this, create);
@@ -1299,10 +1234,11 @@ class _$AliasClassFamilyFamilyOverride implements FamilyOverride {
   final AliasClassFamilyFamily from;
 
   @override
-  AliasClassFamilyProvider getProviderOverride(
+  _AliasClassFamilyProviderElement createElement(
+    ProviderContainer container,
     covariant AliasClassFamilyProvider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -1372,8 +1308,7 @@ class AliasClassFamilyProvider extends AutoDisposeNotifierProviderImpl<
   }
 
   @override
-  AutoDisposeNotifierProviderElement<AliasClassFamily, r.AsyncValue<int>>
-      createElement(
+  _AliasClassFamilyProviderElement createElement(
     ProviderContainer container,
   ) {
     return _AliasClassFamilyProviderElement(this, container);

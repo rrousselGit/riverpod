@@ -63,16 +63,6 @@ class LabelFamily extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  LabelProvider getProviderOverride(
-    covariant LabelProvider provider,
-  ) {
-    return call(
-      provider.userName,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(String Function(LabelRef ref) create) {
     return _$LabelFamilyOverride(this, create);
@@ -91,10 +81,11 @@ class _$LabelFamilyOverride implements FamilyOverride {
   final LabelFamily from;
 
   @override
-  LabelProvider getProviderOverride(
+  _LabelProviderElement createElement(
+    ProviderContainer container,
     covariant LabelProvider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -158,7 +149,7 @@ class LabelProvider extends AutoDisposeProvider<String> {
   }
 
   @override
-  AutoDisposeProviderElement<String> createElement(
+  _LabelProviderElement createElement(
     ProviderContainer container,
   ) {
     return _LabelProviderElement(this, container);

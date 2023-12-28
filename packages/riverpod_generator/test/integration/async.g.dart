@@ -57,14 +57,6 @@ class GenericFamily extends Family {
     return GenericProvider<T>();
   }
 
-  @visibleForOverriding
-  @override
-  GenericProvider<num> getProviderOverride(
-    covariant GenericProvider<num> provider,
-  ) {
-    return call();
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(
       FutureOr<List<T>> Function<T extends num>(GenericRef ref) create) {
@@ -84,10 +76,11 @@ class _$GenericFamilyOverride implements FamilyOverride {
   final GenericFamily from;
 
   @override
-  GenericProvider getProviderOverride(
+  _GenericProviderElement createElement(
+    ProviderContainer container,
     covariant GenericProvider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -145,7 +138,7 @@ class GenericProvider<T extends num>
   }
 
   @override
-  AutoDisposeFutureProviderElement<List<T>> createElement(
+  _GenericProviderElement<T> createElement(
     ProviderContainer container,
   ) {
     return _GenericProviderElement(this, container);
@@ -250,16 +243,6 @@ class FamilyOrFamily extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  FamilyOrProvider getProviderOverride(
-    covariant FamilyOrProvider provider,
-  ) {
-    return call(
-      provider.first,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(FutureOr<String> Function(FamilyOrRef ref) create) {
     return _$FamilyOrFamilyOverride(this, create);
@@ -278,10 +261,11 @@ class _$FamilyOrFamilyOverride implements FamilyOverride {
   final FamilyOrFamily from;
 
   @override
-  FamilyOrProvider getProviderOverride(
+  _FamilyOrProviderElement createElement(
+    ProviderContainer container,
     covariant FamilyOrProvider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -345,7 +329,7 @@ class FamilyOrProvider extends AutoDisposeFutureProvider<String> {
   }
 
   @override
-  AutoDisposeFutureProviderElement<String> createElement(
+  _FamilyOrProviderElement createElement(
     ProviderContainer container,
   ) {
     return _FamilyOrProviderElement(this, container);
@@ -437,20 +421,6 @@ class FamilyFamily extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  FamilyProvider getProviderOverride(
-    covariant FamilyProvider provider,
-  ) {
-    return call(
-      provider.first,
-      second: provider.second,
-      third: provider.third,
-      fourth: provider.fourth,
-      fifth: provider.fifth,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(FutureOr<String> Function(FamilyRef ref) create) {
     return _$FamilyFamilyOverride(this, create);
@@ -469,10 +439,11 @@ class _$FamilyFamilyOverride implements FamilyOverride {
   final FamilyFamily from;
 
   @override
-  FamilyProvider getProviderOverride(
+  _FamilyProviderElement createElement(
+    ProviderContainer container,
     covariant FamilyProvider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -572,7 +543,7 @@ class FamilyProvider extends AutoDisposeFutureProvider<String> {
   }
 
   @override
-  AutoDisposeFutureProviderElement<String> createElement(
+  _FamilyProviderElement createElement(
     ProviderContainer container,
   ) {
     return _FamilyProviderElement(this, container);
@@ -690,14 +661,6 @@ class GenericClassFamily extends Family {
     return GenericClassProvider<T>();
   }
 
-  @visibleForOverriding
-  @override
-  GenericClassProvider<num> getProviderOverride(
-    covariant GenericClassProvider<num> provider,
-  ) {
-    return call();
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(GenericClass Function() create) {
     return _$GenericClassFamilyOverride(this, create);
@@ -716,10 +679,11 @@ class _$GenericClassFamilyOverride implements FamilyOverride {
   final GenericClassFamily from;
 
   @override
-  GenericClassProvider getProviderOverride(
+  _GenericClassProviderElement createElement(
+    ProviderContainer container,
     covariant GenericClassProvider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -781,8 +745,7 @@ class GenericClassProvider<T extends num>
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<GenericClass<T>, List<T>>
-      createElement(
+  _GenericClassProviderElement<T> createElement(
     ProviderContainer container,
   ) {
     return _GenericClassProviderElement(this, container);
@@ -900,16 +863,6 @@ class FamilyOrClassFamily extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  FamilyOrClassProvider getProviderOverride(
-    covariant FamilyOrClassProvider provider,
-  ) {
-    return call(
-      provider.first,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(FamilyOrClass Function() create) {
     return _$FamilyOrClassFamilyOverride(this, create);
@@ -928,10 +881,11 @@ class _$FamilyOrClassFamilyOverride implements FamilyOverride {
   final FamilyOrClassFamily from;
 
   @override
-  FamilyOrClassProvider getProviderOverride(
+  _FamilyOrClassProviderElement createElement(
+    ProviderContainer container,
     covariant FamilyOrClassProvider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -1001,7 +955,7 @@ class FamilyOrClassProvider
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<FamilyOrClass, String> createElement(
+  _FamilyOrClassProviderElement createElement(
     ProviderContainer container,
   ) {
     return _FamilyOrClassProviderElement(this, container);
@@ -1110,20 +1064,6 @@ class FamilyClassFamily extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  FamilyClassProvider getProviderOverride(
-    covariant FamilyClassProvider provider,
-  ) {
-    return call(
-      provider.first,
-      second: provider.second,
-      third: provider.third,
-      fourth: provider.fourth,
-      fifth: provider.fifth,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(FamilyClass Function() create) {
     return _$FamilyClassFamilyOverride(this, create);
@@ -1142,10 +1082,11 @@ class _$FamilyClassFamilyOverride implements FamilyOverride {
   final FamilyClassFamily from;
 
   @override
-  FamilyClassProvider getProviderOverride(
+  _FamilyClassProviderElement createElement(
+    ProviderContainer container,
     covariant FamilyClassProvider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -1261,7 +1202,7 @@ class FamilyClassProvider
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<FamilyClass, String> createElement(
+  _FamilyClassProviderElement createElement(
     ProviderContainer container,
   ) {
     return _FamilyClassProviderElement(this, container);

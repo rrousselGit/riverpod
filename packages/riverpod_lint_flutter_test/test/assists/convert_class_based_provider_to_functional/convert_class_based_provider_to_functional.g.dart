@@ -97,17 +97,6 @@ class ExampleFamilyFamily extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  ExampleFamilyProvider getProviderOverride(
-    covariant ExampleFamilyProvider provider,
-  ) {
-    return call(
-      a: provider.a,
-      b: provider.b,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(ExampleFamily Function() create) {
     return _$ExampleFamilyFamilyOverride(this, create);
@@ -126,10 +115,11 @@ class _$ExampleFamilyFamilyOverride implements FamilyOverride {
   final ExampleFamilyFamily from;
 
   @override
-  ExampleFamilyProvider getProviderOverride(
+  _ExampleFamilyProviderElement createElement(
+    ProviderContainer container,
     covariant ExampleFamilyProvider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -219,7 +209,7 @@ class ExampleFamilyProvider
   }
 
   @override
-  AutoDisposeNotifierProviderElement<ExampleFamily, int> createElement(
+  _ExampleFamilyProviderElement createElement(
     ProviderContainer container,
   ) {
     return _ExampleFamilyProviderElement(this, container);
@@ -313,14 +303,6 @@ class GenericFamily extends Family {
     return GenericProvider<A, B>();
   }
 
-  @visibleForOverriding
-  @override
-  GenericProvider<Object?, Object?> getProviderOverride(
-    covariant GenericProvider<Object?, Object?> provider,
-  ) {
-    return call();
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(Generic Function() create) {
     return _$GenericFamilyOverride(this, create);
@@ -339,10 +321,11 @@ class _$GenericFamilyOverride implements FamilyOverride {
   final GenericFamily from;
 
   @override
-  GenericProvider getProviderOverride(
+  _GenericProviderElement createElement(
+    ProviderContainer container,
     covariant GenericProvider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -403,7 +386,7 @@ class GenericProvider<A, B>
   }
 
   @override
-  AutoDisposeNotifierProviderElement<Generic<A, B>, int> createElement(
+  _GenericProviderElement<A, B> createElement(
     ProviderContainer container,
   ) {
     return _GenericProviderElement(this, container);

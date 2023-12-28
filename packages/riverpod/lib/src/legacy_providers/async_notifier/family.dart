@@ -114,18 +114,21 @@ class AsyncNotifierProviderFamily<NotifierT extends FamilyAsyncNotifier<T, Arg>,
 
   /// {@macro riverpod.override_with}
   Override overrideWith(NotifierT Function() create) {
-    return FamilyOverrideImpl<AsyncValue<T>, Arg,
-        AsyncNotifierFamilyProvider<NotifierT, T, Arg>>(
-      this,
-      (arg) => AsyncNotifierFamilyProvider<NotifierT, T, Arg>.internal(
-        create,
-        from: from,
-        argument: arg,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        name: null,
-      ),
+    return FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as AsyncNotifierFamilyProvider<NotifierT, T, Arg>;
+
+        return AsyncNotifierFamilyProvider<NotifierT, T, Arg>.internal(
+          create,
+          from: from,
+          argument: provider.argument,
+          dependencies: null,
+          allTransitiveDependencies: null,
+          debugGetCreateSourceHash: null,
+          name: null,
+        ).createElement(container);
+      },
     );
   }
 }

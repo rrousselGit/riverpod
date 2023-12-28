@@ -27,7 +27,7 @@ typedef DebugGetCreateSourceHash = String Function();
 @immutable
 abstract class ProviderBase<State> extends ProviderOrFamily
     with ProviderListenable<State>
-    implements Refreshable<State>, ProviderOverride {
+    implements Refreshable<State>, _ProviderOverride {
   /// A base class for _all_ providers.
   const ProviderBase({
     required super.name,

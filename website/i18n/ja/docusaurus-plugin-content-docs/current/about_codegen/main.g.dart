@@ -63,16 +63,6 @@ class FetchUserFamily extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  FetchUserProvider getProviderOverride(
-    covariant FetchUserProvider provider,
-  ) {
-    return call(
-      userId: provider.userId,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(FutureOr<User> Function(FetchUserRef ref) create) {
     return _$FetchUserFamilyOverride(this, create);
@@ -91,10 +81,11 @@ class _$FetchUserFamilyOverride implements FamilyOverride {
   final FetchUserFamily from;
 
   @override
-  FetchUserProvider getProviderOverride(
+  _FetchUserProviderElement createElement(
+    ProviderContainer container,
     covariant FetchUserProvider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -160,7 +151,7 @@ class FetchUserProvider extends AutoDisposeFutureProvider<User> {
   }
 
   @override
-  AutoDisposeFutureProviderElement<User> createElement(
+  _FetchUserProviderElement createElement(
     ProviderContainer container,
   ) {
     return _FetchUserProviderElement(this, container);

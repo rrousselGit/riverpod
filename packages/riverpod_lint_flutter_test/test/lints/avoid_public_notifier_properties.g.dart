@@ -69,16 +69,6 @@ class GeneratedNotifierFamily extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  GeneratedNotifierProvider getProviderOverride(
-    covariant GeneratedNotifierProvider provider,
-  ) {
-    return call(
-      provider.param,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(GeneratedNotifier Function() create) {
     return _$GeneratedNotifierFamilyOverride(this, create);
@@ -97,10 +87,11 @@ class _$GeneratedNotifierFamilyOverride implements FamilyOverride {
   final GeneratedNotifierFamily from;
 
   @override
-  GeneratedNotifierProvider getProviderOverride(
+  _GeneratedNotifierProviderElement createElement(
+    ProviderContainer container,
     covariant GeneratedNotifierProvider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -170,7 +161,7 @@ class GeneratedNotifierProvider
   }
 
   @override
-  AutoDisposeNotifierProviderElement<GeneratedNotifier, int> createElement(
+  _GeneratedNotifierProviderElement createElement(
     ProviderContainer container,
   ) {
     return _GeneratedNotifierProviderElement(this, container);

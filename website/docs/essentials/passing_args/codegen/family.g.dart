@@ -63,16 +63,6 @@ class ActivityFamily extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  ActivityProvider getProviderOverride(
-    covariant ActivityProvider provider,
-  ) {
-    return call(
-      provider.activityType,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(FutureOr<Activity> Function(ActivityRef ref) create) {
     return _$ActivityFamilyOverride(this, create);
@@ -91,10 +81,11 @@ class _$ActivityFamilyOverride implements FamilyOverride {
   final ActivityFamily from;
 
   @override
-  ActivityProvider getProviderOverride(
+  _ActivityProviderElement createElement(
+    ProviderContainer container,
     covariant ActivityProvider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -158,7 +149,7 @@ class ActivityProvider extends AutoDisposeFutureProvider<Activity> {
   }
 
   @override
-  AutoDisposeFutureProviderElement<Activity> createElement(
+  _ActivityProviderElement createElement(
     ProviderContainer container,
   ) {
     return _ActivityProviderElement(this, container);

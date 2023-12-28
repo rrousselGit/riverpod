@@ -97,16 +97,6 @@ class A3Family extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  A3Provider getProviderOverride(
-    covariant A3Provider provider,
-  ) {
-    return call(
-      provider.param,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(A3 Function() create) {
     return _$A3FamilyOverride(this, create);
@@ -125,10 +115,11 @@ class _$A3FamilyOverride implements FamilyOverride {
   final A3Family from;
 
   @override
-  A3Provider getProviderOverride(
+  _A3ProviderElement createElement(
+    ProviderContainer container,
     covariant A3Provider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -194,7 +185,7 @@ class A3Provider extends AutoDisposeNotifierProviderImpl<A3, int> {
   }
 
   @override
-  AutoDisposeNotifierProviderElement<A3, int> createElement(
+  _A3ProviderElement createElement(
     ProviderContainer container,
   ) {
     return _A3ProviderElement(this, container);
@@ -286,16 +277,6 @@ class A4Family extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  A4Provider getProviderOverride(
-    covariant A4Provider provider,
-  ) {
-    return call(
-      provider.param,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(A4 Function() create) {
     return _$A4FamilyOverride(this, create);
@@ -314,10 +295,11 @@ class _$A4FamilyOverride implements FamilyOverride {
   final A4Family from;
 
   @override
-  A4Provider getProviderOverride(
+  _A4ProviderElement createElement(
+    ProviderContainer container,
     covariant A4Provider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -383,7 +365,7 @@ class A4Provider extends NotifierProviderImpl<A4, int> {
   }
 
   @override
-  NotifierProviderElement<A4, int> createElement(
+  _A4ProviderElement createElement(
     ProviderContainer container,
   ) {
     return _A4ProviderElement(this, container);
@@ -474,16 +456,6 @@ class A5Family extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  A5Provider getProviderOverride(
-    covariant A5Provider provider,
-  ) {
-    return call(
-      provider.param,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(A5 Function() create) {
     return _$A5FamilyOverride(this, create);
@@ -502,10 +474,11 @@ class _$A5FamilyOverride implements FamilyOverride {
   final A5Family from;
 
   @override
-  A5Provider getProviderOverride(
+  _A5ProviderElement createElement(
+    ProviderContainer container,
     covariant A5Provider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -571,7 +544,7 @@ class A5Provider extends AutoDisposeAsyncNotifierProviderImpl<A5, int> {
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<A5, int> createElement(
+  _A5ProviderElement createElement(
     ProviderContainer container,
   ) {
     return _A5ProviderElement(this, container);
@@ -663,16 +636,6 @@ class A6Family extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  A6Provider getProviderOverride(
-    covariant A6Provider provider,
-  ) {
-    return call(
-      provider.param,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(A6 Function() create) {
     return _$A6FamilyOverride(this, create);
@@ -691,10 +654,11 @@ class _$A6FamilyOverride implements FamilyOverride {
   final A6Family from;
 
   @override
-  A6Provider getProviderOverride(
+  _A6ProviderElement createElement(
+    ProviderContainer container,
     covariant A6Provider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -760,7 +724,7 @@ class A6Provider extends AsyncNotifierProviderImpl<A6, int> {
   }
 
   @override
-  AsyncNotifierProviderElement<A6, int> createElement(
+  _A6ProviderElement createElement(
     ProviderContainer container,
   ) {
     return _A6ProviderElement(this, container);
@@ -852,16 +816,6 @@ class A7Family extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  A7Provider getProviderOverride(
-    covariant A7Provider provider,
-  ) {
-    return call(
-      provider.param,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(A7 Function() create) {
     return _$A7FamilyOverride(this, create);
@@ -880,10 +834,11 @@ class _$A7FamilyOverride implements FamilyOverride {
   final A7Family from;
 
   @override
-  A7Provider getProviderOverride(
+  _A7ProviderElement createElement(
+    ProviderContainer container,
     covariant A7Provider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -949,7 +904,7 @@ class A7Provider extends AutoDisposeStreamNotifierProviderImpl<A7, int> {
   }
 
   @override
-  AutoDisposeStreamNotifierProviderElement<A7, int> createElement(
+  _A7ProviderElement createElement(
     ProviderContainer container,
   ) {
     return _A7ProviderElement(this, container);
@@ -1041,16 +996,6 @@ class A8Family extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  A8Provider getProviderOverride(
-    covariant A8Provider provider,
-  ) {
-    return call(
-      provider.param,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(A8 Function() create) {
     return _$A8FamilyOverride(this, create);
@@ -1069,10 +1014,11 @@ class _$A8FamilyOverride implements FamilyOverride {
   final A8Family from;
 
   @override
-  A8Provider getProviderOverride(
+  _A8ProviderElement createElement(
+    ProviderContainer container,
     covariant A8Provider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -1138,7 +1084,7 @@ class A8Provider extends StreamNotifierProviderImpl<A8, int> {
   }
 
   @override
-  StreamNotifierProviderElement<A8, int> createElement(
+  _A8ProviderElement createElement(
     ProviderContainer container,
   ) {
     return _A8ProviderElement(this, container);

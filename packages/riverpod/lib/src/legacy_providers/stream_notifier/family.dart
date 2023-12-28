@@ -110,18 +110,21 @@ class StreamNotifierProviderFamily<
 
   /// {@macro riverpod.override_with}
   Override overrideWith(NotifierT Function() create) {
-    return FamilyOverrideImpl<AsyncValue<T>, Arg,
-        StreamNotifierFamilyProvider<NotifierT, T, Arg>>(
-      this,
-      (arg) => StreamNotifierFamilyProvider<NotifierT, T, Arg>.internal(
-        create,
-        from: from,
-        argument: arg,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        name: null,
-      ),
+    return FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as StreamNotifierFamilyProvider<NotifierT, T, Arg>;
+
+        return StreamNotifierFamilyProvider<NotifierT, T, Arg>.internal(
+          create,
+          from: from,
+          argument: provider.argument,
+          dependencies: null,
+          allTransitiveDependencies: null,
+          debugGetCreateSourceHash: null,
+          name: null,
+        ).createElement(container);
+      },
     );
   }
 }

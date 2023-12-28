@@ -121,14 +121,6 @@ class GenericsFamily extends Family {
     return GenericsProvider<A, B>();
   }
 
-  @visibleForOverriding
-  @override
-  GenericsProvider<num, Object?> getProviderOverride(
-    covariant GenericsProvider<num, Object?> provider,
-  ) {
-    return call();
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(Generics Function() create) {
     return _$GenericsFamilyOverride(this, create);
@@ -147,10 +139,11 @@ class _$GenericsFamilyOverride implements FamilyOverride {
   final GenericsFamily from;
 
   @override
-  GenericsProvider getProviderOverride(
+  _GenericsProviderElement createElement(
+    ProviderContainer container,
     covariant GenericsProvider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -211,7 +204,7 @@ class GenericsProvider<A extends num, B>
   }
 
   @override
-  AutoDisposeNotifierProviderElement<Generics<A, B>, int> createElement(
+  _GenericsProviderElement<A, B> createElement(
     ProviderContainer container,
   ) {
     return _GenericsProviderElement(this, container);
@@ -291,14 +284,6 @@ class NoGenericsFamily extends Family {
     return NoGenericsProvider<A, B>();
   }
 
-  @visibleForOverriding
-  @override
-  NoGenericsProvider<num, Object?> getProviderOverride(
-    covariant NoGenericsProvider<num, Object?> provider,
-  ) {
-    return call();
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(NoGenerics Function() create) {
     return _$NoGenericsFamilyOverride(this, create);
@@ -317,10 +302,11 @@ class _$NoGenericsFamilyOverride implements FamilyOverride {
   final NoGenericsFamily from;
 
   @override
-  NoGenericsProvider getProviderOverride(
+  _NoGenericsProviderElement createElement(
+    ProviderContainer container,
     covariant NoGenericsProvider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -382,7 +368,7 @@ class NoGenericsProvider<A extends num, B>
   }
 
   @override
-  AutoDisposeNotifierProviderElement<NoGenerics<A, B>, int> createElement(
+  _NoGenericsProviderElement<A, B> createElement(
     ProviderContainer container,
   ) {
     return _NoGenericsProviderElement(this, container);
@@ -462,14 +448,6 @@ class MissingGenericsFamily extends Family {
     return MissingGenericsProvider<A, B>();
   }
 
-  @visibleForOverriding
-  @override
-  MissingGenericsProvider<Object?, Object?> getProviderOverride(
-    covariant MissingGenericsProvider<Object?, Object?> provider,
-  ) {
-    return call();
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(MissingGenerics Function() create) {
     return _$MissingGenericsFamilyOverride(this, create);
@@ -488,10 +466,11 @@ class _$MissingGenericsFamilyOverride implements FamilyOverride {
   final MissingGenericsFamily from;
 
   @override
-  MissingGenericsProvider getProviderOverride(
+  _MissingGenericsProviderElement createElement(
+    ProviderContainer container,
     covariant MissingGenericsProvider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -553,7 +532,7 @@ class MissingGenericsProvider<A, B>
   }
 
   @override
-  AutoDisposeNotifierProviderElement<MissingGenerics<A, B>, int> createElement(
+  _MissingGenericsProviderElement<A, B> createElement(
     ProviderContainer container,
   ) {
     return _MissingGenericsProviderElement(this, container);
@@ -632,14 +611,6 @@ class WrongOrderFamily extends Family {
     return WrongOrderProvider<A, B>();
   }
 
-  @visibleForOverriding
-  @override
-  WrongOrderProvider<Object?, Object?> getProviderOverride(
-    covariant WrongOrderProvider<Object?, Object?> provider,
-  ) {
-    return call();
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(WrongOrder Function() create) {
     return _$WrongOrderFamilyOverride(this, create);
@@ -658,10 +629,11 @@ class _$WrongOrderFamilyOverride implements FamilyOverride {
   final WrongOrderFamily from;
 
   @override
-  WrongOrderProvider getProviderOverride(
+  _WrongOrderProviderElement createElement(
+    ProviderContainer container,
     covariant WrongOrderProvider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -723,7 +695,7 @@ class WrongOrderProvider<A, B>
   }
 
   @override
-  AutoDisposeNotifierProviderElement<WrongOrder<A, B>, int> createElement(
+  _WrongOrderProviderElement<A, B> createElement(
     ProviderContainer container,
   ) {
     return _WrongOrderProviderElement(this, container);

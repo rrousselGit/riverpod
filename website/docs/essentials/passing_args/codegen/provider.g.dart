@@ -86,16 +86,6 @@ class ActivityNotifier2Family extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  ActivityNotifier2Provider getProviderOverride(
-    covariant ActivityNotifier2Provider provider,
-  ) {
-    return call(
-      provider.activityType,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(ActivityNotifier2 Function() create) {
     return _$ActivityNotifier2FamilyOverride(this, create);
@@ -114,10 +104,11 @@ class _$ActivityNotifier2FamilyOverride implements FamilyOverride {
   final ActivityNotifier2Family from;
 
   @override
-  ActivityNotifier2Provider getProviderOverride(
+  _ActivityNotifier2ProviderElement createElement(
+    ProviderContainer container,
     covariant ActivityNotifier2Provider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -187,8 +178,7 @@ class ActivityNotifier2Provider
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<ActivityNotifier2, Activity>
-      createElement(
+  _ActivityNotifier2ProviderElement createElement(
     ProviderContainer container,
   ) {
     return _ActivityNotifier2ProviderElement(this, container);

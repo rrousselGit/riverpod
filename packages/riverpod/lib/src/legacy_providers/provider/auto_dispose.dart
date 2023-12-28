@@ -96,17 +96,21 @@ class AutoDisposeProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
   Override overrideWith(
     R Function(AutoDisposeProviderRef<R> ref, Arg arg) create,
   ) {
-    return FamilyOverrideImpl<R, Arg, AutoDisposeProvider<R>>(
-      this,
-      (arg) => AutoDisposeProvider<R>.internal(
-        (ref) => create(ref, arg),
-        from: from,
-        argument: arg,
-        name: null,
-        debugGetCreateSourceHash: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-      ),
+    return FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as AutoDisposeProvider<R>;
+
+        return AutoDisposeProvider<R>.internal(
+          (ref) => create(ref, provider.argument as Arg),
+          from: provider.from,
+          argument: provider.argument,
+          dependencies: null,
+          allTransitiveDependencies: null,
+          debugGetCreateSourceHash: null,
+          name: null,
+        ).createElement(container);
+      },
     );
   }
 }

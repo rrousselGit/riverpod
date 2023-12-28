@@ -41,7 +41,6 @@ mixin OverrideWithValueMixin<State> on ProviderBase<State> {
     );
   }
 
-  @mustBeOverridden
   @override
   String toString();
 }

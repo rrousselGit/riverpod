@@ -65,17 +65,6 @@ class FetchPackagesFamily extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  FetchPackagesProvider getProviderOverride(
-    covariant FetchPackagesProvider provider,
-  ) {
-    return call(
-      page: provider.page,
-      search: provider.search,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(
       FutureOr<List<Package>> Function(FetchPackagesRef ref) create) {
@@ -95,10 +84,11 @@ class _$FetchPackagesFamilyOverride implements FamilyOverride {
   final FetchPackagesFamily from;
 
   @override
-  FetchPackagesProvider getProviderOverride(
+  _FetchPackagesProviderElement createElement(
+    ProviderContainer container,
     covariant FetchPackagesProvider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -175,7 +165,7 @@ class FetchPackagesProvider extends AutoDisposeFutureProvider<List<Package>> {
   }
 
   @override
-  AutoDisposeFutureProviderElement<List<Package>> createElement(
+  _FetchPackagesProviderElement createElement(
     ProviderContainer container,
   ) {
     return _FetchPackagesProviderElement(this, container);

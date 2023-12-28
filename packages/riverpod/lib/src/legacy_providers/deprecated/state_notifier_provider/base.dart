@@ -229,17 +229,21 @@ class StateNotifierProviderFamily<NotifierT extends StateNotifier<T>, T, Arg>
     NotifierT Function(StateNotifierProviderRef<NotifierT, T> ref, Arg arg)
         create,
   ) {
-    return FamilyOverrideImpl<T, Arg, StateNotifierProvider<NotifierT, T>>(
-      this,
-      (arg) => StateNotifierProvider<NotifierT, T>.internal(
-        (ref) => create(ref, arg),
-        from: from,
-        argument: arg,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        name: null,
-      ),
+    return FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as StateNotifierProvider<NotifierT, T>;
+
+        return StateNotifierProvider<NotifierT, T>.internal(
+          (ref) => create(ref, provider.argument as Arg),
+          from: provider.from,
+          argument: provider.argument,
+          dependencies: null,
+          allTransitiveDependencies: null,
+          debugGetCreateSourceHash: null,
+          name: null,
+        ).createElement(container);
+      },
     );
   }
 }

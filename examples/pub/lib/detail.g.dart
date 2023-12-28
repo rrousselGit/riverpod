@@ -64,16 +64,6 @@ class FetchPackageDetailsFamily extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  FetchPackageDetailsProvider getProviderOverride(
-    covariant FetchPackageDetailsProvider provider,
-  ) {
-    return call(
-      packageName: provider.packageName,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(
       FutureOr<Package> Function(FetchPackageDetailsRef ref) create) {
@@ -93,10 +83,11 @@ class _$FetchPackageDetailsFamilyOverride implements FamilyOverride {
   final FetchPackageDetailsFamily from;
 
   @override
-  FetchPackageDetailsProvider getProviderOverride(
+  _FetchPackageDetailsProviderElement createElement(
+    ProviderContainer container,
     covariant FetchPackageDetailsProvider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -163,7 +154,7 @@ class FetchPackageDetailsProvider extends AutoDisposeFutureProvider<Package> {
   }
 
   @override
-  AutoDisposeFutureProviderElement<Package> createElement(
+  _FetchPackageDetailsProviderElement createElement(
     ProviderContainer container,
   ) {
     return _FetchPackageDetailsProviderElement(this, container);
@@ -312,16 +303,6 @@ class PackageMetricsFamily extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  PackageMetricsProvider getProviderOverride(
-    covariant PackageMetricsProvider provider,
-  ) {
-    return call(
-      packageName: provider.packageName,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(PackageMetrics Function() create) {
     return _$PackageMetricsFamilyOverride(this, create);
@@ -340,10 +321,11 @@ class _$PackageMetricsFamilyOverride implements FamilyOverride {
   final PackageMetricsFamily from;
 
   @override
-  PackageMetricsProvider getProviderOverride(
+  _PackageMetricsProviderElement createElement(
+    ProviderContainer container,
     covariant PackageMetricsProvider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -427,8 +409,7 @@ class PackageMetricsProvider extends AutoDisposeAsyncNotifierProviderImpl<
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<PackageMetrics, PackageMetricsScore>
-      createElement(
+  _PackageMetricsProviderElement createElement(
     ProviderContainer container,
   ) {
     return _PackageMetricsProviderElement(this, container);

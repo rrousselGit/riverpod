@@ -73,16 +73,6 @@ class BugsEncounteredNotifierFamily extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  BugsEncounteredNotifierProvider getProviderOverride(
-    covariant BugsEncounteredNotifierProvider provider,
-  ) {
-    return call(
-      provider.featureId,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(BugsEncounteredNotifier Function() create) {
     return _$BugsEncounteredNotifierFamilyOverride(this, create);
@@ -101,10 +91,11 @@ class _$BugsEncounteredNotifierFamilyOverride implements FamilyOverride {
   final BugsEncounteredNotifierFamily from;
 
   @override
-  BugsEncounteredNotifierProvider getProviderOverride(
+  _BugsEncounteredNotifierProviderElement createElement(
+    ProviderContainer container,
     covariant BugsEncounteredNotifierProvider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -174,8 +165,7 @@ class BugsEncounteredNotifierProvider
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<BugsEncounteredNotifier, int>
-      createElement(
+  _BugsEncounteredNotifierProviderElement createElement(
     ProviderContainer container,
   ) {
     return _BugsEncounteredNotifierProviderElement(this, container);

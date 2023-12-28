@@ -65,17 +65,6 @@ class RandomFamily extends Family {
     );
   }
 
-  @visibleForOverriding
-  @override
-  RandomProvider getProviderOverride(
-    covariant RandomProvider provider,
-  ) {
-    return call(
-      seed: provider.seed,
-      max: provider.max,
-    );
-  }
-
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(int Function(RandomRef ref) create) {
     return _$RandomFamilyOverride(this, create);
@@ -94,10 +83,11 @@ class _$RandomFamilyOverride implements FamilyOverride {
   final RandomFamily from;
 
   @override
-  RandomProvider getProviderOverride(
+  _RandomProviderElement createElement(
+    ProviderContainer container,
     covariant RandomProvider provider,
   ) {
-    return provider._copyWith(create);
+    return provider._copyWith(create).createElement(container);
   }
 
   @override
@@ -173,7 +163,7 @@ class RandomProvider extends AutoDisposeProvider<int> {
   }
 
   @override
-  AutoDisposeProviderElement<int> createElement(
+  _RandomProviderElement createElement(
     ProviderContainer container,
   ) {
     return _RandomProviderElement(this, container);
