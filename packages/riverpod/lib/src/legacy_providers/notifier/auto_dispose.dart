@@ -125,5 +125,5 @@ class AutoDisposeNotifierProviderElement<NotifierT extends NotifierBase<T>, T>
     implements AutoDisposeNotifierProviderRef<T> {
   /// The [ProviderElementBase] for [NotifierProvider]
   @internal
-  AutoDisposeNotifierProviderElement(super._provider, super.container);
+  AutoDisposeNotifierProviderElement(super.provider, super.container);
 }

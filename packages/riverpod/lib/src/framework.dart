@@ -2,7 +2,6 @@ library framework;
 
 import 'dart:async';
 import 'dart:collection';
-import 'dart:io';
 
 import 'package:collection/collection.dart';
 import 'package:meta/meta.dart';

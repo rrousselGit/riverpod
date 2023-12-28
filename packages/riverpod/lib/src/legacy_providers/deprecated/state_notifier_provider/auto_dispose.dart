@@ -83,7 +83,7 @@ class AutoDisposeStateNotifierProviderElement<
     implements AutoDisposeStateNotifierProviderRef<NotifierT, T> {
   /// The [ProviderElementBase] for [StateNotifierProvider]
   AutoDisposeStateNotifierProviderElement._(
-    AutoDisposeStateNotifierProvider<NotifierT, T> super._provider,
+    AutoDisposeStateNotifierProvider<NotifierT, T> super.provider,
     super.container,
   ) : super._();
 }

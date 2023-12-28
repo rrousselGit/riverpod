@@ -88,7 +88,7 @@ class AutoDisposeChangeNotifierProviderElement<
     implements AutoDisposeChangeNotifierProviderRef<NotifierT> {
   /// The [ProviderElementBase] for [ChangeNotifier]
   AutoDisposeChangeNotifierProviderElement._(
-    AutoDisposeChangeNotifierProvider<NotifierT> super._provider,
+    AutoDisposeChangeNotifierProvider<NotifierT> super.provider,
     super.container,
   ) : super._();
 }

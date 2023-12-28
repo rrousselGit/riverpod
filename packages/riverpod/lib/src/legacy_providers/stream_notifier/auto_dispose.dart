@@ -130,5 +130,5 @@ class AutoDisposeStreamNotifierProviderElement<
     implements AutoDisposeStreamNotifierProviderRef<T> {
   /// The [ProviderElementBase] for [StreamNotifierProvider]
   @internal
-  AutoDisposeStreamNotifierProviderElement(super._provider, super.container);
+  AutoDisposeStreamNotifierProviderElement(super.provider, super.container);
 }

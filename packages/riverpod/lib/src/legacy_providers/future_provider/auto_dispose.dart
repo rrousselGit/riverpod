@@ -79,7 +79,7 @@ class AutoDisposeFutureProviderElement<T> extends FutureProviderElement<T>
   /// The [ProviderElementBase] for [FutureProvider]
   @internal
   AutoDisposeFutureProviderElement(
-    AutoDisposeFutureProvider<T> super._provider,
+    AutoDisposeFutureProvider<T> super.provider,
     super.container,
   ) : super();
 }

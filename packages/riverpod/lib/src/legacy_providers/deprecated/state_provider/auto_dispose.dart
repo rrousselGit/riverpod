@@ -75,7 +75,7 @@ class AutoDisposeStateProviderElement<T> extends StateProviderElement<T>
     implements AutoDisposeStateProviderRef<T> {
   /// The [ProviderElementBase] for [StateProvider]
   AutoDisposeStateProviderElement._(
-    AutoDisposeStateProvider<T> super._provider,
+    AutoDisposeStateProvider<T> super.provider,
     super.container,
   ) : super._();
 }

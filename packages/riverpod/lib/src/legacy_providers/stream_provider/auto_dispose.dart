@@ -76,7 +76,7 @@ class AutoDisposeStreamProviderElement<T> extends StreamProviderElement<T>
     implements AutoDisposeStreamProviderRef<T> {
   /// The [ProviderElementBase] for [StreamProvider]
   AutoDisposeStreamProviderElement(
-    AutoDisposeStreamProvider<T> super._provider,
+    AutoDisposeStreamProvider<T> super.provider,
     super.container,
   );
 }
