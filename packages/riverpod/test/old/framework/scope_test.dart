@@ -693,7 +693,10 @@ Future<void> main() async {
     });
 
     test('auto scope transitive family dependencies', () {
-      final family = Provider.family<int, int>((ref, id) => id * 2);
+      final family = Provider.family<int, int>(
+        (ref, id) => id * 2,
+        dependencies: [],
+      );
       final dep = Provider(
         (ref) => ref.watch(family(21)),
         dependencies: [family],

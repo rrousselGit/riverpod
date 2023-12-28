@@ -103,9 +103,7 @@ void main() {
 
         expect(
           family('foo').toString(),
-          equalsIgnoringHashCodes(
-            'Example:StateNotifierProvider<Counter, int>#05480(foo)',
-          ),
+          equalsIgnoringHashCodes('Example(foo)'),
         );
       },
     );

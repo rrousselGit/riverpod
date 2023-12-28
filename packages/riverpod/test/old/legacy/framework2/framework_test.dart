@@ -79,13 +79,13 @@ void main() {
       expect(family2(0).name, 'name');
       expect(
         family2(0).toString(),
-        equalsIgnoringHashCodes('name:Provider<int>#00000(0)'),
+        equalsIgnoringHashCodes('name(0)'),
       );
 
       expect(family2(1).name, 'name');
       expect(
         family2(1).toString(),
-        equalsIgnoringHashCodes('name:Provider<int>#00000(1)'),
+        equalsIgnoringHashCodes('name(1)'),
       );
     });
   });
