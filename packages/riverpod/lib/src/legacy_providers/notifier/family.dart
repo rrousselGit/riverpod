@@ -115,7 +115,7 @@ class NotifierProviderFamily<NotifierT extends FamilyNotifier<T, Arg>, T, Arg>
     return FamilyOverride(
       from: this,
       createElement: (container, provider) {
-        provider as NotifierProviderFamily<NotifierT, T, Arg>;
+        provider as FamilyNotifierProviderImpl<NotifierT, T, Arg>;
 
         return NotifierFamilyProvider<NotifierT, T, Arg>.internal(
           create,
