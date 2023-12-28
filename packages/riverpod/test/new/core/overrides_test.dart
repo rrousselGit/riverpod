@@ -8,8 +8,9 @@ void main() {
   group('ProviderOverride', () {
     test('TransitiveOverride.toString', () {
       final provider = Provider((_) => 42);
+
       expect(
-        TransitiveProviderOverride(provider),
+        TransitiveProviderOverride(provider).toString(),
         equalsIgnoringHashCodes('Provider<int>#00000'),
       );
     });
@@ -76,8 +77,8 @@ void main() {
       final provider = Provider.family<int, int>((_, b) => 42);
 
       expect(
-        TransitiveFamilyOverride(provider),
-        equalsIgnoringHashCodes('Provider<int, int>#00000'),
+        TransitiveFamilyOverride(provider).toString(),
+        equalsIgnoringHashCodes('ProviderFamily<int, int>#00000'),
       );
     });
 
