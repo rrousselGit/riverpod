@@ -341,24 +341,6 @@ class ProviderPointerManager {
     }
   }
 
-  /// Whether a provider was inserted at [container] instead of an ancestor.
-  bool isLocallyMounted(ProviderOrFamily provider) {
-    // If we are at the root, then providers are always mounted locally.
-    if (this.container.parent == null) return true;
-
-    ProviderContainer? container;
-
-    switch (provider) {
-      case ProviderBase<Object?>():
-        container = readPointer(provider)?.targetContainer ??
-            readDirectory(provider)?.targetContainer;
-      case Family():
-        container = familyPointers[provider]?.targetContainer;
-    }
-
-    return container == this.container;
-  }
-
   /// Obtains the [ProviderContainer] in which provider/family should be mounted,
   /// if the provider is locally scoped.
   ///
@@ -930,7 +912,6 @@ class ProviderContainer implements Node {
     // Assert that the the provider wouldn't have a more up-to-date value
     // if it was locally overridden.
     if (kDebugMode &&
-        !_pointerManager.isLocallyMounted(provider) &&
         // Avoid having the assert trigger itself exponentially
         !_debugVerifyDependenciesAreRespectedEnabled) {
       try {

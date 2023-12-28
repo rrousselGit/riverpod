@@ -178,10 +178,10 @@ class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
 class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
     extends ProviderElementBase<NotifierT>
     implements ChangeNotifierProviderRef<NotifierT> {
-  ChangeNotifierProviderElement._(
-    _ChangeNotifierProviderBase<NotifierT> super._provider,
-    super.container,
-  );
+  ChangeNotifierProviderElement._(this.provider, super.container);
+
+  @override
+  final _ChangeNotifierProviderBase<NotifierT> provider;
 
   @override
   NotifierT get notifier => _notifierNotifier.value;
