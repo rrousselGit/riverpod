@@ -157,22 +157,22 @@ void main() {
       });
     });
 
-    group('hasLocallyOverriddenDependency', () {
-      final dependency = Provider(
-        (_) => 0,
-        dependencies: const [],
-      );
+    group('findDeepestTransitiveDependencyProviderContainer', () {
       final transitiveDependency = Provider(
         (_) => 0,
         dependencies: const [],
       );
+      final dependency = Provider(
+        (_) => 0,
+        dependencies: [transitiveDependency],
+      );
 
       final a = Provider(
         (_) => 0,
-        dependencies: [dependency, transitiveDependency],
+        dependencies: [dependency],
       );
 
-      test('always returns false if has no dependency', () {
+      test('always returns null if has no dependency', () {
         final provider = Provider((_) => 0);
         final root = ProviderContainer.test();
         final container = ProviderContainer.test(
@@ -184,12 +184,14 @@ void main() {
         );
 
         expect(
-          container.pointerManager.hasLocallyOverriddenDependency(provider),
-          false,
+          container.pointerManager
+              .findDeepestTransitiveDependencyProviderContainer(provider),
+          null,
         );
       });
 
-      test('returns false if the root container', () {
+      test('returns null if the dependency is overridden in the root container',
+          () {
         final root = ProviderContainer.test(
           overrides: [
             dependency.overrideWithValue(42),
@@ -197,13 +199,14 @@ void main() {
         );
 
         expect(
-          root.pointerManager.hasLocallyOverriddenDependency(a),
-          false,
+          root.pointerManager
+              .findDeepestTransitiveDependencyProviderContainer(a),
+          null,
         );
       });
 
       test(
-          'returns true in a scoped container with overridden direct dependency',
+          "for direct dependencies, returns the dependency's container if overridden",
           () {
         final root = ProviderContainer.test();
         final container = ProviderContainer.test(
@@ -212,15 +215,23 @@ void main() {
             dependency.overrideWithValue(42),
           ],
         );
+        final leaf = ProviderContainer.test(
+          parent: container,
+          overrides: [
+            // Unrelated override, to avoid the container optimizing the pointer away
+            Provider((ref) => null, dependencies: const []),
+          ],
+        );
 
         expect(
-          container.pointerManager.hasLocallyOverriddenDependency(a),
-          true,
+          leaf.pointerManager
+              .findDeepestTransitiveDependencyProviderContainer(a),
+          container,
         );
       });
 
       test(
-          'returns true in a scoped container with overridden transitive dependency',
+          "for transitive dependencies, returns the dependency's container if overridden",
           () {
         final root = ProviderContainer.test();
         final container = ProviderContainer.test(
@@ -229,10 +240,65 @@ void main() {
             transitiveDependency.overrideWithValue(42),
           ],
         );
+        final leaf = ProviderContainer.test(
+          parent: container,
+          overrides: [
+            // Unrelated override, to avoid the container optimizing the pointer away
+            Provider((ref) => null, dependencies: const []),
+          ],
+        );
 
         expect(
-          container.pointerManager.hasLocallyOverriddenDependency(a),
-          true,
+          leaf.pointerManager
+              .findDeepestTransitiveDependencyProviderContainer(a),
+          container,
+        );
+      });
+
+      test(
+          'if multiple dependencies are overridden, returns the deepest container',
+          () {
+        final dep2 = Provider(
+          (_) => 0,
+          dependencies: const [],
+        );
+        final root = ProviderContainer.test();
+        final container = ProviderContainer.test(
+          parent: root,
+          overrides: [
+            dependency.overrideWithValue(42),
+          ],
+        );
+        final container2 = ProviderContainer.test(
+          parent: container,
+          overrides: [
+            dep2.overrideWithValue(42),
+          ],
+        );
+        final leaf = ProviderContainer.test(
+          parent: container2,
+          overrides: [
+            // Unrelated override, to avoid the container optimizing the pointer away
+            Provider((ref) => null, dependencies: const []),
+          ],
+        );
+
+        final b = Provider(
+          (_) => 0,
+          dependencies: [dep2],
+        );
+
+        expect(
+          leaf.pointerManager
+              .findDeepestTransitiveDependencyProviderContainer(a),
+          // Does not care about dep2, so points to 'container'
+          container,
+        );
+
+        expect(
+          leaf.pointerManager
+              .findDeepestTransitiveDependencyProviderContainer(b),
+          container2,
         );
       });
     });
@@ -422,7 +488,7 @@ void main() {
           pointer,
           isPointer(
             targetContainer: container,
-            override: isTransitiveProviderOverride(family(42)),
+            override: null,
           ),
         );
         expect(
@@ -465,6 +531,81 @@ void main() {
         expect(
           root.pointerManager.orphanPointers.pointers,
           isEmpty,
+        );
+      });
+
+      test('auto-scoping inserts at the correct container', () {
+        final dep = Provider((_) => 0, dependencies: const [], name: 'dep');
+        final dep2 = Provider((_) => 0, dependencies: const [], name: 'dep2');
+
+        final a = Provider((ref) => 0, dependencies: [dep], name: 'a');
+        final b = Provider((ref) => 0, dependencies: [dep2], name: 'b');
+        final c = Provider.family(
+          (ref, id) => 0,
+          dependencies: [dep],
+          name: 'c',
+        );
+        final d = Provider.family(
+          (ref, id) => 0,
+          dependencies: [dep2],
+          name: 'd',
+        );
+
+        final root = ProviderContainer.test();
+        final mid = ProviderContainer.test(parent: root, overrides: [dep]);
+        final mid2 = ProviderContainer.test(parent: mid, overrides: [dep2]);
+        final leaf = ProviderContainer.test(parent: mid2, overrides: [
+          // Disable scoping optimization
+          Provider((ref) => null, dependencies: const []),
+        ]);
+
+        leaf.pointerManager.upsertPointer(a);
+        leaf.pointerManager.upsertPointer(b);
+        leaf.pointerManager.upsertPointer(c(0));
+        leaf.pointerManager.upsertPointer(d(0));
+
+        expect(
+          leaf.pointerManager.orphanPointers,
+          isProviderDirectory(
+            targetContainer: root,
+            override: null,
+            pointers: allOf(
+              containsPair(
+                a,
+                isPointer(
+                  targetContainer: mid,
+                  override: isTransitiveProviderOverride(a),
+                ),
+              ),
+              containsPair(
+                b,
+                isPointer(
+                  targetContainer: mid2,
+                  override: isTransitiveProviderOverride(b),
+                ),
+              ),
+            ),
+          ),
+        );
+
+        expect(
+          leaf.pointerManager.familyPointers,
+          {
+            c: isProviderDirectory(
+              targetContainer: mid,
+              override: isTransitiveFamilyOverride(c),
+              pointers: {
+                c(0): isPointer(targetContainer: mid, override: null),
+              },
+            ),
+            d: isProviderDirectory(
+              targetContainer: mid2,
+              override: isTransitiveFamilyOverride(d),
+              pointers: {
+                d(0): isPointer(targetContainer: mid2, override: null),
+              },
+            ),
+          },
         );
       });
 

@@ -59,32 +59,21 @@ extension<PointerT extends _PointerBase, ProviderT extends ProviderOrFamily>
     final pointer = this[provider];
     if (pointer != null) return pointer;
 
-    // if (pointer != null) {
-    //   // TODO what about family(42) overrides on nested containers?
-    //   if (provider.allTransitiveDependencies == null) {
-    //     // The provider is not scoped, so can never be transitively overridden
-    //     return pointer;
-    //   }
-    //   if (pointer.targetContainer == currentContainer) {
-    //     // The pointer isn't inherited but rather local to the current container,
-    //     // so no need to check for transitive overrides.
-    //     return pointer;
-    //   }
-    // }
+    final deepestTransitiveDependencyContainer = currentContainer
+        ._pointerManager
+        .findDeepestTransitiveDependencyProviderContainer(provider);
 
-    if (currentContainer._pointerManager
-        .hasLocallyOverriddenDependency(provider)) {
-      return this[provider] = scope(override: provider);
-    }
-
-    // Where the provider should be mounted
-    final target = pointer?.targetContainer ??
+    final target = deepestTransitiveDependencyContainer ??
+        pointer?.targetContainer ??
         targetContainer ??
         currentContainer._root ??
         currentContainer;
 
     if (target == currentContainer) {
-      return this[provider] = scope();
+      return this[provider] = scope(
+        override:
+            deepestTransitiveDependencyContainer == null ? null : provider,
+      );
     }
 
     return this[provider] = inherit(target);
@@ -141,7 +130,7 @@ class ProviderDirectory implements _PointerBase {
       inherit: (target) => target._pointerManager.upsertPointer(provider),
       scope: ({override}) => ProviderPointer(
         targetContainer: currentContainer,
-        providerOverride: override == null //
+        providerOverride: override == null || provider.from != null //
             ? null
             : TransitiveProviderOverride(override),
       ),
@@ -357,20 +346,32 @@ class ProviderPointerManager {
     return container == this.container;
   }
 
-  /// Whether a provider has a transitive dependency that is overridden in this container.
-  bool hasLocallyOverriddenDependency(ProviderOrFamily provider) {
-    if (container._parent == null) return false;
+  /// Obtains the [ProviderContainer] in which provider/family should be mounted,
+  /// if the provider is locally scoped.
+  ///
+  /// Returns `null` if it should be mounted at the root.
+  ProviderContainer? findDeepestTransitiveDependencyProviderContainer(
+      ProviderOrFamily provider) {
+    if (container._parent == null) return null;
 
     final transitiveDependencies = provider.allTransitiveDependencies;
 
     /// If the provider has no dependencies, it cannot be locally overridden.
-    if (transitiveDependencies == null) return false;
+    if (transitiveDependencies == null) return null;
 
+    ProviderContainer? deepestContainer;
     for (final dependency in transitiveDependencies) {
-      if (isLocallyMounted(dependency)) return true;
+      final target = switch (dependency) {
+        Family() => familyPointers[dependency]?.targetContainer,
+        ProviderBase() => readPointer(dependency)?.targetContainer,
+      };
+      if (target == null || target.depth == 0) continue;
+      if (deepestContainer == null || deepestContainer.depth < target.depth) {
+        deepestContainer = target;
+      }
     }
 
-    return false;
+    return deepestContainer;
   }
 
   /// Initializes a family and returns its pointer.
