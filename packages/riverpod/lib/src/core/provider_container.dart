@@ -1012,7 +1012,8 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
     return _pointerManager
         .listProviderPointers()
         .map((e) => e.element)
-        .whereNotNull();
+        .whereNotNull()
+        .where((e) => e.container == this);
   }
 
   /// Visit all nodes of the graph at most once, from roots to leaves.
