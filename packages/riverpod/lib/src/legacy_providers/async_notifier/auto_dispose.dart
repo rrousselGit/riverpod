@@ -134,5 +134,5 @@ class AutoDisposeAsyncNotifierProviderElement<
     implements AutoDisposeAsyncNotifierProviderRef<T> {
   /// The [ProviderElementBase] for [AsyncNotifierProvider]
   @internal
-  AutoDisposeAsyncNotifierProviderElement(super._provider, super.container);
+  AutoDisposeAsyncNotifierProviderElement(super.provider, super.container);
 }

@@ -81,16 +81,20 @@ class ValueProvider<State> extends ProviderBase<State> {
 @internal
 class ValueProviderElement<State> extends ProviderElementBase<State> {
   /// The [ProviderElementBase] of a [ValueProvider]
-  ValueProviderElement(ValueProvider<State> super._provider, super.container);
+  ValueProviderElement(this.provider, super.container);
 
   /// A custom listener called when `overrideWithValue` changes
   /// with a different value.
   void Function(State value)? onChange;
 
   @override
-  void update(ProviderBase<State> newProvider) {
+  ValueProvider<State> provider;
+
+  @override
+  void update(covariant ValueProvider<State> newProvider) {
     super.update(newProvider);
-    final newValue = (provider as ValueProvider<State>)._value;
+    provider = newProvider;
+    final newValue = provider._value;
 
     // `getState` will never be in error/loading state since there is no "create"
     final previousState = getState()! as ResultData<State>;

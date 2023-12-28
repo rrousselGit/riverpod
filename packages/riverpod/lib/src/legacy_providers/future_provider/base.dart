@@ -91,11 +91,10 @@ class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
     implements FutureProviderRef<T> {
   /// The element of a [FutureProvider]
   @internal
-  FutureProviderElement(
-    // ignore: library_private_types_in_public_api
-    _FutureProviderBase<T> super._provider,
-    super.container,
-  );
+  FutureProviderElement(this.provider, super.container);
+
+  @override
+  final _FutureProviderBase<T> provider;
 
   @override
   Future<T> get future {
@@ -105,8 +104,6 @@ class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
 
   @override
   void create({required bool didChangeDependency}) {
-    final provider = this.provider as _FutureProviderBase<T>;
-
     handleFuture(
       () => provider._create(this),
       didChangeDependency: didChangeDependency,

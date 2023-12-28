@@ -489,7 +489,7 @@ abstract class AsyncNotifierProviderElementBase<
     with FutureHandlerProviderElementMixin<T> {
   /// The element of [AsyncNotifierProvider].
   @internal
-  AsyncNotifierProviderElementBase(super._provider, super.container);
+  AsyncNotifierProviderElementBase(super.container);
 
   final _notifierNotifier = ProxyElementValueNotifier<NotifierT>();
 
@@ -526,15 +526,13 @@ class AsyncNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
     implements AsyncNotifierProviderRef<T> {
   /// The element of [AsyncNotifierProvider].
   @internal
-  AsyncNotifierProviderElement(
-    AsyncNotifierProviderBase<NotifierT, T> super._provider,
-    super.container,
-  );
+  AsyncNotifierProviderElement(this.provider, super.container);
+
+  @override
+  final AsyncNotifierProviderBase<NotifierT, T> provider;
 
   @override
   void create({required bool didChangeDependency}) {
-    final provider = this.provider as AsyncNotifierProviderBase<NotifierT, T>;
-
     final notifierResult = _notifierNotifier.result ??= Result.guard(() {
       return provider._createNotifier().._setElement(this);
     });

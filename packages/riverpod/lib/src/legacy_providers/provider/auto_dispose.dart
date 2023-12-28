@@ -72,7 +72,7 @@ class AutoDisposeProviderElement<T> extends ProviderElement<T>
   /// The [ProviderElementBase] for [Provider]
   @internal
   AutoDisposeProviderElement(
-    AutoDisposeProvider<T> super._provider,
+    AutoDisposeProvider<T> super.provider,
     super.container,
   );
 }

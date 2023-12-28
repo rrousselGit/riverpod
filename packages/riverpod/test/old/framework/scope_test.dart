@@ -1,7 +1,10 @@
 // Tests related to scoping providers
 
 import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/src/framework.dart';
 import 'package:test/test.dart';
+
+import '../../new/core/provider_container_test.dart';
 
 Future<void> main() async {
   test(
@@ -84,11 +87,19 @@ Future<void> main() async {
 
     expect(mid.read(a(10)), 20);
 
+    final override2 = a.overrideWith((ref, argument) => argument + 20);
     final child = ProviderContainer.test(
       parent: mid,
-      overrides: [
-        a.overrideWith((ref, argument) => argument + 20),
-      ],
+      overrides: [override2],
+    );
+
+    expect(
+      child.pointerManager.familyPointers[a],
+      isProviderDirectory(
+        override: override2,
+        targetContainer: child,
+        pointers: {},
+      ),
     );
 
     expect(child.read(a(10)), 30);

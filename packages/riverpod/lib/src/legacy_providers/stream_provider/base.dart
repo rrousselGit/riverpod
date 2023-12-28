@@ -141,11 +141,12 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
     implements StreamProviderRef<T> {
   /// The element of [StreamProvider].
   @internal
-  StreamProviderElement(
-    // ignore: library_private_types_in_public_api
-    _StreamProviderBase<T> super._provider,
-    super.container,
-  );
+  StreamProviderElement(this.provider, super.container);
+
+  // TODO remove all ignores
+
+  @override
+  final _StreamProviderBase<T> provider;
 
   final _streamNotifier = ProxyElementValueNotifier<Stream<T>>();
   final StreamController<T> _streamController = StreamController<T>.broadcast();
@@ -156,10 +157,7 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
     _streamNotifier.result ??= Result.data(_streamController.stream);
 
     handleStream(
-      () {
-        final provider = this.provider as _StreamProviderBase<T>;
-        return provider._create(this);
-      },
+      () => provider._create(this),
       didChangeDependency: didChangeDependency,
     );
   }

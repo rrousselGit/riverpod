@@ -326,7 +326,10 @@ class ProviderElement<State> extends ProviderElementBase<State>
     implements ProviderRef<State> {
   /// A [ProviderElementBase] for [Provider]
   @internal
-  ProviderElement(super._provider, super.container);
+  ProviderElement(this.provider, super.container);
+
+  @override
+  final InternalProvider<State> provider;
 
   @override
   State get state => requireState;
@@ -336,8 +339,6 @@ class ProviderElement<State> extends ProviderElementBase<State>
 
   @override
   void create({required bool didChangeDependency}) {
-    final provider = this.provider as InternalProvider<State>;
-
     setState(provider._create(this));
   }
 

@@ -147,10 +147,10 @@ class StateNotifierProvider<NotifierT extends StateNotifier<T>, T>
 class StateNotifierProviderElement<NotifierT extends StateNotifier<T>, T>
     extends ProviderElementBase<T>
     implements StateNotifierProviderRef<NotifierT, T> {
-  StateNotifierProviderElement._(
-    _StateNotifierProviderBase<NotifierT, T> super._provider,
-    super.container,
-  );
+  StateNotifierProviderElement._(this.provider, super.container);
+
+  @override
+  final _StateNotifierProviderBase<NotifierT, T> provider;
 
   @override
   NotifierT get notifier => _notifierNotifier.value;
@@ -160,8 +160,6 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<T>, T>
 
   @override
   void create({required bool didChangeDependency}) {
-    final provider = this.provider as _StateNotifierProviderBase<NotifierT, T>;
-
     final notifier =
         _notifierNotifier.result = Result.guard(() => provider._create(this));
 

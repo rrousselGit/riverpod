@@ -111,10 +111,10 @@ class StateProvider<T> extends _StateProviderBase<T> {
 /// The element of [StateProvider].
 class StateProviderElement<T> extends ProviderElementBase<T>
     implements StateProviderRef<T> {
-  StateProviderElement._(
-    _StateProviderBase<T> super._provider,
-    super.container,
-  );
+  StateProviderElement._(this.provider, super.container);
+
+  @override
+  final _StateProviderBase<T> provider;
 
   @override
   StateController<T> get controller => _controllerNotifier.value;
@@ -126,7 +126,6 @@ class StateProviderElement<T> extends ProviderElementBase<T>
 
   @override
   void create({required bool didChangeDependency}) {
-    final provider = this.provider as _StateProviderBase<T>;
     final initialState = provider._create(this);
 
     final controller = StateController(initialState);

@@ -57,19 +57,20 @@ extension<PointerT extends _PointerBase, ProviderT extends ProviderOrFamily>
     required PointerT Function({ProviderT? override}) scope,
   }) {
     final pointer = this[provider];
+    if (pointer != null) return pointer;
 
-    if (pointer != null) {
-      // TODO what about family(42) overrides on nested containers?
-      if (provider.allTransitiveDependencies == null) {
-        // The provider is not scoped, so can never be transitively overridden
-        return pointer;
-      }
-      if (pointer.targetContainer == currentContainer) {
-        // The pointer isn't inherited but rather local to the current container,
-        // so no need to check for transitive overrides.
-        return pointer;
-      }
-    }
+    // if (pointer != null) {
+    //   // TODO what about family(42) overrides on nested containers?
+    //   if (provider.allTransitiveDependencies == null) {
+    //     // The provider is not scoped, so can never be transitively overridden
+    //     return pointer;
+    //   }
+    //   if (pointer.targetContainer == currentContainer) {
+    //     // The pointer isn't inherited but rather local to the current container,
+    //     // so no need to check for transitive overrides.
+    //     return pointer;
+    //   }
+    // }
 
     if (currentContainer._pointerManager
         .hasLocallyOverriddenDependency(provider)) {
@@ -102,7 +103,7 @@ class ProviderDirectory implements _PointerBase {
     ProviderDirectory pointer,
   )   : familyOverride = pointer.familyOverride,
         targetContainer = pointer.targetContainer,
-        pointers = HashMap.of(pointer.pointers);
+        pointers = HashMap.from(pointer.pointers);
 
   /// The override associated with this provider, if any.
   ///
@@ -112,7 +113,7 @@ class ProviderDirectory implements _PointerBase {
   _FamilyOverride? familyOverride;
   final HashMap<ProviderBase<Object?>, ProviderPointer> pointers;
   @override
-  final ProviderContainer targetContainer;
+  ProviderContainer targetContainer;
 
   void addProviderOverride(
     _ProviderOverride override, {
@@ -166,29 +167,33 @@ class ProviderDirectory implements _PointerBase {
       ProviderElementBase<Object?>? element;
 
       switch ((pointer.providerOverride, familyOverride)) {
+        // The provider is overridden. This takes over any family override
         case (final override?, _):
           element =
               override.providerOverride.createElement(pointer.targetContainer);
 
+        // The family was overridden using overrideWith & co.
         case (null, final FamilyOverride override):
           element = override.createElement(pointer.targetContainer, origin);
 
+        // Either the provider wasn't overridden or it was scoped.
         case (null, _FamilyOverride() || null):
           element = origin.createElement(pointer.targetContainer);
       }
 
-      final overrideProvider =
-          pointer.providerOverride?.providerOverride ?? origin;
+      /// Assigning the element before calling "mount" to guarantee
+      /// that even if something goes very wrong, such as a recursive
+      /// initialization or "mount" throwing, next read will not try to
+      /// initialize the provider again.
+      /// This has otherwise no impact unless there is a bug.
+      pointer.element = element;
 
       // TODO test family(42) overrides on nested containers receive the correct container
       element
         // TODO remove
-        .._provider = overrideProvider
-        // TODO remove
         .._origin = origin
         // TODO make this optional
         ..mount();
-      pointer.element = element;
     }
 
     return pointer;
@@ -314,13 +319,15 @@ class ProviderPointerManager {
           final previousPointer = familyPointers[overriddenFamily];
           if (previousPointer != null) {
             /// A provider from that family was overridden first.
-            /// We override the family but preserve the provider override too.
+            /// We override the family but preserve the provider overrides too.
 
-            previousPointer.familyOverride = override;
-            // Remove inherited family values and keep only local ones
-            previousPointer.pointers.removeWhere(
-              (key, value) => value.targetContainer != container,
-            );
+            previousPointer
+              ..familyOverride = override
+              ..targetContainer = container
+              // Remove inherited family values and keep only local ones
+              ..pointers.removeWhere(
+                (key, value) => value.targetContainer != container,
+              );
             continue;
           }
 

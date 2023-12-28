@@ -1148,8 +1148,6 @@ void main() {
           );
         });
 
-        // TODO throw if trying to cope a provider/family with no dependencies
-
         test('orphanPointers.containers are always equal to root', () {
           final root = ProviderContainer.test();
           final provider = Provider(
@@ -1174,6 +1172,71 @@ void main() {
                 targetContainer: container,
                 override: provider,
                 element: null,
+              ),
+            },
+          );
+        });
+
+        test('can scope a provider that is already scoped', () {
+          final provider = Provider((_) => 0, dependencies: const []);
+          final family = Provider.family<int, int>(
+            (_, b) => 0,
+            dependencies: const [],
+          );
+          final root = ProviderContainer.test();
+
+          final providerOverride1 = provider.overrideWithValue(1);
+          final familyOverride1 = family.overrideWith((ref, arg) => 1);
+          final mid = ProviderContainer.test(
+            parent: root,
+            overrides: [providerOverride1, familyOverride1],
+          );
+
+          final providerOverride2 = provider.overrideWithValue(1);
+          final familyOverride2 = family.overrideWith((ref, arg) => 1);
+          final leaf = ProviderContainer.test(
+            parent: mid,
+            overrides: [providerOverride2, familyOverride2],
+          );
+
+          expect(
+            leaf.pointerManager.orphanPointers.pointers,
+            {
+              provider: isPointer(
+                targetContainer: leaf,
+                override: providerOverride2,
+                element: null,
+              ),
+            },
+          );
+          expect(
+            leaf.pointerManager.familyPointers,
+            {
+              family: isProviderDirectory(
+                override: familyOverride2,
+                targetContainer: leaf,
+                pointers: isEmpty,
+              ),
+            },
+          );
+
+          expect(
+            mid.pointerManager.orphanPointers.pointers,
+            {
+              provider: isPointer(
+                targetContainer: mid,
+                override: providerOverride1,
+                element: null,
+              ),
+            },
+          );
+          expect(
+            mid.pointerManager.familyPointers,
+            {
+              family: isProviderDirectory(
+                override: familyOverride1,
+                targetContainer: mid,
+                pointers: isEmpty,
               ),
             },
           );

@@ -143,15 +143,13 @@ class StreamNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
     implements StreamNotifierProviderRef<T> {
   /// The element of [StreamNotifierProvider].
   @internal
-  StreamNotifierProviderElement(
-    StreamNotifierProviderBase<NotifierT, T> super._provider,
-    super.container,
-  );
+  StreamNotifierProviderElement(this.provider, super.container);
+
+  @override
+  final StreamNotifierProviderBase<NotifierT, T> provider;
 
   @override
   void create({required bool didChangeDependency}) {
-    final provider = this.provider as StreamNotifierProviderBase<NotifierT, T>;
-
     final notifierResult = _notifierNotifier.result ??= Result.guard(() {
       return provider._createNotifier().._setElement(this);
     });

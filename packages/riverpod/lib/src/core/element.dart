@@ -44,7 +44,7 @@ void Function()? debugCanModifyProviders;
 abstract class ProviderElementBase<State> implements Ref<State>, Node {
   /// {@macro riverpod.provider_element_base}
   // TODO changelog: ProviderElement no-longer takes a provider as parameter but takes a ProviderContainer
-  ProviderElementBase(this._provider, this.container);
+  ProviderElementBase(this.container);
 
   static ProviderElementBase<Object?>? _debugCurrentlyBuildingElement;
 
@@ -59,10 +59,9 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   ProviderBase<Object?> get origin => _origin;
   late ProviderBase<Object?> _origin;
 
-  // TODO changelog ProviderElement.provider is now abstract
   /// The provider associated with this [ProviderElementBase], after applying overrides.
-  ProviderBase<State> get provider => _provider;
-  ProviderBase<State> _provider;
+  // TODO changelog ProviderElement.provider is now abstract
+  ProviderBase<State> get provider;
 
   /// The [ProviderContainer] that owns this [ProviderElementBase].
   @override
@@ -77,12 +76,12 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
       _subscribers.isNotEmpty ||
       _providerDependents.isNotEmpty;
 
-  // TODO(rrousselGit) refactor to match ChangeNotifier
   /// The list of [ProviderSubscription]s that are linked with this element,
   /// which aren't coming from another provider.
   ///
   /// This is typically Flutter widgets or manual calls to [ProviderContainer.listen]
   /// with this provider as target.
+  // TODO(rrousselGit) refactor to match ChangeNotifier
   final _externalDependents = <_ExternalProviderSubscription<State>>[];
 
   /// The [ProviderSubscription]s associated to the providers that this
@@ -305,11 +304,8 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   /// See also:
   /// - `overrideWithValue`, which relies on [update] to handle
   ///   the scenario where the value changed.
-  @internal
-  // ignore: use_setters_to_change_properties
-  void update(ProviderBase<State> newProvider) {
-    _provider = newProvider;
-  }
+  @visibleForOverriding
+  void update(ProviderBase<State> newProvider) {}
 
   @override
   void invalidate(ProviderOrFamily provider) {

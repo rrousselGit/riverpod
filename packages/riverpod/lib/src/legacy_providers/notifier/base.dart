@@ -192,17 +192,15 @@ class NotifierProviderElement<NotifierT extends NotifierBase<T>, T>
     extends ProviderElementBase<T> implements NotifierProviderRef<T> {
   /// The element of [NotifierProvider].
   @internal
-  NotifierProviderElement(
-    NotifierProviderBase<NotifierT, T> super._provider,
-    super.container,
-  );
+  NotifierProviderElement(this.provider, super.container);
+
+  @override
+  final NotifierProviderBase<NotifierT, T> provider;
 
   final _notifierNotifier = ProxyElementValueNotifier<NotifierT>();
 
   @override
   void create({required bool didChangeDependency}) {
-    final provider = this.provider as NotifierProviderBase<NotifierT, T>;
-
     final notifierResult = _notifierNotifier.result ??= Result.guard(() {
       return provider._createNotifier().._setElement(this);
     });

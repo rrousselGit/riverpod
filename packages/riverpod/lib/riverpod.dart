@@ -11,7 +11,6 @@ export 'src/framework.dart'
         FamilyCreate,
         AsyncSelector,
         FamilyBase,
-        FamilyOverrideImpl,
         AutoDisposeProviderElementMixin,
         FamilyOverride,
         NotifierFamilyBase,
