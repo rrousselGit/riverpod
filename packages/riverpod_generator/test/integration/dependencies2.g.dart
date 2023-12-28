@@ -127,7 +127,7 @@ class _$FamilyWithDependencies2FamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'familyWithDependencies2Provider.overrideWith($create)';
+  String toString() => 'familyWithDependencies2Provider.overrideWith(...)';
 }
 
 /// See also [familyWithDependencies2].
@@ -380,7 +380,7 @@ class _$NotifierFamilyWithDependenciesFamilyOverride implements FamilyOverride {
 
   @override
   String toString() =>
-      'notifierFamilyWithDependenciesProvider.overrideWith($create)';
+      'notifierFamilyWithDependenciesProvider.overrideWith(...)';
 }
 
 /// See also [NotifierFamilyWithDependencies].

@@ -107,7 +107,7 @@ class _$FamilyFamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'familyProvider.overrideWith($create)';
+  String toString() => 'familyProvider.overrideWith(...)';
 }
 
 /// See also [family].
@@ -293,7 +293,7 @@ class _$NotCopiedFamilyFamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'notCopiedFamilyProvider.overrideWith($create)';
+  String toString() => 'notCopiedFamilyProvider.overrideWith(...)';
 }
 
 /// See also [notCopiedFamily].

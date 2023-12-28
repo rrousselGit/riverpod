@@ -85,6 +85,9 @@ class TransitiveProviderOverride implements ProviderOverride {
 
   @override
   ProviderBase<Object?> get providerOverride => origin;
+
+  @override
+  String toString() => '$origin';
 }
 
 /// Do not use: Internal object to used by [ProviderContainer]/`ProviderScope`
@@ -128,6 +131,9 @@ class TransitiveFamilyOverride implements FamilyOverride {
   ) {
     return provider.createElement(container);
   }
+
+  @override
+  String toString() => '$from';
 }
 
 /// An [Override] for families

@@ -354,7 +354,7 @@ class $familyOverrideClassName implements FamilyOverride {
   }
 
   @override
-  String toString() => '$encodedProviderName.overrideWith(\$create)';
+  String toString() => '$encodedProviderName.overrideWith(...)';
 }
 
 $docs

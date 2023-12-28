@@ -89,7 +89,7 @@ class _$LabelFamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'labelProvider.overrideWith($create)';
+  String toString() => 'labelProvider.overrideWith(...)';
 }
 
 /// See also [label].

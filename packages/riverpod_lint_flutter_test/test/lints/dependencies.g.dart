@@ -471,7 +471,7 @@ class _$FamilyDepFamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'familyDepProvider.overrideWith($create)';
+  String toString() => 'familyDepProvider.overrideWith(...)';
 }
 
 /// See also [familyDep].
@@ -647,7 +647,7 @@ class _$FamilyDep2FamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'familyDep2Provider.overrideWith($create)';
+  String toString() => 'familyDep2Provider.overrideWith(...)';
 }
 
 /// See also [familyDep2].

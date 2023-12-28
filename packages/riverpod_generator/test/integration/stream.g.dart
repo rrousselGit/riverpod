@@ -84,7 +84,7 @@ class _$GenericFamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'genericProvider.overrideWith($create)';
+  String toString() => 'genericProvider.overrideWith(...)';
 }
 
 /// See also [generic].
@@ -277,7 +277,7 @@ class _$FamilyFamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'familyProvider.overrideWith($create)';
+  String toString() => 'familyProvider.overrideWith(...)';
 }
 
 /// See also [family].
@@ -517,7 +517,7 @@ class _$GenericClassFamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'genericClassProvider.overrideWith($create)';
+  String toString() => 'genericClassProvider.overrideWith(...)';
 }
 
 /// See also [GenericClass].
@@ -735,7 +735,7 @@ class _$FamilyClassFamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'familyClassProvider.overrideWith($create)';
+  String toString() => 'familyClassProvider.overrideWith(...)';
 }
 
 /// See also [FamilyClass].

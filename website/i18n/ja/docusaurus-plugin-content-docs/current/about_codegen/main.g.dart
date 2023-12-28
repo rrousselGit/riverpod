@@ -89,7 +89,7 @@ class _$FetchUserFamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'fetchUserProvider.overrideWith($create)';
+  String toString() => 'fetchUserProvider.overrideWith(...)';
 }
 
 /// See also [fetchUser].

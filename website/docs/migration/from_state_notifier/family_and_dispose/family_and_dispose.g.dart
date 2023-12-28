@@ -99,7 +99,7 @@ class _$BugsEncounteredNotifierFamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'bugsEncounteredNotifierProvider.overrideWith($create)';
+  String toString() => 'bugsEncounteredNotifierProvider.overrideWith(...)';
 }
 
 /// See also [BugsEncounteredNotifier].

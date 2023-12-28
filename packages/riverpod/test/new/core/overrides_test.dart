@@ -1,10 +1,19 @@
 import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/src/framework.dart';
 import 'package:test/test.dart';
 
 import '../../old/utils.dart';
 
 void main() {
   group('ProviderOverride', () {
+    test('TransitiveOverride.toString', () {
+      final provider = Provider((_) => 42);
+      expect(
+        TransitiveProviderOverride(provider),
+        equalsIgnoringHashCodes('Provider<int>#00000'),
+      );
+    });
+
     group('overrideWith', () {
       test('toString', () {
         final namelessProvider = Provider<int>((_) => 42);
@@ -63,6 +72,15 @@ void main() {
   });
 
   group('FamilyOverride', () {
+    test('TransitiveOverride.toString', () {
+      final provider = Provider.family<int, int>((_, b) => 42);
+
+      expect(
+        TransitiveFamilyOverride(provider),
+        equalsIgnoringHashCodes('Provider<int, int>#00000'),
+      );
+    });
+
     group('overrideWith', () {
       test('toString', () {
         final namelessFamily = Provider.family<int, int>((_, __) => 42);

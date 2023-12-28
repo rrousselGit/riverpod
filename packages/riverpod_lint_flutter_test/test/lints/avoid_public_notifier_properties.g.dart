@@ -95,7 +95,7 @@ class _$GeneratedNotifierFamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'generatedNotifierProvider.overrideWith($create)';
+  String toString() => 'generatedNotifierProvider.overrideWith(...)';
 }
 
 /// See also [GeneratedNotifier].

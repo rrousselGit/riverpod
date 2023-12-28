@@ -123,7 +123,7 @@ class _$A3FamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'a3Provider.overrideWith($create)';
+  String toString() => 'a3Provider.overrideWith(...)';
 }
 
 /// See also [A3].
@@ -303,7 +303,7 @@ class _$A4FamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'a4Provider.overrideWith($create)';
+  String toString() => 'a4Provider.overrideWith(...)';
 }
 
 /// See also [A4].
@@ -482,7 +482,7 @@ class _$A5FamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'a5Provider.overrideWith($create)';
+  String toString() => 'a5Provider.overrideWith(...)';
 }
 
 /// See also [A5].
@@ -662,7 +662,7 @@ class _$A6FamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'a6Provider.overrideWith($create)';
+  String toString() => 'a6Provider.overrideWith(...)';
 }
 
 /// See also [A6].
@@ -842,7 +842,7 @@ class _$A7FamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'a7Provider.overrideWith($create)';
+  String toString() => 'a7Provider.overrideWith(...)';
 }
 
 /// See also [A7].
@@ -1022,7 +1022,7 @@ class _$A8FamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'a8Provider.overrideWith($create)';
+  String toString() => 'a8Provider.overrideWith(...)';
 }
 
 /// See also [A8].

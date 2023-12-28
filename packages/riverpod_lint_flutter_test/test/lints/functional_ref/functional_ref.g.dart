@@ -115,7 +115,7 @@ class _$GenericsFamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'genericsProvider.overrideWith($create)';
+  String toString() => 'genericsProvider.overrideWith(...)';
 }
 
 /// See also [generics].
@@ -269,7 +269,7 @@ class _$NoGenericsFamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'noGenericsProvider.overrideWith($create)';
+  String toString() => 'noGenericsProvider.overrideWith(...)';
 }
 
 /// See also [noGenerics].
@@ -423,7 +423,7 @@ class _$MissingGenericsFamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'missingGenericsProvider.overrideWith($create)';
+  String toString() => 'missingGenericsProvider.overrideWith(...)';
 }
 
 /// See also [missingGenerics].
@@ -577,7 +577,7 @@ class _$WrongOrderFamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'wrongOrderProvider.overrideWith($create)';
+  String toString() => 'wrongOrderProvider.overrideWith(...)';
 }
 
 /// See also [wrongOrder].

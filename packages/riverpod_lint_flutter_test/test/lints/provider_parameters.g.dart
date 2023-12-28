@@ -87,7 +87,7 @@ class _$GeneratorFamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'generatorProvider.overrideWith($create)';
+  String toString() => 'generatorProvider.overrideWith(...)';
 }
 
 /// See also [generator].

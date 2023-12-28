@@ -92,7 +92,7 @@ class _$FetchPackagesFamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'fetchPackagesProvider.overrideWith($create)';
+  String toString() => 'fetchPackagesProvider.overrideWith(...)';
 }
 
 /// See also [fetchPackages].

@@ -112,7 +112,7 @@ class _$ActivityNotifier2FamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'activityNotifier2Provider.overrideWith($create)';
+  String toString() => 'activityNotifier2Provider.overrideWith(...)';
 }
 
 /// See also [ActivityNotifier2].

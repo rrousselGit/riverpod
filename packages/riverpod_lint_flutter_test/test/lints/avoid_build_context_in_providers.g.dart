@@ -89,7 +89,7 @@ class _$FnFamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'fnProvider.overrideWith($create)';
+  String toString() => 'fnProvider.overrideWith(...)';
 }
 
 /// See also [fn].
@@ -289,7 +289,7 @@ class _$MyNotifierFamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'myNotifierProvider.overrideWith($create)';
+  String toString() => 'myNotifierProvider.overrideWith(...)';
 }
 
 /// See also [MyNotifier].

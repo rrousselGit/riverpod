@@ -113,7 +113,7 @@ class _$ExampleFamilyFamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'exampleFamilyProvider.overrideWith($create)';
+  String toString() => 'exampleFamilyProvider.overrideWith(...)';
 }
 
 /// Some comment

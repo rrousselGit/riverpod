@@ -91,7 +91,7 @@ class _$FetchPackageDetailsFamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'fetchPackageDetailsProvider.overrideWith($create)';
+  String toString() => 'fetchPackageDetailsProvider.overrideWith(...)';
 }
 
 /// See also [fetchPackageDetails].
@@ -329,7 +329,7 @@ class _$PackageMetricsFamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'packageMetricsProvider.overrideWith($create)';
+  String toString() => 'packageMetricsProvider.overrideWith(...)';
 }
 
 /// A provider that fetches the likes count, popularity score and pub points

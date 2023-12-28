@@ -129,7 +129,7 @@ class _$Count2FamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'count2ProviderFamily.overrideWith($create)';
+  String toString() => 'count2ProviderFamily.overrideWith(...)';
 }
 
 /// See also [count2].
@@ -299,7 +299,7 @@ class _$CountFuture2FamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'countFuture2ProviderFamily.overrideWith($create)';
+  String toString() => 'countFuture2ProviderFamily.overrideWith(...)';
 }
 
 /// See also [countFuture2].
@@ -470,7 +470,7 @@ class _$CountStream2FamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'countStream2ProviderFamily.overrideWith($create)';
+  String toString() => 'countStream2ProviderFamily.overrideWith(...)';
 }
 
 /// See also [countStream2].
@@ -699,7 +699,7 @@ class _$CountNotifier2FamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'countNotifier2ProviderFamily.overrideWith($create)';
+  String toString() => 'countNotifier2ProviderFamily.overrideWith(...)';
 }
 
 /// See also [CountNotifier2].
@@ -886,8 +886,7 @@ class _$CountAsyncNotifier2FamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() =>
-      'countAsyncNotifier2ProviderFamily.overrideWith($create)';
+  String toString() => 'countAsyncNotifier2ProviderFamily.overrideWith(...)';
 }
 
 /// See also [CountAsyncNotifier2].
@@ -1074,8 +1073,7 @@ class _$CountStreamNotifier2FamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() =>
-      'countStreamNotifier2ProviderFamily.overrideWith($create)';
+  String toString() => 'countStreamNotifier2ProviderFamily.overrideWith(...)';
 }
 
 /// See also [CountStreamNotifier2].

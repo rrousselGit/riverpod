@@ -101,7 +101,7 @@ class _$GeneratedFamilyFamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'generatedFamilyProvider.overrideWith($create)';
+  String toString() => 'generatedFamilyProvider.overrideWith(...)';
 }
 
 /// See also [generatedFamily].
@@ -286,7 +286,7 @@ class _$$DynamicFamilyFamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => '\$dynamicFamilyProvider.overrideWith($create)';
+  String toString() => '\$dynamicFamilyProvider.overrideWith(...)';
 }
 
 /// See also [$dynamicFamily].
@@ -457,7 +457,7 @@ class _$DynamicFamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => '_dynamicProvider.overrideWith($create)';
+  String toString() => '_dynamicProvider.overrideWith(...)';
 }
 
 /// See also [_dynamic].
@@ -641,7 +641,7 @@ class _$AliasFamilyFamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'aliasFamilyProvider.overrideWith($create)';
+  String toString() => 'aliasFamilyProvider.overrideWith(...)';
 }
 
 /// See also [aliasFamily].
@@ -838,7 +838,7 @@ class _$GeneratedClassFamilyFamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'generatedClassFamilyProvider.overrideWith($create)';
+  String toString() => 'generatedClassFamilyProvider.overrideWith(...)';
 }
 
 /// See also [GeneratedClassFamily].
@@ -1041,7 +1041,7 @@ class _$$DynamicClassFamilyFamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => '\$dynamicClassFamilyProvider.overrideWith($create)';
+  String toString() => '\$dynamicClassFamilyProvider.overrideWith(...)';
 }
 
 /// See also [$DynamicClassFamily].
@@ -1242,7 +1242,7 @@ class _$AliasClassFamilyFamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'aliasClassFamilyProvider.overrideWith($create)';
+  String toString() => 'aliasClassFamilyProvider.overrideWith(...)';
 }
 
 /// See also [AliasClassFamily].

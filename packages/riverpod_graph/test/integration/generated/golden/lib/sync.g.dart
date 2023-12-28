@@ -136,7 +136,7 @@ class _$FamilyFamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'familyProvider.overrideWith($create)';
+  String toString() => 'familyProvider.overrideWith(...)';
 }
 
 /// A generated family provider.
@@ -457,7 +457,7 @@ class _$FamilyClassFamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'familyClassProvider.overrideWith($create)';
+  String toString() => 'familyClassProvider.overrideWith(...)';
 }
 
 /// A generated family provider from a class.

@@ -89,7 +89,7 @@ class _$ActivityFamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'activityProvider.overrideWith($create)';
+  String toString() => 'activityProvider.overrideWith(...)';
 }
 
 /// See also [activity].

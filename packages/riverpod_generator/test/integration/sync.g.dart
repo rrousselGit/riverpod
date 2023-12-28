@@ -84,7 +84,7 @@ class _$GenericFamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'genericProvider.overrideWith($create)';
+  String toString() => 'genericProvider.overrideWith(...)';
 }
 
 /// See also [generic].
@@ -246,7 +246,7 @@ class _$ComplexGenericFamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'complexGenericProvider.overrideWith($create)';
+  String toString() => 'complexGenericProvider.overrideWith(...)';
 }
 
 /// See also [complexGeneric].
@@ -473,7 +473,7 @@ class _$RawFamilyFutureFamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'rawFamilyFutureProvider.overrideWith($create)';
+  String toString() => 'rawFamilyFutureProvider.overrideWith(...)';
 }
 
 /// See also [rawFamilyFuture].
@@ -646,7 +646,7 @@ class _$RawFamilyStreamFamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'rawFamilyStreamProvider.overrideWith($create)';
+  String toString() => 'rawFamilyStreamProvider.overrideWith(...)';
 }
 
 /// See also [rawFamilyStream].
@@ -865,7 +865,7 @@ class _$FamilyFamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'familyProvider.overrideWith($create)';
+  String toString() => 'familyProvider.overrideWith(...)';
 }
 
 /// This is some documentation
@@ -1137,7 +1137,7 @@ class _$GenericClassFamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'genericClassProvider.overrideWith($create)';
+  String toString() => 'genericClassProvider.overrideWith(...)';
 }
 
 /// See also [GenericClass].
@@ -1342,7 +1342,7 @@ class _$RawFamilyFutureClassFamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'rawFamilyFutureClassProvider.overrideWith($create)';
+  String toString() => 'rawFamilyFutureClassProvider.overrideWith(...)';
 }
 
 /// See also [RawFamilyFutureClass].
@@ -1530,7 +1530,7 @@ class _$RawFamilyStreamClassFamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'rawFamilyStreamClassProvider.overrideWith($create)';
+  String toString() => 'rawFamilyStreamClassProvider.overrideWith(...)';
 }
 
 /// See also [RawFamilyStreamClass].
@@ -1772,7 +1772,7 @@ class _$FamilyClassFamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'familyClassProvider.overrideWith($create)';
+  String toString() => 'familyClassProvider.overrideWith(...)';
 }
 
 /// This is some documentation

@@ -91,7 +91,7 @@ class _$RandomFamilyOverride implements FamilyOverride {
   }
 
   @override
-  String toString() => 'randomProvider.overrideWith($create)';
+  String toString() => 'randomProvider.overrideWith(...)';
 }
 
 /// See also [random].
