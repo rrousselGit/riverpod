@@ -365,8 +365,8 @@ class $providerTypeNameImpl$typeParametersDefinition extends $providerType$provi
           from: $providerName,
           name: r'$providerName',
           debugGetCreateSourceHash: $hashFn,
-          dependencies: $familyName._dependencies,
-          allTransitiveDependencies: $familyName._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           ${parameters.map((e) => '${e.name}: ${e.name},\n').join()}
         );
 

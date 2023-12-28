@@ -112,9 +112,8 @@ class GeneratedNotifierProvider
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$generatedNotifierHash,
-          dependencies: GeneratedNotifierFamily._dependencies,
-          allTransitiveDependencies:
-              GeneratedNotifierFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           param: param,
         );
 

@@ -106,8 +106,8 @@ class GeneratorProvider extends Provider<int> {
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$generatorHash,
-          dependencies: GeneratorFamily._dependencies,
-          allTransitiveDependencies: GeneratorFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           value: value,
         );
 

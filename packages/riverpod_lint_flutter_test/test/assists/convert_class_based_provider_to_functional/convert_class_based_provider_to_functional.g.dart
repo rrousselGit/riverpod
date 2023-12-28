@@ -147,9 +147,8 @@ class ExampleFamilyProvider
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$exampleFamilyHash,
-          dependencies: ExampleFamilyFamily._dependencies,
-          allTransitiveDependencies:
-              ExampleFamilyFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           a: a,
           b: b,
         );
@@ -345,8 +344,8 @@ class GenericProvider<A, B>
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$genericHash,
-          dependencies: GenericFamily._dependencies,
-          allTransitiveDependencies: GenericFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
         );
 
   GenericProvider._internal(

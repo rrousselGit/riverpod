@@ -129,9 +129,8 @@ class ActivityNotifier2Provider
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$activityNotifier2Hash,
-          dependencies: ActivityNotifier2Family._dependencies,
-          allTransitiveDependencies:
-              ActivityNotifier2Family._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           activityType: activityType,
         );
 

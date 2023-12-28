@@ -108,8 +108,8 @@ class LabelProvider extends AutoDisposeProvider<String> {
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$labelHash,
-          dependencies: LabelFamily._dependencies,
-          allTransitiveDependencies: LabelFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           userName: userName,
         );
 

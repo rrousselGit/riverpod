@@ -108,8 +108,8 @@ class ActivityProvider extends AutoDisposeFutureProvider<Activity> {
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$activityHash,
-          dependencies: ActivityFamily._dependencies,
-          allTransitiveDependencies: ActivityFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           activityType: activityType,
         );
 

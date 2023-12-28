@@ -148,8 +148,8 @@ class Count2Provider extends AutoDisposeProvider<int> {
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$count2Hash,
-          dependencies: Count2Family._dependencies,
-          allTransitiveDependencies: Count2Family._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           a: a,
         );
 
@@ -318,9 +318,8 @@ class CountFuture2Provider extends AutoDisposeFutureProvider<int> {
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$countFuture2Hash,
-          dependencies: CountFuture2Family._dependencies,
-          allTransitiveDependencies:
-              CountFuture2Family._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           a: a,
         );
 
@@ -489,9 +488,8 @@ class CountStream2Provider extends AutoDisposeStreamProvider<int> {
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$countStream2Hash,
-          dependencies: CountStream2Family._dependencies,
-          allTransitiveDependencies:
-              CountStream2Family._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           a: a,
         );
 
@@ -716,9 +714,8 @@ class CountNotifier2Provider
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$countNotifier2Hash,
-          dependencies: CountNotifier2Family._dependencies,
-          allTransitiveDependencies:
-              CountNotifier2Family._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           a: a,
         );
 
@@ -903,9 +900,8 @@ class CountAsyncNotifier2Provider
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$countAsyncNotifier2Hash,
-          dependencies: CountAsyncNotifier2Family._dependencies,
-          allTransitiveDependencies:
-              CountAsyncNotifier2Family._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           a: a,
         );
 
@@ -1090,9 +1086,8 @@ class CountStreamNotifier2Provider
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$countStreamNotifier2Hash,
-          dependencies: CountStreamNotifier2Family._dependencies,
-          allTransitiveDependencies:
-              CountStreamNotifier2Family._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           a: a,
         );
 

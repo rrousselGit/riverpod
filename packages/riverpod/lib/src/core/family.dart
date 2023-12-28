@@ -6,8 +6,10 @@ typedef ProviderCreate<ProviderT, Created, RefT extends Ref> = ProviderT
     Function(
   Create<Created, RefT> create, {
   required String? name,
-  required Iterable<ProviderOrFamily>? dependencies,
-  required Set<ProviderOrFamily>? allTransitiveDependencies,
+  // ignore: prefer_void_to_null, explicitly using Null to cause a compilation error if non-null value is assigned
+  required Null dependencies,
+  // ignore: prefer_void_to_null, explicitly using Null to cause a compilation error if non-null value is assigned
+  required Null allTransitiveDependencies,
   required DebugGetCreateSourceHash? debugGetCreateSourceHash,
   Family from,
   Object? argument,
@@ -85,8 +87,8 @@ class FamilyBase<RefT extends Ref<R>, R, Arg, Created,
       name: name,
       from: this,
       argument: argument,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
+      dependencies: null,
+      allTransitiveDependencies: null,
       debugGetCreateSourceHash: debugGetCreateSourceHash,
     );
   }
@@ -138,8 +140,8 @@ class AutoDisposeFamilyBase<RefT extends Ref<R>, R, Arg, Created,
       name: name,
       from: this,
       argument: argument,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
+      dependencies: null,
+      allTransitiveDependencies: null,
       debugGetCreateSourceHash: debugGetCreateSourceHash,
     );
   }

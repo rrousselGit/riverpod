@@ -108,8 +108,8 @@ class FetchUserProvider extends AutoDisposeFutureProvider<User> {
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$fetchUserHash,
-          dependencies: FetchUserFamily._dependencies,
-          allTransitiveDependencies: FetchUserFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           userId: userId,
         );
 

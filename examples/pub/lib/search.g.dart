@@ -113,9 +113,8 @@ class FetchPackagesProvider extends AutoDisposeFutureProvider<List<Package>> {
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$fetchPackagesHash,
-          dependencies: FetchPackagesFamily._dependencies,
-          allTransitiveDependencies:
-              FetchPackagesFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           page: page,
           search: search,
         );

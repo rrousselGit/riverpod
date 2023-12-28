@@ -108,8 +108,8 @@ class FnProvider extends AutoDisposeProvider<int> {
           name: r'fnProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product') ? null : _$fnHash,
-          dependencies: FnFamily._dependencies,
-          allTransitiveDependencies: FnFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           context1: context1,
           context2: context2,
         );
@@ -309,9 +309,8 @@ class MyNotifierProvider
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$myNotifierHash,
-          dependencies: MyNotifierFamily._dependencies,
-          allTransitiveDependencies:
-              MyNotifierFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           context1: context1,
           context2: context2,
         );

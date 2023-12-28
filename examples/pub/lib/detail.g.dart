@@ -110,9 +110,8 @@ class FetchPackageDetailsProvider extends AutoDisposeFutureProvider<Package> {
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$fetchPackageDetailsHash,
-          dependencies: FetchPackageDetailsFamily._dependencies,
-          allTransitiveDependencies:
-              FetchPackageDetailsFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           packageName: packageName,
         );
 
@@ -358,9 +357,8 @@ class PackageMetricsProvider extends AutoDisposeAsyncNotifierProviderImpl<
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$packageMetricsHash,
-          dependencies: PackageMetricsFamily._dependencies,
-          allTransitiveDependencies:
-              PackageMetricsFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           packageName: packageName,
         );
 

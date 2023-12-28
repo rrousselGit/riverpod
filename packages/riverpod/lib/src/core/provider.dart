@@ -36,7 +36,10 @@ abstract class ProviderBase<State> extends ProviderOrFamily
     required this.debugGetCreateSourceHash,
     required super.dependencies,
     required super.allTransitiveDependencies,
-  });
+  }) : assert(
+          from == null || allTransitiveDependencies == null,
+          'When from a family, providers cannot specify dependencies.',
+        );
 
   /// {@template riverpod.create_source_hash}
   /// A debug-only function for obtaining a hash of the source code of the

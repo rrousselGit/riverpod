@@ -112,8 +112,8 @@ class RandomProvider extends AutoDisposeProvider<int> {
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$randomHash,
-          dependencies: RandomFamily._dependencies,
-          allTransitiveDependencies: RandomFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           seed: seed,
           max: max,
         );

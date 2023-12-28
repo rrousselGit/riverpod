@@ -108,8 +108,8 @@ class ExampleProvider extends AutoDisposeProvider<String> {
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$exampleHash,
-          dependencies: ExampleFamily._dependencies,
-          allTransitiveDependencies: ExampleFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           param: param,
         );
 

@@ -85,6 +85,13 @@ void main() {
     );
   });
 
+  test(
+      'On families, passes `null` as dependencies/allTransitiveDependencies to the providers',
+      () {
+    expect(provider4Provider(42).dependencies, null);
+    expect(provider4Provider(42).allTransitiveDependencies, null);
+  });
+
   test('Caches dependencies', () {
     expect(
       providerProvider.dependencies,

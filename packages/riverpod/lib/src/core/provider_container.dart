@@ -10,6 +10,8 @@ extension on String {
 ProviderBase<Object?>? _circularDependencyLock;
 
 abstract class _PointerBase {
+  bool get isTransitiveOverride;
+
   /// The container in which the element of this provider will be mounted.
   ProviderContainer get targetContainer;
 }
@@ -20,6 +22,10 @@ class ProviderPointer implements _PointerBase {
     required this.providerOverride,
     required this.targetContainer,
   });
+
+  @override
+  bool get isTransitiveOverride =>
+      providerOverride is TransitiveProviderOverride;
 
   /// The override associated with this provider, if any.
   ///
@@ -92,7 +98,12 @@ class ProviderDirectory implements _PointerBase {
     ProviderDirectory pointer,
   )   : familyOverride = pointer.familyOverride,
         targetContainer = pointer.targetContainer,
-        pointers = HashMap.from(pointer.pointers);
+        pointers = HashMap.fromEntries(
+          pointer.pointers.entries.where((e) => !e.value.isTransitiveOverride),
+        );
+
+  @override
+  bool get isTransitiveOverride => familyOverride is TransitiveFamilyOverride;
 
   /// The override associated with this provider, if any.
   ///
@@ -255,7 +266,9 @@ class ProviderPointerManager {
       ),
 
       familyPointers: HashMap.fromEntries(
-        parent._pointerManager.familyPointers.entries.map(
+        parent._pointerManager.familyPointers.entries
+            .where((e) => !e.value.isTransitiveOverride)
+            .map(
           (e) {
             if (e.key.allTransitiveDependencies == null) return e;
 

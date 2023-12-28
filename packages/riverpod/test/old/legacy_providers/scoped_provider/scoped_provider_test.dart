@@ -130,7 +130,7 @@ void main() {
       );
       final provider2 = Provider(
         (ref) => ref.watch(provider) * 2,
-        dependencies: const [],
+        dependencies: [provider],
       );
       final root = ProviderContainer.test();
       final container = ProviderContainer.test(

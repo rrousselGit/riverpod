@@ -249,7 +249,7 @@ Future<void> main() async {
       );
       final provider = Provider.family<String, int>(
         (ref, value) => '$value ${ref.watch(dep)}',
-        dependencies: const [],
+        dependencies: [dep],
       );
       final root = ProviderContainer.test();
       final container = ProviderContainer.test(
@@ -322,7 +322,7 @@ Future<void> main() async {
           callCount++;
           return '$value ${ref.watch(dep)}';
         },
-        dependencies: const [],
+        dependencies: [dep],
       );
       final root = ProviderContainer.test();
       final mid = ProviderContainer.test(
@@ -872,7 +872,7 @@ Future<void> main() async {
     );
     final b = Provider.family<int, int>(
       (ref, _) => ref.watch(a),
-      dependencies: [a],
+      dependencies: [a, another],
     );
 
     final root = ProviderContainer.test(

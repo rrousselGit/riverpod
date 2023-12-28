@@ -167,8 +167,8 @@ class FamilyProvider extends AutoDisposeProvider<String> {
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$familyHash,
-          dependencies: FamilyFamily._dependencies,
-          allTransitiveDependencies: FamilyFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           first: first,
           second: second,
           third: third,
@@ -487,9 +487,8 @@ class FamilyClassProvider
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$familyClassHash,
-          dependencies: FamilyClassFamily._dependencies,
-          allTransitiveDependencies:
-              FamilyClassFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           first: first,
           second: second,
           third: third,

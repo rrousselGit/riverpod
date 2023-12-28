@@ -137,8 +137,8 @@ class A3Provider extends AutoDisposeNotifierProviderImpl<A3, int> {
           name: r'a3Provider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product') ? null : _$a3Hash,
-          dependencies: A3Family._dependencies,
-          allTransitiveDependencies: A3Family._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           param: param,
         );
 
@@ -317,8 +317,8 @@ class A4Provider extends NotifierProviderImpl<A4, int> {
           name: r'a4Provider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product') ? null : _$a4Hash,
-          dependencies: A4Family._dependencies,
-          allTransitiveDependencies: A4Family._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           param: param,
         );
 
@@ -496,8 +496,8 @@ class A5Provider extends AutoDisposeAsyncNotifierProviderImpl<A5, int> {
           name: r'a5Provider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product') ? null : _$a5Hash,
-          dependencies: A5Family._dependencies,
-          allTransitiveDependencies: A5Family._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           param: param,
         );
 
@@ -676,8 +676,8 @@ class A6Provider extends AsyncNotifierProviderImpl<A6, int> {
           name: r'a6Provider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product') ? null : _$a6Hash,
-          dependencies: A6Family._dependencies,
-          allTransitiveDependencies: A6Family._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           param: param,
         );
 
@@ -856,8 +856,8 @@ class A7Provider extends AutoDisposeStreamNotifierProviderImpl<A7, int> {
           name: r'a7Provider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product') ? null : _$a7Hash,
-          dependencies: A7Family._dependencies,
-          allTransitiveDependencies: A7Family._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           param: param,
         );
 
@@ -1036,8 +1036,8 @@ class A8Provider extends StreamNotifierProviderImpl<A8, int> {
           name: r'a8Provider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product') ? null : _$a8Hash,
-          dependencies: A8Family._dependencies,
-          allTransitiveDependencies: A8Family._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           param: param,
         );
 

@@ -101,8 +101,8 @@ class GenericProvider<T extends num> extends AutoDisposeProvider<List<T>> {
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$genericHash,
-          dependencies: GenericFamily._dependencies,
-          allTransitiveDependencies: GenericFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
         );
 
   GenericProvider._internal(
@@ -268,9 +268,8 @@ class ComplexGenericProvider<T extends num, Foo extends String?>
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$complexGenericHash,
-          dependencies: ComplexGenericFamily._dependencies,
-          allTransitiveDependencies:
-              ComplexGenericFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           param: param,
           otherParam: otherParam,
         );
@@ -492,9 +491,8 @@ class RawFamilyFutureProvider extends AutoDisposeProvider<Raw<Future<String>>> {
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$rawFamilyFutureHash,
-          dependencies: RawFamilyFutureFamily._dependencies,
-          allTransitiveDependencies:
-              RawFamilyFutureFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           id: id,
         );
 
@@ -665,9 +663,8 @@ class RawFamilyStreamProvider extends AutoDisposeProvider<Raw<Stream<String>>> {
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$rawFamilyStreamHash,
-          dependencies: RawFamilyStreamFamily._dependencies,
-          allTransitiveDependencies:
-              RawFamilyStreamFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           id: id,
         );
 
@@ -896,8 +893,8 @@ class FamilyProvider extends AutoDisposeProvider<String> {
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$familyHash,
-          dependencies: FamilyFamily._dependencies,
-          allTransitiveDependencies: FamilyFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           first: first,
           second: second,
           third: third,
@@ -1153,9 +1150,8 @@ class GenericClassProvider<T extends num>
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$genericClassHash,
-          dependencies: GenericClassFamily._dependencies,
-          allTransitiveDependencies:
-              GenericClassFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
         );
 
   GenericClassProvider._internal(
@@ -1359,9 +1355,8 @@ class RawFamilyFutureClassProvider extends AutoDisposeNotifierProviderImpl<
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$rawFamilyFutureClassHash,
-          dependencies: RawFamilyFutureClassFamily._dependencies,
-          allTransitiveDependencies:
-              RawFamilyFutureClassFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           id: id,
         );
 
@@ -1547,9 +1542,8 @@ class RawFamilyStreamClassProvider extends AutoDisposeNotifierProviderImpl<
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$rawFamilyStreamClassHash,
-          dependencies: RawFamilyStreamClassFamily._dependencies,
-          allTransitiveDependencies:
-              RawFamilyStreamClassFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           id: id,
         );
 
@@ -1802,9 +1796,8 @@ class FamilyClassProvider
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$familyClassHash,
-          dependencies: FamilyClassFamily._dependencies,
-          allTransitiveDependencies:
-              FamilyClassFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           first: first,
           second: second,
           third: third,

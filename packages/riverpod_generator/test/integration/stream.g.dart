@@ -102,8 +102,8 @@ class GenericProvider<T extends num>
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$genericHash,
-          dependencies: GenericFamily._dependencies,
-          allTransitiveDependencies: GenericFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
         );
 
   GenericProvider._internal(
@@ -304,8 +304,8 @@ class FamilyProvider extends AutoDisposeStreamProvider<String> {
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$familyHash,
-          dependencies: FamilyFamily._dependencies,
-          allTransitiveDependencies: FamilyFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           first: first,
           second: second,
           third: third,
@@ -533,9 +533,8 @@ class GenericClassProvider<T extends num>
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$genericClassHash,
-          dependencies: GenericClassFamily._dependencies,
-          allTransitiveDependencies:
-              GenericClassFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
         );
 
   GenericClassProvider._internal(
@@ -761,9 +760,8 @@ class FamilyClassProvider
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$familyClassHash,
-          dependencies: FamilyClassFamily._dependencies,
-          allTransitiveDependencies:
-              FamilyClassFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           first: first,
           second: second,
           third: third,

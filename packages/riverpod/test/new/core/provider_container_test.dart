@@ -39,11 +39,16 @@ TypeMatcher<TransitiveFamilyOverride> isTransitiveFamilyOverride(
   return isA<TransitiveFamilyOverride>().having((f) => f.from, 'from', family);
 }
 
-TypeMatcher<TransitiveProviderOverride> isTransitiveProviderOverride(
-  Object? provider,
-) {
-  return isA<TransitiveProviderOverride>()
-      .having((f) => f.origin, 'origin', provider);
+TypeMatcher<TransitiveProviderOverride> isTransitiveProviderOverride([
+  Object? provider = _sentinel,
+]) {
+  var matcher = isA<TransitiveProviderOverride>();
+
+  if (provider != _sentinel) {
+    matcher = matcher.having((f) => f.origin, 'origin', provider);
+  }
+
+  return matcher;
 }
 
 TypeMatcher<ProviderDirectory> isProviderDirectory({
@@ -531,6 +536,63 @@ void main() {
         expect(
           root.pointerManager.orphanPointers.pointers,
           isEmpty,
+        );
+      });
+
+      test('skips auto-scoping if the provider is manually overridden', () {
+        final dep = Provider(
+          (_) => 0,
+          dependencies: const [],
+        );
+        final family = Provider.family<int, int>(
+          (ref, id) => 0,
+          dependencies: [dep],
+        );
+        final familyOverride = family.overrideWith((ref, arg) => 0);
+        final provider = Provider((_) => 0, dependencies: [dep]);
+        final providerOverride = provider.overrideWithValue(42);
+
+        final root = ProviderContainer.test();
+        final mid = ProviderContainer.test(
+          parent: root,
+          overrides: [familyOverride, providerOverride],
+        );
+        final container = ProviderContainer.test(
+          parent: mid,
+          overrides: [dep.overrideWithValue(42)],
+        );
+
+        container.pointerManager.upsertPointer(family(42));
+        container.pointerManager.upsertPointer(provider);
+
+        expect(
+          container.pointerManager.familyPointers,
+          {
+            family: isProviderDirectory(
+              targetContainer: mid,
+              override: familyOverride,
+              pointers: {
+                family(42): isPointer(
+                  targetContainer: mid,
+                  override: null,
+                ),
+              },
+            ),
+          },
+        );
+        expect(
+          container.pointerManager.orphanPointers,
+          isProviderDirectory(
+            targetContainer: root,
+            override: null,
+            pointers: {
+              provider: isPointer(
+                targetContainer: mid,
+                override: providerOverride,
+              ),
+              dep: isNotNull,
+            },
+          ),
         );
       });
 
@@ -1150,7 +1212,52 @@ void main() {
       });
 
       group('on scoped containers', () {
+        test('does not inherit transitive overrides', () {
+          final unrelated = Provider((_) => 0, dependencies: const []);
+          final dep = Provider(
+            (_) => 0,
+            dependencies: const [],
+            name: 'dep',
+          );
+          final provider = Provider((_) => 0, dependencies: [dep], name: 'a');
+          final family = Provider.family(
+            (_, d) => 0,
+            dependencies: [dep],
+            name: 'b',
+          );
+          final root = ProviderContainer.test();
+          final mid = ProviderContainer.test(
+            parent: root,
+            overrides: [dep],
+          );
+
+          mid.pointerManager.upsertPointer(provider);
+          mid.pointerManager.upsertPointer(family(42));
+
+          final container = ProviderContainer.test(
+            parent: mid,
+            overrides: [
+              // An unrelated override, added to avoid the container optimizing
+              unrelated,
+            ],
+          );
+
+          expect(
+            container.pointerManager.orphanPointers.pointers,
+            {
+              dep: isPointer(targetContainer: mid, override: dep),
+              unrelated: isPointer(),
+            },
+          );
+          expect(
+            container.pointerManager.familyPointers,
+            isEmpty,
+          );
+        });
+
         test('inherits overrides from its parents', () {
+          // TODO test that inheriting a transitively overridden family which contains family(arg) overrides preserves the family(arg) overrides
+
           final a = Provider((_) => 0, name: 'a');
           final aOverride = a.overrideWithValue(1);
           final b = Provider(

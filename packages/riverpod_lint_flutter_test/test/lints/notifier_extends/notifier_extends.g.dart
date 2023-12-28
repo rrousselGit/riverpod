@@ -163,8 +163,8 @@ class GenericsProvider<A extends num, B>
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$genericsHash,
-          dependencies: GenericsFamily._dependencies,
-          allTransitiveDependencies: GenericsFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
         );
 
   GenericsProvider._internal(
@@ -326,9 +326,8 @@ class NoGenericsProvider<A extends num, B>
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$noGenericsHash,
-          dependencies: NoGenericsFamily._dependencies,
-          allTransitiveDependencies:
-              NoGenericsFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
         );
 
   NoGenericsProvider._internal(
@@ -490,9 +489,8 @@ class MissingGenericsProvider<A, B>
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$missingGenericsHash,
-          dependencies: MissingGenericsFamily._dependencies,
-          allTransitiveDependencies:
-              MissingGenericsFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
         );
 
   MissingGenericsProvider._internal(
@@ -653,9 +651,8 @@ class WrongOrderProvider<A, B>
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$wrongOrderHash,
-          dependencies: WrongOrderFamily._dependencies,
-          allTransitiveDependencies:
-              WrongOrderFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
         );
 
   WrongOrderProvider._internal(

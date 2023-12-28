@@ -120,9 +120,8 @@ class GeneratedFamilyProvider extends AutoDisposeProvider<_Test> {
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$generatedFamilyHash,
-          dependencies: GeneratedFamilyFamily._dependencies,
-          allTransitiveDependencies:
-              GeneratedFamilyFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           test: test,
         );
 
@@ -305,9 +304,8 @@ class $DynamicFamilyProvider extends AutoDisposeProvider<Object?> {
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$$dynamicFamilyHash,
-          dependencies: $DynamicFamilyFamily._dependencies,
-          allTransitiveDependencies:
-              $DynamicFamilyFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           test: test,
         );
 
@@ -476,8 +474,8 @@ class _DynamicProvider extends AutoDisposeProvider<Object?> {
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$dynamicHash,
-          dependencies: _DynamicFamily._dependencies,
-          allTransitiveDependencies: _DynamicFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           test: test,
         );
 
@@ -660,9 +658,8 @@ class AliasFamilyProvider extends AutoDisposeProvider<r.AsyncValue<int>> {
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$aliasFamilyHash,
-          dependencies: AliasFamilyFamily._dependencies,
-          allTransitiveDependencies:
-              AliasFamilyFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           test: test,
         );
 
@@ -855,9 +852,8 @@ class GeneratedClassFamilyProvider
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$generatedClassFamilyHash,
-          dependencies: GeneratedClassFamilyFamily._dependencies,
-          allTransitiveDependencies:
-              GeneratedClassFamilyFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           test: test,
         );
 
@@ -1058,9 +1054,8 @@ class $DynamicClassFamilyProvider
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$$dynamicClassFamilyHash,
-          dependencies: $DynamicClassFamilyFamily._dependencies,
-          allTransitiveDependencies:
-              $DynamicClassFamilyFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           test: test,
         );
 
@@ -1259,9 +1254,8 @@ class AliasClassFamilyProvider extends AutoDisposeNotifierProviderImpl<
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$aliasClassFamilyHash,
-          dependencies: AliasClassFamilyFamily._dependencies,
-          allTransitiveDependencies:
-              AliasClassFamilyFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           test: test,
         );
 

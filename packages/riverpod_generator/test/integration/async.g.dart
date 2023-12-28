@@ -102,8 +102,8 @@ class GenericProvider<T extends num>
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$genericHash,
-          dependencies: GenericFamily._dependencies,
-          allTransitiveDependencies: GenericFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
         );
 
   GenericProvider._internal(
@@ -288,8 +288,8 @@ class FamilyOrProvider extends AutoDisposeFutureProvider<String> {
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$familyOrHash,
-          dependencies: FamilyOrFamily._dependencies,
-          allTransitiveDependencies: FamilyOrFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           first: first,
         );
 
@@ -474,8 +474,8 @@ class FamilyProvider extends AutoDisposeFutureProvider<String> {
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$familyHash,
-          dependencies: FamilyFamily._dependencies,
-          allTransitiveDependencies: FamilyFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           first: first,
           second: second,
           third: third,
@@ -703,9 +703,8 @@ class GenericClassProvider<T extends num>
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$genericClassHash,
-          dependencies: GenericClassFamily._dependencies,
-          allTransitiveDependencies:
-              GenericClassFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
         );
 
   GenericClassProvider._internal(
@@ -906,9 +905,8 @@ class FamilyOrClassProvider
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$familyOrClassHash,
-          dependencies: FamilyOrClassFamily._dependencies,
-          allTransitiveDependencies:
-              FamilyOrClassFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           first: first,
         );
 
@@ -1116,9 +1114,8 @@ class FamilyClassProvider
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$familyClassHash,
-          dependencies: FamilyClassFamily._dependencies,
-          allTransitiveDependencies:
-              FamilyClassFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           first: first,
           second: second,
           third: third,

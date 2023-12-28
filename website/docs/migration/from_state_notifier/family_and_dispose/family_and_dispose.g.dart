@@ -116,9 +116,8 @@ class BugsEncounteredNotifierProvider
               const bool.fromEnvironment('dart.vm.product')
                   ? null
                   : _$bugsEncounteredNotifierHash,
-          dependencies: BugsEncounteredNotifierFamily._dependencies,
-          allTransitiveDependencies:
-              BugsEncounteredNotifierFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
           featureId: featureId,
         );
 
