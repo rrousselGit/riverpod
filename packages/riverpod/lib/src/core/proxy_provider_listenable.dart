@@ -38,10 +38,7 @@ class _ProxySubscription<T> extends ProviderSubscription<T> {
 /// This API is not meant for public consumption.
 @internal
 class ProviderElementProxy<Input, Output>
-    with
-        ProviderListenable<Output>,
-        ProviderListenable<Output>,
-        _ProviderRefreshable<Output> {
+    with ProviderListenable<Output>, _ProviderRefreshable<Output> {
   /// An internal utility for reading alternate values of a provider.
   ///
   /// For example, this is used by [FutureProvider] to differentiate:

@@ -308,9 +308,9 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   void update(ProviderBase<State> newProvider) {}
 
   @override
-  void invalidate(ProviderOrFamily provider) {
-    assert(_debugAssertCanDependOn(provider), '');
-    container.invalidate(provider);
+  void invalidate(ProviderOrFamily providerOrFamily) {
+    if (kDebugMode) _debugAssertCanDependOn(providerOrFamily);
+    container.invalidate(providerOrFamily);
   }
 
   @override
@@ -638,57 +638,67 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     );
   }
 
-  bool _debugAssertCanDependOn(ProviderListenableOrFamily listenable) {
+  void _debugAssertCanDependOn(ProviderListenableOrFamily listenable) {
+    final dependency = switch (listenable) {
+      ProviderOrFamily() => listenable,
+      _ => listenable.listenedProvider,
+    };
+
+    if (dependency == null) return;
+
+    // TODO can we remove this?
+    try {
+      if (dependency is ProviderBase)
+        // Initializing the provider, to make sure its dependencies are setup.
+        container.readProviderElement(dependency);
+    } catch (err) {
+      // We don't care whether the provider is in error or not. We're just
+      // checking whether we're not in a circular dependency.
+    }
+
     assert(
-      () {
-        if (listenable is! ProviderBase<Object?>) return true;
-
-        try {
-          // Initializing the provider, to make sure its dependencies are setup.
-          container.readProviderElement(listenable);
-        } catch (err) {
-          // We don't care whether the provider is in error or not. We're just
-          // checking whether we're not in a circular dependency.
-        }
-
-        assert(
-          listenable != origin,
-          'A provider cannot depend on itself',
-        );
-
-        assert(
-          // If the target has a null "dependencies", it should never be scoped.
-          // As such, the current provider's "dependencies" does not need to
-          // include the target in its dependencies.
-          listenable.dependencies == null ||
-              provider != origin ||
-              // Families are allowed to depend on themselves with different parameters.
-              (origin.from != null && listenable.from == origin.from) ||
-              origin.dependencies == null ||
-              origin.dependencies!.contains(listenable.from) ||
-              origin.dependencies!.contains(listenable),
-          'The provider $origin tried to read $listenable, but it specified a '
-          "'dependencies' list yet that list does not contain $listenable.\n\n"
-          "To fix, add $listenable to $origin's 'dependencies' parameter",
-        );
-
-        final queue =
-            Queue<ProviderElementBase<Object?>>.from(_providerDependents);
-
-        while (queue.isNotEmpty) {
-          final current = queue.removeFirst();
-          queue.addAll(current._providerDependents);
-
-          if (current.origin == listenable) {
-            throw CircularDependencyError._();
-          }
-        }
-
-        return true;
-      }(),
-      '',
+      dependency != origin,
+      'A provider cannot depend on itself',
     );
-    return true;
+
+    final dependencies = origin.from?.dependencies ?? origin.dependencies ?? [];
+    final targetDependencies =
+        dependency.from?.dependencies ?? dependency.dependencies;
+
+    if (
+        // If the target has a null "dependencies", it should never be scoped.
+        !(targetDependencies == null ||
+            // Ignore dependency check if from an override
+            provider != origin ||
+            // Families are allowed to depend on themselves with different parameters.
+            (origin.from != null && dependency.from == origin.from) ||
+            dependencies.contains(dependency.from) ||
+            dependencies.contains(dependency))) {
+      throw StateError('''
+The provider `$origin` depends on `$dependency`, which may be scoped.
+Yet `$dependency` is not part of `$origin`'s `dependencies` list.
+
+To fix, add $dependency to $origin's 'dependencies' parameter.
+This can be done with either:
+
+@Riverpod(dependencies: [<dependency>])
+<your provider>
+
+or:
+
+final <yourProvider> = Provider(dependencies: [<dependency>]);
+''');
+    }
+
+    final queue = Queue<ProviderElementBase<Object?>>.from(_providerDependents);
+    while (queue.isNotEmpty) {
+      final current = queue.removeFirst();
+      queue.addAll(current._providerDependents);
+
+      if (current.origin == dependency) {
+        throw CircularDependencyError._();
+      }
+    }
   }
 
   void _assertNotOutdated() {
@@ -699,18 +709,18 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   @override
-  T refresh<T>(Refreshable<T> provider) {
+  T refresh<T>(Refreshable<T> refreshable) {
     _assertNotOutdated();
-    assert(_debugAssertCanDependOn(provider), '');
-    return container.refresh(provider);
+    if (kDebugMode) _debugAssertCanDependOn(refreshable);
+    return container.refresh(refreshable);
   }
 
   @override
-  T read<T>(ProviderListenable<T> provider) {
+  T read<T>(ProviderListenable<T> listenable) {
     _assertNotOutdated();
     assert(!_debugIsRunningSelector, 'Cannot call ref.read inside a selector');
-    assert(_debugAssertCanDependOn(provider), '');
-    return container.read(provider);
+    if (kDebugMode) _debugAssertCanDependOn(listenable);
+    return container.read(listenable);
   }
 
   @override
@@ -732,7 +742,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       return sub.read();
     }
 
-    assert(_debugAssertCanDependOn(listenable), '');
+    if (kDebugMode) _debugAssertCanDependOn(listenable);
 
     final element = container.readProviderElement(listenable);
     _dependencies.putIfAbsent(element, () {
@@ -798,7 +808,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }) {
     _assertNotOutdated();
     assert(!_debugIsRunningSelector, 'Cannot call ref.read inside a selector');
-    assert(_debugAssertCanDependOn(listenable), '');
+    if (kDebugMode) _debugAssertCanDependOn(listenable);
 
     return listenable.addListener(
       this,

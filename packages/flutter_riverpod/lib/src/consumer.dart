@@ -427,6 +427,9 @@ abstract class ConsumerWidget extends ConsumerStatefulWidget {
   /// {@macro riverpod.consumerwidget}
   const ConsumerWidget({super.key});
 
+  // TODO changelog & document
+  Iterable<ProviderOrFamily> get dependencies;
+
   /// Describes the part of the user interface represented by this widget.
   ///
   /// The framework calls this method when this widget is inserted into the tree

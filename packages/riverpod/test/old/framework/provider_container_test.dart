@@ -105,8 +105,8 @@ void main() {
         );
 
         expect(
-          () => container.readProviderElement(provider),
-          throwsA(isA<AssertionError>()),
+          () => container.read(provider),
+          throwsA(isA<StateError>()),
         );
       });
 
@@ -127,8 +127,8 @@ void main() {
         );
 
         expect(
-          () => container.readProviderElement(provider),
-          throwsA(isA<AssertionError>()),
+          () => container.read(provider),
+          throwsA(isA<StateError>()),
         );
       });
     });

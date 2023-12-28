@@ -519,8 +519,6 @@ class ProviderPointerManager {
   }
 }
 
-var _debugVerifyDependenciesAreRespectedEnabled = true;
-
 /// {@template riverpod.provider_container}
 /// An object that stores the state of the providers and allows overriding the
 /// behavior of a specific provider.
@@ -908,52 +906,6 @@ class ProviderContainer implements Node {
     }
 
     final element = _pointerManager.upsertElement(provider);
-
-    // Assert that the the provider wouldn't have a more up-to-date value
-    // if it was locally overridden.
-    if (kDebugMode &&
-        // Avoid having the assert trigger itself exponentially
-        !_debugVerifyDependenciesAreRespectedEnabled) {
-      try {
-        _debugVerifyDependenciesAreRespectedEnabled = false;
-
-        // Check that this containers doesn't have access to an overridden
-        // dependency of the targeted provider
-        final visitedDependencies = <ProviderBase<Object?>>{};
-        final queue = Queue<ProviderBase<Object?>>();
-        element.visitAncestors((e) => queue.add(e.origin));
-
-        while (queue.isNotEmpty) {
-          final dependency = queue.removeFirst();
-          if (visitedDependencies.add(dependency)) {
-            final dependencyElement = readProviderElement<Object?>(
-              dependency,
-            );
-
-            assert(
-              element.provider != element.origin ||
-                  dependencyElement ==
-                      element.container
-                          .readProviderElement<Object?>(dependency),
-              '''
-Tried to read $provider from a place where one of its dependencies were overridden but the provider is not.
-
-To fix this error, you can add $dependency (a) to the "dependencies" of $provider (b) such that we have:
-
-```
-final a = Provider(...);
-final b = Provider((ref) => ref.watch(a), dependencies: [a]);
-```
-''',
-            );
-
-            dependencyElement.visitAncestors((e) => queue.add(e.origin));
-          }
-        }
-      } finally {
-        _debugVerifyDependenciesAreRespectedEnabled = true;
-      }
-    }
 
     return element as ProviderElementBase<State>;
   }

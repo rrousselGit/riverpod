@@ -1,5 +1,8 @@
 part of '../framework.dart';
 
+/// A shared interface between [ProviderListenable] and [Family].
+abstract class ProviderListenableOrFamily {}
+
 /// A common interface shared by [ProviderBase] and [Family]
 @sealed
 sealed class ProviderOrFamily implements ProviderListenableOrFamily {
@@ -81,8 +84,19 @@ sealed class ProviderOrFamily implements ProviderListenableOrFamily {
   final Iterable<ProviderOrFamily>? allTransitiveDependencies;
 }
 
-/// A shared interface between [ProviderListenable] and [Family].
-abstract class ProviderListenableOrFamily {}
+extension on ProviderListenableOrFamily {
+  ProviderBase<Object?>? get listenedProvider {
+    final that = this;
+    return switch (that) {
+      ProviderBase() => that,
+      // TODO refactor to listenable.provider
+      _ProviderSelector() => that.provider.listenedProvider,
+      _AsyncSelector() => that.provider.listenedProvider,
+      ProviderElementProxy() => that.provider,
+      _ => null,
+    };
+  }
+}
 
 /// Computes the list of all dependencies of a provider.
 @internal
@@ -138,9 +152,11 @@ String shortHash(Object? object) {
 mixin ProviderListenable<State> implements ProviderListenableOrFamily {
   /// Starts listening to this transformer
   ProviderSubscription<State> addListener(
+    // TODO remove Node and pass directly the listened Element
     Node node,
     void Function(State? previous, State next) listener, {
     required void Function(Object error, StackTrace stackTrace)? onError,
+    // TODO remove
     required void Function()? onDependencyMayHaveChanged,
     required bool fireImmediately,
   });
