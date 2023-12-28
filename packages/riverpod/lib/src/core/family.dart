@@ -101,6 +101,9 @@ class FamilyBase<RefT extends Ref<R>, R, Arg, Created,
   /// {@macro riverpod.create_source_hash}
   @internal
   final DebugGetCreateSourceHash? debugGetCreateSourceHash;
+
+  @override
+  String toString() => name ?? describeIdentity(this);
 }
 
 /// A base implementation for [Family], used by the various providers to

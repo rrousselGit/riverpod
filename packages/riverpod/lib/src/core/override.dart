@@ -66,7 +66,12 @@ class ProviderOverride implements _ProviderOverride {
   @mustBeOverridden
   @override
   String toString() {
-    return '$origin.overrideWith($providerOverride)';
+    switch (providerOverride) {
+      case ValueProvider(:final _value):
+        return '$origin.overrideWithValue($_value)';
+      default:
+        return '$origin.overrideWith(...)';
+    }
   }
 }
 
@@ -152,4 +157,8 @@ class _FamilyOverrideImpl implements FamilyOverride {
   ) {
     return _createElement(container, provider);
   }
+
+  @mustBeOverridden
+  @override
+  String toString() => '$from.overrideWith(...)';
 }

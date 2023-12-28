@@ -135,6 +135,30 @@ void main() {
     );
   });
 
+  test('overrides toString', () {
+    expect(publicProvider.toString(), 'publicProvider');
+    expect(familyProvider.toString(), 'familyProvider');
+    expect(
+      familyProvider.call(42, second: 'foo', third: .3).toString(),
+      'familyProvider(42, fifth: null, fourth: true, second: foo, third: 0.3)',
+    );
+
+    expect(
+      publicProvider.overrideWithValue('foo').toString(),
+      'publicProvider.overrideWithValue(foo)',
+    );
+    expect(
+      familyProvider.overrideWith((ref) => 'foo').toString(),
+      'familyProvider.overrideWith(...)',
+    );
+    expect(
+      familyProvider(42, second: 'foo', third: .3)
+          .overrideWith((ref) => '')
+          .toString(),
+      'familyProvider(42, fifth: null, fourth: true, second: foo, third: 0.3).overrideWith(...)',
+    );
+  });
+
   test('Supports overriding non-family providers', () {
     final container = createContainer(
       overrides: [

@@ -74,9 +74,6 @@ class ValueProvider<State> extends ProviderBase<State> {
   ValueProviderElement<State> createElement(ProviderContainer container) {
     return ValueProviderElement(this, container);
   }
-
-  @override
-  String toString() => 'ValueProvider<$State>($_value)';
 }
 
 /// The [ProviderElementBase] of a [ValueProvider]

@@ -1,0 +1,85 @@
+import 'package:riverpod/riverpod.dart';
+import 'package:test/test.dart';
+
+import '../../old/utils.dart';
+
+void main() {
+  group('ProviderOverride', () {
+    group('overrideWith', () {
+      test('toString', () {
+        final namelessProvider = Provider<int>((_) => 42);
+        final namelessFamily = Provider.family<int, int>((_, __) => 42);
+        final provider = Provider<int>((_) => 42, name: 'myName');
+        final family = Provider.family<int, int>((_, __) => 42, name: 'myName');
+
+        expect(
+          namelessProvider.overrideWith((ref) => 42).toString(),
+          equalsIgnoringHashCodes('Provider<int>#00000.overrideWith(...)'),
+        );
+        expect(
+          namelessFamily(42).overrideWith((ref) => 42).toString(),
+          equalsIgnoringHashCodes('Provider<int>#00000(42).overrideWith(...)'),
+        );
+
+        expect(
+          provider.overrideWith((ref) => 42).toString(),
+          'myName.overrideWith(...)',
+        );
+        expect(
+          family(42).overrideWith((ref) => 42).toString(),
+          'myName(42).overrideWith(...)',
+        );
+      });
+    });
+
+    group('overrideWithValue', () {
+      test('toString', () {
+        final namelessProvider = Provider<int>((_) => 42);
+        final namelessFamily = Provider.family<int, int>((_, __) => 42);
+        final provider = Provider<int>((_) => 42, name: 'myName');
+        final family = Provider.family<int, int>((_, __) => 42, name: 'myName');
+
+        expect(
+          namelessProvider.overrideWithValue(21).toString(),
+          equalsIgnoringHashCodes('Provider<int>#00000.overrideWithValue(21)'),
+        );
+        expect(
+          namelessFamily(42).overrideWithValue(21).toString(),
+          equalsIgnoringHashCodes(
+            'Provider<int>#00000(42).overrideWithValue(21)',
+          ),
+        );
+
+        expect(
+          provider.overrideWithValue(21).toString(),
+          'myName.overrideWithValue(21)',
+        );
+        expect(
+          family(42).overrideWithValue(21).toString(),
+          'myName(42).overrideWithValue(21)',
+        );
+      });
+    });
+  });
+
+  group('FamilyOverride', () {
+    group('overrideWith', () {
+      test('toString', () {
+        final namelessFamily = Provider.family<int, int>((_, __) => 42);
+        final family = Provider.family<int, int>((_, __) => 42, name: 'myName');
+
+        expect(
+          namelessFamily.overrideWith((ref, arg) => 42).toString(),
+          equalsIgnoringHashCodes(
+            'ProviderFamily<int, int>#00000.overrideWith(...)',
+          ),
+        );
+
+        expect(
+          family.overrideWith((ref, _) => 42).toString(),
+          'myName.overrideWith(...)',
+        );
+      });
+    });
+  });
+}
