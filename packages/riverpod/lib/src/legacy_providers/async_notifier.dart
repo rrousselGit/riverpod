@@ -50,7 +50,6 @@ abstract class AsyncNotifierBase<State> {
     if (element == null) throw StateError(uninitializedElementError);
 
     element.flush();
-    // ignore: invalid_use_of_protected_member
     return element.requireState;
   }
 

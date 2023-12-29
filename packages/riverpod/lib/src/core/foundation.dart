@@ -4,7 +4,6 @@ part of '../framework.dart';
 abstract class ProviderListenableOrFamily {}
 
 /// A common interface shared by [ProviderBase] and [Family]
-@sealed
 sealed class ProviderOrFamily implements ProviderListenableOrFamily {
   /// A common interface shared by [ProviderBase] and [Family]
   const ProviderOrFamily({

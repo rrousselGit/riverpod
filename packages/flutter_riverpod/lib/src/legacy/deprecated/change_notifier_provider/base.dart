@@ -11,7 +11,6 @@ abstract class ChangeNotifierProviderRef<NotifierT extends ChangeNotifier?>
   NotifierT get notifier;
 }
 
-// ignore: subtype_of_sealed_class
 /// {@template riverpod.change_notifier_provider}
 /// Creates a [ChangeNotifier] and exposes its current state.
 ///
@@ -240,7 +239,6 @@ class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
   }
 }
 
-// ignore: subtype_of_sealed_class
 /// The [Family] of [ChangeNotifierProvider].
 class ChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?, Arg>
     extends FamilyBase<ChangeNotifierProviderRef<NotifierT>, NotifierT, Arg,

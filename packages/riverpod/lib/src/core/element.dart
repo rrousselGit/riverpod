@@ -294,7 +294,6 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
     );
   }
 
-  // ignore: use_setters_to_change_properties
   /// Called when the override of a provider changes.
   ///
   /// See also:

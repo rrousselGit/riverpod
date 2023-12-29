@@ -196,7 +196,6 @@ class TestNotifier extends ChangeNotifier {
   bool mounted = true;
 
   @override
-  // ignore: unnecessary_overrides
   bool get hasListeners => super.hasListeners;
 
   int _count = 0;

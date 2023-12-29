@@ -8,7 +8,6 @@ abstract class AutoDisposeChangeNotifierProviderRef<
     extends ChangeNotifierProviderRef<NotifierT>
     implements AutoDisposeRef<NotifierT> {}
 
-// ignore: subtype_of_sealed_class
 /// {@macro riverpod.change_notifier_provider}
 class AutoDisposeChangeNotifierProvider<NotifierT extends ChangeNotifier?>
     extends _ChangeNotifierProviderBase<NotifierT> {
@@ -93,7 +92,6 @@ class AutoDisposeChangeNotifierProviderElement<
   ) : super._();
 }
 
-// ignore: subtype_of_sealed_class
 /// The [Family] of [AutoDisposeChangeNotifierProvider].
 class AutoDisposeChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?,
         Arg>

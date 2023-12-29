@@ -110,7 +110,6 @@ abstract class ProviderBase<State> extends ProviderOrFamily
   ProviderElementBase<State> createElement(ProviderContainer container);
 
   @override
-  // ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode {
     if (from == null) return super.hashCode;
 
@@ -118,7 +117,6 @@ abstract class ProviderBase<State> extends ProviderOrFamily
   }
 
   @override
-  // ignore: avoid_equals_and_hash_code_on_mutable_classes
   bool operator ==(Object other) {
     if (from == null) return identical(other, this);
 

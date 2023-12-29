@@ -90,7 +90,6 @@ abstract class NotifierBase<State> {
     final element = _element;
     if (element == null) throw StateError(uninitializedElementError);
 
-    // ignore: invalid_use_of_protected_member
     element.setState(value);
   }
 

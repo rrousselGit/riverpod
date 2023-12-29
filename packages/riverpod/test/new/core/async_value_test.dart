@@ -1077,9 +1077,9 @@ void main() {
   });
 
   test('==', () {
-    // ignore: prefer_const_declarations
+    // ignore: prefer_const_declarations, not using const to test runtime
     final value = 42;
-    // ignore: prefer_const_declarations
+    // ignore: prefer_const_declarations, not using const to test runtime
     final value2 = 21;
 
     final stack = StackTrace.current;

@@ -24,7 +24,6 @@ ProviderElementProxy<NotifierT, NotifierT>
   );
 }
 
-// ignore: subtype_of_sealed_class
 /// {@template riverpod.changenotifierprovider}
 /// Creates a [ChangeNotifier] and subscribes to it.
 ///

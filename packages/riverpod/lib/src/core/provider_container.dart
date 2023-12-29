@@ -198,7 +198,6 @@ class ProviderDirectory implements _PointerBase {
   }
 
   @override
-  // ignore: annotate_overrides, https://github.com/dart-lang/linter/issues/4819
   String toString() {
     final buffer = StringBuffer();
     buffer.writeln('ProviderDirectory$hashCode(');
