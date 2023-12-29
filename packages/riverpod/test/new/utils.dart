@@ -32,3 +32,27 @@ class Listener<T> extends Mock {
 }
 
 final isAssertionError = isA<AssertionError>();
+
+class ErrorListener extends Mock {
+  void call(Object? error, StackTrace? stackTrace);
+}
+
+class Selector<Input, Output> extends Mock {
+  Selector(this.fake, Output Function(Input) selector) {
+    when(call(any)).thenAnswer((i) {
+      return selector(
+        i.positionalArguments.first as Input,
+      );
+    });
+  }
+
+  final Output fake;
+
+  Output call(Input? value) {
+    return super.noSuchMethod(
+      Invocation.method(#call, [value]),
+      returnValue: fake,
+      returnValueForMissingStub: fake,
+    ) as Output;
+  }
+}

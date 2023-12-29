@@ -4,19 +4,9 @@ import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/framework.dart';
 import 'package:test/test.dart';
 
-import '../../new/core/provider_container_test.dart';
+import 'provider_container_test.dart';
 
 Future<void> main() async {
-  test(
-      'transitive dependencies includes the transitive dependencies of families',
-      () {
-    final a = Provider((ref) => 0);
-    final b = Provider.family((ref, _) => 0, dependencies: [a]);
-    final c = Provider((ref) => 0, dependencies: [b]);
-
-    expect(c.allTransitiveDependencies, containsAll(<Object>[a, b]));
-  });
-
   test(
       'reading a provider from a scoped container, '
       'then adding a new container with an override, '
@@ -828,5 +818,122 @@ Future<void> main() async {
 
     expect(container.read(a), 42);
     expect(container.read(b(10)), 52);
+  });
+
+  test('scoped autoDispose override preserve the override after one disposal',
+      () async {
+    final provider = Provider.autoDispose(
+      (ref) => 0,
+      dependencies: const [],
+    );
+
+    final root = ProviderContainer.test();
+    final container = ProviderContainer.test(
+      parent: root,
+      overrides: [provider],
+    );
+
+    container.read(provider);
+    expect(root.getAllProviderElements(), isEmpty);
+    expect(container.getAllProviderElements(), isNotEmpty);
+
+    await container.pump();
+
+    expect(root.getAllProviderElements(), isEmpty);
+    expect(container.getAllProviderElements(), isEmpty);
+
+    container.read(provider);
+
+    expect(root.getAllProviderElements(), isEmpty);
+    expect(container.getAllProviderElements(), isNotEmpty);
+  });
+
+  test(
+      'scoped autoDispose override  through intermediary unused container preserve the override after one disposal',
+      () async {
+    final provider = Provider.autoDispose(
+      (ref) => 0,
+      dependencies: const [],
+    );
+
+    final root = ProviderContainer.test();
+    final mid = ProviderContainer.test(parent: root, overrides: [provider]);
+    final container = ProviderContainer.test(parent: mid);
+
+    container.read(provider);
+    expect(root.getAllProviderElements(), isEmpty);
+    expect(mid.getAllProviderElements(), isNotEmpty);
+    expect(container.getAllProviderElements(), isEmpty);
+
+    await container.pump();
+
+    expect(root.getAllProviderElements(), isEmpty);
+    expect(mid.getAllProviderElements(), isEmpty);
+    expect(container.getAllProviderElements(), isEmpty);
+
+    container.read(provider);
+
+    expect(root.getAllProviderElements(), isEmpty);
+    expect(mid.getAllProviderElements(), isNotEmpty);
+    expect(container.getAllProviderElements(), isEmpty);
+  });
+
+  test(
+      'scoped autoDispose override preserve family override after one disposal',
+      () async {
+    final provider = Provider.autoDispose.family<int, int>(
+      (ref, _) => 0,
+      dependencies: const [],
+    );
+
+    final root = ProviderContainer.test();
+    final container = ProviderContainer.test(
+      parent: root,
+      overrides: [provider],
+    );
+
+    container.read(provider(0));
+    expect(root.getAllProviderElements(), isEmpty);
+    expect(container.getAllProviderElements(), isNotEmpty);
+
+    await container.pump();
+
+    expect(root.getAllProviderElements(), isEmpty);
+    expect(container.getAllProviderElements(), isEmpty);
+
+    container.read(provider(0));
+
+    expect(root.getAllProviderElements(), isEmpty);
+    expect(container.getAllProviderElements(), isNotEmpty);
+  });
+
+  test(
+      'scoped autoDispose override through intermediary unused container preserve family  override after one disposal',
+      () async {
+    final provider = Provider.autoDispose.family<int, int>(
+      (ref, _) => 0,
+      dependencies: const [],
+    );
+
+    final root = ProviderContainer.test();
+    final mid = ProviderContainer.test(parent: root, overrides: [provider]);
+    final container = ProviderContainer.test(parent: mid);
+
+    container.read(provider(0));
+    expect(root.getAllProviderElements(), isEmpty);
+    expect(mid.getAllProviderElements(), isNotEmpty);
+    expect(container.getAllProviderElements(), isEmpty);
+
+    await container.pump();
+
+    expect(root.getAllProviderElements(), isEmpty);
+    expect(mid.getAllProviderElements(), isEmpty);
+    expect(container.getAllProviderElements(), isEmpty);
+
+    container.read(provider(0));
+
+    expect(root.getAllProviderElements(), isEmpty);
+    expect(mid.getAllProviderElements(), isNotEmpty);
+    expect(container.getAllProviderElements(), isEmpty);
   });
 }

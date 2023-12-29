@@ -131,7 +131,7 @@ void main() {
     );
   });
 
-  test('family override', () {
+  test('Can override both the family as a provider of that family', () {
     final family = Provider.family<String, int>((ref, a) => 'Hello $a');
     final container = ProviderContainer.test(
       overrides: [

@@ -1,5 +1,7 @@
+import 'dart:async';
+
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/riverpod.dart' hide ErrorListener;
 import 'package:riverpod/src/framework.dart';
 import 'package:test/test.dart';
 
@@ -1638,6 +1640,26 @@ void main() {
 
     group('dispose', () {
       test(
+          'Handles cases where the ProviderContainer is disposed yet Scheduler.performDispose is invoked anyway',
+          () async {
+        // regression test for https://github.com/rrousselGit/riverpod/issues/1400
+        final provider = Provider.autoDispose(
+          (ref) => 0,
+          dependencies: const [],
+        );
+        final root = ProviderContainer.test();
+        final container = ProviderContainer.test(
+          parent: root,
+          overrides: [provider],
+        );
+
+        container.read(provider);
+        container.dispose();
+
+        await root.pump();
+      });
+
+      test(
           'after a child container is disposed, '
           'ref.watch keeps working on providers associated with the ancestor container',
           () async {
@@ -2090,6 +2112,861 @@ void main() {
     });
 
     group('listen', () {
+      test('when no onError is specified, fallbacks to handleUncaughtError',
+          () async {
+        final container = ProviderContainer.test();
+        final isErrored = StateProvider((ref) => false);
+        final dep = Provider<int>((ref) {
+          if (ref.watch(isErrored)) throw UnimplementedError();
+          return 0;
+        });
+        final listener = Listener<int>();
+        final errors = <Object>[];
+
+        runZonedGuarded(
+          () => container.listen(dep, listener.call),
+          (err, stack) => errors.add(err),
+        );
+
+        verifyZeroInteractions(listener);
+        expect(errors, isEmpty);
+
+        container.read(isErrored.notifier).state = true;
+
+        await container.pump();
+
+        verifyZeroInteractions(listener);
+        expect(errors, [isUnimplementedError]);
+      });
+
+      test(
+          'when no onError is specified, selectors fallbacks to handleUncaughtError',
+          () async {
+        final container = ProviderContainer.test();
+        final isErrored = StateProvider((ref) => false);
+        final dep = Provider<int>((ref) {
+          if (ref.watch(isErrored)) throw UnimplementedError();
+          return 0;
+        });
+        final listener = Listener<int>();
+        final errors = <Object>[];
+
+        runZonedGuarded(
+          () => container.listen(dep.select((value) => value), listener.call),
+          (err, stack) => errors.add(err),
+        );
+
+        verifyZeroInteractions(listener);
+        expect(errors, isEmpty);
+
+        container.read(isErrored.notifier).state = true;
+
+        await container.pump();
+
+        verifyZeroInteractions(listener);
+        expect(errors, [isUnimplementedError]);
+      });
+
+      test('when rebuild throws, calls onError', () async {
+        final container = ProviderContainer.test();
+        final dep = StateProvider((ref) => 0);
+        final provider = Provider((ref) {
+          if (ref.watch(dep) != 0) {
+            throw UnimplementedError();
+          }
+          return 0;
+        });
+        final errorListener = ErrorListener();
+        final listener = Listener<int>();
+
+        container.listen(provider, listener.call, onError: errorListener.call);
+
+        verifyZeroInteractions(errorListener);
+        verifyZeroInteractions(listener);
+
+        container.read(dep.notifier).state++;
+        await container.pump();
+
+        verifyZeroInteractions(listener);
+        verifyOnly(
+          errorListener,
+          errorListener(isUnimplementedError, any),
+        );
+      });
+
+      test('when rebuild throws on selector, calls onError', () async {
+        final container = ProviderContainer.test();
+        final dep = StateProvider((ref) => 0);
+        final provider = Provider((ref) {
+          if (ref.watch(dep) != 0) {
+            throw UnimplementedError();
+          }
+          return 0;
+        });
+        final errorListener = ErrorListener();
+        final listener = Listener<int>();
+
+        container.listen(
+          provider.select((value) => value),
+          listener.call,
+          onError: errorListener.call,
+        );
+
+        verifyZeroInteractions(errorListener);
+        verifyZeroInteractions(listener);
+
+        container.read(dep.notifier).state++;
+        await container.pump();
+
+        verifyZeroInteractions(listener);
+        verifyOnly(
+          errorListener,
+          errorListener(isUnimplementedError, any),
+        );
+      });
+
+      test(
+          'when using selectors, `previous` is the latest notification instead of latest event',
+          () {
+        final container = ProviderContainer.test();
+        final provider = StateNotifierProvider<StateController<int>, int>(
+          (ref) => StateController(0),
+        );
+        final listener = Listener<bool>();
+
+        container.listen<bool>(
+          provider.select((value) => value.isEven),
+          listener.call,
+          fireImmediately: true,
+        );
+
+        verifyOnly(listener, listener(null, true));
+
+        container.read(provider.notifier).state += 2;
+
+        verifyNoMoreInteractions(listener);
+
+        container.read(provider.notifier).state++;
+
+        verifyOnly(listener, listener(true, false));
+      });
+
+      test('expose previous and new value on change', () {
+        final container = ProviderContainer.test();
+        final provider = StateNotifierProvider<StateController<int>, int>(
+          (ref) => StateController(0),
+        );
+        final listener = Listener<int>();
+
+        container.listen<int>(provider, listener.call, fireImmediately: true);
+
+        verifyOnly(listener, listener(null, 0));
+
+        container.read(provider.notifier).state++;
+
+        verifyOnly(listener, listener(0, 1));
+      });
+
+      test('can downcast the value', () async {
+        final listener = Listener<num>();
+        final dep = StateProvider((ref) => 0);
+
+        final container = ProviderContainer.test();
+
+        container.listen<num>(dep, listener.call);
+
+        verifyZeroInteractions(listener);
+
+        container.read(dep.notifier).state++;
+        await container.pump();
+
+        verifyOnly(listener, listener(0, 1));
+      });
+
+      test(
+          'if a listener adds a container.listen, the new listener is not called immediately',
+          () {
+        final provider = StateProvider((ref) => 0);
+        final container = ProviderContainer.test();
+
+        final listener = Listener<int>();
+
+        container.listen<int>(provider, (prev, value) {
+          listener(prev, value);
+          container.listen<int>(provider, listener.call);
+        });
+
+        verifyZeroInteractions(listener);
+
+        container.read(provider.notifier).state++;
+
+        verify(listener(0, 1)).called(1);
+
+        container.read(provider.notifier).state++;
+
+        verify(listener(1, 2)).called(2);
+      });
+
+      test(
+          'if a listener removes another provider.listen, the removed listener is still called',
+          () {
+        final provider = StateProvider((ref) => 0);
+        final container = ProviderContainer.test();
+
+        final listener = Listener<int>();
+        final listener2 = Listener<int>();
+
+        final p = Provider((ref) {
+          ProviderSubscription<int>? a;
+          ref.listen<int>(provider, (prev, value) {
+            listener(prev, value);
+            a?.close();
+            a = null;
+          });
+
+          a = ref.listen<int>(provider, listener2.call);
+        });
+        container.read(p);
+
+        verifyZeroInteractions(listener);
+        verifyZeroInteractions(listener2);
+
+        container.read(provider.notifier).state++;
+
+        verifyInOrder([
+          listener(0, 1),
+          listener2(0, 1),
+        ]);
+
+        container.read(provider.notifier).state++;
+
+        verify(listener(1, 2)).called(1);
+        verifyNoMoreInteractions(listener2);
+      });
+
+      test(
+        'if a listener removes another provider.listen, the removed listener is still called (ProviderListenable)',
+        skip: true,
+        () {
+          final provider = StateProvider((ref) => 0);
+          final container = ProviderContainer.test();
+
+          final listener = Listener<int>();
+          final listener2 = Listener<int>();
+
+          final p = Provider((ref) {
+            ProviderSubscription<int>? a;
+            ref.listen<int>(provider, (prev, value) {
+              listener(prev, value);
+              a?.close();
+              a = null;
+            });
+
+            a = ref.listen<int>(provider, listener2.call);
+          });
+          container.read(p);
+
+          verifyZeroInteractions(listener);
+          verifyZeroInteractions(listener2);
+
+          container.read(provider.notifier).state++;
+
+          verifyInOrder([
+            listener(1, 1),
+            listener2(1, 1),
+          ]);
+
+          container.read(provider.notifier).state++;
+
+          verify(listener(2, 2)).called(1);
+          verifyNoMoreInteractions(listener2);
+          // TODO the problem is that ProviderListenable subscriptions are separate from
+          // ProviderElement subscriptions. So the ProviderElement.notifyListeners
+          // making a local copy of the list of subscriptions before notifying listeners
+          // does not apply to ProviderListenables
+          // Support for modifying listeners within a listener probably should be dropped anyway for performance.
+          // This would remove a list copy
+        },
+      );
+
+      test(
+          'if a listener adds a provider.listen, the new listener is not called immediately',
+          () {
+        final provider = StateProvider((ref) => 0);
+        final container = ProviderContainer.test();
+
+        final listener = Listener<int>();
+
+        final p = Provider((ref) {
+          ref.listen<int>(provider, (prev, value) {
+            listener(prev, value);
+            ref.listen<int>(provider, listener.call);
+          });
+        });
+        container.read(p);
+
+        verifyZeroInteractions(listener);
+
+        container.read(provider.notifier).state++;
+
+        verify(listener(0, 1)).called(1);
+
+        container.read(provider.notifier).state++;
+
+        verify(listener(1, 2)).called(2);
+      });
+
+      test(
+        'if a listener removes another container.listen, the removed listener is still called (ProviderListenable)',
+        skip: true,
+        () {
+          final provider = StateProvider((ref) => 0);
+          final container = ProviderContainer.test();
+
+          final listener = Listener<int>();
+          final listener2 = Listener<int>();
+
+          ProviderSubscription<Object?>? a;
+          container.listen<int>(provider, (prev, value) {
+            listener(prev, value);
+            a?.close();
+            a = null;
+          });
+
+          a = container.listen<int>(provider, listener2.call);
+
+          verifyZeroInteractions(listener);
+          verifyZeroInteractions(listener2);
+
+          container.read(provider.notifier).state++;
+
+          verifyInOrder([
+            listener(1, 1),
+            listener2(1, 1),
+          ]);
+
+          container.read(provider.notifier).state++;
+
+          verify(listener(2, 2)).called(1);
+          verifyNoMoreInteractions(listener2);
+          // TODO the problem is that ProviderListenable subscriptions are separate from
+          // ProviderElement subscriptions. So the ProviderElement.notifyListeners
+          // making a local copy of the list of subscriptions before notifying listeners
+          // does not apply to ProviderListenables
+          // Support for modifying listeners within a listener probably should be dropped anyway for performance.
+          // This would remove a list copy
+        },
+      );
+
+      test(
+          'if a listener removes another container.listen, the removed listener is still called',
+          () {
+        final provider = StateProvider((ref) => 0);
+        final container = ProviderContainer.test();
+
+        final listener = Listener<int>();
+        final listener2 = Listener<int>();
+
+        ProviderSubscription<Object?>? a;
+        container.listen<int>(provider, (prev, value) {
+          listener(prev, value);
+          a?.close();
+          a = null;
+        });
+
+        a = container.listen<int>(provider, listener2.call);
+
+        verifyZeroInteractions(listener);
+        verifyZeroInteractions(listener2);
+
+        container.read(provider.notifier).state++;
+
+        verifyInOrder([
+          listener(0, 1),
+          listener2(0, 1),
+        ]);
+
+        container.read(provider.notifier).state++;
+
+        verify(listener(1, 2)).called(1);
+        verifyNoMoreInteractions(listener2);
+      });
+
+      group('fireImmediately', () {
+        test('when no onError is specified, fallbacks to handleUncaughtError',
+            () {
+          final container = ProviderContainer.test();
+          final dep = Provider<int>((ref) => throw UnimplementedError());
+          final listener = Listener<int>();
+          final errors = <Object>[];
+
+          runZonedGuarded(
+            () {
+              container.listen(
+                dep,
+                listener.call,
+                fireImmediately: true,
+              );
+            },
+            (err, stack) => errors.add(err),
+          );
+
+          verifyZeroInteractions(listener);
+          expect(errors, [
+            isUnimplementedError,
+          ]);
+        });
+
+        test(
+            'when no onError is specified on selectors, fallbacks to handleUncaughtError',
+            () {
+          final container = ProviderContainer.test();
+          final dep = Provider<int>((ref) => throw UnimplementedError());
+          final listener = Listener<int>();
+          final errors = <Object>[];
+
+          runZonedGuarded(
+            () {
+              container.listen(
+                dep.select((value) => value),
+                listener.call,
+                fireImmediately: true,
+              );
+            },
+            (err, stack) => errors.add(err),
+          );
+
+          verifyZeroInteractions(listener);
+          expect(errors, [
+            isUnimplementedError,
+          ]);
+        });
+
+        test('on provider that threw, fireImmediately calls onError', () {
+          final container = ProviderContainer.test();
+          final provider = Provider<int>((ref) => throw UnimplementedError());
+          final listener = Listener<int>();
+          final errorListener = ErrorListener();
+
+          container.listen(
+            provider,
+            listener.call,
+            onError: errorListener.call,
+            fireImmediately: true,
+          );
+
+          verifyZeroInteractions(listener);
+          verifyOnly(
+            errorListener,
+            errorListener(isUnimplementedError, argThat(isNotNull)),
+          );
+        });
+
+        test('supports selectors', () {
+          final container = ProviderContainer.test();
+          final provider = StateProvider<int>((ref) => 0);
+          final listener = Listener<bool>();
+          final listener2 = Listener<bool>();
+
+          container.listen(
+            provider.select((v) => v.isEven),
+            listener.call,
+            fireImmediately: true,
+          );
+          container.listen(provider.select((v) => v.isEven), listener2.call);
+
+          verifyOnly(listener, listener(null, true));
+          verifyZeroInteractions(listener2);
+
+          container.read(provider.notifier).state = 21;
+
+          verifyOnly(listener, listener(true, false));
+          verifyOnly(listener2, listener2(true, false));
+        });
+
+        test('passing fireImmediately: false skips the initial value', () {
+          final provider = StateProvider((ref) => 0);
+          final listener = Listener<int>();
+
+          final container = ProviderContainer.test();
+
+          container.listen<int>(provider, listener.call);
+
+          verifyZeroInteractions(listener);
+        });
+
+        test(
+            'correctly listens to the provider if selector onError listener throws',
+            () async {
+          final dep = StateProvider<int>((ref) => 0);
+          final provider = Provider<int>((ref) {
+            if (ref.watch(dep) == 0) {
+              throw UnimplementedError();
+            }
+            return ref.watch(dep);
+          });
+          final listener = Listener<int>();
+          final errorListener = ErrorListener();
+          var isFirstCall = true;
+
+          final container = ProviderContainer.test();
+          final errors = <Object>[];
+
+          final sub = runZonedGuarded(
+            () => container.listen<int>(
+              provider.select((value) => value),
+              listener.call,
+              onError: (err, stack) {
+                errorListener(err, stack);
+                if (isFirstCall) {
+                  isFirstCall = false;
+                  throw StateError('Some error');
+                }
+              },
+              fireImmediately: true,
+            ),
+            (err, stack) => errors.add(err),
+          );
+
+          container.listen(provider, (prev, value) {});
+
+          expect(sub, isNotNull);
+          verifyZeroInteractions(listener);
+          verifyOnly(
+            errorListener,
+            errorListener(argThat(isUnimplementedError), argThat(isNotNull)),
+          );
+          expect(errors, [isStateError]);
+
+          container.read(dep.notifier).state++;
+          await container.pump();
+
+          verifyNoMoreInteractions(errorListener);
+          verifyOnly(listener, listener(null, 1));
+        });
+
+        test(
+            'correctly listens to the provider if normal onError listener throws',
+            () async {
+          final dep = StateProvider<int>((ref) => 0);
+          final provider = Provider<int>((ref) {
+            if (ref.watch(dep) == 0) {
+              throw UnimplementedError();
+            }
+            return ref.watch(dep);
+          });
+          final listener = Listener<int>();
+          final errorListener = ErrorListener();
+          var isFirstCall = true;
+
+          final container = ProviderContainer.test();
+          final errors = <Object>[];
+
+          final sub = runZonedGuarded(
+            () => container.listen<int>(
+              provider,
+              listener.call,
+              onError: (err, stack) {
+                errorListener(err, stack);
+                if (isFirstCall) {
+                  isFirstCall = false;
+                  throw StateError('Some error');
+                }
+              },
+              fireImmediately: true,
+            ),
+            (err, stack) => errors.add(err),
+          );
+
+          container.listen(provider, (prev, value) {});
+
+          expect(sub, isNotNull);
+          verifyZeroInteractions(listener);
+          verifyOnly(
+            errorListener,
+            errorListener(argThat(isUnimplementedError), argThat(isNotNull)),
+          );
+          expect(errors, [isStateError]);
+
+          container.read(dep.notifier).state++;
+          await container.pump();
+
+          verifyNoMoreInteractions(errorListener);
+          verifyOnly(listener, listener(null, 1));
+        });
+
+        test('correctly listens to the provider if selector listener throws',
+            () {
+          final provider = StateProvider((ref) => 0);
+          final listener = Listener<int>();
+          var isFirstCall = true;
+
+          final container = ProviderContainer.test();
+          final errors = <Object>[];
+
+          final sub = runZonedGuarded(
+            () => container.listen<int>(
+              provider.select((value) => value),
+              (prev, value) {
+                listener(prev, value);
+                if (isFirstCall) {
+                  isFirstCall = false;
+                  throw StateError('Some error');
+                }
+              },
+              fireImmediately: true,
+            ),
+            (err, stack) => errors.add(err),
+          );
+
+          expect(sub, isNotNull);
+          verifyOnly(listener, listener(null, 0));
+          expect(errors, [isStateError]);
+
+          container.read(provider.notifier).state++;
+
+          verifyOnly(listener, listener(0, 1));
+        });
+
+        test('correctly listens to the provider if normal listener throws', () {
+          final provider = StateProvider((ref) => 0);
+          final listener = Listener<int>();
+          var isFirstCall = true;
+
+          final container = ProviderContainer.test();
+          final errors = <Object>[];
+
+          final sub = runZonedGuarded(
+            () => container.listen<int>(
+              provider,
+              (prev, value) {
+                listener(prev, value);
+                if (isFirstCall) {
+                  isFirstCall = false;
+                  throw StateError('Some error');
+                }
+              },
+              fireImmediately: true,
+            ),
+            (err, stack) => errors.add(err),
+          );
+
+          expect(sub, isNotNull);
+          verifyOnly(listener, listener(null, 0));
+          expect(errors, [isStateError]);
+
+          container.read(provider.notifier).state++;
+
+          verifyOnly(listener, listener(0, 1));
+        });
+
+        test('correctly listens to the provider if normal listener throws', () {
+          final provider = StateProvider((ref) => 0);
+          final listener = Listener<int>();
+          var isFirstCall = true;
+
+          final container = ProviderContainer.test();
+          final errors = <Object>[];
+
+          final sub = runZonedGuarded(
+            () => container.listen<int>(
+              provider,
+              (prev, notifier) {
+                listener(prev, notifier);
+                if (isFirstCall) {
+                  isFirstCall = false;
+                  throw StateError('Some error');
+                }
+              },
+              fireImmediately: true,
+            ),
+            (err, stack) => errors.add(err),
+          );
+
+          expect(sub, isNotNull);
+          verifyOnly(listener, listener(null, 0));
+          expect(errors, [isStateError]);
+
+          container.read(provider.notifier).state++;
+
+          verifyOnly(listener, listener(0, 1));
+        });
+      });
+
+      test('.read on closed subscription throws', () {
+        final provider = StateProvider<int>((_) => 0);
+        final container = ProviderContainer.test();
+        final listener = Listener<int>();
+
+        final sub =
+            container.listen(provider, listener.call, fireImmediately: true);
+
+        verify(listener(null, 0)).called(1);
+        verifyNoMoreInteractions(listener);
+
+        sub.close();
+        container.read(provider.notifier).state++;
+
+        expect(sub.read, throwsStateError);
+
+        verifyNoMoreInteractions(listener);
+      });
+
+      test('.read on closed selector subscription throws', () {
+        final provider = StateProvider<int>((_) => 0);
+        final container = ProviderContainer.test();
+        final listener = Listener<int>();
+
+        final sub = container.listen(
+          provider.select((value) => value * 2),
+          listener.call,
+          fireImmediately: true,
+        );
+
+        verify(listener(null, 0)).called(1);
+        verifyNoMoreInteractions(listener);
+
+        sub.close();
+        container.read(provider.notifier).state++;
+
+        expect(sub.read, throwsStateError);
+        verifyNoMoreInteractions(listener);
+      });
+
+      test("doesn't trow when creating a provider that failed", () {
+        final container = ProviderContainer.test();
+        final provider = Provider((ref) {
+          throw Error();
+        });
+
+        final sub = container.listen(provider, (_, __) {});
+
+        expect(sub, isA<ProviderSubscription<Object?>>());
+      });
+
+      test('selectors can close listeners', () {
+        final container = ProviderContainer.test();
+        final provider = StateProvider<int>((ref) => 0);
+
+        expect(container.readProviderElement(provider).hasListeners, false);
+
+        final sub = container.listen<bool>(
+          provider.select((count) => count.isEven),
+          (prev, isEven) {},
+        );
+
+        expect(container.readProviderElement(provider).hasListeners, true);
+
+        sub.close();
+
+        expect(container.readProviderElement(provider).hasListeners, false);
+      });
+
+      test('can watch selectors', () async {
+        final container = ProviderContainer.test();
+        final provider = StateProvider<int>((ref) => 0);
+        final isAdultSelector = Selector<int, bool>(false, (c) => c >= 18);
+        final isAdultListener = Listener<bool>();
+
+        final controller = container.read(provider.notifier);
+        container.listen<bool>(
+          provider.select(isAdultSelector.call),
+          isAdultListener.call,
+          fireImmediately: true,
+        );
+
+        verifyOnly(isAdultSelector, isAdultSelector(0));
+        verifyOnly(isAdultListener, isAdultListener(null, false));
+
+        controller.state += 10;
+
+        verifyOnly(isAdultSelector, isAdultSelector(10));
+        verifyNoMoreInteractions(isAdultListener);
+
+        controller.state += 10;
+
+        verifyOnly(isAdultSelector, isAdultSelector(20));
+        verifyOnly(isAdultListener, isAdultListener(false, true));
+
+        controller.state += 10;
+
+        verifyOnly(isAdultSelector, isAdultSelector(30));
+        verifyNoMoreInteractions(isAdultListener);
+      });
+
+      test('calls immediately the listener with the current value', () {
+        final provider = Provider((ref) => 0);
+        final listener = Listener<int>();
+
+        final container = ProviderContainer.test();
+
+        container.listen(provider, listener.call, fireImmediately: true);
+
+        verifyOnly(listener, listener(null, 0));
+      });
+
+      test('call listener when provider rebuilds', () async {
+        final controller = StreamController<int>();
+        addTearDown(controller.close);
+        final container = ProviderContainer.test();
+
+        final count = StateProvider((ref) => 0);
+        final provider = Provider((ref) => ref.watch(count));
+
+        container.listen<int>(
+          provider,
+          (prev, value) => controller.add(value),
+          fireImmediately: true,
+        );
+
+        container.read(count.notifier).state++;
+
+        await expectLater(
+          controller.stream,
+          emitsInOrder(<dynamic>[0, 1]),
+        );
+      });
+
+      test('call listener when provider emits an update', () async {
+        final container = ProviderContainer.test();
+
+        final count = StateProvider((ref) => 0);
+        final listener = Listener<int>();
+
+        container.listen<int>(count, listener.call);
+
+        container.read(count.notifier).state++;
+
+        verifyOnly(listener, listener(0, 1));
+
+        container.read(count.notifier).state++;
+
+        verifyOnly(listener, listener(1, 2));
+      });
+
+      test('supports selectors', () {
+        final container = ProviderContainer.test();
+
+        final count = StateProvider((ref) => 0);
+        final listener = Listener<bool>();
+
+        container.listen<bool>(
+          count.select((value) => value.isEven),
+          listener.call,
+          fireImmediately: true,
+        );
+
+        verifyOnly(listener, listener(null, true));
+
+        container.read(count.notifier).state = 2;
+
+        verifyNoMoreInteractions(listener);
+
+        container.read(count.notifier).state = 3;
+
+        verifyOnly(listener, listener(true, false));
+      });
+
       test('can downcast the listener value', () {
         final container = ProviderContainer.test();
         final provider = StateProvider<int>((ref) => 0);
