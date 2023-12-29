@@ -428,7 +428,7 @@ abstract class ConsumerWidget extends ConsumerStatefulWidget {
   const ConsumerWidget({super.key});
 
   // TODO changelog & document
-  Iterable<ProviderOrFamily> get dependencies;
+  // Iterable<ProviderOrFamily> get dependencies;
 
   /// Describes the part of the user interface represented by this widget.
   ///
