@@ -238,7 +238,7 @@ void main() {
 
   testWidgets('ref.read obtains the nearest Provider possible', (tester) async {
     late WidgetRef ref;
-    final provider = Provider((watch) => 42);
+    final provider = Provider((watch) => 42, dependencies: const []);
 
     await tester.pumpWidget(
       ProviderScope(
