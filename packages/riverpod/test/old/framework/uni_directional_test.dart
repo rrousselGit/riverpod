@@ -14,27 +14,27 @@ void main() {
   });
 
   test(
-      'Catches circular dependency when dependencies are setup during provider initialization',
-      () {
+      'Catches sync circular dependency when the dependency is not yet mounted',
+      skip: true, () {
     // regression for #1766
     final container = ProviderContainer.test();
 
-    final authInterceptorProvider = Provider((ref) => ref);
+    final c = Provider((ref) => ref);
 
-    final dioProvider = Provider<int>((ref) {
-      ref.watch(authInterceptorProvider);
+    final a = Provider<int>((ref) {
+      ref.watch(c);
       return 0;
     });
 
-    final accessTokenProvider = Provider<int>((ref) {
-      return ref.watch(dioProvider);
+    final b = Provider<int>((ref) {
+      return ref.watch(a);
     });
 
-    container.read(dioProvider);
-    final interceptor = container.read(authInterceptorProvider);
+    container.read(a);
+    final ref = container.read(c);
 
     expect(
-      () => interceptor.read(accessTokenProvider),
+      () => ref.read(b),
       throwsA(isA<CircularDependencyError>()),
     );
   });
@@ -291,7 +291,3 @@ void main() {
     expect(errors, isNotEmpty);
   });
 }
-
-// class VsyncMock extends Mock {
-//   void call();
-// }

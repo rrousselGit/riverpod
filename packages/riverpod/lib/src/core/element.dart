@@ -142,13 +142,9 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   /// to expose a way to update the state, the practice is to expose a getter/setter.
   @internal
   void setState(State newState) {
-    assert(
-      () {
-        _debugDidSetState = true;
-        return true;
-      }(),
-      '',
-    );
+    // TODO remove all body asserts
+    if (kDebugMode) _debugDidSetState = true;
+
     final previousResult = getState();
     final result = _state = ResultData(newState);
 
@@ -177,12 +173,14 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   /// [readSelf].
   @internal
   State get requireState {
+    const uninitializedError =
+        'Tried to read the state of an uninitialized provider. '
+        'Do you maybe have a circular dependency?';
+
     assert(
       () {
         if (debugAssertDidSetStateEnabled && !_debugDidSetState) {
-          throw StateError(
-            'Tried to read the state of an uninitialized provider',
-          );
+          throw StateError(uninitializedError);
         }
         return true;
       }(),
@@ -190,9 +188,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
     );
 
     final state = getState();
-    if (state == null) {
-      throw StateError('Tried to read the state of an uninitialized provider');
-    }
+    if (state == null) throw StateError(uninitializedError);
 
     return state.when(
       error: throwErrorWithCombinedStackTrace,
@@ -646,16 +642,6 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
     if (dependency == null) return;
 
-    // TODO can we remove this?
-    try {
-      if (dependency is ProviderBase)
-        // Initializing the provider, to make sure its dependencies are setup.
-        container.readProviderElement(dependency);
-    } catch (err) {
-      // We don't care whether the provider is in error or not. We're just
-      // checking whether we're not in a circular dependency.
-    }
-
     assert(
       dependency != origin,
       'A provider cannot depend on itself',
@@ -690,6 +676,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
 ''');
     }
 
+    // TODO move to a "onAddDependency" life-cycle
     final queue = Queue<ProviderElementBase<Object?>>.from(_providerDependents);
     while (queue.isNotEmpty) {
       final current = queue.removeFirst();

@@ -23,6 +23,8 @@ final refMethodsThatDependOnProviderOrFamilies =
 
 void main() {
   group('Ref', () {
+    // TODO ref.invalidate does not mount providers if they are not already mounted
+
     group(
         'asserts that a provider cannot depend on a provider that is not in its dependencies:',
         () {

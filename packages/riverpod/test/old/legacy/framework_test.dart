@@ -149,7 +149,7 @@ void main() {
     final container = ProviderContainer.test();
     expect(
       () => container.read(provider),
-      throwsA(isA<CircularDependencyError>()),
+      throwsA(isA<StateError>()),
     );
   });
 
@@ -157,16 +157,46 @@ void main() {
     late Provider<int Function()> provider;
 
     final provider1 = Provider((ref) {
-      return ref.watch(provider)() + 1;
+      return () => ref.watch(provider)() + 1;
     });
     final provider2 = Provider((ref) {
-      return ref.watch(provider1) + 1;
+      return () => ref.watch(provider1)() + 1;
     });
     provider = Provider((ref) {
-      return () => ref.watch(provider2) + 1;
+      return () => ref.watch(provider2)() + 1;
     });
 
     final container = ProviderContainer.test();
+
+    container.read(provider);
+    container.read(provider1);
+    container.read(provider2);
+
+    expect(
+      () => container.read(provider)(),
+      throwsA(isA<CircularDependencyError>()),
+    );
+  });
+
+  test('circular dependencies when dependencies are already mounted', () {
+    late Provider<void Function()> provider;
+
+    final provider1 = Provider((ref) {
+      ref.watch(provider);
+    });
+    final provider2 = Provider((ref) {
+      ref.watch(provider1);
+    });
+    provider = Provider((ref) {
+      return () => ref.watch(provider2);
+    });
+
+    final container = ProviderContainer.test();
+
+    container.read(provider);
+    container.read(provider1);
+    container.read(provider2);
+
     expect(
       () => container.read(provider)(),
       throwsA(isA<CircularDependencyError>()),
