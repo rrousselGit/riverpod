@@ -7,8 +7,6 @@ extension on String {
   }
 }
 
-ProviderBase<Object?>? _circularDependencyLock;
-
 abstract class _PointerBase {
   bool get isTransitiveOverride;
 
@@ -346,7 +344,8 @@ class ProviderPointerManager {
   ///
   /// Returns `null` if it should be mounted at the root.
   ProviderContainer? findDeepestTransitiveDependencyProviderContainer(
-      ProviderOrFamily provider) {
+    ProviderOrFamily provider,
+  ) {
     if (container._parent == null) return null;
 
     final transitiveDependencies = provider.allTransitiveDependencies;
@@ -648,11 +647,6 @@ class ProviderContainer implements Node {
   List<ProviderContainer> get debugChildren => UnmodifiableListView(_children);
 
   late final ProviderPointerManager _pointerManager;
-
-  // final _overrideForProvider =
-  //     HashMap<ProviderBase<Object?>, ProviderBase<Object?>>();
-  // final _overrideForFamily = HashMap<Family, _FamilyOverrideRef>();
-  // final Map<ProviderBase<Object?>, _StateReader> _stateReaders;
 
   /// The list of observers attached to this container.
   ///

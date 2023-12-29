@@ -540,10 +540,13 @@ void main() {
         final root = ProviderContainer.test();
         final mid = ProviderContainer.test(parent: root, overrides: [dep]);
         final mid2 = ProviderContainer.test(parent: mid, overrides: [dep2]);
-        final leaf = ProviderContainer.test(parent: mid2, overrides: [
-          // Disable scoping optimization
-          Provider((ref) => null, dependencies: const []),
-        ]);
+        final leaf = ProviderContainer.test(
+          parent: mid2,
+          overrides: [
+            // Disable scoping optimization
+            Provider((ref) => null, dependencies: const []),
+          ],
+        );
 
         leaf.pointerManager.upsertPointer(a);
         leaf.pointerManager.upsertPointer(b);

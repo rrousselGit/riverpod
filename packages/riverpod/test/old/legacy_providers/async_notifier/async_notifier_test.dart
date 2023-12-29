@@ -1075,8 +1075,6 @@ void main() {
       ProviderListenable<T> provider,
     ) {}
 
-    // TODO use package:expect_error to test that commented lined are not compiling
-
     test('provider', () {
       final provider = AsyncNotifierProvider<AsyncTestNotifier<int>, int>(
         () => AsyncTestNotifier((ref) => 0),

@@ -103,7 +103,6 @@ abstract class FamilyOverride implements _FamilyOverride {
   }) = _FamilyOverrideImpl;
 
   /// The family that was overridden.
-  // TODO make all fields private
   Family get from;
 
   /// The overridden [ProviderBase.createElement].

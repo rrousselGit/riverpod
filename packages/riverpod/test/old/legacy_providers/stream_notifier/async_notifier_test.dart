@@ -1015,8 +1015,6 @@ void main() {
       ProviderListenable<T> provider,
     ) {}
 
-    // TODO use package:expect_error to test that commented lined are not compiling
-
     test('provider', () {
       final provider = StreamNotifierProvider<StreamTestNotifier<int>, int>(
         () => StreamTestNotifier((ref) => Stream.value(0)),
@@ -1045,27 +1043,17 @@ void main() {
       autoDispose.selectAsync((int value) => 0);
 
       canBeAssignedToProviderListenable<AsyncValue<int>>(autoDispose);
-      // canBeAssignedToAlwaysAliveListenable<AsyncValue<int>>(autoDispose);
       canBeAssignedToRefreshable<AsyncValue<int>>(autoDispose);
-      // canBeAssignedToAlwaysAliveRefreshable<AsyncValue<int>>(autoDispose);
 
       canBeAssignedToProviderListenable<Future<int>>(autoDispose.future);
-      // canBeAssignedToAlwaysAliveListenable<Future<int>>(autoDispose.future);
       canBeAssignedToRefreshable<Future<int>>(autoDispose.future);
-      // canBeAssignedToAlwaysAliveRefreshable<Future<int>>(autoDispose.future);
 
       canBeAssignedToProviderListenable<AutoDisposeStreamNotifier<int>>(
         autoDispose.notifier,
       );
-      // canBeAssignedToAlwaysAliveListenable<AutoDisposeStreamNotifier<int>>(
-      //   autoDispose.notifier,
-      // );
       canBeAssignedToRefreshable<AutoDisposeStreamNotifier<int>>(
         autoDispose.notifier,
       );
-      // canBeAssignedToAlwaysAliveRefreshable<AutoDisposeStreamNotifier<int>>(
-      //   autoDispose.notifier,
-      // );
     });
 
     test('family', () {
@@ -1108,44 +1096,24 @@ void main() {
       canBeAssignedToProviderListenable<AsyncValue<String>>(
         autoDisposeFamily(0),
       );
-      // canBeAssignedToAlwaysAliveListenable<AsyncValue<String>>(
-      //   autoDisposeFamily(0),
-      // );
       canBeAssignedToRefreshable<AsyncValue<String>>(
         autoDisposeFamily(0),
       );
-      // canBeAssignedToAlwaysAliveRefreshable<AsyncValue<String>>(
-      //   autoDisposeFamily(0),
-      // );
 
       canBeAssignedToProviderListenable<Future<String>>(
         autoDisposeFamily(0).future,
       );
-      // canBeAssignedToAlwaysAliveListenable<Future<String>>(
-      //   autoDisposeFamily(0).future,
-      // );
       canBeAssignedToRefreshable<Future<String>>(
         autoDisposeFamily(0).future,
       );
-      // canBeAssignedToAlwaysAliveRefreshable<Future<String>>(
-      //   autoDisposeFamily(0).future,
-      // );
 
       canBeAssignedToProviderListenable<
           AutoDisposeFamilyStreamNotifier<String, int>>(
         autoDisposeFamily(0).notifier,
       );
-      // canBeAssignedToAlwaysAliveListenable<
-      //     AutoDisposeFamilyStreamNotifier<String, int>>(
-      //   autoDisposeFamily(0).notifier,
-      // );
       canBeAssignedToRefreshable<AutoDisposeFamilyStreamNotifier<String, int>>(
         autoDisposeFamily(0).notifier,
       );
-      // canBeAssignedToAlwaysAliveRefreshable<
-      //     AutoDisposeFamilyStreamNotifier<String, int>>(
-      //   autoDisposeFamily(0).notifier,
-      // );
     });
   });
 }
