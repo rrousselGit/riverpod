@@ -236,8 +236,6 @@ void main() {
       familyProvider(
         42,
         third: .42,
-        // ignore: avoid_redundant_argument_values
-        fourth: true,
       ),
     );
     expect(
@@ -245,8 +243,6 @@ void main() {
       familyProvider(
         42,
         third: .42,
-        // ignore: avoid_redundant_argument_values
-        fourth: true,
       ).hashCode,
     );
 

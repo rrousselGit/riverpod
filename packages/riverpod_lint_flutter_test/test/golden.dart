@@ -36,7 +36,7 @@ void testGolden(
         matcherNormalizedPrioritizedSourceChangeSnapshot(fileName),
       );
     } on TestFailure {
-      // ignore: deprecated_member_use_from_same_package
+      // ignore: deprecated_member_use_from_same_package, deprecated only to avoid commit
       if (!goldenWrite) rethrow;
 
       final file = File('test/$fileName');

@@ -1,5 +1,4 @@
 import 'package:analyzer/dart/ast/ast.dart';
-// ignore: implementation_imports, somehow not exported by analyzer
 import 'package:collection/collection.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 

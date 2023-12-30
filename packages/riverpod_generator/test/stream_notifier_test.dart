@@ -92,8 +92,6 @@ void main() {
       familyClassProvider(
         42,
         third: .42,
-        // ignore: avoid_redundant_argument_values
-        fourth: true,
       ),
     );
     expect(
@@ -101,8 +99,6 @@ void main() {
       familyClassProvider(
         42,
         third: .42,
-        // ignore: avoid_redundant_argument_values
-        fourth: true,
       ).hashCode,
     );
 

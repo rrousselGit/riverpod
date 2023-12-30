@@ -1,6 +1,6 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/source/source_range.dart';
-// ignore: implementation_imports, somehow not exported by analyzer
+// ignore: implementation_imports, https://github.com/dart-lang/sdk/issues/54480
 import 'package:analyzer/src/generated/source.dart' show Source;
 import 'package:collection/collection.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
