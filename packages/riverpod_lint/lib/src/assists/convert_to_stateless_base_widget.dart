@@ -1,5 +1,4 @@
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/source/source_range.dart';
 // ignore: implementation_imports, blocked by https://github.com/dart-lang/sdk/issues/54480
 import 'package:analyzer/src/generated/source.dart' show Source;
