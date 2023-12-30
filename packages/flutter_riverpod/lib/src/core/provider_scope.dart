@@ -1,12 +1,5 @@
 // ignore_for_file: invalid_use_of_internal_member
-
-import 'package:flutter/foundation.dart' hide describeIdentity;
-import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter/widgets.dart';
-import 'package:meta/meta.dart';
-
-import 'internals.dart';
+part of '../core.dart';
 
 /// {@template riverpod.provider_scope}
 /// A widget that stores the state of providers.
@@ -76,7 +69,6 @@ import 'internals.dart';
 /// - [UncontrolledProviderScope], which exposes a [ProviderContainer] to the widget
 ///   tree without managing its life-cycles.
 /// {@endtemplate}
-@sealed
 class ProviderScope extends StatefulWidget {
   /// {@macro riverpod.provider_scope}
   const ProviderScope({
