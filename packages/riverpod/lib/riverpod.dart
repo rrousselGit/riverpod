@@ -1,5 +1,6 @@
-// TODO this exports too many things
-export 'package:state_notifier/state_notifier.dart' hide Listener, LocatorMixin;
+// TODO CHANGELOG breaking: Riverpod now only re-exports StateNotifier from pkg:state_notifier.
+//  for other classes, please add state_notifier as dependency.
+export 'package:state_notifier/state_notifier.dart' show StateNotifier;
 
 export 'src/core/async_value.dart' hide AsyncTransition;
 export 'src/framework.dart'

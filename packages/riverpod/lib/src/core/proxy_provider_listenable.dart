@@ -8,7 +8,7 @@ class _ProxySubscription<T> extends ProviderSubscription<T> {
   });
 
   final ProviderSubscription<Object?> innerSubscription;
-  final RemoveListener _removeListeners;
+  final void Function() _removeListeners;
   final T Function() _read;
 
   @override
