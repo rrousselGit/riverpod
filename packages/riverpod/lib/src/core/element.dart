@@ -142,7 +142,6 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   /// to expose a way to update the state, the practice is to expose a getter/setter.
   @internal
   void setState(State newState) {
-    // TODO remove all body asserts
     if (kDebugMode) _debugDidSetState = true;
 
     final previousResult = getState();
@@ -177,15 +176,11 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
         'Tried to read the state of an uninitialized provider. '
         'Do you maybe have a circular dependency?';
 
-    assert(
-      () {
-        if (debugAssertDidSetStateEnabled && !_debugDidSetState) {
-          throw StateError(uninitializedError);
-        }
-        return true;
-      }(),
-      '',
-    );
+    if (kDebugMode) {
+      if (debugAssertDidSetStateEnabled && !_debugDidSetState) {
+        throw StateError(uninitializedError);
+      }
+    }
 
     final state = getState();
     if (state == null) throw StateError(uninitializedError);
@@ -210,33 +205,22 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   /// This life-cycle is used to check for change in [ProviderBase.debugGetCreateSourceHash],
   /// and invalidate the provider state on change.
   void debugReassemble() {
-    assert(
-      () {
-        final previousHash = _debugCurrentCreateHash;
-        _debugCurrentCreateHash = provider.debugGetCreateSourceHash?.call();
+    final previousHash = _debugCurrentCreateHash;
+    _debugCurrentCreateHash = provider.debugGetCreateSourceHash?.call();
 
-        if (previousHash != _debugCurrentCreateHash) {
-          invalidateSelf();
-        }
-
-        return true;
-      }(),
-      '',
-    );
+    if (previousHash != _debugCurrentCreateHash) {
+      invalidateSelf();
+    }
   }
 
   /// Called the first time a provider is obtained.
   @internal
   void mount() {
     _mounted = true;
-    assert(
-      () {
-        _debugCurrentCreateHash = provider.debugGetCreateSourceHash?.call();
+    if (kDebugMode) {
+      _debugCurrentCreateHash = provider.debugGetCreateSourceHash?.call();
+    }
 
-        return true;
-      }(),
-      '',
-    );
     buildState();
 
     _state!.map(
@@ -370,33 +354,18 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
 
     final previousStateResult = _state;
 
-    assert(
-      () {
-        _debugDidSetState = false;
-        return true;
-      }(),
-      '',
-    );
+    if (kDebugMode) _debugDidSetState = false;
+
     buildState();
 
     if (!identical(_state, previousStateResult)) {
-      assert(
-        () {
-          // Asserts would otherwise prevent a provider rebuild from updating
-          // other providers
-          _debugSkipNotifyListenersAsserts = true;
-          return true;
-        }(),
-        '',
-      );
+      // Asserts would otherwise prevent a provider rebuild from updating
+      // other providers
+      if (kDebugMode) _debugSkipNotifyListenersAsserts = true;
+
       _notifyListeners(_state!, previousStateResult);
-      assert(
-        () {
-          _debugSkipNotifyListenersAsserts = false;
-          return true;
-        }(),
-        '',
-      );
+
+      if (kDebugMode) _debugSkipNotifyListenersAsserts = false;
     }
 
     // Unsubscribe to everything that a provider no longer depends on.
@@ -426,37 +395,25 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
     ProviderElementBase<Object?>? debugPreviouslyBuildingElement;
     final previousDidChangeDependency = _didChangeDependency;
     _didChangeDependency = false;
-    assert(
-      () {
-        debugPreviouslyBuildingElement = _debugCurrentlyBuildingElement;
-        _debugCurrentlyBuildingElement = this;
-        return true;
-      }(),
-      '',
-    );
+    if (kDebugMode) {
+      debugPreviouslyBuildingElement = _debugCurrentlyBuildingElement;
+      _debugCurrentlyBuildingElement = this;
+    }
+
     _didBuild = false;
     try {
       // TODO move outside this function?
       _mounted = true;
       create(didChangeDependency: previousDidChangeDependency);
     } catch (err, stack) {
-      assert(
-        () {
-          _debugDidSetState = true;
-          return true;
-        }(),
-        '',
-      );
+      if (kDebugMode) _debugDidSetState = true;
+
       _state = Result.error(err, stack);
     } finally {
       _didBuild = true;
-      assert(
-        () {
-          _debugCurrentlyBuildingElement = debugPreviouslyBuildingElement;
-          return true;
-        }(),
-        '',
-      );
+      if (kDebugMode) {
+        _debugCurrentlyBuildingElement = debugPreviouslyBuildingElement;
+      }
 
       assert(
         getState() != null,
@@ -481,30 +438,28 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
     }
   }
 
+  void _debugAssertNotificationAllowed() {
+    if (_debugSkipNotifyListenersAsserts) return;
+
+    assert(
+      _debugCurrentlyBuildingElement == null ||
+          _debugCurrentlyBuildingElement == this,
+      '''
+Providers are not allowed to modify other providers during their initialization.
+
+The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while building.
+''',
+    );
+
+    debugCanModifyProviders?.call();
+  }
+
   void _notifyListeners(
     Result<State> newState,
     Result<State>? previousStateResult, {
     bool checkUpdateShouldNotify = true,
   }) {
-    assert(
-      () {
-        if (_debugSkipNotifyListenersAsserts) return true;
-
-        assert(
-          _debugCurrentlyBuildingElement == null ||
-              _debugCurrentlyBuildingElement == this,
-          '''
-Providers are not allowed to modify other providers during their initialization.
-
-The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while building.
-''',
-        );
-
-        debugCanModifyProviders?.call();
-        return true;
-      }(),
-      '',
-    );
+    if (kDebugMode) _debugAssertNotificationAllowed();
 
     final previousState = previousStateResult?.stateOrNull;
 
@@ -737,17 +692,13 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
         return previousSub;
       }
 
-      assert(
-        () {
-          // Flushing the provider before adding a new dependency
-          // as otherwise this could cause false positives with certain asserts.
-          // It's done only in debug mode since `readSelf` will flush the value
-          // again anyway, and the only value of this flush is to not break asserts.
-          element.flush();
-          return true;
-        }(),
-        '',
-      );
+      if (kDebugMode) {
+        // Flushing the provider before adding a new dependency
+        // as otherwise this could cause false positives with certain asserts.
+        // It's done only in debug mode since `readSelf` will flush the value
+        // again anyway, and the only value of this flush is to not break asserts.
+        element.flush();
+      }
 
       element
         .._onListen()

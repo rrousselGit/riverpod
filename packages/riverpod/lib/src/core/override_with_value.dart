@@ -55,25 +55,16 @@ class ValueProviderElement<State> extends ProviderElementBase<State> {
     final previousState = getState()! as ResultData<State>;
 
     if (newValue != previousState.state) {
-      assert(
-        () {
-          // Asserts would otherwise prevent a provider rebuild from updating
-          // other providers
-          _debugSkipNotifyListenersAsserts = true;
-          return true;
-        }(),
-        '',
-      );
+      // Asserts would otherwise prevent a provider rebuild from updating
+      // other providers
+      if (kDebugMode) _debugSkipNotifyListenersAsserts = true;
+
       setState(newValue);
-      assert(
-        () {
-          // Asserts would otherwise prevent a provider rebuild from updating
-          // other providers
-          _debugSkipNotifyListenersAsserts = false;
-          return true;
-        }(),
-        '',
-      );
+
+      // Asserts would otherwise prevent a provider rebuild from updating
+      // other providers
+      if (kDebugMode) _debugSkipNotifyListenersAsserts = false;
+
       onChange?.call(newValue);
     }
   }

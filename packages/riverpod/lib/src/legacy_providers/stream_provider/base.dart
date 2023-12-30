@@ -143,8 +143,6 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
   @internal
   StreamProviderElement(this.provider, super.container);
 
-  // TODO remove all ignores
-
   @override
   final _StreamProviderBase<T> provider;
 

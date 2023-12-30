@@ -84,26 +84,14 @@ class _AsyncSelector<Input, Output> with ProviderListenable<Future<Output>> {
   final Output Function(Input) selector;
 
   Result<Output> _select(Input value) {
-    assert(
-      () {
-        _debugIsRunningSelector = true;
-        return true;
-      }(),
-      '',
-    );
+    if (kDebugMode) _debugIsRunningSelector = true;
 
     try {
       return Result.data(selector(value));
     } catch (err, stack) {
       return Result.error(err, stack);
     } finally {
-      assert(
-        () {
-          _debugIsRunningSelector = false;
-          return true;
-        }(),
-        '',
-      );
+      if (kDebugMode) _debugIsRunningSelector = false;
     }
   }
 

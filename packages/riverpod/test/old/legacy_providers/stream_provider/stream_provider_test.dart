@@ -9,20 +9,6 @@ import 'package:test/test.dart';
 import '../../utils.dart';
 
 void main() {
-  late StreamController<int> controller;
-  final provider = StreamProvider((ref) => controller.stream);
-  late ProviderContainer container;
-
-  // TODO remove this setup/teardown
-  setUp(() {
-    container = ProviderContainer.test();
-    controller = StreamController<int>(sync: true);
-  });
-  tearDown(() {
-    container.dispose();
-    controller.close();
-  });
-
   test('supports overrideWith', () {
     final provider = StreamProvider<int>(
       (ref) {
@@ -300,7 +286,7 @@ void main() {
     expect(container.read(provider), const AsyncValue.data(1));
   });
 
-  group('scoping an override overrides all the associated subproviders', () {
+  group('scoping an override overrides all the associated sub-providers', () {
     test('when passing the provider itself', () async {
       final provider = StreamProvider(
         (ref) => Stream.value(0),
@@ -375,6 +361,11 @@ void main() {
   });
 
   test('Loading to data', () {
+    final container = ProviderContainer.test();
+    final controller = StreamController<int>(sync: true);
+    addTearDown(() => controller.close);
+    final provider = StreamProvider((ref) => controller.stream);
+
     expect(container.read(provider), const AsyncValue<int>.loading());
 
     controller.add(42);
@@ -383,6 +374,11 @@ void main() {
   });
 
   test('Loading to error', () {
+    final container = ProviderContainer.test();
+    final controller = StreamController<int>(sync: true);
+    addTearDown(() => controller.close);
+    final provider = StreamProvider((ref) => controller.stream);
+
     expect(container.read(provider), const AsyncValue<int>.loading());
 
     final stack = StackTrace.current;
@@ -595,6 +591,11 @@ void main() {
   // });
 
   test('does not filter identical values', () async {
+    final container = ProviderContainer.test();
+    final controller = StreamController<int>(sync: true);
+    addTearDown(() => controller.close);
+    final provider = StreamProvider((ref) => controller.stream);
+
     final sub = container.listen(provider, (_, __) {});
 
     expect(sub.read(), const AsyncValue<int>.loading());
@@ -611,6 +612,8 @@ void main() {
   });
 
   test('throwing inside "create" result in an AsyncValue.error', () {
+    final container = ProviderContainer.test();
+
     // ignore: only_throw_errors
     final provider = StreamProvider<int>((ref) => throw 42);
 
@@ -622,6 +625,8 @@ void main() {
 
   test('does not update dependents if the created stream did not change',
       () async {
+    final container = ProviderContainer.test();
+
     final dep = StateProvider((ref) => 0);
     final provider = StreamProvider((ref) {
       ref.watch(dep);
@@ -642,6 +647,8 @@ void main() {
   test(
       '.future does not update dependents if the created future did not change',
       () async {
+    final container = ProviderContainer.test();
+
     final dep = StateProvider((ref) => 0);
 
     final provider = StreamProvider((ref) {

@@ -384,8 +384,11 @@ void main() {
           return 0;
         });
 
-        container.listen(provider, (prev, next) {},
-            onError: errorListener2.call);
+        container.listen(
+          provider,
+          (prev, next) {},
+          onError: errorListener2.call,
+        );
 
         verifyZeroInteractions(errorListener);
         verifyZeroInteractions(errorListener2);

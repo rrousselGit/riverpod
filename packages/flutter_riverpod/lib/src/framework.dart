@@ -168,13 +168,9 @@ class ProviderScopeState extends State<ProviderScope> {
     super.initState();
 
     final parent = _getParent();
-    assert(
-      () {
-        _debugParentOwner = parent;
-        return true;
-      }(),
-      '',
-    );
+    if (kDebugMode) {
+      _debugParentOwner = parent;
+    }
 
     container = ProviderContainer(
       parent: parent,
@@ -223,25 +219,23 @@ class ProviderScopeState extends State<ProviderScope> {
     }
   }
 
+  void _debugAssertParentDidNotChange() {
+    // didUpdateWidget already takes care of widget.parent change
+    if (widget.parent != null) return;
+
+    final parent = _getParent();
+
+    if (parent != _debugParentOwner) {
+      throw UnsupportedError(
+        'ProviderScope was rebuilt with a different ProviderScope ancestor',
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    assert(
-      () {
-        if (widget.parent != null) {
-          // didUpdateWidget already takes care of widget.parent change
-          return true;
-        }
-        final parent = _getParent();
+    if (kDebugMode) _debugAssertParentDidNotChange();
 
-        if (parent != _debugParentOwner) {
-          throw UnsupportedError(
-            'ProviderScope was rebuilt with a different ProviderScope ancestor',
-          );
-        }
-        return true;
-      }(),
-      '',
-    );
     if (_dirty) {
       _dirty = false;
       container.updateOverrides(widget.overrides);
@@ -312,13 +306,9 @@ class _UncontrolledProviderScopeElement extends InheritedElement {
   @override
   void reassemble() {
     super.reassemble();
-    assert(
-      () {
-        _containerOf(widget).debugReassemble();
-        return true;
-      }(),
-      '',
-    );
+    if (kDebugMode) {
+      _containerOf(widget).debugReassemble();
+    }
   }
 
   void _flutterVsync(void Function() task) {

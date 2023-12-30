@@ -2,6 +2,7 @@ import 'package:meta/meta.dart';
 
 import '../framework.dart' show ProviderElementBase;
 import '../internals.dart' show OnError;
+import 'env.dart';
 import 'pragma.dart';
 import 'result.dart';
 
@@ -230,13 +231,7 @@ class _ValueListenable<T> {
   /// listeners or not immediately before disposal.
   @mustCallSuper
   void dispose() {
-    assert(
-      () {
-        _debugDisposed = true;
-        return true;
-      }(),
-      '',
-    );
+    if (kDebugMode) _debugDisposed = true;
     _listeners = _emptyListeners();
     _count = 0;
   }

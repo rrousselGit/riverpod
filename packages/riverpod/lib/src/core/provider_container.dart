@@ -708,16 +708,11 @@ class ProviderContainer implements Node {
 // TODO hot-reload handle family adding parameters
 // TODO found "Future already completed error" after adding family parameter
 
-    assert(
-      () {
-        for (final element in getAllProviderElements()) {
-          element.debugReassemble();
-        }
-
-        return true;
-      }(),
-      '',
-    );
+    if (kDebugMode) {
+      for (final element in getAllProviderElements()) {
+        element.debugReassemble();
+      }
+    }
   }
 
   @override
