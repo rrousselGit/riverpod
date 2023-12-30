@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:mockito/mockito.dart';
+import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
 class OnDisposeMock extends Mock {
@@ -54,5 +57,84 @@ class Selector<Input, Output> extends Mock {
       returnValue: fake,
       returnValueForMissingStub: fake,
     ) as Output;
+  }
+}
+
+class Counter extends StateNotifier<int> {
+  Counter([super.initialValue = 0]);
+
+  void increment() => state++;
+
+  @override
+  int get state => super.state;
+  @override
+  set state(int value) => super.state = value;
+}
+
+List<Object> errorsOf(void Function() cb) {
+  final errors = <Object>[];
+  runZonedGuarded(cb, (err, _) => errors.add(err));
+  return [...errors];
+}
+
+class ObserverMock extends Mock implements ProviderObserver {
+  ObserverMock([this.label]);
+
+  final String? label;
+
+  @override
+  String toString() {
+    return label ?? super.toString();
+  }
+
+  @override
+  void didDisposeProvider(
+    ProviderBase<Object?>? provider,
+    ProviderContainer? container,
+  ) {
+    super.noSuchMethod(
+      Invocation.method(#didDisposeProvider, [provider, container]),
+    );
+  }
+
+  @override
+  void providerDidFail(
+    ProviderBase<Object?>? provider,
+    Object? error,
+    Object? stackTrace,
+    Object? container,
+  ) {
+    super.noSuchMethod(
+      Invocation.method(
+        #providerDidFail,
+        [provider, error, stackTrace, container],
+      ),
+    );
+  }
+
+  @override
+  void didAddProvider(
+    ProviderBase<Object?>? provider,
+    Object? value,
+    ProviderContainer? container,
+  ) {
+    super.noSuchMethod(
+      Invocation.method(#didAddProvider, [provider, value, container]),
+    );
+  }
+
+  @override
+  void didUpdateProvider(
+    ProviderBase<Object?>? provider,
+    Object? previousValue,
+    Object? newValue,
+    ProviderContainer? container,
+  ) {
+    super.noSuchMethod(
+      Invocation.method(
+        #didUpdateProvider,
+        [provider, previousValue, newValue, container],
+      ),
+    );
   }
 }

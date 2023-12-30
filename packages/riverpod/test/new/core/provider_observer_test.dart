@@ -20,7 +20,7 @@ void main() {
       observer.providerDidFail(provider, 0, StackTrace.empty, container);
     });
 
-    test('ProviderObservers can have const constructors', () {
+    test('can have const constructors', () {
       final root = ProviderContainer.test(
         observers: [
           const ConstObserver(),
@@ -256,7 +256,7 @@ void main() {
         ]);
         verifyNoMoreInteractions(observer);
 
-        counter.setState(-10);
+        counter.state = -10;
         await container.pump();
 
         verifyInOrder([
@@ -701,8 +701,8 @@ class Counter extends StateNotifier<int> {
 
   void increment() => state++;
 
-  // ignore: use_setters_to_change_properties
-  void setState(int value) => state = value;
+  @override
+  abstract int state;
 }
 
 class ConstObserver extends ProviderObserver {

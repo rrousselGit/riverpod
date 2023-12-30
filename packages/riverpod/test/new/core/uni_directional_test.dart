@@ -5,14 +5,6 @@ import 'package:test/test.dart';
 import '../utils.dart';
 
 void main() {
-  late ProviderContainer container;
-  setUp(() {
-    container = ProviderContainer();
-  });
-  tearDown(() {
-    container.dispose();
-  });
-
   test(
       'Catches sync circular dependency when the dependency is not yet mounted',
       skip: true, () {
@@ -186,6 +178,7 @@ void main() {
   });
 
   test("initState can't dirty ancestors", () {
+    final container = ProviderContainer.test();
     final ancestor = StateProvider((_) => 0);
     final child = Provider((ref) {
       ref.watch(ancestor.notifier).state++;
@@ -196,6 +189,7 @@ void main() {
   });
 
   test("initState can't dirty siblings", () {
+    final container = ProviderContainer.test();
     final ancestor = StateProvider((_) => 0, name: 'ancestor');
     final counter = Counter();
     final sibling = StateNotifierProvider<Counter, int>(
@@ -222,6 +216,7 @@ void main() {
   });
 
   test("initState can't mark dirty other provider", () {
+    final container = ProviderContainer.test();
     final provider = StateProvider((ref) => 0);
     final provider2 = Provider((ref) {
       ref.watch(provider.notifier).state = 42;
@@ -234,6 +229,7 @@ void main() {
   });
 
   test("nested initState can't mark dirty other providers", () {
+    final container = ProviderContainer.test();
     final counter = Counter();
     final provider = StateNotifierProvider<Counter, int>((_) => counter);
     final nested = Provider((_) => 0);
@@ -249,6 +245,7 @@ void main() {
   });
 
   test('auto dispose can dirty providers', () async {
+    final container = ProviderContainer.test();
     final counter = Counter();
     final provider = StateNotifierProvider<Counter, int>((_) => counter);
     var didDispose = false;
@@ -273,6 +270,7 @@ void main() {
   });
 
   test("Provider can't dirty anything on create", () {
+    final container = ProviderContainer.test();
     final counter = Counter();
     final provider = StateNotifierProvider<Counter, int>((_) => counter);
     late List<Object> errors;
