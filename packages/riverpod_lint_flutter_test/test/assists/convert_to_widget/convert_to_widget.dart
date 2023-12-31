@@ -3,11 +3,22 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 class Stateless extends StatelessWidget {
-  const Stateless({super.key});
+  const Stateless({
+    super.key,
+    required this.field,
+  });
+
+  final int field;
+  static final int staticField = 42;
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Column(
+      children: [
+        Text('$field'),
+        Text('$staticField'),
+      ],
+    );
   }
 }
 
@@ -32,14 +43,25 @@ class Hook extends HookWidget {
 }
 
 class HookConsumer extends HookConsumerWidget {
-  const HookConsumer({super.key});
+  const HookConsumer({
+    super.key,
+    required this.field,
+  });
+
+  final int field;
+  static final int staticField = 42;
 
   @override
   Widget build(
     BuildContext context,
     WidgetRef ref,
   ) {
-    return const Placeholder();
+    return Column(
+      children: [
+        Text('$field'),
+        Text('$staticField'),
+      ],
+    );
   }
 }
 

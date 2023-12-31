@@ -171,39 +171,39 @@ void _runGoldenTest(
             pubspec: pubspec),
 
         // StatelessWithComma
-        ...await assist.testRun(result, const SourceRange(350, 0),
+        ...await assist.testRun(result, const SourceRange(517, 0),
             pubspec: pubspec),
 
         // Hook
-        ...await assist.testRun(result, const SourceRange(524, 0),
-            pubspec: pubspec),
-
-        // HookConsumer
         ...await assist.testRun(result, const SourceRange(690, 0),
             pubspec: pubspec),
 
+        // HookConsumer
+        ...await assist.testRun(result, const SourceRange(856, 0),
+            pubspec: pubspec),
+
         // Stateful
-        ...await assist.testRun(result, const SourceRange(884, 0),
+        ...await assist.testRun(result, const SourceRange(1216, 0),
             pubspec: pubspec),
 
         // ExplicitCreateState
-        ...await assist.testRun(result, const SourceRange(1208, 0),
+        ...await assist.testRun(result, const SourceRange(1543, 0),
             pubspec: pubspec),
 
         // HookStateful
-        ...await assist.testRun(result, const SourceRange(1553, 0),
+        ...await assist.testRun(result, const SourceRange(1888, 0),
             pubspec: pubspec),
 
         // ConsumerStateful
-        ...await assist.testRun(result, const SourceRange(1863, 0),
+        ...await assist.testRun(result, const SourceRange(2199, 0),
             pubspec: pubspec),
 
         // HookConsumerStateful
-        ...await assist.testRun(result, const SourceRange(2214, 0),
+        ...await assist.testRun(result, const SourceRange(2556, 0),
             pubspec: pubspec),
 
         // ConsumerWidget
-        ...await assist.testRun(result, const SourceRange(2582, 0),
+        ...await assist.testRun(result, const SourceRange(2915, 0),
             pubspec: pubspec),
       ];
 
