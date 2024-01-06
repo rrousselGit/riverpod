@@ -195,15 +195,15 @@ void _runGoldenTest(
             pubspec: pubspec),
 
         // ConsumerStateful
-        ...await assist.testRun(result, const SourceRange(2199, 0),
+        ...await assist.testRun(result, const SourceRange(2237, 0),
             pubspec: pubspec),
 
         // HookConsumerStateful
-        ...await assist.testRun(result, const SourceRange(2556, 0),
+        ...await assist.testRun(result, const SourceRange(2957, 0),
             pubspec: pubspec),
 
         // ConsumerWidget
-        ...await assist.testRun(result, const SourceRange(2915, 0),
+        ...await assist.testRun(result, const SourceRange(3316, 0),
             pubspec: pubspec),
       ];
 
