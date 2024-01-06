@@ -111,17 +111,41 @@ class HookStatefulState extends State<HookStateful> {
   }
 }
 
+class FooClass {
+  final bar = 42;
+}
+
 class ConsumerStateful extends ConsumerStatefulWidget {
-  const ConsumerStateful({super.key});
+  const ConsumerStateful({
+    super.key,
+    required this.field,
+    required this.foo,
+  });
+
+  final int field;
+  final FooClass foo;
+  static final int staticField = 42;
 
   @override
   ConsumerState<ConsumerStateful> createState() => _ConsumerStatefulState();
 }
 
 class _ConsumerStatefulState extends ConsumerState<ConsumerStateful> {
+  void printFoo() {
+    print(widget.foo);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    print(widget.field);
+    printFoo();
+    return Column(
+      children: [
+        Text('${widget.field}'),
+        Text('${widget.foo.bar}'),
+        Text('${ConsumerStateful.staticField}'),
+      ],
+    );
   }
 }
 
