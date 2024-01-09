@@ -89,10 +89,14 @@ class Home extends HookConsumerWidget {
             child: const Center(child: CircularProgressIndicator()),
           ),
           error: (err, stack) {
+            String? errorMessage;
+            if (err is DioException) {
+              errorMessage = err.message;
+            }
             return Scaffold(
               appBar: AppBar(title: const Text('Error')),
               body: Center(
-                child: Text('$err'),
+                child: Text(errorMessage ?? '$err'),
               ),
             );
           },
