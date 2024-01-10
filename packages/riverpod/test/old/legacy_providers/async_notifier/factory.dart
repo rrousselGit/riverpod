@@ -4,7 +4,7 @@ import 'package:riverpod/src/internals.dart';
 
 typedef AsyncNotifierProviderFactoryType
     = AsyncNotifierProviderBase<NotifierT, T>
-        Function<NotifierT extends AsyncNotifierBase<T>, T>(
+        Function<NotifierT extends _AsyncNotifierBase<T>, T>(
   NotifierT Function() create, {
   Iterable<ProviderOrFamily>? dependencies,
   String? name,
@@ -55,7 +55,7 @@ List<AsyncNotifierFactory> matrix({
       AsyncNotifierFactory(
         label: 'AsyncNotifierProviderFamily',
         isAutoDispose: false,
-        provider: <NotifierT extends AsyncNotifierBase<T>, T>(
+        provider: <NotifierT extends _AsyncNotifierBase<T>, T>(
           create, {
           argument,
           dependencies,
@@ -124,7 +124,7 @@ List<AsyncNotifierFactory> matrix({
       AsyncNotifierFactory(
         label: 'AutoDisposeAsyncNotifierProviderFamily',
         isAutoDispose: true,
-        provider: <NotifierT extends AsyncNotifierBase<T>, T>(
+        provider: <NotifierT extends _AsyncNotifierBase<T>, T>(
           create, {
           argument,
           dependencies,
@@ -189,7 +189,7 @@ class AsyncNotifierFactory {
   final SimpleTestProviderFactoryType simpleTestProvider;
 }
 
-abstract class AsyncTestNotifierBase<T> extends AsyncNotifierBase<T> {
+abstract class AsyncTestNotifierBase<T> extends _AsyncNotifierBase<T> {
   // overriding to remove the @protected
   @override
   Future<T> update(

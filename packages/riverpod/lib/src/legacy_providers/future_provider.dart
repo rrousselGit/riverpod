@@ -9,22 +9,6 @@ import 'builders.dart';
 import 'provider.dart' show Provider;
 import 'stream_provider.dart' show StreamProvider;
 
-part 'future_provider/auto_dispose.dart';
-part 'future_provider/base.dart';
-
-ProviderElementProxy<AsyncValue<T>, Future<T>> _future<T>(
-  _FutureProviderBase<T> that,
-) {
-  return ProviderElementProxy<AsyncValue<T>, Future<T>>(
-    that,
-    (element) {
-      return FutureHandlerProviderElementMixin.futureNotifierOf(
-        element as FutureHandlerProviderElementMixin<T>,
-      );
-    },
-  );
-}
-
 /// {@template riverpod.future_provider}
 /// A provider that asynchronously creates a value.
 ///
@@ -93,16 +77,116 @@ ProviderElementProxy<AsyncValue<T>, Future<T>> _future<T>(
 /// - [FutureProvider.family], to create a [FutureProvider] from external parameters
 /// - [FutureProvider.autoDispose], to destroy the state of a [FutureProvider] when no longer needed.
 /// {@endtemplate}
-abstract class _FutureProviderBase<T> extends ProviderBase<AsyncValue<T>>
-    with AsyncSelector<T> {
-  const _FutureProviderBase({
+final class FutureProvider<StateT> extends FunctionalProvider<
+    AsyncValue<StateT>,
+    FutureOr<StateT>,
+    FutureProviderRef<StateT>> with FutureModifier<StateT> {
+  /// {@macro riverpod.future_provider}
+  FutureProvider(
+    this._create, {
+    super.name,
+    super.dependencies,
+  }) : super(
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+          from: null,
+          argument: null,
+          debugGetCreateSourceHash: null,
+          // TODO add autoDispose parameter
+          isAutoDispose: false,
+        );
+
+  /// An implementation detail of Riverpod
+  @internal
+  FutureProvider.internal(
+    this._create, {
+    required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
-    required super.name,
+    required super.debugGetCreateSourceHash,
     required super.from,
     required super.argument,
-    required super.debugGetCreateSourceHash,
+    required super.isAutoDispose,
   });
 
-  FutureOr<T> _create(covariant FutureProviderElement<T> ref);
+  /// {@macro riverpod.autoDispose}
+  static const autoDispose = AutoDisposeFutureProviderBuilder();
+
+  /// {@macro riverpod.family}
+  static const family = FutureProviderFamilyBuilder();
+
+  /// TODO make all "create" public, for the sake of dartdocs.
+  final Create<FutureOr<StateT>, FutureProviderRef<StateT>> _create;
+
+  @override
+  FutureProviderElement<StateT> createElement(ProviderContainer container) {
+    return FutureProviderElement(this, container);
+  }
+
+  @override
+  FutureProvider<StateT> copyWithCreate(
+    Create<FutureOr<StateT>, FutureProviderRef<StateT>> create,
+  ) {
+    return FutureProvider<StateT>.internal(
+      create,
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      argument: argument,
+      isAutoDispose: isAutoDispose,
+    );
+  }
+}
+
+/// {@macro riverpod.provider_ref_base}
+abstract class FutureProviderRef<State> implements Ref<AsyncValue<State>> {
+  /// Obtains the [Future] associated to this provider.
+  ///
+  /// This is equivalent to doing `ref.read(myProvider.future)`.
+  /// See also [FutureProvider.future].
+  // TODO move to Ref
+  Future<State> get future;
+}
+
+/// The element of a [FutureProvider]
+class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
+    with FutureModifierElement<T>
+    implements FutureProviderRef<T> {
+  /// The element of a [FutureProvider]
+  @internal
+  FutureProviderElement(this.provider, super.container);
+
+  @override
+  final FutureProvider<T> provider;
+
+  @override
+  Future<T> get future {
+    flush();
+    return futureNotifier.value;
+  }
+
+  @override
+  void create({required bool didChangeDependency}) {
+    handleFuture(
+      () => provider._create(this),
+      didChangeDependency: didChangeDependency,
+    );
+  }
+}
+
+/// The [Family] of a [FutureProvider]
+class FutureProviderFamily<R, Arg> extends FunctionalFamily<
+    FutureProviderRef<R>, AsyncValue<R>, Arg, FutureOr<R>, FutureProvider<R>> {
+  /// Implementation detail of the code-generator.
+  @internal
+  FutureProviderFamily.internal(
+    super._createFn, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.isAutoDispose,
+  }) : super(providerFactory: FutureProvider<R>.internal);
 }

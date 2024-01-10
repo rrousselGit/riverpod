@@ -1,42 +1,16 @@
 part of 'async_notifier.dart';
 
-ProviderElementProxy<AsyncValue<T>, NotifierT>
-    _streamNotifier<NotifierT extends AsyncNotifierBase<T>, T>(
-  StreamNotifierProviderBase<NotifierT, T> that,
-) {
-  return ProviderElementProxy<AsyncValue<T>, NotifierT>(
-    that,
-    (element) {
-      return (element as StreamNotifierProviderElement<NotifierT, T>)
-          ._notifierNotifier;
-    },
-  );
-}
-
-ProviderElementProxy<AsyncValue<T>, Future<T>> _streamFuture<T>(
-  StreamNotifierProviderBase<AsyncNotifierBase<T>, T> that,
-) {
-  return ProviderElementProxy<AsyncValue<T>, Future<T>>(
-    that,
-    (element) {
-      return (element as StreamNotifierProviderElement<AsyncNotifierBase<T>, T>)
-          .futureNotifier;
-    },
-  );
-}
-
-/// A base class for [StreamNotifierProvider]
-///
-/// Not meant for public consumption
-@visibleForTesting
-@internal
-abstract class StreamNotifierProviderBase<
-    NotifierT extends AsyncNotifierBase<T>,
-    T> extends ProviderBase<AsyncValue<T>> with AsyncSelector<T> {
-  /// A base class for [StreamNotifierProvider]
-  ///
-  /// Not meant for public consumption
-  const StreamNotifierProviderBase(
+abstract base class _StreamNotifierProviderBase<
+        NotifierT extends _AsyncNotifierBase<StateT>, //
+        StateT> //
+    extends ClassProvider< //
+        NotifierT,
+        AsyncValue<StateT>,
+        Stream<StateT>,
+        Ref<AsyncValue<StateT>>> //
+    with
+        FutureModifier<StateT> {
+  const _StreamNotifierProviderBase(
     this._createNotifier, {
     required super.name,
     required super.from,
@@ -44,38 +18,70 @@ abstract class StreamNotifierProviderBase<
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
+    required super.isAutoDispose,
   });
 
-  /// Obtains the [StreamNotifier] associated with this provider, without listening
-  /// to state changes.
-  ///
-  /// This is typically used to invoke methods on a [StreamNotifier]. For example:
-  ///
-  /// ```dart
-  /// Button(
-  ///   onTap: () => ref.read(streamNotifierProvider.notifier).increment(),
-  /// )
-  /// ```
-  ///
-  /// This listenable will notify its notifiers if the [StreamNotifier] instance
-  /// changes.
-  /// This may happen if the provider is refreshed or one of its dependencies
-  /// has changes.
-  Refreshable<NotifierT> get notifier;
-
-  /// {@macro riverpod.async_notifier.future}
-  ///
-  /// Listening to this using [Ref.watch] will rebuild the widget/provider
-  /// when the [StreamNotifier] emits a new value.
-  /// This will then return a new [Future] that resoles with the latest "state".
-  @override
-  Refreshable<Future<T>> get future;
-
   final NotifierT Function() _createNotifier;
+}
 
-  /// Runs the `build` method of a notifier.
-  ///
-  /// This is an implementation detail for differentiating [StreamNotifier.build]
-  /// from [FamilyStreamNotifier.build].
-  Stream<T> runNotifierBuild(AsyncNotifierBase<T> notifier);
+/// {@template riverpod.streamNotifier}
+/// A variant of [AsyncNotifier] which has [build] creating a [Stream].
+///
+/// This can be considered as a [StreamProvider] that can mutate its value over time.
+///
+/// The syntax for using this provider is slightly different from the others
+/// in that the provider's function doesn't receive a "ref" (and in case
+/// of `family`, doesn't receive an argument either).
+/// Instead the ref (and argument) are directly accessible in the associated
+/// [AsyncNotifier].
+///
+/// This can be considered as a [StreamProvider] that can mutate its value over time.
+/// When using `family`, your notifier type changes. Instead of extending
+/// [StreamNotifier], you should extend [FamilyStreamNotifier].
+/// {@endtemplate}
+abstract class StreamNotifier<StateT> extends _AsyncNotifierBase<StateT> {
+  @override
+  Ref<AsyncValue<StateT>> get ref {
+    final element = _element;
+    if (element == null) throw StateError(uninitializedElementError);
+
+    return element;
+  }
+
+  /// {@macro riverpod.async_notifier.build}
+  @visibleForOverriding
+  Stream<StateT> build();
+}
+
+// TODO hide all Elements and CreateElements from public API
+class _StreamNotifierProviderElement< //
+        NotifierT extends _AsyncNotifierBase<StateT>,
+        StateT> //
+    extends ProviderElementBase<AsyncValue<StateT>>
+    with
+        ClassProviderElement<NotifierT, AsyncValue<StateT>>,
+        FutureModifierElement<StateT> {
+  _StreamNotifierProviderElement(this.provider, super.container);
+
+  @override
+  final _StreamNotifierProviderBase<NotifierT, StateT> provider;
+
+  @override
+  void create({required bool didChangeDependency}) {
+    final notifierResult = classListenable.result ??= Result.guard(() {
+      return provider._createNotifier().._setElement(this);
+    });
+
+    notifierResult.when(
+      error: (error, stackTrace) {
+        onError(AsyncError(error, stackTrace), seamless: !didChangeDependency);
+      },
+      data: (notifier) {
+        handleStream(
+          () => provider.runNotifierBuild(this, notifier),
+          didChangeDependency: didChangeDependency,
+        );
+      },
+    );
+  }
 }

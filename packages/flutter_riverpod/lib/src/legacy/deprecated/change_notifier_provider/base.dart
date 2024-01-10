@@ -184,7 +184,7 @@ class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
 
   @override
   NotifierT get notifier => _notifierNotifier.value;
-  final _notifierNotifier = ProxyElementValueNotifier<NotifierT>();
+  final _notifierNotifier = ProxyElementValueListenable<NotifierT>();
 
   void Function()? _removeListener;
 
@@ -228,21 +228,21 @@ class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
   @override
   void visitChildren({
     required void Function(ProviderElementBase<Object?> element) elementVisitor,
-    required void Function(ProxyElementValueNotifier<Object?> element)
-        notifierVisitor,
+    required void Function(ProxyElementValueListenable<Object?> element)
+        listenableVisitor,
   }) {
     super.visitChildren(
       elementVisitor: elementVisitor,
-      notifierVisitor: notifierVisitor,
+      listenableVisitor: listenableVisitor,
     );
-    notifierVisitor(_notifierNotifier);
+    listenableVisitor(_notifierNotifier);
   }
 }
 
 /// The [Family] of [ChangeNotifierProvider].
 class ChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?, Arg>
-    extends FamilyBase<ChangeNotifierProviderRef<NotifierT>, NotifierT, Arg,
-        NotifierT, ChangeNotifierProvider<NotifierT>> {
+    extends FunctionalFamily<ChangeNotifierProviderRef<NotifierT>, NotifierT,
+        Arg, NotifierT, ChangeNotifierProvider<NotifierT>> {
   /// The [Family] of [ChangeNotifierProvider].
   ChangeNotifierProviderFamily(
     super._createFn, {

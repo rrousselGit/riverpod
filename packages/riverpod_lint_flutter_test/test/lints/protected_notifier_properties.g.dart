@@ -766,7 +766,7 @@ mixin A6Ref on AsyncNotifierProviderRef<int> {
   int get param;
 }
 
-class _A6ProviderElement extends AsyncNotifierProviderElement<A6, int>
+class _A6ProviderElement extends _AsyncNotifierProviderElement<A6, int>
     with A6Ref {
   _A6ProviderElement(super.provider, super.container);
 
@@ -1126,7 +1126,7 @@ mixin A8Ref on StreamNotifierProviderRef<int> {
   int get param;
 }
 
-class _A8ProviderElement extends StreamNotifierProviderElement<A8, int>
+class _A8ProviderElement extends _StreamNotifierProviderElement<A8, int>
     with A8Ref {
   _A8ProviderElement(super.provider, super.container);
 

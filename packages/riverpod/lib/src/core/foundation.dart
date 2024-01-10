@@ -10,6 +10,8 @@ sealed class ProviderOrFamily implements ProviderListenableOrFamily {
     required this.name,
     required this.dependencies,
     required this.allTransitiveDependencies,
+    required this.isAutoDispose,
+    @internal required this.debugGetCreateSourceHash,
   });
 
   /// The family that this provider/family depends on.
@@ -81,6 +83,20 @@ sealed class ProviderOrFamily implements ProviderListenableOrFamily {
 
   /// All the dependencies of a provider and their dependencies too.
   final Iterable<ProviderOrFamily>? allTransitiveDependencies;
+
+  /// Whether the state associated to this provider should be disposed
+  /// automatically when the provider stops being listened.
+  final bool isAutoDispose;
+
+  /// A debug-only function for obtaining a hash of the source code of the
+  /// initialization function.
+  ///
+  /// If after a hot-reload this function returns a different result, the
+  /// provider will be re-executed.
+  ///
+  /// This variable is only set by `riverpod_generator`.
+  @internal
+  final DebugGetCreateSourceHash? debugGetCreateSourceHash;
 }
 
 extension on ProviderListenableOrFamily {
@@ -226,7 +242,7 @@ mixin ProviderListenable<State> implements ProviderListenableOrFamily {
   /// }
   /// ```
   ///
-  /// This will further optimise our widget by rebuilding it only when "isAdult"
+  /// This will further optimize our widget by rebuilding it only when "isAdult"
   /// changed instead of whenever the age changes.
   ProviderListenable<Selected> select<Selected>(
     Selected Function(State value) selector,

@@ -1008,7 +1008,7 @@ class ProviderContainer implements Node {
           }
         },
         // We only care about Elements here, so let's ignore notifiers
-        notifierVisitor: (_) {},
+        listenableVisitor: (_) {},
       );
     }
   }

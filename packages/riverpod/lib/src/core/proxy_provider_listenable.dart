@@ -58,7 +58,7 @@ class ProviderElementProxy<Input, Output>
 
   @override
   final ProviderBase<Input> provider;
-  final ProxyElementValueNotifier<Output> Function(
+  final ProxyElementValueListenable<Output> Function(
     ProviderElementBase<Input> element,
   ) _lense;
 

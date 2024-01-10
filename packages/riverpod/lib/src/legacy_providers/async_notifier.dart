@@ -2,36 +2,21 @@ import 'dart:async';
 
 import 'package:meta/meta.dart';
 
-import '../common/listenable.dart';
-import '../common/pragma.dart';
-import '../common/result.dart';
-import '../common/run_guarded.dart';
 import '../core/async_value.dart';
 import '../framework.dart';
 import 'builders.dart';
 import 'future_provider.dart' show FutureProvider;
 import 'notifier.dart';
-import 'stream_provider.dart';
 
-part 'async_notifier/auto_dispose.dart';
-part 'async_notifier/auto_dispose_family.dart';
-part 'async_notifier/base.dart';
+part 'async_notifier/orphan.dart';
 part 'async_notifier/family.dart';
-part 'stream_notifier.dart';
-part 'stream_notifier/auto_dispose.dart';
-part 'stream_notifier/auto_dispose_family.dart';
-part 'stream_notifier/base.dart';
-part 'stream_notifier/family.dart';
 
-/// A base class for [AsyncNotifier].
-///
-/// Not meant for public consumption.
-@internal
-abstract class AsyncNotifierBase<State> {
-  AsyncNotifierProviderElementBase<AsyncNotifierBase<State>, State>?
-      get _element;
-
-  void _setElement(ProviderElementBase<AsyncValue<State>>? element);
+abstract class _AsyncNotifierBase<StateT> extends ClassBase< //
+    AsyncValue<StateT>,
+    FutureOr<StateT>> {
+  // TODO docs
+  @protected
+  Ref<AsyncValue<StateT>> get ref;
 
   /// The value currently exposed by this [AsyncNotifier].
   ///
@@ -45,26 +30,13 @@ abstract class AsyncNotifierBase<State> {
   /// dependency has changed) will trigger [AsyncNotifier.build] to be re-executed.
   @visibleForTesting
   @protected
-  AsyncValue<State> get state {
-    final element = _element;
-    if (element == null) throw StateError(uninitializedElementError);
-
-    element.flush();
-    return element.requireState;
-  }
+  @override
+  AsyncValue<StateT> get state;
 
   @visibleForTesting
   @protected
-  set state(AsyncValue<State> newState) {
-    final element = _element;
-    if (element == null) throw StateError(uninitializedElementError);
-
-    element.state = newState;
-  }
-
-  /// The [Ref] from the provider associated with this [AsyncNotifier].
-  @protected
-  Ref<AsyncValue<State>> get ref;
+  @override
+  set state(AsyncValue<StateT> newState);
 
   /// {@template riverpod.async_notifier.future}
   /// Obtains a [Future] that resolves with the first [state] value that is not
@@ -79,9 +51,12 @@ abstract class AsyncNotifierBase<State> {
   /// {@endtemplate}
   @visibleForTesting
   @protected
-  Future<State> get future {
-    final element = _element;
+  Future<StateT> get future {
+    // TODO remove downcast/upcast once "future" is merged with all providers
+    final Object? element = this.element;
     if (element == null) throw StateError(uninitializedElementError);
+
+    element as FutureModifierElement<StateT>;
 
     element.flush();
     return element.futureNotifier.value;
@@ -103,14 +78,14 @@ abstract class AsyncNotifierBase<State> {
   /// - [AsyncValue.guard], and alternate way to perform asynchronous operations.
   @visibleForTesting
   @protected
-  Future<State> update(
-    FutureOr<State> Function(State previousState) cb, {
-    FutureOr<State> Function(Object err, StackTrace stackTrace)? onError,
+  Future<StateT> update(
+    FutureOr<StateT> Function(StateT previousState) cb, {
+    FutureOr<StateT> Function(Object err, StackTrace stackTrace)? onError,
   }) async {
     // TODO cancel on rebuild?
 
     final newState = await future.then(cb, onError: onError);
-    state = AsyncData<State>(newState);
+    state = AsyncData<StateT>(newState);
     return newState;
   }
 
@@ -132,50 +107,28 @@ abstract class AsyncNotifierBase<State> {
   /// - [ProviderBase.select] and [AsyncSelector.selectAsync], which are
   ///   alternative ways to filter out changes to [state].
   @protected
-  bool updateShouldNotify(AsyncValue<State> previous, AsyncValue<State> next) {
-    return FutureHandlerProviderElementMixin.handleUpdateShouldNotify(
+  bool updateShouldNotify(
+    AsyncValue<StateT> previous,
+    AsyncValue<StateT> next,
+  ) {
+    return FutureModifierElement.handleUpdateShouldNotify(
       previous,
       next,
     );
   }
 }
 
-ProviderElementProxy<AsyncValue<T>, NotifierT>
-    _asyncNotifier<NotifierT extends AsyncNotifierBase<T>, T>(
-  AsyncNotifierProviderBase<NotifierT, T> that,
-) {
-  return ProviderElementProxy<AsyncValue<T>, NotifierT>(
-    that,
-    (element) {
-      return (element as AsyncNotifierProviderElement<NotifierT, T>)
-          ._notifierNotifier;
-    },
-  );
-}
-
-ProviderElementProxy<AsyncValue<T>, Future<T>> _asyncFuture<T>(
-  AsyncNotifierProviderBase<AsyncNotifierBase<T>, T> that,
-) {
-  return ProviderElementProxy<AsyncValue<T>, Future<T>>(
-    that,
-    (element) {
-      return (element as AsyncNotifierProviderElement<AsyncNotifierBase<T>, T>)
-          .futureNotifier;
-    },
-  );
-}
-
-/// A base class for [AsyncNotifierProvider]
-///
-/// Not meant for public consumption
-@visibleForTesting
-@internal
-abstract class AsyncNotifierProviderBase<NotifierT extends AsyncNotifierBase<T>,
-    T> extends ProviderBase<AsyncValue<T>> with AsyncSelector<T> {
-  /// A base class for [AsyncNotifierProvider]
-  ///
-  /// Not meant for public consumption
-  const AsyncNotifierProviderBase(
+abstract base class _AsyncNotifierProviderBase< //
+        NotifierT extends _AsyncNotifierBase<StateT>,
+        StateT> //
+    extends ClassProvider< //
+        NotifierT,
+        AsyncValue<StateT>,
+        FutureOr<StateT>,
+        Ref<AsyncValue<StateT>>> //
+    with
+        FutureModifier<StateT> {
+  const _AsyncNotifierProviderBase(
     this._createNotifier, {
     required super.name,
     required super.from,
@@ -183,38 +136,12 @@ abstract class AsyncNotifierProviderBase<NotifierT extends AsyncNotifierBase<T>,
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
+    required super.isAutoDispose,
+    required super.runNotifierBuildOverride,
   });
-
-  /// Obtains the [AsyncNotifier] associated with this provider, without listening
-  /// to state changes.
-  ///
-  /// This is typically used to invoke methods on a [AsyncNotifier]. For example:
-  ///
-  /// ```dart
-  /// Button(
-  ///   onTap: () => ref.read(stateNotifierProvider.notifier).increment(),
-  /// )
-  /// ```
-  ///
-  /// This listenable will notify its notifiers if the [AsyncNotifier] instance
-  /// changes.
-  /// This may happen if the provider is refreshed or one of its dependencies
-  /// has changes.
-  Refreshable<NotifierT> get notifier;
-
-  /// {@macro riverpod.async_notifier.future}
-  ///
-  /// Listening to this using [Ref.watch] will rebuild the widget/provider
-  /// when the [AsyncNotifier] emits a new value.
-  /// This will then return a new [Future] that resoles with the latest "state".
-  @override
-  Refreshable<Future<T>> get future;
 
   final NotifierT Function() _createNotifier;
 
-  /// Runs the `build` method of a notifier.
-  ///
-  /// This is an implementation detail for differentiating [AsyncNotifier.build]
-  /// from [FamilyAsyncNotifier.build].
-  FutureOr<T> runNotifierBuild(AsyncNotifierBase<T> notifier);
+  @override
+  NotifierT create() => _createNotifier();
 }

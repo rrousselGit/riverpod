@@ -85,7 +85,7 @@ class FamilyNotifierProviderImpl<NotifierT extends NotifierBase<T>, T, Arg>
 
 /// The [Family] of [NotifierProvider].
 class NotifierProviderFamily<NotifierT extends FamilyNotifier<T, Arg>, T, Arg>
-    extends NotifierFamilyBase<NotifierProviderRef<T>, T, Arg, NotifierT,
+    extends ClassFamily<NotifierProviderRef<T>, T, Arg, NotifierT,
         NotifierFamilyProvider<NotifierT, T, Arg>> {
   /// The [Family] of [NotifierProvider].
   NotifierProviderFamily(

@@ -2,28 +2,30 @@
 //  for other classes, please add state_notifier as dependency.
 export 'package:state_notifier/state_notifier.dart' show StateNotifier;
 
+// TODO assert all provider variants have const constructors
+
 export 'src/core/async_value.dart' hide AsyncTransition;
 export 'src/framework.dart'
     hide
         ProviderScheduler,
         debugCanModifyProviders,
         Vsync,
-        ValueProviderElement,
+        _ValueProviderElement,
         ValueProvider,
         FamilyCreate,
         AsyncSelector,
-        FamilyBase,
+        FunctionalFamily,
         AutoDisposeProviderElementMixin,
         FamilyOverride,
-        NotifierFamilyBase,
+        ClassFamily,
         SetupFamilyOverride,
         SetupOverride,
         AutoDisposeNotifierFamilyBase,
         ProviderOverride,
         AutoDisposeFamilyBase,
         DebugGetCreateSourceHash,
-        ProviderNotifierCreate,
-        ProviderCreate,
+        ClassProviderFactory,
+        FunctionalProviderFactory,
         computeAllTransitiveDependencies,
         Create,
         Node,
@@ -43,7 +45,7 @@ export 'src/legacy_providers/async_notifier.dart'
         AutoDisposeAsyncNotifierProviderImpl,
         AutoDisposeFamilyAsyncNotifierProviderImpl,
         FamilyAsyncNotifierProviderImpl,
-        AsyncNotifierBase,
+        _AsyncNotifierBase,
         AsyncNotifierProviderBase,
         CancelAsyncSubscription,
         BuildlessAsyncNotifier,

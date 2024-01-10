@@ -685,7 +685,7 @@ class ProviderBuilder {
 
   /// {@macro riverpod.autoDispose}
   Provider<State> call<State>(
-    Create<State, ProviderRef<State>> create, {
+    Create<State, Ref<State>> create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
   }) {
@@ -714,14 +714,17 @@ class ProviderFamilyBuilder {
 
   /// {@macro riverpod.family}
   ProviderFamily<State, Arg> call<State, Arg>(
-    FamilyCreate<State, ProviderRef<State>, Arg> create, {
+    FamilyCreate<State, Ref<State>, Arg> create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
   }) {
-    return ProviderFamily<State, Arg>(
+    return ProviderFamily<State, Arg>.internal(
       create,
       name: name,
       dependencies: dependencies,
+      isAutoDispose: false,
+      allTransitiveDependencies: null,
+      debugGetCreateSourceHash: null,
     );
   }
 
@@ -771,10 +774,13 @@ class FutureProviderFamilyBuilder {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
   }) {
-    return FutureProviderFamily<State, Arg>(
+    return FutureProviderFamily<State, Arg>.internal(
       create,
       name: name,
       dependencies: dependencies,
+      allTransitiveDependencies: computeAllTransitiveDependencies(dependencies),
+      debugGetCreateSourceHash: null,
+      isAutoDispose: false,
     );
   }
 
@@ -791,7 +797,7 @@ class StreamProviderBuilder {
 
   /// {@macro riverpod.autoDispose}
   StreamProvider<State> call<State>(
-    Create<Stream<State>, StreamProviderRef<State>> create, {
+    Create<Stream<State>, Ref<AsyncValue<State>>> create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
   }) {
@@ -820,11 +826,11 @@ class StreamProviderFamilyBuilder {
 
   /// {@macro riverpod.family}
   StreamProviderFamily<State, Arg> call<State, Arg>(
-    FamilyCreate<Stream<State>, StreamProviderRef<State>, Arg> create, {
+    FamilyCreate<Stream<State>, Ref<AsyncValue<State>>, Arg> create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
   }) {
-    return StreamProviderFamily<State, Arg>(
+    return StreamProviderFamily<State, Arg>.internal(
       create,
       name: name,
       dependencies: dependencies,
@@ -934,15 +940,20 @@ class AutoDisposeProviderBuilder {
   const AutoDisposeProviderBuilder();
 
   /// {@macro riverpod.autoDispose}
-  AutoDisposeProvider<State> call<State>(
-    Create<State, AutoDisposeProviderRef<State>> create, {
+  Provider<State> call<State>(
+    Create<State, Ref<State>> create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
   }) {
-    return AutoDisposeProvider<State>(
+    return Provider<State>.internal(
       create,
       name: name,
       dependencies: dependencies,
+      isAutoDispose: true,
+      allTransitiveDependencies: null,
+      debugGetCreateSourceHash: null,
+      from: null,
+      argument: null,
     );
   }
 
@@ -952,21 +963,24 @@ class AutoDisposeProviderBuilder {
   }
 }
 
-/// Builds a [AutoDisposeProviderFamily].
+/// Builds an auto-dispose [ProviderFamily].
 class AutoDisposeProviderFamilyBuilder {
-  /// Builds a [AutoDisposeProviderFamily].
+  /// Builds an auto-dispose [ProviderFamily].
   const AutoDisposeProviderFamilyBuilder();
 
   /// {@macro riverpod.family}
-  AutoDisposeProviderFamily<State, Arg> call<State, Arg>(
-    FamilyCreate<State, AutoDisposeProviderRef<State>, Arg> create, {
+  ProviderFamily<State, Arg> call<State, Arg>(
+    FamilyCreate<State, ProviderRef<State>, Arg> create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
   }) {
-    return AutoDisposeProviderFamily<State, Arg>(
+    return ProviderFamily<State, Arg>.internal(
       create,
       name: name,
+      isAutoDispose: true,
       dependencies: dependencies,
+      allTransitiveDependencies: null,
+      debugGetCreateSourceHash: null,
     );
   }
 }

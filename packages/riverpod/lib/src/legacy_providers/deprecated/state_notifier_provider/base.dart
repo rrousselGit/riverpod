@@ -154,7 +154,7 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<T>, T>
 
   @override
   NotifierT get notifier => _notifierNotifier.value;
-  final _notifierNotifier = ProxyElementValueNotifier<NotifierT>();
+  final _notifierNotifier = ProxyElementValueListenable<NotifierT>();
 
   void Function()? _removeListener;
 
@@ -195,20 +195,20 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<T>, T>
   @override
   void visitChildren({
     required void Function(ProviderElementBase<Object?> element) elementVisitor,
-    required void Function(ProxyElementValueNotifier<Object?> element)
-        notifierVisitor,
+    required void Function(ProxyElementValueListenable<Object?> element)
+        listenableVisitor,
   }) {
     super.visitChildren(
       elementVisitor: elementVisitor,
-      notifierVisitor: notifierVisitor,
+      listenableVisitor: listenableVisitor,
     );
-    notifierVisitor(_notifierNotifier);
+    listenableVisitor(_notifierNotifier);
   }
 }
 
 /// The [Family] of [StateNotifierProvider].
 class StateNotifierProviderFamily<NotifierT extends StateNotifier<T>, T, Arg>
-    extends FamilyBase<StateNotifierProviderRef<NotifierT, T>, T, Arg,
+    extends FunctionalFamily<StateNotifierProviderRef<NotifierT, T>, T, Arg,
         NotifierT, StateNotifierProvider<NotifierT, T>> {
   /// The [Family] of [StateNotifierProvider].
   StateNotifierProviderFamily(

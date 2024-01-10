@@ -4,7 +4,7 @@ import 'package:riverpod/src/internals.dart';
 
 typedef StreamNotifierProviderFactoryType
     = StreamNotifierProviderBase<NotifierT, T>
-        Function<NotifierT extends AsyncNotifierBase<T>, T>(
+        Function<NotifierT extends _AsyncNotifierBase<T>, T>(
   NotifierT Function() create, {
   String? name,
 });
@@ -54,7 +54,7 @@ List<StreamNotifierFactory> matrix({
       StreamNotifierFactory(
         label: 'StreamNotifierProviderFamily',
         isAutoDispose: false,
-        provider: <NotifierT extends AsyncNotifierBase<T>, T>(
+        provider: <NotifierT extends _AsyncNotifierBase<T>, T>(
           create, {
           argument,
           dependencies,
@@ -123,7 +123,7 @@ List<StreamNotifierFactory> matrix({
       StreamNotifierFactory(
         label: 'AutoDisposeStreamNotifierProviderFamily',
         isAutoDispose: true,
-        provider: <NotifierT extends AsyncNotifierBase<T>, T>(
+        provider: <NotifierT extends _AsyncNotifierBase<T>, T>(
           create, {
           argument,
           dependencies,
@@ -188,7 +188,7 @@ class StreamNotifierFactory {
   final SimpleTestProviderFactoryType simpleTestProvider;
 }
 
-abstract class StreamTestNotifierBase<T> extends AsyncNotifierBase<T> {
+abstract class StreamTestNotifierBase<T> extends _AsyncNotifierBase<T> {
   // overriding to remove the @protected
   @override
   AsyncValue<T> get state;

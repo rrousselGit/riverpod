@@ -75,7 +75,7 @@ export 'package:riverpod/src/internals.dart'
         // AsyncNotifier
         AsyncNotifier,
         AutoDisposeAsyncNotifier,
-        AsyncNotifierProviderElement,
+        _AsyncNotifierProviderElement,
         AutoDisposeAsyncNotifierProviderElement,
         // ignore: invalid_use_of_internal_member
         AsyncNotifierProviderImpl,
@@ -93,7 +93,7 @@ export 'package:riverpod/src/internals.dart'
         // StreamNotifier
         StreamNotifier,
         AutoDisposeStreamNotifier,
-        StreamNotifierProviderElement,
+        _StreamNotifierProviderElement,
         AutoDisposeStreamNotifierProviderElement,
         // ignore: invalid_use_of_internal_member
         StreamNotifierProviderImpl,

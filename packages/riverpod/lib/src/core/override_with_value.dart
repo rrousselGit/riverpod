@@ -5,7 +5,7 @@ part of '../framework.dart';
 /// This is an implementation detail of `overrideWithValue`.
 @sealed
 @internal
-class ValueProvider<State> extends ProviderBase<State> {
+final class ValueProvider<State> extends ProviderBase<State> {
   /// Creates a [ValueProvider].
   const ValueProvider(this._value)
       : super(
@@ -15,6 +15,7 @@ class ValueProvider<State> extends ProviderBase<State> {
           debugGetCreateSourceHash: null,
           allTransitiveDependencies: null,
           dependencies: null,
+          isAutoDispose: false,
         );
 
   final State _value;
@@ -26,17 +27,15 @@ class ValueProvider<State> extends ProviderBase<State> {
   Set<ProviderOrFamily>? get allTransitiveDependencies => null;
 
   @override
-  ValueProviderElement<State> createElement(ProviderContainer container) {
-    return ValueProviderElement(this, container);
+  _ValueProviderElement<State> createElement(ProviderContainer container) {
+    return _ValueProviderElement(this, container);
   }
 }
 
 /// The [ProviderElementBase] of a [ValueProvider]
-@sealed
-@internal
-class ValueProviderElement<State> extends ProviderElementBase<State> {
+class _ValueProviderElement<State> extends ProviderElementBase<State> {
   /// The [ProviderElementBase] of a [ValueProvider]
-  ValueProviderElement(this.provider, super.container);
+  _ValueProviderElement(this.provider, super.container);
 
   /// A custom listener called when `overrideWithValue` changes
   /// with a different value.

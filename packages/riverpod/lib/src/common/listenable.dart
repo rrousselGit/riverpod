@@ -18,7 +18,7 @@ class _Listener<T> {
 /// A listenable object used by [ProviderElementBase] as a mean to subscribe
 /// to subsets of the state exposed by a provider.
 @internal
-class ProxyElementValueNotifier<T> extends _ValueListenable<T> {
+class ProxyElementValueListenable<T> extends _ValueListenable<T> {
   /// Directly obtain the value exposed, gratefully handling cases where
   /// [result] is null or in error state.
   T get value {
@@ -43,7 +43,7 @@ class ProxyElementValueNotifier<T> extends _ValueListenable<T> {
     );
   }
 
-  /// Updates the [result] of this [ProxyElementValueNotifier] without invoking listeners.
+  /// Updates the [result] of this [ProxyElementValueListenable] without invoking listeners.
   // ignore: use_setters_to_change_properties, non_constant_identifier_names
   void UNSAFE_setResultWithoutNotifyingListeners(Result<T>? value) {
     _result = value;

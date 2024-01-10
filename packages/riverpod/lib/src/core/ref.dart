@@ -9,10 +9,34 @@ part of '../framework.dart';
 /// - [read] and [watch], two methods that allow a provider to consume other providers.
 /// - [onDispose], a method that allows performing a task when the provider is destroyed.
 /// {@endtemplate}
-@optionalTypeArgs
-abstract class Ref<State extends Object?> {
+abstract class Ref<State> {
+  // TODO changelog breaking: AutoDisposeRef and related interfaces are removed.
+  //  Use the non-autodispose variant instead. They now have the same API.
+
+  /// Obtains the state currently exposed by this provider.
+  ///
+  /// Mutating this property will notify the provider listeners.
+  ///
+  /// If called before a value was set, there are two possible scenarios:
+  /// - on synchronous providers, this will throw a [StateError].
+  /// - on asynchronous providers, this will return an [AsyncLoading].
+  ///
+  /// Will throw if the provider threw during creation.
+  State get state;
+  set state(State newState);
+
   /// The [ProviderContainer] that this provider is associated with.
   ProviderContainer get container;
+
+  /// Requests for the state of a provider to not be disposed when all the
+  /// listeners of the provider are removed.
+  ///
+  /// Returns an object which allows cancelling this operation, therefore
+  /// allowing the provider to dispose itself when all listeners are removed.
+  ///
+  /// If [keepAlive] is invoked multiple times, all [KeepAliveLink] will have
+  /// to be closed for the provider to dispose itself when all listeners are removed.
+  KeepAliveLink keepAlive();
 
   /// {@template riverpod.refresh}
   /// Forces a provider to re-evaluate its state immediately, and return the created value.
@@ -307,35 +331,14 @@ abstract class Ref<State extends Object?> {
   });
 }
 
-/// A [Ref] for providers that are automatically destroyed when
-/// no longer used.
-///
-/// The difference with [Ref] is that it has an extra
-/// [keepAlive] function to help determine if the state can be destroyed
-///  or not.
-abstract class AutoDisposeRef<State> extends Ref<State> {
-  /// Requests for the state of a provider to not be disposed when all the
-  /// listeners of the provider are removed.
-  ///
-  /// Returns an object which allows cancelling this operation, therefore
-  /// allowing the provider to dispose itself when all listeners are removed.
-  ///
-  /// If [keepAlive] is invoked multiple times, all [KeepAliveLink] will have
-  /// to be closed for the provider to dispose itself when all listeners are removed.
-  KeepAliveLink keepAlive();
+/// A object that maintains a provider alive.
+class KeepAliveLink {
+  KeepAliveLink._(this._close);
 
-  @override
-  T watch<T>(
-    // can read both auto-dispose and non-auto-dispose providers
-    ProviderListenable<T> provider,
-  );
+  final void Function() _close;
 
-  @override
-  ProviderSubscription<T> listen<T>(
-    // overridden to allow AutoDisposeProviderBase
-    ProviderListenable<T> provider,
-    void Function(T? previous, T next) listener, {
-    bool fireImmediately,
-    void Function(Object error, StackTrace stackTrace)? onError,
-  });
+  /// Release this [KeepAliveLink], allowing the associated provider to
+  /// be disposed if the provider is no-longer listener nor has any
+  /// remaining [KeepAliveLink].
+  void close() => _close();
 }

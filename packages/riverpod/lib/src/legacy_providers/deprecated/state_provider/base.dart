@@ -118,9 +118,9 @@ class StateProviderElement<T> extends ProviderElementBase<T>
 
   @override
   StateController<T> get controller => _controllerNotifier.value;
-  final _controllerNotifier = ProxyElementValueNotifier<StateController<T>>();
+  final _controllerNotifier = ProxyElementValueListenable<StateController<T>>();
 
-  final _stateNotifier = ProxyElementValueNotifier<StateController<T>>();
+  final _stateNotifier = ProxyElementValueListenable<StateController<T>>();
 
   void Function()? _removeListener;
 
@@ -159,21 +159,21 @@ class StateProviderElement<T> extends ProviderElementBase<T>
   @override
   void visitChildren({
     required void Function(ProviderElementBase<Object?> element) elementVisitor,
-    required void Function(ProxyElementValueNotifier<Object?> element)
-        notifierVisitor,
+    required void Function(ProxyElementValueListenable<Object?> element)
+        listenableVisitor,
   }) {
     super.visitChildren(
       elementVisitor: elementVisitor,
-      notifierVisitor: notifierVisitor,
+      listenableVisitor: listenableVisitor,
     );
-    notifierVisitor(_stateNotifier);
-    notifierVisitor(_controllerNotifier);
+    listenableVisitor(_stateNotifier);
+    listenableVisitor(_controllerNotifier);
   }
 }
 
 /// The [Family] of [StateProvider].
 class StateProviderFamily<R, Arg>
-    extends FamilyBase<StateProviderRef<R>, R, Arg, R, StateProvider<R>> {
+    extends FunctionalFamily<StateProviderRef<R>, R, Arg, R, StateProvider<R>> {
   /// The [Family] of [StateProvider].
   StateProviderFamily(
     super._createFn, {

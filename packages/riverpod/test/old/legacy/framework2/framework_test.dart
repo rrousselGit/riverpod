@@ -257,12 +257,12 @@ void main() {
     var firstDependents = <ProviderElementBase<Object?>>[];
     firstElement.visitChildren(
       elementVisitor: firstDependents.add,
-      notifierVisitor: (_) {},
+      listenableVisitor: (_) {},
     );
     var secondDependents = <ProviderElementBase<Object?>>[];
     secondElement.visitChildren(
       elementVisitor: secondDependents.add,
-      notifierVisitor: (_) {},
+      listenableVisitor: (_) {},
     );
 
     expect(firstDependents, [computedElement]);
@@ -276,12 +276,12 @@ void main() {
     firstDependents = <ProviderElementBase<Object?>>[];
     firstElement.visitChildren(
       elementVisitor: firstDependents.add,
-      notifierVisitor: (_) {},
+      listenableVisitor: (_) {},
     );
     secondDependents = <ProviderElementBase<Object?>>[];
     secondElement.visitChildren(
       elementVisitor: secondDependents.add,
-      notifierVisitor: (_) {},
+      listenableVisitor: (_) {},
     );
     expect(firstDependents, [computedElement]);
     expect(firstElement.hasListeners, true);
@@ -322,7 +322,7 @@ void main() {
     var firstDependents = <ProviderElementBase<Object?>>[];
     firstElement.visitChildren(
       elementVisitor: firstDependents.add,
-      notifierVisitor: (_) {},
+      listenableVisitor: (_) {},
     );
     expect(firstDependents, {computedElement});
     expect(firstElement.hasListeners, true);
@@ -333,7 +333,7 @@ void main() {
     firstDependents = <ProviderElementBase<Object?>>[];
     firstElement.visitChildren(
       elementVisitor: firstDependents.add,
-      notifierVisitor: (_) {},
+      listenableVisitor: (_) {},
     );
     expect(firstDependents, <ProviderElement<Object?>>{});
     expect(firstElement.hasListeners, false);

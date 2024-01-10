@@ -197,7 +197,7 @@ class NotifierProviderElement<NotifierT extends NotifierBase<T>, T>
   @override
   final NotifierProviderBase<NotifierT, T> provider;
 
-  final _notifierNotifier = ProxyElementValueNotifier<NotifierT>();
+  final _notifierNotifier = ProxyElementValueListenable<NotifierT>();
 
   @override
   void create({required bool didChangeDependency}) {
@@ -216,14 +216,14 @@ class NotifierProviderElement<NotifierT extends NotifierBase<T>, T>
   @override
   void visitChildren({
     required void Function(ProviderElementBase<Object?> element) elementVisitor,
-    required void Function(ProxyElementValueNotifier<Object?> element)
-        notifierVisitor,
+    required void Function(ProxyElementValueListenable<Object?> element)
+        listenableVisitor,
   }) {
     super.visitChildren(
       elementVisitor: elementVisitor,
-      notifierVisitor: notifierVisitor,
+      listenableVisitor: listenableVisitor,
     );
-    notifierVisitor(_notifierNotifier);
+    listenableVisitor(_notifierNotifier);
   }
 
   @override

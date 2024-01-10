@@ -29,6 +29,8 @@ mixin _ProviderRefreshable<T> implements Refreshable<T> {
 @internal
 void Function()? debugCanModifyProviders;
 
+class _Foo {}
+
 /// {@template riverpod.provider_element_base}
 /// An internal class that handles the state of a provider.
 ///
@@ -41,6 +43,7 @@ void Function()? debugCanModifyProviders;
 /// Do not use.
 /// {@endtemplate}
 // TODO rename to ProviderElement
+@internal
 abstract class ProviderElementBase<State> implements Ref<State>, Node {
   /// {@macro riverpod.provider_element_base}
   // TODO changelog: ProviderElement no-longer takes a provider as parameter but takes a ProviderContainer
@@ -54,10 +57,12 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   String? _debugCurrentCreateHash;
   var _debugSkipNotifyListenersAsserts = false;
 
+  _Foo? get foo => null;
+
   /// The provider associated with this [ProviderElementBase], before applying overrides.
   // Not typed as <State> because of https://github.com/rrousselGit/riverpod/issues/1100
   ProviderBase<Object?> get origin => _origin;
-  late ProviderBase<Object?> _origin;
+  late final ProviderBase<Object?> _origin;
 
   /// The provider associated with this [ProviderElementBase], after applying overrides.
   // TODO changelog ProviderElement.provider is now abstract
@@ -129,6 +134,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
 
   bool _debugDidSetState = false;
   bool _didBuild = false;
+  List<KeepAliveLink>? _keepAliveLinks;
 
   /* STATE */
   Result<State>? _state;
@@ -172,9 +178,12 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   /// [readSelf].
   @internal
   State get requireState {
-    const uninitializedError =
-        'Tried to read the state of an uninitialized provider. '
-        'Do you maybe have a circular dependency?';
+    const uninitializedError = '''
+Tried to read the state of an uninitialized provider.
+This could mean a few things:
+- You have a circular dependency, and your provider end-up depending on itself.
+- You read "ref.state", but no value was set beforehand.
+''';
 
     if (kDebugMode) {
       if (debugAssertDidSetStateEnabled && !_debugDidSetState) {
@@ -306,7 +315,8 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
     // and "flush" it, as it will already get rebuilt.
     visitChildren(
       elementVisitor: (element) => element._markDependencyMayHaveChanged(),
-      notifierVisitor: (notifier) => notifier.notifyDependencyMayHaveChanged(),
+      listenableVisitor: (notifier) =>
+          notifier.notifyDependencyMayHaveChanged(),
     );
   }
 
@@ -584,7 +594,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
     visitChildren(
       elementVisitor: (element) => element._markDependencyMayHaveChanged(),
-      notifierVisitor: (notifier) => notifier.notifyDependencyMayHaveChanged(),
+      listenableVisitor: (notifier) =>
+          notifier.notifyDependencyMayHaveChanged(),
     );
   }
 
@@ -773,6 +784,21 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
     }
   }
 
+  @override
+  KeepAliveLink keepAlive() {
+    final links = _keepAliveLinks ??= [];
+
+    late KeepAliveLink link;
+    link = KeepAliveLink._(() {
+      if (links.remove(link)) {
+        if (links.isEmpty) mayNeedDispose();
+      }
+    });
+    links.add(link);
+
+    return link;
+  }
+
   /// Returns the currently exposed by a provider
   ///
   /// May throw if the provider threw when creating the exposed value.
@@ -792,8 +818,8 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// [listen] multiple times to an element, it may be visited multiple times.
   void visitChildren({
     required void Function(ProviderElementBase<Object?> element) elementVisitor,
-    required void Function(ProxyElementValueNotifier<Object?> element)
-        notifierVisitor,
+    required void Function(ProxyElementValueListenable<Object?> element)
+        listenableVisitor,
   }) {
     for (var i = 0; i < _providerDependents.length; i++) {
       elementVisitor(_providerDependents[i]);
@@ -872,9 +898,16 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///
   /// - [AutoDisposeProviderElementMixin], which overrides this method to destroy the
   ///   state of a provider when no longer used.
-  @protected
   @visibleForOverriding
-  void mayNeedDispose() {}
+  void mayNeedDispose() {
+    if (provider.isAutoDispose) {
+      final links = _keepAliveLinks;
+
+      if (!hasListeners && (links == null || links.isEmpty)) {
+        container.scheduler.scheduleProviderDispose(this);
+      }
+    }
+  }
 
   @override
   @mustCallSuper
@@ -895,6 +928,8 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   void runOnDispose() {
     if (!_mounted) return;
     _mounted = false;
+
+    _keepAliveLinks?.clear();
 
     while (_listenedProviderSubscriptions.isNotEmpty) {
       _listenedProviderSubscriptions.first.close();
@@ -918,6 +953,11 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
     _onChangeSelfListeners = null;
     _onErrorSelfListeners = null;
     _didCancelOnce = false;
+
+    assert(
+      _keepAliveLinks == null || _keepAliveLinks!.isEmpty,
+      'Cannot call keepAlive() within onDispose listeners',
+    );
   }
 
   @override
