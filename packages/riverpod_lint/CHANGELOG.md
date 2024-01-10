@@ -1,3 +1,8 @@
+## Unreleased fix
+
+- Fix `async_value_nullable_pattern` false positive when used with generics
+  that have non-nullable type constrains.
+
 ## 2.3.7 - 2023-11-27
 
 - `riverpod` upgraded to `2.4.9`
