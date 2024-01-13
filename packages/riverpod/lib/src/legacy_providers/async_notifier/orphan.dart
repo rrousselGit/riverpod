@@ -76,7 +76,7 @@ final class AsyncNotifierProvider< //
 
   /// An implementation detail of Riverpod
   @internal
-  AsyncNotifierProvider.internal(
+  const AsyncNotifierProvider.internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,

@@ -58,9 +58,10 @@ export 'src/legacy_providers/async_notifier.dart'
         StreamNotifierProviderBase,
         BuildlessAutoDisposeStreamNotifier,
         BuildlessStreamNotifier;
-export 'src/legacy_providers/deprecated/state_controller.dart';
-export 'src/legacy_providers/deprecated/state_notifier_provider.dart';
-export 'src/legacy_providers/deprecated/state_provider.dart';
+
+// TODO changelog breaking: StateNotifier & co are no-longer exported from pkg:riverpod/riverpod.dart
+//  Use pkg:riverpod/legacy.dart
+
 export 'src/legacy_providers/future_provider.dart';
 export 'src/legacy_providers/notifier.dart'
     hide

@@ -3,6 +3,9 @@ import 'package:test/test.dart';
 
 void main() {
   group('ProviderBase', () {
+    // TODO assert all providers have an "internal" const constructor
+    // TODO assert all non-internal constructors set allTransitiveDependencies
+
     test('allTransitiveDependencies', () {
       final a = Provider((ref) => 0);
       final b = Provider.family((ref, _) => 0, dependencies: [a]);

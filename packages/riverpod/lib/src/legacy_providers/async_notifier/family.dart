@@ -28,21 +28,8 @@ final class FamilyAsyncNotifierProvider< //
         StateT,
         ArgT> //
     extends _AsyncNotifierProviderBase<NotifierT, StateT> {
-  const FamilyAsyncNotifierProvider(
-    super._createNotifier, {
-    super.name,
-    super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.isAutoDispose,
-    required super.from,
-    required super.argument,
-    required super.runNotifierBuildOverride,
-  });
-
   /// An implementation detail of Riverpod
-  @internal
-  const FamilyAsyncNotifierProvider.internal(
+  const FamilyAsyncNotifierProvider._(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -53,9 +40,6 @@ final class FamilyAsyncNotifierProvider< //
     required super.isAutoDispose,
     required super.runNotifierBuildOverride,
   });
-
-  /// {@macro riverpod.autoDispose}
-  static const autoDispose = AutoDisposeAsyncNotifierProviderFamily.new;
 
   @override
   _AsyncNotifierProviderElement<NotifierT, StateT> createElement(
@@ -72,7 +56,7 @@ final class FamilyAsyncNotifierProvider< //
             Ref<AsyncValue<StateT>>>?
         build,
   }) {
-    return FamilyAsyncNotifierProvider.internal(
+    return FamilyAsyncNotifierProvider._(
       create ?? _createNotifier,
       name: name,
       dependencies: dependencies,
@@ -114,6 +98,20 @@ class AsyncNotifierProviderFamily< //
         FutureOr<StateT>,
         FamilyAsyncNotifierProvider<NotifierT, StateT, ArgT>> {
   /// The [Family] of [AsyncNotifierProvider].
+  AsyncNotifierProviderFamily(
+    super._createFn, {
+    super.name,
+    super.dependencies,
+    super.isAutoDispose = false,
+  }) : super(
+          providerFactory: FamilyAsyncNotifierProvider._,
+          debugGetCreateSourceHash: null,
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+        );
+
+  /// The [Family] of [AsyncNotifierProvider].
+  @internal
   AsyncNotifierProviderFamily.internal(
     super._createFn, {
     super.name,
@@ -121,7 +119,5 @@ class AsyncNotifierProviderFamily< //
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.isAutoDispose,
-  }) : super(
-          providerFactory: FamilyAsyncNotifierProvider.internal,
-        );
+  }) : super(providerFactory: FamilyAsyncNotifierProvider._);
 }

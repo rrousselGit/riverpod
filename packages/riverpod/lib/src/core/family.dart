@@ -29,11 +29,13 @@ typedef ClassProviderFactory< //
         RefT extends Ref<Object?>,
         ArgT>
     = ProviderT Function(
-  CreatedT Function() create, {
+  NotifierT Function() create, {
   required String? name,
   required Iterable<ProviderOrFamily>? dependencies,
   required Iterable<ProviderOrFamily>? allTransitiveDependencies,
   required DebugGetCreateSourceHash? debugGetCreateSourceHash,
+  required RunNotifierBuild<NotifierT, CreatedT, RefT>?
+      runNotifierBuildOverride,
   required bool isAutoDispose,
   required Family from,
   required ArgT argument,
@@ -173,7 +175,7 @@ class ClassFamily< //
 
 // TODO docs
   @internal
-  final ClassProviderFactory<NotifierT, ProviderT, NotifierT, RefT, ArgT>
+  final ClassProviderFactory<NotifierT, ProviderT, CreatedT, RefT, ArgT>
       providerFactory;
 
   final NotifierT Function() _createFn;
@@ -189,6 +191,7 @@ class ClassFamily< //
       dependencies: dependencies,
       allTransitiveDependencies: allTransitiveDependencies,
       debugGetCreateSourceHash: debugGetCreateSourceHash,
+      runNotifierBuildOverride: null,
     );
   }
 
