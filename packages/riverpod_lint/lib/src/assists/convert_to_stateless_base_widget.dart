@@ -152,7 +152,7 @@ class ConvertToStatelessBaseWidget extends RiverpodAssist {
           .whereType<MethodDeclaration>()
           .firstWhereOrNull((element) => element.name.lexeme == 'createState');
       if (createStateMethod != null) {
-        builder.addDeletion(createStateMethod.sourceRange);
+        builder.addDeletion(createStateMethod.sourceRange.getExpanded(1));
       }
 
       // Search for the associated State class
