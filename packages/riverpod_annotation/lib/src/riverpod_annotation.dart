@@ -46,6 +46,10 @@ class Riverpod {
   /// // By not specifying "dependencies", we are saying that this provider is never scoped
   /// @riverpod
   /// Foo root(RootRef ref) => Foo();
+  /// 
+  /// @keepAliveRiverpod
+  /// Foo root(RootRef ref) => Foo();
+  /// 
   /// // By specifying "dependencies" (even if the list is empty),
   /// // we are saying that this provider is potentially scoped
   /// @Riverpod(dependencies: [])
@@ -60,6 +64,13 @@ class Riverpod {
   /// Object? dependent(DependentRef ref) {
   ///   ref.watch(rootProvider);
   ///   // This provider does not depend on any scoped provider,
+  ///   // as such "dependencies" is optional
+  /// }
+  ///
+  /// @keepAliveRiverpod
+  /// Object? dependent(DependentRef ref) {
+  ///   ref.watch(rootProvider);
+  ///   // This provider (with keepAlive set to true) does not depend on any scoped provider,
   ///   // as such "dependencies" is optional
   /// }
   ///
@@ -104,6 +115,10 @@ class Riverpod {
 /// {@macro riverpod_annotation.provider}
 @Target({TargetKind.classType, TargetKind.function})
 const riverpod = Riverpod();
+
+/// {@macro riverpod_annotation.provider}
+@Target({TargetKind.classType, TargetKind.function})
+const keepAliveRiverpod = Riverpod(keepAlive: true);
 
 /// An annotation used to help the linter find the user-defined element from
 /// the generated provider.
