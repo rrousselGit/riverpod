@@ -39,7 +39,7 @@ export 'src/framework.dart'
         ProviderPointerManager,
         ProviderDirectory;
 
-export 'src/legacy_providers/async_notifier.dart'
+export 'src/providers/async_notifier.dart'
     hide
         AsyncNotifierProviderImpl,
         AutoDisposeAsyncNotifierProviderImpl,
@@ -62,8 +62,8 @@ export 'src/legacy_providers/async_notifier.dart'
 // TODO changelog breaking: StateNotifier & co are no-longer exported from pkg:riverpod/riverpod.dart
 //  Use pkg:riverpod/legacy.dart
 
-export 'src/legacy_providers/future_provider.dart';
-export 'src/legacy_providers/notifier.dart'
+export 'src/providers/future_provider.dart';
+export 'src/providers/notifier.dart'
     hide
         NotifierBase,
         NotifierProviderBase,
@@ -73,5 +73,5 @@ export 'src/legacy_providers/notifier.dart'
         NotifierProviderImpl,
         BuildlessAutoDisposeNotifier,
         BuildlessNotifier;
-export 'src/legacy_providers/provider.dart' hide InternalProvider;
-export 'src/legacy_providers/stream_provider.dart';
+export 'src/providers/provider.dart' hide InternalProvider;
+export 'src/providers/stream_provider.dart';

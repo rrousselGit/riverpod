@@ -74,10 +74,13 @@ void main() {
 
   group('FamilyOverride', () {
     test('TransitiveOverride.toString', () {
+      final f = Provider.family;
+
       final provider = Provider.family<int, int>((_, b) => 42);
+      final provider2 = f.call<int, int>((_, b) => 42);
 
       expect(
-        TransitiveFamilyOverride(provider).toString(),
+        TransitiveFamilyOverride(provider2).toString(),
         equalsIgnoringHashCodes('ProviderFamily<int, int>#00000'),
       );
     });

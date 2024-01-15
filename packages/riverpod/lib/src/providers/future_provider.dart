@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:meta/meta.dart';
 
 import '../core/async_value.dart';
+import '../core/builder.dart';
 import '../framework.dart';
 import 'async_notifier.dart';
-import 'builders.dart';
 import 'provider.dart' show Provider;
 import 'stream_provider.dart' show StreamProvider;
 
@@ -86,14 +86,26 @@ final class FutureProvider<StateT> extends FunctionalProvider<
     this._create, {
     super.name,
     super.dependencies,
+    super.isAutoDispose = false,
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
           from: null,
           argument: null,
           debugGetCreateSourceHash: null,
-          // TODO add autoDispose parameter
-          isAutoDispose: false,
+        );
+
+  FutureProvider._autoDispose(
+    this._create, {
+    super.name,
+    super.dependencies,
+  }) : super(
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+          isAutoDispose: true,
+          from: null,
+          argument: null,
+          debugGetCreateSourceHash: null,
         );
 
   /// An implementation detail of Riverpod
@@ -110,10 +122,16 @@ final class FutureProvider<StateT> extends FunctionalProvider<
   });
 
   /// {@macro riverpod.autoDispose}
-  static const autoDispose = AutoDisposeFutureProviderBuilder();
+  static const autoDispose = ProviderBuilder(
+    call: FutureProvider._autoDispose,
+    family: FutureProviderFamily._,
+  );
 
   /// {@macro riverpod.family}
-  static const family = FutureProviderFamilyBuilder();
+  static const family = FamilyBuilder(
+    call: FutureProviderFamily._,
+    autoDispose: FutureProviderFamily._autoDispose,
+  );
 
   /// TODO make all "create" public, for the sake of dartdocs.
   final Create<FutureOr<StateT>, FutureProviderRef<StateT>> _create;
@@ -179,6 +197,30 @@ class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
 /// The [Family] of a [FutureProvider]
 class FutureProviderFamily<R, Arg> extends FunctionalFamily<
     FutureProviderRef<R>, AsyncValue<R>, Arg, FutureOr<R>, FutureProvider<R>> {
+  FutureProviderFamily._(
+    super._createFn, {
+    super.name,
+    super.dependencies,
+    super.isAutoDispose = false,
+  }) : super(
+          providerFactory: FutureProvider<R>.internal,
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+          debugGetCreateSourceHash: null,
+        );
+
+  FutureProviderFamily._autoDispose(
+    super._createFn, {
+    super.name,
+    super.dependencies,
+  }) : super(
+          providerFactory: FutureProvider<R>.internal,
+          isAutoDispose: true,
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+          debugGetCreateSourceHash: null,
+        );
+
   /// Implementation detail of the code-generator.
   @internal
   FutureProviderFamily.internal(

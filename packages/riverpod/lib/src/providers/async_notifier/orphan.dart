@@ -64,7 +64,6 @@ final class AsyncNotifierProvider< //
     super._createNotifier, {
     super.name,
     super.dependencies,
-    super.runNotifierBuildOverride,
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
@@ -72,6 +71,21 @@ final class AsyncNotifierProvider< //
           argument: null,
           debugGetCreateSourceHash: null,
           isAutoDispose: false,
+          runNotifierBuildOverride: null,
+        );
+
+  AsyncNotifierProvider._autoDispose(
+    super._createNotifier, {
+    super.name,
+    super.dependencies,
+  }) : super(
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+          from: null,
+          argument: null,
+          debugGetCreateSourceHash: null,
+          isAutoDispose: true,
+          runNotifierBuildOverride: null,
         );
 
   /// An implementation detail of Riverpod
@@ -89,10 +103,16 @@ final class AsyncNotifierProvider< //
   });
 
   /// {@macro riverpod.autoDispose}
-  static const autoDispose = AutoDisposeAsyncNotifierProviderBuilder();
+  static const autoDispose = ProviderBuilder(
+    call: AsyncNotifierProvider._autoDispose,
+    family: AsyncNotifierProviderFamily._,
+  );
 
   /// {@macro riverpod.family}
-  static const family = AsyncNotifierProviderFamilyBuilder();
+  static const family = FamilyBuilder(
+    call: AsyncNotifierProviderFamily._,
+    autoDispose: AsyncNotifierProviderFamily._autoDispose,
+  );
 
   AsyncNotifierProvider<NotifierT, StateT> _copyWith({
     NotifierT Function()? create,

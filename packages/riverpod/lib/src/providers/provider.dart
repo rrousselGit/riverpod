@@ -1,8 +1,8 @@
 import 'package:meta/meta.dart';
 
+import '../core/builder.dart';
 import '../framework.dart';
-import 'builders.dart';
-import 'deprecated/state_notifier_provider.dart' show StateNotifierProvider;
+import 'legacy/state_notifier_provider.dart' show StateNotifierProvider;
 import 'stream_provider.dart' show StreamProvider;
 
 // TODO changelog ProviderRef was removed. Used Ref directly
@@ -15,14 +15,26 @@ final class Provider<StateT>
     this._create, {
     super.name,
     super.dependencies,
-    // TODO make "autoDispose" an optional arg on the constructor
+    super.isAutoDispose = false,
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
           from: null,
           argument: null,
           debugGetCreateSourceHash: null,
-          isAutoDispose: false,
+        );
+
+  Provider._autoDispose(
+    this._create, {
+    super.name,
+    super.dependencies,
+  }) : super(
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+          isAutoDispose: true,
+          from: null,
+          argument: null,
+          debugGetCreateSourceHash: null,
         );
 
   /// An implementation detail of Riverpod
@@ -38,11 +50,17 @@ final class Provider<StateT>
     required super.isAutoDispose,
   });
 
-  /// {@macro riverpod.family}
-  static const family = ProviderFamilyBuilder();
-
   /// {@macro riverpod.autoDispose}
-  static const autoDispose = AutoDisposeProviderBuilder();
+  static const autoDispose = ProviderBuilder(
+    call: Provider._autoDispose,
+    family: ProviderFamily._,
+  );
+
+  /// {@macro riverpod.family}
+  static const family = FamilyBuilder(
+    call: ProviderFamily._,
+    autoDispose: ProviderFamily._autoDispose,
+  );
 
   final Create<StateT, Ref<StateT>> _create;
 
@@ -346,6 +364,30 @@ class ProviderElement<State> extends ProviderElementBase<State> {
 // TODO remove custom family types
 class ProviderFamily<R, Arg>
     extends FunctionalFamily<Ref<R>, R, Arg, R, Provider<R>> {
+  ProviderFamily._(
+    super._createFn, {
+    super.name,
+    super.dependencies,
+    super.isAutoDispose = false,
+  }) : super(
+          providerFactory: Provider.internal,
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+          debugGetCreateSourceHash: null,
+        );
+
+  ProviderFamily._autoDispose(
+    super._createFn, {
+    super.name,
+    super.dependencies,
+  }) : super(
+          providerFactory: Provider.internal,
+          isAutoDispose: true,
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+          debugGetCreateSourceHash: null,
+        );
+
   /// An implementation detail of Riverpod
   @internal
   ProviderFamily.internal(

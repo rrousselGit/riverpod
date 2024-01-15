@@ -98,7 +98,7 @@ class AsyncNotifierProviderFamily< //
         FutureOr<StateT>,
         FamilyAsyncNotifierProvider<NotifierT, StateT, ArgT>> {
   /// The [Family] of [AsyncNotifierProvider].
-  AsyncNotifierProviderFamily(
+  AsyncNotifierProviderFamily._(
     super._createFn, {
     super.name,
     super.dependencies,
@@ -106,6 +106,18 @@ class AsyncNotifierProviderFamily< //
   }) : super(
           providerFactory: FamilyAsyncNotifierProvider._,
           debugGetCreateSourceHash: null,
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+        );
+
+  AsyncNotifierProviderFamily._autoDispose(
+    super._createFn, {
+    super.name,
+    super.dependencies,
+  }) : super(
+          providerFactory: FamilyAsyncNotifierProvider._,
+          debugGetCreateSourceHash: null,
+          isAutoDispose: true,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
         );

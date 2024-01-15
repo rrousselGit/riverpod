@@ -5,8 +5,8 @@ import 'package:meta/meta.dart';
 import '../common/listenable.dart';
 import '../common/result.dart';
 import '../core/async_value.dart';
+import '../core/builder.dart';
 import '../framework.dart';
-import 'builders.dart';
 import 'future_provider.dart' show FutureProvider;
 import 'provider.dart' show Provider;
 
@@ -74,14 +74,26 @@ final class StreamProvider<T>
     this._create, {
     super.name,
     super.dependencies,
+    super.isAutoDispose = false,
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
           from: null,
           argument: null,
           debugGetCreateSourceHash: null,
-          // TODO add autoDispose param
-          isAutoDispose: false,
+        );
+
+  StreamProvider._autoDispose(
+    this._create, {
+    super.name,
+    super.dependencies,
+  }) : super(
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+          isAutoDispose: true,
+          from: null,
+          argument: null,
+          debugGetCreateSourceHash: null,
         );
 
   /// An implementation detail of Riverpod
@@ -98,10 +110,16 @@ final class StreamProvider<T>
   });
 
   /// {@macro riverpod.autoDispose}
-  static const autoDispose = AutoDisposeStreamProviderBuilder();
+  static const autoDispose = ProviderBuilder(
+    call: StreamProvider._autoDispose,
+    family: StreamProviderFamily._,
+  );
 
   /// {@macro riverpod.family}
-  static const family = StreamProviderFamilyBuilder();
+  static const family = FamilyBuilder(
+    call: StreamProviderFamily._,
+    autoDispose: StreamProviderFamily._autoDispose,
+  );
 
   final Create<Stream<T>, Ref<AsyncValue<T>>> _create;
 
@@ -198,6 +216,18 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
 /// The [Family] of a [StreamProvider]
 class StreamProviderFamily<R, Arg> extends FunctionalFamily<Ref<AsyncValue<R>>,
     AsyncValue<R>, Arg, Stream<R>, StreamProvider<R>> {
+  StreamProviderFamily._(
+    super._createFn, {
+    super.name,
+    super.dependencies,
+    super.isAutoDispose = false,
+  }) : super(
+          providerFactory: StreamProvider<R>.internal,
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+          debugGetCreateSourceHash: null,
+        );
+
   /// Implementation detail of the code-generator.
   @internal
   StreamProviderFamily.internal(
@@ -208,4 +238,16 @@ class StreamProviderFamily<R, Arg> extends FunctionalFamily<Ref<AsyncValue<R>>,
     required super.debugGetCreateSourceHash,
     required super.isAutoDispose,
   }) : super(providerFactory: StreamProvider<R>.internal);
+
+  StreamProviderFamily._autoDispose(
+    super._createFn, {
+    super.name,
+    super.dependencies,
+  }) : super(
+          providerFactory: StreamProvider<R>.internal,
+          isAutoDispose: true,
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+          debugGetCreateSourceHash: null,
+        );
 }
