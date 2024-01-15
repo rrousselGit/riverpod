@@ -1,6 +1,7 @@
 ## Unreleased patch
 
 - Improved `@Riverpod(dependencies: [...])` documentation.
+- Introduces `@keepAliveRiverpod` shorthand.
 
 ## 2.3.3 - 2023-11-27
 
