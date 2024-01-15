@@ -1,56 +1,53 @@
 ---
-title: ^0.14.0 to ^1.0.0
+title: ^0.14.0 到 ^1.0.0
 ---
 
 import { Link } from "@site/src/components/Link";
 
 
-After a long wait, the first stable version of Riverpod is finally released 👏
+经过漫长的等待，Riverpod 迎来了首个稳定版本的发布 👏
 
-To see the full list of changes, consult the [Changelog](https://pub.dev/packages/flutter_riverpod/changelog#100).  
-In this page, we will focus on how to migrate an existing Riverpod application
-from version 0.14.x to version 1.0.0.
+要查看完整的变更列表，请参阅 [Changelog](https://pub.dev/packages/flutter_riverpod/changelog#100).  
+在本页面中，我们将重点介绍如何将现有的 Riverpod 应用程序从版本 0.14.x 迁移到版本 1.0.0。
 
-## Using the migration tool to automatically upgrade your project to the new syntax
+## 使用迁移工具自动升级项目到新的语法
 
-Before explaining the various changes, it is worth noting that Riverpod comes with
-a command-line tool to automatically migrate your project for you.
+在解释各种变更之前，值得注意的是，Riverpod 提供了一个命令行工具，可以自动为您的项目进行迁移。
 
-### Installing the command line tool
+### 安装命令行工具
 
-To install the migration tool, run:
+要安装迁移工具，请运行：
 
 ```sh
 dart pub global activate riverpod_cli
 ```
 
-You should now be able to run:
+现在您应该能够运行：
 
 ```sh
 riverpod --help
 ```
 
-### Usage
+### 使用说明
 
-Now that the command line is installed, we can start using it.
+既然命令行工具已经安装，我们可以开始使用它了。
 
-- First, open the project you want to migrate in your terminal.
-- **Do not** upgrade Riverpod.  
-  The migration tool will upgrade the version of Riverpod for you.
+- 首先，在终端中打开您想要迁移的项目。
+- **不用** 升级 Riverpod.  
+  迁移工具将会为您升级 Riverpod 的版本。
 
   :::danger
-  Not upgrading Riverpod is important.  
-  The tool will not execute properly if you have already installed version 1.0.0.
-  As such, make sure that you are properly using an older version before starting the tool.
+  不升级 Riverpod 非常重要。  
+  如果您已经安装了版本 1.0.0，该工具将无法正常执行。因此，请确保在启动工具之前正确使用较旧的版本。
   :::
 
-- Make sure that your project does not contain errors.
-- Execute:
+- 确保您的项目不包含错误。
+- 执行
   ```sh
   riverpod migrate
   ```
 
-The tool will then analyze your project and suggest changes. For example you may see:
+然后，该工具将分析您的项目并提出更改建议。例如，您可能会看到：
 
 ```diff
 -Widget build(BuildContext context, ScopedReader watch) {
@@ -62,27 +59,25 @@ The tool will then analyze your project and suggest changes. For example you may
 Accept change (y = yes, n = no [default], A = yes to all, q = quit)?
 ```
 
-To accept the change, simply press <kbd>y</kbd>. Otherwise to reject it, press <kbd>n</kbd>.
+要接受更改，只需按 <kbd>y</kbd> 键。否则，要拒绝更改，按 <kbd>n</kbd> 键.
 
-## The changes
+## 变更内容
 
-Now that we've seen how to use the CLI to automatically upgrade your project,
-let's see in detail the changes necessary.
+现在我们已经了解了如何使用命令行工具自动升级项目，让我们详细看看所需的更改。
 
-### Syntax unification
 
-Version 1.0.0 of Riverpod focused on the unification of the syntax for
-interacting with providers.  
-Before, Riverpod had many similar yet different syntaxes for reading a provider,
-such as `ref.watch(provider)` vs `useProvider(provider)` vs `watch(provider)`.  
-With version 1.0.0, only one syntax remains: `ref.watch(provider)`. The
-others were removed.
+### 语法统一
 
-As such:
+Riverpod 1.0.0 版本主要关注与提供程序交互的语法统一。  
+在此之前，Riverpod 对于读取提供程序有许多类似但不同的语法，
+例如 `ref.watch(provider)` 与 `useProvider(provider)` 与 `watch(provider)`。  
+在版本 1.0.0 中，只剩下一种语法： `ref.watch(provider)`。其他的语法已经被移除。
 
-- `useProvider` is removed in favor of `HookConsumerWidget`.
+例如：
 
-  Before:
+- `useProvider` 已被移除，而推荐使用 `HookConsumerWidget`。
+
+  之前:
 
   ```dart
   class Example extends HookWidget {
@@ -95,7 +90,7 @@ As such:
   }
   ```
 
-  After:
+  之后:
 
   ```dart
   class Example extends HookConsumerWidget {
@@ -108,9 +103,9 @@ As such:
   }
   ```
 
-- The prototype of `ConsumerWidget`'s `build` and `Consumer`'s `builder` changed.
+- 在 `ConsumerWidget` 的 `build` 方法和 `Consumer` 的 `builder` 方法原型发生了变化.
  
-  Before:
+  之前:
 
   ```dart
   class Example extends ConsumerWidget {
@@ -129,7 +124,7 @@ As such:
   )
   ```
 
-  After:
+  之后:
 
   ```dart
   class Example extends ConsumerWidget {
@@ -148,9 +143,9 @@ As such:
   )
   ```
 
-- `context.read` is removed in favor of `ref.read`.
+- `context.read` 被移除，取而代之的是 `ref.read` 。
 
-  Before:
+  之前:
 
   ```dart
   class Example extends StatelessWidget {
@@ -163,7 +158,7 @@ As such:
   }
   ```
 
-  After:
+  之后:
 
   ```dart
   class Example extends ConsumerWidget {
@@ -176,15 +171,15 @@ As such:
   }
   ```
 
-### StateProvider update
+### StateProvider 更新
 
-[StateProvider] was updated to match [StateNotifierProvider].
+[StateProvider] 已更新以匹配 [StateNotifierProvider]。
 
-Before, doing `ref.watch(StateProvider)` returned a `StateController` instance.
-Now it only returns the state of the `StateController`.
+在更新之前，使用 `ref.watch(StateProvider)` 会返回一个 `StateController` 实例。
+现在它只返回 `StateController` 的状态。
 
-To migrate you have a few solutions.  
-If your code only obtained the state without modifying it, you can change from:
+要进行迁移，有几种解决方案。  
+如果您的代码仅获取状态而不修改它，可以从：
 
 ```dart
 final provider = StateProvider<int>(...);
@@ -198,7 +193,7 @@ Consumer(
 )
 ```
 
-to:
+变到:
 
 ```dart
 final provider = StateProvider<int>(...);
@@ -212,7 +207,7 @@ Consumer(
 )
 ```
 
-Alternatively you can use the new `StateProvider.state` to keep the old behavior.
+或者，您可以使用新的 `StateProvider.state` 来保持旧的行为。
 
 ```dart
 final provider = StateProvider<int>(...);
