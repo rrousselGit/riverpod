@@ -2,13 +2,13 @@ import 'dart:async';
 
 import 'package:meta/meta.dart';
 
+import '../builder.dart';
 import '../core/async_value.dart';
-import '../core/builder.dart';
 import '../framework.dart';
 import 'future_provider.dart' show FutureProvider;
 
-part 'stream_notifier/orphan.dart';
 part 'stream_notifier/family.dart';
+part 'stream_notifier/orphan.dart';
 
 abstract class _StreamNotifierBase<StateT> extends ClassBase< //
         AsyncValue<StateT>,

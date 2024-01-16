@@ -1,6 +1,6 @@
 import 'package:meta/meta.dart';
 
-import '../core/builder.dart';
+import '../builder.dart';
 import '../framework.dart';
 import 'legacy/state_notifier_provider.dart' show StateNotifierProvider;
 import 'stream_provider.dart' show StreamProvider;
@@ -51,16 +51,10 @@ final class Provider<StateT>
   });
 
   /// {@macro riverpod.autoDispose}
-  static const autoDispose = ProviderBuilder(
-    call: Provider._autoDispose,
-    family: ProviderFamily._,
-  );
+  static const autoDispose = AutoDisposeProviderBuilder();
 
   /// {@macro riverpod.family}
-  static const family = FamilyBuilder(
-    call: ProviderFamily._,
-    autoDispose: ProviderFamily._autoDispose,
-  );
+  static const family = ProviderFamilyBuilder();
 
   final Create<StateT, Ref<StateT>> _create;
 

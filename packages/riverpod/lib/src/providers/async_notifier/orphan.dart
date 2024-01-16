@@ -103,16 +103,10 @@ final class AsyncNotifierProvider< //
   });
 
   /// {@macro riverpod.autoDispose}
-  static const autoDispose = ProviderBuilder(
-    call: AsyncNotifierProvider._autoDispose,
-    family: AsyncNotifierProviderFamily._,
-  );
+  static const autoDispose = AutoDisposeAsyncNotifierProviderBuilder();
 
   /// {@macro riverpod.family}
-  static const family = FamilyBuilder(
-    call: AsyncNotifierProviderFamily._,
-    autoDispose: AsyncNotifierProviderFamily._autoDispose,
-  );
+  static const family = AsyncNotifierProviderFamilyBuilder();
 
   AsyncNotifierProvider<NotifierT, StateT> _copyWith({
     NotifierT Function()? create,

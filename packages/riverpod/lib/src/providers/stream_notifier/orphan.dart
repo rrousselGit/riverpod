@@ -90,16 +90,10 @@ final class StreamNotifierProvider< //
   });
 
   /// {@macro riverpod.autoDispose}
-  static const autoDispose = ProviderBuilder(
-    call: StreamNotifierProvider._autoDispose,
-    family: StreamNotifierProviderFamily._,
-  );
+  static const autoDispose = AutoDisposeStreamNotifierProviderBuilder();
 
   /// {@macro riverpod.family}
-  static const family = FamilyBuilder(
-    call: StreamNotifierProviderFamily._,
-    autoDispose: StreamNotifierProviderFamily._autoDispose,
-  );
+  static const family = StreamNotifierProviderFamilyBuilder();
 
   StreamNotifierProvider<NotifierT, StateT> _copyWith({
     NotifierT Function()? create,

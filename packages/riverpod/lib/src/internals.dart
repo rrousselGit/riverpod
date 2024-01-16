@@ -17,4 +17,5 @@ export 'providers/legacy/state_notifier_provider.dart';
 export 'providers/legacy/state_provider.dart';
 export 'providers/notifier.dart';
 export 'providers/provider.dart';
+export 'providers/stream_notifier.dart';
 export 'providers/stream_provider.dart';

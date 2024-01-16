@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:meta/meta.dart';
 
+import '../builder.dart';
 import '../common/listenable.dart';
 import '../common/result.dart';
 import '../core/async_value.dart';
-import '../core/builder.dart';
 import '../framework.dart';
 import 'future_provider.dart' show FutureProvider;
 import 'provider.dart' show Provider;
@@ -110,16 +110,10 @@ final class StreamProvider<T>
   });
 
   /// {@macro riverpod.autoDispose}
-  static const autoDispose = ProviderBuilder(
-    call: StreamProvider._autoDispose,
-    family: StreamProviderFamily._,
-  );
+  static const autoDispose = AutoDisposeStreamProviderBuilder();
 
   /// {@macro riverpod.family}
-  static const family = FamilyBuilder(
-    call: StreamProviderFamily._,
-    autoDispose: StreamProviderFamily._autoDispose,
-  );
+  static const family = StreamProviderFamilyBuilder();
 
   final Create<Stream<T>, Ref<AsyncValue<T>>> _create;
 

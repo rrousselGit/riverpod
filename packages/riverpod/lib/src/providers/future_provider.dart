@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:meta/meta.dart';
 
+import '../builder.dart';
 import '../core/async_value.dart';
-import '../core/builder.dart';
 import '../framework.dart';
 import 'async_notifier.dart';
 import 'provider.dart' show Provider;
@@ -122,16 +122,10 @@ final class FutureProvider<StateT> extends FunctionalProvider<
   });
 
   /// {@macro riverpod.autoDispose}
-  static const autoDispose = ProviderBuilder(
-    call: FutureProvider._autoDispose,
-    family: FutureProviderFamily._,
-  );
+  static const autoDispose = AutoDisposeFutureProviderBuilder();
 
   /// {@macro riverpod.family}
-  static const family = FamilyBuilder(
-    call: FutureProviderFamily._,
-    autoDispose: FutureProviderFamily._autoDispose,
-  );
+  static const family = FutureProviderFamilyBuilder();
 
   /// TODO make all "create" public, for the sake of dartdocs.
   final Create<FutureOr<StateT>, FutureProviderRef<StateT>> _create;
