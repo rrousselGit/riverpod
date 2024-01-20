@@ -96,7 +96,12 @@ class Home extends HookConsumerWidget {
             return Scaffold(
               appBar: AppBar(title: const Text('Error')),
               body: Center(
-                child: Text(errorMessage ?? '$err'),
+                child: Text(
+                  switch (errorMessage) {
+                    String() => errorMessage,
+                    null => '$err'
+                  },
+                ),
               ),
             );
           },
