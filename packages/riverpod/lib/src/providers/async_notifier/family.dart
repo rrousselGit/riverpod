@@ -102,10 +102,10 @@ class AsyncNotifierProviderFamily< //
     super._createFn, {
     super.name,
     super.dependencies,
-    super.isAutoDispose = false,
   }) : super(
           providerFactory: FamilyAsyncNotifierProvider._,
           debugGetCreateSourceHash: null,
+          isAutoDispose: false,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
         );

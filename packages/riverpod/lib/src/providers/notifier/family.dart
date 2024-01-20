@@ -3,26 +3,14 @@ part of '../notifier.dart';
 /// {@macro riverpod.notifier}
 ///
 /// {@macro riverpod.notifier_provider_modifier}
-abstract class FamilyNotifier<State, Arg> extends BuildlessNotifier<State> {
+abstract class FamilyNotifier<State, Arg> extends _NotifierBase<State> {
   /// {@macro riverpod.notifier.family_arg}
   late final Arg arg;
-
-  @override
-  void _setElement(ProviderElementBase<State>? element) {
-    super._setElement(element);
-    if (element != null) {
-      arg = element.origin.argument as Arg;
-    }
-  }
 
   /// {@macro riverpod.async_notifier.build}
   @visibleForOverriding
   State build(Arg arg);
 }
-
-/// The provider for [NotifierProviderFamily].
-typedef NotifierFamilyProvider<NotifierT extends FamilyNotifier<T, Arg>, T, Arg>
-    = FamilyNotifierProviderImpl<NotifierT, T, Arg>;
 
 /// The implementation of [NotifierFamilyProvider] but with loosened type constraints
 /// that can be shared with [AutoDisposeNotifierProvider].
@@ -31,102 +19,104 @@ typedef NotifierFamilyProvider<NotifierT extends FamilyNotifier<T, Arg>, T, Arg>
 /// [AutoDisposeNotifierProvider] at the same time.
 @visibleForTesting
 @internal
-class FamilyNotifierProviderImpl<NotifierT extends NotifierBase<T>, T, Arg>
-    extends NotifierProviderBase<NotifierT, T> {
-  /// {@macro riverpod.notifier}
-  FamilyNotifierProviderImpl(
-    super._createNotifier, {
-    super.name,
-    super.dependencies,
-  }) : super(
-          allTransitiveDependencies:
-              computeAllTransitiveDependencies(dependencies),
-          from: null,
-          argument: null,
-          debugGetCreateSourceHash: null,
-        );
-
+final class FamilyNotifierProvider //
+    <NotifierT extends _NotifierBase<StateT>, StateT, ArgT>
+    extends _NotifierProvider<NotifierT, StateT> {
   /// An implementation detail of Riverpod
-  @internal
-  FamilyNotifierProviderImpl.internal(
+  const FamilyNotifierProvider._(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
-    super.from,
-    super.argument,
+    required super.from,
+    required super.argument,
+    required super.isAutoDispose,
+    required super.runNotifierBuildOverride,
   });
 
-  /// {@macro riverpod.autoDispose}
-  // ignore: prefer_const_declarations
-  static final autoDispose = AutoDisposeNotifierProviderFamily.new;
-
-  // /// {@macro riverpod.family}
-  // static const family = NotifierProviderFamilyBuilder();
-
   @override
-  late final Refreshable<NotifierT> notifier = _notifier<NotifierT, T>(this);
-
-  @override
-  NotifierProviderElement<NotifierT, T> createElement(
+  _NotifierProviderElement<NotifierT, StateT> createElement(
     ProviderContainer container,
   ) {
-    return NotifierProviderElement(this, container);
+    return _NotifierProviderElement(this, container);
+  }
+
+  FamilyNotifierProvider<NotifierT, StateT, ArgT> _copyWith({
+    NotifierT Function()? create,
+    RunNotifierBuild<NotifierT, StateT, Ref<StateT>>? build,
+  }) {
+    return FamilyNotifierProvider._(
+      create ?? _createNotifier,
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      isAutoDispose: isAutoDispose,
+      runNotifierBuildOverride: build ?? runNotifierBuildOverride,
+      from: from,
+      argument: argument,
+    );
   }
 
   @override
-  T runNotifierBuild(
-    covariant FamilyNotifier<T, Arg> notifier,
+  FamilyNotifierProvider<NotifierT, StateT, ArgT> copyWithBuild(
+    RunNotifierBuild<NotifierT, StateT, Ref<StateT>> build,
   ) {
-    return notifier.build(notifier.arg);
+    return _copyWith(build: build);
+  }
+
+  @override
+  FamilyNotifierProvider<NotifierT, StateT, ArgT> copyWithCreate(
+    NotifierT Function() create,
+  ) {
+    return _copyWith(create: create);
   }
 }
 
 /// The [Family] of [NotifierProvider].
-class NotifierProviderFamily<NotifierT extends FamilyNotifier<T, Arg>, T, Arg>
-    extends ClassFamily<NotifierProviderRef<T>, T, Arg, NotifierT,
-        NotifierFamilyProvider<NotifierT, T, Arg>> {
-  /// The [Family] of [NotifierProvider].
-  NotifierProviderFamily(
+class NotifierProviderFamily<
+        NotifierT extends FamilyNotifier<StateT, ArgT>, StateT, ArgT>
+    extends ClassFamily< //
+        NotifierT,
+        StateT,
+        Ref<StateT>,
+        ArgT,
+        StateT,
+        FamilyNotifierProvider<NotifierT, StateT, ArgT>> {
+  /// The [Family] of [AsyncNotifierProvider].
+  NotifierProviderFamily._(
     super._createFn, {
     super.name,
     super.dependencies,
   }) : super(
-          providerFactory: NotifierFamilyProvider.internal,
+          providerFactory: FamilyNotifierProvider._,
+          debugGetCreateSourceHash: null,
+          isAutoDispose: false,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
-          debugGetCreateSourceHash: null,
         );
 
-  /// An implementation detail of Riverpod
+  NotifierProviderFamily._autoDispose(
+    super._createFn, {
+    super.name,
+    super.dependencies,
+  }) : super(
+          providerFactory: FamilyNotifierProvider._,
+          debugGetCreateSourceHash: null,
+          isAutoDispose: true,
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+        );
+
+  /// The [Family] of [AsyncNotifierProvider].
   @internal
   NotifierProviderFamily.internal(
     super._createFn, {
-    required super.name,
-    required super.dependencies,
+    super.name,
+    super.dependencies,
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
-  }) : super(providerFactory: NotifierFamilyProvider.internal);
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(NotifierT Function() create) {
-    // TODO fix up nootifier names
-    return FamilyOverride(
-      from: this,
-      createElement: (container, provider) {
-        provider as FamilyNotifierProviderImpl<NotifierT, T, Arg>;
-
-        return NotifierFamilyProvider<NotifierT, T, Arg>.internal(
-          create,
-          from: from,
-          argument: provider.argument,
-          dependencies: null,
-          allTransitiveDependencies: null,
-          debugGetCreateSourceHash: null,
-          name: null,
-        ).createElement(container);
-      },
-    );
-  }
+    required super.isAutoDispose,
+  }) : super(providerFactory: FamilyNotifierProvider._);
 }

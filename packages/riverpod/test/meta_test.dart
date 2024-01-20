@@ -7,6 +7,8 @@ import 'package:path/path.dart' as path;
 import 'package:test/test.dart';
 
 void main() {
+  // TODO verify that inherited members reapply annotations
+
   // This verifies that:
   // - All public APIs are documented
   // - public APIs have no unexported types

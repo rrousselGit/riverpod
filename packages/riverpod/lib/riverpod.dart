@@ -65,12 +65,12 @@ export 'src/providers/async_notifier.dart'
 export 'src/providers/future_provider.dart';
 export 'src/providers/notifier.dart'
     hide
-        NotifierBase,
-        NotifierProviderBase,
+        _NotifierBase,
+        _NotifierProviderBase,
         AutoDisposeFamilyNotifierProviderImpl,
         AutoDisposeNotifierProviderImpl,
         FamilyNotifierProviderImpl,
-        NotifierProviderImpl,
+        NotifierProvider,
         BuildlessAutoDisposeNotifier,
         BuildlessNotifier;
 export 'src/providers/provider.dart' hide InternalProvider;

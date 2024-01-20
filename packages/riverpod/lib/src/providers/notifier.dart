@@ -1,25 +1,18 @@
+import 'dart:async';
+
 import 'package:meta/meta.dart';
 
-import '../common/listenable.dart';
-import '../common/result.dart';
+import '../builder.dart';
 import '../framework.dart';
 import 'async_notifier.dart';
-import 'provider.dart';
 
-part 'notifier/auto_dispose.dart';
-part 'notifier/auto_dispose_family.dart';
-part 'notifier/base.dart';
+part 'notifier/orphan.dart';
 part 'notifier/family.dart';
 
-/// A base class for [NotifierBase].
+/// A base class for [_NotifierBase].
 ///
 /// Not meant for public consumption.
-@internal
-abstract class NotifierBase<State> {
-  NotifierProviderElement<NotifierBase<State>, State>? get _element;
-
-  void _setElement(ProviderElementBase<State>? element);
-
+abstract class _NotifierBase<StateT> extends ClassBase<StateT, StateT> {
   /// The value currently exposed by this [Notifier].
   ///
   /// If used inside [Notifier.build], may throw if the notifier is not yet initialized.
@@ -31,15 +24,10 @@ abstract class NotifierBase<State> {
   /// dependency has changed) will trigger [Notifier.build] to be re-executed.
   ///
   /// If [Notifier.build] threw, reading [state] will rethrow the exception.
+  @override
   @protected
   @visibleForTesting
-  State get state {
-    final element = _element;
-    if (element == null) throw StateError(uninitializedElementError);
-
-    element.flush();
-    return element.requireState;
-  }
+  StateT get state;
 
   /// The value currently exposed by this [Notifier].
   ///
@@ -53,26 +41,13 @@ abstract class NotifierBase<State> {
   /// dependency has changed) will trigger [Notifier.build] to be re-executed.
   @protected
   @visibleForTesting
-  State? get stateOrNull {
-    final element = _element;
+  StateT? get stateOrNull {
+    final element = this.element;
     if (element == null) throw StateError(uninitializedElementError);
 
     element.flush();
     return element.getState()?.stateOrNull;
   }
-
-  @protected
-  @visibleForTesting
-  set state(State value) {
-    final element = _element;
-    if (element == null) throw StateError(uninitializedElementError);
-
-    element.setState(value);
-  }
-
-  /// The [Ref] from the provider associated with this [Notifier].
-  @protected
-  Ref<State> get ref;
 
   /// A method invoked when the state exposed by this [Notifier] changes.
   /// It compares the previous and new value, and return whether listeners
@@ -100,36 +75,21 @@ abstract class NotifierBase<State> {
   ///
   /// If you do not want that, you can override this method to perform a deep
   /// comparison of the previous and new values.
-  @protected
-  bool updateShouldNotify(State previous, State next) {
+  @override
+  @visibleForOverriding
+  bool updateShouldNotify(StateT previous, StateT next) {
     // TODO unify updateShouldNotify to use == or identical everywhere
     return !identical(previous, next);
   }
 }
 
-ProviderElementProxy<T, NotifierT>
-    _notifier<NotifierT extends NotifierBase<T>, T>(
-  NotifierProviderBase<NotifierT, T> that,
-) {
-  return ProviderElementProxy<T, NotifierT>(
-    that,
-    (element) {
-      return (element as NotifierProviderElement<NotifierT, T>)
-          ._notifierNotifier;
-    },
-  );
-}
-
-/// An internal base class for [Notifier].
-///
-/// Not meant for public consumption.
-@internal
-abstract base class NotifierProviderBase<NotifierT extends NotifierBase<T>, T>
-    extends ProviderBase<T> {
+abstract base class _NotifierProvider //
+    <NotifierT extends _NotifierBase<StateT>, StateT>
+    extends ClassProvider<NotifierT, StateT, StateT, Ref<StateT>> {
   /// An internal base class for [Notifier].
   ///
   /// Not meant for public consumption.
-  const NotifierProviderBase(
+  const _NotifierProvider(
     this._createNotifier, {
     required super.name,
     required super.from,
@@ -138,31 +98,11 @@ abstract base class NotifierProviderBase<NotifierT extends NotifierBase<T>, T>
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.isAutoDispose,
+    required super.runNotifierBuildOverride,
   });
-
-  /// Obtains the [Notifier] associated with this provider, without listening
-  /// to state changes.
-  ///
-  /// This is typically used to invoke methods on a [Notifier]. For example:
-  ///
-  /// ```dart
-  /// Button(
-  ///   onTap: () => ref.read(stateNotifierProvider.notifier).increment(),
-  /// )
-  /// ```
-  ///
-  /// This listenable will notify its notifiers if the [Notifier] instance
-  /// changes.
-  /// This may happen if the provider is refreshed or one of its dependencies
-  /// has changes.
-  ProviderListenable<NotifierT> get notifier;
 
   final NotifierT Function() _createNotifier;
 
-  /// Runs the `build` method of a notifier.
-  ///
-  /// This is an implementation detail for differentiating [Notifier.build]
-  /// from [FamilyNotifier.build].
-  @visibleForOverriding
-  T runNotifierBuild(NotifierBase<T> notifier);
+  @override
+  NotifierT create() => _createNotifier();
 }

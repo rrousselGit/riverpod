@@ -1,7 +1,7 @@
 import 'package:riverpod/src/internals.dart';
 
-typedef NotifierProviderFactoryType = NotifierProviderBase<NotifierT, T>
-    Function<NotifierT extends NotifierBase<T>, T>(
+typedef NotifierProviderFactoryType = _NotifierProviderBase<NotifierT, T>
+    Function<NotifierT extends _NotifierBase<T>, T>(
   NotifierT Function() create, {
   Iterable<ProviderOrFamily>? dependencies,
   String? name,
@@ -13,12 +13,12 @@ typedef NotifierFactoryType = TestNotifierBase<T> Function<T>(
 });
 
 typedef SimpleTestProviderFactoryType
-    = NotifierProviderBase<TestNotifierBase<T>, T> Function<T>(
+    = _NotifierProviderBase<TestNotifierBase<T>, T> Function<T>(
   T Function(NotifierProviderRef<T> ref) init, {
   bool Function(T prev, T next)? updateShouldNotify,
 });
 
-typedef TestProviderFactoryType = NotifierProviderBase<TestNotifierBase<T>, T>
+typedef TestProviderFactoryType = _NotifierProviderBase<TestNotifierBase<T>, T>
     Function<T>(
   TestNotifierBase<T> Function() createNotifier,
 );
@@ -32,10 +32,10 @@ List<NotifierFactory> matrix({
       NotifierFactory(
         label: 'NotifierProvider',
         isAutoDispose: false,
-        provider: NotifierProviderImpl.new,
+        provider: NotifierProvider.new,
         notifier: TestNotifier.new,
         testProvider: <T>(createNotifier) {
-          return NotifierProviderImpl<TestNotifierBase<T>, T>(
+          return NotifierProvider<TestNotifierBase<T>, T>(
             createNotifier,
           );
         },
@@ -52,7 +52,7 @@ List<NotifierFactory> matrix({
       NotifierFactory(
         label: 'NotifierProviderFamily',
         isAutoDispose: false,
-        provider: <NotifierT extends NotifierBase<T>, T>(
+        provider: <NotifierT extends _NotifierBase<T>, T>(
           create, {
           argument,
           dependencies,
@@ -119,7 +119,7 @@ List<NotifierFactory> matrix({
       NotifierFactory(
         label: 'AutoDisposeNotifierProviderFamily',
         isAutoDispose: true,
-        provider: <NotifierT extends NotifierBase<T>, T>(
+        provider: <NotifierT extends _NotifierBase<T>, T>(
           create, {
           argument,
           dependencies,
@@ -184,7 +184,7 @@ class NotifierFactory {
   final SimpleTestProviderFactoryType simpleTestProvider;
 }
 
-abstract class TestNotifierBase<T> extends NotifierBase<T> {}
+abstract class TestNotifierBase<T> extends _NotifierBase<T> {}
 
 class TestNotifier<T> extends Notifier<T> implements TestNotifierBase<T> {
   TestNotifier(this._init, {bool Function(T prev, T next)? updateShouldNotify})

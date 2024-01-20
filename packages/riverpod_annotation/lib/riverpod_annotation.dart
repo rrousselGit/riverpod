@@ -60,7 +60,7 @@ export 'package:riverpod/src/internals.dart'
         NotifierProviderElement,
         AutoDisposeNotifierProviderElement,
         // ignore: invalid_use_of_internal_member
-        NotifierProviderImpl,
+        NotifierProvider,
         // ignore: invalid_use_of_internal_member
         AutoDisposeNotifierProviderImpl,
         // ignore: invalid_use_of_internal_member

@@ -307,7 +307,7 @@ class _$A4FamilyOverride implements FamilyOverride {
 }
 
 /// See also [A4].
-class A4Provider extends NotifierProviderImpl<A4, int> {
+class A4Provider extends NotifierProvider<A4, int> {
   /// See also [A4].
   A4Provider(
     int param,
