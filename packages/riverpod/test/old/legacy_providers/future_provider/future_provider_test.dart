@@ -3,6 +3,7 @@
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
+import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
@@ -79,7 +80,7 @@ void main() {
       overrides: [
         provider.overrideWith((FutureProviderRef<int> ref) => 42),
         autoDispose.overrideWith(
-          (AutoDisposeFutureProviderRef<int> ref) => 84,
+          (FutureProviderRef<int> ref) => 84,
         ),
       ],
     );
@@ -137,7 +138,7 @@ void main() {
           (FutureProviderRef<String> ref, int arg) => '42 $arg',
         ),
         autoDisposeFamily.overrideWith(
-          (AutoDisposeFutureProviderRef<String> ref, int arg) => '84 $arg',
+          (FutureProviderRef<String> ref, int arg) => '84 $arg',
         ),
       ],
     );

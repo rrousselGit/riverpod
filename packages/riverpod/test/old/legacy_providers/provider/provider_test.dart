@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_types_on_closure_parameters
 
 import 'package:mockito/mockito.dart';
+import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
@@ -13,9 +14,9 @@ void main() {
       final autoDispose = Provider.autoDispose<int>((ref) => 0);
       final container = ProviderContainer.test(
         overrides: [
-          provider.overrideWith((ProviderRef<int> ref) => 42),
+          provider.overrideWith((Ref<int> ref) => 42),
           autoDispose.overrideWith(
-            (AutoDisposeProviderRef<int> ref) => 84,
+            (Ref<int> ref) => 84,
           ),
         ],
       );
@@ -31,9 +32,9 @@ void main() {
       );
       final container = ProviderContainer.test(
         overrides: [
-          family.overrideWith((ProviderRef<String> ref, int arg) => '42 $arg'),
+          family.overrideWith((Ref<String> ref, int arg) => '42 $arg'),
           autoDisposeFamily.overrideWith(
-            (AutoDisposeProviderRef<String> ref, int arg) => '84 $arg',
+            (Ref<String> ref, int arg) => '84 $arg',
           ),
         ],
       );
@@ -77,7 +78,7 @@ void main() {
       test('can read and change current value', () {
         final container = ProviderContainer.test();
         final listener = Listener<int>();
-        late ProviderRef<int> ref;
+        late Ref<int> ref;
         final provider = Provider<int>((r) {
           ref = r;
           return 0;
@@ -153,7 +154,7 @@ void main() {
         () async {
       final container = ProviderContainer.test();
       final listener = Listener<int>();
-      late ProviderRef<int> ref;
+      late Ref<int> ref;
       final provider = Provider<int>((r) {
         ref = r;
         return 0;

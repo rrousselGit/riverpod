@@ -17,6 +17,9 @@ void main() {
         });
         final constantHashBuild = OnBuildMock();
         final constantHash = Provider.internal(
+          isAutoDispose: false,
+          from: null,
+          argument: null,
           name: null,
           dependencies: null,
           allTransitiveDependencies: null,
@@ -29,6 +32,9 @@ void main() {
         var hashResult = '42';
         final changingHashBuild = OnBuildMock();
         final changingHash = Provider.internal(
+          isAutoDispose: false,
+          from: null,
+          argument: null,
           name: null,
           dependencies: null,
           allTransitiveDependencies: null,
@@ -265,11 +271,8 @@ void main() {
         var sub = container.listen(provider, (_, __) {});
 
         expect(
-          container.getAllProviderElements(),
-          unorderedMatches(<Matcher>[
-            isA<ProviderElementBase<int>>(),
-            isA<AutoDisposeProviderElementMixin<int>>(),
-          ]),
+          container.getAllProviderElements().map((e) => e.origin),
+          unorderedEquals([provider, unrelated]),
         );
 
         sub.close();
@@ -283,11 +286,8 @@ void main() {
         sub = container.listen(provider, (_, __) {});
 
         expect(
-          container.getAllProviderElements(),
-          unorderedMatches(<Matcher>[
-            isA<ProviderElementBase<int>>(),
-            isA<AutoDisposeProviderElementMixin<int>>(),
-          ]),
+          container.getAllProviderElements().map((e) => e.origin),
+          unorderedEquals([provider, unrelated]),
         );
       });
     });

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
+import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
@@ -11,7 +12,7 @@ void main() {
     test('can read and set current AsyncValue', () async {
       final container = ProviderContainer.test();
       final listener = Listener<AsyncValue<int>>();
-      late AutoDisposeStreamProviderRef<int> ref;
+      late Ref<AsyncValue<int>> ref;
       final provider = StreamProvider.autoDispose<int>((r) {
         ref = r;
         return Stream.value(0);

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
+import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
@@ -257,7 +258,7 @@ void main() {
         final listener = Listener<int>();
         final listener2 = Listener<int>();
 
-        late ProviderRef<int> ref;
+        late Ref<int> ref;
         final provider = Provider<int>((r) {
           ref = r;
           ref.listenSelf(listener.call);
@@ -639,7 +640,7 @@ void main() {
       test('cannot listen itself', () {
         final container = ProviderContainer.test();
         final listener = Listener<int>();
-        late ProviderRef<int> ref;
+        late Ref<int> ref;
         late Provider<int> provider;
         provider = Provider<int>((r) {
           ref = r;
@@ -1285,7 +1286,7 @@ void main() {
           'the provider will not be disposed.', () async {
         final container = ProviderContainer.test();
         late KeepAliveLink a;
-        late AutoDisposeRef<Object?> ref;
+        late Ref<Object?> ref;
 
         final provider = Provider.autoDispose<void>((r) {
           ref = r;

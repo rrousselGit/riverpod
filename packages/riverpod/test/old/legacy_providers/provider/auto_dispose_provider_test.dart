@@ -1,4 +1,5 @@
 import 'package:mockito/mockito.dart';
+import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
@@ -10,7 +11,7 @@ void main() {
       test('can read and change current value', () {
         final container = ProviderContainer.test();
         final listener = Listener<int>();
-        late ProviderRef<int> ref;
+        late Ref<int> ref;
         final provider = Provider.autoDispose<int>((r) {
           ref = r;
           return 0;
@@ -99,8 +100,8 @@ void main() {
         () async {
       final container = ProviderContainer.test();
       final listener = Listener<int>();
-      late AutoDisposeProviderRef<int> ref;
-      final provider = AutoDisposeProvider<int>((r) {
+      late Ref<int> ref;
+      final provider = Provider.autoDispose<int>((r) {
         ref = r;
         return 0;
       });

@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_types_on_closure_parameters
 
 import 'package:mockito/mockito.dart';
+import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
@@ -17,7 +18,7 @@ void main() {
     final container = ProviderContainer.test(
       overrides: [
         provider.overrideWith((StateProviderRef<int> ref) => 42),
-        autoDispose.overrideWith((AutoDisposeStateProviderRef<int> ref) => 84),
+        autoDispose.overrideWith((StateProviderRef<int> ref) => 84),
       ],
     );
 
@@ -36,7 +37,7 @@ void main() {
           (StateProviderRef<String> ref, int arg) => '42 $arg',
         ),
         autoDisposeFamily.overrideWith(
-          (AutoDisposeStateProviderRef<String> ref, int arg) => '84 $arg',
+          (StateProviderRef<String> ref, int arg) => '84 $arg',
         ),
       ],
     );

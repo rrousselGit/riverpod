@@ -92,7 +92,7 @@ final class StateProvider<StateT>
 
   final StateT Function(StateProviderRef<StateT> ref) _createFn;
 
-  ProviderListenable<StateController<StateT>> get notifier => _notifier(this);
+  Refreshable<StateController<StateT>> get notifier => _notifier(this);
 
   @override
   StateProviderElement<StateT> createElement(

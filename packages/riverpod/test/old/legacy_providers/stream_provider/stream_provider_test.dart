@@ -3,6 +3,7 @@
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
+import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
@@ -24,11 +25,11 @@ void main() {
     );
     final container = ProviderContainer.test(
       overrides: [
-        provider.overrideWith((StreamProviderRef<int> ref) {
+        provider.overrideWith((Ref<AsyncValue<int>> ref) {
           ref.state = const AsyncData(42);
           return Stream.value(43);
         }),
-        autoDispose.overrideWith((AutoDisposeStreamProviderRef<int> ref) {
+        autoDispose.overrideWith((Ref<AsyncValue<int>> ref) {
           ref.state = const AsyncData(84);
           return Stream.value(85);
         }),
@@ -53,13 +54,13 @@ void main() {
     final container = ProviderContainer.test(
       overrides: [
         family.overrideWith(
-          (StreamProviderRef<String> ref, int arg) {
+          (Ref<AsyncValue<String>> ref, int arg) {
             ref.state = AsyncData('42 $arg');
             return Stream.value('43 $arg');
           },
         ),
         autoDisposeFamily.overrideWith(
-          (AutoDisposeStreamProviderRef<String> ref, int arg) {
+          (Ref<AsyncValue<String>> ref, int arg) {
             ref.state = AsyncData('84 $arg');
             return Stream.value('85 $arg');
           },
@@ -166,7 +167,7 @@ void main() {
   test('can read and set current AsyncValue', () async {
     final container = ProviderContainer.test();
     final listener = Listener<AsyncValue<int>>();
-    late StreamProviderRef<int> ref;
+    late Ref<AsyncValue<int>> ref;
     final provider = StreamProvider<int>((r) {
       ref = r;
       return Stream.value(0);

@@ -1,4 +1,5 @@
 import 'package:mockito/mockito.dart';
+import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
@@ -8,7 +9,7 @@ void main() {
   test('can read and set current StateNotifier', () async {
     final container = ProviderContainer.test();
     final listener = Listener<int>();
-    late AutoDisposeStateNotifierProviderRef<Counter, int> ref;
+    late StateNotifierProviderRef<Counter, int> ref;
     final provider = StateNotifierProvider.autoDispose<Counter, int>((r) {
       ref = r;
       return Counter();

@@ -146,7 +146,7 @@ final class StateNotifierProvider< //
   /// changes.
   /// This may happen if the provider is refreshed or one of its dependencies
   /// has changes.
-  ProviderListenable<NotifierT> get notifier => _notifier(this);
+  Refreshable<NotifierT> get notifier => _notifier(this);
 
   @override
   StateNotifierProviderElement<NotifierT, StateT> createElement(

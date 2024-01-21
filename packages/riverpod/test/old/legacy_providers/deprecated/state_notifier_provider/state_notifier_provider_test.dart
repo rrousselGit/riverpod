@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_types_on_closure_parameters
 
 import 'package:mockito/mockito.dart';
+import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
@@ -20,8 +21,7 @@ void main() {
           (StateNotifierProviderRef<TestNotifier, int> ref) => TestNotifier(42),
         ),
         autoDispose.overrideWith(
-          (AutoDisposeStateNotifierProviderRef<TestNotifier, int> ref) =>
-              TestNotifier(84),
+          (StateNotifierProviderRef<TestNotifier, int> ref) => TestNotifier(84),
         ),
       ],
     );
@@ -46,7 +46,7 @@ void main() {
         ),
         autoDisposeFamily.overrideWith(
           (
-            AutoDisposeStateNotifierProviderRef<TestNotifier, int> ref,
+            StateNotifierProviderRef<TestNotifier, int> ref,
             int arg,
           ) =>
               TestNotifier(84 + arg),
