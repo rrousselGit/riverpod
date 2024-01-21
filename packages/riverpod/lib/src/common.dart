@@ -170,8 +170,7 @@ abstract class AsyncValue<T> {
       if (predicate == null) {
         return AsyncValue.error(err, stack);
       }
-      final result = predicate(err);
-      if (result) {
+      if (predicate(err)) {
         return AsyncValue.error(err, stack);
       }
 
