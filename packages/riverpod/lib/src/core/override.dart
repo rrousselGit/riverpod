@@ -55,11 +55,7 @@ class ProviderOverride implements _ProviderOverride {
   ProviderOverride({
     required this.origin,
     required this.providerOverride,
-  }) : assert(
-          providerOverride.dependencies == null &&
-              providerOverride.allTransitiveDependencies == null,
-          'Overriding a provider with dependencies is not supported.',
-        );
+  });
 
   /// The provider that is overridden.
   final ProviderBase<Object?> origin;
