@@ -157,12 +157,25 @@ abstract class AsyncValue<T> {
   ///     });
   ///   }
   /// }
+  ///
+  /// when predicate is provided, and it is false; rethrown.
   /// ```
-  static Future<AsyncValue<T>> guard<T>(Future<T> Function() future) async {
+  static Future<AsyncValue<T>> guard<T>(
+    Future<T> Function() future, [
+    bool Function(Object)? predicate,
+  ]) async {
     try {
       return AsyncValue.data(await future());
     } catch (err, stack) {
-      return AsyncValue.error(err, stack);
+      if (predicate == null) {
+        return AsyncValue.error(err, stack);
+      }
+      final result = predicate(err);
+      if (result) {
+        return AsyncValue.error(err, stack);
+      }
+
+      Error.throwWithStackTrace(err, stack);
     }
   }
 
