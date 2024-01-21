@@ -19,8 +19,8 @@ ProviderElementProxy<T, NotifierT>
   );
 }
 
-abstract class _StateNotifierProviderBase<NotifierT extends StateNotifier<T>, T>
-    extends ProviderBase<T> {
+abstract base class _StateNotifierProviderBase<
+    NotifierT extends StateNotifier<T>, T> extends ProviderBase<T> {
   const _StateNotifierProviderBase({
     required super.name,
     required super.from,
@@ -28,6 +28,7 @@ abstract class _StateNotifierProviderBase<NotifierT extends StateNotifier<T>, T>
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
+    required super.isAutoDispose,
   });
 
   /// Obtains the [StateNotifier] associated with this provider, without listening

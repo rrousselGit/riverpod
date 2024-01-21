@@ -1,8 +1,11 @@
 part of '../../framework.dart';
 
 @internal
-abstract base class FunctionalProvider<StateT, CreatedT,
-    RefT extends Ref<Object?>> extends ProviderBase<StateT> {
+abstract base class FunctionalProvider< //
+        StateT,
+        CreatedT,
+        RefT extends Ref<Object?>> //
+    extends ProviderBase<StateT> {
   const FunctionalProvider({
     required super.name,
     required super.from,

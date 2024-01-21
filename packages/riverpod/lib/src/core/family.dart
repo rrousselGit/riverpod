@@ -10,10 +10,8 @@ typedef FunctionalProviderFactory< //
     = ProviderT Function(
   Create<CreatedT, RefT> create, {
   required String? name,
-  // ignore: prefer_void_to_null, explicitly using Null to cause a compilation error if non-null value is assigned
-  required Null dependencies,
-  // ignore: prefer_void_to_null, explicitly using Null to cause a compilation error if non-null value is assigned
-  required Null allTransitiveDependencies,
+  required List<ProviderOrFamily>? dependencies,
+  required List<ProviderOrFamily>? allTransitiveDependencies,
   required DebugGetCreateSourceHash? debugGetCreateSourceHash,
   required bool isAutoDispose,
   required Family from,
