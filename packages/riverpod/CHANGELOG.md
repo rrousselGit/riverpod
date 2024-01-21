@@ -2,6 +2,7 @@
 
 - Improved `Provider(dependencies: [...])` documentation.
 - Fix out of date `pub.dev` description
+- Add `predicate` argument to `AsyncValue.guard` method. (thanks to @utamori)
 
 ## 2.4.9 - 2023-11-27
 
