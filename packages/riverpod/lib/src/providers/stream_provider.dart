@@ -210,7 +210,7 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
 /// The [Family] of a [StreamProvider]
 class StreamProviderFamily<R, Arg> extends FunctionalFamily<Ref<AsyncValue<R>>,
     AsyncValue<R>, Arg, Stream<R>, StreamProvider<R>> {
-  StreamProviderFamily._(
+  StreamProviderFamily(
     super._createFn, {
     super.name,
     super.dependencies,

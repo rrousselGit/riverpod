@@ -64,13 +64,13 @@ final class AsyncNotifierProvider< //
     super._createNotifier, {
     super.name,
     super.dependencies,
+    super.isAutoDispose = false,
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
           from: null,
           argument: null,
           debugGetCreateSourceHash: null,
-          isAutoDispose: false,
           runNotifierBuildOverride: null,
         );
 

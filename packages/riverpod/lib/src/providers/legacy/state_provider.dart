@@ -190,14 +190,14 @@ class StateProviderFamily<StateT, Arg> extends FunctionalFamily< //
     StateT,
     StateProvider<StateT>> {
   /// The [Family] of [AsyncNotifierProvider].
-  StateProviderFamily._(
+  StateProviderFamily(
     super._createFn, {
     super.name,
     super.dependencies,
+    super.isAutoDispose = false,
   }) : super(
           providerFactory: StateProvider.internal,
           debugGetCreateSourceHash: null,
-          isAutoDispose: false,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
         );

@@ -191,7 +191,7 @@ class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
 /// The [Family] of a [FutureProvider]
 class FutureProviderFamily<R, Arg> extends FunctionalFamily<
     FutureProviderRef<R>, AsyncValue<R>, Arg, FutureOr<R>, FutureProvider<R>> {
-  FutureProviderFamily._(
+  FutureProviderFamily(
     super._createFn, {
     super.name,
     super.dependencies,

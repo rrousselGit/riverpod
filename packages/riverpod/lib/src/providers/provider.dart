@@ -358,7 +358,7 @@ class ProviderElement<State> extends ProviderElementBase<State> {
 // TODO remove custom family types
 class ProviderFamily<R, Arg>
     extends FunctionalFamily<Ref<R>, R, Arg, R, Provider<R>> {
-  ProviderFamily._(
+  ProviderFamily(
     super._createFn, {
     super.name,
     super.dependencies,
