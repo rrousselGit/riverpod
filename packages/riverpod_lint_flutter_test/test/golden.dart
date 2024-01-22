@@ -49,9 +49,11 @@ void testGolden(
         }
       }
 
+      final encoder = new JsonEncoder.withIndent("  ");
+
       file
         ..createSync(recursive: true)
-        ..writeAsStringSync(jsonEncode(changesJson));
+        ..writeAsStringSync(encoder.convert(changesJson));
       return;
     }
   });
