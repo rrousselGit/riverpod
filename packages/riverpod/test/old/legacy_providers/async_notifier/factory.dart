@@ -35,10 +35,10 @@ List<AsyncNotifierFactory> matrix({
       AsyncNotifierFactory(
         label: 'AsyncNotifierProvider',
         isAutoDispose: false,
-        provider: AsyncNotifierProviderImpl.new,
+        provider: AsyncNotifierProvider.new,
         notifier: AsyncTestNotifier.new,
         testProvider: <T>(createNotifier) {
-          return AsyncNotifierProviderImpl<AsyncTestNotifierBase<T>, T>(
+          return AsyncNotifierProvider<AsyncTestNotifierBase<T>, T>(
             createNotifier,
           );
         },

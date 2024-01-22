@@ -16,7 +16,7 @@ part of '../async_notifier.dart';
 /// {@endtemplate}
 ///
 /// {@macro riverpod.async_notifier_provider_modifier}
-abstract class AsyncNotifier<State> extends _AsyncNotifierBase<State> {
+abstract class AsyncNotifier<State> extends AsyncNotifierBase<State> {
   /// {@template riverpod.async_notifier.build}
   /// Initialize an [AsyncNotifier].
   ///
@@ -153,7 +153,7 @@ final class AsyncNotifierProvider< //
 }
 
 class _AsyncNotifierProviderElement< //
-        NotifierT extends _AsyncNotifierBase<StateT>,
+        NotifierT extends AsyncNotifierBase<StateT>,
         StateT> //
     extends ClassProviderElement< //
         NotifierT,

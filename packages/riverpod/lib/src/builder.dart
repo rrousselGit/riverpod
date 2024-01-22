@@ -738,13 +738,13 @@ class AsyncNotifierProviderFamilyBuilder {
   const AsyncNotifierProviderFamilyBuilder();
 
   /// {@macro riverpod.autoDispose}
-  AsyncNotifierProvider<NotifierT, StateT>
-      call<NotifierT extends AsyncNotifier<StateT>, StateT>(
+  FamilyAsyncNotifierProvider<NotifierT, StateT, ArgT>
+      call<NotifierT extends FamilyAsyncNotifier<StateT, ArgT>, StateT, ArgT>(
     NotifierT Function() create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
   }) {
-    return AsyncNotifierProvider<NotifierT, StateT>(
+    return FamilyAsyncNotifierProvider<NotifierT, StateT, ArgT>(
       create,
       name: name,
       dependencies: dependencies,

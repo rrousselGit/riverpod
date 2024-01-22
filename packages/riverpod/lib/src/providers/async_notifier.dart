@@ -11,14 +11,15 @@ import 'notifier.dart';
 part 'async_notifier/orphan.dart';
 part 'async_notifier/family.dart';
 
-abstract class _AsyncNotifierBase<StateT> extends ClassBase< //
+@internal
+abstract class AsyncNotifierBase<StateT> extends ClassBase< //
         AsyncValue<StateT>,
         FutureOr<StateT>> //
     with
         AsyncClassMixin<StateT, FutureOr<StateT>> {}
 
 abstract base class _AsyncNotifierProviderBase< //
-        NotifierT extends _AsyncNotifierBase<StateT>,
+        NotifierT extends AsyncNotifierBase<StateT>,
         StateT> //
     extends ClassProvider< //
         NotifierT,
