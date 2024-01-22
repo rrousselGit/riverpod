@@ -1,1 +1,415 @@
-[{"priority":35,"change":{"message":"Convert to ConsumerWidget","edits":[{"fileStamp":0,"edits":[{"offset":266,"length":0,"replacement":", WidgetRef ref"},{"offset":168,"length":15,"replacement":"ConsumerWidget"}]}],"linkedEditGroups":[]}},{"priority":35,"change":{"message":"Convert to ConsumerWidget","edits":[{"fileStamp":0,"edits":[{"offset":454,"length":0,"replacement":", WidgetRef ref"},{"offset":342,"length":15,"replacement":"ConsumerWidget"}]}],"linkedEditGroups":[]}},{"priority":35,"change":{"message":"Convert to ConsumerWidget","edits":[{"fileStamp":0,"edits":[{"offset":608,"length":0,"replacement":", WidgetRef ref"},{"offset":520,"length":10,"replacement":"ConsumerWidget"}]}],"linkedEditGroups":[]}},{"priority":35,"change":{"message":"Convert to ConsumerWidget","edits":[{"fileStamp":0,"edits":[{"offset":678,"length":18,"replacement":"ConsumerWidget"}]}],"linkedEditGroups":[]}},{"priority":31,"change":{"message":"Convert to ConsumerWidget","edits":[{"fileStamp":0,"edits":[{"offset":1167,"length":0,"replacement":""},{"offset":1085,"length":20,"replacement":"BuildContext context, WidgetRef ref"},{"offset":990,"length":49,"replacement":""},{"offset":926,"length":64,"replacement":""},{"offset":876,"length":14,"replacement":"ConsumerWidget"}]}],"linkedEditGroups":[]}},{"priority":31,"change":{"message":"Convert to ConsumerWidget","edits":[{"fileStamp":0,"edits":[{"offset":1515,"length":0,"replacement":""},{"offset":1445,"length":29,"replacement":"BuildContext context, WidgetRef ref"},{"offset":1347,"length":70,"replacement":""},{"offset":1264,"length":83,"replacement":""},{"offset":1203,"length":14,"replacement":"ConsumerWidget"}]}],"linkedEditGroups":[]}},{"priority":35,"change":{"message":"Convert to ConsumerWidget","edits":[{"fileStamp":0,"edits":[{"offset":1818,"length":0,"replacement":""},{"offset":1757,"length":20,"replacement":"BuildContext context, WidgetRef ref"},{"offset":1673,"length":56,"replacement":""},{"offset":1602,"length":71,"replacement":""},{"offset":1544,"length":18,"replacement":"ConsumerWidget"}]}],"linkedEditGroups":[]}},{"priority":35,"change":{"message":"Convert to ConsumerWidget","edits":[{"fileStamp":0,"edits":[{"offset":2167,"length":0,"replacement":""},{"offset":2106,"length":20,"replacement":"BuildContext context, WidgetRef ref"},{"offset":2005,"length":73,"replacement":""},{"offset":1917,"length":88,"replacement":""},{"offset":1851,"length":22,"replacement":"ConsumerWidget"}]}],"linkedEditGroups":[]}},{"priority":35,"change":{"message":"Convert to ConsumerWidget","edits":[{"fileStamp":0,"edits":[{"offset":2550,"length":0,"replacement":""},{"offset":2489,"length":20,"replacement":"BuildContext context, WidgetRef ref"},{"offset":2380,"length":81,"replacement":""},{"offset":2278,"length":102,"replacement":""},{"offset":2204,"length":26,"replacement":"ConsumerWidget"}]}],"linkedEditGroups":[]}},{"priority":35,"change":{"message":"Convert to ConsumerWidget","edits":[{"fileStamp":0,"edits":[{"offset":2973,"length":0,"replacement":", WidgetRef ref"},{"offset":2775,"length":15,"replacement":"ConsumerWidget"}]}],"linkedEditGroups":[]}},{"priority":35,"change":{"message":"Convert to ConsumerWidget","edits":[{"fileStamp":0,"edits":[{"offset":3127,"length":18,"replacement":"ConsumerWidget"}]}],"linkedEditGroups":[]}},{"priority":35,"change":{"message":"Convert to ConsumerWidget","edits":[{"fileStamp":0,"edits":[{"offset":4298,"length":0,"replacement":""},{"offset":4272,"length":1,"replacement":""},{"offset":4235,"length":26,"replacement":""},{"offset":4234,"length":1,"replacement":""},{"offset":4200,"length":7,"replacement":""},{"offset":4179,"length":1,"replacement":""},{"offset":4167,"length":7,"replacement":""},{"offset":4166,"length":1,"replacement":""},{"offset":4083,"length":7,"replacement":""},{"offset":4049,"length":20,"replacement":"BuildContext context, WidgetRef ref"},{"offset":4004,"length":7,"replacement":""},{"offset":3878,"length":95,"replacement":""},{"offset":3766,"length":112,"replacement":""},{"offset":3555,"length":22,"replacement":"ConsumerWidget"}]}],"linkedEditGroups":[]}}]
+[
+  {
+    "priority": 35,
+    "change": {
+      "message": "Convert to ConsumerWidget",
+      "edits": [
+        {
+          "fileStamp": 0,
+          "edits": [
+            {
+              "offset": 266,
+              "length": 0,
+              "replacement": ", WidgetRef ref"
+            },
+            {
+              "offset": 168,
+              "length": 15,
+              "replacement": "ConsumerWidget"
+            }
+          ]
+        }
+      ],
+      "linkedEditGroups": []
+    }
+  },
+  {
+    "priority": 35,
+    "change": {
+      "message": "Convert to ConsumerWidget",
+      "edits": [
+        {
+          "fileStamp": 0,
+          "edits": [
+            {
+              "offset": 454,
+              "length": 0,
+              "replacement": ", WidgetRef ref"
+            },
+            {
+              "offset": 342,
+              "length": 15,
+              "replacement": "ConsumerWidget"
+            }
+          ]
+        }
+      ],
+      "linkedEditGroups": []
+    }
+  },
+  {
+    "priority": 35,
+    "change": {
+      "message": "Convert to ConsumerWidget",
+      "edits": [
+        {
+          "fileStamp": 0,
+          "edits": [
+            {
+              "offset": 608,
+              "length": 0,
+              "replacement": ", WidgetRef ref"
+            },
+            {
+              "offset": 520,
+              "length": 10,
+              "replacement": "ConsumerWidget"
+            }
+          ]
+        }
+      ],
+      "linkedEditGroups": []
+    }
+  },
+  {
+    "priority": 35,
+    "change": {
+      "message": "Convert to ConsumerWidget",
+      "edits": [
+        {
+          "fileStamp": 0,
+          "edits": [
+            {
+              "offset": 678,
+              "length": 18,
+              "replacement": "ConsumerWidget"
+            }
+          ]
+        }
+      ],
+      "linkedEditGroups": []
+    }
+  },
+  {
+    "priority": 31,
+    "change": {
+      "message": "Convert to ConsumerWidget",
+      "edits": [
+        {
+          "fileStamp": 0,
+          "edits": [
+            {
+              "offset": 1167,
+              "length": 0,
+              "replacement": ""
+            },
+            {
+              "offset": 1085,
+              "length": 20,
+              "replacement": "BuildContext context, WidgetRef ref"
+            },
+            {
+              "offset": 990,
+              "length": 49,
+              "replacement": ""
+            },
+            {
+              "offset": 926,
+              "length": 64,
+              "replacement": ""
+            },
+            {
+              "offset": 876,
+              "length": 14,
+              "replacement": "ConsumerWidget"
+            }
+          ]
+        }
+      ],
+      "linkedEditGroups": []
+    }
+  },
+  {
+    "priority": 31,
+    "change": {
+      "message": "Convert to ConsumerWidget",
+      "edits": [
+        {
+          "fileStamp": 0,
+          "edits": [
+            {
+              "offset": 1515,
+              "length": 0,
+              "replacement": ""
+            },
+            {
+              "offset": 1445,
+              "length": 29,
+              "replacement": "BuildContext context, WidgetRef ref"
+            },
+            {
+              "offset": 1347,
+              "length": 70,
+              "replacement": ""
+            },
+            {
+              "offset": 1264,
+              "length": 83,
+              "replacement": ""
+            },
+            {
+              "offset": 1203,
+              "length": 14,
+              "replacement": "ConsumerWidget"
+            }
+          ]
+        }
+      ],
+      "linkedEditGroups": []
+    }
+  },
+  {
+    "priority": 35,
+    "change": {
+      "message": "Convert to ConsumerWidget",
+      "edits": [
+        {
+          "fileStamp": 0,
+          "edits": [
+            {
+              "offset": 1818,
+              "length": 0,
+              "replacement": ""
+            },
+            {
+              "offset": 1757,
+              "length": 20,
+              "replacement": "BuildContext context, WidgetRef ref"
+            },
+            {
+              "offset": 1673,
+              "length": 56,
+              "replacement": ""
+            },
+            {
+              "offset": 1602,
+              "length": 71,
+              "replacement": ""
+            },
+            {
+              "offset": 1544,
+              "length": 18,
+              "replacement": "ConsumerWidget"
+            }
+          ]
+        }
+      ],
+      "linkedEditGroups": []
+    }
+  },
+  {
+    "priority": 35,
+    "change": {
+      "message": "Convert to ConsumerWidget",
+      "edits": [
+        {
+          "fileStamp": 0,
+          "edits": [
+            {
+              "offset": 2167,
+              "length": 0,
+              "replacement": ""
+            },
+            {
+              "offset": 2106,
+              "length": 20,
+              "replacement": "BuildContext context, WidgetRef ref"
+            },
+            {
+              "offset": 2005,
+              "length": 73,
+              "replacement": ""
+            },
+            {
+              "offset": 1917,
+              "length": 88,
+              "replacement": ""
+            },
+            {
+              "offset": 1851,
+              "length": 22,
+              "replacement": "ConsumerWidget"
+            }
+          ]
+        }
+      ],
+      "linkedEditGroups": []
+    }
+  },
+  {
+    "priority": 35,
+    "change": {
+      "message": "Convert to ConsumerWidget",
+      "edits": [
+        {
+          "fileStamp": 0,
+          "edits": [
+            {
+              "offset": 2550,
+              "length": 0,
+              "replacement": ""
+            },
+            {
+              "offset": 2489,
+              "length": 20,
+              "replacement": "BuildContext context, WidgetRef ref"
+            },
+            {
+              "offset": 2380,
+              "length": 81,
+              "replacement": ""
+            },
+            {
+              "offset": 2278,
+              "length": 102,
+              "replacement": ""
+            },
+            {
+              "offset": 2204,
+              "length": 26,
+              "replacement": "ConsumerWidget"
+            }
+          ]
+        }
+      ],
+      "linkedEditGroups": []
+    }
+  },
+  {
+    "priority": 35,
+    "change": {
+      "message": "Convert to ConsumerWidget",
+      "edits": [
+        {
+          "fileStamp": 0,
+          "edits": [
+            {
+              "offset": 2973,
+              "length": 0,
+              "replacement": ", WidgetRef ref"
+            },
+            {
+              "offset": 2775,
+              "length": 15,
+              "replacement": "ConsumerWidget"
+            }
+          ]
+        }
+      ],
+      "linkedEditGroups": []
+    }
+  },
+  {
+    "priority": 35,
+    "change": {
+      "message": "Convert to ConsumerWidget",
+      "edits": [
+        {
+          "fileStamp": 0,
+          "edits": [
+            {
+              "offset": 3127,
+              "length": 18,
+              "replacement": "ConsumerWidget"
+            }
+          ]
+        }
+      ],
+      "linkedEditGroups": []
+    }
+  },
+  {
+    "priority": 35,
+    "change": {
+      "message": "Convert to ConsumerWidget",
+      "edits": [
+        {
+          "fileStamp": 0,
+          "edits": [
+            {
+              "offset": 4298,
+              "length": 0,
+              "replacement": ""
+            },
+            {
+              "offset": 4272,
+              "length": 1,
+              "replacement": ""
+            },
+            {
+              "offset": 4235,
+              "length": 26,
+              "replacement": ""
+            },
+            {
+              "offset": 4234,
+              "length": 1,
+              "replacement": ""
+            },
+            {
+              "offset": 4200,
+              "length": 7,
+              "replacement": ""
+            },
+            {
+              "offset": 4179,
+              "length": 1,
+              "replacement": ""
+            },
+            {
+              "offset": 4167,
+              "length": 7,
+              "replacement": ""
+            },
+            {
+              "offset": 4166,
+              "length": 1,
+              "replacement": ""
+            },
+            {
+              "offset": 4083,
+              "length": 7,
+              "replacement": ""
+            },
+            {
+              "offset": 4049,
+              "length": 20,
+              "replacement": "BuildContext context, WidgetRef ref"
+            },
+            {
+              "offset": 4004,
+              "length": 7,
+              "replacement": ""
+            },
+            {
+              "offset": 3878,
+              "length": 95,
+              "replacement": ""
+            },
+            {
+              "offset": 3766,
+              "length": 112,
+              "replacement": ""
+            },
+            {
+              "offset": 3555,
+              "length": 22,
+              "replacement": "ConsumerWidget"
+            }
+          ]
+        }
+      ],
+      "linkedEditGroups": []
+    }
+  }
+]
