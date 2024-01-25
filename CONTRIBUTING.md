@@ -68,7 +68,7 @@ Finally, head to `localhost:3000`
 ### Adding new language
 
 Riverpod supports multiple languages.  
-To add new languages, it is recommended to follow the [i18n](https://docusaurus.io/fr/docs/i18n/introduction)
+To add new languages, it is recommended to follow the [i18n](https://docusaurus.io/docs/i18n/introduction)
 documentation of Docusaurus.
 
 The English documentation is hosted in [`/website/docs`](https://github.com/rrousselGit/riverpod/tree/master/website/docs).  
@@ -119,4 +119,4 @@ your code snippets should support those.
 This is done by having a separate `.dart` file for each possible scenario.  
 Again, look at the [Getting Started] for an example.
 
-[Getting Started]: https://github.com/rrousselGit/riverpod/blob/rework-flow/website/docs/introduction/getting_started.mdx
+[Getting Started]: https://github.com/rrousselGit/riverpod/blob/master/website/docs/introduction/getting_started.mdx
