@@ -10,8 +10,8 @@ part of 'provider.dart';
 
 String _$activityHash() => r'636cd5510e09cbfc46f31b74a70d9e98c89e95a4';
 
-/// This will create a provider named `activityProvider`
-/// which will cache the result of this function.
+/// 그러면 `activityProvider`라는 이름의 provider가 생성됩니다.
+/// 이 함수의 결과를 캐시하는 공급자를 생성합니다.
 ///
 /// Copied from [activity].
 @ProviderFor(activity)
