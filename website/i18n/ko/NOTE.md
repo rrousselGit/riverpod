@@ -16,4 +16,7 @@ yarn run dev --locale ko
 yarn run build --locale ko
 # 빌드된 파일 확인
 yarn run serve
+
+# 작업후 문서의 생성코드 업데이트
+dart run build_runner watch --delete-conflicting-outputs 
 ```
