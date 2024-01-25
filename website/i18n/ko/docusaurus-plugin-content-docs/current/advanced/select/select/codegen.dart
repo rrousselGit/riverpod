@@ -19,11 +19,11 @@ User example(ExampleRef ref) => User()
 class ConsumerExample extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Instead of writing:
+    // 이렇게 작성하는 대신:
     // String name = ref.watch(provider).firstName!;
-    // We can write:
+    // 이렇게 작성할수 있습니다:
     String name = ref.watch(exampleProvider.select((it) => it.firstName));
-    // This will cause the widget to only listen to changes on "firstName".
+    // 이렇게 하면 위젯이 "firstName"의 변경 사항만 수신합니다.
 
     return Text('Hello $name');
   }

@@ -11,4 +11,9 @@ yarn run write-translations --locale ko
 # website/i18n/ko/ 폴더에서 문서수정
 # 한국어 문서 실행하고, 최초실행시 import 폴더 구조가 안맞는 것 맞추기
 yarn run dev --locale ko
+
+# 빌드
+yarn run build --locale ko
+# 빌드된 파일 확인
+yarn run serve
 ```

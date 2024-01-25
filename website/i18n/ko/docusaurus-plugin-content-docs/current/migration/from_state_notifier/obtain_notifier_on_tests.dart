@@ -18,12 +18,12 @@ void main(List<String> args) {
     final container = ProviderContainer();
     addTearDown(container.dispose);
 
-    // Obtaining a notifier
+    // notifier 획득
     /* highlight-start */
     final AutoDisposeNotifier<int> notifier = container.read(myNotifierProvider.notifier);
     /* highlight-end */
 
-    // Obtaining its exposed state
+    // 거기서 노출되는 상태 획득
     /* highlight-start */
     final int state = container.read(myNotifierProvider);
     /* highlight-end */

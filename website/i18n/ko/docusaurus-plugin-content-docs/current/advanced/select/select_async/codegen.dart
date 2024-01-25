@@ -16,7 +16,7 @@ final userProvider = FutureProvider(
 /* SNIPPET START */
 @riverpod
 Object? example(ExampleRef ref) async {
-  // Wait for a user to be available, and listen to only the "firstName" property
+  // user를 사용할 수 있을 때까지 기다렸다가 "firstName" 속성만 수신합니다.
   final firstName = await ref.watch(
     userProvider.selectAsync((it) => it.firstName),
   );
