@@ -1,5 +1,5 @@
 ---
-title: Pull to refresh
+title: 당겨서 새로고침(Pull to refresh)
 ---
 
 import { Link } from "../../../../../src/components/Link";
@@ -12,120 +12,108 @@ import displayActivity3 from "!!raw-loader!./pull_to_refresh/display_activity3.d
 import displayActivity4 from "!!raw-loader!./pull_to_refresh/display_activity4.dart";
 import fullApp from "./pull_to_refresh/full_app";
 
-Riverpod natively supports pull-to-refresh thanks to its declarative nature.
+Riverpod은 선언적 성격 덕분에 당겨서 새로고침(pull-to-refresh)를 기본적으로 지원합니다.
 
-In general, pull-to-refreshes can be complex due as there are multiple
-problems to solve:
+일반적으로 당겨서 새로고침(pull-to-refresh)는 해결해야 할 문제가 많기 때문에 복잡할 수 있습니다:
 
-- Upon first entering a page, we want to show a spinner.
-  But during refresh, we want to show the refresh indicator instead.
-  We shouldn't show both the refresh indicator _and_ spinner.
-- While a refresh is pending, we want to show the previous data/error.
-- We need to show the refresh indicator for as long as the refresh is happening.
+- 페이지에 처음 들어갔을 때 스피너(spinner)를 표시하고 싶습니다.
+  하지만 새로 고침 중에는 대신 갱신표시기(refresh indicator)를 표시하고 싶습니다.
+  갱신표시기(refresh indicator)_와_ 스피너(spinner)를 모두 표시해서는 안 됩니다.
+- 새로 고침이 보류 중인 동안 이전 데이터/오류를 표시하고 싶습니다.
+- 새로 고침이 진행되는 동안 갱신표시기(refresh indicator)를 표시해야 합니다.
 
-Let's see how to solve this using Riverpod.  
-For this, we will make a simple example which recommends a random activity to users.  
-And doing a pull-to-refresh will trigger a new suggestion:
+Riverpod를 사용하여 이 문제를 해결하는 방법을 살펴봅시다.  
+이를 위해 사용자에게 임의의 액티비티를 추천하는 간단한 예제를 만들어 보겠습니다.  
+그리고 당겨서 새로고침(pull-to-refresh)를 수행하면 새로운 제안이 트리거됩니다:
 
 <img
   alt="A gif of the previously described application working"
   src="/img/case_studies/pull_to_refresh/app.gif"
 />
 
-## Making a bare-bones application.
+## 기본(bare-bones) 애플리케이션 만들기
 
-Before implement a pull-to-refresh, we first need something to refresh.  
-We can make a simple application which uses [Bored API](https://www.boredapi.com/)
-to suggests a random activity to users.
+당겨서 새로고침(pull-to-refresh) 기능을 구현하기 전에 먼저 새로고침할 무언가가 필요합니다.  
+[Bored API](https://www.boredapi.com/)를 사용하여 사용자에게 임의의 액티비티를 제안하는 간단한 애플리케이션을 만들 수 있습니다.
 
-First, let's define an `Activity` class:
+먼저 `Activity` 클래스를 정의하겠습니다:
 
 <AutoSnippet {...activity} />
 
-That class will be responsible for representing a suggested activity
-in a type-safe manner, and handle JSON encoding/decoding.  
-Using Freezed/json_serializable is not required, but it is recommended.
+이 클래스는 제안된 액티비티를 타입에 안전한(type-safe) 방식으로 표현하고 JSON 인코딩/디코딩을 처리합니다.  
+Freezed/json_serializable을 반드시 사용해야 하는 것은 아니지만 권장합니다.
 
-Now, we'll want to define a provider making a HTTP GET request to fetch
-a single activity:
+이제 단일 액티비티를 가져오기 위해 HTTP GET 요청을 하는 provider를 정의하겠습니다:
 
 <AutoSnippet {...fetchActivity} />
 
-We can now use this provider to display a random activity.  
-For now, we will not handle the loading/error state, and simply
-display the activity when available:
+이제 이 provider를 사용하여 임의의 액티비티를 표시할 수 있습니다.  
+지금은 로딩/오류 상태를 처리하지 않고 사용 가능한 경우 액티비티만 표시합니다:
 
 <AutoSnippet raw={displayActivity} />
 
-## Adding `RefreshIndicator`
+## `RefreshIndicator` 추가
 
-Now that we have a simple application, we can add a `RefreshIndicator` to it.  
-That widget is an official Material widget responsible for displaying a refresh indicator
-when the user pulls down the screen.
+이제 간단한 애플리케이션을 만들었으니 여기에 `RefreshIndicator`를 추가하면 됩니다.  
+이 위젯은 사용자가 화면을 아래로 내릴 때 새로고침 표시기(refresh indicator)를 표시하는 공식 머티리얼(Material) 위젯입니다.
 
-Using `RefreshIndicator` requires a scrollable surface. But so far, we don't have
-any. We can fix that by using a `ListView`/`GridView`/`SingleChildScrollView`/etc:
+`RefreshIndicator`를 사용하려면 스크롤 가능한 표면(surface)이 필요합니다. 
+하지만 지금까지는 하나도 없습니다. 
+`ListView`/`GridView`/`SingleChildScrollView`/등을 사용하면 이 문제를 해결할 수 있습니다:
 
 <AutoSnippet raw={displayActivity2} />
 
-Users can now pull down the screen. But our data isn't refreshed yet.
+이제 사용자가 화면을 아래로 내릴 수 있습니다. 하지만 데이터는 아직 새로 고쳐지지 않았습니다.
 
-## Adding the refresh logic
+## 새로 고침 로직 추가
 
-When users pull down the screen, `RefreshIndicator` will invoke
-the `onRefresh` callback. We can use that callback to refresh our data.
-In there, we can use `ref.refresh` to refresh the provider of our choice.
+사용자가 화면을 아래로 내리면 `RefreshIndicator`가 `onRefresh` 콜백을 호출합니다. 
+이 콜백을 사용해 데이터를 새로 고칠 수 있습니다.
+여기서 `ref.refresh`를 사용하여 선택한 공급자를 새로 고칠 수 있습니다.
 
-**Note**: `onRefresh` is expected to return a `Future`.
-And it is important for that future to complete when the refresh is done.
+**참고**: `onRefresh`는 `Future`를 반환할 것으로 예상됩니다.
+그리고 새로 고침이 완료될 때 그 future가 완료되는 것이 중요합니다.
 
-To obtain such a future, we can read our provider's `.future` property.
-This will return a future which completes when our provider has resolved.
+이러한 future를 얻으려면 공급자의 '.future' 속성을 읽으면 됩니다.
+그러면 공급자가 해결(resolved)될 때 완료되는 future가 반환됩니다.
 
-We can therefore update our `RefreshIndicator` to look like this:
+따라서 `RefreshIndicator`를 다음과 같이 업데이트할 수 있습니다:
 
 <AutoSnippet raw={displayActivity3} />
 
-## Showing a spinner only during initial load and handling errors.
+## 초기 로드 및 오류 처리 중에만 스피너를 표시합니다.
 
-At the moment, our UI does not handle the error/loading states.  
-Instead the data magically pops up when the loading/refresh is done.
+현재 저희 UI는 오류/로딩 상태를 처리하지 않습니다.  
+대신 로딩/새로 고침이 완료되면 데이터가 마술처럼 나타납니다.
 
-Let's change this by gracefully handling those states. There are two
-cases:
+이러한 상태를 우아하게 처리하여 이를 변경해 보겠습니다. 두 가지 경우가 있습니다:
 
-- During the initial load, we want to show a full-screen spinner.
-- During a refresh, we want to show the refresh indicator
-  and the previous data/error.
+- 초기 로드 중에는 전체 화면 스피너를 표시하고 싶습니다.
+- 새로 고침 중에는 새로 고침 표시기와 이전 데이터/오류를 표시하고 싶습니다.
 
-Fortunately, when listening to an asynchronous provider in Riverpod,
-Riverpod gives us an `AsyncValue`, which offers everything we need.
+다행히도 Riverpod에서 비동기 프로바이더를 수신할 때, Riverpod는 필요한 모든 것을 제공하는 `AsyncValue`를 제공합니다.
 
-That `AsyncValue` can then be combined with Dart 3.0's pattern matching
-as followed:
+이 `AsyncValue`는 다음과 같이 Dart 3.0의 패턴 일치(pattern matching)와 사용할 수 있습니다:
 
 <AutoSnippet raw={displayActivity4} />
 
 :::caution
-We use `valueOrNull` here, as currently, using `value` throws
-if in error/loading state.
+여기서는 현재와 같이 `valueOrNull`을 사용하여 에러/로딩 상태인 경우 `value`를 사용합니다.
 
-Riverpod 3.0 will change this to have `value` behave like `valueOrNull`.
-But for now, let's stick to `valueOrNull`.
+Riverpod 3.0에서는 `value`가 `valueOrNull`처럼 동작하도록 변경될 예정입니다. 
+하지만 지금은 `valueOrNull`을 고수하겠습니다.
 :::
 
 :::tip
-Notice the usage of the `:final valueOrNull?` syntax in our pattern matching.
-This syntax can be used only because `activityProvider` returns a non-nullable
-`Activity`.
+패턴 매칭에서 `:final valueOrNull?` 구문이 사용된 것을 주목하세요.
+이 구문은 `activityProvider`가 널이 아닌 `Activity`를 반환할 때만 사용할 수 있습니다.
 
-If your data can be `null`, you can instead use `AsyncValue(hasData: true, :final valueOrNull)`.
-This will correctly handle cases where the data is `null`, at the cost of
-a few extra characters.
+데이터가 `null`일 수 있는 경우, 대신 `AsyncValue(hasData: true, :final valueOrNull)`를 사용할 수 있습니다.
+이렇게 하면 몇 개의 문자가 추가되는 대신 데이터가 `null`인 경우를 올바르게 처리할 수 있습니다.
 :::
 
-## Wrapping up: full application
+## 마무리: 전체 애플리케이션
 
-Here is the combined source of everything we've covered so far:
+지금까지 다룬 모든 내용을 정리한 소스는 다음과 같습니다:
 
 <AutoSnippet {...fullApp} />

@@ -14,7 +14,7 @@ class ActivityView extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Pull to refresh')),
       body: Center(
-        // If we have an activity, display it, otherwise wait
+        // 액티비티가 있으면 표시하고, 그렇지 않으면 대기합니다.
         child: Text(activity.valueOrNull?.activity ?? ''),
       ),
     );

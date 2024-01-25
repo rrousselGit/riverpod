@@ -19,13 +19,12 @@ class ActivityView extends ConsumerWidget {
         child: ListView(
           children: [
             switch (activity) {
-              // If some data is available, we display it.
-              // Note that data will still be available during a refresh.
-              AsyncValue<Activity>(:final valueOrNull?) =>
-                Text(valueOrNull.activity),
-              // An error is available, so we render it.
+              // 일부 데이터를 사용할 수 있는 경우 해당 데이터를 표시합니다.
+              // 새로 고침 중에도 데이터를 계속 사용할 수 있습니다.
+              AsyncValue<Activity>(:final valueOrNull?) => Text(valueOrNull.activity),
+              // 오류를 사용할 수 있으므로 렌더링합니다.
               AsyncValue(:final error?) => Text('Error: $error'),
-              // No data/error, so we're in loading state.
+              // 데이터/오류가 없으므로 로딩 상태입니다.
               _ => const CircularProgressIndicator(),
             },
           ],
