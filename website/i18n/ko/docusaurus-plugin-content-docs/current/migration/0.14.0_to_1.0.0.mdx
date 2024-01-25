@@ -2,6 +2,9 @@
 title: ^0.14.0 to ^1.0.0
 ---
 
+import { Link } from "../../../../../src/components/Link";
+
+
 After a long wait, the first stable version of Riverpod is finally released 👏
 
 To see the full list of changes, consult the [Changelog](https://pub.dev/packages/flutter_riverpod/changelog#100).  
@@ -78,6 +81,7 @@ others were removed.
 As such:
 
 - `useProvider` is removed in favor of `HookConsumerWidget`.
+
   Before:
 
   ```dart
@@ -105,6 +109,7 @@ As such:
   ```
 
 - The prototype of `ConsumerWidget`'s `build` and `Consumer`'s `builder` changed.
+ 
   Before:
 
   ```dart
@@ -144,6 +149,7 @@ As such:
   ```
 
 - `context.read` is removed in favor of `ref.read`.
+
   Before:
 
   ```dart

@@ -1,95 +1,99 @@
 ---
-title: 프로바이더란?
+title: Providers
 ---
 
-[Riverpod] 설치를 완료했다면 이제 "providers"(프로바이더)에 대해 알아보도록 하겠습니다.
+import creatingProvider from "./providers/creating_a_provider";
+import declaringManyProviders from "./providers/declaring_many_providers";
+import {
+  AutoSnippet,
+} from "../../../../../src/components/CodeSnippet";
+import { Link } from "../../../../../src/components/Link";
 
-프로바이더는 [Riverpod] 애플리케이션의 가장 중요한 파트 입니다.
-
-프로바이더는 하나의 상태조각의 압축(encapsulates)된 객체이자 
-상태의 변화를 감시하는 역할을 가지고 있습니다.
-
-## 왜 프로바이더를 사용하나요?
-
-상태를 프로바이더로 감싸게 되면 아래의 서술된 내용들이 가능합니다. 
-
-- 코드상 다양한 위치에서 상태를 쉽게 접근할 수 있습니다. 
-  프로바이더는 Singletons, Service Locators, Dependency Injection 또는 InheritedWidgets
-  과 같은 디자인 패턴들을 완벽하게 대체할 수 있습니다.
-
-- 다른 프로바이더 상태와 간편하게 결합하여 사용할 수 있습니다. 
-  혹시 여러 객체들을 하나로 병합하는데 어려움을 격은적이 있나요? 
-  프로바이더를 사용하면 프로바이더의 간단한 문법을 사용하여 구현할 수 있습니다. 
-
-- 퍼포먼스 최적화가 가능합니다. 
-  위젯을 다시 빌드하는것을 필터링 하거나 비용이 높은 상태 계산을 캐싱하거나 
-  프로바이더는 상태 변경의 영향을 받는 항목만 다시 계산합니다. 
-
-- 애플리케이션의 태스트 용이성이 높아집니다. 
-  프로바이더와 함께라면, 복잡한 `setUp`/`tearDown` 단계가 불필요 합니다.
-  게다가 어떠한 프로바이더이든지 테스트 중의 프로바이더 행위를 오버라이드 할 수 있습니다.
-  매우 특정한 행위(동작)을 테스트 하기 쉽습니다. 
-
-- 고급 기능들과 함께 손 쉬운 통합이 가능합니다. 예를들어 로깅(logging) 또는 pull-to-refresh가 있습니다. 
-
-## 프로바이더 생성하기
-
-다양한 프로바이더들이 있지만, 기본적으로 모두 동일한 방식으로 동작합니다. 
-
-가장 보편적으로 사용하는 방법으로 전역 변수(global constants)로 선언하여 사용하는 방법이 있습니다.
-
-
-```dart
-final myProvider = Provider((ref) {
-  return MyValue();
-});
-```
-
-:::note
-프로바이더를 글로벌하게 전역변수로 선언하여 사용하는것을 두려워하지 마세요. 
-프로바이더는 완전 immutable 특성을 가집니다. 프로바이더를 선언하는 것은 함수를 선언하는것과
-다르지 않습니다. 그리고 프로바이더들은 테스트할 수 있고 유지보수 할 수 있습니다. 
+:::caution
+The content of this page may be outdated.  
+It will be updated in the future, but for now you may want to refer to the content
+in the top of the sidebar instead (introduction/essentials/case-studies/...)
 :::
 
-위 코드 정보는 3개의 컴포넌트를 구성하고 있습니다.
+Now that we have installed [Riverpod], let's talk about "providers".
 
-- `final myProvider`, 변수 선언입니다. 
-  이 변수는 항상 불변(immutable) 특성을 가질 것 입니다. 
-  그리고 추후 프로바이더의 상태를 읽기위해 사용하게 됩니다.
+Providers are the most important part of a [Riverpod] application.
+A provider is an object that encapsulates a piece of state and allows listening
+to that state.
 
-- `Provider`, 우리가 코드에서 사용하기 위해 결정한 프로바이더 입니다. 
-  [Provider]는 모든 프로바이더 종류들 중 가장 기본이 되는 친구입니다. 이 객체는 위에서 설명한 것 처럼 
-  변하지 않는 불변의 특성을 가지게 됩니다. 우리는 여기서 어떻게 상태(값)과 상호 작용하는지에 따라서
-  [Provider]를 다른 종류의 프로바이더로 바꿔 사용할 수 있습니다. 
-  예를 들어 [StreamProvider] 또는 [StateNotifierProvider] 가 있습니다.
+## Why use providers?
 
-- 공유 상태를 생성하는 함수입니다.
-  이 함수는  `ref` 객체를 파라미터로 받습니다. 이 객체는 다른 프로바이더들을 읽기 위해서 사용하거나
-  프로바이더의 상태가 소멸될 때 일부 작업을 수행할 수 있도록 합니다. 
+Wrapping a piece of state in a provider:
 
-프로바이더 내부에서 생성되는 객체의 형태는 사용하는 프로바이더의 종류에 따라 다르게 생성됩니다.
-예를 들어 [Provider]의 함수는 어떤 객체든 생성가능합니다. 반면에  [StreamProvider]는 [Stream] 객체를 
-생성할 필요가 있습니다. 여기서 생성이라고 함은 [StreamProvider]에서 [Stream]을 반환해야합니다. 
+- Allows easily accessing that state in multiple locations.
+  Providers are a complete replacement for patterns like Singletons,
+  Service Locators, Dependency Injection or InheritedWidgets.
+
+- Simplifies combining this state with others.
+  Ever struggled to merge multiple objects into one? This scenario is built
+  directly inside providers.
+
+- Enables performance optimizations.
+  Whether for filtering widget rebuilds or for caching expensive state computations;
+  providers ensure that only what is impacted by a state change is recomputed.
+
+- Increases the testability of your application.
+  With providers, you do not need complex `setUp`/`tearDown` steps. Furthermore,
+  any provider can be overridden to behave differently during a test, which
+  allows easily testing a very specific behavior.
+
+- Allows easy integration with advanced features, such as logging or
+  pull-to-refresh.
+
+## Creating a provider
+
+Providers come in many variants, but they all work the same way.
+
+The most common usage is to declare them as global constants like so:
+
+<AutoSnippet language="dart" {...creatingProvider}></AutoSnippet>
+
+:::note
+Do not be frightened by the global aspect of providers.
+Providers are fully immutable. Declaring a provider is no different from declaring
+a function, and providers are testable and maintainable.
+:::
+
+This snippet consists of three components:
+
+- `final myProvider`, the declaration of a variable.
+  This variable is what we will use in the future to read the state of our provider.
+  Providers should always be `final`.
+
+- `Provider`, the provider that we decided to use.
+  [Provider] is the most basic of all providers. It exposes an object that never
+  changes.
+  We could replace [Provider] with other providers like [StreamProvider] or
+  [NotifierProvider], to change how the value is interacted with.
+
+- A function that creates the shared state.
+  That function will always receive an object called `ref` as a parameter. This object
+  allows us to read other providers, perform some operations when the state
+  of our provider will be destroyed, and much more.
+
+The type of the object returned by the function passed to a provider depends on
+the provider used.
+For example, the function of a [Provider] can create any object.
+On the other hand, [StreamProvider]'s callback will be expected to return a [Stream].
 
 :::info
-어떠한 제한 없이 원하는데로 수 많은 종류의 프로바이더들을 선언할 수 있습니다. 
-`package:provider`를 사용할때와 반대로, [Riverpod]에서는 같은 "type"의 상태를 노출하는 
-2개의 프로바이더를 가지게 됩니다. 
+You can declare as many providers as you want without limitations.
+As opposed to when using `package:provider`, [Riverpod] allows creating multiple
+providers exposing a state of the same "type":
 
+<AutoSnippet language="dart" {...declaringManyProviders}></AutoSnippet>
 
-```dart
-final cityProvider = Provider((ref) => 'London');
-final countryProvider = Provider((ref) => 'England');
-```
-
-사실 위의 예에서는 2개의 프로바이더가 `String` 값을 생성하는 것은 
-어떠한 문제의 원인이 되지 않습니다.
-(역자: '2개의 프로바이더가 `String`값을 생성하는데 문제될 것이 없다'라는 의미로 
-받아들이면 좋겠습니다.)
+The fact that both providers create a `String` does not cause any problem.
 :::
 
 :::caution
-프로바이더가 동작하기 위해서 [ProviderScope]를 Flutter 앱의 가장 최상위(root) 부모 위젯으로 감싸줘야 합니다. 
+For providers to work, you must add [ProviderScope] at the root of your
+Flutter applications:
 
 ```dart
 void main() {
@@ -99,52 +103,52 @@ void main() {
 
 :::
 
-## 상태가 소멸되기 전에 액션 취하기
+## Different Types of Providers
 
-일부 케이스에서, 프로바이더의 상태는 소멸(파괴)되거나 재 생성될 수 있습니다. 
-통상적인 경우 이러한 상황들은 프로바이더 소멸 상태 전에 초기화를 진행하는 경우 입니다.
-예를 들어 `StreamController`를 닫아주는 경우가 있습니다. 
+There are multiple types of providers for multiple different use cases.
 
-이것은 프로바이더 내부에서 사용하는 `ref` 객체의 [onDispose] 메소드를 사용할 수 있습니다. 
+With all of these providers available, it is sometimes difficult to understand when to use one provider type over another.
+Use the table below to choose a provider that fits what you want to provide to the widget tree.
 
-다음 사용예시에서 [onDispose]를 사용하여 `StreamController`를 닫는 과정을 알아봅시다.
+| Provider Type            | Provider Create Function              | Example Use Case                                                                                      |
+| ------------------------ | ------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| [Provider]               | Returns any type                      | A service class / computed property (filtered list)                                                   |
+| [StateProvider]          | Returns any type                      | A filter condition / simple state object                                                              |
+| [FutureProvider]         | Returns a Future of any type          | A result from an API call                                                                             |
+| [StreamProvider]         | Returns a Stream of any type          | A stream of results from an API                                                                       |
+| [NotifierProvider]       | Returns a subclass of (Async)Notifier | A complex state object that is immutable except through an interface                                  |
+| [StateNotifierProvider]  | Returns a subclass of StateNotifier   | A complex state object that is immutable except through an interface. Prefer using a notifierProvider |
+| [ChangeNotifierProvider] | Returns a subclass of ChangeNotifier  | A complex state object that requires mutability                                                       |
 
+:::caution
+While all providers have their purpose, [ChangeNotifierProvider]s are not recommended for scalable applications. See <Link documentID="concepts/why_immutability" />. It exists in the
+`flutter_riverpod` package to provide an easy migration path from
+`package:provider`, and allows for some flutter specific use-cases such as
+integration with some Navigator 2 packages. :::
 
-```dart
-final example = StreamProvider.autoDispose((ref) {
-  final streamController = StreamController<int>();
+## Provider Modifiers
 
-  ref.onDispose(() {
-    // 프로바이더의 상태가 소멸되기 전 StreamController를 닫습니다(close).
-    streamController.close();
-  });
+All Providers have a built-in way to add extra functionalities to your different providers.
 
-  return streamController.stream;
-});
-```
-
-:::note
-사용하는 프로바이더에 따라서, 이러한 리소스 해제 처리 작업을 내부에서 자동으로 진행하는 경우도 있습니다.
-예를 들어 [StateNotifierProvider]는 `StateNotifier`의 `dispose`메소드를 호출합니다. 
-:::
-
-## 프로바이더 수식자(Modifiers)
-
-모든 프로바이더들은 다른 프로바이더와 추가적인 기능을 추가하기 위한 방법이 기본적으로 내장되어 있습니다.
-`ref` object에 새로운 특징을 추가하거나 프로바이더가 어떻게 상태를 소모(사용)하는지를 변경할 수 있습니다. 
-Modifiers는 모든 프로바이더에서 사용할 수 있습니다. 이는  named constructor(생성자) 문법과 유사합니다.
+They may add new features to the `ref` object or change slightly how the provider
+is consumed.
+Modifiers can be used on all providers, with a syntax similar to named constructor:
 
 ```dart
 final myAutoDisposeProvider = StateProvider.autoDispose<int>((ref) => 0);
 final myFamilyProvider = Provider.family<String, int>((ref, id) => '$id');
 ```
-지금은 2개의 사용가능한 수식어가 있습니다. 
 
-- [`.autoDispose`](/docs/concepts/modifiers/auto_dispose) 는 더 이상 상태를 구독하지 않을때 자동으로 프로바이터를 소멸되도록 합니다.
-- [`.family`](/docs/concepts/modifiers/family) 외부 파라미터로부터 프로바이더를 생성할 때 사용합니다. 
+At the moment, there are two modifiers available:
+
+- <Link documentID="concepts/modifiers/auto_dispose" />, which will make the
+  provider automatically destroy its state when it is no longer being listened
+  to.
+- <Link documentID="concepts/modifiers/family" />, which allows creating a
+  provider from external parameters.
 
 :::note
-프로바이더는 복수의 수식어(modifiers)를 한번에 사용할 수 있습니다.  
+A provider can use multiple modifiers at once:
 
 ```dart
 final userProvider = FutureProvider.autoDispose.family<User, int>((ref, userId) async {
@@ -154,11 +158,10 @@ final userProvider = FutureProvider.autoDispose.family<User, int>((ref, userId) 
 
 :::
 
-프로바이더에 대한 설명은 여기까지 입니다!
+That's it for this guide!
 
-[프로바이더 읽기](/docs/concepts/reading) 문서에서 계속됩니다. 
-또는 [프로바이더 결합하기](/docs/concepts/combining_providers)문서도 확인할 수 있습니다. 
-
+You can continue with <Link documentID="concepts/reading"/>.
+Alternatively, you can see <Link documentID="concepts/combining_providers"/>.
 
 [get_it]: http://pub.dev/packages/get_it
 [inheritedwidget]: https://api.flutter.dev/flutter/widgets/InheritedWidget-class.html
@@ -168,7 +171,11 @@ final userProvider = FutureProvider.autoDispose.family<User, int>((ref, userId) 
 [hooks_riverpod]: https://pub.dev/packages/hooks_riverpod
 [flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
 [flutter_hooks]: https://github.com/rrousselGit/flutter_hooks
-[provider]: ../providers/provider
-[streamprovider]: ../providers/stream_provider
-[statenotifierprovider]: ../providers/state_notifier_provider
+[provider]: /docs/providers/provider
+[streamprovider]: /docs/providers/stream_provider
+[futureprovider]: /docs/providers/future_provider
+[stateprovider]: /docs/providers/state_provider
+[statenotifierprovider]: /docs/providers/state_notifier_provider
+[notifierProvider]: /docs/providers/notifier_provider
+[changenotifierprovider]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ChangeNotifierProvider-class.html
 [providerscope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html

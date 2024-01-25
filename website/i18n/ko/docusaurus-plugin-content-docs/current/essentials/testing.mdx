@@ -1,0 +1,148 @@
+---
+title: providers 테스트하기
+---
+
+import { AutoSnippet, When } from "../../../../../src/components/CodeSnippet";
+import createContainer from "!!raw-loader!./testing/create_container.dart";
+import unitTest from "!!raw-loader!./testing/unit_test.dart";
+import widgetTest from "!!raw-loader!./testing/widget_test.dart";
+import fullWidgetTest from "!!raw-loader!./testing/full_widget_test.dart";
+import widgetContainerOf from "!!raw-loader!./testing/widget_container_of.dart";
+import providerToMock from "./testing/provider_to_mock";
+import mockProvider from "!!raw-loader!./testing/mock_provider.dart";
+import autoDisposeListen from "!!raw-loader!./testing/auto_dispose_listen.dart";
+import listenProvider from "!!raw-loader!./testing/listen_provider.dart";
+import awaitFuture from "!!raw-loader!./testing/await_future.dart";
+import notifierMock from "./testing/notifier_mock";
+
+Riverpod API의 핵심은 provider를 개별적으로 테스트할 수 있는 기능입니다.
+
+적절한 테스트 스위트를 위해서는 몇 가지 극복해야 할 과제가 있습니다:
+
+- 테스트는 상태를 공유해서는 안 됩니다. 즉, 새 테스트가 이전 테스트의 영향을 받지 않아야 합니다.
+- 테스트는 원하는 상태를 얻기 위해 특정 기능을 모의할 수 있는 기능을 제공해야 합니다.
+- 테스트 환경은 가능한 한 실제 환경과 유사해야 합니다.
+
+다행히도 Riverpod를 사용하면 이러한 목표를 모두 쉽게 달성할 수 있습니다.
+
+## 테스트 설정하기
+
+Riverpod로 테스트를 정의할 때는 크게 두 가지 시나리오가 있습니다:
+
+- 일반적으로 Flutter 종속성이 없는 단위 테스트.
+  이는 provider의 동작을 단독으로 테스트할 때 유용할 수 있습니다.
+- 위젯 테스트: 일반적으로 Flutter 종속성이 있는 위젯 테스트.
+  공급자를 사용하는 위젯의 동작을 테스트하는 데 유용할 수 있습니다.
+
+### 단위 테스트
+
+단위 테스트는 [package:test](https://pub.dev/packages/test)의 `test` 함수를 사용하여 정의합니다.
+
+다른 테스트와 가장 큰 차이점은 `ProviderContainer` 객체를 생성한다는 점입니다. 
+이 객체를 사용하면 테스트가 provider와 상호 작용할 수 있습니다.
+
+`ProviderContainer` 객체를 생성하고 폐기하기 위한 테스트 유틸리티를 만드는 것이 좋습니다:
+
+<AutoSnippet raw={createContainer} />
+
+그런 다음 이 유틸리티를 사용하여 `test`를 정의할 수 있습니다:
+
+<AutoSnippet raw={unitTest} />
+
+이제 ProviderContainer가 생겼으니 이를 사용하여 provider를 읽을 수 있습니다:
+
+- provider의 현재 값을 읽기위해 `container.read` 사용.
+- provider를 청취하고, 변경을 통지받기 위해 `container.listen` 사용.
+
+:::caution
+provider가 자동으로 폐기될 때 `container.read`를 사용할 때는 주의하세요.  
+provider가 리스닝되지 않으면 테스트 도중에 provider의 상태가 파괴될 가능성이 있습니다.
+
+이 경우 `container.listen`을 사용하는 것을 고려해 보세요.  
+이 반환값은 어쨌든 provider의 현재 값을 읽을 수 있게 해주지만, 
+테스트 도중에 provider가 폐기되지 않도록 보장합니다:
+
+<AutoSnippet raw={autoDisposeListen} />
+:::
+
+### 위젯 테스트
+
+위젯 테스트는 [package:flutter_test](https://pub.dev/packages/flutter_test)의 `testWidgets` 함수를 사용하여 정의합니다.
+
+이 경우 일반적인 위젯 테스트와 가장 큰 차이점은 `tester.pumpWidget`의 루트에 `ProviderScope` 위젯을 추가해야 한다는 점입니다:
+
+<AutoSnippet raw={widgetTest} />
+
+이는 Flutter 앱에서 Riverpod을 활성화할 때 하는 작업과 유사합니다.
+
+그런 다음 `tester`를 사용하여 위젯과 상호 작용할 수 있습니다.
+또는 provider와 상호 작용하고 싶다면 `ProviderContainer`를 얻을 수 있습니다.
+이는 `ProviderScope.containerOf(buildContext)`를 사용하여 얻을 수 있습니다.  
+따라서 `tester`를 사용하면 다음과 같이 작성할 수 있습니다:
+
+<AutoSnippet raw={widgetContainerOf} />
+
+그런 다음 이를 사용하여 provider를 읽을 수 있습니다. 다음은 전체 예제입니다:
+
+<AutoSnippet raw={fullWidgetTest} />
+
+## provider 모킹하기(Mocking)
+
+지금까지 테스트를 설정하는 방법과 provider와의 기본적인 상호 작용에 대해 살펴보았습니다.
+하지만 경우에 따라서는 provider를 모킹(mock)하고 싶을 수도 있습니다.
+
+멋진 부분: 추가 설정 없이 모든 공급자를 기본적으로 모킹할 수 있습니다.  
+이는 `ProviderScope` 또는 `ProviderContainer`에 `overrides` 매개변수를 지정하면 가능합니다.
+
+다음 provider를 살펴봅시다:
+
+<AutoSnippet {...providerToMock} />
+
+다음을 사용하여 모킹해 볼 수 있습니다:
+
+<AutoSnippet raw={mockProvider} />
+
+## provider 변경 사항 감시(Spying)
+
+테스트에서 `ProviderContainer`를 얻었으므로 이를 사용하여 provider를 "listen"할 수 있습니다:
+
+<AutoSnippet raw={listenProvider} />
+
+그런 다음 이를 [mockito](https://pub.dev/packages/mockito) 또는 [mocktail](https://pub.dev/packages/mocktail)과 같은 패키지와 결합하여 해당 패키지의 `verify` API를 사용할 수 있습니다.  
+또는 더 간단하게는 목록에 모든 변경 사항을 추가하고 어설트(assert)할 수 있습니다.
+
+## 비동기 provider를 기다리기
+
+Riverpod에서는 provider가 Future/Stream을 반환하는 경우가 매우 흔합니다.  
+이 경우 테스트에서 해당 비동기 연산이 완료될 때까지 기다려야 할 가능성이 있습니다.
+
+이를 위한 한 가지 방법은 프로바이더의 '.future'를 읽는 것입니다:
+
+<AutoSnippet raw={awaitFuture} />
+
+## Notifiers 모킹하기
+
+일반적으로 Notifiers를 모의하는 것은 권장하지 않습니다.  
+그 대신에, Notifier의 로직에 어느 정도 추상화 수준을 도입하여 그 추상화를 모킹할 수 있도록 해야 합니다.
+예를 들어, Notifier을 모킹하는 대신 Notifier가 데이터를 가져오는 데 사용하는 "repository"를 모킹할 수 있습니다.
+
+Notifier를 모킹하려는 경우, 모킹을 만들 때 특별히 고려해야 할 사항이 있습니다: 
+모의 클래스는 반드시 원래 Notifier 베이스 클래스를 서브 클래싱해야 합니다: 
+인터페이스를 손상시킬 수 있으므로 Notifier를 "implement"할 수 없습니다.
+
+따라서 Notifier를 모킹할 때는 다음과 같은 mockito 코드를 작성하지 마세요:
+
+```dart
+class MyNotifierMock with Mock implements MyNotifier {}
+```
+
+대신 다음과 같이 작성하세요:
+
+<AutoSnippet {...notifierMock} />
+
+<When codegen={true}>
+
+이 기능을 사용하려면 목(Mock)을 모킹하려는 Notifier와 동일한 파일에 배치해야 합니다. 
+그렇지 않으면 `_$MyNotifier` 클래스에 액세스할 수 없습니다.
+
+</When>

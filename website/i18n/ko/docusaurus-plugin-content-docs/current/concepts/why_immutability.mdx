@@ -1,124 +1,94 @@
 ---
-title: 불변성(Immutability)의 중요성
+title: Why Immutability
 ---
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import whyImmutability from "./why_immutability"
+import {
+  trimSnippet,
+  AutoSnippet,
+  When,
+} from "../../../../../src/components/CodeSnippet";
 
-## 불변성(Immutability)이란?
-
-불변성은 객체의 모든 필드가 final 또는 late final인 경우를 의미합니다.
-이러한 필드들은 생성 시에만 설정되며, 이후에는 변경할 수 없습니다.
-
-불변성은 여러 가지 이유에서 유용합니다.
-
-- reference equality(레퍼런스 동등성)이 아닌 value equality(값의 동등성)을 가져옵니다.
-- 코드의 지역적인 이해가 용이해집니다.
-  - 다른 곳에 있는 코드가 레퍼런스에 접근하여 객체를 변경하는 것을 방지할 수 있습니다
-- 비동기 및 병렬 작업에 대해 이해하기 쉬워집니다.
-  - 작업 사이에 다른 코드가 객체를 변경할 수 없습니다.
-- API의 안전성이 보장됩니다.
-  - 메서드에 전달한 객체는 호출자 또는 피호출자에 의해 변경될 수 없습니다.
-
-copyWith 메서드는 기존 객체에서 몇 가지 속성만 변경된 새로운 객체를 생성할 때, 코드의 복잡도를 줄이는 데 도움이 될 수 있습니다.
-
-복사 작업은 예상보다 더 효율적입니다. 왜냐하면 Dart는 변경되지 않은 하위 객체에 대한 참조를 재사용할 수 있기 때문입니다.
-:::warning
-객체가 깊은 불변성(deeply immutable)을 가지고 있는지 확인하십시오. 그렇지 않으면 당신은 깊은 복사 메커니즘을 구현해야 할 수 있습니다.
+:::caution
+The content of this page may be outdated.  
+It will be updated in the future, but for now you may want to refer to the content
+in the top of the sidebar instead (introduction/essentials/case-studies/...)
 :::
 
-## 최적의 방법
+## What is Immutability?
 
-불변 상태를 만들기 위해 다양한 패키지를 이용할 수 있습니다.
+Immutability is when all fields of an `Object` are final or late final.
+They are set exactly once upon construction.
 
-immutable한 객체의 경우
+Immutability is desireable for many different reasons
+
+- Value equality rather than reference equality
+- Local reasoning about a piece of code
+  - A far distant piece of code can't obtain a reference and change the object from underneath you
+- Easier to reason about for asynchronous and parallel tasks
+  - Other code can't mutate your object in between operations
+- Safety of APIs
+  - What you pass into a method cannot be changed by the callee / caller
+
+A copyWith method helps with reducing verbosity when creating a new object with just a few things changed.
+
+Copying is more efficient than you might think, since dart can reuse any references to sub-objects that have not changed.
+:::warning
+Make sure your objects are deeply immutable, otherwise you'll have to implement some sort of deep copy mechanism.
+:::
+
+## Best Practices
+
+You can use any package you want to create immutable state.
+
+For immutable objects:
 
 - [package:freezed](https://pub.dev/packages/freezed)
 - [package:built_value](https://pub.dev/packages/built_value)
 
-immutable한 컬렉션의 경우 (Map, Set, List)
+For immutable collections (Map, Set, List):
 
 - [package:fast_immutable_collections](https://pub.dev/packages/fast_immutable_collections)
 - [package:built_collection](https://pub.dev/packages/built_collection)
 - [package:kt_dart](https://pub.dev/packages/kt_dart)
 - [package:dartz](https://pub.dev/packages/dartz)
 
-[freezed] 사용을 높이 권장합니다.
-이 패키지에는 불변의 객체를 만드는 것 이외에도 몇 가지 멋진 추가 기능들이 있습니다.
+It is highly recommended to use [freezed],
+since it has several nice additions beyond just making immutable objects including:
 
-- copyWith 메서드
-- 깊은 복사 (중첩된 freezed 객체의 copyWith)
-- Union 타입
-- Union 매핑 함수
+- A generated copyWith method
+- Deep copy (copyWith on nested freezed objects)
+- Union types
+- Union mapping functions
 
-불변 상태를 다루기 위해 code generation을 사용해야 할 필요는 없지만, 이를 사용하면 작업이 더 쉬워집니다.
+You do not need to use code generation to work with immutable state, but it makes it much easier.
 
 :::warning
-빌트인 컬렉션을 사용하려면, 업데이트할 때 컬렉션을 복사하는 규칙을 강제해야 합니다.
-컬렉션을 복사하지 않으면 riverpod는 객체에 대한 레퍼런스가 변경되었는지를 기반으로 새 상태를 전달할지 결정합니다.
-객체를 변경하는 메서드를 단순히 호출한다면, 레퍼런스는 이전과 동일하기 때문에 객체가 변경되지 않을 수 있습니다.
+If you want to use the built-in collections, make sure to enforce a discipline of making copies of collections when updating them.
+The issue with not copying a collection is that riverpod determines whether to emit a new state based on whether the reference to the object has changed.
+If you just call a method that mutates an object, the reference is the same.
 :::
 
-### 불변 상태 사용하기
+### Using immutable state
 
-불변 상태는 [StateNotifier]와 [StateNotifierProvider]를 결합하여 사용하는 것이 가장 적합합니다.
-[StateNotifier]를 사용하면 상태를 '변경'할 수 있는 인터페이스를 노출할 수 있습니다.
-[StateNotifier]를 확장하는 클래스 밖에서는 상태를 변경할 수 없으므로, 역할 분리를 강제하고 비즈니스 로직을 UI 바깥에 유지할 수 있습니다.
+Immutable state is best fit for using a [Notifier] <When codegen={false}> in combination with [NotifierProvider] </When>.
+A [Notifier] allows you to expose an interface through which you can 'mutate' the state.
+You cannot mutate the state from outside the class you define that extends [Notifier].
+This enforces a separation of concerns and keeps business logic outside of your UI.
 
-다음은 앱 테마를 변경하는 불변 상태의 설정 클래스 예제입니다.
+Here is an example of a simple immutable settings class for changing an app theme.
 
-```dart
-final themeProvider = StateNotifierProvider((ref) => ThemeNotifier());
+<AutoSnippet language="dart" {...whyImmutability}></AutoSnippet>
 
-class ThemeNotifier extends StateNotifier<ThemeSettings> {
-  ThemeNotifier(): super(
-      ThemeSettings(
-        mode: ThemeMode.system,
-        primaryColor: Colors.blue,
-      ));
-
-  void toggle() {
-    state = state.copyWith(mode: state.mode.toggle);
-  }
-  void setDarkTheme() {
-    state = state.copyWith(mode: ThemeMode.dark);
-  }
-  void setLightTheme() {
-    state = state.copyWith(mode: ThemeMode.light);
-  }
-  void setSystemTheme() {
-    state = state.copyWith(mode: ThemeMode.system);
-  }
-  void setPrimaryColor(Color color) {
-    state = state.copyWith(primaryColor: color);
-  }
-
-}
-
-@freezed
-class ThemeSettings with _$ThemeSettings {
-  const factory ThemeSettings({ThemeMode mode, Color primaryColor}) = _ThemeSettings;
-}
-
-extension ToggleTheme on ThemeMode {
-  ThemeMode get toggle {
-    switch (this){
-      case ThemeMode.dark:
-        return ThemeMode.light;
-      case ThemeMode.light:
-        return ThemeMode.dark;
-      case ThemeMode.system:
-        return ThemeMode.system;
-    }
-  }
-}
-```
-이 코드를 적용하려면, 'freezed_annotation'을 import하고 part 지시문을 추가한 후, [build_runner]를 실행하여 freezed 클래스를 생성해야 하는 것을 기억하세요!
+To use this code, remember to import `freezed_annotation`, add the part directive and run [build_runner] to generate the freezed classes!
 
 [changenotifier]: https://api.flutter.dev/flutter/foundation/ChangeNotifier-class.html
 [statenotifier]: https://pub.dev/documentation/riverpod/latest/riverpod/StateNotifier-class.html
 [statenotifierprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StateNotifierProvider-class.html
+[notifier]: https://pub.dev/documentation/riverpod/latest/riverpod/Notifier-class.html
+[notifierprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/NotifierProvider.html
 [asyncvalue]: https://pub.dev/documentation/riverpod/latest/riverpod/AsyncValue-class.html
 [freezed]: https://pub.dev/packages/freezed
 [build_runner]: https://pub.dev/packages/build_runner
-
