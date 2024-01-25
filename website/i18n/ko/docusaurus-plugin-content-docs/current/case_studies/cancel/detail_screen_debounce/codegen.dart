@@ -10,21 +10,22 @@ part 'codegen.g.dart';
 /* SNIPPET START */
 @riverpod
 Future<Activity> activity(ActivityRef ref) async {
-  // We capture whether the provider is currently disposed or not.
+  // provider가 현재 폐기(disposed)되었는지 여부를 캡처합니다.
   var didDispose = false;
   ref.onDispose(() => didDispose = true);
 
-  // We delay the request by 500ms, to wait for the user to stop refreshing.
+  // 사용자가 새로 고침(refreshing)을 중단할 때까지 기다리기 위해
+  // 요청을 500밀리초 지연합니다.
   await Future<void>.delayed(const Duration(milliseconds: 500));
 
-  // If the provider was disposed during the delay, it means that the user
-  // refreshed again. We throw an exception to cancel the request.
-  // It is safe to use an exception here, as it will be caught by Riverpod.
+  // 지연 중에 provider가 폐기(disposed)되었다면 사용자가 다시 새로고침했다는 의미입니다.
+  // 예외를 던져 요청을 취소합니다.
+  // Riverpod에 의해 잡히므로 여기서 예외를 사용하는 것이 안전합니다.
   if (didDispose) {
     throw Exception('Cancelled');
   }
 
-  // The following code is unchanged from the previous snippet
+  // 다음 코드는 이전 스니펫에서 변경되지 않았습니다.
   final client = http.Client();
   ref.onDispose(client.close);
 
