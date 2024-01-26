@@ -95,7 +95,7 @@ class Home extends HookConsumerWidget {
                 child: Text(
                   switch (err) {
                     DioException() => err.message ?? '$err',
-                    Object() => '$err',
+                    _ => '$err',
                   },
                 ),
               ),
