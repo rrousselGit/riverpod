@@ -3,27 +3,32 @@ title: ProviderObserver
 ---
 
 import CodeBlock from "@theme/CodeBlock";
-import logger from "!!raw-loader!/i18n/ko/docusaurus-plugin-content-docs/current/concepts/provider_observer_logger.dart";
+import logger from "!!raw-loader!/docs/concepts/provider_observer_logger.dart";
 import { trimSnippet } from "../../../../../src/components/CodeSnippet";
 
-[ProviderObserver]는 ProviderContainer의 변화를 관찰합니다.
+:::caution
+The content of this page may be outdated.  
+It will be updated in the future, but for now you may want to refer to the content
+in the top of the sidebar instead (introduction/essentials/case-studies/...)
+:::
 
-[ProviderObserver]를 사용하기 위해서, 사용하고자 하는 클래스에 `ProviderObserver`를 상속하고
-메소드를 오버라이드(override)하여 사용할 수 있습니다. 
+[ProviderObserver] listens to the changes of a ProviderContainer.
 
-[ProviderObserver]는 3개의 메소드를 가집니다.
+To use it, extend the class ProviderObserver and override the method you want to use.
 
-- `didAddProvider`:  프로바이더(provider)가 초기화 될때 마다 호출됩니다. 노출되는 값은 `값(value)`입니다. 
-- `didDisposeProvider`: 프로바이더(provider)가 `disposed`될 때마다 호출됩니다.
-- `didUpdateProvider`: 프로바이더(provider)값이 변경(when they emit a notification)될 때 마다 호출됩니다.
+[ProviderObserver] has three methods :
 
-### 사용법:
+- `didAddProvider` is called every time a provider was initialized, and the value exposed is `value`.
+- `didDisposeProvider` is called every time a provider was disposed.
+- `didUpdateProvider` is called every time by providers when they emit a notification.
 
-[ProviderObserver]는 `didUpdateProvider`를 오버라이딩 하여 프로바이더들(providers)의 변화를 로깅할 수 있습니다. 
+### Usage :
+
+A simple use case for [ProviderObserver] is to log the changes in providers by overriding the `didUpdateProvider` method.
 
 <CodeBlock>{trimSnippet(logger)}</CodeBlock>
 
-이제 프로바이더 상태 값이 갱신될때 마다 로거에 기록으로 출력될 것입니다. 
+Now, every time the value of our provider is updated, the logger will log it:
 
 ```
 I/flutter (16783): {
@@ -32,4 +37,13 @@ I/flutter (16783):   "newValue": "1"
 I/flutter (16783): }
 ```
 
+:::note:
+For states that are mutable such as [StateController] (the state of [StateProvider.state]) and
+[ChangeNotifier] the previousValue and newValue will be the same
+:::
+since they reference the same `StateController` / `ChangeNotifier`.
+
 [providerobserver]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderObserver-class.html
+[statecontroller]: https://pub.dev/documentation/riverpod/latest/riverpod/StateController-class.html
+[stateprovider.state]: https://pub.dev/documentation/riverpod/latest/riverpod/StateProvider/state.html
+[changenotifier]: https://api.flutter.dev/flutter/foundation/ChangeNotifier-class.html

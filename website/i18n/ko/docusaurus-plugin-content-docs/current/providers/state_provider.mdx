@@ -2,8 +2,6 @@
 title: StateProvider
 ---
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
 import product from "!!raw-loader!/docs/providers/state_provider/product.dart";
 import productListView from "!!raw-loader!/docs/providers/state_provider/product_list_view.dart";
@@ -15,9 +13,15 @@ import updateReadTwice from "!!raw-loader!/docs/providers/state_provider/update_
 import updateReadOnce from "!!raw-loader!/docs/providers/state_provider/update_read_once.dart";
 import { trimSnippet } from "../../../../../src/components/CodeSnippet";
 
+:::caution
+The content of this page may be outdated.  
+It will be updated in the future, but for now you may want to refer to the content
+in the top of the sidebar instead (introduction/essentials/case-studies/...)
+:::
+
 `StateProvider` is a provider that exposes a way to modify its state.
-It is a simplification of [StateNotifierProvider], designed to avoid
-having to write a [StateNotifier] class for very simple use-cases.
+It is a simplification of [NotifierProvider], designed to avoid
+having to write a [Notifier] class for very simple use-cases.
 
 `StateProvider` exists primarily to allow the modification of
 **simple** variables by the User Interface.  
@@ -34,10 +38,10 @@ You should not use `StateProvider` if:
 - your state is a complex object (such as a custom class, a list/map, ...)
 - the logic for modifying your state is more advanced than a simple `count++`.
 
-For more advanced cases, consider using [StateNotifierProvider] instead and
-create a [StateNotifier] class.  
+For more advanced cases, consider using [NotifierProvider] instead and
+create a [Notifier] class.  
 While the initial boilerplate will be a bit larger, having a custom
-[StateNotifier] class is critical for the long-term maintainability of your
+[Notifier] class is critical for the long-term maintainability of your
 project – as it centralizes the business logic of your state in a single place.
 
 ## Usage example: Changing the filter type using a dropdown
@@ -119,7 +123,9 @@ This change achieves the same effect while making the syntax a bit better.
 [ref.watch]: ../concepts/reading#using-refwatch-to-observe-a-provider
 [ref.read]: ../concepts/reading#using-refread-to-obtain-the-state-of-a-provider-once
 [statenotifierprovider]: ./state_notifier_provider
+[notifierprovider]: ./notifier_provider
 [futureprovider]: ./future_provider
+[notifier]: https://pub.dev/documentation/riverpod/latest/riverpod/Notifier-class.html
 [statenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/StateNotifier-class.html
 [provider]: ./provider
 [asyncvalue]: https://pub.dev/documentation/riverpod/latest/riverpod/AsyncValue-class.html
