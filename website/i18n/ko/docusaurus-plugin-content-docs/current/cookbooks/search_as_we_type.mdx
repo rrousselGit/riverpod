@@ -2,11 +2,17 @@
 title: Search as we type
 ---
 
+:::caution
+The content of this page may be outdated.  
+It will be updated in the future, but for now you may want to refer to the content
+in the top of the sidebar instead (introduction/essentials/case-studies/...)
+:::
+
 A real world example could be to use `FutureProvider` to implement a searchbar.
 
 ## Usage example: "Search as we type" searchbar
 
-Implementing a "seach as we type" can seem daunting at first when using
+Implementing a "search as we type" can seem daunting at first when using
 conventional means.  
 There are lots of moving parts, such as:
 
@@ -26,10 +32,10 @@ is to split it into multiple providers:
   the other providers/[family].
 
 The first step would be to store the user input somewhere. For this example,
-we will use `StateProvider` (as the seach state is only a single `String`):
+we will use `StateProvider` (as the search state is only a single `String`):
 
 ```dart
-final seachInputProvider = StateProvider<String>((ref) => '');
+final searchInputProvider = StateProvider<String>((ref) => '');
 ```
 
 We can then connect this provider to a [TextField] by doing:
@@ -113,14 +119,11 @@ class MyHomePage extends ConsumerWidget {
                 ref.read(searchFieldProvider.notifier).state = value,
           ),
           Expanded(
-            child: questions.when(
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, stack) => Center(child: Text('Error $error')),
-              data: (questions) {
-                return ListView.builder(
-                  itemCount: questions.length,
+            child: switch (questions) {
+              AsyncData(:final value) => ListView.builder(
+                  itemCount: value.length,
                   itemBuilder: (context, index) {
-                    final question = questions[index];
+                    final question = value[index];
 
                     return ListTile(
                       title: Text(
@@ -128,9 +131,10 @@ class MyHomePage extends ConsumerWidget {
                       ),
                     );
                   },
-                );
-              },
-            ),
+                );,
+              AsyncError(:final error) => Center(child: Text('Error $error')),
+              _ => const Center(child: CircularProgressIndicator()),
+            },
           ),
         ],
       ),

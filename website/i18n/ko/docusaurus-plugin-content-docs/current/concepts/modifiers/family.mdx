@@ -4,47 +4,49 @@ title: .family
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import { Link } from "../../../../../../src/components/Link";
 
-본 문서를 읽기 전에 [프로바이더란](/docs/concepts/providers)와 [프로바이더 읽기](/docs/concepts/reading)문서를 
-먼저 읽고 오면 좋습니다. 
+:::caution
+The content of this page may be outdated.  
+It will be updated in the future, but for now you may want to refer to the content
+in the top of the sidebar instead (introduction/essentials/case-studies/...)
+:::
 
-여기서는 `.family` 수식어에 대해 상세하게 알아보도록 하겠습니다. 
+Before reading this, consider reading about <Link documentID="concepts/providers"/> and <Link documentID="concepts/reading"/>.
+In this part, we will talk in detail about the `.family` provider modifier.
 
-`.family` 수식어(modifier)의 하나의 목적을 가집니다.
-외부 값을 이용하여 프로바이더를 생성할때 사용합니다. 
-
-통상적인 `family` 사용예는 다음과 같습니다.
+The `.family` modifier has one purpose: Getting a unique provider based on external parameters.
 
 Some common use-cases for `family` would be:
 
-- [FutureProvider]를 `.family`와 결합하여 ID에서 `Message`를 가져오는 경우. 
-- 번역을 다루기 위해 현재 `Locale` 값을 프로바이더로 전달하는 경우.
+- Combining [FutureProvider] with `.family` to fetch a `Message` from its ID
+- Passing the current `Locale` to a provider, so that we can handle translations
 
-## 사용방법
+## Usage
 
-프로바이더에 `.family` 수식어를 결합하면 파라미터가 추가됩니다. 
-이 파라미터를 프로바이더가 어떠한 특정 상태를 생성하기 위해 사용됩니다. 
+The way families works is by adding an extra parameter to the provider.
+This parameter can then be freely used in our provider to create some state.
 
-예를 들어, `family` 수식어를 [FutureProvider]에 결합하여 `Message`의 ID를 통해
-`Message`를 가져오는 경우를 확인해 보겠습니다. (위의 1번 예시)
+For example, we can combine `family` with [FutureProvider] to fetch
+a `Message` from its ID:
 
 ```dart
 final messagesFamily = FutureProvider.family<Message, String>((ref, id) async {
   return dio.get('http://my_api.dev/messages/$id');
 });
 ```
-그리고 `messagesFamily` 프로바이더를 사용할때 사용 구문(the syntax)에는 다소 차이가 있습니다.
-일반적인 구문은 컴파일 상에서 에러를 발생시킵니다. 
+
+When using our `messagesFamily` provider, the syntax is slightly different.  
+The usual syntax will not work anymore:
 
 ```dart
 Widget build(BuildContext context, WidgetRef ref) {
-  // Error – messagesFamily is not a provider 
-  // 에러 - messagesFamily는 프로바이더가 아닙니다. 
+  // Error – messagesFamily is not a provider
   final response = ref.watch(messagesFamily);
 }
 ```
 
-아래와 같이, `messagesFamily`에 파라미터를 넘겨줄 필요가 있습니다. 
+Instead, we need to pass a parameter to `messagesFamily`:
 
 ```dart
 Widget build(BuildContext context, WidgetRef ref) {
@@ -53,10 +55,9 @@ Widget build(BuildContext context, WidgetRef ref) {
 ```
 
 :::info
-
- `family` 를 사용하는 프로바이더에 다른 파라미터를 동시에 전달하는 것도 가능합니다. 
- 예를 들어,  `titleFamily` 프로바이더에 프랑스어(French)와 영어(English)의 값을 얻기 위해 
- 동시에 각기 다른 Locale 변수를 파라미터로 전달하고 있는 것을 확인할 수 있습니다. 
+It is possible to use a family with different parameters simultaneously.  
+For example, we could use a `titleFamily` to read both the French and English
+translations at the same time:
 
 ```dart
 @override
@@ -70,24 +71,22 @@ Widget build(BuildContext context, WidgetRef ref) {
 
 :::
 
-## 파라미터 제한하기 
+## Parameter restrictions
 
-`family`를 정상적으로 올바르게 작동시키기 위해서는 전달하는 파라미터에 대한 
-`hashCode` and `==`의 등가성이 정의되어야할 필요가 있습니다. 
+For families to work correctly, it is critical for the parameter passed to
+a provider to have a consistent `hashCode` and `==`.
 
-이상적으로, 매개변수는 primitive자료형(bool/int/double/String), 정수(providers) 또는 
-`==` 와 `hashCode`를 오버라이드 할 수 았는 불변(immutable) 객체 이어야 합니다. 
+Ideally, the parameter should either be a primitive (bool/int/double/String),
+a constant (providers), or an immutable object that overrides `==` and `hashCode`.
 
-- primitive 자료형: 컴퓨터 프로그램을 만드는 데 사용되는 기초적인 언어 구성.
+### _PREFER_ using `autoDispose` when the parameter is not constant:
 
+You may want to use families to pass the input of a search field to your provider.
+But that value can change often and never be reused.  
+This could cause memory leaks as, by default, a provider is never destroyed even
+if no longer used.
 
-### _PREFER_ 파라미터가 정수가 아닐때는 `autoDispose`를 사용하세요.
-
-`family`를 사용해서 검색창에 입력된 값을 프로바이더의 매개변수로 전달하고 싶을 때가 있습니다. 
-그러나, 값은 종종 변경될 수 있고 결코 그 값은 재사용되지 않습니다.
-이것은 심지어 더 이상 사용되지 않을때, 기본적으로 프로바이더는 절대 해제되지 않기 떄문에 메모리 누수를 야기할 수 있습니다.
-
-`.family` 와 `.autoDispose`를 함께 사용함으로써 메모리 누수 문제를 개선할 수 있습니다.
+Using both `.family` and `.autoDispose` fixes that memory leak:
 
 ```dart
 final characters = FutureProvider.autoDispose.family<List<Character>, String>((ref, filter) async {
@@ -95,19 +94,20 @@ final characters = FutureProvider.autoDispose.family<List<Character>, String>((r
 });
 ```
 
-## 복수의 파라미터 전달하기
+## Passing multiple parameters to a family
 
-`family` 수식어는 프로바이더로 복수의 파라미터를 전달하는것이 불가능합니다. 
+Families have no built-in support for passing multiple values to a provider.
 
-반면에, 앞에서 설명한 제한 사항을 충족하는 한 모든 객체를 전달할 수 있습니다.
+On the other hand, that value could be _anything_ (as long as it matches with
+the restrictions mentioned previously).
 
-아래의 패키지들을 이용하면 가능합니다. 
+This includes:
 
 - A tuple from [tuple](http://pub.dev/packages/tuple)
 - Objects generated with [Freezed] or [built_value](https://pub.dev/packages/built_value)
 - Objects using [equatable](https://pub.dev/packages/equatable)
 
-여기 [Freezed] 와 [equatable]를 사용한 예시가 있습니다.
+Here's an example of using [Freezed] or [equatable] for multiple parameters:
 
 <Tabs
   groupId="family"
@@ -132,12 +132,12 @@ abstract class MyParameter with _$MyParameter {
 final exampleProvider = Provider.autoDispose.family<Something, MyParameter>((ref, myParameter) {
   print(myParameter.userId);
   print(myParameter.locale);
-  // userId/locale를 사용하여 무언가를 처리
+  // Do something with userId/locale
 });
 
 @override
 Widget build(BuildContext context, WidgetRef ref) {
-  int userId; // userId를 어디선가 읽어 옴.
+  int userId; // Read the user ID from somewhere
   final locale = Localizations.localeOf(context);
 
   final something = ref.watch(
@@ -168,12 +168,12 @@ class MyParameter extends Equatable  {
 final exampleProvider = Provider.family<Something, MyParameter>((ref, myParameter) {
   print(myParameter.userId);
   print(myParameter.locale);
-  // userId/locale를 사용하여 무언가를 처리
+  // Do something with userId/locale
 });
 
 @override
 Widget build(BuildContext context, WidgetRef ref) {
-  int userId; // userId를 어디선가 읽어 옴.
+  int userId; // Read the user ID from somewhere
   final locale = Localizations.localeOf(context);
 
   final something = ref.watch(
@@ -183,6 +183,7 @@ Widget build(BuildContext context, WidgetRef ref) {
   ...
 }
 ```
+
 </TabItem>
 </Tabs>
 
