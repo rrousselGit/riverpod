@@ -158,19 +158,38 @@ abstract class AsyncValue<T> {
   ///   }
   /// }
   ///
-  /// when predicate is provided, and it is false; rethrown.
+  /// By using the [test] argument, we can add additional conditions.
+  ///
+  /// ```dart
+  /// class MyNotifier extends AsyncNotifier<MyData> {
+  ///   @override
+  ///   Future<MyData> build() => Future.value(MyData());
+  ///
+  ///   Future<void> sideEffect() async {
+  ///     state = const AsyncValue.loading();
+  ///     // does the try/catch for us like previously
+  ///     state = await AsyncValue.guard(() async {
+  ///       final response = await dio.get('my_api/data');
+  ///       return Data.fromJson(response);
+  ///     },
+  ///      // when catch FormatException, rethrow it
+  ///      // It does not get converted to [AsyncError].
+  ///      (err) => err is! FormatException,
+  ///     );
+  ///   }
+  /// }
   /// ```
   static Future<AsyncValue<T>> guard<T>(
     Future<T> Function() future, [
-    bool Function(Object)? predicate,
+    bool Function(Object)? test,
   ]) async {
     try {
       return AsyncValue.data(await future());
     } catch (err, stack) {
-      if (predicate == null) {
+      if (test == null) {
         return AsyncValue.error(err, stack);
       }
-      if (predicate(err)) {
+      if (test(err)) {
         return AsyncValue.error(err, stack);
       }
 
