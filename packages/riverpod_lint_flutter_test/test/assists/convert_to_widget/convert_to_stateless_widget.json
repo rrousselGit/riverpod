@@ -51,11 +51,6 @@
           "fileStamp": 0,
           "edits": [
             {
-              "offset": 1818,
-              "length": 0,
-              "replacement": ""
-            },
-            {
               "offset": 1757,
               "length": 20,
               "replacement": "BuildContext context"
@@ -90,11 +85,6 @@
           "fileStamp": 0,
           "edits": [
             {
-              "offset": 2167,
-              "length": 0,
-              "replacement": ""
-            },
-            {
               "offset": 2106,
               "length": 20,
               "replacement": "BuildContext context"
@@ -128,11 +118,6 @@
         {
           "fileStamp": 0,
           "edits": [
-            {
-              "offset": 2550,
-              "length": 0,
-              "replacement": ""
-            },
             {
               "offset": 2489,
               "length": 20,
@@ -216,67 +201,67 @@
           "fileStamp": 0,
           "edits": [
             {
-              "offset": 4298,
+              "offset": 4340,
               "length": 0,
-              "replacement": ""
+              "replacement": "\n\nconst _constantNumber = 42;\n"
             },
             {
-              "offset": 4272,
+              "offset": 4314,
               "length": 1,
               "replacement": ""
             },
             {
-              "offset": 4235,
+              "offset": 4277,
               "length": 26,
               "replacement": ""
             },
             {
-              "offset": 4234,
+              "offset": 4276,
               "length": 1,
               "replacement": ""
             },
             {
-              "offset": 4200,
+              "offset": 4242,
               "length": 7,
               "replacement": ""
             },
             {
-              "offset": 4179,
+              "offset": 4221,
               "length": 1,
               "replacement": ""
             },
             {
-              "offset": 4167,
+              "offset": 4209,
               "length": 7,
               "replacement": ""
             },
             {
-              "offset": 4166,
+              "offset": 4208,
               "length": 1,
               "replacement": ""
             },
             {
-              "offset": 4083,
+              "offset": 4125,
               "length": 7,
               "replacement": ""
             },
             {
-              "offset": 4049,
+              "offset": 4091,
               "length": 20,
               "replacement": "BuildContext context"
             },
             {
-              "offset": 4004,
+              "offset": 4046,
               "length": 7,
               "replacement": ""
             },
             {
-              "offset": 3878,
-              "length": 95,
+              "offset": 3891,
+              "length": 124,
               "replacement": ""
             },
             {
-              "offset": 3766,
+              "offset": 3779,
               "length": 112,
               "replacement": ""
             },

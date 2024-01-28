@@ -186,12 +186,14 @@ class ConsumerStatefulWithField extends ConsumerStatefulWidget {
 
   final int field;
   final FooClass foo;
-  static final int staticField = 42;
+  static final int staticField = _constantNumber;
 
   @override
   ConsumerState<ConsumerStatefulWithField> createState() =>
       _ConsumerStatefulWithFieldState();
 }
+
+const _constantNumber = 42;
 
 class _ConsumerStatefulWithFieldState
     extends ConsumerState<ConsumerStatefulWithField> {

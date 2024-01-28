@@ -11,8 +11,6 @@ import 'package:custom_lint_builder/custom_lint_builder.dart';
 import '../riverpod_custom_lint.dart';
 import 'convert_to_widget_utils.dart';
 
-final _emptyPattern = RegExp(r'^\s*$');
-
 class ConvertToStatelessBaseWidget extends RiverpodAssist {
   ConvertToStatelessBaseWidget({
     required this.targetWidget,
@@ -223,19 +221,20 @@ class ConvertToStatelessBaseWidget extends RiverpodAssist {
           .firstWhereOrNull((element) => element.name.lexeme == 'build');
       if (buildMethod == null) return;
 
-      builder.addInsertion(stateClass.sourceRange.end, (insertionBuilder) {
-        final outsideRange = SourceRange(
-          widgetClass.sourceRange.end,
-          stateClass.sourceRange.offset - widgetClass.sourceRange.end,
+      final outsideRange = SourceRange(
+        widgetClass.sourceRange.end,
+        stateClass.sourceRange.offset - widgetClass.sourceRange.end,
+      );
+      final outsideLines = source.contents.data.substring(
+        outsideRange.offset,
+        outsideRange.end,
+      );
+      if (outsideLines.trim().isNotEmpty) {
+        builder.addSimpleInsertion(
+          stateClass.sourceRange.end,
+          '${outsideLines.trimRight()}\n',
         );
-        final outsideLines = source.contents.data.substring(
-          outsideRange.offset,
-          outsideRange.end,
-        );
-        if (!_emptyPattern.hasMatch(outsideLines)) {
-          insertionBuilder.write(outsideLines);
-        }
-      });
+      }
 
       // ignore: prefer_foreach
       for (final range in deleteRanges) {

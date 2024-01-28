@@ -342,12 +342,12 @@
           "fileStamp": 0,
           "edits": [
             {
-              "offset": 3931,
+              "offset": 3973,
               "length": 40,
               "replacement": "State<ConsumerStatefulWithField>"
             },
             {
-              "offset": 3779,
+              "offset": 3792,
               "length": 40,
               "replacement": "State<ConsumerStatefulWithField>"
             },
