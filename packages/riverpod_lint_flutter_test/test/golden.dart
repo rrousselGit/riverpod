@@ -31,7 +31,10 @@ void testGolden(
     try {
       expect(
         changes,
-        matcherNormalizedPrioritizedSourceChangeSnapshot(fileName),
+        matcherNormalizedPrioritizedSourceChangeSnapshot(
+          fileName,
+          encoder: const JsonEncoder.withIndent('  '),
+        ),
       );
     } on TestFailure {
       // ignore: deprecated_member_use_from_same_package
@@ -49,9 +52,11 @@ void testGolden(
         }
       }
 
+      final encoder = new JsonEncoder.withIndent("  ");
+
       file
         ..createSync(recursive: true)
-        ..writeAsStringSync(jsonEncode(changesJson));
+        ..writeAsStringSync(encoder.convert(changesJson));
       return;
     }
   });

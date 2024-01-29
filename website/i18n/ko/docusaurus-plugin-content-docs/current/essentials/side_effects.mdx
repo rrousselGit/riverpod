@@ -1,0 +1,407 @@
+---
+title: 부가 작업 수행(Performing side effects)
+version: 1
+---
+
+import { Link } from "../../../../../src/components/Link";
+import { AutoSnippet, When } from "../../../../../src/components/CodeSnippet";
+import Legend, { colors } from "./first_request/legend/legend";
+import todoListProvider from "./side_effects/todo_list_provider";
+import todoListNotifier from "./side_effects/todo_list_notifier";
+import todoListNotifierAddTodo from "./side_effects/todo_list_notifier_add_todo";
+import consumerAddTodoCall from "!!raw-loader!./side_effects/raw/consumer_add_todo_call.dart";
+import restAddTodo from "!!raw-loader!./side_effects/raw/rest_add_todo.dart";
+import invalidateSelfAddTodo from "!!raw-loader!./side_effects/raw/invalidate_self_add_todo.dart";
+import manualAddTodo from "!!raw-loader!./side_effects/raw/manual_add_todo.dart";
+import mutableManualAddTodo from "!!raw-loader!./side_effects/raw/mutable_manual_add_todo.dart";
+import renderAddTodo from "./side_effects/render_add_todo";
+
+지금까지는 데이터를 가져오는 방법(일명 _GET_ HTTP 요청 수행)만 살펴봤습니다.
+하지만 _POST_ 요청과 같은 부수적 효과(side-effect)는 어떨까요?
+
+애플리케이션은 종종 CRUD(생성, 읽기, 업데이트, 삭제) API를 구현합니다.  
+이 경우 일반적으로 업데이트 요청(일반적으로 _POST_)은 로컬 캐시를 업데이트해야 합니다. 
+로컬 캐시도 업데이트하여 UI에 새 상태가 반영되도록 하는 것이 일반적입니다.
+
+문제는 consumer 내에서 provider의 상태를 어떻게 업데이트할 수 있느냐는 것입니다.  
+당연히 providers는 자신의 상태(state)를 수정할 수 있는 방법을 노출하지 않습니다.
+이는 상태가 통제된 방식으로만 수정되도록 하고 관심사 분리(separation of concerns)를 보장하기 위한 설계입니다.  
+대신 providers는 자신의 상태를 수정할 수 있는 방법을 명시적으로 노출해야 합니다.
+
+이를 위해 새로운 개념을 사용할 것입니다: Notifiers.  
+이 새로운 개념을 보여드리기 위해 좀 더 발전된 예를 사용하겠습니다: 할일 목록(to-do list)입니다.
+
+## Notifier 정의하기
+
+이 시점에서 우리가 이미 알고 있는 것부터 시작하겠습니다: 간단한 _GET_ 요청입니다.
+앞서 <Link documentID="essentials/first_request" />에서 보았듯이, 글쓰기를 통해 할일 목록을 가져올 수 있습니다:
+
+<AutoSnippet {...todoListProvider} />
+
+이제 할 일 목록을 가져왔으니 새 할 일을 추가하는 방법을 살펴봅시다.  
+이를 위해서는 상태(state) 수정을 위한 공개 API를 노출하도록 provider를 수정해야 합니다. 
+이 작업은 provider를 "notifier"라고 부르는 것으로 변환하여 수행합니다.
+
+Notifiers는 providers의 "상태저장 위젯(stateful widget)"입니다. 
+provider를 정의하는 문법을 약간 수정해야 합니다.  
+이 새로운 문법은 다음과 같습니다:
+
+<When codegen={false}>
+<Legend
+  code={`final name = SomeNotifierProvider.someModifier<MyNotifier, Result>(MyNotifier.new);
+ 
+class MyNotifier extends SomeNotifier<Result> {
+  @override
+  Result build() {
+    <your logic here>
+  }
+
+  <your methods here>
+}`}
+  annotations={[
+    {
+      offset: 6,
+      length: 4,
+      label: "provider 변수(variable)",
+       description: <>
+
+이 변수는 provider와 상호 작용하는 데 사용됩니다.  
+변수는 final이고 "top-level"(global)이어야 합니다.
+
+</>
+    },
+    {
+      offset: 13,
+      length: 20,
+      label: "provider 타입(type)",
+       description: <>
+
+일반적으로 `NotifierProvider`, `AsyncNotifierProvider` 또는 `StreamNotifierProvider` 중 하나입니다.  
+사용되는 provider 유형은 함수의 반환값(return value)에 따라 달라집니다.
+예를 들어, `Future<Activity>`를 만들려면 `AsyncNotifierProvider<Activity>`가 필요할 것입니다.
+
+가장 많이 사용하는 provider는 `AsyncNotifierProvider`입니다.
+
+:::tip
+"어떤 provider를 선택해야 하나"라는 관점에서 생각하지 마세요.
+대신 "내가 무엇을 반환하고 싶은가"라는 관점에서 생각하세요.
+provider 타입은 자연스럽게 따라올 것입니다.
+:::
+
+</>
+    },
+    {
+      offset: 33,
+      length: 13,
+      label: "수정자(Modifiers) (옵션)",
+      description: <>
+
+종종 provider 유형 뒤에 "수정자(modifier)"가 표시될 수 있습니다.  
+수정자(modifier)는 선택 사항이며, 타입에 안전한(type-safe) 방식으로 provider의 동작을 조정하는 데 사용됩니다.
+
+현재 두 가지 수정자(modifier)를 사용할 수 있습니다:
+
+- `autoDispose`를 설정하면 provider가 더 이상 사용되지 않을 때 자동으로 캐시를 지웁니다.  
+  <Link documentID="essentials/auto_dispose" />도 참조하세요.
+- provider에게 인자(arguments)를 전달할 수 있는 `family`.  
+  <Link documentID="essentials/passing_args" />도 참조하세요.
+
+</>
+    },
+    {
+      offset: 67,
+      length: 14,
+      label: "Notifier의 생성자 (Constructor)",
+      description: <>
+
+"notifier providers"의 매개변수는 "notifier"를 인스턴스화할 것으로 예상되는 함수입니다.  
+일반적으로 "생성자 분리(constructor tear-off)"형식이여야 합니다.
+
+</>
+    },
+    {
+      offset: 86,
+      length: 16,
+      label: "Notifier",
+      description: <>
+
+`NotifierProvider`가 "StatefulWidget" 클래스인 경우, 이 부분은 `State` 클래스입니다.
+
+이 클래스는 provider의 상태(state)를 수정하는 방법을 노출하는 역할을 담당합니다.  
+이 클래스의 공개 메서드는 `ref.read(yourProvider.notifier).yourMethod()`를 사용하여 소비자(consumers)가 액세스할 수 있습니다.
+
+:::note
+UI에서 상태(state)가 변경되었음을 알 수 없기 때문에, Notifiers에는 내장된 `state` 외에 다른 공용 프로퍼티가 없어야 합니다.
+:::
+
+</>
+    },
+    {
+      offset: 111,
+      length: 12,
+      label: "Notifier 타입(type)",
+      description: <>
+
+Notifier가 확장(extend)하는 기반(base) 클래스는 provider + modifiers의 클래스와 일치해야 합니다.
+몇 가지 예를 들면 다음과 같습니다:
+
+- <span style={{ color: colors[0] }}>Notifier</span>Provider -> <span style={{ color: colors[0] }}>Notifier</span>
+- <span style={{ color: colors[0] }}>AsyncNotifier</span>Provider -> <span style={{ color: colors[0] }}>AsyncNotifier</span>
+- <span style={{ color: colors[0] }}>AsyncNotifier</span>Provider.
+  <span style={{ color: colors[1] }}>autoDispose</span> -> <span
+    style={{ color: colors[1] }}
+  >
+    AutoDispose
+  </span>
+  <span style={{ color: colors[0] }}>AsyncNotifier</span>
+- <span style={{ color: colors[0] }}>AsyncNotifier</span>Provider.
+  <span style={{ color: colors[1] }}>autoDispose</span>.<span
+    style={{ color: colors[2] }}
+  >
+    family
+  </span> -> <span style={{ color: colors[1] }}>AutoDispose</span>
+  <span style={{ color: colors[2] }}>Family</span>
+  <span style={{ color: colors[0] }}>AsyncNotifier</span>
+
+이 작업을 더 간단하게 하려면 올바른 유형을 자동으로 추론하는 코드 생성기(code generator)를 사용하는 것이 좋습니다.
+
+</>
+    },
+    {
+      offset: 136,
+      length: 54,
+      label: "build 메소드(method)",
+      description: <>
+
+모든 notifiers는 `build` 메서드를 재정의(override)해야 합니다.  
+이 메서드는 일반적으로 notifier가 아닌 provider(non-notifier provider)에서 로직을 넣는 위치에 해당합니다.
+
+이 메서드는 직접 호출해서는 안 됩니다.
+
+</>
+    },
+]}
+/>
+</When>
+
+<!-- Some separation for good mesure -->
+
+<When codegen={true}>
+<Legend
+  code={`@riverpod
+class MyNotifier extends _$MyNotifier {
+  @override
+  Result build() {
+    <your logic here>
+  }
+
+  <your methods here>
+}`}
+  annotations={[
+    {
+      offset: 0,
+      length: 9,
+      label: "어노테이션(annotation)",
+      description: <>
+
+모든 providers는 `@riverpod` 또는 `@Riverpod()`로 어노테이션해야 합니다.
+이 어노테이션은 전역 함수나 클래스에 배치할 수 있습니다.  
+이 어노테이션을 통해 프로바이더를 구성할 수 있습니다.
+
+예를 들어, `@Riverpod(keepAlive: true)`를 작성하여 "auto-dispose"(나중에 살펴볼 것임)를 비활성화할 수 있습니다.
+
+</>
+    },
+    {
+      offset: 10,
+      length: 16,
+      label: "Notifier",
+       description: <>
+
+`@riverpod` 어노테이션이 클래스에 배치되면 해당 클래스를 "Notifier"라고 부릅니다.  
+클래스는 `_$NotifierName`을 확장해야 하며, 여기서 `NotifierName`은 클래스 이름입니다.
+
+Notifiers는 provider의 상태(state)를 수정하는 메서드를 노출할 책임이 있습니다.  
+이 클래스의 공개 메서드는 `ref.read(yourProvider.notifier).yourMethod()`를 사용하여 consumer가 액세스할 수 있습니다.
+
+:::note
+UI에서 상태가 변경되었음을 알 수 있는 수단이 없기 때문에, Notifiers에는 기본 제공 'state' 외에 공개 속성이 없어야 합니다.
+:::
+
+</>
+    },
+    {
+      offset: 52,
+      length: 54,
+      label: "The build method",
+      description: <>
+
+모든 notifiers는 `build` 메서드를 재정의(override)해야 합니다.  
+이 메서드는 일반적으로 notifier가 아닌 provider(non-notifier provider)에서 로직을 넣는 위치에 해당합니다.
+
+이 메서드는 직접 호출해서는 안 됩니다.
+
+</>
+    },
+]}
+/>
+</When>
+
+참고로, 이 새로운 문법을 이전에 보았던 문법과 비교하려면 <Link documentID="essentials/first_request" />를 확인하면 됩니다.
+
+:::info
+`bbuild` 이외의 메서드가 없는 Notifier는 앞서 본 문법을 사용하는 것과 동일합니다.  
+<Link documentID="essentials/first_request" />에 표시된 문법은 UI에서 수정할 방법이 없는 notifiers에 대한 간략한 표현이라고 볼 수 있습니다.
+:::
+
+이제 문법을 살펴봤으니 이전에 정의한 provider를 notifier으로 변환하는 방법을 살펴보겠습니다:
+Now that we've seen the syntax, let's see how to convert our previously defined provider to a notifier:
+
+<AutoSnippet {...todoListNotifier} />
+
+위젯 내에서 provider를 읽는 방법은 변경되지 않았습니다.  
+이전 구문과 마찬가지로 `ref.watch(todoListProvider)`를 계속 사용할 수 있습니다.
+
+:::caution
+notifier의 생성자에 로직을 넣지 마세요.  
+`ref` 및 기타 프로퍼티는 아직 사용할 수 없으므로 Notifier에는 생성자가 없어야 합니다. 
+대신 `build` 메서드에 로직을 넣으세요.
+
+```dart
+class MyNotifier extends ... {
+  MyNotifier() {
+    // ❌ 이렇게 하지 마세요.
+    // 이 경우 예외가 발생합니다.
+    state = AsyncValue.data(42);
+  }
+
+  @override
+  Result build() {
+    // ✅ 대신 이렇게 하세요.
+    state = AsyncValue.data(42);
+  }
+}
+```
+
+:::
+
+## _POST_ 요청을 수행하는 메서드 노출하기
+
+이제 Notifier가 생겼으니 부가 작업(side-effect)을 수행할 수 있는 메서드를 추가할 수 있습니다.
+그러한 부가 작업 중 하나는 클라이언트가 새 할 일을 _POST_하도록 하는 것입니다.
+notifier에 `addTodo` 메서드를 추가하면 그렇게 할 수 있습니다:
+
+<AutoSnippet {...todoListNotifierAddTodo} />
+
+그런 다음 <Link documentID="essentials/first_request" />에서 보았던 것과 동일한 `Consumer`/`ConsumerWidget`을 사용하여 UI에서 이 메서드를 호출할 수 있습니다:
+
+<AutoSnippet raw={consumerAddTodoCall} />
+
+:::info
+메서드를 호출할 때 `ref.watch` 대신 `ref.read`를 사용하고 있는 것을 주목하세요.  
+`ref.watch`도 기술적으로는 작동할 수 있지만, "onPressed"와 같은 이벤트 핸들러에서 로직이 수행될 때는 `ref.read`를 사용하는 것이 좋습니다.
+:::
+
+이제 버튼을 누르면 _POST_ 요청을 하는 버튼이 생겼습니다.  
+그러나 현재로서는 새 할 일 목록을 반영하도록 UI가 업데이트되지 않습니다.
+로컬 캐시가 서버의 상태와 일치하기를 원할 것입니다.
+
+장단점이 있는 몇 가지 방법이 있습니다.
+
+### API 응답에 맞춰 로컬 캐시 업데이트하기
+
+일반적인 백엔드 관행은 _POST_ 요청이 리소스의 새 상태를 반환하도록 하는 것입니다.  
+특히, 저희 API는 새 할 일을 추가한 후 새 할 일 목록을 반환합니다. 
+이를 수행하는 한 가지 방법은 `state = AsyncData(response)`를 작성하는 것입니다:
+
+<AutoSnippet raw={restAddTodo} />
+
+:::tip 장점
+
+- UI는 가능한 가장 최신 상태로 유지됩니다.
+  다른 사용자가 할 일을 추가하면 우리도 볼 수 있습니다.
+- 서버가 진실의 원천입니다.
+  이 접근 방식을 사용하면 클라이언트는 할 일 목록에서 새 할 일을 어디에 삽입해야 하는지 알 필요가 없습니다.
+- 단 한 번의 네트워크 요청만 필요합니다.
+
+:::
+
+:::danger 단점
+
+- 이 접근 방식은 서버가 특정 방식으로 구현된 경우에만 작동합니다.
+  서버가 새 상태를 반환하지 않으면 이 접근 방식은 작동하지 않습니다.
+- 필터/소팅이 있는 경우와 같이 연결된 _GET_ 요청이 더 복잡한 경우에는 여전히 작동하지 않을 수 있습니다.
+
+:::
+
+### ref.invalidateSelf()`를 사용하여 provider를 새로고침
+
+한 가지 옵션은 provider가 _GET_ 요청을 다시 실행하도록 하는 것입니다.  
+이는 _POST_ 요청 뒤에 `ref.invalidateSelf()`를 호출하여 수행할 수 있습니다:
+
+<AutoSnippet raw={invalidateSelfAddTodo} />
+
+:::tip 장점
+
+- UI는 가능한 가장 최신 상태로 유지됩니다.
+  다른 사용자가 할 일을 추가하면 우리도 볼 수 있습니다.
+- 서버가 진실의 원천입니다.
+  이 접근 방식을 사용하면 클라이언트는 할 일 목록에서 새 할 일을 어디에 삽입해야 하는지 알 필요가 없습니다.
+- 이 접근 방식은 서버 구현에 관계없이 작동합니다.
+  필터/소팅이 포함된 경우와 같이 _GET_ 요청이 더 복잡한 경우에 특히 유용할 수 있습니다.
+
+:::
+
+:::danger 단점
+
+- 이 접근 방식은 비효율적일 수 있는 추가 _GET_ 요청을 수행합니다.
+
+:::
+
+### 로컬 캐시 수동 업데이트
+
+또 다른 옵션은 로컬 캐시를 수동으로 업데이트하는 것입니다.  
+여기에는 백엔드의 동작을 모방하는 작업이 포함됩니다.
+예를 들어, 백엔드가 새 항목을 처음에 삽입하는지 아니면 마지막에 삽입하는지 알아야 합니다.
+
+<AutoSnippet raw={manualAddTodo} />
+
+:::info
+이 예제에서는 불변(immutable) 상태를 사용합니다. 이는 필수는 아니지만 권장 사항입니다.
+자세한 내용은 <Link documentID="concepts/why_immutability" />를 참조하세요.  
+대신 변경 가능한 상태를 사용하려는 경우 다른 방법을 사용할 수 있습니다:
+
+<AutoSnippet raw={mutableManualAddTodo} />
+
+:::
+
+:::tip 장점
+
+- 이 접근 방식은 서버 구현에 관계없이 작동합니다.
+- 네트워크 요청은 단 한 번만 필요합니다.
+
+:::
+
+:::danger 단점
+
+- 로컬 캐시가 서버의 상태와 일치하지 않을 수 있습니다.
+  다른 사용자가 할 일을 추가한 경우 이를 볼 수 없습니다.
+- 이 접근 방식은 백엔드의 로직을 효과적으로 복제하고 구현하기가 더 복잡할 수 있습니다.
+
+:::
+
+## 더 알아보기: 스피너(spinner) 표시 및 오류 처리(error handling)
+
+지금까지 살펴본 바에 따르면 버튼을 누르면 _POST_ 요청을 하고 요청이 완료되면 변경 사항을 반영하여 UI가 업데이트되는 버튼이 있습니다.  
+하지만 현재로서는 요청이 수행되고 있다는 표시도 없고, 요청이 실패할 경우 어떤 정보도 표시되지 않습니다.
+
+한 가지 방법은 로컬 위젯 상태에 `addTodo`가 반환한 Future를 저장한 다음 해당 Future를 수신하여 스피너 또는 오류 메시지를 표시하는 것입니다.  
+이 시나리오에서는 [flutter_hooks](https://pub.dev/packages/flutter_hooks)가 유용합니다. 
+물론 `StatefulWidget`을 대신 사용할 수도 있습니다.
+
+다음 스니펫은 작업이 보류 중인 동안 진행률 표시기를 보여줍니다. 
+그리고 실패하면 버튼을 빨간색으로 렌더링합니다:
+
+![A button which turns red when the operation failed](/img/essentials/side_effects/spinner.gif)
+
+<AutoSnippet {...renderAddTodo} />
