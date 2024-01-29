@@ -283,7 +283,7 @@ class ConvertToStatelessBaseWidget extends RiverpodAssist {
 // Original implemenation in
 // package:analysis_server/lib/src/services/correction/dart/flutter_convert_to_stateless_widget.dart
 class _FieldFinder extends RecursiveAstVisitor<void> {
-  Set<FieldElement> fieldsAssignedInConstructors = {};
+  final fieldsAssignedInConstructors = <FieldElement>{};
 
   @override
   void visitSimpleIdentifier(SimpleIdentifier node) {
@@ -296,12 +296,14 @@ class _FieldFinder extends RecursiveAstVisitor<void> {
         }
       }
     }
+
     if (node.parent is ConstructorFieldInitializer) {
       final element = node.staticElement;
       if (element is FieldElement) {
         fieldsAssignedInConstructors.add(element);
       }
     }
+
     if (node.inSetterContext()) {
       final element = node.writeOrReadElement;
       if (element is PropertyAccessorElement) {
