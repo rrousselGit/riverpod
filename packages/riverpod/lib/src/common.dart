@@ -163,7 +163,7 @@ abstract class AsyncValue<T> {
   ///
   /// ```dart
   ///   AsyncValue.guard(
-  ///    () async { /* ... */ },  ///     },
+  ///    () async { /* ... */ },
   ///     // Catch all errors beside [FormatException]s.
   ///    (err) => err is! FormatException,
   ///   );
