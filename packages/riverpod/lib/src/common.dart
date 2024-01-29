@@ -158,25 +158,15 @@ abstract class AsyncValue<T> {
   ///   }
   /// }
   ///
-  /// By using the [test] argument, we can add additional conditions.
+  /// An optional callback can be specified to catch errors only under a certain condition.
+  /// In the following example, we catch all exceptions beside FormatExceptions.
   ///
   /// ```dart
-  /// class MyNotifier extends AsyncNotifier<MyData> {
-  ///   @override
-  ///   Future<MyData> build() => Future.value(MyData());
-  ///
-  ///   Future<void> sideEffect() async {
-  ///     state = const AsyncValue.loading();
-  ///     // does the try/catch for us like previously
-  ///     state = await AsyncValue.guard(() async {
-  ///       final response = await dio.get('my_api/data');
-  ///       return Data.fromJson(response);
-  ///     },
-  ///      // when catch FormatException, rethrow it
-  ///      // It does not get converted to [AsyncError].
-  ///      (err) => err is! FormatException,
-  ///     );
-  ///   }
+  ///   AsyncValue.guard(
+  ///    () async { /* ... */ },  ///     },
+  ///     // Catch all errors beside [FormatException]s.
+  ///    (err) => err is! FormatException,
+  ///   );
   /// }
   /// ```
   static Future<AsyncValue<T>> guard<T>(
