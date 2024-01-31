@@ -10,7 +10,7 @@ import '../utils.dart';
 
 // TODO automatically generate this list for maintainability
 final refMethodsThatDependOnProviders =
-    <String, void Function(Ref ref, ProviderBase<Object?>)>{
+    <String, void Function(Ref<Object?> ref, ProviderBase<Object?>)>{
   'watch': (ref, p) => ref.watch(p),
   'read': (ref, p) => ref.read(p),
   'listen': (ref, p) => ref.listen(p, (prev, next) {}),
@@ -18,13 +18,13 @@ final refMethodsThatDependOnProviders =
   'refresh': (ref, p) => ref.refresh(p),
 };
 final refMethodsThatDependOnListenables =
-    <String, void Function(Ref ref, ProviderListenable<Object?>)>{
+    <String, void Function(Ref<Object?> ref, ProviderListenable<Object?>)>{
   'watch': (ref, p) => ref.watch(p),
   'read': (ref, p) => ref.read(p),
   'listen': (ref, p) => ref.listen(p, (prev, next) {}),
 };
 final refMethodsThatDependOnProviderOrFamilies =
-    <String, void Function(Ref ref, ProviderOrFamily)>{
+    <String, void Function(Ref<Object?> ref, ProviderOrFamily)>{
   'invalidate': (ref, p) => ref.invalidate(p),
 };
 
@@ -36,7 +36,7 @@ void main() {
       'cannot call ref.watch/ref.read/ref.listen/ref.onDispose after a dependency changed',
       () {
         // TODO assert invalidate & co also throw
-        late Ref ref;
+        late Ref<Object?> ref;
         final container = ProviderContainer.test();
         final dep = StateProvider((ref) => 0);
         final provider = Provider((r) {
@@ -1319,7 +1319,7 @@ void main() {
       test('refreshes a provider and return the new state', () {
         var value = 0;
         final state = Provider((ref) => value);
-        late Ref ref;
+        late Ref<Object?> ref;
         final provider = Provider((r) {
           ref = r;
         });

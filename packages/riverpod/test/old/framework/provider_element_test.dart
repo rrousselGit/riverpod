@@ -139,7 +139,7 @@ void main() {
   group('ref.refresh', () {
     test('Throws if a circular dependency is detected', () {
       // Regression test for https://github.com/rrousselGit/riverpod/issues/2336
-      late Ref ref;
+      late Ref<Object?> ref;
       final a = Provider((r) {
         ref = r;
         return 0;
@@ -159,7 +159,7 @@ void main() {
   group('ref.invalidate', () {
     test('Throws if a circular dependency is detected', () {
       // Regression test for https://github.com/rrousselGit/riverpod/issues/2336
-      late Ref ref;
+      late Ref<Object?> ref;
       final a = Provider((r) {
         ref = r;
         return 0;
@@ -176,7 +176,7 @@ void main() {
     });
 
     test('Circular dependency ignores families', () {
-      late Ref ref;
+      late Ref<Object?> ref;
       final a = Provider((r) {
         ref = r;
         return 0;
@@ -197,7 +197,7 @@ void main() {
       final listener = Listener<int>();
       var result = 0;
       final provider = Provider((r) => result);
-      late Ref ref;
+      late Ref<Object?> ref;
       final another = Provider((r) {
         ref = r;
       });
@@ -226,7 +226,7 @@ void main() {
         var result = 0;
         final unrelated = Provider((ref) => result);
         final provider = Provider.family<String, int>((r, i) => '$result-$i');
-        late Ref ref;
+        late Ref<Object?> ref;
         final another = Provider((r) {
           ref = r;
         });
@@ -262,7 +262,7 @@ void main() {
           (r, i) => result,
           dependencies: const [],
         );
-        late Ref ref;
+        late Ref<Object?> ref;
         final another = Provider((r) => ref = r, dependencies: [provider]);
 
         final listener = Listener<int>();
@@ -298,7 +298,7 @@ void main() {
     test('calls dispose immediately', () {
       final container = ProviderContainer.test();
       final listener = OnDisposeMock();
-      late Ref ref;
+      late Ref<Object?> ref;
       final provider = Provider((r) {
         ref = r;
         ref.onDispose(listener.call);
@@ -320,7 +320,7 @@ void main() {
       final container = ProviderContainer.test();
       final listener = Listener<int>();
       var result = 0;
-      late Ref ref;
+      late Ref<Object?> ref;
       final provider = Provider((r) {
         ref = r;
         return result;
@@ -344,7 +344,7 @@ void main() {
       final container = ProviderContainer.test();
       final listener = Listener<int>();
       final dep = StateProvider((ref) => 0);
-      late Ref ref;
+      late Ref<Object?> ref;
       final provider = Provider((r) {
         ref = r;
         return ref.watch(dep);
@@ -419,7 +419,7 @@ void main() {
           ref.onRemoveListener(listener2.call);
         },
       );
-      late Ref ref;
+      late Ref<Object?> ref;
       final provider = Provider(
         name: 'provider',
         (r) {
@@ -464,7 +464,7 @@ void main() {
           ref.onRemoveListener(listener2.call);
         },
       );
-      late Ref ref;
+      late Ref<Object?> ref;
       final provider = Provider(
         name: 'provider',
         (r) => ref = r,
@@ -581,7 +581,7 @@ void main() {
           ref.onAddListener(listener2.call);
         },
       );
-      late Ref ref;
+      late Ref<Object?> ref;
       final provider = Provider(
         name: 'provider',
         (r) => ref = r,
@@ -614,7 +614,7 @@ void main() {
           ref.onAddListener(listener2.call);
         },
       );
-      late Ref ref;
+      late Ref<Object?> ref;
       final provider = Provider(
         name: 'provider',
         (r) => ref = r,
@@ -747,7 +747,7 @@ void main() {
           ref.onResume(listener2.call);
         },
       );
-      late Ref ref;
+      late Ref<Object?> ref;
       final provider = Provider(
         name: 'provider',
         (r) => ref = r,
@@ -801,7 +801,7 @@ void main() {
           ref.onAddListener(listener2.call);
         },
       );
-      late Ref ref;
+      late Ref<Object?> ref;
       final provider = Provider(
         name: 'provider',
         (r) => ref = r,
@@ -965,7 +965,7 @@ void main() {
         ref.onCancel(listener.call);
         ref.onCancel(listener2.call);
       });
-      late Ref ref;
+      late Ref<Object?> ref;
       final provider = Provider((r) {
         ref = r;
       });

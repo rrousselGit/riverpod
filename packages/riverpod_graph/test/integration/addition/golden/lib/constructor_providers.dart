@@ -17,7 +17,7 @@ class MarvelRepository {
   }) : _getCurrentTimestamp = getCurrentTimestamp ??
             (() => DateTime.now().millisecondsSinceEpoch);
 
-  final Ref ref;
+  final Ref<MarvelRepository> ref;
 
   final int Function() _getCurrentTimestamp;
 }
