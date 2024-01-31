@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/internals.dart';
+import 'package:riverpod/src/internals.dart' show ProviderElementBase;
 import 'package:test/test.dart';
 
 import '../utils.dart';
@@ -278,7 +278,7 @@ void main() {
     var callCount = 0;
     final onDispose = OnDisposeMock();
     final error = Error();
-    late Ref reference;
+    late Ref<Object?> reference;
     final provider = Provider((ref) {
       reference = ref;
       callCount++;
