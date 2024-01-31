@@ -56,7 +56,7 @@ abstract class AsyncNotifier<State> extends AsyncNotifierBase<State> {
 final class AsyncNotifierProvider< //
         NotifierT extends AsyncNotifier<StateT>,
         StateT> //
-    extends _AsyncNotifierProviderBase<NotifierT, StateT> {
+    extends AsyncNotifierProviderBase<NotifierT, StateT> {
   /// {@macro riverpod.async_notifier_provider}
   ///
   /// {@macro riverpod.async_notifier_provider_modifier}

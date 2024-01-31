@@ -55,7 +55,7 @@ final class FamilyAsyncNotifierProvider< //
         NotifierT extends FamilyAsyncNotifier<StateT, ArgT>,
         StateT,
         ArgT> //
-    extends _AsyncNotifierProviderBase<NotifierT, StateT> {
+    extends AsyncNotifierProviderBase<NotifierT, StateT> {
   /// An implementation detail of Riverpod
   const FamilyAsyncNotifierProvider._(
     super._createNotifier, {

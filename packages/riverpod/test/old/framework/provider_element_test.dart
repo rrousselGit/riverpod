@@ -619,7 +619,7 @@ void main() {
         name: 'provider',
         (r) => ref = r,
       );
-      late Ref ref2;
+      late Ref<Object?> ref2;
       final provider2 = Provider(
         name: 'provider',
         (r) => ref2 = r,

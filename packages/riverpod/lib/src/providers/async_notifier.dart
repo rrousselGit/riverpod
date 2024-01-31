@@ -18,7 +18,8 @@ abstract class AsyncNotifierBase<StateT> extends ClassBase< //
     with
         AsyncClassMixin<StateT, FutureOr<StateT>> {}
 
-abstract base class _AsyncNotifierProviderBase< //
+@internal
+abstract base class AsyncNotifierProviderBase< //
         NotifierT extends AsyncNotifierBase<StateT>,
         StateT> //
     extends ClassProvider< //
@@ -28,7 +29,7 @@ abstract base class _AsyncNotifierProviderBase< //
         Ref<AsyncValue<StateT>>> //
     with
         FutureModifier<StateT> {
-  const _AsyncNotifierProviderBase(
+  const AsyncNotifierProviderBase(
     this._createNotifier, {
     required super.name,
     required super.from,
@@ -58,7 +59,7 @@ class _AsyncNotifierProviderElement< //
   _AsyncNotifierProviderElement(this.provider, super.container);
 
   @override
-  final _AsyncNotifierProviderBase<NotifierT, StateT> provider;
+  final AsyncNotifierProviderBase<NotifierT, StateT> provider;
 
   @override
   void handleError(
