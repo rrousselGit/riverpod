@@ -85,38 +85,16 @@ class NotifierProviderFamily<
         StateT,
         FamilyNotifierProvider<NotifierT, StateT, ArgT>> {
   /// The [Family] of [AsyncNotifierProvider].
-  NotifierProviderFamily._(
-    super._createFn, {
-    super.name,
-    super.dependencies,
-  }) : super(
-          providerFactory: FamilyNotifierProvider._,
-          debugGetCreateSourceHash: null,
-          isAutoDispose: false,
-          allTransitiveDependencies:
-              computeAllTransitiveDependencies(dependencies),
-        );
-
-  NotifierProviderFamily._autoDispose(
-    super._createFn, {
-    super.name,
-    super.dependencies,
-  }) : super(
-          providerFactory: FamilyNotifierProvider._,
-          debugGetCreateSourceHash: null,
-          isAutoDispose: true,
-          allTransitiveDependencies:
-              computeAllTransitiveDependencies(dependencies),
-        );
-
-  /// The [Family] of [AsyncNotifierProvider].
   @internal
   NotifierProviderFamily.internal(
     super._createFn, {
     super.name,
     super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.isAutoDispose,
-  }) : super(providerFactory: FamilyNotifierProvider._);
+    super.isAutoDispose = false,
+  }) : super(
+          providerFactory: FamilyNotifierProvider._,
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+          debugGetCreateSourceHash: null,
+        );
 }

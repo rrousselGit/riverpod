@@ -49,9 +49,13 @@ class _FunctionalBuilder extends _Builder {
 class _NotifierBuilder extends _Builder {
   _NotifierBuilder(
     super.providerName, {
+    required this.isFamily,
     required super.genericsDefinition,
     required super.genericsUsage,
   });
+
+  // final String? familyBuilderName;
+  final bool isFamily;
 }
 
 typedef Matrix = ({
@@ -124,20 +128,44 @@ Future<void> main(List<String> args) async {
           ),
           _NotifierBuilder(
             'NotifierProvider',
+            isFamily: false,
             genericsUsage: '<NotifierT, StateT>',
             genericsDefinition: '<NotifierT extends Notifier<StateT>, StateT>',
           ),
           _NotifierBuilder(
+            'NotifierProvider',
+            isFamily: true,
+            genericsUsage: '<NotifierT, StateT, ArgT>',
+            genericsDefinition:
+                '<NotifierT extends FamilyNotifier<StateT, ArgT>, StateT, ArgT>',
+          ),
+          _NotifierBuilder(
             'StreamNotifierProvider',
+            isFamily: false,
             genericsUsage: '<NotifierT, StateT>',
             genericsDefinition:
                 '<NotifierT extends StreamNotifier<StateT>, StateT>',
           ),
           _NotifierBuilder(
+            'StreamNotifierProvider',
+            isFamily: true,
+            genericsUsage: '<NotifierT, StateT, ArgT>',
+            genericsDefinition:
+                '<NotifierT extends FamilyStreamNotifier<StateT, ArgT>, StateT, ArgT>',
+          ),
+          _NotifierBuilder(
             'AsyncNotifierProvider',
+            isFamily: false,
             genericsUsage: '<NotifierT, StateT>',
             genericsDefinition:
                 '<NotifierT extends AsyncNotifier<StateT>, StateT>',
+          ),
+          _NotifierBuilder(
+            'AsyncNotifierProvider',
+            isFamily: true,
+            genericsUsage: '<NotifierT, StateT, ArgT>',
+            genericsDefinition:
+                '<NotifierT extends FamilyAsyncNotifier<StateT, ArgT>, StateT, ArgT>',
           ),
         ],
         kinds: _ProviderKind.values,
@@ -198,7 +226,9 @@ void _generateAll(StringBuffer buffer, Matrix matrix) {
 
         switch (provider) {
           case _NotifierBuilder():
-            _generateNotifierOrphan(buffer, disposeType, provider, kind);
+            if (provider.isFamily == (kind == _ProviderKind.family)) {
+              _generateNotifier(buffer, disposeType, provider, kind);
+            }
           case _FunctionalBuilder():
             switch (kind) {
               case _ProviderKind.orphan:
@@ -218,7 +248,7 @@ void _generateFunctionalFamily(
   _FunctionalBuilder provider,
 ) {
   final builderName = _builderName(
-    provider,
+    provider.providerName,
     disposeType,
     kind: _ProviderKind.family,
   );
@@ -242,7 +272,7 @@ class $builderName {
     );
   }
 
-  ${_autoDisposeModifier(provider, disposeType, _ProviderKind.family)}
+  ${_autoDisposeModifier(provider.providerName, disposeType, _ProviderKind.family)}
 }
 ''');
 }
@@ -253,7 +283,7 @@ void _generateFunctionalOrphan(
   _FunctionalBuilder provider,
 ) {
   final builderName = _builderName(
-    provider,
+    provider.providerName,
     disposeType,
   );
 
@@ -276,14 +306,14 @@ class $builderName {
     );
   }
 
-  ${_familyModifier(provider, disposeType, _ProviderKind.orphan)}
-  ${_autoDisposeModifier(provider, disposeType, _ProviderKind.orphan)}
+  ${_familyModifier(provider.providerName, disposeType, _ProviderKind.orphan)}
+  ${_autoDisposeModifier(provider.providerName, disposeType, _ProviderKind.orphan)}
 }
 ''');
 }
 
 String _builderName(
-  _Builder provider,
+  String name,
   _DisposeType disposeType, {
   _ProviderKind kind = _ProviderKind.orphan,
 }) {
@@ -291,7 +321,7 @@ String _builderName(
   if (kind == _ProviderKind.family) {
     builderName = 'Family$builderName';
   }
-  builderName = '${provider.providerName}$builderName';
+  builderName = '$name$builderName';
   if (disposeType == _DisposeType.autoDispose) {
     builderName = 'AutoDispose$builderName';
   }
@@ -299,14 +329,14 @@ String _builderName(
 }
 
 String _autoDisposeModifier(
-  _Builder provider,
+  String name,
   _DisposeType disposeType,
   _ProviderKind kind,
 ) {
   if (disposeType == _DisposeType.autoDispose) return '';
 
   final targetBuilder = _builderName(
-    provider,
+    name,
     _DisposeType.autoDispose,
     kind: kind,
   );
@@ -318,14 +348,14 @@ String _autoDisposeModifier(
 }
 
 String _familyModifier(
-  _Builder provider,
+  String name,
   _DisposeType disposeType,
   _ProviderKind kind,
 ) {
   if (kind == _ProviderKind.family) return '';
 
   final targetBuilder = _builderName(
-    provider,
+    name,
     disposeType,
     kind: _ProviderKind.family,
   );
@@ -343,17 +373,23 @@ String _isAutoDisposeParam(_DisposeType disposeType) {
   return '';
 }
 
-void _generateNotifierOrphan(
+void _generateNotifier(
   StringBuffer buffer,
   _DisposeType disposeType,
   _NotifierBuilder provider,
   _ProviderKind kind,
 ) {
   final builderName = _builderName(
-    provider,
+    provider.providerName,
     disposeType,
     kind: kind,
   );
+
+  final providerName = provider.isFamily
+      ? '${provider.providerName}Family'
+      : provider.providerName;
+
+  final ctor = provider.isFamily ? '.internal' : '';
 
   buffer.writeln('''
 @internal
@@ -361,12 +397,12 @@ class $builderName {
   const $builderName();
 
   $autoDisposeDoc
-  ${provider.providerName}${provider.genericsUsage} call${provider.genericsDefinition}(
+  $providerName${provider.genericsUsage} call${provider.genericsDefinition}(
     NotifierT Function() create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
   }) {
-    return ${provider.providerName}${provider.genericsUsage}(
+    return $providerName${provider.genericsUsage}$ctor(
       create,
       name: name,
       ${_isAutoDisposeParam(disposeType)}
@@ -374,8 +410,8 @@ class $builderName {
     );
   }
 
-  ${_familyModifier(provider, disposeType, kind)}
-  ${_autoDisposeModifier(provider, disposeType, kind)}
+  ${_familyModifier(provider.providerName, disposeType, kind)}
+  ${_autoDisposeModifier(provider.providerName, disposeType, kind)}
 }
 ''');
 }

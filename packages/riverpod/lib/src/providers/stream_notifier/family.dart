@@ -97,38 +97,16 @@ class StreamNotifierProviderFamily< //
         Stream<StateT>,
         FamilyStreamNotifierProvider<NotifierT, StateT, ArgT>> {
   /// The [Family] of [StreamNotifierProvider].
-  StreamNotifierProviderFamily._(
+  @internal
+  StreamNotifierProviderFamily.internal(
     super._createFn, {
     super.name,
     super.dependencies,
     super.isAutoDispose = false,
   }) : super(
           providerFactory: FamilyStreamNotifierProvider._,
-          debugGetCreateSourceHash: null,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
-        );
-
-  StreamNotifierProviderFamily._autoDispose(
-    super._createFn, {
-    super.name,
-    super.dependencies,
-  }) : super(
-          providerFactory: FamilyStreamNotifierProvider._,
-          isAutoDispose: true,
           debugGetCreateSourceHash: null,
-          allTransitiveDependencies:
-              computeAllTransitiveDependencies(dependencies),
         );
-
-  /// The [Family] of [StreamNotifierProvider].
-  @internal
-  StreamNotifierProviderFamily.internal(
-    super._createFn, {
-    super.name,
-    super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.isAutoDispose,
-  }) : super(providerFactory: FamilyStreamNotifierProvider._);
 }

@@ -45,3 +45,38 @@ abstract base class _AsyncNotifierProviderBase< //
   @override
   NotifierT create() => _createNotifier();
 }
+
+class _AsyncNotifierProviderElement< //
+        NotifierT extends AsyncNotifierBase<StateT>,
+        StateT> //
+    extends ClassProviderElement< //
+        NotifierT,
+        AsyncValue<StateT>,
+        FutureOr<StateT>> //
+    with
+        FutureModifierElement<StateT> {
+  _AsyncNotifierProviderElement(this.provider, super.container);
+
+  @override
+  final _AsyncNotifierProviderBase<NotifierT, StateT> provider;
+
+  @override
+  void handleError(
+    Object error,
+    StackTrace stackTrace, {
+    required bool didChangeDependency,
+  }) {
+    onError(AsyncError(error, stackTrace), seamless: !didChangeDependency);
+  }
+
+  @override
+  void handleValue(
+    FutureOr<StateT> created, {
+    required bool didChangeDependency,
+  }) {
+    handleFuture(
+      () => created,
+      didChangeDependency: didChangeDependency,
+    );
+  }
+}

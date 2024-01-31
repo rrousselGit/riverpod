@@ -10,19 +10,14 @@ export 'src/framework.dart'
         ProviderScheduler,
         debugCanModifyProviders,
         Vsync,
-        _ValueProviderElement,
         ValueProvider,
         FamilyCreate,
-        AsyncSelector,
         FunctionalFamily,
-        AutoDisposeProviderElementMixin,
         FamilyOverride,
         ClassFamily,
         SetupFamilyOverride,
         SetupOverride,
-        AutoDisposeNotifierFamilyBase,
         ProviderOverride,
-        AutoDisposeFamilyBase,
         DebugGetCreateSourceHash,
         ClassProviderFactory,
         FunctionalProviderFactory,
@@ -37,41 +32,25 @@ export 'src/framework.dart'
         TransitiveProviderOverride,
         ProviderPointer,
         ProviderPointerManager,
-        ProviderDirectory;
-
-export 'src/providers/async_notifier.dart'
-    hide
-        AsyncNotifierProviderImpl,
-        AutoDisposeAsyncNotifierProviderImpl,
-        AutoDisposeFamilyAsyncNotifierProviderImpl,
-        FamilyAsyncNotifierProviderImpl,
-        _AsyncNotifierBase,
-        AsyncNotifierProviderBase,
+        ProviderDirectory,
+        AsyncClassMixin,
+        FutureModifier,
+        ProviderElementBase,
+        ClassBaseX,
         CancelAsyncSubscription,
-        BuildlessAsyncNotifier,
-        BuildlessAutoDisposeAsyncNotifier,
-        FutureHandlerProviderElementMixin,
-        FamilyStreamNotifierProviderImpl,
-        StreamNotifierProviderImpl,
-        AutoDisposeStreamNotifierProviderImpl,
-        AutoDisposeFamilyStreamNotifierProviderImpl,
-        StreamNotifierProviderBase,
-        BuildlessAutoDisposeStreamNotifier,
-        BuildlessStreamNotifier;
+        ClassBase,
+        FutureModifierElement,
+        RunNotifierBuild,
+        FunctionalProvider,
+        ClassProvider;
+
+export 'src/providers/async_notifier.dart' hide AsyncNotifierBase;
 
 // TODO changelog breaking: StateNotifier & co are no-longer exported from pkg:riverpod/riverpod.dart
 //  Use pkg:riverpod/legacy.dart
 
 export 'src/providers/future_provider.dart';
 export 'src/providers/notifier.dart'
-    hide
-        _NotifierBase,
-        _NotifierProviderBase,
-        AutoDisposeFamilyNotifierProviderImpl,
-        AutoDisposeNotifierProviderImpl,
-        FamilyNotifierProviderImpl,
-        NotifierProvider,
-        BuildlessAutoDisposeNotifier,
-        BuildlessNotifier;
-export 'src/providers/provider.dart' hide InternalProvider;
+    hide NotifierProvider, FamilyNotifierProvider;
+export 'src/providers/provider.dart';
 export 'src/providers/stream_provider.dart';
