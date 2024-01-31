@@ -20,7 +20,7 @@ class MyNotifier extends StateNotifier<int> {
     _timer = Timer.periodic(period, (t) => update()); // 2 side effect on init
   }
   final Duration period;
-  final Ref ref;
+  final Ref<MyNotifier> ref;
   late final Timer _timer;
 
   Future<void> update() async {

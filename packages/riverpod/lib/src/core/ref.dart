@@ -196,7 +196,7 @@ abstract class Ref<State> {
   /// class MyService {
   ///   MyService(this.ref);
   ///
-  ///   final Ref ref;
+  ///   final Ref<MyService> ref;
   ///
   ///   Future<User> fetchUser() {
   ///     // We read the current configurations, but do not care about
