@@ -1,6 +1,6 @@
 import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/src/internals.dart' show ProviderElementBase;
 import 'package:test/test.dart';
-
 
 void main() {
   test('specifies `from` & `argument` for related providers', () {

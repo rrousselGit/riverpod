@@ -1,5 +1,6 @@
 import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/src/internals.dart' show ProviderElementBase;
 import 'package:test/test.dart';
 
 import '../../../utils.dart';
