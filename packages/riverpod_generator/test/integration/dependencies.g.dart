@@ -51,7 +51,7 @@ class _SystemHash {
 const familyProvider = FamilyFamily();
 
 /// See also [family].
-class FamilyFamily extends Family {
+final class FamilyFamily extends Family {
   /// See also [family].
   const FamilyFamily()
       : super(
@@ -78,37 +78,12 @@ class FamilyFamily extends Family {
     );
   }
 
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(int Function(FamilyRef ref) create) {
-    return _$FamilyFamilyOverride(this, create);
-  }
-
   @override
   String toString() => 'familyProvider';
 }
 
-class _$FamilyFamilyOverride implements FamilyOverride {
-  _$FamilyFamilyOverride(this.from, this.create);
-
-  final int Function(FamilyRef ref) create;
-
-  @override
-  final FamilyFamily from;
-
-  @override
-  _FamilyProviderElement createElement(
-    ProviderContainer container,
-    covariant FamilyProvider provider,
-  ) {
-    return provider._copyWith(create).createElement(container);
-  }
-
-  @override
-  String toString() => 'familyProvider.overrideWith(...)';
-}
-
 /// See also [family].
-class FamilyProvider extends Provider<int> {
+final class FamilyProvider extends Provider<int> {
   /// See also [family].
   FamilyProvider(
     int id,
@@ -117,51 +92,23 @@ class FamilyProvider extends Provider<int> {
             ref as FamilyRef,
             id,
           ),
-          from: familyProvider,
-          name: r'familyProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$familyHash,
-          dependencies: null,
-          allTransitiveDependencies: null,
-          id: id,
+          argument: (id,),
         );
 
   FamilyProvider._internal(
     super.create, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.id,
-  }) : super.internal();
-
-  final int id;
-
-  @override
-  Override overrideWith(
-    int Function(FamilyRef ref) create,
-  ) {
-    return ProviderOverride(
-      origin: this,
-      providerOverride: FamilyProvider._internal(
-        (ref) => create(ref as FamilyRef),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        id: id,
-      ),
-    );
-  }
-
-  @override
-  (int,) get argument {
-    return (id,);
-  }
+    required (int,) super.argument,
+  }) : super.internal(
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$familyHash,
+          from: familyProvider,
+          name: r'familyProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
 
   @override
   _FamilyProviderElement createElement(
@@ -170,32 +117,24 @@ class FamilyProvider extends Provider<int> {
     return _FamilyProviderElement(this, container);
   }
 
-  FamilyProvider _copyWith(
+  @internal
+  @override
+  FamilyProvider copyWithCreate(
     int Function(FamilyRef ref) create,
   ) {
     return FamilyProvider._internal(
       (ref) => create(ref as FamilyRef),
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-      id: id,
+      argument: argument as (int,),
     );
   }
 
   @override
   bool operator ==(Object other) {
-    return other is FamilyProvider && other.id == id;
+    return other is FamilyProvider && other.argument == argument;
   }
 
   @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, id.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
+  int get hashCode => Object.hash(argument, runtimeType);
 
   @override
   String toString() => 'familyProvider$argument';
@@ -432,7 +371,7 @@ abstract class _$Family2 extends BuildlessAutoDisposeNotifier<int> {
 const family2Provider = Family2Family();
 
 /// See also [Family2].
-class Family2Family extends Family {
+final class Family2Family extends Family {
   /// See also [Family2].
   const Family2Family()
       : super(
@@ -459,64 +398,35 @@ class Family2Family extends Family {
     );
   }
 
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(Family2 Function() create) {
-    return _$Family2FamilyOverride(this, create);
-  }
-
   @override
   String toString() => 'family2Provider';
 }
 
-class _$Family2FamilyOverride implements FamilyOverride {
-  _$Family2FamilyOverride(this.from, this.create);
-
-  final Family2 Function() create;
-
-  @override
-  final Family2Family from;
-
-  @override
-  _Family2ProviderElement createElement(
-    ProviderContainer container,
-    covariant Family2Provider provider,
-  ) {
-    return provider._copyWith(create).createElement(container);
-  }
-
-  @override
-  String toString() => 'family2Provider.overrideWith(...)';
-}
-
 /// See also [Family2].
-class Family2Provider extends AutoDisposeNotifierProviderImpl<Family2, int> {
+final class Family2Provider
+    extends AutoDisposeNotifierProviderImpl<Family2, int> {
   /// See also [Family2].
   Family2Provider(
     int id,
   ) : this._internal(
           () => Family2()..id = id,
-          from: family2Provider,
-          name: r'family2Provider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$family2Hash,
-          dependencies: null,
-          allTransitiveDependencies: null,
-          id: id,
+          argument: (id,),
         );
 
   Family2Provider._internal(
     super.create, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.id,
-  }) : super.internal();
-
-  final int id;
+    required (int,) super.argument,
+  }) : super.internal(
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$family2Hash,
+          from: family2Provider,
+          name: r'family2Provider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
 
   @override
   int runNotifierBuild(
@@ -527,25 +437,15 @@ class Family2Provider extends AutoDisposeNotifierProviderImpl<Family2, int> {
     );
   }
 
+  @internal
   @override
-  Override overrideWith(Family2 Function() create) {
-    return ProviderOverride(
-      origin: this,
-      providerOverride: Family2Provider._internal(
-        () => create()..id = id,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        id: id,
-      ),
+  AutoDisposeNotifierProviderImpl copyWithBuild(
+    Family2 Function() create,
+  ) {
+    return AutoDisposeNotifierProviderImpl._internal(
+      create,
+      id: id,
     );
-  }
-
-  @override
-  (int,) get argument {
-    return (id,);
   }
 
   @override
@@ -555,32 +455,24 @@ class Family2Provider extends AutoDisposeNotifierProviderImpl<Family2, int> {
     return _Family2ProviderElement(this, container);
   }
 
-  Family2Provider _copyWith(
+  @internal
+  @override
+  Family2Provider copyWithCreate(
     Family2 Function() create,
   ) {
     return Family2Provider._internal(
       () => create()..id = id,
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-      id: id,
+      argument: argument as (int,),
     );
   }
 
   @override
   bool operator ==(Object other) {
-    return other is Family2Provider && other.id == id;
+    return other is Family2Provider && other.argument == argument;
   }
 
   @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, id.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
+  int get hashCode => Object.hash(argument, runtimeType);
 
   @override
   String toString() => 'family2Provider$argument';
@@ -645,7 +537,7 @@ abstract class _$Provider4 extends BuildlessAutoDisposeNotifier<int> {
 const provider4Provider = Provider4Family();
 
 /// See also [Provider4].
-class Provider4Family extends Family {
+final class Provider4Family extends Family {
   /// See also [Provider4].
   const Provider4Family()
       : super(
@@ -687,65 +579,35 @@ class Provider4Family extends Family {
     );
   }
 
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(Provider4 Function() create) {
-    return _$Provider4FamilyOverride(this, create);
-  }
-
   @override
   String toString() => 'provider4Provider';
 }
 
-class _$Provider4FamilyOverride implements FamilyOverride {
-  _$Provider4FamilyOverride(this.from, this.create);
-
-  final Provider4 Function() create;
-
-  @override
-  final Provider4Family from;
-
-  @override
-  _Provider4ProviderElement createElement(
-    ProviderContainer container,
-    covariant Provider4Provider provider,
-  ) {
-    return provider._copyWith(create).createElement(container);
-  }
-
-  @override
-  String toString() => 'provider4Provider.overrideWith(...)';
-}
-
 /// See also [Provider4].
-class Provider4Provider
+final class Provider4Provider
     extends AutoDisposeNotifierProviderImpl<Provider4, int> {
   /// See also [Provider4].
   Provider4Provider(
     int id,
   ) : this._internal(
           () => Provider4()..id = id,
-          from: provider4Provider,
-          name: r'provider4Provider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$provider4Hash,
-          dependencies: null,
-          allTransitiveDependencies: null,
-          id: id,
+          argument: (id,),
         );
 
   Provider4Provider._internal(
     super.create, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.id,
-  }) : super.internal();
-
-  final int id;
+    required (int,) super.argument,
+  }) : super.internal(
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$provider4Hash,
+          from: provider4Provider,
+          name: r'provider4Provider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
 
   @override
   int runNotifierBuild(
@@ -756,25 +618,15 @@ class Provider4Provider
     );
   }
 
+  @internal
   @override
-  Override overrideWith(Provider4 Function() create) {
-    return ProviderOverride(
-      origin: this,
-      providerOverride: Provider4Provider._internal(
-        () => create()..id = id,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        id: id,
-      ),
+  AutoDisposeNotifierProviderImpl copyWithBuild(
+    Provider4 Function() create,
+  ) {
+    return AutoDisposeNotifierProviderImpl._internal(
+      create,
+      id: id,
     );
-  }
-
-  @override
-  (int,) get argument {
-    return (id,);
   }
 
   @override
@@ -784,32 +636,24 @@ class Provider4Provider
     return _Provider4ProviderElement(this, container);
   }
 
-  Provider4Provider _copyWith(
+  @internal
+  @override
+  Provider4Provider copyWithCreate(
     Provider4 Function() create,
   ) {
     return Provider4Provider._internal(
       () => create()..id = id,
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-      id: id,
+      argument: argument as (int,),
     );
   }
 
   @override
   bool operator ==(Object other) {
-    return other is Provider4Provider && other.id == id;
+    return other is Provider4Provider && other.argument == argument;
   }
 
   @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, id.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
+  int get hashCode => Object.hash(argument, runtimeType);
 
   @override
   String toString() => 'provider4Provider$argument';

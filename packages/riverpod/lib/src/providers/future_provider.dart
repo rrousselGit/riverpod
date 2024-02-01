@@ -77,10 +77,8 @@ import 'stream_provider.dart' show StreamProvider;
 /// - [FutureProvider.family], to create a [FutureProvider] from external parameters
 /// - [FutureProvider.autoDispose], to destroy the state of a [FutureProvider] when no longer needed.
 /// {@endtemplate}
-final class FutureProvider<StateT> extends FunctionalProvider<
-    AsyncValue<StateT>,
-    FutureOr<StateT>,
-    FutureProviderRef<StateT>> with FutureModifier<StateT> {
+base class FutureProvider<StateT> extends FunctionalProvider<AsyncValue<StateT>,
+    FutureOr<StateT>, FutureProviderRef<StateT>> with FutureModifier<StateT> {
   /// {@macro riverpod.future_provider}
   FutureProvider(
     this._create, {

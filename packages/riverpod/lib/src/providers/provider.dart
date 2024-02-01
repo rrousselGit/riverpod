@@ -8,7 +8,7 @@ import 'stream_provider.dart' show StreamProvider;
 
 // TODO changelog ProviderRef was removed. Used Ref directly
 /// {@macro riverpod.provider}
-final class Provider<StateT>
+base class Provider<StateT>
     extends FunctionalProvider<StateT, StateT, Ref<StateT>> {
   /// {@macro riverpod.provider}
   // TODO make all providers const under all variations

@@ -51,7 +51,7 @@ class _SystemHash {
 const generatedFamilyProvider = GeneratedFamilyFamily();
 
 /// See also [generatedFamily].
-class GeneratedFamilyFamily extends Family {
+final class GeneratedFamilyFamily extends Family {
   /// See also [generatedFamily].
   const GeneratedFamilyFamily()
       : super(
@@ -78,37 +78,12 @@ class GeneratedFamilyFamily extends Family {
     );
   }
 
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(_Test Function(GeneratedFamilyRef ref) create) {
-    return _$GeneratedFamilyFamilyOverride(this, create);
-  }
-
   @override
   String toString() => 'generatedFamilyProvider';
 }
 
-class _$GeneratedFamilyFamilyOverride implements FamilyOverride {
-  _$GeneratedFamilyFamilyOverride(this.from, this.create);
-
-  final _Test Function(GeneratedFamilyRef ref) create;
-
-  @override
-  final GeneratedFamilyFamily from;
-
-  @override
-  _GeneratedFamilyProviderElement createElement(
-    ProviderContainer container,
-    covariant GeneratedFamilyProvider provider,
-  ) {
-    return provider._copyWith(create).createElement(container);
-  }
-
-  @override
-  String toString() => 'generatedFamilyProvider.overrideWith(...)';
-}
-
 /// See also [generatedFamily].
-class GeneratedFamilyProvider extends Provider<_Test> {
+final class GeneratedFamilyProvider extends Provider<_Test> {
   /// See also [generatedFamily].
   GeneratedFamilyProvider(
     _Test test,
@@ -117,51 +92,23 @@ class GeneratedFamilyProvider extends Provider<_Test> {
             ref as GeneratedFamilyRef,
             test,
           ),
-          from: generatedFamilyProvider,
-          name: r'generatedFamilyProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$generatedFamilyHash,
-          dependencies: null,
-          allTransitiveDependencies: null,
-          test: test,
+          argument: (test,),
         );
 
   GeneratedFamilyProvider._internal(
     super.create, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.test,
-  }) : super.internal();
-
-  final _Test test;
-
-  @override
-  Override overrideWith(
-    _Test Function(GeneratedFamilyRef ref) create,
-  ) {
-    return ProviderOverride(
-      origin: this,
-      providerOverride: GeneratedFamilyProvider._internal(
-        (ref) => create(ref as GeneratedFamilyRef),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        test: test,
-      ),
-    );
-  }
-
-  @override
-  (_Test,) get argument {
-    return (test,);
-  }
+    required (_Test,) super.argument,
+  }) : super.internal(
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$generatedFamilyHash,
+          from: generatedFamilyProvider,
+          name: r'generatedFamilyProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
 
   @override
   _GeneratedFamilyProviderElement createElement(
@@ -170,32 +117,24 @@ class GeneratedFamilyProvider extends Provider<_Test> {
     return _GeneratedFamilyProviderElement(this, container);
   }
 
-  GeneratedFamilyProvider _copyWith(
+  @internal
+  @override
+  GeneratedFamilyProvider copyWithCreate(
     _Test Function(GeneratedFamilyRef ref) create,
   ) {
     return GeneratedFamilyProvider._internal(
       (ref) => create(ref as GeneratedFamilyRef),
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-      test: test,
+      argument: argument as (_Test,),
     );
   }
 
   @override
   bool operator ==(Object other) {
-    return other is GeneratedFamilyProvider && other.test == test;
+    return other is GeneratedFamilyProvider && other.argument == argument;
   }
 
   @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, test.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
+  int get hashCode => Object.hash(argument, runtimeType);
 
   @override
   String toString() => 'generatedFamilyProvider$argument';
@@ -238,7 +177,7 @@ String _$$dynamicFamilyHash() => r'b764133af8837b8321b08814892f198d4bc1aa18';
 const $dynamicFamilyProvider = $DynamicFamilyFamily();
 
 /// See also [$dynamicFamily].
-class $DynamicFamilyFamily extends Family {
+final class $DynamicFamilyFamily extends Family {
   /// See also [$dynamicFamily].
   const $DynamicFamilyFamily()
       : super(
@@ -265,37 +204,12 @@ class $DynamicFamilyFamily extends Family {
     );
   }
 
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(Object? Function($DynamicFamilyRef ref) create) {
-    return _$$DynamicFamilyFamilyOverride(this, create);
-  }
-
   @override
   String toString() => '\$dynamicFamilyProvider';
 }
 
-class _$$DynamicFamilyFamilyOverride implements FamilyOverride {
-  _$$DynamicFamilyFamilyOverride(this.from, this.create);
-
-  final Object? Function($DynamicFamilyRef ref) create;
-
-  @override
-  final $DynamicFamilyFamily from;
-
-  @override
-  _$DynamicFamilyProviderElement createElement(
-    ProviderContainer container,
-    covariant $DynamicFamilyProvider provider,
-  ) {
-    return provider._copyWith(create).createElement(container);
-  }
-
-  @override
-  String toString() => '\$dynamicFamilyProvider.overrideWith(...)';
-}
-
 /// See also [$dynamicFamily].
-class $DynamicFamilyProvider extends Provider<Object?> {
+final class $DynamicFamilyProvider extends Provider<Object?> {
   /// See also [$dynamicFamily].
   $DynamicFamilyProvider(
     test,
@@ -304,51 +218,23 @@ class $DynamicFamilyProvider extends Provider<Object?> {
             ref as $DynamicFamilyRef,
             test,
           ),
-          from: $dynamicFamilyProvider,
-          name: r'$dynamicFamilyProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$$dynamicFamilyHash,
-          dependencies: null,
-          allTransitiveDependencies: null,
-          test: test,
+          argument: (test,),
         );
 
   $DynamicFamilyProvider._internal(
     super.create, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.test,
-  }) : super.internal();
-
-  final test;
-
-  @override
-  Override overrideWith(
-    Object? Function($DynamicFamilyRef ref) create,
-  ) {
-    return ProviderOverride(
-      origin: this,
-      providerOverride: $DynamicFamilyProvider._internal(
-        (ref) => create(ref as $DynamicFamilyRef),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        test: test,
-      ),
-    );
-  }
-
-  @override
-  (dynamic,) get argument {
-    return (test,);
-  }
+    required (dynamic,) super.argument,
+  }) : super.internal(
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$$dynamicFamilyHash,
+          from: $dynamicFamilyProvider,
+          name: r'$dynamicFamilyProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
 
   @override
   _$DynamicFamilyProviderElement createElement(
@@ -357,32 +243,24 @@ class $DynamicFamilyProvider extends Provider<Object?> {
     return _$DynamicFamilyProviderElement(this, container);
   }
 
-  $DynamicFamilyProvider _copyWith(
+  @internal
+  @override
+  $DynamicFamilyProvider copyWithCreate(
     Object? Function($DynamicFamilyRef ref) create,
   ) {
     return $DynamicFamilyProvider._internal(
       (ref) => create(ref as $DynamicFamilyRef),
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-      test: test,
+      argument: argument as (dynamic,),
     );
   }
 
   @override
   bool operator ==(Object other) {
-    return other is $DynamicFamilyProvider && other.test == test;
+    return other is $DynamicFamilyProvider && other.argument == argument;
   }
 
   @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, test.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
+  int get hashCode => Object.hash(argument, runtimeType);
 
   @override
   String toString() => '\$dynamicFamilyProvider$argument';
@@ -408,7 +286,7 @@ String _$dynamicHash() => r'da9dc07960139fff2cf5fe584dca5c524e4f2308';
 const _dynamicProvider = _DynamicFamily();
 
 /// See also [_dynamic].
-class _DynamicFamily extends Family {
+final class _DynamicFamily extends Family {
   /// See also [_dynamic].
   const _DynamicFamily()
       : super(
@@ -435,37 +313,12 @@ class _DynamicFamily extends Family {
     );
   }
 
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(Object? Function(_DynamicRef ref) create) {
-    return _$DynamicFamilyOverride(this, create);
-  }
-
   @override
   String toString() => '_dynamicProvider';
 }
 
-class _$DynamicFamilyOverride implements FamilyOverride {
-  _$DynamicFamilyOverride(this.from, this.create);
-
-  final Object? Function(_DynamicRef ref) create;
-
-  @override
-  final _DynamicFamily from;
-
-  @override
-  _DynamicProviderElement createElement(
-    ProviderContainer container,
-    covariant _DynamicProvider provider,
-  ) {
-    return provider._copyWith(create).createElement(container);
-  }
-
-  @override
-  String toString() => '_dynamicProvider.overrideWith(...)';
-}
-
 /// See also [_dynamic].
-class _DynamicProvider extends Provider<Object?> {
+final class _DynamicProvider extends Provider<Object?> {
   /// See also [_dynamic].
   _DynamicProvider(
     test,
@@ -474,51 +327,23 @@ class _DynamicProvider extends Provider<Object?> {
             ref as _DynamicRef,
             test,
           ),
-          from: _dynamicProvider,
-          name: r'_dynamicProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$dynamicHash,
-          dependencies: null,
-          allTransitiveDependencies: null,
-          test: test,
+          argument: (test,),
         );
 
   _DynamicProvider._internal(
     super.create, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.test,
-  }) : super.internal();
-
-  final test;
-
-  @override
-  Override overrideWith(
-    Object? Function(_DynamicRef ref) create,
-  ) {
-    return ProviderOverride(
-      origin: this,
-      providerOverride: _DynamicProvider._internal(
-        (ref) => create(ref as _DynamicRef),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        test: test,
-      ),
-    );
-  }
-
-  @override
-  (dynamic,) get argument {
-    return (test,);
-  }
+    required (dynamic,) super.argument,
+  }) : super.internal(
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$dynamicHash,
+          from: _dynamicProvider,
+          name: r'_dynamicProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
 
   @override
   _DynamicProviderElement createElement(
@@ -527,32 +352,24 @@ class _DynamicProvider extends Provider<Object?> {
     return _DynamicProviderElement(this, container);
   }
 
-  _DynamicProvider _copyWith(
+  @internal
+  @override
+  _DynamicProvider copyWithCreate(
     Object? Function(_DynamicRef ref) create,
   ) {
     return _DynamicProvider._internal(
       (ref) => create(ref as _DynamicRef),
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-      test: test,
+      argument: argument as (dynamic,),
     );
   }
 
   @override
   bool operator ==(Object other) {
-    return other is _DynamicProvider && other.test == test;
+    return other is _DynamicProvider && other.argument == argument;
   }
 
   @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, test.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
+  int get hashCode => Object.hash(argument, runtimeType);
 
   @override
   String toString() => '_dynamicProvider$argument';
@@ -595,7 +412,7 @@ String _$aliasFamilyHash() => r'f345937d5750132f629aef41646b119a301f750b';
 const aliasFamilyProvider = AliasFamilyFamily();
 
 /// See also [aliasFamily].
-class AliasFamilyFamily extends Family {
+final class AliasFamilyFamily extends Family {
   /// See also [aliasFamily].
   const AliasFamilyFamily()
       : super(
@@ -622,37 +439,12 @@ class AliasFamilyFamily extends Family {
     );
   }
 
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(r.AsyncValue<int> Function(AliasFamilyRef ref) create) {
-    return _$AliasFamilyFamilyOverride(this, create);
-  }
-
   @override
   String toString() => 'aliasFamilyProvider';
 }
 
-class _$AliasFamilyFamilyOverride implements FamilyOverride {
-  _$AliasFamilyFamilyOverride(this.from, this.create);
-
-  final r.AsyncValue<int> Function(AliasFamilyRef ref) create;
-
-  @override
-  final AliasFamilyFamily from;
-
-  @override
-  _AliasFamilyProviderElement createElement(
-    ProviderContainer container,
-    covariant AliasFamilyProvider provider,
-  ) {
-    return provider._copyWith(create).createElement(container);
-  }
-
-  @override
-  String toString() => 'aliasFamilyProvider.overrideWith(...)';
-}
-
 /// See also [aliasFamily].
-class AliasFamilyProvider extends Provider<r.AsyncValue<int>> {
+final class AliasFamilyProvider extends Provider<r.AsyncValue<int>> {
   /// See also [aliasFamily].
   AliasFamilyProvider(
     r.AsyncValue<int> test,
@@ -661,51 +453,23 @@ class AliasFamilyProvider extends Provider<r.AsyncValue<int>> {
             ref as AliasFamilyRef,
             test,
           ),
-          from: aliasFamilyProvider,
-          name: r'aliasFamilyProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$aliasFamilyHash,
-          dependencies: null,
-          allTransitiveDependencies: null,
-          test: test,
+          argument: (test,),
         );
 
   AliasFamilyProvider._internal(
     super.create, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.test,
-  }) : super.internal();
-
-  final r.AsyncValue<int> test;
-
-  @override
-  Override overrideWith(
-    r.AsyncValue<int> Function(AliasFamilyRef ref) create,
-  ) {
-    return ProviderOverride(
-      origin: this,
-      providerOverride: AliasFamilyProvider._internal(
-        (ref) => create(ref as AliasFamilyRef),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        test: test,
-      ),
-    );
-  }
-
-  @override
-  (r.AsyncValue<int>,) get argument {
-    return (test,);
-  }
+    required (r.AsyncValue<int>,) super.argument,
+  }) : super.internal(
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$aliasFamilyHash,
+          from: aliasFamilyProvider,
+          name: r'aliasFamilyProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
 
   @override
   _AliasFamilyProviderElement createElement(
@@ -714,32 +478,24 @@ class AliasFamilyProvider extends Provider<r.AsyncValue<int>> {
     return _AliasFamilyProviderElement(this, container);
   }
 
-  AliasFamilyProvider _copyWith(
+  @internal
+  @override
+  AliasFamilyProvider copyWithCreate(
     r.AsyncValue<int> Function(AliasFamilyRef ref) create,
   ) {
     return AliasFamilyProvider._internal(
       (ref) => create(ref as AliasFamilyRef),
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-      test: test,
+      argument: argument as (r.AsyncValue<int>,),
     );
   }
 
   @override
   bool operator ==(Object other) {
-    return other is AliasFamilyProvider && other.test == test;
+    return other is AliasFamilyProvider && other.argument == argument;
   }
 
   @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, test.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
+  int get hashCode => Object.hash(argument, runtimeType);
 
   @override
   String toString() => 'aliasFamilyProvider$argument';
@@ -793,7 +549,7 @@ abstract class _$GeneratedClassFamily
 const generatedClassFamilyProvider = GeneratedClassFamilyFamily();
 
 /// See also [GeneratedClassFamily].
-class GeneratedClassFamilyFamily extends Family {
+final class GeneratedClassFamilyFamily extends Family {
   /// See also [GeneratedClassFamily].
   const GeneratedClassFamilyFamily()
       : super(
@@ -820,65 +576,35 @@ class GeneratedClassFamilyFamily extends Family {
     );
   }
 
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(GeneratedClassFamily Function() create) {
-    return _$GeneratedClassFamilyFamilyOverride(this, create);
-  }
-
   @override
   String toString() => 'generatedClassFamilyProvider';
 }
 
-class _$GeneratedClassFamilyFamilyOverride implements FamilyOverride {
-  _$GeneratedClassFamilyFamilyOverride(this.from, this.create);
-
-  final GeneratedClassFamily Function() create;
-
-  @override
-  final GeneratedClassFamilyFamily from;
-
-  @override
-  _GeneratedClassFamilyProviderElement createElement(
-    ProviderContainer container,
-    covariant GeneratedClassFamilyProvider provider,
-  ) {
-    return provider._copyWith(create).createElement(container);
-  }
-
-  @override
-  String toString() => 'generatedClassFamilyProvider.overrideWith(...)';
-}
-
 /// See also [GeneratedClassFamily].
-class GeneratedClassFamilyProvider
+final class GeneratedClassFamilyProvider
     extends AutoDisposeNotifierProviderImpl<GeneratedClassFamily, _Test> {
   /// See also [GeneratedClassFamily].
   GeneratedClassFamilyProvider(
     _Test test,
   ) : this._internal(
           () => GeneratedClassFamily()..test = test,
-          from: generatedClassFamilyProvider,
-          name: r'generatedClassFamilyProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$generatedClassFamilyHash,
-          dependencies: null,
-          allTransitiveDependencies: null,
-          test: test,
+          argument: (test,),
         );
 
   GeneratedClassFamilyProvider._internal(
     super.create, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.test,
-  }) : super.internal();
-
-  final _Test test;
+    required (_Test,) super.argument,
+  }) : super.internal(
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$generatedClassFamilyHash,
+          from: generatedClassFamilyProvider,
+          name: r'generatedClassFamilyProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
 
   @override
   _Test runNotifierBuild(
@@ -889,25 +615,15 @@ class GeneratedClassFamilyProvider
     );
   }
 
+  @internal
   @override
-  Override overrideWith(GeneratedClassFamily Function() create) {
-    return ProviderOverride(
-      origin: this,
-      providerOverride: GeneratedClassFamilyProvider._internal(
-        () => create()..test = test,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        test: test,
-      ),
+  AutoDisposeNotifierProviderImpl copyWithBuild(
+    GeneratedClassFamily Function() create,
+  ) {
+    return AutoDisposeNotifierProviderImpl._internal(
+      create,
+      test: test,
     );
-  }
-
-  @override
-  (_Test,) get argument {
-    return (test,);
   }
 
   @override
@@ -917,32 +633,24 @@ class GeneratedClassFamilyProvider
     return _GeneratedClassFamilyProviderElement(this, container);
   }
 
-  GeneratedClassFamilyProvider _copyWith(
+  @internal
+  @override
+  GeneratedClassFamilyProvider copyWithCreate(
     GeneratedClassFamily Function() create,
   ) {
     return GeneratedClassFamilyProvider._internal(
       () => create()..test = test,
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-      test: test,
+      argument: argument as (_Test,),
     );
   }
 
   @override
   bool operator ==(Object other) {
-    return other is GeneratedClassFamilyProvider && other.test == test;
+    return other is GeneratedClassFamilyProvider && other.argument == argument;
   }
 
   @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, test.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
+  int get hashCode => Object.hash(argument, runtimeType);
 
   @override
   String toString() => 'generatedClassFamilyProvider$argument';
@@ -997,7 +705,7 @@ abstract class _$$DynamicClassFamily
 const $dynamicClassFamilyProvider = $DynamicClassFamilyFamily();
 
 /// See also [$DynamicClassFamily].
-class $DynamicClassFamilyFamily extends Family {
+final class $DynamicClassFamilyFamily extends Family {
   /// See also [$DynamicClassFamily].
   const $DynamicClassFamilyFamily()
       : super(
@@ -1024,65 +732,35 @@ class $DynamicClassFamilyFamily extends Family {
     );
   }
 
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith($DynamicClassFamily Function() create) {
-    return _$$DynamicClassFamilyFamilyOverride(this, create);
-  }
-
   @override
   String toString() => '\$dynamicClassFamilyProvider';
 }
 
-class _$$DynamicClassFamilyFamilyOverride implements FamilyOverride {
-  _$$DynamicClassFamilyFamilyOverride(this.from, this.create);
-
-  final $DynamicClassFamily Function() create;
-
-  @override
-  final $DynamicClassFamilyFamily from;
-
-  @override
-  _$DynamicClassFamilyProviderElement createElement(
-    ProviderContainer container,
-    covariant $DynamicClassFamilyProvider provider,
-  ) {
-    return provider._copyWith(create).createElement(container);
-  }
-
-  @override
-  String toString() => '\$dynamicClassFamilyProvider.overrideWith(...)';
-}
-
 /// See also [$DynamicClassFamily].
-class $DynamicClassFamilyProvider
+final class $DynamicClassFamilyProvider
     extends AutoDisposeNotifierProviderImpl<$DynamicClassFamily, Object?> {
   /// See also [$DynamicClassFamily].
   $DynamicClassFamilyProvider(
     test,
   ) : this._internal(
           () => $DynamicClassFamily()..test = test,
-          from: $dynamicClassFamilyProvider,
-          name: r'$dynamicClassFamilyProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$$dynamicClassFamilyHash,
-          dependencies: null,
-          allTransitiveDependencies: null,
-          test: test,
+          argument: (test,),
         );
 
   $DynamicClassFamilyProvider._internal(
     super.create, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.test,
-  }) : super.internal();
-
-  final test;
+    required (dynamic,) super.argument,
+  }) : super.internal(
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$$dynamicClassFamilyHash,
+          from: $dynamicClassFamilyProvider,
+          name: r'$dynamicClassFamilyProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
 
   @override
   Object? runNotifierBuild(
@@ -1093,25 +771,15 @@ class $DynamicClassFamilyProvider
     );
   }
 
+  @internal
   @override
-  Override overrideWith($DynamicClassFamily Function() create) {
-    return ProviderOverride(
-      origin: this,
-      providerOverride: $DynamicClassFamilyProvider._internal(
-        () => create()..test = test,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        test: test,
-      ),
+  AutoDisposeNotifierProviderImpl copyWithBuild(
+    $DynamicClassFamily Function() create,
+  ) {
+    return AutoDisposeNotifierProviderImpl._internal(
+      create,
+      test: test,
     );
-  }
-
-  @override
-  (dynamic,) get argument {
-    return (test,);
   }
 
   @override
@@ -1121,32 +789,24 @@ class $DynamicClassFamilyProvider
     return _$DynamicClassFamilyProviderElement(this, container);
   }
 
-  $DynamicClassFamilyProvider _copyWith(
+  @internal
+  @override
+  $DynamicClassFamilyProvider copyWithCreate(
     $DynamicClassFamily Function() create,
   ) {
     return $DynamicClassFamilyProvider._internal(
       () => create()..test = test,
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-      test: test,
+      argument: argument as (dynamic,),
     );
   }
 
   @override
   bool operator ==(Object other) {
-    return other is $DynamicClassFamilyProvider && other.test == test;
+    return other is $DynamicClassFamilyProvider && other.argument == argument;
   }
 
   @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, test.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
+  int get hashCode => Object.hash(argument, runtimeType);
 
   @override
   String toString() => '\$dynamicClassFamilyProvider$argument';
@@ -1200,7 +860,7 @@ abstract class _$AliasClassFamily
 const aliasClassFamilyProvider = AliasClassFamilyFamily();
 
 /// See also [AliasClassFamily].
-class AliasClassFamilyFamily extends Family {
+final class AliasClassFamilyFamily extends Family {
   /// See also [AliasClassFamily].
   const AliasClassFamilyFamily()
       : super(
@@ -1227,65 +887,35 @@ class AliasClassFamilyFamily extends Family {
     );
   }
 
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(AliasClassFamily Function() create) {
-    return _$AliasClassFamilyFamilyOverride(this, create);
-  }
-
   @override
   String toString() => 'aliasClassFamilyProvider';
 }
 
-class _$AliasClassFamilyFamilyOverride implements FamilyOverride {
-  _$AliasClassFamilyFamilyOverride(this.from, this.create);
-
-  final AliasClassFamily Function() create;
-
-  @override
-  final AliasClassFamilyFamily from;
-
-  @override
-  _AliasClassFamilyProviderElement createElement(
-    ProviderContainer container,
-    covariant AliasClassFamilyProvider provider,
-  ) {
-    return provider._copyWith(create).createElement(container);
-  }
-
-  @override
-  String toString() => 'aliasClassFamilyProvider.overrideWith(...)';
-}
-
 /// See also [AliasClassFamily].
-class AliasClassFamilyProvider extends AutoDisposeNotifierProviderImpl<
+final class AliasClassFamilyProvider extends AutoDisposeNotifierProviderImpl<
     AliasClassFamily, r.AsyncValue<int>> {
   /// See also [AliasClassFamily].
   AliasClassFamilyProvider(
     r.AsyncValue<int> test,
   ) : this._internal(
           () => AliasClassFamily()..test = test,
-          from: aliasClassFamilyProvider,
-          name: r'aliasClassFamilyProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$aliasClassFamilyHash,
-          dependencies: null,
-          allTransitiveDependencies: null,
-          test: test,
+          argument: (test,),
         );
 
   AliasClassFamilyProvider._internal(
     super.create, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.test,
-  }) : super.internal();
-
-  final r.AsyncValue<int> test;
+    required (r.AsyncValue<int>,) super.argument,
+  }) : super.internal(
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$aliasClassFamilyHash,
+          from: aliasClassFamilyProvider,
+          name: r'aliasClassFamilyProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
 
   @override
   r.AsyncValue<int> runNotifierBuild(
@@ -1296,25 +926,15 @@ class AliasClassFamilyProvider extends AutoDisposeNotifierProviderImpl<
     );
   }
 
+  @internal
   @override
-  Override overrideWith(AliasClassFamily Function() create) {
-    return ProviderOverride(
-      origin: this,
-      providerOverride: AliasClassFamilyProvider._internal(
-        () => create()..test = test,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        test: test,
-      ),
+  AutoDisposeNotifierProviderImpl copyWithBuild(
+    AliasClassFamily Function() create,
+  ) {
+    return AutoDisposeNotifierProviderImpl._internal(
+      create,
+      test: test,
     );
-  }
-
-  @override
-  (r.AsyncValue<int>,) get argument {
-    return (test,);
   }
 
   @override
@@ -1324,32 +944,24 @@ class AliasClassFamilyProvider extends AutoDisposeNotifierProviderImpl<
     return _AliasClassFamilyProviderElement(this, container);
   }
 
-  AliasClassFamilyProvider _copyWith(
+  @internal
+  @override
+  AliasClassFamilyProvider copyWithCreate(
     AliasClassFamily Function() create,
   ) {
     return AliasClassFamilyProvider._internal(
       () => create()..test = test,
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-      test: test,
+      argument: argument as (r.AsyncValue<int>,),
     );
   }
 
   @override
   bool operator ==(Object other) {
-    return other is AliasClassFamilyProvider && other.test == test;
+    return other is AliasClassFamilyProvider && other.argument == argument;
   }
 
   @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, test.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
+  int get hashCode => Object.hash(argument, runtimeType);
 
   @override
   String toString() => 'aliasClassFamilyProvider$argument';

@@ -62,7 +62,6 @@ class FamilyTemplate extends Template {
     var providerType = 'Provider';
     var refType = 'Ref<${provider.valueTypeDisplayString}>';
     var elementType = 'ProviderElement';
-    var createdType = provider.createdTypeDisplayString;
 
     final returnType = provider.createdTypeNode?.type;
     if (returnType != null && !returnType.isRaw) {
@@ -70,9 +69,6 @@ class FamilyTemplate extends Template {
         providerType = 'FutureProvider';
         refType = 'Ref<AsyncValue<${provider.valueTypeDisplayString}>>';
         elementType = 'FutureProviderElement';
-        // Always use FutureOr<T> in overrideWith as return value
-        // or otherwise we get a compilation error.
-        createdType = 'FutureOr<${provider.valueTypeDisplayString}>';
       } else if (returnType.isDartAsyncStream) {
         providerType = 'StreamProvider';
         refType = 'Ref<AsyncValue<${provider.valueTypeDisplayString}>>';
@@ -93,6 +89,9 @@ class FamilyTemplate extends Template {
     final typeParametersDefinition =
         genericDefinitionDisplayString(typeParameters);
 
+    final createType =
+        '${provider.createdTypeDisplayString} Function$typeParametersDefinition(${provider._refImplName} ref)';
+
     return FamilyTemplate._(
       provider,
       options: options,
@@ -106,29 +105,8 @@ class FamilyTemplate extends Template {
           '(ref) => ${provider.name}$typeParametersUsage(ref as ${provider._refImplName}$typeParametersUsage, $parametersPassThrough)',
       providerType: providerType,
       parametersPassThrough: parametersPassThrough,
-      createType:
-          '${provider.createdTypeDisplayString} Function$typeParametersDefinition(${provider._refImplName} ref)',
+      createType: createType,
       overrideCreate: '(ref) => create(ref as ${provider._refImplName})',
-      providerOther: '''
-
-  @override
-  Override overrideWith(
-    $createdType Function(${provider._refImplName}$typeParametersUsage ref) create,
-  ) {
-    return ProviderOverride(
-      origin: this,
-      providerOverride: ${provider._providerImplName}$typeParametersUsage._internal(
-        (ref) => create(ref as ${provider._refImplName}$typeParametersUsage),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-${parameters.map((e) => '        ${e.name}: ${e.name},\n').join()}
-      ),
-    );
-  }
-''',
     );
   }
 
@@ -212,19 +190,14 @@ abstract class $notifierTypedefName$typeParametersDefinition extends $notifierBa
     return notifier.build($parametersPassThrough);
   }
 
+  @internal
   @override
-  Override overrideWith(${provider.name}$typeParametersUsage Function() create) {
-    return ProviderOverride(
-      origin: this,
-      providerOverride: ${provider._providerImplName}$typeParametersUsage._internal(
-        () => create()$cascadePropertyInit,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-${parameters.map((e) => '        ${e.name}: ${e.name},\n').join()}
-      ),
+  $providerType copyWithBuild(
+    ${provider.name} Function() create,
+  ) {
+    return $providerType._internal(
+      create,
+      ${parameters.map((e) => '${e.name}: ${e.name},\n').join()}
     );
   }
 ''',
@@ -249,9 +222,7 @@ ${parameters.map((e) => '        ${e.name}: ${e.name},\n').join()}
 
   @override
   void run(StringBuffer buffer) {
-    final isAutoDispose = !provider.providerElement.annotation.keepAlive
-        ? 'isAutoDispose: true,'
-        : '';
+    final isAutoDispose = !provider.providerElement.annotation.keepAlive;
 
     final providerTypeNameImpl = provider._providerImplName;
     final refNameImpl = provider._refImplName;
@@ -259,9 +230,6 @@ ${parameters.map((e) => '        ${e.name}: ${e.name},\n').join()}
     final familyName = '${provider.providerElement.name.titled}Family';
 
     final parameterDefinition = buildParamDefinitionQuery(parameters);
-    final parameterThisNamedPassThrough = parameters
-        .map((parameter) => '${parameter.name}: ${parameter.name},')
-        .join();
 
     final docs = providerDocFor(provider.providerElement.element);
     final meta = metaAnnotations(provider.node.metadata);
@@ -284,9 +252,6 @@ ${parameters.map((e) => '        ${e.name}: ${e.name},\n').join()}
       for (final parameter in parameters) parameter: parameter.name!.lexeme,
     });
 
-    final familyOverrideClassName =
-        '_\$${provider.name.lexeme.titled.public}FamilyOverride';
-
     // TODO changelog updated to support createElement prototype change
     // TODO changelog toString()
     // TODO handle generics with $ in their name
@@ -305,7 +270,7 @@ $meta
 const $providerName = $familyName();
 
 $docs
-class $familyName extends Family {
+final class $familyName extends Family {
   $docs
   const $familyName()
     : super(
@@ -313,7 +278,7 @@ class $familyName extends Family {
         dependencies: _dependencies,
         allTransitiveDependencies: _allTransitiveDependencies,
         debugGetCreateSourceHash: $hashFn,
-        $isAutoDispose
+        ${isAutoDispose ? 'isAutoDispose: true,' : ''}
       );
 
   static $dependenciesKeyword _dependencies = ${serializeDependencies(provider.providerElement.annotation, options)};
@@ -325,88 +290,45 @@ class $familyName extends Family {
     return $providerTypeNameImpl$typeParametersUsage($parametersPassThrough);
   }
 
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith($createType create) {
-    return $familyOverrideClassName(this, create);
-  }
-
   @override
   String toString() => '$encodedProviderName';
 }
 
-class $familyOverrideClassName implements FamilyOverride {
-  $familyOverrideClassName(this.from, this.create);
-
-  final $createType create;
-
-  @override
-  final $familyName from;
-
-  @override
-  $elementNameImpl createElement(
-    ProviderContainer container,
-    covariant $providerTypeNameImpl provider,
-  ) {
-    return provider._copyWith(create).createElement(container);
-  }
-
-  @override
-  String toString() => '$encodedProviderName.overrideWith(...)';
-}
-
 $docs
-class $providerTypeNameImpl$typeParametersDefinition extends $providerType$providerGenerics {
+final class $providerTypeNameImpl$typeParametersDefinition extends $providerType$providerGenerics {
   $docs
   $providerTypeNameImpl($parameterDefinition) : this._internal(
           $providerCreate,
-          from: $providerName,
-          name: r'$providerName',
-          debugGetCreateSourceHash: $hashFn,
-          dependencies: null,
-          allTransitiveDependencies: null,
-          ${parameters.map((e) => '${e.name}: ${e.name},\n').join()}
+          argument: ($argumentsToRecord),
         );
 
   $providerTypeNameImpl._internal(
     super.create, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    ${buildParamDefinitionQuery(
-      parameters,
-      asThisParameter: true,
-      writeBrackets: false,
-      asRequiredNamed: true,
-    )}
-  }) : super.internal();
-
-${parameters.map((e) => 'final ${e.typeDisplayString} ${e.name};').join()}
+      required ($argumentRecordType) super.argument,
+   }) : super.internal(
+          debugGetCreateSourceHash: $hashFn,
+          from: $providerName,
+          name: r'$providerName',
+          isAutoDispose: $isAutoDispose,
+          dependencies: null,
+          allTransitiveDependencies: null,
+       );
 
 $providerOther
-
-  @override
-  ($argumentRecordType) get argument {
-    return ($argumentsToRecord);
-  }
 
   @override
   $elementNameImpl$typeParametersUsage createElement(ProviderContainer container,) {
     return $elementNameImpl(this, container);
   }
 
-  $providerTypeNameImpl _copyWith(
+  @internal
+  @override
+  $providerTypeNameImpl copyWithCreate(
     $createType create,
   ) {
     return $providerTypeNameImpl._internal(
       $overrideCreate,
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-      $parameterThisNamedPassThrough
+      argument: argument as ($argumentRecordType),
     );
   }
 
@@ -417,20 +339,12 @@ $providerOther
       // If there are type parameters, check the runtimeType to check them too.
       if (typeParameters?.typeParameters.isNotEmpty ?? false)
         'other.runtimeType == runtimeType',
-      ...parameters.map((e) => 'other.${e.name} == ${e.name}'),
+      'other.argument == argument',
     ].join(' && ')};
   }
 
   @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-${[
-      ...parameters.map((e) => e.name),
-      ...?typeParameters?.typeParameters.map((e) => e.name),
-    ].map((e) => 'hash = _SystemHash.combine(hash, $e.hashCode);').join()}
-
-    return _SystemHash.finish(hash);
-  }
+  int get hashCode => Object.hash(argument, runtimeType);
 
   @override
   String toString() => '$encodedProviderName$encodedGenerics\$argument';

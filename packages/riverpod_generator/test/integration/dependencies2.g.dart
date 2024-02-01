@@ -65,7 +65,7 @@ class _SystemHash {
 const familyWithDependencies2Provider = FamilyWithDependencies2Family();
 
 /// See also [familyWithDependencies2].
-class FamilyWithDependencies2Family extends Family {
+final class FamilyWithDependencies2Family extends Family {
   /// See also [familyWithDependencies2].
   const FamilyWithDependencies2Family()
       : super(
@@ -104,37 +104,12 @@ class FamilyWithDependencies2Family extends Family {
     );
   }
 
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(int Function(FamilyWithDependencies2Ref ref) create) {
-    return _$FamilyWithDependencies2FamilyOverride(this, create);
-  }
-
   @override
   String toString() => 'familyWithDependencies2Provider';
 }
 
-class _$FamilyWithDependencies2FamilyOverride implements FamilyOverride {
-  _$FamilyWithDependencies2FamilyOverride(this.from, this.create);
-
-  final int Function(FamilyWithDependencies2Ref ref) create;
-
-  @override
-  final FamilyWithDependencies2Family from;
-
-  @override
-  _FamilyWithDependencies2ProviderElement createElement(
-    ProviderContainer container,
-    covariant FamilyWithDependencies2Provider provider,
-  ) {
-    return provider._copyWith(create).createElement(container);
-  }
-
-  @override
-  String toString() => 'familyWithDependencies2Provider.overrideWith(...)';
-}
-
 /// See also [familyWithDependencies2].
-class FamilyWithDependencies2Provider extends Provider<int> {
+final class FamilyWithDependencies2Provider extends Provider<int> {
   /// See also [familyWithDependencies2].
   FamilyWithDependencies2Provider({
     int? id,
@@ -143,53 +118,26 @@ class FamilyWithDependencies2Provider extends Provider<int> {
             ref as FamilyWithDependencies2Ref,
             id: id,
           ),
-          from: familyWithDependencies2Provider,
-          name: r'familyWithDependencies2Provider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$familyWithDependencies2Hash,
-          dependencies: null,
-          allTransitiveDependencies: null,
-          id: id,
+          argument: (id: id,),
         );
 
   FamilyWithDependencies2Provider._internal(
     super.create, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.id,
-  }) : super.internal();
-
-  final int? id;
-
-  @override
-  Override overrideWith(
-    int Function(FamilyWithDependencies2Ref ref) create,
-  ) {
-    return ProviderOverride(
-      origin: this,
-      providerOverride: FamilyWithDependencies2Provider._internal(
-        (ref) => create(ref as FamilyWithDependencies2Ref),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        id: id,
-      ),
-    );
-  }
-
-  @override
-  ({
-    int? id,
-  }) get argument {
-    return (id: id,);
-  }
+    required ({
+      int? id,
+    })
+        super.argument,
+  }) : super.internal(
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$familyWithDependencies2Hash,
+          from: familyWithDependencies2Provider,
+          name: r'familyWithDependencies2Provider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
 
   @override
   _FamilyWithDependencies2ProviderElement createElement(
@@ -198,32 +146,27 @@ class FamilyWithDependencies2Provider extends Provider<int> {
     return _FamilyWithDependencies2ProviderElement(this, container);
   }
 
-  FamilyWithDependencies2Provider _copyWith(
+  @internal
+  @override
+  FamilyWithDependencies2Provider copyWithCreate(
     int Function(FamilyWithDependencies2Ref ref) create,
   ) {
     return FamilyWithDependencies2Provider._internal(
       (ref) => create(ref as FamilyWithDependencies2Ref),
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-      id: id,
+      argument: argument as ({
+        int? id,
+      }),
     );
   }
 
   @override
   bool operator ==(Object other) {
-    return other is FamilyWithDependencies2Provider && other.id == id;
+    return other is FamilyWithDependencies2Provider &&
+        other.argument == argument;
   }
 
   @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, id.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
+  int get hashCode => Object.hash(argument, runtimeType);
 
   @override
   String toString() => 'familyWithDependencies2Provider$argument';
@@ -325,7 +268,7 @@ const notifierFamilyWithDependenciesProvider =
     NotifierFamilyWithDependenciesFamily();
 
 /// See also [NotifierFamilyWithDependencies].
-class NotifierFamilyWithDependenciesFamily extends Family {
+final class NotifierFamilyWithDependenciesFamily extends Family {
   /// See also [NotifierFamilyWithDependencies].
   const NotifierFamilyWithDependenciesFamily()
       : super(
@@ -364,38 +307,12 @@ class NotifierFamilyWithDependenciesFamily extends Family {
     );
   }
 
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(NotifierFamilyWithDependencies Function() create) {
-    return _$NotifierFamilyWithDependenciesFamilyOverride(this, create);
-  }
-
   @override
   String toString() => 'notifierFamilyWithDependenciesProvider';
 }
 
-class _$NotifierFamilyWithDependenciesFamilyOverride implements FamilyOverride {
-  _$NotifierFamilyWithDependenciesFamilyOverride(this.from, this.create);
-
-  final NotifierFamilyWithDependencies Function() create;
-
-  @override
-  final NotifierFamilyWithDependenciesFamily from;
-
-  @override
-  _NotifierFamilyWithDependenciesProviderElement createElement(
-    ProviderContainer container,
-    covariant NotifierFamilyWithDependenciesProvider provider,
-  ) {
-    return provider._copyWith(create).createElement(container);
-  }
-
-  @override
-  String toString() =>
-      'notifierFamilyWithDependenciesProvider.overrideWith(...)';
-}
-
 /// See also [NotifierFamilyWithDependencies].
-class NotifierFamilyWithDependenciesProvider
+final class NotifierFamilyWithDependenciesProvider
     extends AutoDisposeNotifierProviderImpl<NotifierFamilyWithDependencies,
         int> {
   /// See also [NotifierFamilyWithDependencies].
@@ -403,28 +320,26 @@ class NotifierFamilyWithDependenciesProvider
     int? id,
   }) : this._internal(
           () => NotifierFamilyWithDependencies()..id = id,
-          from: notifierFamilyWithDependenciesProvider,
-          name: r'notifierFamilyWithDependenciesProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$notifierFamilyWithDependenciesHash,
-          dependencies: null,
-          allTransitiveDependencies: null,
-          id: id,
+          argument: (id: id,),
         );
 
   NotifierFamilyWithDependenciesProvider._internal(
     super.create, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.id,
-  }) : super.internal();
-
-  final int? id;
+    required ({
+      int? id,
+    })
+        super.argument,
+  }) : super.internal(
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$notifierFamilyWithDependenciesHash,
+          from: notifierFamilyWithDependenciesProvider,
+          name: r'notifierFamilyWithDependenciesProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
 
   @override
   int runNotifierBuild(
@@ -435,27 +350,15 @@ class NotifierFamilyWithDependenciesProvider
     );
   }
 
+  @internal
   @override
-  Override overrideWith(NotifierFamilyWithDependencies Function() create) {
-    return ProviderOverride(
-      origin: this,
-      providerOverride: NotifierFamilyWithDependenciesProvider._internal(
-        () => create()..id = id,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        id: id,
-      ),
+  AutoDisposeNotifierProviderImpl copyWithBuild(
+    NotifierFamilyWithDependencies Function() create,
+  ) {
+    return AutoDisposeNotifierProviderImpl._internal(
+      create,
+      id: id,
     );
-  }
-
-  @override
-  ({
-    int? id,
-  }) get argument {
-    return (id: id,);
   }
 
   @override
@@ -465,32 +368,27 @@ class NotifierFamilyWithDependenciesProvider
     return _NotifierFamilyWithDependenciesProviderElement(this, container);
   }
 
-  NotifierFamilyWithDependenciesProvider _copyWith(
+  @internal
+  @override
+  NotifierFamilyWithDependenciesProvider copyWithCreate(
     NotifierFamilyWithDependencies Function() create,
   ) {
     return NotifierFamilyWithDependenciesProvider._internal(
       () => create()..id = id,
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-      id: id,
+      argument: argument as ({
+        int? id,
+      }),
     );
   }
 
   @override
   bool operator ==(Object other) {
-    return other is NotifierFamilyWithDependenciesProvider && other.id == id;
+    return other is NotifierFamilyWithDependenciesProvider &&
+        other.argument == argument;
   }
 
   @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, id.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
+  int get hashCode => Object.hash(argument, runtimeType);
 
   @override
   String toString() => 'notifierFamilyWithDependenciesProvider$argument';

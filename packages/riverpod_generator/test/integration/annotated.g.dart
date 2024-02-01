@@ -57,7 +57,7 @@ class _SystemHash {
 const familyProvider = FamilyFamily();
 
 /// See also [family].
-class FamilyFamily extends Family {
+final class FamilyFamily extends Family {
   /// See also [family].
   const FamilyFamily()
       : super(
@@ -84,37 +84,12 @@ class FamilyFamily extends Family {
     );
   }
 
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(String Function(FamilyRef ref) create) {
-    return _$FamilyFamilyOverride(this, create);
-  }
-
   @override
   String toString() => 'familyProvider';
 }
 
-class _$FamilyFamilyOverride implements FamilyOverride {
-  _$FamilyFamilyOverride(this.from, this.create);
-
-  final String Function(FamilyRef ref) create;
-
-  @override
-  final FamilyFamily from;
-
-  @override
-  _FamilyProviderElement createElement(
-    ProviderContainer container,
-    covariant FamilyProvider provider,
-  ) {
-    return provider._copyWith(create).createElement(container);
-  }
-
-  @override
-  String toString() => 'familyProvider.overrideWith(...)';
-}
-
 /// See also [family].
-class FamilyProvider extends Provider<String> {
+final class FamilyProvider extends Provider<String> {
   /// See also [family].
   FamilyProvider(
     int id,
@@ -123,51 +98,23 @@ class FamilyProvider extends Provider<String> {
             ref as FamilyRef,
             id,
           ),
-          from: familyProvider,
-          name: r'familyProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$familyHash,
-          dependencies: null,
-          allTransitiveDependencies: null,
-          id: id,
+          argument: (id,),
         );
 
   FamilyProvider._internal(
     super.create, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.id,
-  }) : super.internal();
-
-  final int id;
-
-  @override
-  Override overrideWith(
-    String Function(FamilyRef ref) create,
-  ) {
-    return ProviderOverride(
-      origin: this,
-      providerOverride: FamilyProvider._internal(
-        (ref) => create(ref as FamilyRef),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        id: id,
-      ),
-    );
-  }
-
-  @override
-  (int,) get argument {
-    return (id,);
-  }
+    required (int,) super.argument,
+  }) : super.internal(
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$familyHash,
+          from: familyProvider,
+          name: r'familyProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
 
   @override
   _FamilyProviderElement createElement(
@@ -176,32 +123,24 @@ class FamilyProvider extends Provider<String> {
     return _FamilyProviderElement(this, container);
   }
 
-  FamilyProvider _copyWith(
+  @internal
+  @override
+  FamilyProvider copyWithCreate(
     String Function(FamilyRef ref) create,
   ) {
     return FamilyProvider._internal(
       (ref) => create(ref as FamilyRef),
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-      id: id,
+      argument: argument as (int,),
     );
   }
 
   @override
   bool operator ==(Object other) {
-    return other is FamilyProvider && other.id == id;
+    return other is FamilyProvider && other.argument == argument;
   }
 
   @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, id.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
+  int get hashCode => Object.hash(argument, runtimeType);
 
   @override
   String toString() => 'familyProvider$argument';
@@ -245,7 +184,7 @@ String _$notCopiedFamilyHash() => r'6ef06ce6ebd73b476870bbe1af41c4f3fbe8ddb1';
 const notCopiedFamilyProvider = NotCopiedFamilyFamily();
 
 /// See also [notCopiedFamily].
-class NotCopiedFamilyFamily extends Family {
+final class NotCopiedFamilyFamily extends Family {
   /// See also [notCopiedFamily].
   const NotCopiedFamilyFamily()
       : super(
@@ -272,37 +211,12 @@ class NotCopiedFamilyFamily extends Family {
     );
   }
 
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(String Function(NotCopiedFamilyRef ref) create) {
-    return _$NotCopiedFamilyFamilyOverride(this, create);
-  }
-
   @override
   String toString() => 'notCopiedFamilyProvider';
 }
 
-class _$NotCopiedFamilyFamilyOverride implements FamilyOverride {
-  _$NotCopiedFamilyFamilyOverride(this.from, this.create);
-
-  final String Function(NotCopiedFamilyRef ref) create;
-
-  @override
-  final NotCopiedFamilyFamily from;
-
-  @override
-  _NotCopiedFamilyProviderElement createElement(
-    ProviderContainer container,
-    covariant NotCopiedFamilyProvider provider,
-  ) {
-    return provider._copyWith(create).createElement(container);
-  }
-
-  @override
-  String toString() => 'notCopiedFamilyProvider.overrideWith(...)';
-}
-
 /// See also [notCopiedFamily].
-class NotCopiedFamilyProvider extends Provider<String> {
+final class NotCopiedFamilyProvider extends Provider<String> {
   /// See also [notCopiedFamily].
   NotCopiedFamilyProvider(
     int id,
@@ -311,51 +225,23 @@ class NotCopiedFamilyProvider extends Provider<String> {
             ref as NotCopiedFamilyRef,
             id,
           ),
-          from: notCopiedFamilyProvider,
-          name: r'notCopiedFamilyProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$notCopiedFamilyHash,
-          dependencies: null,
-          allTransitiveDependencies: null,
-          id: id,
+          argument: (id,),
         );
 
   NotCopiedFamilyProvider._internal(
     super.create, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.id,
-  }) : super.internal();
-
-  final int id;
-
-  @override
-  Override overrideWith(
-    String Function(NotCopiedFamilyRef ref) create,
-  ) {
-    return ProviderOverride(
-      origin: this,
-      providerOverride: NotCopiedFamilyProvider._internal(
-        (ref) => create(ref as NotCopiedFamilyRef),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        id: id,
-      ),
-    );
-  }
-
-  @override
-  (int,) get argument {
-    return (id,);
-  }
+    required (int,) super.argument,
+  }) : super.internal(
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$notCopiedFamilyHash,
+          from: notCopiedFamilyProvider,
+          name: r'notCopiedFamilyProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
 
   @override
   _NotCopiedFamilyProviderElement createElement(
@@ -364,32 +250,24 @@ class NotCopiedFamilyProvider extends Provider<String> {
     return _NotCopiedFamilyProviderElement(this, container);
   }
 
-  NotCopiedFamilyProvider _copyWith(
+  @internal
+  @override
+  NotCopiedFamilyProvider copyWithCreate(
     String Function(NotCopiedFamilyRef ref) create,
   ) {
     return NotCopiedFamilyProvider._internal(
       (ref) => create(ref as NotCopiedFamilyRef),
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-      id: id,
+      argument: argument as (int,),
     );
   }
 
   @override
   bool operator ==(Object other) {
-    return other is NotCopiedFamilyProvider && other.id == id;
+    return other is NotCopiedFamilyProvider && other.argument == argument;
   }
 
   @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, id.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
+  int get hashCode => Object.hash(argument, runtimeType);
 
   @override
   String toString() => 'notCopiedFamilyProvider$argument';
