@@ -10,14 +10,16 @@ import 'future_provider.dart' show FutureProvider;
 part 'stream_notifier/family.dart';
 part 'stream_notifier/orphan.dart';
 
-abstract class _StreamNotifierBase<StateT> extends ClassBase< //
+@internal
+abstract class StreamNotifierBase<StateT> extends ClassBase< //
         AsyncValue<StateT>,
         Stream<StateT>> //
     with
         AsyncClassMixin<StateT, Stream<StateT>> {}
 
-abstract base class _StreamNotifierProviderBase<
-        NotifierT extends _StreamNotifierBase<StateT>, //
+@internal
+abstract base class StreamNotifierProviderBase<
+        NotifierT extends StreamNotifierBase<StateT>, //
         StateT> //
     extends ClassProvider< //
         NotifierT,
@@ -26,7 +28,7 @@ abstract base class _StreamNotifierProviderBase<
         Ref<AsyncValue<StateT>>> //
     with
         FutureModifier<StateT> {
-  const _StreamNotifierProviderBase(
+  const StreamNotifierProviderBase(
     this._createNotifier, {
     required super.name,
     required super.from,

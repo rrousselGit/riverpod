@@ -4,7 +4,7 @@ part of '../stream_notifier.dart';
 ///
 /// {@macro riverpod.async_notifier_provider_modifier}
 abstract class FamilyStreamNotifier<State, Arg>
-    extends _StreamNotifierBase<State> {
+    extends StreamNotifierBase<State> {
   /// {@template riverpod.notifier.family_arg}
   /// The argument that was passed to this family.
   ///
@@ -16,18 +16,22 @@ abstract class FamilyStreamNotifier<State, Arg>
   ///
   /// then [arg] will be `0`.
   /// {@endtemplate}
-  late final Arg arg;
+  late final Arg arg = (ref as ProviderElementBase).origin.argument as Arg;
 
   /// {@macro riverpod.async_notifier.build}
   @visibleForOverriding
   Stream<State> build(Arg arg);
+
+  @internal
+  @override
+  Stream<State> runBuild() => build(arg);
 }
 
 final class FamilyStreamNotifierProvider< //
         NotifierT extends FamilyStreamNotifier<StateT, ArgT>,
         StateT,
         ArgT> //
-    extends _StreamNotifierProviderBase<NotifierT, StateT> {
+    extends StreamNotifierProviderBase<NotifierT, StateT> {
   /// An implementation detail of Riverpod
   const FamilyStreamNotifierProvider._(
     super._createNotifier, {

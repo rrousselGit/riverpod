@@ -15,10 +15,14 @@ part of '../stream_notifier.dart';
 /// When using `family`, your notifier type changes. Instead of extending
 /// [StreamNotifier], you should extend [FamilyStreamNotifier].
 /// {@endtemplate}
-abstract class StreamNotifier<State> extends _StreamNotifierBase<State> {
+abstract class StreamNotifier<State> extends StreamNotifierBase<State> {
   /// {@macro riverpod.async_notifier.build}
   @visibleForOverriding
   Stream<State> build();
+
+  @internal
+  @override
+  Stream<State> runBuild() => build();
 }
 
 /// {@template riverpod.async_notifier_provider}
@@ -43,7 +47,7 @@ abstract class StreamNotifier<State> extends _StreamNotifierBase<State> {
 final class StreamNotifierProvider< //
         NotifierT extends StreamNotifier<StateT>,
         StateT> //
-    extends _StreamNotifierProviderBase<NotifierT, StateT> {
+    extends StreamNotifierProviderBase<NotifierT, StateT> {
   /// {@macro riverpod.async_notifier_provider}
   ///
   /// {@macro riverpod.async_notifier_provider_modifier}
@@ -138,7 +142,7 @@ final class StreamNotifierProvider< //
 }
 
 class _StreamNotifierProviderElement< //
-        NotifierT extends _StreamNotifierBase<StateT>,
+        NotifierT extends StreamNotifierBase<StateT>,
         StateT> //
     extends ClassProviderElement< //
         NotifierT,
@@ -149,7 +153,7 @@ class _StreamNotifierProviderElement< //
   _StreamNotifierProviderElement(this.provider, super.container);
 
   @override
-  final _StreamNotifierProviderBase<NotifierT, StateT> provider;
+  final StreamNotifierProviderBase<NotifierT, StateT> provider;
 
   @override
   void handleError(
