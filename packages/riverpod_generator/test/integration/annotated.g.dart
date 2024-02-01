@@ -13,16 +13,19 @@ String _$functionalHash() => r'69e260b1de8ba28cbeb8e24d628933366cde6b8b';
 @Deprecated('Deprecation message')
 @visibleForTesting
 @protected
-final functionalProvider = AutoDisposeProvider<String>.internal(
+final functionalProvider = Provider<String>.internal(
   functional,
   name: r'functionalProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$functionalHash,
+  from: null,
+  argument: null,
+  isAutoDispose: true,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef FunctionalRef = AutoDisposeProviderRef<String>;
+typedef FunctionalRef = Ref<String>;
 String _$familyHash() => r'd70685b83be840bfd9e79c11fb84c905d19d6e10';
 
 /// Copied from Dart SDK
@@ -56,21 +59,21 @@ const familyProvider = FamilyFamily();
 /// See also [family].
 class FamilyFamily extends Family {
   /// See also [family].
-  const FamilyFamily();
+  const FamilyFamily()
+      : super(
+          name: r'familyProvider',
+          dependencies: _dependencies,
+          allTransitiveDependencies: _allTransitiveDependencies,
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$familyHash,
+          isAutoDispose: true,
+        );
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
 
   static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'familyProvider';
 
   /// See also [family].
   FamilyProvider call(
@@ -111,7 +114,7 @@ class _$FamilyFamilyOverride implements FamilyOverride {
 }
 
 /// See also [family].
-class FamilyProvider extends AutoDisposeProvider<String> {
+class FamilyProvider extends Provider<String> {
   /// See also [family].
   FamilyProvider(
     int id,
@@ -204,13 +207,12 @@ class FamilyProvider extends AutoDisposeProvider<String> {
   String toString() => 'familyProvider$argument';
 }
 
-mixin FamilyRef on AutoDisposeProviderRef<String> {
+mixin FamilyRef on Ref<String> {
   /// The parameter `id` of this provider.
   int get id;
 }
 
-class _FamilyProviderElement extends AutoDisposeProviderElement<String>
-    with FamilyRef {
+class _FamilyProviderElement extends ProviderElement<String> with FamilyRef {
   _FamilyProviderElement(super.provider, super.container);
 
   @override
@@ -222,17 +224,20 @@ String _$notCopiedFunctionalHash() =>
 
 /// See also [notCopiedFunctional].
 @ProviderFor(notCopiedFunctional)
-final notCopiedFunctionalProvider = AutoDisposeProvider<String>.internal(
+final notCopiedFunctionalProvider = Provider<String>.internal(
   notCopiedFunctional,
   name: r'notCopiedFunctionalProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$notCopiedFunctionalHash,
+  from: null,
+  argument: null,
+  isAutoDispose: true,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef NotCopiedFunctionalRef = AutoDisposeProviderRef<String>;
+typedef NotCopiedFunctionalRef = Ref<String>;
 String _$notCopiedFamilyHash() => r'6ef06ce6ebd73b476870bbe1af41c4f3fbe8ddb1';
 
 /// See also [notCopiedFamily].
@@ -242,21 +247,21 @@ const notCopiedFamilyProvider = NotCopiedFamilyFamily();
 /// See also [notCopiedFamily].
 class NotCopiedFamilyFamily extends Family {
   /// See also [notCopiedFamily].
-  const NotCopiedFamilyFamily();
+  const NotCopiedFamilyFamily()
+      : super(
+          name: r'notCopiedFamilyProvider',
+          dependencies: _dependencies,
+          allTransitiveDependencies: _allTransitiveDependencies,
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$notCopiedFamilyHash,
+          isAutoDispose: true,
+        );
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
 
   static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'notCopiedFamilyProvider';
 
   /// See also [notCopiedFamily].
   NotCopiedFamilyProvider call(
@@ -297,7 +302,7 @@ class _$NotCopiedFamilyFamilyOverride implements FamilyOverride {
 }
 
 /// See also [notCopiedFamily].
-class NotCopiedFamilyProvider extends AutoDisposeProvider<String> {
+class NotCopiedFamilyProvider extends Provider<String> {
   /// See also [notCopiedFamily].
   NotCopiedFamilyProvider(
     int id,
@@ -390,12 +395,12 @@ class NotCopiedFamilyProvider extends AutoDisposeProvider<String> {
   String toString() => 'notCopiedFamilyProvider$argument';
 }
 
-mixin NotCopiedFamilyRef on AutoDisposeProviderRef<String> {
+mixin NotCopiedFamilyRef on Ref<String> {
   /// The parameter `id` of this provider.
   int get id;
 }
 
-class _NotCopiedFamilyProviderElement extends AutoDisposeProviderElement<String>
+class _NotCopiedFamilyProviderElement extends ProviderElement<String>
     with NotCopiedFamilyRef {
   _NotCopiedFamilyProviderElement(super.provider, super.container);
 
@@ -410,26 +415,31 @@ String _$classBasedHash() => r'f40d1a032ee264aafd7686a985cdf1937f2dc108';
 @Deprecated('Deprecation message')
 @visibleForTesting
 @protected
-final classBasedProvider =
-    AutoDisposeNotifierProvider<ClassBased, String>.internal(
+final classBasedProvider = NotifierProvider<ClassBased, String>.internal(
   ClassBased.new,
   name: r'classBasedProvider',
+  from: null,
+  argument: null,
+  isAutoDispose: true,
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$classBasedHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$ClassBased = AutoDisposeNotifier<String>;
+typedef _$ClassBased = Notifier<String>;
 String _$notCopiedClassBasedHash() =>
     r'd2aefd08a78e3bb4c02000d4931a3bf15c01b495';
 
 /// See also [NotCopiedClassBased].
 @ProviderFor(NotCopiedClassBased)
 final notCopiedClassBasedProvider =
-    AutoDisposeNotifierProvider<NotCopiedClassBased, String>.internal(
+    NotifierProvider<NotCopiedClassBased, String>.internal(
   NotCopiedClassBased.new,
   name: r'notCopiedClassBasedProvider',
+  from: null,
+  argument: null,
+  isAutoDispose: true,
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$notCopiedClassBasedHash,
@@ -437,6 +447,6 @@ final notCopiedClassBasedProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$NotCopiedClassBased = AutoDisposeNotifier<String>;
+typedef _$NotCopiedClassBased = Notifier<String>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package

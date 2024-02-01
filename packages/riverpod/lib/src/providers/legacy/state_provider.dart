@@ -101,7 +101,8 @@ final class StateProvider<StateT>
     return StateProviderElement._(this, container);
   }
 
-  @internal
+  @mustBeOverridden
+  @visibleForOverriding
   @override
   StateProvider<StateT> copyWithCreate(
     Create<StateT, StateProviderRef<StateT>> create,

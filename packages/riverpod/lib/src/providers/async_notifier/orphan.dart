@@ -138,7 +138,8 @@ final class AsyncNotifierProvider< //
     return _AsyncNotifierProviderElement(this, container);
   }
 
-  @internal
+  @mustBeOverridden
+  @visibleForOverriding
   @override
   AsyncNotifierProvider<NotifierT, StateT> copyWithBuild(
     RunNotifierBuild<NotifierT, FutureOr<StateT>, Ref<AsyncValue<StateT>>>?
@@ -147,7 +148,8 @@ final class AsyncNotifierProvider< //
     return _copyWith(build: build);
   }
 
-  @internal
+  @mustBeOverridden
+  @visibleForOverriding
   @override
   AsyncNotifierProvider<NotifierT, StateT> copyWithCreate(
     NotifierT Function() create,

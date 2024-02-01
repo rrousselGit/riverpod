@@ -124,7 +124,8 @@ final class StreamNotifierProvider< //
     return _StreamNotifierProviderElement(this, container);
   }
 
-  @internal
+  @mustBeOverridden
+  @visibleForOverriding
   @override
   StreamNotifierProvider<NotifierT, StateT> copyWithBuild(
     RunNotifierBuild<NotifierT, Stream<StateT>, Ref<AsyncValue<StateT>>>? build,
@@ -132,7 +133,8 @@ final class StreamNotifierProvider< //
     return _copyWith(build: build);
   }
 
-  @internal
+  @mustBeOverridden
+  @visibleForOverriding
   @override
   StreamNotifierProvider<NotifierT, StateT> copyWithCreate(
     NotifierT Function() create,

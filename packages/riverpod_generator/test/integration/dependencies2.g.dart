@@ -11,12 +11,15 @@ String _$providerWithDependencies2Hash() =>
 
 /// See also [providerWithDependencies2].
 @ProviderFor(providerWithDependencies2)
-final providerWithDependencies2Provider = AutoDisposeProvider<int>.internal(
+final providerWithDependencies2Provider = Provider<int>.internal(
   providerWithDependencies2,
   name: r'providerWithDependencies2Provider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$providerWithDependencies2Hash,
+  from: null,
+  argument: null,
+  isAutoDispose: true,
   dependencies: <ProviderOrFamily>[
     providerWithDependenciesProvider,
     _private2Provider,
@@ -32,7 +35,7 @@ final providerWithDependencies2Provider = AutoDisposeProvider<int>.internal(
   },
 );
 
-typedef ProviderWithDependencies2Ref = AutoDisposeProviderRef<int>;
+typedef ProviderWithDependencies2Ref = Ref<int>;
 String _$familyWithDependencies2Hash() =>
     r'209b9e3ed4e5fad89572268d161fbe64a6ef0e87';
 
@@ -64,7 +67,17 @@ const familyWithDependencies2Provider = FamilyWithDependencies2Family();
 /// See also [familyWithDependencies2].
 class FamilyWithDependencies2Family extends Family {
   /// See also [familyWithDependencies2].
-  const FamilyWithDependencies2Family();
+  const FamilyWithDependencies2Family()
+      : super(
+          name: r'familyWithDependencies2Provider',
+          dependencies: _dependencies,
+          allTransitiveDependencies: _allTransitiveDependencies,
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$familyWithDependencies2Hash,
+          isAutoDispose: true,
+        );
 
   static final Iterable<ProviderOrFamily> _dependencies = <ProviderOrFamily>[
     providerWithDependenciesProvider,
@@ -81,16 +94,6 @@ class FamilyWithDependencies2Family extends Family {
     public2Provider,
     ...?public2Provider.allTransitiveDependencies
   };
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'familyWithDependencies2Provider';
 
   /// See also [familyWithDependencies2].
   FamilyWithDependencies2Provider call({
@@ -131,7 +134,7 @@ class _$FamilyWithDependencies2FamilyOverride implements FamilyOverride {
 }
 
 /// See also [familyWithDependencies2].
-class FamilyWithDependencies2Provider extends AutoDisposeProvider<int> {
+class FamilyWithDependencies2Provider extends Provider<int> {
   /// See also [familyWithDependencies2].
   FamilyWithDependencies2Provider({
     int? id,
@@ -226,13 +229,13 @@ class FamilyWithDependencies2Provider extends AutoDisposeProvider<int> {
   String toString() => 'familyWithDependencies2Provider$argument';
 }
 
-mixin FamilyWithDependencies2Ref on AutoDisposeProviderRef<int> {
+mixin FamilyWithDependencies2Ref on Ref<int> {
   /// The parameter `id` of this provider.
   int? get id;
 }
 
-class _FamilyWithDependencies2ProviderElement
-    extends AutoDisposeProviderElement<int> with FamilyWithDependencies2Ref {
+class _FamilyWithDependencies2ProviderElement extends ProviderElement<int>
+    with FamilyWithDependencies2Ref {
   _FamilyWithDependencies2ProviderElement(super.provider, super.container);
 
   @override
@@ -243,39 +246,48 @@ String _$private2Hash() => r'5e0fa14ff40fb444c027ed25150a42362db3ef19';
 
 /// See also [_private2].
 @ProviderFor(_private2)
-final _private2Provider = AutoDisposeProvider<int>.internal(
+final _private2Provider = Provider<int>.internal(
   _private2,
   name: r'_private2Provider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$private2Hash,
+  from: null,
+  argument: null,
+  isAutoDispose: true,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _Private2Ref = AutoDisposeProviderRef<int>;
+typedef _Private2Ref = Ref<int>;
 String _$public2Hash() => r'9767255f0182589fe48b29d217dd488b0a13b9d5';
 
 /// See also [public2].
 @ProviderFor(public2)
-final public2Provider = AutoDisposeProvider<int>.internal(
+final public2Provider = Provider<int>.internal(
   public2,
   name: r'public2Provider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$public2Hash,
+  from: null,
+  argument: null,
+  isAutoDispose: true,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef Public2Ref = AutoDisposeProviderRef<int>;
+typedef Public2Ref = Ref<int>;
 String _$notifierWithDependenciesHash() =>
     r'becc68e5a54b0cc2b8277a6d54b74edef93bfe89';
 
 /// See also [NotifierWithDependencies].
 @ProviderFor(NotifierWithDependencies)
 final notifierWithDependenciesProvider =
-    AutoDisposeNotifierProvider<NotifierWithDependencies, int>.internal(
+    NotifierProvider<NotifierWithDependencies, int>.internal(
   NotifierWithDependencies.new,
   name: r'notifierWithDependenciesProvider',
+  from: null,
+  argument: null,
+  isAutoDispose: true,
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$notifierWithDependenciesHash,
@@ -294,7 +306,7 @@ final notifierWithDependenciesProvider =
   },
 );
 
-typedef _$NotifierWithDependencies = AutoDisposeNotifier<int>;
+typedef _$NotifierWithDependencies = Notifier<int>;
 String _$notifierFamilyWithDependenciesHash() =>
     r'b185ba93857cd028964c1412e748ee887dbd45c8';
 
@@ -315,7 +327,17 @@ const notifierFamilyWithDependenciesProvider =
 /// See also [NotifierFamilyWithDependencies].
 class NotifierFamilyWithDependenciesFamily extends Family {
   /// See also [NotifierFamilyWithDependencies].
-  const NotifierFamilyWithDependenciesFamily();
+  const NotifierFamilyWithDependenciesFamily()
+      : super(
+          name: r'notifierFamilyWithDependenciesProvider',
+          dependencies: _dependencies,
+          allTransitiveDependencies: _allTransitiveDependencies,
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$notifierFamilyWithDependenciesHash,
+          isAutoDispose: true,
+        );
 
   static final Iterable<ProviderOrFamily> _dependencies = <ProviderOrFamily>[
     providerWithDependenciesProvider,
@@ -332,16 +354,6 @@ class NotifierFamilyWithDependenciesFamily extends Family {
     public2Provider,
     ...?public2Provider.allTransitiveDependencies
   };
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'notifierFamilyWithDependenciesProvider';
 
   /// See also [NotifierFamilyWithDependencies].
   NotifierFamilyWithDependenciesProvider call({
@@ -484,7 +496,7 @@ class NotifierFamilyWithDependenciesProvider
   String toString() => 'notifierFamilyWithDependenciesProvider$argument';
 }
 
-mixin NotifierFamilyWithDependenciesRef on AutoDisposeNotifierProviderRef<int> {
+mixin NotifierFamilyWithDependenciesRef on AutoDisposeNotifierProviderRef {
   /// The parameter `id` of this provider.
   int? get id;
 }

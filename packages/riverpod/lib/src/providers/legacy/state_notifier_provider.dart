@@ -155,6 +155,8 @@ final class StateNotifierProvider< //
     return StateNotifierProviderElement._(this, container);
   }
 
+  @mustBeOverridden
+  @visibleForOverriding
   @override
   StateNotifierProvider<NotifierT, StateT> copyWithCreate(
     Create<NotifierT, StateNotifierProviderRef<NotifierT, StateT>> create,

@@ -125,6 +125,8 @@ final class StreamProvider<StateT> extends FunctionalProvider<
     return StreamProviderElement(this, container);
   }
 
+  @mustBeOverridden
+  @visibleForOverriding
   @override
   FunctionalProvider<AsyncValue<StateT>, Stream<StateT>,
       Ref<AsyncValue<StateT>>> copyWithCreate(

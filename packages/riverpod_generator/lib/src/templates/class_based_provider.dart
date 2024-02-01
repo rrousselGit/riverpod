@@ -89,23 +89,22 @@ class ClassBasedProviderTemplate extends Template {
 
   @override
   void run(StringBuffer buffer) {
-    var leading = '';
-    if (!provider.annotation.element.keepAlive) {
-      leading = 'AutoDispose';
-    }
+    final isAutoDispose = !provider.providerElement.annotation.keepAlive
+        ? 'isAutoDispose: true,'
+        : '';
 
-    var notifierBaseType = '${leading}Notifier';
-    var providerType = '${leading}NotifierProvider';
+    var notifierBaseType = 'Notifier';
+    var providerType = 'NotifierProvider';
 
     final providerName = providerNameFor(provider.providerElement, options);
     final returnType = provider.createdTypeNode?.type;
     if (returnType != null && !returnType.isRaw) {
       if ((returnType.isDartAsyncFutureOr) || (returnType.isDartAsyncFuture)) {
-        notifierBaseType = '${leading}AsyncNotifier';
-        providerType = '${leading}AsyncNotifierProvider';
+        notifierBaseType = 'AsyncNotifier';
+        providerType = 'AsyncNotifierProvider';
       } else if (returnType.isDartAsyncStream) {
-        notifierBaseType = '${leading}StreamNotifier';
-        providerType = '${leading}StreamNotifierProvider';
+        notifierBaseType = 'StreamNotifier';
+        providerType = 'StreamNotifierProvider';
       }
     }
 
@@ -116,6 +115,9 @@ ${metaAnnotations(provider.node.metadata)}
 final $providerName = $providerType<${provider.name}, ${provider.valueTypeDisplayString}>.internal(
   ${provider.providerElement.name}.new,
   name: r'$providerName',
+  from: null,
+  argument: null,
+  $isAutoDispose
   debugGetCreateSourceHash: $hashFn,
   dependencies: ${serializeDependencies(provider.providerElement.annotation, options)},
   allTransitiveDependencies: ${serializeAllTransitiveDependencies(provider.providerElement.annotation, options)},

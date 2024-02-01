@@ -36,21 +36,21 @@ const genericProvider = GenericFamily();
 /// See also [generic].
 class GenericFamily extends Family {
   /// See also [generic].
-  const GenericFamily();
+  const GenericFamily()
+      : super(
+          name: r'genericProvider',
+          dependencies: _dependencies,
+          allTransitiveDependencies: _allTransitiveDependencies,
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$genericHash,
+          isAutoDispose: true,
+        );
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
 
   static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'genericProvider';
 
   /// See also [generic].
   GenericProvider<T> call<T extends num>() {
@@ -88,7 +88,7 @@ class _$GenericFamilyOverride implements FamilyOverride {
 }
 
 /// See also [generic].
-class GenericProvider<T extends num> extends AutoDisposeProvider<List<T>> {
+class GenericProvider<T extends num> extends Provider<List<T>> {
   /// See also [generic].
   GenericProvider()
       : this._internal(
@@ -173,10 +173,10 @@ class GenericProvider<T extends num> extends AutoDisposeProvider<List<T>> {
   String toString() => 'genericProvider<$T>$argument';
 }
 
-mixin GenericRef<T extends num> on AutoDisposeProviderRef<List<T>> {}
+mixin GenericRef<T extends num> on Ref<List<T>> {}
 
-class _GenericProviderElement<T extends num>
-    extends AutoDisposeProviderElement<List<T>> with GenericRef<T> {
+class _GenericProviderElement<T extends num> extends ProviderElement<List<T>>
+    with GenericRef<T> {
   _GenericProviderElement(super.provider, super.container);
 }
 
@@ -189,21 +189,21 @@ const complexGenericProvider = ComplexGenericFamily();
 /// See also [complexGeneric].
 class ComplexGenericFamily extends Family {
   /// See also [complexGeneric].
-  const ComplexGenericFamily();
+  const ComplexGenericFamily()
+      : super(
+          name: r'complexGenericProvider',
+          dependencies: _dependencies,
+          allTransitiveDependencies: _allTransitiveDependencies,
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$complexGenericHash,
+          isAutoDispose: true,
+        );
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
 
   static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'complexGenericProvider';
 
   /// See also [complexGeneric].
   ComplexGenericProvider<T, Foo> call<T extends num, Foo extends String?>({
@@ -251,7 +251,7 @@ class _$ComplexGenericFamilyOverride implements FamilyOverride {
 
 /// See also [complexGeneric].
 class ComplexGenericProvider<T extends num, Foo extends String?>
-    extends AutoDisposeProvider<List<T>> {
+    extends Provider<List<T>> {
   /// See also [complexGeneric].
   ComplexGenericProvider({
     required T param,
@@ -364,8 +364,7 @@ class ComplexGenericProvider<T extends num, Foo extends String?>
   String toString() => 'complexGenericProvider<$T,$Foo>$argument';
 }
 
-mixin ComplexGenericRef<T extends num, Foo extends String?>
-    on AutoDisposeProviderRef<List<T>> {
+mixin ComplexGenericRef<T extends num, Foo extends String?> on Ref<List<T>> {
   /// The parameter `param` of this provider.
   T get param;
 
@@ -374,7 +373,7 @@ mixin ComplexGenericRef<T extends num, Foo extends String?>
 }
 
 class _ComplexGenericProviderElement<T extends num, Foo extends String?>
-    extends AutoDisposeProviderElement<List<T>> with ComplexGenericRef<T, Foo> {
+    extends ProviderElement<List<T>> with ComplexGenericRef<T, Foo> {
   _ComplexGenericProviderElement(super.provider, super.container);
 
   @override
@@ -387,30 +386,36 @@ String _$rawFutureHash() => r'5203a56065b768023770326281618e3229ccb530';
 
 /// See also [rawFuture].
 @ProviderFor(rawFuture)
-final rawFutureProvider = AutoDisposeProvider<Raw<Future<String>>>.internal(
+final rawFutureProvider = Provider<Raw<Future<String>>>.internal(
   rawFuture,
   name: r'rawFutureProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$rawFutureHash,
+  from: null,
+  argument: null,
+  isAutoDispose: true,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef RawFutureRef = AutoDisposeProviderRef<Raw<Future<String>>>;
+typedef RawFutureRef = Ref<Raw<Future<String>>>;
 String _$rawStreamHash() => r'2b764189753a8b74f47ba557a79416f00ef5cebd';
 
 /// See also [rawStream].
 @ProviderFor(rawStream)
-final rawStreamProvider = AutoDisposeProvider<Raw<Stream<String>>>.internal(
+final rawStreamProvider = Provider<Raw<Stream<String>>>.internal(
   rawStream,
   name: r'rawStreamProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$rawStreamHash,
+  from: null,
+  argument: null,
+  isAutoDispose: true,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef RawStreamRef = AutoDisposeProviderRef<Raw<Stream<String>>>;
+typedef RawStreamRef = Ref<Raw<Stream<String>>>;
 String _$rawFamilyFutureHash() => r'485f59512081852e51279658facc015309743864';
 
 /// See also [rawFamilyFuture].
@@ -420,21 +425,21 @@ const rawFamilyFutureProvider = RawFamilyFutureFamily();
 /// See also [rawFamilyFuture].
 class RawFamilyFutureFamily extends Family {
   /// See also [rawFamilyFuture].
-  const RawFamilyFutureFamily();
+  const RawFamilyFutureFamily()
+      : super(
+          name: r'rawFamilyFutureProvider',
+          dependencies: _dependencies,
+          allTransitiveDependencies: _allTransitiveDependencies,
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$rawFamilyFutureHash,
+          isAutoDispose: true,
+        );
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
 
   static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'rawFamilyFutureProvider';
 
   /// See also [rawFamilyFuture].
   RawFamilyFutureProvider call(
@@ -476,7 +481,7 @@ class _$RawFamilyFutureFamilyOverride implements FamilyOverride {
 }
 
 /// See also [rawFamilyFuture].
-class RawFamilyFutureProvider extends AutoDisposeProvider<Raw<Future<String>>> {
+class RawFamilyFutureProvider extends Provider<Raw<Future<String>>> {
   /// See also [rawFamilyFuture].
   RawFamilyFutureProvider(
     int id,
@@ -569,14 +574,13 @@ class RawFamilyFutureProvider extends AutoDisposeProvider<Raw<Future<String>>> {
   String toString() => 'rawFamilyFutureProvider$argument';
 }
 
-mixin RawFamilyFutureRef on AutoDisposeProviderRef<Raw<Future<String>>> {
+mixin RawFamilyFutureRef on Ref<Raw<Future<String>>> {
   /// The parameter `id` of this provider.
   int get id;
 }
 
 class _RawFamilyFutureProviderElement
-    extends AutoDisposeProviderElement<Raw<Future<String>>>
-    with RawFamilyFutureRef {
+    extends ProviderElement<Raw<Future<String>>> with RawFamilyFutureRef {
   _RawFamilyFutureProviderElement(super.provider, super.container);
 
   @override
@@ -592,21 +596,21 @@ const rawFamilyStreamProvider = RawFamilyStreamFamily();
 /// See also [rawFamilyStream].
 class RawFamilyStreamFamily extends Family {
   /// See also [rawFamilyStream].
-  const RawFamilyStreamFamily();
+  const RawFamilyStreamFamily()
+      : super(
+          name: r'rawFamilyStreamProvider',
+          dependencies: _dependencies,
+          allTransitiveDependencies: _allTransitiveDependencies,
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$rawFamilyStreamHash,
+          isAutoDispose: true,
+        );
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
 
   static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'rawFamilyStreamProvider';
 
   /// See also [rawFamilyStream].
   RawFamilyStreamProvider call(
@@ -648,7 +652,7 @@ class _$RawFamilyStreamFamilyOverride implements FamilyOverride {
 }
 
 /// See also [rawFamilyStream].
-class RawFamilyStreamProvider extends AutoDisposeProvider<Raw<Stream<String>>> {
+class RawFamilyStreamProvider extends Provider<Raw<Stream<String>>> {
   /// See also [rawFamilyStream].
   RawFamilyStreamProvider(
     int id,
@@ -741,14 +745,13 @@ class RawFamilyStreamProvider extends AutoDisposeProvider<Raw<Stream<String>>> {
   String toString() => 'rawFamilyStreamProvider$argument';
 }
 
-mixin RawFamilyStreamRef on AutoDisposeProviderRef<Raw<Stream<String>>> {
+mixin RawFamilyStreamRef on Ref<Raw<Stream<String>>> {
   /// The parameter `id` of this provider.
   int get id;
 }
 
 class _RawFamilyStreamProviderElement
-    extends AutoDisposeProviderElement<Raw<Stream<String>>>
-    with RawFamilyStreamRef {
+    extends ProviderElement<Raw<Stream<String>>> with RawFamilyStreamRef {
   _RawFamilyStreamProviderElement(super.provider, super.container);
 
   @override
@@ -761,31 +764,37 @@ String _$publicHash() => r'138be35943899793ab085e711fe3f3d22696a3ba';
 ///
 /// Copied from [public].
 @ProviderFor(public)
-final publicProvider = AutoDisposeProvider<String>.internal(
+final publicProvider = Provider<String>.internal(
   public,
   name: r'publicProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$publicHash,
+  from: null,
+  argument: null,
+  isAutoDispose: true,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef PublicRef = AutoDisposeProviderRef<String>;
+typedef PublicRef = Ref<String>;
 String _$supports$inNamesHash() => r'cbf929802fcbd0aa949ad72743d096fb3ef5f28f';
 
 /// See also [supports$inNames].
 @ProviderFor(supports$inNames)
-final supports$inNamesProvider = AutoDisposeProvider<String>.internal(
+final supports$inNamesProvider = Provider<String>.internal(
   supports$inNames,
   name: r'supports$inNamesProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$supports$inNamesHash,
+  from: null,
+  argument: null,
+  isAutoDispose: true,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef Supports$inNamesRef = AutoDisposeProviderRef<String>;
+typedef Supports$inNamesRef = Ref<String>;
 String _$familyHash() => r'14d1ee238ca608d547630d0e222ef4c5866e9e61';
 
 /// This is some documentation
@@ -801,21 +810,21 @@ class FamilyFamily extends Family {
   /// This is some documentation
   ///
   /// Copied from [family].
-  const FamilyFamily();
+  const FamilyFamily()
+      : super(
+          name: r'familyProvider',
+          dependencies: _dependencies,
+          allTransitiveDependencies: _allTransitiveDependencies,
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$familyHash,
+          isAutoDispose: true,
+        );
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
 
   static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'familyProvider';
 
   /// This is some documentation
   ///
@@ -868,7 +877,7 @@ class _$FamilyFamilyOverride implements FamilyOverride {
 /// This is some documentation
 ///
 /// Copied from [family].
-class FamilyProvider extends AutoDisposeProvider<String> {
+class FamilyProvider extends Provider<String> {
   /// This is some documentation
   ///
   /// Copied from [family].
@@ -1012,7 +1021,7 @@ class FamilyProvider extends AutoDisposeProvider<String> {
   String toString() => 'familyProvider$argument';
 }
 
-mixin FamilyRef on AutoDisposeProviderRef<String> {
+mixin FamilyRef on Ref<String> {
   /// The parameter `first` of this provider.
   int get first;
 
@@ -1029,8 +1038,7 @@ mixin FamilyRef on AutoDisposeProviderRef<String> {
   List<String>? get fifth;
 }
 
-class _FamilyProviderElement extends AutoDisposeProviderElement<String>
-    with FamilyRef {
+class _FamilyProviderElement extends ProviderElement<String> with FamilyRef {
   _FamilyProviderElement(super.provider, super.container);
 
   @override
@@ -1049,30 +1057,36 @@ String _$privateHash() => r'519561bc7e88e394d7f75ca2102a5c0acc832c66';
 
 /// See also [_private].
 @ProviderFor(_private)
-final _privateProvider = AutoDisposeProvider<String>.internal(
+final _privateProvider = Provider<String>.internal(
   _private,
   name: r'_privateProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$privateHash,
+  from: null,
+  argument: null,
+  isAutoDispose: true,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _PrivateRef = AutoDisposeProviderRef<String>;
+typedef _PrivateRef = Ref<String>;
 String _$generatedHash() => r'fecbc1d5d9a05fc996b452a57fd1975ff368af91';
 
 /// See also [generated].
 @ProviderFor(generated)
-final generatedProvider = AutoDisposeProvider<String>.internal(
+final generatedProvider = Provider<String>.internal(
   generated,
   name: r'generatedProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$generatedHash,
+  from: null,
+  argument: null,
+  isAutoDispose: true,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef GeneratedRef = AutoDisposeProviderRef<String>;
+typedef GeneratedRef = Ref<String>;
 String _$genericClassHash() => r'671e348a5abf8e00ab06c5f247defbca8af9677b';
 
 abstract class _$GenericClass<T extends num>
@@ -1087,21 +1101,21 @@ const genericClassProvider = GenericClassFamily();
 /// See also [GenericClass].
 class GenericClassFamily extends Family {
   /// See also [GenericClass].
-  const GenericClassFamily();
+  const GenericClassFamily()
+      : super(
+          name: r'genericClassProvider',
+          dependencies: _dependencies,
+          allTransitiveDependencies: _allTransitiveDependencies,
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$genericClassHash,
+          isAutoDispose: true,
+        );
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
 
   static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'genericClassProvider';
 
   /// See also [GenericClass].
   GenericClassProvider<T> call<T extends num>() {
@@ -1227,8 +1241,7 @@ class GenericClassProvider<T extends num>
   String toString() => 'genericClassProvider<$T>$argument';
 }
 
-mixin GenericClassRef<T extends num>
-    on AutoDisposeNotifierProviderRef<List<T>> {}
+mixin GenericClassRef<T extends num> on AutoDisposeNotifierProviderRef {}
 
 class _GenericClassProviderElement<T extends num>
     extends AutoDisposeNotifierProviderElement<GenericClass<T>, List<T>>
@@ -1241,9 +1254,12 @@ String _$rawFutureClassHash() => r'bf66f1cdbd99118b8845d206e6a2611b3101f45c';
 /// See also [RawFutureClass].
 @ProviderFor(RawFutureClass)
 final rawFutureClassProvider =
-    AutoDisposeNotifierProvider<RawFutureClass, Raw<Future<String>>>.internal(
+    NotifierProvider<RawFutureClass, Raw<Future<String>>>.internal(
   RawFutureClass.new,
   name: r'rawFutureClassProvider',
+  from: null,
+  argument: null,
+  isAutoDispose: true,
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$rawFutureClassHash,
@@ -1251,15 +1267,18 @@ final rawFutureClassProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$RawFutureClass = AutoDisposeNotifier<Raw<Future<String>>>;
+typedef _$RawFutureClass = Notifier<Raw<Future<String>>>;
 String _$rawStreamClassHash() => r'712cffcb2018cfb4ff45012c1aa6e43c8cbe9d5d';
 
 /// See also [RawStreamClass].
 @ProviderFor(RawStreamClass)
 final rawStreamClassProvider =
-    AutoDisposeNotifierProvider<RawStreamClass, Raw<Stream<String>>>.internal(
+    NotifierProvider<RawStreamClass, Raw<Stream<String>>>.internal(
   RawStreamClass.new,
   name: r'rawStreamClassProvider',
+  from: null,
+  argument: null,
+  isAutoDispose: true,
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$rawStreamClassHash,
@@ -1267,7 +1286,7 @@ final rawStreamClassProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$RawStreamClass = AutoDisposeNotifier<Raw<Stream<String>>>;
+typedef _$RawStreamClass = Notifier<Raw<Stream<String>>>;
 String _$rawFamilyFutureClassHash() =>
     r'd7cacb0f2c51697d107de6daa68b242c04085dca';
 
@@ -1287,21 +1306,21 @@ const rawFamilyFutureClassProvider = RawFamilyFutureClassFamily();
 /// See also [RawFamilyFutureClass].
 class RawFamilyFutureClassFamily extends Family {
   /// See also [RawFamilyFutureClass].
-  const RawFamilyFutureClassFamily();
+  const RawFamilyFutureClassFamily()
+      : super(
+          name: r'rawFamilyFutureClassProvider',
+          dependencies: _dependencies,
+          allTransitiveDependencies: _allTransitiveDependencies,
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$rawFamilyFutureClassHash,
+          isAutoDispose: true,
+        );
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
 
   static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'rawFamilyFutureClassProvider';
 
   /// See also [RawFamilyFutureClass].
   RawFamilyFutureClassProvider call(
@@ -1440,8 +1459,7 @@ class RawFamilyFutureClassProvider extends AutoDisposeNotifierProviderImpl<
   String toString() => 'rawFamilyFutureClassProvider$argument';
 }
 
-mixin RawFamilyFutureClassRef
-    on AutoDisposeNotifierProviderRef<Raw<Future<String>>> {
+mixin RawFamilyFutureClassRef on AutoDisposeNotifierProviderRef {
   /// The parameter `id` of this provider.
   int get id;
 }
@@ -1474,21 +1492,21 @@ const rawFamilyStreamClassProvider = RawFamilyStreamClassFamily();
 /// See also [RawFamilyStreamClass].
 class RawFamilyStreamClassFamily extends Family {
   /// See also [RawFamilyStreamClass].
-  const RawFamilyStreamClassFamily();
+  const RawFamilyStreamClassFamily()
+      : super(
+          name: r'rawFamilyStreamClassProvider',
+          dependencies: _dependencies,
+          allTransitiveDependencies: _allTransitiveDependencies,
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$rawFamilyStreamClassHash,
+          isAutoDispose: true,
+        );
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
 
   static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'rawFamilyStreamClassProvider';
 
   /// See also [RawFamilyStreamClass].
   RawFamilyStreamClassProvider call(
@@ -1627,8 +1645,7 @@ class RawFamilyStreamClassProvider extends AutoDisposeNotifierProviderImpl<
   String toString() => 'rawFamilyStreamClassProvider$argument';
 }
 
-mixin RawFamilyStreamClassRef
-    on AutoDisposeNotifierProviderRef<Raw<Stream<String>>> {
+mixin RawFamilyStreamClassRef on AutoDisposeNotifierProviderRef {
   /// The parameter `id` of this provider.
   int get id;
 }
@@ -1648,32 +1665,36 @@ String _$publicClassHash() => r'c8e7eec9e202acf8394e02496857cbe49405bf62';
 ///
 /// Copied from [PublicClass].
 @ProviderFor(PublicClass)
-final publicClassProvider =
-    AutoDisposeNotifierProvider<PublicClass, String>.internal(
+final publicClassProvider = NotifierProvider<PublicClass, String>.internal(
   PublicClass.new,
   name: r'publicClassProvider',
+  from: null,
+  argument: null,
+  isAutoDispose: true,
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$publicClassHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$PublicClass = AutoDisposeNotifier<String>;
+typedef _$PublicClass = Notifier<String>;
 String _$privateClassHash() => r'6d41def3ffdc1f79e593beaefb3304ce4b211a77';
 
 /// See also [_PrivateClass].
 @ProviderFor(_PrivateClass)
-final _privateClassProvider =
-    AutoDisposeNotifierProvider<_PrivateClass, String>.internal(
+final _privateClassProvider = NotifierProvider<_PrivateClass, String>.internal(
   _PrivateClass.new,
   name: r'_privateClassProvider',
+  from: null,
+  argument: null,
+  isAutoDispose: true,
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$privateClassHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$PrivateClass = AutoDisposeNotifier<String>;
+typedef _$PrivateClass = Notifier<String>;
 String _$familyClassHash() => r'01e3b9cb4d6d0bf12a2284761b1a11819d97d249';
 
 abstract class _$FamilyClass extends BuildlessAutoDisposeNotifier<String> {
@@ -1705,21 +1726,21 @@ class FamilyClassFamily extends Family {
   /// This is some documentation
   ///
   /// Copied from [FamilyClass].
-  const FamilyClassFamily();
+  const FamilyClassFamily()
+      : super(
+          name: r'familyClassProvider',
+          dependencies: _dependencies,
+          allTransitiveDependencies: _allTransitiveDependencies,
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$familyClassHash,
+          isAutoDispose: true,
+        );
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
 
   static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'familyClassProvider';
 
   /// This is some documentation
   ///
@@ -1936,7 +1957,7 @@ class FamilyClassProvider
   String toString() => 'familyClassProvider$argument';
 }
 
-mixin FamilyClassRef on AutoDisposeNotifierProviderRef<String> {
+mixin FamilyClassRef on AutoDisposeNotifierProviderRef {
   /// The parameter `first` of this provider.
   int get first;
 
@@ -1976,9 +1997,12 @@ String _$supports$InClassNameHash() =>
 /// See also [Supports$InClassName].
 @ProviderFor(Supports$InClassName)
 final supports$InClassNameProvider =
-    AutoDisposeNotifierProvider<Supports$InClassName, String>.internal(
+    NotifierProvider<Supports$InClassName, String>.internal(
   Supports$InClassName.new,
   name: r'supports$InClassNameProvider',
+  from: null,
+  argument: null,
+  isAutoDispose: true,
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$supports$InClassNameHash,
@@ -1986,6 +2010,6 @@ final supports$InClassNameProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$Supports$InClassName = AutoDisposeNotifier<String>;
+typedef _$Supports$InClassName = Notifier<String>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package

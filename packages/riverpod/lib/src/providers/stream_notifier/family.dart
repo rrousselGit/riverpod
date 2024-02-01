@@ -74,6 +74,8 @@ final class FamilyStreamNotifierProvider< //
   }
 
   @override
+  @mustBeOverridden
+  @visibleForOverriding
   FamilyStreamNotifierProvider<NotifierT, StateT, ArgT> copyWithBuild(
     RunNotifierBuild<NotifierT, Stream<StateT>, Ref<AsyncValue<StateT>>> build,
   ) {
@@ -81,6 +83,8 @@ final class FamilyStreamNotifierProvider< //
   }
 
   @override
+  @mustBeOverridden
+  @visibleForOverriding
   FamilyStreamNotifierProvider<NotifierT, StateT, ArgT> copyWithCreate(
     NotifierT Function() create,
   ) {

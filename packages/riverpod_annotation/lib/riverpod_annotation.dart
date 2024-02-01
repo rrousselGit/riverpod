@@ -16,36 +16,23 @@ export 'package:riverpod/src/internals.dart'
         ProviderOverride,
         // ignore: invalid_use_of_internal_member, used by families for overrideWith
         FamilyOverride,
+        Ref,
 
         // Provider
         Provider,
         ProviderFamily,
-        ProviderRef,
-        AutoDisposeProvider,
-        AutoDisposeProviderFamily,
-        AutoDisposeProviderRef,
         ProviderElement,
-        AutoDisposeProviderElement,
 
         // FutureProvider
         FutureProvider,
         FutureProviderFamily,
         FutureProviderRef,
-        AutoDisposeFutureProvider,
-        AutoDisposeFutureProviderFamily,
-        AutoDisposeFutureProviderRef,
         FutureProviderElement,
-        AutoDisposeFutureProviderElement,
 
         // StreamProvider
         StreamProvider,
         StreamProviderFamily,
-        StreamProviderRef,
-        AutoDisposeStreamProvider,
-        AutoDisposeStreamProviderFamily,
-        AutoDisposeStreamProviderRef,
         StreamProviderElement,
-        AutoDisposeStreamProviderElement,
 
         // AsyncValue
         AsyncValue,
@@ -56,56 +43,14 @@ export 'package:riverpod/src/internals.dart'
 
         // Notifier
         Notifier,
-        AutoDisposeNotifier,
-        NotifierProviderElement,
-        AutoDisposeNotifierProviderElement,
         // ignore: invalid_use_of_internal_member
         NotifierProvider,
-        // ignore: invalid_use_of_internal_member
-        AutoDisposeNotifierProviderImpl,
-        // ignore: invalid_use_of_internal_member
-        BuildlessNotifier,
-        // ignore: invalid_use_of_internal_member
-        BuildlessAutoDisposeNotifier,
-        NotifierProvider,
-        NotifierProviderRef,
-        AutoDisposeNotifierProvider,
-        AutoDisposeNotifierProviderRef,
 
         // AsyncNotifier
         AsyncNotifier,
-        AutoDisposeAsyncNotifier,
-        _AsyncNotifierProviderElement,
-        AutoDisposeAsyncNotifierProviderElement,
-        // ignore: invalid_use_of_internal_member
-        AsyncNotifierProviderImpl,
-        // ignore: invalid_use_of_internal_member
-        AutoDisposeAsyncNotifierProviderImpl,
-        // ignore: invalid_use_of_internal_member
-        BuildlessAsyncNotifier,
-        // ignore: invalid_use_of_internal_member
-        BuildlessAutoDisposeAsyncNotifier,
         AsyncNotifierProvider,
-        AsyncNotifierProviderRef,
-        AutoDisposeAsyncNotifierProvider,
-        AutoDisposeAsyncNotifierProviderRef,
-
         // StreamNotifier
         StreamNotifier,
-        AutoDisposeStreamNotifier,
-        _StreamNotifierProviderElement,
-        AutoDisposeStreamNotifierProviderElement,
-        // ignore: invalid_use_of_internal_member
-        StreamNotifierProviderImpl,
-        // ignore: invalid_use_of_internal_member
-        AutoDisposeStreamNotifierProviderImpl,
-        // ignore: invalid_use_of_internal_member
-        BuildlessStreamNotifier,
-        // ignore: invalid_use_of_internal_member
-        BuildlessAutoDisposeStreamNotifier,
-        StreamNotifierProvider,
-        StreamNotifierProviderRef,
-        AutoDisposeStreamNotifierProvider,
-        AutoDisposeStreamNotifierProviderRef;
+        StreamNotifierProvider;
 
 export 'src/riverpod_annotation.dart';

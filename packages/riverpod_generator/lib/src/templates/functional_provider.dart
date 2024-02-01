@@ -27,20 +27,21 @@ class FunctionalProviderTemplate extends Template {
 
   @override
   void run(StringBuffer buffer) {
-    var leading = '';
+    final isAutoDispose = !provider.providerElement.annotation.keepAlive
+        ? 'isAutoDispose: true,'
+        : '';
 
-    if (!provider.annotation.element.keepAlive) {
-      leading = 'AutoDispose';
-    }
-
-    var providerType = '${leading}Provider';
+    var providerType = 'Provider';
+    var refType = 'Ref<${provider.valueTypeDisplayString}>';
 
     final returnType = provider.createdTypeNode?.type;
     if (returnType != null && !returnType.isRaw) {
       if ((returnType.isDartAsyncFutureOr) || (returnType.isDartAsyncFuture)) {
-        providerType = '${leading}FutureProvider';
+        providerType = 'FutureProvider';
+        refType = 'Ref<AsyncValue<${provider.valueTypeDisplayString}>>';
       } else if (returnType.isDartAsyncStream) {
-        providerType = '${leading}StreamProvider';
+        providerType = 'StreamProvider';
+        refType = 'Ref<AsyncValue<${provider.valueTypeDisplayString}>>';
       }
     }
 
@@ -63,11 +64,14 @@ final $providerName = $providerType<${provider.valueTypeDisplayString}>.internal
   $createFn,
   name: r'$providerName',
   debugGetCreateSourceHash: $hashFn,
+  from: null,
+  argument: null,
+  $isAutoDispose
   dependencies: ${serializeDependencies(provider.providerElement.annotation, options)},
   allTransitiveDependencies: ${serializeAllTransitiveDependencies(provider.providerElement.annotation, options)},
 );
 
-typedef $refName = ${providerType}Ref<${provider.valueTypeDisplayString}>;
+typedef $refName = $refType;
 ''');
   }
 }

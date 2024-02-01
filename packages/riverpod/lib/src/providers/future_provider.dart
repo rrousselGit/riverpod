@@ -135,6 +135,8 @@ final class FutureProvider<StateT> extends FunctionalProvider<
     return FutureProviderElement(this, container);
   }
 
+  @mustBeOverridden
+  @visibleForOverriding
   @override
   FutureProvider<StateT> copyWithCreate(
     Create<FutureOr<StateT>, FutureProviderRef<StateT>> create,

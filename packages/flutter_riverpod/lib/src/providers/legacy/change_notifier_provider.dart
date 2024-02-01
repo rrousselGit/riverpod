@@ -150,6 +150,8 @@ final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
     return ChangeNotifierProviderElement<NotifierT>._(this, container);
   }
 
+  @mustBeOverridden
+  @visibleForOverriding
   @override
   ChangeNotifierProvider<NotifierT> copyWithCreate(
     Create<NotifierT, ChangeNotifierProviderRef<NotifierT>> create,

@@ -59,29 +59,24 @@ class FamilyTemplate extends Template {
     required String hashFn,
     required BuildYamlOptions options,
   }) {
-    var leading = '';
-    if (!provider.annotation.element.keepAlive) {
-      leading = 'AutoDispose';
-    }
-
-    var providerType = '${leading}Provider';
-    var refType = '${leading}ProviderRef';
-    var elementType = '${leading}ProviderElement';
+    var providerType = 'Provider';
+    var refType = 'Ref<${provider.valueTypeDisplayString}>';
+    var elementType = 'ProviderElement';
     var createdType = provider.createdTypeDisplayString;
 
     final returnType = provider.createdTypeNode?.type;
     if (returnType != null && !returnType.isRaw) {
       if (returnType.isDartAsyncFutureOr || returnType.isDartAsyncFuture) {
-        providerType = '${leading}FutureProvider';
-        refType = '${leading}FutureProviderRef';
-        elementType = '${leading}FutureProviderElement';
+        providerType = 'FutureProvider';
+        refType = 'Ref<AsyncValue<${provider.valueTypeDisplayString}>>';
+        elementType = 'FutureProviderElement';
         // Always use FutureOr<T> in overrideWith as return value
         // or otherwise we get a compilation error.
         createdType = 'FutureOr<${provider.valueTypeDisplayString}>';
       } else if (returnType.isDartAsyncStream) {
-        providerType = '${leading}StreamProvider';
-        refType = '${leading}StreamProviderRef';
-        elementType = '${leading}StreamProviderElement';
+        providerType = 'StreamProvider';
+        refType = 'Ref<AsyncValue<${provider.valueTypeDisplayString}>>';
+        elementType = 'StreamProviderElement';
       }
     }
 
@@ -254,6 +249,10 @@ ${parameters.map((e) => '        ${e.name}: ${e.name},\n').join()}
 
   @override
   void run(StringBuffer buffer) {
+    final isAutoDispose = !provider.providerElement.annotation.keepAlive
+        ? 'isAutoDispose: true,'
+        : '';
+
     final providerTypeNameImpl = provider._providerImplName;
     final refNameImpl = provider._refImplName;
     final elementNameImpl = '_${providerTypeNameImpl.public}Element';
@@ -308,20 +307,18 @@ const $providerName = $familyName();
 $docs
 class $familyName extends Family {
   $docs
-  const $familyName();
+  const $familyName()
+    : super(
+        name: r'$providerName',
+        dependencies: _dependencies,
+        allTransitiveDependencies: _allTransitiveDependencies,
+        debugGetCreateSourceHash: $hashFn,
+        $isAutoDispose
+      );
 
   static $dependenciesKeyword _dependencies = ${serializeDependencies(provider.providerElement.annotation, options)};
 
   static $dependenciesKeyword _allTransitiveDependencies = ${serializeAllTransitiveDependencies(provider.providerElement.annotation, options)};
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies => _allTransitiveDependencies;
-
-  @override
-  String? get name => r'$providerName';
 
   $docs
   $providerTypeNameImpl$typeParametersUsage call$typeParametersDefinition($parameterDefinition) {
@@ -439,7 +436,7 @@ ${[
   String toString() => '$encodedProviderName$encodedGenerics\$argument';
 }
 
-mixin $refNameImpl$typeParametersDefinition on $refType<${provider.valueTypeDisplayString}> {
+mixin $refNameImpl$typeParametersDefinition on $refType {
   ${parameters.map((e) {
       return '''
 /// The parameter `${e.name}` of this provider.

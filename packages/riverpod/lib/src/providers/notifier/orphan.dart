@@ -153,7 +153,8 @@ final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>
     );
   }
 
-  @internal
+  @mustBeOverridden
+  @visibleForOverriding
   @override
   NotifierProvider<NotifierT, StateT> copyWithBuild(
     RunNotifierBuild<NotifierT, StateT, Ref<StateT>>? build,
@@ -161,7 +162,8 @@ final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>
     return _copyWith(build: build);
   }
 
-  @internal
+  @mustBeOverridden
+  @visibleForOverriding
   @override
   NotifierProvider<NotifierT, StateT> copyWithCreate(
     NotifierT Function() create,

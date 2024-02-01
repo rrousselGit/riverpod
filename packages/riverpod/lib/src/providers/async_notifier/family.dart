@@ -99,7 +99,8 @@ final class FamilyAsyncNotifierProvider< //
     return _AsyncNotifierProviderElement(this, container);
   }
 
-  @internal
+  @mustBeOverridden
+  @visibleForOverriding
   @override
   FamilyAsyncNotifierProvider<NotifierT, StateT, ArgT> copyWithBuild(
     RunNotifierBuild<NotifierT, FutureOr<StateT>, Ref<AsyncValue<StateT>>>?
@@ -108,7 +109,8 @@ final class FamilyAsyncNotifierProvider< //
     return _copyWith(build: build);
   }
 
-  @internal
+  @mustBeOverridden
+  @visibleForOverriding
   @override
   FamilyAsyncNotifierProvider<NotifierT, StateT, ArgT> copyWithCreate(
     NotifierT Function() create,

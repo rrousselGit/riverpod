@@ -66,6 +66,7 @@ final class Provider<StateT>
     return ProviderElement(this, container);
   }
 
+  @mustBeOverridden
   @visibleForOverriding
   @override
   Provider<StateT> copyWithCreate(
