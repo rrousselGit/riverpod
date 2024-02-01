@@ -16,11 +16,15 @@ abstract class FamilyAsyncNotifier<State, Arg>
   ///
   /// then [arg] will be `0`.
   /// {@endtemplate}
-  late final Arg arg;
+  late final Arg arg = (ref as ProviderElementBase).origin.argument as Arg;
 
   /// {@macro riverpod.async_notifier.build}
   @visibleForOverriding
   FutureOr<State> build(Arg arg);
+
+  @internal
+  @override
+  FutureOr<State> runBuild() => build(arg);
 }
 
 /// The [Family] of [AsyncNotifierProvider].

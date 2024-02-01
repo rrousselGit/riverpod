@@ -93,6 +93,15 @@ abstract base class ClassProvider< //
     required this.runNotifierBuildOverride,
   });
 
+  Refreshable<NotifierT> get notifier {
+    return ProviderElementProxy<StateT, NotifierT>(
+      this,
+      (element) =>
+          (element as ClassProviderElement<NotifierT, StateT, CreatedT>)
+              .classListenable,
+    );
+  }
+
   @internal
   final RunNotifierBuild<NotifierT, CreatedT, RefT>? runNotifierBuildOverride;
 
@@ -168,6 +177,8 @@ abstract class ClassProviderElement< //
     switch (result) {
       case ResultData():
         try {
+          handleNotifier(result.state, seamless: !didChangeDependency);
+
           final created =
               provider.runNotifierBuildOverride?.call(this, result.state) ??
                   result.state.runBuild();
@@ -182,6 +193,10 @@ abstract class ClassProviderElement< //
           didChangeDependency: didChangeDependency,
         );
     }
+  }
+
+  void handleNotifier(NotifierT notifier, {required bool seamless}) {
+    // Overridden by FutureModifier mixin
   }
 
   void handleValue(CreatedT created, {required bool didChangeDependency});

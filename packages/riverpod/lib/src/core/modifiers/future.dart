@@ -224,21 +224,17 @@ mixin FutureModifierElement<StateT> on ProviderElementBase<AsyncValue<StateT>> {
     );
   }
 
-  @override
-  bool updateShouldNotify(
-      AsyncValue<StateT> previous, AsyncValue<StateT> next) {
-    return FutureModifierElement.handleUpdateShouldNotify(
-      previous,
-      next,
-    );
-  }
-
   void _onLoading(AsyncLoading<StateT> value, {bool seamless = false}) {
     asyncTransition(value, seamless: seamless);
     if (_futureCompleter == null) {
       final completer = _futureCompleter = Completer();
       futureNotifier.result = ResultData(completer.future);
     }
+  }
+
+  void handleNotifier(Object? notifier, {required bool seamless}) {
+    // Overrides the default behavior of ClassProviderElement.handleNotifier
+    asyncTransition(AsyncLoading<StateT>(), seamless: seamless);
   }
 
   /// Life-cycle for when an error from the provider's "build" method is received.

@@ -153,28 +153,29 @@ final class FutureProvider<StateT> extends FunctionalProvider<
 }
 
 /// {@macro riverpod.provider_ref_base}
-abstract class FutureProviderRef<State> implements Ref<AsyncValue<State>> {
+abstract class FutureProviderRef<StateT> implements Ref<AsyncValue<StateT>> {
   /// Obtains the [Future] associated to this provider.
   ///
   /// This is equivalent to doing `ref.read(myProvider.future)`.
   /// See also [FutureProvider.future].
   // TODO move to Ref
-  Future<State> get future;
+  Future<StateT> get future;
 }
 
 /// The element of a [FutureProvider]
-class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
-    with FutureModifierElement<T>
-    implements FutureProviderRef<T> {
+class FutureProviderElement<StateT>
+    extends ProviderElementBase<AsyncValue<StateT>>
+    with FutureModifierElement<StateT>
+    implements FutureProviderRef<StateT> {
   /// The element of a [FutureProvider]
   @internal
   FutureProviderElement(this.provider, super.container);
 
   @override
-  final FutureProvider<T> provider;
+  final FutureProvider<StateT> provider;
 
   @override
-  Future<T> get future {
+  Future<StateT> get future {
     flush();
     return futureNotifier.value;
   }
@@ -186,18 +187,31 @@ class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
       didChangeDependency: didChangeDependency,
     );
   }
+
+  @override
+  bool updateShouldNotify(
+      AsyncValue<StateT> previous, AsyncValue<StateT> next) {
+    return FutureModifierElement.handleUpdateShouldNotify(
+      previous,
+      next,
+    );
+  }
 }
 
 /// The [Family] of a [FutureProvider]
-class FutureProviderFamily<R, Arg> extends FunctionalFamily<
-    FutureProviderRef<R>, AsyncValue<R>, Arg, FutureOr<R>, FutureProvider<R>> {
+class FutureProviderFamily<StateT, ArgT> extends FunctionalFamily<
+    FutureProviderRef<StateT>,
+    AsyncValue<StateT>,
+    ArgT,
+    FutureOr<StateT>,
+    FutureProvider<StateT>> {
   FutureProviderFamily(
     super._createFn, {
     super.name,
     super.dependencies,
     super.isAutoDispose = false,
   }) : super(
-          providerFactory: FutureProvider<R>.internal,
+          providerFactory: FutureProvider<StateT>.internal,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
           debugGetCreateSourceHash: null,
@@ -208,7 +222,7 @@ class FutureProviderFamily<R, Arg> extends FunctionalFamily<
     super.name,
     super.dependencies,
   }) : super(
-          providerFactory: FutureProvider<R>.internal,
+          providerFactory: FutureProvider<StateT>.internal,
           isAutoDispose: true,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
@@ -224,5 +238,5 @@ class FutureProviderFamily<R, Arg> extends FunctionalFamily<
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.isAutoDispose,
-  }) : super(providerFactory: FutureProvider<R>.internal);
+  }) : super(providerFactory: FutureProvider<StateT>.internal);
 }

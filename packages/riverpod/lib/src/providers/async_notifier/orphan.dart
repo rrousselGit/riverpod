@@ -32,6 +32,10 @@ abstract class AsyncNotifier<State> extends AsyncNotifierBase<State> {
   /// {@endtemplate}
   @visibleForOverriding
   FutureOr<State> build();
+
+  @internal
+  @override
+  FutureOr<State> runBuild() => build();
 }
 
 /// {@template riverpod.async_notifier_provider}

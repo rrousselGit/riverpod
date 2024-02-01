@@ -66,9 +66,10 @@ import 'provider.dart' show Provider;
 /// - [StreamProvider.family], to create a [StreamProvider] from external parameters
 /// - [StreamProvider.autoDispose], to destroy the state of a [StreamProvider] when no longer needed.
 /// {@endtemplate}
-final class StreamProvider<T>
-    extends FunctionalProvider<AsyncValue<T>, Stream<T>, Ref<AsyncValue<T>>>
-    with FutureModifier<T> {
+final class StreamProvider<StateT> extends FunctionalProvider<
+    AsyncValue<StateT>,
+    Stream<StateT>,
+    Ref<AsyncValue<StateT>>> with FutureModifier<StateT> {
   /// {@macro riverpod.stream_provider}
   StreamProvider(
     this._create, {
@@ -115,21 +116,21 @@ final class StreamProvider<T>
   /// {@macro riverpod.family}
   static const family = StreamProviderFamilyBuilder();
 
-  final Create<Stream<T>, Ref<AsyncValue<T>>> _create;
+  final Create<Stream<StateT>, Ref<AsyncValue<StateT>>> _create;
 
   @override
-  StreamProviderElement<T> createElement(
+  StreamProviderElement<StateT> createElement(
     ProviderContainer container,
   ) {
     return StreamProviderElement(this, container);
   }
 
   @override
-  FunctionalProvider<AsyncValue<T>, Stream<T>, Ref<AsyncValue<T>>>
-      copyWithCreate(
-    Create<Stream<T>, Ref<AsyncValue<T>>> create,
+  FunctionalProvider<AsyncValue<StateT>, Stream<StateT>,
+      Ref<AsyncValue<StateT>>> copyWithCreate(
+    Create<Stream<StateT>, Ref<AsyncValue<StateT>>> create,
   ) {
-    return StreamProvider<T>.internal(
+    return StreamProvider<StateT>.internal(
       create,
       name: name,
       dependencies: null,
@@ -143,21 +144,23 @@ final class StreamProvider<T>
 }
 
 /// The element of [StreamProvider].
-class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
-    with FutureModifierElement<T> {
+class StreamProviderElement<StateT>
+    extends ProviderElementBase<AsyncValue<StateT>>
+    with FutureModifierElement<StateT> {
   /// The element of [StreamProvider].
   @internal
   StreamProviderElement(this.provider, super.container);
 
   @override
-  final StreamProvider<T> provider;
+  final StreamProvider<StateT> provider;
 
-  final _streamNotifier = ProxyElementValueListenable<Stream<T>>();
-  final StreamController<T> _streamController = StreamController<T>.broadcast();
+  final _streamNotifier = ProxyElementValueListenable<Stream<StateT>>();
+  final StreamController<StateT> _streamController =
+      StreamController<StateT>.broadcast();
 
   @override
   void create({required bool didChangeDependency}) {
-    asyncTransition(AsyncLoading<T>(), seamless: !didChangeDependency);
+    asyncTransition(AsyncLoading<StateT>(), seamless: !didChangeDependency);
     _streamNotifier.result ??= Result.data(_streamController.stream);
 
     handleStream(
@@ -189,7 +192,7 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
   }
 
   @override
-  void onData(AsyncData<T> value, {bool seamless = false}) {
+  void onData(AsyncData<StateT> value, {bool seamless = false}) {
     if (!_streamController.isClosed) {
       // The controller might be closed if onData is executed post dispose. Cf onData
       _streamController.add(value.value);
@@ -198,25 +201,38 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
   }
 
   @override
-  void onError(AsyncError<T> value, {bool seamless = false}) {
+  void onError(AsyncError<StateT> value, {bool seamless = false}) {
     if (!_streamController.isClosed) {
       // The controller might be closed if onError is executed post dispose. Cf onError
       _streamController.addError(value.error, value.stackTrace);
     }
     super.onError(value, seamless: seamless);
   }
+
+  @override
+  bool updateShouldNotify(
+      AsyncValue<StateT> previous, AsyncValue<StateT> next) {
+    return FutureModifierElement.handleUpdateShouldNotify(
+      previous,
+      next,
+    );
+  }
 }
 
 /// The [Family] of a [StreamProvider]
-class StreamProviderFamily<R, Arg> extends FunctionalFamily<Ref<AsyncValue<R>>,
-    AsyncValue<R>, Arg, Stream<R>, StreamProvider<R>> {
+class StreamProviderFamily<StateT, ArgT> extends FunctionalFamily<
+    Ref<AsyncValue<StateT>>,
+    AsyncValue<StateT>,
+    ArgT,
+    Stream<StateT>,
+    StreamProvider<StateT>> {
   StreamProviderFamily(
     super._createFn, {
     super.name,
     super.dependencies,
     super.isAutoDispose = false,
   }) : super(
-          providerFactory: StreamProvider<R>.internal,
+          providerFactory: StreamProvider<StateT>.internal,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
           debugGetCreateSourceHash: null,
@@ -231,14 +247,14 @@ class StreamProviderFamily<R, Arg> extends FunctionalFamily<Ref<AsyncValue<R>>,
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.isAutoDispose,
-  }) : super(providerFactory: StreamProvider<R>.internal);
+  }) : super(providerFactory: StreamProvider<StateT>.internal);
 
   StreamProviderFamily._autoDispose(
     super._createFn, {
     super.name,
     super.dependencies,
   }) : super(
-          providerFactory: StreamProvider<R>.internal,
+          providerFactory: StreamProvider<StateT>.internal,
           isAutoDispose: true,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
