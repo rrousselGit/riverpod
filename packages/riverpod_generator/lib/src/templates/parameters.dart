@@ -13,10 +13,10 @@ String buildParamDefinitionQuery(
     'Cannot enable both asThisParameter and asSuperParameter',
   );
 
-  final requiredPositionals = parameters
+  final requiredPositional = parameters
       .where((element) => element.isRequiredPositional && !asRequiredNamed)
       .toList();
-  final optionalPositionals = parameters
+  final optionalPositional = parameters
       .where((element) => element.isOptionalPositional && !asRequiredNamed)
       .toList();
   final named = parameters
@@ -48,12 +48,12 @@ String buildParamDefinitionQuery(
   }
 
   buffer.writeAll(
-    requiredPositionals.map(encodeParameter).expand((e) => [e, ',']),
+    requiredPositional.map(encodeParameter).expand((e) => [e, ',']),
   );
-  if (optionalPositionals.isNotEmpty) {
+  if (optionalPositional.isNotEmpty) {
     if (writeBrackets && !asRecord) buffer.write('[');
     buffer.writeAll(
-      optionalPositionals.map(encodeParameter).expand((e) => [e, ',']),
+      optionalPositional.map(encodeParameter).expand((e) => [e, ',']),
     );
     if (writeBrackets && !asRecord) buffer.write(']');
   }
@@ -82,7 +82,7 @@ String buildParamInvocationQuery(
   return buffer.toString();
 }
 
-extension ParamterType on FormalParameter {
+extension ParameterType on FormalParameter {
   String get typeDisplayString {
     final that = this;
     switch (that) {
