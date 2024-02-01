@@ -2,7 +2,6 @@
 import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/builder.dart';
-import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart';
 
 void main() {

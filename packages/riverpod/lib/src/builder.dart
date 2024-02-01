@@ -343,8 +343,9 @@ class StateNotifierProviderFamilyBuilder {
   StateNotifierProviderFamily<NotifierT, StateT, ArgT>
       call<NotifierT extends StateNotifier<StateT>, StateT, ArgT>(
     NotifierT Function(
-            StateNotifierProviderRef<NotifierT, StateT> ref, ArgT param)
-        create, {
+      StateNotifierProviderRef<NotifierT, StateT> ref,
+      ArgT param,
+    ) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
   }) {
@@ -393,8 +394,9 @@ class AutoDisposeStateNotifierProviderFamilyBuilder {
   StateNotifierProviderFamily<NotifierT, StateT, ArgT>
       call<NotifierT extends StateNotifier<StateT>, StateT, ArgT>(
     NotifierT Function(
-            StateNotifierProviderRef<NotifierT, StateT> ref, ArgT param)
-        create, {
+      StateNotifierProviderRef<NotifierT, StateT> ref,
+      ArgT param,
+    ) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
   }) {

@@ -74,7 +74,7 @@ void main() {
 
   group('FamilyOverride', () {
     test('TransitiveOverride.toString', () {
-      final f = Provider.family;
+      const f = Provider.family;
 
       final provider = Provider.family<int, int>((_, b) => 42);
       final provider2 = f.call<int, int>((_, b) => 42);

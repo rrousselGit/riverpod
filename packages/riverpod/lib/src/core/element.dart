@@ -29,8 +29,6 @@ mixin _ProviderRefreshable<T> implements Refreshable<T> {
 @internal
 void Function()? debugCanModifyProviders;
 
-class _Foo {}
-
 /// {@template riverpod.provider_element_base}
 /// An internal class that handles the state of a provider.
 ///
@@ -396,7 +394,7 @@ This could mean a few things:
 
   /// Initialize a provider.
   ///
-  /// This function **must** call [setState] or throw (or both).
+  /// This function **must** call [setStateResult] or throw (or both).
   ///
   /// Exceptions within this function will be caught and set the provider in error
   /// state. Then, reading this provider will rethrow the thrown exception.
