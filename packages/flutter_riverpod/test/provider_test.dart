@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
@@ -289,7 +290,7 @@ void main() {
     final provider = Provider((_) => 42);
 
     // These check the type safety
-    Ref? ref;
+    Ref<Object?>? ref;
 
     final Provider<int> provider1 = Provider<int>((r) {
       final first = r.watch(provider);

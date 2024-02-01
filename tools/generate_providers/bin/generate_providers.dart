@@ -188,9 +188,9 @@ import 'internals.dart';
           _FunctionalBuilder(
             'ChangeNotifierProvider',
             genericsUsage: 'NotifierT',
-            genericsDefinition: 'NotifierT extends ChangeNotifier',
+            genericsDefinition: 'NotifierT extends ChangeNotifier?',
             createdT: 'NotifierT',
-            refT: 'ChangeProviderRef<NotifierT>',
+            refT: 'ChangeNotifierProviderRef<NotifierT>',
           ),
         ],
         kinds: _ProviderKind.values,

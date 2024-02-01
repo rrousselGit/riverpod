@@ -22,7 +22,7 @@ void main() {
               ValueNotifier(42),
         ),
         autoDispose.overrideWith(
-          (AutoDisposeChangeNotifierProviderRef<ValueNotifier<int>> ref) =>
+          (ChangeNotifierProviderRef<ValueNotifier<int>> ref) =>
               ValueNotifier(84),
         ),
       ],
@@ -47,10 +47,7 @@ void main() {
               ValueNotifier('42 $arg'),
         ),
         autoDisposeFamily.overrideWith(
-          (
-            AutoDisposeChangeNotifierProviderRef<ValueNotifier<String>> ref,
-            int arg,
-          ) =>
+          (ChangeNotifierProviderRef<ValueNotifier<String>> ref, int arg) =>
               ValueNotifier('84 $arg'),
         ),
       ],
