@@ -69,7 +69,7 @@ abstract base class ProviderBase<StateT> extends ProviderOrFamily
     element.flush();
     if (fireImmediately) {
       _handleFireImmediately(
-        element.getState()!,
+        element.stateResult!,
         listener: listener,
         onError: onError,
       );

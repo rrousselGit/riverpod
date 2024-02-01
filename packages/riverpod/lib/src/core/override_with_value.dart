@@ -51,14 +51,14 @@ class _ValueProviderElement<State> extends ProviderElementBase<State> {
     final newValue = provider._value;
 
     // `getState` will never be in error/loading state since there is no "create"
-    final previousState = getState()! as ResultData<State>;
+    final previousState = stateResult! as ResultData<State>;
 
     if (newValue != previousState.state) {
       // Asserts would otherwise prevent a provider rebuild from updating
       // other providers
       if (kDebugMode) _debugSkipNotifyListenersAsserts = true;
 
-      setState(newValue);
+      setStateResult(ResultData(newValue));
 
       // Asserts would otherwise prevent a provider rebuild from updating
       // other providers
@@ -70,7 +70,7 @@ class _ValueProviderElement<State> extends ProviderElementBase<State> {
 
   @override
   void create({required bool didChangeDependency}) {
-    setState(provider._value);
+    setStateResult(ResultData(provider._value));
   }
 
   @override

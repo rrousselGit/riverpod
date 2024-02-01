@@ -1,6 +1,7 @@
 import 'package:meta/meta.dart';
 
 import '../builder.dart';
+import '../common/result.dart';
 import '../framework.dart';
 import 'legacy/state_notifier_provider.dart' show StateNotifierProvider;
 import 'stream_provider.dart' show StreamProvider;
@@ -341,11 +342,11 @@ class ProviderElement<State> extends ProviderElementBase<State> {
   State get state => requireState;
 
   @override
-  set state(State newState) => setState(newState);
+  set state(State newState) => setStateResult(ResultData(newState));
 
   @override
   void create({required bool didChangeDependency}) {
-    setState(provider._create(this));
+    setStateResult(ResultData(provider._create(this)));
   }
 
   @override

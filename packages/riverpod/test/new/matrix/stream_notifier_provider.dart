@@ -3,6 +3,7 @@ part of '../matrix.dart';
 final streamNotifierProviderFactory = TestMatrix<StreamNotifierTestFactory>(
   {
     'StreamNotifierProvider': StreamNotifierTestFactory(
+      isAutoDispose: false,
       deferredNotifier: DeferredStreamNotifier.new,
       deferredProvider: <StateT>(create, {updateShouldNotify}) {
         return StreamNotifierProvider<DeferredStreamNotifier<StateT>, StateT>(
@@ -25,6 +26,7 @@ final streamNotifierProviderFactory = TestMatrix<StreamNotifierTestFactory>(
       },
     ),
     'StreamNotifierProvider.autoDispose': StreamNotifierTestFactory(
+      isAutoDispose: true,
       deferredNotifier: DeferredStreamNotifier.new,
       deferredProvider: <StateT>(create, {updateShouldNotify}) {
         return StreamNotifierProvider.autoDispose<
@@ -51,6 +53,7 @@ final streamNotifierProviderFactory = TestMatrix<StreamNotifierTestFactory>(
       },
     ),
     'StreamNotifierProvider.family': StreamNotifierTestFactory(
+      isAutoDispose: false,
       deferredNotifier: DeferredFamilyStreamNotifier.new,
       deferredProvider: <StateT>(create, {updateShouldNotify}) {
         return StreamNotifierProvider.family<
@@ -77,6 +80,7 @@ final streamNotifierProviderFactory = TestMatrix<StreamNotifierTestFactory>(
       },
     ),
     'StreamNotifierProvider.autoDispose.family': StreamNotifierTestFactory(
+      isAutoDispose: true,
       deferredNotifier: DeferredFamilyStreamNotifier.new,
       deferredProvider: <StateT>(create, {updateShouldNotify}) {
         return StreamNotifierProvider.family
@@ -172,6 +176,7 @@ class DeferredFamilyStreamNotifier<StateT>
 class StreamNotifierTestFactory extends TestFactory<
     ProviderFactory<StreamNotifierBase<Object?>, ProviderBase<Object?>, void>> {
   StreamNotifierTestFactory({
+    required super.isAutoDispose,
     required super.value,
     required this.deferredNotifier,
     required this.deferredProvider,

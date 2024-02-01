@@ -1,5 +1,6 @@
 import 'package:meta/meta.dart';
 
+import '../common/result.dart';
 import '../common/stack_trace.dart';
 import '../framework.dart';
 import '../providers/future_provider.dart' show FutureProvider;
@@ -18,15 +19,17 @@ extension AsyncTransition<T> on ProviderElementBase<AsyncValue<T>> {
     required bool seamless,
   }) {
 // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-    final previous = getState()?.requireState;
+    final previous = stateResult?.requireState;
 
     if (previous == null) {
 // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-      setState(newState);
+      setStateResult(ResultData(newState));
     } else {
 // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-      setState(
-        newState._cast<T>().copyWithPrevious(previous, isRefresh: seamless),
+      setStateResult(
+        ResultData(
+          newState._cast<T>().copyWithPrevious(previous, isRefresh: seamless),
+        ),
       );
     }
   }

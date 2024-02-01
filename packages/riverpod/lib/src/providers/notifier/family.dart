@@ -3,13 +3,17 @@ part of '../notifier.dart';
 /// {@macro riverpod.notifier}
 ///
 /// {@macro riverpod.notifier_provider_modifier}
-abstract class FamilyNotifier<State, Arg> extends _NotifierBase<State> {
+abstract class FamilyNotifier<StateT, ArgT> extends NotifierBase<StateT> {
   /// {@macro riverpod.notifier.family_arg}
-  late final Arg arg;
+  late final ArgT arg = (ref as ProviderElementBase).origin.argument as ArgT;
 
   /// {@macro riverpod.async_notifier.build}
   @visibleForOverriding
-  State build(Arg arg);
+  StateT build(ArgT arg);
+
+  @internal
+  @override
+  StateT runBuild() => build(arg);
 }
 
 /// The implementation of [NotifierFamilyProvider] but with loosened type constraints
@@ -17,11 +21,9 @@ abstract class FamilyNotifier<State, Arg> extends _NotifierBase<State> {
 ///
 /// This enables tests to execute on both [NotifierProvider] and
 /// [AutoDisposeNotifierProvider] at the same time.
-@visibleForTesting
-@internal
 final class FamilyNotifierProvider //
-    <NotifierT extends _NotifierBase<StateT>, StateT, ArgT>
-    extends _NotifierProvider<NotifierT, StateT> {
+    <NotifierT extends NotifierBase<StateT>, StateT, ArgT>
+    extends NotifierProviderBase<NotifierT, StateT> {
   /// An implementation detail of Riverpod
   const FamilyNotifierProvider._(
     super._createNotifier, {

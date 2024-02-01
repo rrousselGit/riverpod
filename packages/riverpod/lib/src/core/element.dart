@@ -55,7 +55,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   State get state => readSelf();
 
   @override
-  set state(State newState) => setState(newState);
+  set state(State newState) => setStateResult(ResultData(newState));
 
   /// The last result of [ProviderBase.debugGetCreateSourceHash].
   ///
@@ -141,26 +141,10 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   List<KeepAliveLink>? _keepAliveLinks;
 
   /* STATE */
-  Result<State>? _state;
+  Result<State>? _stateResult;
 
-  /// Update the exposed value of a provider and notify its listeners.
+  /// The current state of the provider.
   ///
-  /// Listeners will only be notified if [updateShouldNotify]
-  /// returns true.
-  ///
-  /// This API is not meant for public consumption. Instead if a [Ref] needs
-  /// to expose a way to update the state, the practice is to expose a getter/setter.
-  @internal
-  void setState(State newState) {
-    if (kDebugMode) _debugDidSetState = true;
-
-    final previousResult = getState();
-    final result = _state = ResultData(newState);
-
-    if (_didBuild) {
-      _notifyListeners(result, previousResult);
-    }
-  }
 
   /// Obtains the current state, or null if the provider has yet to initialize.
   ///
@@ -171,7 +155,26 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   /// This is not meant for public consumption. Instead, public API should use
   /// [readSelf].
   @internal
-  Result<State>? getState() => _state;
+  Result<State>? get stateResult => _stateResult;
+
+  /// Update the exposed value of a provider and notify its listeners.
+  ///
+  /// Listeners will only be notified if [updateShouldNotify]
+  /// returns true.
+  ///
+  /// This API is not meant for public consumption. Instead if a [Ref] needs
+  /// to expose a way to update the state, the practice is to expose a getter/setter.
+  @internal
+  void setStateResult(Result<State> newState) {
+    if (kDebugMode) _debugDidSetState = true;
+
+    final previousResult = stateResult;
+    final result = _stateResult = newState;
+
+    if (_didBuild) {
+      _notifyListeners(result, previousResult);
+    }
+  }
 
   /// Read the current value of a provider and:
   ///
@@ -195,7 +198,7 @@ This could mean a few things:
       }
     }
 
-    final state = getState();
+    final state = stateResult;
     if (state == null) throw StateError(uninitializedError);
 
     return state.when(
@@ -236,7 +239,7 @@ This could mean a few things:
 
     buildState();
 
-    _state!.map(
+    _stateResult!.map(
       data: (newState) {
         final onChangeSelfListeners = _onChangeSelfListeners;
         if (onChangeSelfListeners != null) {
@@ -366,18 +369,18 @@ This could mean a few things:
     _previousDependencies = _dependencies;
     _dependencies = HashMap();
 
-    final previousStateResult = _state;
+    final previousStateResult = _stateResult;
 
     if (kDebugMode) _debugDidSetState = false;
 
     buildState();
 
-    if (!identical(_state, previousStateResult)) {
+    if (!identical(_stateResult, previousStateResult)) {
       // Asserts would otherwise prevent a provider rebuild from updating
       // other providers
       if (kDebugMode) _debugSkipNotifyListenersAsserts = true;
 
-      _notifyListeners(_state!, previousStateResult);
+      _notifyListeners(_stateResult!, previousStateResult);
 
       if (kDebugMode) _debugSkipNotifyListenersAsserts = false;
     }
@@ -422,7 +425,7 @@ This could mean a few things:
     } catch (err, stack) {
       if (kDebugMode) _debugDidSetState = true;
 
-      _state = Result.error(err, stack);
+      _stateResult = Result.error(err, stack);
     } finally {
       _didBuild = true;
       if (kDebugMode) {
@@ -430,7 +433,7 @@ This could mean a few things:
       }
 
       assert(
-        getState() != null,
+        stateResult != null,
         'Bad state, the provider did not initialize. Did "create" forget to set the state?',
       );
     }
@@ -438,7 +441,7 @@ This could mean a few things:
 
   @override
   void notifyListeners() {
-    final currentResult = getState();
+    final currentResult = stateResult;
     // If `notifyListeners` is used during `build`, the result will be null.
     // Throwing would be unnecessarily inconvenient, so we simply skip it.
     if (currentResult == null) return;

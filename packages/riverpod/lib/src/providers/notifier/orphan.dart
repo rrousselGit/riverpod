@@ -55,7 +55,7 @@ part of '../notifier.dart';
 /// - [FamilyNotifier] for `family`
 /// - [AutoDisposeFamilyNotifier] for `autoDispose.family`
 /// {@endtemplate}
-abstract class Notifier<State> extends _NotifierBase<State> {
+abstract class Notifier<State> extends NotifierBase<State> {
   /// {@template riverpod.notifier.build}
   /// Initialize a [Notifier].
   ///
@@ -70,10 +70,14 @@ abstract class Notifier<State> extends _NotifierBase<State> {
   /// {@endtemplate}
   @visibleForOverriding
   State build();
+
+  @internal
+  @override
+  State runBuild() => build();
 }
 
 final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>
-    extends _NotifierProvider<NotifierT, StateT> {
+    extends NotifierProviderBase<NotifierT, StateT> {
   /// {@macro riverpod.notifier_provider}
   ///
   /// {@macro riverpod.notifier_provider_modifier}
@@ -167,7 +171,7 @@ final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>
 }
 
 class _NotifierProviderElement< //
-        NotifierT extends _NotifierBase<StateT>,
+        NotifierT extends NotifierBase<StateT>,
         StateT> //
     extends ClassProviderElement< //
         NotifierT,
@@ -177,7 +181,7 @@ class _NotifierProviderElement< //
   _NotifierProviderElement(this.provider, super.container);
 
   @override
-  final _NotifierProvider<NotifierT, StateT> provider;
+  final NotifierProviderBase<NotifierT, StateT> provider;
 
   @override
   void handleError(
@@ -185,7 +189,9 @@ class _NotifierProviderElement< //
     StackTrace stackTrace, {
     required bool didChangeDependency,
   }) {
-    Zone.current.handleUncaughtError(error, stackTrace);
+    setStateResult(ResultError<StateT>(error, stackTrace));
+    // TODO report uncaught error to the zone
+    // Zone.current.handleUncaughtError(error, stackTrace);
   }
 
   @override

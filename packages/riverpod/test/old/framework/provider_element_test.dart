@@ -1190,7 +1190,7 @@ void main() {
       final element = container.readProviderElement(provider);
 
       expect(
-        element.getState(),
+        element.stateResult,
         isA<ResultError<Object?>>()
             .having((e) => e.error, 'error', isUnimplementedError),
       );

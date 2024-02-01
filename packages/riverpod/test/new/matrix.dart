@@ -5,6 +5,7 @@ import 'package:test/test.dart';
 
 part 'matrix/async_notifier_provider.dart';
 part 'matrix/stream_notifier_provider.dart';
+part 'matrix/notifier_provider.dart';
 
 class TestMatrix<T extends TestFactory<Object?>> {
   TestMatrix(this.values);
@@ -19,9 +20,13 @@ class TestMatrix<T extends TestFactory<Object?>> {
 }
 
 class TestFactory<T> {
-  TestFactory({required this.value});
+  TestFactory({
+    required this.value,
+    required this.isAutoDispose,
+  });
 
   final T value;
+  final bool isAutoDispose;
 }
 
 typedef ProviderFactory<BaseT, ProviderT, RefT>

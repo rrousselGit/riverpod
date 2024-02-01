@@ -146,7 +146,7 @@ class StateProviderElement<T> extends ProviderElementBase<T>
       fireImmediately: true,
       (state) {
         _stateNotifier.result = _controllerNotifier.result;
-        setState(state);
+        setStateResult(ResultData(state));
       },
     );
   }

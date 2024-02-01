@@ -49,8 +49,7 @@ export 'src/providers/async_notifier.dart'
 //  Use pkg:riverpod/legacy.dart
 
 export 'src/providers/future_provider.dart';
-export 'src/providers/notifier.dart'
-    hide NotifierProvider, FamilyNotifierProvider;
+export 'src/providers/notifier.dart' hide NotifierBase, NotifierProviderBase;
 export 'src/providers/provider.dart';
 export 'src/providers/stream_notifier.dart'
     hide StreamNotifierBase, StreamNotifierProviderBase;

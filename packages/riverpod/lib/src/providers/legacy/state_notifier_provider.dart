@@ -195,7 +195,10 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<T>, T>
     _removeListener = notifier
         // TODO test requireState, as ref.read(p) is expected to throw if notifier creation failed
         .requireState
-        .addListener(setState, fireImmediately: true);
+        .addListener(
+      (newState) => setStateResult(ResultData(newState)),
+      fireImmediately: true,
+    );
   }
 
   @override

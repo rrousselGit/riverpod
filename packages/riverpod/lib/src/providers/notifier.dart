@@ -1,18 +1,18 @@
-import 'dart:async';
-
 import 'package:meta/meta.dart';
 
 import '../builder.dart';
+import '../common/result.dart';
 import '../framework.dart';
 import 'async_notifier.dart';
 
 part 'notifier/orphan.dart';
 part 'notifier/family.dart';
 
-/// A base class for [_NotifierBase].
+/// A base class for [NotifierBase].
 ///
 /// Not meant for public consumption.
-abstract class _NotifierBase<StateT> extends ClassBase<StateT, StateT> {
+@internal
+abstract class NotifierBase<StateT> extends ClassBase<StateT, StateT> {
   /// The value currently exposed by this [Notifier].
   ///
   /// If used inside [Notifier.build], may throw if the notifier is not yet initialized.
@@ -46,7 +46,7 @@ abstract class _NotifierBase<StateT> extends ClassBase<StateT, StateT> {
     if (element == null) throw StateError(uninitializedElementError);
 
     element.flush();
-    return element.getState()?.stateOrNull;
+    return element.stateResult?.stateOrNull;
   }
 
   /// A method invoked when the state exposed by this [Notifier] changes.
@@ -83,13 +83,14 @@ abstract class _NotifierBase<StateT> extends ClassBase<StateT, StateT> {
   }
 }
 
-abstract base class _NotifierProvider //
-    <NotifierT extends _NotifierBase<StateT>, StateT>
+@internal
+abstract base class NotifierProviderBase //
+    <NotifierT extends NotifierBase<StateT>, StateT>
     extends ClassProvider<NotifierT, StateT, StateT, Ref<StateT>> {
   /// An internal base class for [Notifier].
   ///
   /// Not meant for public consumption.
-  const _NotifierProvider(
+  const NotifierProviderBase(
     this._createNotifier, {
     required super.name,
     required super.from,
