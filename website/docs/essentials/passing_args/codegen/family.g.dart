@@ -72,7 +72,7 @@ class ActivityFamily extends Family {
   String toString() => 'activityProvider';
 }
 
-class _$ActivityFamilyOverride implements FamilyOverride {
+class _$ActivityFamilyOverride implements $FamilyOverride {
   _$ActivityFamilyOverride(this.from, this.create);
 
   final FutureOr<Activity> Function(ActivityRef ref) create;
@@ -129,7 +129,7 @@ class ActivityProvider extends AutoDisposeFutureProvider<Activity> {
   Override overrideWith(
     FutureOr<Activity> Function(ActivityRef ref) create,
   ) {
-    return ProviderOverride(
+    return $ProviderOverride(
       origin: this,
       providerOverride: ActivityProvider._internal(
         (ref) => create(ref as ActivityRef),

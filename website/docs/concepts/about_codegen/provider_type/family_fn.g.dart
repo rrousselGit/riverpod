@@ -74,7 +74,7 @@ class ExampleFamily extends Family {
   String toString() => 'exampleProvider';
 }
 
-class _$ExampleFamilyOverride implements FamilyOverride {
+class _$ExampleFamilyOverride implements $FamilyOverride {
   _$ExampleFamilyOverride(this.from, this.create);
 
   final String Function(ExampleRef ref) create;
@@ -136,7 +136,7 @@ class ExampleProvider extends AutoDisposeProvider<String> {
   Override overrideWith(
     String Function(ExampleRef ref) create,
   ) {
-    return ProviderOverride(
+    return $ProviderOverride(
       origin: this,
       providerOverride: ExampleProvider._internal(
         (ref) => create(ref as ExampleRef),

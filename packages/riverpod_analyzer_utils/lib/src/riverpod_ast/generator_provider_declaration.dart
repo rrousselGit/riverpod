@@ -57,7 +57,8 @@ extension on LibraryElement {
   }
 }
 
-abstract class GeneratorProviderDeclaration extends ProviderDeclaration {
+// TODO changelog made sealed
+sealed class GeneratorProviderDeclaration extends ProviderDeclaration {
   @override
   GeneratorProviderDeclarationElement get providerElement;
   RiverpodAnnotation get annotation;

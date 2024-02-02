@@ -1,3 +1,4 @@
+import 'package:riverpod/src/framework.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'async.g.dart';
@@ -20,7 +21,7 @@ FutureOr<String> public(PublicRef ref) {
   return 'Hello world';
 }
 
-final privateProvider = _privateProvider;
+const privateProvider = _privateProvider;
 
 @riverpod
 Future<String> _private(_PrivateRef ref) async {

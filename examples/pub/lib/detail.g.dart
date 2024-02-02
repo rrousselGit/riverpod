@@ -74,7 +74,7 @@ class FetchPackageDetailsFamily extends Family {
   String toString() => 'fetchPackageDetailsProvider';
 }
 
-class _$FetchPackageDetailsFamilyOverride implements FamilyOverride {
+class _$FetchPackageDetailsFamilyOverride implements $FamilyOverride {
   _$FetchPackageDetailsFamilyOverride(this.from, this.create);
 
   final FutureOr<Package> Function(FetchPackageDetailsRef ref) create;
@@ -131,7 +131,7 @@ class FetchPackageDetailsProvider extends AutoDisposeFutureProvider<Package> {
   Override overrideWith(
     FutureOr<Package> Function(FetchPackageDetailsRef ref) create,
   ) {
-    return ProviderOverride(
+    return $ProviderOverride(
       origin: this,
       providerOverride: FetchPackageDetailsProvider._internal(
         (ref) => create(ref as FetchPackageDetailsRef),
@@ -311,7 +311,7 @@ class PackageMetricsFamily extends Family {
   String toString() => 'packageMetricsProvider';
 }
 
-class _$PackageMetricsFamilyOverride implements FamilyOverride {
+class _$PackageMetricsFamilyOverride implements $FamilyOverride {
   _$PackageMetricsFamilyOverride(this.from, this.create);
 
   final PackageMetrics Function() create;
@@ -385,7 +385,7 @@ class PackageMetricsProvider extends AutoDisposeAsyncNotifierProviderImpl<
 
   @override
   Override overrideWith(PackageMetrics Function() create) {
-    return ProviderOverride(
+    return $ProviderOverride(
       origin: this,
       providerOverride: PackageMetricsProvider._internal(
         () => create()..packageName = packageName,

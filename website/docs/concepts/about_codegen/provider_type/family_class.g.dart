@@ -84,7 +84,7 @@ class ExampleFamily extends Family {
   String toString() => 'exampleProvider';
 }
 
-class _$ExampleFamilyOverride implements FamilyOverride {
+class _$ExampleFamilyOverride implements $FamilyOverride {
   _$ExampleFamilyOverride(this.from, this.create);
 
   final Example Function() create;
@@ -152,7 +152,7 @@ class ExampleProvider extends AutoDisposeNotifierProviderImpl<Example, String> {
 
   @override
   Override overrideWith(Example Function() create) {
-    return ProviderOverride(
+    return $ProviderOverride(
       origin: this,
       providerOverride: ExampleProvider._internal(
         () => create()

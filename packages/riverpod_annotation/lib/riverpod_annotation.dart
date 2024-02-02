@@ -7,15 +7,14 @@ export 'package:meta/meta.dart' show visibleForOverriding;
 export 'package:riverpod/src/internals.dart'
     show
         // General stuff
-        // TODO changelog exported ProviderContainer,
+        // TODO changelog changed exports,
         ProviderContainer,
         Family,
         ProviderOrFamily,
         Override,
-        // ignore: invalid_use_of_internal_member, Used by notifiers for overriding overrideWith
-        ProviderOverride,
-        // ignore: invalid_use_of_internal_member, used by families for overrideWith
-        FamilyOverride,
+        $FamilyOverride,
+        $FunctionalProvider,
+        $FutureModifier,
         Ref,
 
         // Provider
@@ -24,33 +23,33 @@ export 'package:riverpod/src/internals.dart'
         ProviderElement,
 
         // FutureProvider
-        FutureProvider,
-        FutureProviderFamily,
-        FutureProviderRef,
-        FutureProviderElement,
+        $FutureProvider,
+        // FutureProviderFamily,
+        // FutureProviderRef,
+        $FutureProviderElement,
 
-        // StreamProvider
-        StreamProvider,
-        StreamProviderFamily,
-        StreamProviderElement,
+// // StreamProvider
+// StreamProvider,
+// StreamProviderFamily,
+// StreamProviderElement,
 
-        // AsyncValue
+// AsyncValue
         AsyncValue,
         AsyncLoading,
         AsyncData,
         AsyncError,
-        AsyncValueX,
+        AsyncValueX;
 
-        // Notifier
-        Notifier,
-        // ignore: invalid_use_of_internal_member
-        NotifierProvider,
+// // Notifier
+// Notifier,
+// // ignore: invalid_use_of_internal_member
+// NotifierProvider,
 
-        // AsyncNotifier
-        AsyncNotifier,
-        AsyncNotifierProvider,
-        // StreamNotifier
-        StreamNotifier,
-        StreamNotifierProvider;
+// // AsyncNotifier
+// AsyncNotifier,
+// AsyncNotifierProvider,
+// // StreamNotifier
+// StreamNotifier,
+// StreamNotifierProvider;
 
 export 'src/riverpod_annotation.dart';

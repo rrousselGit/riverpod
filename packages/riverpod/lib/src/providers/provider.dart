@@ -9,7 +9,7 @@ import 'stream_provider.dart' show StreamProvider;
 // TODO changelog ProviderRef was removed. Used Ref directly
 /// {@macro riverpod.provider}
 base class Provider<StateT>
-    extends FunctionalProvider<StateT, StateT, Ref<StateT>> {
+    extends $FunctionalProvider<StateT, StateT, Ref<StateT>> {
   /// {@macro riverpod.provider}
   // TODO make all providers const under all variations
   Provider(
@@ -114,7 +114,7 @@ base class Provider<StateT>
   /// );
   /// ```
   Override overrideWithValue(StateT value) {
-    return ProviderOverride(
+    return $ProviderOverride(
       origin: this,
       providerOverride: ValueProvider<StateT>(value),
     );

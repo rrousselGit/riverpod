@@ -7,6 +7,7 @@ String buildParamDefinitionQuery(
   bool writeBrackets = true,
   bool asRequiredNamed = false,
   bool asRecord = false,
+  bool withDefaults = true,
 }) {
   assert(
     !asThisParameter || !asSuperParameter,
@@ -24,6 +25,7 @@ String buildParamDefinitionQuery(
       .toList();
 
   final buffer = StringBuffer();
+
   String encodeParameter(FormalParameter parameter) {
     if (asRecord) {
       final type = parameter.typeDisplayString.isEmpty
@@ -38,9 +40,10 @@ String buildParamDefinitionQuery(
     late final element = parameter.declaredElement!;
     late final leading =
         parameter.isRequiredNamed || asRequiredNamed ? 'required ' : '';
-    late final trailing = element.defaultValueCode != null && !asRequiredNamed
-        ? '= ${element.defaultValueCode}'
-        : '';
+    late final trailing =
+        element.defaultValueCode != null && !asRequiredNamed && withDefaults
+            ? '= ${element.defaultValueCode}'
+            : '';
     if (asThisParameter) return '${leading}this.${parameter.name}$trailing';
     if (asSuperParameter) return '${leading}super.${parameter.name}$trailing';
 

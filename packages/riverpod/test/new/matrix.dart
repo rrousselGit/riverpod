@@ -48,7 +48,7 @@ extension $Modifiers on ProviderBase<Object?> {
   Refreshable<Future<Object?>>? get future {
     final that = this;
     return switch (that) {
-      FutureModifier() => that.future,
+      $FutureModifier() => that.future,
       _ => null,
     };
   }

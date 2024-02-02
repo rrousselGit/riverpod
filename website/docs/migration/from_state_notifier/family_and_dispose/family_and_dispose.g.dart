@@ -82,7 +82,7 @@ class BugsEncounteredNotifierFamily extends Family {
   String toString() => 'bugsEncounteredNotifierProvider';
 }
 
-class _$BugsEncounteredNotifierFamilyOverride implements FamilyOverride {
+class _$BugsEncounteredNotifierFamilyOverride implements $FamilyOverride {
   _$BugsEncounteredNotifierFamilyOverride(this.from, this.create);
 
   final BugsEncounteredNotifier Function() create;
@@ -144,7 +144,7 @@ class BugsEncounteredNotifierProvider
 
   @override
   Override overrideWith(BugsEncounteredNotifier Function() create) {
-    return ProviderOverride(
+    return $ProviderOverride(
       origin: this,
       providerOverride: BugsEncounteredNotifierProvider._internal(
         () => create()..featureId = featureId,

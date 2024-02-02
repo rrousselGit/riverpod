@@ -74,7 +74,7 @@ class RandomFamily extends Family {
   String toString() => 'randomProvider';
 }
 
-class _$RandomFamilyOverride implements FamilyOverride {
+class _$RandomFamilyOverride implements $FamilyOverride {
   _$RandomFamilyOverride(this.from, this.create);
 
   final int Function(RandomRef ref) create;
@@ -136,7 +136,7 @@ class RandomProvider extends AutoDisposeProvider<int> {
   Override overrideWith(
     int Function(RandomRef ref) create,
   ) {
-    return ProviderOverride(
+    return $ProviderOverride(
       origin: this,
       providerOverride: RandomProvider._internal(
         (ref) => create(ref as RandomRef),

@@ -108,8 +108,9 @@ mixin AsyncClassMixin<StateT, CreatedT>
   }
 }
 
-@internal
-base mixin FutureModifier<StateT> on ProviderBase<AsyncValue<StateT>> {
+/// Implementation detail for `riverpod_generator`.
+/// Do not use.
+base mixin $FutureModifier<StateT> on ProviderBase<AsyncValue<StateT>> {
   /// Obtains the [Future] representing this provider.
   ///
   /// The instance of [Future] obtained may change over time. This typically

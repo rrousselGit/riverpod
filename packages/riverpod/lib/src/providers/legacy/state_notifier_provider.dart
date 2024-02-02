@@ -91,7 +91,7 @@ abstract class StateNotifierProviderRef<NotifierT extends StateNotifier<T>, T>
 final class StateNotifierProvider< //
         NotifierT extends StateNotifier<StateT>,
         StateT> //
-    extends FunctionalProvider< //
+    extends $FunctionalProvider< //
         StateT,
         NotifierT,
         StateNotifierProviderRef<NotifierT, StateT>> {

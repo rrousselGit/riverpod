@@ -11,7 +11,7 @@ environment:
 
 dependencies:
   meta: ^1.7.0
-  riverpod: ^3.0.0-dev.3
+  riverpod: 3.0.0-dev.3
 
 dev_dependencies:
   test: ^1.21.0

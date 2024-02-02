@@ -72,7 +72,7 @@ class FnFamily extends Family {
   String toString() => 'fnProvider';
 }
 
-class _$FnFamilyOverride implements FamilyOverride {
+class _$FnFamilyOverride implements $FamilyOverride {
   _$FnFamilyOverride(this.from, this.create);
 
   final int Function(FnRef ref) create;
@@ -132,7 +132,7 @@ class FnProvider extends AutoDisposeProvider<int> {
   Override overrideWith(
     int Function(FnRef ref) create,
   ) {
-    return ProviderOverride(
+    return $ProviderOverride(
       origin: this,
       providerOverride: FnProvider._internal(
         (ref) => create(ref as FnRef),
@@ -272,7 +272,7 @@ class MyNotifierFamily extends Family {
   String toString() => 'myNotifierProvider';
 }
 
-class _$MyNotifierFamilyOverride implements FamilyOverride {
+class _$MyNotifierFamilyOverride implements $FamilyOverride {
   _$MyNotifierFamilyOverride(this.from, this.create);
 
   final MyNotifier Function() create;
@@ -341,7 +341,7 @@ class MyNotifierProvider
 
   @override
   Override overrideWith(MyNotifier Function() create) {
-    return ProviderOverride(
+    return $ProviderOverride(
       origin: this,
       providerOverride: MyNotifierProvider._internal(
         () => create()

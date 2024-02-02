@@ -27,7 +27,7 @@ abstract base class StreamNotifierProviderBase<
         Stream<StateT>,
         Ref<AsyncValue<StateT>>> //
     with
-        FutureModifier<StateT> {
+        $FutureModifier<StateT> {
   const StreamNotifierProviderBase(
     this._createNotifier, {
     required super.name,

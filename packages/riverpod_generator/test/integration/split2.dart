@@ -1,4 +1,4 @@
-part of 'split.dart';
+// part of 'split.dart';
 
-@riverpod
-int counter(CounterRef ref) => 0;
+// @riverpod
+// int counter(CounterRef ref) => 0;

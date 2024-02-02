@@ -28,7 +28,7 @@ abstract base class AsyncNotifierProviderBase< //
         FutureOr<StateT>,
         Ref<AsyncValue<StateT>>> //
     with
-        FutureModifier<StateT> {
+        $FutureModifier<StateT> {
   const AsyncNotifierProviderBase(
     this._createNotifier, {
     required super.name,

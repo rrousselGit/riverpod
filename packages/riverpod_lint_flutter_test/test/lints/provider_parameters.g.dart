@@ -70,7 +70,7 @@ class GeneratorFamily extends Family {
   String toString() => 'generatorProvider';
 }
 
-class _$GeneratorFamilyOverride implements FamilyOverride {
+class _$GeneratorFamilyOverride implements $FamilyOverride {
   _$GeneratorFamilyOverride(this.from, this.create);
 
   final int Function(GeneratorRef ref) create;
@@ -127,7 +127,7 @@ class GeneratorProvider extends Provider<int> {
   Override overrideWith(
     int Function(GeneratorRef ref) create,
   ) {
-    return ProviderOverride(
+    return $ProviderOverride(
       origin: this,
       providerOverride: GeneratorProvider._internal(
         (ref) => create(ref as GeneratorRef),

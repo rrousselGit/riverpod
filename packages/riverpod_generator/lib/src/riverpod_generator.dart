@@ -9,9 +9,11 @@ import 'package:source_gen/source_gen.dart';
 
 import 'models.dart';
 import 'parse_generator.dart';
-import 'templates/class_based_provider.dart';
 import 'templates/family.dart';
-import 'templates/functional_provider.dart';
+import 'templates/hash.dart';
+import 'templates/provider.dart';
+import 'templates/provider_variable.dart';
+import 'templates/ref.dart';
 
 const riverpodTypeChecker = TypeChecker.fromRuntime(Riverpod);
 
@@ -35,19 +37,6 @@ String metaAnnotations(NodeList<Annotation> metadata) {
   }
 
   return buffer.toString();
-}
-
-String _hashFn(GeneratorProviderDeclaration provider, String hashName) {
-  return "String $hashName() => r'${provider.computeProviderHash()}';";
-}
-
-String _hashFnName(ProviderDeclaration provider) {
-  return '_\$${provider.providerElement.name.public.lowerFirst}Hash';
-}
-
-String _hashFnIdentifier(String hashFnName) {
-  return "const bool.fromEnvironment('dart.vm.product') ? "
-      'null : $hashFnName';
 }
 
 const _defaultProviderNameSuffix = 'Provider';
@@ -95,9 +84,13 @@ class RiverpodGenerator extends ParserGenerator<Riverpod> {
 
     // Only emit the header if we actually generated something
     if (buffer.isNotEmpty) {
+      buffer.writeln(
+        r"const $kDebugMode = bool.fromEnvironment('dart.vm.product');",
+      );
+
       buffer.write('''
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package
+// ignore_for_file: deprecated_member_use_from_same_package
 ''');
     }
 
@@ -115,34 +108,12 @@ class _RiverpodGeneratorVisitor extends RecursiveRiverpodAstVisitor {
 
   String get familySuffix => options.providerFamilyNameSuffix ?? suffix;
 
-  var _didEmitHashUtils = false;
-
-  void maybeEmitHashUtils() {
-    if (_didEmitHashUtils) return;
-
-    _didEmitHashUtils = true;
-    buffer.write('''
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-''');
+  void visitGeneratorProviderDeclaration(
+    GeneratorProviderDeclaration provider,
+  ) {
+    ProviderVariableTemplate(provider, options).run(buffer);
+    ProviderTemplate(provider).run(buffer);
+    HashFnTemplate(provider).run(buffer);
   }
 
   @override
@@ -150,38 +121,7 @@ class _SystemHash {
     ClassBasedProviderDeclaration provider,
   ) {
     super.visitClassBasedProviderDeclaration(provider);
-
-    final hashFunctionName = _hashFnName(provider);
-    final hashFn = _hashFnIdentifier(hashFunctionName);
-    buffer.write(_hashFn(provider, hashFunctionName));
-
-    if (!provider.providerElement.isFamily) {
-      final providerName = '${provider.providerElement.name.lowerFirst}$suffix';
-      final notifierTypedefName = providerName.startsWith('_')
-          ? '_\$${provider.providerElement.name.substring(1)}'
-          : '_\$${provider.providerElement.name}';
-
-      ClassBasedProviderTemplate(
-        provider,
-        options: options,
-        notifierTypedefName: notifierTypedefName,
-        hashFn: hashFn,
-      ).run(buffer);
-    } else {
-      final providerName =
-          '${provider.providerElement.name.lowerFirst}$familySuffix';
-      final notifierTypedefName = providerName.startsWith('_')
-          ? '_\$${provider.providerElement.name.substring(1)}'
-          : '_\$${provider.providerElement.name}';
-
-      maybeEmitHashUtils();
-      FamilyTemplate.classBased(
-        provider,
-        options: options,
-        notifierTypedefName: notifierTypedefName,
-        hashFn: hashFn,
-      ).run(buffer);
-    }
+    visitGeneratorProviderDeclaration(provider);
   }
 
   @override
@@ -189,28 +129,8 @@ class _SystemHash {
     FunctionalProviderDeclaration provider,
   ) {
     super.visitFunctionalProviderDeclaration(provider);
-
-    final hashFunctionName = _hashFnName(provider);
-    final hashFn = _hashFnIdentifier(hashFunctionName);
-    buffer.write(_hashFn(provider, hashFunctionName));
-
-    // Using >1 as functional providers always have at least one parameter: ref
-    // So a provider is a "family" only if it has parameters besides the ref.
-    if (provider.providerElement.isFamily) {
-      maybeEmitHashUtils();
-      FamilyTemplate.functional(
-        provider,
-        options: options,
-        hashFn: hashFn,
-      ).run(buffer);
-    } else {
-      final refName = '${provider.providerElement.name.titled}Ref';
-      FunctionalProviderTemplate(
-        provider,
-        refName: refName,
-        options: options,
-        hashFn: hashFn,
-      ).run(buffer);
-    }
+    RefTemplate(provider).run(buffer);
+    FamilyTemplate(provider, options).run(buffer);
+    visitGeneratorProviderDeclaration(provider);
   }
 }

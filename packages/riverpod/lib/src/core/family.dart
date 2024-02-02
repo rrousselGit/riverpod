@@ -79,7 +79,7 @@ class FunctionalFamily< //
         StateT,
         ArgT,
         CreatedT,
-        ProviderT extends FunctionalProvider<StateT, CreatedT, RefT>>
+        ProviderT extends $FunctionalProvider<StateT, CreatedT, RefT>>
     extends Family {
   /// A base implementation for [Family], used by the various providers to
   /// help them define a [Family].
@@ -125,7 +125,7 @@ class FunctionalFamily< //
   Override overrideWith(
     CreatedT Function(RefT ref, ArgT arg) create,
   ) {
-    return FamilyOverride(
+    return $FamilyOverride(
       from: this,
       createElement: (container, provider) {
         provider as ProviderT;
@@ -195,7 +195,7 @@ class ClassFamily< //
 
   /// {@macro riverpod.override_with}
   Override overrideWith(NotifierT Function() create) {
-    return FamilyOverride(
+    return $FamilyOverride(
       from: this,
       createElement: (container, provider) {
         provider as ProviderT;
@@ -209,7 +209,7 @@ class ClassFamily< //
   Override overrideWithBuild(
     RunNotifierBuild<NotifierT, CreatedT, RefT> build,
   ) {
-    return FamilyOverride(
+    return $FamilyOverride(
       from: this,
       createElement: (container, provider) {
         provider as ProviderT;

@@ -78,7 +78,7 @@ class GeneratedNotifierFamily extends Family {
   String toString() => 'generatedNotifierProvider';
 }
 
-class _$GeneratedNotifierFamilyOverride implements FamilyOverride {
+class _$GeneratedNotifierFamilyOverride implements $FamilyOverride {
   _$GeneratedNotifierFamilyOverride(this.from, this.create);
 
   final GeneratedNotifier Function() create;
@@ -140,7 +140,7 @@ class GeneratedNotifierProvider
 
   @override
   Override overrideWith(GeneratedNotifier Function() create) {
-    return ProviderOverride(
+    return $ProviderOverride(
       origin: this,
       providerOverride: GeneratedNotifierProvider._internal(
         () => create()..param = param,

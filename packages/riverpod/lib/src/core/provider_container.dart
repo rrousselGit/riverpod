@@ -171,7 +171,7 @@ class ProviderDirectory implements _PointerBase {
               override.providerOverride.createElement(pointer.targetContainer);
 
         // The family was overridden using overrideWith & co.
-        case (null, final FamilyOverride override):
+        case (null, final $FamilyOverride override):
           element = override.createElement(pointer.targetContainer, origin);
 
         // Either the provider wasn't overridden or it was scoped.

@@ -454,7 +454,7 @@ class FamilyDepFamily extends Family {
   String toString() => 'familyDepProvider';
 }
 
-class _$FamilyDepFamilyOverride implements FamilyOverride {
+class _$FamilyDepFamilyOverride implements $FamilyOverride {
   _$FamilyDepFamilyOverride(this.from, this.create);
 
   final int Function(FamilyDepRef ref) create;
@@ -511,7 +511,7 @@ class FamilyDepProvider extends AutoDisposeProvider<int> {
   Override overrideWith(
     int Function(FamilyDepRef ref) create,
   ) {
-    return ProviderOverride(
+    return $ProviderOverride(
       origin: this,
       providerOverride: FamilyDepProvider._internal(
         (ref) => create(ref as FamilyDepRef),
@@ -630,7 +630,7 @@ class FamilyDep2Family extends Family {
   String toString() => 'familyDep2Provider';
 }
 
-class _$FamilyDep2FamilyOverride implements FamilyOverride {
+class _$FamilyDep2FamilyOverride implements $FamilyOverride {
   _$FamilyDep2FamilyOverride(this.from, this.create);
 
   final int Function(FamilyDep2Ref ref) create;
@@ -687,7 +687,7 @@ class FamilyDep2Provider extends AutoDisposeProvider<int> {
   Override overrideWith(
     int Function(FamilyDep2Ref ref) create,
   ) {
-    return ProviderOverride(
+    return $ProviderOverride(
       origin: this,
       providerOverride: FamilyDep2Provider._internal(
         (ref) => create(ref as FamilyDep2Ref),

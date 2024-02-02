@@ -89,7 +89,7 @@ abstract class ChangeNotifierProviderRef<NotifierT extends ChangeNotifier?>
 /// }
 /// ```
 final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
-    extends FunctionalProvider<NotifierT, NotifierT,
+    extends $FunctionalProvider<NotifierT, NotifierT,
         ChangeNotifierProviderRef<NotifierT>> {
   /// {@macro riverpod.change_notifier_provider}
   ChangeNotifierProvider(
@@ -255,7 +255,7 @@ class ChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?, Arg>
     NotifierT Function(ChangeNotifierProviderRef<NotifierT> ref, Arg arg)
         create,
   ) {
-    return FamilyOverride(
+    return $FamilyOverride(
       from: this,
       createElement: (container, provider) {
         provider as ChangeNotifierProvider<NotifierT>;

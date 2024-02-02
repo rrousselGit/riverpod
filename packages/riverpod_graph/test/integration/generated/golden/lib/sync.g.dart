@@ -119,7 +119,7 @@ class FamilyFamily extends Family {
   String toString() => 'familyProvider';
 }
 
-class _$FamilyFamilyOverride implements FamilyOverride {
+class _$FamilyFamilyOverride implements $FamilyOverride {
   _$FamilyFamilyOverride(this.from, this.create);
 
   final String Function(FamilyRef ref) create;
@@ -200,7 +200,7 @@ class FamilyProvider extends AutoDisposeProvider<String> {
   Override overrideWith(
     String Function(FamilyRef ref) create,
   ) {
-    return ProviderOverride(
+    return $ProviderOverride(
       origin: this,
       providerOverride: FamilyProvider._internal(
         (ref) => create(ref as FamilyRef),
@@ -440,7 +440,7 @@ class FamilyClassFamily extends Family {
   String toString() => 'familyClassProvider';
 }
 
-class _$FamilyClassFamilyOverride implements FamilyOverride {
+class _$FamilyClassFamilyOverride implements $FamilyOverride {
   _$FamilyClassFamilyOverride(this.from, this.create);
 
   final FamilyClass Function() create;
@@ -531,7 +531,7 @@ class FamilyClassProvider
 
   @override
   Override overrideWith(FamilyClass Function() create) {
-    return ProviderOverride(
+    return $ProviderOverride(
       origin: this,
       providerOverride: FamilyClassProvider._internal(
         () => create()

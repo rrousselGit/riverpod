@@ -95,7 +95,7 @@ class ActivityNotifier2Family extends Family {
   String toString() => 'activityNotifier2Provider';
 }
 
-class _$ActivityNotifier2FamilyOverride implements FamilyOverride {
+class _$ActivityNotifier2FamilyOverride implements $FamilyOverride {
   _$ActivityNotifier2FamilyOverride(this.from, this.create);
 
   final ActivityNotifier2 Function() create;
@@ -157,7 +157,7 @@ class ActivityNotifier2Provider
 
   @override
   Override overrideWith(ActivityNotifier2 Function() create) {
-    return ProviderOverride(
+    return $ProviderOverride(
       origin: this,
       providerOverride: ActivityNotifier2Provider._internal(
         () => create()..activityType = activityType,

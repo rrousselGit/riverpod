@@ -106,7 +106,7 @@ class A3Family extends Family {
   String toString() => 'a3Provider';
 }
 
-class _$A3FamilyOverride implements FamilyOverride {
+class _$A3FamilyOverride implements $FamilyOverride {
   _$A3FamilyOverride(this.from, this.create);
 
   final A3 Function() create;
@@ -165,7 +165,7 @@ class A3Provider extends AutoDisposeNotifierProviderImpl<A3, int> {
 
   @override
   Override overrideWith(A3 Function() create) {
-    return ProviderOverride(
+    return $ProviderOverride(
       origin: this,
       providerOverride: A3Provider._internal(
         () => create()..param = param,
@@ -286,7 +286,7 @@ class A4Family extends Family {
   String toString() => 'a4Provider';
 }
 
-class _$A4FamilyOverride implements FamilyOverride {
+class _$A4FamilyOverride implements $FamilyOverride {
   _$A4FamilyOverride(this.from, this.create);
 
   final A4 Function() create;
@@ -345,7 +345,7 @@ class A4Provider extends NotifierProvider<A4, int> {
 
   @override
   Override overrideWith(A4 Function() create) {
-    return ProviderOverride(
+    return $ProviderOverride(
       origin: this,
       providerOverride: A4Provider._internal(
         () => create()..param = param,
@@ -465,7 +465,7 @@ class A5Family extends Family {
   String toString() => 'a5Provider';
 }
 
-class _$A5FamilyOverride implements FamilyOverride {
+class _$A5FamilyOverride implements $FamilyOverride {
   _$A5FamilyOverride(this.from, this.create);
 
   final A5 Function() create;
@@ -524,7 +524,7 @@ class A5Provider extends AutoDisposeAsyncNotifierProviderImpl<A5, int> {
 
   @override
   Override overrideWith(A5 Function() create) {
-    return ProviderOverride(
+    return $ProviderOverride(
       origin: this,
       providerOverride: A5Provider._internal(
         () => create()..param = param,
@@ -645,7 +645,7 @@ class A6Family extends Family {
   String toString() => 'a6Provider';
 }
 
-class _$A6FamilyOverride implements FamilyOverride {
+class _$A6FamilyOverride implements $FamilyOverride {
   _$A6FamilyOverride(this.from, this.create);
 
   final A6 Function() create;
@@ -704,7 +704,7 @@ class A6Provider extends AsyncNotifierProviderImpl<A6, int> {
 
   @override
   Override overrideWith(A6 Function() create) {
-    return ProviderOverride(
+    return $ProviderOverride(
       origin: this,
       providerOverride: A6Provider._internal(
         () => create()..param = param,
@@ -825,7 +825,7 @@ class A7Family extends Family {
   String toString() => 'a7Provider';
 }
 
-class _$A7FamilyOverride implements FamilyOverride {
+class _$A7FamilyOverride implements $FamilyOverride {
   _$A7FamilyOverride(this.from, this.create);
 
   final A7 Function() create;
@@ -884,7 +884,7 @@ class A7Provider extends AutoDisposeStreamNotifierProviderImpl<A7, int> {
 
   @override
   Override overrideWith(A7 Function() create) {
-    return ProviderOverride(
+    return $ProviderOverride(
       origin: this,
       providerOverride: A7Provider._internal(
         () => create()..param = param,
@@ -1005,7 +1005,7 @@ class A8Family extends Family {
   String toString() => 'a8Provider';
 }
 
-class _$A8FamilyOverride implements FamilyOverride {
+class _$A8FamilyOverride implements $FamilyOverride {
   _$A8FamilyOverride(this.from, this.create);
 
   final A8 Function() create;
@@ -1064,7 +1064,7 @@ class A8Provider extends StreamNotifierProviderImpl<A8, int> {
 
   @override
   Override overrideWith(A8 Function() create) {
-    return ProviderOverride(
+    return $ProviderOverride(
       origin: this,
       providerOverride: A8Provider._internal(
         () => create()..param = param,

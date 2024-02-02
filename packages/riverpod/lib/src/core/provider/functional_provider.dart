@@ -1,12 +1,15 @@
 part of '../../framework.dart';
 
-@internal
-abstract base class FunctionalProvider< //
+/// Implementation detail of `riverpod_generator`.
+/// Do not use, as this can be removed at any time.
+abstract base class $FunctionalProvider< //
         StateT,
         CreatedT,
         RefT extends Ref<Object?>> //
     extends ProviderBase<StateT> {
-  const FunctionalProvider({
+  /// Implementation detail of `riverpod_generator`.
+  /// Do not use, as this can be removed at any time.
+  const $FunctionalProvider({
     required super.name,
     required super.from,
     required super.argument,
@@ -17,7 +20,7 @@ abstract base class FunctionalProvider< //
   });
 
   @visibleForOverriding
-  FunctionalProvider<StateT, CreatedT, RefT> copyWithCreate(
+  $FunctionalProvider<StateT, CreatedT, RefT> copyWithCreate(
     Create<CreatedT, RefT> create,
   );
 
@@ -56,7 +59,7 @@ abstract base class FunctionalProvider< //
   /// ```
   /// {@endtemplate}
   Override overrideWith(Create<CreatedT, RefT> create) {
-    return ProviderOverride(
+    return $ProviderOverride(
       origin: this,
       providerOverride: copyWithCreate(create),
     );

@@ -9,6 +9,12 @@ import 'async_notifier.dart';
 import 'provider.dart' show Provider;
 import 'stream_provider.dart' show StreamProvider;
 
+/// Implementation detail of `riverpod_generator`.
+/// Do not use, as this may be removed at any time.
+base mixin $FutureProvider<StateT, RefT> on ProviderBase<AsyncValue<StateT>> {
+  FutureOr<StateT> create(FutureProviderRef<StateT> ref);
+}
+
 /// {@template riverpod.future_provider}
 /// A provider that asynchronously creates a value.
 ///
@@ -77,8 +83,11 @@ import 'stream_provider.dart' show StreamProvider;
 /// - [FutureProvider.family], to create a [FutureProvider] from external parameters
 /// - [FutureProvider.autoDispose], to destroy the state of a [FutureProvider] when no longer needed.
 /// {@endtemplate}
-base class FutureProvider<StateT> extends FunctionalProvider<AsyncValue<StateT>,
-    FutureOr<StateT>, FutureProviderRef<StateT>> with FutureModifier<StateT> {
+final class FutureProvider<StateT> extends $FunctionalProvider<
+        AsyncValue<StateT>, FutureOr<StateT>, FutureProviderRef<StateT>>
+    with
+        $FutureModifier<StateT>,
+        $FutureProvider<StateT, FutureProviderRef<StateT>> {
   /// {@macro riverpod.future_provider}
   FutureProvider(
     this._create, {
@@ -125,12 +134,15 @@ base class FutureProvider<StateT> extends FunctionalProvider<AsyncValue<StateT>,
   /// {@macro riverpod.family}
   static const family = FutureProviderFamilyBuilder();
 
-  /// TODO make all "create" public, for the sake of dartdocs.
+  /// TODO add dartdoc on all create cbs.
   final Create<FutureOr<StateT>, FutureProviderRef<StateT>> _create;
 
   @override
-  FutureProviderElement<StateT> createElement(ProviderContainer container) {
-    return FutureProviderElement(this, container);
+  FutureOr<StateT> create(FutureProviderRef<StateT> ref) => this._create(ref);
+
+  @override
+  $FutureProviderElement<StateT> createElement(ProviderContainer container) {
+    return $FutureProviderElement(this, container);
   }
 
   @mustBeOverridden
@@ -163,16 +175,17 @@ abstract class FutureProviderRef<StateT> implements Ref<AsyncValue<StateT>> {
 }
 
 /// The element of a [FutureProvider]
-class FutureProviderElement<StateT>
+/// Implementation detail of `riverpod_generator`. Do not use.
+class $FutureProviderElement<StateT>
     extends ProviderElementBase<AsyncValue<StateT>>
     with FutureModifierElement<StateT>
     implements FutureProviderRef<StateT> {
   /// The element of a [FutureProvider]
-  @internal
-  FutureProviderElement(this.provider, super.container);
+  /// Implementation detail of `riverpod_generator`. Do not use.
+  $FutureProviderElement(this.provider, super.container);
 
   @override
-  final FutureProvider<StateT> provider;
+  final $FutureProvider<StateT, Ref<AsyncValue<StateT>>> provider;
 
   @override
   Future<StateT> get future {
@@ -183,7 +196,7 @@ class FutureProviderElement<StateT>
   @override
   void create({required bool didChangeDependency}) {
     handleFuture(
-      () => provider._create(this),
+      () => provider.create(this),
       didChangeDependency: didChangeDependency,
     );
   }

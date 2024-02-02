@@ -106,7 +106,7 @@ class ExampleFamilyFamily extends Family {
   String toString() => 'exampleFamilyProvider';
 }
 
-class _$ExampleFamilyFamilyOverride implements FamilyOverride {
+class _$ExampleFamilyFamilyOverride implements $FamilyOverride {
   _$ExampleFamilyFamilyOverride(this.from, this.create);
 
   final ExampleFamily Function() create;
@@ -179,7 +179,7 @@ class ExampleFamilyProvider
 
   @override
   Override overrideWith(ExampleFamily Function() create) {
-    return ProviderOverride(
+    return $ProviderOverride(
       origin: this,
       providerOverride: ExampleFamilyProvider._internal(
         () => create()
@@ -311,7 +311,7 @@ class GenericFamily extends Family {
   String toString() => 'genericProvider';
 }
 
-class _$GenericFamilyOverride implements FamilyOverride {
+class _$GenericFamilyOverride implements $FamilyOverride {
   _$GenericFamilyOverride(this.from, this.create);
 
   final Generic Function() create;
@@ -366,7 +366,7 @@ class GenericProvider<A, B>
 
   @override
   Override overrideWith(Generic<A, B> Function() create) {
-    return ProviderOverride(
+    return $ProviderOverride(
       origin: this,
       providerOverride: GenericProvider<A, B>._internal(
         () => create(),

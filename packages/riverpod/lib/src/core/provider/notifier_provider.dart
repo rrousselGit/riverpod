@@ -120,7 +120,7 @@ abstract base class ClassProvider< //
 
   /// {@macro riverpod.override_with}
   Override overrideWith(NotifierT Function() create) {
-    return ProviderOverride(
+    return $ProviderOverride(
       origin: this,
       providerOverride: copyWithCreate(create),
     );
@@ -130,7 +130,7 @@ abstract base class ClassProvider< //
   Override overrideWithBuild(
     RunNotifierBuild<NotifierT, CreatedT, RefT> build,
   ) {
-    return ProviderOverride(
+    return $ProviderOverride(
       origin: this,
       providerOverride: copyWithBuild(build),
     );

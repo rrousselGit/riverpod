@@ -14,7 +14,7 @@ extension on _ProviderOverride {
     final that = this;
     return switch (that) {
       ProviderBase() => that,
-      ProviderOverride() => that.origin,
+      $ProviderOverride() => that.origin,
     };
   }
 
@@ -23,7 +23,7 @@ extension on _ProviderOverride {
     final that = this;
     return switch (that) {
       ProviderBase() => that,
-      ProviderOverride() => that.providerOverride,
+      $ProviderOverride() => that.providerOverride,
     };
   }
 }
@@ -36,7 +36,7 @@ extension on _FamilyOverride {
     final that = this;
     return switch (that) {
       Family() => that,
-      FamilyOverride() => that.from,
+      $FamilyOverride() => that.from,
     };
   }
 }
@@ -44,15 +44,15 @@ extension on _FamilyOverride {
 /// An object used by [ProviderContainer] to override the behavior of a provider
 /// for a part of the application.
 ///
-/// Do not implement/extend this class.
+/// Do not use.
 ///
 /// See also:
 ///
 /// - [ProviderContainer], which uses this object.
-/// - `overrideWithValue`, which creates a [ProviderOverride].
-class ProviderOverride implements _ProviderOverride {
+/// - `overrideWithValue`, which creates a [$ProviderOverride].
+class $ProviderOverride implements _ProviderOverride {
   /// Override a provider
-  ProviderOverride({
+  $ProviderOverride({
     required this.origin,
     required this.providerOverride,
   });
@@ -77,7 +77,7 @@ class ProviderOverride implements _ProviderOverride {
 
 /// When a provider is automatically scoped due to specifying `dependencies`.
 @internal
-class TransitiveProviderOverride implements ProviderOverride {
+class TransitiveProviderOverride implements $ProviderOverride {
   TransitiveProviderOverride(this.origin);
 
   @override
@@ -92,9 +92,10 @@ class TransitiveProviderOverride implements ProviderOverride {
 
 /// Do not use: Internal object to used by [ProviderContainer]/`ProviderScope`
 /// to override the behavior of a "family" for part of the application.
-@internal
-abstract class FamilyOverride implements _FamilyOverride {
-  factory FamilyOverride({
+abstract class $FamilyOverride implements _FamilyOverride {
+  /// Do not use: Internal object to used by [ProviderContainer]/`ProviderScope`
+  /// to override the behavior of a "family" for part of the application.
+  factory $FamilyOverride({
     required ProviderElementBase<Object?> Function(
       ProviderContainer container,
       ProviderBase<Object?> provider,
@@ -117,7 +118,7 @@ abstract class FamilyOverride implements _FamilyOverride {
 }
 
 @internal
-class TransitiveFamilyOverride implements FamilyOverride {
+class TransitiveFamilyOverride implements $FamilyOverride {
   TransitiveFamilyOverride(this.from);
 
   @override
@@ -136,7 +137,7 @@ class TransitiveFamilyOverride implements FamilyOverride {
 }
 
 /// An [Override] for families
-class _FamilyOverrideImpl implements FamilyOverride {
+class _FamilyOverrideImpl implements $FamilyOverride {
   /// An [Override] for families
   // ignore: library_private_types_in_public_api
   _FamilyOverrideImpl({
