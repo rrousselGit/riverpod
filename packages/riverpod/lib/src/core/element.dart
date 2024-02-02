@@ -813,7 +813,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
     return requireState;
   }
 
-  /// Visit the [ProviderElement]s of providers that are listening to this element.
+  /// Visit the [$ProviderElement]s of providers that are listening to this element.
   ///
   /// A provider is considered as listening to this element if it either [watch]
   /// or [listen] this element.

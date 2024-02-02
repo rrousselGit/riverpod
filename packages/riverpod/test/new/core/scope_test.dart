@@ -163,7 +163,7 @@ Future<void> main() async {
       expect(child.read(provider), 0);
 
       expect(child.getAllProviderElements(), [
-        isA<ProviderElement<Object?>>()
+        isA<$ProviderElement<Object?>>()
             .having((e) => e.provider, 'provider', provider),
       ]);
       expect(container.getAllProviderElements(), isEmpty);
@@ -293,7 +293,7 @@ Future<void> main() async {
       expect(child.read(provider(0)), 0);
 
       expect(child.getAllProviderElements(), [
-        isA<ProviderElement<Object?>>()
+        isA<$ProviderElement<Object?>>()
             .having((e) => e.provider, 'provider', provider(0)),
       ]);
       expect(container.getAllProviderElements(), isEmpty);

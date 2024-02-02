@@ -191,7 +191,8 @@ mixin GeneratorRef on ProviderRef<int> {
   Object? get value;
 }
 
-class _GeneratorProviderElement extends ProviderElement<int> with GeneratorRef {
+class _GeneratorProviderElement extends $ProviderElement<int>
+    with GeneratorRef {
   _GeneratorProviderElement(super.provider, super.container);
 
   @override

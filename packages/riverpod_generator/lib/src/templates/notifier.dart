@@ -23,7 +23,7 @@ class NotifierTemplate extends Template {
       SupportedCreatedType.stream =>
         '\$StreamNotifier<${provider.valueTypeDisplayString}>',
       SupportedCreatedType.value =>
-        '\$cNotifier<${provider.valueTypeDisplayString}>',
+        '\$Notifier<${provider.valueTypeDisplayString}>',
     };
 
     final argumentRecordType = buildParamDefinitionQuery(

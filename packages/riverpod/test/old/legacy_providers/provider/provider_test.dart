@@ -68,7 +68,7 @@ void main() {
         );
 
         final element =
-            container.readProviderElement(provider) as ProviderElement;
+            container.readProviderElement(provider) as $ProviderElement;
 
         expect(
           () => element.state,

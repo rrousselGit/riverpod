@@ -10,6 +10,12 @@ import '../framework.dart';
 import 'future_provider.dart' show FutureProvider;
 import 'provider.dart' show Provider;
 
+/// Implementation detail of `riverpod_generator`.
+/// Do not use, as this may be removed at any time.
+base mixin $StreamProvider<StateT, RefT> on ProviderBase<AsyncValue<StateT>> {
+  Stream<StateT> create(RefT ref);
+}
+
 /// {@template riverpod.stream_provider}
 /// Creates a stream and exposes its latest event.
 ///
@@ -67,9 +73,10 @@ import 'provider.dart' show Provider;
 /// - [StreamProvider.autoDispose], to destroy the state of a [StreamProvider] when no longer needed.
 /// {@endtemplate}
 base class StreamProvider<StateT> extends $FunctionalProvider<
-    AsyncValue<StateT>,
-    Stream<StateT>,
-    Ref<AsyncValue<StateT>>> with $FutureModifier<StateT> {
+        AsyncValue<StateT>, Stream<StateT>, Ref<AsyncValue<StateT>>>
+    with
+        $FutureModifier<StateT>,
+        $StreamProvider<StateT, Ref<AsyncValue<StateT>>> {
   /// {@macro riverpod.stream_provider}
   StreamProvider(
     this._create, {
@@ -119,10 +126,13 @@ base class StreamProvider<StateT> extends $FunctionalProvider<
   final Create<Stream<StateT>, Ref<AsyncValue<StateT>>> _create;
 
   @override
-  StreamProviderElement<StateT> createElement(
+  Stream<StateT> create(Ref<AsyncValue<StateT>> ref) => _create(ref);
+
+  @override
+  $StreamProviderElement<StateT> createElement(
     ProviderContainer container,
   ) {
-    return StreamProviderElement(this, container);
+    return $StreamProviderElement(this, container);
   }
 
   @mustBeOverridden
@@ -146,15 +156,14 @@ base class StreamProvider<StateT> extends $FunctionalProvider<
 }
 
 /// The element of [StreamProvider].
-class StreamProviderElement<StateT>
+class $StreamProviderElement<StateT>
     extends ProviderElementBase<AsyncValue<StateT>>
     with FutureModifierElement<StateT> {
   /// The element of [StreamProvider].
-  @internal
-  StreamProviderElement(this.provider, super.container);
+  $StreamProviderElement(this.provider, super.container);
 
   @override
-  final StreamProvider<StateT> provider;
+  final $StreamProvider<StateT, Ref<AsyncValue<StateT>>> provider;
 
   final _streamNotifier = ProxyElementValueListenable<Stream<StateT>>();
   final StreamController<StateT> _streamController =
@@ -166,7 +175,7 @@ class StreamProviderElement<StateT>
     _streamNotifier.result ??= Result.data(_streamController.stream);
 
     handleStream(
-      () => provider._create(this),
+      () => provider.create(this),
       didChangeDependency: didChangeDependency,
     );
   }

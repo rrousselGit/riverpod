@@ -287,7 +287,7 @@ void main() {
     );
     expect(firstDependents, [computedElement]);
     expect(firstElement.hasListeners, true);
-    expect(secondDependents, <ProviderElement<Object?>>[]);
+    expect(secondDependents, <$ProviderElement<Object?>>[]);
     expect(secondElement.hasListeners, false);
   });
 
@@ -337,7 +337,7 @@ void main() {
       elementVisitor: firstDependents.add,
       listenableVisitor: (_) {},
     );
-    expect(firstDependents, <ProviderElement<Object?>>{});
+    expect(firstDependents, <$ProviderElement<Object?>>{});
     expect(firstElement.hasListeners, false);
   });
 

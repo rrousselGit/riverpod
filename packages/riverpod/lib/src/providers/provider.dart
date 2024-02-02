@@ -6,10 +6,17 @@ import '../framework.dart';
 import 'legacy/state_notifier_provider.dart' show StateNotifierProvider;
 import 'stream_provider.dart' show StreamProvider;
 
+/// Implementation detail of `riverpod_generator`.
+/// Do not use, as this may be removed at any time.
+base mixin $Provider<StateT, RefT> on ProviderBase<StateT> {
+  StateT create(RefT ref);
+}
+
 // TODO changelog ProviderRef was removed. Used Ref directly
 /// {@macro riverpod.provider}
 base class Provider<StateT>
-    extends $FunctionalProvider<StateT, StateT, Ref<StateT>> {
+    extends $FunctionalProvider<StateT, StateT, Ref<StateT>>
+    with $Provider<StateT, Ref<StateT>> {
   /// {@macro riverpod.provider}
   // TODO make all providers const under all variations
   Provider(
@@ -60,10 +67,13 @@ base class Provider<StateT>
   final Create<StateT, Ref<StateT>> _create;
 
   @override
-  ProviderElement<StateT> createElement(
+  StateT create(Ref<StateT> ref) => _create(ref);
+
+  @override
+  $ProviderElement<StateT> createElement(
     ProviderContainer container,
   ) {
-    return ProviderElement(this, container);
+    return $ProviderElement(this, container);
   }
 
   @mustBeOverridden
@@ -331,27 +341,26 @@ base class Provider<StateT>
 ///   when that provider is no longer listened to.
 /// - [Provider.family], to allow providers to create a value from external parameters.
 /// {@endtemplate}
-class ProviderElement<State> extends ProviderElementBase<State> {
+class $ProviderElement<StateT> extends ProviderElementBase<StateT> {
   /// A [ProviderElementBase] for [Provider]
-  @internal
-  ProviderElement(this.provider, super.container);
+  $ProviderElement(this.provider, super.container);
 
   @override
-  final Provider<State> provider;
+  final $Provider<StateT, Ref<StateT>> provider;
 
   @override
-  State get state => requireState;
+  StateT get state => requireState;
 
   @override
-  set state(State newState) => setStateResult(ResultData(newState));
+  set state(StateT newState) => setStateResult(ResultData(newState));
 
   @override
   void create({required bool didChangeDependency}) {
-    setStateResult(ResultData(provider._create(this)));
+    setStateResult(ResultData(provider.create(this)));
   }
 
   @override
-  bool updateShouldNotify(State previous, State next) {
+  bool updateShouldNotify(StateT previous, StateT next) {
     return previous != next;
   }
 }

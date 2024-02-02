@@ -12,7 +12,7 @@ import 'stream_provider.dart' show StreamProvider;
 /// Implementation detail of `riverpod_generator`.
 /// Do not use, as this may be removed at any time.
 base mixin $FutureProvider<StateT, RefT> on ProviderBase<AsyncValue<StateT>> {
-  FutureOr<StateT> create(FutureProviderRef<StateT> ref);
+  FutureOr<StateT> create(RefT ref);
 }
 
 /// {@template riverpod.future_provider}

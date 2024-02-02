@@ -259,9 +259,9 @@ void main() {
 
   test('Ref is unusable after dispose (read/onDispose)', () {
     final container = ProviderContainer.test();
-    late ProviderElement<Object?> ref;
+    late $ProviderElement<Object?> ref;
     final provider = Provider((s) {
-      ref = s as ProviderElement;
+      ref = s as $ProviderElement;
       return 42;
     });
     final other = Provider((_) => 42);

@@ -191,7 +191,7 @@ void main() {
 
         expect(
           child.getAllProviderElements().single,
-          isA<ProviderElement<Object?>>()
+          isA<$ProviderElement<Object?>>()
               .having((e) => e.origin, 'origin', scopedProvider),
         );
       });
@@ -214,7 +214,7 @@ void main() {
 
         expect(
           child.getAllProviderElements().single,
-          isA<ProviderElement<Object?>>()
+          isA<$ProviderElement<Object?>>()
               .having((e) => e.origin, 'origin', scopedProvider),
         );
       });
@@ -247,17 +247,17 @@ void main() {
 
         expect(
           root.getAllProviderElements().single,
-          isA<ProviderElement<Object?>>()
+          isA<$ProviderElement<Object?>>()
               .having((e) => e.provider, 'provider', provider),
         );
         expect(
           mid.getAllProviderElements().single,
-          isA<ProviderElement<Object?>>()
+          isA<$ProviderElement<Object?>>()
               .having((e) => e.provider, 'provider', provider2),
         );
         expect(
           leaf.getAllProviderElements().single,
-          isA<ProviderElement<Object?>>()
+          isA<$ProviderElement<Object?>>()
               .having((e) => e.provider, 'provider', provider3),
         );
       });
@@ -308,7 +308,7 @@ void main() {
 
         expect(
           child.getAllProviderElementsInOrder().single,
-          isA<ProviderElement<Object?>>()
+          isA<$ProviderElement<Object?>>()
               .having((e) => e.origin, 'origin', scopedProvider),
         );
       });
@@ -331,7 +331,7 @@ void main() {
 
         expect(
           child.getAllProviderElementsInOrder().single,
-          isA<ProviderElement<Object?>>()
+          isA<$ProviderElement<Object?>>()
               .having((e) => e.origin, 'origin', scopedProvider),
         );
       });

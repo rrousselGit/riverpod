@@ -51,7 +51,7 @@ class ProviderTemplate extends Template {
               '\$StreamProvider<$valueType, $_refType>',
             ];
           case SupportedCreatedType.value:
-            modifiers = [];
+            modifiers = ['\$Provider<$valueType, $_refType>'];
         }
 
         final mixins = modifiers.isEmpty ? '' : ' with ${modifiers.join(', ')}';

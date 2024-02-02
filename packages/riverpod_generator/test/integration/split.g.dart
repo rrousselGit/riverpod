@@ -1,86 +1,34 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'auto_dispose.dart';
+part of 'split.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-typedef KeepAliveRef = Ref<int>;
+typedef Counter2Ref = Ref<int>;
 
-const keepAliveProvider = KeepAliveProvider._();
+const counter2Provider = Counter2Provider._();
 
-final class KeepAliveProvider
-    extends $FunctionalProvider<int, int, KeepAliveRef>
-    with $Provider<int, KeepAliveRef> {
-  const KeepAliveProvider._(
+final class Counter2Provider extends $FunctionalProvider<int, int, Counter2Ref>
+    with $Provider<int, Counter2Ref> {
+  const Counter2Provider._(
       {int Function(
-        KeepAliveRef ref,
+        Counter2Ref ref,
       )? create})
       : _createCb = create,
         super(
           from: null,
           argument: null,
-          debugGetCreateSourceHash: _$keepAliveHash,
-          name: r'keepAlive',
-          isAutoDispose: false,
-          dependencies: null,
-          allTransitiveDependencies: null,
-        );
-
-  final int Function(
-    KeepAliveRef ref,
-  )? _createCb;
-
-  @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
-
-  @override
-  int create(KeepAliveRef ref) {
-    final fn = _createCb ?? keepAlive;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
-  KeepAliveProvider copyWithCreate(
-    int Function(
-      KeepAliveRef ref,
-    ) create,
-  ) {
-    return KeepAliveProvider._(create: create);
-  }
-}
-
-String _$keepAliveHash() => r'72dd192676126d487c24c7695a91d59410c62696';
-
-typedef NotKeepAliveRef = Ref<int>;
-
-const notKeepAliveProvider = NotKeepAliveProvider._();
-
-final class NotKeepAliveProvider
-    extends $FunctionalProvider<int, int, NotKeepAliveRef>
-    with $Provider<int, NotKeepAliveRef> {
-  const NotKeepAliveProvider._(
-      {int Function(
-        NotKeepAliveRef ref,
-      )? create})
-      : _createCb = create,
-        super(
-          from: null,
-          argument: null,
-          debugGetCreateSourceHash: _$notKeepAliveHash,
-          name: r'notKeepAlive',
+          debugGetCreateSourceHash: _$counter2Hash,
+          name: r'counter2',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
         );
 
   final int Function(
-    NotKeepAliveRef ref,
+    Counter2Ref ref,
   )? _createCb;
 
   @override
@@ -88,8 +36,8 @@ final class NotKeepAliveProvider
       $ProviderElement(this, container);
 
   @override
-  int create(NotKeepAliveRef ref) {
-    final fn = _createCb ?? notKeepAlive;
+  int create(Counter2Ref ref) {
+    final fn = _createCb ?? counter2;
 
     return fn(
       ref,
@@ -97,16 +45,66 @@ final class NotKeepAliveProvider
   }
 
   @override
-  NotKeepAliveProvider copyWithCreate(
+  Counter2Provider copyWithCreate(
     int Function(
-      NotKeepAliveRef ref,
+      Counter2Ref ref,
     ) create,
   ) {
-    return NotKeepAliveProvider._(create: create);
+    return Counter2Provider._(create: create);
   }
 }
 
-String _$notKeepAliveHash() => r'1ccc497d7c651f8e730ec1bcecf271ffe9615d83';
+String _$counter2Hash() => r'9328919066a683f85226fc59201bb7c54f107a7d';
+
+typedef CounterRef = Ref<int>;
+
+const counterProvider = CounterProvider._();
+
+final class CounterProvider extends $FunctionalProvider<int, int, CounterRef>
+    with $Provider<int, CounterRef> {
+  const CounterProvider._(
+      {int Function(
+        CounterRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          debugGetCreateSourceHash: _$counterHash,
+          name: r'counter',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final int Function(
+    CounterRef ref,
+  )? _createCb;
+
+  @override
+  $ProviderElement<int> createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  int create(CounterRef ref) {
+    final fn = _createCb ?? counter;
+
+    return fn(
+      ref,
+    );
+  }
+
+  @override
+  CounterProvider copyWithCreate(
+    int Function(
+      CounterRef ref,
+    ) create,
+  ) {
+    return CounterProvider._(create: create);
+  }
+}
+
+String _$counterHash() => r'9b0db44ecc47057e79891e5ecd92d34b08637679';
 
 const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint

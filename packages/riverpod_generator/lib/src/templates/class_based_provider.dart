@@ -18,23 +18,14 @@ String serializeDependencies(
   if (dependencies == null) return 'null';
 
   final buffer = StringBuffer('const <ProviderOrFamily>');
-  // Use list vs set based on the number of dependencies to optimize "contains" call
-  if (dependencies.length < 4) {
-    buffer.write('[');
-  } else {
-    buffer.write('{');
-  }
+  buffer.write('[');
 
   buffer.writeAll(
     dependencies.map((e) => providerNameFor(e, options)),
     ',',
   );
 
-  if (dependencies.length < 4) {
-    buffer.write(']');
-  } else {
-    buffer.write('}');
-  }
+  buffer.write(']');
   return buffer.toString();
 }
 
@@ -51,14 +42,14 @@ String serializeAllTransitiveDependencies(
 
   final buffer = StringBuffer('const <ProviderOrFamily>');
 
-  buffer.write('{');
+  buffer.write('[');
   buffer.writeAll(
     dependencies
         .map((e) => providerNameFor(e, options))
         .map((e) => '$e, ...?$e.allTransitiveDependencies'),
     ',',
   );
-  buffer.write('}');
+  buffer.write(']');
 
   return buffer.toString();
 }

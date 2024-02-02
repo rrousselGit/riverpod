@@ -21,22 +21,18 @@ export 'package:riverpod/src/internals.dart'
         Ref,
 
         // Provider
-        Provider,
-        ProviderFamily,
-        ProviderElement,
+        $Provider,
+        $ProviderElement,
 
         // FutureProvider
         $FutureProvider,
-        // FutureProviderFamily,
-        // FutureProviderRef,
         $FutureProviderElement,
 
-// // StreamProvider
-// StreamProvider,
-// StreamProviderFamily,
-// StreamProviderElement,
+        // StreamProvider
+        $StreamProvider,
+        $StreamProviderElement,
 
-// AsyncValue
+        // AsyncValue
         AsyncValue,
         AsyncLoading,
         AsyncData,
