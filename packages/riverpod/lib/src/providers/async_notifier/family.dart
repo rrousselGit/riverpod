@@ -61,7 +61,7 @@ final class FamilyAsyncNotifierProvider< //
     extends $AsyncNotifierProvider<NotifierT, StateT> {
   /// An implementation detail of Riverpod
   const FamilyAsyncNotifierProvider._(
-    super._createNotifier, {
+    this._createNotifier, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -89,6 +89,11 @@ final class FamilyAsyncNotifierProvider< //
       runNotifierBuildOverride: build ?? runNotifierBuildOverride,
     );
   }
+
+  final NotifierT Function() _createNotifier;
+
+  @override
+  NotifierT create() => _createNotifier();
 
   @internal
   @override

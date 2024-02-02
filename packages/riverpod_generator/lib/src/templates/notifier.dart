@@ -26,15 +26,39 @@ class NotifierTemplate extends Template {
         '\$cNotifier<${provider.valueTypeDisplayString}>',
     };
 
+    final argumentRecordType = buildParamDefinitionQuery(
+      provider.parameters,
+      asRecord: true,
+    );
+
+    final paramsPassThrough = buildParamInvocationQuery({
+      for (final (index, parameter) in provider.parameters.indexed)
+        if (parameter.isPositional)
+          parameter: '_\$args.\$${index + 1}'
+        else
+          parameter: '_\$args.${parameter.name!.lexeme}',
+    });
+
+    final _$args = r'late final _$args = '
+        '(ref as ${provider.elementName}).origin.argument as ($argumentRecordType);';
+    var paramOffset = 0;
+    final parametersAsFields = provider.parameters
+        .map(
+          (p) => '${p.typeDisplayString} get ${p.name!.lexeme} => '
+              '_\$args.${p.isPositional ? '\$${++paramOffset}' : p.name!.lexeme};',
+        )
+        .join();
+
     buffer.writeln('''
 abstract class $notifierBaseName$genericsDefinition extends $baseClass {
+  ${provider.parameters.isNotEmpty ? _$args : ''}
+  $parametersAsFields
+
   ${provider.createdTypeDisplayString} build($buildParams);
 
   @\$internal
   @override
-  void runBuild() {
-
-  }
+  ${provider.createdTypeDisplayString} runBuild() => build($paramsPassThrough);
 }
 ''');
   }

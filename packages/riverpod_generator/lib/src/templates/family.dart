@@ -1,7 +1,6 @@
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
 import '../models.dart';
-import 'class_based_provider.dart';
 import 'family_back.dart';
 import 'parameters.dart';
 import 'template.dart';
@@ -36,8 +35,8 @@ final class ${provider.familyTypeName} extends Family{
   const ${provider.familyTypeName}._()
       : super(
         name: r'${provider.name}',
-        dependencies: ${serializeDependencies(provider.providerElement.annotation, options)},
-        allTransitiveDependencies: ${serializeAllTransitiveDependencies(provider.providerElement.annotation, options)},
+        dependencies: ${provider.dependencies(options)},
+        allTransitiveDependencies: ${provider.allTransitiveDependencies(options)},
         debugGetCreateSourceHash: ${provider.hashFnName},
         ${provider.providerElement.isAutoDispose ? 'isAutoDispose: true,' : ''}
       );

@@ -10,16 +10,14 @@ String providerNameFor(
   return '${provider.name.lowerFirst}${options.providerNameSuffix ?? 'Provider'}';
 }
 
-String? serializeDependencies(
+String serializeDependencies(
   RiverpodAnnotationElement annotation,
   BuildYamlOptions options,
 ) {
   final dependencies = annotation.dependencies;
   if (dependencies == null) return 'null';
 
-  final buffer = StringBuffer(
-    '${dependencies.isEmpty ? 'const ' : ''}<ProviderOrFamily>',
-  );
+  final buffer = StringBuffer('const <ProviderOrFamily>');
   // Use list vs set based on the number of dependencies to optimize "contains" call
   if (dependencies.length < 4) {
     buffer.write('[');
@@ -40,7 +38,7 @@ String? serializeDependencies(
   return buffer.toString();
 }
 
-String? serializeAllTransitiveDependencies(
+String serializeAllTransitiveDependencies(
   RiverpodAnnotationElement annotation,
   BuildYamlOptions options,
 ) {
@@ -51,9 +49,7 @@ String? serializeAllTransitiveDependencies(
   final dependencies = annotation.dependencies;
   if (dependencies == null) return 'null';
 
-  final buffer = StringBuffer(
-    '${dependencies.isEmpty ? 'const ' : ''}<ProviderOrFamily>',
-  );
+  final buffer = StringBuffer('const <ProviderOrFamily>');
 
   buffer.write('{');
   buffer.writeAll(

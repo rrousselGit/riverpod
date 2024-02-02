@@ -13,19 +13,19 @@ const genericProvider = GenericFamily._();
 final class GenericProvider<T extends num> extends $FunctionalProvider<
         AsyncValue<List<T>>, FutureOr<List<T>>, GenericRef<T>>
     with $FutureModifier<List<T>>, $FutureProvider<List<T>, GenericRef<T>> {
-  const GenericProvider._({
-    FutureOr<List<T>> Function(
-      GenericRef<T> ref,
-    )? create,
-    required GenericFamily super.from,
-  })  : _createCb = create,
+  const GenericProvider._(
+      {required GenericFamily super.from,
+      FutureOr<List<T>> Function(
+        GenericRef<T> ref,
+      )? create})
+      : _createCb = create,
         super(
+          argument: null,
           debugGetCreateSourceHash: _$genericHash,
           name: r'generic',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
-          argument: null,
         );
 
   final FutureOr<List<T>> Function(
@@ -51,10 +51,7 @@ final class GenericProvider<T extends num> extends $FunctionalProvider<
       GenericRef<T> ref,
     ) create,
   ) {
-    return GenericProvider<T>._(
-      create: create,
-      from: from! as GenericFamily,
-    );
+    return GenericProvider<T>._(from: from! as GenericFamily, create: create);
   }
 
   @override
@@ -90,19 +87,19 @@ const publicProvider = PublicProvider._();
 final class PublicProvider
     extends $FunctionalProvider<AsyncValue<String>, FutureOr<String>, PublicRef>
     with $FutureModifier<String>, $FutureProvider<String, PublicRef> {
-  const PublicProvider._({
-    FutureOr<String> Function(
-      PublicRef ref,
-    )? create,
-  })  : _createCb = create,
+  const PublicProvider._(
+      {FutureOr<String> Function(
+        PublicRef ref,
+      )? create})
+      : _createCb = create,
         super(
+          from: null,
+          argument: null,
           debugGetCreateSourceHash: _$publicHash,
           name: r'public',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
-          from: null,
-          argument: null,
         );
 
   final FutureOr<String> Function(
@@ -128,9 +125,7 @@ final class PublicProvider
       PublicRef ref,
     ) create,
   ) {
-    return PublicProvider._(
-      create: create,
-    );
+    return PublicProvider._(create: create);
   }
 }
 
@@ -143,19 +138,19 @@ const _privateProvider = _PrivateProvider._();
 final class _PrivateProvider extends $FunctionalProvider<AsyncValue<String>,
         FutureOr<String>, _PrivateRef>
     with $FutureModifier<String>, $FutureProvider<String, _PrivateRef> {
-  const _PrivateProvider._({
-    FutureOr<String> Function(
-      _PrivateRef ref,
-    )? create,
-  })  : _createCb = create,
+  const _PrivateProvider._(
+      {FutureOr<String> Function(
+        _PrivateRef ref,
+      )? create})
+      : _createCb = create,
         super(
+          from: null,
+          argument: null,
           debugGetCreateSourceHash: _$privateHash,
           name: r'_private',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
-          from: null,
-          argument: null,
         );
 
   final FutureOr<String> Function(
@@ -181,9 +176,7 @@ final class _PrivateProvider extends $FunctionalProvider<AsyncValue<String>,
       _PrivateRef ref,
     ) create,
   ) {
-    return _PrivateProvider._(
-      create: create,
-    );
+    return _PrivateProvider._(create: create);
   }
 }
 
@@ -196,14 +189,14 @@ const familyOrProvider = FamilyOrFamily._();
 final class FamilyOrProvider extends $FunctionalProvider<AsyncValue<String>,
         FutureOr<String>, FamilyOrRef>
     with $FutureModifier<String>, $FutureProvider<String, FamilyOrRef> {
-  const FamilyOrProvider._({
-    FutureOr<String> Function(
-      FamilyOrRef ref,
-      int first,
-    )? create,
-    required FamilyOrFamily super.from,
-    required (int,) super.argument,
-  })  : _createCb = create,
+  const FamilyOrProvider._(
+      {required FamilyOrFamily super.from,
+      required (int,) super.argument,
+      FutureOr<String> Function(
+        FamilyOrRef ref,
+        int first,
+      )? create})
+      : _createCb = create,
         super(
           debugGetCreateSourceHash: _$familyOrHash,
           name: r'familyOr',
@@ -238,14 +231,13 @@ final class FamilyOrProvider extends $FunctionalProvider<AsyncValue<String>,
     ) create,
   ) {
     return FamilyOrProvider._(
-      create: (
-        ref,
-        int first,
-      ) =>
-          create(ref),
-      argument: argument! as (int,),
-      from: from! as FamilyOrFamily,
-    );
+        argument: argument! as (int,),
+        from: from! as FamilyOrFamily,
+        create: (
+          ref,
+          int first,
+        ) =>
+            create(ref));
   }
 
   @override
@@ -282,25 +274,25 @@ const familyProvider = FamilyFamily._();
 final class FamilyProvider
     extends $FunctionalProvider<AsyncValue<String>, FutureOr<String>, FamilyRef>
     with $FutureModifier<String>, $FutureProvider<String, FamilyRef> {
-  const FamilyProvider._({
-    FutureOr<String> Function(
-      FamilyRef ref,
-      int first, {
-      String? second,
-      required double third,
-      bool fourth,
-      List<String>? fifth,
-    })? create,
-    required FamilyFamily super.from,
-    required (
-      int, {
-      String? second,
-      double third,
-      bool fourth,
-      List<String>? fifth,
-    })
-        super.argument,
-  })  : _createCb = create,
+  const FamilyProvider._(
+      {required FamilyFamily super.from,
+      required (
+        int, {
+        String? second,
+        double third,
+        bool fourth,
+        List<String>? fifth,
+      })
+          super.argument,
+      FutureOr<String> Function(
+        FamilyRef ref,
+        int first, {
+        String? second,
+        required double third,
+        bool fourth,
+        List<String>? fifth,
+      })? create})
+      : _createCb = create,
         super(
           debugGetCreateSourceHash: _$familyHash,
           name: r'family',
@@ -355,24 +347,23 @@ final class FamilyProvider
     ) create,
   ) {
     return FamilyProvider._(
-      create: (
-        ref,
-        int first, {
-        String? second,
-        required double third,
-        bool fourth = true,
-        List<String>? fifth,
-      }) =>
-          create(ref),
-      argument: argument! as (
-        int, {
-        String? second,
-        double third,
-        bool fourth,
-        List<String>? fifth,
-      }),
-      from: from! as FamilyFamily,
-    );
+        argument: argument! as (
+          int, {
+          String? second,
+          double third,
+          bool fourth,
+          List<String>? fifth,
+        }),
+        from: from! as FamilyFamily,
+        create: (
+          ref,
+          int first, {
+          String? second,
+          required double third,
+          bool fourth = true,
+          List<String>? fifth,
+        }) =>
+            create(ref));
   }
 
   @override
@@ -416,21 +407,45 @@ const genericClassProvider = GenericClassFamily._();
 
 final class GenericClassProvider<T extends num>
     extends $AsyncNotifierProvider<GenericClass<T>, List<T>> {
-  const GenericClassProvider._({
-    FutureOr<List<T>> Function()? create,
-    required GenericClassFamily super.from,
-  })  : _createCb = create,
+  const GenericClassProvider._(
+      {required GenericClassFamily super.from,
+      super.runNotifierBuildOverride,
+      GenericClass<T> Function()? create})
+      : _createCb = create,
         super(
+          argument: null,
           debugGetCreateSourceHash: _$genericClassHash,
           name: r'GenericClass',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
-          argument: null,
         );
 
-  final FutureOr<List<T>> Function()? _createCb;
+  final GenericClass<T> Function()? _createCb;
 
+  @$internal
+  @override
+  GenericClass<T> create() => _createCb?.call() ?? GenericClass<T>();
+
+  @$internal
+  @override
+  GenericClassProvider<T> copyWithCreate(
+    GenericClass<T> Function() create,
+  ) {
+    return GenericClassProvider<T>._(
+        from: from! as GenericClassFamily, create: create);
+  }
+
+  @$internal
+  @override
+  GenericClassProvider<T> copyWithBuild(
+    FutureOr<List<T>> Function(Ref<AsyncValue<List<T>>>, GenericClass<T>) build,
+  ) {
+    return GenericClassProvider<T>._(
+        from: from! as GenericClassFamily, runNotifierBuildOverride: build);
+  }
+
+  @$internal
   @override
   $AsyncNotifierProviderElement<GenericClass<T>, List<T>> createElement(
           ProviderContainer container) =>
@@ -468,28 +483,49 @@ abstract class _$GenericClass<T extends num> extends $AsyncNotifier<List<T>> {
 
   @$internal
   @override
-  void runBuild() {}
+  FutureOr<List<T>> runBuild() => build();
 }
 
 const publicClassProvider = PublicClassProvider._();
 
 final class PublicClassProvider
     extends $AsyncNotifierProvider<PublicClass, String> {
-  const PublicClassProvider._({
-    FutureOr<String> Function()? create,
-  })  : _createCb = create,
+  const PublicClassProvider._(
+      {super.runNotifierBuildOverride, PublicClass Function()? create})
+      : _createCb = create,
         super(
+          from: null,
+          argument: null,
           debugGetCreateSourceHash: _$publicClassHash,
           name: r'PublicClass',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
-          from: null,
-          argument: null,
         );
 
-  final FutureOr<String> Function()? _createCb;
+  final PublicClass Function()? _createCb;
 
+  @$internal
+  @override
+  PublicClass create() => _createCb?.call() ?? PublicClass();
+
+  @$internal
+  @override
+  PublicClassProvider copyWithCreate(
+    PublicClass Function() create,
+  ) {
+    return PublicClassProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  PublicClassProvider copyWithBuild(
+    FutureOr<String> Function(Ref<AsyncValue<String>>, PublicClass) build,
+  ) {
+    return PublicClassProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
   @override
   $AsyncNotifierProviderElement<PublicClass, String> createElement(
           ProviderContainer container) =>
@@ -503,28 +539,49 @@ abstract class _$PublicClass extends $AsyncNotifier<String> {
 
   @$internal
   @override
-  void runBuild() {}
+  FutureOr<String> runBuild() => build();
 }
 
 const _privateClassProvider = _PrivateClassProvider._();
 
 final class _PrivateClassProvider
     extends $AsyncNotifierProvider<_PrivateClass, String> {
-  const _PrivateClassProvider._({
-    FutureOr<String> Function()? create,
-  })  : _createCb = create,
+  const _PrivateClassProvider._(
+      {super.runNotifierBuildOverride, _PrivateClass Function()? create})
+      : _createCb = create,
         super(
+          from: null,
+          argument: null,
           debugGetCreateSourceHash: _$privateClassHash,
           name: r'_PrivateClass',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
-          from: null,
-          argument: null,
         );
 
-  final FutureOr<String> Function()? _createCb;
+  final _PrivateClass Function()? _createCb;
 
+  @$internal
+  @override
+  _PrivateClass create() => _createCb?.call() ?? _PrivateClass();
+
+  @$internal
+  @override
+  _PrivateClassProvider copyWithCreate(
+    _PrivateClass Function() create,
+  ) {
+    return _PrivateClassProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  _PrivateClassProvider copyWithBuild(
+    FutureOr<String> Function(Ref<AsyncValue<String>>, _PrivateClass) build,
+  ) {
+    return _PrivateClassProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
   @override
   $AsyncNotifierProviderElement<_PrivateClass, String> createElement(
           ProviderContainer container) =>
@@ -538,18 +595,19 @@ abstract class _$PrivateClass extends $AsyncNotifier<String> {
 
   @$internal
   @override
-  void runBuild() {}
+  FutureOr<String> runBuild() => build();
 }
 
 const familyOrClassProvider = FamilyOrClassFamily._();
 
 final class FamilyOrClassProvider
     extends $AsyncNotifierProvider<FamilyOrClass, String> {
-  const FamilyOrClassProvider._({
-    FutureOr<String> Function()? create,
-    required FamilyOrClassFamily super.from,
-    required (int,) super.argument,
-  })  : _createCb = create,
+  const FamilyOrClassProvider._(
+      {required FamilyOrClassFamily super.from,
+      required (int,) super.argument,
+      super.runNotifierBuildOverride,
+      FamilyOrClass Function()? create})
+      : _createCb = create,
         super(
           debugGetCreateSourceHash: _$familyOrClassHash,
           name: r'FamilyOrClass',
@@ -558,8 +616,35 @@ final class FamilyOrClassProvider
           allTransitiveDependencies: null,
         );
 
-  final FutureOr<String> Function()? _createCb;
+  final FamilyOrClass Function()? _createCb;
 
+  @$internal
+  @override
+  FamilyOrClass create() => _createCb?.call() ?? FamilyOrClass();
+
+  @$internal
+  @override
+  FamilyOrClassProvider copyWithCreate(
+    FamilyOrClass Function() create,
+  ) {
+    return FamilyOrClassProvider._(
+        argument: argument! as (int,),
+        from: from! as FamilyOrClassFamily,
+        create: create);
+  }
+
+  @$internal
+  @override
+  FamilyOrClassProvider copyWithBuild(
+    FutureOr<String> Function(Ref<AsyncValue<String>>, FamilyOrClass) build,
+  ) {
+    return FamilyOrClassProvider._(
+        argument: argument! as (int,),
+        from: from! as FamilyOrClassFamily,
+        runNotifierBuildOverride: build);
+  }
+
+  @$internal
   @override
   $AsyncNotifierProviderElement<FamilyOrClass, String> createElement(
           ProviderContainer container) =>
@@ -593,31 +678,38 @@ final class FamilyOrClassFamily extends Family {
 }
 
 abstract class _$FamilyOrClass extends $AsyncNotifier<String> {
+  late final _$args =
+      (ref as $AsyncNotifierProviderElement).origin.argument as (int,);
+  int get first => _$args.$1;
+
   FutureOr<String> build(
     int first,
   );
 
   @$internal
   @override
-  void runBuild() {}
+  FutureOr<String> runBuild() => build(
+        _$args.$1,
+      );
 }
 
 const familyClassProvider = FamilyClassFamily._();
 
 final class FamilyClassProvider
     extends $AsyncNotifierProvider<FamilyClass, String> {
-  const FamilyClassProvider._({
-    FutureOr<String> Function()? create,
-    required FamilyClassFamily super.from,
-    required (
-      int, {
-      String? second,
-      double third,
-      bool fourth,
-      List<String>? fifth,
-    })
-        super.argument,
-  })  : _createCb = create,
+  const FamilyClassProvider._(
+      {required FamilyClassFamily super.from,
+      required (
+        int, {
+        String? second,
+        double third,
+        bool fourth,
+        List<String>? fifth,
+      })
+          super.argument,
+      super.runNotifierBuildOverride,
+      FamilyClass Function()? create})
+      : _createCb = create,
         super(
           debugGetCreateSourceHash: _$familyClassHash,
           name: r'FamilyClass',
@@ -626,8 +718,47 @@ final class FamilyClassProvider
           allTransitiveDependencies: null,
         );
 
-  final FutureOr<String> Function()? _createCb;
+  final FamilyClass Function()? _createCb;
 
+  @$internal
+  @override
+  FamilyClass create() => _createCb?.call() ?? FamilyClass();
+
+  @$internal
+  @override
+  FamilyClassProvider copyWithCreate(
+    FamilyClass Function() create,
+  ) {
+    return FamilyClassProvider._(
+        argument: argument! as (
+          int, {
+          String? second,
+          double third,
+          bool fourth,
+          List<String>? fifth,
+        }),
+        from: from! as FamilyClassFamily,
+        create: create);
+  }
+
+  @$internal
+  @override
+  FamilyClassProvider copyWithBuild(
+    FutureOr<String> Function(Ref<AsyncValue<String>>, FamilyClass) build,
+  ) {
+    return FamilyClassProvider._(
+        argument: argument! as (
+          int, {
+          String? second,
+          double third,
+          bool fourth,
+          List<String>? fifth,
+        }),
+        from: from! as FamilyClassFamily,
+        runNotifierBuildOverride: build);
+  }
+
+  @$internal
   @override
   $AsyncNotifierProviderElement<FamilyClass, String> createElement(
           ProviderContainer container) =>
@@ -671,6 +802,20 @@ final class FamilyClassFamily extends Family {
 }
 
 abstract class _$FamilyClass extends $AsyncNotifier<String> {
+  late final _$args =
+      (ref as $AsyncNotifierProviderElement).origin.argument as (
+    int, {
+    String? second,
+    double third,
+    bool fourth,
+    List<String>? fifth,
+  });
+  int get first => _$args.$1;
+  String? get second => _$args.second;
+  double get third => _$args.third;
+  bool get fourth => _$args.fourth;
+  List<String>? get fifth => _$args.fifth;
+
   FutureOr<String> build(
     int first, {
     String? second,
@@ -681,7 +826,13 @@ abstract class _$FamilyClass extends $AsyncNotifier<String> {
 
   @$internal
   @override
-  void runBuild() {}
+  FutureOr<String> runBuild() => build(
+        _$args.$1,
+        second: _$args.second,
+        third: _$args.third,
+        fourth: _$args.fourth,
+        fifth: _$args.fifth,
+      );
 }
 
 const $kDebugMode = bool.fromEnvironment('dart.vm.product');

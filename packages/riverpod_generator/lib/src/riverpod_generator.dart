@@ -113,7 +113,7 @@ class _RiverpodGeneratorVisitor extends RecursiveRiverpodAstVisitor {
     GeneratorProviderDeclaration provider,
   ) {
     ProviderVariableTemplate(provider, options).run(buffer);
-    ProviderTemplate(provider).run(buffer);
+    ProviderTemplate(provider, options).run(buffer);
     HashFnTemplate(provider).run(buffer);
     FamilyTemplate(provider, options).run(buffer);
   }

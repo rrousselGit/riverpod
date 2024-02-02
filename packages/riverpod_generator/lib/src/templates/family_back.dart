@@ -400,7 +400,7 @@ extension ProviderNames on GeneratorProviderDeclaration {
         final refType = '${provider.refImplName}$generics';
         return '${provider.createdTypeDisplayString} Function($refType ref, $params)';
       case ClassBasedProviderDeclaration():
-        return '${provider.createdTypeDisplayString} Function()';
+        return '${provider.name}$generics Function()';
     }
   }
 
@@ -430,4 +430,10 @@ extension ProviderNames on GeneratorProviderDeclaration {
         return provider.buildMethod.parameters!.parameters.toList();
     }
   }
+
+  String dependencies(BuildYamlOptions options) =>
+      serializeDependencies(providerElement.annotation, options);
+
+  String allTransitiveDependencies(BuildYamlOptions options) =>
+      serializeAllTransitiveDependencies(providerElement.annotation, options);
 }
