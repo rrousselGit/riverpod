@@ -4,9 +4,10 @@ part of '../../framework.dart';
 @internal
 typedef CancelAsyncSubscription = void Function();
 
-@internal
-mixin AsyncClassMixin<StateT, CreatedT>
-    on ClassBase<AsyncValue<StateT>, CreatedT> {
+/// Implementation detail of `riverpod_generator`.
+/// Do not use.
+mixin $AsyncClassModifier<StateT, CreatedT>
+    on $ClassBase<AsyncValue<StateT>, CreatedT> {
   /// The value currently exposed by this [AsyncNotifier].
   ///
   /// Defaults to [AsyncLoading] inside the [AsyncNotifier.build] method.

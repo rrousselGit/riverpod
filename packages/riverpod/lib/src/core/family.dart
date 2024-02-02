@@ -148,14 +148,14 @@ class FunctionalFamily< //
 /// This API is not meant for public consumption.
 @internal
 class ClassFamily< //
-        NotifierT extends ClassBase< //
+        NotifierT extends $ClassBase< //
             StateT,
             CreatedT>,
         StateT,
         RefT extends Ref<StateT>,
         ArgT,
         CreatedT,
-        ProviderT extends ClassProvider<NotifierT, StateT, CreatedT, RefT>>
+        ProviderT extends $ClassProvider<NotifierT, StateT, CreatedT, RefT>>
     extends Family {
   /// A base implementation for [Family], used by the various providers to
   /// help them define a [Family].

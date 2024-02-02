@@ -1,7 +1,7 @@
-export 'dart:async' show FutureOr;
-
 // Annotations used by code-generators
-export 'package:meta/meta.dart' show visibleForOverriding;
+import 'package:meta/meta.dart' as meta;
+
+export 'dart:async' show FutureOr;
 
 // ignore: invalid_export_of_internal_element
 export 'package:riverpod/src/internals.dart'
@@ -15,6 +15,9 @@ export 'package:riverpod/src/internals.dart'
         $FamilyOverride,
         $FunctionalProvider,
         $FutureModifier,
+        $ClassBase,
+        $AsyncClassModifier,
+        $ClassProvider,
         Ref,
 
         // Provider
@@ -38,18 +41,25 @@ export 'package:riverpod/src/internals.dart'
         AsyncLoading,
         AsyncData,
         AsyncError,
-        AsyncValueX;
+        AsyncValueX,
 
-// // Notifier
-// Notifier,
-// // ignore: invalid_use_of_internal_member
-// NotifierProvider,
+        // AsyncNotifier
+        $AsyncNotifierProvider,
+        $AsyncNotifier,
+        $AsyncNotifierProviderElement,
 
-// // AsyncNotifier
-// AsyncNotifier,
-// AsyncNotifierProvider,
-// // StreamNotifier
-// StreamNotifier,
-// StreamNotifierProvider;
+        // StreamNotifier
+        $StreamNotifierProvider,
+        $StreamNotifierProviderElement,
+        $StreamNotifier,
+
+        // Notifier
+        $NotifierProvider,
+        $NotifierProviderElement,
+        $Notifier;
 
 export 'src/riverpod_annotation.dart';
+
+/// An implementation detail of `riverpod_generator`.
+/// Do not use.
+const $internal = meta.internal;

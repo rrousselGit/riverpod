@@ -13,19 +13,16 @@ class ProviderVariableTemplate extends Template {
 
   @override
   void run(StringBuffer buffer) {
-    final provider = this.provider;
-
     final providerName = providerNameFor(provider.providerElement, options);
 
     switch (provider) {
       case _ when provider.providerElement.isFamily:
-        buffer.writeln('const $providerName = ${provider.familyTypeName}._();');
+        buffer
+            .writeln('const $providerName = ${provider.familyTypeName}._();\n');
 
-      case FunctionalProviderDeclaration():
+      case _:
         final providerType = provider.providerTypeName;
-
-        buffer.writeln('const $providerName = $providerType._();');
-      default:
+        buffer.writeln('const $providerName = $providerType._();\n');
     }
   }
 }

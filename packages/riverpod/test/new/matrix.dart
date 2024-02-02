@@ -40,7 +40,7 @@ extension $Modifiers on ProviderBase<Object?> {
   Refreshable<Object?>? get notifier {
     final that = this;
     return switch (that) {
-      ClassProvider() => that.notifier,
+      $ClassProvider() => that.notifier,
       _ => null,
     };
   }

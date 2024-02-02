@@ -29,9 +29,11 @@ typedef RunNotifierBuild< //
         RefT extends Ref<Object?>>
     = CreatedT Function(RefT ref, NotifierT notifier);
 
-@internal
-abstract class ClassBase<StateT, CreatedT> {
-  ClassProviderElement<ClassBase<StateT, CreatedT>, StateT, CreatedT>? _element;
+/// Implementation detail of `riverpod_generator`.
+/// Do not use.
+abstract class $ClassBase<StateT, CreatedT> {
+  ClassProviderElement<$ClassBase<StateT, CreatedT>, StateT, CreatedT>?
+      _element;
 
   // TODO docs
   @protected
@@ -69,20 +71,21 @@ abstract class ClassBase<StateT, CreatedT> {
 }
 
 @internal
-extension ClassBaseX<StateT, CreatedT> on ClassBase<StateT, CreatedT> {
-  ClassProviderElement<ClassBase<StateT, CreatedT>, StateT, CreatedT>?
+extension ClassBaseX<StateT, CreatedT> on $ClassBase<StateT, CreatedT> {
+  ClassProviderElement<$ClassBase<StateT, CreatedT>, StateT, CreatedT>?
       get element => _element;
 }
 
-@internal
-abstract base class ClassProvider< //
-    NotifierT extends ClassBase< //
+/// Implementation detail of `riverpod_generator`.
+/// Do not use.
+abstract base class $ClassProvider< //
+    NotifierT extends $ClassBase< //
         StateT,
         CreatedT>,
     StateT,
     CreatedT,
     RefT extends Ref<StateT>> extends ProviderBase<StateT> {
-  const ClassProvider({
+  const $ClassProvider({
     required super.name,
     required super.from,
     required super.argument,
@@ -109,12 +112,12 @@ abstract base class ClassProvider< //
   NotifierT create();
 
   @visibleForOverriding
-  ClassProvider<NotifierT, StateT, CreatedT, RefT> copyWithCreate(
+  $ClassProvider<NotifierT, StateT, CreatedT, RefT> copyWithCreate(
     NotifierT Function() create,
   );
 
   @visibleForOverriding
-  ClassProvider<NotifierT, StateT, CreatedT, RefT> copyWithBuild(
+  $ClassProvider<NotifierT, StateT, CreatedT, RefT> copyWithBuild(
     RunNotifierBuild<NotifierT, CreatedT, RefT> build,
   );
 
@@ -144,7 +147,7 @@ abstract base class ClassProvider< //
 }
 
 abstract class ClassProviderElement< //
-        NotifierT extends ClassBase< //
+        NotifierT extends $ClassBase< //
             StateT,
             CreatedT>,
         StateT,
@@ -153,7 +156,7 @@ abstract class ClassProviderElement< //
   ClassProviderElement(super.container);
 
   @override
-  ClassProvider<NotifierT, StateT, CreatedT, Ref<StateT>> get provider;
+  $ClassProvider<NotifierT, StateT, CreatedT, Ref<StateT>> get provider;
 
   final classListenable = ProxyElementValueListenable<NotifierT>();
 

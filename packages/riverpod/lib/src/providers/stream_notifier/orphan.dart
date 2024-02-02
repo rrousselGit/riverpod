@@ -15,7 +15,7 @@ part of '../stream_notifier.dart';
 /// When using `family`, your notifier type changes. Instead of extending
 /// [StreamNotifier], you should extend [FamilyStreamNotifier].
 /// {@endtemplate}
-abstract class StreamNotifier<State> extends StreamNotifierBase<State> {
+abstract class StreamNotifier<State> extends $StreamNotifier<State> {
   /// {@macro riverpod.async_notifier.build}
   @visibleForOverriding
   Stream<State> build();
@@ -47,7 +47,7 @@ abstract class StreamNotifier<State> extends StreamNotifierBase<State> {
 final class StreamNotifierProvider< //
         NotifierT extends StreamNotifier<StateT>,
         StateT> //
-    extends StreamNotifierProviderBase<NotifierT, StateT> {
+    extends $StreamNotifierProvider<NotifierT, StateT> {
   /// {@macro riverpod.async_notifier_provider}
   ///
   /// {@macro riverpod.async_notifier_provider_modifier}
@@ -118,10 +118,10 @@ final class StreamNotifierProvider< //
 
   @internal
   @override
-  _StreamNotifierProviderElement<NotifierT, StateT> createElement(
+  $StreamNotifierProviderElement<NotifierT, StateT> createElement(
     ProviderContainer container,
   ) {
-    return _StreamNotifierProviderElement(this, container);
+    return $StreamNotifierProviderElement(this, container);
   }
 
   @mustBeOverridden
@@ -140,40 +140,5 @@ final class StreamNotifierProvider< //
     NotifierT Function() create,
   ) {
     return _copyWith(create: create);
-  }
-}
-
-class _StreamNotifierProviderElement< //
-        NotifierT extends StreamNotifierBase<StateT>,
-        StateT> //
-    extends ClassProviderElement< //
-        NotifierT,
-        AsyncValue<StateT>,
-        Stream<StateT>> //
-    with
-        FutureModifierElement<StateT> {
-  _StreamNotifierProviderElement(this.provider, super.container);
-
-  @override
-  final StreamNotifierProviderBase<NotifierT, StateT> provider;
-
-  @override
-  void handleError(
-    Object error,
-    StackTrace stackTrace, {
-    required bool didChangeDependency,
-  }) {
-    onError(AsyncError(error, stackTrace), seamless: !didChangeDependency);
-  }
-
-  @override
-  void handleValue(
-    Stream<StateT> created, {
-    required bool didChangeDependency,
-  }) {
-    handleStream(
-      () => created,
-      didChangeDependency: didChangeDependency,
-    );
   }
 }

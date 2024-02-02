@@ -16,15 +16,17 @@ class ProviderTemplate extends Template {
     final generics = provider.generics();
     final genericsDefinition = provider.genericsDefinition();
 
+    final name = provider.providerTypeName;
+    final exposedType = provider.exposedTypeDisplayString;
+    final createdType = provider.createdTypeDisplayString;
+    final valueType = provider.valueTypeDisplayString;
+    final refType = switch (provider) {
+      FunctionalProviderDeclaration() => '${provider.refImplName}$generics',
+      ClassBasedProviderDeclaration() => 'Ref<$exposedType>',
+    };
+
     switch (provider) {
       case FunctionalProviderDeclaration():
-        final name = provider.providerTypeName;
-        final exposedType = provider.exposedTypeDisplayString;
-        final createdType = provider.createdTypeDisplayString;
-        final valueType = provider.valueTypeDisplayString;
-
-        final refType = '${provider.refImplName}$generics';
-
         final List<String> modifiers;
 
         switch (provider.createdType) {
@@ -44,8 +46,7 @@ class ProviderTemplate extends Template {
 
         final mixins = modifiers.isEmpty ? '' : ' with ${modifiers.join(', ')}';
 
-        buffer.writeln(
-          '''
+        buffer.writeln('''
 final class $name$genericsDefinition
     extends \$FunctionalProvider<
         $exposedType,
@@ -53,15 +54,30 @@ final class $name$genericsDefinition
         $refType
       >
     $mixins {
-''',
+''');
+
+      case ClassBasedProviderDeclaration():
+        final notifierType = '${provider.name}$generics';
+
+        final String baseClass;
+
+        switch (provider.createdType) {
+          case SupportedCreatedType.future:
+            baseClass = '\$AsyncNotifierProvider<$notifierType, $valueType>';
+          case SupportedCreatedType.stream:
+            baseClass = '\$StreamNotifierProvider<$notifierType, $valueType>';
+          case SupportedCreatedType.value:
+            baseClass = '\$NotifierProvider<$notifierType, $valueType>';
+        }
+
+        buffer.writeln(
+          'final class $name$genericsDefinition extends $baseClass {',
         );
-
-        _writeMembers(buffer);
-
-        buffer.writeln('}');
-
-      default:
     }
+
+    _writeMembers(buffer);
+
+    buffer.writeln('}');
   }
 
   void _writeMembers(StringBuffer buffer) {
@@ -113,18 +129,6 @@ final class $name$genericsDefinition
       );
 
   final ${provider.createType()}? _createCb;
-
-  @override
-  ${provider.createdTypeDisplayString} create(${provider.refImplName}$generics ref){
-    final fn = _createCb ?? ${provider.name}$generics;
-    $localArgumentDefinition
-    return fn(ref, $paramsPassThrough);
-  }
-
-  @override
-  ${provider.elementName}<${provider.valueTypeDisplayString}> createElement(
-    ProviderContainer container
-  ) => ${provider.elementName}(this, container);
 ''');
 
     switch (provider) {
@@ -144,6 +148,21 @@ final class $name$genericsDefinition
 
         buffer.writeln('''
   @override
+  ${provider.elementName}<${provider.valueTypeDisplayString}> createElement(
+    ProviderContainer container
+  ) => ${provider.elementName}(this, container);
+''');
+
+        buffer.writeln('''
+  @override
+  ${provider.createdTypeDisplayString} create(${provider.refImplName}$generics ref){
+    final fn = _createCb ?? ${provider.name}$generics;
+    $localArgumentDefinition
+    return fn(ref, $paramsPassThrough);
+  }''');
+
+        buffer.writeln('''
+  @override
   ${provider.providerTypeName}$generics copyWithCreate(
     ${provider.createType(withArguments: false)} create,
   ) {
@@ -153,7 +172,13 @@ final class $name$genericsDefinition
     );
   }
 ''');
-      default:
+      case ClassBasedProviderDeclaration():
+        buffer.writeln('''
+  @override
+  ${provider.elementName}<${provider.name}$generics, ${provider.valueTypeDisplayString}> createElement(
+    ProviderContainer container
+  ) => ${provider.elementName}(this, container);
+''');
     }
 
     if (provider.providerElement.isFamily) {

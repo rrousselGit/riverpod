@@ -55,7 +55,7 @@ part of '../notifier.dart';
 /// - [FamilyNotifier] for `family`
 /// - [AutoDisposeFamilyNotifier] for `autoDispose.family`
 /// {@endtemplate}
-abstract class Notifier<State> extends NotifierBase<State> {
+abstract class Notifier<State> extends $Notifier<State> {
   /// {@template riverpod.notifier.build}
   /// Initialize a [Notifier].
   ///
@@ -77,7 +77,7 @@ abstract class Notifier<State> extends NotifierBase<State> {
 }
 
 final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>
-    extends NotifierProviderBase<NotifierT, StateT> {
+    extends $NotifierProvider<NotifierT, StateT> {
   /// {@macro riverpod.notifier_provider}
   ///
   /// {@macro riverpod.notifier_provider_modifier}
@@ -130,10 +130,10 @@ final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>
   static const family = NotifierProviderFamilyBuilder();
 
   @override
-  _NotifierProviderElement<NotifierT, StateT> createElement(
+  $NotifierProviderElement<NotifierT, StateT> createElement(
     ProviderContainer container,
   ) {
-    return _NotifierProviderElement(this, container);
+    return $NotifierProviderElement(this, container);
   }
 
   NotifierProvider<NotifierT, StateT> _copyWith({
@@ -169,38 +169,5 @@ final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>
     NotifierT Function() create,
   ) {
     return _copyWith(create: create);
-  }
-}
-
-class _NotifierProviderElement< //
-        NotifierT extends NotifierBase<StateT>,
-        StateT> //
-    extends ClassProviderElement< //
-        NotifierT,
-        StateT,
-        StateT> //
-{
-  _NotifierProviderElement(this.provider, super.container);
-
-  @override
-  final NotifierProviderBase<NotifierT, StateT> provider;
-
-  @override
-  void handleError(
-    Object error,
-    StackTrace stackTrace, {
-    required bool didChangeDependency,
-  }) {
-    setStateResult(ResultError<StateT>(error, stackTrace));
-    // TODO report uncaught error to the zone
-    // Zone.current.handleUncaughtError(error, stackTrace);
-  }
-
-  @override
-  void handleValue(
-    StateT created, {
-    required bool didChangeDependency,
-  }) {
-    state = created;
   }
 }

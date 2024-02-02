@@ -110,7 +110,7 @@ final asyncNotifierProviderFactory = TestMatrix<AsyncNotifierTestFactory>(
   },
 );
 
-abstract class TestAsyncNotifier<StateT> implements AsyncNotifierBase<StateT> {
+abstract class TestAsyncNotifier<StateT> implements $AsyncNotifier<StateT> {
   // Removing protected
   @override
   AsyncValue<StateT> get state;
@@ -172,7 +172,7 @@ class DeferredFamilyAsyncNotifier<StateT>
 }
 
 class AsyncNotifierTestFactory extends TestFactory<
-    ProviderFactory<AsyncNotifierBase<Object?>, ProviderBase<Object?>, void>> {
+    ProviderFactory<$AsyncNotifier<Object?>, ProviderBase<Object?>, void>> {
   AsyncNotifierTestFactory({
     required super.isAutoDispose,
     required super.value,
@@ -185,18 +185,17 @@ class AsyncNotifierTestFactory extends TestFactory<
     FutureOr<StateT> Function(Ref<AsyncValue<StateT>> ref) create,
   ) deferredNotifier;
 
-  final AsyncNotifierProviderBase<TestAsyncNotifier<StateT>, StateT>
+  final $AsyncNotifierProvider<TestAsyncNotifier<StateT>, StateT>
       Function<StateT>(
     FutureOr<StateT> Function(Ref<AsyncValue<StateT>> ref) create, {
     bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
   }) deferredProvider;
 
-  final AsyncNotifierProviderBase<AsyncNotifierBase<StateT>, StateT>
-      Function<StateT>(
-    AsyncNotifierBase<StateT> Function() create,
+  final $AsyncNotifierProvider<$AsyncNotifier<StateT>, StateT> Function<StateT>(
+    $AsyncNotifier<StateT> Function() create,
   ) provider;
 
-  AsyncNotifierProviderBase<TestAsyncNotifier<StateT>, StateT>
+  $AsyncNotifierProvider<TestAsyncNotifier<StateT>, StateT>
       simpleTestProvider<StateT>(
     FutureOr<StateT> Function(Ref<AsyncValue<StateT>> ref) create, {
     bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,

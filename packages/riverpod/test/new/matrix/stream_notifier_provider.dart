@@ -111,8 +111,7 @@ final streamNotifierProviderFactory = TestMatrix<StreamNotifierTestFactory>(
   },
 );
 
-abstract class TestStreamNotifier<StateT>
-    implements StreamNotifierBase<StateT> {
+abstract class TestStreamNotifier<StateT> implements $StreamNotifier<StateT> {
   // Removing protected
   @override
   AsyncValue<StateT> get state;
@@ -174,7 +173,7 @@ class DeferredFamilyStreamNotifier<StateT>
 }
 
 class StreamNotifierTestFactory extends TestFactory<
-    ProviderFactory<StreamNotifierBase<Object?>, ProviderBase<Object?>, void>> {
+    ProviderFactory<$StreamNotifier<Object?>, ProviderBase<Object?>, void>> {
   StreamNotifierTestFactory({
     required super.isAutoDispose,
     required super.value,
@@ -187,18 +186,18 @@ class StreamNotifierTestFactory extends TestFactory<
     Stream<StateT> Function(Ref<AsyncValue<StateT>> ref) create,
   ) deferredNotifier;
 
-  final StreamNotifierProviderBase<TestStreamNotifier<StateT>, StateT>
+  final $StreamNotifierProvider<TestStreamNotifier<StateT>, StateT>
       Function<StateT>(
     Stream<StateT> Function(Ref<AsyncValue<StateT>> ref) create, {
     bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
   }) deferredProvider;
 
-  final StreamNotifierProviderBase<StreamNotifierBase<StateT>, StateT>
+  final $StreamNotifierProvider<$StreamNotifier<StateT>, StateT>
       Function<StateT>(
-    StreamNotifierBase<StateT> Function() create,
+    $StreamNotifier<StateT> Function() create,
   ) provider;
 
-  StreamNotifierProviderBase<TestStreamNotifier<StateT>, StateT>
+  $StreamNotifierProvider<TestStreamNotifier<StateT>, StateT>
       simpleTestProvider<StateT>(
     Stream<StateT> Function(Ref<AsyncValue<StateT>> ref) create, {
     bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,

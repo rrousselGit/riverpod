@@ -404,10 +404,17 @@ extension ProviderNames on GeneratorProviderDeclaration {
     }
   }
 
-  String get elementName => switch (createdType) {
-        SupportedCreatedType.future => r'$FutureProviderElement',
-        SupportedCreatedType.stream => r'$StreamProviderElement',
-        SupportedCreatedType.value => r'$ProviderElement',
+  String get elementName => switch (this) {
+        ClassBasedProviderDeclaration() => switch (createdType) {
+            SupportedCreatedType.future => r'$AsyncNotifierProviderElement',
+            SupportedCreatedType.stream => r'$StreamNotifierProviderElement',
+            SupportedCreatedType.value => r'$NotifierProviderElement',
+          },
+        FunctionalProviderDeclaration() => switch (createdType) {
+            SupportedCreatedType.future => r'$FutureProviderElement',
+            SupportedCreatedType.stream => r'$StreamProviderElement',
+            SupportedCreatedType.value => r'$ProviderElement',
+          },
       };
 
   String get hashFnName => '_\$${providerElement.name.public.lowerFirst}Hash';

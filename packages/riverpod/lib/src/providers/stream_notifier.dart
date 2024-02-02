@@ -10,25 +10,27 @@ import 'future_provider.dart' show FutureProvider;
 part 'stream_notifier/family.dart';
 part 'stream_notifier/orphan.dart';
 
-@internal
-abstract class StreamNotifierBase<StateT> extends ClassBase< //
+/// Implementation detail of `riverpod_generator`.
+/// Do not use.
+abstract class $StreamNotifier<StateT> extends $ClassBase< //
         AsyncValue<StateT>,
         Stream<StateT>> //
     with
-        AsyncClassMixin<StateT, Stream<StateT>> {}
+        $AsyncClassModifier<StateT, Stream<StateT>> {}
 
-@internal
-abstract base class StreamNotifierProviderBase<
-        NotifierT extends StreamNotifierBase<StateT>, //
+/// Implementation detail of `riverpod_generator`.
+/// Do not use.
+abstract base class $StreamNotifierProvider<
+        NotifierT extends $StreamNotifier<StateT>, //
         StateT> //
-    extends ClassProvider< //
+    extends $ClassProvider< //
         NotifierT,
         AsyncValue<StateT>,
         Stream<StateT>,
         Ref<AsyncValue<StateT>>> //
     with
         $FutureModifier<StateT> {
-  const StreamNotifierProviderBase(
+  const $StreamNotifierProvider(
     this._createNotifier, {
     required super.name,
     required super.from,
@@ -44,4 +46,41 @@ abstract base class StreamNotifierProviderBase<
 
   @override
   NotifierT create() => _createNotifier();
+}
+
+/// Implementation detail of `riverpod_generator`.
+/// Do not use.
+class $StreamNotifierProviderElement< //
+        NotifierT extends $StreamNotifier<StateT>,
+        StateT> //
+    extends ClassProviderElement< //
+        NotifierT,
+        AsyncValue<StateT>,
+        Stream<StateT>> //
+    with
+        FutureModifierElement<StateT> {
+  $StreamNotifierProviderElement(this.provider, super.container);
+
+  @override
+  final $StreamNotifierProvider<NotifierT, StateT> provider;
+
+  @override
+  void handleError(
+    Object error,
+    StackTrace stackTrace, {
+    required bool didChangeDependency,
+  }) {
+    onError(AsyncError(error, stackTrace), seamless: !didChangeDependency);
+  }
+
+  @override
+  void handleValue(
+    Stream<StateT> created, {
+    required bool didChangeDependency,
+  }) {
+    handleStream(
+      () => created,
+      didChangeDependency: didChangeDependency,
+    );
+  }
 }

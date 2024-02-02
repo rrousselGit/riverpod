@@ -11,25 +11,27 @@ import 'notifier.dart';
 part 'async_notifier/orphan.dart';
 part 'async_notifier/family.dart';
 
-@internal
-abstract class AsyncNotifierBase<StateT> extends ClassBase< //
+/// Implementation detail of `riverpod_generator`.
+/// Do not use.
+abstract class $AsyncNotifier<StateT> extends $ClassBase< //
         AsyncValue<StateT>,
         FutureOr<StateT>> //
     with
-        AsyncClassMixin<StateT, FutureOr<StateT>> {}
+        $AsyncClassModifier<StateT, FutureOr<StateT>> {}
 
-@internal
-abstract base class AsyncNotifierProviderBase< //
-        NotifierT extends AsyncNotifierBase<StateT>,
+/// Implementation detail of `riverpod_generator`.
+/// Do not use.
+abstract base class $AsyncNotifierProvider< //
+        NotifierT extends $AsyncNotifier<StateT>,
         StateT> //
-    extends ClassProvider< //
+    extends $ClassProvider< //
         NotifierT,
         AsyncValue<StateT>,
         FutureOr<StateT>,
         Ref<AsyncValue<StateT>>> //
     with
         $FutureModifier<StateT> {
-  const AsyncNotifierProviderBase(
+  const $AsyncNotifierProvider(
     this._createNotifier, {
     required super.name,
     required super.from,
@@ -47,8 +49,10 @@ abstract base class AsyncNotifierProviderBase< //
   NotifierT create() => _createNotifier();
 }
 
-class _AsyncNotifierProviderElement< //
-        NotifierT extends AsyncNotifierBase<StateT>,
+/// Implementation detail of `riverpod_generator`.
+/// Do not use.
+class $AsyncNotifierProviderElement< //
+        NotifierT extends $AsyncNotifier<StateT>,
         StateT> //
     extends ClassProviderElement< //
         NotifierT,
@@ -56,10 +60,10 @@ class _AsyncNotifierProviderElement< //
         FutureOr<StateT>> //
     with
         FutureModifierElement<StateT> {
-  _AsyncNotifierProviderElement(this.provider, super.container);
+  $AsyncNotifierProviderElement(this.provider, super.container);
 
   @override
-  final AsyncNotifierProviderBase<NotifierT, StateT> provider;
+  final $AsyncNotifierProvider<NotifierT, StateT> provider;
 
   @override
   void handleError(

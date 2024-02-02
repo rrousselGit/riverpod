@@ -11,7 +11,7 @@ class HashFnTemplate extends Template {
   @override
   void run(StringBuffer buffer) {
     buffer.writeln(
-      "String ${provider.hashFnName}() => r'${provider.computeProviderHash()}';",
+      "String ${provider.hashFnName}() => r'${provider.computeProviderHash()}';\n",
     );
   }
 }

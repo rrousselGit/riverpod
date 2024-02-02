@@ -3,8 +3,7 @@ part of '../stream_notifier.dart';
 /// {@macro riverpod.async_notifier}
 ///
 /// {@macro riverpod.async_notifier_provider_modifier}
-abstract class FamilyStreamNotifier<State, Arg>
-    extends StreamNotifierBase<State> {
+abstract class FamilyStreamNotifier<State, Arg> extends $StreamNotifier<State> {
   /// {@template riverpod.notifier.family_arg}
   /// The argument that was passed to this family.
   ///
@@ -31,7 +30,7 @@ final class FamilyStreamNotifierProvider< //
         NotifierT extends FamilyStreamNotifier<StateT, ArgT>,
         StateT,
         ArgT> //
-    extends StreamNotifierProviderBase<NotifierT, StateT> {
+    extends $StreamNotifierProvider<NotifierT, StateT> {
   /// An implementation detail of Riverpod
   const FamilyStreamNotifierProvider._(
     super._createNotifier, {
@@ -46,10 +45,10 @@ final class FamilyStreamNotifierProvider< //
   });
 
   @override
-  _StreamNotifierProviderElement<NotifierT, StateT> createElement(
+  $StreamNotifierProviderElement<NotifierT, StateT> createElement(
     ProviderContainer container,
   ) {
-    return _StreamNotifierProviderElement(this, container);
+    return $StreamNotifierProviderElement(this, container);
   }
 
   FamilyStreamNotifierProvider<NotifierT, StateT, ArgT> _copyWith({

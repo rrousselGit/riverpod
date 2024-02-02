@@ -11,6 +11,7 @@ import 'models.dart';
 import 'parse_generator.dart';
 import 'templates/family.dart';
 import 'templates/hash.dart';
+import 'templates/notifier.dart';
 import 'templates/provider.dart';
 import 'templates/provider_variable.dart';
 import 'templates/ref.dart';
@@ -114,6 +115,7 @@ class _RiverpodGeneratorVisitor extends RecursiveRiverpodAstVisitor {
     ProviderVariableTemplate(provider, options).run(buffer);
     ProviderTemplate(provider).run(buffer);
     HashFnTemplate(provider).run(buffer);
+    FamilyTemplate(provider, options).run(buffer);
   }
 
   @override
@@ -122,6 +124,7 @@ class _RiverpodGeneratorVisitor extends RecursiveRiverpodAstVisitor {
   ) {
     super.visitClassBasedProviderDeclaration(provider);
     visitGeneratorProviderDeclaration(provider);
+    NotifierTemplate(provider).run(buffer);
   }
 
   @override
@@ -130,7 +133,6 @@ class _RiverpodGeneratorVisitor extends RecursiveRiverpodAstVisitor {
   ) {
     super.visitFunctionalProviderDeclaration(provider);
     RefTemplate(provider).run(buffer);
-    FamilyTemplate(provider, options).run(buffer);
     visitGeneratorProviderDeclaration(provider);
   }
 }

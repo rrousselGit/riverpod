@@ -3,7 +3,7 @@ part of '../notifier.dart';
 /// {@macro riverpod.notifier}
 ///
 /// {@macro riverpod.notifier_provider_modifier}
-abstract class FamilyNotifier<StateT, ArgT> extends NotifierBase<StateT> {
+abstract class FamilyNotifier<StateT, ArgT> extends $Notifier<StateT> {
   /// {@macro riverpod.notifier.family_arg}
   late final ArgT arg = (ref as ProviderElementBase).origin.argument as ArgT;
 
@@ -22,8 +22,8 @@ abstract class FamilyNotifier<StateT, ArgT> extends NotifierBase<StateT> {
 /// This enables tests to execute on both [NotifierProvider] and
 /// [AutoDisposeNotifierProvider] at the same time.
 final class FamilyNotifierProvider //
-    <NotifierT extends NotifierBase<StateT>, StateT, ArgT>
-    extends NotifierProviderBase<NotifierT, StateT> {
+    <NotifierT extends $Notifier<StateT>, StateT, ArgT>
+    extends $NotifierProvider<NotifierT, StateT> {
   /// An implementation detail of Riverpod
   const FamilyNotifierProvider._(
     super._createNotifier, {
@@ -38,10 +38,10 @@ final class FamilyNotifierProvider //
   });
 
   @override
-  _NotifierProviderElement<NotifierT, StateT> createElement(
+  $NotifierProviderElement<NotifierT, StateT> createElement(
     ProviderContainer container,
   ) {
-    return _NotifierProviderElement(this, container);
+    return $NotifierProviderElement(this, container);
   }
 
   FamilyNotifierProvider<NotifierT, StateT, ArgT> _copyWith({

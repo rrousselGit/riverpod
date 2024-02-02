@@ -107,7 +107,7 @@ final notifierProviderFactory = TestMatrix<NotifierTestFactory>(
   },
 );
 
-abstract class TestNotifier<StateT> implements NotifierBase<StateT> {
+abstract class TestNotifier<StateT> implements $Notifier<StateT> {
   // Removing protected
   @override
   StateT get state;
@@ -165,7 +165,7 @@ class DeferredFamilyNotifier<StateT> extends FamilyNotifier<StateT, int>
 }
 
 class NotifierTestFactory extends TestFactory<
-    ProviderFactory<NotifierBase<Object?>, ProviderBase<Object?>, void>> {
+    ProviderFactory<$Notifier<Object?>, ProviderBase<Object?>, void>> {
   NotifierTestFactory({
     required super.isAutoDispose,
     required super.value,
@@ -178,16 +178,16 @@ class NotifierTestFactory extends TestFactory<
     StateT Function(Ref<StateT> ref) create,
   ) deferredNotifier;
 
-  final NotifierProviderBase<TestNotifier<StateT>, StateT> Function<StateT>(
+  final $NotifierProvider<TestNotifier<StateT>, StateT> Function<StateT>(
     StateT Function(Ref<StateT> ref) create, {
     bool Function(StateT, StateT)? updateShouldNotify,
   }) deferredProvider;
 
-  final NotifierProviderBase<NotifierBase<StateT>, StateT> Function<StateT>(
-    NotifierBase<StateT> Function() create,
+  final $NotifierProvider<$Notifier<StateT>, StateT> Function<StateT>(
+    $Notifier<StateT> Function() create,
   ) provider;
 
-  NotifierProviderBase<TestNotifier<StateT>, StateT> simpleTestProvider<StateT>(
+  $NotifierProvider<TestNotifier<StateT>, StateT> simpleTestProvider<StateT>(
     StateT Function(Ref<StateT> ref) create, {
     bool Function(StateT, StateT)? updateShouldNotify,
   }) {

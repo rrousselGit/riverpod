@@ -8,11 +8,9 @@ import 'async_notifier.dart';
 part 'notifier/orphan.dart';
 part 'notifier/family.dart';
 
-/// A base class for [NotifierBase].
-///
+/// A base class for [$Notifier].
 /// Not meant for public consumption.
-@internal
-abstract class NotifierBase<StateT> extends ClassBase<StateT, StateT> {
+abstract class $Notifier<StateT> extends $ClassBase<StateT, StateT> {
   /// The value currently exposed by this [Notifier].
   ///
   /// If used inside [Notifier.build], may throw if the notifier is not yet initialized.
@@ -83,14 +81,15 @@ abstract class NotifierBase<StateT> extends ClassBase<StateT, StateT> {
   }
 }
 
-@internal
-abstract base class NotifierProviderBase //
-    <NotifierT extends NotifierBase<StateT>, StateT>
-    extends ClassProvider<NotifierT, StateT, StateT, Ref<StateT>> {
+/// An implementation detail of `riverpod_generator`.
+/// Do not use.
+abstract base class $NotifierProvider //
+    <NotifierT extends $Notifier<StateT>, StateT>
+    extends $ClassProvider<NotifierT, StateT, StateT, Ref<StateT>> {
   /// An internal base class for [Notifier].
   ///
   /// Not meant for public consumption.
-  const NotifierProviderBase(
+  const $NotifierProvider(
     this._createNotifier, {
     required super.name,
     required super.from,
@@ -106,4 +105,39 @@ abstract base class NotifierProviderBase //
 
   @override
   NotifierT create() => _createNotifier();
+}
+
+/// An implementation detail of `riverpod_generator`.
+/// Do not use.
+class $NotifierProviderElement< //
+        NotifierT extends $Notifier<StateT>,
+        StateT> //
+    extends ClassProviderElement< //
+        NotifierT,
+        StateT,
+        StateT> //
+{
+  $NotifierProviderElement(this.provider, super.container);
+
+  @override
+  final $NotifierProvider<NotifierT, StateT> provider;
+
+  @override
+  void handleError(
+    Object error,
+    StackTrace stackTrace, {
+    required bool didChangeDependency,
+  }) {
+    setStateResult(ResultError<StateT>(error, stackTrace));
+    // TODO report uncaught error to the zone
+    // Zone.current.handleUncaughtError(error, stackTrace);
+  }
+
+  @override
+  void handleValue(
+    StateT created, {
+    required bool didChangeDependency,
+  }) {
+    state = created;
+  }
 }
