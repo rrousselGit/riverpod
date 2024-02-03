@@ -1,7 +1,3 @@
-import 'dart:io';
-
-import 'package:analyzer/dart/analysis/results.dart';
-import 'package:analyzer/dart/analysis/utilities.dart';
 import 'package:analyzer/source/source_range.dart';
 import 'package:pubspec_parse/pubspec_parse.dart';
 import 'package:riverpod_lint/src/assists/convert_to_stateful_base_widget.dart';
@@ -28,7 +24,7 @@ void main() {
           targetWidget: targetWidget,
         ),
         'Convert widgets to ${targetWidget.name}s with hooks_riverpod and flutter_hooks dependency',
-        'assists/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.json',
+        'assists/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.diff',
         pubspecWithDependencies,
         targetWidget == StatelessBaseWidgetType.statelessWidget ? 6 : 9,
       );
@@ -42,7 +38,7 @@ void main() {
           targetWidget: targetWidget,
         ),
         'Convert widgets to ${targetWidget.name}s with hooks_riverpod and flutter_hooks dependency',
-        'assists/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.json',
+        'assists/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.diff',
         pubspecWithDependencies,
         targetWidget == StatefulBaseWidgetType.statefulWidget ? 6 : 9,
       );
@@ -72,12 +68,12 @@ void main() {
       switch (targetWidget) {
         case StatelessBaseWidgetType.hookWidget:
         case StatelessBaseWidgetType.hookConsumerWidget:
-          goldenFilePath = 'assists/empty.json';
+          goldenFilePath = 'assists/empty.diff';
           break;
         case StatelessBaseWidgetType.consumerWidget:
         case StatelessBaseWidgetType.statelessWidget:
           goldenFilePath =
-              'assists/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.json';
+              'assists/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.diff';
           break;
       }
 
@@ -112,12 +108,12 @@ void main() {
       switch (targetWidget) {
         case StatefulBaseWidgetType.statefulHookWidget:
         case StatefulBaseWidgetType.statefulHookConsumerWidget:
-          goldenFilePath = 'assists/empty.json';
+          goldenFilePath = 'assists/empty.diff';
           break;
         case StatefulBaseWidgetType.consumerStatefulWidget:
         case StatefulBaseWidgetType.statefulWidget:
           goldenFilePath =
-              'assists/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.json';
+              'assists/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.diff';
           break;
       }
 
@@ -153,14 +149,8 @@ void _runGoldenTest(
   testGolden(
     description,
     goldenFilePath,
-    () async {
-      final file = File(
-        'test/assists/convert_to_widget/convert_to_widget.dart',
-      ).absolute;
-
-      final result = await resolveFile2(path: file.path);
-      result as ResolvedUnitResult;
-
+    sourcePath: 'test/assists/convert_to_widget/convert_to_widget.dart',
+    (result) async {
       final changes = [
         // Stateless
         ...await assist.testRun(result, const SourceRange(163, 0),

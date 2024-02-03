@@ -1,0 +1,22 @@
+Message: `Wrap with ProviderScope`
+=== diff (starting at line 11)
+    Map();
+
+-     return Scaffold(
+-       body: Container(),
+-     );
++     return ProviderScope(child: Scaffold(
++       body: Container(),
++     ),);
+  }
+}
+===
+Message: `Wrap with ProviderScope`
+=== diff (starting at line 12)
+
+    return Scaffold(
+-       body: Container(),
++       body: ProviderScope(child: Container(),),
+    );
+  }
+===

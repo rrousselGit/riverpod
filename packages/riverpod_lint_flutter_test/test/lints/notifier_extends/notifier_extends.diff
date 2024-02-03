@@ -1,0 +1,18 @@
+Message: `Extend _$NoExtends`
+=== diff (starting at line 12)
+@riverpod
+// expect_lint: notifier_extends
+- class NoExtends {
++ class NoExtends extends _$NoExtends {
+  int build() => 0;
+}
+===
+Message: `Extend _$WrongExtends`
+=== diff (starting at line 18)
+@riverpod
+// expect_lint: notifier_extends
+- class WrongExtends extends AsyncNotifier<int> {
++ class WrongExtends extends _$WrongExtends {
+  int build() => 0;
+}
+===
