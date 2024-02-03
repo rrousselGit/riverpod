@@ -1,0 +1,192 @@
+Message: `Convert to HookWidget`
+<<<< start: 168 -- end: 176
+Stateles
+==== start: 168 -- end: 171
+Hoo
+>>>>
+Message: `Convert to HookWidget`
+<<<< start: 342 -- end: 350
+Stateles
+==== start: 342 -- end: 345
+Hoo
+>>>>
+Message: `Convert to HookWidget`
+<<<< start: 682 -- end: 809
+ConsumerWidget {
+  const HookConsumer({super.key});
+
+  @override
+  Widget build(
+    BuildContext context,
+    WidgetRef ref,
+ 
+==== start: 682 -- end: 778
+Widget {
+  const HookConsumer({super.key});
+
+  @override
+  Widget build(
+    BuildContext contex
+>>>>
+Message: `Convert to HookWidget`
+<<<< start: 876 -- end: 1166
+StatefulWidget {
+  const Stateful({super.key});
+
+  @override
+  State<Stateful> createState() => _StatefulState();
+}
+
+class _StatefulState extends State<Stateful> {
+  /// Hello world
+  @override
+  Widget build(BuildContext context) {
+    // Some comments
+    return const Placeholder();
+  }
+
+==== start: 876 -- end: 1050
+HookWidget {
+  const Stateful({super.key});
+
+  
+/// Hello world
+  @override
+  Widget build(BuildContext context) {
+    // Some comments
+    return const Placeholder();
+  }
+}
+
+>>>>
+Message: `Convert to HookWidget`
+<<<< start: 1203 -- end: 1514
+StatefulWidget {
+  const ExplicitCreateState({super.key});
+
+  @override
+  ExplicitCreateStateState createState() => ExplicitCreateStateState();
+}
+
+class ExplicitCreateStateState extends State<ExplicitCreateState> {
+  @override
+  Widget build(
+    BuildContext context,
+  ) {
+    return const Placeholder();
+  }
+
+==== start: 1203 -- end: 1358
+HookWidget {
+  const ExplicitCreateState({super.key});
+
+  
+@override
+  Widget build(
+    BuildContext context,
+  ) {
+    return const Placeholder();
+  }
+}
+
+>>>>
+Message: `Convert to HookWidget`
+<<<< start: 1544 -- end: 1817
+StatefulHookWidget {
+  const HookStateful({super.key});
+
+  @override
+  State<HookStateful> createState() => HookStatefulState();
+}
+
+class HookStatefulState extends State<HookStateful> {
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
+  }
+
+==== start: 1544 -- end: 1683
+HookWidget {
+  const HookStateful({super.key});
+
+  
+@override
+  Widget build(BuildContext context) {
+    return const Placeholder();
+  }
+}
+
+>>>>
+Message: `Convert to HookWidget`
+<<<< start: 1851 -- end: 2166
+ConsumerStatefulWidget {
+  const ConsumerStateful({super.key});
+
+  @override
+  ConsumerState<ConsumerStateful> createState() => _ConsumerStatefulState();
+}
+
+class _ConsumerStatefulState extends ConsumerState<ConsumerStateful> {
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
+  }
+
+==== start: 1851 -- end: 1994
+HookWidget {
+  const ConsumerStateful({super.key});
+
+  
+@override
+  Widget build(BuildContext context) {
+    return const Placeholder();
+  }
+}
+
+>>>>
+Message: `Convert to HookWidget`
+<<<< start: 2204 -- end: 2549
+StatefulHookConsumerWidget {
+  const HookConsumerStateful({super.key});
+
+  @override
+  ConsumerState<HookConsumerStateful> createState() =>
+      _HookConsumerStatefulState();
+}
+
+class _HookConsumerStatefulState extends ConsumerState<HookConsumerStateful> {
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
+  }
+
+==== start: 2204 -- end: 2351
+HookWidget {
+  const HookConsumerStateful({super.key});
+
+  
+@override
+  Widget build(BuildContext context) {
+    return const Placeholder();
+  }
+}
+
+>>>>
+Message: `Convert to HookWidget`
+<<<< start: 2575 -- end: 2698
+ConsumerWidget {
+  const Consumer({super.key});
+
+  @override
+  Widget build(
+    BuildContext context,
+    WidgetRef ref,
+ 
+==== start: 2575 -- end: 2671
+HookWidget {
+  const Consumer({super.key});
+
+  @override
+  Widget build(
+    BuildContext contex
+>>>>

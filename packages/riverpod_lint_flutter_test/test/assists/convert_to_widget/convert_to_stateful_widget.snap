@@ -1,0 +1,109 @@
+Message: `Convert to StatefulWidget`
+<<<< start: 520 -- end: 562
+HookWidget {
+  const Hook({super.key});
+
+ 
+==== start: 520 -- end: 663
+StatefulWidget {
+  const Hook({super.key});
+
+  @override
+  State<Hook> createState() => _HookState();
+}
+
+class _HookState extends State<Hook> {
+>>>>
+Message: `Convert to StatefulWidget`
+<<<< start: 678 -- end: 809
+HookConsumerWidget {
+  const HookConsumer({super.key});
+
+  @override
+  Widget build(
+    BuildContext context,
+    WidgetRef ref,
+ 
+==== start: 678 -- end: 911
+StatefulWidget {
+  const HookConsumer({super.key});
+
+  @override
+  State<HookConsumer> createState() => _HookConsumerState();
+}
+
+class _HookConsumerState extends State<HookConsumer> {
+@override
+  Widget build(
+    BuildContext contex
+>>>>
+Message: `Convert to StatefulWidget`
+<<<< start: 1552 -- end: 1556
+Hook
+==== start: 1552 -- end: 1552
+>>>>
+Message: `Convert to StatefulWidget`
+<<<< start: 1851 -- end: 2052
+ConsumerStatefulWidget {
+  const ConsumerStateful({super.key});
+
+  @override
+  ConsumerState<ConsumerStateful> createState() => _ConsumerStatefulState();
+}
+
+class _ConsumerStatefulState extends Consume
+==== start: 1851 -- end: 2028
+StatefulWidget {
+  const ConsumerStateful({super.key});
+
+  @override
+  State<ConsumerStateful> createState() => _ConsumerStatefulState();
+}
+
+class _ConsumerStatefulState extends
+>>>>
+Message: `Convert to StatefulWidget`
+<<<< start: 2212 -- end: 2431
+HookConsumerWidget {
+  const HookConsumerStateful({super.key});
+
+  @override
+  ConsumerState<HookConsumerStateful> createState() =>
+      _HookConsumerStatefulState();
+}
+
+class _HookConsumerStatefulState extends Consume
+==== start: 2212 -- end: 2403
+Widget {
+  const HookConsumerStateful({super.key});
+
+  @override
+  State<HookConsumerStateful> createState() =>
+      _HookConsumerStatefulState();
+}
+
+class _HookConsumerStatefulState extends
+>>>>
+Message: `Convert to StatefulWidget`
+<<<< start: 2575 -- end: 2698
+ConsumerWidget {
+  const Consumer({super.key});
+
+  @override
+  Widget build(
+    BuildContext context,
+    WidgetRef ref,
+ 
+==== start: 2575 -- end: 2788
+StatefulWidget {
+  const Consumer({super.key});
+
+  @override
+  State<Consumer> createState() => _ConsumerState();
+}
+
+class _ConsumerState extends State<Consumer> {
+@override
+  Widget build(
+    BuildContext contex
+>>>>

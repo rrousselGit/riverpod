@@ -1,0 +1,41 @@
+Message: `Convert to functional provider`
+<<<< start: 150 -- end: 216
+class Example extends _$Example {
+  @override
+  int build() => 0;
+
+==== start: 150 -- end: 182
+int example(ExampleRef ref) => 0
+>>>>
+Message: `Convert to functional provider`
+<<<< start: 150 -- end: 216
+class Example extends _$Example {
+  @override
+  int build() => 0;
+
+==== start: 150 -- end: 182
+int example(ExampleRef ref) => 0
+>>>>
+Message: `Convert to functional provider`
+<<<< start: 150 -- end: 216
+class Example extends _$Example {
+  @override
+  int build() => 0;
+
+==== start: 150 -- end: 182
+int example(ExampleRef ref) => 0
+>>>>
+Message: `Convert to functional provider`
+<<<< start: 246 -- end: 389
+class ExampleFamily extends _$ExampleFamily {
+  @override
+  int build({required int a, String b = '42'}) {
+    // Hello world
+    return 0;
+  }
+==== start: 246 -- end: 357
+int exampleFamily(ExampleFamilyRef ref, {required int a, String b = '42'}) {
+    // Hello world
+    return 0;
+ 
+>>>>
