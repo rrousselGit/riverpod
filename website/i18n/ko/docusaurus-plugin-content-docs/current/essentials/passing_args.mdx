@@ -1,0 +1,137 @@
+---
+title: 요청에 인자 전달하기
+version: 1
+---
+
+import { Link } from "../../../../../src/components/Link";
+import { AutoSnippet, When } from "../../../../../src/components/CodeSnippet";
+import noArgProvider from "./passing_args/no_arg_provider";
+import family from "!!raw-loader!./passing_args/raw/family.dart";
+import codegenFamily from "!!raw-loader!./passing_args/codegen/family.dart";
+import consumerProvider from "!!raw-loader!./passing_args/raw/consumer_provider.dart";
+import consumerFamily from "!!raw-loader!./passing_args/raw/consumer_family.dart";
+import consumerListFamily from "!!raw-loader!./passing_args/raw/consumer_list_family.dart";
+import multipleConsumerFamily from "!!raw-loader!./passing_args/raw/multiple_consumer_family.dart";
+import tupleFamily from "!!raw-loader!./passing_args/raw/tuple_family.dart";
+import consumerTupleFamily from "!!raw-loader!./passing_args/raw/consumer_tuple_family.dart";
+
+이전 글에서 "provider"를 정의하여 간단한 _GET_ HTTP 요청을 만드는 방법을 살펴봤습니다.  
+하지만 HTTP 요청은 외부 매개변수(external parameters)에 의존하는 경우가 많습니다.
+
+예를 들어, 이전에는 사용자에게 무작위 액티비티를 제안하기 위해 [Bored API](https://boredapi.com/)를 사용했습니다.
+하지만 사용자가 원하는 액티비티 타입을 필터링하거나 가격 요구 사항 등을 원할 수도 있습니다.  
+이러한 매개변수는 미리 알 수 없습니다. 
+따라서 이러한 매개변수를 UI에서 providers에 전달할 방법이 필요합니다.
+
+## 인수를 허용하도록 providers 업데이트
+
+참고로 이전에는 다음과 같이 provider를 정의했습니다:
+
+<AutoSnippet {...noArgProvider} />
+
+<When codegen={false}>
+
+코드 생성(code-generation)에 의존하지 않을 때는 인자 전달(passing arguments)을 지원하기 위해 provider 정의 구문을 약간 조정해야 합니다. 
+이는 "family"라는 "수정자(modifier)"에 의존하여 수행됩니다.
+
+간단히 말해, provider 타입 뒤에 `.family`를 추가하고 인수 타입(argument type)에 해당하는 추가 타입 매개 변수를 추가해야 합니다.
+예를 들어, 원하는 액티비티 타입에 해당하는 `String` 인수를 받도록 provider를 업데이트할 수 있습니다:
+
+<AutoSnippet raw={family} />
+
+</When>
+
+<When codegen={true}>
+
+provider에게 매개변수(parameters)를 전달하려면 어노테이션이 달린 함수 자체에 매개변수(parameters)를 추가하기만 하면 됩니다.  
+예를 들어, 원하는 액티비티 타입에 해당하는 `String` 인수를 받도록 provider를 업데이트할 수 있습니다:
+
+<AutoSnippet raw={codegenFamily} />
+
+</When>
+
+:::caution
+provider에게 인수(arguments)를 전달할 때는 provider에서 "autoDispose"를 활성화하는 것이 좋습니다.  
+그렇지 않으면 메모리 누수(memory leaks)가 발생할 수 있습니다.  
+자세한 내용은 <Link documentID="essentials/auto_dispose" />를 참조하세요.
+:::
+
+## 인수(arguments)를 전달하도록 UI 업데이트
+
+이전에는 위젯이 다음과 같이 provider를 소비(consume)했습니다:
+
+<AutoSnippet raw={consumerProvider} />
+
+하지만 이제 provider가 인수(arguments)를 받으므로 인수를 사용하는 구문이 약간 달라졌습니다. 
+이제 provider는 요청된 매개 변수를 사용하여 호출해야 하는 함수입니다.  
+이와 같이 하드코딩된 타입의 액티비티을 전달하도록 UI를 업데이트할 수 있습니다:
+
+<AutoSnippet raw={consumerFamily} />
+
+<When codegen={true}>
+
+provider에게 전달된 매개변수(parameters)는 어노테이션이 달린 함수의 매개변수에서 "ref" 매개변수를 뺀 값에 해당합니다.
+
+</When>
+
+:::info
+서로 다른 인수(arguments)를 가진 동일한 provider를 동시에 수신(listen)하는 것은 전적으로 가능합니다.  
+예를 들어, 우리의 UI는 "오락" 액티비티와 "요리" 액티비티을 모두 렌더링할 수 있습니다:
+
+<AutoSnippet raw={multipleConsumerFamily} />
+
+<When codegen={false}>
+
+이것이 수정자(modifier)를 "family"라고 부르는 이유입니다: 
+provider에게 매개 변수를 전달하면, 내부적으로 동일한 로직을 가진 상태 그룹(group of states)으로 공급자를 효과적으로 변환할 수 있기 때문입니다.
+
+</When>
+:::
+
+## Caching considerations and parameter restrictions
+
+매개변수(parameters)를 providers에게 전달할 때 계산은 여전히 캐시됩니다.
+차이점은 이제 계산이 인수별로 캐시(cached per-argument)된다는 점입니다.
+
+즉, 두 개의 위젯이 동일한 매개변수로 동일한 provider를 사용하는 경우 네트워크 요청은 한 번만 이루어집니다.  
+그러나 두 위젯이 서로 다른 매개변수를 가진 동일한 provider를 사용하는 경우 두 번의 네트워크 요청이 이루어집니다.
+
+이를 위해 Riverpod은 매개변수의 `==` 연산자에 의존합니다.  
+따라서 provider에게 전달되는 매개변수가 일관된 동일성(consistent equality)을 갖는 것이 중요합니다.
+
+:::caution
+흔히 저지르는 실수는 새 객체가 `==`를 재정의하지 않는데도 새 객체를 프로바이더의 매개변수로 직접 인스턴스화하는 것입니다.  
+예를 들어, `List`를 이렇게 전달하고 싶은 유혹을 받을 수 있습니다:
+
+<AutoSnippet raw={consumerListFamily} />
+
+이 코드의 문제점은 `['recreational', 'cooking'] == ['recreational', 'cooking']`가 `false`라는 것입니다.
+따라서 Riverpod은 두 매개변수가 다르다고 판단하고 새로운 네트워크 요청을 시도합니다.  
+이렇게 되면 네트워크 요청이 무한 반복되어 사용자에게 진행률 표시기가 영구적으로 표시됩니다.
+
+이 문제를 해결하려면 `const` 목록(`const ['레크리에이션', '요리']`)을 사용하거나 `==`를 재정의하는 사용자 정의 목록 구현을 사용할 수 있습니다.
+
+이 실수를 발견하는 데 도움이 되려면 [riverpod_lint](https://pub.dev/packages/riverpod_lint)를 사용하여 
+[provider_parameters](https://github.com/rrousselGit/riverpod/tree/master/packages/riverpod_lint#provider_parameters) 린트 규칙을 활성화하는 것이 좋습니다. 
+그러면 위와 같은 스니펫에 경고가 표시됩니다.
+설치 단계는 <Link documentID="introduction/getting_started" hash="enabling-riverpod_lintcustom_lint" />를 참조하세요.
+:::
+
+<When codegen={false}>
+
+이를 염두에 두고 provider에 여러 매개 변수(multiple parameters)를 전달하는 방법이 궁금할 수 있습니다.  
+권장되는 해결책은 다음과 같습니다:
+
+- 코드 생성(code-generation)으로 전환하여 원하는 수의 매개변수를 전달할 수 있습니다.
+- Dart 3의 레코드(records) 사용
+
+다트 3의 레코드(records)가 유용한 이유는 `==`를 자연스럽게 재정의하고 편리한 구문을 가지고 있기 때문입니다.  
+예를 들어, 액티비티 타입과 최대 가격을 모두 허용하도록 공급자를 업데이트할 수 있습니다:
+
+<AutoSnippet raw={tupleFamily} />
+
+그런 다음 이 provider를 다음과 같이 소비(consume)할 수 있습니다:
+
+<AutoSnippet raw={consumerTupleFamily} />
+
+</When>

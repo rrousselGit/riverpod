@@ -1,0 +1,22 @@
+Message: `Wrap with Consumer`
+=== diff (starting at line 11)
+    Map();
+
+-     return Scaffold(
+-       body: Container(),
+-     );
++     return Consumer(builder: (context, ref, child) { return Scaffold(
++       body: Container(),
++     ); },);
+  }
+}
+===
+Message: `Wrap with Consumer`
+=== diff (starting at line 12)
+
+    return Scaffold(
+-       body: Container(),
++       body: Consumer(builder: (context, ref, child) { return Container(); },),
+    );
+  }
+===

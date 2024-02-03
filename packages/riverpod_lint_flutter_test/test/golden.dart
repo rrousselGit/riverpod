@@ -5,6 +5,8 @@ import 'package:test/test.dart';
 import 'package:path/path.dart';
 import 'package:custom_lint_core/custom_lint_core.dart';
 import 'package:analyzer_plugin/protocol/protocol_generated.dart';
+import 'package:analyzer/dart/analysis/results.dart';
+import 'package:analyzer/dart/analysis/utilities.dart';
 
 @Deprecated('Do not commit')
 var goldenWrite = false;
@@ -23,15 +25,25 @@ File writeToTemporaryFile(String content) {
 void testGolden(
   String description,
   String fileName,
-  Future<Iterable<PrioritizedSourceChange>> Function() body,
-) {
+  Future<Iterable<PrioritizedSourceChange>> Function(ResolvedUnitResult unit)
+      body, {
+  required String sourcePath,
+}) {
   test(description, () async {
-    final changes = await body().then((value) => value.toList());
+    final file = File(sourcePath).absolute;
+
+    final result = await resolveFile2(path: file.path);
+    result as ResolvedUnitResult;
+
+    final changes = await body(result).then((value) => value.toList());
 
     try {
       expect(
         changes,
-        matcherNormalizedPrioritizedSourceChangeSnapshot(fileName),
+        matcherNormalizedPrioritizedSourceChangeSnapshot(
+          fileName,
+          encoder: const JsonEncoder.withIndent('  '),
+        ),
       );
     } on TestFailure {
       // ignore: deprecated_member_use_from_same_package
@@ -39,21 +51,15 @@ void testGolden(
 
       final file = File('test/$fileName');
 
-      final changesJson = changes.map((e) => e.toJson()).toList();
-      // Remove all "file" references from the json.
-      for (final change in changesJson) {
-        final changeMap = change['change']! as Map<String, Object?>;
-        final edits = changeMap['edits']! as List;
-        for (final edit in edits.cast<Map<String, Object?>>()) {
-          edit.remove('file');
-        }
-      }
-
-      final encoder = new JsonEncoder.withIndent("  ");
+      final source = File(sourcePath).readAsStringSync();
+      final result = encodePrioritizedSourceChanges(
+        changes,
+        source: source,
+      );
 
       file
         ..createSync(recursive: true)
-        ..writeAsStringSync(encoder.convert(changesJson));
+        ..writeAsStringSync(result);
       return;
     }
   });

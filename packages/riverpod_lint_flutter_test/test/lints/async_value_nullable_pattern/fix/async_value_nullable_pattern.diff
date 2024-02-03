@@ -1,0 +1,18 @@
+Message: `Use "hasValue: true" instead`
+=== diff (starting at line 8)
+    case AsyncValue<int?>(
+        // expect_lint: async_value_nullable_pattern
+-         :final value?,
++         :final value, hasValue: true,
+      ):
+      print(value);
+===
+Message: `Use "hasValue: true" instead`
+=== diff (starting at line 17)
+    case AsyncValue<int?>(
+        // expect_lint: async_value_nullable_pattern
+-         :final value?
++         :final value, hasValue: true
+      ):
+      print(value);
+===

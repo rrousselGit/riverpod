@@ -1,0 +1,13 @@
+Message: `Add build method`
+=== diff (starting at line 8)
+@riverpod
+// expect_lint: notifier_build
+- class ExampleProvider1 extends _$ExampleProvider1 {}
++ class ExampleProvider1 extends _$ExampleProvider1 {
++   @override
++   dynamic build() {
++     // TODO: implement build
++     throw UnimplementedError();
++   }
++ }
+===

@@ -1,0 +1,192 @@
+---
+title: 동기부여(Motivation)
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import sameType from "./same_type";
+import combine from "./combine";
+import asyncValues from "./async_values";
+import autoDispose from "./auto_dispose";
+import override from "./override";
+import sideEffects from "./side_effects";
+import {
+  trimSnippet,
+  AutoSnippet,
+  When,
+} from "../../../../../../src/components/CodeSnippet";
+
+이 심층 글은 Riverpod의 존재 이유를 보여주기 위해 작성되었습니다.
+
+특히 이 섹션에서는 아래에 답해야 합니다:
+  - Provider가 널리 사용되는데 왜 Riverpod로 마이그레이션해야 하나요?
+  - 어떤 구체적인 이점을 얻을 수 있나요?
+  - 어떻게 Riverpod로 마이그레이션할 수 있나요?
+  - 점진적으로 마이그레이션할 수 있나요?
+  - 기타 등등
+
+이 섹션이 끝날 때쯤이면 Provider보다 Riverpod을 선호해야 한다는 확신이 들 것입니다. 
+
+**Riverpod은 실제로 Provider와 비교할 때 더 현대적이고 권장되며 신뢰할 수 있는 접근 방식입니다.**
+
+Riverpod은 더 나은 상태 관리 기능, 더 나은 캐싱 전략, 간소화된 리액티비티 모델을 제공합니다.  
+반면, Provider는 현재 많은 부분에서 부족하고 앞으로 나아갈 방법이 없습니다.
+
+## Provider의 제약사항
+
+Provider는 InheritedWidget API의 제약을 받기 때문에 근본적인 문제가 있습니다.
+본질적으로 Provider는 "더 단순한 `InheritedWidget`"입니다; 
+Provider는 단지 InheritedWidget 래퍼일 뿐이므로 이에 의해 제한을 받습니다.
+
+### Provider는 동일한 "타입"의 providers를 두 개(또는 그 이상) 보유할 수 었습니다.
+
+두 개의 `Provider<Item>`를 선언하면 불안정한 동작이 발생합니다.: 
+`InheritedWidget`API는 *둘 중 하나*만 가져옵니다: 가장 가까운 `Provider<Item>` 조상(ancestor)
+
+[해결방법]은 Provider의 문서에 설명되어 있지만, Riverpod은 이 문제가 없습니다.
+
+이 제약을 제거하면 다음과 같이 로직을 작은 조각으로 자유롭게 분할할 수 있습니다:
+
+<AutoSnippet language="dart" {...sameType}></AutoSnippet>
+
+### Providers는 한 번에 하나의 값만 합리적으로 반환합니다
+
+외부 RESTful API를 읽을 때, 새 호출이 다음 값을 로드하는 동안 마지막으로 읽은 값을 표시하는 것은 매우 일반적입니다.  
+Riverpod은 `AsyncValue`의 API를 통해 한 번에 두 개의 값(즉, 이전 데이터 값과 새로 들어오는 새 로딩 값)을 전송함으로써 이러한 동작을 허용합니다:
+
+<AutoSnippet language="dart" {...asyncValues}></AutoSnippet>
+
+이전 코드 조각에서 `evenItemsProvider`를 보면 다음과 같은 효과가 나타납니다:
+1. 처음에, 요청이 이루어지고 빈 목록을 얻습니다;
+2. 그런 다음 오류가 발생한다고 가정합니다. `[Item(id: -1)]`을 얻습니다;
+3. 그런 다음 pull-to-refresh 로직으로 요청을 다시 시도합니다(예: `ref.invalidate`를 통해);
+4. 첫 번째 공급자를 다시 로드하는 동안 두 번째 공급자는 여전히 `[Item(id: -1)]`을 노출합니다;
+5. 이번에는 일부 파싱된 데이터가 올바르게 수신됩니다: 짝수 항목이 올바르게 반환됩니다.
+
+프로바이더를 사용하면 위의 기능을 원격으로 구현할 수 없으며 해결 방법도 쉽지 않습니다.
+
+### providers를 결합하는 것은 어렵고 에러가 발생하기 쉽습니다
+
+Provider를 사용하면 provider의 `create`안에서 `context.watch`를 사용하고 싶을 수 있습니다.
+이는 종속성이 변경되지 않은 경우(예: 위젯 트리에 GlobalKey가 포함되어 있는 경우)에도 `didChangeDependencies`가 트리거될 수 있기 때문에 신뢰할 수 없습니다.
+
+그럼에도 불구하고, Provider는 `ProxyProvider`라는 Ad-hoc 솔루션을 가지고 있지만, 이는 지루하고 오류가 발생하기 쉽다고 여겨집니다.
+
+상태 결합은 [ref.watch] 및 [ref.listen]와 같은 간단하지만 강력한 유틸리티를 사용하여 오버헤드 없이 반응형으로 값을 결합하고 캐시할 수 있기 때문에 Riverpod의 핵심 메커니즘입니다.
+
+<AutoSnippet language="dart" {...combine}></AutoSnippet>
+
+Riverpod에서는 종속성을 읽을 수 있고 API가 동일하게 유지되므로 값을 결합하는 것이 자연스럽게 느껴집니다.
+
+### 안정성 부족
+Provider를 상요하면, 리팩토링 또는 대규모 변경 중에 `ProviderNotFoundException`을 종종 마주치게 됩니다.
+사실, 이 런타임 예외는 Riverpod이 처음 만들어진 주요 이유 중 하나였습니다.
+
+이보다 훨씬 더 많은 유틸리티를 제공하지만, Riverpod은 이 예외를 던질 수 없습니다.
+
+### 상태를 폐기(Disposing)하는 것은 어렵습니다
+
+`InheritedWidget`은 [Comsumer가 더이상 Listen하지 않을때 반응(React)할 수 없습니다].  
+이로 인해 더 이상 사용되지 않을때 Provider의 상태를 자동으로 파기(Dispose)할 수 없습니다.
+프로파이더를 사용하면 우리는 범위 제한(Scoping) provider에 의존하여 상태가 더 이상 사용되지 않을 때 상태를 파기(Dispose)해야 합니다.
+하지만 페이지 간에 상태가 공유되는 경우 까다로워지기 때문에 이것이 쉽지 않습니다.
+
+Riverpod은 [autodispose]와 [keepAlive]와 같은 쉽게 이해할 수 있는 API로 이 문제를 해결합니다.
+이 두 API는 유연하고 창의적인 캐싱 전략(예: 시간 기반 캐싱)을 가능하게 합니다:
+
+<AutoSnippet language="dart" {...autoDispose}></AutoSnippet>
+
+안타깝께도 원시 `InheritedWidget`으로는 이를 구현할 방법이 없으므로 Provider로 구현할 수 없습니다.
+
+### 신뢰할 수 있는 매개변수화 매커니즘 부족
+Riverpod은 사용자가 [.family 수정자(modifier)]를 사용하여 "매개변수화된(parameterized)" 공급자를 선언할 수 있습니다.  
+실제로 `.family`는 Riverpod의 가장 강력한 기능 중 하나이며, Riverpod의 혁신의 핵심입니다.
+예를 들어, 엄청한 [로직의 단순화]을 가능하게 합니다.
+
+Provider를 사용해 비슷한 기능을 구현하려면, 이러한 매개변수에 대한 사용 편의성*과* 유형 안전성을 포기해야 합니다. 
+
+또한, [이 두 기능은 서로 밀접하게 연관되어 있기 때문]에 Provider로 유사한 '.autoDispose' 메커니즘을 구현할 수 없다는 것은 본질적으로 '.family'의 동등한 구현을 막는 것입니다.
+
+마지막으로, 앞에서 살펴본 것처럼 위젯이 `InheritedWidget`을 수신(listen)하기 위해 *절대로* 멈추지 않는다는 것을 알 수 있습니다.
+이는 일부 provider 상태가 "동적으로 마운트(dynamically mounted)"된 경우, 예를 들어 빌드에 매개변수를 사용하여 provider를 빌드할 때 심각한 메모리 누수가 발생한다는 것을 의미합니다, 이것이 바로 '.family'가 하는 일입니다.
+따라서 현재로서는 Provider에 해당하는 `.family`를 얻는 것은 근본적으로 불가능합니다.
+
+### 지루한 테스트
+테스트를 작성하려면 각 테스트 내에서 providers를 *다시 정의해야만* 합니다.
+
+Riverpod을 사용하면 기본적으로 테스트 내부에서 providers를 사용할 수 있습니다. 
+또한, Riverpod은 providers를 모킹(mocking)할 때 중요한 "재정의(overriding)" 유틸리티 모음을 편리하게 제공합니다.
+
+위의 결합된 상태 스니펫을 테스트하는 것은 다음과 같이 간단합니다:
+
+<AutoSnippet language="dart" {...override}></AutoSnippet>
+
+테스트에 대한 자세한 내용은 [테스팅]을 참조하세요.
+
+
+### 부수 기능 트리거(Triggering side effects)는 간단하지 않습니다.
+
+`InheritedWidget`에는 `onChange`콜백이 없으므로, provider는 콜백을 가질 수 없습니다.
+리는 snackbars, modals 등과 같은 네비게이션에 문제가 있습니다.
+
+대신 Riverpod은 간단한 `ref.listen`을 제공합니다. 이는 [Flutter와 잘 통합]됩니다.
+
+<AutoSnippet language="dart" {...sideEffects}></AutoSnippet>
+
+## Riverpod을 향해
+
+개념적으로 Riverpod과 Provider는 상당히 유사합니다.
+두 패키지 모두 비슷한 역할을 수행합니다. 둘 다 시도합니다:
+
+- 일부 상태 저장 객체를 캐시하고 폐기합니다;
+- 테스트 중에 해당 객체를 모킹하는 방법을 제공합니다;
+- 위젯이 이러한 객체를 간단한 방법으로 수신할 수 있는 방법을 제공합니다.
+
+Riverpod을 Provider가 몇 년 동안 계속 발전했다면 어땠을지로 생각해 볼 수 있습니다.
+
+### 왜 별도의 패키지인가요?
+
+원래는 앞서 언급한 문제를 해결하기 위한 방법으로 'Provider'의 주요 버전이 출시될 예정이었습니다.
+그러나 새로운 `ConsumerWidget` API로 인해 "너무 많은 것을 깨뜨리고" 심지어 논란의 여지가 있었기 때문에 이를 포기하기로 결정했습니다.
+Provider는 여전히 가장 많이 사용되는 Flutter 패키지 중 하나이기 때문에 별도의 패키지를 만들기로 결정했고, 그렇게 해서 Riverpod이 탄생했습니다.
+
+별도의 패키지 생성 활성화:
+  - 두 가지 접근 방식을 *동시에* 임시로 사용할 수 있도록 하여 원하는 사람은 누구나 쉽게 마이그레이션할 수 있습니다;
+  - 원칙적으로 Riverpod이 마음에 들지 않거나 아직 신뢰할 수 없다고 판단되는 경우 Provider를 계속 사용할 수 있도록 허용;
+  - Provider의 다양한 기술적 한계에 대한 생산적인 솔루션을 찾기 위해 Riverpod이 실험할 수 있도록 합니다.
+
+실제로 Riverpod은 Provider의 정신적 후계자 역할을 하도록 설계되었습니다. 따라서 'Riverpod'라는 이름은 'Riverpod'의 아나그램입니다.  
+
+### 획기적인 변화
+Riverpod의 유일한 단점은 작동하려면 위젯 유형을 변경해야 한다는 것입니다:
+
+- Riverpod을 사용하면 `StatelessWidget` 대신 `ConsumerWidget`을 확장(extend)해야 합니다.
+- Riverpod을 사용하면 `StatefulWidget` 대신 `ConsumerStatefulWidget`을 확장(extend)해야 합니다.
+
+그러나 이러한 불편함은 큰 틀에서 보면 상당히 사소한 것입니다. 그리고 언젠가는 이 요구 사항이 사라질 수도 있습니다.
+
+### 적합한 라이브러리 선택
+아마 스스로에게 물어보셨을 것입니다: 
+*"그렇다면 Provider 사용자로서 Provider를 사용해야 하나요, 아니면 Riverpod을 사용해야 하나요?"*.
+
+저희는 이 질문에 명확하게 답해드리고자 합니다:
+
+    아마도 Riverpod을 사용해야 할 것입니다.
+
+Riverpod이 전반적으로 더 잘 설계되어 있으며 로직을 대폭 간소화할 수 있습니다.
+
+
+[ref.watch]: /docs/concepts/reading#using-refwatch-to-observe-a-provider
+[ref.listen]: /docs/concepts/reading#using-reflisten-to-react-to-a-provider-change
+[autodispose]: /docs/concepts/modifiers/auto_dispose
+[해결방법]: https://pub.dev/packages/provider#can-i-obtain-two-different-providers-using-the-same-type
+[.family 수정자(modifier)]: /docs/concepts/modifiers/family
+[keepAlive]: /docs/concepts/modifiers/auto_dispose#refkeepalive
+[이 두 기능은 서로 밀접하게 연관되어 있기 때문]: /docs/concepts/modifiers/family#prefer-using-autodispose-when-the-parameter-is-not-constant
+[로직의 단순화]: /docs/concepts/modifiers/family#usage
+[we have to]: https://github.com/flutter/flutter/issues/128432
+[it turns out]: https://github.com/flutter/flutter/issues/106549
+[Comsumer가 더이상 Listen하지 않을때 반응(React)할 수 없습니다]: https://github.com/flutter/flutter/issues/106546
+[테스팅]: /docs/cookbooks/testing
+[Flutter와 잘 통합]: /docs/concepts/reading#using-reflisten-to-react-to-a-provider-change

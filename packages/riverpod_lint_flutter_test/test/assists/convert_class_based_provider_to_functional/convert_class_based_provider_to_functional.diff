@@ -1,0 +1,51 @@
+Message: `Convert to functional provider`
+=== diff (starting at line 7)
+/// Some comment
+@riverpod
+- class Example extends _$Example {
+-   @override
+-   int build() => 0;
+- }
++ int example(ExampleRef ref) => 0;
+
+/// Some comment
+===
+Message: `Convert to functional provider`
+=== diff (starting at line 7)
+/// Some comment
+@riverpod
+- class Example extends _$Example {
+-   @override
+-   int build() => 0;
+- }
++ int example(ExampleRef ref) => 0;
+
+/// Some comment
+===
+Message: `Convert to functional provider`
+=== diff (starting at line 7)
+/// Some comment
+@riverpod
+- class Example extends _$Example {
+-   @override
+-   int build() => 0;
+- }
++ int example(ExampleRef ref) => 0;
+
+/// Some comment
+===
+Message: `Convert to functional provider`
+=== diff (starting at line 14)
+/// Some comment
+@riverpod
+- class ExampleFamily extends _$ExampleFamily {
+-   @override
+-   int build({required int a, String b = '42'}) {
+-     // Hello world
+-     return 0;
+-   }
++ int exampleFamily(ExampleFamilyRef ref, {required int a, String b = '42'}) {
++     // Hello world
++     return 0;
++   }
+===
