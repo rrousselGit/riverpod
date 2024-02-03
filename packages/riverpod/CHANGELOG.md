@@ -1,4 +1,4 @@
-## Unreleased minor
+## 2.5.0 - 2024-02-03
 
 - Add `test` argument to `AsyncValue.guard` method. (thanks to @utamori)
 

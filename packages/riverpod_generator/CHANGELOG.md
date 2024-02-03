@@ -1,4 +1,4 @@
-## Unreleased patch
+## 2.3.10 - 2024-02-03
 
 - Improved error handling if:
   - a Notifier has no default constructor
