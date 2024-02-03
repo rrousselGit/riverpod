@@ -19,6 +19,19 @@ void main() {
 
   StatelessBaseWidgetType.values.forEach(
     (targetWidget) {
+      final int expectedChangeCount;
+      switch (targetWidget) {
+        case StatelessBaseWidgetType.hookConsumerWidget:
+          expectedChangeCount = 11;
+          break;
+        case StatelessBaseWidgetType.hookWidget:
+        case StatelessBaseWidgetType.consumerWidget:
+          expectedChangeCount = 12;
+          break;
+        case StatelessBaseWidgetType.statelessWidget:
+          expectedChangeCount = 8;
+          break;
+      }
       _runGoldenTest(
         ConvertToStatelessBaseWidget(
           targetWidget: targetWidget,
@@ -26,13 +39,26 @@ void main() {
         'Convert widgets to ${targetWidget.name}s with hooks_riverpod and flutter_hooks dependency',
         'assists/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.diff',
         pubspecWithDependencies,
-        targetWidget == StatelessBaseWidgetType.statelessWidget ? 6 : 9,
+        expectedChangeCount,
       );
     },
   );
 
   StatefulBaseWidgetType.values.forEach(
     (targetWidget) {
+      final int expectedChangeCount;
+      switch (targetWidget) {
+        case StatefulBaseWidgetType.statefulHookConsumerWidget:
+        case StatefulBaseWidgetType.statefulHookWidget:
+          expectedChangeCount = 12;
+          break;
+        case StatefulBaseWidgetType.consumerStatefulWidget:
+          expectedChangeCount = 11;
+          break;
+        case StatefulBaseWidgetType.statefulWidget:
+          expectedChangeCount = 8;
+          break;
+      }
       _runGoldenTest(
         ConvertToStatefulBaseWidget(
           targetWidget: targetWidget,
@@ -40,7 +66,7 @@ void main() {
         'Convert widgets to ${targetWidget.name}s with hooks_riverpod and flutter_hooks dependency',
         'assists/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.diff',
         pubspecWithDependencies,
-        targetWidget == StatefulBaseWidgetType.statefulWidget ? 6 : 9,
+        expectedChangeCount,
       );
     },
   );
@@ -54,14 +80,14 @@ void main() {
       final int expectedChangeCount;
       switch (targetWidget) {
         case StatelessBaseWidgetType.consumerWidget:
-          expectedChangeCount = 9;
+          expectedChangeCount = 12;
           break;
         case StatelessBaseWidgetType.hookWidget:
         case StatelessBaseWidgetType.hookConsumerWidget:
           expectedChangeCount = 0;
           break;
         case StatelessBaseWidgetType.statelessWidget:
-          expectedChangeCount = 6;
+          expectedChangeCount = 8;
           break;
       }
       final String goldenFilePath;
@@ -94,14 +120,14 @@ void main() {
       final int expectedChangeCount;
       switch (targetWidget) {
         case StatefulBaseWidgetType.consumerStatefulWidget:
-          expectedChangeCount = 9;
+          expectedChangeCount = 11;
           break;
         case StatefulBaseWidgetType.statefulHookWidget:
         case StatefulBaseWidgetType.statefulHookConsumerWidget:
           expectedChangeCount = 0;
           break;
         case StatefulBaseWidgetType.statefulWidget:
-          expectedChangeCount = 6;
+          expectedChangeCount = 8;
           break;
       }
       final String goldenFilePath;
@@ -194,6 +220,18 @@ void _runGoldenTest(
 
         // ConsumerWidget
         ...await assist.testRun(result, const SourceRange(2582, 0),
+            pubspec: pubspec),
+
+        // StatelessWithField
+        ...await assist.testRun(result, const SourceRange(2784, 0),
+            pubspec: pubspec),
+
+        // HookConsumerWithField
+        ...await assist.testRun(result, const SourceRange(3139, 0),
+            pubspec: pubspec),
+
+        // ConsumerStatefulWithField
+        ...await assist.testRun(result, const SourceRange(3571, 0),
             pubspec: pubspec),
       ];
 
