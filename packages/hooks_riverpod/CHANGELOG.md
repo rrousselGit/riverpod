@@ -1,6 +1,7 @@
-## Unreleased fix
+## 2.4.10 - 2024-02-03
 
 - Fix out of date `pub.dev` description
+- Add `test` argument to `AsyncValue.guard` method. (thanks to @utamori)
 
 ## 2.4.9 - 2023-11-27
 

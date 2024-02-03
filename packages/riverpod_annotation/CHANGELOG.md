@@ -1,4 +1,4 @@
-## Unreleased patch
+## 2.3.4 - 2024-02-03
 
 - Improved `@Riverpod(dependencies: [...])` documentation.
 

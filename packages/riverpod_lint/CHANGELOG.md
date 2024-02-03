@@ -1,8 +1,9 @@
-## Unreleased fix
+## 2.3.8 - 2024-02-03
 
 - Fix `async_value_nullable_pattern` false positive when used with generics
   that have non-nullable type constrains.
-- Add migration widget field when convert Stateless-based and Stateful-based to each other.
+- Add migration widget field when convert Stateless-based and 
+  Stateful-based to each other (thanks to @Kurogoma4D)
 
 ## 2.3.7 - 2023-11-27
 
