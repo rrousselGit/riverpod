@@ -9,7 +9,7 @@ import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/analysis/utilities.dart';
 
 @Deprecated('Do not commit')
-var goldenWrite = true;
+var goldenWrite = false;
 
 File writeToTemporaryFile(String content) {
   final tempDir = Directory.systemTemp.createTempSync();
