@@ -16,7 +16,7 @@ dependencies:
 dev_dependencies:
   build_runner: ^2.4.6
   custom_lint: ^0.5.2
-  custom_lint_core: ^0.5.13
+  custom_lint_core: ^0.5.14
   freezed: ^2.3.2
   json_serializable: ^6.6.1
   riverpod_lint:

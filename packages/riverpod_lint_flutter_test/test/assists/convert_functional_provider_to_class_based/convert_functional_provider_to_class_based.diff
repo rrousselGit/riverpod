@@ -1,0 +1,27 @@
+Message: `Convert to class-based provider`
+=== diff (starting at line 7)
+/// Some comment
+@riverpod
+- int example(ExampleRef ref) => 0;
++ class Example extends _$Example {
++   @override
++   int build() => 0;
++ }
+
+/// Some comment
+===
+Message: `Convert to class-based provider`
+=== diff (starting at line 11)
+/// Some comment
+@riverpod
+- int exampleFamily(ExampleFamilyRef ref, {required int a, String b = '42'}) {
+-   // Hello world
+-   return 0;
++ class ExampleFamily extends _$ExampleFamily {
++   @override
++   int build({required int a, String b = '42'}) {
++   // Hello world
++   return 0;
++ }
+}
+===

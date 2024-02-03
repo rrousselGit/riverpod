@@ -6,7 +6,7 @@ import '../../golden.dart';
 void main() {
   testGolden(
     'Convert plain class provider to functional provider',
-    'assists/convert_class_based_provider_to_functional/convert_class_based_provider_to_functional.snap',
+    'assists/convert_class_based_provider_to_functional/convert_class_based_provider_to_functional.diff',
     sourcePath:
         'test/assists/convert_class_based_provider_to_functional/convert_class_based_provider_to_functional.dart',
     (result) async {

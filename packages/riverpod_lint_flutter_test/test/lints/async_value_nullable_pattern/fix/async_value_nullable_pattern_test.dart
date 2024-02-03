@@ -6,7 +6,7 @@ import '../../../golden.dart';
 void main() {
   testGolden(
     'Verify that @riverpod classes has the build method',
-    'lints/async_value_nullable_pattern/fix/async_value_nullable_pattern.snap',
+    'lints/async_value_nullable_pattern/fix/async_value_nullable_pattern.diff',
     sourcePath:
         'test/lints/async_value_nullable_pattern/fix/async_value_nullable_pattern.dart',
     (result) async {

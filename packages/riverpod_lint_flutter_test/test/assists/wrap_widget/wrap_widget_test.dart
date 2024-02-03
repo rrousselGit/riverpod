@@ -8,7 +8,7 @@ import '../../golden.dart';
 void main() {
   testGolden(
     'Wrap with consumer',
-    'assists/wrap_widget/wrap_with_consumer.snap',
+    'assists/wrap_widget/wrap_with_consumer.diff',
     sourcePath: 'test/assists/wrap_widget/wrap_widget.dart',
     (result) async {
       final assist = WrapWithConsumer();
@@ -35,7 +35,7 @@ void main() {
 
   testGolden(
     'Wrap with ProviderScope',
-    'assists/wrap_widget/wrap_with_provider_scope.snap',
+    'assists/wrap_widget/wrap_with_provider_scope.diff',
     sourcePath: 'test/assists/wrap_widget/wrap_widget.dart',
     (result) async {
       final assist = WrapWithProviderScope();

@@ -8,7 +8,7 @@ import '../../golden.dart';
 void main() {
   testGolden(
     'Verify that @riverpod classes extend the generated typedef',
-    'lints/notifier_extends/notifier_extends.snap',
+    'lints/notifier_extends/notifier_extends.diff',
     sourcePath: 'test/lints/notifier_extends/notifier_extends.dart',
     (result) async {
       final lint = NotifierExtends();

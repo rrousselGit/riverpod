@@ -24,7 +24,7 @@ void main() {
           targetWidget: targetWidget,
         ),
         'Convert widgets to ${targetWidget.name}s with hooks_riverpod and flutter_hooks dependency',
-        'assists/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.snap',
+        'assists/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.diff',
         pubspecWithDependencies,
         targetWidget == StatelessBaseWidgetType.statelessWidget ? 6 : 9,
       );
@@ -38,7 +38,7 @@ void main() {
           targetWidget: targetWidget,
         ),
         'Convert widgets to ${targetWidget.name}s with hooks_riverpod and flutter_hooks dependency',
-        'assists/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.snap',
+        'assists/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.diff',
         pubspecWithDependencies,
         targetWidget == StatefulBaseWidgetType.statefulWidget ? 6 : 9,
       );
@@ -68,12 +68,12 @@ void main() {
       switch (targetWidget) {
         case StatelessBaseWidgetType.hookWidget:
         case StatelessBaseWidgetType.hookConsumerWidget:
-          goldenFilePath = 'assists/empty.snap';
+          goldenFilePath = 'assists/empty.diff';
           break;
         case StatelessBaseWidgetType.consumerWidget:
         case StatelessBaseWidgetType.statelessWidget:
           goldenFilePath =
-              'assists/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.snap';
+              'assists/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.diff';
           break;
       }
 
@@ -108,12 +108,12 @@ void main() {
       switch (targetWidget) {
         case StatefulBaseWidgetType.statefulHookWidget:
         case StatefulBaseWidgetType.statefulHookConsumerWidget:
-          goldenFilePath = 'assists/empty.snap';
+          goldenFilePath = 'assists/empty.diff';
           break;
         case StatefulBaseWidgetType.consumerStatefulWidget:
         case StatefulBaseWidgetType.statefulWidget:
           goldenFilePath =
-              'assists/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.snap';
+              'assists/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.diff';
           break;
       }
 

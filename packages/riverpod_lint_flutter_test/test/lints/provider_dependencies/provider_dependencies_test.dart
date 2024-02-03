@@ -7,7 +7,7 @@ import '../../golden.dart';
 void main() {
   testGolden(
     'Verify that @riverpod classes extend the generated typedef',
-    'lints/provider_dependencies/provider_dependencies.snap',
+    'lints/provider_dependencies/provider_dependencies.diff',
     sourcePath: 'test/lints/provider_dependencies/provider_dependencies.dart',
     (result) async {
       const lint = ProviderDependencies();

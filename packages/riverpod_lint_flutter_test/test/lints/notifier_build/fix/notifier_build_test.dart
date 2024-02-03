@@ -6,7 +6,7 @@ import '../../../golden.dart';
 void main() {
   testGolden(
     'Verify that @riverpod classes has the build method',
-    'lints/notifier_build/fix/notifier_build.snap',
+    'lints/notifier_build/fix/notifier_build.diff',
     sourcePath: 'test/lints/notifier_build/fix/notifier_build.dart',
     (result) async {
       const lint = NotifierBuild();
