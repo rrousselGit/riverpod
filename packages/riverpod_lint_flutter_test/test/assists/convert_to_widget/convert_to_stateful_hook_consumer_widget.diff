@@ -185,3 +185,100 @@ Message: `Convert to StatefulHookConsumerWidget`
     return const Placeholder();
   }
 ===
+Message: `Convert to StatefulHookConsumerWidget`
+=== diff (starting at line 133)
+}
+
+- class StatelessWithField extends StatelessWidget {
+-   const StatelessWithField({
+-     super.key,
+-     required this.field,
+-   });
+- 
+-   final int field;
+-   static final int staticField = 42;
+- 
+-   @override
+-   Widget build(BuildContext context) {
+-     return Column(
+-       children: [
+-         Text('$field'),
+-         Text('$staticField'),
++ class StatelessWithField extends StatefulHookConsumerWidget {
++   const StatelessWithField({
++     super.key,
++     required this.field,
++   });
++ 
++   final int field;
++   static final int staticField = 42;
++ 
++   @override
++   ConsumerState<StatelessWithField> createState() => _StatelessWithFieldState();
++ }
++ 
++ class _StatelessWithFieldState extends ConsumerState<StatelessWithField> {
++ @override
++   Widget build(BuildContext context) {
++     return Column(
++       children: [
++         Text('${widget.field}'),
++         Text('${StatelessWithField.staticField}'),
+      ],
+    );
+===
+Message: `Convert to StatefulHookConsumerWidget`
+=== diff (starting at line 153)
+}
+
+- class HookConsumerWithField extends HookConsumerWidget {
+-   const HookConsumerWithField({
+-     super.key,
+-     required this.field,
+-   });
+- 
+-   final int field;
+-   static final int staticField = 42;
+- 
+-   @override
+-   Widget build(
+-     BuildContext context,
+-     WidgetRef ref,
+-   ) {
+-     return Column(
+-       children: [
+-         Text('$field'),
+-         Text('$staticField'),
++ class HookConsumerWithField extends StatefulHookConsumerWidget {
++   const HookConsumerWithField({
++     super.key,
++     required this.field,
++   });
++ 
++   final int field;
++   static final int staticField = 42;
++ 
++   @override
++   ConsumerState<HookConsumerWithField> createState() => _HookConsumerWithFieldState();
++ }
++ 
++ class _HookConsumerWithFieldState extends ConsumerState<HookConsumerWithField> {
++ @override
++   Widget build(
++     BuildContext context) {
++     return Column(
++       children: [
++         Text('${widget.field}'),
++         Text('${HookConsumerWithField.staticField}'),
+      ],
+    );
+===
+Message: `Convert to StatefulHookConsumerWidget`
+=== diff (starting at line 180)
+}
+
+- class ConsumerStatefulWithField extends ConsumerStatefulWidget {
++ class ConsumerStatefulWithField extends StatefulHookConsumerWidget {
+  const ConsumerStatefulWithField({
+    super.key,
+===
