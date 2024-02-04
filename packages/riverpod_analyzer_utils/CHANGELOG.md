@@ -1,3 +1,7 @@
+## Unreleased patch
+
+- Bumped `custom_lint` version
+
 ## 0.5.0 - 2023-11-20
 
 - **Breaking** `LegacyProviderDeclarationElement.providerType` is now nullable.
