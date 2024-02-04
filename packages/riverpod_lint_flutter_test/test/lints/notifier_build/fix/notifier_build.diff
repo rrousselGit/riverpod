@@ -1,5 +1,7 @@
 Message: `Add build method`
-=== diff (starting at line 8)
+Priority: 80
+Diff for file `test/lints/notifier_build/fix/notifier_build.dart:8`:
+```
 @riverpod
 // expect_lint: notifier_build
 - class ExampleProvider1 extends _$ExampleProvider1 {}
@@ -10,4 +12,5 @@ Message: `Add build method`
 +     throw UnimplementedError();
 +   }
 + }
-===
+```
+---

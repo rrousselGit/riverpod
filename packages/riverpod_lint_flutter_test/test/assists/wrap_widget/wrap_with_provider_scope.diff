@@ -1,5 +1,7 @@
 Message: `Wrap with ProviderScope`
-=== diff (starting at line 11)
+Priority: 27
+Diff for file `test/assists/wrap_widget/wrap_widget.dart:11`:
+```
     Map();
 
 -     return Scaffold(
@@ -10,13 +12,17 @@ Message: `Wrap with ProviderScope`
 +     ),);
   }
 }
-===
+```
+---
 Message: `Wrap with ProviderScope`
-=== diff (starting at line 12)
+Priority: 27
+Diff for file `test/assists/wrap_widget/wrap_widget.dart:12`:
+```
 
     return Scaffold(
 -       body: Container(),
 +       body: ProviderScope(child: Container(),),
     );
   }
-===
+```
+---

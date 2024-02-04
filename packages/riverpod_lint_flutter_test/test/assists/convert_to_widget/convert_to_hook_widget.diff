@@ -1,23 +1,31 @@
 Message: `Convert to HookWidget`
-=== diff (starting at line 5)
+Priority: 36
+Diff for file `test/assists/convert_to_widget/convert_to_widget.dart:5`:
+```
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 - class Stateless extends StatelessWidget {
 + class Stateless extends HookWidget {
   const Stateless({super.key});
 
-===
+```
+---
 Message: `Convert to HookWidget`
-=== diff (starting at line 14)
+Priority: 36
+Diff for file `test/assists/convert_to_widget/convert_to_widget.dart:14`:
+```
 }
 
 - class StatelessWithComma extends StatelessWidget {
 + class StatelessWithComma extends HookWidget {
   const StatelessWithComma({super.key});
 
-===
+```
+---
 Message: `Convert to HookWidget`
-=== diff (starting at line 34)
+Priority: 36
+Diff for file `test/assists/convert_to_widget/convert_to_widget.dart:34`:
+```
 }
 
 - class HookConsumer extends HookConsumerWidget {
@@ -36,9 +44,12 @@ Message: `Convert to HookWidget`
 +     BuildContext context) {
     return const Placeholder();
   }
-===
+```
+---
 Message: `Convert to HookWidget`
-=== diff (starting at line 46)
+Priority: 32
+Diff for file `test/assists/convert_to_widget/convert_to_widget.dart:46`:
+```
 }
 
 - class Stateful extends StatefulWidget {
@@ -55,9 +66,12 @@ Message: `Convert to HookWidget`
 +  
   /// Hello world
   @override
-===
+```
+---
 Message: `Convert to HookWidget`
-=== diff (starting at line 62)
+Priority: 32
+Diff for file `test/assists/convert_to_widget/convert_to_widget.dart:62`:
+```
 }
 
 - class ExplicitCreateState extends StatefulWidget {
@@ -80,9 +94,12 @@ Message: `Convert to HookWidget`
 +   Widget build(BuildContext context) {
     return const Placeholder();
   }
-===
+```
+---
 Message: `Convert to HookWidget`
-=== diff (starting at line 78)
+Priority: 36
+Diff for file `test/assists/convert_to_widget/convert_to_widget.dart:78`:
+```
 }
 
 - class HookStateful extends StatefulHookWidget {
@@ -99,9 +116,12 @@ Message: `Convert to HookWidget`
 +  
   @override
   Widget build(BuildContext context) {
-===
+```
+---
 Message: `Convert to HookWidget`
-=== diff (starting at line 92)
+Priority: 36
+Diff for file `test/assists/convert_to_widget/convert_to_widget.dart:92`:
+```
 }
 
 - class ConsumerStateful extends ConsumerStatefulWidget {
@@ -118,9 +138,12 @@ Message: `Convert to HookWidget`
 +  
   @override
   Widget build(BuildContext context) {
-===
+```
+---
 Message: `Convert to HookWidget`
-=== diff (starting at line 106)
+Priority: 36
+Diff for file `test/assists/convert_to_widget/convert_to_widget.dart:106`:
+```
 }
 
 - class HookConsumerStateful extends StatefulHookConsumerWidget {
@@ -138,9 +161,12 @@ Message: `Convert to HookWidget`
 +  
   @override
   Widget build(BuildContext context) {
-===
+```
+---
 Message: `Convert to HookWidget`
-=== diff (starting at line 121)
+Priority: 36
+Diff for file `test/assists/convert_to_widget/convert_to_widget.dart:121`:
+```
 }
 
 - class Consumer extends ConsumerWidget {
@@ -159,18 +185,24 @@ Message: `Convert to HookWidget`
 +     BuildContext context) {
     return const Placeholder();
   }
-===
+```
+---
 Message: `Convert to HookWidget`
-=== diff (starting at line 133)
+Priority: 36
+Diff for file `test/assists/convert_to_widget/convert_to_widget.dart:133`:
+```
 }
 
 - class StatelessWithField extends StatelessWidget {
 + class StatelessWithField extends HookWidget {
   const StatelessWithField({
     super.key,
-===
+```
+---
 Message: `Convert to HookWidget`
-=== diff (starting at line 153)
+Priority: 36
+Diff for file `test/assists/convert_to_widget/convert_to_widget.dart:153`:
+```
 }
 
 - class HookConsumerWithField extends HookConsumerWidget {
@@ -201,9 +233,12 @@ Message: `Convert to HookWidget`
 +     BuildContext context) {
     return Column(
       children: [
-===
+```
+---
 Message: `Convert to HookWidget`
-=== diff (starting at line 180)
+Priority: 36
+Diff for file `test/assists/convert_to_widget/convert_to_widget.dart:180`:
+```
 }
 
 - class ConsumerStatefulWithField extends ConsumerStatefulWidget {
@@ -275,4 +310,5 @@ Message: `Convert to HookWidget`
 + 
 + const _constantNumber = 42;
 
-===
+```
+---

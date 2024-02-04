@@ -1,5 +1,7 @@
 Message: `Wrap with Consumer`
-=== diff (starting at line 11)
+Priority: 28
+Diff for file `test/assists/wrap_widget/wrap_widget.dart:11`:
+```
     Map();
 
 -     return Scaffold(
@@ -10,13 +12,17 @@ Message: `Wrap with Consumer`
 +     ); },);
   }
 }
-===
+```
+---
 Message: `Wrap with Consumer`
-=== diff (starting at line 12)
+Priority: 28
+Diff for file `test/assists/wrap_widget/wrap_widget.dart:12`:
+```
 
     return Scaffold(
 -       body: Container(),
 +       body: Consumer(builder: (context, ref, child) { return Container(); },),
     );
   }
-===
+```
+---
