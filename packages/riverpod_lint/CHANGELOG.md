@@ -1,4 +1,4 @@
-## Unreleased patch
+## 2.3.9 - 2024-02-04
 
 - Bumped `custom_lint` version
 

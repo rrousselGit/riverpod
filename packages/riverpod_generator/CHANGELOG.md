@@ -1,3 +1,7 @@
+## 2.3.11 - 2024-02-04
+
+- `riverpod_analyzer_utils` upgraded to `0.5.1`
+
 ## 2.3.10 - 2024-02-03
 
 - Improved error handling if:
