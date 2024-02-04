@@ -1,5 +1,7 @@
 Message: `Convert to functional provider`
-=== diff (starting at line 7)
+Priority: 100
+Diff for file `test/assists/convert_class_based_provider_to_functional/convert_class_based_provider_to_functional.dart:7`:
+```
 /// Some comment
 @riverpod
 - class Example extends _$Example {
@@ -9,9 +11,12 @@ Message: `Convert to functional provider`
 + int example(ExampleRef ref) => 0;
 
 /// Some comment
-===
+```
+---
 Message: `Convert to functional provider`
-=== diff (starting at line 7)
+Priority: 100
+Diff for file `test/assists/convert_class_based_provider_to_functional/convert_class_based_provider_to_functional.dart:7`:
+```
 /// Some comment
 @riverpod
 - class Example extends _$Example {
@@ -21,9 +26,12 @@ Message: `Convert to functional provider`
 + int example(ExampleRef ref) => 0;
 
 /// Some comment
-===
+```
+---
 Message: `Convert to functional provider`
-=== diff (starting at line 7)
+Priority: 100
+Diff for file `test/assists/convert_class_based_provider_to_functional/convert_class_based_provider_to_functional.dart:7`:
+```
 /// Some comment
 @riverpod
 - class Example extends _$Example {
@@ -33,9 +41,12 @@ Message: `Convert to functional provider`
 + int example(ExampleRef ref) => 0;
 
 /// Some comment
-===
+```
+---
 Message: `Convert to functional provider`
-=== diff (starting at line 14)
+Priority: 100
+Diff for file `test/assists/convert_class_based_provider_to_functional/convert_class_based_provider_to_functional.dart:14`:
+```
 /// Some comment
 @riverpod
 - class ExampleFamily extends _$ExampleFamily {
@@ -48,4 +59,5 @@ Message: `Convert to functional provider`
 +     // Hello world
 +     return 0;
 +   }
-===
+```
+---

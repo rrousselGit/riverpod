@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:test/test.dart';
@@ -36,28 +35,30 @@ void testGolden(
     result as ResolvedUnitResult;
 
     final changes = await body(result).then((value) => value.toList());
+    final source = file.readAsStringSync();
 
     try {
       expect(
         changes,
         matcherNormalizedPrioritizedSourceChangeSnapshot(
           fileName,
-          encoder: const JsonEncoder.withIndent('  '),
+          sources: {'**': source},
+          relativePath: Directory.current.path,
         ),
       );
     } on TestFailure {
       // ignore: deprecated_member_use_from_same_package
       if (!goldenWrite) rethrow;
 
-      final file = File('test/$fileName');
-
       final source = File(sourcePath).readAsStringSync();
       final result = encodePrioritizedSourceChanges(
         changes,
-        source: source,
+        sources: {'**': source},
+        relativePath: Directory.current.path,
       );
 
-      file
+      final golden = File('test/$fileName');
+      golden
         ..createSync(recursive: true)
         ..writeAsStringSync(result);
       return;

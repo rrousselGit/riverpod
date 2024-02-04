@@ -1,3 +1,7 @@
+## Unreleased patch
+
+- Bumped `custom_lint` version
+
 ## 2.3.8 - 2024-02-03
 
 - Fix `async_value_nullable_pattern` false positive when used with generics

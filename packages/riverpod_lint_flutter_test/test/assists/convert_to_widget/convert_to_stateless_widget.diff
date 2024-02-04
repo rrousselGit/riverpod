@@ -1,14 +1,19 @@
 Message: `Convert to StatelessWidget`
-=== diff (starting at line 25)
+Priority: 34
+Diff for file `test/assists/convert_to_widget/convert_to_widget.dart:25`:
+```
 }
 
 - class Hook extends HookWidget {
 + class Hook extends StatelessWidget {
   const Hook({super.key});
 
-===
+```
+---
 Message: `Convert to StatelessWidget`
-=== diff (starting at line 34)
+Priority: 34
+Diff for file `test/assists/convert_to_widget/convert_to_widget.dart:34`:
+```
 }
 
 - class HookConsumer extends HookConsumerWidget {
@@ -27,9 +32,12 @@ Message: `Convert to StatelessWidget`
 +     BuildContext context) {
     return const Placeholder();
   }
-===
+```
+---
 Message: `Convert to StatelessWidget`
-=== diff (starting at line 78)
+Priority: 34
+Diff for file `test/assists/convert_to_widget/convert_to_widget.dart:78`:
+```
 }
 
 - class HookStateful extends StatefulHookWidget {
@@ -46,9 +54,12 @@ Message: `Convert to StatelessWidget`
 +  
   @override
   Widget build(BuildContext context) {
-===
+```
+---
 Message: `Convert to StatelessWidget`
-=== diff (starting at line 92)
+Priority: 34
+Diff for file `test/assists/convert_to_widget/convert_to_widget.dart:92`:
+```
 }
 
 - class ConsumerStateful extends ConsumerStatefulWidget {
@@ -65,9 +76,12 @@ Message: `Convert to StatelessWidget`
 +  
   @override
   Widget build(BuildContext context) {
-===
+```
+---
 Message: `Convert to StatelessWidget`
-=== diff (starting at line 106)
+Priority: 34
+Diff for file `test/assists/convert_to_widget/convert_to_widget.dart:106`:
+```
 }
 
 - class HookConsumerStateful extends StatefulHookConsumerWidget {
@@ -85,9 +99,12 @@ Message: `Convert to StatelessWidget`
 +  
   @override
   Widget build(BuildContext context) {
-===
+```
+---
 Message: `Convert to StatelessWidget`
-=== diff (starting at line 121)
+Priority: 34
+Diff for file `test/assists/convert_to_widget/convert_to_widget.dart:121`:
+```
 }
 
 - class Consumer extends ConsumerWidget {
@@ -106,9 +123,12 @@ Message: `Convert to StatelessWidget`
 +     BuildContext context) {
     return const Placeholder();
   }
-===
+```
+---
 Message: `Convert to StatelessWidget`
-=== diff (starting at line 153)
+Priority: 34
+Diff for file `test/assists/convert_to_widget/convert_to_widget.dart:153`:
+```
 }
 
 - class HookConsumerWithField extends HookConsumerWidget {
@@ -139,9 +159,12 @@ Message: `Convert to StatelessWidget`
 +     BuildContext context) {
     return Column(
       children: [
-===
+```
+---
 Message: `Convert to StatelessWidget`
-=== diff (starting at line 180)
+Priority: 34
+Diff for file `test/assists/convert_to_widget/convert_to_widget.dart:180`:
+```
 }
 
 - class ConsumerStatefulWithField extends ConsumerStatefulWidget {
@@ -213,4 +236,5 @@ Message: `Convert to StatelessWidget`
 + 
 + const _constantNumber = 42;
 
-===
+```
+---
