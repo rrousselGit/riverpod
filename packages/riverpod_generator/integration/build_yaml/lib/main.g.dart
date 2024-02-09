@@ -38,21 +38,18 @@ final class CountProvider extends $FunctionalProvider<int, int, CountRef>
       $ProviderElement(this, container);
 
   @override
-  int create(CountRef ref) {
-    final fn = _createCb ?? count;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
   CountProvider $copyWithCreate(
     int Function(
       CountRef ref,
     ) create,
   ) {
     return CountProvider._(create: create);
+  }
+
+  @override
+  int create(CountRef ref) {
+    final fn = _createCb ?? count;
+    return fn(ref);
   }
 }
 
@@ -91,21 +88,18 @@ final class CountFutureProvider
       $FutureProviderElement(this, container);
 
   @override
-  FutureOr<int> create(CountFutureRef ref) {
-    final fn = _createCb ?? countFuture;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
   CountFutureProvider $copyWithCreate(
     FutureOr<int> Function(
       CountFutureRef ref,
     ) create,
   ) {
     return CountFutureProvider._(create: create);
+  }
+
+  @override
+  FutureOr<int> create(CountFutureRef ref) {
+    final fn = _createCb ?? countFuture;
+    return fn(ref);
   }
 }
 
@@ -144,21 +138,18 @@ final class CountStreamProvider
       $StreamProviderElement(this, container);
 
   @override
-  Stream<int> create(CountStreamRef ref) {
-    final fn = _createCb ?? countStream;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
   CountStreamProvider $copyWithCreate(
     Stream<int> Function(
       CountStreamRef ref,
     ) create,
   ) {
     return CountStreamProvider._(create: create);
+  }
+
+  @override
+  Stream<int> create(CountStreamRef ref) {
+    final fn = _createCb ?? countStream;
+    return fn(ref);
   }
 }
 
@@ -172,7 +163,7 @@ final class Count2Provider extends $FunctionalProvider<int, int, Count2Ref>
     with $Provider<int, Count2Ref> {
   const Count2Provider._(
       {required Count2Family super.from,
-      required (int,) super.argument,
+      required int super.argument,
       int Function(
         Count2Ref ref,
         int a,
@@ -198,29 +189,29 @@ final class Count2Provider extends $FunctionalProvider<int, int, Count2Ref>
       $ProviderElement(this, container);
 
   @override
-  int create(Count2Ref ref) {
-    final fn = _createCb ?? count2;
-    final (int,) argument = this.argument! as (int,);
-    return fn(
-      ref,
-      argument.$1,
-    );
-  }
-
-  @override
   Count2Provider $copyWithCreate(
     int Function(
       Count2Ref ref,
     ) create,
   ) {
     return Count2Provider._(
-        argument: argument! as (int,),
+        argument: argument as int,
         from: from! as Count2Family,
         create: (
           ref,
           int a,
         ) =>
             create(ref));
+  }
+
+  @override
+  int create(Count2Ref ref) {
+    final fn = _createCb ?? count2;
+    final int argument = this.argument as int;
+    return fn(
+      ref,
+      argument,
+    );
   }
 
   @override
@@ -243,20 +234,13 @@ final class Count2Family extends Family {
   Count2Provider call(
     int a,
   ) =>
-      Count2Provider._(argument: (a,), from: this);
+      Count2Provider._(argument: a, from: this);
 
   @override
   String debugGetCreateSourceHash() => _$count2Hash();
 
   @override
   String toString() => r'count2';
-
-  Override overrideWith(
-    int Function(
-      Count2Ref ref,
-      (int,) args,
-    ) create,
-  ) {}
 }
 
 typedef CountFuture2Ref = Ref<AsyncValue<int>>;
@@ -268,7 +252,7 @@ final class CountFuture2Provider
     with $FutureModifier<int>, $FutureProvider<int, CountFuture2Ref> {
   const CountFuture2Provider._(
       {required CountFuture2Family super.from,
-      required (int,) super.argument,
+      required int super.argument,
       FutureOr<int> Function(
         CountFuture2Ref ref,
         int a,
@@ -294,29 +278,29 @@ final class CountFuture2Provider
       $FutureProviderElement(this, container);
 
   @override
-  FutureOr<int> create(CountFuture2Ref ref) {
-    final fn = _createCb ?? countFuture2;
-    final (int,) argument = this.argument! as (int,);
-    return fn(
-      ref,
-      argument.$1,
-    );
-  }
-
-  @override
   CountFuture2Provider $copyWithCreate(
     FutureOr<int> Function(
       CountFuture2Ref ref,
     ) create,
   ) {
     return CountFuture2Provider._(
-        argument: argument! as (int,),
+        argument: argument as int,
         from: from! as CountFuture2Family,
         create: (
           ref,
           int a,
         ) =>
             create(ref));
+  }
+
+  @override
+  FutureOr<int> create(CountFuture2Ref ref) {
+    final fn = _createCb ?? countFuture2;
+    final int argument = this.argument as int;
+    return fn(
+      ref,
+      argument,
+    );
   }
 
   @override
@@ -339,20 +323,13 @@ final class CountFuture2Family extends Family {
   CountFuture2Provider call(
     int a,
   ) =>
-      CountFuture2Provider._(argument: (a,), from: this);
+      CountFuture2Provider._(argument: a, from: this);
 
   @override
   String debugGetCreateSourceHash() => _$countFuture2Hash();
 
   @override
   String toString() => r'countFuture2';
-
-  Override overrideWith(
-    FutureOr<int> Function(
-      CountFuture2Ref ref,
-      (int,) args,
-    ) create,
-  ) {}
 }
 
 typedef CountStream2Ref = Ref<AsyncValue<int>>;
@@ -364,7 +341,7 @@ final class CountStream2Provider
     with $FutureModifier<int>, $StreamProvider<int, CountStream2Ref> {
   const CountStream2Provider._(
       {required CountStream2Family super.from,
-      required (int,) super.argument,
+      required int super.argument,
       Stream<int> Function(
         CountStream2Ref ref,
         int a,
@@ -390,29 +367,29 @@ final class CountStream2Provider
       $StreamProviderElement(this, container);
 
   @override
-  Stream<int> create(CountStream2Ref ref) {
-    final fn = _createCb ?? countStream2;
-    final (int,) argument = this.argument! as (int,);
-    return fn(
-      ref,
-      argument.$1,
-    );
-  }
-
-  @override
   CountStream2Provider $copyWithCreate(
     Stream<int> Function(
       CountStream2Ref ref,
     ) create,
   ) {
     return CountStream2Provider._(
-        argument: argument! as (int,),
+        argument: argument as int,
         from: from! as CountStream2Family,
         create: (
           ref,
           int a,
         ) =>
             create(ref));
+  }
+
+  @override
+  Stream<int> create(CountStream2Ref ref) {
+    final fn = _createCb ?? countStream2;
+    final int argument = this.argument as int;
+    return fn(
+      ref,
+      argument,
+    );
   }
 
   @override
@@ -435,20 +412,13 @@ final class CountStream2Family extends Family {
   CountStream2Provider call(
     int a,
   ) =>
-      CountStream2Provider._(argument: (a,), from: this);
+      CountStream2Provider._(argument: a, from: this);
 
   @override
   String debugGetCreateSourceHash() => _$countStream2Hash();
 
   @override
   String toString() => r'countStream2';
-
-  Override overrideWith(
-    Stream<int> Function(
-      CountStream2Ref ref,
-      (int,) args,
-    ) create,
-  ) {}
 }
 
 const countNotifierPod = CountNotifierProvider._();
@@ -633,7 +603,7 @@ final class CountNotifier2Provider
     extends $NotifierProvider<CountNotifier2, int> {
   const CountNotifier2Provider._(
       {required CountNotifier2Family super.from,
-      required (int,) super.argument,
+      required int super.argument,
       super.runNotifierBuildOverride,
       CountNotifier2 Function()? create})
       : _createCb = create,
@@ -659,7 +629,7 @@ final class CountNotifier2Provider
     CountNotifier2 Function() create,
   ) {
     return CountNotifier2Provider._(
-        argument: argument! as (int,),
+        argument: argument as int,
         from: from! as CountNotifier2Family,
         create: create);
   }
@@ -670,7 +640,7 @@ final class CountNotifier2Provider
     int Function(Ref<int>, CountNotifier2) build,
   ) {
     return CountNotifier2Provider._(
-        argument: argument! as (int,),
+        argument: argument as int,
         from: from! as CountNotifier2Family,
         runNotifierBuildOverride: build);
   }
@@ -701,22 +671,13 @@ final class CountNotifier2Family extends Family {
   CountNotifier2Provider call(
     int a,
   ) =>
-      CountNotifier2Provider._(argument: (a,), from: this);
+      CountNotifier2Provider._(argument: a, from: this);
 
   @override
   String debugGetCreateSourceHash() => _$countNotifier2Hash();
 
   @override
   String toString() => r'CountNotifier2';
-
-  Override overrideWith(
-    int Function(
-      Ref<int> ref,
-      (int,) args,
-    ) create,
-  ) {}
-
-  Override overrideWithBuild() {}
 }
 
 abstract class _$CountNotifier2 extends $Notifier<int> {
@@ -741,7 +702,7 @@ final class CountAsyncNotifier2Provider
     extends $AsyncNotifierProvider<CountAsyncNotifier2, int> {
   const CountAsyncNotifier2Provider._(
       {required CountAsyncNotifier2Family super.from,
-      required (int,) super.argument,
+      required int super.argument,
       super.runNotifierBuildOverride,
       CountAsyncNotifier2 Function()? create})
       : _createCb = create,
@@ -767,7 +728,7 @@ final class CountAsyncNotifier2Provider
     CountAsyncNotifier2 Function() create,
   ) {
     return CountAsyncNotifier2Provider._(
-        argument: argument! as (int,),
+        argument: argument as int,
         from: from! as CountAsyncNotifier2Family,
         create: create);
   }
@@ -778,7 +739,7 @@ final class CountAsyncNotifier2Provider
     FutureOr<int> Function(Ref<AsyncValue<int>>, CountAsyncNotifier2) build,
   ) {
     return CountAsyncNotifier2Provider._(
-        argument: argument! as (int,),
+        argument: argument as int,
         from: from! as CountAsyncNotifier2Family,
         runNotifierBuildOverride: build);
   }
@@ -810,22 +771,13 @@ final class CountAsyncNotifier2Family extends Family {
   CountAsyncNotifier2Provider call(
     int a,
   ) =>
-      CountAsyncNotifier2Provider._(argument: (a,), from: this);
+      CountAsyncNotifier2Provider._(argument: a, from: this);
 
   @override
   String debugGetCreateSourceHash() => _$countAsyncNotifier2Hash();
 
   @override
   String toString() => r'CountAsyncNotifier2';
-
-  Override overrideWith(
-    FutureOr<int> Function(
-      Ref<AsyncValue<int>> ref,
-      (int,) args,
-    ) create,
-  ) {}
-
-  Override overrideWithBuild() {}
 }
 
 abstract class _$CountAsyncNotifier2 extends $AsyncNotifier<int> {
@@ -850,7 +802,7 @@ final class CountStreamNotifier2Provider
     extends $StreamNotifierProvider<CountStreamNotifier2, int> {
   const CountStreamNotifier2Provider._(
       {required CountStreamNotifier2Family super.from,
-      required (int,) super.argument,
+      required int super.argument,
       super.runNotifierBuildOverride,
       CountStreamNotifier2 Function()? create})
       : _createCb = create,
@@ -876,7 +828,7 @@ final class CountStreamNotifier2Provider
     CountStreamNotifier2 Function() create,
   ) {
     return CountStreamNotifier2Provider._(
-        argument: argument! as (int,),
+        argument: argument as int,
         from: from! as CountStreamNotifier2Family,
         create: create);
   }
@@ -887,7 +839,7 @@ final class CountStreamNotifier2Provider
     Stream<int> Function(Ref<AsyncValue<int>>, CountStreamNotifier2) build,
   ) {
     return CountStreamNotifier2Provider._(
-        argument: argument! as (int,),
+        argument: argument as int,
         from: from! as CountStreamNotifier2Family,
         runNotifierBuildOverride: build);
   }
@@ -919,22 +871,13 @@ final class CountStreamNotifier2Family extends Family {
   CountStreamNotifier2Provider call(
     int a,
   ) =>
-      CountStreamNotifier2Provider._(argument: (a,), from: this);
+      CountStreamNotifier2Provider._(argument: a, from: this);
 
   @override
   String debugGetCreateSourceHash() => _$countStreamNotifier2Hash();
 
   @override
   String toString() => r'CountStreamNotifier2';
-
-  Override overrideWith(
-    Stream<int> Function(
-      Ref<AsyncValue<int>> ref,
-      (int,) args,
-    ) create,
-  ) {}
-
-  Override overrideWithBuild() {}
 }
 
 abstract class _$CountStreamNotifier2 extends $StreamNotifier<int> {

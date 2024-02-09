@@ -17,10 +17,7 @@ class ProviderTemplate extends Template {
   final BuildYamlOptions options;
   final List<String>? allTransitiveDependencies;
 
-  late final _argumentRecordType = buildParamDefinitionQuery(
-    provider.parameters,
-    asRecord: true,
-  );
+  late final _argumentRecordType = provider.argumentRecordType;
 
   late final _generics = provider.generics();
   late final _genericsDefinition = provider.genericsDefinition();
@@ -105,7 +102,7 @@ final class $name$_genericsDefinition
       if (provider.providerElement.isFamily)
         'required ${provider.familyTypeName} super.from,',
       if (provider.parameters.isNotEmpty)
-        'required ($_argumentRecordType) super.argument,',
+        'required $_argumentRecordType super.argument,',
       if (provider is ClassBasedProviderDeclaration)
         'super.runNotifierBuildOverride,',
     ].join();
@@ -150,20 +147,9 @@ final class $name$_genericsDefinition
   String debugGetCreateSourceHash() => ${provider.hashFnName}();
 ''');
 
-    final localArgumentDefinition = provider.parameters.isNotEmpty
-        ? 'final ($_argumentRecordType) argument = this.argument! as ($_argumentRecordType);'
-        : '';
-    final paramsPassThrough = buildParamInvocationQuery({
-      for (final (index, parameter) in provider.parameters.indexed)
-        if (parameter.isPositional)
-          parameter: 'argument.\$${index + 1}'
-        else
-          parameter: 'argument.${parameter.name!.lexeme}',
-    });
-
     final copyParameters = [
       if (provider.parameters.isNotEmpty)
-        'argument: argument! as ($_argumentRecordType),',
+        'argument: argument as $_argumentRecordType,',
       if (provider.providerElement.isFamily)
         'from: from! as ${provider.familyTypeName},',
     ].join();
@@ -171,7 +157,6 @@ final class $name$_genericsDefinition
     switch (provider) {
       case FunctionalProviderDeclaration():
         final createParams = buildParamDefinitionQuery(provider.parameters);
-
         final createFn = provider.parameters.isEmpty
             ? 'create'
             : '(ref, $createParams) => create(ref)';
@@ -181,17 +166,7 @@ final class $name$_genericsDefinition
   ${provider.elementName}<${provider.valueTypeDisplayString}> createElement(
     ProviderContainer container
   ) => ${provider.elementName}(this, container);
-''');
 
-        buffer.writeln('''
-  @override
-  ${provider.createdTypeDisplayString} create(${provider.refImplName}$_generics ref){
-    final fn = _createCb ?? ${provider.name}$_generics;
-    $localArgumentDefinition
-    return fn(ref, $paramsPassThrough);
-  }''');
-
-        buffer.writeln('''
   @override
   ${provider.providerTypeName}$_generics \$copyWithCreate(
     ${provider.createType(withArguments: false)} create,
@@ -202,6 +177,9 @@ final class $name$_genericsDefinition
     );
   }
 ''');
+
+        _writeFunctionalCreate(buffer);
+
       case ClassBasedProviderDeclaration():
         final notifierType = '${provider.name}$_generics';
 
@@ -241,6 +219,36 @@ final class $name$_genericsDefinition
     }
 
     _writeEqual(buffer);
+  }
+
+  void _writeFunctionalCreate(StringBuffer buffer) {
+    buffer.write('''
+  @override
+  ${provider.createdTypeDisplayString} create(${provider.refImplName}$_generics ref) {
+    final fn = _createCb ?? ${provider.name}$_generics;
+''');
+
+    switch (provider.parameters) {
+      case []:
+        buffer.writeln('return fn(ref);');
+      case [...]:
+        final paramsPassThrough = buildParamInvocationQuery({
+          for (final (index, parameter) in provider.parameters.indexed)
+            if (provider.parameters.length == 1)
+              parameter: 'argument'
+            else if (parameter.isPositional)
+              parameter: 'argument.\$${index + 1}'
+            else
+              parameter: 'argument.${parameter.name!.lexeme}',
+        });
+
+        buffer.writeln('''
+        final $_argumentRecordType argument = this.argument as $_argumentRecordType;
+        return fn(ref, $paramsPassThrough);
+      ''');
+    }
+
+    buffer.writeln('}');
   }
 
   void _writeEqual(StringBuffer buffer) {

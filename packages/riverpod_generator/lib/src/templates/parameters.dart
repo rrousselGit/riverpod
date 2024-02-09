@@ -92,8 +92,9 @@ extension ParameterType on FormalParameter {
       case DefaultFormalParameter():
         return that.parameter.typeDisplayString;
       case SimpleFormalParameter():
-        // No type, so let's just return ''
-        return that.type?.toSource() ?? '';
+        // TODO changelog no type = dynamic
+        // No type, so let's just return 'dynamic'
+        return that.type?.toSource() ?? 'dynamic';
       case FieldFormalParameter():
       case FunctionTypedFormalParameter():
       case SuperFormalParameter():

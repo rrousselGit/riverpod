@@ -38,21 +38,18 @@ final class ScopedProvider extends $FunctionalProvider<int, int, ScopedRef>
       $ProviderElement(this, container);
 
   @override
-  int create(ScopedRef ref) {
-    final fn = _createCb ?? scoped;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
   ScopedProvider $copyWithCreate(
     int Function(
       ScopedRef ref,
     ) create,
   ) {
     return ScopedProvider._(create: create);
+  }
+
+  @override
+  int create(ScopedRef ref) {
+    final fn = _createCb ?? scoped;
+    return fn(ref);
   }
 }
 

@@ -38,21 +38,18 @@ final class Counter2Provider extends $FunctionalProvider<int, int, Counter2Ref>
       $ProviderElement(this, container);
 
   @override
-  int create(Counter2Ref ref) {
-    final fn = _createCb ?? counter2;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
   Counter2Provider $copyWithCreate(
     int Function(
       Counter2Ref ref,
     ) create,
   ) {
     return Counter2Provider._(create: create);
+  }
+
+  @override
+  int create(Counter2Ref ref) {
+    final fn = _createCb ?? counter2;
+    return fn(ref);
   }
 }
 
@@ -90,21 +87,18 @@ final class CounterProvider extends $FunctionalProvider<int, int, CounterRef>
       $ProviderElement(this, container);
 
   @override
-  int create(CounterRef ref) {
-    final fn = _createCb ?? counter;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
   CounterProvider $copyWithCreate(
     int Function(
       CounterRef ref,
     ) create,
   ) {
     return CounterProvider._(create: create);
+  }
+
+  @override
+  int create(CounterRef ref) {
+    final fn = _createCb ?? counter;
+    return fn(ref);
   }
 }
 

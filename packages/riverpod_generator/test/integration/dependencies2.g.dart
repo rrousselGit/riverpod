@@ -57,21 +57,18 @@ final class ProviderWithDependencies2Provider
       $ProviderElement(this, container);
 
   @override
-  int create(ProviderWithDependencies2Ref ref) {
-    final fn = _createCb ?? providerWithDependencies2;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
   ProviderWithDependencies2Provider $copyWithCreate(
     int Function(
       ProviderWithDependencies2Ref ref,
     ) create,
   ) {
     return ProviderWithDependencies2Provider._(create: create);
+  }
+
+  @override
+  int create(ProviderWithDependencies2Ref ref) {
+    final fn = _createCb ?? providerWithDependencies2;
+    return fn(ref);
   }
 }
 
@@ -87,10 +84,7 @@ final class FamilyWithDependencies2Provider
     with $Provider<int, FamilyWithDependencies2Ref> {
   const FamilyWithDependencies2Provider._(
       {required FamilyWithDependencies2Family super.from,
-      required ({
-        int? id,
-      })
-          super.argument,
+      required int? super.argument,
       int Function(
         FamilyWithDependencies2Ref ref, {
         int? id,
@@ -124,35 +118,29 @@ final class FamilyWithDependencies2Provider
       $ProviderElement(this, container);
 
   @override
-  int create(FamilyWithDependencies2Ref ref) {
-    final fn = _createCb ?? familyWithDependencies2;
-    final ({
-      int? id,
-    }) argument = this.argument! as ({
-      int? id,
-    });
-    return fn(
-      ref,
-      id: argument.id,
-    );
-  }
-
-  @override
   FamilyWithDependencies2Provider $copyWithCreate(
     int Function(
       FamilyWithDependencies2Ref ref,
     ) create,
   ) {
     return FamilyWithDependencies2Provider._(
-        argument: argument! as ({
-          int? id,
-        }),
+        argument: argument as int?,
         from: from! as FamilyWithDependencies2Family,
         create: (
           ref, {
           int? id,
         }) =>
             create(ref));
+  }
+
+  @override
+  int create(FamilyWithDependencies2Ref ref) {
+    final fn = _createCb ?? familyWithDependencies2;
+    final int? argument = this.argument as int?;
+    return fn(
+      ref,
+      id: argument,
+    );
   }
 
   @override
@@ -187,22 +175,13 @@ final class FamilyWithDependencies2Family extends Family {
   FamilyWithDependencies2Provider call({
     int? id,
   }) =>
-      FamilyWithDependencies2Provider._(argument: (id: id,), from: this);
+      FamilyWithDependencies2Provider._(argument: id, from: this);
 
   @override
   String debugGetCreateSourceHash() => _$familyWithDependencies2Hash();
 
   @override
   String toString() => r'familyWithDependencies2';
-
-  Override overrideWith(
-    int Function(
-      FamilyWithDependencies2Ref ref,
-      ({
-        int? id,
-      }) args,
-    ) create,
-  ) {}
 }
 
 typedef _Private2Ref = Ref<int>;
@@ -238,21 +217,18 @@ final class _Private2Provider
       $ProviderElement(this, container);
 
   @override
-  int create(_Private2Ref ref) {
-    final fn = _createCb ?? _private2;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
   _Private2Provider $copyWithCreate(
     int Function(
       _Private2Ref ref,
     ) create,
   ) {
     return _Private2Provider._(create: create);
+  }
+
+  @override
+  int create(_Private2Ref ref) {
+    final fn = _createCb ?? _private2;
+    return fn(ref);
   }
 }
 
@@ -290,21 +266,18 @@ final class Public2Provider extends $FunctionalProvider<int, int, Public2Ref>
       $ProviderElement(this, container);
 
   @override
-  int create(Public2Ref ref) {
-    final fn = _createCb ?? public2;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
   Public2Provider $copyWithCreate(
     int Function(
       Public2Ref ref,
     ) create,
   ) {
     return Public2Provider._(create: create);
+  }
+
+  @override
+  int create(Public2Ref ref) {
+    final fn = _createCb ?? public2;
+    return fn(ref);
   }
 }
 
@@ -396,10 +369,7 @@ final class NotifierFamilyWithDependenciesProvider
     extends $NotifierProvider<NotifierFamilyWithDependencies, int> {
   const NotifierFamilyWithDependenciesProvider._(
       {required NotifierFamilyWithDependenciesFamily super.from,
-      required ({
-        int? id,
-      })
-          super.argument,
+      required int? super.argument,
       super.runNotifierBuildOverride,
       NotifierFamilyWithDependencies Function()? create})
       : _createCb = create,
@@ -434,9 +404,7 @@ final class NotifierFamilyWithDependenciesProvider
     NotifierFamilyWithDependencies Function() create,
   ) {
     return NotifierFamilyWithDependenciesProvider._(
-        argument: argument! as ({
-          int? id,
-        }),
+        argument: argument as int?,
         from: from! as NotifierFamilyWithDependenciesFamily,
         create: create);
   }
@@ -447,9 +415,7 @@ final class NotifierFamilyWithDependenciesProvider
     int Function(Ref<int>, NotifierFamilyWithDependencies) build,
   ) {
     return NotifierFamilyWithDependenciesProvider._(
-        argument: argument! as ({
-          int? id,
-        }),
+        argument: argument as int?,
         from: from! as NotifierFamilyWithDependenciesFamily,
         runNotifierBuildOverride: build);
   }
@@ -492,24 +458,13 @@ final class NotifierFamilyWithDependenciesFamily extends Family {
   NotifierFamilyWithDependenciesProvider call({
     int? id,
   }) =>
-      NotifierFamilyWithDependenciesProvider._(argument: (id: id,), from: this);
+      NotifierFamilyWithDependenciesProvider._(argument: id, from: this);
 
   @override
   String debugGetCreateSourceHash() => _$notifierFamilyWithDependenciesHash();
 
   @override
   String toString() => r'NotifierFamilyWithDependencies';
-
-  Override overrideWith(
-    int Function(
-      Ref<int> ref,
-      ({
-        int? id,
-      }) args,
-    ) create,
-  ) {}
-
-  Override overrideWithBuild() {}
 }
 
 abstract class _$NotifierFamilyWithDependencies extends $Notifier<int> {

@@ -39,21 +39,18 @@ final class SimpleProvider
       $ProviderElement(this, container);
 
   @override
-  String create(SimpleRef ref) {
-    final fn = _createCb ?? simple;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
   SimpleProvider $copyWithCreate(
     String Function(
       SimpleRef ref,
     ) create,
   ) {
     return SimpleProvider._(create: create);
+  }
+
+  @override
+  String create(SimpleRef ref) {
+    final fn = _createCb ?? simple;
+    return fn(ref);
   }
 }
 
@@ -92,21 +89,18 @@ final class Simple2Provider
       $ProviderElement(this, container);
 
   @override
-  String create(Simple2Ref ref) {
-    final fn = _createCb ?? simple2;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
   Simple2Provider $copyWithCreate(
     String Function(
       Simple2Ref ref,
     ) create,
   ) {
     return Simple2Provider._(create: create);
+  }
+
+  @override
+  String create(Simple2Ref ref) {
+    final fn = _createCb ?? simple2;
+    return fn(ref);
   }
 }
 

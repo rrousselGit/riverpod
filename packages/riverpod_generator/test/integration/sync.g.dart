@@ -39,21 +39,18 @@ final class GenericProvider<T extends num>
       $ProviderElement(this, container);
 
   @override
-  List<T> create(GenericRef<T> ref) {
-    final fn = _createCb ?? generic<T>;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
   GenericProvider<T> $copyWithCreate(
     List<T> Function(
       GenericRef<T> ref,
     ) create,
   ) {
     return GenericProvider<T>._(from: from! as GenericFamily, create: create);
+  }
+
+  @override
+  List<T> create(GenericRef<T> ref) {
+    final fn = _createCb ?? generic<T>;
+    return fn(ref);
   }
 
   @override
@@ -82,10 +79,6 @@ final class GenericFamily extends Family {
 
   @override
   String toString() => r'generic';
-
-  Override overrideWith(
-    List<T> Function<T extends num>(GenericRef<T> ref) create,
-  ) {}
 }
 
 typedef ComplexGenericRef<T extends num, Foo extends String?> = Ref<List<T>>;
@@ -129,30 +122,13 @@ final class ComplexGenericProvider<T extends num, Foo extends String?>
       $ProviderElement(this, container);
 
   @override
-  List<T> create(ComplexGenericRef<T, Foo> ref) {
-    final fn = _createCb ?? complexGeneric<T, Foo>;
-    final ({
-      T param,
-      Foo? otherParam,
-    }) argument = this.argument! as ({
-      T param,
-      Foo? otherParam,
-    });
-    return fn(
-      ref,
-      param: argument.param,
-      otherParam: argument.otherParam,
-    );
-  }
-
-  @override
   ComplexGenericProvider<T, Foo> $copyWithCreate(
     List<T> Function(
       ComplexGenericRef<T, Foo> ref,
     ) create,
   ) {
     return ComplexGenericProvider<T, Foo>._(
-        argument: argument! as ({
+        argument: argument as ({
           T param,
           Foo? otherParam,
         }),
@@ -163,6 +139,23 @@ final class ComplexGenericProvider<T extends num, Foo extends String?>
           Foo? otherParam,
         }) =>
             create(ref));
+  }
+
+  @override
+  List<T> create(ComplexGenericRef<T, Foo> ref) {
+    final fn = _createCb ?? complexGeneric<T, Foo>;
+    final ({
+      T param,
+      Foo? otherParam,
+    }) argument = this.argument as ({
+      T param,
+      Foo? otherParam,
+    });
+    return fn(
+      ref,
+      param: argument.param,
+      otherParam: argument.otherParam,
+    );
   }
 
   @override
@@ -198,16 +191,6 @@ final class ComplexGenericFamily extends Family {
 
   @override
   String toString() => r'complexGeneric';
-
-  Override overrideWith(
-    List<T> Function<T extends num, Foo extends String?>(
-      ComplexGenericRef<T, Foo> ref,
-      ({
-        T param,
-        Foo? otherParam,
-      }) args,
-    ) create,
-  ) {}
 }
 
 typedef RawFutureRef = Ref<Raw<Future<String>>>;
@@ -245,21 +228,18 @@ final class RawFutureProvider extends $FunctionalProvider<
       $ProviderElement(this, container);
 
   @override
-  Raw<Future<String>> create(RawFutureRef ref) {
-    final fn = _createCb ?? rawFuture;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
   RawFutureProvider $copyWithCreate(
     Raw<Future<String>> Function(
       RawFutureRef ref,
     ) create,
   ) {
     return RawFutureProvider._(create: create);
+  }
+
+  @override
+  Raw<Future<String>> create(RawFutureRef ref) {
+    final fn = _createCb ?? rawFuture;
+    return fn(ref);
   }
 }
 
@@ -300,21 +280,18 @@ final class RawStreamProvider extends $FunctionalProvider<
       $ProviderElement(this, container);
 
   @override
-  Raw<Stream<String>> create(RawStreamRef ref) {
-    final fn = _createCb ?? rawStream;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
   RawStreamProvider $copyWithCreate(
     Raw<Stream<String>> Function(
       RawStreamRef ref,
     ) create,
   ) {
     return RawStreamProvider._(create: create);
+  }
+
+  @override
+  Raw<Stream<String>> create(RawStreamRef ref) {
+    final fn = _createCb ?? rawStream;
+    return fn(ref);
   }
 }
 
@@ -329,7 +306,7 @@ final class RawFamilyFutureProvider extends $FunctionalProvider<
     with $Provider<Raw<Future<String>>, RawFamilyFutureRef> {
   const RawFamilyFutureProvider._(
       {required RawFamilyFutureFamily super.from,
-      required (int,) super.argument,
+      required int super.argument,
       Raw<Future<String>> Function(
         RawFamilyFutureRef ref,
         int id,
@@ -356,29 +333,29 @@ final class RawFamilyFutureProvider extends $FunctionalProvider<
       $ProviderElement(this, container);
 
   @override
-  Raw<Future<String>> create(RawFamilyFutureRef ref) {
-    final fn = _createCb ?? rawFamilyFuture;
-    final (int,) argument = this.argument! as (int,);
-    return fn(
-      ref,
-      argument.$1,
-    );
-  }
-
-  @override
   RawFamilyFutureProvider $copyWithCreate(
     Raw<Future<String>> Function(
       RawFamilyFutureRef ref,
     ) create,
   ) {
     return RawFamilyFutureProvider._(
-        argument: argument! as (int,),
+        argument: argument as int,
         from: from! as RawFamilyFutureFamily,
         create: (
           ref,
           int id,
         ) =>
             create(ref));
+  }
+
+  @override
+  Raw<Future<String>> create(RawFamilyFutureRef ref) {
+    final fn = _createCb ?? rawFamilyFuture;
+    final int argument = this.argument as int;
+    return fn(
+      ref,
+      argument,
+    );
   }
 
   @override
@@ -401,20 +378,13 @@ final class RawFamilyFutureFamily extends Family {
   RawFamilyFutureProvider call(
     int id,
   ) =>
-      RawFamilyFutureProvider._(argument: (id,), from: this);
+      RawFamilyFutureProvider._(argument: id, from: this);
 
   @override
   String debugGetCreateSourceHash() => _$rawFamilyFutureHash();
 
   @override
   String toString() => r'rawFamilyFuture';
-
-  Override overrideWith(
-    Raw<Future<String>> Function(
-      RawFamilyFutureRef ref,
-      (int,) args,
-    ) create,
-  ) {}
 }
 
 typedef RawFamilyStreamRef = Ref<Raw<Stream<String>>>;
@@ -426,7 +396,7 @@ final class RawFamilyStreamProvider extends $FunctionalProvider<
     with $Provider<Raw<Stream<String>>, RawFamilyStreamRef> {
   const RawFamilyStreamProvider._(
       {required RawFamilyStreamFamily super.from,
-      required (int,) super.argument,
+      required int super.argument,
       Raw<Stream<String>> Function(
         RawFamilyStreamRef ref,
         int id,
@@ -453,29 +423,29 @@ final class RawFamilyStreamProvider extends $FunctionalProvider<
       $ProviderElement(this, container);
 
   @override
-  Raw<Stream<String>> create(RawFamilyStreamRef ref) {
-    final fn = _createCb ?? rawFamilyStream;
-    final (int,) argument = this.argument! as (int,);
-    return fn(
-      ref,
-      argument.$1,
-    );
-  }
-
-  @override
   RawFamilyStreamProvider $copyWithCreate(
     Raw<Stream<String>> Function(
       RawFamilyStreamRef ref,
     ) create,
   ) {
     return RawFamilyStreamProvider._(
-        argument: argument! as (int,),
+        argument: argument as int,
         from: from! as RawFamilyStreamFamily,
         create: (
           ref,
           int id,
         ) =>
             create(ref));
+  }
+
+  @override
+  Raw<Stream<String>> create(RawFamilyStreamRef ref) {
+    final fn = _createCb ?? rawFamilyStream;
+    final int argument = this.argument as int;
+    return fn(
+      ref,
+      argument,
+    );
   }
 
   @override
@@ -498,20 +468,13 @@ final class RawFamilyStreamFamily extends Family {
   RawFamilyStreamProvider call(
     int id,
   ) =>
-      RawFamilyStreamProvider._(argument: (id,), from: this);
+      RawFamilyStreamProvider._(argument: id, from: this);
 
   @override
   String debugGetCreateSourceHash() => _$rawFamilyStreamHash();
 
   @override
   String toString() => r'rawFamilyStream';
-
-  Override overrideWith(
-    Raw<Stream<String>> Function(
-      RawFamilyStreamRef ref,
-      (int,) args,
-    ) create,
-  ) {}
 }
 
 typedef PublicRef = Ref<String>;
@@ -547,21 +510,18 @@ final class PublicProvider
       $ProviderElement(this, container);
 
   @override
-  String create(PublicRef ref) {
-    final fn = _createCb ?? public;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
   PublicProvider $copyWithCreate(
     String Function(
       PublicRef ref,
     ) create,
   ) {
     return PublicProvider._(create: create);
+  }
+
+  @override
+  String create(PublicRef ref) {
+    final fn = _createCb ?? public;
+    return fn(ref);
   }
 }
 
@@ -600,21 +560,18 @@ final class Supports$inNamesProvider
       $ProviderElement(this, container);
 
   @override
-  String create(Supports$inNamesRef ref) {
-    final fn = _createCb ?? supports$inNames;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
   Supports$inNamesProvider $copyWithCreate(
     String Function(
       Supports$inNamesRef ref,
     ) create,
   ) {
     return Supports$inNamesProvider._(create: create);
+  }
+
+  @override
+  String create(Supports$inNamesRef ref) {
+    final fn = _createCb ?? supports$inNames;
+    return fn(ref);
   }
 }
 
@@ -670,39 +627,13 @@ final class FamilyProvider
       $ProviderElement(this, container);
 
   @override
-  String create(FamilyRef ref) {
-    final fn = _createCb ?? family;
-    final (
-      int, {
-      String? second,
-      double third,
-      bool fourth,
-      List<String>? fifth,
-    }) argument = this.argument! as (
-      int, {
-      String? second,
-      double third,
-      bool fourth,
-      List<String>? fifth,
-    });
-    return fn(
-      ref,
-      argument.$1,
-      second: argument.second,
-      third: argument.third,
-      fourth: argument.fourth,
-      fifth: argument.fifth,
-    );
-  }
-
-  @override
   FamilyProvider $copyWithCreate(
     String Function(
       FamilyRef ref,
     ) create,
   ) {
     return FamilyProvider._(
-        argument: argument! as (
+        argument: argument as (
           int, {
           String? second,
           double third,
@@ -719,6 +650,32 @@ final class FamilyProvider
           List<String>? fifth,
         }) =>
             create(ref));
+  }
+
+  @override
+  String create(FamilyRef ref) {
+    final fn = _createCb ?? family;
+    final (
+      int, {
+      String? second,
+      double third,
+      bool fourth,
+      List<String>? fifth,
+    }) argument = this.argument as (
+      int, {
+      String? second,
+      double third,
+      bool fourth,
+      List<String>? fifth,
+    });
+    return fn(
+      ref,
+      argument.$1,
+      second: argument.second,
+      third: argument.third,
+      fourth: argument.fourth,
+      fifth: argument.fifth,
+    );
   }
 
   @override
@@ -758,19 +715,6 @@ final class FamilyFamily extends Family {
 
   @override
   String toString() => r'family';
-
-  Override overrideWith(
-    String Function(
-      FamilyRef ref,
-      (
-        int, {
-        String? second,
-        double third,
-        bool fourth,
-        List<String>? fifth,
-      }) args,
-    ) create,
-  ) {}
 }
 
 typedef _PrivateRef = Ref<String>;
@@ -806,21 +750,18 @@ final class _PrivateProvider
       $ProviderElement(this, container);
 
   @override
-  String create(_PrivateRef ref) {
-    final fn = _createCb ?? _private;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
   _PrivateProvider $copyWithCreate(
     String Function(
       _PrivateRef ref,
     ) create,
   ) {
     return _PrivateProvider._(create: create);
+  }
+
+  @override
+  String create(_PrivateRef ref) {
+    final fn = _createCb ?? _private;
+    return fn(ref);
   }
 }
 
@@ -859,21 +800,18 @@ final class GeneratedProvider
       $ProviderElement(this, container);
 
   @override
-  String create(GeneratedRef ref) {
-    final fn = _createCb ?? generated;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
   GeneratedProvider $copyWithCreate(
     String Function(
       GeneratedRef ref,
     ) create,
   ) {
     return GeneratedProvider._(create: create);
+  }
+
+  @override
+  String create(GeneratedRef ref) {
+    final fn = _createCb ?? generated;
+    return fn(ref);
   }
 }
 
@@ -956,12 +894,6 @@ final class GenericClassFamily extends Family {
 
   @override
   String toString() => r'GenericClass';
-
-  Override overrideWith(
-    List<T> Function<T extends num>(Ref<List<T>> re) create,
-  ) {}
-
-  Override overrideWithBuild() {}
 }
 
 abstract class _$GenericClass<T extends num> extends $Notifier<List<T>> {
@@ -1096,7 +1028,7 @@ final class RawFamilyFutureClassProvider
     extends $NotifierProvider<RawFamilyFutureClass, Raw<Future<String>>> {
   const RawFamilyFutureClassProvider._(
       {required RawFamilyFutureClassFamily super.from,
-      required (int,) super.argument,
+      required int super.argument,
       super.runNotifierBuildOverride,
       RawFamilyFutureClass Function()? create})
       : _createCb = create,
@@ -1122,7 +1054,7 @@ final class RawFamilyFutureClassProvider
     RawFamilyFutureClass Function() create,
   ) {
     return RawFamilyFutureClassProvider._(
-        argument: argument! as (int,),
+        argument: argument as int,
         from: from! as RawFamilyFutureClassFamily,
         create: create);
   }
@@ -1134,7 +1066,7 @@ final class RawFamilyFutureClassProvider
         build,
   ) {
     return RawFamilyFutureClassProvider._(
-        argument: argument! as (int,),
+        argument: argument as int,
         from: from! as RawFamilyFutureClassFamily,
         runNotifierBuildOverride: build);
   }
@@ -1166,22 +1098,13 @@ final class RawFamilyFutureClassFamily extends Family {
   RawFamilyFutureClassProvider call(
     int id,
   ) =>
-      RawFamilyFutureClassProvider._(argument: (id,), from: this);
+      RawFamilyFutureClassProvider._(argument: id, from: this);
 
   @override
   String debugGetCreateSourceHash() => _$rawFamilyFutureClassHash();
 
   @override
   String toString() => r'RawFamilyFutureClass';
-
-  Override overrideWith(
-    Raw<Future<String>> Function(
-      Ref<Raw<Future<String>>> ref,
-      (int,) args,
-    ) create,
-  ) {}
-
-  Override overrideWithBuild() {}
 }
 
 abstract class _$RawFamilyFutureClass extends $Notifier<Raw<Future<String>>> {
@@ -1206,7 +1129,7 @@ final class RawFamilyStreamClassProvider
     extends $NotifierProvider<RawFamilyStreamClass, Raw<Stream<String>>> {
   const RawFamilyStreamClassProvider._(
       {required RawFamilyStreamClassFamily super.from,
-      required (int,) super.argument,
+      required int super.argument,
       super.runNotifierBuildOverride,
       RawFamilyStreamClass Function()? create})
       : _createCb = create,
@@ -1232,7 +1155,7 @@ final class RawFamilyStreamClassProvider
     RawFamilyStreamClass Function() create,
   ) {
     return RawFamilyStreamClassProvider._(
-        argument: argument! as (int,),
+        argument: argument as int,
         from: from! as RawFamilyStreamClassFamily,
         create: create);
   }
@@ -1244,7 +1167,7 @@ final class RawFamilyStreamClassProvider
         build,
   ) {
     return RawFamilyStreamClassProvider._(
-        argument: argument! as (int,),
+        argument: argument as int,
         from: from! as RawFamilyStreamClassFamily,
         runNotifierBuildOverride: build);
   }
@@ -1276,22 +1199,13 @@ final class RawFamilyStreamClassFamily extends Family {
   RawFamilyStreamClassProvider call(
     int id,
   ) =>
-      RawFamilyStreamClassProvider._(argument: (id,), from: this);
+      RawFamilyStreamClassProvider._(argument: id, from: this);
 
   @override
   String debugGetCreateSourceHash() => _$rawFamilyStreamClassHash();
 
   @override
   String toString() => r'RawFamilyStreamClass';
-
-  Override overrideWith(
-    Raw<Stream<String>> Function(
-      Ref<Raw<Stream<String>>> ref,
-      (int,) args,
-    ) create,
-  ) {}
-
-  Override overrideWithBuild() {}
 }
 
 abstract class _$RawFamilyStreamClass extends $Notifier<Raw<Stream<String>>> {
@@ -1463,7 +1377,7 @@ final class FamilyClassProvider extends $NotifierProvider<FamilyClass, String> {
     FamilyClass Function() create,
   ) {
     return FamilyClassProvider._(
-        argument: argument! as (
+        argument: argument as (
           int, {
           String? second,
           double third,
@@ -1480,7 +1394,7 @@ final class FamilyClassProvider extends $NotifierProvider<FamilyClass, String> {
     String Function(Ref<String>, FamilyClass) build,
   ) {
     return FamilyClassProvider._(
-        argument: argument! as (
+        argument: argument as (
           int, {
           String? second,
           double third,
@@ -1534,21 +1448,6 @@ final class FamilyClassFamily extends Family {
 
   @override
   String toString() => r'FamilyClass';
-
-  Override overrideWith(
-    String Function(
-      Ref<String> ref,
-      (
-        int, {
-        String? second,
-        double third,
-        bool fourth,
-        List<String>? fifth,
-      }) args,
-    ) create,
-  ) {}
-
-  Override overrideWithBuild() {}
 }
 
 abstract class _$FamilyClass extends $Notifier<String> {

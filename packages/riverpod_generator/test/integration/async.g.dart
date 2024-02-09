@@ -39,21 +39,18 @@ final class GenericProvider<T extends num> extends $FunctionalProvider<
       $FutureProviderElement(this, container);
 
   @override
-  FutureOr<List<T>> create(GenericRef<T> ref) {
-    final fn = _createCb ?? generic<T>;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
   GenericProvider<T> $copyWithCreate(
     FutureOr<List<T>> Function(
       GenericRef<T> ref,
     ) create,
   ) {
     return GenericProvider<T>._(from: from! as GenericFamily, create: create);
+  }
+
+  @override
+  FutureOr<List<T>> create(GenericRef<T> ref) {
+    final fn = _createCb ?? generic<T>;
+    return fn(ref);
   }
 
   @override
@@ -82,10 +79,6 @@ final class GenericFamily extends Family {
 
   @override
   String toString() => r'generic';
-
-  Override overrideWith(
-    FutureOr<List<T>> Function<T extends num>(GenericRef<T> ref) create,
-  ) {}
 }
 
 typedef PublicRef = Ref<AsyncValue<String>>;
@@ -121,21 +114,18 @@ final class PublicProvider
       $FutureProviderElement(this, container);
 
   @override
-  FutureOr<String> create(PublicRef ref) {
-    final fn = _createCb ?? public;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
   PublicProvider $copyWithCreate(
     FutureOr<String> Function(
       PublicRef ref,
     ) create,
   ) {
     return PublicProvider._(create: create);
+  }
+
+  @override
+  FutureOr<String> create(PublicRef ref) {
+    final fn = _createCb ?? public;
+    return fn(ref);
   }
 }
 
@@ -174,21 +164,18 @@ final class _PrivateProvider extends $FunctionalProvider<AsyncValue<String>,
       $FutureProviderElement(this, container);
 
   @override
-  FutureOr<String> create(_PrivateRef ref) {
-    final fn = _createCb ?? _private;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
   _PrivateProvider $copyWithCreate(
     FutureOr<String> Function(
       _PrivateRef ref,
     ) create,
   ) {
     return _PrivateProvider._(create: create);
+  }
+
+  @override
+  FutureOr<String> create(_PrivateRef ref) {
+    final fn = _createCb ?? _private;
+    return fn(ref);
   }
 }
 
@@ -203,7 +190,7 @@ final class FamilyOrProvider extends $FunctionalProvider<AsyncValue<String>,
     with $FutureModifier<String>, $FutureProvider<String, FamilyOrRef> {
   const FamilyOrProvider._(
       {required FamilyOrFamily super.from,
-      required (int,) super.argument,
+      required int super.argument,
       FutureOr<String> Function(
         FamilyOrRef ref,
         int first,
@@ -229,29 +216,29 @@ final class FamilyOrProvider extends $FunctionalProvider<AsyncValue<String>,
       $FutureProviderElement(this, container);
 
   @override
-  FutureOr<String> create(FamilyOrRef ref) {
-    final fn = _createCb ?? familyOr;
-    final (int,) argument = this.argument! as (int,);
-    return fn(
-      ref,
-      argument.$1,
-    );
-  }
-
-  @override
   FamilyOrProvider $copyWithCreate(
     FutureOr<String> Function(
       FamilyOrRef ref,
     ) create,
   ) {
     return FamilyOrProvider._(
-        argument: argument! as (int,),
+        argument: argument as int,
         from: from! as FamilyOrFamily,
         create: (
           ref,
           int first,
         ) =>
             create(ref));
+  }
+
+  @override
+  FutureOr<String> create(FamilyOrRef ref) {
+    final fn = _createCb ?? familyOr;
+    final int argument = this.argument as int;
+    return fn(
+      ref,
+      argument,
+    );
   }
 
   @override
@@ -274,20 +261,13 @@ final class FamilyOrFamily extends Family {
   FamilyOrProvider call(
     int first,
   ) =>
-      FamilyOrProvider._(argument: (first,), from: this);
+      FamilyOrProvider._(argument: first, from: this);
 
   @override
   String debugGetCreateSourceHash() => _$familyOrHash();
 
   @override
   String toString() => r'familyOr';
-
-  Override overrideWith(
-    FutureOr<String> Function(
-      FamilyOrRef ref,
-      (int,) args,
-    ) create,
-  ) {}
 }
 
 typedef FamilyRef = Ref<AsyncValue<String>>;
@@ -340,39 +320,13 @@ final class FamilyProvider
       $FutureProviderElement(this, container);
 
   @override
-  FutureOr<String> create(FamilyRef ref) {
-    final fn = _createCb ?? family;
-    final (
-      int, {
-      String? second,
-      double third,
-      bool fourth,
-      List<String>? fifth,
-    }) argument = this.argument! as (
-      int, {
-      String? second,
-      double third,
-      bool fourth,
-      List<String>? fifth,
-    });
-    return fn(
-      ref,
-      argument.$1,
-      second: argument.second,
-      third: argument.third,
-      fourth: argument.fourth,
-      fifth: argument.fifth,
-    );
-  }
-
-  @override
   FamilyProvider $copyWithCreate(
     FutureOr<String> Function(
       FamilyRef ref,
     ) create,
   ) {
     return FamilyProvider._(
-        argument: argument! as (
+        argument: argument as (
           int, {
           String? second,
           double third,
@@ -389,6 +343,32 @@ final class FamilyProvider
           List<String>? fifth,
         }) =>
             create(ref));
+  }
+
+  @override
+  FutureOr<String> create(FamilyRef ref) {
+    final fn = _createCb ?? family;
+    final (
+      int, {
+      String? second,
+      double third,
+      bool fourth,
+      List<String>? fifth,
+    }) argument = this.argument as (
+      int, {
+      String? second,
+      double third,
+      bool fourth,
+      List<String>? fifth,
+    });
+    return fn(
+      ref,
+      argument.$1,
+      second: argument.second,
+      third: argument.third,
+      fourth: argument.fourth,
+      fifth: argument.fifth,
+    );
   }
 
   @override
@@ -428,19 +408,6 @@ final class FamilyFamily extends Family {
 
   @override
   String toString() => r'family';
-
-  Override overrideWith(
-    FutureOr<String> Function(
-      FamilyRef ref,
-      (
-        int, {
-        String? second,
-        double third,
-        bool fourth,
-        List<String>? fifth,
-      }) args,
-    ) create,
-  ) {}
 }
 
 const genericClassProvider = GenericClassFamily._();
@@ -520,13 +487,6 @@ final class GenericClassFamily extends Family {
 
   @override
   String toString() => r'GenericClass';
-
-  Override overrideWith(
-    FutureOr<List<T>> Function<T extends num>(Ref<AsyncValue<List<T>>> re)
-        create,
-  ) {}
-
-  Override overrideWithBuild() {}
 }
 
 abstract class _$GenericClass<T extends num> extends $AsyncNotifier<List<T>> {
@@ -659,7 +619,7 @@ final class FamilyOrClassProvider
     extends $AsyncNotifierProvider<FamilyOrClass, String> {
   const FamilyOrClassProvider._(
       {required FamilyOrClassFamily super.from,
-      required (int,) super.argument,
+      required int super.argument,
       super.runNotifierBuildOverride,
       FamilyOrClass Function()? create})
       : _createCb = create,
@@ -685,7 +645,7 @@ final class FamilyOrClassProvider
     FamilyOrClass Function() create,
   ) {
     return FamilyOrClassProvider._(
-        argument: argument! as (int,),
+        argument: argument as int,
         from: from! as FamilyOrClassFamily,
         create: create);
   }
@@ -696,7 +656,7 @@ final class FamilyOrClassProvider
     FutureOr<String> Function(Ref<AsyncValue<String>>, FamilyOrClass) build,
   ) {
     return FamilyOrClassProvider._(
-        argument: argument! as (int,),
+        argument: argument as int,
         from: from! as FamilyOrClassFamily,
         runNotifierBuildOverride: build);
   }
@@ -727,22 +687,13 @@ final class FamilyOrClassFamily extends Family {
   FamilyOrClassProvider call(
     int first,
   ) =>
-      FamilyOrClassProvider._(argument: (first,), from: this);
+      FamilyOrClassProvider._(argument: first, from: this);
 
   @override
   String debugGetCreateSourceHash() => _$familyOrClassHash();
 
   @override
   String toString() => r'FamilyOrClass';
-
-  Override overrideWith(
-    FutureOr<String> Function(
-      Ref<AsyncValue<String>> ref,
-      (int,) args,
-    ) create,
-  ) {}
-
-  Override overrideWithBuild() {}
 }
 
 abstract class _$FamilyOrClass extends $AsyncNotifier<String> {
@@ -800,7 +751,7 @@ final class FamilyClassProvider
     FamilyClass Function() create,
   ) {
     return FamilyClassProvider._(
-        argument: argument! as (
+        argument: argument as (
           int, {
           String? second,
           double third,
@@ -817,7 +768,7 @@ final class FamilyClassProvider
     FutureOr<String> Function(Ref<AsyncValue<String>>, FamilyClass) build,
   ) {
     return FamilyClassProvider._(
-        argument: argument! as (
+        argument: argument as (
           int, {
           String? second,
           double third,
@@ -871,21 +822,6 @@ final class FamilyClassFamily extends Family {
 
   @override
   String toString() => r'FamilyClass';
-
-  Override overrideWith(
-    FutureOr<String> Function(
-      Ref<AsyncValue<String>> ref,
-      (
-        int, {
-        String? second,
-        double third,
-        bool fourth,
-        List<String>? fifth,
-      }) args,
-    ) create,
-  ) {}
-
-  Override overrideWithBuild() {}
 }
 
 abstract class _$FamilyClass extends $AsyncNotifier<String> {

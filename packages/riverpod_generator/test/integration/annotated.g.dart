@@ -39,21 +39,18 @@ final class FunctionalProvider
       $ProviderElement(this, container);
 
   @override
-  String create(FunctionalRef ref) {
-    final fn = _createCb ?? functional;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
   FunctionalProvider $copyWithCreate(
     String Function(
       FunctionalRef ref,
     ) create,
   ) {
     return FunctionalProvider._(create: create);
+  }
+
+  @override
+  String create(FunctionalRef ref) {
+    final fn = _createCb ?? functional;
+    return fn(ref);
   }
 }
 
@@ -68,7 +65,7 @@ final class FamilyProvider
     with $Provider<String, FamilyRef> {
   const FamilyProvider._(
       {required FamilyFamily super.from,
-      required (int,) super.argument,
+      required int super.argument,
       String Function(
         FamilyRef ref,
         int id,
@@ -94,29 +91,29 @@ final class FamilyProvider
       $ProviderElement(this, container);
 
   @override
-  String create(FamilyRef ref) {
-    final fn = _createCb ?? family;
-    final (int,) argument = this.argument! as (int,);
-    return fn(
-      ref,
-      argument.$1,
-    );
-  }
-
-  @override
   FamilyProvider $copyWithCreate(
     String Function(
       FamilyRef ref,
     ) create,
   ) {
     return FamilyProvider._(
-        argument: argument! as (int,),
+        argument: argument as int,
         from: from! as FamilyFamily,
         create: (
           ref,
           int id,
         ) =>
             create(ref));
+  }
+
+  @override
+  String create(FamilyRef ref) {
+    final fn = _createCb ?? family;
+    final int argument = this.argument as int;
+    return fn(
+      ref,
+      argument,
+    );
   }
 
   @override
@@ -139,20 +136,13 @@ final class FamilyFamily extends Family {
   FamilyProvider call(
     int id,
   ) =>
-      FamilyProvider._(argument: (id,), from: this);
+      FamilyProvider._(argument: id, from: this);
 
   @override
   String debugGetCreateSourceHash() => _$familyHash();
 
   @override
   String toString() => r'family';
-
-  Override overrideWith(
-    String Function(
-      FamilyRef ref,
-      (int,) args,
-    ) create,
-  ) {}
 }
 
 typedef NotCopiedFunctionalRef = Ref<String>;
@@ -188,21 +178,18 @@ final class NotCopiedFunctionalProvider
       $ProviderElement(this, container);
 
   @override
-  String create(NotCopiedFunctionalRef ref) {
-    final fn = _createCb ?? notCopiedFunctional;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
   NotCopiedFunctionalProvider $copyWithCreate(
     String Function(
       NotCopiedFunctionalRef ref,
     ) create,
   ) {
     return NotCopiedFunctionalProvider._(create: create);
+  }
+
+  @override
+  String create(NotCopiedFunctionalRef ref) {
+    final fn = _createCb ?? notCopiedFunctional;
+    return fn(ref);
   }
 }
 
@@ -218,7 +205,7 @@ final class NotCopiedFamilyProvider
     with $Provider<String, NotCopiedFamilyRef> {
   const NotCopiedFamilyProvider._(
       {required NotCopiedFamilyFamily super.from,
-      required (int,) super.argument,
+      required int super.argument,
       String Function(
         NotCopiedFamilyRef ref,
         int id,
@@ -244,29 +231,29 @@ final class NotCopiedFamilyProvider
       $ProviderElement(this, container);
 
   @override
-  String create(NotCopiedFamilyRef ref) {
-    final fn = _createCb ?? notCopiedFamily;
-    final (int,) argument = this.argument! as (int,);
-    return fn(
-      ref,
-      argument.$1,
-    );
-  }
-
-  @override
   NotCopiedFamilyProvider $copyWithCreate(
     String Function(
       NotCopiedFamilyRef ref,
     ) create,
   ) {
     return NotCopiedFamilyProvider._(
-        argument: argument! as (int,),
+        argument: argument as int,
         from: from! as NotCopiedFamilyFamily,
         create: (
           ref,
           int id,
         ) =>
             create(ref));
+  }
+
+  @override
+  String create(NotCopiedFamilyRef ref) {
+    final fn = _createCb ?? notCopiedFamily;
+    final int argument = this.argument as int;
+    return fn(
+      ref,
+      argument,
+    );
   }
 
   @override
@@ -289,20 +276,13 @@ final class NotCopiedFamilyFamily extends Family {
   NotCopiedFamilyProvider call(
     int id,
   ) =>
-      NotCopiedFamilyProvider._(argument: (id,), from: this);
+      NotCopiedFamilyProvider._(argument: id, from: this);
 
   @override
   String debugGetCreateSourceHash() => _$notCopiedFamilyHash();
 
   @override
   String toString() => r'notCopiedFamily';
-
-  Override overrideWith(
-    String Function(
-      NotCopiedFamilyRef ref,
-      (int,) args,
-    ) create,
-  ) {}
 }
 
 const classBasedProvider = ClassBasedProvider._();

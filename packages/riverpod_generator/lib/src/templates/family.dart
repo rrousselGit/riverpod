@@ -16,6 +16,8 @@ class FamilyTemplate extends Template {
   final BuildYamlOptions options;
   final List<String>? allTransitiveDependencies;
 
+  late final _argumentRecordType = provider.argumentRecordType;
+
   @override
   void run(StringBuffer buffer) {
     if (!provider.providerElement.isFamily) return;
@@ -29,13 +31,9 @@ class FamilyTemplate extends Template {
 
     final parameterDefinition = buildParamDefinitionQuery(provider.parameters);
 
-    final parametersPassThrough = buildParamInvocationQuery({
-      for (final parameter in provider.parameters)
-        parameter: parameter.name!.lexeme,
-    });
-    final argument = provider.parameters.isEmpty
-        ? ''
-        : 'argument: ($parametersPassThrough),';
+    final parametersPassThrough = provider.argumentToRecord();
+    final argument =
+        provider.parameters.isEmpty ? '' : 'argument: $parametersPassThrough,';
 
     buffer.writeln('''
 final class ${provider.familyTypeName} extends Family {
@@ -60,11 +58,11 @@ final class ${provider.familyTypeName} extends Family {
   String toString() => r'${provider.name}';
 ''');
 
-    _writeOverrides(
-      buffer,
-      topLevelBuffer: topLevelBuffer,
-      genericsDefinition: genericsDefinition,
-    );
+    // _writeOverrides(
+    //   buffer,
+    //   topLevelBuffer: topLevelBuffer,
+    //   genericsDefinition: genericsDefinition,
+    // );
 
     buffer.writeln('}');
 
@@ -99,8 +97,14 @@ final class ${provider.familyTypeName} extends Family {
     required StringBuffer topLevelBuffer,
     required String genericsDefinition,
   }) {
-    late final argumentsType =
-        '(${buildParamDefinitionQuery(provider.parameters, asRecord: true)})';
+    // Encode the list of parameters into a record.
+    // We do so only if there are at least two parameters.
+    // TODO test
+    late final argumentsType = switch (provider.parameters) {
+      [final p] => p.typeDisplayString,
+      _ =>
+        '(${buildParamDefinitionQuery(provider.parameters, asRecord: true)})',
+    };
 
     final createType = switch (provider) {
       FunctionalProviderDeclaration(parameters: [_, ...]) =>
@@ -116,7 +120,25 @@ final class ${provider.familyTypeName} extends Family {
     // TODO docs
     buffer.writeln('''
 Override overrideWith($createType create,) {
+  return \$FamilyOverride(
+    from: this,
+    createElement: (container, provider) {
+      provider as ProviderT;
+''');
 
+    switch (provider.parameters) {
+      case [_]:
+        buffer.writeln('''
+      final args = provider.argument! as ${provider.parameters.single.typeDisplayString};
+      ''');
+    }
+
+    ('''
+      final args = provider.argument! as $_argumentRecordType;
+
+      return provider.\$copyWithCreate(create).createElement(container);
+    },
+  );
 }
 ''');
   }

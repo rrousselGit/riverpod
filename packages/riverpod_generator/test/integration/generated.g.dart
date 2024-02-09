@@ -39,21 +39,18 @@ final class GeneratedProvider
       $ProviderElement(this, container);
 
   @override
-  _Test create(GeneratedRef ref) {
-    final fn = _createCb ?? generated;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
   GeneratedProvider $copyWithCreate(
     _Test Function(
       GeneratedRef ref,
     ) create,
   ) {
     return GeneratedProvider._(create: create);
+  }
+
+  @override
+  _Test create(GeneratedRef ref) {
+    final fn = _createCb ?? generated;
+    return fn(ref);
   }
 }
 
@@ -68,7 +65,7 @@ final class GeneratedFamilyProvider
     with $Provider<_Test, GeneratedFamilyRef> {
   const GeneratedFamilyProvider._(
       {required GeneratedFamilyFamily super.from,
-      required (_Test,) super.argument,
+      required _Test super.argument,
       _Test Function(
         GeneratedFamilyRef ref,
         _Test test,
@@ -94,29 +91,29 @@ final class GeneratedFamilyProvider
       $ProviderElement(this, container);
 
   @override
-  _Test create(GeneratedFamilyRef ref) {
-    final fn = _createCb ?? generatedFamily;
-    final (_Test,) argument = this.argument! as (_Test,);
-    return fn(
-      ref,
-      argument.$1,
-    );
-  }
-
-  @override
   GeneratedFamilyProvider $copyWithCreate(
     _Test Function(
       GeneratedFamilyRef ref,
     ) create,
   ) {
     return GeneratedFamilyProvider._(
-        argument: argument! as (_Test,),
+        argument: argument as _Test,
         from: from! as GeneratedFamilyFamily,
         create: (
           ref,
           _Test test,
         ) =>
             create(ref));
+  }
+
+  @override
+  _Test create(GeneratedFamilyRef ref) {
+    final fn = _createCb ?? generatedFamily;
+    final _Test argument = this.argument as _Test;
+    return fn(
+      ref,
+      argument,
+    );
   }
 
   @override
@@ -139,20 +136,13 @@ final class GeneratedFamilyFamily extends Family {
   GeneratedFamilyProvider call(
     _Test test,
   ) =>
-      GeneratedFamilyProvider._(argument: (test,), from: this);
+      GeneratedFamilyProvider._(argument: test, from: this);
 
   @override
   String debugGetCreateSourceHash() => _$generatedFamilyHash();
 
   @override
   String toString() => r'generatedFamily';
-
-  Override overrideWith(
-    _Test Function(
-      GeneratedFamilyRef ref,
-      (_Test,) args,
-    ) create,
-  ) {}
 }
 
 typedef $DynamicRef = Ref<Object?>;
@@ -188,21 +178,18 @@ final class $DynamicProvider
       $ProviderElement(this, container);
 
   @override
-  Object? create($DynamicRef ref) {
-    final fn = _createCb ?? $dynamic;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
   $DynamicProvider $copyWithCreate(
     Object? Function(
       $DynamicRef ref,
     ) create,
   ) {
     return $DynamicProvider._(create: create);
+  }
+
+  @override
+  Object? create($DynamicRef ref) {
+    final fn = _createCb ?? $dynamic;
+    return fn(ref);
   }
 }
 
@@ -217,10 +204,10 @@ final class $DynamicFamilyProvider
     with $Provider<Object?, $DynamicFamilyRef> {
   const $DynamicFamilyProvider._(
       {required $DynamicFamilyFamily super.from,
-      required (dynamic,) super.argument,
+      required dynamic super.argument,
       Object? Function(
         $DynamicFamilyRef ref,
-        test,
+        dynamic test,
       )? create})
       : _createCb = create,
         super(
@@ -232,7 +219,7 @@ final class $DynamicFamilyProvider
 
   final Object? Function(
     $DynamicFamilyRef ref,
-    test,
+    dynamic test,
   )? _createCb;
 
   @override
@@ -243,29 +230,29 @@ final class $DynamicFamilyProvider
       $ProviderElement(this, container);
 
   @override
-  Object? create($DynamicFamilyRef ref) {
-    final fn = _createCb ?? $dynamicFamily;
-    final (dynamic,) argument = this.argument! as (dynamic,);
-    return fn(
-      ref,
-      argument.$1,
-    );
-  }
-
-  @override
   $DynamicFamilyProvider $copyWithCreate(
     Object? Function(
       $DynamicFamilyRef ref,
     ) create,
   ) {
     return $DynamicFamilyProvider._(
-        argument: argument! as (dynamic,),
+        argument: argument as dynamic,
         from: from! as $DynamicFamilyFamily,
         create: (
           ref,
-          test,
+          dynamic test,
         ) =>
             create(ref));
+  }
+
+  @override
+  Object? create($DynamicFamilyRef ref) {
+    final fn = _createCb ?? $dynamicFamily;
+    final dynamic argument = this.argument as dynamic;
+    return fn(
+      ref,
+      argument,
+    );
   }
 
   @override
@@ -286,22 +273,15 @@ final class $DynamicFamilyFamily extends Family {
         );
 
   $DynamicFamilyProvider call(
-    test,
+    dynamic test,
   ) =>
-      $DynamicFamilyProvider._(argument: (test,), from: this);
+      $DynamicFamilyProvider._(argument: test, from: this);
 
   @override
   String debugGetCreateSourceHash() => _$$dynamicFamilyHash();
 
   @override
   String toString() => r'$dynamicFamily';
-
-  Override overrideWith(
-    Object? Function(
-      $DynamicFamilyRef ref,
-      (dynamic,) args,
-    ) create,
-  ) {}
 }
 
 typedef _DynamicRef = Ref<Object?>;
@@ -313,10 +293,10 @@ final class _DynamicProvider
     with $Provider<Object?, _DynamicRef> {
   const _DynamicProvider._(
       {required _DynamicFamily super.from,
-      required (dynamic,) super.argument,
+      required dynamic super.argument,
       Object? Function(
         _DynamicRef ref,
-        test,
+        dynamic test,
       )? create})
       : _createCb = create,
         super(
@@ -328,7 +308,7 @@ final class _DynamicProvider
 
   final Object? Function(
     _DynamicRef ref,
-    test,
+    dynamic test,
   )? _createCb;
 
   @override
@@ -339,29 +319,29 @@ final class _DynamicProvider
       $ProviderElement(this, container);
 
   @override
-  Object? create(_DynamicRef ref) {
-    final fn = _createCb ?? _dynamic;
-    final (dynamic,) argument = this.argument! as (dynamic,);
-    return fn(
-      ref,
-      argument.$1,
-    );
-  }
-
-  @override
   _DynamicProvider $copyWithCreate(
     Object? Function(
       _DynamicRef ref,
     ) create,
   ) {
     return _DynamicProvider._(
-        argument: argument! as (dynamic,),
+        argument: argument as dynamic,
         from: from! as _DynamicFamily,
         create: (
           ref,
-          test,
+          dynamic test,
         ) =>
             create(ref));
+  }
+
+  @override
+  Object? create(_DynamicRef ref) {
+    final fn = _createCb ?? _dynamic;
+    final dynamic argument = this.argument as dynamic;
+    return fn(
+      ref,
+      argument,
+    );
   }
 
   @override
@@ -382,22 +362,15 @@ final class _DynamicFamily extends Family {
         );
 
   _DynamicProvider call(
-    test,
+    dynamic test,
   ) =>
-      _DynamicProvider._(argument: (test,), from: this);
+      _DynamicProvider._(argument: test, from: this);
 
   @override
   String debugGetCreateSourceHash() => _$dynamicHash();
 
   @override
   String toString() => r'_dynamic';
-
-  Override overrideWith(
-    Object? Function(
-      _DynamicRef ref,
-      (dynamic,) args,
-    ) create,
-  ) {}
 }
 
 typedef AliasRef = Ref<r.AsyncValue<int>>;
@@ -434,21 +407,18 @@ final class AliasProvider
       $ProviderElement(this, container);
 
   @override
-  r.AsyncValue<int> create(AliasRef ref) {
-    final fn = _createCb ?? alias;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
   AliasProvider $copyWithCreate(
     r.AsyncValue<int> Function(
       AliasRef ref,
     ) create,
   ) {
     return AliasProvider._(create: create);
+  }
+
+  @override
+  r.AsyncValue<int> create(AliasRef ref) {
+    final fn = _createCb ?? alias;
+    return fn(ref);
   }
 }
 
@@ -464,7 +434,7 @@ final class AliasFamilyProvider extends $FunctionalProvider<
     AliasFamilyRef> with $Provider<r.AsyncValue<int>, AliasFamilyRef> {
   const AliasFamilyProvider._(
       {required AliasFamilyFamily super.from,
-      required (r.AsyncValue<int>,) super.argument,
+      required r.AsyncValue<int> super.argument,
       r.AsyncValue<int> Function(
         AliasFamilyRef ref,
         r.AsyncValue<int> test,
@@ -491,30 +461,29 @@ final class AliasFamilyProvider extends $FunctionalProvider<
       $ProviderElement(this, container);
 
   @override
-  r.AsyncValue<int> create(AliasFamilyRef ref) {
-    final fn = _createCb ?? aliasFamily;
-    final (r.AsyncValue<int>,) argument =
-        this.argument! as (r.AsyncValue<int>,);
-    return fn(
-      ref,
-      argument.$1,
-    );
-  }
-
-  @override
   AliasFamilyProvider $copyWithCreate(
     r.AsyncValue<int> Function(
       AliasFamilyRef ref,
     ) create,
   ) {
     return AliasFamilyProvider._(
-        argument: argument! as (r.AsyncValue<int>,),
+        argument: argument as r.AsyncValue<int>,
         from: from! as AliasFamilyFamily,
         create: (
           ref,
           r.AsyncValue<int> test,
         ) =>
             create(ref));
+  }
+
+  @override
+  r.AsyncValue<int> create(AliasFamilyRef ref) {
+    final fn = _createCb ?? aliasFamily;
+    final r.AsyncValue<int> argument = this.argument as r.AsyncValue<int>;
+    return fn(
+      ref,
+      argument,
+    );
   }
 
   @override
@@ -537,20 +506,13 @@ final class AliasFamilyFamily extends Family {
   AliasFamilyProvider call(
     r.AsyncValue<int> test,
   ) =>
-      AliasFamilyProvider._(argument: (test,), from: this);
+      AliasFamilyProvider._(argument: test, from: this);
 
   @override
   String debugGetCreateSourceHash() => _$aliasFamilyHash();
 
   @override
   String toString() => r'aliasFamily';
-
-  Override overrideWith(
-    r.AsyncValue<int> Function(
-      AliasFamilyRef ref,
-      (r.AsyncValue<int>,) args,
-    ) create,
-  ) {}
 }
 
 const generatedClassProvider = GeneratedClassProvider._();
@@ -617,7 +579,7 @@ final class GeneratedClassFamilyProvider
     extends $NotifierProvider<GeneratedClassFamily, _Test> {
   const GeneratedClassFamilyProvider._(
       {required GeneratedClassFamilyFamily super.from,
-      required (_Test,) super.argument,
+      required _Test super.argument,
       super.runNotifierBuildOverride,
       GeneratedClassFamily Function()? create})
       : _createCb = create,
@@ -643,7 +605,7 @@ final class GeneratedClassFamilyProvider
     GeneratedClassFamily Function() create,
   ) {
     return GeneratedClassFamilyProvider._(
-        argument: argument! as (_Test,),
+        argument: argument as _Test,
         from: from! as GeneratedClassFamilyFamily,
         create: create);
   }
@@ -654,7 +616,7 @@ final class GeneratedClassFamilyProvider
     _Test Function(Ref<_Test>, GeneratedClassFamily) build,
   ) {
     return GeneratedClassFamilyProvider._(
-        argument: argument! as (_Test,),
+        argument: argument as _Test,
         from: from! as GeneratedClassFamilyFamily,
         runNotifierBuildOverride: build);
   }
@@ -686,22 +648,13 @@ final class GeneratedClassFamilyFamily extends Family {
   GeneratedClassFamilyProvider call(
     _Test test,
   ) =>
-      GeneratedClassFamilyProvider._(argument: (test,), from: this);
+      GeneratedClassFamilyProvider._(argument: test, from: this);
 
   @override
   String debugGetCreateSourceHash() => _$generatedClassFamilyHash();
 
   @override
   String toString() => r'GeneratedClassFamily';
-
-  Override overrideWith(
-    _Test Function(
-      Ref<_Test> ref,
-      (_Test,) args,
-    ) create,
-  ) {}
-
-  Override overrideWithBuild() {}
 }
 
 abstract class _$GeneratedClassFamily extends $Notifier<_Test> {
@@ -784,7 +737,7 @@ final class $DynamicClassFamilyProvider
     extends $NotifierProvider<$DynamicClassFamily, Object?> {
   const $DynamicClassFamilyProvider._(
       {required $DynamicClassFamilyFamily super.from,
-      required (dynamic,) super.argument,
+      required dynamic super.argument,
       super.runNotifierBuildOverride,
       $DynamicClassFamily Function()? create})
       : _createCb = create,
@@ -810,7 +763,7 @@ final class $DynamicClassFamilyProvider
     $DynamicClassFamily Function() create,
   ) {
     return $DynamicClassFamilyProvider._(
-        argument: argument! as (dynamic,),
+        argument: argument as dynamic,
         from: from! as $DynamicClassFamilyFamily,
         create: create);
   }
@@ -821,7 +774,7 @@ final class $DynamicClassFamilyProvider
     Object? Function(Ref<Object?>, $DynamicClassFamily) build,
   ) {
     return $DynamicClassFamilyProvider._(
-        argument: argument! as (dynamic,),
+        argument: argument as dynamic,
         from: from! as $DynamicClassFamilyFamily,
         runNotifierBuildOverride: build);
   }
@@ -851,33 +804,24 @@ final class $DynamicClassFamilyFamily extends Family {
         );
 
   $DynamicClassFamilyProvider call(
-    test,
+    dynamic test,
   ) =>
-      $DynamicClassFamilyProvider._(argument: (test,), from: this);
+      $DynamicClassFamilyProvider._(argument: test, from: this);
 
   @override
   String debugGetCreateSourceHash() => _$$dynamicClassFamilyHash();
 
   @override
   String toString() => r'$DynamicClassFamily';
-
-  Override overrideWith(
-    Object? Function(
-      Ref<Object?> ref,
-      (dynamic,) args,
-    ) create,
-  ) {}
-
-  Override overrideWithBuild() {}
 }
 
 abstract class _$$DynamicClassFamily extends $Notifier<Object?> {
   late final _$args =
       (ref as $NotifierProviderElement).origin.argument as (dynamic,);
-  get test => _$args.$1;
+  dynamic get test => _$args.$1;
 
   Object? build(
-    test,
+    dynamic test,
   );
 
   @$internal
@@ -951,7 +895,7 @@ final class AliasClassFamilyProvider
     extends $NotifierProvider<AliasClassFamily, r.AsyncValue<int>> {
   const AliasClassFamilyProvider._(
       {required AliasClassFamilyFamily super.from,
-      required (r.AsyncValue<int>,) super.argument,
+      required r.AsyncValue<int> super.argument,
       super.runNotifierBuildOverride,
       AliasClassFamily Function()? create})
       : _createCb = create,
@@ -977,7 +921,7 @@ final class AliasClassFamilyProvider
     AliasClassFamily Function() create,
   ) {
     return AliasClassFamilyProvider._(
-        argument: argument! as (r.AsyncValue<int>,),
+        argument: argument as r.AsyncValue<int>,
         from: from! as AliasClassFamilyFamily,
         create: create);
   }
@@ -988,7 +932,7 @@ final class AliasClassFamilyProvider
     r.AsyncValue<int> Function(Ref<r.AsyncValue<int>>, AliasClassFamily) build,
   ) {
     return AliasClassFamilyProvider._(
-        argument: argument! as (r.AsyncValue<int>,),
+        argument: argument as r.AsyncValue<int>,
         from: from! as AliasClassFamilyFamily,
         runNotifierBuildOverride: build);
   }
@@ -1019,22 +963,13 @@ final class AliasClassFamilyFamily extends Family {
   AliasClassFamilyProvider call(
     r.AsyncValue<int> test,
   ) =>
-      AliasClassFamilyProvider._(argument: (test,), from: this);
+      AliasClassFamilyProvider._(argument: test, from: this);
 
   @override
   String debugGetCreateSourceHash() => _$aliasClassFamilyHash();
 
   @override
   String toString() => r'AliasClassFamily';
-
-  Override overrideWith(
-    r.AsyncValue<int> Function(
-      Ref<r.AsyncValue<int>> ref,
-      (r.AsyncValue<int>,) args,
-    ) create,
-  ) {}
-
-  Override overrideWithBuild() {}
 }
 
 abstract class _$AliasClassFamily extends $Notifier<r.AsyncValue<int>> {

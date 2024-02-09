@@ -38,21 +38,18 @@ final class DepProvider extends $FunctionalProvider<int, int, DepRef>
       $ProviderElement(this, container);
 
   @override
-  int create(DepRef ref) {
-    final fn = _createCb ?? dep;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
   DepProvider $copyWithCreate(
     int Function(
       DepRef ref,
     ) create,
   ) {
     return DepProvider._(create: create);
+  }
+
+  @override
+  int create(DepRef ref) {
+    final fn = _createCb ?? dep;
+    return fn(ref);
   }
 }
 
@@ -66,7 +63,7 @@ final class FamilyProvider extends $FunctionalProvider<int, int, FamilyRef>
     with $Provider<int, FamilyRef> {
   const FamilyProvider._(
       {required FamilyFamily super.from,
-      required (int,) super.argument,
+      required int super.argument,
       int Function(
         FamilyRef ref,
         int id,
@@ -92,29 +89,29 @@ final class FamilyProvider extends $FunctionalProvider<int, int, FamilyRef>
       $ProviderElement(this, container);
 
   @override
-  int create(FamilyRef ref) {
-    final fn = _createCb ?? family;
-    final (int,) argument = this.argument! as (int,);
-    return fn(
-      ref,
-      argument.$1,
-    );
-  }
-
-  @override
   FamilyProvider $copyWithCreate(
     int Function(
       FamilyRef ref,
     ) create,
   ) {
     return FamilyProvider._(
-        argument: argument! as (int,),
+        argument: argument as int,
         from: from! as FamilyFamily,
         create: (
           ref,
           int id,
         ) =>
             create(ref));
+  }
+
+  @override
+  int create(FamilyRef ref) {
+    final fn = _createCb ?? family;
+    final int argument = this.argument as int;
+    return fn(
+      ref,
+      argument,
+    );
   }
 
   @override
@@ -137,20 +134,13 @@ final class FamilyFamily extends Family {
   FamilyProvider call(
     int id,
   ) =>
-      FamilyProvider._(argument: (id,), from: this);
+      FamilyProvider._(argument: id, from: this);
 
   @override
   String debugGetCreateSourceHash() => _$familyHash();
 
   @override
   String toString() => r'family';
-
-  Override overrideWith(
-    int Function(
-      FamilyRef ref,
-      (int,) args,
-    ) create,
-  ) {}
 }
 
 typedef ProviderRef = Ref<int>;
@@ -200,21 +190,18 @@ final class ProviderProvider extends $FunctionalProvider<int, int, ProviderRef>
       $ProviderElement(this, container);
 
   @override
-  int create(ProviderRef ref) {
-    final fn = _createCb ?? provider;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
   ProviderProvider $copyWithCreate(
     int Function(
       ProviderRef ref,
     ) create,
   ) {
     return ProviderProvider._(create: create);
+  }
+
+  @override
+  int create(ProviderRef ref) {
+    final fn = _createCb ?? provider;
+    return fn(ref);
   }
 }
 
@@ -268,21 +255,18 @@ final class Provider2Provider
       $ProviderElement(this, container);
 
   @override
-  int create(Provider2Ref ref) {
-    final fn = _createCb ?? provider2;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
   Provider2Provider $copyWithCreate(
     int Function(
       Provider2Ref ref,
     ) create,
   ) {
     return Provider2Provider._(create: create);
+  }
+
+  @override
+  int create(Provider2Ref ref) {
+    final fn = _createCb ?? provider2;
+    return fn(ref);
   }
 }
 
@@ -337,21 +321,18 @@ final class TransitiveDependenciesProvider
       $ProviderElement(this, container);
 
   @override
-  int create(TransitiveDependenciesRef ref) {
-    final fn = _createCb ?? transitiveDependencies;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
   TransitiveDependenciesProvider $copyWithCreate(
     int Function(
       TransitiveDependenciesRef ref,
     ) create,
   ) {
     return TransitiveDependenciesProvider._(create: create);
+  }
+
+  @override
+  int create(TransitiveDependenciesRef ref) {
+    final fn = _createCb ?? transitiveDependencies;
+    return fn(ref);
   }
 }
 
@@ -404,21 +385,18 @@ final class SmallTransitiveDependencyCountProvider
       $ProviderElement(this, container);
 
   @override
-  int create(SmallTransitiveDependencyCountRef ref) {
-    final fn = _createCb ?? smallTransitiveDependencyCount;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
   SmallTransitiveDependencyCountProvider $copyWithCreate(
     int Function(
       SmallTransitiveDependencyCountRef ref,
     ) create,
   ) {
     return SmallTransitiveDependencyCountProvider._(create: create);
+  }
+
+  @override
+  int create(SmallTransitiveDependencyCountRef ref) {
+    final fn = _createCb ?? smallTransitiveDependencyCount;
+    return fn(ref);
   }
 }
 
@@ -459,21 +437,18 @@ final class EmptyDependenciesFunctionalProvider
       $ProviderElement(this, container);
 
   @override
-  int create(EmptyDependenciesFunctionalRef ref) {
-    final fn = _createCb ?? emptyDependenciesFunctional;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
   EmptyDependenciesFunctionalProvider $copyWithCreate(
     int Function(
       EmptyDependenciesFunctionalRef ref,
     ) create,
   ) {
     return EmptyDependenciesFunctionalProvider._(create: create);
+  }
+
+  @override
+  int create(EmptyDependenciesFunctionalRef ref) {
+    final fn = _createCb ?? emptyDependenciesFunctional;
+    return fn(ref);
   }
 }
 
@@ -522,21 +497,18 @@ final class ProviderWithDependenciesProvider
       $ProviderElement(this, container);
 
   @override
-  int create(ProviderWithDependenciesRef ref) {
-    final fn = _createCb ?? providerWithDependencies;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
   ProviderWithDependenciesProvider $copyWithCreate(
     int Function(
       ProviderWithDependenciesRef ref,
     ) create,
   ) {
     return ProviderWithDependenciesProvider._(create: create);
+  }
+
+  @override
+  int create(ProviderWithDependenciesRef ref) {
+    final fn = _createCb ?? providerWithDependencies;
+    return fn(ref);
   }
 }
 
@@ -576,21 +548,18 @@ final class _PrivateDepProvider
       $ProviderElement(this, container);
 
   @override
-  int create(_PrivateDepRef ref) {
-    final fn = _createCb ?? _privateDep;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
   _PrivateDepProvider $copyWithCreate(
     int Function(
       _PrivateDepRef ref,
     ) create,
   ) {
     return _PrivateDepProvider._(create: create);
+  }
+
+  @override
+  int create(_PrivateDepRef ref) {
+    final fn = _createCb ?? _privateDep;
+    return fn(ref);
   }
 }
 
@@ -629,21 +598,18 @@ final class PublicDepProvider
       $ProviderElement(this, container);
 
   @override
-  int create(PublicDepRef ref) {
-    final fn = _createCb ?? publicDep;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
   PublicDepProvider $copyWithCreate(
     int Function(
       PublicDepRef ref,
     ) create,
   ) {
     return PublicDepProvider._(create: create);
+  }
+
+  @override
+  int create(PublicDepRef ref) {
+    final fn = _createCb ?? publicDep;
+    return fn(ref);
   }
 }
 
@@ -688,21 +654,18 @@ final class DuplicateDependenciesProvider
       $ProviderElement(this, container);
 
   @override
-  int create(DuplicateDependenciesRef ref) {
-    final fn = _createCb ?? duplicateDependencies;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
   DuplicateDependenciesProvider $copyWithCreate(
     int Function(
       DuplicateDependenciesRef ref,
     ) create,
   ) {
     return DuplicateDependenciesProvider._(create: create);
+  }
+
+  @override
+  int create(DuplicateDependenciesRef ref) {
+    final fn = _createCb ?? duplicateDependencies;
+    return fn(ref);
   }
 }
 
@@ -751,21 +714,18 @@ final class DuplicateDependencies2Provider
       $ProviderElement(this, container);
 
   @override
-  int create(DuplicateDependencies2Ref ref) {
-    final fn = _createCb ?? duplicateDependencies2;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
   DuplicateDependencies2Provider $copyWithCreate(
     int Function(
       DuplicateDependencies2Ref ref,
     ) create,
   ) {
     return DuplicateDependencies2Provider._(create: create);
+  }
+
+  @override
+  int create(DuplicateDependencies2Ref ref) {
+    final fn = _createCb ?? duplicateDependencies2;
+    return fn(ref);
   }
 }
 
@@ -827,21 +787,18 @@ final class TransitiveDuplicateDependenciesProvider
       $ProviderElement(this, container);
 
   @override
-  int create(TransitiveDuplicateDependenciesRef ref) {
-    final fn = _createCb ?? transitiveDuplicateDependencies;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
   TransitiveDuplicateDependenciesProvider $copyWithCreate(
     int Function(
       TransitiveDuplicateDependenciesRef ref,
     ) create,
   ) {
     return TransitiveDuplicateDependenciesProvider._(create: create);
+  }
+
+  @override
+  int create(TransitiveDuplicateDependenciesRef ref) {
+    final fn = _createCb ?? transitiveDuplicateDependencies;
+    return fn(ref);
   }
 }
 
@@ -910,7 +867,7 @@ const family2Provider = Family2Family._();
 final class Family2Provider extends $NotifierProvider<Family2, int> {
   const Family2Provider._(
       {required Family2Family super.from,
-      required (int,) super.argument,
+      required int super.argument,
       super.runNotifierBuildOverride,
       Family2 Function()? create})
       : _createCb = create,
@@ -936,7 +893,7 @@ final class Family2Provider extends $NotifierProvider<Family2, int> {
     Family2 Function() create,
   ) {
     return Family2Provider._(
-        argument: argument! as (int,),
+        argument: argument as int,
         from: from! as Family2Family,
         create: create);
   }
@@ -947,7 +904,7 @@ final class Family2Provider extends $NotifierProvider<Family2, int> {
     int Function(Ref<int>, Family2) build,
   ) {
     return Family2Provider._(
-        argument: argument! as (int,),
+        argument: argument as int,
         from: from! as Family2Family,
         runNotifierBuildOverride: build);
   }
@@ -978,22 +935,13 @@ final class Family2Family extends Family {
   Family2Provider call(
     int id,
   ) =>
-      Family2Provider._(argument: (id,), from: this);
+      Family2Provider._(argument: id, from: this);
 
   @override
   String debugGetCreateSourceHash() => _$family2Hash();
 
   @override
   String toString() => r'Family2';
-
-  Override overrideWith(
-    int Function(
-      Ref<int> ref,
-      (int,) args,
-    ) create,
-  ) {}
-
-  Override overrideWithBuild() {}
 }
 
 abstract class _$Family2 extends $Notifier<int> {
@@ -1089,7 +1037,7 @@ const provider4Provider = Provider4Family._();
 final class Provider4Provider extends $NotifierProvider<Provider4, int> {
   const Provider4Provider._(
       {required Provider4Family super.from,
-      required (int,) super.argument,
+      required int super.argument,
       super.runNotifierBuildOverride,
       Provider4 Function()? create})
       : _createCb = create,
@@ -1120,7 +1068,7 @@ final class Provider4Provider extends $NotifierProvider<Provider4, int> {
     Provider4 Function() create,
   ) {
     return Provider4Provider._(
-        argument: argument! as (int,),
+        argument: argument as int,
         from: from! as Provider4Family,
         create: create);
   }
@@ -1131,7 +1079,7 @@ final class Provider4Provider extends $NotifierProvider<Provider4, int> {
     int Function(Ref<int>, Provider4) build,
   ) {
     return Provider4Provider._(
-        argument: argument! as (int,),
+        argument: argument as int,
         from: from! as Provider4Family,
         runNotifierBuildOverride: build);
   }
@@ -1172,22 +1120,13 @@ final class Provider4Family extends Family {
   Provider4Provider call(
     int id,
   ) =>
-      Provider4Provider._(argument: (id,), from: this);
+      Provider4Provider._(argument: id, from: this);
 
   @override
   String debugGetCreateSourceHash() => _$provider4Hash();
 
   @override
   String toString() => r'Provider4';
-
-  Override overrideWith(
-    int Function(
-      Ref<int> ref,
-      (int,) args,
-    ) create,
-  ) {}
-
-  Override overrideWithBuild() {}
 }
 
 abstract class _$Provider4 extends $Notifier<int> {

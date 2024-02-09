@@ -39,21 +39,18 @@ final class KeepAliveProvider
       $ProviderElement(this, container);
 
   @override
-  int create(KeepAliveRef ref) {
-    final fn = _createCb ?? keepAlive;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
   KeepAliveProvider $copyWithCreate(
     int Function(
       KeepAliveRef ref,
     ) create,
   ) {
     return KeepAliveProvider._(create: create);
+  }
+
+  @override
+  int create(KeepAliveRef ref) {
+    final fn = _createCb ?? keepAlive;
+    return fn(ref);
   }
 }
 
@@ -92,21 +89,18 @@ final class NotKeepAliveProvider
       $ProviderElement(this, container);
 
   @override
-  int create(NotKeepAliveRef ref) {
-    final fn = _createCb ?? notKeepAlive;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
   NotKeepAliveProvider $copyWithCreate(
     int Function(
       NotKeepAliveRef ref,
     ) create,
   ) {
     return NotKeepAliveProvider._(create: create);
+  }
+
+  @override
+  int create(NotKeepAliveRef ref) {
+    final fn = _createCb ?? notKeepAlive;
+    return fn(ref);
   }
 }
 

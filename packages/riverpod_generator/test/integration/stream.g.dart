@@ -39,21 +39,18 @@ final class GenericProvider<T extends num> extends $FunctionalProvider<
       $StreamProviderElement(this, container);
 
   @override
-  Stream<List<T>> create(GenericRef<T> ref) {
-    final fn = _createCb ?? generic<T>;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
   GenericProvider<T> $copyWithCreate(
     Stream<List<T>> Function(
       GenericRef<T> ref,
     ) create,
   ) {
     return GenericProvider<T>._(from: from! as GenericFamily, create: create);
+  }
+
+  @override
+  Stream<List<T>> create(GenericRef<T> ref) {
+    final fn = _createCb ?? generic<T>;
+    return fn(ref);
   }
 
   @override
@@ -82,10 +79,6 @@ final class GenericFamily extends Family {
 
   @override
   String toString() => r'generic';
-
-  Override overrideWith(
-    Stream<List<T>> Function<T extends num>(GenericRef<T> ref) create,
-  ) {}
 }
 
 typedef PublicRef = Ref<AsyncValue<String>>;
@@ -121,21 +114,18 @@ final class PublicProvider
       $StreamProviderElement(this, container);
 
   @override
-  Stream<String> create(PublicRef ref) {
-    final fn = _createCb ?? public;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
   PublicProvider $copyWithCreate(
     Stream<String> Function(
       PublicRef ref,
     ) create,
   ) {
     return PublicProvider._(create: create);
+  }
+
+  @override
+  Stream<String> create(PublicRef ref) {
+    final fn = _createCb ?? public;
+    return fn(ref);
   }
 }
 
@@ -174,21 +164,18 @@ final class _PrivateProvider
       $StreamProviderElement(this, container);
 
   @override
-  Stream<String> create(_PrivateRef ref) {
-    final fn = _createCb ?? _private;
-
-    return fn(
-      ref,
-    );
-  }
-
-  @override
   _PrivateProvider $copyWithCreate(
     Stream<String> Function(
       _PrivateRef ref,
     ) create,
   ) {
     return _PrivateProvider._(create: create);
+  }
+
+  @override
+  Stream<String> create(_PrivateRef ref) {
+    final fn = _createCb ?? _private;
+    return fn(ref);
   }
 }
 
@@ -244,39 +231,13 @@ final class FamilyProvider
       $StreamProviderElement(this, container);
 
   @override
-  Stream<String> create(FamilyRef ref) {
-    final fn = _createCb ?? family;
-    final (
-      int, {
-      String? second,
-      double third,
-      bool fourth,
-      List<String>? fifth,
-    }) argument = this.argument! as (
-      int, {
-      String? second,
-      double third,
-      bool fourth,
-      List<String>? fifth,
-    });
-    return fn(
-      ref,
-      argument.$1,
-      second: argument.second,
-      third: argument.third,
-      fourth: argument.fourth,
-      fifth: argument.fifth,
-    );
-  }
-
-  @override
   FamilyProvider $copyWithCreate(
     Stream<String> Function(
       FamilyRef ref,
     ) create,
   ) {
     return FamilyProvider._(
-        argument: argument! as (
+        argument: argument as (
           int, {
           String? second,
           double third,
@@ -293,6 +254,32 @@ final class FamilyProvider
           List<String>? fifth,
         }) =>
             create(ref));
+  }
+
+  @override
+  Stream<String> create(FamilyRef ref) {
+    final fn = _createCb ?? family;
+    final (
+      int, {
+      String? second,
+      double third,
+      bool fourth,
+      List<String>? fifth,
+    }) argument = this.argument as (
+      int, {
+      String? second,
+      double third,
+      bool fourth,
+      List<String>? fifth,
+    });
+    return fn(
+      ref,
+      argument.$1,
+      second: argument.second,
+      third: argument.third,
+      fourth: argument.fourth,
+      fifth: argument.fifth,
+    );
   }
 
   @override
@@ -332,19 +319,6 @@ final class FamilyFamily extends Family {
 
   @override
   String toString() => r'family';
-
-  Override overrideWith(
-    Stream<String> Function(
-      FamilyRef ref,
-      (
-        int, {
-        String? second,
-        double third,
-        bool fourth,
-        List<String>? fifth,
-      }) args,
-    ) create,
-  ) {}
 }
 
 const genericClassProvider = GenericClassFamily._();
@@ -424,12 +398,6 @@ final class GenericClassFamily extends Family {
 
   @override
   String toString() => r'GenericClass';
-
-  Override overrideWith(
-    Stream<List<T>> Function<T extends num>(Ref<AsyncValue<List<T>>> re) create,
-  ) {}
-
-  Override overrideWithBuild() {}
 }
 
 abstract class _$GenericClass<T extends num> extends $StreamNotifier<List<T>> {
@@ -595,7 +563,7 @@ final class FamilyClassProvider
     FamilyClass Function() create,
   ) {
     return FamilyClassProvider._(
-        argument: argument! as (
+        argument: argument as (
           int, {
           String? second,
           double third,
@@ -612,7 +580,7 @@ final class FamilyClassProvider
     Stream<String> Function(Ref<AsyncValue<String>>, FamilyClass) build,
   ) {
     return FamilyClassProvider._(
-        argument: argument! as (
+        argument: argument as (
           int, {
           String? second,
           double third,
@@ -666,21 +634,6 @@ final class FamilyClassFamily extends Family {
 
   @override
   String toString() => r'FamilyClass';
-
-  Override overrideWith(
-    Stream<String> Function(
-      Ref<AsyncValue<String>> ref,
-      (
-        int, {
-        String? second,
-        double third,
-        bool fourth,
-        List<String>? fifth,
-      }) args,
-    ) create,
-  ) {}
-
-  Override overrideWithBuild() {}
 }
 
 abstract class _$FamilyClass extends $StreamNotifier<String> {

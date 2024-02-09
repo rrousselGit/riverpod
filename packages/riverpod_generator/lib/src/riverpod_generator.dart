@@ -279,6 +279,32 @@ extension ProviderNames on GeneratorProviderDeclaration {
 
   String get familyTypeName => providerElement.familyTypeName;
 
+  String get argumentRecordType {
+    switch (parameters) {
+      case [_]:
+        return parameters.first.typeDisplayString;
+      case []:
+        return 'Never';
+      case [...]:
+        return '(${buildParamDefinitionQuery(parameters, asRecord: true)})';
+    }
+  }
+
+  String argumentToRecord({String? variableName}) {
+    switch (parameters) {
+      case [final p]:
+        return variableName ?? p.name.toString();
+      case [...]:
+        return '(${buildParamInvocationQuery({
+              for (final parameter in parameters)
+                if (variableName != null)
+                  parameter: '$variableName.${parameter.name}'
+                else
+                  parameter: parameter.name.toString(),
+            })})';
+    }
+  }
+
   // TODO possibly no-longer needed
   String dependencies(BuildYamlOptions options) =>
       providerElement.dependencies(options);
