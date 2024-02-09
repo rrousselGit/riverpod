@@ -33,6 +33,9 @@ final class GenericProvider<T extends num>
   )? _createCb;
 
   @override
+  void $unimplemented() {}
+
+  @override
   $ProviderElement<List<T>> createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
@@ -113,6 +116,9 @@ final class ComplexGenericProvider<T extends num, Foo extends String?>
     required T param,
     Foo? otherParam,
   })? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @override
   $ProviderElement<List<T>> createElement(ProviderContainer container) =>
@@ -217,6 +223,9 @@ final class RawFutureProvider extends $FunctionalProvider<Raw<Future<String>>,
   )? _createCb;
 
   @override
+  void $unimplemented() {}
+
+  @override
   $FutureProviderElement<Raw<Future<String>>> createElement(
           ProviderContainer container) =>
       $FutureProviderElement(this, container);
@@ -269,6 +278,9 @@ final class RawStreamProvider extends $FunctionalProvider<Raw<Stream<String>>,
   final Raw<Stream<String>> Function(
     RawStreamRef ref,
   )? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @override
   $StreamProviderElement<Raw<Stream<String>>> createElement(
@@ -325,6 +337,9 @@ final class RawFamilyFutureProvider extends $FunctionalProvider<
     RawFamilyFutureRef ref,
     int id,
   )? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @override
   $FutureProviderElement<Raw<Future<String>>> createElement(
@@ -415,6 +430,9 @@ final class RawFamilyStreamProvider extends $FunctionalProvider<
   )? _createCb;
 
   @override
+  void $unimplemented() {}
+
+  @override
   $StreamProviderElement<Raw<Stream<String>>> createElement(
           ProviderContainer container) =>
       $StreamProviderElement(this, container);
@@ -499,6 +517,9 @@ final class PublicProvider
   )? _createCb;
 
   @override
+  void $unimplemented() {}
+
+  @override
   $ProviderElement<String> createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
@@ -548,6 +569,9 @@ final class Supports$inNamesProvider
   final String Function(
     Supports$inNamesRef ref,
   )? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @override
   $ProviderElement<String> createElement(ProviderContainer container) =>
@@ -616,6 +640,9 @@ final class FamilyProvider
     bool fourth,
     List<String>? fifth,
   })? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @override
   $ProviderElement<String> createElement(ProviderContainer container) =>
@@ -737,6 +764,9 @@ final class _PrivateProvider
   )? _createCb;
 
   @override
+  void $unimplemented() {}
+
+  @override
   $ProviderElement<String> createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
@@ -788,6 +818,9 @@ final class GeneratedProvider
   )? _createCb;
 
   @override
+  void $unimplemented() {}
+
+  @override
   $ProviderElement<String> createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
@@ -831,6 +864,9 @@ final class GenericClassProvider<T extends num>
         );
 
   final GenericClass<T> Function()? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @$internal
   @override
@@ -914,6 +950,9 @@ final class RawFutureClassProvider
 
   final RawFutureClass Function()? _createCb;
 
+  @override
+  void $unimplemented() {}
+
   @$internal
   @override
   RawFutureClass create() => _createCb?.call() ?? RawFutureClass();
@@ -970,6 +1009,9 @@ final class RawStreamClassProvider
         );
 
   final RawStreamClass Function()? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @$internal
   @override
@@ -1028,6 +1070,9 @@ final class RawFamilyFutureClassProvider
         );
 
   final RawFamilyFutureClass Function()? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @$internal
   @override
@@ -1127,6 +1172,9 @@ final class RawFamilyStreamClassProvider
 
   final RawFamilyStreamClass Function()? _createCb;
 
+  @override
+  void $unimplemented() {}
+
   @$internal
   @override
   RawFamilyStreamClass create() => _createCb?.call() ?? RawFamilyStreamClass();
@@ -1223,6 +1271,9 @@ final class PublicClassProvider extends $NotifierProvider<PublicClass, String> {
 
   final PublicClass Function()? _createCb;
 
+  @override
+  void $unimplemented() {}
+
   @$internal
   @override
   PublicClass create() => _createCb?.call() ?? PublicClass();
@@ -1278,6 +1329,9 @@ final class _PrivateClassProvider
         );
 
   final _PrivateClass Function()? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @$internal
   @override
@@ -1341,6 +1395,9 @@ final class FamilyClassProvider extends $NotifierProvider<FamilyClass, String> {
         );
 
   final FamilyClass Function()? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @$internal
   @override
@@ -1474,6 +1531,9 @@ final class Supports$InClassNameProvider
         );
 
   final Supports$InClassName Function()? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @$internal
   @override

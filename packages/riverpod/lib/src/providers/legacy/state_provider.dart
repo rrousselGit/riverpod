@@ -56,7 +56,8 @@ abstract class StateProviderRef<State> implements Ref<State> {
 /// }
 /// ```
 final class StateProvider<StateT>
-    extends $FunctionalProvider<StateT, StateT, StateProviderRef<StateT>> {
+    extends $FunctionalProvider<StateT, StateT, StateProviderRef<StateT>>
+    with LegacyProviderEqualMixin<StateT> {
   /// {@macro riverpod.stateprovider}
   StateProvider(
     this._createFn, {

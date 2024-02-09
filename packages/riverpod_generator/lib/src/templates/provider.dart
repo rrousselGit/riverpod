@@ -1,16 +1,21 @@
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
 import '../models.dart';
+import '../riverpod_generator.dart';
 import '../type.dart';
-import 'family_back.dart';
 import 'parameters.dart';
 import 'template.dart';
 
 class ProviderTemplate extends Template {
-  ProviderTemplate(this.provider, this.options);
+  ProviderTemplate(
+    this.provider,
+    this.options, {
+    required this.allTransitiveDependencies,
+  });
 
   final GeneratorProviderDeclaration provider;
   final BuildYamlOptions options;
+  final List<String>? allTransitiveDependencies;
 
   late final _argumentRecordType = buildParamDefinitionQuery(
     provider.parameters,
@@ -116,16 +121,34 @@ final class $name$_genericsDefinition
         name: r'${provider.name}',
         isAutoDispose: ${!provider.annotation.element.keepAlive},
         dependencies: ${!provider.providerElement.isFamily ? provider.dependencies(options) : 'null'},
-        allTransitiveDependencies: ${!provider.providerElement.isFamily ? provider.allTransitiveDependencies(options) : 'null'},
+        allTransitiveDependencies: ${!provider.providerElement.isFamily ? provider.allTransitiveDependencies(allTransitiveDependencies) : 'null'},
       );
 ''');
   }
 
+  void _writeDependencies(StringBuffer buffer) {
+    final allTransitiveDependencies = this.allTransitiveDependencies;
+    if (allTransitiveDependencies == null) return;
+
+    for (final (index, transitiveDependency)
+        in allTransitiveDependencies.indexed) {
+      buffer.writeln(
+        'static const \$allTransitiveDependencies$index = $transitiveDependency;',
+      );
+    }
+
+    buffer.writeln();
+  }
+
   void _writeMembers(StringBuffer buffer) {
     _writeConstructor(buffer);
+    _writeDependencies(buffer);
 
     buffer.writeln('''
   final ${provider.createType()}? _createCb;
+
+  @override
+  void \$unimplemented() {}
 ''');
 
     final localArgumentDefinition = provider.parameters.isNotEmpty

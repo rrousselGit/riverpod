@@ -42,7 +42,9 @@ export 'src/framework.dart'
         FutureModifierElement,
         RunNotifierBuild,
         $FunctionalProvider,
-        $ClassProvider;
+        $ClassProvider,
+        LegacyProviderEqualMixin;
+
 export 'src/providers/async_notifier.dart'
     hide $AsyncNotifier, $AsyncNotifierProvider;
 // TODO changelog breaking: StateNotifier & co are no-longer exported from pkg:riverpod/riverpod.dart

@@ -47,7 +47,8 @@ abstract class StreamNotifier<State> extends $StreamNotifier<State> {
 final class StreamNotifierProvider< //
         NotifierT extends StreamNotifier<StateT>,
         StateT> //
-    extends $StreamNotifierProvider<NotifierT, StateT> {
+    extends $StreamNotifierProvider<NotifierT, StateT>
+    with LegacyProviderEqualMixin<AsyncValue<StateT>> {
   /// {@macro riverpod.async_notifier_provider}
   ///
   /// {@macro riverpod.async_notifier_provider_modifier}

@@ -12,9 +12,11 @@ import 'parse_generator.dart';
 import 'templates/family.dart';
 import 'templates/hash.dart';
 import 'templates/notifier.dart';
+import 'templates/parameters.dart';
 import 'templates/provider.dart';
 import 'templates/provider_variable.dart';
 import 'templates/ref.dart';
+import 'type.dart';
 
 const riverpodTypeChecker = TypeChecker.fromRuntime(Riverpod);
 
@@ -112,10 +114,75 @@ class _RiverpodGeneratorVisitor extends RecursiveRiverpodAstVisitor {
   void visitGeneratorProviderDeclaration(
     GeneratorProviderDeclaration provider,
   ) {
+    final allTransitiveDependencies =
+        _computeAllTransitiveDependencies(provider);
+
     ProviderVariableTemplate(provider, options).run(buffer);
-    ProviderTemplate(provider, options).run(buffer);
+    ProviderTemplate(
+      provider,
+      options,
+      allTransitiveDependencies: allTransitiveDependencies,
+    ).run(buffer);
     HashFnTemplate(provider).run(buffer);
-    FamilyTemplate(provider, options).run(buffer);
+    FamilyTemplate(
+      provider,
+      options,
+      allTransitiveDependencies: allTransitiveDependencies,
+    ).run(buffer);
+  }
+
+  List<String>? _computeAllTransitiveDependencies(
+    GeneratorProviderDeclaration provider,
+  ) {
+    // TODO throw if a dependency is not accessible in the current library.
+    final dependencies = provider.annotation.dependencies?.dependencies;
+    if (dependencies == null) return null;
+
+    final allTransitiveDependencies = <String>[];
+
+    Iterable<GeneratorProviderDeclarationElement>
+        computeAllTransitiveDependencies(
+      GeneratorProviderDeclarationElement provider,
+    ) sync* {
+      final deps = provider.annotation.dependencies;
+      if (deps == null) return;
+
+      final uniqueDependencies = <GeneratorProviderDeclarationElement>{};
+
+      for (final transitiveDependency in deps) {
+        if (!uniqueDependencies.add(transitiveDependency)) continue;
+        yield transitiveDependency;
+        yield* computeAllTransitiveDependencies(transitiveDependency);
+      }
+    }
+
+    final uniqueDependencies = <GeneratorProviderDeclarationElement>{};
+    for (final dependency in dependencies) {
+      if (!uniqueDependencies.add(dependency.provider)) continue;
+
+      // TODO verify that the provider is accessible in the current library
+      allTransitiveDependencies.add(dependency.provider.providerName(options));
+
+      final uniqueTransitiveDependencies =
+          computeAllTransitiveDependencies(dependency.provider)
+              // Since generated code trims duplicate dependencies,
+              // we have to trim them back when parsing the dependencies to
+              // keep the index correct.
+              .toSet()
+              .indexed;
+
+      for (final (index, transitiveDependency)
+          in uniqueTransitiveDependencies) {
+        if (!uniqueDependencies.add(transitiveDependency)) continue;
+
+        // TODO verify that the provider is accessible in the current library
+        allTransitiveDependencies.add(
+          '${dependency.provider.providerTypeName}.\$allTransitiveDependencies$index',
+        );
+      }
+    }
+
+    return allTransitiveDependencies;
   }
 
   @override
@@ -135,4 +202,140 @@ class _RiverpodGeneratorVisitor extends RecursiveRiverpodAstVisitor {
     RefTemplate(provider).run(buffer);
     visitGeneratorProviderDeclaration(provider);
   }
+}
+
+extension ProviderElementNames on GeneratorProviderDeclarationElement {
+  String providerName(BuildYamlOptions options) {
+    return '${name.lowerFirst}${options.providerNameSuffix ?? 'Provider'}';
+  }
+
+  String get providerTypeName => '${name.titled}Provider';
+  String get refImplName => '${name.titled}Ref';
+  String get familyTypeName => '${name.titled}Family';
+
+  String dependencies(BuildYamlOptions options) {
+    final dependencies = annotation.dependencies;
+    if (dependencies == null) return 'null';
+
+    final buffer = StringBuffer('const <ProviderOrFamily>');
+    buffer.write('[');
+
+    buffer.writeAll(
+      dependencies.map((e) => e.providerName(options)),
+      ',',
+    );
+
+    buffer.write(']');
+    return buffer.toString();
+  }
+
+  String allTransitiveDependencies(List<String>? allTransitiveDependencies) {
+    if (allTransitiveDependencies == null) return 'null';
+
+    final buffer = StringBuffer('const <ProviderOrFamily>');
+    if (allTransitiveDependencies.length < 4) {
+      buffer.write('[');
+    } else {
+      buffer.write('{');
+    }
+
+    for (var i = 0; i < allTransitiveDependencies.length; i++) {
+      buffer.write('$providerTypeName.\$allTransitiveDependencies$i,');
+    }
+
+    if (allTransitiveDependencies.length < 4) {
+      buffer.write(']');
+    } else {
+      buffer.write('}');
+    }
+
+    return buffer.toString();
+  }
+}
+
+extension ProviderNames on GeneratorProviderDeclaration {
+  String providerName(BuildYamlOptions options) {
+    return providerElement.providerName(options);
+  }
+
+  String get providerTypeName => providerElement.providerTypeName;
+  String get refImplName => providerElement.refImplName;
+  String get familyTypeName => providerElement.familyTypeName;
+
+  // TODO possibly no-longer needed
+  String dependencies(BuildYamlOptions options) =>
+      providerElement.dependencies(options);
+  // TODO possibly no-longer needed
+  String allTransitiveDependencies(List<String>? allTransitiveDependencies) {
+    return providerElement.allTransitiveDependencies(allTransitiveDependencies);
+  }
+
+  TypeParameterList? get typeParameters => switch (this) {
+        final FunctionalProviderDeclaration p =>
+          p.node.functionExpression.typeParameters,
+        final ClassBasedProviderDeclaration p => p.node.typeParameters
+      };
+
+  String generics() => _genericUsageDisplayString(typeParameters);
+  String genericsDefinition() =>
+      _genericDefinitionDisplayString(typeParameters);
+
+  String createType({bool withArguments = true}) {
+    final generics = this.generics();
+
+    final provider = this;
+    switch (provider) {
+      case FunctionalProviderDeclaration():
+        final params = withArguments
+            ? buildParamDefinitionQuery(
+                parameters,
+                withDefaults: false,
+              )
+            : '';
+
+        final refType = '${provider.refImplName}$generics';
+        return '${provider.createdTypeDisplayString} Function($refType ref, $params)';
+      case ClassBasedProviderDeclaration():
+        return '${provider.name}$generics Function()';
+    }
+  }
+
+  String get elementName => switch (this) {
+        ClassBasedProviderDeclaration() => switch (createdType) {
+            SupportedCreatedType.future => r'$AsyncNotifierProviderElement',
+            SupportedCreatedType.stream => r'$StreamNotifierProviderElement',
+            SupportedCreatedType.value => r'$NotifierProviderElement',
+          },
+        FunctionalProviderDeclaration() => switch (createdType) {
+            SupportedCreatedType.future => r'$FutureProviderElement',
+            SupportedCreatedType.stream => r'$StreamProviderElement',
+            SupportedCreatedType.value => r'$ProviderElement',
+          },
+      };
+
+  String get hashFnName => '_\$${providerElement.name.public.lowerFirst}Hash';
+
+  List<FormalParameter> get parameters {
+    final provider = this;
+    switch (provider) {
+      case FunctionalProviderDeclaration():
+        return provider.node.functionExpression.parameters!.parameters
+            .skip(1)
+            .toList();
+      case ClassBasedProviderDeclaration():
+        return provider.buildMethod.parameters!.parameters.toList();
+    }
+  }
+}
+
+String _genericDefinitionDisplayString(TypeParameterList? typeParameters) {
+  return typeParameters?.toSource() ?? '';
+}
+
+String _genericUsageDisplayString(TypeParameterList? typeParameterList) {
+  if (typeParameterList == null) {
+    return '';
+  }
+
+  return '<${typeParameterList.typeParameters.map((e) => e.name.lexeme).join(', ')}>';
 }

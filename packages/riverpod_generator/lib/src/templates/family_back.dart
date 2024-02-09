@@ -16,18 +16,6 @@ String providerFamilyNameFor(
   return '${provider.name.lowerFirst}${options.providerFamilyNameSuffix ?? options.providerNameSuffix ?? 'Provider'}';
 }
 
-String genericDefinitionDisplayString(TypeParameterList? typeParameters) {
-  return typeParameters?.toSource() ?? '';
-}
-
-String genericUsageDisplayString(TypeParameterList? typeParameterList) {
-  if (typeParameterList == null) {
-    return '';
-  }
-
-  return '<${typeParameterList.typeParameters.map((e) => e.name.lexeme).join(', ')}>';
-}
-
 class FamilyTemplate extends Template {
   FamilyTemplate._(
     this.provider, {
@@ -282,9 +270,9 @@ final class $familyName extends Family {
         ${isAutoDispose ? 'isAutoDispose: true,' : ''}
       );
 
-  static $dependenciesKeyword _dependencies = ${serializeDependencies(provider.providerElement.annotation, options)};
+  static $dependenciesKeyword _dependencies = ${provider.dependencies(options)};
 
-  static $dependenciesKeyword _allTransitiveDependencies = ${serializeAllTransitiveDependencies(provider.providerElement.annotation, options)};
+  static $dependenciesKeyword _allTransitiveDependencies = ${null};
 
   $docs
   $providerTypeNameImpl$typeParametersUsage call$typeParametersDefinition($parameterDefinition) {
@@ -366,74 +354,4 @@ ${parameters.map((e) => '@override ${e.typeDisplayString} get ${e.name} => (orig
 }
 ''');
   }
-}
-
-extension ProviderNames on GeneratorProviderDeclaration {
-  String get providerTypeName => '${providerElement.name.titled}Provider';
-
-  String get refImplName => '${providerElement.name.titled}Ref';
-
-  String get familyTypeName => '${providerElement.name.titled}Family';
-
-  TypeParameterList? get typeParameters => switch (this) {
-        final FunctionalProviderDeclaration p =>
-          p.node.functionExpression.typeParameters,
-        final ClassBasedProviderDeclaration p => p.node.typeParameters
-      };
-
-  String generics() => genericUsageDisplayString(typeParameters);
-  String genericsDefinition() => genericDefinitionDisplayString(typeParameters);
-
-  String createType({bool withArguments = true}) {
-    final generics = this.generics();
-
-    final provider = this;
-    switch (provider) {
-      case FunctionalProviderDeclaration():
-        final params = withArguments
-            ? buildParamDefinitionQuery(
-                parameters,
-                withDefaults: false,
-              )
-            : '';
-
-        final refType = '${provider.refImplName}$generics';
-        return '${provider.createdTypeDisplayString} Function($refType ref, $params)';
-      case ClassBasedProviderDeclaration():
-        return '${provider.name}$generics Function()';
-    }
-  }
-
-  String get elementName => switch (this) {
-        ClassBasedProviderDeclaration() => switch (createdType) {
-            SupportedCreatedType.future => r'$AsyncNotifierProviderElement',
-            SupportedCreatedType.stream => r'$StreamNotifierProviderElement',
-            SupportedCreatedType.value => r'$NotifierProviderElement',
-          },
-        FunctionalProviderDeclaration() => switch (createdType) {
-            SupportedCreatedType.future => r'$FutureProviderElement',
-            SupportedCreatedType.stream => r'$StreamProviderElement',
-            SupportedCreatedType.value => r'$ProviderElement',
-          },
-      };
-
-  String get hashFnName => '_\$${providerElement.name.public.lowerFirst}Hash';
-
-  List<FormalParameter> get parameters {
-    final provider = this;
-    switch (provider) {
-      case FunctionalProviderDeclaration():
-        return provider.node.functionExpression.parameters!.parameters
-            .skip(1)
-            .toList();
-      case ClassBasedProviderDeclaration():
-        return provider.buildMethod.parameters!.parameters.toList();
-    }
-  }
-
-  String dependencies(BuildYamlOptions options) =>
-      serializeDependencies(providerElement.annotation, options);
-
-  String allTransitiveDependencies(BuildYamlOptions options) =>
-      serializeAllTransitiveDependencies(providerElement.annotation, options);
 }

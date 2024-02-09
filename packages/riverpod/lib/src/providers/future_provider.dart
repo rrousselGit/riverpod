@@ -87,7 +87,8 @@ final class FutureProvider<StateT> extends $FunctionalProvider<
         AsyncValue<StateT>, FutureOr<StateT>, FutureProviderRef<StateT>>
     with
         $FutureModifier<StateT>,
-        $FutureProvider<StateT, FutureProviderRef<StateT>> {
+        $FutureProvider<StateT, FutureProviderRef<StateT>>,
+        LegacyProviderEqualMixin<AsyncValue<StateT>> {
   /// {@macro riverpod.future_provider}
   FutureProvider(
     this._create, {

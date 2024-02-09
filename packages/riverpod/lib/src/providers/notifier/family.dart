@@ -23,7 +23,8 @@ abstract class FamilyNotifier<StateT, ArgT> extends $Notifier<StateT> {
 /// [AutoDisposeNotifierProvider] at the same time.
 final class FamilyNotifierProvider //
     <NotifierT extends $Notifier<StateT>, StateT, ArgT>
-    extends $NotifierProvider<NotifierT, StateT> {
+    extends $NotifierProvider<NotifierT, StateT>
+    with LegacyProviderEqualMixin<StateT> {
   /// An implementation detail of Riverpod
   const FamilyNotifierProvider._(
     super._createNotifier, {

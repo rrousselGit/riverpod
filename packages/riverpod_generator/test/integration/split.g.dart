@@ -32,6 +32,9 @@ final class Counter2Provider extends $FunctionalProvider<int, int, Counter2Ref>
   )? _createCb;
 
   @override
+  void $unimplemented() {}
+
+  @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
@@ -80,6 +83,9 @@ final class CounterProvider extends $FunctionalProvider<int, int, CounterRef>
   final int Function(
     CounterRef ref,
   )? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>

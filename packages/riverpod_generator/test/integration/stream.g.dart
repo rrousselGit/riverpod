@@ -33,6 +33,9 @@ final class GenericProvider<T extends num> extends $FunctionalProvider<
   )? _createCb;
 
   @override
+  void $unimplemented() {}
+
+  @override
   $StreamProviderElement<List<T>> createElement(ProviderContainer container) =>
       $StreamProviderElement(this, container);
 
@@ -107,6 +110,9 @@ final class PublicProvider
   )? _createCb;
 
   @override
+  void $unimplemented() {}
+
+  @override
   $StreamProviderElement<String> createElement(ProviderContainer container) =>
       $StreamProviderElement(this, container);
 
@@ -156,6 +162,9 @@ final class _PrivateProvider
   final Stream<String> Function(
     _PrivateRef ref,
   )? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @override
   $StreamProviderElement<String> createElement(ProviderContainer container) =>
@@ -224,6 +233,9 @@ final class FamilyProvider
     bool fourth,
     List<String>? fifth,
   })? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @override
   $StreamProviderElement<String> createElement(ProviderContainer container) =>
@@ -338,6 +350,9 @@ final class GenericClassProvider<T extends num>
 
   final GenericClass<T> Function()? _createCb;
 
+  @override
+  void $unimplemented() {}
+
   @$internal
   @override
   GenericClass<T> create() => _createCb?.call() ?? GenericClass<T>();
@@ -420,6 +435,9 @@ final class PublicClassProvider
 
   final PublicClass Function()? _createCb;
 
+  @override
+  void $unimplemented() {}
+
   @$internal
   @override
   PublicClass create() => _createCb?.call() ?? PublicClass();
@@ -475,6 +493,9 @@ final class _PrivateClassProvider
         );
 
   final _PrivateClass Function()? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @$internal
   @override
@@ -539,6 +560,9 @@ final class FamilyClassProvider
         );
 
   final FamilyClass Function()? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @$internal
   @override

@@ -1,15 +1,20 @@
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
 import '../models.dart';
-import 'family_back.dart';
+import '../riverpod_generator.dart';
 import 'parameters.dart';
 import 'template.dart';
 
 class FamilyTemplate extends Template {
-  FamilyTemplate(this.provider, this.options);
+  FamilyTemplate(
+    this.provider,
+    this.options, {
+    required this.allTransitiveDependencies,
+  });
 
   final GeneratorProviderDeclaration provider;
   final BuildYamlOptions options;
+  final List<String>? allTransitiveDependencies;
 
   @override
   void run(StringBuffer buffer) {
@@ -36,7 +41,7 @@ final class ${provider.familyTypeName} extends Family{
       : super(
         name: r'${provider.name}',
         dependencies: ${provider.dependencies(options)},
-        allTransitiveDependencies: ${provider.allTransitiveDependencies(options)},
+        allTransitiveDependencies: ${provider.allTransitiveDependencies(allTransitiveDependencies)},
         debugGetCreateSourceHash: ${provider.hashFnName},
         ${provider.providerElement.isAutoDispose ? 'isAutoDispose: true,' : ''}
       );

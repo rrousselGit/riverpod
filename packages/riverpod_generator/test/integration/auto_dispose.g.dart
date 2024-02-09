@@ -33,6 +33,9 @@ final class KeepAliveProvider
   )? _createCb;
 
   @override
+  void $unimplemented() {}
+
+  @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
@@ -82,6 +85,9 @@ final class NotKeepAliveProvider
   final int Function(
     NotKeepAliveRef ref,
   )? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>

@@ -33,6 +33,9 @@ final class GenericProvider<T extends num> extends $FunctionalProvider<
   )? _createCb;
 
   @override
+  void $unimplemented() {}
+
+  @override
   $FutureProviderElement<List<T>> createElement(ProviderContainer container) =>
       $FutureProviderElement(this, container);
 
@@ -107,6 +110,9 @@ final class PublicProvider
   )? _createCb;
 
   @override
+  void $unimplemented() {}
+
+  @override
   $FutureProviderElement<String> createElement(ProviderContainer container) =>
       $FutureProviderElement(this, container);
 
@@ -156,6 +162,9 @@ final class _PrivateProvider extends $FunctionalProvider<AsyncValue<String>,
   final FutureOr<String> Function(
     _PrivateRef ref,
   )? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @override
   $FutureProviderElement<String> createElement(ProviderContainer container) =>
@@ -209,6 +218,9 @@ final class FamilyOrProvider extends $FunctionalProvider<AsyncValue<String>,
     FamilyOrRef ref,
     int first,
   )? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @override
   $FutureProviderElement<String> createElement(ProviderContainer container) =>
@@ -309,6 +321,9 @@ final class FamilyProvider
     bool fourth,
     List<String>? fifth,
   })? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @override
   $FutureProviderElement<String> createElement(ProviderContainer container) =>
@@ -423,6 +438,9 @@ final class GenericClassProvider<T extends num>
 
   final GenericClass<T> Function()? _createCb;
 
+  @override
+  void $unimplemented() {}
+
   @$internal
   @override
   GenericClass<T> create() => _createCb?.call() ?? GenericClass<T>();
@@ -505,6 +523,9 @@ final class PublicClassProvider
 
   final PublicClass Function()? _createCb;
 
+  @override
+  void $unimplemented() {}
+
   @$internal
   @override
   PublicClass create() => _createCb?.call() ?? PublicClass();
@@ -560,6 +581,9 @@ final class _PrivateClassProvider
         );
 
   final _PrivateClass Function()? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @$internal
   @override
@@ -617,6 +641,9 @@ final class FamilyOrClassProvider
         );
 
   final FamilyOrClass Function()? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @$internal
   @override
@@ -719,6 +746,9 @@ final class FamilyClassProvider
         );
 
   final FamilyClass Function()? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @$internal
   @override

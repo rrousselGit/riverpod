@@ -32,6 +32,9 @@ final class DepProvider extends $FunctionalProvider<int, int, DepRef>
   )? _createCb;
 
   @override
+  void $unimplemented() {}
+
+  @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
@@ -82,6 +85,9 @@ final class FamilyProvider extends $FunctionalProvider<int, int, FamilyRef>
     FamilyRef ref,
     int id,
   )? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
@@ -163,21 +169,25 @@ final class ProviderProvider extends $FunctionalProvider<int, int, ProviderRef>
             dep2Provider,
             family2Provider
           ],
-          allTransitiveDependencies: const <ProviderOrFamily>[
-            depProvider,
-            ...?depProvider.allTransitiveDependencies,
-            familyProvider,
-            ...?familyProvider.allTransitiveDependencies,
-            dep2Provider,
-            ...?dep2Provider.allTransitiveDependencies,
-            family2Provider,
-            ...?family2Provider.allTransitiveDependencies
-          ],
+          allTransitiveDependencies: const <ProviderOrFamily>{
+            ProviderProvider.$allTransitiveDependencies0,
+            ProviderProvider.$allTransitiveDependencies1,
+            ProviderProvider.$allTransitiveDependencies2,
+            ProviderProvider.$allTransitiveDependencies3,
+          },
         );
+
+  static const $allTransitiveDependencies0 = depProvider;
+  static const $allTransitiveDependencies1 = familyProvider;
+  static const $allTransitiveDependencies2 = dep2Provider;
+  static const $allTransitiveDependencies3 = family2Provider;
 
   final int Function(
     ProviderRef ref,
   )? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
@@ -228,21 +238,25 @@ final class Provider2Provider
             dep2Provider,
             family2Provider
           ],
-          allTransitiveDependencies: const <ProviderOrFamily>[
-            depProvider,
-            ...?depProvider.allTransitiveDependencies,
-            familyProvider,
-            ...?familyProvider.allTransitiveDependencies,
-            dep2Provider,
-            ...?dep2Provider.allTransitiveDependencies,
-            family2Provider,
-            ...?family2Provider.allTransitiveDependencies
-          ],
+          allTransitiveDependencies: const <ProviderOrFamily>{
+            Provider2Provider.$allTransitiveDependencies0,
+            Provider2Provider.$allTransitiveDependencies1,
+            Provider2Provider.$allTransitiveDependencies2,
+            Provider2Provider.$allTransitiveDependencies3,
+          },
         );
+
+  static const $allTransitiveDependencies0 = depProvider;
+  static const $allTransitiveDependencies1 = familyProvider;
+  static const $allTransitiveDependencies2 = dep2Provider;
+  static const $allTransitiveDependencies3 = family2Provider;
 
   final int Function(
     Provider2Ref ref,
   )? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
@@ -288,15 +302,31 @@ final class TransitiveDependenciesProvider
           name: r'transitiveDependencies',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[providerProvider],
-          allTransitiveDependencies: const <ProviderOrFamily>[
-            providerProvider,
-            ...?providerProvider.allTransitiveDependencies
-          ],
+          allTransitiveDependencies: const <ProviderOrFamily>{
+            TransitiveDependenciesProvider.$allTransitiveDependencies0,
+            TransitiveDependenciesProvider.$allTransitiveDependencies1,
+            TransitiveDependenciesProvider.$allTransitiveDependencies2,
+            TransitiveDependenciesProvider.$allTransitiveDependencies3,
+            TransitiveDependenciesProvider.$allTransitiveDependencies4,
+          },
         );
+
+  static const $allTransitiveDependencies0 = providerProvider;
+  static const $allTransitiveDependencies1 =
+      ProviderProvider.$allTransitiveDependencies0;
+  static const $allTransitiveDependencies2 =
+      ProviderProvider.$allTransitiveDependencies1;
+  static const $allTransitiveDependencies3 =
+      ProviderProvider.$allTransitiveDependencies2;
+  static const $allTransitiveDependencies4 =
+      ProviderProvider.$allTransitiveDependencies3;
 
   final int Function(
     TransitiveDependenciesRef ref,
   )? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
@@ -349,18 +379,22 @@ final class SmallTransitiveDependencyCountProvider
             dep2Provider
           ],
           allTransitiveDependencies: const <ProviderOrFamily>[
-            depProvider,
-            ...?depProvider.allTransitiveDependencies,
-            familyProvider,
-            ...?familyProvider.allTransitiveDependencies,
-            dep2Provider,
-            ...?dep2Provider.allTransitiveDependencies
+            SmallTransitiveDependencyCountProvider.$allTransitiveDependencies0,
+            SmallTransitiveDependencyCountProvider.$allTransitiveDependencies1,
+            SmallTransitiveDependencyCountProvider.$allTransitiveDependencies2,
           ],
         );
+
+  static const $allTransitiveDependencies0 = depProvider;
+  static const $allTransitiveDependencies1 = familyProvider;
+  static const $allTransitiveDependencies2 = dep2Provider;
 
   final int Function(
     SmallTransitiveDependencyCountRef ref,
   )? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
@@ -416,6 +450,9 @@ final class EmptyDependenciesFunctionalProvider
   )? _createCb;
 
   @override
+  void $unimplemented() {}
+
+  @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
@@ -464,16 +501,20 @@ final class ProviderWithDependenciesProvider
             publicDepProvider
           ],
           allTransitiveDependencies: const <ProviderOrFamily>[
-            _privateDepProvider,
-            ...?_privateDepProvider.allTransitiveDependencies,
-            publicDepProvider,
-            ...?publicDepProvider.allTransitiveDependencies
+            ProviderWithDependenciesProvider.$allTransitiveDependencies0,
+            ProviderWithDependenciesProvider.$allTransitiveDependencies1,
           ],
         );
+
+  static const $allTransitiveDependencies0 = _privateDepProvider;
+  static const $allTransitiveDependencies1 = publicDepProvider;
 
   final int Function(
     ProviderWithDependenciesRef ref,
   )? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
@@ -528,6 +569,9 @@ final class _PrivateDepProvider
   )? _createCb;
 
   @override
+  void $unimplemented() {}
+
+  @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
@@ -579,6 +623,9 @@ final class PublicDepProvider
   )? _createCb;
 
   @override
+  void $unimplemented() {}
+
+  @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
@@ -603,6 +650,208 @@ final class PublicDepProvider
 
 String _$publicDepHash() => r'bcb69aace017c86c3c4b8eccf59fa22d010834bc';
 
+typedef DuplicateDependenciesRef = Ref<int>;
+
+const duplicateDependenciesProvider = DuplicateDependenciesProvider._();
+
+final class DuplicateDependenciesProvider
+    extends $FunctionalProvider<int, int, DuplicateDependenciesRef>
+    with $Provider<int, DuplicateDependenciesRef> {
+  const DuplicateDependenciesProvider._(
+      {int Function(
+        DuplicateDependenciesRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          debugGetCreateSourceHash: _$duplicateDependenciesHash,
+          name: r'duplicateDependencies',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[depProvider, dep2Provider],
+          allTransitiveDependencies: const <ProviderOrFamily>[
+            DuplicateDependenciesProvider.$allTransitiveDependencies0,
+            DuplicateDependenciesProvider.$allTransitiveDependencies1,
+          ],
+        );
+
+  static const $allTransitiveDependencies0 = depProvider;
+  static const $allTransitiveDependencies1 = dep2Provider;
+
+  final int Function(
+    DuplicateDependenciesRef ref,
+  )? _createCb;
+
+  @override
+  void $unimplemented() {}
+
+  @override
+  $ProviderElement<int> createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  int create(DuplicateDependenciesRef ref) {
+    final fn = _createCb ?? duplicateDependencies;
+
+    return fn(
+      ref,
+    );
+  }
+
+  @override
+  DuplicateDependenciesProvider copyWithCreate(
+    int Function(
+      DuplicateDependenciesRef ref,
+    ) create,
+  ) {
+    return DuplicateDependenciesProvider._(create: create);
+  }
+}
+
+String _$duplicateDependenciesHash() =>
+    r'8e4c4b40d7500e97e8490874d48cc960c64af712';
+
+typedef DuplicateDependencies2Ref = Ref<int>;
+
+const duplicateDependencies2Provider = DuplicateDependencies2Provider._();
+
+final class DuplicateDependencies2Provider
+    extends $FunctionalProvider<int, int, DuplicateDependencies2Ref>
+    with $Provider<int, DuplicateDependencies2Ref> {
+  const DuplicateDependencies2Provider._(
+      {int Function(
+        DuplicateDependencies2Ref ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          debugGetCreateSourceHash: _$duplicateDependencies2Hash,
+          name: r'duplicateDependencies2',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[
+            familyProvider,
+            family2Provider
+          ],
+          allTransitiveDependencies: const <ProviderOrFamily>[
+            DuplicateDependencies2Provider.$allTransitiveDependencies0,
+            DuplicateDependencies2Provider.$allTransitiveDependencies1,
+          ],
+        );
+
+  static const $allTransitiveDependencies0 = familyProvider;
+  static const $allTransitiveDependencies1 = family2Provider;
+
+  final int Function(
+    DuplicateDependencies2Ref ref,
+  )? _createCb;
+
+  @override
+  void $unimplemented() {}
+
+  @override
+  $ProviderElement<int> createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  int create(DuplicateDependencies2Ref ref) {
+    final fn = _createCb ?? duplicateDependencies2;
+
+    return fn(
+      ref,
+    );
+  }
+
+  @override
+  DuplicateDependencies2Provider copyWithCreate(
+    int Function(
+      DuplicateDependencies2Ref ref,
+    ) create,
+  ) {
+    return DuplicateDependencies2Provider._(create: create);
+  }
+}
+
+String _$duplicateDependencies2Hash() =>
+    r'43a4ff16a760fc697426a5b1ebc1f8882c816cfb';
+
+typedef TransitiveDuplicateDependenciesRef = Ref<int>;
+
+const transitiveDuplicateDependenciesProvider =
+    TransitiveDuplicateDependenciesProvider._();
+
+final class TransitiveDuplicateDependenciesProvider
+    extends $FunctionalProvider<int, int, TransitiveDuplicateDependenciesRef>
+    with $Provider<int, TransitiveDuplicateDependenciesRef> {
+  const TransitiveDuplicateDependenciesProvider._(
+      {int Function(
+        TransitiveDuplicateDependenciesRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          debugGetCreateSourceHash: _$transitiveDuplicateDependenciesHash,
+          name: r'transitiveDuplicateDependencies',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[
+            duplicateDependenciesProvider,
+            duplicateDependencies2Provider
+          ],
+          allTransitiveDependencies: const <ProviderOrFamily>{
+            TransitiveDuplicateDependenciesProvider.$allTransitiveDependencies0,
+            TransitiveDuplicateDependenciesProvider.$allTransitiveDependencies1,
+            TransitiveDuplicateDependenciesProvider.$allTransitiveDependencies2,
+            TransitiveDuplicateDependenciesProvider.$allTransitiveDependencies3,
+            TransitiveDuplicateDependenciesProvider.$allTransitiveDependencies4,
+            TransitiveDuplicateDependenciesProvider.$allTransitiveDependencies5,
+          },
+        );
+
+  static const $allTransitiveDependencies0 = duplicateDependenciesProvider;
+  static const $allTransitiveDependencies1 =
+      DuplicateDependenciesProvider.$allTransitiveDependencies0;
+  static const $allTransitiveDependencies2 =
+      DuplicateDependenciesProvider.$allTransitiveDependencies1;
+  static const $allTransitiveDependencies3 = duplicateDependencies2Provider;
+  static const $allTransitiveDependencies4 =
+      DuplicateDependencies2Provider.$allTransitiveDependencies0;
+  static const $allTransitiveDependencies5 =
+      DuplicateDependencies2Provider.$allTransitiveDependencies1;
+
+  final int Function(
+    TransitiveDuplicateDependenciesRef ref,
+  )? _createCb;
+
+  @override
+  void $unimplemented() {}
+
+  @override
+  $ProviderElement<int> createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  int create(TransitiveDuplicateDependenciesRef ref) {
+    final fn = _createCb ?? transitiveDuplicateDependencies;
+
+    return fn(
+      ref,
+    );
+  }
+
+  @override
+  TransitiveDuplicateDependenciesProvider copyWithCreate(
+    int Function(
+      TransitiveDuplicateDependenciesRef ref,
+    ) create,
+  ) {
+    return TransitiveDuplicateDependenciesProvider._(create: create);
+  }
+}
+
+String _$transitiveDuplicateDependenciesHash() =>
+    r'aba44b6c1cf82eea782ad260f2e95d9f771f12ac';
+
 const dep2Provider = Dep2Provider._();
 
 final class Dep2Provider extends $NotifierProvider<Dep2, int> {
@@ -620,6 +869,9 @@ final class Dep2Provider extends $NotifierProvider<Dep2, int> {
         );
 
   final Dep2 Function()? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @$internal
   @override
@@ -676,6 +928,9 @@ final class Family2Provider extends $NotifierProvider<Family2, int> {
         );
 
   final Family2 Function()? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @$internal
   @override
@@ -770,19 +1025,23 @@ final class Provider3Provider extends $NotifierProvider<Provider3, int> {
             dep2Provider,
             family2Provider
           ],
-          allTransitiveDependencies: const <ProviderOrFamily>[
-            depProvider,
-            ...?depProvider.allTransitiveDependencies,
-            familyProvider,
-            ...?familyProvider.allTransitiveDependencies,
-            dep2Provider,
-            ...?dep2Provider.allTransitiveDependencies,
-            family2Provider,
-            ...?family2Provider.allTransitiveDependencies
-          ],
+          allTransitiveDependencies: const <ProviderOrFamily>{
+            Provider3Provider.$allTransitiveDependencies0,
+            Provider3Provider.$allTransitiveDependencies1,
+            Provider3Provider.$allTransitiveDependencies2,
+            Provider3Provider.$allTransitiveDependencies3,
+          },
         );
 
+  static const $allTransitiveDependencies0 = depProvider;
+  static const $allTransitiveDependencies1 = familyProvider;
+  static const $allTransitiveDependencies2 = dep2Provider;
+  static const $allTransitiveDependencies3 = family2Provider;
+
   final Provider3 Function()? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @$internal
   @override
@@ -838,7 +1097,15 @@ final class Provider4Provider extends $NotifierProvider<Provider4, int> {
           allTransitiveDependencies: null,
         );
 
+  static const $allTransitiveDependencies0 = depProvider;
+  static const $allTransitiveDependencies1 = familyProvider;
+  static const $allTransitiveDependencies2 = dep2Provider;
+  static const $allTransitiveDependencies3 = family2Provider;
+
   final Provider4 Function()? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @$internal
   @override
@@ -890,16 +1157,12 @@ final class Provider4Family extends Family {
             dep2Provider,
             family2Provider
           ],
-          allTransitiveDependencies: const <ProviderOrFamily>[
-            depProvider,
-            ...?depProvider.allTransitiveDependencies,
-            familyProvider,
-            ...?familyProvider.allTransitiveDependencies,
-            dep2Provider,
-            ...?dep2Provider.allTransitiveDependencies,
-            family2Provider,
-            ...?family2Provider.allTransitiveDependencies
-          ],
+          allTransitiveDependencies: const <ProviderOrFamily>{
+            Provider4Provider.$allTransitiveDependencies0,
+            Provider4Provider.$allTransitiveDependencies1,
+            Provider4Provider.$allTransitiveDependencies2,
+            Provider4Provider.$allTransitiveDependencies3,
+          },
           debugGetCreateSourceHash: _$provider4Hash,
           isAutoDispose: true,
         );
@@ -949,6 +1212,9 @@ final class EmptyDependenciesClassBasedProvider
         );
 
   final EmptyDependenciesClassBased Function()? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @$internal
   @override

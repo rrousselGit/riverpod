@@ -33,6 +33,9 @@ final class GeneratedProvider
   )? _createCb;
 
   @override
+  void $unimplemented() {}
+
+  @override
   $ProviderElement<_Test> createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
@@ -84,6 +87,9 @@ final class GeneratedFamilyProvider
     GeneratedFamilyRef ref,
     _Test test,
   )? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @override
   $ProviderElement<_Test> createElement(ProviderContainer container) =>
@@ -169,6 +175,9 @@ final class $DynamicProvider
   )? _createCb;
 
   @override
+  void $unimplemented() {}
+
+  @override
   $ProviderElement<Object?> createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
@@ -220,6 +229,9 @@ final class $DynamicFamilyProvider
     $DynamicFamilyRef ref,
     test,
   )? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @override
   $ProviderElement<Object?> createElement(ProviderContainer container) =>
@@ -307,6 +319,9 @@ final class _DynamicProvider
   )? _createCb;
 
   @override
+  void $unimplemented() {}
+
+  @override
   $ProviderElement<Object?> createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
@@ -390,6 +405,9 @@ final class AliasProvider
   )? _createCb;
 
   @override
+  void $unimplemented() {}
+
+  @override
   $ProviderElement<r.AsyncValue<int>> createElement(
           ProviderContainer container) =>
       $ProviderElement(this, container);
@@ -443,6 +461,9 @@ final class AliasFamilyProvider extends $FunctionalProvider<
     AliasFamilyRef ref,
     r.AsyncValue<int> test,
   )? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @override
   $ProviderElement<r.AsyncValue<int>> createElement(
@@ -522,6 +543,9 @@ final class GeneratedClassProvider
 
   final GeneratedClass Function()? _createCb;
 
+  @override
+  void $unimplemented() {}
+
   @$internal
   @override
   GeneratedClass create() => _createCb?.call() ?? GeneratedClass();
@@ -578,6 +602,9 @@ final class GeneratedClassFamilyProvider
         );
 
   final GeneratedClassFamily Function()? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @$internal
   @override
@@ -674,6 +701,9 @@ final class $DynamicClassProvider
 
   final $DynamicClass Function()? _createCb;
 
+  @override
+  void $unimplemented() {}
+
   @$internal
   @override
   $DynamicClass create() => _createCb?.call() ?? $DynamicClass();
@@ -730,6 +760,9 @@ final class $DynamicClassFamilyProvider
         );
 
   final $DynamicClassFamily Function()? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @$internal
   @override
@@ -826,6 +859,9 @@ final class AliasClassProvider
 
   final AliasClass Function()? _createCb;
 
+  @override
+  void $unimplemented() {}
+
   @$internal
   @override
   AliasClass create() => _createCb?.call() ?? AliasClass();
@@ -882,6 +918,9 @@ final class AliasClassFamilyProvider
         );
 
   final AliasClassFamily Function()? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @$internal
   @override

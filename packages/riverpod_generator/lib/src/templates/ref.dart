@@ -1,6 +1,6 @@
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
-import 'family_back.dart';
+import '../riverpod_generator.dart';
 import 'template.dart';
 
 class RefTemplate extends Template {
@@ -10,9 +10,7 @@ class RefTemplate extends Template {
 
   @override
   void run(StringBuffer buffer) {
-    final typeParameters = provider.node.functionExpression.typeParameters;
-    final typeParametersDefinition =
-        genericDefinitionDisplayString(typeParameters);
+    final typeParametersDefinition = provider.genericsDefinition();
 
     buffer.writeln('''
 typedef ${provider.refImplName}$typeParametersDefinition = Ref<${provider.exposedTypeDisplayString}>;

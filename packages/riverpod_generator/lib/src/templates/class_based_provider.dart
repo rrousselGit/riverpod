@@ -1,58 +1,8 @@
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import '../models.dart';
 import '../riverpod_generator.dart';
+import 'family_back.dart';
 import 'template.dart';
-
-String providerNameFor(
-  ProviderDeclarationElement provider,
-  BuildYamlOptions options,
-) {
-  return '${provider.name.lowerFirst}${options.providerNameSuffix ?? 'Provider'}';
-}
-
-String serializeDependencies(
-  RiverpodAnnotationElement annotation,
-  BuildYamlOptions options,
-) {
-  final dependencies = annotation.dependencies;
-  if (dependencies == null) return 'null';
-
-  final buffer = StringBuffer('const <ProviderOrFamily>');
-  buffer.write('[');
-
-  buffer.writeAll(
-    dependencies.map((e) => providerNameFor(e, options)),
-    ',',
-  );
-
-  buffer.write(']');
-  return buffer.toString();
-}
-
-String serializeAllTransitiveDependencies(
-  RiverpodAnnotationElement annotation,
-  BuildYamlOptions options,
-) {
-  // Not optimizing based off "allTransitiveDependencies" yet due to https://github.com/dart-lang/language/issues/3037
-  // This could be worked around by having the "Provider" type expose
-  // the transitive dependencies.
-  // But this assumes that all providers have their custom Provider class.
-  final dependencies = annotation.dependencies;
-  if (dependencies == null) return 'null';
-
-  final buffer = StringBuffer('const <ProviderOrFamily>');
-
-  buffer.write('[');
-  buffer.writeAll(
-    dependencies
-        .map((e) => providerNameFor(e, options))
-        .map((e) => '$e, ...?$e.allTransitiveDependencies'),
-    ',',
-  );
-  buffer.write(']');
-
-  return buffer.toString();
-}
 
 class ClassBasedProviderTemplate extends Template {
   ClassBasedProviderTemplate(
@@ -106,8 +56,8 @@ final $providerName = $providerType<${provider.name}, ${provider.valueTypeDispla
   argument: null,
   $isAutoDispose
   debugGetCreateSourceHash: $hashFn,
-  dependencies: ${serializeDependencies(provider.providerElement.annotation, options)},
-  allTransitiveDependencies: ${serializeAllTransitiveDependencies(provider.providerElement.annotation, options)},
+  dependencies: ${provider.dependencies(options)},
+  allTransitiveDependencies: null,
 );
 
 typedef $notifierTypedefName = $notifierBaseType<${provider.valueTypeDisplayString}>;

@@ -1,6 +1,6 @@
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
-import 'family_back.dart';
+import '../riverpod_generator.dart';
 import 'template.dart';
 
 class HashFnTemplate extends Template {

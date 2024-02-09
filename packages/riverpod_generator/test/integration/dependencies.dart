@@ -63,3 +63,13 @@ int _privateDep(_PrivateDepRef ref) => 0;
 
 @riverpod
 int publicDep(PublicDepRef ref) => 0;
+
+@Riverpod(dependencies: [dep, dep, Dep2, Dep2])
+int duplicateDependencies(DuplicateDependenciesRef ref) => 0;
+
+@Riverpod(dependencies: [family, family, Family2, Family2])
+int duplicateDependencies2(DuplicateDependencies2Ref ref) => 0;
+
+@Riverpod(dependencies: [duplicateDependencies, duplicateDependencies2])
+int transitiveDuplicateDependencies(TransitiveDuplicateDependenciesRef ref) =>
+    0;

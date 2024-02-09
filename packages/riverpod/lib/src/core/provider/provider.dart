@@ -100,6 +100,42 @@ abstract base class ProviderBase<StateT> extends ProviderOrFamily
   @visibleForOverriding
   ProviderElementBase<StateT> createElement(ProviderContainer container);
 
+  /// Do not use.
+  ///
+  /// An unimplemented method, for the sole purpose of forcing all
+  /// non-code-generators to apply a mixin that overrides ==/hashCode.
+  /// This is because `riverpod_generator` expects all generated providers
+  /// to not override ==/hashCode, for the sake of inserting providers in a
+  /// constant [Set].
+  ///
+  /// At the same time, all non-generated providers must override ==/hashCode.
+  /// So to prevent forgetting to override ==/hashCode, this method is added.
+  /// This method is then expected to be implemented using [LegacyProviderEqualMixin]
+  void $unimplemented();
+
+  @override
+  String toString() {
+    var leading = '';
+    if (from != null) {
+      leading = '($argument)';
+    }
+
+    String label;
+    if (name case final name?) {
+      label = name;
+    } else {
+      label = describeIdentity(this);
+    }
+
+    return '$label$leading';
+  }
+}
+
+/// A mixin that implements ==/hashCode for providers that are not code-generated.
+///
+/// See [ProviderBase.$unimplemented] for explanation.
+@internal
+base mixin LegacyProviderEqualMixin<StateT> on ProviderBase<StateT> {
   @override
   int get hashCode {
     if (from == null) return super.hashCode;
@@ -118,19 +154,5 @@ abstract base class ProviderBase<StateT> extends ProviderOrFamily
   }
 
   @override
-  String toString() {
-    var leading = '';
-    if (from != null) {
-      leading = '($argument)';
-    }
-
-    String label;
-    if (name case final name?) {
-      label = name;
-    } else {
-      label = describeIdentity(this);
-    }
-
-    return '$label$leading';
-  }
+  void $unimplemented() {}
 }

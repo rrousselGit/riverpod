@@ -76,7 +76,8 @@ base class StreamProvider<StateT> extends $FunctionalProvider<
         AsyncValue<StateT>, Stream<StateT>, Ref<AsyncValue<StateT>>>
     with
         $FutureModifier<StateT>,
-        $StreamProvider<StateT, Ref<AsyncValue<StateT>>> {
+        $StreamProvider<StateT, Ref<AsyncValue<StateT>>>,
+        LegacyProviderEqualMixin<AsyncValue<StateT>> {
   /// {@macro riverpod.stream_provider}
   StreamProvider(
     this._create, {

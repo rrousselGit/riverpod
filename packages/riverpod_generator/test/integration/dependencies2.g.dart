@@ -29,19 +29,29 @@ final class ProviderWithDependencies2Provider
             _private2Provider,
             public2Provider
           ],
-          allTransitiveDependencies: const <ProviderOrFamily>[
-            providerWithDependenciesProvider,
-            ...?providerWithDependenciesProvider.allTransitiveDependencies,
-            _private2Provider,
-            ...?_private2Provider.allTransitiveDependencies,
-            public2Provider,
-            ...?public2Provider.allTransitiveDependencies
-          ],
+          allTransitiveDependencies: const <ProviderOrFamily>{
+            ProviderWithDependencies2Provider.$allTransitiveDependencies0,
+            ProviderWithDependencies2Provider.$allTransitiveDependencies1,
+            ProviderWithDependencies2Provider.$allTransitiveDependencies2,
+            ProviderWithDependencies2Provider.$allTransitiveDependencies3,
+            ProviderWithDependencies2Provider.$allTransitiveDependencies4,
+          },
         );
+
+  static const $allTransitiveDependencies0 = providerWithDependenciesProvider;
+  static const $allTransitiveDependencies1 =
+      ProviderWithDependenciesProvider.$allTransitiveDependencies0;
+  static const $allTransitiveDependencies2 =
+      ProviderWithDependenciesProvider.$allTransitiveDependencies1;
+  static const $allTransitiveDependencies3 = _private2Provider;
+  static const $allTransitiveDependencies4 = public2Provider;
 
   final int Function(
     ProviderWithDependencies2Ref ref,
   )? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
@@ -95,10 +105,21 @@ final class FamilyWithDependencies2Provider
           allTransitiveDependencies: null,
         );
 
+  static const $allTransitiveDependencies0 = providerWithDependenciesProvider;
+  static const $allTransitiveDependencies1 =
+      ProviderWithDependenciesProvider.$allTransitiveDependencies0;
+  static const $allTransitiveDependencies2 =
+      ProviderWithDependenciesProvider.$allTransitiveDependencies1;
+  static const $allTransitiveDependencies3 = _private2Provider;
+  static const $allTransitiveDependencies4 = public2Provider;
+
   final int Function(
     FamilyWithDependencies2Ref ref, {
     int? id,
   })? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
@@ -155,14 +176,13 @@ final class FamilyWithDependencies2Family extends Family {
             _private2Provider,
             public2Provider
           ],
-          allTransitiveDependencies: const <ProviderOrFamily>[
-            providerWithDependenciesProvider,
-            ...?providerWithDependenciesProvider.allTransitiveDependencies,
-            _private2Provider,
-            ...?_private2Provider.allTransitiveDependencies,
-            public2Provider,
-            ...?public2Provider.allTransitiveDependencies
-          ],
+          allTransitiveDependencies: const <ProviderOrFamily>{
+            FamilyWithDependencies2Provider.$allTransitiveDependencies0,
+            FamilyWithDependencies2Provider.$allTransitiveDependencies1,
+            FamilyWithDependencies2Provider.$allTransitiveDependencies2,
+            FamilyWithDependencies2Provider.$allTransitiveDependencies3,
+            FamilyWithDependencies2Provider.$allTransitiveDependencies4,
+          },
           debugGetCreateSourceHash: _$familyWithDependencies2Hash,
           isAutoDispose: true,
         );
@@ -201,6 +221,9 @@ final class _Private2Provider
   final int Function(
     _Private2Ref ref,
   )? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
@@ -253,6 +276,9 @@ final class Public2Provider extends $FunctionalProvider<int, int, Public2Ref>
   )? _createCb;
 
   @override
+  void $unimplemented() {}
+
+  @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
@@ -296,17 +322,27 @@ final class NotifierWithDependenciesProvider
             _private2Provider,
             public2Provider
           ],
-          allTransitiveDependencies: const <ProviderOrFamily>[
-            providerWithDependenciesProvider,
-            ...?providerWithDependenciesProvider.allTransitiveDependencies,
-            _private2Provider,
-            ...?_private2Provider.allTransitiveDependencies,
-            public2Provider,
-            ...?public2Provider.allTransitiveDependencies
-          ],
+          allTransitiveDependencies: const <ProviderOrFamily>{
+            NotifierWithDependenciesProvider.$allTransitiveDependencies0,
+            NotifierWithDependenciesProvider.$allTransitiveDependencies1,
+            NotifierWithDependenciesProvider.$allTransitiveDependencies2,
+            NotifierWithDependenciesProvider.$allTransitiveDependencies3,
+            NotifierWithDependenciesProvider.$allTransitiveDependencies4,
+          },
         );
 
+  static const $allTransitiveDependencies0 = providerWithDependenciesProvider;
+  static const $allTransitiveDependencies1 =
+      ProviderWithDependenciesProvider.$allTransitiveDependencies0;
+  static const $allTransitiveDependencies2 =
+      ProviderWithDependenciesProvider.$allTransitiveDependencies1;
+  static const $allTransitiveDependencies3 = _private2Provider;
+  static const $allTransitiveDependencies4 = public2Provider;
+
   final NotifierWithDependencies Function()? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @$internal
   @override
@@ -369,7 +405,18 @@ final class NotifierFamilyWithDependenciesProvider
           allTransitiveDependencies: null,
         );
 
+  static const $allTransitiveDependencies0 = providerWithDependenciesProvider;
+  static const $allTransitiveDependencies1 =
+      ProviderWithDependenciesProvider.$allTransitiveDependencies0;
+  static const $allTransitiveDependencies2 =
+      ProviderWithDependenciesProvider.$allTransitiveDependencies1;
+  static const $allTransitiveDependencies3 = _private2Provider;
+  static const $allTransitiveDependencies4 = public2Provider;
+
   final NotifierFamilyWithDependencies Function()? _createCb;
+
+  @override
+  void $unimplemented() {}
 
   @$internal
   @override
@@ -427,14 +474,13 @@ final class NotifierFamilyWithDependenciesFamily extends Family {
             _private2Provider,
             public2Provider
           ],
-          allTransitiveDependencies: const <ProviderOrFamily>[
-            providerWithDependenciesProvider,
-            ...?providerWithDependenciesProvider.allTransitiveDependencies,
-            _private2Provider,
-            ...?_private2Provider.allTransitiveDependencies,
-            public2Provider,
-            ...?public2Provider.allTransitiveDependencies
-          ],
+          allTransitiveDependencies: const <ProviderOrFamily>{
+            NotifierFamilyWithDependenciesProvider.$allTransitiveDependencies0,
+            NotifierFamilyWithDependenciesProvider.$allTransitiveDependencies1,
+            NotifierFamilyWithDependenciesProvider.$allTransitiveDependencies2,
+            NotifierFamilyWithDependenciesProvider.$allTransitiveDependencies3,
+            NotifierFamilyWithDependenciesProvider.$allTransitiveDependencies4,
+          },
           debugGetCreateSourceHash: _$notifierFamilyWithDependenciesHash,
           isAutoDispose: true,
         );

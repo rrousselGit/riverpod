@@ -30,7 +30,8 @@ final class FamilyStreamNotifierProvider< //
         NotifierT extends FamilyStreamNotifier<StateT, ArgT>,
         StateT,
         ArgT> //
-    extends $StreamNotifierProvider<NotifierT, StateT> {
+    extends $StreamNotifierProvider<NotifierT, StateT>
+    with LegacyProviderEqualMixin<AsyncValue<StateT>> {
   /// An implementation detail of Riverpod
   const FamilyStreamNotifierProvider._(
     super._createNotifier, {

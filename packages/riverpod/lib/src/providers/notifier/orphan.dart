@@ -77,7 +77,8 @@ abstract class Notifier<State> extends $Notifier<State> {
 }
 
 final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>
-    extends $NotifierProvider<NotifierT, StateT> {
+    extends $NotifierProvider<NotifierT, StateT>
+    with LegacyProviderEqualMixin<StateT> {
   /// {@macro riverpod.notifier_provider}
   ///
   /// {@macro riverpod.notifier_provider_modifier}

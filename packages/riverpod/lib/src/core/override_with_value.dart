@@ -5,7 +5,8 @@ part of '../framework.dart';
 /// This is an implementation detail of `overrideWithValue`.
 @sealed
 @internal
-final class ValueProvider<State> extends ProviderBase<State> {
+final class ValueProvider<StateT> extends ProviderBase<StateT>
+    with LegacyProviderEqualMixin<StateT> {
   /// Creates a [ValueProvider].
   const ValueProvider(this._value)
       : super(
@@ -18,7 +19,7 @@ final class ValueProvider<State> extends ProviderBase<State> {
           isAutoDispose: false,
         );
 
-  final State _value;
+  final StateT _value;
 
   @override
   Iterable<ProviderOrFamily>? get dependencies => null;
@@ -27,7 +28,7 @@ final class ValueProvider<State> extends ProviderBase<State> {
   Set<ProviderOrFamily>? get allTransitiveDependencies => null;
 
   @override
-  _ValueProviderElement<State> createElement(ProviderContainer container) {
+  _ValueProviderElement<StateT> createElement(ProviderContainer container) {
     return _ValueProviderElement(this, container);
   }
 }

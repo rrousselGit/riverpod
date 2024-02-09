@@ -90,7 +90,8 @@ abstract class ChangeNotifierProviderRef<NotifierT extends ChangeNotifier?>
 /// ```
 final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
     extends $FunctionalProvider<NotifierT, NotifierT,
-        ChangeNotifierProviderRef<NotifierT>> {
+        ChangeNotifierProviderRef<NotifierT>>
+    with LegacyProviderEqualMixin<NotifierT> {
   /// {@macro riverpod.change_notifier_provider}
   ChangeNotifierProvider(
     this._createFn, {

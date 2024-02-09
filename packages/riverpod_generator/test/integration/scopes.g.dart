@@ -32,6 +32,9 @@ final class ScopedProvider extends $FunctionalProvider<int, int, ScopedRef>
   )? _createCb;
 
   @override
+  void $unimplemented() {}
+
+  @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 

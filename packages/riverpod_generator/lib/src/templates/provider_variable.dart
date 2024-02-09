@@ -1,8 +1,7 @@
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
 import '../models.dart';
-import 'class_based_provider.dart';
-import 'family_back.dart';
+import '../riverpod_generator.dart';
 import 'template.dart';
 
 class ProviderVariableTemplate extends Template {
@@ -13,7 +12,7 @@ class ProviderVariableTemplate extends Template {
 
   @override
   void run(StringBuffer buffer) {
-    final providerName = providerNameFor(provider.providerElement, options);
+    final providerName = provider.providerName(options);
 
     switch (provider) {
       case _ when provider.providerElement.isFamily:

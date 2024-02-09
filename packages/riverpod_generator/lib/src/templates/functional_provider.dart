@@ -1,7 +1,6 @@
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import '../models.dart';
 import '../riverpod_generator.dart';
-import 'class_based_provider.dart';
 import 'template.dart';
 
 class FunctionalProviderTemplate extends Template {
@@ -45,7 +44,7 @@ class FunctionalProviderTemplate extends Template {
       }
     }
 
-    final providerName = providerNameFor(provider.providerElement, options);
+    final providerName = provider.providerName(options);
 
     final createFn = provider.node.externalKeyword == null
         ? provider.providerElement.name
