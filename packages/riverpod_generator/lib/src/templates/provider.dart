@@ -117,7 +117,7 @@ final class $name$_genericsDefinition
   }): _createCb = create,
       super(
         $superParameters
-        name: r'${provider.name}',
+        name: r'${provider.providerName(options)}',
         isAutoDispose: ${!provider.annotation.element.keepAlive},
         dependencies: ${!provider.providerElement.isFamily ? provider.dependencies(options) : 'null'},
         allTransitiveDependencies: ${!provider.providerElement.isFamily ? provider.allTransitiveDependencies(allTransitiveDependencies) : 'null'},

@@ -206,7 +206,11 @@ class _RiverpodGeneratorVisitor extends RecursiveRiverpodAstVisitor {
 
 extension ProviderElementNames on GeneratorProviderDeclarationElement {
   String providerName(BuildYamlOptions options) {
-    return '${name.lowerFirst}${options.providerNameSuffix ?? 'Provider'}';
+    final suffix = isFamily
+        ? options.providerFamilyNameSuffix
+        : options.providerNameSuffix;
+
+    return '${name.lowerFirst}${suffix ?? 'Provider'}';
   }
 
   String get providerTypeName => '${name.titled}Provider';

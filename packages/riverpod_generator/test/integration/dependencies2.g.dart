@@ -21,7 +21,7 @@ final class ProviderWithDependencies2Provider
         super(
           from: null,
           argument: null,
-          name: r'providerWithDependencies2',
+          name: r'providerWithDependencies2Provider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[
             providerWithDependenciesProvider,
@@ -97,7 +97,7 @@ final class FamilyWithDependencies2Provider
       })? create})
       : _createCb = create,
         super(
-          name: r'familyWithDependencies2',
+          name: r'familyWithDependencies2Provider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
@@ -168,7 +168,7 @@ String _$familyWithDependencies2Hash() =>
 final class FamilyWithDependencies2Family extends Family {
   const FamilyWithDependencies2Family._()
       : super(
-          name: r'familyWithDependencies2',
+          name: r'familyWithDependencies2Provider',
           dependencies: const <ProviderOrFamily>[
             providerWithDependenciesProvider,
             _private2Provider,
@@ -211,7 +211,7 @@ final class _Private2Provider
         super(
           from: null,
           argument: null,
-          name: r'_private2',
+          name: r'_private2Provider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
@@ -263,7 +263,7 @@ final class Public2Provider extends $FunctionalProvider<int, int, Public2Ref>
         super(
           from: null,
           argument: null,
-          name: r'public2',
+          name: r'public2Provider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
@@ -312,7 +312,7 @@ final class NotifierWithDependenciesProvider
         super(
           from: null,
           argument: null,
-          name: r'NotifierWithDependencies',
+          name: r'notifierWithDependenciesProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[
             providerWithDependenciesProvider,
@@ -395,7 +395,7 @@ final class NotifierFamilyWithDependenciesProvider
       NotifierFamilyWithDependencies Function()? create})
       : _createCb = create,
         super(
-          name: r'NotifierFamilyWithDependencies',
+          name: r'notifierFamilyWithDependenciesProvider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
@@ -464,7 +464,7 @@ String _$notifierFamilyWithDependenciesHash() =>
 final class NotifierFamilyWithDependenciesFamily extends Family {
   const NotifierFamilyWithDependenciesFamily._()
       : super(
-          name: r'NotifierFamilyWithDependencies',
+          name: r'notifierFamilyWithDependenciesProvider',
           dependencies: const <ProviderOrFamily>[
             providerWithDependenciesProvider,
             _private2Provider,

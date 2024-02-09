@@ -21,7 +21,7 @@ final class GenericProvider<T extends num> extends $FunctionalProvider<
       : _createCb = create,
         super(
           argument: null,
-          name: r'generic',
+          name: r'genericProvider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
@@ -69,7 +69,7 @@ String _$genericHash() => r'c1122edf55163d47de8d871ed5d15e0a7edddc05';
 final class GenericFamily extends Family {
   const GenericFamily._()
       : super(
-          name: r'generic',
+          name: r'genericProvider',
           dependencies: null,
           allTransitiveDependencies: null,
           isAutoDispose: true,
@@ -99,7 +99,7 @@ final class PublicProvider
         super(
           from: null,
           argument: null,
-          name: r'public',
+          name: r'publicProvider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
@@ -152,7 +152,7 @@ final class _PrivateProvider
         super(
           from: null,
           argument: null,
-          name: r'_private',
+          name: r'_privateProvider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
@@ -217,7 +217,7 @@ final class FamilyProvider
       })? create})
       : _createCb = create,
         super(
-          name: r'family',
+          name: r'familyProvider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
@@ -302,7 +302,7 @@ String _$familyHash() => r'6896fac2f6e3ccd7c38ecaa0d538cbd3577936b2';
 final class FamilyFamily extends Family {
   const FamilyFamily._()
       : super(
-          name: r'family',
+          name: r'familyProvider',
           dependencies: null,
           allTransitiveDependencies: null,
           isAutoDispose: true,
@@ -341,7 +341,7 @@ final class GenericClassProvider<T extends num>
       : _createCb = create,
         super(
           argument: null,
-          name: r'GenericClass',
+          name: r'genericClassProvider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
@@ -393,7 +393,7 @@ String _$genericClassHash() => r'401ae1cfd97a4291dfd135a69ff8e1c436866e5a';
 final class GenericClassFamily extends Family {
   const GenericClassFamily._()
       : super(
-          name: r'GenericClass',
+          name: r'genericClassProvider',
           dependencies: null,
           allTransitiveDependencies: null,
           isAutoDispose: true,
@@ -427,7 +427,7 @@ final class PublicClassProvider
         super(
           from: null,
           argument: null,
-          name: r'PublicClass',
+          name: r'publicClassProvider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
@@ -485,7 +485,7 @@ final class _PrivateClassProvider
         super(
           from: null,
           argument: null,
-          name: r'_PrivateClass',
+          name: r'_privateClassProvider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
@@ -551,7 +551,7 @@ final class FamilyClassProvider
       FamilyClass Function()? create})
       : _createCb = create,
         super(
-          name: r'FamilyClass',
+          name: r'familyClassProvider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
@@ -617,7 +617,7 @@ String _$familyClassHash() => r'6ec16ca23da8df4c010ecb5eed72e3e655504460';
 final class FamilyClassFamily extends Family {
   const FamilyClassFamily._()
       : super(
-          name: r'FamilyClass',
+          name: r'familyClassProvider',
           dependencies: null,
           allTransitiveDependencies: null,
           isAutoDispose: true,

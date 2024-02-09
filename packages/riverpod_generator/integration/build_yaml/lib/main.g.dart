@@ -1,1188 +1,910 @@
-// // GENERATED CODE - DO NOT MODIFY BY HAND
-
-// part of 'main.dart';
-
-// // **************************************************************************
-// // RiverpodGenerator
-// // **************************************************************************
-
-// String _$countHash() => r'4c7e72b275767a60ece5e8662ab1e28f73cf7e44';
-
-// /// See also [count].
-// @ProviderFor(count)
-// final countPod = AutoDisposeProvider<int>.internal(
-//   count,
-//   name: r'countPod',
-//   debugGetCreateSourceHash:
-//       const bool.fromEnvironment('dart.vm.product') ? null : _$countHash,
-//   dependencies: null,
-//   allTransitiveDependencies: null,
-// );
-
-// typedef CountRef = AutoDisposeProviderRef<int>;
-// String _$countFutureHash() => r'ec7cc31ce1c1a10607f1dcb35dd217acd2877729';
-
-// /// See also [countFuture].
-// @ProviderFor(countFuture)
-// final countFuturePod = AutoDisposeFutureProvider<int>.internal(
-//   countFuture,
-//   name: r'countFuturePod',
-//   debugGetCreateSourceHash:
-//       const bool.fromEnvironment('dart.vm.product') ? null : _$countFutureHash,
-//   dependencies: null,
-//   allTransitiveDependencies: null,
-// );
-
-// typedef CountFutureRef = AutoDisposeFutureProviderRef<int>;
-// String _$countStreamHash() => r'1dbe49244ea19e8dbc3af0534429bb323720c07a';
-
-// /// See also [countStream].
-// @ProviderFor(countStream)
-// final countStreamPod = AutoDisposeStreamProvider<int>.internal(
-//   countStream,
-//   name: r'countStreamPod',
-//   debugGetCreateSourceHash:
-//       const bool.fromEnvironment('dart.vm.product') ? null : _$countStreamHash,
-//   dependencies: null,
-//   allTransitiveDependencies: null,
-// );
-
-// typedef CountStreamRef = AutoDisposeStreamProviderRef<int>;
-// String _$count2Hash() => r'6256825480d83bb13acde282cf3c9d9524cc3a6c';
-
-// /// Copied from Dart SDK
-// class _SystemHash {
-//   _SystemHash._();
-
-//   static int combine(int hash, int value) {
-//     // ignore: parameter_assignments
-//     hash = 0x1fffffff & (hash + value);
-//     // ignore: parameter_assignments
-//     hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-//     return hash ^ (hash >> 6);
-//   }
-
-//   static int finish(int hash) {
-//     // ignore: parameter_assignments
-//     hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-//     // ignore: parameter_assignments
-//     hash = hash ^ (hash >> 11);
-//     return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-//   }
-// }
-
-// /// See also [count2].
-// @ProviderFor(count2)
-// const count2ProviderFamily = Count2Family();
-
-// /// See also [count2].
-// class Count2Family extends Family {
-//   /// See also [count2].
-//   const Count2Family();
-
-//   static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-//   static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-//   @override
-//   Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-//   @override
-//   Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-//       _allTransitiveDependencies;
-
-//   @override
-//   String? get name => r'count2ProviderFamily';
-
-//   /// See also [count2].
-//   Count2Provider call(
-//     int a,
-//   ) {
-//     return Count2Provider(
-//       a,
-//     );
-//   }
-
-//   /// Enables overriding the behavior of this provider, no matter the parameters.
-//   Override overrideWith(int Function(Count2Ref ref) create) {
-//     return _$Count2FamilyOverride(this, create);
-//   }
-
-//   @override
-//   String toString() => 'count2ProviderFamily';
-// }
-
-// class _$Count2FamilyOverride implements $FamilyOverride {
-//   _$Count2FamilyOverride(this.from, this.create);
-
-//   final int Function(Count2Ref ref) create;
-
-//   @override
-//   final Count2Family from;
-
-//   @override
-//   _Count2ProviderElement createElement(
-//     ProviderContainer container,
-//     covariant Count2Provider provider,
-//   ) {
-//     return provider._copyWith(create).createElement(container);
-//   }
-
-//   @override
-//   String toString() => 'count2ProviderFamily.overrideWith(...)';
-// }
-
-// /// See also [count2].
-// class Count2Provider extends AutoDisposeProvider<int> {
-//   /// See also [count2].
-//   Count2Provider(
-//     int a,
-//   ) : this._internal(
-//           (ref) => count2(
-//             ref as Count2Ref,
-//             a,
-//           ),
-//           from: count2ProviderFamily,
-//           name: r'count2ProviderFamily',
-//           debugGetCreateSourceHash:
-//               const bool.fromEnvironment('dart.vm.product')
-//                   ? null
-//                   : _$count2Hash,
-//           dependencies: null,
-//           allTransitiveDependencies: null,
-//           a: a,
-//         );
-
-//   Count2Provider._internal(
-//     super.create, {
-//     required super.name,
-//     required super.dependencies,
-//     required super.allTransitiveDependencies,
-//     required super.debugGetCreateSourceHash,
-//     required super.from,
-//     required this.a,
-//   }) : super.internal();
-
-//   final int a;
-
-//   @override
-//   Override overrideWith(
-//     int Function(Count2Ref ref) create,
-//   ) {
-//     return $ProviderOverride(
-//       origin: this,
-//       providerOverride: Count2Provider._internal(
-//         (ref) => create(ref as Count2Ref),
-//         from: from,
-//         name: null,
-//         dependencies: null,
-//         allTransitiveDependencies: null,
-//         debugGetCreateSourceHash: null,
-//         a: a,
-//       ),
-//     );
-//   }
-
-//   @override
-//   (int,) get argument {
-//     return (a,);
-//   }
-
-//   @override
-//   _Count2ProviderElement createElement(
-//     ProviderContainer container,
-//   ) {
-//     return _Count2ProviderElement(this, container);
-//   }
-
-//   Count2Provider _copyWith(
-//     int Function(Count2Ref ref) create,
-//   ) {
-//     return Count2Provider._internal(
-//       (ref) => create(ref as Count2Ref),
-//       name: name,
-//       dependencies: dependencies,
-//       allTransitiveDependencies: allTransitiveDependencies,
-//       debugGetCreateSourceHash: debugGetCreateSourceHash,
-//       from: from,
-//       a: a,
-//     );
-//   }
-
-//   @override
-//   bool operator ==(Object other) {
-//     return other is Count2Provider && other.a == a;
-//   }
-
-//   @override
-//   int get hashCode {
-//     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-//     hash = _SystemHash.combine(hash, a.hashCode);
-
-//     return _SystemHash.finish(hash);
-//   }
-
-//   @override
-//   String toString() => 'count2ProviderFamily$argument';
-// }
-
-// mixin Count2Ref on AutoDisposeProviderRef<int> {
-//   /// The parameter `a` of this provider.
-//   int get a;
-// }
-
-// class _Count2ProviderElement extends AutoDisposeProviderElement<int>
-//     with Count2Ref {
-//   _Count2ProviderElement(super.provider, super.container);
-
-//   @override
-//   int get a => (origin as Count2Provider).a;
-// }
-
-// String _$countFuture2Hash() => r'096675b70a267f5d7c62ac7d3e7dd231ef529034';
-
-// /// See also [countFuture2].
-// @ProviderFor(countFuture2)
-// const countFuture2ProviderFamily = CountFuture2Family();
-
-// /// See also [countFuture2].
-// class CountFuture2Family extends Family {
-//   /// See also [countFuture2].
-//   const CountFuture2Family();
-
-//   static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-//   static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-//   @override
-//   Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-//   @override
-//   Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-//       _allTransitiveDependencies;
-
-//   @override
-//   String? get name => r'countFuture2ProviderFamily';
-
-//   /// See also [countFuture2].
-//   CountFuture2Provider call(
-//     int a,
-//   ) {
-//     return CountFuture2Provider(
-//       a,
-//     );
-//   }
-
-//   /// Enables overriding the behavior of this provider, no matter the parameters.
-//   Override overrideWith(FutureOr<int> Function(CountFuture2Ref ref) create) {
-//     return _$CountFuture2FamilyOverride(this, create);
-//   }
-
-//   @override
-//   String toString() => 'countFuture2ProviderFamily';
-// }
-
-// class _$CountFuture2FamilyOverride implements $FamilyOverride {
-//   _$CountFuture2FamilyOverride(this.from, this.create);
-
-//   final FutureOr<int> Function(CountFuture2Ref ref) create;
-
-//   @override
-//   final CountFuture2Family from;
-
-//   @override
-//   _CountFuture2ProviderElement createElement(
-//     ProviderContainer container,
-//     covariant CountFuture2Provider provider,
-//   ) {
-//     return provider._copyWith(create).createElement(container);
-//   }
-
-//   @override
-//   String toString() => 'countFuture2ProviderFamily.overrideWith(...)';
-// }
-
-// /// See also [countFuture2].
-// class CountFuture2Provider extends AutoDisposeFutureProvider<int> {
-//   /// See also [countFuture2].
-//   CountFuture2Provider(
-//     int a,
-//   ) : this._internal(
-//           (ref) => countFuture2(
-//             ref as CountFuture2Ref,
-//             a,
-//           ),
-//           from: countFuture2ProviderFamily,
-//           name: r'countFuture2ProviderFamily',
-//           debugGetCreateSourceHash:
-//               const bool.fromEnvironment('dart.vm.product')
-//                   ? null
-//                   : _$countFuture2Hash,
-//           dependencies: null,
-//           allTransitiveDependencies: null,
-//           a: a,
-//         );
-
-//   CountFuture2Provider._internal(
-//     super.create, {
-//     required super.name,
-//     required super.dependencies,
-//     required super.allTransitiveDependencies,
-//     required super.debugGetCreateSourceHash,
-//     required super.from,
-//     required this.a,
-//   }) : super.internal();
-
-//   final int a;
-
-//   @override
-//   Override overrideWith(
-//     FutureOr<int> Function(CountFuture2Ref ref) create,
-//   ) {
-//     return $ProviderOverride(
-//       origin: this,
-//       providerOverride: CountFuture2Provider._internal(
-//         (ref) => create(ref as CountFuture2Ref),
-//         from: from,
-//         name: null,
-//         dependencies: null,
-//         allTransitiveDependencies: null,
-//         debugGetCreateSourceHash: null,
-//         a: a,
-//       ),
-//     );
-//   }
-
-//   @override
-//   (int,) get argument {
-//     return (a,);
-//   }
-
-//   @override
-//   _CountFuture2ProviderElement createElement(
-//     ProviderContainer container,
-//   ) {
-//     return _CountFuture2ProviderElement(this, container);
-//   }
-
-//   CountFuture2Provider _copyWith(
-//     FutureOr<int> Function(CountFuture2Ref ref) create,
-//   ) {
-//     return CountFuture2Provider._internal(
-//       (ref) => create(ref as CountFuture2Ref),
-//       name: name,
-//       dependencies: dependencies,
-//       allTransitiveDependencies: allTransitiveDependencies,
-//       debugGetCreateSourceHash: debugGetCreateSourceHash,
-//       from: from,
-//       a: a,
-//     );
-//   }
-
-//   @override
-//   bool operator ==(Object other) {
-//     return other is CountFuture2Provider && other.a == a;
-//   }
-
-//   @override
-//   int get hashCode {
-//     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-//     hash = _SystemHash.combine(hash, a.hashCode);
-
-//     return _SystemHash.finish(hash);
-//   }
-
-//   @override
-//   String toString() => 'countFuture2ProviderFamily$argument';
-// }
-
-// mixin CountFuture2Ref on AutoDisposeFutureProviderRef<int> {
-//   /// The parameter `a` of this provider.
-//   int get a;
-// }
-
-// class _CountFuture2ProviderElement extends AutoDisposeFutureProviderElement<int>
-//     with CountFuture2Ref {
-//   _CountFuture2ProviderElement(super.provider, super.container);
-
-//   @override
-//   int get a => (origin as CountFuture2Provider).a;
-// }
-
-// String _$countStream2Hash() => r'051264dd685ebc0a57e454bb676957c93cb4ae20';
-
-// /// See also [countStream2].
-// @ProviderFor(countStream2)
-// const countStream2ProviderFamily = CountStream2Family();
-
-// /// See also [countStream2].
-// class CountStream2Family extends Family {
-//   /// See also [countStream2].
-//   const CountStream2Family();
-
-//   static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-//   static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-//   @override
-//   Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-//   @override
-//   Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-//       _allTransitiveDependencies;
-
-//   @override
-//   String? get name => r'countStream2ProviderFamily';
-
-//   /// See also [countStream2].
-//   CountStream2Provider call(
-//     int a,
-//   ) {
-//     return CountStream2Provider(
-//       a,
-//     );
-//   }
-
-//   /// Enables overriding the behavior of this provider, no matter the parameters.
-//   Override overrideWith(Stream<int> Function(CountStream2Ref ref) create) {
-//     return _$CountStream2FamilyOverride(this, create);
-//   }
-
-//   @override
-//   String toString() => 'countStream2ProviderFamily';
-// }
-
-// class _$CountStream2FamilyOverride implements $FamilyOverride {
-//   _$CountStream2FamilyOverride(this.from, this.create);
-
-//   final Stream<int> Function(CountStream2Ref ref) create;
-
-//   @override
-//   final CountStream2Family from;
-
-//   @override
-//   _CountStream2ProviderElement createElement(
-//     ProviderContainer container,
-//     covariant CountStream2Provider provider,
-//   ) {
-//     return provider._copyWith(create).createElement(container);
-//   }
-
-//   @override
-//   String toString() => 'countStream2ProviderFamily.overrideWith(...)';
-// }
-
-// /// See also [countStream2].
-// class CountStream2Provider extends AutoDisposeStreamProvider<int> {
-//   /// See also [countStream2].
-//   CountStream2Provider(
-//     int a,
-//   ) : this._internal(
-//           (ref) => countStream2(
-//             ref as CountStream2Ref,
-//             a,
-//           ),
-//           from: countStream2ProviderFamily,
-//           name: r'countStream2ProviderFamily',
-//           debugGetCreateSourceHash:
-//               const bool.fromEnvironment('dart.vm.product')
-//                   ? null
-//                   : _$countStream2Hash,
-//           dependencies: null,
-//           allTransitiveDependencies: null,
-//           a: a,
-//         );
-
-//   CountStream2Provider._internal(
-//     super.create, {
-//     required super.name,
-//     required super.dependencies,
-//     required super.allTransitiveDependencies,
-//     required super.debugGetCreateSourceHash,
-//     required super.from,
-//     required this.a,
-//   }) : super.internal();
-
-//   final int a;
-
-//   @override
-//   Override overrideWith(
-//     Stream<int> Function(CountStream2Ref ref) create,
-//   ) {
-//     return $ProviderOverride(
-//       origin: this,
-//       providerOverride: CountStream2Provider._internal(
-//         (ref) => create(ref as CountStream2Ref),
-//         from: from,
-//         name: null,
-//         dependencies: null,
-//         allTransitiveDependencies: null,
-//         debugGetCreateSourceHash: null,
-//         a: a,
-//       ),
-//     );
-//   }
-
-//   @override
-//   (int,) get argument {
-//     return (a,);
-//   }
-
-//   @override
-//   _CountStream2ProviderElement createElement(
-//     ProviderContainer container,
-//   ) {
-//     return _CountStream2ProviderElement(this, container);
-//   }
-
-//   CountStream2Provider _copyWith(
-//     Stream<int> Function(CountStream2Ref ref) create,
-//   ) {
-//     return CountStream2Provider._internal(
-//       (ref) => create(ref as CountStream2Ref),
-//       name: name,
-//       dependencies: dependencies,
-//       allTransitiveDependencies: allTransitiveDependencies,
-//       debugGetCreateSourceHash: debugGetCreateSourceHash,
-//       from: from,
-//       a: a,
-//     );
-//   }
-
-//   @override
-//   bool operator ==(Object other) {
-//     return other is CountStream2Provider && other.a == a;
-//   }
-
-//   @override
-//   int get hashCode {
-//     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-//     hash = _SystemHash.combine(hash, a.hashCode);
-
-//     return _SystemHash.finish(hash);
-//   }
-
-//   @override
-//   String toString() => 'countStream2ProviderFamily$argument';
-// }
-
-// mixin CountStream2Ref on AutoDisposeStreamProviderRef<int> {
-//   /// The parameter `a` of this provider.
-//   int get a;
-// }
-
-// class _CountStream2ProviderElement extends AutoDisposeStreamProviderElement<int>
-//     with CountStream2Ref {
-//   _CountStream2ProviderElement(super.provider, super.container);
-
-//   @override
-//   int get a => (origin as CountStream2Provider).a;
-// }
-
-// String _$countNotifierHash() => r'a8dd7a66ee0002b8af657245c4affaa206fd99ec';
-
-// /// See also [CountNotifier].
-// @ProviderFor(CountNotifier)
-// final countNotifierPod =
-//     AutoDisposeNotifierProvider<CountNotifier, int>.internal(
-//   CountNotifier.new,
-//   name: r'countNotifierPod',
-//   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-//       ? null
-//       : _$countNotifierHash,
-//   dependencies: null,
-//   allTransitiveDependencies: null,
-// );
-
-// typedef _$CountNotifier = AutoDisposeNotifier<int>;
-// String _$countAsyncNotifierHash() =>
-//     r'2a7049d864bf396e44a5937b4001efb4774a5f29';
-
-// /// See also [CountAsyncNotifier].
-// @ProviderFor(CountAsyncNotifier)
-// final countAsyncNotifierPod =
-//     AutoDisposeAsyncNotifierProvider<CountAsyncNotifier, int>.internal(
-//   CountAsyncNotifier.new,
-//   name: r'countAsyncNotifierPod',
-//   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-//       ? null
-//       : _$countAsyncNotifierHash,
-//   dependencies: null,
-//   allTransitiveDependencies: null,
-// );
-
-// typedef _$CountAsyncNotifier = AutoDisposeAsyncNotifier<int>;
-// String _$countStreamNotifierHash() =>
-//     r'61d2cd311c4808f8d7e8b2d67f5c7b85337666c6';
-
-// /// See also [CountStreamNotifier].
-// @ProviderFor(CountStreamNotifier)
-// final countStreamNotifierPod =
-//     AutoDisposeStreamNotifierProvider<CountStreamNotifier, int>.internal(
-//   CountStreamNotifier.new,
-//   name: r'countStreamNotifierPod',
-//   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-//       ? null
-//       : _$countStreamNotifierHash,
-//   dependencies: null,
-//   allTransitiveDependencies: null,
-// );
-
-// typedef _$CountStreamNotifier = AutoDisposeStreamNotifier<int>;
-// String _$countNotifier2Hash() => r'ef12bb4f94add336804ae43bcdbcd8e9b0bec420';
-
-// abstract class _$CountNotifier2 extends BuildlessAutoDisposeNotifier<int> {
-//   late final int a;
-
-//   int build(
-//     int a,
-//   );
-// }
-
-// /// See also [CountNotifier2].
-// @ProviderFor(CountNotifier2)
-// const countNotifier2ProviderFamily = CountNotifier2Family();
-
-// /// See also [CountNotifier2].
-// class CountNotifier2Family extends Family {
-//   /// See also [CountNotifier2].
-//   const CountNotifier2Family();
-
-//   static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-//   static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-//   @override
-//   Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-//   @override
-//   Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-//       _allTransitiveDependencies;
-
-//   @override
-//   String? get name => r'countNotifier2ProviderFamily';
-
-//   /// See also [CountNotifier2].
-//   CountNotifier2Provider call(
-//     int a,
-//   ) {
-//     return CountNotifier2Provider(
-//       a,
-//     );
-//   }
-
-//   /// Enables overriding the behavior of this provider, no matter the parameters.
-//   Override overrideWith(CountNotifier2 Function() create) {
-//     return _$CountNotifier2FamilyOverride(this, create);
-//   }
-
-//   @override
-//   String toString() => 'countNotifier2ProviderFamily';
-// }
-
-// class _$CountNotifier2FamilyOverride implements $FamilyOverride {
-//   _$CountNotifier2FamilyOverride(this.from, this.create);
-
-//   final CountNotifier2 Function() create;
-
-//   @override
-//   final CountNotifier2Family from;
-
-//   @override
-//   _CountNotifier2ProviderElement createElement(
-//     ProviderContainer container,
-//     covariant CountNotifier2Provider provider,
-//   ) {
-//     return provider._copyWith(create).createElement(container);
-//   }
-
-//   @override
-//   String toString() => 'countNotifier2ProviderFamily.overrideWith(...)';
-// }
-
-// /// See also [CountNotifier2].
-// class CountNotifier2Provider
-//     extends AutoDisposeNotifierProviderImpl<CountNotifier2, int> {
-//   /// See also [CountNotifier2].
-//   CountNotifier2Provider(
-//     int a,
-//   ) : this._internal(
-//           () => CountNotifier2()..a = a,
-//           from: countNotifier2ProviderFamily,
-//           name: r'countNotifier2ProviderFamily',
-//           debugGetCreateSourceHash:
-//               const bool.fromEnvironment('dart.vm.product')
-//                   ? null
-//                   : _$countNotifier2Hash,
-//           dependencies: null,
-//           allTransitiveDependencies: null,
-//           a: a,
-//         );
-
-//   CountNotifier2Provider._internal(
-//     super.create, {
-//     required super.name,
-//     required super.dependencies,
-//     required super.allTransitiveDependencies,
-//     required super.debugGetCreateSourceHash,
-//     required super.from,
-//     required this.a,
-//   }) : super.internal();
-
-//   final int a;
-
-//   @override
-//   int runNotifierBuild(
-//     covariant CountNotifier2 notifier,
-//   ) {
-//     return notifier.build(
-//       a,
-//     );
-//   }
-
-//   @override
-//   Override overrideWith(CountNotifier2 Function() create) {
-//     return $ProviderOverride(
-//       origin: this,
-//       providerOverride: CountNotifier2Provider._internal(
-//         () => create()..a = a,
-//         from: from,
-//         name: null,
-//         dependencies: null,
-//         allTransitiveDependencies: null,
-//         debugGetCreateSourceHash: null,
-//         a: a,
-//       ),
-//     );
-//   }
-
-//   @override
-//   (int,) get argument {
-//     return (a,);
-//   }
-
-//   @override
-//   _CountNotifier2ProviderElement createElement(
-//     ProviderContainer container,
-//   ) {
-//     return _CountNotifier2ProviderElement(this, container);
-//   }
-
-//   CountNotifier2Provider _copyWith(
-//     CountNotifier2 Function() create,
-//   ) {
-//     return CountNotifier2Provider._internal(
-//       () => create()..a = a,
-//       name: name,
-//       dependencies: dependencies,
-//       allTransitiveDependencies: allTransitiveDependencies,
-//       debugGetCreateSourceHash: debugGetCreateSourceHash,
-//       from: from,
-//       a: a,
-//     );
-//   }
-
-//   @override
-//   bool operator ==(Object other) {
-//     return other is CountNotifier2Provider && other.a == a;
-//   }
-
-//   @override
-//   int get hashCode {
-//     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-//     hash = _SystemHash.combine(hash, a.hashCode);
-
-//     return _SystemHash.finish(hash);
-//   }
-
-//   @override
-//   String toString() => 'countNotifier2ProviderFamily$argument';
-// }
-
-// mixin CountNotifier2Ref on AutoDisposeNotifierProviderRef<int> {
-//   /// The parameter `a` of this provider.
-//   int get a;
-// }
-
-// class _CountNotifier2ProviderElement
-//     extends AutoDisposeNotifierProviderElement<CountNotifier2, int>
-//     with CountNotifier2Ref {
-//   _CountNotifier2ProviderElement(super.provider, super.container);
-
-//   @override
-//   int get a => (origin as CountNotifier2Provider).a;
-// }
-
-// String _$countAsyncNotifier2Hash() =>
-//     r'e4bd4d858edbb47fa0d7581f3cfa72e13c914d3d';
-
-// abstract class _$CountAsyncNotifier2
-//     extends BuildlessAutoDisposeAsyncNotifier<int> {
-//   late final int a;
-
-//   FutureOr<int> build(
-//     int a,
-//   );
-// }
-
-// /// See also [CountAsyncNotifier2].
-// @ProviderFor(CountAsyncNotifier2)
-// const countAsyncNotifier2ProviderFamily = CountAsyncNotifier2Family();
-
-// /// See also [CountAsyncNotifier2].
-// class CountAsyncNotifier2Family extends Family {
-//   /// See also [CountAsyncNotifier2].
-//   const CountAsyncNotifier2Family();
-
-//   static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-//   static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-//   @override
-//   Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-//   @override
-//   Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-//       _allTransitiveDependencies;
-
-//   @override
-//   String? get name => r'countAsyncNotifier2ProviderFamily';
-
-//   /// See also [CountAsyncNotifier2].
-//   CountAsyncNotifier2Provider call(
-//     int a,
-//   ) {
-//     return CountAsyncNotifier2Provider(
-//       a,
-//     );
-//   }
-
-//   /// Enables overriding the behavior of this provider, no matter the parameters.
-//   Override overrideWith(CountAsyncNotifier2 Function() create) {
-//     return _$CountAsyncNotifier2FamilyOverride(this, create);
-//   }
-
-//   @override
-//   String toString() => 'countAsyncNotifier2ProviderFamily';
-// }
-
-// class _$CountAsyncNotifier2FamilyOverride implements $FamilyOverride {
-//   _$CountAsyncNotifier2FamilyOverride(this.from, this.create);
-
-//   final CountAsyncNotifier2 Function() create;
-
-//   @override
-//   final CountAsyncNotifier2Family from;
-
-//   @override
-//   _CountAsyncNotifier2ProviderElement createElement(
-//     ProviderContainer container,
-//     covariant CountAsyncNotifier2Provider provider,
-//   ) {
-//     return provider._copyWith(create).createElement(container);
-//   }
-
-//   @override
-//   String toString() => 'countAsyncNotifier2ProviderFamily.overrideWith(...)';
-// }
-
-// /// See also [CountAsyncNotifier2].
-// class CountAsyncNotifier2Provider
-//     extends AutoDisposeAsyncNotifierProviderImpl<CountAsyncNotifier2, int> {
-//   /// See also [CountAsyncNotifier2].
-//   CountAsyncNotifier2Provider(
-//     int a,
-//   ) : this._internal(
-//           () => CountAsyncNotifier2()..a = a,
-//           from: countAsyncNotifier2ProviderFamily,
-//           name: r'countAsyncNotifier2ProviderFamily',
-//           debugGetCreateSourceHash:
-//               const bool.fromEnvironment('dart.vm.product')
-//                   ? null
-//                   : _$countAsyncNotifier2Hash,
-//           dependencies: null,
-//           allTransitiveDependencies: null,
-//           a: a,
-//         );
-
-//   CountAsyncNotifier2Provider._internal(
-//     super.create, {
-//     required super.name,
-//     required super.dependencies,
-//     required super.allTransitiveDependencies,
-//     required super.debugGetCreateSourceHash,
-//     required super.from,
-//     required this.a,
-//   }) : super.internal();
-
-//   final int a;
-
-//   @override
-//   FutureOr<int> runNotifierBuild(
-//     covariant CountAsyncNotifier2 notifier,
-//   ) {
-//     return notifier.build(
-//       a,
-//     );
-//   }
-
-//   @override
-//   Override overrideWith(CountAsyncNotifier2 Function() create) {
-//     return $ProviderOverride(
-//       origin: this,
-//       providerOverride: CountAsyncNotifier2Provider._internal(
-//         () => create()..a = a,
-//         from: from,
-//         name: null,
-//         dependencies: null,
-//         allTransitiveDependencies: null,
-//         debugGetCreateSourceHash: null,
-//         a: a,
-//       ),
-//     );
-//   }
-
-//   @override
-//   (int,) get argument {
-//     return (a,);
-//   }
-
-//   @override
-//   _CountAsyncNotifier2ProviderElement createElement(
-//     ProviderContainer container,
-//   ) {
-//     return _CountAsyncNotifier2ProviderElement(this, container);
-//   }
-
-//   CountAsyncNotifier2Provider _copyWith(
-//     CountAsyncNotifier2 Function() create,
-//   ) {
-//     return CountAsyncNotifier2Provider._internal(
-//       () => create()..a = a,
-//       name: name,
-//       dependencies: dependencies,
-//       allTransitiveDependencies: allTransitiveDependencies,
-//       debugGetCreateSourceHash: debugGetCreateSourceHash,
-//       from: from,
-//       a: a,
-//     );
-//   }
-
-//   @override
-//   bool operator ==(Object other) {
-//     return other is CountAsyncNotifier2Provider && other.a == a;
-//   }
-
-//   @override
-//   int get hashCode {
-//     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-//     hash = _SystemHash.combine(hash, a.hashCode);
-
-//     return _SystemHash.finish(hash);
-//   }
-
-//   @override
-//   String toString() => 'countAsyncNotifier2ProviderFamily$argument';
-// }
-
-// mixin CountAsyncNotifier2Ref on AutoDisposeAsyncNotifierProviderRef<int> {
-//   /// The parameter `a` of this provider.
-//   int get a;
-// }
-
-// class _CountAsyncNotifier2ProviderElement
-//     extends AutoDisposeAsyncNotifierProviderElement<CountAsyncNotifier2, int>
-//     with CountAsyncNotifier2Ref {
-//   _CountAsyncNotifier2ProviderElement(super.provider, super.container);
-
-//   @override
-//   int get a => (origin as CountAsyncNotifier2Provider).a;
-// }
-
-// String _$countStreamNotifier2Hash() =>
-//     r'13be1b7aa32801b33c68f2a228851d2fb6a4a9ee';
-
-// abstract class _$CountStreamNotifier2
-//     extends BuildlessAutoDisposeStreamNotifier<int> {
-//   late final int a;
-
-//   Stream<int> build(
-//     int a,
-//   );
-// }
-
-// /// See also [CountStreamNotifier2].
-// @ProviderFor(CountStreamNotifier2)
-// const countStreamNotifier2ProviderFamily = CountStreamNotifier2Family();
-
-// /// See also [CountStreamNotifier2].
-// class CountStreamNotifier2Family extends Family {
-//   /// See also [CountStreamNotifier2].
-//   const CountStreamNotifier2Family();
-
-//   static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-//   static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-//   @override
-//   Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-//   @override
-//   Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-//       _allTransitiveDependencies;
-
-//   @override
-//   String? get name => r'countStreamNotifier2ProviderFamily';
-
-//   /// See also [CountStreamNotifier2].
-//   CountStreamNotifier2Provider call(
-//     int a,
-//   ) {
-//     return CountStreamNotifier2Provider(
-//       a,
-//     );
-//   }
-
-//   /// Enables overriding the behavior of this provider, no matter the parameters.
-//   Override overrideWith(CountStreamNotifier2 Function() create) {
-//     return _$CountStreamNotifier2FamilyOverride(this, create);
-//   }
-
-//   @override
-//   String toString() => 'countStreamNotifier2ProviderFamily';
-// }
-
-// class _$CountStreamNotifier2FamilyOverride implements $FamilyOverride {
-//   _$CountStreamNotifier2FamilyOverride(this.from, this.create);
-
-//   final CountStreamNotifier2 Function() create;
-
-//   @override
-//   final CountStreamNotifier2Family from;
-
-//   @override
-//   _CountStreamNotifier2ProviderElement createElement(
-//     ProviderContainer container,
-//     covariant CountStreamNotifier2Provider provider,
-//   ) {
-//     return provider._copyWith(create).createElement(container);
-//   }
-
-//   @override
-//   String toString() => 'countStreamNotifier2ProviderFamily.overrideWith(...)';
-// }
-
-// /// See also [CountStreamNotifier2].
-// class CountStreamNotifier2Provider
-//     extends AutoDisposeStreamNotifierProviderImpl<CountStreamNotifier2, int> {
-//   /// See also [CountStreamNotifier2].
-//   CountStreamNotifier2Provider(
-//     int a,
-//   ) : this._internal(
-//           () => CountStreamNotifier2()..a = a,
-//           from: countStreamNotifier2ProviderFamily,
-//           name: r'countStreamNotifier2ProviderFamily',
-//           debugGetCreateSourceHash:
-//               const bool.fromEnvironment('dart.vm.product')
-//                   ? null
-//                   : _$countStreamNotifier2Hash,
-//           dependencies: null,
-//           allTransitiveDependencies: null,
-//           a: a,
-//         );
-
-//   CountStreamNotifier2Provider._internal(
-//     super.create, {
-//     required super.name,
-//     required super.dependencies,
-//     required super.allTransitiveDependencies,
-//     required super.debugGetCreateSourceHash,
-//     required super.from,
-//     required this.a,
-//   }) : super.internal();
-
-//   final int a;
-
-//   @override
-//   Stream<int> runNotifierBuild(
-//     covariant CountStreamNotifier2 notifier,
-//   ) {
-//     return notifier.build(
-//       a,
-//     );
-//   }
-
-//   @override
-//   Override overrideWith(CountStreamNotifier2 Function() create) {
-//     return $ProviderOverride(
-//       origin: this,
-//       providerOverride: CountStreamNotifier2Provider._internal(
-//         () => create()..a = a,
-//         from: from,
-//         name: null,
-//         dependencies: null,
-//         allTransitiveDependencies: null,
-//         debugGetCreateSourceHash: null,
-//         a: a,
-//       ),
-//     );
-//   }
-
-//   @override
-//   (int,) get argument {
-//     return (a,);
-//   }
-
-//   @override
-//   _CountStreamNotifier2ProviderElement createElement(
-//     ProviderContainer container,
-//   ) {
-//     return _CountStreamNotifier2ProviderElement(this, container);
-//   }
-
-//   CountStreamNotifier2Provider _copyWith(
-//     CountStreamNotifier2 Function() create,
-//   ) {
-//     return CountStreamNotifier2Provider._internal(
-//       () => create()..a = a,
-//       name: name,
-//       dependencies: dependencies,
-//       allTransitiveDependencies: allTransitiveDependencies,
-//       debugGetCreateSourceHash: debugGetCreateSourceHash,
-//       from: from,
-//       a: a,
-//     );
-//   }
-
-//   @override
-//   bool operator ==(Object other) {
-//     return other is CountStreamNotifier2Provider && other.a == a;
-//   }
-
-//   @override
-//   int get hashCode {
-//     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-//     hash = _SystemHash.combine(hash, a.hashCode);
-
-//     return _SystemHash.finish(hash);
-//   }
-
-//   @override
-//   String toString() => 'countStreamNotifier2ProviderFamily$argument';
-// }
-
-// mixin CountStreamNotifier2Ref on AutoDisposeStreamNotifierProviderRef<int> {
-//   /// The parameter `a` of this provider.
-//   int get a;
-// }
-
-// class _CountStreamNotifier2ProviderElement
-//     extends AutoDisposeStreamNotifierProviderElement<CountStreamNotifier2, int>
-//     with CountStreamNotifier2Ref {
-//   _CountStreamNotifier2ProviderElement(super.provider, super.container);
-
-//   @override
-//   int get a => (origin as CountStreamNotifier2Provider).a;
-// }
-// // ignore_for_file: type=lint
-// // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'main.dart';
+
+// **************************************************************************
+// RiverpodGenerator
+// **************************************************************************
+
+typedef CountRef = Ref<int>;
+
+const countPod = CountProvider._();
+
+final class CountProvider extends $FunctionalProvider<int, int, CountRef>
+    with $Provider<int, CountRef> {
+  const CountProvider._(
+      {int Function(
+        CountRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'countPod',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final int Function(
+    CountRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$countHash();
+
+  @override
+  $ProviderElement<int> createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  int create(CountRef ref) {
+    final fn = _createCb ?? count;
+
+    return fn(
+      ref,
+    );
+  }
+
+  @override
+  CountProvider copyWithCreate(
+    int Function(
+      CountRef ref,
+    ) create,
+  ) {
+    return CountProvider._(create: create);
+  }
+}
+
+String _$countHash() => r'4c7e72b275767a60ece5e8662ab1e28f73cf7e44';
+
+typedef CountFutureRef = Ref<AsyncValue<int>>;
+
+const countFuturePod = CountFutureProvider._();
+
+final class CountFutureProvider
+    extends $FunctionalProvider<AsyncValue<int>, FutureOr<int>, CountFutureRef>
+    with $FutureModifier<int>, $FutureProvider<int, CountFutureRef> {
+  const CountFutureProvider._(
+      {FutureOr<int> Function(
+        CountFutureRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'countFuturePod',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final FutureOr<int> Function(
+    CountFutureRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$countFutureHash();
+
+  @override
+  $FutureProviderElement<int> createElement(ProviderContainer container) =>
+      $FutureProviderElement(this, container);
+
+  @override
+  FutureOr<int> create(CountFutureRef ref) {
+    final fn = _createCb ?? countFuture;
+
+    return fn(
+      ref,
+    );
+  }
+
+  @override
+  CountFutureProvider copyWithCreate(
+    FutureOr<int> Function(
+      CountFutureRef ref,
+    ) create,
+  ) {
+    return CountFutureProvider._(create: create);
+  }
+}
+
+String _$countFutureHash() => r'ec7cc31ce1c1a10607f1dcb35dd217acd2877729';
+
+typedef CountStreamRef = Ref<AsyncValue<int>>;
+
+const countStreamPod = CountStreamProvider._();
+
+final class CountStreamProvider
+    extends $FunctionalProvider<AsyncValue<int>, Stream<int>, CountStreamRef>
+    with $FutureModifier<int>, $StreamProvider<int, CountStreamRef> {
+  const CountStreamProvider._(
+      {Stream<int> Function(
+        CountStreamRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'countStreamPod',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final Stream<int> Function(
+    CountStreamRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$countStreamHash();
+
+  @override
+  $StreamProviderElement<int> createElement(ProviderContainer container) =>
+      $StreamProviderElement(this, container);
+
+  @override
+  Stream<int> create(CountStreamRef ref) {
+    final fn = _createCb ?? countStream;
+
+    return fn(
+      ref,
+    );
+  }
+
+  @override
+  CountStreamProvider copyWithCreate(
+    Stream<int> Function(
+      CountStreamRef ref,
+    ) create,
+  ) {
+    return CountStreamProvider._(create: create);
+  }
+}
+
+String _$countStreamHash() => r'1dbe49244ea19e8dbc3af0534429bb323720c07a';
+
+typedef Count2Ref = Ref<int>;
+
+const count2ProviderFamily = Count2Family._();
+
+final class Count2Provider extends $FunctionalProvider<int, int, Count2Ref>
+    with $Provider<int, Count2Ref> {
+  const Count2Provider._(
+      {required Count2Family super.from,
+      required (int,) super.argument,
+      int Function(
+        Count2Ref ref,
+        int a,
+      )? create})
+      : _createCb = create,
+        super(
+          name: r'count2ProviderFamily',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final int Function(
+    Count2Ref ref,
+    int a,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$count2Hash();
+
+  @override
+  $ProviderElement<int> createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  int create(Count2Ref ref) {
+    final fn = _createCb ?? count2;
+    final (int,) argument = this.argument! as (int,);
+    return fn(
+      ref,
+      argument.$1,
+    );
+  }
+
+  @override
+  Count2Provider copyWithCreate(
+    int Function(
+      Count2Ref ref,
+    ) create,
+  ) {
+    return Count2Provider._(
+        argument: argument! as (int,),
+        from: from! as Count2Family,
+        create: (
+          ref,
+          int a,
+        ) =>
+            create(ref));
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is Count2Provider && other.argument == argument;
+  }
+}
+
+String _$count2Hash() => r'6256825480d83bb13acde282cf3c9d9524cc3a6c';
+
+final class Count2Family extends Family {
+  const Count2Family._()
+      : super(
+          name: r'count2ProviderFamily',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  Count2Provider call(
+    int a,
+  ) =>
+      Count2Provider._(argument: (a,), from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$count2Hash();
+
+  @override
+  String toString() => r'count2';
+}
+
+typedef CountFuture2Ref = Ref<AsyncValue<int>>;
+
+const countFuture2ProviderFamily = CountFuture2Family._();
+
+final class CountFuture2Provider
+    extends $FunctionalProvider<AsyncValue<int>, FutureOr<int>, CountFuture2Ref>
+    with $FutureModifier<int>, $FutureProvider<int, CountFuture2Ref> {
+  const CountFuture2Provider._(
+      {required CountFuture2Family super.from,
+      required (int,) super.argument,
+      FutureOr<int> Function(
+        CountFuture2Ref ref,
+        int a,
+      )? create})
+      : _createCb = create,
+        super(
+          name: r'countFuture2ProviderFamily',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final FutureOr<int> Function(
+    CountFuture2Ref ref,
+    int a,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$countFuture2Hash();
+
+  @override
+  $FutureProviderElement<int> createElement(ProviderContainer container) =>
+      $FutureProviderElement(this, container);
+
+  @override
+  FutureOr<int> create(CountFuture2Ref ref) {
+    final fn = _createCb ?? countFuture2;
+    final (int,) argument = this.argument! as (int,);
+    return fn(
+      ref,
+      argument.$1,
+    );
+  }
+
+  @override
+  CountFuture2Provider copyWithCreate(
+    FutureOr<int> Function(
+      CountFuture2Ref ref,
+    ) create,
+  ) {
+    return CountFuture2Provider._(
+        argument: argument! as (int,),
+        from: from! as CountFuture2Family,
+        create: (
+          ref,
+          int a,
+        ) =>
+            create(ref));
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is CountFuture2Provider && other.argument == argument;
+  }
+}
+
+String _$countFuture2Hash() => r'096675b70a267f5d7c62ac7d3e7dd231ef529034';
+
+final class CountFuture2Family extends Family {
+  const CountFuture2Family._()
+      : super(
+          name: r'countFuture2ProviderFamily',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  CountFuture2Provider call(
+    int a,
+  ) =>
+      CountFuture2Provider._(argument: (a,), from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$countFuture2Hash();
+
+  @override
+  String toString() => r'countFuture2';
+}
+
+typedef CountStream2Ref = Ref<AsyncValue<int>>;
+
+const countStream2ProviderFamily = CountStream2Family._();
+
+final class CountStream2Provider
+    extends $FunctionalProvider<AsyncValue<int>, Stream<int>, CountStream2Ref>
+    with $FutureModifier<int>, $StreamProvider<int, CountStream2Ref> {
+  const CountStream2Provider._(
+      {required CountStream2Family super.from,
+      required (int,) super.argument,
+      Stream<int> Function(
+        CountStream2Ref ref,
+        int a,
+      )? create})
+      : _createCb = create,
+        super(
+          name: r'countStream2ProviderFamily',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final Stream<int> Function(
+    CountStream2Ref ref,
+    int a,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$countStream2Hash();
+
+  @override
+  $StreamProviderElement<int> createElement(ProviderContainer container) =>
+      $StreamProviderElement(this, container);
+
+  @override
+  Stream<int> create(CountStream2Ref ref) {
+    final fn = _createCb ?? countStream2;
+    final (int,) argument = this.argument! as (int,);
+    return fn(
+      ref,
+      argument.$1,
+    );
+  }
+
+  @override
+  CountStream2Provider copyWithCreate(
+    Stream<int> Function(
+      CountStream2Ref ref,
+    ) create,
+  ) {
+    return CountStream2Provider._(
+        argument: argument! as (int,),
+        from: from! as CountStream2Family,
+        create: (
+          ref,
+          int a,
+        ) =>
+            create(ref));
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is CountStream2Provider && other.argument == argument;
+  }
+}
+
+String _$countStream2Hash() => r'051264dd685ebc0a57e454bb676957c93cb4ae20';
+
+final class CountStream2Family extends Family {
+  const CountStream2Family._()
+      : super(
+          name: r'countStream2ProviderFamily',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  CountStream2Provider call(
+    int a,
+  ) =>
+      CountStream2Provider._(argument: (a,), from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$countStream2Hash();
+
+  @override
+  String toString() => r'countStream2';
+}
+
+const countNotifierPod = CountNotifierProvider._();
+
+final class CountNotifierProvider
+    extends $NotifierProvider<CountNotifier, int> {
+  const CountNotifierProvider._(
+      {super.runNotifierBuildOverride, CountNotifier Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'countNotifierPod',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final CountNotifier Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$countNotifierHash();
+
+  @$internal
+  @override
+  CountNotifier create() => _createCb?.call() ?? CountNotifier();
+
+  @$internal
+  @override
+  CountNotifierProvider copyWithCreate(
+    CountNotifier Function() create,
+  ) {
+    return CountNotifierProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  CountNotifierProvider copyWithBuild(
+    int Function(Ref<int>, CountNotifier) build,
+  ) {
+    return CountNotifierProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<CountNotifier, int> createElement(
+          ProviderContainer container) =>
+      $NotifierProviderElement(this, container);
+}
+
+String _$countNotifierHash() => r'a8dd7a66ee0002b8af657245c4affaa206fd99ec';
+
+abstract class _$CountNotifier extends $Notifier<int> {
+  int build();
+
+  @$internal
+  @override
+  int runBuild() => build();
+}
+
+const countAsyncNotifierPod = CountAsyncNotifierProvider._();
+
+final class CountAsyncNotifierProvider
+    extends $AsyncNotifierProvider<CountAsyncNotifier, int> {
+  const CountAsyncNotifierProvider._(
+      {super.runNotifierBuildOverride, CountAsyncNotifier Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'countAsyncNotifierPod',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final CountAsyncNotifier Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$countAsyncNotifierHash();
+
+  @$internal
+  @override
+  CountAsyncNotifier create() => _createCb?.call() ?? CountAsyncNotifier();
+
+  @$internal
+  @override
+  CountAsyncNotifierProvider copyWithCreate(
+    CountAsyncNotifier Function() create,
+  ) {
+    return CountAsyncNotifierProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  CountAsyncNotifierProvider copyWithBuild(
+    FutureOr<int> Function(Ref<AsyncValue<int>>, CountAsyncNotifier) build,
+  ) {
+    return CountAsyncNotifierProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $AsyncNotifierProviderElement<CountAsyncNotifier, int> createElement(
+          ProviderContainer container) =>
+      $AsyncNotifierProviderElement(this, container);
+}
+
+String _$countAsyncNotifierHash() =>
+    r'2a7049d864bf396e44a5937b4001efb4774a5f29';
+
+abstract class _$CountAsyncNotifier extends $AsyncNotifier<int> {
+  FutureOr<int> build();
+
+  @$internal
+  @override
+  FutureOr<int> runBuild() => build();
+}
+
+const countStreamNotifierPod = CountStreamNotifierProvider._();
+
+final class CountStreamNotifierProvider
+    extends $StreamNotifierProvider<CountStreamNotifier, int> {
+  const CountStreamNotifierProvider._(
+      {super.runNotifierBuildOverride, CountStreamNotifier Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'countStreamNotifierPod',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final CountStreamNotifier Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$countStreamNotifierHash();
+
+  @$internal
+  @override
+  CountStreamNotifier create() => _createCb?.call() ?? CountStreamNotifier();
+
+  @$internal
+  @override
+  CountStreamNotifierProvider copyWithCreate(
+    CountStreamNotifier Function() create,
+  ) {
+    return CountStreamNotifierProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  CountStreamNotifierProvider copyWithBuild(
+    Stream<int> Function(Ref<AsyncValue<int>>, CountStreamNotifier) build,
+  ) {
+    return CountStreamNotifierProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $StreamNotifierProviderElement<CountStreamNotifier, int> createElement(
+          ProviderContainer container) =>
+      $StreamNotifierProviderElement(this, container);
+}
+
+String _$countStreamNotifierHash() =>
+    r'61d2cd311c4808f8d7e8b2d67f5c7b85337666c6';
+
+abstract class _$CountStreamNotifier extends $StreamNotifier<int> {
+  Stream<int> build();
+
+  @$internal
+  @override
+  Stream<int> runBuild() => build();
+}
+
+const countNotifier2ProviderFamily = CountNotifier2Family._();
+
+final class CountNotifier2Provider
+    extends $NotifierProvider<CountNotifier2, int> {
+  const CountNotifier2Provider._(
+      {required CountNotifier2Family super.from,
+      required (int,) super.argument,
+      super.runNotifierBuildOverride,
+      CountNotifier2 Function()? create})
+      : _createCb = create,
+        super(
+          name: r'countNotifier2ProviderFamily',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final CountNotifier2 Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$countNotifier2Hash();
+
+  @$internal
+  @override
+  CountNotifier2 create() => _createCb?.call() ?? CountNotifier2();
+
+  @$internal
+  @override
+  CountNotifier2Provider copyWithCreate(
+    CountNotifier2 Function() create,
+  ) {
+    return CountNotifier2Provider._(
+        argument: argument! as (int,),
+        from: from! as CountNotifier2Family,
+        create: create);
+  }
+
+  @$internal
+  @override
+  CountNotifier2Provider copyWithBuild(
+    int Function(Ref<int>, CountNotifier2) build,
+  ) {
+    return CountNotifier2Provider._(
+        argument: argument! as (int,),
+        from: from! as CountNotifier2Family,
+        runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<CountNotifier2, int> createElement(
+          ProviderContainer container) =>
+      $NotifierProviderElement(this, container);
+
+  @override
+  bool operator ==(Object other) {
+    return other is CountNotifier2Provider && other.argument == argument;
+  }
+}
+
+String _$countNotifier2Hash() => r'ef12bb4f94add336804ae43bcdbcd8e9b0bec420';
+
+final class CountNotifier2Family extends Family {
+  const CountNotifier2Family._()
+      : super(
+          name: r'countNotifier2ProviderFamily',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  CountNotifier2Provider call(
+    int a,
+  ) =>
+      CountNotifier2Provider._(argument: (a,), from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$countNotifier2Hash();
+
+  @override
+  String toString() => r'CountNotifier2';
+}
+
+abstract class _$CountNotifier2 extends $Notifier<int> {
+  late final _$args =
+      (ref as $NotifierProviderElement).origin.argument as (int,);
+  int get a => _$args.$1;
+
+  int build(
+    int a,
+  );
+
+  @$internal
+  @override
+  int runBuild() => build(
+        _$args.$1,
+      );
+}
+
+const countAsyncNotifier2ProviderFamily = CountAsyncNotifier2Family._();
+
+final class CountAsyncNotifier2Provider
+    extends $AsyncNotifierProvider<CountAsyncNotifier2, int> {
+  const CountAsyncNotifier2Provider._(
+      {required CountAsyncNotifier2Family super.from,
+      required (int,) super.argument,
+      super.runNotifierBuildOverride,
+      CountAsyncNotifier2 Function()? create})
+      : _createCb = create,
+        super(
+          name: r'countAsyncNotifier2ProviderFamily',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final CountAsyncNotifier2 Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$countAsyncNotifier2Hash();
+
+  @$internal
+  @override
+  CountAsyncNotifier2 create() => _createCb?.call() ?? CountAsyncNotifier2();
+
+  @$internal
+  @override
+  CountAsyncNotifier2Provider copyWithCreate(
+    CountAsyncNotifier2 Function() create,
+  ) {
+    return CountAsyncNotifier2Provider._(
+        argument: argument! as (int,),
+        from: from! as CountAsyncNotifier2Family,
+        create: create);
+  }
+
+  @$internal
+  @override
+  CountAsyncNotifier2Provider copyWithBuild(
+    FutureOr<int> Function(Ref<AsyncValue<int>>, CountAsyncNotifier2) build,
+  ) {
+    return CountAsyncNotifier2Provider._(
+        argument: argument! as (int,),
+        from: from! as CountAsyncNotifier2Family,
+        runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $AsyncNotifierProviderElement<CountAsyncNotifier2, int> createElement(
+          ProviderContainer container) =>
+      $AsyncNotifierProviderElement(this, container);
+
+  @override
+  bool operator ==(Object other) {
+    return other is CountAsyncNotifier2Provider && other.argument == argument;
+  }
+}
+
+String _$countAsyncNotifier2Hash() =>
+    r'e4bd4d858edbb47fa0d7581f3cfa72e13c914d3d';
+
+final class CountAsyncNotifier2Family extends Family {
+  const CountAsyncNotifier2Family._()
+      : super(
+          name: r'countAsyncNotifier2ProviderFamily',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  CountAsyncNotifier2Provider call(
+    int a,
+  ) =>
+      CountAsyncNotifier2Provider._(argument: (a,), from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$countAsyncNotifier2Hash();
+
+  @override
+  String toString() => r'CountAsyncNotifier2';
+}
+
+abstract class _$CountAsyncNotifier2 extends $AsyncNotifier<int> {
+  late final _$args =
+      (ref as $AsyncNotifierProviderElement).origin.argument as (int,);
+  int get a => _$args.$1;
+
+  FutureOr<int> build(
+    int a,
+  );
+
+  @$internal
+  @override
+  FutureOr<int> runBuild() => build(
+        _$args.$1,
+      );
+}
+
+const countStreamNotifier2ProviderFamily = CountStreamNotifier2Family._();
+
+final class CountStreamNotifier2Provider
+    extends $StreamNotifierProvider<CountStreamNotifier2, int> {
+  const CountStreamNotifier2Provider._(
+      {required CountStreamNotifier2Family super.from,
+      required (int,) super.argument,
+      super.runNotifierBuildOverride,
+      CountStreamNotifier2 Function()? create})
+      : _createCb = create,
+        super(
+          name: r'countStreamNotifier2ProviderFamily',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final CountStreamNotifier2 Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$countStreamNotifier2Hash();
+
+  @$internal
+  @override
+  CountStreamNotifier2 create() => _createCb?.call() ?? CountStreamNotifier2();
+
+  @$internal
+  @override
+  CountStreamNotifier2Provider copyWithCreate(
+    CountStreamNotifier2 Function() create,
+  ) {
+    return CountStreamNotifier2Provider._(
+        argument: argument! as (int,),
+        from: from! as CountStreamNotifier2Family,
+        create: create);
+  }
+
+  @$internal
+  @override
+  CountStreamNotifier2Provider copyWithBuild(
+    Stream<int> Function(Ref<AsyncValue<int>>, CountStreamNotifier2) build,
+  ) {
+    return CountStreamNotifier2Provider._(
+        argument: argument! as (int,),
+        from: from! as CountStreamNotifier2Family,
+        runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $StreamNotifierProviderElement<CountStreamNotifier2, int> createElement(
+          ProviderContainer container) =>
+      $StreamNotifierProviderElement(this, container);
+
+  @override
+  bool operator ==(Object other) {
+    return other is CountStreamNotifier2Provider && other.argument == argument;
+  }
+}
+
+String _$countStreamNotifier2Hash() =>
+    r'13be1b7aa32801b33c68f2a228851d2fb6a4a9ee';
+
+final class CountStreamNotifier2Family extends Family {
+  const CountStreamNotifier2Family._()
+      : super(
+          name: r'countStreamNotifier2ProviderFamily',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  CountStreamNotifier2Provider call(
+    int a,
+  ) =>
+      CountStreamNotifier2Provider._(argument: (a,), from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$countStreamNotifier2Hash();
+
+  @override
+  String toString() => r'CountStreamNotifier2';
+}
+
+abstract class _$CountStreamNotifier2 extends $StreamNotifier<int> {
+  late final _$args =
+      (ref as $StreamNotifierProviderElement).origin.argument as (int,);
+  int get a => _$args.$1;
+
+  Stream<int> build(
+    int a,
+  );
+
+  @$internal
+  @override
+  Stream<int> runBuild() => build(
+        _$args.$1,
+      );
+}
+
+const $kDebugMode = bool.fromEnvironment('dart.vm.product');
+// ignore_for_file: type=lint
+// ignore_for_file: deprecated_member_use_from_same_package

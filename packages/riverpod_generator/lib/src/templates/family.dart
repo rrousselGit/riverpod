@@ -39,7 +39,7 @@ class FamilyTemplate extends Template {
 final class ${provider.familyTypeName} extends Family {
   const ${provider.familyTypeName}._()
       : super(
-        name: r'${provider.name}',
+        name: r'${provider.providerName(options)}',
         dependencies: ${provider.dependencies(options)},
         allTransitiveDependencies: ${provider.allTransitiveDependencies(allTransitiveDependencies)},
         ${provider.providerElement.isAutoDispose ? 'isAutoDispose: true,' : ''}

@@ -21,7 +21,7 @@ final class GeneratedProvider
         super(
           from: null,
           argument: null,
-          name: r'generated',
+          name: r'generatedProvider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
@@ -75,7 +75,7 @@ final class GeneratedFamilyProvider
       )? create})
       : _createCb = create,
         super(
-          name: r'generatedFamily',
+          name: r'generatedFamilyProvider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
@@ -130,7 +130,7 @@ String _$generatedFamilyHash() => r'ed284f58926c87acc81dab9168882d5d1c2cddf8';
 final class GeneratedFamilyFamily extends Family {
   const GeneratedFamilyFamily._()
       : super(
-          name: r'generatedFamily',
+          name: r'generatedFamilyProvider',
           dependencies: null,
           allTransitiveDependencies: null,
           isAutoDispose: true,
@@ -163,7 +163,7 @@ final class $DynamicProvider
         super(
           from: null,
           argument: null,
-          name: r'$dynamic',
+          name: r'$dynamicProvider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
@@ -217,7 +217,7 @@ final class $DynamicFamilyProvider
       )? create})
       : _createCb = create,
         super(
-          name: r'$dynamicFamily',
+          name: r'$dynamicFamilyProvider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
@@ -272,7 +272,7 @@ String _$$dynamicFamilyHash() => r'b764133af8837b8321b08814892f198d4bc1aa18';
 final class $DynamicFamilyFamily extends Family {
   const $DynamicFamilyFamily._()
       : super(
-          name: r'$dynamicFamily',
+          name: r'$dynamicFamilyProvider',
           dependencies: null,
           allTransitiveDependencies: null,
           isAutoDispose: true,
@@ -306,7 +306,7 @@ final class _DynamicProvider
       )? create})
       : _createCb = create,
         super(
-          name: r'_dynamic',
+          name: r'_dynamicProvider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
@@ -361,7 +361,7 @@ String _$dynamicHash() => r'da9dc07960139fff2cf5fe584dca5c524e4f2308';
 final class _DynamicFamily extends Family {
   const _DynamicFamily._()
       : super(
-          name: r'_dynamic',
+          name: r'_dynamicProvider',
           dependencies: null,
           allTransitiveDependencies: null,
           isAutoDispose: true,
@@ -394,7 +394,7 @@ final class AliasProvider
         super(
           from: null,
           argument: null,
-          name: r'alias',
+          name: r'aliasProvider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
@@ -450,7 +450,7 @@ final class AliasFamilyProvider extends $FunctionalProvider<
       )? create})
       : _createCb = create,
         super(
-          name: r'aliasFamily',
+          name: r'aliasFamilyProvider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
@@ -507,7 +507,7 @@ String _$aliasFamilyHash() => r'f345937d5750132f629aef41646b119a301f750b';
 final class AliasFamilyFamily extends Family {
   const AliasFamilyFamily._()
       : super(
-          name: r'aliasFamily',
+          name: r'aliasFamilyProvider',
           dependencies: null,
           allTransitiveDependencies: null,
           isAutoDispose: true,
@@ -535,7 +535,7 @@ final class GeneratedClassProvider
         super(
           from: null,
           argument: null,
-          name: r'GeneratedClass',
+          name: r'generatedClassProvider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
@@ -594,7 +594,7 @@ final class GeneratedClassFamilyProvider
       GeneratedClassFamily Function()? create})
       : _createCb = create,
         super(
-          name: r'GeneratedClassFamily',
+          name: r'generatedClassFamilyProvider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
@@ -649,7 +649,7 @@ String _$generatedClassFamilyHash() =>
 final class GeneratedClassFamilyFamily extends Family {
   const GeneratedClassFamilyFamily._()
       : super(
-          name: r'GeneratedClassFamily',
+          name: r'generatedClassFamilyProvider',
           dependencies: null,
           allTransitiveDependencies: null,
           isAutoDispose: true,
@@ -693,7 +693,7 @@ final class $DynamicClassProvider
         super(
           from: null,
           argument: null,
-          name: r'$DynamicClass',
+          name: r'$dynamicClassProvider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
@@ -752,7 +752,7 @@ final class $DynamicClassFamilyProvider
       $DynamicClassFamily Function()? create})
       : _createCb = create,
         super(
-          name: r'$DynamicClassFamily',
+          name: r'$dynamicClassFamilyProvider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
@@ -807,7 +807,7 @@ String _$$dynamicClassFamilyHash() =>
 final class $DynamicClassFamilyFamily extends Family {
   const $DynamicClassFamilyFamily._()
       : super(
-          name: r'$DynamicClassFamily',
+          name: r'$dynamicClassFamilyProvider',
           dependencies: null,
           allTransitiveDependencies: null,
           isAutoDispose: true,
@@ -851,7 +851,7 @@ final class AliasClassProvider
         super(
           from: null,
           argument: null,
-          name: r'AliasClass',
+          name: r'aliasClassProvider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
@@ -910,7 +910,7 @@ final class AliasClassFamilyProvider
       AliasClassFamily Function()? create})
       : _createCb = create,
         super(
-          name: r'AliasClassFamily',
+          name: r'aliasClassFamilyProvider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
@@ -964,7 +964,7 @@ String _$aliasClassFamilyHash() => r'3f348beb95dae3a9890b4a4d0ce01481316fc66d';
 final class AliasClassFamilyFamily extends Family {
   const AliasClassFamilyFamily._()
       : super(
-          name: r'AliasClassFamily',
+          name: r'aliasClassFamilyProvider',
           dependencies: null,
           allTransitiveDependencies: null,
           isAutoDispose: true,

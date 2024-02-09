@@ -21,7 +21,7 @@ final class KeepAliveProvider
         super(
           from: null,
           argument: null,
-          name: r'keepAlive',
+          name: r'keepAliveProvider',
           isAutoDispose: false,
           dependencies: null,
           allTransitiveDependencies: null,
@@ -74,7 +74,7 @@ final class NotKeepAliveProvider
         super(
           from: null,
           argument: null,
-          name: r'notKeepAlive',
+          name: r'notKeepAliveProvider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
