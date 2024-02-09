@@ -296,8 +296,8 @@ void main() {
       publicProvider.overrideWith((ref) => 'test'),
       publicClassProvider.overrideWith(() => PublicClass(42)),
       familyProvider.overrideWith(
-        (ref) =>
-            'test (first: ${ref.first}, second: ${ref.second}, third: ${ref.third}, fourth: ${ref.fourth}, fifth: ${ref.fifth})',
+        (ref, args) =>
+            'test (first: ${args.first}, second: ${args.second}, third: ${args.third}, fourth: ${args.fourth}, fifth: ${args.fifth})',
       ),
       familyClassProvider.overrideWith(() => FamilyClass(42)),
     ]);

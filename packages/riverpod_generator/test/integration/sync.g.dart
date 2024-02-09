@@ -75,7 +75,7 @@ final class GenericFamily extends Family {
           isAutoDispose: true,
         );
 
-  GenericProvider<T> call<T extends num>() => GenericProvider._(from: this);
+  GenericProvider<T> call<T extends num>() => GenericProvider<T>._(from: this);
 
   @override
   String debugGetCreateSourceHash() => _$genericHash();
@@ -184,7 +184,7 @@ final class ComplexGenericFamily extends Family {
     required T param,
     Foo? otherParam,
   }) =>
-      ComplexGenericProvider._(argument: (
+      ComplexGenericProvider<T, Foo>._(argument: (
         param: param,
         otherParam: otherParam,
       ), from: this);
@@ -200,11 +200,10 @@ typedef RawFutureRef = Ref<Raw<Future<String>>>;
 
 const rawFutureProvider = RawFutureProvider._();
 
-final class RawFutureProvider extends $FunctionalProvider<Raw<Future<String>>,
-        Raw<Future<String>>, RawFutureRef>
-    with
-        $FutureModifier<Raw<Future<String>>>,
-        $FutureProvider<Raw<Future<String>>, RawFutureRef> {
+final class RawFutureProvider extends $FunctionalProvider<
+    Raw<Future<String>>,
+    Raw<Future<String>>,
+    RawFutureRef> with $Provider<Raw<Future<String>>, RawFutureRef> {
   const RawFutureProvider._(
       {Raw<Future<String>> Function(
         RawFutureRef ref,
@@ -227,9 +226,9 @@ final class RawFutureProvider extends $FunctionalProvider<Raw<Future<String>>,
   String debugGetCreateSourceHash() => _$rawFutureHash();
 
   @override
-  $FutureProviderElement<Raw<Future<String>>> createElement(
+  $ProviderElement<Raw<Future<String>>> createElement(
           ProviderContainer container) =>
-      $FutureProviderElement(this, container);
+      $ProviderElement(this, container);
 
   @override
   Raw<Future<String>> create(RawFutureRef ref) {
@@ -256,11 +255,10 @@ typedef RawStreamRef = Ref<Raw<Stream<String>>>;
 
 const rawStreamProvider = RawStreamProvider._();
 
-final class RawStreamProvider extends $FunctionalProvider<Raw<Stream<String>>,
-        Raw<Stream<String>>, RawStreamRef>
-    with
-        $FutureModifier<Raw<Stream<String>>>,
-        $StreamProvider<Raw<Stream<String>>, RawStreamRef> {
+final class RawStreamProvider extends $FunctionalProvider<
+    Raw<Stream<String>>,
+    Raw<Stream<String>>,
+    RawStreamRef> with $Provider<Raw<Stream<String>>, RawStreamRef> {
   const RawStreamProvider._(
       {Raw<Stream<String>> Function(
         RawStreamRef ref,
@@ -283,9 +281,9 @@ final class RawStreamProvider extends $FunctionalProvider<Raw<Stream<String>>,
   String debugGetCreateSourceHash() => _$rawStreamHash();
 
   @override
-  $StreamProviderElement<Raw<Stream<String>>> createElement(
+  $ProviderElement<Raw<Stream<String>>> createElement(
           ProviderContainer container) =>
-      $StreamProviderElement(this, container);
+      $ProviderElement(this, container);
 
   @override
   Raw<Stream<String>> create(RawStreamRef ref) {
@@ -314,9 +312,7 @@ const rawFamilyFutureProvider = RawFamilyFutureFamily._();
 
 final class RawFamilyFutureProvider extends $FunctionalProvider<
         Raw<Future<String>>, Raw<Future<String>>, RawFamilyFutureRef>
-    with
-        $FutureModifier<Raw<Future<String>>>,
-        $FutureProvider<Raw<Future<String>>, RawFamilyFutureRef> {
+    with $Provider<Raw<Future<String>>, RawFamilyFutureRef> {
   const RawFamilyFutureProvider._(
       {required RawFamilyFutureFamily super.from,
       required (int,) super.argument,
@@ -341,9 +337,9 @@ final class RawFamilyFutureProvider extends $FunctionalProvider<
   String debugGetCreateSourceHash() => _$rawFamilyFutureHash();
 
   @override
-  $FutureProviderElement<Raw<Future<String>>> createElement(
+  $ProviderElement<Raw<Future<String>>> createElement(
           ProviderContainer container) =>
-      $FutureProviderElement(this, container);
+      $ProviderElement(this, container);
 
   @override
   Raw<Future<String>> create(RawFamilyFutureRef ref) {
@@ -406,9 +402,7 @@ const rawFamilyStreamProvider = RawFamilyStreamFamily._();
 
 final class RawFamilyStreamProvider extends $FunctionalProvider<
         Raw<Stream<String>>, Raw<Stream<String>>, RawFamilyStreamRef>
-    with
-        $FutureModifier<Raw<Stream<String>>>,
-        $StreamProvider<Raw<Stream<String>>, RawFamilyStreamRef> {
+    with $Provider<Raw<Stream<String>>, RawFamilyStreamRef> {
   const RawFamilyStreamProvider._(
       {required RawFamilyStreamFamily super.from,
       required (int,) super.argument,
@@ -433,9 +427,9 @@ final class RawFamilyStreamProvider extends $FunctionalProvider<
   String debugGetCreateSourceHash() => _$rawFamilyStreamHash();
 
   @override
-  $StreamProviderElement<Raw<Stream<String>>> createElement(
+  $ProviderElement<Raw<Stream<String>>> createElement(
           ProviderContainer container) =>
-      $StreamProviderElement(this, container);
+      $ProviderElement(this, container);
 
   @override
   Raw<Stream<String>> create(RawFamilyStreamRef ref) {
@@ -914,7 +908,7 @@ final class GenericClassFamily extends Family {
         );
 
   GenericClassProvider<T> call<T extends num>() =>
-      GenericClassProvider._(from: this);
+      GenericClassProvider<T>._(from: this);
 
   @override
   String debugGetCreateSourceHash() => _$genericClassHash();
@@ -934,7 +928,7 @@ abstract class _$GenericClass<T extends num> extends $Notifier<List<T>> {
 const rawFutureClassProvider = RawFutureClassProvider._();
 
 final class RawFutureClassProvider
-    extends $AsyncNotifierProvider<RawFutureClass, Raw<Future<String>>> {
+    extends $NotifierProvider<RawFutureClass, Raw<Future<String>>> {
   const RawFutureClassProvider._(
       {super.runNotifierBuildOverride, RawFutureClass Function()? create})
       : _createCb = create,
@@ -975,14 +969,14 @@ final class RawFutureClassProvider
 
   @$internal
   @override
-  $AsyncNotifierProviderElement<RawFutureClass, Raw<Future<String>>>
-      createElement(ProviderContainer container) =>
-          $AsyncNotifierProviderElement(this, container);
+  $NotifierProviderElement<RawFutureClass, Raw<Future<String>>> createElement(
+          ProviderContainer container) =>
+      $NotifierProviderElement(this, container);
 }
 
 String _$rawFutureClassHash() => r'bf66f1cdbd99118b8845d206e6a2611b3101f45c';
 
-abstract class _$RawFutureClass extends $AsyncNotifier<Raw<Future<String>>> {
+abstract class _$RawFutureClass extends $Notifier<Raw<Future<String>>> {
   Raw<Future<String>> build();
 
   @$internal
@@ -993,7 +987,7 @@ abstract class _$RawFutureClass extends $AsyncNotifier<Raw<Future<String>>> {
 const rawStreamClassProvider = RawStreamClassProvider._();
 
 final class RawStreamClassProvider
-    extends $StreamNotifierProvider<RawStreamClass, Raw<Stream<String>>> {
+    extends $NotifierProvider<RawStreamClass, Raw<Stream<String>>> {
   const RawStreamClassProvider._(
       {super.runNotifierBuildOverride, RawStreamClass Function()? create})
       : _createCb = create,
@@ -1034,14 +1028,14 @@ final class RawStreamClassProvider
 
   @$internal
   @override
-  $StreamNotifierProviderElement<RawStreamClass, Raw<Stream<String>>>
-      createElement(ProviderContainer container) =>
-          $StreamNotifierProviderElement(this, container);
+  $NotifierProviderElement<RawStreamClass, Raw<Stream<String>>> createElement(
+          ProviderContainer container) =>
+      $NotifierProviderElement(this, container);
 }
 
 String _$rawStreamClassHash() => r'712cffcb2018cfb4ff45012c1aa6e43c8cbe9d5d';
 
-abstract class _$RawStreamClass extends $StreamNotifier<Raw<Stream<String>>> {
+abstract class _$RawStreamClass extends $Notifier<Raw<Stream<String>>> {
   Raw<Stream<String>> build();
 
   @$internal
@@ -1052,7 +1046,7 @@ abstract class _$RawStreamClass extends $StreamNotifier<Raw<Stream<String>>> {
 const rawFamilyFutureClassProvider = RawFamilyFutureClassFamily._();
 
 final class RawFamilyFutureClassProvider
-    extends $AsyncNotifierProvider<RawFamilyFutureClass, Raw<Future<String>>> {
+    extends $NotifierProvider<RawFamilyFutureClass, Raw<Future<String>>> {
   const RawFamilyFutureClassProvider._(
       {required RawFamilyFutureClassFamily super.from,
       required (int,) super.argument,
@@ -1100,9 +1094,9 @@ final class RawFamilyFutureClassProvider
 
   @$internal
   @override
-  $AsyncNotifierProviderElement<RawFamilyFutureClass, Raw<Future<String>>>
+  $NotifierProviderElement<RawFamilyFutureClass, Raw<Future<String>>>
       createElement(ProviderContainer container) =>
-          $AsyncNotifierProviderElement(this, container);
+          $NotifierProviderElement(this, container);
 
   @override
   bool operator ==(Object other) {
@@ -1134,10 +1128,9 @@ final class RawFamilyFutureClassFamily extends Family {
   String toString() => r'RawFamilyFutureClass';
 }
 
-abstract class _$RawFamilyFutureClass
-    extends $AsyncNotifier<Raw<Future<String>>> {
+abstract class _$RawFamilyFutureClass extends $Notifier<Raw<Future<String>>> {
   late final _$args =
-      (ref as $AsyncNotifierProviderElement).origin.argument as (int,);
+      (ref as $NotifierProviderElement).origin.argument as (int,);
   int get id => _$args.$1;
 
   Raw<Future<String>> build(
@@ -1154,7 +1147,7 @@ abstract class _$RawFamilyFutureClass
 const rawFamilyStreamClassProvider = RawFamilyStreamClassFamily._();
 
 final class RawFamilyStreamClassProvider
-    extends $StreamNotifierProvider<RawFamilyStreamClass, Raw<Stream<String>>> {
+    extends $NotifierProvider<RawFamilyStreamClass, Raw<Stream<String>>> {
   const RawFamilyStreamClassProvider._(
       {required RawFamilyStreamClassFamily super.from,
       required (int,) super.argument,
@@ -1202,9 +1195,9 @@ final class RawFamilyStreamClassProvider
 
   @$internal
   @override
-  $StreamNotifierProviderElement<RawFamilyStreamClass, Raw<Stream<String>>>
+  $NotifierProviderElement<RawFamilyStreamClass, Raw<Stream<String>>>
       createElement(ProviderContainer container) =>
-          $StreamNotifierProviderElement(this, container);
+          $NotifierProviderElement(this, container);
 
   @override
   bool operator ==(Object other) {
@@ -1236,10 +1229,9 @@ final class RawFamilyStreamClassFamily extends Family {
   String toString() => r'RawFamilyStreamClass';
 }
 
-abstract class _$RawFamilyStreamClass
-    extends $StreamNotifier<Raw<Stream<String>>> {
+abstract class _$RawFamilyStreamClass extends $Notifier<Raw<Stream<String>>> {
   late final _$args =
-      (ref as $StreamNotifierProviderElement).origin.argument as (int,);
+      (ref as $NotifierProviderElement).origin.argument as (int,);
   int get id => _$args.$1;
 
   Raw<Stream<String>> build(

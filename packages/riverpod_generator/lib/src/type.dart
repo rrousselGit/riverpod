@@ -5,9 +5,10 @@ extension SwitchCreatedType on GeneratorProviderDeclaration {
     final dartType = createdTypeNode?.type;
     switch (dartType) {
       case != null
-          when dartType.isDartAsyncFutureOr || dartType.isDartAsyncFuture:
+          when !dartType.isRaw &&
+              (dartType.isDartAsyncFutureOr || dartType.isDartAsyncFuture):
         return SupportedCreatedType.future;
-      case != null when dartType.isDartAsyncStream:
+      case != null when !dartType.isRaw && dartType.isDartAsyncStream:
         return SupportedCreatedType.stream;
       case _:
         return SupportedCreatedType.value;

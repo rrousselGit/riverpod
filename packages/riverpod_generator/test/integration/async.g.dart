@@ -75,7 +75,7 @@ final class GenericFamily extends Family {
           isAutoDispose: true,
         );
 
-  GenericProvider<T> call<T extends num>() => GenericProvider._(from: this);
+  GenericProvider<T> call<T extends num>() => GenericProvider<T>._(from: this);
 
   @override
   String debugGetCreateSourceHash() => _$genericHash();
@@ -489,7 +489,7 @@ final class GenericClassFamily extends Family {
         );
 
   GenericClassProvider<T> call<T extends num>() =>
-      GenericClassProvider._(from: this);
+      GenericClassProvider<T>._(from: this);
 
   @override
   String debugGetCreateSourceHash() => _$genericClassHash();
