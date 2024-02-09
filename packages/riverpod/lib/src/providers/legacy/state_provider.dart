@@ -57,7 +57,7 @@ abstract class StateProviderRef<State> implements Ref<State> {
 /// ```
 final class StateProvider<StateT>
     extends $FunctionalProvider<StateT, StateT, StateProviderRef<StateT>>
-    with LegacyProviderEqualMixin<StateT> {
+    with LegacyProviderMixin<StateT> {
   /// {@macro riverpod.stateprovider}
   StateProvider(
     this._createFn, {
@@ -69,7 +69,6 @@ final class StateProvider<StateT>
               computeAllTransitiveDependencies(dependencies),
           from: null,
           argument: null,
-          debugGetCreateSourceHash: null,
         );
 
   /// An implementation detail of Riverpod
@@ -79,7 +78,6 @@ final class StateProvider<StateT>
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
     required super.isAutoDispose,
     required super.from,
     required super.argument,
@@ -113,7 +111,6 @@ final class StateProvider<StateT>
       name: name,
       dependencies: dependencies,
       allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
       from: from,
       argument: argument,
       isAutoDispose: isAutoDispose,
@@ -199,7 +196,6 @@ class StateProviderFamily<StateT, Arg> extends FunctionalFamily< //
     super.isAutoDispose = false,
   }) : super(
           providerFactory: StateProvider.internal,
-          debugGetCreateSourceHash: null,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
         );
@@ -210,7 +206,6 @@ class StateProviderFamily<StateT, Arg> extends FunctionalFamily< //
     super.dependencies,
   }) : super(
           providerFactory: StateProvider.internal,
-          debugGetCreateSourceHash: null,
           isAutoDispose: true,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
@@ -223,7 +218,6 @@ class StateProviderFamily<StateT, Arg> extends FunctionalFamily< //
     super.name,
     super.dependencies,
     required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
     required super.isAutoDispose,
   }) : super(providerFactory: StateProvider.internal);
 }

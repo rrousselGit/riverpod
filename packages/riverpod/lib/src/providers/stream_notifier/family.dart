@@ -31,14 +31,13 @@ final class FamilyStreamNotifierProvider< //
         StateT,
         ArgT> //
     extends $StreamNotifierProvider<NotifierT, StateT>
-    with LegacyProviderEqualMixin<AsyncValue<StateT>> {
+    with LegacyProviderMixin<AsyncValue<StateT>> {
   /// An implementation detail of Riverpod
   const FamilyStreamNotifierProvider._(
     this._createNotifier, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
     required super.from,
     required super.argument,
     required super.isAutoDispose,
@@ -70,7 +69,6 @@ final class FamilyStreamNotifierProvider< //
       name: name,
       dependencies: dependencies,
       allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
       isAutoDispose: isAutoDispose,
       runNotifierBuildOverride: build ?? runNotifierBuildOverride,
       from: from,
@@ -120,6 +118,5 @@ class StreamNotifierProviderFamily< //
           providerFactory: FamilyStreamNotifierProvider._,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
-          debugGetCreateSourceHash: null,
         );
 }

@@ -24,14 +24,13 @@ abstract class FamilyNotifier<StateT, ArgT> extends $Notifier<StateT> {
 final class FamilyNotifierProvider //
     <NotifierT extends $Notifier<StateT>, StateT, ArgT>
     extends $NotifierProvider<NotifierT, StateT>
-    with LegacyProviderEqualMixin<StateT> {
+    with LegacyProviderMixin<StateT> {
   /// An implementation detail of Riverpod
   const FamilyNotifierProvider._(
     this._createNotifier, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
     required super.from,
     required super.argument,
     required super.isAutoDispose,
@@ -59,7 +58,6 @@ final class FamilyNotifierProvider //
       name: name,
       dependencies: dependencies,
       allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
       isAutoDispose: isAutoDispose,
       runNotifierBuildOverride: build ?? runNotifierBuildOverride,
       from: from,
@@ -107,6 +105,5 @@ class NotifierProviderFamily<
           providerFactory: FamilyNotifierProvider._,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
-          debugGetCreateSourceHash: null,
         );
 }

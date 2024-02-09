@@ -18,7 +18,6 @@ export 'src/framework.dart'
         SetupFamilyOverride,
         SetupOverride,
         $ProviderOverride,
-        DebugGetCreateSourceHash,
         ClassProviderFactory,
         FunctionalProviderFactory,
         computeAllTransitiveDependencies,
@@ -43,7 +42,7 @@ export 'src/framework.dart'
         RunNotifierBuild,
         $FunctionalProvider,
         $ClassProvider,
-        LegacyProviderEqualMixin;
+        LegacyProviderMixin;
 
 export 'src/providers/async_notifier.dart'
     hide $AsyncNotifier, $AsyncNotifierProvider;

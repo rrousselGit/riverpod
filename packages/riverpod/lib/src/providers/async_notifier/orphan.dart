@@ -61,7 +61,7 @@ final class AsyncNotifierProvider< //
         NotifierT extends AsyncNotifier<StateT>,
         StateT> //
     extends $AsyncNotifierProvider<NotifierT, StateT>
-    with LegacyProviderEqualMixin<AsyncValue<StateT>> {
+    with LegacyProviderMixin<AsyncValue<StateT>> {
   /// {@macro riverpod.async_notifier_provider}
   ///
   /// {@macro riverpod.async_notifier_provider_modifier}
@@ -75,7 +75,6 @@ final class AsyncNotifierProvider< //
               computeAllTransitiveDependencies(dependencies),
           from: null,
           argument: null,
-          debugGetCreateSourceHash: null,
           runNotifierBuildOverride: null,
         );
 
@@ -88,7 +87,6 @@ final class AsyncNotifierProvider< //
               computeAllTransitiveDependencies(dependencies),
           from: null,
           argument: null,
-          debugGetCreateSourceHash: null,
           isAutoDispose: true,
           runNotifierBuildOverride: null,
         );
@@ -100,7 +98,6 @@ final class AsyncNotifierProvider< //
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
     required super.from,
     required super.argument,
     required super.isAutoDispose,
@@ -128,7 +125,6 @@ final class AsyncNotifierProvider< //
       name: name,
       dependencies: dependencies,
       allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
       from: from,
       argument: argument,
       isAutoDispose: isAutoDispose,

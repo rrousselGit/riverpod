@@ -48,7 +48,7 @@ final class StreamNotifierProvider< //
         NotifierT extends StreamNotifier<StateT>,
         StateT> //
     extends $StreamNotifierProvider<NotifierT, StateT>
-    with LegacyProviderEqualMixin<AsyncValue<StateT>> {
+    with LegacyProviderMixin<AsyncValue<StateT>> {
   /// {@macro riverpod.async_notifier_provider}
   ///
   /// {@macro riverpod.async_notifier_provider_modifier}
@@ -63,7 +63,6 @@ final class StreamNotifierProvider< //
               computeAllTransitiveDependencies(dependencies),
           from: null,
           argument: null,
-          debugGetCreateSourceHash: null,
         );
 
   StreamNotifierProvider._autoDispose(
@@ -76,7 +75,6 @@ final class StreamNotifierProvider< //
               computeAllTransitiveDependencies(dependencies),
           from: null,
           argument: null,
-          debugGetCreateSourceHash: null,
           isAutoDispose: true,
         );
 
@@ -87,7 +85,6 @@ final class StreamNotifierProvider< //
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
     required super.from,
     required super.argument,
     required super.isAutoDispose,
@@ -114,7 +111,6 @@ final class StreamNotifierProvider< //
       name: name,
       dependencies: dependencies,
       allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
       from: from,
       argument: argument,
       isAutoDispose: isAutoDispose,

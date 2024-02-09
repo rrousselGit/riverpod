@@ -11,7 +11,6 @@ sealed class ProviderOrFamily implements ProviderListenableOrFamily {
     required this.dependencies,
     required this.allTransitiveDependencies,
     required this.isAutoDispose,
-    @internal required this.debugGetCreateSourceHash,
   });
 
   /// The family that this provider/family depends on.
@@ -94,9 +93,11 @@ sealed class ProviderOrFamily implements ProviderListenableOrFamily {
   /// If after a hot-reload this function returns a different result, the
   /// provider will be re-executed.
   ///
-  /// This variable is only set by `riverpod_generator`.
+  /// This method only returns a non-null value when using `riverpod_generator`.
+  // This is voluntarily not implemented by default, to force all non-generated
+  // providers to apply the LegacyProviderMixin.
   @internal
-  final DebugGetCreateSourceHash? debugGetCreateSourceHash;
+  String? debugGetCreateSourceHash();
 }
 
 extension on ProviderListenableOrFamily {

@@ -77,7 +77,7 @@ base class StreamProvider<StateT> extends $FunctionalProvider<
     with
         $FutureModifier<StateT>,
         $StreamProvider<StateT, Ref<AsyncValue<StateT>>>,
-        LegacyProviderEqualMixin<AsyncValue<StateT>> {
+        LegacyProviderMixin<AsyncValue<StateT>> {
   /// {@macro riverpod.stream_provider}
   StreamProvider(
     this._create, {
@@ -89,7 +89,6 @@ base class StreamProvider<StateT> extends $FunctionalProvider<
               computeAllTransitiveDependencies(dependencies),
           from: null,
           argument: null,
-          debugGetCreateSourceHash: null,
         );
 
   StreamProvider._autoDispose(
@@ -102,7 +101,6 @@ base class StreamProvider<StateT> extends $FunctionalProvider<
           isAutoDispose: true,
           from: null,
           argument: null,
-          debugGetCreateSourceHash: null,
         );
 
   /// An implementation detail of Riverpod
@@ -112,7 +110,6 @@ base class StreamProvider<StateT> extends $FunctionalProvider<
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
     required super.from,
     required super.argument,
     required super.isAutoDispose,
@@ -148,7 +145,6 @@ base class StreamProvider<StateT> extends $FunctionalProvider<
       name: name,
       dependencies: null,
       allTransitiveDependencies: null,
-      debugGetCreateSourceHash: null,
       from: from,
       argument: argument,
       isAutoDispose: isAutoDispose,
@@ -247,7 +243,6 @@ class StreamProviderFamily<StateT, ArgT> extends FunctionalFamily<
           providerFactory: StreamProvider<StateT>.internal,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
-          debugGetCreateSourceHash: null,
         );
 
   /// Implementation detail of the code-generator.
@@ -257,7 +252,6 @@ class StreamProviderFamily<StateT, ArgT> extends FunctionalFamily<
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
     required super.isAutoDispose,
   }) : super(providerFactory: StreamProvider<StateT>.internal);
 
@@ -270,6 +264,5 @@ class StreamProviderFamily<StateT, ArgT> extends FunctionalFamily<
           isAutoDispose: true,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
-          debugGetCreateSourceHash: null,
         );
 }

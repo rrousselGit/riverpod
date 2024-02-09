@@ -78,7 +78,7 @@ abstract class Notifier<State> extends $Notifier<State> {
 
 final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>
     extends $NotifierProvider<NotifierT, StateT>
-    with LegacyProviderEqualMixin<StateT> {
+    with LegacyProviderMixin<StateT> {
   /// {@macro riverpod.notifier_provider}
   ///
   /// {@macro riverpod.notifier_provider_modifier}
@@ -92,7 +92,6 @@ final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>
               computeAllTransitiveDependencies(dependencies),
           from: null,
           argument: null,
-          debugGetCreateSourceHash: null,
           runNotifierBuildOverride: null,
         );
 
@@ -106,7 +105,6 @@ final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>
           isAutoDispose: true,
           from: null,
           argument: null,
-          debugGetCreateSourceHash: null,
           runNotifierBuildOverride: null,
         );
 
@@ -117,7 +115,6 @@ final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
     required super.from,
     required super.argument,
     required super.isAutoDispose,
@@ -151,7 +148,6 @@ final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>
       name: name,
       dependencies: dependencies,
       allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
       from: from,
       argument: argument,
       isAutoDispose: isAutoDispose,

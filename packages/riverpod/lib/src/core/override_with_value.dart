@@ -6,14 +6,13 @@ part of '../framework.dart';
 @sealed
 @internal
 final class ValueProvider<StateT> extends ProviderBase<StateT>
-    with LegacyProviderEqualMixin<StateT> {
+    with LegacyProviderMixin<StateT> {
   /// Creates a [ValueProvider].
   const ValueProvider(this._value)
       : super(
           name: null,
           from: null,
           argument: null,
-          debugGetCreateSourceHash: null,
           allTransitiveDependencies: null,
           dependencies: null,
           isAutoDispose: false,

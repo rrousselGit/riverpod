@@ -36,7 +36,6 @@ abstract base class $StreamNotifierProvider<
     required super.argument,
     required super.dependencies,
     required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
     required super.isAutoDispose,
     required super.runNotifierBuildOverride,
   });

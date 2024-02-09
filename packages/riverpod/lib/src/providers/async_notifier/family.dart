@@ -49,7 +49,6 @@ class AsyncNotifierProviderFamily< //
           providerFactory: FamilyAsyncNotifierProvider._,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
-          debugGetCreateSourceHash: null,
         );
 }
 
@@ -59,14 +58,13 @@ final class FamilyAsyncNotifierProvider< //
         StateT,
         ArgT> //
     extends $AsyncNotifierProvider<NotifierT, StateT>
-    with LegacyProviderEqualMixin<AsyncValue<StateT>> {
+    with LegacyProviderMixin<AsyncValue<StateT>> {
   /// An implementation detail of Riverpod
   const FamilyAsyncNotifierProvider._(
     this._createNotifier, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
     required super.from,
     required super.argument,
     required super.isAutoDispose,
@@ -83,7 +81,6 @@ final class FamilyAsyncNotifierProvider< //
       name: name,
       dependencies: dependencies,
       allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
       from: from,
       argument: argument,
       isAutoDispose: isAutoDispose,

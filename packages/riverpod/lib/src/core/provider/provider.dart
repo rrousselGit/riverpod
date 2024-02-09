@@ -19,10 +19,6 @@ typedef Create<T, R extends Ref<Object?>> = T Function(R ref);
 @internal
 typedef OnError = void Function(Object, StackTrace);
 
-/// A typedef for `debugGetCreateSourceHash` parameters.
-@internal
-typedef DebugGetCreateSourceHash = String Function();
-
 /// A base class for _all_ providers.
 @immutable
 // TODO rename all generics to <FooT>
@@ -35,7 +31,6 @@ abstract base class ProviderBase<StateT> extends ProviderOrFamily
     required super.name,
     required this.from,
     required this.argument,
-    required super.debugGetCreateSourceHash,
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.isAutoDispose,
@@ -100,19 +95,6 @@ abstract base class ProviderBase<StateT> extends ProviderOrFamily
   @visibleForOverriding
   ProviderElementBase<StateT> createElement(ProviderContainer container);
 
-  /// Do not use.
-  ///
-  /// An unimplemented method, for the sole purpose of forcing all
-  /// non-code-generators to apply a mixin that overrides ==/hashCode.
-  /// This is because `riverpod_generator` expects all generated providers
-  /// to not override ==/hashCode, for the sake of inserting providers in a
-  /// constant [Set].
-  ///
-  /// At the same time, all non-generated providers must override ==/hashCode.
-  /// So to prevent forgetting to override ==/hashCode, this method is added.
-  /// This method is then expected to be implemented using [LegacyProviderEqualMixin]
-  void $unimplemented();
-
   @override
   String toString() {
     var leading = '';
@@ -131,11 +113,9 @@ abstract base class ProviderBase<StateT> extends ProviderOrFamily
   }
 }
 
-/// A mixin that implements ==/hashCode for providers that are not code-generated.
-///
-/// See [ProviderBase.$unimplemented] for explanation.
+/// A mixin that implements some methods for non-generic providers.
 @internal
-base mixin LegacyProviderEqualMixin<StateT> on ProviderBase<StateT> {
+base mixin LegacyProviderMixin<StateT> on ProviderBase<StateT> {
   @override
   int get hashCode {
     if (from == null) return super.hashCode;
@@ -153,6 +133,7 @@ base mixin LegacyProviderEqualMixin<StateT> on ProviderBase<StateT> {
         other.argument == argument;
   }
 
+  @internal
   @override
-  void $unimplemented() {}
+  String? debugGetCreateSourceHash() => null;
 }

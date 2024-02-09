@@ -12,7 +12,6 @@ typedef FunctionalProviderFactory< //
   required String? name,
   required List<ProviderOrFamily>? dependencies,
   required List<ProviderOrFamily>? allTransitiveDependencies,
-  required DebugGetCreateSourceHash? debugGetCreateSourceHash,
   required bool isAutoDispose,
   required Family from,
   required ArgT argument,
@@ -31,7 +30,6 @@ typedef ClassProviderFactory< //
   required String? name,
   required Iterable<ProviderOrFamily>? dependencies,
   required Iterable<ProviderOrFamily>? allTransitiveDependencies,
-  required DebugGetCreateSourceHash? debugGetCreateSourceHash,
   required RunNotifierBuild<NotifierT, CreatedT, RefT>?
       runNotifierBuildOverride,
   required bool isAutoDispose,
@@ -52,7 +50,6 @@ abstract class Family extends ProviderOrFamily implements _FamilyOverride {
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.isAutoDispose,
-    required super.debugGetCreateSourceHash,
   });
 
   @override
@@ -92,7 +89,6 @@ class FunctionalFamily< //
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
     required super.isAutoDispose,
   }) : _providerFactory = providerFactory;
 
@@ -117,9 +113,11 @@ class FunctionalFamily< //
       // TODO test all families set dependencies as null
       dependencies: null,
       allTransitiveDependencies: null,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
     );
   }
+
+  @override
+  String? debugGetCreateSourceHash() => null;
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
@@ -167,7 +165,6 @@ class ClassFamily< //
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
     required super.isAutoDispose,
   });
 
@@ -188,10 +185,12 @@ class ClassFamily< //
       argument: argument,
       dependencies: dependencies,
       allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
       runNotifierBuildOverride: null,
     );
   }
+
+  @override
+  String? debugGetCreateSourceHash() => null;
 
   /// {@macro riverpod.override_with}
   Override overrideWith(NotifierT Function() create) {

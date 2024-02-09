@@ -23,7 +23,6 @@ void main() {
           name: null,
           dependencies: null,
           allTransitiveDependencies: null,
-          debugGetCreateSourceHash: () => 'hash',
           (ref) {
             constantHashBuild();
             return 0;
@@ -38,7 +37,6 @@ void main() {
           name: null,
           dependencies: null,
           allTransitiveDependencies: null,
-          debugGetCreateSourceHash: () => hashResult,
           (ref) {
             changingHashBuild();
             return 0;

@@ -95,7 +95,7 @@ final class StateNotifierProvider< //
         StateT,
         NotifierT,
         StateNotifierProviderRef<NotifierT, StateT>>
-    with LegacyProviderEqualMixin<StateT> {
+    with LegacyProviderMixin<StateT> {
   /// {@macro riverpod.statenotifierprovider}
   StateNotifierProvider(
     this._create, {
@@ -107,7 +107,6 @@ final class StateNotifierProvider< //
               computeAllTransitiveDependencies(dependencies),
           from: null,
           argument: null,
-          debugGetCreateSourceHash: null,
         );
 
   /// An implementation detail of Riverpod
@@ -117,7 +116,6 @@ final class StateNotifierProvider< //
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
     required super.from,
     required super.argument,
     required super.isAutoDispose,
@@ -167,7 +165,6 @@ final class StateNotifierProvider< //
       name: name,
       dependencies: dependencies,
       allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
       from: from,
       argument: argument,
       isAutoDispose: isAutoDispose,
@@ -255,6 +252,5 @@ class StateNotifierProviderFamily<NotifierT extends StateNotifier<T>, T, Arg>
           providerFactory: StateNotifierProvider.internal,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
-          debugGetCreateSourceHash: null,
         );
 }

@@ -88,7 +88,7 @@ final class FutureProvider<StateT> extends $FunctionalProvider<
     with
         $FutureModifier<StateT>,
         $FutureProvider<StateT, FutureProviderRef<StateT>>,
-        LegacyProviderEqualMixin<AsyncValue<StateT>> {
+        LegacyProviderMixin<AsyncValue<StateT>> {
   /// {@macro riverpod.future_provider}
   FutureProvider(
     this._create, {
@@ -100,7 +100,6 @@ final class FutureProvider<StateT> extends $FunctionalProvider<
               computeAllTransitiveDependencies(dependencies),
           from: null,
           argument: null,
-          debugGetCreateSourceHash: null,
         );
 
   FutureProvider._autoDispose(
@@ -113,7 +112,6 @@ final class FutureProvider<StateT> extends $FunctionalProvider<
           isAutoDispose: true,
           from: null,
           argument: null,
-          debugGetCreateSourceHash: null,
         );
 
   /// An implementation detail of Riverpod
@@ -123,7 +121,6 @@ final class FutureProvider<StateT> extends $FunctionalProvider<
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
     required super.from,
     required super.argument,
     required super.isAutoDispose,
@@ -157,7 +154,6 @@ final class FutureProvider<StateT> extends $FunctionalProvider<
       name: name,
       dependencies: dependencies,
       allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
       from: from,
       argument: argument,
       isAutoDispose: isAutoDispose,
@@ -230,7 +226,6 @@ class FutureProviderFamily<StateT, ArgT> extends FunctionalFamily<
           providerFactory: FutureProvider<StateT>.internal,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
-          debugGetCreateSourceHash: null,
         );
 
   FutureProviderFamily._autoDispose(
@@ -242,7 +237,6 @@ class FutureProviderFamily<StateT, ArgT> extends FunctionalFamily<
           isAutoDispose: true,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
-          debugGetCreateSourceHash: null,
         );
 
   /// Implementation detail of the code-generator.
@@ -252,7 +246,6 @@ class FutureProviderFamily<StateT, ArgT> extends FunctionalFamily<
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
     required super.isAutoDispose,
   }) : super(providerFactory: FutureProvider<StateT>.internal);
 }

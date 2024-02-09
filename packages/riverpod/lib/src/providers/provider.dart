@@ -16,7 +16,7 @@ base mixin $Provider<StateT, RefT> on ProviderBase<StateT> {
 /// {@macro riverpod.provider}
 base class Provider<StateT>
     extends $FunctionalProvider<StateT, StateT, Ref<StateT>>
-    with $Provider<StateT, Ref<StateT>>, LegacyProviderEqualMixin<StateT> {
+    with $Provider<StateT, Ref<StateT>>, LegacyProviderMixin<StateT> {
   /// {@macro riverpod.provider}
   // TODO make all providers const under all variations
   Provider(
@@ -29,7 +29,6 @@ base class Provider<StateT>
               computeAllTransitiveDependencies(dependencies),
           from: null,
           argument: null,
-          debugGetCreateSourceHash: null,
         );
 
   Provider._autoDispose(
@@ -42,7 +41,6 @@ base class Provider<StateT>
           isAutoDispose: true,
           from: null,
           argument: null,
-          debugGetCreateSourceHash: null,
         );
 
   /// An implementation detail of Riverpod
@@ -52,7 +50,6 @@ base class Provider<StateT>
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
     required super.from,
     required super.argument,
     required super.isAutoDispose,
@@ -89,7 +86,6 @@ base class Provider<StateT>
       isAutoDispose: isAutoDispose,
       allTransitiveDependencies: null,
       dependencies: null,
-      debugGetCreateSourceHash: null,
       name: null,
     );
   }
@@ -378,7 +374,6 @@ class ProviderFamily<R, Arg>
           providerFactory: Provider.internal,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
-          debugGetCreateSourceHash: null,
         );
 
   ProviderFamily._autoDispose(
@@ -390,7 +385,6 @@ class ProviderFamily<R, Arg>
           isAutoDispose: true,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
-          debugGetCreateSourceHash: null,
         );
 
   /// An implementation detail of Riverpod
@@ -400,7 +394,6 @@ class ProviderFamily<R, Arg>
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
     required super.isAutoDispose,
   }) : super(providerFactory: Provider.internal);
 }

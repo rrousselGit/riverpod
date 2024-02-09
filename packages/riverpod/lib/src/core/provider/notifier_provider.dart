@@ -89,7 +89,6 @@ abstract base class $ClassProvider< //
     required super.name,
     required super.from,
     required super.argument,
-    required super.debugGetCreateSourceHash,
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.isAutoDispose,

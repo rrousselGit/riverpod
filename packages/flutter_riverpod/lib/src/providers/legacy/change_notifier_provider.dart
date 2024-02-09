@@ -91,7 +91,7 @@ abstract class ChangeNotifierProviderRef<NotifierT extends ChangeNotifier?>
 final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
     extends $FunctionalProvider<NotifierT, NotifierT,
         ChangeNotifierProviderRef<NotifierT>>
-    with LegacyProviderEqualMixin<NotifierT> {
+    with LegacyProviderMixin<NotifierT> {
   /// {@macro riverpod.change_notifier_provider}
   ChangeNotifierProvider(
     this._createFn, {
@@ -103,7 +103,6 @@ final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
               computeAllTransitiveDependencies(dependencies),
           from: null,
           argument: null,
-          debugGetCreateSourceHash: null,
         );
 
   /// An implementation detail of Riverpod
@@ -113,7 +112,6 @@ final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
     required super.isAutoDispose,
     super.from,
     super.argument,
@@ -165,7 +163,6 @@ final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
       from: from,
       argument: argument,
       allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
     );
   }
 }
@@ -246,7 +243,6 @@ class ChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?, Arg>
     super.isAutoDispose = false,
   }) : super(
           providerFactory: ChangeNotifierProvider.internal,
-          debugGetCreateSourceHash: null,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
         );
@@ -268,7 +264,6 @@ class ChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?, Arg>
           isAutoDispose: provider.isAutoDispose,
           dependencies: null,
           allTransitiveDependencies: null,
-          debugGetCreateSourceHash: null,
           name: null,
         ).createElement(container);
       },

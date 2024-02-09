@@ -36,7 +36,7 @@ class FamilyTemplate extends Template {
         : 'argument: ($parametersPassThrough),';
 
     buffer.writeln('''
-final class ${provider.familyTypeName} extends Family{
+final class ${provider.familyTypeName} extends Family {
   const ${provider.familyTypeName}._()
       : super(
         name: r'${provider.name}',

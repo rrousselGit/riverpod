@@ -220,7 +220,7 @@ This could mean a few things:
   /// and invalidate the provider state on change.
   void debugReassemble() {
     final previousHash = _debugCurrentCreateHash;
-    _debugCurrentCreateHash = provider.debugGetCreateSourceHash?.call();
+    _debugCurrentCreateHash = provider.debugGetCreateSourceHash();
 
     if (previousHash != _debugCurrentCreateHash) {
       invalidateSelf();
@@ -232,7 +232,7 @@ This could mean a few things:
   void mount() {
     _mounted = true;
     if (kDebugMode) {
-      _debugCurrentCreateHash = provider.debugGetCreateSourceHash?.call();
+      _debugCurrentCreateHash = provider.debugGetCreateSourceHash();
     }
 
     buildState();
