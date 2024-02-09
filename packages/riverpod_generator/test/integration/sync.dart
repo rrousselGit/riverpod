@@ -155,7 +155,12 @@ class FamilyClass extends _$FamilyClass {
 }
 
 @riverpod
-class Supports$InClassName extends _$Supports$InClassName {
+String supports$InFnName<And$InT>(Supports$InFnNameRef<And$InT> ref) {
+  return 'Hello world';
+}
+
+@riverpod
+class Supports$InClassName<And$InT> extends _$Supports$InClassName<And$InT> {
   @override
   String build() {
     return 'Hello world';

@@ -22,11 +22,7 @@ class ProviderTemplate extends Template {
   late final _generics = provider.generics();
   late final _genericsDefinition = provider.genericsDefinition();
 
-  late final _refType = switch (provider) {
-    FunctionalProviderDeclaration() => '${provider.refImplName}$_generics',
-    ClassBasedProviderDeclaration() =>
-      'Ref<${provider.exposedTypeDisplayString}>',
-  };
+  late final _refType = provider.refWithGenerics;
 
   @override
   void run(StringBuffer buffer) {
@@ -154,6 +150,9 @@ final class $name$_genericsDefinition
         'from: from! as ${provider.familyTypeName},',
     ].join();
 
+    _writeGenericCopyWith(buffer, copyParameters: copyParameters);
+    _writeToString(buffer);
+
     switch (provider) {
       case FunctionalProviderDeclaration():
         final createParams = buildParamDefinitionQuery(provider.parameters);
@@ -202,7 +201,7 @@ final class $name$_genericsDefinition
   @\$internal
   @override
   ${provider.providerTypeName}$_generics \$copyWithBuild(
-    ${provider.createdTypeDisplayString} Function($_refType, $notifierType) build,
+    ${provider.notifierBuildType()} build,
   ) {
     return ${provider.providerTypeName}$_generics._(
       $copyParameters
@@ -219,6 +218,37 @@ final class $name$_genericsDefinition
     }
 
     _writeEqual(buffer);
+  }
+
+  void _writeGenericCopyWith(
+    StringBuffer buffer, {
+    required String copyParameters,
+  }) {
+    if (provider.typeParameters?.typeParameters.isEmpty ?? true) return;
+
+    buffer.writeln('''
+    ${provider.providerTypeName}$_generics _copyWithCreate(
+      ${provider.createType(withGenericDefinition: true)} create,
+    ) {
+      return ${provider.providerTypeName}$_generics._(
+        $copyParameters
+        create: create$_generics
+      );
+    }
+    ''');
+
+    if (provider is ClassBasedProviderDeclaration) {
+      buffer.writeln('''
+    ${provider.providerTypeName}$_generics _copyWithBuild(
+      ${provider.notifierBuildType(withGenericDefinition: true)} build,
+    ) {
+      return ${provider.providerTypeName}$_generics._(
+        $copyParameters
+        runNotifierBuildOverride: build$_generics
+      );
+    }
+    ''');
+    }
   }
 
   void _writeFunctionalCreate(StringBuffer buffer) {
@@ -266,5 +296,28 @@ final class $name$_genericsDefinition
     ].join(' && ')};
       }
     ''');
+  }
+
+  void _writeToString(StringBuffer buffer) {
+    if (!provider.providerElement.isFamily) return;
+
+    final encodedGenerics = provider.typeParameters?.typeParameters.isEmpty ??
+            true
+        ? ''
+        : '<${provider.typeParameters!.typeParameters.map((e) => '\${${e.name}}').join(', ')}>';
+
+    buffer.writeln('''
+@override
+String toString() {
+  return r'${provider.providerName(options)}'
+    '$encodedGenerics'
+    '${switch (provider.parameters) {
+      [] => '()',
+      [_] => r'($argument)',
+      // Calling toString on a record, do we don't add the () to avoid `provider((...))`
+      [_, ...] => r'$argument',
+    }}';
+}
+''');
   }
 }

@@ -34,6 +34,22 @@ final class GenericProvider<T extends num>
   @override
   String debugGetCreateSourceHash() => _$genericHash();
 
+  GenericProvider<T> _copyWithCreate(
+    List<T> Function<T extends num>(
+      GenericRef<T> ref,
+    ) create,
+  ) {
+    return GenericProvider<T>._(
+        from: from! as GenericFamily, create: create<T>);
+  }
+
+  @override
+  String toString() {
+    return r'genericProvider'
+        '<${T}>'
+        '()';
+  }
+
   @override
   $ProviderElement<List<T>> createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
@@ -78,7 +94,20 @@ final class GenericFamily extends Family {
   String debugGetCreateSourceHash() => _$genericHash();
 
   @override
-  String toString() => r'generic';
+  String toString() => r'genericProvider';
+
+  Override overrideWith(
+    List<T> Function<T extends num>(GenericRef<T> ref) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as GenericProvider;
+
+        return provider._copyWithCreate(create).createElement(container);
+      },
+    );
+  }
 }
 
 typedef ComplexGenericRef<T extends num, Foo extends String?> = Ref<List<T>>;
@@ -116,6 +145,29 @@ final class ComplexGenericProvider<T extends num, Foo extends String?>
 
   @override
   String debugGetCreateSourceHash() => _$complexGenericHash();
+
+  ComplexGenericProvider<T, Foo> _copyWithCreate(
+    List<T> Function<T extends num, Foo extends String?>(
+      ComplexGenericRef<T, Foo> ref, {
+      required T param,
+      Foo? otherParam,
+    }) create,
+  ) {
+    return ComplexGenericProvider<T, Foo>._(
+        argument: argument as ({
+          T param,
+          Foo? otherParam,
+        }),
+        from: from! as ComplexGenericFamily,
+        create: create<T, Foo>);
+  }
+
+  @override
+  String toString() {
+    return r'complexGenericProvider'
+        '<${T}, ${Foo}>'
+        '$argument';
+  }
 
   @override
   $ProviderElement<List<T>> createElement(ProviderContainer container) =>
@@ -190,7 +242,37 @@ final class ComplexGenericFamily extends Family {
   String debugGetCreateSourceHash() => _$complexGenericHash();
 
   @override
-  String toString() => r'complexGeneric';
+  String toString() => r'complexGenericProvider';
+
+  Override overrideWith(
+    List<T> Function<T extends num, Foo extends String?>(
+      ComplexGenericRef<T, Foo> ref,
+      ({
+        T param,
+        Foo? otherParam,
+      }) args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as ComplexGenericProvider;
+
+        return provider._copyWithCreate(<T extends num, Foo extends String?>(
+          ref, {
+          required T param,
+          Foo? otherParam,
+        }) {
+          final argument = provider.argument as ({
+            T param,
+            Foo? otherParam,
+          });
+
+          return create(ref, argument);
+        }).createElement(container);
+      },
+    );
+  }
 }
 
 typedef RawFutureRef = Ref<Raw<Future<String>>>;
@@ -328,6 +410,13 @@ final class RawFamilyFutureProvider extends $FunctionalProvider<
   String debugGetCreateSourceHash() => _$rawFamilyFutureHash();
 
   @override
+  String toString() {
+    return r'rawFamilyFutureProvider'
+        ''
+        '($argument)';
+  }
+
+  @override
   $ProviderElement<Raw<Future<String>>> createElement(
           ProviderContainer container) =>
       $ProviderElement(this, container);
@@ -384,7 +473,27 @@ final class RawFamilyFutureFamily extends Family {
   String debugGetCreateSourceHash() => _$rawFamilyFutureHash();
 
   @override
-  String toString() => r'rawFamilyFuture';
+  String toString() => r'rawFamilyFutureProvider';
+
+  Override overrideWith(
+    Raw<Future<String>> Function(
+      RawFamilyFutureRef ref,
+      int args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as RawFamilyFutureProvider;
+
+        final argument = provider.argument as int;
+
+        return provider
+            .$copyWithCreate((ref) => create(ref, argument))
+            .createElement(container);
+      },
+    );
+  }
 }
 
 typedef RawFamilyStreamRef = Ref<Raw<Stream<String>>>;
@@ -416,6 +525,13 @@ final class RawFamilyStreamProvider extends $FunctionalProvider<
 
   @override
   String debugGetCreateSourceHash() => _$rawFamilyStreamHash();
+
+  @override
+  String toString() {
+    return r'rawFamilyStreamProvider'
+        ''
+        '($argument)';
+  }
 
   @override
   $ProviderElement<Raw<Stream<String>>> createElement(
@@ -474,7 +590,27 @@ final class RawFamilyStreamFamily extends Family {
   String debugGetCreateSourceHash() => _$rawFamilyStreamHash();
 
   @override
-  String toString() => r'rawFamilyStream';
+  String toString() => r'rawFamilyStreamProvider';
+
+  Override overrideWith(
+    Raw<Stream<String>> Function(
+      RawFamilyStreamRef ref,
+      int args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as RawFamilyStreamProvider;
+
+        final argument = provider.argument as int;
+
+        return provider
+            .$copyWithCreate((ref) => create(ref, argument))
+            .createElement(container);
+      },
+    );
+  }
 }
 
 typedef PublicRef = Ref<String>;
@@ -623,6 +759,13 @@ final class FamilyProvider
   String debugGetCreateSourceHash() => _$familyHash();
 
   @override
+  String toString() {
+    return r'familyProvider'
+        ''
+        '$argument';
+  }
+
+  @override
   $ProviderElement<String> createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
@@ -714,7 +857,39 @@ final class FamilyFamily extends Family {
   String debugGetCreateSourceHash() => _$familyHash();
 
   @override
-  String toString() => r'family';
+  String toString() => r'familyProvider';
+
+  Override overrideWith(
+    String Function(
+      FamilyRef ref,
+      (
+        int, {
+        String? second,
+        double third,
+        bool fourth,
+        List<String>? fifth,
+      }) args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as FamilyProvider;
+
+        final argument = provider.argument as (
+          int, {
+          String? second,
+          double third,
+          bool fourth,
+          List<String>? fifth,
+        });
+
+        return provider
+            .$copyWithCreate((ref) => create(ref, argument))
+            .createElement(container);
+      },
+    );
+  }
 }
 
 typedef _PrivateRef = Ref<String>;
@@ -766,6 +941,112 @@ final class _PrivateProvider
 }
 
 String _$privateHash() => r'519561bc7e88e394d7f75ca2102a5c0acc832c66';
+
+typedef Supports$InFnNameRef<And$InT> = Ref<String>;
+
+const supports$InFnNameProvider = Supports$InFnNameFamily._();
+
+final class Supports$InFnNameProvider<And$InT>
+    extends $FunctionalProvider<String, String, Supports$InFnNameRef<And$InT>>
+    with $Provider<String, Supports$InFnNameRef<And$InT>> {
+  const Supports$InFnNameProvider._(
+      {required Supports$InFnNameFamily super.from,
+      String Function(
+        Supports$InFnNameRef<And$InT> ref,
+      )? create})
+      : _createCb = create,
+        super(
+          argument: null,
+          name: r'supports$InFnNameProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final String Function(
+    Supports$InFnNameRef<And$InT> ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$supports$InFnNameHash();
+
+  Supports$InFnNameProvider<And$InT> _copyWithCreate(
+    String Function<And$InT>(
+      Supports$InFnNameRef<And$InT> ref,
+    ) create,
+  ) {
+    return Supports$InFnNameProvider<And$InT>._(
+        from: from! as Supports$InFnNameFamily, create: create<And$InT>);
+  }
+
+  @override
+  String toString() {
+    return r'supports$InFnNameProvider'
+        '<${And$InT}>'
+        '()';
+  }
+
+  @override
+  $ProviderElement<String> createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  Supports$InFnNameProvider<And$InT> $copyWithCreate(
+    String Function(
+      Supports$InFnNameRef<And$InT> ref,
+    ) create,
+  ) {
+    return Supports$InFnNameProvider<And$InT>._(
+        from: from! as Supports$InFnNameFamily, create: create);
+  }
+
+  @override
+  String create(Supports$InFnNameRef<And$InT> ref) {
+    final fn = _createCb ?? supports$InFnName<And$InT>;
+    return fn(ref);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is Supports$InFnNameProvider &&
+        other.runtimeType == runtimeType &&
+        other.argument == argument;
+  }
+}
+
+String _$supports$InFnNameHash() => r'fec3daca655669a46760cc54921f098b9cbaac3d';
+
+final class Supports$InFnNameFamily extends Family {
+  const Supports$InFnNameFamily._()
+      : super(
+          name: r'supports$InFnNameProvider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  Supports$InFnNameProvider<And$InT> call<And$InT>() =>
+      Supports$InFnNameProvider<And$InT>._(from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$supports$InFnNameHash();
+
+  @override
+  String toString() => r'supports$InFnNameProvider';
+
+  Override overrideWith(
+    String Function<And$InT>(Supports$InFnNameRef<And$InT> ref) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as Supports$InFnNameProvider;
+
+        return provider._copyWithCreate(create).createElement(container);
+      },
+    );
+  }
+}
 
 typedef GeneratedRef = Ref<String>;
 
@@ -839,6 +1120,30 @@ final class GenericClassProvider<T extends num>
   @override
   String debugGetCreateSourceHash() => _$genericClassHash();
 
+  GenericClassProvider<T> _copyWithCreate(
+    GenericClass<T> Function<T extends num>() create,
+  ) {
+    return GenericClassProvider<T>._(
+        from: from! as GenericClassFamily, create: create<T>);
+  }
+
+  GenericClassProvider<T> _copyWithBuild(
+    List<T> Function<T extends num>(
+      Ref<List<T>>,
+      GenericClass<T>,
+    ) build,
+  ) {
+    return GenericClassProvider<T>._(
+        from: from! as GenericClassFamily, runNotifierBuildOverride: build<T>);
+  }
+
+  @override
+  String toString() {
+    return r'genericClassProvider'
+        '<${T}>'
+        '()';
+  }
+
   @$internal
   @override
   GenericClass<T> create() => _createCb?.call() ?? GenericClass<T>();
@@ -855,7 +1160,10 @@ final class GenericClassProvider<T extends num>
   @$internal
   @override
   GenericClassProvider<T> $copyWithBuild(
-    List<T> Function(Ref<List<T>>, GenericClass<T>) build,
+    List<T> Function(
+      Ref<List<T>>,
+      GenericClass<T>,
+    ) build,
   ) {
     return GenericClassProvider<T>._(
         from: from! as GenericClassFamily, runNotifierBuildOverride: build);
@@ -893,7 +1201,34 @@ final class GenericClassFamily extends Family {
   String debugGetCreateSourceHash() => _$genericClassHash();
 
   @override
-  String toString() => r'GenericClass';
+  String toString() => r'genericClassProvider';
+
+  Override overrideWith(
+    GenericClass<T> Function<T extends num>() create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as GenericClassProvider;
+
+        return provider._copyWithCreate(create).createElement(container);
+      },
+    );
+  }
+
+  Override overrideWithBuild(
+    List<T> Function<T extends num>(Ref<List<T>> ref, GenericClass<T> notifier)
+        build,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as GenericClassProvider;
+
+        return provider._copyWithBuild(build).createElement(container);
+      },
+    );
+  }
 }
 
 abstract class _$GenericClass<T extends num> extends $Notifier<List<T>> {
@@ -940,8 +1275,10 @@ final class RawFutureClassProvider
   @$internal
   @override
   RawFutureClassProvider $copyWithBuild(
-    Raw<Future<String>> Function(Ref<Raw<Future<String>>>, RawFutureClass)
-        build,
+    Raw<Future<String>> Function(
+      Ref<Raw<Future<String>>>,
+      RawFutureClass,
+    ) build,
   ) {
     return RawFutureClassProvider._(runNotifierBuildOverride: build);
   }
@@ -999,8 +1336,10 @@ final class RawStreamClassProvider
   @$internal
   @override
   RawStreamClassProvider $copyWithBuild(
-    Raw<Stream<String>> Function(Ref<Raw<Stream<String>>>, RawStreamClass)
-        build,
+    Raw<Stream<String>> Function(
+      Ref<Raw<Stream<String>>>,
+      RawStreamClass,
+    ) build,
   ) {
     return RawStreamClassProvider._(runNotifierBuildOverride: build);
   }
@@ -1044,6 +1383,13 @@ final class RawFamilyFutureClassProvider
   @override
   String debugGetCreateSourceHash() => _$rawFamilyFutureClassHash();
 
+  @override
+  String toString() {
+    return r'rawFamilyFutureClassProvider'
+        ''
+        '($argument)';
+  }
+
   @$internal
   @override
   RawFamilyFutureClass create() => _createCb?.call() ?? RawFamilyFutureClass();
@@ -1062,8 +1408,10 @@ final class RawFamilyFutureClassProvider
   @$internal
   @override
   RawFamilyFutureClassProvider $copyWithBuild(
-    Raw<Future<String>> Function(Ref<Raw<Future<String>>>, RawFamilyFutureClass)
-        build,
+    Raw<Future<String>> Function(
+      Ref<Raw<Future<String>>>,
+      RawFamilyFutureClass,
+    ) build,
   ) {
     return RawFamilyFutureClassProvider._(
         argument: argument as int,
@@ -1104,13 +1452,50 @@ final class RawFamilyFutureClassFamily extends Family {
   String debugGetCreateSourceHash() => _$rawFamilyFutureClassHash();
 
   @override
-  String toString() => r'RawFamilyFutureClass';
+  String toString() => r'rawFamilyFutureClassProvider';
+
+  Override overrideWith(
+    RawFamilyFutureClass Function(
+      int args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as RawFamilyFutureClassProvider;
+
+        final argument = provider.argument as int;
+
+        return provider
+            .$copyWithCreate(() => create(argument))
+            .createElement(container);
+      },
+    );
+  }
+
+  Override overrideWithBuild(
+    Raw<Future<String>> Function(Ref<Raw<Future<String>>> ref,
+            RawFamilyFutureClass notifier, int argument)
+        build,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as RawFamilyFutureClassProvider;
+
+        final argument = provider.argument as int;
+
+        return provider
+            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
+            .createElement(container);
+      },
+    );
+  }
 }
 
 abstract class _$RawFamilyFutureClass extends $Notifier<Raw<Future<String>>> {
-  late final _$args =
-      (ref as $NotifierProviderElement).origin.argument as (int,);
-  int get id => _$args.$1;
+  late final _$args = (ref as $NotifierProviderElement).origin.argument as int;
+  int get id => _$args;
 
   Raw<Future<String>> build(
     int id,
@@ -1119,7 +1504,7 @@ abstract class _$RawFamilyFutureClass extends $Notifier<Raw<Future<String>>> {
   @$internal
   @override
   Raw<Future<String>> runBuild() => build(
-        _$args.$1,
+        _$args,
       );
 }
 
@@ -1145,6 +1530,13 @@ final class RawFamilyStreamClassProvider
   @override
   String debugGetCreateSourceHash() => _$rawFamilyStreamClassHash();
 
+  @override
+  String toString() {
+    return r'rawFamilyStreamClassProvider'
+        ''
+        '($argument)';
+  }
+
   @$internal
   @override
   RawFamilyStreamClass create() => _createCb?.call() ?? RawFamilyStreamClass();
@@ -1163,8 +1555,10 @@ final class RawFamilyStreamClassProvider
   @$internal
   @override
   RawFamilyStreamClassProvider $copyWithBuild(
-    Raw<Stream<String>> Function(Ref<Raw<Stream<String>>>, RawFamilyStreamClass)
-        build,
+    Raw<Stream<String>> Function(
+      Ref<Raw<Stream<String>>>,
+      RawFamilyStreamClass,
+    ) build,
   ) {
     return RawFamilyStreamClassProvider._(
         argument: argument as int,
@@ -1205,13 +1599,50 @@ final class RawFamilyStreamClassFamily extends Family {
   String debugGetCreateSourceHash() => _$rawFamilyStreamClassHash();
 
   @override
-  String toString() => r'RawFamilyStreamClass';
+  String toString() => r'rawFamilyStreamClassProvider';
+
+  Override overrideWith(
+    RawFamilyStreamClass Function(
+      int args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as RawFamilyStreamClassProvider;
+
+        final argument = provider.argument as int;
+
+        return provider
+            .$copyWithCreate(() => create(argument))
+            .createElement(container);
+      },
+    );
+  }
+
+  Override overrideWithBuild(
+    Raw<Stream<String>> Function(Ref<Raw<Stream<String>>> ref,
+            RawFamilyStreamClass notifier, int argument)
+        build,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as RawFamilyStreamClassProvider;
+
+        final argument = provider.argument as int;
+
+        return provider
+            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
+            .createElement(container);
+      },
+    );
+  }
 }
 
 abstract class _$RawFamilyStreamClass extends $Notifier<Raw<Stream<String>>> {
-  late final _$args =
-      (ref as $NotifierProviderElement).origin.argument as (int,);
-  int get id => _$args.$1;
+  late final _$args = (ref as $NotifierProviderElement).origin.argument as int;
+  int get id => _$args;
 
   Raw<Stream<String>> build(
     int id,
@@ -1220,7 +1651,7 @@ abstract class _$RawFamilyStreamClass extends $Notifier<Raw<Stream<String>>> {
   @$internal
   @override
   Raw<Stream<String>> runBuild() => build(
-        _$args.$1,
+        _$args,
       );
 }
 
@@ -1259,7 +1690,10 @@ final class PublicClassProvider extends $NotifierProvider<PublicClass, String> {
   @$internal
   @override
   PublicClassProvider $copyWithBuild(
-    String Function(Ref<String>, PublicClass) build,
+    String Function(
+      Ref<String>,
+      PublicClass,
+    ) build,
   ) {
     return PublicClassProvider._(runNotifierBuildOverride: build);
   }
@@ -1317,7 +1751,10 @@ final class _PrivateClassProvider
   @$internal
   @override
   _PrivateClassProvider $copyWithBuild(
-    String Function(Ref<String>, _PrivateClass) build,
+    String Function(
+      Ref<String>,
+      _PrivateClass,
+    ) build,
   ) {
     return _PrivateClassProvider._(runNotifierBuildOverride: build);
   }
@@ -1367,6 +1804,13 @@ final class FamilyClassProvider extends $NotifierProvider<FamilyClass, String> {
   @override
   String debugGetCreateSourceHash() => _$familyClassHash();
 
+  @override
+  String toString() {
+    return r'familyClassProvider'
+        ''
+        '$argument';
+  }
+
   @$internal
   @override
   FamilyClass create() => _createCb?.call() ?? FamilyClass();
@@ -1391,7 +1835,10 @@ final class FamilyClassProvider extends $NotifierProvider<FamilyClass, String> {
   @$internal
   @override
   FamilyClassProvider $copyWithBuild(
-    String Function(Ref<String>, FamilyClass) build,
+    String Function(
+      Ref<String>,
+      FamilyClass,
+    ) build,
   ) {
     return FamilyClassProvider._(
         argument: argument as (
@@ -1447,7 +1894,71 @@ final class FamilyClassFamily extends Family {
   String debugGetCreateSourceHash() => _$familyClassHash();
 
   @override
-  String toString() => r'FamilyClass';
+  String toString() => r'familyClassProvider';
+
+  Override overrideWith(
+    FamilyClass Function(
+      (
+        int, {
+        String? second,
+        double third,
+        bool fourth,
+        List<String>? fifth,
+      }) args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as FamilyClassProvider;
+
+        final argument = provider.argument as (
+          int, {
+          String? second,
+          double third,
+          bool fourth,
+          List<String>? fifth,
+        });
+
+        return provider
+            .$copyWithCreate(() => create(argument))
+            .createElement(container);
+      },
+    );
+  }
+
+  Override overrideWithBuild(
+    String Function(
+            Ref<String> ref,
+            FamilyClass notifier,
+            (
+              int, {
+              String? second,
+              double third,
+              bool fourth,
+              List<String>? fifth,
+            }) argument)
+        build,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as FamilyClassProvider;
+
+        final argument = provider.argument as (
+          int, {
+          String? second,
+          double third,
+          bool fourth,
+          List<String>? fifth,
+        });
+
+        return provider
+            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
+            .createElement(container);
+      },
+    );
+  }
 }
 
 abstract class _$FamilyClass extends $Notifier<String> {
@@ -1483,15 +1994,16 @@ abstract class _$FamilyClass extends $Notifier<String> {
       );
 }
 
-const supports$InClassNameProvider = Supports$InClassNameProvider._();
+const supports$InClassNameProvider = Supports$InClassNameFamily._();
 
-final class Supports$InClassNameProvider
-    extends $NotifierProvider<Supports$InClassName, String> {
+final class Supports$InClassNameProvider<And$InT>
+    extends $NotifierProvider<Supports$InClassName<And$InT>, String> {
   const Supports$InClassNameProvider._(
-      {super.runNotifierBuildOverride, Supports$InClassName Function()? create})
+      {required Supports$InClassNameFamily super.from,
+      super.runNotifierBuildOverride,
+      Supports$InClassName<And$InT> Function()? create})
       : _createCb = create,
         super(
-          from: null,
           argument: null,
           name: r'supports$InClassNameProvider',
           isAutoDispose: true,
@@ -1499,42 +2011,128 @@ final class Supports$InClassNameProvider
           allTransitiveDependencies: null,
         );
 
-  final Supports$InClassName Function()? _createCb;
+  final Supports$InClassName<And$InT> Function()? _createCb;
 
   @override
   String debugGetCreateSourceHash() => _$supports$InClassNameHash();
 
-  @$internal
-  @override
-  Supports$InClassName create() => _createCb?.call() ?? Supports$InClassName();
-
-  @$internal
-  @override
-  Supports$InClassNameProvider $copyWithCreate(
-    Supports$InClassName Function() create,
+  Supports$InClassNameProvider<And$InT> _copyWithCreate(
+    Supports$InClassName<And$InT> Function<And$InT>() create,
   ) {
-    return Supports$InClassNameProvider._(create: create);
+    return Supports$InClassNameProvider<And$InT>._(
+        from: from! as Supports$InClassNameFamily, create: create<And$InT>);
+  }
+
+  Supports$InClassNameProvider<And$InT> _copyWithBuild(
+    String Function<And$InT>(
+      Ref<String>,
+      Supports$InClassName<And$InT>,
+    ) build,
+  ) {
+    return Supports$InClassNameProvider<And$InT>._(
+        from: from! as Supports$InClassNameFamily,
+        runNotifierBuildOverride: build<And$InT>);
+  }
+
+  @override
+  String toString() {
+    return r'supports$InClassNameProvider'
+        '<${And$InT}>'
+        '()';
   }
 
   @$internal
   @override
-  Supports$InClassNameProvider $copyWithBuild(
-    String Function(Ref<String>, Supports$InClassName) build,
+  Supports$InClassName<And$InT> create() =>
+      _createCb?.call() ?? Supports$InClassName<And$InT>();
+
+  @$internal
+  @override
+  Supports$InClassNameProvider<And$InT> $copyWithCreate(
+    Supports$InClassName<And$InT> Function() create,
   ) {
-    return Supports$InClassNameProvider._(runNotifierBuildOverride: build);
+    return Supports$InClassNameProvider<And$InT>._(
+        from: from! as Supports$InClassNameFamily, create: create);
   }
 
   @$internal
   @override
-  $NotifierProviderElement<Supports$InClassName, String> createElement(
+  Supports$InClassNameProvider<And$InT> $copyWithBuild(
+    String Function(
+      Ref<String>,
+      Supports$InClassName<And$InT>,
+    ) build,
+  ) {
+    return Supports$InClassNameProvider<And$InT>._(
+        from: from! as Supports$InClassNameFamily,
+        runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<Supports$InClassName<And$InT>, String> createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
+
+  @override
+  bool operator ==(Object other) {
+    return other is Supports$InClassNameProvider &&
+        other.runtimeType == runtimeType &&
+        other.argument == argument;
+  }
 }
 
 String _$supports$InClassNameHash() =>
-    r'4e99f433d9cb3598faaf4d172edf9f28b9e68091';
+    r'9eeab74a85af26136dd698df79669df4cec4c42b';
 
-abstract class _$Supports$InClassName extends $Notifier<String> {
+final class Supports$InClassNameFamily extends Family {
+  const Supports$InClassNameFamily._()
+      : super(
+          name: r'supports$InClassNameProvider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  Supports$InClassNameProvider<And$InT> call<And$InT>() =>
+      Supports$InClassNameProvider<And$InT>._(from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$supports$InClassNameHash();
+
+  @override
+  String toString() => r'supports$InClassNameProvider';
+
+  Override overrideWith(
+    Supports$InClassName<And$InT> Function<And$InT>() create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as Supports$InClassNameProvider;
+
+        return provider._copyWithCreate(create).createElement(container);
+      },
+    );
+  }
+
+  Override overrideWithBuild(
+    String Function<And$InT>(
+            Ref<String> ref, Supports$InClassName<And$InT> notifier)
+        build,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as Supports$InClassNameProvider;
+
+        return provider._copyWithBuild(build).createElement(container);
+      },
+    );
+  }
+}
+
+abstract class _$Supports$InClassName<And$InT> extends $Notifier<String> {
   String build();
 
   @$internal

@@ -268,18 +268,13 @@ extension ProviderNames on GeneratorProviderDeclaration {
 
   String get providerTypeName => providerElement.providerTypeName;
   String get refImplName => providerElement.refImplName;
-  String get refWithGenerics {
-    switch (this) {
-      case FunctionalProviderDeclaration():
-        return '${providerElement.refImplName}${generics()}';
-      case ClassBasedProviderDeclaration():
-        return '${providerElement.refImplName}<$exposedTypeDisplayString>';
-    }
-  }
 
   String get familyTypeName => providerElement.familyTypeName;
 
   String get argumentRecordType {
+    // Encode the list of parameters into a record.
+    // We do so only if there are at least two parameters.
+    // TODO test
     switch (parameters) {
       case [_]:
         return parameters.first.typeDisplayString;
@@ -323,8 +318,38 @@ extension ProviderNames on GeneratorProviderDeclaration {
   String genericsDefinition() =>
       _genericDefinitionDisplayString(typeParameters);
 
-  String createType({bool withArguments = true}) {
+  String get refWithGenerics {
+    return switch (this) {
+      FunctionalProviderDeclaration() => '$refImplName${generics()}',
+      ClassBasedProviderDeclaration() => 'Ref<$exposedTypeDisplayString>',
+    };
+  }
+
+  String notifierBuildType({
+    bool withGenericDefinition = false,
+    bool withArguments = false,
+  }) {
+    final genericsDefinition =
+        withGenericDefinition ? this.genericsDefinition() : '';
+    final notifierType = '$name${generics()}';
+
+    final parameters = withArguments
+        ? buildParamDefinitionQuery(
+            this.parameters,
+            withDefaults: false,
+          )
+        : '';
+
+    return '$createdTypeDisplayString Function$genericsDefinition($refWithGenerics, $notifierType, $parameters)';
+  }
+
+  String createType({
+    bool withArguments = true,
+    bool withGenericDefinition = false,
+  }) {
     final generics = this.generics();
+    final genericsDefinition =
+        withGenericDefinition ? this.genericsDefinition() : '';
 
     final provider = this;
     switch (provider) {
@@ -337,9 +362,9 @@ extension ProviderNames on GeneratorProviderDeclaration {
             : '';
 
         final refType = '${provider.refImplName}$generics';
-        return '${provider.createdTypeDisplayString} Function($refType ref, $params)';
+        return '${provider.createdTypeDisplayString} Function$genericsDefinition($refType ref, $params)';
       case ClassBasedProviderDeclaration():
-        return '${provider.name}$generics Function()';
+        return '${provider.name}$generics Function$genericsDefinition()';
     }
   }
 

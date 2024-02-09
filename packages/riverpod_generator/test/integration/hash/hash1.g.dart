@@ -141,7 +141,10 @@ final class SimpleClassProvider extends $NotifierProvider<SimpleClass, String> {
   @$internal
   @override
   SimpleClassProvider $copyWithBuild(
-    String Function(Ref<String>, SimpleClass) build,
+    String Function(
+      Ref<String>,
+      SimpleClass,
+    ) build,
   ) {
     return SimpleClassProvider._(runNotifierBuildOverride: build);
   }

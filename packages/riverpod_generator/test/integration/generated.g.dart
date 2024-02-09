@@ -87,6 +87,13 @@ final class GeneratedFamilyProvider
   String debugGetCreateSourceHash() => _$generatedFamilyHash();
 
   @override
+  String toString() {
+    return r'generatedFamilyProvider'
+        ''
+        '($argument)';
+  }
+
+  @override
   $ProviderElement<_Test> createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
@@ -142,7 +149,27 @@ final class GeneratedFamilyFamily extends Family {
   String debugGetCreateSourceHash() => _$generatedFamilyHash();
 
   @override
-  String toString() => r'generatedFamily';
+  String toString() => r'generatedFamilyProvider';
+
+  Override overrideWith(
+    _Test Function(
+      GeneratedFamilyRef ref,
+      _Test args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as GeneratedFamilyProvider;
+
+        final argument = provider.argument as _Test;
+
+        return provider
+            .$copyWithCreate((ref) => create(ref, argument))
+            .createElement(container);
+      },
+    );
+  }
 }
 
 typedef $DynamicRef = Ref<Object?>;
@@ -226,6 +253,13 @@ final class $DynamicFamilyProvider
   String debugGetCreateSourceHash() => _$$dynamicFamilyHash();
 
   @override
+  String toString() {
+    return r'$dynamicFamilyProvider'
+        ''
+        '($argument)';
+  }
+
+  @override
   $ProviderElement<Object?> createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
@@ -281,7 +315,27 @@ final class $DynamicFamilyFamily extends Family {
   String debugGetCreateSourceHash() => _$$dynamicFamilyHash();
 
   @override
-  String toString() => r'$dynamicFamily';
+  String toString() => r'$dynamicFamilyProvider';
+
+  Override overrideWith(
+    Object? Function(
+      $DynamicFamilyRef ref,
+      dynamic args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as $DynamicFamilyProvider;
+
+        final argument = provider.argument as dynamic;
+
+        return provider
+            .$copyWithCreate((ref) => create(ref, argument))
+            .createElement(container);
+      },
+    );
+  }
 }
 
 typedef _DynamicRef = Ref<Object?>;
@@ -313,6 +367,13 @@ final class _DynamicProvider
 
   @override
   String debugGetCreateSourceHash() => _$dynamicHash();
+
+  @override
+  String toString() {
+    return r'_dynamicProvider'
+        ''
+        '($argument)';
+  }
 
   @override
   $ProviderElement<Object?> createElement(ProviderContainer container) =>
@@ -370,7 +431,27 @@ final class _DynamicFamily extends Family {
   String debugGetCreateSourceHash() => _$dynamicHash();
 
   @override
-  String toString() => r'_dynamic';
+  String toString() => r'_dynamicProvider';
+
+  Override overrideWith(
+    Object? Function(
+      _DynamicRef ref,
+      dynamic args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as _DynamicProvider;
+
+        final argument = provider.argument as dynamic;
+
+        return provider
+            .$copyWithCreate((ref) => create(ref, argument))
+            .createElement(container);
+      },
+    );
+  }
 }
 
 typedef AliasRef = Ref<r.AsyncValue<int>>;
@@ -456,6 +537,13 @@ final class AliasFamilyProvider extends $FunctionalProvider<
   String debugGetCreateSourceHash() => _$aliasFamilyHash();
 
   @override
+  String toString() {
+    return r'aliasFamilyProvider'
+        ''
+        '($argument)';
+  }
+
+  @override
   $ProviderElement<r.AsyncValue<int>> createElement(
           ProviderContainer container) =>
       $ProviderElement(this, container);
@@ -512,7 +600,27 @@ final class AliasFamilyFamily extends Family {
   String debugGetCreateSourceHash() => _$aliasFamilyHash();
 
   @override
-  String toString() => r'aliasFamily';
+  String toString() => r'aliasFamilyProvider';
+
+  Override overrideWith(
+    r.AsyncValue<int> Function(
+      AliasFamilyRef ref,
+      r.AsyncValue<int> args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as AliasFamilyProvider;
+
+        final argument = provider.argument as r.AsyncValue<int>;
+
+        return provider
+            .$copyWithCreate((ref) => create(ref, argument))
+            .createElement(container);
+      },
+    );
+  }
 }
 
 const generatedClassProvider = GeneratedClassProvider._();
@@ -551,7 +659,10 @@ final class GeneratedClassProvider
   @$internal
   @override
   GeneratedClassProvider $copyWithBuild(
-    _Test Function(Ref<_Test>, GeneratedClass) build,
+    _Test Function(
+      Ref<_Test>,
+      GeneratedClass,
+    ) build,
   ) {
     return GeneratedClassProvider._(runNotifierBuildOverride: build);
   }
@@ -595,6 +706,13 @@ final class GeneratedClassFamilyProvider
   @override
   String debugGetCreateSourceHash() => _$generatedClassFamilyHash();
 
+  @override
+  String toString() {
+    return r'generatedClassFamilyProvider'
+        ''
+        '($argument)';
+  }
+
   @$internal
   @override
   GeneratedClassFamily create() => _createCb?.call() ?? GeneratedClassFamily();
@@ -613,7 +731,10 @@ final class GeneratedClassFamilyProvider
   @$internal
   @override
   GeneratedClassFamilyProvider $copyWithBuild(
-    _Test Function(Ref<_Test>, GeneratedClassFamily) build,
+    _Test Function(
+      Ref<_Test>,
+      GeneratedClassFamily,
+    ) build,
   ) {
     return GeneratedClassFamilyProvider._(
         argument: argument as _Test,
@@ -654,13 +775,51 @@ final class GeneratedClassFamilyFamily extends Family {
   String debugGetCreateSourceHash() => _$generatedClassFamilyHash();
 
   @override
-  String toString() => r'GeneratedClassFamily';
+  String toString() => r'generatedClassFamilyProvider';
+
+  Override overrideWith(
+    GeneratedClassFamily Function(
+      _Test args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as GeneratedClassFamilyProvider;
+
+        final argument = provider.argument as _Test;
+
+        return provider
+            .$copyWithCreate(() => create(argument))
+            .createElement(container);
+      },
+    );
+  }
+
+  Override overrideWithBuild(
+    _Test Function(
+            Ref<_Test> ref, GeneratedClassFamily notifier, _Test argument)
+        build,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as GeneratedClassFamilyProvider;
+
+        final argument = provider.argument as _Test;
+
+        return provider
+            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
+            .createElement(container);
+      },
+    );
+  }
 }
 
 abstract class _$GeneratedClassFamily extends $Notifier<_Test> {
   late final _$args =
-      (ref as $NotifierProviderElement).origin.argument as (_Test,);
-  _Test get test => _$args.$1;
+      (ref as $NotifierProviderElement).origin.argument as _Test;
+  _Test get test => _$args;
 
   _Test build(
     _Test test,
@@ -669,7 +828,7 @@ abstract class _$GeneratedClassFamily extends $Notifier<_Test> {
   @$internal
   @override
   _Test runBuild() => build(
-        _$args.$1,
+        _$args,
       );
 }
 
@@ -709,7 +868,10 @@ final class $DynamicClassProvider
   @$internal
   @override
   $DynamicClassProvider $copyWithBuild(
-    Object? Function(Ref<Object?>, $DynamicClass) build,
+    Object? Function(
+      Ref<Object?>,
+      $DynamicClass,
+    ) build,
   ) {
     return $DynamicClassProvider._(runNotifierBuildOverride: build);
   }
@@ -753,6 +915,13 @@ final class $DynamicClassFamilyProvider
   @override
   String debugGetCreateSourceHash() => _$$dynamicClassFamilyHash();
 
+  @override
+  String toString() {
+    return r'$dynamicClassFamilyProvider'
+        ''
+        '($argument)';
+  }
+
   @$internal
   @override
   $DynamicClassFamily create() => _createCb?.call() ?? $DynamicClassFamily();
@@ -771,7 +940,10 @@ final class $DynamicClassFamilyProvider
   @$internal
   @override
   $DynamicClassFamilyProvider $copyWithBuild(
-    Object? Function(Ref<Object?>, $DynamicClassFamily) build,
+    Object? Function(
+      Ref<Object?>,
+      $DynamicClassFamily,
+    ) build,
   ) {
     return $DynamicClassFamilyProvider._(
         argument: argument as dynamic,
@@ -812,13 +984,51 @@ final class $DynamicClassFamilyFamily extends Family {
   String debugGetCreateSourceHash() => _$$dynamicClassFamilyHash();
 
   @override
-  String toString() => r'$DynamicClassFamily';
+  String toString() => r'$dynamicClassFamilyProvider';
+
+  Override overrideWith(
+    $DynamicClassFamily Function(
+      dynamic args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as $DynamicClassFamilyProvider;
+
+        final argument = provider.argument as dynamic;
+
+        return provider
+            .$copyWithCreate(() => create(argument))
+            .createElement(container);
+      },
+    );
+  }
+
+  Override overrideWithBuild(
+    Object? Function(
+            Ref<Object?> ref, $DynamicClassFamily notifier, dynamic argument)
+        build,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as $DynamicClassFamilyProvider;
+
+        final argument = provider.argument as dynamic;
+
+        return provider
+            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
+            .createElement(container);
+      },
+    );
+  }
 }
 
 abstract class _$$DynamicClassFamily extends $Notifier<Object?> {
   late final _$args =
-      (ref as $NotifierProviderElement).origin.argument as (dynamic,);
-  dynamic get test => _$args.$1;
+      (ref as $NotifierProviderElement).origin.argument as dynamic;
+  dynamic get test => _$args;
 
   Object? build(
     dynamic test,
@@ -827,7 +1037,7 @@ abstract class _$$DynamicClassFamily extends $Notifier<Object?> {
   @$internal
   @override
   Object? runBuild() => build(
-        _$args.$1,
+        _$args,
       );
 }
 
@@ -867,7 +1077,10 @@ final class AliasClassProvider
   @$internal
   @override
   AliasClassProvider $copyWithBuild(
-    r.AsyncValue<int> Function(Ref<r.AsyncValue<int>>, AliasClass) build,
+    r.AsyncValue<int> Function(
+      Ref<r.AsyncValue<int>>,
+      AliasClass,
+    ) build,
   ) {
     return AliasClassProvider._(runNotifierBuildOverride: build);
   }
@@ -911,6 +1124,13 @@ final class AliasClassFamilyProvider
   @override
   String debugGetCreateSourceHash() => _$aliasClassFamilyHash();
 
+  @override
+  String toString() {
+    return r'aliasClassFamilyProvider'
+        ''
+        '($argument)';
+  }
+
   @$internal
   @override
   AliasClassFamily create() => _createCb?.call() ?? AliasClassFamily();
@@ -929,7 +1149,10 @@ final class AliasClassFamilyProvider
   @$internal
   @override
   AliasClassFamilyProvider $copyWithBuild(
-    r.AsyncValue<int> Function(Ref<r.AsyncValue<int>>, AliasClassFamily) build,
+    r.AsyncValue<int> Function(
+      Ref<r.AsyncValue<int>>,
+      AliasClassFamily,
+    ) build,
   ) {
     return AliasClassFamilyProvider._(
         argument: argument as r.AsyncValue<int>,
@@ -969,13 +1192,51 @@ final class AliasClassFamilyFamily extends Family {
   String debugGetCreateSourceHash() => _$aliasClassFamilyHash();
 
   @override
-  String toString() => r'AliasClassFamily';
+  String toString() => r'aliasClassFamilyProvider';
+
+  Override overrideWith(
+    AliasClassFamily Function(
+      r.AsyncValue<int> args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as AliasClassFamilyProvider;
+
+        final argument = provider.argument as r.AsyncValue<int>;
+
+        return provider
+            .$copyWithCreate(() => create(argument))
+            .createElement(container);
+      },
+    );
+  }
+
+  Override overrideWithBuild(
+    r.AsyncValue<int> Function(Ref<r.AsyncValue<int>> ref,
+            AliasClassFamily notifier, r.AsyncValue<int> argument)
+        build,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as AliasClassFamilyProvider;
+
+        final argument = provider.argument as r.AsyncValue<int>;
+
+        return provider
+            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
+            .createElement(container);
+      },
+    );
+  }
 }
 
 abstract class _$AliasClassFamily extends $Notifier<r.AsyncValue<int>> {
   late final _$args =
-      (ref as $NotifierProviderElement).origin.argument as (r.AsyncValue<int>,);
-  r.AsyncValue<int> get test => _$args.$1;
+      (ref as $NotifierProviderElement).origin.argument as r.AsyncValue<int>;
+  r.AsyncValue<int> get test => _$args;
 
   r.AsyncValue<int> build(
     r.AsyncValue<int> test,
@@ -984,7 +1245,7 @@ abstract class _$AliasClassFamily extends $Notifier<r.AsyncValue<int>> {
   @$internal
   @override
   r.AsyncValue<int> runBuild() => build(
-        _$args.$1,
+        _$args,
       );
 }
 

@@ -18,6 +18,12 @@ class FamilyTemplate extends Template {
 
   late final _argumentRecordType = provider.argumentRecordType;
 
+  late final _generics = provider.generics();
+  late final _genericsDefinition = provider.genericsDefinition();
+  late final _parameterDefinition =
+      buildParamDefinitionQuery(provider.parameters);
+  late final _notifierType = '${provider.name}$_generics';
+
   @override
   void run(StringBuffer buffer) {
     if (!provider.providerElement.isFamily) return;
@@ -25,11 +31,6 @@ class FamilyTemplate extends Template {
     final topLevelBuffer = StringBuffer();
 
     // TODO add docs everywhere in generated code
-
-    final generics = provider.generics();
-    final genericsDefinition = provider.genericsDefinition();
-
-    final parameterDefinition = buildParamDefinitionQuery(provider.parameters);
 
     final parametersPassThrough = provider.argumentToRecord();
     final argument =
@@ -45,8 +46,8 @@ final class ${provider.familyTypeName} extends Family {
         ${provider.providerElement.isAutoDispose ? 'isAutoDispose: true,' : ''}
       );
 
-  ${provider.providerTypeName}$generics call$genericsDefinition($parameterDefinition)
-    => ${provider.providerTypeName}$generics._(
+  ${provider.providerTypeName}$_generics call$_genericsDefinition($_parameterDefinition)
+    => ${provider.providerTypeName}$_generics._(
       $argument
       from: this
     );
@@ -55,14 +56,10 @@ final class ${provider.familyTypeName} extends Family {
   String debugGetCreateSourceHash() => ${provider.hashFnName}();
  
   @override
-  String toString() => r'${provider.name}';
+  String toString() => r'${provider.providerName(options)}';
 ''');
 
-    // _writeOverrides(
-    //   buffer,
-    //   topLevelBuffer: topLevelBuffer,
-    //   genericsDefinition: genericsDefinition,
-    // );
+    _writeOverrides(buffer, topLevelBuffer: topLevelBuffer);
 
     buffer.writeln('}');
 
@@ -72,13 +69,11 @@ final class ${provider.familyTypeName} extends Family {
   void _writeOverrides(
     StringBuffer buffer, {
     required StringBuffer topLevelBuffer,
-    required String genericsDefinition,
   }) {
     // overrideWith
     _writeOverrideWith(
       buffer,
       topLevelBuffer: topLevelBuffer,
-      genericsDefinition: genericsDefinition,
     );
 
     // overrideWithBuild
@@ -95,26 +90,16 @@ final class ${provider.familyTypeName} extends Family {
   void _writeOverrideWith(
     StringBuffer buffer, {
     required StringBuffer topLevelBuffer,
-    required String genericsDefinition,
   }) {
-    // Encode the list of parameters into a record.
-    // We do so only if there are at least two parameters.
-    // TODO test
-    late final argumentsType = switch (provider.parameters) {
-      [final p] => p.typeDisplayString,
-      _ =>
-        '(${buildParamDefinitionQuery(provider.parameters, asRecord: true)})',
-    };
-
     final createType = switch (provider) {
       FunctionalProviderDeclaration(parameters: [_, ...]) =>
-        '${provider.createdTypeDisplayString} Function$genericsDefinition(${provider.refWithGenerics} ref, $argumentsType args,)',
+        '${provider.createdTypeDisplayString} Function$_genericsDefinition(${provider.refWithGenerics} ref, $_argumentRecordType args,)',
       FunctionalProviderDeclaration(parameters: []) =>
-        '${provider.createdTypeDisplayString} Function$genericsDefinition(${provider.refWithGenerics} ref)',
+        '${provider.createdTypeDisplayString} Function$_genericsDefinition(${provider.refWithGenerics} ref)',
       ClassBasedProviderDeclaration(parameters: [_, ...]) =>
-        '${provider.createdTypeDisplayString} Function$genericsDefinition(${provider.refWithGenerics} ref, $argumentsType args,)',
+        '$_notifierType Function$_genericsDefinition($_argumentRecordType args,)',
       ClassBasedProviderDeclaration() =>
-        '${provider.createdTypeDisplayString} Function$genericsDefinition(${provider.refWithGenerics} re)',
+        '$_notifierType Function$_genericsDefinition()',
     };
 
     // TODO docs
@@ -123,24 +108,46 @@ Override overrideWith($createType create,) {
   return \$FamilyOverride(
     from: this,
     createElement: (container, provider) {
-      provider as ProviderT;
+      provider as ${provider.providerTypeName};
 ''');
 
-    switch (provider.parameters) {
-      case [_]:
+    switch ((
+      hasParameters: provider.parameters.isNotEmpty,
+      hasGenerics: provider.typeParameters?.typeParameters.isNotEmpty ?? false,
+    )) {
+      case (hasParameters: false, hasGenerics: false):
+        buffer.writeln(
+          r'return provider.$copyWithCreate(create).createElement(container);',
+        );
+      case (hasParameters: true, hasGenerics: false):
         buffer.writeln('''
-      final args = provider.argument! as ${provider.parameters.single.typeDisplayString};
+        final argument = provider.argument as $_argumentRecordType;
+
+        return provider.\$copyWithCreate(${switch (provider) {
+          FunctionalProviderDeclaration() => '(ref) => create(ref, argument)',
+          ClassBasedProviderDeclaration() => '() => create(argument)',
+        }}).createElement(container);
+      ''');
+
+      case (hasParameters: false, hasGenerics: true):
+        buffer.writeln(
+          'return provider._copyWithCreate(create).createElement(container);',
+        );
+
+      case (hasParameters: true, hasGenerics: true):
+        buffer.writeln('''
+        return provider._copyWithCreate($_genericsDefinition(ref, $_parameterDefinition) {
+          final argument = provider.argument as $_argumentRecordType;
+
+          return create(ref, argument);
+        }).createElement(container);
       ''');
     }
 
-    ('''
-      final args = provider.argument! as $_argumentRecordType;
-
-      return provider.\$copyWithCreate(create).createElement(container);
+    buffer.writeln('''
     },
   );
-}
-''');
+}''');
   }
 
   void _writeOverrideWithBuild(
@@ -148,11 +155,58 @@ Override overrideWith($createType create,) {
     ClassBasedProviderDeclaration provider, {
     required StringBuffer topLevelBuffer,
   }) {
+    final runNotifierBuildType = '''
+${provider.createdTypeDisplayString} Function$_genericsDefinition(
+  ${provider.refWithGenerics} ref,
+  $_notifierType notifier
+  ${switch (provider.parameters) {
+      [] => '',
+      [_, ...] => ', $_argumentRecordType argument',
+    }}
+)''';
+
     // TODO docs
     buffer.writeln('''
-Override overrideWithBuild() {
-
-}
+Override overrideWithBuild($runNotifierBuildType build,) {
+  return \$FamilyOverride(
+    from: this,
+    createElement: (container, provider) {
+      provider as ${provider.providerTypeName};
 ''');
+
+    switch ((
+      hasParameters: provider.parameters.isNotEmpty,
+      hasGenerics: provider.typeParameters?.typeParameters.isNotEmpty ?? false,
+    )) {
+      case (hasParameters: false, hasGenerics: false):
+        buffer.writeln(
+          r'return provider.$copyWithBuild(build).createElement(container);',
+        );
+      case (hasParameters: true, hasGenerics: false):
+        buffer.writeln('''
+        final argument = provider.argument as $_argumentRecordType;
+
+        return provider.\$copyWithBuild((ref, notifier) => build(ref, notifier, argument)).createElement(container);
+      ''');
+
+      case (hasParameters: false, hasGenerics: true):
+        buffer.writeln(
+          'return provider._copyWithBuild(build).createElement(container);',
+        );
+
+      case (hasParameters: true, hasGenerics: true):
+        buffer.writeln('''
+        return provider._copyWithBuild($_genericsDefinition(ref, notifier, $_parameterDefinition) {
+          final argument = provider.argument as $_argumentRecordType;
+
+          return build(ref, notifier, argument);
+        }).createElement(container);
+      ''');
+    }
+
+    buffer.writeln('''
+    },
+  );
+}''');
   }
 }

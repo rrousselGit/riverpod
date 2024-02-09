@@ -185,6 +185,13 @@ final class Count2Provider extends $FunctionalProvider<int, int, Count2Ref>
   String debugGetCreateSourceHash() => _$count2Hash();
 
   @override
+  String toString() {
+    return r'count2ProviderFamily'
+        ''
+        '($argument)';
+  }
+
+  @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
@@ -240,7 +247,27 @@ final class Count2Family extends Family {
   String debugGetCreateSourceHash() => _$count2Hash();
 
   @override
-  String toString() => r'count2';
+  String toString() => r'count2ProviderFamily';
+
+  Override overrideWith(
+    int Function(
+      Count2Ref ref,
+      int args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as Count2Provider;
+
+        final argument = provider.argument as int;
+
+        return provider
+            .$copyWithCreate((ref) => create(ref, argument))
+            .createElement(container);
+      },
+    );
+  }
 }
 
 typedef CountFuture2Ref = Ref<AsyncValue<int>>;
@@ -272,6 +299,13 @@ final class CountFuture2Provider
 
   @override
   String debugGetCreateSourceHash() => _$countFuture2Hash();
+
+  @override
+  String toString() {
+    return r'countFuture2ProviderFamily'
+        ''
+        '($argument)';
+  }
 
   @override
   $FutureProviderElement<int> createElement(ProviderContainer container) =>
@@ -329,7 +363,27 @@ final class CountFuture2Family extends Family {
   String debugGetCreateSourceHash() => _$countFuture2Hash();
 
   @override
-  String toString() => r'countFuture2';
+  String toString() => r'countFuture2ProviderFamily';
+
+  Override overrideWith(
+    FutureOr<int> Function(
+      CountFuture2Ref ref,
+      int args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as CountFuture2Provider;
+
+        final argument = provider.argument as int;
+
+        return provider
+            .$copyWithCreate((ref) => create(ref, argument))
+            .createElement(container);
+      },
+    );
+  }
 }
 
 typedef CountStream2Ref = Ref<AsyncValue<int>>;
@@ -361,6 +415,13 @@ final class CountStream2Provider
 
   @override
   String debugGetCreateSourceHash() => _$countStream2Hash();
+
+  @override
+  String toString() {
+    return r'countStream2ProviderFamily'
+        ''
+        '($argument)';
+  }
 
   @override
   $StreamProviderElement<int> createElement(ProviderContainer container) =>
@@ -418,7 +479,27 @@ final class CountStream2Family extends Family {
   String debugGetCreateSourceHash() => _$countStream2Hash();
 
   @override
-  String toString() => r'countStream2';
+  String toString() => r'countStream2ProviderFamily';
+
+  Override overrideWith(
+    Stream<int> Function(
+      CountStream2Ref ref,
+      int args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as CountStream2Provider;
+
+        final argument = provider.argument as int;
+
+        return provider
+            .$copyWithCreate((ref) => create(ref, argument))
+            .createElement(container);
+      },
+    );
+  }
 }
 
 const countNotifierPod = CountNotifierProvider._();
@@ -457,7 +538,10 @@ final class CountNotifierProvider
   @$internal
   @override
   CountNotifierProvider $copyWithBuild(
-    int Function(Ref<int>, CountNotifier) build,
+    int Function(
+      Ref<int>,
+      CountNotifier,
+    ) build,
   ) {
     return CountNotifierProvider._(runNotifierBuildOverride: build);
   }
@@ -515,7 +599,10 @@ final class CountAsyncNotifierProvider
   @$internal
   @override
   CountAsyncNotifierProvider $copyWithBuild(
-    FutureOr<int> Function(Ref<AsyncValue<int>>, CountAsyncNotifier) build,
+    FutureOr<int> Function(
+      Ref<AsyncValue<int>>,
+      CountAsyncNotifier,
+    ) build,
   ) {
     return CountAsyncNotifierProvider._(runNotifierBuildOverride: build);
   }
@@ -574,7 +661,10 @@ final class CountStreamNotifierProvider
   @$internal
   @override
   CountStreamNotifierProvider $copyWithBuild(
-    Stream<int> Function(Ref<AsyncValue<int>>, CountStreamNotifier) build,
+    Stream<int> Function(
+      Ref<AsyncValue<int>>,
+      CountStreamNotifier,
+    ) build,
   ) {
     return CountStreamNotifierProvider._(runNotifierBuildOverride: build);
   }
@@ -619,6 +709,13 @@ final class CountNotifier2Provider
   @override
   String debugGetCreateSourceHash() => _$countNotifier2Hash();
 
+  @override
+  String toString() {
+    return r'countNotifier2ProviderFamily'
+        ''
+        '($argument)';
+  }
+
   @$internal
   @override
   CountNotifier2 create() => _createCb?.call() ?? CountNotifier2();
@@ -637,7 +734,10 @@ final class CountNotifier2Provider
   @$internal
   @override
   CountNotifier2Provider $copyWithBuild(
-    int Function(Ref<int>, CountNotifier2) build,
+    int Function(
+      Ref<int>,
+      CountNotifier2,
+    ) build,
   ) {
     return CountNotifier2Provider._(
         argument: argument as int,
@@ -677,13 +777,48 @@ final class CountNotifier2Family extends Family {
   String debugGetCreateSourceHash() => _$countNotifier2Hash();
 
   @override
-  String toString() => r'CountNotifier2';
+  String toString() => r'countNotifier2ProviderFamily';
+
+  Override overrideWith(
+    CountNotifier2 Function(
+      int args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as CountNotifier2Provider;
+
+        final argument = provider.argument as int;
+
+        return provider
+            .$copyWithCreate(() => create(argument))
+            .createElement(container);
+      },
+    );
+  }
+
+  Override overrideWithBuild(
+    int Function(Ref<int> ref, CountNotifier2 notifier, int argument) build,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as CountNotifier2Provider;
+
+        final argument = provider.argument as int;
+
+        return provider
+            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
+            .createElement(container);
+      },
+    );
+  }
 }
 
 abstract class _$CountNotifier2 extends $Notifier<int> {
-  late final _$args =
-      (ref as $NotifierProviderElement).origin.argument as (int,);
-  int get a => _$args.$1;
+  late final _$args = (ref as $NotifierProviderElement).origin.argument as int;
+  int get a => _$args;
 
   int build(
     int a,
@@ -692,7 +827,7 @@ abstract class _$CountNotifier2 extends $Notifier<int> {
   @$internal
   @override
   int runBuild() => build(
-        _$args.$1,
+        _$args,
       );
 }
 
@@ -718,6 +853,13 @@ final class CountAsyncNotifier2Provider
   @override
   String debugGetCreateSourceHash() => _$countAsyncNotifier2Hash();
 
+  @override
+  String toString() {
+    return r'countAsyncNotifier2ProviderFamily'
+        ''
+        '($argument)';
+  }
+
   @$internal
   @override
   CountAsyncNotifier2 create() => _createCb?.call() ?? CountAsyncNotifier2();
@@ -736,7 +878,10 @@ final class CountAsyncNotifier2Provider
   @$internal
   @override
   CountAsyncNotifier2Provider $copyWithBuild(
-    FutureOr<int> Function(Ref<AsyncValue<int>>, CountAsyncNotifier2) build,
+    FutureOr<int> Function(
+      Ref<AsyncValue<int>>,
+      CountAsyncNotifier2,
+    ) build,
   ) {
     return CountAsyncNotifier2Provider._(
         argument: argument as int,
@@ -777,13 +922,51 @@ final class CountAsyncNotifier2Family extends Family {
   String debugGetCreateSourceHash() => _$countAsyncNotifier2Hash();
 
   @override
-  String toString() => r'CountAsyncNotifier2';
+  String toString() => r'countAsyncNotifier2ProviderFamily';
+
+  Override overrideWith(
+    CountAsyncNotifier2 Function(
+      int args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as CountAsyncNotifier2Provider;
+
+        final argument = provider.argument as int;
+
+        return provider
+            .$copyWithCreate(() => create(argument))
+            .createElement(container);
+      },
+    );
+  }
+
+  Override overrideWithBuild(
+    FutureOr<int> Function(Ref<AsyncValue<int>> ref,
+            CountAsyncNotifier2 notifier, int argument)
+        build,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as CountAsyncNotifier2Provider;
+
+        final argument = provider.argument as int;
+
+        return provider
+            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
+            .createElement(container);
+      },
+    );
+  }
 }
 
 abstract class _$CountAsyncNotifier2 extends $AsyncNotifier<int> {
   late final _$args =
-      (ref as $AsyncNotifierProviderElement).origin.argument as (int,);
-  int get a => _$args.$1;
+      (ref as $AsyncNotifierProviderElement).origin.argument as int;
+  int get a => _$args;
 
   FutureOr<int> build(
     int a,
@@ -792,7 +975,7 @@ abstract class _$CountAsyncNotifier2 extends $AsyncNotifier<int> {
   @$internal
   @override
   FutureOr<int> runBuild() => build(
-        _$args.$1,
+        _$args,
       );
 }
 
@@ -818,6 +1001,13 @@ final class CountStreamNotifier2Provider
   @override
   String debugGetCreateSourceHash() => _$countStreamNotifier2Hash();
 
+  @override
+  String toString() {
+    return r'countStreamNotifier2ProviderFamily'
+        ''
+        '($argument)';
+  }
+
   @$internal
   @override
   CountStreamNotifier2 create() => _createCb?.call() ?? CountStreamNotifier2();
@@ -836,7 +1026,10 @@ final class CountStreamNotifier2Provider
   @$internal
   @override
   CountStreamNotifier2Provider $copyWithBuild(
-    Stream<int> Function(Ref<AsyncValue<int>>, CountStreamNotifier2) build,
+    Stream<int> Function(
+      Ref<AsyncValue<int>>,
+      CountStreamNotifier2,
+    ) build,
   ) {
     return CountStreamNotifier2Provider._(
         argument: argument as int,
@@ -877,13 +1070,51 @@ final class CountStreamNotifier2Family extends Family {
   String debugGetCreateSourceHash() => _$countStreamNotifier2Hash();
 
   @override
-  String toString() => r'CountStreamNotifier2';
+  String toString() => r'countStreamNotifier2ProviderFamily';
+
+  Override overrideWith(
+    CountStreamNotifier2 Function(
+      int args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as CountStreamNotifier2Provider;
+
+        final argument = provider.argument as int;
+
+        return provider
+            .$copyWithCreate(() => create(argument))
+            .createElement(container);
+      },
+    );
+  }
+
+  Override overrideWithBuild(
+    Stream<int> Function(Ref<AsyncValue<int>> ref,
+            CountStreamNotifier2 notifier, int argument)
+        build,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as CountStreamNotifier2Provider;
+
+        final argument = provider.argument as int;
+
+        return provider
+            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
+            .createElement(container);
+      },
+    );
+  }
 }
 
 abstract class _$CountStreamNotifier2 extends $StreamNotifier<int> {
   late final _$args =
-      (ref as $StreamNotifierProviderElement).origin.argument as (int,);
-  int get a => _$args.$1;
+      (ref as $StreamNotifierProviderElement).origin.argument as int;
+  int get a => _$args;
 
   Stream<int> build(
     int a,
@@ -892,7 +1123,7 @@ abstract class _$CountStreamNotifier2 extends $StreamNotifier<int> {
   @$internal
   @override
   Stream<int> runBuild() => build(
-        _$args.$1,
+        _$args,
       );
 }
 

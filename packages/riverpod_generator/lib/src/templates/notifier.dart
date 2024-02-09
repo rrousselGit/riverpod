@@ -26,26 +26,27 @@ class NotifierTemplate extends Template {
         '\$Notifier<${provider.valueTypeDisplayString}>',
     };
 
-    final argumentRecordType = buildParamDefinitionQuery(
-      provider.parameters,
-      asRecord: true,
-    );
-
     final paramsPassThrough = buildParamInvocationQuery({
       for (final (index, parameter) in provider.parameters.indexed)
-        if (parameter.isPositional)
+        if (provider.parameters.length == 1)
+          parameter: r'_$args'
+        else if (parameter.isPositional)
           parameter: '_\$args.\$${index + 1}'
         else
           parameter: '_\$args.${parameter.name!.lexeme}',
     });
 
     final _$args = r'late final _$args = '
-        '(ref as ${provider.elementName}).origin.argument as ($argumentRecordType);';
+        '(ref as ${provider.elementName}).origin.argument as ${provider.argumentRecordType};';
     var paramOffset = 0;
     final parametersAsFields = provider.parameters
         .map(
-          (p) => '${p.typeDisplayString} get ${p.name!.lexeme} => '
+          (p) =>
+              '${p.typeDisplayString} get ${p.name!.lexeme} => ${switch (provider.parameters) {
+            [_] => r'_$args;',
+            _ =>
               '_\$args.${p.isPositional ? '\$${++paramOffset}' : p.name!.lexeme};',
+          }}',
         )
         .join();
 

@@ -34,6 +34,22 @@ final class GenericProvider<T extends num> extends $FunctionalProvider<
   @override
   String debugGetCreateSourceHash() => _$genericHash();
 
+  GenericProvider<T> _copyWithCreate(
+    Stream<List<T>> Function<T extends num>(
+      GenericRef<T> ref,
+    ) create,
+  ) {
+    return GenericProvider<T>._(
+        from: from! as GenericFamily, create: create<T>);
+  }
+
+  @override
+  String toString() {
+    return r'genericProvider'
+        '<${T}>'
+        '()';
+  }
+
   @override
   $StreamProviderElement<List<T>> createElement(ProviderContainer container) =>
       $StreamProviderElement(this, container);
@@ -78,7 +94,20 @@ final class GenericFamily extends Family {
   String debugGetCreateSourceHash() => _$genericHash();
 
   @override
-  String toString() => r'generic';
+  String toString() => r'genericProvider';
+
+  Override overrideWith(
+    Stream<List<T>> Function<T extends num>(GenericRef<T> ref) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as GenericProvider;
+
+        return provider._copyWithCreate(create).createElement(container);
+      },
+    );
+  }
 }
 
 typedef PublicRef = Ref<AsyncValue<String>>;
@@ -227,6 +256,13 @@ final class FamilyProvider
   String debugGetCreateSourceHash() => _$familyHash();
 
   @override
+  String toString() {
+    return r'familyProvider'
+        ''
+        '$argument';
+  }
+
+  @override
   $StreamProviderElement<String> createElement(ProviderContainer container) =>
       $StreamProviderElement(this, container);
 
@@ -318,7 +354,39 @@ final class FamilyFamily extends Family {
   String debugGetCreateSourceHash() => _$familyHash();
 
   @override
-  String toString() => r'family';
+  String toString() => r'familyProvider';
+
+  Override overrideWith(
+    Stream<String> Function(
+      FamilyRef ref,
+      (
+        int, {
+        String? second,
+        double third,
+        bool fourth,
+        List<String>? fifth,
+      }) args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as FamilyProvider;
+
+        final argument = provider.argument as (
+          int, {
+          String? second,
+          double third,
+          bool fourth,
+          List<String>? fifth,
+        });
+
+        return provider
+            .$copyWithCreate((ref) => create(ref, argument))
+            .createElement(container);
+      },
+    );
+  }
 }
 
 const genericClassProvider = GenericClassFamily._();
@@ -343,6 +411,30 @@ final class GenericClassProvider<T extends num>
   @override
   String debugGetCreateSourceHash() => _$genericClassHash();
 
+  GenericClassProvider<T> _copyWithCreate(
+    GenericClass<T> Function<T extends num>() create,
+  ) {
+    return GenericClassProvider<T>._(
+        from: from! as GenericClassFamily, create: create<T>);
+  }
+
+  GenericClassProvider<T> _copyWithBuild(
+    Stream<List<T>> Function<T extends num>(
+      Ref<AsyncValue<List<T>>>,
+      GenericClass<T>,
+    ) build,
+  ) {
+    return GenericClassProvider<T>._(
+        from: from! as GenericClassFamily, runNotifierBuildOverride: build<T>);
+  }
+
+  @override
+  String toString() {
+    return r'genericClassProvider'
+        '<${T}>'
+        '()';
+  }
+
   @$internal
   @override
   GenericClass<T> create() => _createCb?.call() ?? GenericClass<T>();
@@ -359,7 +451,10 @@ final class GenericClassProvider<T extends num>
   @$internal
   @override
   GenericClassProvider<T> $copyWithBuild(
-    Stream<List<T>> Function(Ref<AsyncValue<List<T>>>, GenericClass<T>) build,
+    Stream<List<T>> Function(
+      Ref<AsyncValue<List<T>>>,
+      GenericClass<T>,
+    ) build,
   ) {
     return GenericClassProvider<T>._(
         from: from! as GenericClassFamily, runNotifierBuildOverride: build);
@@ -397,7 +492,35 @@ final class GenericClassFamily extends Family {
   String debugGetCreateSourceHash() => _$genericClassHash();
 
   @override
-  String toString() => r'GenericClass';
+  String toString() => r'genericClassProvider';
+
+  Override overrideWith(
+    GenericClass<T> Function<T extends num>() create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as GenericClassProvider;
+
+        return provider._copyWithCreate(create).createElement(container);
+      },
+    );
+  }
+
+  Override overrideWithBuild(
+    Stream<List<T>> Function<T extends num>(
+            Ref<AsyncValue<List<T>>> ref, GenericClass<T> notifier)
+        build,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as GenericClassProvider;
+
+        return provider._copyWithBuild(build).createElement(container);
+      },
+    );
+  }
 }
 
 abstract class _$GenericClass<T extends num> extends $StreamNotifier<List<T>> {
@@ -444,7 +567,10 @@ final class PublicClassProvider
   @$internal
   @override
   PublicClassProvider $copyWithBuild(
-    Stream<String> Function(Ref<AsyncValue<String>>, PublicClass) build,
+    Stream<String> Function(
+      Ref<AsyncValue<String>>,
+      PublicClass,
+    ) build,
   ) {
     return PublicClassProvider._(runNotifierBuildOverride: build);
   }
@@ -502,7 +628,10 @@ final class _PrivateClassProvider
   @$internal
   @override
   _PrivateClassProvider $copyWithBuild(
-    Stream<String> Function(Ref<AsyncValue<String>>, _PrivateClass) build,
+    Stream<String> Function(
+      Ref<AsyncValue<String>>,
+      _PrivateClass,
+    ) build,
   ) {
     return _PrivateClassProvider._(runNotifierBuildOverride: build);
   }
@@ -553,6 +682,13 @@ final class FamilyClassProvider
   @override
   String debugGetCreateSourceHash() => _$familyClassHash();
 
+  @override
+  String toString() {
+    return r'familyClassProvider'
+        ''
+        '$argument';
+  }
+
   @$internal
   @override
   FamilyClass create() => _createCb?.call() ?? FamilyClass();
@@ -577,7 +713,10 @@ final class FamilyClassProvider
   @$internal
   @override
   FamilyClassProvider $copyWithBuild(
-    Stream<String> Function(Ref<AsyncValue<String>>, FamilyClass) build,
+    Stream<String> Function(
+      Ref<AsyncValue<String>>,
+      FamilyClass,
+    ) build,
   ) {
     return FamilyClassProvider._(
         argument: argument as (
@@ -633,7 +772,71 @@ final class FamilyClassFamily extends Family {
   String debugGetCreateSourceHash() => _$familyClassHash();
 
   @override
-  String toString() => r'FamilyClass';
+  String toString() => r'familyClassProvider';
+
+  Override overrideWith(
+    FamilyClass Function(
+      (
+        int, {
+        String? second,
+        double third,
+        bool fourth,
+        List<String>? fifth,
+      }) args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as FamilyClassProvider;
+
+        final argument = provider.argument as (
+          int, {
+          String? second,
+          double third,
+          bool fourth,
+          List<String>? fifth,
+        });
+
+        return provider
+            .$copyWithCreate(() => create(argument))
+            .createElement(container);
+      },
+    );
+  }
+
+  Override overrideWithBuild(
+    Stream<String> Function(
+            Ref<AsyncValue<String>> ref,
+            FamilyClass notifier,
+            (
+              int, {
+              String? second,
+              double third,
+              bool fourth,
+              List<String>? fifth,
+            }) argument)
+        build,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as FamilyClassProvider;
+
+        final argument = provider.argument as (
+          int, {
+          String? second,
+          double third,
+          bool fourth,
+          List<String>? fifth,
+        });
+
+        return provider
+            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
+            .createElement(container);
+      },
+    );
+  }
 }
 
 abstract class _$FamilyClass extends $StreamNotifier<String> {

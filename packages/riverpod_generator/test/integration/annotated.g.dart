@@ -87,6 +87,13 @@ final class FamilyProvider
   String debugGetCreateSourceHash() => _$familyHash();
 
   @override
+  String toString() {
+    return r'familyProvider'
+        ''
+        '($argument)';
+  }
+
+  @override
   $ProviderElement<String> createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
@@ -142,7 +149,27 @@ final class FamilyFamily extends Family {
   String debugGetCreateSourceHash() => _$familyHash();
 
   @override
-  String toString() => r'family';
+  String toString() => r'familyProvider';
+
+  Override overrideWith(
+    String Function(
+      FamilyRef ref,
+      int args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as FamilyProvider;
+
+        final argument = provider.argument as int;
+
+        return provider
+            .$copyWithCreate((ref) => create(ref, argument))
+            .createElement(container);
+      },
+    );
+  }
 }
 
 typedef NotCopiedFunctionalRef = Ref<String>;
@@ -227,6 +254,13 @@ final class NotCopiedFamilyProvider
   String debugGetCreateSourceHash() => _$notCopiedFamilyHash();
 
   @override
+  String toString() {
+    return r'notCopiedFamilyProvider'
+        ''
+        '($argument)';
+  }
+
+  @override
   $ProviderElement<String> createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
@@ -282,7 +316,27 @@ final class NotCopiedFamilyFamily extends Family {
   String debugGetCreateSourceHash() => _$notCopiedFamilyHash();
 
   @override
-  String toString() => r'notCopiedFamily';
+  String toString() => r'notCopiedFamilyProvider';
+
+  Override overrideWith(
+    String Function(
+      NotCopiedFamilyRef ref,
+      int args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as NotCopiedFamilyProvider;
+
+        final argument = provider.argument as int;
+
+        return provider
+            .$copyWithCreate((ref) => create(ref, argument))
+            .createElement(container);
+      },
+    );
+  }
 }
 
 const classBasedProvider = ClassBasedProvider._();
@@ -320,7 +374,10 @@ final class ClassBasedProvider extends $NotifierProvider<ClassBased, String> {
   @$internal
   @override
   ClassBasedProvider $copyWithBuild(
-    String Function(Ref<String>, ClassBased) build,
+    String Function(
+      Ref<String>,
+      ClassBased,
+    ) build,
   ) {
     return ClassBasedProvider._(runNotifierBuildOverride: build);
   }
@@ -378,7 +435,10 @@ final class NotCopiedClassBasedProvider
   @$internal
   @override
   NotCopiedClassBasedProvider $copyWithBuild(
-    String Function(Ref<String>, NotCopiedClassBased) build,
+    String Function(
+      Ref<String>,
+      NotCopiedClassBased,
+    ) build,
   ) {
     return NotCopiedClassBasedProvider._(runNotifierBuildOverride: build);
   }

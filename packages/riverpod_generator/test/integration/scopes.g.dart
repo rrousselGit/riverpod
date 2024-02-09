@@ -90,7 +90,10 @@ final class ScopedClassProvider extends $NotifierProvider<ScopedClass, int> {
   @$internal
   @override
   ScopedClassProvider $copyWithBuild(
-    int Function(Ref<int>, ScopedClass) build,
+    int Function(
+      Ref<int>,
+      ScopedClass,
+    ) build,
   ) {
     return ScopedClassProvider._(runNotifierBuildOverride: build);
   }

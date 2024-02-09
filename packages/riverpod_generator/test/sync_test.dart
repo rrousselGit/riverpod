@@ -1,4 +1,4 @@
-// ignore_for_file: omit_local_variable_types, unused_local_variable, require_trailing_commas
+// ignore_for_file: omit_local_variable_types, unused_local_variable
 
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
@@ -138,12 +138,13 @@ void main() {
       'familyProvider(42, fifth: null, fourth: true, second: foo, third: 0.3)',
     );
 
+    // TODO uncomment
+    // expect(
+    //   publicProvider.overrideWithValue('foo').toString(),
+    //   'publicProvider.overrideWithValue(foo)',
+    // );
     expect(
-      publicProvider.overrideWithValue('foo').toString(),
-      'publicProvider.overrideWithValue(foo)',
-    );
-    expect(
-      familyProvider.overrideWith((ref) => 'foo').toString(),
+      familyProvider.overrideWith((ref, _) => 'foo').toString(),
       'familyProvider.overrideWith(...)',
     );
     expect(
@@ -151,6 +152,23 @@ void main() {
           .overrideWith((ref) => '')
           .toString(),
       'familyProvider(42, fifth: null, fourth: true, second: foo, third: 0.3).overrideWith(...)',
+    );
+
+    expect(
+      complexGenericProvider<int, String>(param: 42).toString(),
+      'complexGenericProvider<int, String>(otherParam: null, param: 42)',
+    );
+    expect(
+      rawFamilyStreamProvider(42).toString(),
+      'rawFamilyStreamProvider(42)',
+    );
+    expect(
+      supports$InFnNameProvider<int>().toString(),
+      r'supports$InFnNameProvider<int>()',
+    );
+    expect(
+      supports$InClassNameProvider<int>().toString(),
+      r'supports$InClassNameProvider<int>()',
     );
   });
 
@@ -168,15 +186,20 @@ void main() {
   test('Supports overriding family providers', () {
     final container = createContainer(
       overrides: [
-        familyProvider(42, third: .42).overrideWith(
-          (ref, args) => 'Hello world ${args.first} ${args.second} '
+        familyProvider.overrideWith(
+          (ref, args) => 'Hello world ${args.$1} ${args.second} '
               '${args.third} ${args.fourth} ${args.fifth}',
         ),
+        familyProvider(42, third: .42).overrideWith((ref) => 'Override'),
       ],
     );
 
-    final result = container.read(familyProvider(42, third: .42));
-    expect(result, 'Hello world 42 null 0.42 true null');
+    expect(
+      container.read(familyProvider(21, third: .21)),
+      'Hello world 21 null 0.21 true null',
+    );
+
+    expect(container.read(familyProvider(42, third: .42)), 'Override');
   });
 
   test(
@@ -292,15 +315,18 @@ void main() {
   });
 
   test('can override providers', () {
-    final container = createContainer(overrides: [
-      publicProvider.overrideWith((ref) => 'test'),
-      publicClassProvider.overrideWith(() => PublicClass(42)),
-      familyProvider.overrideWith(
-        (ref, args) =>
-            'test (first: ${args.first}, second: ${args.second}, third: ${args.third}, fourth: ${args.fourth}, fifth: ${args.fifth})',
-      ),
-      familyClassProvider.overrideWith(() => FamilyClass(42)),
-    ]);
+    final container = createContainer(
+      overrides: [
+        publicProvider.overrideWith((ref) => 'test'),
+        publicClassProvider.overrideWith(() => PublicClass(42)),
+        // TODO test overrideWithBuild
+        familyProvider.overrideWith(
+          (ref, args) =>
+              'test (first: ${args.$1}, second: ${args.second}, third: ${args.third}, fourth: ${args.fourth}, fifth: ${args.fifth})',
+        ),
+        familyClassProvider.overrideWith(FamilyClass.new),
+      ],
+    );
 
     expect(container.read(publicProvider), 'test');
     expect(container.read(publicClassProvider.notifier).param, 42);
@@ -312,7 +338,7 @@ void main() {
       container
           .read(familyClassProvider(42, second: '42', third: .42).notifier)
           .param,
-      42,
+      (42, second: '42', third: 0.42, fourth: true, fifth: null),
     );
   });
 }

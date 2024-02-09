@@ -114,6 +114,13 @@ final class FamilyWithDependencies2Provider
   String debugGetCreateSourceHash() => _$familyWithDependencies2Hash();
 
   @override
+  String toString() {
+    return r'familyWithDependencies2Provider'
+        ''
+        '($argument)';
+  }
+
+  @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
@@ -181,7 +188,27 @@ final class FamilyWithDependencies2Family extends Family {
   String debugGetCreateSourceHash() => _$familyWithDependencies2Hash();
 
   @override
-  String toString() => r'familyWithDependencies2';
+  String toString() => r'familyWithDependencies2Provider';
+
+  Override overrideWith(
+    int Function(
+      FamilyWithDependencies2Ref ref,
+      int? args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as FamilyWithDependencies2Provider;
+
+        final argument = provider.argument as int?;
+
+        return provider
+            .$copyWithCreate((ref) => create(ref, argument))
+            .createElement(container);
+      },
+    );
+  }
 }
 
 typedef _Private2Ref = Ref<int>;
@@ -339,7 +366,10 @@ final class NotifierWithDependenciesProvider
   @$internal
   @override
   NotifierWithDependenciesProvider $copyWithBuild(
-    int Function(Ref<int>, NotifierWithDependencies) build,
+    int Function(
+      Ref<int>,
+      NotifierWithDependencies,
+    ) build,
   ) {
     return NotifierWithDependenciesProvider._(runNotifierBuildOverride: build);
   }
@@ -393,6 +423,13 @@ final class NotifierFamilyWithDependenciesProvider
   @override
   String debugGetCreateSourceHash() => _$notifierFamilyWithDependenciesHash();
 
+  @override
+  String toString() {
+    return r'notifierFamilyWithDependenciesProvider'
+        ''
+        '($argument)';
+  }
+
   @$internal
   @override
   NotifierFamilyWithDependencies create() =>
@@ -412,7 +449,10 @@ final class NotifierFamilyWithDependenciesProvider
   @$internal
   @override
   NotifierFamilyWithDependenciesProvider $copyWithBuild(
-    int Function(Ref<int>, NotifierFamilyWithDependencies) build,
+    int Function(
+      Ref<int>,
+      NotifierFamilyWithDependencies,
+    ) build,
   ) {
     return NotifierFamilyWithDependenciesProvider._(
         argument: argument as int?,
@@ -464,14 +504,50 @@ final class NotifierFamilyWithDependenciesFamily extends Family {
   String debugGetCreateSourceHash() => _$notifierFamilyWithDependenciesHash();
 
   @override
-  String toString() => r'NotifierFamilyWithDependencies';
+  String toString() => r'notifierFamilyWithDependenciesProvider';
+
+  Override overrideWith(
+    NotifierFamilyWithDependencies Function(
+      int? args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as NotifierFamilyWithDependenciesProvider;
+
+        final argument = provider.argument as int?;
+
+        return provider
+            .$copyWithCreate(() => create(argument))
+            .createElement(container);
+      },
+    );
+  }
+
+  Override overrideWithBuild(
+    int Function(Ref<int> ref, NotifierFamilyWithDependencies notifier,
+            int? argument)
+        build,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as NotifierFamilyWithDependenciesProvider;
+
+        final argument = provider.argument as int?;
+
+        return provider
+            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
+            .createElement(container);
+      },
+    );
+  }
 }
 
 abstract class _$NotifierFamilyWithDependencies extends $Notifier<int> {
-  late final _$args = (ref as $NotifierProviderElement).origin.argument as ({
-    int? id,
-  });
-  int? get id => _$args.id;
+  late final _$args = (ref as $NotifierProviderElement).origin.argument as int?;
+  int? get id => _$args;
 
   int build({
     int? id,
@@ -480,7 +556,7 @@ abstract class _$NotifierFamilyWithDependencies extends $Notifier<int> {
   @$internal
   @override
   int runBuild() => build(
-        id: _$args.id,
+        id: _$args,
       );
 }
 
