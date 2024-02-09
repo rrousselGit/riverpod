@@ -1,3 +1,7 @@
+## Unreleased build
+
+- **Breaking** Removed support for `@riverpod external int fn();`.
+
 ## 3.0.0-dev.11 - 2023-11-27
 
 - `riverpod_annotation` upgraded to `3.0.0-dev.3`
