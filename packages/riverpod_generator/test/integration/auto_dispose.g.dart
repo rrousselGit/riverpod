@@ -106,6 +106,56 @@ final class NotKeepAliveProvider
 
 String _$notKeepAliveHash() => r'1ccc497d7c651f8e730ec1bcecf271ffe9615d83';
 
+typedef DefaultKeepAliveRef = Ref<int>;
+
+const defaultKeepAliveProvider = DefaultKeepAliveProvider._();
+
+final class DefaultKeepAliveProvider
+    extends $FunctionalProvider<int, int, DefaultKeepAliveRef>
+    with $Provider<int, DefaultKeepAliveRef> {
+  const DefaultKeepAliveProvider._(
+      {int Function(
+        DefaultKeepAliveRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'defaultKeepAliveProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final int Function(
+    DefaultKeepAliveRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$defaultKeepAliveHash();
+
+  @override
+  $ProviderElement<int> createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  DefaultKeepAliveProvider $copyWithCreate(
+    int Function(
+      DefaultKeepAliveRef ref,
+    ) create,
+  ) {
+    return DefaultKeepAliveProvider._(create: create);
+  }
+
+  @override
+  int create(DefaultKeepAliveRef ref) {
+    final fn = _createCb ?? defaultKeepAlive;
+    return fn(ref);
+  }
+}
+
+String _$defaultKeepAliveHash() => r'1c236764d83a62ca442c5d5b4a83bd0d6e4548cf';
+
 const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
 // ignore_for_file: deprecated_member_use_from_same_package

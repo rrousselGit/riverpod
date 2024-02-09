@@ -1,6 +1,6 @@
 // ignore_for_file: omit_local_variable_types, unused_local_variable
 
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:riverpod/riverpod.dart' show ProviderBase;
 import 'package:test/test.dart';
 
 import 'integration/sync.dart';
@@ -11,8 +11,7 @@ void main() {
       () {
     final container = createContainer();
 
-    final AutoDisposeNotifierProvider<PublicClass, String> provider =
-        publicClassProvider;
+    const ProviderBase<String> provider = publicClassProvider;
     final String result = container.read(publicProvider);
 
     expect(result, 'Hello world');
@@ -36,6 +35,7 @@ void main() {
     final notifier = container.read(publicClassProvider.notifier);
     expect(notifier.param, 'Hello world');
 
+    // ignore: invalid_use_of_protected_member
     expect(notifier.ref, isNotNull);
     expect(notifier.state, isNotNull);
   });
@@ -57,6 +57,7 @@ void main() {
     expect(notifier.fourth, true);
     expect(notifier.fifth, null);
 
+    // ignore: invalid_use_of_protected_member
     expect(notifier.ref, isNotNull);
     expect(notifier.state, isNotNull);
   });
@@ -107,14 +108,7 @@ void main() {
       fifth: ['x42'],
     );
     // ignore: invalid_use_of_internal_member
-    final AutoDisposeNotifierProviderImpl<FamilyClass, String> futureProvider =
-        provider;
-
-    expect(provider.first, 42);
-    expect(provider.second, 'x42');
-    expect(provider.third, .42);
-    expect(provider.fourth, false);
-    expect(provider.fifth, ['x42']);
+    final ProviderBase<String> futureProvider = provider;
 
     final String result = container.read(
       familyClassProvider(

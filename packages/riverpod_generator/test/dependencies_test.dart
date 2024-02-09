@@ -76,12 +76,12 @@ void main() {
 
     expect(
       emptyDependenciesFunctionalProvider.allTransitiveDependencies,
-      same(const <ProviderOrFamily>{}),
+      same(const <ProviderOrFamily>[]),
     );
 
     expect(
       emptyDependenciesClassBasedProvider.allTransitiveDependencies,
-      same(const <ProviderOrFamily>{}),
+      same(const <ProviderOrFamily>[]),
     );
   });
 

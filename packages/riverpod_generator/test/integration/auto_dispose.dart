@@ -12,3 +12,8 @@ int notKeepAlive(NotKeepAliveRef ref) {
   ref.keepAlive();
   return 0;
 }
+
+@riverpod
+int defaultKeepAlive(DefaultKeepAliveRef ref) {
+  return 0;
+}

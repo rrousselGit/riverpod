@@ -1,5 +1,6 @@
 // ignore_for_file: omit_local_variable_types, unused_local_variable
 
+import 'package:riverpod/riverpod.dart' show ProviderBase;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:test/test.dart';
 
@@ -11,7 +12,7 @@ void main() {
       () async {
     final container = createContainer();
 
-    final AutoDisposeStreamProvider<String> provider = publicProvider;
+    const ProviderBase<AsyncValue<String>> provider = publicProvider;
 
     expect(
       await container.listen(publicProvider.future, (_, __) {}).read(),
@@ -41,17 +42,26 @@ void main() {
   test('Supports overriding family providers', () async {
     final container = createContainer(
       overrides: [
-        familyProvider(42, third: .42).overrideWith(
-          (ref) => Stream.value(
-            'Hello world ${ref.first} ${ref.second} '
-            '${ref.third} ${ref.fourth} ${ref.fifth}',
+        familyProvider.overrideWith(
+          (ref, args) => Stream.value(
+            'Hello world ${args.$1} ${args.second} '
+            '${args.third} ${args.fourth} ${args.fifth}',
           ),
+        ),
+        familyProvider(21, third: .21).overrideWith(
+          (ref) => Stream.value('Override'),
         ),
       ],
     );
 
-    final result = container.read(familyProvider(42, third: .42).future);
-    expect(await result, 'Hello world 42 null 0.42 true null');
+    expect(
+      await container.read(familyProvider(42, third: .42).future),
+      'Hello world 42 null 0.42 true null',
+    );
+    expect(
+      await container.read(familyProvider(21, third: .21).future),
+      'Override',
+    );
   });
 
   test(
@@ -99,13 +109,7 @@ void main() {
       fourth: false,
       fifth: ['x42'],
     );
-    final AutoDisposeStreamProvider<String> futureProvider = provider;
-
-    expect(provider.first, 42);
-    expect(provider.second, 'x42');
-    expect(provider.third, .42);
-    expect(provider.fourth, false);
-    expect(provider.fifth, ['x42']);
+    final ProviderBase<AsyncValue<String>> futureProvider = provider;
 
     expect(
       await container
@@ -133,14 +137,14 @@ void main() {
         }),
         publicClassProvider.overrideWith(() => PublicClass(42)),
         familyProvider.overrideWith(
-          (ref) {
+          (ref, args) {
             ref.state = AsyncData(
-              'test (first: ${ref.first}, second: ${ref.second}, third: ${ref.third}, fourth: ${ref.fourth}, fifth: ${ref.fifth})',
+              'test (first: ${args.$1}, second: ${args.second}, third: ${args.third}, fourth: ${args.fourth}, fifth: ${args.fifth})',
             );
             return const Stream.empty();
           },
         ),
-        familyClassProvider.overrideWith(() => FamilyClass(42)),
+        familyClassProvider.overrideWith(FamilyClass.new),
       ],
     );
 
@@ -154,7 +158,7 @@ void main() {
       container
           .read(familyClassProvider(42, second: '42', third: .42).notifier)
           .param,
-      42,
+      (42, second: '42', third: 0.42, fourth: true, fifth: null),
     );
   });
 }
