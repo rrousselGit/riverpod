@@ -20,7 +20,6 @@ final class DepProvider extends $FunctionalProvider<int, int, DepRef>
         super(
           from: null,
           argument: null,
-          debugGetCreateSourceHash: _$depHash,
           name: r'dep',
           isAutoDispose: true,
           dependencies: null,
@@ -32,7 +31,7 @@ final class DepProvider extends $FunctionalProvider<int, int, DepRef>
   )? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$depHash();
 
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
@@ -74,7 +73,6 @@ final class FamilyProvider extends $FunctionalProvider<int, int, FamilyRef>
       )? create})
       : _createCb = create,
         super(
-          debugGetCreateSourceHash: _$familyHash,
           name: r'family',
           isAutoDispose: true,
           dependencies: null,
@@ -87,7 +85,7 @@ final class FamilyProvider extends $FunctionalProvider<int, int, FamilyRef>
   )? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$familyHash();
 
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
@@ -133,7 +131,6 @@ final class FamilyFamily extends Family {
           name: r'family',
           dependencies: null,
           allTransitiveDependencies: null,
-          debugGetCreateSourceHash: _$familyHash,
           isAutoDispose: true,
         );
 
@@ -141,6 +138,9 @@ final class FamilyFamily extends Family {
     int id,
   ) =>
       FamilyProvider._(argument: (id,), from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$familyHash();
 
   @override
   String toString() => r'family';
@@ -160,7 +160,6 @@ final class ProviderProvider extends $FunctionalProvider<int, int, ProviderRef>
         super(
           from: null,
           argument: null,
-          debugGetCreateSourceHash: _$providerHash,
           name: r'provider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[
@@ -187,7 +186,7 @@ final class ProviderProvider extends $FunctionalProvider<int, int, ProviderRef>
   )? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$providerHash();
 
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
@@ -229,7 +228,6 @@ final class Provider2Provider
         super(
           from: null,
           argument: null,
-          debugGetCreateSourceHash: _$provider2Hash,
           name: r'provider2',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[
@@ -256,7 +254,7 @@ final class Provider2Provider
   )? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$provider2Hash();
 
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
@@ -298,7 +296,6 @@ final class TransitiveDependenciesProvider
         super(
           from: null,
           argument: null,
-          debugGetCreateSourceHash: _$transitiveDependenciesHash,
           name: r'transitiveDependencies',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[providerProvider],
@@ -326,7 +323,7 @@ final class TransitiveDependenciesProvider
   )? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$transitiveDependenciesHash();
 
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
@@ -370,7 +367,6 @@ final class SmallTransitiveDependencyCountProvider
         super(
           from: null,
           argument: null,
-          debugGetCreateSourceHash: _$smallTransitiveDependencyCountHash,
           name: r'smallTransitiveDependencyCount',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[
@@ -394,7 +390,7 @@ final class SmallTransitiveDependencyCountProvider
   )? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$smallTransitiveDependencyCountHash();
 
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
@@ -438,7 +434,6 @@ final class EmptyDependenciesFunctionalProvider
         super(
           from: null,
           argument: null,
-          debugGetCreateSourceHash: _$emptyDependenciesFunctionalHash,
           name: r'emptyDependenciesFunctional',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],
@@ -450,7 +445,7 @@ final class EmptyDependenciesFunctionalProvider
   )? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$emptyDependenciesFunctionalHash();
 
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
@@ -493,7 +488,6 @@ final class ProviderWithDependenciesProvider
         super(
           from: null,
           argument: null,
-          debugGetCreateSourceHash: _$providerWithDependenciesHash,
           name: r'providerWithDependencies',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[
@@ -514,7 +508,7 @@ final class ProviderWithDependenciesProvider
   )? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$providerWithDependenciesHash();
 
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
@@ -557,7 +551,6 @@ final class _PrivateDepProvider
         super(
           from: null,
           argument: null,
-          debugGetCreateSourceHash: _$privateDepHash,
           name: r'_privateDep',
           isAutoDispose: true,
           dependencies: null,
@@ -569,7 +562,7 @@ final class _PrivateDepProvider
   )? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$privateDepHash();
 
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
@@ -611,7 +604,6 @@ final class PublicDepProvider
         super(
           from: null,
           argument: null,
-          debugGetCreateSourceHash: _$publicDepHash,
           name: r'publicDep',
           isAutoDispose: true,
           dependencies: null,
@@ -623,7 +615,7 @@ final class PublicDepProvider
   )? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$publicDepHash();
 
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
@@ -665,7 +657,6 @@ final class DuplicateDependenciesProvider
         super(
           from: null,
           argument: null,
-          debugGetCreateSourceHash: _$duplicateDependenciesHash,
           name: r'duplicateDependencies',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[depProvider, dep2Provider],
@@ -683,7 +674,7 @@ final class DuplicateDependenciesProvider
   )? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$duplicateDependenciesHash();
 
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
@@ -726,7 +717,6 @@ final class DuplicateDependencies2Provider
         super(
           from: null,
           argument: null,
-          debugGetCreateSourceHash: _$duplicateDependencies2Hash,
           name: r'duplicateDependencies2',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[
@@ -747,7 +737,7 @@ final class DuplicateDependencies2Provider
   )? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$duplicateDependencies2Hash();
 
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
@@ -791,7 +781,6 @@ final class TransitiveDuplicateDependenciesProvider
         super(
           from: null,
           argument: null,
-          debugGetCreateSourceHash: _$transitiveDuplicateDependenciesHash,
           name: r'transitiveDuplicateDependencies',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[
@@ -824,7 +813,7 @@ final class TransitiveDuplicateDependenciesProvider
   )? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$transitiveDuplicateDependenciesHash();
 
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
@@ -861,7 +850,6 @@ final class Dep2Provider extends $NotifierProvider<Dep2, int> {
         super(
           from: null,
           argument: null,
-          debugGetCreateSourceHash: _$dep2Hash,
           name: r'Dep2',
           isAutoDispose: true,
           dependencies: null,
@@ -871,7 +859,7 @@ final class Dep2Provider extends $NotifierProvider<Dep2, int> {
   final Dep2 Function()? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$dep2Hash();
 
   @$internal
   @override
@@ -920,7 +908,6 @@ final class Family2Provider extends $NotifierProvider<Family2, int> {
       Family2 Function()? create})
       : _createCb = create,
         super(
-          debugGetCreateSourceHash: _$family2Hash,
           name: r'Family2',
           isAutoDispose: true,
           dependencies: null,
@@ -930,7 +917,7 @@ final class Family2Provider extends $NotifierProvider<Family2, int> {
   final Family2 Function()? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$family2Hash();
 
   @$internal
   @override
@@ -978,7 +965,6 @@ final class Family2Family extends Family {
           name: r'Family2',
           dependencies: null,
           allTransitiveDependencies: null,
-          debugGetCreateSourceHash: _$family2Hash,
           isAutoDispose: true,
         );
 
@@ -986,6 +972,9 @@ final class Family2Family extends Family {
     int id,
   ) =>
       Family2Provider._(argument: (id,), from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$family2Hash();
 
   @override
   String toString() => r'Family2';
@@ -1016,7 +1005,6 @@ final class Provider3Provider extends $NotifierProvider<Provider3, int> {
         super(
           from: null,
           argument: null,
-          debugGetCreateSourceHash: _$provider3Hash,
           name: r'Provider3',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[
@@ -1041,7 +1029,7 @@ final class Provider3Provider extends $NotifierProvider<Provider3, int> {
   final Provider3 Function()? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$provider3Hash();
 
   @$internal
   @override
@@ -1090,7 +1078,6 @@ final class Provider4Provider extends $NotifierProvider<Provider4, int> {
       Provider4 Function()? create})
       : _createCb = create,
         super(
-          debugGetCreateSourceHash: _$provider4Hash,
           name: r'Provider4',
           isAutoDispose: true,
           dependencies: null,
@@ -1105,7 +1092,7 @@ final class Provider4Provider extends $NotifierProvider<Provider4, int> {
   final Provider4 Function()? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$provider4Hash();
 
   @$internal
   @override
@@ -1163,7 +1150,6 @@ final class Provider4Family extends Family {
             Provider4Provider.$allTransitiveDependencies2,
             Provider4Provider.$allTransitiveDependencies3,
           },
-          debugGetCreateSourceHash: _$provider4Hash,
           isAutoDispose: true,
         );
 
@@ -1171,6 +1157,9 @@ final class Provider4Family extends Family {
     int id,
   ) =>
       Provider4Provider._(argument: (id,), from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$provider4Hash();
 
   @override
   String toString() => r'Provider4';
@@ -1204,7 +1193,6 @@ final class EmptyDependenciesClassBasedProvider
         super(
           from: null,
           argument: null,
-          debugGetCreateSourceHash: _$emptyDependenciesClassBasedHash,
           name: r'EmptyDependenciesClassBased',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],
@@ -1214,7 +1202,7 @@ final class EmptyDependenciesClassBasedProvider
   final EmptyDependenciesClassBased Function()? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$emptyDependenciesClassBasedHash();
 
   @$internal
   @override

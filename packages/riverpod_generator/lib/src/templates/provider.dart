@@ -117,7 +117,6 @@ final class $name$_genericsDefinition
   }): _createCb = create,
       super(
         $superParameters
-        debugGetCreateSourceHash: ${provider.hashFnName},
         name: r'${provider.name}',
         isAutoDispose: ${!provider.annotation.element.keepAlive},
         dependencies: ${!provider.providerElement.isFamily ? provider.dependencies(options) : 'null'},
@@ -148,7 +147,7 @@ final class $name$_genericsDefinition
   final ${provider.createType()}? _createCb;
 
   @override
-  void \$unimplemented() {}
+  String debugGetCreateSourceHash() => ${provider.hashFnName}();
 ''');
 
     final localArgumentDefinition = provider.parameters.isNotEmpty

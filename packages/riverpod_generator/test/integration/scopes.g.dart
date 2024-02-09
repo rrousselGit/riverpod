@@ -20,7 +20,6 @@ final class ScopedProvider extends $FunctionalProvider<int, int, ScopedRef>
         super(
           from: null,
           argument: null,
-          debugGetCreateSourceHash: _$scopedHash,
           name: r'scoped',
           isAutoDispose: true,
           dependencies: null,
@@ -32,7 +31,7 @@ final class ScopedProvider extends $FunctionalProvider<int, int, ScopedRef>
   )? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$scopedHash();
 
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>

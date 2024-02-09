@@ -20,7 +20,6 @@ final class Counter2Provider extends $FunctionalProvider<int, int, Counter2Ref>
         super(
           from: null,
           argument: null,
-          debugGetCreateSourceHash: _$counter2Hash,
           name: r'counter2',
           isAutoDispose: true,
           dependencies: null,
@@ -32,7 +31,7 @@ final class Counter2Provider extends $FunctionalProvider<int, int, Counter2Ref>
   )? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$counter2Hash();
 
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
@@ -73,7 +72,6 @@ final class CounterProvider extends $FunctionalProvider<int, int, CounterRef>
         super(
           from: null,
           argument: null,
-          debugGetCreateSourceHash: _$counterHash,
           name: r'counter',
           isAutoDispose: true,
           dependencies: null,
@@ -85,7 +83,7 @@ final class CounterProvider extends $FunctionalProvider<int, int, CounterRef>
   )? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$counterHash();
 
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>

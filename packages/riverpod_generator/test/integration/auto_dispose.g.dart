@@ -21,7 +21,6 @@ final class KeepAliveProvider
         super(
           from: null,
           argument: null,
-          debugGetCreateSourceHash: _$keepAliveHash,
           name: r'keepAlive',
           isAutoDispose: false,
           dependencies: null,
@@ -33,7 +32,7 @@ final class KeepAliveProvider
   )? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$keepAliveHash();
 
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
@@ -75,7 +74,6 @@ final class NotKeepAliveProvider
         super(
           from: null,
           argument: null,
-          debugGetCreateSourceHash: _$notKeepAliveHash,
           name: r'notKeepAlive',
           isAutoDispose: true,
           dependencies: null,
@@ -87,7 +85,7 @@ final class NotKeepAliveProvider
   )? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$notKeepAliveHash();
 
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>

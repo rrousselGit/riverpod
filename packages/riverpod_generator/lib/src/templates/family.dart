@@ -42,7 +42,6 @@ final class ${provider.familyTypeName} extends Family {
         name: r'${provider.name}',
         dependencies: ${provider.dependencies(options)},
         allTransitiveDependencies: ${provider.allTransitiveDependencies(allTransitiveDependencies)},
-        debugGetCreateSourceHash: ${provider.hashFnName},
         ${provider.providerElement.isAutoDispose ? 'isAutoDispose: true,' : ''}
       );
 
@@ -52,6 +51,9 @@ final class ${provider.familyTypeName} extends Family {
       from: this
     );
 
+  @override
+  String debugGetCreateSourceHash() => ${provider.hashFnName}();
+ 
   @override
   String toString() => r'${provider.name}';
 }

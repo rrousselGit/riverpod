@@ -21,7 +21,6 @@ final class GeneratedProvider
         super(
           from: null,
           argument: null,
-          debugGetCreateSourceHash: _$generatedHash,
           name: r'generated',
           isAutoDispose: true,
           dependencies: null,
@@ -33,7 +32,7 @@ final class GeneratedProvider
   )? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$generatedHash();
 
   @override
   $ProviderElement<_Test> createElement(ProviderContainer container) =>
@@ -76,7 +75,6 @@ final class GeneratedFamilyProvider
       )? create})
       : _createCb = create,
         super(
-          debugGetCreateSourceHash: _$generatedFamilyHash,
           name: r'generatedFamily',
           isAutoDispose: true,
           dependencies: null,
@@ -89,7 +87,7 @@ final class GeneratedFamilyProvider
   )? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$generatedFamilyHash();
 
   @override
   $ProviderElement<_Test> createElement(ProviderContainer container) =>
@@ -135,7 +133,6 @@ final class GeneratedFamilyFamily extends Family {
           name: r'generatedFamily',
           dependencies: null,
           allTransitiveDependencies: null,
-          debugGetCreateSourceHash: _$generatedFamilyHash,
           isAutoDispose: true,
         );
 
@@ -143,6 +140,9 @@ final class GeneratedFamilyFamily extends Family {
     _Test test,
   ) =>
       GeneratedFamilyProvider._(argument: (test,), from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$generatedFamilyHash();
 
   @override
   String toString() => r'generatedFamily';
@@ -163,7 +163,6 @@ final class $DynamicProvider
         super(
           from: null,
           argument: null,
-          debugGetCreateSourceHash: _$$dynamicHash,
           name: r'$dynamic',
           isAutoDispose: true,
           dependencies: null,
@@ -175,7 +174,7 @@ final class $DynamicProvider
   )? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$$dynamicHash();
 
   @override
   $ProviderElement<Object?> createElement(ProviderContainer container) =>
@@ -218,7 +217,6 @@ final class $DynamicFamilyProvider
       )? create})
       : _createCb = create,
         super(
-          debugGetCreateSourceHash: _$$dynamicFamilyHash,
           name: r'$dynamicFamily',
           isAutoDispose: true,
           dependencies: null,
@@ -231,7 +229,7 @@ final class $DynamicFamilyProvider
   )? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$$dynamicFamilyHash();
 
   @override
   $ProviderElement<Object?> createElement(ProviderContainer container) =>
@@ -277,7 +275,6 @@ final class $DynamicFamilyFamily extends Family {
           name: r'$dynamicFamily',
           dependencies: null,
           allTransitiveDependencies: null,
-          debugGetCreateSourceHash: _$$dynamicFamilyHash,
           isAutoDispose: true,
         );
 
@@ -285,6 +282,9 @@ final class $DynamicFamilyFamily extends Family {
     test,
   ) =>
       $DynamicFamilyProvider._(argument: (test,), from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$$dynamicFamilyHash();
 
   @override
   String toString() => r'$dynamicFamily';
@@ -306,7 +306,6 @@ final class _DynamicProvider
       )? create})
       : _createCb = create,
         super(
-          debugGetCreateSourceHash: _$dynamicHash,
           name: r'_dynamic',
           isAutoDispose: true,
           dependencies: null,
@@ -319,7 +318,7 @@ final class _DynamicProvider
   )? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$dynamicHash();
 
   @override
   $ProviderElement<Object?> createElement(ProviderContainer container) =>
@@ -365,7 +364,6 @@ final class _DynamicFamily extends Family {
           name: r'_dynamic',
           dependencies: null,
           allTransitiveDependencies: null,
-          debugGetCreateSourceHash: _$dynamicHash,
           isAutoDispose: true,
         );
 
@@ -373,6 +371,9 @@ final class _DynamicFamily extends Family {
     test,
   ) =>
       _DynamicProvider._(argument: (test,), from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$dynamicHash();
 
   @override
   String toString() => r'_dynamic';
@@ -393,7 +394,6 @@ final class AliasProvider
         super(
           from: null,
           argument: null,
-          debugGetCreateSourceHash: _$aliasHash,
           name: r'alias',
           isAutoDispose: true,
           dependencies: null,
@@ -405,7 +405,7 @@ final class AliasProvider
   )? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$aliasHash();
 
   @override
   $ProviderElement<r.AsyncValue<int>> createElement(
@@ -450,7 +450,6 @@ final class AliasFamilyProvider extends $FunctionalProvider<
       )? create})
       : _createCb = create,
         super(
-          debugGetCreateSourceHash: _$aliasFamilyHash,
           name: r'aliasFamily',
           isAutoDispose: true,
           dependencies: null,
@@ -463,7 +462,7 @@ final class AliasFamilyProvider extends $FunctionalProvider<
   )? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$aliasFamilyHash();
 
   @override
   $ProviderElement<r.AsyncValue<int>> createElement(
@@ -511,7 +510,6 @@ final class AliasFamilyFamily extends Family {
           name: r'aliasFamily',
           dependencies: null,
           allTransitiveDependencies: null,
-          debugGetCreateSourceHash: _$aliasFamilyHash,
           isAutoDispose: true,
         );
 
@@ -519,6 +517,9 @@ final class AliasFamilyFamily extends Family {
     r.AsyncValue<int> test,
   ) =>
       AliasFamilyProvider._(argument: (test,), from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$aliasFamilyHash();
 
   @override
   String toString() => r'aliasFamily';
@@ -534,7 +535,6 @@ final class GeneratedClassProvider
         super(
           from: null,
           argument: null,
-          debugGetCreateSourceHash: _$generatedClassHash,
           name: r'GeneratedClass',
           isAutoDispose: true,
           dependencies: null,
@@ -544,7 +544,7 @@ final class GeneratedClassProvider
   final GeneratedClass Function()? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$generatedClassHash();
 
   @$internal
   @override
@@ -594,7 +594,6 @@ final class GeneratedClassFamilyProvider
       GeneratedClassFamily Function()? create})
       : _createCb = create,
         super(
-          debugGetCreateSourceHash: _$generatedClassFamilyHash,
           name: r'GeneratedClassFamily',
           isAutoDispose: true,
           dependencies: null,
@@ -604,7 +603,7 @@ final class GeneratedClassFamilyProvider
   final GeneratedClassFamily Function()? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$generatedClassFamilyHash();
 
   @$internal
   @override
@@ -653,7 +652,6 @@ final class GeneratedClassFamilyFamily extends Family {
           name: r'GeneratedClassFamily',
           dependencies: null,
           allTransitiveDependencies: null,
-          debugGetCreateSourceHash: _$generatedClassFamilyHash,
           isAutoDispose: true,
         );
 
@@ -661,6 +659,9 @@ final class GeneratedClassFamilyFamily extends Family {
     _Test test,
   ) =>
       GeneratedClassFamilyProvider._(argument: (test,), from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$generatedClassFamilyHash();
 
   @override
   String toString() => r'GeneratedClassFamily';
@@ -692,7 +693,6 @@ final class $DynamicClassProvider
         super(
           from: null,
           argument: null,
-          debugGetCreateSourceHash: _$$dynamicClassHash,
           name: r'$DynamicClass',
           isAutoDispose: true,
           dependencies: null,
@@ -702,7 +702,7 @@ final class $DynamicClassProvider
   final $DynamicClass Function()? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$$dynamicClassHash();
 
   @$internal
   @override
@@ -752,7 +752,6 @@ final class $DynamicClassFamilyProvider
       $DynamicClassFamily Function()? create})
       : _createCb = create,
         super(
-          debugGetCreateSourceHash: _$$dynamicClassFamilyHash,
           name: r'$DynamicClassFamily',
           isAutoDispose: true,
           dependencies: null,
@@ -762,7 +761,7 @@ final class $DynamicClassFamilyProvider
   final $DynamicClassFamily Function()? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$$dynamicClassFamilyHash();
 
   @$internal
   @override
@@ -811,7 +810,6 @@ final class $DynamicClassFamilyFamily extends Family {
           name: r'$DynamicClassFamily',
           dependencies: null,
           allTransitiveDependencies: null,
-          debugGetCreateSourceHash: _$$dynamicClassFamilyHash,
           isAutoDispose: true,
         );
 
@@ -819,6 +817,9 @@ final class $DynamicClassFamilyFamily extends Family {
     test,
   ) =>
       $DynamicClassFamilyProvider._(argument: (test,), from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$$dynamicClassFamilyHash();
 
   @override
   String toString() => r'$DynamicClassFamily';
@@ -850,7 +851,6 @@ final class AliasClassProvider
         super(
           from: null,
           argument: null,
-          debugGetCreateSourceHash: _$aliasClassHash,
           name: r'AliasClass',
           isAutoDispose: true,
           dependencies: null,
@@ -860,7 +860,7 @@ final class AliasClassProvider
   final AliasClass Function()? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$aliasClassHash();
 
   @$internal
   @override
@@ -910,7 +910,6 @@ final class AliasClassFamilyProvider
       AliasClassFamily Function()? create})
       : _createCb = create,
         super(
-          debugGetCreateSourceHash: _$aliasClassFamilyHash,
           name: r'AliasClassFamily',
           isAutoDispose: true,
           dependencies: null,
@@ -920,7 +919,7 @@ final class AliasClassFamilyProvider
   final AliasClassFamily Function()? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$aliasClassFamilyHash();
 
   @$internal
   @override
@@ -968,7 +967,6 @@ final class AliasClassFamilyFamily extends Family {
           name: r'AliasClassFamily',
           dependencies: null,
           allTransitiveDependencies: null,
-          debugGetCreateSourceHash: _$aliasClassFamilyHash,
           isAutoDispose: true,
         );
 
@@ -976,6 +974,9 @@ final class AliasClassFamilyFamily extends Family {
     r.AsyncValue<int> test,
   ) =>
       AliasClassFamilyProvider._(argument: (test,), from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$aliasClassFamilyHash();
 
   @override
   String toString() => r'AliasClassFamily';

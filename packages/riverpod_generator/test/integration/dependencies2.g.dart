@@ -21,7 +21,6 @@ final class ProviderWithDependencies2Provider
         super(
           from: null,
           argument: null,
-          debugGetCreateSourceHash: _$providerWithDependencies2Hash,
           name: r'providerWithDependencies2',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[
@@ -51,7 +50,7 @@ final class ProviderWithDependencies2Provider
   )? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$providerWithDependencies2Hash();
 
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
@@ -98,7 +97,6 @@ final class FamilyWithDependencies2Provider
       })? create})
       : _createCb = create,
         super(
-          debugGetCreateSourceHash: _$familyWithDependencies2Hash,
           name: r'familyWithDependencies2',
           isAutoDispose: true,
           dependencies: null,
@@ -119,7 +117,7 @@ final class FamilyWithDependencies2Provider
   })? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$familyWithDependencies2Hash();
 
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
@@ -183,7 +181,6 @@ final class FamilyWithDependencies2Family extends Family {
             FamilyWithDependencies2Provider.$allTransitiveDependencies3,
             FamilyWithDependencies2Provider.$allTransitiveDependencies4,
           },
-          debugGetCreateSourceHash: _$familyWithDependencies2Hash,
           isAutoDispose: true,
         );
 
@@ -191,6 +188,9 @@ final class FamilyWithDependencies2Family extends Family {
     int? id,
   }) =>
       FamilyWithDependencies2Provider._(argument: (id: id,), from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$familyWithDependencies2Hash();
 
   @override
   String toString() => r'familyWithDependencies2';
@@ -211,7 +211,6 @@ final class _Private2Provider
         super(
           from: null,
           argument: null,
-          debugGetCreateSourceHash: _$private2Hash,
           name: r'_private2',
           isAutoDispose: true,
           dependencies: null,
@@ -223,7 +222,7 @@ final class _Private2Provider
   )? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$private2Hash();
 
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
@@ -264,7 +263,6 @@ final class Public2Provider extends $FunctionalProvider<int, int, Public2Ref>
         super(
           from: null,
           argument: null,
-          debugGetCreateSourceHash: _$public2Hash,
           name: r'public2',
           isAutoDispose: true,
           dependencies: null,
@@ -276,7 +274,7 @@ final class Public2Provider extends $FunctionalProvider<int, int, Public2Ref>
   )? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$public2Hash();
 
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
@@ -314,7 +312,6 @@ final class NotifierWithDependenciesProvider
         super(
           from: null,
           argument: null,
-          debugGetCreateSourceHash: _$notifierWithDependenciesHash,
           name: r'NotifierWithDependencies',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[
@@ -342,7 +339,7 @@ final class NotifierWithDependenciesProvider
   final NotifierWithDependencies Function()? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$notifierWithDependenciesHash();
 
   @$internal
   @override
@@ -398,7 +395,6 @@ final class NotifierFamilyWithDependenciesProvider
       NotifierFamilyWithDependencies Function()? create})
       : _createCb = create,
         super(
-          debugGetCreateSourceHash: _$notifierFamilyWithDependenciesHash,
           name: r'NotifierFamilyWithDependencies',
           isAutoDispose: true,
           dependencies: null,
@@ -416,7 +412,7 @@ final class NotifierFamilyWithDependenciesProvider
   final NotifierFamilyWithDependencies Function()? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$notifierFamilyWithDependenciesHash();
 
   @$internal
   @override
@@ -481,7 +477,6 @@ final class NotifierFamilyWithDependenciesFamily extends Family {
             NotifierFamilyWithDependenciesProvider.$allTransitiveDependencies3,
             NotifierFamilyWithDependenciesProvider.$allTransitiveDependencies4,
           },
-          debugGetCreateSourceHash: _$notifierFamilyWithDependenciesHash,
           isAutoDispose: true,
         );
 
@@ -489,6 +484,9 @@ final class NotifierFamilyWithDependenciesFamily extends Family {
     int? id,
   }) =>
       NotifierFamilyWithDependenciesProvider._(argument: (id: id,), from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$notifierFamilyWithDependenciesHash();
 
   @override
   String toString() => r'NotifierFamilyWithDependencies';

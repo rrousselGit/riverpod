@@ -21,7 +21,6 @@ final class GenericProvider<T extends num>
       : _createCb = create,
         super(
           argument: null,
-          debugGetCreateSourceHash: _$genericHash,
           name: r'generic',
           isAutoDispose: true,
           dependencies: null,
@@ -33,7 +32,7 @@ final class GenericProvider<T extends num>
   )? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$genericHash();
 
   @override
   $ProviderElement<List<T>> createElement(ProviderContainer container) =>
@@ -73,11 +72,13 @@ final class GenericFamily extends Family {
           name: r'generic',
           dependencies: null,
           allTransitiveDependencies: null,
-          debugGetCreateSourceHash: _$genericHash,
           isAutoDispose: true,
         );
 
   GenericProvider<T> call<T extends num>() => GenericProvider._(from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$genericHash();
 
   @override
   String toString() => r'generic';
@@ -104,7 +105,6 @@ final class ComplexGenericProvider<T extends num, Foo extends String?>
       })? create})
       : _createCb = create,
         super(
-          debugGetCreateSourceHash: _$complexGenericHash,
           name: r'complexGeneric',
           isAutoDispose: true,
           dependencies: null,
@@ -118,7 +118,7 @@ final class ComplexGenericProvider<T extends num, Foo extends String?>
   })? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$complexGenericHash();
 
   @override
   $ProviderElement<List<T>> createElement(ProviderContainer container) =>
@@ -177,7 +177,6 @@ final class ComplexGenericFamily extends Family {
           name: r'complexGeneric',
           dependencies: null,
           allTransitiveDependencies: null,
-          debugGetCreateSourceHash: _$complexGenericHash,
           isAutoDispose: true,
         );
 
@@ -189,6 +188,9 @@ final class ComplexGenericFamily extends Family {
         param: param,
         otherParam: otherParam,
       ), from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$complexGenericHash();
 
   @override
   String toString() => r'complexGeneric';
@@ -211,7 +213,6 @@ final class RawFutureProvider extends $FunctionalProvider<Raw<Future<String>>,
         super(
           from: null,
           argument: null,
-          debugGetCreateSourceHash: _$rawFutureHash,
           name: r'rawFuture',
           isAutoDispose: true,
           dependencies: null,
@@ -223,7 +224,7 @@ final class RawFutureProvider extends $FunctionalProvider<Raw<Future<String>>,
   )? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$rawFutureHash();
 
   @override
   $FutureProviderElement<Raw<Future<String>>> createElement(
@@ -268,7 +269,6 @@ final class RawStreamProvider extends $FunctionalProvider<Raw<Stream<String>>,
         super(
           from: null,
           argument: null,
-          debugGetCreateSourceHash: _$rawStreamHash,
           name: r'rawStream',
           isAutoDispose: true,
           dependencies: null,
@@ -280,7 +280,7 @@ final class RawStreamProvider extends $FunctionalProvider<Raw<Stream<String>>,
   )? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$rawStreamHash();
 
   @override
   $StreamProviderElement<Raw<Stream<String>>> createElement(
@@ -326,7 +326,6 @@ final class RawFamilyFutureProvider extends $FunctionalProvider<
       )? create})
       : _createCb = create,
         super(
-          debugGetCreateSourceHash: _$rawFamilyFutureHash,
           name: r'rawFamilyFuture',
           isAutoDispose: true,
           dependencies: null,
@@ -339,7 +338,7 @@ final class RawFamilyFutureProvider extends $FunctionalProvider<
   )? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$rawFamilyFutureHash();
 
   @override
   $FutureProviderElement<Raw<Future<String>>> createElement(
@@ -386,7 +385,6 @@ final class RawFamilyFutureFamily extends Family {
           name: r'rawFamilyFuture',
           dependencies: null,
           allTransitiveDependencies: null,
-          debugGetCreateSourceHash: _$rawFamilyFutureHash,
           isAutoDispose: true,
         );
 
@@ -394,6 +392,9 @@ final class RawFamilyFutureFamily extends Family {
     int id,
   ) =>
       RawFamilyFutureProvider._(argument: (id,), from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$rawFamilyFutureHash();
 
   @override
   String toString() => r'rawFamilyFuture';
@@ -417,7 +418,6 @@ final class RawFamilyStreamProvider extends $FunctionalProvider<
       )? create})
       : _createCb = create,
         super(
-          debugGetCreateSourceHash: _$rawFamilyStreamHash,
           name: r'rawFamilyStream',
           isAutoDispose: true,
           dependencies: null,
@@ -430,7 +430,7 @@ final class RawFamilyStreamProvider extends $FunctionalProvider<
   )? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$rawFamilyStreamHash();
 
   @override
   $StreamProviderElement<Raw<Stream<String>>> createElement(
@@ -477,7 +477,6 @@ final class RawFamilyStreamFamily extends Family {
           name: r'rawFamilyStream',
           dependencies: null,
           allTransitiveDependencies: null,
-          debugGetCreateSourceHash: _$rawFamilyStreamHash,
           isAutoDispose: true,
         );
 
@@ -485,6 +484,9 @@ final class RawFamilyStreamFamily extends Family {
     int id,
   ) =>
       RawFamilyStreamProvider._(argument: (id,), from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$rawFamilyStreamHash();
 
   @override
   String toString() => r'rawFamilyStream';
@@ -505,7 +507,6 @@ final class PublicProvider
         super(
           from: null,
           argument: null,
-          debugGetCreateSourceHash: _$publicHash,
           name: r'public',
           isAutoDispose: true,
           dependencies: null,
@@ -517,7 +518,7 @@ final class PublicProvider
   )? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$publicHash();
 
   @override
   $ProviderElement<String> createElement(ProviderContainer container) =>
@@ -559,7 +560,6 @@ final class Supports$inNamesProvider
         super(
           from: null,
           argument: null,
-          debugGetCreateSourceHash: _$supports$inNamesHash,
           name: r'supports$inNames',
           isAutoDispose: true,
           dependencies: null,
@@ -571,7 +571,7 @@ final class Supports$inNamesProvider
   )? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$supports$inNamesHash();
 
   @override
   $ProviderElement<String> createElement(ProviderContainer container) =>
@@ -625,7 +625,6 @@ final class FamilyProvider
       })? create})
       : _createCb = create,
         super(
-          debugGetCreateSourceHash: _$familyHash,
           name: r'family',
           isAutoDispose: true,
           dependencies: null,
@@ -642,7 +641,7 @@ final class FamilyProvider
   })? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$familyHash();
 
   @override
   $ProviderElement<String> createElement(ProviderContainer container) =>
@@ -714,7 +713,6 @@ final class FamilyFamily extends Family {
           name: r'family',
           dependencies: null,
           allTransitiveDependencies: null,
-          debugGetCreateSourceHash: _$familyHash,
           isAutoDispose: true,
         );
 
@@ -732,6 +730,9 @@ final class FamilyFamily extends Family {
         fourth: fourth,
         fifth: fifth,
       ), from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$familyHash();
 
   @override
   String toString() => r'family';
@@ -752,7 +753,6 @@ final class _PrivateProvider
         super(
           from: null,
           argument: null,
-          debugGetCreateSourceHash: _$privateHash,
           name: r'_private',
           isAutoDispose: true,
           dependencies: null,
@@ -764,7 +764,7 @@ final class _PrivateProvider
   )? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$privateHash();
 
   @override
   $ProviderElement<String> createElement(ProviderContainer container) =>
@@ -806,7 +806,6 @@ final class GeneratedProvider
         super(
           from: null,
           argument: null,
-          debugGetCreateSourceHash: _$generatedHash,
           name: r'generated',
           isAutoDispose: true,
           dependencies: null,
@@ -818,7 +817,7 @@ final class GeneratedProvider
   )? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$generatedHash();
 
   @override
   $ProviderElement<String> createElement(ProviderContainer container) =>
@@ -856,7 +855,6 @@ final class GenericClassProvider<T extends num>
       : _createCb = create,
         super(
           argument: null,
-          debugGetCreateSourceHash: _$genericClassHash,
           name: r'GenericClass',
           isAutoDispose: true,
           dependencies: null,
@@ -866,7 +864,7 @@ final class GenericClassProvider<T extends num>
   final GenericClass<T> Function()? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$genericClassHash();
 
   @$internal
   @override
@@ -912,12 +910,14 @@ final class GenericClassFamily extends Family {
           name: r'GenericClass',
           dependencies: null,
           allTransitiveDependencies: null,
-          debugGetCreateSourceHash: _$genericClassHash,
           isAutoDispose: true,
         );
 
   GenericClassProvider<T> call<T extends num>() =>
       GenericClassProvider._(from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$genericClassHash();
 
   @override
   String toString() => r'GenericClass';
@@ -941,7 +941,6 @@ final class RawFutureClassProvider
         super(
           from: null,
           argument: null,
-          debugGetCreateSourceHash: _$rawFutureClassHash,
           name: r'RawFutureClass',
           isAutoDispose: true,
           dependencies: null,
@@ -951,7 +950,7 @@ final class RawFutureClassProvider
   final RawFutureClass Function()? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$rawFutureClassHash();
 
   @$internal
   @override
@@ -1001,7 +1000,6 @@ final class RawStreamClassProvider
         super(
           from: null,
           argument: null,
-          debugGetCreateSourceHash: _$rawStreamClassHash,
           name: r'RawStreamClass',
           isAutoDispose: true,
           dependencies: null,
@@ -1011,7 +1009,7 @@ final class RawStreamClassProvider
   final RawStreamClass Function()? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$rawStreamClassHash();
 
   @$internal
   @override
@@ -1062,7 +1060,6 @@ final class RawFamilyFutureClassProvider
       RawFamilyFutureClass Function()? create})
       : _createCb = create,
         super(
-          debugGetCreateSourceHash: _$rawFamilyFutureClassHash,
           name: r'RawFamilyFutureClass',
           isAutoDispose: true,
           dependencies: null,
@@ -1072,7 +1069,7 @@ final class RawFamilyFutureClassProvider
   final RawFamilyFutureClass Function()? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$rawFamilyFutureClassHash();
 
   @$internal
   @override
@@ -1122,7 +1119,6 @@ final class RawFamilyFutureClassFamily extends Family {
           name: r'RawFamilyFutureClass',
           dependencies: null,
           allTransitiveDependencies: null,
-          debugGetCreateSourceHash: _$rawFamilyFutureClassHash,
           isAutoDispose: true,
         );
 
@@ -1130,6 +1126,9 @@ final class RawFamilyFutureClassFamily extends Family {
     int id,
   ) =>
       RawFamilyFutureClassProvider._(argument: (id,), from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$rawFamilyFutureClassHash();
 
   @override
   String toString() => r'RawFamilyFutureClass';
@@ -1163,7 +1162,6 @@ final class RawFamilyStreamClassProvider
       RawFamilyStreamClass Function()? create})
       : _createCb = create,
         super(
-          debugGetCreateSourceHash: _$rawFamilyStreamClassHash,
           name: r'RawFamilyStreamClass',
           isAutoDispose: true,
           dependencies: null,
@@ -1173,7 +1171,7 @@ final class RawFamilyStreamClassProvider
   final RawFamilyStreamClass Function()? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$rawFamilyStreamClassHash();
 
   @$internal
   @override
@@ -1223,7 +1221,6 @@ final class RawFamilyStreamClassFamily extends Family {
           name: r'RawFamilyStreamClass',
           dependencies: null,
           allTransitiveDependencies: null,
-          debugGetCreateSourceHash: _$rawFamilyStreamClassHash,
           isAutoDispose: true,
         );
 
@@ -1231,6 +1228,9 @@ final class RawFamilyStreamClassFamily extends Family {
     int id,
   ) =>
       RawFamilyStreamClassProvider._(argument: (id,), from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$rawFamilyStreamClassHash();
 
   @override
   String toString() => r'RawFamilyStreamClass';
@@ -1262,7 +1262,6 @@ final class PublicClassProvider extends $NotifierProvider<PublicClass, String> {
         super(
           from: null,
           argument: null,
-          debugGetCreateSourceHash: _$publicClassHash,
           name: r'PublicClass',
           isAutoDispose: true,
           dependencies: null,
@@ -1272,7 +1271,7 @@ final class PublicClassProvider extends $NotifierProvider<PublicClass, String> {
   final PublicClass Function()? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$publicClassHash();
 
   @$internal
   @override
@@ -1321,7 +1320,6 @@ final class _PrivateClassProvider
         super(
           from: null,
           argument: null,
-          debugGetCreateSourceHash: _$privateClassHash,
           name: r'_PrivateClass',
           isAutoDispose: true,
           dependencies: null,
@@ -1331,7 +1329,7 @@ final class _PrivateClassProvider
   final _PrivateClass Function()? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$privateClassHash();
 
   @$internal
   @override
@@ -1387,7 +1385,6 @@ final class FamilyClassProvider extends $NotifierProvider<FamilyClass, String> {
       FamilyClass Function()? create})
       : _createCb = create,
         super(
-          debugGetCreateSourceHash: _$familyClassHash,
           name: r'FamilyClass',
           isAutoDispose: true,
           dependencies: null,
@@ -1397,7 +1394,7 @@ final class FamilyClassProvider extends $NotifierProvider<FamilyClass, String> {
   final FamilyClass Function()? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$familyClassHash();
 
   @$internal
   @override
@@ -1457,7 +1454,6 @@ final class FamilyClassFamily extends Family {
           name: r'FamilyClass',
           dependencies: null,
           allTransitiveDependencies: null,
-          debugGetCreateSourceHash: _$familyClassHash,
           isAutoDispose: true,
         );
 
@@ -1475,6 +1471,9 @@ final class FamilyClassFamily extends Family {
         fourth: fourth,
         fifth: fifth,
       ), from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$familyClassHash();
 
   @override
   String toString() => r'FamilyClass';
@@ -1523,7 +1522,6 @@ final class Supports$InClassNameProvider
         super(
           from: null,
           argument: null,
-          debugGetCreateSourceHash: _$supports$InClassNameHash,
           name: r'Supports$InClassName',
           isAutoDispose: true,
           dependencies: null,
@@ -1533,7 +1531,7 @@ final class Supports$InClassNameProvider
   final Supports$InClassName Function()? _createCb;
 
   @override
-  void $unimplemented() {}
+  String debugGetCreateSourceHash() => _$supports$InClassNameHash();
 
   @$internal
   @override
