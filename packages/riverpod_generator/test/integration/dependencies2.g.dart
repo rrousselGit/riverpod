@@ -66,7 +66,7 @@ final class ProviderWithDependencies2Provider
   }
 
   @override
-  ProviderWithDependencies2Provider copyWithCreate(
+  ProviderWithDependencies2Provider $copyWithCreate(
     int Function(
       ProviderWithDependencies2Ref ref,
     ) create,
@@ -138,7 +138,7 @@ final class FamilyWithDependencies2Provider
   }
 
   @override
-  FamilyWithDependencies2Provider copyWithCreate(
+  FamilyWithDependencies2Provider $copyWithCreate(
     int Function(
       FamilyWithDependencies2Ref ref,
     ) create,
@@ -247,7 +247,7 @@ final class _Private2Provider
   }
 
   @override
-  _Private2Provider copyWithCreate(
+  _Private2Provider $copyWithCreate(
     int Function(
       _Private2Ref ref,
     ) create,
@@ -299,7 +299,7 @@ final class Public2Provider extends $FunctionalProvider<int, int, Public2Ref>
   }
 
   @override
-  Public2Provider copyWithCreate(
+  Public2Provider $copyWithCreate(
     int Function(
       Public2Ref ref,
     ) create,
@@ -357,7 +357,7 @@ final class NotifierWithDependenciesProvider
 
   @$internal
   @override
-  NotifierWithDependenciesProvider copyWithCreate(
+  NotifierWithDependenciesProvider $copyWithCreate(
     NotifierWithDependencies Function() create,
   ) {
     return NotifierWithDependenciesProvider._(create: create);
@@ -365,7 +365,7 @@ final class NotifierWithDependenciesProvider
 
   @$internal
   @override
-  NotifierWithDependenciesProvider copyWithBuild(
+  NotifierWithDependenciesProvider $copyWithBuild(
     int Function(Ref<int>, NotifierWithDependencies) build,
   ) {
     return NotifierWithDependenciesProvider._(runNotifierBuildOverride: build);
@@ -430,7 +430,7 @@ final class NotifierFamilyWithDependenciesProvider
 
   @$internal
   @override
-  NotifierFamilyWithDependenciesProvider copyWithCreate(
+  NotifierFamilyWithDependenciesProvider $copyWithCreate(
     NotifierFamilyWithDependencies Function() create,
   ) {
     return NotifierFamilyWithDependenciesProvider._(
@@ -443,7 +443,7 @@ final class NotifierFamilyWithDependenciesProvider
 
   @$internal
   @override
-  NotifierFamilyWithDependenciesProvider copyWithBuild(
+  NotifierFamilyWithDependenciesProvider $copyWithBuild(
     int Function(Ref<int>, NotifierFamilyWithDependencies) build,
   ) {
     return NotifierFamilyWithDependenciesProvider._(

@@ -48,7 +48,7 @@ final class GenericProvider<T extends num> extends $FunctionalProvider<
   }
 
   @override
-  GenericProvider<T> copyWithCreate(
+  GenericProvider<T> $copyWithCreate(
     Stream<List<T>> Function(
       GenericRef<T> ref,
     ) create,
@@ -130,7 +130,7 @@ final class PublicProvider
   }
 
   @override
-  PublicProvider copyWithCreate(
+  PublicProvider $copyWithCreate(
     Stream<String> Function(
       PublicRef ref,
     ) create,
@@ -183,7 +183,7 @@ final class _PrivateProvider
   }
 
   @override
-  _PrivateProvider copyWithCreate(
+  _PrivateProvider $copyWithCreate(
     Stream<String> Function(
       _PrivateRef ref,
     ) create,
@@ -270,7 +270,7 @@ final class FamilyProvider
   }
 
   @override
-  FamilyProvider copyWithCreate(
+  FamilyProvider $copyWithCreate(
     Stream<String> Function(
       FamilyRef ref,
     ) create,
@@ -375,7 +375,7 @@ final class GenericClassProvider<T extends num>
 
   @$internal
   @override
-  GenericClassProvider<T> copyWithCreate(
+  GenericClassProvider<T> $copyWithCreate(
     GenericClass<T> Function() create,
   ) {
     return GenericClassProvider<T>._(
@@ -384,7 +384,7 @@ final class GenericClassProvider<T extends num>
 
   @$internal
   @override
-  GenericClassProvider<T> copyWithBuild(
+  GenericClassProvider<T> $copyWithBuild(
     Stream<List<T>> Function(Ref<AsyncValue<List<T>>>, GenericClass<T>) build,
   ) {
     return GenericClassProvider<T>._(
@@ -467,7 +467,7 @@ final class PublicClassProvider
 
   @$internal
   @override
-  PublicClassProvider copyWithCreate(
+  PublicClassProvider $copyWithCreate(
     PublicClass Function() create,
   ) {
     return PublicClassProvider._(create: create);
@@ -475,7 +475,7 @@ final class PublicClassProvider
 
   @$internal
   @override
-  PublicClassProvider copyWithBuild(
+  PublicClassProvider $copyWithBuild(
     Stream<String> Function(Ref<AsyncValue<String>>, PublicClass) build,
   ) {
     return PublicClassProvider._(runNotifierBuildOverride: build);
@@ -525,7 +525,7 @@ final class _PrivateClassProvider
 
   @$internal
   @override
-  _PrivateClassProvider copyWithCreate(
+  _PrivateClassProvider $copyWithCreate(
     _PrivateClass Function() create,
   ) {
     return _PrivateClassProvider._(create: create);
@@ -533,7 +533,7 @@ final class _PrivateClassProvider
 
   @$internal
   @override
-  _PrivateClassProvider copyWithBuild(
+  _PrivateClassProvider $copyWithBuild(
     Stream<String> Function(Ref<AsyncValue<String>>, _PrivateClass) build,
   ) {
     return _PrivateClassProvider._(runNotifierBuildOverride: build);
@@ -591,7 +591,7 @@ final class FamilyClassProvider
 
   @$internal
   @override
-  FamilyClassProvider copyWithCreate(
+  FamilyClassProvider $copyWithCreate(
     FamilyClass Function() create,
   ) {
     return FamilyClassProvider._(
@@ -608,7 +608,7 @@ final class FamilyClassProvider
 
   @$internal
   @override
-  FamilyClassProvider copyWithBuild(
+  FamilyClassProvider $copyWithBuild(
     Stream<String> Function(Ref<AsyncValue<String>>, FamilyClass) build,
   ) {
     return FamilyClassProvider._(

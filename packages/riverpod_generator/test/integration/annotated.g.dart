@@ -48,7 +48,7 @@ final class FunctionalProvider
   }
 
   @override
-  FunctionalProvider copyWithCreate(
+  FunctionalProvider $copyWithCreate(
     String Function(
       FunctionalRef ref,
     ) create,
@@ -104,7 +104,7 @@ final class FamilyProvider
   }
 
   @override
-  FamilyProvider copyWithCreate(
+  FamilyProvider $copyWithCreate(
     String Function(
       FamilyRef ref,
     ) create,
@@ -197,7 +197,7 @@ final class NotCopiedFunctionalProvider
   }
 
   @override
-  NotCopiedFunctionalProvider copyWithCreate(
+  NotCopiedFunctionalProvider $copyWithCreate(
     String Function(
       NotCopiedFunctionalRef ref,
     ) create,
@@ -254,7 +254,7 @@ final class NotCopiedFamilyProvider
   }
 
   @override
-  NotCopiedFamilyProvider copyWithCreate(
+  NotCopiedFamilyProvider $copyWithCreate(
     String Function(
       NotCopiedFamilyRef ref,
     ) create,
@@ -331,7 +331,7 @@ final class ClassBasedProvider extends $NotifierProvider<ClassBased, String> {
 
   @$internal
   @override
-  ClassBasedProvider copyWithCreate(
+  ClassBasedProvider $copyWithCreate(
     ClassBased Function() create,
   ) {
     return ClassBasedProvider._(create: create);
@@ -339,7 +339,7 @@ final class ClassBasedProvider extends $NotifierProvider<ClassBased, String> {
 
   @$internal
   @override
-  ClassBasedProvider copyWithBuild(
+  ClassBasedProvider $copyWithBuild(
     String Function(Ref<String>, ClassBased) build,
   ) {
     return ClassBasedProvider._(runNotifierBuildOverride: build);
@@ -389,7 +389,7 @@ final class NotCopiedClassBasedProvider
 
   @$internal
   @override
-  NotCopiedClassBasedProvider copyWithCreate(
+  NotCopiedClassBasedProvider $copyWithCreate(
     NotCopiedClassBased Function() create,
   ) {
     return NotCopiedClassBasedProvider._(create: create);
@@ -397,7 +397,7 @@ final class NotCopiedClassBasedProvider
 
   @$internal
   @override
-  NotCopiedClassBasedProvider copyWithBuild(
+  NotCopiedClassBasedProvider $copyWithBuild(
     String Function(Ref<String>, NotCopiedClassBased) build,
   ) {
     return NotCopiedClassBasedProvider._(runNotifierBuildOverride: build);

@@ -137,7 +137,7 @@ base class StreamProvider<StateT> extends $FunctionalProvider<
   @visibleForOverriding
   @override
   $FunctionalProvider<AsyncValue<StateT>, Stream<StateT>,
-      Ref<AsyncValue<StateT>>> copyWithCreate(
+      Ref<AsyncValue<StateT>>> $copyWithCreate(
     Create<Stream<StateT>, Ref<AsyncValue<StateT>>> create,
   ) {
     return StreamProvider<StateT>.internal(

@@ -193,7 +193,7 @@ final class $name$_genericsDefinition
 
         buffer.writeln('''
   @override
-  ${provider.providerTypeName}$_generics copyWithCreate(
+  ${provider.providerTypeName}$_generics $copyWithCreate(
     ${provider.createType(withArguments: false)} create,
   ) {
     return ${provider.providerTypeName}$_generics._(
@@ -212,7 +212,7 @@ final class $name$_genericsDefinition
 
   @\$internal
   @override
-  ${provider.providerTypeName}$_generics copyWithCreate(
+  ${provider.providerTypeName}$_generics $copyWithCreate(
     $notifierType Function() create,
   ) {
     return ${provider.providerTypeName}$_generics._(
@@ -223,7 +223,7 @@ final class $name$_genericsDefinition
 
   @\$internal
   @override
-  ${provider.providerTypeName}$_generics copyWithBuild(
+  ${provider.providerTypeName}$_generics $copyWithBuild(
     ${provider.createdTypeDisplayString} Function($_refType, $notifierType) build,
   ) {
     return ${provider.providerTypeName}$_generics._(

@@ -129,7 +129,7 @@ final class StreamNotifierProvider< //
   @mustBeOverridden
   @visibleForOverriding
   @override
-  StreamNotifierProvider<NotifierT, StateT> copyWithBuild(
+  StreamNotifierProvider<NotifierT, StateT> $copyWithBuild(
     RunNotifierBuild<NotifierT, Stream<StateT>, Ref<AsyncValue<StateT>>>? build,
   ) {
     return _copyWith(build: build);
@@ -138,7 +138,7 @@ final class StreamNotifierProvider< //
   @mustBeOverridden
   @visibleForOverriding
   @override
-  StreamNotifierProvider<NotifierT, StateT> copyWithCreate(
+  StreamNotifierProvider<NotifierT, StateT> $copyWithCreate(
     NotifierT Function() create,
   ) {
     return _copyWith(create: create);

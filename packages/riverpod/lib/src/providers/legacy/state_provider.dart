@@ -103,7 +103,7 @@ final class StateProvider<StateT>
   @mustBeOverridden
   @visibleForOverriding
   @override
-  StateProvider<StateT> copyWithCreate(
+  StateProvider<StateT> $copyWithCreate(
     Create<StateT, StateProviderRef<StateT>> create,
   ) {
     return StateProvider<StateT>.internal(

@@ -47,7 +47,7 @@ final class DepProvider extends $FunctionalProvider<int, int, DepRef>
   }
 
   @override
-  DepProvider copyWithCreate(
+  DepProvider $copyWithCreate(
     int Function(
       DepRef ref,
     ) create,
@@ -102,7 +102,7 @@ final class FamilyProvider extends $FunctionalProvider<int, int, FamilyRef>
   }
 
   @override
-  FamilyProvider copyWithCreate(
+  FamilyProvider $copyWithCreate(
     int Function(
       FamilyRef ref,
     ) create,
@@ -209,7 +209,7 @@ final class ProviderProvider extends $FunctionalProvider<int, int, ProviderRef>
   }
 
   @override
-  ProviderProvider copyWithCreate(
+  ProviderProvider $copyWithCreate(
     int Function(
       ProviderRef ref,
     ) create,
@@ -277,7 +277,7 @@ final class Provider2Provider
   }
 
   @override
-  Provider2Provider copyWithCreate(
+  Provider2Provider $copyWithCreate(
     int Function(
       Provider2Ref ref,
     ) create,
@@ -346,7 +346,7 @@ final class TransitiveDependenciesProvider
   }
 
   @override
-  TransitiveDependenciesProvider copyWithCreate(
+  TransitiveDependenciesProvider $copyWithCreate(
     int Function(
       TransitiveDependenciesRef ref,
     ) create,
@@ -413,7 +413,7 @@ final class SmallTransitiveDependencyCountProvider
   }
 
   @override
-  SmallTransitiveDependencyCountProvider copyWithCreate(
+  SmallTransitiveDependencyCountProvider $copyWithCreate(
     int Function(
       SmallTransitiveDependencyCountRef ref,
     ) create,
@@ -468,7 +468,7 @@ final class EmptyDependenciesFunctionalProvider
   }
 
   @override
-  EmptyDependenciesFunctionalProvider copyWithCreate(
+  EmptyDependenciesFunctionalProvider $copyWithCreate(
     int Function(
       EmptyDependenciesFunctionalRef ref,
     ) create,
@@ -531,7 +531,7 @@ final class ProviderWithDependenciesProvider
   }
 
   @override
-  ProviderWithDependenciesProvider copyWithCreate(
+  ProviderWithDependenciesProvider $copyWithCreate(
     int Function(
       ProviderWithDependenciesRef ref,
     ) create,
@@ -585,7 +585,7 @@ final class _PrivateDepProvider
   }
 
   @override
-  _PrivateDepProvider copyWithCreate(
+  _PrivateDepProvider $copyWithCreate(
     int Function(
       _PrivateDepRef ref,
     ) create,
@@ -638,7 +638,7 @@ final class PublicDepProvider
   }
 
   @override
-  PublicDepProvider copyWithCreate(
+  PublicDepProvider $copyWithCreate(
     int Function(
       PublicDepRef ref,
     ) create,
@@ -697,7 +697,7 @@ final class DuplicateDependenciesProvider
   }
 
   @override
-  DuplicateDependenciesProvider copyWithCreate(
+  DuplicateDependenciesProvider $copyWithCreate(
     int Function(
       DuplicateDependenciesRef ref,
     ) create,
@@ -760,7 +760,7 @@ final class DuplicateDependencies2Provider
   }
 
   @override
-  DuplicateDependencies2Provider copyWithCreate(
+  DuplicateDependencies2Provider $copyWithCreate(
     int Function(
       DuplicateDependencies2Ref ref,
     ) create,
@@ -836,7 +836,7 @@ final class TransitiveDuplicateDependenciesProvider
   }
 
   @override
-  TransitiveDuplicateDependenciesProvider copyWithCreate(
+  TransitiveDuplicateDependenciesProvider $copyWithCreate(
     int Function(
       TransitiveDuplicateDependenciesRef ref,
     ) create,
@@ -874,7 +874,7 @@ final class Dep2Provider extends $NotifierProvider<Dep2, int> {
 
   @$internal
   @override
-  Dep2Provider copyWithCreate(
+  Dep2Provider $copyWithCreate(
     Dep2 Function() create,
   ) {
     return Dep2Provider._(create: create);
@@ -882,7 +882,7 @@ final class Dep2Provider extends $NotifierProvider<Dep2, int> {
 
   @$internal
   @override
-  Dep2Provider copyWithBuild(
+  Dep2Provider $copyWithBuild(
     int Function(Ref<int>, Dep2) build,
   ) {
     return Dep2Provider._(runNotifierBuildOverride: build);
@@ -932,7 +932,7 @@ final class Family2Provider extends $NotifierProvider<Family2, int> {
 
   @$internal
   @override
-  Family2Provider copyWithCreate(
+  Family2Provider $copyWithCreate(
     Family2 Function() create,
   ) {
     return Family2Provider._(
@@ -943,7 +943,7 @@ final class Family2Provider extends $NotifierProvider<Family2, int> {
 
   @$internal
   @override
-  Family2Provider copyWithBuild(
+  Family2Provider $copyWithBuild(
     int Function(Ref<int>, Family2) build,
   ) {
     return Family2Provider._(
@@ -1053,7 +1053,7 @@ final class Provider3Provider extends $NotifierProvider<Provider3, int> {
 
   @$internal
   @override
-  Provider3Provider copyWithCreate(
+  Provider3Provider $copyWithCreate(
     Provider3 Function() create,
   ) {
     return Provider3Provider._(create: create);
@@ -1061,7 +1061,7 @@ final class Provider3Provider extends $NotifierProvider<Provider3, int> {
 
   @$internal
   @override
-  Provider3Provider copyWithBuild(
+  Provider3Provider $copyWithBuild(
     int Function(Ref<int>, Provider3) build,
   ) {
     return Provider3Provider._(runNotifierBuildOverride: build);
@@ -1116,7 +1116,7 @@ final class Provider4Provider extends $NotifierProvider<Provider4, int> {
 
   @$internal
   @override
-  Provider4Provider copyWithCreate(
+  Provider4Provider $copyWithCreate(
     Provider4 Function() create,
   ) {
     return Provider4Provider._(
@@ -1127,7 +1127,7 @@ final class Provider4Provider extends $NotifierProvider<Provider4, int> {
 
   @$internal
   @override
-  Provider4Provider copyWithBuild(
+  Provider4Provider $copyWithBuild(
     int Function(Ref<int>, Provider4) build,
   ) {
     return Provider4Provider._(
@@ -1236,7 +1236,7 @@ final class EmptyDependenciesClassBasedProvider
 
   @$internal
   @override
-  EmptyDependenciesClassBasedProvider copyWithCreate(
+  EmptyDependenciesClassBasedProvider $copyWithCreate(
     EmptyDependenciesClassBased Function() create,
   ) {
     return EmptyDependenciesClassBasedProvider._(create: create);
@@ -1244,7 +1244,7 @@ final class EmptyDependenciesClassBasedProvider
 
   @$internal
   @override
-  EmptyDependenciesClassBasedProvider copyWithBuild(
+  EmptyDependenciesClassBasedProvider $copyWithBuild(
     int Function(Ref<int>, EmptyDependenciesClassBased) build,
   ) {
     return EmptyDependenciesClassBasedProvider._(

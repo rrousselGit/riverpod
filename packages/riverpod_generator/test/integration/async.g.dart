@@ -48,7 +48,7 @@ final class GenericProvider<T extends num> extends $FunctionalProvider<
   }
 
   @override
-  GenericProvider<T> copyWithCreate(
+  GenericProvider<T> $copyWithCreate(
     FutureOr<List<T>> Function(
       GenericRef<T> ref,
     ) create,
@@ -130,7 +130,7 @@ final class PublicProvider
   }
 
   @override
-  PublicProvider copyWithCreate(
+  PublicProvider $copyWithCreate(
     FutureOr<String> Function(
       PublicRef ref,
     ) create,
@@ -183,7 +183,7 @@ final class _PrivateProvider extends $FunctionalProvider<AsyncValue<String>,
   }
 
   @override
-  _PrivateProvider copyWithCreate(
+  _PrivateProvider $copyWithCreate(
     FutureOr<String> Function(
       _PrivateRef ref,
     ) create,
@@ -239,7 +239,7 @@ final class FamilyOrProvider extends $FunctionalProvider<AsyncValue<String>,
   }
 
   @override
-  FamilyOrProvider copyWithCreate(
+  FamilyOrProvider $copyWithCreate(
     FutureOr<String> Function(
       FamilyOrRef ref,
     ) create,
@@ -366,7 +366,7 @@ final class FamilyProvider
   }
 
   @override
-  FamilyProvider copyWithCreate(
+  FamilyProvider $copyWithCreate(
     FutureOr<String> Function(
       FamilyRef ref,
     ) create,
@@ -471,7 +471,7 @@ final class GenericClassProvider<T extends num>
 
   @$internal
   @override
-  GenericClassProvider<T> copyWithCreate(
+  GenericClassProvider<T> $copyWithCreate(
     GenericClass<T> Function() create,
   ) {
     return GenericClassProvider<T>._(
@@ -480,7 +480,7 @@ final class GenericClassProvider<T extends num>
 
   @$internal
   @override
-  GenericClassProvider<T> copyWithBuild(
+  GenericClassProvider<T> $copyWithBuild(
     FutureOr<List<T>> Function(Ref<AsyncValue<List<T>>>, GenericClass<T>) build,
   ) {
     return GenericClassProvider<T>._(
@@ -564,7 +564,7 @@ final class PublicClassProvider
 
   @$internal
   @override
-  PublicClassProvider copyWithCreate(
+  PublicClassProvider $copyWithCreate(
     PublicClass Function() create,
   ) {
     return PublicClassProvider._(create: create);
@@ -572,7 +572,7 @@ final class PublicClassProvider
 
   @$internal
   @override
-  PublicClassProvider copyWithBuild(
+  PublicClassProvider $copyWithBuild(
     FutureOr<String> Function(Ref<AsyncValue<String>>, PublicClass) build,
   ) {
     return PublicClassProvider._(runNotifierBuildOverride: build);
@@ -622,7 +622,7 @@ final class _PrivateClassProvider
 
   @$internal
   @override
-  _PrivateClassProvider copyWithCreate(
+  _PrivateClassProvider $copyWithCreate(
     _PrivateClass Function() create,
   ) {
     return _PrivateClassProvider._(create: create);
@@ -630,7 +630,7 @@ final class _PrivateClassProvider
 
   @$internal
   @override
-  _PrivateClassProvider copyWithBuild(
+  _PrivateClassProvider $copyWithBuild(
     FutureOr<String> Function(Ref<AsyncValue<String>>, _PrivateClass) build,
   ) {
     return _PrivateClassProvider._(runNotifierBuildOverride: build);
@@ -681,7 +681,7 @@ final class FamilyOrClassProvider
 
   @$internal
   @override
-  FamilyOrClassProvider copyWithCreate(
+  FamilyOrClassProvider $copyWithCreate(
     FamilyOrClass Function() create,
   ) {
     return FamilyOrClassProvider._(
@@ -692,7 +692,7 @@ final class FamilyOrClassProvider
 
   @$internal
   @override
-  FamilyOrClassProvider copyWithBuild(
+  FamilyOrClassProvider $copyWithBuild(
     FutureOr<String> Function(Ref<AsyncValue<String>>, FamilyOrClass) build,
   ) {
     return FamilyOrClassProvider._(
@@ -796,7 +796,7 @@ final class FamilyClassProvider
 
   @$internal
   @override
-  FamilyClassProvider copyWithCreate(
+  FamilyClassProvider $copyWithCreate(
     FamilyClass Function() create,
   ) {
     return FamilyClassProvider._(
@@ -813,7 +813,7 @@ final class FamilyClassProvider
 
   @$internal
   @override
-  FamilyClassProvider copyWithBuild(
+  FamilyClassProvider $copyWithBuild(
     FutureOr<String> Function(Ref<AsyncValue<String>>, FamilyClass) build,
   ) {
     return FamilyClassProvider._(

@@ -48,7 +48,7 @@ final class SimpleProvider
   }
 
   @override
-  SimpleProvider copyWithCreate(
+  SimpleProvider $copyWithCreate(
     String Function(
       SimpleRef ref,
     ) create,
@@ -101,7 +101,7 @@ final class Simple2Provider
   }
 
   @override
-  Simple2Provider copyWithCreate(
+  Simple2Provider $copyWithCreate(
     String Function(
       Simple2Ref ref,
     ) create,
@@ -138,7 +138,7 @@ final class SimpleClassProvider extends $NotifierProvider<SimpleClass, String> {
 
   @$internal
   @override
-  SimpleClassProvider copyWithCreate(
+  SimpleClassProvider $copyWithCreate(
     SimpleClass Function() create,
   ) {
     return SimpleClassProvider._(create: create);
@@ -146,7 +146,7 @@ final class SimpleClassProvider extends $NotifierProvider<SimpleClass, String> {
 
   @$internal
   @override
-  SimpleClassProvider copyWithBuild(
+  SimpleClassProvider $copyWithBuild(
     String Function(Ref<String>, SimpleClass) build,
   ) {
     return SimpleClassProvider._(runNotifierBuildOverride: build);

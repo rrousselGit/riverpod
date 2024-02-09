@@ -181,7 +181,7 @@ abstract class $notifierTypedefName$typeParametersDefinition extends $notifierBa
 
   @internal
   @override
-  $providerType copyWithBuild(
+  $providerType $copyWithBuild(
     ${provider.name} Function() create,
   ) {
     return $providerType._internal(
@@ -312,7 +312,7 @@ $providerOther
 
   @internal
   @override
-  $providerTypeNameImpl copyWithCreate(
+  $providerTypeNameImpl $copyWithCreate(
     $createType create,
   ) {
     return $providerTypeNameImpl._internal(

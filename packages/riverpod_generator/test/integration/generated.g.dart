@@ -48,7 +48,7 @@ final class GeneratedProvider
   }
 
   @override
-  GeneratedProvider copyWithCreate(
+  GeneratedProvider $copyWithCreate(
     _Test Function(
       GeneratedRef ref,
     ) create,
@@ -104,7 +104,7 @@ final class GeneratedFamilyProvider
   }
 
   @override
-  GeneratedFamilyProvider copyWithCreate(
+  GeneratedFamilyProvider $copyWithCreate(
     _Test Function(
       GeneratedFamilyRef ref,
     ) create,
@@ -197,7 +197,7 @@ final class $DynamicProvider
   }
 
   @override
-  $DynamicProvider copyWithCreate(
+  $DynamicProvider $copyWithCreate(
     Object? Function(
       $DynamicRef ref,
     ) create,
@@ -253,7 +253,7 @@ final class $DynamicFamilyProvider
   }
 
   @override
-  $DynamicFamilyProvider copyWithCreate(
+  $DynamicFamilyProvider $copyWithCreate(
     Object? Function(
       $DynamicFamilyRef ref,
     ) create,
@@ -349,7 +349,7 @@ final class _DynamicProvider
   }
 
   @override
-  _DynamicProvider copyWithCreate(
+  _DynamicProvider $copyWithCreate(
     Object? Function(
       _DynamicRef ref,
     ) create,
@@ -443,7 +443,7 @@ final class AliasProvider
   }
 
   @override
-  AliasProvider copyWithCreate(
+  AliasProvider $copyWithCreate(
     r.AsyncValue<int> Function(
       AliasRef ref,
     ) create,
@@ -502,7 +502,7 @@ final class AliasFamilyProvider extends $FunctionalProvider<
   }
 
   @override
-  AliasFamilyProvider copyWithCreate(
+  AliasFamilyProvider $copyWithCreate(
     r.AsyncValue<int> Function(
       AliasFamilyRef ref,
     ) create,
@@ -580,7 +580,7 @@ final class GeneratedClassProvider
 
   @$internal
   @override
-  GeneratedClassProvider copyWithCreate(
+  GeneratedClassProvider $copyWithCreate(
     GeneratedClass Function() create,
   ) {
     return GeneratedClassProvider._(create: create);
@@ -588,7 +588,7 @@ final class GeneratedClassProvider
 
   @$internal
   @override
-  GeneratedClassProvider copyWithBuild(
+  GeneratedClassProvider $copyWithBuild(
     _Test Function(Ref<_Test>, GeneratedClass) build,
   ) {
     return GeneratedClassProvider._(runNotifierBuildOverride: build);
@@ -639,7 +639,7 @@ final class GeneratedClassFamilyProvider
 
   @$internal
   @override
-  GeneratedClassFamilyProvider copyWithCreate(
+  GeneratedClassFamilyProvider $copyWithCreate(
     GeneratedClassFamily Function() create,
   ) {
     return GeneratedClassFamilyProvider._(
@@ -650,7 +650,7 @@ final class GeneratedClassFamilyProvider
 
   @$internal
   @override
-  GeneratedClassFamilyProvider copyWithBuild(
+  GeneratedClassFamilyProvider $copyWithBuild(
     _Test Function(Ref<_Test>, GeneratedClassFamily) build,
   ) {
     return GeneratedClassFamilyProvider._(
@@ -747,7 +747,7 @@ final class $DynamicClassProvider
 
   @$internal
   @override
-  $DynamicClassProvider copyWithCreate(
+  $DynamicClassProvider $copyWithCreate(
     $DynamicClass Function() create,
   ) {
     return $DynamicClassProvider._(create: create);
@@ -755,7 +755,7 @@ final class $DynamicClassProvider
 
   @$internal
   @override
-  $DynamicClassProvider copyWithBuild(
+  $DynamicClassProvider $copyWithBuild(
     Object? Function(Ref<Object?>, $DynamicClass) build,
   ) {
     return $DynamicClassProvider._(runNotifierBuildOverride: build);
@@ -806,7 +806,7 @@ final class $DynamicClassFamilyProvider
 
   @$internal
   @override
-  $DynamicClassFamilyProvider copyWithCreate(
+  $DynamicClassFamilyProvider $copyWithCreate(
     $DynamicClassFamily Function() create,
   ) {
     return $DynamicClassFamilyProvider._(
@@ -817,7 +817,7 @@ final class $DynamicClassFamilyProvider
 
   @$internal
   @override
-  $DynamicClassFamilyProvider copyWithBuild(
+  $DynamicClassFamilyProvider $copyWithBuild(
     Object? Function(Ref<Object?>, $DynamicClassFamily) build,
   ) {
     return $DynamicClassFamilyProvider._(
@@ -914,7 +914,7 @@ final class AliasClassProvider
 
   @$internal
   @override
-  AliasClassProvider copyWithCreate(
+  AliasClassProvider $copyWithCreate(
     AliasClass Function() create,
   ) {
     return AliasClassProvider._(create: create);
@@ -922,7 +922,7 @@ final class AliasClassProvider
 
   @$internal
   @override
-  AliasClassProvider copyWithBuild(
+  AliasClassProvider $copyWithBuild(
     r.AsyncValue<int> Function(Ref<r.AsyncValue<int>>, AliasClass) build,
   ) {
     return AliasClassProvider._(runNotifierBuildOverride: build);
@@ -973,7 +973,7 @@ final class AliasClassFamilyProvider
 
   @$internal
   @override
-  AliasClassFamilyProvider copyWithCreate(
+  AliasClassFamilyProvider $copyWithCreate(
     AliasClassFamily Function() create,
   ) {
     return AliasClassFamilyProvider._(
@@ -984,7 +984,7 @@ final class AliasClassFamilyProvider
 
   @$internal
   @override
-  AliasClassFamilyProvider copyWithBuild(
+  AliasClassFamilyProvider $copyWithBuild(
     r.AsyncValue<int> Function(Ref<r.AsyncValue<int>>, AliasClassFamily) build,
   ) {
     return AliasClassFamilyProvider._(

@@ -47,7 +47,7 @@ final class CountProvider extends $FunctionalProvider<int, int, CountRef>
   }
 
   @override
-  CountProvider copyWithCreate(
+  CountProvider $copyWithCreate(
     int Function(
       CountRef ref,
     ) create,
@@ -100,7 +100,7 @@ final class CountFutureProvider
   }
 
   @override
-  CountFutureProvider copyWithCreate(
+  CountFutureProvider $copyWithCreate(
     FutureOr<int> Function(
       CountFutureRef ref,
     ) create,
@@ -153,7 +153,7 @@ final class CountStreamProvider
   }
 
   @override
-  CountStreamProvider copyWithCreate(
+  CountStreamProvider $copyWithCreate(
     Stream<int> Function(
       CountStreamRef ref,
     ) create,
@@ -208,7 +208,7 @@ final class Count2Provider extends $FunctionalProvider<int, int, Count2Ref>
   }
 
   @override
-  Count2Provider copyWithCreate(
+  Count2Provider $copyWithCreate(
     int Function(
       Count2Ref ref,
     ) create,
@@ -304,7 +304,7 @@ final class CountFuture2Provider
   }
 
   @override
-  CountFuture2Provider copyWithCreate(
+  CountFuture2Provider $copyWithCreate(
     FutureOr<int> Function(
       CountFuture2Ref ref,
     ) create,
@@ -400,7 +400,7 @@ final class CountStream2Provider
   }
 
   @override
-  CountStream2Provider copyWithCreate(
+  CountStream2Provider $copyWithCreate(
     Stream<int> Function(
       CountStream2Ref ref,
     ) create,
@@ -478,7 +478,7 @@ final class CountNotifierProvider
 
   @$internal
   @override
-  CountNotifierProvider copyWithCreate(
+  CountNotifierProvider $copyWithCreate(
     CountNotifier Function() create,
   ) {
     return CountNotifierProvider._(create: create);
@@ -486,7 +486,7 @@ final class CountNotifierProvider
 
   @$internal
   @override
-  CountNotifierProvider copyWithBuild(
+  CountNotifierProvider $copyWithBuild(
     int Function(Ref<int>, CountNotifier) build,
   ) {
     return CountNotifierProvider._(runNotifierBuildOverride: build);
@@ -536,7 +536,7 @@ final class CountAsyncNotifierProvider
 
   @$internal
   @override
-  CountAsyncNotifierProvider copyWithCreate(
+  CountAsyncNotifierProvider $copyWithCreate(
     CountAsyncNotifier Function() create,
   ) {
     return CountAsyncNotifierProvider._(create: create);
@@ -544,7 +544,7 @@ final class CountAsyncNotifierProvider
 
   @$internal
   @override
-  CountAsyncNotifierProvider copyWithBuild(
+  CountAsyncNotifierProvider $copyWithBuild(
     FutureOr<int> Function(Ref<AsyncValue<int>>, CountAsyncNotifier) build,
   ) {
     return CountAsyncNotifierProvider._(runNotifierBuildOverride: build);
@@ -595,7 +595,7 @@ final class CountStreamNotifierProvider
 
   @$internal
   @override
-  CountStreamNotifierProvider copyWithCreate(
+  CountStreamNotifierProvider $copyWithCreate(
     CountStreamNotifier Function() create,
   ) {
     return CountStreamNotifierProvider._(create: create);
@@ -603,7 +603,7 @@ final class CountStreamNotifierProvider
 
   @$internal
   @override
-  CountStreamNotifierProvider copyWithBuild(
+  CountStreamNotifierProvider $copyWithBuild(
     Stream<int> Function(Ref<AsyncValue<int>>, CountStreamNotifier) build,
   ) {
     return CountStreamNotifierProvider._(runNotifierBuildOverride: build);
@@ -655,7 +655,7 @@ final class CountNotifier2Provider
 
   @$internal
   @override
-  CountNotifier2Provider copyWithCreate(
+  CountNotifier2Provider $copyWithCreate(
     CountNotifier2 Function() create,
   ) {
     return CountNotifier2Provider._(
@@ -666,7 +666,7 @@ final class CountNotifier2Provider
 
   @$internal
   @override
-  CountNotifier2Provider copyWithBuild(
+  CountNotifier2Provider $copyWithBuild(
     int Function(Ref<int>, CountNotifier2) build,
   ) {
     return CountNotifier2Provider._(
@@ -763,7 +763,7 @@ final class CountAsyncNotifier2Provider
 
   @$internal
   @override
-  CountAsyncNotifier2Provider copyWithCreate(
+  CountAsyncNotifier2Provider $copyWithCreate(
     CountAsyncNotifier2 Function() create,
   ) {
     return CountAsyncNotifier2Provider._(
@@ -774,7 +774,7 @@ final class CountAsyncNotifier2Provider
 
   @$internal
   @override
-  CountAsyncNotifier2Provider copyWithBuild(
+  CountAsyncNotifier2Provider $copyWithBuild(
     FutureOr<int> Function(Ref<AsyncValue<int>>, CountAsyncNotifier2) build,
   ) {
     return CountAsyncNotifier2Provider._(
@@ -872,7 +872,7 @@ final class CountStreamNotifier2Provider
 
   @$internal
   @override
-  CountStreamNotifier2Provider copyWithCreate(
+  CountStreamNotifier2Provider $copyWithCreate(
     CountStreamNotifier2 Function() create,
   ) {
     return CountStreamNotifier2Provider._(
@@ -883,7 +883,7 @@ final class CountStreamNotifier2Provider
 
   @$internal
   @override
-  CountStreamNotifier2Provider copyWithBuild(
+  CountStreamNotifier2Provider $copyWithBuild(
     Stream<int> Function(Ref<AsyncValue<int>>, CountStreamNotifier2) build,
   ) {
     return CountStreamNotifier2Provider._(

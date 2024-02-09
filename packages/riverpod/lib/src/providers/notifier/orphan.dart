@@ -158,7 +158,7 @@ final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>
   @mustBeOverridden
   @visibleForOverriding
   @override
-  NotifierProvider<NotifierT, StateT> copyWithBuild(
+  NotifierProvider<NotifierT, StateT> $copyWithBuild(
     RunNotifierBuild<NotifierT, StateT, Ref<StateT>>? build,
   ) {
     return _copyWith(build: build);
@@ -167,7 +167,7 @@ final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>
   @mustBeOverridden
   @visibleForOverriding
   @override
-  NotifierProvider<NotifierT, StateT> copyWithCreate(
+  NotifierProvider<NotifierT, StateT> $copyWithCreate(
     NotifierT Function() create,
   ) {
     return _copyWith(create: create);

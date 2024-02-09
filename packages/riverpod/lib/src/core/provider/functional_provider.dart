@@ -19,7 +19,7 @@ abstract base class $FunctionalProvider< //
   });
 
   @visibleForOverriding
-  $FunctionalProvider<StateT, CreatedT, RefT> copyWithCreate(
+  $FunctionalProvider<StateT, CreatedT, RefT> $copyWithCreate(
     Create<CreatedT, RefT> create,
   );
 
@@ -60,7 +60,7 @@ abstract base class $FunctionalProvider< //
   Override overrideWith(Create<CreatedT, RefT> create) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: copyWithCreate(create),
+      providerOverride: $copyWithCreate(create),
     );
   }
 }

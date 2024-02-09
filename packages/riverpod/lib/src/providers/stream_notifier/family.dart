@@ -79,7 +79,7 @@ final class FamilyStreamNotifierProvider< //
   @override
   @mustBeOverridden
   @visibleForOverriding
-  FamilyStreamNotifierProvider<NotifierT, StateT, ArgT> copyWithBuild(
+  FamilyStreamNotifierProvider<NotifierT, StateT, ArgT> $copyWithBuild(
     RunNotifierBuild<NotifierT, Stream<StateT>, Ref<AsyncValue<StateT>>> build,
   ) {
     return _copyWith(build: build);
@@ -88,7 +88,7 @@ final class FamilyStreamNotifierProvider< //
   @override
   @mustBeOverridden
   @visibleForOverriding
-  FamilyStreamNotifierProvider<NotifierT, StateT, ArgT> copyWithCreate(
+  FamilyStreamNotifierProvider<NotifierT, StateT, ArgT> $copyWithCreate(
     NotifierT Function() create,
   ) {
     return _copyWith(create: create);

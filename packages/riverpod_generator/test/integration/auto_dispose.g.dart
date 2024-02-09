@@ -48,7 +48,7 @@ final class KeepAliveProvider
   }
 
   @override
-  KeepAliveProvider copyWithCreate(
+  KeepAliveProvider $copyWithCreate(
     int Function(
       KeepAliveRef ref,
     ) create,
@@ -101,7 +101,7 @@ final class NotKeepAliveProvider
   }
 
   @override
-  NotKeepAliveProvider copyWithCreate(
+  NotKeepAliveProvider $copyWithCreate(
     int Function(
       NotKeepAliveRef ref,
     ) create,

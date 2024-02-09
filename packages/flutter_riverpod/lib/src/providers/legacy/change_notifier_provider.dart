@@ -152,7 +152,7 @@ final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
   @mustBeOverridden
   @visibleForOverriding
   @override
-  ChangeNotifierProvider<NotifierT> copyWithCreate(
+  ChangeNotifierProvider<NotifierT> $copyWithCreate(
     Create<NotifierT, ChangeNotifierProviderRef<NotifierT>> create,
   ) {
     return ChangeNotifierProvider<NotifierT>.internal(

@@ -76,7 +76,7 @@ base class Provider<StateT>
   @mustBeOverridden
   @visibleForOverriding
   @override
-  Provider<StateT> copyWithCreate(
+  Provider<StateT> $copyWithCreate(
     Create<StateT, Ref<StateT>> create,
   ) {
     return Provider<StateT>.internal(

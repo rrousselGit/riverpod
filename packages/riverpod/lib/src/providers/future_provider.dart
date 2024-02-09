@@ -146,7 +146,7 @@ final class FutureProvider<StateT> extends $FunctionalProvider<
   @mustBeOverridden
   @visibleForOverriding
   @override
-  FutureProvider<StateT> copyWithCreate(
+  FutureProvider<StateT> $copyWithCreate(
     Create<FutureOr<StateT>, FutureProviderRef<StateT>> create,
   ) {
     return FutureProvider<StateT>.internal(

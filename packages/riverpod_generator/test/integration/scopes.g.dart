@@ -47,7 +47,7 @@ final class ScopedProvider extends $FunctionalProvider<int, int, ScopedRef>
   }
 
   @override
-  ScopedProvider copyWithCreate(
+  ScopedProvider $copyWithCreate(
     int Function(
       ScopedRef ref,
     ) create,
@@ -84,7 +84,7 @@ final class ScopedClassProvider extends $NotifierProvider<ScopedClass, int> {
 
   @$internal
   @override
-  ScopedClassProvider copyWithCreate(
+  ScopedClassProvider $copyWithCreate(
     ScopedClass Function() create,
   ) {
     return ScopedClassProvider._(create: create);
@@ -92,7 +92,7 @@ final class ScopedClassProvider extends $NotifierProvider<ScopedClass, int> {
 
   @$internal
   @override
-  ScopedClassProvider copyWithBuild(
+  ScopedClassProvider $copyWithBuild(
     int Function(Ref<int>, ScopedClass) build,
   ) {
     return ScopedClassProvider._(runNotifierBuildOverride: build);

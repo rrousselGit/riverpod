@@ -111,12 +111,12 @@ abstract base class $ClassProvider< //
   NotifierT create();
 
   @visibleForOverriding
-  $ClassProvider<NotifierT, StateT, CreatedT, RefT> copyWithCreate(
+  $ClassProvider<NotifierT, StateT, CreatedT, RefT> $copyWithCreate(
     NotifierT Function() create,
   );
 
   @visibleForOverriding
-  $ClassProvider<NotifierT, StateT, CreatedT, RefT> copyWithBuild(
+  $ClassProvider<NotifierT, StateT, CreatedT, RefT> $copyWithBuild(
     RunNotifierBuild<NotifierT, CreatedT, RefT> build,
   );
 
@@ -124,7 +124,7 @@ abstract base class $ClassProvider< //
   Override overrideWith(NotifierT Function() create) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: copyWithCreate(create),
+      providerOverride: $copyWithCreate(create),
     );
   }
 
@@ -134,7 +134,7 @@ abstract base class $ClassProvider< //
   ) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: copyWithBuild(build),
+      providerOverride: $copyWithBuild(build),
     );
   }
 

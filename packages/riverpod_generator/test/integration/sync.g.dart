@@ -48,7 +48,7 @@ final class GenericProvider<T extends num>
   }
 
   @override
-  GenericProvider<T> copyWithCreate(
+  GenericProvider<T> $copyWithCreate(
     List<T> Function(
       GenericRef<T> ref,
     ) create,
@@ -146,7 +146,7 @@ final class ComplexGenericProvider<T extends num, Foo extends String?>
   }
 
   @override
-  ComplexGenericProvider<T, Foo> copyWithCreate(
+  ComplexGenericProvider<T, Foo> $copyWithCreate(
     List<T> Function(
       ComplexGenericRef<T, Foo> ref,
     ) create,
@@ -254,7 +254,7 @@ final class RawFutureProvider extends $FunctionalProvider<
   }
 
   @override
-  RawFutureProvider copyWithCreate(
+  RawFutureProvider $copyWithCreate(
     Raw<Future<String>> Function(
       RawFutureRef ref,
     ) create,
@@ -309,7 +309,7 @@ final class RawStreamProvider extends $FunctionalProvider<
   }
 
   @override
-  RawStreamProvider copyWithCreate(
+  RawStreamProvider $copyWithCreate(
     Raw<Stream<String>> Function(
       RawStreamRef ref,
     ) create,
@@ -366,7 +366,7 @@ final class RawFamilyFutureProvider extends $FunctionalProvider<
   }
 
   @override
-  RawFamilyFutureProvider copyWithCreate(
+  RawFamilyFutureProvider $copyWithCreate(
     Raw<Future<String>> Function(
       RawFamilyFutureRef ref,
     ) create,
@@ -463,7 +463,7 @@ final class RawFamilyStreamProvider extends $FunctionalProvider<
   }
 
   @override
-  RawFamilyStreamProvider copyWithCreate(
+  RawFamilyStreamProvider $copyWithCreate(
     Raw<Stream<String>> Function(
       RawFamilyStreamRef ref,
     ) create,
@@ -556,7 +556,7 @@ final class PublicProvider
   }
 
   @override
-  PublicProvider copyWithCreate(
+  PublicProvider $copyWithCreate(
     String Function(
       PublicRef ref,
     ) create,
@@ -609,7 +609,7 @@ final class Supports$inNamesProvider
   }
 
   @override
-  Supports$inNamesProvider copyWithCreate(
+  Supports$inNamesProvider $copyWithCreate(
     String Function(
       Supports$inNamesRef ref,
     ) create,
@@ -696,7 +696,7 @@ final class FamilyProvider
   }
 
   @override
-  FamilyProvider copyWithCreate(
+  FamilyProvider $copyWithCreate(
     String Function(
       FamilyRef ref,
     ) create,
@@ -815,7 +815,7 @@ final class _PrivateProvider
   }
 
   @override
-  _PrivateProvider copyWithCreate(
+  _PrivateProvider $copyWithCreate(
     String Function(
       _PrivateRef ref,
     ) create,
@@ -868,7 +868,7 @@ final class GeneratedProvider
   }
 
   @override
-  GeneratedProvider copyWithCreate(
+  GeneratedProvider $copyWithCreate(
     String Function(
       GeneratedRef ref,
     ) create,
@@ -907,7 +907,7 @@ final class GenericClassProvider<T extends num>
 
   @$internal
   @override
-  GenericClassProvider<T> copyWithCreate(
+  GenericClassProvider<T> $copyWithCreate(
     GenericClass<T> Function() create,
   ) {
     return GenericClassProvider<T>._(
@@ -916,7 +916,7 @@ final class GenericClassProvider<T extends num>
 
   @$internal
   @override
-  GenericClassProvider<T> copyWithBuild(
+  GenericClassProvider<T> $copyWithBuild(
     List<T> Function(Ref<List<T>>, GenericClass<T>) build,
   ) {
     return GenericClassProvider<T>._(
@@ -999,7 +999,7 @@ final class RawFutureClassProvider
 
   @$internal
   @override
-  RawFutureClassProvider copyWithCreate(
+  RawFutureClassProvider $copyWithCreate(
     RawFutureClass Function() create,
   ) {
     return RawFutureClassProvider._(create: create);
@@ -1007,7 +1007,7 @@ final class RawFutureClassProvider
 
   @$internal
   @override
-  RawFutureClassProvider copyWithBuild(
+  RawFutureClassProvider $copyWithBuild(
     Raw<Future<String>> Function(Ref<Raw<Future<String>>>, RawFutureClass)
         build,
   ) {
@@ -1058,7 +1058,7 @@ final class RawStreamClassProvider
 
   @$internal
   @override
-  RawStreamClassProvider copyWithCreate(
+  RawStreamClassProvider $copyWithCreate(
     RawStreamClass Function() create,
   ) {
     return RawStreamClassProvider._(create: create);
@@ -1066,7 +1066,7 @@ final class RawStreamClassProvider
 
   @$internal
   @override
-  RawStreamClassProvider copyWithBuild(
+  RawStreamClassProvider $copyWithBuild(
     Raw<Stream<String>> Function(Ref<Raw<Stream<String>>>, RawStreamClass)
         build,
   ) {
@@ -1118,7 +1118,7 @@ final class RawFamilyFutureClassProvider
 
   @$internal
   @override
-  RawFamilyFutureClassProvider copyWithCreate(
+  RawFamilyFutureClassProvider $copyWithCreate(
     RawFamilyFutureClass Function() create,
   ) {
     return RawFamilyFutureClassProvider._(
@@ -1129,7 +1129,7 @@ final class RawFamilyFutureClassProvider
 
   @$internal
   @override
-  RawFamilyFutureClassProvider copyWithBuild(
+  RawFamilyFutureClassProvider $copyWithBuild(
     Raw<Future<String>> Function(Ref<Raw<Future<String>>>, RawFamilyFutureClass)
         build,
   ) {
@@ -1228,7 +1228,7 @@ final class RawFamilyStreamClassProvider
 
   @$internal
   @override
-  RawFamilyStreamClassProvider copyWithCreate(
+  RawFamilyStreamClassProvider $copyWithCreate(
     RawFamilyStreamClass Function() create,
   ) {
     return RawFamilyStreamClassProvider._(
@@ -1239,7 +1239,7 @@ final class RawFamilyStreamClassProvider
 
   @$internal
   @override
-  RawFamilyStreamClassProvider copyWithBuild(
+  RawFamilyStreamClassProvider $copyWithBuild(
     Raw<Stream<String>> Function(Ref<Raw<Stream<String>>>, RawFamilyStreamClass)
         build,
   ) {
@@ -1336,7 +1336,7 @@ final class PublicClassProvider extends $NotifierProvider<PublicClass, String> {
 
   @$internal
   @override
-  PublicClassProvider copyWithCreate(
+  PublicClassProvider $copyWithCreate(
     PublicClass Function() create,
   ) {
     return PublicClassProvider._(create: create);
@@ -1344,7 +1344,7 @@ final class PublicClassProvider extends $NotifierProvider<PublicClass, String> {
 
   @$internal
   @override
-  PublicClassProvider copyWithBuild(
+  PublicClassProvider $copyWithBuild(
     String Function(Ref<String>, PublicClass) build,
   ) {
     return PublicClassProvider._(runNotifierBuildOverride: build);
@@ -1394,7 +1394,7 @@ final class _PrivateClassProvider
 
   @$internal
   @override
-  _PrivateClassProvider copyWithCreate(
+  _PrivateClassProvider $copyWithCreate(
     _PrivateClass Function() create,
   ) {
     return _PrivateClassProvider._(create: create);
@@ -1402,7 +1402,7 @@ final class _PrivateClassProvider
 
   @$internal
   @override
-  _PrivateClassProvider copyWithBuild(
+  _PrivateClassProvider $copyWithBuild(
     String Function(Ref<String>, _PrivateClass) build,
   ) {
     return _PrivateClassProvider._(runNotifierBuildOverride: build);
@@ -1459,7 +1459,7 @@ final class FamilyClassProvider extends $NotifierProvider<FamilyClass, String> {
 
   @$internal
   @override
-  FamilyClassProvider copyWithCreate(
+  FamilyClassProvider $copyWithCreate(
     FamilyClass Function() create,
   ) {
     return FamilyClassProvider._(
@@ -1476,7 +1476,7 @@ final class FamilyClassProvider extends $NotifierProvider<FamilyClass, String> {
 
   @$internal
   @override
-  FamilyClassProvider copyWithBuild(
+  FamilyClassProvider $copyWithBuild(
     String Function(Ref<String>, FamilyClass) build,
   ) {
     return FamilyClassProvider._(
@@ -1611,7 +1611,7 @@ final class Supports$InClassNameProvider
 
   @$internal
   @override
-  Supports$InClassNameProvider copyWithCreate(
+  Supports$InClassNameProvider $copyWithCreate(
     Supports$InClassName Function() create,
   ) {
     return Supports$InClassNameProvider._(create: create);
@@ -1619,7 +1619,7 @@ final class Supports$InClassNameProvider
 
   @$internal
   @override
-  Supports$InClassNameProvider copyWithBuild(
+  Supports$InClassNameProvider $copyWithBuild(
     String Function(Ref<String>, Supports$InClassName) build,
   ) {
     return Supports$InClassNameProvider._(runNotifierBuildOverride: build);

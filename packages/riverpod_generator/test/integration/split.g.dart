@@ -47,7 +47,7 @@ final class Counter2Provider extends $FunctionalProvider<int, int, Counter2Ref>
   }
 
   @override
-  Counter2Provider copyWithCreate(
+  Counter2Provider $copyWithCreate(
     int Function(
       Counter2Ref ref,
     ) create,
@@ -99,7 +99,7 @@ final class CounterProvider extends $FunctionalProvider<int, int, CounterRef>
   }
 
   @override
-  CounterProvider copyWithCreate(
+  CounterProvider $copyWithCreate(
     int Function(
       CounterRef ref,
     ) create,
