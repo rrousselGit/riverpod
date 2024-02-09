@@ -274,7 +274,6 @@ extension ProviderNames on GeneratorProviderDeclaration {
   String get argumentRecordType {
     // Encode the list of parameters into a record.
     // We do so only if there are at least two parameters.
-    // TODO test
     switch (parameters) {
       case [_]:
         return parameters.first.typeDisplayString;
@@ -300,10 +299,9 @@ extension ProviderNames on GeneratorProviderDeclaration {
     }
   }
 
-  // TODO possibly no-longer needed
   String dependencies(BuildYamlOptions options) =>
       providerElement.dependencies(options);
-  // TODO possibly no-longer needed
+
   String allTransitiveDependencies(List<String>? allTransitiveDependencies) {
     return providerElement.allTransitiveDependencies(allTransitiveDependencies);
   }
