@@ -294,8 +294,16 @@ final class $name$_genericsDefinition
         'other.runtimeType == runtimeType',
       'other.argument == argument',
     ].join(' && ')};
-      }
-    ''');
+  }
+
+  @override
+  int get hashCode {
+    return ${switch (provider.typeParameters?.typeParameters ?? []) {
+      [] => 'argument.hashCode',
+      [_, ...] => 'Object.hash(runtimeType, argument)',
+    }};
+  }
+''');
   }
 
   void _writeToString(StringBuffer buffer) {

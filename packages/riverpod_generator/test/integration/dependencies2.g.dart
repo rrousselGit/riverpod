@@ -155,6 +155,11 @@ final class FamilyWithDependencies2Provider
     return other is FamilyWithDependencies2Provider &&
         other.argument == argument;
   }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
 }
 
 String _$familyWithDependencies2Hash() =>
@@ -470,6 +475,11 @@ final class NotifierFamilyWithDependenciesProvider
   bool operator ==(Object other) {
     return other is NotifierFamilyWithDependenciesProvider &&
         other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
   }
 }
 

@@ -125,6 +125,11 @@ final class FamilyProvider extends $FunctionalProvider<int, int, FamilyRef>
   bool operator ==(Object other) {
     return other is FamilyProvider && other.argument == argument;
   }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
 }
 
 String _$familyHash() => r'8c228ff14b8c6cf1f3d4d6266232d64b5057c440';
@@ -959,6 +964,11 @@ final class Family2Provider extends $NotifierProvider<Family2, int> {
   bool operator ==(Object other) {
     return other is Family2Provider && other.argument == argument;
   }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
 }
 
 String _$family2Hash() => r'ce727b262aae067b0d4f703f03670abb70ad8977';
@@ -1181,6 +1191,11 @@ final class Provider4Provider extends $NotifierProvider<Provider4, int> {
   @override
   bool operator ==(Object other) {
     return other is Provider4Provider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
   }
 }
 

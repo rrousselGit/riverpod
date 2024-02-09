@@ -127,6 +127,11 @@ final class GeneratedFamilyProvider
   bool operator ==(Object other) {
     return other is GeneratedFamilyProvider && other.argument == argument;
   }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
 }
 
 String _$generatedFamilyHash() => r'ed284f58926c87acc81dab9168882d5d1c2cddf8';
@@ -293,6 +298,11 @@ final class $DynamicFamilyProvider
   bool operator ==(Object other) {
     return other is $DynamicFamilyProvider && other.argument == argument;
   }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
 }
 
 String _$$dynamicFamilyHash() => r'b764133af8837b8321b08814892f198d4bc1aa18';
@@ -408,6 +418,11 @@ final class _DynamicProvider
   @override
   bool operator ==(Object other) {
     return other is _DynamicProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
   }
 }
 
@@ -577,6 +592,11 @@ final class AliasFamilyProvider extends $FunctionalProvider<
   @override
   bool operator ==(Object other) {
     return other is AliasFamilyProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
   }
 }
 
@@ -751,6 +771,11 @@ final class GeneratedClassFamilyProvider
   @override
   bool operator ==(Object other) {
     return other is GeneratedClassFamilyProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
   }
 }
 
@@ -961,6 +986,11 @@ final class $DynamicClassFamilyProvider
   bool operator ==(Object other) {
     return other is $DynamicClassFamilyProvider && other.argument == argument;
   }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
 }
 
 String _$$dynamicClassFamilyHash() =>
@@ -1169,6 +1199,11 @@ final class AliasClassFamilyProvider
   @override
   bool operator ==(Object other) {
     return other is AliasClassFamilyProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
   }
 }
 

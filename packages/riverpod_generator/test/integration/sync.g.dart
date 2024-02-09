@@ -75,6 +75,11 @@ final class GenericProvider<T extends num>
         other.runtimeType == runtimeType &&
         other.argument == argument;
   }
+
+  @override
+  int get hashCode {
+    return Object.hash(runtimeType, argument);
+  }
 }
 
 String _$genericHash() => r'0fda19dd377694315cdffd7414d53f98569c655c';
@@ -215,6 +220,11 @@ final class ComplexGenericProvider<T extends num, Foo extends String?>
     return other is ComplexGenericProvider &&
         other.runtimeType == runtimeType &&
         other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(runtimeType, argument);
   }
 }
 
@@ -451,6 +461,11 @@ final class RawFamilyFutureProvider extends $FunctionalProvider<
   bool operator ==(Object other) {
     return other is RawFamilyFutureProvider && other.argument == argument;
   }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
 }
 
 String _$rawFamilyFutureHash() => r'485f59512081852e51279658facc015309743864';
@@ -567,6 +582,11 @@ final class RawFamilyStreamProvider extends $FunctionalProvider<
   @override
   bool operator ==(Object other) {
     return other is RawFamilyStreamProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
   }
 }
 
@@ -825,6 +845,11 @@ final class FamilyProvider
   bool operator ==(Object other) {
     return other is FamilyProvider && other.argument == argument;
   }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
 }
 
 String _$familyHash() => r'14d1ee238ca608d547630d0e222ef4c5866e9e61';
@@ -1012,6 +1037,11 @@ final class Supports$InFnNameProvider<And$InT>
         other.runtimeType == runtimeType &&
         other.argument == argument;
   }
+
+  @override
+  int get hashCode {
+    return Object.hash(runtimeType, argument);
+  }
 }
 
 String _$supports$InFnNameHash() => r'fec3daca655669a46760cc54921f098b9cbaac3d';
@@ -1180,6 +1210,11 @@ final class GenericClassProvider<T extends num>
     return other is GenericClassProvider &&
         other.runtimeType == runtimeType &&
         other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(runtimeType, argument);
   }
 }
 
@@ -1429,6 +1464,11 @@ final class RawFamilyFutureClassProvider
   bool operator ==(Object other) {
     return other is RawFamilyFutureClassProvider && other.argument == argument;
   }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
 }
 
 String _$rawFamilyFutureClassHash() =>
@@ -1575,6 +1615,11 @@ final class RawFamilyStreamClassProvider
   @override
   bool operator ==(Object other) {
     return other is RawFamilyStreamClassProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
   }
 }
 
@@ -1862,6 +1907,11 @@ final class FamilyClassProvider extends $NotifierProvider<FamilyClass, String> {
   bool operator ==(Object other) {
     return other is FamilyClassProvider && other.argument == argument;
   }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
 }
 
 String _$familyClassHash() => r'01e3b9cb4d6d0bf12a2284761b1a11819d97d249';
@@ -2079,6 +2129,11 @@ final class Supports$InClassNameProvider<And$InT>
     return other is Supports$InClassNameProvider &&
         other.runtimeType == runtimeType &&
         other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(runtimeType, argument);
   }
 }
 

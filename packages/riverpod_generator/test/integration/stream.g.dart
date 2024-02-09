@@ -75,6 +75,11 @@ final class GenericProvider<T extends num> extends $FunctionalProvider<
         other.runtimeType == runtimeType &&
         other.argument == argument;
   }
+
+  @override
+  int get hashCode {
+    return Object.hash(runtimeType, argument);
+  }
 }
 
 String _$genericHash() => r'c1122edf55163d47de8d871ed5d15e0a7edddc05';
@@ -322,6 +327,11 @@ final class FamilyProvider
   bool operator ==(Object other) {
     return other is FamilyProvider && other.argument == argument;
   }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
 }
 
 String _$familyHash() => r'6896fac2f6e3ccd7c38ecaa0d538cbd3577936b2';
@@ -471,6 +481,11 @@ final class GenericClassProvider<T extends num>
     return other is GenericClassProvider &&
         other.runtimeType == runtimeType &&
         other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(runtimeType, argument);
   }
 }
 
@@ -739,6 +754,11 @@ final class FamilyClassProvider
   @override
   bool operator ==(Object other) {
     return other is FamilyClassProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
   }
 }
 

@@ -225,6 +225,11 @@ final class Count2Provider extends $FunctionalProvider<int, int, Count2Ref>
   bool operator ==(Object other) {
     return other is Count2Provider && other.argument == argument;
   }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
 }
 
 String _$count2Hash() => r'6256825480d83bb13acde282cf3c9d9524cc3a6c';
@@ -341,6 +346,11 @@ final class CountFuture2Provider
   bool operator ==(Object other) {
     return other is CountFuture2Provider && other.argument == argument;
   }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
 }
 
 String _$countFuture2Hash() => r'096675b70a267f5d7c62ac7d3e7dd231ef529034';
@@ -456,6 +466,11 @@ final class CountStream2Provider
   @override
   bool operator ==(Object other) {
     return other is CountStream2Provider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
   }
 }
 
@@ -755,6 +770,11 @@ final class CountNotifier2Provider
   bool operator ==(Object other) {
     return other is CountNotifier2Provider && other.argument == argument;
   }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
 }
 
 String _$countNotifier2Hash() => r'ef12bb4f94add336804ae43bcdbcd8e9b0bec420';
@@ -898,6 +918,11 @@ final class CountAsyncNotifier2Provider
   @override
   bool operator ==(Object other) {
     return other is CountAsyncNotifier2Provider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
   }
 }
 
@@ -1046,6 +1071,11 @@ final class CountStreamNotifier2Provider
   @override
   bool operator ==(Object other) {
     return other is CountStreamNotifier2Provider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
   }
 }
 

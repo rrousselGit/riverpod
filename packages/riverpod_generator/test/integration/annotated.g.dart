@@ -127,6 +127,11 @@ final class FamilyProvider
   bool operator ==(Object other) {
     return other is FamilyProvider && other.argument == argument;
   }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
 }
 
 String _$familyHash() => r'd70685b83be840bfd9e79c11fb84c905d19d6e10';
@@ -293,6 +298,11 @@ final class NotCopiedFamilyProvider
   @override
   bool operator ==(Object other) {
     return other is NotCopiedFamilyProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
   }
 }
 
