@@ -159,10 +159,35 @@ String supports$InFnName<And$InT>(Supports$InFnNameRef<And$InT> ref) {
   return 'Hello world';
 }
 
+const default$value = '';
+
+@riverpod
+String supports$InFnNameFamily<And$InT>(
+  Supports$InFnNameFamilyRef<And$InT> ref,
+  And$InT positional$arg, {
+  required And$InT named$arg,
+  String defaultArg = default$value,
+}) {
+  return 'Hello world';
+}
+
 @riverpod
 class Supports$InClassName<And$InT> extends _$Supports$InClassName<And$InT> {
   @override
   String build() {
+    return 'Hello world';
+  }
+}
+
+@riverpod
+class Supports$InClassFamilyName<And$InT>
+    extends _$Supports$InClassFamilyName<And$InT> {
+  @override
+  String build(
+    And$InT positional$arg, {
+    required And$InT named$arg,
+    String defaultArg = default$value,
+  }) {
     return 'Hello world';
   }
 }

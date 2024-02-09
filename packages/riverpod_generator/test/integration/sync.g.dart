@@ -273,12 +273,10 @@ final class ComplexGenericFamily extends Family {
           required T param,
           Foo? otherParam,
         }) {
-          final argument = provider.argument as ({
-            T param,
-            Foo? otherParam,
-          });
-
-          return create(ref, argument);
+          return create(ref, (
+            param: param,
+            otherParam: otherParam,
+          ));
         }).createElement(container);
       },
     );
@@ -1073,6 +1071,191 @@ final class Supports$InFnNameFamily extends Family {
         provider as Supports$InFnNameProvider;
 
         return provider._copyWithCreate(create).createElement(container);
+      },
+    );
+  }
+}
+
+typedef Supports$InFnNameFamilyRef<And$InT> = Ref<String>;
+
+const supports$InFnNameFamilyProvider = Supports$InFnNameFamilyFamily._();
+
+final class Supports$InFnNameFamilyProvider<And$InT>
+    extends $FunctionalProvider<String, String,
+        Supports$InFnNameFamilyRef<And$InT>>
+    with $Provider<String, Supports$InFnNameFamilyRef<And$InT>> {
+  const Supports$InFnNameFamilyProvider._(
+      {required Supports$InFnNameFamilyFamily super.from,
+      required (
+        And$InT, {
+        And$InT named$arg,
+        String defaultArg,
+      })
+          super.argument,
+      String Function(
+        Supports$InFnNameFamilyRef<And$InT> ref,
+        And$InT positional$arg, {
+        required And$InT named$arg,
+        String defaultArg,
+      })? create})
+      : _createCb = create,
+        super(
+          name: r'supports$InFnNameFamilyProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final String Function(
+    Supports$InFnNameFamilyRef<And$InT> ref,
+    And$InT positional$arg, {
+    required And$InT named$arg,
+    String defaultArg,
+  })? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$supports$InFnNameFamilyHash();
+
+  Supports$InFnNameFamilyProvider<And$InT> _copyWithCreate(
+    String Function<And$InT>(
+      Supports$InFnNameFamilyRef<And$InT> ref,
+      And$InT positional$arg, {
+      required And$InT named$arg,
+      String defaultArg,
+    }) create,
+  ) {
+    return Supports$InFnNameFamilyProvider<And$InT>._(
+        argument: argument as (
+          And$InT, {
+          And$InT named$arg,
+          String defaultArg,
+        }),
+        from: from! as Supports$InFnNameFamilyFamily,
+        create: create<And$InT>);
+  }
+
+  @override
+  String toString() {
+    return r'supports$InFnNameFamilyProvider'
+        '<${And$InT}>'
+        '$argument';
+  }
+
+  @override
+  $ProviderElement<String> createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  Supports$InFnNameFamilyProvider<And$InT> $copyWithCreate(
+    String Function(
+      Supports$InFnNameFamilyRef<And$InT> ref,
+    ) create,
+  ) {
+    return Supports$InFnNameFamilyProvider<And$InT>._(
+        argument: argument as (
+          And$InT, {
+          And$InT named$arg,
+          String defaultArg,
+        }),
+        from: from! as Supports$InFnNameFamilyFamily,
+        create: (
+          ref,
+          And$InT positional$arg, {
+          required And$InT named$arg,
+          String defaultArg = default$value,
+        }) =>
+            create(ref));
+  }
+
+  @override
+  String create(Supports$InFnNameFamilyRef<And$InT> ref) {
+    final fn = _createCb ?? supports$InFnNameFamily<And$InT>;
+    final (
+      And$InT, {
+      And$InT named$arg,
+      String defaultArg,
+    }) argument = this.argument as (
+      And$InT, {
+      And$InT named$arg,
+      String defaultArg,
+    });
+    return fn(
+      ref,
+      argument.$1,
+      named$arg: argument.named$arg,
+      defaultArg: argument.defaultArg,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is Supports$InFnNameFamilyProvider &&
+        other.runtimeType == runtimeType &&
+        other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(runtimeType, argument);
+  }
+}
+
+String _$supports$InFnNameFamilyHash() =>
+    r'1daa434fa2ad9ff37deade29ba3ca8155833df1b';
+
+final class Supports$InFnNameFamilyFamily extends Family {
+  const Supports$InFnNameFamilyFamily._()
+      : super(
+          name: r'supports$InFnNameFamilyProvider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  Supports$InFnNameFamilyProvider<And$InT> call<And$InT>(
+    And$InT positional$arg, {
+    required And$InT named$arg,
+    String defaultArg = default$value,
+  }) =>
+      Supports$InFnNameFamilyProvider<And$InT>._(argument: (
+        positional$arg,
+        named$arg: named$arg,
+        defaultArg: defaultArg,
+      ), from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$supports$InFnNameFamilyHash();
+
+  @override
+  String toString() => r'supports$InFnNameFamilyProvider';
+
+  Override overrideWith(
+    String Function<And$InT>(
+      Supports$InFnNameFamilyRef<And$InT> ref,
+      (
+        And$InT, {
+        And$InT named$arg,
+        String defaultArg,
+      }) args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as Supports$InFnNameFamilyProvider;
+
+        return provider._copyWithCreate(<And$InT>(
+          ref,
+          And$InT positional$arg, {
+          required And$InT named$arg,
+          String defaultArg = default$value,
+        }) {
+          return create(ref, (
+            positional$arg,
+            named$arg: named$arg,
+            defaultArg: defaultArg,
+          ));
+        }).createElement(container);
       },
     );
   }
@@ -2193,6 +2376,237 @@ abstract class _$Supports$InClassName<And$InT> extends $Notifier<String> {
   @$internal
   @override
   String runBuild() => build();
+}
+
+const supports$InClassFamilyNameProvider = Supports$InClassFamilyNameFamily._();
+
+final class Supports$InClassFamilyNameProvider<And$InT>
+    extends $NotifierProvider<Supports$InClassFamilyName<And$InT>, String> {
+  const Supports$InClassFamilyNameProvider._(
+      {required Supports$InClassFamilyNameFamily super.from,
+      required (
+        And$InT, {
+        And$InT named$arg,
+        String defaultArg,
+      })
+          super.argument,
+      super.runNotifierBuildOverride,
+      Supports$InClassFamilyName<And$InT> Function()? create})
+      : _createCb = create,
+        super(
+          name: r'supports$InClassFamilyNameProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final Supports$InClassFamilyName<And$InT> Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$supports$InClassFamilyNameHash();
+
+  Supports$InClassFamilyNameProvider<And$InT> _copyWithCreate(
+    Supports$InClassFamilyName<And$InT> Function<And$InT>() create,
+  ) {
+    return Supports$InClassFamilyNameProvider<And$InT>._(
+        argument: argument as (
+          And$InT, {
+          And$InT named$arg,
+          String defaultArg,
+        }),
+        from: from! as Supports$InClassFamilyNameFamily,
+        create: create<And$InT>);
+  }
+
+  Supports$InClassFamilyNameProvider<And$InT> _copyWithBuild(
+    String Function<And$InT>(
+      Ref<String>,
+      Supports$InClassFamilyName<And$InT>,
+    ) build,
+  ) {
+    return Supports$InClassFamilyNameProvider<And$InT>._(
+        argument: argument as (
+          And$InT, {
+          And$InT named$arg,
+          String defaultArg,
+        }),
+        from: from! as Supports$InClassFamilyNameFamily,
+        runNotifierBuildOverride: build<And$InT>);
+  }
+
+  @override
+  String toString() {
+    return r'supports$InClassFamilyNameProvider'
+        '<${And$InT}>'
+        '$argument';
+  }
+
+  @$internal
+  @override
+  Supports$InClassFamilyName<And$InT> create() =>
+      _createCb?.call() ?? Supports$InClassFamilyName<And$InT>();
+
+  @$internal
+  @override
+  Supports$InClassFamilyNameProvider<And$InT> $copyWithCreate(
+    Supports$InClassFamilyName<And$InT> Function() create,
+  ) {
+    return Supports$InClassFamilyNameProvider<And$InT>._(
+        argument: argument as (
+          And$InT, {
+          And$InT named$arg,
+          String defaultArg,
+        }),
+        from: from! as Supports$InClassFamilyNameFamily,
+        create: create);
+  }
+
+  @$internal
+  @override
+  Supports$InClassFamilyNameProvider<And$InT> $copyWithBuild(
+    String Function(
+      Ref<String>,
+      Supports$InClassFamilyName<And$InT>,
+    ) build,
+  ) {
+    return Supports$InClassFamilyNameProvider<And$InT>._(
+        argument: argument as (
+          And$InT, {
+          And$InT named$arg,
+          String defaultArg,
+        }),
+        from: from! as Supports$InClassFamilyNameFamily,
+        runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<Supports$InClassFamilyName<And$InT>, String>
+      createElement(ProviderContainer container) =>
+          $NotifierProviderElement(this, container);
+
+  @override
+  bool operator ==(Object other) {
+    return other is Supports$InClassFamilyNameProvider &&
+        other.runtimeType == runtimeType &&
+        other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(runtimeType, argument);
+  }
+}
+
+String _$supports$InClassFamilyNameHash() =>
+    r'39e844561e4f4727011bb2f97169d0334c928b20';
+
+final class Supports$InClassFamilyNameFamily extends Family {
+  const Supports$InClassFamilyNameFamily._()
+      : super(
+          name: r'supports$InClassFamilyNameProvider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  Supports$InClassFamilyNameProvider<And$InT> call<And$InT>(
+    And$InT positional$arg, {
+    required And$InT named$arg,
+    String defaultArg = default$value,
+  }) =>
+      Supports$InClassFamilyNameProvider<And$InT>._(argument: (
+        positional$arg,
+        named$arg: named$arg,
+        defaultArg: defaultArg,
+      ), from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$supports$InClassFamilyNameHash();
+
+  @override
+  String toString() => r'supports$InClassFamilyNameProvider';
+
+  Override overrideWith(
+    Supports$InClassFamilyName<And$InT> Function<And$InT>(
+      (
+        And$InT, {
+        And$InT named$arg,
+        String defaultArg,
+      }) args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as Supports$InClassFamilyNameProvider;
+
+        return provider._copyWithCreate(<And$InT>() {
+          final argument = provider.argument as (
+            And$InT, {
+            And$InT named$arg,
+            String defaultArg,
+          });
+
+          return create(argument);
+        }).createElement(container);
+      },
+    );
+  }
+
+  Override overrideWithBuild(
+    String Function<And$InT>(
+            Ref<String> ref,
+            Supports$InClassFamilyName<And$InT> notifier,
+            (
+              And$InT, {
+              And$InT named$arg,
+              String defaultArg,
+            }) argument)
+        build,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as Supports$InClassFamilyNameProvider;
+
+        return provider._copyWithBuild(<And$InT>(ref, notifier) {
+          final argument = provider.argument as (
+            And$InT, {
+            And$InT named$arg,
+            String defaultArg,
+          });
+
+          return build(ref, notifier, argument);
+        }).createElement(container);
+      },
+    );
+  }
+}
+
+abstract class _$Supports$InClassFamilyName<And$InT> extends $Notifier<String> {
+  late final _$args = (ref as $NotifierProviderElement).origin.argument as (
+    And$InT, {
+    And$InT named$arg,
+    String defaultArg,
+  });
+  And$InT get positional$arg => _$args.$1;
+  And$InT get named$arg => _$args.named$arg;
+  String get defaultArg => _$args.defaultArg;
+
+  String build(
+    And$InT positional$arg, {
+    required And$InT named$arg,
+    String defaultArg = default$value,
+  });
+
+  @$internal
+  @override
+  String runBuild() => build(
+        _$args.$1,
+        named$arg: _$args.named$arg,
+        defaultArg: _$args.defaultArg,
+      );
 }
 
 const $kDebugMode = bool.fromEnvironment('dart.vm.product');

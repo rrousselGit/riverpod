@@ -12,6 +12,8 @@ void main() async {
       .whereType<TopLevelVariableDeclaration>()
       .toList();
 
+  // TODO test import docs
+
   test('Annotations on generated functionalProvider', () async {
     final annotations = topLevelDeclarations
         .findNamed('functionalProvider')

@@ -114,12 +114,13 @@ Override overrideWith($createType create,) {
     switch ((
       hasParameters: provider.parameters.isNotEmpty,
       hasGenerics: provider.typeParameters?.typeParameters.isNotEmpty ?? false,
+      provider,
     )) {
-      case (hasParameters: false, hasGenerics: false):
+      case (hasParameters: false, hasGenerics: false, _):
         buffer.writeln(
           r'return provider.$copyWithCreate(create).createElement(container);',
         );
-      case (hasParameters: true, hasGenerics: false):
+      case (hasParameters: true, hasGenerics: false, _):
         buffer.writeln('''
         final argument = provider.argument as $_argumentRecordType;
 
@@ -129,17 +130,31 @@ Override overrideWith($createType create,) {
         }}).createElement(container);
       ''');
 
-      case (hasParameters: false, hasGenerics: true):
+      case (hasParameters: false, hasGenerics: true, _):
         buffer.writeln(
           'return provider._copyWithCreate(create).createElement(container);',
         );
 
-      case (hasParameters: true, hasGenerics: true):
+      case (
+          hasParameters: true,
+          hasGenerics: true,
+          FunctionalProviderDeclaration()
+        ):
         buffer.writeln('''
         return provider._copyWithCreate($_genericsDefinition(ref, $_parameterDefinition) {
+          return create(ref, ${provider.argumentToRecord()});
+        }).createElement(container);
+      ''');
+      case (
+          hasParameters: true,
+          hasGenerics: true,
+          ClassBasedProviderDeclaration()
+        ):
+        buffer.writeln('''
+        return provider._copyWithCreate($_genericsDefinition() {
           final argument = provider.argument as $_argumentRecordType;
 
-          return create(ref, argument);
+          return create(argument);
         }).createElement(container);
       ''');
     }
@@ -196,7 +211,7 @@ Override overrideWithBuild($runNotifierBuildType build,) {
 
       case (hasParameters: true, hasGenerics: true):
         buffer.writeln('''
-        return provider._copyWithBuild($_genericsDefinition(ref, notifier, $_parameterDefinition) {
+        return provider._copyWithBuild($_genericsDefinition(ref, notifier) {
           final argument = provider.argument as $_argumentRecordType;
 
           return build(ref, notifier, argument);
