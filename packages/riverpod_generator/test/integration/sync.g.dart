@@ -82,6 +82,10 @@ final class GenericFamily extends Family {
 
   @override
   String toString() => r'generic';
+
+  Override overrideWith(
+    List<T> Function<T extends num>(GenericRef<T> ref) create,
+  ) {}
 }
 
 typedef ComplexGenericRef<T extends num, Foo extends String?> = Ref<List<T>>;
@@ -194,6 +198,16 @@ final class ComplexGenericFamily extends Family {
 
   @override
   String toString() => r'complexGeneric';
+
+  Override overrideWith(
+    List<T> Function<T extends num, Foo extends String?>(
+      ComplexGenericRef<T, Foo> ref,
+      ({
+        T param,
+        Foo? otherParam,
+      }) args,
+    ) create,
+  ) {}
 }
 
 typedef RawFutureRef = Ref<Raw<Future<String>>>;
@@ -394,6 +408,13 @@ final class RawFamilyFutureFamily extends Family {
 
   @override
   String toString() => r'rawFamilyFuture';
+
+  Override overrideWith(
+    Raw<Future<String>> Function(
+      RawFamilyFutureRef ref,
+      (int,) args,
+    ) create,
+  ) {}
 }
 
 typedef RawFamilyStreamRef = Ref<Raw<Stream<String>>>;
@@ -484,6 +505,13 @@ final class RawFamilyStreamFamily extends Family {
 
   @override
   String toString() => r'rawFamilyStream';
+
+  Override overrideWith(
+    Raw<Stream<String>> Function(
+      RawFamilyStreamRef ref,
+      (int,) args,
+    ) create,
+  ) {}
 }
 
 typedef PublicRef = Ref<String>;
@@ -730,6 +758,19 @@ final class FamilyFamily extends Family {
 
   @override
   String toString() => r'family';
+
+  Override overrideWith(
+    String Function(
+      FamilyRef ref,
+      (
+        int, {
+        String? second,
+        double third,
+        bool fourth,
+        List<String>? fifth,
+      }) args,
+    ) create,
+  ) {}
 }
 
 typedef _PrivateRef = Ref<String>;
@@ -915,6 +956,12 @@ final class GenericClassFamily extends Family {
 
   @override
   String toString() => r'GenericClass';
+
+  Override overrideWith(
+    List<T> Function<T extends num>(Ref<List<T>> re) create,
+  ) {}
+
+  Override overrideWithBuild() {}
 }
 
 abstract class _$GenericClass<T extends num> extends $Notifier<List<T>> {
@@ -1126,6 +1173,15 @@ final class RawFamilyFutureClassFamily extends Family {
 
   @override
   String toString() => r'RawFamilyFutureClass';
+
+  Override overrideWith(
+    Raw<Future<String>> Function(
+      Ref<Raw<Future<String>>> ref,
+      (int,) args,
+    ) create,
+  ) {}
+
+  Override overrideWithBuild() {}
 }
 
 abstract class _$RawFamilyFutureClass extends $Notifier<Raw<Future<String>>> {
@@ -1227,6 +1283,15 @@ final class RawFamilyStreamClassFamily extends Family {
 
   @override
   String toString() => r'RawFamilyStreamClass';
+
+  Override overrideWith(
+    Raw<Stream<String>> Function(
+      Ref<Raw<Stream<String>>> ref,
+      (int,) args,
+    ) create,
+  ) {}
+
+  Override overrideWithBuild() {}
 }
 
 abstract class _$RawFamilyStreamClass extends $Notifier<Raw<Stream<String>>> {
@@ -1469,6 +1534,21 @@ final class FamilyClassFamily extends Family {
 
   @override
   String toString() => r'FamilyClass';
+
+  Override overrideWith(
+    String Function(
+      Ref<String> ref,
+      (
+        int, {
+        String? second,
+        double third,
+        bool fourth,
+        List<String>? fifth,
+      }) args,
+    ) create,
+  ) {}
+
+  Override overrideWithBuild() {}
 }
 
 abstract class _$FamilyClass extends $Notifier<String> {

@@ -194,6 +194,15 @@ final class FamilyWithDependencies2Family extends Family {
 
   @override
   String toString() => r'familyWithDependencies2';
+
+  Override overrideWith(
+    int Function(
+      FamilyWithDependencies2Ref ref,
+      ({
+        int? id,
+      }) args,
+    ) create,
+  ) {}
 }
 
 typedef _Private2Ref = Ref<int>;
@@ -490,6 +499,17 @@ final class NotifierFamilyWithDependenciesFamily extends Family {
 
   @override
   String toString() => r'NotifierFamilyWithDependencies';
+
+  Override overrideWith(
+    int Function(
+      Ref<int> ref,
+      ({
+        int? id,
+      }) args,
+    ) create,
+  ) {}
+
+  Override overrideWithBuild() {}
 }
 
 abstract class _$NotifierFamilyWithDependencies extends $Notifier<int> {

@@ -82,6 +82,10 @@ final class GenericFamily extends Family {
 
   @override
   String toString() => r'generic';
+
+  Override overrideWith(
+    FutureOr<List<T>> Function<T extends num>(GenericRef<T> ref) create,
+  ) {}
 }
 
 typedef PublicRef = Ref<AsyncValue<String>>;
@@ -277,6 +281,13 @@ final class FamilyOrFamily extends Family {
 
   @override
   String toString() => r'familyOr';
+
+  Override overrideWith(
+    FutureOr<String> Function(
+      FamilyOrRef ref,
+      (int,) args,
+    ) create,
+  ) {}
 }
 
 typedef FamilyRef = Ref<AsyncValue<String>>;
@@ -417,6 +428,19 @@ final class FamilyFamily extends Family {
 
   @override
   String toString() => r'family';
+
+  Override overrideWith(
+    FutureOr<String> Function(
+      FamilyRef ref,
+      (
+        int, {
+        String? second,
+        double third,
+        bool fourth,
+        List<String>? fifth,
+      }) args,
+    ) create,
+  ) {}
 }
 
 const genericClassProvider = GenericClassFamily._();
@@ -496,6 +520,13 @@ final class GenericClassFamily extends Family {
 
   @override
   String toString() => r'GenericClass';
+
+  Override overrideWith(
+    FutureOr<List<T>> Function<T extends num>(Ref<AsyncValue<List<T>>> re)
+        create,
+  ) {}
+
+  Override overrideWithBuild() {}
 }
 
 abstract class _$GenericClass<T extends num> extends $AsyncNotifier<List<T>> {
@@ -703,6 +734,15 @@ final class FamilyOrClassFamily extends Family {
 
   @override
   String toString() => r'FamilyOrClass';
+
+  Override overrideWith(
+    FutureOr<String> Function(
+      Ref<AsyncValue<String>> ref,
+      (int,) args,
+    ) create,
+  ) {}
+
+  Override overrideWithBuild() {}
 }
 
 abstract class _$FamilyOrClass extends $AsyncNotifier<String> {
@@ -831,6 +871,21 @@ final class FamilyClassFamily extends Family {
 
   @override
   String toString() => r'FamilyClass';
+
+  Override overrideWith(
+    FutureOr<String> Function(
+      Ref<AsyncValue<String>> ref,
+      (
+        int, {
+        String? second,
+        double third,
+        bool fourth,
+        List<String>? fifth,
+      }) args,
+    ) create,
+  ) {}
+
+  Override overrideWithBuild() {}
 }
 
 abstract class _$FamilyClass extends $AsyncNotifier<String> {

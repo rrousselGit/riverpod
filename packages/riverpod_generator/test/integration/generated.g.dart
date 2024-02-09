@@ -146,6 +146,13 @@ final class GeneratedFamilyFamily extends Family {
 
   @override
   String toString() => r'generatedFamily';
+
+  Override overrideWith(
+    _Test Function(
+      GeneratedFamilyRef ref,
+      (_Test,) args,
+    ) create,
+  ) {}
 }
 
 typedef $DynamicRef = Ref<Object?>;
@@ -288,6 +295,13 @@ final class $DynamicFamilyFamily extends Family {
 
   @override
   String toString() => r'$dynamicFamily';
+
+  Override overrideWith(
+    Object? Function(
+      $DynamicFamilyRef ref,
+      (dynamic,) args,
+    ) create,
+  ) {}
 }
 
 typedef _DynamicRef = Ref<Object?>;
@@ -377,6 +391,13 @@ final class _DynamicFamily extends Family {
 
   @override
   String toString() => r'_dynamic';
+
+  Override overrideWith(
+    Object? Function(
+      _DynamicRef ref,
+      (dynamic,) args,
+    ) create,
+  ) {}
 }
 
 typedef AliasRef = Ref<r.AsyncValue<int>>;
@@ -523,6 +544,13 @@ final class AliasFamilyFamily extends Family {
 
   @override
   String toString() => r'aliasFamily';
+
+  Override overrideWith(
+    r.AsyncValue<int> Function(
+      AliasFamilyRef ref,
+      (r.AsyncValue<int>,) args,
+    ) create,
+  ) {}
 }
 
 const generatedClassProvider = GeneratedClassProvider._();
@@ -665,6 +693,15 @@ final class GeneratedClassFamilyFamily extends Family {
 
   @override
   String toString() => r'GeneratedClassFamily';
+
+  Override overrideWith(
+    _Test Function(
+      Ref<_Test> ref,
+      (_Test,) args,
+    ) create,
+  ) {}
+
+  Override overrideWithBuild() {}
 }
 
 abstract class _$GeneratedClassFamily extends $Notifier<_Test> {
@@ -823,6 +860,15 @@ final class $DynamicClassFamilyFamily extends Family {
 
   @override
   String toString() => r'$DynamicClassFamily';
+
+  Override overrideWith(
+    Object? Function(
+      Ref<Object?> ref,
+      (dynamic,) args,
+    ) create,
+  ) {}
+
+  Override overrideWithBuild() {}
 }
 
 abstract class _$$DynamicClassFamily extends $Notifier<Object?> {
@@ -980,6 +1026,15 @@ final class AliasClassFamilyFamily extends Family {
 
   @override
   String toString() => r'AliasClassFamily';
+
+  Override overrideWith(
+    r.AsyncValue<int> Function(
+      Ref<r.AsyncValue<int>> ref,
+      (r.AsyncValue<int>,) args,
+    ) create,
+  ) {}
+
+  Override overrideWithBuild() {}
 }
 
 abstract class _$AliasClassFamily extends $Notifier<r.AsyncValue<int>> {

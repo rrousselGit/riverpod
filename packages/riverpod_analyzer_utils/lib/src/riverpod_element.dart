@@ -256,7 +256,8 @@ class LegacyFamilyInvocationElement {
   final DartType parameterType;
 }
 
-abstract class GeneratorProviderDeclarationElement
+// TODO changelog made sealed
+sealed class GeneratorProviderDeclarationElement
     implements ProviderDeclarationElement {
   RiverpodAnnotationElement get annotation;
 

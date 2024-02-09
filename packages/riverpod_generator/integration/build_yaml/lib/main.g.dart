@@ -250,6 +250,13 @@ final class Count2Family extends Family {
 
   @override
   String toString() => r'count2';
+
+  Override overrideWith(
+    int Function(
+      Count2Ref ref,
+      (int,) args,
+    ) create,
+  ) {}
 }
 
 typedef CountFuture2Ref = Ref<AsyncValue<int>>;
@@ -339,6 +346,13 @@ final class CountFuture2Family extends Family {
 
   @override
   String toString() => r'countFuture2';
+
+  Override overrideWith(
+    FutureOr<int> Function(
+      CountFuture2Ref ref,
+      (int,) args,
+    ) create,
+  ) {}
 }
 
 typedef CountStream2Ref = Ref<AsyncValue<int>>;
@@ -428,6 +442,13 @@ final class CountStream2Family extends Family {
 
   @override
   String toString() => r'countStream2';
+
+  Override overrideWith(
+    Stream<int> Function(
+      CountStream2Ref ref,
+      (int,) args,
+    ) create,
+  ) {}
 }
 
 const countNotifierPod = CountNotifierProvider._();
@@ -687,6 +708,15 @@ final class CountNotifier2Family extends Family {
 
   @override
   String toString() => r'CountNotifier2';
+
+  Override overrideWith(
+    int Function(
+      Ref<int> ref,
+      (int,) args,
+    ) create,
+  ) {}
+
+  Override overrideWithBuild() {}
 }
 
 abstract class _$CountNotifier2 extends $Notifier<int> {
@@ -787,6 +817,15 @@ final class CountAsyncNotifier2Family extends Family {
 
   @override
   String toString() => r'CountAsyncNotifier2';
+
+  Override overrideWith(
+    FutureOr<int> Function(
+      Ref<AsyncValue<int>> ref,
+      (int,) args,
+    ) create,
+  ) {}
+
+  Override overrideWithBuild() {}
 }
 
 abstract class _$CountAsyncNotifier2 extends $AsyncNotifier<int> {
@@ -887,6 +926,15 @@ final class CountStreamNotifier2Family extends Family {
 
   @override
   String toString() => r'CountStreamNotifier2';
+
+  Override overrideWith(
+    Stream<int> Function(
+      Ref<AsyncValue<int>> ref,
+      (int,) args,
+    ) create,
+  ) {}
+
+  Override overrideWithBuild() {}
 }
 
 abstract class _$CountStreamNotifier2 extends $StreamNotifier<int> {

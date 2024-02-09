@@ -214,7 +214,11 @@ extension ProviderElementNames on GeneratorProviderDeclarationElement {
   }
 
   String get providerTypeName => '${name.titled}Provider';
-  String get refImplName => '${name.titled}Ref';
+  String get refImplName => switch (this) {
+        ClassBasedProviderDeclarationElement() => 'Ref',
+        FunctionalProviderDeclarationElement() => '${name.titled}Ref'
+      };
+
   String get familyTypeName => '${name.titled}Family';
 
   String dependencies(BuildYamlOptions options) {
@@ -264,6 +268,15 @@ extension ProviderNames on GeneratorProviderDeclaration {
 
   String get providerTypeName => providerElement.providerTypeName;
   String get refImplName => providerElement.refImplName;
+  String get refWithGenerics {
+    switch (this) {
+      case FunctionalProviderDeclaration():
+        return '${providerElement.refImplName}${generics()}';
+      case ClassBasedProviderDeclaration():
+        return '${providerElement.refImplName}<$exposedTypeDisplayString>';
+    }
+  }
+
   String get familyTypeName => providerElement.familyTypeName;
 
   // TODO possibly no-longer needed

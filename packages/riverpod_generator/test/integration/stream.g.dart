@@ -82,6 +82,10 @@ final class GenericFamily extends Family {
 
   @override
   String toString() => r'generic';
+
+  Override overrideWith(
+    Stream<List<T>> Function<T extends num>(GenericRef<T> ref) create,
+  ) {}
 }
 
 typedef PublicRef = Ref<AsyncValue<String>>;
@@ -328,6 +332,19 @@ final class FamilyFamily extends Family {
 
   @override
   String toString() => r'family';
+
+  Override overrideWith(
+    Stream<String> Function(
+      FamilyRef ref,
+      (
+        int, {
+        String? second,
+        double third,
+        bool fourth,
+        List<String>? fifth,
+      }) args,
+    ) create,
+  ) {}
 }
 
 const genericClassProvider = GenericClassFamily._();
@@ -407,6 +424,12 @@ final class GenericClassFamily extends Family {
 
   @override
   String toString() => r'GenericClass';
+
+  Override overrideWith(
+    Stream<List<T>> Function<T extends num>(Ref<AsyncValue<List<T>>> re) create,
+  ) {}
+
+  Override overrideWithBuild() {}
 }
 
 abstract class _$GenericClass<T extends num> extends $StreamNotifier<List<T>> {
@@ -643,6 +666,21 @@ final class FamilyClassFamily extends Family {
 
   @override
   String toString() => r'FamilyClass';
+
+  Override overrideWith(
+    Stream<String> Function(
+      Ref<AsyncValue<String>> ref,
+      (
+        int, {
+        String? second,
+        double third,
+        bool fourth,
+        List<String>? fifth,
+      }) args,
+    ) create,
+  ) {}
+
+  Override overrideWithBuild() {}
 }
 
 abstract class _$FamilyClass extends $StreamNotifier<String> {

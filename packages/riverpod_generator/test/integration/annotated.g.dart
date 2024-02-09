@@ -146,6 +146,13 @@ final class FamilyFamily extends Family {
 
   @override
   String toString() => r'family';
+
+  Override overrideWith(
+    String Function(
+      FamilyRef ref,
+      (int,) args,
+    ) create,
+  ) {}
 }
 
 typedef NotCopiedFunctionalRef = Ref<String>;
@@ -289,6 +296,13 @@ final class NotCopiedFamilyFamily extends Family {
 
   @override
   String toString() => r'notCopiedFamily';
+
+  Override overrideWith(
+    String Function(
+      NotCopiedFamilyRef ref,
+      (int,) args,
+    ) create,
+  ) {}
 }
 
 const classBasedProvider = ClassBasedProvider._();

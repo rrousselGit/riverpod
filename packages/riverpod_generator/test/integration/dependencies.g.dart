@@ -144,6 +144,13 @@ final class FamilyFamily extends Family {
 
   @override
   String toString() => r'family';
+
+  Override overrideWith(
+    int Function(
+      FamilyRef ref,
+      (int,) args,
+    ) create,
+  ) {}
 }
 
 typedef ProviderRef = Ref<int>;
@@ -978,6 +985,15 @@ final class Family2Family extends Family {
 
   @override
   String toString() => r'Family2';
+
+  Override overrideWith(
+    int Function(
+      Ref<int> ref,
+      (int,) args,
+    ) create,
+  ) {}
+
+  Override overrideWithBuild() {}
 }
 
 abstract class _$Family2 extends $Notifier<int> {
@@ -1163,6 +1179,15 @@ final class Provider4Family extends Family {
 
   @override
   String toString() => r'Provider4';
+
+  Override overrideWith(
+    int Function(
+      Ref<int> ref,
+      (int,) args,
+    ) create,
+  ) {}
+
+  Override overrideWithBuild() {}
 }
 
 abstract class _$Provider4 extends $Notifier<int> {

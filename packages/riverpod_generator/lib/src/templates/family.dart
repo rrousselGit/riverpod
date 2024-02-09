@@ -60,10 +60,11 @@ final class ${provider.familyTypeName} extends Family {
   String toString() => r'${provider.name}';
 ''');
 
-    // _writeOverrides(
-    //   buffer,
-    //   topLevelBuffer: topLevelBuffer,
-    // );
+    _writeOverrides(
+      buffer,
+      topLevelBuffer: topLevelBuffer,
+      genericsDefinition: genericsDefinition,
+    );
 
     buffer.writeln('}');
 
@@ -73,9 +74,14 @@ final class ${provider.familyTypeName} extends Family {
   void _writeOverrides(
     StringBuffer buffer, {
     required StringBuffer topLevelBuffer,
+    required String genericsDefinition,
   }) {
     // overrideWith
-    _writeOverrideWith(buffer, topLevelBuffer: topLevelBuffer);
+    _writeOverrideWith(
+      buffer,
+      topLevelBuffer: topLevelBuffer,
+      genericsDefinition: genericsDefinition,
+    );
 
     // overrideWithBuild
     final provider = this.provider;
@@ -91,19 +97,20 @@ final class ${provider.familyTypeName} extends Family {
   void _writeOverrideWith(
     StringBuffer buffer, {
     required StringBuffer topLevelBuffer,
+    required String genericsDefinition,
   }) {
     late final argumentsType =
         '(${buildParamDefinitionQuery(provider.parameters, asRecord: true)})';
 
     final createType = switch (provider) {
       FunctionalProviderDeclaration(parameters: [_, ...]) =>
-        '${provider.createdTypeDisplayString} Function${provider.genericsDefinition()}(${provider.refImplName} ref, $argumentsType args)',
+        '${provider.createdTypeDisplayString} Function$genericsDefinition(${provider.refWithGenerics} ref, $argumentsType args,)',
       FunctionalProviderDeclaration(parameters: []) =>
-        '${provider.createdTypeDisplayString} Function${provider.genericsDefinition()}(${provider.refImplName} ref)',
+        '${provider.createdTypeDisplayString} Function$genericsDefinition(${provider.refWithGenerics} ref)',
       ClassBasedProviderDeclaration(parameters: [_, ...]) =>
-        '${provider.createdTypeDisplayString} Function${provider.genericsDefinition()}(${provider.refImplName} ref, $argumentsType args)',
+        '${provider.createdTypeDisplayString} Function$genericsDefinition(${provider.refWithGenerics} ref, $argumentsType args,)',
       ClassBasedProviderDeclaration() =>
-        '${provider.createdTypeDisplayString} Function${provider.genericsDefinition()}(${provider.refImplName} re)',
+        '${provider.createdTypeDisplayString} Function$genericsDefinition(${provider.refWithGenerics} re)',
     };
 
     // TODO docs
