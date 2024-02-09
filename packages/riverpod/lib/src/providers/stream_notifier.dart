@@ -30,8 +30,7 @@ abstract base class $StreamNotifierProvider<
         Ref<AsyncValue<StateT>>> //
     with
         $FutureModifier<StateT> {
-  const $StreamNotifierProvider(
-    this._createNotifier, {
+  const $StreamNotifierProvider({
     required super.name,
     required super.from,
     required super.argument,
@@ -41,11 +40,6 @@ abstract base class $StreamNotifierProvider<
     required super.isAutoDispose,
     required super.runNotifierBuildOverride,
   });
-
-  final NotifierT Function() _createNotifier;
-
-  @override
-  NotifierT create() => _createNotifier();
 }
 
 /// Implementation detail of `riverpod_generator`.

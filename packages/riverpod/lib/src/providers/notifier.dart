@@ -89,8 +89,7 @@ abstract base class $NotifierProvider //
   /// An internal base class for [Notifier].
   ///
   /// Not meant for public consumption.
-  const $NotifierProvider(
-    this._createNotifier, {
+  const $NotifierProvider({
     required super.name,
     required super.from,
     required super.argument,
@@ -100,11 +99,6 @@ abstract base class $NotifierProvider //
     required super.isAutoDispose,
     required super.runNotifierBuildOverride,
   });
-
-  final NotifierT Function() _createNotifier;
-
-  @override
-  NotifierT create() => _createNotifier();
 }
 
 /// An implementation detail of `riverpod_generator`.

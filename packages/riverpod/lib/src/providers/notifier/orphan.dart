@@ -83,7 +83,7 @@ final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>
   ///
   /// {@macro riverpod.notifier_provider_modifier}
   NotifierProvider(
-    super._createNotifier, {
+    this._createNotifier, {
     super.name,
     super.dependencies,
     super.isAutoDispose = false,
@@ -97,7 +97,7 @@ final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>
         );
 
   NotifierProvider._autoDispose(
-    super._createNotifier, {
+    this._createNotifier, {
     super.name,
     super.dependencies,
   }) : super(
@@ -113,7 +113,7 @@ final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>
   /// An implementation detail of Riverpod
   @internal
   NotifierProvider.internal(
-    super._createNotifier, {
+    this._createNotifier, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -129,6 +129,11 @@ final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>
 
   /// {@macro riverpod.family}
   static const family = NotifierProviderFamilyBuilder();
+
+  final NotifierT Function() _createNotifier;
+
+  @override
+  NotifierT create() => _createNotifier();
 
   @override
   $NotifierProviderElement<NotifierT, StateT> createElement(

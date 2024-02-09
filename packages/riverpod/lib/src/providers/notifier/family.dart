@@ -27,7 +27,7 @@ final class FamilyNotifierProvider //
     with LegacyProviderEqualMixin<StateT> {
   /// An implementation detail of Riverpod
   const FamilyNotifierProvider._(
-    super._createNotifier, {
+    this._createNotifier, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -37,6 +37,11 @@ final class FamilyNotifierProvider //
     required super.isAutoDispose,
     required super.runNotifierBuildOverride,
   });
+
+  final NotifierT Function() _createNotifier;
+
+  @override
+  NotifierT create() => _createNotifier();
 
   @override
   $NotifierProviderElement<NotifierT, StateT> createElement(

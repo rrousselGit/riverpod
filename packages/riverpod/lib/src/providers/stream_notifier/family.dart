@@ -34,7 +34,7 @@ final class FamilyStreamNotifierProvider< //
     with LegacyProviderEqualMixin<AsyncValue<StateT>> {
   /// An implementation detail of Riverpod
   const FamilyStreamNotifierProvider._(
-    super._createNotifier, {
+    this._createNotifier, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -44,6 +44,11 @@ final class FamilyStreamNotifierProvider< //
     required super.isAutoDispose,
     required super.runNotifierBuildOverride,
   });
+
+  final NotifierT Function() _createNotifier;
+
+  @override
+  NotifierT create() => _createNotifier();
 
   @override
   $StreamNotifierProviderElement<NotifierT, StateT> createElement(
