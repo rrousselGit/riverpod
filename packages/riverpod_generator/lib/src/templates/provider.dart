@@ -270,12 +270,12 @@ ${provider.doc} final class $name$_genericsDefinition
     buffer.write('''
   @override
   ${provider.createdTypeDisplayString} create(${provider.refImplName}$_generics ref) {
-    final fn = _createCb ?? ${provider.name}$_generics;
+    final _\$cb = _createCb ?? ${provider.name}$_generics;
 ''');
 
     switch (provider.parameters) {
       case []:
-        buffer.writeln('return fn(ref);');
+        buffer.writeln(r'return _$cb(ref);');
       case [...]:
         final paramsPassThrough = buildParamInvocationQuery({
           for (final (index, parameter) in provider.parameters.indexed)
@@ -289,7 +289,7 @@ ${provider.doc} final class $name$_genericsDefinition
 
         buffer.writeln('''
         final argument = this.argument${provider.argumentCast};
-        return fn(ref, $paramsPassThrough);
+        return _\$cb(ref, $paramsPassThrough);
       ''');
     }
 
