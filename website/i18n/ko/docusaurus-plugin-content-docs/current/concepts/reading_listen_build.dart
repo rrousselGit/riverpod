@@ -18,7 +18,7 @@ class HomeView extends ConsumerWidget {
     ref.listen<int>(counterProvider, (int? previousCount, int newCount) {
       print('The counter changed $newCount');
     });
-    
+
     return Container();
   }
 }

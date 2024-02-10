@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -62,18 +61,21 @@ void main() {
         // 以下を抽出して MyApp ウィジェットとしても可
         child: MaterialApp(
           home: Scaffold(
-            body: Consumer(builder: (context, ref, _) {
-              final todos = ref.watch(todoListProvider);
-              // Todo リストのステートが loading か error の場合
-              if (todos.asData == null) {
-                return const CircularProgressIndicator();
-              }
-              return ListView(
-                children: [
-                  for (final todo in todos.asData!.value) TodoItem(todo: todo),
-                ],
-              );
-            },),
+            body: Consumer(
+              builder: (context, ref, _) {
+                final todos = ref.watch(todoListProvider);
+                // Todo リストのステートが loading か error の場合
+                if (todos.asData == null) {
+                  return const CircularProgressIndicator();
+                }
+                return ListView(
+                  children: [
+                    for (final todo in todos.asData!.value)
+                      TodoItem(todo: todo),
+                  ],
+                );
+              },
+            ),
           ),
         ),
       ),

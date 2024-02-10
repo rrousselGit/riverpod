@@ -14,9 +14,10 @@ class HomeView extends ConsumerWidget {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // On et  à jour l'état à partir de la valeur précédente, 
+          // On et  à jour l'état à partir de la valeur précédente,
           // on fini par lire le provider deux fois !
-          ref.read(counterProvider.notifier).state = ref.read(counterProvider.notifier).state + 1;
+          ref.read(counterProvider.notifier).state =
+              ref.read(counterProvider.notifier).state + 1;
         },
       ),
     );

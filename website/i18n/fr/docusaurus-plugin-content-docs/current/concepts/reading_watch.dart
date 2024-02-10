@@ -13,13 +13,14 @@ abstract class Todo {
 }
 
 class TodoList extends StateNotifier<List<Todo>> {
-  TodoList(): super([]);
+  TodoList() : super([]);
 }
 
 /* SNIPPET START */
 
 final filterTypeProvider = StateProvider<FilterType>((ref) => FilterType.none);
-final todosProvider = StateNotifierProvider<TodoList, List<Todo>>((ref) => TodoList());
+final todosProvider =
+    StateNotifierProvider<TodoList, List<Todo>>((ref) => TodoList());
 
 final filteredTodoListProvider = Provider((ref) {
   // récupère à la fois le filtre et la liste des todos

@@ -3,11 +3,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../config_provider/codegen.dart';
 
-
-
 /* SNIPPET START */
 
-class MyConfiguration extends HookConsumerWidget  {
+class MyConfiguration extends HookConsumerWidget {
   const MyConfiguration({super.key});
 
   @override
@@ -15,11 +13,12 @@ class MyConfiguration extends HookConsumerWidget  {
     final config = ref.watch(fetchConfigurationProvider);
     return Scaffold(
       body: config.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (err, stack) => Center(child: Text('Error: $err')),
-      data: (config) {
-        return Center(child: Text(config.host));
-      },
-    ),);
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (err, stack) => Center(child: Text('Error: $err')),
+        data: (config) {
+          return Center(child: Text(config.host));
+        },
+      ),
+    );
   }
 }

@@ -14,7 +14,7 @@ abstract class Todo {
 }
 
 class TodoList extends StateNotifier<List<Todo>> {
-  TodoList(): super([]);
+  TodoList() : super([]);
 }
 
 /* SNIPPET START */

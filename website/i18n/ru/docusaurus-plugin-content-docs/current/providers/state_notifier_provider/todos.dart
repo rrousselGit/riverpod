@@ -8,7 +8,11 @@ import 'package:flutter_riverpod/legacy.dart';
 // Для реализации этого мы можем воспользоваться пакетами как Freezed
 @immutable
 class Todo {
-  const Todo({required this.id, required this.description, required this.completed});
+  const Todo({
+    required this.id,
+    required this.description,
+    required this.completed,
+  });
 
   // В классе все поля должны быть `final`.
   final String id;
@@ -33,7 +37,7 @@ class Todo {
 // Публичные методы описывают то, как UI может изменять состояние.
 class TodosNotifier extends StateNotifier<List<Todo>> {
   // Инициализируем список задач пустым списком
-  TodosNotifier(): super([]);
+  TodosNotifier() : super([]);
 
   // Добавление задач
   void addTodo(Todo todo) {

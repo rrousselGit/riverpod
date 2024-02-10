@@ -16,7 +16,8 @@ class HomeView extends ConsumerWidget {
         onPressed: () {
           // 直近のステートから新たなステートを算出しようとすると、
           // このようにプロバイダを2回利用してしまいがち。
-          ref.read(counterProvider.notifier).state = ref.read(counterProvider.notifier).state + 1;
+          ref.read(counterProvider.notifier).state =
+              ref.read(counterProvider.notifier).state + 1;
         },
       ),
     );

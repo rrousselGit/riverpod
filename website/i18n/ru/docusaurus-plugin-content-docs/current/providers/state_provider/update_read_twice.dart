@@ -16,7 +16,8 @@ class HomeView extends ConsumerWidget {
         onPressed: () {
           // Обновляем состояние провайдера, основываясь на предыдущем состоянии
           // И в итоге, мы дважды читаем значение провайдера!
-          ref.read(counterProvider.notifier).state = ref.read(counterProvider.notifier).state + 1;
+          ref.read(counterProvider.notifier).state =
+              ref.read(counterProvider.notifier).state + 1;
         },
       ),
     );
