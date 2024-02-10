@@ -49,8 +49,9 @@ final class FamilyStreamNotifierProvider< //
   @override
   NotifierT create() => _createNotifier();
 
+  @internal
   @override
-  $StreamNotifierProviderElement<NotifierT, StateT> createElement(
+  $StreamNotifierProviderElement<NotifierT, StateT> $createElement(
     ProviderContainer container,
   ) {
     return $StreamNotifierProviderElement(this, container);

@@ -142,8 +142,9 @@ final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
 
   final NotifierT Function(ChangeNotifierProviderRef<NotifierT> ref) _createFn;
 
+  @internal
   @override
-  ChangeNotifierProviderElement<NotifierT> createElement(
+  ChangeNotifierProviderElement<NotifierT> $createElement(
     ProviderContainer container,
   ) {
     return ChangeNotifierProviderElement<NotifierT>._(this, container);
@@ -265,7 +266,7 @@ class ChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?, Arg>
           dependencies: null,
           allTransitiveDependencies: null,
           name: null,
-        ).createElement(container);
+        ).$createElement(container);
       },
     );
   }

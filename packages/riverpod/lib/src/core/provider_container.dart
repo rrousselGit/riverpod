@@ -168,7 +168,7 @@ class ProviderDirectory implements _PointerBase {
         // The provider is overridden. This takes over any family override
         case (final override?, _):
           element =
-              override.providerOverride.createElement(pointer.targetContainer);
+              override.providerOverride.$createElement(pointer.targetContainer);
 
         // The family was overridden using overrideWith & co.
         case (null, final $FamilyOverride override):
@@ -176,7 +176,7 @@ class ProviderDirectory implements _PointerBase {
 
         // Either the provider wasn't overridden or it was scoped.
         case (null, _FamilyOverride() || null):
-          element = origin.createElement(pointer.targetContainer);
+          element = origin.$createElement(pointer.targetContainer);
       }
 
       /// Assigning the element before calling "mount" to guarantee

@@ -93,7 +93,7 @@ abstract base class ProviderBase<StateT> extends ProviderOrFamily
 
   /// An internal method that defines how a provider behaves.
   @visibleForOverriding
-  ProviderElementBase<StateT> createElement(ProviderContainer container);
+  ProviderElementBase<StateT> $createElement(ProviderContainer container);
 
   @override
   String toString() {

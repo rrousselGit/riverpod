@@ -37,8 +37,9 @@ final class FamilyNotifierProvider //
   @override
   NotifierT create() => _createNotifier();
 
+  @internal
   @override
-  $NotifierProviderElement<NotifierT, StateT> createElement(
+  $NotifierProviderElement<NotifierT, StateT> $createElement(
     ProviderContainer container,
   ) {
     return $NotifierProviderElement(this, container);

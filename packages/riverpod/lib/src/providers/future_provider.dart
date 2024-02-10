@@ -126,8 +126,9 @@ final class FutureProvider<StateT> extends $FunctionalProvider<
   @override
   FutureOr<StateT> create(FutureProviderRef<StateT> ref) => this._create(ref);
 
+  @internal
   @override
-  $FutureProviderElement<StateT> createElement(ProviderContainer container) {
+  $FutureProviderElement<StateT> $createElement(ProviderContainer container) {
     return $FutureProviderElement(this, container);
   }
 

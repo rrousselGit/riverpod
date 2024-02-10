@@ -129,7 +129,7 @@ class TransitiveFamilyOverride implements $FamilyOverride {
     ProviderContainer container,
     ProviderBase<Object?> provider,
   ) {
-    return provider.createElement(container);
+    return provider.$createElement(container);
   }
 
   @override

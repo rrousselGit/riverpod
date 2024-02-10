@@ -117,7 +117,7 @@ Override overrideWith($createType create,) {
     )) {
       case (hasParameters: false, hasGenerics: false, _):
         buffer.writeln(
-          r'return provider.$copyWithCreate(create).createElement(container);',
+          r'return provider.$copyWithCreate(create).$createElement(container);',
         );
       case (hasParameters: true, hasGenerics: false, _):
         buffer.writeln('''
@@ -126,12 +126,12 @@ Override overrideWith($createType create,) {
         return provider.\$copyWithCreate(${switch (provider) {
           FunctionalProviderDeclaration() => '(ref) => create(ref, argument)',
           ClassBasedProviderDeclaration() => '() => create(argument)',
-        }}).createElement(container);
+        }}).\$createElement(container);
       ''');
 
       case (hasParameters: false, hasGenerics: true, _):
         buffer.writeln(
-          'return provider._copyWithCreate(create).createElement(container);',
+          r'return provider._copyWithCreate(create).$createElement(container);',
         );
 
       case (
@@ -142,7 +142,7 @@ Override overrideWith($createType create,) {
         buffer.writeln('''
         return provider._copyWithCreate($_genericsDefinition(ref, $_parameterDefinition) {
           return create(ref, ${provider.argumentToRecord()});
-        }).createElement(container);
+        }).\$createElement(container);
       ''');
       case (
           hasParameters: true,
@@ -154,7 +154,7 @@ Override overrideWith($createType create,) {
           final argument = provider.argument$_argumentCast;
 
           return create(argument);
-        }).createElement(container);
+        }).\$createElement(container);
       ''');
     }
 
@@ -194,7 +194,7 @@ Override overrideWithBuild($runNotifierBuildType build,) {
     )) {
       case (hasParameters: false, hasGenerics: false):
         buffer.writeln(
-          r'return provider.$copyWithBuild(build).createElement(container);',
+          r'return provider.$copyWithBuild(build).$createElement(container);',
         );
       case (hasParameters: true, hasGenerics: false):
         buffer.writeln('''
@@ -205,7 +205,7 @@ Override overrideWithBuild($runNotifierBuildType build,) {
 
       case (hasParameters: false, hasGenerics: true):
         buffer.writeln(
-          'return provider._copyWithBuild(build).createElement(container);',
+          r'return provider._copyWithBuild(build).$createElement(container);',
         );
 
       case (hasParameters: true, hasGenerics: true):
@@ -214,7 +214,7 @@ Override overrideWithBuild($runNotifierBuildType build,) {
           final argument = provider.argument$_argumentCast;
 
           return build(ref, notifier, argument);
-        }).createElement(container);
+        }).\$createElement(container);
       ''');
     }
 

@@ -130,7 +130,7 @@ class FunctionalFamily< //
 
         return provider
             .$copyWithCreate((ref) => create(ref, provider.argument as ArgT))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -199,7 +199,7 @@ class ClassFamily< //
       createElement: (container, provider) {
         provider as ProviderT;
 
-        return provider.$copyWithCreate(create).createElement(container);
+        return provider.$copyWithCreate(create).$createElement(container);
       },
     );
   }
@@ -213,7 +213,7 @@ class ClassFamily< //
       createElement: (container, provider) {
         provider as ProviderT;
 
-        return provider.$copyWithBuild(build).createElement(container);
+        return provider.$copyWithBuild(build).$createElement(container);
       },
     );
   }

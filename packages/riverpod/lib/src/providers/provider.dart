@@ -54,8 +54,9 @@ base class Provider<StateT>
   @override
   StateT create(Ref<StateT> ref) => _create(ref);
 
+  @internal
   @override
-  $ProviderElement<StateT> createElement(
+  $ProviderElement<StateT> $createElement(
     ProviderContainer container,
   ) {
     return $ProviderElement(this, container);

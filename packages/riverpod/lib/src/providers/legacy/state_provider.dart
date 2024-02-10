@@ -92,8 +92,9 @@ final class StateProvider<StateT>
 
   Refreshable<StateController<StateT>> get notifier => _notifier(this);
 
+  @internal
   @override
-  StateProviderElement<StateT> createElement(
+  StateProviderElement<StateT> $createElement(
     ProviderContainer container,
   ) {
     return StateProviderElement._(this, container);

@@ -145,7 +145,7 @@ abstract base class $ClassProvider< //
   ClassProviderElement< //
       NotifierT,
       StateT,
-      CreatedT> createElement(ProviderContainer container);
+      CreatedT> $createElement(ProviderContainer container);
 }
 
 @internal

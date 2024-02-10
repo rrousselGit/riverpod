@@ -25,7 +25,7 @@ final class $ValueProvider<StateT> extends ProviderBase<StateT>
   Set<ProviderOrFamily>? get allTransitiveDependencies => null;
 
   @override
-  _ValueProviderElement<StateT> createElement(ProviderContainer container) {
+  _ValueProviderElement<StateT> $createElement(ProviderContainer container) {
     return _ValueProviderElement(this, container);
   }
 }

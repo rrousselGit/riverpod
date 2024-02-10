@@ -147,8 +147,9 @@ final class StateNotifierProvider< //
   /// has changes.
   Refreshable<NotifierT> get notifier => _notifier(this);
 
+  @internal
   @override
-  StateNotifierProviderElement<NotifierT, StateT> createElement(
+  StateNotifierProviderElement<NotifierT, StateT> $createElement(
     ProviderContainer container,
   ) {
     return StateNotifierProviderElement._(this, container);

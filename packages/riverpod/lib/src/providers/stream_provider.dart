@@ -114,8 +114,9 @@ base class StreamProvider<StateT> extends $FunctionalProvider<
   @override
   Stream<StateT> create(Ref<AsyncValue<StateT>> ref) => _create(ref);
 
+  @internal
   @override
-  $StreamProviderElement<StateT> createElement(
+  $StreamProviderElement<StateT> $createElement(
     ProviderContainer container,
   ) {
     return $StreamProviderElement(this, container);
