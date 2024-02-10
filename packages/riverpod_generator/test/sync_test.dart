@@ -1,10 +1,9 @@
 // ignore_for_file: omit_local_variable_types, unused_local_variable
 
-import 'package:riverpod/riverpod.dart' show ProviderBase;
+import 'package:riverpod/riverpod.dart' show ProviderBase, ProviderContainer;
 import 'package:test/test.dart';
 
 import 'integration/sync.dart';
-import 'utils.dart';
 
 void main() {
   group('Supports generics', () {
@@ -55,7 +54,7 @@ void main() {
     });
 
     test('in simple scenarios', () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
 
       expect(
         container.listen(genericProvider<int>(), (p, n) {}).read(),
@@ -73,7 +72,7 @@ void main() {
   });
 
   test('Supports Raw', () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     expect(
       container.read(rawFutureProvider),
@@ -170,7 +169,7 @@ void main() {
   });
 
   test('Supports overriding non-family providers', () {
-    final container = createContainer(
+    final container = ProviderContainer.test(
       overrides: [
         publicProvider.overrideWith((ref) => 'Hello world'),
       ],
@@ -181,7 +180,7 @@ void main() {
   });
 
   test('Supports overriding family providers', () {
-    final container = createContainer(
+    final container = ProviderContainer.test(
       overrides: [
         familyProvider.overrideWith(
           (ref, args) => 'Hello world ${args.$1} ${args.second} '
@@ -202,7 +201,7 @@ void main() {
   test(
       'Creates a Provider<T> if @riverpod is used on an stream function wrapped in Raw',
       () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     const ProviderBase<Stream<String>> provider = rawStreamProvider;
     final Stream<String> result = container.read(rawStreamProvider);
@@ -212,7 +211,7 @@ void main() {
 
   test('Creates a Provider<T> if @riverpod is used on a synchronous function',
       () {
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     const ProviderBase<String> provider = publicProvider;
     final String result = container.read(publicProvider);
@@ -231,7 +230,7 @@ void main() {
   test(
       'Creates a Provider.family<T> if @riverpod is used on a synchronous function with parameters',
       () {
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     const FamilyFamily family = familyProvider;
 
@@ -312,17 +311,27 @@ void main() {
   });
 
   test('can override providers', () {
-    final container = createContainer(
+    final container = ProviderContainer.test(
       overrides: [
         publicProvider.overrideWith((ref) => 'test'),
         publicClassProvider.overrideWith(() => PublicClass(42)),
-        // TODO test overrideWithBuild
         familyProvider.overrideWith(
           (ref, args) =>
               'test (first: ${args.$1}, second: ${args.second}, third: ${args.third}, fourth: ${args.fourth}, fifth: ${args.fifth})',
         ),
         familyProvider(21, third: .21).overrideWithValue('Override'),
         familyClassProvider.overrideWith(FamilyClass.new),
+      ],
+    );
+    final container2 = ProviderContainer.test(
+      overrides: [
+        publicClassProvider.overrideWithBuild((ref, notifier) => 'Hello world'),
+        familyClassProvider.overrideWithBuild((ref, notifier, args) {
+          return 'FamilyClass$args';
+        }),
+        familyClassProvider(21, third: .21).overrideWithBuild((ref, notifier) {
+          return 'Override';
+        }),
       ],
     );
 
@@ -338,6 +347,16 @@ void main() {
           .read(familyClassProvider(42, second: '42', third: .42).notifier)
           .param,
       (42, second: '42', third: 0.42, fourth: true, fifth: null),
+    );
+
+    expect(container2.read(publicClassProvider), 'Hello world');
+    expect(
+      container2.read(familyClassProvider(42, third: .42)),
+      'FamilyClass(42, fifth: null, fourth: true, second: null, third: 0.42)',
+    );
+    expect(
+      container2.read(familyClassProvider(21, third: .21)),
+      'Override',
     );
   });
 }

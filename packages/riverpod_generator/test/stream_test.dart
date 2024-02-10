@@ -5,12 +5,11 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:test/test.dart';
 
 import 'integration/stream.dart';
-import 'utils.dart';
 
 void main() {
   test('Creates a StreamProvider<T> if @riverpod is used on a Stream function',
       () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     const ProviderBase<AsyncValue<String>> provider = publicProvider;
 
@@ -29,7 +28,7 @@ void main() {
   });
 
   test('Supports overriding non-family providers', () async {
-    final container = createContainer(
+    final container = ProviderContainer.test(
       overrides: [
         publicProvider.overrideWith((ref) => Stream.value('Hello world')),
       ],
@@ -40,7 +39,7 @@ void main() {
   });
 
   test('Supports overriding family providers', () async {
-    final container = createContainer(
+    final container = ProviderContainer.test(
       overrides: [
         familyProvider.overrideWith(
           (ref, args) => Stream.value(
@@ -67,7 +66,7 @@ void main() {
   test(
       'Creates a Provider.family<T> if @riverpod is used on a synchronous function with parameters',
       () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     const FamilyFamily family = familyProvider;
 
@@ -129,7 +128,7 @@ void main() {
   });
 
   test('can override providers', () {
-    final container = createContainer(
+    final container = ProviderContainer.test(
       overrides: [
         publicProvider.overrideWith((ref) {
           ref.state = const AsyncData('test');

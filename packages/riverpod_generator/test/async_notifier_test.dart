@@ -4,13 +4,12 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:test/test.dart';
 
 import 'integration/async.dart';
-import 'utils.dart';
 
 void main() {
   test(
       'Creates an AsyncNotifierProvider<T> if @riverpod is used on an async class',
       () {
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     const ProviderBase<AsyncValue<String>> provider = publicClassProvider;
     final AsyncValue<String> result = container.read(publicClassProvider);
@@ -27,7 +26,7 @@ void main() {
   });
 
   test('Supports overriding non-family notifiers', () {
-    final container = createContainer(
+    final container = ProviderContainer.test(
       overrides: [
         publicClassProvider.overrideWith(() => PublicClass('Hello world')),
       ],
@@ -42,7 +41,7 @@ void main() {
   });
 
   test('Supports overriding family notifiers', () {
-    final container = createContainer(
+    final container = ProviderContainer.test(
       overrides: [
         familyClassProvider(42, third: .42)
             .overrideWith(() => FamilyClass('Hello world')),
@@ -66,7 +65,7 @@ void main() {
   test(
       'Creates a NotifierProvider.family<T> if @riverpod is used on a synchronous function with parameters',
       () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     const FamilyClassFamily family = familyClassProvider;
 
