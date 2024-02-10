@@ -36,9 +36,23 @@ class _SystemHash {
 const exampleProvider = ExampleFamily();
 
 /// See also [example].
-class ExampleFamily extends Family<String> {
+class ExampleFamily extends Family {
   /// See also [example].
   const ExampleFamily();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'exampleProvider';
 
   /// See also [example].
   ExampleProvider call(
@@ -51,6 +65,7 @@ class ExampleFamily extends Family<String> {
     );
   }
 
+  @visibleForOverriding
   @override
   ExampleProvider getProviderOverride(
     covariant ExampleProvider provider,
@@ -61,19 +76,26 @@ class ExampleFamily extends Family<String> {
     );
   }
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(String Function(ExampleRef ref) create) {
+    return _$ExampleFamilyOverride(this, create);
+  }
+}
+
+class _$ExampleFamilyOverride implements FamilyOverride {
+  _$ExampleFamilyOverride(this.overriddenFamily, this.create);
+
+  final String Function(ExampleRef ref) create;
 
   @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+  final ExampleFamily overriddenFamily;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'exampleProvider';
+  ExampleProvider getProviderOverride(
+    covariant ExampleProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
 }
 
 /// See also [example].
@@ -101,7 +123,7 @@ class ExampleProvider extends AutoDisposeProvider<String> {
         );
 
   ExampleProvider._internal(
-    super._createNotifier, {
+    super.create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
@@ -116,7 +138,7 @@ class ExampleProvider extends AutoDisposeProvider<String> {
 
   @override
   Override overrideWith(
-    String Function(ExampleRef provider) create,
+    String Function(ExampleRef ref) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -134,8 +156,34 @@ class ExampleProvider extends AutoDisposeProvider<String> {
   }
 
   @override
+  (
+    int, {
+    String param2,
+  }) get argument {
+    return (
+      param1,
+      param2: param2,
+    );
+  }
+
+  @override
   AutoDisposeProviderElement<String> createElement() {
     return _ExampleProviderElement(this);
+  }
+
+  ExampleProvider _copyWith(
+    String Function(ExampleRef ref) create,
+  ) {
+    return ExampleProvider._internal(
+      (ref) => create(ref as ExampleRef),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      param1: param1,
+      param2: param2,
+    );
   }
 
   @override
@@ -173,4 +221,4 @@ class _ExampleProviderElement extends AutoDisposeProviderElement<String>
   String get param2 => (origin as ExampleProvider).param2;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package
