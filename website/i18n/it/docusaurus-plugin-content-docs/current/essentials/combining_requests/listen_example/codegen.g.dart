@@ -8,6 +8,65 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+typedef OtherRef = Ref<int>;
+
+@ProviderFor(other)
+const otherProvider = OtherProvider._();
+
+final class OtherProvider extends $FunctionalProvider<int, int, OtherRef>
+    with $Provider<int, OtherRef> {
+  const OtherProvider._(
+      {int Function(
+        OtherRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'otherProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final int Function(
+    OtherRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$otherHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  OtherProvider $copyWithCreate(
+    int Function(
+      OtherRef ref,
+    ) create,
+  ) {
+    return OtherProvider._(create: create);
+  }
+
+  @override
+  int create(OtherRef ref) {
+    final _$cb = _createCb ?? other;
+    return _$cb(ref);
+  }
+}
+
+String _$otherHash() => r'6e430ebf25cc307c3aff048518bdcb69646fe123';
+
 typedef ExampleRef = Ref<int>;
 
 @ProviderFor(example)

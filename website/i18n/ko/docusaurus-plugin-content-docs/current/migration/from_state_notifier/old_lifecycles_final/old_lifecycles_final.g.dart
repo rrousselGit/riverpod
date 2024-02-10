@@ -8,6 +8,66 @@ part of 'old_lifecycles_final.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+typedef RepositoryRef = Ref<_MyRepo>;
+
+@ProviderFor(repository)
+const repositoryProvider = RepositoryProvider._();
+
+final class RepositoryProvider
+    extends $FunctionalProvider<_MyRepo, _MyRepo, RepositoryRef>
+    with $Provider<_MyRepo, RepositoryRef> {
+  const RepositoryProvider._(
+      {_MyRepo Function(
+        RepositoryRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'repositoryProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final _MyRepo Function(
+    RepositoryRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$repositoryHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(_MyRepo value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<_MyRepo>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<_MyRepo> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  RepositoryProvider $copyWithCreate(
+    _MyRepo Function(
+      RepositoryRef ref,
+    ) create,
+  ) {
+    return RepositoryProvider._(create: create);
+  }
+
+  @override
+  _MyRepo create(RepositoryRef ref) {
+    final _$cb = _createCb ?? repository;
+    return _$cb(ref);
+  }
+}
+
+String _$repositoryHash() => r'e271c7e2cb18076d5eb6d2cd4e47b96a97a35e6f';
+
 @ProviderFor(MyNotifier)
 const myNotifierProvider = MyNotifierProvider._();
 
