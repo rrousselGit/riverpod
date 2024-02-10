@@ -3,51 +3,63 @@ title: FutureProvider
 version: 1
 ---
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
-import CodeBlock from "@theme/CodeBlock";
 import configProvider from "./future_provider/config_provider";
 import configConsumer from "./future_provider/config_consumer";
-import { trimSnippet,AutoSnippet} from "../../../../../src/components/CodeSnippet";
+import { AutoSnippet} from "@site/src/components/CodeSnippet";
 
-`FutureProvider` 与 [Provider] 类似，但用在异步代码中。
-
-`FutureProvider` 一般用于：
-
-- 执行和缓存异步操作 (比如网络请求)
-- 能很好地处理异步操作中的错误/加载中的状态
-- 将多个异步的值组合为另一个异步的值
-
-`FutureProvider` 与 [ref.watch] 结合使用有很多好处。
-这种组合允许在某些变量改变时自动重新获取一些数据，确保我们总是拥有最新的值。
-
-:::info
-`FutureProvider` 不提供给用户交互后直接修改计算结果的方法。它被设计用来解决简单的用例。
-对于更高级的场景请考虑使用 [StateNotifierProvider] 。
+:::caution
+<!---
+The content of this page may be outdated.  
+It will be updated in the future, but for now you may want to refer to the content
+in the top of the sidebar instead (introduction/essentials/case-studies/...)
+-->
+本页内容可能已经过时。  
+今后会进行更新，但目前您可能需要参考侧边栏顶部的内容（介绍/要点/应用案例/......）。
 :::
 
-## 用法示例：读取配置文件
+`FutureProvider` is the equivalent of [Provider] but for asynchronous code.
 
-`FutureProvider` 可以是一种通过读取JSON文件创建的 `Configuration` 对象的便捷方法。
+`FutureProvider` is typically used for:
 
-在provider内部使用的async/await语法创建配置。
-再加上使用Flutter的资产系统，举个例子：
+- performing and caching asynchronous operations (such as network requests)
+- nicely handling error/loading states of asynchronous operations
+- combining multiple asynchronous values into another value
+
+`FutureProvider` gains a lot when combined with [ref.watch]. This combination
+allows automatic re-fetching of some data when some variables change,
+ensuring that we always have the most up-to-date value.
+
+:::info
+`FutureProvider` does not offer a way of directly modifying the computation after
+a user interaction. It is designed to solve simple use-cases.  
+For more advanced scenarios, consider using [AsyncNotifierProvider].
+:::
+
+## Usage example: reading a configuration file
+
+`FutureProvider` can be a convenient way to expose a `Configuration` object
+created by reading a JSON file.
+
+Creating the configuration would be done with your typical async/await
+syntax, but inside the provider.
+Using Flutter's asset system, this would be:
 
 <AutoSnippet language="dart" {...configProvider}></AutoSnippet>
 
 
-接着，UI可以像这样监听配置：
+Then, the UI can listen to configurations like so:
 
 <AutoSnippet language="dart" {...configConsumer}></AutoSnippet>
 
-这将在 [Future] 完成时自动重新构建UI。
-同时，如果多个widget需要配置，Flutter资产将只载入一次。
+This will automatically rebuild the UI when the [Future] completes.
+At the same time, if multiple widgets want the configurations,
+the asset will be decoded only once.
 
-如你所见，在widget中监听 `FutureProvider` 会返回一个 [AsyncValue] ，
-它允许你处理错误/加载中的状态。
+As you can see, listening to a `FutureProvider` inside a widget returns
+an [AsyncValue] – which allows handling the error/loading states.
 
 [ref.watch]: ../concepts/reading#using-refwatch-to-observe-a-provider
-[statenotifierprovider]: ./state_notifier_provider
+[asyncnotifierprovider]: ./notifier_provider
 [provider]: ./provider
 [asyncvalue]: https://pub.dev/documentation/riverpod/latest/riverpod/AsyncValue-class.html
 [future]: https://api.dart.dev/dart-async/Future-class.html

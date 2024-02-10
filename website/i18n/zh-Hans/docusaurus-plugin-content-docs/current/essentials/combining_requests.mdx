@@ -1,0 +1,275 @@
+---
+title: 组合请求
+version: 1
+---
+
+import { Link } from "@site/src/components/Link";
+import { AutoSnippet } from "@site/src/components/CodeSnippet";
+import functionalRef from "./combining_requests/functional_ref";
+import notifierRef from "./combining_requests/notifier_ref";
+import watchExample from "./combining_requests/watch_example";
+import watchPlacement from "./combining_requests/watch_placement";
+import listenExample from "./combining_requests/listen_example";
+import readExample from './combining_requests/read_example'
+
+<!---
+Up till now, we've only seens cases were requests are independent from each
+other. But a common use-case is to have to trigger a request based on the
+result of another request.
+-->
+到目前为止，我们只看到请求彼此独立的案例。
+但一个常见的用例是必须根据另一个请求的结果触发请求。
+
+<!---
+We _could_ be using the <Link documentID="essentials/passing_args" /> mechanism to
+do that, by passing the result of a provider as parameter to another a provider.
+-->
+我们可以使用<Link documentID="essentials/passing_args" />机制来做到这一点，
+方法是将一个提供者程序的结果作为参数传递给另一个提供者程序。
+
+<!---
+But this approach has a few downsides:
+-->
+但这种方法有一些缺点：
+
+<!---
+- This leaks implementation details.
+  Now, your UI needs to know about all the providers that are used
+  your other provider.
+- Whenever the parameter change, a brand new state will be made.
+  By passing parameters, there are no way to keep the previous state
+  when the parameter changes.
+- It makes combining requests harder.
+- This makes tooling less useful. A devtool wouldn't
+  know about the relationship between providers.
+-->
+- 这泄露了实现细节。
+  现在，UI 需要了解所有被其他提供者程序使用的提供者程序。
+- 每当参数发生变化时，都会产生一个全新的状态。
+  通过传递参数，当参数更改时，无法保持以前的状态。
+- 它使合并请求变得更加困难。
+- 这使得开发工具的用处降低。devtool 不会知道提供者程序之间的关系。
+
+<!---
+To improve this, Riverpod offers a different approach to combine requests.
+-->
+为了改善这一点，Riverpod 提供了一种不同的方法来合并请求。
+
+<!---
+## The basics: Obtaining a "ref"
+-->
+## 基础知识：获取 "ref"
+
+<!---
+All possible ways of combining requests have one thing in common:
+They are all based on the `Ref` object.
+-->
+组合请求的所有可能方法都有一个共同点：它们都基于 `Ref` 对象。
+
+<!---
+The `Ref` object is an object which all providers have access to.
+It grants them access to various life-cycle listeners, but also
+various methods to combine providers.
+-->
+该 `Ref` 对象是所有提供者程序都有权访问的对象。
+它允许他们访问各种生命周期监听器，
+还可以使用各种方法来组合提供者程序。
+
+<!---
+The place where `Ref` can be obtained depends on the type of provider.
+-->
+可以获取的位置 `Ref` 取决于提供者程序的类型。
+
+<!---
+In functional providers, the `Ref` is passed as parameter to the
+provider's function:
+-->
+在函数提供者程序中，将 `Ref` 作为参数传递给提供者程序的函数：
+
+<AutoSnippet {...functionalRef} />
+
+<!---
+In class variants, the `Ref` is a property of the Notifier class:
+-->
+在类变体中，`Ref` 是通知者程序类的一个属性：
+
+<AutoSnippet {...notifierRef} />
+
+<!---
+## Using ref to read a provider.
+-->
+## 使用 ref 读取提供者程序。
+
+<!---
+### The `ref.watch` method.
+-->
+### `ref.watch` 方法。
+
+<!---
+Now that we've obtained a `Ref`, we can use it to combine requests.
+The main way to do so is by using `ref.watch`.  
+It is generally recommended to architecture your code such that you
+can use `ref.watch` over other options, as it is generally easier to maintain.
+-->
+现在我们已经获得了一个 `Ref`，我们可以用它来组合请求。
+执行此操作的主要方法是使用 `ref.watch`。  
+通常建议对代码进行架构设计，
+以便可以使用 `ref.watch` 的其他选项，因为它通常更易于维护。
+
+<!---
+The `ref.watch` method takes a provider, and returns its current state.
+Then, whenever the listened provider changes, our provider will be
+invalidated and rebuilt next frame or on next read.
+-->
+该 `ref.watch` 方法采用提供者程序，并返回其当前状态。
+然后，每当监听的提供者程序发生更改时，我们的提供者程序将在
+下一帧或下一次读取时失效并重新生成。
+
+<!---
+By using `ref.watch`, your logic becomes both "reactive" and "declarative".  
+Meaning that your logic will automatically recompute when needed.
+And that the update mechanism doesn't rely on side-effects, such as an "on change".
+This is similar to how StatelessWidgets behave.
+-->
+通过使用 `ref.watch`，您的逻辑变得既是“反应式”又是“声明式”。  
+这意味着您的逻辑将在需要时自动重新计算。
+并且更新机制不依赖于副作用，例如“更改”。
+这类似于 StatelessWidgets 的行为方式。
+
+<!---
+As an example, we could define a provider that listens to the user's location.
+Then, we could use this location to fetch the list of restaurants near the user.
+-->
+例如，我们可以定义一个监听用户位置的提供者程序。
+然后，我们可以使用这个位置来获取用户附近的餐馆列表。
+
+<AutoSnippet {...watchExample} />
+
+:::info
+<!---
+When the listened provider changes and our request recomputes, the previous
+state is kept until the new request completes.  
+At the same time, while the request is pending, the "isLoading" and "isReloading"
+flags will be set.
+-->
+当监听的提供者程序发生更改并且我们的请求重新计算时，将保留以前的状态，直到新请求完成。  
+同时，当请求处于挂起状态时，将设置 "isLoading" 和 "isReloading" 标志。
+
+<!---
+This enables UI to either show the previous state, or a loading indicator,
+or even both.
+-->
+这使 UI 能够显示以前的状态或加载指示器，甚至两者兼而有之。
+:::
+
+:::info
+<!---
+Notice how we used `ref.watch(locationProvider.future)` instead of `ref.watch(locationProvider)`.
+That is because our `locationProvider` is asynchronous. As such, we want to
+await for an initial value to be available.
+-->
+请注意我们如何使用 `ref.watch(locationProvider.future)` 来替代 `ref.watch(locationProvider)`。
+那是因为我们 `locationProvider` 是异步的。因此，我们希望等待初始值可用。
+
+<!---
+If we omit that `.future`, we would receive an `AsyncValue`, which is a snapshot
+of the current state of the `locationProvider`. But if no location is available yet,
+we wouldn't be able to do anything.
+-->
+如果我们省略了这一点 `.future`，我们将收到一个 `AsyncValue`，
+它是 `locationProvider` 当前状态的快照。但是，如果还没有可用的位置，
+我们将无能为力。
+:::
+
+:::caution
+<!---
+It is considered bad practice to call `ref.watch` inside code that is executed
+"imperatively". Meaning any code that is possibly not executed during the build
+phase of the provider. This includes "listener" callbacks or methods on Notifiers:
+-->
+调用 `ref.watch` “命令式”执行的内部代码被认为是不好的做法。
+这意味着在提供者程序的构建阶段可能未执行的任何代码。
+这包括通告程序上的“监听器”回调或方法：
+
+<AutoSnippet {...watchPlacement} />
+:::
+
+<!---
+## The `ref.listen`/`listenSelf` methods.
+-->
+### `ref.listen`/`listenSelf` 方法。
+
+<!---
+The `ref.listen` method is an alternative to `ref.watch`.  
+It is similar to your traditional "listen"/"addListener" method. It takes a provider
+and a callback, and will invoke said callback whenever the content of the provider
+changes.
+-->
+该 `ref.listen` 方法是 `ref.watch` 的替代方法。  
+它类似于传统的 "listen"/"addListener" 方法。
+它接受一个提供者程序和一个回调，
+并在提供者程序的内容发生更改时调用该回调。
+
+<!---
+Refactoring your code such that you can use `ref.watch` instead of `ref.listen`
+is generally recommended, as the latter is more error-prone due to its imperative nature.  
+But `ref.listen` can be helpful to add some quick logic without having to do
+significant refactor.
+-->
+通常建议重构代码，您可以使用 `ref.watch` 替代 `ref.listen`，
+因为后者由于其命令性质而更容易出错。  
+但是 `ref.listen` 可以有助于添加一些快速逻辑而不必进行重大重构。
+
+<!---
+We could rewrite the `ref.watch` example to use `ref.listen` instead
+-->
+我们可以重写 `ref.watch` 示例并使用 `ref.listen` 代替
+
+<AutoSnippet {...listenExample} />
+
+:::info
+<!---
+It is entirely safe to use `ref.listen` during the build phase of a provider.
+If the provider somehow is recomputed, previous listeners will be removed.
+-->
+在提供者程序的构建阶段使用 `ref.listen` 是完全安全的。
+如果以某种方式重新计算提供者程序，则以前的监听器将被删除。
+
+<!---
+Alternatively, you can use the return value of `ref.listen` to remove the listener
+manually when you wish.
+-->
+或者，您可以根据需要使用 `ref.listen` 的返回值手动删除监听器。
+:::
+
+<!---
+## The `ref.read` method.
+-->
+### `ref.read` 方法
+
+<!---
+The last option available is `ref.read`.
+It is similar to `ref.watch` in that it returns the current state of a provider.
+But unlike `ref.watch`, it doesn't listen to the provider.
+-->
+最后一个可用选项是 `ref.read`。
+它类似于 `ref.watch` 返回提供者程序的当前状态。
+但与 `ref.watch` 不同的是，它不监听提供者程序。
+
+<!---
+As such, `ref.read` should be only be used in placed where you can't use
+`ref.watch`, such as inside methods of Notifiers.
+-->
+因此，`ref.read` 应该只被用在你不能使用 `ref.watch` 的地方，
+比如通告程序的内部方法。
+
+<AutoSnippet {...readExample} />
+
+:::caution
+<!---
+Be careful when using `ref.read` on a provider as, since it doesn't listen to the
+provider, said provider may decide to destroy its state if it isn't listened.
+-->
+`ref.read` 在提供者程序上使用时要小心，因为它不监听提供者程序，
+因此如果不监听提供者程序，则该提供者程序可能会决定处置其状态。
+:::

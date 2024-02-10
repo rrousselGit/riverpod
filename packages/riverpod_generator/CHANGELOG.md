@@ -98,6 +98,17 @@ This comes with a few minor restrictions:
 - **Breaking**: Arguments of the form `fn(void myParameter())`
   are no-longer supported. Instead use `fn(void Function() myParameter)`.
 
+## 2.3.11 - 2024-02-04
+
+- `riverpod_analyzer_utils` upgraded to `0.5.1`
+
+## 2.3.10 - 2024-02-03
+
+- Improved error handling if:
+  - a Notifier has no default constructor
+  - a Notifier has has a default constructor but with required parameters
+  - a Notifier is abstract
+
 ## 2.3.9 - 2023-11-27
 
 - `riverpod_annotation` upgraded to `2.3.3`

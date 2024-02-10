@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:collection/collection.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
@@ -147,4 +148,33 @@ ClassDeclaration? findStateClass(ClassDeclaration widgetClass) {
     final checker = TypeChecker.fromStatic(widgetType);
     return checker.isExactlyType(stateWidgetType);
   });
+}
+
+// Original implemenation in package:analyzer/lib/src/dart/ast/extensions.dart
+extension IdentifierExtension on Identifier {
+  Element? get writeOrReadElement {
+    return _writeElement(this) ?? staticElement;
+  }
+}
+
+Element? _writeElement(AstNode node) {
+  final parent = node.parent;
+
+  if (parent is AssignmentExpression && parent.leftHandSide == node) {
+    return parent.writeElement;
+  }
+  if (parent is PostfixExpression && parent.operand == node) {
+    return parent.writeElement;
+  }
+  if (parent is PrefixExpression && parent.operand == node) {
+    return parent.writeElement;
+  }
+
+  if (parent is PrefixedIdentifier && parent.identifier == node) {
+    return _writeElement(parent);
+  }
+  if (parent is PropertyAccess && parent.propertyName == node) {
+    return _writeElement(parent);
+  }
+  return null;
 }

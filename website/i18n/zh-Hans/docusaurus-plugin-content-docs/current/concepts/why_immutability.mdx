@@ -1,124 +1,98 @@
 ---
-title: 为何需要不可变性
+title: Why Immutability
 ---
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import whyImmutability from "./why_immutability"
+import {
+  trimSnippet,
+  AutoSnippet,
+  When,
+} from "@site/src/components/CodeSnippet";
 
-## 什么是不可变性?
-
-不可变性指当一个`对象`中的所有域(属性)是final或late final的。
-它们只能通过构造器赋值一次。
-
-出于许多原因，不可变性是比较理想的方式：
-
-- 值相等而不是引用相等
-- 关于代码的局部推理
-  - 远处的一段代码不能从你的下面获得引用并改变对象
-- 对于异步和并行任务更容易推理
-  - 其他代码不能在操作中改变对象
-- API安全
-  - 你传递给方法的东西不会被访问者或被访问者改变
-
-当创建了一个只改变几处的新对象时，copyWith方法可以帮助你减少冗余
-
-拷贝的效率比你想的更高，dart可以重用对未更改的字对象的引用。
-:::warning
-确保你的对象是深度不可变的，否则你必须实现某种深拷贝机制。
+:::caution
+<!---
+The content of this page may be outdated.  
+It will be updated in the future, but for now you may want to refer to the content
+in the top of the sidebar instead (introduction/essentials/case-studies/...)
+-->
+本页内容可能已经过时。  
+今后会进行更新，但目前您可能需要参考侧边栏顶部的内容（介绍/要点/应用案例/......）。
 :::
 
-## 最佳实践
+## What is Immutability?
 
-你可以用任何package来创建你想要的不可变状态。
+Immutability is when all fields of an `Object` are final or late final.
+They are set exactly once upon construction.
 
-对于不可变对象:
+Immutability is desireable for many different reasons
+
+- Value equality rather than reference equality
+- Local reasoning about a piece of code
+  - A far distant piece of code can't obtain a reference and change the object from underneath you
+- Easier to reason about for asynchronous and parallel tasks
+  - Other code can't mutate your object in between operations
+- Safety of APIs
+  - What you pass into a method cannot be changed by the callee / caller
+
+A copyWith method helps with reducing verbosity when creating a new object with just a few things changed.
+
+Copying is more efficient than you might think, since dart can reuse any references to sub-objects that have not changed.
+:::warning
+Make sure your objects are deeply immutable, otherwise you'll have to implement some sort of deep copy mechanism.
+:::
+
+## Best Practices
+
+You can use any package you want to create immutable state.
+
+For immutable objects:
 
 - [package:freezed](https://pub.dev/packages/freezed)
 - [package:built_value](https://pub.dev/packages/built_value)
 
-对于不可变集合 (Map, Set, List):
+For immutable collections (Map, Set, List):
 
 - [package:fast_immutable_collections](https://pub.dev/packages/fast_immutable_collections)
 - [package:built_collection](https://pub.dev/packages/built_collection)
 - [package:kt_dart](https://pub.dev/packages/kt_dart)
 - [package:dartz](https://pub.dev/packages/dartz)
 
-非常推荐[freezed]这个package,它除了创建不可变对象外，还提供了一些不错的附加功能，包括：
+It is highly recommended to use [freezed],
+since it has several nice additions beyond just making immutable objects including:
 
-- 生成copyWith方法
-- 深拷贝 (在嵌套的freezed对象的copyWith方法)
-- 联合类型
-- 联合映射函数
+- A generated copyWith method
+- Deep copy (copyWith on nested freezed objects)
+- Union types
+- Union mapping functions
 
-使用不可变状态不一定需要代码生成，但它能让这一过程变得更简单。
+You do not need to use code generation to work with immutable state, but it makes it much easier.
 
 :::warning
-如果你想使用内置的集合，请确保实现更新集合时执行复制集合的规则。
-不复制集合的问题在于，riverpod会根据对对象的引用是否更改来确定是否发出新的状态。
-如果仅调用一个改变对象的方法，那么使用引用也是可行的。
+If you want to use the built-in collections, make sure to enforce a discipline of making copies of collections when updating them.
+The issue with not copying a collection is that riverpod determines whether to emit a new state based on whether the reference to the object has changed.
+If you just call a method that mutates an object, the reference is the same.
 :::
 
-### 使用不可变状态
+### Using immutable state
 
-不可变状态最适合 [StateNotifier] 和 [StateNotifierProvider] 结合使用。
-[StateNotifier]允许你暴露一个可以“改变”状态的接口。
-你不能从你定义的继承自 [StateNotifier] 的对象外面改变他的状态。
-这分离了你的关注点，并将业务逻辑保留在UI之外。
+Immutable state is best fit for using a [Notifier] <When codegen={false}> in combination with [NotifierProvider] </When>.
+A [Notifier] allows you to expose an interface through which you can 'mutate' the state.
+You cannot mutate the state from outside the class you define that extends [Notifier].
+This enforces a separation of concerns and keeps business logic outside of your UI.
 
-下面是一个例子，通过一个简单的不可变设置类来改变应用主题。
+Here is an example of a simple immutable settings class for changing an app theme.
 
-```dart
-final themeProvider = StateNotifierProvider((ref) => ThemeNotifier());
+<AutoSnippet language="dart" {...whyImmutability}></AutoSnippet>
 
-class ThemeNotifier extends StateNotifier<ThemeSettings> {
-  ThemeNotifier(): super(
-      ThemeSettings(
-        mode: ThemeMode.system,
-        primaryColor: Colors.blue,
-      ));
-
-  void toggle() {
-    state = state.copyWith(mode: state.mode.toggle);
-  }
-  void setDarkTheme() {
-    state = state.copyWith(mode: ThemeMode.dark);
-  }
-  void setLightTheme() {
-    state = state.copyWith(mode: ThemeMode.light);
-  }
-  void setSystemTheme() {
-    state = state.copyWith(mode: ThemeMode.system);
-  }
-  void setPrimaryColor(Color color) {
-    state = state.copyWith(primaryColor: color);
-  }
-
-}
-
-@freezed
-class ThemeSettings with _$ThemeSettings {
-  const factory ThemeSettings({ThemeMode mode, Color primaryColor}) = _ThemeSettings;
-}
-
-extension ToggleTheme on ThemeMode {
-  ThemeMode get toggle {
-    switch (this){
-      case ThemeMode.dark:
-        return ThemeMode.light;
-      case ThemeMode.light:
-        return ThemeMode.dark;
-      case ThemeMode.system:
-        return ThemeMode.system;
-    }
-  }
-}
-```
-
-要使用这段代码，记住你需要引入 `freezed_annotation`这个package，并运行 [build_runner] 来构建freezed生成的类。
+To use this code, remember to import `freezed_annotation`, add the part directive and run [build_runner] to generate the freezed classes!
 
 [changenotifier]: https://api.flutter.dev/flutter/foundation/ChangeNotifier-class.html
 [statenotifier]: https://pub.dev/documentation/riverpod/latest/riverpod/StateNotifier-class.html
 [statenotifierprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StateNotifierProvider-class.html
+[notifier]: https://pub.dev/documentation/riverpod/latest/riverpod/Notifier-class.html
+[notifierprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/NotifierProvider.html
 [asyncvalue]: https://pub.dev/documentation/riverpod/latest/riverpod/AsyncValue-class.html
 [freezed]: https://pub.dev/packages/freezed
 [build_runner]: https://pub.dev/packages/build_runner

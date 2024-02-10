@@ -1,52 +1,54 @@
 ---
-title: da ^0.14.0 a ^1.0.0
+title: ^0.14.0 to ^1.0.0
 ---
 
-Dopo una lunga attesa, la prima versione stabile di Riverpod è stata finalmente rilasciata 👏
 
-Per vedere tutta la lista dei cambiamenti, consulta il [Changelog](https://pub.dev/packages/flutter_riverpod/changelog#100).  
-In questa pagina ci concentreremo su come migrare una applicazione Riverpod esistente 
-dalla versione 0.14.x alla versione 1.0.0.
+After a long wait, the first stable version of Riverpod is finally released 👏
 
-## Utilizzo dello strumento di migrazione per aggiornare i tuoi progetti alla nuova sintassi
+To see the full list of changes, consult the [Changelog](https://pub.dev/packages/flutter_riverpod/changelog#100).  
+In this page, we will focus on how to migrate an existing Riverpod application
+from version 0.14.x to version 1.0.0.
 
-Prima di spiegare i vari cambiamenti, vale la pena far notare che Riverpod ha 
-uno strumento da riga di comando per migrare automaticamente il tuo progetto.
+## Using the migration tool to automatically upgrade your project to the new syntax
 
-### Installazione dello strumento
+Before explaining the various changes, it is worth noting that Riverpod comes with
+a command-line tool to automatically migrate your project for you.
 
-Per installare lo strumento di migrazione, eseguire: 
+### Installing the command line tool
+
+To install the migration tool, run:
 
 ```sh
 dart pub global activate riverpod_cli
 ```
 
-Dovresti poter eseguire ora:
+You should now be able to run:
 
 ```sh
 riverpod --help
 ```
 
-### Uso
+### Usage
 
-Ora che lo strumento è installato, possiamo iniziare ad utilizzarlo.
+Now that the command line is installed, we can start using it.
 
-- Per prima cosa, apri il progetto che vuoi migrare nel tuo terminale.
-- **NON** aggiornare Riverpod.  
-  Lo strumento di migrazione aggiornerà la versione di Riverpod per te.
-  :::danger PERICOLO
-  Non aggiornare Riverpod è importante.
-  Lo strumento non si eseguirà correttamente se hai già installato la versione 1.0.0.
-  Pertanto, assicurati di utilizzare correttamente una versione precedente prima di avviare lo strumento.
+- First, open the project you want to migrate in your terminal.
+- **Do not** upgrade Riverpod.  
+  The migration tool will upgrade the version of Riverpod for you.
+
+  :::danger
+  Not upgrading Riverpod is important.  
+  The tool will not execute properly if you have already installed version 1.0.0.
+  As such, make sure that you are properly using an older version before starting the tool.
   :::
 
-- Assicurati che il tuo progetto non contenga errori.
-- Eseguire:
+- Make sure that your project does not contain errors.
+- Execute:
   ```sh
   riverpod migrate
   ```
 
-Lo strumento analizzerà il tuo progetto e ti suggerirà le modifiche. Per esempio potresti vedere:
+The tool will then analyze your project and suggest changes. For example you may see:
 
 ```diff
 -Widget build(BuildContext context, ScopedReader watch) {
@@ -58,25 +60,27 @@ Lo strumento analizzerà il tuo progetto e ti suggerirà le modifiche. Per esemp
 Accept change (y = yes, n = no [default], A = yes to all, q = quit)?
 ```
 
-Per accettare la modifica, premi semplicemente <kbd>y</kbd>. In caso contrario, premi <kbd>n</kbd>.
+To accept the change, simply press <kbd>y</kbd>. Otherwise to reject it, press <kbd>n</kbd>.
 
-## I cambiamenti
+## The changes
 
-Ora che abbiamo visto come utilizzare il terminale per aggiornare il nostro progetto, 
-vediamo nel dettaglio queste modifiche.
+Now that we've seen how to use the CLI to automatically upgrade your project,
+let's see in detail the changes necessary.
 
-### Unificazione della sintassi
+### Syntax unification
 
-La versione 1.0.0 di Riverpod si concentra sull'unificazione della sintassi 
-per interagire con i provider.  
-Prima, Riverpod aveva molte sintassi simili ma diverse per leggere un provider, 
-come `ref.watch(provider)` vs `useProvider(provider)` vs `watch(provider)`.  
-Con la versione 1.0.0, rimane solo una sintassi: `ref.watch(provider)`. Le altre sono state rimosse.
+Version 1.0.0 of Riverpod focused on the unification of the syntax for
+interacting with providers.  
+Before, Riverpod had many similar yet different syntaxes for reading a provider,
+such as `ref.watch(provider)` vs `useProvider(provider)` vs `watch(provider)`.  
+With version 1.0.0, only one syntax remains: `ref.watch(provider)`. The
+others were removed.
 
-Il che significa che:
+As such:
 
-- `useProvider` è stato rimosso in favore di `HookConsumerWidget`.
-  Prima:
+- `useProvider` is removed in favor of `HookConsumerWidget`.
+
+  Before:
 
   ```dart
   class Example extends HookWidget {
@@ -89,7 +93,7 @@ Il che significa che:
   }
   ```
 
-  Dopo:
+  After:
 
   ```dart
   class Example extends HookConsumerWidget {
@@ -102,9 +106,9 @@ Il che significa che:
   }
   ```
 
-- Il prototipo del metodo `build` di `ConsumerWidget` e `Consumer` è stato cambiato.
-
-  Prima:
+- The prototype of `ConsumerWidget`'s `build` and `Consumer`'s `builder` changed.
+ 
+  Before:
 
   ```dart
   class Example extends ConsumerWidget {
@@ -123,7 +127,7 @@ Il che significa che:
   )
   ```
 
-  Dopo:
+  After:
 
   ```dart
   class Example extends ConsumerWidget {
@@ -142,9 +146,9 @@ Il che significa che:
   )
   ```
 
-- `context.read` è sostituito da `ref.read`.
+- `context.read` is removed in favor of `ref.read`.
 
-  Prima:
+  Before:
 
   ```dart
   class Example extends StatelessWidget {
@@ -157,7 +161,7 @@ Il che significa che:
   }
   ```
 
-  Dopo:
+  After:
 
   ```dart
   class Example extends ConsumerWidget {
@@ -170,15 +174,15 @@ Il che significa che:
   }
   ```
 
-### StateProvider
+### StateProvider update
 
-[StateProvider] è stato allineato con [StateNotifierProvider].
+[StateProvider] was updated to match [StateNotifierProvider].
 
-In precedenza, scrivere `ref.watch(StateProvider)` restituiva un'istanza `StateController`.
-Ora restituisce solo lo stato di `StateController`.
+Before, doing `ref.watch(StateProvider)` returned a `StateController` instance.
+Now it only returns the state of the `StateController`.
 
-Per migrare hai alcune soluzioni.
-Se il tuo codice otteneva lo stato senza modificarlo, puoi cambiare da:
+To migrate you have a few solutions.  
+If your code only obtained the state without modifying it, you can change from:
 
 ```dart
 final provider = StateProvider<int>(...);
@@ -192,7 +196,7 @@ Consumer(
 )
 ```
 
-a:
+to:
 
 ```dart
 final provider = StateProvider<int>(...);
@@ -206,8 +210,7 @@ Consumer(
 )
 ```
 
-Alternativemente, puoi usare il nuovo `StateProvider.state` per mantenere 
-il vecchio comportamento.
+Alternatively you can use the new `StateProvider.state` to keep the old behavior.
 
 ```dart
 final provider = StateProvider<int>(...);
@@ -221,6 +224,6 @@ Consumer(
 )
 ```
 
-[statenotifierprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StateNotifierProvider-class.html
-[stateprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StateProvider-class.html
+[statenotifierprovider]: ../providers/state_notifier_provider
+[stateprovider]: ../providers/state_provider
 [statenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/StateNotifier-class.html

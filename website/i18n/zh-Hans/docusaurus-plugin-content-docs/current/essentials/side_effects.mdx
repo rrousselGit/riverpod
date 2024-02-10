@@ -1,0 +1,668 @@
+---
+title: 执行副作用
+version: 1
+---
+
+import { Link } from "@site/src/components/Link";
+import { AutoSnippet, When } from "@site/src/components/CodeSnippet";
+import Legend, { colors } from "./first_request/legend/legend";
+import todoListProvider from "./side_effects/todo_list_provider";
+import todoListNotifier from "./side_effects/todo_list_notifier";
+import todoListNotifierAddTodo from "./side_effects/todo_list_notifier_add_todo";
+import consumerAddTodoCall from "!!raw-loader!./side_effects/raw/consumer_add_todo_call.dart";
+import restAddTodo from "!!raw-loader!./side_effects/raw/rest_add_todo.dart";
+import invalidateSelfAddTodo from "!!raw-loader!./side_effects/raw/invalidate_self_add_todo.dart";
+import manualAddTodo from "!!raw-loader!./side_effects/raw/manual_add_todo.dart";
+import mutableManualAddTodo from "!!raw-loader!./side_effects/raw/mutable_manual_add_todo.dart";
+import renderAddTodo from "./side_effects/render_add_todo";
+
+<!---
+So far, we've only seen how to fetch data (aka perform a _GET_ HTTP request).  
+But what about side-effects, such as a _POST_ request?
+-->
+到目前为止，我们只看到了如何获取数据（也就是执行 _GET_ HTTP 请求）。  
+但是副作用（例如 _POST_ 请求）呢？
+
+<!---
+Applications often implement a CRUD (Create, Read, Update, Delete) API.  
+When doing so, it is common that an update request (typically a _POST_) should
+also update the local cache to have the UI reflect the new state.
+-->
+应用程序通常实现 CRUD（创建、读取、更新、删除）API。  
+执行此操作时，更新请求（通常是 _POST_）通常还应更新本地缓存，以使 UI 反映新状态。
+
+<!---
+The problem is, how do we update the state of a provider from within a consumer?  
+Naturally, providers do not expose a way to modify their state.
+This is by design, to ensure that the state is only modified in a controlled way
+and promote separation of concerns.  
+Instead, providers have to explicitly expose a way to modify their state.
+-->
+问题是，我们如何从消费者程序内部更新提供者程序的状态？  
+理所当然的，提供者程序不会公开修改其状态的方法。
+这是设计使然，以确保仅以受控方式修改状态并促进关注点分离。  
+相反，提供者程序必须显式公开修改其状态的方法。
+
+<!---
+To do that, we will use a new concept: Notifiers.  
+To showcase this new concept, let's use a more advanced example: A to-do list.
+-->
+为此，我们将使用一个新概念：通知者程序（Notifiers）。  
+为了展示这个新概念，让我们使用一个更高级的例子：待办事项列表。
+
+<!---
+## Defining a Notifier
+-->
+## 定义通知者程序
+
+<!---
+Let's start with what we already know by this point: A plain simple _GET_ request.
+As saw previously in <Link documentID="essentials/first_request" />, we could
+fetch a list of todos by writing:
+-->
+让我们从此时我们已经知道的内容开始：一个简单的 GET 请求。
+正如之前在<Link documentID="essentials/first_request" />中看到的那样，
+我们可以通过编写以下内容来获取待办事项列表：
+
+<AutoSnippet {...todoListProvider} />
+
+<!---
+Now that we've fetch a list of todos, let's see how we can add a new todos.  
+For this, we will need to modify our provider such that they expose a public API
+for modifying their state. This is done by converting our provider into what
+we call a "notifier".
+-->
+现在我们已经获取了待办事项列表，让我们看看如何添加新的待办事项。  
+为此，我们需要修改我们的提供者程序，以便它们公开一个公共 API 来修改其状态。
+这是通过将我们的提供者程序转换为我们所说的“通知者程序”来完成的。
+
+<!---
+Notifiers are the "stateful widget" of providers. They require a slight tweak to
+the syntax for defining a provider.  
+This new syntax is as follows:
+-->
+通知者程序是提供者程序的“有状态小部件”。它们需要对定义提供者程序的语法稍作调整。  
+此新语法如下：
+
+<When codegen={false}>
+<Legend
+  code={`final name = SomeNotifierProvider.someModifier<MyNotifier, Result>(MyNotifier.new);
+ 
+class MyNotifier extends SomeNotifier<Result> {
+  @override
+  Result build() {
+    <你的业务逻辑在这里>
+  }
+ 
+  <你的方法在这里>
+}`}
+  annotations={[
+    {
+      offset: 6,
+      length: 4,
+      label: "提供者程序变量",
+       description: <>
+
+<!---
+This variable is what will be used to interact with our provider.  
+The variable must be final and "top-level" (global).
+-->
+此变量将用于与我们的提供者程序进行交互。  
+变量必须是 final 和“顶级”（全局）。
+
+</>
+    },
+    {
+      offset: 13,
+      length: 20,
+      label: "提供者程序类型",
+       description: <>
+
+<!---
+Generally either `NotifierProvider`, `AsyncNotifierProvider` or `StreamNotifierProvider`.  
+The type of provider used depends on the return value of your function.
+For example, to create a `Future<Activity>`, you'll want a `AsyncNotifierProvider<Activity>`.
+-->
+通常为 `NotifierProvider`、`AsyncNotifierProvider` 和 `StreamNotifierProvider`。  
+使用的提供者程序类型取决于函数的返回值。
+例如，要创建一个 `Future<Activity>` ，您需要一个 `AsyncNotifierProvider<Activity>`。
+
+<!---
+`AsyncNotifierProvider` is the one you'll want to use the most.
+-->
+`AsyncNotifierProvider` 是你最想用的那个。
+
+:::tip
+<!---
+Don't think in terms of "Which provider should I pick".
+Instead, think in terms of "What do I want to return". The provider type
+will follow naturally.
+-->
+不要从“我应该选择哪个提供者程序”的角度来思考。
+相反，从“我想返回什么”的角度来思考。提供者程序类型将自然而然地遵循。
+:::
+
+</>
+    },
+    {
+      offset: 33,
+      length: 13,
+      label: "修饰符（可选的）",
+      description: <>
+
+<!---
+Often, after the type of the provider you may see a "modifier".  
+Modifiers are optional, and are used to tweak the behavior of the provider
+in a way that is type-safe.
+-->
+通常，在提供者程序的类型之后，您可能会看到一个“修饰符”。  
+修饰符是可选的，用于以类型安全的方式调整提供者程序的行为。
+
+<!---
+There are currently two modifiers available:
+-->
+目前有两种修饰符可用：
+
+<!---
+- `autoDispose`, which will automatically clear the cache when the provider
+  stops being used.  
+  See also <Link documentID="essentials/auto_dispose" />
+- `family`, which enables passing arguments to your provider.  
+  See also <Link documentID="essentials/passing_args" />.
+-->
+- `autoDispose`，这将在提供者程序停止使用时自动清除缓存。  
+  另请参阅<Link documentID="essentials/auto_dispose" />
+- `family`，这样就可以将参数传递给提供者程序。  
+  另请参阅<Link documentID="essentials/passing_args" />
+
+</>
+    },
+    {
+      offset: 67,
+      length: 14,
+      label: "通知者程序的构造函数",
+      description: <>
+
+<!---
+The parameter of "notifier providers" is a function which is expected
+to instantiate the "notifier".  
+It generally should be a "constructor tear-off".
+-->
+“notifier providers”的参数是一个函数，它应该实例化“notifier”。  
+它通常应该是“构造函数撕裂”。
+
+</>
+    },
+    {
+      offset: 86,
+      length: 16,
+      label: "通知者程序",
+      description: <>
+
+<!---
+If `NotifierProvider` is the "StatefulWidget" class, then this part is
+the `State` class.
+-->
+如果 `NotifierProvider` 是 “StatefulWidget” 类，则此部分就是该 `State` 类。
+
+<!---
+This class is responsible for exposing ways to modify the state of the provider.  
+Public methods on this class are accessible to consumers using `ref.read(yourProvider.notifier).yourMethod()`.
+-->
+此类负责公开修改提供者程序状态的方法。  
+使用者可以使用 `ref.read(yourProvider.notifier).yourMethod()` 此类上的公共方法。
+
+:::note
+<!---
+Notifiers should not have public properties besides the built-in `state`, as the UI
+would have no mean to know that state has changed.
+-->
+除了内置的 `state` 之外，通知者程序不应具有公共属性，因为 UI 无法知道状态已更改。
+:::
+
+</>
+    },
+    {
+      offset: 111,
+      length: 12,
+      label: "通知者程序类型",
+      description: <>
+
+<!---
+The base class extended by your notifier should match that of the provider + modifiers.
+Some examples would be:
+-->
+通知者程序扩展的基类应与提供者程序 + 修饰符的基类匹配。一些例子是：
+
+- <span style={{ color: colors[0] }}>Notifier</span>Provider -> <span style={{ color: colors[0] }}>Notifier</span>
+- <span style={{ color: colors[0] }}>AsyncNotifier</span>Provider -> <span style={{ color: colors[0] }}>AsyncNotifier</span>
+- <span style={{ color: colors[0] }}>AsyncNotifier</span>Provider.
+  <span style={{ color: colors[1] }}>autoDispose</span> -> <span
+    style={{ color: colors[1] }}
+  >
+    AutoDispose
+  </span>
+  <span style={{ color: colors[0] }}>AsyncNotifier</span>
+- <span style={{ color: colors[0] }}>AsyncNotifier</span>Provider.
+  <span style={{ color: colors[1] }}>autoDispose</span>.<span
+    style={{ color: colors[2] }}
+  >
+    family
+  </span> -> <span style={{ color: colors[1] }}>AutoDispose</span>
+  <span style={{ color: colors[2] }}>Family</span>
+  <span style={{ color: colors[0] }}>AsyncNotifier</span>
+
+<!---
+To make this simpler, it is recommended to use the code generator, as it
+automatically infers the correct type.
+-->
+为了简化此操作，建议使用代码生成器，因为它会自动推断正确的类型。
+
+</>
+    },
+    {
+      offset: 136,
+      length: 54,
+      label: "build 方法",
+      description: <>
+
+<!---
+All notifiers must override the `build` method.  
+This method is equivalent to the place where you would normally put your
+logic in a non-notifier provider.
+-->
+所有通知者程序都必须重写该 `build` 方法。  
+此方法等效于通常将逻辑放在非通知者程序提供者程序中的位置。
+
+<!---
+This method should not be called directly.
+-->
+不应直接调用此方法。
+
+</>
+    },
+]}
+/>
+</When>
+
+<!-- Some separation for good mesure -->
+
+<When codegen={true}>
+<Legend
+  code={`@riverpod
+class MyNotifier extends _$MyNotifier {
+  @override
+  Result build() {
+    <你的业务逻辑在这里>
+  }
+ 
+  <你的方法在这里>
+}`}
+  annotations={[
+    {
+      offset: 0,
+      length: 9,
+      label: "注解",
+      description: <>
+
+<!---
+All providers must be annotated with `@riverpod` or `@Riverpod()`.
+This annotation can be placed on global functions or classes.  
+Through this annotation, it is possible to configure the provider.
+-->
+所有提供者程序都必须使用 `@riverpod` 或 `@Riverpod()` 进行注解。
+此注解可以放置在全局函数或类上。
+通过此注解，可以配置提供者程序。
+
+<!---
+For example, we can disable "auto-dispose" (which we will see later) by writing `@Riverpod(keepAlive: true)`.
+-->
+例如，我们可以通过编写 `@Riverpod(keepAlive: true)` 来禁用“自动处置”（我们将在后面看到）。
+
+</>
+    },
+    {
+      offset: 10,
+      length: 16,
+      label: "通知者程序",
+       description: <>
+
+<!---
+When a `@riverpod` annotation is placed on a class, that class is called
+a "Notifier".  
+The class must extend `_$NotifierName`, where `NotifierName` is class name.
+-->
+当 `@riverpod` 注解被放置在一个类上时，该类被称为“通知者程序”。  
+类必须扩展 `_$NotifierName` ，其中 `NotifierName` 是类名。
+
+<!---
+Notifiers are responsible for exposing ways to modify the state of the provider.  
+Public methods on this class are accessible to consumers using `ref.read(yourProvider.notifier).yourMethod()`.
+-->
+通知者程序负责公开修改提供者程序状态的方法。  
+使用者可以使用 `ref.read(yourProvider.notifier).yourMethod()` 此类上的公共方法。
+
+:::note
+<!---
+Notifiers should not have public properties besides the built-in `state`, as the UI
+would have no mean to know that state has changed.
+-->
+除了内置的 `state` 之外，通知者程序不应具有公共属性，因为 UI 无法知道状态已更改。
+:::
+
+</>
+    },
+    {
+      offset: 52,
+      length: 54,
+      label: "build 方法",
+      description: <>
+
+<!---
+All notifiers must override the `build` method.  
+This method is equivalent to the place where you would normally put your
+logic in a non-notifier provider.
+-->
+所有通知者程序都必须重写该 `build` 方法。  
+此方法等效于通常将逻辑放在非通知者程序提供者程序中的位置。
+
+<!---
+This method should not be called directly.
+-->
+不应直接调用此方法。
+
+</>
+    },
+]}
+/>
+</When>
+
+<!---
+For reference, you might want to check <Link documentID="essentials/first_request" />
+to compare this new syntax with the previously seen syntax.
+-->
+作为参考，您可能需要查看<Link documentID="essentials/first_request" />，将这里的新语法与之前看到的语法进行比较。
+
+:::info
+<!---
+A Notifier with no method outside of `build` is identical to using the
+previously seen syntax.  
+The syntax shown in <Link documentID="essentials/first_request" /> can be considered
+as a shorthand for notifiers with no way to be modified from the UI.
+-->
+除了 `build` 以外，没有其他方法的通知者程序与使用前面看到的语法相同。  
+<Link documentID="essentials/first_request" />中显示的语法可以被视为通知者程序的简写，无法从 UI 进行修改。
+:::
+
+<!---
+Now that we've seen the syntax, let's see how to convert our previously
+defined provider to a notifier:
+-->
+现在我们已经了解了语法，让我们看看如何将之前定义的提供者程序转换为通知者程序：
+
+<AutoSnippet {...todoListNotifier} />
+
+<!---
+Note that the way of reading the provider inside widgets is unchanged.  
+You can still use `ref.watch(todoListProvider)` as with the previous syntax.
+-->
+请注意，在小部件中读取提供者程序的方式保持不变。  
+您仍然可以像以前的语法一样使用 `ref.watch(todoListProvider)`。
+
+:::caution
+<!---
+Do not put logic in the constructor of your notifier.  
+Notifiers should not have a constructor, as `ref` and other properties aren't
+yet available at that point. Instead, put your logic in the `build` method.
+-->
+不要将逻辑放在通知者程序的构造函数中。  
+通知者程序不应具有构造函数，因为 `ref` 此时其他属性尚不可用。
+相反，将您的逻辑放在方法中 `build`。
+
+```dart
+class MyNotifier extends ... {
+  MyNotifier() {
+    // ❌ 别这样做
+    // 这将会抛出一个异常
+    state = AsyncValue.data(42);
+  }
+
+  @override
+  Result build() {
+    // ✅ 应该这样做
+    state = AsyncValue.data(42);
+  }
+}
+```
+
+:::
+
+<!---
+## Exposing a method to perform a _POST_ request
+-->
+## 公开用于执行 _POST_ 请求的方法
+
+<!---
+Now that we have a Notifier, we can start adding methods to enable
+performing side-effects.
+One such side-effect would be to have the client _POST_ a new todo.
+We could do so by adding an `addTodo` method on our notifier:
+-->
+现在我们有了通知者程序，我们可以开始添加方法来执行副作用。
+其中一个副作用是让客户端 _POST_ 一个新的待办事项。
+我们可以通过在通知者程序上添加一个 `addTodo` 方法来做到这一点：
+
+<AutoSnippet {...todoListNotifierAddTodo} />
+
+<!---
+Then, we can invoke this method in our UI using the same `Consumer`/`ConsumerWidget`
+we saw in <Link documentID="essentials/first_request" />:
+-->
+然后，我们可以在 UI 中使用我们在<Link documentID="essentials/first_request" />中看到的相同 `Consumer`/`ConsumerWidget` 调用此方法：
+
+<AutoSnippet raw={consumerAddTodoCall} />
+
+:::info
+<!---
+Notice how we are using `ref.read` instead of `ref.watch` to invoke our method.  
+Although `ref.watch` could technically work, it is recommended to use `ref.read`
+when logic is performed in event handlers such as "onPressed".
+-->
+请注意我们如何使用 `ref.read` 而不是调用 `ref.watch` 的方法。
+虽然在技术上可以工作，但 `ref.watch` 建议在事件处理（如“onPressed”）中执行逻辑时使用 `ref.read`。
+:::
+
+<!---
+We now have a button which makes a _POST_ request when pressed.  
+However, at the moment, our UI does not update to reflect the new todo list.
+We will want our local cache to match the server's state.
+-->
+我们现在有一个按钮，按下时会发出 _POST_ 请求。  
+但是，目前，我们的 UI 不会更新以返回新的待办事项列表。
+我们希望本地缓存与服务器的状态相匹配。
+
+<!---
+There are a few ways to do so with their pros and cons.
+-->
+有几种方法可以做到这一点，下面说说优点和缺点。
+
+<!---
+### Updating our local cache to match the API response
+-->
+### 更新本地缓存以匹配 API 响应
+
+<!---
+A common backend practice is to have the _POST_ request return the new
+state of the resource.  
+In particular, our API would return the new list of todos after adding
+a new todo. One way of doing this is by writing `state = AsyncData(response)`:
+-->
+一种常见的后端做法是让 _POST_ 请求返回资源的新状态。  
+特别是，我们的 API 将在添加新的待办事项后返回新的待办事项列表。
+一种方法是编写 `state = AsyncData(response)`：
+
+<AutoSnippet raw={restAddTodo} />
+
+:::tip 优点
+
+<!---
+- The UI will have the most up-to-date state possible.
+  If another user added a todo, we will see it too.
+- The server is the source of truth.
+  With this approach, the client doesn't need to know where the new todo
+  needs to be inserted in the list of todos.
+- Only a single network-request is needed.
+-->
+- UI 将尽可能具有最新状态。如果其他用户添加了待办事项，我们也会看到它。
+- 服务器是事实的来源。使用这种方法，客户端不需要知道需要在列表的哪个位置插入新的待办事项。
+- 只需要一个网络请求。
+
+:::
+
+:::danger 缺点
+
+<!---
+- This approach will only work if the server is implemented in a specific way.
+  If the server does not return the new state, this approach will not work.
+- May still not be doable if the associated _GET_ request is more complex,
+  such as if it has filters/sorting.
+-->
+- 仅当服务器以特定方式实现时，此方法才有效。如果服务器不返回新状态，则此方法将不起作用。
+- 如果关联的 _GET_ 请求更复杂，例如如果它具有过滤/排序的功能，则可能仍然不可行。
+
+:::
+
+<!---
+### Using `ref.invalidateSelf()` to refresh the provider.
+-->
+### 使用 `ref.invalidateSelf()` 刷新提供者程序。
+
+<!---
+One option is to have our provider re-execute the _GET_ request.  
+This can be done by calling `ref.invalidateSelf()` after the _POST_ request:
+-->
+一种选择是让我们的提供者程序重新执行 _GET_ 请求。  
+这可以通过在 _POST_ 请求之后调用 `ref.invalidateSelf()` 来完成：
+
+<AutoSnippet raw={invalidateSelfAddTodo} />
+
+:::tip 优点
+
+<!---
+- The UI will have the most up-to-date state possible.
+  If another user added a todo, we will see it too.
+- The server is the source of truth.
+  With this approach, the client doesn't need to know where the new todo
+  needs to be inserted in the list of todos.
+- This approach should work regarless of the server implementation.
+  It can be especially useful if your _GET_ request is more complex,
+  such as if it has filters/sorting.
+-->
+- UI 将尽可能具有最新状态。如果其他用户添加了待办事项，我们也会看到它。
+- 服务器是事实的来源。使用这种方法，客户端不需要知道需要在列表的哪个位置插入新的待办事项。
+- 无论服务器实现如何，此方法都应该有效。如果您的 _GET_ 请求更复杂，例如它具有过滤器/排序，则它可能特别有用。
+
+:::
+
+:::danger 缺点
+
+<!---
+- This approach will perform an extra _GET_ request, which may be
+  inefficient.
+-->
+- 此方法将执行额外的 _GET_ 请求，这可能效率低下。
+
+:::
+
+<!---
+### Updating the local cache manually
+-->
+### 手动更新本地缓存
+
+<!---
+Another option is to update the local cache manually.  
+This would involve trying to mimick the backend's behavior.
+For instance, we would need to know whether the backend inserts new items
+at the start or at the end.
+-->
+另一种选择是手动更新本地缓存。  
+这将涉及尝试模仿后端的行为。例如，我们需要知道后端是在开头还是结尾插入新项目。
+
+<AutoSnippet raw={manualAddTodo} />
+
+:::info
+<!---
+This example uses immutable state. This is not required, but recommended.
+See <Link documentID="concepts/why_immutability" /> for more details.  
+If you want to use mutable state instead, you can alternatively do:
+-->
+此示例使用不可变状态。这不是必需的，但建议这样做。
+有关更多详细信息，请参阅<Link documentID="concepts/why_immutability" />。  
+如果要改用可变状态，也可以执行以下操作：
+
+<AutoSnippet raw={mutableManualAddTodo} />
+
+:::
+
+:::tip 优点
+
+<!---
+- This approach should work regarless of the server implementation.
+- Only a single network-request is needed.
+-->
+- 无论服务器实现如何，此方法都应该有效。
+- 只需要一个网络请求。
+
+:::
+
+:::danger 缺点
+
+<!---
+- The local cache may not match the server's state.
+  If another user added a todo, we will not see it.
+- This approach may be more complex to implement and effectively
+  duplicate the backend's logic.
+-->
+- 本地缓存可能与服务器的状态不匹配。如果其他用户添加了待办事项，我们将看不到它。
+- 这种方法的实现和有效地复制后端的逻辑可能更复杂。
+
+:::
+
+<!---
+## Going further: Showing a spinner & error handling
+-->
+## 更进一步：显示下拉加载器和错误处理
+
+<!---
+With all we've seen so far, we have a button which makes a _POST_ request
+when pressed; and when the request is done, the UI updates to reflect
+changes.  
+But at the moment, there is no indication that the request is being
+performed, nor any information if failed.
+-->
+到目前为止我们所看到的一切，我们有一个按钮，当按下时会发出 _POST_ 请求;
+请求完成后，UI 会更新以反映更改。  
+但目前，没有迹象表明请求正在执行，如果失败，也没有任何信息。
+
+<!---
+One way to do so is to store the Future returned by `addTodo`
+in the local widget state, and then listen to that future to show
+a snipper or error message.  
+This is one scenario where [flutter_hooks](https://pub.dev/packages/flutter_hooks)
+comes in handy. But of course, you can also use a `StatefulWidget` instead.
+-->
+一种方法是将返回 `addTodo` 的异步结果存储在本地小部件状态中，
+然后监听该异步状态以显示下拉加载器或错误消息。  
+这时[flutter_hooks](https://pub.dev/packages/flutter_hooks)派上用场的一种情况。
+但是，当然，您也可以使用 `StatefulWidget` 代替。
+
+<!---
+The following snippet shows a progress indicator while
+and operation is pending. And if it failed, renders the button as red:
+-->
+以下代码片段显示了当处于加载状态时，进度指示器和操作处于挂起状态。
+如果失败，则将按钮呈现为红色：
+
+![A button which turns red when the operation failed](/img/essentials/side_effects/spinner.gif)
+
+<AutoSnippet {...renderAddTodo} />

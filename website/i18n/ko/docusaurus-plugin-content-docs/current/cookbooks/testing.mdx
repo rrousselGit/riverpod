@@ -1,46 +1,57 @@
 ---
-title: 테스트
+title: Testing
 ---
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
-import testingOriginalTestFlutter from "!!raw-loader!/i18n/ko/docusaurus-plugin-content-docs/current/cookbooks/testing_original_test_flutter.dart";
-import testingOriginalTestDart from "!!raw-loader!/i18n/ko/docusaurus-plugin-content-docs/current/cookbooks/testing_original_test_dart.dart";
-import repositorySnippet from "!!raw-loader!/i18n/ko/docusaurus-plugin-content-docs/current/cookbooks/testing_repository.dart";
-import testFlutter from "!!raw-loader!/i18n/ko/docusaurus-plugin-content-docs/current/cookbooks/testing_flutter.dart";
-import testDart from "!!raw-loader!/i18n/ko/docusaurus-plugin-content-docs/current/cookbooks/testing_dart.dart";
-import testFull from "!!raw-loader!/i18n/ko/docusaurus-plugin-content-docs/current/cookbooks/testing_full.dart";
-import testOverrideInfo from "!!raw-loader!/i18n/ko/docusaurus-plugin-content-docs/current/cookbooks/testing_override_info.dart";
+import testingOriginalTestFlutter from "!!raw-loader!/docs/cookbooks/testing_original_test_flutter.dart";
+import testingOriginalTestDart from "!!raw-loader!/docs/cookbooks/testing_original_test_dart.dart";
+import repositorySnippet from "!!raw-loader!/docs/cookbooks/testing_repository.dart";
+import testFlutter from "!!raw-loader!/docs/cookbooks/testing_flutter.dart";
+import testDart from "!!raw-loader!/docs/cookbooks/testing_dart.dart";
+import testFull from "!!raw-loader!/docs/cookbooks/testing_full.dart";
+import testOverrideInfo from "!!raw-loader!/docs/cookbooks/testing_override_info.dart";
 import { trimSnippet } from "../../../../../src/components/CodeSnippet";
 
-중, 대규모 애플리케이션에서 테스트는 중요한 작업입니다.
+:::caution
+The content of this page may be outdated.  
+It will be updated in the future, but for now you may want to refer to the content
+in the top of the sidebar instead (introduction/essentials/case-studies/...)
+:::
 
-우리의 앱을 성공적으로 테스트하기 위해서 아래의 몇가지 포인트를 생각해 보아야합니다.
+For any medium to large-scale applications, it is critical to test the application.
 
-- `test`/`testWidgets`간 상태를 공유하지 않습니다.
-  이것은 글로벌 상태를 가지지 않은 앱 또는 모든 글로벌 상태들이 테스트 후에 초기화됨을 의미합니다.
+To successfully test our application, we will want the following things:
 
-- 프로바이더에 특정한 상태를 가질 수 있도록 할 수 있는데, mocking 또는 조작을 통해 원하는 상태로 만들어 줄 수 있습니다.
+- No state should be preserved between `test`/`testWidgets`.  
+  That means no global state in the application, or all global states should reset after each test.
 
-[Riverpod]의 기능을 어떻게 활용할 수 있는지 하나씩 확인해봅시다.
+- Being able to force our providers to have a specific state, either through
+  mocking or by manipulating them until we reach the desired state.
 
-## `test`와`testWidgets`간 상태를 공유(보존)하지 않음.
+Let's see one by one how [Riverpod] helps you with these.
 
-당신은 프로바이더가 전역(글로벌)변수로서 선언되어 사용되기 때문에 이 부분을 걱정할 수 도 있습니다.
-어쨋든, 전역 상태를 만들어 테스팅하는것은  `setUp`/`tearDown`이 많이 요구되기 때문에 매우 까다롭습니다.
+## No state should be preserved between `test`/`testWidgets`.
 
-그러나 실제로는 프로바이더가 전역(상태변수)로서 선언되는 동안 프로바이더의 상태는 전역이**아닙니다**.
+Since providers are usually declared as global variables, you might worry about
+that one.  
+After all, global state makes testing very difficult, because it can require
+lengthy `setUp`/`tearDown`.
 
-대신에, 상태들은 [ProviderContainer]의 객체 이름을 가지고 저장됩니다. 
-Dart만 사용하는 경우(dart-only)의 샘플 코드에서 [ProviderContainer]객체를 보셨을 수 있습니다. 
-만약 모르고 있었다면 [ProviderContainer] 객체는 암묵적으로 우리의 프로젝트에서 [Riverpod]을 사용하기위해 
-사용하는 위젯 [ProviderScope]에 의해 생성됩니다. 
+But the reality is: While providers are declared as globals, the state of a provider
+is **not** global.
 
-구체적으로, 상태가 글로벌(전역)이 아니라는 것은 프로바이더를 사용하는 2개의 `testWidgets` 간 상태는 공유되지 않습니다.
-엄밀히 말해서 `setUp`/`tearDown`을 모두 필요로 하지 않습니다. 
+Instead, it is stored in an object named [ProviderContainer], which you may have
+seen if you looked at the dart-only examples.  
+If you haven't, know that this [ProviderContainer] object is implicitly created
+by [ProviderScope], the widget that enables [Riverpod] on our project.
 
-길게 설정하는것보다 예제로 확인해보도록 합시다.
+Concretely what this means is, two `testWidgets` using providers do not share
+any state.  
+As such, there is no need for any `setUp`/`tearDown` at all.
+
+But an example is better than lengthy explanations:
 
 <Tabs
   defaultValue="testWidgets"
@@ -61,27 +72,35 @@ Dart만 사용하는 경우(dart-only)의 샘플 코드에서 [ProviderContainer
 </TabItem>
 </Tabs>
 
-보았듯이 `counterProvider`가 전역상태번수로 선언되어 있음에도 테스트 간 상태는 공유되지 않습니다. 
-그래서 우리는 각각의 테스트가 독립된 환경에서 실행되지 때문에 실행순서에 따라 테스트 결과가 달라지는 것을 걱정하지 않아도 됩니다. 
+As you can see, while `counterProvider` was declared as a global, no state was
+shared between tests.  
+As such, we do not have to worry about our tests potentially behaving differently
+if executed in a different order, since they are running in complete isolation.
 
-## 테스트 하는동안 프로바이더의 동작을 오버라이딩 하는 경우.
-
-통상적인 현실세계의 애플리케이션은 아래와 같은 객체를 가지고 있다고 생각합니다. 
+## Overriding the behavior of a provider during tests.
 
 A common real-world application may have the following objects:
 
-- 타입세이프(a type-safe)와 HTTP 요청 수행 기능을 제공하는 `Repository` 클래스를 가지고 있습니다.
+- It will have a `Repository` class, which provides a type-safe and simple API
+  to perform HTTP requests.
 
-- 앱 상태를 관리하고 `Repository`를 사용해 다양한 조건을 기반으로 한 HTTP 요청을 수행하는 객체를 가지고 있습니다. 이것은 아마도  `ChangeNotifier`, `Bloc` 또는 프로바이더 일것입니다.
+- An object that manages the application state, and may use `Repository` to perform
+  HTTP requests based on different factors.
+  This may be a `ChangeNotifier`, `Bloc`, or even a provider.
 
-[Riverpod]을 사용하면 아래와 같이 표현 할 수 있습니다. 
+Using [Riverpod], this may be represented as follows:
 
 <CodeBlock>{trimSnippet(repositorySnippet)}</CodeBlock>
 
-이 상황에서는 a unit/widget test를 만들때, `Repository` 인스턴스를 실제 HTTP요청 대신에 사전 정의된 응답을 반환하는 fake 구현 레포지토리로 대체합니다. 
-`todoListProvider` 또는 `Repository`의 구현된 mock과 동등한 객체를 사용합니다. 
+In this situation, when making a unit/widget test, we will typically want to
+replace our `Repository` instance with a fake implementation that returns
+a pre-defined response instead of making a real HTTP request.
 
-이를 달성하기위해서, `repositoryProvider`의 행위를 오버라이드 하기위해 [ProviderScope]/[ProviderContainer]의 `overrides` 파라미터를 사용할 수 있습니다. 
+We will then want our `todoListProvider` or equivalent to use the mocked implementation
+of `Repository`.
+
+To achieve this, we can use the `overrides` parameter of [ProviderScope]/[ProviderContainer]
+to override the behavior of `repositoryProvider`:
 
 <Tabs
   defaultValue="ProviderScope"
@@ -102,27 +121,30 @@ A common real-world application may have the following objects:
 </TabItem>
 </Tabs>
 
-하이라이트된 코드를 확인해보면, [ProviderScope]/[ProviderContainer]는 다른 동작을 하는 프로바이더의 구현체로 교체할 수 있는것을 허용합니다. 
-
+As you can see by the highlighted code, [ProviderScope]/[ProviderContainer]
+allows replacing the implementation of a provider with a different behavior.
 
 :::info
-프로바이더에 따라 프로바이더가 가지는 동작을 오버라이드하기 위해 간단한 방법을 노출합니다.
-예를 들어 [FutureProvider]는 `AsyncValue`와 함께 프로바이더를 오버라이딩 할 수 있습니다. 
+Some providers expose simplified ways to override their behavior.  
+For example, [FutureProvider] allows overriding the provider with an `AsyncValue`:
 
 <CodeBlock>{trimSnippet(testOverrideInfo)}</CodeBlock>
+
+**Note**: As part of the 2.0.0 release, `overrideWithValue` methods are temporarily
+removed. They will be added back in later versions.
 
 :::
 
 :::info
-프로바이더를 오버라이딩하기 위해 사용하는 `family` 수식자와 구문이 조금 차이가 있습니다.
+The syntax for overriding a provider with the `family` modifier is slightly different.
 
-만약 아래와 같이 프로바이더를 사용한다면 
+If you used a provider like this:
 
 ```dart
 final response = ref.watch(myProvider('12345'));
 ```
 
-아래와 같이 프로바이더를 오버라이드할 수 있습니다.
+You could override the provider as:
 
 ```dart
 myProvider('12345').overrideWithValue(...));
@@ -130,9 +152,9 @@ myProvider('12345').overrideWithValue(...));
 
 :::
 
-## 모든 위젯 테스트 예제 Full widget test example
+## Full widget test example
 
-마지막으로 위의 내용을 정리한 모든 테스트 코드를 확인해봅시다.
+Wrapping up, here is the entire full code for our Flutter test.
 
 <CodeBlock>{trimSnippet(testFull)}</CodeBlock>
 

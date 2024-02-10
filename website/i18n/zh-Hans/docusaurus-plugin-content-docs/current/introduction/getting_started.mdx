@@ -1,0 +1,296 @@
+---
+title: 入门指南
+pagination_next: essentials/first_request
+version: 4
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import pubspec from "./getting_started/pubspec";
+import dartHelloWorld from "./getting_started/dart_hello_world";
+import pubadd from "./getting_started/pub_add";
+import helloWorld from "./getting_started/hello_world";
+import dartPubspec from "./getting_started/dart_pubspec";
+import dartPubadd from "./getting_started/dart_pub_add";
+import {
+  AutoSnippet,
+  When,
+} from "@site/src/components/CodeSnippet";
+import { Link } from "@site/src/components/Link";
+
+<!---
+## Try Riverpod online
+-->
+## 在线尝试 Riverpod
+
+<!---
+To get a feel of Riverpod, try it online on [Dartpad](https://dartpad.dev/?null_safety=true&id=ef06ab3ce0b822e6cc5db0575248e6e2)
+or on [Zapp](https://zapp.run/new):
+-->
+要尝试 Riverpod，请在 [Dartpad](https://dartpad.dev/?null_safety=true&id=ef06ab3ce0b822e6cc5db0575248e6e2) 
+或 [Zapp](https://zapp.run/new) 上在线试用：
+
+<iframe
+  src="https://zapp.run/edit/zv2060sv306?theme=dark&lazy=false"
+  style={{ width: "100%", border: 0, overflow: "hidden", aspectRatio: "1.5" }}
+></iframe>
+
+<!---
+## Installing the package
+-->
+## 安装包
+
+<!---
+Once you know what package you want to install, proceed to add the dependency to your app in a single line like this:
+-->
+知道要安装哪个包后，请继续在一行中将依赖项添加到应用，如下所示：
+
+<Tabs
+  groupId="riverpod"
+  defaultValue="flutter_riverpod"
+  values={[
+    { label: 'Flutter', value: 'flutter_riverpod', },
+    { label: 'Dart only', value: 'riverpod', },
+  ]}
+>
+<TabItem value="flutter_riverpod">
+
+<AutoSnippet {...pubadd}></AutoSnippet>
+
+</TabItem>
+
+<TabItem value="riverpod">
+
+<AutoSnippet {...dartPubadd}></AutoSnippet>
+
+</TabItem>
+
+</Tabs>
+
+<!---
+Alternatively, you can manually add the dependency to your app from within your `pubspec.yaml`:
+-->
+或者，您可以从以下 pubspec.yaml 位置手动将依赖项添加到您的应用：
+
+<Tabs
+  groupId="riverpod"
+  defaultValue="flutter_riverpod"
+  values={[
+    { label: 'Flutter', value: 'flutter_riverpod', },
+    { label: 'Dart only', value: 'riverpod', },
+  ]}
+>
+<TabItem value="flutter_riverpod">
+
+<AutoSnippet title="pubspec.yaml" language="yaml" {...pubspec}></AutoSnippet>
+
+<!---
+Then, install packages with `flutter pub get`.
+-->
+然后，使用 `flutter pub get` 安装包。
+
+<!---
+<When codegen={true}>
+  You can now run the code-generator with{" "}
+  <code>dart run build_runner watch</code>.
+</When>
+-->
+<When codegen={true}>
+  现在你可以运行代码生成工具 {" "} 
+  <code>dart run build_runner watch</code>.
+</When>
+
+</TabItem>
+<TabItem value="riverpod">
+
+<AutoSnippet
+  title="pubspec.yaml"
+  language="yaml"
+  {...dartPubspec}
+></AutoSnippet>
+
+<!---
+Then, install packages with `dart pub get`.
+-->
+然后，使用 `dart pub get` 安装包。
+
+<!---
+<When codegen={true}>
+  You can now run the code-generator with{" "}
+  <code>flutter pub run build_runner watch</code>.
+</When>
+-->
+<When codegen={true}>
+  现在你可以运行代码生成工具 {" "} 
+  <code>dart run build_runner watch</code>.
+</When>
+
+</TabItem>
+</Tabs>
+
+<!---
+That's it. You've added [Riverpod] to your app!
+-->
+就是这样。你已将 [Riverpod] 添加到你的应用中！
+
+<!---
+## Enabling riverpod_lint/custom_lint
+-->
+## 启用 riverpod_lint/custom_lint
+
+<!---
+Riverpod comes with an optional [riverpod_lint]
+package that provides lint rules to help you write better code, and
+provide custom refactoring options.
+-->
+Riverpod 附带一个可选的 riverpod_lint 包，
+该包提供 lint 规则以帮助您编写更好的代码，
+并提供自定义重构选项。
+
+<!---
+The package should already be installed if you followed the previous steps, but a
+separate step is necessary to enable it.
+-->
+如果按照前面的步骤操作，则应该已经安装了该包，
+但需要单独的步骤才能启用它。
+
+<!---
+To enable [riverpod_lint], you need add an `analysis_options.yaml` placed next to
+your `pubspec.yaml` and include the following:
+-->
+要启用riverpod_lint，您需要在 `pubspec.yaml` 文件的旁边添加一个
+`analysis_options.yaml` 文件，并包含以下内容：
+
+<CodeBlock language="yaml" title="analysis_options.yaml">
+  {`analyzer:
+  plugins:
+    - custom_lint`}
+</CodeBlock>
+
+<!---
+You should now see warnings in your IDE if you made mistakes when using Riverpod
+in your codebase.
+-->
+现在，如果在代码库中使用 Riverpod 时出错，您应该会在 IDE 中看到警告。
+
+<!---
+To see the full list of warnings and refactorings, head to the [riverpod_lint] page.
+-->
+要查看警告和重构的完整列表，请前往 [riverpod_lint] 页面。
+
+<!---
+:::note
+Those warnings will not show-up in the `dart analyze` command.  
+If you want to check those warnings in the CI/terminal, you can run the following:
+-->
+:::note
+这些警告不会显示在 `dart analyze` 命令的结果中。
+如果要在 CI 或终端中检查这些警告，可以运行以下命令：
+
+```sh
+dart run custom_lint
+```
+
+:::
+
+<!---
+## Usage example: Hello world
+-->
+## 使用示例：Hello world
+
+<!---
+Now that we have installed [Riverpod], we can start using it.
+-->
+现在我们已经安装了 [Riverpod]，我们可以开始使用它了。
+
+<!---
+The following snippets showcase how to use our new dependency to make a "Hello world":
+-->
+以下代码片段展示了如何使用我们的新依赖项来创建 “Hello world”：
+
+export const foo = 42;
+
+<Tabs
+  groupId="riverpod"
+  defaultValue="flutter_riverpod"
+  values={[
+    { label: "Flutter", value: "flutter_riverpod" },
+    { label: "Dart only", value: "riverpod" },
+  ]}
+>
+<TabItem value="flutter_riverpod">
+
+<AutoSnippet
+  title="lib/main.dart"
+  language="dart"
+  {...helloWorld}
+></AutoSnippet>
+
+<!---
+Then, start the application with `flutter run`.  
+This will render "Hello world" on your device.
+-->
+然后，使用 `flutter run` 启动应用程序。  
+这将在您的设备上呈现 “Hello world”。
+
+</TabItem>
+<TabItem value="riverpod">
+
+<AutoSnippet
+  title="lib/main.dart"
+  language="dart"
+  {...dartHelloWorld}
+></AutoSnippet>
+
+<!---
+Then, start the application with `dart lib/main.dart`.  
+This will print "Hello world" in the console.
+-->
+然后，使用 `dart lib/main.dart` 启动应用程序。  
+这将在控制台中打印 “Hello world”。
+
+</TabItem>
+</Tabs>
+
+<!---
+## Going further: Installing code snippets
+-->
+## 更进一步：安装代码片段
+
+<!---
+If you are using `Flutter` and `VS Code` , consider using [Flutter Riverpod Snippets](https://marketplace.visualstudio.com/items?itemName=robert-brunhage.flutter-riverpod-snippets)
+-->
+如果你使用的 `Flutter` 是 `VS Code` ，请考虑使用 [Flutter Riverpod Snippets](https://marketplace.visualstudio.com/items?itemName=robert-brunhage.flutter-riverpod-snippets)
+
+<!---
+If you are using `Flutter` and `Android Studio` or `IntelliJ`, consider using [Flutter Riverpod Snippets](https://plugins.jetbrains.com/plugin/14641-flutter-riverpod-snippets)
+-->
+如果您使用的 `Flutter` 是 `Android Studio` 或 `IntelliJ` ，请考虑使用 [Flutter Riverpod Snippets](https://plugins.jetbrains.com/plugin/14641-flutter-riverpod-snippets)
+
+![img](/img/snippets/greetingProvider.gif)
+
+<!---
+## Choose your next step
+-->
+## 选择你的下一步
+
+<!---
+Learn some basic concepts:
+-->
+了解一些基本概念：
+
+- <Link documentID="concepts/providers" />
+
+<!---
+Follow a cookbook:
+-->
+跟着教程走：
+
+- <Link documentID="cookbooks/testing" />
+
+[riverpod]: https://github.com/rrousselgit/riverpod
+[hooks_riverpod]: https://pub.dev/packages/hooks_riverpod
+[flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
+[flutter_hooks]: https://github.com/rrousselGit/flutter_hooks
+[riverpod_lint]: https://pub.dev/packages/riverpod_lint

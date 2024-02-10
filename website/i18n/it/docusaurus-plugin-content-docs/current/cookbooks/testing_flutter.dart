@@ -18,7 +18,6 @@ class FakeRepository {}
 
 void main() {
 /* SNIPPET START */
-
   testWidgets('override repositoryProvider', (tester) async {
     await tester.pumpWidget(
       ProviderScope(
@@ -35,6 +34,5 @@ void main() {
       ),
     );
   });
-
 /* SNIPPET END */
 }

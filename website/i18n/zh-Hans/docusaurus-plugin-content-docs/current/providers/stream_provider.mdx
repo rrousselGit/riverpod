@@ -2,33 +2,54 @@
 title: StreamProvider
 ---
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
-import { trimSnippet } from "../../../../../src/components/CodeSnippet";
-import streamProvider from "!!raw-loader!/docs/providers/stream_provider/live_stream_chat_provider.dart";
+import { trimSnippet,AutoSnippet } from "@site/src/components/CodeSnippet";
+import streamProvider from "./stream_provider/live_stream_chat_provider";
 import streamConsumer from "!!raw-loader!/docs/providers/stream_provider/live_stream_chat_consumer.dart";
+
+:::caution
+<!---
+The content of this page may be outdated.  
+It will be updated in the future, but for now you may want to refer to the content
+in the top of the sidebar instead (introduction/essentials/case-studies/...)
+-->
+本页内容可能已经过时。  
+今后会进行更新，但目前您可能需要参考侧边栏顶部的内容（介绍/要点/应用案例/......）。
+:::
 
 `StreamProvider` is similar to [FutureProvider] but for [Stream]s instead of
 [Future]s.
-`FutureProvider` 与 [Provider] 类似，但用在 [Stream] 中而不是 [Future]。
 
-`StreamProvider` 一般用于：
+`StreamProvider` is usually used for:
 
-- 监听Firebase或web-sockets
-- 每隔几秒重建另一个provider
+- listening to Firebase or web-sockets
+- rebuilding another provider every few seconds
 
-由于 [Stream] 自然地公开了一种监听更新的方式，一些人可能认为使用 `StreamProvider` 没什么用。
-特别是，你可能认为Flutter的 [StreamBuilder]  可以很好地用于监听流，但这是错误的。
+Since [Stream]s naturally expose a way for listening to updates, some may think
+that using `StreamProvider` has a low value. In particular, you may believe that
+Flutter's [StreamBuilder] would work just as well for listening to a [Stream], but
+this is a mistake.
 
-在 [StreamBuilder] 上使用 `StreamProvider` 有很多好处：
+Using `StreamProvider` over [StreamBuilder] has numerous benefits:
 
-- 它允许其他provider使用 [ref.watch] 监听流。
-- 多亏了 [AsyncValue] ，它能确保加载和错误情况得到正确处理。
-- 它消除了必须区分广播流和普通流的需要。
-- 它缓存由流发出的最新值，确保如果在事件发出后添加监听器，
-  监听器仍然可以立即访问最新的事件。
-- 它允许在测试期间通过覆盖 `StreamProvider` 轻松地模拟流。
+- it allows other providers to listen to the stream using [ref.watch].
+- it ensures that loading and error cases are properly handled, thanks to [AsyncValue].
+- it removes the need for having to differentiate broadcast streams vs normal streams.
+- it caches the latest value emitted by the stream, ensuring that if a
+  listener is added after an event is emitted, the listener will still have
+  immediate access to the most up-to-date event.
+- it allows easily mocking the stream during tests by overriding the `StreamProvider`.
+
+## Usage example: live chat using sockets
+
+`StreamProvider` is used in when we handle stream of asynchronous data
+such as Video Streaming, Weather broadcasting Apis or Live chat as follows:
+
+<AutoSnippet language="dart" {...streamProvider}></AutoSnippet>
+
+Then, the UI can listen to live streaming chats like so:
+
+<CodeBlock>{trimSnippet(streamConsumer)}</CodeBlock>
 
 [ref.watch]: ../concepts/reading#using-refwatch-to-observe-a-provider
 [statenotifierprovider]: ./state_notifier_provider
@@ -40,13 +61,3 @@ import streamConsumer from "!!raw-loader!/docs/providers/stream_provider/live_st
 [stream.periodic]: https://api.dart.dev/stable/2.15.1/dart-async/Stream/Stream.periodic.html
 [family]: ../concepts/modifiers/family
 [streambuilder]: https://api.flutter.dev/flutter/widgets/StreamBuilder-class.html
-
-## 用法示例：使用套接字的实时聊天
-
-`StreamProvider` 用于处理异步数据流，如视频流、天气广播Api。
-
-<CodeBlock>{trimSnippet(streamProvider)}</CodeBlock>
-
-然后，UI就可以像这样聊天了：
-
-<CodeBlock>{trimSnippet(streamConsumer)}</CodeBlock>

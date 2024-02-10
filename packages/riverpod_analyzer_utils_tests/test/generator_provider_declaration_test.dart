@@ -214,7 +214,7 @@ int sixth(SixthRef ref) => 0;
 
     expect(
       errors[5].message,
-      'Failed to parse dependency Type (int*)',
+      'Failed to parse dependency Type (int)',
     );
     expect(errors[5].targetElement?.toString(), 'int sixth(InvalidType ref)');
   });

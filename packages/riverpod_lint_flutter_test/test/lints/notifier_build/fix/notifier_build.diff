@@ -1,0 +1,16 @@
+Message: `Add build method`
+Priority: 80
+Diff for file `test/lints/notifier_build/fix/notifier_build.dart:8`:
+```
+@riverpod
+// expect_lint: notifier_build
+- class ExampleProvider1 extends _$ExampleProvider1 {}
++ class ExampleProvider1 extends _$ExampleProvider1 {
++   @override
++   dynamic build() {
++     // TODO: implement build
++     throw UnimplementedError();
++   }
++ }
+```
+---

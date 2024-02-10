@@ -16,8 +16,6 @@ class HomeView extends ConsumerWidget {
         onPressed: () {
           // We're updating the state from the previous value, we ended-up reading
           // the provider twice!
-          // Stiamo aggiornando lo stato dal valore precedente, siamo finiti per
-          // leggere il provider due volte!
           ref.read(counterProvider.notifier).state = ref.read(counterProvider.notifier).state + 1;
         },
       ),

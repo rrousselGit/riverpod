@@ -5,48 +5,48 @@ import 'package:riverpod/riverpod.dart';
 
 /* SNIPPET START */
 
-// Un contatore implementato e testato solo con Dart (nessuna dipendenza da Flutter)
+// A Counter implemented and tested with Dart only (no dependency on Flutter)
 
-// Abbiamo dichiarato un provider globalmente e lo useremo in due test
-// per vedere se lo stato si resetta correttamente a `0` tra i test.
+// We declared a provider globally, and we will use it in two tests, to see
+// if the state correctly resets to `0` between tests.
 
 final counterProvider = StateProvider((ref) => 0);
 
-// Usiamo 'mockito' per tener traccia di quando un provider notifica i suoi listener
+// Using mockito to keep track of when a provider notify its listeners
 class Listener extends Mock {
   void call(int? previous, int value);
 }
 
 void main() {
   test('defaults to 0 and notify listeners when value changes', () {
-    // Un oggetto che ci permetterà di leggere i provider
-    // Non viene condiviso tra i test.
+    // An object that will allow us to read providers
+    // Do not share this between tests.
     final container = ProviderContainer();
     addTearDown(container.dispose);
     final listener = Listener();
 
-    // Osserva un provider e ne spia i cambiamenti
+    // Observe a provider and spy the changes.
     container.listen<int>(
       counterProvider,
       listener.call,
       fireImmediately: true,
     );
 
-    // Il listener è chiamato immediatamente con 0, il valore di default
+    // the listener is called immediately with 0, the default value
     verify(listener(null, 0)).called(1);
     verifyNoMoreInteractions(listener);
 
-    // Incrementiamo il valore
+    // We increment the value
     container.read(counterProvider.notifier).state++;
 
-    // Il listener è chiamato di nuovo ma questa volta con valore 1
+    // The listener was called again, but with 1 this time
     verify(listener(0, 1)).called(1);
     verifyNoMoreInteractions(listener);
   });
 
   test('the counter state is not shared between tests', () {
-    // Usiamo un ProviderContainer diverso per leggere il nostro provider.
-    // Ciò assicura che nessun stato sia riusato tra i test
+    // We use a different ProviderContainer to read our provider.
+    // This ensure that no state is reused between tests
     final container = ProviderContainer();
     addTearDown(container.dispose);
     final listener = Listener();
@@ -57,7 +57,7 @@ void main() {
       fireImmediately: true,
     );
 
-    // Il nuovo test usa correttamente il valore di default 0
+    // The new test correctly uses the default value: 0
     verify(listener(null, 0)).called(1);
     verifyNoMoreInteractions(listener);
   });

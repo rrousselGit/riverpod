@@ -1,53 +1,54 @@
 ---
-title: ^0.14.0 to ^1.0.0
+title: ^0.14.0에서 ^1.0.0
 ---
 
-After a long wait, the first stable version of Riverpod is finally released 👏
+import { Link } from "../../../../../src/components/Link";
 
-To see the full list of changes, consult the [Changelog](https://pub.dev/packages/flutter_riverpod/changelog#100).  
-In this page, we will focus on how to migrate an existing Riverpod application
-from version 0.14.x to version 1.0.0.
 
-## Using the migration tool to automatically upgrade your project to the new syntax
+오랜 기다림 끝에 드디어 리버팟의 첫 번째 안정 버전이 출시되었습니다 👏.
 
-Before explaining the various changes, it is worth noting that Riverpod comes with
-a command-line tool to automatically migrate your project for you.
+전체 변경 목록을 보려면 [변경 로그](https://pub.dev/packages/flutter_riverpod/changelog#100)를 참조하세요.  
+이 페이지에서는 기존 리버Riverpod드 애플리케이션을 버전 0.14.x에서 버전 1.0.0으로 마이그레이션하는 방법에 대해 중점적으로 설명합니다.
 
-### Installing the command line tool
+## 마이그레이션 도구를 사용하여 프로젝트를 새 구문으로 자동 업그레이드하기
 
-To install the migration tool, run:
+다양한 변경 사항을 설명하기 전에, Riverpod에는 프로젝트를 자동으로 마이그레이션할 수 있는 명령줄 도구가 함께 제공된다는 점을 알아둘 필요가 있습니다.
+
+### 명령줄 도구 설치하기
+
+마이그레이션 도구를 설치하려면 다음을 실행합니다:
 
 ```sh
 dart pub global activate riverpod_cli
 ```
 
-You should now be able to run:
+이제 실행할 수 있을 것입니다:
 
 ```sh
 riverpod --help
 ```
 
-### Usage
+### 사용법
 
-Now that the command line is installed, we can start using it.
+이제 명령줄이 설치되었으므로 사용을 시작할 수 있습니다.
 
-- First, open the project you want to migrate in your terminal.
-- **Do not** upgrade Riverpod.  
-  The migration tool will upgrade the version of Riverpod for you.
+- 먼저 터미널에서 마이그레이션하려는 프로젝트를 엽니다.
+- **Do not** Riverpod을 업그레이드하지 마세요.  
+  마이그레이션 도구가 Riverpod의 버전을 업그레이드해 줍니다.
 
   :::danger
-  Not upgrading Riverpod is important.  
-  The tool will not execute properly if you have already installed version 1.0.0.
-  As such, make sure that you are properly using an older version before starting the tool.
+  Riverpod을 업그레이드하지 않는 것이 중요합니다.  
+  이미 버전 1.0.0을 설치한 경우 도구가 제대로 실행되지 않습니다.
+  따라서 도구를 시작하기 전에 이전 버전을 제대로 사용하고 있는지 확인하세요.
   :::
 
-- Make sure that your project does not contain errors.
-- Execute:
+- 프로젝트에 오류가 없는지 확인합니다.
+- 실행:
   ```sh
   riverpod migrate
   ```
 
-The tool will then analyze your project and suggest changes. For example you may see:
+그러면 도구가 프로젝트를 분석하고 변경 사항을 제안합니다. 예를 들면 다음과 같습니다:
 
 ```diff
 -Widget build(BuildContext context, ScopedReader watch) {
@@ -59,26 +60,23 @@ The tool will then analyze your project and suggest changes. For example you may
 Accept change (y = yes, n = no [default], A = yes to all, q = quit)?
 ```
 
-To accept the change, simply press <kbd>y</kbd>. Otherwise to reject it, press <kbd>n</kbd>.
+변경을 수락하려면 <kbd>Y</kbd>를 누르면 됩니다. 변경을 거부하려면 <kbd>n</kbd>을 누르세요.
 
-## The changes
+## 변경사항
 
-Now that we've seen how to use the CLI to automatically upgrade your project,
-let's see in detail the changes necessary.
+이제 CLI를 사용하여 프로젝트를 자동으로 업그레이드하는 방법을 살펴봤으니 필요한 변경 사항을 자세히 살펴봅시다.
 
-### Syntax unification
+### 구문(Syntax) 통합
 
-Version 1.0.0 of Riverpod focused on the unification of the syntax for
-interacting with providers.  
-Before, Riverpod had many similar yet different syntaxes for reading a provider,
-such as `ref.watch(provider)` vs `useProvider(provider)` vs `watch(provider)`.  
-With version 1.0.0, only one syntax remains: `ref.watch(provider)`. The
-others were removed.
+리버포드 버전 1.0.0은 providers와 상호작용하기 위한 구문을 통합하는 데 중점을 두었습니다.  
+이전에는 `ref.watch(provider)` 대 `useProvider(provider)` 대 `watch(provider)`와 같이 provider를 읽는 구문이 비슷하지만 서로 다른 구문이 많았습니다.  
+버전 1.0.0에서는 구문이 하나만 남았습니다: ref.watch(provider)`. 나머지는 제거되었습니다.
 
-As such:
+따라서:
 
-- `useProvider` is removed in favor of `HookConsumerWidget`.
-  Before:
+- `useProvider`가 제거되고 `HookConsumerWidget`이 대신 사용됩니다.
+
+  이전:
 
   ```dart
   class Example extends HookWidget {
@@ -91,7 +89,7 @@ As such:
   }
   ```
 
-  After:
+  변경후:
 
   ```dart
   class Example extends HookConsumerWidget {
@@ -104,8 +102,9 @@ As such:
   }
   ```
 
-- The prototype of `ConsumerWidget`'s `build` and `Consumer`'s `builder` changed.
-  Before:
+- `ConsumerWidget`의 `build` 와 `Consumer`의 `builder`의 프로토타입이 변경되었습니다.
+ 
+  이전:
 
   ```dart
   class Example extends ConsumerWidget {
@@ -124,7 +123,7 @@ As such:
   )
   ```
 
-  After:
+  변경후:
 
   ```dart
   class Example extends ConsumerWidget {
@@ -143,8 +142,9 @@ As such:
   )
   ```
 
-- `context.read` is removed in favor of `ref.read`.
-  Before:
+- `context.read`가 `ref.read`로 대체되어 제거됩니다.
+
+  이전:
 
   ```dart
   class Example extends StatelessWidget {
@@ -157,7 +157,7 @@ As such:
   }
   ```
 
-  After:
+  변경후:
 
   ```dart
   class Example extends ConsumerWidget {
@@ -170,15 +170,15 @@ As such:
   }
   ```
 
-### StateProvider update
+### StateProvider 업데이트
 
-[StateProvider] was updated to match [StateNotifierProvider].
+[StateProvider]가 [StateNotifierProvider]와 일치하도록 업데이트 되었습니다.
 
-Before, doing `ref.watch(StateProvider)` returned a `StateController` instance.
-Now it only returns the state of the `StateController`.
+이전에는 `ref.watch(StateProvider)`를 실행하면 `StateController` 인스턴스가 반환되었습니다.
+이제 `StateController`의 상태만 반환합니다.
 
-To migrate you have a few solutions.  
-If your code only obtained the state without modifying it, you can change from:
+마이그레이션을 위한 몇 가지 솔루션이 있습니다.  
+코드를 수정하지 않고 상태만 가져온 경우 다음에서 변경할 수 있습니다:
 
 ```dart
 final provider = StateProvider<int>(...);
@@ -192,7 +192,7 @@ Consumer(
 )
 ```
 
-to:
+에서 다음과 같이:
 
 ```dart
 final provider = StateProvider<int>(...);
@@ -206,7 +206,7 @@ Consumer(
 )
 ```
 
-Alternatively you can use the new `StateProvider.state` to keep the old behavior.
+또는 새로운 `StateProvider.state`를 사용하여 이전 동작을 유지할 수 있습니다.
 
 ```dart
 final provider = StateProvider<int>(...);

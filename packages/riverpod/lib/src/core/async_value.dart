@@ -160,12 +160,33 @@ sealed class AsyncValue<T> {
   ///     });
   ///   }
   /// }
+  ///
+  /// An optional callback can be specified to catch errors only under a certain condition.
+  /// In the following example, we catch all exceptions beside FormatExceptions.
+  ///
+  /// ```dart
+  ///   AsyncValue.guard(
+  ///    () async { /* ... */ },
+  ///     // Catch all errors beside [FormatException]s.
+  ///    (err) => err is! FormatException,
+  ///   );
+  /// }
   /// ```
-  static Future<AsyncValue<T>> guard<T>(Future<T> Function() future) async {
+  static Future<AsyncValue<T>> guard<T>(
+    Future<T> Function() future, [
+    bool Function(Object)? test,
+  ]) async {
     try {
       return AsyncValue.data(await future());
     } catch (err, stack) {
-      return AsyncValue.error(err, stack);
+      if (test == null) {
+        return AsyncValue.error(err, stack);
+      }
+      if (test(err)) {
+        return AsyncValue.error(err, stack);
+      }
+
+      Error.throwWithStackTrace(err, stack);
     }
   }
 
