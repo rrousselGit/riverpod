@@ -102,6 +102,7 @@ final class GenericFamily extends Family {
   @override
   String toString() => r'genericProvider';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     Stream<List<T>> Function<T extends num>(GenericRef<T> ref) create,
   ) {
@@ -370,6 +371,7 @@ final class FamilyFamily extends Family {
   @override
   String toString() => r'familyProvider';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     Stream<String> Function(
       FamilyRef ref,
@@ -514,6 +516,7 @@ final class GenericClassFamily extends Family {
   @override
   String toString() => r'genericClassProvider';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     GenericClass<T> Function<T extends num>() create,
   ) {
@@ -527,6 +530,7 @@ final class GenericClassFamily extends Family {
     );
   }
 
+  /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
     Stream<List<T>> Function<T extends num>(
             Ref<AsyncValue<List<T>>> ref, GenericClass<T> notifier)
@@ -802,6 +806,7 @@ final class FamilyClassFamily extends Family {
   @override
   String toString() => r'familyClassProvider';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     FamilyClass Function(
       (
@@ -833,6 +838,7 @@ final class FamilyClassFamily extends Family {
     );
   }
 
+  /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
     Stream<String> Function(
             Ref<AsyncValue<String>> ref,

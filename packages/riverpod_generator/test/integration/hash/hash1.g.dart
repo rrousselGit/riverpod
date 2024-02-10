@@ -35,6 +35,14 @@ final class SimpleProvider
   @override
   String debugGetCreateSourceHash() => _$simpleHash();
 
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
+  }
+
   @override
   $ProviderElement<String> createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
@@ -86,6 +94,14 @@ final class Simple2Provider
   @override
   String debugGetCreateSourceHash() => _$simple2Hash();
 
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
+  }
+
   @override
   $ProviderElement<String> createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
@@ -128,6 +144,14 @@ final class SimpleClassProvider extends $NotifierProvider<SimpleClass, String> {
 
   @override
   String debugGetCreateSourceHash() => _$simpleClassHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
+  }
 
   @$internal
   @override

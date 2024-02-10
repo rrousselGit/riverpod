@@ -35,6 +35,14 @@ final class KeepAliveProvider
   @override
   String debugGetCreateSourceHash() => _$keepAliveHash();
 
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
@@ -86,6 +94,14 @@ final class NotKeepAliveProvider
   @override
   String debugGetCreateSourceHash() => _$notKeepAliveHash();
 
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
@@ -136,6 +152,14 @@ final class DefaultKeepAliveProvider
 
   @override
   String debugGetCreateSourceHash() => _$defaultKeepAliveHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
 
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>

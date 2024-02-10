@@ -152,6 +152,7 @@ ${provider.doc} final class $name$_genericsDefinition
 
     _writeGenericCopyWith(buffer, copyParameters: copyParameters);
     _writeToString(buffer);
+    _writeOverrideWithValue(buffer);
 
     switch (provider) {
       case FunctionalProviderDeclaration():
@@ -218,6 +219,20 @@ ${provider.doc} final class $name$_genericsDefinition
     }
 
     _writeEqual(buffer);
+  }
+
+  void _writeOverrideWithValue(StringBuffer buffer) {
+    if (provider.createdType != SupportedCreatedType.value) return;
+
+    buffer.writeln('''
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(${provider.exposedTypeDisplayString} value) {
+    return \$ProviderOverride(
+      origin: this,
+      providerOverride: \$ValueProvider<${provider.exposedTypeDisplayString}>(value),
+    );
+  }
+''');
   }
 
   void _writeGenericCopyWith(

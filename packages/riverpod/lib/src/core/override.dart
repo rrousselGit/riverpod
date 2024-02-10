@@ -67,7 +67,7 @@ class $ProviderOverride implements _ProviderOverride {
   @override
   String toString() {
     switch (providerOverride) {
-      case ValueProvider(:final _value):
+      case $ValueProvider(:final _value):
         return '$origin.overrideWithValue($_value)';
       default:
         return '$origin.overrideWith(...)';

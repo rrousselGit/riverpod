@@ -102,6 +102,7 @@ final class GenericFamily extends Family {
   @override
   String toString() => r'genericProvider';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     FutureOr<List<T>> Function<T extends num>(GenericRef<T> ref) create,
   ) {
@@ -319,6 +320,7 @@ final class FamilyOrFamily extends Family {
   @override
   String toString() => r'familyOrProvider';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     FutureOr<String> Function(
       FamilyOrRef ref,
@@ -492,6 +494,7 @@ final class FamilyFamily extends Family {
   @override
   String toString() => r'familyProvider';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     FutureOr<String> Function(
       FamilyRef ref,
@@ -636,6 +639,7 @@ final class GenericClassFamily extends Family {
   @override
   String toString() => r'genericClassProvider';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     GenericClass<T> Function<T extends num>() create,
   ) {
@@ -649,6 +653,7 @@ final class GenericClassFamily extends Family {
     );
   }
 
+  /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
     FutureOr<List<T>> Function<T extends num>(
             Ref<AsyncValue<List<T>>> ref, GenericClass<T> notifier)
@@ -895,6 +900,7 @@ final class FamilyOrClassFamily extends Family {
   @override
   String toString() => r'familyOrClassProvider';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     FamilyOrClass Function(
       int args,
@@ -914,6 +920,7 @@ final class FamilyOrClassFamily extends Family {
     );
   }
 
+  /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
     FutureOr<String> Function(
             Ref<AsyncValue<String>> ref, FamilyOrClass notifier, int argument)
@@ -1077,6 +1084,7 @@ final class FamilyClassFamily extends Family {
   @override
   String toString() => r'familyClassProvider';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     FamilyClass Function(
       (
@@ -1108,6 +1116,7 @@ final class FamilyClassFamily extends Family {
     );
   }
 
+  /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
     FutureOr<String> Function(
             Ref<AsyncValue<String>> ref,

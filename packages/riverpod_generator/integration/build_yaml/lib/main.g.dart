@@ -34,6 +34,14 @@ final class CountProvider extends $FunctionalProvider<int, int, CountRef>
   @override
   String debugGetCreateSourceHash() => _$countHash();
 
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
@@ -195,6 +203,14 @@ final class Count2Provider extends $FunctionalProvider<int, int, Count2Ref>
         '($argument)';
   }
 
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
@@ -258,6 +274,7 @@ final class Count2Family extends Family {
   @override
   String toString() => r'count2ProviderFamily';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     int Function(
       Count2Ref ref,
@@ -380,6 +397,7 @@ final class CountFuture2Family extends Family {
   @override
   String toString() => r'countFuture2ProviderFamily';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     FutureOr<int> Function(
       CountFuture2Ref ref,
@@ -502,6 +520,7 @@ final class CountStream2Family extends Family {
   @override
   String toString() => r'countStream2ProviderFamily';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     Stream<int> Function(
       CountStream2Ref ref,
@@ -544,6 +563,14 @@ final class CountNotifierProvider
 
   @override
   String debugGetCreateSourceHash() => _$countNotifierHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
 
   @$internal
   @override
@@ -741,6 +768,14 @@ final class CountNotifier2Provider
         '($argument)';
   }
 
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
   @$internal
   @override
   CountNotifier2 create() => _createCb?.call() ?? CountNotifier2();
@@ -809,6 +844,7 @@ final class CountNotifier2Family extends Family {
   @override
   String toString() => r'countNotifier2ProviderFamily';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     CountNotifier2 Function(
       int args,
@@ -828,6 +864,7 @@ final class CountNotifier2Family extends Family {
     );
   }
 
+  /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
     int Function(Ref<int> ref, CountNotifier2 notifier, int argument) build,
   ) {
@@ -960,6 +997,7 @@ final class CountAsyncNotifier2Family extends Family {
   @override
   String toString() => r'countAsyncNotifier2ProviderFamily';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     CountAsyncNotifier2 Function(
       int args,
@@ -979,6 +1017,7 @@ final class CountAsyncNotifier2Family extends Family {
     );
   }
 
+  /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
     FutureOr<int> Function(Ref<AsyncValue<int>> ref,
             CountAsyncNotifier2 notifier, int argument)
@@ -1114,6 +1153,7 @@ final class CountStreamNotifier2Family extends Family {
   @override
   String toString() => r'countStreamNotifier2ProviderFamily';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     CountStreamNotifier2 Function(
       int args,
@@ -1133,6 +1173,7 @@ final class CountStreamNotifier2Family extends Family {
     );
   }
 
+  /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
     Stream<int> Function(Ref<AsyncValue<int>> ref,
             CountStreamNotifier2 notifier, int argument)

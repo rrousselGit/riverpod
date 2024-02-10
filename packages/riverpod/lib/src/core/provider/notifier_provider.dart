@@ -129,6 +129,9 @@ abstract base class $ClassProvider< //
   }
 
   // TODO docs
+  /// {@template riverpod.override_with_build}
+  /// Hello world
+  /// {@endtemplate}
   Override overrideWithBuild(
     RunNotifierBuild<NotifierT, CreatedT, RefT> build,
   ) {

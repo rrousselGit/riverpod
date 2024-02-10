@@ -19,6 +19,8 @@ export 'package:riverpod/src/internals.dart'
         $AsyncClassModifier,
         $ClassProvider,
         Ref,
+        $ValueProvider,
+        $ProviderOverride,
 
         // Provider
         $Provider,

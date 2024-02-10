@@ -1,55 +1,9 @@
-import 'package:analyzer/dart/analysis/results.dart';
-import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/ast/token.dart';
-import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import 'package:test/test.dart';
 
 import 'analyzer_test_utils.dart';
 
-class MyVisitor extends RecursiveAstVisitor<void> {
-  @override
-  void visitClassDeclaration(ClassDeclaration node) {
-    print(node);
-    final buffer = StringBuffer();
-    for (Token? a = node.documentationComment!.beginToken;
-        a != null;
-        a = a.next) {
-      buffer.write(a);
-    }
-    print(buffer);
-    print('`${node.declaredElement?.documentationComment}`');
-  }
-
-  @override
-  void visitFunctionDeclaration(FunctionDeclaration node) {
-    print(node);
-    print('`${node.documentationComment}`');
-    print('`${node.declaredElement?.documentationComment}`');
-  }
-}
-
 void main() {
-  testSource('MyTest', source: '''
-library foo;
-/// Hello world
-class Foo {}
-
-/// Hello world
-void fn() {}
-''', (resolver) async {
-    final library = await resolver.requireFindLibraryByName(
-      'foo',
-      ignoreErrors: true,
-    );
-    final libraryAst =
-        await library.session.getResolvedLibraryByElement(library);
-    libraryAst as ResolvedLibraryResult;
-
-    final visitor = MyVisitor();
-    libraryAst.units.first.unit.accept(visitor);
-  });
-
   testSource('Handles consumers with a ProviderBase inside', source: '''
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';

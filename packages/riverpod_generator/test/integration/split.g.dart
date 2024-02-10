@@ -34,6 +34,14 @@ final class Counter2Provider extends $FunctionalProvider<int, int, Counter2Ref>
   @override
   String debugGetCreateSourceHash() => _$counter2Hash();
 
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
@@ -83,6 +91,14 @@ final class CounterProvider extends $FunctionalProvider<int, int, CounterRef>
 
   @override
   String debugGetCreateSourceHash() => _$counterHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
 
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>

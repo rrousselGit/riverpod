@@ -51,6 +51,14 @@ final class GenericProvider<T extends num>
         '()';
   }
 
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(List<T> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<List<T>>(value),
+    );
+  }
+
   @override
   $ProviderElement<List<T>> createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
@@ -102,6 +110,7 @@ final class GenericFamily extends Family {
   @override
   String toString() => r'genericProvider';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     List<T> Function<T extends num>(GenericRef<T> ref) create,
   ) {
@@ -174,6 +183,14 @@ final class ComplexGenericProvider<T extends num, Foo extends String?>
     return r'complexGenericProvider'
         '<${T}, ${Foo}>'
         '$argument';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(List<T> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<List<T>>(value),
+    );
   }
 
   @override
@@ -256,6 +273,7 @@ final class ComplexGenericFamily extends Family {
   @override
   String toString() => r'complexGenericProvider';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     List<T> Function<T extends num, Foo extends String?>(
       ComplexGenericRef<T, Foo> ref,
@@ -315,6 +333,14 @@ final class RawFutureProvider extends $FunctionalProvider<
   @override
   String debugGetCreateSourceHash() => _$rawFutureHash();
 
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Raw<Future<String>> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<Raw<Future<String>>>(value),
+    );
+  }
+
   @override
   $ProviderElement<Raw<Future<String>>> createElement(
           ProviderContainer container) =>
@@ -367,6 +393,14 @@ final class RawStreamProvider extends $FunctionalProvider<
 
   @override
   String debugGetCreateSourceHash() => _$rawStreamHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Raw<Stream<String>> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<Raw<Stream<String>>>(value),
+    );
+  }
 
   @override
   $ProviderElement<Raw<Stream<String>>> createElement(
@@ -427,6 +461,14 @@ final class RawFamilyFutureProvider extends $FunctionalProvider<
     return r'rawFamilyFutureProvider'
         ''
         '($argument)';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Raw<Future<String>> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<Raw<Future<String>>>(value),
+    );
   }
 
   @override
@@ -493,6 +535,7 @@ final class RawFamilyFutureFamily extends Family {
   @override
   String toString() => r'rawFamilyFutureProvider';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     Raw<Future<String>> Function(
       RawFamilyFutureRef ref,
@@ -550,6 +593,14 @@ final class RawFamilyStreamProvider extends $FunctionalProvider<
     return r'rawFamilyStreamProvider'
         ''
         '($argument)';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Raw<Stream<String>> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<Raw<Stream<String>>>(value),
+    );
   }
 
   @override
@@ -616,6 +667,7 @@ final class RawFamilyStreamFamily extends Family {
   @override
   String toString() => r'rawFamilyStreamProvider';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     Raw<Stream<String>> Function(
       RawFamilyStreamRef ref,
@@ -670,6 +722,14 @@ final class PublicProvider
   @override
   String debugGetCreateSourceHash() => _$publicHash();
 
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
+  }
+
   @override
   $ProviderElement<String> createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
@@ -720,6 +780,14 @@ final class Supports$inNamesProvider
 
   @override
   String debugGetCreateSourceHash() => _$supports$inNamesHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
+  }
 
   @override
   $ProviderElement<String> createElement(ProviderContainer container) =>
@@ -798,6 +866,14 @@ final class FamilyProvider
     return r'familyProvider'
         ''
         '$argument';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
   }
 
   @override
@@ -901,6 +977,7 @@ final class FamilyFamily extends Family {
   @override
   String toString() => r'familyProvider';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     String Function(
       FamilyRef ref,
@@ -962,6 +1039,14 @@ final class _PrivateProvider
 
   @override
   String debugGetCreateSourceHash() => _$privateHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
+  }
 
   @override
   $ProviderElement<String> createElement(ProviderContainer container) =>
@@ -1030,6 +1115,14 @@ final class Supports$InFnNameProvider<And$InT>
         '()';
   }
 
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
+  }
+
   @override
   $ProviderElement<String> createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
@@ -1083,6 +1176,7 @@ final class Supports$InFnNameFamily extends Family {
   @override
   String toString() => r'supports$InFnNameProvider';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     String Function<And$InT>(Supports$InFnNameRef<And$InT> ref) create,
   ) {
@@ -1161,6 +1255,14 @@ final class Supports$InFnNameFamilyProvider<And$InT>
     return r'supports$InFnNameFamilyProvider'
         '<${And$InT}>'
         '$argument';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
   }
 
   @override
@@ -1251,6 +1353,7 @@ final class Supports$InFnNameFamilyFamily extends Family {
   @override
   String toString() => r'supports$InFnNameFamilyProvider';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     String Function<And$InT>(
       Supports$InFnNameFamilyRef<And$InT> ref,
@@ -1311,6 +1414,14 @@ final class GeneratedProvider
 
   @override
   String debugGetCreateSourceHash() => _$generatedHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
+  }
 
   @override
   $ProviderElement<String> createElement(ProviderContainer container) =>
@@ -1381,6 +1492,14 @@ final class GenericClassProvider<T extends num>
         '()';
   }
 
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(List<T> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<List<T>>(value),
+    );
+  }
+
   @$internal
   @override
   GenericClass<T> create() => _createCb?.call() ?? GenericClass<T>();
@@ -1445,6 +1564,7 @@ final class GenericClassFamily extends Family {
   @override
   String toString() => r'genericClassProvider';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     GenericClass<T> Function<T extends num>() create,
   ) {
@@ -1458,6 +1578,7 @@ final class GenericClassFamily extends Family {
     );
   }
 
+  /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
     List<T> Function<T extends num>(Ref<List<T>> ref, GenericClass<T> notifier)
         build,
@@ -1502,6 +1623,14 @@ final class RawFutureClassProvider
 
   @override
   String debugGetCreateSourceHash() => _$rawFutureClassHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Raw<Future<String>> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<Raw<Future<String>>>(value),
+    );
+  }
 
   @$internal
   @override
@@ -1564,6 +1693,14 @@ final class RawStreamClassProvider
 
   @override
   String debugGetCreateSourceHash() => _$rawStreamClassHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Raw<Stream<String>> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<Raw<Stream<String>>>(value),
+    );
+  }
 
   @$internal
   @override
@@ -1635,6 +1772,14 @@ final class RawFamilyFutureClassProvider
         '($argument)';
   }
 
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Raw<Future<String>> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<Raw<Future<String>>>(value),
+    );
+  }
+
   @$internal
   @override
   RawFamilyFutureClass create() => _createCb?.call() ?? RawFamilyFutureClass();
@@ -1704,6 +1849,7 @@ final class RawFamilyFutureClassFamily extends Family {
   @override
   String toString() => r'rawFamilyFutureClassProvider';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     RawFamilyFutureClass Function(
       int args,
@@ -1723,6 +1869,7 @@ final class RawFamilyFutureClassFamily extends Family {
     );
   }
 
+  /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
     Raw<Future<String>> Function(Ref<Raw<Future<String>>> ref,
             RawFamilyFutureClass notifier, int argument)
@@ -1786,6 +1933,14 @@ final class RawFamilyStreamClassProvider
     return r'rawFamilyStreamClassProvider'
         ''
         '($argument)';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Raw<Stream<String>> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<Raw<Stream<String>>>(value),
+    );
   }
 
   @$internal
@@ -1857,6 +2012,7 @@ final class RawFamilyStreamClassFamily extends Family {
   @override
   String toString() => r'rawFamilyStreamClassProvider';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     RawFamilyStreamClass Function(
       int args,
@@ -1876,6 +2032,7 @@ final class RawFamilyStreamClassFamily extends Family {
     );
   }
 
+  /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
     Raw<Stream<String>> Function(Ref<Raw<Stream<String>>> ref,
             RawFamilyStreamClass notifier, int argument)
@@ -1934,6 +2091,14 @@ final class PublicClassProvider extends $NotifierProvider<PublicClass, String> {
 
   @override
   String debugGetCreateSourceHash() => _$publicClassHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
+  }
 
   @$internal
   @override
@@ -1996,6 +2161,14 @@ final class _PrivateClassProvider
 
   @override
   String debugGetCreateSourceHash() => _$privateClassHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
+  }
 
   @$internal
   @override
@@ -2074,6 +2247,14 @@ final class FamilyClassProvider extends $NotifierProvider<FamilyClass, String> {
     return r'familyClassProvider'
         ''
         '$argument';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
   }
 
   @$internal
@@ -2168,6 +2349,7 @@ final class FamilyClassFamily extends Family {
   @override
   String toString() => r'familyClassProvider';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     FamilyClass Function(
       (
@@ -2199,6 +2381,7 @@ final class FamilyClassFamily extends Family {
     );
   }
 
+  /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
     String Function(
             Ref<String> ref,
@@ -2314,6 +2497,14 @@ final class Supports$InClassNameProvider<And$InT>
         '()';
   }
 
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
+  }
+
   @$internal
   @override
   Supports$InClassName<And$InT> create() =>
@@ -2381,6 +2572,7 @@ final class Supports$InClassNameFamily extends Family {
   @override
   String toString() => r'supports$InClassNameProvider';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     Supports$InClassName<And$InT> Function<And$InT>() create,
   ) {
@@ -2394,6 +2586,7 @@ final class Supports$InClassNameFamily extends Family {
     );
   }
 
+  /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
     String Function<And$InT>(
             Ref<String> ref, Supports$InClassName<And$InT> notifier)
@@ -2482,6 +2675,14 @@ final class Supports$InClassFamilyNameProvider<And$InT>
         '$argument';
   }
 
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
+  }
+
   @$internal
   @override
   Supports$InClassFamilyName<And$InT> create() =>
@@ -2568,6 +2769,7 @@ final class Supports$InClassFamilyNameFamily extends Family {
   @override
   String toString() => r'supports$InClassFamilyNameProvider';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     Supports$InClassFamilyName<And$InT> Function<And$InT>(
       (
@@ -2595,6 +2797,7 @@ final class Supports$InClassFamilyNameFamily extends Family {
     );
   }
 
+  /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
     String Function<And$InT>(
             Ref<String> ref,

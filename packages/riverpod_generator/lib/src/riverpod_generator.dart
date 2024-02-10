@@ -54,8 +54,6 @@ class RiverpodInvalidGenerationSourceError
   });
 
   final AstNode? astNode;
-
-// TODO override toString to render AST nodes.
 }
 
 @immutable
@@ -159,7 +157,6 @@ class _RiverpodGeneratorVisitor extends RecursiveRiverpodAstVisitor {
     for (final dependency in dependencies) {
       if (!uniqueDependencies.add(dependency.provider)) continue;
 
-      // TODO verify that the provider is accessible in the current library
       allTransitiveDependencies.add(dependency.provider.providerName(options));
 
       final uniqueTransitiveDependencies =
@@ -174,7 +171,6 @@ class _RiverpodGeneratorVisitor extends RecursiveRiverpodAstVisitor {
           in uniqueTransitiveDependencies) {
         if (!uniqueDependencies.add(transitiveDependency)) continue;
 
-        // TODO verify that the provider is accessible in the current library
         allTransitiveDependencies.add(
           '${dependency.provider.providerTypeName}.\$allTransitiveDependencies$index',
         );

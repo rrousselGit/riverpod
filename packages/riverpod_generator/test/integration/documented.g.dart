@@ -43,6 +43,14 @@ final class FunctionalProvider
   @override
   String debugGetCreateSourceHash() => _$functionalHash();
 
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
+  }
+
   @override
   $ProviderElement<String> createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
@@ -109,6 +117,14 @@ final class FamilyProvider
     return r'familyProvider'
         ''
         '($argument)';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
   }
 
   @override
@@ -178,6 +194,7 @@ final class FamilyFamily extends Family {
   @override
   String toString() => r'familyProvider';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     String Function(
       FamilyRef ref,
@@ -225,6 +242,14 @@ final class ClassBasedProvider extends $NotifierProvider<ClassBased, String> {
 
   @override
   String debugGetCreateSourceHash() => _$classBasedHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
+  }
 
   @$internal
   @override
@@ -302,6 +327,14 @@ final class ClassFamilyBasedProvider
         '($argument)';
   }
 
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
+  }
+
   @$internal
   @override
   ClassFamilyBased create() => _createCb?.call() ?? ClassFamilyBased();
@@ -374,6 +407,7 @@ final class ClassFamilyBasedFamily extends Family {
   @override
   String toString() => r'classFamilyBasedProvider';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     ClassFamilyBased Function(
       int args,
@@ -393,6 +427,7 @@ final class ClassFamilyBasedFamily extends Family {
     );
   }
 
+  /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
     String Function(Ref<String> ref, ClassFamilyBased notifier, int argument)
         build,

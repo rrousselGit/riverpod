@@ -3,12 +3,10 @@ part of '../framework.dart';
 /// A provider that is driven by a value instead of a function.
 ///
 /// This is an implementation detail of `overrideWithValue`.
-@sealed
-@internal
-final class ValueProvider<StateT> extends ProviderBase<StateT>
+final class $ValueProvider<StateT> extends ProviderBase<StateT>
     with LegacyProviderMixin<StateT> {
-  /// Creates a [ValueProvider].
-  const ValueProvider(this._value)
+  /// Creates a [$ValueProvider].
+  const $ValueProvider(this._value)
       : super(
           name: null,
           from: null,
@@ -32,9 +30,9 @@ final class ValueProvider<StateT> extends ProviderBase<StateT>
   }
 }
 
-/// The [ProviderElementBase] of a [ValueProvider]
+/// The [ProviderElementBase] of a [$ValueProvider]
 class _ValueProviderElement<State> extends ProviderElementBase<State> {
-  /// The [ProviderElementBase] of a [ValueProvider]
+  /// The [ProviderElementBase] of a [$ValueProvider]
   _ValueProviderElement(this.provider, super.container);
 
   /// A custom listener called when `overrideWithValue` changes
@@ -42,10 +40,10 @@ class _ValueProviderElement<State> extends ProviderElementBase<State> {
   void Function(State value)? onChange;
 
   @override
-  ValueProvider<State> provider;
+  $ValueProvider<State> provider;
 
   @override
-  void update(covariant ValueProvider<State> newProvider) {
+  void update(covariant $ValueProvider<State> newProvider) {
     super.update(newProvider);
     provider = newProvider;
     final newValue = provider._value;

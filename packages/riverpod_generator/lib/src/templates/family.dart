@@ -30,8 +30,6 @@ class FamilyTemplate extends Template {
 
     final topLevelBuffer = StringBuffer();
 
-    // TODO add docs everywhere in generated code
-
     final parametersPassThrough = provider.argumentToRecord();
     final argument =
         provider.parameters.isEmpty ? '' : 'argument: $parametersPassThrough,';
@@ -102,8 +100,8 @@ ${provider.doc} final class ${provider.familyTypeName} extends Family {
         '$_notifierType Function$_genericsDefinition()',
     };
 
-    // TODO docs
     buffer.writeln('''
+/// {@macro riverpod.override_with}
 Override overrideWith($createType create,) {
   return \$FamilyOverride(
     from: this,
@@ -180,8 +178,8 @@ ${provider.createdTypeDisplayString} Function$_genericsDefinition(
     }}
 )''';
 
-    // TODO docs
     buffer.writeln('''
+/// {@macro riverpod.override_with_build}
 Override overrideWithBuild($runNotifierBuildType build,) {
   return \$FamilyOverride(
     from: this,

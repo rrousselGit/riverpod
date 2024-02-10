@@ -10,7 +10,7 @@ export 'src/framework.dart'
         ProviderScheduler,
         debugCanModifyProviders,
         Vsync,
-        ValueProvider,
+        $ValueProvider,
         FamilyCreate,
         FunctionalFamily,
         $FamilyOverride,

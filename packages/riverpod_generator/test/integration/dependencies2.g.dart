@@ -53,6 +53,14 @@ final class ProviderWithDependencies2Provider
   @override
   String debugGetCreateSourceHash() => _$providerWithDependencies2Hash();
 
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
@@ -120,6 +128,14 @@ final class FamilyWithDependencies2Provider
     return r'familyWithDependencies2Provider'
         ''
         '($argument)';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
   }
 
   @override
@@ -197,6 +213,7 @@ final class FamilyWithDependencies2Family extends Family {
   @override
   String toString() => r'familyWithDependencies2Provider';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     int Function(
       FamilyWithDependencies2Ref ref,
@@ -247,6 +264,14 @@ final class _Private2Provider
   @override
   String debugGetCreateSourceHash() => _$private2Hash();
 
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
@@ -296,6 +321,14 @@ final class Public2Provider extends $FunctionalProvider<int, int, Public2Ref>
 
   @override
   String debugGetCreateSourceHash() => _$public2Hash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
 
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
@@ -359,6 +392,14 @@ final class NotifierWithDependenciesProvider
 
   @override
   String debugGetCreateSourceHash() => _$notifierWithDependenciesHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
 
   @$internal
   @override
@@ -439,6 +480,14 @@ final class NotifierFamilyWithDependenciesProvider
     return r'notifierFamilyWithDependenciesProvider'
         ''
         '($argument)';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
   }
 
   @$internal
@@ -522,6 +571,7 @@ final class NotifierFamilyWithDependenciesFamily extends Family {
   @override
   String toString() => r'notifierFamilyWithDependenciesProvider';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     NotifierFamilyWithDependencies Function(
       int? args,
@@ -541,6 +591,7 @@ final class NotifierFamilyWithDependenciesFamily extends Family {
     );
   }
 
+  /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
     int Function(Ref<int> ref, NotifierFamilyWithDependencies notifier,
             int? argument)

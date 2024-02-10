@@ -90,6 +90,7 @@ base class Provider<StateT>
     );
   }
 
+  /// {@template riverpod.override_with_value}
   /// Overrides a provider with a value, ejecting the default behavior.
   ///
   /// This will also disable the auto-scoping mechanism, meaning that if the
@@ -119,10 +120,11 @@ base class Provider<StateT>
   ///   ),
   /// );
   /// ```
+  /// {@endtemplate}
   Override overrideWithValue(StateT value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: ValueProvider<StateT>(value),
+      providerOverride: $ValueProvider<StateT>(value),
     );
   }
 }

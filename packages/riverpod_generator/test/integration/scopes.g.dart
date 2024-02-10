@@ -34,6 +34,14 @@ final class ScopedProvider extends $FunctionalProvider<int, int, ScopedRef>
   @override
   String debugGetCreateSourceHash() => _$scopedHash();
 
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
   @override
   $ProviderElement<int> createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
@@ -76,6 +84,14 @@ final class ScopedClassProvider extends $NotifierProvider<ScopedClass, int> {
 
   @override
   String debugGetCreateSourceHash() => _$scopedClassHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
 
   @$internal
   @override

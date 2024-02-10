@@ -35,6 +35,14 @@ final class GeneratedProvider
   @override
   String debugGetCreateSourceHash() => _$generatedHash();
 
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(_Test value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<_Test>(value),
+    );
+  }
+
   @override
   $ProviderElement<_Test> createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
@@ -93,6 +101,14 @@ final class GeneratedFamilyProvider
     return r'generatedFamilyProvider'
         ''
         '($argument)';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(_Test value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<_Test>(value),
+    );
   }
 
   @override
@@ -158,6 +174,7 @@ final class GeneratedFamilyFamily extends Family {
   @override
   String toString() => r'generatedFamilyProvider';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     _Test Function(
       GeneratedFamilyRef ref,
@@ -207,6 +224,14 @@ final class $DynamicProvider
 
   @override
   String debugGetCreateSourceHash() => _$$dynamicHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Object? value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<Object?>(value),
+    );
+  }
 
   @override
   $ProviderElement<Object?> createElement(ProviderContainer container) =>
@@ -266,6 +291,14 @@ final class $DynamicFamilyProvider
     return r'$dynamicFamilyProvider'
         ''
         '($argument)';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Object? value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<Object?>(value),
+    );
   }
 
   @override
@@ -331,6 +364,7 @@ final class $DynamicFamilyFamily extends Family {
   @override
   String toString() => r'$dynamicFamilyProvider';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     Object? Function(
       $DynamicFamilyRef ref,
@@ -388,6 +422,14 @@ final class _DynamicProvider
     return r'_dynamicProvider'
         ''
         '($argument)';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Object? value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<Object?>(value),
+    );
   }
 
   @override
@@ -453,6 +495,7 @@ final class _DynamicFamily extends Family {
   @override
   String toString() => r'_dynamicProvider';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     Object? Function(
       _DynamicRef ref,
@@ -502,6 +545,14 @@ final class AliasProvider
 
   @override
   String debugGetCreateSourceHash() => _$aliasHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(r.AsyncValue<int> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<r.AsyncValue<int>>(value),
+    );
+  }
 
   @override
   $ProviderElement<r.AsyncValue<int>> createElement(
@@ -563,6 +614,14 @@ final class AliasFamilyProvider extends $FunctionalProvider<
     return r'aliasFamilyProvider'
         ''
         '($argument)';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(r.AsyncValue<int> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<r.AsyncValue<int>>(value),
+    );
   }
 
   @override
@@ -629,6 +688,7 @@ final class AliasFamilyFamily extends Family {
   @override
   String toString() => r'aliasFamilyProvider';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     r.AsyncValue<int> Function(
       AliasFamilyRef ref,
@@ -671,6 +731,14 @@ final class GeneratedClassProvider
 
   @override
   String debugGetCreateSourceHash() => _$generatedClassHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(_Test value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<_Test>(value),
+    );
+  }
 
   @$internal
   @override
@@ -742,6 +810,14 @@ final class GeneratedClassFamilyProvider
         '($argument)';
   }
 
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(_Test value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<_Test>(value),
+    );
+  }
+
   @$internal
   @override
   GeneratedClassFamily create() => _createCb?.call() ?? GeneratedClassFamily();
@@ -811,6 +887,7 @@ final class GeneratedClassFamilyFamily extends Family {
   @override
   String toString() => r'generatedClassFamilyProvider';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     GeneratedClassFamily Function(
       _Test args,
@@ -830,6 +907,7 @@ final class GeneratedClassFamilyFamily extends Family {
     );
   }
 
+  /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
     _Test Function(
             Ref<_Test> ref, GeneratedClassFamily notifier, _Test argument)
@@ -887,6 +965,14 @@ final class $DynamicClassProvider
 
   @override
   String debugGetCreateSourceHash() => _$$dynamicClassHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Object? value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<Object?>(value),
+    );
+  }
 
   @$internal
   @override
@@ -958,6 +1044,14 @@ final class $DynamicClassFamilyProvider
         '($argument)';
   }
 
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Object? value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<Object?>(value),
+    );
+  }
+
   @$internal
   @override
   $DynamicClassFamily create() => _createCb?.call() ?? $DynamicClassFamily();
@@ -1027,6 +1121,7 @@ final class $DynamicClassFamilyFamily extends Family {
   @override
   String toString() => r'$dynamicClassFamilyProvider';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     $DynamicClassFamily Function(
       dynamic args,
@@ -1046,6 +1141,7 @@ final class $DynamicClassFamilyFamily extends Family {
     );
   }
 
+  /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
     Object? Function(
             Ref<Object?> ref, $DynamicClassFamily notifier, dynamic argument)
@@ -1103,6 +1199,14 @@ final class AliasClassProvider
 
   @override
   String debugGetCreateSourceHash() => _$aliasClassHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(r.AsyncValue<int> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<r.AsyncValue<int>>(value),
+    );
+  }
 
   @$internal
   @override
@@ -1174,6 +1278,14 @@ final class AliasClassFamilyProvider
         '($argument)';
   }
 
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(r.AsyncValue<int> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<r.AsyncValue<int>>(value),
+    );
+  }
+
   @$internal
   @override
   AliasClassFamily create() => _createCb?.call() ?? AliasClassFamily();
@@ -1242,6 +1354,7 @@ final class AliasClassFamilyFamily extends Family {
   @override
   String toString() => r'aliasClassFamilyProvider';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     AliasClassFamily Function(
       r.AsyncValue<int> args,
@@ -1261,6 +1374,7 @@ final class AliasClassFamilyFamily extends Family {
     );
   }
 
+  /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
     r.AsyncValue<int> Function(Ref<r.AsyncValue<int>> ref,
             AliasClassFamily notifier, r.AsyncValue<int> argument)

@@ -47,6 +47,14 @@ final class FunctionalProvider
         '($argument)';
   }
 
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
+  }
+
   @override
   $ProviderElement<String> createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
@@ -110,6 +118,7 @@ final class FunctionalFamily extends Family {
   @override
   String toString() => r'functionalProvider';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     String Function(
       FunctionalRef ref,
@@ -170,6 +179,14 @@ final class FamilyProvider
     return r'familyProvider'
         ''
         '($argument)';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
   }
 
   @override
@@ -235,6 +252,7 @@ final class FamilyFamily extends Family {
   @override
   String toString() => r'familyProvider';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     String Function(
       FamilyRef ref,
@@ -284,6 +302,14 @@ final class NotCopiedFunctionalProvider
 
   @override
   String debugGetCreateSourceHash() => _$notCopiedFunctionalHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
+  }
 
   @override
   $ProviderElement<String> createElement(ProviderContainer container) =>
@@ -344,6 +370,14 @@ final class NotCopiedFamilyProvider
     return r'notCopiedFamilyProvider'
         ''
         '($argument)';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
   }
 
   @override
@@ -409,6 +443,7 @@ final class NotCopiedFamilyFamily extends Family {
   @override
   String toString() => r'notCopiedFamilyProvider';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     String Function(
       NotCopiedFamilyRef ref,
@@ -460,6 +495,14 @@ final class ClassBasedProvider extends $NotifierProvider<ClassBased, String> {
     return r'classBasedProvider'
         ''
         '($argument)';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
   }
 
   @$internal
@@ -530,6 +573,7 @@ final class ClassBasedFamily extends Family {
   @override
   String toString() => r'classBasedProvider';
 
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     ClassBased Function(
       int args,
@@ -549,6 +593,7 @@ final class ClassBasedFamily extends Family {
     );
   }
 
+  /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
     String Function(Ref<String> ref, ClassBased notifier, int argument) build,
   ) {
@@ -604,6 +649,14 @@ final class NotCopiedClassBasedProvider
 
   @override
   String debugGetCreateSourceHash() => _$notCopiedClassBasedHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
+  }
 
   @$internal
   @override

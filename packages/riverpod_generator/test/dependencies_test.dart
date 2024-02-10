@@ -144,6 +144,38 @@ void main() {
     );
   });
 
-  // TODO add tests for duplicate variants
-  // TODO add tests for set vs list
+  test('remove duplicate dependencies', () {
+    expect(
+      duplicateDependenciesProvider.dependencies,
+      same(const <ProviderOrFamily>[depProvider, dep2Provider]),
+    );
+    expect(
+      duplicateDependenciesProvider.allTransitiveDependencies,
+      same(const <ProviderOrFamily>[depProvider, dep2Provider]),
+    );
+
+    expect(
+      transitiveDuplicateDependenciesProvider.allTransitiveDependencies,
+      same(const <ProviderOrFamily>{
+        duplicateDependenciesProvider,
+        depProvider,
+        dep2Provider,
+        duplicateDependencies2Provider,
+        familyProvider,
+        family2Provider,
+      }),
+    );
+  });
+
+  test('uses a set or a list based on the length', () {
+    expect(
+      smallTransitiveDependencyCountProvider.allTransitiveDependencies,
+      isA<List<Object?>>(),
+    );
+
+    expect(
+      transitiveDependenciesProvider.allTransitiveDependencies,
+      isA<Set<Object?>>(),
+    );
+  });
 }

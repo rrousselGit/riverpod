@@ -7,8 +7,6 @@ import 'integration/sync.dart';
 import 'utils.dart';
 
 void main() {
-  // TODO test that the generated providers contain the docs from the annotated element
-
   group('Supports generics', () {
     test('checks generics in hashCode', () {
       expect(
@@ -138,11 +136,10 @@ void main() {
       'familyProvider(42, fifth: null, fourth: true, second: foo, third: 0.3)',
     );
 
-    // TODO uncomment
-    // expect(
-    //   publicProvider.overrideWithValue('foo').toString(),
-    //   'publicProvider.overrideWithValue(foo)',
-    // );
+    expect(
+      publicProvider.overrideWithValue('foo').toString(),
+      'publicProvider.overrideWithValue(foo)',
+    );
     expect(
       familyProvider.overrideWith((ref, _) => 'foo').toString(),
       'familyProvider.overrideWith(...)',
@@ -324,6 +321,7 @@ void main() {
           (ref, args) =>
               'test (first: ${args.$1}, second: ${args.second}, third: ${args.third}, fourth: ${args.fourth}, fifth: ${args.fifth})',
         ),
+        familyProvider(21, third: .21).overrideWithValue('Override'),
         familyClassProvider.overrideWith(FamilyClass.new),
       ],
     );
@@ -334,6 +332,7 @@ void main() {
       container.read(familyProvider(42, second: '42', third: .42)),
       'test (first: 42, second: 42, third: 0.42, fourth: true, fifth: null)',
     );
+    expect(container.read(familyProvider(21, third: .21)), 'Override');
     expect(
       container
           .read(familyClassProvider(42, second: '42', third: .42).notifier)
