@@ -1566,10 +1566,7 @@ void main() {
     final stack = StackTrace.current;
 
     await expectLater(
-      AsyncValue.guard(
-        () => Future<int>.error(42, stack),
-        null,
-      ),
+      AsyncValue.guard(() => Future<int>.error(42, stack)),
       completion(AsyncError<int>(42, stack)),
     );
   });
