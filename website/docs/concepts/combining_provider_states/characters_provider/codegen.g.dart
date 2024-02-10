@@ -8,6 +8,65 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+typedef SearchRef = Ref<String>;
+
+@ProviderFor(search)
+const searchProvider = SearchProvider._();
+
+final class SearchProvider
+    extends $FunctionalProvider<String, String, SearchRef>
+    with $Provider<String, SearchRef> {
+  const SearchProvider._(
+      {String Function(
+        SearchRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'searchProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final String Function(
+    SearchRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$searchHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
+  }
+
+  @override
+  $ProviderElement<String> createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  SearchProvider $copyWithCreate(
+    String Function(
+      SearchRef ref,
+    ) create,
+  ) {
+    return SearchProvider._(create: create);
+  }
+
+  @override
+  String create(SearchRef ref) {
+    final _$cb = _createCb ?? search;
+    return _$cb(ref);
+  }
+}
+
+String _$searchHash() => r'a093687a671a5d5481789cf3e401a09f96f8896d';
+
 typedef ConfigsRef = Ref<AsyncValue<Configuration>>;
 
 @ProviderFor(configs)
