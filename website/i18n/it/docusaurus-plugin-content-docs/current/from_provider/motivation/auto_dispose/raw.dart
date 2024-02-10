@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 /* SNIPPET START */

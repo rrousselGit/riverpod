@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 enum FilterType {
@@ -28,7 +29,7 @@ class HomeView extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // You can use hooks inside a HookConsumerWidget
     final greeting = useState('Hello');
-    
+
     // use ref to listen to a provider
     final counter = ref.watch(counterProvider);
 

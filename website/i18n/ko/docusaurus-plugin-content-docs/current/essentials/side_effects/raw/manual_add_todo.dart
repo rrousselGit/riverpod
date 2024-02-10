@@ -12,7 +12,7 @@ final todoListProvider =
   TodoList.new,
 );
 
-class TodoList extends AutoDisposeAsyncNotifier<List<Todo>> {
+class TodoList extends AsyncNotifier<List<Todo>> {
   @override
   Future<List<Todo>> build() async => [/* ... */];
 
@@ -27,7 +27,7 @@ class TodoList extends AutoDisposeAsyncNotifier<List<Todo>> {
 
     // 그런 다음 로컬 캐시를 수동으로 업데이트할 수 있습니다. 이를 위해서는 이전 상태를 가져와야 합니다.
     // 주의: 이전 상태가 여전히 로딩 중이거나 오류 상태일 수 있습니다.
-    // 이 문제를 우아하게 처리하는 방법은 `this.state` 대신 `this.future`를 읽어서 로딩 상태를 기다리게 하고 
+    // 이 문제를 우아하게 처리하는 방법은 `this.state` 대신 `this.future`를 읽어서 로딩 상태를 기다리게 하고
     // 상태가 오류 상태인 경우 오류를 발생시키는 것입니다.
     final previousState = await future;
 

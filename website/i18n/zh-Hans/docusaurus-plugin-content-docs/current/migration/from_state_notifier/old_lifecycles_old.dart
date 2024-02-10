@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 import '../utils.dart';
 
@@ -20,7 +21,7 @@ class MyNotifier extends StateNotifier<int> {
     _timer = Timer.periodic(period, (t) => update()); // 2 初始化副作用
   }
   final Duration period;
-  final Ref ref;
+  final Ref<int> ref;
   late final Timer _timer;
 
   Future<void> update() async {

@@ -3,14 +3,15 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class MyNotifier extends AutoDisposeNotifier<int> {
+class MyNotifier extends Notifier<int> {
   @override
   int build() {
     return 0;
   }
 }
 
-final myNotifierProvider = NotifierProvider.autoDispose<MyNotifier, int>(MyNotifier.new);
+final myNotifierProvider =
+    NotifierProvider.autoDispose<MyNotifier, int>(MyNotifier.new);
 
 /* SNIPPET START */
 void main(List<String> args) {
@@ -20,7 +21,7 @@ void main(List<String> args) {
 
     // Ottenendo un notifier
     /* highlight-start */
-    final AutoDisposeNotifier<int> notifier = container.read(myNotifierProvider.notifier);
+    final Notifier<int> notifier = container.read(myNotifierProvider.notifier);
     /* highlight-end */
 
     // Ottenendo il suo stato esposto

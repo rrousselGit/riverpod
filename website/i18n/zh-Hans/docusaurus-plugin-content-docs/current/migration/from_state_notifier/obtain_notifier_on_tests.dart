@@ -3,7 +3,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class MyNotifier extends AutoDisposeNotifier<int> {
+class MyNotifier extends Notifier<int> {
   @override
   int build() {
     return 0;
@@ -21,8 +21,7 @@ void main(List<String> args) {
 
     // 获取通知者程序
     /* highlight-start */
-    final AutoDisposeNotifier<int> notifier =
-        container.read(myNotifierProvider.notifier);
+    final Notifier<int> notifier = container.read(myNotifierProvider.notifier);
     /* highlight-end */
 
     // 获取其暴露状态
