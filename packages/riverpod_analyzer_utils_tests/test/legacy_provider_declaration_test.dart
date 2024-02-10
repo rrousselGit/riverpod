@@ -639,50 +639,6 @@ final explicitAutoDisposeFamily = AutoDisposeStateNotifierProviderFamily<StateCo
       }
     });
 
-    testSource('Decode isAutoDispose', source: '''
-import 'package:riverpod/riverpod.dart';
-
-final alwaysAliveProvider = Provider<int>((ref) => 0);
-final alwaysAliveFamily = Provider.family<int, int>((ref, id) => 0);
-final explicitAlwaysAliveFamily = ProviderFamily<int, int>((ref, id) => 0);
-
-final autoDisposeProvider = Provider.autoDispose<int>((ref) => 0);
-final explicitAutoDisposeProvider = AutoDisposeProvider<int>((ref) => 0);
-final autoDisposeFamily = Provider.autoDispose.family<int, int>((ref, id) => 0);
-final autoDisposeFamily2 = Provider.family.autoDispose<int, int>((ref, id) => 0);
-final explicitAutoDisposeFamily = AutoDisposeProviderFamily<int, int>((ref, id) => 0);
-''', (resolver) async {
-      final result = await resolver.resolveRiverpodAnalysisResult();
-      final autoDisposeProviders = result.legacyProviderDeclarations.takeAll([
-        'autoDisposeProvider',
-        'explicitAutoDisposeProvider',
-        'autoDisposeFamily',
-        'autoDisposeFamily2',
-        'explicitAutoDisposeFamily',
-      ]);
-
-      final alwaysAliveProviders = result.legacyProviderDeclarations.takeAll([
-        'alwaysAliveProvider',
-        'alwaysAliveFamily',
-        'explicitAlwaysAliveFamily',
-      ]);
-
-      for (final provider in autoDisposeProviders.entries) {
-        expect(
-          provider.value.providerElement.isAutoDispose,
-          true,
-          reason: '${provider.key} is autoDispose',
-        );
-      }
-      for (final provider in alwaysAliveProviders.entries) {
-        expect(
-          provider.value.providerElement.isAutoDispose,
-          false,
-          reason: '${provider.key} is not autoDispose',
-        );
-      }
-    });
-
     testSource('Decode families', source: '''
 import 'package:riverpod/riverpod.dart';
 

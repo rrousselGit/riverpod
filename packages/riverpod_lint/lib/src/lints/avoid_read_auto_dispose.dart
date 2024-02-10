@@ -1,5 +1,6 @@
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
 import '../riverpod_custom_lint.dart';
 
@@ -23,7 +24,10 @@ Then dispose of the listener when you no longer need the autoDispose provider to
     CustomLintContext context,
   ) {
     riverpodRegistry(context).addRefReadInvocation((read) {
-      if (read.provider.providerElement?.isAutoDispose ?? false) {
+      final provider = read.provider.providerElement;
+
+      if (provider is GeneratorProviderDeclarationElement &&
+          provider.isAutoDispose) {
         reporter.reportErrorForNode(
           _code,
           read.node,

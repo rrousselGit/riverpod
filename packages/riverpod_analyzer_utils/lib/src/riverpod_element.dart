@@ -115,7 +115,7 @@ class RiverpodAnnotationElement {
 }
 
 abstract class ProviderDeclarationElement {
-  bool get isAutoDispose;
+  // TODO changelog breaking: removed isAutoDispose from ProviderDeclarationElement
   Element get element;
   String get name;
 }
@@ -183,7 +183,6 @@ class LegacyProviderDeclarationElement implements ProviderDeclarationElement {
   LegacyProviderDeclarationElement._({
     required this.name,
     required this.element,
-    required this.isAutoDispose,
     required this.familyElement,
     required this.providerType,
   });
@@ -201,13 +200,9 @@ class LegacyProviderDeclarationElement implements ProviderDeclarationElement {
         return null;
       }
 
-      bool isAutoDispose;
       LegacyFamilyInvocationElement? familyElement;
       LegacyProviderType? providerType;
       if (providerBaseType.isAssignableFromType(element.type)) {
-        isAutoDispose = !alwaysAliveProviderListenableType
-            .isAssignableFromType(element.type);
-
         providerType = LegacyProviderType._parse(element.type);
       } else if (familyType.isAssignableFromType(element.type)) {
         final callFn = (element.type as InterfaceType).lookUpMethod2(
@@ -216,8 +211,6 @@ class LegacyProviderDeclarationElement implements ProviderDeclarationElement {
         )!;
         final parameter = callFn.parameters.single;
 
-        isAutoDispose = !alwaysAliveProviderListenableType
-            .isAssignableFromType(callFn.returnType);
         providerType = LegacyProviderType._parse(callFn.returnType);
         familyElement = LegacyFamilyInvocationElement._(parameter.type);
       } else {
@@ -228,7 +221,6 @@ class LegacyProviderDeclarationElement implements ProviderDeclarationElement {
       return LegacyProviderDeclarationElement._(
         name: element.name,
         element: element,
-        isAutoDispose: isAutoDispose,
         familyElement: familyElement,
         providerType: providerType,
       );
@@ -242,9 +234,6 @@ class LegacyProviderDeclarationElement implements ProviderDeclarationElement {
 
   @override
   final String name;
-
-  @override
-  final bool isAutoDispose;
 
   final LegacyFamilyInvocationElement? familyElement;
 
@@ -275,7 +264,6 @@ sealed class GeneratorProviderDeclarationElement
         that.buildMethod.isAbstract;
   }
 
-  @override
   bool get isAutoDispose => !annotation.keepAlive;
 }
 
