@@ -48,6 +48,8 @@ class $DynamicClassFamily extends _$$DynamicClassFamily {
   build(test) => _Test();
 }
 
+const dynamicProvider = _dynamicProvider;
+
 @riverpod
 _dynamic(_DynamicRef ref, test) => 0;
 
