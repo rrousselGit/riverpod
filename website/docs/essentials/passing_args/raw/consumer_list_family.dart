@@ -1,4 +1,4 @@
-// ignore_for_file: omit_local_variable_types, unused_local_variable, prefer_final_locals
+// ignore_for_file: omit_local_variable_types, unused_local_variable, prefer_final_locals, provider_parameters
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
