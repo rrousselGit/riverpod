@@ -59,8 +59,8 @@ final class NumberProvider extends $FunctionalProvider<int, int, NumberRef>
 
   @override
   int create(NumberRef ref) {
-    final fn = _createCb ?? number;
-    return fn(ref);
+    final _$cb = _createCb ?? number;
+    return _$cb(ref);
   }
 }
 
@@ -117,8 +117,8 @@ final class DoubledProvider extends $FunctionalProvider<int, int, DoubledRef>
 
   @override
   int create(DoubledRef ref) {
-    final fn = _createCb ?? doubled;
-    return fn(ref);
+    final _$cb = _createCb ?? doubled;
+    return _$cb(ref);
   }
 }
 

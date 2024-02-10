@@ -60,8 +60,8 @@ final class SynchronousExampleProvider
 
   @override
   int create(SynchronousExampleRef ref) {
-    final fn = _createCb ?? synchronousExample;
-    return fn(ref);
+    final _$cb = _createCb ?? synchronousExample;
+    return _$cb(ref);
   }
 }
 

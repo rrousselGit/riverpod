@@ -59,8 +59,8 @@ final class CityProvider extends $FunctionalProvider<String, String, CityRef>
 
   @override
   String create(CityRef ref) {
-    final fn = _createCb ?? city;
-    return fn(ref);
+    final _$cb = _createCb ?? city;
+    return _$cb(ref);
   }
 }
 
@@ -118,8 +118,8 @@ final class CountryProvider
 
   @override
   String create(CountryRef ref) {
-    final fn = _createCb ?? country;
-    return fn(ref);
+    final _$cb = _createCb ?? country;
+    return _$cb(ref);
   }
 }
 

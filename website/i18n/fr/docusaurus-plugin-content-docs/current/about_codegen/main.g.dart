@@ -68,9 +68,9 @@ final class FetchUserProvider
 
   @override
   FutureOr<User> create(FetchUserRef ref) {
-    final fn = _createCb ?? fetchUser;
+    final _$cb = _createCb ?? fetchUser;
     final argument = this.argument as int;
-    return fn(
+    return _$cb(
       ref,
       userId: argument,
     );

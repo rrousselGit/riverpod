@@ -57,8 +57,8 @@ final class IntegerProvider extends $FunctionalProvider<int, int, IntegerRef>
 
   @override
   int create(IntegerRef ref) {
-    final fn = _createCb ?? integer;
-    return fn(ref);
+    final _$cb = _createCb ?? integer;
+    return _$cb(ref);
   }
 }
 
@@ -118,8 +118,8 @@ final class StateNotifierProvider extends $FunctionalProvider<
 
   @override
   MyStateNotifier create(StateNotifierRef ref) {
-    final fn = _createCb ?? stateNotifier;
-    return fn(ref);
+    final _$cb = _createCb ?? stateNotifier;
+    return _$cb(ref);
   }
 }
 
@@ -174,8 +174,8 @@ final class AsyncStateNotifierProvider extends $FunctionalProvider<
 
   @override
   FutureOr<MyStateNotifier> create(AsyncStateNotifierRef ref) {
-    final fn = _createCb ?? asyncStateNotifier;
-    return fn(ref);
+    final _$cb = _createCb ?? asyncStateNotifier;
+    return _$cb(ref);
   }
 }
 
@@ -231,8 +231,8 @@ final class StateNotifierAsyncProvider extends $FunctionalProvider<
 
   @override
   FutureOr<MyStateNotifier> create(StateNotifierAsyncRef ref) {
-    final fn = _createCb ?? stateNotifierAsync;
-    return fn(ref);
+    final _$cb = _createCb ?? stateNotifierAsync;
+    return _$cb(ref);
   }
 }
 
@@ -293,8 +293,8 @@ final class ChangeNotifierProvider extends $FunctionalProvider<
 
   @override
   MyChangeNotifier create(ChangeNotifierRef ref) {
-    final fn = _createCb ?? changeNotifier;
-    return fn(ref);
+    final _$cb = _createCb ?? changeNotifier;
+    return _$cb(ref);
   }
 }
 
@@ -352,8 +352,8 @@ final class NotifierProvider
 
   @override
   MyNotifier create(NotifierRef ref) {
-    final fn = _createCb ?? notifier;
-    return fn(ref);
+    final _$cb = _createCb ?? notifier;
+    return _$cb(ref);
   }
 }
 
@@ -412,8 +412,8 @@ final class AutoDisposeNotifierProvider extends $FunctionalProvider<
 
   @override
   MyAutoDisposeNotifier create(AutoDisposeNotifierRef ref) {
-    final fn = _createCb ?? autoDisposeNotifier;
-    return fn(ref);
+    final _$cb = _createCb ?? autoDisposeNotifier;
+    return _$cb(ref);
   }
 }
 
@@ -474,8 +474,8 @@ final class AsyncNotifierProvider extends $FunctionalProvider<
 
   @override
   MyAsyncNotifier create(AsyncNotifierRef ref) {
-    final fn = _createCb ?? asyncNotifier;
-    return fn(ref);
+    final _$cb = _createCb ?? asyncNotifier;
+    return _$cb(ref);
   }
 }
 
@@ -535,8 +535,8 @@ final class RawNotifierProvider extends $FunctionalProvider<
 
   @override
   Raw<MyChangeNotifier> create(RawNotifierRef ref) {
-    final fn = _createCb ?? rawNotifier;
-    return fn(ref);
+    final _$cb = _createCb ?? rawNotifier;
+    return _$cb(ref);
   }
 }
 
@@ -597,8 +597,8 @@ final class RawFutureNotifierProvider extends $FunctionalProvider<
 
   @override
   Raw<Future<MyChangeNotifier>> create(RawFutureNotifierRef ref) {
-    final fn = _createCb ?? rawFutureNotifier;
-    return fn(ref);
+    final _$cb = _createCb ?? rawFutureNotifier;
+    return _$cb(ref);
   }
 }
 
@@ -659,8 +659,8 @@ final class RawStreamNotifierProvider extends $FunctionalProvider<
 
   @override
   Raw<Stream<MyChangeNotifier>> create(RawStreamNotifierRef ref) {
-    final fn = _createCb ?? rawStreamNotifier;
-    return fn(ref);
+    final _$cb = _createCb ?? rawStreamNotifier;
+    return _$cb(ref);
   }
 }
 
@@ -715,8 +715,8 @@ final class FutureRawNotifierProvider extends $FunctionalProvider<
 
   @override
   FutureOr<Raw<MyChangeNotifier>> create(FutureRawNotifierRef ref) {
-    final fn = _createCb ?? futureRawNotifier;
-    return fn(ref);
+    final _$cb = _createCb ?? futureRawNotifier;
+    return _$cb(ref);
   }
 }
 
@@ -771,8 +771,8 @@ final class StreamRawNotifierProvider extends $FunctionalProvider<
 
   @override
   Stream<Raw<MyChangeNotifier>> create(StreamRawNotifierRef ref) {
-    final fn = _createCb ?? streamRawNotifier;
-    return fn(ref);
+    final _$cb = _createCb ?? streamRawNotifier;
+    return _$cb(ref);
   }
 }
 

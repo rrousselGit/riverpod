@@ -62,8 +62,8 @@ final class RawStreamProvider extends $FunctionalProvider<
 
   @override
   Raw<Stream<int>> create(RawStreamRef ref) {
-    final fn = _createCb ?? rawStream;
-    return fn(ref);
+    final _$cb = _createCb ?? rawStream;
+    return _$cb(ref);
   }
 }
 

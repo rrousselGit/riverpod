@@ -81,12 +81,12 @@ final class FetchPackagesProvider extends $FunctionalProvider<
 
   @override
   FutureOr<List<Package>> create(FetchPackagesRef ref) {
-    final fn = _createCb ?? fetchPackages;
+    final _$cb = _createCb ?? fetchPackages;
     final argument = this.argument as ({
       int page,
       String search,
     });
-    return fn(
+    return _$cb(
       ref,
       page: argument.page,
       search: argument.search,

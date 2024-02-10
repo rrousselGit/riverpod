@@ -58,8 +58,8 @@ final class GeneratedProvider
 
   @override
   _Test create(GeneratedRef ref) {
-    final fn = _createCb ?? generated;
-    return fn(ref);
+    final _$cb = _createCb ?? generated;
+    return _$cb(ref);
   }
 }
 
@@ -133,9 +133,9 @@ final class GeneratedFamilyProvider
 
   @override
   _Test create(GeneratedFamilyRef ref) {
-    final fn = _createCb ?? generatedFamily;
+    final _$cb = _createCb ?? generatedFamily;
     final argument = this.argument as _Test;
-    return fn(
+    return _$cb(
       ref,
       argument,
     );
@@ -248,8 +248,8 @@ final class $DynamicProvider
 
   @override
   Object? create($DynamicRef ref) {
-    final fn = _createCb ?? $dynamic;
-    return fn(ref);
+    final _$cb = _createCb ?? $dynamic;
+    return _$cb(ref);
   }
 }
 
@@ -323,9 +323,9 @@ final class $DynamicFamilyProvider
 
   @override
   Object? create($DynamicFamilyRef ref) {
-    final fn = _createCb ?? $dynamicFamily;
+    final _$cb = _createCb ?? $dynamicFamily;
     final argument = this.argument as dynamic;
-    return fn(
+    return _$cb(
       ref,
       argument,
     );
@@ -454,9 +454,9 @@ final class _DynamicProvider
 
   @override
   Object? create(_DynamicRef ref) {
-    final fn = _createCb ?? _dynamic;
+    final _$cb = _createCb ?? _dynamic;
     final argument = this.argument as dynamic;
-    return fn(
+    return _$cb(
       ref,
       argument,
     );
@@ -570,8 +570,8 @@ final class AliasProvider
 
   @override
   r.AsyncValue<int> create(AliasRef ref) {
-    final fn = _createCb ?? alias;
-    return fn(ref);
+    final _$cb = _createCb ?? alias;
+    return _$cb(ref);
   }
 }
 
@@ -647,9 +647,9 @@ final class AliasFamilyProvider extends $FunctionalProvider<
 
   @override
   r.AsyncValue<int> create(AliasFamilyRef ref) {
-    final fn = _createCb ?? aliasFamily;
+    final _$cb = _createCb ?? aliasFamily;
     final argument = this.argument as r.AsyncValue<int>;
-    return fn(
+    return _$cb(
       ref,
       argument,
     );

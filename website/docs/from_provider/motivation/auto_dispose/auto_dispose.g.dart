@@ -59,8 +59,8 @@ final class DiceRollProvider extends $FunctionalProvider<int, int, DiceRollRef>
 
   @override
   int create(DiceRollRef ref) {
-    final fn = _createCb ?? diceRoll;
-    return fn(ref);
+    final _$cb = _createCb ?? diceRoll;
+    return _$cb(ref);
   }
 }
 
@@ -118,8 +118,8 @@ final class CachedDiceRollProvider
 
   @override
   int create(CachedDiceRollRef ref) {
-    final fn = _createCb ?? cachedDiceRoll;
-    return fn(ref);
+    final _$cb = _createCb ?? cachedDiceRoll;
+    return _$cb(ref);
   }
 }
 

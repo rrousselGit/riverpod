@@ -62,8 +62,8 @@ final class MyListenableProvider extends $FunctionalProvider<
 
   @override
   Raw<ValueNotifier<int>> create(MyListenableRef ref) {
-    final fn = _createCb ?? myListenable;
-    return fn(ref);
+    final _$cb = _createCb ?? myListenable;
+    return _$cb(ref);
   }
 }
 
@@ -122,8 +122,8 @@ final class AnotherListenableProvider extends $FunctionalProvider<
 
   @override
   Raw<ValueNotifier<int>> create(AnotherListenableRef ref) {
-    final fn = _createCb ?? anotherListenable;
-    return fn(ref);
+    final _$cb = _createCb ?? anotherListenable;
+    return _$cb(ref);
   }
 }
 

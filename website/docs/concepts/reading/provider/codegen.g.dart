@@ -60,8 +60,8 @@ final class RepositoryProvider
 
   @override
   Repository create(RepositoryRef ref) {
-    final fn = _createCb ?? repository;
-    return fn(ref);
+    final _$cb = _createCb ?? repository;
+    return _$cb(ref);
   }
 }
 
@@ -118,8 +118,8 @@ final class ValueProvider extends $FunctionalProvider<String, String, ValueRef>
 
   @override
   String create(ValueRef ref) {
-    final fn = _createCb ?? value;
-    return fn(ref);
+    final _$cb = _createCb ?? value;
+    return _$cb(ref);
   }
 }
 

@@ -53,8 +53,8 @@ final class ChatProvider extends $FunctionalProvider<AsyncValue<List<String>>,
 
   @override
   Stream<List<String>> create(ChatRef ref) {
-    final fn = _createCb ?? chat;
-    return fn(ref);
+    final _$cb = _createCb ?? chat;
+    return _$cb(ref);
   }
 }
 

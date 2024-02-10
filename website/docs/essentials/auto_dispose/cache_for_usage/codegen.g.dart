@@ -52,8 +52,8 @@ final class ExampleProvider extends $FunctionalProvider<AsyncValue<Object>,
 
   @override
   FutureOr<Object> create(ExampleRef ref) {
-    final fn = _createCb ?? example;
-    return fn(ref);
+    final _$cb = _createCb ?? example;
+    return _$cb(ref);
   }
 }
 

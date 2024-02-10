@@ -74,9 +74,9 @@ final class GeneratorProvider
 
   @override
   int create(GeneratorRef ref) {
-    final fn = _createCb ?? generator;
+    final _$cb = _createCb ?? generator;
     final argument = this.argument;
-    return fn(
+    return _$cb(
       ref,
       value: argument,
     );

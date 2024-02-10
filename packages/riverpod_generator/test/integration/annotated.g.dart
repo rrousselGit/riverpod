@@ -77,9 +77,9 @@ final class FunctionalProvider
 
   @override
   String create(FunctionalRef ref) {
-    final fn = _createCb ?? functional;
+    final _$cb = _createCb ?? functional;
     final argument = this.argument as int;
-    return fn(
+    return _$cb(
       ref,
       argument,
     );
@@ -211,9 +211,9 @@ final class FamilyProvider
 
   @override
   String create(FamilyRef ref) {
-    final fn = _createCb ?? family;
+    final _$cb = _createCb ?? family;
     final argument = this.argument as int;
-    return fn(
+    return _$cb(
       ref,
       argument,
     );
@@ -326,8 +326,8 @@ final class NotCopiedFunctionalProvider
 
   @override
   String create(NotCopiedFunctionalRef ref) {
-    final fn = _createCb ?? notCopiedFunctional;
-    return fn(ref);
+    final _$cb = _createCb ?? notCopiedFunctional;
+    return _$cb(ref);
   }
 }
 
@@ -402,9 +402,9 @@ final class NotCopiedFamilyProvider
 
   @override
   String create(NotCopiedFamilyRef ref) {
-    final fn = _createCb ?? notCopiedFamily;
+    final _$cb = _createCb ?? notCopiedFamily;
     final argument = this.argument as int;
-    return fn(
+    return _$cb(
       ref,
       argument,
     );

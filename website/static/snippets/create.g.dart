@@ -52,8 +52,8 @@ final class BoredSuggestionProvider extends $FunctionalProvider<
 
   @override
   FutureOr<String> create(BoredSuggestionRef ref) {
-    final fn = _createCb ?? boredSuggestion;
-    return fn(ref);
+    final _$cb = _createCb ?? boredSuggestion;
+    return _$cb(ref);
   }
 }
 

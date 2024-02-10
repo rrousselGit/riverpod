@@ -83,12 +83,12 @@ final class FnProvider extends $FunctionalProvider<int, int, FnRef>
 
   @override
   int create(FnRef ref) {
-    final fn = _createCb ?? fn;
+    final _$cb = _createCb ?? fn;
     final argument = this.argument as (
       BuildContext, {
       BuildContext context2,
     });
-    return fn(
+    return _$cb(
       ref,
       argument.$1,
       context2: argument.context2,

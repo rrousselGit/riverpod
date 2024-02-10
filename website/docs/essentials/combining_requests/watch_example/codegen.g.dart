@@ -57,8 +57,8 @@ final class LocationProvider extends $FunctionalProvider<
 
   @override
   Stream<({double longitude, double latitude})> create(LocationRef ref) {
-    final fn = _createCb ?? location;
-    return fn(ref);
+    final _$cb = _createCb ?? location;
+    return _$cb(ref);
   }
 }
 
@@ -111,8 +111,8 @@ final class RestaurantsNearMeProvider extends $FunctionalProvider<
 
   @override
   FutureOr<List<String>> create(RestaurantsNearMeRef ref) {
-    final fn = _createCb ?? restaurantsNearMe;
-    return fn(ref);
+    final _$cb = _createCb ?? restaurantsNearMe;
+    return _$cb(ref);
   }
 }
 

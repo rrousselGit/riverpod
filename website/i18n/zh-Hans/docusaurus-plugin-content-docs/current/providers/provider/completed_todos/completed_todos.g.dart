@@ -60,8 +60,8 @@ final class CompletedTodosProvider
 
   @override
   List<Todo> create(CompletedTodosRef ref) {
-    final fn = _createCb ?? completedTodos;
-    return fn(ref);
+    final _$cb = _createCb ?? completedTodos;
+    return _$cb(ref);
   }
 }
 

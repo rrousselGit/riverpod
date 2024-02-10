@@ -57,8 +57,8 @@ final class DepProvider extends $FunctionalProvider<int, int, DepRef>
 
   @override
   int create(DepRef ref) {
-    final fn = _createCb ?? dep;
-    return fn(ref);
+    final _$cb = _createCb ?? dep;
+    return _$cb(ref);
   }
 }
 
@@ -115,8 +115,8 @@ final class Dep2Provider extends $FunctionalProvider<int, int, Dep2Ref>
 
   @override
   int create(Dep2Ref ref) {
-    final fn = _createCb ?? dep2;
-    return fn(ref);
+    final _$cb = _createCb ?? dep2;
+    return _$cb(ref);
   }
 }
 
@@ -182,8 +182,8 @@ final class PlainAnnotationProvider
 
   @override
   int create(PlainAnnotationRef ref) {
-    final fn = _createCb ?? plainAnnotation;
-    return fn(ref);
+    final _$cb = _createCb ?? plainAnnotation;
+    return _$cb(ref);
   }
 }
 
@@ -241,8 +241,8 @@ final class CustomAnnotationProvider
 
   @override
   int create(CustomAnnotationRef ref) {
-    final fn = _createCb ?? customAnnotation;
-    return fn(ref);
+    final _$cb = _createCb ?? customAnnotation;
+    return _$cb(ref);
   }
 }
 
@@ -302,8 +302,8 @@ final class CustomAnnotationWithTrailingCommaProvider
 
   @override
   int create(CustomAnnotationWithTrailingCommaRef ref) {
-    final fn = _createCb ?? customAnnotationWithTrailingComma;
-    return fn(ref);
+    final _$cb = _createCb ?? customAnnotationWithTrailingComma;
+    return _$cb(ref);
   }
 }
 
@@ -362,8 +362,8 @@ final class ExistingDepProvider
 
   @override
   int create(ExistingDepRef ref) {
-    final fn = _createCb ?? existingDep;
-    return fn(ref);
+    final _$cb = _createCb ?? existingDep;
+    return _$cb(ref);
   }
 }
 
@@ -421,8 +421,8 @@ final class MultipleDepsProvider
 
   @override
   int create(MultipleDepsRef ref) {
-    final fn = _createCb ?? multipleDeps;
-    return fn(ref);
+    final _$cb = _createCb ?? multipleDeps;
+    return _$cb(ref);
   }
 }
 
@@ -485,8 +485,8 @@ final class ExtraDepProvider extends $FunctionalProvider<int, int, ExtraDepRef>
 
   @override
   int create(ExtraDepRef ref) {
-    final fn = _createCb ?? extraDep;
-    return fn(ref);
+    final _$cb = _createCb ?? extraDep;
+    return _$cb(ref);
   }
 }
 
@@ -547,8 +547,8 @@ final class NoDepProvider extends $FunctionalProvider<int, int, NoDepRef>
 
   @override
   int create(NoDepRef ref) {
-    final fn = _createCb ?? noDep;
-    return fn(ref);
+    final _$cb = _createCb ?? noDep;
+    return _$cb(ref);
   }
 }
 
@@ -611,8 +611,8 @@ final class DependenciesFirstThenKeepAliveProvider
 
   @override
   int create(DependenciesFirstThenKeepAliveRef ref) {
-    final fn = _createCb ?? dependenciesFirstThenKeepAlive;
-    return fn(ref);
+    final _$cb = _createCb ?? dependenciesFirstThenKeepAlive;
+    return _$cb(ref);
   }
 }
 
@@ -675,8 +675,8 @@ final class NoDepNoParamProvider
 
   @override
   int create(NoDepNoParamRef ref) {
-    final fn = _createCb ?? noDepNoParam;
-    return fn(ref);
+    final _$cb = _createCb ?? noDepNoParam;
+    return _$cb(ref);
   }
 }
 
@@ -738,8 +738,8 @@ final class NoDepWithoutCommaProvider
 
   @override
   int create(NoDepWithoutCommaRef ref) {
-    final fn = _createCb ?? noDepWithoutComma;
-    return fn(ref);
+    final _$cb = _createCb ?? noDepWithoutComma;
+    return _$cb(ref);
   }
 }
 

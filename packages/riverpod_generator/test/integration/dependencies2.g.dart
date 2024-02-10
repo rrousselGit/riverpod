@@ -76,8 +76,8 @@ final class ProviderWithDependencies2Provider
 
   @override
   int create(ProviderWithDependencies2Ref ref) {
-    final fn = _createCb ?? providerWithDependencies2;
-    return fn(ref);
+    final _$cb = _createCb ?? providerWithDependencies2;
+    return _$cb(ref);
   }
 }
 
@@ -160,9 +160,9 @@ final class FamilyWithDependencies2Provider
 
   @override
   int create(FamilyWithDependencies2Ref ref) {
-    final fn = _createCb ?? familyWithDependencies2;
+    final _$cb = _createCb ?? familyWithDependencies2;
     final argument = this.argument as int?;
-    return fn(
+    return _$cb(
       ref,
       id: argument,
     );
@@ -287,8 +287,8 @@ final class _Private2Provider
 
   @override
   int create(_Private2Ref ref) {
-    final fn = _createCb ?? _private2;
-    return fn(ref);
+    final _$cb = _createCb ?? _private2;
+    return _$cb(ref);
   }
 }
 
@@ -345,8 +345,8 @@ final class Public2Provider extends $FunctionalProvider<int, int, Public2Ref>
 
   @override
   int create(Public2Ref ref) {
-    final fn = _createCb ?? public2;
-    return fn(ref);
+    final _$cb = _createCb ?? public2;
+    return _$cb(ref);
   }
 }
 

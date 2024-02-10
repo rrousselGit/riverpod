@@ -74,8 +74,8 @@ final class GenericProvider<T extends num>
 
   @override
   List<T> create(GenericRef<T> ref) {
-    final fn = _createCb ?? generic<T>;
-    return fn(ref);
+    final _$cb = _createCb ?? generic<T>;
+    return _$cb(ref);
   }
 
   @override
@@ -219,12 +219,12 @@ final class ComplexGenericProvider<T extends num, Foo extends String?>
 
   @override
   List<T> create(ComplexGenericRef<T, Foo> ref) {
-    final fn = _createCb ?? complexGeneric<T, Foo>;
+    final _$cb = _createCb ?? complexGeneric<T, Foo>;
     final argument = this.argument as ({
       T param,
       Foo? otherParam,
     });
-    return fn(
+    return _$cb(
       ref,
       param: argument.param,
       otherParam: argument.otherParam,
@@ -354,8 +354,8 @@ final class RawFutureProvider extends $FunctionalProvider<
 
   @override
   Raw<Future<String>> create(RawFutureRef ref) {
-    final fn = _createCb ?? rawFuture;
-    return fn(ref);
+    final _$cb = _createCb ?? rawFuture;
+    return _$cb(ref);
   }
 }
 
@@ -415,8 +415,8 @@ final class RawStreamProvider extends $FunctionalProvider<
 
   @override
   Raw<Stream<String>> create(RawStreamRef ref) {
-    final fn = _createCb ?? rawStream;
-    return fn(ref);
+    final _$cb = _createCb ?? rawStream;
+    return _$cb(ref);
   }
 }
 
@@ -491,9 +491,9 @@ final class RawFamilyFutureProvider extends $FunctionalProvider<
 
   @override
   Raw<Future<String>> create(RawFamilyFutureRef ref) {
-    final fn = _createCb ?? rawFamilyFuture;
+    final _$cb = _createCb ?? rawFamilyFuture;
     final argument = this.argument as int;
-    return fn(
+    return _$cb(
       ref,
       argument,
     );
@@ -623,9 +623,9 @@ final class RawFamilyStreamProvider extends $FunctionalProvider<
 
   @override
   Raw<Stream<String>> create(RawFamilyStreamRef ref) {
-    final fn = _createCb ?? rawFamilyStream;
+    final _$cb = _createCb ?? rawFamilyStream;
     final argument = this.argument as int;
-    return fn(
+    return _$cb(
       ref,
       argument,
     );
@@ -742,8 +742,8 @@ final class PublicProvider
 
   @override
   String create(PublicRef ref) {
-    final fn = _createCb ?? public;
-    return fn(ref);
+    final _$cb = _createCb ?? public;
+    return _$cb(ref);
   }
 }
 
@@ -801,8 +801,8 @@ final class Supports$inNamesProvider
 
   @override
   String create(Supports$inNamesRef ref) {
-    final fn = _createCb ?? supports$inNames;
-    return fn(ref);
+    final _$cb = _createCb ?? supports$inNames;
+    return _$cb(ref);
   }
 }
 
@@ -905,7 +905,7 @@ final class FamilyProvider
 
   @override
   String create(FamilyRef ref) {
-    final fn = _createCb ?? family;
+    final _$cb = _createCb ?? family;
     final argument = this.argument as (
       int, {
       String? second,
@@ -913,7 +913,7 @@ final class FamilyProvider
       bool fourth,
       List<String>? fifth,
     });
-    return fn(
+    return _$cb(
       ref,
       argument.$1,
       second: argument.second,
@@ -1054,8 +1054,8 @@ final class _PrivateProvider
 
   @override
   String create(_PrivateRef ref) {
-    final fn = _createCb ?? _private;
-    return fn(ref);
+    final _$cb = _createCb ?? _private;
+    return _$cb(ref);
   }
 }
 
@@ -1130,8 +1130,8 @@ final class Supports$InFnNameProvider<And$InT>
 
   @override
   String create(Supports$InFnNameRef<And$InT> ref) {
-    final fn = _createCb ?? supports$InFnName<And$InT>;
-    return fn(ref);
+    final _$cb = _createCb ?? supports$InFnName<And$InT>;
+    return _$cb(ref);
   }
 
   @override
@@ -1284,13 +1284,13 @@ final class Supports$InFnNameFamilyProvider<And$InT>
 
   @override
   String create(Supports$InFnNameFamilyRef<And$InT> ref) {
-    final fn = _createCb ?? supports$InFnNameFamily<And$InT>;
+    final _$cb = _createCb ?? supports$InFnNameFamily<And$InT>;
     final argument = this.argument as (
       And$InT, {
       And$InT named$arg,
       String defaultArg,
     });
-    return fn(
+    return _$cb(
       ref,
       argument.$1,
       named$arg: argument.named$arg,
@@ -1425,8 +1425,8 @@ final class GeneratedProvider
 
   @override
   String create(GeneratedRef ref) {
-    final fn = _createCb ?? generated;
-    return fn(ref);
+    final _$cb = _createCb ?? generated;
+    return _$cb(ref);
   }
 }
 
@@ -1500,9 +1500,9 @@ final class UnnecessaryCastProvider
 
   @override
   String create(UnnecessaryCastRef ref) {
-    final fn = _createCb ?? unnecessaryCast;
+    final _$cb = _createCb ?? unnecessaryCast;
     final argument = this.argument;
-    return fn(
+    return _$cb(
       ref,
       argument,
     );

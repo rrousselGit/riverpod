@@ -59,8 +59,8 @@ final class AnotherProvider extends $FunctionalProvider<void, void, AnotherRef>
 
   @override
   void create(AnotherRef ref) {
-    final fn = _createCb ?? another;
-    return fn(ref);
+    final _$cb = _createCb ?? another;
+    return _$cb(ref);
   }
 }
 

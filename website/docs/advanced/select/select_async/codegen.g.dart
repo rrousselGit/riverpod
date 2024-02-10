@@ -60,8 +60,8 @@ final class ExampleProvider
 
   @override
   Object? create(ExampleRef ref) {
-    final fn = _createCb ?? example;
-    return fn(ref);
+    final _$cb = _createCb ?? example;
+    return _$cb(ref);
   }
 }
 

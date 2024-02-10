@@ -53,8 +53,8 @@ final class ItemsApiProvider extends $FunctionalProvider<AsyncValue<List<Item>>,
 
   @override
   FutureOr<List<Item>> create(ItemsApiRef ref) {
-    final fn = _createCb ?? itemsApi;
-    return fn(ref);
+    final _$cb = _createCb ?? itemsApi;
+    return _$cb(ref);
   }
 }
 
@@ -112,8 +112,8 @@ final class EvenItemsProvider
 
   @override
   List<Item> create(EvenItemsRef ref) {
-    final fn = _createCb ?? evenItems;
-    return fn(ref);
+    final _$cb = _createCb ?? evenItems;
+    return _$cb(ref);
   }
 }
 

@@ -60,8 +60,8 @@ final class CanGoToPreviousPageProvider
 
   @override
   bool create(CanGoToPreviousPageRef ref) {
-    final fn = _createCb ?? canGoToPreviousPage;
-    return fn(ref);
+    final _$cb = _createCb ?? canGoToPreviousPage;
+    return _$cb(ref);
   }
 }
 

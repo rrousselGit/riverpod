@@ -70,9 +70,9 @@ final class FetchPackageDetailsProvider extends $FunctionalProvider<
 
   @override
   FutureOr<Package> create(FetchPackageDetailsRef ref) {
-    final fn = _createCb ?? fetchPackageDetails;
+    final _$cb = _createCb ?? fetchPackageDetails;
     final argument = this.argument as String;
-    return fn(
+    return _$cb(
       ref,
       packageName: argument,
     );
@@ -181,8 +181,8 @@ final class LikedPackagesProvider extends $FunctionalProvider<
 
   @override
   FutureOr<List<String>> create(LikedPackagesRef ref) {
-    final fn = _createCb ?? likedPackages;
-    return fn(ref);
+    final _$cb = _createCb ?? likedPackages;
+    return _$cb(ref);
   }
 }
 
@@ -240,8 +240,8 @@ final class PubRepositoryProvider
 
   @override
   PubRepository create(PubRepositoryRef ref) {
-    final fn = _createCb ?? pubRepository;
-    return fn(ref);
+    final _$cb = _createCb ?? pubRepository;
+    return _$cb(ref);
   }
 }
 

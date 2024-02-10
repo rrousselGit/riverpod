@@ -53,8 +53,8 @@ final class TodoListProvider extends $FunctionalProvider<AsyncValue<List<Todo>>,
 
   @override
   FutureOr<List<Todo>> create(TodoListRef ref) {
-    final fn = _createCb ?? todoList;
-    return fn(ref);
+    final _$cb = _createCb ?? todoList;
+    return _$cb(ref);
   }
 }
 

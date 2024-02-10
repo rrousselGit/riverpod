@@ -57,8 +57,8 @@ final class NamelessProvider extends $FunctionalProvider<int, int, NamelessRef>
 
   @override
   int create(NamelessRef ref) {
-    final fn = _createCb ?? nameless;
-    return fn(ref);
+    final _$cb = _createCb ?? nameless;
+    return _$cb(ref);
   }
 }
 
@@ -115,8 +115,8 @@ final class ScopedProvider extends $FunctionalProvider<int, int, ScopedRef>
 
   @override
   int create(ScopedRef ref) {
-    final fn = _createCb ?? scoped;
-    return fn(ref);
+    final _$cb = _createCb ?? scoped;
+    return _$cb(ref);
   }
 }
 
@@ -191,8 +191,8 @@ final class GenericsProvider<A extends num, B>
 
   @override
   int create(GenericsRef<A, B> ref) {
-    final fn = _createCb ?? generics<A, B>;
-    return fn(ref);
+    final _$cb = _createCb ?? generics<A, B>;
+    return _$cb(ref);
   }
 
   @override
@@ -312,8 +312,8 @@ final class NoGenericsProvider<A extends num, B>
 
   @override
   int create(NoGenericsRef<A, B> ref) {
-    final fn = _createCb ?? noGenerics<A, B>;
-    return fn(ref);
+    final _$cb = _createCb ?? noGenerics<A, B>;
+    return _$cb(ref);
   }
 
   @override
@@ -433,8 +433,8 @@ final class MissingGenericsProvider<A, B>
 
   @override
   int create(MissingGenericsRef<A, B> ref) {
-    final fn = _createCb ?? missingGenerics<A, B>;
-    return fn(ref);
+    final _$cb = _createCb ?? missingGenerics<A, B>;
+    return _$cb(ref);
   }
 
   @override
@@ -554,8 +554,8 @@ final class WrongOrderProvider<B, A>
 
   @override
   int create(WrongOrderRef<B, A> ref) {
-    final fn = _createCb ?? wrongOrder<B, A>;
-    return fn(ref);
+    final _$cb = _createCb ?? wrongOrder<B, A>;
+    return _$cb(ref);
   }
 
   @override

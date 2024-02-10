@@ -57,8 +57,8 @@ final class DepProvider extends $FunctionalProvider<int, int, DepRef>
 
   @override
   int create(DepRef ref) {
-    final fn = _createCb ?? dep;
-    return fn(ref);
+    final _$cb = _createCb ?? dep;
+    return _$cb(ref);
   }
 }
 
@@ -131,9 +131,9 @@ final class FamilyProvider extends $FunctionalProvider<int, int, FamilyRef>
 
   @override
   int create(FamilyRef ref) {
-    final fn = _createCb ?? family;
+    final _$cb = _createCb ?? family;
     final argument = this.argument as int;
-    return fn(
+    return _$cb(
       ref,
       argument,
     );
@@ -260,8 +260,8 @@ final class ProviderProvider extends $FunctionalProvider<int, int, ProviderRef>
 
   @override
   int create(ProviderRef ref) {
-    final fn = _createCb ?? provider;
-    return fn(ref);
+    final _$cb = _createCb ?? provider;
+    return _$cb(ref);
   }
 }
 
@@ -334,8 +334,8 @@ final class Provider2Provider
 
   @override
   int create(Provider2Ref ref) {
-    final fn = _createCb ?? provider2;
-    return fn(ref);
+    final _$cb = _createCb ?? provider2;
+    return _$cb(ref);
   }
 }
 
@@ -409,8 +409,8 @@ final class TransitiveDependenciesProvider
 
   @override
   int create(TransitiveDependenciesRef ref) {
-    final fn = _createCb ?? transitiveDependencies;
-    return fn(ref);
+    final _$cb = _createCb ?? transitiveDependencies;
+    return _$cb(ref);
   }
 }
 
@@ -482,8 +482,8 @@ final class SmallTransitiveDependencyCountProvider
 
   @override
   int create(SmallTransitiveDependencyCountRef ref) {
-    final fn = _createCb ?? smallTransitiveDependencyCount;
-    return fn(ref);
+    final _$cb = _createCb ?? smallTransitiveDependencyCount;
+    return _$cb(ref);
   }
 }
 
@@ -543,8 +543,8 @@ final class EmptyDependenciesFunctionalProvider
 
   @override
   int create(EmptyDependenciesFunctionalRef ref) {
-    final fn = _createCb ?? emptyDependenciesFunctional;
-    return fn(ref);
+    final _$cb = _createCb ?? emptyDependenciesFunctional;
+    return _$cb(ref);
   }
 }
 
@@ -612,8 +612,8 @@ final class ProviderWithDependenciesProvider
 
   @override
   int create(ProviderWithDependenciesRef ref) {
-    final fn = _createCb ?? providerWithDependencies;
-    return fn(ref);
+    final _$cb = _createCb ?? providerWithDependencies;
+    return _$cb(ref);
   }
 }
 
@@ -672,8 +672,8 @@ final class _PrivateDepProvider
 
   @override
   int create(_PrivateDepRef ref) {
-    final fn = _createCb ?? _privateDep;
-    return fn(ref);
+    final _$cb = _createCb ?? _privateDep;
+    return _$cb(ref);
   }
 }
 
@@ -731,8 +731,8 @@ final class PublicDepProvider
 
   @override
   int create(PublicDepRef ref) {
-    final fn = _createCb ?? publicDep;
-    return fn(ref);
+    final _$cb = _createCb ?? publicDep;
+    return _$cb(ref);
   }
 }
 
@@ -796,8 +796,8 @@ final class DuplicateDependenciesProvider
 
   @override
   int create(DuplicateDependenciesRef ref) {
-    final fn = _createCb ?? duplicateDependencies;
-    return fn(ref);
+    final _$cb = _createCb ?? duplicateDependencies;
+    return _$cb(ref);
   }
 }
 
@@ -865,8 +865,8 @@ final class DuplicateDependencies2Provider
 
   @override
   int create(DuplicateDependencies2Ref ref) {
-    final fn = _createCb ?? duplicateDependencies2;
-    return fn(ref);
+    final _$cb = _createCb ?? duplicateDependencies2;
+    return _$cb(ref);
   }
 }
 
@@ -947,8 +947,8 @@ final class TransitiveDuplicateDependenciesProvider
 
   @override
   int create(TransitiveDuplicateDependenciesRef ref) {
-    final fn = _createCb ?? transitiveDuplicateDependencies;
-    return fn(ref);
+    final _$cb = _createCb ?? transitiveDuplicateDependencies;
+    return _$cb(ref);
   }
 }
 

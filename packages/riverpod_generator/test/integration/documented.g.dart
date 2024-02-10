@@ -66,8 +66,8 @@ final class FunctionalProvider
 
   @override
   String create(FunctionalRef ref) {
-    final fn = _createCb ?? functional;
-    return fn(ref);
+    final _$cb = _createCb ?? functional;
+    return _$cb(ref);
   }
 }
 
@@ -149,9 +149,9 @@ final class FamilyProvider
 
   @override
   String create(FamilyRef ref) {
-    final fn = _createCb ?? family;
+    final _$cb = _createCb ?? family;
     final argument = this.argument as int;
-    return fn(
+    return _$cb(
       ref,
       argument,
     );

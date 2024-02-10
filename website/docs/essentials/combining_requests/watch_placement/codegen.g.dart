@@ -59,8 +59,8 @@ final class ExampleProvider extends $FunctionalProvider<int, int, ExampleRef>
 
   @override
   int create(ExampleRef ref) {
-    final fn = _createCb ?? example;
-    return fn(ref);
+    final _$cb = _createCb ?? example;
+    return _$cb(ref);
   }
 }
 

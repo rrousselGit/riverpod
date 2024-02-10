@@ -61,8 +61,8 @@ final class ExampleProvider extends $FunctionalProvider<int, int, ExampleRef>
 
   @override
   int create(ExampleRef ref) {
-    final fn = _createCb ?? example;
-    return fn(ref);
+    final _$cb = _createCb ?? example;
+    return _$cb(ref);
   }
 }
 
@@ -150,12 +150,12 @@ final class ExampleFamilyProvider
 
   @override
   int create(ExampleFamilyRef ref) {
-    final fn = _createCb ?? exampleFamily;
+    final _$cb = _createCb ?? exampleFamily;
     final argument = this.argument as ({
       int a,
       String b,
     });
-    return fn(
+    return _$cb(
       ref,
       a: argument.a,
       b: argument.b,

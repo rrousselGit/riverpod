@@ -57,8 +57,8 @@ final class CountProvider extends $FunctionalProvider<int, int, CountRef>
 
   @override
   int create(CountRef ref) {
-    final fn = _createCb ?? count;
-    return fn(ref);
+    final _$cb = _createCb ?? count;
+    return _$cb(ref);
   }
 }
 
@@ -108,8 +108,8 @@ final class CountFutureProvider
 
   @override
   FutureOr<int> create(CountFutureRef ref) {
-    final fn = _createCb ?? countFuture;
-    return fn(ref);
+    final _$cb = _createCb ?? countFuture;
+    return _$cb(ref);
   }
 }
 
@@ -159,8 +159,8 @@ final class CountStreamProvider
 
   @override
   Stream<int> create(CountStreamRef ref) {
-    final fn = _createCb ?? countStream;
-    return fn(ref);
+    final _$cb = _createCb ?? countStream;
+    return _$cb(ref);
   }
 }
 
@@ -233,9 +233,9 @@ final class Count2Provider extends $FunctionalProvider<int, int, Count2Ref>
 
   @override
   int create(Count2Ref ref) {
-    final fn = _createCb ?? count2;
+    final _$cb = _createCb ?? count2;
     final argument = this.argument as int;
-    return fn(
+    return _$cb(
       ref,
       argument,
     );
@@ -356,9 +356,9 @@ final class CountFuture2Provider
 
   @override
   FutureOr<int> create(CountFuture2Ref ref) {
-    final fn = _createCb ?? countFuture2;
+    final _$cb = _createCb ?? countFuture2;
     final argument = this.argument as int;
-    return fn(
+    return _$cb(
       ref,
       argument,
     );
@@ -479,9 +479,9 @@ final class CountStream2Provider
 
   @override
   Stream<int> create(CountStream2Ref ref) {
-    final fn = _createCb ?? countStream2;
+    final _$cb = _createCb ?? countStream2;
     final argument = this.argument as int;
-    return fn(
+    return _$cb(
       ref,
       argument,
     );

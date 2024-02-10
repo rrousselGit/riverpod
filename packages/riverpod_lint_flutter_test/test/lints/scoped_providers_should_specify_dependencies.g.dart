@@ -57,8 +57,8 @@ final class ScopedProvider extends $FunctionalProvider<int, int, ScopedRef>
 
   @override
   int create(ScopedRef ref) {
-    final fn = _createCb ?? scoped;
-    return fn(ref);
+    final _$cb = _createCb ?? scoped;
+    return _$cb(ref);
   }
 }
 
@@ -116,8 +116,8 @@ final class UnimplementedScopedProvider
 
   @override
   int create(UnimplementedScopedRef ref) {
-    final fn = _createCb ?? unimplementedScoped;
-    return fn(ref);
+    final _$cb = _createCb ?? unimplementedScoped;
+    return _$cb(ref);
   }
 }
 
@@ -175,8 +175,8 @@ final class RootProvider extends $FunctionalProvider<int, int, RootRef>
 
   @override
   int create(RootRef ref) {
-    final fn = _createCb ?? root;
-    return fn(ref);
+    final _$cb = _createCb ?? root;
+    return _$cb(ref);
   }
 }
 

@@ -60,8 +60,8 @@ final class Example1Provider
 
   @override
   String create(Example1Ref ref) {
-    final fn = _createCb ?? example1;
-    return fn(ref);
+    final _$cb = _createCb ?? example1;
+    return _$cb(ref);
   }
 }
 
@@ -119,8 +119,8 @@ final class Example2Provider
 
   @override
   String create(Example2Ref ref) {
-    final fn = _createCb ?? example2;
-    return fn(ref);
+    final _$cb = _createCb ?? example2;
+    return _$cb(ref);
   }
 }
 

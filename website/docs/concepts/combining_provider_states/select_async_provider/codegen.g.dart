@@ -55,8 +55,8 @@ final class ConfigProvider extends $FunctionalProvider<
 
   @override
   Stream<Configuration> create(ConfigRef ref) {
-    final fn = _createCb ?? config;
-    return fn(ref);
+    final _$cb = _createCb ?? config;
+    return _$cb(ref);
   }
 }
 
@@ -109,8 +109,8 @@ final class ProductsProvider extends $FunctionalProvider<
 
   @override
   FutureOr<List<Product>> create(ProductsRef ref) {
-    final fn = _createCb ?? products;
-    return fn(ref);
+    final _$cb = _createCb ?? products;
+    return _$cb(ref);
   }
 }
 

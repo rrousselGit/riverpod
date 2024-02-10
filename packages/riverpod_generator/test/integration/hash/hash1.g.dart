@@ -58,8 +58,8 @@ final class SimpleProvider
 
   @override
   String create(SimpleRef ref) {
-    final fn = _createCb ?? simple;
-    return fn(ref);
+    final _$cb = _createCb ?? simple;
+    return _$cb(ref);
   }
 }
 
@@ -117,8 +117,8 @@ final class Simple2Provider
 
   @override
   String create(Simple2Ref ref) {
-    final fn = _createCb ?? simple2;
-    return fn(ref);
+    final _$cb = _createCb ?? simple2;
+    return _$cb(ref);
   }
 }
 

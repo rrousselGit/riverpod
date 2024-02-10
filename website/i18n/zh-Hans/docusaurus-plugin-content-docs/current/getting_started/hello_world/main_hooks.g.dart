@@ -60,8 +60,8 @@ final class HelloWorldProvider
 
   @override
   String create(HelloWorldRef ref) {
-    final fn = _createCb ?? helloWorld;
-    return fn(ref);
+    final _$cb = _createCb ?? helloWorld;
+    return _$cb(ref);
   }
 }
 

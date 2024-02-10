@@ -66,8 +66,8 @@ final class GenericProvider<T extends num> extends $FunctionalProvider<
 
   @override
   FutureOr<List<T>> create(GenericRef<T> ref) {
-    final fn = _createCb ?? generic<T>;
-    return fn(ref);
+    final _$cb = _createCb ?? generic<T>;
+    return _$cb(ref);
   }
 
   @override
@@ -161,8 +161,8 @@ final class PublicProvider
 
   @override
   FutureOr<String> create(PublicRef ref) {
-    final fn = _createCb ?? public;
-    return fn(ref);
+    final _$cb = _createCb ?? public;
+    return _$cb(ref);
   }
 }
 
@@ -212,8 +212,8 @@ final class _PrivateProvider extends $FunctionalProvider<AsyncValue<String>,
 
   @override
   FutureOr<String> create(_PrivateRef ref) {
-    final fn = _createCb ?? _private;
-    return fn(ref);
+    final _$cb = _createCb ?? _private;
+    return _$cb(ref);
   }
 }
 
@@ -279,9 +279,9 @@ final class FamilyOrProvider extends $FunctionalProvider<AsyncValue<String>,
 
   @override
   FutureOr<String> create(FamilyOrRef ref) {
-    final fn = _createCb ?? familyOr;
+    final _$cb = _createCb ?? familyOr;
     final argument = this.argument as int;
-    return fn(
+    return _$cb(
       ref,
       argument,
     );
@@ -427,7 +427,7 @@ final class FamilyProvider
 
   @override
   FutureOr<String> create(FamilyRef ref) {
-    final fn = _createCb ?? family;
+    final _$cb = _createCb ?? family;
     final argument = this.argument as (
       int, {
       String? second,
@@ -435,7 +435,7 @@ final class FamilyProvider
       bool fourth,
       List<String>? fifth,
     });
-    return fn(
+    return _$cb(
       ref,
       argument.$1,
       second: argument.second,

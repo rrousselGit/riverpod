@@ -57,8 +57,8 @@ final class DepProvider extends $FunctionalProvider<int, int, DepRef>
 
   @override
   int create(DepRef ref) {
-    final fn = _createCb ?? dep;
-    return fn(ref);
+    final _$cb = _createCb ?? dep;
+    return _$cb(ref);
   }
 }
 
@@ -116,8 +116,8 @@ final class GeneratedScopedProvider
 
   @override
   int create(GeneratedScopedRef ref) {
-    final fn = _createCb ?? generatedScoped;
-    return fn(ref);
+    final _$cb = _createCb ?? generatedScoped;
+    return _$cb(ref);
   }
 }
 
@@ -175,8 +175,8 @@ final class GeneratedRootProvider
 
   @override
   int create(GeneratedRootRef ref) {
-    final fn = _createCb ?? generatedRoot;
-    return fn(ref);
+    final _$cb = _createCb ?? generatedRoot;
+    return _$cb(ref);
   }
 }
 
@@ -235,8 +235,8 @@ final class WatchScopedButNoDependenciesProvider
 
   @override
   int create(WatchScopedButNoDependenciesRef ref) {
-    final fn = _createCb ?? watchScopedButNoDependencies;
-    return fn(ref);
+    final _$cb = _createCb ?? watchScopedButNoDependencies;
+    return _$cb(ref);
   }
 }
 
@@ -298,8 +298,8 @@ final class WatchGeneratedScopedButNoDependenciesProvider
 
   @override
   int create(WatchGeneratedScopedButNoDependenciesRef ref) {
-    final fn = _createCb ?? watchGeneratedScopedButNoDependencies;
-    return fn(ref);
+    final _$cb = _createCb ?? watchGeneratedScopedButNoDependencies;
+    return _$cb(ref);
   }
 }
 
@@ -359,8 +359,8 @@ final class WatchRootButNoDependenciesProvider
 
   @override
   int create(WatchRootButNoDependenciesRef ref) {
-    final fn = _createCb ?? watchRootButNoDependencies;
-    return fn(ref);
+    final _$cb = _createCb ?? watchRootButNoDependencies;
+    return _$cb(ref);
   }
 }
 
@@ -422,8 +422,8 @@ final class WatchGeneratedRootButNoDependenciesProvider
 
   @override
   int create(WatchGeneratedRootButNoDependenciesRef ref) {
-    final fn = _createCb ?? watchGeneratedRootButNoDependencies;
-    return fn(ref);
+    final _$cb = _createCb ?? watchGeneratedRootButNoDependencies;
+    return _$cb(ref);
   }
 }
 
@@ -483,8 +483,8 @@ final class WatchScopedButEmptyDependenciesProvider
 
   @override
   int create(WatchScopedButEmptyDependenciesRef ref) {
-    final fn = _createCb ?? watchScopedButEmptyDependencies;
-    return fn(ref);
+    final _$cb = _createCb ?? watchScopedButEmptyDependencies;
+    return _$cb(ref);
   }
 }
 
@@ -546,8 +546,8 @@ final class WatchGeneratedScopedButEmptyDependenciesProvider
 
   @override
   int create(WatchGeneratedScopedButEmptyDependenciesRef ref) {
-    final fn = _createCb ?? watchGeneratedScopedButEmptyDependencies;
-    return fn(ref);
+    final _$cb = _createCb ?? watchGeneratedScopedButEmptyDependencies;
+    return _$cb(ref);
   }
 }
 
@@ -607,8 +607,8 @@ final class WatchRootButEmptyDependenciesProvider
 
   @override
   int create(WatchRootButEmptyDependenciesRef ref) {
-    final fn = _createCb ?? watchRootButEmptyDependencies;
-    return fn(ref);
+    final _$cb = _createCb ?? watchRootButEmptyDependencies;
+    return _$cb(ref);
   }
 }
 
@@ -670,8 +670,8 @@ final class WatchGeneratedRootButEmptyDependenciesProvider
 
   @override
   int create(WatchGeneratedRootButEmptyDependenciesRef ref) {
-    final fn = _createCb ?? watchGeneratedRootButEmptyDependencies;
-    return fn(ref);
+    final _$cb = _createCb ?? watchGeneratedRootButEmptyDependencies;
+    return _$cb(ref);
   }
 }
 
@@ -737,8 +737,8 @@ final class WatchScopedButMissingDependenciesProvider
 
   @override
   int create(WatchScopedButMissingDependenciesRef ref) {
-    final fn = _createCb ?? watchScopedButMissingDependencies;
-    return fn(ref);
+    final _$cb = _createCb ?? watchScopedButMissingDependencies;
+    return _$cb(ref);
   }
 }
 
@@ -805,8 +805,8 @@ final class WatchGeneratedScopedButMissingDependenciesProvider
 
   @override
   int create(WatchGeneratedScopedButMissingDependenciesRef ref) {
-    final fn = _createCb ?? watchGeneratedScopedButMissingDependencies;
-    return fn(ref);
+    final _$cb = _createCb ?? watchGeneratedScopedButMissingDependencies;
+    return _$cb(ref);
   }
 }
 
@@ -870,8 +870,8 @@ final class WatchRootButMissingDependenciesProvider
 
   @override
   int create(WatchRootButMissingDependenciesRef ref) {
-    final fn = _createCb ?? watchRootButMissingDependencies;
-    return fn(ref);
+    final _$cb = _createCb ?? watchRootButMissingDependencies;
+    return _$cb(ref);
   }
 }
 
@@ -938,8 +938,8 @@ final class WatchGeneratedRootButMissingDependenciesProvider
 
   @override
   int create(WatchGeneratedRootButMissingDependenciesRef ref) {
-    final fn = _createCb ?? watchGeneratedRootButMissingDependencies;
-    return fn(ref);
+    final _$cb = _createCb ?? watchGeneratedRootButMissingDependencies;
+    return _$cb(ref);
   }
 }
 
@@ -1006,8 +1006,8 @@ final class WatchGeneratedScopedAndContainsDependencyProvider
 
   @override
   int create(WatchGeneratedScopedAndContainsDependencyRef ref) {
-    final fn = _createCb ?? watchGeneratedScopedAndContainsDependency;
-    return fn(ref);
+    final _$cb = _createCb ?? watchGeneratedScopedAndContainsDependency;
+    return _$cb(ref);
   }
 }
 
@@ -1074,8 +1074,8 @@ final class WatchGeneratedRootAndContainsDependencyProvider
 
   @override
   int create(WatchGeneratedRootAndContainsDependencyRef ref) {
-    final fn = _createCb ?? watchGeneratedRootAndContainsDependency;
-    return fn(ref);
+    final _$cb = _createCb ?? watchGeneratedRootAndContainsDependency;
+    return _$cb(ref);
   }
 }
 
@@ -1144,8 +1144,8 @@ final class SpecifiedDependencyButNeverUsedProvider
 
   @override
   int create(SpecifiedDependencyButNeverUsedRef ref) {
-    final fn = _createCb ?? specifiedDependencyButNeverUsed;
-    return fn(ref);
+    final _$cb = _createCb ?? specifiedDependencyButNeverUsed;
+    return _$cb(ref);
   }
 }
 
@@ -1208,8 +1208,8 @@ final class Regression2348Provider
 
   @override
   int create(Regression2348Ref ref) {
-    final fn = _createCb ?? regression2348;
-    return fn(ref);
+    final _$cb = _createCb ?? regression2348;
+    return _$cb(ref);
   }
 }
 
@@ -1285,9 +1285,9 @@ final class FamilyDepProvider
 
   @override
   int create(FamilyDepRef ref) {
-    final fn = _createCb ?? familyDep;
+    final _$cb = _createCb ?? familyDep;
     final argument = this.argument as int;
-    return fn(
+    return _$cb(
       ref,
       argument,
     );
@@ -1422,9 +1422,9 @@ final class FamilyDep2Provider
 
   @override
   int create(FamilyDep2Ref ref) {
-    final fn = _createCb ?? familyDep2;
+    final _$cb = _createCb ?? familyDep2;
     final argument = this.argument as int;
-    return fn(
+    return _$cb(
       ref,
       argument,
     );
@@ -1539,8 +1539,8 @@ final class AliasProvider extends $FunctionalProvider<int, int, AliasRef>
 
   @override
   int create(AliasRef ref) {
-    final fn = _createCb ?? alias;
-    return fn(ref);
+    final _$cb = _createCb ?? alias;
+    return _$cb(ref);
   }
 }
 

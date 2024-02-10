@@ -57,8 +57,8 @@ final class FetchConfigurationProvider extends $FunctionalProvider<
 
   @override
   FutureOr<Configuration> create(FetchConfigurationRef ref) {
-    final fn = _createCb ?? fetchConfiguration;
-    return fn(ref);
+    final _$cb = _createCb ?? fetchConfiguration;
+    return _$cb(ref);
   }
 }
 

@@ -58,8 +58,8 @@ final class KeepAliveProvider
 
   @override
   int create(KeepAliveRef ref) {
-    final fn = _createCb ?? keepAlive;
-    return fn(ref);
+    final _$cb = _createCb ?? keepAlive;
+    return _$cb(ref);
   }
 }
 
@@ -117,8 +117,8 @@ final class NotKeepAliveProvider
 
   @override
   int create(NotKeepAliveRef ref) {
-    final fn = _createCb ?? notKeepAlive;
-    return fn(ref);
+    final _$cb = _createCb ?? notKeepAlive;
+    return _$cb(ref);
   }
 }
 
@@ -176,8 +176,8 @@ final class DefaultKeepAliveProvider
 
   @override
   int create(DefaultKeepAliveRef ref) {
-    final fn = _createCb ?? defaultKeepAlive;
-    return fn(ref);
+    final _$cb = _createCb ?? defaultKeepAlive;
+    return _$cb(ref);
   }
 }
 
@@ -251,9 +251,9 @@ final class KeepAliveFamilyProvider
 
   @override
   int create(KeepAliveFamilyRef ref) {
-    final fn = _createCb ?? keepAliveFamily;
+    final _$cb = _createCb ?? keepAliveFamily;
     final argument = this.argument as int;
-    return fn(
+    return _$cb(
       ref,
       argument,
     );
@@ -382,9 +382,9 @@ final class NotKeepAliveFamilyProvider
 
   @override
   int create(NotKeepAliveFamilyRef ref) {
-    final fn = _createCb ?? notKeepAliveFamily;
+    final _$cb = _createCb ?? notKeepAliveFamily;
     final argument = this.argument as int;
-    return fn(
+    return _$cb(
       ref,
       argument,
     );
@@ -514,9 +514,9 @@ final class DefaultKeepAliveFamilyProvider
 
   @override
   int create(DefaultKeepAliveFamilyRef ref) {
-    final fn = _createCb ?? defaultKeepAliveFamily;
+    final _$cb = _createCb ?? defaultKeepAliveFamily;
     final argument = this.argument as int;
-    return fn(
+    return _$cb(
       ref,
       argument,
     );

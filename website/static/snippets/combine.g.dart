@@ -60,8 +60,8 @@ final class FilteredTodosProvider
 
   @override
   List<Todo> create(FilteredTodosRef ref) {
-    final fn = _createCb ?? filteredTodos;
-    return fn(ref);
+    final _$cb = _createCb ?? filteredTodos;
+    return _$cb(ref);
   }
 }
 

@@ -55,8 +55,8 @@ final class ConfigurationsProvider extends $FunctionalProvider<
 
   @override
   FutureOr<Configuration> create(ConfigurationsRef ref) {
-    final fn = _createCb ?? configurations;
-    return fn(ref);
+    final _$cb = _createCb ?? configurations;
+    return _$cb(ref);
   }
 }
 

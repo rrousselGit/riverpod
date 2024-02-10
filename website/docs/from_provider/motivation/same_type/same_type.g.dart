@@ -60,8 +60,8 @@ final class ItemsProvider
 
   @override
   List<Item> create(ItemsRef ref) {
-    final fn = _createCb ?? items;
-    return fn(ref);
+    final _$cb = _createCb ?? items;
+    return _$cb(ref);
   }
 }
 
@@ -119,8 +119,8 @@ final class EvenItemsProvider
 
   @override
   List<Item> create(EvenItemsRef ref) {
-    final fn = _createCb ?? evenItems;
-    return fn(ref);
+    final _$cb = _createCb ?? evenItems;
+    return _$cb(ref);
   }
 }
 

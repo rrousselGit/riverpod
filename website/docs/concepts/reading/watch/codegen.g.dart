@@ -60,8 +60,8 @@ final class FilterTypeProvider
 
   @override
   FilterType create(FilterTypeRef ref) {
-    final fn = _createCb ?? filterType;
-    return fn(ref);
+    final _$cb = _createCb ?? filterType;
+    return _$cb(ref);
   }
 }
 
@@ -119,8 +119,8 @@ final class FilteredTodoListProvider
 
   @override
   List<Todo> create(FilteredTodoListRef ref) {
-    final fn = _createCb ?? filteredTodoList;
-    return fn(ref);
+    final _$cb = _createCb ?? filteredTodoList;
+    return _$cb(ref);
   }
 }
 

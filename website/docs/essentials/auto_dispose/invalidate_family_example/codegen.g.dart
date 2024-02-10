@@ -75,9 +75,9 @@ final class LabelProvider extends $FunctionalProvider<String, String, LabelRef>
 
   @override
   String create(LabelRef ref) {
-    final fn = _createCb ?? label;
+    final _$cb = _createCb ?? label;
     final argument = this.argument as String;
-    return fn(
+    return _$cb(
       ref,
       argument,
     );

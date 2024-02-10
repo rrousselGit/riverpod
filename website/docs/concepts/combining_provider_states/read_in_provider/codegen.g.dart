@@ -60,8 +60,8 @@ final class AnotherProvider
 
   @override
   MyValue create(AnotherRef ref) {
-    final fn = _createCb ?? another;
-    return fn(ref);
+    final _$cb = _createCb ?? another;
+    return _$cb(ref);
   }
 }
 
@@ -118,8 +118,8 @@ final class MyProvider extends $FunctionalProvider<MyValue, MyValue, MyRef>
 
   @override
   MyValue create(MyRef ref) {
-    final fn = _createCb ?? my;
-    return fn(ref);
+    final _$cb = _createCb ?? my;
+    return _$cb(ref);
   }
 }
 

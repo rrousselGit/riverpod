@@ -62,8 +62,8 @@ final class PublicProvider
 
   @override
   String create(PublicRef ref) {
-    final fn = _createCb ?? public;
-    return fn(ref);
+    final _$cb = _createCb ?? public;
+    return _$cb(ref);
   }
 }
 
@@ -125,8 +125,8 @@ final class Supports$inNamesProvider
 
   @override
   String create(Supports$inNamesRef ref) {
-    final fn = _createCb ?? supports$inNames;
-    return fn(ref);
+    final _$cb = _createCb ?? supports$inNames;
+    return _$cb(ref);
   }
 }
 
@@ -229,7 +229,7 @@ final class FamilyProvider
 
   @override
   String create(FamilyRef ref) {
-    final fn = _createCb ?? family;
+    final _$cb = _createCb ?? family;
     final argument = this.argument as (
       int, {
       String? second,
@@ -237,7 +237,7 @@ final class FamilyProvider
       bool forth,
       List<String>? fifth,
     });
-    return fn(
+    return _$cb(
       ref,
       argument.$1,
       second: argument.second,
@@ -378,8 +378,8 @@ final class _PrivateProvider
 
   @override
   String create(_PrivateRef ref) {
-    final fn = _createCb ?? _private;
-    return fn(ref);
+    final _$cb = _createCb ?? _private;
+    return _$cb(ref);
   }
 }
 

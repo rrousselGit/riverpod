@@ -57,8 +57,8 @@ final class BProvider extends $FunctionalProvider<int, int, BRef>
 
   @override
   int create(BRef ref) {
-    final fn = _createCb ?? b;
-    return fn(ref);
+    final _$cb = _createCb ?? b;
+    return _$cb(ref);
   }
 }
 

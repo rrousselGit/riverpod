@@ -52,8 +52,8 @@ final class StreamExampleProvider
 
   @override
   Stream<int> create(StreamExampleRef ref) {
-    final fn = _createCb ?? streamExample;
-    return fn(ref);
+    final _$cb = _createCb ?? streamExample;
+    return _$cb(ref);
   }
 }
 

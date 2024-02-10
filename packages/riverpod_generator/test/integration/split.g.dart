@@ -57,8 +57,8 @@ final class Counter2Provider extends $FunctionalProvider<int, int, Counter2Ref>
 
   @override
   int create(Counter2Ref ref) {
-    final fn = _createCb ?? counter2;
-    return fn(ref);
+    final _$cb = _createCb ?? counter2;
+    return _$cb(ref);
   }
 }
 
@@ -115,8 +115,8 @@ final class CounterProvider extends $FunctionalProvider<int, int, CounterRef>
 
   @override
   int create(CounterRef ref) {
-    final fn = _createCb ?? counter;
-    return fn(ref);
+    final _$cb = _createCb ?? counter;
+    return _$cb(ref);
   }
 }
 
