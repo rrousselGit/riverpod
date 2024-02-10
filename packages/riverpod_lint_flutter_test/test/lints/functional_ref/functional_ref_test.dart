@@ -8,7 +8,7 @@ import '../../golden.dart';
 void main() {
   testGolden(
     'Verify that @riverpod classes extend the generated typedef',
-    'lints/functional_ref/functional_ref.json',
+    'lints/functional_ref/functional_ref.diff',
     sourcePath: 'test/lints/functional_ref/functional_ref.dart',
     (result) async {
       final lint = FunctionalRef();
