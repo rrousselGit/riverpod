@@ -43,8 +43,9 @@ final class SimpleProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<String> createElement(ProviderContainer container) =>
+  $ProviderElement<String> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -102,8 +103,9 @@ final class Simple2Provider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<String> createElement(ProviderContainer container) =>
+  $ProviderElement<String> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -178,7 +180,7 @@ final class SimpleClassProvider extends $NotifierProvider<SimpleClass, String> {
 
   @$internal
   @override
-  $NotifierProviderElement<SimpleClass, String> createElement(
+  $NotifierProviderElement<SimpleClass, String> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }

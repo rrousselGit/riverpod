@@ -47,8 +47,9 @@ final class PublicProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<String> createElement(ProviderContainer container) =>
+  $ProviderElement<String> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -110,8 +111,9 @@ final class Supports$inNamesProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<String> createElement(ProviderContainer container) =>
+  $ProviderElement<String> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -197,8 +199,9 @@ final class FamilyProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<String> createElement(ProviderContainer container) =>
+  $ProviderElement<String> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -320,7 +323,7 @@ final class FamilyFamily extends Family {
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -363,8 +366,9 @@ final class _PrivateProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<String> createElement(ProviderContainer container) =>
+  $ProviderElement<String> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -442,7 +446,7 @@ final class PublicClassProvider extends $NotifierProvider<PublicClass, String> {
 
   @$internal
   @override
-  $NotifierProviderElement<PublicClass, String> createElement(
+  $NotifierProviderElement<PublicClass, String> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }
@@ -511,7 +515,7 @@ final class _PrivateClassProvider
 
   @$internal
   @override
-  $NotifierProviderElement<_PrivateClass, String> createElement(
+  $NotifierProviderElement<_PrivateClass, String> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }
@@ -615,7 +619,7 @@ final class FamilyClassProvider extends $NotifierProvider<FamilyClass, String> {
 
   @$internal
   @override
-  $NotifierProviderElement<FamilyClass, String> createElement(
+  $NotifierProviderElement<FamilyClass, String> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 
@@ -691,7 +695,7 @@ final class FamilyClassFamily extends Family {
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -725,7 +729,7 @@ final class FamilyClassFamily extends Family {
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -821,7 +825,7 @@ final class Supports$InClassNameProvider
 
   @$internal
   @override
-  $NotifierProviderElement<Supports$InClassName, String> createElement(
+  $NotifierProviderElement<Supports$InClassName, String> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }

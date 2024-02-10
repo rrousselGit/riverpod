@@ -51,8 +51,9 @@ final class GenericProvider<T extends num> extends $FunctionalProvider<
         '()';
   }
 
+  @$internal
   @override
-  $StreamProviderElement<List<T>> createElement(ProviderContainer container) =>
+  $StreamProviderElement<List<T>> $createElement(ProviderContainer container) =>
       $StreamProviderElement(this, container);
 
   @override
@@ -111,7 +112,7 @@ final class GenericFamily extends Family {
       createElement: (container, provider) {
         provider as GenericProvider;
 
-        return provider._copyWithCreate(create).createElement(container);
+        return provider._copyWithCreate(create).$createElement(container);
       },
     );
   }
@@ -146,8 +147,9 @@ final class PublicProvider
   @override
   String debugGetCreateSourceHash() => _$publicHash();
 
+  @$internal
   @override
-  $StreamProviderElement<String> createElement(ProviderContainer container) =>
+  $StreamProviderElement<String> $createElement(ProviderContainer container) =>
       $StreamProviderElement(this, container);
 
   @override
@@ -197,8 +199,9 @@ final class _PrivateProvider
   @override
   String debugGetCreateSourceHash() => _$privateHash();
 
+  @$internal
   @override
-  $StreamProviderElement<String> createElement(ProviderContainer container) =>
+  $StreamProviderElement<String> $createElement(ProviderContainer container) =>
       $StreamProviderElement(this, container);
 
   @override
@@ -272,8 +275,9 @@ final class FamilyProvider
         '$argument';
   }
 
+  @$internal
   @override
-  $StreamProviderElement<String> createElement(ProviderContainer container) =>
+  $StreamProviderElement<String> $createElement(ProviderContainer container) =>
       $StreamProviderElement(this, container);
 
   @override
@@ -393,7 +397,7 @@ final class FamilyFamily extends Family {
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -473,7 +477,7 @@ final class GenericClassProvider<T extends num>
 
   @$internal
   @override
-  $StreamNotifierProviderElement<GenericClass<T>, List<T>> createElement(
+  $StreamNotifierProviderElement<GenericClass<T>, List<T>> $createElement(
           ProviderContainer container) =>
       $StreamNotifierProviderElement(this, container);
 
@@ -519,7 +523,7 @@ final class GenericClassFamily extends Family {
       createElement: (container, provider) {
         provider as GenericClassProvider;
 
-        return provider._copyWithCreate(create).createElement(container);
+        return provider._copyWithCreate(create).$createElement(container);
       },
     );
   }
@@ -535,7 +539,7 @@ final class GenericClassFamily extends Family {
       createElement: (container, provider) {
         provider as GenericClassProvider;
 
-        return provider._copyWithBuild(build).createElement(container);
+        return provider._copyWithBuild(build).$createElement(container);
       },
     );
   }
@@ -595,7 +599,7 @@ final class PublicClassProvider
 
   @$internal
   @override
-  $StreamNotifierProviderElement<PublicClass, String> createElement(
+  $StreamNotifierProviderElement<PublicClass, String> $createElement(
           ProviderContainer container) =>
       $StreamNotifierProviderElement(this, container);
 }
@@ -656,7 +660,7 @@ final class _PrivateClassProvider
 
   @$internal
   @override
-  $StreamNotifierProviderElement<_PrivateClass, String> createElement(
+  $StreamNotifierProviderElement<_PrivateClass, String> $createElement(
           ProviderContainer container) =>
       $StreamNotifierProviderElement(this, container);
 }
@@ -750,7 +754,7 @@ final class FamilyClassProvider
 
   @$internal
   @override
-  $StreamNotifierProviderElement<FamilyClass, String> createElement(
+  $StreamNotifierProviderElement<FamilyClass, String> $createElement(
           ProviderContainer container) =>
       $StreamNotifierProviderElement(this, container);
 
@@ -824,7 +828,7 @@ final class FamilyClassFamily extends Family {
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -858,7 +862,7 @@ final class FamilyClassFamily extends Family {
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }

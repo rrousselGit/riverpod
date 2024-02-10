@@ -59,7 +59,8 @@ final class AProvider extends $NotifierProvider<A, int> {
 
   @$internal
   @override
-  $NotifierProviderElement<A, int> createElement(ProviderContainer container) =>
+  $NotifierProviderElement<A, int> $createElement(
+          ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }
 
@@ -125,7 +126,7 @@ final class A2Provider extends $NotifierProvider<A2, int> {
 
   @$internal
   @override
-  $NotifierProviderElement<A2, int> createElement(
+  $NotifierProviderElement<A2, int> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }
@@ -205,7 +206,7 @@ final class A3Provider extends $NotifierProvider<A3, int> {
 
   @$internal
   @override
-  $NotifierProviderElement<A3, int> createElement(
+  $NotifierProviderElement<A3, int> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 
@@ -257,7 +258,7 @@ final class A3Family extends Family {
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -275,7 +276,7 @@ final class A3Family extends Family {
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -361,7 +362,7 @@ final class A4Provider extends $NotifierProvider<A4, int> {
 
   @$internal
   @override
-  $NotifierProviderElement<A4, int> createElement(
+  $NotifierProviderElement<A4, int> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 
@@ -413,7 +414,7 @@ final class A4Family extends Family {
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -431,7 +432,7 @@ final class A4Family extends Family {
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -509,7 +510,7 @@ final class A5Provider extends $AsyncNotifierProvider<A5, int> {
 
   @$internal
   @override
-  $AsyncNotifierProviderElement<A5, int> createElement(
+  $AsyncNotifierProviderElement<A5, int> $createElement(
           ProviderContainer container) =>
       $AsyncNotifierProviderElement(this, container);
 
@@ -561,7 +562,7 @@ final class A5Family extends Family {
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -580,7 +581,7 @@ final class A5Family extends Family {
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -659,7 +660,7 @@ final class A6Provider extends $AsyncNotifierProvider<A6, int> {
 
   @$internal
   @override
-  $AsyncNotifierProviderElement<A6, int> createElement(
+  $AsyncNotifierProviderElement<A6, int> $createElement(
           ProviderContainer container) =>
       $AsyncNotifierProviderElement(this, container);
 
@@ -711,7 +712,7 @@ final class A6Family extends Family {
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -730,7 +731,7 @@ final class A6Family extends Family {
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -809,7 +810,7 @@ final class A7Provider extends $StreamNotifierProvider<A7, int> {
 
   @$internal
   @override
-  $StreamNotifierProviderElement<A7, int> createElement(
+  $StreamNotifierProviderElement<A7, int> $createElement(
           ProviderContainer container) =>
       $StreamNotifierProviderElement(this, container);
 
@@ -861,7 +862,7 @@ final class A7Family extends Family {
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -880,7 +881,7 @@ final class A7Family extends Family {
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -959,7 +960,7 @@ final class A8Provider extends $StreamNotifierProvider<A8, int> {
 
   @$internal
   @override
-  $StreamNotifierProviderElement<A8, int> createElement(
+  $StreamNotifierProviderElement<A8, int> $createElement(
           ProviderContainer container) =>
       $StreamNotifierProviderElement(this, container);
 
@@ -1011,7 +1012,7 @@ final class A8Family extends Family {
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -1030,7 +1031,7 @@ final class A8Family extends Family {
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -1104,7 +1105,8 @@ final class BProvider extends $NotifierProvider<B, int> {
 
   @$internal
   @override
-  $NotifierProviderElement<B, int> createElement(ProviderContainer container) =>
+  $NotifierProviderElement<B, int> $createElement(
+          ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }
 
@@ -1170,7 +1172,7 @@ final class B2Provider extends $NotifierProvider<B2, int> {
 
   @$internal
   @override
-  $NotifierProviderElement<B2, int> createElement(
+  $NotifierProviderElement<B2, int> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }

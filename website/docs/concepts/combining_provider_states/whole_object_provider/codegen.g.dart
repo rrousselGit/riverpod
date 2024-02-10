@@ -39,8 +39,9 @@ final class ConfigProvider extends $FunctionalProvider<
   @override
   String debugGetCreateSourceHash() => _$configHash();
 
+  @$internal
   @override
-  $StreamProviderElement<Configuration> createElement(
+  $StreamProviderElement<Configuration> $createElement(
           ProviderContainer container) =>
       $StreamProviderElement(this, container);
 
@@ -93,8 +94,9 @@ final class ProductsProvider extends $FunctionalProvider<
   @override
   String debugGetCreateSourceHash() => _$productsHash();
 
+  @$internal
   @override
-  $FutureProviderElement<List<Product>> createElement(
+  $FutureProviderElement<List<Product>> $createElement(
           ProviderContainer container) =>
       $FutureProviderElement(this, container);
 

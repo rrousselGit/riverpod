@@ -44,8 +44,9 @@ final class OtherProvider extends $FunctionalProvider<int, int, OtherRef>
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -95,8 +96,9 @@ final class ExampleProvider
   @override
   String debugGetCreateSourceHash() => _$exampleHash();
 
+  @$internal
   @override
-  $StreamProviderElement<int> createElement(ProviderContainer container) =>
+  $StreamProviderElement<int> $createElement(ProviderContainer container) =>
       $StreamProviderElement(this, container);
 
   @override

@@ -61,8 +61,9 @@ final class ProviderWithDependencies2Provider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -138,8 +139,9 @@ final class FamilyWithDependencies2Provider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -229,7 +231,7 @@ final class FamilyWithDependencies2Family extends Family {
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -272,8 +274,9 @@ final class _Private2Provider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -330,8 +333,9 @@ final class Public2Provider extends $FunctionalProvider<int, int, Public2Ref>
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -427,7 +431,7 @@ final class NotifierWithDependenciesProvider
 
   @$internal
   @override
-  $NotifierProviderElement<NotifierWithDependencies, int> createElement(
+  $NotifierProviderElement<NotifierWithDependencies, int> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }
@@ -521,7 +525,7 @@ final class NotifierFamilyWithDependenciesProvider
 
   @$internal
   @override
-  $NotifierProviderElement<NotifierFamilyWithDependencies, int> createElement(
+  $NotifierProviderElement<NotifierFamilyWithDependencies, int> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 
@@ -585,7 +589,7 @@ final class NotifierFamilyWithDependenciesFamily extends Family {
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -605,7 +609,7 @@ final class NotifierFamilyWithDependenciesFamily extends Family {
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }

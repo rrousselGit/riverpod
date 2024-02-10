@@ -44,8 +44,9 @@ final class OtherProvider extends $FunctionalProvider<int, int, OtherRef>
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -120,7 +121,7 @@ final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
 
   @$internal
   @override
-  $NotifierProviderElement<MyNotifier, int> createElement(
+  $NotifierProviderElement<MyNotifier, int> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }

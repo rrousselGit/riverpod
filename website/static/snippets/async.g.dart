@@ -39,8 +39,9 @@ final class ConfigurationsProvider extends $FunctionalProvider<
   @override
   String debugGetCreateSourceHash() => _$configurationsHash();
 
+  @$internal
   @override
-  $FutureProviderElement<Configuration> createElement(
+  $FutureProviderElement<Configuration> $createElement(
           ProviderContainer container) =>
       $FutureProviderElement(this, container);
 

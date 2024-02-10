@@ -45,8 +45,9 @@ final class RepositoryProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<Repository> createElement(ProviderContainer container) =>
+  $ProviderElement<Repository> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -103,8 +104,9 @@ final class ValueProvider extends $FunctionalProvider<String, String, ValueRef>
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<String> createElement(ProviderContainer container) =>
+  $ProviderElement<String> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override

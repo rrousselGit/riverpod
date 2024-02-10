@@ -62,7 +62,7 @@ final class ExampleProvider extends $NotifierProvider<Example, String> {
 
   @$internal
   @override
-  $NotifierProviderElement<Example, String> createElement(
+  $NotifierProviderElement<Example, String> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }

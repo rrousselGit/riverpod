@@ -44,8 +44,9 @@ final class AnotherProvider extends $FunctionalProvider<void, void, AnotherRef>
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<void> createElement(ProviderContainer container) =>
+  $ProviderElement<void> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override

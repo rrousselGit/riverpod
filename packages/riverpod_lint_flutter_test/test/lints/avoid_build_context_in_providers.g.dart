@@ -57,8 +57,9 @@ final class FnProvider extends $FunctionalProvider<int, int, FnRef>
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -154,7 +155,7 @@ final class FnFamily extends Family {
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -238,7 +239,7 @@ final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
 
   @$internal
   @override
-  $NotifierProviderElement<MyNotifier, int> createElement(
+  $NotifierProviderElement<MyNotifier, int> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 
@@ -300,7 +301,7 @@ final class MyNotifierFamily extends Family {
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -328,7 +329,7 @@ final class MyNotifierFamily extends Family {
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -411,7 +412,7 @@ final class Regresion2959Provider
 
   @$internal
   @override
-  $NotifierProviderElement<Regresion2959, void> createElement(
+  $NotifierProviderElement<Regresion2959, void> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }

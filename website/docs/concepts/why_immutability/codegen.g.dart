@@ -63,7 +63,7 @@ final class ThemeNotifierProvider
 
   @$internal
   @override
-  $NotifierProviderElement<ThemeNotifier, ThemeSettings> createElement(
+  $NotifierProviderElement<ThemeNotifier, ThemeSettings> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }

@@ -42,8 +42,9 @@ final class DepProvider extends $FunctionalProvider<int, int, DepRef>
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -100,8 +101,9 @@ final class Dep2Provider extends $FunctionalProvider<int, int, Dep2Ref>
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -167,8 +169,9 @@ final class PlainAnnotationProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -226,8 +229,9 @@ final class CustomAnnotationProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -287,8 +291,9 @@ final class CustomAnnotationWithTrailingCommaProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -347,8 +352,9 @@ final class ExistingDepProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -406,8 +412,9 @@ final class MultipleDepsProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -470,8 +477,9 @@ final class ExtraDepProvider extends $FunctionalProvider<int, int, ExtraDepRef>
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -532,8 +540,9 @@ final class NoDepProvider extends $FunctionalProvider<int, int, NoDepRef>
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -596,8 +605,9 @@ final class DependenciesFirstThenKeepAliveProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -660,8 +670,9 @@ final class NoDepNoParamProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -723,8 +734,9 @@ final class NoDepWithoutCommaProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override

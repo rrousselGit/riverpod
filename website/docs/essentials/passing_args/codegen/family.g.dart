@@ -46,8 +46,10 @@ final class ActivityProvider extends $FunctionalProvider<AsyncValue<Activity>,
         '($argument)';
   }
 
+  @$internal
   @override
-  $FutureProviderElement<Activity> createElement(ProviderContainer container) =>
+  $FutureProviderElement<Activity> $createElement(
+          ProviderContainer container) =>
       $FutureProviderElement(this, container);
 
   @override
@@ -125,7 +127,7 @@ final class ActivityFamily extends Family {
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }

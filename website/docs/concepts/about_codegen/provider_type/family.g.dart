@@ -54,8 +54,9 @@ final class ExampleProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<String> createElement(ProviderContainer container) =>
+  $ProviderElement<String> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -133,7 +134,7 @@ final class ExampleFamily extends Family {
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }

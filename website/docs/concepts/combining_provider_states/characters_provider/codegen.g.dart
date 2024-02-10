@@ -45,8 +45,9 @@ final class SearchProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<String> createElement(ProviderContainer container) =>
+  $ProviderElement<String> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -98,8 +99,9 @@ final class ConfigsProvider extends $FunctionalProvider<
   @override
   String debugGetCreateSourceHash() => _$configsHash();
 
+  @$internal
   @override
-  $StreamProviderElement<Configuration> createElement(
+  $StreamProviderElement<Configuration> $createElement(
           ProviderContainer container) =>
       $StreamProviderElement(this, container);
 
@@ -152,8 +154,9 @@ final class CharactersProvider extends $FunctionalProvider<
   @override
   String debugGetCreateSourceHash() => _$charactersHash();
 
+  @$internal
   @override
-  $FutureProviderElement<List<Character>> createElement(
+  $FutureProviderElement<List<Character>> $createElement(
           ProviderContainer container) =>
       $FutureProviderElement(this, container);
 

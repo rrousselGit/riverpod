@@ -42,8 +42,9 @@ final class DepProvider extends $FunctionalProvider<int, int, DepRef>
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -101,8 +102,9 @@ final class GeneratedScopedProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -160,8 +162,9 @@ final class GeneratedRootProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -220,8 +223,9 @@ final class WatchScopedButNoDependenciesProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -283,8 +287,9 @@ final class WatchGeneratedScopedButNoDependenciesProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -344,8 +349,9 @@ final class WatchRootButNoDependenciesProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -407,8 +413,9 @@ final class WatchGeneratedRootButNoDependenciesProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -468,8 +475,9 @@ final class WatchScopedButEmptyDependenciesProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -531,8 +539,9 @@ final class WatchGeneratedScopedButEmptyDependenciesProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -592,8 +601,9 @@ final class WatchRootButEmptyDependenciesProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -655,8 +665,9 @@ final class WatchGeneratedRootButEmptyDependenciesProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -722,8 +733,9 @@ final class WatchScopedButMissingDependenciesProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -790,8 +802,9 @@ final class WatchGeneratedScopedButMissingDependenciesProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -855,8 +868,9 @@ final class WatchRootButMissingDependenciesProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -923,8 +937,9 @@ final class WatchGeneratedRootButMissingDependenciesProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -991,8 +1006,9 @@ final class WatchGeneratedScopedAndContainsDependencyProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -1059,8 +1075,9 @@ final class WatchGeneratedRootAndContainsDependencyProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -1129,8 +1146,9 @@ final class SpecifiedDependencyButNeverUsedProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -1193,8 +1211,9 @@ final class Regression2348Provider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -1263,8 +1282,9 @@ final class FamilyDepProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -1344,7 +1364,7 @@ final class FamilyDepFamily extends Family {
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -1400,8 +1420,9 @@ final class FamilyDep2Provider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -1482,7 +1503,7 @@ final class FamilyDep2Family extends Family {
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -1524,8 +1545,9 @@ final class AliasProvider extends $FunctionalProvider<int, int, AliasRef>
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -1609,7 +1631,7 @@ final class ClassWatchGeneratedRootButMissingDependenciesProvider
   @$internal
   @override
   $NotifierProviderElement<ClassWatchGeneratedRootButMissingDependencies, int>
-      createElement(ProviderContainer container) =>
+      $createElement(ProviderContainer container) =>
           $NotifierProviderElement(this, container);
 }
 
@@ -1687,7 +1709,7 @@ final class ClassWatchGeneratedScopedButMissingDependenciesProvider
   @$internal
   @override
   $NotifierProviderElement<ClassWatchGeneratedScopedButMissingDependencies, int>
-      createElement(ProviderContainer container) =>
+      $createElement(ProviderContainer container) =>
           $NotifierProviderElement(this, container);
 }
 
@@ -1761,7 +1783,7 @@ final class Regression2417Provider
 
   @$internal
   @override
-  $NotifierProviderElement<Regression2417, int> createElement(
+  $NotifierProviderElement<Regression2417, int> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }
@@ -1829,7 +1851,7 @@ final class AliasClassProvider extends $NotifierProvider<AliasClass, int> {
 
   @$internal
   @override
-  $NotifierProviderElement<AliasClass, int> createElement(
+  $NotifierProviderElement<AliasClass, int> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }

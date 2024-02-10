@@ -42,8 +42,9 @@ final class NamelessProvider extends $FunctionalProvider<int, int, NamelessRef>
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -100,8 +101,9 @@ final class ScopedProvider extends $FunctionalProvider<int, int, ScopedRef>
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -175,8 +177,9 @@ final class GenericsProvider<A extends num, B>
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -237,7 +240,7 @@ final class GenericsFamily extends Family {
       createElement: (container, provider) {
         provider as GenericsProvider;
 
-        return provider._copyWithCreate(create).createElement(container);
+        return provider._copyWithCreate(create).$createElement(container);
       },
     );
   }
@@ -296,8 +299,9 @@ final class NoGenericsProvider<A extends num, B>
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -358,7 +362,7 @@ final class NoGenericsFamily extends Family {
       createElement: (container, provider) {
         provider as NoGenericsProvider;
 
-        return provider._copyWithCreate(create).createElement(container);
+        return provider._copyWithCreate(create).$createElement(container);
       },
     );
   }
@@ -417,8 +421,9 @@ final class MissingGenericsProvider<A, B>
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -479,7 +484,7 @@ final class MissingGenericsFamily extends Family {
       createElement: (container, provider) {
         provider as MissingGenericsProvider;
 
-        return provider._copyWithCreate(create).createElement(container);
+        return provider._copyWithCreate(create).$createElement(container);
       },
     );
   }
@@ -538,8 +543,9 @@ final class WrongOrderProvider<B, A>
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -600,7 +606,7 @@ final class WrongOrderFamily extends Family {
       createElement: (container, provider) {
         provider as WrongOrderProvider;
 
-        return provider._copyWithCreate(create).createElement(container);
+        return provider._copyWithCreate(create).$createElement(container);
       },
     );
   }

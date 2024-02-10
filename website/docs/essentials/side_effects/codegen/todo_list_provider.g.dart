@@ -37,8 +37,9 @@ final class TodoListProvider extends $FunctionalProvider<AsyncValue<List<Todo>>,
   @override
   String debugGetCreateSourceHash() => _$todoListHash();
 
+  @$internal
   @override
-  $FutureProviderElement<List<Todo>> createElement(
+  $FutureProviderElement<List<Todo>> $createElement(
           ProviderContainer container) =>
       $FutureProviderElement(this, container);
 

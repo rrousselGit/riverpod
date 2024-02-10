@@ -37,8 +37,9 @@ final class ExampleProvider extends $FunctionalProvider<AsyncValue<Object>,
   @override
   String debugGetCreateSourceHash() => _$exampleHash();
 
+  @$internal
   @override
-  $FutureProviderElement<Object> createElement(ProviderContainer container) =>
+  $FutureProviderElement<Object> $createElement(ProviderContainer container) =>
       $FutureProviderElement(this, container);
 
   @override

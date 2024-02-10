@@ -41,8 +41,9 @@ final class LocationProvider extends $FunctionalProvider<
   @override
   String debugGetCreateSourceHash() => _$locationHash();
 
+  @$internal
   @override
-  $StreamProviderElement<({double longitude, double latitude})> createElement(
+  $StreamProviderElement<({double longitude, double latitude})> $createElement(
           ProviderContainer container) =>
       $StreamProviderElement(this, container);
 
@@ -95,8 +96,9 @@ final class RestaurantsNearMeProvider extends $FunctionalProvider<
   @override
   String debugGetCreateSourceHash() => _$restaurantsNearMeHash();
 
+  @$internal
   @override
-  $FutureProviderElement<List<String>> createElement(
+  $FutureProviderElement<List<String>> $createElement(
           ProviderContainer container) =>
       $FutureProviderElement(this, container);
 

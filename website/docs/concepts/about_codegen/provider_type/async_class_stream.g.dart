@@ -54,7 +54,7 @@ final class ExampleProvider extends $StreamNotifierProvider<Example, String> {
 
   @$internal
   @override
-  $StreamNotifierProviderElement<Example, String> createElement(
+  $StreamNotifierProviderElement<Example, String> $createElement(
           ProviderContainer container) =>
       $StreamNotifierProviderElement(this, container);
 }

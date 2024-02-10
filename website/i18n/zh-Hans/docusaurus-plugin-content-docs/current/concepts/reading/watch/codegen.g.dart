@@ -45,8 +45,9 @@ final class FilterTypeProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<FilterType> createElement(ProviderContainer container) =>
+  $ProviderElement<FilterType> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -104,8 +105,9 @@ final class FilteredTodoListProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<List<Todo>> createElement(ProviderContainer container) =>
+  $ProviderElement<List<Todo>> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -180,7 +182,7 @@ final class TodosProvider extends $NotifierProvider<Todos, List<Todo>> {
 
   @$internal
   @override
-  $NotifierProviderElement<Todos, List<Todo>> createElement(
+  $NotifierProviderElement<Todos, List<Todo>> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }

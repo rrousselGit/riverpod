@@ -63,7 +63,7 @@ final class ExampleProvider extends $NotifierProvider<Example, int> {
 
   @$internal
   @override
-  $NotifierProviderElement<Example, int> createElement(
+  $NotifierProviderElement<Example, int> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }
@@ -159,7 +159,7 @@ final class ExampleFamilyProvider
 
   @$internal
   @override
-  $NotifierProviderElement<ExampleFamily, int> createElement(
+  $NotifierProviderElement<ExampleFamily, int> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 
@@ -223,7 +223,7 @@ final class ExampleFamilyFamily extends Family {
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -251,7 +251,7 @@ final class ExampleFamilyFamily extends Family {
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -359,7 +359,7 @@ final class GenericProvider<A, B>
 
   @$internal
   @override
-  $NotifierProviderElement<Generic<A, B>, int> createElement(
+  $NotifierProviderElement<Generic<A, B>, int> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 
@@ -404,7 +404,7 @@ final class GenericFamily extends Family {
       createElement: (container, provider) {
         provider as GenericProvider;
 
-        return provider._copyWithCreate(create).createElement(container);
+        return provider._copyWithCreate(create).$createElement(container);
       },
     );
   }
@@ -418,7 +418,7 @@ final class GenericFamily extends Family {
       createElement: (container, provider) {
         provider as GenericProvider;
 
-        return provider._copyWithBuild(build).createElement(container);
+        return provider._copyWithBuild(build).$createElement(container);
       },
     );
   }

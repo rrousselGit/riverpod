@@ -62,7 +62,7 @@ final class CountProvider extends $NotifierProvider<Count, int> {
 
   @$internal
   @override
-  $NotifierProviderElement<Count, int> createElement(
+  $NotifierProviderElement<Count, int> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }

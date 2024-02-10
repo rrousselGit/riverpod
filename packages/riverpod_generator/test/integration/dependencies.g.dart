@@ -42,8 +42,9 @@ final class DepProvider extends $FunctionalProvider<int, int, DepRef>
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -109,8 +110,9 @@ final class FamilyProvider extends $FunctionalProvider<int, int, FamilyRef>
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -188,7 +190,7 @@ final class FamilyFamily extends Family {
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -245,8 +247,9 @@ final class ProviderProvider extends $FunctionalProvider<int, int, ProviderRef>
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -319,8 +322,9 @@ final class Provider2Provider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -394,8 +398,9 @@ final class TransitiveDependenciesProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -467,8 +472,9 @@ final class SmallTransitiveDependencyCountProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -528,8 +534,9 @@ final class EmptyDependenciesFunctionalProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -597,8 +604,9 @@ final class ProviderWithDependenciesProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -657,8 +665,9 @@ final class _PrivateDepProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -716,8 +725,9 @@ final class PublicDepProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -781,8 +791,9 @@ final class DuplicateDependenciesProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -850,8 +861,9 @@ final class DuplicateDependencies2Provider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -932,8 +944,9 @@ final class TransitiveDuplicateDependenciesProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -1009,7 +1022,7 @@ final class Dep2Provider extends $NotifierProvider<Dep2, int> {
 
   @$internal
   @override
-  $NotifierProviderElement<Dep2, int> createElement(
+  $NotifierProviderElement<Dep2, int> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }
@@ -1091,7 +1104,7 @@ final class Family2Provider extends $NotifierProvider<Family2, int> {
 
   @$internal
   @override
-  $NotifierProviderElement<Family2, int> createElement(
+  $NotifierProviderElement<Family2, int> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 
@@ -1143,7 +1156,7 @@ final class Family2Family extends Family {
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -1161,7 +1174,7 @@ final class Family2Family extends Family {
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -1250,7 +1263,7 @@ final class Provider3Provider extends $NotifierProvider<Provider3, int> {
 
   @$internal
   @override
-  $NotifierProviderElement<Provider3, int> createElement(
+  $NotifierProviderElement<Provider3, int> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }
@@ -1337,7 +1350,7 @@ final class Provider4Provider extends $NotifierProvider<Provider4, int> {
 
   @$internal
   @override
-  $NotifierProviderElement<Provider4, int> createElement(
+  $NotifierProviderElement<Provider4, int> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 
@@ -1399,7 +1412,7 @@ final class Provider4Family extends Family {
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -1417,7 +1430,7 @@ final class Provider4Family extends Family {
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -1496,7 +1509,7 @@ final class EmptyDependenciesClassBasedProvider
 
   @$internal
   @override
-  $NotifierProviderElement<EmptyDependenciesClassBased, int> createElement(
+  $NotifierProviderElement<EmptyDependenciesClassBased, int> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }

@@ -42,8 +42,9 @@ final class CountProvider extends $FunctionalProvider<int, int, CountRef>
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -93,8 +94,9 @@ final class CountFutureProvider
   @override
   String debugGetCreateSourceHash() => _$countFutureHash();
 
+  @$internal
   @override
-  $FutureProviderElement<int> createElement(ProviderContainer container) =>
+  $FutureProviderElement<int> $createElement(ProviderContainer container) =>
       $FutureProviderElement(this, container);
 
   @override
@@ -144,8 +146,9 @@ final class CountStreamProvider
   @override
   String debugGetCreateSourceHash() => _$countStreamHash();
 
+  @$internal
   @override
-  $StreamProviderElement<int> createElement(ProviderContainer container) =>
+  $StreamProviderElement<int> $createElement(ProviderContainer container) =>
       $StreamProviderElement(this, container);
 
   @override
@@ -211,8 +214,9 @@ final class Count2Provider extends $FunctionalProvider<int, int, Count2Ref>
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -290,7 +294,7 @@ final class Count2Family extends Family {
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -334,8 +338,9 @@ final class CountFuture2Provider
         '($argument)';
   }
 
+  @$internal
   @override
-  $FutureProviderElement<int> createElement(ProviderContainer container) =>
+  $FutureProviderElement<int> $createElement(ProviderContainer container) =>
       $FutureProviderElement(this, container);
 
   @override
@@ -413,7 +418,7 @@ final class CountFuture2Family extends Family {
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -457,8 +462,9 @@ final class CountStream2Provider
         '($argument)';
   }
 
+  @$internal
   @override
-  $StreamProviderElement<int> createElement(ProviderContainer container) =>
+  $StreamProviderElement<int> $createElement(ProviderContainer container) =>
       $StreamProviderElement(this, container);
 
   @override
@@ -536,7 +542,7 @@ final class CountStream2Family extends Family {
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -597,7 +603,7 @@ final class CountNotifierProvider
 
   @$internal
   @override
-  $NotifierProviderElement<CountNotifier, int> createElement(
+  $NotifierProviderElement<CountNotifier, int> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }
@@ -658,7 +664,7 @@ final class CountAsyncNotifierProvider
 
   @$internal
   @override
-  $AsyncNotifierProviderElement<CountAsyncNotifier, int> createElement(
+  $AsyncNotifierProviderElement<CountAsyncNotifier, int> $createElement(
           ProviderContainer container) =>
       $AsyncNotifierProviderElement(this, container);
 }
@@ -720,7 +726,7 @@ final class CountStreamNotifierProvider
 
   @$internal
   @override
-  $StreamNotifierProviderElement<CountStreamNotifier, int> createElement(
+  $StreamNotifierProviderElement<CountStreamNotifier, int> $createElement(
           ProviderContainer container) =>
       $StreamNotifierProviderElement(this, container);
 }
@@ -804,7 +810,7 @@ final class CountNotifier2Provider
 
   @$internal
   @override
-  $NotifierProviderElement<CountNotifier2, int> createElement(
+  $NotifierProviderElement<CountNotifier2, int> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 
@@ -856,7 +862,7 @@ final class CountNotifier2Family extends Family {
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -874,7 +880,7 @@ final class CountNotifier2Family extends Family {
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -955,7 +961,7 @@ final class CountAsyncNotifier2Provider
 
   @$internal
   @override
-  $AsyncNotifierProviderElement<CountAsyncNotifier2, int> createElement(
+  $AsyncNotifierProviderElement<CountAsyncNotifier2, int> $createElement(
           ProviderContainer container) =>
       $AsyncNotifierProviderElement(this, container);
 
@@ -1008,7 +1014,7 @@ final class CountAsyncNotifier2Family extends Family {
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -1028,7 +1034,7 @@ final class CountAsyncNotifier2Family extends Family {
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -1110,7 +1116,7 @@ final class CountStreamNotifier2Provider
 
   @$internal
   @override
-  $StreamNotifierProviderElement<CountStreamNotifier2, int> createElement(
+  $StreamNotifierProviderElement<CountStreamNotifier2, int> $createElement(
           ProviderContainer container) =>
       $StreamNotifierProviderElement(this, container);
 
@@ -1163,7 +1169,7 @@ final class CountStreamNotifier2Family extends Family {
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -1183,7 +1189,7 @@ final class CountStreamNotifier2Family extends Family {
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }

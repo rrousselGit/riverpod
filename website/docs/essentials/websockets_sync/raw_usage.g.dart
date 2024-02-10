@@ -46,8 +46,9 @@ final class RawStreamProvider extends $FunctionalProvider<
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<Raw<Stream<int>>> createElement(
+  $ProviderElement<Raw<Stream<int>>> $createElement(
           ProviderContainer container) =>
       $ProviderElement(this, container);
 

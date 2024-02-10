@@ -48,8 +48,9 @@ final class FetchPackageDetailsProvider extends $FunctionalProvider<
         '($argument)';
   }
 
+  @$internal
   @override
-  $FutureProviderElement<Package> createElement(ProviderContainer container) =>
+  $FutureProviderElement<Package> $createElement(ProviderContainer container) =>
       $FutureProviderElement(this, container);
 
   @override
@@ -128,7 +129,7 @@ final class FetchPackageDetailsFamily extends Family {
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -165,8 +166,9 @@ final class LikedPackagesProvider extends $FunctionalProvider<
   @override
   String debugGetCreateSourceHash() => _$likedPackagesHash();
 
+  @$internal
   @override
-  $FutureProviderElement<List<String>> createElement(
+  $FutureProviderElement<List<String>> $createElement(
           ProviderContainer container) =>
       $FutureProviderElement(this, container);
 
@@ -225,8 +227,9 @@ final class PubRepositoryProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<PubRepository> createElement(ProviderContainer container) =>
+  $ProviderElement<PubRepository> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -324,7 +327,7 @@ final class PackageMetricsProvider
   @$internal
   @override
   $AsyncNotifierProviderElement<PackageMetrics, PackageMetricsScore>
-      createElement(ProviderContainer container) =>
+      $createElement(ProviderContainer container) =>
           $AsyncNotifierProviderElement(this, container);
 
   @override
@@ -385,7 +388,7 @@ final class PackageMetricsFamily extends Family {
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -407,7 +410,7 @@ final class PackageMetricsFamily extends Family {
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }

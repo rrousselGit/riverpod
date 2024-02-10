@@ -45,8 +45,9 @@ final class AnotherProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<MyValue> createElement(ProviderContainer container) =>
+  $ProviderElement<MyValue> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -103,8 +104,9 @@ final class MyProvider extends $FunctionalProvider<MyValue, MyValue, MyRef>
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<MyValue> createElement(ProviderContainer container) =>
+  $ProviderElement<MyValue> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override

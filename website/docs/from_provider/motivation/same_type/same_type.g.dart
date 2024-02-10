@@ -45,8 +45,9 @@ final class ItemsProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<List<Item>> createElement(ProviderContainer container) =>
+  $ProviderElement<List<Item>> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -104,8 +105,9 @@ final class EvenItemsProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<List<Item>> createElement(ProviderContainer container) =>
+  $ProviderElement<List<Item>> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override

@@ -59,8 +59,9 @@ final class GenericProvider<T extends num>
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<List<T>> createElement(ProviderContainer container) =>
+  $ProviderElement<List<T>> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -119,7 +120,7 @@ final class GenericFamily extends Family {
       createElement: (container, provider) {
         provider as GenericProvider;
 
-        return provider._copyWithCreate(create).createElement(container);
+        return provider._copyWithCreate(create).$createElement(container);
       },
     );
   }
@@ -193,8 +194,9 @@ final class ComplexGenericProvider<T extends num, Foo extends String?>
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<List<T>> createElement(ProviderContainer container) =>
+  $ProviderElement<List<T>> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -294,7 +296,7 @@ final class ComplexGenericFamily extends Family {
             param: param,
             otherParam: otherParam,
           ));
-        }).createElement(container);
+        }).$createElement(container);
       },
     );
   }
@@ -338,8 +340,9 @@ final class RawFutureProvider extends $FunctionalProvider<
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<Raw<Future<String>>> createElement(
+  $ProviderElement<Raw<Future<String>>> $createElement(
           ProviderContainer container) =>
       $ProviderElement(this, container);
 
@@ -399,8 +402,9 @@ final class RawStreamProvider extends $FunctionalProvider<
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<Raw<Stream<String>>> createElement(
+  $ProviderElement<Raw<Stream<String>>> $createElement(
           ProviderContainer container) =>
       $ProviderElement(this, container);
 
@@ -468,8 +472,9 @@ final class RawFamilyFutureProvider extends $FunctionalProvider<
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<Raw<Future<String>>> createElement(
+  $ProviderElement<Raw<Future<String>>> $createElement(
           ProviderContainer container) =>
       $ProviderElement(this, container);
 
@@ -548,7 +553,7 @@ final class RawFamilyFutureFamily extends Family {
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -600,8 +605,9 @@ final class RawFamilyStreamProvider extends $FunctionalProvider<
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<Raw<Stream<String>>> createElement(
+  $ProviderElement<Raw<Stream<String>>> $createElement(
           ProviderContainer container) =>
       $ProviderElement(this, container);
 
@@ -680,7 +686,7 @@ final class RawFamilyStreamFamily extends Family {
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -727,8 +733,9 @@ final class PublicProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<String> createElement(ProviderContainer container) =>
+  $ProviderElement<String> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -786,8 +793,9 @@ final class Supports$inNamesProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<String> createElement(ProviderContainer container) =>
+  $ProviderElement<String> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -873,8 +881,9 @@ final class FamilyProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<String> createElement(ProviderContainer container) =>
+  $ProviderElement<String> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -996,7 +1005,7 @@ final class FamilyFamily extends Family {
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -1039,8 +1048,9 @@ final class _PrivateProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<String> createElement(ProviderContainer container) =>
+  $ProviderElement<String> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -1114,8 +1124,9 @@ final class Supports$InFnNameProvider<And$InT>
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<String> createElement(ProviderContainer container) =>
+  $ProviderElement<String> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -1176,7 +1187,7 @@ final class Supports$InFnNameFamily extends Family {
       createElement: (container, provider) {
         provider as Supports$InFnNameProvider;
 
-        return provider._copyWithCreate(create).createElement(container);
+        return provider._copyWithCreate(create).$createElement(container);
       },
     );
   }
@@ -1256,8 +1267,9 @@ final class Supports$InFnNameFamilyProvider<And$InT>
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<String> createElement(ProviderContainer container) =>
+  $ProviderElement<String> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -1367,7 +1379,7 @@ final class Supports$InFnNameFamilyFamily extends Family {
             named$arg: named$arg,
             defaultArg: defaultArg,
           ));
-        }).createElement(container);
+        }).$createElement(container);
       },
     );
   }
@@ -1410,8 +1422,9 @@ final class GeneratedProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<String> createElement(ProviderContainer container) =>
+  $ProviderElement<String> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -1478,8 +1491,9 @@ final class UnnecessaryCastProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<String> createElement(ProviderContainer container) =>
+  $ProviderElement<String> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -1557,7 +1571,7 @@ final class UnnecessaryCastFamily extends Family {
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -1645,7 +1659,7 @@ final class GenericClassProvider<T extends num>
 
   @$internal
   @override
-  $NotifierProviderElement<GenericClass<T>, List<T>> createElement(
+  $NotifierProviderElement<GenericClass<T>, List<T>> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 
@@ -1691,7 +1705,7 @@ final class GenericClassFamily extends Family {
       createElement: (container, provider) {
         provider as GenericClassProvider;
 
-        return provider._copyWithCreate(create).createElement(container);
+        return provider._copyWithCreate(create).$createElement(container);
       },
     );
   }
@@ -1706,7 +1720,7 @@ final class GenericClassFamily extends Family {
       createElement: (container, provider) {
         provider as GenericClassProvider;
 
-        return provider._copyWithBuild(build).createElement(container);
+        return provider._copyWithBuild(build).$createElement(container);
       },
     );
   }
@@ -1774,7 +1788,7 @@ final class RawFutureClassProvider
 
   @$internal
   @override
-  $NotifierProviderElement<RawFutureClass, Raw<Future<String>>> createElement(
+  $NotifierProviderElement<RawFutureClass, Raw<Future<String>>> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }
@@ -1843,7 +1857,7 @@ final class RawStreamClassProvider
 
   @$internal
   @override
-  $NotifierProviderElement<RawStreamClass, Raw<Stream<String>>> createElement(
+  $NotifierProviderElement<RawStreamClass, Raw<Stream<String>>> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }
@@ -1927,7 +1941,7 @@ final class RawFamilyFutureClassProvider
   @$internal
   @override
   $NotifierProviderElement<RawFamilyFutureClass, Raw<Future<String>>>
-      createElement(ProviderContainer container) =>
+      $createElement(ProviderContainer container) =>
           $NotifierProviderElement(this, container);
 
   @override
@@ -1979,7 +1993,7 @@ final class RawFamilyFutureClassFamily extends Family {
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -1999,7 +2013,7 @@ final class RawFamilyFutureClassFamily extends Family {
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -2089,7 +2103,7 @@ final class RawFamilyStreamClassProvider
   @$internal
   @override
   $NotifierProviderElement<RawFamilyStreamClass, Raw<Stream<String>>>
-      createElement(ProviderContainer container) =>
+      $createElement(ProviderContainer container) =>
           $NotifierProviderElement(this, container);
 
   @override
@@ -2141,7 +2155,7 @@ final class RawFamilyStreamClassFamily extends Family {
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -2161,7 +2175,7 @@ final class RawFamilyStreamClassFamily extends Family {
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -2238,7 +2252,7 @@ final class PublicClassProvider extends $NotifierProvider<PublicClass, String> {
 
   @$internal
   @override
-  $NotifierProviderElement<PublicClass, String> createElement(
+  $NotifierProviderElement<PublicClass, String> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }
@@ -2307,7 +2321,7 @@ final class _PrivateClassProvider
 
   @$internal
   @override
-  $NotifierProviderElement<_PrivateClass, String> createElement(
+  $NotifierProviderElement<_PrivateClass, String> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }
@@ -2411,7 +2425,7 @@ final class FamilyClassProvider extends $NotifierProvider<FamilyClass, String> {
 
   @$internal
   @override
-  $NotifierProviderElement<FamilyClass, String> createElement(
+  $NotifierProviderElement<FamilyClass, String> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 
@@ -2487,7 +2501,7 @@ final class FamilyClassFamily extends Family {
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -2521,7 +2535,7 @@ final class FamilyClassFamily extends Family {
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -2644,9 +2658,9 @@ final class Supports$InClassNameProvider<And$InT>
 
   @$internal
   @override
-  $NotifierProviderElement<Supports$InClassName<And$InT>, String> createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+  $NotifierProviderElement<Supports$InClassName<And$InT>, String>
+      $createElement(ProviderContainer container) =>
+          $NotifierProviderElement(this, container);
 
   @override
   bool operator ==(Object other) {
@@ -2691,7 +2705,7 @@ final class Supports$InClassNameFamily extends Family {
       createElement: (container, provider) {
         provider as Supports$InClassNameProvider;
 
-        return provider._copyWithCreate(create).createElement(container);
+        return provider._copyWithCreate(create).$createElement(container);
       },
     );
   }
@@ -2707,7 +2721,7 @@ final class Supports$InClassNameFamily extends Family {
       createElement: (container, provider) {
         provider as Supports$InClassNameProvider;
 
-        return provider._copyWithBuild(build).createElement(container);
+        return provider._copyWithBuild(build).$createElement(container);
       },
     );
   }
@@ -2833,7 +2847,7 @@ final class Supports$InClassFamilyNameProvider<And$InT>
   @$internal
   @override
   $NotifierProviderElement<Supports$InClassFamilyName<And$InT>, String>
-      createElement(ProviderContainer container) =>
+      $createElement(ProviderContainer container) =>
           $NotifierProviderElement(this, container);
 
   @override
@@ -2901,7 +2915,7 @@ final class Supports$InClassFamilyNameFamily extends Family {
           });
 
           return create(argument);
-        }).createElement(container);
+        }).$createElement(container);
       },
     );
   }
@@ -2931,7 +2945,7 @@ final class Supports$InClassFamilyNameFamily extends Family {
           });
 
           return build(ref, notifier, argument);
-        }).createElement(container);
+        }).$createElement(container);
       },
     );
   }
@@ -3030,7 +3044,7 @@ final class UnnecessaryCastClassProvider
 
   @$internal
   @override
-  $NotifierProviderElement<UnnecessaryCastClass, String> createElement(
+  $NotifierProviderElement<UnnecessaryCastClass, String> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 
@@ -3083,7 +3097,7 @@ final class UnnecessaryCastClassFamily extends Family {
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -3103,7 +3117,7 @@ final class UnnecessaryCastClassFamily extends Family {
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }

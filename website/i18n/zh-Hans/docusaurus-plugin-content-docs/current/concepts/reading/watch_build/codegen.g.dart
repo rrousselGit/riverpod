@@ -44,8 +44,9 @@ final class CounterProvider extends $FunctionalProvider<int, int, CounterRef>
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -120,7 +121,7 @@ final class TodoListProvider extends $NotifierProvider<TodoList, List<Todo>> {
 
   @$internal
   @override
-  $NotifierProviderElement<TodoList, List<Todo>> createElement(
+  $NotifierProviderElement<TodoList, List<Todo>> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }

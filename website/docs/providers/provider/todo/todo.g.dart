@@ -62,7 +62,7 @@ final class TodosProvider extends $NotifierProvider<Todos, List<Todo>> {
 
   @$internal
   @override
-  $NotifierProviderElement<Todos, List<Todo>> createElement(
+  $NotifierProviderElement<Todos, List<Todo>> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }

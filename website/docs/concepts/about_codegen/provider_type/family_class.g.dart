@@ -86,7 +86,7 @@ final class ExampleProvider extends $NotifierProvider<Example, String> {
 
   @$internal
   @override
-  $NotifierProviderElement<Example, String> createElement(
+  $NotifierProviderElement<Example, String> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 
@@ -148,7 +148,7 @@ final class ExampleFamily extends Family {
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -176,7 +176,7 @@ final class ExampleFamily extends Family {
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }

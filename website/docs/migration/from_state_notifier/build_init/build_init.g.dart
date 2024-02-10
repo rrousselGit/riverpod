@@ -63,7 +63,7 @@ final class CounterNotifierProvider
 
   @$internal
   @override
-  $NotifierProviderElement<CounterNotifier, int> createElement(
+  $NotifierProviderElement<CounterNotifier, int> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }

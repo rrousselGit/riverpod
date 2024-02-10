@@ -51,8 +51,9 @@ final class FunctionalProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<String> createElement(ProviderContainer container) =>
+  $ProviderElement<String> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -127,8 +128,9 @@ final class FamilyProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<String> createElement(ProviderContainer container) =>
+  $ProviderElement<String> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -210,7 +212,7 @@ final class FamilyFamily extends Family {
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -276,7 +278,7 @@ final class ClassBasedProvider extends $NotifierProvider<ClassBased, String> {
 
   @$internal
   @override
-  $NotifierProviderElement<ClassBased, String> createElement(
+  $NotifierProviderElement<ClassBased, String> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }
@@ -365,7 +367,7 @@ final class ClassFamilyBasedProvider
 
   @$internal
   @override
-  $NotifierProviderElement<ClassFamilyBased, String> createElement(
+  $NotifierProviderElement<ClassFamilyBased, String> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 
@@ -421,7 +423,7 @@ final class ClassFamilyBasedFamily extends Family {
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -440,7 +442,7 @@ final class ClassFamilyBasedFamily extends Family {
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }

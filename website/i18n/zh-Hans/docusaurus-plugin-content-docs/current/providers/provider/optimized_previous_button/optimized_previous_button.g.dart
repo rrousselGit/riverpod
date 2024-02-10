@@ -45,8 +45,9 @@ final class CanGoToPreviousPageProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<bool> createElement(ProviderContainer container) =>
+  $ProviderElement<bool> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -122,7 +123,7 @@ final class PageIndexProvider extends $NotifierProvider<PageIndex, int> {
 
   @$internal
   @override
-  $NotifierProviderElement<PageIndex, int> createElement(
+  $NotifierProviderElement<PageIndex, int> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }

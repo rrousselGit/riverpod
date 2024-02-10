@@ -43,8 +43,9 @@ final class GeneratedProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<_Test> createElement(ProviderContainer container) =>
+  $ProviderElement<_Test> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -111,8 +112,9 @@ final class GeneratedFamilyProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<_Test> createElement(ProviderContainer container) =>
+  $ProviderElement<_Test> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -190,7 +192,7 @@ final class GeneratedFamilyFamily extends Family {
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -233,8 +235,9 @@ final class $DynamicProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<Object?> createElement(ProviderContainer container) =>
+  $ProviderElement<Object?> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -301,8 +304,9 @@ final class $DynamicFamilyProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<Object?> createElement(ProviderContainer container) =>
+  $ProviderElement<Object?> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -380,7 +384,7 @@ final class $DynamicFamilyFamily extends Family {
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -432,8 +436,9 @@ final class _DynamicProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<Object?> createElement(ProviderContainer container) =>
+  $ProviderElement<Object?> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -511,7 +516,7 @@ final class _DynamicFamily extends Family {
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -554,8 +559,9 @@ final class AliasProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<r.AsyncValue<int>> createElement(
+  $ProviderElement<r.AsyncValue<int>> $createElement(
           ProviderContainer container) =>
       $ProviderElement(this, container);
 
@@ -624,8 +630,9 @@ final class AliasFamilyProvider extends $FunctionalProvider<
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<r.AsyncValue<int>> createElement(
+  $ProviderElement<r.AsyncValue<int>> $createElement(
           ProviderContainer container) =>
       $ProviderElement(this, container);
 
@@ -704,7 +711,7 @@ final class AliasFamilyFamily extends Family {
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -765,7 +772,7 @@ final class GeneratedClassProvider
 
   @$internal
   @override
-  $NotifierProviderElement<GeneratedClass, _Test> createElement(
+  $NotifierProviderElement<GeneratedClass, _Test> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }
@@ -848,7 +855,7 @@ final class GeneratedClassFamilyProvider
 
   @$internal
   @override
-  $NotifierProviderElement<GeneratedClassFamily, _Test> createElement(
+  $NotifierProviderElement<GeneratedClassFamily, _Test> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 
@@ -901,7 +908,7 @@ final class GeneratedClassFamilyFamily extends Family {
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -921,7 +928,7 @@ final class GeneratedClassFamilyFamily extends Family {
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -997,7 +1004,7 @@ final class $DynamicClassProvider
 
   @$internal
   @override
-  $NotifierProviderElement<$DynamicClass, Object?> createElement(
+  $NotifierProviderElement<$DynamicClass, Object?> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }
@@ -1080,7 +1087,7 @@ final class $DynamicClassFamilyProvider
 
   @$internal
   @override
-  $NotifierProviderElement<$DynamicClassFamily, Object?> createElement(
+  $NotifierProviderElement<$DynamicClassFamily, Object?> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 
@@ -1133,7 +1140,7 @@ final class $DynamicClassFamilyFamily extends Family {
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -1153,7 +1160,7 @@ final class $DynamicClassFamilyFamily extends Family {
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -1229,7 +1236,7 @@ final class AliasClassProvider
 
   @$internal
   @override
-  $NotifierProviderElement<AliasClass, r.AsyncValue<int>> createElement(
+  $NotifierProviderElement<AliasClass, r.AsyncValue<int>> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }
@@ -1312,7 +1319,7 @@ final class AliasClassFamilyProvider
 
   @$internal
   @override
-  $NotifierProviderElement<AliasClassFamily, r.AsyncValue<int>> createElement(
+  $NotifierProviderElement<AliasClassFamily, r.AsyncValue<int>> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 
@@ -1364,7 +1371,7 @@ final class AliasClassFamilyFamily extends Family {
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -1384,7 +1391,7 @@ final class AliasClassFamilyFamily extends Family {
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }

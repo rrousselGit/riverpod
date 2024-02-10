@@ -37,8 +37,9 @@ final class BoredSuggestionProvider extends $FunctionalProvider<
   @override
   String debugGetCreateSourceHash() => _$boredSuggestionHash();
 
+  @$internal
   @override
-  $FutureProviderElement<String> createElement(ProviderContainer container) =>
+  $FutureProviderElement<String> $createElement(ProviderContainer container) =>
       $FutureProviderElement(this, container);
 
   @override

@@ -62,7 +62,7 @@ final class PageIndexProvider extends $NotifierProvider<PageIndex, int> {
 
   @$internal
   @override
-  $NotifierProviderElement<PageIndex, int> createElement(
+  $NotifierProviderElement<PageIndex, int> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }

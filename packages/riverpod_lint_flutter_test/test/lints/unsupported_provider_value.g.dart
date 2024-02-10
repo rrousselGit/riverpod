@@ -42,8 +42,9 @@ final class IntegerProvider extends $FunctionalProvider<int, int, IntegerRef>
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -102,8 +103,9 @@ final class StateNotifierProvider extends $FunctionalProvider<
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<MyStateNotifier> createElement(
+  $ProviderElement<MyStateNotifier> $createElement(
           ProviderContainer container) =>
       $ProviderElement(this, container);
 
@@ -158,8 +160,9 @@ final class AsyncStateNotifierProvider extends $FunctionalProvider<
   @override
   String debugGetCreateSourceHash() => _$asyncStateNotifierHash();
 
+  @$internal
   @override
-  $FutureProviderElement<MyStateNotifier> createElement(
+  $FutureProviderElement<MyStateNotifier> $createElement(
           ProviderContainer container) =>
       $FutureProviderElement(this, container);
 
@@ -215,8 +218,9 @@ final class StateNotifierAsyncProvider extends $FunctionalProvider<
   @override
   String debugGetCreateSourceHash() => _$stateNotifierAsyncHash();
 
+  @$internal
   @override
-  $FutureProviderElement<MyStateNotifier> createElement(
+  $FutureProviderElement<MyStateNotifier> $createElement(
           ProviderContainer container) =>
       $FutureProviderElement(this, container);
 
@@ -277,8 +281,9 @@ final class ChangeNotifierProvider extends $FunctionalProvider<
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<MyChangeNotifier> createElement(
+  $ProviderElement<MyChangeNotifier> $createElement(
           ProviderContainer container) =>
       $ProviderElement(this, container);
 
@@ -337,8 +342,9 @@ final class NotifierProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<MyNotifier> createElement(ProviderContainer container) =>
+  $ProviderElement<MyNotifier> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -396,8 +402,9 @@ final class AutoDisposeNotifierProvider extends $FunctionalProvider<
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<MyAutoDisposeNotifier> createElement(
+  $ProviderElement<MyAutoDisposeNotifier> $createElement(
           ProviderContainer container) =>
       $ProviderElement(this, container);
 
@@ -458,8 +465,9 @@ final class AsyncNotifierProvider extends $FunctionalProvider<
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<MyAsyncNotifier> createElement(
+  $ProviderElement<MyAsyncNotifier> $createElement(
           ProviderContainer container) =>
       $ProviderElement(this, container);
 
@@ -519,8 +527,9 @@ final class RawNotifierProvider extends $FunctionalProvider<
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<Raw<MyChangeNotifier>> createElement(
+  $ProviderElement<Raw<MyChangeNotifier>> $createElement(
           ProviderContainer container) =>
       $ProviderElement(this, container);
 
@@ -581,8 +590,9 @@ final class RawFutureNotifierProvider extends $FunctionalProvider<
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<Raw<Future<MyChangeNotifier>>> createElement(
+  $ProviderElement<Raw<Future<MyChangeNotifier>>> $createElement(
           ProviderContainer container) =>
       $ProviderElement(this, container);
 
@@ -643,8 +653,9 @@ final class RawStreamNotifierProvider extends $FunctionalProvider<
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<Raw<Stream<MyChangeNotifier>>> createElement(
+  $ProviderElement<Raw<Stream<MyChangeNotifier>>> $createElement(
           ProviderContainer container) =>
       $ProviderElement(this, container);
 
@@ -699,8 +710,9 @@ final class FutureRawNotifierProvider extends $FunctionalProvider<
   @override
   String debugGetCreateSourceHash() => _$futureRawNotifierHash();
 
+  @$internal
   @override
-  $FutureProviderElement<Raw<MyChangeNotifier>> createElement(
+  $FutureProviderElement<Raw<MyChangeNotifier>> $createElement(
           ProviderContainer container) =>
       $FutureProviderElement(this, container);
 
@@ -755,8 +767,9 @@ final class StreamRawNotifierProvider extends $FunctionalProvider<
   @override
   String debugGetCreateSourceHash() => _$streamRawNotifierHash();
 
+  @$internal
   @override
-  $StreamProviderElement<Raw<MyChangeNotifier>> createElement(
+  $StreamProviderElement<Raw<MyChangeNotifier>> $createElement(
           ProviderContainer container) =>
       $StreamProviderElement(this, container);
 
@@ -833,7 +846,7 @@ final class StateNotifierClassProvider
 
   @$internal
   @override
-  $NotifierProviderElement<StateNotifierClass, MyStateNotifier> createElement(
+  $NotifierProviderElement<StateNotifierClass, MyStateNotifier> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }
@@ -895,7 +908,7 @@ final class SelfNotifierProvider
 
   @$internal
   @override
-  $AsyncNotifierProviderElement<SelfNotifier, SelfNotifier> createElement(
+  $AsyncNotifierProviderElement<SelfNotifier, SelfNotifier> $createElement(
           ProviderContainer container) =>
       $AsyncNotifierProviderElement(this, container);
 }
@@ -964,7 +977,7 @@ final class SyncSelfNotifierProvider
 
   @$internal
   @override
-  $NotifierProviderElement<SyncSelfNotifier, SyncSelfNotifier> createElement(
+  $NotifierProviderElement<SyncSelfNotifier, SyncSelfNotifier> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }
@@ -1026,7 +1039,7 @@ final class StreamSelfNotifierProvider
   @$internal
   @override
   $StreamNotifierProviderElement<StreamSelfNotifier, StreamSelfNotifier>
-      createElement(ProviderContainer container) =>
+      $createElement(ProviderContainer container) =>
           $StreamNotifierProviderElement(this, container);
 }
 
@@ -1091,7 +1104,7 @@ final class StateNotifierClassAsyncProvider
   @$internal
   @override
   $AsyncNotifierProviderElement<StateNotifierClassAsync, MyStateNotifier>
-      createElement(ProviderContainer container) =>
+      $createElement(ProviderContainer container) =>
           $AsyncNotifierProviderElement(this, container);
 }
 
@@ -1161,9 +1174,9 @@ final class ChangeNotifierClassProvider
 
   @$internal
   @override
-  $NotifierProviderElement<ChangeNotifierClass, MyChangeNotifier> createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+  $NotifierProviderElement<ChangeNotifierClass, MyChangeNotifier>
+      $createElement(ProviderContainer container) =>
+          $NotifierProviderElement(this, container);
 }
 
 String _$changeNotifierClassHash() =>
@@ -1231,7 +1244,7 @@ final class NotifierClassProvider
 
   @$internal
   @override
-  $NotifierProviderElement<NotifierClass, MyNotifier> createElement(
+  $NotifierProviderElement<NotifierClass, MyNotifier> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }
@@ -1300,7 +1313,7 @@ final class AsyncNotifierClassProvider
 
   @$internal
   @override
-  $NotifierProviderElement<AsyncNotifierClass, MyAsyncNotifier> createElement(
+  $NotifierProviderElement<AsyncNotifierClass, MyAsyncNotifier> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }

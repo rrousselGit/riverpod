@@ -44,8 +44,9 @@ final class ExampleProvider extends $FunctionalProvider<int, int, ExampleRef>
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override

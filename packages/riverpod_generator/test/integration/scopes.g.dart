@@ -60,7 +60,7 @@ final class ScopedClassProvider extends $NotifierProvider<ScopedClass, int> {
 
   @$internal
   @override
-  $NotifierProviderElement<ScopedClass, int> createElement(
+  $NotifierProviderElement<ScopedClass, int> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }
@@ -143,7 +143,7 @@ final class ScopedClassFamilyProvider
 
   @$internal
   @override
-  $NotifierProviderElement<ScopedClassFamily, int> createElement(
+  $NotifierProviderElement<ScopedClassFamily, int> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 
@@ -195,7 +195,7 @@ final class ScopedClassFamilyFamily extends Family {
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -213,7 +213,7 @@ final class ScopedClassFamilyFamily extends Family {
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }

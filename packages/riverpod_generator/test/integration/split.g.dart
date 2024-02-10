@@ -42,8 +42,9 @@ final class Counter2Provider extends $FunctionalProvider<int, int, Counter2Ref>
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -100,8 +101,9 @@ final class CounterProvider extends $FunctionalProvider<int, int, CounterRef>
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override

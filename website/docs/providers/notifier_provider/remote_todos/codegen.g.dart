@@ -72,7 +72,7 @@ final class AsyncTodosProvider
 
   @$internal
   @override
-  $AsyncNotifierProviderElement<AsyncTodos, List<Todo>> createElement(
+  $AsyncNotifierProviderElement<AsyncTodos, List<Todo>> $createElement(
           ProviderContainer container) =>
       $AsyncNotifierProviderElement(this, container);
 }

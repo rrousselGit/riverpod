@@ -37,8 +37,9 @@ final class StreamExampleProvider
   @override
   String debugGetCreateSourceHash() => _$streamExampleHash();
 
+  @$internal
   @override
-  $StreamProviderElement<int> createElement(ProviderContainer container) =>
+  $StreamProviderElement<int> $createElement(ProviderContainer container) =>
       $StreamProviderElement(this, container);
 
   @override

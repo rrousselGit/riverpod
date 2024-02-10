@@ -37,8 +37,9 @@ final class ChatProvider extends $FunctionalProvider<AsyncValue<List<String>>,
   @override
   String debugGetCreateSourceHash() => _$chatHash();
 
+  @$internal
   @override
-  $StreamProviderElement<List<String>> createElement(
+  $StreamProviderElement<List<String>> $createElement(
           ProviderContainer container) =>
       $StreamProviderElement(this, container);
 

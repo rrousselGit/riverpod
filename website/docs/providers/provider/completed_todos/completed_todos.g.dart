@@ -45,8 +45,9 @@ final class CompletedTodosProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<List<Todo>> createElement(ProviderContainer container) =>
+  $ProviderElement<List<Todo>> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override

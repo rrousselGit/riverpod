@@ -54,8 +54,9 @@ final class MyListenableProvider extends $FunctionalProvider<
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<Raw<ValueNotifier<int>>> createElement(
+  $ProviderElement<Raw<ValueNotifier<int>>> $createElement(
           ProviderContainer container) =>
       $ProviderElement(this, container);
 

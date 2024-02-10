@@ -46,8 +46,9 @@ final class FetchUserProvider
         '($argument)';
   }
 
+  @$internal
   @override
-  $FutureProviderElement<User> createElement(ProviderContainer container) =>
+  $FutureProviderElement<User> $createElement(ProviderContainer container) =>
       $FutureProviderElement(this, container);
 
   @override
@@ -125,7 +126,7 @@ final class FetchUserFamily extends Family {
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }

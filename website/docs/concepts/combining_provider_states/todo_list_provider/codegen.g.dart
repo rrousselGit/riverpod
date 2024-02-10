@@ -62,7 +62,7 @@ final class TodoListProvider extends $NotifierProvider<TodoList, List<Todo>> {
 
   @$internal
   @override
-  $NotifierProviderElement<TodoList, List<Todo>> createElement(
+  $NotifierProviderElement<TodoList, List<Todo>> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }

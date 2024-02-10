@@ -55,8 +55,9 @@ final class FunctionalProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<String> createElement(ProviderContainer container) =>
+  $ProviderElement<String> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -134,7 +135,7 @@ final class FunctionalFamily extends Family {
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -189,8 +190,9 @@ final class FamilyProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<String> createElement(ProviderContainer container) =>
+  $ProviderElement<String> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -268,7 +270,7 @@ final class FamilyFamily extends Family {
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -311,8 +313,9 @@ final class NotCopiedFunctionalProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<String> createElement(ProviderContainer container) =>
+  $ProviderElement<String> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -380,8 +383,9 @@ final class NotCopiedFamilyProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<String> createElement(ProviderContainer container) =>
+  $ProviderElement<String> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -459,7 +463,7 @@ final class NotCopiedFamilyFamily extends Family {
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -536,7 +540,7 @@ final class ClassBasedProvider extends $NotifierProvider<ClassBased, String> {
 
   @$internal
   @override
-  $NotifierProviderElement<ClassBased, String> createElement(
+  $NotifierProviderElement<ClassBased, String> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 
@@ -588,7 +592,7 @@ final class ClassBasedFamily extends Family {
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -606,7 +610,7 @@ final class ClassBasedFamily extends Family {
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -682,7 +686,7 @@ final class NotCopiedClassBasedProvider
 
   @$internal
   @override
-  $NotifierProviderElement<NotCopiedClassBased, String> createElement(
+  $NotifierProviderElement<NotCopiedClassBased, String> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }

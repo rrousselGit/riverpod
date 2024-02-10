@@ -44,8 +44,9 @@ final class CityProvider extends $FunctionalProvider<String, String, CityRef>
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<String> createElement(ProviderContainer container) =>
+  $ProviderElement<String> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -95,8 +96,9 @@ final class WeatherProvider extends $FunctionalProvider<AsyncValue<Weather>,
   @override
   String debugGetCreateSourceHash() => _$weatherHash();
 
+  @$internal
   @override
-  $FutureProviderElement<Weather> createElement(ProviderContainer container) =>
+  $FutureProviderElement<Weather> $createElement(ProviderContainer container) =>
       $FutureProviderElement(this, container);
 
   @override

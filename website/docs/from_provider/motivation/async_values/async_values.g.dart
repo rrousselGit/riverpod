@@ -37,8 +37,9 @@ final class ItemsApiProvider extends $FunctionalProvider<AsyncValue<List<Item>>,
   @override
   String debugGetCreateSourceHash() => _$itemsApiHash();
 
+  @$internal
   @override
-  $FutureProviderElement<List<Item>> createElement(
+  $FutureProviderElement<List<Item>> $createElement(
           ProviderContainer container) =>
       $FutureProviderElement(this, container);
 
@@ -97,8 +98,9 @@ final class EvenItemsProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<List<Item>> createElement(ProviderContainer container) =>
+  $ProviderElement<List<Item>> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override

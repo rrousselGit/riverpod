@@ -54,7 +54,7 @@ final class ExampleProvider extends $AsyncNotifierProvider<Example, String> {
 
   @$internal
   @override
-  $AsyncNotifierProviderElement<Example, String> createElement(
+  $AsyncNotifierProviderElement<Example, String> $createElement(
           ProviderContainer container) =>
       $AsyncNotifierProviderElement(this, container);
 }

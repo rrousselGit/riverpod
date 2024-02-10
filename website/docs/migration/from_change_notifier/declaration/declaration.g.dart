@@ -55,7 +55,7 @@ final class MyNotifierProvider
 
   @$internal
   @override
-  $AsyncNotifierProviderElement<MyNotifier, List<Todo>> createElement(
+  $AsyncNotifierProviderElement<MyNotifier, List<Todo>> $createElement(
           ProviderContainer container) =>
       $AsyncNotifierProviderElement(this, container);
 }

@@ -45,8 +45,9 @@ final class DurationProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<Duration> createElement(ProviderContainer container) =>
+  $ProviderElement<Duration> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -104,8 +105,9 @@ final class RepositoryProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<_MyRepo> createElement(ProviderContainer container) =>
+  $ProviderElement<_MyRepo> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
@@ -180,7 +182,7 @@ final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
 
   @$internal
   @override
-  $NotifierProviderElement<MyNotifier, int> createElement(
+  $NotifierProviderElement<MyNotifier, int> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }

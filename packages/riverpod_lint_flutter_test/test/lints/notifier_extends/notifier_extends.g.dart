@@ -60,7 +60,7 @@ final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
 
   @$internal
   @override
-  $NotifierProviderElement<MyNotifier, int> createElement(
+  $NotifierProviderElement<MyNotifier, int> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }
@@ -128,7 +128,7 @@ final class NoExtendsProvider extends $NotifierProvider<NoExtends, int> {
 
   @$internal
   @override
-  $NotifierProviderElement<NoExtends, int> createElement(
+  $NotifierProviderElement<NoExtends, int> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }
@@ -196,7 +196,7 @@ final class WrongExtendsProvider extends $NotifierProvider<WrongExtends, int> {
 
   @$internal
   @override
-  $NotifierProviderElement<WrongExtends, int> createElement(
+  $NotifierProviderElement<WrongExtends, int> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }
@@ -265,7 +265,7 @@ final class _PrivateClassProvider
 
   @$internal
   @override
-  $NotifierProviderElement<_PrivateClass, String> createElement(
+  $NotifierProviderElement<_PrivateClass, String> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 }
@@ -361,7 +361,7 @@ final class GenericsProvider<A extends num, B>
 
   @$internal
   @override
-  $NotifierProviderElement<Generics<A, B>, int> createElement(
+  $NotifierProviderElement<Generics<A, B>, int> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 
@@ -407,7 +407,7 @@ final class GenericsFamily extends Family {
       createElement: (container, provider) {
         provider as GenericsProvider;
 
-        return provider._copyWithCreate(create).createElement(container);
+        return provider._copyWithCreate(create).$createElement(container);
       },
     );
   }
@@ -421,7 +421,7 @@ final class GenericsFamily extends Family {
       createElement: (container, provider) {
         provider as GenericsProvider;
 
-        return provider._copyWithBuild(build).createElement(container);
+        return provider._copyWithBuild(build).$createElement(container);
       },
     );
   }
@@ -516,7 +516,7 @@ final class NoGenericsProvider<A extends num, B>
 
   @$internal
   @override
-  $NotifierProviderElement<NoGenerics<A, B>, int> createElement(
+  $NotifierProviderElement<NoGenerics<A, B>, int> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 
@@ -562,7 +562,7 @@ final class NoGenericsFamily extends Family {
       createElement: (container, provider) {
         provider as NoGenericsProvider;
 
-        return provider._copyWithCreate(create).createElement(container);
+        return provider._copyWithCreate(create).$createElement(container);
       },
     );
   }
@@ -577,7 +577,7 @@ final class NoGenericsFamily extends Family {
       createElement: (container, provider) {
         provider as NoGenericsProvider;
 
-        return provider._copyWithBuild(build).createElement(container);
+        return provider._copyWithBuild(build).$createElement(container);
       },
     );
   }
@@ -674,7 +674,7 @@ final class MissingGenericsProvider<A, B>
 
   @$internal
   @override
-  $NotifierProviderElement<MissingGenerics<A, B>, int> createElement(
+  $NotifierProviderElement<MissingGenerics<A, B>, int> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 
@@ -720,7 +720,7 @@ final class MissingGenericsFamily extends Family {
       createElement: (container, provider) {
         provider as MissingGenericsProvider;
 
-        return provider._copyWithCreate(create).createElement(container);
+        return provider._copyWithCreate(create).$createElement(container);
       },
     );
   }
@@ -734,7 +734,7 @@ final class MissingGenericsFamily extends Family {
       createElement: (container, provider) {
         provider as MissingGenericsProvider;
 
-        return provider._copyWithBuild(build).createElement(container);
+        return provider._copyWithBuild(build).$createElement(container);
       },
     );
   }
@@ -829,7 +829,7 @@ final class WrongOrderProvider<A, B>
 
   @$internal
   @override
-  $NotifierProviderElement<WrongOrder<A, B>, int> createElement(
+  $NotifierProviderElement<WrongOrder<A, B>, int> $createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
 
@@ -875,7 +875,7 @@ final class WrongOrderFamily extends Family {
       createElement: (container, provider) {
         provider as WrongOrderProvider;
 
-        return provider._copyWithCreate(create).createElement(container);
+        return provider._copyWithCreate(create).$createElement(container);
       },
     );
   }
@@ -889,7 +889,7 @@ final class WrongOrderFamily extends Family {
       createElement: (container, provider) {
         provider as WrongOrderProvider;
 
-        return provider._copyWithBuild(build).createElement(container);
+        return provider._copyWithBuild(build).$createElement(container);
       },
     );
   }

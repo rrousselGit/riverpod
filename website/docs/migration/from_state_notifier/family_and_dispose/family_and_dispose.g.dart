@@ -46,8 +46,9 @@ final class TaskTrackerProvider extends $FunctionalProvider<
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<TaskTrackerRepo> createElement(
+  $ProviderElement<TaskTrackerRepo> $createElement(
           ProviderContainer container) =>
       $ProviderElement(this, container);
 
@@ -131,7 +132,7 @@ final class BugsEncounteredNotifierProvider
 
   @$internal
   @override
-  $AsyncNotifierProviderElement<BugsEncounteredNotifier, int> createElement(
+  $AsyncNotifierProviderElement<BugsEncounteredNotifier, int> $createElement(
           ProviderContainer container) =>
       $AsyncNotifierProviderElement(this, container);
 
@@ -185,7 +186,7 @@ final class BugsEncounteredNotifierFamily extends Family {
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -205,7 +206,7 @@ final class BugsEncounteredNotifierFamily extends Family {
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }

@@ -51,8 +51,9 @@ final class GenericProvider<T extends num> extends $FunctionalProvider<
         '()';
   }
 
+  @$internal
   @override
-  $FutureProviderElement<List<T>> createElement(ProviderContainer container) =>
+  $FutureProviderElement<List<T>> $createElement(ProviderContainer container) =>
       $FutureProviderElement(this, container);
 
   @override
@@ -111,7 +112,7 @@ final class GenericFamily extends Family {
       createElement: (container, provider) {
         provider as GenericProvider;
 
-        return provider._copyWithCreate(create).createElement(container);
+        return provider._copyWithCreate(create).$createElement(container);
       },
     );
   }
@@ -146,8 +147,9 @@ final class PublicProvider
   @override
   String debugGetCreateSourceHash() => _$publicHash();
 
+  @$internal
   @override
-  $FutureProviderElement<String> createElement(ProviderContainer container) =>
+  $FutureProviderElement<String> $createElement(ProviderContainer container) =>
       $FutureProviderElement(this, container);
 
   @override
@@ -197,8 +199,9 @@ final class _PrivateProvider extends $FunctionalProvider<AsyncValue<String>,
   @override
   String debugGetCreateSourceHash() => _$privateHash();
 
+  @$internal
   @override
-  $FutureProviderElement<String> createElement(ProviderContainer container) =>
+  $FutureProviderElement<String> $createElement(ProviderContainer container) =>
       $FutureProviderElement(this, container);
 
   @override
@@ -257,8 +260,9 @@ final class FamilyOrProvider extends $FunctionalProvider<AsyncValue<String>,
         '($argument)';
   }
 
+  @$internal
   @override
-  $FutureProviderElement<String> createElement(ProviderContainer container) =>
+  $FutureProviderElement<String> $createElement(ProviderContainer container) =>
       $FutureProviderElement(this, container);
 
   @override
@@ -336,7 +340,7 @@ final class FamilyOrFamily extends Family {
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -395,8 +399,9 @@ final class FamilyProvider
         '$argument';
   }
 
+  @$internal
   @override
-  $FutureProviderElement<String> createElement(ProviderContainer container) =>
+  $FutureProviderElement<String> $createElement(ProviderContainer container) =>
       $FutureProviderElement(this, container);
 
   @override
@@ -516,7 +521,7 @@ final class FamilyFamily extends Family {
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -596,7 +601,7 @@ final class GenericClassProvider<T extends num>
 
   @$internal
   @override
-  $AsyncNotifierProviderElement<GenericClass<T>, List<T>> createElement(
+  $AsyncNotifierProviderElement<GenericClass<T>, List<T>> $createElement(
           ProviderContainer container) =>
       $AsyncNotifierProviderElement(this, container);
 
@@ -642,7 +647,7 @@ final class GenericClassFamily extends Family {
       createElement: (container, provider) {
         provider as GenericClassProvider;
 
-        return provider._copyWithCreate(create).createElement(container);
+        return provider._copyWithCreate(create).$createElement(container);
       },
     );
   }
@@ -658,7 +663,7 @@ final class GenericClassFamily extends Family {
       createElement: (container, provider) {
         provider as GenericClassProvider;
 
-        return provider._copyWithBuild(build).createElement(container);
+        return provider._copyWithBuild(build).$createElement(container);
       },
     );
   }
@@ -718,7 +723,7 @@ final class PublicClassProvider
 
   @$internal
   @override
-  $AsyncNotifierProviderElement<PublicClass, String> createElement(
+  $AsyncNotifierProviderElement<PublicClass, String> $createElement(
           ProviderContainer container) =>
       $AsyncNotifierProviderElement(this, container);
 }
@@ -779,7 +784,7 @@ final class _PrivateClassProvider
 
   @$internal
   @override
-  $AsyncNotifierProviderElement<_PrivateClass, String> createElement(
+  $AsyncNotifierProviderElement<_PrivateClass, String> $createElement(
           ProviderContainer container) =>
       $AsyncNotifierProviderElement(this, container);
 }
@@ -854,7 +859,7 @@ final class FamilyOrClassProvider
 
   @$internal
   @override
-  $AsyncNotifierProviderElement<FamilyOrClass, String> createElement(
+  $AsyncNotifierProviderElement<FamilyOrClass, String> $createElement(
           ProviderContainer container) =>
       $AsyncNotifierProviderElement(this, container);
 
@@ -906,7 +911,7 @@ final class FamilyOrClassFamily extends Family {
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -926,7 +931,7 @@ final class FamilyOrClassFamily extends Family {
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -1027,7 +1032,7 @@ final class FamilyClassProvider
 
   @$internal
   @override
-  $AsyncNotifierProviderElement<FamilyClass, String> createElement(
+  $AsyncNotifierProviderElement<FamilyClass, String> $createElement(
           ProviderContainer container) =>
       $AsyncNotifierProviderElement(this, container);
 
@@ -1101,7 +1106,7 @@ final class FamilyClassFamily extends Family {
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -1135,7 +1140,7 @@ final class FamilyClassFamily extends Family {
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }

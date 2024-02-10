@@ -54,8 +54,9 @@ final class FetchPackagesProvider extends $FunctionalProvider<
         '$argument';
   }
 
+  @$internal
   @override
-  $FutureProviderElement<List<Package>> createElement(
+  $FutureProviderElement<List<Package>> $createElement(
           ProviderContainer container) =>
       $FutureProviderElement(this, container);
 
@@ -152,7 +153,7 @@ final class FetchPackagesFamily extends Family {
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }

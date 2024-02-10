@@ -57,8 +57,10 @@ final class ActivityProvider extends $FunctionalProvider<AsyncValue<Activity>,
   @override
   String debugGetCreateSourceHash() => _$activityHash();
 
+  @$internal
   @override
-  $FutureProviderElement<Activity> createElement(ProviderContainer container) =>
+  $FutureProviderElement<Activity> $createElement(
+          ProviderContainer container) =>
       $FutureProviderElement(this, container);
 
   @override

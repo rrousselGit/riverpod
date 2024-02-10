@@ -41,8 +41,9 @@ final class FetchConfigurationProvider extends $FunctionalProvider<
   @override
   String debugGetCreateSourceHash() => _$fetchConfigurationHash();
 
+  @$internal
   @override
-  $FutureProviderElement<Configuration> createElement(
+  $FutureProviderElement<Configuration> $createElement(
           ProviderContainer container) =>
       $FutureProviderElement(this, container);
 

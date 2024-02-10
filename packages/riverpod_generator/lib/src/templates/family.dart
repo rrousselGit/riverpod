@@ -200,7 +200,7 @@ Override overrideWithBuild($runNotifierBuildType build,) {
         buffer.writeln('''
         final argument = provider.argument$_argumentCast;
 
-        return provider.\$copyWithBuild((ref, notifier) => build(ref, notifier, argument)).createElement(container);
+        return provider.\$copyWithBuild((ref, notifier) => build(ref, notifier, argument)).\$createElement(container);
       ''');
 
       case (hasParameters: false, hasGenerics: true):

@@ -37,8 +37,9 @@ final class UserProvider
   @override
   String debugGetCreateSourceHash() => _$userHash();
 
+  @$internal
   @override
-  $FutureProviderElement<User> createElement(ProviderContainer container) =>
+  $FutureProviderElement<User> $createElement(ProviderContainer container) =>
       $FutureProviderElement(this, container);
 
   @override
@@ -96,8 +97,9 @@ final class ExampleProvider
     );
   }
 
+  @$internal
   @override
-  $ProviderElement<Object?> createElement(ProviderContainer container) =>
+  $ProviderElement<Object?> $createElement(ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override

@@ -37,8 +37,10 @@ final class ActivityProvider extends $FunctionalProvider<AsyncValue<Activity>,
   @override
   String debugGetCreateSourceHash() => _$activityHash();
 
+  @$internal
   @override
-  $FutureProviderElement<Activity> createElement(ProviderContainer container) =>
+  $FutureProviderElement<Activity> $createElement(
+          ProviderContainer container) =>
       $FutureProviderElement(this, container);
 
   @override
@@ -120,7 +122,7 @@ final class ActivityNotifier2Provider
 
   @$internal
   @override
-  $AsyncNotifierProviderElement<ActivityNotifier2, Activity> createElement(
+  $AsyncNotifierProviderElement<ActivityNotifier2, Activity> $createElement(
           ProviderContainer container) =>
       $AsyncNotifierProviderElement(this, container);
 
@@ -172,7 +174,7 @@ final class ActivityNotifier2Family extends Family {
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
@@ -192,7 +194,7 @@ final class ActivityNotifier2Family extends Family {
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .createElement(container);
+            .$createElement(container);
       },
     );
   }
