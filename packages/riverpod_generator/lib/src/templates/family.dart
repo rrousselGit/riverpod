@@ -23,6 +23,7 @@ class FamilyTemplate extends Template {
   late final _parameterDefinition =
       buildParamDefinitionQuery(provider.parameters);
   late final _notifierType = '${provider.name}$_generics';
+  late final _argumentCast = provider.argumentCast;
 
   @override
   void run(StringBuffer buffer) {
@@ -120,7 +121,7 @@ Override overrideWith($createType create,) {
         );
       case (hasParameters: true, hasGenerics: false, _):
         buffer.writeln('''
-        final argument = provider.argument as $_argumentRecordType;
+        final argument = provider.argument$_argumentCast;
 
         return provider.\$copyWithCreate(${switch (provider) {
           FunctionalProviderDeclaration() => '(ref) => create(ref, argument)',
@@ -150,7 +151,7 @@ Override overrideWith($createType create,) {
         ):
         buffer.writeln('''
         return provider._copyWithCreate($_genericsDefinition() {
-          final argument = provider.argument as $_argumentRecordType;
+          final argument = provider.argument$_argumentCast;
 
           return create(argument);
         }).createElement(container);
@@ -197,7 +198,7 @@ Override overrideWithBuild($runNotifierBuildType build,) {
         );
       case (hasParameters: true, hasGenerics: false):
         buffer.writeln('''
-        final argument = provider.argument as $_argumentRecordType;
+        final argument = provider.argument$_argumentCast;
 
         return provider.\$copyWithBuild((ref, notifier) => build(ref, notifier, argument)).createElement(container);
       ''');
@@ -210,7 +211,7 @@ Override overrideWithBuild($runNotifierBuildType build,) {
       case (hasParameters: true, hasGenerics: true):
         buffer.writeln('''
         return provider._copyWithBuild($_genericsDefinition(ref, notifier) {
-          final argument = provider.argument as $_argumentRecordType;
+          final argument = provider.argument$_argumentCast;
 
           return build(ref, notifier, argument);
         }).createElement(container);

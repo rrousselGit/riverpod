@@ -36,7 +36,7 @@ class NotifierTemplate extends Template {
     });
 
     final _$args = r'late final _$args = '
-        '(ref as ${provider.elementName}).origin.argument as ${provider.argumentRecordType};';
+        '(ref as ${provider.elementName}).origin.argument${provider.argumentCast};';
     var paramOffset = 0;
     final parametersAsFields = provider.parameters.map(
       (p) {

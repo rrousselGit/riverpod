@@ -145,7 +145,7 @@ ${provider.doc} final class $name$_genericsDefinition
 
     final copyParameters = [
       if (provider.parameters.isNotEmpty)
-        'argument: argument as $_argumentRecordType,',
+        'argument: argument${provider.argumentCast},',
       if (provider.providerElement.isFamily)
         'from: from! as ${provider.familyTypeName},',
     ].join();
@@ -288,7 +288,7 @@ ${provider.doc} final class $name$_genericsDefinition
         });
 
         buffer.writeln('''
-        final $_argumentRecordType argument = this.argument as $_argumentRecordType;
+        final argument = this.argument${provider.argumentCast};
         return fn(ref, $paramsPassThrough);
       ''');
     }

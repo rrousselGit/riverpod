@@ -132,7 +132,7 @@ final class FamilyProvider extends $FunctionalProvider<int, int, FamilyRef>
   @override
   int create(FamilyRef ref) {
     final fn = _createCb ?? family;
-    final int argument = this.argument as int;
+    final argument = this.argument as int;
     return fn(
       ref,
       argument,

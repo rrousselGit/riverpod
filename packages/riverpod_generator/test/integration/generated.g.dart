@@ -134,7 +134,7 @@ final class GeneratedFamilyProvider
   @override
   _Test create(GeneratedFamilyRef ref) {
     final fn = _createCb ?? generatedFamily;
-    final _Test argument = this.argument as _Test;
+    final argument = this.argument as _Test;
     return fn(
       ref,
       argument,
@@ -324,7 +324,7 @@ final class $DynamicFamilyProvider
   @override
   Object? create($DynamicFamilyRef ref) {
     final fn = _createCb ?? $dynamicFamily;
-    final dynamic argument = this.argument as dynamic;
+    final argument = this.argument as dynamic;
     return fn(
       ref,
       argument,
@@ -455,7 +455,7 @@ final class _DynamicProvider
   @override
   Object? create(_DynamicRef ref) {
     final fn = _createCb ?? _dynamic;
-    final dynamic argument = this.argument as dynamic;
+    final argument = this.argument as dynamic;
     return fn(
       ref,
       argument,
@@ -648,7 +648,7 @@ final class AliasFamilyProvider extends $FunctionalProvider<
   @override
   r.AsyncValue<int> create(AliasFamilyRef ref) {
     final fn = _createCb ?? aliasFamily;
-    final r.AsyncValue<int> argument = this.argument as r.AsyncValue<int>;
+    final argument = this.argument as r.AsyncValue<int>;
     return fn(
       ref,
       argument,

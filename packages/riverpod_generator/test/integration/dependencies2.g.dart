@@ -161,7 +161,7 @@ final class FamilyWithDependencies2Provider
   @override
   int create(FamilyWithDependencies2Ref ref) {
     final fn = _createCb ?? familyWithDependencies2;
-    final int? argument = this.argument as int?;
+    final argument = this.argument as int?;
     return fn(
       ref,
       id: argument,

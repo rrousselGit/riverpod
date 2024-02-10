@@ -294,6 +294,12 @@ extension ProviderNames on GeneratorProviderDeclaration {
 
   String get doc => node.doc;
 
+  String get argumentCast {
+    final type = argumentRecordType;
+    if (type == 'Object?') return '';
+    return ' as $type';
+  }
+
   String argumentToRecord({String? variableName}) {
     switch (parameters) {
       case [final p]:

@@ -220,10 +220,7 @@ final class ComplexGenericProvider<T extends num, Foo extends String?>
   @override
   List<T> create(ComplexGenericRef<T, Foo> ref) {
     final fn = _createCb ?? complexGeneric<T, Foo>;
-    final ({
-      T param,
-      Foo? otherParam,
-    }) argument = this.argument as ({
+    final argument = this.argument as ({
       T param,
       Foo? otherParam,
     });
@@ -495,7 +492,7 @@ final class RawFamilyFutureProvider extends $FunctionalProvider<
   @override
   Raw<Future<String>> create(RawFamilyFutureRef ref) {
     final fn = _createCb ?? rawFamilyFuture;
-    final int argument = this.argument as int;
+    final argument = this.argument as int;
     return fn(
       ref,
       argument,
@@ -627,7 +624,7 @@ final class RawFamilyStreamProvider extends $FunctionalProvider<
   @override
   Raw<Stream<String>> create(RawFamilyStreamRef ref) {
     final fn = _createCb ?? rawFamilyStream;
-    final int argument = this.argument as int;
+    final argument = this.argument as int;
     return fn(
       ref,
       argument,
@@ -909,13 +906,7 @@ final class FamilyProvider
   @override
   String create(FamilyRef ref) {
     final fn = _createCb ?? family;
-    final (
-      int, {
-      String? second,
-      double third,
-      bool fourth,
-      List<String>? fifth,
-    }) argument = this.argument as (
+    final argument = this.argument as (
       int, {
       String? second,
       double third,
@@ -1294,11 +1285,7 @@ final class Supports$InFnNameFamilyProvider<And$InT>
   @override
   String create(Supports$InFnNameFamilyRef<And$InT> ref) {
     final fn = _createCb ?? supports$InFnNameFamily<And$InT>;
-    final (
-      And$InT, {
-      And$InT named$arg,
-      String defaultArg,
-    }) argument = this.argument as (
+    final argument = this.argument as (
       And$InT, {
       And$InT named$arg,
       String defaultArg,
@@ -1444,6 +1431,137 @@ final class GeneratedProvider
 }
 
 String _$generatedHash() => r'fecbc1d5d9a05fc996b452a57fd1975ff368af91';
+
+typedef UnnecessaryCastRef = Ref<String>;
+
+@ProviderFor(unnecessaryCast)
+const unnecessaryCastProvider = UnnecessaryCastFamily._();
+
+final class UnnecessaryCastProvider
+    extends $FunctionalProvider<String, String, UnnecessaryCastRef>
+    with $Provider<String, UnnecessaryCastRef> {
+  const UnnecessaryCastProvider._(
+      {required UnnecessaryCastFamily super.from,
+      required Object? super.argument,
+      String Function(
+        UnnecessaryCastRef ref,
+        Object? arg,
+      )? create})
+      : _createCb = create,
+        super(
+          name: r'unnecessaryCastProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final String Function(
+    UnnecessaryCastRef ref,
+    Object? arg,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$unnecessaryCastHash();
+
+  @override
+  String toString() {
+    return r'unnecessaryCastProvider'
+        ''
+        '($argument)';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
+  }
+
+  @override
+  $ProviderElement<String> createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  UnnecessaryCastProvider $copyWithCreate(
+    String Function(
+      UnnecessaryCastRef ref,
+    ) create,
+  ) {
+    return UnnecessaryCastProvider._(
+        argument: argument,
+        from: from! as UnnecessaryCastFamily,
+        create: (
+          ref,
+          Object? arg,
+        ) =>
+            create(ref));
+  }
+
+  @override
+  String create(UnnecessaryCastRef ref) {
+    final fn = _createCb ?? unnecessaryCast;
+    final argument = this.argument;
+    return fn(
+      ref,
+      argument,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is UnnecessaryCastProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$unnecessaryCastHash() => r'282c11ef4f55267c3e6ed70af1a260cd1c2163e6';
+
+final class UnnecessaryCastFamily extends Family {
+  const UnnecessaryCastFamily._()
+      : super(
+          name: r'unnecessaryCastProvider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  UnnecessaryCastProvider call(
+    Object? arg,
+  ) =>
+      UnnecessaryCastProvider._(argument: arg, from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$unnecessaryCastHash();
+
+  @override
+  String toString() => r'unnecessaryCastProvider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    String Function(
+      UnnecessaryCastRef ref,
+      Object? args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as UnnecessaryCastProvider;
+
+        final argument = provider.argument;
+
+        return provider
+            .$copyWithCreate((ref) => create(ref, argument))
+            .createElement(container);
+      },
+    );
+  }
+}
 
 @ProviderFor(GenericClass)
 const genericClassProvider = GenericClassFamily._();
@@ -2840,6 +2958,168 @@ abstract class _$Supports$InClassFamilyName<And$InT> extends $Notifier<String> {
         _$args.$1,
         named$arg: _$args.named$arg,
         defaultArg: _$args.defaultArg,
+      );
+}
+
+@ProviderFor(UnnecessaryCastClass)
+const unnecessaryCastClassProvider = UnnecessaryCastClassFamily._();
+
+final class UnnecessaryCastClassProvider
+    extends $NotifierProvider<UnnecessaryCastClass, String> {
+  const UnnecessaryCastClassProvider._(
+      {required UnnecessaryCastClassFamily super.from,
+      required Object? super.argument,
+      super.runNotifierBuildOverride,
+      UnnecessaryCastClass Function()? create})
+      : _createCb = create,
+        super(
+          name: r'unnecessaryCastClassProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final UnnecessaryCastClass Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$unnecessaryCastClassHash();
+
+  @override
+  String toString() {
+    return r'unnecessaryCastClassProvider'
+        ''
+        '($argument)';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
+  }
+
+  @$internal
+  @override
+  UnnecessaryCastClass create() => _createCb?.call() ?? UnnecessaryCastClass();
+
+  @$internal
+  @override
+  UnnecessaryCastClassProvider $copyWithCreate(
+    UnnecessaryCastClass Function() create,
+  ) {
+    return UnnecessaryCastClassProvider._(
+        argument: argument,
+        from: from! as UnnecessaryCastClassFamily,
+        create: create);
+  }
+
+  @$internal
+  @override
+  UnnecessaryCastClassProvider $copyWithBuild(
+    String Function(
+      Ref<String>,
+      UnnecessaryCastClass,
+    ) build,
+  ) {
+    return UnnecessaryCastClassProvider._(
+        argument: argument,
+        from: from! as UnnecessaryCastClassFamily,
+        runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<UnnecessaryCastClass, String> createElement(
+          ProviderContainer container) =>
+      $NotifierProviderElement(this, container);
+
+  @override
+  bool operator ==(Object other) {
+    return other is UnnecessaryCastClassProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$unnecessaryCastClassHash() =>
+    r'8cbf80b29c4edf7f5401e4447feca553e921e734';
+
+final class UnnecessaryCastClassFamily extends Family {
+  const UnnecessaryCastClassFamily._()
+      : super(
+          name: r'unnecessaryCastClassProvider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  UnnecessaryCastClassProvider call(
+    Object? arg,
+  ) =>
+      UnnecessaryCastClassProvider._(argument: arg, from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$unnecessaryCastClassHash();
+
+  @override
+  String toString() => r'unnecessaryCastClassProvider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    UnnecessaryCastClass Function(
+      Object? args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as UnnecessaryCastClassProvider;
+
+        final argument = provider.argument;
+
+        return provider
+            .$copyWithCreate(() => create(argument))
+            .createElement(container);
+      },
+    );
+  }
+
+  /// {@macro riverpod.override_with_build}
+  Override overrideWithBuild(
+    String Function(
+            Ref<String> ref, UnnecessaryCastClass notifier, Object? argument)
+        build,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as UnnecessaryCastClassProvider;
+
+        final argument = provider.argument;
+
+        return provider
+            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
+            .createElement(container);
+      },
+    );
+  }
+}
+
+abstract class _$UnnecessaryCastClass extends $Notifier<String> {
+  late final _$args = (ref as $NotifierProviderElement).origin.argument;
+  Object? get arg => _$args;
+
+  String build(
+    Object? arg,
+  );
+  @$internal
+  @override
+  String runBuild() => build(
+        _$args,
       );
 }
 

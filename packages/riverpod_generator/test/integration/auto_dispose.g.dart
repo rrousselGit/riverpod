@@ -252,7 +252,7 @@ final class KeepAliveFamilyProvider
   @override
   int create(KeepAliveFamilyRef ref) {
     final fn = _createCb ?? keepAliveFamily;
-    final int argument = this.argument as int;
+    final argument = this.argument as int;
     return fn(
       ref,
       argument,
@@ -383,7 +383,7 @@ final class NotKeepAliveFamilyProvider
   @override
   int create(NotKeepAliveFamilyRef ref) {
     final fn = _createCb ?? notKeepAliveFamily;
-    final int argument = this.argument as int;
+    final argument = this.argument as int;
     return fn(
       ref,
       argument,
@@ -515,7 +515,7 @@ final class DefaultKeepAliveFamilyProvider
   @override
   int create(DefaultKeepAliveFamilyRef ref) {
     final fn = _createCb ?? defaultKeepAliveFamily;
-    final int argument = this.argument as int;
+    final argument = this.argument as int;
     return fn(
       ref,
       argument,

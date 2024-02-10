@@ -205,3 +205,17 @@ final _someProvider = someProvider();
 // Regression test for https://github.com/rrousselGit/riverpod/issues/2294
 // ignore: unused_element
 final _other = _someProvider;
+
+// Regression test for now casting `as Object?` when not needed
+@riverpod
+String unnecessaryCast(GeneratedRef ref, Object? arg) {
+  return 'Just a simple normal generated provider';
+}
+
+@riverpod
+class UnnecessaryCastClass extends _$UnnecessaryCastClass {
+  @override
+  String build(Object? arg) {
+    return 'Just a simple normal generated provider';
+  }
+}

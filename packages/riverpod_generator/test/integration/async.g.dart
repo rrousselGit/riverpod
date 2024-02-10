@@ -280,7 +280,7 @@ final class FamilyOrProvider extends $FunctionalProvider<AsyncValue<String>,
   @override
   FutureOr<String> create(FamilyOrRef ref) {
     final fn = _createCb ?? familyOr;
-    final int argument = this.argument as int;
+    final argument = this.argument as int;
     return fn(
       ref,
       argument,
@@ -428,13 +428,7 @@ final class FamilyProvider
   @override
   FutureOr<String> create(FamilyRef ref) {
     final fn = _createCb ?? family;
-    final (
-      int, {
-      String? second,
-      double third,
-      bool fourth,
-      List<String>? fifth,
-    }) argument = this.argument as (
+    final argument = this.argument as (
       int, {
       String? second,
       double third,

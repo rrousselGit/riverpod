@@ -150,7 +150,7 @@ final class FamilyProvider
   @override
   String create(FamilyRef ref) {
     final fn = _createCb ?? family;
-    final int argument = this.argument as int;
+    final argument = this.argument as int;
     return fn(
       ref,
       argument,

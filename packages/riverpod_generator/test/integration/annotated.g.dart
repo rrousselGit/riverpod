@@ -78,7 +78,7 @@ final class FunctionalProvider
   @override
   String create(FunctionalRef ref) {
     final fn = _createCb ?? functional;
-    final int argument = this.argument as int;
+    final argument = this.argument as int;
     return fn(
       ref,
       argument,
@@ -212,7 +212,7 @@ final class FamilyProvider
   @override
   String create(FamilyRef ref) {
     final fn = _createCb ?? family;
-    final int argument = this.argument as int;
+    final argument = this.argument as int;
     return fn(
       ref,
       argument,
@@ -403,7 +403,7 @@ final class NotCopiedFamilyProvider
   @override
   String create(NotCopiedFamilyRef ref) {
     final fn = _createCb ?? notCopiedFamily;
-    final int argument = this.argument as int;
+    final argument = this.argument as int;
     return fn(
       ref,
       argument,
