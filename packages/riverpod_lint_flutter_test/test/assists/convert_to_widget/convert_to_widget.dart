@@ -129,3 +129,88 @@ class Consumer extends ConsumerWidget {
     return const Placeholder();
   }
 }
+
+class StatelessWithField extends StatelessWidget {
+  const StatelessWithField({
+    super.key,
+    required this.field,
+  });
+
+  final int field;
+  static final int staticField = 42;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text('$field'),
+        Text('$staticField'),
+      ],
+    );
+  }
+}
+
+class HookConsumerWithField extends HookConsumerWidget {
+  const HookConsumerWithField({
+    super.key,
+    required this.field,
+  });
+
+  final int field;
+  static final int staticField = 42;
+
+  @override
+  Widget build(
+    BuildContext context,
+    WidgetRef ref,
+  ) {
+    return Column(
+      children: [
+        Text('$field'),
+        Text('$staticField'),
+      ],
+    );
+  }
+}
+
+class FooClass {
+  final bar = 42;
+}
+
+class ConsumerStatefulWithField extends ConsumerStatefulWidget {
+  const ConsumerStatefulWithField({
+    super.key,
+    required this.field,
+    required this.foo,
+  });
+
+  final int field;
+  final FooClass foo;
+  static final int staticField = _constantNumber;
+
+  @override
+  ConsumerState<ConsumerStatefulWithField> createState() =>
+      _ConsumerStatefulWithFieldState();
+}
+
+const _constantNumber = 42;
+
+class _ConsumerStatefulWithFieldState
+    extends ConsumerState<ConsumerStatefulWithField> {
+  void printFoo() {
+    print(widget.foo);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    print(widget.field);
+    printFoo();
+    return Column(
+      children: [
+        Text('${widget.field}'),
+        Text('${widget.foo.bar}'),
+        Text('${ConsumerStatefulWithField.staticField}'),
+      ],
+    );
+  }
+}

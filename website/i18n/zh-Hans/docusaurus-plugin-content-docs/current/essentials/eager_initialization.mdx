@@ -1,0 +1,117 @@
+---
+title: 急切的初始化提供者程序
+version: 1
+---
+
+import { Link } from "@site/src/components/Link";
+import { AutoSnippet } from "@site/src/components/CodeSnippet";
+import consumerExample from "!!raw-loader!./eager_initialization/consumer_example.dart";
+import asyncConsumerExample from "!!raw-loader!./eager_initialization/async_consumer_example.dart";
+import requireValue from "./eager_initialization/require_value";
+
+<!---
+All providers are initialized lazily by default. This means that the provider is only
+initialized when it is first used. This is useful for providers that are only
+used in certain parts of the application.
+-->
+默认情况下，所有提供者程序都以延迟方式初始化。
+这意味着提供者程序仅在首次使用时进行初始化。
+这对于仅在应用程序的某些部分使用的提供者程序很有用。
+
+<!---
+Unfortunately, there is no way to flag a provider as needing to be eagerly initialized due
+to how Dart works (for tree shaking purposes). One solution, however, is to forcibly
+read the providers you want to eagerly initialize at the root of your application.
+-->
+不幸的是，由于 Dart 的工作方式（出于摇树目的），没有办法将提供者程序标记为需要急切初始化。
+但是，一种解决方案是在应用程序的根组件下强制读取要急切初始化的提供者程序。
+
+<!---
+The recommended approach is to simply "watch" a provider in a Consumer placed right under your `ProviderScope`:
+-->
+推荐的方法是简单地 "watch" 位于 `ProviderScope` 下方的 Consumer 中的提供者程序：
+
+<AutoSnippet raw={consumerExample} />
+
+:::note
+<!---
+Consider putting the initialization consumer in your "MyApp" or in a public widget.
+This enables your tests to use the same behavior, by removing logic from your main.
+-->
+请考虑将初始化使用者放在 "MyApp" 或公共小部件中。
+这使你的测试能够使用相同的行为，方法是从你的主数据中删除逻辑。
+:::
+
+<!---
+### FAQ
+-->
+### 常见疑问
+
+<!---
+#### Won't this rebuild our entire application when the provider changes?
+-->
+#### 当提供者程序更改时，这不会重建我们的整个应用程序吗？
+
+<!---
+No, this is not the case.
+In the sample given above, the consumer responsible for eagerly initializing
+is a separate widget, which does nothing but return a `child`.
+-->
+不，事实并非如此。
+在上面给出的示例中，负责急切初始化的消费者程序是一个单独的小部件，它只返回一个 `child` .
+
+<!---
+The key part is that it returns a `child`, rather than instantiating `MaterialApp` itself.
+This means that if `_EagerInitialization` ever rebuilds, the `child` variable
+will not have changed. And when a widget doesn't change, Flutter doesn't rebuild it.
+-->
+关键部分是它返回一个 `child` ，而不是实例化 `MaterialApp` 自身。
+这意味着，如果重新生成 `_EagerInitialization`，`child` 变量将不会更改。
+当一个小部件没有改变时，Flutter 不会重建它。
+
+<!---
+As such, only `_EagerInitialization` will rebuild, unless another widget is also listening to that provider.
+-->
+因此，除非另一个小部件也在监听该提供者程序，否则只会 `_EagerInitialization` 重新构建。
+
+<!---
+#### Using this approach, how can I handle loading and error states?
+-->
+#### 使用此方法，如何处理加载和错误状态？
+
+<!---
+You can handle loading/error states as you normally would in a `Consumer`.
+Your `_EagerInitialization` could check if a provider is in a "loading" state,
+and if so, return a `CircularProgressIndicator` instead of the `child`:
+-->
+您可以像往常一样在 `Consumer` 中处理加载/错误状态。
+您可以 `_EagerInitialization` 检查提供者程序是否处于 "loading" 状态，
+如果是则返回 `CircularProgressIndicator` 否则返回 `child`：
+
+<AutoSnippet raw={asyncConsumerExample} />
+
+<!---
+#### I've handled loading/error states, but other Consumers still receive an AsyncValue! Is there a way to not have to handle loading/error states in every widget?
+-->
+#### 我已经处理了加载/错误状态，但其他消费者程序仍然收到 AsyncValue！有没有办法不必处理每个小部件中的加载/错误状态？
+
+<!---
+Rather than trying to have your provider _not_ expose an `AsyncValue`, you can
+instead have your widgets use `AsyncValue.requireValue`.  
+This will read the data without having to do pattern matching. And in case a bug slips through,
+it will throw an exception with a clear message.
+-->
+与其试图让你的提供者程序不公开一个 `AsyncValue` ，不如让你的小部件使用 `AsyncValue.requireValue`。  
+这将读取数据，而无需进行模式匹配。如果一个错误溜走了，它会抛出一个异常，并带有明确的信息。
+
+<AutoSnippet {...requireValue} />
+
+:::note
+<!---
+Although there are ways to not expose the loading/error states in those cases (relying on scoping),
+it is generally discouraged to do so.  
+The added complexity of making two providers and using overrides is not worth the trouble.
+-->
+尽管有一些方法可以在这些情况下不公开加载/错误状态（依赖于范围），但通常不建议这样做。  
+创建两个提供者程序并使用覆盖所增加的复杂性不值得麻烦。
+:::

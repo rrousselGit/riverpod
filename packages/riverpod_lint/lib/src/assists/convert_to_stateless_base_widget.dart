@@ -1,4 +1,7 @@
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/token.dart';
+import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/source/source_range.dart';
 // ignore: implementation_imports, somehow not exported by analyzer
 import 'package:analyzer/src/generated/source.dart' show Source;
@@ -145,12 +148,70 @@ class ConvertToStatelessBaseWidget extends RiverpodAssist {
           .whereType<MethodDeclaration>()
           .firstWhereOrNull((element) => element.name.lexeme == 'createState');
       if (createStateMethod != null) {
-        builder.addDeletion(createStateMethod.sourceRange);
+        builder.addDeletion(createStateMethod.sourceRange.getExpanded(1));
       }
 
       // Search for the associated State class
       final stateClass = findStateClass(widgetClass);
       if (stateClass == null) return;
+
+      final fieldFinder = _FieldFinder();
+
+      for (final member in stateClass.members) {
+        if (member is ConstructorDeclaration) {
+          member.accept(fieldFinder);
+        }
+      }
+
+      final fieldsAssignedInConstructors =
+          fieldFinder.fieldsAssignedInConstructors;
+
+      // Prepare nodes to move.
+      final nodesToMove = <ClassMember>[];
+      final elementsToMove = <Element>{};
+      for (final member in stateClass.members) {
+        if (member is FieldDeclaration) {
+          if (member.isStatic) {
+            return;
+          }
+          for (final fieldNode in member.fields.variables) {
+            final fieldElement = fieldNode.declaredElement as FieldElement?;
+            if (fieldElement == null) continue;
+            if (!fieldsAssignedInConstructors.contains(fieldElement)) {
+              nodesToMove.add(member);
+              elementsToMove.add(fieldElement);
+
+              final getter = fieldElement.getter;
+              if (getter != null) {
+                elementsToMove.add(getter);
+              }
+
+              final setter = fieldElement.setter;
+              if (setter != null) {
+                elementsToMove.add(setter);
+              }
+            }
+          }
+        } else if (member is MethodDeclaration) {
+          if (member.isStatic) {
+            return;
+          }
+          if (!_isDefaultOverride(member)) {
+            nodesToMove.add(member);
+            elementsToMove.add(member.declaredElement!);
+          }
+        }
+      }
+
+      final deleteRanges = <SourceRange>[];
+      for (final node in nodesToMove) {
+        final visitor = _ReplacementEditBuilder(
+          widgetClass.declaredElement!,
+          elementsToMove,
+        );
+        node.accept(visitor);
+        deleteRanges.addAll(visitor.deleteRanges);
+      }
 
       // Move the build method to the widget class
       final buildMethod = stateClass.members
@@ -158,74 +219,179 @@ class ConvertToStatelessBaseWidget extends RiverpodAssist {
           .firstWhereOrNull((element) => element.name.lexeme == 'build');
       if (buildMethod == null) return;
 
-      final String? newBuildMethod;
+      final outsideRange = SourceRange(
+        widgetClass.sourceRange.end,
+        stateClass.sourceRange.offset - widgetClass.sourceRange.end,
+      );
+      final outsideLines = source.contents.data.substring(
+        outsideRange.offset,
+        outsideRange.end,
+      );
+      if (outsideLines.trim().isNotEmpty) {
+        builder.addSimpleInsertion(
+          stateClass.sourceRange.end,
+          '${outsideLines.trimRight()}\n',
+        );
+      }
+
+      // ignore: prefer_foreach
+      for (final range in deleteRanges) {
+        builder.addDeletion(range);
+      }
+
+      builder.addDeletion(
+        SourceRange(
+          widgetClass.rightBracket.offset,
+          stateClass.leftBracket.end - widgetClass.rightBracket.offset,
+        ),
+      );
+
+      final parameterRange = _generateBuildMethodParameterRange(buildMethod);
+      if (parameterRange == SourceRange.EMPTY) {
+        return;
+      }
       switch (targetWidget) {
         case StatelessBaseWidgetType.consumerWidget:
         case StatelessBaseWidgetType.hookConsumerWidget:
-          newBuildMethod = _buildMethodWithRef(buildMethod, source);
+          builder.addSimpleReplacement(
+            parameterRange,
+            'BuildContext context, WidgetRef ref',
+          );
         case StatelessBaseWidgetType.hookWidget:
         case StatelessBaseWidgetType.statelessWidget:
-          newBuildMethod = _buildMethodWithoutRef(buildMethod, source);
+          builder.addSimpleReplacement(
+            parameterRange,
+            'BuildContext context',
+          );
       }
-
-      if (newBuildMethod == null) return;
-      builder.addSimpleInsertion(
-        widgetClass.rightBracket.offset,
-        newBuildMethod,
-      );
-
-      // Delete the state class
-      builder.addDeletion(stateClass.sourceRange);
     });
   }
 
-  String? _buildMethodWithRef(MethodDeclaration buildMethod, Source source) {
-    final parameters = buildMethod.parameters;
-    if (parameters == null) return null;
+  SourceRange _generateBuildMethodParameterRange(
+    MethodDeclaration buildMethod,
+  ) {
+    final offset = buildMethod.parameters?.leftParenthesis.end ?? 0;
+    final end = buildMethod.parameters?.rightParenthesis.offset ?? 0;
+    return SourceRange(offset, end - offset);
+  }
+}
 
-    if (parameters.parameters.length == 2) {
-      // The build method already has a ref parameter, nothing to change
-      return '${source.contents.data.substring(buildMethod.offset, buildMethod.end)}\n';
+// Original implemenation in
+// package:analysis_server/lib/src/services/correction/dart/flutter_convert_to_stateless_widget.dart
+class _FieldFinder extends RecursiveAstVisitor<void> {
+  final fieldsAssignedInConstructors = <FieldElement>{};
+
+  @override
+  void visitSimpleIdentifier(SimpleIdentifier node) {
+    if (node.parent is FieldFormalParameter) {
+      final element = node.staticElement;
+      if (element is FieldFormalParameterElement) {
+        final field = element.field;
+        if (field != null) {
+          fieldsAssignedInConstructors.add(field);
+        }
+      }
     }
 
-    final buffer = StringBuffer();
-    final refParamStartOffset = parameters.parameters.firstOrNull?.end ??
-        parameters.leftParenthesis.offset + 1;
-
-    buffer
-      ..write(
-        source.contents.data.substring(buildMethod.offset, refParamStartOffset),
-      )
-      ..write(', WidgetRef ref')
-      ..writeln(
-        source.contents.data.substring(refParamStartOffset, buildMethod.end),
-      );
-
-    return buffer.toString();
-  }
-
-  String? _buildMethodWithoutRef(MethodDeclaration buildMethod, Source source) {
-    final parameters = buildMethod.parameters;
-    if (parameters == null) return null;
-
-    if (parameters.parameters.length == 1) {
-      // The build method already has not a ref parameter, nothing to change
-      return '${source.contents.data.substring(buildMethod.offset, buildMethod.end)}\n';
+    if (node.parent is ConstructorFieldInitializer) {
+      final element = node.staticElement;
+      if (element is FieldElement) {
+        fieldsAssignedInConstructors.add(element);
+      }
     }
 
-    final buffer = StringBuffer();
-    final contextEndOffset = parameters.parameters.firstOrNull?.end ??
-        parameters.leftParenthesis.offset + 1;
-    final refParamStartOffset = parameters.parameters.last.offset;
-
-    buffer
-      ..write(
-        source.contents.data.substring(buildMethod.offset, contextEndOffset),
-      )
-      ..writeln(
-        source.contents.data.substring(refParamStartOffset, buildMethod.end),
-      );
-
-    return buffer.toString();
+    if (node.inSetterContext()) {
+      final element = node.writeOrReadElement;
+      if (element is PropertyAccessorElement) {
+        final field = element.variable;
+        if (field is FieldElement) {
+          fieldsAssignedInConstructors.add(field);
+        }
+      }
+    }
   }
+}
+
+class _ReplacementEditBuilder extends RecursiveAstVisitor<void> {
+  _ReplacementEditBuilder(
+    this.widgetClassElement,
+    this.elementsToMove,
+  );
+
+  final ClassElement widgetClassElement;
+  final Set<Element> elementsToMove;
+
+  List<SourceRange> deleteRanges = [];
+
+  @override
+  void visitSimpleIdentifier(SimpleIdentifier node) {
+    if (node.inDeclarationContext()) {
+      return;
+    }
+    final element = node.staticElement;
+    if (element is ExecutableElement &&
+        element.enclosingElement == widgetClassElement &&
+        !elementsToMove.contains(element)) {
+      final parent = node.parent;
+      if (parent is PrefixedIdentifier) {
+        final grandParent = parent.parent;
+
+        if (!node.name.contains(r'$') &&
+            grandParent is InterpolationExpression &&
+            grandParent.leftBracket.type ==
+                TokenType.STRING_INTERPOLATION_EXPRESSION) {
+          final offset = grandParent.rightBracket?.offset;
+
+          if (offset != null) {
+            deleteRanges.add(SourceRange(offset, 1));
+          }
+          deleteRanges.add(SourceRange(grandParent.leftBracket.end - 1, 1));
+        }
+        final offset = parent.prefix.offset;
+        final length = parent.period.end - offset;
+        deleteRanges.add(SourceRange(offset, length));
+      } else if (parent is MethodInvocation) {
+        final target = parent.target;
+        final operator = parent.operator;
+        if (target != null && operator != null) {
+          final offset = target.offset;
+          final length = operator.end - offset;
+          deleteRanges.add(SourceRange(offset, length));
+        }
+      } else if (parent is PropertyAccess) {
+        final target = parent.target;
+        final operator = parent.operator;
+        if (target != null) {
+          final offset = target.offset;
+          final length = operator.end - offset;
+          deleteRanges.add(SourceRange(offset, length));
+        }
+      }
+    }
+  }
+}
+
+bool _isDefaultOverride(MethodDeclaration? methodDeclaration) {
+  final body = methodDeclaration?.body;
+  if (body != null) {
+    Expression expression;
+    if (body is BlockFunctionBody) {
+      final statements = body.block.statements;
+      if (statements.isEmpty) return true;
+      if (statements.length > 1) return false;
+      final first = statements.first;
+      if (first is! ExpressionStatement) return false;
+      expression = first.expression;
+    } else if (body is ExpressionFunctionBody) {
+      expression = body.expression;
+    } else {
+      return false;
+    }
+    if (expression is MethodInvocation &&
+        expression.target is SuperExpression &&
+        methodDeclaration!.name.lexeme == expression.methodName.name) {
+      return true;
+    }
+  }
+  return false;
 }

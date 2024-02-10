@@ -1,0 +1,580 @@
+---
+title: 开始你的第一次 provider/network 请求
+pagination_prev: introduction/getting_started
+version: 1
+---
+
+import { Link } from "@site/src/components/Link";
+import { AutoSnippet, When } from "@site/src/components/CodeSnippet";
+import activity from "./first_request/activity";
+import provider from "./first_request/provider";
+import consumer from "./first_request/consumer";
+import consumerWidget from "./first_request/consumer_widget";
+import consumerStatefulWidget from "./first_request/consumer_stateful_widget";
+import hookConsumerWidget from "./first_request/hook_consumer_widget";
+import Legend from "./first_request/legend/legend";
+
+<!---
+Network requests are the core of any application. But there are a lot of things to consider when
+making a network request:
+-->
+网络请求是任何应用程序的核心。但是，在发出网络请求时，需要考虑很多事项：
+
+<!---
+- The UI should render a loading state while the request is being made
+- Errors should be gracefully handled
+- The request should be cached if possible
+-->
+- UI 应在发出请求时呈现加载状态
+- 应妥善处理错误
+- 如果可能，应缓存请求
+
+<!---
+In this section, we will see how Riverpod can help us deal with all of this naturally.
+-->
+在本节中，我们将看到 Riverpod 如何帮助我们自然地处理所有这些问题。
+
+<!---
+## Setting up `ProviderScope`
+-->
+## 配置 `ProviderScope`
+
+<!---
+Before we start making network requests, make sure that `ProviderScope` is added at the
+root of the application.
+-->
+在开始发出网络请求之前，请确保将其 `ProviderScope` 添加到应用程序的根目录。
+
+```dart
+void main() {
+  runApp(
+    // To install Riverpod, we need to add this widget above everything else.
+    // This should not be inside "MyApp" but as direct parameter to "runApp".
+    // 为了安装 Riverpod，我们需要将这个小组件添加到所有的小组件之上。
+    // 它不应该在 “MyApp” 内部，而是作为 “runApp” 的直接参数。
+    ProviderScope(
+      child: MyApp(),
+    ),
+  );
+}
+```
+
+<!---
+Doing so will enable Riverpod for the entire application.
+-->
+这样就可以为整个应用程序启用 Riverpod。
+
+:::note
+<!---
+For complete installation steps (such as installing [riverpod_lint](https://pub.dev/packages/riverpod_lint)
+and running the code-generator), check out <Link documentID="introduction/getting_started" />.
+-->
+有关完整的安装步骤（例如安装 [riverpod_lint](https://pub.dev/packages/riverpod_lint)
+和运行代码生成器），请查看<Link documentID="introduction/getting_started" />。
+:::
+
+<!---
+## Performing your network request in a "provider"
+-->
+## 在 “provider” 中执行网络请求
+
+<!---
+Performing a network request is usually what we call "business logic".
+In Riverpod, business logic is placed inside "providers".  
+A provider is a super-powered function.
+They behave like normal functions, with the added benefits of:
+-->
+执行网络请求通常就是我们所说的“业务逻辑”。在 Riverpod 中，业务逻辑位于“providers”中。  
+provider 是一种具有超能力的函数。它们的行为与正常函数类似，并具有以下额外好处：
+
+<!---
+- being cached
+- offering default error/loading handling
+- being listenable
+- automatically re-executing when some data changes
+-->
+- 保持缓存
+- 提供默认错误/加载处理
+- 可以被监听
+- 当某些数据发生变化时自动重新执行
+
+<!---
+This make providers a perfect fit for _GET_ network requests (as for _POST/etc_ requests, see <Link documentID="essentials/side_effects" />).
+-->
+这使得 provider 非常适合 _GET_ 网络请求（与 _POST/etc_ 请求一样，请参阅<Link documentID="essentials/side_effects" />）。
+
+<!---
+As an example, let's make a simple application which suggests a random activity to do when bored.  
+To do so, we will use the [Bored API](https://boredapi.com/). In particular,
+we will perform a _GET_ request on the `/api/activity` endpoint. This returns a JSON object,
+which we will parse into a Dart class instance.  
+The next step would then be to display this activity in the UI. We would also make sure
+to render a loading state while the request is being made, and to gracefully handle errors.
+-->
+举个例子，让我们做一个简单的应用程序，建议在无聊时做一个随机的活动。  
+为此，我们将使用 [Bored API](https://boredapi.com/)。具体而言，
+我们将在 `/api/activity` 端点上执行 _GET_ 请求。端点返回一个 JSON 对象，我们将把它解析为 Dart 类实例。  
+然后，下一步是在 UI 中显示此活动。我们还将确保在发出请求时呈现加载状态，并优雅地处理错误。
+
+<!---
+Sounds great? Let's do it!
+-->
+听起来不错？让我们开始吧！
+
+<!---
+### Defining the model
+-->
+### 定义数据模型
+
+<!---
+Before we start, we need to define the model of the data we will receive from the API.
+This model will also need a way to parse the JSON object into a Dart class instance.
+-->
+在开始之前，我们需要定义从 API 接收的数据模型。
+该模型还需要一种方法将 JSON 对象解析为 Dart 类实例。
+
+<!---
+Generally, it is recommended to use a code-generator such as [Freezed](https://pub.dev/packages/freezed)
+or [json_serializable](https://pub.dev/packages/json_serializable) to handle
+JSON decoding. But of course, it's also possible to do it by hand.
+-->
+通常，建议使用 [Freezed](https://pub.dev/packages/freezed)
+或 [json_serializable](https://pub.dev/packages/json_serializable) 等代码生成器来处理 JSON 解码。
+虽然但是，也可以手动完成。
+
+<!---
+Anyway, here's our model:
+-->
+无论如何，这是我们的模型：
+
+<AutoSnippet title="activity.dart" {...activity} />
+
+<!---
+### Creating the provider
+-->
+### 创建 provider
+
+<!---
+Now that we have our model, we can start querying the API.  
+To do so, we will need to create our first provider.
+-->
+现在我们有了模型，可以开始创建查询 API。  
+为此，我们需要创建我们的第一个 provider。
+
+<!---
+The syntax for defining a provider is as followed:
+-->
+定义 provider 的语法如下：
+
+<When codegen={false}>
+<Legend
+  code={`final name = SomeProvider.someModifier<Result>((ref) {
+  <你的逻辑写这里>
+});
+`}
+  annotations={[
+    {
+      offset: 6,
+      length: 4,
+      label: "provider 的变量",
+       description: <>
+
+<!---
+This variable is what will be used to interact with our provider.  
+The variable must be final and "top-level" (global).
+-->
+此变量将用于与我们的提供者程序进行交互。  
+变量必须是 final 和“顶级”（global）。
+
+</>
+    },
+    {
+      offset: 13,
+      length: 12,
+      label: "provider 的类型",
+      description: <>
+
+<!---
+Generally either `Provider`, `FutureProvider` or `StreamProvider`.  
+The type of provider used depends on the return value of your function.
+For example, to create a `Future<Activity>`, you'll want a `FutureProvider<Activity>`.
+-->
+通常为 `Provider`、`FutureProvider` 或 `StreamProvider`。  
+使用提供者程序的类型取决于函数的返回值。
+例如，要创建一个 `Future<Activity>`，您需要一个 `FutureProvider<Activity>`。
+
+<!---
+`FutureProvider` is the one you'll want to use the most.
+-->
+`FutureProvider` 是你最想用的那个。
+
+:::tip
+<!---
+Don't think in terms of "Which provider should I pick".
+Instead, think in terms of "What do I want to return". The provider type
+will follow naturally.
+-->
+不要从“我应该选择哪个提供者程序”的角度来思考。
+相反，从“我想返回什么”的角度来思考。
+提供者程序的类型将自然而然地遵循。
+:::
+
+</>
+    },
+    {
+      offset: 25,
+      length: 13,
+      label: "修饰符（可选的）",
+      description: <>
+
+<!---
+Often, after the type of the provider you may see a "modifier".  
+Modifiers are optional, and are used to tweak the behavior of the provider
+in a way that is type-safe.
+-->
+通常，在提供者程序的类型之后，您可能会看到一个“修饰符”。  
+修饰符是可选的，用于以类型安全的方式调整提供者程序的行为。
+
+<!---
+There are currently two modifiers available:
+-->
+目前有两种修饰符可用：
+
+<!---
+- `autoDispose`, which will automatically clear the cache when the provider
+  stops being used.  
+  See also <Link documentID="essentials/auto_dispose" />
+- `family`, which enables passing arguments to your provider.  
+  See also <Link documentID="essentials/passing_args" />.
+-->
+- `autoDispose`，这将在提供者程序停止使用时自动清除缓存。
+  另请参阅<Link documentID="essentials/auto_dispose" />
+- `family`，这可以将参数传递给提供者程序。
+  另请参阅<Link documentID="essentials/passing_args" />。
+
+</>
+    },
+    {
+      offset: 48,
+      length: 3,
+      label: "Ref 引用",
+      description: <>
+
+<!---
+An object used to interact with other providers.  
+All providers have one; either as parameter of the provider function,
+or as a property of a Notifier.
+-->
+用于与其他 provider 交互的对象。
+所有提供者程序都有一个 `Ref`；要么作为 `provider` 函数的参数，要么作为 `Notifier` 的属性。
+
+</>
+    },
+    {
+      offset: 57,
+      length: 17,
+      label: "provider 函数",
+      description: <>
+
+<!---
+This is where we place the logic of our providers.
+This function will be called when the provider is first read.  
+Subsequent reads will not call the function again, but instead return the cached value.
+-->
+这就是我们放置提供者程序逻辑的地方。首次读取提供者程序时将调用此函数。  
+后续读取不会再次调用该函数，而是返回缓存的值。
+
+</>
+    },
+]}
+/>
+</When>
+
+<When codegen={true}>
+<Legend
+  code={`@riverpod
+Result myFunction(MyFunctionRef ref) {
+  <你的逻辑写这里>
+}
+`}
+  annotations={[
+    {
+      offset: 0,
+      length: 9,
+      label: "注解",
+       description: <>
+
+<!---
+All providers must be annotated with `@riverpod` or `@Riverpod()`.
+This annotation can be placed on global functions or classes.  
+Through this annotation, it is possible to configure the provider.
+-->
+所有提供者程序都必须使用 `@riverpod` 或 `@Riverpod()` 进行注释。
+此注释可以放置在全局函数或类上。  
+通过此注释，可以配置提供者程序。
+
+<!---
+For example, we can disable "auto-dispose" (which we will see later) by writing `@Riverpod(keepAlive: true)`.
+-->
+例如，我们可以通过编写 `@Riverpod(keepAlive: true)` 来禁用“自动处置”（我们将在后面看到）。
+
+</>
+    },
+    {
+      offset: 17,
+      length: 10,
+      label: "带注解的函数",
+       description: <>
+
+<!---
+The name of the annotated function determines how the provider
+will be interacted with.  
+For a given function `myFunction`, a generated `myFunctionProvider` variable will be generated.
+-->
+带批注的函数的名称决定了如何与提供者程序进行交互。  
+对于给定的函数 `myFunction` ，将生成一个生成的 `myFunctionProvider` 变量。
+
+<!---
+Annotated functions **must** specify a "ref" as first parameter.  
+Besides that, the function can have any number of parameters, including generics.
+The function is also free to return a `Future`/`Stream` if it wishes to.
+-->
+带注释的函数**必须**指定“ref”作为第一个参数。  
+除此之外，该函数可以具有任意数量的参数，包括泛型。
+如果愿意，该函数也可以自由返回 `Future`/`Stream`。
+
+<!---
+This function will be called when the provider is first read.  
+Subsequent reads will not call the function again, but instead return the cached value.
+-->
+首次读取提供者程序时将调用此函数。  
+后续读取不会再次调用该函数，而是返回缓存的值。
+
+</>
+    },
+    {
+      offset: 28,
+      length: 17,
+      label: "Ref",
+      description: <>
+
+<!---
+An object used to interact with other providers.  
+All providers have one; either as parameter of the provider function,
+or as a property of a Notifier.  
+The type of this object is determined by the name of the function/class.
+-->
+用于与其他提供者程序交互的对象。  
+所有提供者程序都有一个 `Ref`；要么作为 `provider` 函数的参数，要么作为 `Notifier` 的属性。 
+此对象的类型由函数/类的名称确定。
+
+</>
+    },
+]}
+/>
+</When>
+
+<!---
+In our case, we want to _GET_ an activity from the API.  
+Since a _GET_ is an asynchronous operation, that means we will want
+to create a `Future<Activity>`.
+-->
+在我们的例子中，我们希望从 API 中 _GET_ 一个活动。  
+由于 _GET_ 是异步操作，这意味着我们需要创建一个 `Future<Activity>`。
+
+<!---
+Using the syntax defined previously, we can therefore define our provider as followed:
+-->
+因此，使用前面定义的语法，我们可以按如下方式定义提供者程序：
+
+<AutoSnippet title="provider.dart" {...provider} />
+
+<!---
+In this snippet, we've defined a provider named `activityProvider` which
+our UI will be able to use to obtain a random activity. It is worth noting
+that:
+-->
+在此代码片段中，我们定义了一个名为 `activityProvider` 的提供者程序，
+我们的 UI 将能够使用该提供者程序来获取随机活动。值得一提的是：
+
+<!---
+- The network request will not be executed until the UI reads the provider
+  at least once.
+- Subsequent reads will not re-execute the network request,
+  but instead return the previously fetched activity.
+- If the UI stops using this provider, the cache will be destroyed.
+  Then, if the UI ever uses the provider again, that a new network request will be made.
+- We did not catch errors. This is voluntary, as providers
+  natively handle errors.  
+  If the network request or if the JSON parsing throws, the error
+  will be caught by Riverpod. Then, the UI will automatically have the necessary
+  information to render an error page.
+-->
+- 在 UI 读取提供者程序至少一次之前，不会执行网络请求。
+- 后续读取不会重新执行网络请求，而是返回之前提取的活动。
+- 如果 UI 停止使用此提供者程序，则缓存将被处置。
+  然后，如果 UI 再次使用提供者程序，则会发出新的网络请求。
+- 我们没有捕获错误。这是自动的，因为提供者程序本身会处理错误。  
+  如果网络请求或 JSON 解析抛出错误，则 Riverpod 将捕获该错误。
+  然后，UI 将自动包含呈现错误页面所需的信息。
+
+:::info
+<!---
+Providers are "lazy". Defining a provider will not execute the network request.
+Instead, the network request will be executed when the provider is first read.
+-->
+提供者程序是“懒惰的”。定义提供者程序不会执行网络请求。
+相反，网络请求将在首次读取提供者程序时执行。
+:::
+
+<!---
+### Rendering the network request's response in the UI
+-->
+### 在 UI 中呈现网络请求的响应
+
+<!---
+Now that we have defined a provider, we can start using it inside our UI
+to display the activity.
+-->
+现在我们已经定义了一个提供者程序，我们可以开始在 UI 中使用它来显示活动。
+
+<!---
+To interact with a provider, we need an object called "ref". You may have seen
+it previously in the provider definition, as providers naturally have access
+to a "ref" object.  
+But in our case, we aren't in a provider, but a widget. So how do we get a "ref"?
+-->
+为了与提供者程序交互，我们需要一个名为“ref”的对象。
+您之前可能在提供者程序定义中看到过它，因为提供者程序自然可以访问“ref”对象。  
+但在我们的例子中，我们不是提供者程序，而是小部件。那么我们如何获得“ref”呢？
+
+<!---
+The solution is to use a custom widget called `Consumer`. A `Consumer` is a widget
+similar to `Builder`, but with the added benefit of offering us a "ref". This enables our UI to read providers.
+The following example showcases how to use a `Consumer`:
+-->
+解决方案是使用名为 `Consumer` 的自定义小部件。
+`Consumer` 是一个类似于 `Builder` 的小部件，但还有一个额外的好处，那就是为我们提供了一个“ref”。
+这使我们的 UI 能够读取提供者程序。以下示例展示了如何使用 `Consumer`：
+
+<AutoSnippet title="consumer.dart" {...consumer} />
+
+<!---
+In that snippet, we've used a `Consumer` to read our `activityProvider` and display the activity.
+We also gracefully handled the loading/error states.  
+Notice how the UI was able to handle loading/error states without having to do anything special
+in the provider.  
+At the same time, if the widget were to rebuild, the network request would correctly
+not be re-executed. Other widgets could also access the same provider without
+re-executing the network request.
+-->
+在该代码段中，我们使用了 `Consumer` 来读取和 `activityProvider` 显示活动。
+我们还优雅地处理了加载/错误状态。  
+请注意 UI 如何能够处理加载/错误状态，而无需在提供者程序中执行任何特殊操作。  
+同时，如果小部件要重建，则不会正确地重新执行网络请求。
+其他小部件也可以访问同一提供者程序，而无需重新执行网络请求。
+
+:::info
+<!---
+Widgets can listen to as many providers as they want. To do so, simply add more `ref.watch` calls.
+-->
+小部件可以根据需要，监听任意数量的提供者程序。为此，只需添加更多 ref.watch 调用即可。
+:::
+
+:::tip
+<!---
+Make sure to install the linter. That will enable your IDE to offer refactoring
+options to automatically add a `Consumer` or convert a `StatelessWidget` into a `ConsumerWidget`.
+-->
+确保安装 linter。这将使您的 IDE 能够提供重构选项，
+以自动添加 `Consumer` 或将 `StatelessWidget` 重构为 `ConsumerWidget`。
+
+<!---
+See <Link documentID="introduction/getting_started" hash="enabling-riverpod_lintcustom_lint" /> for installation steps.
+-->
+有关安装步骤，请参阅<Link documentID="introduction/getting_started" hash="enabling-riverpod_lintcustom_lint" />。
+:::
+
+<!---
+## Going further: Removing code indentation by using `ConsumerWidget` instead of `Consumer`.
+-->
+## 更进一步：使用 `ConsumerWidget` 替代 `Consumer` 删除代码缩进。
+
+<!---
+In the previous example, we used a `Consumer` to read our provider.  
+Although there is nothing wrong with this approach, the added indentation
+can make the code harder to read.
+-->
+在前面的示例中，我们使用 `Consumer` 来读取提供者程序。  
+尽管这种方法没有错，但添加的缩进会使代码更难阅读。
+
+<!---
+Riverpod offers an alternative way of achieving the same result:
+Instead of writing a `StatelessWidget`/`StatefulWidge` return returns a `Consumer`, we can
+define a `ConsumerWidget`/`ConsumerStatefulWidget`.  
+`ConsumerWidget` and `ConsumerStatefulWidget` are effectively the fusion
+of a `StatelessWidget`/`StatefulWidget` and a `Consumer`. They behave the same
+as their original couterpart, but with the added benefit of offering a "ref".
+-->
+Riverpod 提供了另一种实现相同结果的方法：
+我们可以定义 `ConsumerWidget` / `ConsumerStatefulWidget` 来代替在
+`StatelessWidget` / `StatefulWidget` 返回 `Consumer` 小组件。  
+`ConsumerWidget` 和 `ConsumerStatefulWidget` 实际上是 `StatelessWidget` / `StatefulWidget` 和 `Consumer` 的融合。
+它们的行为与原来的 couterpart 相同，但具有提供“ref”的额外好处。
+
+<!---
+We can rewrite the previous examples to use `ConsumerWidget` as followed:
+-->
+我们可以使用 `ConsumerWidget` 重写前面的例子，如下所示：
+
+<AutoSnippet {...consumerWidget} />
+
+<!---
+As for `ConsumerStatefulWidget`, we would instead write:
+-->
+至于 `ConsumerStatefulWidget`，我们会这样写：
+
+<AutoSnippet {...consumerStatefulWidget} />
+
+<!---
+### Flutter_hooks considerations: Combining `HookWidget` and `ConsumerWidget`
+-->
+### Flutter_hooks 注意事项：结合 `HookWidget` 和 `ConsumerWidget`
+
+:::caution
+<!---
+If you have never heard about "hooks" before, feel free to skip this section.  
+[Flutter_hooks](https://pub.dev/packages/flutter_hooks) is a package
+independent from Riverpod but often used alongside it. If you are new to Riverpod,
+using "hooks" is discouraged. See more in <Link documentID="concepts/about_hooks"/>.
+-->
+如果您以前从未听说过“钩子（hooks）”，请随时跳过本节。  
+[Flutter_hooks](https://pub.dev/packages/flutter_hooks) 是一个独立于 Riverpod 的软件包，
+但经常与 Riverpod 一起使用。如果您不熟悉 Riverpod，不建议使用“钩子”。
+有关详细信息，请参阅<Link documentID="concepts/about_hooks"/>。
+:::
+
+<!---
+If you are using `flutter_hooks`, you may be wondering how to combine `HookWidget`
+and `ConsumerWidget`. After all, both involve changing the extended widget class.
+-->
+如果您正在使用 `flutter_hooks`，您可能想知道如何将 `ConsumerWidget`
+和 `HookWidget` 组合在一起。毕竟，两者都涉及更改扩展的小部件类。
+
+<!---
+Riverpod offers a solution to this problem: `HookConsumerWidget` and `StatefulHookConsumerWidget`.  
+Similarly to how `ConsumerWidget` and `ConsumerStatefulWidget` are the fusion of `Consumer` and `StatelessWidget`/`StatefulWidget`,
+`HookConsumerWidget` and `StatefulHookConsumerWidget` are the fusion of `Consumer` and `HookWidget`/`HookStatefulWidget`.
+As such, they enable using both hooks and providers in the same widget.
+-->
+Riverpod 为此问题提供了解决方案：`HookConsumerWidget` 和 `StatefulHookConsumerWidget`。  
+类似于 `ConsumerWidget` 和 `ConsumerStatefulWidget` 是 `StatelessWidget` / `StatefulWidget` 和 `Consumer` 融合，
+`HookConsumerWidget` 和 `StatefulHookConsumerWidget` 是 `HookWidget` / `HookStatefulWidget` 和 `Consumer` 的融合。
+因此，它们允许在同一个小部件中同时使用钩子和提供者程序。
+
+<!---
+To showcase this, we could one more time rewrite the previous example:
+-->
+为了展示这一点，我们可以再次重写前面的例子：
+
+<AutoSnippet {...hookConsumerWidget} />

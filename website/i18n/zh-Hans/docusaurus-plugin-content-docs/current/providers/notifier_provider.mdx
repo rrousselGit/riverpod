@@ -2,41 +2,54 @@
 title: (Async)NotifierProvider
 ---
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
 import todos from "./notifier_provider/todos";
 import todosConsumer from "!!raw-loader!/docs/providers/notifier_provider/todos/todos_consumer.dart";
 import remoteTodos from "./notifier_provider/remote_todos";
 import remoteTodosConsumer from "!!raw-loader!/docs/providers/notifier_provider/remote_todos/todos_consumer.dart";
-import { trimSnippet, AutoSnippet } from "../../../../../src/components/CodeSnippet";
+import { trimSnippet, AutoSnippet } from "@site/src/components/CodeSnippet";
 
-[NotifierProvider] 是一个监听和暴露 [Notifier] 的provider。
-[AsyncNotifier] 是一个可以异步初始化的 [Notifier]。
-[AsyncNotifierProvider] 是一个用于监听和公开 [AsyncNotifier] 的provider。
-`(Async)NotifierProvider` 和 `(Async)Notifier` 是Riverpod推荐的管理状态的方案，
-这些状态可能会因用户交互而发生变化。
+:::caution
+<!---
+The content of this page may be outdated.  
+It will be updated in the future, but for now you may want to refer to the content
+in the top of the sidebar instead (introduction/essentials/case-studies/...)
+-->
+本页内容可能已经过时。  
+今后会进行更新，但目前您可能需要参考侧边栏顶部的内容（介绍/要点/应用案例/......）。
+:::
 
-它一般用于：
+[NotifierProvider] is a provider that is used to listen to and expose a [Notifier].  
+[AsyncNotifierProvider] is a provider that is used to listen to and expose an [AsyncNotifier].
+[AsyncNotifier] is a [Notifier] that can be asynchronously initialized.  
+`(Async)NotifierProvider` along with `(Async)Notifier` is Riverpod's recommended solution
+for managing state which may change in reaction to a user interaction.
 
-- 暴露在对自定义事件做出反应后可以随时间推移变化的状态。
-- 修改某些状态的逻辑(又名“业务逻辑”)集中在一个地方，随着时间的推移也能提高可维护性。
+It is typically used for:
 
-作为使用示例，我们使用 [NotifierProvider] 来实现一个待办清单。
-这样做将允许我们公开 `addTodo` 等方法，让UI在用户交互时修改待办清单的列表：
+- exposing a state which can change over time after reacting to custom events.
+- centralizing the logic for modifying some state (aka "business logic") in a
+  single place, improving maintainability over time.
+
+As a usage example, we could use [NotifierProvider] to implement a todo-list.
+Doing so would allow us to expose methods such as `addTodo` to let the UI
+modify the list of todos on user interactions:
 
 <AutoSnippet language="dart" {...todos}></AutoSnippet>
 
-现在我们定义了一个 [NotifierProvider] ，我们可以使用它来与UI中的待办清单列表交互：
+Now that we have defined a [NotifierProvider], we can use it to interact
+with the list of todos in our UI:
 
 <CodeBlock>{trimSnippet(todosConsumer)}</CodeBlock>
 
-下面的使用示例，我们可以使用 [AsyncNotifierProvider] 来实现一个远程待办清单列表。
-这样做将允许我们暴露 `addTodo` 等方法，让UI在用户交互时修改待办清单列表：
+As a usage example, we could use [AsyncNotifierProvider] to implement a remote todo-list.
+Doing so would allow us to expose methods such as `addTodo` to let the UI
+modify the list of todos on user interactions:
 
 <AutoSnippet language="dart" {...remoteTodos}></AutoSnippet>
 
-现在我们已经定义了一个 [AsyncNotifierProvider] ，我们可以使用它来与UI中的待办清单交互：
+Now that we have defined a [AsyncNotifierProvider], we can use it to interact
+with the list of todos in our UI:
 
 <CodeBlock>{trimSnippet(remoteTodosConsumer)}</CodeBlock>
 

@@ -1,9 +1,7 @@
 ---
-title: 读取 Provider
+title: Reading a Provider
 ---
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
 import counter from "./reading/counter";
 import consumerWidget from "./reading/consumer_widget";
@@ -22,58 +20,74 @@ import {
   trimSnippet,
   AutoSnippet,
   When,
-} from "../../../../../src/components/CodeSnippet";
+} from "@site/src/components/CodeSnippet";
+import { Link } from "@site/src/components/Link";
 
-在阅读本指南之前，请确保先阅读有关[Providers](/docs/concepts/providers)的内容。
+:::caution
+<!---
+The content of this page may be outdated.  
+It will be updated in the future, but for now you may want to refer to the content
+in the top of the sidebar instead (introduction/essentials/case-studies/...)
+-->
+本页内容可能已经过时。  
+今后会进行更新，但目前您可能需要参考侧边栏顶部的内容（介绍/要点/应用案例/......）。
+:::
 
-在本指南中，我们将了解如何使用provider。
+Before reading this guide, make sure to <Link documentID="concepts/providers"/> first.
 
-## 获取一个“ref”对象
+In this guide, we will see how to consume a provider.
 
-首先，也是最重要的，在读取provider之前，我们需要获取一个“ref”对象。
+## Obtaining a "ref" object
 
-这个对象能够让我们与provider交互，不管是来自widget还是其他provider。
+First and foremost, before reading a provider, we need to obtain a "ref" object.
 
-### 从provider获取“ref”
+This object is what allows us to interact with providers, be it from a widget
+or another provider.
 
-所有provider都接收一个“ref”作为参数：
+### Obtaining a "ref" from a provider
+
+All providers receive a "ref" as a parameter:
 
 <AutoSnippet language="dart" {...provider}></AutoSnippet>
 
-将此参数传递给provider暴露的值是安全的。
+This parameter is safe to pass to the value exposed by the provider.
 
 <When codegen={false}>
 
-一个常见的用例是将provider的“ref”传递给`StateNotifier`
+A common use-case is to pass the provider's "ref" to a `StateNotifier`
 
 </When>
 
 <AutoSnippet language="dart" {...counter}></AutoSnippet>
 
-这样做允许`Counter`类读取provider。
+Doing so allows our `Counter` class to read providers.
 
-### 从widget获取“ref”
+### Obtaining a "ref" from a widget
 
-Widget自然没有ref参数。但是 [Riverpod] 提供了多种从widget中获取ref的解决方案。
+Widgets naturally do not have a ref parameter. But [Riverpod] offers multiple
+solutions to obtain one from widgets.
 
 <When>
 
-#### 扩展ConsumerWidget而不是StatelessWidget
+#### Extending ConsumerWidget instead of StatelessWidget
 
-在widget树中获取ref的最常用方法是将 [StatelessWidget] 替换为 [ConsumerWidget] 。
+The most common way to obtain a ref in the widget tree is
+to replace [StatelessWidget] with [ConsumerWidget].
 
-[ConsumerWidget] 在用法上与 [StatelessWidget] 相同，唯一的区别是它在构建方法上有一个额外的参数:“ref”对象。
+[ConsumerWidget] is identical in use to [StatelessWidget], with the only
+difference being that it has an extra parameter on its build method: the "ref" object.
 
-一个典型的 [ConsumerWidget] 如下所示:
+A typical [ConsumerWidget] looks like:
 
 <AutoSnippet language="dart" {...consumerWidget}></AutoSnippet>
 
-#### 扩展ConsumerStatefulWidget+ConsumerState而不是StatefulWidget+State
+#### Extending ConsumerStatefulWidget+ConsumerState instead of StatefulWidget+State
 
-与 [ConsumerWidget] 类似， [ConsumerStatefulWidget] 和 [ConsumerState]
-等价于带有状态的StatefulWidget，区别在于状态中有一个“ref”对象。
+Similar to [ConsumerWidget], [ConsumerStatefulWidget] and [ConsumerState] are the equivalent of a
+[StatefulWidget] with its [State], with the difference that the state has a "ref" object.
 
-这一次，“ref”没有作为构建方法的参数传递，而是作为 [ConsumerState] 对象的属性传递：
+This time, the "ref" isn't passed as parameter of the build method, but is
+a property of the [ConsumerState] object:
 
 <AutoSnippet language="dart" {...consumerStatefulWidget}></AutoSnippet>
 
@@ -81,226 +95,251 @@ Widget自然没有ref参数。但是 [Riverpod] 提供了多种从widget中获�
 
 <When hooks>
 
-#### 扩展HookConsumerWidget类而不是HookWidget类
+#### Extending HookConsumerWidget instead of HookWidget
 
-此选项适用于使用 [flutter_hooks] 的用户。由于 [flutter_hooks] 需要扩展 [HookWidget] 才能工作，
-使用钩子的widget无法扩展 [ConsumerWidget]。
+This option is for [flutter_hooks] users. Since [flutter_hooks] requires
+extending [HookWidget] to work, widgets that use hooks are unable to extend
+[ConsumerWidget].
 
-[hooks_riverpod] package 暴露了一个名为 [HookConsumerWidget] 的widget。
-[HookConsumerWidget] 同时充当 [ConsumerWidget] 和 [HookWidget]。
-这允许widget既监听provider又使用钩子。
+The package [hooks_riverpod] exposes a new widget called [HookConsumerWidget].
+[HookConsumerWidget] acts as both a [ConsumerWidget] and a [HookWidget]. This
+allows a widget to both listen to providers and use hooks.
 
-比如说：
+An example would be:
 
 <AutoSnippet language="dart" {...consumerWidget}></AutoSnippet>
 
-#### 扩展 StatefulHookConsumerWidget 而不是 HookWidget
+#### Extending StatefulHookConsumerWidget instead of HookWidget
 
-此选项适用于 [flutter_hooks] 用户，他们需要使用 [StatefulWidget] 生命周期方法还有钩子。
+This option is for [flutter_hooks] users, who need to use [StatefulWidget] lifecycle methods in addition to hooks.
 
-举个例子：
+An example would be:
+
 <AutoSnippet language="dart" {...consumerStatefulWidget}></AutoSnippet>
 
-#### Consumer 和 HookConsumer widgets
+#### Consumer and HookConsumer widgets
 
-获得widget内部的“ref”的最后一种方法是依赖 [Consumer]/[HookConsumer]。
+A final way to obtain a "ref" inside widgets is to rely on [Consumer]/
+[HookConsumer].
 
-这些类是可用于在build回调中获取“ref”的widget，具有与 [ConsumerWidget]/[HookConsumerWidget] 相同的属性。
+These classes are widgets that can be used to obtain a "ref" in a builder callback, with the same
+properties as [ConsumerWidget]/[HookConsumerWidget].
 
-因此，这些widget是一种不需要定义类就能获得“ref”的方法。比如：
+As such, these widgets are a way to obtain a "ref" without having to define a class.
+An example would be:
 
 <CodeBlock>{trimSnippet(consumerHook)}</CodeBlock>
 
 </When>
 
-## 使用ref与provider交互
+## Using ref to interact with providers
 
-现在我们有了一个“ref”，我们可以开始使用它了。
+Now that we have a "ref", we can start using it.
 
-“ref”有三种主要用法：
+There are three primary usages for "ref":
 
-- 获取provider的值并监听更改，这样当该值发生更改时，
-  将重新构建订阅该值的widget或provider。  
-  这是使用 `ref.watch` 完成的
-- 在provider上添加监听器，以执行诸如导航到新页面或每当provider更改时显示模态框等操作。  
-  这是使用 `ref.listen` 完成的。
-- 在忽略更改的情况下获取provider的值。
-  当我们在诸如“on click”之类的事件中需要provider的值时很有用。  
-  这是使用 `ref.read` 完成的。
+- obtaining the value of a provider and listening to changes, such that when
+  this value changes, this will rebuild the widget or provider that subscribed
+  to the value.
+  This is done using `ref.watch`
+- adding a listener on a provider, to execute an action such as navigating to a new
+  page or showing a modal whenever that provider changes.  
+  This is done using `ref.listen`.
+- obtaining the value of a provider while ignoring changes.
+  This is useful when we need the value of a provider in an event
+  such as "on click".
+  This is done using `ref.read`.
 
 :::note
-尽可能使用 `ref.watch` 而不是 `ref.read` 或 `ref.listen` 来实现你的功能。
-通过依赖 `ref.watch` ，你的应用变得既具有响应性又具有声明性，这使得项目会更易于维护。
+Whenever possible, prefer using `ref.watch` over `ref.read` or `ref.listen` to
+implement a feature.  
+By relying on `ref.watch`, your application becomes both reactive
+and declarative, which makes it more maintainable.
 :::
 
 ### Using ref.watch to observe a provider
-### 使用 ref.watch 观察provider
 
-Ref.watch在widget的`build`方法中或在provider的主体中使用，以使widget/provider监听provider：
+`ref.watch` is used inside the `build` method of a widget or
+inside the body of a provider to have the widget/provider listen to a provider:
 
-例如，一个provider可以使用 `ref.watch` 将多个provider组合成一个新值。
+For example, a provider could use `ref.watch` to combine multiple providers
+into a new value.
 
-筛选待办清单就是一个例子。我们可以有两个provider：
+An example would be filtering a todo-list.
+We could have two providers:
 
-- `filterTypeProvider`，一个能够暴露当前过滤器类型(不显示，只显示完成的内容等等)的provider。
-  
-- `todosProvider`，暴露整个待办清单列表的provider。
+- `filterTypeProvider`, a provider that exposes the current type of filter
+  (none, show only completed tasks, ...)
+- `todosProvider`, a provider that exposes the entire list of tasks
 
-通过 `ref.watch`，我们可以创建第三个provider，
-它结合了这两个provider来创建一个过滤过的待办清单列表：
+And by using `ref.watch`, we could make a third provider that combines both providers to
+create a filtered list of tasks:
 
 <AutoSnippet language="dart" {...watch}></AutoSnippet>
 
-有了这段代码，`filteredTodoListProvider` 现在暴露了过滤后的清单列表。
+With this code, `filteredTodoListProvider` now exposes the filtered list of tasks.
 
-如果筛选器或待办清单列表发生变化，筛选后的列表也会自动更新。
-同时，如果过滤器和待办清单列表都没有改变，则不会重新计算那个列表。
+The filtered list will also automatically update if either the filter or the list of tasks
+changed. At the same time, the filtered list will not be recomputed if
+neither the filter nor the list of tasks changed.
 
-类似地，widget可以使用ref.watch显示来自provider的内容，
-并在内容发生变化时更新用户界面：
+Similarly, a widget can use `ref.watch` to show
+the content from a provider and update the user interface whenever that content changes:
 
 <AutoSnippet language="dart" {...watchBuild}></AutoSnippet>
 
-这个代码段显示了一个widget，它监听了存储`count`的provider。
-如果该`count`发生变化，widget将重新构建，UI将更新以显示新的值。
+This snippet shows a widget that listens to a provider which stores a `count`.
+And if that `count` changes, the widget will rebuild and the UI will update
+to show the new value.
 
 :::caution
-像在 [ElevatedButton] 的 `onPressed` 中那样，`watch` 方法不应该被异步调用。
-它也不应该在 `initState` 和其他 [State] 的生命周期中使用。
+The `watch` method should not be called asynchronously,
+like inside an `onPressed` of an [ElevatedButton]. Nor should it be used
+inside `initState` and other [State] life-cycles.
 
-在这种情况下，请考虑使用 `ref.read`。
+In those cases, consider using `ref.read` instead.
 :::
 
-### 使用ref.listen来响应provider的变化
+### Using ref.listen to react to a provider change
 
-与 `ref.watch` 类似，也可以使用ref.listen来观察一个provider。
+Similarly to `ref.watch`, it is possible to use `ref.listen` to observe a provider.
 
 The main difference between them is that, rather than rebuilding the widget/provider
 if the listened to provider changes, using `ref.listen` will instead call a custom function.
-它们之间的主要区别是，如果监听的provider发生更改，
-使用 `ref.listen` 将调用自定义的函数，而不是重新构建widget/provider。
 
-这对于在发生特定变化时执行操作很有用，例如在发生错误时显示snackbar。
+That can be useful for performing actions when a certain change happens, such
+as showing a snackbar when an error happens.
 
-`ref.listen` 方法需要两个位置参数，第一个是Provider，第二个是当状态改变时我们想要执行的回调函数。
-当调用回调函数时将传递前一个状态的值和新状态的值。
+The `ref.listen` method needs 2 positional arguments, the first one is the Provider and the second one is the callback function that we want to execute when the state changes.
+The callback function when called will be passed 2 values, the value of the previous State and the value of the new State.
 
-`ref.listen` 方法可以在provider内部使用：
+The `ref.listen` method can be used inside the body of a provider:
 
 <AutoSnippet language="dart" {...listen}></AutoSnippet>
 
-或者在widget的 `build` 方法中：
+or inside the `build` method of a widget:
 
 <AutoSnippet language="dart" {...listenBuild}></AutoSnippet>
 
 :::caution
-像在 [ElevatedButton] 的 `onPressed` 中那样，`listen` 方法不应该被异步调用。
-它也不应该在 `initState` 和其他 [State] 的生命周期中使用。
+The `listen` method should not be called asynchronously,
+like inside an `onPressed` of an [ElevatedButton]. Nor should it be used
+inside `initState` and other [State] life-cycles.
 :::
 
-### 使用ref.read获取一个provider的状态
+### Using ref.read to obtain the state of a provider
 
-`ref.read` 是一种不监听provider状态的方法。
+The `ref.read` method is a way to obtain the state of a provider without listening to it.
 
-它通常在用户交互触发的函数中使用。
-例如，我们可以使用 `ref.read` 在用户单击按钮时将计数器数值加1：
+It is commonly used inside functions triggered by user interactions.
+For example, we can use `ref.read` to increment a counter when a user clicks a button:
 
 <AutoSnippet language="dart" {...read}></AutoSnippet>
 
 :::note
-你应该尽量避免使用 `ref.read` ，因为它不是响应式的。
+Using `ref.read` should be avoided as much as possible because it is not reactive.
 
-它的存在是由于使用 `watch` 或 `listen` 会导致问题。如果可以，使用 `watch`/`listen` 更好，尤其是 `watch`。
+It exists for cases where using `watch` or `listen` would cause issues.
+If you can, it is almost always better to use `watch`/`listen`, especially `watch`.
 :::
 
-#### **不要**在build方法中使用 `ref.read`
+#### **DON'T** use `ref.read` inside the build method
 
-你可能会想使用 `ref.read` 来优化widget的性能：
+You might be tempted to use `ref.read` to optimize the performance of a widget
+by doing:
 
 <AutoSnippet language="dart" {...readBuild}></AutoSnippet>
 
-但这样做是非常糟糕的，它可能会导致预料之外的bug。
+But this is a very bad practice and can cause bugs that are difficult to track.
 
-以这种方式使用 `ref.read` 通常会让人觉得“provider暴露的值永远不会改变，
-所以使用 `ref.read` 是安全的”。但问题是，
-虽然现在的provider可能确实永远不会更新它的值，但你无法保证以后的值还是一样的。
+Using `ref.read` this way is commonly associated with the thought "The value
+exposed by a provider never changes so using 'ref.read' is safe". The problem
+with this assumption is that, while today that provider may indeed never update
+its value, there is no guarantee that tomorrow will be the same.
 
-应用往往会发生很多变更，假设在未来，以前从未改变的一个值将需要改变。
-如果你使用 `ref.read`，当该值需要更改时，你必须遍历整个代码库将 `ref.read` 更改为 `ref.watch`，
-这很容易出错，而且你很可能会忘记某些情况。
+Software tends to change a lot, and it is likely that in the future, a value
+that previously never changed will need to change.  
+If you use `ref.read`, when that value needs to change, you have
+to go through your entire codebase to change `ref.read` into `ref.watch` –
+which is error prone and you are likely to forget some cases.
 
-但如果一开始就使用 `ref.watch`，当你重构时遇到的问题就会更少。
+If you use `ref.watch` to begin with, you will have fewer problems when refactoring.
 
-**_但是我想要用 `ref.read` 来减少小部件重新构建的次数_**
+**_But I wanted to use `ref.read` to reduce the number of times my widget rebuilds_**
 
-这个想法很好，但需要注意的是，使用 `ref.watch` 也可以达到完全相同的效果(减少重新构建的次数)。
+While the goal is commendable, it is important to note that you can achieve the
+exact same effect (reducing the number of builds) using `ref.watch` instead.
 
-provider提供了许多获取值的方法，同时也减少了重新构建的次数，你可以使用这些方法。
+Providers offer various ways to obtain a value while reducing the number of
+rebuilds, which you could use instead.
 
-比如，不应该这样：
+For example instead of
 
 <AutoSnippet language="dart" {...readNotifierBuild}></AutoSnippet>
 
-我们应该:
+we could do:
 
 <AutoSnippet language="dart" {...watchNotifierBuild}></AutoSnippet>
 
-这两段代码实现了相同的效果：当计数器增加时，我们的按钮也不会重新构建。
+Both snippets achieve the same effect: our button will not rebuild when the
+counter increments.
 
-另一方面，第二种方法支持重置计数器。例如，应用的另一部分可以调用：
+On the other hand, the second approach supports cases where the counter is reset.
+For example, another part of the application could call:
 
 ```dart
 ref.refresh(counterProvider);
 ```
 
 <When codegen={false}>
+  
+which would recreate the `StateController` object.
 
-
-来重新创建 `Counter` 对象。
-
-如果我们在这里使用 `ref.read`，我们的按钮仍将使用之前的 `StateController` 实例，
-但实际上该实例已被丢弃，不应该再使用。
-当我们正确使用 `ref.watch` 将重新构建按钮以使用新的 `Counter`实例
+If we used `ref.read` here, our button would still use the previous
+`StateController` instance, which was disposed and should no-longer be used.
+Whereas using `ref.watch` correctly rebuilds the button to use the new
+`StateController`.
 
 </When>
 
 <When codegen>
 
-来重新创建 `Counter` 对象。
+which would recreate the `Counter` object.
 
-如果我们在这里使用 `ref.read`，我们的按钮仍将使用之前的 `Counter` 实例，
-但实际上该实例已被丢弃，不应该再使用。
-而正确使用 `ref.watch` 将重新构建按钮以使用新的 `Counter`实例。
+If we used `ref.read` here, our button would still use the previous `Counter`
+instance, which was disposed and should no-longer be used. Whereas using
+`ref.watch` correctly rebuilds the button to use the new `Counter`.
 
 </When>
 
-## 选择读取的方式
+## Deciding what to read
 
-根据你想要监听的provider，你可能有多个可以监听的值。
+Depending on the provider you want to listen to, you may have multiple possible
+values that you can listen to.
 
-比如，考虑以下 [StreamProvider]：
+As an example, consider the following [StreamProvider]:
 
 ```dart
 final userProvider = StreamProvider<User>(...);
 ```
 
-当读取这个 `userProvider` 时，你可以：
+When reading this `userProvider`, you can:
 
-- 通过监听 `userProvider` 本身 同步读取当前状态：
+- synchronously read the current state by listening to `userProvider` itself:
 
   ```dart
   Widget build(BuildContext context, WidgetRef ref) {
     AsyncValue<User> user = ref.watch(userProvider);
 
-    return user.when(
-      loading: () => const CircularProgressIndicator(),
-      error: (error, stack) => const Text('Oops'),
-      data: (user) => Text(user.name),
-    );
+    return switch (user) {
+      AsyncData(:final value) => Text(value.name),
+      AsyncError(:final error) => const Text('Oops $error'),
+      _ => const CircularProgressIndicator(),
+    };
   }
   ```
 
-- 通过监听 `userProvider.stream` 获取关联的 [Stream]：
+- obtain the associated [Stream], by listening to `userProvider.stream`:
 
   ```dart
   Widget build(BuildContext context, WidgetRef ref) {
@@ -308,7 +347,7 @@ final userProvider = StreamProvider<User>(...);
   }
   ```
 
-- 通过监听 `userProvider.future`，获得一个解析最新值的 [Future] ：
+- obtain a [Future] that resolves with the latest value emitted, by listening to `userProvider.future`:
 
   ```dart
   Widget build(BuildContext context, WidgetRef ref) {
@@ -316,18 +355,21 @@ final userProvider = StreamProvider<User>(...);
   }
   ```
 
-不同的provider可能提供用法。  
-要了解更多信息，请阅读[API 参考](https://pub.dev/documentation/riverpod/latest/riverpod/riverpod-library.html)来获取每个provider的文档。
+Other providers may offer different alternative values.  
+For more information, refer to the documentation of each provider by
+consulting the [API reference](https://pub.dev/documentation/riverpod/latest/riverpod/riverpod-library.html).
 
-## 使用“select”来过滤重建内容
+## Using "select" to filter rebuilds
 
-与读取provider相关的最后一个特性是能够减少widget/provider从 `ref.watch` 重新构建的次数，
-或者减少 `ref.listen` 执行函数的频率。
+One final feature to mention related to reading providers is the ability to
+reduce the number of times a widget/provider rebuilds from `ref.watch`, or how often `ref.listen`
+executes a function.
 
-记住，这一点很重要，因为默认情况下，监听provider将监听整个对象状态。
-但有时widget/provider可能只关心某些属性的更改，而不是整个对象。
+This is important to keep in mind as, by default, listening to a provider
+listens to the entire object state. But sometimes, a widget/provider may only
+care about changes to some properties instead of the whole object.
 
-比如说，一个provider可能暴露一个 `User` 对象：
+For example, a provider may expose a `User`:
 
 ```dart
 abstract class User {
@@ -336,7 +378,7 @@ abstract class User {
 }
 ```
 
-但是widget可能只使用用户名：
+But a widget may only use the user name:
 
 ```dart
 Widget build(BuildContext context, WidgetRef ref) {
@@ -345,11 +387,13 @@ Widget build(BuildContext context, WidgetRef ref) {
 }
 ```
 
-如果我们简单地使用 `ref.watch`，这将在用户年龄(`age`)发生变化时重新构建widget。
+If we naively used `ref.watch`, this would rebuild the widget when the user's
+`age` changes.
 
-解决方案是使用 `select` 显式地告诉Riverpod我们只想监听 `User` 的 `name` 属性。
+The solution is to use `select` to explicitly tell Riverpod that we only
+want to listen to the name property of the `User`.
 
-更新后的代码如下:
+The updated code would be:
 
 ```dart
 Widget build(BuildContext context, WidgetRef ref) {
@@ -358,15 +402,17 @@ Widget build(BuildContext context, WidgetRef ref) {
 }
 ```
 
-通过使用 `select`，我们可以指定一个返回我们所关心的属性的函数。
+By using `select`, we are able to specify a function
+that returns the property that we care about.
 
-每当 `User` 发生变化时，Riverpod将调用该函数并比较以前和新的结果。
-如果它们是不同的(例如当名称更改时)，Riverpod将重新构建widget。
-
-当然了，如果它们相等(例如当年龄改变时)，Riverpod将不会重建widget。
+Whenever the `User` changes, Riverpod will call this function and
+compare the previous and new result. If they are different (such as when the name
+changed), Riverpod will rebuild the widget.  
+However, if they are equal (such as when the age changed), Riverpod will not
+rebuild the widget.
 
 :::info
-也可以 `select` 和 `ref.listen` 结合使用：
+It is also possible to use `select` with `ref.listen`:
 
 ```dart
 ref.listen<String>(
@@ -377,11 +423,12 @@ ref.listen<String>(
 );
 ```
 
-这样做只会在名称更改时调用监听器。
+Doing so will call the listener only when the name changes.
 :::
 
 :::tip
-你不需要返回对象的属性。任何可以使用==的值都可以工作。举个例子：
+You don't have to return a property of the object. Any value that
+overrides == will work. For example you could do:
 
 ```dart
 final label = ref.watch(userProvider.select((user) => 'Mr ${user.name}'));

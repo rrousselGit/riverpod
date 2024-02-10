@@ -25,7 +25,7 @@ import 'internals.dart';
 /// }
 /// ```
 ///
-/// It optionally possible to specify `overrides` to change the behavior of
+/// It's optionally possible to specify `overrides` to change the behavior of
 /// some providers. This can be useful for testing purposes:
 ///
 /// ```dart

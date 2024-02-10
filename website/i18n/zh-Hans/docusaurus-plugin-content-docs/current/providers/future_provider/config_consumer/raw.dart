@@ -10,11 +10,9 @@ import '../config_provider/raw.dart';
 Widget build(BuildContext context, WidgetRef ref) {
   AsyncValue<Configuration> config = ref.watch(configProvider);
 
-  return config.when(
-    loading: () => const CircularProgressIndicator(),
-    error: (err, stack) => Text('Error: $err'),
-    data: (config) {
-      return Text(config.host);
-    },
-  );
+  return switch (config) {
+    AsyncData(:final value) => Text(value.host),
+    AsyncError(:final error) => Text('Error: $error'),
+    _ => const CircularProgressIndicator(),
+  };
 }

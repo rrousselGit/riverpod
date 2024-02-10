@@ -4,6 +4,7 @@ import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
 import '../models.dart';
 import '../riverpod_generator.dart';
+import '../validation.dart';
 import 'class_based_provider.dart';
 import 'parameters.dart';
 import 'template.dart';
@@ -151,6 +152,8 @@ ${parameters.map((e) => '        ${e.name}: ${e.name},\n').join()}
     required String hashFn,
     required BuildYamlOptions options,
   }) {
+    validateClassBasedProvider(provider);
+
     var leading = '';
     if (!provider.annotation.element.keepAlive) {
       leading = 'AutoDispose';

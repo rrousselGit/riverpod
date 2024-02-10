@@ -1,0 +1,132 @@
+---
+title: Da `ChangeNotifier`
+---
+
+import old from "!!raw-loader!./from_change_notifier/old.dart";
+import declaration from "./from_change_notifier/declaration";
+import initialization from "./from_change_notifier/initialization";
+import migrated from "./from_change_notifier/migrated";
+
+import { Link } from "../../../../../src/components/Link";
+import { AutoSnippet } from "../../../../../src/components/CodeSnippet";
+
+All'interno di Riverpod, `ChangeNotifierProvider` deve essere utilizzato per offrire una transizione 
+graduale da pkg:provider.
+
+Se hai appena iniziato una migrazione verso Riverpod, assicurati di leggere la guida dedicata 
+(consulta <Link documentID="from_provider/quickstart" />).
+Questo articolo è pensata per chi è già transizionato su Riverpod ma vuole distaccarsi dall'usare 
+`ChangeNotifier` in modo definitivo.
+
+Nel complesso, la migrazione da `ChangeNotifier` a `AsyncNotifer` richiede un cambio di paradigma, 
+ma comporta una grande semplificazione con il codice migrato risultante. 
+Consulta anche <Link documentID="concepts/why_immutability" />.
+
+Prendiamo in considerazione questo esempio (difettoso):
+<AutoSnippet raw={old} />
+
+Questa implementazione mostra diverse lacune di progettazione come:
+- L'utilizzo di `isLoading` e `hasError` per gestire differenti casi asincroni
+- La necessita di gestire attentamente le richieste attraverso le espressioni `try`/`catch`/`finally`
+- La necessita di invocare `notifyListeners` nei momenti giusti per far sì che questa implementazione funzioni
+- La presenza di stato incoerenti o possibilmente indesiderabile, ad esempio l'inizializzazione con una lista vuota
+
+Si noti come questo esempio è stato realizzato per mostrare come `ChangeNotifier` possa portare a scelte 
+di design difettose per sviluppatori alle prime armi; inoltre, un'altra conclusione è che lo stato mutabile 
+potrebbe essere molto più difficile di quanto promesso inizialmente.
+
+`Notifier`/`AsyncNotifer`, in combinazione con lo stato immutabile, può portare a scelte di design migliori 
+e meno errori.
+
+Vediamo come migrare lo snippet precedente, un passo alla volta, verso le API più recenti
+
+## Inizia la tua migrazione
+
+Per prima cosa, dovremmo dichiarare il nuovo provider / notifier: questo richiede ci richiede una riflessione 
+su cosa dobbiamo fare che dipende dalla tua unica business logic.
+
+Riassumiamo le richieste:
+- Lo stato è rappresentato con una `List<Todo>`, che è ottenuta da una chiamata di rete, con nessun parametro
+- Lo stato dovrebbe *anche* esporre informazioni sui suoi stati di `loading`, `error` e `data`
+- Lo stato può essere mutato attraverso dei metodi esposti, quindi una funzione non è sufficiente
+
+:::tip
+La riflessione appena fatta si riduce alla risposta alle seguenti domande:
+1. Sono richiesti dei side effects?
+    - `y`: Utilizza le API di Riverpod basate su classi
+    - `n`: Utilizza le API di Riverpod basate sulle funzioni
+2. Lo stato necessita di essere caricato in modo asincrono?
+    - `y`: Permettiamo a `build` di restituire `Future<T>`
+    - `n`: Permettiamo a `build` di restituire semplicemente `T`
+1. Sono richiesti dei parametri?
+    - `y`: Permettiamo a `build` (o alla tua funzione) di accettarli
+    - `n`: Non permettiamo a `build` (o alla tua funzione) di accettare parametri extra
+:::
+
+:::info
+Se stai utilizzando la generazione di codice, la riflessione precedente è abbastanza.
+Non è necessario pensare ai nomi corretti delle classi e alle loro API *specifiche*.
+`@riverpod` ti chiede solamente di scrivere una classe con il suo tipo da restituire, e questo basta.
+:::
+
+Tecnicamente, la mossa migliore qui è definire un `AutoDisposeAsyncNotifier<List<Todo>>`, 
+che coprirà tutti i requisiti richiesti. Scriviamo per prima del pseudocodice.
+
+<AutoSnippet language="dart" {...declaration}></AutoSnippet>
+
+:::tip
+Ricorda: utilizza gli snippet nel tuo IDE per avere una sorta di guida, oppure per velocizzare la scrittura del codice.
+Consulta <Link documentID="introduction/getting_started" hash="andando-oltre-installazione-di-snippet-di-codice" />.
+:::
+
+Rispetto all'implementazione di `ChangeNotifier`, non abbiamo più bisogno di dichiarare `todos`;
+tale variabile è contenuta in `state`, che è implicitamente caricato con `build`.
+
+Infatti, i notifier di Riverpod possono esporre *una* entità alla volta.
+
+:::tip
+Le API di Riverpod sono pensate per essere granulari, tuttavia, durante la migrazione, puoi comunque definire 
+un'entità personalizzata per contenere più valori. Inizialmente, valuta l'utilizzo dei 
+[record di Dart 3](https://dart.dev/language/records) per semplificare la migrazione.
+:::
+
+### Inizializzazione
+
+Inizializzare un notifier è facile: basta scrivere la logica di inizializzazione dentro il metodo `build`.
+Possiamo ora sbarazzarci della vecchia funzione `_init`.
+
+<AutoSnippet language="dart" {...initialization}></AutoSnippet>
+
+Rispetto alla vecchia funzone `_init`, al nuovo metodo `build` non manca nulla: non c'è più bisogno di 
+inizializzare variabili come `isLoading` o `hasError`.
+
+Riverpod tradurrà automaticamente qualsiasi provider asincrono esponendo un `AsyncValue<List<Todo>>` e 
+gestirà le complessità dello stato asincrono in modo decisamente migliore rispetto a quello che possono fare 
+due semplici variabili booleane.
+
+Infatti, qualsiasi `AsyncNotifier` rende effettivamente la scrittura aggiuntiva di `try`/`catch`/`finally` 
+un anti-pattern per la gestione dello stato asincrono.
+
+### Mutazioni e Side effects
+
+Proprio come l'inizializzazione, quando si eseguono dei side effects non c'è la necessità di manipolare 
+variabili booleani come `hasError`, o di scrivere blocchi `try`/`catch`/`finally` aggiuntivi.
+
+Di seguito, abbiamo tagliato tutto il codice boilerplate e migrato con successo l'esempio di sopra:
+<AutoSnippet language="dart" {...migrated} />
+
+:::tip
+La sintassi e le scelte di progettazione possono variare, ma alla fine, quello di cui abbiamo bisogno 
+è scrivere le nostre richieste ed aggiornare lo stato in seguito. 
+Consulta <Link documentID="essentials/side_effects" />.
+:::
+
+## Riassunto del processo di migrazione
+
+Rivediamo l'intero processo di migrazione applicato in questa pagina, da un punto di vista operazionale.
+
+1. Abbiamo spostato l'inizializzazione, da un metodo personalizzato invocato in un costruttore, al metodo `build`
+2. Abbiamo rimosso le proprietà `todos`, `isLoading` e `hasError`: la proprietà interna `state` sarà sufficiente
+3. Abbiamo rimosso qualsiasi tipo blocco `try`-`catch`-`finally`, restituire il future è sufficiente
+4. Abbiamo applicato la stessa simplificazione sui side effects (`addTodo`)
+5. Abbiamo applicato le mutazioni, semplicemente riassegnando `state`

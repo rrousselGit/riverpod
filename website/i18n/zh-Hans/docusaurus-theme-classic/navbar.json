@@ -3,6 +3,10 @@
     "message": "Riverpod",
     "description": "The title in the navbar"
   },
+  "logo.alt": {
+    "message": "Riverpod",
+    "description": "The alt text of navbar logo"
+  },
   "item.label.Docs": {
     "message": "文档",
     "description": "Navbar item with label Docs"

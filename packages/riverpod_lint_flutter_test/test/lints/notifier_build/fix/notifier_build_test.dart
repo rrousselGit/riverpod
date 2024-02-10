@@ -1,25 +1,16 @@
-import 'dart:io';
-
 import 'package:collection/collection.dart';
 import 'package:riverpod_lint/src/lints/notifier_build.dart';
-import 'package:analyzer/dart/analysis/results.dart';
-import 'package:analyzer/dart/analysis/utilities.dart';
 
 import '../../../golden.dart';
 
 void main() {
   testGolden(
     'Verify that @riverpod classes has the build method',
-    'lints/notifier_build/fix/notifier_build.json',
-    () async {
+    'lints/notifier_build/fix/notifier_build.diff',
+    sourcePath: 'test/lints/notifier_build/fix/notifier_build.dart',
+    (result) async {
       const lint = NotifierBuild();
       final fix = lint.getFixes().single;
-      final file = File(
-        'test/lints/notifier_build/fix/notifier_build.dart',
-      ).absolute;
-
-      final result = await resolveFile2(path: file.path);
-      result as ResolvedUnitResult;
 
       final errors = await lint.testRun(result);
 

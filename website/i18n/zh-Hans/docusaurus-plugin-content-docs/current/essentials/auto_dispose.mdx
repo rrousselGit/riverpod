@@ -1,0 +1,306 @@
+---
+title: 清除缓存并对状态处置做出反应
+---
+
+import { Link } from "@site/src/components/Link";
+import { AutoSnippet, When } from "@site/src/components/CodeSnippet";
+import onDisposeExample from "./auto_dispose/on_dispose_example";
+import codegenKeepAlive from "!!raw-loader!./auto_dispose/codegen_keep_alive.dart";
+import rawAutoDispose from "!!raw-loader!./auto_dispose/raw_auto_dispose.dart";
+import invalidateExample from "!!raw-loader!./auto_dispose/invalidate_example.dart";
+import keepAlive from "./auto_dispose/keep_alive";
+import cacheForExtension from "!!raw-loader!./auto_dispose/cache_for_extension.dart";
+import cacheForUsage from "./auto_dispose/cache_for_usage";
+import invalidateFamilyExample from './auto_dispose/invalidate_family_example'
+
+<!---
+So far, we've seen how to create/update some state.
+But we have yet to talk about when state destruction occurs.
+-->
+到目前为止，我们已经了解了如何创建/更新某些状态。
+但我们还没有谈论状态处置何时发生。
+
+<!---
+Riverpod offers various ways to interact with state disposal.
+This ranges from delaying the disposal of state to reacting to destruction.
+-->
+Riverpod 提供了多种与状态处置进行交互的方法。
+这包括从延迟处置状态到对处置做出反应。
+
+<!---
+## When is state destroyed and how to change this?
+-->
+## 何时状态被处置，如何改变这一点？
+
+<When codegen={true}>
+
+<!---
+When using code-generation, by default, the state is destroyed when
+the provider stops being listened to.  
+This happens when a listener has no active listener for a full frame.
+When that happens, the state is destroyed.
+-->
+使用代码生成时，默认情况下，当提供者程序停止被监听时，状态将被处置。  
+当监听器在整个帧中没有活动的监听器时，会发生这种情况。
+当这种情况发生时，状态将被处置。
+
+<!---
+This behavior can be opted out by using `keepAlive: true`.  
+Doing so will prevent the state from getting destroyed when all listeners
+are removed.
+-->
+可以使用 `keepAlive: true` 选择禁用此行为。  
+这样做可以防止在删除所有监听器时状态被处置。
+
+<AutoSnippet raw={codegenKeepAlive} />
+
+</When>
+
+<When codegen={false}>
+
+<!---
+When not using code-generation, by default the state isn't destroyed
+when the provider stops being listened.
+-->
+不使用代码生成时，默认情况下，当提供者程序停止监听时，状态不会被处置。
+
+<!---
+You can optionally change this behavior and use automatic disposal.
+When doing so, Riverpod will track whether a provider has listeners or not.
+Then, if the provider has no listeners for a full frame, the state will be destroyed.
+-->
+您可以选择更改此行为并使用自动处置。
+执行此操作时，Riverpod 将跟踪提供者程序是否有监听器。
+然后，如果一帧的时间内提供者程序没有监听器，则状态将被处置。
+
+<!---
+To enable automatic disposal, you can use `.autoDispose` next to the provider type:
+-->
+若要启用自动处置，可以在提供者程序类型旁边使用 `.autoDispose`：
+
+<AutoSnippet raw={rawAutoDispose} />
+
+</When>
+
+:::note
+<!---
+Enabling/disabling automatic disposal has no impact on whether or not
+the state is destroyed when the provider is recomputed.  
+The state will always be destroyed when the provider is recomputed.
+-->
+启用/禁用自动处置在重新计算提供者程序时，对于是否处置状态没有影响。  
+重新计算提供者程序时，状态将始终被处置。
+:::
+
+:::caution
+<!---
+When providers receive parameters, it is recommended to enable automatic disposal.
+That is because otherwise, one state per parameter combination will be created,
+which can lead to memory leaks.
+-->
+当提供者程序收到参数时，建议启用自动处置。
+这是因为否则，将为每个参数组合创建一个状态，这可能会导致内存泄漏。
+:::
+
+<!---
+## Reacting to state disposal
+-->
+## 对状态处置做出反应
+
+<!---
+In Riverpod, there are a few built-in ways for state to be destroyed:
+-->
+在 Riverpod 中，有几种内置的处置状态的方法：
+
+<!---
+- The provider is no longer used and is in "auto dispose" mode (more on that later).
+  In this case, all associated state with the provider is destroyed.
+- The provider is recomputed, such as with `ref.watch`.
+  In that case, the previous state is disposed, and a new state is created.
+-->
+- 提供者程序不再使用，并且处于“自动处置”模式（稍后会详细介绍）。
+  在这种情况下，与提供者程序的所有关联状态都将被处置。
+- 提供者程序将重新计算，例如 `ref.watch`。
+  在这种情况下，将处置以前的状态，并创建一个新状态。
+
+<!---
+In both cases. you may want to execute some logic when that happens.  
+This can be achieved with `ref.onDispose`. This methods enables
+registering a listener to whenever the state is destroyed.
+-->
+在这两种情况下。发生这种情况时，您可能希望执行一些逻辑。  
+这可以通过 `ref.onDispose` 实现。
+此方法允许注册监听器，当状态被处置时回调。
+
+<!---
+For example, you may want use it to close any active `StreamController`:
+-->
+例如，您可能希望使用它来关闭任何活动 `StreamController`：
+
+<AutoSnippet {...onDisposeExample} />
+
+:::caution
+<!---
+The callback of `ref.onDispose` must not trigger side-effects.
+Modifying providers inside `onDispose` could lead to unexpected behavior.
+-->
+不得触发副作用的 `ref.onDispose` 回调。
+修改提供者程序内部的 `onDispose` 可能会导致意外行为。
+:::
+
+:::info
+<!---
+There are other useful life-cycles such as:
+-->
+还有其他有用的生命周期，例如：
+
+<!---
+- `ref.onCancel` which is called when the last listener of a provider is removed.
+- `ref.onResume` which is called when a new listener is added after `onCancel` was invoked.
+-->
+- `ref.onCancel` 当删除提供者程序的最后一个监听器时调用。
+- `ref.onResume` 当 `onCancel` 调用之后添加新的监听器时调用。
+
+:::
+
+:::info
+<!---
+You can call `ref.onDispose` as many times as you wish.
+Feel free to call it once per disposable object in your provider. This practice
+makes it easier to spot when we forget to dispose of something.
+-->
+您可以根据需要多次调用 `ref.onDispose`。
+在提供者程序中，每个可处置的对象可随意调用一次。
+这种做法使我们更容易发现我们何时忘记处置某些东西。
+:::
+
+<!---
+## Manually forcing the destruction of a provider, using `ref.invalidate`
+-->
+## 手动强制处置提供者程序，使用 `ref.invalidate`
+
+<!---
+Sometimes, you may want to force the destruction of a provider.
+This can be done by using `ref.invalidate`, which can be called from another
+provider or from a widget.
+-->
+有时，您可能希望强制处置提供者程序。
+这可以通过使用 `ref.invalidate` 来完成，
+它可以从另一个提供者程序或小部件调用。
+
+<!---
+Using `ref.invalidate` will destroy the current provider state.
+There are then two possible outcomes:
+-->
+使用 `ref.invalidate` 将处置当前提供者程序状态。
+然后有两种可能的结果：
+
+<!---
+- If the provider is listened, a new state will be created.
+- If the provider is not listened, the provider will be fully destroyed.
+-->
+- 如果监听提供者程序，则将创建一个新状态。
+- 如果提供者程序未被监听，则提供者程序将被完全处置。
+
+<AutoSnippet raw={invalidateExample} />
+
+:::info
+<!---
+It is possible for providers to invalidate themselves by using `ref.invalidateSelf`.
+Although in this case, this will always result in a new state being created.
+-->
+提供者程序可以使用 `ref.invalidateSelf` 使自己失效。
+尽管在这种情况下，这始终会导致创建新状态。
+:::
+
+:::tip
+<!---
+When trying to invalidate a provider which receives parameters,
+it is posible to either invalidate one specific parameter combination,
+or all parameter combinations at once:
+-->
+当尝试使接收参数的提供者程序失效时，
+可能会使一个特定的参数组合失效，
+也可以同时使所有参数组合失效：
+
+<AutoSnippet {...invalidateFamilyExample} />
+:::
+
+<!---
+## Fine-tuned disposal with `ref.keepAlive`
+-->
+## 使用 `ref.keepAlive` 微调处置
+
+<!---
+As mentioned above, when automatic disposal is enabled, the state is destroyed
+when the provider has no listeners for a full frame.
+-->
+如上所述，当自动处置启用时，如果在完整的一帧时间里提供者程序没有监听器，状态将被处置。
+
+<!---
+But you may want to have more control over this behavior. For instance,
+you may want to keep the state of successful network requests,
+but not cache failed requests.
+-->
+但您可能希望对此行为有更多的控制权。例如，
+您可能希望保留成功网络请求的状态，但不缓存失败的请求。
+
+<!---
+This can be achieved with `ref.keepAlive`, after enabling automatic disposal.
+Using it, you can decide _when_ the state stops being automatically disposed.
+-->
+这可以在启用自动处置后，使用通过 `ref.keepAlive` 来实现。
+使用它，您可以决定_何时_停止自动处置状态。
+
+<AutoSnippet {...keepAlive} />
+
+:::note
+<!---
+If the provider is recomputed, automatic disposal will be re-enabled.
+-->
+如果重新计算提供者程序，将重新启用自动处置。
+
+<!---
+It is also possible to use the return value of `ref.keepAlive` to
+revert to automatic disposal.
+-->
+也可以使用 `ref.keepAlive` 的返回值使其恢复到自动处置状态。
+:::
+
+<!---
+## Example: keeping state alive for a specific amount of time
+-->
+## 示例：在一段特定时间内保持状态
+
+<!---
+Currently, Riverpod does not offer a built-in way to keep state alive
+for a specific amount of time.  
+But implementing such a feature is easy and reusable with the tools we've seen so far.
+-->
+目前，Riverpod 不提供在特定时间内保持状态的内置方法。  
+但是，使用我们目前看到的工具，实现这样的功能很容易且可重用。
+
+<!---
+By using a `Timer` + `ref.keepAlive`, we can keep the state alive for a specific amount of time.
+To make this logic reusable, we could implement it in an extension method:
+-->
+通过使用 `Timer` + `ref.keepAlive`，我们可以在特定的时间内保持状态。
+为了使这个逻辑可重用，我们可以在扩展方法中实现它：
+
+<AutoSnippet raw={cacheForExtension} />
+
+<!---
+Then, we can use it like so:
+-->
+然后，我们可以这样使用它：
+
+<AutoSnippet {...cacheForUsage} />
+
+<!---
+This logic can be tweaked to fit your needs. 
+For example, you could use `ref.onCancel`/`ref.onResume` to destroy the state
+only if a provider hasn't been listened to for a specific amount of time.
+-->
+可以调整此逻辑以满足您的需求。
+例如，仅当提供者程序在特定时间内未被监听时，
+才可以使用 `ref.onCancel`/`ref.onResume` 处置状态。

@@ -29,10 +29,75 @@ class Riverpod {
   /// Defaults to false.
   final bool keepAlive;
 
-  /// The list of dependencies of a provider.
+  /// The list of providers that this provider potentially depends on.
   ///
-  /// Values passed to the list of dependency should be the classes/functions
-  /// annotated with `@riverpod`; not the provider.
+  /// This list must contains the classes/functions annotated with `@riverpod`,
+  /// not the generated providers themselves.
+  ///
+  /// Specifying this list is strictly equivalent to saying "This provider may
+  /// be scoped". If a provider is scoped, it should specify [dependencies].
+  /// If it is never scoped, it should not specify [dependencies].
+  ///
+  /// The content of [dependencies] should be a list of all the providers that
+  /// this provider may depend on which can be scoped.
+  ///
+  /// For example, consider the following providers:
+  /// ```dart
+  /// // By not specifying "dependencies", we are saying that this provider is never scoped
+  /// @riverpod
+  /// Foo root(RootRef ref) => Foo();
+  /// // By specifying "dependencies" (even if the list is empty),
+  /// // we are saying that this provider is potentially scoped
+  /// @Riverpod(dependencies: [])
+  /// Foo scoped(ScopedRef ref) => Foo();
+  /// ```
+  ///
+  /// Then if we were to depend on `rootProvider` in a scoped provider, we
+  /// could write any of:
+  ///
+  /// ```dart
+  /// @riverpod
+  /// Object? dependent(DependentRef ref) {
+  ///   ref.watch(rootProvider);
+  ///   // This provider does not depend on any scoped provider,
+  ///   // as such "dependencies" is optional
+  /// }
+  ///
+  /// @Riverpod(dependencies: [])
+  /// Object? dependent(DependentRef ref) {
+  ///   ref.watch(rootProvider);
+  ///   // This provider decided to specify "dependencies" anyway, marking
+  ///   // "dependentProvider" as possibly scoped.
+  ///   // Since "rootProvider" is never scoped, it doesn't need to be included
+  ///   // in "dependencies".
+  /// }
+  ///
+  /// @Riverpod(dependencies: [root])
+  /// Object? dependent(DependentRef ref) {
+  ///   ref.watch(rootProvider);
+  ///   // Including "rootProvider" in "dependencies" is fine too, even though
+  ///   // it is not required. It is a no-op.
+  /// }
+  /// ```
+  ///
+  /// However, if we were to depend on `scopedProvider` then our only choice is:
+  ///
+  /// ```dart
+  /// @Riverpod(dependencies: [scoped])
+  /// Object? dependent(DependentRef ref) {
+  ///   ref.watch(scopedProvider);
+  ///   // Since "scopedProvider" specifies "dependencies", any provider that
+  ///   // depends on it must also specify "dependencies" and include "scopedProvider".
+  /// }
+  /// ```
+  ///
+  /// In that scenario, the `dependencies` parameter is required and it must
+  /// include `scopedProvider`.
+  ///
+  /// See also:
+  /// - [provider_dependencies](https://github.com/rrousselGit/riverpod/tree/master/packages/riverpod_lint#provider_dependencies-riverpod_generator-only)
+  ///   and [scoped_providers_should_specify_dependencies](https://github.com/rrousselGit/riverpod/tree/master/packages/riverpod_lint#scoped_providers_should_specify_dependencies-generator-only).\
+  ///   These are lint rules that will warn about incorrect `dependencies` usages.
   final List<Object>? dependencies;
 }
 
