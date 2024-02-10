@@ -18,6 +18,9 @@ abstract base class $FunctionalProvider< //
     required super.isAutoDispose,
   });
 
+  /// Clone a provider with a different initialization method.
+  ///
+  /// This is an implementation detail of Riverpod and should not be used.
   @visibleForOverriding
   $FunctionalProvider<StateT, CreatedT, RefT> $copyWithCreate(
     Create<CreatedT, RefT> create,

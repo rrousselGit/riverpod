@@ -24,6 +24,7 @@ abstract class StateProviderRef<State> implements Ref<State> {
   StateController<State> get controller;
 }
 
+/// {@template riverpod.state_provider}
 /// A provider that exposes a value that can be modified from outside.
 ///
 /// It can be useful for very simple states, like a filter or the currently
@@ -55,9 +56,11 @@ abstract class StateProviderRef<State> implements Ref<State> {
 ///   );
 /// }
 /// ```
+/// {@endtemplate}
 final class StateProvider<StateT>
     extends $FunctionalProvider<StateT, StateT, StateProviderRef<StateT>>
     with LegacyProviderMixin<StateT> {
+  /// {@macro riverpod.state_provider}
   StateProvider(
     this._createFn, {
     super.name,

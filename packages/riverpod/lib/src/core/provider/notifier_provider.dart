@@ -22,6 +22,7 @@ This means that you tried to either:
   to abort any pending logic that could try to use `ref/state`.
 ''';
 
+/// The prototype of `Notifier.build` overrides.
 @internal
 typedef RunNotifierBuild< //
         NotifierT,

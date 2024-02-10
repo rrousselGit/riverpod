@@ -106,7 +106,7 @@ abstract class $FamilyOverride implements _FamilyOverride {
   /// The family that was overridden.
   Family get from;
 
-  /// The overridden [ProviderBase.createElement].
+  /// The overridden [ProviderBase.$createElement].
   ProviderElementBase<Object?> createElement(
     ProviderContainer container,
     ProviderBase<Object?> provider,

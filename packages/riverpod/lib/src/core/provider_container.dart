@@ -30,6 +30,7 @@ class ProviderPointer implements _PointerBase {
   /// If non-null, this pointer should **never** be removed.
   ///
   /// This override may be implicitly created by [ProviderOrFamily.allTransitiveDependencies].
+  // ignore: library_private_types_in_public_api, not public API
   _ProviderOverride? providerOverride;
   ProviderElementBase<Object?>? element;
   @override
@@ -108,12 +109,14 @@ class ProviderDirectory implements _PointerBase {
   /// If non-null, this pointer should **never** be removed.
   ///
   /// This override may be implicitly created by [ProviderOrFamily.allTransitiveDependencies].
+  // ignore: library_private_types_in_public_api, not public API
   _FamilyOverride? familyOverride;
   final HashMap<ProviderBase<Object?>, ProviderPointer> pointers;
   @override
   ProviderContainer targetContainer;
 
   void addProviderOverride(
+    // ignore: library_private_types_in_public_api, not public API
     _ProviderOverride override, {
     required ProviderContainer targetContainer,
   }) {
@@ -129,7 +132,7 @@ class ProviderDirectory implements _PointerBase {
     ProviderBase<Object?> provider, {
     required ProviderContainer currentContainer,
   }) {
-    // TODO changelog that provider which don't specify depencies can't be scoped
+    // TODO changelog that provider which don't specify dependencies can't be scoped
     // TODO throw if a provider is overridden but does not specify dependencies
 
     return pointers._upsert(

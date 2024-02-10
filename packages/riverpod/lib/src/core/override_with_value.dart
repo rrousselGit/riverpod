@@ -24,7 +24,9 @@ final class $ValueProvider<StateT> extends ProviderBase<StateT>
   @override
   Set<ProviderOrFamily>? get allTransitiveDependencies => null;
 
+  @internal
   @override
+  // ignore: library_private_types_in_public_api, not public API
   _ValueProviderElement<StateT> $createElement(ProviderContainer container) {
     return _ValueProviderElement(this, container);
   }
