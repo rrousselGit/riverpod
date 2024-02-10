@@ -2,9 +2,9 @@
 
 import 'package:meta/meta.dart';
 import 'package:meta/meta_meta.dart';
-import 'package:riverpod/src/internals.dart';
-
-import '../riverpod_annotation.dart';
+import 'package:riverpod/riverpod.dart';
+// ignore: implementation_imports, invalid_use_of_internal_member
+import 'package:riverpod/src/internals.dart' show ProviderElementBase;
 
 /// {@template riverpod_annotation.provider}
 /// An annotation placed on classes or functions.

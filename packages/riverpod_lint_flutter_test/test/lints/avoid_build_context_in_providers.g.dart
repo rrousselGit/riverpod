@@ -6,447 +6,428 @@ part of 'avoid_build_context_in_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$fnHash() => r'7b8d0cf179067c80b8553b3232fd886fac83f387';
+typedef FnRef = Ref<int>;
 
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-/// See also [fn].
 @ProviderFor(fn)
-const fnProvider = FnFamily();
+const fnProvider = FnFamily._();
 
-/// See also [fn].
-class FnFamily extends Family {
-  /// See also [fn].
-  const FnFamily();
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'fnProvider';
-
-  /// See also [fn].
-  FnProvider call(
-    BuildContext context1, {
-    required BuildContext context2,
-  }) {
-    return FnProvider(
-      context1,
-      context2: context2,
-    );
-  }
-
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(int Function(FnRef ref) create) {
-    return _$FnFamilyOverride(this, create);
-  }
-
-  @override
-  String toString() => 'fnProvider';
-}
-
-class _$FnFamilyOverride implements $FamilyOverride {
-  _$FnFamilyOverride(this.from, this.create);
-
-  final int Function(FnRef ref) create;
-
-  @override
-  final FnFamily from;
-
-  @override
-  _FnProviderElement createElement(
-    ProviderContainer container,
-    covariant FnProvider provider,
-  ) {
-    return provider._copyWith(create).createElement(container);
-  }
-
-  @override
-  String toString() => 'fnProvider.overrideWith(...)';
-}
-
-/// See also [fn].
-class FnProvider extends AutoDisposeProvider<int> {
-  /// See also [fn].
-  FnProvider(
-    BuildContext context1, {
-    required BuildContext context2,
-  }) : this._internal(
-          (ref) => fn(
-            ref as FnRef,
-            context1,
-            context2: context2,
-          ),
-          from: fnProvider,
+final class FnProvider extends $FunctionalProvider<int, int, FnRef>
+    with $Provider<int, FnRef> {
+  const FnProvider._(
+      {required FnFamily super.from,
+      required (
+        BuildContext, {
+        BuildContext context2,
+      })
+          super.argument,
+      int Function(
+        FnRef ref,
+        BuildContext context1, {
+        required BuildContext context2,
+      })? create})
+      : _createCb = create,
+        super(
           name: r'fnProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product') ? null : _$fnHash,
+          isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
-          context1: context1,
-          context2: context2,
         );
 
-  FnProvider._internal(
-    super.create, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.context1,
-    required this.context2,
-  }) : super.internal();
-
-  final BuildContext context1;
-  final BuildContext context2;
+  final int Function(
+    FnRef ref,
+    BuildContext context1, {
+    required BuildContext context2,
+  })? _createCb;
 
   @override
-  Override overrideWith(
-    int Function(FnRef ref) create,
-  ) {
+  String debugGetCreateSourceHash() => _$fnHash();
+
+  @override
+  String toString() {
+    return r'fnProvider'
+        ''
+        '$argument';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: FnProvider._internal(
-        (ref) => create(ref as FnRef),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        context1: context1,
-        context2: context2,
-      ),
+      providerOverride: $ValueProvider<int>(value),
     );
   }
 
   @override
-  (
-    BuildContext, {
-    BuildContext context2,
-  }) get argument {
-    return (
-      context1,
-      context2: context2,
-    );
+  $ProviderElement<int> createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  FnProvider $copyWithCreate(
+    int Function(
+      FnRef ref,
+    ) create,
+  ) {
+    return FnProvider._(
+        argument: argument as (
+          BuildContext, {
+          BuildContext context2,
+        }),
+        from: from! as FnFamily,
+        create: (
+          ref,
+          BuildContext context1, {
+          required BuildContext context2,
+        }) =>
+            create(ref));
   }
 
   @override
-  _FnProviderElement createElement(
-    ProviderContainer container,
-  ) {
-    return _FnProviderElement(this, container);
-  }
-
-  FnProvider _copyWith(
-    int Function(FnRef ref) create,
-  ) {
-    return FnProvider._internal(
-      (ref) => create(ref as FnRef),
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-      context1: context1,
-      context2: context2,
+  int create(FnRef ref) {
+    final fn = _createCb ?? fn;
+    final (
+      BuildContext, {
+      BuildContext context2,
+    }) argument = this.argument as (
+      BuildContext, {
+      BuildContext context2,
+    });
+    return fn(
+      ref,
+      argument.$1,
+      context2: argument.context2,
     );
   }
 
   @override
   bool operator ==(Object other) {
-    return other is FnProvider &&
-        other.context1 == context1 &&
-        other.context2 == context2;
+    return other is FnProvider && other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, context1.hashCode);
-    hash = _SystemHash.combine(hash, context2.hashCode);
+    return argument.hashCode;
+  }
+}
 
-    return _SystemHash.finish(hash);
+String _$fnHash() => r'7b8d0cf179067c80b8553b3232fd886fac83f387';
+
+final class FnFamily extends Family {
+  const FnFamily._()
+      : super(
+          name: r'fnProvider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  FnProvider call(
+    BuildContext context1, {
+    required BuildContext context2,
+  }) =>
+      FnProvider._(argument: (
+        context1,
+        context2: context2,
+      ), from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$fnHash();
+
+  @override
+  String toString() => r'fnProvider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    int Function(
+      FnRef ref,
+      (
+        BuildContext, {
+        BuildContext context2,
+      }) args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as FnProvider;
+
+        final argument = provider.argument as (
+          BuildContext, {
+          BuildContext context2,
+        });
+
+        return provider
+            .$copyWithCreate((ref) => create(ref, argument))
+            .createElement(container);
+      },
+    );
+  }
+}
+
+@ProviderFor(MyNotifier)
+const myNotifierProvider = MyNotifierFamily._();
+
+final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
+  const MyNotifierProvider._(
+      {required MyNotifierFamily super.from,
+      required (
+        BuildContext, {
+        BuildContext context2,
+      })
+          super.argument,
+      super.runNotifierBuildOverride,
+      MyNotifier Function()? create})
+      : _createCb = create,
+        super(
+          name: r'myNotifierProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final MyNotifier Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$myNotifierHash();
+
+  @override
+  String toString() {
+    return r'myNotifierProvider'
+        ''
+        '$argument';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  MyNotifier create() => _createCb?.call() ?? MyNotifier();
+
+  @$internal
+  @override
+  MyNotifierProvider $copyWithCreate(
+    MyNotifier Function() create,
+  ) {
+    return MyNotifierProvider._(
+        argument: argument as (
+          BuildContext, {
+          BuildContext context2,
+        }),
+        from: from! as MyNotifierFamily,
+        create: create);
+  }
+
+  @$internal
+  @override
+  MyNotifierProvider $copyWithBuild(
+    int Function(
+      Ref<int>,
+      MyNotifier,
+    ) build,
+  ) {
+    return MyNotifierProvider._(
+        argument: argument as (
+          BuildContext, {
+          BuildContext context2,
+        }),
+        from: from! as MyNotifierFamily,
+        runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<MyNotifier, int> createElement(
+          ProviderContainer container) =>
+      $NotifierProviderElement(this, container);
+
+  @override
+  bool operator ==(Object other) {
+    return other is MyNotifierProvider && other.argument == argument;
   }
 
   @override
-  String toString() => 'fnProvider$argument';
-}
-
-mixin FnRef on AutoDisposeProviderRef<int> {
-  /// The parameter `context1` of this provider.
-  BuildContext get context1;
-
-  /// The parameter `context2` of this provider.
-  BuildContext get context2;
-}
-
-class _FnProviderElement extends AutoDisposeProviderElement<int> with FnRef {
-  _FnProviderElement(super.provider, super.container);
-
-  @override
-  BuildContext get context1 => (origin as FnProvider).context1;
-  @override
-  BuildContext get context2 => (origin as FnProvider).context2;
+  int get hashCode {
+    return argument.hashCode;
+  }
 }
 
 String _$myNotifierHash() => r'04a0cf33dbda80e3fa80748fe46546b1c968da22';
 
-abstract class _$MyNotifier extends BuildlessAutoDisposeNotifier<int> {
-  late final BuildContext context1;
-  late final BuildContext context2;
+final class MyNotifierFamily extends Family {
+  const MyNotifierFamily._()
+      : super(
+          name: r'myNotifierProvider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  MyNotifierProvider call(
+    BuildContext context1, {
+    required BuildContext context2,
+  }) =>
+      MyNotifierProvider._(argument: (
+        context1,
+        context2: context2,
+      ), from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$myNotifierHash();
+
+  @override
+  String toString() => r'myNotifierProvider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    MyNotifier Function(
+      (
+        BuildContext, {
+        BuildContext context2,
+      }) args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as MyNotifierProvider;
+
+        final argument = provider.argument as (
+          BuildContext, {
+          BuildContext context2,
+        });
+
+        return provider
+            .$copyWithCreate(() => create(argument))
+            .createElement(container);
+      },
+    );
+  }
+
+  /// {@macro riverpod.override_with_build}
+  Override overrideWithBuild(
+    int Function(
+            Ref<int> ref,
+            MyNotifier notifier,
+            (
+              BuildContext, {
+              BuildContext context2,
+            }) argument)
+        build,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as MyNotifierProvider;
+
+        final argument = provider.argument as (
+          BuildContext, {
+          BuildContext context2,
+        });
+
+        return provider
+            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
+            .createElement(container);
+      },
+    );
+  }
+}
+
+abstract class _$MyNotifier extends $Notifier<int> {
+  late final _$args = (ref as $NotifierProviderElement).origin.argument as (
+    BuildContext, {
+    BuildContext context2,
+  });
+  // expect_lint: avoid_build_context_in_providers
+  BuildContext get context1 =>
+      _$args.$1; // expect_lint: avoid_build_context_in_providers
+  BuildContext get context2 => _$args.context2;
 
   int build(
     BuildContext context1, {
     required BuildContext context2,
   });
+  @$internal
+  @override
+  int runBuild() => build(
+        _$args.$1,
+        context2: _$args.context2,
+      );
 }
 
-/// See also [MyNotifier].
-@ProviderFor(MyNotifier)
-const myNotifierProvider = MyNotifierFamily();
+@ProviderFor(Regresion2959)
+const regresion2959Provider = Regresion2959Provider._();
 
-/// See also [MyNotifier].
-class MyNotifierFamily extends Family {
-  /// See also [MyNotifier].
-  const MyNotifierFamily();
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'myNotifierProvider';
-
-  /// See also [MyNotifier].
-  MyNotifierProvider call(
-    BuildContext context1, {
-    required BuildContext context2,
-  }) {
-    return MyNotifierProvider(
-      context1,
-      context2: context2,
-    );
-  }
-
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(MyNotifier Function() create) {
-    return _$MyNotifierFamilyOverride(this, create);
-  }
-
-  @override
-  String toString() => 'myNotifierProvider';
-}
-
-class _$MyNotifierFamilyOverride implements $FamilyOverride {
-  _$MyNotifierFamilyOverride(this.from, this.create);
-
-  final MyNotifier Function() create;
-
-  @override
-  final MyNotifierFamily from;
-
-  @override
-  _MyNotifierProviderElement createElement(
-    ProviderContainer container,
-    covariant MyNotifierProvider provider,
-  ) {
-    return provider._copyWith(create).createElement(container);
-  }
-
-  @override
-  String toString() => 'myNotifierProvider.overrideWith(...)';
-}
-
-/// See also [MyNotifier].
-class MyNotifierProvider
-    extends AutoDisposeNotifierProviderImpl<MyNotifier, int> {
-  /// See also [MyNotifier].
-  MyNotifierProvider(
-    BuildContext context1, {
-    required BuildContext context2,
-  }) : this._internal(
-          () => MyNotifier()
-            ..context1 = context1
-            ..context2 = context2,
-          from: myNotifierProvider,
-          name: r'myNotifierProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$myNotifierHash,
+final class Regresion2959Provider
+    extends $NotifierProvider<Regresion2959, void> {
+  const Regresion2959Provider._(
+      {super.runNotifierBuildOverride, Regresion2959 Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'regresion2959Provider',
+          isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
-          context1: context1,
-          context2: context2,
         );
 
-  MyNotifierProvider._internal(
-    super.create, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.context1,
-    required this.context2,
-  }) : super.internal();
-
-  final BuildContext context1;
-  final BuildContext context2;
+  final Regresion2959 Function()? _createCb;
 
   @override
-  int runNotifierBuild(
-    covariant MyNotifier notifier,
-  ) {
-    return notifier.build(
-      context1,
-      context2: context2,
-    );
-  }
+  String debugGetCreateSourceHash() => _$regresion2959Hash();
 
-  @override
-  Override overrideWith(MyNotifier Function() create) {
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(void value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: MyNotifierProvider._internal(
-        () => create()
-          ..context1 = context1
-          ..context2 = context2,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        context1: context1,
-        context2: context2,
-      ),
+      providerOverride: $ValueProvider<void>(value),
     );
   }
 
+  @$internal
   @override
-  (
-    BuildContext, {
-    BuildContext context2,
-  }) get argument {
-    return (
-      context1,
-      context2: context2,
-    );
-  }
+  Regresion2959 create() => _createCb?.call() ?? Regresion2959();
 
+  @$internal
   @override
-  _MyNotifierProviderElement createElement(
-    ProviderContainer container,
+  Regresion2959Provider $copyWithCreate(
+    Regresion2959 Function() create,
   ) {
-    return _MyNotifierProviderElement(this, container);
+    return Regresion2959Provider._(create: create);
   }
 
-  MyNotifierProvider _copyWith(
-    MyNotifier Function() create,
+  @$internal
+  @override
+  Regresion2959Provider $copyWithBuild(
+    void Function(
+      Ref<void>,
+      Regresion2959,
+    ) build,
   ) {
-    return MyNotifierProvider._internal(
-      () => create()
-        ..context1 = context1
-        ..context2 = context2,
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-      context1: context1,
-      context2: context2,
-    );
+    return Regresion2959Provider._(runNotifierBuildOverride: build);
   }
 
+  @$internal
   @override
-  bool operator ==(Object other) {
-    return other is MyNotifierProvider &&
-        other.context1 == context1 &&
-        other.context2 == context2;
-  }
-
-  @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, context1.hashCode);
-    hash = _SystemHash.combine(hash, context2.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
-
-  @override
-  String toString() => 'myNotifierProvider$argument';
-}
-
-mixin MyNotifierRef on AutoDisposeNotifierProviderRef<int> {
-  /// The parameter `context1` of this provider.
-  BuildContext get context1;
-
-  /// The parameter `context2` of this provider.
-  BuildContext get context2;
-}
-
-class _MyNotifierProviderElement
-    extends AutoDisposeNotifierProviderElement<MyNotifier, int>
-    with MyNotifierRef {
-  _MyNotifierProviderElement(super.provider, super.container);
-
-  @override
-  BuildContext get context1 => (origin as MyNotifierProvider).context1;
-  @override
-  BuildContext get context2 => (origin as MyNotifierProvider).context2;
+  $NotifierProviderElement<Regresion2959, void> createElement(
+          ProviderContainer container) =>
+      $NotifierProviderElement(this, container);
 }
 
 String _$regresion2959Hash() => r'bcf9a829ce75026a78569de680451d157c7d90a2';
 
-/// See also [Regresion2959].
-@ProviderFor(Regresion2959)
-final regresion2959Provider =
-    AutoDisposeNotifierProvider<Regresion2959, void>.internal(
-  Regresion2959.new,
-  name: r'regresion2959Provider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$regresion2959Hash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+abstract class _$Regresion2959 extends $Notifier<void> {
+  void build();
+  @$internal
+  @override
+  void runBuild() => build();
+}
 
-typedef _$Regresion2959 = AutoDisposeNotifier<void>;
+const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package
+// ignore_for_file: deprecated_member_use_from_same_package

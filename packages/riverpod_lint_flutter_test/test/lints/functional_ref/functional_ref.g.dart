@@ -6,670 +6,606 @@ part of 'functional_ref.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$namelessHash() => r'1a2aa61445a64c65301051820b159c5998195606';
+typedef NamelessRef = Ref<int>;
 
-/// See also [nameless].
 @ProviderFor(nameless)
-final namelessProvider = AutoDisposeProvider<int>.internal(
-  nameless,
-  name: r'namelessProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$namelessHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+const namelessProvider = NamelessProvider._();
 
-typedef NamelessRef = AutoDisposeProviderRef<int>;
-String _$scopedHash() => r'590f1a203323105e732397a2616fbd7dac65f0cc';
-
-/// See also [scoped].
-@ProviderFor(scoped)
-final scopedProvider = AutoDisposeProvider<int>.internal(
-  (_) => throw UnsupportedError(
-    'The provider "scopedProvider" is expected to get overridden/scoped, '
-    'but was accessed without an override.',
-  ),
-  name: r'scopedProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$scopedHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef ScopedRef = AutoDisposeProviderRef<int>;
-String _$genericsHash() => r'b5813cf6a00581bafea48d8ab66f7d5468fff0e4';
-
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-/// See also [generics].
-@ProviderFor(generics)
-const genericsProvider = GenericsFamily();
-
-/// See also [generics].
-class GenericsFamily extends Family {
-  /// See also [generics].
-  const GenericsFamily();
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'genericsProvider';
-
-  /// See also [generics].
-  GenericsProvider<A, B> call<A extends num, B>() {
-    return GenericsProvider<A, B>();
-  }
-
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(
-      int Function<A extends num, B>(GenericsRef ref) create) {
-    return _$GenericsFamilyOverride(this, create);
-  }
-
-  @override
-  String toString() => 'genericsProvider';
-}
-
-class _$GenericsFamilyOverride implements $FamilyOverride {
-  _$GenericsFamilyOverride(this.from, this.create);
-
-  final int Function<A extends num, B>(GenericsRef ref) create;
-
-  @override
-  final GenericsFamily from;
-
-  @override
-  _GenericsProviderElement createElement(
-    ProviderContainer container,
-    covariant GenericsProvider provider,
-  ) {
-    return provider._copyWith(create).createElement(container);
-  }
-
-  @override
-  String toString() => 'genericsProvider.overrideWith(...)';
-}
-
-/// See also [generics].
-class GenericsProvider<A extends num, B> extends AutoDisposeProvider<int> {
-  /// See also [generics].
-  GenericsProvider()
-      : this._internal(
-          (ref) => generics<A, B>(
-            ref as GenericsRef<A, B>,
-          ),
-          from: genericsProvider,
-          name: r'genericsProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$genericsHash,
+final class NamelessProvider extends $FunctionalProvider<int, int, NamelessRef>
+    with $Provider<int, NamelessRef> {
+  const NamelessProvider._(
+      {int Function(
+        NamelessRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'namelessProvider',
+          isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
         );
 
-  GenericsProvider._internal(
-    super.create, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-  }) : super.internal();
+  final int Function(
+    NamelessRef ref,
+  )? _createCb;
 
   @override
-  Override overrideWith(
-    int Function(GenericsRef<A, B> ref) create,
-  ) {
+  String debugGetCreateSourceHash() => _$namelessHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: GenericsProvider<A, B>._internal(
-        (ref) => create(ref as GenericsRef<A, B>),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-      ),
+      providerOverride: $ValueProvider<int>(value),
     );
   }
 
   @override
-  () get argument {
-    return ();
+  $ProviderElement<int> createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  NamelessProvider $copyWithCreate(
+    int Function(
+      NamelessRef ref,
+    ) create,
+  ) {
+    return NamelessProvider._(create: create);
   }
 
   @override
-  _GenericsProviderElement<A, B> createElement(
-    ProviderContainer container,
-  ) {
-    return _GenericsProviderElement(this, container);
+  int create(NamelessRef ref) {
+    final fn = _createCb ?? nameless;
+    return fn(ref);
+  }
+}
+
+String _$namelessHash() => r'1a2aa61445a64c65301051820b159c5998195606';
+
+typedef ScopedRef = Ref<int>;
+
+@ProviderFor(scoped)
+const scopedProvider = ScopedProvider._();
+
+final class ScopedProvider extends $FunctionalProvider<int, int, ScopedRef>
+    with $Provider<int, ScopedRef> {
+  const ScopedProvider._(
+      {int Function(
+        ScopedRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'scopedProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final int Function(
+    ScopedRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$scopedHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
   }
 
-  GenericsProvider _copyWith(
-    int Function<A extends num, B>(GenericsRef ref) create,
+  @override
+  $ProviderElement<int> createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  ScopedProvider $copyWithCreate(
+    int Function(
+      ScopedRef ref,
+    ) create,
   ) {
-    return GenericsProvider._internal(
-      (ref) => create(ref as GenericsRef),
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
+    return ScopedProvider._(create: create);
+  }
+
+  @override
+  int create(ScopedRef ref) {
+    final fn = _createCb ?? scoped;
+    return fn(ref);
+  }
+}
+
+String _$scopedHash() => r'590f1a203323105e732397a2616fbd7dac65f0cc';
+
+typedef GenericsRef<A extends num, B> = Ref<int>;
+
+@ProviderFor(generics)
+const genericsProvider = GenericsFamily._();
+
+final class GenericsProvider<A extends num, B>
+    extends $FunctionalProvider<int, int, GenericsRef<A, B>>
+    with $Provider<int, GenericsRef<A, B>> {
+  const GenericsProvider._(
+      {required GenericsFamily super.from,
+      int Function(
+        GenericsRef<A, B> ref,
+      )? create})
+      : _createCb = create,
+        super(
+          argument: null,
+          name: r'genericsProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final int Function(
+    GenericsRef<A, B> ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$genericsHash();
+
+  GenericsProvider<A, B> _copyWithCreate(
+    int Function<A extends num, B>(
+      GenericsRef<A, B> ref,
+    ) create,
+  ) {
+    return GenericsProvider<A, B>._(
+        from: from! as GenericsFamily, create: create<A, B>);
+  }
+
+  @override
+  String toString() {
+    return r'genericsProvider'
+        '<${A}, ${B}>'
+        '()';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
     );
+  }
+
+  @override
+  $ProviderElement<int> createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  GenericsProvider<A, B> $copyWithCreate(
+    int Function(
+      GenericsRef<A, B> ref,
+    ) create,
+  ) {
+    return GenericsProvider<A, B>._(
+        from: from! as GenericsFamily, create: create);
+  }
+
+  @override
+  int create(GenericsRef<A, B> ref) {
+    final fn = _createCb ?? generics<A, B>;
+    return fn(ref);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is GenericsProvider && other.runtimeType == runtimeType;
+    return other is GenericsProvider &&
+        other.runtimeType == runtimeType &&
+        other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, A.hashCode);
-    hash = _SystemHash.combine(hash, B.hashCode);
+    return Object.hash(runtimeType, argument);
+  }
+}
 
-    return _SystemHash.finish(hash);
+String _$genericsHash() => r'b5813cf6a00581bafea48d8ab66f7d5468fff0e4';
+
+final class GenericsFamily extends Family {
+  const GenericsFamily._()
+      : super(
+          name: r'genericsProvider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  GenericsProvider<A, B> call<A extends num, B>() =>
+      GenericsProvider<A, B>._(from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$genericsHash();
+
+  @override
+  String toString() => r'genericsProvider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    int Function<A extends num, B>(GenericsRef<A, B> ref) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as GenericsProvider;
+
+        return provider._copyWithCreate(create).createElement(container);
+      },
+    );
+  }
+}
+
+typedef NoGenericsRef<A extends num, B> = Ref<int>;
+
+@ProviderFor(noGenerics)
+const noGenericsProvider = NoGenericsFamily._();
+
+final class NoGenericsProvider<A extends num, B>
+    extends $FunctionalProvider<int, int, NoGenericsRef<A, B>>
+    with $Provider<int, NoGenericsRef<A, B>> {
+  const NoGenericsProvider._(
+      {required NoGenericsFamily super.from,
+      int Function(
+        NoGenericsRef<A, B> ref,
+      )? create})
+      : _createCb = create,
+        super(
+          argument: null,
+          name: r'noGenericsProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final int Function(
+    NoGenericsRef<A, B> ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$noGenericsHash();
+
+  NoGenericsProvider<A, B> _copyWithCreate(
+    int Function<A extends num, B>(
+      NoGenericsRef<A, B> ref,
+    ) create,
+  ) {
+    return NoGenericsProvider<A, B>._(
+        from: from! as NoGenericsFamily, create: create<A, B>);
   }
 
   @override
-  String toString() => 'genericsProvider<$A,$B>$argument';
-}
+  String toString() {
+    return r'noGenericsProvider'
+        '<${A}, ${B}>'
+        '()';
+  }
 
-mixin GenericsRef<A extends num, B> on AutoDisposeProviderRef<int> {}
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
 
-class _GenericsProviderElement<A extends num, B>
-    extends AutoDisposeProviderElement<int> with GenericsRef<A, B> {
-  _GenericsProviderElement(super.provider, super.container);
+  @override
+  $ProviderElement<int> createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  NoGenericsProvider<A, B> $copyWithCreate(
+    int Function(
+      NoGenericsRef<A, B> ref,
+    ) create,
+  ) {
+    return NoGenericsProvider<A, B>._(
+        from: from! as NoGenericsFamily, create: create);
+  }
+
+  @override
+  int create(NoGenericsRef<A, B> ref) {
+    final fn = _createCb ?? noGenerics<A, B>;
+    return fn(ref);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is NoGenericsProvider &&
+        other.runtimeType == runtimeType &&
+        other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(runtimeType, argument);
+  }
 }
 
 String _$noGenericsHash() => r'449264e25990bc14ad811c0940117c8cde4d730a';
 
-/// See also [noGenerics].
-@ProviderFor(noGenerics)
-const noGenericsProvider = NoGenericsFamily();
-
-/// See also [noGenerics].
-class NoGenericsFamily extends Family {
-  /// See also [noGenerics].
-  const NoGenericsFamily();
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'noGenericsProvider';
-
-  /// See also [noGenerics].
-  NoGenericsProvider<A, B> call<A extends num, B>() {
-    return NoGenericsProvider<A, B>();
-  }
-
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(
-      int Function<A extends num, B>(NoGenericsRef ref) create) {
-    return _$NoGenericsFamilyOverride(this, create);
-  }
-
-  @override
-  String toString() => 'noGenericsProvider';
-}
-
-class _$NoGenericsFamilyOverride implements $FamilyOverride {
-  _$NoGenericsFamilyOverride(this.from, this.create);
-
-  final int Function<A extends num, B>(NoGenericsRef ref) create;
-
-  @override
-  final NoGenericsFamily from;
-
-  @override
-  _NoGenericsProviderElement createElement(
-    ProviderContainer container,
-    covariant NoGenericsProvider provider,
-  ) {
-    return provider._copyWith(create).createElement(container);
-  }
-
-  @override
-  String toString() => 'noGenericsProvider.overrideWith(...)';
-}
-
-/// See also [noGenerics].
-class NoGenericsProvider<A extends num, B> extends AutoDisposeProvider<int> {
-  /// See also [noGenerics].
-  NoGenericsProvider()
-      : this._internal(
-          (ref) => noGenerics<A, B>(
-            ref as NoGenericsRef<A, B>,
-          ),
-          from: noGenericsProvider,
+final class NoGenericsFamily extends Family {
+  const NoGenericsFamily._()
+      : super(
           name: r'noGenericsProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$noGenericsHash,
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  NoGenericsProvider<A, B> call<A extends num, B>() =>
+      NoGenericsProvider<A, B>._(from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$noGenericsHash();
+
+  @override
+  String toString() => r'noGenericsProvider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    int Function<A extends num, B>(NoGenericsRef<A, B> ref) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as NoGenericsProvider;
+
+        return provider._copyWithCreate(create).createElement(container);
+      },
+    );
+  }
+}
+
+typedef MissingGenericsRef<A, B> = Ref<int>;
+
+@ProviderFor(missingGenerics)
+const missingGenericsProvider = MissingGenericsFamily._();
+
+final class MissingGenericsProvider<A, B>
+    extends $FunctionalProvider<int, int, MissingGenericsRef<A, B>>
+    with $Provider<int, MissingGenericsRef<A, B>> {
+  const MissingGenericsProvider._(
+      {required MissingGenericsFamily super.from,
+      int Function(
+        MissingGenericsRef<A, B> ref,
+      )? create})
+      : _createCb = create,
+        super(
+          argument: null,
+          name: r'missingGenericsProvider',
+          isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
         );
 
-  NoGenericsProvider._internal(
-    super.create, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-  }) : super.internal();
+  final int Function(
+    MissingGenericsRef<A, B> ref,
+  )? _createCb;
 
   @override
-  Override overrideWith(
-    int Function(NoGenericsRef<A, B> ref) create,
+  String debugGetCreateSourceHash() => _$missingGenericsHash();
+
+  MissingGenericsProvider<A, B> _copyWithCreate(
+    int Function<A, B>(
+      MissingGenericsRef<A, B> ref,
+    ) create,
   ) {
+    return MissingGenericsProvider<A, B>._(
+        from: from! as MissingGenericsFamily, create: create<A, B>);
+  }
+
+  @override
+  String toString() {
+    return r'missingGenericsProvider'
+        '<${A}, ${B}>'
+        '()';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: NoGenericsProvider<A, B>._internal(
-        (ref) => create(ref as NoGenericsRef<A, B>),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-      ),
+      providerOverride: $ValueProvider<int>(value),
     );
   }
 
   @override
-  () get argument {
-    return ();
+  $ProviderElement<int> createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  MissingGenericsProvider<A, B> $copyWithCreate(
+    int Function(
+      MissingGenericsRef<A, B> ref,
+    ) create,
+  ) {
+    return MissingGenericsProvider<A, B>._(
+        from: from! as MissingGenericsFamily, create: create);
   }
 
   @override
-  _NoGenericsProviderElement<A, B> createElement(
-    ProviderContainer container,
-  ) {
-    return _NoGenericsProviderElement(this, container);
-  }
-
-  NoGenericsProvider _copyWith(
-    int Function<A extends num, B>(NoGenericsRef ref) create,
-  ) {
-    return NoGenericsProvider._internal(
-      (ref) => create(ref as NoGenericsRef),
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-    );
+  int create(MissingGenericsRef<A, B> ref) {
+    final fn = _createCb ?? missingGenerics<A, B>;
+    return fn(ref);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is NoGenericsProvider && other.runtimeType == runtimeType;
+    return other is MissingGenericsProvider &&
+        other.runtimeType == runtimeType &&
+        other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, A.hashCode);
-    hash = _SystemHash.combine(hash, B.hashCode);
-
-    return _SystemHash.finish(hash);
+    return Object.hash(runtimeType, argument);
   }
-
-  @override
-  String toString() => 'noGenericsProvider<$A,$B>$argument';
-}
-
-mixin NoGenericsRef<A extends num, B> on AutoDisposeProviderRef<int> {}
-
-class _NoGenericsProviderElement<A extends num, B>
-    extends AutoDisposeProviderElement<int> with NoGenericsRef<A, B> {
-  _NoGenericsProviderElement(super.provider, super.container);
 }
 
 String _$missingGenericsHash() => r'7d8bc49e4f1e466260fbf6a61a3f9e62b4aef28f';
 
-/// See also [missingGenerics].
-@ProviderFor(missingGenerics)
-const missingGenericsProvider = MissingGenericsFamily();
-
-/// See also [missingGenerics].
-class MissingGenericsFamily extends Family {
-  /// See also [missingGenerics].
-  const MissingGenericsFamily();
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'missingGenericsProvider';
-
-  /// See also [missingGenerics].
-  MissingGenericsProvider<A, B> call<A, B>() {
-    return MissingGenericsProvider<A, B>();
-  }
-
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(int Function<A, B>(MissingGenericsRef ref) create) {
-    return _$MissingGenericsFamilyOverride(this, create);
-  }
-
-  @override
-  String toString() => 'missingGenericsProvider';
-}
-
-class _$MissingGenericsFamilyOverride implements $FamilyOverride {
-  _$MissingGenericsFamilyOverride(this.from, this.create);
-
-  final int Function<A, B>(MissingGenericsRef ref) create;
-
-  @override
-  final MissingGenericsFamily from;
-
-  @override
-  _MissingGenericsProviderElement createElement(
-    ProviderContainer container,
-    covariant MissingGenericsProvider provider,
-  ) {
-    return provider._copyWith(create).createElement(container);
-  }
-
-  @override
-  String toString() => 'missingGenericsProvider.overrideWith(...)';
-}
-
-/// See also [missingGenerics].
-class MissingGenericsProvider<A, B> extends AutoDisposeProvider<int> {
-  /// See also [missingGenerics].
-  MissingGenericsProvider()
-      : this._internal(
-          (ref) => missingGenerics<A, B>(
-            ref as MissingGenericsRef<A, B>,
-          ),
-          from: missingGenericsProvider,
+final class MissingGenericsFamily extends Family {
+  const MissingGenericsFamily._()
+      : super(
           name: r'missingGenericsProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$missingGenericsHash,
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  MissingGenericsProvider<A, B> call<A, B>() =>
+      MissingGenericsProvider<A, B>._(from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$missingGenericsHash();
+
+  @override
+  String toString() => r'missingGenericsProvider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    int Function<A, B>(MissingGenericsRef<A, B> ref) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as MissingGenericsProvider;
+
+        return provider._copyWithCreate(create).createElement(container);
+      },
+    );
+  }
+}
+
+typedef WrongOrderRef<B, A> = Ref<int>;
+
+@ProviderFor(wrongOrder)
+const wrongOrderProvider = WrongOrderFamily._();
+
+final class WrongOrderProvider<B, A>
+    extends $FunctionalProvider<int, int, WrongOrderRef<B, A>>
+    with $Provider<int, WrongOrderRef<B, A>> {
+  const WrongOrderProvider._(
+      {required WrongOrderFamily super.from,
+      int Function(
+        WrongOrderRef<B, A> ref,
+      )? create})
+      : _createCb = create,
+        super(
+          argument: null,
+          name: r'wrongOrderProvider',
+          isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
         );
 
-  MissingGenericsProvider._internal(
-    super.create, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-  }) : super.internal();
+  final int Function(
+    WrongOrderRef<B, A> ref,
+  )? _createCb;
 
   @override
-  Override overrideWith(
-    int Function(MissingGenericsRef<A, B> ref) create,
+  String debugGetCreateSourceHash() => _$wrongOrderHash();
+
+  WrongOrderProvider<B, A> _copyWithCreate(
+    int Function<B, A>(
+      WrongOrderRef<B, A> ref,
+    ) create,
   ) {
+    return WrongOrderProvider<B, A>._(
+        from: from! as WrongOrderFamily, create: create<B, A>);
+  }
+
+  @override
+  String toString() {
+    return r'wrongOrderProvider'
+        '<${B}, ${A}>'
+        '()';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: MissingGenericsProvider<A, B>._internal(
-        (ref) => create(ref as MissingGenericsRef<A, B>),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-      ),
+      providerOverride: $ValueProvider<int>(value),
     );
   }
 
   @override
-  () get argument {
-    return ();
+  $ProviderElement<int> createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  WrongOrderProvider<B, A> $copyWithCreate(
+    int Function(
+      WrongOrderRef<B, A> ref,
+    ) create,
+  ) {
+    return WrongOrderProvider<B, A>._(
+        from: from! as WrongOrderFamily, create: create);
   }
 
   @override
-  _MissingGenericsProviderElement<A, B> createElement(
-    ProviderContainer container,
-  ) {
-    return _MissingGenericsProviderElement(this, container);
-  }
-
-  MissingGenericsProvider _copyWith(
-    int Function<A, B>(MissingGenericsRef ref) create,
-  ) {
-    return MissingGenericsProvider._internal(
-      (ref) => create(ref as MissingGenericsRef),
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-    );
+  int create(WrongOrderRef<B, A> ref) {
+    final fn = _createCb ?? wrongOrder<B, A>;
+    return fn(ref);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is MissingGenericsProvider && other.runtimeType == runtimeType;
+    return other is WrongOrderProvider &&
+        other.runtimeType == runtimeType &&
+        other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, A.hashCode);
-    hash = _SystemHash.combine(hash, B.hashCode);
-
-    return _SystemHash.finish(hash);
+    return Object.hash(runtimeType, argument);
   }
-
-  @override
-  String toString() => 'missingGenericsProvider<$A,$B>$argument';
-}
-
-mixin MissingGenericsRef<A, B> on AutoDisposeProviderRef<int> {}
-
-class _MissingGenericsProviderElement<A, B>
-    extends AutoDisposeProviderElement<int> with MissingGenericsRef<A, B> {
-  _MissingGenericsProviderElement(super.provider, super.container);
 }
 
 String _$wrongOrderHash() => r'6732863e85b220c07f82c2d13be15c1e6f08192d';
 
-/// See also [wrongOrder].
-@ProviderFor(wrongOrder)
-const wrongOrderProvider = WrongOrderFamily();
-
-/// See also [wrongOrder].
-class WrongOrderFamily extends Family {
-  /// See also [wrongOrder].
-  const WrongOrderFamily();
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'wrongOrderProvider';
-
-  /// See also [wrongOrder].
-  WrongOrderProvider<B, A> call<B, A>() {
-    return WrongOrderProvider<B, A>();
-  }
-
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(int Function<B, A>(WrongOrderRef ref) create) {
-    return _$WrongOrderFamilyOverride(this, create);
-  }
-
-  @override
-  String toString() => 'wrongOrderProvider';
-}
-
-class _$WrongOrderFamilyOverride implements $FamilyOverride {
-  _$WrongOrderFamilyOverride(this.from, this.create);
-
-  final int Function<B, A>(WrongOrderRef ref) create;
-
-  @override
-  final WrongOrderFamily from;
-
-  @override
-  _WrongOrderProviderElement createElement(
-    ProviderContainer container,
-    covariant WrongOrderProvider provider,
-  ) {
-    return provider._copyWith(create).createElement(container);
-  }
-
-  @override
-  String toString() => 'wrongOrderProvider.overrideWith(...)';
-}
-
-/// See also [wrongOrder].
-class WrongOrderProvider<B, A> extends AutoDisposeProvider<int> {
-  /// See also [wrongOrder].
-  WrongOrderProvider()
-      : this._internal(
-          (ref) => wrongOrder<B, A>(
-            ref as WrongOrderRef<B, A>,
-          ),
-          from: wrongOrderProvider,
+final class WrongOrderFamily extends Family {
+  const WrongOrderFamily._()
+      : super(
           name: r'wrongOrderProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$wrongOrderHash,
           dependencies: null,
           allTransitiveDependencies: null,
+          isAutoDispose: true,
         );
 
-  WrongOrderProvider._internal(
-    super.create, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-  }) : super.internal();
+  WrongOrderProvider<B, A> call<B, A>() =>
+      WrongOrderProvider<B, A>._(from: this);
 
   @override
+  String debugGetCreateSourceHash() => _$wrongOrderHash();
+
+  @override
+  String toString() => r'wrongOrderProvider';
+
+  /// {@macro riverpod.override_with}
   Override overrideWith(
-    int Function(WrongOrderRef<B, A> ref) create,
+    int Function<B, A>(WrongOrderRef<B, A> ref) create,
   ) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: WrongOrderProvider<B, A>._internal(
-        (ref) => create(ref as WrongOrderRef<B, A>),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-      ),
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as WrongOrderProvider;
+
+        return provider._copyWithCreate(create).createElement(container);
+      },
     );
   }
-
-  @override
-  () get argument {
-    return ();
-  }
-
-  @override
-  _WrongOrderProviderElement<B, A> createElement(
-    ProviderContainer container,
-  ) {
-    return _WrongOrderProviderElement(this, container);
-  }
-
-  WrongOrderProvider _copyWith(
-    int Function<B, A>(WrongOrderRef ref) create,
-  ) {
-    return WrongOrderProvider._internal(
-      (ref) => create(ref as WrongOrderRef),
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-    );
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is WrongOrderProvider && other.runtimeType == runtimeType;
-  }
-
-  @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, B.hashCode);
-    hash = _SystemHash.combine(hash, A.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
-
-  @override
-  String toString() => 'wrongOrderProvider<$B,$A>$argument';
 }
 
-mixin WrongOrderRef<B, A> on AutoDisposeProviderRef<int> {}
-
-class _WrongOrderProviderElement<B, A> extends AutoDisposeProviderElement<int>
-    with WrongOrderRef<B, A> {
-  _WrongOrderProviderElement(super.provider, super.container);
-}
+const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package
+// ignore_for_file: deprecated_member_use_from_same_package

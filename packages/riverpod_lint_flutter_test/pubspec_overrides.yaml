@@ -15,3 +15,4 @@ dependency_overrides:
   riverpod_lint:
     path: ../riverpod_lint
   test_api: ^0.6.1
+  vm_service: ^14.0.0
