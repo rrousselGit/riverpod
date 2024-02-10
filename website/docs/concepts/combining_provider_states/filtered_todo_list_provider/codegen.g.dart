@@ -8,6 +8,65 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+typedef FilterRef = Ref<Filter>;
+
+@ProviderFor(filter)
+const filterProvider = FilterProvider._();
+
+final class FilterProvider
+    extends $FunctionalProvider<Filter, Filter, FilterRef>
+    with $Provider<Filter, FilterRef> {
+  const FilterProvider._(
+      {Filter Function(
+        FilterRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'filterProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final Filter Function(
+    FilterRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$filterHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Filter value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<Filter>(value),
+    );
+  }
+
+  @override
+  $ProviderElement<Filter> createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  FilterProvider $copyWithCreate(
+    Filter Function(
+      FilterRef ref,
+    ) create,
+  ) {
+    return FilterProvider._(create: create);
+  }
+
+  @override
+  Filter create(FilterRef ref) {
+    final _$cb = _createCb ?? filter;
+    return _$cb(ref);
+  }
+}
+
+String _$filterHash() => r'53b85f9e189dabb39aa269e62536a3f1a3559ef7';
+
 typedef FilteredTodoListRef = Ref<List<Todo>>;
 
 @ProviderFor(filteredTodoList)

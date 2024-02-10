@@ -8,6 +8,9 @@ import '../../utils.dart';
 
 part 'family_and_dispose.g.dart';
 
+@riverpod
+TaskTrackerRepo taskTracker(TaskTrackerRef ref) => TaskTrackerRepo();
+
 /* SNIPPET START */
 @riverpod
 class BugsEncounteredNotifier extends _$BugsEncounteredNotifier {

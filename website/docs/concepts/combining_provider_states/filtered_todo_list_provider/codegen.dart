@@ -1,7 +1,6 @@
-import 'package:flutter_riverpod/legacy.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../todo_list_provider/raw.dart';
+import '../todo_list_provider/codegen.dart';
 
 part 'codegen.g.dart';
 
@@ -11,7 +10,8 @@ enum Filter {
   uncompleted,
 }
 
-final filterProvider = StateProvider((ref) => Filter.none);
+@riverpod
+Filter filter(FilterRef ref) => Filter.none;
 
 /* SNIPPET START */
 

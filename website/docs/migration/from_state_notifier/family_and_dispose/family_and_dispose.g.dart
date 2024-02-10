@@ -8,6 +8,67 @@ part of 'family_and_dispose.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+typedef TaskTrackerRef = Ref<TaskTrackerRepo>;
+
+@ProviderFor(taskTracker)
+const taskTrackerProvider = TaskTrackerProvider._();
+
+final class TaskTrackerProvider extends $FunctionalProvider<
+    TaskTrackerRepo,
+    TaskTrackerRepo,
+    TaskTrackerRef> with $Provider<TaskTrackerRepo, TaskTrackerRef> {
+  const TaskTrackerProvider._(
+      {TaskTrackerRepo Function(
+        TaskTrackerRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'taskTrackerProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final TaskTrackerRepo Function(
+    TaskTrackerRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$taskTrackerHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(TaskTrackerRepo value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<TaskTrackerRepo>(value),
+    );
+  }
+
+  @override
+  $ProviderElement<TaskTrackerRepo> createElement(
+          ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  TaskTrackerProvider $copyWithCreate(
+    TaskTrackerRepo Function(
+      TaskTrackerRef ref,
+    ) create,
+  ) {
+    return TaskTrackerProvider._(create: create);
+  }
+
+  @override
+  TaskTrackerRepo create(TaskTrackerRef ref) {
+    final _$cb = _createCb ?? taskTracker;
+    return _$cb(ref);
+  }
+}
+
+String _$taskTrackerHash() => r'd78149146c3a07b78e7dc1d03fa60ed1941c3702';
+
 @ProviderFor(BugsEncounteredNotifier)
 const bugsEncounteredNotifierProvider = BugsEncounteredNotifierFamily._();
 
