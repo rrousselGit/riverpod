@@ -1,3 +1,36 @@
+## 3.0.0-dev.3 - 2023-11-27
+
+- Fix "pending timer" issue inside tests when using `ref.keepAlive()`.
+- Fix `Ref.invalidate`/`Ref.refresh` not throwing on circular dependency.
+- Fix an infinite loop caused by `ref.keepAlive` if the `KeepAliveLink` is immediately closed.
+- Fix `container.exists(provider)` on nested containers not checking their
+  parent containers.
+
+## 3.0.0-dev.2 - 2023-11-20
+
+Fix exceptions when using multiple root `ProviderContainers`/`ProviderScopes`.
+
+## 3.0.0-dev.1 - 2023-11-20
+
+- All notifier properties now throw an error if used after the notifier
+  has been disposed.
+- The error thrown when a notifier property is used inside the constructor
+  of a notifier has been improved.
+- Fix `ProviderObserver.didUpdateProvider` being called with an incorrect
+  "provider" parameter when the provider is overridden.
+
+## 3.0.0-dev.0 - 2023-10-29
+
+- **Breaking**: `AsyncValue` is now "sealed" and `AsyncData/AsyncLoading/AsyncError`
+  are "final". This means that it is no-longer possible to subclass
+  `AsyncValue` or the associated classes.
+- **Breaking**: Removed everything marked as "deprecated"
+- Bumped minimum Dart SDK to >= 3.0.0-dev
+
+## 2.5.0 - 2024-02-03
+
+- Add `test` argument to `AsyncValue.guard` method. (thanks to @utamori)
+
 ## 2.4.9 - 2023-11-27
 
 - Fix "pending timer" issue inside tests when using `ref.keepAlive()`.
@@ -436,10 +469,18 @@ Riverpod is now stable!
   `ProviderContainer.debugProviderElements` are removed. You can now instead use
   `ProviderContainer.getAllProviderElements`.
 - Increased minimum SDK version to 2.14.0
+  <<<<<<< HEAD
 - **Breaking** The return value when reading a `StateProvider` changed.
   Before, doing `ref.read(someStateProvider)` would return the `StateController` instance.
   Now, this will only return the state of the `StateController`.
-  This new behaviour matches `StateNotifierProvider`.
+  This new behavior matches `StateNotifierProvider`.
+  =======
+- **Breaking** The return value when reading a `StateProvider` changed. Before,
+  doing `ref.read(someStateProvider)` would return the `StateController`
+  instance. Now, this will only return the state of the `StateController`. This
+  new behaviour matches `StateNotifierProvider`.
+
+  > > > > > > > 1f6e3c462bdb2f8e058be63ab309ca2eb01ed71e
 
   For a simple migration, the old behavior is available by writing
   `ref.read(someStateProvider.state)`.
@@ -893,7 +934,13 @@ migrated to null safety.
 
 ## 0.14.0+1
 
-- Re-added `StateProvider.overrideWithValue`/`StateProvider.overrideWithProvider` that were unvoluntarily removed.
+<<<<<<< HEAD
+
+- # Re-added `StateProvider.overrideWithValue`/`StateProvider.overrideWithProvider` that were involuntarily removed.
+- Re-added
+  `StateProvider.overrideWithValue`/`StateProvider.overrideWithProvider` that
+  were unvoluntarily removed.
+  > > > > > > > 1f6e3c462bdb2f8e058be63ab309ca2eb01ed71e
 
 ## 0.14.0
 
