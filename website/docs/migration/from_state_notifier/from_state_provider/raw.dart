@@ -1,5 +1,4 @@
 import 'package:riverpod/riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 /* SNIPPET START */
 class CounterNotifier extends Notifier<int> {

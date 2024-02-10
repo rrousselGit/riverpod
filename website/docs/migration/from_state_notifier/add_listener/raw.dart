@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:riverpod/riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 /* SNIPPET START */
 class MyNotifier extends Notifier<int> {

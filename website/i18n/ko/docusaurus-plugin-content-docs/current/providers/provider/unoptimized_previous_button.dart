@@ -1,6 +1,7 @@
 // 현재 페이지를 제어하는 프로바이더
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 /* SNIPPET START */
 
