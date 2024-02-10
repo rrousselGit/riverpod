@@ -69,7 +69,7 @@ final class ActivityProvider extends $FunctionalProvider<AsyncValue<Activity>,
   @override
   FutureOr<Activity> create(ActivityRef ref) {
     final fn = _createCb ?? activity;
-    final String argument = this.argument as String;
+    final argument = this.argument as String;
     return fn(
       ref,
       argument,

@@ -71,7 +71,7 @@ final class FetchPackageDetailsProvider extends $FunctionalProvider<
   @override
   FutureOr<Package> create(FetchPackageDetailsRef ref) {
     final fn = _createCb ?? fetchPackageDetails;
-    final String argument = this.argument as String;
+    final argument = this.argument as String;
     return fn(
       ref,
       packageName: argument,

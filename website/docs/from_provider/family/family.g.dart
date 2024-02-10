@@ -86,10 +86,7 @@ final class RandomProvider extends $FunctionalProvider<int, int, RandomRef>
   @override
   int create(RandomRef ref) {
     final fn = _createCb ?? random;
-    final ({
-      int seed,
-      int max,
-    }) argument = this.argument as ({
+    final argument = this.argument as ({
       int seed,
       int max,
     });

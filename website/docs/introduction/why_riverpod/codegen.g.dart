@@ -82,10 +82,7 @@ final class FetchPackagesProvider extends $FunctionalProvider<
   @override
   FutureOr<List<Package>> create(FetchPackagesRef ref) {
     final fn = _createCb ?? fetchPackages;
-    final ({
-      int page,
-      String search,
-    }) argument = this.argument as ({
+    final argument = this.argument as ({
       int page,
       String search,
     });

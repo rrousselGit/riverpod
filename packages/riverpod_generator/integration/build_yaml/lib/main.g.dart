@@ -234,7 +234,7 @@ final class Count2Provider extends $FunctionalProvider<int, int, Count2Ref>
   @override
   int create(Count2Ref ref) {
     final fn = _createCb ?? count2;
-    final int argument = this.argument as int;
+    final argument = this.argument as int;
     return fn(
       ref,
       argument,
@@ -357,7 +357,7 @@ final class CountFuture2Provider
   @override
   FutureOr<int> create(CountFuture2Ref ref) {
     final fn = _createCb ?? countFuture2;
-    final int argument = this.argument as int;
+    final argument = this.argument as int;
     return fn(
       ref,
       argument,
@@ -480,7 +480,7 @@ final class CountStream2Provider
   @override
   Stream<int> create(CountStream2Ref ref) {
     final fn = _createCb ?? countStream2;
-    final int argument = this.argument as int;
+    final argument = this.argument as int;
     return fn(
       ref,
       argument,

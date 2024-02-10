@@ -151,10 +151,7 @@ final class ExampleFamilyProvider
   @override
   int create(ExampleFamilyRef ref) {
     final fn = _createCb ?? exampleFamily;
-    final ({
-      int a,
-      String b,
-    }) argument = this.argument as ({
+    final argument = this.argument as ({
       int a,
       String b,
     });

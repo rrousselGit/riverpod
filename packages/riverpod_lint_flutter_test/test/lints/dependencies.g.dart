@@ -1286,7 +1286,7 @@ final class FamilyDepProvider
   @override
   int create(FamilyDepRef ref) {
     final fn = _createCb ?? familyDep;
-    final int argument = this.argument as int;
+    final argument = this.argument as int;
     return fn(
       ref,
       argument,
@@ -1423,7 +1423,7 @@ final class FamilyDep2Provider
   @override
   int create(FamilyDep2Ref ref) {
     final fn = _createCb ?? familyDep2;
-    final int argument = this.argument as int;
+    final argument = this.argument as int;
     return fn(
       ref,
       argument,

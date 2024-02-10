@@ -77,7 +77,7 @@ final class ExampleProvider
   @override
   String create(ExampleRef ref) {
     final fn = _createCb ?? example;
-    final int argument = this.argument as int;
+    final argument = this.argument as int;
     return fn(
       ref,
       argument,

@@ -230,13 +230,7 @@ final class FamilyProvider
   @override
   String create(FamilyRef ref) {
     final fn = _createCb ?? family;
-    final (
-      int, {
-      String? second,
-      double third,
-      bool forth,
-      List<String>? fifth,
-    }) argument = this.argument as (
+    final argument = this.argument as (
       int, {
       String? second,
       double third,

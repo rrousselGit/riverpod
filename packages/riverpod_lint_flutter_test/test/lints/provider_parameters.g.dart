@@ -63,7 +63,7 @@ final class GeneratorProvider
     ) create,
   ) {
     return GeneratorProvider._(
-        argument: argument as Object?,
+        argument: argument,
         from: from! as GeneratorFamily,
         create: (
           ref, {
@@ -75,7 +75,7 @@ final class GeneratorProvider
   @override
   int create(GeneratorRef ref) {
     final fn = _createCb ?? generator;
-    final Object? argument = this.argument as Object?;
+    final argument = this.argument;
     return fn(
       ref,
       value: argument,
@@ -127,7 +127,7 @@ final class GeneratorFamily extends Family {
       createElement: (container, provider) {
         provider as GeneratorProvider;
 
-        final argument = provider.argument as Object?;
+        final argument = provider.argument;
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
