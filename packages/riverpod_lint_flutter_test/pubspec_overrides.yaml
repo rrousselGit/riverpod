@@ -14,5 +14,6 @@ dependency_overrides:
     path: ../riverpod_annotation
   riverpod_lint:
     path: ../riverpod_lint
-  test_api: ^0.6.1
+  
+  # hotreloader stuff
   vm_service: ^14.0.0
