@@ -6,7 +6,6 @@ import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 import 'package:trotter/trotter.dart';
 
-
 void main() {
   //  A
   //  |
