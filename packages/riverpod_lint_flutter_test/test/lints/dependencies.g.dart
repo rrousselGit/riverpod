@@ -6,66 +6,6 @@ part of 'dependencies.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef UnimplementedScopedRef = Ref<int>;
-
-@ProviderFor(unimplementedScoped)
-const unimplementedScopedProvider = UnimplementedScopedProvider._();
-
-final class UnimplementedScopedProvider
-    extends $FunctionalProvider<int, int, UnimplementedScopedRef>
-    with $Provider<int, UnimplementedScopedRef> {
-  const UnimplementedScopedProvider._(
-      {int Function(
-        UnimplementedScopedRef ref,
-      )? create})
-      : _createCb = create,
-        super(
-          from: null,
-          argument: null,
-          name: r'unimplementedScopedProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          allTransitiveDependencies: null,
-        );
-
-  final int Function(
-    UnimplementedScopedRef ref,
-  )? _createCb;
-
-  @override
-  String debugGetCreateSourceHash() => _$unimplementedScopedHash();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(int value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<int>(value),
-    );
-  }
-
-  @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
-
-  @override
-  UnimplementedScopedProvider $copyWithCreate(
-    int Function(
-      UnimplementedScopedRef ref,
-    ) create,
-  ) {
-    return UnimplementedScopedProvider._(create: create);
-  }
-
-  @override
-  int create(UnimplementedScopedRef ref) {
-    final fn = _createCb ?? unimplementedScoped;
-    return fn(ref);
-  }
-}
-
-String _$unimplementedScopedHash() =>
-    r'5f32fc56f4157238612d62ef54038fe92b7cdfe8';
-
 typedef DepRef = Ref<int>;
 
 @ProviderFor(dep)
@@ -302,67 +242,6 @@ final class WatchScopedButNoDependenciesProvider
 
 String _$watchScopedButNoDependenciesHash() =>
     r'3ec52c4ab2ea2b3204b7aa049d1756c01c014ff0';
-
-typedef WatchExternalButNoDependenciesRef = Ref<int>;
-
-@ProviderFor(watchExternalButNoDependencies)
-const watchExternalButNoDependenciesProvider =
-    WatchExternalButNoDependenciesProvider._();
-
-final class WatchExternalButNoDependenciesProvider
-    extends $FunctionalProvider<int, int, WatchExternalButNoDependenciesRef>
-    with $Provider<int, WatchExternalButNoDependenciesRef> {
-  const WatchExternalButNoDependenciesProvider._(
-      {int Function(
-        WatchExternalButNoDependenciesRef ref,
-      )? create})
-      : _createCb = create,
-        super(
-          from: null,
-          argument: null,
-          name: r'watchExternalButNoDependenciesProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          allTransitiveDependencies: null,
-        );
-
-  final int Function(
-    WatchExternalButNoDependenciesRef ref,
-  )? _createCb;
-
-  @override
-  String debugGetCreateSourceHash() => _$watchExternalButNoDependenciesHash();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(int value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<int>(value),
-    );
-  }
-
-  @override
-  $ProviderElement<int> createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
-
-  @override
-  WatchExternalButNoDependenciesProvider $copyWithCreate(
-    int Function(
-      WatchExternalButNoDependenciesRef ref,
-    ) create,
-  ) {
-    return WatchExternalButNoDependenciesProvider._(create: create);
-  }
-
-  @override
-  int create(WatchExternalButNoDependenciesRef ref) {
-    final fn = _createCb ?? watchExternalButNoDependencies;
-    return fn(ref);
-  }
-}
-
-String _$watchExternalButNoDependenciesHash() =>
-    r'bbe1ed12645a261e2030222549308d378f5f368c';
 
 typedef WatchGeneratedScopedButNoDependenciesRef = Ref<int>;
 
