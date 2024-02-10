@@ -8,212 +8,163 @@ part of 'family_and_dispose.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$bugsEncounteredNotifierHash() =>
-    r'c76e924f84db91c57d226896b062d9f4e8ab79e5';
-
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-abstract class _$BugsEncounteredNotifier
-    extends BuildlessAutoDisposeAsyncNotifier<int> {
-  late final String featureId;
-
-  FutureOr<int> build(
-    String featureId,
-  );
-}
-
-/// See also [BugsEncounteredNotifier].
 @ProviderFor(BugsEncounteredNotifier)
-const bugsEncounteredNotifierProvider = BugsEncounteredNotifierFamily();
+const bugsEncounteredNotifierProvider = BugsEncounteredNotifierFamily._();
 
-/// See also [BugsEncounteredNotifier].
-class BugsEncounteredNotifierFamily extends Family {
-  /// See also [BugsEncounteredNotifier].
-  const BugsEncounteredNotifierFamily();
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'bugsEncounteredNotifierProvider';
-
-  /// See also [BugsEncounteredNotifier].
-  BugsEncounteredNotifierProvider call(
-    String featureId,
-  ) {
-    return BugsEncounteredNotifierProvider(
-      featureId,
-    );
-  }
-
-  @visibleForOverriding
-  @override
-  BugsEncounteredNotifierProvider getProviderOverride(
-    covariant BugsEncounteredNotifierProvider provider,
-  ) {
-    return call(
-      provider.featureId,
-    );
-  }
-
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(BugsEncounteredNotifier Function() create) {
-    return _$BugsEncounteredNotifierFamilyOverride(this, create);
-  }
-}
-
-class _$BugsEncounteredNotifierFamilyOverride implements FamilyOverride {
-  _$BugsEncounteredNotifierFamilyOverride(this.overriddenFamily, this.create);
-
-  final BugsEncounteredNotifier Function() create;
-
-  @override
-  final BugsEncounteredNotifierFamily overriddenFamily;
-
-  @override
-  BugsEncounteredNotifierProvider getProviderOverride(
-    covariant BugsEncounteredNotifierProvider provider,
-  ) {
-    return provider._copyWith(create);
-  }
-}
-
-/// See also [BugsEncounteredNotifier].
-class BugsEncounteredNotifierProvider
-    extends AutoDisposeAsyncNotifierProviderImpl<BugsEncounteredNotifier, int> {
-  /// See also [BugsEncounteredNotifier].
-  BugsEncounteredNotifierProvider(
-    String featureId,
-  ) : this._internal(
-          () => BugsEncounteredNotifier()..featureId = featureId,
-          from: bugsEncounteredNotifierProvider,
+final class BugsEncounteredNotifierProvider
+    extends $AsyncNotifierProvider<BugsEncounteredNotifier, int> {
+  const BugsEncounteredNotifierProvider._(
+      {required BugsEncounteredNotifierFamily super.from,
+      required String super.argument,
+      super.runNotifierBuildOverride,
+      BugsEncounteredNotifier Function()? create})
+      : _createCb = create,
+        super(
           name: r'bugsEncounteredNotifierProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$bugsEncounteredNotifierHash,
-          dependencies: BugsEncounteredNotifierFamily._dependencies,
-          allTransitiveDependencies:
-              BugsEncounteredNotifierFamily._allTransitiveDependencies,
-          featureId: featureId,
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
         );
 
-  BugsEncounteredNotifierProvider._internal(
-    super.create, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.featureId,
-  }) : super.internal();
-
-  final String featureId;
+  final BugsEncounteredNotifier Function()? _createCb;
 
   @override
-  FutureOr<int> runNotifierBuild(
-    covariant BugsEncounteredNotifier notifier,
-  ) {
-    return notifier.build(
-      featureId,
-    );
-  }
+  String debugGetCreateSourceHash() => _$bugsEncounteredNotifierHash();
 
   @override
-  Override overrideWith(BugsEncounteredNotifier Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: BugsEncounteredNotifierProvider._internal(
-        () => create()..featureId = featureId,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        featureId: featureId,
-      ),
-    );
+  String toString() {
+    return r'bugsEncounteredNotifierProvider'
+        ''
+        '($argument)';
   }
 
+  @$internal
   @override
-  (String,) get argument {
-    return (featureId,);
-  }
+  BugsEncounteredNotifier create() =>
+      _createCb?.call() ?? BugsEncounteredNotifier();
 
+  @$internal
   @override
-  AutoDisposeAsyncNotifierProviderElement<BugsEncounteredNotifier, int>
-      createElement() {
-    return _BugsEncounteredNotifierProviderElement(this);
-  }
-
-  BugsEncounteredNotifierProvider _copyWith(
+  BugsEncounteredNotifierProvider $copyWithCreate(
     BugsEncounteredNotifier Function() create,
   ) {
-    return BugsEncounteredNotifierProvider._internal(
-      () => create()..featureId = featureId,
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-      featureId: featureId,
-    );
+    return BugsEncounteredNotifierProvider._(
+        argument: argument as String,
+        from: from! as BugsEncounteredNotifierFamily,
+        create: create);
   }
+
+  @$internal
+  @override
+  BugsEncounteredNotifierProvider $copyWithBuild(
+    FutureOr<int> Function(
+      Ref<AsyncValue<int>>,
+      BugsEncounteredNotifier,
+    ) build,
+  ) {
+    return BugsEncounteredNotifierProvider._(
+        argument: argument as String,
+        from: from! as BugsEncounteredNotifierFamily,
+        runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $AsyncNotifierProviderElement<BugsEncounteredNotifier, int> $createElement(
+          ProviderContainer container) =>
+      $AsyncNotifierProviderElement(this, container);
 
   @override
   bool operator ==(Object other) {
     return other is BugsEncounteredNotifierProvider &&
-        other.featureId == featureId;
+        other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, featureId.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-mixin BugsEncounteredNotifierRef on AutoDisposeAsyncNotifierProviderRef<int> {
-  /// The parameter `featureId` of this provider.
-  String get featureId;
-}
+String _$bugsEncounteredNotifierHash() =>
+    r'c76e924f84db91c57d226896b062d9f4e8ab79e5';
 
-class _BugsEncounteredNotifierProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<BugsEncounteredNotifier,
-        int> with BugsEncounteredNotifierRef {
-  _BugsEncounteredNotifierProviderElement(super.provider);
+final class BugsEncounteredNotifierFamily extends Family {
+  const BugsEncounteredNotifierFamily._()
+      : super(
+          name: r'bugsEncounteredNotifierProvider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  BugsEncounteredNotifierProvider call(
+    String featureId,
+  ) =>
+      BugsEncounteredNotifierProvider._(argument: featureId, from: this);
 
   @override
-  String get featureId => (origin as BugsEncounteredNotifierProvider).featureId;
+  String debugGetCreateSourceHash() => _$bugsEncounteredNotifierHash();
+
+  @override
+  String toString() => r'bugsEncounteredNotifierProvider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    BugsEncounteredNotifier Function(
+      String args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as BugsEncounteredNotifierProvider;
+
+        final argument = provider.argument as String;
+
+        return provider
+            .$copyWithCreate(() => create(argument))
+            .$createElement(container);
+      },
+    );
+  }
+
+  /// {@macro riverpod.override_with_build}
+  Override overrideWithBuild(
+    FutureOr<int> Function(Ref<AsyncValue<int>> ref,
+            BugsEncounteredNotifier notifier, String argument)
+        build,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as BugsEncounteredNotifierProvider;
+
+        final argument = provider.argument as String;
+
+        return provider
+            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
+            .$createElement(container);
+      },
+    );
+  }
 }
+
+abstract class _$BugsEncounteredNotifier extends $AsyncNotifier<int> {
+  late final _$args =
+      (ref as $AsyncNotifierProviderElement).origin.argument as String;
+  String get featureId => _$args;
+
+  FutureOr<int> build(
+    String featureId,
+  );
+  @$internal
+  @override
+  FutureOr<int> runBuild() => build(
+        _$args,
+      );
+}
+
+const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

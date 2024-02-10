@@ -8,19 +8,59 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+typedef ChatRef = Ref<AsyncValue<List<String>>>;
+
+@ProviderFor(chat)
+const chatProvider = ChatProvider._();
+
+final class ChatProvider extends $FunctionalProvider<AsyncValue<List<String>>,
+        Stream<List<String>>, ChatRef>
+    with $FutureModifier<List<String>>, $StreamProvider<List<String>, ChatRef> {
+  const ChatProvider._(
+      {Stream<List<String>> Function(
+        ChatRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'chatProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final Stream<List<String>> Function(
+    ChatRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$chatHash();
+
+  @$internal
+  @override
+  $StreamProviderElement<List<String>> $createElement(
+          ProviderContainer container) =>
+      $StreamProviderElement(this, container);
+
+  @override
+  ChatProvider $copyWithCreate(
+    Stream<List<String>> Function(
+      ChatRef ref,
+    ) create,
+  ) {
+    return ChatProvider._(create: create);
+  }
+
+  @override
+  Stream<List<String>> create(ChatRef ref) {
+    final _$cb = _createCb ?? chat;
+    return _$cb(ref);
+  }
+}
+
 String _$chatHash() => r'db1302132f90e854fe2f5da9d97d89c9a3c8b858';
 
-/// See also [chat].
-@ProviderFor(chat)
-final chatProvider = AutoDisposeStreamProvider<List<String>>.internal(
-  chat,
-  name: r'chatProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$chatHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef ChatRef = AutoDisposeStreamProviderRef<List<String>>;
+const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

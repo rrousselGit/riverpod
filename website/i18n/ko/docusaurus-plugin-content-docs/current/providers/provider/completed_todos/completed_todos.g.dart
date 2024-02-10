@@ -8,20 +8,66 @@ part of 'completed_todos.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+typedef CompletedTodosRef = Ref<List<Todo>>;
+
+@ProviderFor(completedTodos)
+const completedTodosProvider = CompletedTodosProvider._();
+
+final class CompletedTodosProvider
+    extends $FunctionalProvider<List<Todo>, List<Todo>, CompletedTodosRef>
+    with $Provider<List<Todo>, CompletedTodosRef> {
+  const CompletedTodosProvider._(
+      {List<Todo> Function(
+        CompletedTodosRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'completedTodosProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final List<Todo> Function(
+    CompletedTodosRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$completedTodosHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(List<Todo> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<List<Todo>>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<List<Todo>> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  CompletedTodosProvider $copyWithCreate(
+    List<Todo> Function(
+      CompletedTodosRef ref,
+    ) create,
+  ) {
+    return CompletedTodosProvider._(create: create);
+  }
+
+  @override
+  List<Todo> create(CompletedTodosRef ref) {
+    final _$cb = _createCb ?? completedTodos;
+    return _$cb(ref);
+  }
+}
+
 String _$completedTodosHash() => r'855706c09268f428696b3b382ae1605818361b83';
 
-/// See also [completedTodos].
-@ProviderFor(completedTodos)
-final completedTodosProvider = AutoDisposeProvider<List<Todo>>.internal(
-  completedTodos,
-  name: r'completedTodosProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$completedTodosHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef CompletedTodosRef = AutoDisposeProviderRef<List<Todo>>;
+const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

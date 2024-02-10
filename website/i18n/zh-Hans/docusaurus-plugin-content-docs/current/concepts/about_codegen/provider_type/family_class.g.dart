@@ -8,238 +8,200 @@ part of 'family_class.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$exampleHash() => r'c81e9d94e763b25403ab6b7fa03f092003570142';
+@ProviderFor(Example)
+const exampleProvider = ExampleFamily._();
 
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
+final class ExampleProvider extends $NotifierProvider<Example, String> {
+  const ExampleProvider._(
+      {required ExampleFamily super.from,
+      required (
+        int, {
+        String param2,
+      })
+          super.argument,
+      super.runNotifierBuildOverride,
+      Example Function()? create})
+      : _createCb = create,
+        super(
+          name: r'exampleProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
 
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
+  final Example Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$exampleHash();
+
+  @override
+  String toString() {
+    return r'exampleProvider'
+        ''
+        '$argument';
   }
 
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
+  }
+
+  @$internal
+  @override
+  Example create() => _createCb?.call() ?? Example();
+
+  @$internal
+  @override
+  ExampleProvider $copyWithCreate(
+    Example Function() create,
+  ) {
+    return ExampleProvider._(
+        argument: argument as (
+          int, {
+          String param2,
+        }),
+        from: from! as ExampleFamily,
+        create: create);
+  }
+
+  @$internal
+  @override
+  ExampleProvider $copyWithBuild(
+    String Function(
+      Ref<String>,
+      Example,
+    ) build,
+  ) {
+    return ExampleProvider._(
+        argument: argument as (
+          int, {
+          String param2,
+        }),
+        from: from! as ExampleFamily,
+        runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<Example, String> $createElement(
+          ProviderContainer container) =>
+      $NotifierProviderElement(this, container);
+
+  @override
+  bool operator ==(Object other) {
+    return other is ExampleProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
   }
 }
 
-abstract class _$Example extends BuildlessAutoDisposeNotifier<String> {
-  late final int param1;
-  late final String param2;
+String _$exampleHash() => r'c81e9d94e763b25403ab6b7fa03f092003570142';
+
+final class ExampleFamily extends Family {
+  const ExampleFamily._()
+      : super(
+          name: r'exampleProvider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  ExampleProvider call(
+    int param1, {
+    String param2 = 'foo',
+  }) =>
+      ExampleProvider._(argument: (
+        param1,
+        param2: param2,
+      ), from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$exampleHash();
+
+  @override
+  String toString() => r'exampleProvider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    Example Function(
+      (
+        int, {
+        String param2,
+      }) args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as ExampleProvider;
+
+        final argument = provider.argument as (
+          int, {
+          String param2,
+        });
+
+        return provider
+            .$copyWithCreate(() => create(argument))
+            .$createElement(container);
+      },
+    );
+  }
+
+  /// {@macro riverpod.override_with_build}
+  Override overrideWithBuild(
+    String Function(
+            Ref<String> ref,
+            Example notifier,
+            (
+              int, {
+              String param2,
+            }) argument)
+        build,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as ExampleProvider;
+
+        final argument = provider.argument as (
+          int, {
+          String param2,
+        });
+
+        return provider
+            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
+            .$createElement(container);
+      },
+    );
+  }
+}
+
+abstract class _$Example extends $Notifier<String> {
+  late final _$args = (ref as $NotifierProviderElement).origin.argument as (
+    int, {
+    String param2,
+  });
+  int get param1 => _$args.$1;
+  String get param2 => _$args.param2;
 
   String build(
     int param1, {
     String param2 = 'foo',
   });
+  @$internal
+  @override
+  String runBuild() => build(
+        _$args.$1,
+        param2: _$args.param2,
+      );
 }
 
-/// See also [Example].
-@ProviderFor(Example)
-const exampleProvider = ExampleFamily();
-
-/// See also [Example].
-class ExampleFamily extends Family {
-  /// See also [Example].
-  const ExampleFamily();
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'exampleProvider';
-
-  /// See also [Example].
-  ExampleProvider call(
-    int param1, {
-    String param2 = 'foo',
-  }) {
-    return ExampleProvider(
-      param1,
-      param2: param2,
-    );
-  }
-
-  @visibleForOverriding
-  @override
-  ExampleProvider getProviderOverride(
-    covariant ExampleProvider provider,
-  ) {
-    return call(
-      provider.param1,
-      param2: provider.param2,
-    );
-  }
-
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(Example Function() create) {
-    return _$ExampleFamilyOverride(this, create);
-  }
-}
-
-class _$ExampleFamilyOverride implements FamilyOverride {
-  _$ExampleFamilyOverride(this.overriddenFamily, this.create);
-
-  final Example Function() create;
-
-  @override
-  final ExampleFamily overriddenFamily;
-
-  @override
-  ExampleProvider getProviderOverride(
-    covariant ExampleProvider provider,
-  ) {
-    return provider._copyWith(create);
-  }
-}
-
-/// See also [Example].
-class ExampleProvider extends AutoDisposeNotifierProviderImpl<Example, String> {
-  /// See also [Example].
-  ExampleProvider(
-    int param1, {
-    String param2 = 'foo',
-  }) : this._internal(
-          () => Example()
-            ..param1 = param1
-            ..param2 = param2,
-          from: exampleProvider,
-          name: r'exampleProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$exampleHash,
-          dependencies: ExampleFamily._dependencies,
-          allTransitiveDependencies: ExampleFamily._allTransitiveDependencies,
-          param1: param1,
-          param2: param2,
-        );
-
-  ExampleProvider._internal(
-    super.create, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.param1,
-    required this.param2,
-  }) : super.internal();
-
-  final int param1;
-  final String param2;
-
-  @override
-  String runNotifierBuild(
-    covariant Example notifier,
-  ) {
-    return notifier.build(
-      param1,
-      param2: param2,
-    );
-  }
-
-  @override
-  Override overrideWith(Example Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: ExampleProvider._internal(
-        () => create()
-          ..param1 = param1
-          ..param2 = param2,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        param1: param1,
-        param2: param2,
-      ),
-    );
-  }
-
-  @override
-  (
-    int, {
-    String param2,
-  }) get argument {
-    return (
-      param1,
-      param2: param2,
-    );
-  }
-
-  @override
-  AutoDisposeNotifierProviderElement<Example, String> createElement() {
-    return _ExampleProviderElement(this);
-  }
-
-  ExampleProvider _copyWith(
-    Example Function() create,
-  ) {
-    return ExampleProvider._internal(
-      () => create()
-        ..param1 = param1
-        ..param2 = param2,
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-      param1: param1,
-      param2: param2,
-    );
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is ExampleProvider &&
-        other.param1 == param1 &&
-        other.param2 == param2;
-  }
-
-  @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, param1.hashCode);
-    hash = _SystemHash.combine(hash, param2.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
-}
-
-mixin ExampleRef on AutoDisposeNotifierProviderRef<String> {
-  /// The parameter `param1` of this provider.
-  int get param1;
-
-  /// The parameter `param2` of this provider.
-  String get param2;
-}
-
-class _ExampleProviderElement
-    extends AutoDisposeNotifierProviderElement<Example, String>
-    with ExampleRef {
-  _ExampleProviderElement(super.provider);
-
-  @override
-  int get param1 => (origin as ExampleProvider).param1;
-  @override
-  String get param2 => (origin as ExampleProvider).param2;
-}
+const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main
