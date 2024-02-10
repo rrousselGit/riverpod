@@ -12,20 +12,20 @@ import watchPlacement from "./combining_requests/watch_placement";
 import listenExample from "./combining_requests/listen_example";
 import readExample from './combining_requests/read_example'
 
-Up till now, we've only seens cases were requests are independent from each
+Up till now, we've only seen cases where requests are independent from each
 other. But a common use-case is to have to trigger a request based on the
 result of another request.
 
 We _could_ be using the <Link documentID="essentials/passing_args" /> mechanism to
-do that, by passing the result of a provider as parameter to another a provider.
+do that, by passing the result of a provider as a parameter to another provider.
 
 But this approach has a few downsides:
 
 - This leaks implementation details.
   Now, your UI needs to know about all the providers that are used
-  your other provider.
-- Whenever the parameter change, a brand new state will be made.
-  By passing parameters, there are no way to keep the previous state
+  by your other provider.
+- Whenever the parameter changes, a brand new state will be made.
+  By passing parameters, there is no way to keep the previous state
   when the parameter changes.
 - It makes combining requests harder.
 - This makes tooling less useful. A devtool wouldn't
@@ -38,13 +38,13 @@ To improve this, Riverpod offers a different approach to combine requests.
 All possible ways of combining requests have one thing in common:
 They are all based on the `Ref` object.
 
-The `Ref` object is an object which all providers have access to.
+The `Ref` object is an object to which all providers have access.
 It grants them access to various life-cycle listeners, but also
 various methods to combine providers.
 
 The place where `Ref` can be obtained depends on the type of provider.
 
-In functional providers, the `Ref` is passed as parameter to the
+In functional providers, the `Ref` is passed as a parameter to the
 provider's function:
 
 <AutoSnippet {...functionalRef} />
@@ -77,12 +77,12 @@ Then, we could use this location to fetch the list of restaurants near the user.
 <AutoSnippet {...watchExample} />
 
 :::info
-When the listened provider changes and our request recomputes, the previous
-state is kept until the new request completes.  
+When the listened to provider changes and our request recomputes, the previous
+state is kept until the new request is completed.  
 At the same time, while the request is pending, the "isLoading" and "isReloading"
 flags will be set.
 
-This enables UI to either show the previous state, or a loading indicator,
+This enables UI to either show the previous state or a loading indicator,
 or even both.
 :::
 
@@ -93,7 +93,7 @@ await for an initial value to be available.
 
 If we omit that `.future`, we would receive an `AsyncValue`, which is a snapshot
 of the current state of the `locationProvider`. But if no location is available yet,
-we wouldn't be able to do anything.
+we won't be able to do anything.
 :::
 
 :::caution

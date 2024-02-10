@@ -1,314 +1,341 @@
 ---
-title: Leggere un provider
+title: Reading a Provider
 ---
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
-import counter from "!!raw-loader!/i18n/it/docusaurus-plugin-content-docs/current/concepts/reading_counter.dart";
-import consumerWidget from "!!raw-loader!/i18n/it/docusaurus-plugin-content-docs/current/concepts/reading_consumer_widget.dart";
-import consumerStatefulWidget from "!!raw-loader!/i18n/it/docusaurus-plugin-content-docs/current/concepts/reading_consumer_stateful_widget.dart";
-import consumerHookWidget from "!!raw-loader!/i18n/it/docusaurus-plugin-content-docs/current/concepts/reading_consumer_hook_widget.dart";
-import statefulHookConsumerWidget from "!!raw-loader!/i18n/it/docusaurus-plugin-content-docs/current/concepts/reading_stateful_hook_consumer_widget.dart";
-import consumerHook from "!!raw-loader!/i18n/it/docusaurus-plugin-content-docs/current/concepts/reading_consumer_hook.dart";
-import watch from "!!raw-loader!/i18n/it/docusaurus-plugin-content-docs/current/concepts/reading_watch.dart";
-import watchBuild from "!!raw-loader!/i18n/it/docusaurus-plugin-content-docs/current/concepts/reading_watch_build.dart";
-import listen from "!!raw-loader!./reading_listen.dart";
-import listenBuild from "!!raw-loader!./reading_listen_build.dart";
-import read from "!!raw-loader!/i18n/it/docusaurus-plugin-content-docs/current/concepts/reading_read.dart";
-import readBuild from "!!raw-loader!/i18n/it/docusaurus-plugin-content-docs/current/concepts/reading_read_build.dart";
-import readNotifierBuild from "!!raw-loader!./reading_read_notifier_build.dart";
-import watchNotifierBuild from "!!raw-loader!./reading_watch_notifier_build.dart";
-import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+import counter from "./reading/counter";
+import consumerWidget from "./reading/consumer_widget";
+import consumerStatefulWidget from "./reading/consumer_stateful_widget";
+import consumerHook from "!!raw-loader!/docs/concepts/reading/consumer_hook.dart";
+import watch from "./reading/watch";
+import watchBuild from "./reading/watch_build";
+import listen from "./reading/listen";
+import listenBuild from "./reading/listen_build";
+import read from "./reading/read";
+import readBuild from "./reading/read_build";
+import readNotifierBuild from "./reading/read_notifier_build";
+import watchNotifierBuild from "./reading/watch_notifier_build";
+import provider from "./reading/provider";
+import {
+  trimSnippet,
+  AutoSnippet,
+  When,
+} from "../../../../../src/components/CodeSnippet";
+import { Link } from "../../../../../src/components/Link";
 
-Prima di leggere questa guida, assicurati di [aver letto prima Providers](/docs/concepts/providers).
+:::caution
+The content of this page may be outdated.  
+It will be updated in the future, but for now you may want to refer to the content
+in the top of the sidebar instead (introduction/essentials/case-studies/...)
+:::
 
-In questa guida vedremo come consumare un provider.
+Before reading this guide, make sure to <Link documentID="concepts/providers"/> first.
 
-## Ottenere un oggetto "ref"
+In this guide, we will see how to consume a provider.
 
-Innanzitutto, prima di leggere un provider abbiamo bisogno di ottenere un oggetto "ref".
+## Obtaining a "ref" object
 
-Questo oggetto ci permette di interagire con i provider, che si tratti di un widget
-o di un altro provider.
+First and foremost, before reading a provider, we need to obtain a "ref" object.
 
-### Ottenere un "ref" da un provider
+This object is what allows us to interact with providers, be it from a widget
+or another provider.
 
-Tutti i provider ricevono "ref" come parametro:
+### Obtaining a "ref" from a provider
 
-```dart
-final provider = Provider((ref) {
-  // usa ref per ottenere altri provider
-  final repository = ref.watch(repositoryProvider);
+All providers receive a "ref" as a parameter:
 
-  return SomeValue(repository);
-})
-```
+<AutoSnippet language="dart" {...provider}></AutoSnippet>
 
-É sicuro passare questo parametro al valore esposto dal provider.
+This parameter is safe to pass to the value exposed by the provider.
 
-Per esempio, un uso comune è passare il "ref" del provider ad un [StateNotifier]:
+<When codegen={false}>
 
-<CodeBlock>{trimSnippet(counter)}</CodeBlock>
+A common use-case is to pass the provider's "ref" to a `StateNotifier`
 
-Ciò consente alla nostra classe `Counter` di leggere i provider.
+</When>
 
-### Ottenere un "ref" da un widget
+<AutoSnippet language="dart" {...counter}></AutoSnippet>
 
-I widget per natura non hanno un parametro `ref`.
-Ma [Riverpod] offre diverse soluzioni per ottenerne uno dai widget.
+Doing so allows our `Counter` class to read providers.
 
-#### Estendendo ConsumerWidget al posto di StatelessWidget
+### Obtaining a "ref" from a widget
 
-La soluzione più comune è di sostituire [StatelessWidget] con [ConsumerWidget]
-quando si crea un widget.
+Widgets naturally do not have a ref parameter. But [Riverpod] offers multiple
+solutions to obtain one from widgets.
 
-[ConsumerWidget] è identico a [StatelessWidget] nell'uso, con la sola differenza che
-ha un parametro extra nel suo metodo "build": l'oggetto "ref".
+<When>
 
-Un tipico [ConsumerWidget] è simile al seguente:
+#### Extending ConsumerWidget instead of StatelessWidget
 
-<CodeBlock>{trimSnippet(consumerWidget)}</CodeBlock>
+The most common way to obtain a ref in the widget tree is
+to replace [StatelessWidget] with [ConsumerWidget].
 
-#### Estendendo ConsumerStatefulWidget+ConsumerState al posto di StatefulWidget+State
+[ConsumerWidget] is identical in use to [StatelessWidget], with the only
+difference being that it has an extra parameter on its build method: the "ref" object.
 
-Come [ConsumerWidget], [ConsumerStatefulWidget] e [ConsumerState] sono l'equivalente
-di uno [StatefulWidget] con il suo [State], con la differenza che lo stato ha un oggetto "ref".
+A typical [ConsumerWidget] looks like:
 
-Questa volta, "ref" non è passato come parametro del metodo "build" ma è invece
-una proprietà dell'oggetto [ConsumerState]:
+<AutoSnippet language="dart" {...consumerWidget}></AutoSnippet>
 
-<CodeBlock>{trimSnippet(consumerStatefulWidget)}</CodeBlock>
+#### Extending ConsumerStatefulWidget+ConsumerState instead of StatefulWidget+State
 
-#### Estendendo HookConsumerWidget al posto di HookWidget
+Similar to [ConsumerWidget], [ConsumerStatefulWidget] and [ConsumerState] are the equivalent of a
+[StatefulWidget] with its [State], with the difference that the state has a "ref" object.
 
-Quest'opzione è specifica per chi usa [flutter_hooks]. Dato che [flutter_hooks]
-richiede l'estensione di [HookWidget] per funzionare, i widget che usano gli hooks
-non possono estendere [ConsumerWidget].
+This time, the "ref" isn't passed as parameter of the build method, but is
+a property of the [ConsumerState] object:
 
-Il pacchetto [hooks_riverpod] espone un nuovo widget chiamato [HookConsumerWidget].
-[HookConsumerWidget] si comporta come un [ConsumerWidget] e un [HookWidget].
-Ciò consente ad un widget: sia di stare in ascolto dei provider e sia di usare gli hooks.
+<AutoSnippet language="dart" {...consumerStatefulWidget}></AutoSnippet>
 
-Un esempio potrebbe essere:
+</When>
 
-<CodeBlock>{trimSnippet(consumerHookWidget)}</CodeBlock>
+<When hooks>
 
-#### Estendendo StatefulHookConsumerWidget invece di HookWidget
+#### Extending HookConsumerWidget instead of HookWidget
 
-Quest'opzione è specifica per chi usa [flutter_hooks], per poter usare i metodi del ciclo di
-vita di uno [StatefulWidget] in aggiunta agli hooks.
+This option is for [flutter_hooks] users. Since [flutter_hooks] requires
+extending [HookWidget] to work, widgets that use hooks are unable to extend
+[ConsumerWidget].
 
-Di seguito un esempio:
+The package [hooks_riverpod] exposes a new widget called [HookConsumerWidget].
+[HookConsumerWidget] acts as both a [ConsumerWidget] and a [HookWidget]. This
+allows a widget to both listen to providers and use hooks.
 
-<CodeBlock>{trimSnippet(statefulHookConsumerWidget)}</CodeBlock>
+An example would be:
 
-#### Widgets Consumer e HookConsumer
+<AutoSnippet language="dart" {...consumerWidget}></AutoSnippet>
 
-Un ultimo modo per ottenere un "ref" dentro i widget è fare affidamento a [Consumer]/[HookConsumer].
+#### Extending StatefulHookConsumerWidget instead of HookWidget
 
-Queste classi sono widget che possono essere usati per ottenere un "ref",
-con le stesse proprietà di [ConsumerWidget]/[HookConsumerWidget].
+This option is for [flutter_hooks] users, who need to use [StatefulWidget] lifecycle methods in addition to hooks.
 
-In quanto tali, questi widget sono un modo per ottenere un "ref" senza dover definire una classe.
-Di seguito un esempio:
+An example would be:
+
+<AutoSnippet language="dart" {...consumerStatefulWidget}></AutoSnippet>
+
+#### Consumer and HookConsumer widgets
+
+A final way to obtain a "ref" inside widgets is to rely on [Consumer]/
+[HookConsumer].
+
+These classes are widgets that can be used to obtain a "ref" in a builder callback, with the same
+properties as [ConsumerWidget]/[HookConsumerWidget].
+
+As such, these widgets are a way to obtain a "ref" without having to define a class.
+An example would be:
 
 <CodeBlock>{trimSnippet(consumerHook)}</CodeBlock>
 
-## Usare ref per interagire con i provider
+</When>
 
-Ora che abbiamo un "ref", possiamo iniziare ad usarlo.
+## Using ref to interact with providers
 
-Questi sono i tre usi primari di "ref":
+Now that we have a "ref", we can start using it.
 
-- ottenere il valore di un provider e ascoltarne i cambiamenti, in modo tale
-  che quando questo valore cambia, questo ricostruirà il widget o il provider
-  che ha sottoscritto il valore.
-  Ciò può essere fatto usando `ref.watch`
-- aggiungendo un "listener" ad un provider, per eseguire un'azione ogni tal volta
-  che il provider cambia, ad esempio aprire una nuova pagina o mostrare una modale.
-  Ciò può essere fatto usando `ref.listen`.
-- ottenere il valore di un provider ignorandone i cambiamenti.
-  Questo è utile quando abbiamo bisogno del valore di un provider in un evento come "on click".
-  Ciò può essere fatto usando `ref.read`.
+There are three primary usages for "ref":
 
-:::note NOTA
-Quando possibile, preferire l'uso di `ref.watch` rispetto a `ref.read` o `ref.listen` per
-implementare una feature.
-Affidandosi a `ref.watch`, la tua applicazione diventa sia reattiva che dichiarativa, il che
-la rende più mantenibile.
+- obtaining the value of a provider and listening to changes, such that when
+  this value changes, this will rebuild the widget or provider that subscribed
+  to the value.
+  This is done using `ref.watch`
+- adding a listener on a provider, to execute an action such as navigating to a new
+  page or showing a modal whenever that provider changes.  
+  This is done using `ref.listen`.
+- obtaining the value of a provider while ignoring changes.
+  This is useful when we need the value of a provider in an event
+  such as "on click".
+  This is done using `ref.read`.
+
+:::note
+Whenever possible, prefer using `ref.watch` over `ref.read` or `ref.listen` to
+implement a feature.  
+By relying on `ref.watch`, your application becomes both reactive
+and declarative, which makes it more maintainable.
 :::
 
-### Usare ref.watch per osservare un provider
+### Using ref.watch to observe a provider
 
-`ref.watch` è usato all'interno del metodo `build` di un widget oppure all'interno
-del body di un provider per fare in modo che il widget/provider ascolti un provider:
+`ref.watch` is used inside the `build` method of a widget or
+inside the body of a provider to have the widget/provider listen to a provider:
 
-Per esempio, un provider può usare `ref.watch` per combinare provider multipli in un
-nuovo valore.
+For example, a provider could use `ref.watch` to combine multiple providers
+into a new value.
 
-Un esempio potrebbe essere filtrare una todo-list. Potremmo avere due provider:
+An example would be filtering a todo-list.
+We could have two providers:
 
-- `filterTypeProvider`, un provider che espone il tipo corrente del filtro
-  (nessuno, mostra solo i task completati, ...)
-- `todosProvider`, un provider che espone l'intera lista dei task
+- `filterTypeProvider`, a provider that exposes the current type of filter
+  (none, show only completed tasks, ...)
+- `todosProvider`, a provider that exposes the entire list of tasks
 
-E utilizzando `ref.watch`, potremmo fare un terzo provider che combina entrambi i
-precedenti per creare una lista filtrata di task.
+And by using `ref.watch`, we could make a third provider that combines both providers to
+create a filtered list of tasks:
 
-<CodeBlock>{trimSnippet(watch)}</CodeBlock>
+<AutoSnippet language="dart" {...watch}></AutoSnippet>
 
-Con questo codice, `filteredTodoListProvider` ora espone la lista dei task filtrata.
+With this code, `filteredTodoListProvider` now exposes the filtered list of tasks.
 
-La lista filtrata inoltre si aggiornerà automaticamente se, o il filtro o la lista dei task
-cambierà.
-Allo stesso tempo, la lista filtrata non verrà ricalcolata se nè il filtro nè la lista dei
-task verranno modificati.
+The filtered list will also automatically update if either the filter or the list of tasks
+changed. At the same time, the filtered list will not be recomputed if
+neither the filter nor the list of tasks changed.
 
-In maniera simile, un widget potrà usare `ref.watch` per mostrare il contenuto da un
-provider e aggiornare l'interfaccia grafica ogni volta che il contenuto cambia:
+Similarly, a widget can use `ref.watch` to show
+the content from a provider and update the user interface whenever that content changes:
 
-<CodeBlock>{trimSnippet(watchBuild)}</CodeBlock>
+<AutoSnippet language="dart" {...watchBuild}></AutoSnippet>
 
-Questo snippet mostra un widget che ascolta un provider che memorizza un `count`.
-Se `count` cambia, il widget si ricostruirà e la UI si aggiornerà per mostrare il nuovo
-valore.
+This snippet shows a widget that listens to a provider which stores a `count`.
+And if that `count` changes, the widget will rebuild and the UI will update
+to show the new value.
 
-:::caution ATTENZIONE
-Il metodo `watch` non dovrebbe essere chiamato in modo asincrono, come all'interno di
-`onPressed` di un [ElevatedButton].
-E neppure all'interno di `initState` e altri cicli di vita di [State].
+:::caution
+The `watch` method should not be called asynchronously,
+like inside an `onPressed` of an [ElevatedButton]. Nor should it be used
+inside `initState` and other [State] life-cycles.
 
-In questi casi, considera invece l'utilizzo di `ref.read`.
+In those cases, consider using `ref.read` instead.
 :::
 
-### Usare ref.listen per reagire al cambiamento di un provider
+### Using ref.listen to react to a provider change
 
-In maniera simile a `ref.watch`, è possibile usare `ref.listen` per osservare un provider.
+Similarly to `ref.watch`, it is possible to use `ref.listen` to observe a provider.
 
-La principale differenza tra i due è che, invece di ricostruire il widget/provider se il
-provider ascoltato cambia, usare `ref.listen` chiamerà una funzione personalizzata.
+The main difference between them is that, rather than rebuilding the widget/provider
+if the listened to provider changes, using `ref.listen` will instead call a custom function.
 
-Ciò può essere utile per eseguire azioni quando un certo cambiamento si verifica, come
-mostrare una snackbar quando capita un errore.
+That can be useful for performing actions when a certain change happens, such
+as showing a snackbar when an error happens.
 
-Il metodo `ref.listen` necessita di 2 argomenti posizionali, il primo è il Provider
-e il secondo è la funzione di callback che vogliamo eseguire quando lo stato cambia.
-Alla funzione di callback, quando viene chiamata, verranno passati due valori:
-il valore precedente e il nuovo valore dello Stato.
+The `ref.listen` method needs 2 positional arguments, the first one is the Provider and the second one is the callback function that we want to execute when the state changes.
+The callback function when called will be passed 2 values, the value of the previous State and the value of the new State.
 
-Il metodo `ref.listen` si può utilizzare all'interno del body di un provider:
+The `ref.listen` method can be used inside the body of a provider:
 
-<CodeBlock>{trimSnippet(listen)}</CodeBlock>
+<AutoSnippet language="dart" {...listen}></AutoSnippet>
 
-o all'interno del metodo `build` di un widget:
+or inside the `build` method of a widget:
 
-<CodeBlock>{trimSnippet(listenBuild)}</CodeBlock>
+<AutoSnippet language="dart" {...listenBuild}></AutoSnippet>
 
-:::caution ATTENZIONE
-Il metodo `listen` non dovrebbe essere chiamato in modo asincrono, come all'interno di
-`onPressed` di un [ElevatedButton].
-E neppure all'interno di `initState` e altri cicli di vita di [State].
+:::caution
+The `listen` method should not be called asynchronously,
+like inside an `onPressed` of an [ElevatedButton]. Nor should it be used
+inside `initState` and other [State] life-cycles.
 :::
 
-### Usare ref.read per ottenere lo stato di un provider
+### Using ref.read to obtain the state of a provider
 
-Il metodo `ref.read` è un modo per ottenere lo stato di un provider senza starne in ascolto.
+The `ref.read` method is a way to obtain the state of a provider without listening to it.
 
-Si usa comunemente all'interno di funzioni innescate dalle interazioni dell'utente.
-Per esempio, possiamo usare `ref.read` per incremementare un contatore quando l'utente
-clicca un bottone.
+It is commonly used inside functions triggered by user interactions.
+For example, we can use `ref.read` to increment a counter when a user clicks a button:
 
-<CodeBlock>{trimSnippet(read)}</CodeBlock>
+<AutoSnippet language="dart" {...read}></AutoSnippet>
 
-:::note NOTA
-L'uso di `ref.read` dovrebbe essere evitato il più possibile perchè non è reattivo.
+:::note
+Using `ref.read` should be avoided as much as possible because it is not reactive.
 
-`read` esiste per casi dove usare `watch` o `listen` potrebbe generare errori.
-Se puoi, è quasi sempre meglio usare `watch`/`listen`, specialmente `watch`.
+It exists for cases where using `watch` or `listen` would cause issues.
+If you can, it is almost always better to use `watch`/`listen`, especially `watch`.
 :::
 
-#### **NON** usare `ref.read` dentro il metodo build
+#### **DON'T** use `ref.read` inside the build method
 
-Potresti essere tentato di usare `ref.read` per ottimizzare le performance di un widget
-facendo:
+You might be tempted to use `ref.read` to optimize the performance of a widget
+by doing:
 
-<CodeBlock>{trimSnippet(readBuild)}</CodeBlock>
+<AutoSnippet language="dart" {...readBuild}></AutoSnippet>
 
-Ma questa è una cattiva pratica e può causare bug che sono difficili da tracciare.
+But this is a very bad practice and can cause bugs that are difficult to track.
 
-L'uso di `ref.read` in questa forma è comunemente associato al pensiero "Il valore esposto
-da un provider non cambia mai quindi usare 'ref.read' è sicuro". Il problema con
-questa ipotesi è che, mentre oggi quel provider potrebbe effettivamente non aggiornare mai
-il suo valore, non vi è alcuna garanzia che domani sarà lo stesso.
+Using `ref.read` this way is commonly associated with the thought "The value
+exposed by a provider never changes so using 'ref.read' is safe". The problem
+with this assumption is that, while today that provider may indeed never update
+its value, there is no guarantee that tomorrow will be the same.
 
-Il software tende a cambiare molto ed è probabile che nel futuro, un valore che
-precedentemente non cambiava mai dovrà cambiare.
-Se si usa `ref.read`, quando il valore necessiterà di cambiare, si dovrà andare in tutto il codice
-per modificare `ref.read` in `ref.watch`, il che è un approccio soggetto a errori ed è
-probabile che dimenticherai alcuni casi.
+Software tends to change a lot, and it is likely that in the future, a value
+that previously never changed will need to change.  
+If you use `ref.read`, when that value needs to change, you have
+to go through your entire codebase to change `ref.read` into `ref.watch` –
+which is error prone and you are likely to forget some cases.
 
-Mentre se usi `ref.watch` dal principio, avrai meno problemi durante il refactoring.
+If you use `ref.watch` to begin with, you will have fewer problems when refactoring.
 
-**_Ma voglio usare `ref.read` per ridurre il numero di rebuilds del mio widget_**
+**_But I wanted to use `ref.read` to reduce the number of times my widget rebuilds_**
 
-Sebbene l'obiettivo sia lodevole, è importante far notare che puoi ottenere lo stesso effetto
-(ridurre il numero di builds) usando sempre `ref.watch`.
+While the goal is commendable, it is important to note that you can achieve the
+exact same effect (reducing the number of builds) using `ref.watch` instead.
 
-I provider offrono diversi modi di ottenere un valore riducendo il numero di rebuilds.
+Providers offer various ways to obtain a value while reducing the number of
+rebuilds, which you could use instead.
 
-Per esempio, invece di
+For example instead of
 
-<CodeBlock>{trimSnippet(readNotifierBuild)}</CodeBlock>
+<AutoSnippet language="dart" {...readNotifierBuild}></AutoSnippet>
 
-possiamo scrivere:
+we could do:
 
-<CodeBlock>{trimSnippet(watchNotifierBuild)}</CodeBlock>
+<AutoSnippet language="dart" {...watchNotifierBuild}></AutoSnippet>
 
-Entrambi i pezzi di codice compiono lo stesso effetto: il nostro bottone non si ricostruirà
-quando il contatore incrementa.
+Both snippets achieve the same effect: our button will not rebuild when the
+counter increments.
 
-D'altra parte, il secondo approccio supporta casi dove il contatore è resettato. Per esempio,
-un'altra parte dell'applicazione potrebbe chiamare:
+On the other hand, the second approach supports cases where the counter is reset.
+For example, another part of the application could call:
 
 ```dart
 ref.refresh(counterProvider);
 ```
 
-che ricreerebbe l'oggeto `StateController`.
+<When codegen={false}>
+  
+which would recreate the `StateController` object.
 
-Se usassimo `ref.read` qui, il nostro bottone userebbe l'istanza precedente di
-`StateController`, che è stata eliminata e non dovrebbe essere più utilizzata.
-Usando `ref.watch` invece, ricostruiremmo correttamente il pulsante per utilizzare il nuovo `StateController`.
+If we used `ref.read` here, our button would still use the previous
+`StateController` instance, which was disposed and should no-longer be used.
+Whereas using `ref.watch` correctly rebuilds the button to use the new
+`StateController`.
 
-## Decidere cosa leggere
+</When>
 
-In base al provider che si vuole ascoltare, si possono avere più valori possibili che puoi
-ascoltare.
+<When codegen>
 
-Come esempio, considera il seguente [StreamProvider]:
+which would recreate the `Counter` object.
+
+If we used `ref.read` here, our button would still use the previous `Counter`
+instance, which was disposed and should no-longer be used. Whereas using
+`ref.watch` correctly rebuilds the button to use the new `Counter`.
+
+</When>
+
+## Deciding what to read
+
+Depending on the provider you want to listen to, you may have multiple possible
+values that you can listen to.
+
+As an example, consider the following [StreamProvider]:
 
 ```dart
 final userProvider = StreamProvider<User>(...);
 ```
 
-Leggendo questo `userProvider`, puoi:
+When reading this `userProvider`, you can:
 
-- leggere in modo sincrono lo stato corrente ascoltando `userProvider` stesso:
+- synchronously read the current state by listening to `userProvider` itself:
 
   ```dart
   Widget build(BuildContext context, WidgetRef ref) {
     AsyncValue<User> user = ref.watch(userProvider);
 
-    return user.when(
-      loading: () => const CircularProgressIndicator(),
-      error: (error, stack) => const Text('Oops'),
-      data: (user) => Text(user.name),
-    );
+    return switch (user) {
+      AsyncData(:final value) => Text(value.name),
+      AsyncError(:final error) => const Text('Oops $error'),
+      _ => const CircularProgressIndicator(),
+    };
   }
   ```
 
-- ottenere lo [Stream] associato, ascoltando `userProvider.stream`:
+- obtain the associated [Stream], by listening to `userProvider.stream`:
 
   ```dart
   Widget build(BuildContext context, WidgetRef ref) {
@@ -316,7 +343,7 @@ Leggendo questo `userProvider`, puoi:
   }
   ```
 
-- ottenere un [Future] che si risolve all'ultimo valore emesso, ascoltando `userProvider.future`:
+- obtain a [Future] that resolves with the latest value emitted, by listening to `userProvider.future`:
 
   ```dart
   Widget build(BuildContext context, WidgetRef ref) {
@@ -324,21 +351,21 @@ Leggendo questo `userProvider`, puoi:
   }
   ```
 
-Altri provider offrono diversi valori alternativi.
-Per più informazioni, riferirsi alla documentazione di ogni provider consultando
-[riferimento API](https://pub.dev/documentation/riverpod/latest/riverpod/riverpod-library.html).
+Other providers may offer different alternative values.  
+For more information, refer to the documentation of each provider by
+consulting the [API reference](https://pub.dev/documentation/riverpod/latest/riverpod/riverpod-library.html).
 
-## Usare "select" per filtrare le rebuilds
+## Using "select" to filter rebuilds
 
-Una caratteristica finale da menzionare legata alla lettura dei provider è l'abilità
-di ridurre il numero di volte che un widget/provider effettua una rebuild da `ref.watch`,
-o come `ref.listen` esegue una funzione.
+One final feature to mention related to reading providers is the ability to
+reduce the number of times a widget/provider rebuilds from `ref.watch`, or how often `ref.listen`
+executes a function.
 
-Questo è importante da tenere a mente poiché, per default, l'ascolto di un provider agisce
-sull'intero stato dell'oggetto. Qualche volta però, ad un widget/provider potrebbero
-interessare solo le modifiche di alcune proprietà invece che dell'intero oggetto.
+This is important to keep in mind as, by default, listening to a provider
+listens to the entire object state. But sometimes, a widget/provider may only
+care about changes to some properties instead of the whole object.
 
-Per esempio, un provider può esporre `User`:
+For example, a provider may expose a `User`:
 
 ```dart
 abstract class User {
@@ -347,7 +374,7 @@ abstract class User {
 }
 ```
 
-Ma un widget potrebbe usare solo la proprietà `name`:
+But a widget may only use the user name:
 
 ```dart
 Widget build(BuildContext context, WidgetRef ref) {
@@ -356,30 +383,32 @@ Widget build(BuildContext context, WidgetRef ref) {
 }
 ```
 
-Se ingenuamente abbiamo usato `ref.watch`, allora il widget verrebbe ricostruito
-anche quando la proprietà `age` cambia.
+If we naively used `ref.watch`, this would rebuild the widget when the user's
+`age` changes.
 
-La soluzione a ciò è usare `select` per dire esplicitamente a Riverpod che vogliamo
-ascoltare solo le modifiche della proprietà `name` di `User`.
+The solution is to use `select` to explicitly tell Riverpod that we only
+want to listen to the name property of the `User`.
 
-Il codice aggiornato sarebbe:
+The updated code would be:
 
 ```dart
 Widget build(BuildContext context, WidgetRef ref) {
-  String name = ref.watch(userProvider.select((user) => user.name))
+  String name = ref.watch(userProvider.select((user) => user.name));
   return Text(name);
 }
 ```
 
-Usando `select` siamo in grando di specificare una funzione che restituisce la proprietà che
-ci interessa.
+By using `select`, we are able to specify a function
+that returns the property that we care about.
 
-Ogni qualvolta che `User` cambia, Riverpod chiamerà questa funzione e comparerà il risultato
-precedente e il nuovo. Se sono differenti, Riverpod ricostruirà il widget.
-Altrimenti, se sono uguali, Riverpod non ricostruirà il widget.
+Whenever the `User` changes, Riverpod will call this function and
+compare the previous and new result. If they are different (such as when the name
+changed), Riverpod will rebuild the widget.  
+However, if they are equal (such as when the age changed), Riverpod will not
+rebuild the widget.
 
 :::info
-É anche possibile usare `select` con `ref.listen`:
+It is also possible to use `select` with `ref.listen`:
 
 ```dart
 ref.listen<String>(
@@ -390,13 +419,12 @@ ref.listen<String>(
 );
 ```
 
-Così facendo, Riverpod chiamerà il listener solo quando `name` cambia.
+Doing so will call the listener only when the name changes.
 :::
 
 :::tip
-Non devi per forza restituire solo la proprietà dell'oggetto.
-Qualsiasi valore che sovrascrive == funzionerà
-Per esempio potresti fare:
+You don't have to return a property of the object. Any value that
+overrides == will work. For example you could do:
 
 ```dart
 final label = ref.watch(userProvider.select((user) => 'Mr ${user.name}'));
@@ -404,8 +432,7 @@ final label = ref.watch(userProvider.select((user) => 'Mr ${user.name}'));
 
 :::
 
-[provider]: https://pub.dev/documentation/riverpod/latest/riverpod/Provider-class.html
-[stateprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StateProvider-class.html
+[stateprovider]: ../providers/state_provider
 [providercontainer]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderContainer-class.html
 [providerlistener]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderListener-class.html
 [providerscope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
@@ -426,9 +453,8 @@ final label = ref.watch(userProvider.select((user) => 'Mr ${user.name}'));
 [hookconsumer]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/HookConsumer-class.html
 [flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
 [flutter_hooks]: https://github.com/rrousselGit/flutter_hooks
-[statenotifierprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StateNotifierProvider-class.html
 [statenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/StateNotifier-class.html
-[streamprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StreamProvider-class.html
+[streamprovider]: ../providers/stream_provider
 [statelesswidget]: https://api.flutter.dev/flutter/widgets/StatelessWidget-class.html
 [statefulwidget]: https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html
 [state]: https://api.flutter.dev/flutter/widgets/State-class.html

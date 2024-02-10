@@ -10,7 +10,7 @@ Widget build() {
 /* SNIPPET START */
 Consumer(builder: (context, ref, child) {
   final completedTodos = ref.watch(completedTodosProvider);
-  // TODO 使用ListView/GridView/……展示待办清单列表 /* SKIP */
+  // TODO show the todos using a ListView/GridView/.../* SKIP */
   return Container();
   /* SKIP END */
 },);

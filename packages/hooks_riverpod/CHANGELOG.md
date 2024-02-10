@@ -27,6 +27,11 @@ Fix exceptions when using multiple root `ProviderContainers`/`ProviderScopes`.
 - **Breaking**: Removed everything marked as "deprecated"
 - Bumped minimum Dart SDK to >= 3.0.0-dev
 
+## 2.4.10 - 2024-02-03
+
+- Fix out of date `pub.dev` description
+- Add `test` argument to `AsyncValue.guard` method. (thanks to @utamori)
+
 ## 2.4.9 - 2023-11-27
 
 - Fix "pending timer" issue inside tests when using `ref.keepAlive()`.

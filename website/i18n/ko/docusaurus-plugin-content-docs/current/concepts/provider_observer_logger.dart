@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/legacy.dart';
 
 /* SNIPPET START */
 
-// riverpod과 Logger를 사용한 카운터 앱 예제
+// A Counter example implemented with riverpod with Logger
 
 class Logger extends ProviderObserver {
   @override
@@ -26,8 +26,8 @@ class Logger extends ProviderObserver {
 
 void main() {
   runApp(
-    // ProviderScope를 추가하여 프로젝트 전반적으로 Riverpod을 사용가능하도록 합니다.
-    // observers 리스트(목록)에 위에서 정의한 Logger 클래스를 추가합니다.
+    // Adding ProviderScope enables Riverpod for the entire project
+    // Adding our Logger to the list of observers
     ProviderScope(observers: [Logger()], child: const MyApp()),
   );
 }

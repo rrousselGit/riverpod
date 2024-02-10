@@ -4,21 +4,23 @@ import 'package:flutter_riverpod/legacy.dart';
 
 /* SNIPPET START */
 
-// Lo stato del nostro StateNotifier dovrebbe essere immutabile.
-// Potremmo usare anche packages come Freezed per aiutarci con l'implementazione.
-
+// The state of our StateNotifier should be immutable.
+// We could also use packages like Freezed to help with the implementation.
 @immutable
 class Todo {
-  const Todo({required this.id, required this.description, required this.completed});
+  const Todo({
+    required this.id,
+    required this.description,
+    required this.completed,
+  });
 
-  // Tutte le proprietà dovrebbero essere `final` nella nostra classe.
+  // All properties should be `final` on our class.
   final String id;
   final String description;
   final bool completed;
 
-  // Dato che Todo è immutabile, implementiamo un metodo che ci permette di
-  // clonare l'oggetto Todo con un contenuto leggermente diverso.
-
+  // Since Todo is immutable, we implement a method that allows cloning the
+  // Todo with slightly different content.
   Todo copyWith({String? id, String? description, bool? completed}) {
     return Todo(
       id: id ?? this.id,
@@ -28,60 +30,54 @@ class Todo {
   }
 }
 
-// La classe StateNotifier sarà passata al nostro StateNotifierProvider.
-// Questa classe non dovrebbe esporre lo stato al di fuori della sua proprietà "state"
-// il che significa nessuna proprietà o getter pubblico!
-
-// I metodi pubblici di questa classe sono quelli che consentiranno alla UI di modificare lo stato.
-
+// The StateNotifier class that will be passed to our StateNotifierProvider.
+// This class should not expose state outside of its "state" property, which means
+// no public getters/properties!
+// The public methods on this class will be what allow the UI to modify the state.
 class TodosNotifier extends StateNotifier<List<Todo>> {
-  // Inizializzamo la lista dei todo con una lista vuota
-
+  // We initialize the list of todos to an empty list
   TodosNotifier() : super([]);
 
-  // Consentiamo alla UI di aggiungere i todo
+  // Let's allow the UI to add todos.
   void addTodo(Todo todo) {
-    // Poichè il nostro stato è immutabile, non siamo autorizzati a fare `state.add(todo)`.
-    // Dovremmo invece creare una nuova lista di todo contenente
-    // gli elementi precedenti e il nuovo
-
-    // Usare lo spread operator di Dart qui è d'aiuto!
-
+    // Since our state is immutable, we are not allowed to do `state.add(todo)`.
+    // Instead, we should create a new list of todos which contains the previous
+    // items and the new one.
+    // Using Dart's spread operator here is helpful!
     state = [...state, todo];
-    // Non c'è bisogno di chiamare "notifiyListeners" o qualcosa di simile.
-    // Chiamare "state =" ricostruirà automaticamente la UI quando necessario.
+    // No need to call "notifyListeners" or anything similar. Calling "state ="
+    // will automatically rebuild the UI when necessary.
   }
 
-  // Consentiamo di rimuovere i todo
+  // Let's allow removing todos
   void removeTodo(String todoId) {
-    // Di nuovo, il nostro stato è immutabile. Quindi facciamo una nuova lista
-    // invece di modificare la lista esistente.
-
+    // Again, our state is immutable. So we're making a new list instead of
+    // changing the existing list.
     state = [
       for (final todo in state)
         if (todo.id != todoId) todo,
     ];
   }
 
-  // Contrassegniamo il todo come completato
+  // Let's mark a todo as completed
   void toggle(String todoId) {
     state = [
       for (final todo in state)
-        // contrassegniamo solo il todo corrispondente come completato
+        // we're marking only the matching todo as completed
         if (todo.id == todoId)
-          // Usiamo il metodo `copyWith` implementato prima per aiutarci nel
-          // modificare lo stato
-
+          // Once more, since our state is immutable, we need to make a copy
+          // of the todo. We're using our `copyWith` method implemented before
+          // to help with that.
           todo.copyWith(completed: !todo.completed)
         else
-          // gli altri todo non sono modificati
+          // other todos are not modified
           todo,
     ];
   }
 }
 
-// Infine, usiamo StateNotifierProvider per consentire all'UI di interagire con
-// la classe TodosNotifier
+// Finally, we are using StateNotifierProvider to allow the UI to interact with
+// our TodosNotifier class.
 final todosProvider = StateNotifierProvider<TodosNotifier, List<Todo>>((ref) {
   return TodosNotifier();
 });

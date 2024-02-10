@@ -7,9 +7,25 @@
     "message": "커뮤니티",
     "description": "The title of the footer links column with title=Community in the footer"
   },
+  "link.title.Sponsors": {
+    "message": "스폰서",
+    "description": "The title of the footer links column with title=Sponsors in the footer"
+  },
+  "link.item.label.Why Riverpod?": {
+    "message": "왜 Riverpod인가?",
+    "description": "The label of footer link with label=Why Riverpod? linking to docs/introduction/why_riverpod"
+  },
   "link.item.label.Getting started": {
     "message": "시작하기",
-    "description": "The label of footer link with label=Getting started linking to docs/getting_started"
+    "description": "The label of footer link with label=Getting started linking to docs/introduction/getting_started"
+  },
+  "link.item.label.Discord": {
+    "message": "Discord",
+    "description": "The label of footer link with label=Discord linking to https://discord.gg/Bbumvej"
+  },
+  "link.item.label.GitHub": {
+    "message": "GitHub",
+    "description": "The label of footer link with label=GitHub linking to https://github.com/rrousselgit/riverpod"
   },
   "link.item.label.Stack Overflow": {
     "message": "Stack Overflow",
@@ -19,12 +35,20 @@
     "message": "Twitter",
     "description": "The label of footer link with label=Twitter linking to https://twitter.com/remi_rousselet"
   },
-  "link.item.label.GitHub": {
-    "message": "GitHub",
-    "description": "The label of footer link with label=GitHub linking to https://github.com/rrousselgit/riverpod"
+  "link.item.label.Code of conduct": {
+    "message": "행동 강령",
+    "description": "The label of footer link with label=Code of conduct linking to https://github.com/rrousselGit/riverpod/blob/master/CODE_OF_CONDUCT.md"
+  },
+  "link.item.label.Contributing guide": {
+    "message": "기여 가이드",
+    "description": "The label of footer link with label=Contributing guide linking to https://github.com/rrousselGit/riverpod/blob/rework-flow/CONTRIBUTING.md"
   },
   "copyright": {
-    "message": "Copyright © 2022 Remi Rousselet.<br /> Built with Docusaurus.",
+    "message": "Copyright © 2024 Remi Rousselet.<br /> Built with Docusaurus.",
     "description": "The footer copyright"
+  },
+  "logo.alt": {
+    "message": "Riverpod",
+    "description": "The alt text of footer logo"
   }
 }

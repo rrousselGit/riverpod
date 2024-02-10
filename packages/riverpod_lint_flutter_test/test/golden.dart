@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -6,6 +5,8 @@ import 'package:test/test.dart';
 import 'package:path/path.dart';
 import 'package:custom_lint_core/custom_lint_core.dart';
 import 'package:analyzer_plugin/protocol/protocol_generated.dart';
+import 'package:analyzer/dart/analysis/results.dart';
+import 'package:analyzer/dart/analysis/utilities.dart';
 
 @Deprecated('Do not commit')
 var goldenWrite = false;
@@ -25,35 +26,43 @@ File writeToTemporaryFile(String content) {
 void testGolden(
   String description,
   String fileName,
-  Future<Iterable<PrioritizedSourceChange>> Function() body,
-) {
+  Future<Iterable<PrioritizedSourceChange>> Function(ResolvedUnitResult unit)
+      body, {
+  required String sourcePath,
+}) {
   test(description, () async {
-    final changes = await body().then((value) => value.toList());
+    final file = File(sourcePath).absolute;
+
+    final result = await resolveFile2(path: file.path);
+    result as ResolvedUnitResult;
+
+    final changes = await body(result).then((value) => value.toList());
+    final source = file.readAsStringSync();
 
     try {
       expect(
         changes,
-        matcherNormalizedPrioritizedSourceChangeSnapshot(fileName),
+        matcherNormalizedPrioritizedSourceChangeSnapshot(
+          fileName,
+          sources: {'**': source},
+          relativePath: Directory.current.path,
+        ),
       );
     } on TestFailure {
       // ignore: deprecated_member_use_from_same_package, deprecated only to avoid commit
       if (!goldenWrite) rethrow;
 
-      final file = File('test/$fileName');
+      final source = File(sourcePath).readAsStringSync();
+      final result = encodePrioritizedSourceChanges(
+        changes,
+        sources: {'**': source},
+        relativePath: Directory.current.path,
+      );
 
-      final changesJson = changes.map((e) => e.toJson()).toList();
-      // Remove all "file" references from the json.
-      for (final change in changesJson) {
-        final changeMap = change['change']! as Map<String, Object?>;
-        final edits = changeMap['edits']! as List;
-        for (final edit in edits.cast<Map<String, Object?>>()) {
-          edit.remove('file');
-        }
-      }
-
-      file
+      final golden = File('test/$fileName');
+      golden
         ..createSync(recursive: true)
-        ..writeAsStringSync(jsonEncode(changesJson));
+        ..writeAsStringSync(result);
       return;
     }
   });

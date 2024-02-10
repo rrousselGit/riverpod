@@ -1,0 +1,28 @@
+Message: `Wrap with Consumer`
+Priority: 28
+Diff for file `test/assists/wrap_widget/wrap_widget.dart:11`:
+```
+    Map();
+
+-     return Scaffold(
+-       body: Container(),
+-     );
++     return Consumer(builder: (context, ref, child) { return Scaffold(
++       body: Container(),
++     ); },);
+  }
+}
+```
+---
+Message: `Wrap with Consumer`
+Priority: 28
+Diff for file `test/assists/wrap_widget/wrap_widget.dart:12`:
+```
+
+    return Scaffold(
+-       body: Container(),
++       body: Consumer(builder: (context, ref, child) { return Container(); },),
+    );
+  }
+```
+---

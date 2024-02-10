@@ -1,0 +1,117 @@
+---
+title: "`ChangeNotifier`에서"
+---
+
+import old from "!!raw-loader!./from_change_notifier/old.dart";
+import declaration from "./from_change_notifier/declaration";
+import initialization from "./from_change_notifier/initialization";
+import migrated from "./from_change_notifier/migrated";
+
+import { Link } from "../../../../../src/components/Link";
+import { AutoSnippet } from "../../../../../src/components/CodeSnippet";
+
+Riverpod 내에서 `ChangeNotifierProvider`는 pkg:provider에서 원활한 전환을 제공하는 데 사용됩니다.
+
+이제 막 pkg:riverpod로 마이그레이션을 시작한 경우 전용 가이드를 읽어보세요(<Link documentID="from_provider/quickstart" /> 참조).
+이 글은 이미 Riverpod로 마이그레이션했지만 `ChangeNotifier`에서 완전히 벗어나고 싶은 분들을 위한 글입니다.
+
+대체로 `ChangeNotifier`에서 `AsyncNotifer`로 마이그레이션하려면 패러다임의 전환이 필요하지만, 마이그레이션된 코드를 통해 크게 간소화할 수 있습니다. 
+<Link documentID="concepts/why_immutability" />도 참조하세요.
+
+이 (잘못된) 예를 들어보겠습니다:
+<AutoSnippet raw={old} />
+
+이 구현은 다음과 같은 몇 가지 잘못된 디자인 선택을 보여줍니다:
+- 다양한 비동기 케이스를 처리하기 위해 `isLoading`과 `hasError`를 사용함.
+- 지루한 `try`/`catch`/`finally` 표현식으로 요청을 신중하게 처리해야 합니다.
+- 이 구현이 작동하도록 하기 위해 적시에 `notifyListeners`를 삽입해야 할 필요성
+- 일관성이 없거나 바람직하지 않은 상태(예: 빈 리스트로 초기화)가 존재할 수 있습니다.
+
+이 예제는 `ChangeNotifier`가 초보 개발자에게 어떻게 잘못된 디자인 선택으로 이어질 수 있는지 보여주기 위해 만들어졌습니다; 
+또한 변경 가능한 상태가 처음에 약속한 것보다 훨씬 더 어려울 수 있다는 점도 알아두세요.
+
+`Notifier`/`AsyncNotifer`를 불변 상태(immutable state)와 함께 사용하면 더 나은 디자인 선택과 오류 감소로 이어질 수 있습니다.
+
+위의 스니펫을 한 번에 한 단계씩 최신 API로 마이그레이션하는 방법을 살펴보겠습니다.
+
+## 마이그레이셔 시작
+먼저 새 provider / notifier를 선언해야 합니다. 여기에는 고유한 비즈니스 로직에 따라 몇 가지 사고 과정이 필요합니다.
+
+위의 요구 사항을 요약해 보겠습니다:
+- 상태(state)는 매개 변수(parameters) 없이 네트워크 호출을 통해 얻은 `List<Todo>`로 표현됩니다.
+- 상태는 `loading`, `error` 및 `data` 상태에 대한 정보를 *또한* 노출해야 합니다.
+- State는 노출된 일부 메서드를 통해 변경될 수 있으므로 함수만으로는 충분하지 않습니다.
+
+:::tip
+위의 사고 과정은 다음 질문에 답하는 것으로 요약됩니다:
+1. 부가작업(side effects)이 필요한가?
+    - `y`: Riverpod의 클래스 기반 API 사용
+    - `n`: Riverpod의 함수 기반 API 사용
+2. 상태를 비동기적으로 로드해야 하나요?
+    - `y`: `build`가 `Future<T>`를 반환하도록 합니다.
+    - `n`: `build`가 단순히 `T`를 반환하도록 합니다.
+3. 몇 가지 매개변수가 필요한가요?
+    - `y`: `build`(또는 함수)가 매개 변수를 받아들이도록 합니다.
+    - `n`: `build`(또는 함수)가 추가 매개변수를 받지 않도록 합니다.
+:::
+
+:::info
+코드생성을 사용한다면 위의 생각 과정만으로도 충분합니다.  
+올바른 클래스 이름과 해당 클래스의 *특정* API에 대해 생각할 필요가 없습니다.  
+`@riverpod`는 반환 유형이 있는 클래스를 작성하기만 하면 됩니다.
+:::
+
+기술적으로 가장 적합한 방법은 위의 모든 요구 사항을 충족하는 `AsyncNotifier<List<Todo>>`를 정의하는 것입니다. 
+먼저 의사 코드를 작성해 봅시다.
+
+<AutoSnippet language="dart" {...declaration}></AutoSnippet>
+
+:::tip
+기억하세요: IDE에서 스니펫을 사용하여 지침을 얻거나 코드 작성 속도를 높이세요.
+<Link documentID="introduction/getting_started" hash="going-further-installing-code-snippets" />를 참조하세요.
+:::
+
+`ChangeNotifier`의 구현과 관련해서는 더 이상 `todos`를 선언할 필요가 없습니다;
+이러한 변수는 `state`이며, `build`와 함께 암시적으로 로드됩니다.
+
+실제로 Riverpod의 노티파이어는 한 번에 *하나의* 엔티티를 노출할 수 있습니다.
+
+:::tip
+Riverpod의 API는 세분화되어 있지만, 마이그레이션할 때 여러 값을 보유하도록 사용자 정의 엔티티를 정의할 수 있습니다. 
+처음에는 마이그레이션을 원활하게 하기 위해 [Dart 3's records](https://dart.dev/language/records)를 사용하는 것이 좋습니다.
+:::
+
+
+### 초기화
+`build` 안에 초기화 로직을 작성하기만 하면 notifier를 쉽게 초기화할 수 있습니다.  
+이제 이전 `_init` 함수를 제거할 수 있습니다.
+
+<AutoSnippet language="dart" {...initialization}></AutoSnippet>
+
+기존 `_init`과 관련하여, 새로운 `build`에서는 더 이상 `isLoading` 또는 `hasError`와 같은 변수를 초기화할 필요가 없습니다.
+
+Riverpod `AsyncValue<List<Todo>>` 노출을 통해 모든 비동기 provider를 자동으로 변환하며, 
+두 개의 단순한 boolean 플래그가 할 수 있는 것보다 비동기 상태의 복잡성을 훨씬 더 잘 처리합니다.
+
+실제로 `AsyncNotifier`를 사용하면 비동기 상태를 처리하기 위해 추가 `try`/`catch`/`finally`를 작성하는 것이 사실상 안티 패턴이 됩니다.
+
+### 변이 및 부가작업(Mutations and Side Effects)
+초기화와 마찬가지로 부가작업을 수행할 때 `hasError`와 같은 boolean 플래그를 조작하거나 `try`/`catch`/`finally` 블록을 추가로 작성할 필요가 없습니다.
+
+아래에서는 모든 상용구를 줄이고 위의 예제를 성공적으로 완전히 마이그레이션했습니다:
+<AutoSnippet language="dart" {...migrated} />
+
+:::tip
+구문과 디자인 선택은 다를 수 있지만 결국에는 요청을 작성하고 나중에 상태를 업데이트하기만 하면 됩니다. 
+<Link documentID="essentials/side_effects" />를 참조하세요.
+:::
+
+## 마이그레이션 프로세스 요약
+
+위에서 적용한 전체 마이그레이션 프로세스를 운영 관점에서 검토해 보겠습니다.
+
+1. 초기화를 생성자에서 호출되는 사용자 정의 메서드에서 `build`로 옮겼습니다.
+2. `todos`, `isLoading`, `hasError` 프로퍼티를 제거했습니다: 내부 `state`로 충분합니다.
+3. `try`-`catch`-`finally` 블록을 제거했습니다: futures를 반환하는 것으로 충분합니다.
+4. 부가작업(`addTodo`)에도 동일한 단순화를 적용했습니다.
+5. 단순히 `state` 재할당을 통해 변형을 적용했습니다.

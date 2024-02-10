@@ -1,0 +1,265 @@
+---
+title: 将参数传递给您的请求
+version: 1
+---
+
+import { Link } from "@site/src/components/Link";
+import { AutoSnippet, When } from "@site/src/components/CodeSnippet";
+import noArgProvider from "./passing_args/no_arg_provider";
+import family from "!!raw-loader!./passing_args/raw/family.dart";
+import codegenFamily from "!!raw-loader!./passing_args/codegen/family.dart";
+import consumerProvider from "!!raw-loader!./passing_args/raw/consumer_provider.dart";
+import consumerFamily from "!!raw-loader!./passing_args/raw/consumer_family.dart";
+import consumerListFamily from "!!raw-loader!./passing_args/raw/consumer_list_family.dart";
+import multipleConsumerFamily from "!!raw-loader!./passing_args/raw/multiple_consumer_family.dart";
+import tupleFamily from "!!raw-loader!./passing_args/raw/tuple_family.dart";
+import consumerTupleFamily from "!!raw-loader!./passing_args/raw/consumer_tuple_family.dart";
+
+<!---
+In a previous article, we saw how we could define a "provider" to make
+a simple _GET_ HTTP request.  
+But often, HTTP requests depend on external parameters.
+-->
+在上一篇文章中，我们看到了如何定义一个“provider”来发出一个简单的 _GET_ HTTP 请求。  
+但通常，HTTP 请求依赖于外部参数。
+
+<!---
+For example, previously we used the [Bored API](https://boredapi.com/)
+to suggest a random activity to users.
+But maybe users would want to filter the type of activity they want to do,
+or have price requirements, etc...  
+These parameters are not known in advance. So we need a way to pass
+these parameters from our UI to our providers.
+-->
+例如，以前我们使用 [Bored API](https://boredapi.com/) 向用户推荐随机活动。
+但也许用户想要过滤他们想做的活动类型，或者有价格要求，等等……  
+这些参数事先是未知的。因此，我们需要一种方法将这些参数
+从我们的 UI 传递到我们的提供者程序。
+
+<!---
+## Updating our providers to accept arguments
+-->
+## 更新我们的提供者程序以接受参数
+
+<!---
+As a reminder, previously we defined our provider like this:
+-->
+提醒一下，以前我们是这样定义我们的提供者程序的：
+
+<AutoSnippet {...noArgProvider} />
+
+<When codegen={false}>
+
+<!---
+When not relying on code-generation, we need to tweak the syntax for defining
+our providers a bit to support passing arguments. This is done by relying on
+the "modifier" called "family".
+-->
+当不依赖于代码生成时，我们需要稍微调整定义提供者程序的语法，以支持传递参数。
+这是通过依靠称为“family”的“修饰符”来完成的。
+
+<!---
+In short, we need to add `.family` after the type of our provider, and
+an extra type parameter corresponding to the argument type.
+For example, we could update our provider to accept a `String` argument
+corresponding to the type of activity desired:
+-->
+简而言之，我们需要在提供者程序的类型之后添加 `.family` 一个额外的类型参数，
+以及与参数类型相对应的类型参数。
+例如，我们可以更新提供者程序以接受与所需活动类型相对应的 String 参数：
+
+<AutoSnippet raw={family} />
+
+</When>
+
+<When codegen={true}>
+
+<!---
+To pass parameters to our providers, we can simply add our parameters
+on the annotated function itself.  
+For example, we could update our provider to accept a `String` argument
+corresponding to the type of activity desired:
+-->
+要将参数传递给我们的提供者程序，我们只需在带注解的函数本身上添加参数即可。  
+例如，我们可以更新提供者程序以接受与所需活动类型相对应的 `String` 参数：
+
+<AutoSnippet raw={codegenFamily} />
+
+</When>
+
+:::caution
+<!---
+When passing arguments to providers, it is highly encouraged to
+enable "autoDispose" on the provider.  
+Failing to do so may result in memory leaks.  
+See <Link documentID="essentials/auto_dispose" /> for more details.
+-->
+将参数传递给提供者程序时，强烈建议在提供者程序上启用“autoDispose”。  
+否则可能会导致内存泄漏。  
+有关详细信息，请参阅<Link documentID="essentials/auto_dispose" />。
+:::
+
+<!---
+## Updating our UI to pass arguments
+-->
+## 更新我们的 UI 以传递参数
+
+<!---
+Previously, widgets consumed our provider like this:
+-->
+以前，小部件是这样消费我们的提供者程序的：
+
+<AutoSnippet raw={consumerProvider} />
+
+<!---
+But now that our provider receives arguments, the syntax to consume it is slightly
+different. The provider is now a function, which needs to be invoked with the parameters
+requested.  
+We could update our UI to pass a hard-coded type of activity like this:
+-->
+但是现在我们的提供者程序收到参数，使用它的语法略有不同。
+提供者程序现在是一个函数，需要使用请求的参数来调用它。  
+我们可以更新我们的 UI 以传递硬编码类型的活动，如下所示：
+
+<AutoSnippet raw={consumerFamily} />
+
+<When codegen={true}>
+
+<!---
+The parameters passed to the provider corresponds to the parameters
+of the annotated function, minus the "ref" parameter.
+-->
+传递给提供者程序的参数对应于带注解的函数的参数，减去“ref”参数。
+
+</When>
+
+:::info
+<!---
+It is entirely possible to listen to the same provider with different arguments
+simultaneously.  
+For example, our UI could render both "recreational" _and_ "cooking" activities:
+-->
+完全可以同时监听具有不同参数的同一提供者程序。  
+例如，我们的 UI 可以同时呈现“娱乐（recreational）”_和_“烹饪（cooking）”活动：
+
+<AutoSnippet raw={multipleConsumerFamily} />
+
+<When codegen={false}>
+
+<!---
+This is the reason why the modifier is called "family": Because passing
+parameters to a provider effectively transforms the provider in a group of
+states with the same logic under the hood.
+-->
+这就是修饰符被称为“family”的原因：
+因为把参数传递给提供者程序（译者注：作为不同状态的区分的 key 值），
+可以有效地将提供者程序转换为一组具有相同逻辑的状态。
+
+</When>
+:::
+
+<!---
+## Caching considerations and parameter restrictions
+-->
+## 缓存注意事项和参数限制
+
+<!---
+When passing parameters to providers, the computation is still cached.
+The difference is that the computation is now cached per-argument.
+-->
+将参数传递给提供者程序时，仍会缓存计算。
+不同之处在于，计算现在是按参数缓存的。
+
+<!---
+This means that if two widgets consumes the same provider with the same
+parameters, only a single network request will be made.  
+But if two widgets consumes the same provider with different parameters,
+two network requests will be made.
+-->
+这意味着，如果两个小部件使用具有相同参数的同一提供者程序，则只会发出单个网络请求。  
+但是，如果两个小部件使用具有不同参数的同一提供者程序，则将发出两个网络请求。
+
+<!---
+For this to work, Riverpod relies on the `==` operator of the parameters.  
+As such, it is important that the parameters passed to the provider
+have consistent equality.
+-->
+为此，Riverpod 依赖于参数的 `==` 运算符。  
+因此，传递给提供者程序的参数必须具有一致的相等性，这一点很重要。
+
+:::caution
+<!---
+A common mistake is to directly instantiate a new object as the parameter
+of a provider, when that object does not override `==`.  
+For example, you may be tempted to pass a `List` like so:
+-->
+一个常见的错误是直接实例化一个新对象作为提供者程序的参数，但该对象没有重写 `==`。  
+例如，您可能很想去这样使用 `List`：
+
+<AutoSnippet raw={consumerListFamily} />
+
+<!---
+The problem with this code is that `['recreational', 'cooking'] == ['recreational', 'cooking']` is `false`.
+As such, Riverpod will consider that the two parameters are different,
+and attempt to make a new network request.  
+This would result in an infinite loop of network requests, permanently
+showing a progress indicator to the user.
+-->
+此代码的问题在于 `['recreational', 'cooking'] == ['recreational', 'cooking']` 的结果是 `false`。
+因此，Riverpod 将认为这两个参数不同，并尝试发出新的网络请求。  
+这将导致网络请求的无限循环，一直向用户显示进度指示器。
+
+<!---
+To fix this, you could either use a `const` list (`const ['recreational', 'cooking']`)
+or use a custom list implementation that overrides `==`.
+-->
+要解决此问题，您可以使用 `const` 列表 (`const ['recreational', 'cooking']`)
+或使用重写了 `==` 的自定义列表实现。
+
+<!---
+To help spot this mistake, it is recommended to use the [riverpod_lint](https://pub.dev/packages/riverpod_lint)
+and enable the [provider_parameters](https://github.com/rrousselGit/riverpod/tree/master/packages/riverpod_lint#provider_parameters)
+lint rule. Then, the previous snippet would show a warning.
+See <Link documentID="introduction/getting_started" hash="enabling-riverpod_lintcustom_lint" /> for installation steps.
+-->
+为了帮助发现此错误，建议使用 [riverpod_lint](https://pub.dev/packages/riverpod_lint)
+并启用 [provider_parameters](https://github.com/rrousselGit/riverpod/tree/master/packages/riverpod_lint#provider_parameters)
+的 lint 规则。这样做之后，上面的代码片段将显示警告。
+有关安装步骤，请参阅<Link documentID="introduction/getting_started" hash="enabling-riverpod_lintcustom_lint" />。
+:::
+
+<When codegen={false}>
+
+<!---
+With that in mind, you may wonder how to pass multiple parameters to a provider.  
+The recommended solution is either to:
+-->
+考虑到这一点，您可能想知道如何将多个参数传递给提供者程序。  
+建议的解决方案是：
+
+<!---
+- Switch to code-generation, which enables passing any number of parameters
+- Use Dart 3's records
+-->
+- 切换到代码生成，这样可以传递任意数量的参数
+- 使用 Dart 3 的记录 (record) 语法
+
+<!---
+The reason why Dart 3's records come in handy is because they
+naturally override `==` and have a convenient syntax.  
+As an example, we could update our provider to accept both a type of activity
+and a maximum price:
+-->
+Dart 3 的记录之所以派上用场，是因为它们自然覆盖 `==` 并具有方便的语法。  
+例如，我们可以更新我们的提供者程序，以同时接受一种活动类型和最高价格：
+
+<AutoSnippet raw={tupleFamily} />
+
+<!---
+We can then consume this provider like so:
+-->
+然后，我们可以像这样消费这个提供者程序：
+
+<AutoSnippet raw={consumerTupleFamily} />
+
+</When>

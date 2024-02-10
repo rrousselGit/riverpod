@@ -1,7 +1,3 @@
-import 'dart:io';
-
-import 'package:analyzer/dart/analysis/results.dart';
-import 'package:analyzer/dart/analysis/utilities.dart';
 import 'package:analyzer/source/source_range.dart';
 import 'package:pubspec_parse/pubspec_parse.dart';
 import 'package:riverpod_lint/src/assists/convert_to_stateful_base_widget.dart';
@@ -23,28 +19,54 @@ void main() {
 
   StatelessBaseWidgetType.values.forEach(
     (targetWidget) {
+      final int expectedChangeCount;
+      switch (targetWidget) {
+        case StatelessBaseWidgetType.hookConsumerWidget:
+          expectedChangeCount = 11;
+          break;
+        case StatelessBaseWidgetType.hookWidget:
+        case StatelessBaseWidgetType.consumerWidget:
+          expectedChangeCount = 12;
+          break;
+        case StatelessBaseWidgetType.statelessWidget:
+          expectedChangeCount = 8;
+          break;
+      }
       _runGoldenTest(
         ConvertToStatelessBaseWidget(
           targetWidget: targetWidget,
         ),
         'Convert widgets to ${targetWidget.name}s with hooks_riverpod and flutter_hooks dependency',
-        'assists/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.json',
+        'assists/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.diff',
         pubspecWithDependencies,
-        targetWidget == StatelessBaseWidgetType.statelessWidget ? 6 : 9,
+        expectedChangeCount,
       );
     },
   );
 
   StatefulBaseWidgetType.values.forEach(
     (targetWidget) {
+      final int expectedChangeCount;
+      switch (targetWidget) {
+        case StatefulBaseWidgetType.statefulHookConsumerWidget:
+        case StatefulBaseWidgetType.statefulHookWidget:
+          expectedChangeCount = 12;
+          break;
+        case StatefulBaseWidgetType.consumerStatefulWidget:
+          expectedChangeCount = 11;
+          break;
+        case StatefulBaseWidgetType.statefulWidget:
+          expectedChangeCount = 8;
+          break;
+      }
       _runGoldenTest(
         ConvertToStatefulBaseWidget(
           targetWidget: targetWidget,
         ),
         'Convert widgets to ${targetWidget.name}s with hooks_riverpod and flutter_hooks dependency',
-        'assists/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.json',
+        'assists/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.diff',
         pubspecWithDependencies,
-        targetWidget == StatefulBaseWidgetType.statefulWidget ? 6 : 9,
+        expectedChangeCount,
       );
     },
   );
@@ -58,26 +80,26 @@ void main() {
       final int expectedChangeCount;
       switch (targetWidget) {
         case StatelessBaseWidgetType.consumerWidget:
-          expectedChangeCount = 9;
+          expectedChangeCount = 12;
           break;
         case StatelessBaseWidgetType.hookWidget:
         case StatelessBaseWidgetType.hookConsumerWidget:
           expectedChangeCount = 0;
           break;
         case StatelessBaseWidgetType.statelessWidget:
-          expectedChangeCount = 6;
+          expectedChangeCount = 8;
           break;
       }
       final String goldenFilePath;
       switch (targetWidget) {
         case StatelessBaseWidgetType.hookWidget:
         case StatelessBaseWidgetType.hookConsumerWidget:
-          goldenFilePath = 'assists/empty.json';
+          goldenFilePath = 'assists/empty.diff';
           break;
         case StatelessBaseWidgetType.consumerWidget:
         case StatelessBaseWidgetType.statelessWidget:
           goldenFilePath =
-              'assists/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.json';
+              'assists/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.diff';
           break;
       }
 
@@ -98,26 +120,26 @@ void main() {
       final int expectedChangeCount;
       switch (targetWidget) {
         case StatefulBaseWidgetType.consumerStatefulWidget:
-          expectedChangeCount = 9;
+          expectedChangeCount = 11;
           break;
         case StatefulBaseWidgetType.statefulHookWidget:
         case StatefulBaseWidgetType.statefulHookConsumerWidget:
           expectedChangeCount = 0;
           break;
         case StatefulBaseWidgetType.statefulWidget:
-          expectedChangeCount = 6;
+          expectedChangeCount = 8;
           break;
       }
       final String goldenFilePath;
       switch (targetWidget) {
         case StatefulBaseWidgetType.statefulHookWidget:
         case StatefulBaseWidgetType.statefulHookConsumerWidget:
-          goldenFilePath = 'assists/empty.json';
+          goldenFilePath = 'assists/empty.diff';
           break;
         case StatefulBaseWidgetType.consumerStatefulWidget:
         case StatefulBaseWidgetType.statefulWidget:
           goldenFilePath =
-              'assists/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.json';
+              'assists/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.diff';
           break;
       }
 
@@ -153,14 +175,8 @@ void _runGoldenTest(
   testGolden(
     description,
     goldenFilePath,
-    () async {
-      final file = File(
-        'test/assists/convert_to_widget/convert_to_widget.dart',
-      ).absolute;
-
-      final result = await resolveFile2(path: file.path);
-      result as ResolvedUnitResult;
-
+    sourcePath: 'test/assists/convert_to_widget/convert_to_widget.dart',
+    (result) async {
       final changes = [
         // Stateless
         ...await assist.testRun(result, const SourceRange(163, 0),
@@ -204,6 +220,18 @@ void _runGoldenTest(
 
         // ConsumerWidget
         ...await assist.testRun(result, const SourceRange(2582, 0),
+            pubspec: pubspec),
+
+        // StatelessWithField
+        ...await assist.testRun(result, const SourceRange(2784, 0),
+            pubspec: pubspec),
+
+        // HookConsumerWithField
+        ...await assist.testRun(result, const SourceRange(3139, 0),
+            pubspec: pubspec),
+
+        // ConsumerStatefulWithField
+        ...await assist.testRun(result, const SourceRange(3571, 0),
             pubspec: pubspec),
       ];
 

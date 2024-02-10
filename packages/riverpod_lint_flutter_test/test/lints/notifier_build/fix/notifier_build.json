@@ -1,1 +1,0 @@
-[{"priority":80,"change":{"message":"Add build method","edits":[{"fileStamp":0,"edits":[{"offset":212,"length":0,"replacement":"\n  @override\n  dynamic build() {\n    // TODO: implement build\n    throw UnimplementedError();\n  }\n"}]}],"linkedEditGroups":[]}}]

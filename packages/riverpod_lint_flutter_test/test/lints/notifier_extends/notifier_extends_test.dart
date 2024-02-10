@@ -1,10 +1,6 @@
-import 'dart:io';
-
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:collection/collection.dart';
 import 'package:riverpod_lint/src/lints/notifier_extends.dart';
-import 'package:analyzer/dart/analysis/results.dart';
-import 'package:analyzer/dart/analysis/utilities.dart';
 import 'package:test/test.dart';
 
 import '../../golden.dart';
@@ -12,16 +8,11 @@ import '../../golden.dart';
 void main() {
   testGolden(
     'Verify that @riverpod classes extend the generated typedef',
-    'lints/notifier_extends/notifier_extends.json',
-    () async {
+    'lints/notifier_extends/notifier_extends.diff',
+    sourcePath: 'test/lints/notifier_extends/notifier_extends.dart',
+    (result) async {
       final lint = NotifierExtends();
       final fix = lint.getFixes().single as DartFix;
-      final file = File(
-        'test/lints/notifier_extends/notifier_extends.dart',
-      ).absolute;
-
-      final result = await resolveFile2(path: file.path);
-      result as ResolvedUnitResult;
 
       final errors = await lint.testRun(result);
       expect(errors, hasLength(5));
