@@ -2,6 +2,7 @@
 
 import 'dart:math';
 
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../utils.dart';
@@ -13,7 +14,7 @@ class BugsEncounteredNotifier extends StateNotifier<AsyncValue<int>> {
     required this.featureId,
   }) : super(const AsyncData(99));
   final String featureId;
-  final Ref<BugsEncounteredNotifier> ref;
+  final Ref<AsyncValue<int>> ref;
 
   Future<void> fix(int amount) async {
     state = await AsyncValue.guard(() async {
@@ -26,6 +27,6 @@ class BugsEncounteredNotifier extends StateNotifier<AsyncValue<int>> {
 }
 
 final bugsEncounteredNotifierProvider = StateNotifierProvider.family
-    .autoDispose<BugsEncounteredNotifier, int, String>((ref, id) {
+    .autoDispose<BugsEncounteredNotifier, AsyncValue<int>, String>((ref, id) {
   return BugsEncounteredNotifier(ref: ref, featureId: id);
 });

@@ -13,7 +13,7 @@ final todoListProvider =
 );
 
 /* SNIPPET START */
-class TodoList extends AutoDisposeAsyncNotifier<List<Todo>> {
+class TodoList extends AsyncNotifier<List<Todo>> {
   @override
   Future<List<Todo>> build() async => [/* ... */];
 

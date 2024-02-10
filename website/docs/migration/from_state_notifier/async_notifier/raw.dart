@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print, avoid_unused_constructor_parameters
 
+import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 class Todo {
@@ -24,6 +25,7 @@ class AsyncTodosNotifier extends AsyncNotifier<List<Todo>> {
   // ...
 }
 
-final asyncTodosNotifier = AsyncNotifierProvider<AsyncTodosNotifier, List<Todo>>(
+final asyncTodosNotifier =
+    AsyncNotifierProvider<AsyncTodosNotifier, List<Todo>>(
   AsyncTodosNotifier.new,
 );

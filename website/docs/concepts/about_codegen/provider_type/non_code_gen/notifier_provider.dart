@@ -5,7 +5,7 @@ final exampleProvider = NotifierProvider.autoDispose<ExampleNotifier, String>(
   ExampleNotifier.new,
 );
 
-class ExampleNotifier extends AutoDisposeNotifier<String> {
+class ExampleNotifier extends Notifier<String> {
   @override
   String build() {
     return 'foo';

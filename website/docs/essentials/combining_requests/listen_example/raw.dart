@@ -1,4 +1,5 @@
 // ignore_for_file: unused_local_variable, avoid_print
+import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 final otherProvider = Provider<int>((ref) => 0);
