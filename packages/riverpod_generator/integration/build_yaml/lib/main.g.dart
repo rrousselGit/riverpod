@@ -606,7 +606,6 @@ String _$countNotifierHash() => r'a8dd7a66ee0002b8af657245c4affaa206fd99ec';
 
 abstract class _$CountNotifier extends $Notifier<int> {
   int build();
-
   @$internal
   @override
   int runBuild() => build();
@@ -669,7 +668,6 @@ String _$countAsyncNotifierHash() =>
 
 abstract class _$CountAsyncNotifier extends $AsyncNotifier<int> {
   FutureOr<int> build();
-
   @$internal
   @override
   FutureOr<int> runBuild() => build();
@@ -732,7 +730,6 @@ String _$countStreamNotifierHash() =>
 
 abstract class _$CountStreamNotifier extends $StreamNotifier<int> {
   Stream<int> build();
-
   @$internal
   @override
   Stream<int> runBuild() => build();
@@ -890,7 +887,6 @@ abstract class _$CountNotifier2 extends $Notifier<int> {
   int build(
     int a,
   );
-
   @$internal
   @override
   int runBuild() => build(
@@ -1046,7 +1042,6 @@ abstract class _$CountAsyncNotifier2 extends $AsyncNotifier<int> {
   FutureOr<int> build(
     int a,
   );
-
   @$internal
   @override
   FutureOr<int> runBuild() => build(
@@ -1202,7 +1197,6 @@ abstract class _$CountStreamNotifier2 extends $StreamNotifier<int> {
   Stream<int> build(
     int a,
   );
-
   @$internal
   @override
   Stream<int> runBuild() => build(

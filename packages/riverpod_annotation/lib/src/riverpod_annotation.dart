@@ -2,6 +2,7 @@
 
 import 'package:meta/meta.dart';
 import 'package:meta/meta_meta.dart';
+import 'package:riverpod/src/internals.dart';
 
 import '../riverpod_annotation.dart';
 
@@ -101,3 +102,22 @@ class ProviderFor {
 ///
 /// {@endtemplate}
 typedef Raw<T> = T;
+
+/// An exception thrown when a scoped provider is accessed when not yet overridden.
+class MissingScopeException implements Exception {
+  /// An exception thrown when a scoped provider is accessed when not yet overridden.
+  MissingScopeException(this.ref);
+
+  /// The [Ref] that threw the exception
+  final Ref<Object?> ref;
+
+  @override
+  String toString() {
+    // ignore: invalid_use_of_internal_member
+    final element = ref as ProviderElementBase<Object?>;
+
+    return 'MissingScopeException: The provider ${element.origin} is scoped, '
+        'but was accessed in a place where it is not overridden. '
+        'Either you forgot to override the provider, or you tried to read it outside of where it is defined';
+  }
+}

@@ -549,7 +549,6 @@ final class GenericClassFamily extends Family {
 
 abstract class _$GenericClass<T extends num> extends $StreamNotifier<List<T>> {
   Stream<List<T>> build();
-
   @$internal
   @override
   Stream<List<T>> runBuild() => build();
@@ -611,7 +610,6 @@ String _$publicClassHash() => r'b1526943c8ff0aaa20642bf78e744e5833cf9d02';
 
 abstract class _$PublicClass extends $StreamNotifier<String> {
   Stream<String> build();
-
   @$internal
   @override
   Stream<String> runBuild() => build();
@@ -673,7 +671,6 @@ String _$privateClassHash() => r'8c0d52b7ab79c0546d0c84c011bb3512609e029e';
 
 abstract class _$PrivateClass extends $StreamNotifier<String> {
   Stream<String> build();
-
   @$internal
   @override
   Stream<String> runBuild() => build();
@@ -895,7 +892,6 @@ abstract class _$FamilyClass extends $StreamNotifier<String> {
     bool fourth = true,
     List<String>? fifth,
   });
-
   @$internal
   @override
   Stream<String> runBuild() => build(

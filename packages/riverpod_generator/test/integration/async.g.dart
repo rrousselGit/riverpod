@@ -672,7 +672,6 @@ final class GenericClassFamily extends Family {
 
 abstract class _$GenericClass<T extends num> extends $AsyncNotifier<List<T>> {
   FutureOr<List<T>> build();
-
   @$internal
   @override
   FutureOr<List<T>> runBuild() => build();
@@ -734,7 +733,6 @@ String _$publicClassHash() => r'e9bc69e44b72e8ed77d423524c0d74ad460d629d';
 
 abstract class _$PublicClass extends $AsyncNotifier<String> {
   FutureOr<String> build();
-
   @$internal
   @override
   FutureOr<String> runBuild() => build();
@@ -796,7 +794,6 @@ String _$privateClassHash() => r'7e69cffe8315999710e4cb6bb3de9f179d3f2f5d';
 
 abstract class _$PrivateClass extends $AsyncNotifier<String> {
   FutureOr<String> build();
-
   @$internal
   @override
   FutureOr<String> runBuild() => build();
@@ -949,7 +946,6 @@ abstract class _$FamilyOrClass extends $AsyncNotifier<String> {
   FutureOr<String> build(
     int first,
   );
-
   @$internal
   @override
   FutureOr<String> runBuild() => build(
@@ -1173,7 +1169,6 @@ abstract class _$FamilyClass extends $AsyncNotifier<String> {
     bool fourth = true,
     List<String>? fifth,
   });
-
   @$internal
   @override
   FutureOr<String> runBuild() => build(

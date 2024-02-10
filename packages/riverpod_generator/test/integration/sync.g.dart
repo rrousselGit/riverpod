@@ -1596,7 +1596,6 @@ final class GenericClassFamily extends Family {
 
 abstract class _$GenericClass<T extends num> extends $Notifier<List<T>> {
   List<T> build();
-
   @$internal
   @override
   List<T> runBuild() => build();
@@ -1666,7 +1665,6 @@ String _$rawFutureClassHash() => r'bf66f1cdbd99118b8845d206e6a2611b3101f45c';
 
 abstract class _$RawFutureClass extends $Notifier<Raw<Future<String>>> {
   Raw<Future<String>> build();
-
   @$internal
   @override
   Raw<Future<String>> runBuild() => build();
@@ -1736,7 +1734,6 @@ String _$rawStreamClassHash() => r'712cffcb2018cfb4ff45012c1aa6e43c8cbe9d5d';
 
 abstract class _$RawStreamClass extends $Notifier<Raw<Stream<String>>> {
   Raw<Stream<String>> build();
-
   @$internal
   @override
   Raw<Stream<String>> runBuild() => build();
@@ -1897,7 +1894,6 @@ abstract class _$RawFamilyFutureClass extends $Notifier<Raw<Future<String>>> {
   Raw<Future<String>> build(
     int id,
   );
-
   @$internal
   @override
   Raw<Future<String>> runBuild() => build(
@@ -2060,7 +2056,6 @@ abstract class _$RawFamilyStreamClass extends $Notifier<Raw<Stream<String>>> {
   Raw<Stream<String>> build(
     int id,
   );
-
   @$internal
   @override
   Raw<Stream<String>> runBuild() => build(
@@ -2134,7 +2129,6 @@ String _$publicClassHash() => r'c8e7eec9e202acf8394e02496857cbe49405bf62';
 
 abstract class _$PublicClass extends $Notifier<String> {
   String build();
-
   @$internal
   @override
   String runBuild() => build();
@@ -2204,7 +2198,6 @@ String _$privateClassHash() => r'6d41def3ffdc1f79e593beaefb3304ce4b211a77';
 
 abstract class _$PrivateClass extends $Notifier<String> {
   String build();
-
   @$internal
   @override
   String runBuild() => build();
@@ -2437,7 +2430,6 @@ abstract class _$FamilyClass extends $Notifier<String> {
     bool fourth = true,
     List<String>? fifth,
   });
-
   @$internal
   @override
   String runBuild() => build(
@@ -2605,7 +2597,6 @@ final class Supports$InClassNameFamily extends Family {
 
 abstract class _$Supports$InClassName<And$InT> extends $Notifier<String> {
   String build();
-
   @$internal
   @override
   String runBuild() => build();
@@ -2843,7 +2834,6 @@ abstract class _$Supports$InClassFamilyName<And$InT> extends $Notifier<String> {
     required And$InT named$arg,
     String defaultArg = default$value,
   });
-
   @$internal
   @override
   String runBuild() => build(

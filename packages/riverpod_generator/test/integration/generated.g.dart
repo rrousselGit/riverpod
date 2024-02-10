@@ -774,7 +774,6 @@ String _$generatedClassHash() => r'984153f97e25de687d2f19756b277aabd56f6e72';
 
 abstract class _$GeneratedClass extends $Notifier<_Test> {
   _Test build();
-
   @$internal
   @override
   _Test runBuild() => build();
@@ -936,7 +935,6 @@ abstract class _$GeneratedClassFamily extends $Notifier<_Test> {
   _Test build(
     _Test test,
   );
-
   @$internal
   @override
   _Test runBuild() => build(
@@ -1008,7 +1006,6 @@ String _$$dynamicClassHash() => r'c6d8e5191c3f060df3ce3eee66107433fd4c3292';
 
 abstract class _$$DynamicClass extends $Notifier<Object?> {
   Object? build();
-
   @$internal
   @override
   Object? runBuild() => build();
@@ -1170,7 +1167,6 @@ abstract class _$$DynamicClassFamily extends $Notifier<Object?> {
   Object? build(
     dynamic test,
   );
-
   @$internal
   @override
   Object? runBuild() => build(
@@ -1242,7 +1238,6 @@ String _$aliasClassHash() => r'a6c6d7594ebd09ba728e42d79b12af560d09c379';
 
 abstract class _$AliasClass extends $Notifier<r.AsyncValue<int>> {
   r.AsyncValue<int> build();
-
   @$internal
   @override
   r.AsyncValue<int> runBuild() => build();
@@ -1403,7 +1398,6 @@ abstract class _$AliasClassFamily extends $Notifier<r.AsyncValue<int>> {
   r.AsyncValue<int> build(
     r.AsyncValue<int> test,
   );
-
   @$internal
   @override
   r.AsyncValue<int> runBuild() => build(

@@ -437,7 +437,6 @@ String _$notifierWithDependenciesHash() =>
 
 abstract class _$NotifierWithDependencies extends $Notifier<int> {
   int build();
-
   @$internal
   @override
   int runBuild() => build();
@@ -619,7 +618,6 @@ abstract class _$NotifierFamilyWithDependencies extends $Notifier<int> {
   int build({
     int? id,
   });
-
   @$internal
   @override
   int runBuild() => build(

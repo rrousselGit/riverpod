@@ -620,7 +620,6 @@ abstract class _$ClassBased extends $Notifier<String> {
   String build(
     @Deprecated('field') int id,
   );
-
   @$internal
   @override
   String runBuild() => build(
@@ -693,7 +692,6 @@ String _$notCopiedClassBasedHash() =>
 
 abstract class _$NotCopiedClassBased extends $Notifier<String> {
   String build();
-
   @$internal
   @override
   String runBuild() => build();

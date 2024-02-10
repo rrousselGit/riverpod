@@ -285,7 +285,6 @@ String _$classBasedHash() => r'f1139017b1fcf38017402b514c61fb32dae40c39';
 
 abstract class _$ClassBased extends $Notifier<String> {
   String build();
-
   @$internal
   @override
   String runBuild() => build();
@@ -457,7 +456,6 @@ abstract class _$ClassFamilyBased extends $Notifier<String> {
   String build(
     int id,
   );
-
   @$internal
   @override
   String runBuild() => build(

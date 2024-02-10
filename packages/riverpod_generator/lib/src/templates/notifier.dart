@@ -15,7 +15,6 @@ class NotifierTemplate extends Template {
   void run(StringBuffer buffer) {
     final notifierBaseName = '_\$${provider.name.lexeme.public}';
     final genericsDefinition = provider.genericsDefinition();
-    final buildParams = buildParamDefinitionQuery(provider.parameters);
 
     final baseClass = switch (provider.createdType) {
       SupportedCreatedType.future =>
@@ -56,13 +55,27 @@ class NotifierTemplate extends Template {
 abstract class $notifierBaseName$genericsDefinition extends $baseClass {
   ${provider.parameters.isNotEmpty ? _$args : ''}
   $parametersAsFields
+''');
 
-  ${provider.createdTypeDisplayString} build($buildParams);
+    _writeBuild(buffer);
 
+    buffer.writeln('''
   @\$internal
   @override
   ${provider.createdTypeDisplayString} runBuild() => build($paramsPassThrough);
 }
 ''');
+  }
+
+  void _writeBuild(StringBuffer buffer) {
+    final buildParams = buildParamDefinitionQuery(provider.parameters);
+
+    buffer.write('${provider.createdTypeDisplayString} build($buildParams)');
+
+    if (provider.buildMethod.isAbstract) {
+      buffer.writeln('=> throw MissingScopeException(ref);');
+    } else {
+      buffer.writeln(';');
+    }
   }
 }

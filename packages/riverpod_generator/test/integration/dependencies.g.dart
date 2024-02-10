@@ -1018,7 +1018,6 @@ String _$dep2Hash() => r'2778537df77f6431148c2ce400724da3e2ab4b94';
 
 abstract class _$Dep2 extends $Notifier<int> {
   int build();
-
   @$internal
   @override
   int runBuild() => build();
@@ -1175,7 +1174,6 @@ abstract class _$Family2 extends $Notifier<int> {
   int build(
     int id,
   );
-
   @$internal
   @override
   int runBuild() => build(
@@ -1261,7 +1259,6 @@ String _$provider3Hash() => r'dfdd6dec6cfee543c73d99593ce98d68f4db385c';
 
 abstract class _$Provider3 extends $Notifier<int> {
   int build();
-
   @$internal
   @override
   int runBuild() => build();
@@ -1433,7 +1430,6 @@ abstract class _$Provider4 extends $Notifier<int> {
   int build(
     int id,
   );
-
   @$internal
   @override
   int runBuild() => build(
@@ -1510,7 +1506,6 @@ String _$emptyDependenciesClassBasedHash() =>
 
 abstract class _$EmptyDependenciesClassBased extends $Notifier<int> {
   int build();
-
   @$internal
   @override
   int runBuild() => build();

@@ -265,7 +265,15 @@ sealed class GeneratorProviderDeclarationElement
   /// or type parameters.
   bool get isFamily;
 
-  bool get isScoped => annotation.dependencies != null;
+  bool get isScoped {
+    if (annotation.dependencies != null) return true;
+
+    // TODO changelog isScoped now supports abstract build methods
+    // TODO test
+    final that = this;
+    return that is ClassBasedProviderDeclarationElement &&
+        that.buildMethod.isAbstract;
+  }
 
   @override
   bool get isAutoDispose => !annotation.keepAlive;
