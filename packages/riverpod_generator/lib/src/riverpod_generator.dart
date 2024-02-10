@@ -90,7 +90,7 @@ class RiverpodGenerator extends ParserGenerator<Riverpod> {
 
       buffer.write('''
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main
 ''');
     }
 
