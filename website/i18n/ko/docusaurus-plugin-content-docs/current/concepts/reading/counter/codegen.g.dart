@@ -8,6 +8,66 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+typedef RepositoryRef = Ref<Repository>;
+
+@ProviderFor(repository)
+const repositoryProvider = RepositoryProvider._();
+
+final class RepositoryProvider
+    extends $FunctionalProvider<Repository, Repository, RepositoryRef>
+    with $Provider<Repository, RepositoryRef> {
+  const RepositoryProvider._(
+      {Repository Function(
+        RepositoryRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'repositoryProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final Repository Function(
+    RepositoryRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$repositoryHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Repository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<Repository>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<Repository> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  RepositoryProvider $copyWithCreate(
+    Repository Function(
+      RepositoryRef ref,
+    ) create,
+  ) {
+    return RepositoryProvider._(create: create);
+  }
+
+  @override
+  Repository create(RepositoryRef ref) {
+    final _$cb = _createCb ?? repository;
+    return _$cb(ref);
+  }
+}
+
+String _$repositoryHash() => r'c6dc3b5b727028966b5b850b27ffc7294b485273';
+
 @ProviderFor(Counter)
 const counterProvider = CounterProvider._();
 

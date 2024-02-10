@@ -3,7 +3,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'codegen.g.dart';
 
-final repositoryProvider = Provider((ref) => Repository());
+@riverpod
+Repository repository(RepositoryRef ref) => Repository();
 
 class Repository {
   Future<void> post(String url) async {}

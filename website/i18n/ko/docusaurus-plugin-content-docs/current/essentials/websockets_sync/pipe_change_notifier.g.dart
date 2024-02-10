@@ -9,7 +9,7 @@ part of 'pipe_change_notifier.dart';
 // **************************************************************************
 
 /// 값이 변경될 때마다 ValueNotifier를 생성하고 리스너를 업데이트하는 provider입니다.
-typedef MyListenableRef = Ref<ValueNotifier<int>>;
+typedef MyListenableRef = Ref<Raw<ValueNotifier<int>>>;
 
 /// 값이 변경될 때마다 ValueNotifier를 생성하고 리스너를 업데이트하는 provider입니다.
 @ProviderFor(myListenable)
@@ -17,12 +17,12 @@ const myListenableProvider = MyListenableProvider._();
 
 /// 값이 변경될 때마다 ValueNotifier를 생성하고 리스너를 업데이트하는 provider입니다.
 final class MyListenableProvider extends $FunctionalProvider<
-    ValueNotifier<int>,
-    ValueNotifier<int>,
-    MyListenableRef> with $Provider<ValueNotifier<int>, MyListenableRef> {
+    Raw<ValueNotifier<int>>,
+    Raw<ValueNotifier<int>>,
+    MyListenableRef> with $Provider<Raw<ValueNotifier<int>>, MyListenableRef> {
   /// 값이 변경될 때마다 ValueNotifier를 생성하고 리스너를 업데이트하는 provider입니다.
   const MyListenableProvider._(
-      {ValueNotifier<int> Function(
+      {Raw<ValueNotifier<int>> Function(
         MyListenableRef ref,
       )? create})
       : _createCb = create,
@@ -35,7 +35,7 @@ final class MyListenableProvider extends $FunctionalProvider<
           allTransitiveDependencies: null,
         );
 
-  final ValueNotifier<int> Function(
+  final Raw<ValueNotifier<int>> Function(
     MyListenableRef ref,
   )? _createCb;
 
@@ -43,22 +43,22 @@ final class MyListenableProvider extends $FunctionalProvider<
   String debugGetCreateSourceHash() => _$myListenableHash();
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(ValueNotifier<int> value) {
+  Override overrideWithValue(Raw<ValueNotifier<int>> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<ValueNotifier<int>>(value),
+      providerOverride: $ValueProvider<Raw<ValueNotifier<int>>>(value),
     );
   }
 
   @$internal
   @override
-  $ProviderElement<ValueNotifier<int>> $createElement(
+  $ProviderElement<Raw<ValueNotifier<int>>> $createElement(
           ProviderContainer container) =>
       $ProviderElement(this, container);
 
   @override
   MyListenableProvider $copyWithCreate(
-    ValueNotifier<int> Function(
+    Raw<ValueNotifier<int>> Function(
       MyListenableRef ref,
     ) create,
   ) {
@@ -66,13 +66,13 @@ final class MyListenableProvider extends $FunctionalProvider<
   }
 
   @override
-  ValueNotifier<int> create(MyListenableRef ref) {
+  Raw<ValueNotifier<int>> create(MyListenableRef ref) {
     final _$cb = _createCb ?? myListenable;
     return _$cb(ref);
   }
 }
 
-String _$myListenableHash() => r'4cc07df2f47050c4aa761e5467f341ab6c312d09';
+String _$myListenableHash() => r'c80799a0224092668fca44187b98ccfcd2b33ae1';
 
 const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint

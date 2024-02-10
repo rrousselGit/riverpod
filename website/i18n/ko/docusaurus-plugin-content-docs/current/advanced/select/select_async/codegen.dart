@@ -9,11 +9,9 @@ class User {
   late String firstName, lastName;
 }
 
-final userProvider = FutureProvider(
-  (ref) => User()
-    ..firstName = 'John'
-    ..lastName = 'Doe',
-);
+@riverpod
+FutureOr<User> user(UserRef ref) => User();
+
 /* SNIPPET START */
 @riverpod
 Object? example(ExampleRef ref) async {

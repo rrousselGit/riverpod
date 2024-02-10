@@ -8,6 +8,58 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+typedef UserRef = Ref<AsyncValue<User>>;
+
+@ProviderFor(user)
+const userProvider = UserProvider._();
+
+final class UserProvider
+    extends $FunctionalProvider<AsyncValue<User>, FutureOr<User>, UserRef>
+    with $FutureModifier<User>, $FutureProvider<User, UserRef> {
+  const UserProvider._(
+      {FutureOr<User> Function(
+        UserRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'userProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final FutureOr<User> Function(
+    UserRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$userHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<User> $createElement(ProviderContainer container) =>
+      $FutureProviderElement(this, container);
+
+  @override
+  UserProvider $copyWithCreate(
+    FutureOr<User> Function(
+      UserRef ref,
+    ) create,
+  ) {
+    return UserProvider._(create: create);
+  }
+
+  @override
+  FutureOr<User> create(UserRef ref) {
+    final _$cb = _createCb ?? user;
+    return _$cb(ref);
+  }
+}
+
+String _$userHash() => r'01b30f814d2a91385bc2279fd51d073a4a5b0f06';
+
 typedef ExampleRef = Ref<Object?>;
 
 @ProviderFor(example)
