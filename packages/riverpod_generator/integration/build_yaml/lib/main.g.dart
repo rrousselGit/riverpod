@@ -8,6 +8,7 @@ part of 'main.dart';
 
 typedef CountRef = Ref<int>;
 
+@ProviderFor(count)
 const countPod = CountProvider._();
 
 final class CountProvider extends $FunctionalProvider<int, int, CountRef>
@@ -57,6 +58,7 @@ String _$countHash() => r'4c7e72b275767a60ece5e8662ab1e28f73cf7e44';
 
 typedef CountFutureRef = Ref<AsyncValue<int>>;
 
+@ProviderFor(countFuture)
 const countFuturePod = CountFutureProvider._();
 
 final class CountFutureProvider
@@ -107,6 +109,7 @@ String _$countFutureHash() => r'ec7cc31ce1c1a10607f1dcb35dd217acd2877729';
 
 typedef CountStreamRef = Ref<AsyncValue<int>>;
 
+@ProviderFor(countStream)
 const countStreamPod = CountStreamProvider._();
 
 final class CountStreamProvider
@@ -157,6 +160,7 @@ String _$countStreamHash() => r'1dbe49244ea19e8dbc3af0534429bb323720c07a';
 
 typedef Count2Ref = Ref<int>;
 
+@ProviderFor(count2)
 const count2ProviderFamily = Count2Family._();
 
 final class Count2Provider extends $FunctionalProvider<int, int, Count2Ref>
@@ -277,6 +281,7 @@ final class Count2Family extends Family {
 
 typedef CountFuture2Ref = Ref<AsyncValue<int>>;
 
+@ProviderFor(countFuture2)
 const countFuture2ProviderFamily = CountFuture2Family._();
 
 final class CountFuture2Provider
@@ -398,6 +403,7 @@ final class CountFuture2Family extends Family {
 
 typedef CountStream2Ref = Ref<AsyncValue<int>>;
 
+@ProviderFor(countStream2)
 const countStream2ProviderFamily = CountStream2Family._();
 
 final class CountStream2Provider
@@ -517,6 +523,7 @@ final class CountStream2Family extends Family {
   }
 }
 
+@ProviderFor(CountNotifier)
 const countNotifierPod = CountNotifierProvider._();
 
 final class CountNotifierProvider
@@ -578,6 +585,7 @@ abstract class _$CountNotifier extends $Notifier<int> {
   int runBuild() => build();
 }
 
+@ProviderFor(CountAsyncNotifier)
 const countAsyncNotifierPod = CountAsyncNotifierProvider._();
 
 final class CountAsyncNotifierProvider
@@ -640,6 +648,7 @@ abstract class _$CountAsyncNotifier extends $AsyncNotifier<int> {
   FutureOr<int> runBuild() => build();
 }
 
+@ProviderFor(CountStreamNotifier)
 const countStreamNotifierPod = CountStreamNotifierProvider._();
 
 final class CountStreamNotifierProvider
@@ -702,6 +711,7 @@ abstract class _$CountStreamNotifier extends $StreamNotifier<int> {
   Stream<int> runBuild() => build();
 }
 
+@ProviderFor(CountNotifier2)
 const countNotifier2ProviderFamily = CountNotifier2Family._();
 
 final class CountNotifier2Provider
@@ -851,6 +861,7 @@ abstract class _$CountNotifier2 extends $Notifier<int> {
       );
 }
 
+@ProviderFor(CountAsyncNotifier2)
 const countAsyncNotifier2ProviderFamily = CountAsyncNotifier2Family._();
 
 final class CountAsyncNotifier2Provider
@@ -1004,6 +1015,7 @@ abstract class _$CountAsyncNotifier2 extends $AsyncNotifier<int> {
       );
 }
 
+@ProviderFor(CountStreamNotifier2)
 const countStreamNotifier2ProviderFamily = CountStreamNotifier2Family._();
 
 final class CountStreamNotifier2Provider

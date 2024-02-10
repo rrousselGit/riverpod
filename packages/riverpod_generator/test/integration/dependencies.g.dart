@@ -8,6 +8,7 @@ part of 'dependencies.dart';
 
 typedef DepRef = Ref<int>;
 
+@ProviderFor(dep)
 const depProvider = DepProvider._();
 
 final class DepProvider extends $FunctionalProvider<int, int, DepRef>
@@ -57,6 +58,7 @@ String _$depHash() => r'2213a401e03a1a914579b4a3a7707b783de9efba';
 
 typedef FamilyRef = Ref<int>;
 
+@ProviderFor(family)
 const familyProvider = FamilyFamily._();
 
 final class FamilyProvider extends $FunctionalProvider<int, int, FamilyRef>
@@ -177,6 +179,7 @@ final class FamilyFamily extends Family {
 
 typedef ProviderRef = Ref<int>;
 
+@ProviderFor(provider)
 const providerProvider = ProviderProvider._();
 
 final class ProviderProvider extends $FunctionalProvider<int, int, ProviderRef>
@@ -241,6 +244,7 @@ String _$providerHash() => r'6c9184ef4c6a410a2132e1ecc13a2e646e936d37';
 
 typedef Provider2Ref = Ref<int>;
 
+@ProviderFor(provider2)
 const provider2Provider = Provider2Provider._();
 
 final class Provider2Provider
@@ -306,6 +310,7 @@ String _$provider2Hash() => r'70d908579c5e64ce6558b42f433adfb80f4dc79b';
 
 typedef TransitiveDependenciesRef = Ref<int>;
 
+@ProviderFor(transitiveDependencies)
 const transitiveDependenciesProvider = TransitiveDependenciesProvider._();
 
 final class TransitiveDependenciesProvider
@@ -373,6 +378,7 @@ String _$transitiveDependenciesHash() =>
 
 typedef SmallTransitiveDependencyCountRef = Ref<int>;
 
+@ProviderFor(smallTransitiveDependencyCount)
 const smallTransitiveDependencyCountProvider =
     SmallTransitiveDependencyCountProvider._();
 
@@ -437,6 +443,7 @@ String _$smallTransitiveDependencyCountHash() =>
 
 typedef EmptyDependenciesFunctionalRef = Ref<int>;
 
+@ProviderFor(emptyDependenciesFunctional)
 const emptyDependenciesFunctionalProvider =
     EmptyDependenciesFunctionalProvider._();
 
@@ -489,6 +496,7 @@ String _$emptyDependenciesFunctionalHash() =>
 
 typedef ProviderWithDependenciesRef = Ref<int>;
 
+@ProviderFor(providerWithDependencies)
 const providerWithDependenciesProvider = ProviderWithDependenciesProvider._();
 
 final class ProviderWithDependenciesProvider
@@ -549,6 +557,7 @@ String _$providerWithDependenciesHash() =>
 
 typedef _PrivateDepRef = Ref<int>;
 
+@ProviderFor(_privateDep)
 const _privateDepProvider = _PrivateDepProvider._();
 
 final class _PrivateDepProvider
@@ -599,6 +608,7 @@ String _$privateDepHash() => r'f610d91bd39e0dcffe6ff4e74160964a291289d9';
 
 typedef PublicDepRef = Ref<int>;
 
+@ProviderFor(publicDep)
 const publicDepProvider = PublicDepProvider._();
 
 final class PublicDepProvider
@@ -649,6 +659,7 @@ String _$publicDepHash() => r'bcb69aace017c86c3c4b8eccf59fa22d010834bc';
 
 typedef DuplicateDependenciesRef = Ref<int>;
 
+@ProviderFor(duplicateDependencies)
 const duplicateDependenciesProvider = DuplicateDependenciesProvider._();
 
 final class DuplicateDependenciesProvider
@@ -706,6 +717,7 @@ String _$duplicateDependenciesHash() =>
 
 typedef DuplicateDependencies2Ref = Ref<int>;
 
+@ProviderFor(duplicateDependencies2)
 const duplicateDependencies2Provider = DuplicateDependencies2Provider._();
 
 final class DuplicateDependencies2Provider
@@ -766,6 +778,7 @@ String _$duplicateDependencies2Hash() =>
 
 typedef TransitiveDuplicateDependenciesRef = Ref<int>;
 
+@ProviderFor(transitiveDuplicateDependencies)
 const transitiveDuplicateDependenciesProvider =
     TransitiveDuplicateDependenciesProvider._();
 
@@ -837,6 +850,7 @@ final class TransitiveDuplicateDependenciesProvider
 String _$transitiveDuplicateDependenciesHash() =>
     r'aba44b6c1cf82eea782ad260f2e95d9f771f12ac';
 
+@ProviderFor(Dep2)
 const dep2Provider = Dep2Provider._();
 
 final class Dep2Provider extends $NotifierProvider<Dep2, int> {
@@ -897,6 +911,7 @@ abstract class _$Dep2 extends $Notifier<int> {
   int runBuild() => build();
 }
 
+@ProviderFor(Family2)
 const family2Provider = Family2Family._();
 
 final class Family2Provider extends $NotifierProvider<Family2, int> {
@@ -1045,6 +1060,7 @@ abstract class _$Family2 extends $Notifier<int> {
       );
 }
 
+@ProviderFor(Provider3)
 const provider3Provider = Provider3Provider._();
 
 final class Provider3Provider extends $NotifierProvider<Provider3, int> {
@@ -1120,6 +1136,7 @@ abstract class _$Provider3 extends $Notifier<int> {
   int runBuild() => build();
 }
 
+@ProviderFor(Provider4)
 const provider4Provider = Provider4Family._();
 
 final class Provider4Provider extends $NotifierProvider<Provider4, int> {
@@ -1283,6 +1300,7 @@ abstract class _$Provider4 extends $Notifier<int> {
       );
 }
 
+@ProviderFor(EmptyDependenciesClassBased)
 const emptyDependenciesClassBasedProvider =
     EmptyDependenciesClassBasedProvider._();
 

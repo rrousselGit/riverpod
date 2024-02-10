@@ -126,7 +126,7 @@ extension ResolverX on Resolver {
     String libraryName = 'foo',
     bool ignoreErrors = false,
   }) async {
-    final library = await _requireFindLibraryByName(
+    final library = await requireFindLibraryByName(
       libraryName,
       ignoreErrors: ignoreErrors,
     );
@@ -143,7 +143,7 @@ extension ResolverX on Resolver {
     return result;
   }
 
-  Future<LibraryElement> _requireFindLibraryByName(
+  Future<LibraryElement> requireFindLibraryByName(
     String libraryName, {
     required bool ignoreErrors,
   }) async {

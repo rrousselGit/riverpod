@@ -8,6 +8,7 @@ part of 'stream.dart';
 
 typedef GenericRef<T extends num> = Ref<AsyncValue<List<T>>>;
 
+@ProviderFor(generic)
 const genericProvider = GenericFamily._();
 
 final class GenericProvider<T extends num> extends $FunctionalProvider<
@@ -117,6 +118,7 @@ final class GenericFamily extends Family {
 
 typedef PublicRef = Ref<AsyncValue<String>>;
 
+@ProviderFor(public)
 const publicProvider = PublicProvider._();
 
 final class PublicProvider
@@ -167,6 +169,7 @@ String _$publicHash() => r'c5cc0eac434371901cf6ab159a81bba49c58da12';
 
 typedef _PrivateRef = Ref<AsyncValue<String>>;
 
+@ProviderFor(_private)
 const _privateProvider = _PrivateProvider._();
 
 final class _PrivateProvider
@@ -217,6 +220,7 @@ String _$privateHash() => r'bbee0c7e27bda81346b5f52c96b23b2e48f83077';
 
 typedef FamilyRef = Ref<AsyncValue<String>>;
 
+@ProviderFor(family)
 const familyProvider = FamilyFamily._();
 
 final class FamilyProvider
@@ -399,6 +403,7 @@ final class FamilyFamily extends Family {
   }
 }
 
+@ProviderFor(GenericClass)
 const genericClassProvider = GenericClassFamily._();
 
 final class GenericClassProvider<T extends num>
@@ -546,6 +551,7 @@ abstract class _$GenericClass<T extends num> extends $StreamNotifier<List<T>> {
   Stream<List<T>> runBuild() => build();
 }
 
+@ProviderFor(PublicClass)
 const publicClassProvider = PublicClassProvider._();
 
 final class PublicClassProvider
@@ -607,6 +613,7 @@ abstract class _$PublicClass extends $StreamNotifier<String> {
   Stream<String> runBuild() => build();
 }
 
+@ProviderFor(_PrivateClass)
 const _privateClassProvider = _PrivateClassProvider._();
 
 final class _PrivateClassProvider
@@ -668,6 +675,7 @@ abstract class _$PrivateClass extends $StreamNotifier<String> {
   Stream<String> runBuild() => build();
 }
 
+@ProviderFor(FamilyClass)
 const familyClassProvider = FamilyClassFamily._();
 
 final class FamilyClassProvider

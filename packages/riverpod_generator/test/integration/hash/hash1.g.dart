@@ -8,6 +8,7 @@ part of 'hash1.dart';
 
 typedef SimpleRef = Ref<String>;
 
+@ProviderFor(simple)
 const simpleProvider = SimpleProvider._();
 
 final class SimpleProvider
@@ -58,6 +59,7 @@ String _$simpleHash() => r'ff9f7451526aef5b3af6646814631a502ad76a5f';
 
 typedef Simple2Ref = Ref<String>;
 
+@ProviderFor(simple2)
 const simple2Provider = Simple2Provider._();
 
 final class Simple2Provider
@@ -106,6 +108,7 @@ final class Simple2Provider
 
 String _$simple2Hash() => r'06327442776394c5c9cbb33b048d7a42e709e7fd';
 
+@ProviderFor(SimpleClass)
 const simpleClassProvider = SimpleClassProvider._();
 
 final class SimpleClassProvider extends $NotifierProvider<SimpleClass, String> {

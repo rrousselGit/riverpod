@@ -55,7 +55,7 @@ class ProviderTemplate extends Template {
         final mixins = modifiers.isEmpty ? '' : ' with ${modifiers.join(', ')}';
 
         buffer.writeln('''
-final class $name$_genericsDefinition
+${provider.doc} final class $name$_genericsDefinition
     extends \$FunctionalProvider<
         $exposedType,
         $createdType,
@@ -79,7 +79,7 @@ final class $name$_genericsDefinition
         }
 
         buffer.writeln(
-          'final class $name$_genericsDefinition extends $baseClass {',
+          '${provider.doc} final class $name$_genericsDefinition extends $baseClass {',
         );
     }
 
@@ -104,7 +104,7 @@ final class $name$_genericsDefinition
     ].join();
 
     buffer.writeln('''
-  const ${provider.providerTypeName}._({
+  ${provider.doc} const ${provider.providerTypeName}._({
     $constructorParameters
     ${provider.createType()}? create
   }): _createCb = create,

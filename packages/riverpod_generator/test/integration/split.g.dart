@@ -8,6 +8,7 @@ part of 'split.dart';
 
 typedef Counter2Ref = Ref<int>;
 
+@ProviderFor(counter2)
 const counter2Provider = Counter2Provider._();
 
 final class Counter2Provider extends $FunctionalProvider<int, int, Counter2Ref>
@@ -57,6 +58,7 @@ String _$counter2Hash() => r'9328919066a683f85226fc59201bb7c54f107a7d';
 
 typedef CounterRef = Ref<int>;
 
+@ProviderFor(counter)
 const counterProvider = CounterProvider._();
 
 final class CounterProvider extends $FunctionalProvider<int, int, CounterRef>

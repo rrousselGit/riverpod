@@ -8,6 +8,7 @@ part of 'auto_dispose.dart';
 
 typedef KeepAliveRef = Ref<int>;
 
+@ProviderFor(keepAlive)
 const keepAliveProvider = KeepAliveProvider._();
 
 final class KeepAliveProvider
@@ -58,6 +59,7 @@ String _$keepAliveHash() => r'72dd192676126d487c24c7695a91d59410c62696';
 
 typedef NotKeepAliveRef = Ref<int>;
 
+@ProviderFor(notKeepAlive)
 const notKeepAliveProvider = NotKeepAliveProvider._();
 
 final class NotKeepAliveProvider
@@ -108,6 +110,7 @@ String _$notKeepAliveHash() => r'1ccc497d7c651f8e730ec1bcecf271ffe9615d83';
 
 typedef DefaultKeepAliveRef = Ref<int>;
 
+@ProviderFor(defaultKeepAlive)
 const defaultKeepAliveProvider = DefaultKeepAliveProvider._();
 
 final class DefaultKeepAliveProvider

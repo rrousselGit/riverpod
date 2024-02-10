@@ -8,6 +8,7 @@ part of 'dependencies2.dart';
 
 typedef ProviderWithDependencies2Ref = Ref<int>;
 
+@ProviderFor(providerWithDependencies2)
 const providerWithDependencies2Provider = ProviderWithDependencies2Provider._();
 
 final class ProviderWithDependencies2Provider
@@ -77,6 +78,7 @@ String _$providerWithDependencies2Hash() =>
 
 typedef FamilyWithDependencies2Ref = Ref<int>;
 
+@ProviderFor(familyWithDependencies2)
 const familyWithDependencies2Provider = FamilyWithDependencies2Family._();
 
 final class FamilyWithDependencies2Provider
@@ -218,6 +220,7 @@ final class FamilyWithDependencies2Family extends Family {
 
 typedef _Private2Ref = Ref<int>;
 
+@ProviderFor(_private2)
 const _private2Provider = _Private2Provider._();
 
 final class _Private2Provider
@@ -268,6 +271,7 @@ String _$private2Hash() => r'5e0fa14ff40fb444c027ed25150a42362db3ef19';
 
 typedef Public2Ref = Ref<int>;
 
+@ProviderFor(public2)
 const public2Provider = Public2Provider._();
 
 final class Public2Provider extends $FunctionalProvider<int, int, Public2Ref>
@@ -315,6 +319,7 @@ final class Public2Provider extends $FunctionalProvider<int, int, Public2Ref>
 
 String _$public2Hash() => r'9767255f0182589fe48b29d217dd488b0a13b9d5';
 
+@ProviderFor(NotifierWithDependencies)
 const notifierWithDependenciesProvider = NotifierWithDependenciesProvider._();
 
 final class NotifierWithDependenciesProvider
@@ -397,6 +402,7 @@ abstract class _$NotifierWithDependencies extends $Notifier<int> {
   int runBuild() => build();
 }
 
+@ProviderFor(NotifierFamilyWithDependencies)
 const notifierFamilyWithDependenciesProvider =
     NotifierFamilyWithDependenciesFamily._();
 

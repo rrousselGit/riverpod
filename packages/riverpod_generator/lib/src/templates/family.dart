@@ -37,7 +37,7 @@ class FamilyTemplate extends Template {
         provider.parameters.isEmpty ? '' : 'argument: $parametersPassThrough,';
 
     buffer.writeln('''
-final class ${provider.familyTypeName} extends Family {
+${provider.doc} final class ${provider.familyTypeName} extends Family {
   const ${provider.familyTypeName}._()
       : super(
         name: r'${provider.providerName(options)}',
@@ -46,7 +46,7 @@ final class ${provider.familyTypeName} extends Family {
         ${provider.providerElement.isAutoDispose ? 'isAutoDispose: true,' : ''}
       );
 
-  ${provider.providerTypeName}$_generics call$_genericsDefinition($_parameterDefinition)
+  ${provider.doc} ${provider.providerTypeName}$_generics call$_genericsDefinition($_parameterDefinition)
     => ${provider.providerTypeName}$_generics._(
       $argument
       from: this

@@ -8,6 +8,7 @@ part of 'sync.dart';
 
 typedef GenericRef<T extends num> = Ref<List<T>>;
 
+@ProviderFor(generic)
 const genericProvider = GenericFamily._();
 
 final class GenericProvider<T extends num>
@@ -117,6 +118,7 @@ final class GenericFamily extends Family {
 
 typedef ComplexGenericRef<T extends num, Foo extends String?> = Ref<List<T>>;
 
+@ProviderFor(complexGeneric)
 const complexGenericProvider = ComplexGenericFamily._();
 
 final class ComplexGenericProvider<T extends num, Foo extends String?>
@@ -285,6 +287,7 @@ final class ComplexGenericFamily extends Family {
 
 typedef RawFutureRef = Ref<Raw<Future<String>>>;
 
+@ProviderFor(rawFuture)
 const rawFutureProvider = RawFutureProvider._();
 
 final class RawFutureProvider extends $FunctionalProvider<
@@ -337,6 +340,7 @@ String _$rawFutureHash() => r'5203a56065b768023770326281618e3229ccb530';
 
 typedef RawStreamRef = Ref<Raw<Stream<String>>>;
 
+@ProviderFor(rawStream)
 const rawStreamProvider = RawStreamProvider._();
 
 final class RawStreamProvider extends $FunctionalProvider<
@@ -389,6 +393,7 @@ String _$rawStreamHash() => r'2b764189753a8b74f47ba557a79416f00ef5cebd';
 
 typedef RawFamilyFutureRef = Ref<Raw<Future<String>>>;
 
+@ProviderFor(rawFamilyFuture)
 const rawFamilyFutureProvider = RawFamilyFutureFamily._();
 
 final class RawFamilyFutureProvider extends $FunctionalProvider<
@@ -511,6 +516,7 @@ final class RawFamilyFutureFamily extends Family {
 
 typedef RawFamilyStreamRef = Ref<Raw<Stream<String>>>;
 
+@ProviderFor(rawFamilyStream)
 const rawFamilyStreamProvider = RawFamilyStreamFamily._();
 
 final class RawFamilyStreamProvider extends $FunctionalProvider<
@@ -631,13 +637,18 @@ final class RawFamilyStreamFamily extends Family {
   }
 }
 
+/// This is some documentation
 typedef PublicRef = Ref<String>;
 
+/// This is some documentation
+@ProviderFor(public)
 const publicProvider = PublicProvider._();
 
+/// This is some documentation
 final class PublicProvider
     extends $FunctionalProvider<String, String, PublicRef>
     with $Provider<String, PublicRef> {
+  /// This is some documentation
   const PublicProvider._(
       {String Function(
         PublicRef ref,
@@ -683,6 +694,7 @@ String _$publicHash() => r'138be35943899793ab085e711fe3f3d22696a3ba';
 
 typedef Supports$inNamesRef = Ref<String>;
 
+@ProviderFor(supports$inNames)
 const supports$inNamesProvider = Supports$inNamesProvider._();
 
 final class Supports$inNamesProvider
@@ -731,13 +743,18 @@ final class Supports$inNamesProvider
 
 String _$supports$inNamesHash() => r'cbf929802fcbd0aa949ad72743d096fb3ef5f28f';
 
+/// This is some documentation
 typedef FamilyRef = Ref<String>;
 
+/// This is some documentation
+@ProviderFor(family)
 const familyProvider = FamilyFamily._();
 
+/// This is some documentation
 final class FamilyProvider
     extends $FunctionalProvider<String, String, FamilyRef>
     with $Provider<String, FamilyRef> {
+  /// This is some documentation
   const FamilyProvider._(
       {required FamilyFamily super.from,
       required (
@@ -852,6 +869,7 @@ final class FamilyProvider
 
 String _$familyHash() => r'14d1ee238ca608d547630d0e222ef4c5866e9e61';
 
+/// This is some documentation
 final class FamilyFamily extends Family {
   const FamilyFamily._()
       : super(
@@ -861,6 +879,7 @@ final class FamilyFamily extends Family {
           isAutoDispose: true,
         );
 
+  /// This is some documentation
   FamilyProvider call(
     int first, {
     String? second,
@@ -917,6 +936,7 @@ final class FamilyFamily extends Family {
 
 typedef _PrivateRef = Ref<String>;
 
+@ProviderFor(_private)
 const _privateProvider = _PrivateProvider._();
 
 final class _PrivateProvider
@@ -967,6 +987,7 @@ String _$privateHash() => r'519561bc7e88e394d7f75ca2102a5c0acc832c66';
 
 typedef Supports$InFnNameRef<And$InT> = Ref<String>;
 
+@ProviderFor(supports$InFnName)
 const supports$InFnNameProvider = Supports$InFnNameFamily._();
 
 final class Supports$InFnNameProvider<And$InT>
@@ -1078,6 +1099,7 @@ final class Supports$InFnNameFamily extends Family {
 
 typedef Supports$InFnNameFamilyRef<And$InT> = Ref<String>;
 
+@ProviderFor(supports$InFnNameFamily)
 const supports$InFnNameFamilyProvider = Supports$InFnNameFamilyFamily._();
 
 final class Supports$InFnNameFamilyProvider<And$InT>
@@ -1263,6 +1285,7 @@ final class Supports$InFnNameFamilyFamily extends Family {
 
 typedef GeneratedRef = Ref<String>;
 
+@ProviderFor(generated)
 const generatedProvider = GeneratedProvider._();
 
 final class GeneratedProvider
@@ -1311,6 +1334,7 @@ final class GeneratedProvider
 
 String _$generatedHash() => r'fecbc1d5d9a05fc996b452a57fd1975ff368af91';
 
+@ProviderFor(GenericClass)
 const genericClassProvider = GenericClassFamily._();
 
 final class GenericClassProvider<T extends num>
@@ -1457,6 +1481,7 @@ abstract class _$GenericClass<T extends num> extends $Notifier<List<T>> {
   List<T> runBuild() => build();
 }
 
+@ProviderFor(RawFutureClass)
 const rawFutureClassProvider = RawFutureClassProvider._();
 
 final class RawFutureClassProvider
@@ -1518,6 +1543,7 @@ abstract class _$RawFutureClass extends $Notifier<Raw<Future<String>>> {
   Raw<Future<String>> runBuild() => build();
 }
 
+@ProviderFor(RawStreamClass)
 const rawStreamClassProvider = RawStreamClassProvider._();
 
 final class RawStreamClassProvider
@@ -1579,6 +1605,7 @@ abstract class _$RawStreamClass extends $Notifier<Raw<Stream<String>>> {
   Raw<Stream<String>> runBuild() => build();
 }
 
+@ProviderFor(RawFamilyFutureClass)
 const rawFamilyFutureClassProvider = RawFamilyFutureClassFamily._();
 
 final class RawFamilyFutureClassProvider
@@ -1731,6 +1758,7 @@ abstract class _$RawFamilyFutureClass extends $Notifier<Raw<Future<String>>> {
       );
 }
 
+@ProviderFor(RawFamilyStreamClass)
 const rawFamilyStreamClassProvider = RawFamilyStreamClassFamily._();
 
 final class RawFamilyStreamClassProvider
@@ -1883,9 +1911,13 @@ abstract class _$RawFamilyStreamClass extends $Notifier<Raw<Stream<String>>> {
       );
 }
 
+/// This is some documentation
+@ProviderFor(PublicClass)
 const publicClassProvider = PublicClassProvider._();
 
+/// This is some documentation
 final class PublicClassProvider extends $NotifierProvider<PublicClass, String> {
+  /// This is some documentation
   const PublicClassProvider._(
       {super.runNotifierBuildOverride, PublicClass Function()? create})
       : _createCb = create,
@@ -1943,6 +1975,7 @@ abstract class _$PublicClass extends $Notifier<String> {
   String runBuild() => build();
 }
 
+@ProviderFor(_PrivateClass)
 const _privateClassProvider = _PrivateClassProvider._();
 
 final class _PrivateClassProvider
@@ -2004,9 +2037,13 @@ abstract class _$PrivateClass extends $Notifier<String> {
   String runBuild() => build();
 }
 
+/// This is some documentation
+@ProviderFor(FamilyClass)
 const familyClassProvider = FamilyClassFamily._();
 
+/// This is some documentation
 final class FamilyClassProvider extends $NotifierProvider<FamilyClass, String> {
+  /// This is some documentation
   const FamilyClassProvider._(
       {required FamilyClassFamily super.from,
       required (
@@ -2099,6 +2136,7 @@ final class FamilyClassProvider extends $NotifierProvider<FamilyClass, String> {
 
 String _$familyClassHash() => r'01e3b9cb4d6d0bf12a2284761b1a11819d97d249';
 
+/// This is some documentation
 final class FamilyClassFamily extends Family {
   const FamilyClassFamily._()
       : super(
@@ -2108,6 +2146,7 @@ final class FamilyClassFamily extends Family {
           isAutoDispose: true,
         );
 
+  /// This is some documentation
   FamilyClassProvider call(
     int first, {
     String? second,
@@ -2227,6 +2266,7 @@ abstract class _$FamilyClass extends $Notifier<String> {
       );
 }
 
+@ProviderFor(Supports$InClassName)
 const supports$InClassNameProvider = Supports$InClassNameFamily._();
 
 final class Supports$InClassNameProvider<And$InT>
@@ -2378,6 +2418,7 @@ abstract class _$Supports$InClassName<And$InT> extends $Notifier<String> {
   String runBuild() => build();
 }
 
+@ProviderFor(Supports$InClassFamilyName)
 const supports$InClassFamilyNameProvider = Supports$InClassFamilyNameFamily._();
 
 final class Supports$InClassFamilyNameProvider<And$InT>

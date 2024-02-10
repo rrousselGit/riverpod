@@ -13,7 +13,7 @@ class RefTemplate extends Template {
     final typeParametersDefinition = provider.genericsDefinition();
 
     buffer.writeln('''
-typedef ${provider.refImplName}$typeParametersDefinition = Ref<${provider.exposedTypeDisplayString}>;
+${provider.doc} typedef ${provider.refImplName}$typeParametersDefinition = Ref<${provider.exposedTypeDisplayString}>;
 ''');
   }
 }

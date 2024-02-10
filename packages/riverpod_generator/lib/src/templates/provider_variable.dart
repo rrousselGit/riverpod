@@ -14,6 +14,9 @@ class ProviderVariableTemplate extends Template {
   void run(StringBuffer buffer) {
     final providerName = provider.providerName(options);
 
+    buffer.write(provider.doc);
+    provider.metadata.forEach(buffer.writeln);
+
     switch (provider) {
       case _ when provider.providerElement.isFamily:
         buffer

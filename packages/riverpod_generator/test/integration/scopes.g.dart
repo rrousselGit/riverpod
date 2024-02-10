@@ -8,6 +8,7 @@ part of 'scopes.dart';
 
 typedef ScopedRef = Ref<int>;
 
+@ProviderFor(scoped)
 const scopedProvider = ScopedProvider._();
 
 final class ScopedProvider extends $FunctionalProvider<int, int, ScopedRef>
@@ -55,6 +56,7 @@ final class ScopedProvider extends $FunctionalProvider<int, int, ScopedRef>
 
 String _$scopedHash() => r'590f1a203323105e732397a2616fbd7dac65f0cc';
 
+@ProviderFor(ScopedClass)
 const scopedClassProvider = ScopedClassProvider._();
 
 final class ScopedClassProvider extends $NotifierProvider<ScopedClass, int> {

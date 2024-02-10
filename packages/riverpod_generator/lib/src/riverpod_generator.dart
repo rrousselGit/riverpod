@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:meta/meta.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
@@ -17,8 +18,6 @@ import 'templates/provider.dart';
 import 'templates/provider_variable.dart';
 import 'templates/ref.dart';
 import 'type.dart';
-
-const riverpodTypeChecker = TypeChecker.fromRuntime(Riverpod);
 
 String providerDocFor(Element element) {
   return element.documentationComment == null
@@ -284,6 +283,21 @@ extension ProviderNames on GeneratorProviderDeclaration {
     }
   }
 
+  Iterable<String> get metadata {
+    return ['@ProviderFor($name)'].followedBy(
+      node.metadata.where((e) {
+        if (e.elementAnnotation!.isDoNotStore) return false;
+
+        final valueType = e.elementAnnotation!.computeConstantValue()?.type;
+        if (valueType == null) return false;
+
+        return !riverpodType.isExactlyType(valueType);
+      }).map((e) => e.toString()),
+    );
+  }
+
+  String get doc => node.doc;
+
   String argumentToRecord({String? variableName}) {
     switch (parameters) {
       case [final p]:
@@ -404,4 +418,28 @@ String _genericUsageDisplayString(TypeParameterList? typeParameterList) {
   }
 
   return '<${typeParameterList.typeParameters.map((e) => e.name.lexeme).join(', ')}>';
+}
+
+extension ParameterDoc on AstNode {
+  String get doc {
+    final builder = StringBuffer();
+    final that = this;
+
+    switch (that) {
+      case AnnotatedNode():
+        for (var token = that.documentationComment?.beginToken;
+            token != null;
+            token = token.next) {
+          builder.writeln(token);
+        }
+      case _:
+        for (Token? token = beginToken.precedingComments;
+            token != null;
+            token = token.next) {
+          builder.writeln(token);
+        }
+    }
+
+    return builder.toString();
+  }
 }

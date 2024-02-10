@@ -8,6 +8,7 @@ part of 'async.dart';
 
 typedef GenericRef<T extends num> = Ref<AsyncValue<List<T>>>;
 
+@ProviderFor(generic)
 const genericProvider = GenericFamily._();
 
 final class GenericProvider<T extends num> extends $FunctionalProvider<
@@ -117,6 +118,7 @@ final class GenericFamily extends Family {
 
 typedef PublicRef = Ref<AsyncValue<String>>;
 
+@ProviderFor(public)
 const publicProvider = PublicProvider._();
 
 final class PublicProvider
@@ -167,6 +169,7 @@ String _$publicHash() => r'9d99b79c013da13926d4ad89c72ebca4fc1cc257';
 
 typedef _PrivateRef = Ref<AsyncValue<String>>;
 
+@ProviderFor(_private)
 const _privateProvider = _PrivateProvider._();
 
 final class _PrivateProvider extends $FunctionalProvider<AsyncValue<String>,
@@ -217,6 +220,7 @@ String _$privateHash() => r'bc0469a9315de114a0ccd82c7db4980844d0009f';
 
 typedef FamilyOrRef = Ref<AsyncValue<String>>;
 
+@ProviderFor(familyOr)
 const familyOrProvider = FamilyOrFamily._();
 
 final class FamilyOrProvider extends $FunctionalProvider<AsyncValue<String>,
@@ -338,6 +342,7 @@ final class FamilyOrFamily extends Family {
 
 typedef FamilyRef = Ref<AsyncValue<String>>;
 
+@ProviderFor(family)
 const familyProvider = FamilyFamily._();
 
 final class FamilyProvider
@@ -520,6 +525,7 @@ final class FamilyFamily extends Family {
   }
 }
 
+@ProviderFor(GenericClass)
 const genericClassProvider = GenericClassFamily._();
 
 final class GenericClassProvider<T extends num>
@@ -667,6 +673,7 @@ abstract class _$GenericClass<T extends num> extends $AsyncNotifier<List<T>> {
   FutureOr<List<T>> runBuild() => build();
 }
 
+@ProviderFor(PublicClass)
 const publicClassProvider = PublicClassProvider._();
 
 final class PublicClassProvider
@@ -728,6 +735,7 @@ abstract class _$PublicClass extends $AsyncNotifier<String> {
   FutureOr<String> runBuild() => build();
 }
 
+@ProviderFor(_PrivateClass)
 const _privateClassProvider = _PrivateClassProvider._();
 
 final class _PrivateClassProvider
@@ -789,6 +797,7 @@ abstract class _$PrivateClass extends $AsyncNotifier<String> {
   FutureOr<String> runBuild() => build();
 }
 
+@ProviderFor(FamilyOrClass)
 const familyOrClassProvider = FamilyOrClassFamily._();
 
 final class FamilyOrClassProvider
@@ -941,6 +950,7 @@ abstract class _$FamilyOrClass extends $AsyncNotifier<String> {
       );
 }
 
+@ProviderFor(FamilyClass)
 const familyClassProvider = FamilyClassFamily._();
 
 final class FamilyClassProvider

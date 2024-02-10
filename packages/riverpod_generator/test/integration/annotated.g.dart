@@ -8,6 +8,10 @@ part of 'annotated.dart';
 
 typedef FunctionalRef = Ref<String>;
 
+@ProviderFor(functional)
+@Deprecated('Deprecation message')
+@visibleForTesting
+@protected
 const functionalProvider = FunctionalProvider._();
 
 final class FunctionalProvider
@@ -58,6 +62,10 @@ String _$functionalHash() => r'69e260b1de8ba28cbeb8e24d628933366cde6b8b';
 
 typedef FamilyRef = Ref<String>;
 
+@ProviderFor(family)
+@Deprecated('Deprecation message')
+@visibleForTesting
+@protected
 const familyProvider = FamilyFamily._();
 
 final class FamilyProvider
@@ -179,6 +187,7 @@ final class FamilyFamily extends Family {
 
 typedef NotCopiedFunctionalRef = Ref<String>;
 
+@ProviderFor(notCopiedFunctional)
 const notCopiedFunctionalProvider = NotCopiedFunctionalProvider._();
 
 final class NotCopiedFunctionalProvider
@@ -230,6 +239,7 @@ String _$notCopiedFunctionalHash() =>
 
 typedef NotCopiedFamilyRef = Ref<String>;
 
+@ProviderFor(notCopiedFamily)
 const notCopiedFamilyProvider = NotCopiedFamilyFamily._();
 
 final class NotCopiedFamilyProvider
@@ -349,6 +359,10 @@ final class NotCopiedFamilyFamily extends Family {
   }
 }
 
+@ProviderFor(ClassBased)
+@Deprecated('Deprecation message')
+@visibleForTesting
+@protected
 const classBasedProvider = ClassBasedProvider._();
 
 final class ClassBasedProvider extends $NotifierProvider<ClassBased, String> {
@@ -409,6 +423,7 @@ abstract class _$ClassBased extends $Notifier<String> {
   String runBuild() => build();
 }
 
+@ProviderFor(NotCopiedClassBased)
 const notCopiedClassBasedProvider = NotCopiedClassBasedProvider._();
 
 final class NotCopiedClassBasedProvider

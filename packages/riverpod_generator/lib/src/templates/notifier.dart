@@ -39,16 +39,15 @@ class NotifierTemplate extends Template {
     final _$args = r'late final _$args = '
         '(ref as ${provider.elementName}).origin.argument as ${provider.argumentRecordType};';
     var paramOffset = 0;
-    final parametersAsFields = provider.parameters
-        .map(
-          (p) =>
-              '${p.typeDisplayString} get ${p.name!.lexeme} => ${switch (provider.parameters) {
-            [_] => r'_$args;',
-            _ =>
-              '_\$args.${p.isPositional ? '\$${++paramOffset}' : p.name!.lexeme};',
-          }}',
-        )
-        .join();
+    final parametersAsFields = provider.parameters.map(
+      (p) {
+        return '${p.doc} ${p.typeDisplayString} get ${p.name!.lexeme} => ${switch (provider.parameters) {
+          [_] => r'_$args;',
+          _ =>
+            '_\$args.${p.isPositional ? '\$${++paramOffset}' : p.name!.lexeme};',
+        }}';
+      },
+    ).join();
 
     buffer.writeln('''
 abstract class $notifierBaseName$genericsDefinition extends $baseClass {

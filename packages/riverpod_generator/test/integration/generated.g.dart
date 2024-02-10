@@ -8,6 +8,7 @@ part of 'generated.dart';
 
 typedef GeneratedRef = Ref<_Test>;
 
+@ProviderFor(generated)
 const generatedProvider = GeneratedProvider._();
 
 final class GeneratedProvider
@@ -58,6 +59,7 @@ String _$generatedHash() => r'e49f3520d06ed50d34a44de613fdcd20b19f48d4';
 
 typedef GeneratedFamilyRef = Ref<_Test>;
 
+@ProviderFor(generatedFamily)
 const generatedFamilyProvider = GeneratedFamilyFamily._();
 
 final class GeneratedFamilyProvider
@@ -179,6 +181,7 @@ final class GeneratedFamilyFamily extends Family {
 
 typedef $DynamicRef = Ref<Object?>;
 
+@ProviderFor($dynamic)
 const $dynamicProvider = $DynamicProvider._();
 
 final class $DynamicProvider
@@ -229,6 +232,7 @@ String _$$dynamicHash() => r'f62d63d9340f30b253e687f76deacd8205fed0e7';
 
 typedef $DynamicFamilyRef = Ref<Object?>;
 
+@ProviderFor($dynamicFamily)
 const $dynamicFamilyProvider = $DynamicFamilyFamily._();
 
 final class $DynamicFamilyProvider
@@ -350,6 +354,7 @@ final class $DynamicFamilyFamily extends Family {
 
 typedef _DynamicRef = Ref<Object?>;
 
+@ProviderFor(_dynamic)
 const _dynamicProvider = _DynamicFamily._();
 
 final class _DynamicProvider
@@ -471,6 +476,7 @@ final class _DynamicFamily extends Family {
 
 typedef AliasRef = Ref<r.AsyncValue<int>>;
 
+@ProviderFor(alias)
 const aliasProvider = AliasProvider._();
 
 final class AliasProvider
@@ -522,6 +528,7 @@ String _$aliasHash() => r'cc08ec4cc5ec0dc98bdb7f4dcbc035021b09bcf3';
 
 typedef AliasFamilyRef = Ref<r.AsyncValue<int>>;
 
+@ProviderFor(aliasFamily)
 const aliasFamilyProvider = AliasFamilyFamily._();
 
 final class AliasFamilyProvider extends $FunctionalProvider<
@@ -643,6 +650,7 @@ final class AliasFamilyFamily extends Family {
   }
 }
 
+@ProviderFor(GeneratedClass)
 const generatedClassProvider = GeneratedClassProvider._();
 
 final class GeneratedClassProvider
@@ -704,6 +712,7 @@ abstract class _$GeneratedClass extends $Notifier<_Test> {
   _Test runBuild() => build();
 }
 
+@ProviderFor(GeneratedClassFamily)
 const generatedClassFamilyProvider = GeneratedClassFamilyFamily._();
 
 final class GeneratedClassFamilyProvider
@@ -857,6 +866,7 @@ abstract class _$GeneratedClassFamily extends $Notifier<_Test> {
       );
 }
 
+@ProviderFor($DynamicClass)
 const $dynamicClassProvider = $DynamicClassProvider._();
 
 final class $DynamicClassProvider
@@ -918,6 +928,7 @@ abstract class _$$DynamicClass extends $Notifier<Object?> {
   Object? runBuild() => build();
 }
 
+@ProviderFor($DynamicClassFamily)
 const $dynamicClassFamilyProvider = $DynamicClassFamilyFamily._();
 
 final class $DynamicClassFamilyProvider
@@ -1071,6 +1082,7 @@ abstract class _$$DynamicClassFamily extends $Notifier<Object?> {
       );
 }
 
+@ProviderFor(AliasClass)
 const aliasClassProvider = AliasClassProvider._();
 
 final class AliasClassProvider
@@ -1132,6 +1144,7 @@ abstract class _$AliasClass extends $Notifier<r.AsyncValue<int>> {
   r.AsyncValue<int> runBuild() => build();
 }
 
+@ProviderFor(AliasClassFamily)
 const aliasClassFamilyProvider = AliasClassFamilyFamily._();
 
 final class AliasClassFamilyProvider
