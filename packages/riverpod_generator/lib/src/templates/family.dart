@@ -41,7 +41,7 @@ ${provider.doc} final class ${provider.familyTypeName} extends Family {
         name: r'${provider.providerName(options)}',
         dependencies: ${provider.dependencies(options)},
         allTransitiveDependencies: ${provider.allTransitiveDependencies(allTransitiveDependencies)},
-        ${provider.providerElement.isAutoDispose ? 'isAutoDispose: true,' : ''}
+        isAutoDispose: ${provider.providerElement.isAutoDispose},
       );
 
   ${provider.doc} ${provider.providerTypeName}$_generics call$_genericsDefinition($_parameterDefinition)

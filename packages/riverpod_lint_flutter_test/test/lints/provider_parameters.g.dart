@@ -101,6 +101,7 @@ final class GeneratorFamily extends Family {
           name: r'generatorProvider',
           dependencies: null,
           allTransitiveDependencies: null,
+          isAutoDispose: false,
         );
 
   GeneratorProvider call({

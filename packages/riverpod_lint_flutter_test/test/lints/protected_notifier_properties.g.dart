@@ -384,6 +384,7 @@ final class A4Family extends Family {
           name: r'a4Provider',
           dependencies: null,
           allTransitiveDependencies: null,
+          isAutoDispose: false,
         );
 
   A4Provider call(
@@ -681,6 +682,7 @@ final class A6Family extends Family {
           name: r'a6Provider',
           dependencies: null,
           allTransitiveDependencies: null,
+          isAutoDispose: false,
         );
 
   A6Provider call(
@@ -980,6 +982,7 @@ final class A8Family extends Family {
           name: r'a8Provider',
           dependencies: null,
           allTransitiveDependencies: null,
+          isAutoDispose: false,
         );
 
   A8Provider call(
