@@ -2,47 +2,58 @@
 title: ChangeNotifierProvider
 ---
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
 import todos from "!!raw-loader!/docs/providers/change_notifier_provider/todos.dart";
 import todosConsumer from "!!raw-loader!/docs/providers/change_notifier_provider/todos_consumer.dart";
-import { trimSnippet, Foo } from "../../../../../src/components/CodeSnippet";
+import { trimSnippet } from "@site/src/components/CodeSnippet";
 
-`ChangeNotifierProvider` (来自 flutter_riverpod/hooks_riverpod) 
-是一个用于监听和暴露Flutter本身的 [ChangeNotifier] 的provider。
-
-Riverpod不鼓励使用 `ChangeNotifierProvider` ，它的存在主要是为了：
-
-- an easy transition from `package:provider` when using its `ChangeNotifierProvider`
-- 当使用它的 `ChangeNotifierProvider` 时，简单地从 `package:provider` 迁移。
-- 支持可变状态，即使不可变的状态更好。
-
-:::info
-更倾向于使用 [StateNotifierProvider]。
-只有在绝对需要可变状态时才考虑使用 `ChangeNotifierProvider`。
+:::caution
+<!---
+The content of this page may be outdated.  
+It will be updated in the future, but for now you may want to refer to the content
+in the top of the sidebar instead (introduction/essentials/case-studies/...)
+-->
+本页内容可能已经过时。  
+今后会进行更新，但目前您可能需要参考侧边栏顶部的内容（介绍/要点/应用案例/......）。
 :::
 
-使用可变状态而不是不可变状态有时会更高效。
-但缺点是它可能更难维护，并可能破坏各种功能。  
-比如说如果状态是可变的，
-用于优化widget重新构建的 `provider.select` 可能不起作用，
-因为Select会认为值没有改变。  
-因此，使用不可变的数据结构有时会更快。
-制定特定用例的基准测试非常重要，以确保通过使用 `ChangeNotifierProvider` 时能真正获得性能。
+`ChangeNotifierProvider` (flutter_riverpod/hooks_riverpod only) is a provider that
+is used to listen to and expose a [ChangeNotifier] from Flutter itself.
 
-下面是用法示例，我们可以使用 `ChangeNotifierProvider` 来实现待办清单。
-这样做将允许我们公开 `addTodo` 等方法，让UI修改用户交互中的待办清单：
+Using `ChangeNotifierProvider` is discouraged by Riverpod and exists primarily for:
+
+- an easy transition from `package:provider` when using its `ChangeNotifierProvider`
+- supporting mutable state, even though immutable state is preferred
+
+:::info
+Prefer using [NotifierProvider] instead.  
+Consider using `ChangeNotifierProvider` only if you are absolutely certain
+that you want mutable state.
+:::
+
+Using mutable state instead of immutable state can sometimes be more efficient.
+The downside is, it can be harder to maintain and may break various features.  
+For example, using `provider.select` to optimize rebuilds of your widgets
+may not work if your state is mutable, as `select` will think that the value
+hasn't changed.  
+As such, using immutable data structures can sometimes be faster. Therefore
+it is important to make benchmarks specific to your use-case, to make sure
+that you are truly gaining performance by using `ChangeNotifierProvider`.
+
+As a usage example, we could use `ChangeNotifierProvider` to implement a todo-list.
+Doing so would allow us to expose methods such as `addTodo` to let the UI
+modify the list of todos on user interactions:
 
 <CodeBlock>{trimSnippet(todos)}</CodeBlock>
 
-现在我们已经定义了一个 `ChangeNotifierProvider`，
-我们可以用它来与UI中的待办清单交互：
+Now that we have defined a `ChangeNotifierProvider`, we can use it to interact
+with the list of todos in our UI:
 
 <CodeBlock>{trimSnippet(todosConsumer)}</CodeBlock>
 
 [state_notifier]: https://pub.dev/packages/state_notifier
 [statenotifierprovider]: ./state_notifier_provider
+[notifierprovider]: ./notifier_provider
 [changenotifier]: https://api.flutter.dev/flutter/foundation/ChangeNotifier-class.html
 [provider]: ./provider
 [futureprovider]: ./future_provider

@@ -1,0 +1,65 @@
+---
+title: Ottimizzare le performance
+---
+
+import { AutoSnippet } from "../../../../../src/components/CodeSnippet";
+import select from "./select/select";
+
+import selectAsync from "./select/select_async";
+
+Con tutto ciò che abbiamo visto fino ad ora, possiamo già costruire un'applicazione 
+completamente funzionante. Tuttavia, potresti avere delle domande riguardo alle performance.
+
+In questa pagina copriremo alcuni consigli e trucchi per ottimizzare possibilmente il tuo codice.
+
+:::caution
+Prima di fare qualsiasi ottimizzazione, assicurati di misurare le prestazioni della tua applicazione. 
+Potrebbe non essere conveniente affrontare la complessità delle ottimizzazioni se i benefici ottenuti sono limitati.
+:::
+
+## Filtrare i rebuild dei widget/provider usando "select".
+
+Avrai notato che, di default, usare `ref.watch` provoca la ricostruzione 
+dei consumer/provider ogni volta che _qualsiasi_ delle proprietà di un oggetto cambia.
+Per fare un esempio, osservare un oggetto `User` ed usare solo la sua proprietà "name" 
+causerà la ricostruzione del consumer anche se è solo la proprietà "age" a cambiare.
+
+Ma nel caso tu abbia un consumer che usa solo un subset di proprietà, vuoi 
+evitare di ricostruire il widget quando altre proprietà cambiano.
+
+Questo comportamento può essere ottenuto usando la funzionalità `select` dei provider.
+Quando lo si usa, `ref.watch` non restituirà più l'oggetto completo ma le proprietà selezionate.
+Ora i tuoi consumer/provider si ricostruiranno solo se quelle proprietà selezionate cambieranno.
+
+<AutoSnippet {...select} />
+
+:::info
+È possibile chiamare `select` quante volte si desidera.
+Sei libero di chiamarlo una volta per la proprietà che desideri.
+:::
+
+:::caution
+Si prevede che le proprietà selezionate siano immutabili.
+Restituire una `List` per poi mutarla non azionerà un rebuild.
+:::
+
+:::caution
+Usare `select` rallenta leggermente le singole operazioni di lettura ed 
+aumenterà di poco la complessità del tuo codice.
+Potrebbe non valere la pena usarlo se quelle "altre proprietà" cambiano raramente.
+:::
+
+### Selezionare proprietà asincrone
+
+Nel caso tu stia provando ad ottimizzare un provider che ascolta un altro provider, 
+potrebbe capitare che l'altro provider sia asincrono.
+
+Normalmente, useresti `ref.watch(anotherProvider.future)` per ottenere il valore.
+Il problema è che, `select` si applicherà solo su `AsyncValue`, il quale non è qualcosa 
+che puoi aspettare.
+
+A questo scopo è possibile utilizzare invece `selectAsync`. È unicamente per il 
+codice asincrono e permette di eseguire un'operazione `select` sul dato emesso da un provider.
+Il suo utilizzo è simile a quello di `select` ma restituisce un `Future`:
+
+<AutoSnippet {...selectAsync} />

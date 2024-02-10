@@ -12,7 +12,7 @@ part of 'question.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 QuestionsResponse _$QuestionsResponseFromJson(Map<String, dynamic> json) {
   return _QuestionsResponse.fromJson(json);
@@ -132,7 +132,7 @@ class _$QuestionsResponseImpl implements _QuestionsResponse {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$QuestionsResponseImpl &&
@@ -476,7 +476,7 @@ class _$QuestionImpl implements _Question {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$QuestionImpl &&
@@ -683,7 +683,7 @@ class _$QuestionThemeImpl implements _QuestionTheme {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$QuestionThemeImpl &&

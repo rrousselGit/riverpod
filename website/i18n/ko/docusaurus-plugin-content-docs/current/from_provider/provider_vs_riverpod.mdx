@@ -1,0 +1,419 @@
+---
+title: Provider vs Riverpod
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import family from "./family";
+import {
+  trimSnippet,
+  AutoSnippet,
+  When,
+} from "../../../../../src/components/CodeSnippet";
+
+
+이 문서에서는 Provider와 Riverpod의 차이점과 유사점을 요약하여 설명합니다.
+
+:::info
+한글에는 영어 대/소문자가 없어서 "Provider"와 "provider"를 "프로바이더", "공급자"등으로 번역시 구분할 수 없습니다.
+이 문서에서는 pkg:Provider를 "Provider"로 표기하고,
+pkg:Provider나 pkg:Riverpod에서 제공되는 provider들을 "provider"로 표기합니다.
+:::
+
+## 공급자(Provider) 정의하기
+
+두 패키지의 가장 큰 차이점은 "providers"를 정의하는 방식입니다.
+
+[Provider]를 사용하면 providers는 위젯이므로 위젯 트리 안에 배치됩니다,
+일반적으로 `MultiProvider` 안에 배치됩니다:
+
+```dart
+class Counter extends ChangeNotifier {
+ ...
+}
+
+void main() {
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider<Counter>(create: (context) => Counter()),
+      ],
+      child: MyApp(),
+    )
+  );
+}
+```
+
+Riverpod에서 providers는 위젯이 **아닙니다**. 대신 일반 Dart 객체입니다.  
+마찬가지로 providers는 위젯 트리 외부에서 정의되며, 대신 전역 최종(global final) 변수로 선언됩니다.
+
+또한 Riverpod이 작동하려면 전체 애플리케이션 위에 `ProviderScope` 위젯을 추가해야 합니다. 
+따라서 Riverpod을 사용하는 것은 Provider 예시와 동일합니다:
+
+```dart
+// Provider는 이제 최상위 변수
+final counterProvider = ChangeNotifierProvider<Counter>((ref) => Counter());
+
+void main() {
+  runApp(
+    // 이 위젯은 전체 프로젝트에서 Riverpod을 사용할 수 있게 합니다
+    ProviderScope(
+      child: MyApp(),
+    ),
+  );
+}
+```
+
+provider 정의가 단순히 몇 줄 위로 올라간 것을 주목하세요.
+
+:::info
+Riverpod providers는 일반 다트 객체이므로 Flutter 없이 Riverpod을 사용할 수 있습니다.  
+예를 들어, 명령줄 애플리케이션을 작성하는 데 Riverpod을 사용할 수 있습니다.
+:::
+
+## providers 읽기: BuildContext
+
+Provider에서 providers를 읽는 한 가지 방법은 위젯의 'BuildContext'를 사용하는 것입니다.
+
+예를 들어, provider가 다음과 같이 정의된 경우:
+
+```dart
+Provider<Model>(...);
+```
+
+그런 다음 Provider를 사용하여 읽는 것은 다음과 같습니다:
+
+```dart
+class Example extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    Model model = context.watch<Model>();
+
+  }
+}
+```
+
+이것은 Riverpod에서 동일합니다. Riverpod의 스니펫은 다음과 같습니다:
+
+```dart
+final modelProvider = Provider<Model>(...);
+
+class Example extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    Model model = ref.watch(modelProvider);
+
+  }
+}
+```
+
+방법을 확인하세요:
+
+- Riverpod의 스니펫은 `StatelessWidget` 대신 `ConsumerWidget`을 확장(extend)합니다.
+  이 다른 위젯 유형은 `build` 함수에 하나의 추가 매개변수인 `WidgetRef`를 추가합니다.
+
+- Riverpod에서는 `BuildContext.watch` 대신 `ConsumerWidget`에서 가져온 `WidgetRef`를 사용하여 `WidgetRef.watch`를 수행합니다.
+
+- Riverpod은 제네릭 타입에 의존하지 않습니다. 대신 공급자 정의(provider definition)를 통해 생성된 변수(variable)에 의존합니다.
+
+문구가 얼마나 유사한지도 주목하세요. Provider와 Riverpod은 모두 "watch" 키워드를 사용하여 "이 위젯은 값이 변경되면 다시 빌드되어야 합니다"라고 설명합니다.
+
+:::info
+Riverpod은 provider 읽기에 대해 Provider와 동일한 용어를 사용합니다.
+
+- `BuildContext.watch` -> `WidgetRef.watch`
+- `BuildContext.read` -> `WidgetRef.read`
+- `BuildContext.select` -> `WidgetRef.watch(myProvider.select)`
+
+`context.watch`와 `context.read`에 대한 규칙은 Riverpod에도 적용됩니다:
+`build` 메서드 내부에서는 "watch"를 사용합니다. 
+클릭 핸들러 및 기타 이벤트 내부에서는 "read"를 사용합니다.
+값을 필터링하고 다시 빌드해야 하는 경우 "select"를 사용합니다.
+:::
+
+## providers 읽기: Consumer
+
+Provider는 선택적으로 `Consumer`라는 위젯(및 `Consumer2`와 같은 변형)을 제공합니다.
+
+`Consumer`는 위젯 트리 보다 세분화하여 재빌드할 수 있으므로, 성능최적화에 도음이 됩니다. - 상태가 변경될 때 관련 위젯만 업데이트합니다:
+
+따라서 provider가 다음과 같이 정의된 경우:
+
+```dart
+Provider<Model>(...);
+```
+
+Provider는 `Consumer`를 사용하여 provider를 읽을 수 있게합니다:
+
+```dart
+
+Provider allows reading that provider using `Consumer` with:
+
+```dart
+Consumer<Model>(
+  builder: (BuildContext context, Model model, Widget? child) {
+
+  }
+)
+```
+
+Riverpod도 같은 원리를 가지고 있습니다. Riverpod에도 똑같은 용도의 'Consumer'라는 위젯이 있습니다.
+
+provider를 다음과 같이 정의했다면:
+
+```dart
+final modelProvider = Provider<Model>(...);
+```
+
+`Consumer`를 사용하여 provider를 읽을 수 있습니다:
+
+```dart
+Consumer(
+  builder: (BuildContext context, WidgetRef ref, Widget? child) {
+    Model model = ref.watch(modelProvider);
+
+  }
+)
+```
+
+`Consumer`가 어떻게 `WidgetRef` 객체를 제공하는지 주목해주세요. 이것은 이전 파트에서 `ConsumerWidget`과 관련된 것과 동일한 객체입니다.
+
+### Riverpod에는 `ConsumerN`에 해당하는 객체가 없음
+
+Riverpod에서는 pkg:Provider의 `Consumer2`, `Consumer3` 등이 필요하지 않고, 누락된 것을 확인할 수 있습니다. (not needed nor missed)
+
+Riverpod을 사용하면, 여러 provider로 부터 값을 읽으려면 다음과 같이 여러 개의 `ref.watch` 문을 작성하면 됩니다.:
+
+```dart
+Consumer(
+  builder: (context, ref, child) {
+    Model1 model = ref.watch(model1Provider);
+    Model2 model = ref.watch(model2Provider);
+    Model3 model = ref.watch(model3Provider);
+    // ...
+  }
+)
+```
+
+위의 솔루션은 pkg:Provider의 `ConsumerN` API와 비교할 때 훨씬 덜 무겁게 느껴지고 이해하기 쉬울 것입니다.
+
+## providers 결합하기: ProxyProvider 와 stateless objects
+
+Provider를 사용할 때, providers를 결합하는 공식적인 방법은 `ProxyProvider` 위젯(또는 `ProxyProvider2`와 같은 변형)을 사용하는 것입니다.
+
+예를 들어 다음과 같이 정의할 수 있습니다:
+
+```dart
+class UserIdNotifier extends ChangeNotifier {
+  String? userId;
+}
+
+// ...
+
+ChangeNotifierProvider<UserIdNotifier>(create: (context) => UserIdNotifier()),
+```
+
+이제 두가지 옵션이 있습니다.
+`UserIdNotifier`를 결합하여 새로운 "stateless" provider(일반적으로 ==를 재정의할 수 있는 불변값)를 만들 수 있습니다.
+다음과 같은:
+
+```dart
+ProxyProvider<UserIdNotifier, String>(
+  update: (context, userIdNotifier, _) {
+    return 'The user ID of the the user is ${userIdNotifier.userId}';
+  }
+)
+```
+
+이 프로바이더는 `UserIdNotifier.userId`가 변경될 때마다 자동으로 새 `String`을 반환합니다.
+
+Riverpod에서도 비슷한 작업을 수행할 수 있지만 구문이 다릅니다.  
+먼저, Riverpod에서 `UserIdNotifier`의 정의는 다음과 같습니다:
+
+```dart
+class UserIdNotifier extends ChangeNotifier {
+  String? userId;
+}
+
+// ...
+
+final userIdNotifierProvider = ChangeNotifierProvider<UserIdNotifier>(
+  (ref) => UserIdNotifier(),
+);
+```
+
+거기에서, 'userId'를 기반으로 'String'을 생성하면 됩니다:
+
+```dart
+final labelProvider = Provider<String>((ref) {
+  UserIdNotifier userIdNotifier = ref.watch(userIdNotifierProvider);
+  return 'The user ID of the the user is ${userIdNotifier.userId}';
+});
+```
+
+`ref.watch(userIdNotifierProvider)`를 수행하는 줄을 주목하세요.
+
+이 코드 줄은 Riverpod에게 `userIdNotifierProvider`의 내용을 가져오고, 그 값이 변경될 때마다 `labelProvider`도 다시 계산하도록 지시합니다.
+따라서 `labelProvider`가 내보내는 `String`은 `userId`가 변경될 때마다 자동으로 업데이트됩니다.
+
+이 `ref.watch` 줄도 비슷하게 느껴질 것입니다. 이 패턴은 이전에 [위젯 내부에서 provider를 읽는 방법](#reading-providers-buildcontext)을 설명할 때 다뤘던 내용입니다.
+실제로 providers는 이제 위젯과 같은 방식으로 다른 providers를 수신할 수 있습니다.
+
+## providers 결합하기: ProxyProvider 와 stateful objects
+
+providers를 결합할 때 또 다른 대안적인 사용 사례는 `ChangeNotifier` 인스턴스와 같은 상태 저장 객체를 노출하는 것입니다.
+
+이를 위해 `ChangeNotifierProxyProvider`(또는 `ChangeNotifierProxyProvider2`와 같은 변형)를 사용할 수 있습니다.  
+예를 들어 다음과 같이 정의할 수 있습니다:
+
+```dart
+class UserIdNotifier extends ChangeNotifier {
+  String? userId;
+}
+
+// ...
+
+ChangeNotifierProvider<UserIdNotifier>(create: (context) => UserIdNotifier()),
+```
+
+그런 다음 `UserIdNotifier.userId`를 기반으로 하는 새로운 `ChangeNotifier`를 정의할 수 있습니다.
+예를 들어 다음과 같이 할 수 있습니다:
+
+```dart
+class UserNotifier extends ChangeNotifier {
+  String? _userId;
+
+  void setUserId(String? userId) {
+    if (userId != _userId) {
+      print('The user ID changed from $_userId to $userId');
+      _userId = userId;
+    }
+  }
+}
+
+// ...
+
+ChangeNotifierProxyProvider<UserIdNotifier, UserNotifier>(
+  create: (context) => UserNotifier(),
+  update: (context, userIdNotifier, userNotifier) {
+    return userNotifier!
+      ..setUserId(userIdNotifier.userId);
+  },
+);
+```
+
+이 새 provider는 (재구성되지 않는) `UserNotifier`의 단일 인스턴스를 생성하고 사용자 ID가 변경될 때마다 문자열을 인쇄합니다.
+
+provider에서 동일한 작업을 수행하는 방식은 다릅니다.
+먼저, Riverpod에서는 `UserIdNotifier`의 정의가 다음과 같습니다:
+
+```dart
+class UserIdNotifier extends ChangeNotifier {
+  String? userId;
+}
+
+// ...
+
+final userIdNotifierProvider = ChangeNotifierProvider<UserIdNotifier>(
+  (ref) => UserIdNotifier(),
+),
+```
+
+이전의 `ChangeNotifierProxyProvider`에 해당하는 코드는 다음과 같습니다:
+
+```dart
+class UserNotifier extends ChangeNotifier {
+  String? _userId;
+
+  void setUserId(String? userId) {
+    if (userId != _userId) {
+      print('The user ID changed from $_userId to $userId');
+      _userId = userId;
+    }
+  }
+}
+
+// ...
+
+final userNotifierProvider = ChangeNotifierProvider<UserNotifier>((ref) {
+  final userNotifier = UserNotifier();
+  ref.listen<UserIdNotifier>(
+    userIdNotifierProvider,
+    (previous, next) {
+      if (previous?.userId != next.userId) {
+        userNotifier.setUserId(next.userId);
+      }
+    },
+  );
+
+  return userNotifier;
+});
+```
+
+이 스니펫의 핵심은 `ref.listen` 줄입니다.  
+이 `ref.listen` 함수는 provider를 수신 대기하고, provider가 변경될 때마다 함수를 실행하는 유틸리티입니다.
+
+해당 함수의 `previous` 및 `next` 매개 변수는 공급자가 변경되기 전의 마지막 값과 변경된 후의 새 값에 해당합니다.
+
+## 범위 지정 공급자(Scoping Providers) vs `.family` + `.autoDispose`
+pkg:Provider에서 범위 지정은 두 가지 용도로 사용되었습니다:
+  - 페이지 이탈 시 상태 소멸(destroying state)
+  - 페이지당 커스텀 상태 보유
+
+상태를 파괴(Destroy)하기 위해 스코핑(Scoping)을 사용하는 것은 이상적이지 않습니다.  
+문제는 범위 지정(Scoping)이 대규모 애플리케이션에서 제대로 작동하지 않는다는 것입니다.  
+예를 들어, 상태는 한 페이지에서 생성되지만 탐색 후 다른 페이지에서 나중에 소멸되는 경우가 많습니다.  
+이렇게 하면 여러 페이지에서 여러 개의 캐시를 활성화할 수 없습니다.
+
+마찬가지로 모달이나 다단계 양식과 같이 해당 상태를 위젯 트리의 다른 부분과 공유해야 하는 경우 '페이지별 사용자 지정 상태(custom state per page)' 접근 방식은 처리하기 어려워집니다.
+
+Riverpod은 다른 접근 방식을 취합니다: 첫째, 범위 지정(Scoping) providers는 권장하지 않으며, 둘째, `.family` 및 `.autoDispose`는 이를 완전히 대체하는 솔루션 입니다.
+
+Riverpod 내에서 '.autoDispose'로 표시된 공급자는 더 이상 사용되지 않을 때 자동으로 상태를 소멸(destroy)합니다.  
+공급자를 제거하는 마지막 위젯이 마운트 해제되면 Riverpod은 이를 감지하고 공급자를 파기(destroy)합니다.  
+이 동작을 테스트하려면 제공자에서 이 두 가지 수명 주기 메서드를 사용해 보세요:
+
+
+```dart
+ref.onCancel((){
+  print("더 이상 어떤 것도 나를 Listen하지 않음!");
+});
+ref.onDispose((){
+  print("`.autoDispose`로 정의된 경우, 방금 폐기되었음!");
+});
+```
+
+이는 본질적으로 "상태 소멸(destroying state)" 문제를 해결합니다.
+
+또한 Provider를 `.family`로 표시할 수 있습니다. (동시에 `.autoDispose`로 표시할 수도 있습니다.)
+이렇게 하면 providers에게 매개변수를 전달하여 내부적으로 여러 providers를 생성하고 추적할 수 있습니다.
+즉, 매개변수를 전달할 때 *고유한 매개변수당 고유한 상태가 생성됩니다*.
+
+<AutoSnippet language="dart" {...family}></AutoSnippet>
+
+이렇게 하면 "페이지별 맞춤 상태(custom state per page)" 문제가 해결됩니다. 
+사실, 또 다른 이점이 있습니다. 이러한 상태는 더 이상 특정 페이지에 묶여 있지 않습니다.  
+대신 다른 페이지에서 동일한 상태에 액세스하려고 시도하는 경우 해당 페이지에서 매개변수를 재사용하기만 하면 액세스할 수 있습니다.
+
+여러 가지 면에서 providers에게 매개변수를 전달하는 것은 맵 키와 동일합니다.
+키가 같으면 얻어지는 값도 동일합니다. 키가 다르면 다른 상태가 얻어집니다.
+ 
+[provider]: https://pub.dev/packages/provider
+[ref.watch]: /docs/concepts/reading#using-refwatch-to-observe-a-provider
+[ref.listen]: /docs/concepts/reading#using-reflisten-to-react-to-a-provider-change
+[autodispose]: /docs/concepts/modifiers/auto_dispose
+[workaround]: https://pub.dev/packages/provider#can-i-obtain-two-different-providers-using-the-same-type
+[.family modifier]: /docs/concepts/modifiers/family
+[keepAlive]: /docs/concepts/modifiers/auto_dispose#refkeepalive
+[as these two features go hand-in-hand]: /docs/concepts/modifiers/family#prefer-using-autodispose-when-the-parameter-is-not-constant
+[simplification of logic]: /docs/concepts/modifiers/family#usage
+[we have to]: https://github.com/flutter/flutter/issues/128432
+[it turns out]: https://github.com/flutter/flutter/issues/106549
+[*can't* react when a consumer stops listening to them]: https://github.com/flutter/flutter/issues/106546
+[integrates well with Flutter]: /docs/concepts/reading#using-reflisten-to-react-to-a-provider-change
+[ChangeNotifierProvider]: /docs/providers/change_notifier_provider
+[Code generation]: /docs/about_code_generation
+[AsyncNotifiers]: /docs/providers/notifier_provider
+[combining Providers]: /docs/concepts/combining_providers
+[global final variable]: /docs/concepts/providers#creating-a-provider

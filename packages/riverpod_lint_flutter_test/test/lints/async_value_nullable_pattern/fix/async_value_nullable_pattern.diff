@@ -1,0 +1,24 @@
+Message: `Use "hasValue: true" instead`
+Priority: 100
+Diff for file `test/lints/async_value_nullable_pattern/fix/async_value_nullable_pattern.dart:8`:
+```
+    case AsyncValue<int?>(
+        // expect_lint: async_value_nullable_pattern
+-         :final value?,
++         :final value, hasValue: true,
+      ):
+      print(value);
+```
+---
+Message: `Use "hasValue: true" instead`
+Priority: 100
+Diff for file `test/lints/async_value_nullable_pattern/fix/async_value_nullable_pattern.dart:17`:
+```
+    case AsyncValue<int?>(
+        // expect_lint: async_value_nullable_pattern
+-         :final value?
++         :final value, hasValue: true
+      ):
+      print(value);
+```
+---

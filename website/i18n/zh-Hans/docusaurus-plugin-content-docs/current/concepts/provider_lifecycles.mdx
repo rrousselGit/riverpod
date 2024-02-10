@@ -1,91 +1,100 @@
 ---
-title: Provider生命周期
+title: Provider Lifecycles
 ---
 
 import CodeBlock from "@theme/CodeBlock";
 import onDispose from "./lifecycle_on_dispose";
-import { trimSnippet, CodeSnippet, AutoSnippet } from "../../../../../src/components/CodeSnippet";
+import { trimSnippet, When, AutoSnippet } from "@site/src/components/CodeSnippet";
 
-## 什么时候创建并销毁我的Provider？
+:::caution
+<!---
+The content of this page may be outdated.  
+It will be updated in the future, but for now you may want to refer to the content
+in the top of the sidebar instead (introduction/essentials/case-studies/...)
+-->
+本页内容可能已经过时。  
+今后会进行更新，但目前您可能需要参考侧边栏顶部的内容（介绍/要点/应用案例/......）。
+:::
 
-所有不同类型的provider经历的状态是相同的：
+## When does my Provider get created and disposed?
 
-- 未初始化
-- 活动中
-- 暂停
-- 已销毁
+The states that all different types of providers can go through are the same:
 
-### 已销毁 / 未初始化
+- Uninitialized
+- Alive
+- Paused
+- Disposed
 
-**未初始化**或**已销毁**的provider不占用任何内存，因为它的状态没有初始化。
-从本质上来说，它只是定义了在你需要时如何创建provider的状态。
-它将一直保持这种状态，直到**活动中**provider被创建或由于UI中的[WidgetRef] 读取、观察或监听它。
+### Disposed / Uninitialized
 
-### 创建中 -> 活动中
+An **Uninitialized** or **Disposed** provider does not take up any memory since its state is not initialized.
+Essentially it is just a definition of how to create the provider's state when you need it.
+It will stay that way until an **Alive** provider or a [WidgetRef] from the UI reads, watches, or listens to it.
 
-当读取、监听或观察**未初始化**的provider时，将创建其状态。
+### Creating -> Alive
 
-在创建期间，你的provider的构建函数将会运行。
-使用回调函数所暴露的 `ref` 读取(read)或观察(watch)的任何provider将根据需要创建，并且将检索它们的状态。
+When an **Uninitialized** provider is read, listened to or watched it's state will be created.
 
-如果在创建过程中存在任何循环依赖关系，Riverpod将抛出一个错误。
-修复此错误的最佳方式是重新设计依赖项，使其具有单向数据流。
+During creation your provider's build function will be run. 
+Any providers that you read or watch using the `ref` exposed by the callback will be created as needed and their state will be retrieved.
 
-provider的状态存储在 [ProviderContainer] 中。在Flutter应用中，此容器位于[ProviderScope] widget中。
+If there are any circular dependencies during this creation process Riverpod will throw an error.
+The best way to fix this error is to redesign your dependencies to have a uni-directional dataflow.
 
-因此，尽管如何创建状态(provider)的定义是全局的，但状态实际上是本地的，
-并且使用嵌套的[ProviderScope] widget和覆盖在UI的不同部分中有所不同。
+The provider's state is stored in a [ProviderContainer]. In a Flutter app this container is in a [ProviderScope] widget.
 
-这与flutter widget的工作方式非常相似。你只需为其定义一次，
-但是可以根据需要在树的不同部分重用状态。
+As such, even though the definition of how to create the state (the provider) is global, the state is actually local,
+and can be different in different portions of your UI using nested [ProviderScope] widgets and overrides.
 
-### 活动中
+This is very similar to how flutter widgets work. You only pay for the definition once, but can reuse the state in different parts of the tree as needed.
 
-当你的provider为**活动中**时，对其状态的更改将导致依赖的provider和/或依赖的UI重新构建。
+### Alive
 
-从另一个角度来看，作为响应式框架，你可以观察其他provider，以便在它的某个依赖项发生变化时重建自己。
+When your provider is **Alive**, changes to its state will cause dependent providers and/or the dependent UI to rebuild.
 
-如果你需要一些依赖于其他状态的长期状态，你可以使用Ref的 [listen] 方法来订阅另一个provider上的更改，而不会导致重新构建该provider。
+From the other perspective, as a reactive framework, you can watch other providers to have the provider recreate itself whenever one of it's dependencies changes.
 
-如果你需要使用来自另一个可能有副作用的provider的状态，你可以使用Ref的[read]方法从另一个provider获取当前状态。
+If you need to have some long-lived state that depends on other state you can use Ref's [listen] method to subscribe for changes on another provider without causing a rebuild of the provider.
 
-通常，在构造 [StateNotifier] 或 [ChangeNotifier] 类时，应该传入引用，
-以允许Notifier根据需要获取依赖项的当前值。
-通过使用来自Riverpod 2.0的新[Notifier] 和 [AsyncNotifier]类，ref已经作为类的实例成员可用。
+If you need to use the state from another provider in a side-effect, you can use Ref's [read] method to obtain the current state from another provider.
 
-### 活动中 -> 暂停
-当其他provider或UI不再监听**活动的** provider时，它将进入**暂停**状态。这意味着它将不再对正在监听的provider的更改做出反应。
-这是一种优化，如果你没有监听的provider，就没有必要让它保持活动状态。每个未被使用的provider都将返回到**暂停**状态，从而减少你的应用的计算负担。
+Typically when constructing a [StateNotifier] or [ChangeNotifier] class you should pass in the `ref` to allow the Notifier to obtain the current value of dependencies as needed. By using the new [Notifier] and [AsyncNotifier] classes from Riverpod 2.0, the ref is already available as an instance member of the class.
 
-如果你需要让provider保持活动状态以防止副作用发生，请确保在UI中应该保持活动状态的适当位置监听它。
+### Alive -> Paused
+When an **Alive** provider is no longer listened to by other providers or the UI, it goes into a **Paused** state. 
+This means that it no longer will react to changes on providers it is listening to.
+This is an optimization, as if you are not listening to the provider, there is no need to keep it alive. 
+Every provider not being used will be returned to a **Paused** state, reducing the computational burden of your app.
 
-如果你需要在provider暂停时执行一些操作，请使用ref的 [onCancel] 方法来注册回调函数。
+If you need to keep a provider alive for side-effects, make sure to listen to it in an appropriate place in the UI where it should be kept alive.
 
-当provider从暂停状态恢复到活动状态时，如果你需要执行一些操作，请使用ref的[onResume]方法来注册回调。
+If you need to perform some action when a provider is paused use the ref's [onCancel] method to register callbacks.
 
-如果你想销毁状态，那么除了不占用计算资源外，还可以销毁状态的内存，请在provider上使用`.autoDispose`修饰符。
-这将导致它在不再被使用时转换到**已销毁**状态，而不是**暂停**状态。
+If you need to perform some action when a provider resumes to an Alive state from a paused state, use the ref's [onResume] method to register callbacks.
 
-### 活动中 -> 销毁中
+If you want the state to be disposed, so that in addition to taking no computational resources, it also disposes of the memory of the state, use the `.autoDispose` modifier on your provider definition.
+This will cause it to transition to a **Disposed** state instead of **Paused** when it is no longer being used.
 
-销毁provider有几个原因。
+### Alive -> Disposing
 
-- 当使用`.autoDispose`修饰符定义并不再被UI或其他providerg观察时
-- 当手动刷新或provider失效时
-- 当provider由于被监视的依赖项之一发生变化而被重新创建时
+There are a few reasons for a provider to be disposed.
 
-刷新会导致provider立即再次执行创建过程，而无效则会导致provider的下一次读取/观察导致重新构建provider。
+- When defined using the `.autoDispose` modifier and no longer being watched by the UI or another provider
+- When the provider is being manually refreshed or invalidated
+- When the provider is being recreated due to one of it's watched dependencies changing
 
-## 在状态被销毁前执行操作
-如果你需要在销毁provider时执行一些操作，使用ref的 [onDispose] 方法来注册回调函数。
+Refreshing causes the provider to immediately go through the creation process again, whereas invalidating causes the next read / watch of the provider to cause the provider to be rebuilt.
 
-下面的例子使用onDispose关闭StreamController：
+## Performing actions before the state destruction
+If you need to perform some action when a provider is disposed, use the ref's [onDispose] method to register callbacks.
+
+The following example uses onDispose to close a StreamController:
 
 <AutoSnippet {...onDispose}></AutoSnippet>
 
 :::note
-根据所使用的provider，它可能已经处理了清理过程。
-例如，[StateNotifierProvider] 将调用返回的 [StateNotifier] 的`dispose`方法。
+Depending on the provider used, it may already take care of the clean-up process.
+For example, [StateNotifierProvider] will call the `dispose` method of the returned [StateNotifier].
 :::
 
 [onDispose]: https://pub.dev/documentation/riverpod/latest/riverpod/Ref/onDispose.html

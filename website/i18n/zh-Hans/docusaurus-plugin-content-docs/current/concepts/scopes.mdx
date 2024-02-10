@@ -1,49 +1,60 @@
 ---
-title: 作用域
+title: Scopes
 ---
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
 import asyncInitialization from "!!raw-loader!/docs/concepts/async_initialization.dart";
 import dialogScope from "!!raw-loader!/docs/concepts/dialog_scope.dart";
 import themeScope from "!!raw-loader!/docs/concepts/theme_scope.dart";
 import subtreeScope from "!!raw-loader!/docs/concepts/subtree_scope.dart";
-import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+import { trimSnippet } from "@site/src/components/CodeSnippet";
+import { Link } from "@site/src/components/Link";
 
-Riverpod中的作用域是一个非常强大的功能，但像其他强大的功能一样，应该理智地使用它。
+:::caution
+<!---
+The content of this page may be outdated.  
+It will be updated in the future, but for now you may want to refer to the content
+in the top of the sidebar instead (introduction/essentials/case-studies/...)
+-->
+本页内容可能已经过时。  
+今后会进行更新，但目前您可能需要参考侧边栏顶部的内容（介绍/要点/应用案例/......）。
+:::
 
-作用域支持：
-- 覆盖特定子树的provider状态(类似于主题和 `InheritedWidgets` 在flutter中的工作方式) [(查看示例)](#子树作用域)
-- 为一般异步API创建同步provider [(查看示例)](#异步api的同步provider初始化)
-- 允许 `对话框(Dialog)` 和 `覆盖层(Overlay)`从widget子树继承provider的状态以显示它们[(查看示例)](#展示对话框)
-- 通过从widget的构造函数中删除参数来优化widget的重建，从而允许你将它们设置为`const`
+Scoping in Riverpod is a very powerful feature, but like all powerful features, it should be used wisely and intentionally.
 
-如果你想用作用域来表示上面的第一点，你也可以用family来代替。
-family的优点是允许你从widget树中的任何位置访问状态的每个实例，而不仅仅是从你所在的特定子树的状态范围访问。
+A few of the things that scoping enables are:
 
-使用作用域创建provider状态的多个实例与 `package:provider` 的工作方式类似。
+- Override the state of providers for a specific subtree (similar to how theming and `InheritedWidgets` work in flutter) [(see example)](#subtree-scope)
+- Creating synchronous providers for normally async APIs [(see example)](#initialization-of-synchronous-provider-for-async-apis)
+- Allowing `Dialog`s and `Overlay`s to inherit the state of providers from the widget subtree that cause them to be shown [(see example)](#showing-dialogs)
+- Optimizing rebuilds of widgets by removing parameters from Widget constructors allowing you to make them `const`
 
-但是，使用作用域来完成该任务的限制更大，因为你不能决定从该作用域访问其他实例。
+If you are wanting to use scope for the first point, chances are you can use families instead.
+Families have the advantages of allowing you to access each of those instances of the state from anywhere in the widget tree rather than just the state scoped to the specific subtree that you are in.
 
-因此，在确定所使用的每个provider的作用域之前，请仔细考虑为什么要确定provider的作用域。
+Using scope to create multiple instances of a provider's state is similar to how `package:provider` works.
 
-## ProviderScope 和 ProviderContainer
+However, using scope to accomplish that task, is more restrictive, as you cannot decide to access other instances from that scope.
 
-作用域由 [ProviderContainer] 引入。这个容器保存了所有provider的当前状态。它管理provider之间的查找和订阅功能。
+As such, before scoping every provider you use, consider carefully why you want to scope the provider.
 
-在Flutter中，你应该使用 [ProviderScope] widget，
-它内部包含一个 [ProviderContainer]，并提供了一种访问该容器到widget树其余部分的方法。
+## ProviderScope and ProviderContainer
+
+A scope is introduced by a [ProviderContainer]. This container holds the current state of all of your providers.
+It manages the lookup and subscriptions between providers.
+
+In Flutter you should use the [ProviderScope] widget, which contains a [ProviderContainer]
+internally, and provides a way to access that container to the rest of the widget tree.
 
 ```dart
 final valueProvider = StateProvider((ref) => 0);
 
-// 这样做：
+// DO this
 void main() {
   runApp(ProviderScope(child: MyApp()));
 }
 
-// 不要这样做：
+//DON'T do this:
 final myProviderContainer = ProviderContainer();
 void main(){
   runApp(MyApp());
@@ -51,118 +62,120 @@ void main(){
 ```
 
 :::warning
-在了解它们的工作原理之前，不要使用多个 [ProviderContainer]。
-每个线程都有自己独立的状态线程，这些状态线程不能相互访问。
-拿测试举例，你可能希望使用单独的 [ProviderContainer]，以便使每个测试的状态独立于其他测试。
+Do not use multiple [ProviderContainer]s, without an understanding of how they work.
+Each will have it's own separate thread of states, which will not be able to access each other.
+Tests are an example of when you might want to use separate [ProviderContainer]s
+in order to make each test's state independent of the others.
 :::
 
-仅在纯Dart项目中和测试中创建并使用 [ProviderContainer] 且不需要 [ProviderScope]。
+Only create a [ProviderContainer] without a [ProviderScope] for testing and dart-only usage.
 
-## How Riverpod如何找到一个Provider
+## How Riverpod Finds a Provider
 
-当一个widget或provider请求一个provider的值时，Riverpod在最近的ProviderScope widget中查找该provider的状态。
-如果provider和它显式列出的依赖项都没有在该范围内被覆盖到，Riverpod将继续查找widget树。
-如果provider没有在任何widget子树中被覆盖到，则默认查找到根 [ProviderScope] 中的 [ProviderContainer]。
+When a widget or provider requests the value of a provider, Riverpod looks up the state of that provider in the nearest
+[ProviderScope] widget. If neither the provider nor one of it's explicitly listed dependencies is overridden in that scope Riverpod continues it's lookup up the widget tree.
+If the provider has not been overridden in any Widget subtrees the lookup defaults to the [ProviderContainer] in the root [ProviderScope].
 
-一旦该进程定位了provider应该驻留的作用域，它就会确定provider是否已经创建。
-如果是，它将返回provider的状态。但是，如果provider已经失效或未初始化，它将使用provider的构建方法创建状态。
+Once this process locates the scope in which the provider should reside it determines if the provider has been created yet.
+If so, it will return the state of the provider.
+However, if the provider has been invalidated or is not currently initialized it will create the state using the provider's build method.
 
-## 异步API的同步provider初始化
+## Initialization of Synchronous Provider for Async APIs
 
-通常，你可能会对依赖项(如 `SharedPreferences` 或 `FirebaseApp`)进行一些异步初始化。
-许多其他provider可能依赖于此，在每个provider中处理错误/加载中状态是多余的。
+Often you might have some async initialization of a dependency such as `SharedPreferences` or `FirebaseApp`.
+Many other providers might rely on this, and dealing with the error / loading states in each of those providers is redundant.
 
-你可以保证这些provider不会有错误，并且在应用启动时可以快速加载。
+You might be able to guarantee that those providers will not have errors and will load quickly when the app is started.
 
-那么，如何让这些provider状态同步可用呢?
+So how do you makes these sorts of provider states available synchronously?
 
-下面是一个示例，它展示了当异步API准备好时，作用域如何允许你覆盖一个形式上的provider。
+Here is an example that shows how scoping allows you override a dummy provider when your asynchronous API is ready.
 
 <CodeBlock>{trimSnippet(asyncInitialization)}</CodeBlock>
 
-## 展示对话框
+## Showing Dialogs
 
-当你显示一个`对话框(Dialog)` 或 `OverlayEntry`时，flutter会创建一个新的 `路由(Route)` 或添加到具有不同构建范围的 `Overlay` 中，
-这样它就可以摆脱它的父布局，并可以显示在其他 `路由(Routes)` 之上。
-但这通常会给 `InheritedWidget` 带来一个问题，因为 [ProviderScope] 也是一个 `InheritedWidget`，所以它也会受到影响。
+When you show a `Dialog` or `OverlayEntry`, flutter creates a new `Route` or adds to an `Overlay` that has a different build scope,
+so that it can escape the layout of it's parent, and can be shown above other `Routes`.
+This presents a problem for `InheritedWidget`s in general, and since [ProviderScope] is an `InheritedWidget`, it is also affected.
 
-为了解决这个问题，Riverpod允许你创建一个 `ProviderScope` ，它可以访问父作用域中所有provider的状态。
+To solve this problem, Riverpod allows you to create a `ProviderScope` that can access the state of all providers in a `parent` scope.
 
-下面的示例展示了如何使用这个功能，它允许打开的`Dialog`从上下文(context)中访问计数器的状态。
+The following example shows how to use this, to allow a `Dialog` to access the state of a counter from the context that caused the `Dialog` to be shown.
 
 <CodeBlock>{trimSnippet(dialogScope)}</CodeBlock>
 
-## 子树作用域
+## Subtree Scoping
 
-作用域允许你覆盖widget树的特定子树的provider状态。
-通过这种方式，它可以提供类似于flutter中的 `InheritedWidget` 或 `package:provider` 中的provider机制。
+Scoping allows you to override the state of a provider for a specific subtree of your widget tree.
+In this way it can provide a similar mechanism to `InheritedWidget` from flutter, or the providers from `package:provider`.
 
 For example, in flutter you can override the `Theme` for a particular subtree of your widget tree, by wrapping it in a `Theme` widget.
-比如，在flutter中，通过将widget树的特定子树包装在Theme widget中，可以覆盖widget树的Theme。
 
 <CodeBlock>{trimSnippet(themeScope)}</CodeBlock>
 
-在底层，`Theme` 是一个 `InheritedWidget` ，当widget查找 `Theme` 时，它们从widget树中找到最近的 `Theme` widget 来获得主题。
+Under the hood, `Theme` is an `InheritedWidget` and when widgets look up the `Theme` they get the `Theme` from the nearest `Theme` widget above it in the widget tree.
 
-Riverpod的工作方式不太一样，因为应用的所有状态通常存储在根 [ProviderScope] widget中。
-不要担心，当状态改变时，这不会导致整个应用程序重新构建，它只是允许你从widget树中的任何位置去访问状态。
+Riverpod works differently, since all of the state of your application is typically stored in a root [ProviderScope] widget.
+Don't worry, this doesn't cause your whole application to rebuild when the state changes, it just allows you to access the state from anywhere in your widget tree.
 
-如果根据所处的页面需要不同的provider该怎么办?
+What if you want different providers depending on which page you are in?
 
-你应该考虑的第一件事是它所提供的行为是否会以某种方式有所不同。
+The first thing that you should consider is whether the provided behavior will differ in any way.
 
-如果不同 -> 只需创建一个不同名称的新的provider，并在该页面中使用它
+If so -> just create a new provider with a different name and use it in that page
 
-如果相同 -> 考虑使用family[在这里了解更多关于family的内容](/docs/concepts/modifiers/family)。
+If not -> Consider using a <Link documentID="concepts/modifiers/family"/>.
 
-通常，你开始时认为只需要在特定页面上使用provider，但最后却希望在稍后的另一个页面上也使用它。
-family可以让你不受这种可能性的影响，如果你是来自 `package:provider` 的开发者，你应该使用family来调整思维。
+Often you start by thinking that you only need a provider on a particular page, but end up wanting to use it in another page later on.
+Families protect you against this eventuality, and are a major difference in how you should adjust your thinking if you are coming from `package:provider`.
 
-但如果family确实不适合你的用例，下面的示例向你展示了如何覆盖特定子树的provider：
+If families really do not fit your use case, the following example shows you how to override a provider for a particular subtree.
 
 <CodeBlock>{trimSnippet(subtreeScope)}</CodeBlock>
 
-## 什么时候选择有作用域的Provider还是Family
+## When to choose Scoped Providers or Families
 
-虽然理解作用域很重要，但在使用作用域时很容易失去控制。
+While scopes are important to understand, it is easy to get carried away when using scopes.
 
-如果你想要一个provider状态的不同实例，取决于它在widget树中的位置，你有几个可供选择的选项: `Scoping`, `Families`，或组合它们。
-请根据你的情况选择合适方案。
+If you want a different instance of a provider's state depending on where it is in the widget tree you have a few alternatives available to you: `Scoping`, `Families`, or a combination.
+The appropriate choice depends on your use case.
 
-Family:
-- 优点：无论你在哪个子树中，你都可以显示多个状态
-- 优点：这使得它成为许多用例的更灵活和可扩展的解决方案
+Families:
 
-作用域:
-- 缺点：你最终会在你的widget树中嵌套更多的[ProviderScope] widget
-- 缺点：你只能访问一个覆盖住你部分的widget树
-- 缺点：你最终不得不显式地列出大多数provider的依赖关系
-- 优点：可以减少widget构造函数中的参数数量
-- 优点：你可以获得轻微的性能优势，并且可以潜在地使你的一些widget的构造函数为const
+- Pro: You can show multiple of the states no matter which subtree you are in
+- Pro: This makes it a more flexible and scalable solution for many use cases
 
-组合使用这两种方法，你可以同时获得这两种方法的优点，但你仍然必须解决作用域的缺点。
+Scoping:
+
+- Con: You end up with more nesting of [ProviderScope] widgets in your widget tree
+- Con: You can only access the one override in your section of the widget tree
+- Con: You end up having to explicitly list the dependencies of most of your providers
+- Pro: You can reduce the number of parameters in your widget constructors
+- Pro: You get a slight performance advantage, and can potentially make some of your widget constructors `const`
+
+Using a combination of the two approaches, you can get the pros of both approaches, but you still have to deal with the cons of scoping.
 
 :::warning
-请记住，作用域为每个被覆盖的provider或列出了对被覆盖的provider的依赖项的provider引入了一个新的状态实例。
-如果你在应用程序的不同子树中覆盖相同的参数，它将**不会是**provider状态的相同实例。
-一般来说，family更加灵活，并且通过即将到来的代码生成特性，可以很容易地为一个family使用多个参数。
-一个很好的组合通常是同时使用family和作用域。使用一个family来提供对应用中任何地方的状态块的访问，
-取决于你在widget树中的位置，然后使用作用域来提供一个特定的family状态实例。
+Remember that scopes introduce a new instance of the state of every provider that is overridden or has listed a dependency on a provider that was overridden.
+If you override with the same parameter in a different subtree of the app, it will **not** be the same instance of the provider's state.
+Families are more flexible in general, and with the upcoming code generation feature it is easy to use multiple parameters for a family.
+Often a good combination is to use both families and scoping. Use a family to provide general access to a piece of state anywhere in your app, and then use scoping to
+provide a specific instance of the family's state depending on where you are in the widget tree.
 :::
 
-### 作用域的不常见用法
+### Less common usages of Scopes
 
-有时你可能想要覆盖应用特定子树中的所有provider。
-通过在每个provider的依赖项列表中列出一个公共provider，
-你可以通过覆盖公共provider，轻松地一次性为所有这些provider创建新状态。
+Sometimes you may want to override a whole set of providers in a specific subtree of your app.
+By listing a common provider in the dependencies list of each of those providers, you can easily create new states for all of them at once, by overriding the common one.
 
-请注意，如果你尝试使用family来实现此功能，那么你将得到许多具有相同参数的family，
-并且你可能会在整个widget树中传递该参数。在这种情况下，也可以使用作用域。
+Note that if you try to use families for this, you will end up with many families that all have the same parameter, and you could end up passing that parameter all over the widget tree.
+In this case it is also acceptable to use scopes.
 
 :::warning
-一旦开始使用作用域，请确保始终列出依赖项并保持最新状态，以防止运行时异常。
-为了解决这个问题，我们创建了 [riverpod_lint]，它会在缺少依赖时警告你。
-另外，使用 [riverpod_generator] 这个代码生成器会自动为你生成依赖项列表。
+Once you start using scope, make sure to always list your dependencies and keep them up to date, to prevent runtime exceptions.
+To help with this we have created [riverpod_lint] which will warn you if there is a missing dependency.
+Additionally with [riverpod_generator] the code generator automatically generates the dependency list.
 :::
 
 [ProviderContainer]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderContainer-class.html

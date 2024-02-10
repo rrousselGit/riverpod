@@ -1,6 +1,7 @@
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import '../models.dart';
 import '../riverpod_generator.dart';
+import '../validation.dart';
 import 'template.dart';
 
 String providerNameFor(
@@ -81,7 +82,10 @@ class ClassBasedProviderTemplate extends Template {
         'Expected a non-family provider',
       );
     }
+
+    validateClassBasedProvider(provider);
   }
+
   final ClassBasedProviderDeclaration provider;
   final String notifierTypedefName;
   final String hashFn;

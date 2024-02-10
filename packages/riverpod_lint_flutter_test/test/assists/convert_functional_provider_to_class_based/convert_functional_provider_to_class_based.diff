@@ -1,0 +1,33 @@
+Message: `Convert to class-based provider`
+Priority: 100
+Diff for file `test/assists/convert_functional_provider_to_class_based/convert_functional_provider_to_class_based.dart:7`:
+```
+/// Some comment
+@riverpod
+- int example(ExampleRef ref) => 0;
++ class Example extends _$Example {
++   @override
++   int build() => 0;
++ }
+
+/// Some comment
+```
+---
+Message: `Convert to class-based provider`
+Priority: 100
+Diff for file `test/assists/convert_functional_provider_to_class_based/convert_functional_provider_to_class_based.dart:11`:
+```
+/// Some comment
+@riverpod
+- int exampleFamily(ExampleFamilyRef ref, {required int a, String b = '42'}) {
+-   // Hello world
+-   return 0;
++ class ExampleFamily extends _$ExampleFamily {
++   @override
++   int build({required int a, String b = '42'}) {
++   // Hello world
++   return 0;
++ }
+}
+```
+---

@@ -1,7 +1,7 @@
 name: flutter_riverpod
 description: >
-  A simple way to access state from anywhere in your application
-  while robust and testable.
+  A reactive caching and data-binding framework.
+  Riverpod makes working with asynchronous code a breeze.
 version: 3.0.0-dev.3
 homepage: https://riverpod.dev
 repository: https://github.com/rrousselGit/riverpod

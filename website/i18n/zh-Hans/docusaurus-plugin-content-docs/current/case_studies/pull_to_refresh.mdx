@@ -1,0 +1,253 @@
+---
+title: 下拉刷新
+---
+
+import { Link } from "@site/src/components/Link";
+import { AutoSnippet, When } from "@site/src/components/CodeSnippet";
+import activity from "./pull_to_refresh/activity";
+import fetchActivity from "./pull_to_refresh/fetch_activity";
+import displayActivity from "!!raw-loader!./pull_to_refresh/display_activity.dart";
+import displayActivity2 from "!!raw-loader!./pull_to_refresh/display_activity2.dart";
+import displayActivity3 from "!!raw-loader!./pull_to_refresh/display_activity3.dart";
+import displayActivity4 from "!!raw-loader!./pull_to_refresh/display_activity4.dart";
+import fullApp from "./pull_to_refresh/full_app";
+
+<!---
+Riverpod natively supports pull-to-refresh thanks to its declarative nature.
+-->
+由于其声明性，Riverpod 本身就支持拉动刷新。
+
+<!---
+In general, pull-to-refreshes can be complex due as there are multiple
+problems to solve:
+-->
+一般来说，拉动刷新可能很复杂，因为有多个问题需要解决：
+
+<!---
+- Upon first entering a page, we want to show a spinner.
+  But during refresh, we want to show the refresh indicator instead.
+  We shouldn't show both the refresh indicator _and_ spinner.
+- While a refresh is pending, we want to show the previous data/error.
+- We need to show the refresh indicator for as long as the refresh is happening.
+-->
+- 第一次进入页面时，我们想要显示一个微调器（spinner）。
+  但在重刷新期间，我们希望显示刷新指示器。
+  我们不应该同时显示刷新指示器_和_微调器。
+- 当刷新挂起时，我们希望显示以前的数据/错误。
+- 只要重刷新发生，我们就需要显示刷新指示器。
+
+<!---
+Let's see how to solve this using Riverpod.  
+For this, we will make a simple example which recommands a random activity to users.  
+And doing a pull-to-refresh will trigger a new suggestion:
+-->
+让我们看看如何使用 Riverpod 解决这个问题。  
+为此，我们将制作一个简单的示例，向用户推荐随机活动。  
+并且进行下拉刷新将触发新的建议：
+
+<!---
+<img
+  alt="A gif of the previously described application working"
+  src="/img/case_studies/pull_to_refresh/app.gif"
+/>
+-->
+<img
+  alt="上面描述的应用软件工作时的 gif"
+  src="/img/case_studies/pull_to_refresh/app.gif"
+/>
+
+<!---
+## Making a bare-bones application.
+-->
+## 制作一个简单的应用程序。​
+
+<!---
+Before implement a pull-to-refresh, we first need something to refresh.  
+We can make a simple application which uses [Bored API](https://www.boredapi.com/)
+to suggests a random activity to users.
+-->
+在实现下拉刷新之前，我们首先需要刷新一些东西。  
+我们可以制作一个简单的应用程序，使用 [Bored API](https://www.boredapi.com/)
+向用户建议随机活动。
+
+<!---
+First, let's define an `Activity` class:
+-->
+首先，我们定义一个 `Activity` 类：
+
+<AutoSnippet {...activity} />
+
+<!---
+That class will be responsible for representing a suggested activity
+in a type-safe manner, and handle JSON encoding/decoding.  
+Using Freezed/json_serializable is not required, but it is recommended.
+-->
+该类将负责以类型安全的方式表示建议的活动，并处理 JSON 编码/解码。  
+使用 Freezed/json_serialized 不是必需的，但建议使用。
+
+<!---
+Now, we'll want to define a provider making a HTTP GET request to fetch
+a single activity:
+-->
+现在，我们要定义一个提供者程序发出 HTTP GET 请求来获取单个活动：
+
+<AutoSnippet {...fetchActivity} />
+
+<!---
+We can now use this provider to display a random activity.  
+For now, we will not handle the loading/error state, and simply
+display the activity when available:
+-->
+我们现在可以使用此提供者程序来显示随机活动。  
+目前，我们不会处理加载/错误状态，而只是在可用时显示活动：
+
+<AutoSnippet raw={displayActivity} />
+
+<!---
+## Adding `RefreshIndicator`
+-->
+## 添加 `RefreshIndicator`
+
+<!---
+Now that we have a simple application, we can add a `RefreshIndicator` to it.  
+That widget is an official Material widget responsible for displaying a refresh indicator
+when the user pulls down the screen.
+-->
+现在我们有了一个简单的应用程序，我们可以向它添加一个 `RefreshIndicator`。  
+该小部件是一个官方的 Material 小部件，负责在用户下拉屏幕时显示刷新指示器。
+
+<!---
+Using `RefreshIndicator` requires a scrollable surface. But so far, we don't have
+any. We can fix that by using a `ListView`/`GridView`/`SingleChildScrollView`/etc:
+-->
+使用 `RefreshIndicator` 需要一个可滚动的表面。但到目前为止，我们还没有。
+我们可以通过使用 `ListView`/`GridView`/`SingleChildScrollView` 等等来解决这个问题：
+
+<AutoSnippet raw={displayActivity2} />
+
+<!---
+Users can now pull down the screen. But our data isn't refreshed yet.
+-->
+用户现在可以下拉屏幕。但我们的数据还没有刷新。
+
+<!---
+## Adding the refresh logic
+-->
+## 添加刷新逻辑​
+
+<!---
+When users pull down the screen, `RefreshIndicator` will invoke
+the `onRefresh` callback. We can use that callback to refresh our data.
+In there, we can use `ref.refresh` to refresh the provider of our choice.
+-->
+当用户下拉屏幕时，`RefreshIndicator` 将调用
+`onRefresh` 回调。我们可以使用该回调来刷新我们的数据。
+在那里，我们可以使用 `ref.refresh` 刷新我们选择的提供者程序。
+
+<!---
+**Note**: `onRefresh` is expected to return a `Future`.
+And it is important for that future to complete when the refresh is done.
+-->
+**注意**：`onRefresh` 期望返回一个 `Future`。
+刷新完成后，future 的完成非常重要。
+
+<!---
+To obtain such a future, we can read our provider's `.future` property.
+This will return a future which completes when our provider has resolved.
+-->
+为了获得这样的 future，我们可以读取提供者程序的 `.future` 属性。
+这将返回一个 future，该 future 在我们的提供者程序解决后完成。
+
+<!---
+We can therefore update our `RefreshIndicator` to look like this:
+-->
+因此，我们可以将 `RefreshIndicator` 更新为如下所示：
+
+<AutoSnippet raw={displayActivity3} />
+
+<!---
+## Showing a spinner only during initial load and handling errors.
+-->
+## 仅在初始加载和处理错误期间显示微调器。
+
+<!---
+At the moment, our UI does not handle the error/loading states.  
+Instead the data magically pops up when the loading/refresh is done.
+-->
+目前，我们的 UI 不处理错误/加载状态。  
+相反，当加载/刷新完成时，数据会神奇地弹出。
+
+<!---
+Let's change this by gracefully handling those states. There are two
+cases:
+-->
+让我们通过优雅地处理这些状态来改变这一点。有两种情况：
+
+<!---
+- During the initial load, we want to show a full-screen spinner.
+- During a refresh, we want to show the refresh indicator
+  and the previous data/error.
+-->
+- 在初始加载期间，我们希望显示全屏微调器。
+- 在刷新期间，我们希望显示刷新指示器和之前的数据/错误。
+
+<!---
+Fortunately, when listening to an asynchronous provider in Riverpod,
+Riverpod gives us an `AsyncValue`, which offers everything we need.
+-->
+幸运的是，当在 Riverpod 中监听异步提供者程序时，
+Riverpod 为我们提供了一个 `AsyncValue` ，它提供了我们需要的一切。
+
+<!---
+That `AsyncValue` can then be combined with Dart 3.0's pattern matching
+as followed:
+-->
+然后可以将 `AsyncValue` 与 Dart 3.0 的模式匹配结合起来，如下所示：
+
+<AutoSnippet raw={displayActivity4} />
+
+:::caution
+<!---
+We use `valueOrNull` here, as currently, using `value` throws
+if in error/loading state.
+-->
+我们在这里使用 `valueOrNull`，就像目前一样，
+如果处于错误/加载状态，则使用 `value` 会抛出异常。
+
+<!---
+Riverpod 3.0 will change this to have `value` behave like `valueOrNull`.
+But for now, let's stick to `valueOrNull`.
+-->
+Riverpod 3.0 将对此进行更改，使 `value` 的行为类似于 `valueOrNull`。
+但现在，让我们坚持使用 `valueOrNull`。
+:::
+
+:::tip
+<!---
+Notice the usage of the `:final valueOrNull?` syntax in our pattern matching.
+This syntax can be used only because `activityProvider` returns a non-nullable
+`Activity`.
+-->
+请注意我们的模式匹配中 `:final valueOrNull?` 语法的使用。
+只能使用此语法，因为 `activityProvider` 返回不可为 null 的 `Activity`。
+
+<!---
+If your data can be `null`, you can instead use `AsyncValue(hasData: true, :final valueOrNull)`.
+This will correctly handle cases where the data is `null`, at the cost of
+a few extra characters.
+-->
+如果您的数据可以是 `null`，则可以使用 `AsyncValue(hasData: true, :final valueOrNull)`。
+这将正确处理数据为 `null` 的情况，但需要一些额外的字符。
+:::
+
+<!---
+## Wrapping up: full application
+-->
+## 总结：完整的应用
+
+<!---
+Here is the combined source of everything we've covered so far:
+-->
+以下是组合了我们迄今为止所涵盖的所有内容的源码：
+
+<AutoSnippet {...fullApp} />

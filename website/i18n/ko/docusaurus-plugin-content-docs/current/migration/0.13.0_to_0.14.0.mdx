@@ -1,11 +1,11 @@
 ---
-title: ^0.13.0 to ^0.14.0
+title: ^0.13.0에서 ^0.14.0
 ---
 
-With the release of version `0.14.0` of Riverpod, the syntax for using [StateNotifierProvider] changed
-(see https://github.com/rrousselGit/riverpod/issues/341 for the explanation).
+리버팟 `0.14.0` 버전이 출시되면서, [StateNotifierProvider] 사용 구문이 변경되었습니다.
+(자세한 설명은 https://github.com/rrousselGit/riverpod/issues/341 참조)
 
-For the entire article, consider the following [StateNotifier]:
+전체 문서에 대해서는 다음 [StateNotifier]를 참조하세요:
 
 ```dart
 class MyModel {}
@@ -15,12 +15,11 @@ class MyStateNotifier extends StateNotifier<MyModel> {
 }
 ```
 
-## The changes
+## 변경사항
 
-- [StateNotifierProvider] takes an extra generic parameter, which should be
-  the type of the state of your [StateNotifier].
+- [StateNotifierProvider]는 추가 제네릭 매개변수(extra generic parameter)를 받는데, 이 매개변수는 [StateNotifier]의 상태 타입이어야 합니다.
 
-  Before:
+  이전:
 
   ```dart
   final provider = StateNotifierProvider<MyStateNotifier>((ref) {
@@ -28,7 +27,7 @@ class MyStateNotifier extends StateNotifier<MyModel> {
   });
   ```
 
-  After:
+  변경후:
 
   ```dart
   final provider = StateNotifierProvider<MyStateNotifier, MyModel>((ref) {
@@ -36,9 +35,9 @@ class MyStateNotifier extends StateNotifier<MyModel> {
   });
   ```
 
-- to obtain the [StateNotifier], you should now read `myProvider.notifier` instead of just `myProvider`:
+- [StateNotifier]를 얻으려면, 이제 `myProvider`가 아닌 `myProvider.notifier`를 읽어야 합니다:
 
-  Before:
+  이전:
 
   ```dart
   Widget build(BuildContext context, ScopedReader watch) {
@@ -46,7 +45,7 @@ class MyStateNotifier extends StateNotifier<MyModel> {
   }
   ```
 
-  After:
+  변경후:
 
   ```dart
   Widget build(BuildContext context, ScopedReader watch) {
@@ -54,9 +53,9 @@ class MyStateNotifier extends StateNotifier<MyModel> {
   }
   ```
 
-- to listen to the state of the [StateNotifier], you should now read `myProvider` instead of `myProvider.state`:
+- [StateNotifier]의 상태를 수신(listen)하려면, 이제 `myProvider.state` 대신 `myProvider`를 읽어야 합니다:
 
-  Before:
+  이전:
 
   ```dart
   Widget build(BuildContext context, ScopedReader watch) {
@@ -64,7 +63,7 @@ class MyStateNotifier extends StateNotifier<MyModel> {
   }
   ```
 
-  After:
+  변경후:
 
   ```dart
   Widget build(BuildContext context, ScopedReader watch) {
@@ -72,39 +71,38 @@ class MyStateNotifier extends StateNotifier<MyModel> {
   }
   ```
 
-## Using the migration tool to automatically upgrade your projects to the new syntax
+## 마이그레이션 도구를 사용하여 프로젝트를 새 구문으로 자동 업그레이드하기
 
-With version 0.14.0 came the release of a command line tool for Riverpod,
-which can help you migrate your projects.
+버전 0.14.0에서는 프로젝트를 마이그레이션하는 데 도움이 되는 리버포드용 명령줄 도구가 출시되었습니다.
 
-### Installing the command line
+### 명령줄 설치하기
 
-To install the migration tool, run:
+마이그레이션 도구를 설치하려면 다음을 실행합니다:
 
 ```sh
 dart pub global activate riverpod_cli
 ```
 
-You should now be able to run:
+이제 실행할 수 있을 것입니다:
 
 ```sh
 riverpod --help
 ```
 
-### Usage
+### 사용법
 
-Now that the command line is installed, we can start using it.
+이제 명령줄이 설치되었으므로 사용을 시작할 수 있습니다.
 
-- First, open the project you want to migrate in your terminal.
-- **Do not** upgrade Riverpod.  
-  The migration tool will upgrade the version of Riverpod for you.
-- Make sure that your project does not contain errors.
-- Execute:
+- 먼저 터미널에서 마이그레이션하려는 프로젝트를 엽니다.
+- **Do not** Riverpod을 업그레이드하지 마세요.  
+  마이그레이션 도구가 Riverpod의 버전을 업그레이드해 줍니다.
+- 프로젝트에 오류가 없는지 확인합니다.
+- 실행:
   ```sh
   riverpod migrate
   ```
 
-The tool will then analyze your project and suggest changes. For example you may see:
+그러면 도구가 프로젝트를 분석하고 변경 사항을 제안합니다. 예를 들면 다음과 같습니다:
 
 ```diff
 Widget build(BuildContext context, ScopedReader watch) {
@@ -115,8 +113,7 @@ Widget build(BuildContext context, ScopedReader watch) {
 Accept change (y = yes, n = no [default], A = yes to all, q = quit)? 
 ```
 
-To accept the change, simply press <kbd>y</kbd>. Otherwise to reject it, press <kbd>n</kbd>.
-
+변경을 수락하려면 <kbd>Y</kbd>를 누르면 됩니다. 변경을 거부하려면 <kbd>n</kbd>을 누르세요.
 
 [statenotifierprovider]: ../providers/state_notifier_provider
 [statenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/StateNotifier-class.html

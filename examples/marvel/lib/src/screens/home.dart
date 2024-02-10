@@ -92,7 +92,12 @@ class Home extends HookConsumerWidget {
             return Scaffold(
               appBar: AppBar(title: const Text('Error')),
               body: Center(
-                child: Text('$err'),
+                child: Text(
+                  switch (err) {
+                    DioException() => err.message ?? '$err',
+                    _ => '$err',
+                  },
+                ),
               ),
             );
           },

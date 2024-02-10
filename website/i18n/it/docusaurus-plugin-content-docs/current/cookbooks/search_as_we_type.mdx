@@ -2,40 +2,43 @@
 title: Search as we type
 ---
 
-Un esempio reale potrebbe essere usare `FutureProvider` per implementare una barra di ricerca.
+:::caution
+The content of this page may be outdated.  
+It will be updated in the future, but for now you may want to refer to the content
+in the top of the sidebar instead (introduction/essentials/case-studies/...)
+:::
 
-## Esempio d'uso: barra di ricerca "Search as we type"
+A real world example could be to use `FutureProvider` to implement a searchbar.
 
-Implementare una "search as we type" ("cerca mentre si digita") può sembrare
-scoraggiante all'inizio quando si utilizzano mezzi convenzionali.
-Ci sono molte parti dinamiche, come:
+## Usage example: "Search as we type" searchbar
 
-- gestire gli errori.
-- rimbalzare l'input dell'utente per evitare di effettuare richieste
-  di rete ad ogni battitura.
-- cancellare precedenti richieste di rete in sospeso quando il
-  campo di ricerca cambia.
+Implementing a "search as we type" can seem daunting at first when using
+conventional means.  
+There are lots of moving parts, such as:
 
-Tuttavia, la combinazione di `FutureProvider` e la potenza di [ref.watch]
-possono semplificare di gran lunga questo lavoro.
+- handling errors.
+- debouncing the user input to avoid making network requests on every keystroke.
+- cancelling previously pending network requests when the search field changes.
 
-Un pattern comune per eseguire richieste asincrone consiste nel
-suddividerle in più provider:
+But the combination of `FutureProvider` and the power of [ref.watch] can
+significantly simplify this task.
 
-- uno [StateNotifierProvider] o `StateProvider` per i parametri della tua richiesta
-  (o in alternativa usare [family])
-- un `FutureProvider`, che farà la richiesta leggendo i parametri dagli altri
-  providers/[family].
+A common pattern wanting to perform an asynchronous requests
+is to split it into multiple providers:
 
-Il primo passo è immagazzinare l'input dell'utente da qualche parte.
-Per questo esempio useremo `StateProvider` (dato che lo stato di ricerca
-è solo una singola `String`):
+- a [StateNotifierProvider] or `StateProvider` for the parameters of your request
+  (or alternatively use [family])
+- a `FutureProvider`, which will do the request by reading the parameters from
+  the other providers/[family].
+
+The first step would be to store the user input somewhere. For this example,
+we will use `StateProvider` (as the search state is only a single `String`):
 
 ```dart
-final seachInputProvider = StateProvider<String>((ref) => '');
+final searchInputProvider = StateProvider<String>((ref) => '');
 ```
 
-Possiamo poi connettere questo provider ad un [TextField] scrivendo:
+We can then connect this provider to a [TextField] by doing:
 
 ```dart
 Consumer(
@@ -47,7 +50,7 @@ Consumer(
 )
 ```
 
-Successivamente, possiamo creare `FutureProvider` che si occuperà della richiesta:
+Then, we can create our `FutureProvider` which will take care of the request:
 
 ```dart
 final searchProvider = FutureProvider<
@@ -116,14 +119,11 @@ class MyHomePage extends ConsumerWidget {
                 ref.read(searchFieldProvider.notifier).state = value,
           ),
           Expanded(
-            child: questions.when(
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, stack) => Center(child: Text('Error $error')),
-              data: (questions) {
-                return ListView.builder(
-                  itemCount: questions.length,
+            child: switch (questions) {
+              AsyncData(:final value) => ListView.builder(
+                  itemCount: value.length,
                   itemBuilder: (context, index) {
-                    final question = questions[index];
+                    final question = value[index];
 
                     return ListTile(
                       title: Text(
@@ -131,9 +131,10 @@ class MyHomePage extends ConsumerWidget {
                       ),
                     );
                   },
-                );
-              },
-            ),
+                );,
+              AsyncError(:final error) => Center(child: Text('Error $error')),
+              _ => const Center(child: CircularProgressIndicator()),
+            },
           ),
         ],
       ),

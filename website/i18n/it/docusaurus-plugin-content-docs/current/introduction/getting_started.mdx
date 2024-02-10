@@ -1,0 +1,195 @@
+---
+title: Introduzione
+pagination_next: essentials/first_request
+version: 4
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import pubspec from "./getting_started/pubspec";
+import dartHelloWorld from "./getting_started/dart_hello_world";
+import pubadd from "./getting_started/pub_add";
+import helloWorld from "./getting_started/hello_world";
+import dartPubspec from "./getting_started/dart_pubspec";
+import dartPubadd from "./getting_started/dart_pub_add";
+import {
+  AutoSnippet,
+  When,
+} from "../../../../../src/components/CodeSnippet";
+import { Link } from "../../../../../src/components/Link";
+
+## Prova Riverpod online
+
+Per farti un'idea di Riverpod, prova a utilizzarlo online su [Dartpad](https://dartpad.dev/?null_safety=true&id=ef06ab3ce0b822e6cc5db0575248e6e2)
+o su [Zapp](https://zapp.run/new):
+
+<iframe
+  src="https://zapp.run/edit/zv2060sv306?theme=dark&lazy=false"
+  style={{ width: "100%", border: 0, overflow: "hidden", aspectRatio: "1.5" }}
+></iframe>
+
+## Installazione del package
+
+Una volta che sai quale pacchetto desideri installare, procedi ad aggiungere la dipendenza alla tua app tramite riga di comando:
+
+<Tabs
+  groupId="riverpod"
+  defaultValue="flutter_riverpod"
+  values={[
+    { label: 'Flutter', value: 'flutter_riverpod', },
+    { label: 'Dart only', value: 'riverpod', },
+  ]}
+>
+<TabItem value="flutter_riverpod">
+
+<AutoSnippet {...pubadd}></AutoSnippet>
+
+</TabItem>
+
+<TabItem value="riverpod">
+
+<AutoSnippet {...dartPubadd}></AutoSnippet>
+
+</TabItem>
+
+</Tabs>
+
+In alternativa, puoi aggiungere manualmente la dipendenza alla tua app all'interno del tuo file `pubspec.yaml`:
+
+<Tabs
+  groupId="riverpod"
+  defaultValue="flutter_riverpod"
+  values={[
+    { label: 'Flutter', value: 'flutter_riverpod', },
+    { label: 'Dart only', value: 'riverpod', },
+  ]}
+>
+<TabItem value="flutter_riverpod">
+
+<AutoSnippet title="pubspec.yaml" language="yaml" {...pubspec}></AutoSnippet>
+
+Infine, installa i package con `flutter pub get`.
+
+<When codegen={true}>
+  Ora puoi eseguire il code-generator con{" "}
+  <code>flutter pub run build_runner watch</code>.
+</When>
+
+</TabItem>
+<TabItem value="riverpod">
+
+<AutoSnippet
+  title="pubspec.yaml"
+  language="yaml"
+  {...dartPubspec}
+></AutoSnippet>
+
+Infine, installa i package con `dart pub get`.
+
+<When codegen={true}>
+  Ora puoi eseguire il code-generator con{" "}
+  <code>dart run build_runner watch</code>.
+</When>
+
+</TabItem>
+</Tabs>
+
+Ecco fatto. Hai aggiunto [Riverpod] alla tua app!
+
+## Abilitare riverpod_lint/custom_lint
+
+Riverpod include un pacchetto opzionale chiamato [riverpod_lint] 
+che fornisce regole di lint per aiutarti a scrivere codice migliore 
+e offre opzioni di refactoring personalizzate.
+
+Il pacchetto dovrebbe già essere installato se hai seguito i passaggi precedenti, 
+ma è necessario un passaggio separato per abilitarlo.
+
+Per abilitare [riverpod_lint], è necessario aggiungere un file `analysis_options.yaml` 
+posizionato sullo stesso livello del tuo `pubspec.yaml` e includere quanto segue:
+
+<CodeBlock language="yaml" title="analysis_options.yaml">
+  {`analyzer:
+  plugins:
+    - custom_lint`}
+</CodeBlock>
+
+Ora dovresti vedere dei warning nel tuo ambiente di sviluppo (IDE) se hai commesso errori 
+nell'utilizzo di Riverpod nel tuo codice.
+
+Per vedere l'elenco completo dei possibili warning e refactoring, vai alla pagina di [riverpod_lint].
+
+:::note
+Quei warning non verranno visualizzati nel comando `dart analyze`.
+Se desideri verificare tali warning in CI/terminale, puoi eseguire quanto segue:
+
+```sh
+dart run custom_lint
+```
+
+:::
+
+## Esempio di utilizzo: Hello world
+
+Ora che abbiamo installato [Riverpod], possiamo iniziare ad usarlo.
+
+Gli snippet seguenti mostrano come utilizzare la nostra nuova dipendenza per creare un "Hello world":
+
+<Tabs
+  groupId="riverpod"
+  defaultValue="flutter_riverpod"
+  values={[
+    { label: "Flutter", value: "flutter_riverpod" },
+    { label: "Dart only", value: "riverpod" },
+  ]}
+>
+<TabItem value="flutter_riverpod">
+
+<AutoSnippet
+  title="lib/main.dart"
+  language="dart"
+  {...helloWorld}
+></AutoSnippet>
+
+Successivamente, avvia l'applicazione con `flutter run`.
+Questo renderizzerà "Hello world" sul tuo dispositivo.
+
+</TabItem>
+<TabItem value="riverpod">
+
+<AutoSnippet
+  title="lib/main.dart"
+  language="dart"
+  {...dartHelloWorld}
+></AutoSnippet>
+
+Successivamente, avvia l'applicazione con `dart lib/main.dart`.
+Vedrai stampato "Hello world" nella console.
+
+</TabItem>
+</Tabs>
+
+## Andando oltre: Installazione di snippet di codice
+
+Se stai utilizzando `Flutter` e `VS Code`, considera l'utilizzo di [Flutter Riverpod Snippets](https://marketplace.visualstudio.com/items?itemName=robert-brunhage.flutter-riverpod-snippets)
+
+Se stai utilizzando `Flutter` e `Android Studio` o `IntelliJ`, considera l'utilizzo di [Flutter Riverpod Snippets](https://plugins.jetbrains.com/plugin/14641-flutter-riverpod-snippets)
+
+![img](/img/snippets/greetingProvider.gif)
+
+## Scegli il prossimo passo
+
+Apprendi i concetti base:
+
+- <Link documentID="concepts/providers" />
+
+Segui un cookbook:
+
+- <Link documentID="cookbooks/testing" />
+
+[riverpod]: https://github.com/rrousselgit/riverpod
+[hooks_riverpod]: https://pub.dev/packages/hooks_riverpod
+[flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
+[flutter_hooks]: https://github.com/rrousselGit/flutter_hooks
+[riverpod_lint]: https://pub.dev/packages/riverpod_lint
