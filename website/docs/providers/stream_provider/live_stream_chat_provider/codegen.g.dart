@@ -62,4 +62,4 @@ String _$chatHash() => r'db1302132f90e854fe2f5da9d97d89c9a3c8b858';
 
 const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

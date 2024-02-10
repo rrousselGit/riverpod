@@ -185,4 +185,4 @@ String _$defaultKeepAliveHash() => r'1c236764d83a62ca442c5d5b4a83bd0d6e4548cf';
 
 const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

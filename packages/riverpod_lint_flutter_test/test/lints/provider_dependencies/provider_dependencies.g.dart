@@ -747,4 +747,4 @@ String _$noDepWithoutCommaHash() => r'59d5a7874da40605b1b187766ebb4927d2eaae81';
 
 const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

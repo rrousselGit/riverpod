@@ -107,7 +107,7 @@ final class FetchPackagesProvider extends $FunctionalProvider<
   }
 }
 
-String _$fetchPackagesHash() => r'3637226080ea667823875a135a6c4cf002cb0329';
+String _$fetchPackagesHash() => r'46519fce4d1661e1358deac4d806374fa68f12c8';
 
 final class FetchPackagesFamily extends Family {
   const FetchPackagesFamily._()
@@ -163,4 +163,4 @@ final class FetchPackagesFamily extends Family {
 
 const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main
