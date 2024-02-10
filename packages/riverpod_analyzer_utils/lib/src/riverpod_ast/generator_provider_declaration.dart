@@ -210,16 +210,26 @@ class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration {
       );
     }
 
-    final defaultConstructor = node.members
-        .whereType<ConstructorDeclaration>()
+    final constructors =
+        node.members.whereType<ConstructorDeclaration>().toList();
+    final defaultConstructor = constructors
         .firstWhereOrNull((constructor) => constructor.name == null);
+    if (defaultConstructor == null && constructors.isNotEmpty) {
+      errorReporter?.call(
+        RiverpodAnalysisError(
+          'Classes annotated with @riverpod must have a default constructor.',
+          targetNode: node,
+          targetElement: node.declaredElement,
+        ),
+      );
+    }
     // TODO changelog report error if default constructor is missing
-    if (defaultConstructor == null ||
+    if (defaultConstructor != null &&
         defaultConstructor.parameters.parameters.any((e) => e.isRequired)) {
       errorReporter?.call(
         RiverpodAnalysisError(
-          'Classes annotated with @riverpod must have a default constructor '
-          'with no required parameters.',
+          'The default constructor of classes annotated with @riverpod '
+          'cannot have required parameters.',
           targetNode: node,
           targetElement: node.declaredElement,
         ),
