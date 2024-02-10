@@ -17,6 +17,6 @@ class MyConfiguration extends HookConsumerWidget {
       data: (config) {
         return Center(child: Text(config.host));
       },
-    ));
+    ),);
   }
 }

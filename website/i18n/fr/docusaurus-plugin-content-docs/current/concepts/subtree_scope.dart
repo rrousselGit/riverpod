@@ -54,7 +54,7 @@ class Home extends ConsumerWidget {
         // Cet affichage particulier utilisera l'état du provider à partir du ProviderScope racine.
         const CounterDisplay(),
       ],
-    ));
+    ),);
   }
 }
 

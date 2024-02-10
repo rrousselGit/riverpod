@@ -56,7 +56,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          repositoryProvider.overrideWithValue(FakeRepository())
+          repositoryProvider.overrideWithValue(FakeRepository()),
         ],
         // Наше приложение, которые читает значение todoListProvider
         // для отображение списка задач.
@@ -71,10 +71,10 @@ void main() {
               }
               return ListView(
                 children: [
-                  for (final todo in todos.asData!.value) TodoItem(todo: todo)
+                  for (final todo in todos.asData!.value) TodoItem(todo: todo),
                 ],
               );
-            }),
+            },),
           ),
         ),
       ),

@@ -21,5 +21,5 @@ DropdownButton<ProductSortType>(
   ],
 ),
 /* SNIPPET END */
-  ]);
+  ],);
 }

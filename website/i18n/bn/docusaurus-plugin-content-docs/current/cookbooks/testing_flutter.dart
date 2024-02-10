@@ -26,7 +26,7 @@ void main() {
           //  repositoryProvider এর আচরণ পরিবর্তন করে
           //  FakeRepository রিটার্ন করবে আসল Repository এর বদলে
           /* highlight-start */
-          repositoryProvider.overrideWithValue(FakeRepository())
+          repositoryProvider.overrideWithValue(FakeRepository()),
           /* highlight-end */
           // আমাদের `todoListProvider` প্রভাইডার ওভাররাইড করার প্রয়োজন নেই,
           // এটি অটোমেটিকলী ওভাররাইডেন repositoryProvider ব্যবহার করবে

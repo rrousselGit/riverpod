@@ -13,6 +13,6 @@ Consumer(builder: (context, ref, child) {
   // TODO 使用ListView/GridView/……展示待办清单列表 /* SKIP */
   return Container();
   /* SKIP END */
-});
+},);
 /* SNIPPET END */
 }

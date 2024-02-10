@@ -31,7 +31,7 @@ class SomeConsumer extends ConsumerWidget {
           onPressed: ref.read(counterNotifierProvider.notifier).increment,
           /* highlight-end */
           child: const Text('Count even more!'),
-        )
+        ),
       ],
     );
   }

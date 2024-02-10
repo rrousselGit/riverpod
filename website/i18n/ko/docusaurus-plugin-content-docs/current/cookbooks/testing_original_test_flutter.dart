@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
           onPressed: () => ref.read(counterProvider.notifier).state++,
           child: Text('$counter'),
         );
-      }),
+      },),
     );
   }
 }

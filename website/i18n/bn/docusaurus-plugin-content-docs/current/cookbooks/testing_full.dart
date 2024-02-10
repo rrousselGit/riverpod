@@ -67,10 +67,10 @@ void main() {
               }
               return ListView(
                 children: [
-                  for (final todo in todos.asData!.value) TodoItem(todo: todo)
+                  for (final todo in todos.asData!.value) TodoItem(todo: todo),
                 ],
               );
-            }),
+            },),
           ),
         ),
       ),

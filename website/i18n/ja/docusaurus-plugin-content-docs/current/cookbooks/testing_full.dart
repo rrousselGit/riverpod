@@ -56,7 +56,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          repositoryProvider.overrideWithValue(FakeRepository())
+          repositoryProvider.overrideWithValue(FakeRepository()),
         ],
         // todoListProvider の値を監視して Todo リストを表示するアプリ
         // 以下を抽出して MyApp ウィジェットとしても可
@@ -70,10 +70,10 @@ void main() {
               }
               return ListView(
                 children: [
-                  for (final todo in todos.asData!.value) TodoItem(todo: todo)
+                  for (final todo in todos.asData!.value) TodoItem(todo: todo),
                 ],
               );
-            }),
+            },),
           ),
         ),
       ),

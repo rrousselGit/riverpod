@@ -13,6 +13,6 @@ Widget build() {
     // TODO a ListView/GridView/...등을 사용하여 todos를 표시하기/* SKIP */
     return Container();
     /* SKIP END */
-  });
+  },);
 /* SNIPPET END */
 }

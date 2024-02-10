@@ -44,7 +44,7 @@ class Home extends ConsumerWidget {
           child: const Text('Increment Count'),
         ),
       ],
-    ));
+    ),);
   }
 }
 

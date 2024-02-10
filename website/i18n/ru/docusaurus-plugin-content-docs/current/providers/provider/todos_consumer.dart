@@ -13,6 +13,6 @@ Consumer(builder: (context, ref, child) {
   // TODO: отобразить задачи с помощью ListView/GridView/.../* SKIP */
   return Container();
   /* SKIP END */
-});
+},);
 /* SNIPPET END */
 }

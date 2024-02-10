@@ -13,6 +13,6 @@ Widget build() {
     // TODO mostrare i todo usando ListView/GridView/.../* SKIP */
     return Container();
     /* SKIP END */
-  });
+  },);
 /* SNIPPET END */
 }

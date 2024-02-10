@@ -9,7 +9,7 @@ import 'package:flutter_riverpod/legacy.dart';
 @immutable
 class Todo {
   const Todo(
-      {required this.id, required this.description, required this.completed});
+      {required this.id, required this.description, required this.completed,});
 
   // Alle variablen in unserer Klasse sollten `final` sein.
   final String id;

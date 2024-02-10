@@ -26,7 +26,7 @@ testWidgets('override repositoryProvider', (tester) async {
         // Переопределяем поведение repositoryProvider, чтобы он
         // возвращал FakeRepository вместо Repository.
         /* highlight-start */
-        repositoryProvider.overrideWithValue(FakeRepository())
+        repositoryProvider.overrideWithValue(FakeRepository()),
         /* highlight-end */
         // Нам не нужно переопределять `todoListProvider`.
         // Он автоматически будет использовать
