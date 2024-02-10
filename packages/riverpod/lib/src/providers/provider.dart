@@ -31,18 +31,6 @@ base class Provider<StateT>
           argument: null,
         );
 
-  Provider._autoDispose(
-    this._create, {
-    super.name,
-    super.dependencies,
-  }) : super(
-          allTransitiveDependencies:
-              computeAllTransitiveDependencies(dependencies),
-          isAutoDispose: true,
-          from: null,
-          argument: null,
-        );
-
   /// An implementation detail of Riverpod
   @internal
   const Provider.internal(
@@ -374,17 +362,6 @@ class ProviderFamily<R, Arg>
     super.isAutoDispose = false,
   }) : super(
           providerFactory: Provider.internal,
-          allTransitiveDependencies:
-              computeAllTransitiveDependencies(dependencies),
-        );
-
-  ProviderFamily._autoDispose(
-    super._createFn, {
-    super.name,
-    super.dependencies,
-  }) : super(
-          providerFactory: Provider.internal,
-          isAutoDispose: true,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
         );

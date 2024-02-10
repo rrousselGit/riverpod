@@ -58,7 +58,6 @@ abstract class StateProviderRef<State> implements Ref<State> {
 final class StateProvider<StateT>
     extends $FunctionalProvider<StateT, StateT, StateProviderRef<StateT>>
     with LegacyProviderMixin<StateT> {
-  /// {@macro riverpod.stateprovider}
   StateProvider(
     this._createFn, {
     super.name,
@@ -196,17 +195,6 @@ class StateProviderFamily<StateT, Arg> extends FunctionalFamily< //
     super.isAutoDispose = false,
   }) : super(
           providerFactory: StateProvider.internal,
-          allTransitiveDependencies:
-              computeAllTransitiveDependencies(dependencies),
-        );
-
-  StateProviderFamily._autoDispose(
-    super._createFn, {
-    super.name,
-    super.dependencies,
-  }) : super(
-          providerFactory: StateProvider.internal,
-          isAutoDispose: true,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
         );

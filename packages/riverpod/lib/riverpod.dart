@@ -42,7 +42,8 @@ export 'src/framework.dart'
         RunNotifierBuild,
         $FunctionalProvider,
         $ClassProvider,
-        LegacyProviderMixin;
+        LegacyProviderMixin,
+        ClassProviderElement;
 
 export 'src/providers/async_notifier.dart'
     hide $AsyncNotifier, $AsyncNotifierProvider;

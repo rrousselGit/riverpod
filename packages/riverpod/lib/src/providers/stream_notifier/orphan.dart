@@ -38,11 +38,8 @@ abstract class StreamNotifier<State> extends $StreamNotifier<State> {
 /// {@endtemplate}
 ///
 /// {@template riverpod.async_notifier_provider_modifier}
-/// When using `autoDispose` or `family`, your notifier type changes.
-/// Instead of extending [StreamNotifier], you should extend either:
-/// - [AutoDisposeAsyncNotifier] for `autoDispose`
-/// - [FamilyAsyncNotifier] for `family`
-/// - [AutoDisposeFamilyAsyncNotifier] for `autoDispose.family`
+/// When using your notifier type changes.
+/// Instead of extending [StreamNotifier], you should extend [FamilyStreamNotifier].
 /// {@endtemplate}
 final class StreamNotifierProvider< //
         NotifierT extends StreamNotifier<StateT>,
@@ -63,19 +60,6 @@ final class StreamNotifierProvider< //
               computeAllTransitiveDependencies(dependencies),
           from: null,
           argument: null,
-        );
-
-  StreamNotifierProvider._autoDispose(
-    this._createNotifier, {
-    super.name,
-    super.dependencies,
-    super.runNotifierBuildOverride,
-  }) : super(
-          allTransitiveDependencies:
-              computeAllTransitiveDependencies(dependencies),
-          from: null,
-          argument: null,
-          isAutoDispose: true,
         );
 
   /// An implementation detail of Riverpod

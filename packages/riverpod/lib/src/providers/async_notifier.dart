@@ -31,6 +31,8 @@ abstract base class $AsyncNotifierProvider< //
         Ref<AsyncValue<StateT>>> //
     with
         $FutureModifier<StateT> {
+  /// Implementation detail of `riverpod_generator`.
+  /// Do not use.
   const $AsyncNotifierProvider({
     required super.name,
     required super.from,
@@ -53,6 +55,8 @@ class $AsyncNotifierProviderElement< //
         FutureOr<StateT>> //
     with
         FutureModifierElement<StateT> {
+  /// Implementation detail of `riverpod_generator`.
+  /// Do not use.
   $AsyncNotifierProviderElement(this.provider, super.container);
 
   @override

@@ -86,7 +86,7 @@ abstract base class ProviderBase<StateT> extends ProviderOrFamily
     element.flush();
 
     // In case `read` was called on a provider that has no listener
-    element.mayNeedDispose();
+    element._mayNeedDispose();
 
     return element.requireState;
   }

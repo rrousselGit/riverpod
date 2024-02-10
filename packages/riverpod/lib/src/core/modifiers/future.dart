@@ -94,7 +94,7 @@ mixin $AsyncClassModifier<StateT, CreatedT>
   /// does not matter. Checking `==` would only hinder performances for no reason.
   ///
   /// See also:
-  /// - [ProviderBase.select] and [AsyncSelector.selectAsync], which are
+  /// - [ProviderBase.select] and [$FutureModifier.selectAsync], which are
   ///   alternative ways to filter out changes to [state].
   @override
   @protected

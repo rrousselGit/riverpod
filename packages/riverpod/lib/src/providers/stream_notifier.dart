@@ -5,7 +5,9 @@ import 'package:meta/meta.dart';
 import '../builder.dart';
 import '../core/async_value.dart';
 import '../framework.dart';
+import 'async_notifier.dart';
 import 'future_provider.dart' show FutureProvider;
+import 'stream_provider.dart';
 
 part 'stream_notifier/family.dart';
 part 'stream_notifier/orphan.dart';
@@ -30,6 +32,8 @@ abstract base class $StreamNotifierProvider<
         Ref<AsyncValue<StateT>>> //
     with
         $FutureModifier<StateT> {
+  /// Implementation detail of `riverpod_generator`.
+  /// Do not use.
   const $StreamNotifierProvider({
     required super.name,
     required super.from,
@@ -52,6 +56,8 @@ class $StreamNotifierProviderElement< //
         Stream<StateT>> //
     with
         FutureModifierElement<StateT> {
+  /// Implementation detail of `riverpod_generator`.
+  /// Do not use.
   $StreamNotifierProviderElement(this.provider, super.container);
 
   @override

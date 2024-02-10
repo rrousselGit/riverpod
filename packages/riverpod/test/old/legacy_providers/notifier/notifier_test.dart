@@ -89,7 +89,6 @@ void main() {
     });
 
     group('Notifier.stateOrNull', () {
-      // TODO should use matrix
       test('returns null during first build until state= is set', () {
         final stateInBuild = <int?>[];
 

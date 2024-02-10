@@ -49,11 +49,8 @@ part of '../notifier.dart';
 /// {@endtemplate}
 ///
 /// {@template riverpod.notifier_provider_modifier}
-/// When using `autoDispose` or `family`, your notifier type changes.
-/// Instead of extending [Notifier], you should extend either:
-/// - [AutoDisposeNotifier] for `autoDispose`
-/// - [FamilyNotifier] for `family`
-/// - [AutoDisposeFamilyNotifier] for `autoDispose.family`
+/// When using `family`, your notifier type changes.
+/// Instead of extending [Notifier], you should extend [FamilyNotifier].
 /// {@endtemplate}
 abstract class Notifier<State> extends $Notifier<State> {
   /// {@template riverpod.notifier.build}
@@ -90,19 +87,6 @@ final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
-          from: null,
-          argument: null,
-          runNotifierBuildOverride: null,
-        );
-
-  NotifierProvider._autoDispose(
-    this._createNotifier, {
-    super.name,
-    super.dependencies,
-  }) : super(
-          allTransitiveDependencies:
-              computeAllTransitiveDependencies(dependencies),
-          isAutoDispose: true,
           from: null,
           argument: null,
           runNotifierBuildOverride: null,

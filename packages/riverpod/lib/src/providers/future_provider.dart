@@ -102,18 +102,6 @@ final class FutureProvider<StateT> extends $FunctionalProvider<
           argument: null,
         );
 
-  FutureProvider._autoDispose(
-    this._create, {
-    super.name,
-    super.dependencies,
-  }) : super(
-          allTransitiveDependencies:
-              computeAllTransitiveDependencies(dependencies),
-          isAutoDispose: true,
-          from: null,
-          argument: null,
-        );
-
   /// An implementation detail of Riverpod
   @internal
   FutureProvider.internal(
@@ -224,17 +212,6 @@ class FutureProviderFamily<StateT, ArgT> extends FunctionalFamily<
     super.isAutoDispose = false,
   }) : super(
           providerFactory: FutureProvider<StateT>.internal,
-          allTransitiveDependencies:
-              computeAllTransitiveDependencies(dependencies),
-        );
-
-  FutureProviderFamily._autoDispose(
-    super._createFn, {
-    super.name,
-    super.dependencies,
-  }) : super(
-          providerFactory: FutureProvider<StateT>.internal,
-          isAutoDispose: true,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
         );

@@ -112,7 +112,7 @@ class ProviderElementProxy<Input, Output>
   Output read(Node node) {
     final element = node.readProviderElement(provider);
     element.flush();
-    element.mayNeedDispose();
+    element._mayNeedDispose();
     return _lense(element).value;
   }
 

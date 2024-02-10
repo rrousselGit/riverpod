@@ -91,18 +91,6 @@ base class StreamProvider<StateT> extends $FunctionalProvider<
           argument: null,
         );
 
-  StreamProvider._autoDispose(
-    this._create, {
-    super.name,
-    super.dependencies,
-  }) : super(
-          allTransitiveDependencies:
-              computeAllTransitiveDependencies(dependencies),
-          isAutoDispose: true,
-          from: null,
-          argument: null,
-        );
-
   /// An implementation detail of Riverpod
   @internal
   StreamProvider.internal(
@@ -256,15 +244,4 @@ class StreamProviderFamily<StateT, ArgT> extends FunctionalFamily<
     required super.allTransitiveDependencies,
     required super.isAutoDispose,
   }) : super(providerFactory: StreamProvider<StateT>.internal);
-
-  StreamProviderFamily._autoDispose(
-    super._createFn, {
-    super.name,
-    super.dependencies,
-  }) : super(
-          providerFactory: StreamProvider<StateT>.internal,
-          isAutoDispose: true,
-          allTransitiveDependencies:
-              computeAllTransitiveDependencies(dependencies),
-        );
 }

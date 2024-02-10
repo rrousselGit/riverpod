@@ -138,7 +138,7 @@ abstract class Ref<State> {
   /// (and [onCancel] was triggered).
   ///
   /// See also:
-  /// - [AutoDisposeRef.keepAlive], which can be combined with [onCancel] for
+  /// - [keepAlive], which can be combined with [onCancel] for
   ///   advanced manipulation on when the provider should get disposed.
   /// - [Provider.autoDispose], a modifier which tell a provider that it should
   ///   destroy its state when no longer listened to.
@@ -157,7 +157,7 @@ abstract class Ref<State> {
   /// is removed, a new listener is immediately added.
   ///
   /// See also:
-  /// - [AutoDisposeRef.keepAlive], which can be combined with [onCancel] for
+  /// - [keepAlive], which can be combined with [onCancel] for
   ///   advanced manipulation on when the provider should get disposed.
   /// - [Provider.autoDispose], a modifier which tell a provider that it should
   ///   destroy its state when no longer listened to.

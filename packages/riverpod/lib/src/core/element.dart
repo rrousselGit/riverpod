@@ -77,7 +77,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   /// Whether this [ProviderElementBase] is currently listened to or not.
   ///
   /// This maps to listeners added with [listen].
-  /// See also [mayNeedDispose], called when [hasListeners] may have changed.
+  /// See also [_mayNeedDispose], called when [hasListeners] may have changed.
   bool get hasListeners =>
       _externalDependents.isNotEmpty ||
       _subscribers.isNotEmpty ||
@@ -796,7 +796,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
     late KeepAliveLink link;
     link = KeepAliveLink._(() {
       if (links.remove(link)) {
-        if (links.isEmpty) mayNeedDispose();
+        if (links.isEmpty) _mayNeedDispose();
       }
     });
     links.add(link);
@@ -894,17 +894,11 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
       _didCancelOnce = true;
       _onCancelListeners?.forEach(runGuarded);
     }
-    mayNeedDispose();
+    _mayNeedDispose();
   }
 
   /// Life-cycle for when a listener is removed.
-  ///
-  /// See also:
-  ///
-  /// - [AutoDisposeProviderElementMixin], which overrides this method to destroy the
-  ///   state of a provider when no longer used.
-  @visibleForOverriding
-  void mayNeedDispose() {
+  void _mayNeedDispose() {
     if (provider.isAutoDispose) {
       final links = _keepAliveLinks;
 

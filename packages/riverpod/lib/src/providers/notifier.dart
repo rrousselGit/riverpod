@@ -108,8 +108,9 @@ class $NotifierProviderElement< //
     extends ClassProviderElement< //
         NotifierT,
         StateT,
-        StateT> //
-{
+        StateT> {
+  /// An implementation detail of `riverpod_generator`.
+  /// Do not use.
   $NotifierProviderElement(this.provider, super.container);
 
   @override

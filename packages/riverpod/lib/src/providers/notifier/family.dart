@@ -16,11 +16,6 @@ abstract class FamilyNotifier<StateT, ArgT> extends $Notifier<StateT> {
   StateT runBuild() => build(arg);
 }
 
-/// The implementation of [NotifierFamilyProvider] but with loosened type constraints
-/// that can be shared with [AutoDisposeNotifierProvider].
-///
-/// This enables tests to execute on both [NotifierProvider] and
-/// [AutoDisposeNotifierProvider] at the same time.
 final class FamilyNotifierProvider //
     <NotifierT extends $Notifier<StateT>, StateT, ArgT>
     extends $NotifierProvider<NotifierT, StateT>

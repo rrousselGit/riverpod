@@ -51,11 +51,8 @@ abstract class AsyncNotifier<State> extends $AsyncNotifier<State> {
 /// {@endtemplate}
 ///
 /// {@template riverpod.async_notifier_provider_modifier}
-/// When using `autoDispose` or `family`, your notifier type changes.
-/// Instead of extending [AsyncNotifier], you should extend either:
-/// - [AutoDisposeAsyncNotifier] for `autoDispose`
-/// - [FamilyAsyncNotifier] for `family`
-/// - [AutoDisposeFamilyAsyncNotifier] for `autoDispose.family`
+/// When using `family`, your notifier type changes.
+/// Instead of extending [AsyncNotifier], you should extend [FamilyAsyncNotifier].
 /// {@endtemplate}
 final class AsyncNotifierProvider< //
         NotifierT extends AsyncNotifier<StateT>,
@@ -75,19 +72,6 @@ final class AsyncNotifierProvider< //
               computeAllTransitiveDependencies(dependencies),
           from: null,
           argument: null,
-          runNotifierBuildOverride: null,
-        );
-
-  AsyncNotifierProvider._autoDispose(
-    this._createNotifier, {
-    super.name,
-    super.dependencies,
-  }) : super(
-          allTransitiveDependencies:
-              computeAllTransitiveDependencies(dependencies),
-          from: null,
-          argument: null,
-          isAutoDispose: true,
           runNotifierBuildOverride: null,
         );
 
