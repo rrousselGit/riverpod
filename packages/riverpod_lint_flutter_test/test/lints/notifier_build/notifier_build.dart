@@ -1,10 +1,11 @@
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 /// Fake Provider
 typedef _$ExampleProvider1 = Object;
 
 /// Fake Provider
-typedef _$ExampleProvider = AutoDisposeNotifier<int>;
+typedef _$ExampleProvider = Notifier<int>;
 
 @riverpod
 // expect_lint: notifier_build

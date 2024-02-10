@@ -18,7 +18,6 @@ class Http {
 final http = Http();
 
 /* SNIPPET START */
-@riverpod
 class MyNotifier extends AsyncNotifier<List<Todo>> {
   @override
   FutureOr<List<Todo>> build() {

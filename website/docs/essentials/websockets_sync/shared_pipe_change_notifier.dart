@@ -18,11 +18,11 @@ extension on Ref<Object?> {
 }
 
 @riverpod
-ValueNotifier<int> myListenable(MyListenableRef ref) {
+Raw<ValueNotifier<int>> myListenable(MyListenableRef ref) {
   return ref.disposeAndListenChangeNotifier(ValueNotifier(0));
 }
 
 @riverpod
-ValueNotifier<int> anotherListenable(AnotherListenableRef ref) {
+Raw<ValueNotifier<int>> anotherListenable(AnotherListenableRef ref) {
   return ref.disposeAndListenChangeNotifier(ValueNotifier(42));
 }
