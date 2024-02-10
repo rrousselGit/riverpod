@@ -219,7 +219,9 @@ class $StreamProviderElement<StateT>
 
   @override
   bool updateShouldNotify(
-      AsyncValue<StateT> previous, AsyncValue<StateT> next) {
+    AsyncValue<StateT> previous,
+    AsyncValue<StateT> next,
+  ) {
     return FutureModifierElement.handleUpdateShouldNotify(
       previous,
       next,

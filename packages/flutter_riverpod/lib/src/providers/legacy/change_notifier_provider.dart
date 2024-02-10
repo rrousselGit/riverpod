@@ -247,7 +247,7 @@ class ChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?, Arg>
               computeAllTransitiveDependencies(dependencies),
         );
 
-  /// {@macro riverpod.override_with}
+  @override
   Override overrideWith(
     NotifierT Function(ChangeNotifierProviderRef<NotifierT> ref, Arg arg)
         create,
