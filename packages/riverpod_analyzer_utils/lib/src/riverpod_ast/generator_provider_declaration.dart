@@ -199,6 +199,33 @@ class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration {
     final riverpodAnnotation = RiverpodAnnotation._parse(node);
     if (riverpodAnnotation == null) return null;
 
+    // TODO changelog report error if abstract
+    if (node.abstractKeyword != null) {
+      errorReporter?.call(
+        RiverpodAnalysisError(
+          'Classes annotated with @riverpod cannot be abstract.',
+          targetNode: node,
+          targetElement: node.declaredElement,
+        ),
+      );
+    }
+
+    final defaultConstructor = node.members
+        .whereType<ConstructorDeclaration>()
+        .firstWhereOrNull((constructor) => constructor.name == null);
+    // TODO changelog report error if default constructor is missing
+    if (defaultConstructor == null ||
+        defaultConstructor.parameters.parameters.any((e) => e.isRequired)) {
+      errorReporter?.call(
+        RiverpodAnalysisError(
+          'Classes annotated with @riverpod must have a default constructor '
+          'with no required parameters.',
+          targetNode: node,
+          targetElement: node.declaredElement,
+        ),
+      );
+    }
+
     final buildMethod = node.members
         .whereType<MethodDeclaration>()
         .firstWhereOrNull((method) => method.name.lexeme == 'build');
