@@ -41,7 +41,10 @@ class NotifierTemplate extends Template {
     var paramOffset = 0;
     final parametersAsFields = provider.parameters.map(
       (p) {
-        return '${p.doc} ${p.typeDisplayString} get ${p.name!.lexeme} => ${switch (provider.parameters) {
+        final metadata = p.metadata.isNotEmpty
+            ? '${p.metadata.map((e) => e.toSource()).join(' ')} '
+            : '';
+        return '${p.doc} $metadata ${p.typeDisplayString} get ${p.name!.lexeme} => ${switch (provider.parameters) {
           [_] => r'_$args;',
           _ =>
             '_\$args.${p.isPositional ? '\$${++paramOffset}' : p.name!.lexeme};',

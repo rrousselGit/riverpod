@@ -2,8 +2,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'documented.g.dart';
 
-// Foo
 /// Hello world
+// Foo
 @riverpod
 String functional(FunctionalRef ref) => 'functional';
 

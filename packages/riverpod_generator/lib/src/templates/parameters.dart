@@ -37,9 +37,14 @@ String buildParamDefinitionQuery(
       return type;
     }
 
+    late final metadata = parameter.metadata.isNotEmpty
+        ? '${parameter.metadata.map((e) => e.toSource()).join(' ')} '
+        : '';
+
     late final element = parameter.declaredElement!;
-    late final leading =
-        parameter.isRequiredNamed || asRequiredNamed ? 'required ' : '';
+    late final leading = parameter.isRequiredNamed || asRequiredNamed
+        ? 'required $metadata'
+        : metadata;
     late final trailing =
         element.defaultValueCode != null && !asRequiredNamed && withDefaults
             ? '= ${element.defaultValueCode}'

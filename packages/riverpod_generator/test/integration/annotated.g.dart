@@ -12,19 +12,20 @@ typedef FunctionalRef = Ref<String>;
 @Deprecated('Deprecation message')
 @visibleForTesting
 @protected
-const functionalProvider = FunctionalProvider._();
+const functionalProvider = FunctionalFamily._();
 
 final class FunctionalProvider
     extends $FunctionalProvider<String, String, FunctionalRef>
     with $Provider<String, FunctionalRef> {
   const FunctionalProvider._(
-      {String Function(
+      {required FunctionalFamily super.from,
+      required int super.argument,
+      String Function(
         FunctionalRef ref,
+        @Deprecated('field') int id,
       )? create})
       : _createCb = create,
         super(
-          from: null,
-          argument: null,
           name: r'functionalProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -33,10 +34,18 @@ final class FunctionalProvider
 
   final String Function(
     FunctionalRef ref,
+    @Deprecated('field') int id,
   )? _createCb;
 
   @override
   String debugGetCreateSourceHash() => _$functionalHash();
+
+  @override
+  String toString() {
+    return r'functionalProvider'
+        ''
+        '($argument)';
+  }
 
   @override
   $ProviderElement<String> createElement(ProviderContainer container) =>
@@ -48,17 +57,79 @@ final class FunctionalProvider
       FunctionalRef ref,
     ) create,
   ) {
-    return FunctionalProvider._(create: create);
+    return FunctionalProvider._(
+        argument: argument as int,
+        from: from! as FunctionalFamily,
+        create: (
+          ref,
+          @Deprecated('field') int id,
+        ) =>
+            create(ref));
   }
 
   @override
   String create(FunctionalRef ref) {
     final fn = _createCb ?? functional;
-    return fn(ref);
+    final int argument = this.argument as int;
+    return fn(
+      ref,
+      argument,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is FunctionalProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
   }
 }
 
-String _$functionalHash() => r'69e260b1de8ba28cbeb8e24d628933366cde6b8b';
+String _$functionalHash() => r'288107f94c896141a9b3999f606e4ccdf078f15e';
+
+final class FunctionalFamily extends Family {
+  const FunctionalFamily._()
+      : super(
+          name: r'functionalProvider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  FunctionalProvider call(
+    @Deprecated('field') int id,
+  ) =>
+      FunctionalProvider._(argument: id, from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$functionalHash();
+
+  @override
+  String toString() => r'functionalProvider';
+
+  Override overrideWith(
+    String Function(
+      FunctionalRef ref,
+      int args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as FunctionalProvider;
+
+        final argument = provider.argument as int;
+
+        return provider
+            .$copyWithCreate((ref) => create(ref, argument))
+            .createElement(container);
+      },
+    );
+  }
+}
 
 typedef FamilyRef = Ref<String>;
 
@@ -363,15 +434,16 @@ final class NotCopiedFamilyFamily extends Family {
 @Deprecated('Deprecation message')
 @visibleForTesting
 @protected
-const classBasedProvider = ClassBasedProvider._();
+const classBasedProvider = ClassBasedFamily._();
 
 final class ClassBasedProvider extends $NotifierProvider<ClassBased, String> {
   const ClassBasedProvider._(
-      {super.runNotifierBuildOverride, ClassBased Function()? create})
+      {required ClassBasedFamily super.from,
+      required int super.argument,
+      super.runNotifierBuildOverride,
+      ClassBased Function()? create})
       : _createCb = create,
         super(
-          from: null,
-          argument: null,
           name: r'classBasedProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -383,6 +455,13 @@ final class ClassBasedProvider extends $NotifierProvider<ClassBased, String> {
   @override
   String debugGetCreateSourceHash() => _$classBasedHash();
 
+  @override
+  String toString() {
+    return r'classBasedProvider'
+        ''
+        '($argument)';
+  }
+
   @$internal
   @override
   ClassBased create() => _createCb?.call() ?? ClassBased();
@@ -392,7 +471,10 @@ final class ClassBasedProvider extends $NotifierProvider<ClassBased, String> {
   ClassBasedProvider $copyWithCreate(
     ClassBased Function() create,
   ) {
-    return ClassBasedProvider._(create: create);
+    return ClassBasedProvider._(
+        argument: argument as int,
+        from: from! as ClassBasedFamily,
+        create: create);
   }
 
   @$internal
@@ -403,7 +485,10 @@ final class ClassBasedProvider extends $NotifierProvider<ClassBased, String> {
       ClassBased,
     ) build,
   ) {
-    return ClassBasedProvider._(runNotifierBuildOverride: build);
+    return ClassBasedProvider._(
+        argument: argument as int,
+        from: from! as ClassBasedFamily,
+        runNotifierBuildOverride: build);
   }
 
   @$internal
@@ -411,16 +496,91 @@ final class ClassBasedProvider extends $NotifierProvider<ClassBased, String> {
   $NotifierProviderElement<ClassBased, String> createElement(
           ProviderContainer container) =>
       $NotifierProviderElement(this, container);
+
+  @override
+  bool operator ==(Object other) {
+    return other is ClassBasedProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
 }
 
-String _$classBasedHash() => r'f40d1a032ee264aafd7686a985cdf1937f2dc108';
+String _$classBasedHash() => r'92b444806ef8a304c6e0dc3d8e2383601e781183';
+
+final class ClassBasedFamily extends Family {
+  const ClassBasedFamily._()
+      : super(
+          name: r'classBasedProvider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  ClassBasedProvider call(
+    @Deprecated('field') int id,
+  ) =>
+      ClassBasedProvider._(argument: id, from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$classBasedHash();
+
+  @override
+  String toString() => r'classBasedProvider';
+
+  Override overrideWith(
+    ClassBased Function(
+      int args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as ClassBasedProvider;
+
+        final argument = provider.argument as int;
+
+        return provider
+            .$copyWithCreate(() => create(argument))
+            .createElement(container);
+      },
+    );
+  }
+
+  Override overrideWithBuild(
+    String Function(Ref<String> ref, ClassBased notifier, int argument) build,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as ClassBasedProvider;
+
+        final argument = provider.argument as int;
+
+        return provider
+            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
+            .createElement(container);
+      },
+    );
+  }
+}
 
 abstract class _$ClassBased extends $Notifier<String> {
-  String build();
+  late final _$args = (ref as $NotifierProviderElement).origin.argument as int;
+  @Deprecated('field')
+  int get id => _$args;
+
+  String build(
+    @Deprecated('field') int id,
+  );
 
   @$internal
   @override
-  String runBuild() => build();
+  String runBuild() => build(
+        _$args,
+      );
 }
 
 @ProviderFor(NotCopiedClassBased)

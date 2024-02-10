@@ -7,17 +7,21 @@ part of 'documented.dart';
 // **************************************************************************
 
 /// Hello world
+// Foo
 typedef FunctionalRef = Ref<String>;
 
 /// Hello world
+// Foo
 @ProviderFor(functional)
 const functionalProvider = FunctionalProvider._();
 
 /// Hello world
+// Foo
 final class FunctionalProvider
     extends $FunctionalProvider<String, String, FunctionalRef>
     with $Provider<String, FunctionalRef> {
   /// Hello world
+// Foo
   const FunctionalProvider._(
       {String Function(
         FunctionalRef ref,
