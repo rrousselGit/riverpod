@@ -56,7 +56,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          repositoryProvider.overrideWithValue(FakeRepository())
+          repositoryProvider.overrideWithValue(FakeRepository()),
         ],
         // Our application, which will read from todoListProvider to display the todo-list.
         // You may extract this into a MyApp widget
@@ -70,7 +70,7 @@ void main() {
               }
               return ListView(
                 children: [
-                  for (final todo in todos.asData!.value) TodoItem(todo: todo)
+                  for (final todo in todos.asData!.value) TodoItem(todo: todo),
                 ],
               );
             },),

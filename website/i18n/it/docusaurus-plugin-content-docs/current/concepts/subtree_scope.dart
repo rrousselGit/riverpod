@@ -53,7 +53,7 @@ class Home extends ConsumerWidget {
         // This particular display will use the provider state from the root ProviderScope
         const CounterDisplay(),
       ],
-    ));
+    ),);
   }
 }
 

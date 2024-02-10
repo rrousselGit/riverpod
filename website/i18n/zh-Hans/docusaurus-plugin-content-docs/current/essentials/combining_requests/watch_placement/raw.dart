@@ -2,7 +2,6 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:riverpod/riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 final otherProvider = Provider<int>((ref) => 0);
 

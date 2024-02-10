@@ -22,7 +22,7 @@ test('override repositoryProvider', () async {
       // Surcharge le comportement de repositoryProvider pour qu'il renvoie 
       // FakeRepository au lieu de Repository.
       /* highlight-start */
-      repositoryProvider.overrideWithValue(FakeRepository())
+      repositoryProvider.overrideWithValue(FakeRepository()),
       /* highlight-end */
       // Il n'est pas nécessaire de surcharger `todoListProvider`, 
       // il utilisera automatiquement le repositoryProvider surchargé.

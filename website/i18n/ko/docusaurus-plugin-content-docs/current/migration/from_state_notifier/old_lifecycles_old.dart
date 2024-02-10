@@ -21,7 +21,7 @@ class MyNotifier extends StateNotifier<int> {
     _timer = Timer.periodic(period, (t) => update()); // 2 초기화시 부가작업
   }
   final Duration period;
-  final Ref ref;
+  final Ref<int> ref;
   late final Timer _timer;
 
   Future<void> update() async {

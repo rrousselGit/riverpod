@@ -1,13 +1,12 @@
 // ignore_for_file: omit_local_variable_types
 
 import 'package:flutter/widgets.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'shared_pipe_change_notifier.g.dart';
 
 /* SNIPPET START */
-extension on Ref {
+extension on Ref<Object?> {
   // 我们可以将之前的逻辑移至 Ref 扩展。
   // 这使得能够重用提供者程序之间的逻辑
   T disposeAndListenChangeNotifier<T extends ChangeNotifier>(T notifier) {

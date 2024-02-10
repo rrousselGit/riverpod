@@ -2,7 +2,6 @@
 
 import 'package:http/http.dart' as http;
 import 'package:riverpod/riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../cache_for_extension.dart';
 

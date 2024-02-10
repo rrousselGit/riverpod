@@ -44,7 +44,7 @@ class Home extends ConsumerWidget {
           onPressed: () {
             ref.read(counterProvider.notifier).state++;
           },
-        ));
+        ),);
   }
 }
 
