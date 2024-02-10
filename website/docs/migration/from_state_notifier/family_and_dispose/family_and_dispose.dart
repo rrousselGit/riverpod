@@ -18,7 +18,9 @@ class BugsEncounteredNotifier extends _$BugsEncounteredNotifier {
 
   Future<void> fix(int amount) async {
     final old = await future;
-    final result = await ref.read(taskTrackerProvider).fix(id: this.featureId, fixed: amount);
+    final result = await ref
+        .read(taskTrackerProvider)
+        .fix(id: this.featureId, fixed: amount);
     state = AsyncData(max(old - result, 0));
   }
 }
