@@ -1,5 +1,4 @@
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
@@ -17,7 +16,7 @@ class AvoidBuildContextInProviders extends RiverpodLintRule {
     name: 'avoid_build_context_in_providers',
     problemMessage:
         'Passing BuildContext to providers indicates mixing UI with the business logic.',
-    errorSeverity: ErrorSeverity.WARNING,
+    // TODO changelog: avoid_build_context_in_providers is now an INFO
   );
 
   @override

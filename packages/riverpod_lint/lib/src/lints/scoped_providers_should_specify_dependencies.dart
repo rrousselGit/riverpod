@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
@@ -38,6 +39,8 @@ class ScopedProvidersShouldSpecifyDependencies extends RiverpodLintRule {
     name: 'scoped_providers_should_specify_dependencies',
     problemMessage:
         'Providers which are overridden in a non-root ProviderContainer/ProviderScope should specify dependencies.',
+    // TODO changelog: scoped_providers_should_specify_dependencies is now a WARNING
+    errorSeverity: ErrorSeverity.WARNING,
   );
 
   @override

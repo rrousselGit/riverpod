@@ -1,5 +1,6 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
@@ -15,6 +16,8 @@ class ProviderParameters extends RiverpodLintRule {
         'Meaning either the values should be cached, or the parameters should override ==',
     url:
         'https://riverpod.dev/docs/concepts/modifiers/family#passing-multiple-parameters-to-a-family',
+    // TODO changelog: provider_parameters is now a WARNING
+    errorSeverity: ErrorSeverity.WARNING,
   );
 
   @override

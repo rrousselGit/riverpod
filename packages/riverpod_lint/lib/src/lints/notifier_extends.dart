@@ -53,6 +53,8 @@ class NotifierExtends extends RiverpodLintRule {
   static const _code = LintCode(
     name: 'notifier_extends',
     problemMessage: r'Classes annotated by @riverpod must extend _$ClassName',
+    // TODO changelog: notifier_extends is now a WARNING.
+    errorSeverity: ErrorSeverity.WARNING,
   );
 
   @override
