@@ -119,6 +119,7 @@ class RiverpodAnnotation extends RiverpodAst {
         RiverpodAnalysisError(
           '@Riverpod(dependencies: <...>) only support list literals (using []).',
           targetNode: dependenciesNodeValue,
+          code: RiverpodAnalysisErrorCode.riverpodDependencyParseError,
         ),
       );
     } else {
@@ -128,6 +129,7 @@ class RiverpodAnnotation extends RiverpodAst {
             RiverpodAnalysisError(
               '@Riverpod(dependencies: [...]) does not support if/for/spread operators.',
               targetNode: dependency,
+              code: RiverpodAnalysisErrorCode.riverpodDependencyParseError,
             ),
           );
           continue;
@@ -138,6 +140,7 @@ class RiverpodAnnotation extends RiverpodAst {
             RiverpodAnalysisError(
               'Only elements annotated with @riverpod are supported as "dependencies".',
               targetNode: dependency,
+              code: RiverpodAnalysisErrorCode.riverpodDependencyParseError,
             ),
           );
           continue;
@@ -154,6 +157,7 @@ class RiverpodAnnotation extends RiverpodAst {
               RiverpodAnalysisError(
                 'The dependency $dependency is not a class annotated with @riverpod',
                 targetNode: dependency,
+                code: RiverpodAnalysisErrorCode.riverpodDependencyParseError,
               ),
             );
             continue;
@@ -175,6 +179,7 @@ class RiverpodAnnotation extends RiverpodAst {
               RiverpodAnalysisError(
                 'The dependency $dependency is not a class annotated with @riverpod',
                 targetNode: dependency,
+                code: RiverpodAnalysisErrorCode.riverpodDependencyParseError,
               ),
             );
             continue;
@@ -191,6 +196,7 @@ class RiverpodAnnotation extends RiverpodAst {
             RiverpodAnalysisError(
               '@Riverpod(dependencies: [...]) only supports elements annotated with @riverpod as values.',
               targetNode: dependency,
+              code: RiverpodAnalysisErrorCode.riverpodDependencyParseError,
             ),
           );
         }

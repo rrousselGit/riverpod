@@ -39,6 +39,7 @@ extension on LibraryElement {
           'No AsyncValue accessible in the library. '
           'Did you forget to import Riverpod?',
           targetElement: this,
+          code: null,
         ),
       );
       return null;
@@ -206,6 +207,7 @@ class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration {
           'Classes annotated with @riverpod cannot be abstract.',
           targetNode: node,
           targetElement: node.declaredElement,
+          code: RiverpodAnalysisErrorCode.abstractNotifier,
         ),
       );
     }
@@ -220,6 +222,7 @@ class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration {
           'Classes annotated with @riverpod must have a default constructor.',
           targetNode: node,
           targetElement: node.declaredElement,
+          code: RiverpodAnalysisErrorCode.missingNotifierDefaultConstructor,
         ),
       );
     }
@@ -232,6 +235,8 @@ class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration {
           'cannot have required parameters.',
           targetNode: node,
           targetElement: node.declaredElement,
+          code: RiverpodAnalysisErrorCode
+              .notifierDefaultConstructorHasRequiredParameters,
         ),
       );
     }
@@ -245,6 +250,7 @@ class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration {
           'No "build" method found. '
           'Classes annotated with @riverpod must define a method named "build".',
           targetNode: node,
+          code: RiverpodAnalysisErrorCode.missingNotifierBuild,
         ),
       );
       return null;

@@ -19,6 +19,7 @@ import 'src/lints/notifier_extends.dart';
 import 'src/lints/protected_notifier_properties.dart';
 import 'src/lints/provider_dependencies.dart';
 import 'src/lints/provider_parameters.dart';
+import 'src/lints/riverpod_syntax_error.dart';
 import 'src/lints/scoped_providers_should_specify_dependencies.dart';
 import 'src/lints/unsupported_provider_value.dart';
 
@@ -41,6 +42,8 @@ class _RiverpodPlugin extends PluginBase {
         const NotifierBuild(),
         const AsyncValueNullablePattern(),
         const ProtectedNotifierProperties(),
+        // TODO changelog added riverpod_syntax_error, for reporting errors when the generator would throw.
+        const RiverpodSyntaxError(),
       ];
 
   @override

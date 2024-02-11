@@ -38,6 +38,7 @@ class RiverpodAnnotationElement {
           RiverpodAnalysisError(
             'Failed to parse dependency $dep',
             targetElement: element,
+            code: RiverpodAnalysisErrorCode.riverpodDependencyParseError,
           ),
         );
         return null;
@@ -81,6 +82,7 @@ class RiverpodAnnotationElement {
         'Unsupported dependency. '
         'Only functions and classes annotated by @riverpod are supported.',
         targetElement: targetElement,
+        code: RiverpodAnalysisErrorCode.riverpodDependencyParseError,
       ),
     );
     return null;
@@ -295,6 +297,7 @@ class ClassBasedProviderDeclarationElement
             'No "build" method found. '
             'Classes annotated with @riverpod must define a method named "build".',
             targetElement: element,
+            code: RiverpodAnalysisErrorCode.missingNotifierBuild,
           ),
         );
 
