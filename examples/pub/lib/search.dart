@@ -45,7 +45,7 @@ Future<List<Package>> fetchPackages(
   return Future.wait([
     for (final package in searchedPackages)
       ref.watch(
-        FetchPackageDetailsProvider(packageName: package.package).future,
+        fetchPackageDetailsProvider(packageName: package.package).future,
       ),
   ]);
 }

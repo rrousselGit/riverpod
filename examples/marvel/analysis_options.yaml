@@ -1,5 +1,8 @@
 import: ../../analysis_options.yaml
 analyzer:
+  # enable riverpod_lint
+  plugins:
+    - custom_lint
   errors:
     # Some assets are voluntarily gitignored
     asset_does_not_exist: ignore
