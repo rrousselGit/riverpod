@@ -2,7 +2,8 @@
 
 - Fix "pending timer" issue inside tests when using `ref.keepAlive()`.
 - Fix `Ref.invalidate`/`Ref.refresh` not throwing on circular dependency.
-- Fix an infinite loop caused by `ref.keepAlive` if the `KeepAliveLink` is immediately closed.
+- Fix an infinite loop caused by `ref.keepAlive` if the `KeepAliveLink` is
+  immediately closed.
 - Fix `container.exists(provider)` on nested containers not checking their
   parent containers.
 
@@ -30,6 +31,8 @@ Fix exceptions when using multiple root `ProviderContainers`/`ProviderScopes`.
 ## 2.5.0 - 2024-02-03
 
 - Add `test` argument to `AsyncValue.guard` method. (thanks to @utamori)
+- Improved `Provider(dependencies: [...])` documentation.
+- Fix out of date `pub.dev` description
 
 ## 2.4.9 - 2023-11-27
 
@@ -469,18 +472,10 @@ Riverpod is now stable!
   `ProviderContainer.debugProviderElements` are removed. You can now instead use
   `ProviderContainer.getAllProviderElements`.
 - Increased minimum SDK version to 2.14.0
-  <<<<<<< HEAD
 - **Breaking** The return value when reading a `StateProvider` changed.
   Before, doing `ref.read(someStateProvider)` would return the `StateController` instance.
   Now, this will only return the state of the `StateController`.
   This new behavior matches `StateNotifierProvider`.
-  =======
-- **Breaking** The return value when reading a `StateProvider` changed. Before,
-  doing `ref.read(someStateProvider)` would return the `StateController`
-  instance. Now, this will only return the state of the `StateController`. This
-  new behaviour matches `StateNotifierProvider`.
-
-  > > > > > > > 1f6e3c462bdb2f8e058be63ab309ca2eb01ed71e
 
   For a simple migration, the old behavior is available by writing
   `ref.read(someStateProvider.state)`.
@@ -934,13 +929,9 @@ migrated to null safety.
 
 ## 0.14.0+1
 
-<<<<<<< HEAD
-
-- # Re-added `StateProvider.overrideWithValue`/`StateProvider.overrideWithProvider` that were involuntarily removed.
 - Re-added
   `StateProvider.overrideWithValue`/`StateProvider.overrideWithProvider` that
   were unvoluntarily removed.
-  > > > > > > > 1f6e3c462bdb2f8e058be63ab309ca2eb01ed71e
 
 ## 0.14.0
 

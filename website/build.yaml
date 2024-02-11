@@ -2,7 +2,6 @@ targets:
   $default:
     sources:
       - docs/**
-      - i18n/**
       - static/**
     builders:
       riverpod_generator:

@@ -8,7 +8,7 @@ import 'completed_todos/completed_todos.dart';
 Widget build() {
   return
 /* SNIPPET START */
-  Consumer(
+      Consumer(
     builder: (context, ref, child) {
       final completedTodos = ref.watch(completedTodosProvider);
       // TODO mostrare i todo usando ListView/GridView/.../* SKIP */

@@ -1,4 +1,11 @@
 {
+  "riverpod.snippets.selectAsync.todo": {
+    "message": "Bar"
+  },
+  "riverpod.snippets.selectAsync.watch": {
+    "message": "Foo"
+  },
+
   "version.label": {
     "message": "다음",
     "description": "The label for version current"

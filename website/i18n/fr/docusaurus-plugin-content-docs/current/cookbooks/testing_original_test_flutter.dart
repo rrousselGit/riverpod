@@ -19,13 +19,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Consumer(builder: (context, ref, _) {
-        final counter = ref.watch(counterProvider);
-        return ElevatedButton(
-          onPressed: () => ref.read(counterProvider.notifier).state++,
-          child: Text('$counter'),
-        );
-      },),
+      home: Consumer(
+        builder: (context, ref, _) {
+          final counter = ref.watch(counterProvider);
+          return ElevatedButton(
+            onPressed: () => ref.read(counterProvider.notifier).state++,
+            child: Text('$counter'),
+          );
+        },
+      ),
     );
   }
 }

@@ -17,7 +17,6 @@ class HomeView extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final greeting = useState('Hello');
-
     return Scaffold(
       body: Center(child: Text(greeting.value)),
       floatingActionButton: FloatingActionButton(

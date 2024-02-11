@@ -29,7 +29,6 @@ class HomeView extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // You can use hooks inside a HookConsumerWidget
     final greeting = useState('Hello');
-
     // use ref to listen to a provider
     final counter = ref.watch(counterProvider);
 
