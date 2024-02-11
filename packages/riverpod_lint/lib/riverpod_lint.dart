@@ -23,6 +23,7 @@ import 'src/lints/provider_parameters.dart';
 import 'src/lints/riverpod_syntax_error.dart';
 import 'src/lints/scoped_providers_should_specify_dependencies.dart';
 import 'src/lints/unsupported_provider_value.dart';
+import 'src/migration/missing_legacy_import.dart';
 
 PluginBase createPlugin() => _RiverpodPlugin();
 
@@ -46,6 +47,9 @@ class _RiverpodPlugin extends PluginBase {
         const RiverpodSyntaxError(),
         const ScopedProvidersShouldSpecifyDependencies(),
         const UnsupportedProviderValue(),
+
+        // Migrations
+        const MissingLegacyImport(),
       ];
 
   @override

@@ -63,7 +63,8 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
   - [Convert widget to `ConsumerStatefulWidget`](#convert-widget-to-consumerstatefulwidget)
   - [Convert functional `@riverpod` to class variant](#convert-functional-riverpod-to-class-variant)
   - [Convert class `@riverpod` to functional variant](#convert-class-riverpod-to-functional-variant)
-- [Upcoming content:](#upcoming-content)
+- [Migrations](#migrations)
+  - [missing\_legacy\_import](#missing_legacy_import)
 
 ## Installing riverpod_lint
 
@@ -771,12 +772,24 @@ class B extends _$B {
 
 ![Convert provider to functional variant sample](https://raw.githubusercontent.com/rrousselGit/riverpod/master/packages/riverpod_lint/resources/convert_to_functional_provider.gif)
 
-## Upcoming content:
+## Migrations
 
-- Warn if a provider's `dependencies` parameter doesn't match the `ref.watch/read/listen` usages.
-- Refactoring to convert AsyncNotifier<>Notifier + autoDispose/family variants
-- Warn if an `AsyncNotifierProvider.autoDispose` doesn't use an `AutoDisposeAsyncNotifier`
+Migrations are a list of warnings with an automatic quick-fix, to help
+upgrading to higher Riverpod versions.
+They are designed to be used only once.
 
-and much more
+As a general rule, it is recommended to apply migration by running the following
+in your terminal:
+
+```sh
+dart run custom_lint --fix
+```
+
+### missing_legacy_import
+
+As part of Riverpod 3.0, `StateProvider`, `StateNotifierProvider`, `StateNotifier` and `ChangeNotifierProvider` are moved out of `package:riverpod/riverpod.dart` to
+`package:riverpod/riverpod.dart`.
+
+This migration will automatically adds the missing import.
 
 [custom_lint]: https://pub.dev/packages/custom_lint
