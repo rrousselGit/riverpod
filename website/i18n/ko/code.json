@@ -1,4 +1,8 @@
 {
+  "riverpod.snippets.selectAsync.watch": {
+    "message": "  // user를 사용할 수 있을 때까지 기다렸다가 \"firstName\" 속성만 수신합니다."
+  },
+
   "home.shared_state_title": {
     "message": "어디서나 공유 상태 선언하기"
   },

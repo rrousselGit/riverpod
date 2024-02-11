@@ -1,17 +1,22 @@
 "use client";
 
-import React, { ReactElement, useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import CodeBlock from "@theme/CodeBlock";
+import { translate } from "@docusaurus/Translate";
+
 import {
   CodegenContext,
   FlutterHooksContext,
 } from "../../theme/DocPage/Layout";
-import useIsBrowser from '@docusaurus/useIsBrowser';
+import useIsBrowser from "@docusaurus/useIsBrowser";
 
 const START_AT = "/* SNIPPET START */";
 const END_AT = "/* SNIPPET END */";
 
-export function trimSnippet(snippet: string): string {
+const templateRegex = /^\s*\/\/\s*{@template\s(.+?)}/g;
+const endTemplateRegex = /^\s*\/\/\s*{@endtemplate}/g;
+
+export function trimSnippet(snippet: string, fileKey?: string): string {
   if (!snippet) return;
   const startAtIndex = snippet.indexOf(START_AT);
   if (startAtIndex < 0) return snippet;
@@ -22,30 +27,76 @@ export function trimSnippet(snippet: string): string {
   // Substring starts after "/* START" + 1 for the newline
   snippet = snippet.substring(startAtIndex + START_AT.length + 1, endAtIndex);
 
-  const leadingSpaces = snippet.match(/^\s+/);
-  if (leadingSpaces) {
-    const leadingSpaceCount = leadingSpaces[0].length;
-    snippet = snippet
-      .split("\n")
-      .map((line) =>
-        line.startsWith(leadingSpaces[0])
-          ? line.substring(leadingSpaceCount)
-          : line
-      )
-      .join("\n");
+  let currentTemplateKey: string | undefined;
+
+  const leadingSpaces = snippet.match(/^\h+/)?.[0];
+  const lines = snippet.split("\n");
+
+  const transformedLines: Array<string> = [];
+
+  for (var i = 0; i < lines.length; i++) {
+    let line = lines[i];
+    if (leadingSpaces && line.startsWith(leadingSpaces[0])) {
+      line = line.substring(leadingSpaces.length);
+    }
+
+    const templateMatch = templateRegex.exec(line);
+    const endTemplateMatch = endTemplateRegex.exec(line);
+    // console.log("line", line);
+    // console.log("templateMatch", templateMatch);
+    // console.log("endTemplateMatch", endTemplateMatch);
+
+    if (templateMatch) {
+      if (currentTemplateKey) {
+        throw new Error(
+          `Nested templates are not supported. Template ${currentTemplateKey} is already open (${templateMatch[1]})`
+        );
+      }
+
+      const templateKey = templateMatch[1];
+
+      // const key = `riverpod.snippets.${fileKey}.${currentTemplateKey}`;
+      const key = `riverpod.snippets.selectAsync.${templateKey}`;
+      const translation = translate({
+        message: key,
+      });
+
+      if (translation !== key) {
+        // Replace the content if the template is translated, and insert the new content.
+        currentTemplateKey = templateKey;
+        transformedLines.push(translation);
+      }
+
+      // delete the template markup.
+      continue;
+    }
+
+    if (endTemplateMatch) {
+      currentTemplateKey = undefined;
+      continue;
+    }
+
+    // If inside a translation, delete the untranslated content.
+    if (currentTemplateKey) {
+      continue;
+    }
+
+    transformedLines.push(line);
   }
 
-  return snippet;
+  return transformedLines.join("\n");
 }
 
 interface CodeSnippetProps {
   title?: string;
   snippet: string;
+  fileKey?: string;
 }
 
 export const CodeSnippet: React.FC<CodeSnippetProps> = ({
   snippet,
   title,
+  fileKey,
   ...other
 }) => {
   return (
@@ -58,7 +109,7 @@ export const CodeSnippet: React.FC<CodeSnippetProps> = ({
         </div>
         <div className="snippet__title">{title}</div>
       </div>
-      <CodeBlock {...other}>{trimSnippet(snippet)}</CodeBlock>
+      <CodeBlock {...other}>{trimSnippet(snippet, fileKey)}</CodeBlock>
     </div>
   );
 };
@@ -70,10 +121,9 @@ export function AutoSnippet(props: {
   hooksCodegen?: string | Array<string>;
   raw: string | Array<string>;
   hooks?: string | Array<string>;
+  fileKey?: string;
 }) {
-  const [codegen] = useIsBrowser()
-    ? useContext(CodegenContext)
-    : [true];
+  const [codegen] = useIsBrowser() ? useContext(CodegenContext) : [true];
   const [hooksEnabled] = useIsBrowser()
     ? useContext(FlutterHooksContext)
     : [false];
@@ -94,7 +144,7 @@ export function AutoSnippet(props: {
 
   return (
     <CodeBlock language={props.language} title={props.title}>
-      {trimSnippet(code)}
+      {trimSnippet(code, props.fileKey)}
     </CodeBlock>
   );
 }
@@ -104,9 +154,7 @@ export function When(props: {
   codegen?: boolean;
   children: string;
 }) {
-  const [codegen] = useIsBrowser()
-    ? useContext(CodegenContext)
-    : [true];
+  const [codegen] = useIsBrowser() ? useContext(CodegenContext) : [true];
   const [hooksEnabled] = useIsBrowser()
     ? useContext(FlutterHooksContext)
     : [false];
