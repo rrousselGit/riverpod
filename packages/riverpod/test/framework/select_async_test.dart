@@ -138,7 +138,6 @@ void main() {
     container.listen(
       provider.selectAsync((data) => data.isEven),
       listener.call,
-      fireImmediately: false,
     );
 
     verifyZeroInteractions(listener);
