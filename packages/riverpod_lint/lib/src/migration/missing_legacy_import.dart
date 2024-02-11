@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
@@ -12,7 +13,7 @@ class MissingLegacyImport extends RiverpodLintRule {
   static const _code = LintCode(
     name: 'missing_legacy_import',
     problemMessage:
-        'StateProvider/StateNotifierProvider/ChangeNotifierProvider were used '
+        'StateProvider/StateNotifierProvider/ChangeNotifierProvider/StateNotifier were used '
         'without importing `package:flutter_riverpod/legacy.dart`.',
   );
 
@@ -22,14 +23,21 @@ class MissingLegacyImport extends RiverpodLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    context.registry.addIdentifier((node) {
-      const legacyProviders = [
+    void handleType(AstNode node, DartType? type, String? name) {
+      // Skip resolved types. Even if the import is missing,
+      // chances are the import was indirectly imported.
+      if (type != null && type is! InvalidType) {
+        return;
+      }
+
+      const legacyIdentifiers = [
         'StateProvider',
         'StateNotifierProvider',
+        'StateNotifier',
         'ChangeNotifierProvider',
       ];
 
-      if (!legacyProviders.contains(node.name)) return;
+      if (!legacyIdentifiers.contains(name)) return;
 
       final unit = node.thisOrAncestorOfType<CompilationUnit>()!;
 
@@ -40,13 +48,20 @@ class MissingLegacyImport extends RiverpodLintRule {
       final compatibleImports = [
         'package:flutter_riverpod/legacy.dart',
         'package:hooks_riverpod/legacy.dart',
-        if (node.name != 'ChangeNotifierProvider')
-          'package:riverpod/legacy.dart',
+        if (name != 'ChangeNotifierProvider') 'package:riverpod/legacy.dart',
       ];
 
       if (compatibleImports.any(imports.contains)) return;
 
       reporter.reportErrorForNode(_code, node);
+    }
+
+    context.registry.addNamedType((node) {
+      handleType(node, node.type, node.name2.lexeme);
+    });
+
+    context.registry.addIdentifier((node) {
+      handleType(node, node.staticType, node.name);
     });
   }
 
@@ -63,10 +78,10 @@ class _AddMissingLegacyImport extends DartFix {
     AnalysisError analysisError,
     List<AnalysisError> others,
   ) {
-    context.registry.addIdentifier((node) {
+    void handleType(AstNode node, String? name) {
       if (!node.sourceRange.intersects(analysisError.sourceRange)) return;
 
-      final toImport = node.name == 'ChangeNotifierProvider'
+      final toImport = name == 'ChangeNotifierProvider'
           ? 'package:flutter_riverpod/legacy.dart'
           : 'package:riverpod/legacy.dart';
 
@@ -78,6 +93,14 @@ class _AddMissingLegacyImport extends DartFix {
       changeBuilder.addDartFileEdit((builder) {
         builder.addSimpleInsertion(0, "import '$toImport';\n");
       });
+    }
+
+    context.registry.addIdentifier((node) {
+      handleType(node, node.name);
+    });
+
+    context.registry.addNamedType((node) {
+      handleType(node, node.name2.lexeme);
     });
   }
 }

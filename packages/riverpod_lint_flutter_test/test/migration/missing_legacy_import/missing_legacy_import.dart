@@ -4,7 +4,7 @@ import 'package:riverpod/riverpod.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// ignore_for_file: undefined_function, undefined_identifier
+// ignore_for_file: undefined_function, undefined_identifier, extends_non_class, extra_positional_arguments
 
 // expect_lint: missing_legacy_import
 final p = StateProvider((ref) => 0);
@@ -17,3 +17,8 @@ final p3 = ChangeNotifierProvider((ref) => 0);
 
 // expect_lint: missing_legacy_import
 final p4 = StateNotifierProvider((ref) => 0);
+
+// expect_lint: missing_legacy_import
+class MyNotifier extends StateNotifier<int> {
+  MyNotifier() : super(0);
+}

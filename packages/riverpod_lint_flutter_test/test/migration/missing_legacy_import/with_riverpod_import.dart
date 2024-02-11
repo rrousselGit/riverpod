@@ -12,3 +12,7 @@ final p3 = ChangeNotifierProvider((ref) => 0);
 final p4 = StateNotifierProvider<StateNotifier<int>, int>((ref) {
   throw UnimplementedError();
 });
+
+class MyNotifier extends StateNotifier<int> {
+  MyNotifier() : super(0);
+}
