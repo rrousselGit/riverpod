@@ -40,45 +40,43 @@ export function trimSnippet(snippet: string, fileKey?: string): string {
       line = line.substring(leadingSpaces.length);
     }
 
-    const templateMatch = templateRegex.exec(line);
-    const endTemplateMatch = endTemplateRegex.exec(line);
-    // console.log("line", line);
-    // console.log("templateMatch", templateMatch);
-    // console.log("endTemplateMatch", endTemplateMatch);
+    if (fileKey) {
+      const templateMatch = templateRegex.exec(line);
+      const endTemplateMatch = endTemplateRegex.exec(line);
 
-    if (templateMatch) {
+      if (templateMatch) {
+        if (currentTemplateKey) {
+          throw new Error(
+            `Nested templates are not supported. Template ${currentTemplateKey} is already open (${templateMatch[1]})`
+          );
+        }
+
+        const templateKey = templateMatch[1];
+
+        const key = `riverpod.snippets.${fileKey}.${templateKey}`;
+        const translation = translate({
+          message: key,
+        });
+
+        if (translation !== key) {
+          // Replace the content if the template is translated, and insert the new content.
+          currentTemplateKey = templateKey;
+          transformedLines.push(translation);
+        }
+
+        // delete the template markup.
+        continue;
+      }
+
+      if (endTemplateMatch) {
+        currentTemplateKey = undefined;
+        continue;
+      }
+
+      // If inside a translation, delete the untranslated content.
       if (currentTemplateKey) {
-        throw new Error(
-          `Nested templates are not supported. Template ${currentTemplateKey} is already open (${templateMatch[1]})`
-        );
+        continue;
       }
-
-      const templateKey = templateMatch[1];
-
-      // const key = `riverpod.snippets.${fileKey}.${currentTemplateKey}`;
-      const key = `riverpod.snippets.selectAsync.${templateKey}`;
-      const translation = translate({
-        message: key,
-      });
-
-      if (translation !== key) {
-        // Replace the content if the template is translated, and insert the new content.
-        currentTemplateKey = templateKey;
-        transformedLines.push(translation);
-      }
-
-      // delete the template markup.
-      continue;
-    }
-
-    if (endTemplateMatch) {
-      currentTemplateKey = undefined;
-      continue;
-    }
-
-    // If inside a translation, delete the untranslated content.
-    if (currentTemplateKey) {
-      continue;
     }
 
     transformedLines.push(line);
