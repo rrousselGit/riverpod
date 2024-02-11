@@ -3,20 +3,23 @@ description: A new Flutter project.
 publish_to: 'none'
 
 environment:
-  sdk: ">=2.14.0 <3.0.0"
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
+  build_runner: ^2.0.6
+  cupertino_icons: ^1.0.2
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.2
   flutter_riverpod:
   mockito: ^5.0.13
-  build_runner: ^2.0.6
 
 dev_dependencies:
+  custom_lint: ^0.6.0
+  flutter_lints: ^1.0.0
   flutter_test:
     sdk: flutter
-  flutter_lints: ^1.0.0
+  riverpod_lint:
+    path: ../../packages/riverpod_lint
 
 flutter:
   uses-material-design: true
