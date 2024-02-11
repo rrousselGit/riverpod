@@ -8,19 +8,66 @@ part of 'main.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+typedef HelloWorldRef = Ref<String>;
+
+@ProviderFor(helloWorld)
+const helloWorldProvider = HelloWorldProvider._();
+
+final class HelloWorldProvider
+    extends $FunctionalProvider<String, String, HelloWorldRef>
+    with $Provider<String, HelloWorldRef> {
+  const HelloWorldProvider._(
+      {String Function(
+        HelloWorldRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'helloWorldProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final String Function(
+    HelloWorldRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$helloWorldHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<String> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  HelloWorldProvider $copyWithCreate(
+    String Function(
+      HelloWorldRef ref,
+    ) create,
+  ) {
+    return HelloWorldProvider._(create: create);
+  }
+
+  @override
+  String create(HelloWorldRef ref) {
+    final _$cb = _createCb ?? helloWorld;
+    return _$cb(ref);
+  }
+}
+
 String _$helloWorldHash() => r'8bbe6cff2b7b1f4e1f7be3d1820da793259f7bfc';
 
-/// See also [helloWorld].
-@ProviderFor(helloWorld)
-final helloWorldProvider = AutoDisposeProvider<String>.internal(
-  helloWorld,
-  name: r'helloWorldProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$helloWorldHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef HelloWorldRef = AutoDisposeProviderRef<String>;
+const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

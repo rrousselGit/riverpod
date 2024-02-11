@@ -1,3 +1,4 @@
+import 'package:riverpod/riverpod.dart' as r;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'sync.g.dart';
@@ -104,7 +105,7 @@ String family(
   return '(first: $first, second: $second, third: $third, fourth: $fourth, fifth: $fifth)';
 }
 
-final privateProvider = _privateProvider;
+const privateProvider = _privateProvider;
 
 @riverpod
 String _private(_PrivateRef ref) {
@@ -124,7 +125,7 @@ class PublicClass extends _$PublicClass {
   }
 }
 
-final privateClassProvider = _privateClassProvider;
+const privateClassProvider = _privateClassProvider;
 
 @riverpod
 class _PrivateClass extends _$PrivateClass {
@@ -154,9 +155,39 @@ class FamilyClass extends _$FamilyClass {
 }
 
 @riverpod
-class Supports$InClassName extends _$Supports$InClassName {
+String supports$InFnName<And$InT>(Supports$InFnNameRef<And$InT> ref) {
+  return 'Hello world';
+}
+
+const default$value = '';
+
+@riverpod
+String supports$InFnNameFamily<And$InT>(
+  Supports$InFnNameFamilyRef<And$InT> ref,
+  And$InT positional$arg, {
+  required And$InT named$arg,
+  String defaultArg = default$value,
+}) {
+  return 'Hello world';
+}
+
+@riverpod
+class Supports$InClassName<And$InT> extends _$Supports$InClassName<And$InT> {
   @override
   String build() {
+    return 'Hello world';
+  }
+}
+
+@riverpod
+class Supports$InClassFamilyName<And$InT>
+    extends _$Supports$InClassFamilyName<And$InT> {
+  @override
+  String build(
+    And$InT positional$arg, {
+    required And$InT named$arg,
+    String defaultArg = default$value,
+  }) {
     return 'Hello world';
   }
 }
@@ -166,7 +197,7 @@ String generated(GeneratedRef ref) {
   return 'Just a simple normal generated provider';
 }
 
-Provider<String> someProvider() => Provider((ref) => 'hello');
+r.Provider<String> someProvider() => r.Provider((ref) => 'hello');
 
 // Regression test for https://github.com/rrousselGit/riverpod/issues/2299
 final _someProvider = someProvider();
@@ -174,3 +205,17 @@ final _someProvider = someProvider();
 // Regression test for https://github.com/rrousselGit/riverpod/issues/2294
 // ignore: unused_element
 final _other = _someProvider;
+
+// Regression test for now casting `as Object?` when not needed
+@riverpod
+String unnecessaryCast(GeneratedRef ref, Object? arg) {
+  return 'Just a simple normal generated provider';
+}
+
+@riverpod
+class UnnecessaryCastClass extends _$UnnecessaryCastClass {
+  @override
+  String build(Object? arg) {
+    return 'Just a simple normal generated provider';
+  }
+}

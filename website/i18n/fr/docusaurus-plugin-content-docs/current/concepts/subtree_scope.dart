@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 /* SNIPPET START */
 
@@ -53,7 +54,7 @@ class Home extends ConsumerWidget {
         // Cet affichage particulier utilisera l'état du provider à partir du ProviderScope racine.
         const CounterDisplay(),
       ],
-    ));
+    ),);
   }
 }
 

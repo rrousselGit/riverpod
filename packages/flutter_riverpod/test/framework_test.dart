@@ -238,7 +238,7 @@ void main() {
 
   testWidgets('ref.read obtains the nearest Provider possible', (tester) async {
     late WidgetRef ref;
-    final provider = Provider((watch) => 42);
+    final provider = Provider((watch) => 42, dependencies: const []);
 
     await tester.pumpWidget(
       ProviderScope(
@@ -508,7 +508,7 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: InitState(
+        child: _InitState(
           initState: (context, ref) => result = ref.read(provider),
         ),
       ),
@@ -828,17 +828,18 @@ void main() {
 
     expect(find.text('1'), findsOneWidget);
 
-    // ignore: unawaited_futures
-    key.currentState!.pushReplacement<void, void>(
-      PageRouteBuilder<void>(
-        pageBuilder: (_, __, ___) {
-          return Consumer(
-            builder: (context, ref, _) {
-              final count = ref.watch(counterProvider);
-              return Text('new $count');
-            },
-          );
-        },
+    unawaited(
+      key.currentState!.pushReplacement<void, void>(
+        PageRouteBuilder<void>(
+          pageBuilder: (_, __, ___) {
+            return Consumer(
+              builder: (context, ref, _) {
+                final count = ref.watch(counterProvider);
+                return Text('new $count');
+              },
+            );
+          },
+        ),
       ),
     );
 
@@ -850,18 +851,16 @@ void main() {
   });
 }
 
-class InitState extends ConsumerStatefulWidget {
-  const InitState({super.key, required this.initState});
+class _InitState extends ConsumerStatefulWidget {
+  const _InitState({required this.initState});
 
-  // ignore: diagnostic_describe_all_properties
   final void Function(BuildContext context, WidgetRef ref) initState;
 
   @override
-  // ignore: library_private_types_in_public_api
   _InitStateState createState() => _InitStateState();
 }
 
-class _InitStateState extends ConsumerState<InitState> {
+class _InitStateState extends ConsumerState<_InitState> {
   @override
   void initState() {
     super.initState();

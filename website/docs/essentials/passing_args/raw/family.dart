@@ -27,9 +27,8 @@ final activityProvider2 = AsyncNotifierProvider.autoDispose
 
 // When using ".family" with notifiers, we need to change the notifier subclass:
 // AsyncNotifier -> FamilyAsyncNotifier
-// AutoDisposeAsyncNotifier -> AutoDisposeFamilyAsyncNotifier
-class ActivityNotifier
-    extends AutoDisposeFamilyAsyncNotifier<Activity, String> {
+// AsyncNotifier -> FamilyAsyncNotifier
+class ActivityNotifier extends FamilyAsyncNotifier<Activity, String> {
   /// Family arguments are passed to the build method and accessible with this.arg
   @override
   Future<Activity> build(String activityType) async {

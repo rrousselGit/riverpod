@@ -9,7 +9,8 @@ void main() {
     runGenerator: true,
     files: {
       'file.dart': '''
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:riverpod/riverpod.dart';
+
 final aProvider = Provider<int>((ref) => 0);
 ''',
     },
@@ -46,7 +47,7 @@ int aliased(AliasedRef ref) {
   );
 
   testSource('Decode watch expressions with syntax errors', source: '''
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:riverpod/riverpod.dart';
 
 @ProviderFor(gibberish)
 final gibberishProvider = Provider((ref) => 0);

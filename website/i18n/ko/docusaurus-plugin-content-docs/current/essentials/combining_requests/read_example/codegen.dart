@@ -1,10 +1,10 @@
 // ignore_for_file: unused_local_variable
-
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'codegen.g.dart';
 
-final otherProvider = Provider<int>((ref) => 0);
+@riverpod
+int other(OtherRef ref) => 0;
 
 /* SNIPPET START */
 @riverpod

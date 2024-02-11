@@ -1,19 +1,17 @@
 // ignore_for_file: omit_local_variable_types, unused_local_variable
-
+import 'package:riverpod/riverpod.dart' show ProviderBase;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:test/test.dart';
 
 import 'integration/async.dart';
-import 'utils.dart';
 
 void main() {
   test(
       'Creates an AsyncNotifierProvider<T> if @riverpod is used on an async class',
       () {
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
-    final AutoDisposeAsyncNotifierProvider<PublicClass, String> provider =
-        publicClassProvider;
+    const ProviderBase<AsyncValue<String>> provider = publicClassProvider;
     final AsyncValue<String> result = container.read(publicClassProvider);
 
     expect(result, const AsyncData('Hello world'));
@@ -28,7 +26,7 @@ void main() {
   });
 
   test('Supports overriding non-family notifiers', () {
-    final container = createContainer(
+    final container = ProviderContainer.test(
       overrides: [
         publicClassProvider.overrideWith(() => PublicClass('Hello world')),
       ],
@@ -37,12 +35,13 @@ void main() {
     final notifier = container.read(publicClassProvider.notifier);
     expect(notifier.param, 'Hello world');
 
+    // ignore: invalid_use_of_protected_member
     expect(notifier.ref, isNotNull);
     expect(notifier.state, isNotNull);
   });
 
   test('Supports overriding family notifiers', () {
-    final container = createContainer(
+    final container = ProviderContainer.test(
       overrides: [
         familyClassProvider(42, third: .42)
             .overrideWith(() => FamilyClass('Hello world')),
@@ -58,6 +57,7 @@ void main() {
     expect(notifier.fourth, true);
     expect(notifier.fifth, null);
 
+    // ignore: invalid_use_of_protected_member
     expect(notifier.ref, isNotNull);
     expect(notifier.state, isNotNull);
   });
@@ -65,7 +65,7 @@ void main() {
   test(
       'Creates a NotifierProvider.family<T> if @riverpod is used on a synchronous function with parameters',
       () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     const FamilyClassFamily family = familyClassProvider;
 
@@ -90,8 +90,6 @@ void main() {
       familyClassProvider(
         42,
         third: .42,
-        // ignore: avoid_redundant_argument_values
-        fourth: true,
       ),
     );
     expect(
@@ -99,8 +97,6 @@ void main() {
       familyClassProvider(
         42,
         third: .42,
-        // ignore: avoid_redundant_argument_values
-        fourth: true,
       ).hashCode,
     );
 
@@ -112,14 +108,7 @@ void main() {
       fifth: const ['x42'],
     );
     // ignore: invalid_use_of_internal_member
-    final AutoDisposeAsyncNotifierProviderImpl<FamilyClass, String>
-        futureProvider = provider;
-
-    expect(provider.first, 42);
-    expect(provider.second, 'x42');
-    expect(provider.third, .42);
-    expect(provider.fourth, false);
-    expect(provider.fifth, same(const ['x42']));
+    final ProviderBase<AsyncValue<String>> futureProvider = provider;
 
     final sub = container.listen(
       familyClassProvider(

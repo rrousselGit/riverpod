@@ -6,424 +6,431 @@ part of 'convert_class_based_provider_to_functional.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$exampleHash() => r'081776126bafed3e1583bba9c1fadef798215ad7';
+/// Some comment
+@ProviderFor(Example)
+const exampleProvider = ExampleProvider._();
 
 /// Some comment
-///
-/// Copied from [Example].
-@ProviderFor(Example)
-final exampleProvider = AutoDisposeNotifierProvider<Example, int>.internal(
-  Example.new,
-  name: r'exampleProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$exampleHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+final class ExampleProvider extends $NotifierProvider<Example, int> {
+  /// Some comment
+  const ExampleProvider._(
+      {super.runNotifierBuildOverride, Example Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'exampleProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
 
-typedef _$Example = AutoDisposeNotifier<int>;
-String _$exampleFamilyHash() => r'37d4a4fd66999562cd92051f91266270d5a1e5ea';
+  final Example Function()? _createCb;
 
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
+  @override
+  String debugGetCreateSourceHash() => _$exampleHash();
 
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
   }
 
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
+  @$internal
+  @override
+  Example create() => _createCb?.call() ?? Example();
+
+  @$internal
+  @override
+  ExampleProvider $copyWithCreate(
+    Example Function() create,
+  ) {
+    return ExampleProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  ExampleProvider $copyWithBuild(
+    int Function(
+      Ref<int>,
+      Example,
+    ) build,
+  ) {
+    return ExampleProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<Example, int> $createElement(
+          ProviderContainer container) =>
+      $NotifierProviderElement(this, container);
+}
+
+String _$exampleHash() => r'081776126bafed3e1583bba9c1fadef798215ad7';
+
+abstract class _$Example extends $Notifier<int> {
+  int build();
+  @$internal
+  @override
+  int runBuild() => build();
+}
+
+/// Some comment
+@ProviderFor(ExampleFamily)
+const exampleFamilyProvider = ExampleFamilyFamily._();
+
+/// Some comment
+final class ExampleFamilyProvider
+    extends $NotifierProvider<ExampleFamily, int> {
+  /// Some comment
+  const ExampleFamilyProvider._(
+      {required ExampleFamilyFamily super.from,
+      required ({
+        int a,
+        String b,
+      })
+          super.argument,
+      super.runNotifierBuildOverride,
+      ExampleFamily Function()? create})
+      : _createCb = create,
+        super(
+          name: r'exampleFamilyProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final ExampleFamily Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$exampleFamilyHash();
+
+  @override
+  String toString() {
+    return r'exampleFamilyProvider'
+        ''
+        '$argument';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  ExampleFamily create() => _createCb?.call() ?? ExampleFamily();
+
+  @$internal
+  @override
+  ExampleFamilyProvider $copyWithCreate(
+    ExampleFamily Function() create,
+  ) {
+    return ExampleFamilyProvider._(
+        argument: argument as ({
+          int a,
+          String b,
+        }),
+        from: from! as ExampleFamilyFamily,
+        create: create);
+  }
+
+  @$internal
+  @override
+  ExampleFamilyProvider $copyWithBuild(
+    int Function(
+      Ref<int>,
+      ExampleFamily,
+    ) build,
+  ) {
+    return ExampleFamilyProvider._(
+        argument: argument as ({
+          int a,
+          String b,
+        }),
+        from: from! as ExampleFamilyFamily,
+        runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<ExampleFamily, int> $createElement(
+          ProviderContainer container) =>
+      $NotifierProviderElement(this, container);
+
+  @override
+  bool operator ==(Object other) {
+    return other is ExampleFamilyProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
   }
 }
 
-abstract class _$ExampleFamily extends BuildlessAutoDisposeNotifier<int> {
-  late final int a;
-  late final String b;
+String _$exampleFamilyHash() => r'37d4a4fd66999562cd92051f91266270d5a1e5ea';
+
+/// Some comment
+final class ExampleFamilyFamily extends Family {
+  const ExampleFamilyFamily._()
+      : super(
+          name: r'exampleFamilyProvider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  /// Some comment
+  ExampleFamilyProvider call({
+    required int a,
+    String b = '42',
+  }) =>
+      ExampleFamilyProvider._(argument: (
+        a: a,
+        b: b,
+      ), from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$exampleFamilyHash();
+
+  @override
+  String toString() => r'exampleFamilyProvider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    ExampleFamily Function(
+      ({
+        int a,
+        String b,
+      }) args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as ExampleFamilyProvider;
+
+        final argument = provider.argument as ({
+          int a,
+          String b,
+        });
+
+        return provider
+            .$copyWithCreate(() => create(argument))
+            .$createElement(container);
+      },
+    );
+  }
+
+  /// {@macro riverpod.override_with_build}
+  Override overrideWithBuild(
+    int Function(
+            Ref<int> ref,
+            ExampleFamily notifier,
+            ({
+              int a,
+              String b,
+            }) argument)
+        build,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as ExampleFamilyProvider;
+
+        final argument = provider.argument as ({
+          int a,
+          String b,
+        });
+
+        return provider
+            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
+            .$createElement(container);
+      },
+    );
+  }
+}
+
+abstract class _$ExampleFamily extends $Notifier<int> {
+  late final _$args = (ref as $NotifierProviderElement).origin.argument as ({
+    int a,
+    String b,
+  });
+  int get a => _$args.a;
+  String get b => _$args.b;
 
   int build({
     required int a,
     String b = '42',
   });
+  @$internal
+  @override
+  int runBuild() => build(
+        a: _$args.a,
+        b: _$args.b,
+      );
 }
 
-/// Some comment
-///
-/// Copied from [ExampleFamily].
-@ProviderFor(ExampleFamily)
-const exampleFamilyProvider = ExampleFamilyFamily();
+@ProviderFor(Generic)
+const genericProvider = GenericFamily._();
 
-/// Some comment
-///
-/// Copied from [ExampleFamily].
-class ExampleFamilyFamily extends Family {
-  /// Some comment
-  ///
-  /// Copied from [ExampleFamily].
-  const ExampleFamilyFamily();
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'exampleFamilyProvider';
-
-  /// Some comment
-  ///
-  /// Copied from [ExampleFamily].
-  ExampleFamilyProvider call({
-    required int a,
-    String b = '42',
-  }) {
-    return ExampleFamilyProvider(
-      a: a,
-      b: b,
-    );
-  }
-
-  @visibleForOverriding
-  @override
-  ExampleFamilyProvider getProviderOverride(
-    covariant ExampleFamilyProvider provider,
-  ) {
-    return call(
-      a: provider.a,
-      b: provider.b,
-    );
-  }
-
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(ExampleFamily Function() create) {
-    return _$ExampleFamilyFamilyOverride(this, create);
-  }
-}
-
-class _$ExampleFamilyFamilyOverride implements FamilyOverride {
-  _$ExampleFamilyFamilyOverride(this.overriddenFamily, this.create);
-
-  final ExampleFamily Function() create;
-
-  @override
-  final ExampleFamilyFamily overriddenFamily;
-
-  @override
-  ExampleFamilyProvider getProviderOverride(
-    covariant ExampleFamilyProvider provider,
-  ) {
-    return provider._copyWith(create);
-  }
-}
-
-/// Some comment
-///
-/// Copied from [ExampleFamily].
-class ExampleFamilyProvider
-    extends AutoDisposeNotifierProviderImpl<ExampleFamily, int> {
-  /// Some comment
-  ///
-  /// Copied from [ExampleFamily].
-  ExampleFamilyProvider({
-    required int a,
-    String b = '42',
-  }) : this._internal(
-          () => ExampleFamily()
-            ..a = a
-            ..b = b,
-          from: exampleFamilyProvider,
-          name: r'exampleFamilyProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$exampleFamilyHash,
-          dependencies: ExampleFamilyFamily._dependencies,
-          allTransitiveDependencies:
-              ExampleFamilyFamily._allTransitiveDependencies,
-          a: a,
-          b: b,
+final class GenericProvider<A, B>
+    extends $NotifierProvider<Generic<A, B>, int> {
+  const GenericProvider._(
+      {required GenericFamily super.from,
+      super.runNotifierBuildOverride,
+      Generic<A, B> Function()? create})
+      : _createCb = create,
+        super(
+          argument: null,
+          name: r'genericProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
         );
 
-  ExampleFamilyProvider._internal(
-    super.create, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.a,
-    required this.b,
-  }) : super.internal();
-
-  final int a;
-  final String b;
+  final Generic<A, B> Function()? _createCb;
 
   @override
-  int runNotifierBuild(
-    covariant ExampleFamily notifier,
+  String debugGetCreateSourceHash() => _$genericHash();
+
+  GenericProvider<A, B> _copyWithCreate(
+    Generic<A, B> Function<A, B>() create,
   ) {
-    return notifier.build(
-      a: a,
-      b: b,
-    );
+    return GenericProvider<A, B>._(
+        from: from! as GenericFamily, create: create<A, B>);
+  }
+
+  GenericProvider<A, B> _copyWithBuild(
+    int Function<A, B>(
+      Ref<int>,
+      Generic<A, B>,
+    ) build,
+  ) {
+    return GenericProvider<A, B>._(
+        from: from! as GenericFamily, runNotifierBuildOverride: build<A, B>);
   }
 
   @override
-  Override overrideWith(ExampleFamily Function() create) {
-    return ProviderOverride(
+  String toString() {
+    return r'genericProvider'
+        '<${A}, ${B}>'
+        '()';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
       origin: this,
-      override: ExampleFamilyProvider._internal(
-        () => create()
-          ..a = a
-          ..b = b,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        a: a,
-        b: b,
-      ),
+      providerOverride: $ValueProvider<int>(value),
     );
   }
 
+  @$internal
   @override
-  ({
-    int a,
-    String b,
-  }) get argument {
-    return (
-      a: a,
-      b: b,
-    );
-  }
+  Generic<A, B> create() => _createCb?.call() ?? Generic<A, B>();
 
+  @$internal
   @override
-  AutoDisposeNotifierProviderElement<ExampleFamily, int> createElement() {
-    return _ExampleFamilyProviderElement(this);
-  }
-
-  ExampleFamilyProvider _copyWith(
-    ExampleFamily Function() create,
+  GenericProvider<A, B> $copyWithCreate(
+    Generic<A, B> Function() create,
   ) {
-    return ExampleFamilyProvider._internal(
-      () => create()
-        ..a = a
-        ..b = b,
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-      a: a,
-      b: b,
-    );
+    return GenericProvider<A, B>._(
+        from: from! as GenericFamily, create: create);
   }
+
+  @$internal
+  @override
+  GenericProvider<A, B> $copyWithBuild(
+    int Function(
+      Ref<int>,
+      Generic<A, B>,
+    ) build,
+  ) {
+    return GenericProvider<A, B>._(
+        from: from! as GenericFamily, runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<Generic<A, B>, int> $createElement(
+          ProviderContainer container) =>
+      $NotifierProviderElement(this, container);
 
   @override
   bool operator ==(Object other) {
-    return other is ExampleFamilyProvider && other.a == a && other.b == b;
+    return other is GenericProvider &&
+        other.runtimeType == runtimeType &&
+        other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, a.hashCode);
-    hash = _SystemHash.combine(hash, b.hashCode);
-
-    return _SystemHash.finish(hash);
+    return Object.hash(runtimeType, argument);
   }
-}
-
-mixin ExampleFamilyRef on AutoDisposeNotifierProviderRef<int> {
-  /// The parameter `a` of this provider.
-  int get a;
-
-  /// The parameter `b` of this provider.
-  String get b;
-}
-
-class _ExampleFamilyProviderElement
-    extends AutoDisposeNotifierProviderElement<ExampleFamily, int>
-    with ExampleFamilyRef {
-  _ExampleFamilyProviderElement(super.provider);
-
-  @override
-  int get a => (origin as ExampleFamilyProvider).a;
-  @override
-  String get b => (origin as ExampleFamilyProvider).b;
 }
 
 String _$genericHash() => r'0a3792d7b59723aebd92715eef2c74d2f267cbd2';
 
-abstract class _$Generic<A, B> extends BuildlessAutoDisposeNotifier<int> {
-  int build();
-}
-
-/// See also [Generic].
-@ProviderFor(Generic)
-const genericProvider = GenericFamily();
-
-/// See also [Generic].
-class GenericFamily extends Family {
-  /// See also [Generic].
-  const GenericFamily();
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'genericProvider';
-
-  /// See also [Generic].
-  GenericProvider<A, B> call<A, B>() {
-    return GenericProvider<A, B>();
-  }
-
-  @visibleForOverriding
-  @override
-  GenericProvider<Object?, Object?> getProviderOverride(
-    covariant GenericProvider<Object?, Object?> provider,
-  ) {
-    return call();
-  }
-
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(Generic Function() create) {
-    return _$GenericFamilyOverride(this, create);
-  }
-}
-
-class _$GenericFamilyOverride implements FamilyOverride {
-  _$GenericFamilyOverride(this.overriddenFamily, this.create);
-
-  final Generic Function() create;
-
-  @override
-  final GenericFamily overriddenFamily;
-
-  @override
-  GenericProvider getProviderOverride(
-    covariant GenericProvider provider,
-  ) {
-    return provider._copyWith(create);
-  }
-}
-
-/// See also [Generic].
-class GenericProvider<A, B>
-    extends AutoDisposeNotifierProviderImpl<Generic<A, B>, int> {
-  /// See also [Generic].
-  GenericProvider()
-      : this._internal(
-          Generic<A, B>.new,
-          from: genericProvider,
+final class GenericFamily extends Family {
+  const GenericFamily._()
+      : super(
           name: r'genericProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$genericHash,
-          dependencies: GenericFamily._dependencies,
-          allTransitiveDependencies: GenericFamily._allTransitiveDependencies,
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
         );
 
-  GenericProvider._internal(
-    super.create, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-  }) : super.internal();
+  GenericProvider<A, B> call<A, B>() => GenericProvider<A, B>._(from: this);
 
   @override
-  int runNotifierBuild(
-    covariant Generic<A, B> notifier,
+  String debugGetCreateSourceHash() => _$genericHash();
+
+  @override
+  String toString() => r'genericProvider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    Generic<A, B> Function<A, B>() create,
   ) {
-    return notifier.build();
-  }
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as GenericProvider;
 
-  @override
-  Override overrideWith(Generic<A, B> Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: GenericProvider<A, B>._internal(
-        () => create(),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-      ),
+        return provider._copyWithCreate(create).$createElement(container);
+      },
     );
   }
 
-  @override
-  () get argument {
-    return ();
-  }
-
-  @override
-  AutoDisposeNotifierProviderElement<Generic<A, B>, int> createElement() {
-    return _GenericProviderElement(this);
-  }
-
-  GenericProvider _copyWith(
-    Generic Function() create,
+  /// {@macro riverpod.override_with_build}
+  Override overrideWithBuild(
+    int Function<A, B>(Ref<int> ref, Generic<A, B> notifier) build,
   ) {
-    return GenericProvider._internal(
-      () => create(),
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as GenericProvider;
+
+        return provider._copyWithBuild(build).$createElement(container);
+      },
     );
   }
-
-  @override
-  bool operator ==(Object other) {
-    return other is GenericProvider && other.runtimeType == runtimeType;
-  }
-
-  @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, A.hashCode);
-    hash = _SystemHash.combine(hash, B.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
 }
 
-mixin GenericRef<A, B> on AutoDisposeNotifierProviderRef<int> {}
-
-class _GenericProviderElement<A, B>
-    extends AutoDisposeNotifierProviderElement<Generic<A, B>, int>
-    with GenericRef<A, B> {
-  _GenericProviderElement(super.provider);
+abstract class _$Generic<A, B> extends $Notifier<int> {
+  int build();
+  @$internal
+  @override
+  int runBuild() => build();
 }
+
+const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

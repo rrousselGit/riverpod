@@ -9,7 +9,7 @@ part 'pipe_change_notifier.g.dart';
 /// A provider which creates a ValueNotifier and update its listeners
 /// whenever the value changes.
 @riverpod
-ValueNotifier<int> myListenable(MyListenableRef ref) {
+Raw<ValueNotifier<int>> myListenable(MyListenableRef ref) {
   final notifier = ValueNotifier(0);
 
   // Smaltiamo il notifier quando il provider viene distrutto

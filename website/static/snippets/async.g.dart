@@ -8,21 +8,61 @@ part of 'async.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+typedef ConfigurationsRef = Ref<AsyncValue<Configuration>>;
+
+@ProviderFor(configurations)
+const configurationsProvider = ConfigurationsProvider._();
+
+final class ConfigurationsProvider extends $FunctionalProvider<
+        AsyncValue<Configuration>, FutureOr<Configuration>, ConfigurationsRef>
+    with
+        $FutureModifier<Configuration>,
+        $FutureProvider<Configuration, ConfigurationsRef> {
+  const ConfigurationsProvider._(
+      {FutureOr<Configuration> Function(
+        ConfigurationsRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'configurationsProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final FutureOr<Configuration> Function(
+    ConfigurationsRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$configurationsHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<Configuration> $createElement(
+          ProviderContainer container) =>
+      $FutureProviderElement(this, container);
+
+  @override
+  ConfigurationsProvider $copyWithCreate(
+    FutureOr<Configuration> Function(
+      ConfigurationsRef ref,
+    ) create,
+  ) {
+    return ConfigurationsProvider._(create: create);
+  }
+
+  @override
+  FutureOr<Configuration> create(ConfigurationsRef ref) {
+    final _$cb = _createCb ?? configurations;
+    return _$cb(ref);
+  }
+}
+
 String _$configurationsHash() => r'27f534f8b2a22c39b2d28c2414358a228c552155';
 
-/// See also [configurations].
-@ProviderFor(configurations)
-final configurationsProvider =
-    AutoDisposeFutureProvider<Configuration>.internal(
-  configurations,
-  name: r'configurationsProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$configurationsHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef ConfigurationsRef = AutoDisposeFutureProviderRef<Configuration>;
+const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

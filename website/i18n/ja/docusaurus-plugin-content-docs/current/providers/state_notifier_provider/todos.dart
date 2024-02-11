@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 /* SNIPPET START */
 
@@ -7,7 +8,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // ここは Freezed のようなパッケージを利用してイミュータブルにしても OK です。
 @immutable
 class Todo {
-  const Todo({required this.id, required this.description, required this.completed});
+  const Todo({
+    required this.id,
+    required this.description,
+    required this.completed,
+  });
 
   // イミュータブルなクラスのプロパティはすべて `final` にする必要があります。
   final String id;
@@ -31,7 +36,7 @@ class Todo {
 // public メソッドを通じて UI 側にステートの操作を許可します。
 class TodosNotifier extends StateNotifier<List<Todo>> {
   // Todo リストを空のリストとして初期化します。
-  TodosNotifier(): super([]);
+  TodosNotifier() : super([]);
 
   // Todo の追加
   void addTodo(Todo todo) {
@@ -46,7 +51,7 @@ class TodosNotifier extends StateNotifier<List<Todo>> {
 
   // Todo の削除
   void removeTodo(String todoId) {
-    // しつこいですが、ステートはイミュータブルです。 
+    // しつこいですが、ステートはイミュータブルです。
     // そのため既存リストを変更するのではなく、新しくリストを作成する必要があります。
     state = [
       for (final todo in state)

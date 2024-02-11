@@ -3,7 +3,7 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/source/source_range.dart';
-// ignore: implementation_imports, somehow not exported by analyzer
+// ignore: implementation_imports, https://github.com/dart-lang/sdk/issues/54480
 import 'package:analyzer/src/generated/source.dart' show Source;
 import 'package:analyzer_plugin/utilities/change_builder/change_builder_dart.dart';
 import 'package:collection/collection.dart';

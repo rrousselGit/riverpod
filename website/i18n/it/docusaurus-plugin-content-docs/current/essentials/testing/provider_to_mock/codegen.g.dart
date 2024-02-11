@@ -8,19 +8,58 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+typedef ExampleRef = Ref<AsyncValue<String>>;
+
+@ProviderFor(example)
+const exampleProvider = ExampleProvider._();
+
+final class ExampleProvider extends $FunctionalProvider<AsyncValue<String>,
+        FutureOr<String>, ExampleRef>
+    with $FutureModifier<String>, $FutureProvider<String, ExampleRef> {
+  const ExampleProvider._(
+      {FutureOr<String> Function(
+        ExampleRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'exampleProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final FutureOr<String> Function(
+    ExampleRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$exampleHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<String> $createElement(ProviderContainer container) =>
+      $FutureProviderElement(this, container);
+
+  @override
+  ExampleProvider $copyWithCreate(
+    FutureOr<String> Function(
+      ExampleRef ref,
+    ) create,
+  ) {
+    return ExampleProvider._(create: create);
+  }
+
+  @override
+  FutureOr<String> create(ExampleRef ref) {
+    final _$cb = _createCb ?? example;
+    return _$cb(ref);
+  }
+}
+
 String _$exampleHash() => r'd421d08db0ee9d10af5521159561135d8c5fa57c';
 
-/// See also [example].
-@ProviderFor(example)
-final exampleProvider = AutoDisposeFutureProvider<String>.internal(
-  example,
-  name: r'exampleProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$exampleHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef ExampleRef = AutoDisposeFutureProviderRef<String>;
+const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

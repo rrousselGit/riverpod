@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 
 /* SNIPPET START */
-extension DebounceAndCancelExtension on Ref {
+extension DebounceAndCancelExtension on Ref<Object?> {
   /// [duration] (기본값은 500ms) 동안 기다린 다음 요청에 사용할 수 있는 [http.Client]를 반환합니다.
   ///
   /// 해당 클라이언트는 provider가 폐기되면 자동으로 닫힙니다.

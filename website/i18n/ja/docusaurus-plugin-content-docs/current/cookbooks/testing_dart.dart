@@ -22,7 +22,7 @@ test('override repositoryProvider', () async {
       // repositoryProvider の挙動をオーバーライドして
       // Repository の代わりに FakeRepository を戻り値とする
       /* highlight-start */
-      repositoryProvider.overrideWithValue(FakeRepository())
+      repositoryProvider.overrideWithValue(FakeRepository()),
       /* highlight-end */
       // `todoListProvider` はオーバーライドされた repositoryProvider を
       // 自動的に利用することになるため、オーバーライド不要

@@ -19,13 +19,13 @@ void main() {
 test('override repositoryProvider', () async {
   final container = ProviderContainer(
     overrides: [
-      // Override the behavior of repositoryProvider to return
-      // FakeRepository instead of Repository.
+      // Sovrascrive il comportamento di repositoryProvider per restituire
+      // FakeRepository al posto di Repository.
       /* highlight-start */
-      repositoryProvider.overrideWithValue(FakeRepository())
+      repositoryProvider.overrideWithValue(FakeRepository()),
       /* highlight-end */
-      // We do not have to override `todoListProvider`, it will automatically
-      // use the overridden repositoryProvider
+      // Non dobbiamo sovrascrivere `todoListProvider`,
+      // utilizzerà automaticamente il repositoryProvider sovrascritto
     ],
   );
 

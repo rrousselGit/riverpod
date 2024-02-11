@@ -8,19 +8,74 @@ part of 'codegen_hooks.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+@ProviderFor(Counter)
+const counterProvider = CounterProvider._();
+
+final class CounterProvider extends $NotifierProvider<Counter, int> {
+  const CounterProvider._(
+      {super.runNotifierBuildOverride, Counter Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'counterProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final Counter Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$counterHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  Counter create() => _createCb?.call() ?? Counter();
+
+  @$internal
+  @override
+  CounterProvider $copyWithCreate(
+    Counter Function() create,
+  ) {
+    return CounterProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  CounterProvider $copyWithBuild(
+    int Function(
+      Ref<int>,
+      Counter,
+    ) build,
+  ) {
+    return CounterProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<Counter, int> $createElement(
+          ProviderContainer container) =>
+      $NotifierProviderElement(this, container);
+}
+
 String _$counterHash() => r'4320f811608c7a6e7342b83e3031965a34f7cb8e';
 
-/// See also [Counter].
-@ProviderFor(Counter)
-final counterProvider = AutoDisposeNotifierProvider<Counter, int>.internal(
-  Counter.new,
-  name: r'counterProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$counterHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+abstract class _$Counter extends $Notifier<int> {
+  int build();
+  @$internal
+  @override
+  int runBuild() => build();
+}
 
-typedef _$Counter = AutoDisposeNotifier<int>;
+const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

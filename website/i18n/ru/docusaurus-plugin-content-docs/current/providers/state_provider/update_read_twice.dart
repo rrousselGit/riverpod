@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 /* SNIPPET START */
 
@@ -15,7 +16,8 @@ class HomeView extends ConsumerWidget {
         onPressed: () {
           // Обновляем состояние провайдера, основываясь на предыдущем состоянии
           // И в итоге, мы дважды читаем значение провайдера!
-          ref.read(counterProvider.notifier).state = ref.read(counterProvider.notifier).state + 1;
+          ref.read(counterProvider.notifier).state =
+              ref.read(counterProvider.notifier).state + 1;
         },
       ),
     );

@@ -1,8 +1,7 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, unreachable_from_main
 
 /* SNIPPET START */
 
-import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'main.g.dart';

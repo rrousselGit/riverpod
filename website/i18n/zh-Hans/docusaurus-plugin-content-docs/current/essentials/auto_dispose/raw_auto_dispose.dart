@@ -1,4 +1,4 @@
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:riverpod/riverpod.dart';
 
 /* SNIPPET START */
 // 我们可以指定 autoDispose 来启用状态自动处置功能。

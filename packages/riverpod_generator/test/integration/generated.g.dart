@@ -6,1346 +6,1412 @@ part of 'generated.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$generatedHash() => r'e49f3520d06ed50d34a44de613fdcd20b19f48d4';
+typedef GeneratedRef = Ref<_Test>;
 
-/// See also [generated].
 @ProviderFor(generated)
-final generatedProvider = AutoDisposeProvider<_Test>.internal(
-  generated,
-  name: r'generatedProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$generatedHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+const generatedProvider = GeneratedProvider._();
 
-typedef GeneratedRef = AutoDisposeProviderRef<_Test>;
-String _$generatedFamilyHash() => r'ed284f58926c87acc81dab9168882d5d1c2cddf8';
-
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-/// See also [generatedFamily].
-@ProviderFor(generatedFamily)
-const generatedFamilyProvider = GeneratedFamilyFamily();
-
-/// See also [generatedFamily].
-class GeneratedFamilyFamily extends Family {
-  /// See also [generatedFamily].
-  const GeneratedFamilyFamily();
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'generatedFamilyProvider';
-
-  /// See also [generatedFamily].
-  GeneratedFamilyProvider call(
-    _Test test,
-  ) {
-    return GeneratedFamilyProvider(
-      test,
-    );
-  }
-
-  @visibleForOverriding
-  @override
-  GeneratedFamilyProvider getProviderOverride(
-    covariant GeneratedFamilyProvider provider,
-  ) {
-    return call(
-      provider.test,
-    );
-  }
-
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(_Test Function(GeneratedFamilyRef ref) create) {
-    return _$GeneratedFamilyFamilyOverride(this, create);
-  }
-}
-
-class _$GeneratedFamilyFamilyOverride implements FamilyOverride {
-  _$GeneratedFamilyFamilyOverride(this.overriddenFamily, this.create);
-
-  final _Test Function(GeneratedFamilyRef ref) create;
-
-  @override
-  final GeneratedFamilyFamily overriddenFamily;
-
-  @override
-  GeneratedFamilyProvider getProviderOverride(
-    covariant GeneratedFamilyProvider provider,
-  ) {
-    return provider._copyWith(create);
-  }
-}
-
-/// See also [generatedFamily].
-class GeneratedFamilyProvider extends AutoDisposeProvider<_Test> {
-  /// See also [generatedFamily].
-  GeneratedFamilyProvider(
-    _Test test,
-  ) : this._internal(
-          (ref) => generatedFamily(
-            ref as GeneratedFamilyRef,
-            test,
-          ),
-          from: generatedFamilyProvider,
-          name: r'generatedFamilyProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$generatedFamilyHash,
-          dependencies: GeneratedFamilyFamily._dependencies,
-          allTransitiveDependencies:
-              GeneratedFamilyFamily._allTransitiveDependencies,
-          test: test,
+final class GeneratedProvider
+    extends $FunctionalProvider<_Test, _Test, GeneratedRef>
+    with $Provider<_Test, GeneratedRef> {
+  const GeneratedProvider._(
+      {_Test Function(
+        GeneratedRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'generatedProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
         );
 
-  GeneratedFamilyProvider._internal(
-    super.create, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.test,
-  }) : super.internal();
-
-  final _Test test;
+  final _Test Function(
+    GeneratedRef ref,
+  )? _createCb;
 
   @override
-  Override overrideWith(
-    _Test Function(GeneratedFamilyRef ref) create,
-  ) {
-    return ProviderOverride(
+  String debugGetCreateSourceHash() => _$generatedHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(_Test value) {
+    return $ProviderOverride(
       origin: this,
-      override: GeneratedFamilyProvider._internal(
-        (ref) => create(ref as GeneratedFamilyRef),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        test: test,
-      ),
+      providerOverride: $ValueProvider<_Test>(value),
     );
   }
 
+  @$internal
   @override
-  (_Test,) get argument {
-    return (test,);
-  }
+  $ProviderElement<_Test> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
 
   @override
-  AutoDisposeProviderElement<_Test> createElement() {
-    return _GeneratedFamilyProviderElement(this);
-  }
-
-  GeneratedFamilyProvider _copyWith(
-    _Test Function(GeneratedFamilyRef ref) create,
+  GeneratedProvider $copyWithCreate(
+    _Test Function(
+      GeneratedRef ref,
+    ) create,
   ) {
-    return GeneratedFamilyProvider._internal(
-      (ref) => create(ref as GeneratedFamilyRef),
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-      test: test,
+    return GeneratedProvider._(create: create);
+  }
+
+  @override
+  _Test create(GeneratedRef ref) {
+    final _$cb = _createCb ?? generated;
+    return _$cb(ref);
+  }
+}
+
+String _$generatedHash() => r'e49f3520d06ed50d34a44de613fdcd20b19f48d4';
+
+typedef GeneratedFamilyRef = Ref<_Test>;
+
+@ProviderFor(generatedFamily)
+const generatedFamilyProvider = GeneratedFamilyFamily._();
+
+final class GeneratedFamilyProvider
+    extends $FunctionalProvider<_Test, _Test, GeneratedFamilyRef>
+    with $Provider<_Test, GeneratedFamilyRef> {
+  const GeneratedFamilyProvider._(
+      {required GeneratedFamilyFamily super.from,
+      required _Test super.argument,
+      _Test Function(
+        GeneratedFamilyRef ref,
+        _Test test,
+      )? create})
+      : _createCb = create,
+        super(
+          name: r'generatedFamilyProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final _Test Function(
+    GeneratedFamilyRef ref,
+    _Test test,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$generatedFamilyHash();
+
+  @override
+  String toString() {
+    return r'generatedFamilyProvider'
+        ''
+        '($argument)';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(_Test value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<_Test>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<_Test> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  GeneratedFamilyProvider $copyWithCreate(
+    _Test Function(
+      GeneratedFamilyRef ref,
+    ) create,
+  ) {
+    return GeneratedFamilyProvider._(
+        argument: argument as _Test,
+        from: from! as GeneratedFamilyFamily,
+        create: (
+          ref,
+          _Test test,
+        ) =>
+            create(ref));
+  }
+
+  @override
+  _Test create(GeneratedFamilyRef ref) {
+    final _$cb = _createCb ?? generatedFamily;
+    final argument = this.argument as _Test;
+    return _$cb(
+      ref,
+      argument,
     );
   }
 
   @override
   bool operator ==(Object other) {
-    return other is GeneratedFamilyProvider && other.test == test;
+    return other is GeneratedFamilyProvider && other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, test.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-mixin GeneratedFamilyRef on AutoDisposeProviderRef<_Test> {
-  /// The parameter `test` of this provider.
-  _Test get test;
-}
+String _$generatedFamilyHash() => r'ed284f58926c87acc81dab9168882d5d1c2cddf8';
 
-class _GeneratedFamilyProviderElement extends AutoDisposeProviderElement<_Test>
-    with GeneratedFamilyRef {
-  _GeneratedFamilyProviderElement(super.provider);
+final class GeneratedFamilyFamily extends Family {
+  const GeneratedFamilyFamily._()
+      : super(
+          name: r'generatedFamilyProvider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  GeneratedFamilyProvider call(
+    _Test test,
+  ) =>
+      GeneratedFamilyProvider._(argument: test, from: this);
 
   @override
-  _Test get test => (origin as GeneratedFamilyProvider).test;
+  String debugGetCreateSourceHash() => _$generatedFamilyHash();
+
+  @override
+  String toString() => r'generatedFamilyProvider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    _Test Function(
+      GeneratedFamilyRef ref,
+      _Test args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as GeneratedFamilyProvider;
+
+        final argument = provider.argument as _Test;
+
+        return provider
+            .$copyWithCreate((ref) => create(ref, argument))
+            .$createElement(container);
+      },
+    );
+  }
+}
+
+typedef $DynamicRef = Ref<Object?>;
+
+@ProviderFor($dynamic)
+const $dynamicProvider = $DynamicProvider._();
+
+final class $DynamicProvider
+    extends $FunctionalProvider<Object?, Object?, $DynamicRef>
+    with $Provider<Object?, $DynamicRef> {
+  const $DynamicProvider._(
+      {Object? Function(
+        $DynamicRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'$dynamicProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final Object? Function(
+    $DynamicRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$$dynamicHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Object? value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<Object?>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<Object?> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  $DynamicProvider $copyWithCreate(
+    Object? Function(
+      $DynamicRef ref,
+    ) create,
+  ) {
+    return $DynamicProvider._(create: create);
+  }
+
+  @override
+  Object? create($DynamicRef ref) {
+    final _$cb = _createCb ?? $dynamic;
+    return _$cb(ref);
+  }
 }
 
 String _$$dynamicHash() => r'f62d63d9340f30b253e687f76deacd8205fed0e7';
 
-/// See also [$dynamic].
-@ProviderFor($dynamic)
-final $dynamicProvider = AutoDisposeProvider<Object?>.internal(
-  $dynamic,
-  name: r'$dynamicProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$$dynamicHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+typedef $DynamicFamilyRef = Ref<Object?>;
 
-typedef $DynamicRef = AutoDisposeProviderRef<Object?>;
-String _$$dynamicFamilyHash() => r'b764133af8837b8321b08814892f198d4bc1aa18';
-
-/// See also [$dynamicFamily].
 @ProviderFor($dynamicFamily)
-const $dynamicFamilyProvider = $DynamicFamilyFamily();
+const $dynamicFamilyProvider = $DynamicFamilyFamily._();
 
-/// See also [$dynamicFamily].
-class $DynamicFamilyFamily extends Family {
-  /// See also [$dynamicFamily].
-  const $DynamicFamilyFamily();
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'$dynamicFamilyProvider';
-
-  /// See also [$dynamicFamily].
-  $DynamicFamilyProvider call(
-    test,
-  ) {
-    return $DynamicFamilyProvider(
-      test,
-    );
-  }
-
-  @visibleForOverriding
-  @override
-  $DynamicFamilyProvider getProviderOverride(
-    covariant $DynamicFamilyProvider provider,
-  ) {
-    return call(
-      provider.test,
-    );
-  }
-
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(Object? Function($DynamicFamilyRef ref) create) {
-    return _$$DynamicFamilyFamilyOverride(this, create);
-  }
-}
-
-class _$$DynamicFamilyFamilyOverride implements FamilyOverride {
-  _$$DynamicFamilyFamilyOverride(this.overriddenFamily, this.create);
-
-  final Object? Function($DynamicFamilyRef ref) create;
-
-  @override
-  final $DynamicFamilyFamily overriddenFamily;
-
-  @override
-  $DynamicFamilyProvider getProviderOverride(
-    covariant $DynamicFamilyProvider provider,
-  ) {
-    return provider._copyWith(create);
-  }
-}
-
-/// See also [$dynamicFamily].
-class $DynamicFamilyProvider extends AutoDisposeProvider<Object?> {
-  /// See also [$dynamicFamily].
-  $DynamicFamilyProvider(
-    test,
-  ) : this._internal(
-          (ref) => $dynamicFamily(
-            ref as $DynamicFamilyRef,
-            test,
-          ),
-          from: $dynamicFamilyProvider,
+final class $DynamicFamilyProvider
+    extends $FunctionalProvider<Object?, Object?, $DynamicFamilyRef>
+    with $Provider<Object?, $DynamicFamilyRef> {
+  const $DynamicFamilyProvider._(
+      {required $DynamicFamilyFamily super.from,
+      required dynamic super.argument,
+      Object? Function(
+        $DynamicFamilyRef ref,
+        dynamic test,
+      )? create})
+      : _createCb = create,
+        super(
           name: r'$dynamicFamilyProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$$dynamicFamilyHash,
-          dependencies: $DynamicFamilyFamily._dependencies,
-          allTransitiveDependencies:
-              $DynamicFamilyFamily._allTransitiveDependencies,
-          test: test,
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
         );
 
-  $DynamicFamilyProvider._internal(
-    super.create, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.test,
-  }) : super.internal();
-
-  final test;
+  final Object? Function(
+    $DynamicFamilyRef ref,
+    dynamic test,
+  )? _createCb;
 
   @override
-  Override overrideWith(
-    Object? Function($DynamicFamilyRef ref) create,
-  ) {
-    return ProviderOverride(
+  String debugGetCreateSourceHash() => _$$dynamicFamilyHash();
+
+  @override
+  String toString() {
+    return r'$dynamicFamilyProvider'
+        ''
+        '($argument)';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Object? value) {
+    return $ProviderOverride(
       origin: this,
-      override: $DynamicFamilyProvider._internal(
-        (ref) => create(ref as $DynamicFamilyRef),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        test: test,
-      ),
+      providerOverride: $ValueProvider<Object?>(value),
     );
   }
 
+  @$internal
   @override
-  (dynamic,) get argument {
-    return (test,);
-  }
+  $ProviderElement<Object?> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
 
   @override
-  AutoDisposeProviderElement<Object?> createElement() {
-    return _$DynamicFamilyProviderElement(this);
-  }
-
-  $DynamicFamilyProvider _copyWith(
-    Object? Function($DynamicFamilyRef ref) create,
+  $DynamicFamilyProvider $copyWithCreate(
+    Object? Function(
+      $DynamicFamilyRef ref,
+    ) create,
   ) {
-    return $DynamicFamilyProvider._internal(
-      (ref) => create(ref as $DynamicFamilyRef),
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-      test: test,
+    return $DynamicFamilyProvider._(
+        argument: argument as dynamic,
+        from: from! as $DynamicFamilyFamily,
+        create: (
+          ref,
+          dynamic test,
+        ) =>
+            create(ref));
+  }
+
+  @override
+  Object? create($DynamicFamilyRef ref) {
+    final _$cb = _createCb ?? $dynamicFamily;
+    final argument = this.argument as dynamic;
+    return _$cb(
+      ref,
+      argument,
     );
   }
 
   @override
   bool operator ==(Object other) {
-    return other is $DynamicFamilyProvider && other.test == test;
+    return other is $DynamicFamilyProvider && other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, test.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-mixin $DynamicFamilyRef on AutoDisposeProviderRef<Object?> {
-  /// The parameter `test` of this provider.
-  get test;
-}
+String _$$dynamicFamilyHash() => r'b764133af8837b8321b08814892f198d4bc1aa18';
 
-class _$DynamicFamilyProviderElement extends AutoDisposeProviderElement<Object?>
-    with $DynamicFamilyRef {
-  _$DynamicFamilyProviderElement(super.provider);
+final class $DynamicFamilyFamily extends Family {
+  const $DynamicFamilyFamily._()
+      : super(
+          name: r'$dynamicFamilyProvider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  $DynamicFamilyProvider call(
+    dynamic test,
+  ) =>
+      $DynamicFamilyProvider._(argument: test, from: this);
 
   @override
-  get test => (origin as $DynamicFamilyProvider).test;
+  String debugGetCreateSourceHash() => _$$dynamicFamilyHash();
+
+  @override
+  String toString() => r'$dynamicFamilyProvider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    Object? Function(
+      $DynamicFamilyRef ref,
+      dynamic args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as $DynamicFamilyProvider;
+
+        final argument = provider.argument as dynamic;
+
+        return provider
+            .$copyWithCreate((ref) => create(ref, argument))
+            .$createElement(container);
+      },
+    );
+  }
+}
+
+typedef _DynamicRef = Ref<Object?>;
+
+@ProviderFor(_dynamic)
+const _dynamicProvider = _DynamicFamily._();
+
+final class _DynamicProvider
+    extends $FunctionalProvider<Object?, Object?, _DynamicRef>
+    with $Provider<Object?, _DynamicRef> {
+  const _DynamicProvider._(
+      {required _DynamicFamily super.from,
+      required dynamic super.argument,
+      Object? Function(
+        _DynamicRef ref,
+        dynamic test,
+      )? create})
+      : _createCb = create,
+        super(
+          name: r'_dynamicProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final Object? Function(
+    _DynamicRef ref,
+    dynamic test,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$dynamicHash();
+
+  @override
+  String toString() {
+    return r'_dynamicProvider'
+        ''
+        '($argument)';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Object? value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<Object?>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<Object?> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  _DynamicProvider $copyWithCreate(
+    Object? Function(
+      _DynamicRef ref,
+    ) create,
+  ) {
+    return _DynamicProvider._(
+        argument: argument as dynamic,
+        from: from! as _DynamicFamily,
+        create: (
+          ref,
+          dynamic test,
+        ) =>
+            create(ref));
+  }
+
+  @override
+  Object? create(_DynamicRef ref) {
+    final _$cb = _createCb ?? _dynamic;
+    final argument = this.argument as dynamic;
+    return _$cb(
+      ref,
+      argument,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is _DynamicProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
 }
 
 String _$dynamicHash() => r'da9dc07960139fff2cf5fe584dca5c524e4f2308';
 
-/// See also [_dynamic].
-@ProviderFor(_dynamic)
-const _dynamicProvider = _DynamicFamily();
-
-/// See also [_dynamic].
-class _DynamicFamily extends Family {
-  /// See also [_dynamic].
-  const _DynamicFamily();
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'_dynamicProvider';
-
-  /// See also [_dynamic].
-  _DynamicProvider call(
-    test,
-  ) {
-    return _DynamicProvider(
-      test,
-    );
-  }
-
-  @visibleForOverriding
-  @override
-  _DynamicProvider getProviderOverride(
-    covariant _DynamicProvider provider,
-  ) {
-    return call(
-      provider.test,
-    );
-  }
-
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(Object? Function(_DynamicRef ref) create) {
-    return _$DynamicFamilyOverride(this, create);
-  }
-}
-
-class _$DynamicFamilyOverride implements FamilyOverride {
-  _$DynamicFamilyOverride(this.overriddenFamily, this.create);
-
-  final Object? Function(_DynamicRef ref) create;
-
-  @override
-  final _DynamicFamily overriddenFamily;
-
-  @override
-  _DynamicProvider getProviderOverride(
-    covariant _DynamicProvider provider,
-  ) {
-    return provider._copyWith(create);
-  }
-}
-
-/// See also [_dynamic].
-class _DynamicProvider extends AutoDisposeProvider<Object?> {
-  /// See also [_dynamic].
-  _DynamicProvider(
-    test,
-  ) : this._internal(
-          (ref) => _dynamic(
-            ref as _DynamicRef,
-            test,
-          ),
-          from: _dynamicProvider,
+final class _DynamicFamily extends Family {
+  const _DynamicFamily._()
+      : super(
           name: r'_dynamicProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$dynamicHash,
-          dependencies: _DynamicFamily._dependencies,
-          allTransitiveDependencies: _DynamicFamily._allTransitiveDependencies,
-          test: test,
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
         );
 
-  _DynamicProvider._internal(
-    super.create, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.test,
-  }) : super.internal();
-
-  final test;
+  _DynamicProvider call(
+    dynamic test,
+  ) =>
+      _DynamicProvider._(argument: test, from: this);
 
   @override
+  String debugGetCreateSourceHash() => _$dynamicHash();
+
+  @override
+  String toString() => r'_dynamicProvider';
+
+  /// {@macro riverpod.override_with}
   Override overrideWith(
-    Object? Function(_DynamicRef ref) create,
+    Object? Function(
+      _DynamicRef ref,
+      dynamic args,
+    ) create,
   ) {
-    return ProviderOverride(
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as _DynamicProvider;
+
+        final argument = provider.argument as dynamic;
+
+        return provider
+            .$copyWithCreate((ref) => create(ref, argument))
+            .$createElement(container);
+      },
+    );
+  }
+}
+
+typedef AliasRef = Ref<r.AsyncValue<int>>;
+
+@ProviderFor(alias)
+const aliasProvider = AliasProvider._();
+
+final class AliasProvider
+    extends $FunctionalProvider<r.AsyncValue<int>, r.AsyncValue<int>, AliasRef>
+    with $Provider<r.AsyncValue<int>, AliasRef> {
+  const AliasProvider._(
+      {r.AsyncValue<int> Function(
+        AliasRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'aliasProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final r.AsyncValue<int> Function(
+    AliasRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$aliasHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(r.AsyncValue<int> value) {
+    return $ProviderOverride(
       origin: this,
-      override: _DynamicProvider._internal(
-        (ref) => create(ref as _DynamicRef),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        test: test,
-      ),
+      providerOverride: $ValueProvider<r.AsyncValue<int>>(value),
     );
   }
 
+  @$internal
   @override
-  (dynamic,) get argument {
-    return (test,);
-  }
+  $ProviderElement<r.AsyncValue<int>> $createElement(
+          ProviderContainer container) =>
+      $ProviderElement(this, container);
 
   @override
-  AutoDisposeProviderElement<Object?> createElement() {
-    return _DynamicProviderElement(this);
-  }
-
-  _DynamicProvider _copyWith(
-    Object? Function(_DynamicRef ref) create,
+  AliasProvider $copyWithCreate(
+    r.AsyncValue<int> Function(
+      AliasRef ref,
+    ) create,
   ) {
-    return _DynamicProvider._internal(
-      (ref) => create(ref as _DynamicRef),
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-      test: test,
-    );
+    return AliasProvider._(create: create);
   }
 
   @override
-  bool operator ==(Object other) {
-    return other is _DynamicProvider && other.test == test;
+  r.AsyncValue<int> create(AliasRef ref) {
+    final _$cb = _createCb ?? alias;
+    return _$cb(ref);
   }
-
-  @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, test.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
-}
-
-mixin _DynamicRef on AutoDisposeProviderRef<Object?> {
-  /// The parameter `test` of this provider.
-  get test;
-}
-
-class _DynamicProviderElement extends AutoDisposeProviderElement<Object?>
-    with _DynamicRef {
-  _DynamicProviderElement(super.provider);
-
-  @override
-  get test => (origin as _DynamicProvider).test;
 }
 
 String _$aliasHash() => r'cc08ec4cc5ec0dc98bdb7f4dcbc035021b09bcf3';
 
-/// See also [alias].
-@ProviderFor(alias)
-final aliasProvider = AutoDisposeProvider<r.AsyncValue<int>>.internal(
-  alias,
-  name: r'aliasProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$aliasHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+typedef AliasFamilyRef = Ref<r.AsyncValue<int>>;
 
-typedef AliasRef = AutoDisposeProviderRef<r.AsyncValue<int>>;
-String _$aliasFamilyHash() => r'f345937d5750132f629aef41646b119a301f750b';
-
-/// See also [aliasFamily].
 @ProviderFor(aliasFamily)
-const aliasFamilyProvider = AliasFamilyFamily();
+const aliasFamilyProvider = AliasFamilyFamily._();
 
-/// See also [aliasFamily].
-class AliasFamilyFamily extends Family {
-  /// See also [aliasFamily].
-  const AliasFamilyFamily();
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'aliasFamilyProvider';
-
-  /// See also [aliasFamily].
-  AliasFamilyProvider call(
-    r.AsyncValue<int> test,
-  ) {
-    return AliasFamilyProvider(
-      test,
-    );
-  }
-
-  @visibleForOverriding
-  @override
-  AliasFamilyProvider getProviderOverride(
-    covariant AliasFamilyProvider provider,
-  ) {
-    return call(
-      provider.test,
-    );
-  }
-
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(r.AsyncValue<int> Function(AliasFamilyRef ref) create) {
-    return _$AliasFamilyFamilyOverride(this, create);
-  }
-}
-
-class _$AliasFamilyFamilyOverride implements FamilyOverride {
-  _$AliasFamilyFamilyOverride(this.overriddenFamily, this.create);
-
-  final r.AsyncValue<int> Function(AliasFamilyRef ref) create;
-
-  @override
-  final AliasFamilyFamily overriddenFamily;
-
-  @override
-  AliasFamilyProvider getProviderOverride(
-    covariant AliasFamilyProvider provider,
-  ) {
-    return provider._copyWith(create);
-  }
-}
-
-/// See also [aliasFamily].
-class AliasFamilyProvider extends AutoDisposeProvider<r.AsyncValue<int>> {
-  /// See also [aliasFamily].
-  AliasFamilyProvider(
-    r.AsyncValue<int> test,
-  ) : this._internal(
-          (ref) => aliasFamily(
-            ref as AliasFamilyRef,
-            test,
-          ),
-          from: aliasFamilyProvider,
+final class AliasFamilyProvider extends $FunctionalProvider<
+    r.AsyncValue<int>,
+    r.AsyncValue<int>,
+    AliasFamilyRef> with $Provider<r.AsyncValue<int>, AliasFamilyRef> {
+  const AliasFamilyProvider._(
+      {required AliasFamilyFamily super.from,
+      required r.AsyncValue<int> super.argument,
+      r.AsyncValue<int> Function(
+        AliasFamilyRef ref,
+        r.AsyncValue<int> test,
+      )? create})
+      : _createCb = create,
+        super(
           name: r'aliasFamilyProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$aliasFamilyHash,
-          dependencies: AliasFamilyFamily._dependencies,
-          allTransitiveDependencies:
-              AliasFamilyFamily._allTransitiveDependencies,
-          test: test,
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
         );
 
-  AliasFamilyProvider._internal(
-    super.create, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.test,
-  }) : super.internal();
-
-  final r.AsyncValue<int> test;
+  final r.AsyncValue<int> Function(
+    AliasFamilyRef ref,
+    r.AsyncValue<int> test,
+  )? _createCb;
 
   @override
-  Override overrideWith(
-    r.AsyncValue<int> Function(AliasFamilyRef ref) create,
-  ) {
-    return ProviderOverride(
+  String debugGetCreateSourceHash() => _$aliasFamilyHash();
+
+  @override
+  String toString() {
+    return r'aliasFamilyProvider'
+        ''
+        '($argument)';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(r.AsyncValue<int> value) {
+    return $ProviderOverride(
       origin: this,
-      override: AliasFamilyProvider._internal(
-        (ref) => create(ref as AliasFamilyRef),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        test: test,
-      ),
+      providerOverride: $ValueProvider<r.AsyncValue<int>>(value),
     );
   }
 
+  @$internal
   @override
-  (r.AsyncValue<int>,) get argument {
-    return (test,);
-  }
+  $ProviderElement<r.AsyncValue<int>> $createElement(
+          ProviderContainer container) =>
+      $ProviderElement(this, container);
 
   @override
-  AutoDisposeProviderElement<r.AsyncValue<int>> createElement() {
-    return _AliasFamilyProviderElement(this);
-  }
-
-  AliasFamilyProvider _copyWith(
-    r.AsyncValue<int> Function(AliasFamilyRef ref) create,
+  AliasFamilyProvider $copyWithCreate(
+    r.AsyncValue<int> Function(
+      AliasFamilyRef ref,
+    ) create,
   ) {
-    return AliasFamilyProvider._internal(
-      (ref) => create(ref as AliasFamilyRef),
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-      test: test,
+    return AliasFamilyProvider._(
+        argument: argument as r.AsyncValue<int>,
+        from: from! as AliasFamilyFamily,
+        create: (
+          ref,
+          r.AsyncValue<int> test,
+        ) =>
+            create(ref));
+  }
+
+  @override
+  r.AsyncValue<int> create(AliasFamilyRef ref) {
+    final _$cb = _createCb ?? aliasFamily;
+    final argument = this.argument as r.AsyncValue<int>;
+    return _$cb(
+      ref,
+      argument,
     );
   }
 
   @override
   bool operator ==(Object other) {
-    return other is AliasFamilyProvider && other.test == test;
+    return other is AliasFamilyProvider && other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, test.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-mixin AliasFamilyRef on AutoDisposeProviderRef<r.AsyncValue<int>> {
-  /// The parameter `test` of this provider.
-  r.AsyncValue<int> get test;
-}
+String _$aliasFamilyHash() => r'f345937d5750132f629aef41646b119a301f750b';
 
-class _AliasFamilyProviderElement
-    extends AutoDisposeProviderElement<r.AsyncValue<int>> with AliasFamilyRef {
-  _AliasFamilyProviderElement(super.provider);
+final class AliasFamilyFamily extends Family {
+  const AliasFamilyFamily._()
+      : super(
+          name: r'aliasFamilyProvider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  AliasFamilyProvider call(
+    r.AsyncValue<int> test,
+  ) =>
+      AliasFamilyProvider._(argument: test, from: this);
 
   @override
-  r.AsyncValue<int> get test => (origin as AliasFamilyProvider).test;
+  String debugGetCreateSourceHash() => _$aliasFamilyHash();
+
+  @override
+  String toString() => r'aliasFamilyProvider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    r.AsyncValue<int> Function(
+      AliasFamilyRef ref,
+      r.AsyncValue<int> args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as AliasFamilyProvider;
+
+        final argument = provider.argument as r.AsyncValue<int>;
+
+        return provider
+            .$copyWithCreate((ref) => create(ref, argument))
+            .$createElement(container);
+      },
+    );
+  }
+}
+
+@ProviderFor(GeneratedClass)
+const generatedClassProvider = GeneratedClassProvider._();
+
+final class GeneratedClassProvider
+    extends $NotifierProvider<GeneratedClass, _Test> {
+  const GeneratedClassProvider._(
+      {super.runNotifierBuildOverride, GeneratedClass Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'generatedClassProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final GeneratedClass Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$generatedClassHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(_Test value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<_Test>(value),
+    );
+  }
+
+  @$internal
+  @override
+  GeneratedClass create() => _createCb?.call() ?? GeneratedClass();
+
+  @$internal
+  @override
+  GeneratedClassProvider $copyWithCreate(
+    GeneratedClass Function() create,
+  ) {
+    return GeneratedClassProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  GeneratedClassProvider $copyWithBuild(
+    _Test Function(
+      Ref<_Test>,
+      GeneratedClass,
+    ) build,
+  ) {
+    return GeneratedClassProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<GeneratedClass, _Test> $createElement(
+          ProviderContainer container) =>
+      $NotifierProviderElement(this, container);
 }
 
 String _$generatedClassHash() => r'984153f97e25de687d2f19756b277aabd56f6e72';
 
-/// See also [GeneratedClass].
-@ProviderFor(GeneratedClass)
-final generatedClassProvider =
-    AutoDisposeNotifierProvider<GeneratedClass, _Test>.internal(
-  GeneratedClass.new,
-  name: r'generatedClassProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$generatedClassHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+abstract class _$GeneratedClass extends $Notifier<_Test> {
+  _Test build();
+  @$internal
+  @override
+  _Test runBuild() => build();
+}
 
-typedef _$GeneratedClass = AutoDisposeNotifier<_Test>;
+@ProviderFor(GeneratedClassFamily)
+const generatedClassFamilyProvider = GeneratedClassFamilyFamily._();
+
+final class GeneratedClassFamilyProvider
+    extends $NotifierProvider<GeneratedClassFamily, _Test> {
+  const GeneratedClassFamilyProvider._(
+      {required GeneratedClassFamilyFamily super.from,
+      required _Test super.argument,
+      super.runNotifierBuildOverride,
+      GeneratedClassFamily Function()? create})
+      : _createCb = create,
+        super(
+          name: r'generatedClassFamilyProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final GeneratedClassFamily Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$generatedClassFamilyHash();
+
+  @override
+  String toString() {
+    return r'generatedClassFamilyProvider'
+        ''
+        '($argument)';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(_Test value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<_Test>(value),
+    );
+  }
+
+  @$internal
+  @override
+  GeneratedClassFamily create() => _createCb?.call() ?? GeneratedClassFamily();
+
+  @$internal
+  @override
+  GeneratedClassFamilyProvider $copyWithCreate(
+    GeneratedClassFamily Function() create,
+  ) {
+    return GeneratedClassFamilyProvider._(
+        argument: argument as _Test,
+        from: from! as GeneratedClassFamilyFamily,
+        create: create);
+  }
+
+  @$internal
+  @override
+  GeneratedClassFamilyProvider $copyWithBuild(
+    _Test Function(
+      Ref<_Test>,
+      GeneratedClassFamily,
+    ) build,
+  ) {
+    return GeneratedClassFamilyProvider._(
+        argument: argument as _Test,
+        from: from! as GeneratedClassFamilyFamily,
+        runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<GeneratedClassFamily, _Test> $createElement(
+          ProviderContainer container) =>
+      $NotifierProviderElement(this, container);
+
+  @override
+  bool operator ==(Object other) {
+    return other is GeneratedClassFamilyProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
 String _$generatedClassFamilyHash() =>
     r'28d0a5a82af5b254f6ef07b492916e2feb7e6e63';
 
-abstract class _$GeneratedClassFamily
-    extends BuildlessAutoDisposeNotifier<_Test> {
-  late final _Test test;
+final class GeneratedClassFamilyFamily extends Family {
+  const GeneratedClassFamilyFamily._()
+      : super(
+          name: r'generatedClassFamilyProvider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  GeneratedClassFamilyProvider call(
+    _Test test,
+  ) =>
+      GeneratedClassFamilyProvider._(argument: test, from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$generatedClassFamilyHash();
+
+  @override
+  String toString() => r'generatedClassFamilyProvider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    GeneratedClassFamily Function(
+      _Test args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as GeneratedClassFamilyProvider;
+
+        final argument = provider.argument as _Test;
+
+        return provider
+            .$copyWithCreate(() => create(argument))
+            .$createElement(container);
+      },
+    );
+  }
+
+  /// {@macro riverpod.override_with_build}
+  Override overrideWithBuild(
+    _Test Function(
+            Ref<_Test> ref, GeneratedClassFamily notifier, _Test argument)
+        build,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as GeneratedClassFamilyProvider;
+
+        final argument = provider.argument as _Test;
+
+        return provider
+            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
+            .$createElement(container);
+      },
+    );
+  }
+}
+
+abstract class _$GeneratedClassFamily extends $Notifier<_Test> {
+  late final _$args =
+      (ref as $NotifierProviderElement).origin.argument as _Test;
+  _Test get test => _$args;
 
   _Test build(
     _Test test,
   );
+  @$internal
+  @override
+  _Test runBuild() => build(
+        _$args,
+      );
 }
 
-/// See also [GeneratedClassFamily].
-@ProviderFor(GeneratedClassFamily)
-const generatedClassFamilyProvider = GeneratedClassFamilyFamily();
+@ProviderFor($DynamicClass)
+const $dynamicClassProvider = $DynamicClassProvider._();
 
-/// See also [GeneratedClassFamily].
-class GeneratedClassFamilyFamily extends Family {
-  /// See also [GeneratedClassFamily].
-  const GeneratedClassFamilyFamily();
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'generatedClassFamilyProvider';
-
-  /// See also [GeneratedClassFamily].
-  GeneratedClassFamilyProvider call(
-    _Test test,
-  ) {
-    return GeneratedClassFamilyProvider(
-      test,
-    );
-  }
-
-  @visibleForOverriding
-  @override
-  GeneratedClassFamilyProvider getProviderOverride(
-    covariant GeneratedClassFamilyProvider provider,
-  ) {
-    return call(
-      provider.test,
-    );
-  }
-
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(GeneratedClassFamily Function() create) {
-    return _$GeneratedClassFamilyFamilyOverride(this, create);
-  }
-}
-
-class _$GeneratedClassFamilyFamilyOverride implements FamilyOverride {
-  _$GeneratedClassFamilyFamilyOverride(this.overriddenFamily, this.create);
-
-  final GeneratedClassFamily Function() create;
-
-  @override
-  final GeneratedClassFamilyFamily overriddenFamily;
-
-  @override
-  GeneratedClassFamilyProvider getProviderOverride(
-    covariant GeneratedClassFamilyProvider provider,
-  ) {
-    return provider._copyWith(create);
-  }
-}
-
-/// See also [GeneratedClassFamily].
-class GeneratedClassFamilyProvider
-    extends AutoDisposeNotifierProviderImpl<GeneratedClassFamily, _Test> {
-  /// See also [GeneratedClassFamily].
-  GeneratedClassFamilyProvider(
-    _Test test,
-  ) : this._internal(
-          () => GeneratedClassFamily()..test = test,
-          from: generatedClassFamilyProvider,
-          name: r'generatedClassFamilyProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$generatedClassFamilyHash,
-          dependencies: GeneratedClassFamilyFamily._dependencies,
-          allTransitiveDependencies:
-              GeneratedClassFamilyFamily._allTransitiveDependencies,
-          test: test,
+final class $DynamicClassProvider
+    extends $NotifierProvider<$DynamicClass, Object?> {
+  const $DynamicClassProvider._(
+      {super.runNotifierBuildOverride, $DynamicClass Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'$dynamicClassProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
         );
 
-  GeneratedClassFamilyProvider._internal(
-    super.create, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.test,
-  }) : super.internal();
-
-  final _Test test;
+  final $DynamicClass Function()? _createCb;
 
   @override
-  _Test runNotifierBuild(
-    covariant GeneratedClassFamily notifier,
-  ) {
-    return notifier.build(
-      test,
-    );
-  }
+  String debugGetCreateSourceHash() => _$$dynamicClassHash();
 
-  @override
-  Override overrideWith(GeneratedClassFamily Function() create) {
-    return ProviderOverride(
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Object? value) {
+    return $ProviderOverride(
       origin: this,
-      override: GeneratedClassFamilyProvider._internal(
-        () => create()..test = test,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        test: test,
-      ),
+      providerOverride: $ValueProvider<Object?>(value),
     );
   }
 
+  @$internal
   @override
-  (_Test,) get argument {
-    return (test,);
-  }
+  $DynamicClass create() => _createCb?.call() ?? $DynamicClass();
 
+  @$internal
   @override
-  AutoDisposeNotifierProviderElement<GeneratedClassFamily, _Test>
-      createElement() {
-    return _GeneratedClassFamilyProviderElement(this);
-  }
-
-  GeneratedClassFamilyProvider _copyWith(
-    GeneratedClassFamily Function() create,
+  $DynamicClassProvider $copyWithCreate(
+    $DynamicClass Function() create,
   ) {
-    return GeneratedClassFamilyProvider._internal(
-      () => create()..test = test,
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-      test: test,
-    );
+    return $DynamicClassProvider._(create: create);
   }
 
+  @$internal
   @override
-  bool operator ==(Object other) {
-    return other is GeneratedClassFamilyProvider && other.test == test;
+  $DynamicClassProvider $copyWithBuild(
+    Object? Function(
+      Ref<Object?>,
+      $DynamicClass,
+    ) build,
+  ) {
+    return $DynamicClassProvider._(runNotifierBuildOverride: build);
   }
 
+  @$internal
   @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, test.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
-}
-
-mixin GeneratedClassFamilyRef on AutoDisposeNotifierProviderRef<_Test> {
-  /// The parameter `test` of this provider.
-  _Test get test;
-}
-
-class _GeneratedClassFamilyProviderElement
-    extends AutoDisposeNotifierProviderElement<GeneratedClassFamily, _Test>
-    with GeneratedClassFamilyRef {
-  _GeneratedClassFamilyProviderElement(super.provider);
-
-  @override
-  _Test get test => (origin as GeneratedClassFamilyProvider).test;
+  $NotifierProviderElement<$DynamicClass, Object?> $createElement(
+          ProviderContainer container) =>
+      $NotifierProviderElement(this, container);
 }
 
 String _$$dynamicClassHash() => r'c6d8e5191c3f060df3ce3eee66107433fd4c3292';
 
-/// See also [$DynamicClass].
-@ProviderFor($DynamicClass)
-final $dynamicClassProvider =
-    AutoDisposeNotifierProvider<$DynamicClass, Object?>.internal(
-  $DynamicClass.new,
-  name: r'$dynamicClassProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$$dynamicClassHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef _$$DynamicClass = AutoDisposeNotifier<Object?>;
-String _$$dynamicClassFamilyHash() =>
-    r'bdda961386f3b647c071d79293a8da441580c470';
-
-abstract class _$$DynamicClassFamily
-    extends BuildlessAutoDisposeNotifier<Object?> {
-  late final test;
-
-  Object? build(
-    test,
-  );
+abstract class _$$DynamicClass extends $Notifier<Object?> {
+  Object? build();
+  @$internal
+  @override
+  Object? runBuild() => build();
 }
 
-/// See also [$DynamicClassFamily].
 @ProviderFor($DynamicClassFamily)
-const $dynamicClassFamilyProvider = $DynamicClassFamilyFamily();
+const $dynamicClassFamilyProvider = $DynamicClassFamilyFamily._();
 
-/// See also [$DynamicClassFamily].
-class $DynamicClassFamilyFamily extends Family {
-  /// See also [$DynamicClassFamily].
-  const $DynamicClassFamilyFamily();
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'$dynamicClassFamilyProvider';
-
-  /// See also [$DynamicClassFamily].
-  $DynamicClassFamilyProvider call(
-    test,
-  ) {
-    return $DynamicClassFamilyProvider(
-      test,
-    );
-  }
-
-  @visibleForOverriding
-  @override
-  $DynamicClassFamilyProvider getProviderOverride(
-    covariant $DynamicClassFamilyProvider provider,
-  ) {
-    return call(
-      provider.test,
-    );
-  }
-
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith($DynamicClassFamily Function() create) {
-    return _$$DynamicClassFamilyFamilyOverride(this, create);
-  }
-}
-
-class _$$DynamicClassFamilyFamilyOverride implements FamilyOverride {
-  _$$DynamicClassFamilyFamilyOverride(this.overriddenFamily, this.create);
-
-  final $DynamicClassFamily Function() create;
-
-  @override
-  final $DynamicClassFamilyFamily overriddenFamily;
-
-  @override
-  $DynamicClassFamilyProvider getProviderOverride(
-    covariant $DynamicClassFamilyProvider provider,
-  ) {
-    return provider._copyWith(create);
-  }
-}
-
-/// See also [$DynamicClassFamily].
-class $DynamicClassFamilyProvider
-    extends AutoDisposeNotifierProviderImpl<$DynamicClassFamily, Object?> {
-  /// See also [$DynamicClassFamily].
-  $DynamicClassFamilyProvider(
-    test,
-  ) : this._internal(
-          () => $DynamicClassFamily()..test = test,
-          from: $dynamicClassFamilyProvider,
+final class $DynamicClassFamilyProvider
+    extends $NotifierProvider<$DynamicClassFamily, Object?> {
+  const $DynamicClassFamilyProvider._(
+      {required $DynamicClassFamilyFamily super.from,
+      required dynamic super.argument,
+      super.runNotifierBuildOverride,
+      $DynamicClassFamily Function()? create})
+      : _createCb = create,
+        super(
           name: r'$dynamicClassFamilyProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$$dynamicClassFamilyHash,
-          dependencies: $DynamicClassFamilyFamily._dependencies,
-          allTransitiveDependencies:
-              $DynamicClassFamilyFamily._allTransitiveDependencies,
-          test: test,
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
         );
 
-  $DynamicClassFamilyProvider._internal(
-    super.create, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.test,
-  }) : super.internal();
-
-  final test;
+  final $DynamicClassFamily Function()? _createCb;
 
   @override
-  Object? runNotifierBuild(
-    covariant $DynamicClassFamily notifier,
-  ) {
-    return notifier.build(
-      test,
-    );
+  String debugGetCreateSourceHash() => _$$dynamicClassFamilyHash();
+
+  @override
+  String toString() {
+    return r'$dynamicClassFamilyProvider'
+        ''
+        '($argument)';
   }
 
-  @override
-  Override overrideWith($DynamicClassFamily Function() create) {
-    return ProviderOverride(
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Object? value) {
+    return $ProviderOverride(
       origin: this,
-      override: $DynamicClassFamilyProvider._internal(
-        () => create()..test = test,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        test: test,
-      ),
+      providerOverride: $ValueProvider<Object?>(value),
     );
   }
 
+  @$internal
   @override
-  (dynamic,) get argument {
-    return (test,);
-  }
+  $DynamicClassFamily create() => _createCb?.call() ?? $DynamicClassFamily();
 
+  @$internal
   @override
-  AutoDisposeNotifierProviderElement<$DynamicClassFamily, Object?>
-      createElement() {
-    return _$DynamicClassFamilyProviderElement(this);
-  }
-
-  $DynamicClassFamilyProvider _copyWith(
+  $DynamicClassFamilyProvider $copyWithCreate(
     $DynamicClassFamily Function() create,
   ) {
-    return $DynamicClassFamilyProvider._internal(
-      () => create()..test = test,
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-      test: test,
-    );
+    return $DynamicClassFamilyProvider._(
+        argument: argument as dynamic,
+        from: from! as $DynamicClassFamilyFamily,
+        create: create);
   }
+
+  @$internal
+  @override
+  $DynamicClassFamilyProvider $copyWithBuild(
+    Object? Function(
+      Ref<Object?>,
+      $DynamicClassFamily,
+    ) build,
+  ) {
+    return $DynamicClassFamilyProvider._(
+        argument: argument as dynamic,
+        from: from! as $DynamicClassFamilyFamily,
+        runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<$DynamicClassFamily, Object?> $createElement(
+          ProviderContainer container) =>
+      $NotifierProviderElement(this, container);
 
   @override
   bool operator ==(Object other) {
-    return other is $DynamicClassFamilyProvider && other.test == test;
+    return other is $DynamicClassFamilyProvider && other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, test.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-mixin $DynamicClassFamilyRef on AutoDisposeNotifierProviderRef<Object?> {
-  /// The parameter `test` of this provider.
-  get test;
-}
+String _$$dynamicClassFamilyHash() =>
+    r'bdda961386f3b647c071d79293a8da441580c470';
 
-class _$DynamicClassFamilyProviderElement
-    extends AutoDisposeNotifierProviderElement<$DynamicClassFamily, Object?>
-    with $DynamicClassFamilyRef {
-  _$DynamicClassFamilyProviderElement(super.provider);
+final class $DynamicClassFamilyFamily extends Family {
+  const $DynamicClassFamilyFamily._()
+      : super(
+          name: r'$dynamicClassFamilyProvider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  $DynamicClassFamilyProvider call(
+    dynamic test,
+  ) =>
+      $DynamicClassFamilyProvider._(argument: test, from: this);
 
   @override
-  get test => (origin as $DynamicClassFamilyProvider).test;
+  String debugGetCreateSourceHash() => _$$dynamicClassFamilyHash();
+
+  @override
+  String toString() => r'$dynamicClassFamilyProvider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    $DynamicClassFamily Function(
+      dynamic args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as $DynamicClassFamilyProvider;
+
+        final argument = provider.argument as dynamic;
+
+        return provider
+            .$copyWithCreate(() => create(argument))
+            .$createElement(container);
+      },
+    );
+  }
+
+  /// {@macro riverpod.override_with_build}
+  Override overrideWithBuild(
+    Object? Function(
+            Ref<Object?> ref, $DynamicClassFamily notifier, dynamic argument)
+        build,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as $DynamicClassFamilyProvider;
+
+        final argument = provider.argument as dynamic;
+
+        return provider
+            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
+            .$createElement(container);
+      },
+    );
+  }
+}
+
+abstract class _$$DynamicClassFamily extends $Notifier<Object?> {
+  late final _$args =
+      (ref as $NotifierProviderElement).origin.argument as dynamic;
+  dynamic get test => _$args;
+
+  Object? build(
+    dynamic test,
+  );
+  @$internal
+  @override
+  Object? runBuild() => build(
+        _$args,
+      );
+}
+
+@ProviderFor(AliasClass)
+const aliasClassProvider = AliasClassProvider._();
+
+final class AliasClassProvider
+    extends $NotifierProvider<AliasClass, r.AsyncValue<int>> {
+  const AliasClassProvider._(
+      {super.runNotifierBuildOverride, AliasClass Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'aliasClassProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final AliasClass Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$aliasClassHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(r.AsyncValue<int> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<r.AsyncValue<int>>(value),
+    );
+  }
+
+  @$internal
+  @override
+  AliasClass create() => _createCb?.call() ?? AliasClass();
+
+  @$internal
+  @override
+  AliasClassProvider $copyWithCreate(
+    AliasClass Function() create,
+  ) {
+    return AliasClassProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  AliasClassProvider $copyWithBuild(
+    r.AsyncValue<int> Function(
+      Ref<r.AsyncValue<int>>,
+      AliasClass,
+    ) build,
+  ) {
+    return AliasClassProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<AliasClass, r.AsyncValue<int>> $createElement(
+          ProviderContainer container) =>
+      $NotifierProviderElement(this, container);
 }
 
 String _$aliasClassHash() => r'a6c6d7594ebd09ba728e42d79b12af560d09c379';
 
-/// See also [AliasClass].
-@ProviderFor(AliasClass)
-final aliasClassProvider =
-    AutoDisposeNotifierProvider<AliasClass, r.AsyncValue<int>>.internal(
-  AliasClass.new,
-  name: r'aliasClassProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$aliasClassHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef _$AliasClass = AutoDisposeNotifier<r.AsyncValue<int>>;
-String _$aliasClassFamilyHash() => r'3f348beb95dae3a9890b4a4d0ce01481316fc66d';
-
-abstract class _$AliasClassFamily
-    extends BuildlessAutoDisposeNotifier<r.AsyncValue<int>> {
-  late final r.AsyncValue<int> test;
-
-  r.AsyncValue<int> build(
-    r.AsyncValue<int> test,
-  );
+abstract class _$AliasClass extends $Notifier<r.AsyncValue<int>> {
+  r.AsyncValue<int> build();
+  @$internal
+  @override
+  r.AsyncValue<int> runBuild() => build();
 }
 
-/// See also [AliasClassFamily].
 @ProviderFor(AliasClassFamily)
-const aliasClassFamilyProvider = AliasClassFamilyFamily();
+const aliasClassFamilyProvider = AliasClassFamilyFamily._();
 
-/// See also [AliasClassFamily].
-class AliasClassFamilyFamily extends Family {
-  /// See also [AliasClassFamily].
-  const AliasClassFamilyFamily();
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'aliasClassFamilyProvider';
-
-  /// See also [AliasClassFamily].
-  AliasClassFamilyProvider call(
-    r.AsyncValue<int> test,
-  ) {
-    return AliasClassFamilyProvider(
-      test,
-    );
-  }
-
-  @visibleForOverriding
-  @override
-  AliasClassFamilyProvider getProviderOverride(
-    covariant AliasClassFamilyProvider provider,
-  ) {
-    return call(
-      provider.test,
-    );
-  }
-
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(AliasClassFamily Function() create) {
-    return _$AliasClassFamilyFamilyOverride(this, create);
-  }
-}
-
-class _$AliasClassFamilyFamilyOverride implements FamilyOverride {
-  _$AliasClassFamilyFamilyOverride(this.overriddenFamily, this.create);
-
-  final AliasClassFamily Function() create;
-
-  @override
-  final AliasClassFamilyFamily overriddenFamily;
-
-  @override
-  AliasClassFamilyProvider getProviderOverride(
-    covariant AliasClassFamilyProvider provider,
-  ) {
-    return provider._copyWith(create);
-  }
-}
-
-/// See also [AliasClassFamily].
-class AliasClassFamilyProvider extends AutoDisposeNotifierProviderImpl<
-    AliasClassFamily, r.AsyncValue<int>> {
-  /// See also [AliasClassFamily].
-  AliasClassFamilyProvider(
-    r.AsyncValue<int> test,
-  ) : this._internal(
-          () => AliasClassFamily()..test = test,
-          from: aliasClassFamilyProvider,
+final class AliasClassFamilyProvider
+    extends $NotifierProvider<AliasClassFamily, r.AsyncValue<int>> {
+  const AliasClassFamilyProvider._(
+      {required AliasClassFamilyFamily super.from,
+      required r.AsyncValue<int> super.argument,
+      super.runNotifierBuildOverride,
+      AliasClassFamily Function()? create})
+      : _createCb = create,
+        super(
           name: r'aliasClassFamilyProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$aliasClassFamilyHash,
-          dependencies: AliasClassFamilyFamily._dependencies,
-          allTransitiveDependencies:
-              AliasClassFamilyFamily._allTransitiveDependencies,
-          test: test,
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
         );
 
-  AliasClassFamilyProvider._internal(
-    super.create, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.test,
-  }) : super.internal();
-
-  final r.AsyncValue<int> test;
+  final AliasClassFamily Function()? _createCb;
 
   @override
-  r.AsyncValue<int> runNotifierBuild(
-    covariant AliasClassFamily notifier,
-  ) {
-    return notifier.build(
-      test,
-    );
+  String debugGetCreateSourceHash() => _$aliasClassFamilyHash();
+
+  @override
+  String toString() {
+    return r'aliasClassFamilyProvider'
+        ''
+        '($argument)';
   }
 
-  @override
-  Override overrideWith(AliasClassFamily Function() create) {
-    return ProviderOverride(
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(r.AsyncValue<int> value) {
+    return $ProviderOverride(
       origin: this,
-      override: AliasClassFamilyProvider._internal(
-        () => create()..test = test,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        test: test,
-      ),
+      providerOverride: $ValueProvider<r.AsyncValue<int>>(value),
     );
   }
 
+  @$internal
   @override
-  (r.AsyncValue<int>,) get argument {
-    return (test,);
-  }
+  AliasClassFamily create() => _createCb?.call() ?? AliasClassFamily();
 
+  @$internal
   @override
-  AutoDisposeNotifierProviderElement<AliasClassFamily, r.AsyncValue<int>>
-      createElement() {
-    return _AliasClassFamilyProviderElement(this);
-  }
-
-  AliasClassFamilyProvider _copyWith(
+  AliasClassFamilyProvider $copyWithCreate(
     AliasClassFamily Function() create,
   ) {
-    return AliasClassFamilyProvider._internal(
-      () => create()..test = test,
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-      test: test,
-    );
+    return AliasClassFamilyProvider._(
+        argument: argument as r.AsyncValue<int>,
+        from: from! as AliasClassFamilyFamily,
+        create: create);
   }
+
+  @$internal
+  @override
+  AliasClassFamilyProvider $copyWithBuild(
+    r.AsyncValue<int> Function(
+      Ref<r.AsyncValue<int>>,
+      AliasClassFamily,
+    ) build,
+  ) {
+    return AliasClassFamilyProvider._(
+        argument: argument as r.AsyncValue<int>,
+        from: from! as AliasClassFamilyFamily,
+        runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<AliasClassFamily, r.AsyncValue<int>> $createElement(
+          ProviderContainer container) =>
+      $NotifierProviderElement(this, container);
 
   @override
   bool operator ==(Object other) {
-    return other is AliasClassFamilyProvider && other.test == test;
+    return other is AliasClassFamilyProvider && other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, test.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-mixin AliasClassFamilyRef on AutoDisposeNotifierProviderRef<r.AsyncValue<int>> {
-  /// The parameter `test` of this provider.
-  r.AsyncValue<int> get test;
-}
+String _$aliasClassFamilyHash() => r'3f348beb95dae3a9890b4a4d0ce01481316fc66d';
 
-class _AliasClassFamilyProviderElement
-    extends AutoDisposeNotifierProviderElement<AliasClassFamily,
-        r.AsyncValue<int>> with AliasClassFamilyRef {
-  _AliasClassFamilyProviderElement(super.provider);
+final class AliasClassFamilyFamily extends Family {
+  const AliasClassFamilyFamily._()
+      : super(
+          name: r'aliasClassFamilyProvider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  AliasClassFamilyProvider call(
+    r.AsyncValue<int> test,
+  ) =>
+      AliasClassFamilyProvider._(argument: test, from: this);
 
   @override
-  r.AsyncValue<int> get test => (origin as AliasClassFamilyProvider).test;
+  String debugGetCreateSourceHash() => _$aliasClassFamilyHash();
+
+  @override
+  String toString() => r'aliasClassFamilyProvider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    AliasClassFamily Function(
+      r.AsyncValue<int> args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as AliasClassFamilyProvider;
+
+        final argument = provider.argument as r.AsyncValue<int>;
+
+        return provider
+            .$copyWithCreate(() => create(argument))
+            .$createElement(container);
+      },
+    );
+  }
+
+  /// {@macro riverpod.override_with_build}
+  Override overrideWithBuild(
+    r.AsyncValue<int> Function(Ref<r.AsyncValue<int>> ref,
+            AliasClassFamily notifier, r.AsyncValue<int> argument)
+        build,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as AliasClassFamilyProvider;
+
+        final argument = provider.argument as r.AsyncValue<int>;
+
+        return provider
+            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
+            .$createElement(container);
+      },
+    );
+  }
 }
+
+abstract class _$AliasClassFamily extends $Notifier<r.AsyncValue<int>> {
+  late final _$args =
+      (ref as $NotifierProviderElement).origin.argument as r.AsyncValue<int>;
+  r.AsyncValue<int> get test => _$args;
+
+  r.AsyncValue<int> build(
+    r.AsyncValue<int> test,
+  );
+  @$internal
+  @override
+  r.AsyncValue<int> runBuild() => build(
+        _$args,
+      );
+}
+
+const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

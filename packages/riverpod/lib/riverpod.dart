@@ -1,72 +1,58 @@
-export 'package:state_notifier/state_notifier.dart' hide Listener, LocatorMixin;
+// TODO CHANGELOG breaking: Riverpod now only re-exports StateNotifier from pkg:state_notifier.
+//  for other classes, please add state_notifier as dependency.
+export 'package:state_notifier/state_notifier.dart' show StateNotifier;
 
-export 'src/async_notifier.dart'
-    hide
-        AsyncNotifierProviderImpl,
-        AutoDisposeAsyncNotifierProviderImpl,
-        AutoDisposeFamilyAsyncNotifierProviderImpl,
-        FamilyAsyncNotifierProviderImpl,
-        AsyncNotifierBase,
-        AsyncNotifierProviderBase,
-        CancelAsyncSubscription,
-        BuildlessAsyncNotifier,
-        BuildlessAutoDisposeAsyncNotifier,
-        FutureHandlerProviderElementMixin,
-        FamilyStreamNotifierProviderImpl,
-        StreamNotifierProviderImpl,
-        AutoDisposeStreamNotifierProviderImpl,
-        AutoDisposeFamilyStreamNotifierProviderImpl,
-        StreamNotifierProviderBase,
-        BuildlessAutoDisposeStreamNotifier,
-        BuildlessStreamNotifier;
+// TODO assert all provider variants have const constructors
 
-export 'src/common.dart' hide AsyncTransition;
-
+export 'src/core/async_value.dart' hide AsyncTransition;
 export 'src/framework.dart'
     hide
         ProviderScheduler,
         debugCanModifyProviders,
         Vsync,
-        ValueProviderElement,
-        ValueProvider,
+        $ValueProvider,
         FamilyCreate,
-        AsyncSelector,
-        FamilyBase,
-        FamilyOverrideImpl,
-        AutoDisposeProviderElementMixin,
-        FamilyOverride,
-        NotifierFamilyBase,
+        FunctionalFamily,
+        $FamilyOverride,
+        ClassFamily,
         SetupFamilyOverride,
         SetupOverride,
-        AutoDisposeNotifierFamilyBase,
-        ProviderOverride,
-        AutoDisposeFamilyBase,
-        AlwaysAliveAsyncSelector,
-        handleFireImmediately,
-        DebugGetCreateSourceHash,
-        ProviderNotifierCreate,
-        ProviderCreate,
+        $ProviderOverride,
+        ClassProviderFactory,
+        FunctionalProviderFactory,
         computeAllTransitiveDependencies,
         Create,
         Node,
         ProviderElementProxy,
-        OnError;
+        OnError,
+        ProviderContainerTest,
+        DebugRiverpodDevtoolBiding,
+        TransitiveFamilyOverride,
+        TransitiveProviderOverride,
+        ProviderPointer,
+        ProviderPointerManager,
+        ProviderDirectory,
+        $AsyncClassModifier,
+        $FutureModifier,
+        ProviderElementBase,
+        ClassBaseX,
+        CancelAsyncSubscription,
+        $ClassBase,
+        FutureModifierElement,
+        RunNotifierBuild,
+        $FunctionalProvider,
+        $ClassProvider,
+        LegacyProviderMixin,
+        ClassProviderElement;
 
-export 'src/future_provider.dart';
+export 'src/providers/async_notifier.dart'
+    hide $AsyncNotifier, $AsyncNotifierProvider;
+// TODO changelog breaking: StateNotifier & co are no-longer exported from pkg:riverpod/riverpod.dart
+//  Use pkg:riverpod/legacy.dart
 
-export 'src/notifier.dart'
-    hide
-        NotifierBase,
-        NotifierProviderBase,
-        AutoDisposeFamilyNotifierProviderImpl,
-        AutoDisposeNotifierProviderImpl,
-        FamilyNotifierProviderImpl,
-        NotifierProviderImpl,
-        BuildlessAutoDisposeNotifier,
-        BuildlessNotifier;
-
-export 'src/provider.dart' hide InternalProvider;
-export 'src/state_controller.dart';
-export 'src/state_notifier_provider.dart';
-export 'src/state_provider.dart';
-export 'src/stream_provider.dart';
+export 'src/providers/future_provider.dart';
+export 'src/providers/notifier.dart' hide $Notifier, $NotifierProvider;
+export 'src/providers/provider.dart';
+export 'src/providers/stream_notifier.dart'
+    hide $StreamNotifier, $StreamNotifierProvider;
+export 'src/providers/stream_provider.dart';

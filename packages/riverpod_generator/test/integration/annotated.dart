@@ -7,7 +7,8 @@ part 'annotated.g.dart';
 @Deprecated('Deprecation message')
 @visibleForTesting
 @protected
-String functional(FunctionalRef ref) => 'functional';
+String functional(FunctionalRef ref, @Deprecated('field') int id) =>
+    'functional';
 
 @riverpod
 @Deprecated('Deprecation message')
@@ -15,7 +16,7 @@ String functional(FunctionalRef ref) => 'functional';
 @protected
 class ClassBased extends _$ClassBased {
   @override
-  String build() => 'ClassBased';
+  String build(@Deprecated('field') int id) => 'ClassBased';
 }
 
 @riverpod

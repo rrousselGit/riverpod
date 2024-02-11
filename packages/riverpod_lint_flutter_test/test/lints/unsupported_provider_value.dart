@@ -89,7 +89,7 @@ class MyNotifier extends Notifier<int> {
   int build() => 0;
 }
 
-class MyAutoDisposeNotifier extends AutoDisposeNotifier<int> {
+class MyAutoDisposeNotifier extends Notifier<int> {
   @override
   int build() => 0;
 }

@@ -1,4 +1,4 @@
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:riverpod/riverpod.dart';
 
 /* SNIPPET START */
 // We can specify autoDispose to enable automatic state destruction.

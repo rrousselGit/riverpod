@@ -23,7 +23,8 @@ class TodoListView extends ConsumerWidget {
             value: todo.completed,
             // По клику меняем статус задачи
             // выполнена/не выполнена
-            onChanged: (value) => ref.read(todosProvider.notifier).toggle(todo.id),
+            onChanged: (value) =>
+                ref.read(todosProvider.notifier).toggle(todo.id),
             title: Text(todo.description),
           ),
       ],

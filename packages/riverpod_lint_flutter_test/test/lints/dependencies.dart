@@ -1,12 +1,10 @@
 // ignore_for_file: unused_field
 
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'another.dart' as import_alias;
 
 part 'dependencies.g.dart';
-
-@riverpod
-external int unimplementedScoped();
 
 @Riverpod(dependencies: [])
 int dep(DepRef ref) => 0;
@@ -27,12 +25,6 @@ int generatedRoot(GeneratedRootRef ref) => 0;
 int watchScopedButNoDependencies(WatchScopedButNoDependenciesRef ref) {
   // expect_lint: avoid_manual_providers_as_generated_provider_dependency
   return ref.watch(scoped);
-}
-
-// expect_lint: provider_dependencies
-@riverpod
-int watchExternalButNoDependencies(WatchExternalButNoDependenciesRef ref) {
-  return ref.watch(unimplementedScopedProvider);
 }
 
 // expect_lint: provider_dependencies

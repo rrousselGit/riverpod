@@ -6,839 +6,1865 @@ part of 'dependencies.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$unimplementedScopedHash() =>
-    r'5f32fc56f4157238612d62ef54038fe92b7cdfe8';
+typedef DepRef = Ref<int>;
 
-/// See also [unimplementedScoped].
-@ProviderFor(unimplementedScoped)
-final unimplementedScopedProvider = AutoDisposeProvider<int>.internal(
-  (_) => throw UnsupportedError(
-    'The provider "unimplementedScopedProvider" is expected to get overridden/scoped, '
-    'but was accessed without an override.',
-  ),
-  name: r'unimplementedScopedProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$unimplementedScopedHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+@ProviderFor(dep)
+const depProvider = DepProvider._();
 
-typedef UnimplementedScopedRef = AutoDisposeProviderRef<int>;
+final class DepProvider extends $FunctionalProvider<int, int, DepRef>
+    with $Provider<int, DepRef> {
+  const DepProvider._(
+      {int Function(
+        DepRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'depProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[],
+          allTransitiveDependencies: const <ProviderOrFamily>[],
+        );
+
+  final int Function(
+    DepRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$depHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  DepProvider $copyWithCreate(
+    int Function(
+      DepRef ref,
+    ) create,
+  ) {
+    return DepProvider._(create: create);
+  }
+
+  @override
+  int create(DepRef ref) {
+    final _$cb = _createCb ?? dep;
+    return _$cb(ref);
+  }
+}
+
 String _$depHash() => r'749c4d696d29c72686cabcabd6fa7855f5cbf4db';
 
-/// See also [dep].
-@ProviderFor(dep)
-final depProvider = AutoDisposeProvider<int>.internal(
-  dep,
-  name: r'depProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$depHash,
-  dependencies: const <ProviderOrFamily>[],
-  allTransitiveDependencies: const <ProviderOrFamily>{},
-);
+typedef GeneratedScopedRef = Ref<int>;
 
-typedef DepRef = AutoDisposeProviderRef<int>;
+@ProviderFor(generatedScoped)
+const generatedScopedProvider = GeneratedScopedProvider._();
+
+final class GeneratedScopedProvider
+    extends $FunctionalProvider<int, int, GeneratedScopedRef>
+    with $Provider<int, GeneratedScopedRef> {
+  const GeneratedScopedProvider._(
+      {int Function(
+        GeneratedScopedRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'generatedScopedProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[],
+          allTransitiveDependencies: const <ProviderOrFamily>[],
+        );
+
+  final int Function(
+    GeneratedScopedRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$generatedScopedHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  GeneratedScopedProvider $copyWithCreate(
+    int Function(
+      GeneratedScopedRef ref,
+    ) create,
+  ) {
+    return GeneratedScopedProvider._(create: create);
+  }
+
+  @override
+  int create(GeneratedScopedRef ref) {
+    final _$cb = _createCb ?? generatedScoped;
+    return _$cb(ref);
+  }
+}
+
 String _$generatedScopedHash() => r'2eefb4cc872ddccfeb862142fd5f7e6d8bd82159';
 
-/// See also [generatedScoped].
-@ProviderFor(generatedScoped)
-final generatedScopedProvider = AutoDisposeProvider<int>.internal(
-  generatedScoped,
-  name: r'generatedScopedProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$generatedScopedHash,
-  dependencies: const <ProviderOrFamily>[],
-  allTransitiveDependencies: const <ProviderOrFamily>{},
-);
+typedef GeneratedRootRef = Ref<int>;
 
-typedef GeneratedScopedRef = AutoDisposeProviderRef<int>;
+@ProviderFor(generatedRoot)
+const generatedRootProvider = GeneratedRootProvider._();
+
+final class GeneratedRootProvider
+    extends $FunctionalProvider<int, int, GeneratedRootRef>
+    with $Provider<int, GeneratedRootRef> {
+  const GeneratedRootProvider._(
+      {int Function(
+        GeneratedRootRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'generatedRootProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final int Function(
+    GeneratedRootRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$generatedRootHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  GeneratedRootProvider $copyWithCreate(
+    int Function(
+      GeneratedRootRef ref,
+    ) create,
+  ) {
+    return GeneratedRootProvider._(create: create);
+  }
+
+  @override
+  int create(GeneratedRootRef ref) {
+    final _$cb = _createCb ?? generatedRoot;
+    return _$cb(ref);
+  }
+}
+
 String _$generatedRootHash() => r'080e3393566db0f44add3607e28a5a2980948704';
 
-/// See also [generatedRoot].
-@ProviderFor(generatedRoot)
-final generatedRootProvider = AutoDisposeProvider<int>.internal(
-  generatedRoot,
-  name: r'generatedRootProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$generatedRootHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+typedef WatchScopedButNoDependenciesRef = Ref<int>;
 
-typedef GeneratedRootRef = AutoDisposeProviderRef<int>;
+@ProviderFor(watchScopedButNoDependencies)
+const watchScopedButNoDependenciesProvider =
+    WatchScopedButNoDependenciesProvider._();
+
+final class WatchScopedButNoDependenciesProvider
+    extends $FunctionalProvider<int, int, WatchScopedButNoDependenciesRef>
+    with $Provider<int, WatchScopedButNoDependenciesRef> {
+  const WatchScopedButNoDependenciesProvider._(
+      {int Function(
+        WatchScopedButNoDependenciesRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'watchScopedButNoDependenciesProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final int Function(
+    WatchScopedButNoDependenciesRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$watchScopedButNoDependenciesHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  WatchScopedButNoDependenciesProvider $copyWithCreate(
+    int Function(
+      WatchScopedButNoDependenciesRef ref,
+    ) create,
+  ) {
+    return WatchScopedButNoDependenciesProvider._(create: create);
+  }
+
+  @override
+  int create(WatchScopedButNoDependenciesRef ref) {
+    final _$cb = _createCb ?? watchScopedButNoDependencies;
+    return _$cb(ref);
+  }
+}
+
 String _$watchScopedButNoDependenciesHash() =>
     r'3ec52c4ab2ea2b3204b7aa049d1756c01c014ff0';
 
-/// See also [watchScopedButNoDependencies].
-@ProviderFor(watchScopedButNoDependencies)
-final watchScopedButNoDependenciesProvider = AutoDisposeProvider<int>.internal(
-  watchScopedButNoDependencies,
-  name: r'watchScopedButNoDependenciesProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$watchScopedButNoDependenciesHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+typedef WatchGeneratedScopedButNoDependenciesRef = Ref<int>;
 
-typedef WatchScopedButNoDependenciesRef = AutoDisposeProviderRef<int>;
-String _$watchExternalButNoDependenciesHash() =>
-    r'bbe1ed12645a261e2030222549308d378f5f368c';
+@ProviderFor(watchGeneratedScopedButNoDependencies)
+const watchGeneratedScopedButNoDependenciesProvider =
+    WatchGeneratedScopedButNoDependenciesProvider._();
 
-/// See also [watchExternalButNoDependencies].
-@ProviderFor(watchExternalButNoDependencies)
-final watchExternalButNoDependenciesProvider =
-    AutoDisposeProvider<int>.internal(
-  watchExternalButNoDependencies,
-  name: r'watchExternalButNoDependenciesProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$watchExternalButNoDependenciesHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+final class WatchGeneratedScopedButNoDependenciesProvider
+    extends $FunctionalProvider<int, int,
+        WatchGeneratedScopedButNoDependenciesRef>
+    with $Provider<int, WatchGeneratedScopedButNoDependenciesRef> {
+  const WatchGeneratedScopedButNoDependenciesProvider._(
+      {int Function(
+        WatchGeneratedScopedButNoDependenciesRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'watchGeneratedScopedButNoDependenciesProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
 
-typedef WatchExternalButNoDependenciesRef = AutoDisposeProviderRef<int>;
+  final int Function(
+    WatchGeneratedScopedButNoDependenciesRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() =>
+      _$watchGeneratedScopedButNoDependenciesHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  WatchGeneratedScopedButNoDependenciesProvider $copyWithCreate(
+    int Function(
+      WatchGeneratedScopedButNoDependenciesRef ref,
+    ) create,
+  ) {
+    return WatchGeneratedScopedButNoDependenciesProvider._(create: create);
+  }
+
+  @override
+  int create(WatchGeneratedScopedButNoDependenciesRef ref) {
+    final _$cb = _createCb ?? watchGeneratedScopedButNoDependencies;
+    return _$cb(ref);
+  }
+}
+
 String _$watchGeneratedScopedButNoDependenciesHash() =>
     r'2a4aba824078fe2c999260b4138939dee96c4fba';
 
-/// See also [watchGeneratedScopedButNoDependencies].
-@ProviderFor(watchGeneratedScopedButNoDependencies)
-final watchGeneratedScopedButNoDependenciesProvider =
-    AutoDisposeProvider<int>.internal(
-  watchGeneratedScopedButNoDependencies,
-  name: r'watchGeneratedScopedButNoDependenciesProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$watchGeneratedScopedButNoDependenciesHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+typedef WatchRootButNoDependenciesRef = Ref<int>;
 
-typedef WatchGeneratedScopedButNoDependenciesRef = AutoDisposeProviderRef<int>;
+@ProviderFor(watchRootButNoDependencies)
+const watchRootButNoDependenciesProvider =
+    WatchRootButNoDependenciesProvider._();
+
+final class WatchRootButNoDependenciesProvider
+    extends $FunctionalProvider<int, int, WatchRootButNoDependenciesRef>
+    with $Provider<int, WatchRootButNoDependenciesRef> {
+  const WatchRootButNoDependenciesProvider._(
+      {int Function(
+        WatchRootButNoDependenciesRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'watchRootButNoDependenciesProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final int Function(
+    WatchRootButNoDependenciesRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$watchRootButNoDependenciesHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  WatchRootButNoDependenciesProvider $copyWithCreate(
+    int Function(
+      WatchRootButNoDependenciesRef ref,
+    ) create,
+  ) {
+    return WatchRootButNoDependenciesProvider._(create: create);
+  }
+
+  @override
+  int create(WatchRootButNoDependenciesRef ref) {
+    final _$cb = _createCb ?? watchRootButNoDependencies;
+    return _$cb(ref);
+  }
+}
+
 String _$watchRootButNoDependenciesHash() =>
     r'037187e333a5bd5d11d00147d179640b8a0f18dd';
 
-/// See also [watchRootButNoDependencies].
-@ProviderFor(watchRootButNoDependencies)
-final watchRootButNoDependenciesProvider = AutoDisposeProvider<int>.internal(
-  watchRootButNoDependencies,
-  name: r'watchRootButNoDependenciesProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$watchRootButNoDependenciesHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+typedef WatchGeneratedRootButNoDependenciesRef = Ref<int>;
 
-typedef WatchRootButNoDependenciesRef = AutoDisposeProviderRef<int>;
+@ProviderFor(watchGeneratedRootButNoDependencies)
+const watchGeneratedRootButNoDependenciesProvider =
+    WatchGeneratedRootButNoDependenciesProvider._();
+
+final class WatchGeneratedRootButNoDependenciesProvider
+    extends $FunctionalProvider<int, int,
+        WatchGeneratedRootButNoDependenciesRef>
+    with $Provider<int, WatchGeneratedRootButNoDependenciesRef> {
+  const WatchGeneratedRootButNoDependenciesProvider._(
+      {int Function(
+        WatchGeneratedRootButNoDependenciesRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'watchGeneratedRootButNoDependenciesProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final int Function(
+    WatchGeneratedRootButNoDependenciesRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() =>
+      _$watchGeneratedRootButNoDependenciesHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  WatchGeneratedRootButNoDependenciesProvider $copyWithCreate(
+    int Function(
+      WatchGeneratedRootButNoDependenciesRef ref,
+    ) create,
+  ) {
+    return WatchGeneratedRootButNoDependenciesProvider._(create: create);
+  }
+
+  @override
+  int create(WatchGeneratedRootButNoDependenciesRef ref) {
+    final _$cb = _createCb ?? watchGeneratedRootButNoDependencies;
+    return _$cb(ref);
+  }
+}
+
 String _$watchGeneratedRootButNoDependenciesHash() =>
     r'ecf43cc257376d2828638ce937813d2b72b46967';
 
-/// See also [watchGeneratedRootButNoDependencies].
-@ProviderFor(watchGeneratedRootButNoDependencies)
-final watchGeneratedRootButNoDependenciesProvider =
-    AutoDisposeProvider<int>.internal(
-  watchGeneratedRootButNoDependencies,
-  name: r'watchGeneratedRootButNoDependenciesProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$watchGeneratedRootButNoDependenciesHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+typedef WatchScopedButEmptyDependenciesRef = Ref<int>;
 
-typedef WatchGeneratedRootButNoDependenciesRef = AutoDisposeProviderRef<int>;
+@ProviderFor(watchScopedButEmptyDependencies)
+const watchScopedButEmptyDependenciesProvider =
+    WatchScopedButEmptyDependenciesProvider._();
+
+final class WatchScopedButEmptyDependenciesProvider
+    extends $FunctionalProvider<int, int, WatchScopedButEmptyDependenciesRef>
+    with $Provider<int, WatchScopedButEmptyDependenciesRef> {
+  const WatchScopedButEmptyDependenciesProvider._(
+      {int Function(
+        WatchScopedButEmptyDependenciesRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'watchScopedButEmptyDependenciesProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[],
+          allTransitiveDependencies: const <ProviderOrFamily>[],
+        );
+
+  final int Function(
+    WatchScopedButEmptyDependenciesRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$watchScopedButEmptyDependenciesHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  WatchScopedButEmptyDependenciesProvider $copyWithCreate(
+    int Function(
+      WatchScopedButEmptyDependenciesRef ref,
+    ) create,
+  ) {
+    return WatchScopedButEmptyDependenciesProvider._(create: create);
+  }
+
+  @override
+  int create(WatchScopedButEmptyDependenciesRef ref) {
+    final _$cb = _createCb ?? watchScopedButEmptyDependencies;
+    return _$cb(ref);
+  }
+}
+
 String _$watchScopedButEmptyDependenciesHash() =>
     r'6b7526eb9dfd70c8249c71efffc60d612ca92f16';
 
-/// See also [watchScopedButEmptyDependencies].
-@ProviderFor(watchScopedButEmptyDependencies)
-final watchScopedButEmptyDependenciesProvider =
-    AutoDisposeProvider<int>.internal(
-  watchScopedButEmptyDependencies,
-  name: r'watchScopedButEmptyDependenciesProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$watchScopedButEmptyDependenciesHash,
-  dependencies: const <ProviderOrFamily>[],
-  allTransitiveDependencies: const <ProviderOrFamily>{},
-);
+typedef WatchGeneratedScopedButEmptyDependenciesRef = Ref<int>;
 
-typedef WatchScopedButEmptyDependenciesRef = AutoDisposeProviderRef<int>;
+@ProviderFor(watchGeneratedScopedButEmptyDependencies)
+const watchGeneratedScopedButEmptyDependenciesProvider =
+    WatchGeneratedScopedButEmptyDependenciesProvider._();
+
+final class WatchGeneratedScopedButEmptyDependenciesProvider
+    extends $FunctionalProvider<int, int,
+        WatchGeneratedScopedButEmptyDependenciesRef>
+    with $Provider<int, WatchGeneratedScopedButEmptyDependenciesRef> {
+  const WatchGeneratedScopedButEmptyDependenciesProvider._(
+      {int Function(
+        WatchGeneratedScopedButEmptyDependenciesRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'watchGeneratedScopedButEmptyDependenciesProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[],
+          allTransitiveDependencies: const <ProviderOrFamily>[],
+        );
+
+  final int Function(
+    WatchGeneratedScopedButEmptyDependenciesRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() =>
+      _$watchGeneratedScopedButEmptyDependenciesHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  WatchGeneratedScopedButEmptyDependenciesProvider $copyWithCreate(
+    int Function(
+      WatchGeneratedScopedButEmptyDependenciesRef ref,
+    ) create,
+  ) {
+    return WatchGeneratedScopedButEmptyDependenciesProvider._(create: create);
+  }
+
+  @override
+  int create(WatchGeneratedScopedButEmptyDependenciesRef ref) {
+    final _$cb = _createCb ?? watchGeneratedScopedButEmptyDependencies;
+    return _$cb(ref);
+  }
+}
+
 String _$watchGeneratedScopedButEmptyDependenciesHash() =>
     r'5dc6791ab2f661a378de3e8335943a48e8305435';
 
-/// See also [watchGeneratedScopedButEmptyDependencies].
-@ProviderFor(watchGeneratedScopedButEmptyDependencies)
-final watchGeneratedScopedButEmptyDependenciesProvider =
-    AutoDisposeProvider<int>.internal(
-  watchGeneratedScopedButEmptyDependencies,
-  name: r'watchGeneratedScopedButEmptyDependenciesProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$watchGeneratedScopedButEmptyDependenciesHash,
-  dependencies: const <ProviderOrFamily>[],
-  allTransitiveDependencies: const <ProviderOrFamily>{},
-);
+typedef WatchRootButEmptyDependenciesRef = Ref<int>;
 
-typedef WatchGeneratedScopedButEmptyDependenciesRef
-    = AutoDisposeProviderRef<int>;
+@ProviderFor(watchRootButEmptyDependencies)
+const watchRootButEmptyDependenciesProvider =
+    WatchRootButEmptyDependenciesProvider._();
+
+final class WatchRootButEmptyDependenciesProvider
+    extends $FunctionalProvider<int, int, WatchRootButEmptyDependenciesRef>
+    with $Provider<int, WatchRootButEmptyDependenciesRef> {
+  const WatchRootButEmptyDependenciesProvider._(
+      {int Function(
+        WatchRootButEmptyDependenciesRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'watchRootButEmptyDependenciesProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[],
+          allTransitiveDependencies: const <ProviderOrFamily>[],
+        );
+
+  final int Function(
+    WatchRootButEmptyDependenciesRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$watchRootButEmptyDependenciesHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  WatchRootButEmptyDependenciesProvider $copyWithCreate(
+    int Function(
+      WatchRootButEmptyDependenciesRef ref,
+    ) create,
+  ) {
+    return WatchRootButEmptyDependenciesProvider._(create: create);
+  }
+
+  @override
+  int create(WatchRootButEmptyDependenciesRef ref) {
+    final _$cb = _createCb ?? watchRootButEmptyDependencies;
+    return _$cb(ref);
+  }
+}
+
 String _$watchRootButEmptyDependenciesHash() =>
     r'c95800f6aec446737168ac8dc3e6edcaeeed3bc0';
 
-/// See also [watchRootButEmptyDependencies].
-@ProviderFor(watchRootButEmptyDependencies)
-final watchRootButEmptyDependenciesProvider = AutoDisposeProvider<int>.internal(
-  watchRootButEmptyDependencies,
-  name: r'watchRootButEmptyDependenciesProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$watchRootButEmptyDependenciesHash,
-  dependencies: const <ProviderOrFamily>[],
-  allTransitiveDependencies: const <ProviderOrFamily>{},
-);
+typedef WatchGeneratedRootButEmptyDependenciesRef = Ref<int>;
 
-typedef WatchRootButEmptyDependenciesRef = AutoDisposeProviderRef<int>;
+@ProviderFor(watchGeneratedRootButEmptyDependencies)
+const watchGeneratedRootButEmptyDependenciesProvider =
+    WatchGeneratedRootButEmptyDependenciesProvider._();
+
+final class WatchGeneratedRootButEmptyDependenciesProvider
+    extends $FunctionalProvider<int, int,
+        WatchGeneratedRootButEmptyDependenciesRef>
+    with $Provider<int, WatchGeneratedRootButEmptyDependenciesRef> {
+  const WatchGeneratedRootButEmptyDependenciesProvider._(
+      {int Function(
+        WatchGeneratedRootButEmptyDependenciesRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'watchGeneratedRootButEmptyDependenciesProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[],
+          allTransitiveDependencies: const <ProviderOrFamily>[],
+        );
+
+  final int Function(
+    WatchGeneratedRootButEmptyDependenciesRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() =>
+      _$watchGeneratedRootButEmptyDependenciesHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  WatchGeneratedRootButEmptyDependenciesProvider $copyWithCreate(
+    int Function(
+      WatchGeneratedRootButEmptyDependenciesRef ref,
+    ) create,
+  ) {
+    return WatchGeneratedRootButEmptyDependenciesProvider._(create: create);
+  }
+
+  @override
+  int create(WatchGeneratedRootButEmptyDependenciesRef ref) {
+    final _$cb = _createCb ?? watchGeneratedRootButEmptyDependencies;
+    return _$cb(ref);
+  }
+}
+
 String _$watchGeneratedRootButEmptyDependenciesHash() =>
     r'9fb97c1fa207a18870cd23c682305dcef413a706';
 
-/// See also [watchGeneratedRootButEmptyDependencies].
-@ProviderFor(watchGeneratedRootButEmptyDependencies)
-final watchGeneratedRootButEmptyDependenciesProvider =
-    AutoDisposeProvider<int>.internal(
-  watchGeneratedRootButEmptyDependencies,
-  name: r'watchGeneratedRootButEmptyDependenciesProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$watchGeneratedRootButEmptyDependenciesHash,
-  dependencies: const <ProviderOrFamily>[],
-  allTransitiveDependencies: const <ProviderOrFamily>{},
-);
+typedef WatchScopedButMissingDependenciesRef = Ref<int>;
 
-typedef WatchGeneratedRootButEmptyDependenciesRef = AutoDisposeProviderRef<int>;
+@ProviderFor(watchScopedButMissingDependencies)
+const watchScopedButMissingDependenciesProvider =
+    WatchScopedButMissingDependenciesProvider._();
+
+final class WatchScopedButMissingDependenciesProvider
+    extends $FunctionalProvider<int, int, WatchScopedButMissingDependenciesRef>
+    with $Provider<int, WatchScopedButMissingDependenciesRef> {
+  const WatchScopedButMissingDependenciesProvider._(
+      {int Function(
+        WatchScopedButMissingDependenciesRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'watchScopedButMissingDependenciesProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[depProvider],
+          allTransitiveDependencies: const <ProviderOrFamily>[
+            WatchScopedButMissingDependenciesProvider
+                .$allTransitiveDependencies0,
+          ],
+        );
+
+  static const $allTransitiveDependencies0 = depProvider;
+
+  final int Function(
+    WatchScopedButMissingDependenciesRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() =>
+      _$watchScopedButMissingDependenciesHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  WatchScopedButMissingDependenciesProvider $copyWithCreate(
+    int Function(
+      WatchScopedButMissingDependenciesRef ref,
+    ) create,
+  ) {
+    return WatchScopedButMissingDependenciesProvider._(create: create);
+  }
+
+  @override
+  int create(WatchScopedButMissingDependenciesRef ref) {
+    final _$cb = _createCb ?? watchScopedButMissingDependencies;
+    return _$cb(ref);
+  }
+}
+
 String _$watchScopedButMissingDependenciesHash() =>
     r'9bc337d57438161120d179de48443ed4be4c5b65';
 
-/// See also [watchScopedButMissingDependencies].
-@ProviderFor(watchScopedButMissingDependencies)
-final watchScopedButMissingDependenciesProvider =
-    AutoDisposeProvider<int>.internal(
-  watchScopedButMissingDependencies,
-  name: r'watchScopedButMissingDependenciesProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$watchScopedButMissingDependenciesHash,
-  dependencies: <ProviderOrFamily>[depProvider],
-  allTransitiveDependencies: <ProviderOrFamily>{
-    depProvider,
-    ...?depProvider.allTransitiveDependencies
-  },
-);
+typedef WatchGeneratedScopedButMissingDependenciesRef = Ref<int>;
 
-typedef WatchScopedButMissingDependenciesRef = AutoDisposeProviderRef<int>;
+@ProviderFor(watchGeneratedScopedButMissingDependencies)
+const watchGeneratedScopedButMissingDependenciesProvider =
+    WatchGeneratedScopedButMissingDependenciesProvider._();
+
+final class WatchGeneratedScopedButMissingDependenciesProvider
+    extends $FunctionalProvider<int, int,
+        WatchGeneratedScopedButMissingDependenciesRef>
+    with $Provider<int, WatchGeneratedScopedButMissingDependenciesRef> {
+  const WatchGeneratedScopedButMissingDependenciesProvider._(
+      {int Function(
+        WatchGeneratedScopedButMissingDependenciesRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'watchGeneratedScopedButMissingDependenciesProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[depProvider],
+          allTransitiveDependencies: const <ProviderOrFamily>[
+            WatchGeneratedScopedButMissingDependenciesProvider
+                .$allTransitiveDependencies0,
+          ],
+        );
+
+  static const $allTransitiveDependencies0 = depProvider;
+
+  final int Function(
+    WatchGeneratedScopedButMissingDependenciesRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() =>
+      _$watchGeneratedScopedButMissingDependenciesHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  WatchGeneratedScopedButMissingDependenciesProvider $copyWithCreate(
+    int Function(
+      WatchGeneratedScopedButMissingDependenciesRef ref,
+    ) create,
+  ) {
+    return WatchGeneratedScopedButMissingDependenciesProvider._(create: create);
+  }
+
+  @override
+  int create(WatchGeneratedScopedButMissingDependenciesRef ref) {
+    final _$cb = _createCb ?? watchGeneratedScopedButMissingDependencies;
+    return _$cb(ref);
+  }
+}
+
 String _$watchGeneratedScopedButMissingDependenciesHash() =>
     r'be4cf146ec2bebf4c92f6acd73e1dee60e689c20';
 
-/// See also [watchGeneratedScopedButMissingDependencies].
-@ProviderFor(watchGeneratedScopedButMissingDependencies)
-final watchGeneratedScopedButMissingDependenciesProvider =
-    AutoDisposeProvider<int>.internal(
-  watchGeneratedScopedButMissingDependencies,
-  name: r'watchGeneratedScopedButMissingDependenciesProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$watchGeneratedScopedButMissingDependenciesHash,
-  dependencies: <ProviderOrFamily>[depProvider],
-  allTransitiveDependencies: <ProviderOrFamily>{
-    depProvider,
-    ...?depProvider.allTransitiveDependencies
-  },
-);
+typedef WatchRootButMissingDependenciesRef = Ref<int>;
 
-typedef WatchGeneratedScopedButMissingDependenciesRef
-    = AutoDisposeProviderRef<int>;
+@ProviderFor(watchRootButMissingDependencies)
+const watchRootButMissingDependenciesProvider =
+    WatchRootButMissingDependenciesProvider._();
+
+final class WatchRootButMissingDependenciesProvider
+    extends $FunctionalProvider<int, int, WatchRootButMissingDependenciesRef>
+    with $Provider<int, WatchRootButMissingDependenciesRef> {
+  const WatchRootButMissingDependenciesProvider._(
+      {int Function(
+        WatchRootButMissingDependenciesRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'watchRootButMissingDependenciesProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[depProvider],
+          allTransitiveDependencies: const <ProviderOrFamily>[
+            WatchRootButMissingDependenciesProvider.$allTransitiveDependencies0,
+          ],
+        );
+
+  static const $allTransitiveDependencies0 = depProvider;
+
+  final int Function(
+    WatchRootButMissingDependenciesRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$watchRootButMissingDependenciesHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  WatchRootButMissingDependenciesProvider $copyWithCreate(
+    int Function(
+      WatchRootButMissingDependenciesRef ref,
+    ) create,
+  ) {
+    return WatchRootButMissingDependenciesProvider._(create: create);
+  }
+
+  @override
+  int create(WatchRootButMissingDependenciesRef ref) {
+    final _$cb = _createCb ?? watchRootButMissingDependencies;
+    return _$cb(ref);
+  }
+}
+
 String _$watchRootButMissingDependenciesHash() =>
     r'aa6ca4efaba18ad3d2132439f1bb26773cceb170';
 
-/// See also [watchRootButMissingDependencies].
-@ProviderFor(watchRootButMissingDependencies)
-final watchRootButMissingDependenciesProvider =
-    AutoDisposeProvider<int>.internal(
-  watchRootButMissingDependencies,
-  name: r'watchRootButMissingDependenciesProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$watchRootButMissingDependenciesHash,
-  dependencies: <ProviderOrFamily>[depProvider],
-  allTransitiveDependencies: <ProviderOrFamily>{
-    depProvider,
-    ...?depProvider.allTransitiveDependencies
-  },
-);
+typedef WatchGeneratedRootButMissingDependenciesRef = Ref<int>;
 
-typedef WatchRootButMissingDependenciesRef = AutoDisposeProviderRef<int>;
+@ProviderFor(watchGeneratedRootButMissingDependencies)
+const watchGeneratedRootButMissingDependenciesProvider =
+    WatchGeneratedRootButMissingDependenciesProvider._();
+
+final class WatchGeneratedRootButMissingDependenciesProvider
+    extends $FunctionalProvider<int, int,
+        WatchGeneratedRootButMissingDependenciesRef>
+    with $Provider<int, WatchGeneratedRootButMissingDependenciesRef> {
+  const WatchGeneratedRootButMissingDependenciesProvider._(
+      {int Function(
+        WatchGeneratedRootButMissingDependenciesRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'watchGeneratedRootButMissingDependenciesProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[depProvider],
+          allTransitiveDependencies: const <ProviderOrFamily>[
+            WatchGeneratedRootButMissingDependenciesProvider
+                .$allTransitiveDependencies0,
+          ],
+        );
+
+  static const $allTransitiveDependencies0 = depProvider;
+
+  final int Function(
+    WatchGeneratedRootButMissingDependenciesRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() =>
+      _$watchGeneratedRootButMissingDependenciesHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  WatchGeneratedRootButMissingDependenciesProvider $copyWithCreate(
+    int Function(
+      WatchGeneratedRootButMissingDependenciesRef ref,
+    ) create,
+  ) {
+    return WatchGeneratedRootButMissingDependenciesProvider._(create: create);
+  }
+
+  @override
+  int create(WatchGeneratedRootButMissingDependenciesRef ref) {
+    final _$cb = _createCb ?? watchGeneratedRootButMissingDependencies;
+    return _$cb(ref);
+  }
+}
+
 String _$watchGeneratedRootButMissingDependenciesHash() =>
     r'eda2f1b9c3aaf26cd152108104b8bbb71774c906';
 
-/// See also [watchGeneratedRootButMissingDependencies].
-@ProviderFor(watchGeneratedRootButMissingDependencies)
-final watchGeneratedRootButMissingDependenciesProvider =
-    AutoDisposeProvider<int>.internal(
-  watchGeneratedRootButMissingDependencies,
-  name: r'watchGeneratedRootButMissingDependenciesProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$watchGeneratedRootButMissingDependenciesHash,
-  dependencies: <ProviderOrFamily>[depProvider],
-  allTransitiveDependencies: <ProviderOrFamily>{
-    depProvider,
-    ...?depProvider.allTransitiveDependencies
-  },
-);
+typedef WatchGeneratedScopedAndContainsDependencyRef = Ref<int>;
 
-typedef WatchGeneratedRootButMissingDependenciesRef
-    = AutoDisposeProviderRef<int>;
+@ProviderFor(watchGeneratedScopedAndContainsDependency)
+const watchGeneratedScopedAndContainsDependencyProvider =
+    WatchGeneratedScopedAndContainsDependencyProvider._();
+
+final class WatchGeneratedScopedAndContainsDependencyProvider
+    extends $FunctionalProvider<int, int,
+        WatchGeneratedScopedAndContainsDependencyRef>
+    with $Provider<int, WatchGeneratedScopedAndContainsDependencyRef> {
+  const WatchGeneratedScopedAndContainsDependencyProvider._(
+      {int Function(
+        WatchGeneratedScopedAndContainsDependencyRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'watchGeneratedScopedAndContainsDependencyProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[generatedScopedProvider],
+          allTransitiveDependencies: const <ProviderOrFamily>[
+            WatchGeneratedScopedAndContainsDependencyProvider
+                .$allTransitiveDependencies0,
+          ],
+        );
+
+  static const $allTransitiveDependencies0 = generatedScopedProvider;
+
+  final int Function(
+    WatchGeneratedScopedAndContainsDependencyRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() =>
+      _$watchGeneratedScopedAndContainsDependencyHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  WatchGeneratedScopedAndContainsDependencyProvider $copyWithCreate(
+    int Function(
+      WatchGeneratedScopedAndContainsDependencyRef ref,
+    ) create,
+  ) {
+    return WatchGeneratedScopedAndContainsDependencyProvider._(create: create);
+  }
+
+  @override
+  int create(WatchGeneratedScopedAndContainsDependencyRef ref) {
+    final _$cb = _createCb ?? watchGeneratedScopedAndContainsDependency;
+    return _$cb(ref);
+  }
+}
+
 String _$watchGeneratedScopedAndContainsDependencyHash() =>
     r'320592737e763091c1229a79ae07fe961e7aab72';
 
-/// See also [watchGeneratedScopedAndContainsDependency].
-@ProviderFor(watchGeneratedScopedAndContainsDependency)
-final watchGeneratedScopedAndContainsDependencyProvider =
-    AutoDisposeProvider<int>.internal(
-  watchGeneratedScopedAndContainsDependency,
-  name: r'watchGeneratedScopedAndContainsDependencyProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$watchGeneratedScopedAndContainsDependencyHash,
-  dependencies: <ProviderOrFamily>[generatedScopedProvider],
-  allTransitiveDependencies: <ProviderOrFamily>{
-    generatedScopedProvider,
-    ...?generatedScopedProvider.allTransitiveDependencies
-  },
-);
+typedef WatchGeneratedRootAndContainsDependencyRef = Ref<int>;
 
-typedef WatchGeneratedScopedAndContainsDependencyRef
-    = AutoDisposeProviderRef<int>;
+@ProviderFor(watchGeneratedRootAndContainsDependency)
+const watchGeneratedRootAndContainsDependencyProvider =
+    WatchGeneratedRootAndContainsDependencyProvider._();
+
+final class WatchGeneratedRootAndContainsDependencyProvider
+    extends $FunctionalProvider<int, int,
+        WatchGeneratedRootAndContainsDependencyRef>
+    with $Provider<int, WatchGeneratedRootAndContainsDependencyRef> {
+  const WatchGeneratedRootAndContainsDependencyProvider._(
+      {int Function(
+        WatchGeneratedRootAndContainsDependencyRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'watchGeneratedRootAndContainsDependencyProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[generatedRootProvider],
+          allTransitiveDependencies: const <ProviderOrFamily>[
+            WatchGeneratedRootAndContainsDependencyProvider
+                .$allTransitiveDependencies0,
+          ],
+        );
+
+  static const $allTransitiveDependencies0 = generatedRootProvider;
+
+  final int Function(
+    WatchGeneratedRootAndContainsDependencyRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() =>
+      _$watchGeneratedRootAndContainsDependencyHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  WatchGeneratedRootAndContainsDependencyProvider $copyWithCreate(
+    int Function(
+      WatchGeneratedRootAndContainsDependencyRef ref,
+    ) create,
+  ) {
+    return WatchGeneratedRootAndContainsDependencyProvider._(create: create);
+  }
+
+  @override
+  int create(WatchGeneratedRootAndContainsDependencyRef ref) {
+    final _$cb = _createCb ?? watchGeneratedRootAndContainsDependency;
+    return _$cb(ref);
+  }
+}
+
 String _$watchGeneratedRootAndContainsDependencyHash() =>
     r'5bb8cc73e375ce8c5dbd03d5ca3c16fb2d5b199f';
 
-/// See also [watchGeneratedRootAndContainsDependency].
-@ProviderFor(watchGeneratedRootAndContainsDependency)
-final watchGeneratedRootAndContainsDependencyProvider =
-    AutoDisposeProvider<int>.internal(
-  watchGeneratedRootAndContainsDependency,
-  name: r'watchGeneratedRootAndContainsDependencyProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$watchGeneratedRootAndContainsDependencyHash,
-  dependencies: <ProviderOrFamily>[generatedRootProvider],
-  allTransitiveDependencies: <ProviderOrFamily>{
-    generatedRootProvider,
-    ...?generatedRootProvider.allTransitiveDependencies
-  },
-);
+typedef SpecifiedDependencyButNeverUsedRef = Ref<int>;
 
-typedef WatchGeneratedRootAndContainsDependencyRef
-    = AutoDisposeProviderRef<int>;
+@ProviderFor(specifiedDependencyButNeverUsed)
+const specifiedDependencyButNeverUsedProvider =
+    SpecifiedDependencyButNeverUsedProvider._();
+
+final class SpecifiedDependencyButNeverUsedProvider
+    extends $FunctionalProvider<int, int, SpecifiedDependencyButNeverUsedRef>
+    with $Provider<int, SpecifiedDependencyButNeverUsedRef> {
+  const SpecifiedDependencyButNeverUsedProvider._(
+      {int Function(
+        SpecifiedDependencyButNeverUsedRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'specifiedDependencyButNeverUsedProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[
+            depProvider,
+            generatedRootProvider
+          ],
+          allTransitiveDependencies: const <ProviderOrFamily>[
+            SpecifiedDependencyButNeverUsedProvider.$allTransitiveDependencies0,
+            SpecifiedDependencyButNeverUsedProvider.$allTransitiveDependencies1,
+          ],
+        );
+
+  static const $allTransitiveDependencies0 = depProvider;
+  static const $allTransitiveDependencies1 = generatedRootProvider;
+
+  final int Function(
+    SpecifiedDependencyButNeverUsedRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$specifiedDependencyButNeverUsedHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  SpecifiedDependencyButNeverUsedProvider $copyWithCreate(
+    int Function(
+      SpecifiedDependencyButNeverUsedRef ref,
+    ) create,
+  ) {
+    return SpecifiedDependencyButNeverUsedProvider._(create: create);
+  }
+
+  @override
+  int create(SpecifiedDependencyButNeverUsedRef ref) {
+    final _$cb = _createCb ?? specifiedDependencyButNeverUsed;
+    return _$cb(ref);
+  }
+}
+
 String _$specifiedDependencyButNeverUsedHash() =>
     r'b0254ee8c3a0360ec249686083f430b12f3b4940';
 
-/// See also [specifiedDependencyButNeverUsed].
-@ProviderFor(specifiedDependencyButNeverUsed)
-final specifiedDependencyButNeverUsedProvider =
-    AutoDisposeProvider<int>.internal(
-  specifiedDependencyButNeverUsed,
-  name: r'specifiedDependencyButNeverUsedProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$specifiedDependencyButNeverUsedHash,
-  dependencies: <ProviderOrFamily>[depProvider, generatedRootProvider],
-  allTransitiveDependencies: <ProviderOrFamily>{
-    depProvider,
-    ...?depProvider.allTransitiveDependencies,
-    generatedRootProvider,
-    ...?generatedRootProvider.allTransitiveDependencies
-  },
-);
+typedef Regression2348Ref = Ref<int>;
 
-typedef SpecifiedDependencyButNeverUsedRef = AutoDisposeProviderRef<int>;
-String _$regression2348Hash() => r'72fbbe420e9835c9843c28b7c9375ca3d99ca4b7';
-
-/// See also [regression2348].
 @ProviderFor(regression2348)
-final regression2348Provider = AutoDisposeProvider<int>.internal(
-  regression2348,
-  name: r'regression2348Provider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$regression2348Hash,
-  dependencies: <ProviderOrFamily>[generatedScopedProvider],
-  allTransitiveDependencies: <ProviderOrFamily>{
-    generatedScopedProvider,
-    ...?generatedScopedProvider.allTransitiveDependencies
-  },
-);
+const regression2348Provider = Regression2348Provider._();
 
-typedef Regression2348Ref = AutoDisposeProviderRef<int>;
-String _$familyDepHash() => r'1c152873ed2b3e88da09d8e1fc53a33635cbe3b3';
-
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-/// See also [familyDep].
-@ProviderFor(familyDep)
-const familyDepProvider = FamilyDepFamily();
-
-/// See also [familyDep].
-class FamilyDepFamily extends Family {
-  /// See also [familyDep].
-  const FamilyDepFamily();
-
-  static final Iterable<ProviderOrFamily> _dependencies = <ProviderOrFamily>[
-    depProvider
-  ];
-
-  static final Iterable<ProviderOrFamily> _allTransitiveDependencies =
-      <ProviderOrFamily>{
-    depProvider,
-    ...?depProvider.allTransitiveDependencies
-  };
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'familyDepProvider';
-
-  /// See also [familyDep].
-  FamilyDepProvider call(
-    int p,
-  ) {
-    return FamilyDepProvider(
-      p,
-    );
-  }
-
-  @visibleForOverriding
-  @override
-  FamilyDepProvider getProviderOverride(
-    covariant FamilyDepProvider provider,
-  ) {
-    return call(
-      provider.p,
-    );
-  }
-
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(int Function(FamilyDepRef ref) create) {
-    return _$FamilyDepFamilyOverride(this, create);
-  }
-}
-
-class _$FamilyDepFamilyOverride implements FamilyOverride {
-  _$FamilyDepFamilyOverride(this.overriddenFamily, this.create);
-
-  final int Function(FamilyDepRef ref) create;
-
-  @override
-  final FamilyDepFamily overriddenFamily;
-
-  @override
-  FamilyDepProvider getProviderOverride(
-    covariant FamilyDepProvider provider,
-  ) {
-    return provider._copyWith(create);
-  }
-}
-
-/// See also [familyDep].
-class FamilyDepProvider extends AutoDisposeProvider<int> {
-  /// See also [familyDep].
-  FamilyDepProvider(
-    int p,
-  ) : this._internal(
-          (ref) => familyDep(
-            ref as FamilyDepRef,
-            p,
-          ),
-          from: familyDepProvider,
-          name: r'familyDepProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$familyDepHash,
-          dependencies: FamilyDepFamily._dependencies,
-          allTransitiveDependencies: FamilyDepFamily._allTransitiveDependencies,
-          p: p,
+final class Regression2348Provider
+    extends $FunctionalProvider<int, int, Regression2348Ref>
+    with $Provider<int, Regression2348Ref> {
+  const Regression2348Provider._(
+      {int Function(
+        Regression2348Ref ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'regression2348Provider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[generatedScopedProvider],
+          allTransitiveDependencies: const <ProviderOrFamily>[
+            Regression2348Provider.$allTransitiveDependencies0,
+          ],
         );
 
-  FamilyDepProvider._internal(
-    super.create, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.p,
-  }) : super.internal();
+  static const $allTransitiveDependencies0 = generatedScopedProvider;
 
-  final int p;
+  final int Function(
+    Regression2348Ref ref,
+  )? _createCb;
 
   @override
-  Override overrideWith(
-    int Function(FamilyDepRef ref) create,
-  ) {
-    return ProviderOverride(
+  String debugGetCreateSourceHash() => _$regression2348Hash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
       origin: this,
-      override: FamilyDepProvider._internal(
-        (ref) => create(ref as FamilyDepRef),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        p: p,
-      ),
+      providerOverride: $ValueProvider<int>(value),
     );
   }
 
+  @$internal
   @override
-  (int,) get argument {
-    return (p,);
-  }
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
 
   @override
-  AutoDisposeProviderElement<int> createElement() {
-    return _FamilyDepProviderElement(this);
-  }
-
-  FamilyDepProvider _copyWith(
-    int Function(FamilyDepRef ref) create,
+  Regression2348Provider $copyWithCreate(
+    int Function(
+      Regression2348Ref ref,
+    ) create,
   ) {
-    return FamilyDepProvider._internal(
-      (ref) => create(ref as FamilyDepRef),
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-      p: p,
+    return Regression2348Provider._(create: create);
+  }
+
+  @override
+  int create(Regression2348Ref ref) {
+    final _$cb = _createCb ?? regression2348;
+    return _$cb(ref);
+  }
+}
+
+String _$regression2348Hash() => r'72fbbe420e9835c9843c28b7c9375ca3d99ca4b7';
+
+typedef FamilyDepRef = Ref<int>;
+
+@ProviderFor(familyDep)
+const familyDepProvider = FamilyDepFamily._();
+
+final class FamilyDepProvider
+    extends $FunctionalProvider<int, int, FamilyDepRef>
+    with $Provider<int, FamilyDepRef> {
+  const FamilyDepProvider._(
+      {required FamilyDepFamily super.from,
+      required int super.argument,
+      int Function(
+        FamilyDepRef ref,
+        int p,
+      )? create})
+      : _createCb = create,
+        super(
+          name: r'familyDepProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  static const $allTransitiveDependencies0 = depProvider;
+
+  final int Function(
+    FamilyDepRef ref,
+    int p,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$familyDepHash();
+
+  @override
+  String toString() {
+    return r'familyDepProvider'
+        ''
+        '($argument)';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  FamilyDepProvider $copyWithCreate(
+    int Function(
+      FamilyDepRef ref,
+    ) create,
+  ) {
+    return FamilyDepProvider._(
+        argument: argument as int,
+        from: from! as FamilyDepFamily,
+        create: (
+          ref,
+          int p,
+        ) =>
+            create(ref));
+  }
+
+  @override
+  int create(FamilyDepRef ref) {
+    final _$cb = _createCb ?? familyDep;
+    final argument = this.argument as int;
+    return _$cb(
+      ref,
+      argument,
     );
   }
 
   @override
   bool operator ==(Object other) {
-    return other is FamilyDepProvider && other.p == p;
+    return other is FamilyDepProvider && other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, p.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-mixin FamilyDepRef on AutoDisposeProviderRef<int> {
-  /// The parameter `p` of this provider.
-  int get p;
-}
+String _$familyDepHash() => r'1c152873ed2b3e88da09d8e1fc53a33635cbe3b3';
 
-class _FamilyDepProviderElement extends AutoDisposeProviderElement<int>
-    with FamilyDepRef {
-  _FamilyDepProviderElement(super.provider);
+final class FamilyDepFamily extends Family {
+  const FamilyDepFamily._()
+      : super(
+          name: r'familyDepProvider',
+          dependencies: const <ProviderOrFamily>[depProvider],
+          allTransitiveDependencies: const <ProviderOrFamily>[
+            FamilyDepProvider.$allTransitiveDependencies0,
+          ],
+          isAutoDispose: true,
+        );
+
+  FamilyDepProvider call(
+    int p,
+  ) =>
+      FamilyDepProvider._(argument: p, from: this);
 
   @override
-  int get p => (origin as FamilyDepProvider).p;
+  String debugGetCreateSourceHash() => _$familyDepHash();
+
+  @override
+  String toString() => r'familyDepProvider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    int Function(
+      FamilyDepRef ref,
+      int args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as FamilyDepProvider;
+
+        final argument = provider.argument as int;
+
+        return provider
+            .$copyWithCreate((ref) => create(ref, argument))
+            .$createElement(container);
+      },
+    );
+  }
+}
+
+typedef FamilyDep2Ref = Ref<int>;
+
+@ProviderFor(familyDep2)
+const familyDep2Provider = FamilyDep2Family._();
+
+final class FamilyDep2Provider
+    extends $FunctionalProvider<int, int, FamilyDep2Ref>
+    with $Provider<int, FamilyDep2Ref> {
+  const FamilyDep2Provider._(
+      {required FamilyDep2Family super.from,
+      required int super.argument,
+      int Function(
+        FamilyDep2Ref ref,
+        int p,
+      )? create})
+      : _createCb = create,
+        super(
+          name: r'familyDep2Provider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  static const $allTransitiveDependencies0 = familyDepProvider;
+  static const $allTransitiveDependencies1 =
+      FamilyDepProvider.$allTransitiveDependencies0;
+
+  final int Function(
+    FamilyDep2Ref ref,
+    int p,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$familyDep2Hash();
+
+  @override
+  String toString() {
+    return r'familyDep2Provider'
+        ''
+        '($argument)';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  FamilyDep2Provider $copyWithCreate(
+    int Function(
+      FamilyDep2Ref ref,
+    ) create,
+  ) {
+    return FamilyDep2Provider._(
+        argument: argument as int,
+        from: from! as FamilyDep2Family,
+        create: (
+          ref,
+          int p,
+        ) =>
+            create(ref));
+  }
+
+  @override
+  int create(FamilyDep2Ref ref) {
+    final _$cb = _createCb ?? familyDep2;
+    final argument = this.argument as int;
+    return _$cb(
+      ref,
+      argument,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is FamilyDep2Provider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
 }
 
 String _$familyDep2Hash() => r'd81e2e56d75dd08a695b834853a3a6cea99ea305';
 
-/// See also [familyDep2].
-@ProviderFor(familyDep2)
-const familyDep2Provider = FamilyDep2Family();
-
-/// See also [familyDep2].
-class FamilyDep2Family extends Family {
-  /// See also [familyDep2].
-  const FamilyDep2Family();
-
-  static final Iterable<ProviderOrFamily> _dependencies = <ProviderOrFamily>[
-    familyDepProvider
-  ];
-
-  static final Iterable<ProviderOrFamily> _allTransitiveDependencies =
-      <ProviderOrFamily>{
-    familyDepProvider,
-    ...?familyDepProvider.allTransitiveDependencies
-  };
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'familyDep2Provider';
-
-  /// See also [familyDep2].
-  FamilyDep2Provider call(
-    int p,
-  ) {
-    return FamilyDep2Provider(
-      p,
-    );
-  }
-
-  @visibleForOverriding
-  @override
-  FamilyDep2Provider getProviderOverride(
-    covariant FamilyDep2Provider provider,
-  ) {
-    return call(
-      provider.p,
-    );
-  }
-
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(int Function(FamilyDep2Ref ref) create) {
-    return _$FamilyDep2FamilyOverride(this, create);
-  }
-}
-
-class _$FamilyDep2FamilyOverride implements FamilyOverride {
-  _$FamilyDep2FamilyOverride(this.overriddenFamily, this.create);
-
-  final int Function(FamilyDep2Ref ref) create;
-
-  @override
-  final FamilyDep2Family overriddenFamily;
-
-  @override
-  FamilyDep2Provider getProviderOverride(
-    covariant FamilyDep2Provider provider,
-  ) {
-    return provider._copyWith(create);
-  }
-}
-
-/// See also [familyDep2].
-class FamilyDep2Provider extends AutoDisposeProvider<int> {
-  /// See also [familyDep2].
-  FamilyDep2Provider(
-    int p,
-  ) : this._internal(
-          (ref) => familyDep2(
-            ref as FamilyDep2Ref,
-            p,
-          ),
-          from: familyDep2Provider,
+final class FamilyDep2Family extends Family {
+  const FamilyDep2Family._()
+      : super(
           name: r'familyDep2Provider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$familyDep2Hash,
-          dependencies: FamilyDep2Family._dependencies,
-          allTransitiveDependencies:
-              FamilyDep2Family._allTransitiveDependencies,
-          p: p,
+          dependencies: const <ProviderOrFamily>[familyDepProvider],
+          allTransitiveDependencies: const <ProviderOrFamily>[
+            FamilyDep2Provider.$allTransitiveDependencies0,
+            FamilyDep2Provider.$allTransitiveDependencies1,
+          ],
+          isAutoDispose: true,
         );
 
-  FamilyDep2Provider._internal(
-    super.create, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.p,
-  }) : super.internal();
-
-  final int p;
+  FamilyDep2Provider call(
+    int p,
+  ) =>
+      FamilyDep2Provider._(argument: p, from: this);
 
   @override
+  String debugGetCreateSourceHash() => _$familyDep2Hash();
+
+  @override
+  String toString() => r'familyDep2Provider';
+
+  /// {@macro riverpod.override_with}
   Override overrideWith(
-    int Function(FamilyDep2Ref ref) create,
+    int Function(
+      FamilyDep2Ref ref,
+      int args,
+    ) create,
   ) {
-    return ProviderOverride(
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as FamilyDep2Provider;
+
+        final argument = provider.argument as int;
+
+        return provider
+            .$copyWithCreate((ref) => create(ref, argument))
+            .$createElement(container);
+      },
+    );
+  }
+}
+
+typedef AliasRef = Ref<int>;
+
+@ProviderFor(alias)
+const aliasProvider = AliasProvider._();
+
+final class AliasProvider extends $FunctionalProvider<int, int, AliasRef>
+    with $Provider<int, AliasRef> {
+  const AliasProvider._(
+      {int Function(
+        AliasRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'aliasProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final int Function(
+    AliasRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$aliasHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
       origin: this,
-      override: FamilyDep2Provider._internal(
-        (ref) => create(ref as FamilyDep2Ref),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        p: p,
-      ),
+      providerOverride: $ValueProvider<int>(value),
     );
   }
 
+  @$internal
   @override
-  (int,) get argument {
-    return (p,);
-  }
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
 
   @override
-  AutoDisposeProviderElement<int> createElement() {
-    return _FamilyDep2ProviderElement(this);
-  }
-
-  FamilyDep2Provider _copyWith(
-    int Function(FamilyDep2Ref ref) create,
+  AliasProvider $copyWithCreate(
+    int Function(
+      AliasRef ref,
+    ) create,
   ) {
-    return FamilyDep2Provider._internal(
-      (ref) => create(ref as FamilyDep2Ref),
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-      p: p,
-    );
+    return AliasProvider._(create: create);
   }
 
   @override
-  bool operator ==(Object other) {
-    return other is FamilyDep2Provider && other.p == p;
+  int create(AliasRef ref) {
+    final _$cb = _createCb ?? alias;
+    return _$cb(ref);
   }
-
-  @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, p.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
-}
-
-mixin FamilyDep2Ref on AutoDisposeProviderRef<int> {
-  /// The parameter `p` of this provider.
-  int get p;
-}
-
-class _FamilyDep2ProviderElement extends AutoDisposeProviderElement<int>
-    with FamilyDep2Ref {
-  _FamilyDep2ProviderElement(super.provider);
-
-  @override
-  int get p => (origin as FamilyDep2Provider).p;
 }
 
 String _$aliasHash() => r'871c6c7ab22e4bbed2dc46917daf42e7fc1b9d88';
 
-/// See also [alias].
-@ProviderFor(alias)
-final aliasProvider = AutoDisposeProvider<int>.internal(
-  alias,
-  name: r'aliasProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$aliasHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+@ProviderFor(ClassWatchGeneratedRootButMissingDependencies)
+const classWatchGeneratedRootButMissingDependenciesProvider =
+    ClassWatchGeneratedRootButMissingDependenciesProvider._();
 
-typedef AliasRef = AutoDisposeProviderRef<int>;
+final class ClassWatchGeneratedRootButMissingDependenciesProvider
+    extends $NotifierProvider<ClassWatchGeneratedRootButMissingDependencies,
+        int> {
+  const ClassWatchGeneratedRootButMissingDependenciesProvider._(
+      {super.runNotifierBuildOverride,
+      ClassWatchGeneratedRootButMissingDependencies Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'classWatchGeneratedRootButMissingDependenciesProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[],
+          allTransitiveDependencies: const <ProviderOrFamily>[],
+        );
+
+  final ClassWatchGeneratedRootButMissingDependencies Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() =>
+      _$classWatchGeneratedRootButMissingDependenciesHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  ClassWatchGeneratedRootButMissingDependencies create() =>
+      _createCb?.call() ?? ClassWatchGeneratedRootButMissingDependencies();
+
+  @$internal
+  @override
+  ClassWatchGeneratedRootButMissingDependenciesProvider $copyWithCreate(
+    ClassWatchGeneratedRootButMissingDependencies Function() create,
+  ) {
+    return ClassWatchGeneratedRootButMissingDependenciesProvider._(
+        create: create);
+  }
+
+  @$internal
+  @override
+  ClassWatchGeneratedRootButMissingDependenciesProvider $copyWithBuild(
+    int Function(
+      Ref<int>,
+      ClassWatchGeneratedRootButMissingDependencies,
+    ) build,
+  ) {
+    return ClassWatchGeneratedRootButMissingDependenciesProvider._(
+        runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<ClassWatchGeneratedRootButMissingDependencies, int>
+      $createElement(ProviderContainer container) =>
+          $NotifierProviderElement(this, container);
+}
+
 String _$classWatchGeneratedRootButMissingDependenciesHash() =>
     r'e36d7126a86ea9ded6dc66a6f33eabb2724455a9';
 
-/// See also [ClassWatchGeneratedRootButMissingDependencies].
-@ProviderFor(ClassWatchGeneratedRootButMissingDependencies)
-final classWatchGeneratedRootButMissingDependenciesProvider =
-    AutoDisposeNotifierProvider<ClassWatchGeneratedRootButMissingDependencies,
-        int>.internal(
-  ClassWatchGeneratedRootButMissingDependencies.new,
-  name: r'classWatchGeneratedRootButMissingDependenciesProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$classWatchGeneratedRootButMissingDependenciesHash,
-  dependencies: const <ProviderOrFamily>[],
-  allTransitiveDependencies: const <ProviderOrFamily>{},
-);
+abstract class _$ClassWatchGeneratedRootButMissingDependencies
+    extends $Notifier<int> {
+  int build();
+  @$internal
+  @override
+  int runBuild() => build();
+}
 
-typedef _$ClassWatchGeneratedRootButMissingDependencies
-    = AutoDisposeNotifier<int>;
+@ProviderFor(ClassWatchGeneratedScopedButMissingDependencies)
+const classWatchGeneratedScopedButMissingDependenciesProvider =
+    ClassWatchGeneratedScopedButMissingDependenciesProvider._();
+
+final class ClassWatchGeneratedScopedButMissingDependenciesProvider
+    extends $NotifierProvider<ClassWatchGeneratedScopedButMissingDependencies,
+        int> {
+  const ClassWatchGeneratedScopedButMissingDependenciesProvider._(
+      {super.runNotifierBuildOverride,
+      ClassWatchGeneratedScopedButMissingDependencies Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'classWatchGeneratedScopedButMissingDependenciesProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[],
+          allTransitiveDependencies: const <ProviderOrFamily>[],
+        );
+
+  final ClassWatchGeneratedScopedButMissingDependencies Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() =>
+      _$classWatchGeneratedScopedButMissingDependenciesHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  ClassWatchGeneratedScopedButMissingDependencies create() =>
+      _createCb?.call() ?? ClassWatchGeneratedScopedButMissingDependencies();
+
+  @$internal
+  @override
+  ClassWatchGeneratedScopedButMissingDependenciesProvider $copyWithCreate(
+    ClassWatchGeneratedScopedButMissingDependencies Function() create,
+  ) {
+    return ClassWatchGeneratedScopedButMissingDependenciesProvider._(
+        create: create);
+  }
+
+  @$internal
+  @override
+  ClassWatchGeneratedScopedButMissingDependenciesProvider $copyWithBuild(
+    int Function(
+      Ref<int>,
+      ClassWatchGeneratedScopedButMissingDependencies,
+    ) build,
+  ) {
+    return ClassWatchGeneratedScopedButMissingDependenciesProvider._(
+        runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<ClassWatchGeneratedScopedButMissingDependencies, int>
+      $createElement(ProviderContainer container) =>
+          $NotifierProviderElement(this, container);
+}
+
 String _$classWatchGeneratedScopedButMissingDependenciesHash() =>
     r'f5a5ba5f572ee2d0654c89de9e991cef9f15b936';
 
-/// See also [ClassWatchGeneratedScopedButMissingDependencies].
-@ProviderFor(ClassWatchGeneratedScopedButMissingDependencies)
-final classWatchGeneratedScopedButMissingDependenciesProvider =
-    AutoDisposeNotifierProvider<ClassWatchGeneratedScopedButMissingDependencies,
-        int>.internal(
-  ClassWatchGeneratedScopedButMissingDependencies.new,
-  name: r'classWatchGeneratedScopedButMissingDependenciesProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$classWatchGeneratedScopedButMissingDependenciesHash,
-  dependencies: const <ProviderOrFamily>[],
-  allTransitiveDependencies: const <ProviderOrFamily>{},
-);
+abstract class _$ClassWatchGeneratedScopedButMissingDependencies
+    extends $Notifier<int> {
+  int build();
+  @$internal
+  @override
+  int runBuild() => build();
+}
 
-typedef _$ClassWatchGeneratedScopedButMissingDependencies
-    = AutoDisposeNotifier<int>;
+@ProviderFor(Regression2417)
+const regression2417Provider = Regression2417Provider._();
+
+final class Regression2417Provider
+    extends $NotifierProvider<Regression2417, int> {
+  const Regression2417Provider._(
+      {super.runNotifierBuildOverride, Regression2417 Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'regression2417Provider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[generatedScopedProvider],
+          allTransitiveDependencies: const <ProviderOrFamily>[
+            Regression2417Provider.$allTransitiveDependencies0,
+          ],
+        );
+
+  static const $allTransitiveDependencies0 = generatedScopedProvider;
+
+  final Regression2417 Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$regression2417Hash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  Regression2417 create() => _createCb?.call() ?? Regression2417();
+
+  @$internal
+  @override
+  Regression2417Provider $copyWithCreate(
+    Regression2417 Function() create,
+  ) {
+    return Regression2417Provider._(create: create);
+  }
+
+  @$internal
+  @override
+  Regression2417Provider $copyWithBuild(
+    int Function(
+      Ref<int>,
+      Regression2417,
+    ) build,
+  ) {
+    return Regression2417Provider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<Regression2417, int> $createElement(
+          ProviderContainer container) =>
+      $NotifierProviderElement(this, container);
+}
+
 String _$regression2417Hash() => r'c9ac0ba44e849ea1460c79c1f676feba1b5400da';
 
-/// See also [Regression2417].
-@ProviderFor(Regression2417)
-final regression2417Provider =
-    AutoDisposeNotifierProvider<Regression2417, int>.internal(
-  Regression2417.new,
-  name: r'regression2417Provider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$regression2417Hash,
-  dependencies: <ProviderOrFamily>[generatedScopedProvider],
-  allTransitiveDependencies: <ProviderOrFamily>{
-    generatedScopedProvider,
-    ...?generatedScopedProvider.allTransitiveDependencies
-  },
-);
+abstract class _$Regression2417 extends $Notifier<int> {
+  int build();
+  @$internal
+  @override
+  int runBuild() => build();
+}
 
-typedef _$Regression2417 = AutoDisposeNotifier<int>;
+@ProviderFor(AliasClass)
+const aliasClassProvider = AliasClassProvider._();
+
+final class AliasClassProvider extends $NotifierProvider<AliasClass, int> {
+  const AliasClassProvider._(
+      {super.runNotifierBuildOverride, AliasClass Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'aliasClassProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final AliasClass Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$aliasClassHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  AliasClass create() => _createCb?.call() ?? AliasClass();
+
+  @$internal
+  @override
+  AliasClassProvider $copyWithCreate(
+    AliasClass Function() create,
+  ) {
+    return AliasClassProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  AliasClassProvider $copyWithBuild(
+    int Function(
+      Ref<int>,
+      AliasClass,
+    ) build,
+  ) {
+    return AliasClassProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<AliasClass, int> $createElement(
+          ProviderContainer container) =>
+      $NotifierProviderElement(this, container);
+}
+
 String _$aliasClassHash() => r'f5c1f43e7541638274ca7dc334a713763c9c8071';
 
-/// See also [AliasClass].
-@ProviderFor(AliasClass)
-final aliasClassProvider =
-    AutoDisposeNotifierProvider<AliasClass, int>.internal(
-  AliasClass.new,
-  name: r'aliasClassProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$aliasClassHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+abstract class _$AliasClass extends $Notifier<int> {
+  int build();
+  @$internal
+  @override
+  int runBuild() => build();
+}
 
-typedef _$AliasClass = AutoDisposeNotifier<int>;
+const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

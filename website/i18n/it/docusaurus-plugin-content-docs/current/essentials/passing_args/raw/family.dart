@@ -6,7 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../first_request/raw/activity.dart';
 
-FutureOr<Activity> fetchActivity(String activityType) => throw UnimplementedError();
+FutureOr<Activity> fetchActivity(String activityType) =>
+    throw UnimplementedError();
 
 /* SNIPPET START */
 // Un provider "funzionale"
@@ -28,8 +29,8 @@ final activityProvider2 = AsyncNotifierProvider.autoDispose
 
 // Quando si usa ".family" con i notifier abbiamo bisogno di cambiare la sottoclasse del notifier:
 // AsyncNotifier -> FamilyAsyncNotifier
-// AutoDisposeAsyncNotifier -> AutoDisposeFamilyAsyncNotifier
-class ActivityNotifier extends AutoDisposeFamilyAsyncNotifier<Activity, String> {
+// AsyncNotifier -> FamilyAsyncNotifier
+class ActivityNotifier extends FamilyAsyncNotifier<Activity, String> {
   /// Gli argomenti della famiglia sono passati al metodo build e accessibili tramite this.arg
   @override
   Future<Activity> build(String activityType) async {

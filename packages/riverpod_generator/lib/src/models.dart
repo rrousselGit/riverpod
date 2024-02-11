@@ -16,6 +16,8 @@ class BuildYamlOptions {
 }
 
 extension CaseChangeExtension on String {
+  String get encoded => replaceAll(r'$', r'\$');
+
   String get titled {
     return replaceFirstMapped(
       RegExp('[a-zA-Z]'),

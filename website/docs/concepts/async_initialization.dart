@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoadingScreen extends StatelessWidget {
@@ -31,7 +32,7 @@ final sharedPreferencesProvider =
 Future<void> main() async {
   // Show a loading indicator before running the full app (optional)
   // The platform's loading screen will be used while awaiting if you omit this.
-  runApp(const LoadingScreen());
+  runApp(const ProviderScope(child: LoadingScreen()));
 
   // Get the instance of shared preferences
   final prefs = await SharedPreferences.getInstance();

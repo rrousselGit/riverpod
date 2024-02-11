@@ -39,7 +39,8 @@ class _ExampleState extends ConsumerState<Example> {
       builder: (context, snapshot) {
         // Calcoliamo se c'è uno stato di errore o meno.
         // Controlliamo qui lo stato di ConnectionState per gestire quando l'operazione viene ripetuta.
-        final isErrored = snapshot.hasError && snapshot.connectionState != ConnectionState.waiting;
+        final isErrored = snapshot.hasError &&
+            snapshot.connectionState != ConnectionState.waiting;
 
         return Row(
           children: [
@@ -67,7 +68,7 @@ class _ExampleState extends ConsumerState<Example> {
             if (snapshot.connectionState == ConnectionState.waiting) ...[
               const SizedBox(width: 8),
               const CircularProgressIndicator(),
-            ]
+            ],
           ],
         );
       },

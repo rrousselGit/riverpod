@@ -7,16 +7,17 @@ String buildParamDefinitionQuery(
   bool writeBrackets = true,
   bool asRequiredNamed = false,
   bool asRecord = false,
+  bool withDefaults = true,
 }) {
   assert(
     !asThisParameter || !asSuperParameter,
     'Cannot enable both asThisParameter and asSuperParameter',
   );
 
-  final requiredPositionals = parameters
+  final requiredPositional = parameters
       .where((element) => element.isRequiredPositional && !asRequiredNamed)
       .toList();
-  final optionalPositionals = parameters
+  final optionalPositional = parameters
       .where((element) => element.isOptionalPositional && !asRequiredNamed)
       .toList();
   final named = parameters
@@ -24,6 +25,7 @@ String buildParamDefinitionQuery(
       .toList();
 
   final buffer = StringBuffer();
+
   String encodeParameter(FormalParameter parameter) {
     if (asRecord) {
       final type = parameter.typeDisplayString.isEmpty
@@ -35,12 +37,18 @@ String buildParamDefinitionQuery(
       return type;
     }
 
-    late final element = parameter.declaredElement!;
-    late final leading =
-        parameter.isRequiredNamed || asRequiredNamed ? 'required ' : '';
-    late final trailing = element.defaultValueCode != null && !asRequiredNamed
-        ? '= ${element.defaultValueCode}'
+    late final metadata = parameter.metadata.isNotEmpty
+        ? '${parameter.metadata.map((e) => e.toSource()).join(' ')} '
         : '';
+
+    late final element = parameter.declaredElement!;
+    late final leading = parameter.isRequiredNamed || asRequiredNamed
+        ? 'required $metadata'
+        : metadata;
+    late final trailing =
+        element.defaultValueCode != null && !asRequiredNamed && withDefaults
+            ? '= ${element.defaultValueCode}'
+            : '';
     if (asThisParameter) return '${leading}this.${parameter.name}$trailing';
     if (asSuperParameter) return '${leading}super.${parameter.name}$trailing';
 
@@ -48,12 +56,12 @@ String buildParamDefinitionQuery(
   }
 
   buffer.writeAll(
-    requiredPositionals.map(encodeParameter).expand((e) => [e, ',']),
+    requiredPositional.map(encodeParameter).expand((e) => [e, ',']),
   );
-  if (optionalPositionals.isNotEmpty) {
+  if (optionalPositional.isNotEmpty) {
     if (writeBrackets && !asRecord) buffer.write('[');
     buffer.writeAll(
-      optionalPositionals.map(encodeParameter).expand((e) => [e, ',']),
+      optionalPositional.map(encodeParameter).expand((e) => [e, ',']),
     );
     if (writeBrackets && !asRecord) buffer.write(']');
   }
@@ -82,15 +90,15 @@ String buildParamInvocationQuery(
   return buffer.toString();
 }
 
-extension ParamterType on FormalParameter {
+extension ParameterType on FormalParameter {
   String get typeDisplayString {
     final that = this;
     switch (that) {
       case DefaultFormalParameter():
         return that.parameter.typeDisplayString;
       case SimpleFormalParameter():
-        // No type, so let's just return ''
-        return that.type?.toSource() ?? '';
+        // No type, so let's just return 'dynamic'
+        return that.type?.toSource() ?? 'dynamic';
       case FieldFormalParameter():
       case FunctionTypedFormalParameter():
       case SuperFormalParameter():

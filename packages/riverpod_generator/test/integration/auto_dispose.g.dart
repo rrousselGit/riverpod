@@ -6,33 +6,585 @@ part of 'auto_dispose.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+typedef KeepAliveRef = Ref<int>;
+
+@ProviderFor(keepAlive)
+const keepAliveProvider = KeepAliveProvider._();
+
+final class KeepAliveProvider
+    extends $FunctionalProvider<int, int, KeepAliveRef>
+    with $Provider<int, KeepAliveRef> {
+  const KeepAliveProvider._(
+      {int Function(
+        KeepAliveRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'keepAliveProvider',
+          isAutoDispose: false,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final int Function(
+    KeepAliveRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$keepAliveHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  KeepAliveProvider $copyWithCreate(
+    int Function(
+      KeepAliveRef ref,
+    ) create,
+  ) {
+    return KeepAliveProvider._(create: create);
+  }
+
+  @override
+  int create(KeepAliveRef ref) {
+    final _$cb = _createCb ?? keepAlive;
+    return _$cb(ref);
+  }
+}
+
 String _$keepAliveHash() => r'72dd192676126d487c24c7695a91d59410c62696';
 
-/// See also [keepAlive].
-@ProviderFor(keepAlive)
-final keepAliveProvider = Provider<int>.internal(
-  keepAlive,
-  name: r'keepAliveProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$keepAliveHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+typedef NotKeepAliveRef = Ref<int>;
 
-typedef KeepAliveRef = ProviderRef<int>;
+@ProviderFor(notKeepAlive)
+const notKeepAliveProvider = NotKeepAliveProvider._();
+
+final class NotKeepAliveProvider
+    extends $FunctionalProvider<int, int, NotKeepAliveRef>
+    with $Provider<int, NotKeepAliveRef> {
+  const NotKeepAliveProvider._(
+      {int Function(
+        NotKeepAliveRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'notKeepAliveProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final int Function(
+    NotKeepAliveRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$notKeepAliveHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  NotKeepAliveProvider $copyWithCreate(
+    int Function(
+      NotKeepAliveRef ref,
+    ) create,
+  ) {
+    return NotKeepAliveProvider._(create: create);
+  }
+
+  @override
+  int create(NotKeepAliveRef ref) {
+    final _$cb = _createCb ?? notKeepAlive;
+    return _$cb(ref);
+  }
+}
+
 String _$notKeepAliveHash() => r'1ccc497d7c651f8e730ec1bcecf271ffe9615d83';
 
-/// See also [notKeepAlive].
-@ProviderFor(notKeepAlive)
-final notKeepAliveProvider = AutoDisposeProvider<int>.internal(
-  notKeepAlive,
-  name: r'notKeepAliveProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$notKeepAliveHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+typedef DefaultKeepAliveRef = Ref<int>;
 
-typedef NotKeepAliveRef = AutoDisposeProviderRef<int>;
+@ProviderFor(defaultKeepAlive)
+const defaultKeepAliveProvider = DefaultKeepAliveProvider._();
+
+final class DefaultKeepAliveProvider
+    extends $FunctionalProvider<int, int, DefaultKeepAliveRef>
+    with $Provider<int, DefaultKeepAliveRef> {
+  const DefaultKeepAliveProvider._(
+      {int Function(
+        DefaultKeepAliveRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'defaultKeepAliveProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final int Function(
+    DefaultKeepAliveRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$defaultKeepAliveHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  DefaultKeepAliveProvider $copyWithCreate(
+    int Function(
+      DefaultKeepAliveRef ref,
+    ) create,
+  ) {
+    return DefaultKeepAliveProvider._(create: create);
+  }
+
+  @override
+  int create(DefaultKeepAliveRef ref) {
+    final _$cb = _createCb ?? defaultKeepAlive;
+    return _$cb(ref);
+  }
+}
+
+String _$defaultKeepAliveHash() => r'1c236764d83a62ca442c5d5b4a83bd0d6e4548cf';
+
+typedef KeepAliveFamilyRef = Ref<int>;
+
+@ProviderFor(keepAliveFamily)
+const keepAliveFamilyProvider = KeepAliveFamilyFamily._();
+
+final class KeepAliveFamilyProvider
+    extends $FunctionalProvider<int, int, KeepAliveFamilyRef>
+    with $Provider<int, KeepAliveFamilyRef> {
+  const KeepAliveFamilyProvider._(
+      {required KeepAliveFamilyFamily super.from,
+      required int super.argument,
+      int Function(
+        KeepAliveFamilyRef ref,
+        int a,
+      )? create})
+      : _createCb = create,
+        super(
+          name: r'keepAliveFamilyProvider',
+          isAutoDispose: false,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final int Function(
+    KeepAliveFamilyRef ref,
+    int a,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$keepAliveFamilyHash();
+
+  @override
+  String toString() {
+    return r'keepAliveFamilyProvider'
+        ''
+        '($argument)';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  KeepAliveFamilyProvider $copyWithCreate(
+    int Function(
+      KeepAliveFamilyRef ref,
+    ) create,
+  ) {
+    return KeepAliveFamilyProvider._(
+        argument: argument as int,
+        from: from! as KeepAliveFamilyFamily,
+        create: (
+          ref,
+          int a,
+        ) =>
+            create(ref));
+  }
+
+  @override
+  int create(KeepAliveFamilyRef ref) {
+    final _$cb = _createCb ?? keepAliveFamily;
+    final argument = this.argument as int;
+    return _$cb(
+      ref,
+      argument,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is KeepAliveFamilyProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$keepAliveFamilyHash() => r'80d684923a104e2488ec281097bf9b5b04b4fa5a';
+
+final class KeepAliveFamilyFamily extends Family {
+  const KeepAliveFamilyFamily._()
+      : super(
+          name: r'keepAliveFamilyProvider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: false,
+        );
+
+  KeepAliveFamilyProvider call(
+    int a,
+  ) =>
+      KeepAliveFamilyProvider._(argument: a, from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$keepAliveFamilyHash();
+
+  @override
+  String toString() => r'keepAliveFamilyProvider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    int Function(
+      KeepAliveFamilyRef ref,
+      int args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as KeepAliveFamilyProvider;
+
+        final argument = provider.argument as int;
+
+        return provider
+            .$copyWithCreate((ref) => create(ref, argument))
+            .$createElement(container);
+      },
+    );
+  }
+}
+
+typedef NotKeepAliveFamilyRef = Ref<int>;
+
+@ProviderFor(notKeepAliveFamily)
+const notKeepAliveFamilyProvider = NotKeepAliveFamilyFamily._();
+
+final class NotKeepAliveFamilyProvider
+    extends $FunctionalProvider<int, int, NotKeepAliveFamilyRef>
+    with $Provider<int, NotKeepAliveFamilyRef> {
+  const NotKeepAliveFamilyProvider._(
+      {required NotKeepAliveFamilyFamily super.from,
+      required int super.argument,
+      int Function(
+        NotKeepAliveFamilyRef ref,
+        int a,
+      )? create})
+      : _createCb = create,
+        super(
+          name: r'notKeepAliveFamilyProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final int Function(
+    NotKeepAliveFamilyRef ref,
+    int a,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$notKeepAliveFamilyHash();
+
+  @override
+  String toString() {
+    return r'notKeepAliveFamilyProvider'
+        ''
+        '($argument)';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  NotKeepAliveFamilyProvider $copyWithCreate(
+    int Function(
+      NotKeepAliveFamilyRef ref,
+    ) create,
+  ) {
+    return NotKeepAliveFamilyProvider._(
+        argument: argument as int,
+        from: from! as NotKeepAliveFamilyFamily,
+        create: (
+          ref,
+          int a,
+        ) =>
+            create(ref));
+  }
+
+  @override
+  int create(NotKeepAliveFamilyRef ref) {
+    final _$cb = _createCb ?? notKeepAliveFamily;
+    final argument = this.argument as int;
+    return _$cb(
+      ref,
+      argument,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is NotKeepAliveFamilyProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$notKeepAliveFamilyHash() =>
+    r'9f530635a3310431aff36f0f9150f80c56348a51';
+
+final class NotKeepAliveFamilyFamily extends Family {
+  const NotKeepAliveFamilyFamily._()
+      : super(
+          name: r'notKeepAliveFamilyProvider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  NotKeepAliveFamilyProvider call(
+    int a,
+  ) =>
+      NotKeepAliveFamilyProvider._(argument: a, from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$notKeepAliveFamilyHash();
+
+  @override
+  String toString() => r'notKeepAliveFamilyProvider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    int Function(
+      NotKeepAliveFamilyRef ref,
+      int args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as NotKeepAliveFamilyProvider;
+
+        final argument = provider.argument as int;
+
+        return provider
+            .$copyWithCreate((ref) => create(ref, argument))
+            .$createElement(container);
+      },
+    );
+  }
+}
+
+typedef DefaultKeepAliveFamilyRef = Ref<int>;
+
+@ProviderFor(defaultKeepAliveFamily)
+const defaultKeepAliveFamilyProvider = DefaultKeepAliveFamilyFamily._();
+
+final class DefaultKeepAliveFamilyProvider
+    extends $FunctionalProvider<int, int, DefaultKeepAliveFamilyRef>
+    with $Provider<int, DefaultKeepAliveFamilyRef> {
+  const DefaultKeepAliveFamilyProvider._(
+      {required DefaultKeepAliveFamilyFamily super.from,
+      required int super.argument,
+      int Function(
+        DefaultKeepAliveFamilyRef ref,
+        int a,
+      )? create})
+      : _createCb = create,
+        super(
+          name: r'defaultKeepAliveFamilyProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final int Function(
+    DefaultKeepAliveFamilyRef ref,
+    int a,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$defaultKeepAliveFamilyHash();
+
+  @override
+  String toString() {
+    return r'defaultKeepAliveFamilyProvider'
+        ''
+        '($argument)';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  DefaultKeepAliveFamilyProvider $copyWithCreate(
+    int Function(
+      DefaultKeepAliveFamilyRef ref,
+    ) create,
+  ) {
+    return DefaultKeepAliveFamilyProvider._(
+        argument: argument as int,
+        from: from! as DefaultKeepAliveFamilyFamily,
+        create: (
+          ref,
+          int a,
+        ) =>
+            create(ref));
+  }
+
+  @override
+  int create(DefaultKeepAliveFamilyRef ref) {
+    final _$cb = _createCb ?? defaultKeepAliveFamily;
+    final argument = this.argument as int;
+    return _$cb(
+      ref,
+      argument,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is DefaultKeepAliveFamilyProvider &&
+        other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$defaultKeepAliveFamilyHash() =>
+    r'a1d9a5a40b8d43983428273ebee0660fe39250ed';
+
+final class DefaultKeepAliveFamilyFamily extends Family {
+  const DefaultKeepAliveFamilyFamily._()
+      : super(
+          name: r'defaultKeepAliveFamilyProvider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  DefaultKeepAliveFamilyProvider call(
+    int a,
+  ) =>
+      DefaultKeepAliveFamilyProvider._(argument: a, from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$defaultKeepAliveFamilyHash();
+
+  @override
+  String toString() => r'defaultKeepAliveFamilyProvider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    int Function(
+      DefaultKeepAliveFamilyRef ref,
+      int args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as DefaultKeepAliveFamilyProvider;
+
+        final argument = provider.argument as int;
+
+        return provider
+            .$copyWithCreate((ref) => create(ref, argument))
+            .$createElement(container);
+      },
+    );
+  }
+}
+
+const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

@@ -8,81 +8,14 @@
 // You can then use it in your terminal by executing:
 // generate_providers <riverpod/flutter_riverpod/hooks_riverpod> <path to builder file to update>
 
-// ignore_for_file: invalid_use_of_internal_member
-
 import 'package:flutter/foundation.dart';
+import 'package:meta/meta.dart';
+
 import 'internals.dart';
 
-/// Builds a [ChangeNotifierProvider].
-class ChangeNotifierProviderBuilder {
-  /// Builds a [ChangeNotifierProvider].
-  const ChangeNotifierProviderBuilder();
-
-  /// {@template riverpod.autoDispose}
-  /// Marks the provider as automatically disposed when no longer listened to.
-  ///
-  /// Some typical use-cases:
-  ///
-  /// - Combined with [StreamProvider], this can be used as a mean to keep
-  ///   the connection with Firebase alive only when truly needed (to reduce costs).
-  /// - Automatically reset a form state when leaving the screen.
-  /// - Automatically retry HTTP requests that failed when the user exit and
-  ///   re-enter the screen.
-  /// - Cancel HTTP requests if the user leaves a screen before the request completed.
-  ///
-  /// Marking a provider with `autoDispose` also adds an extra method on `ref`: `keepAlive`.
-  ///
-  /// The `keepAlive` function is used to tell Riverpod that the state of the provider
-  /// should be preserved even if no longer listened to.
-  ///
-  /// A use-case would be to set this flag to `true` after an HTTP request have
-  /// completed:
-  ///
-  /// ```dart
-  /// final myProvider = FutureProvider.autoDispose((ref) async {
-  ///   final response = await httpClient.get(...);
-  ///   ref.keepAlive();
-  ///   return response;
-  /// });
-  /// ```
-  ///
-  /// This way, if the request failed and the UI leaves the screen then re-enters
-  /// it, then the request will be performed again.
-  /// But if the request completed successfully, the state will be preserved
-  /// and re-entering the screen will not trigger a new request.
-  ///
-  /// It can be combined with `ref.onDispose` for more advanced behaviors, such
-  /// as cancelling pending HTTP requests when the user leaves a screen.
-  /// For example, modifying our previous snippet and using `dio`, we would have:
-  ///
-  /// ```diff
-  /// final myProvider = FutureProvider.autoDispose((ref) async {
-  /// + final cancelToken = CancelToken();
-  /// + ref.onDispose(() => cancelToken.cancel());
-  ///
-  /// + final response = await dio.get('path', cancelToken: cancelToken);
-  /// - final response = await dio.get('path');
-  ///   ref.keepAlive();
-  ///   return response;
-  /// });
-  /// ```
-  /// {@endtemplate}
-  ChangeNotifierProvider<Notifier> call<Notifier extends ChangeNotifier?>(
-    Create<Notifier, ChangeNotifierProviderRef<Notifier>> create, {
-    String? name,
-    Iterable<ProviderOrFamily>? dependencies,
-  }) {
-    return ChangeNotifierProvider<Notifier>(
-      create,
-      name: name,
-      dependencies: dependencies,
-    );
-  }
-
-  /// {@macro riverpod.autoDispose}
-  AutoDisposeChangeNotifierProviderBuilder get autoDispose {
-    return const AutoDisposeChangeNotifierProviderBuilder();
-  }
+@internal
+class ChangeNotifierProviderFamilyBuilder {
+  const ChangeNotifierProviderFamilyBuilder();
 
   /// {@template riverpod.family}
   /// A group of providers that builds their value from an external parameter.
@@ -293,77 +226,112 @@ class ChangeNotifierProviderBuilder {
   ///   }
   ///   ```
   /// {@endtemplate}
-  ChangeNotifierProviderFamilyBuilder get family {
-    return const ChangeNotifierProviderFamilyBuilder();
-  }
-}
-
-/// Builds a [ChangeNotifierProviderFamily].
-class ChangeNotifierProviderFamilyBuilder {
-  /// Builds a [ChangeNotifierProviderFamily].
-  const ChangeNotifierProviderFamilyBuilder();
-
-  /// {@macro riverpod.family}
-  ChangeNotifierProviderFamily<Notifier, Arg>
-      call<Notifier extends ChangeNotifier?, Arg>(
-    FamilyCreate<Notifier, ChangeNotifierProviderRef<Notifier>, Arg> create, {
-    String? name,
-    Iterable<ProviderOrFamily>? dependencies,
-  }) {
-    return ChangeNotifierProviderFamily<Notifier, Arg>(
-      create,
-      name: name,
-      dependencies: dependencies,
-    );
-  }
-
-  /// {@macro riverpod.autoDispose}
-  AutoDisposeChangeNotifierProviderFamilyBuilder get autoDispose {
-    return const AutoDisposeChangeNotifierProviderFamilyBuilder();
-  }
-}
-
-/// Builds a [AutoDisposeChangeNotifierProvider].
-class AutoDisposeChangeNotifierProviderBuilder {
-  /// Builds a [AutoDisposeChangeNotifierProvider].
-  const AutoDisposeChangeNotifierProviderBuilder();
-
-  /// {@macro riverpod.autoDispose}
-  AutoDisposeChangeNotifierProvider<Notifier>
-      call<Notifier extends ChangeNotifier?>(
-    Create<Notifier, AutoDisposeChangeNotifierProviderRef<Notifier>> create, {
-    String? name,
-    Iterable<ProviderOrFamily>? dependencies,
-  }) {
-    return AutoDisposeChangeNotifierProvider<Notifier>(
-      create,
-      name: name,
-      dependencies: dependencies,
-    );
-  }
-
-  /// {@macro riverpod.family}
-  AutoDisposeChangeNotifierProviderFamilyBuilder get family {
-    return const AutoDisposeChangeNotifierProviderFamilyBuilder();
-  }
-}
-
-/// Builds a [AutoDisposeChangeNotifierProviderFamily].
-class AutoDisposeChangeNotifierProviderFamilyBuilder {
-  /// Builds a [AutoDisposeChangeNotifierProviderFamily].
-  const AutoDisposeChangeNotifierProviderFamilyBuilder();
-
-  /// {@macro riverpod.family}
-  AutoDisposeChangeNotifierProviderFamily<Notifier, Arg>
-      call<Notifier extends ChangeNotifier?, Arg>(
-    FamilyCreate<Notifier, AutoDisposeChangeNotifierProviderRef<Notifier>, Arg>
+  ChangeNotifierProviderFamily<NotifierT, ArgT>
+      call<NotifierT extends ChangeNotifier?, ArgT>(
+    NotifierT Function(ChangeNotifierProviderRef<NotifierT> ref, ArgT param)
         create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
   }) {
-    return AutoDisposeChangeNotifierProviderFamily<Notifier, Arg>(
+    return ChangeNotifierProviderFamily<NotifierT, ArgT>(
       create,
       name: name,
+      dependencies: dependencies,
+    );
+  }
+
+  /// {@template riverpod.autoDispose}
+  /// Marks the provider as automatically disposed when no longer listened to.
+  ///
+  /// Some typical use-cases:
+  ///
+  /// - Combined with [StreamProvider], this can be used as a mean to keep
+  ///   the connection with Firebase alive only when truly needed (to reduce costs).
+  /// - Automatically reset a form state when leaving the screen.
+  /// - Automatically retry HTTP requests that failed when the user exit and
+  ///   re-enter the screen.
+  /// - Cancel HTTP requests if the user leaves a screen before the request completed.
+  ///
+  /// Marking a provider with `autoDispose` also adds an extra method on `ref`: `keepAlive`.
+  ///
+  /// The `keepAlive` function is used to tell Riverpod that the state of the provider
+  /// should be preserved even if no longer listened to.
+  ///
+  /// A use-case would be to set this flag to `true` after an HTTP request have
+  /// completed:
+  ///
+  /// ```dart
+  /// final myProvider = FutureProvider.autoDispose((ref) async {
+  ///   final response = await httpClient.get(...);
+  ///   ref.keepAlive();
+  ///   return response;
+  /// });
+  /// ```
+  ///
+  /// This way, if the request failed and the UI leaves the screen then re-enters
+  /// it, then the request will be performed again.
+  /// But if the request completed successfully, the state will be preserved
+  /// and re-entering the screen will not trigger a new request.
+  ///
+  /// It can be combined with `ref.onDispose` for more advanced behaviors, such
+  /// as cancelling pending HTTP requests when the user leaves a screen.
+  /// For example, modifying our previous snippet and using `dio`, we would have:
+  ///
+  /// ```diff
+  /// final myProvider = FutureProvider.autoDispose((ref) async {
+  /// + final cancelToken = CancelToken();
+  /// + ref.onDispose(() => cancelToken.cancel());
+  ///
+  /// + final response = await dio.get('path', cancelToken: cancelToken);
+  /// - final response = await dio.get('path');
+  ///   ref.keepAlive();
+  ///   return response;
+  /// });
+  /// ```
+  /// {@endtemplate}
+  AutoDisposeChangeNotifierProviderFamilyBuilder get autoDispose =>
+      const AutoDisposeChangeNotifierProviderFamilyBuilder();
+}
+
+@internal
+class AutoDisposeChangeNotifierProviderBuilder {
+  const AutoDisposeChangeNotifierProviderBuilder();
+
+  /// {@macro riverpod.family}
+  ChangeNotifierProvider<NotifierT> call<NotifierT extends ChangeNotifier?>(
+    NotifierT Function(ChangeNotifierProviderRef<NotifierT> ref) create, {
+    String? name,
+    Iterable<ProviderOrFamily>? dependencies,
+  }) {
+    return ChangeNotifierProvider<NotifierT>(
+      create,
+      name: name,
+      isAutoDispose: true,
+      dependencies: dependencies,
+    );
+  }
+
+  /// {@macro riverpod.family}
+  AutoDisposeChangeNotifierProviderFamilyBuilder get family =>
+      const AutoDisposeChangeNotifierProviderFamilyBuilder();
+}
+
+@internal
+class AutoDisposeChangeNotifierProviderFamilyBuilder {
+  const AutoDisposeChangeNotifierProviderFamilyBuilder();
+
+  /// {@macro riverpod.family}
+  ChangeNotifierProviderFamily<NotifierT, ArgT>
+      call<NotifierT extends ChangeNotifier?, ArgT>(
+    NotifierT Function(ChangeNotifierProviderRef<NotifierT> ref, ArgT param)
+        create, {
+    String? name,
+    Iterable<ProviderOrFamily>? dependencies,
+  }) {
+    return ChangeNotifierProviderFamily<NotifierT, ArgT>(
+      create,
+      name: name,
+      isAutoDispose: true,
       dependencies: dependencies,
     );
   }

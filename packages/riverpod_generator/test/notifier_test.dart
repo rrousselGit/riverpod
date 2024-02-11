@@ -1,18 +1,16 @@
 // ignore_for_file: omit_local_variable_types, unused_local_variable
 
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:riverpod/riverpod.dart' show ProviderBase, ProviderContainer;
 import 'package:test/test.dart';
 
 import 'integration/sync.dart';
-import 'utils.dart';
 
 void main() {
   test('Creates a Provider<T> if @riverpod is used on a synchronous function',
       () {
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
-    final AutoDisposeNotifierProvider<PublicClass, String> provider =
-        publicClassProvider;
+    const ProviderBase<String> provider = publicClassProvider;
     final String result = container.read(publicProvider);
 
     expect(result, 'Hello world');
@@ -27,7 +25,7 @@ void main() {
   });
 
   test('Supports overriding non-family notifiers', () {
-    final container = createContainer(
+    final container = ProviderContainer.test(
       overrides: [
         publicClassProvider.overrideWith(() => PublicClass('Hello world')),
       ],
@@ -36,12 +34,13 @@ void main() {
     final notifier = container.read(publicClassProvider.notifier);
     expect(notifier.param, 'Hello world');
 
+    // ignore: invalid_use_of_protected_member
     expect(notifier.ref, isNotNull);
     expect(notifier.state, isNotNull);
   });
 
   test('Supports overriding family notifiers', () {
-    final container = createContainer(
+    final container = ProviderContainer.test(
       overrides: [
         familyClassProvider(42, third: .42)
             .overrideWith(() => FamilyClass('Hello world')),
@@ -57,6 +56,7 @@ void main() {
     expect(notifier.fourth, true);
     expect(notifier.fifth, null);
 
+    // ignore: invalid_use_of_protected_member
     expect(notifier.ref, isNotNull);
     expect(notifier.state, isNotNull);
   });
@@ -64,7 +64,7 @@ void main() {
   test(
       'Creates a NotifierProvider.family<T> if @riverpod is used on a synchronous function with parameters',
       () {
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     const FamilyClassFamily family = familyClassProvider;
 
@@ -89,8 +89,6 @@ void main() {
       familyClassProvider(
         42,
         third: .42,
-        // ignore: avoid_redundant_argument_values
-        fourth: true,
       ),
     );
     expect(
@@ -98,8 +96,6 @@ void main() {
       familyClassProvider(
         42,
         third: .42,
-        // ignore: avoid_redundant_argument_values
-        fourth: true,
       ).hashCode,
     );
 
@@ -111,14 +107,7 @@ void main() {
       fifth: ['x42'],
     );
     // ignore: invalid_use_of_internal_member
-    final AutoDisposeNotifierProviderImpl<FamilyClass, String> futureProvider =
-        provider;
-
-    expect(provider.first, 42);
-    expect(provider.second, 'x42');
-    expect(provider.third, .42);
-    expect(provider.fourth, false);
-    expect(provider.fifth, ['x42']);
+    final ProviderBase<String> futureProvider = provider;
 
     final String result = container.read(
       familyClassProvider(

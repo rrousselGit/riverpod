@@ -6,194 +6,138 @@ part of 'provider_parameters.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$generatorHash() => r'e76b8050c3a272ecef1985e4dc7dfe5df3270f2f';
+typedef GeneratorRef = Ref<int>;
 
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-/// See also [generator].
 @ProviderFor(generator)
-const generatorProvider = GeneratorFamily();
+const generatorProvider = GeneratorFamily._();
 
-/// See also [generator].
-class GeneratorFamily extends Family {
-  /// See also [generator].
-  const GeneratorFamily();
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'generatorProvider';
-
-  /// See also [generator].
-  GeneratorProvider call({
-    Object? value,
-  }) {
-    return GeneratorProvider(
-      value: value,
-    );
-  }
-
-  @visibleForOverriding
-  @override
-  GeneratorProvider getProviderOverride(
-    covariant GeneratorProvider provider,
-  ) {
-    return call(
-      value: provider.value,
-    );
-  }
-
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(int Function(GeneratorRef ref) create) {
-    return _$GeneratorFamilyOverride(this, create);
-  }
-}
-
-class _$GeneratorFamilyOverride implements FamilyOverride {
-  _$GeneratorFamilyOverride(this.overriddenFamily, this.create);
-
-  final int Function(GeneratorRef ref) create;
-
-  @override
-  final GeneratorFamily overriddenFamily;
-
-  @override
-  GeneratorProvider getProviderOverride(
-    covariant GeneratorProvider provider,
-  ) {
-    return provider._copyWith(create);
-  }
-}
-
-/// See also [generator].
-class GeneratorProvider extends Provider<int> {
-  /// See also [generator].
-  GeneratorProvider({
-    Object? value,
-  }) : this._internal(
-          (ref) => generator(
-            ref as GeneratorRef,
-            value: value,
-          ),
-          from: generatorProvider,
+final class GeneratorProvider
+    extends $FunctionalProvider<int, int, GeneratorRef>
+    with $Provider<int, GeneratorRef> {
+  const GeneratorProvider._(
+      {required GeneratorFamily super.from,
+      required Object? super.argument,
+      int Function(
+        GeneratorRef ref, {
+        Object? value,
+      })? create})
+      : _createCb = create,
+        super(
           name: r'generatorProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$generatorHash,
-          dependencies: GeneratorFamily._dependencies,
-          allTransitiveDependencies: GeneratorFamily._allTransitiveDependencies,
-          value: value,
+          isAutoDispose: false,
+          dependencies: null,
+          allTransitiveDependencies: null,
         );
 
-  GeneratorProvider._internal(
-    super.create, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.value,
-  }) : super.internal();
-
-  final Object? value;
+  final int Function(
+    GeneratorRef ref, {
+    Object? value,
+  })? _createCb;
 
   @override
-  Override overrideWith(
-    int Function(GeneratorRef ref) create,
-  ) {
-    return ProviderOverride(
+  String debugGetCreateSourceHash() => _$generatorHash();
+
+  @override
+  String toString() {
+    return r'generatorProvider'
+        ''
+        '($argument)';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
       origin: this,
-      override: GeneratorProvider._internal(
-        (ref) => create(ref as GeneratorRef),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        value: value,
-      ),
+      providerOverride: $ValueProvider<int>(value),
     );
   }
 
+  @$internal
   @override
-  ({
-    Object? value,
-  }) get argument {
-    return (value: value,);
-  }
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
 
   @override
-  ProviderElement<int> createElement() {
-    return _GeneratorProviderElement(this);
-  }
-
-  GeneratorProvider _copyWith(
-    int Function(GeneratorRef ref) create,
+  GeneratorProvider $copyWithCreate(
+    int Function(
+      GeneratorRef ref,
+    ) create,
   ) {
-    return GeneratorProvider._internal(
-      (ref) => create(ref as GeneratorRef),
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-      value: value,
+    return GeneratorProvider._(
+        argument: argument,
+        from: from! as GeneratorFamily,
+        create: (
+          ref, {
+          Object? value,
+        }) =>
+            create(ref));
+  }
+
+  @override
+  int create(GeneratorRef ref) {
+    final _$cb = _createCb ?? generator;
+    final argument = this.argument;
+    return _$cb(
+      ref,
+      value: argument,
     );
   }
 
   @override
   bool operator ==(Object other) {
-    return other is GeneratorProvider && other.value == value;
+    return other is GeneratorProvider && other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, value.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-mixin GeneratorRef on ProviderRef<int> {
-  /// The parameter `value` of this provider.
-  Object? get value;
-}
+String _$generatorHash() => r'e76b8050c3a272ecef1985e4dc7dfe5df3270f2f';
 
-class _GeneratorProviderElement extends ProviderElement<int> with GeneratorRef {
-  _GeneratorProviderElement(super.provider);
+final class GeneratorFamily extends Family {
+  const GeneratorFamily._()
+      : super(
+          name: r'generatorProvider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: false,
+        );
+
+  GeneratorProvider call({
+    Object? value,
+  }) =>
+      GeneratorProvider._(argument: value, from: this);
 
   @override
-  Object? get value => (origin as GeneratorProvider).value;
+  String debugGetCreateSourceHash() => _$generatorHash();
+
+  @override
+  String toString() => r'generatorProvider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    int Function(
+      GeneratorRef ref,
+      Object? args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as GeneratorProvider;
+
+        final argument = provider.argument;
+
+        return provider
+            .$copyWithCreate((ref) => create(ref, argument))
+            .$createElement(container);
+      },
+    );
+  }
 }
+
+const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

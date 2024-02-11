@@ -8,21 +8,67 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+typedef SynchronousExampleRef = Ref<int>;
+
+@ProviderFor(synchronousExample)
+const synchronousExampleProvider = SynchronousExampleProvider._();
+
+final class SynchronousExampleProvider
+    extends $FunctionalProvider<int, int, SynchronousExampleRef>
+    with $Provider<int, SynchronousExampleRef> {
+  const SynchronousExampleProvider._(
+      {int Function(
+        SynchronousExampleRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'synchronousExampleProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final int Function(
+    SynchronousExampleRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$synchronousExampleHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  SynchronousExampleProvider $copyWithCreate(
+    int Function(
+      SynchronousExampleRef ref,
+    ) create,
+  ) {
+    return SynchronousExampleProvider._(create: create);
+  }
+
+  @override
+  int create(SynchronousExampleRef ref) {
+    final _$cb = _createCb ?? synchronousExample;
+    return _$cb(ref);
+  }
+}
+
 String _$synchronousExampleHash() =>
     r'98df96e07d554683041f668c06b36f183ff534c1';
 
-/// See also [synchronousExample].
-@ProviderFor(synchronousExample)
-final synchronousExampleProvider = AutoDisposeProvider<int>.internal(
-  synchronousExample,
-  name: r'synchronousExampleProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$synchronousExampleHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef SynchronousExampleRef = AutoDisposeProviderRef<int>;
+const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

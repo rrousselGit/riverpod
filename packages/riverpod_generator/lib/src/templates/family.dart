@@ -1,468 +1,226 @@
-import 'package:analyzer/dart/ast/ast.dart';
-import 'package:collection/collection.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
 import '../models.dart';
 import '../riverpod_generator.dart';
-import '../validation.dart';
-import 'class_based_provider.dart';
 import 'parameters.dart';
 import 'template.dart';
 
-String providerFamilyNameFor(
-  ProviderDeclarationElement provider,
-  BuildYamlOptions options,
-) {
-  return '${provider.name.lowerFirst}${options.providerFamilyNameSuffix ?? options.providerNameSuffix ?? 'Provider'}';
-}
-
-String genericDefinitionDisplayString(TypeParameterList? typeParameters) {
-  return typeParameters?.toSource() ?? '';
-}
-
-String genericUsageDisplayString(TypeParameterList? typeParameterList) {
-  if (typeParameterList == null) {
-    return '';
-  }
-
-  return '<${typeParameterList.typeParameters.map((e) => e.name.lexeme).join(', ')}>';
-}
-
-String anyGenericUsageDisplayString(TypeParameterList? typeParameterList) {
-  if (typeParameterList == null) {
-    return '';
-  }
-
-  return '<${typeParameterList.typeParameters.map((e) => e.declaredElement?.bound?.toString() ?? 'Object?').join(', ')}>';
-}
-
 class FamilyTemplate extends Template {
-  FamilyTemplate._(
-    this.provider, {
-    required this.options,
-    required this.parameters,
-    required this.typeParameters,
-    required this.providerType,
-    required this.refType,
-    required this.elementType,
-    required this.providerGenerics,
-    required this.providerCreate,
-    required this.parametersPassThrough,
-    required this.hashFn,
-    required this.createType,
-    required this.overrideCreate,
-    this.other = '',
-    this.providerOther = '',
+  FamilyTemplate(
+    this.provider,
+    this.options, {
+    required this.allTransitiveDependencies,
+  });
+
+  final GeneratorProviderDeclaration provider;
+  final BuildYamlOptions options;
+  final List<String>? allTransitiveDependencies;
+
+  late final _argumentRecordType = provider.argumentRecordType;
+
+  late final _generics = provider.generics();
+  late final _genericsDefinition = provider.genericsDefinition();
+  late final _parameterDefinition =
+      buildParamDefinitionQuery(provider.parameters);
+  late final _notifierType = '${provider.name}$_generics';
+  late final _argumentCast = provider.argumentCast;
+
+  @override
+  void run(StringBuffer buffer) {
+    if (!provider.providerElement.isFamily) return;
+
+    final topLevelBuffer = StringBuffer();
+
+    final parametersPassThrough = provider.argumentToRecord();
+    final argument =
+        provider.parameters.isEmpty ? '' : 'argument: $parametersPassThrough,';
+
+    buffer.writeln('''
+${provider.doc} final class ${provider.familyTypeName} extends Family {
+  const ${provider.familyTypeName}._()
+      : super(
+        name: r'${provider.providerName(options)}',
+        dependencies: ${provider.dependencies(options)},
+        allTransitiveDependencies: ${provider.allTransitiveDependencies(allTransitiveDependencies)},
+        isAutoDispose: ${provider.providerElement.isAutoDispose},
+      );
+
+  ${provider.doc} ${provider.providerTypeName}$_generics call$_genericsDefinition($_parameterDefinition)
+    => ${provider.providerTypeName}$_generics._(
+      $argument
+      from: this
+    );
+
+  @override
+  String debugGetCreateSourceHash() => ${provider.hashFnName}();
+ 
+  @override
+  String toString() => r'${provider.providerName(options)}';
+''');
+
+    _writeOverrides(buffer, topLevelBuffer: topLevelBuffer);
+
+    buffer.writeln('}');
+
+    buffer.write(topLevelBuffer);
+  }
+
+  void _writeOverrides(
+    StringBuffer buffer, {
+    required StringBuffer topLevelBuffer,
   }) {
-    if (!provider.providerElement.isFamily) {
-      throw ArgumentError.value(
-        provider.providerElement.isFamily,
-        'provider.providerElement.isFamily',
-        'Expected a family provider',
+    // overrideWith
+    _writeOverrideWith(
+      buffer,
+      topLevelBuffer: topLevelBuffer,
+    );
+
+    // overrideWithBuild
+    final provider = this.provider;
+    if (provider is ClassBasedProviderDeclaration) {
+      _writeOverrideWithBuild(
+        buffer,
+        provider,
+        topLevelBuffer: topLevelBuffer,
       );
     }
   }
 
-  factory FamilyTemplate.functional(
-    FunctionalProviderDeclaration provider, {
-    required String hashFn,
-    required BuildYamlOptions options,
+  void _writeOverrideWith(
+    StringBuffer buffer, {
+    required StringBuffer topLevelBuffer,
   }) {
-    var leading = '';
-    if (!provider.annotation.element.keepAlive) {
-      leading = 'AutoDispose';
-    }
+    final createType = switch (provider) {
+      FunctionalProviderDeclaration(parameters: [_, ...]) =>
+        '${provider.createdTypeDisplayString} Function$_genericsDefinition(${provider.refWithGenerics} ref, $_argumentRecordType args,)',
+      FunctionalProviderDeclaration(parameters: []) =>
+        '${provider.createdTypeDisplayString} Function$_genericsDefinition(${provider.refWithGenerics} ref)',
+      ClassBasedProviderDeclaration(parameters: [_, ...]) =>
+        '$_notifierType Function$_genericsDefinition($_argumentRecordType args,)',
+      ClassBasedProviderDeclaration() =>
+        '$_notifierType Function$_genericsDefinition()',
+    };
 
-    var providerType = '${leading}Provider';
-    var refType = '${leading}ProviderRef';
-    var elementType = '${leading}ProviderElement';
-    var createdType = provider.createdTypeDisplayString;
+    buffer.writeln('''
+/// {@macro riverpod.override_with}
+Override overrideWith($createType create,) {
+  return \$FamilyOverride(
+    from: this,
+    createElement: (container, provider) {
+      provider as ${provider.providerTypeName};
+''');
 
-    final returnType = provider.createdTypeNode?.type;
-    if (returnType != null && !returnType.isRaw) {
-      if (returnType.isDartAsyncFutureOr || returnType.isDartAsyncFuture) {
-        providerType = '${leading}FutureProvider';
-        refType = '${leading}FutureProviderRef';
-        elementType = '${leading}FutureProviderElement';
-        // Always use FutureOr<T> in overrideWith as return value
-        // or otherwise we get a compilation error.
-        createdType = 'FutureOr<${provider.valueTypeDisplayString}>';
-      } else if (returnType.isDartAsyncStream) {
-        providerType = '${leading}StreamProvider';
-        refType = '${leading}StreamProviderRef';
-        elementType = '${leading}StreamProviderElement';
-      }
-    }
-
-    final parameters = provider.node.functionExpression.parameters!.parameters
-        .skip(1)
-        .toList();
-
-    final parametersPassThrough = buildParamInvocationQuery({
-      for (final parameter in parameters) parameter: parameter.name!.lexeme,
-    });
-
-    final typeParameters = provider.node.functionExpression.typeParameters;
-    final typeParametersUsage = genericUsageDisplayString(typeParameters);
-    final typeParametersDefinition =
-        genericDefinitionDisplayString(typeParameters);
-
-    return FamilyTemplate._(
+    switch ((
+      hasParameters: provider.parameters.isNotEmpty,
+      hasGenerics: provider.typeParameters?.typeParameters.isNotEmpty ?? false,
       provider,
-      options: options,
-      parameters: parameters,
-      typeParameters: typeParameters,
-      hashFn: hashFn,
-      elementType: elementType,
-      refType: refType,
-      providerGenerics: '<${provider.valueTypeDisplayString}>',
-      providerCreate:
-          '(ref) => ${provider.name}$typeParametersUsage(ref as ${provider._refImplName}$typeParametersUsage, $parametersPassThrough)',
-      providerType: providerType,
-      parametersPassThrough: parametersPassThrough,
-      createType:
-          '${provider.createdTypeDisplayString} Function$typeParametersDefinition(${provider._refImplName} ref)',
-      overrideCreate: '(ref) => create(ref as ${provider._refImplName})',
-      providerOther: '''
+    )) {
+      case (hasParameters: false, hasGenerics: false, _):
+        buffer.writeln(
+          r'return provider.$copyWithCreate(create).$createElement(container);',
+        );
+      case (hasParameters: true, hasGenerics: false, _):
+        buffer.writeln('''
+        final argument = provider.argument$_argumentCast;
 
-  @override
-  Override overrideWith(
-    $createdType Function(${provider._refImplName}$typeParametersUsage ref) create,
-  ) {
-    return ProviderOverride(
-      origin: this,
-      override: ${provider._providerImplName}$typeParametersUsage._internal(
-        (ref) => create(ref as ${provider._refImplName}$typeParametersUsage),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-${parameters.map((e) => '        ${e.name}: ${e.name},\n').join()}
-      ),
-    );
-  }
-''',
-    );
-  }
+        return provider.\$copyWithCreate(${switch (provider) {
+          FunctionalProviderDeclaration() => '(ref) => create(ref, argument)',
+          ClassBasedProviderDeclaration() => '() => create(argument)',
+        }}).\$createElement(container);
+      ''');
 
-  factory FamilyTemplate.classBased(
-    ClassBasedProviderDeclaration provider, {
-    required String notifierTypedefName,
-    required String hashFn,
-    required BuildYamlOptions options,
-  }) {
-    validateClassBasedProvider(provider);
-
-    var leading = '';
-    if (!provider.annotation.element.keepAlive) {
-      leading = 'AutoDispose';
-    }
-
-    var providerType = '${leading}NotifierProviderImpl';
-    var refType = '${leading}NotifierProviderRef';
-    var notifierBaseType = 'Buildless${leading}Notifier';
-    var elementType = '${leading}NotifierProviderElement';
-
-    final returnType = provider.createdTypeNode?.type;
-    if (returnType != null && !returnType.isRaw) {
-      if (returnType.isDartAsyncFutureOr || returnType.isDartAsyncFuture) {
-        providerType = '${leading}AsyncNotifierProviderImpl';
-        refType = '${leading}AsyncNotifierProviderRef';
-        notifierBaseType = 'Buildless${leading}AsyncNotifier';
-        elementType = '${leading}AsyncNotifierProviderElement';
-      } else if (returnType.isDartAsyncStream) {
-        providerType = '${leading}StreamNotifierProviderImpl';
-        refType = '${leading}StreamNotifierProviderRef';
-        notifierBaseType = 'Buildless${leading}StreamNotifier';
-        elementType = '${leading}StreamNotifierProviderElement';
-      }
-    }
-
-    final parameters =
-        provider.buildMethod.parameters!.parameters.whereNotNull().toList();
-    final parameterDefinition = buildParamDefinitionQuery(parameters);
-    final cascadePropertyInit =
-        parameters.map((e) => '..${e.name} = ${e.name}').join('\n');
-
-    final parametersPassThrough = buildParamInvocationQuery({
-      for (final parameter in parameters) parameter: parameter.name!.lexeme,
-    });
-
-    final typeParameters = provider.node.typeParameters;
-    final typeParametersUsage = genericUsageDisplayString(typeParameters);
-    final typeParametersDefinition =
-        genericDefinitionDisplayString(typeParameters);
-
-    return FamilyTemplate._(
-      provider,
-      options: options,
-      parameters: parameters,
-      typeParameters: typeParameters,
-      hashFn: hashFn,
-      elementType: elementType,
-      refType: refType,
-      providerGenerics:
-          '<${provider.name}$typeParametersUsage, ${provider.valueTypeDisplayString}>',
-      providerType: providerType,
-      providerCreate: parameters.isEmpty
-          // If the provider has no arguments (and therefore only generics),
-          // use tear-off constructor
-          ? '${provider.name.lexeme}$typeParametersUsage.new'
-          : '() => ${provider.name}$typeParametersUsage()$cascadePropertyInit',
-      parametersPassThrough: parametersPassThrough,
-      createType: '${provider.name} Function()',
-      overrideCreate: '() => create()$cascadePropertyInit',
-      other: '''
-abstract class $notifierTypedefName$typeParametersDefinition extends $notifierBaseType<${provider.valueTypeDisplayString}> {
-  ${parameters.map((e) => 'late final ${e.typeDisplayString} ${e.name};').join('\n')}
-
-  ${provider.createdTypeDisplayString} build($parameterDefinition);
-}
-''',
-      providerOther: '''
-  @override
-  ${provider.createdTypeDisplayString} runNotifierBuild(
-    covariant ${provider.name}$typeParametersUsage notifier,
-  ) {
-    return notifier.build($parametersPassThrough);
-  }
-
-  @override
-  Override overrideWith(${provider.name}$typeParametersUsage Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: ${provider._providerImplName}$typeParametersUsage._internal(
-        () => create()$cascadePropertyInit,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-${parameters.map((e) => '        ${e.name}: ${e.name},\n').join()}
-      ),
-    );
-  }
-''',
-    );
-  }
-
-  final GeneratorProviderDeclaration provider;
-  final List<FormalParameter> parameters;
-  final TypeParameterList? typeParameters;
-  final BuildYamlOptions options;
-  final String refType;
-  final String elementType;
-  final String providerType;
-  final String providerGenerics;
-  final String providerCreate;
-  final String other;
-  final String providerOther;
-  final String parametersPassThrough;
-  final String hashFn;
-  final String createType;
-  final String overrideCreate;
-
-  @override
-  void run(StringBuffer buffer) {
-    final providerTypeNameImpl = provider._providerImplName;
-    final refNameImpl = provider._refImplName;
-    final elementNameImpl = '_${providerTypeNameImpl.public}Element';
-    final familyName = '${provider.providerElement.name.titled}Family';
-
-    final parameterDefinition = buildParamDefinitionQuery(parameters);
-    final parameterProviderPassThrough = buildParamInvocationQuery({
-      for (final parameter in parameters)
-        parameter: 'provider.${parameter.name}',
-    });
-    final parameterThisNamedPassThrough = parameters
-        .map((parameter) => '${parameter.name}: ${parameter.name},')
-        .join();
-
-    final docs = providerDocFor(provider.providerElement.element);
-    final meta = metaAnnotations(provider.node.metadata);
-    final providerName =
-        providerFamilyNameFor(provider.providerElement, options);
-
-    final dependenciesKeyword =
-        provider.providerElement.annotation.dependencies == null
-            ? 'const Iterable<ProviderOrFamily>?'
-            : 'final Iterable<ProviderOrFamily>';
-
-    final typeParametersDefinition =
-        genericDefinitionDisplayString(typeParameters);
-    final typeParametersUsage = genericUsageDisplayString(typeParameters);
-    final anyTypeParametersUsage = anyGenericUsageDisplayString(typeParameters);
-    final argumentRecordType = buildParamDefinitionQuery(
-      parameters,
-      asRecord: true,
-    );
-    final argumentsToRecord = buildParamInvocationQuery({
-      for (final parameter in parameters) parameter: parameter.name!.lexeme,
-    });
-
-    final familyOverrideClassName =
-        '_\$${provider.name.lexeme.titled.public}FamilyOverride';
-
-    buffer.write('''
-$other
-
-$docs
-@ProviderFor(${provider.name})
-$meta
-const $providerName = $familyName();
-
-$docs
-class $familyName extends Family {
-  $docs
-  const $familyName();
-
-  static $dependenciesKeyword _dependencies = ${serializeDependencies(provider.providerElement.annotation, options)};
-
-  static $dependenciesKeyword _allTransitiveDependencies = ${serializeAllTransitiveDependencies(provider.providerElement.annotation, options)};
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies => _allTransitiveDependencies;
-
-  @override
-  String? get name => r'$providerName';
-
-  $docs
-  $providerTypeNameImpl$typeParametersUsage call$typeParametersDefinition($parameterDefinition) {
-    return $providerTypeNameImpl$typeParametersUsage($parametersPassThrough);
-  }
-
-  @visibleForOverriding
-  @override
-  $providerTypeNameImpl$anyTypeParametersUsage getProviderOverride(
-    covariant $providerTypeNameImpl$anyTypeParametersUsage provider,
-  ) {
-    return call($parameterProviderPassThrough);
-  }
-
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith($createType create) {
-    return $familyOverrideClassName(this, create);
-  }
-}
-
-class $familyOverrideClassName implements FamilyOverride {
-  $familyOverrideClassName(this.overriddenFamily, this.create);
-
-  final $createType create;
-
-  @override
-  final $familyName overriddenFamily;
-
-  @override
-  $providerTypeNameImpl getProviderOverride(
-    covariant $providerTypeNameImpl provider,
-  ) {
-    return provider._copyWith(create);
-  }
-}
-
-$docs
-class $providerTypeNameImpl$typeParametersDefinition extends $providerType$providerGenerics {
-  $docs
-  $providerTypeNameImpl($parameterDefinition) : this._internal(
-          $providerCreate,
-          from: $providerName,
-          name: r'$providerName',
-          debugGetCreateSourceHash: $hashFn,
-          dependencies: $familyName._dependencies,
-          allTransitiveDependencies: $familyName._allTransitiveDependencies,
-          ${parameters.map((e) => '${e.name}: ${e.name},\n').join()}
+      case (hasParameters: false, hasGenerics: true, _):
+        buffer.writeln(
+          r'return provider._copyWithCreate(create).$createElement(container);',
         );
 
-  $providerTypeNameImpl._internal(
-    super.create, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    ${buildParamDefinitionQuery(
-      parameters,
-      asThisParameter: true,
-      writeBrackets: false,
-      asRequiredNamed: true,
-    )}
-  }) : super.internal();
+      case (
+          hasParameters: true,
+          hasGenerics: true,
+          FunctionalProviderDeclaration()
+        ):
+        buffer.writeln('''
+        return provider._copyWithCreate($_genericsDefinition(ref, $_parameterDefinition) {
+          return create(ref, ${provider.argumentToRecord()});
+        }).\$createElement(container);
+      ''');
+      case (
+          hasParameters: true,
+          hasGenerics: true,
+          ClassBasedProviderDeclaration()
+        ):
+        buffer.writeln('''
+        return provider._copyWithCreate($_genericsDefinition() {
+          final argument = provider.argument$_argumentCast;
 
-${parameters.map((e) => 'final ${e.typeDisplayString} ${e.name};').join()}
+          return create(argument);
+        }).\$createElement(container);
+      ''');
+    }
 
-$providerOther
-
-  @override
-  ($argumentRecordType) get argument {
-    return ($argumentsToRecord);
+    buffer.writeln('''
+    },
+  );
+}''');
   }
 
-  @override
-  $elementType$providerGenerics createElement() {
-    return $elementNameImpl(this);
-  }
+  void _writeOverrideWithBuild(
+    StringBuffer buffer,
+    ClassBasedProviderDeclaration provider, {
+    required StringBuffer topLevelBuffer,
+  }) {
+    final runNotifierBuildType = '''
+${provider.createdTypeDisplayString} Function$_genericsDefinition(
+  ${provider.refWithGenerics} ref,
+  $_notifierType notifier
+  ${switch (provider.parameters) {
+      [] => '',
+      [_, ...] => ', $_argumentRecordType argument',
+    }}
+)''';
 
-  $providerTypeNameImpl _copyWith(
-    $createType create,
-  ) {
-    return $providerTypeNameImpl._internal(
-      $overrideCreate,
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-      $parameterThisNamedPassThrough
-    );
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return ${[
-      'other is $providerTypeNameImpl',
-      // If there are type parameters, check the runtimeType to check them too.
-      if (typeParameters?.typeParameters.isNotEmpty ?? false)
-        'other.runtimeType == runtimeType',
-      ...parameters.map((e) => 'other.${e.name} == ${e.name}'),
-    ].join(' && ')};
-  }
-
-  @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-${[
-      ...parameters.map((e) => e.name),
-      ...?typeParameters?.typeParameters.map((e) => e.name),
-    ].map((e) => 'hash = _SystemHash.combine(hash, $e.hashCode);').join()}
-
-    return _SystemHash.finish(hash);
-  }
-}
-
-mixin $refNameImpl$typeParametersDefinition on $refType<${provider.valueTypeDisplayString}> {
-  ${parameters.map((e) {
-      return '''
-/// The parameter `${e.name}` of this provider.
-${e.typeDisplayString} get ${e.name};''';
-    }).join()}
-}
-
-class $elementNameImpl$typeParametersDefinition extends $elementType$providerGenerics with $refNameImpl$typeParametersUsage {
-  $elementNameImpl(super.provider);
-
-${parameters.map((e) => '@override ${e.typeDisplayString} get ${e.name} => (origin as $providerTypeNameImpl$typeParametersUsage).${e.name};').join()}
-}
+    buffer.writeln('''
+/// {@macro riverpod.override_with_build}
+Override overrideWithBuild($runNotifierBuildType build,) {
+  return \$FamilyOverride(
+    from: this,
+    createElement: (container, provider) {
+      provider as ${provider.providerTypeName};
 ''');
+
+    switch ((
+      hasParameters: provider.parameters.isNotEmpty,
+      hasGenerics: provider.typeParameters?.typeParameters.isNotEmpty ?? false,
+    )) {
+      case (hasParameters: false, hasGenerics: false):
+        buffer.writeln(
+          r'return provider.$copyWithBuild(build).$createElement(container);',
+        );
+      case (hasParameters: true, hasGenerics: false):
+        buffer.writeln('''
+        final argument = provider.argument$_argumentCast;
+
+        return provider.\$copyWithBuild((ref, notifier) => build(ref, notifier, argument)).\$createElement(container);
+      ''');
+
+      case (hasParameters: false, hasGenerics: true):
+        buffer.writeln(
+          r'return provider._copyWithBuild(build).$createElement(container);',
+        );
+
+      case (hasParameters: true, hasGenerics: true):
+        buffer.writeln('''
+        return provider._copyWithBuild($_genericsDefinition(ref, notifier) {
+          final argument = provider.argument$_argumentCast;
+
+          return build(ref, notifier, argument);
+        }).\$createElement(container);
+      ''');
+    }
+
+    buffer.writeln('''
+    },
+  );
+}''');
   }
-}
-
-extension on GeneratorProviderDeclaration {
-  String get _providerImplName => '${providerElement.name.titled}Provider';
-
-  String get _refImplName => '${providerElement.name.titled}Ref';
 }

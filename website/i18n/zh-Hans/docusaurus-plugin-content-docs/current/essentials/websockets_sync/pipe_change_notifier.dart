@@ -8,7 +8,7 @@ part 'pipe_change_notifier.g.dart';
 /* SNIPPET START */
 /// 一个提供者程序，它创建 ValueNotifier 并在值更改时更新其监听器。
 @riverpod
-ValueNotifier<int> myListenable(MyListenableRef ref) {
+Raw<ValueNotifier<int>> myListenable(MyListenableRef ref) {
   final notifier = ValueNotifier(0);
 
   // 当提供者程序被处置时处置通知者程序

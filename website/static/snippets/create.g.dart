@@ -8,20 +8,58 @@ part of 'create.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+typedef BoredSuggestionRef = Ref<AsyncValue<String>>;
+
+@ProviderFor(boredSuggestion)
+const boredSuggestionProvider = BoredSuggestionProvider._();
+
+final class BoredSuggestionProvider extends $FunctionalProvider<
+        AsyncValue<String>, FutureOr<String>, BoredSuggestionRef>
+    with $FutureModifier<String>, $FutureProvider<String, BoredSuggestionRef> {
+  const BoredSuggestionProvider._(
+      {FutureOr<String> Function(
+        BoredSuggestionRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'boredSuggestionProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final FutureOr<String> Function(
+    BoredSuggestionRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$boredSuggestionHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<String> $createElement(ProviderContainer container) =>
+      $FutureProviderElement(this, container);
+
+  @override
+  BoredSuggestionProvider $copyWithCreate(
+    FutureOr<String> Function(
+      BoredSuggestionRef ref,
+    ) create,
+  ) {
+    return BoredSuggestionProvider._(create: create);
+  }
+
+  @override
+  FutureOr<String> create(BoredSuggestionRef ref) {
+    final _$cb = _createCb ?? boredSuggestion;
+    return _$cb(ref);
+  }
+}
+
 String _$boredSuggestionHash() => r'5975efd623c41e5bc92ecd326209e6124cb1736d';
 
-/// See also [boredSuggestion].
-@ProviderFor(boredSuggestion)
-final boredSuggestionProvider = AutoDisposeFutureProvider<String>.internal(
-  boredSuggestion,
-  name: r'boredSuggestionProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$boredSuggestionHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef BoredSuggestionRef = AutoDisposeFutureProviderRef<String>;
+const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

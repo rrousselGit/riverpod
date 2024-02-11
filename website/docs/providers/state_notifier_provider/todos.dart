@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 /* SNIPPET START */
 
@@ -7,7 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // We could also use packages like Freezed to help with the implementation.
 @immutable
 class Todo {
-  const Todo({required this.id, required this.description, required this.completed});
+  const Todo(
+      {required this.id, required this.description, required this.completed,});
 
   // All properties should be `final` on our class.
   final String id;
@@ -31,7 +33,7 @@ class Todo {
 // The public methods on this class will be what allow the UI to modify the state.
 class TodosNotifier extends StateNotifier<List<Todo>> {
   // We initialize the list of todos to an empty list
-  TodosNotifier(): super([]);
+  TodosNotifier() : super([]);
 
   // Let's allow the UI to add todos.
   void addTodo(Todo todo) {

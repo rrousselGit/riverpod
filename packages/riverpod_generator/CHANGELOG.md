@@ -1,3 +1,20 @@
+## Unreleased build
+
+- **Breaking** Removed support for `@riverpod external int fn();`.
+- **Breaking** Family arguments are no-longer available on the `Ref` object.
+  The various override methods now take two parameters:
+
+  ```dart
+  @riverpod
+  String example(ExampleRef ref, int arg, {required int anotherArg}) {...}
+  // ...
+  exampleProvider.overrideWith(
+    (ref, ({int arg, int anotherArg}) args) {
+
+    }
+  )
+  ```
+
 ## 3.0.0-dev.11 - 2023-11-27
 
 - `riverpod_annotation` upgraded to `3.0.0-dev.3`

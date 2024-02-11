@@ -8,225 +8,213 @@ part of 'provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$activityHash() => r'2f9496c5d70de9314c67e5c48ac44d8b149bc471';
+typedef ActivityRef = Ref<AsyncValue<Activity>>;
 
-/// See also [activity].
 @ProviderFor(activity)
-final activityProvider = AutoDisposeFutureProvider<Activity>.internal(
-  activity,
-  name: r'activityProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$activityHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+const activityProvider = ActivityProvider._();
 
-typedef ActivityRef = AutoDisposeFutureProviderRef<Activity>;
-String _$activityNotifier2Hash() => r'9e67c655d53a9f98c3b012a0534421385dde0339';
-
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-abstract class _$ActivityNotifier2
-    extends BuildlessAutoDisposeAsyncNotifier<Activity> {
-  late final String activityType;
-
-  FutureOr<Activity> build(
-    String activityType,
-  );
-}
-
-/// See also [ActivityNotifier2].
-@ProviderFor(ActivityNotifier2)
-const activityNotifier2Provider = ActivityNotifier2Family();
-
-/// See also [ActivityNotifier2].
-class ActivityNotifier2Family extends Family {
-  /// See also [ActivityNotifier2].
-  const ActivityNotifier2Family();
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'activityNotifier2Provider';
-
-  /// See also [ActivityNotifier2].
-  ActivityNotifier2Provider call(
-    String activityType,
-  ) {
-    return ActivityNotifier2Provider(
-      activityType,
-    );
-  }
-
-  @visibleForOverriding
-  @override
-  ActivityNotifier2Provider getProviderOverride(
-    covariant ActivityNotifier2Provider provider,
-  ) {
-    return call(
-      provider.activityType,
-    );
-  }
-
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(ActivityNotifier2 Function() create) {
-    return _$ActivityNotifier2FamilyOverride(this, create);
-  }
-}
-
-class _$ActivityNotifier2FamilyOverride implements FamilyOverride {
-  _$ActivityNotifier2FamilyOverride(this.overriddenFamily, this.create);
-
-  final ActivityNotifier2 Function() create;
-
-  @override
-  final ActivityNotifier2Family overriddenFamily;
-
-  @override
-  ActivityNotifier2Provider getProviderOverride(
-    covariant ActivityNotifier2Provider provider,
-  ) {
-    return provider._copyWith(create);
-  }
-}
-
-/// See also [ActivityNotifier2].
-class ActivityNotifier2Provider
-    extends AutoDisposeAsyncNotifierProviderImpl<ActivityNotifier2, Activity> {
-  /// See also [ActivityNotifier2].
-  ActivityNotifier2Provider(
-    String activityType,
-  ) : this._internal(
-          () => ActivityNotifier2()..activityType = activityType,
-          from: activityNotifier2Provider,
-          name: r'activityNotifier2Provider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$activityNotifier2Hash,
-          dependencies: ActivityNotifier2Family._dependencies,
-          allTransitiveDependencies:
-              ActivityNotifier2Family._allTransitiveDependencies,
-          activityType: activityType,
+final class ActivityProvider extends $FunctionalProvider<AsyncValue<Activity>,
+        FutureOr<Activity>, ActivityRef>
+    with $FutureModifier<Activity>, $FutureProvider<Activity, ActivityRef> {
+  const ActivityProvider._(
+      {FutureOr<Activity> Function(
+        ActivityRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'activityProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
         );
 
-  ActivityNotifier2Provider._internal(
-    super.create, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.activityType,
-  }) : super.internal();
-
-  final String activityType;
+  final FutureOr<Activity> Function(
+    ActivityRef ref,
+  )? _createCb;
 
   @override
-  FutureOr<Activity> runNotifierBuild(
-    covariant ActivityNotifier2 notifier,
+  String debugGetCreateSourceHash() => _$activityHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<Activity> $createElement(
+          ProviderContainer container) =>
+      $FutureProviderElement(this, container);
+
+  @override
+  ActivityProvider $copyWithCreate(
+    FutureOr<Activity> Function(
+      ActivityRef ref,
+    ) create,
   ) {
-    return notifier.build(
-      activityType,
-    );
+    return ActivityProvider._(create: create);
   }
 
   @override
-  Override overrideWith(ActivityNotifier2 Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: ActivityNotifier2Provider._internal(
-        () => create()..activityType = activityType,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        activityType: activityType,
-      ),
-    );
+  FutureOr<Activity> create(ActivityRef ref) {
+    final _$cb = _createCb ?? activity;
+    return _$cb(ref);
   }
+}
+
+String _$activityHash() => r'2f9496c5d70de9314c67e5c48ac44d8b149bc471';
+
+@ProviderFor(ActivityNotifier2)
+const activityNotifier2Provider = ActivityNotifier2Family._();
+
+final class ActivityNotifier2Provider
+    extends $AsyncNotifierProvider<ActivityNotifier2, Activity> {
+  const ActivityNotifier2Provider._(
+      {required ActivityNotifier2Family super.from,
+      required String super.argument,
+      super.runNotifierBuildOverride,
+      ActivityNotifier2 Function()? create})
+      : _createCb = create,
+        super(
+          name: r'activityNotifier2Provider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final ActivityNotifier2 Function()? _createCb;
 
   @override
-  (String,) get argument {
-    return (activityType,);
-  }
+  String debugGetCreateSourceHash() => _$activityNotifier2Hash();
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<ActivityNotifier2, Activity>
-      createElement() {
-    return _ActivityNotifier2ProviderElement(this);
+  String toString() {
+    return r'activityNotifier2Provider'
+        ''
+        '($argument)';
   }
 
-  ActivityNotifier2Provider _copyWith(
+  @$internal
+  @override
+  ActivityNotifier2 create() => _createCb?.call() ?? ActivityNotifier2();
+
+  @$internal
+  @override
+  ActivityNotifier2Provider $copyWithCreate(
     ActivityNotifier2 Function() create,
   ) {
-    return ActivityNotifier2Provider._internal(
-      () => create()..activityType = activityType,
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-      activityType: activityType,
-    );
+    return ActivityNotifier2Provider._(
+        argument: argument as String,
+        from: from! as ActivityNotifier2Family,
+        create: create);
   }
+
+  @$internal
+  @override
+  ActivityNotifier2Provider $copyWithBuild(
+    FutureOr<Activity> Function(
+      Ref<AsyncValue<Activity>>,
+      ActivityNotifier2,
+    ) build,
+  ) {
+    return ActivityNotifier2Provider._(
+        argument: argument as String,
+        from: from! as ActivityNotifier2Family,
+        runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $AsyncNotifierProviderElement<ActivityNotifier2, Activity> $createElement(
+          ProviderContainer container) =>
+      $AsyncNotifierProviderElement(this, container);
 
   @override
   bool operator ==(Object other) {
-    return other is ActivityNotifier2Provider &&
-        other.activityType == activityType;
+    return other is ActivityNotifier2Provider && other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, activityType.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-mixin ActivityNotifier2Ref on AutoDisposeAsyncNotifierProviderRef<Activity> {
-  /// The parameter `activityType` of this provider.
-  String get activityType;
-}
+String _$activityNotifier2Hash() => r'9e67c655d53a9f98c3b012a0534421385dde0339';
 
-class _ActivityNotifier2ProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<ActivityNotifier2, Activity>
-    with ActivityNotifier2Ref {
-  _ActivityNotifier2ProviderElement(super.provider);
+final class ActivityNotifier2Family extends Family {
+  const ActivityNotifier2Family._()
+      : super(
+          name: r'activityNotifier2Provider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  ActivityNotifier2Provider call(
+    String activityType,
+  ) =>
+      ActivityNotifier2Provider._(argument: activityType, from: this);
 
   @override
-  String get activityType => (origin as ActivityNotifier2Provider).activityType;
+  String debugGetCreateSourceHash() => _$activityNotifier2Hash();
+
+  @override
+  String toString() => r'activityNotifier2Provider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    ActivityNotifier2 Function(
+      String args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as ActivityNotifier2Provider;
+
+        final argument = provider.argument as String;
+
+        return provider
+            .$copyWithCreate(() => create(argument))
+            .$createElement(container);
+      },
+    );
+  }
+
+  /// {@macro riverpod.override_with_build}
+  Override overrideWithBuild(
+    FutureOr<Activity> Function(Ref<AsyncValue<Activity>> ref,
+            ActivityNotifier2 notifier, String argument)
+        build,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as ActivityNotifier2Provider;
+
+        final argument = provider.argument as String;
+
+        return provider
+            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
+            .$createElement(container);
+      },
+    );
+  }
 }
+
+abstract class _$ActivityNotifier2 extends $AsyncNotifier<Activity> {
+  late final _$args =
+      (ref as $AsyncNotifierProviderElement).origin.argument as String;
+  String get activityType => _$args;
+
+  FutureOr<Activity> build(
+    String activityType,
+  );
+  @$internal
+  @override
+  FutureOr<Activity> runBuild() => build(
+        _$args,
+      );
+}
+
+const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

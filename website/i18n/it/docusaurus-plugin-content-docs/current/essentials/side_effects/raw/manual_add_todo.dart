@@ -7,11 +7,12 @@ import 'package:http/http.dart' as http;
 
 import 'todo_list_notifier.dart';
 
-final todoListProvider = AsyncNotifierProvider.autoDispose<TodoList, List<Todo>>(
+final todoListProvider =
+    AsyncNotifierProvider.autoDispose<TodoList, List<Todo>>(
   TodoList.new,
 );
 
-class TodoList extends AutoDisposeAsyncNotifier<List<Todo>> {
+class TodoList extends AsyncNotifier<List<Todo>> {
   @override
   Future<List<Todo>> build() async => [/* ... */];
 

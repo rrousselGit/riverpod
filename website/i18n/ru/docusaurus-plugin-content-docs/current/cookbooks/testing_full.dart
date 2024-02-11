@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -56,25 +55,28 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          repositoryProvider.overrideWithValue(FakeRepository())
+          repositoryProvider.overrideWithValue(FakeRepository()),
         ],
         // Наше приложение, которые читает значение todoListProvider
         // для отображение списка задач.
         // Вы можете вынести это в отдельный MyApp виджет
         child: MaterialApp(
           home: Scaffold(
-            body: Consumer(builder: (context, ref, _) {
-              final todos = ref.watch(todoListProvider);
-              // Список задач загружается, либо случилась ошибка
-              if (todos.asData == null) {
-                return const CircularProgressIndicator();
-              }
-              return ListView(
-                children: [
-                  for (final todo in todos.asData!.value) TodoItem(todo: todo)
-                ],
-              );
-            }),
+            body: Consumer(
+              builder: (context, ref, _) {
+                final todos = ref.watch(todoListProvider);
+                // Список задач загружается, либо случилась ошибка
+                if (todos.asData == null) {
+                  return const CircularProgressIndicator();
+                }
+                return ListView(
+                  children: [
+                    for (final todo in todos.asData!.value)
+                      TodoItem(todo: todo),
+                  ],
+                );
+              },
+            ),
           ),
         ),
       ),

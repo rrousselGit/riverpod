@@ -1,11 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /* SNIPPET START */
-final exampleProvider = AsyncNotifierProvider.autoDispose<ExampleNotifier, String>(
+final exampleProvider =
+    AsyncNotifierProvider.autoDispose<ExampleNotifier, String>(
   ExampleNotifier.new,
 );
 
-class ExampleNotifier extends AutoDisposeAsyncNotifier<String> {
+class ExampleNotifier extends AsyncNotifier<String> {
   @override
   Future<String> build() async {
     return Future.value('foo');

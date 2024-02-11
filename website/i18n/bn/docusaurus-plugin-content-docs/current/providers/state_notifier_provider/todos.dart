@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 /* SNIPPET START */
 
@@ -8,7 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 @immutable
 class Todo {
   const Todo(
-      {required this.id, required this.description, required this.completed});
+      {required this.id, required this.description, required this.completed,});
 
   // সমস্ত বৈশিষ্ট্য আমাদের ক্লাসে 'final' হওয়া উচিত।
   final String id;
