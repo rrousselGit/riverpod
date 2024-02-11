@@ -17,6 +17,7 @@ class AvoidGlobalProviderContainer extends DartLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
+    // TODO release or delete
     context.registry.addInstanceCreationExpression((node) {
       // If there is a parameterElement it means we are not declaring a variable
       if (node.staticParameterElement != null) return;

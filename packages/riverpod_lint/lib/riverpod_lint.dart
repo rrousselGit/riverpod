@@ -28,22 +28,22 @@ PluginBase createPlugin() => _RiverpodPlugin();
 class _RiverpodPlugin extends PluginBase {
   @override
   List<LintRule> getLintRules(CustomLintConfigs configs) => [
+        const AsyncValueNullablePattern(),
         const AvoidBuildContextInProviders(),
+        const AvoidManualProvidersAsGeneratedProviderDependency(),
         const AvoidPublicNotifierProperties(),
+        const AvoidRefInsideStateDispose(),
         const FunctionalRef(),
         const MissingProviderScope(),
-        const ProviderParameters(),
-        const NotifierExtends(),
-        const ProviderDependencies(),
-        const AvoidManualProvidersAsGeneratedProviderDependency(),
-        const ScopedProvidersShouldSpecifyDependencies(),
-        const UnsupportedProviderValue(),
-        const AvoidRefInsideStateDispose(),
         const NotifierBuild(),
-        const AsyncValueNullablePattern(),
+        const NotifierExtends(),
         const ProtectedNotifierProperties(),
+        const ProviderDependencies(),
+        const ProviderParameters(),
         // TODO changelog added riverpod_syntax_error, for reporting errors when the generator would throw.
         const RiverpodSyntaxError(),
+        const ScopedProvidersShouldSpecifyDependencies(),
+        const UnsupportedProviderValue(),
       ];
 
   @override
