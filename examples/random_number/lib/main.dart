@@ -24,7 +24,7 @@ final randomNumberProvider = StateNotifierProvider(
 );
 
 class RandomNumberApp extends StatelessWidget {
-  const RandomNumberApp({Key? key}) : super(key: key);
+  const RandomNumberApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +59,7 @@ class RandomNumberApp extends StatelessWidget {
 
 /// Custom consumer using the provider
 class RandomConsumer extends ConsumerWidget {
-  const RandomConsumer({Key? key}) : super(key: key);
+  const RandomConsumer({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
