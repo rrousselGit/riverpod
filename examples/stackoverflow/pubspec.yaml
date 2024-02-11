@@ -3,7 +3,7 @@ description: A new Flutter project.
 publish_to: "none"
 
 environment:
-  sdk: ">=3.0.0-0.0-dev <4.0.0"
+  sdk: ">=3.0.0 <4.0.0"
   flutter: ">=1.17.0"
 
 dependencies:
@@ -19,12 +19,15 @@ dependencies:
 
 dev_dependencies:
   build_runner: ^2.0.0
+  custom_lint: ^0.6.0
   flutter_test:
     sdk: flutter
   freezed: ^2.1.0
   json_serializable: ^6.3.0
   mockito: ^5.0.0
   riverpod_generator:
+  riverpod_lint:
+    path: ../../packages/riverpod_lint
 
 flutter:
   uses-material-design: true

@@ -14,6 +14,5 @@ dependency_overrides:
     path: ../../packages/riverpod_annotation
   riverpod_generator:
     path: ../../packages/riverpod_generator
-
-  # hotreloader issue
-  vm_service: ^14.0.0
+  # https://github.com/vegardit/dart-hotreloader/issues/14
+  vm_service: ">=8.0.0 <15.0.0"
