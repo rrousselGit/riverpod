@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_keep_alive_dependency_inside_auto_dispose
+// ignore_for_file: only_use_keep_alive_inside_keep_alive
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'protected_notifier_properties.g.dart';
