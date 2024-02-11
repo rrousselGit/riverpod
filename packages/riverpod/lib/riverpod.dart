@@ -1,7 +1,3 @@
-// TODO CHANGELOG breaking: Riverpod now only re-exports StateNotifier from pkg:state_notifier.
-//  for other classes, please add state_notifier as dependency.
-export 'package:state_notifier/state_notifier.dart' show StateNotifier;
-
 // TODO assert all provider variants have const constructors
 
 export 'src/core/async_value.dart' hide AsyncTransition;

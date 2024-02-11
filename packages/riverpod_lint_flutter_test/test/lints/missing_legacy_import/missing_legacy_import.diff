@@ -1,0 +1,60 @@
+Message: `Extend _$NoExtends`
+Priority: 90
+Diff for file `test/lints/notifier_extends/notifier_extends.dart:15`:
+```
+@riverpod
+// expect_lint: notifier_extends
+- class NoExtends {
++ class NoExtends extends _$NoExtends {
+  int build() => 0;
+}
+```
+---
+Message: `Extend _$WrongExtends`
+Priority: 90
+Diff for file `test/lints/notifier_extends/notifier_extends.dart:21`:
+```
+@riverpod
+// expect_lint: notifier_extends
+- class WrongExtends extends AsyncNotifier<int> {
++ class WrongExtends extends _$WrongExtends {
+  int build() => 0;
+}
+```
+---
+Message: `Extend _$NoGenerics<A, B>`
+Priority: 90
+Diff for file `test/lints/notifier_extends/notifier_extends.dart:39`:
+```
+@riverpod
+// expect_lint: notifier_extends
+- class NoGenerics<A extends num, B> extends _$NoGenerics {
++ class NoGenerics<A extends num, B> extends _$NoGenerics<A, B> {
+  int build() => 0;
+}
+```
+---
+Message: `Extend _$MissingGenerics<A, B>`
+Priority: 90
+Diff for file `test/lints/notifier_extends/notifier_extends.dart:45`:
+```
+@riverpod
+// expect_lint: notifier_extends
+- class MissingGenerics<A, B> extends _$MissingGenerics<A> {
++ class MissingGenerics<A, B> extends _$MissingGenerics<A, B> {
+  int build() => 0;
+}
+```
+---
+Message: `Extend _$WrongOrder<A, B>`
+Priority: 90
+Diff for file `test/lints/notifier_extends/notifier_extends.dart:51`:
+```
+@riverpod
+// expect_lint: notifier_extends
+- class WrongOrder<A, B> extends _$WrongOrder<B, A> {
++ class WrongOrder<A, B> extends _$WrongOrder<A, B> {
+  int build() => 0;
+}
+```
+---
