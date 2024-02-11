@@ -1600,7 +1600,6 @@ void main() {
     );
   });
 
-
   test(
       'AsyncValue.guard emits the error when the created future fails and predicate is null',
       () async {
