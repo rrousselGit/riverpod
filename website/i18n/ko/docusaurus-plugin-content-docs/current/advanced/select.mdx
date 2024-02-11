@@ -55,4 +55,9 @@ import selectAsync from "/docs/advanced/select/select_async";
 이 함수는 비동기 코드에 고유하며, 공급자가 방출한 데이터에 대해 `select` 연산을 수행할 수 있게 해줍니다.  
 사용법은 `select`와 비슷하지만 대신 `Future`를 반환합니다:
 
-<AutoSnippet {...selectAsync} fileKey="selectAsync" />
+<AutoSnippet
+  {...selectAsync}
+  translations={{
+    watch: "  // user를 사용할 수 있을 때까지 기다렸다가 \"firstName\" 속성만 수신합니다."
+  }}
+/>
