@@ -2,7 +2,6 @@
 
 import React, { useContext } from "react";
 import CodeBlock from "@theme/CodeBlock";
-import { translate } from "@docusaurus/Translate";
 
 import {
   CodegenContext,
@@ -16,7 +15,12 @@ const END_AT = "/* SNIPPET END */";
 const templateRegex = /^\s*\/\/\s*{@template\s(.+?)}/g;
 const endTemplateRegex = /^\s*\/\/\s*{@endtemplate}/g;
 
-export function trimSnippet(snippet: string, fileKey?: string): string {
+type TranslationMap = Record<string, string>;
+
+export function trimSnippet(
+  snippet: string,
+  translations?: TranslationMap
+): string {
   if (!snippet) return;
   const startAtIndex = snippet.indexOf(START_AT);
   if (startAtIndex < 0) return snippet;
@@ -40,7 +44,7 @@ export function trimSnippet(snippet: string, fileKey?: string): string {
       line = line.substring(leadingSpaces.length);
     }
 
-    if (fileKey) {
+    if (translations) {
       const templateMatch = templateRegex.exec(line);
       const endTemplateMatch = endTemplateRegex.exec(line);
 
@@ -53,12 +57,9 @@ export function trimSnippet(snippet: string, fileKey?: string): string {
 
         const templateKey = templateMatch[1];
 
-        const key = `riverpod.snippets.${fileKey}.${templateKey}`;
-        const translation = translate({
-          message: key,
-        });
+        const translation = translations[templateKey];
 
-        if (translation !== key) {
+        if (translation) {
           // Replace the content if the template is translated, and insert the new content.
           currentTemplateKey = templateKey;
           transformedLines.push(translation);
@@ -88,13 +89,13 @@ export function trimSnippet(snippet: string, fileKey?: string): string {
 interface CodeSnippetProps {
   title?: string;
   snippet: string;
-  fileKey?: string;
+  translations?: TranslationMap;
 }
 
 export const CodeSnippet: React.FC<CodeSnippetProps> = ({
   snippet,
   title,
-  fileKey,
+  translations,
   ...other
 }) => {
   return (
@@ -107,7 +108,7 @@ export const CodeSnippet: React.FC<CodeSnippetProps> = ({
         </div>
         <div className="snippet__title">{title}</div>
       </div>
-      <CodeBlock {...other}>{trimSnippet(snippet, fileKey)}</CodeBlock>
+      <CodeBlock {...other}>{trimSnippet(snippet, translations)}</CodeBlock>
     </div>
   );
 };
@@ -119,7 +120,7 @@ export function AutoSnippet(props: {
   hooksCodegen?: string | Array<string>;
   raw: string | Array<string>;
   hooks?: string | Array<string>;
-  fileKey?: string;
+  translations?: TranslationMap;
 }) {
   const [codegen] = useIsBrowser() ? useContext(CodegenContext) : [true];
   const [hooksEnabled] = useIsBrowser()
@@ -142,7 +143,7 @@ export function AutoSnippet(props: {
 
   return (
     <CodeBlock language={props.language} title={props.title}>
-      {trimSnippet(code, props.fileKey)}
+      {trimSnippet(code, props.translations)}
     </CodeBlock>
   );
 }
