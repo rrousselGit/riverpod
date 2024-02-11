@@ -51,6 +51,7 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
   - [functional\_ref (riverpod\_generator only)](#functional_ref-riverpod_generator-only)
   - [notifier\_extends (riverpod\_generator only)](#notifier_extends-riverpod_generator-only)
   - [avoid\_ref\_inside\_state\_dispose](#avoid_ref_inside_state_dispose)
+  - [avoid\_keep\_alive\_dependency\_inside\_auto\_dispose (riverpod\_generator only)](#avoid_keep_alive_dependency_inside_auto_dispose-riverpod_generator-only)
   - [notifier\_build (riverpod\_generator only)](#notifier_build-riverpod_generator-only)
 - [riverpod\_syntax\_error (riverpod\_generator only)](#riverpod_syntax_error-riverpod_generator-only)
   - [async\_value\_nullable\_patttern](#async_value_nullable_patttern)
@@ -586,6 +587,26 @@ class _MyWidgetState extends ConsumerState<MyWidget> {
   }
 
   // ...
+}
+```
+
+### avoid_keep_alive_dependency_inside_auto_dispose (riverpod_generator only)
+
+Warn when a `keepAlive` provider tries to use a non-`keepAlive` provider.
+
+This is discouraged because such relationship would cause the non-`keepAlive` provider
+to behave as a `keepAlive`, even though it isn't marked as such.
+
+**Bad**:
+
+```dart
+@riverpod
+int nonKeepAlive(NonKeepAliveRef ref) => 0;
+
+@Riverpod(keepAlive: true)
+int fn(FnRef ref) {
+  // `keepAlive` providers should only depend on keepAlive providers.
+  ref.watch(nonKeepAliveProvider);
 }
 ```
 

@@ -16,6 +16,7 @@ import 'src/lints/functional_ref.dart';
 import 'src/lints/missing_provider_scope.dart';
 import 'src/lints/notifier_build.dart';
 import 'src/lints/notifier_extends.dart';
+import 'src/lints/only_use_keep_alive_inside_keep_alive.dart';
 import 'src/lints/protected_notifier_properties.dart';
 import 'src/lints/provider_dependencies.dart';
 import 'src/lints/provider_parameters.dart';
@@ -30,6 +31,7 @@ class _RiverpodPlugin extends PluginBase {
   List<LintRule> getLintRules(CustomLintConfigs configs) => [
         const AsyncValueNullablePattern(),
         const AvoidBuildContextInProviders(),
+        const OnlyUseKeepAliveInsideKeepAlive(),
         const AvoidManualProvidersAsGeneratedProviderDependency(),
         const AvoidPublicNotifierProperties(),
         const AvoidRefInsideStateDispose(),
