@@ -1577,7 +1577,6 @@ void main() {
     await expectLater(
       AsyncValue.guard(
         () => Future<int>.error(42, stack),
-        null,
       ),
       completion(AsyncError<int>(42, stack)),
     );
