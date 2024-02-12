@@ -756,7 +756,7 @@ class RiverpodAstRegistry {
   }
 }
 
-// Voluntarily not extenting RiverpodAstVisitor to trigger a compilation error
+// Voluntarily not extending RecursiveRiverpodAstVisitor to trigger a compilation error
 // when new nodes are added.
 class _RiverpodAstRegistryVisitor extends RiverpodAstVisitor {
   _RiverpodAstRegistryVisitor(this._registry);
