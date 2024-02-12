@@ -56,7 +56,8 @@ class ResolvedRiverpodLibraryResult extends RiverpodAst {
 
   @override
   void accept(RiverpodAstVisitor visitor) {
-    visitor.visitResolvedRiverpodUnit(this);
+    // TODO changelog breaking renamed visitResolvedRiverpodLibraryResult
+    visitor.visitResolvedRiverpodLibraryResult(this);
   }
 
   @override

@@ -59,9 +59,11 @@ extension on LibraryElement {
 }
 
 // TODO changelog made sealed
-sealed class GeneratorProviderDeclaration extends ProviderDeclaration {
+sealed class GeneratorProviderDeclaration extends ProviderDeclaration
+    with _$GeneratorProviderDeclaration {
   @override
   GeneratorProviderDeclarationElement get providerElement;
+  @override
   RiverpodAnnotation get annotation;
 
   String get valueTypeDisplayString => valueTypeNode?.toSource() ?? 'Object?';
@@ -82,6 +84,7 @@ sealed class GeneratorProviderDeclaration extends ProviderDeclaration {
   SourcedType? get exposedTypeNode;
   TypeAnnotation? get createdTypeNode;
 
+  @override
   final List<RefInvocation> refInvocations = [];
 
   String computeProviderHash() {
@@ -91,14 +94,6 @@ sealed class GeneratorProviderDeclaration extends ProviderDeclaration {
     final bytes = utf8.encode(node.toSource());
     final digest = sha1.convert(bytes);
     return digest.toString();
-  }
-
-  @mustCallSuper
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    for (final refInvocation in refInvocations) {
-      refInvocation.accept(visitor);
-    }
   }
 }
 
@@ -179,7 +174,8 @@ TypeAnnotation? _getValueType(
 
 typedef SourcedType = ({String? source, DartType dartType});
 
-class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration {
+class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration
+    with _$ClassBasedProviderDeclaration {
   ClassBasedProviderDeclaration._({
     required this.name,
     required this.node,
@@ -305,17 +301,6 @@ class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration {
   final TypeAnnotation? valueTypeNode;
   @override
   final SourcedType exposedTypeNode;
-
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitClassBasedProviderDeclaration(this);
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    super.visitChildren(visitor);
-    annotation.accept(visitor);
-  }
 }
 
 class _GeneratorRefInvocationVisitor extends RecursiveAstVisitor<void>
