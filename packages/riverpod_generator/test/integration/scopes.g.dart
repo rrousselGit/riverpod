@@ -18,8 +18,8 @@ final class ScopedClassProvider extends $NotifierProvider<ScopedClass, int> {
           argument: null,
           name: r'scopedClassProvider',
           isAutoDispose: true,
-          dependencies: null,
-          allTransitiveDependencies: null,
+          dependencies: const <ProviderOrFamily>[],
+          allTransitiveDependencies: const <ProviderOrFamily>[],
         );
 
   final ScopedClass Function()? _createCb;
@@ -164,8 +164,8 @@ final class ScopedClassFamilyFamily extends Family {
   const ScopedClassFamilyFamily._()
       : super(
           name: r'scopedClassFamilyProvider',
-          dependencies: null,
-          allTransitiveDependencies: null,
+          dependencies: const <ProviderOrFamily>[],
+          allTransitiveDependencies: const <ProviderOrFamily>[],
           isAutoDispose: true,
         );
 

@@ -217,8 +217,9 @@ extension ProviderElementNames on GeneratorProviderDeclarationElement {
   String get familyTypeName => '${name.titled}Family';
 
   String dependencies(BuildYamlOptions options) {
-    final dependencies = annotation.dependencies;
-    if (dependencies == null) return 'null';
+    var dependencies = annotation.dependencies;
+    if (dependencies == null && !isScoped) return 'null';
+    dependencies ??= {};
 
     final buffer = StringBuffer('const <ProviderOrFamily>');
     buffer.write('[');
@@ -232,8 +233,10 @@ extension ProviderElementNames on GeneratorProviderDeclarationElement {
     return buffer.toString();
   }
 
-  String allTransitiveDependencies(List<String>? allTransitiveDependencies) {
-    if (allTransitiveDependencies == null) return 'null';
+  String allTransitiveDependencies(List<String>? deps) {
+    var allTransitiveDependencies = deps;
+    if (deps == null && !isScoped) return 'null';
+    allTransitiveDependencies ??= [];
 
     final buffer = StringBuffer('const <ProviderOrFamily>');
     if (allTransitiveDependencies.length < 4) {

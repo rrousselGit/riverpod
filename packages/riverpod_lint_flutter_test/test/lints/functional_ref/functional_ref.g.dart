@@ -82,8 +82,8 @@ final class ScopedProvider extends $FunctionalProvider<int, int, ScopedRef>
           argument: null,
           name: r'scopedProvider',
           isAutoDispose: true,
-          dependencies: null,
-          allTransitiveDependencies: null,
+          dependencies: const <ProviderOrFamily>[],
+          allTransitiveDependencies: const <ProviderOrFamily>[],
         );
 
   final int Function(

@@ -83,8 +83,8 @@ final class UnimplementedScopedProvider
           argument: null,
           name: r'unimplementedScopedProvider',
           isAutoDispose: true,
-          dependencies: null,
-          allTransitiveDependencies: null,
+          dependencies: const <ProviderOrFamily>[],
+          allTransitiveDependencies: const <ProviderOrFamily>[],
         );
 
   final int Function(
