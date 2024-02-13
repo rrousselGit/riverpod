@@ -1,6 +1,7 @@
 part of '../riverpod_ast.dart';
 
-class ProviderContainerInstanceCreationExpression extends RiverpodAst {
+final class ProviderContainerInstanceCreationExpression extends RiverpodAst
+    with _$ProviderContainerInstanceCreationExpression {
   ProviderContainerInstanceCreationExpression._({
     required this.node,
     required this.overrides,
@@ -26,15 +27,6 @@ class ProviderContainerInstanceCreationExpression extends RiverpodAst {
   }
 
   final InstanceCreationExpression node;
+  @override
   final ProviderOverrideList? overrides;
-
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitProviderContainerInstanceCreationExpression(this);
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    overrides?.accept(visitor);
-  }
 }

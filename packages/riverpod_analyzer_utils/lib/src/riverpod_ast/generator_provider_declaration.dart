@@ -174,7 +174,7 @@ TypeAnnotation? _getValueType(
 
 typedef SourcedType = ({String? source, DartType dartType});
 
-class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration
+final class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration
     with _$ClassBasedProviderDeclaration {
   ClassBasedProviderDeclaration._({
     required this.name,
@@ -336,7 +336,8 @@ class _GeneratorRefInvocationVisitor extends RecursiveAstVisitor<void>
   }
 }
 
-class FunctionalProviderDeclaration extends GeneratorProviderDeclaration {
+final class FunctionalProviderDeclaration extends GeneratorProviderDeclaration
+    with _$FunctionalProviderDeclaration {
   FunctionalProviderDeclaration._({
     required this.name,
     required this.node,
@@ -409,15 +410,4 @@ class FunctionalProviderDeclaration extends GeneratorProviderDeclaration {
   /// external int count();
   /// ```
   bool get needsOverride => node.externalKeyword != null;
-
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitFunctionalProviderDeclaration(this);
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    super.visitChildren(visitor);
-    annotation.accept(visitor);
-  }
 }

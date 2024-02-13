@@ -1,6 +1,7 @@
 part of '../riverpod_ast.dart';
 
-class ResolvedRiverpodLibraryResult extends RiverpodAst {
+final class ResolvedRiverpodLibraryResult extends RiverpodAst
+    with _$ResolvedRiverpodLibraryResult {
   ResolvedRiverpodLibraryResult._();
 
   factory ResolvedRiverpodLibraryResult.from(
@@ -30,77 +31,43 @@ class ResolvedRiverpodLibraryResult extends RiverpodAst {
 
   final errors = <RiverpodAnalysisError>[];
 
+  @override
   final providerScopeInstanceCreationExpressions =
       <ProviderScopeInstanceCreationExpression>[];
+  @override
   final providerContainerInstanceCreationExpressions =
       <ProviderContainerInstanceCreationExpression>[];
 
+  @override
   final functionalProviderDeclarations = <FunctionalProviderDeclaration>[];
+  @override
   final classBasedProviderDeclarations = <ClassBasedProviderDeclaration>[];
 
+  @override
   final legacyProviderDeclarations = <LegacyProviderDeclaration>[];
 
+  @override
   final consumerWidgetDeclarations = <ConsumerWidgetDeclaration>[];
+  @override
   final consumerStatefulWidgetDeclarations =
       <ConsumerStatefulWidgetDeclaration>[];
+  @override
   final consumerStateDeclaration = <ConsumerStateDeclaration>[];
+  @override
   final statefulHookConsumerWidgetDeclarations =
       <StatefulHookConsumerWidgetDeclaration>[];
+  @override
   final hookConsumerWidgetDeclarations = <HookConsumerWidgetDeclaration>[];
 
+  @override
   final unknownRefInvocations = <RefInvocation>[];
+  @override
   final unknownWidgetRefInvocations = <WidgetRefInvocation>[];
 
   @override
   Null get parent => null;
 
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    // TODO changelog breaking renamed visitResolvedRiverpodLibraryResult
-    visitor.visitResolvedRiverpodLibraryResult(this);
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    for (final declaration in providerScopeInstanceCreationExpressions) {
-      declaration.accept(visitor);
-    }
-    for (final declaration in providerContainerInstanceCreationExpressions) {
-      declaration.accept(visitor);
-    }
-
-    for (final declaration in functionalProviderDeclarations) {
-      declaration.accept(visitor);
-    }
-    for (final declaration in classBasedProviderDeclarations) {
-      declaration.accept(visitor);
-    }
-    for (final declaration in legacyProviderDeclarations) {
-      declaration.accept(visitor);
-    }
-    for (final declaration in consumerWidgetDeclarations) {
-      declaration.accept(visitor);
-    }
-    for (final declaration in consumerStatefulWidgetDeclarations) {
-      declaration.accept(visitor);
-    }
-    for (final declaration in consumerStateDeclaration) {
-      declaration.accept(visitor);
-    }
-    for (final declaration in statefulHookConsumerWidgetDeclarations) {
-      declaration.accept(visitor);
-    }
-    for (final declaration in hookConsumerWidgetDeclarations) {
-      declaration.accept(visitor);
-    }
-
-    for (final invocation in unknownRefInvocations) {
-      invocation.accept(visitor);
-    }
-    for (final invocation in unknownWidgetRefInvocations) {
-      invocation.accept(visitor);
-    }
-  }
+  // TODO changelog breaking renamed visitResolvedRiverpodLibraryResult
 }
 
 mixin _ParseRefInvocationMixin on RecursiveAstVisitor<void> {

@@ -1,6 +1,7 @@
 part of '../riverpod_ast.dart';
 
-abstract class WidgetRefInvocation extends RiverpodAst
+abstract base class WidgetRefInvocation extends RiverpodAst
+    with _$WidgetRefInvocation
     implements ProviderListenableExpressionParent {
   WidgetRefInvocation._({
     required this.node,
@@ -72,7 +73,8 @@ abstract class WidgetRefInvocation extends RiverpodAst
   final SimpleIdentifier function;
 }
 
-class WidgetRefWatchInvocation extends WidgetRefInvocation {
+final class WidgetRefWatchInvocation extends WidgetRefInvocation
+    with _$WidgetRefWatchInvocation {
   WidgetRefWatchInvocation._({
     required super.node,
     required super.function,
@@ -103,20 +105,12 @@ class WidgetRefWatchInvocation extends WidgetRefInvocation {
     return widgetRefWatchInvocation;
   }
 
+  @override
   final ProviderListenableExpression provider;
-
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitWidgetRefWatchInvocation(this);
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    provider.accept(visitor);
-  }
 }
 
-class WidgetRefReadInvocation extends WidgetRefInvocation {
+final class WidgetRefReadInvocation extends WidgetRefInvocation
+    with _$WidgetRefReadInvocation {
   WidgetRefReadInvocation._({
     required super.node,
     required super.function,
@@ -147,20 +141,12 @@ class WidgetRefReadInvocation extends WidgetRefInvocation {
     return widgetRefReadInvocation;
   }
 
+  @override
   final ProviderListenableExpression provider;
-
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitWidgetRefReadInvocation(this);
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    provider.accept(visitor);
-  }
 }
 
-class WidgetRefListenInvocation extends WidgetRefInvocation {
+final class WidgetRefListenInvocation extends WidgetRefInvocation
+    with _$WidgetRefListenInvocation {
   WidgetRefListenInvocation._({
     required super.node,
     required super.function,
@@ -197,21 +183,13 @@ class WidgetRefListenInvocation extends WidgetRefInvocation {
     return widgetRefListenInvocation;
   }
 
+  @override
   final ProviderListenableExpression provider;
   final Expression listener;
-
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitWidgetRefListenInvocation(this);
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    provider.accept(visitor);
-  }
 }
 
-class WidgetRefListenManualInvocation extends WidgetRefInvocation {
+final class WidgetRefListenManualInvocation extends WidgetRefInvocation
+    with _$WidgetRefListenManualInvocation {
   WidgetRefListenManualInvocation._({
     required super.node,
     required super.function,
@@ -248,16 +226,7 @@ class WidgetRefListenManualInvocation extends WidgetRefInvocation {
     return widgetRefListenManualInvocation;
   }
 
+  @override
   final ProviderListenableExpression provider;
   final Expression listener;
-
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitWidgetRefListenManualInvocation(this);
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    provider.accept(visitor);
-  }
 }

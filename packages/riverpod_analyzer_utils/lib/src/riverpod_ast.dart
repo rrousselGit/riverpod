@@ -45,8 +45,7 @@ class _SetParentVisitor extends GeneralizingRiverpodAstVisitor {
   }
 }
 
-@sealed
-abstract class RiverpodAst {
+abstract base class RiverpodAst {
   RiverpodAst() {
     visitChildren(_SetParentVisitor(this));
   }

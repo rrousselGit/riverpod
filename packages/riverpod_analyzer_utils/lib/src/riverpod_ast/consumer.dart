@@ -1,6 +1,6 @@
 part of '../riverpod_ast.dart';
 
-abstract class ConsumerDeclaration extends RiverpodAst
+abstract base class ConsumerDeclaration extends RiverpodAst
     with _$ConsumerDeclaration {
   static ConsumerDeclaration? _parse(
     ClassDeclaration node,
@@ -29,7 +29,7 @@ abstract class ConsumerDeclaration extends RiverpodAst
   ClassDeclaration get node;
 }
 
-class ConsumerWidgetDeclaration extends ConsumerDeclaration
+final class ConsumerWidgetDeclaration extends ConsumerDeclaration
     with _$ConsumerWidgetDeclaration {
   ConsumerWidgetDeclaration._({
     required this.buildMethod,
@@ -114,7 +114,7 @@ class _ParseConsumerRefInvocationVisitor extends RecursiveAstVisitor<void>
   }
 }
 
-class HookConsumerWidgetDeclaration extends ConsumerDeclaration
+final class HookConsumerWidgetDeclaration extends ConsumerDeclaration
     with _$HookConsumerWidgetDeclaration {
   HookConsumerWidgetDeclaration({
     required this.buildMethod,
@@ -156,7 +156,7 @@ class HookConsumerWidgetDeclaration extends ConsumerDeclaration
   final ClassDeclaration node;
 }
 
-class ConsumerStatefulWidgetDeclaration extends ConsumerDeclaration
+final class ConsumerStatefulWidgetDeclaration extends ConsumerDeclaration
     with _$ConsumerStatefulWidgetDeclaration {
   ConsumerStatefulWidgetDeclaration._({required this.node});
 
@@ -167,7 +167,7 @@ class ConsumerStatefulWidgetDeclaration extends ConsumerDeclaration
   final ClassDeclaration node;
 }
 
-class StatefulHookConsumerWidgetDeclaration extends ConsumerDeclaration
+final class StatefulHookConsumerWidgetDeclaration extends ConsumerDeclaration
     with _$StatefulHookConsumerWidgetDeclaration {
   StatefulHookConsumerWidgetDeclaration._({required this.node});
 
@@ -178,7 +178,7 @@ class StatefulHookConsumerWidgetDeclaration extends ConsumerDeclaration
   final ClassDeclaration node;
 }
 
-class ConsumerStateDeclaration extends ConsumerDeclaration
+final class ConsumerStateDeclaration extends ConsumerDeclaration
     with _$ConsumerStateDeclaration {
   ConsumerStateDeclaration._({
     required this.node,

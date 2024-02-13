@@ -1,6 +1,7 @@
 part of '../riverpod_ast.dart';
 
-class RiverpodAnnotationDependency extends RiverpodAst {
+final class RiverpodAnnotationDependency extends RiverpodAst
+    with _$RiverpodAnnotationDependency {
   RiverpodAnnotationDependency._({
     required this.node,
     required this.provider,
@@ -8,42 +9,21 @@ class RiverpodAnnotationDependency extends RiverpodAst {
 
   final Expression node;
   final GeneratorProviderDeclarationElement provider;
-
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitRiverpodAnnotationDependency(this);
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {}
 }
 
-class RiverpodAnnotationDependencies extends RiverpodAst {
+final class RiverpodAnnotationDependencies extends RiverpodAst
+    with _$RiverpodAnnotationDependencies {
   RiverpodAnnotationDependencies._({
     required this.node,
     required this.dependencies,
   });
 
   final NamedExpression node;
+  @override
   final List<RiverpodAnnotationDependency>? dependencies;
-
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitRiverpodAnnotationDependencies(this);
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    final dependencies = this.dependencies;
-    if (dependencies != null) {
-      for (final dependency in dependencies) {
-        dependency.accept(visitor);
-      }
-    }
-  }
 }
 
-class RiverpodAnnotation extends RiverpodAst {
+final class RiverpodAnnotation extends RiverpodAst with _$RiverpodAnnotation {
   RiverpodAnnotation._({
     required this.annotation,
     required this.element,
@@ -218,15 +198,6 @@ class RiverpodAnnotation extends RiverpodAst {
   final Annotation annotation;
   final RiverpodAnnotationElement element;
   final NamedExpression? keepAliveNode;
+  @override
   final RiverpodAnnotationDependencies? dependencies;
-
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitRiverpodAnnotation(this);
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    dependencies?.accept(visitor);
-  }
 }

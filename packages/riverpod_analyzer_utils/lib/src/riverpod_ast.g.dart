@@ -6,12 +6,12 @@ part of 'riverpod_ast.dart';
 // _LintVisitorGenerator
 // **************************************************************************
 
-mixin _$ConsumerDeclaration on RiverpodAst {
+base mixin _$ConsumerDeclaration on RiverpodAst {
   @override
   void visitChildren(RiverpodAstVisitor visitor) {}
 }
 
-mixin _$ConsumerWidgetDeclaration on ConsumerDeclaration {
+base mixin _$ConsumerWidgetDeclaration on RiverpodAst {
   List<WidgetRefInvocation> get widgetRefInvocations;
   List<ProviderScopeInstanceCreationExpression>
       get providerScopeInstanceCreateExpressions;
@@ -37,7 +37,7 @@ mixin _$ConsumerWidgetDeclaration on ConsumerDeclaration {
   }
 }
 
-mixin _$HookConsumerWidgetDeclaration on ConsumerDeclaration {
+base mixin _$HookConsumerWidgetDeclaration on RiverpodAst {
   List<WidgetRefInvocation> get widgetRefInvocations;
   List<ProviderScopeInstanceCreationExpression>
       get providerScopeInstanceCreateExpressions;
@@ -63,7 +63,7 @@ mixin _$HookConsumerWidgetDeclaration on ConsumerDeclaration {
   }
 }
 
-mixin _$ConsumerStatefulWidgetDeclaration on ConsumerDeclaration {
+base mixin _$ConsumerStatefulWidgetDeclaration on RiverpodAst {
   @override
   void accept(RiverpodAstVisitor visitor) {
     visitor.visitConsumerStatefulWidgetDeclaration(
@@ -77,7 +77,7 @@ mixin _$ConsumerStatefulWidgetDeclaration on ConsumerDeclaration {
   }
 }
 
-mixin _$StatefulHookConsumerWidgetDeclaration on ConsumerDeclaration {
+base mixin _$StatefulHookConsumerWidgetDeclaration on RiverpodAst {
   @override
   void accept(RiverpodAstVisitor visitor) {
     visitor.visitStatefulHookConsumerWidgetDeclaration(
@@ -91,7 +91,7 @@ mixin _$StatefulHookConsumerWidgetDeclaration on ConsumerDeclaration {
   }
 }
 
-mixin _$ConsumerStateDeclaration on ConsumerDeclaration {
+base mixin _$ConsumerStateDeclaration on RiverpodAst {
   List<WidgetRefInvocation> get widgetRefInvocations;
   List<ProviderScopeInstanceCreationExpression>
       get providerScopeInstanceCreateExpressions;
@@ -117,7 +117,7 @@ mixin _$ConsumerStateDeclaration on ConsumerDeclaration {
   }
 }
 
-mixin _$GeneratorProviderDeclaration on ProviderDeclaration {
+base mixin _$GeneratorProviderDeclaration on RiverpodAst {
   List<RefInvocation> get refInvocations;
   RiverpodAnnotation get annotation;
 
@@ -133,9 +133,7 @@ mixin _$GeneratorProviderDeclaration on ProviderDeclaration {
   }
 }
 
-mixin _$ClassBasedProviderDeclaration on GeneratorProviderDeclaration {
-  RiverpodAnnotation get annotation;
-
+base mixin _$ClassBasedProviderDeclaration on RiverpodAst {
   @override
   void accept(RiverpodAstVisitor visitor) {
     visitor.visitClassBasedProviderDeclaration(
@@ -146,13 +144,10 @@ mixin _$ClassBasedProviderDeclaration on GeneratorProviderDeclaration {
   @override
   void visitChildren(RiverpodAstVisitor visitor) {
     super.visitChildren(visitor);
-    annotation.accept(visitor);
   }
 }
 
-mixin _$FunctionalProviderDeclaration on GeneratorProviderDeclaration {
-  RiverpodAnnotation get annotation;
-
+base mixin _$FunctionalProviderDeclaration on RiverpodAst {
   @override
   void accept(RiverpodAstVisitor visitor) {
     visitor.visitFunctionalProviderDeclaration(
@@ -163,11 +158,10 @@ mixin _$FunctionalProviderDeclaration on GeneratorProviderDeclaration {
   @override
   void visitChildren(RiverpodAstVisitor visitor) {
     super.visitChildren(visitor);
-    annotation.accept(visitor);
   }
 }
 
-mixin _$LegacyProviderDependencies on RiverpodAst {
+base mixin _$LegacyProviderDependencies on RiverpodAst {
   List<LegacyProviderDependency>? get dependencies;
 
   @override
@@ -187,7 +181,7 @@ mixin _$LegacyProviderDependencies on RiverpodAst {
   }
 }
 
-mixin _$LegacyProviderDependency on RiverpodAst {
+base mixin _$LegacyProviderDependency on RiverpodAst {
   ProviderListenableExpression? get provider;
 
   @override
@@ -203,7 +197,7 @@ mixin _$LegacyProviderDependency on RiverpodAst {
   }
 }
 
-mixin _$LegacyProviderDeclaration on RiverpodAst {
+base mixin _$LegacyProviderDeclaration on RiverpodAst {
   LegacyProviderDependencies? get dependencies;
   List<RefInvocation> get refInvocations;
 
@@ -224,7 +218,7 @@ mixin _$LegacyProviderDeclaration on RiverpodAst {
   }
 }
 
-mixin _$ProviderContainerInstanceCreationExpression on RiverpodAst {
+base mixin _$ProviderContainerInstanceCreationExpression on RiverpodAst {
   ProviderOverrideList? get overrides;
 
   @override
@@ -240,17 +234,17 @@ mixin _$ProviderContainerInstanceCreationExpression on RiverpodAst {
   }
 }
 
-mixin _$ProviderDeclaration on RiverpodAst {
+base mixin _$ProviderDeclaration on RiverpodAst {
   @override
   void visitChildren(RiverpodAstVisitor visitor) {}
 }
 
-mixin _$ProviderListenableExpressionParent on RiverpodAst {
+base mixin _$ProviderListenableExpressionParent on RiverpodAst {
   @override
   void visitChildren(RiverpodAstVisitor visitor) {}
 }
 
-mixin _$ProviderListenableExpression on RiverpodAst {
+base mixin _$ProviderListenableExpression on RiverpodAst {
   @override
   void accept(RiverpodAstVisitor visitor) {
     visitor.visitProviderListenableExpression(
@@ -262,7 +256,7 @@ mixin _$ProviderListenableExpression on RiverpodAst {
   void visitChildren(RiverpodAstVisitor visitor) {}
 }
 
-mixin _$ProviderOverrideExpression on RiverpodAst {
+base mixin _$ProviderOverrideExpression on RiverpodAst {
   @override
   void accept(RiverpodAstVisitor visitor) {
     visitor.visitProviderOverrideExpression(
@@ -274,7 +268,7 @@ mixin _$ProviderOverrideExpression on RiverpodAst {
   void visitChildren(RiverpodAstVisitor visitor) {}
 }
 
-mixin _$ProviderOverrideList on RiverpodAst {
+base mixin _$ProviderOverrideList on RiverpodAst {
   List<ProviderOverrideExpression>? get overrides;
 
   @override
@@ -294,7 +288,7 @@ mixin _$ProviderOverrideList on RiverpodAst {
   }
 }
 
-mixin _$ProviderScopeInstanceCreationExpression on RiverpodAst {
+base mixin _$ProviderScopeInstanceCreationExpression on RiverpodAst {
   ProviderOverrideList? get overrides;
 
   @override
@@ -310,12 +304,12 @@ mixin _$ProviderScopeInstanceCreationExpression on RiverpodAst {
   }
 }
 
-mixin _$RefInvocation on RiverpodAst {
+base mixin _$RefInvocation on RiverpodAst {
   @override
   void visitChildren(RiverpodAstVisitor visitor) {}
 }
 
-mixin _$RefDependencyInvocation on RefInvocation {
+base mixin _$RefDependencyInvocation on RiverpodAst {
   ProviderListenableExpression get provider;
 
   @override
@@ -325,7 +319,7 @@ mixin _$RefDependencyInvocation on RefInvocation {
   }
 }
 
-mixin _$RefWatchInvocation on RefDependencyInvocation {
+base mixin _$RefWatchInvocation on RiverpodAst {
   @override
   void accept(RiverpodAstVisitor visitor) {
     visitor.visitRefWatchInvocation(
@@ -339,7 +333,7 @@ mixin _$RefWatchInvocation on RefDependencyInvocation {
   }
 }
 
-mixin _$RefReadInvocation on RefDependencyInvocation {
+base mixin _$RefReadInvocation on RiverpodAst {
   @override
   void accept(RiverpodAstVisitor visitor) {
     visitor.visitRefReadInvocation(
@@ -353,7 +347,7 @@ mixin _$RefReadInvocation on RefDependencyInvocation {
   }
 }
 
-mixin _$RefListenInvocation on RefDependencyInvocation {
+base mixin _$RefListenInvocation on RiverpodAst {
   @override
   void accept(RiverpodAstVisitor visitor) {
     visitor.visitRefListenInvocation(
@@ -367,7 +361,7 @@ mixin _$RefListenInvocation on RefDependencyInvocation {
   }
 }
 
-mixin _$ResolvedRiverpodLibraryResult on RiverpodAst {
+base mixin _$ResolvedRiverpodLibraryResult on RiverpodAst {
   List<ProviderScopeInstanceCreationExpression>
       get providerScopeInstanceCreationExpressions;
   List<ProviderContainerInstanceCreationExpression>
@@ -444,7 +438,7 @@ mixin _$ResolvedRiverpodLibraryResult on RiverpodAst {
   }
 }
 
-mixin _$RiverpodAnnotationDependency on RiverpodAst {
+base mixin _$RiverpodAnnotationDependency on RiverpodAst {
   @override
   void accept(RiverpodAstVisitor visitor) {
     visitor.visitRiverpodAnnotationDependency(
@@ -456,7 +450,7 @@ mixin _$RiverpodAnnotationDependency on RiverpodAst {
   void visitChildren(RiverpodAstVisitor visitor) {}
 }
 
-mixin _$RiverpodAnnotationDependencies on RiverpodAst {
+base mixin _$RiverpodAnnotationDependencies on RiverpodAst {
   List<RiverpodAnnotationDependency>? get dependencies;
 
   @override
@@ -476,7 +470,7 @@ mixin _$RiverpodAnnotationDependencies on RiverpodAst {
   }
 }
 
-mixin _$RiverpodAnnotation on RiverpodAst {
+base mixin _$RiverpodAnnotation on RiverpodAst {
   RiverpodAnnotationDependencies? get dependencies;
 
   @override
@@ -492,12 +486,12 @@ mixin _$RiverpodAnnotation on RiverpodAst {
   }
 }
 
-mixin _$WidgetRefInvocation on RiverpodAst {
+base mixin _$WidgetRefInvocation on RiverpodAst {
   @override
   void visitChildren(RiverpodAstVisitor visitor) {}
 }
 
-mixin _$WidgetRefWatchInvocation on WidgetRefInvocation {
+base mixin _$WidgetRefWatchInvocation on RiverpodAst {
   ProviderListenableExpression get provider;
 
   @override
@@ -514,7 +508,7 @@ mixin _$WidgetRefWatchInvocation on WidgetRefInvocation {
   }
 }
 
-mixin _$WidgetRefReadInvocation on WidgetRefInvocation {
+base mixin _$WidgetRefReadInvocation on RiverpodAst {
   ProviderListenableExpression get provider;
 
   @override
@@ -531,7 +525,7 @@ mixin _$WidgetRefReadInvocation on WidgetRefInvocation {
   }
 }
 
-mixin _$WidgetRefListenInvocation on WidgetRefInvocation {
+base mixin _$WidgetRefListenInvocation on RiverpodAst {
   ProviderListenableExpression get provider;
 
   @override
@@ -548,7 +542,7 @@ mixin _$WidgetRefListenInvocation on WidgetRefInvocation {
   }
 }
 
-mixin _$WidgetRefListenManualInvocation on WidgetRefInvocation {
+base mixin _$WidgetRefListenManualInvocation on RiverpodAst {
   ProviderListenableExpression get provider;
 
   @override
@@ -665,21 +659,27 @@ abstract class GeneralizingRiverpodAstVisitor implements RiverpodAstVisitor {
   @override
   void visitClassBasedProviderDeclaration(ClassBasedProviderDeclaration node) {
     visitGeneratorProviderDeclaration(node);
+    visitProviderDeclaration(node);
   }
 
   @override
   void visitFunctionalProviderDeclaration(FunctionalProviderDeclaration node) {
     visitGeneratorProviderDeclaration(node);
+    visitProviderDeclaration(node);
   }
 
   @override
   void visitLegacyProviderDependencies(LegacyProviderDependencies node) {}
 
   @override
-  void visitLegacyProviderDependency(LegacyProviderDependency node) {}
+  void visitLegacyProviderDependency(LegacyProviderDependency node) {
+    visitProviderListenableExpressionParent(node);
+  }
 
   @override
-  void visitLegacyProviderDeclaration(LegacyProviderDeclaration node) {}
+  void visitLegacyProviderDeclaration(LegacyProviderDeclaration node) {
+    visitProviderDeclaration(node);
+  }
 
   @override
   void visitProviderContainerInstanceCreationExpression(
@@ -703,25 +703,34 @@ abstract class GeneralizingRiverpodAstVisitor implements RiverpodAstVisitor {
   void visitProviderScopeInstanceCreationExpression(
       ProviderScopeInstanceCreationExpression node) {}
 
-  void visitRefInvocation(RefInvocation node) {}
+  void visitRefInvocation(RefInvocation node) {
+    visitProviderListenableExpressionParent(node);
+  }
 
   void visitRefDependencyInvocation(RefDependencyInvocation node) {
     visitRefInvocation(node);
+    visitProviderListenableExpressionParent(node);
   }
 
   @override
   void visitRefWatchInvocation(RefWatchInvocation node) {
     visitRefDependencyInvocation(node);
+    visitRefInvocation(node);
+    visitProviderListenableExpressionParent(node);
   }
 
   @override
   void visitRefReadInvocation(RefReadInvocation node) {
     visitRefDependencyInvocation(node);
+    visitRefInvocation(node);
+    visitProviderListenableExpressionParent(node);
   }
 
   @override
   void visitRefListenInvocation(RefListenInvocation node) {
     visitRefDependencyInvocation(node);
+    visitRefInvocation(node);
+    visitProviderListenableExpressionParent(node);
   }
 
   @override
@@ -737,27 +746,33 @@ abstract class GeneralizingRiverpodAstVisitor implements RiverpodAstVisitor {
   @override
   void visitRiverpodAnnotation(RiverpodAnnotation node) {}
 
-  void visitWidgetRefInvocation(WidgetRefInvocation node) {}
+  void visitWidgetRefInvocation(WidgetRefInvocation node) {
+    visitProviderListenableExpressionParent(node);
+  }
 
   @override
   void visitWidgetRefWatchInvocation(WidgetRefWatchInvocation node) {
     visitWidgetRefInvocation(node);
+    visitProviderListenableExpressionParent(node);
   }
 
   @override
   void visitWidgetRefReadInvocation(WidgetRefReadInvocation node) {
     visitWidgetRefInvocation(node);
+    visitProviderListenableExpressionParent(node);
   }
 
   @override
   void visitWidgetRefListenInvocation(WidgetRefListenInvocation node) {
     visitWidgetRefInvocation(node);
+    visitProviderListenableExpressionParent(node);
   }
 
   @override
   void visitWidgetRefListenManualInvocation(
       WidgetRefListenManualInvocation node) {
     visitWidgetRefInvocation(node);
+    visitProviderListenableExpressionParent(node);
   }
 }
 
@@ -1120,6 +1135,311 @@ abstract class UnimplementedRiverpodAstVisitor implements RiverpodAstVisitor {
   void visitWidgetRefListenManualInvocation(
       WidgetRefListenManualInvocation node) {
     throw UnimplementedError();
+  }
+}
+
+@internal
+class RiverpodAnalysisResult extends GeneralizingRiverpodAstVisitor {
+  final consumerDeclarations = <ConsumerDeclaration>[];
+  @override
+  void visitConsumerDeclaration(
+    ConsumerDeclaration node,
+  ) {
+    super.visitConsumerDeclaration(node);
+    consumerDeclarations.add(node);
+  }
+
+  final consumerWidgetDeclarations = <ConsumerWidgetDeclaration>[];
+  @override
+  void visitConsumerWidgetDeclaration(
+    ConsumerWidgetDeclaration node,
+  ) {
+    super.visitConsumerWidgetDeclaration(node);
+    consumerWidgetDeclarations.add(node);
+  }
+
+  final hookConsumerWidgetDeclarations = <HookConsumerWidgetDeclaration>[];
+  @override
+  void visitHookConsumerWidgetDeclaration(
+    HookConsumerWidgetDeclaration node,
+  ) {
+    super.visitHookConsumerWidgetDeclaration(node);
+    hookConsumerWidgetDeclarations.add(node);
+  }
+
+  final consumerStatefulWidgetDeclarations =
+      <ConsumerStatefulWidgetDeclaration>[];
+  @override
+  void visitConsumerStatefulWidgetDeclaration(
+    ConsumerStatefulWidgetDeclaration node,
+  ) {
+    super.visitConsumerStatefulWidgetDeclaration(node);
+    consumerStatefulWidgetDeclarations.add(node);
+  }
+
+  final statefulHookConsumerWidgetDeclarations =
+      <StatefulHookConsumerWidgetDeclaration>[];
+  @override
+  void visitStatefulHookConsumerWidgetDeclaration(
+    StatefulHookConsumerWidgetDeclaration node,
+  ) {
+    super.visitStatefulHookConsumerWidgetDeclaration(node);
+    statefulHookConsumerWidgetDeclarations.add(node);
+  }
+
+  final consumerStateDeclarations = <ConsumerStateDeclaration>[];
+  @override
+  void visitConsumerStateDeclaration(
+    ConsumerStateDeclaration node,
+  ) {
+    super.visitConsumerStateDeclaration(node);
+    consumerStateDeclarations.add(node);
+  }
+
+  final generatorProviderDeclarations = <GeneratorProviderDeclaration>[];
+  @override
+  void visitGeneratorProviderDeclaration(
+    GeneratorProviderDeclaration node,
+  ) {
+    super.visitGeneratorProviderDeclaration(node);
+    generatorProviderDeclarations.add(node);
+  }
+
+  final classBasedProviderDeclarations = <ClassBasedProviderDeclaration>[];
+  @override
+  void visitClassBasedProviderDeclaration(
+    ClassBasedProviderDeclaration node,
+  ) {
+    super.visitClassBasedProviderDeclaration(node);
+    classBasedProviderDeclarations.add(node);
+  }
+
+  final functionalProviderDeclarations = <FunctionalProviderDeclaration>[];
+  @override
+  void visitFunctionalProviderDeclaration(
+    FunctionalProviderDeclaration node,
+  ) {
+    super.visitFunctionalProviderDeclaration(node);
+    functionalProviderDeclarations.add(node);
+  }
+
+  final legacyProviderDependenciess = <LegacyProviderDependencies>[];
+  @override
+  void visitLegacyProviderDependencies(
+    LegacyProviderDependencies node,
+  ) {
+    super.visitLegacyProviderDependencies(node);
+    legacyProviderDependenciess.add(node);
+  }
+
+  final legacyProviderDependencys = <LegacyProviderDependency>[];
+  @override
+  void visitLegacyProviderDependency(
+    LegacyProviderDependency node,
+  ) {
+    super.visitLegacyProviderDependency(node);
+    legacyProviderDependencys.add(node);
+  }
+
+  final legacyProviderDeclarations = <LegacyProviderDeclaration>[];
+  @override
+  void visitLegacyProviderDeclaration(
+    LegacyProviderDeclaration node,
+  ) {
+    super.visitLegacyProviderDeclaration(node);
+    legacyProviderDeclarations.add(node);
+  }
+
+  final providerContainerInstanceCreationExpressions =
+      <ProviderContainerInstanceCreationExpression>[];
+  @override
+  void visitProviderContainerInstanceCreationExpression(
+    ProviderContainerInstanceCreationExpression node,
+  ) {
+    super.visitProviderContainerInstanceCreationExpression(node);
+    providerContainerInstanceCreationExpressions.add(node);
+  }
+
+  final providerDeclarations = <ProviderDeclaration>[];
+  @override
+  void visitProviderDeclaration(
+    ProviderDeclaration node,
+  ) {
+    super.visitProviderDeclaration(node);
+    providerDeclarations.add(node);
+  }
+
+  final providerListenableExpressionParents =
+      <ProviderListenableExpressionParent>[];
+  @override
+  void visitProviderListenableExpressionParent(
+    ProviderListenableExpressionParent node,
+  ) {
+    super.visitProviderListenableExpressionParent(node);
+    providerListenableExpressionParents.add(node);
+  }
+
+  final providerListenableExpressions = <ProviderListenableExpression>[];
+  @override
+  void visitProviderListenableExpression(
+    ProviderListenableExpression node,
+  ) {
+    super.visitProviderListenableExpression(node);
+    providerListenableExpressions.add(node);
+  }
+
+  final providerOverrideExpressions = <ProviderOverrideExpression>[];
+  @override
+  void visitProviderOverrideExpression(
+    ProviderOverrideExpression node,
+  ) {
+    super.visitProviderOverrideExpression(node);
+    providerOverrideExpressions.add(node);
+  }
+
+  final providerOverrideLists = <ProviderOverrideList>[];
+  @override
+  void visitProviderOverrideList(
+    ProviderOverrideList node,
+  ) {
+    super.visitProviderOverrideList(node);
+    providerOverrideLists.add(node);
+  }
+
+  final providerScopeInstanceCreationExpressions =
+      <ProviderScopeInstanceCreationExpression>[];
+  @override
+  void visitProviderScopeInstanceCreationExpression(
+    ProviderScopeInstanceCreationExpression node,
+  ) {
+    super.visitProviderScopeInstanceCreationExpression(node);
+    providerScopeInstanceCreationExpressions.add(node);
+  }
+
+  final refInvocations = <RefInvocation>[];
+  @override
+  void visitRefInvocation(
+    RefInvocation node,
+  ) {
+    super.visitRefInvocation(node);
+    refInvocations.add(node);
+  }
+
+  final refDependencyInvocations = <RefDependencyInvocation>[];
+  @override
+  void visitRefDependencyInvocation(
+    RefDependencyInvocation node,
+  ) {
+    super.visitRefDependencyInvocation(node);
+    refDependencyInvocations.add(node);
+  }
+
+  final refWatchInvocations = <RefWatchInvocation>[];
+  @override
+  void visitRefWatchInvocation(
+    RefWatchInvocation node,
+  ) {
+    super.visitRefWatchInvocation(node);
+    refWatchInvocations.add(node);
+  }
+
+  final refReadInvocations = <RefReadInvocation>[];
+  @override
+  void visitRefReadInvocation(
+    RefReadInvocation node,
+  ) {
+    super.visitRefReadInvocation(node);
+    refReadInvocations.add(node);
+  }
+
+  final refListenInvocations = <RefListenInvocation>[];
+  @override
+  void visitRefListenInvocation(
+    RefListenInvocation node,
+  ) {
+    super.visitRefListenInvocation(node);
+    refListenInvocations.add(node);
+  }
+
+  final resolvedRiverpodLibraryResults = <ResolvedRiverpodLibraryResult>[];
+  @override
+  void visitResolvedRiverpodLibraryResult(
+    ResolvedRiverpodLibraryResult node,
+  ) {
+    super.visitResolvedRiverpodLibraryResult(node);
+    resolvedRiverpodLibraryResults.add(node);
+  }
+
+  final riverpodAnnotationDependencys = <RiverpodAnnotationDependency>[];
+  @override
+  void visitRiverpodAnnotationDependency(
+    RiverpodAnnotationDependency node,
+  ) {
+    super.visitRiverpodAnnotationDependency(node);
+    riverpodAnnotationDependencys.add(node);
+  }
+
+  final riverpodAnnotationDependenciess = <RiverpodAnnotationDependencies>[];
+  @override
+  void visitRiverpodAnnotationDependencies(
+    RiverpodAnnotationDependencies node,
+  ) {
+    super.visitRiverpodAnnotationDependencies(node);
+    riverpodAnnotationDependenciess.add(node);
+  }
+
+  final riverpodAnnotations = <RiverpodAnnotation>[];
+  @override
+  void visitRiverpodAnnotation(
+    RiverpodAnnotation node,
+  ) {
+    super.visitRiverpodAnnotation(node);
+    riverpodAnnotations.add(node);
+  }
+
+  final widgetRefInvocations = <WidgetRefInvocation>[];
+  @override
+  void visitWidgetRefInvocation(
+    WidgetRefInvocation node,
+  ) {
+    super.visitWidgetRefInvocation(node);
+    widgetRefInvocations.add(node);
+  }
+
+  final widgetRefWatchInvocations = <WidgetRefWatchInvocation>[];
+  @override
+  void visitWidgetRefWatchInvocation(
+    WidgetRefWatchInvocation node,
+  ) {
+    super.visitWidgetRefWatchInvocation(node);
+    widgetRefWatchInvocations.add(node);
+  }
+
+  final widgetRefReadInvocations = <WidgetRefReadInvocation>[];
+  @override
+  void visitWidgetRefReadInvocation(
+    WidgetRefReadInvocation node,
+  ) {
+    super.visitWidgetRefReadInvocation(node);
+    widgetRefReadInvocations.add(node);
+  }
+
+  final widgetRefListenInvocations = <WidgetRefListenInvocation>[];
+  @override
+  void visitWidgetRefListenInvocation(
+    WidgetRefListenInvocation node,
+  ) {
+    super.visitWidgetRefListenInvocation(node);
+    widgetRefListenInvocations.add(node);
+  }
+
+  final widgetRefListenManualInvocations = <WidgetRefListenManualInvocation>[];
+  @override
+  void visitWidgetRefListenManualInvocation(
+    WidgetRefListenManualInvocation node,
+  ) {
+    super.visitWidgetRefListenManualInvocation(node);
+    widgetRefListenManualInvocations.add(node);
   }
 }
 

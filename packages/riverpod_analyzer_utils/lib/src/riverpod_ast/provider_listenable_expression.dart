@@ -1,8 +1,10 @@
 part of '../riverpod_ast.dart';
 
-abstract class ProviderListenableExpressionParent implements RiverpodAst {}
+abstract base class ProviderListenableExpressionParent extends RiverpodAst
+    with _$ProviderListenableExpressionParent {}
 
-class ProviderListenableExpression extends RiverpodAst {
+final class ProviderListenableExpression extends RiverpodAst
+    with _$ProviderListenableExpression {
   ProviderListenableExpression._({
     required this.node,
     required this.provider,
@@ -112,12 +114,4 @@ class ProviderListenableExpression extends RiverpodAst {
   /// If [provider] is a provider with arguments (family), represents the arguments
   /// passed to the provider.
   final ArgumentList? familyArguments;
-
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitProviderListenableExpression(this);
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {}
 }

@@ -81,21 +81,45 @@ class _LintVisitorGenerator extends Generator {
         .where(_riverpodAstType.isAssignableFrom)
         .toList();
 
-    final relationships = <ClassElement, List<String>>{};
+    final relationships = <ClassElement, Set<String>>{};
 
     for (final ast in allAst) {
-      final relation = relationships.putIfAbsent(ast, () => []);
+      final relation = relationships.putIfAbsent(ast, () => {});
 
-      String? supertype;
-      if (ast.supertype case final type?
-          when !type.isDartCoreObject && type.element.name != 'RiverpodAst') {
-        supertype = type.element.name;
-        relation.add(supertype);
+      final allSuperAstTypes = ast.allSupertypes
+          .where((e) => !e.isDartCoreObject && e.element.name != 'RiverpodAst')
+          .toList();
+
+      final inheritedSuperTypes = <InterfaceType>[];
+      for (var superType = ast.supertype;
+          superType != null &&
+              superType.element.name != 'RiverpodAst' &&
+              !superType.isDartCoreObject;
+          superType = superType.superclass) {
+        inheritedSuperTypes.add(superType);
       }
 
-      final astFields = ast.fields.map(_AstField.parse).whereNotNull().toList();
+      for (final superAst in allSuperAstTypes) {
+        relation.add(superAst.element.name);
+      }
 
-      _writeAstMixin(buffer, ast, supertype, astFields);
+      final astFields = ast.fields
+          // Exclude fields already handled by the supertype
+          .where(
+            (field) => inheritedSuperTypes
+                .expand((e) => e.accessors)
+                .every((superField) => superField.name != field.name),
+          )
+          .map(_AstField.parse)
+          .whereNotNull()
+          .toList();
+
+      _writeAstMixin(
+        buffer,
+        ast,
+        astFields,
+        hasSuperType: inheritedSuperTypes.isNotEmpty,
+      );
     }
 
     final concreteRelationshipEntries =
@@ -156,6 +180,24 @@ abstract class UnimplementedRiverpodAstVisitor implements RiverpodAstVisitor {
   }
 ''',
             ).join('\n')}
+}
+
+@internal
+class RiverpodAnalysisResult extends GeneralizingRiverpodAstVisitor {
+    ${relationships.entries.map(
+              (e) => '''
+  final ${e.key.name.lowerFirst}s =
+      <${e.key.name}>[];
+  @override
+  void visit${e.key.name}(
+    ${e.key.name} node,
+  ) {
+    super.visit${e.key.name}(node);
+    ${e.key.name.lowerFirst}s.add(node);
+  }
+''',
+            ).join('\n')}
+
 }
 
 class _RiverpodAstRegistryVisitor extends GeneralizingRiverpodAstVisitor {
@@ -222,9 +264,9 @@ class RiverpodAstRegistry {
   void _writeAstMixin(
     StringBuffer buffer,
     ClassElement ast,
-    String? supertype,
-    List<_AstField> astFields,
-  ) {
+    List<_AstField> astFields, {
+    required bool hasSuperType,
+  }) {
     late final accept = '''
       @override
       void accept(RiverpodAstVisitor visitor) {
@@ -233,7 +275,7 @@ class RiverpodAstRegistry {
     ''';
 
     final visitChildren = StringBuffer();
-    if (supertype != null) {
+    if (hasSuperType) {
       visitChildren.writeln('super.visitChildren(visitor);');
     }
 
@@ -272,7 +314,7 @@ class RiverpodAstRegistry {
     }
 
     buffer.writeln('''
-mixin _\$${ast.name} on ${supertype ?? 'RiverpodAst'} {
+base mixin _\$${ast.name} on RiverpodAst {
   ${astFields.map((e) => '${e.type} get ${e.field.name};').join('\n')}
 
   ${ast.isAbstract ? '' : accept}
@@ -283,4 +325,8 @@ mixin _\$${ast.name} on ${supertype ?? 'RiverpodAst'} {
 }
 ''');
   }
+}
+
+extension on String {
+  String get lowerFirst => substring(0, 1).toLowerCase() + substring(1);
 }
