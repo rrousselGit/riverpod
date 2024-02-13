@@ -13,4 +13,16 @@ void main() {
     final options = BuildYamlOptions.fromMap(map);
     expect(options.providerFamilyNameSuffix, 'ProviderFamily');
   });
+
+  test('custom prefix', () async {
+    const map = {'provider_name_prefix': 'my'};
+    final options = BuildYamlOptions.fromMap(map);
+    expect(options.providerNameSuffix, 'my');
+  });
+
+  test('custom family prefix', () async {
+    const map = {'provider_family_name_prefix': 'myFamily'};
+    final options = BuildYamlOptions.fromMap(map);
+    expect(options.providerFamilyNamePrefix, 'myFamily');
+  });
 }

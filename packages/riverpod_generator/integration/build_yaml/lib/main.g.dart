@@ -10,9 +10,9 @@ String _$countHash() => r'4c7e72b275767a60ece5e8662ab1e28f73cf7e44';
 
 /// See also [count].
 @ProviderFor(count)
-final countPod = AutoDisposeProvider<int>.internal(
+final myCountPod = AutoDisposeProvider<int>.internal(
   count,
-  name: r'countPod',
+  name: r'myCountPod',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$countHash,
   dependencies: null,
@@ -24,9 +24,9 @@ String _$countFutureHash() => r'ec7cc31ce1c1a10607f1dcb35dd217acd2877729';
 
 /// See also [countFuture].
 @ProviderFor(countFuture)
-final countFuturePod = AutoDisposeFutureProvider<int>.internal(
+final myCountFuturePod = AutoDisposeFutureProvider<int>.internal(
   countFuture,
-  name: r'countFuturePod',
+  name: r'myCountFuturePod',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$countFutureHash,
   dependencies: null,
@@ -38,9 +38,9 @@ String _$countStreamHash() => r'1dbe49244ea19e8dbc3af0534429bb323720c07a';
 
 /// See also [countStream].
 @ProviderFor(countStream)
-final countStreamPod = AutoDisposeStreamProvider<int>.internal(
+final myCountStreamPod = AutoDisposeStreamProvider<int>.internal(
   countStream,
-  name: r'countStreamPod',
+  name: r'myCountStreamPod',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$countStreamHash,
   dependencies: null,
@@ -73,7 +73,7 @@ class _SystemHash {
 
 /// See also [count2].
 @ProviderFor(count2)
-const count2ProviderFamily = Count2Family();
+const myFamilyCount2ProviderFamily = Count2Family();
 
 /// See also [count2].
 class Count2Family extends Family<int> {
@@ -110,7 +110,7 @@ class Count2Family extends Family<int> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'count2ProviderFamily';
+  String? get name => r'myFamilyCount2ProviderFamily';
 }
 
 /// See also [count2].
@@ -123,8 +123,8 @@ class Count2Provider extends AutoDisposeProvider<int> {
             ref as Count2Ref,
             a,
           ),
-          from: count2ProviderFamily,
-          name: r'count2ProviderFamily',
+          from: myFamilyCount2ProviderFamily,
+          name: r'myFamilyCount2ProviderFamily',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
@@ -200,7 +200,7 @@ String _$countFuture2Hash() => r'096675b70a267f5d7c62ac7d3e7dd231ef529034';
 
 /// See also [countFuture2].
 @ProviderFor(countFuture2)
-const countFuture2ProviderFamily = CountFuture2Family();
+const myFamilyCountFuture2ProviderFamily = CountFuture2Family();
 
 /// See also [countFuture2].
 class CountFuture2Family extends Family<AsyncValue<int>> {
@@ -237,7 +237,7 @@ class CountFuture2Family extends Family<AsyncValue<int>> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'countFuture2ProviderFamily';
+  String? get name => r'myFamilyCountFuture2ProviderFamily';
 }
 
 /// See also [countFuture2].
@@ -250,8 +250,8 @@ class CountFuture2Provider extends AutoDisposeFutureProvider<int> {
             ref as CountFuture2Ref,
             a,
           ),
-          from: countFuture2ProviderFamily,
-          name: r'countFuture2ProviderFamily',
+          from: myFamilyCountFuture2ProviderFamily,
+          name: r'myFamilyCountFuture2ProviderFamily',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
@@ -328,7 +328,7 @@ String _$countStream2Hash() => r'051264dd685ebc0a57e454bb676957c93cb4ae20';
 
 /// See also [countStream2].
 @ProviderFor(countStream2)
-const countStream2ProviderFamily = CountStream2Family();
+const myFamilyCountStream2ProviderFamily = CountStream2Family();
 
 /// See also [countStream2].
 class CountStream2Family extends Family<AsyncValue<int>> {
@@ -365,7 +365,7 @@ class CountStream2Family extends Family<AsyncValue<int>> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'countStream2ProviderFamily';
+  String? get name => r'myFamilyCountStream2ProviderFamily';
 }
 
 /// See also [countStream2].
@@ -378,8 +378,8 @@ class CountStream2Provider extends AutoDisposeStreamProvider<int> {
             ref as CountStream2Ref,
             a,
           ),
-          from: countStream2ProviderFamily,
-          name: r'countStream2ProviderFamily',
+          from: myFamilyCountStream2ProviderFamily,
+          name: r'myFamilyCountStream2ProviderFamily',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
@@ -456,10 +456,10 @@ String _$countNotifierHash() => r'a8dd7a66ee0002b8af657245c4affaa206fd99ec';
 
 /// See also [CountNotifier].
 @ProviderFor(CountNotifier)
-final countNotifierPod =
+final myCountNotifierPod =
     AutoDisposeNotifierProvider<CountNotifier, int>.internal(
   CountNotifier.new,
-  name: r'countNotifierPod',
+  name: r'myCountNotifierPod',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$countNotifierHash,
@@ -473,10 +473,10 @@ String _$countAsyncNotifierHash() =>
 
 /// See also [CountAsyncNotifier].
 @ProviderFor(CountAsyncNotifier)
-final countAsyncNotifierPod =
+final myCountAsyncNotifierPod =
     AutoDisposeAsyncNotifierProvider<CountAsyncNotifier, int>.internal(
   CountAsyncNotifier.new,
-  name: r'countAsyncNotifierPod',
+  name: r'myCountAsyncNotifierPod',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$countAsyncNotifierHash,
@@ -490,10 +490,10 @@ String _$countStreamNotifierHash() =>
 
 /// See also [CountStreamNotifier].
 @ProviderFor(CountStreamNotifier)
-final countStreamNotifierPod =
+final myCountStreamNotifierPod =
     AutoDisposeStreamNotifierProvider<CountStreamNotifier, int>.internal(
   CountStreamNotifier.new,
-  name: r'countStreamNotifierPod',
+  name: r'myCountStreamNotifierPod',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$countStreamNotifierHash,
@@ -514,7 +514,7 @@ abstract class _$CountNotifier2 extends BuildlessAutoDisposeNotifier<int> {
 
 /// See also [CountNotifier2].
 @ProviderFor(CountNotifier2)
-const countNotifier2ProviderFamily = CountNotifier2Family();
+const myFamilyCountNotifier2ProviderFamily = CountNotifier2Family();
 
 /// See also [CountNotifier2].
 class CountNotifier2Family extends Family<int> {
@@ -551,7 +551,7 @@ class CountNotifier2Family extends Family<int> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'countNotifier2ProviderFamily';
+  String? get name => r'myFamilyCountNotifier2ProviderFamily';
 }
 
 /// See also [CountNotifier2].
@@ -562,8 +562,8 @@ class CountNotifier2Provider
     int a,
   ) : this._internal(
           () => CountNotifier2()..a = a,
-          from: countNotifier2ProviderFamily,
-          name: r'countNotifier2ProviderFamily',
+          from: myFamilyCountNotifier2ProviderFamily,
+          name: r'myFamilyCountNotifier2ProviderFamily',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
@@ -658,7 +658,7 @@ abstract class _$CountAsyncNotifier2
 
 /// See also [CountAsyncNotifier2].
 @ProviderFor(CountAsyncNotifier2)
-const countAsyncNotifier2ProviderFamily = CountAsyncNotifier2Family();
+const myFamilyCountAsyncNotifier2ProviderFamily = CountAsyncNotifier2Family();
 
 /// See also [CountAsyncNotifier2].
 class CountAsyncNotifier2Family extends Family<AsyncValue<int>> {
@@ -695,7 +695,7 @@ class CountAsyncNotifier2Family extends Family<AsyncValue<int>> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'countAsyncNotifier2ProviderFamily';
+  String? get name => r'myFamilyCountAsyncNotifier2ProviderFamily';
 }
 
 /// See also [CountAsyncNotifier2].
@@ -706,8 +706,8 @@ class CountAsyncNotifier2Provider
     int a,
   ) : this._internal(
           () => CountAsyncNotifier2()..a = a,
-          from: countAsyncNotifier2ProviderFamily,
-          name: r'countAsyncNotifier2ProviderFamily',
+          from: myFamilyCountAsyncNotifier2ProviderFamily,
+          name: r'myFamilyCountAsyncNotifier2ProviderFamily',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
@@ -803,7 +803,7 @@ abstract class _$CountStreamNotifier2
 
 /// See also [CountStreamNotifier2].
 @ProviderFor(CountStreamNotifier2)
-const countStreamNotifier2ProviderFamily = CountStreamNotifier2Family();
+const myFamilyCountStreamNotifier2ProviderFamily = CountStreamNotifier2Family();
 
 /// See also [CountStreamNotifier2].
 class CountStreamNotifier2Family extends Family<AsyncValue<int>> {
@@ -840,7 +840,7 @@ class CountStreamNotifier2Family extends Family<AsyncValue<int>> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'countStreamNotifier2ProviderFamily';
+  String? get name => r'myFamilyCountStreamNotifier2ProviderFamily';
 }
 
 /// See also [CountStreamNotifier2].
@@ -851,8 +851,8 @@ class CountStreamNotifier2Provider
     int a,
   ) : this._internal(
           () => CountStreamNotifier2()..a = a,
-          from: countStreamNotifier2ProviderFamily,
-          name: r'countStreamNotifier2ProviderFamily',
+          from: myFamilyCountStreamNotifier2ProviderFamily,
+          name: r'myFamilyCountStreamNotifier2ProviderFamily',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
