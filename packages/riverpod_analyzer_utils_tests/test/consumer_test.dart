@@ -109,7 +109,7 @@ class MyConsumerWidget extends HookConsumerWidget {
 ''', (resolver) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
-    final consumerWidget = result.hookConsumerWidgetDeclaration.single;
+    final consumerWidget = result.hookConsumerWidgetDeclarations.single;
     expect(consumerWidget, isA<HookConsumerWidgetDeclaration>());
     expect(consumerWidget.node.name.toString(), 'MyConsumerWidget');
     expect(
@@ -218,7 +218,7 @@ class MyConsumerState extends ConsumerState<MyConsumerWidget> {
 ''', (resolver) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
-    final consumerWidget = result.statefulHookConsumerWidgetDeclaration.single;
+    final consumerWidget = result.statefulHookConsumerWidgetDeclarations.single;
     final consumerState = result.consumerStateDeclarations.single;
 
     expect(consumerWidget, isA<StatefulHookConsumerWidgetDeclaration>());

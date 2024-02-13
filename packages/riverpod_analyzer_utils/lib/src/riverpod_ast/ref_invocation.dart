@@ -1,6 +1,7 @@
 part of '../riverpod_ast.dart';
 
-abstract class RefInvocation extends RiverpodAst
+abstract base class RefInvocation extends RiverpodAst
+    with _$RefInvocation
     implements ProviderListenableExpressionParent {
   RefInvocation._({
     required this.node,
@@ -61,7 +62,8 @@ abstract class RefInvocation extends RiverpodAst
 }
 
 /// A [RefInvocation] which interacts with a provider, inducing a dependency.
-abstract class RefDependencyInvocation extends RefInvocation {
+abstract base class RefDependencyInvocation extends RefInvocation
+    with _$RefDependencyInvocation {
   RefDependencyInvocation._({
     required super.node,
     required super.function,
@@ -69,10 +71,12 @@ abstract class RefDependencyInvocation extends RefInvocation {
   }) : super._();
 
   /// The provider that is being interacted with.
+  @override
   final ProviderListenableExpression provider;
 }
 
-class RefWatchInvocation extends RefDependencyInvocation {
+final class RefWatchInvocation extends RefDependencyInvocation
+    with _$RefWatchInvocation {
   RefWatchInvocation._({
     required super.node,
     required super.function,
@@ -102,19 +106,10 @@ class RefWatchInvocation extends RefDependencyInvocation {
     providerListenableExpression._parent = refWatchInvocation;
     return refWatchInvocation;
   }
-
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitRefWatchInvocation(this);
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    provider.accept(visitor);
-  }
 }
 
-class RefReadInvocation extends RefDependencyInvocation {
+final class RefReadInvocation extends RefDependencyInvocation
+    with _$RefReadInvocation {
   RefReadInvocation._({
     required super.node,
     required super.function,
@@ -144,19 +139,10 @@ class RefReadInvocation extends RefDependencyInvocation {
     providerListenableExpression._parent = refReadInvocation;
     return refReadInvocation;
   }
-
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitRefReadInvocation(this);
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    provider.accept(visitor);
-  }
 }
 
-class RefListenInvocation extends RefDependencyInvocation {
+final class RefListenInvocation extends RefDependencyInvocation
+    with _$RefListenInvocation {
   RefListenInvocation._({
     required super.node,
     required super.function,
@@ -195,14 +181,4 @@ class RefListenInvocation extends RefDependencyInvocation {
   }
 
   final Expression listener;
-
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitRefListenInvocation(this);
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    provider.accept(visitor);
-  }
 }

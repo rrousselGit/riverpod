@@ -1,3 +1,5 @@
+library riverpod_ast;
+
 import 'dart:async';
 import 'dart:convert';
 
@@ -17,22 +19,37 @@ import '../riverpod_analyzer_utils.dart';
 import 'argument_list_utils.dart';
 import 'errors.dart';
 
+part 'riverpod_ast.g.dart';
 part 'riverpod_ast/consumer.dart';
 part 'riverpod_ast/generator_provider_declaration.dart';
 part 'riverpod_ast/legacy_provider_declaration.dart';
 part 'riverpod_ast/provider_container_instance_creation_expression.dart';
 part 'riverpod_ast/provider_declaration.dart';
 part 'riverpod_ast/provider_listenable_expression.dart';
+part 'riverpod_ast/provider_override.dart';
+part 'riverpod_ast/provider_scope.dart';
 part 'riverpod_ast/ref_invocation.dart';
 part 'riverpod_ast/resolve_riverpod.dart';
 part 'riverpod_ast/riverpod_annotation.dart';
-part 'riverpod_ast/visitor.dart';
 part 'riverpod_ast/widget_ref_invocation.dart';
-part 'riverpod_ast/provider_scope.dart';
-part 'riverpod_ast/provider_override.dart';
 
-@sealed
-abstract class RiverpodAst {
+class _SetParentVisitor extends GeneralizingRiverpodAstVisitor {
+  _SetParentVisitor(this.parent);
+
+  final RiverpodAst parent;
+
+  @override
+  void visitRiverpodAst(RiverpodAst node) {
+    node._parent = parent;
+    super.visitRiverpodAst(node);
+  }
+}
+
+abstract base class RiverpodAst {
+  RiverpodAst() {
+    visitChildren(_SetParentVisitor(this));
+  }
+
   RiverpodAst? _parent;
   RiverpodAst? get parent => _parent;
 

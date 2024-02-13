@@ -1,6 +1,7 @@
 part of '../riverpod_ast.dart';
 
-class LegacyProviderDependencies extends RiverpodAst {
+final class LegacyProviderDependencies extends RiverpodAst
+    with _$LegacyProviderDependencies {
   LegacyProviderDependencies._({
     required this.dependencies,
     required this.dependenciesNode,
@@ -28,26 +29,13 @@ class LegacyProviderDependencies extends RiverpodAst {
     return legacyProviderDependencies;
   }
 
+  @override
   final List<LegacyProviderDependency>? dependencies;
   final NamedExpression dependenciesNode;
-
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitLegacyProviderDependencies(this);
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    final dependencies = this.dependencies;
-    if (dependencies != null) {
-      for (final dependency in dependencies) {
-        dependency.accept(visitor);
-      }
-    }
-  }
 }
 
-class LegacyProviderDependency extends RiverpodAst
+final class LegacyProviderDependency extends RiverpodAst
+    with _$LegacyProviderDependency
     implements ProviderListenableExpressionParent {
   LegacyProviderDependency._({
     required this.node,
@@ -67,20 +55,12 @@ class LegacyProviderDependency extends RiverpodAst
   }
 
   final CollectionElement node;
+  @override
   final ProviderListenableExpression? provider;
-
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitLegacyProviderDependency(this);
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    provider?.accept(visitor);
-  }
 }
 
-class LegacyProviderDeclaration extends RiverpodAst
+final class LegacyProviderDeclaration extends RiverpodAst
+    with _$LegacyProviderDeclaration
     implements ProviderDeclaration {
   LegacyProviderDeclaration._({
     required this.name,
@@ -189,6 +169,7 @@ class LegacyProviderDeclaration extends RiverpodAst
     return legacyProviderDeclaration;
   }
 
+  @override
   final LegacyProviderDependencies? dependencies;
 
   final FunctionExpression build;
@@ -201,6 +182,7 @@ class LegacyProviderDeclaration extends RiverpodAst
   @override
   final LegacyProviderDeclarationElement providerElement;
 
+  @override
   final List<RefInvocation> refInvocations = [];
 
   @override
@@ -208,19 +190,6 @@ class LegacyProviderDeclaration extends RiverpodAst
 
   @override
   final VariableDeclaration node;
-
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitLegacyProviderDeclaration(this);
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    dependencies?.accept(visitor);
-    for (final refInvocation in refInvocations) {
-      refInvocation.accept(visitor);
-    }
-  }
 }
 
 class _LegacyRefInvocationVisitor extends RecursiveAstVisitor<void>

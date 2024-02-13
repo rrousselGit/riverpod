@@ -1,6 +1,7 @@
 part of '../riverpod_ast.dart';
 
-abstract class ConsumerDeclaration extends RiverpodAst {
+abstract base class ConsumerDeclaration extends RiverpodAst
+    with _$ConsumerDeclaration {
   static ConsumerDeclaration? _parse(
     ClassDeclaration node,
     _ParseRefInvocationMixin parent,
@@ -28,7 +29,8 @@ abstract class ConsumerDeclaration extends RiverpodAst {
   ClassDeclaration get node;
 }
 
-class ConsumerWidgetDeclaration extends ConsumerDeclaration {
+final class ConsumerWidgetDeclaration extends ConsumerDeclaration
+    with _$ConsumerWidgetDeclaration {
   ConsumerWidgetDeclaration._({
     required this.buildMethod,
     required this.node,
@@ -59,27 +61,14 @@ class ConsumerWidgetDeclaration extends ConsumerDeclaration {
   }
 
   final MethodDeclaration? buildMethod;
+  @override
   final List<WidgetRefInvocation> widgetRefInvocations = [];
+  @override
   final List<ProviderScopeInstanceCreationExpression>
       providerScopeInstanceCreateExpressions = [];
 
   @override
   final ClassDeclaration node;
-
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitConsumerWidgetDeclaration(this);
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    for (final invocation in widgetRefInvocations) {
-      invocation.accept(visitor);
-    }
-    for (final expression in providerScopeInstanceCreateExpressions) {
-      expression.accept(visitor);
-    }
-  }
 }
 
 class _ParseConsumerRefInvocationVisitor extends RecursiveAstVisitor<void>
@@ -125,7 +114,8 @@ class _ParseConsumerRefInvocationVisitor extends RecursiveAstVisitor<void>
   }
 }
 
-class HookConsumerWidgetDeclaration extends ConsumerDeclaration {
+final class HookConsumerWidgetDeclaration extends ConsumerDeclaration
+    with _$HookConsumerWidgetDeclaration {
   HookConsumerWidgetDeclaration({
     required this.buildMethod,
     required this.node,
@@ -156,30 +146,18 @@ class HookConsumerWidgetDeclaration extends ConsumerDeclaration {
   }
 
   final MethodDeclaration? buildMethod;
+  @override
   final List<WidgetRefInvocation> widgetRefInvocations = [];
+  @override
   final List<ProviderScopeInstanceCreationExpression>
       providerScopeInstanceCreateExpressions = [];
 
   @override
   final ClassDeclaration node;
-
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitHookConsumerWidgetDeclaration(this);
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    for (final invocation in widgetRefInvocations) {
-      invocation.accept(visitor);
-    }
-    for (final expression in providerScopeInstanceCreateExpressions) {
-      expression.accept(visitor);
-    }
-  }
 }
 
-class ConsumerStatefulWidgetDeclaration extends ConsumerDeclaration {
+final class ConsumerStatefulWidgetDeclaration extends ConsumerDeclaration
+    with _$ConsumerStatefulWidgetDeclaration {
   ConsumerStatefulWidgetDeclaration._({required this.node});
 
   ConsumerStatefulWidgetDeclaration.parse(ClassDeclaration node)
@@ -187,17 +165,10 @@ class ConsumerStatefulWidgetDeclaration extends ConsumerDeclaration {
 
   @override
   final ClassDeclaration node;
-
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitConsumerStatefulWidgetDeclaration(this);
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {}
 }
 
-class StatefulHookConsumerWidgetDeclaration extends ConsumerDeclaration {
+final class StatefulHookConsumerWidgetDeclaration extends ConsumerDeclaration
+    with _$StatefulHookConsumerWidgetDeclaration {
   StatefulHookConsumerWidgetDeclaration._({required this.node});
 
   StatefulHookConsumerWidgetDeclaration.parse(ClassDeclaration node)
@@ -205,17 +176,10 @@ class StatefulHookConsumerWidgetDeclaration extends ConsumerDeclaration {
 
   @override
   final ClassDeclaration node;
-
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitStatefulHookConsumerWidgetDeclaration(this);
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {}
 }
 
-class ConsumerStateDeclaration extends ConsumerDeclaration {
+final class ConsumerStateDeclaration extends ConsumerDeclaration
+    with _$ConsumerStateDeclaration {
   ConsumerStateDeclaration._({
     required this.node,
   });
@@ -239,25 +203,12 @@ class ConsumerStateDeclaration extends ConsumerDeclaration {
     return consumerWidgetDeclaration;
   }
 
+  @override
   final List<WidgetRefInvocation> widgetRefInvocations = [];
+  @override
   final List<ProviderScopeInstanceCreationExpression>
       providerScopeInstanceCreateExpressions = [];
 
   @override
   final ClassDeclaration node;
-
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitConsumerStateDeclaration(this);
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    for (final invocation in widgetRefInvocations) {
-      invocation.accept(visitor);
-    }
-    for (final expression in providerScopeInstanceCreateExpressions) {
-      expression.accept(visitor);
-    }
-  }
 }

@@ -22,7 +22,7 @@ class RiverpodSyntaxError extends RiverpodLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    riverpodRegistry(context).addRiverpodUnit((unit) {
+    riverpodRegistry(context).addResolvedRiverpodLibraryResult((unit) {
       for (final error in unit.errors) {
         switch (error.code) {
           case RiverpodAnalysisErrorCode.missingNotifierBuild:

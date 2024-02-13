@@ -1,6 +1,7 @@
 part of '../riverpod_ast.dart';
 
-class ProviderOverrideExpression extends RiverpodAst {
+final class ProviderOverrideExpression extends RiverpodAst
+    with _$ProviderOverrideExpression {
   ProviderOverrideExpression._({
     required this.expression,
     required this.providerElement,
@@ -35,17 +36,10 @@ class ProviderOverrideExpression extends RiverpodAst {
   /// If [provider] is a provider with arguments (family), represents the arguments
   /// passed to the provider.
   final ArgumentList? familyArguments;
-
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitProviderOverrideExpression(this);
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {}
 }
 
-class ProviderOverrideList extends RiverpodAst {
+final class ProviderOverrideList extends RiverpodAst
+    with _$ProviderOverrideList {
   ProviderOverrideList._({
     required this.node,
     required this.overrides,
@@ -73,15 +67,6 @@ class ProviderOverrideList extends RiverpodAst {
   }
 
   final NamedExpression node;
+  @override
   final List<ProviderOverrideExpression>? overrides;
-
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitProviderOverrideList(this);
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    overrides?.forEach((e) => e.accept(visitor));
-  }
 }
