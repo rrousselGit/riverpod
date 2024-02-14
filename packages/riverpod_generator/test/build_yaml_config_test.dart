@@ -17,7 +17,7 @@ void main() {
   test('custom prefix', () async {
     const map = {'provider_name_prefix': 'my'};
     final options = BuildYamlOptions.fromMap(map);
-    expect(options.providerNameSuffix, 'my');
+    expect(options.providerNamePrefix, 'my');
   });
 
   test('custom family prefix', () async {

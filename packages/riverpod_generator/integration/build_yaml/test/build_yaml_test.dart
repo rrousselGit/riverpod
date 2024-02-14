@@ -13,34 +13,34 @@ void main() {
   );
 
   test('provider names', () {
-    expect(countPod.name, 'myCountPod');
-    expect(countFuturePod.name, 'myCountFuturePod');
-    expect(countStreamPod.name, 'myCountStreamPod');
-    expect(countNotifierPod.name, 'myCountNotifierPod');
-    expect(countAsyncNotifierPod.name, 'myCountAsyncNotifierPod');
-    expect(countStreamNotifierPod.name, 'myCountStreamNotifierPod');
+    expect(myCountPod.name, 'myCountPod');
+    expect(myCountFuturePod.name, 'myCountFuturePod');
+    expect(myCountStreamPod.name, 'myCountStreamPod');
+    expect(myCountNotifierPod.name, 'myCountNotifierPod');
+    expect(myCountAsyncNotifierPod.name, 'myCountAsyncNotifierPod');
+    expect(myCountStreamNotifierPod.name, 'myCountStreamNotifierPod');
   });
 
   test('provider family names', () {
-    expect(count2ProviderFamily.name, 'myFamilyCount2ProviderFamily');
+    expect(myFamilyCount2ProviderFamily.name, 'myFamilyCount2ProviderFamily');
     expect(
-      countFuture2ProviderFamily.name,
+      myFamilyCountFuture2ProviderFamily.name,
       'myFamilyCountFuture2ProviderFamily',
     );
     expect(
-      countStream2ProviderFamily.name,
+      myFamilyCountStream2ProviderFamily.name,
       'myFamilyCountStream2ProviderFamily',
     );
     expect(
-      countNotifier2ProviderFamily.name,
+      myFamilyCountNotifier2ProviderFamily.name,
       'myFamilyCountNotifier2ProviderFamily',
     );
     expect(
-      countAsyncNotifier2ProviderFamily.name,
+      myFamilyCountAsyncNotifier2ProviderFamily.name,
       'myFamilyCountAsyncNotifier2ProviderFamily',
     );
     expect(
-      countStreamNotifier2ProviderFamily.name,
+      myFamilyCountStreamNotifier2ProviderFamily.name,
       'myFamilyCountStreamNotifier2ProviderFamily',
     );
   });
