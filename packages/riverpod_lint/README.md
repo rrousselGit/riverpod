@@ -788,7 +788,7 @@ dart run custom_lint --fix
 ### missing_legacy_import
 
 As part of Riverpod 3.0, `StateProvider`, `StateNotifierProvider`, `StateNotifier` and `ChangeNotifierProvider` are moved out of `package:riverpod/riverpod.dart` to
-`package:riverpod/riverpod.dart`.
+`package:riverpod/legacy.dart`.
 
 This migration will automatically adds the missing import.
 
