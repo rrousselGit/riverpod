@@ -2,10 +2,9 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../first_request/raw/activity.dart';
 
-/* SNIPPET START */
-
 FutureOr<Activity> fetchActivity() => throw UnimplementedError();
 
+/* SNIPPET START */
 // A "functional" provider
 final activityProvider = FutureProvider.autoDispose((ref) async {
   // TODO: perform a network request to fetch an activity
