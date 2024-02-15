@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../first_request/raw/activity.dart';
-import 'family.dart';
+import '../family/raw.dart';
 
 class Example extends ConsumerWidget {
   const Example({super.key});

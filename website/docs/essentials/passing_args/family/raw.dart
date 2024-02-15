@@ -2,13 +2,13 @@
 
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../first_request/raw/activity.dart';
 
 FutureOr<Activity> fetchActivity(String activityType) =>
     throw UnimplementedError();
 
 /* SNIPPET START */
-// A "functional" provider
 final activityProvider = FutureProvider.autoDispose
     // We use the ".family" modifier.
     // The "String" generic type corresponds to the argument type.
@@ -18,9 +18,8 @@ final activityProvider = FutureProvider.autoDispose
   return fetchActivity(activityType);
 });
 
-// A "notifier" provider
+// Again, for notifier we use the ".family" modifier, and specify the argument as type "String".
 final activityProvider2 = AsyncNotifierProvider.autoDispose
-    // Again, we use the ".family" modifier, and specify the argument as type "String".
     .family<ActivityNotifier, Activity, String>(
   ActivityNotifier.new,
 );

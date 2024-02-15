@@ -4,7 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../first_request/codegen/activity.dart';
 
 // Necessary for code-generation to work
-part 'provider.g.dart';
+part 'codegen.g.dart';
 
 FutureOr<Activity> fetchActivity() => throw UnimplementedError();
 
@@ -19,13 +19,8 @@ Future<Activity> activity(ActivityRef ref) async {
 // Or alternatively, a "notifier"
 @riverpod
 class ActivityNotifier2 extends _$ActivityNotifier2 {
-  /// Notifier arguments are specified on the build method.
-  /// There can be as many as you want, have any name, and even be optional/named.
   @override
-  Future<Activity> build(String activityType) async {
-    // Arguments are also available with "this.<argumentName>"
-    print(this.activityType);
-
+  Future<Activity> build() async {
     // TODO: perform a network request to fetch an activity
     return fetchActivity();
   }

@@ -2,7 +2,7 @@
 
 // ignore_for_file: non_constant_identifier_names
 
-part of 'provider.dart';
+part of 'codegen.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -11,19 +11,20 @@ part of 'provider.dart';
 typedef ActivityRef = Ref<AsyncValue<Activity>>;
 
 @ProviderFor(activity)
-const activityProvider = ActivityProvider._();
+const activityProvider = ActivityFamily._();
 
 final class ActivityProvider extends $FunctionalProvider<AsyncValue<Activity>,
         FutureOr<Activity>, ActivityRef>
     with $FutureModifier<Activity>, $FutureProvider<Activity, ActivityRef> {
   const ActivityProvider._(
-      {FutureOr<Activity> Function(
+      {required ActivityFamily super.from,
+      required String super.argument,
+      FutureOr<Activity> Function(
         ActivityRef ref,
+        String activityType,
       )? create})
       : _createCb = create,
         super(
-          from: null,
-          argument: null,
           name: r'activityProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -32,10 +33,18 @@ final class ActivityProvider extends $FunctionalProvider<AsyncValue<Activity>,
 
   final FutureOr<Activity> Function(
     ActivityRef ref,
+    String activityType,
   )? _createCb;
 
   @override
   String debugGetCreateSourceHash() => _$activityHash();
+
+  @override
+  String toString() {
+    return r'activityProvider'
+        ''
+        '($argument)';
+  }
 
   @$internal
   @override
@@ -49,17 +58,80 @@ final class ActivityProvider extends $FunctionalProvider<AsyncValue<Activity>,
       ActivityRef ref,
     ) create,
   ) {
-    return ActivityProvider._(create: create);
+    return ActivityProvider._(
+        argument: argument as String,
+        from: from! as ActivityFamily,
+        create: (
+          ref,
+          String activityType,
+        ) =>
+            create(ref));
   }
 
   @override
   FutureOr<Activity> create(ActivityRef ref) {
     final _$cb = _createCb ?? activity;
-    return _$cb(ref);
+    final argument = this.argument as String;
+    return _$cb(
+      ref,
+      argument,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ActivityProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
   }
 }
 
-String _$activityHash() => r'2f9496c5d70de9314c67e5c48ac44d8b149bc471';
+String _$activityHash() => r'cb76e67cd45f1823d3ed497a235be53819ce2eaf';
+
+final class ActivityFamily extends Family {
+  const ActivityFamily._()
+      : super(
+          name: r'activityProvider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  ActivityProvider call(
+    String activityType,
+  ) =>
+      ActivityProvider._(argument: activityType, from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$activityHash();
+
+  @override
+  String toString() => r'activityProvider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    FutureOr<Activity> Function(
+      ActivityRef ref,
+      String args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as ActivityProvider;
+
+        final argument = provider.argument as String;
+
+        return provider
+            .$copyWithCreate((ref) => create(ref, argument))
+            .$createElement(container);
+      },
+    );
+  }
+}
 
 @ProviderFor(ActivityNotifier2)
 const activityNotifier2Provider = ActivityNotifier2Family._();
