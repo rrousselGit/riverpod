@@ -18,15 +18,10 @@ final class LegacyProviderDependencies extends RiverpodAst
           value.elements.map(LegacyProviderDependency._parse).toList();
     }
 
-    final legacyProviderDependencies = LegacyProviderDependencies._(
+    return LegacyProviderDependencies._(
       dependenciesNode: dependenciesNode,
       dependencies: dependencies,
     );
-    legacyProviderDependencies.dependencies?.forEach((element) {
-      element._parent = legacyProviderDependencies;
-    });
-
-    return legacyProviderDependencies;
   }
 
   @override
@@ -46,12 +41,10 @@ final class LegacyProviderDependency extends RiverpodAst
     final provider =
         node.cast<Expression>().let(ProviderListenableExpression._parse);
 
-    final legacyProviderDependency = LegacyProviderDependency._(
+    return LegacyProviderDependency._(
       node: node,
       provider: provider,
     );
-    provider?._parent = legacyProviderDependency;
-    return legacyProviderDependency;
   }
 
   final CollectionElement node;
@@ -75,10 +68,7 @@ final class LegacyProviderDeclaration extends RiverpodAst
     required this.dependencies,
   });
 
-  static LegacyProviderDeclaration? _parse(
-    VariableDeclaration node,
-    _ParseRefInvocationMixin parent,
-  ) {
+  static LegacyProviderDeclaration? _parse(VariableDeclaration node) {
     final element = node.declaredElement;
     if (element == null) return null;
 
@@ -145,7 +135,7 @@ final class LegacyProviderDeclaration extends RiverpodAst
         .firstWhereOrNull((e) => e.name.label.name == 'dependencies');
     final dependencies = LegacyProviderDependencies._parse(dependenciesElement);
 
-    final legacyProviderDeclaration = LegacyProviderDeclaration._(
+    return LegacyProviderDeclaration._(
       name: node.name,
       node: node,
       build: build,
@@ -157,16 +147,6 @@ final class LegacyProviderDeclaration extends RiverpodAst
       familyModifier: familyModifier,
       dependencies: dependencies,
     );
-
-    dependencies?._parent = legacyProviderDeclaration;
-    build.accept(
-      _LegacyRefInvocationVisitor(
-        legacyProviderDeclaration,
-        parent,
-      ),
-    );
-
-    return legacyProviderDeclaration;
   }
 
   @override
@@ -183,44 +163,8 @@ final class LegacyProviderDeclaration extends RiverpodAst
   final LegacyProviderDeclarationElement providerElement;
 
   @override
-  final List<RefInvocation> refInvocations = [];
-
-  @override
   final Token name;
 
   @override
   final VariableDeclaration node;
-}
-
-class _LegacyRefInvocationVisitor extends GeneralizingAstVisitor<void>
-    with _ParseRefInvocationMixin {
-  _LegacyRefInvocationVisitor(this.declaration, this.parent);
-
-  final LegacyProviderDeclaration declaration;
-  final _ParseRefInvocationMixin parent;
-
-  @override
-  void visitRefInvocation(RefInvocation invocation) {
-    declaration.refInvocations.add(invocation);
-    invocation._parent = declaration;
-  }
-
-  @override
-  void visitWidgetRefInvocation(WidgetRefInvocation invocation) {
-    parent.visitWidgetRefInvocation(invocation);
-  }
-
-  @override
-  void visitProviderContainerInstanceCreationExpression(
-    ProviderContainerInstanceCreationExpression expression,
-  ) {
-    parent.visitProviderContainerInstanceCreationExpression(expression);
-  }
-
-  @override
-  void visitProviderScopeInstanceCreationExpression(
-    ProviderScopeInstanceCreationExpression expression,
-  ) {
-    parent.visitProviderScopeInstanceCreationExpression(expression);
-  }
 }

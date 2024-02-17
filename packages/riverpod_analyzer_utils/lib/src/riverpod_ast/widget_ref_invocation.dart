@@ -8,10 +8,7 @@ abstract base class WidgetRefInvocation extends RiverpodAst
     required this.function,
   });
 
-  static WidgetRefInvocation? _parse(
-    MethodInvocation node, {
-    required void Function() superCall,
-  }) {
+  static WidgetRefInvocation? _parse(MethodInvocation node) {
     final targetType = node.realTarget?.staticType;
     if (targetType == null) return null;
 
@@ -40,29 +37,13 @@ abstract base class WidgetRefInvocation extends RiverpodAst
 
     switch (function.name) {
       case 'watch':
-        return WidgetRefWatchInvocation._parse(
-          node,
-          function,
-          superCall: superCall,
-        );
+        return WidgetRefWatchInvocation._parse(node, function);
       case 'read':
-        return WidgetRefReadInvocation._parse(
-          node,
-          function,
-          superCall: superCall,
-        );
+        return WidgetRefReadInvocation._parse(node, function);
       case 'listen':
-        return WidgetRefListenInvocation._parse(
-          node,
-          function,
-          superCall: superCall,
-        );
+        return WidgetRefListenInvocation._parse(node, function);
       case 'listenManual':
-        return WidgetRefListenManualInvocation._parse(
-          node,
-          function,
-          superCall: superCall,
-        );
+        return WidgetRefListenManualInvocation._parse(node, function);
 
       default:
         return null;
@@ -83,9 +64,8 @@ final class WidgetRefWatchInvocation extends WidgetRefInvocation
 
   static WidgetRefWatchInvocation? _parse(
     MethodInvocation node,
-    SimpleIdentifier function, {
-    required void Function() superCall,
-  }) {
+    SimpleIdentifier function,
+  ) {
     assert(
       function.name == 'watch',
       'Argument error, function is not a ref.watch function',
@@ -96,13 +76,11 @@ final class WidgetRefWatchInvocation extends WidgetRefInvocation
     );
     if (providerListenableExpression == null) return null;
 
-    final widgetRefWatchInvocation = WidgetRefWatchInvocation._(
+    return WidgetRefWatchInvocation._(
       node: node,
       function: function,
       provider: providerListenableExpression,
     );
-    providerListenableExpression._parent = widgetRefWatchInvocation;
-    return widgetRefWatchInvocation;
   }
 
   @override
@@ -119,9 +97,8 @@ final class WidgetRefReadInvocation extends WidgetRefInvocation
 
   static WidgetRefReadInvocation? _parse(
     MethodInvocation node,
-    SimpleIdentifier function, {
-    required void Function() superCall,
-  }) {
+    SimpleIdentifier function,
+  ) {
     assert(
       function.name == 'read',
       'Argument error, function is not a ref.read function',
@@ -132,13 +109,11 @@ final class WidgetRefReadInvocation extends WidgetRefInvocation
     );
     if (providerListenableExpression == null) return null;
 
-    final widgetRefReadInvocation = WidgetRefReadInvocation._(
+    return WidgetRefReadInvocation._(
       node: node,
       function: function,
       provider: providerListenableExpression,
     );
-    providerListenableExpression._parent = widgetRefReadInvocation;
-    return widgetRefReadInvocation;
   }
 
   @override
@@ -156,9 +131,8 @@ final class WidgetRefListenInvocation extends WidgetRefInvocation
 
   static WidgetRefListenInvocation? _parse(
     MethodInvocation node,
-    SimpleIdentifier function, {
-    required void Function() superCall,
-  }) {
+    SimpleIdentifier function,
+  ) {
     assert(
       function.name == 'listen',
       'Argument error, function is not a ref.listen function',
@@ -173,14 +147,12 @@ final class WidgetRefListenInvocation extends WidgetRefInvocation
     );
     if (providerListenableExpression == null) return null;
 
-    final widgetRefListenInvocation = WidgetRefListenInvocation._(
+    return WidgetRefListenInvocation._(
       node: node,
       function: function,
       provider: providerListenableExpression,
       listener: listener,
     );
-    providerListenableExpression._parent = widgetRefListenInvocation;
-    return widgetRefListenInvocation;
   }
 
   @override
@@ -199,9 +171,8 @@ final class WidgetRefListenManualInvocation extends WidgetRefInvocation
 
   static WidgetRefListenManualInvocation? _parse(
     MethodInvocation node,
-    SimpleIdentifier function, {
-    required void Function() superCall,
-  }) {
+    SimpleIdentifier function,
+  ) {
     assert(
       function.name == 'listenManual',
       'Argument error, function is not a ref.listen function',
@@ -216,14 +187,12 @@ final class WidgetRefListenManualInvocation extends WidgetRefInvocation
     );
     if (providerListenableExpression == null) return null;
 
-    final widgetRefListenManualInvocation = WidgetRefListenManualInvocation._(
+    return WidgetRefListenManualInvocation._(
       node: node,
       function: function,
       provider: providerListenableExpression,
       listener: listener,
     );
-    providerListenableExpression._parent = widgetRefListenManualInvocation;
-    return widgetRefListenManualInvocation;
   }
 
   @override

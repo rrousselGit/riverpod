@@ -35,15 +35,9 @@ part 'riverpod_ast/resolve_riverpod.dart';
 part 'riverpod_ast/riverpod_annotation.dart';
 part 'riverpod_ast/widget_ref_invocation.dart';
 
-class _SetParentVisitor extends GeneralizingRiverpodAstVisitor {
-  _SetParentVisitor(this.parent);
-
-  final RiverpodAst parent;
-
-  @override
-  void visitRiverpodAst(RiverpodAst node) {
-    node._parent = parent;
-    super.visitRiverpodAst(node);
+extension MethodInvocationX on MethodInvocation {
+  RefInvocation? get refInvocation {
+    return upsert('RefInvocation', () => RefInvocation._parse(this));
   }
 }
 
@@ -61,8 +55,34 @@ abstract base class RiverpodAst {
   void visitChildren(RiverpodAstVisitor visitor);
 }
 
-@internal
-extension ObjectUtils<T> on T? {
+class _SetParentVisitor extends GeneralizingRiverpodAstVisitor {
+  _SetParentVisitor(this.parent);
+
+  final RiverpodAst parent;
+
+  @override
+  void visitRiverpodAst(RiverpodAst node) {
+    node._parent = parent;
+    super.visitRiverpodAst(node);
+  }
+}
+
+extension on AstNode {
+  R upsert<R>(
+    String key,
+    R Function() create,
+  ) {
+    // Using a record to differentiate "null value" from "no value".
+    final existing = getProperty<(R value,)>('riverpod.$key');
+    if (existing != null) return existing.$1;
+
+    final created = create();
+    setProperty(key, (created,));
+    return created;
+  }
+}
+
+extension<T> on T? {
   R? cast<R>() {
     final that = this;
     if (that is R) return that;

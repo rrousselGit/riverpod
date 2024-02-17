@@ -8,10 +8,7 @@ abstract base class RefInvocation extends RiverpodAst
     required this.function,
   });
 
-  static RefInvocation? _parse(
-    MethodInvocation node, {
-    required void Function() superCall,
-  }) {
+  static RefInvocation? _parse(MethodInvocation node) {
     final targetType = node.realTarget?.staticType;
     if (targetType == null) return null;
 
@@ -35,23 +32,11 @@ abstract base class RefInvocation extends RiverpodAst
 
     switch (function.name) {
       case 'watch':
-        return RefWatchInvocation._parse(
-          node,
-          function,
-          superCall: superCall,
-        );
+        return RefWatchInvocation._parse(node, function);
       case 'read':
-        return RefReadInvocation._parse(
-          node,
-          function,
-          superCall: superCall,
-        );
+        return RefReadInvocation._parse(node, function);
       case 'listen':
-        return RefListenInvocation._parse(
-          node,
-          function,
-          superCall: superCall,
-        );
+        return RefListenInvocation._parse(node, function);
       default:
         return null;
     }
@@ -85,9 +70,8 @@ final class RefWatchInvocation extends RefDependencyInvocation
 
   static RefWatchInvocation? _parse(
     MethodInvocation node,
-    SimpleIdentifier function, {
-    required void Function() superCall,
-  }) {
+    SimpleIdentifier function,
+  ) {
     assert(
       function.name == 'watch',
       'Argument error, function is not a ref.watch function',
@@ -98,13 +82,11 @@ final class RefWatchInvocation extends RefDependencyInvocation
     );
     if (providerListenableExpression == null) return null;
 
-    final refWatchInvocation = RefWatchInvocation._(
+    return RefWatchInvocation._(
       node: node,
       function: function,
       provider: providerListenableExpression,
     );
-    providerListenableExpression._parent = refWatchInvocation;
-    return refWatchInvocation;
   }
 }
 
@@ -118,9 +100,8 @@ final class RefReadInvocation extends RefDependencyInvocation
 
   static RefReadInvocation? _parse(
     MethodInvocation node,
-    SimpleIdentifier function, {
-    required void Function() superCall,
-  }) {
+    SimpleIdentifier function,
+  ) {
     assert(
       function.name == 'read',
       'Argument error, function is not a ref.read function',
@@ -131,13 +112,11 @@ final class RefReadInvocation extends RefDependencyInvocation
     );
     if (providerListenableExpression == null) return null;
 
-    final refReadInvocation = RefReadInvocation._(
+    return RefReadInvocation._(
       node: node,
       function: function,
       provider: providerListenableExpression,
     );
-    providerListenableExpression._parent = refReadInvocation;
-    return refReadInvocation;
   }
 }
 
@@ -152,9 +131,8 @@ final class RefListenInvocation extends RefDependencyInvocation
 
   static RefListenInvocation? _parse(
     MethodInvocation node,
-    SimpleIdentifier function, {
-    required void Function() superCall,
-  }) {
+    SimpleIdentifier function,
+  ) {
     assert(
       function.name == 'listen',
       'Argument error, function is not a ref.listen function',
@@ -170,14 +148,12 @@ final class RefListenInvocation extends RefDependencyInvocation
     );
     if (providerListenableExpression == null) return null;
 
-    final refListenInvocation = RefListenInvocation._(
+    return RefListenInvocation._(
       node: node,
       function: function,
       listener: listener,
       provider: providerListenableExpression,
     );
-    providerListenableExpression._parent = refListenInvocation;
-    return refListenInvocation;
   }
 
   final Expression listener;

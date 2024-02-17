@@ -84,9 +84,6 @@ sealed class GeneratorProviderDeclaration extends ProviderDeclaration
   SourcedType? get exposedTypeNode;
   TypeAnnotation? get createdTypeNode;
 
-  @override
-  final List<RefInvocation> refInvocations = [];
-
   String computeProviderHash() {
     // TODO improve hash function to inspect the body of the create fn
     // such that the hash changes if one of the element defined outside of the
@@ -187,10 +184,7 @@ final class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration
     required this.valueTypeNode,
   });
 
-  static ClassBasedProviderDeclaration? _parse(
-    ClassDeclaration node,
-    _ParseRefInvocationMixin parent,
-  ) {
+  static ClassBasedProviderDeclaration? _parse(ClassDeclaration node) {
     final element = node.declaredElement;
     if (element == null) return null;
     final riverpodAnnotation = RiverpodAnnotation._parse(node);
@@ -278,10 +272,6 @@ final class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration
       exposedTypeNode: exposedTypeNode,
       valueTypeNode: valueTypeNode,
     );
-    riverpodAnnotation._parent = classBasedProviderDeclaration;
-    node.accept(
-      _GeneratorRefInvocationVisitor(classBasedProviderDeclaration, parent),
-    );
 
     return classBasedProviderDeclaration;
   }
@@ -303,39 +293,6 @@ final class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration
   final SourcedType exposedTypeNode;
 }
 
-class _GeneratorRefInvocationVisitor extends GeneralizingAstVisitor<void>
-    with _ParseRefInvocationMixin {
-  _GeneratorRefInvocationVisitor(this.declaration, this.parent);
-
-  final GeneratorProviderDeclaration declaration;
-  final _ParseRefInvocationMixin parent;
-
-  @override
-  void visitRefInvocation(RefInvocation invocation) {
-    declaration.refInvocations.add(invocation);
-    invocation._parent = declaration;
-  }
-
-  @override
-  void visitWidgetRefInvocation(WidgetRefInvocation invocation) {
-    parent.visitWidgetRefInvocation(invocation);
-  }
-
-  @override
-  void visitProviderContainerInstanceCreationExpression(
-    ProviderContainerInstanceCreationExpression expression,
-  ) {
-    parent.visitProviderContainerInstanceCreationExpression(expression);
-  }
-
-  @override
-  void visitProviderScopeInstanceCreationExpression(
-    ProviderScopeInstanceCreationExpression expression,
-  ) {
-    parent.visitProviderScopeInstanceCreationExpression(expression);
-  }
-}
-
 final class FunctionalProviderDeclaration extends GeneratorProviderDeclaration
     with _$FunctionalProviderDeclaration {
   FunctionalProviderDeclaration._({
@@ -348,10 +305,7 @@ final class FunctionalProviderDeclaration extends GeneratorProviderDeclaration
     required this.valueTypeNode,
   });
 
-  static FunctionalProviderDeclaration? _parse(
-    FunctionDeclaration node,
-    _ParseRefInvocationMixin parent,
-  ) {
+  static FunctionalProviderDeclaration? _parse(FunctionDeclaration node) {
     final element = node.declaredElement;
     if (element == null) return null;
     final riverpodAnnotation = RiverpodAnnotation._parse(node);
@@ -371,7 +325,7 @@ final class FunctionalProviderDeclaration extends GeneratorProviderDeclaration
       return null;
     }
 
-    final functionalProviderDeclaration = FunctionalProviderDeclaration._(
+    return FunctionalProviderDeclaration._(
       name: node.name,
       node: node,
       providerElement: providerElement,
@@ -380,11 +334,6 @@ final class FunctionalProviderDeclaration extends GeneratorProviderDeclaration
       exposedTypeNode: exposedTypeNode,
       valueTypeNode: _getValueType(createdTypeNode, element.library),
     );
-    riverpodAnnotation._parent = functionalProviderDeclaration;
-    node.accept(
-      _GeneratorRefInvocationVisitor(functionalProviderDeclaration, parent),
-    );
-    return functionalProviderDeclaration;
   }
 
   @override

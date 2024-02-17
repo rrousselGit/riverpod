@@ -26,17 +26,12 @@ final class ResolvedRiverpodLibraryResult extends RiverpodAst
       errorReporter = null;
     }
 
+    result.visitChildren(_SetParentVisitor(result));
+
     return result;
   }
 
   final errors = <RiverpodAnalysisError>[];
-
-  @override
-  final providerScopeInstanceCreationExpressions =
-      <ProviderScopeInstanceCreationExpression>[];
-  @override
-  final providerContainerInstanceCreationExpressions =
-      <ProviderContainerInstanceCreationExpression>[];
 
   @override
   final functionalProviderDeclarations = <FunctionalProviderDeclaration>[];
@@ -60,11 +55,6 @@ final class ResolvedRiverpodLibraryResult extends RiverpodAst
   final hookConsumerWidgetDeclarations = <HookConsumerWidgetDeclaration>[];
 
   @override
-  final unknownRefInvocations = <RefInvocation>[];
-  @override
-  final unknownWidgetRefInvocations = <WidgetRefInvocation>[];
-
-  @override
   Null get parent => null;
 
   // TODO changelog breaking renamed visitResolvedRiverpodLibraryResult
@@ -73,17 +63,14 @@ final class ResolvedRiverpodLibraryResult extends RiverpodAst
 mixin _ParseRefInvocationMixin on GeneralizingAstVisitor<void> {
   @override
   void visitMethodInvocation(MethodInvocation node) {
-    void superCall() => super.visitMethodInvocation(node);
-
-    final refInvocation = RefInvocation._parse(node, superCall: superCall);
+    final refInvocation = RefInvocation._parse(node);
     if (refInvocation != null) {
       visitRefInvocation(refInvocation);
       // Don't call super as RefInvocation should already be recursive
       return;
     }
 
-    final widgetRefInvocation =
-        WidgetRefInvocation._parse(node, superCall: superCall);
+    final widgetRefInvocation = WidgetRefInvocation._parse(node);
     if (widgetRefInvocation != null) {
       visitWidgetRefInvocation(widgetRefInvocation);
       // Don't call super as WidgetRefInvocation should already be recursive
@@ -169,25 +156,22 @@ class _AddConsumerDeclarationVisitor extends UnimplementedRiverpodAstVisitor {
   }
 }
 
-class _ParseRiverpodUnitVisitor extends GeneralizingAstVisitor<void>
-    with _ParseRefInvocationMixin {
+class _ParseRiverpodUnitVisitor extends SimpleAstVisitor<void> {
   _ParseRiverpodUnitVisitor(this.result);
 
   final ResolvedRiverpodLibraryResult result;
 
   @override
   void visitClassDeclaration(ClassDeclaration node) {
-    final declaration = ClassBasedProviderDeclaration._parse(node, this);
+    final declaration = ClassBasedProviderDeclaration._parse(node);
     if (declaration != null) {
       result.classBasedProviderDeclarations.add(declaration);
-      declaration._parent = result;
       // Don't call super as ClassBasedProviderDeclaration should already be recursive
       return;
     }
 
-    final consumerDeclaration = ConsumerDeclaration._parse(node, this);
+    final consumerDeclaration = ConsumerDeclaration._parse(node);
     if (consumerDeclaration != null) {
-      consumerDeclaration._parent = result;
       consumerDeclaration.accept(_AddConsumerDeclarationVisitor(result));
       // Don't call super as ClassBasedProviderDeclaration should already be recursive
       return;
@@ -198,10 +182,9 @@ class _ParseRiverpodUnitVisitor extends GeneralizingAstVisitor<void>
 
   @override
   void visitFunctionDeclaration(FunctionDeclaration node) {
-    final declaration = FunctionalProviderDeclaration._parse(node, this);
+    final declaration = FunctionalProviderDeclaration._parse(node);
     if (declaration != null) {
       result.functionalProviderDeclarations.add(declaration);
-      declaration._parent = result;
       // Don't call super as FunctionalProviderDeclaration should already be recursive
       return;
     }
@@ -211,42 +194,13 @@ class _ParseRiverpodUnitVisitor extends GeneralizingAstVisitor<void>
 
   @override
   void visitVariableDeclaration(VariableDeclaration node) {
-    final declaration = LegacyProviderDeclaration._parse(node, this);
+    final declaration = LegacyProviderDeclaration._parse(node);
     if (declaration != null) {
       result.legacyProviderDeclarations.add(declaration);
-      declaration._parent = result;
       // Don't call super as LegacyProviderDeclaration should already be recursive
       return;
     }
 
     super.visitVariableDeclaration(node);
-  }
-
-  @override
-  void visitRefInvocation(RefInvocation invocation) {
-    result.unknownRefInvocations.add(invocation);
-    invocation._parent = result;
-  }
-
-  @override
-  void visitWidgetRefInvocation(WidgetRefInvocation invocation) {
-    result.unknownWidgetRefInvocations.add(invocation);
-    invocation._parent = result;
-  }
-
-  @override
-  void visitProviderContainerInstanceCreationExpression(
-    ProviderContainerInstanceCreationExpression expression,
-  ) {
-    result.providerContainerInstanceCreationExpressions.add(expression);
-    expression._parent = result;
-  }
-
-  @override
-  void visitProviderScopeInstanceCreationExpression(
-    ProviderScopeInstanceCreationExpression expression,
-  ) {
-    result.providerScopeInstanceCreationExpressions.add(expression);
-    expression._parent = result;
   }
 }

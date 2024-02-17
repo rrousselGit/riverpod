@@ -11,7 +11,6 @@ final class DependenciesAnnotationDependency extends RiverpodAst
   final GeneratorProviderDeclarationElement provider;
 }
 
-@internal
 Iterable<
     ({
       ({
@@ -19,7 +18,7 @@ Iterable<
         Expression astNode,
       })? provider,
       ({String message, AstNode? node})? error,
-    })> parseProviderOrFamilyListLiteral(Expression? expression) sync* {
+    })> _parseProviderOrFamilyListLiteral(Expression? expression) sync* {
   if (expression is! ListLiteral) {
     yield (
       provider: null,
@@ -152,7 +151,7 @@ final class DependenciesAnnotation extends RiverpodAst
 
     final listNode = annotation.arguments?.arguments.firstOrNull;
 
-    final dependencies = parseProviderOrFamilyListLiteral(listNode)
+    final dependencies = _parseProviderOrFamilyListLiteral(listNode)
         .map((e) {
           if (e.error case final error?) {
             errorReporter?.call(
@@ -175,17 +174,11 @@ final class DependenciesAnnotation extends RiverpodAst
         .whereNotNull()
         .toList();
 
-    final riverpodAnnotationDependencies = DependenciesAnnotation._(
+    return DependenciesAnnotation._(
       dependencies: dependencies,
       declaration: declaration,
       node: annotation,
     );
-
-    for (final dependency in dependencies) {
-      dependency._parent = riverpodAnnotationDependencies;
-    }
-
-    return riverpodAnnotationDependencies;
   }
 
   final Declaration declaration;

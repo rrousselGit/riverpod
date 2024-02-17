@@ -150,17 +150,11 @@ base mixin _$ConsumerStateDeclaration on RiverpodAst {
 }
 
 base mixin _$GeneratorProviderDeclaration on RiverpodAst {
-  List<RefInvocation> get refInvocations;
   RiverpodAnnotation get annotation;
 
   @override
   void visitChildren(RiverpodAstVisitor visitor) {
     super.visitChildren(visitor);
-
-    for (final value in refInvocations) {
-      value.accept(visitor);
-    }
-
     annotation.accept(visitor);
   }
 }
@@ -231,7 +225,6 @@ base mixin _$LegacyProviderDependency on RiverpodAst {
 
 base mixin _$LegacyProviderDeclaration on RiverpodAst {
   LegacyProviderDependencies? get dependencies;
-  List<RefInvocation> get refInvocations;
 
   @override
   void accept(RiverpodAstVisitor visitor) {
@@ -243,10 +236,6 @@ base mixin _$LegacyProviderDeclaration on RiverpodAst {
   @override
   void visitChildren(RiverpodAstVisitor visitor) {
     dependencies?.accept(visitor);
-
-    for (final value in refInvocations) {
-      value.accept(visitor);
-    }
   }
 }
 
@@ -394,10 +383,6 @@ base mixin _$RefListenInvocation on RiverpodAst {
 }
 
 base mixin _$ResolvedRiverpodLibraryResult on RiverpodAst {
-  List<ProviderScopeInstanceCreationExpression>
-      get providerScopeInstanceCreationExpressions;
-  List<ProviderContainerInstanceCreationExpression>
-      get providerContainerInstanceCreationExpressions;
   List<FunctionalProviderDeclaration> get functionalProviderDeclarations;
   List<ClassBasedProviderDeclaration> get classBasedProviderDeclarations;
   List<LegacyProviderDeclaration> get legacyProviderDeclarations;
@@ -408,8 +393,6 @@ base mixin _$ResolvedRiverpodLibraryResult on RiverpodAst {
   List<StatefulHookConsumerWidgetDeclaration>
       get statefulHookConsumerWidgetDeclarations;
   List<HookConsumerWidgetDeclaration> get hookConsumerWidgetDeclarations;
-  List<RefInvocation> get unknownRefInvocations;
-  List<WidgetRefInvocation> get unknownWidgetRefInvocations;
 
   @override
   void accept(RiverpodAstVisitor visitor) {
@@ -420,14 +403,6 @@ base mixin _$ResolvedRiverpodLibraryResult on RiverpodAst {
 
   @override
   void visitChildren(RiverpodAstVisitor visitor) {
-    for (final value in providerScopeInstanceCreationExpressions) {
-      value.accept(visitor);
-    }
-
-    for (final value in providerContainerInstanceCreationExpressions) {
-      value.accept(visitor);
-    }
-
     for (final value in functionalProviderDeclarations) {
       value.accept(visitor);
     }
@@ -457,14 +432,6 @@ base mixin _$ResolvedRiverpodLibraryResult on RiverpodAst {
     }
 
     for (final value in hookConsumerWidgetDeclarations) {
-      value.accept(visitor);
-    }
-
-    for (final value in unknownRefInvocations) {
-      value.accept(visitor);
-    }
-
-    for (final value in unknownWidgetRefInvocations) {
       value.accept(visitor);
     }
   }

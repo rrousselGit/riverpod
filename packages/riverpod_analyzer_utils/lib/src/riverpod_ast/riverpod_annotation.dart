@@ -71,15 +71,12 @@ final class RiverpodAnnotation extends RiverpodAst with _$RiverpodAnnotation {
 
       final dependencies = _parseDependencies(dependenciesNode);
 
-      final riverpodAnnotation = RiverpodAnnotation._(
+      return RiverpodAnnotation._(
         annotation: annotation,
         element: riverpodAnnotationElement,
         keepAliveNode: keepAliveNode,
         dependencies: dependencies,
       );
-      dependencies?._parent = riverpodAnnotation;
-
-      return riverpodAnnotation;
     }
 
     return null;
@@ -92,7 +89,7 @@ final class RiverpodAnnotation extends RiverpodAst with _$RiverpodAnnotation {
     // TODO handle Riverpod(dependencies:null)
 
     final dependencies =
-        parseProviderOrFamilyListLiteral(dependenciesNode.expression)
+        _parseProviderOrFamilyListLiteral(dependenciesNode.expression)
             .map((e) {
               if (e.error case final error?) {
                 errorReporter?.call(
@@ -116,16 +113,10 @@ final class RiverpodAnnotation extends RiverpodAst with _$RiverpodAnnotation {
             .whereNotNull()
             .toList();
 
-    final riverpodAnnotationDependencies = RiverpodAnnotationDependencies._(
+    return RiverpodAnnotationDependencies._(
       node: dependenciesNode,
       dependencies: dependencies,
     );
-
-    for (final dependency in dependencies) {
-      dependency._parent = riverpodAnnotationDependencies;
-    }
-
-    return riverpodAnnotationDependencies;
   }
 
   final Annotation annotation;

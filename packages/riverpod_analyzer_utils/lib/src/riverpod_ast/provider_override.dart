@@ -56,14 +56,10 @@ final class ProviderOverrideList extends RiverpodAst
           .toList();
     }
 
-    final providerOverrideList = ProviderOverrideList._(
+    return ProviderOverrideList._(
       node: expression,
       overrides: overrides,
     );
-
-    overrides?.forEach((e) => e._parent = providerOverrideList);
-
-    return providerOverrideList;
   }
 
   final NamedExpression node;

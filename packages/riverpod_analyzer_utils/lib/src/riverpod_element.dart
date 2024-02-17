@@ -7,11 +7,10 @@ import 'package:meta/meta.dart';
 import '../riverpod_analyzer_utils.dart';
 import 'errors.dart';
 
-@internal
 (
   Set<GeneratorProviderDeclarationElement>?,
   String? message,
-) parseProviderOrFamilyList(
+) _parseProviderOrFamilyList(
   DartObject? listObject,
 ) {
   if (listObject == null) {
@@ -92,7 +91,7 @@ class RiverpodAnnotationElement {
     }
     if (annotation == null) return null;
 
-    final dependencies = parseProviderOrFamilyList(
+    final dependencies = _parseProviderOrFamilyList(
       annotation.getField('dependencies'),
     );
 
