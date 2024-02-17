@@ -146,11 +146,13 @@ class _ParseRiverpodUnitVisitor extends SimpleAstVisitor<void> {
   }
 
   @override
-  void visitVariableDeclaration(VariableDeclaration node) {
-    final declaration = LegacyProviderDeclaration._parse(node);
-    if (declaration != null) {
-      result.legacyProviderDeclarations.add(declaration);
-      return;
+  void visitTopLevelVariableDeclaration(TopLevelVariableDeclaration node) {
+    for (final variable in node.variables.variables) {
+      final declaration = LegacyProviderDeclaration._parse(variable);
+      if (declaration != null) {
+        result.legacyProviderDeclarations.add(declaration);
+        continue;
+      }
     }
   }
 }

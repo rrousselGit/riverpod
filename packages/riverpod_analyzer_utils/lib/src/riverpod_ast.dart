@@ -23,6 +23,7 @@ import 'errors.dart';
 part 'riverpod_ast.g.dart';
 part 'riverpod_ast/dependencies.dart';
 part 'riverpod_ast/consumer.dart';
+part 'riverpod_ast/provider_or_family_expression.dart';
 part 'riverpod_ast/generator_provider_declaration.dart';
 part 'riverpod_ast/legacy_provider_declaration.dart';
 part 'riverpod_ast/provider_container_instance_creation_expression.dart';

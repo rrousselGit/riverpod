@@ -24,7 +24,7 @@ GeneratorProviderDeclarationElement? _parseGeneratedProviderFromAnnotation(
 }
 
 ({
-  SimpleIdentifier? provider,
+  SimpleIdentifier provider,
   SimpleIdentifier? providerPrefix,
   ProviderDeclarationElement? providerElement,
   ArgumentList? familyArguments,
@@ -84,8 +84,19 @@ GeneratorProviderDeclarationElement? _parseGeneratedProviderFromAnnotation(
 
   parseExpression(expression);
 
+  final p = provider;
+
+  if (p == null) return null;
+  final providerType = p.staticType;
+
+  if (providerType == null) return null;
+  if (!providerBaseType.isAssignableFromType(providerType) &&
+      !familyType.isAssignableFromType(providerType)) {
+    return null;
+  }
+
   return (
-    provider: provider,
+    provider: p,
     providerPrefix: providerPrefix,
     providerElement: providerElement,
     familyArguments: familyArguments,
@@ -116,15 +127,6 @@ final class ProviderListenableExpression {
       :providerElement,
       :familyArguments,
     ) = parseResult;
-
-    if (provider == null) return null;
-    final providerType = provider.staticType;
-
-    if (providerType == null) return null;
-    if (!providerBaseType.isAssignableFromType(providerType) &&
-        !familyType.isAssignableFromType(providerType)) {
-      return null;
-    }
 
     return ProviderListenableExpression._(
       node: expression,

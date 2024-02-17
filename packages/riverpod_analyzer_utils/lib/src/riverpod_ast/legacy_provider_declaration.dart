@@ -39,7 +39,7 @@ final class LegacyProviderDependency extends RiverpodAst
 
   factory LegacyProviderDependency._parse(CollectionElement node) {
     final provider =
-        node.cast<Expression>().let(ProviderListenableExpression._parse);
+        node.cast<Expression>().let(ProviderOrFamilyExpression._parse);
 
     return LegacyProviderDependency._(
       node: node,
@@ -49,7 +49,7 @@ final class LegacyProviderDependency extends RiverpodAst
 
   @override
   final CollectionElement node;
-  final ProviderListenableExpression? provider;
+  final ProviderOrFamilyExpression? provider;
 }
 
 final class LegacyProviderDeclaration extends RiverpodAst
