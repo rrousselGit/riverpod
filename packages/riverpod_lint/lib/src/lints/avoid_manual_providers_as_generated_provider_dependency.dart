@@ -28,15 +28,12 @@ class AvoidManualProvidersAsGeneratedProviderDependency
     ) {
       final dependencyElement = dependency.provider.providerElement;
       if (dependencyElement is! GeneratorProviderDeclarationElement) {
-        reporter.reportErrorForNode(
-          code,
-          dependency.provider.provider ?? dependency.provider.node,
-        );
+        reporter.reportErrorForNode(code, dependency.provider.provider);
       }
     }
 
     riverpodRegistry(context).addGeneratorProviderDeclaration((declaration) {
-      for (final invocation in declaration.refInvocations) {
+      for (final invocation in declaration.node.refInvocations) {
         if (invocation is RefDependencyInvocation) {
           checkDependency(declaration, invocation);
         }

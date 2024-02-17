@@ -275,12 +275,12 @@ void fn(WidgetRef ref) {
 ''', (resolver) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
-    final libraryResult = result.resolvedRiverpodLibraryResults.single;
+    final libraryResult = result.riverpodCompilationUnits.single;
 
-    expect(libraryResult.unknownWidgetRefInvocations, hasLength(2));
+    expect(libraryResult.refInvocations, hasLength(2));
     expect(
       result.widgetRefReadInvocations,
-      libraryResult.unknownWidgetRefInvocations,
+      libraryResult.widgetRefInvocations,
     );
     expect(result.widgetRefInvocations, result.widgetRefReadInvocations);
 
@@ -520,10 +520,10 @@ void fn(_Ref ref) {
 ''', (resolver) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
-    final libraryResult = result.resolvedRiverpodLibraryResults.single;
+    final libraryResult = result.riverpodCompilationUnits.single;
 
-    expect(libraryResult.unknownRefInvocations, isEmpty);
-    expect(libraryResult.unknownWidgetRefInvocations, isEmpty);
+    expect(libraryResult.refInvocations, isEmpty);
+    expect(libraryResult.widgetRefInvocations, isEmpty);
 
     final providerRefInvocations =
         libraryResult.consumerWidgetDeclarations.single.widgetRefInvocations;

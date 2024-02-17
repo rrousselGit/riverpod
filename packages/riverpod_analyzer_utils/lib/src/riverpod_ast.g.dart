@@ -6,92 +6,23 @@ part of 'riverpod_ast.dart';
 // _LintVisitorGenerator
 // **************************************************************************
 
-base mixin _$DependenciesAnnotationDependency on RiverpodAst {
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitDependenciesAnnotationDependency(
-      this as DependenciesAnnotationDependency,
-    );
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {}
-}
-
-base mixin _$DependenciesAnnotation on RiverpodAst {
-  List<DependenciesAnnotationDependency>? get dependencies;
-
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitDependenciesAnnotation(
-      this as DependenciesAnnotation,
-    );
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    if (dependencies case final dependencies?) {
-      for (final value in dependencies) {
-        value.accept(visitor);
-      }
-    }
-  }
-}
-
-base mixin _$ConsumerDeclaration on RiverpodAst {
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {}
-}
+base mixin _$ConsumerDeclaration on RiverpodAst {}
 
 base mixin _$ConsumerWidgetDeclaration on RiverpodAst {
-  List<WidgetRefInvocation> get widgetRefInvocations;
-  List<ProviderScopeInstanceCreationExpression>
-      get providerScopeInstanceCreateExpressions;
-
   @override
   void accept(RiverpodAstVisitor visitor) {
     visitor.visitConsumerWidgetDeclaration(
       this as ConsumerWidgetDeclaration,
     );
   }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    super.visitChildren(visitor);
-
-    for (final value in widgetRefInvocations) {
-      value.accept(visitor);
-    }
-
-    for (final value in providerScopeInstanceCreateExpressions) {
-      value.accept(visitor);
-    }
-  }
 }
 
 base mixin _$HookConsumerWidgetDeclaration on RiverpodAst {
-  List<WidgetRefInvocation> get widgetRefInvocations;
-  List<ProviderScopeInstanceCreationExpression>
-      get providerScopeInstanceCreateExpressions;
-
   @override
   void accept(RiverpodAstVisitor visitor) {
     visitor.visitHookConsumerWidgetDeclaration(
       this as HookConsumerWidgetDeclaration,
     );
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    super.visitChildren(visitor);
-
-    for (final value in widgetRefInvocations) {
-      value.accept(visitor);
-    }
-
-    for (final value in providerScopeInstanceCreateExpressions) {
-      value.accept(visitor);
-    }
   }
 }
 
@@ -102,11 +33,6 @@ base mixin _$ConsumerStatefulWidgetDeclaration on RiverpodAst {
       this as ConsumerStatefulWidgetDeclaration,
     );
   }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    super.visitChildren(visitor);
-  }
 }
 
 base mixin _$StatefulHookConsumerWidgetDeclaration on RiverpodAst {
@@ -116,42 +42,21 @@ base mixin _$StatefulHookConsumerWidgetDeclaration on RiverpodAst {
       this as StatefulHookConsumerWidgetDeclaration,
     );
   }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    super.visitChildren(visitor);
-  }
 }
 
 base mixin _$ConsumerStateDeclaration on RiverpodAst {
-  List<WidgetRefInvocation> get widgetRefInvocations;
-  List<ProviderScopeInstanceCreationExpression>
-      get providerScopeInstanceCreateExpressions;
-
   @override
   void accept(RiverpodAstVisitor visitor) {
     visitor.visitConsumerStateDeclaration(
       this as ConsumerStateDeclaration,
     );
   }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    super.visitChildren(visitor);
-
-    for (final value in widgetRefInvocations) {
-      value.accept(visitor);
-    }
-
-    for (final value in providerScopeInstanceCreateExpressions) {
-      value.accept(visitor);
-    }
-  }
 }
 
 base mixin _$GeneratorProviderDeclaration on RiverpodAst {
   RiverpodAnnotation get annotation;
 
+  @mustCallSuper
   @override
   void visitChildren(RiverpodAstVisitor visitor) {
     super.visitChildren(visitor);
@@ -166,11 +71,6 @@ base mixin _$ClassBasedProviderDeclaration on RiverpodAst {
       this as ClassBasedProviderDeclaration,
     );
   }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    super.visitChildren(visitor);
-  }
 }
 
 base mixin _$FunctionalProviderDeclaration on RiverpodAst {
@@ -179,11 +79,6 @@ base mixin _$FunctionalProviderDeclaration on RiverpodAst {
     visitor.visitFunctionalProviderDeclaration(
       this as FunctionalProviderDeclaration,
     );
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    super.visitChildren(visitor);
   }
 }
 
@@ -197,8 +92,10 @@ base mixin _$LegacyProviderDependencies on RiverpodAst {
     );
   }
 
+  @mustCallSuper
   @override
   void visitChildren(RiverpodAstVisitor visitor) {
+    super.visitChildren(visitor);
     if (dependencies case final dependencies?) {
       for (final value in dependencies) {
         value.accept(visitor);
@@ -208,18 +105,11 @@ base mixin _$LegacyProviderDependencies on RiverpodAst {
 }
 
 base mixin _$LegacyProviderDependency on RiverpodAst {
-  ProviderListenableExpression? get provider;
-
   @override
   void accept(RiverpodAstVisitor visitor) {
     visitor.visitLegacyProviderDependency(
       this as LegacyProviderDependency,
     );
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    provider?.accept(visitor);
   }
 }
 
@@ -233,154 +123,15 @@ base mixin _$LegacyProviderDeclaration on RiverpodAst {
     );
   }
 
+  @mustCallSuper
   @override
   void visitChildren(RiverpodAstVisitor visitor) {
+    super.visitChildren(visitor);
     dependencies?.accept(visitor);
   }
 }
 
-base mixin _$ProviderContainerInstanceCreationExpression on RiverpodAst {
-  ProviderOverrideList? get overrides;
-
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitProviderContainerInstanceCreationExpression(
-      this as ProviderContainerInstanceCreationExpression,
-    );
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    overrides?.accept(visitor);
-  }
-}
-
-base mixin _$ProviderDeclaration on RiverpodAst {
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {}
-}
-
-base mixin _$ProviderListenableExpressionParent on RiverpodAst {
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {}
-}
-
-base mixin _$ProviderListenableExpression on RiverpodAst {
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitProviderListenableExpression(
-      this as ProviderListenableExpression,
-    );
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {}
-}
-
-base mixin _$ProviderOverrideExpression on RiverpodAst {
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitProviderOverrideExpression(
-      this as ProviderOverrideExpression,
-    );
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {}
-}
-
-base mixin _$ProviderOverrideList on RiverpodAst {
-  List<ProviderOverrideExpression>? get overrides;
-
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitProviderOverrideList(
-      this as ProviderOverrideList,
-    );
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    if (overrides case final overrides?) {
-      for (final value in overrides) {
-        value.accept(visitor);
-      }
-    }
-  }
-}
-
-base mixin _$ProviderScopeInstanceCreationExpression on RiverpodAst {
-  ProviderOverrideList? get overrides;
-
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitProviderScopeInstanceCreationExpression(
-      this as ProviderScopeInstanceCreationExpression,
-    );
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    overrides?.accept(visitor);
-  }
-}
-
-base mixin _$RefInvocation on RiverpodAst {
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {}
-}
-
-base mixin _$RefDependencyInvocation on RiverpodAst {
-  ProviderListenableExpression get provider;
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    super.visitChildren(visitor);
-    provider.accept(visitor);
-  }
-}
-
-base mixin _$RefWatchInvocation on RiverpodAst {
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitRefWatchInvocation(
-      this as RefWatchInvocation,
-    );
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    super.visitChildren(visitor);
-  }
-}
-
-base mixin _$RefReadInvocation on RiverpodAst {
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitRefReadInvocation(
-      this as RefReadInvocation,
-    );
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    super.visitChildren(visitor);
-  }
-}
-
-base mixin _$RefListenInvocation on RiverpodAst {
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitRefListenInvocation(
-      this as RefListenInvocation,
-    );
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    super.visitChildren(visitor);
-  }
-}
+base mixin _$ProviderDeclaration on RiverpodAst {}
 
 base mixin _$RiverpodCompilationUnit on RiverpodAst {
   List<FunctionalProviderDeclaration> get functionalProviderDeclarations;
@@ -401,8 +152,11 @@ base mixin _$RiverpodCompilationUnit on RiverpodAst {
     );
   }
 
+  @mustCallSuper
   @override
   void visitChildren(RiverpodAstVisitor visitor) {
+    super.visitChildren(visitor);
+
     for (final value in functionalProviderDeclarations) {
       value.accept(visitor);
     }
@@ -444,9 +198,6 @@ base mixin _$RiverpodAnnotationDependency on RiverpodAst {
       this as RiverpodAnnotationDependency,
     );
   }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {}
 }
 
 base mixin _$RiverpodAnnotationDependencies on RiverpodAst {
@@ -459,8 +210,10 @@ base mixin _$RiverpodAnnotationDependencies on RiverpodAst {
     );
   }
 
+  @mustCallSuper
   @override
   void visitChildren(RiverpodAstVisitor visitor) {
+    super.visitChildren(visitor);
     if (dependencies case final dependencies?) {
       for (final value in dependencies) {
         value.accept(visitor);
@@ -479,91 +232,15 @@ base mixin _$RiverpodAnnotation on RiverpodAst {
     );
   }
 
+  @mustCallSuper
   @override
   void visitChildren(RiverpodAstVisitor visitor) {
+    super.visitChildren(visitor);
     dependencies?.accept(visitor);
   }
 }
 
-base mixin _$WidgetRefInvocation on RiverpodAst {
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {}
-}
-
-base mixin _$WidgetRefWatchInvocation on RiverpodAst {
-  ProviderListenableExpression get provider;
-
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitWidgetRefWatchInvocation(
-      this as WidgetRefWatchInvocation,
-    );
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    super.visitChildren(visitor);
-    provider.accept(visitor);
-  }
-}
-
-base mixin _$WidgetRefReadInvocation on RiverpodAst {
-  ProviderListenableExpression get provider;
-
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitWidgetRefReadInvocation(
-      this as WidgetRefReadInvocation,
-    );
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    super.visitChildren(visitor);
-    provider.accept(visitor);
-  }
-}
-
-base mixin _$WidgetRefListenInvocation on RiverpodAst {
-  ProviderListenableExpression get provider;
-
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitWidgetRefListenInvocation(
-      this as WidgetRefListenInvocation,
-    );
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    super.visitChildren(visitor);
-    provider.accept(visitor);
-  }
-}
-
-base mixin _$WidgetRefListenManualInvocation on RiverpodAst {
-  ProviderListenableExpression get provider;
-
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitWidgetRefListenManualInvocation(
-      this as WidgetRefListenManualInvocation,
-    );
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    super.visitChildren(visitor);
-    provider.accept(visitor);
-  }
-}
-
 abstract class RiverpodAstVisitor {
-  void visitDependenciesAnnotationDependency(
-      DependenciesAnnotationDependency node);
-
-  void visitDependenciesAnnotation(DependenciesAnnotation node);
-
   void visitConsumerWidgetDeclaration(ConsumerWidgetDeclaration node);
 
   void visitHookConsumerWidgetDeclaration(HookConsumerWidgetDeclaration node);
@@ -586,24 +263,6 @@ abstract class RiverpodAstVisitor {
 
   void visitLegacyProviderDeclaration(LegacyProviderDeclaration node);
 
-  void visitProviderContainerInstanceCreationExpression(
-      ProviderContainerInstanceCreationExpression node);
-
-  void visitProviderListenableExpression(ProviderListenableExpression node);
-
-  void visitProviderOverrideExpression(ProviderOverrideExpression node);
-
-  void visitProviderOverrideList(ProviderOverrideList node);
-
-  void visitProviderScopeInstanceCreationExpression(
-      ProviderScopeInstanceCreationExpression node);
-
-  void visitRefWatchInvocation(RefWatchInvocation node);
-
-  void visitRefReadInvocation(RefReadInvocation node);
-
-  void visitRefListenInvocation(RefListenInvocation node);
-
   void visitRiverpodCompilationUnit(RiverpodCompilationUnit node);
 
   void visitRiverpodAnnotationDependency(RiverpodAnnotationDependency node);
@@ -611,15 +270,6 @@ abstract class RiverpodAstVisitor {
   void visitRiverpodAnnotationDependencies(RiverpodAnnotationDependencies node);
 
   void visitRiverpodAnnotation(RiverpodAnnotation node);
-
-  void visitWidgetRefWatchInvocation(WidgetRefWatchInvocation node);
-
-  void visitWidgetRefReadInvocation(WidgetRefReadInvocation node);
-
-  void visitWidgetRefListenInvocation(WidgetRefListenInvocation node);
-
-  void visitWidgetRefListenManualInvocation(
-      WidgetRefListenManualInvocation node);
 }
 
 abstract class GeneralizingRiverpodAstVisitor implements RiverpodAstVisitor {
@@ -627,14 +277,9 @@ abstract class GeneralizingRiverpodAstVisitor implements RiverpodAstVisitor {
     node.visitChildren(this);
   }
 
-  @override
-  void visitDependenciesAnnotationDependency(
-      DependenciesAnnotationDependency node) {}
-
-  @override
-  void visitDependenciesAnnotation(DependenciesAnnotation node) {}
-
-  void visitConsumerDeclaration(ConsumerDeclaration node) {}
+  void visitConsumerDeclaration(ConsumerDeclaration node) {
+    visitRiverpodAst(node);
+  }
 
   @override
   void visitConsumerWidgetDeclaration(ConsumerWidgetDeclaration node) {
@@ -680,11 +325,13 @@ abstract class GeneralizingRiverpodAstVisitor implements RiverpodAstVisitor {
   }
 
   @override
-  void visitLegacyProviderDependencies(LegacyProviderDependencies node) {}
+  void visitLegacyProviderDependencies(LegacyProviderDependencies node) {
+    visitRiverpodAst(node);
+  }
 
   @override
   void visitLegacyProviderDependency(LegacyProviderDependency node) {
-    visitProviderListenableExpressionParent(node);
+    visitRiverpodAst(node);
   }
 
   @override
@@ -692,113 +339,33 @@ abstract class GeneralizingRiverpodAstVisitor implements RiverpodAstVisitor {
     visitProviderDeclaration(node);
   }
 
-  @override
-  void visitProviderContainerInstanceCreationExpression(
-      ProviderContainerInstanceCreationExpression node) {}
-
-  void visitProviderDeclaration(ProviderDeclaration node) {}
-
-  void visitProviderListenableExpressionParent(
-      ProviderListenableExpressionParent node) {}
-
-  @override
-  void visitProviderListenableExpression(ProviderListenableExpression node) {}
-
-  @override
-  void visitProviderOverrideExpression(ProviderOverrideExpression node) {}
-
-  @override
-  void visitProviderOverrideList(ProviderOverrideList node) {}
-
-  @override
-  void visitProviderScopeInstanceCreationExpression(
-      ProviderScopeInstanceCreationExpression node) {}
-
-  void visitRefInvocation(RefInvocation node) {
-    visitProviderListenableExpressionParent(node);
-  }
-
-  void visitRefDependencyInvocation(RefDependencyInvocation node) {
-    visitRefInvocation(node);
-    visitProviderListenableExpressionParent(node);
+  void visitProviderDeclaration(ProviderDeclaration node) {
+    visitRiverpodAst(node);
   }
 
   @override
-  void visitRefWatchInvocation(RefWatchInvocation node) {
-    visitRefDependencyInvocation(node);
-    visitRefInvocation(node);
-    visitProviderListenableExpressionParent(node);
+  void visitRiverpodCompilationUnit(RiverpodCompilationUnit node) {
+    visitRiverpodAst(node);
   }
 
   @override
-  void visitRefReadInvocation(RefReadInvocation node) {
-    visitRefDependencyInvocation(node);
-    visitRefInvocation(node);
-    visitProviderListenableExpressionParent(node);
+  void visitRiverpodAnnotationDependency(RiverpodAnnotationDependency node) {
+    visitRiverpodAst(node);
   }
-
-  @override
-  void visitRefListenInvocation(RefListenInvocation node) {
-    visitRefDependencyInvocation(node);
-    visitRefInvocation(node);
-    visitProviderListenableExpressionParent(node);
-  }
-
-  @override
-  void visitRiverpodCompilationUnit(RiverpodCompilationUnit node) {}
-
-  @override
-  void visitRiverpodAnnotationDependency(RiverpodAnnotationDependency node) {}
 
   @override
   void visitRiverpodAnnotationDependencies(
-      RiverpodAnnotationDependencies node) {}
-
-  @override
-  void visitRiverpodAnnotation(RiverpodAnnotation node) {}
-
-  void visitWidgetRefInvocation(WidgetRefInvocation node) {
-    visitProviderListenableExpressionParent(node);
+      RiverpodAnnotationDependencies node) {
+    visitRiverpodAst(node);
   }
 
   @override
-  void visitWidgetRefWatchInvocation(WidgetRefWatchInvocation node) {
-    visitWidgetRefInvocation(node);
-    visitProviderListenableExpressionParent(node);
-  }
-
-  @override
-  void visitWidgetRefReadInvocation(WidgetRefReadInvocation node) {
-    visitWidgetRefInvocation(node);
-    visitProviderListenableExpressionParent(node);
-  }
-
-  @override
-  void visitWidgetRefListenInvocation(WidgetRefListenInvocation node) {
-    visitWidgetRefInvocation(node);
-    visitProviderListenableExpressionParent(node);
-  }
-
-  @override
-  void visitWidgetRefListenManualInvocation(
-      WidgetRefListenManualInvocation node) {
-    visitWidgetRefInvocation(node);
-    visitProviderListenableExpressionParent(node);
+  void visitRiverpodAnnotation(RiverpodAnnotation node) {
+    visitRiverpodAst(node);
   }
 }
 
 abstract class RecursiveRiverpodAstVisitor implements RiverpodAstVisitor {
-  @override
-  void visitDependenciesAnnotationDependency(
-      DependenciesAnnotationDependency node) {
-    node.visitChildren(this);
-  }
-
-  @override
-  void visitDependenciesAnnotation(DependenciesAnnotation node) {
-    node.visitChildren(this);
-  }
-
   @override
   void visitConsumerWidgetDeclaration(ConsumerWidgetDeclaration node) {
     node.visitChildren(this);
@@ -852,48 +419,6 @@ abstract class RecursiveRiverpodAstVisitor implements RiverpodAstVisitor {
   }
 
   @override
-  void visitProviderContainerInstanceCreationExpression(
-      ProviderContainerInstanceCreationExpression node) {
-    node.visitChildren(this);
-  }
-
-  @override
-  void visitProviderListenableExpression(ProviderListenableExpression node) {
-    node.visitChildren(this);
-  }
-
-  @override
-  void visitProviderOverrideExpression(ProviderOverrideExpression node) {
-    node.visitChildren(this);
-  }
-
-  @override
-  void visitProviderOverrideList(ProviderOverrideList node) {
-    node.visitChildren(this);
-  }
-
-  @override
-  void visitProviderScopeInstanceCreationExpression(
-      ProviderScopeInstanceCreationExpression node) {
-    node.visitChildren(this);
-  }
-
-  @override
-  void visitRefWatchInvocation(RefWatchInvocation node) {
-    node.visitChildren(this);
-  }
-
-  @override
-  void visitRefReadInvocation(RefReadInvocation node) {
-    node.visitChildren(this);
-  }
-
-  @override
-  void visitRefListenInvocation(RefListenInvocation node) {
-    node.visitChildren(this);
-  }
-
-  @override
   void visitRiverpodCompilationUnit(RiverpodCompilationUnit node) {
     node.visitChildren(this);
   }
@@ -913,37 +438,9 @@ abstract class RecursiveRiverpodAstVisitor implements RiverpodAstVisitor {
   void visitRiverpodAnnotation(RiverpodAnnotation node) {
     node.visitChildren(this);
   }
-
-  @override
-  void visitWidgetRefWatchInvocation(WidgetRefWatchInvocation node) {
-    node.visitChildren(this);
-  }
-
-  @override
-  void visitWidgetRefReadInvocation(WidgetRefReadInvocation node) {
-    node.visitChildren(this);
-  }
-
-  @override
-  void visitWidgetRefListenInvocation(WidgetRefListenInvocation node) {
-    node.visitChildren(this);
-  }
-
-  @override
-  void visitWidgetRefListenManualInvocation(
-      WidgetRefListenManualInvocation node) {
-    node.visitChildren(this);
-  }
 }
 
 abstract class SimpleRiverpodAstVisitor implements RiverpodAstVisitor {
-  @override
-  void visitDependenciesAnnotationDependency(
-      DependenciesAnnotationDependency node) {}
-
-  @override
-  void visitDependenciesAnnotation(DependenciesAnnotation node) {}
-
   @override
   void visitConsumerWidgetDeclaration(ConsumerWidgetDeclaration node) {}
 
@@ -977,32 +474,6 @@ abstract class SimpleRiverpodAstVisitor implements RiverpodAstVisitor {
   void visitLegacyProviderDeclaration(LegacyProviderDeclaration node) {}
 
   @override
-  void visitProviderContainerInstanceCreationExpression(
-      ProviderContainerInstanceCreationExpression node) {}
-
-  @override
-  void visitProviderListenableExpression(ProviderListenableExpression node) {}
-
-  @override
-  void visitProviderOverrideExpression(ProviderOverrideExpression node) {}
-
-  @override
-  void visitProviderOverrideList(ProviderOverrideList node) {}
-
-  @override
-  void visitProviderScopeInstanceCreationExpression(
-      ProviderScopeInstanceCreationExpression node) {}
-
-  @override
-  void visitRefWatchInvocation(RefWatchInvocation node) {}
-
-  @override
-  void visitRefReadInvocation(RefReadInvocation node) {}
-
-  @override
-  void visitRefListenInvocation(RefListenInvocation node) {}
-
-  @override
   void visitRiverpodCompilationUnit(RiverpodCompilationUnit node) {}
 
   @override
@@ -1014,33 +485,9 @@ abstract class SimpleRiverpodAstVisitor implements RiverpodAstVisitor {
 
   @override
   void visitRiverpodAnnotation(RiverpodAnnotation node) {}
-
-  @override
-  void visitWidgetRefWatchInvocation(WidgetRefWatchInvocation node) {}
-
-  @override
-  void visitWidgetRefReadInvocation(WidgetRefReadInvocation node) {}
-
-  @override
-  void visitWidgetRefListenInvocation(WidgetRefListenInvocation node) {}
-
-  @override
-  void visitWidgetRefListenManualInvocation(
-      WidgetRefListenManualInvocation node) {}
 }
 
 abstract class UnimplementedRiverpodAstVisitor implements RiverpodAstVisitor {
-  @override
-  void visitDependenciesAnnotationDependency(
-      DependenciesAnnotationDependency node) {
-    throw UnimplementedError();
-  }
-
-  @override
-  void visitDependenciesAnnotation(DependenciesAnnotation node) {
-    throw UnimplementedError();
-  }
-
   @override
   void visitConsumerWidgetDeclaration(ConsumerWidgetDeclaration node) {
     throw UnimplementedError();
@@ -1094,48 +541,6 @@ abstract class UnimplementedRiverpodAstVisitor implements RiverpodAstVisitor {
   }
 
   @override
-  void visitProviderContainerInstanceCreationExpression(
-      ProviderContainerInstanceCreationExpression node) {
-    throw UnimplementedError();
-  }
-
-  @override
-  void visitProviderListenableExpression(ProviderListenableExpression node) {
-    throw UnimplementedError();
-  }
-
-  @override
-  void visitProviderOverrideExpression(ProviderOverrideExpression node) {
-    throw UnimplementedError();
-  }
-
-  @override
-  void visitProviderOverrideList(ProviderOverrideList node) {
-    throw UnimplementedError();
-  }
-
-  @override
-  void visitProviderScopeInstanceCreationExpression(
-      ProviderScopeInstanceCreationExpression node) {
-    throw UnimplementedError();
-  }
-
-  @override
-  void visitRefWatchInvocation(RefWatchInvocation node) {
-    throw UnimplementedError();
-  }
-
-  @override
-  void visitRefReadInvocation(RefReadInvocation node) {
-    throw UnimplementedError();
-  }
-
-  @override
-  void visitRefListenInvocation(RefListenInvocation node) {
-    throw UnimplementedError();
-  }
-
-  @override
   void visitRiverpodCompilationUnit(RiverpodCompilationUnit node) {
     throw UnimplementedError();
   }
@@ -1155,50 +560,10 @@ abstract class UnimplementedRiverpodAstVisitor implements RiverpodAstVisitor {
   void visitRiverpodAnnotation(RiverpodAnnotation node) {
     throw UnimplementedError();
   }
-
-  @override
-  void visitWidgetRefWatchInvocation(WidgetRefWatchInvocation node) {
-    throw UnimplementedError();
-  }
-
-  @override
-  void visitWidgetRefReadInvocation(WidgetRefReadInvocation node) {
-    throw UnimplementedError();
-  }
-
-  @override
-  void visitWidgetRefListenInvocation(WidgetRefListenInvocation node) {
-    throw UnimplementedError();
-  }
-
-  @override
-  void visitWidgetRefListenManualInvocation(
-      WidgetRefListenManualInvocation node) {
-    throw UnimplementedError();
-  }
 }
 
 @internal
 class RiverpodAnalysisResult extends GeneralizingRiverpodAstVisitor {
-  final dependenciesAnnotationDependencys =
-      <DependenciesAnnotationDependency>[];
-  @override
-  void visitDependenciesAnnotationDependency(
-    DependenciesAnnotationDependency node,
-  ) {
-    super.visitDependenciesAnnotationDependency(node);
-    dependenciesAnnotationDependencys.add(node);
-  }
-
-  final dependenciesAnnotations = <DependenciesAnnotation>[];
-  @override
-  void visitDependenciesAnnotation(
-    DependenciesAnnotation node,
-  ) {
-    super.visitDependenciesAnnotation(node);
-    dependenciesAnnotations.add(node);
-  }
-
   final consumerDeclarations = <ConsumerDeclaration>[];
   @override
   void visitConsumerDeclaration(
@@ -1309,16 +674,6 @@ class RiverpodAnalysisResult extends GeneralizingRiverpodAstVisitor {
     legacyProviderDeclarations.add(node);
   }
 
-  final providerContainerInstanceCreationExpressions =
-      <ProviderContainerInstanceCreationExpression>[];
-  @override
-  void visitProviderContainerInstanceCreationExpression(
-    ProviderContainerInstanceCreationExpression node,
-  ) {
-    super.visitProviderContainerInstanceCreationExpression(node);
-    providerContainerInstanceCreationExpressions.add(node);
-  }
-
   final providerDeclarations = <ProviderDeclaration>[];
   @override
   void visitProviderDeclaration(
@@ -1326,98 +681,6 @@ class RiverpodAnalysisResult extends GeneralizingRiverpodAstVisitor {
   ) {
     super.visitProviderDeclaration(node);
     providerDeclarations.add(node);
-  }
-
-  final providerListenableExpressionParents =
-      <ProviderListenableExpressionParent>[];
-  @override
-  void visitProviderListenableExpressionParent(
-    ProviderListenableExpressionParent node,
-  ) {
-    super.visitProviderListenableExpressionParent(node);
-    providerListenableExpressionParents.add(node);
-  }
-
-  final providerListenableExpressions = <ProviderListenableExpression>[];
-  @override
-  void visitProviderListenableExpression(
-    ProviderListenableExpression node,
-  ) {
-    super.visitProviderListenableExpression(node);
-    providerListenableExpressions.add(node);
-  }
-
-  final providerOverrideExpressions = <ProviderOverrideExpression>[];
-  @override
-  void visitProviderOverrideExpression(
-    ProviderOverrideExpression node,
-  ) {
-    super.visitProviderOverrideExpression(node);
-    providerOverrideExpressions.add(node);
-  }
-
-  final providerOverrideLists = <ProviderOverrideList>[];
-  @override
-  void visitProviderOverrideList(
-    ProviderOverrideList node,
-  ) {
-    super.visitProviderOverrideList(node);
-    providerOverrideLists.add(node);
-  }
-
-  final providerScopeInstanceCreationExpressions =
-      <ProviderScopeInstanceCreationExpression>[];
-  @override
-  void visitProviderScopeInstanceCreationExpression(
-    ProviderScopeInstanceCreationExpression node,
-  ) {
-    super.visitProviderScopeInstanceCreationExpression(node);
-    providerScopeInstanceCreationExpressions.add(node);
-  }
-
-  final refInvocations = <RefInvocation>[];
-  @override
-  void visitRefInvocation(
-    RefInvocation node,
-  ) {
-    super.visitRefInvocation(node);
-    refInvocations.add(node);
-  }
-
-  final refDependencyInvocations = <RefDependencyInvocation>[];
-  @override
-  void visitRefDependencyInvocation(
-    RefDependencyInvocation node,
-  ) {
-    super.visitRefDependencyInvocation(node);
-    refDependencyInvocations.add(node);
-  }
-
-  final refWatchInvocations = <RefWatchInvocation>[];
-  @override
-  void visitRefWatchInvocation(
-    RefWatchInvocation node,
-  ) {
-    super.visitRefWatchInvocation(node);
-    refWatchInvocations.add(node);
-  }
-
-  final refReadInvocations = <RefReadInvocation>[];
-  @override
-  void visitRefReadInvocation(
-    RefReadInvocation node,
-  ) {
-    super.visitRefReadInvocation(node);
-    refReadInvocations.add(node);
-  }
-
-  final refListenInvocations = <RefListenInvocation>[];
-  @override
-  void visitRefListenInvocation(
-    RefListenInvocation node,
-  ) {
-    super.visitRefListenInvocation(node);
-    refListenInvocations.add(node);
   }
 
   final riverpodCompilationUnits = <RiverpodCompilationUnit>[];
@@ -1455,51 +718,6 @@ class RiverpodAnalysisResult extends GeneralizingRiverpodAstVisitor {
     super.visitRiverpodAnnotation(node);
     riverpodAnnotations.add(node);
   }
-
-  final widgetRefInvocations = <WidgetRefInvocation>[];
-  @override
-  void visitWidgetRefInvocation(
-    WidgetRefInvocation node,
-  ) {
-    super.visitWidgetRefInvocation(node);
-    widgetRefInvocations.add(node);
-  }
-
-  final widgetRefWatchInvocations = <WidgetRefWatchInvocation>[];
-  @override
-  void visitWidgetRefWatchInvocation(
-    WidgetRefWatchInvocation node,
-  ) {
-    super.visitWidgetRefWatchInvocation(node);
-    widgetRefWatchInvocations.add(node);
-  }
-
-  final widgetRefReadInvocations = <WidgetRefReadInvocation>[];
-  @override
-  void visitWidgetRefReadInvocation(
-    WidgetRefReadInvocation node,
-  ) {
-    super.visitWidgetRefReadInvocation(node);
-    widgetRefReadInvocations.add(node);
-  }
-
-  final widgetRefListenInvocations = <WidgetRefListenInvocation>[];
-  @override
-  void visitWidgetRefListenInvocation(
-    WidgetRefListenInvocation node,
-  ) {
-    super.visitWidgetRefListenInvocation(node);
-    widgetRefListenInvocations.add(node);
-  }
-
-  final widgetRefListenManualInvocations = <WidgetRefListenManualInvocation>[];
-  @override
-  void visitWidgetRefListenManualInvocation(
-    WidgetRefListenManualInvocation node,
-  ) {
-    super.visitWidgetRefListenManualInvocation(node);
-    widgetRefListenManualInvocations.add(node);
-  }
 }
 
 class _RiverpodAstRegistryVisitor extends GeneralizingRiverpodAstVisitor {
@@ -1523,27 +741,6 @@ class _RiverpodAstRegistryVisitor extends GeneralizingRiverpodAstVisitor {
   @override
   void visitRiverpodAst(RiverpodAst node) {
     node.visitChildren(this);
-  }
-
-  @override
-  void visitDependenciesAnnotationDependency(
-      DependenciesAnnotationDependency node) {
-    super.visitDependenciesAnnotationDependency(node);
-    node.visitChildren(this);
-    _runSubscriptions(
-      node,
-      _registry._onDependenciesAnnotationDependency,
-    );
-  }
-
-  @override
-  void visitDependenciesAnnotation(DependenciesAnnotation node) {
-    super.visitDependenciesAnnotation(node);
-    node.visitChildren(this);
-    _runSubscriptions(
-      node,
-      _registry._onDependenciesAnnotation,
-    );
   }
 
   @override
@@ -1669,125 +866,12 @@ class _RiverpodAstRegistryVisitor extends GeneralizingRiverpodAstVisitor {
   }
 
   @override
-  void visitProviderContainerInstanceCreationExpression(
-      ProviderContainerInstanceCreationExpression node) {
-    super.visitProviderContainerInstanceCreationExpression(node);
-    node.visitChildren(this);
-    _runSubscriptions(
-      node,
-      _registry._onProviderContainerInstanceCreationExpression,
-    );
-  }
-
-  @override
   void visitProviderDeclaration(ProviderDeclaration node) {
     super.visitProviderDeclaration(node);
     node.visitChildren(this);
     _runSubscriptions(
       node,
       _registry._onProviderDeclaration,
-    );
-  }
-
-  @override
-  void visitProviderListenableExpressionParent(
-      ProviderListenableExpressionParent node) {
-    super.visitProviderListenableExpressionParent(node);
-    node.visitChildren(this);
-    _runSubscriptions(
-      node,
-      _registry._onProviderListenableExpressionParent,
-    );
-  }
-
-  @override
-  void visitProviderListenableExpression(ProviderListenableExpression node) {
-    super.visitProviderListenableExpression(node);
-    node.visitChildren(this);
-    _runSubscriptions(
-      node,
-      _registry._onProviderListenableExpression,
-    );
-  }
-
-  @override
-  void visitProviderOverrideExpression(ProviderOverrideExpression node) {
-    super.visitProviderOverrideExpression(node);
-    node.visitChildren(this);
-    _runSubscriptions(
-      node,
-      _registry._onProviderOverrideExpression,
-    );
-  }
-
-  @override
-  void visitProviderOverrideList(ProviderOverrideList node) {
-    super.visitProviderOverrideList(node);
-    node.visitChildren(this);
-    _runSubscriptions(
-      node,
-      _registry._onProviderOverrideList,
-    );
-  }
-
-  @override
-  void visitProviderScopeInstanceCreationExpression(
-      ProviderScopeInstanceCreationExpression node) {
-    super.visitProviderScopeInstanceCreationExpression(node);
-    node.visitChildren(this);
-    _runSubscriptions(
-      node,
-      _registry._onProviderScopeInstanceCreationExpression,
-    );
-  }
-
-  @override
-  void visitRefInvocation(RefInvocation node) {
-    super.visitRefInvocation(node);
-    node.visitChildren(this);
-    _runSubscriptions(
-      node,
-      _registry._onRefInvocation,
-    );
-  }
-
-  @override
-  void visitRefDependencyInvocation(RefDependencyInvocation node) {
-    super.visitRefDependencyInvocation(node);
-    node.visitChildren(this);
-    _runSubscriptions(
-      node,
-      _registry._onRefDependencyInvocation,
-    );
-  }
-
-  @override
-  void visitRefWatchInvocation(RefWatchInvocation node) {
-    super.visitRefWatchInvocation(node);
-    node.visitChildren(this);
-    _runSubscriptions(
-      node,
-      _registry._onRefWatchInvocation,
-    );
-  }
-
-  @override
-  void visitRefReadInvocation(RefReadInvocation node) {
-    super.visitRefReadInvocation(node);
-    node.visitChildren(this);
-    _runSubscriptions(
-      node,
-      _registry._onRefReadInvocation,
-    );
-  }
-
-  @override
-  void visitRefListenInvocation(RefListenInvocation node) {
-    super.visitRefListenInvocation(node);
-    node.visitChildren(this);
-    _runSubscriptions(
-      node,
-      _registry._onRefListenInvocation,
     );
   }
 
@@ -1831,57 +915,6 @@ class _RiverpodAstRegistryVisitor extends GeneralizingRiverpodAstVisitor {
       _registry._onRiverpodAnnotation,
     );
   }
-
-  @override
-  void visitWidgetRefInvocation(WidgetRefInvocation node) {
-    super.visitWidgetRefInvocation(node);
-    node.visitChildren(this);
-    _runSubscriptions(
-      node,
-      _registry._onWidgetRefInvocation,
-    );
-  }
-
-  @override
-  void visitWidgetRefWatchInvocation(WidgetRefWatchInvocation node) {
-    super.visitWidgetRefWatchInvocation(node);
-    node.visitChildren(this);
-    _runSubscriptions(
-      node,
-      _registry._onWidgetRefWatchInvocation,
-    );
-  }
-
-  @override
-  void visitWidgetRefReadInvocation(WidgetRefReadInvocation node) {
-    super.visitWidgetRefReadInvocation(node);
-    node.visitChildren(this);
-    _runSubscriptions(
-      node,
-      _registry._onWidgetRefReadInvocation,
-    );
-  }
-
-  @override
-  void visitWidgetRefListenInvocation(WidgetRefListenInvocation node) {
-    super.visitWidgetRefListenInvocation(node);
-    node.visitChildren(this);
-    _runSubscriptions(
-      node,
-      _registry._onWidgetRefListenInvocation,
-    );
-  }
-
-  @override
-  void visitWidgetRefListenManualInvocation(
-      WidgetRefListenManualInvocation node) {
-    super.visitWidgetRefListenManualInvocation(node);
-    node.visitChildren(this);
-    _runSubscriptions(
-      node,
-      _registry._onWidgetRefListenManualInvocation,
-    );
-  }
 }
 
 class RiverpodAstRegistry {
@@ -1892,19 +925,6 @@ class RiverpodAstRegistry {
   final _onRiverpodAst = <void Function(RiverpodAst)>[];
   void addRiverpodAst(void Function(RiverpodAst node) cb) {
     _onRiverpodAst.add(cb);
-  }
-
-  final _onDependenciesAnnotationDependency =
-      <void Function(DependenciesAnnotationDependency)>[];
-  void addDependenciesAnnotationDependency(
-      void Function(DependenciesAnnotationDependency node) cb) {
-    _onDependenciesAnnotationDependency.add(cb);
-  }
-
-  final _onDependenciesAnnotation = <void Function(DependenciesAnnotation)>[];
-  void addDependenciesAnnotation(
-      void Function(DependenciesAnnotation node) cb) {
-    _onDependenciesAnnotation.add(cb);
   }
 
   final _onConsumerDeclaration = <void Function(ConsumerDeclaration)>[];
@@ -1989,75 +1009,9 @@ class RiverpodAstRegistry {
     _onLegacyProviderDeclaration.add(cb);
   }
 
-  final _onProviderContainerInstanceCreationExpression =
-      <void Function(ProviderContainerInstanceCreationExpression)>[];
-  void addProviderContainerInstanceCreationExpression(
-      void Function(ProviderContainerInstanceCreationExpression node) cb) {
-    _onProviderContainerInstanceCreationExpression.add(cb);
-  }
-
   final _onProviderDeclaration = <void Function(ProviderDeclaration)>[];
   void addProviderDeclaration(void Function(ProviderDeclaration node) cb) {
     _onProviderDeclaration.add(cb);
-  }
-
-  final _onProviderListenableExpressionParent =
-      <void Function(ProviderListenableExpressionParent)>[];
-  void addProviderListenableExpressionParent(
-      void Function(ProviderListenableExpressionParent node) cb) {
-    _onProviderListenableExpressionParent.add(cb);
-  }
-
-  final _onProviderListenableExpression =
-      <void Function(ProviderListenableExpression)>[];
-  void addProviderListenableExpression(
-      void Function(ProviderListenableExpression node) cb) {
-    _onProviderListenableExpression.add(cb);
-  }
-
-  final _onProviderOverrideExpression =
-      <void Function(ProviderOverrideExpression)>[];
-  void addProviderOverrideExpression(
-      void Function(ProviderOverrideExpression node) cb) {
-    _onProviderOverrideExpression.add(cb);
-  }
-
-  final _onProviderOverrideList = <void Function(ProviderOverrideList)>[];
-  void addProviderOverrideList(void Function(ProviderOverrideList node) cb) {
-    _onProviderOverrideList.add(cb);
-  }
-
-  final _onProviderScopeInstanceCreationExpression =
-      <void Function(ProviderScopeInstanceCreationExpression)>[];
-  void addProviderScopeInstanceCreationExpression(
-      void Function(ProviderScopeInstanceCreationExpression node) cb) {
-    _onProviderScopeInstanceCreationExpression.add(cb);
-  }
-
-  final _onRefInvocation = <void Function(RefInvocation)>[];
-  void addRefInvocation(void Function(RefInvocation node) cb) {
-    _onRefInvocation.add(cb);
-  }
-
-  final _onRefDependencyInvocation = <void Function(RefDependencyInvocation)>[];
-  void addRefDependencyInvocation(
-      void Function(RefDependencyInvocation node) cb) {
-    _onRefDependencyInvocation.add(cb);
-  }
-
-  final _onRefWatchInvocation = <void Function(RefWatchInvocation)>[];
-  void addRefWatchInvocation(void Function(RefWatchInvocation node) cb) {
-    _onRefWatchInvocation.add(cb);
-  }
-
-  final _onRefReadInvocation = <void Function(RefReadInvocation)>[];
-  void addRefReadInvocation(void Function(RefReadInvocation node) cb) {
-    _onRefReadInvocation.add(cb);
-  }
-
-  final _onRefListenInvocation = <void Function(RefListenInvocation)>[];
-  void addRefListenInvocation(void Function(RefListenInvocation node) cb) {
-    _onRefListenInvocation.add(cb);
   }
 
   final _onRiverpodCompilationUnit = <void Function(RiverpodCompilationUnit)>[];
@@ -2083,38 +1037,6 @@ class RiverpodAstRegistry {
   final _onRiverpodAnnotation = <void Function(RiverpodAnnotation)>[];
   void addRiverpodAnnotation(void Function(RiverpodAnnotation node) cb) {
     _onRiverpodAnnotation.add(cb);
-  }
-
-  final _onWidgetRefInvocation = <void Function(WidgetRefInvocation)>[];
-  void addWidgetRefInvocation(void Function(WidgetRefInvocation node) cb) {
-    _onWidgetRefInvocation.add(cb);
-  }
-
-  final _onWidgetRefWatchInvocation =
-      <void Function(WidgetRefWatchInvocation)>[];
-  void addWidgetRefWatchInvocation(
-      void Function(WidgetRefWatchInvocation node) cb) {
-    _onWidgetRefWatchInvocation.add(cb);
-  }
-
-  final _onWidgetRefReadInvocation = <void Function(WidgetRefReadInvocation)>[];
-  void addWidgetRefReadInvocation(
-      void Function(WidgetRefReadInvocation node) cb) {
-    _onWidgetRefReadInvocation.add(cb);
-  }
-
-  final _onWidgetRefListenInvocation =
-      <void Function(WidgetRefListenInvocation)>[];
-  void addWidgetRefListenInvocation(
-      void Function(WidgetRefListenInvocation node) cb) {
-    _onWidgetRefListenInvocation.add(cb);
-  }
-
-  final _onWidgetRefListenManualInvocation =
-      <void Function(WidgetRefListenManualInvocation)>[];
-  void addWidgetRefListenManualInvocation(
-      void Function(WidgetRefListenManualInvocation node) cb) {
-    _onWidgetRefListenManualInvocation.add(cb);
   }
 }
 

@@ -426,10 +426,10 @@ void fn(Ref<int> ref) {
 ''', (resolver) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
-    final libraryResult = result.resolvedRiverpodLibraryResults.single;
+    final libraryResult = result.riverpodCompilationUnits.single;
 
-    expect(libraryResult.unknownRefInvocations, hasLength(2));
-    expect(result.refReadInvocations, libraryResult.unknownRefInvocations);
+    expect(libraryResult.refInvocations, hasLength(2));
+    expect(result.refReadInvocations, libraryResult.refInvocations);
     expect(result.refInvocations, result.refReadInvocations);
 
     expect(result.refReadInvocations[0].node.toSource(), 'ref.read(dep)');
@@ -488,10 +488,10 @@ void fn(_Ref ref) {
 ''', (resolver) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
-    final libraryResult = result.resolvedRiverpodLibraryResults.single;
+    final libraryResult = result.riverpodCompilationUnits.single;
 
-    expect(libraryResult.unknownRefInvocations, isEmpty);
-    expect(libraryResult.unknownWidgetRefInvocations, isEmpty);
+    expect(libraryResult.refInvocations, isEmpty);
+    expect(libraryResult.widgetRefInvocations, isEmpty);
 
     final providerRefInvocations = libraryResult.legacyProviderDeclarations
         .where((e) => e.providerElement.name == 'provider')

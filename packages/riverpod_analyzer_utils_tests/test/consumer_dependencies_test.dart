@@ -35,7 +35,7 @@ void function() {}
 ''', (resolver) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
-    expect(result.resolvedRiverpodLibraryResults.single.errors, isEmpty);
+    expect(result.riverpodCompilationUnits.single.errors, isEmpty);
 
     expect(result.dependenciesAnnotations, hasLength(2));
 

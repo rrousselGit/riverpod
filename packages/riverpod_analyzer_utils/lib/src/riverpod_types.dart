@@ -8,6 +8,12 @@ const providerForType = TypeChecker.fromName(
   packageName: 'riverpod_annotation',
 );
 
+/// [TypeChecker] for `Override`
+const overrideType = TypeChecker.fromName(
+  'Override',
+  packageName: 'riverpod',
+);
+
 /// Matches with the `Riverpod` annotation from riverpod_annotation.
 const riverpodType =
     TypeChecker.fromName('Riverpod', packageName: 'riverpod_annotation');
@@ -15,6 +21,12 @@ const riverpodType =
 /// [TypeChecker] for `ProviderBase`
 const providerBaseType = TypeChecker.fromName(
   'ProviderBase',
+  packageName: 'riverpod',
+);
+
+/// [TypeChecker] for `ProviderListenable`
+const providerListenableType = TypeChecker.fromName(
+  'ProviderListenable',
   packageName: 'riverpod',
 );
 

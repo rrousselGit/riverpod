@@ -118,7 +118,6 @@ class _LintVisitorGenerator extends Generator {
         buffer,
         ast,
         astFields,
-        hasSuperType: inheritedSuperTypes.isNotEmpty,
       );
     }
 
@@ -143,7 +142,7 @@ abstract class GeneralizingRiverpodAstVisitor implements RiverpodAstVisitor {
               (e) => '''
   ${e.key.isAbstract ? '' : '@override'}
   void visit${e.key.name}(${e.key.name} node) {
-    ${e.value.map((e) => 'visit$e(node);').join('\n')}
+    ${e.value.isEmpty ? 'visitRiverpodAst(node);' : e.value.map((e) => 'visit$e(node);').join('\n')}
   }
 ''',
             ).join('\n')}
@@ -264,9 +263,8 @@ class RiverpodAstRegistry {
   void _writeAstMixin(
     StringBuffer buffer,
     ClassElement ast,
-    List<_AstField> astFields, {
-    required bool hasSuperType,
-  }) {
+    List<_AstField> astFields,
+  ) {
     late final accept = '''
       @override
       void accept(RiverpodAstVisitor visitor) {
@@ -274,10 +272,28 @@ class RiverpodAstRegistry {
       }
     ''';
 
-    final visitChildren = StringBuffer();
-    if (hasSuperType) {
-      visitChildren.writeln('super.visitChildren(visitor);');
-    }
+    final visitChildren = _writeVisitChildren(astFields);
+
+    buffer.writeln('''
+base mixin _\$${ast.name} on RiverpodAst {
+  ${astFields.map((e) => '${e.type} get ${e.field.name};').join('\n')}
+
+  ${ast.isAbstract ? '' : accept}
+  $visitChildren
+}
+''');
+  }
+
+  String _writeVisitChildren(List<_AstField> astFields) {
+    if (astFields.isEmpty) return '';
+
+    final buffer = StringBuffer();
+
+    buffer.writeln('''
+@mustCallSuper
+@override
+void visitChildren(RiverpodAstVisitor visitor) {
+  super.visitChildren(visitor);''');
 
     for (final field in astFields) {
       switch (field) {
@@ -295,7 +311,7 @@ class RiverpodAstRegistry {
             trailing = '}';
           }
 
-          visitChildren.writeln('''
+          buffer.writeln('''
               $leading
               for (final value in ${field.field.name}) {
                 value$op.accept(visitor);
@@ -307,23 +323,15 @@ class RiverpodAstRegistry {
           final op = field.type.nullabilitySuffix == NullabilitySuffix.question
               ? '?'
               : '';
-          visitChildren.writeln(
+          buffer.writeln(
             '${field.field.name}$op.accept(visitor);',
           );
       }
     }
 
-    buffer.writeln('''
-base mixin _\$${ast.name} on RiverpodAst {
-  ${astFields.map((e) => '${e.type} get ${e.field.name};').join('\n')}
+    buffer.writeln('}');
 
-  ${ast.isAbstract ? '' : accept}
-
-  @override void visitChildren(RiverpodAstVisitor visitor) {
-    $visitChildren
-  }
-}
-''');
+    return buffer.toString();
   }
 }
 

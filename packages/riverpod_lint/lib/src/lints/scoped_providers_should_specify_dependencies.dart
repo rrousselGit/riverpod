@@ -49,43 +49,64 @@ class ScopedProvidersShouldSpecifyDependencies extends RiverpodLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    void checkScopedOverrideList(
-      ProviderOverrideList? overrideList,
-    ) {
-      final overrides = overrideList?.overrides;
-      if (overrides == null) return;
+    context.registry.addInstanceCreationExpression((node) {
+      final providerScope = node.providerScopeInstanceCreation;
+      if (providerScope != null) {
+        handleProviderScopeInstanceCreation(providerScope, reporter);
+        return;
+      }
 
-      for (final override in overrides) {
-        final provider = override.providerElement;
-        // We can only know statically if a provider is scoped on generator providers
-        if (provider is! GeneratorProviderDeclarationElement) continue;
+      final providerContainer = node.providerContainerInstanceCreation;
+      if (providerContainer != null) {
+        handleProviderContainerInstanceCreation(providerContainer, reporter);
+        return;
+      }
+    });
+  }
 
-        if (!provider.isScoped) {
-          reporter.reportErrorForNode(code, override.node);
-        }
+  void checkScopedOverrideList(
+    ProviderOverrideList? overrideList,
+    ErrorReporter reporter,
+  ) {
+    final overrides = overrideList?.overrides;
+    if (overrides == null) return;
+
+    for (final override in overrides) {
+      final provider = override.providerElement;
+
+      // We can only know statically if a provider is scoped on generator providers
+      if (provider is! GeneratorProviderDeclarationElement) continue;
+      if (!provider.isScoped) {
+        reporter.reportErrorForNode(code, override.node);
       }
     }
+  }
 
-    riverpodRegistry(context)
-      ..addProviderScopeInstanceCreationExpression((expression) {
-        final isScoped = isProviderScopeScoped(expression);
-        if (!isScoped) return;
+  void handleProviderScopeInstanceCreation(
+    ProviderScopeInstanceCreationExpression expression,
+    ErrorReporter reporter,
+  ) {
+    final isScoped = isProviderScopeScoped(expression);
+    if (!isScoped) return;
 
-        checkScopedOverrideList(expression.overrides);
-      })
-      ..addProviderContainerInstanceCreationExpression((expression) {
-        final hasParent = expression.node.argumentList.arguments
-            .whereType<NamedExpression>()
-            // TODO handle parent:null.
-            // This might be doable by checking that the expression's
-            // static type is non-nullable
-            .any((e) => e.name.label.name == 'parent');
+    checkScopedOverrideList(expression.overrides, reporter);
+  }
 
-        // No parent: parameter found, therefore ProviderContainer is never scoped
-        if (!hasParent) return;
+  void handleProviderContainerInstanceCreation(
+    ProviderContainerInstanceCreationExpression expression,
+    ErrorReporter reporter,
+  ) {
+    final hasParent = expression.node.argumentList.arguments
+        .whereType<NamedExpression>()
+        // TODO handle parent:null.
+        // This might be doable by checking that the expression's
+        // static type is non-nullable
+        .any((e) => e.name.label.name == 'parent');
 
-        checkScopedOverrideList(expression.overrides);
-      });
+    // No parent: parameter found, therefore ProviderContainer is never scoped
+    if (!hasParent) return;
+
+    checkScopedOverrideList(expression.overrides, reporter);
   }
 
   bool isProviderScopeScoped(

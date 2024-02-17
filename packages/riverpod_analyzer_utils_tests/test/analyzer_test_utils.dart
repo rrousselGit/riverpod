@@ -101,6 +101,14 @@ extension MapTake<Key, Value> on Map<Key, Value> {
   }
 }
 
+class _Foo extends GeneralizingRiverpodAstVisitor {
+  @override
+  void visitRiverpodAst(RiverpodAst node) {
+    print('node $node');
+    // super.visitRiverpodAst(node);
+  }
+}
+
 extension ResolverX on Resolver {
   // ignore: invalid_use_of_internal_member
   Future<RiverpodAnalysisResult> resolveRiverpodAnalysisResult({
@@ -113,12 +121,21 @@ extension ResolverX on Resolver {
     );
 
     final result = RiverpodAnalysisResult();
-    riverpodAst.accept(result);
+
+    print(
+      'foo // ${riverpodAst.units} // ${riverpodAst.units.single.consumerWidgetDeclarations}',
+    );
+
+    for (final unit in riverpodAst.units) {
+      unit.accept(_Foo());
+      unit.accept(result);
+    }
+
+    print('result // ${result.consumerWidgetDeclarations}');
 
     if (!ignoreErrors) {
-      final errors = result.resolvedRiverpodLibraryResults
-          .expand((e) => e.errors)
-          .toList();
+      final errors =
+          result.riverpodCompilationUnits.expand((e) => e.errors).toList();
       if (errors.isNotEmpty) {
         throw StateError(errors.map((e) => '- $e\n').join());
       }
@@ -184,7 +201,9 @@ ${errors.map((e) => '- $e\n').join()}
 void expectValidParentChildrenRelationship(
   ResolvedRiverpodLibraryResult result,
 ) {
-  result.accept(_ParentRiverpodVisitor(null));
+  for (final unit in result.units) {
+    unit.accept(_ParentRiverpodVisitor(null));
+  }
 }
 
 class _ParentRiverpodVisitor extends GeneralizingRiverpodAstVisitor {

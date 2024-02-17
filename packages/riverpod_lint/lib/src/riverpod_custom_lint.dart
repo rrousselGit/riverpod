@@ -89,7 +89,7 @@ mixin _ParseRiverpod {
     final unit = await resolver.getResolvedUnitResult();
     final result = ResolvedRiverpodLibraryResult.from([unit.unit]);
 
-    context.addPostRunCallback(() => registry.run(result));
+    context.addPostRunCallback(() => result.units.forEach(registry.run));
   }
 
   RiverpodAstRegistry riverpodRegistry(CustomLintContext context) {

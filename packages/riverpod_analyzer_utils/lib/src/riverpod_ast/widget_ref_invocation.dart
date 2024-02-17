@@ -1,8 +1,6 @@
 part of '../riverpod_ast.dart';
 
-abstract base class WidgetRefInvocation extends RiverpodAst
-    with _$WidgetRefInvocation
-    implements ProviderListenableExpressionParent {
+abstract base class WidgetRefInvocation {
   WidgetRefInvocation._({
     required this.node,
     required this.function,
@@ -50,13 +48,11 @@ abstract base class WidgetRefInvocation extends RiverpodAst
     }
   }
 
-  @override
   final MethodInvocation node;
   final SimpleIdentifier function;
 }
 
-final class WidgetRefWatchInvocation extends WidgetRefInvocation
-    with _$WidgetRefWatchInvocation {
+final class WidgetRefWatchInvocation extends WidgetRefInvocation {
   WidgetRefWatchInvocation._({
     required super.node,
     required super.function,
@@ -84,12 +80,10 @@ final class WidgetRefWatchInvocation extends WidgetRefInvocation
     );
   }
 
-  @override
   final ProviderListenableExpression provider;
 }
 
-final class WidgetRefReadInvocation extends WidgetRefInvocation
-    with _$WidgetRefReadInvocation {
+final class WidgetRefReadInvocation extends WidgetRefInvocation {
   WidgetRefReadInvocation._({
     required super.node,
     required super.function,
@@ -117,12 +111,10 @@ final class WidgetRefReadInvocation extends WidgetRefInvocation
     );
   }
 
-  @override
   final ProviderListenableExpression provider;
 }
 
-final class WidgetRefListenInvocation extends WidgetRefInvocation
-    with _$WidgetRefListenInvocation {
+final class WidgetRefListenInvocation extends WidgetRefInvocation {
   WidgetRefListenInvocation._({
     required super.node,
     required super.function,
@@ -156,13 +148,11 @@ final class WidgetRefListenInvocation extends WidgetRefInvocation
     );
   }
 
-  @override
   final ProviderListenableExpression provider;
   final Expression listener;
 }
 
-final class WidgetRefListenManualInvocation extends WidgetRefInvocation
-    with _$WidgetRefListenManualInvocation {
+final class WidgetRefListenManualInvocation extends WidgetRefInvocation {
   WidgetRefListenManualInvocation._({
     required super.node,
     required super.function,
@@ -196,7 +186,6 @@ final class WidgetRefListenManualInvocation extends WidgetRefInvocation
     );
   }
 
-  @override
   final ProviderListenableExpression provider;
   final Expression listener;
 }

@@ -6,7 +6,6 @@ import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
-import '../object_utils.dart';
 import '../riverpod_custom_lint.dart';
 
 extension DartObjectSuperField on DartObject {
@@ -63,27 +62,28 @@ class ConsumerDependencies extends RiverpodLintRule {
       if (allTransitiveDependencies == null) return;
 
       final enclosingMethodInvocation =
-          node.parent?.parent.safeCast<MethodInvocation>();
-      if (enclosingMethodInvocation == null) {
-        reporter.reportErrorForNode(
-          code,
-          node,
-          ['A provider was used, but could not find the associated `ref`.'],
-        );
+          node.thisOrAncestorOfType<MethodInvocation>();
+      final refInvocation = enclosingMethodInvocation?.refInvocation;
+      final widgetRefInvocation =
+          enclosingMethodInvocation?.widgetRefInvocation;
+
+      // TODO reject ref.watch(obj.method(provider))
+      if (refInvocation != null || widgetRefInvocation != null) return;
+
+      // The provider expression is for an override, so it's fine.
+      final enclosingExpression = node.thisOrAncestorOfType<Expression>();
+      final enclosingExpressionType = enclosingExpression?.staticType;
+
+      if (enclosingExpressionType != null &&
+          overrideType.isAssignableFromType(enclosingExpressionType)) {
         return;
       }
 
-      // Check that the method is a ref method
-      final target = enclosingMethodInvocation.target?.staticType;
-      if (target == null) return;
-      if (!refType.isAssignableFromType(target) &&
-          !widgetRefType.isAssignableFromType(target)) {
-        reporter.reportErrorForNode(
-          code,
-          node,
-          ['A provider was used, but could not find the associated `ref`.'],
-        );
-      }
+      reporter.reportErrorForNode(
+        code,
+        node,
+        ['A provider was used, but could not find the associated `ref`.'],
+      );
     });
   }
 }

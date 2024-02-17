@@ -178,7 +178,7 @@ int sixth(SixthRef ref) => 0;
     );
 
     final errors =
-        result.resolvedRiverpodLibraryResults.expand((e) => e.errors).toList();
+        result.riverpodCompilationUnits.expand((e) => e.errors).toList();
 
     expect(errors, hasLength(6));
 

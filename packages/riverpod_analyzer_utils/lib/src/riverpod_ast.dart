@@ -40,17 +40,6 @@ abstract base class RiverpodAst {
     visitChildren(_SetParentVisitor(this));
   }
 
-  List<RefInvocation> get refInvocations => node.refInvocations;
-  List<WidgetRefInvocation> get widgetRefInvocations =>
-      node.widgetRefInvocations;
-
-  List<ProviderContainerInstanceCreationExpression>
-      get providerContainerInstanceCreations =>
-          node.providerContainerInstanceCreations;
-
-  List<ProviderScopeInstanceCreationExpression>
-      get providerScopeInstanceCreations => node.providerScopeInstanceCreations;
-
   RiverpodAst? _parent;
   RiverpodAst? get parent => _parent;
 
@@ -59,21 +48,29 @@ abstract base class RiverpodAst {
   void accept(RiverpodAstVisitor visitor);
 
   @mustCallSuper
-  void visitChildren(RiverpodAstVisitor visitor);
+  void visitChildren(RiverpodAstVisitor visitor) {}
 }
 
 extension AstNodeX on AstNode {
-  List<RefInvocation> get refInvocations {
-    return upsert('RefInvocations', () {
-      final visitor = _RefInvocationVisitor();
+  List<ProviderListenableExpression> get providerListenables {
+    return upsert('ProviderListenableExpressions', () {
+      final visitor = _ProviderListenableExpressionVisitor();
       accept(visitor);
-      return visitor.invocations;
+      return visitor.expressions;
     });
   }
 
   List<WidgetRefInvocation> get widgetRefInvocations {
     return upsert('WidgetRefInvocations', () {
       final visitor = _WidgetRefInvocationVisitor();
+      accept(visitor);
+      return visitor.invocations;
+    });
+  }
+
+  List<RefInvocation> get refInvocations {
+    return upsert('RefInvocations', () {
+      final visitor = _RefInvocationVisitor();
       accept(visitor);
       return visitor.invocations;
     });
@@ -98,16 +95,17 @@ extension AstNodeX on AstNode {
   }
 }
 
-class _RefInvocationVisitor extends GeneralizingAstVisitor<void> {
-  final invocations = <RefInvocation>[];
+class _ProviderListenableExpressionVisitor
+    extends GeneralizingAstVisitor<void> {
+  final expressions = <ProviderListenableExpression>[];
 
   @override
-  void visitMethodInvocation(MethodInvocation node) {
-    final refInvocation = node.refInvocation;
-    if (refInvocation != null) {
-      invocations.add(refInvocation);
+  void visitExpression(Expression node) {
+    final listenable = node.providerListenable;
+    if (listenable != null) {
+      expressions.add(listenable);
     }
-    super.visitMethodInvocation(node);
+    super.visitExpression(node);
   }
 }
 
@@ -117,6 +115,19 @@ class _WidgetRefInvocationVisitor extends GeneralizingAstVisitor<void> {
   @override
   void visitMethodInvocation(MethodInvocation node) {
     final refInvocation = node.widgetRefInvocation;
+    if (refInvocation != null) {
+      invocations.add(refInvocation);
+    }
+    super.visitMethodInvocation(node);
+  }
+}
+
+class _RefInvocationVisitor extends GeneralizingAstVisitor<void> {
+  final invocations = <RefInvocation>[];
+
+  @override
+  void visitMethodInvocation(MethodInvocation node) {
+    final refInvocation = node.refInvocation;
     if (refInvocation != null) {
       invocations.add(refInvocation);
     }
@@ -149,6 +160,14 @@ class _ProviderScopeInstanceCreationVisitor
       instances.add(instance);
     }
     super.visitInstanceCreationExpression(node);
+  }
+}
+
+extension ExpressionX on Expression {
+  ProviderListenableExpression? get providerListenable {
+    return upsert('ProviderListenableExpression', () {
+      return ProviderListenableExpression._parse(this);
+    });
   }
 }
 

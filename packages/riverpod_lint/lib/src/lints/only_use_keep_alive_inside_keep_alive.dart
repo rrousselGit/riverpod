@@ -28,7 +28,7 @@ class OnlyUseKeepAliveInsideKeepAlive extends RiverpodLintRule {
       // The current provider is "autoDispose", so it is allowed to use other "autoDispose" providers
       if (node.providerElement.isAutoDispose) return;
 
-      for (final refInvocation in node.refInvocations) {
+      for (final refInvocation in node.node.refInvocations) {
         switch (refInvocation) {
           case RefDependencyInvocation(
                 provider: ProviderListenableExpression(

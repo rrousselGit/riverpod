@@ -31,8 +31,7 @@ final class LegacyProviderDependencies extends RiverpodAst
 }
 
 final class LegacyProviderDependency extends RiverpodAst
-    with _$LegacyProviderDependency
-    implements ProviderListenableExpressionParent {
+    with _$LegacyProviderDependency {
   LegacyProviderDependency._({
     required this.node,
     required this.provider,
@@ -50,7 +49,6 @@ final class LegacyProviderDependency extends RiverpodAst
 
   @override
   final CollectionElement node;
-  @override
   final ProviderListenableExpression? provider;
 }
 

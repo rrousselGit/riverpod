@@ -24,16 +24,18 @@ Then dispose of the listener when you no longer need the autoDispose provider to
     CustomLintContext context,
   ) {
     // TODO release or delete
-    riverpodRegistry(context).addRefReadInvocation((read) {
-      final provider = read.provider.providerElement;
-
-      if (provider is GeneratorProviderDeclarationElement &&
-          provider.isAutoDispose) {
-        reporter.reportErrorForNode(
-          _code,
-          read.node,
-          [read.provider.provider!],
-        );
+    context.registry.addCompilationUnit((node) {
+      for (final refInvocation
+          in node.refInvocations.whereType<RefReadInvocation>()) {
+        final provider = refInvocation.provider.providerElement;
+        if (provider is GeneratorProviderDeclarationElement &&
+            provider.isAutoDispose) {
+          reporter.reportErrorForNode(
+            _code,
+            refInvocation.node,
+            [refInvocation.provider.provider],
+          );
+        }
       }
     });
   }

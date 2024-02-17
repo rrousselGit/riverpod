@@ -1,8 +1,6 @@
 part of '../riverpod_ast.dart';
 
-abstract base class RefInvocation extends RiverpodAst
-    with _$RefInvocation
-    implements ProviderListenableExpressionParent {
+abstract base class RefInvocation {
   RefInvocation._({
     required this.node,
     required this.function,
@@ -42,14 +40,12 @@ abstract base class RefInvocation extends RiverpodAst
     }
   }
 
-  @override
   final MethodInvocation node;
   final SimpleIdentifier function;
 }
 
 /// A [RefInvocation] which interacts with a provider, inducing a dependency.
-abstract base class RefDependencyInvocation extends RefInvocation
-    with _$RefDependencyInvocation {
+abstract base class RefDependencyInvocation extends RefInvocation {
   RefDependencyInvocation._({
     required super.node,
     required super.function,
@@ -57,12 +53,10 @@ abstract base class RefDependencyInvocation extends RefInvocation
   }) : super._();
 
   /// The provider that is being interacted with.
-  @override
   final ProviderListenableExpression provider;
 }
 
-final class RefWatchInvocation extends RefDependencyInvocation
-    with _$RefWatchInvocation {
+final class RefWatchInvocation extends RefDependencyInvocation {
   RefWatchInvocation._({
     required super.node,
     required super.function,
@@ -91,8 +85,7 @@ final class RefWatchInvocation extends RefDependencyInvocation
   }
 }
 
-final class RefReadInvocation extends RefDependencyInvocation
-    with _$RefReadInvocation {
+final class RefReadInvocation extends RefDependencyInvocation {
   RefReadInvocation._({
     required super.node,
     required super.function,
@@ -121,8 +114,7 @@ final class RefReadInvocation extends RefDependencyInvocation
   }
 }
 
-final class RefListenInvocation extends RefDependencyInvocation
-    with _$RefListenInvocation {
+final class RefListenInvocation extends RefDependencyInvocation {
   RefListenInvocation._({
     required super.node,
     required super.function,

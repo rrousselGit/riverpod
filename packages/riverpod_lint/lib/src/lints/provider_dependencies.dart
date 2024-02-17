@@ -18,7 +18,7 @@ class _ExtraAndMissingDependencies {
 extension on GeneratorProviderDeclaration {
   Iterable<RefDependencyInvocation> findScopedDependencies() sync* {
     for (final dependency
-        in refInvocations.whereType<RefDependencyInvocation>()) {
+        in node.refInvocations.whereType<RefDependencyInvocation>()) {
       final dependencyElement = dependency.provider.providerElement;
       if (dependencyElement is! GeneratorProviderDeclarationElement) {
         // If we cannot statically determine the dependencies of the dependency,

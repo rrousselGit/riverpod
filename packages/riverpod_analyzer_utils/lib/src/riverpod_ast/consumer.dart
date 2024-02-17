@@ -46,11 +46,6 @@ final class ConsumerWidgetDeclaration extends ConsumerDeclaration
   }
 
   final MethodDeclaration? buildMethod;
-  @override
-  final List<WidgetRefInvocation> widgetRefInvocations = [];
-  @override
-  final List<ProviderScopeInstanceCreationExpression>
-      providerScopeInstanceCreateExpressions = [];
 
   @override
   final ClassDeclaration node;
@@ -75,11 +70,6 @@ final class HookConsumerWidgetDeclaration extends ConsumerDeclaration
   }
 
   final MethodDeclaration? buildMethod;
-  @override
-  final List<WidgetRefInvocation> widgetRefInvocations = [];
-  @override
-  final List<ProviderScopeInstanceCreationExpression>
-      providerScopeInstanceCreateExpressions = [];
 
   @override
   final ClassDeclaration node;
@@ -116,12 +106,6 @@ final class ConsumerStateDeclaration extends ConsumerDeclaration
   static ConsumerStateDeclaration? _parse(ClassDeclaration node) {
     return ConsumerStateDeclaration._(node: node);
   }
-
-  @override
-  final List<WidgetRefInvocation> widgetRefInvocations = [];
-  @override
-  final List<ProviderScopeInstanceCreationExpression>
-      providerScopeInstanceCreateExpressions = [];
 
   @override
   final ClassDeclaration node;

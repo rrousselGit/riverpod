@@ -1,7 +1,6 @@
 part of '../riverpod_ast.dart';
 
-final class ProviderContainerInstanceCreationExpression extends RiverpodAst
-    with _$ProviderContainerInstanceCreationExpression {
+final class ProviderContainerInstanceCreationExpression {
   ProviderContainerInstanceCreationExpression._({
     required this.node,
     required this.overrides,
@@ -26,8 +25,6 @@ final class ProviderContainerInstanceCreationExpression extends RiverpodAst
     );
   }
 
-  @override
   final InstanceCreationExpression node;
-  @override
   final ProviderOverrideList? overrides;
 }

@@ -70,7 +70,7 @@ class RiverpodGenerator extends ParserGenerator<Riverpod> {
   }
 
   String runGenerator(ResolvedRiverpodLibraryResult riverpodResult) {
-    for (final error in riverpodResult.errors) {
+    for (final error in riverpodResult.units.expand((e) => e.errors)) {
       throw RiverpodInvalidGenerationSourceError(
         error.message,
         element: error.targetElement,
@@ -80,7 +80,10 @@ class RiverpodGenerator extends ParserGenerator<Riverpod> {
 
     final buffer = StringBuffer();
 
-    riverpodResult.visitChildren(_RiverpodGeneratorVisitor(buffer, options));
+    final visitor = _RiverpodGeneratorVisitor(buffer, options);
+    for (final unit in riverpodResult.units) {
+      unit.visitChildren(visitor);
+    }
 
     // Only emit the header if we actually generated something
     if (buffer.isNotEmpty) {

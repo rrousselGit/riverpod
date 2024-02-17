@@ -1,13 +1,11 @@
 part of '../riverpod_ast.dart';
 
-final class DependenciesAnnotationDependency extends RiverpodAst
-    with _$DependenciesAnnotationDependency {
+final class DependenciesAnnotationDependency {
   DependenciesAnnotationDependency._({
     required this.node,
     required this.provider,
   });
 
-  @override
   final Expression node;
   final GeneratorProviderDeclarationElement provider;
 }
@@ -116,8 +114,7 @@ Iterable<
   }
 }
 
-final class DependenciesAnnotation extends RiverpodAst
-    with _$DependenciesAnnotation {
+final class DependenciesAnnotation {
   DependenciesAnnotation._({
     required this.declaration,
     required this.dependencies,
@@ -183,8 +180,6 @@ final class DependenciesAnnotation extends RiverpodAst
   }
 
   final Declaration declaration;
-  @override
   final List<DependenciesAnnotationDependency>? dependencies;
-  @override
   final Annotation node;
 }

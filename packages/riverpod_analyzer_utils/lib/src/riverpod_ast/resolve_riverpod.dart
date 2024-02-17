@@ -8,10 +8,9 @@ final class ResolvedRiverpodLibraryResult {
   ) {
     final riverpodUnits = units.map(RiverpodCompilationUnit._).toList();
 
-    final errors = <RiverpodAnalysisError>[];
-    errorReporter = errors.add;
     try {
       for (final unit in riverpodUnits) {
+        errorReporter = unit.errors.add;
         // Let's not parse generated files
         const generatedExtensions = {'.freezed.dart', '.g.dart'};
         final shortName = unit.node.declaredElement?.source.shortName ?? '';
@@ -19,9 +18,7 @@ final class ResolvedRiverpodLibraryResult {
           continue;
         }
 
-        final visitor = _ParseRiverpodUnitVisitor(unit);
-        unit.node.accept(visitor);
-
+        unit.node.visitChildren(_ParseRiverpodUnitVisitor(unit));
         unit.visitChildren(_SetParentVisitor(unit));
       }
     } finally {
@@ -30,8 +27,6 @@ final class ResolvedRiverpodLibraryResult {
 
     return ResolvedRiverpodLibraryResult._(riverpodUnits);
   }
-
-  final errors = <RiverpodAnalysisError>[];
 
   final List<RiverpodCompilationUnit> units;
 }
@@ -60,6 +55,8 @@ final class RiverpodCompilationUnit extends RiverpodAst
       <StatefulHookConsumerWidgetDeclaration>[];
   @override
   final hookConsumerWidgetDeclarations = <HookConsumerWidgetDeclaration>[];
+
+  final errors = <RiverpodAnalysisError>[];
 
   @override
   Null get parent => null;
