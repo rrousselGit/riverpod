@@ -1,37 +1,44 @@
 part of '../riverpod_ast.dart';
 
-final class ResolvedRiverpodLibraryResult extends RiverpodAst
-    with _$ResolvedRiverpodLibraryResult {
-  ResolvedRiverpodLibraryResult._();
+final class ResolvedRiverpodLibraryResult {
+  ResolvedRiverpodLibraryResult._(this.units);
 
   factory ResolvedRiverpodLibraryResult.from(
     List<CompilationUnit> units,
   ) {
-    final result = ResolvedRiverpodLibraryResult._();
-    final visitor = _ParseRiverpodUnitVisitor(result);
+    final riverpodUnits = units.map(RiverpodCompilationUnit._).toList();
 
+    final errors = <RiverpodAnalysisError>[];
+    errorReporter = errors.add;
     try {
-      errorReporter = result.errors.add;
-
-      for (final unit in units) {
+      for (final unit in riverpodUnits) {
         // Let's not parse generated files
         const generatedExtensions = {'.freezed.dart', '.g.dart'};
-        final shortName = unit.declaredElement?.source.shortName ?? '';
+        final shortName = unit.node.declaredElement?.source.shortName ?? '';
         if (generatedExtensions.any(shortName.endsWith)) {
           continue;
         }
-        unit.accept(visitor);
+
+        final visitor = _ParseRiverpodUnitVisitor(unit);
+        unit.node.accept(visitor);
+
+        unit.visitChildren(_SetParentVisitor(unit));
       }
     } finally {
       errorReporter = null;
     }
 
-    result.visitChildren(_SetParentVisitor(result));
-
-    return result;
+    return ResolvedRiverpodLibraryResult._(riverpodUnits);
   }
 
   final errors = <RiverpodAnalysisError>[];
+
+  final List<RiverpodCompilationUnit> units;
+}
+
+final class RiverpodCompilationUnit extends RiverpodAst
+    with _$RiverpodCompilationUnit {
+  RiverpodCompilationUnit._(this.node);
 
   @override
   final functionalProviderDeclarations = <FunctionalProviderDeclaration>[];
@@ -58,15 +65,13 @@ final class ResolvedRiverpodLibraryResult extends RiverpodAst
   Null get parent => null;
 
   @override
-  Null get node => null;
-
-  // TODO changelog breaking renamed visitResolvedRiverpodLibraryResult
+  final CompilationUnit node;
 }
 
 class _AddConsumerDeclarationVisitor extends UnimplementedRiverpodAstVisitor {
   _AddConsumerDeclarationVisitor(this.result);
 
-  final ResolvedRiverpodLibraryResult result;
+  final RiverpodCompilationUnit result;
 
   @override
   void visitConsumerStatefulWidgetDeclaration(
@@ -103,7 +108,7 @@ class _AddConsumerDeclarationVisitor extends UnimplementedRiverpodAstVisitor {
 class _ParseRiverpodUnitVisitor extends SimpleAstVisitor<void> {
   _ParseRiverpodUnitVisitor(this.result);
 
-  final ResolvedRiverpodLibraryResult result;
+  final RiverpodCompilationUnit result;
 
   @override
   void visitClassDeclaration(ClassDeclaration node) {

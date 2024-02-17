@@ -46,11 +46,6 @@ class ProviderWidget<T> extends ConsumerWidget {
                 ),
           ),
     ]);
-
-    expect(
-      result.resolvedRiverpodLibraryResults.single.unknownWidgetRefInvocations,
-      isEmpty,
-    );
   });
 
   testSource('Decode ConsumerWidget declarations', source: '''
@@ -77,11 +72,6 @@ class MyConsumerWidget extends ConsumerWidget {
     expect(
       consumerWidget.buildMethod!.toSource(),
       '@override Widget build(BuildContext context, WidgetRef ref) {ref.watch(provider); return Container();}',
-    );
-
-    expect(
-      result.resolvedRiverpodLibraryResults.single.unknownWidgetRefInvocations,
-      isEmpty,
     );
 
     expect(consumerWidget.widgetRefInvocations, hasLength(1));
@@ -115,11 +105,6 @@ class MyConsumerWidget extends HookConsumerWidget {
     expect(
       consumerWidget.buildMethod!.toSource(),
       '@override Widget build(BuildContext context, WidgetRef ref) {ref.watch(provider); return Container();}',
-    );
-
-    expect(
-      result.resolvedRiverpodLibraryResults.single.unknownWidgetRefInvocations,
-      isEmpty,
     );
 
     expect(consumerWidget.widgetRefInvocations, hasLength(1));
@@ -168,11 +153,6 @@ class MyConsumerState extends ConsumerState<MyConsumerWidget> {
 
     expect(consumerState, isA<ConsumerStateDeclaration>());
     expect(consumerState.node.name.toString(), 'MyConsumerState');
-
-    expect(
-      result.resolvedRiverpodLibraryResults.single.unknownWidgetRefInvocations,
-      isEmpty,
-    );
 
     expect(consumerState.widgetRefInvocations, hasLength(2));
     expect(
@@ -226,11 +206,6 @@ class MyConsumerState extends ConsumerState<MyConsumerWidget> {
 
     expect(consumerState, isA<ConsumerStateDeclaration>());
     expect(consumerState.node.name.toString(), 'MyConsumerState');
-
-    expect(
-      result.resolvedRiverpodLibraryResults.single.unknownWidgetRefInvocations,
-      isEmpty,
-    );
 
     expect(consumerState.widgetRefInvocations, hasLength(2));
     expect(

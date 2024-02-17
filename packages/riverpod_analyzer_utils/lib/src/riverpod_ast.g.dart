@@ -382,7 +382,7 @@ base mixin _$RefListenInvocation on RiverpodAst {
   }
 }
 
-base mixin _$ResolvedRiverpodLibraryResult on RiverpodAst {
+base mixin _$RiverpodCompilationUnit on RiverpodAst {
   List<FunctionalProviderDeclaration> get functionalProviderDeclarations;
   List<ClassBasedProviderDeclaration> get classBasedProviderDeclarations;
   List<LegacyProviderDeclaration> get legacyProviderDeclarations;
@@ -396,8 +396,8 @@ base mixin _$ResolvedRiverpodLibraryResult on RiverpodAst {
 
   @override
   void accept(RiverpodAstVisitor visitor) {
-    visitor.visitResolvedRiverpodLibraryResult(
-      this as ResolvedRiverpodLibraryResult,
+    visitor.visitRiverpodCompilationUnit(
+      this as RiverpodCompilationUnit,
     );
   }
 
@@ -604,7 +604,7 @@ abstract class RiverpodAstVisitor {
 
   void visitRefListenInvocation(RefListenInvocation node);
 
-  void visitResolvedRiverpodLibraryResult(ResolvedRiverpodLibraryResult node);
+  void visitRiverpodCompilationUnit(RiverpodCompilationUnit node);
 
   void visitRiverpodAnnotationDependency(RiverpodAnnotationDependency node);
 
@@ -745,7 +745,7 @@ abstract class GeneralizingRiverpodAstVisitor implements RiverpodAstVisitor {
   }
 
   @override
-  void visitResolvedRiverpodLibraryResult(ResolvedRiverpodLibraryResult node) {}
+  void visitRiverpodCompilationUnit(RiverpodCompilationUnit node) {}
 
   @override
   void visitRiverpodAnnotationDependency(RiverpodAnnotationDependency node) {}
@@ -894,7 +894,7 @@ abstract class RecursiveRiverpodAstVisitor implements RiverpodAstVisitor {
   }
 
   @override
-  void visitResolvedRiverpodLibraryResult(ResolvedRiverpodLibraryResult node) {
+  void visitRiverpodCompilationUnit(RiverpodCompilationUnit node) {
     node.visitChildren(this);
   }
 
@@ -1003,7 +1003,7 @@ abstract class SimpleRiverpodAstVisitor implements RiverpodAstVisitor {
   void visitRefListenInvocation(RefListenInvocation node) {}
 
   @override
-  void visitResolvedRiverpodLibraryResult(ResolvedRiverpodLibraryResult node) {}
+  void visitRiverpodCompilationUnit(RiverpodCompilationUnit node) {}
 
   @override
   void visitRiverpodAnnotationDependency(RiverpodAnnotationDependency node) {}
@@ -1136,7 +1136,7 @@ abstract class UnimplementedRiverpodAstVisitor implements RiverpodAstVisitor {
   }
 
   @override
-  void visitResolvedRiverpodLibraryResult(ResolvedRiverpodLibraryResult node) {
+  void visitRiverpodCompilationUnit(RiverpodCompilationUnit node) {
     throw UnimplementedError();
   }
 
@@ -1420,13 +1420,13 @@ class RiverpodAnalysisResult extends GeneralizingRiverpodAstVisitor {
     refListenInvocations.add(node);
   }
 
-  final resolvedRiverpodLibraryResults = <ResolvedRiverpodLibraryResult>[];
+  final riverpodCompilationUnits = <RiverpodCompilationUnit>[];
   @override
-  void visitResolvedRiverpodLibraryResult(
-    ResolvedRiverpodLibraryResult node,
+  void visitRiverpodCompilationUnit(
+    RiverpodCompilationUnit node,
   ) {
-    super.visitResolvedRiverpodLibraryResult(node);
-    resolvedRiverpodLibraryResults.add(node);
+    super.visitRiverpodCompilationUnit(node);
+    riverpodCompilationUnits.add(node);
   }
 
   final riverpodAnnotationDependencys = <RiverpodAnnotationDependency>[];
@@ -1792,12 +1792,12 @@ class _RiverpodAstRegistryVisitor extends GeneralizingRiverpodAstVisitor {
   }
 
   @override
-  void visitResolvedRiverpodLibraryResult(ResolvedRiverpodLibraryResult node) {
-    super.visitResolvedRiverpodLibraryResult(node);
+  void visitRiverpodCompilationUnit(RiverpodCompilationUnit node) {
+    super.visitRiverpodCompilationUnit(node);
     node.visitChildren(this);
     _runSubscriptions(
       node,
-      _registry._onResolvedRiverpodLibraryResult,
+      _registry._onRiverpodCompilationUnit,
     );
   }
 
@@ -2060,11 +2060,10 @@ class RiverpodAstRegistry {
     _onRefListenInvocation.add(cb);
   }
 
-  final _onResolvedRiverpodLibraryResult =
-      <void Function(ResolvedRiverpodLibraryResult)>[];
-  void addResolvedRiverpodLibraryResult(
-      void Function(ResolvedRiverpodLibraryResult node) cb) {
-    _onResolvedRiverpodLibraryResult.add(cb);
+  final _onRiverpodCompilationUnit = <void Function(RiverpodCompilationUnit)>[];
+  void addRiverpodCompilationUnit(
+      void Function(RiverpodCompilationUnit node) cb) {
+    _onRiverpodCompilationUnit.add(cb);
   }
 
   final _onRiverpodAnnotationDependency =

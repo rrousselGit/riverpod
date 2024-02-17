@@ -35,6 +35,123 @@ part 'riverpod_ast/resolve_riverpod.dart';
 part 'riverpod_ast/riverpod_annotation.dart';
 part 'riverpod_ast/widget_ref_invocation.dart';
 
+abstract base class RiverpodAst {
+  RiverpodAst() {
+    visitChildren(_SetParentVisitor(this));
+  }
+
+  List<RefInvocation> get refInvocations => node.refInvocations;
+  List<WidgetRefInvocation> get widgetRefInvocations =>
+      node.widgetRefInvocations;
+
+  List<ProviderContainerInstanceCreationExpression>
+      get providerContainerInstanceCreations =>
+          node.providerContainerInstanceCreations;
+
+  List<ProviderScopeInstanceCreationExpression>
+      get providerScopeInstanceCreations => node.providerScopeInstanceCreations;
+
+  RiverpodAst? _parent;
+  RiverpodAst? get parent => _parent;
+
+  AstNode get node;
+
+  void accept(RiverpodAstVisitor visitor);
+
+  @mustCallSuper
+  void visitChildren(RiverpodAstVisitor visitor);
+}
+
+extension AstNodeX on AstNode {
+  List<RefInvocation> get refInvocations {
+    return upsert('RefInvocations', () {
+      final visitor = _RefInvocationVisitor();
+      accept(visitor);
+      return visitor.invocations;
+    });
+  }
+
+  List<WidgetRefInvocation> get widgetRefInvocations {
+    return upsert('WidgetRefInvocations', () {
+      final visitor = _WidgetRefInvocationVisitor();
+      accept(visitor);
+      return visitor.invocations;
+    });
+  }
+
+  List<ProviderContainerInstanceCreationExpression>
+      get providerContainerInstanceCreations {
+    return upsert('ProviderContainerInstanceCreations', () {
+      final visitor = _ProviderContainerInstanceCreationVisitor();
+      accept(visitor);
+      return visitor.instances;
+    });
+  }
+
+  List<ProviderScopeInstanceCreationExpression>
+      get providerScopeInstanceCreations {
+    return upsert('ProviderScopeInstanceCreations', () {
+      final visitor = _ProviderScopeInstanceCreationVisitor();
+      accept(visitor);
+      return visitor.instances;
+    });
+  }
+}
+
+class _RefInvocationVisitor extends GeneralizingAstVisitor<void> {
+  final invocations = <RefInvocation>[];
+
+  @override
+  void visitMethodInvocation(MethodInvocation node) {
+    final refInvocation = node.refInvocation;
+    if (refInvocation != null) {
+      invocations.add(refInvocation);
+    }
+    super.visitMethodInvocation(node);
+  }
+}
+
+class _WidgetRefInvocationVisitor extends GeneralizingAstVisitor<void> {
+  final invocations = <WidgetRefInvocation>[];
+
+  @override
+  void visitMethodInvocation(MethodInvocation node) {
+    final refInvocation = node.widgetRefInvocation;
+    if (refInvocation != null) {
+      invocations.add(refInvocation);
+    }
+    super.visitMethodInvocation(node);
+  }
+}
+
+class _ProviderContainerInstanceCreationVisitor
+    extends GeneralizingAstVisitor<void> {
+  final instances = <ProviderContainerInstanceCreationExpression>[];
+
+  @override
+  void visitInstanceCreationExpression(InstanceCreationExpression node) {
+    final instance = node.providerContainerInstanceCreation;
+    if (instance != null) {
+      instances.add(instance);
+    }
+    super.visitInstanceCreationExpression(node);
+  }
+}
+
+class _ProviderScopeInstanceCreationVisitor
+    extends GeneralizingAstVisitor<void> {
+  final instances = <ProviderScopeInstanceCreationExpression>[];
+
+  @override
+  void visitInstanceCreationExpression(InstanceCreationExpression node) {
+    final instance = node.providerScopeInstanceCreation;
+    if (instance != null) {
+      instances.add(instance);
+    }
+    super.visitInstanceCreationExpression(node);
+  }
+}
+
 extension MethodInvocationX on MethodInvocation {
   RefInvocation? get refInvocation {
     return upsert('RefInvocation', () => RefInvocation._parse(this));
@@ -63,22 +180,6 @@ extension InstanceCreationX on InstanceCreationExpression {
       () => ProviderContainerInstanceCreationExpression._parse(this),
     );
   }
-}
-
-abstract base class RiverpodAst {
-  RiverpodAst() {
-    visitChildren(_SetParentVisitor(this));
-  }
-
-  RiverpodAst? _parent;
-  RiverpodAst? get parent => _parent;
-
-  AstNode? get node;
-
-  void accept(RiverpodAstVisitor visitor);
-
-  @mustCallSuper
-  void visitChildren(RiverpodAstVisitor visitor);
 }
 
 class _SetParentVisitor extends GeneralizingRiverpodAstVisitor {
