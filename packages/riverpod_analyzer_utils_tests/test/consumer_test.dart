@@ -29,23 +29,6 @@ class ProviderWidget<T> extends ConsumerWidget {
       consumerWidget.buildMethod!.toSource(),
       '@override Widget build(BuildContext context, WidgetRef ref) {ref.watch(provider); return Container();}',
     );
-
-    expect(consumerWidget.node.widgetRefInvocations, [
-      isA<WidgetRefWatchInvocation>()
-          .having((e) => e.node.toSource(), 'node', 'ref.watch(provider)')
-          .having(
-            (e) => e.provider,
-            'provider',
-            isA<ProviderListenableExpression>()
-                .having((e) => e.node.toSource(), 'node', 'provider')
-                .having(
-                  (e) => e.providerElement,
-                  'providerElement',
-                  isA<LegacyProviderDeclarationElement>()
-                      .having((e) => e.providerType, 'providerType', null),
-                ),
-          ),
-    ]);
   });
 
   testSource('Decode ConsumerWidget declarations', source: '''
@@ -73,12 +56,6 @@ class MyConsumerWidget extends ConsumerWidget {
       consumerWidget.buildMethod!.toSource(),
       '@override Widget build(BuildContext context, WidgetRef ref) {ref.watch(provider); return Container();}',
     );
-
-    expect(consumerWidget.node.widgetRefInvocations, hasLength(1));
-    expect(
-      consumerWidget.node.widgetRefInvocations.single,
-      isA<WidgetRefInvocation>(),
-    );
   });
 
   testSource('Decode HookConsumerWidgetDeclaration declarations', source: '''
@@ -105,12 +82,6 @@ class MyConsumerWidget extends HookConsumerWidget {
     expect(
       consumerWidget.buildMethod!.toSource(),
       '@override Widget build(BuildContext context, WidgetRef ref) {ref.watch(provider); return Container();}',
-    );
-
-    expect(consumerWidget.node.widgetRefInvocations, hasLength(1));
-    expect(
-      consumerWidget.node.widgetRefInvocations.single,
-      isA<WidgetRefInvocation>(),
     );
   });
 
@@ -153,18 +124,6 @@ class MyConsumerState extends ConsumerState<MyConsumerWidget> {
 
     expect(consumerState, isA<ConsumerStateDeclaration>());
     expect(consumerState.node.name.toString(), 'MyConsumerState');
-
-    expect(consumerState.node.widgetRefInvocations, hasLength(2));
-    expect(
-      consumerState.node.widgetRefInvocations[0],
-      isA<WidgetRefInvocation>()
-          .having((e) => e.node.toSource(), 'node', 'ref.watch(provider)'),
-    );
-    expect(
-      consumerState.node.widgetRefInvocations[1],
-      isA<WidgetRefInvocation>()
-          .having((e) => e.node.toSource(), 'node', 'ref.watch(provider2)'),
-    );
   });
 
   testSource('Decode StatefulHookConsumerWidgetDeclaration declarations',
@@ -191,7 +150,6 @@ class MyConsumerState extends ConsumerState<MyConsumerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    ref.watch(provider2);
     return Container();
   }
 }
@@ -206,17 +164,5 @@ class MyConsumerState extends ConsumerState<MyConsumerWidget> {
 
     expect(consumerState, isA<ConsumerStateDeclaration>());
     expect(consumerState.node.name.toString(), 'MyConsumerState');
-
-    expect(consumerState.node.widgetRefInvocations, hasLength(2));
-    expect(
-      consumerState.node.widgetRefInvocations[0],
-      isA<WidgetRefInvocation>()
-          .having((e) => e.node.toSource(), 'node', 'ref.watch(provider)'),
-    );
-    expect(
-      consumerState.node.widgetRefInvocations[1],
-      isA<WidgetRefInvocation>()
-          .having((e) => e.node.toSource(), 'node', 'ref.watch(provider2)'),
-    );
   });
 }

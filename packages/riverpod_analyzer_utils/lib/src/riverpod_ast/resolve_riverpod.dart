@@ -103,26 +103,40 @@ class _AddConsumerDeclarationVisitor extends UnimplementedRiverpodAstVisitor {
   }
 }
 
-class _TriggerAstParsingVisitor extends GeneralizingAstVisitor<void> {
-  @override
-  void visitNode(AstNode node) {
-    super.visitNode(node);
+class _TriggerAstParsingVisitor extends GeneralizingAstVisitor<void> {}
 
-    node.providerContainerInstanceCreations;
-    node.providerScopeInstanceCreations;
-    node.providerListenables;
-    node.refInvocations;
-    node.widgetRefInvocations;
-  }
-}
-
-class _ParseRiverpodUnitVisitor extends SimpleAstVisitor<void> {
+class _ParseRiverpodUnitVisitor extends GeneralizingAstVisitor<void> {
   _ParseRiverpodUnitVisitor(this.result);
 
   final RiverpodCompilationUnit result;
 
   @override
+  void visitInstanceCreationExpression(InstanceCreationExpression node) {
+    super.visitInstanceCreationExpression(node);
+
+    node.providerContainerInstanceCreation;
+    node.providerScopeInstanceCreation;
+  }
+
+  @override
+  void visitExpression(Expression node) {
+    super.visitExpression(node);
+
+    node.providerListenable;
+  }
+
+  @override
+  void visitMethodInvocation(MethodInvocation node) {
+    super.visitMethodInvocation(node);
+
+    node.refInvocation;
+    node.widgetRefInvocation;
+  }
+
+  @override
   void visitClassDeclaration(ClassDeclaration node) {
+    super.visitClassDeclaration(node);
+
     final declaration = ClassBasedProviderDeclaration._parse(node);
     if (declaration != null) {
       result.classBasedProviderDeclarations.add(declaration);
@@ -138,6 +152,8 @@ class _ParseRiverpodUnitVisitor extends SimpleAstVisitor<void> {
 
   @override
   void visitFunctionDeclaration(FunctionDeclaration node) {
+    super.visitFunctionDeclaration(node);
+
     final declaration = FunctionalProviderDeclaration._parse(node);
     if (declaration != null) {
       result.functionalProviderDeclarations.add(declaration);
@@ -146,13 +162,12 @@ class _ParseRiverpodUnitVisitor extends SimpleAstVisitor<void> {
   }
 
   @override
-  void visitTopLevelVariableDeclaration(TopLevelVariableDeclaration node) {
-    for (final variable in node.variables.variables) {
-      final declaration = LegacyProviderDeclaration._parse(variable);
-      if (declaration != null) {
-        result.legacyProviderDeclarations.add(declaration);
-        continue;
-      }
+  void visitVariableDeclaration(VariableDeclaration node) {
+    super.visitVariableDeclaration(node);
+
+    final declaration = LegacyProviderDeclaration._parse(node);
+    if (declaration != null) {
+      result.legacyProviderDeclarations.add(declaration);
     }
   }
 }
