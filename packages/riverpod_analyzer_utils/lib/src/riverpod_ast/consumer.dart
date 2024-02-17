@@ -23,6 +23,7 @@ abstract base class ConsumerDeclaration extends RiverpodAst
     return null;
   }
 
+  @override
   ClassDeclaration get node;
 }
 

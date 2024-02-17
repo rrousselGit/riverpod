@@ -42,6 +42,7 @@ abstract base class RefInvocation extends RiverpodAst
     }
   }
 
+  @override
   final MethodInvocation node;
   final SimpleIdentifier function;
 }

@@ -106,6 +106,7 @@ final class ProviderListenableExpression extends RiverpodAst
     }
   }
 
+  @override
   final Expression node;
   final SimpleIdentifier? providerPrefix;
   final SimpleIdentifier? provider;

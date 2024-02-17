@@ -7,6 +7,7 @@ final class RiverpodAnnotationDependency extends RiverpodAst
     required this.provider,
   });
 
+  @override
   final Expression node;
   final GeneratorProviderDeclarationElement provider;
 }
@@ -18,6 +19,7 @@ final class RiverpodAnnotationDependencies extends RiverpodAst
     required this.dependencies,
   });
 
+  @override
   final NamedExpression node;
   @override
   final List<RiverpodAnnotationDependency>? dependencies;
@@ -25,7 +27,7 @@ final class RiverpodAnnotationDependencies extends RiverpodAst
 
 final class RiverpodAnnotation extends RiverpodAst with _$RiverpodAnnotation {
   RiverpodAnnotation._({
-    required this.annotation,
+    required this.node,
     required this.element,
     required this.keepAliveNode,
     required this.dependencies,
@@ -72,7 +74,7 @@ final class RiverpodAnnotation extends RiverpodAst with _$RiverpodAnnotation {
       final dependencies = _parseDependencies(dependenciesNode);
 
       return RiverpodAnnotation._(
-        annotation: annotation,
+        node: annotation,
         element: riverpodAnnotationElement,
         keepAliveNode: keepAliveNode,
         dependencies: dependencies,
@@ -119,7 +121,8 @@ final class RiverpodAnnotation extends RiverpodAst with _$RiverpodAnnotation {
     );
   }
 
-  final Annotation annotation;
+  @override
+  final Annotation node;
   final RiverpodAnnotationElement element;
   final NamedExpression? keepAliveNode;
   @override

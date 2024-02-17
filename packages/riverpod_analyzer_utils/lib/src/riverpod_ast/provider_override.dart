@@ -3,7 +3,7 @@ part of '../riverpod_ast.dart';
 final class ProviderOverrideExpression extends RiverpodAst
     with _$ProviderOverrideExpression {
   ProviderOverrideExpression._({
-    required this.expression,
+    required this.node,
     required this.providerElement,
     required this.provider,
     required this.familyArguments,
@@ -22,14 +22,15 @@ final class ProviderOverrideExpression extends RiverpodAst
     }
 
     return ProviderOverrideExpression._(
-      expression: expression,
+      node: expression,
       providerElement: providerElement,
       familyArguments: familyArguments,
       provider: provider,
     );
   }
 
-  final CollectionElement expression;
+  @override
+  final CollectionElement node;
   final ProviderDeclarationElement? providerElement;
   final SimpleIdentifier? provider;
 
@@ -62,6 +63,7 @@ final class ProviderOverrideList extends RiverpodAst
     );
   }
 
+  @override
   final NamedExpression node;
   @override
   final List<ProviderOverrideExpression>? overrides;

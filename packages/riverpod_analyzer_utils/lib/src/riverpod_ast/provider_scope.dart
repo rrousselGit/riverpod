@@ -25,6 +25,7 @@ final class ProviderScopeInstanceCreationExpression extends RiverpodAst
     );
   }
 
+  @override
   final InstanceCreationExpression node;
   @override
   final ProviderOverrideList? overrides;

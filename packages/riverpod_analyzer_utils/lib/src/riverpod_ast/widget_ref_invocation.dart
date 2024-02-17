@@ -50,6 +50,7 @@ abstract base class WidgetRefInvocation extends RiverpodAst
     }
   }
 
+  @override
   final MethodInvocation node;
   final SimpleIdentifier function;
 }

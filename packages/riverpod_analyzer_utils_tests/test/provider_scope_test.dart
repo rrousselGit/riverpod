@@ -74,7 +74,7 @@ class Example extends ConsumerWidget {
         same(provider.providerElement),
       );
       expect(
-        scopes[1].overrides!.overrides![0].expression.toSource(),
+        scopes[1].overrides!.overrides![0].node.toSource(),
         'provider.overrideWith((ref) => 0)',
       );
       expect(
@@ -89,7 +89,7 @@ class Example extends ConsumerWidget {
         same(provider.providerElement),
       );
       expect(
-        scopes[1].overrides!.overrides![1].expression.toSource(),
+        scopes[1].overrides!.overrides![1].node.toSource(),
         'provider.overrideWithValue(42)',
       );
       expect(
@@ -104,7 +104,7 @@ class Example extends ConsumerWidget {
         same(provider.providerElement),
       );
       expect(
-        scopes[1].overrides!.overrides![2].expression.toSource(),
+        scopes[1].overrides!.overrides![2].node.toSource(),
         'provider',
       );
       expect(
@@ -120,7 +120,7 @@ class Example extends ConsumerWidget {
         same(family.providerElement),
       );
       expect(
-        scopes[1].overrides!.overrides![3].expression.toSource(),
+        scopes[1].overrides!.overrides![3].node.toSource(),
         'family(42)',
       );
       expect(
@@ -138,7 +138,7 @@ class Example extends ConsumerWidget {
         same(family.providerElement),
       );
       expect(
-        scopes[1].overrides!.overrides![4].expression.toSource(),
+        scopes[1].overrides!.overrides![4].node.toSource(),
         'family.overrideWith((ref, id) => 0)',
       );
       expect(
@@ -153,7 +153,7 @@ class Example extends ConsumerWidget {
         same(family.providerElement),
       );
       expect(
-        scopes[1].overrides!.overrides![5].expression.toSource(),
+        scopes[1].overrides!.overrides![5].node.toSource(),
         'family(42).overrideWith((ref) => 0)',
       );
       expect(
@@ -183,7 +183,7 @@ class Example extends ConsumerWidget {
       'overrides: [() {return provider;}()]',
     );
     expect(
-      scopes[3].overrides?.overrides?.single.expression.toSource(),
+      scopes[3].overrides?.overrides?.single.node.toSource(),
       '() {return provider;}()',
     );
     expect(scopes[3].overrides?.overrides?.single.providerElement, null);

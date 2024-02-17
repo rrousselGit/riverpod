@@ -26,6 +26,7 @@ final class ProviderContainerInstanceCreationExpression extends RiverpodAst
     );
   }
 
+  @override
   final InstanceCreationExpression node;
   @override
   final ProviderOverrideList? overrides;

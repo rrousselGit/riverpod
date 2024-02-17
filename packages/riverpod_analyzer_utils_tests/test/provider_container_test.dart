@@ -62,7 +62,7 @@ void main() {
         same(provider.providerElement),
       );
       expect(
-        containers[1].overrides!.overrides![0].expression.toSource(),
+        containers[1].overrides!.overrides![0].node.toSource(),
         'provider.overrideWith((ref) => 0)',
       );
       expect(
@@ -77,7 +77,7 @@ void main() {
         same(provider.providerElement),
       );
       expect(
-        containers[1].overrides!.overrides![1].expression.toSource(),
+        containers[1].overrides!.overrides![1].node.toSource(),
         'provider.overrideWithValue(42)',
       );
       expect(
@@ -92,7 +92,7 @@ void main() {
         same(provider.providerElement),
       );
       expect(
-        containers[1].overrides!.overrides![2].expression.toSource(),
+        containers[1].overrides!.overrides![2].node.toSource(),
         'provider',
       );
       expect(
@@ -108,7 +108,7 @@ void main() {
         same(family.providerElement),
       );
       expect(
-        containers[1].overrides!.overrides![3].expression.toSource(),
+        containers[1].overrides!.overrides![3].node.toSource(),
         'family(42)',
       );
       expect(
@@ -126,7 +126,7 @@ void main() {
         same(family.providerElement),
       );
       expect(
-        containers[1].overrides!.overrides![4].expression.toSource(),
+        containers[1].overrides!.overrides![4].node.toSource(),
         'family.overrideWith((ref, id) => 0)',
       );
       expect(
@@ -141,7 +141,7 @@ void main() {
         same(family.providerElement),
       );
       expect(
-        containers[1].overrides!.overrides![5].expression.toSource(),
+        containers[1].overrides!.overrides![5].node.toSource(),
         'family(42).overrideWith((ref) => 0)',
       );
       expect(
@@ -171,7 +171,7 @@ void main() {
       'overrides: [() {return provider;}()]',
     );
     expect(
-      containers[3].overrides?.overrides?.single.expression.toSource(),
+      containers[3].overrides?.overrides?.single.node.toSource(),
       '() {return provider;}()',
     );
     expect(containers[3].overrides?.overrides?.single.providerElement, null);

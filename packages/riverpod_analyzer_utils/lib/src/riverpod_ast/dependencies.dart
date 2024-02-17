@@ -7,6 +7,7 @@ final class DependenciesAnnotationDependency extends RiverpodAst
     required this.provider,
   });
 
+  @override
   final Expression node;
   final GeneratorProviderDeclarationElement provider;
 }
@@ -184,5 +185,6 @@ final class DependenciesAnnotation extends RiverpodAst
   final Declaration declaration;
   @override
   final List<DependenciesAnnotationDependency>? dependencies;
+  @override
   final Annotation node;
 }

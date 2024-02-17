@@ -172,7 +172,7 @@ final autoDisposeFamily2 = Provider.family.autoDispose<int, int>(
       expect(unknownDependencies.dependencies, isNotNull);
       expect(unknownDependencies.dependencies?.dependencies, isNull);
       expect(
-        unknownDependencies.dependencies?.dependenciesNode.toSource(),
+        unknownDependencies.dependencies?.node.toSource(),
         'dependencies: getDeps()',
       );
 
@@ -183,7 +183,7 @@ final autoDisposeFamily2 = Provider.family.autoDispose<int, int>(
           reason: '${provider.key} has no dependency',
         );
         expect(
-          provider.value.dependencies?.dependenciesNode.toSource(),
+          provider.value.dependencies?.node.toSource(),
           'dependencies: []',
         );
       }
@@ -196,7 +196,7 @@ final autoDisposeFamily2 = Provider.family.autoDispose<int, int>(
         );
 
         expect(
-          provider.value.dependencies?.dependenciesNode.toSource(),
+          provider.value.dependencies?.node.toSource(),
           'dependencies: [dep, family, family(42), ...getDeps()]',
         );
 
@@ -248,7 +248,7 @@ final autoDisposeFamily2 = Provider.family.autoDispose<int, int>(
         hasLength(2),
       );
       expect(
-        generatorDependencies.dependencies?.dependenciesNode.toSource(),
+        generatorDependencies.dependencies?.node.toSource(),
         'dependencies: [dep2Provider, family2Provider]',
       );
       expect(
@@ -379,7 +379,7 @@ final weird = Provider<int>(name: 'foo', dependencies: [], (ref) => 0);
         "(name: 'foo', dependencies: [], (ref) => 0)",
       );
       expect(
-        providers['weird']?.dependencies?.dependenciesNode.toSource(),
+        providers['weird']?.dependencies?.node.toSource(),
         'dependencies: []',
       );
       expect(providers['weird']?.build.toSource(), '(ref) => 0');

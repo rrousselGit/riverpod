@@ -39,6 +39,30 @@ extension MethodInvocationX on MethodInvocation {
   RefInvocation? get refInvocation {
     return upsert('RefInvocation', () => RefInvocation._parse(this));
   }
+
+  WidgetRefInvocation? get widgetRefInvocation {
+    return upsert(
+      'WidgetRefInvocation',
+      () => WidgetRefInvocation._parse(this),
+    );
+  }
+}
+
+extension InstanceCreationX on InstanceCreationExpression {
+  ProviderScopeInstanceCreationExpression? get providerScopeInstanceCreation {
+    return upsert(
+      'ProviderScopeInstanceCreationExpression',
+      () => ProviderScopeInstanceCreationExpression._parse(this),
+    );
+  }
+
+  ProviderContainerInstanceCreationExpression?
+      get providerContainerInstanceCreation {
+    return upsert(
+      'ProviderContainerInstanceCreationExpression',
+      () => ProviderContainerInstanceCreationExpression._parse(this),
+    );
+  }
 }
 
 abstract base class RiverpodAst {
@@ -48,6 +72,8 @@ abstract base class RiverpodAst {
 
   RiverpodAst? _parent;
   RiverpodAst? get parent => _parent;
+
+  AstNode? get node;
 
   void accept(RiverpodAstVisitor visitor);
 

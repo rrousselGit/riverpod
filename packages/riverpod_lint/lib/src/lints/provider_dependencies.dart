@@ -89,7 +89,7 @@ class ProviderDependencies extends RiverpodLintRule {
         reporter.reportErrorForNode(
           _code,
           declaration.annotation.dependencies?.node ??
-              declaration.annotation.annotation,
+              declaration.annotation.node,
         );
       }
     });
@@ -134,7 +134,7 @@ class _ProviderDependenciesFix extends RiverpodFix {
             // So instead of @Riverpod(dependencies: []) -> @Riverpod(),
             // we can do @Riverpod(dependencies: []) -> @riverpod
             builder.addSimpleReplacement(
-              declaration.annotation.annotation.sourceRange,
+              declaration.annotation.node.sourceRange,
               '@riverpod',
             );
           } else {
@@ -143,14 +143,13 @@ class _ProviderDependenciesFix extends RiverpodFix {
 
             final end = min(
               // End before the closing parenthesis or before the next parameter
-              declaration
-                  .annotation.annotation.arguments!.rightParenthesis.offset,
+              declaration.annotation.node.arguments!.rightParenthesis.offset,
               dependenciesNode.endToken.next!.end,
             );
 
             final start = max(
               // Start after the opening parenthesis or after the next parameter
-              declaration.annotation.annotation.arguments!.leftParenthesis.end,
+              declaration.annotation.node.arguments!.leftParenthesis.end,
               dependenciesNode.beginToken.previous!.end,
             );
 
@@ -167,12 +166,11 @@ class _ProviderDependenciesFix extends RiverpodFix {
           priority: _fixDependenciesPriority,
         );
         changeBuilder.addDartFileEdit((builder) {
-          final annotationArguments =
-              declaration.annotation.annotation.arguments;
+          final annotationArguments = declaration.annotation.node.arguments;
           if (annotationArguments == null) {
             // No argument list found. We are using the @riverpod annotation.
             builder.addSimpleReplacement(
-              declaration.annotation.annotation.sourceRange,
+              declaration.annotation.node.sourceRange,
               '@Riverpod(dependencies: $newDependencies)',
             );
           } else {

@@ -4,7 +4,7 @@ final class LegacyProviderDependencies extends RiverpodAst
     with _$LegacyProviderDependencies {
   LegacyProviderDependencies._({
     required this.dependencies,
-    required this.dependenciesNode,
+    required this.node,
   });
 
   static LegacyProviderDependencies? _parse(NamedExpression? dependenciesNode) {
@@ -19,14 +19,15 @@ final class LegacyProviderDependencies extends RiverpodAst
     }
 
     return LegacyProviderDependencies._(
-      dependenciesNode: dependenciesNode,
+      node: dependenciesNode,
       dependencies: dependencies,
     );
   }
 
   @override
   final List<LegacyProviderDependency>? dependencies;
-  final NamedExpression dependenciesNode;
+  @override
+  final NamedExpression node;
 }
 
 final class LegacyProviderDependency extends RiverpodAst
@@ -47,6 +48,7 @@ final class LegacyProviderDependency extends RiverpodAst
     );
   }
 
+  @override
   final CollectionElement node;
   @override
   final ProviderListenableExpression? provider;
