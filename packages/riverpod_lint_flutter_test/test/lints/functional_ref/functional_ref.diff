@@ -10,6 +10,30 @@ int nameless(
   return 0;
 ```
 ---
+Message: `Type as NamelessRef`
+Priority: 90
+Diff for file `test/lints/functional_ref/functional_ref.dart:8`:
+```
+int nameless(
+  // expect_lint: functional_ref
+-   ref,
++   NamelessRef ref,
+) {
+  return 0;
+```
+---
+Message: `Type as NoGenericsRef<A, B>`
+Priority: 90
+Diff for file `test/lints/functional_ref/functional_ref.dart:21`:
+```
+@riverpod
+// expect_lint: functional_ref
+- int noGenerics<A extends num, B>(NoGenericsRef ref) => 0;
++ int noGenerics<A extends num, B>(NoGenericsRef<A, B> ref) => 0;
+
+@riverpod
+```
+---
 Message: `Type as NoGenericsRef<A, B>`
 Priority: 90
 Diff for file `test/lints/functional_ref/functional_ref.dart:21`:
@@ -32,6 +56,28 @@ Diff for file `test/lints/functional_ref/functional_ref.dart:25`:
 + int missingGenerics<A, B>(MissingGenericsRef<A, B> ref) => 0;
 
 @riverpod
+```
+---
+Message: `Type as MissingGenericsRef<A, B>`
+Priority: 90
+Diff for file `test/lints/functional_ref/functional_ref.dart:25`:
+```
+@riverpod
+// expect_lint: functional_ref
+- int missingGenerics<A, B>(MissingGenericsRef ref) => 0;
++ int missingGenerics<A, B>(MissingGenericsRef<A, B> ref) => 0;
+
+@riverpod
+```
+---
+Message: `Type as WrongOrderRef<B, A>`
+Priority: 90
+Diff for file `test/lints/functional_ref/functional_ref.dart:29`:
+```
+@riverpod
+// expect_lint: functional_ref
+- int wrongOrder<B, A>(WrongOrderRef ref) => 0;
++ int wrongOrder<B, A>(WrongOrderRef<B, A> ref) => 0;
 ```
 ---
 Message: `Type as WrongOrderRef<B, A>`

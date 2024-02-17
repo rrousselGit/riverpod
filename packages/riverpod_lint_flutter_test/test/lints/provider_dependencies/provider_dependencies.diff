@@ -12,6 +12,18 @@ int plainAnnotation(PlainAnnotationRef ref) {
 ---
 Message: `Specify "dependencies"`
 Priority: 100
+Diff for file `test/lints/provider_dependencies/provider_dependencies.dart:14`:
+```
+
+// expect_lint: provider_dependencies
+- @riverpod
++ @Riverpod(dependencies: [dep])
+int plainAnnotation(PlainAnnotationRef ref) {
+  ref.watch(depProvider);
+```
+---
+Message: `Specify "dependencies"`
+Priority: 100
 Diff for file `test/lints/provider_dependencies/provider_dependencies.dart:21`:
 ```
 
@@ -20,6 +32,30 @@ Diff for file `test/lints/provider_dependencies/provider_dependencies.dart:21`:
 + @Riverpod(keepAlive: false, dependencies: [dep])
 int customAnnotation(CustomAnnotationRef ref) {
   ref.watch(depProvider);
+```
+---
+Message: `Specify "dependencies"`
+Priority: 100
+Diff for file `test/lints/provider_dependencies/provider_dependencies.dart:21`:
+```
+
+// expect_lint: provider_dependencies
+- @Riverpod(keepAlive: false)
++ @Riverpod(keepAlive: false, dependencies: [dep])
+int customAnnotation(CustomAnnotationRef ref) {
+  ref.watch(depProvider);
+```
+---
+Message: `Specify "dependencies"`
+Priority: 100
+Diff for file `test/lints/provider_dependencies/provider_dependencies.dart:29`:
+```
+// expect_lint: provider_dependencies
+@Riverpod(
+-   keepAlive: false,
++   keepAlive: false, dependencies: [dep],
+)
+int customAnnotationWithTrailingComma(
 ```
 ---
 Message: `Specify "dependencies"`
@@ -48,6 +84,18 @@ int existingDep(ExistingDepRef ref) {
 ---
 Message: `Update "dependencies"`
 Priority: 100
+Diff for file `test/lints/provider_dependencies/provider_dependencies.dart:41`:
+```
+  keepAlive: false,
+  // expect_lint: provider_dependencies
+-   dependencies: [],
++   dependencies: [dep],
+)
+int existingDep(ExistingDepRef ref) {
+```
+---
+Message: `Update "dependencies"`
+Priority: 100
 Diff for file `test/lints/provider_dependencies/provider_dependencies.dart:51`:
 ```
   keepAlive: false,
@@ -56,6 +104,34 @@ Diff for file `test/lints/provider_dependencies/provider_dependencies.dart:51`:
 +   dependencies: [dep, dep2],
 )
 int multipleDeps(MultipleDepsRef ref) {
+```
+---
+Message: `Update "dependencies"`
+Priority: 100
+Diff for file `test/lints/provider_dependencies/provider_dependencies.dart:51`:
+```
+  keepAlive: false,
+  // expect_lint: provider_dependencies
+-   dependencies: [],
++   dependencies: [dep, dep2],
+)
+int multipleDeps(MultipleDepsRef ref) {
+```
+---
+Message: `Update "dependencies"`
+Priority: 100
+Diff for file `test/lints/provider_dependencies/provider_dependencies.dart:61`:
+```
+@Riverpod(
+  keepAlive: false,
+-   dependencies: [
+-     // expect_lint: provider_dependencies
+-     dep,
+-     dep2,
+-   ],
++   dependencies: [dep2],
+)
+int extraDep(ExtraDepRef ref) {
 ```
 ---
 Message: `Update "dependencies"`
@@ -92,6 +168,38 @@ int noDep(NoDepRef ref) {
 ---
 Message: `Remove "dependencies"`
 Priority: 100
+Diff for file `test/lints/provider_dependencies/provider_dependencies.dart:74`:
+```
+@Riverpod(
+  keepAlive: false,
+-   dependencies: [
+-     // expect_lint: provider_dependencies
+-     dep,
+-   ],
+- )
++ )
+int noDep(NoDepRef ref) {
+  return 0;
+```
+---
+Message: `Remove "dependencies"`
+Priority: 100
+Diff for file `test/lints/provider_dependencies/provider_dependencies.dart:84`:
+```
+
+@Riverpod(
+-   dependencies: [
+-     // expect_lint: provider_dependencies
+-     dep,
+-   ],
+-   keepAlive: false,
++   keepAlive: false,
+)
+int dependenciesFirstThenKeepAlive(DependenciesFirstThenKeepAliveRef ref) {
+```
+---
+Message: `Remove "dependencies"`
+Priority: 100
 Diff for file `test/lints/provider_dependencies/provider_dependencies.dart:84`:
 ```
 
@@ -120,6 +228,35 @@ Diff for file `test/lints/provider_dependencies/provider_dependencies.dart:94`:
 - )
 + @riverpod
 int noDepNoParam(NoDepNoParamRef ref) {
+  return 0;
+```
+---
+Message: `Remove "dependencies"`
+Priority: 100
+Diff for file `test/lints/provider_dependencies/provider_dependencies.dart:94`:
+```
+}
+
+- @Riverpod(
+-   dependencies: [
+-     // expect_lint: provider_dependencies
+-     dep,
+-   ],
+- )
++ @riverpod
+int noDepNoParam(NoDepNoParamRef ref) {
+  return 0;
+```
+---
+Message: `Remove "dependencies"`
+Priority: 100
+Diff for file `test/lints/provider_dependencies/provider_dependencies.dart:105`:
+```
+
+// expect_lint: provider_dependencies
+- @Riverpod(keepAlive: false, dependencies: [dep])
++ @Riverpod(keepAlive: false,)
+int noDepWithoutComma(NoDepWithoutCommaRef ref) {
   return 0;
 ```
 ---

@@ -19,6 +19,7 @@ final class ResolvedRiverpodLibraryResult {
         }
 
         unit.node.visitChildren(_ParseRiverpodUnitVisitor(unit));
+        unit.node.visitChildren(_TriggerAstParsingVisitor());
         unit.visitChildren(_SetParentVisitor(unit));
       }
     } finally {
@@ -99,6 +100,19 @@ class _AddConsumerDeclarationVisitor extends UnimplementedRiverpodAstVisitor {
   @override
   void visitConsumerWidgetDeclaration(ConsumerWidgetDeclaration declaration) {
     result.consumerWidgetDeclarations.add(declaration);
+  }
+}
+
+class _TriggerAstParsingVisitor extends GeneralizingAstVisitor<void> {
+  @override
+  void visitNode(AstNode node) {
+    super.visitNode(node);
+
+    node.providerContainerInstanceCreations;
+    node.providerScopeInstanceCreations;
+    node.providerListenables;
+    node.refInvocations;
+    node.widgetRefInvocations;
   }
 }
 

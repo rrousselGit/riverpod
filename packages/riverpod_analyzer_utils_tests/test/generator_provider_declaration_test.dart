@@ -172,6 +172,14 @@ int fifth(FifthRef ref) => 0;
 
 @Riverpod(dependencies: [int])
 int sixth(SixthRef ref) => 0;
+
+void fn() {}
+
+@Riverpod(dependencies: [fn])
+int seven(SevenRef ref) => 0;
+
+@Riverpod(dependencies: ['foo'])
+int eight(EightRef ref) => 0;
 ''', (resolver) async {
     final result = await resolver.resolveRiverpodAnalysisResult(
       ignoreErrors: true,
@@ -180,43 +188,49 @@ int sixth(SixthRef ref) => 0;
     final errors =
         result.riverpodCompilationUnits.expand((e) => e.errors).toList();
 
-    expect(errors, hasLength(6));
+    expect(errors, hasLength(7));
 
     expect(
       errors[0].message,
-      '@Riverpod(dependencies: <...>) only support list literals (using []).',
+      'Only list literals (using []) as supported.',
     );
     expect(errors[0].targetNode?.toSource(), 'deps');
 
     expect(
       errors[1].message,
-      '@Riverpod(dependencies: <...>) only support list literals (using []).',
+      'Only list literals (using []) as supported.',
     );
     expect(errors[1].targetNode?.toSource(), '');
 
     expect(
       errors[2].message,
-      '@Riverpod(dependencies: [...]) only supports elements annotated with @riverpod as values.',
+      'Only elements annotated with @riverpod are supported.',
     );
     expect(errors[2].targetNode?.toSource(), 'gibberish');
 
     expect(
       errors[3].message,
-      '@Riverpod(dependencies: [...]) does not support if/for/spread operators.',
+      'if/for/spread operators as not supported.',
     );
     expect(errors[3].targetNode?.toSource(), 'if (true) forth');
 
     expect(
       errors[4].message,
-      'Unsupported dependency. Only functions and classes annotated by @riverpod are supported.',
+      'Unsupported dependency "int". Only functions and classes annotated by @riverpod are supported.',
     );
     expect(errors[4].targetElement.toString(), 'int sixth(InvalidType ref)');
 
     expect(
       errors[5].message,
-      'Failed to parse dependency Type (int)',
+      'Unsupported dependency "void fn()". Only functions and classes annotated by @riverpod are supported.',
     );
-    expect(errors[5].targetElement?.toString(), 'int sixth(InvalidType ref)');
+    expect(errors[5].targetElement.toString(), 'int seven(InvalidType ref)');
+
+    expect(
+      errors[6].message,
+      'Unsupported dependency "String (\'foo\')". Only functions and classes annotated by @riverpod are supported.',
+    );
+    expect(errors[6].targetElement.toString(), 'int eight(InvalidType ref)');
   });
 
   testSource('Decode name', runGenerator: true, source: r'''

@@ -37,11 +37,6 @@ import 'errors.dart';
         result.add(provider);
         continue;
       }
-
-      return (
-        null,
-        'Failed to decode $functionType',
-      );
     }
 
     final type = dep.toTypeValue();
@@ -54,16 +49,11 @@ import 'errors.dart';
         result.add(provider);
         continue;
       }
-
-      return (
-        null,
-        'Failed to decode $type',
-      );
     }
 
     return (
       null,
-      'Unsupported dependency. ${dep.type}',
+      'Unsupported dependency "${functionType ?? type ?? dep}". Only functions and classes annotated by @riverpod are supported.',
     );
   }
 

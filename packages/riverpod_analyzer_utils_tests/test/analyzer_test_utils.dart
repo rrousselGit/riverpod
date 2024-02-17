@@ -101,14 +101,6 @@ extension MapTake<Key, Value> on Map<Key, Value> {
   }
 }
 
-class _Foo extends GeneralizingRiverpodAstVisitor {
-  @override
-  void visitRiverpodAst(RiverpodAst node) {
-    print('node $node');
-    // super.visitRiverpodAst(node);
-  }
-}
-
 extension ResolverX on Resolver {
   // ignore: invalid_use_of_internal_member
   Future<RiverpodAnalysisResult> resolveRiverpodAnalysisResult({
@@ -122,16 +114,9 @@ extension ResolverX on Resolver {
 
     final result = RiverpodAnalysisResult();
 
-    print(
-      'foo // ${riverpodAst.units} // ${riverpodAst.units.single.consumerWidgetDeclarations}',
-    );
-
     for (final unit in riverpodAst.units) {
-      unit.accept(_Foo());
       unit.accept(result);
     }
-
-    print('result // ${result.consumerWidgetDeclarations}');
 
     if (!ignoreErrors) {
       final errors =

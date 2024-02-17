@@ -1,3 +1,4 @@
+import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import 'package:test/test.dart';
 
 import 'analyzer_test_utils.dart';
@@ -46,7 +47,8 @@ class Example extends ConsumerWidget {
 ''', (resolver) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
-    final scopes = result.providerScopeInstanceCreationExpressions;
+    final scopes = result
+        .riverpodCompilationUnits.single.node.providerScopeInstanceCreations;
     final consumer = result.consumerWidgetDeclarations.single;
 
     final provider =
@@ -192,9 +194,9 @@ class Example extends ConsumerWidget {
 
     expect(scopes[4].node.toSource(), "ProviderScope(child: Text('foo'))");
     expect(scopes[4].overrides, null);
-    expect(consumer.providerScopeInstanceCreateExpressions, hasLength(1));
+    expect(consumer.node.providerScopeInstanceCreations, hasLength(1));
     expect(
-      consumer.providerScopeInstanceCreateExpressions.single,
+      consumer.node.providerScopeInstanceCreations.single,
       same(scopes[4]),
     );
   });

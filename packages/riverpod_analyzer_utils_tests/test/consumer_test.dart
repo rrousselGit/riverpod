@@ -30,7 +30,7 @@ class ProviderWidget<T> extends ConsumerWidget {
       '@override Widget build(BuildContext context, WidgetRef ref) {ref.watch(provider); return Container();}',
     );
 
-    expect(consumerWidget.widgetRefInvocations, [
+    expect(consumerWidget.node.widgetRefInvocations, [
       isA<WidgetRefWatchInvocation>()
           .having((e) => e.node.toSource(), 'node', 'ref.watch(provider)')
           .having(
@@ -74,9 +74,9 @@ class MyConsumerWidget extends ConsumerWidget {
       '@override Widget build(BuildContext context, WidgetRef ref) {ref.watch(provider); return Container();}',
     );
 
-    expect(consumerWidget.widgetRefInvocations, hasLength(1));
+    expect(consumerWidget.node.widgetRefInvocations, hasLength(1));
     expect(
-      consumerWidget.widgetRefInvocations.single,
+      consumerWidget.node.widgetRefInvocations.single,
       isA<WidgetRefInvocation>(),
     );
   });
@@ -107,9 +107,9 @@ class MyConsumerWidget extends HookConsumerWidget {
       '@override Widget build(BuildContext context, WidgetRef ref) {ref.watch(provider); return Container();}',
     );
 
-    expect(consumerWidget.widgetRefInvocations, hasLength(1));
+    expect(consumerWidget.node.widgetRefInvocations, hasLength(1));
     expect(
-      consumerWidget.widgetRefInvocations.single,
+      consumerWidget.node.widgetRefInvocations.single,
       isA<WidgetRefInvocation>(),
     );
   });
@@ -154,14 +154,14 @@ class MyConsumerState extends ConsumerState<MyConsumerWidget> {
     expect(consumerState, isA<ConsumerStateDeclaration>());
     expect(consumerState.node.name.toString(), 'MyConsumerState');
 
-    expect(consumerState.widgetRefInvocations, hasLength(2));
+    expect(consumerState.node.widgetRefInvocations, hasLength(2));
     expect(
-      consumerState.widgetRefInvocations[0],
+      consumerState.node.widgetRefInvocations[0],
       isA<WidgetRefInvocation>()
           .having((e) => e.node.toSource(), 'node', 'ref.watch(provider)'),
     );
     expect(
-      consumerState.widgetRefInvocations[1],
+      consumerState.node.widgetRefInvocations[1],
       isA<WidgetRefInvocation>()
           .having((e) => e.node.toSource(), 'node', 'ref.watch(provider2)'),
     );
@@ -207,14 +207,14 @@ class MyConsumerState extends ConsumerState<MyConsumerWidget> {
     expect(consumerState, isA<ConsumerStateDeclaration>());
     expect(consumerState.node.name.toString(), 'MyConsumerState');
 
-    expect(consumerState.widgetRefInvocations, hasLength(2));
+    expect(consumerState.node.widgetRefInvocations, hasLength(2));
     expect(
-      consumerState.widgetRefInvocations[0],
+      consumerState.node.widgetRefInvocations[0],
       isA<WidgetRefInvocation>()
           .having((e) => e.node.toSource(), 'node', 'ref.watch(provider)'),
     );
     expect(
-      consumerState.widgetRefInvocations[1],
+      consumerState.node.widgetRefInvocations[1],
       isA<WidgetRefInvocation>()
           .having((e) => e.node.toSource(), 'node', 'ref.watch(provider2)'),
     );

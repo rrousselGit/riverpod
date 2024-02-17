@@ -1,3 +1,4 @@
+import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import 'package:test/test.dart';
 
 import 'analyzer_test_utils.dart';
@@ -41,7 +42,8 @@ void main() {
     final family =
         result.legacyProviderDeclarations.takeAll(['family']).values.single;
 
-    final containers = result.providerContainerInstanceCreationExpressions;
+    final containers = result.riverpodCompilationUnits.single.node
+        .providerContainerInstanceCreations;
 
     expect(containers, hasLength(4));
     expect(containers[0].node.toSource(), 'ProviderContainer()');

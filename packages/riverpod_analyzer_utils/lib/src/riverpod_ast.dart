@@ -100,6 +100,11 @@ class _ProviderListenableExpressionVisitor
   final expressions = <ProviderListenableExpression>[];
 
   @override
+  void visitNode(AstNode node) {
+    // Disable recursion
+  }
+
+  @override
   void visitExpression(Expression node) {
     final listenable = node.providerListenable;
     if (listenable != null) {
@@ -109,7 +114,7 @@ class _ProviderListenableExpressionVisitor
   }
 }
 
-class _WidgetRefInvocationVisitor extends GeneralizingAstVisitor<void> {
+class _WidgetRefInvocationVisitor extends SimpleAstVisitor<void> {
   final invocations = <WidgetRefInvocation>[];
 
   @override
@@ -122,7 +127,7 @@ class _WidgetRefInvocationVisitor extends GeneralizingAstVisitor<void> {
   }
 }
 
-class _RefInvocationVisitor extends GeneralizingAstVisitor<void> {
+class _RefInvocationVisitor extends SimpleAstVisitor<void> {
   final invocations = <RefInvocation>[];
 
   @override
@@ -135,8 +140,7 @@ class _RefInvocationVisitor extends GeneralizingAstVisitor<void> {
   }
 }
 
-class _ProviderContainerInstanceCreationVisitor
-    extends GeneralizingAstVisitor<void> {
+class _ProviderContainerInstanceCreationVisitor extends SimpleAstVisitor<void> {
   final instances = <ProviderContainerInstanceCreationExpression>[];
 
   @override
@@ -149,8 +153,7 @@ class _ProviderContainerInstanceCreationVisitor
   }
 }
 
-class _ProviderScopeInstanceCreationVisitor
-    extends GeneralizingAstVisitor<void> {
+class _ProviderScopeInstanceCreationVisitor extends SimpleAstVisitor<void> {
   final instances = <ProviderScopeInstanceCreationExpression>[];
 
   @override
@@ -209,7 +212,6 @@ class _SetParentVisitor extends GeneralizingRiverpodAstVisitor {
   @override
   void visitRiverpodAst(RiverpodAst node) {
     node._parent = parent;
-    super.visitRiverpodAst(node);
   }
 }
 
