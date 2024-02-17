@@ -71,7 +71,7 @@ final class ConsumerWidgetDeclaration extends ConsumerDeclaration
   final ClassDeclaration node;
 }
 
-class _ParseConsumerRefInvocationVisitor extends RecursiveAstVisitor<void>
+class _ParseConsumerRefInvocationVisitor extends GeneralizingAstVisitor<void>
     with _ParseRefInvocationMixin {
   _ParseConsumerRefInvocationVisitor(
     this.parent,

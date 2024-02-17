@@ -195,3 +195,11 @@ class MissingScopeException implements Exception {
         'Either you forgot to override the provider, or you tried to read it outside of where it is defined';
   }
 }
+
+// TODO changelog added "Depedencies"
+@Target({TargetKind.classType})
+class Dependencies {
+  const Dependencies(this.dependencies);
+
+  final List<Object> dependencies;
+}

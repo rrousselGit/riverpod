@@ -303,7 +303,7 @@ final class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration
   final SourcedType exposedTypeNode;
 }
 
-class _GeneratorRefInvocationVisitor extends RecursiveAstVisitor<void>
+class _GeneratorRefInvocationVisitor extends GeneralizingAstVisitor<void>
     with _ParseRefInvocationMixin {
   _GeneratorRefInvocationVisitor(this.declaration, this.parent);
 

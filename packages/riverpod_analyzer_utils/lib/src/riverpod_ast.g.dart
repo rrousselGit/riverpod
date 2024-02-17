@@ -6,6 +6,38 @@ part of 'riverpod_ast.dart';
 // _LintVisitorGenerator
 // **************************************************************************
 
+base mixin _$DependenciesAnnotationDependency on RiverpodAst {
+  @override
+  void accept(RiverpodAstVisitor visitor) {
+    visitor.visitDependenciesAnnotationDependency(
+      this as DependenciesAnnotationDependency,
+    );
+  }
+
+  @override
+  void visitChildren(RiverpodAstVisitor visitor) {}
+}
+
+base mixin _$DependenciesAnnotation on RiverpodAst {
+  List<DependenciesAnnotationDependency>? get dependencies;
+
+  @override
+  void accept(RiverpodAstVisitor visitor) {
+    visitor.visitDependenciesAnnotation(
+      this as DependenciesAnnotation,
+    );
+  }
+
+  @override
+  void visitChildren(RiverpodAstVisitor visitor) {
+    if (dependencies case final dependencies?) {
+      for (final value in dependencies) {
+        value.accept(visitor);
+      }
+    }
+  }
+}
+
 base mixin _$ConsumerDeclaration on RiverpodAst {
   @override
   void visitChildren(RiverpodAstVisitor visitor) {}
@@ -560,6 +592,11 @@ base mixin _$WidgetRefListenManualInvocation on RiverpodAst {
 }
 
 abstract class RiverpodAstVisitor {
+  void visitDependenciesAnnotationDependency(
+      DependenciesAnnotationDependency node);
+
+  void visitDependenciesAnnotation(DependenciesAnnotation node);
+
   void visitConsumerWidgetDeclaration(ConsumerWidgetDeclaration node);
 
   void visitHookConsumerWidgetDeclaration(HookConsumerWidgetDeclaration node);
@@ -622,6 +659,13 @@ abstract class GeneralizingRiverpodAstVisitor implements RiverpodAstVisitor {
   void visitRiverpodAst(RiverpodAst node) {
     node.visitChildren(this);
   }
+
+  @override
+  void visitDependenciesAnnotationDependency(
+      DependenciesAnnotationDependency node) {}
+
+  @override
+  void visitDependenciesAnnotation(DependenciesAnnotation node) {}
 
   void visitConsumerDeclaration(ConsumerDeclaration node) {}
 
@@ -778,6 +822,17 @@ abstract class GeneralizingRiverpodAstVisitor implements RiverpodAstVisitor {
 
 abstract class RecursiveRiverpodAstVisitor implements RiverpodAstVisitor {
   @override
+  void visitDependenciesAnnotationDependency(
+      DependenciesAnnotationDependency node) {
+    node.visitChildren(this);
+  }
+
+  @override
+  void visitDependenciesAnnotation(DependenciesAnnotation node) {
+    node.visitChildren(this);
+  }
+
+  @override
   void visitConsumerWidgetDeclaration(ConsumerWidgetDeclaration node) {
     node.visitChildren(this);
   }
@@ -916,6 +971,13 @@ abstract class RecursiveRiverpodAstVisitor implements RiverpodAstVisitor {
 
 abstract class SimpleRiverpodAstVisitor implements RiverpodAstVisitor {
   @override
+  void visitDependenciesAnnotationDependency(
+      DependenciesAnnotationDependency node) {}
+
+  @override
+  void visitDependenciesAnnotation(DependenciesAnnotation node) {}
+
+  @override
   void visitConsumerWidgetDeclaration(ConsumerWidgetDeclaration node) {}
 
   @override
@@ -1001,6 +1063,17 @@ abstract class SimpleRiverpodAstVisitor implements RiverpodAstVisitor {
 }
 
 abstract class UnimplementedRiverpodAstVisitor implements RiverpodAstVisitor {
+  @override
+  void visitDependenciesAnnotationDependency(
+      DependenciesAnnotationDependency node) {
+    throw UnimplementedError();
+  }
+
+  @override
+  void visitDependenciesAnnotation(DependenciesAnnotation node) {
+    throw UnimplementedError();
+  }
+
   @override
   void visitConsumerWidgetDeclaration(ConsumerWidgetDeclaration node) {
     throw UnimplementedError();
@@ -1140,6 +1213,25 @@ abstract class UnimplementedRiverpodAstVisitor implements RiverpodAstVisitor {
 
 @internal
 class RiverpodAnalysisResult extends GeneralizingRiverpodAstVisitor {
+  final dependenciesAnnotationDependencys =
+      <DependenciesAnnotationDependency>[];
+  @override
+  void visitDependenciesAnnotationDependency(
+    DependenciesAnnotationDependency node,
+  ) {
+    super.visitDependenciesAnnotationDependency(node);
+    dependenciesAnnotationDependencys.add(node);
+  }
+
+  final dependenciesAnnotations = <DependenciesAnnotation>[];
+  @override
+  void visitDependenciesAnnotation(
+    DependenciesAnnotation node,
+  ) {
+    super.visitDependenciesAnnotation(node);
+    dependenciesAnnotations.add(node);
+  }
+
   final consumerDeclarations = <ConsumerDeclaration>[];
   @override
   void visitConsumerDeclaration(
@@ -1464,6 +1556,27 @@ class _RiverpodAstRegistryVisitor extends GeneralizingRiverpodAstVisitor {
   @override
   void visitRiverpodAst(RiverpodAst node) {
     node.visitChildren(this);
+  }
+
+  @override
+  void visitDependenciesAnnotationDependency(
+      DependenciesAnnotationDependency node) {
+    super.visitDependenciesAnnotationDependency(node);
+    node.visitChildren(this);
+    _runSubscriptions(
+      node,
+      _registry._onDependenciesAnnotationDependency,
+    );
+  }
+
+  @override
+  void visitDependenciesAnnotation(DependenciesAnnotation node) {
+    super.visitDependenciesAnnotation(node);
+    node.visitChildren(this);
+    _runSubscriptions(
+      node,
+      _registry._onDependenciesAnnotation,
+    );
   }
 
   @override
@@ -1812,6 +1925,19 @@ class RiverpodAstRegistry {
   final _onRiverpodAst = <void Function(RiverpodAst)>[];
   void addRiverpodAst(void Function(RiverpodAst node) cb) {
     _onRiverpodAst.add(cb);
+  }
+
+  final _onDependenciesAnnotationDependency =
+      <void Function(DependenciesAnnotationDependency)>[];
+  void addDependenciesAnnotationDependency(
+      void Function(DependenciesAnnotationDependency node) cb) {
+    _onDependenciesAnnotationDependency.add(cb);
+  }
+
+  final _onDependenciesAnnotation = <void Function(DependenciesAnnotation)>[];
+  void addDependenciesAnnotation(
+      void Function(DependenciesAnnotation node) cb) {
+    _onDependenciesAnnotation.add(cb);
   }
 
   final _onConsumerDeclaration = <void Function(ConsumerDeclaration)>[];

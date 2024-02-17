@@ -7,6 +7,70 @@ import 'package:meta/meta.dart';
 import '../riverpod_analyzer_utils.dart';
 import 'errors.dart';
 
+@internal
+(
+  Set<GeneratorProviderDeclarationElement>?,
+  String? message,
+) parseProviderOrFamilyList(
+  DartObject? listObject,
+) {
+  if (listObject == null) {
+    return (null, '`dependencies` not found');
+  }
+
+  // No dependencies, not an error
+  if (listObject.isNull) return (null, null);
+
+  final dependencies = listObject.toListValue() ?? listObject.toSetValue();
+  if (dependencies == null) {
+    return (null, 'Not a list');
+  }
+
+  final result = <GeneratorProviderDeclarationElement>{};
+  for (final dep in dependencies) {
+    final functionType = dep.toFunctionValue();
+    if (functionType != null) {
+      final provider = FunctionalProviderDeclarationElement.parse(
+        functionType,
+        annotation: null,
+      );
+      if (provider != null) {
+        result.add(provider);
+        continue;
+      }
+
+      return (
+        null,
+        'Failed to decode $functionType',
+      );
+    }
+
+    final type = dep.toTypeValue();
+    if (type != null) {
+      final provider = ClassBasedProviderDeclarationElement.parse(
+        type.element! as ClassElement,
+        annotation: null,
+      );
+      if (provider != null) {
+        result.add(provider);
+        continue;
+      }
+
+      return (
+        null,
+        'Failed to decode $type',
+      );
+    }
+
+    return (
+      null,
+      'Unsupported dependency. ${dep.type}',
+    );
+  }
+
+  return (result, null);
+}
+
 class RiverpodAnnotationElement {
   @internal
   RiverpodAnnotationElement({
@@ -28,64 +92,25 @@ class RiverpodAnnotationElement {
     }
     if (annotation == null) return null;
 
-    final dependencies = readDependencies(annotation)?.map((dep) {
-      final result = _parseDependency(
-        dep,
-        targetElement: element,
-      );
-      if (result == null) {
-        errorReporter?.call(
-          RiverpodAnalysisError(
-            'Failed to parse dependency $dep',
-            targetElement: element,
-            code: RiverpodAnalysisErrorCode.riverpodDependencyParseError,
-          ),
-        );
-        return null;
-      }
-      return result;
-    }).toSet();
+    final dependencies = parseProviderOrFamilyList(
+      annotation.getField('dependencies'),
+    );
 
-    if (dependencies?.any((e) => e == null) ?? false) {
-      // One of the dependencies failed to parse
+    if (dependencies.$2 case final error?) {
+      errorReporter?.call(
+        RiverpodAnalysisError(
+          error,
+          targetElement: element,
+          code: RiverpodAnalysisErrorCode.riverpodDependencyParseError,
+        ),
+      );
       return null;
     }
 
     return RiverpodAnnotationElement(
       keepAlive: readKeepAlive(annotation),
-      dependencies: dependencies?.cast(),
+      dependencies: dependencies.$1,
     );
-  }
-
-  static GeneratorProviderDeclarationElement? _parseDependency(
-    DartObject object, {
-    required Element targetElement,
-  }) {
-    final functionType = object.toFunctionValue();
-    if (functionType != null) {
-      final provider = FunctionalProviderDeclarationElement.parse(
-        functionType,
-        annotation: null,
-      );
-      if (provider != null) return provider;
-    }
-    final valueType = object.toTypeValue();
-    if (valueType != null) {
-      final provider = ClassBasedProviderDeclarationElement.parse(
-        valueType.element! as ClassElement,
-        annotation: null,
-      );
-      if (provider != null) return provider;
-    }
-    errorReporter?.call(
-      RiverpodAnalysisError(
-        'Unsupported dependency. '
-        'Only functions and classes annotated by @riverpod are supported.',
-        targetElement: targetElement,
-        code: RiverpodAnalysisErrorCode.riverpodDependencyParseError,
-      ),
-    );
-    return null;
   }
 
   static Set<GeneratorProviderDeclarationElement>?
@@ -104,11 +129,6 @@ class RiverpodAnnotationElement {
   @internal
   static bool readKeepAlive(DartObject object) {
     return object.getField('keepAlive')?.toBoolValue() ?? false;
-  }
-
-  @internal
-  static List<DartObject>? readDependencies(DartObject object) {
-    return object.getField('dependencies')?.toListValue();
   }
 
   final bool keepAlive;

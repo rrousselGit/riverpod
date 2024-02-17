@@ -192,7 +192,7 @@ final class LegacyProviderDeclaration extends RiverpodAst
   final VariableDeclaration node;
 }
 
-class _LegacyRefInvocationVisitor extends RecursiveAstVisitor<void>
+class _LegacyRefInvocationVisitor extends GeneralizingAstVisitor<void>
     with _ParseRefInvocationMixin {
   _LegacyRefInvocationVisitor(this.declaration, this.parent);
 

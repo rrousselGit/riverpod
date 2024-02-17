@@ -89,99 +89,32 @@ final class RiverpodAnnotation extends RiverpodAst with _$RiverpodAnnotation {
     NamedExpression? dependenciesNode,
   ) {
     if (dependenciesNode == null) return null;
-    final dependenciesNodeValue = dependenciesNode.expression;
     // TODO handle Riverpod(dependencies:null)
 
-    final dependencies = <RiverpodAnnotationDependency>[];
+    final dependencies =
+        parseProviderOrFamilyListLiteral(dependenciesNode.expression)
+            .map((e) {
+              if (e.error case final error?) {
+                errorReporter?.call(
+                  RiverpodAnalysisError(
+                    error.message,
+                    targetNode: error.node,
+                    code:
+                        RiverpodAnalysisErrorCode.riverpodDependencyParseError,
+                  ),
+                );
+                return null;
+              }
 
-    if (dependenciesNodeValue is! ListLiteral) {
-      errorReporter?.call(
-        RiverpodAnalysisError(
-          '@Riverpod(dependencies: <...>) only support list literals (using []).',
-          targetNode: dependenciesNodeValue,
-          code: RiverpodAnalysisErrorCode.riverpodDependencyParseError,
-        ),
-      );
-    } else {
-      for (final dependency in dependenciesNodeValue.elements) {
-        if (dependency is! Expression) {
-          errorReporter?.call(
-            RiverpodAnalysisError(
-              '@Riverpod(dependencies: [...]) does not support if/for/spread operators.',
-              targetNode: dependency,
-              code: RiverpodAnalysisErrorCode.riverpodDependencyParseError,
-            ),
-          );
-          continue;
-        }
+              final p = e.provider!;
 
-        if (dependency is! SimpleIdentifier) {
-          errorReporter?.call(
-            RiverpodAnalysisError(
-              'Only elements annotated with @riverpod are supported as "dependencies".',
-              targetNode: dependency,
-              code: RiverpodAnalysisErrorCode.riverpodDependencyParseError,
-            ),
-          );
-          continue;
-        }
-
-        final dependencyElement = dependency.staticElement;
-        if (dependencyElement is FunctionElement) {
-          final dependencyProvider = FunctionalProviderDeclarationElement.parse(
-            dependencyElement,
-            annotation: null,
-          );
-          if (dependencyProvider == null) {
-            errorReporter?.call(
-              RiverpodAnalysisError(
-                'The dependency $dependency is not a class annotated with @riverpod',
-                targetNode: dependency,
-                code: RiverpodAnalysisErrorCode.riverpodDependencyParseError,
-              ),
-            );
-            continue;
-          }
-
-          dependencies.add(
-            RiverpodAnnotationDependency._(
-              node: dependency,
-              provider: dependencyProvider,
-            ),
-          );
-        } else if (dependencyElement is ClassElement) {
-          final dependencyProvider = ClassBasedProviderDeclarationElement.parse(
-            dependencyElement,
-            annotation: null,
-          );
-          if (dependencyProvider == null) {
-            errorReporter?.call(
-              RiverpodAnalysisError(
-                'The dependency $dependency is not a class annotated with @riverpod',
-                targetNode: dependency,
-                code: RiverpodAnalysisErrorCode.riverpodDependencyParseError,
-              ),
-            );
-            continue;
-          }
-
-          dependencies.add(
-            RiverpodAnnotationDependency._(
-              node: dependency,
-              provider: dependencyProvider,
-            ),
-          );
-        } else {
-          errorReporter?.call(
-            RiverpodAnalysisError(
-              '@Riverpod(dependencies: [...]) only supports elements annotated with @riverpod as values.',
-              targetNode: dependency,
-              code: RiverpodAnalysisErrorCode.riverpodDependencyParseError,
-            ),
-          );
-        }
-      }
-    }
+              return RiverpodAnnotationDependency._(
+                node: p.astNode,
+                provider: p.provider,
+              );
+            })
+            .whereNotNull()
+            .toList();
 
     final riverpodAnnotationDependencies = RiverpodAnnotationDependencies._(
       node: dependenciesNode,

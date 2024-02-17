@@ -13,6 +13,7 @@ import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:collection/collection.dart';
 import 'package:crypto/crypto.dart';
+import 'package:custom_lint_core/custom_lint_core.dart';
 import 'package:meta/meta.dart';
 
 import '../riverpod_analyzer_utils.dart';
@@ -20,6 +21,7 @@ import 'argument_list_utils.dart';
 import 'errors.dart';
 
 part 'riverpod_ast.g.dart';
+part 'riverpod_ast/dependencies.dart';
 part 'riverpod_ast/consumer.dart';
 part 'riverpod_ast/generator_provider_declaration.dart';
 part 'riverpod_ast/legacy_provider_declaration.dart';

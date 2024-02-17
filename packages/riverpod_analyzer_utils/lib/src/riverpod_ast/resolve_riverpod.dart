@@ -70,7 +70,7 @@ final class ResolvedRiverpodLibraryResult extends RiverpodAst
   // TODO changelog breaking renamed visitResolvedRiverpodLibraryResult
 }
 
-mixin _ParseRefInvocationMixin on RecursiveAstVisitor<void> {
+mixin _ParseRefInvocationMixin on GeneralizingAstVisitor<void> {
   @override
   void visitMethodInvocation(MethodInvocation node) {
     void superCall() => super.visitMethodInvocation(node);
@@ -169,7 +169,7 @@ class _AddConsumerDeclarationVisitor extends UnimplementedRiverpodAstVisitor {
   }
 }
 
-class _ParseRiverpodUnitVisitor extends RecursiveAstVisitor<void>
+class _ParseRiverpodUnitVisitor extends GeneralizingAstVisitor<void>
     with _ParseRefInvocationMixin {
   _ParseRiverpodUnitVisitor(this.result);
 
