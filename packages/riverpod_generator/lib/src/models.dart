@@ -36,13 +36,6 @@ extension CaseChangeExtension on String {
     );
   }
 
-  String get upperFirst {
-    return replaceFirstMapped(
-      RegExp('[a-zA-Z]'),
-      (match) => match.group(0)!.toUpperCase(),
-    );
-  }
-
   String get public {
     if (startsWith('_')) return substring(1);
     return this;

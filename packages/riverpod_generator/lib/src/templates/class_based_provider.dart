@@ -12,7 +12,7 @@ String providerNameFor(
   final prefix = options.providerNamePrefix ?? '';
   final rawProviderName = provider.name;
   final suffix = options.providerNameSuffix ?? 'Provider';
-  return '$prefix${prefix.isEmpty ? rawProviderName.lowerFirst : rawProviderName.upperFirst}$suffix';
+  return '$prefix${prefix.isEmpty ? rawProviderName.lowerFirst : rawProviderName.titled}$suffix';
 }
 
 String? serializeDependencies(

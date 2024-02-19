@@ -145,7 +145,7 @@ class _SystemHash {
     if (parameters.isEmpty) {
       final rawProviderName = provider.providerElement.name;
       final providerName =
-          '$prefix${prefix.isEmpty ? rawProviderName.lowerFirst : rawProviderName.upperFirst}$suffix';
+          '$prefix${prefix.isEmpty ? rawProviderName.lowerFirst : rawProviderName.titled}$suffix';
       final notifierTypedefName = providerName.startsWith('_')
           ? '_\$${provider.providerElement.name.substring(1)}'
           : '_\$${provider.providerElement.name}';
@@ -159,7 +159,7 @@ class _SystemHash {
     } else {
       final rawProviderName = provider.providerElement.name;
       final providerName =
-          '$prefix${prefix.isEmpty ? rawProviderName.lowerFirst : rawProviderName.upperFirst}$suffix';
+          '$prefix${prefix.isEmpty ? rawProviderName.lowerFirst : rawProviderName.titled}$suffix';
       final notifierTypedefName = providerName.startsWith('_')
           ? '_\$${provider.providerElement.name.substring(1)}'
           : '_\$${provider.providerElement.name}';

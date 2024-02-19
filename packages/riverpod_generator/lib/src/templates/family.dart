@@ -19,7 +19,7 @@ String providerFamilyNameFor(
   final suffix = options.providerFamilyNameSuffix ??
       options.providerNameSuffix ??
       'Provider';
-  return '$prefix${prefix.isEmpty ? rawProviderName.lowerFirst : rawProviderName.upperFirst}$suffix';
+  return '$prefix${prefix.isEmpty ? rawProviderName.lowerFirst : rawProviderName.titled}$suffix';
 }
 
 class FamilyTemplate extends Template {
