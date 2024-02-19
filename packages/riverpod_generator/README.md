@@ -166,23 +166,6 @@ targets:
     builders:
       riverpod_generator:
         options:
-          # Could be changed to "Pod", such that riverpod_generator
-          # would generate "countPod" instead of "countProvider"
-          provider_name_suffix: "Provider" # (default)
-          # Similar to provider_name_suffix, this is an option for renaming
-          # providers with parameters ("families").
-          # This takes precedence over provider_name_suffix.
-          provider_family_name_suffix: "Provider" # (default)
-```
-
-You can change provider name prefix in the build.yaml file:
-
-```yaml
-targets:
-  $default:
-    builders:
-      riverpod_generator:
-        options:
           # Could be changed to "my", such that riverpod_generator
           # would generate "myCountProvider" instead of "countProvider"
           provider_name_prefix: "" # (default)
@@ -190,6 +173,13 @@ targets:
           # providers with parameters ("families").
           # This takes precedence over provider_name_prefix.
           provider_family_name_prefix: "" # (default)
+          # Could be changed to "Pod", such that riverpod_generator
+          # would generate "countPod" instead of "countProvider"
+          provider_name_suffix: "Provider" # (default)
+          # Similar to provider_name_suffix, this is an option for renaming
+          # providers with parameters ("families").
+          # This takes precedence over provider_name_suffix.
+          provider_family_name_suffix: "Provider" # (default)
 ```
 
 [family]: https://riverpod.dev/docs/concepts/modifiers/family
