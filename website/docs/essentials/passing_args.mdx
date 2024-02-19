@@ -1,13 +1,12 @@
 ---
 title: Passing arguments to your requests
-version: 2
+version: 3
 ---
 
 import { Link } from "/src/components/Link";
 import { AutoSnippet, When } from "/src/components/CodeSnippet";
 import noArgProvider from "./passing_args/no_arg_provider";
-import family from "!!raw-loader!./passing_args/raw/family.dart";
-import codegenFamily from "!!raw-loader!./passing_args/codegen/family.dart";
+import family from "./passing_args/family";
 import consumerProvider from "!!raw-loader!./passing_args/raw/consumer_provider.dart";
 import consumerFamily from "!!raw-loader!./passing_args/raw/consumer_family.dart";
 import consumerListFamily from "!!raw-loader!./passing_args/raw/consumer_list_family.dart";
@@ -33,7 +32,6 @@ As a reminder, previously we defined our provider like this:
 <AutoSnippet {...noArgProvider} />
 
 <When codegen={false}>
-
 When not relying on code-generation, we need to tweak the syntax for defining
 our providers a bit to support passing arguments. This is done by relying on
 the "modifier" called "family".
@@ -42,21 +40,15 @@ In short, we need to add `.family` after the type of our provider, and
 an extra type parameter corresponding to the argument type.
 For example, we could update our provider to accept a `String` argument
 corresponding to the type of activity desired:
-
-<AutoSnippet raw={family} />
-
 </When>
-
 <When codegen={true}>
-
 To pass parameters to our providers, we can simply add our parameters
 on the annotated function itself.  
 For example, we could update our provider to accept a `String` argument
 corresponding to the type of activity desired:
-
-<AutoSnippet raw={codegenFamily} />
-
 </When>
+
+<AutoSnippet {...family} />
 
 :::caution
 When passing arguments to providers, it is highly encouraged to
