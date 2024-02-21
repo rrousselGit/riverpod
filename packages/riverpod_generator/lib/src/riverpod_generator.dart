@@ -113,7 +113,6 @@ class _RiverpodGeneratorVisitor extends RecursiveRiverpodAstVisitor {
 
   String get familySuffix => options.providerFamilyNameSuffix ?? suffix;
 
-
   void visitGeneratorProviderDeclaration(
     GeneratorProviderDeclaration provider,
   ) {
@@ -208,11 +207,13 @@ class _RiverpodGeneratorVisitor extends RecursiveRiverpodAstVisitor {
 extension ProviderElementNames on GeneratorProviderDeclarationElement {
   String providerName(BuildYamlOptions options) {
     final prefix = (isFamily
-        ? options.providerFamilyNamePrefix
-        : options.providerNamePrefix) ?? _defaultProviderNamePrefix;
+            ? options.providerFamilyNamePrefix
+            : options.providerNamePrefix) ??
+        _defaultProviderNamePrefix;
     final suffix = (isFamily
-        ? options.providerFamilyNameSuffix
-        : options.providerNameSuffix) ?? _defaultProviderNameSuffix;
+            ? options.providerFamilyNameSuffix
+            : options.providerNameSuffix) ??
+        _defaultProviderNameSuffix;
 
     return '$prefix${prefix.isEmpty ? name.lowerFirst : name.titled}$suffix';
   }
