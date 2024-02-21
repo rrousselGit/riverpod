@@ -26,7 +26,7 @@ void main() {
           // Überschreiben Sie das Verhalten von repositoryProvider, um
           // FakeRepository anstelle von Repository zurückzugeben.
           /* highlight-start */
-          repositoryProvider.overrideWithValue(FakeRepository())
+          repositoryProvider.overrideWithValue(FakeRepository()),
           /* highlight-end */
           // Wir müssen den `todoListProvider` nicht überschreiben, er wird
           // automatisch den überschriebenen repositoryProvider verwenden

@@ -6,903 +6,1186 @@ part of 'protected_notifier_properties.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$aHash() => r'9bf449b010f4dd5800e78f9f5b8a431b1a79c8b7';
-
-/// See also [A].
 @ProviderFor(A)
-final aProvider = AutoDisposeNotifierProvider<A, int>.internal(
-  A.new,
-  name: r'aProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$aHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+const aProvider = AProvider._();
 
-typedef _$A = AutoDisposeNotifier<int>;
-String _$a2Hash() => r'898d46cbcec03233c7b8b0754810a6903226aa2e';
-
-/// See also [A2].
-@ProviderFor(A2)
-final a2Provider = NotifierProvider<A2, int>.internal(
-  A2.new,
-  name: r'a2Provider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$a2Hash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef _$A2 = Notifier<int>;
-String _$a3Hash() => r'2e21e9af8b67b5412611e0d23b862ead56deb8e1';
-
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-abstract class _$A3 extends BuildlessAutoDisposeNotifier<int> {
-  late final int param;
-
-  int build(
-    int param,
-  );
-}
-
-/// See also [A3].
-@ProviderFor(A3)
-const a3Provider = A3Family();
-
-/// See also [A3].
-class A3Family extends Family<int> {
-  /// See also [A3].
-  const A3Family();
-
-  /// See also [A3].
-  A3Provider call(
-    int param,
-  ) {
-    return A3Provider(
-      param,
-    );
-  }
-
-  @override
-  A3Provider getProviderOverride(
-    covariant A3Provider provider,
-  ) {
-    return call(
-      provider.param,
-    );
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'a3Provider';
-}
-
-/// See also [A3].
-class A3Provider extends AutoDisposeNotifierProviderImpl<A3, int> {
-  /// See also [A3].
-  A3Provider(
-    int param,
-  ) : this._internal(
-          () => A3()..param = param,
-          from: a3Provider,
-          name: r'a3Provider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product') ? null : _$a3Hash,
-          dependencies: A3Family._dependencies,
-          allTransitiveDependencies: A3Family._allTransitiveDependencies,
-          param: param,
+final class AProvider extends $NotifierProvider<A, int> {
+  const AProvider._({super.runNotifierBuildOverride, A Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'aProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
         );
 
-  A3Provider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.param,
-  }) : super.internal();
-
-  final int param;
+  final A Function()? _createCb;
 
   @override
-  int runNotifierBuild(
-    covariant A3 notifier,
-  ) {
-    return notifier.build(
-      param,
-    );
-  }
+  String debugGetCreateSourceHash() => _$aHash();
 
-  @override
-  Override overrideWith(A3 Function() create) {
-    return ProviderOverride(
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
       origin: this,
-      override: A3Provider._internal(
-        () => create()..param = param,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        param: param,
-      ),
+      providerOverride: $ValueProvider<int>(value),
     );
   }
 
+  @$internal
   @override
-  AutoDisposeNotifierProviderElement<A3, int> createElement() {
-    return _A3ProviderElement(this);
+  A create() => _createCb?.call() ?? A();
+
+  @$internal
+  @override
+  AProvider $copyWithCreate(
+    A Function() create,
+  ) {
+    return AProvider._(create: create);
   }
+
+  @$internal
+  @override
+  AProvider $copyWithBuild(
+    int Function(
+      Ref<int>,
+      A,
+    ) build,
+  ) {
+    return AProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<A, int> $createElement(
+          ProviderContainer container) =>
+      $NotifierProviderElement(this, container);
+}
+
+String _$aHash() => r'9bf449b010f4dd5800e78f9f5b8a431b1a79c8b7';
+
+abstract class _$A extends $Notifier<int> {
+  int build();
+  @$internal
+  @override
+  int runBuild() => build();
+}
+
+@ProviderFor(A2)
+const a2Provider = A2Provider._();
+
+final class A2Provider extends $NotifierProvider<A2, int> {
+  const A2Provider._({super.runNotifierBuildOverride, A2 Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'a2Provider',
+          isAutoDispose: false,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final A2 Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$a2Hash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  A2 create() => _createCb?.call() ?? A2();
+
+  @$internal
+  @override
+  A2Provider $copyWithCreate(
+    A2 Function() create,
+  ) {
+    return A2Provider._(create: create);
+  }
+
+  @$internal
+  @override
+  A2Provider $copyWithBuild(
+    int Function(
+      Ref<int>,
+      A2,
+    ) build,
+  ) {
+    return A2Provider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<A2, int> $createElement(
+          ProviderContainer container) =>
+      $NotifierProviderElement(this, container);
+}
+
+String _$a2Hash() => r'898d46cbcec03233c7b8b0754810a6903226aa2e';
+
+abstract class _$A2 extends $Notifier<int> {
+  int build();
+  @$internal
+  @override
+  int runBuild() => build();
+}
+
+@ProviderFor(A3)
+const a3Provider = A3Family._();
+
+final class A3Provider extends $NotifierProvider<A3, int> {
+  const A3Provider._(
+      {required A3Family super.from,
+      required int super.argument,
+      super.runNotifierBuildOverride,
+      A3 Function()? create})
+      : _createCb = create,
+        super(
+          name: r'a3Provider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final A3 Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$a3Hash();
+
+  @override
+  String toString() {
+    return r'a3Provider'
+        ''
+        '($argument)';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  A3 create() => _createCb?.call() ?? A3();
+
+  @$internal
+  @override
+  A3Provider $copyWithCreate(
+    A3 Function() create,
+  ) {
+    return A3Provider._(
+        argument: argument as int, from: from! as A3Family, create: create);
+  }
+
+  @$internal
+  @override
+  A3Provider $copyWithBuild(
+    int Function(
+      Ref<int>,
+      A3,
+    ) build,
+  ) {
+    return A3Provider._(
+        argument: argument as int,
+        from: from! as A3Family,
+        runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<A3, int> $createElement(
+          ProviderContainer container) =>
+      $NotifierProviderElement(this, container);
 
   @override
   bool operator ==(Object other) {
-    return other is A3Provider && other.param == param;
+    return other is A3Provider && other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, param.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-mixin A3Ref on AutoDisposeNotifierProviderRef<int> {
-  /// The parameter `param` of this provider.
-  int get param;
-}
+String _$a3Hash() => r'2e21e9af8b67b5412611e0d23b862ead56deb8e1';
 
-class _A3ProviderElement extends AutoDisposeNotifierProviderElement<A3, int>
-    with A3Ref {
-  _A3ProviderElement(super.provider);
+final class A3Family extends Family {
+  const A3Family._()
+      : super(
+          name: r'a3Provider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  A3Provider call(
+    int param,
+  ) =>
+      A3Provider._(argument: param, from: this);
 
   @override
-  int get param => (origin as A3Provider).param;
+  String debugGetCreateSourceHash() => _$a3Hash();
+
+  @override
+  String toString() => r'a3Provider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    A3 Function(
+      int args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as A3Provider;
+
+        final argument = provider.argument as int;
+
+        return provider
+            .$copyWithCreate(() => create(argument))
+            .$createElement(container);
+      },
+    );
+  }
+
+  /// {@macro riverpod.override_with_build}
+  Override overrideWithBuild(
+    int Function(Ref<int> ref, A3 notifier, int argument) build,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as A3Provider;
+
+        final argument = provider.argument as int;
+
+        return provider
+            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
+            .$createElement(container);
+      },
+    );
+  }
+}
+
+abstract class _$A3 extends $Notifier<int> {
+  late final _$args = (ref as $NotifierProviderElement).origin.argument as int;
+  int get param => _$args;
+
+  int build(
+    int param,
+  );
+  @$internal
+  @override
+  int runBuild() => build(
+        _$args,
+      );
+}
+
+@ProviderFor(A4)
+const a4Provider = A4Family._();
+
+final class A4Provider extends $NotifierProvider<A4, int> {
+  const A4Provider._(
+      {required A4Family super.from,
+      required int super.argument,
+      super.runNotifierBuildOverride,
+      A4 Function()? create})
+      : _createCb = create,
+        super(
+          name: r'a4Provider',
+          isAutoDispose: false,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final A4 Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$a4Hash();
+
+  @override
+  String toString() {
+    return r'a4Provider'
+        ''
+        '($argument)';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  A4 create() => _createCb?.call() ?? A4();
+
+  @$internal
+  @override
+  A4Provider $copyWithCreate(
+    A4 Function() create,
+  ) {
+    return A4Provider._(
+        argument: argument as int, from: from! as A4Family, create: create);
+  }
+
+  @$internal
+  @override
+  A4Provider $copyWithBuild(
+    int Function(
+      Ref<int>,
+      A4,
+    ) build,
+  ) {
+    return A4Provider._(
+        argument: argument as int,
+        from: from! as A4Family,
+        runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<A4, int> $createElement(
+          ProviderContainer container) =>
+      $NotifierProviderElement(this, container);
+
+  @override
+  bool operator ==(Object other) {
+    return other is A4Provider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
 }
 
 String _$a4Hash() => r'cdd9ad09099881cafe06d7b3095a8b06dbe7d876';
 
-abstract class _$A4 extends BuildlessNotifier<int> {
-  late final int param;
+final class A4Family extends Family {
+  const A4Family._()
+      : super(
+          name: r'a4Provider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: false,
+        );
+
+  A4Provider call(
+    int param,
+  ) =>
+      A4Provider._(argument: param, from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$a4Hash();
+
+  @override
+  String toString() => r'a4Provider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    A4 Function(
+      int args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as A4Provider;
+
+        final argument = provider.argument as int;
+
+        return provider
+            .$copyWithCreate(() => create(argument))
+            .$createElement(container);
+      },
+    );
+  }
+
+  /// {@macro riverpod.override_with_build}
+  Override overrideWithBuild(
+    int Function(Ref<int> ref, A4 notifier, int argument) build,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as A4Provider;
+
+        final argument = provider.argument as int;
+
+        return provider
+            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
+            .$createElement(container);
+      },
+    );
+  }
+}
+
+abstract class _$A4 extends $Notifier<int> {
+  late final _$args = (ref as $NotifierProviderElement).origin.argument as int;
+  int get param => _$args;
 
   int build(
     int param,
   );
+  @$internal
+  @override
+  int runBuild() => build(
+        _$args,
+      );
 }
 
-/// See also [A4].
-@ProviderFor(A4)
-const a4Provider = A4Family();
+@ProviderFor(A5)
+const a5Provider = A5Family._();
 
-/// See also [A4].
-class A4Family extends Family<int> {
-  /// See also [A4].
-  const A4Family();
-
-  /// See also [A4].
-  A4Provider call(
-    int param,
-  ) {
-    return A4Provider(
-      param,
-    );
-  }
-
-  @override
-  A4Provider getProviderOverride(
-    covariant A4Provider provider,
-  ) {
-    return call(
-      provider.param,
-    );
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'a4Provider';
-}
-
-/// See also [A4].
-class A4Provider extends NotifierProviderImpl<A4, int> {
-  /// See also [A4].
-  A4Provider(
-    int param,
-  ) : this._internal(
-          () => A4()..param = param,
-          from: a4Provider,
-          name: r'a4Provider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product') ? null : _$a4Hash,
-          dependencies: A4Family._dependencies,
-          allTransitiveDependencies: A4Family._allTransitiveDependencies,
-          param: param,
+final class A5Provider extends $AsyncNotifierProvider<A5, int> {
+  const A5Provider._(
+      {required A5Family super.from,
+      required int super.argument,
+      super.runNotifierBuildOverride,
+      A5 Function()? create})
+      : _createCb = create,
+        super(
+          name: r'a5Provider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
         );
 
-  A4Provider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.param,
-  }) : super.internal();
-
-  final int param;
+  final A5 Function()? _createCb;
 
   @override
-  int runNotifierBuild(
-    covariant A4 notifier,
+  String debugGetCreateSourceHash() => _$a5Hash();
+
+  @override
+  String toString() {
+    return r'a5Provider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  A5 create() => _createCb?.call() ?? A5();
+
+  @$internal
+  @override
+  A5Provider $copyWithCreate(
+    A5 Function() create,
   ) {
-    return notifier.build(
-      param,
-    );
+    return A5Provider._(
+        argument: argument as int, from: from! as A5Family, create: create);
   }
 
+  @$internal
   @override
-  Override overrideWith(A4 Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: A4Provider._internal(
-        () => create()..param = param,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        param: param,
-      ),
-    );
+  A5Provider $copyWithBuild(
+    FutureOr<int> Function(
+      Ref<AsyncValue<int>>,
+      A5,
+    ) build,
+  ) {
+    return A5Provider._(
+        argument: argument as int,
+        from: from! as A5Family,
+        runNotifierBuildOverride: build);
   }
 
+  @$internal
   @override
-  NotifierProviderElement<A4, int> createElement() {
-    return _A4ProviderElement(this);
-  }
+  $AsyncNotifierProviderElement<A5, int> $createElement(
+          ProviderContainer container) =>
+      $AsyncNotifierProviderElement(this, container);
 
   @override
   bool operator ==(Object other) {
-    return other is A4Provider && other.param == param;
+    return other is A5Provider && other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, param.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
-}
-
-mixin A4Ref on NotifierProviderRef<int> {
-  /// The parameter `param` of this provider.
-  int get param;
-}
-
-class _A4ProviderElement extends NotifierProviderElement<A4, int> with A4Ref {
-  _A4ProviderElement(super.provider);
-
-  @override
-  int get param => (origin as A4Provider).param;
 }
 
 String _$a5Hash() => r'c83634c22b6a9149aa8787e45c3b7cd6c88b5958';
 
-abstract class _$A5 extends BuildlessAutoDisposeAsyncNotifier<int> {
-  late final int param;
+final class A5Family extends Family {
+  const A5Family._()
+      : super(
+          name: r'a5Provider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  A5Provider call(
+    int param,
+  ) =>
+      A5Provider._(argument: param, from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$a5Hash();
+
+  @override
+  String toString() => r'a5Provider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    A5 Function(
+      int args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as A5Provider;
+
+        final argument = provider.argument as int;
+
+        return provider
+            .$copyWithCreate(() => create(argument))
+            .$createElement(container);
+      },
+    );
+  }
+
+  /// {@macro riverpod.override_with_build}
+  Override overrideWithBuild(
+    FutureOr<int> Function(Ref<AsyncValue<int>> ref, A5 notifier, int argument)
+        build,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as A5Provider;
+
+        final argument = provider.argument as int;
+
+        return provider
+            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
+            .$createElement(container);
+      },
+    );
+  }
+}
+
+abstract class _$A5 extends $AsyncNotifier<int> {
+  late final _$args =
+      (ref as $AsyncNotifierProviderElement).origin.argument as int;
+  int get param => _$args;
 
   FutureOr<int> build(
     int param,
   );
+  @$internal
+  @override
+  FutureOr<int> runBuild() => build(
+        _$args,
+      );
 }
 
-/// See also [A5].
-@ProviderFor(A5)
-const a5Provider = A5Family();
+@ProviderFor(A6)
+const a6Provider = A6Family._();
 
-/// See also [A5].
-class A5Family extends Family<AsyncValue<int>> {
-  /// See also [A5].
-  const A5Family();
-
-  /// See also [A5].
-  A5Provider call(
-    int param,
-  ) {
-    return A5Provider(
-      param,
-    );
-  }
-
-  @override
-  A5Provider getProviderOverride(
-    covariant A5Provider provider,
-  ) {
-    return call(
-      provider.param,
-    );
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'a5Provider';
-}
-
-/// See also [A5].
-class A5Provider extends AutoDisposeAsyncNotifierProviderImpl<A5, int> {
-  /// See also [A5].
-  A5Provider(
-    int param,
-  ) : this._internal(
-          () => A5()..param = param,
-          from: a5Provider,
-          name: r'a5Provider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product') ? null : _$a5Hash,
-          dependencies: A5Family._dependencies,
-          allTransitiveDependencies: A5Family._allTransitiveDependencies,
-          param: param,
+final class A6Provider extends $AsyncNotifierProvider<A6, int> {
+  const A6Provider._(
+      {required A6Family super.from,
+      required int super.argument,
+      super.runNotifierBuildOverride,
+      A6 Function()? create})
+      : _createCb = create,
+        super(
+          name: r'a6Provider',
+          isAutoDispose: false,
+          dependencies: null,
+          allTransitiveDependencies: null,
         );
 
-  A5Provider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.param,
-  }) : super.internal();
-
-  final int param;
+  final A6 Function()? _createCb;
 
   @override
-  FutureOr<int> runNotifierBuild(
-    covariant A5 notifier,
+  String debugGetCreateSourceHash() => _$a6Hash();
+
+  @override
+  String toString() {
+    return r'a6Provider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  A6 create() => _createCb?.call() ?? A6();
+
+  @$internal
+  @override
+  A6Provider $copyWithCreate(
+    A6 Function() create,
   ) {
-    return notifier.build(
-      param,
-    );
+    return A6Provider._(
+        argument: argument as int, from: from! as A6Family, create: create);
   }
 
+  @$internal
   @override
-  Override overrideWith(A5 Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: A5Provider._internal(
-        () => create()..param = param,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        param: param,
-      ),
-    );
+  A6Provider $copyWithBuild(
+    FutureOr<int> Function(
+      Ref<AsyncValue<int>>,
+      A6,
+    ) build,
+  ) {
+    return A6Provider._(
+        argument: argument as int,
+        from: from! as A6Family,
+        runNotifierBuildOverride: build);
   }
 
+  @$internal
   @override
-  AutoDisposeAsyncNotifierProviderElement<A5, int> createElement() {
-    return _A5ProviderElement(this);
-  }
+  $AsyncNotifierProviderElement<A6, int> $createElement(
+          ProviderContainer container) =>
+      $AsyncNotifierProviderElement(this, container);
 
   @override
   bool operator ==(Object other) {
-    return other is A5Provider && other.param == param;
+    return other is A6Provider && other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, param.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
-}
-
-mixin A5Ref on AutoDisposeAsyncNotifierProviderRef<int> {
-  /// The parameter `param` of this provider.
-  int get param;
-}
-
-class _A5ProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<A5, int> with A5Ref {
-  _A5ProviderElement(super.provider);
-
-  @override
-  int get param => (origin as A5Provider).param;
 }
 
 String _$a6Hash() => r'fe641c72cacf3dd119eb77a34fe8fc71c5c30139';
 
-abstract class _$A6 extends BuildlessAsyncNotifier<int> {
-  late final int param;
+final class A6Family extends Family {
+  const A6Family._()
+      : super(
+          name: r'a6Provider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: false,
+        );
+
+  A6Provider call(
+    int param,
+  ) =>
+      A6Provider._(argument: param, from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$a6Hash();
+
+  @override
+  String toString() => r'a6Provider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    A6 Function(
+      int args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as A6Provider;
+
+        final argument = provider.argument as int;
+
+        return provider
+            .$copyWithCreate(() => create(argument))
+            .$createElement(container);
+      },
+    );
+  }
+
+  /// {@macro riverpod.override_with_build}
+  Override overrideWithBuild(
+    FutureOr<int> Function(Ref<AsyncValue<int>> ref, A6 notifier, int argument)
+        build,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as A6Provider;
+
+        final argument = provider.argument as int;
+
+        return provider
+            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
+            .$createElement(container);
+      },
+    );
+  }
+}
+
+abstract class _$A6 extends $AsyncNotifier<int> {
+  late final _$args =
+      (ref as $AsyncNotifierProviderElement).origin.argument as int;
+  int get param => _$args;
 
   FutureOr<int> build(
     int param,
   );
+  @$internal
+  @override
+  FutureOr<int> runBuild() => build(
+        _$args,
+      );
 }
 
-/// See also [A6].
-@ProviderFor(A6)
-const a6Provider = A6Family();
+@ProviderFor(A7)
+const a7Provider = A7Family._();
 
-/// See also [A6].
-class A6Family extends Family<AsyncValue<int>> {
-  /// See also [A6].
-  const A6Family();
-
-  /// See also [A6].
-  A6Provider call(
-    int param,
-  ) {
-    return A6Provider(
-      param,
-    );
-  }
-
-  @override
-  A6Provider getProviderOverride(
-    covariant A6Provider provider,
-  ) {
-    return call(
-      provider.param,
-    );
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'a6Provider';
-}
-
-/// See also [A6].
-class A6Provider extends AsyncNotifierProviderImpl<A6, int> {
-  /// See also [A6].
-  A6Provider(
-    int param,
-  ) : this._internal(
-          () => A6()..param = param,
-          from: a6Provider,
-          name: r'a6Provider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product') ? null : _$a6Hash,
-          dependencies: A6Family._dependencies,
-          allTransitiveDependencies: A6Family._allTransitiveDependencies,
-          param: param,
+final class A7Provider extends $StreamNotifierProvider<A7, int> {
+  const A7Provider._(
+      {required A7Family super.from,
+      required int super.argument,
+      super.runNotifierBuildOverride,
+      A7 Function()? create})
+      : _createCb = create,
+        super(
+          name: r'a7Provider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
         );
 
-  A6Provider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.param,
-  }) : super.internal();
-
-  final int param;
+  final A7 Function()? _createCb;
 
   @override
-  FutureOr<int> runNotifierBuild(
-    covariant A6 notifier,
+  String debugGetCreateSourceHash() => _$a7Hash();
+
+  @override
+  String toString() {
+    return r'a7Provider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  A7 create() => _createCb?.call() ?? A7();
+
+  @$internal
+  @override
+  A7Provider $copyWithCreate(
+    A7 Function() create,
   ) {
-    return notifier.build(
-      param,
-    );
+    return A7Provider._(
+        argument: argument as int, from: from! as A7Family, create: create);
   }
 
+  @$internal
   @override
-  Override overrideWith(A6 Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: A6Provider._internal(
-        () => create()..param = param,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        param: param,
-      ),
-    );
+  A7Provider $copyWithBuild(
+    Stream<int> Function(
+      Ref<AsyncValue<int>>,
+      A7,
+    ) build,
+  ) {
+    return A7Provider._(
+        argument: argument as int,
+        from: from! as A7Family,
+        runNotifierBuildOverride: build);
   }
 
+  @$internal
   @override
-  AsyncNotifierProviderElement<A6, int> createElement() {
-    return _A6ProviderElement(this);
-  }
+  $StreamNotifierProviderElement<A7, int> $createElement(
+          ProviderContainer container) =>
+      $StreamNotifierProviderElement(this, container);
 
   @override
   bool operator ==(Object other) {
-    return other is A6Provider && other.param == param;
+    return other is A7Provider && other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, param.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
-}
-
-mixin A6Ref on AsyncNotifierProviderRef<int> {
-  /// The parameter `param` of this provider.
-  int get param;
-}
-
-class _A6ProviderElement extends AsyncNotifierProviderElement<A6, int>
-    with A6Ref {
-  _A6ProviderElement(super.provider);
-
-  @override
-  int get param => (origin as A6Provider).param;
 }
 
 String _$a7Hash() => r'd3d9ab5090e21987d65522f14ebb70d0058fc56a';
 
-abstract class _$A7 extends BuildlessAutoDisposeStreamNotifier<int> {
-  late final int param;
+final class A7Family extends Family {
+  const A7Family._()
+      : super(
+          name: r'a7Provider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  A7Provider call(
+    int param,
+  ) =>
+      A7Provider._(argument: param, from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$a7Hash();
+
+  @override
+  String toString() => r'a7Provider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    A7 Function(
+      int args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as A7Provider;
+
+        final argument = provider.argument as int;
+
+        return provider
+            .$copyWithCreate(() => create(argument))
+            .$createElement(container);
+      },
+    );
+  }
+
+  /// {@macro riverpod.override_with_build}
+  Override overrideWithBuild(
+    Stream<int> Function(Ref<AsyncValue<int>> ref, A7 notifier, int argument)
+        build,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as A7Provider;
+
+        final argument = provider.argument as int;
+
+        return provider
+            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
+            .$createElement(container);
+      },
+    );
+  }
+}
+
+abstract class _$A7 extends $StreamNotifier<int> {
+  late final _$args =
+      (ref as $StreamNotifierProviderElement).origin.argument as int;
+  int get param => _$args;
 
   Stream<int> build(
     int param,
   );
+  @$internal
+  @override
+  Stream<int> runBuild() => build(
+        _$args,
+      );
 }
 
-/// See also [A7].
-@ProviderFor(A7)
-const a7Provider = A7Family();
+@ProviderFor(A8)
+const a8Provider = A8Family._();
 
-/// See also [A7].
-class A7Family extends Family<AsyncValue<int>> {
-  /// See also [A7].
-  const A7Family();
-
-  /// See also [A7].
-  A7Provider call(
-    int param,
-  ) {
-    return A7Provider(
-      param,
-    );
-  }
-
-  @override
-  A7Provider getProviderOverride(
-    covariant A7Provider provider,
-  ) {
-    return call(
-      provider.param,
-    );
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'a7Provider';
-}
-
-/// See also [A7].
-class A7Provider extends AutoDisposeStreamNotifierProviderImpl<A7, int> {
-  /// See also [A7].
-  A7Provider(
-    int param,
-  ) : this._internal(
-          () => A7()..param = param,
-          from: a7Provider,
-          name: r'a7Provider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product') ? null : _$a7Hash,
-          dependencies: A7Family._dependencies,
-          allTransitiveDependencies: A7Family._allTransitiveDependencies,
-          param: param,
+final class A8Provider extends $StreamNotifierProvider<A8, int> {
+  const A8Provider._(
+      {required A8Family super.from,
+      required int super.argument,
+      super.runNotifierBuildOverride,
+      A8 Function()? create})
+      : _createCb = create,
+        super(
+          name: r'a8Provider',
+          isAutoDispose: false,
+          dependencies: null,
+          allTransitiveDependencies: null,
         );
 
-  A7Provider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.param,
-  }) : super.internal();
-
-  final int param;
+  final A8 Function()? _createCb;
 
   @override
-  Stream<int> runNotifierBuild(
-    covariant A7 notifier,
+  String debugGetCreateSourceHash() => _$a8Hash();
+
+  @override
+  String toString() {
+    return r'a8Provider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  A8 create() => _createCb?.call() ?? A8();
+
+  @$internal
+  @override
+  A8Provider $copyWithCreate(
+    A8 Function() create,
   ) {
-    return notifier.build(
-      param,
-    );
+    return A8Provider._(
+        argument: argument as int, from: from! as A8Family, create: create);
   }
 
+  @$internal
   @override
-  Override overrideWith(A7 Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: A7Provider._internal(
-        () => create()..param = param,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        param: param,
-      ),
-    );
+  A8Provider $copyWithBuild(
+    Stream<int> Function(
+      Ref<AsyncValue<int>>,
+      A8,
+    ) build,
+  ) {
+    return A8Provider._(
+        argument: argument as int,
+        from: from! as A8Family,
+        runNotifierBuildOverride: build);
   }
 
+  @$internal
   @override
-  AutoDisposeStreamNotifierProviderElement<A7, int> createElement() {
-    return _A7ProviderElement(this);
-  }
+  $StreamNotifierProviderElement<A8, int> $createElement(
+          ProviderContainer container) =>
+      $StreamNotifierProviderElement(this, container);
 
   @override
   bool operator ==(Object other) {
-    return other is A7Provider && other.param == param;
+    return other is A8Provider && other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, param.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
-}
-
-mixin A7Ref on AutoDisposeStreamNotifierProviderRef<int> {
-  /// The parameter `param` of this provider.
-  int get param;
-}
-
-class _A7ProviderElement
-    extends AutoDisposeStreamNotifierProviderElement<A7, int> with A7Ref {
-  _A7ProviderElement(super.provider);
-
-  @override
-  int get param => (origin as A7Provider).param;
 }
 
 String _$a8Hash() => r'54f4a841a283161bed3d444dcee53bf367958678';
 
-abstract class _$A8 extends BuildlessStreamNotifier<int> {
-  late final int param;
+final class A8Family extends Family {
+  const A8Family._()
+      : super(
+          name: r'a8Provider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: false,
+        );
+
+  A8Provider call(
+    int param,
+  ) =>
+      A8Provider._(argument: param, from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$a8Hash();
+
+  @override
+  String toString() => r'a8Provider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    A8 Function(
+      int args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as A8Provider;
+
+        final argument = provider.argument as int;
+
+        return provider
+            .$copyWithCreate(() => create(argument))
+            .$createElement(container);
+      },
+    );
+  }
+
+  /// {@macro riverpod.override_with_build}
+  Override overrideWithBuild(
+    Stream<int> Function(Ref<AsyncValue<int>> ref, A8 notifier, int argument)
+        build,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as A8Provider;
+
+        final argument = provider.argument as int;
+
+        return provider
+            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
+            .$createElement(container);
+      },
+    );
+  }
+}
+
+abstract class _$A8 extends $StreamNotifier<int> {
+  late final _$args =
+      (ref as $StreamNotifierProviderElement).origin.argument as int;
+  int get param => _$args;
 
   Stream<int> build(
     int param,
   );
+  @$internal
+  @override
+  Stream<int> runBuild() => build(
+        _$args,
+      );
 }
 
-/// See also [A8].
-@ProviderFor(A8)
-const a8Provider = A8Family();
+@ProviderFor(B)
+const bProvider = BProvider._();
 
-/// See also [A8].
-class A8Family extends Family<AsyncValue<int>> {
-  /// See also [A8].
-  const A8Family();
-
-  /// See also [A8].
-  A8Provider call(
-    int param,
-  ) {
-    return A8Provider(
-      param,
-    );
-  }
-
-  @override
-  A8Provider getProviderOverride(
-    covariant A8Provider provider,
-  ) {
-    return call(
-      provider.param,
-    );
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'a8Provider';
-}
-
-/// See also [A8].
-class A8Provider extends StreamNotifierProviderImpl<A8, int> {
-  /// See also [A8].
-  A8Provider(
-    int param,
-  ) : this._internal(
-          () => A8()..param = param,
-          from: a8Provider,
-          name: r'a8Provider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product') ? null : _$a8Hash,
-          dependencies: A8Family._dependencies,
-          allTransitiveDependencies: A8Family._allTransitiveDependencies,
-          param: param,
+final class BProvider extends $NotifierProvider<B, int> {
+  const BProvider._({super.runNotifierBuildOverride, B Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'bProvider',
+          isAutoDispose: false,
+          dependencies: null,
+          allTransitiveDependencies: null,
         );
 
-  A8Provider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.param,
-  }) : super.internal();
-
-  final int param;
+  final B Function()? _createCb;
 
   @override
-  Stream<int> runNotifierBuild(
-    covariant A8 notifier,
-  ) {
-    return notifier.build(
-      param,
-    );
-  }
+  String debugGetCreateSourceHash() => _$bHash();
 
-  @override
-  Override overrideWith(A8 Function() create) {
-    return ProviderOverride(
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
       origin: this,
-      override: A8Provider._internal(
-        () => create()..param = param,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        param: param,
-      ),
+      providerOverride: $ValueProvider<int>(value),
     );
   }
 
+  @$internal
   @override
-  StreamNotifierProviderElement<A8, int> createElement() {
-    return _A8ProviderElement(this);
+  B create() => _createCb?.call() ?? B();
+
+  @$internal
+  @override
+  BProvider $copyWithCreate(
+    B Function() create,
+  ) {
+    return BProvider._(create: create);
   }
 
+  @$internal
   @override
-  bool operator ==(Object other) {
-    return other is A8Provider && other.param == param;
+  BProvider $copyWithBuild(
+    int Function(
+      Ref<int>,
+      B,
+    ) build,
+  ) {
+    return BProvider._(runNotifierBuildOverride: build);
   }
 
+  @$internal
   @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, param.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
-}
-
-mixin A8Ref on StreamNotifierProviderRef<int> {
-  /// The parameter `param` of this provider.
-  int get param;
-}
-
-class _A8ProviderElement extends StreamNotifierProviderElement<A8, int>
-    with A8Ref {
-  _A8ProviderElement(super.provider);
-
-  @override
-  int get param => (origin as A8Provider).param;
+  $NotifierProviderElement<B, int> $createElement(
+          ProviderContainer container) =>
+      $NotifierProviderElement(this, container);
 }
 
 String _$bHash() => r'44288285e9c28f846d609ba892520f577ecf7867';
 
-/// See also [B].
-@ProviderFor(B)
-final bProvider = NotifierProvider<B, int>.internal(
-  B.new,
-  name: r'bProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$bHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+abstract class _$B extends $Notifier<int> {
+  int build();
+  @$internal
+  @override
+  int runBuild() => build();
+}
 
-typedef _$B = Notifier<int>;
+@ProviderFor(B2)
+const b2Provider = B2Provider._();
+
+final class B2Provider extends $NotifierProvider<B2, int> {
+  const B2Provider._({super.runNotifierBuildOverride, B2 Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'b2Provider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final B2 Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$b2Hash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  B2 create() => _createCb?.call() ?? B2();
+
+  @$internal
+  @override
+  B2Provider $copyWithCreate(
+    B2 Function() create,
+  ) {
+    return B2Provider._(create: create);
+  }
+
+  @$internal
+  @override
+  B2Provider $copyWithBuild(
+    int Function(
+      Ref<int>,
+      B2,
+    ) build,
+  ) {
+    return B2Provider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<B2, int> $createElement(
+          ProviderContainer container) =>
+      $NotifierProviderElement(this, container);
+}
+
 String _$b2Hash() => r'292925c285c6975ed6585d541c5a9ae18977d73c';
 
-/// See also [B2].
-@ProviderFor(B2)
-final b2Provider = AutoDisposeNotifierProvider<B2, int>.internal(
-  B2.new,
-  name: r'b2Provider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$b2Hash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+abstract class _$B2 extends $Notifier<int> {
+  int build();
+  @$internal
+  @override
+  int runBuild() => build();
+}
 
-typedef _$B2 = AutoDisposeNotifier<int>;
+const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

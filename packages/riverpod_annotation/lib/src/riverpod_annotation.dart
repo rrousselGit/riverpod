@@ -2,8 +2,9 @@
 
 import 'package:meta/meta.dart';
 import 'package:meta/meta_meta.dart';
-
-import '../riverpod_annotation.dart';
+import 'package:riverpod/riverpod.dart';
+// ignore: implementation_imports, invalid_use_of_internal_member
+import 'package:riverpod/src/internals.dart' show ProviderElementBase;
 
 /// {@template riverpod_annotation.provider}
 /// An annotation placed on classes or functions.
@@ -17,7 +18,8 @@ import '../riverpod_annotation.dart';
 /// {@endtemplate}
 @Target({TargetKind.classType, TargetKind.function})
 @sealed
-class Riverpod {
+// TODO changelog make "Riverpod" final
+final class Riverpod {
   /// {@macro riverpod_annotation.provider}
   const Riverpod({
     this.keepAlive = false,
@@ -46,10 +48,18 @@ class Riverpod {
   /// // By not specifying "dependencies", we are saying that this provider is never scoped
   /// @riverpod
   /// Foo root(RootRef ref) => Foo();
+  ///
   /// // By specifying "dependencies" (even if the list is empty),
   /// // we are saying that this provider is potentially scoped
   /// @Riverpod(dependencies: [])
   /// Foo scoped(ScopedRef ref) => Foo();
+  ///
+  /// // Alternatively, notifiers with an abstract build method are also considered scoped
+  /// @riverpod
+  /// class MyNotifier extends _$MyNotifier {
+  ///  @override
+  ///  int build();
+  /// }
   /// ```
   ///
   /// Then if we were to depend on `rootProvider` in a scoped provider, we
@@ -166,3 +176,22 @@ class ProviderFor {
 ///
 /// {@endtemplate}
 typedef Raw<T> = T;
+
+/// An exception thrown when a scoped provider is accessed when not yet overridden.
+class MissingScopeException implements Exception {
+  /// An exception thrown when a scoped provider is accessed when not yet overridden.
+  MissingScopeException(this.ref);
+
+  /// The [Ref] that threw the exception
+  final Ref<Object?> ref;
+
+  @override
+  String toString() {
+    // ignore: invalid_use_of_internal_member
+    final element = ref as ProviderElementBase<Object?>;
+
+    return 'MissingScopeException: The provider ${element.origin} is scoped, '
+        'but was accessed in a place where it is not overridden. '
+        'Either you forgot to override the provider, or you tried to read it outside of where it is defined';
+  }
+}

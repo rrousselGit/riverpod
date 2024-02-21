@@ -22,7 +22,7 @@ void main() {
               ValueNotifier(42),
         ),
         autoDispose.overrideWith(
-          (AutoDisposeChangeNotifierProviderRef<ValueNotifier<int>> ref) =>
+          (ChangeNotifierProviderRef<ValueNotifier<int>> ref) =>
               ValueNotifier(84),
         ),
       ],
@@ -47,10 +47,7 @@ void main() {
               ValueNotifier('42 $arg'),
         ),
         autoDisposeFamily.overrideWith(
-          (
-            AutoDisposeChangeNotifierProviderRef<ValueNotifier<String>> ref,
-            int arg,
-          ) =>
+          (ChangeNotifierProviderRef<ValueNotifier<String>> ref, int arg) =>
               ValueNotifier('84 $arg'),
         ),
       ],
@@ -150,7 +147,10 @@ void main() {
 
   group('scoping an override overrides all the associated subproviders', () {
     test('when passing the provider itself', () {
-      final provider = ChangeNotifierProvider((ref) => ValueNotifier(0));
+      final provider = ChangeNotifierProvider(
+        (ref) => ValueNotifier(0),
+        dependencies: const [],
+      );
       final root = createContainer();
       final container = createContainer(parent: root, overrides: [provider]);
 
@@ -187,16 +187,16 @@ void main() {
     //   expect(root.getAllProviderElements(), isEmpty);
     // });
 
-    test('when using provider.overrideWithProvider', () {
-      final provider = ChangeNotifierProvider((ref) => ValueNotifier(0));
+    test('when using provider.overrideWith', () {
+      final provider = ChangeNotifierProvider(
+        (ref) => ValueNotifier(0),
+        dependencies: const [],
+      );
       final root = createContainer();
       final container = createContainer(
         parent: root,
         overrides: [
-          // ignore: deprecated_member_use
-          provider.overrideWithProvider(
-            ChangeNotifierProvider((ref) => ValueNotifier(42)),
-          ),
+          provider.overrideWith((ref) => ValueNotifier(42)),
         ],
       );
 
@@ -391,7 +391,7 @@ void main() {
   // });
 
   test('ChangeNotifier can be auto-scoped', () async {
-    final dep = Provider((ref) => 0);
+    final dep = Provider((ref) => 0, dependencies: const []);
     final provider = ChangeNotifierProvider(
       (ref) => ValueNotifier(ref.watch(dep)),
       dependencies: [dep],
@@ -408,7 +408,7 @@ void main() {
     expect(root.getAllProviderElements(), isEmpty);
   });
 
-  test('overrideWithProvider preserves the state across update', () async {
+  test('overrideWith preserves the state across update', () async {
     final provider = ChangeNotifierProvider((_) {
       return TestNotifier();
     });
@@ -416,8 +416,7 @@ void main() {
     final notifier2 = TestNotifier();
     final container = createContainer(
       overrides: [
-        // ignore: deprecated_member_use
-        provider.overrideWithProvider(ChangeNotifierProvider((_) => notifier)),
+        provider.overrideWith((_) => notifier),
       ],
     );
     addTearDown(container.dispose);
@@ -436,8 +435,7 @@ void main() {
     expect(callCount, 1);
 
     container.updateOverrides([
-      // ignore: deprecated_member_use
-      provider.overrideWithProvider(ChangeNotifierProvider((_) => notifier2)),
+      provider.overrideWith((_) => notifier2),
     ]);
 
     await container.pump();

@@ -16,31 +16,40 @@ import 'src/lints/functional_ref.dart';
 import 'src/lints/missing_provider_scope.dart';
 import 'src/lints/notifier_build.dart';
 import 'src/lints/notifier_extends.dart';
+import 'src/lints/only_use_keep_alive_inside_keep_alive.dart';
 import 'src/lints/protected_notifier_properties.dart';
 import 'src/lints/provider_dependencies.dart';
 import 'src/lints/provider_parameters.dart';
+import 'src/lints/riverpod_syntax_error.dart';
 import 'src/lints/scoped_providers_should_specify_dependencies.dart';
 import 'src/lints/unsupported_provider_value.dart';
+import 'src/migration/missing_legacy_import.dart';
 
 PluginBase createPlugin() => _RiverpodPlugin();
 
 class _RiverpodPlugin extends PluginBase {
   @override
   List<LintRule> getLintRules(CustomLintConfigs configs) => [
+        const AsyncValueNullablePattern(),
         const AvoidBuildContextInProviders(),
+        const OnlyUseKeepAliveInsideKeepAlive(),
+        const AvoidManualProvidersAsGeneratedProviderDependency(),
         const AvoidPublicNotifierProperties(),
+        const AvoidRefInsideStateDispose(),
         const FunctionalRef(),
         const MissingProviderScope(),
-        const ProviderParameters(),
+        const NotifierBuild(),
         const NotifierExtends(),
+        const ProtectedNotifierProperties(),
         const ProviderDependencies(),
-        const AvoidManualProvidersAsGeneratedProviderDependency(),
+        const ProviderParameters(),
+        // TODO changelog added riverpod_syntax_error, for reporting errors when the generator would throw.
+        const RiverpodSyntaxError(),
         const ScopedProvidersShouldSpecifyDependencies(),
         const UnsupportedProviderValue(),
-        const AvoidRefInsideStateDispose(),
-        const NotifierBuild(),
-        const AsyncValueNullablePattern(),
-        const ProtectedNotifierProperties(),
+
+        // Migrations
+        const MissingLegacyImport(),
       ];
 
   @override

@@ -1,12 +1,7 @@
 name: Check CHANGELOG.md
 
 on:
-  push:
-    branches:
-      - master
-      - dev
   pull_request:
-  
 
 jobs:
   changelog:
@@ -28,5 +23,5 @@ jobs:
       - name: Install "semantic_changelog"
         run: dart pub global activate -s git https://github.com/rrousselGit/semantic_changelog
 
-      - run: git fetch origin master:refs/remotes/origin/master
-      - run: semantic_changelog check origin/master
+      - run: git fetch origin dev:refs/remotes/origin/dev
+      - run: semantic_changelog check origin/dev

@@ -6,408 +6,629 @@ part of 'dependencies2.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+typedef ProviderWithDependencies2Ref = Ref<int>;
+
+@ProviderFor(providerWithDependencies2)
+const providerWithDependencies2Provider = ProviderWithDependencies2Provider._();
+
+final class ProviderWithDependencies2Provider
+    extends $FunctionalProvider<int, int, ProviderWithDependencies2Ref>
+    with $Provider<int, ProviderWithDependencies2Ref> {
+  const ProviderWithDependencies2Provider._(
+      {int Function(
+        ProviderWithDependencies2Ref ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'providerWithDependencies2Provider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[
+            providerWithDependenciesProvider,
+            _private2Provider,
+            public2Provider
+          ],
+          allTransitiveDependencies: const <ProviderOrFamily>{
+            ProviderWithDependencies2Provider.$allTransitiveDependencies0,
+            ProviderWithDependencies2Provider.$allTransitiveDependencies1,
+            ProviderWithDependencies2Provider.$allTransitiveDependencies2,
+            ProviderWithDependencies2Provider.$allTransitiveDependencies3,
+            ProviderWithDependencies2Provider.$allTransitiveDependencies4,
+          },
+        );
+
+  static const $allTransitiveDependencies0 = providerWithDependenciesProvider;
+  static const $allTransitiveDependencies1 =
+      ProviderWithDependenciesProvider.$allTransitiveDependencies0;
+  static const $allTransitiveDependencies2 =
+      ProviderWithDependenciesProvider.$allTransitiveDependencies1;
+  static const $allTransitiveDependencies3 = _private2Provider;
+  static const $allTransitiveDependencies4 = public2Provider;
+
+  final int Function(
+    ProviderWithDependencies2Ref ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$providerWithDependencies2Hash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  ProviderWithDependencies2Provider $copyWithCreate(
+    int Function(
+      ProviderWithDependencies2Ref ref,
+    ) create,
+  ) {
+    return ProviderWithDependencies2Provider._(create: create);
+  }
+
+  @override
+  int create(ProviderWithDependencies2Ref ref) {
+    final _$cb = _createCb ?? providerWithDependencies2;
+    return _$cb(ref);
+  }
+}
+
 String _$providerWithDependencies2Hash() =>
     r'90e090d5fa759369dceb59b2d2e219f67ed5f9e0';
 
-/// See also [providerWithDependencies2].
-@ProviderFor(providerWithDependencies2)
-final providerWithDependencies2Provider = AutoDisposeProvider<int>.internal(
-  providerWithDependencies2,
-  name: r'providerWithDependencies2Provider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$providerWithDependencies2Hash,
-  dependencies: <ProviderOrFamily>[
-    providerWithDependenciesProvider,
-    _private2Provider,
-    public2Provider
-  ],
-  allTransitiveDependencies: <ProviderOrFamily>{
-    providerWithDependenciesProvider,
-    ...?providerWithDependenciesProvider.allTransitiveDependencies,
-    _private2Provider,
-    ...?_private2Provider.allTransitiveDependencies,
-    public2Provider,
-    ...?public2Provider.allTransitiveDependencies
-  },
-);
+typedef FamilyWithDependencies2Ref = Ref<int>;
 
-typedef ProviderWithDependencies2Ref = AutoDisposeProviderRef<int>;
-String _$familyWithDependencies2Hash() =>
-    r'209b9e3ed4e5fad89572268d161fbe64a6ef0e87';
-
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-/// See also [familyWithDependencies2].
 @ProviderFor(familyWithDependencies2)
-const familyWithDependencies2Provider = FamilyWithDependencies2Family();
+const familyWithDependencies2Provider = FamilyWithDependencies2Family._();
 
-/// See also [familyWithDependencies2].
-class FamilyWithDependencies2Family extends Family<int> {
-  /// See also [familyWithDependencies2].
-  const FamilyWithDependencies2Family();
-
-  /// See also [familyWithDependencies2].
-  FamilyWithDependencies2Provider call({
-    int? id,
-  }) {
-    return FamilyWithDependencies2Provider(
-      id: id,
-    );
-  }
-
-  @override
-  FamilyWithDependencies2Provider getProviderOverride(
-    covariant FamilyWithDependencies2Provider provider,
-  ) {
-    return call(
-      id: provider.id,
-    );
-  }
-
-  static final Iterable<ProviderOrFamily> _dependencies = <ProviderOrFamily>[
-    providerWithDependenciesProvider,
-    _private2Provider,
-    public2Provider
-  ];
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static final Iterable<ProviderOrFamily> _allTransitiveDependencies =
-      <ProviderOrFamily>{
-    providerWithDependenciesProvider,
-    ...?providerWithDependenciesProvider.allTransitiveDependencies,
-    _private2Provider,
-    ...?_private2Provider.allTransitiveDependencies,
-    public2Provider,
-    ...?public2Provider.allTransitiveDependencies
-  };
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'familyWithDependencies2Provider';
-}
-
-/// See also [familyWithDependencies2].
-class FamilyWithDependencies2Provider extends AutoDisposeProvider<int> {
-  /// See also [familyWithDependencies2].
-  FamilyWithDependencies2Provider({
-    int? id,
-  }) : this._internal(
-          (ref) => familyWithDependencies2(
-            ref as FamilyWithDependencies2Ref,
-            id: id,
-          ),
-          from: familyWithDependencies2Provider,
+final class FamilyWithDependencies2Provider
+    extends $FunctionalProvider<int, int, FamilyWithDependencies2Ref>
+    with $Provider<int, FamilyWithDependencies2Ref> {
+  const FamilyWithDependencies2Provider._(
+      {required FamilyWithDependencies2Family super.from,
+      required int? super.argument,
+      int Function(
+        FamilyWithDependencies2Ref ref, {
+        int? id,
+      })? create})
+      : _createCb = create,
+        super(
           name: r'familyWithDependencies2Provider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$familyWithDependencies2Hash,
-          dependencies: FamilyWithDependencies2Family._dependencies,
-          allTransitiveDependencies:
-              FamilyWithDependencies2Family._allTransitiveDependencies,
-          id: id,
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
         );
 
-  FamilyWithDependencies2Provider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.id,
-  }) : super.internal();
+  static const $allTransitiveDependencies0 = providerWithDependenciesProvider;
+  static const $allTransitiveDependencies1 =
+      ProviderWithDependenciesProvider.$allTransitiveDependencies0;
+  static const $allTransitiveDependencies2 =
+      ProviderWithDependenciesProvider.$allTransitiveDependencies1;
+  static const $allTransitiveDependencies3 = _private2Provider;
+  static const $allTransitiveDependencies4 = public2Provider;
 
-  final int? id;
+  final int Function(
+    FamilyWithDependencies2Ref ref, {
+    int? id,
+  })? _createCb;
 
   @override
-  Override overrideWith(
-    int Function(FamilyWithDependencies2Ref provider) create,
-  ) {
-    return ProviderOverride(
+  String debugGetCreateSourceHash() => _$familyWithDependencies2Hash();
+
+  @override
+  String toString() {
+    return r'familyWithDependencies2Provider'
+        ''
+        '($argument)';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
       origin: this,
-      override: FamilyWithDependencies2Provider._internal(
-        (ref) => create(ref as FamilyWithDependencies2Ref),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        id: id,
-      ),
+      providerOverride: $ValueProvider<int>(value),
     );
   }
 
+  @$internal
   @override
-  AutoDisposeProviderElement<int> createElement() {
-    return _FamilyWithDependencies2ProviderElement(this);
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  FamilyWithDependencies2Provider $copyWithCreate(
+    int Function(
+      FamilyWithDependencies2Ref ref,
+    ) create,
+  ) {
+    return FamilyWithDependencies2Provider._(
+        argument: argument as int?,
+        from: from! as FamilyWithDependencies2Family,
+        create: (
+          ref, {
+          int? id,
+        }) =>
+            create(ref));
+  }
+
+  @override
+  int create(FamilyWithDependencies2Ref ref) {
+    final _$cb = _createCb ?? familyWithDependencies2;
+    final argument = this.argument as int?;
+    return _$cb(
+      ref,
+      id: argument,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return other is FamilyWithDependencies2Provider && other.id == id;
+    return other is FamilyWithDependencies2Provider &&
+        other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, id.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-mixin FamilyWithDependencies2Ref on AutoDisposeProviderRef<int> {
-  /// The parameter `id` of this provider.
-  int? get id;
-}
+String _$familyWithDependencies2Hash() =>
+    r'209b9e3ed4e5fad89572268d161fbe64a6ef0e87';
 
-class _FamilyWithDependencies2ProviderElement
-    extends AutoDisposeProviderElement<int> with FamilyWithDependencies2Ref {
-  _FamilyWithDependencies2ProviderElement(super.provider);
+final class FamilyWithDependencies2Family extends Family {
+  const FamilyWithDependencies2Family._()
+      : super(
+          name: r'familyWithDependencies2Provider',
+          dependencies: const <ProviderOrFamily>[
+            providerWithDependenciesProvider,
+            _private2Provider,
+            public2Provider
+          ],
+          allTransitiveDependencies: const <ProviderOrFamily>{
+            FamilyWithDependencies2Provider.$allTransitiveDependencies0,
+            FamilyWithDependencies2Provider.$allTransitiveDependencies1,
+            FamilyWithDependencies2Provider.$allTransitiveDependencies2,
+            FamilyWithDependencies2Provider.$allTransitiveDependencies3,
+            FamilyWithDependencies2Provider.$allTransitiveDependencies4,
+          },
+          isAutoDispose: true,
+        );
+
+  FamilyWithDependencies2Provider call({
+    int? id,
+  }) =>
+      FamilyWithDependencies2Provider._(argument: id, from: this);
 
   @override
-  int? get id => (origin as FamilyWithDependencies2Provider).id;
+  String debugGetCreateSourceHash() => _$familyWithDependencies2Hash();
+
+  @override
+  String toString() => r'familyWithDependencies2Provider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    int Function(
+      FamilyWithDependencies2Ref ref,
+      int? args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as FamilyWithDependencies2Provider;
+
+        final argument = provider.argument as int?;
+
+        return provider
+            .$copyWithCreate((ref) => create(ref, argument))
+            .$createElement(container);
+      },
+    );
+  }
+}
+
+typedef _Private2Ref = Ref<int>;
+
+@ProviderFor(_private2)
+const _private2Provider = _Private2Provider._();
+
+final class _Private2Provider
+    extends $FunctionalProvider<int, int, _Private2Ref>
+    with $Provider<int, _Private2Ref> {
+  const _Private2Provider._(
+      {int Function(
+        _Private2Ref ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'_private2Provider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final int Function(
+    _Private2Ref ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$private2Hash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  _Private2Provider $copyWithCreate(
+    int Function(
+      _Private2Ref ref,
+    ) create,
+  ) {
+    return _Private2Provider._(create: create);
+  }
+
+  @override
+  int create(_Private2Ref ref) {
+    final _$cb = _createCb ?? _private2;
+    return _$cb(ref);
+  }
 }
 
 String _$private2Hash() => r'5e0fa14ff40fb444c027ed25150a42362db3ef19';
 
-/// See also [_private2].
-@ProviderFor(_private2)
-final _private2Provider = AutoDisposeProvider<int>.internal(
-  _private2,
-  name: r'_private2Provider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$private2Hash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+typedef Public2Ref = Ref<int>;
 
-typedef _Private2Ref = AutoDisposeProviderRef<int>;
+@ProviderFor(public2)
+const public2Provider = Public2Provider._();
+
+final class Public2Provider extends $FunctionalProvider<int, int, Public2Ref>
+    with $Provider<int, Public2Ref> {
+  const Public2Provider._(
+      {int Function(
+        Public2Ref ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'public2Provider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final int Function(
+    Public2Ref ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$public2Hash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  Public2Provider $copyWithCreate(
+    int Function(
+      Public2Ref ref,
+    ) create,
+  ) {
+    return Public2Provider._(create: create);
+  }
+
+  @override
+  int create(Public2Ref ref) {
+    final _$cb = _createCb ?? public2;
+    return _$cb(ref);
+  }
+}
+
 String _$public2Hash() => r'9767255f0182589fe48b29d217dd488b0a13b9d5';
 
-/// See also [public2].
-@ProviderFor(public2)
-final public2Provider = AutoDisposeProvider<int>.internal(
-  public2,
-  name: r'public2Provider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$public2Hash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+@ProviderFor(NotifierWithDependencies)
+const notifierWithDependenciesProvider = NotifierWithDependenciesProvider._();
 
-typedef Public2Ref = AutoDisposeProviderRef<int>;
+final class NotifierWithDependenciesProvider
+    extends $NotifierProvider<NotifierWithDependencies, int> {
+  const NotifierWithDependenciesProvider._(
+      {super.runNotifierBuildOverride,
+      NotifierWithDependencies Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'notifierWithDependenciesProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[
+            providerWithDependenciesProvider,
+            _private2Provider,
+            public2Provider
+          ],
+          allTransitiveDependencies: const <ProviderOrFamily>{
+            NotifierWithDependenciesProvider.$allTransitiveDependencies0,
+            NotifierWithDependenciesProvider.$allTransitiveDependencies1,
+            NotifierWithDependenciesProvider.$allTransitiveDependencies2,
+            NotifierWithDependenciesProvider.$allTransitiveDependencies3,
+            NotifierWithDependenciesProvider.$allTransitiveDependencies4,
+          },
+        );
+
+  static const $allTransitiveDependencies0 = providerWithDependenciesProvider;
+  static const $allTransitiveDependencies1 =
+      ProviderWithDependenciesProvider.$allTransitiveDependencies0;
+  static const $allTransitiveDependencies2 =
+      ProviderWithDependenciesProvider.$allTransitiveDependencies1;
+  static const $allTransitiveDependencies3 = _private2Provider;
+  static const $allTransitiveDependencies4 = public2Provider;
+
+  final NotifierWithDependencies Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$notifierWithDependenciesHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  NotifierWithDependencies create() =>
+      _createCb?.call() ?? NotifierWithDependencies();
+
+  @$internal
+  @override
+  NotifierWithDependenciesProvider $copyWithCreate(
+    NotifierWithDependencies Function() create,
+  ) {
+    return NotifierWithDependenciesProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  NotifierWithDependenciesProvider $copyWithBuild(
+    int Function(
+      Ref<int>,
+      NotifierWithDependencies,
+    ) build,
+  ) {
+    return NotifierWithDependenciesProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<NotifierWithDependencies, int> $createElement(
+          ProviderContainer container) =>
+      $NotifierProviderElement(this, container);
+}
+
 String _$notifierWithDependenciesHash() =>
     r'becc68e5a54b0cc2b8277a6d54b74edef93bfe89';
 
-/// See also [NotifierWithDependencies].
-@ProviderFor(NotifierWithDependencies)
-final notifierWithDependenciesProvider =
-    AutoDisposeNotifierProvider<NotifierWithDependencies, int>.internal(
-  NotifierWithDependencies.new,
-  name: r'notifierWithDependenciesProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$notifierWithDependenciesHash,
-  dependencies: <ProviderOrFamily>[
-    providerWithDependenciesProvider,
-    _private2Provider,
-    public2Provider
-  ],
-  allTransitiveDependencies: <ProviderOrFamily>{
-    providerWithDependenciesProvider,
-    ...?providerWithDependenciesProvider.allTransitiveDependencies,
-    _private2Provider,
-    ...?_private2Provider.allTransitiveDependencies,
-    public2Provider,
-    ...?public2Provider.allTransitiveDependencies
-  },
-);
-
-typedef _$NotifierWithDependencies = AutoDisposeNotifier<int>;
-String _$notifierFamilyWithDependenciesHash() =>
-    r'b185ba93857cd028964c1412e748ee887dbd45c8';
-
-abstract class _$NotifierFamilyWithDependencies
-    extends BuildlessAutoDisposeNotifier<int> {
-  late final int? id;
-
-  int build({
-    int? id,
-  });
+abstract class _$NotifierWithDependencies extends $Notifier<int> {
+  int build();
+  @$internal
+  @override
+  int runBuild() => build();
 }
 
-/// See also [NotifierFamilyWithDependencies].
 @ProviderFor(NotifierFamilyWithDependencies)
 const notifierFamilyWithDependenciesProvider =
-    NotifierFamilyWithDependenciesFamily();
+    NotifierFamilyWithDependenciesFamily._();
 
-/// See also [NotifierFamilyWithDependencies].
-class NotifierFamilyWithDependenciesFamily extends Family<int> {
-  /// See also [NotifierFamilyWithDependencies].
-  const NotifierFamilyWithDependenciesFamily();
-
-  /// See also [NotifierFamilyWithDependencies].
-  NotifierFamilyWithDependenciesProvider call({
-    int? id,
-  }) {
-    return NotifierFamilyWithDependenciesProvider(
-      id: id,
-    );
-  }
-
-  @override
-  NotifierFamilyWithDependenciesProvider getProviderOverride(
-    covariant NotifierFamilyWithDependenciesProvider provider,
-  ) {
-    return call(
-      id: provider.id,
-    );
-  }
-
-  static final Iterable<ProviderOrFamily> _dependencies = <ProviderOrFamily>[
-    providerWithDependenciesProvider,
-    _private2Provider,
-    public2Provider
-  ];
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static final Iterable<ProviderOrFamily> _allTransitiveDependencies =
-      <ProviderOrFamily>{
-    providerWithDependenciesProvider,
-    ...?providerWithDependenciesProvider.allTransitiveDependencies,
-    _private2Provider,
-    ...?_private2Provider.allTransitiveDependencies,
-    public2Provider,
-    ...?public2Provider.allTransitiveDependencies
-  };
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'notifierFamilyWithDependenciesProvider';
-}
-
-/// See also [NotifierFamilyWithDependencies].
-class NotifierFamilyWithDependenciesProvider
-    extends AutoDisposeNotifierProviderImpl<NotifierFamilyWithDependencies,
-        int> {
-  /// See also [NotifierFamilyWithDependencies].
-  NotifierFamilyWithDependenciesProvider({
-    int? id,
-  }) : this._internal(
-          () => NotifierFamilyWithDependencies()..id = id,
-          from: notifierFamilyWithDependenciesProvider,
+final class NotifierFamilyWithDependenciesProvider
+    extends $NotifierProvider<NotifierFamilyWithDependencies, int> {
+  const NotifierFamilyWithDependenciesProvider._(
+      {required NotifierFamilyWithDependenciesFamily super.from,
+      required int? super.argument,
+      super.runNotifierBuildOverride,
+      NotifierFamilyWithDependencies Function()? create})
+      : _createCb = create,
+        super(
           name: r'notifierFamilyWithDependenciesProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$notifierFamilyWithDependenciesHash,
-          dependencies: NotifierFamilyWithDependenciesFamily._dependencies,
-          allTransitiveDependencies:
-              NotifierFamilyWithDependenciesFamily._allTransitiveDependencies,
-          id: id,
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
         );
 
-  NotifierFamilyWithDependenciesProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.id,
-  }) : super.internal();
+  static const $allTransitiveDependencies0 = providerWithDependenciesProvider;
+  static const $allTransitiveDependencies1 =
+      ProviderWithDependenciesProvider.$allTransitiveDependencies0;
+  static const $allTransitiveDependencies2 =
+      ProviderWithDependenciesProvider.$allTransitiveDependencies1;
+  static const $allTransitiveDependencies3 = _private2Provider;
+  static const $allTransitiveDependencies4 = public2Provider;
 
-  final int? id;
+  final NotifierFamilyWithDependencies Function()? _createCb;
 
   @override
-  int runNotifierBuild(
-    covariant NotifierFamilyWithDependencies notifier,
-  ) {
-    return notifier.build(
-      id: id,
-    );
+  String debugGetCreateSourceHash() => _$notifierFamilyWithDependenciesHash();
+
+  @override
+  String toString() {
+    return r'notifierFamilyWithDependenciesProvider'
+        ''
+        '($argument)';
   }
 
-  @override
-  Override overrideWith(NotifierFamilyWithDependencies Function() create) {
-    return ProviderOverride(
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
       origin: this,
-      override: NotifierFamilyWithDependenciesProvider._internal(
-        () => create()..id = id,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        id: id,
-      ),
+      providerOverride: $ValueProvider<int>(value),
     );
   }
 
+  @$internal
   @override
-  AutoDisposeNotifierProviderElement<NotifierFamilyWithDependencies, int>
-      createElement() {
-    return _NotifierFamilyWithDependenciesProviderElement(this);
+  NotifierFamilyWithDependencies create() =>
+      _createCb?.call() ?? NotifierFamilyWithDependencies();
+
+  @$internal
+  @override
+  NotifierFamilyWithDependenciesProvider $copyWithCreate(
+    NotifierFamilyWithDependencies Function() create,
+  ) {
+    return NotifierFamilyWithDependenciesProvider._(
+        argument: argument as int?,
+        from: from! as NotifierFamilyWithDependenciesFamily,
+        create: create);
   }
+
+  @$internal
+  @override
+  NotifierFamilyWithDependenciesProvider $copyWithBuild(
+    int Function(
+      Ref<int>,
+      NotifierFamilyWithDependencies,
+    ) build,
+  ) {
+    return NotifierFamilyWithDependenciesProvider._(
+        argument: argument as int?,
+        from: from! as NotifierFamilyWithDependenciesFamily,
+        runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<NotifierFamilyWithDependencies, int> $createElement(
+          ProviderContainer container) =>
+      $NotifierProviderElement(this, container);
 
   @override
   bool operator ==(Object other) {
-    return other is NotifierFamilyWithDependenciesProvider && other.id == id;
+    return other is NotifierFamilyWithDependenciesProvider &&
+        other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, id.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-mixin NotifierFamilyWithDependenciesRef on AutoDisposeNotifierProviderRef<int> {
-  /// The parameter `id` of this provider.
-  int? get id;
-}
+String _$notifierFamilyWithDependenciesHash() =>
+    r'b185ba93857cd028964c1412e748ee887dbd45c8';
 
-class _NotifierFamilyWithDependenciesProviderElement
-    extends AutoDisposeNotifierProviderElement<NotifierFamilyWithDependencies,
-        int> with NotifierFamilyWithDependenciesRef {
-  _NotifierFamilyWithDependenciesProviderElement(super.provider);
+final class NotifierFamilyWithDependenciesFamily extends Family {
+  const NotifierFamilyWithDependenciesFamily._()
+      : super(
+          name: r'notifierFamilyWithDependenciesProvider',
+          dependencies: const <ProviderOrFamily>[
+            providerWithDependenciesProvider,
+            _private2Provider,
+            public2Provider
+          ],
+          allTransitiveDependencies: const <ProviderOrFamily>{
+            NotifierFamilyWithDependenciesProvider.$allTransitiveDependencies0,
+            NotifierFamilyWithDependenciesProvider.$allTransitiveDependencies1,
+            NotifierFamilyWithDependenciesProvider.$allTransitiveDependencies2,
+            NotifierFamilyWithDependenciesProvider.$allTransitiveDependencies3,
+            NotifierFamilyWithDependenciesProvider.$allTransitiveDependencies4,
+          },
+          isAutoDispose: true,
+        );
+
+  NotifierFamilyWithDependenciesProvider call({
+    int? id,
+  }) =>
+      NotifierFamilyWithDependenciesProvider._(argument: id, from: this);
 
   @override
-  int? get id => (origin as NotifierFamilyWithDependenciesProvider).id;
+  String debugGetCreateSourceHash() => _$notifierFamilyWithDependenciesHash();
+
+  @override
+  String toString() => r'notifierFamilyWithDependenciesProvider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    NotifierFamilyWithDependencies Function(
+      int? args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as NotifierFamilyWithDependenciesProvider;
+
+        final argument = provider.argument as int?;
+
+        return provider
+            .$copyWithCreate(() => create(argument))
+            .$createElement(container);
+      },
+    );
+  }
+
+  /// {@macro riverpod.override_with_build}
+  Override overrideWithBuild(
+    int Function(Ref<int> ref, NotifierFamilyWithDependencies notifier,
+            int? argument)
+        build,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as NotifierFamilyWithDependenciesProvider;
+
+        final argument = provider.argument as int?;
+
+        return provider
+            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
+            .$createElement(container);
+      },
+    );
+  }
 }
+
+abstract class _$NotifierFamilyWithDependencies extends $Notifier<int> {
+  late final _$args = (ref as $NotifierProviderElement).origin.argument as int?;
+  int? get id => _$args;
+
+  int build({
+    int? id,
+  });
+  @$internal
+  @override
+  int runBuild() => build(
+        id: _$args,
+      );
+}
+
+const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

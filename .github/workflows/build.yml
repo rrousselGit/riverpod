@@ -5,13 +5,6 @@ on:
     paths-ignore:
       - "**.md"
       - "**.mdx"
-  push:
-    branches:
-      - master
-      - dev
-    paths-ignore:
-      - "**.md"
-      - "**.mdx"
 
   schedule:
     # runs the CI everyday at 10AM
@@ -28,7 +21,6 @@ jobs:
     strategy:
       matrix:
         channel:
-          - stable
           - master
         package_path:
           - examples/counter
@@ -44,8 +36,6 @@ jobs:
           - packages/hooks_riverpod
           - packages/hooks_riverpod/example
           - packages/riverpod_annotation
-          # TODO(rrousselGit) update riverpod_cli test setup to be supported by the CI
-          # - packages/riverpod_cli
           - packages/riverpod_generator
           - packages/riverpod_generator/integration/build_yaml
           # TODO(rrousselGit) update riverpod_graph test setup to be supported by the CI

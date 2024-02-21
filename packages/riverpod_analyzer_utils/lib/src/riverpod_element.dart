@@ -38,6 +38,7 @@ class RiverpodAnnotationElement {
           RiverpodAnalysisError(
             'Failed to parse dependency $dep',
             targetElement: element,
+            code: RiverpodAnalysisErrorCode.riverpodDependencyParseError,
           ),
         );
         return null;
@@ -81,6 +82,7 @@ class RiverpodAnnotationElement {
         'Unsupported dependency. '
         'Only functions and classes annotated by @riverpod are supported.',
         targetElement: targetElement,
+        code: RiverpodAnalysisErrorCode.riverpodDependencyParseError,
       ),
     );
     return null;
@@ -115,7 +117,7 @@ class RiverpodAnnotationElement {
 }
 
 abstract class ProviderDeclarationElement {
-  bool get isAutoDispose;
+  // TODO changelog breaking: removed isAutoDispose from ProviderDeclarationElement
   Element get element;
   String get name;
 }
@@ -183,7 +185,6 @@ class LegacyProviderDeclarationElement implements ProviderDeclarationElement {
   LegacyProviderDeclarationElement._({
     required this.name,
     required this.element,
-    required this.isAutoDispose,
     required this.familyElement,
     required this.providerType,
   });
@@ -201,13 +202,9 @@ class LegacyProviderDeclarationElement implements ProviderDeclarationElement {
         return null;
       }
 
-      bool isAutoDispose;
       LegacyFamilyInvocationElement? familyElement;
       LegacyProviderType? providerType;
       if (providerBaseType.isAssignableFromType(element.type)) {
-        isAutoDispose = !alwaysAliveProviderListenableType
-            .isAssignableFromType(element.type);
-
         providerType = LegacyProviderType._parse(element.type);
       } else if (familyType.isAssignableFromType(element.type)) {
         final callFn = (element.type as InterfaceType).lookUpMethod2(
@@ -216,8 +213,6 @@ class LegacyProviderDeclarationElement implements ProviderDeclarationElement {
         )!;
         final parameter = callFn.parameters.single;
 
-        isAutoDispose = !alwaysAliveProviderListenableType
-            .isAssignableFromType(callFn.returnType);
         providerType = LegacyProviderType._parse(callFn.returnType);
         familyElement = LegacyFamilyInvocationElement._(parameter.type);
       } else {
@@ -228,7 +223,6 @@ class LegacyProviderDeclarationElement implements ProviderDeclarationElement {
       return LegacyProviderDeclarationElement._(
         name: element.name,
         element: element,
-        isAutoDispose: isAutoDispose,
         familyElement: familyElement,
         providerType: providerType,
       );
@@ -243,9 +237,6 @@ class LegacyProviderDeclarationElement implements ProviderDeclarationElement {
   @override
   final String name;
 
-  @override
-  final bool isAutoDispose;
-
   final LegacyFamilyInvocationElement? familyElement;
 
   final LegacyProviderType? providerType;
@@ -256,13 +247,25 @@ class LegacyFamilyInvocationElement {
   final DartType parameterType;
 }
 
-abstract class GeneratorProviderDeclarationElement
+// TODO changelog made sealed
+sealed class GeneratorProviderDeclarationElement
     implements ProviderDeclarationElement {
   RiverpodAnnotationElement get annotation;
 
-  bool get isScoped => annotation.dependencies != null;
+  /// Whether a provider has any form of parameter, be it function parameters
+  /// or type parameters.
+  bool get isFamily;
 
-  @override
+  bool get isScoped {
+    if (annotation.dependencies != null) return true;
+
+    // TODO changelog isScoped now supports abstract build methods
+    // TODO test
+    final that = this;
+    return that is ClassBasedProviderDeclarationElement &&
+        that.buildMethod.isAbstract;
+  }
+
   bool get isAutoDispose => !annotation.keepAlive;
 }
 
@@ -294,6 +297,7 @@ class ClassBasedProviderDeclarationElement
             'No "build" method found. '
             'Classes annotated with @riverpod must define a method named "build".',
             targetElement: element,
+            code: RiverpodAnalysisErrorCode.missingNotifierBuild,
           ),
         );
 
@@ -310,6 +314,12 @@ class ClassBasedProviderDeclarationElement
   }
 
   static final _cache = Expando<_Box<ClassBasedProviderDeclarationElement>>();
+
+  @override
+  bool get isFamily {
+    return buildMethod.parameters.isNotEmpty ||
+        element.typeParameters.isNotEmpty;
+  }
 
   @override
   final ClassElement element;
@@ -351,6 +361,14 @@ class FunctionalProviderDeclarationElement
   static final _cache = Expando<_Box<FunctionalProviderDeclarationElement>>();
 
   @override
+  bool get isScoped => super.isScoped || element.isExternal;
+
+  @override
+  bool get isFamily {
+    return element.parameters.length > 1 || element.typeParameters.isNotEmpty;
+  }
+
+  @override
   final ExecutableElement element;
 
   @override
@@ -358,9 +376,6 @@ class FunctionalProviderDeclarationElement
 
   @override
   final RiverpodAnnotationElement annotation;
-
-  @override
-  bool get isScoped => super.isScoped || element.isExternal;
 }
 
 /// An object for differentiating "no cache" from "cache but value is null".

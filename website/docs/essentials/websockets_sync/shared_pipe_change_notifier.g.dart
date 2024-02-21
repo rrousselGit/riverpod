@@ -8,35 +8,129 @@ part of 'shared_pipe_change_notifier.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$myListenableHash() => r'7096094cd24ed50dbabb9fb9ab64b340176c04bf';
+typedef MyListenableRef = Ref<Raw<ValueNotifier<int>>>;
 
-/// See also [myListenable].
 @ProviderFor(myListenable)
-final myListenableProvider = AutoDisposeProvider<ValueNotifier<int>>.internal(
-  myListenable,
-  name: r'myListenableProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$myListenableHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+const myListenableProvider = MyListenableProvider._();
 
-typedef MyListenableRef = AutoDisposeProviderRef<ValueNotifier<int>>;
-String _$anotherListenableHash() => r'38bfe5dbf5f148819b3671ad69d15c8e05264c23';
+final class MyListenableProvider extends $FunctionalProvider<
+    Raw<ValueNotifier<int>>,
+    Raw<ValueNotifier<int>>,
+    MyListenableRef> with $Provider<Raw<ValueNotifier<int>>, MyListenableRef> {
+  const MyListenableProvider._(
+      {Raw<ValueNotifier<int>> Function(
+        MyListenableRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'myListenableProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
 
-/// See also [anotherListenable].
+  final Raw<ValueNotifier<int>> Function(
+    MyListenableRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$myListenableHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Raw<ValueNotifier<int>> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<Raw<ValueNotifier<int>>>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<Raw<ValueNotifier<int>>> $createElement(
+          ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  MyListenableProvider $copyWithCreate(
+    Raw<ValueNotifier<int>> Function(
+      MyListenableRef ref,
+    ) create,
+  ) {
+    return MyListenableProvider._(create: create);
+  }
+
+  @override
+  Raw<ValueNotifier<int>> create(MyListenableRef ref) {
+    final _$cb = _createCb ?? myListenable;
+    return _$cb(ref);
+  }
+}
+
+String _$myListenableHash() => r'90f4227ef5442f978d742115663e5f0869622a27';
+
+typedef AnotherListenableRef = Ref<Raw<ValueNotifier<int>>>;
+
 @ProviderFor(anotherListenable)
-final anotherListenableProvider =
-    AutoDisposeProvider<ValueNotifier<int>>.internal(
-  anotherListenable,
-  name: r'anotherListenableProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$anotherListenableHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+const anotherListenableProvider = AnotherListenableProvider._();
 
-typedef AnotherListenableRef = AutoDisposeProviderRef<ValueNotifier<int>>;
+final class AnotherListenableProvider extends $FunctionalProvider<
+        Raw<ValueNotifier<int>>, Raw<ValueNotifier<int>>, AnotherListenableRef>
+    with $Provider<Raw<ValueNotifier<int>>, AnotherListenableRef> {
+  const AnotherListenableProvider._(
+      {Raw<ValueNotifier<int>> Function(
+        AnotherListenableRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'anotherListenableProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final Raw<ValueNotifier<int>> Function(
+    AnotherListenableRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$anotherListenableHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Raw<ValueNotifier<int>> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<Raw<ValueNotifier<int>>>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<Raw<ValueNotifier<int>>> $createElement(
+          ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  AnotherListenableProvider $copyWithCreate(
+    Raw<ValueNotifier<int>> Function(
+      AnotherListenableRef ref,
+    ) create,
+  ) {
+    return AnotherListenableProvider._(create: create);
+  }
+
+  @override
+  Raw<ValueNotifier<int>> create(AnotherListenableRef ref) {
+    final _$cb = _createCb ?? anotherListenable;
+    return _$cb(ref);
+  }
+}
+
+String _$anotherListenableHash() => r'50dd36b21e07c50818944ec49f9e68d21fcae876';
+
+const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

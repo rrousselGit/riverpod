@@ -1,7 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/src/internals.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:riverpod/legacy.dart';
 
 import 'utils.dart';
 
@@ -190,8 +192,7 @@ void main() {
     expect(find.byType(Container), findsOneWidget);
     expect(buildCount, 1);
 
-    // ignore: unawaited_futures
-    tester.binding.reassembleApplication();
+    unawaited(tester.binding.reassembleApplication());
     await tester.pump();
 
     expect(find.byType(Container), findsOneWidget);
@@ -478,13 +479,13 @@ void main() {
     expect(find.text('isPositive true'), findsOneWidget);
     expect(buildCount, 1);
 
-    notifier.value = -10;
+    notifier.state = -10;
     await tester.pump();
 
     expect(find.text('isPositive false'), findsOneWidget);
     expect(buildCount, 2);
 
-    notifier.value = -5;
+    notifier.state = -5;
     await tester.pump();
 
     expect(find.text('isPositive false'), findsOneWidget);
@@ -760,8 +761,8 @@ class TestNotifier extends StateNotifier<int> {
 
   void increment() => state++;
 
-  // ignore: avoid_setters_without_getters
-  set value(int value) => state = value;
+  @override
+  int get state;
 }
 
 final _provider = Provider((ref) => 'hello world');

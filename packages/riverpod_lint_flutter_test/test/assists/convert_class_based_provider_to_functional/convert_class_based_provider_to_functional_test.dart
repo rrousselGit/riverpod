@@ -20,6 +20,7 @@ void main() {
         ...await assist.testRun(result, const SourceRange(174, 0)),
         ...await assist.testRun(result, const SourceRange(190, 0)),
         ...await assist.testRun(result, const SourceRange(258, 0)),
+        ...await assist.testRun(result, const SourceRange(412, 0)),
       ];
     },
   );

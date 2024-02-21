@@ -1,7 +1,7 @@
 // ignore_for_file: unused_local_variable
 
 import 'package:http/http.dart' as http;
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:riverpod/riverpod.dart';
 
 import '../cache_for_extension.dart';
 

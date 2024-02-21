@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 
 /* SNIPPET START */

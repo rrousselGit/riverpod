@@ -43,7 +43,7 @@ class MyNotifier extends Notifier<int> {
   }
 }
 
-class MyAutoDisposeNotifier extends AutoDisposeNotifier<int> {
+class MyAutoDisposeNotifier extends Notifier<int> {
   int get _privateGetter => 0;
 
   // expect_lint: avoid_public_notifier_properties
@@ -53,7 +53,7 @@ class MyAutoDisposeNotifier extends AutoDisposeNotifier<int> {
   int build() => 0;
 }
 
-class MyAutoDisposeFamilyNotifier extends AutoDisposeFamilyNotifier<int, int> {
+class MyAutoDisposeFamilyNotifier extends FamilyNotifier<int, int> {
   int get _privateGetter => 0;
 
   // expect_lint: avoid_public_notifier_properties
@@ -73,7 +73,7 @@ class MyAsyncNotifier extends AsyncNotifier<int> {
   Future<int> build() async => 0;
 }
 
-class MyAutoDisposeAsyncNotifier extends AutoDisposeAsyncNotifier<int> {
+class MyAutoDisposeAsyncNotifier extends AsyncNotifier<int> {
   int get _privateGetter => 0;
 
   // expect_lint: avoid_public_notifier_properties
@@ -83,8 +83,7 @@ class MyAutoDisposeAsyncNotifier extends AutoDisposeAsyncNotifier<int> {
   Future<int> build() async => 0;
 }
 
-class MyAutoDisposeFamilyAsyncNotifier
-    extends AutoDisposeFamilyAsyncNotifier<int, int> {
+class MyAutoDisposeFamilyAsyncNotifier extends FamilyAsyncNotifier<int, int> {
   int get _privateGetter => 0;
 
   // expect_lint: avoid_public_notifier_properties

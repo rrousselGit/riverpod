@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 /* SNIPPET START */
-extension CacheForExtension on AutoDisposeRef<Object?> {
+extension CacheForExtension on Ref<Object?> {
   /// Mantiene il provider in vita per [duration].
   void cacheFor(Duration duration) {
     // Previene subito lo stato dal essere distrutto.

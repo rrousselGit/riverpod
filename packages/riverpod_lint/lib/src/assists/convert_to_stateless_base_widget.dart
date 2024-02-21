@@ -3,7 +3,7 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/source/source_range.dart';
-// ignore: implementation_imports, somehow not exported by analyzer
+// ignore: implementation_imports, blocked by https://github.com/dart-lang/sdk/issues/54480
 import 'package:analyzer/src/generated/source.dart' show Source;
 import 'package:collection/collection.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
@@ -107,7 +107,6 @@ class ConvertToStatelessBaseWidget extends RiverpodAssist {
               ', WidgetRef ref',
             );
           }
-          break;
         case StatelessBaseWidgetType.hookWidget:
         case StatelessBaseWidgetType.statelessWidget:
           // If the build method has a ref, remove it
@@ -119,7 +118,6 @@ class ConvertToStatelessBaseWidget extends RiverpodAssist {
               ),
             );
           }
-          break;
       }
     });
   }
@@ -259,14 +257,12 @@ class ConvertToStatelessBaseWidget extends RiverpodAssist {
             parameterRange,
             'BuildContext context, WidgetRef ref',
           );
-          break;
         case StatelessBaseWidgetType.hookWidget:
         case StatelessBaseWidgetType.statelessWidget:
           builder.addSimpleReplacement(
             parameterRange,
             'BuildContext context',
           );
-          break;
       }
     });
   }

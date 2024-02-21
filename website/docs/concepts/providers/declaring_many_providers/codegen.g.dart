@@ -8,33 +8,125 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+typedef CityRef = Ref<String>;
+
+@ProviderFor(city)
+const cityProvider = CityProvider._();
+
+final class CityProvider extends $FunctionalProvider<String, String, CityRef>
+    with $Provider<String, CityRef> {
+  const CityProvider._(
+      {String Function(
+        CityRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'cityProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final String Function(
+    CityRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$cityHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<String> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  CityProvider $copyWithCreate(
+    String Function(
+      CityRef ref,
+    ) create,
+  ) {
+    return CityProvider._(create: create);
+  }
+
+  @override
+  String create(CityRef ref) {
+    final _$cb = _createCb ?? city;
+    return _$cb(ref);
+  }
+}
+
 String _$cityHash() => r'2ccdee096b5d5c1cafa736b3e52b788431b9af38';
 
-/// See also [city].
-@ProviderFor(city)
-final cityProvider = AutoDisposeProvider<String>.internal(
-  city,
-  name: r'cityProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$cityHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+typedef CountryRef = Ref<String>;
 
-typedef CityRef = AutoDisposeProviderRef<String>;
+@ProviderFor(country)
+const countryProvider = CountryProvider._();
+
+final class CountryProvider
+    extends $FunctionalProvider<String, String, CountryRef>
+    with $Provider<String, CountryRef> {
+  const CountryProvider._(
+      {String Function(
+        CountryRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'countryProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final String Function(
+    CountryRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$countryHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<String> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  CountryProvider $copyWithCreate(
+    String Function(
+      CountryRef ref,
+    ) create,
+  ) {
+    return CountryProvider._(create: create);
+  }
+
+  @override
+  String create(CountryRef ref) {
+    final _$cb = _createCb ?? country;
+    return _$cb(ref);
+  }
+}
+
 String _$countryHash() => r'd1513349c3bc0c99763cb4fb29eb012f2351bc4c';
 
-/// See also [country].
-@ProviderFor(country)
-final countryProvider = AutoDisposeProvider<String>.internal(
-  country,
-  name: r'countryProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$countryHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef CountryRef = AutoDisposeProviderRef<String>;
+const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

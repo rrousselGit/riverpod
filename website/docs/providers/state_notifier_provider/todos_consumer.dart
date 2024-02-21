@@ -22,7 +22,8 @@ class TodoListView extends ConsumerWidget {
           CheckboxListTile(
             value: todo.completed,
             // When tapping on the todo, change its completed status
-            onChanged: (value) => ref.read(todosProvider.notifier).toggle(todo.id),
+            onChanged: (value) =>
+                ref.read(todosProvider.notifier).toggle(todo.id),
             title: Text(todo.description),
           ),
       ],

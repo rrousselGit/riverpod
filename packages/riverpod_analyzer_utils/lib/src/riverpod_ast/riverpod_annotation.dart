@@ -1,6 +1,7 @@
 part of '../riverpod_ast.dart';
 
-class RiverpodAnnotationDependency extends RiverpodAst {
+final class RiverpodAnnotationDependency extends RiverpodAst
+    with _$RiverpodAnnotationDependency {
   RiverpodAnnotationDependency._({
     required this.node,
     required this.provider,
@@ -8,42 +9,21 @@ class RiverpodAnnotationDependency extends RiverpodAst {
 
   final Expression node;
   final GeneratorProviderDeclarationElement provider;
-
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitRiverpodAnnotationDependency(this);
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {}
 }
 
-class RiverpodAnnotationDependencies extends RiverpodAst {
+final class RiverpodAnnotationDependencies extends RiverpodAst
+    with _$RiverpodAnnotationDependencies {
   RiverpodAnnotationDependencies._({
     required this.node,
     required this.dependencies,
   });
 
   final NamedExpression node;
+  @override
   final List<RiverpodAnnotationDependency>? dependencies;
-
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitRiverpodAnnotationDependencies(this);
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    final dependencies = this.dependencies;
-    if (dependencies != null) {
-      for (final dependency in dependencies) {
-        dependency.accept(visitor);
-      }
-    }
-  }
 }
 
-class RiverpodAnnotation extends RiverpodAst {
+final class RiverpodAnnotation extends RiverpodAst with _$RiverpodAnnotation {
   RiverpodAnnotation._({
     required this.annotation,
     required this.element,
@@ -119,6 +99,7 @@ class RiverpodAnnotation extends RiverpodAst {
         RiverpodAnalysisError(
           '@Riverpod(dependencies: <...>) only support list literals (using []).',
           targetNode: dependenciesNodeValue,
+          code: RiverpodAnalysisErrorCode.riverpodDependencyParseError,
         ),
       );
     } else {
@@ -128,6 +109,7 @@ class RiverpodAnnotation extends RiverpodAst {
             RiverpodAnalysisError(
               '@Riverpod(dependencies: [...]) does not support if/for/spread operators.',
               targetNode: dependency,
+              code: RiverpodAnalysisErrorCode.riverpodDependencyParseError,
             ),
           );
           continue;
@@ -138,6 +120,7 @@ class RiverpodAnnotation extends RiverpodAst {
             RiverpodAnalysisError(
               'Only elements annotated with @riverpod are supported as "dependencies".',
               targetNode: dependency,
+              code: RiverpodAnalysisErrorCode.riverpodDependencyParseError,
             ),
           );
           continue;
@@ -154,6 +137,7 @@ class RiverpodAnnotation extends RiverpodAst {
               RiverpodAnalysisError(
                 'The dependency $dependency is not a class annotated with @riverpod',
                 targetNode: dependency,
+                code: RiverpodAnalysisErrorCode.riverpodDependencyParseError,
               ),
             );
             continue;
@@ -175,6 +159,7 @@ class RiverpodAnnotation extends RiverpodAst {
               RiverpodAnalysisError(
                 'The dependency $dependency is not a class annotated with @riverpod',
                 targetNode: dependency,
+                code: RiverpodAnalysisErrorCode.riverpodDependencyParseError,
               ),
             );
             continue;
@@ -191,6 +176,7 @@ class RiverpodAnnotation extends RiverpodAst {
             RiverpodAnalysisError(
               '@Riverpod(dependencies: [...]) only supports elements annotated with @riverpod as values.',
               targetNode: dependency,
+              code: RiverpodAnalysisErrorCode.riverpodDependencyParseError,
             ),
           );
         }
@@ -212,15 +198,6 @@ class RiverpodAnnotation extends RiverpodAst {
   final Annotation annotation;
   final RiverpodAnnotationElement element;
   final NamedExpression? keepAliveNode;
+  @override
   final RiverpodAnnotationDependencies? dependencies;
-
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitRiverpodAnnotation(this);
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    dependencies?.accept(visitor);
-  }
 }

@@ -22,9 +22,6 @@ linter:
 
     # Low value and lacks a quick fix
     combinators_ordering: false
-    
-    # Low value and high cost to change on all files
-    eol_at_end_of_file: false
 
     # Conflicts with unused variables
     no_leading_underscores_for_local_identifiers: false
@@ -84,6 +81,3 @@ linter:
 
     # conflicts with `prefer_relative_imports`
     always_use_package_imports: false
-
-    # Disabled for now until we have NNBD as it otherwise conflicts with `missing_return`
-    no_default_cases: false

@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:riverpod/legacy.dart';
 
 /* SNIPPET START */
 
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
           onPressed: () => ref.read(counterProvider.notifier).state++,
           child: Text('$counter'),
         );
-      }),
+      },),
     );
   }
 }

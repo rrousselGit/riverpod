@@ -8,33 +8,116 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+typedef ConfigRef = Ref<AsyncValue<Configuration>>;
+
+@ProviderFor(config)
+const configProvider = ConfigProvider._();
+
+final class ConfigProvider extends $FunctionalProvider<
+        AsyncValue<Configuration>, Stream<Configuration>, ConfigRef>
+    with
+        $FutureModifier<Configuration>,
+        $StreamProvider<Configuration, ConfigRef> {
+  const ConfigProvider._(
+      {Stream<Configuration> Function(
+        ConfigRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'configProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final Stream<Configuration> Function(
+    ConfigRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$configHash();
+
+  @$internal
+  @override
+  $StreamProviderElement<Configuration> $createElement(
+          ProviderContainer container) =>
+      $StreamProviderElement(this, container);
+
+  @override
+  ConfigProvider $copyWithCreate(
+    Stream<Configuration> Function(
+      ConfigRef ref,
+    ) create,
+  ) {
+    return ConfigProvider._(create: create);
+  }
+
+  @override
+  Stream<Configuration> create(ConfigRef ref) {
+    final _$cb = _createCb ?? config;
+    return _$cb(ref);
+  }
+}
+
 String _$configHash() => r'3021d1a8aac384e99d5d22714ffe6e868954888b';
 
-/// See also [config].
-@ProviderFor(config)
-final configProvider = AutoDisposeStreamProvider<Configuration>.internal(
-  config,
-  name: r'configProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$configHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+typedef ProductsRef = Ref<AsyncValue<List<Product>>>;
 
-typedef ConfigRef = AutoDisposeStreamProviderRef<Configuration>;
+@ProviderFor(products)
+const productsProvider = ProductsProvider._();
+
+final class ProductsProvider extends $FunctionalProvider<
+        AsyncValue<List<Product>>, FutureOr<List<Product>>, ProductsRef>
+    with
+        $FutureModifier<List<Product>>,
+        $FutureProvider<List<Product>, ProductsRef> {
+  const ProductsProvider._(
+      {FutureOr<List<Product>> Function(
+        ProductsRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'productsProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final FutureOr<List<Product>> Function(
+    ProductsRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$productsHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<List<Product>> $createElement(
+          ProviderContainer container) =>
+      $FutureProviderElement(this, container);
+
+  @override
+  ProductsProvider $copyWithCreate(
+    FutureOr<List<Product>> Function(
+      ProductsRef ref,
+    ) create,
+  ) {
+    return ProductsProvider._(create: create);
+  }
+
+  @override
+  FutureOr<List<Product>> create(ProductsRef ref) {
+    final _$cb = _createCb ?? products;
+    return _$cb(ref);
+  }
+}
+
 String _$productsHash() => r'd1f4523880408cf8ee0e68969c40cf87d5c78557';
 
-/// See also [products].
-@ProviderFor(products)
-final productsProvider = AutoDisposeFutureProvider<List<Product>>.internal(
-  products,
-  name: r'productsProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$productsHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef ProductsRef = AutoDisposeFutureProviderRef<List<Product>>;
+const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

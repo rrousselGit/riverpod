@@ -1,3 +1,12 @@
+## 1.0.0-dev.1 - 2023-11-20
+
+- **Breaking** `LegacyProviderDeclarationElement.providerType` is now nullable.
+- Fix crash when parsing classes with a `ProviderBase` field.
+
+## 1.0.0-dev.0 - 2023-10-30
+
+- Added `GeneratorProviderDeclarationElement.isFamily`
+
 ## 0.5.1 - 2024-02-04
 
 - Bumped `custom_lint` version
@@ -6,16 +15,10 @@
 
 - **Breaking** `LegacyProviderDeclarationElement.providerType` is now nullable.
 - Fix crash when parsing classes with a `ProviderBase` field.
- 
+
 ## 0.4.3 - 2023-10-28
 
-- `GeneratorProviderDeclaration.createdTypeDisplayString` now always
-  return `FutureOr<value>` on asynchronous providers.
-- Fixing typos
-
-## 0.4.2 - 2023-10-21
-
-- Type `provider.node` as `AnnotatedNode`
+- Added `GeneratorProviderDeclarationElement.isFamily`
 
 ## 0.4.1 - 2023-10-06
 

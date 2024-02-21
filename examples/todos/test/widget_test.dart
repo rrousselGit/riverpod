@@ -36,43 +36,40 @@ void main() {
     matching: find.byType(Checkbox),
   );
 
-  testWidgets(
-    'Render the default todos',
-    (tester) async {
-      await tester.pumpWidget(const ProviderScope(child: MyApp()));
+  testWidgets('Render the default todos', skip: !Platform.isMacOS,
+      (tester) async {
+    await tester.pumpWidget(const ProviderScope(child: MyApp()));
 
-      expect(
-        find.descendant(of: firstItem, matching: find.text(firstItemText)),
-        findsOneWidget,
-      );
-      expect(
-        tester.widget(firstCheckbox),
-        isA<Checkbox>().having((s) => s.value, 'value', false),
-      );
-      expect(
-        find.descendant(of: secondItem, matching: find.text(secondItemText)),
-        findsOneWidget,
-      );
-      expect(
-        tester.widget(secondCheckbox),
-        isA<Checkbox>().having((s) => s.value, 'value', false),
-      );
-      expect(
-        find.descendant(of: thirdItem, matching: find.text(thirdItemText)),
-        findsOneWidget,
-      );
-      expect(
-        tester.widget(thirdCheckbox),
-        isA<Checkbox>().having((s) => s.value, 'value', false),
-      );
+    expect(
+      find.descendant(of: firstItem, matching: find.text(firstItemText)),
+      findsOneWidget,
+    );
+    expect(
+      tester.widget(firstCheckbox),
+      isA<Checkbox>().having((s) => s.value, 'value', false),
+    );
+    expect(
+      find.descendant(of: secondItem, matching: find.text(secondItemText)),
+      findsOneWidget,
+    );
+    expect(
+      tester.widget(secondCheckbox),
+      isA<Checkbox>().having((s) => s.value, 'value', false),
+    );
+    expect(
+      find.descendant(of: thirdItem, matching: find.text(thirdItemText)),
+      findsOneWidget,
+    );
+    expect(
+      tester.widget(thirdCheckbox),
+      isA<Checkbox>().having((s) => s.value, 'value', false),
+    );
 
-      await expectLater(
-        find.byType(MyApp),
-        matchesGoldenFile('initial_state.png'),
-      );
-    },
-    skip: !Platform.isMacOS,
-  );
+    await expectLater(
+      find.byType(MyApp),
+      matchesGoldenFile('initial_state.png'),
+    );
+  });
 
   testWidgets('Clicking on checkbox toggles the todo', (tester) async {
     await tester.pumpWidget(const ProviderScope(child: MyApp()));

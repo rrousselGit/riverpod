@@ -8,7 +8,7 @@ part 'pipe_change_notifier.g.dart';
 /* SNIPPET START */
 /// 값이 변경될 때마다 ValueNotifier를 생성하고 리스너를 업데이트하는 provider입니다.
 @riverpod
-ValueNotifier<int> myListenable(MyListenableRef ref) {
+Raw<ValueNotifier<int>> myListenable(MyListenableRef ref) {
   final notifier = ValueNotifier(0);
 
   // provider가 dispose되면 notifier를 dispose합니다.

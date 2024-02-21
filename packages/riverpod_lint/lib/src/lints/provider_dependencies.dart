@@ -69,6 +69,8 @@ class ProviderDependencies extends RiverpodLintRule {
     problemMessage:
         'If a provider depends on providers which specify "dependencies", '
         'they should themselves specify "dependencies" and include all the scoped providers. ',
+    // TODO changelog: provider_dependencies is now a WARNING
+    errorSeverity: ErrorSeverity.WARNING,
   );
 
   @override

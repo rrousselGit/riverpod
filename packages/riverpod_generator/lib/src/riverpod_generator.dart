@@ -1,18 +1,23 @@
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:meta/meta.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
+
 // ignore: implementation_imports, safe as we are the one controlling this file
 import 'package:riverpod_annotation/src/riverpod_annotation.dart';
 import 'package:source_gen/source_gen.dart';
 
 import 'models.dart';
 import 'parse_generator.dart';
-import 'templates/class_based_provider.dart';
 import 'templates/family.dart';
-import 'templates/functional_provider.dart';
-
-const riverpodTypeChecker = TypeChecker.fromRuntime(Riverpod);
+import 'templates/hash.dart';
+import 'templates/notifier.dart';
+import 'templates/parameters.dart';
+import 'templates/provider.dart';
+import 'templates/provider_variable.dart';
+import 'templates/ref.dart';
+import 'type.dart';
 
 String providerDocFor(Element element) {
   return element.documentationComment == null
@@ -20,17 +25,20 @@ String providerDocFor(Element element) {
       : '${element.documentationComment}\n///\n/// Copied from [${element.name}].';
 }
 
-String _hashFn(GeneratorProviderDeclaration provider, String hashName) {
-  return "String $hashName() => r'${provider.computeProviderHash()}';";
-}
+String metaAnnotations(NodeList<Annotation> metadata) {
+  final buffer = StringBuffer();
+  for (final annotation in metadata) {
+    final element = annotation.elementAnnotation;
+    if (element == null) continue;
+    if (element.isDeprecated ||
+        element.isVisibleForTesting ||
+        element.isProtected) {
+      buffer.writeln('$annotation');
+      continue;
+    }
+  }
 
-String _hashFnName(ProviderDeclaration provider) {
-  return '_\$${provider.providerElement.name.public.lowerFirst}Hash';
-}
-
-String _hashFnIdentifier(String hashFnName) {
-  return "const bool.fromEnvironment('dart.vm.product') ? "
-      'null : $hashFnName';
+  return buffer.toString();
 }
 
 const _defaultProviderNamePrefix = '';
@@ -47,8 +55,6 @@ class RiverpodInvalidGenerationSourceError
   });
 
   final AstNode? astNode;
-
-  // TODO overrride toString to render AST nodes.
 }
 
 @immutable
@@ -79,9 +85,13 @@ class RiverpodGenerator extends ParserGenerator<Riverpod> {
 
     // Only emit the header if we actually generated something
     if (buffer.isNotEmpty) {
+      buffer.writeln(
+        r"const $kDebugMode = bool.fromEnvironment('dart.vm.product');",
+      );
+
       buffer.write('''
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main
 ''');
     }
 
@@ -96,37 +106,84 @@ class _RiverpodGeneratorVisitor extends RecursiveRiverpodAstVisitor {
   final BuildYamlOptions options;
 
   String get prefix => options.providerNamePrefix ?? _defaultProviderNamePrefix;
+
   String get familyPrefix => options.providerFamilyNamePrefix ?? prefix;
+
   String get suffix => options.providerNameSuffix ?? _defaultProviderNameSuffix;
+
   String get familySuffix => options.providerFamilyNameSuffix ?? suffix;
 
-  var _didEmitHashUtils = false;
-  void maybeEmitHashUtils() {
-    if (_didEmitHashUtils) return;
 
-    _didEmitHashUtils = true;
-    buffer.write('''
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
+  void visitGeneratorProviderDeclaration(
+    GeneratorProviderDeclaration provider,
+  ) {
+    final allTransitiveDependencies =
+        _computeAllTransitiveDependencies(provider);
 
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
+    ProviderVariableTemplate(provider, options).run(buffer);
+    ProviderTemplate(
+      provider,
+      options,
+      allTransitiveDependencies: allTransitiveDependencies,
+    ).run(buffer);
+    HashFnTemplate(provider).run(buffer);
+    FamilyTemplate(
+      provider,
+      options,
+      allTransitiveDependencies: allTransitiveDependencies,
+    ).run(buffer);
   }
 
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-''');
+  List<String>? _computeAllTransitiveDependencies(
+    GeneratorProviderDeclaration provider,
+  ) {
+    // TODO throw if a dependency is not accessible in the current library.
+    final dependencies = provider.annotation.dependencies?.dependencies;
+    if (dependencies == null) return null;
+
+    final allTransitiveDependencies = <String>[];
+
+    Iterable<GeneratorProviderDeclarationElement>
+        computeAllTransitiveDependencies(
+      GeneratorProviderDeclarationElement provider,
+    ) sync* {
+      final deps = provider.annotation.dependencies;
+      if (deps == null) return;
+
+      final uniqueDependencies = <GeneratorProviderDeclarationElement>{};
+
+      for (final transitiveDependency in deps) {
+        if (!uniqueDependencies.add(transitiveDependency)) continue;
+        yield transitiveDependency;
+        yield* computeAllTransitiveDependencies(transitiveDependency);
+      }
+    }
+
+    final uniqueDependencies = <GeneratorProviderDeclarationElement>{};
+    for (final dependency in dependencies) {
+      if (!uniqueDependencies.add(dependency.provider)) continue;
+
+      allTransitiveDependencies.add(dependency.provider.providerName(options));
+
+      final uniqueTransitiveDependencies =
+          computeAllTransitiveDependencies(dependency.provider)
+              // Since generated code trims duplicate dependencies,
+              // we have to trim them back when parsing the dependencies to
+              // keep the index correct.
+              .toSet()
+              .indexed;
+
+      for (final (index, transitiveDependency)
+          in uniqueTransitiveDependencies) {
+        if (!uniqueDependencies.add(transitiveDependency)) continue;
+
+        allTransitiveDependencies.add(
+          '${dependency.provider.providerTypeName}.\$allTransitiveDependencies$index',
+        );
+      }
+    }
+
+    return allTransitiveDependencies;
   }
 
   @override
@@ -134,44 +191,8 @@ class _SystemHash {
     ClassBasedProviderDeclaration provider,
   ) {
     super.visitClassBasedProviderDeclaration(provider);
-
-    final parameters = provider.buildMethod.parameters?.parameters;
-    if (parameters == null) return;
-
-    final hashFunctionName = _hashFnName(provider);
-    final hashFn = _hashFnIdentifier(hashFunctionName);
-    buffer.write(_hashFn(provider, hashFunctionName));
-
-    if (parameters.isEmpty) {
-      final rawProviderName = provider.providerElement.name;
-      final providerName =
-          '$prefix${prefix.isEmpty ? rawProviderName.lowerFirst : rawProviderName.titled}$suffix';
-      final notifierTypedefName = providerName.startsWith('_')
-          ? '_\$${provider.providerElement.name.substring(1)}'
-          : '_\$${provider.providerElement.name}';
-
-      ClassBasedProviderTemplate(
-        provider,
-        options: options,
-        notifierTypedefName: notifierTypedefName,
-        hashFn: hashFn,
-      ).run(buffer);
-    } else {
-      final rawProviderName = provider.providerElement.name;
-      final providerName =
-          '$prefix${prefix.isEmpty ? rawProviderName.lowerFirst : rawProviderName.titled}$suffix';
-      final notifierTypedefName = providerName.startsWith('_')
-          ? '_\$${provider.providerElement.name.substring(1)}'
-          : '_\$${provider.providerElement.name}';
-
-      maybeEmitHashUtils();
-      FamilyTemplate.classBased(
-        provider,
-        options: options,
-        notifierTypedefName: notifierTypedefName,
-        hashFn: hashFn,
-      ).run(buffer);
-    }
+    visitGeneratorProviderDeclaration(provider);
+    NotifierTemplate(provider).run(buffer);
   }
 
   @override
@@ -179,31 +200,260 @@ class _SystemHash {
     FunctionalProviderDeclaration provider,
   ) {
     super.visitFunctionalProviderDeclaration(provider);
+    RefTemplate(provider).run(buffer);
+    visitGeneratorProviderDeclaration(provider);
+  }
+}
 
-    final parameters = provider.node.functionExpression.parameters?.parameters;
-    if (parameters == null) return;
+extension ProviderElementNames on GeneratorProviderDeclarationElement {
+  String providerName(BuildYamlOptions options) {
+    final prefix = (isFamily
+        ? options.providerFamilyNamePrefix
+        : options.providerNamePrefix) ?? _defaultProviderNamePrefix;
+    final suffix = (isFamily
+        ? options.providerFamilyNameSuffix
+        : options.providerNameSuffix) ?? _defaultProviderNameSuffix;
 
-    final hashFunctionName = _hashFnName(provider);
-    final hashFn = _hashFnIdentifier(hashFunctionName);
-    buffer.write(_hashFn(provider, hashFunctionName));
+    return '$prefix${prefix.isEmpty ? name.lowerFirst : name.titled}$suffix';
+  }
 
-    // Using >1 as functional providers always have at least one parameter: ref
-    // So a provider is a "family" only if it has parameters besides the ref.
-    if (parameters.length > 1) {
-      maybeEmitHashUtils();
-      FamilyTemplate.functional(
-        provider,
-        options: options,
-        hashFn: hashFn,
-      ).run(buffer);
+  String get providerTypeName => '${name.titled}Provider';
+  String get refImplName => switch (this) {
+        ClassBasedProviderDeclarationElement() => 'Ref',
+        FunctionalProviderDeclarationElement() => '${name.titled}Ref'
+      };
+
+  String get familyTypeName => '${name.titled}Family';
+
+  String dependencies(BuildYamlOptions options) {
+    var dependencies = annotation.dependencies;
+    if (dependencies == null && !isScoped) return 'null';
+    dependencies ??= {};
+
+    final buffer = StringBuffer('const <ProviderOrFamily>');
+    buffer.write('[');
+
+    buffer.writeAll(
+      dependencies.map((e) => e.providerName(options)),
+      ',',
+    );
+
+    buffer.write(']');
+    return buffer.toString();
+  }
+
+  String allTransitiveDependencies(List<String>? deps) {
+    var allTransitiveDependencies = deps;
+    if (deps == null && !isScoped) return 'null';
+    allTransitiveDependencies ??= [];
+
+    final buffer = StringBuffer('const <ProviderOrFamily>');
+    if (allTransitiveDependencies.length < 4) {
+      buffer.write('[');
     } else {
-      final refName = '${provider.providerElement.name.titled}Ref';
-      FunctionalProviderTemplate(
-        provider,
-        refName: refName,
-        options: options,
-        hashFn: hashFn,
-      ).run(buffer);
+      buffer.write('{');
     }
+
+    for (var i = 0; i < allTransitiveDependencies.length; i++) {
+      buffer.write('$providerTypeName.\$allTransitiveDependencies$i,');
+    }
+
+    if (allTransitiveDependencies.length < 4) {
+      buffer.write(']');
+    } else {
+      buffer.write('}');
+    }
+
+    return buffer.toString();
+  }
+}
+
+extension ProviderNames on GeneratorProviderDeclaration {
+  String providerName(BuildYamlOptions options) {
+    return providerElement.providerName(options);
+  }
+
+  String get providerTypeName => providerElement.providerTypeName;
+  String get refImplName => providerElement.refImplName;
+
+  String get familyTypeName => providerElement.familyTypeName;
+
+  String get argumentRecordType {
+    // Encode the list of parameters into a record.
+    // We do so only if there are at least two parameters.
+    switch (parameters) {
+      case [_]:
+        return parameters.first.typeDisplayString;
+      case []:
+        return 'Never';
+      case [...]:
+        return '(${buildParamDefinitionQuery(parameters, asRecord: true)})';
+    }
+  }
+
+  Iterable<String> get metadata {
+    return ['@ProviderFor($name)'].followedBy(
+      node.metadata.where((e) {
+        if (e.elementAnnotation!.isDoNotStore) return false;
+
+        final valueType = e.elementAnnotation!.computeConstantValue()?.type;
+        if (valueType == null) return false;
+
+        return !riverpodType.isExactlyType(valueType);
+      }).map((e) => e.toString()),
+    );
+  }
+
+  String get doc => node.doc;
+
+  String get argumentCast {
+    final type = argumentRecordType;
+    if (type == 'Object?') return '';
+    return ' as $type';
+  }
+
+  String argumentToRecord({String? variableName}) {
+    switch (parameters) {
+      case [final p]:
+        return variableName ?? p.name.toString();
+      case [...]:
+        return '(${buildParamInvocationQuery({
+              for (final parameter in parameters)
+                if (variableName != null)
+                  parameter: '$variableName.${parameter.name}'
+                else
+                  parameter: parameter.name.toString(),
+            })})';
+    }
+  }
+
+  String dependencies(BuildYamlOptions options) =>
+      providerElement.dependencies(options);
+
+  String allTransitiveDependencies(List<String>? allTransitiveDependencies) {
+    return providerElement.allTransitiveDependencies(allTransitiveDependencies);
+  }
+
+  TypeParameterList? get typeParameters => switch (this) {
+        final FunctionalProviderDeclaration p =>
+          p.node.functionExpression.typeParameters,
+        final ClassBasedProviderDeclaration p => p.node.typeParameters
+      };
+
+  String generics() => _genericUsageDisplayString(typeParameters);
+  String genericsDefinition() =>
+      _genericDefinitionDisplayString(typeParameters);
+
+  String get refWithGenerics {
+    return switch (this) {
+      FunctionalProviderDeclaration() => '$refImplName${generics()}',
+      ClassBasedProviderDeclaration() => 'Ref<$exposedTypeDisplayString>',
+    };
+  }
+
+  String notifierBuildType({
+    bool withGenericDefinition = false,
+    bool withArguments = false,
+  }) {
+    final genericsDefinition =
+        withGenericDefinition ? this.genericsDefinition() : '';
+    final notifierType = '$name${generics()}';
+
+    final parameters = withArguments
+        ? buildParamDefinitionQuery(
+            this.parameters,
+            withDefaults: false,
+          )
+        : '';
+
+    return '$createdTypeDisplayString Function$genericsDefinition($refWithGenerics, $notifierType, $parameters)';
+  }
+
+  String createType({
+    bool withArguments = true,
+    bool withGenericDefinition = false,
+  }) {
+    final generics = this.generics();
+    final genericsDefinition =
+        withGenericDefinition ? this.genericsDefinition() : '';
+
+    final provider = this;
+    switch (provider) {
+      case FunctionalProviderDeclaration():
+        final params = withArguments
+            ? buildParamDefinitionQuery(
+                parameters,
+                withDefaults: false,
+              )
+            : '';
+
+        final refType = '${provider.refImplName}$generics';
+        return '${provider.createdTypeDisplayString} Function$genericsDefinition($refType ref, $params)';
+      case ClassBasedProviderDeclaration():
+        return '${provider.name}$generics Function$genericsDefinition()';
+    }
+  }
+
+  String get elementName => switch (this) {
+        ClassBasedProviderDeclaration() => switch (createdType) {
+            SupportedCreatedType.future => r'$AsyncNotifierProviderElement',
+            SupportedCreatedType.stream => r'$StreamNotifierProviderElement',
+            SupportedCreatedType.value => r'$NotifierProviderElement',
+          },
+        FunctionalProviderDeclaration() => switch (createdType) {
+            SupportedCreatedType.future => r'$FutureProviderElement',
+            SupportedCreatedType.stream => r'$StreamProviderElement',
+            SupportedCreatedType.value => r'$ProviderElement',
+          },
+      };
+
+  String get hashFnName => '_\$${providerElement.name.public.lowerFirst}Hash';
+
+  List<FormalParameter> get parameters {
+    final provider = this;
+    switch (provider) {
+      case FunctionalProviderDeclaration():
+        return provider.node.functionExpression.parameters!.parameters
+            .skip(1)
+            .toList();
+      case ClassBasedProviderDeclaration():
+        return provider.buildMethod.parameters!.parameters.toList();
+    }
+  }
+}
+
+String _genericDefinitionDisplayString(TypeParameterList? typeParameters) {
+  return typeParameters?.toSource() ?? '';
+}
+
+String _genericUsageDisplayString(TypeParameterList? typeParameterList) {
+  if (typeParameterList == null) {
+    return '';
+  }
+
+  return '<${typeParameterList.typeParameters.map((e) => e.name.lexeme).join(', ')}>';
+}
+
+extension ParameterDoc on AstNode {
+  String get doc {
+    final builder = StringBuffer();
+    final that = this;
+
+    switch (that) {
+      case AnnotatedNode():
+        for (var token = that.documentationComment?.beginToken;
+            token != null;
+            token = token.next) {
+          builder.writeln(token);
+        }
+      case _:
+        for (Token? token = beginToken.precedingComments;
+            token != null;
+            token = token.next) {
+          builder.writeln(token);
+        }
+    }
+
+    return builder.toString();
   }
 }

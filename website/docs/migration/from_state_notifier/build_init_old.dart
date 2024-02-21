@@ -1,4 +1,4 @@
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 /* SNIPPET START */
 class CounterNotifier extends StateNotifier<int> {
@@ -8,6 +8,7 @@ class CounterNotifier extends StateNotifier<int> {
   void decrement() => state++;
 }
 
-final counterNotifierProvider = StateNotifierProvider<CounterNotifier, int>((ref) {
+final counterNotifierProvider =
+    StateNotifierProvider<CounterNotifier, int>((ref) {
   return CounterNotifier();
 });

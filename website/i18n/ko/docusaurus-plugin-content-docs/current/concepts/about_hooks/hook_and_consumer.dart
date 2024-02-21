@@ -16,12 +16,14 @@ class Example extends StatelessWidget {
     // 두 패키지 모두에서 제공하는 빌더를 사용할 수 있습니다.
     return Consumer(
       builder: (context, ref, child) {
-        return HookBuilder(builder: (context) {
-          final counter = useState(0);
-          final value = ref.watch(myProvider);
+        return HookBuilder(
+          builder: (context) {
+            final counter = useState(0);
+            final value = ref.watch(myProvider);
 
-          return Text('Hello $counter $value');
-        });
+            return Text('Hello $counter $value');
+          },
+        );
       },
     );
   }

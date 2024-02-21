@@ -2,14 +2,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../counter/raw.dart';
 
 /* SNIPPET START */
 
-final counterProvider =
-    StateNotifierProvider<Counter, int>(Counter.new);
+final counterProvider = StateNotifierProvider<Counter, int>(Counter.new);
 
 class HomeView extends HookConsumerWidget {
   const HomeView({super.key});
@@ -17,7 +17,6 @@ class HomeView extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final greeting = useState('Hello');
-    
     return Scaffold(
       body: Center(child: Text(greeting.value)),
       floatingActionButton: FloatingActionButton(

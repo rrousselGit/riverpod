@@ -12,7 +12,7 @@ import 'search.dart';
 
 part 'detail.g.dart';
 
-extension CancelTokenX on Ref {
+extension CancelTokenX on Ref<Object?> {
   CancelToken cancelToken() {
     final cancelToken = CancelToken();
     onDispose(cancelToken.cancel);

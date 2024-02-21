@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -56,24 +55,27 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          repositoryProvider.overrideWithValue(FakeRepository())
+          repositoryProvider.overrideWithValue(FakeRepository()),
         ],
         // todoListProvider の値を監視して Todo リストを表示するアプリ
         // 以下を抽出して MyApp ウィジェットとしても可
         child: MaterialApp(
           home: Scaffold(
-            body: Consumer(builder: (context, ref, _) {
-              final todos = ref.watch(todoListProvider);
-              // Todo リストのステートが loading か error の場合
-              if (todos.asData == null) {
-                return const CircularProgressIndicator();
-              }
-              return ListView(
-                children: [
-                  for (final todo in todos.asData!.value) TodoItem(todo: todo)
-                ],
-              );
-            }),
+            body: Consumer(
+              builder: (context, ref, _) {
+                final todos = ref.watch(todoListProvider);
+                // Todo リストのステートが loading か error の場合
+                if (todos.asData == null) {
+                  return const CircularProgressIndicator();
+                }
+                return ListView(
+                  children: [
+                    for (final todo in todos.asData!.value)
+                      TodoItem(todo: todo),
+                  ],
+                );
+              },
+            ),
           ),
         ),
       ),

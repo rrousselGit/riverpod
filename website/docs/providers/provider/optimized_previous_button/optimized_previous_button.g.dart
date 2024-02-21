@@ -8,35 +8,135 @@ part of 'optimized_previous_button.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+typedef CanGoToPreviousPageRef = Ref<bool>;
+
+@ProviderFor(canGoToPreviousPage)
+const canGoToPreviousPageProvider = CanGoToPreviousPageProvider._();
+
+final class CanGoToPreviousPageProvider
+    extends $FunctionalProvider<bool, bool, CanGoToPreviousPageRef>
+    with $Provider<bool, CanGoToPreviousPageRef> {
+  const CanGoToPreviousPageProvider._(
+      {bool Function(
+        CanGoToPreviousPageRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'canGoToPreviousPageProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final bool Function(
+    CanGoToPreviousPageRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$canGoToPreviousPageHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(bool value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<bool>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<bool> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  CanGoToPreviousPageProvider $copyWithCreate(
+    bool Function(
+      CanGoToPreviousPageRef ref,
+    ) create,
+  ) {
+    return CanGoToPreviousPageProvider._(create: create);
+  }
+
+  @override
+  bool create(CanGoToPreviousPageRef ref) {
+    final _$cb = _createCb ?? canGoToPreviousPage;
+    return _$cb(ref);
+  }
+}
+
 String _$canGoToPreviousPageHash() =>
     r'801fe8182a37cd21ae83bdfccbe36c125b4d14fb';
 
-/// See also [canGoToPreviousPage].
-@ProviderFor(canGoToPreviousPage)
-final canGoToPreviousPageProvider = AutoDisposeProvider<bool>.internal(
-  canGoToPreviousPage,
-  name: r'canGoToPreviousPageProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$canGoToPreviousPageHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+@ProviderFor(PageIndex)
+const pageIndexProvider = PageIndexProvider._();
 
-typedef CanGoToPreviousPageRef = AutoDisposeProviderRef<bool>;
+final class PageIndexProvider extends $NotifierProvider<PageIndex, int> {
+  const PageIndexProvider._(
+      {super.runNotifierBuildOverride, PageIndex Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'pageIndexProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final PageIndex Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$pageIndexHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  PageIndex create() => _createCb?.call() ?? PageIndex();
+
+  @$internal
+  @override
+  PageIndexProvider $copyWithCreate(
+    PageIndex Function() create,
+  ) {
+    return PageIndexProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  PageIndexProvider $copyWithBuild(
+    int Function(
+      Ref<int>,
+      PageIndex,
+    ) build,
+  ) {
+    return PageIndexProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<PageIndex, int> $createElement(
+          ProviderContainer container) =>
+      $NotifierProviderElement(this, container);
+}
+
 String _$pageIndexHash() => r'59307ecf23b5b2432833da5ad6b312bf36435d0e';
 
-/// See also [PageIndex].
-@ProviderFor(PageIndex)
-final pageIndexProvider = AutoDisposeNotifierProvider<PageIndex, int>.internal(
-  PageIndex.new,
-  name: r'pageIndexProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$pageIndexHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+abstract class _$PageIndex extends $Notifier<int> {
+  int build();
+  @$internal
+  @override
+  int runBuild() => build();
+}
 
-typedef _$PageIndex = AutoDisposeNotifier<int>;
+const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

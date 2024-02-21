@@ -16,7 +16,6 @@ abstract class HookConsumerWidget extends ConsumerWidget {
   _HookConsumerElement createElement() => _HookConsumerElement(this);
 }
 
-// ignore: invalid_use_of_visible_for_testing_member
 class _HookConsumerElement extends ConsumerStatefulElement with HookElement {
   _HookConsumerElement(HookConsumerWidget super.widget);
 }

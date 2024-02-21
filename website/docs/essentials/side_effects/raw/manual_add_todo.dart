@@ -12,7 +12,7 @@ final todoListProvider =
   TodoList.new,
 );
 
-class TodoList extends AutoDisposeAsyncNotifier<List<Todo>> {
+class TodoList extends AsyncNotifier<List<Todo>> {
   @override
   Future<List<Todo>> build() async => [/* ... */];
 

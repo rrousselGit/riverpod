@@ -33,8 +33,11 @@ void main() {
 
     group('scoping an override overrides all the associated subproviders', () {
       test('when passing the provider itself', () async {
-        final provider = ChangeNotifierProvider.autoDispose
-            .family<ValueNotifier<int>, int>((ref, _) => ValueNotifier(0));
+        final provider =
+            ChangeNotifierProvider.autoDispose.family<ValueNotifier<int>, int>(
+          (ref, _) => ValueNotifier(0),
+          dependencies: const [],
+        );
         final root = createContainer();
         final container = createContainer(parent: root, overrides: [provider]);
 
@@ -51,7 +54,7 @@ void main() {
       });
 
       test('ChangeNotifier can be auto-scoped', () async {
-        final dep = Provider((ref) => 0);
+        final dep = Provider((ref) => 0, dependencies: const []);
         final provider =
             ChangeNotifierProvider.autoDispose.family<ValueNotifier<int>, int>(
           (ref, i) => ValueNotifier(ref.watch(dep) + i),
@@ -69,18 +72,17 @@ void main() {
         expect(root.getAllProviderElements(), isEmpty);
       });
 
-      test('when using provider.overrideWithProvider', () async {
-        final provider = ChangeNotifierProvider.autoDispose
-            .family<ValueNotifier<int>, int>((ref, _) => ValueNotifier(0));
+      test('when using provider.overrideWith', () async {
+        final provider =
+            ChangeNotifierProvider.autoDispose.family<ValueNotifier<int>, int>(
+          (ref, _) => ValueNotifier(0),
+          dependencies: const [],
+        );
         final root = createContainer();
         final container = createContainer(
           parent: root,
           overrides: [
-            provider.overrideWithProvider(
-              (value) => ChangeNotifierProvider.autoDispose(
-                (ref) => ValueNotifier(42),
-              ),
-            ),
+            provider.overrideWith((ref, value) => ValueNotifier(42)),
           ],
         );
 

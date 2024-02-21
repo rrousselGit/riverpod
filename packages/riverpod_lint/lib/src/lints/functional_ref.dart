@@ -5,6 +5,7 @@ import 'package:collection/collection.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
 import '../riverpod_custom_lint.dart';
+import 'notifier_extends.dart';
 
 class FunctionalRef extends RiverpodLintRule {
   const FunctionalRef() : super(code: _code);
@@ -13,6 +14,8 @@ class FunctionalRef extends RiverpodLintRule {
     name: 'functional_ref',
     problemMessage:
         'Functional providers must receive a ref matching the provider name as their first positional parameter.',
+    // TODO changelog: functional_ref is now a WARNING
+    errorSeverity: ErrorSeverity.WARNING,
   );
 
   @override
@@ -53,6 +56,26 @@ class FunctionalRef extends RiverpodLintRule {
       if (refNodeType.beginToken.lexeme != expectedRefName) {
         reporter.reportErrorForNode(_code, refNodeType);
       }
+
+      final expectedTypeArguments =
+          declaration.node.functionExpression.typeParameters?.typeParameters ??
+              const <TypeParameter>[];
+
+      final currentRefType = refNode.type;
+      if (currentRefType is! NamedType) {
+        reporter.reportErrorForNode(_code, refNodeType);
+        return;
+      }
+      final actualTypeArguments =
+          currentRefType.typeArguments?.arguments ?? const <TypeAnnotation>[];
+
+      if (!areGenericTypeArgumentsMatching(
+        expectedTypeArguments,
+        actualTypeArguments,
+      )) {
+        reporter.reportErrorForNode(_code, refNodeType);
+        return;
+      }
     });
   }
 
@@ -75,7 +98,11 @@ class FunctionalRefFix extends RiverpodFix {
         return;
       }
 
-      final expectedRefType = refNameFor(declaration);
+      final expectedGenerics = genericsDisplayStringFor(
+        declaration.node.functionExpression.typeParameters,
+      );
+      final expectedRefType = '${refNameFor(declaration)}$expectedGenerics';
+
       final refNode = declaration
           .node.functionExpression.parameters!.parameters.firstOrNull;
       if (refNode == null) {

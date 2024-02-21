@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'dart:async';
 
 import 'package:dio/dio.dart';
@@ -7,9 +9,10 @@ import '../../utils.dart';
 
 part 'old_lifecycles.g.dart';
 
-final repositoryProvider = Provider<_MyRepo>((ref) {
+@riverpod
+_MyRepo repository(RepositoryRef ref) {
   return _MyRepo();
-});
+}
 
 class _MyRepo {
   Future<void> update(int i, {CancelToken? token}) async {}

@@ -19,6 +19,7 @@ void main() {
         ...await assist.testRun(result, const SourceRange(167, 0)),
         ...await assist.testRun(result, const SourceRange(180, 0)),
         ...await assist.testRun(result, const SourceRange(224, 0)),
+        ...await assist.testRun(result, const SourceRange(342, 0)),
       ];
     },
   );

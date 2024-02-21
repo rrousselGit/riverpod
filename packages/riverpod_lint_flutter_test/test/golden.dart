@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:test/test.dart';
 import 'package:path/path.dart';
 import 'package:custom_lint_core/custom_lint_core.dart';
@@ -21,6 +22,7 @@ File writeToTemporaryFile(String content) {
   return file;
 }
 
+@isTest
 void testGolden(
   String description,
   String fileName,
@@ -47,7 +49,7 @@ void testGolden(
         ),
       );
     } on TestFailure {
-      // ignore: deprecated_member_use_from_same_package
+      // ignore: deprecated_member_use_from_same_package, deprecated only to avoid commit
       if (!goldenWrite) rethrow;
 
       final source = File(sourcePath).readAsStringSync();

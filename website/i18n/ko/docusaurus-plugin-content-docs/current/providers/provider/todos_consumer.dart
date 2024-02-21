@@ -8,11 +8,13 @@ import 'completed_todos/completed_todos.dart';
 Widget build() {
   return
 /* SNIPPET START */
-Consumer(builder: (context, ref, child) {
-  final completedTodos = ref.watch(completedTodosProvider);
-  // TODO show the todos using a ListView/GridView/.../* SKIP */
-  return Container();
-  /* SKIP END */
-});
+      Consumer(
+    builder: (context, ref, child) {
+      final completedTodos = ref.watch(completedTodosProvider);
+      // TODO a ListView/GridView/...등을 사용하여 todos를 표시하기/* SKIP */
+      return Container();
+      /* SKIP END */
+    },
+  );
 /* SNIPPET END */
 }

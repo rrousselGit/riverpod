@@ -24,7 +24,7 @@ void main() {
     test('can read and set current ChangeNotifier', () async {
       final container = createContainer();
       final listener = Listener<ValueNotifier<int>>();
-      late AutoDisposeChangeNotifierProviderRef<ValueNotifier<int>> ref;
+      late ChangeNotifierProviderRef<ValueNotifier<int>> ref;
       final provider =
           ChangeNotifierProvider.autoDispose<ValueNotifier<int>>((r) {
         ref = r;
@@ -72,8 +72,10 @@ void main() {
 
     group('scoping an override overrides all the associated subproviders', () {
       test('when passing the provider itself', () {
-        final provider =
-            ChangeNotifierProvider.autoDispose((ref) => ValueNotifier(0));
+        final provider = ChangeNotifierProvider.autoDispose(
+          (ref) => ValueNotifier(0),
+          dependencies: const [],
+        );
         final root = createContainer();
         final container = createContainer(parent: root, overrides: [provider]);
 
@@ -111,17 +113,16 @@ void main() {
       //   expect(root.getAllProviderElements(), isEmpty);
       // });
 
-      test('when using provider.overrideWithProvider', () {
-        final provider =
-            ChangeNotifierProvider.autoDispose((ref) => ValueNotifier(0));
+      test('when using provider.overrideWith', () {
+        final provider = ChangeNotifierProvider.autoDispose(
+          (ref) => ValueNotifier(0),
+          dependencies: const [],
+        );
         final root = createContainer();
         final container = createContainer(
           parent: root,
           overrides: [
-            // ignore: deprecated_member_use
-            provider.overrideWithProvider(
-              ChangeNotifierProvider.autoDispose((ref) => ValueNotifier(42)),
-            ),
+            provider.overrideWith((ref) => ValueNotifier(42)),
           ],
         );
 
@@ -139,7 +140,7 @@ void main() {
     });
 
     test('can be auto-scoped', () async {
-      final dep = Provider((ref) => 0);
+      final dep = Provider((ref) => 0, dependencies: const []);
       final provider = ChangeNotifierProvider.autoDispose(
         (ref) => ValueNotifier(ref.watch(dep)),
         dependencies: [dep],

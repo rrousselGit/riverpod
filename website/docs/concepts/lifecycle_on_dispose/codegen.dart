@@ -18,4 +18,3 @@ Stream<int> example(ExampleRef ref) {
 
   return streamController.stream;
 }
-

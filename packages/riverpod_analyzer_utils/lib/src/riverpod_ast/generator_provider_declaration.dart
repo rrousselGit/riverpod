@@ -39,6 +39,7 @@ extension on LibraryElement {
           'No AsyncValue accessible in the library. '
           'Did you forget to import Riverpod?',
           targetElement: this,
+          code: null,
         ),
       );
       return null;
@@ -57,9 +58,12 @@ extension on LibraryElement {
   }
 }
 
-abstract class GeneratorProviderDeclaration extends ProviderDeclaration {
+// TODO changelog made sealed
+sealed class GeneratorProviderDeclaration extends ProviderDeclaration
+    with _$GeneratorProviderDeclaration {
   @override
   GeneratorProviderDeclarationElement get providerElement;
+  @override
   RiverpodAnnotation get annotation;
 
   String get valueTypeDisplayString => valueTypeNode?.toSource() ?? 'Object?';
@@ -80,6 +84,7 @@ abstract class GeneratorProviderDeclaration extends ProviderDeclaration {
   SourcedType? get exposedTypeNode;
   TypeAnnotation? get createdTypeNode;
 
+  @override
   final List<RefInvocation> refInvocations = [];
 
   String computeProviderHash() {
@@ -89,14 +94,6 @@ abstract class GeneratorProviderDeclaration extends ProviderDeclaration {
     final bytes = utf8.encode(node.toSource());
     final digest = sha1.convert(bytes);
     return digest.toString();
-  }
-
-  @mustCallSuper
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    for (final refInvocation in refInvocations) {
-      refInvocation.accept(visitor);
-    }
   }
 }
 
@@ -177,7 +174,8 @@ TypeAnnotation? _getValueType(
 
 typedef SourcedType = ({String? source, DartType dartType});
 
-class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration {
+final class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration
+    with _$ClassBasedProviderDeclaration {
   ClassBasedProviderDeclaration._({
     required this.name,
     required this.node,
@@ -198,6 +196,47 @@ class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration {
     final riverpodAnnotation = RiverpodAnnotation._parse(node);
     if (riverpodAnnotation == null) return null;
 
+    // TODO changelog report error if abstract
+    if (node.abstractKeyword != null) {
+      errorReporter?.call(
+        RiverpodAnalysisError(
+          'Classes annotated with @riverpod cannot be abstract.',
+          targetNode: node,
+          targetElement: node.declaredElement,
+          code: RiverpodAnalysisErrorCode.abstractNotifier,
+        ),
+      );
+    }
+
+    final constructors =
+        node.members.whereType<ConstructorDeclaration>().toList();
+    final defaultConstructor = constructors
+        .firstWhereOrNull((constructor) => constructor.name == null);
+    if (defaultConstructor == null && constructors.isNotEmpty) {
+      errorReporter?.call(
+        RiverpodAnalysisError(
+          'Classes annotated with @riverpod must have a default constructor.',
+          targetNode: node,
+          targetElement: node.declaredElement,
+          code: RiverpodAnalysisErrorCode.missingNotifierDefaultConstructor,
+        ),
+      );
+    }
+    // TODO changelog report error if default constructor is missing
+    if (defaultConstructor != null &&
+        defaultConstructor.parameters.parameters.any((e) => e.isRequired)) {
+      errorReporter?.call(
+        RiverpodAnalysisError(
+          'The default constructor of classes annotated with @riverpod '
+          'cannot have required parameters.',
+          targetNode: node,
+          targetElement: node.declaredElement,
+          code: RiverpodAnalysisErrorCode
+              .notifierDefaultConstructorHasRequiredParameters,
+        ),
+      );
+    }
+
     final buildMethod = node.members
         .whereType<MethodDeclaration>()
         .firstWhereOrNull((method) => method.name.lexeme == 'build');
@@ -207,6 +246,7 @@ class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration {
           'No "build" method found. '
           'Classes annotated with @riverpod must define a method named "build".',
           targetNode: node,
+          code: RiverpodAnalysisErrorCode.missingNotifierBuild,
         ),
       );
       return null;
@@ -261,17 +301,6 @@ class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration {
   final TypeAnnotation? valueTypeNode;
   @override
   final SourcedType exposedTypeNode;
-
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitClassBasedProviderDeclaration(this);
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    super.visitChildren(visitor);
-    annotation.accept(visitor);
-  }
 }
 
 class _GeneratorRefInvocationVisitor extends RecursiveAstVisitor<void>
@@ -307,7 +336,8 @@ class _GeneratorRefInvocationVisitor extends RecursiveAstVisitor<void>
   }
 }
 
-class FunctionalProviderDeclaration extends GeneratorProviderDeclaration {
+final class FunctionalProviderDeclaration extends GeneratorProviderDeclaration
+    with _$FunctionalProviderDeclaration {
   FunctionalProviderDeclaration._({
     required this.name,
     required this.node,
@@ -380,15 +410,4 @@ class FunctionalProviderDeclaration extends GeneratorProviderDeclaration {
   /// external int count();
   /// ```
   bool get needsOverride => node.externalKeyword != null;
-
-  @override
-  void accept(RiverpodAstVisitor visitor) {
-    visitor.visitFunctionalProviderDeclaration(this);
-  }
-
-  @override
-  void visitChildren(RiverpodAstVisitor visitor) {
-    super.visitChildren(visitor);
-    annotation.accept(visitor);
-  }
 }

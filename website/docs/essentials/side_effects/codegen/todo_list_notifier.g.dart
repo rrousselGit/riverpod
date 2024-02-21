@@ -23,20 +23,67 @@ Map<String, dynamic> _$$TodoImplToJson(_$TodoImpl instance) =>
 // RiverpodGenerator
 // **************************************************************************
 
+@ProviderFor(TodoList)
+const todoListProvider = TodoListProvider._();
+
+final class TodoListProvider
+    extends $AsyncNotifierProvider<TodoList, List<Todo>> {
+  const TodoListProvider._(
+      {super.runNotifierBuildOverride, TodoList Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'todoListProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final TodoList Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$todoListHash();
+
+  @$internal
+  @override
+  TodoList create() => _createCb?.call() ?? TodoList();
+
+  @$internal
+  @override
+  TodoListProvider $copyWithCreate(
+    TodoList Function() create,
+  ) {
+    return TodoListProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  TodoListProvider $copyWithBuild(
+    FutureOr<List<Todo>> Function(
+      Ref<AsyncValue<List<Todo>>>,
+      TodoList,
+    ) build,
+  ) {
+    return TodoListProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $AsyncNotifierProviderElement<TodoList, List<Todo>> $createElement(
+          ProviderContainer container) =>
+      $AsyncNotifierProviderElement(this, container);
+}
+
 String _$todoListHash() => r'c939d438b07da6065dbbcfab86c27ef363bdb76c';
 
-/// See also [TodoList].
-@ProviderFor(TodoList)
-final todoListProvider =
-    AutoDisposeAsyncNotifierProvider<TodoList, List<Todo>>.internal(
-  TodoList.new,
-  name: r'todoListProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$todoListHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+abstract class _$TodoList extends $AsyncNotifier<List<Todo>> {
+  FutureOr<List<Todo>> build();
+  @$internal
+  @override
+  FutureOr<List<Todo>> runBuild() => build();
+}
 
-typedef _$TodoList = AutoDisposeAsyncNotifier<List<Todo>>;
+const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main
