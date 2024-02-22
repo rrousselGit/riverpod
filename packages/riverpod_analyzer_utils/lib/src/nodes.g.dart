@@ -14,6 +14,10 @@ mixin RiverpodAstVisitor {
   void visitGeneratorProviderDeclaration(GeneratorProviderDeclaration node) {}
   void visitProviderIdentifier(ProviderIdentifier node) {}
   void visitRiverpodAnnotation(RiverpodAnnotation node) {}
+  void visitProviderContainerInstanceCreationExpression(
+      ProviderContainerInstanceCreationExpression node) {}
+  void visitProviderScopeInstanceCreationExpression(
+      ProviderScopeInstanceCreationExpression node) {}
 }
 
 abstract class RecursiveRiverpodAstVisitor extends GeneralizingAstVisitor<void>
@@ -48,6 +52,13 @@ abstract class RecursiveRiverpodAstVisitor extends GeneralizingAstVisitor<void>
     super.visitSimpleIdentifier(node);
     node.provider.let(visitProviderIdentifier);
   }
+
+  void visitInstanceCreationExpression(InstanceCreationExpression node) {
+    super.visitInstanceCreationExpression(node);
+    node.providerContainer
+        .let(visitProviderContainerInstanceCreationExpression);
+    node.providerScope.let(visitProviderScopeInstanceCreationExpression);
+  }
 }
 
 abstract class SimpleRiverpodAstVisitor extends RecursiveRiverpodAstVisitor {
@@ -70,6 +81,12 @@ abstract class UnimplementedRiverpodAstVisitor
   void visitProviderIdentifier(ProviderIdentifier node) =>
       throw UnimplementedError();
   void visitRiverpodAnnotation(RiverpodAnnotation node) =>
+      throw UnimplementedError();
+  void visitProviderContainerInstanceCreationExpression(
+          ProviderContainerInstanceCreationExpression node) =>
+      throw UnimplementedError();
+  void visitProviderScopeInstanceCreationExpression(
+          ProviderScopeInstanceCreationExpression node) =>
       throw UnimplementedError();
 }
 
@@ -139,6 +156,26 @@ class RiverpodAnalysisResult extends RecursiveRiverpodAstVisitor {
     super.visitRiverpodAnnotation(node);
     riverpodAnnotations.add(node);
   }
+
+  final providerContainerInstanceCreationExpressions =
+      <ProviderContainerInstanceCreationExpression>[];
+  @override
+  void visitProviderContainerInstanceCreationExpression(
+    ProviderContainerInstanceCreationExpression node,
+  ) {
+    super.visitProviderContainerInstanceCreationExpression(node);
+    providerContainerInstanceCreationExpressions.add(node);
+  }
+
+  final providerScopeInstanceCreationExpressions =
+      <ProviderScopeInstanceCreationExpression>[];
+  @override
+  void visitProviderScopeInstanceCreationExpression(
+    ProviderScopeInstanceCreationExpression node,
+  ) {
+    super.visitProviderScopeInstanceCreationExpression(node);
+    providerScopeInstanceCreationExpressions.add(node);
+  }
 }
 
 class RiverpodAstRegistry {
@@ -188,6 +225,20 @@ class RiverpodAstRegistry {
   final _onRiverpodAnnotation = <void Function(RiverpodAnnotation)>[];
   void addRiverpodAnnotation(void Function(RiverpodAnnotation node) cb) {
     _onRiverpodAnnotation.add(cb);
+  }
+
+  final _onProviderContainerInstanceCreationExpression =
+      <void Function(ProviderContainerInstanceCreationExpression)>[];
+  void addProviderContainerInstanceCreationExpression(
+      void Function(ProviderContainerInstanceCreationExpression node) cb) {
+    _onProviderContainerInstanceCreationExpression.add(cb);
+  }
+
+  final _onProviderScopeInstanceCreationExpression =
+      <void Function(ProviderScopeInstanceCreationExpression)>[];
+  void addProviderScopeInstanceCreationExpression(
+      void Function(ProviderScopeInstanceCreationExpression node) cb) {
+    _onProviderScopeInstanceCreationExpression.add(cb);
   }
 }
 
@@ -269,6 +320,26 @@ class _RiverpodAstRegistryVisitor extends RecursiveRiverpodAstVisitor {
     _runSubscriptions(
       node,
       _registry._onRiverpodAnnotation,
+    );
+  }
+
+  @override
+  void visitProviderContainerInstanceCreationExpression(
+      ProviderContainerInstanceCreationExpression node) {
+    super.visitProviderContainerInstanceCreationExpression(node);
+    _runSubscriptions(
+      node,
+      _registry._onProviderContainerInstanceCreationExpression,
+    );
+  }
+
+  @override
+  void visitProviderScopeInstanceCreationExpression(
+      ProviderScopeInstanceCreationExpression node) {
+    super.visitProviderScopeInstanceCreationExpression(node);
+    _runSubscriptions(
+      node,
+      _registry._onProviderScopeInstanceCreationExpression,
     );
   }
 }

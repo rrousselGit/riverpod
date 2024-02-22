@@ -1,38 +1,21 @@
 library riverpod_ast;
 
-import 'dart:async';
-import 'dart:convert';
-
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/ast/syntactic_entity.dart';
 import 'package:analyzer/dart/ast/token.dart';
-import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
-import 'package:analyzer/dart/element/type.dart';
 import 'package:collection/collection.dart';
-import 'package:crypto/crypto.dart';
-import 'package:custom_lint_core/custom_lint_core.dart';
-import 'package:meta/meta.dart';
 
 import '../riverpod_analyzer_utils.dart';
 import 'argument_list_utils.dart';
-import 'errors.dart';
 
-part 'riverpod_ast.g.dart';
-part 'riverpod_ast/dependencies.dart';
 part 'riverpod_ast/consumer.dart';
 part 'riverpod_ast/provider_or_family_expression.dart';
-part 'riverpod_ast/generator_provider_declaration.dart';
-part 'riverpod_ast/legacy_provider_declaration.dart';
 part 'riverpod_ast/provider_container_instance_creation_expression.dart';
 part 'riverpod_ast/provider_declaration.dart';
 part 'riverpod_ast/provider_listenable_expression.dart';
-part 'riverpod_ast/provider_override.dart';
 part 'riverpod_ast/provider_scope.dart';
 part 'riverpod_ast/ref_invocation.dart';
-part 'riverpod_ast/resolve_riverpod.dart';
-part 'riverpod_ast/riverpod_annotation.dart';
 part 'riverpod_ast/widget_ref_invocation.dart';
 
 extension ExpressionX on Expression {

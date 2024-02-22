@@ -9,7 +9,7 @@ extension RiverpodAnnotatedAnnotatedNodeX on AnnotatedNode {
   }
 }
 
-extension RiverpodAnnotationX on Annotation {
+extension on Annotation {
   RiverpodAnnotation? get riverpod {
     return upsert('RiverpodAnnotation', () {
       final elementAnnotation = this.elementAnnotation;

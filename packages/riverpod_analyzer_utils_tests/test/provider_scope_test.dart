@@ -1,4 +1,3 @@
-import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import 'package:test/test.dart';
 
 import 'analyzer_test_utils.dart';
@@ -47,9 +46,7 @@ class Example extends ConsumerWidget {
 ''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
-    final scopes = result
-        .riverpodCompilationUnits.single.node.providerScopeInstanceCreations;
-    final consumer = result.consumerWidgetDeclarations.single;
+    final scopes = result.providerScopeInstanceCreationExpressions;
 
     final provider =
         result.legacyProviderDeclarations.takeAll(['provider']).values.single;
@@ -68,7 +65,7 @@ class Example extends ConsumerWidget {
     expect(scopes[1].overrides!.overrides, hasLength(6));
     expect(
       scopes[1].overrides!.node.toSource(),
-      'overrides: [provider.overrideWith((ref) => 0), provider.overrideWithValue(42), provider, family(42), family.overrideWith((ref, id) => 0), family(42).overrideWith((ref) => 0)]',
+      '[provider.overrideWith((ref) => 0), provider.overrideWithValue(42), provider, family(42), family.overrideWith((ref, id) => 0), family(42).overrideWith((ref) => 0)]',
     );
     {
       expect(
@@ -173,7 +170,7 @@ class Example extends ConsumerWidget {
       'ProviderScope(overrides: fn(), child: Container())',
     );
     expect(scopes[2].overrides!.overrides, null);
-    expect(scopes[2].overrides!.node.toSource(), 'overrides: fn()');
+    expect(scopes[2].overrides!.node.toSource(), 'fn()');
 
     expect(
       scopes[3].node.toSource(),
@@ -182,7 +179,7 @@ class Example extends ConsumerWidget {
     expect(scopes[3].overrides?.overrides, hasLength(1));
     expect(
       scopes[3].overrides!.node.toSource(),
-      'overrides: [() {return provider;}()]',
+      '[() {return provider;}()]',
     );
     expect(
       scopes[3].overrides?.overrides?.single.node.toSource(),
@@ -194,10 +191,5 @@ class Example extends ConsumerWidget {
 
     expect(scopes[4].node.toSource(), "ProviderScope(child: Text('foo'))");
     expect(scopes[4].overrides, null);
-    expect(consumer.node.providerScopeInstanceCreations, hasLength(1));
-    expect(
-      consumer.node.providerScopeInstanceCreations.single,
-      same(scopes[4]),
-    );
   });
 }

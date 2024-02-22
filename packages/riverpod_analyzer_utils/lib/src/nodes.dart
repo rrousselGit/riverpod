@@ -35,12 +35,11 @@ part 'nodes/providers/identifiers.dart';
 
 part 'nodes/provider_for.dart';
 part 'nodes/provider_or_family.dart';
-// part 'nodes/scopes.dart';
 part 'nodes/riverpod.dart';
 
-// part 'nodes/scopes/overrides.dart';
-// part 'nodes/scopes/provider_container.dart';
-// part 'nodes/scopes/provider_scope.dart';
+part 'nodes/scopes/overrides.dart';
+part 'nodes/scopes/provider_container.dart';
+part 'nodes/scopes/provider_scope.dart';
 
 part 'nodes.g.dart';
 

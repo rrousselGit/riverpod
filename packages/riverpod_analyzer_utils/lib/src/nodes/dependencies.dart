@@ -1,6 +1,6 @@
 part of '../nodes.dart';
 
-extension ProviderDependencyX on CollectionElement {
+extension on CollectionElement {
   ProviderDependency? get providerDependency {
     return upsert('ProviderDependency', () {
       final that = this;
@@ -87,7 +87,7 @@ final class ProviderDependency {
   final GeneratorProviderDeclarationElement provider;
 }
 
-extension ProviderDependencyListX on Expression {
+extension on Expression {
   ProviderDependencyList? get providerDependencyList {
     return upsert('ProviderDependencyList', () {
       final that = this;
@@ -191,7 +191,7 @@ extension DependenciesAnnotatedAnnotatedNodeX on AnnotatedNode {
   }
 }
 
-extension DependenciesAnnotationX on Annotation {
+extension on Annotation {
   DependenciesAnnotation? get dependencies {
     return upsert('DependenciesAnnotation', () {
       final elementAnnotation = this.elementAnnotation;

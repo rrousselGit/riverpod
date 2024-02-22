@@ -1,7 +1,6 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import 'package:riverpod_analyzer_utils/src/nodes.dart';
 import 'package:test/test.dart';
 

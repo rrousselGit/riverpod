@@ -9,6 +9,7 @@ import 'package:build_test/build_test.dart';
 import 'package:collection/collection.dart';
 import 'package:meta/meta.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
+import 'package:riverpod_analyzer_utils/src/nodes.dart';
 import 'package:riverpod_generator/src/riverpod_generator.dart';
 import 'package:test/test.dart';
 

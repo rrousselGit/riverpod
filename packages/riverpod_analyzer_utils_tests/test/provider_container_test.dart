@@ -1,4 +1,3 @@
-import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import 'package:test/test.dart';
 
 import 'analyzer_test_utils.dart';
@@ -42,8 +41,7 @@ void main() {
     final family =
         result.legacyProviderDeclarations.takeAll(['family']).values.single;
 
-    final containers = result.riverpodCompilationUnits.single.node
-        .providerContainerInstanceCreations;
+    final containers = result.providerContainerInstanceCreationExpressions;
 
     expect(containers, hasLength(4));
     expect(containers[0].node.toSource(), 'ProviderContainer()');
@@ -56,7 +54,7 @@ void main() {
     expect(containers[1].overrides!.overrides, hasLength(6));
     expect(
       containers[1].overrides!.node.toSource(),
-      'overrides: [provider.overrideWith((ref) => 0), provider.overrideWithValue(42), provider, family(42), family.overrideWith((ref, id) => 0), family(42).overrideWith((ref) => 0)]',
+      '[provider.overrideWith((ref) => 0), provider.overrideWithValue(42), provider, family(42), family.overrideWith((ref, id) => 0), family(42).overrideWith((ref) => 0)]',
     );
     {
       expect(
@@ -161,7 +159,7 @@ void main() {
       'ProviderContainer(overrides: fn())',
     );
     expect(containers[2].overrides!.overrides, null);
-    expect(containers[2].overrides!.node.toSource(), 'overrides: fn()');
+    expect(containers[2].overrides!.node.toSource(), 'fn()');
 
     expect(
       containers[3].node.toSource(),
@@ -170,7 +168,7 @@ void main() {
     expect(containers[3].overrides?.overrides, hasLength(1));
     expect(
       containers[3].overrides!.node.toSource(),
-      'overrides: [() {return provider;}()]',
+      '[() {return provider;}()]',
     );
     expect(
       containers[3].overrides?.overrides?.single.node.toSource(),
