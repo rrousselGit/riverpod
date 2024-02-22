@@ -9,7 +9,6 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
-import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:collection/collection.dart';
 import 'package:crypto/crypto.dart';
@@ -35,22 +34,6 @@ part 'riverpod_ast/ref_invocation.dart';
 part 'riverpod_ast/resolve_riverpod.dart';
 part 'riverpod_ast/riverpod_annotation.dart';
 part 'riverpod_ast/widget_ref_invocation.dart';
-
-abstract base class RiverpodAst {
-  RiverpodAst() {
-    visitChildren(_SetParentVisitor(this));
-  }
-
-  RiverpodAst? _parent;
-  RiverpodAst? get parent => _parent;
-
-  AstNode get node;
-
-  void accept(RiverpodAstVisitor visitor);
-
-  @mustCallSuper
-  void visitChildren(RiverpodAstVisitor visitor) {}
-}
 
 extension ExpressionX on Expression {
   ProviderListenableExpression? get providerListenable {
@@ -87,17 +70,6 @@ extension InstanceCreationX on InstanceCreationExpression {
       'ProviderContainerInstanceCreationExpression',
       () => ProviderContainerInstanceCreationExpression._parse(this),
     );
-  }
-}
-
-class _SetParentVisitor extends GeneralizingRiverpodAstVisitor {
-  _SetParentVisitor(this.parent);
-
-  final RiverpodAst parent;
-
-  @override
-  void visitRiverpodAst(RiverpodAst node) {
-    node._parent = parent;
   }
 }
 

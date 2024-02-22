@@ -1,40 +1,19 @@
 part of '../riverpod_ast.dart';
 
-abstract base class ConsumerDeclaration extends RiverpodAst
-    with _$ConsumerDeclaration {
-  static ConsumerDeclaration? _parse(ClassDeclaration node) {
-    final extendsClause = node.extendsClause;
-    if (extendsClause == null) return null;
-    final extendsType = extendsClause.superclass.type;
-    if (extendsType == null) return null;
-
-    if (consumerWidgetType.isExactlyType(extendsType)) {
-      return ConsumerWidgetDeclaration._parse(node);
-    } else if (hookConsumerWidgetType.isExactlyType(extendsType)) {
-      return HookConsumerWidgetDeclaration._parse(node);
-    } else if (consumerStatefulWidgetType.isExactlyType(extendsType)) {
-      return ConsumerStatefulWidgetDeclaration.parse(node);
-    } else if (statefulHookConsumerStateType.isExactlyType(extendsType)) {
-      return StatefulHookConsumerWidgetDeclaration.parse(node);
-    } else if (consumerStateType.isExactlyType(extendsType)) {
-      return ConsumerStateDeclaration._parse(node);
-    }
-
-    return null;
-  }
-
-  @override
+abstract base class ConsumerDeclaration {
   ClassDeclaration get node;
 }
 
-final class ConsumerWidgetDeclaration extends ConsumerDeclaration
-    with _$ConsumerWidgetDeclaration {
+final class ConsumerWidgetDeclaration extends ConsumerDeclaration {
   ConsumerWidgetDeclaration._({
     required this.buildMethod,
     required this.node,
   });
 
   static ConsumerWidgetDeclaration? _parse(ClassDeclaration node) {
+    final type = node.extendsClause?.superclass.type;
+    if (type == null || !consumerWidgetType.isExactlyType(type)) return null;
+
     final buildMethod = node.members
         .whereType<MethodDeclaration>()
         .firstWhereOrNull((e) => e.name.lexeme == 'build');
@@ -51,14 +30,18 @@ final class ConsumerWidgetDeclaration extends ConsumerDeclaration
   final ClassDeclaration node;
 }
 
-final class HookConsumerWidgetDeclaration extends ConsumerDeclaration
-    with _$HookConsumerWidgetDeclaration {
+final class HookConsumerWidgetDeclaration extends ConsumerDeclaration {
   HookConsumerWidgetDeclaration({
     required this.buildMethod,
     required this.node,
   });
 
   static HookConsumerWidgetDeclaration? _parse(ClassDeclaration node) {
+    final type = node.extendsClause?.superclass.type;
+    if (type == null || !hookConsumerWidgetType.isExactlyType(type)) {
+      return null;
+    }
+
     final buildMethod = node.members
         .whereType<MethodDeclaration>()
         .firstWhereOrNull((e) => e.name.lexeme == 'build');
@@ -75,35 +58,45 @@ final class HookConsumerWidgetDeclaration extends ConsumerDeclaration
   final ClassDeclaration node;
 }
 
-final class ConsumerStatefulWidgetDeclaration extends ConsumerDeclaration
-    with _$ConsumerStatefulWidgetDeclaration {
+final class ConsumerStatefulWidgetDeclaration extends ConsumerDeclaration {
   ConsumerStatefulWidgetDeclaration._({required this.node});
 
-  ConsumerStatefulWidgetDeclaration.parse(ClassDeclaration node)
-      : this._(node: node);
+  static ConsumerStatefulWidgetDeclaration? _parse(ClassDeclaration node) {
+    final type = node.extendsClause?.superclass.type;
+    if (type == null || !consumerStatefulWidgetType.isExactlyType(type)) {
+      return null;
+    }
+
+    return ConsumerStatefulWidgetDeclaration._(node: node);
+  }
 
   @override
   final ClassDeclaration node;
 }
 
-final class StatefulHookConsumerWidgetDeclaration extends ConsumerDeclaration
-    with _$StatefulHookConsumerWidgetDeclaration {
+final class StatefulHookConsumerWidgetDeclaration extends ConsumerDeclaration {
   StatefulHookConsumerWidgetDeclaration._({required this.node});
 
-  StatefulHookConsumerWidgetDeclaration.parse(ClassDeclaration node)
-      : this._(node: node);
+  static StatefulHookConsumerWidgetDeclaration? _parse(ClassDeclaration node) {
+    final type = node.extendsClause?.superclass.type;
+    if (type == null || !statefulHookConsumerStateType.isExactlyType(type)) {
+      return null;
+    }
+
+    return StatefulHookConsumerWidgetDeclaration._(node: node);
+  }
 
   @override
   final ClassDeclaration node;
 }
 
-final class ConsumerStateDeclaration extends ConsumerDeclaration
-    with _$ConsumerStateDeclaration {
-  ConsumerStateDeclaration._({
-    required this.node,
-  });
+final class ConsumerStateDeclaration extends ConsumerDeclaration {
+  ConsumerStateDeclaration._({required this.node});
 
   static ConsumerStateDeclaration? _parse(ClassDeclaration node) {
+    final type = node.extendsClause?.superclass.type;
+    if (type == null || !consumerStateType.isExactlyType(type)) return null;
+
     return ConsumerStateDeclaration._(node: node);
   }
 

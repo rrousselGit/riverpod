@@ -1,6 +1,6 @@
 part of '../riverpod_ast.dart';
 
-abstract base class WidgetRefInvocation {
+sealed class WidgetRefInvocation {
   WidgetRefInvocation._({
     required this.node,
     required this.function,

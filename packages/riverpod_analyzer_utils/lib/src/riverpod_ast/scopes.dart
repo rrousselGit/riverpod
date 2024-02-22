@@ -1,4 +1,4 @@
-part of '../riverpod_ast.dart';
+part of 'scopes.dart';
 
 final class DependenciesAnnotationDependency {
   DependenciesAnnotationDependency._({
@@ -78,7 +78,7 @@ Iterable<
         ),
       );
     } else if (dependencyElement is ClassElement) {
-      final dependencyProvider = ClassBasedProviderDeclarationElement._parse(
+      final dependencyProvider = ClassBasedProviderDeclarationElement.parse(
         dependencyElement,
         annotation: null,
       );

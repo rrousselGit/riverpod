@@ -20,7 +20,7 @@ final class ProviderScopeInstanceCreationExpression {
 
     return ProviderScopeInstanceCreationExpression._(
       node: node,
-      overrides: ProviderOverrideList._parse(overrides),
+      overrides: overrides?.expression.let(ProviderOverrideList._parse),
     );
   }
 

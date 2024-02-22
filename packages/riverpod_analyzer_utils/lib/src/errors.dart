@@ -5,15 +5,20 @@ import 'package:meta/meta.dart';
 @internal
 typedef ErrorReporter = void Function(RiverpodAnalysisError);
 
-@internal
-ErrorReporter? errorReporter;
+ErrorReporter errorReporter = (error) {
+  throw UnsupportedError(
+    'RiverpodAnalysisError found but no errorReporter specified: ${error.message}',
+  );
+};
 
+@internal
 enum RiverpodAnalysisErrorCode {
   missingNotifierBuild,
   abstractNotifier,
   missingNotifierDefaultConstructor,
   notifierDefaultConstructorHasRequiredParameters,
-  riverpodDependencyParseError,
+  providerDependencyListParseError,
+  providerOrFamilyExpressionParseError,
 }
 
 class RiverpodAnalysisError {

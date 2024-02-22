@@ -1,69 +1,9 @@
 part of '../riverpod_ast.dart';
 
-extension RawTypeX on DartType {
-  /// Returns whether this type is a `Raw` typedef from `package:riverpod_annotation`.
-  bool get isRaw {
-    final alias = this.alias;
-    if (alias == null) return false;
-    return alias.element.name == 'Raw' &&
-        isFromRiverpodAnnotation.isExactly(alias.element);
-  }
-}
-
-extension on LibraryElement {
-  static final _asyncValueCache = Expando<ClassElement>();
-
-  Element? findElementWithNameFromPackage(
-    String name, {
-    required String packageName,
-  }) {
-    return library.importedLibraries
-        .map((e) => e.exportNamespace.get(name))
-        .firstWhereOrNull(
-          // TODO find a way to test this
-          (element) => element != null && isFromRiverpod.isExactly(element),
-        );
-  }
-
-  ClassElement? findAsyncValue() {
-    final cache = _asyncValueCache[this];
-    if (cache != null) return cache;
-
-    final result = findElementWithNameFromPackage(
-      'AsyncValue',
-      packageName: 'riverpod',
-    );
-    if (result == null) {
-      errorReporter?.call(
-        RiverpodAnalysisError(
-          'No AsyncValue accessible in the library. '
-          'Did you forget to import Riverpod?',
-          targetElement: this,
-          code: null,
-        ),
-      );
-      return null;
-    }
-
-    return _asyncValueCache[this] = result as ClassElement?;
-  }
-
-  DartType? createdTypeToValueType(DartType? typeArg) {
-    final asyncValue = findAsyncValue();
-
-    return asyncValue?.instantiate(
-      typeArguments: [if (typeArg != null) typeArg],
-      nullabilitySuffix: NullabilitySuffix.none,
-    );
-  }
-}
-
 // TODO changelog made sealed
-sealed class GeneratorProviderDeclaration extends ProviderDeclaration
-    with _$GeneratorProviderDeclaration {
+sealed class GeneratorProviderDeclaration extends ProviderDeclaration {
   @override
   GeneratorProviderDeclarationElement get providerElement;
-  @override
   RiverpodAnnotation get annotation;
 
   String get valueTypeDisplayString => valueTypeNode?.toSource() ?? 'Object?';
@@ -171,8 +111,7 @@ TypeAnnotation? _getValueType(
 
 typedef SourcedType = ({String? source, DartType dartType});
 
-final class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration
-    with _$ClassBasedProviderDeclaration {
+final class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration {
   ClassBasedProviderDeclaration._({
     required this.name,
     required this.node,
@@ -246,7 +185,7 @@ final class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration
       return null;
     }
 
-    final providerElement = ClassBasedProviderDeclarationElement.parse(
+    final providerElement = ClassBasedProviderDeclarationElement._parse(
       element,
       annotation: riverpodAnnotation.element,
     );
@@ -293,8 +232,7 @@ final class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration
   final SourcedType exposedTypeNode;
 }
 
-final class FunctionalProviderDeclaration extends GeneratorProviderDeclaration
-    with _$FunctionalProviderDeclaration {
+final class FunctionalProviderDeclaration extends GeneratorProviderDeclaration {
   FunctionalProviderDeclaration._({
     required this.name,
     required this.node,
@@ -351,12 +289,4 @@ final class FunctionalProviderDeclaration extends GeneratorProviderDeclaration
   final TypeAnnotation? valueTypeNode;
   @override
   final SourcedType exposedTypeNode;
-
-  /// Whether the provider uses the syntax sugar for scoped providers:
-  ///
-  /// ```dart
-  /// @riverpod
-  /// external int count();
-  /// ```
-  bool get needsOverride => node.externalKeyword != null;
 }

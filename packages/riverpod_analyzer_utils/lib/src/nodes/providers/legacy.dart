@@ -1,4 +1,4 @@
-part of '../riverpod_ast.dart';
+part of '../../nodes.dart';
 
 final class LegacyProviderDependencies {
   LegacyProviderDependencies._({
@@ -159,4 +159,143 @@ final class LegacyProviderDeclaration implements ProviderDeclaration {
 
   @override
   final VariableDeclaration node;
+}
+
+/// The class name for explicitly typed provider.
+///
+/// Such as `FutureProvider` for `final provider = FutureProvider(...)`.
+/// This is only about the type, and does not include autoDispose/family/...
+enum LegacyProviderType {
+  /// Type for `ChangeNotifierProvider`
+  changeNotifierProvider,
+
+  /// Type for `FutureProvider`
+  futureProvider,
+
+  /// Type for `AsyncNotifierProvider`
+  asyncNotifierProvider,
+
+  /// Type for `StreamProvider`
+  streamProvider,
+
+  /// Type for `StreamNotifier`
+  streamNotifier,
+
+  /// Type for `StateNotifierProvider`
+  stateNotifierProvider,
+
+  /// Type for `StateProvider`
+  stateProvider,
+
+  /// Type for `Provider`
+  provider,
+
+  /// Type for `NotifierProvider`
+  notifierProvider;
+}
+
+@internal
+LegacyProviderType? parseLegacyProviderType(DartType type) {
+  if (!isFromRiverpod.isExactlyType(type) &&
+      !isFromFlutterRiverpod.isExactlyType(type)) {
+    return null;
+  }
+
+  final name = type.element?.name;
+  if (name == 'FutureProvider' || name == 'FutureProviderFamily') {
+    return LegacyProviderType.futureProvider;
+  }
+  if (name == 'StreamProvider' || name == 'StreamProviderFamily') {
+    return LegacyProviderType.streamProvider;
+  }
+  if (name == 'StreamNotifierProvider' ||
+      name == 'StreamNotifierProviderFamily') {
+    return LegacyProviderType.streamNotifier;
+  }
+  if (name == 'StateProvider' || name == 'StateProviderFamily') {
+    return LegacyProviderType.stateProvider;
+  }
+  if (name == 'StateNotifierProvider' ||
+      name == 'StateNotifierProviderFamily') {
+    return LegacyProviderType.stateNotifierProvider;
+  }
+  if (name == 'Provider' || name == 'ProviderFamily') {
+    return LegacyProviderType.provider;
+  }
+  if (name == 'NotifierProvider' || name == 'NotifierProviderFamily') {
+    return LegacyProviderType.notifierProvider;
+  }
+  if (name == 'AsyncNotifierProvider' ||
+      name == 'AsyncNotifierProviderFamily') {
+    return LegacyProviderType.asyncNotifierProvider;
+  }
+  if (name == 'ChangeNotifierProvider' ||
+      name == 'ChangeNotifierProviderFamily') {
+    return LegacyProviderType.changeNotifierProvider;
+  }
+
+  return null;
+}
+
+class LegacyProviderDeclarationElement implements ProviderDeclarationElement {
+  LegacyProviderDeclarationElement._({
+    required this.name,
+    required this.element,
+    required this.familyElement,
+    required this.providerType,
+  });
+
+  static LegacyProviderDeclarationElement? _parse(VariableElement element) {
+    return _cache(element, () {
+      // Search for @ProviderFor annotation. If present, then this is a generated provider
+      if (providerForType.hasAnnotationOfExact(
+        element,
+        throwOnUnresolved: false,
+      )) {
+        return null;
+      }
+
+      LegacyFamilyInvocationElement? familyElement;
+      LegacyProviderType? providerType;
+      if (providerBaseType.isAssignableFromType(element.type)) {
+        providerType = parseLegacyProviderType(element.type);
+      } else if (familyType.isAssignableFromType(element.type)) {
+        final callFn = (element.type as InterfaceType).lookUpMethod2(
+          'call',
+          element.library!,
+        )!;
+        final parameter = callFn.parameters.single;
+
+        providerType = parseLegacyProviderType(callFn.returnType);
+        familyElement = LegacyFamilyInvocationElement._(parameter.type);
+      } else {
+        // Not a provider
+        return null;
+      }
+
+      return LegacyProviderDeclarationElement._(
+        name: element.name,
+        element: element,
+        familyElement: familyElement,
+        providerType: providerType,
+      );
+    });
+  }
+
+  static final _cache = _Cache<LegacyProviderDeclarationElement?>();
+
+  @override
+  final VariableElement element;
+
+  @override
+  final String name;
+
+  final LegacyFamilyInvocationElement? familyElement;
+
+  final LegacyProviderType? providerType;
+}
+
+class LegacyFamilyInvocationElement {
+  LegacyFamilyInvocationElement._(this.parameterType);
+  final DartType parameterType;
 }

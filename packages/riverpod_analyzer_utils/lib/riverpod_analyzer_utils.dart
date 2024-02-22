@@ -1,5 +1,4 @@
-// TODO changelog exported
-export 'src/errors.dart' hide errorReporter, ErrorReporter;
-export 'src/riverpod_ast.dart' hide RiverpodAnalysisResult;
-export 'src/riverpod_element.dart';
+export 'src/errors.dart' hide RiverpodAnalysisErrorCode, ErrorReporter;
+export 'src/nodes.dart'
+    hide parseFirstProviderFor, parseLegacyProviderType, parseProviderFor;
 export 'src/riverpod_types.dart';

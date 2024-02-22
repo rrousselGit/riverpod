@@ -1,31 +1,30 @@
 part of '../riverpod_ast.dart';
 
-final class RiverpodAnnotationDependency extends RiverpodAst
-    with _$RiverpodAnnotationDependency {
+final class RiverpodAnnotationDependency {
   RiverpodAnnotationDependency._({
     required this.node,
     required this.provider,
   });
 
-  @override
+  static RiverpodAnnotationDependency? _parse(CollectionElement dependency) {}
+
   final Expression node;
   final GeneratorProviderDeclarationElement provider;
 }
 
-final class RiverpodAnnotationDependencies extends RiverpodAst
-    with _$RiverpodAnnotationDependencies {
+final class RiverpodAnnotationDependencies {
   RiverpodAnnotationDependencies._({
     required this.node,
     required this.dependencies,
   });
 
-  @override
-  final NamedExpression node;
-  @override
+  static RiverpodAnnotationDependencies? _parse(Expression dependencies) {}
+
+  final Expression node;
   final List<RiverpodAnnotationDependency>? dependencies;
 }
 
-final class RiverpodAnnotation extends RiverpodAst with _$RiverpodAnnotation {
+final class RiverpodAnnotation {
   RiverpodAnnotation._({
     required this.node,
     required this.element,
@@ -33,55 +32,46 @@ final class RiverpodAnnotation extends RiverpodAst with _$RiverpodAnnotation {
     required this.dependencies,
   });
 
-  static RiverpodAnnotation? _parse(
-    Declaration node,
-  ) {
-    final annotatedElement = node.declaredElement;
-    if (annotatedElement == null) return null;
-
-    for (final annotation in node.metadata) {
-      final elementAnnotation = annotation.elementAnnotation;
-      final annotationElement = annotation.element;
-      if (elementAnnotation == null || annotationElement == null) continue;
-      if (annotationElement is! ExecutableElement ||
-          !riverpodType.isExactlyType(annotationElement.returnType)) {
-        // The annotation is not an @Riverpod
-        continue;
-      }
-
-      final dartObject = elementAnnotation.computeConstantValue();
-      if (dartObject == null) return null;
-
-      NamedExpression? keepAliveNode;
-      NamedExpression? dependenciesNode;
-      final argumentList = annotation.arguments;
-      if (argumentList != null) {
-        for (final argument
-            in argumentList.arguments.whereType<NamedExpression>()) {
-          switch (argument.name.label.name) {
-            case 'keepAlive':
-              keepAliveNode = argument;
-            case 'dependencies':
-              dependenciesNode = argument;
-          }
-        }
-      }
-
-      final riverpodAnnotationElement =
-          RiverpodAnnotationElement.parse(annotatedElement);
-      if (riverpodAnnotationElement == null) return null;
-
-      final dependencies = _parseDependencies(dependenciesNode);
-
-      return RiverpodAnnotation._(
-        node: annotation,
-        element: riverpodAnnotationElement,
-        keepAliveNode: keepAliveNode,
-        dependencies: dependencies,
-      );
+  static RiverpodAnnotation? _parse(Annotation node) {
+    final elementAnnotation = node.elementAnnotation;
+    final annotationElement = node.element;
+    if (elementAnnotation == null || annotationElement == null) return null;
+    if (annotationElement is! ExecutableElement ||
+        !riverpodType.isExactlyType(annotationElement.returnType)) {
+      // The annotation is not an @Riverpod
+      return null;
     }
 
-    return null;
+    final dartObject = elementAnnotation.computeConstantValue();
+    if (dartObject == null) return null;
+
+    NamedExpression? keepAliveNode;
+    NamedExpression? dependenciesNode;
+    final argumentList = node.arguments;
+    if (argumentList != null) {
+      for (final argument
+          in argumentList.arguments.whereType<NamedExpression>()) {
+        switch (argument.name.label.name) {
+          case 'keepAlive':
+            keepAliveNode = argument;
+          case 'dependencies':
+            dependenciesNode = argument;
+        }
+      }
+    }
+
+    final riverpodAnnotationElement =
+        RiverpodAnnotationElement.parse(node.element);
+    if (riverpodAnnotationElement == null) return null;
+
+    final dependencies = _parseDependencies(dependenciesNode);
+
+    return RiverpodAnnotation._(
+      node: annotation,
+      element: riverpodAnnotationElement,
+      keepAliveNode: keepAliveNode,
+      dependencies: dependencies,
+    );
   }
 
   static RiverpodAnnotationDependencies? _parseDependencies(
@@ -121,10 +111,8 @@ final class RiverpodAnnotation extends RiverpodAst with _$RiverpodAnnotation {
     );
   }
 
-  @override
   final Annotation node;
   final RiverpodAnnotationElement element;
   final NamedExpression? keepAliveNode;
-  @override
   final RiverpodAnnotationDependencies? dependencies;
 }

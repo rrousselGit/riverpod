@@ -1,7 +1,9 @@
-import 'package:riverpod_analyzer_utils/src/riverpod_ast.dart';
+import 'package:analyzer/dart/ast/ast.dart';
+import 'package:collection/collection.dart';
+import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import 'package:test/test.dart';
 
-import 'analyzer_test_utils.dart';
+import '../../analyzer_test_utils.dart';
 
 void main() {
   testSource('Parses element.isFamily', source: r'''
@@ -33,27 +35,14 @@ class ParametrizedClass extends _$ParametrizedClass {
   @override
   int build(int id) => throw UnimplementedError();
 }
-''', (resolver) async {
-    final result = await resolver.resolveRiverpodAnalysisResult();
-
-    final generic = result.generatorProviderDeclarations.singleWhere(
-      (e) => e.name.toString() == 'generic',
-    );
-    final genericClass = result.generatorProviderDeclarations.singleWhere(
-      (e) => e.name.toString() == 'GenericClass',
-    );
-    final value = result.generatorProviderDeclarations.singleWhere(
-      (e) => e.name.toString() == 'value',
-    );
-    final valueClass = result.generatorProviderDeclarations.singleWhere(
-      (e) => e.name.toString() == 'ValueClass',
-    );
-    final parametrized = result.generatorProviderDeclarations.singleWhere(
-      (e) => e.name.toString() == 'parametrized',
-    );
-    final parametrizedClass = result.generatorProviderDeclarations.singleWhere(
-      (e) => e.name.toString() == 'ParametrizedClass',
-    );
+''', (units, unit) async {
+    final generic = unit.declarations.findByName('generic').provider!;
+    final genericClass = unit.declarations.findByName('GenericClass').provider!;
+    final value = unit.declarations.findByName('value').provider!;
+    final valueClass = unit.declarations.findByName('ValueClass').provider!;
+    final parametrized = unit.declarations.findByName('parametrized').provider!;
+    final parametrizedClass =
+        unit.declarations.findByName('ParametrizedClass').provider!;
 
     expect(generic.providerElement.isFamily, true);
     expect(genericClass.providerElement.isFamily, true);
@@ -76,18 +65,13 @@ Future<int> value2(Value2Ref ref) async => 0;
 
 @riverpod
 Future<Raw<int>> value3(Value3Ref ref) async => 0;
-''', (resolver) async {
-    final result = await resolver.resolveRiverpodAnalysisResult();
-
-    final value = result.functionalProviderDeclarations.singleWhere(
-      (e) => e.name.toString() == 'value',
-    );
-    final value2 = result.functionalProviderDeclarations.singleWhere(
-      (e) => e.name.toString() == 'value2',
-    );
-    final value3 = result.functionalProviderDeclarations.singleWhere(
-      (e) => e.name.toString() == 'value3',
-    );
+''', (units, unit) async {
+    final value =
+        unit.declarations.findByName<FunctionDeclaration>('value').provider!;
+    final value2 =
+        unit.declarations.findByName<FunctionDeclaration>('value2').provider!;
+    final value3 =
+        unit.declarations.findByName<FunctionDeclaration>('value3').provider!;
     expect(value.createdTypeNode.toString(), 'Raw<Future<int>>');
     expect(value.createdTypeDisplayString, 'Raw<Future<int>>');
     expect(value.exposedTypeNode.source, 'Raw<Future<int>>');
@@ -120,117 +104,22 @@ Future<Raw<int>> value3(Value3Ref ref) async => 0;
     expect(value3.valueTypeNode!.type!.isRaw, true);
   });
 
-  testSource('Decode needsOverride/isScoped', source: '''
+  testSource('Decode isScoped', source: '''
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-@riverpod
-external int needsOverride();
 
 @Riverpod(dependencies: [])
 int scoped() => 0;
 
 @riverpod
 int plain(PlainRef ref) => 0;
-''', (resolver) async {
-    final result = await resolver.resolveRiverpodAnalysisResult();
+''', (units, unit) async {
+    final scoped =
+        unit.declarations.findByName<FunctionDeclaration>('scoped').provider!;
+    final plain =
+        unit.declarations.findByName<FunctionDeclaration>('plain').provider!;
 
-    final needsOverride = result.functionalProviderDeclarations.singleWhere(
-      (e) => e.name.toString() == 'needsOverride',
-    );
-    final scoped = result.functionalProviderDeclarations.singleWhere(
-      (e) => e.name.toString() == 'scoped',
-    );
-    final plain = result.functionalProviderDeclarations.singleWhere(
-      (e) => e.name.toString() == 'plain',
-    );
-
-    expect(needsOverride.needsOverride, true);
-    expect(scoped.needsOverride, false);
-    expect(plain.needsOverride, false);
-
-    expect(needsOverride.providerElement.isScoped, true);
     expect(scoped.providerElement.isScoped, true);
     expect(plain.providerElement.isScoped, false);
-  });
-
-  testSource('Decode dependencies with syntax errors', source: '''
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-const deps = <ProviderOrFamily>[];
-
-@Riverpod(dependencies: deps)
-int first(FirstRef ref) => 0;
-
-@Riverpod(dependencies: )
-int second(SecondRef ref) => 0;
-
-@Riverpod(dependencies: [gibberish])
-int forth(ForthRef ref) => 0;
-
-@Riverpod(dependencies: [if (true) forth])
-int fifth(FifthRef ref) => 0;
-
-@Riverpod(dependencies: [int])
-int sixth(SixthRef ref) => 0;
-
-void fn() {}
-
-@Riverpod(dependencies: [fn])
-int seven(SevenRef ref) => 0;
-
-@Riverpod(dependencies: ['foo'])
-int eight(EightRef ref) => 0;
-''', (resolver) async {
-    final result = await resolver.resolveRiverpodAnalysisResult(
-      ignoreErrors: true,
-    );
-
-    final errors =
-        result.riverpodCompilationUnits.expand((e) => e.errors).toList();
-
-    expect(errors, hasLength(7));
-
-    expect(
-      errors[0].message,
-      'Only list literals (using []) as supported.',
-    );
-    expect(errors[0].targetNode?.toSource(), 'deps');
-
-    expect(
-      errors[1].message,
-      'Only list literals (using []) as supported.',
-    );
-    expect(errors[1].targetNode?.toSource(), '');
-
-    expect(
-      errors[2].message,
-      'Only elements annotated with @riverpod are supported.',
-    );
-    expect(errors[2].targetNode?.toSource(), 'gibberish');
-
-    expect(
-      errors[3].message,
-      'if/for/spread operators as not supported.',
-    );
-    expect(errors[3].targetNode?.toSource(), 'if (true) forth');
-
-    expect(
-      errors[4].message,
-      'Unsupported dependency "int". Only functions and classes annotated by @riverpod are supported.',
-    );
-    expect(errors[4].targetElement.toString(), 'int sixth(InvalidType ref)');
-
-    expect(
-      errors[5].message,
-      'Unsupported dependency "void fn()". Only functions and classes annotated by @riverpod are supported.',
-    );
-    expect(errors[5].targetElement.toString(), 'int seven(InvalidType ref)');
-
-    expect(
-      errors[6].message,
-      'Unsupported dependency "String (\'foo\')". Only functions and classes annotated by @riverpod are supported.',
-    );
-    expect(errors[6].targetElement.toString(), 'int eight(InvalidType ref)');
   });
 
   testSource('Decode name', runGenerator: true, source: r'''
@@ -249,9 +138,8 @@ class Counter extends _$Counter {
   @override
   int build() => 0;
 }
-''', (resolver) async {
-    final result = await resolver.resolveRiverpodAnalysisResult();
-    final providers = result.generatorProviderDeclarations;
+''', (units, unit) async {
+    final providers = unit.declarations.map((e) => e.provider).toList();
 
     expect(providers, [
       isA<FunctionalProviderDeclaration>()
@@ -297,17 +185,19 @@ class KeepAliveNotifier extends _$KeepAliveNotifier {
   @override
   int build() => 0;
 }
-''', (resolver) async {
-    final result = await resolver.resolveRiverpodAnalysisResult();
-    final autoDispose = result.generatorProviderDeclarations.takeAll([
+''', (units, unit) async {
+    final providers =
+        unit.declarations.map((e) => e.provider).whereNotNull().toList();
+
+    final autoDispose = providers.takeAll([
       'autoDispose',
       'AutoDisposeNotifierTest',
     ]);
-    final explicitAutoDispose = result.generatorProviderDeclarations.takeAll([
+    final explicitAutoDispose = providers.takeAll([
       'autoDispose2',
       'AutoDisposeNotifier2',
     ]);
-    final keepAlive = result.generatorProviderDeclarations.takeAll([
+    final keepAlive = providers.takeAll([
       'keepAlive',
       'KeepAliveNotifier',
     ]);
@@ -399,30 +289,32 @@ class FamilyClass extends _$FamilyClass {
   @override
   int build() => 0;
 }
-''', (resolver) async {
-    final result = await resolver.resolveRiverpodAnalysisResult();
-    final roots = result.generatorProviderDeclarations.takeAll([
+''', (units, unit) async {
+    final providers =
+        unit.declarations.map((e) => e.provider).whereNotNull().toList();
+
+    final roots = providers.takeAll([
       'root',
       'RootNotifier',
     ]);
-    final empty = result.generatorProviderDeclarations.takeAll([
+    final empty = providers.takeAll([
       'empty',
       'EmptyNotifier',
     ]);
-    final providers = result.generatorProviderDeclarations.takeAll([
+    final direct = providers.takeAll([
       'providerDependency',
       'ProviderDependencyNotifier',
       'family',
       'FamilyClass',
     ]);
-    final nesteds = result.generatorProviderDeclarations.takeAll([
+    final nesteds = providers.takeAll([
       'nestedDependency',
       'NestedDependencyNotifier',
     ]);
 
     for (final provider in roots.entries) {
       expect(
-        provider.value.annotation.dependencies,
+        provider.value.annotation.dependencyList,
         null,
         reason: '${provider.key} has no dependency',
       );
@@ -439,7 +331,7 @@ class FamilyClass extends _$FamilyClass {
     }
     for (final provider in empty.entries) {
       expect(
-        provider.value.annotation.dependencies?.dependencies,
+        provider.value.annotation.dependencyList?.values,
         isEmpty,
         reason: '${provider.key} has an empty list of dependencies',
       );
@@ -454,14 +346,20 @@ class FamilyClass extends _$FamilyClass {
         reason: '${provider.key} has an empty list of dependencies',
       );
       expect(
-        provider.value.annotation.dependencies?.node.toSource(),
+        provider.value.annotation.dependenciesNode?.toSource(),
         'dependencies: []',
         reason: '${provider.key} has an empty list of dependencies',
       );
-    }
-    for (final provider in providers.entries) {
       expect(
-        provider.value.annotation.dependencies?.dependencies,
+        provider.value.annotation.dependencyList?.node.toSource(),
+        '[]',
+        reason: '${provider.key} has an empty list of dependencies',
+      );
+    }
+
+    for (final provider in direct.entries) {
+      expect(
+        provider.value.annotation.dependencyList?.values,
         hasLength(2),
         reason: '${provider.key} has two explicit dependencies',
       );
@@ -476,8 +374,8 @@ class FamilyClass extends _$FamilyClass {
         reason: '${provider.key} has two explicit dependencies',
       );
       expect(
-        provider.value.annotation.dependencies?.dependencies?[0],
-        isA<RiverpodAnnotationDependency>()
+        provider.value.annotation.dependencyList?.values?[0],
+        isA<ProviderDependency>()
             .having(
               (e) => e.provider,
               'provider',
@@ -487,8 +385,8 @@ class FamilyClass extends _$FamilyClass {
         reason: '${provider.key} has `empty` as first dependency',
       );
       expect(
-        provider.value.annotation.dependencies?.dependencies?[1],
-        isA<RiverpodAnnotationDependency>()
+        provider.value.annotation.dependencyList?.values?[1],
+        isA<ProviderDependency>()
             .having(
               (e) => e.provider,
               'provider',
@@ -515,15 +413,20 @@ class FamilyClass extends _$FamilyClass {
       );
 
       expect(
-        provider.value.annotation.dependencies?.node.toSource(),
+        provider.value.annotation.dependenciesNode?.toSource(),
         'dependencies: [empty, EmptyNotifier]',
+        reason: '${provider.key} has two dependencies',
+      );
+      expect(
+        provider.value.annotation.dependencyList?.node.toSource(),
+        '[empty, EmptyNotifier]',
         reason: '${provider.key} has two dependencies',
       );
     }
 
     for (final provider in nesteds.entries) {
       expect(
-        provider.value.annotation.dependencies?.dependencies,
+        provider.value.annotation.dependencyList?.values,
         hasLength(2),
         reason: '${provider.key} has two explicit dependencies',
       );
@@ -535,31 +438,31 @@ class FamilyClass extends _$FamilyClass {
       expect(
         provider.value.annotation.element.allTransitiveDependencies,
         unorderedEquals([
-          providers['providerDependency']!.providerElement,
-          providers['ProviderDependencyNotifier']!.providerElement,
+          direct['providerDependency']!.providerElement,
+          direct['ProviderDependencyNotifier']!.providerElement,
           empty['empty']!.providerElement,
           empty['EmptyNotifier']!.providerElement,
         ]),
         reason: '${provider.key} has two explicit dependencies',
       );
       expect(
-        provider.value.annotation.dependencies?.dependencies?[0],
-        isA<RiverpodAnnotationDependency>()
+        provider.value.annotation.dependencyList?.values?[0],
+        isA<ProviderDependency>()
             .having(
               (e) => e.provider,
               'provider',
-              same(providers['providerDependency']!.providerElement),
+              same(direct['providerDependency']!.providerElement),
             )
             .having((e) => e.node.toString(), 'node', 'providerDependency'),
         reason: '${provider.key} has `providerDependency` as first dependency',
       );
       expect(
-        provider.value.annotation.dependencies?.dependencies?[1],
-        isA<RiverpodAnnotationDependency>()
+        provider.value.annotation.dependencyList?.values?[1],
+        isA<ProviderDependency>()
             .having(
               (e) => e.provider,
               'provider',
-              same(providers['ProviderDependencyNotifier']!.providerElement),
+              same(direct['ProviderDependencyNotifier']!.providerElement),
             )
             .having(
               (e) => e.node.toString(),
@@ -577,19 +480,24 @@ class FamilyClass extends _$FamilyClass {
       );
       expect(
         provider.value.annotation.element.dependencies?.elementAt(0),
-        same(providers['providerDependency']!.providerElement),
+        same(direct['providerDependency']!.providerElement),
         reason: '${provider.key} has `providerDependency` as first dependency',
       );
       expect(
         provider.value.annotation.element.dependencies?.elementAt(1),
-        same(providers['ProviderDependencyNotifier']!.providerElement),
+        same(direct['ProviderDependencyNotifier']!.providerElement),
         reason:
             '${provider.key} has `ProviderDependencyNotifier` as second dependency',
       );
 
       expect(
-        provider.value.annotation.dependencies?.node.toSource(),
+        provider.value.annotation.dependenciesNode?.toSource(),
         'dependencies: [providerDependency, ProviderDependencyNotifier]',
+        reason: '${provider.key} has two dependencies',
+      );
+      expect(
+        provider.value.annotation.dependencyList?.node.toSource(),
+        '[providerDependency, ProviderDependencyNotifier]',
         reason: '${provider.key} has two dependencies',
       );
     }

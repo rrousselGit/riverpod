@@ -32,16 +32,11 @@ final class ResolvedRiverpodLibraryResult {
   final List<RiverpodCompilationUnit> units;
 }
 
-final class RiverpodCompilationUnit extends RiverpodAst
-    with _$RiverpodCompilationUnit {
+final class RiverpodCompilationUnit {
   RiverpodCompilationUnit._(this.node);
 
-  @override
   final functionalProviderDeclarations = <FunctionalProviderDeclaration>[];
-  @override
   final classBasedProviderDeclarations = <ClassBasedProviderDeclaration>[];
-
-  @override
   final legacyProviderDeclarations = <LegacyProviderDeclaration>[];
 
   @override

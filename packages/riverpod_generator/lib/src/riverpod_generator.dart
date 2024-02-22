@@ -65,12 +65,20 @@ class RiverpodGenerator extends ParserGenerator<Riverpod> {
 
   @override
   String generateForUnit(List<CompilationUnit> compilationUnits) {
-    final riverpodResult = ResolvedRiverpodLibraryResult.from(compilationUnits);
-    return runGenerator(riverpodResult);
-  }
+    final buffer = StringBuffer();
 
-  String runGenerator(ResolvedRiverpodLibraryResult riverpodResult) {
-    for (final error in riverpodResult.units.expand((e) => e.errors)) {
+    final errors = <RiverpodAnalysisError>[];
+    final previousErrorReporter = errorReporter;
+
+    try {
+      errorReporter = errors.add;
+      _generate(compilationUnits, buffer);
+    } finally {
+      errorReporter = previousErrorReporter;
+    }
+
+    // Running at the end to aggregate all errors.
+    for (final error in errors) {
       throw RiverpodInvalidGenerationSourceError(
         error.message,
         element: error.targetElement,
@@ -78,30 +86,35 @@ class RiverpodGenerator extends ParserGenerator<Riverpod> {
       );
     }
 
-    final buffer = StringBuffer();
+    return buffer.toString();
+  }
 
+  void _generate(List<CompilationUnit> units, StringBuffer buffer) {
     final visitor = _RiverpodGeneratorVisitor(buffer, options);
-    for (final unit in riverpodResult.units) {
-      unit.visitChildren(visitor);
+    for (final unit in units.expand((e) => e.declarations)) {
+      final provider = unit.provider;
+
+      switch (provider) {
+        case ClassBasedProviderDeclaration():
+          visitor.visitClassBasedProviderDeclaration(provider);
+        case FunctionalProviderDeclaration():
+          visitor.visitFunctionalProviderDeclaration(provider);
+        default:
+          continue;
+      }
     }
 
     // Only emit the header if we actually generated something
     if (buffer.isNotEmpty) {
-      buffer.writeln(
-        r"const $kDebugMode = bool.fromEnvironment('dart.vm.product');",
-      );
-
       buffer.write('''
 // ignore_for_file: type=lint
 // ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main
 ''');
     }
-
-    return buffer.toString();
   }
 }
 
-class _RiverpodGeneratorVisitor extends RecursiveRiverpodAstVisitor {
+class _RiverpodGeneratorVisitor {
   _RiverpodGeneratorVisitor(this.buffer, this.options);
 
   final StringBuffer buffer;
@@ -135,7 +148,7 @@ class _RiverpodGeneratorVisitor extends RecursiveRiverpodAstVisitor {
     GeneratorProviderDeclaration provider,
   ) {
     // TODO throw if a dependency is not accessible in the current library.
-    final dependencies = provider.annotation.dependencies?.dependencies;
+    final dependencies = provider.annotation.dependencyList?.values;
     if (dependencies == null) return null;
 
     final allTransitiveDependencies = <String>[];
@@ -183,20 +196,16 @@ class _RiverpodGeneratorVisitor extends RecursiveRiverpodAstVisitor {
     return allTransitiveDependencies;
   }
 
-  @override
   void visitClassBasedProviderDeclaration(
     ClassBasedProviderDeclaration provider,
   ) {
-    super.visitClassBasedProviderDeclaration(provider);
     visitGeneratorProviderDeclaration(provider);
     NotifierTemplate(provider).run(buffer);
   }
 
-  @override
   void visitFunctionalProviderDeclaration(
     FunctionalProviderDeclaration provider,
   ) {
-    super.visitFunctionalProviderDeclaration(provider);
     RefTemplate(provider).run(buffer);
     visitGeneratorProviderDeclaration(provider);
   }
@@ -222,7 +231,7 @@ extension ProviderElementNames on GeneratorProviderDeclarationElement {
   String dependencies(BuildYamlOptions options) {
     var dependencies = annotation.dependencies;
     if (dependencies == null && !isScoped) return 'null';
-    dependencies ??= {};
+    dependencies ??= [];
 
     final buffer = StringBuffer('const <ProviderOrFamily>');
     buffer.write('[');

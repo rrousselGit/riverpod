@@ -14,93 +14,13 @@ GeneratorProviderDeclarationElement? _parseGeneratedProviderFromAnnotation(
   }
   late final type = generatedProviderDefinition.toTypeValue()?.element;
   if (type != null && type is ClassElement) {
-    return ClassBasedProviderDeclarationElement.parse(
+    return ClassBasedProviderDeclarationElement._parse(
       type,
       annotation: null,
     );
   } else {
     throw StateError('Unknown value $generatedProviderDefinition');
   }
-}
-
-({
-  SimpleIdentifier provider,
-  SimpleIdentifier? providerPrefix,
-  ProviderDeclarationElement? providerElement,
-  ArgumentList? familyArguments,
-})? _parsesProviderExpression(Expression? expression) {
-  SimpleIdentifier? provider;
-  SimpleIdentifier? providerPrefix;
-  ProviderDeclarationElement? providerElement;
-  ArgumentList? familyArguments;
-
-  void parseExpression(Expression? expression) {
-    // Can be reached when the code contains syntax errors
-    if (expression == null) return;
-    if (expression is SimpleIdentifier) {
-      // watch(expression)
-      provider = expression;
-      final element = expression.staticElement;
-      if (element is PropertyAccessorElement) {
-        // watch(provider)
-        DartObject? annotation;
-        try {
-          annotation = providerForType.firstAnnotationOfExact(element.variable);
-        } catch (_) {
-          return;
-        }
-
-        if (annotation == null) {
-          providerElement =
-              LegacyProviderDeclarationElement.parse(element.variable);
-        } else {
-          providerElement = _parseGeneratedProviderFromAnnotation(annotation);
-        }
-      }
-    } else if (expression is FunctionExpressionInvocation) {
-      // watch(expression())
-      familyArguments = expression.argumentList;
-      parseExpression(expression.function);
-    } else if (expression is MethodInvocation) {
-      // watch(expression.method())
-      parseExpression(expression.target);
-    } else if (expression is PrefixedIdentifier) {
-      // watch(expression.modifier)
-      final element = expression.prefix.staticElement;
-      if (element is PrefixElement) {
-        providerPrefix = expression.prefix;
-        parseExpression(expression.identifier);
-      } else {
-        parseExpression(expression.prefix);
-      }
-    } else if (expression is IndexExpression) {
-      // watch(expression[])
-      parseExpression(expression.target);
-    } else if (expression is PropertyAccess) {
-      // watch(expression.property)
-      parseExpression(expression.target);
-    }
-  }
-
-  parseExpression(expression);
-
-  final p = provider;
-
-  if (p == null) return null;
-  final providerType = p.staticType;
-
-  if (providerType == null) return null;
-  if (!providerBaseType.isAssignableFromType(providerType) &&
-      !familyType.isAssignableFromType(providerType)) {
-    return null;
-  }
-
-  return (
-    provider: p,
-    providerPrefix: providerPrefix,
-    providerElement: providerElement,
-    familyArguments: familyArguments,
-  );
 }
 
 final class ProviderListenableExpression {
