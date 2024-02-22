@@ -21,11 +21,9 @@ import 'element_util.dart';
 import 'errors.dart';
 import 'object_extensions.dart';
 
-// part 'nodes/widgets/consumer_widget.dart';
-// part 'nodes/widgets/stateful_widget.dart';
+part 'nodes/widgets/stateless_widget.dart';
+part 'nodes/widgets/stateful_widget.dart';
 
-// part 'nodes/widget_ref.dart';
-// part 'nodes/ref.dart';
 part 'nodes/dependencies.dart';
 part 'nodes/providers/function.dart';
 part 'nodes/providers/legacy.dart';
