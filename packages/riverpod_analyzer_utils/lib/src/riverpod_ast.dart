@@ -9,12 +9,9 @@ import 'package:collection/collection.dart';
 import '../riverpod_analyzer_utils.dart';
 import 'argument_list_utils.dart';
 
-part 'riverpod_ast/consumer.dart';
 part 'riverpod_ast/provider_or_family_expression.dart';
-part 'riverpod_ast/provider_container_instance_creation_expression.dart';
 part 'riverpod_ast/provider_declaration.dart';
 part 'riverpod_ast/provider_listenable_expression.dart';
-part 'riverpod_ast/provider_scope.dart';
 part 'riverpod_ast/ref_invocation.dart';
 part 'riverpod_ast/widget_ref_invocation.dart';
 
@@ -35,23 +32,6 @@ extension MethodInvocationX on MethodInvocation {
     return upsert(
       'WidgetRefInvocation',
       () => WidgetRefInvocation._parse(this),
-    );
-  }
-}
-
-extension InstanceCreationX on InstanceCreationExpression {
-  ProviderScopeInstanceCreationExpression? get providerScopeInstanceCreation {
-    return upsert(
-      'ProviderScopeInstanceCreationExpression',
-      () => ProviderScopeInstanceCreationExpression._parse(this),
-    );
-  }
-
-  ProviderContainerInstanceCreationExpression?
-      get providerContainerInstanceCreation {
-    return upsert(
-      'ProviderContainerInstanceCreationExpression',
-      () => ProviderContainerInstanceCreationExpression._parse(this),
     );
   }
 }

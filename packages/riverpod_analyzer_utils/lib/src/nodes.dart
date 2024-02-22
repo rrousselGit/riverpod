@@ -23,6 +23,7 @@ import 'object_extensions.dart';
 
 part 'nodes/widgets/stateless_widget.dart';
 part 'nodes/widgets/stateful_widget.dart';
+part 'nodes/widgets/widget.dart';
 
 part 'nodes/dependencies.dart';
 part 'nodes/providers/function.dart';
