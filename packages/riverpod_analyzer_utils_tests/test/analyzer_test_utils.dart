@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/diagnostic/diagnostic.dart';
 import 'package:build/build.dart';
 import 'package:build_test/build_test.dart';
 import 'package:collection/collection.dart';
@@ -47,7 +49,11 @@ int _testNumber = 0;
 @isTest
 void testSource(
   String description,
-  Future<void> Function(List<ResolvedUnitResult> units, CompilationUnit) run, {
+  Future<void> Function(
+    Resolver resolver,
+    CompilationUnit unit,
+    List<ResolvedUnitResult> units,
+  ) run, {
   required String source,
   Map<String, String> files = const {},
   bool runGenerator = false,
@@ -114,7 +120,7 @@ void testSource(
             () async {
               final (units, unit) = await getUnits(resolver);
 
-              return run(units, unit);
+              return run(resolver, unit, units);
             },
             zoneSpecification: ZoneSpecification(
               // Somehow prints are captured inside the callback. Let's restore them
@@ -186,5 +192,81 @@ extension FindAst<Base extends AstNode> on List<Base> {
     }
 
     throw StateError('No node found with name "$name"');
+  }
+}
+
+extension ResolverX on Resolver {
+  // ignore: invalid_use_of_internal_member
+  Future<RiverpodAnalysisResult> resolveRiverpodAnalysisResult({
+    String libraryName = 'foo',
+    bool ignoreErrors = false,
+  }) async {
+    final library = await requireFindLibraryByName(
+      libraryName,
+      ignoreErrors: ignoreErrors,
+    );
+    final libraryAst =
+        await library.session.getResolvedLibraryByElement(library);
+    libraryAst as ResolvedLibraryResult;
+
+    final result = RiverpodAnalysisResult();
+
+    final errors = <RiverpodAnalysisError>[];
+    final previousErrorReporter = errorReporter;
+    try {
+      if (ignoreErrors) {
+        errorReporter = errors.add;
+      } else {
+        errorReporter = (error) {
+          throw StateError('Unexpected error: $error');
+        };
+      }
+
+      for (final unit in libraryAst.units) {
+        unit.unit.accept(result);
+      }
+    } finally {
+      errorReporter = previousErrorReporter;
+    }
+
+    result.errors.addAll(errors);
+
+    if (!ignoreErrors) {
+      if (errors.isNotEmpty) {
+        throw StateError(errors.map((e) => '- $e\n').join());
+      }
+    }
+
+    return result;
+  }
+
+  Future<LibraryElement> requireFindLibraryByName(
+    String libraryName, {
+    required bool ignoreErrors,
+  }) async {
+    final library = await findLibraryByName(libraryName);
+    if (library == null) {
+      throw StateError('No library found for name "$libraryName"');
+    }
+
+    if (!ignoreErrors) {
+      final errorResult =
+          await library.session.getErrors('/test_lib/lib/foo.dart');
+      errorResult as ErrorsResult;
+
+      final errors = errorResult.errors
+          // Infos are only recommendations. There's no reason to fail just for this
+          .where((e) => e.severity != Severity.info)
+          .toList();
+
+      if (errors.isNotEmpty) {
+        throw StateError('''
+The parsed library has errors:
+${errors.map((e) => '- $e\n').join()}
+''');
+      }
+    }
+
+    return library;
   }
 }

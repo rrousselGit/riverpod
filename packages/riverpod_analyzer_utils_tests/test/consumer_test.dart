@@ -19,7 +19,7 @@ class ProviderWidget<T> extends ConsumerWidget {
     return Container();
   }
 }
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
     final consumerWidget = result.consumerWidgetDeclarations.single;
@@ -46,7 +46,7 @@ class MyConsumerWidget extends ConsumerWidget {
     return Container();
   }
 }
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
     final consumerWidget = result.consumerWidgetDeclarations.single;
@@ -73,7 +73,7 @@ class MyConsumerWidget extends HookConsumerWidget {
     return Container();
   }
 }
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
     final consumerWidget = result.hookConsumerWidgetDeclarations.single;
@@ -113,7 +113,7 @@ class MyConsumerState extends ConsumerState<MyConsumerWidget> {
     return Container();
   }
 }
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
     final consumerWidget = result.consumerStatefulWidgetDeclarations.single;
@@ -153,7 +153,7 @@ class MyConsumerState extends ConsumerState<MyConsumerWidget> {
     return Container();
   }
 }
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
     final consumerWidget = result.statefulHookConsumerWidgetDeclarations.single;

@@ -34,7 +34,7 @@ int seven(SevenRef ref) => 0;
 
 @Riverpod(dependencies: ['foo'])
 int eight(EightRef ref) => 0;
-''', (units, unit) async {
+''', (resolver, unit, units) async {
     final errors = collectErrors(() {
       for (final d in unit.declarations) {
         d.provider;
@@ -124,7 +124,7 @@ int fn(FnRef ref) => 0;
 
 @Riverpod(dependencies: [dependency])
 int fn2(FnRef ref) => 0;
-''', (units, unit) async {
+''', (resolver, unit, units) async {
     final dependency = unit.declarations.findByName('dependency').riverpod;
 
     final fn = unit.declarations.findByName('fn').riverpod;
@@ -165,7 +165,7 @@ class NestedClass {
     int value = 0;
   }
 }
-''', (units, unit) async {
+''', (resolver, unit, units) async {
     expect(
       unit.declarations.findByName('unrelated').riverpod,
       isNull,

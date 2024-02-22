@@ -18,7 +18,7 @@ class Example extends ConsumerWidget {
     return Container();
   }
 }
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult(
       ignoreErrors: true,
     );
@@ -79,7 +79,7 @@ class MyWidget extends ConsumerWidget {
     return Container();
   }
 }
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
     expect(result.widgetRefWatchInvocations, hasLength(3));
@@ -191,7 +191,7 @@ class _Ref {
 void fn(_Ref ref) {
   ref.watch(dep);
 }
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
     expect(result.widgetRefWatchInvocations, hasLength(3));
@@ -272,7 +272,7 @@ void fn(WidgetRef ref) {
   ref.read(dep);
   ref.read(dep2);
 }
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
     final libraryResult = result.riverpodCompilationUnits.single;
@@ -323,7 +323,7 @@ class MyWidget extends ConsumerWidget {
     return Container();
   }
 }
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
     expect(result.widgetRefListenInvocations, hasLength(1));
@@ -365,7 +365,7 @@ class MyWidget extends ConsumerWidget {
     return Container();
   }
 }
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
     expect(result.widgetRefListenManualInvocations, hasLength(3));
@@ -449,7 +449,7 @@ class MyWidget extends ConsumerWidget {
     return Container();
   }
 }
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
     expect(result.widgetRefReadInvocations, hasLength(2));
@@ -517,7 +517,7 @@ class _Ref {
 void fn(_Ref ref) {
   ref.watch(family(0));
 }
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
     final libraryResult = result.riverpodCompilationUnits.single;
@@ -669,7 +669,7 @@ class _Ref {
 void fn(_Ref ref) {
   ref.watch(dep);
 }
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
     expect(result.widgetRefWatchInvocations, hasLength(4));

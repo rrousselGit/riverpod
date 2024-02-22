@@ -1,8 +1,12 @@
+library nodes;
+
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/syntactic_entity.dart';
 import 'package:analyzer/dart/ast/token.dart';
+import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
@@ -37,6 +41,10 @@ part 'nodes/riverpod.dart';
 // part 'nodes/scopes/overrides.dart';
 // part 'nodes/scopes/provider_container.dart';
 // part 'nodes/scopes/provider_scope.dart';
+
+part 'nodes.g.dart';
+
+const _ast = Object();
 
 extension RawTypeX on DartType {
   /// Returns whether this type is a `Raw` typedef from `package:riverpod_annotation`.

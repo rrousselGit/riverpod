@@ -35,7 +35,7 @@ class ParametrizedClass extends _$ParametrizedClass {
   @override
   int build(int id) => throw UnimplementedError();
 }
-''', (units, unit) async {
+''', (resolver, unit, units) async {
     final generic = unit.declarations.findByName('generic').provider!;
     final genericClass = unit.declarations.findByName('GenericClass').provider!;
     final value = unit.declarations.findByName('value').provider!;
@@ -65,7 +65,7 @@ Future<int> value2(Value2Ref ref) async => 0;
 
 @riverpod
 Future<Raw<int>> value3(Value3Ref ref) async => 0;
-''', (units, unit) async {
+''', (resolver, unit, units) async {
     final value =
         unit.declarations.findByName<FunctionDeclaration>('value').provider!;
     final value2 =
@@ -112,7 +112,7 @@ int scoped() => 0;
 
 @riverpod
 int plain(PlainRef ref) => 0;
-''', (units, unit) async {
+''', (resolver, unit, units) async {
     final scoped =
         unit.declarations.findByName<FunctionDeclaration>('scoped').provider!;
     final plain =
@@ -138,7 +138,7 @@ class Counter extends _$Counter {
   @override
   int build() => 0;
 }
-''', (units, unit) async {
+''', (resolver, unit, units) async {
     final providers = unit.declarations.map((e) => e.provider).toList();
 
     expect(providers, [
@@ -185,7 +185,7 @@ class KeepAliveNotifier extends _$KeepAliveNotifier {
   @override
   int build() => 0;
 }
-''', (units, unit) async {
+''', (resolver, unit, units) async {
     final providers =
         unit.declarations.map((e) => e.provider).whereNotNull().toList();
 
@@ -289,7 +289,7 @@ class FamilyClass extends _$FamilyClass {
   @override
   int build() => 0;
 }
-''', (units, unit) async {
+''', (resolver, unit, units) async {
     final providers =
         unit.declarations.map((e) => e.provider).whereNotNull().toList();
 

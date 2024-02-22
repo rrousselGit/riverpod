@@ -1,5 +1,6 @@
 part of '../../nodes.dart';
 
+@_ast
 extension ProviderIdentifierX on SimpleIdentifier {
   ProviderIdentifier? get provider {
     return upsert('ProviderIdentifier', () {

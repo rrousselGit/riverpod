@@ -40,7 +40,7 @@ void main() {
   @Dependencies([a, B, c, D])
   var value = 0;
 }
-''', (units, unit) async {
+''', (resolver, unit, units) async {
     final clazz = unit.declarations.findByName('Class');
     final function = unit.declarations.findByName('function');
 

@@ -7,7 +7,7 @@ typedef ErrorReporter = void Function(RiverpodAnalysisError);
 
 ErrorReporter errorReporter = (error) {
   throw UnsupportedError(
-    'RiverpodAnalysisError found but no errorReporter specified: ${error.message}',
+    'RiverpodAnalysisError found but no errorReporter specified: $error',
   );
 };
 
@@ -38,10 +38,10 @@ class RiverpodAnalysisError {
   String toString() {
     var trailing = '';
     if (targetElement != null) {
-      trailing += '\nelement: $targetElement (${targetElement.runtimeType})';
+      trailing += ' ; element: $targetElement (${targetElement.runtimeType})';
     }
     if (targetNode != null) {
-      trailing += '\nelement: $targetNode (${targetNode.runtimeType})';
+      trailing += ' ; node: $targetNode (${targetNode.runtimeType})';
     }
 
     return 'RiverpodAnalysisError: $message$trailing';

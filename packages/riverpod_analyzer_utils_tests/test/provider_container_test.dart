@@ -34,7 +34,7 @@ void main() {
     ],
   );
 }
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
     final provider =

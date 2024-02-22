@@ -14,7 +14,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 const random = 42;
 ProviderBase? fromRiverpod = null;
 Consumer? fromFlutterRiverpod = null;
-''', (units, unit) async {
+''', (resolver, unit, units) async {
     final variables =
         unit.declarations.whereType<TopLevelVariableDeclaration>();
 
@@ -100,7 +100,7 @@ class D3 extends _$D3 {
   @override
   Stream<int> build(int arg) => throws();
 }
-''', (units, unit) async {
+''', (resolver, unit, units) async {
     final generated = units.singleWhere((e) => e.path.endsWith('.g.dart')).unit;
 
     final variables = generated.declarations
@@ -159,7 +159,7 @@ final asyncNotifierProviderFamily = AsyncNotifierProvider.family<int, int>((ref,
 
 final streamNotifierProvider = StreamNotifierProvider((ref) => throws());
 final streamNotifierProviderFamily = StreamNotifierProvider.family<int, int>((ref, id) => throws());
-''', (units, unit) async {
+''', (resolver, unit, units) async {
     final variables =
         unit.declarations.whereType<TopLevelVariableDeclaration>();
 

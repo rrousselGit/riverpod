@@ -1,5 +1,6 @@
 part of '../../nodes.dart';
 
+@_ast
 extension FunctionalProviderDeclarationX on FunctionDeclaration {
   FunctionalProviderDeclaration? get provider {
     return upsert('FunctionalProviderDeclaration', () {

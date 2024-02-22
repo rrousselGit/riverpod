@@ -182,6 +182,7 @@ extension on DartObject {
   }
 }
 
+@_ast
 extension DependenciesAnnotatedAnnotatedNodeX on AnnotatedNode {
   DependenciesAnnotation? get dependencies {
     return upsert('DependenciesAnnotationAnnotatedNodeX', () {

@@ -44,7 +44,7 @@ class Example extends ConsumerWidget {
     return ProviderScope(child: Text('foo'));
   }
 }
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
     final scopes = result

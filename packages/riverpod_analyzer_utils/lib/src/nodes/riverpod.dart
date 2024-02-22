@@ -1,5 +1,6 @@
 part of '../nodes.dart';
 
+@_ast
 extension RiverpodAnnotatedAnnotatedNodeX on AnnotatedNode {
   RiverpodAnnotation? get riverpod {
     return upsert('RiverpodAnnotationAnnotatedNodeX', () {

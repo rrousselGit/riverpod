@@ -1,5 +1,6 @@
 part of '../../nodes.dart';
 
+@_ast
 extension ClassBasedProviderDeclarationX on ClassDeclaration {
   ClassBasedProviderDeclaration? get provider {
     return upsert('ClassBasedProviderDeclaration', () {

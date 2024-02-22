@@ -12,6 +12,7 @@ sealed class ProviderDeclarationElement {
   String get name;
 }
 
+@_ast
 extension GeneratorProviderDeclarationX on Declaration {
   GeneratorProviderDeclaration? get provider {
     final that = this;

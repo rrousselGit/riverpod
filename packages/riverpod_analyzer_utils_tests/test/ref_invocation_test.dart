@@ -25,7 +25,7 @@ int aliased(AliasedRef ref) {
   return 0;
 }
 ''',
-    (resolver) async {
+    (resolver, unit, units) async {
       final result = await resolver.resolveRiverpodAnalysisResult();
 
       expect(result.refWatchInvocations, hasLength(1));
@@ -55,7 +55,7 @@ final gibberishProvider = Provider((ref) => 0);
 final dependency = Provider((ref) {
   ref.watch(gibberishProvider);
 });
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult(
       ignoreErrors: true,
     );
@@ -95,7 +95,7 @@ class MyNotifier extends _$MyNotifier {
   }
 }
 
-''', (resolver) async {
+''', (resolver, unit, units) async {
 // Regression test for https://github.com/rrousselGit/riverpod/issues/2417
     final result = await resolver.resolveRiverpodAnalysisResult();
 
@@ -142,7 +142,7 @@ final provider = Provider<int>((ref) {
   return 0;
 });
 
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
     expect(result.refWatchInvocations, hasLength(3));
@@ -244,7 +244,7 @@ class _Ref {
 void fn(_Ref ref) {
   ref.watch(dep);
 }
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
     expect(result.refWatchInvocations, hasLength(3));
@@ -325,7 +325,7 @@ final provider = Provider<int>((ref) {
 
   return 0;
 });
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
     expect(result.refListenInvocations, hasLength(3));
@@ -389,7 +389,7 @@ final provider = Provider<int>((ref) {
 
   return 0;
 });
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
     expect(result.refReadInvocations, hasLength(2));
@@ -423,7 +423,7 @@ void fn(Ref<int> ref) {
   ref.read(dep);
   ref.read(dep2);
 }
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
     final libraryResult = result.riverpodCompilationUnits.single;
@@ -485,7 +485,7 @@ class _Ref {
 void fn(_Ref ref) {
   ref.watch(family(0));
 }
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
     final libraryResult = result.riverpodCompilationUnits.single;
@@ -629,7 +629,7 @@ class _Ref {
 void fn(_Ref ref) {
   ref.watch(dep);
 }
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
     expect(result.refWatchInvocations, hasLength(4));

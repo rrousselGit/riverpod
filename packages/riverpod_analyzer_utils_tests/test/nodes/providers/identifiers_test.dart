@@ -29,7 +29,7 @@ void main() {
   aProvider;
   bProvider;
 }
-''', (units, unit) async {
+''', (resolver, unit, units) async {
     final visitor = _FindIdentifiersVisitor();
     unit.accept(visitor);
 
@@ -59,7 +59,7 @@ final provider = Provider<int>((ref) => 0);
 void main() {
   provider;
 }
-''', (units, unit) async {
+''', (resolver, unit, units) async {
     final visitor = _FindIdentifiersVisitor();
     unit.accept(visitor);
 
