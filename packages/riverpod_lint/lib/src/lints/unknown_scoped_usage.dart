@@ -1,5 +1,4 @@
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
@@ -7,23 +6,11 @@ import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
 import '../riverpod_custom_lint.dart';
 
-extension DartObjectSuperField on DartObject {
-  DartObject? getFieldInThisOrSuper(String name) {
-    final field = getField(name);
-    if (field != null) return field;
-
-    final superField = getField('(super)');
-    if (superField == null) return null;
-
-    return superField.getFieldInThisOrSuper(name);
-  }
-}
-
-class ConsumerDependencies extends RiverpodLintRule {
-  const ConsumerDependencies() : super(code: _code);
+class UnknownScopedUsage extends RiverpodLintRule {
+  const UnknownScopedUsage() : super(code: _code);
 
   static const _code = LintCode(
-    name: 'consumer_dependencies',
+    name: 'unknown_scoped_usage',
     problemMessage: '{0}',
     errorSeverity: ErrorSeverity.WARNING,
   );
@@ -37,11 +24,7 @@ class ConsumerDependencies extends RiverpodLintRule {
     riverpodRegistry(context).addProviderIdentifier((identifier) {
       final providerElement = identifier.providerElement;
       if (providerElement is! GeneratorProviderDeclarationElement) return;
-      final allTransitiveDependencies =
-          providerElement.annotation.allTransitiveDependencies;
-
-      // No, nothing to lint.
-      if (allTransitiveDependencies == null) return;
+      if (!providerElement.isScoped) return;
 
       final enclosingMethodInvocation =
           identifier.node.thisOrAncestorOfType<MethodInvocation>();
