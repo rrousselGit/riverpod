@@ -31,4 +31,6 @@ final class ProviderContainerInstanceCreationExpression {
 
   final InstanceCreationExpression node;
   final ProviderOverrideList? overrides;
+
+  late final NamedExpression? parent = node.argumentList.named('parent');
 }

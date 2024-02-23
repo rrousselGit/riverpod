@@ -1,6 +1,5 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/constant/value.dart';
-import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
@@ -35,34 +34,17 @@ class ConsumerDependencies extends RiverpodLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    context.registry.addSimpleIdentifier((node) {
-      final type = node.staticType;
-      if (type == null) return;
-      final element = node.staticElement;
-      if (element is! PropertyAccessorElement) return;
-
-      final variableElement = element.variable;
-      if (!providerForType.hasAnnotationOfExact(variableElement)) return;
-
-      final constantValue = variableElement.computeConstantValue();
-      if (constantValue == null) return;
-
-      final allTransitiveDependenciesObject =
-          constantValue.getFieldInThisOrSuper('allTransitiveDependencies');
-
-      if (allTransitiveDependenciesObject == null) {
-        // Bad state, the constant likely didn't contain a provider.
-        // Did a user annotate a random variable with `@ProviderFor`?
-        return;
-      }
+    riverpodRegistry(context).addProviderIdentifier((identifier) {
+      final providerElement = identifier.providerElement;
+      if (providerElement is! GeneratorProviderDeclarationElement) return;
       final allTransitiveDependencies =
-          allTransitiveDependenciesObject.toListValue();
+          providerElement.annotation.allTransitiveDependencies;
 
       // No, nothing to lint.
       if (allTransitiveDependencies == null) return;
 
       final enclosingMethodInvocation =
-          node.thisOrAncestorOfType<MethodInvocation>();
+          identifier.node.thisOrAncestorOfType<MethodInvocation>();
       final refInvocation = enclosingMethodInvocation?.refInvocation;
       final widgetRefInvocation =
           enclosingMethodInvocation?.widgetRefInvocation;
@@ -71,7 +53,8 @@ class ConsumerDependencies extends RiverpodLintRule {
       if (refInvocation != null || widgetRefInvocation != null) return;
 
       // The provider expression is for an override, so it's fine.
-      final enclosingExpression = node.thisOrAncestorOfType<Expression>();
+      final enclosingExpression =
+          identifier.node.thisOrAncestorOfType<Expression>();
       final enclosingExpressionType = enclosingExpression?.staticType;
 
       if (enclosingExpressionType != null &&
@@ -81,7 +64,7 @@ class ConsumerDependencies extends RiverpodLintRule {
 
       reporter.reportErrorForNode(
         code,
-        node,
+        identifier.node,
         ['A provider was used, but could not find the associated `ref`.'],
       );
     });

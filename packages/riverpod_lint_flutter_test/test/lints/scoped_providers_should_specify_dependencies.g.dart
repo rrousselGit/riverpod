@@ -6,18 +6,13 @@ part of 'scoped_providers_should_specify_dependencies.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef UnimplementedScopedRef = Ref<int>;
-
-@ProviderFor(unimplementedScoped)
+@ProviderFor(UnimplementedScoped)
 const unimplementedScopedProvider = UnimplementedScopedProvider._();
 
 final class UnimplementedScopedProvider
-    extends $FunctionalProvider<int, int, UnimplementedScopedRef>
-    with $Provider<int, UnimplementedScopedRef> {
+    extends $NotifierProvider<UnimplementedScoped, int> {
   const UnimplementedScopedProvider._(
-      {int Function(
-        UnimplementedScopedRef ref,
-      )? create})
+      {super.runNotifierBuildOverride, UnimplementedScoped Function()? create})
       : _createCb = create,
         super(
           from: null,
@@ -28,9 +23,7 @@ final class UnimplementedScopedProvider
           allTransitiveDependencies: const <ProviderOrFamily>[],
         );
 
-  final int Function(
-    UnimplementedScopedRef ref,
-  )? _createCb;
+  final UnimplementedScoped Function()? _createCb;
 
   @override
   String debugGetCreateSourceHash() => _$unimplementedScopedHash();
@@ -45,27 +38,43 @@ final class UnimplementedScopedProvider
 
   @$internal
   @override
-  $ProviderElement<int> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  UnimplementedScoped create() => _createCb?.call() ?? UnimplementedScoped();
 
+  @$internal
   @override
   UnimplementedScopedProvider $copyWithCreate(
-    int Function(
-      UnimplementedScopedRef ref,
-    ) create,
+    UnimplementedScoped Function() create,
   ) {
     return UnimplementedScopedProvider._(create: create);
   }
 
+  @$internal
   @override
-  int create(UnimplementedScopedRef ref) {
-    final _$cb = _createCb ?? unimplementedScoped;
-    return _$cb(ref);
+  UnimplementedScopedProvider $copyWithBuild(
+    int Function(
+      Ref<int>,
+      UnimplementedScoped,
+    ) build,
+  ) {
+    return UnimplementedScopedProvider._(runNotifierBuildOverride: build);
   }
+
+  @$internal
+  @override
+  $NotifierProviderElement<UnimplementedScoped, int> $createElement(
+          ProviderContainer container) =>
+      $NotifierProviderElement(this, container);
 }
 
 String _$unimplementedScopedHash() =>
-    r'609694fdecd7ff8ada63a6fb704b394a26a88036';
+    r'0511a23bd69f21f42fa4f20a9078f6a200a073cb';
+
+abstract class _$UnimplementedScoped extends $Notifier<int> {
+  int build() => throw MissingScopeException(ref);
+  @$internal
+  @override
+  int runBuild() => build();
+}
 
 typedef ScopedRef = Ref<int>;
 

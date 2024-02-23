@@ -90,12 +90,10 @@ class ScopedProvidersShouldSpecifyDependencies extends RiverpodLintRule {
     ProviderContainerInstanceCreationExpression expression,
     ErrorReporter reporter,
   ) {
-    final hasParent = expression.node.argumentList.arguments
-        .whereType<NamedExpression>()
-        // TODO handle parent:null.
-        // This might be doable by checking that the expression's
-        // static type is non-nullable
-        .any((e) => e.name.label.name == 'parent');
+    // TODO handle parent:null.
+    // This might be doable by checking that the expression's
+    // static type is non-nullable
+    final hasParent = expression.parent != null;
 
     // No parent: parameter found, therefore ProviderContainer is never scoped
     if (!hasParent) return;
