@@ -103,7 +103,21 @@ class RiverpodAnalysisResult extends RecursiveRiverpodAstVisitor {
 
 class RiverpodAstRegistry {
   void run(AstNode node) {
-    node.accept(_RiverpodAstRegistryVisitor(this));
+    final previousErrorReporter = errorReporter;
+    try {
+      final visitor = _RiverpodAstRegistryVisitor(this);
+      errorReporter = (error) => visitor._runSubscriptions(error, _onRiverpodAnalysisError);
+      node.accept(visitor);
+    } finally {
+      errorReporter = previousErrorReporter;
+    }
+  }
+
+  final _onRiverpodAnalysisError = <void Function(RiverpodAnalysisError)>[];
+  void addRiverpodAnalysisError(
+    void Function(RiverpodAnalysisError node) cb,
+  ) {
+    _onRiverpodAnalysisError.add(cb);
   }
 
   ${allAst.map((e) => '''

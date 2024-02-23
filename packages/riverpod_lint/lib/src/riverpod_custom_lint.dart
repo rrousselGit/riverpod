@@ -85,11 +85,9 @@ mixin _ParseRiverpod {
     if (context.sharedState.containsKey(_contextKey)) return;
     // Only run the riverpod parsing logic once
     final registry = context.sharedState[_contextKey] = RiverpodAstRegistry();
-
     final unit = await resolver.getResolvedUnitResult();
-    final result = ResolvedRiverpodLibraryResult.from([unit.unit]);
 
-    context.addPostRunCallback(() => result.units.forEach(registry.run));
+    context.addPostRunCallback(() => registry.run(unit.unit));
   }
 
   RiverpodAstRegistry riverpodRegistry(CustomLintContext context) {

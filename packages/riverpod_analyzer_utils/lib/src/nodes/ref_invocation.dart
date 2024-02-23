@@ -38,6 +38,9 @@ extension RefInvocationX on MethodInvocation {
     });
   }
 
+  RefDependencyInvocation? get refDependencyInvocation =>
+      refInvocation.cast<RefDependencyInvocation>();
+
   RefWatchInvocation? get refWatchInvocation =>
       refInvocation.cast<RefWatchInvocation>();
 

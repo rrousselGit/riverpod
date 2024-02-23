@@ -23,6 +23,7 @@ mixin RiverpodAstVisitor {
   void visitRiverpodAnnotation(RiverpodAnnotation node) {}
   void visitProviderListenableExpression(ProviderListenableExpression node) {}
   void visitRefInvocation(RefInvocation node) {}
+  void visitRefDependencyInvocation(RefDependencyInvocation node) {}
   void visitRefWatchInvocation(RefWatchInvocation node) {}
   void visitRefReadInvocation(RefReadInvocation node) {}
   void visitRefListenInvocation(RefListenInvocation node) {}
@@ -88,6 +89,7 @@ abstract class RecursiveRiverpodAstVisitor extends GeneralizingAstVisitor<void>
   void visitMethodInvocation(MethodInvocation node) {
     super.visitMethodInvocation(node);
     node.refInvocation.let(visitRefInvocation);
+    node.refDependencyInvocation.let(visitRefDependencyInvocation);
     node.refWatchInvocation.let(visitRefWatchInvocation);
     node.refReadInvocation.let(visitRefReadInvocation);
     node.refListenInvocation.let(visitRefListenInvocation);
@@ -148,6 +150,8 @@ abstract class UnimplementedRiverpodAstVisitor
   void visitProviderListenableExpression(ProviderListenableExpression node) =>
       throw UnimplementedError();
   void visitRefInvocation(RefInvocation node) => throw UnimplementedError();
+  void visitRefDependencyInvocation(RefDependencyInvocation node) =>
+      throw UnimplementedError();
   void visitRefWatchInvocation(RefWatchInvocation node) =>
       throw UnimplementedError();
   void visitRefReadInvocation(RefReadInvocation node) =>
@@ -309,6 +313,15 @@ class RiverpodAnalysisResult extends RecursiveRiverpodAstVisitor {
     refInvocations.add(node);
   }
 
+  final refDependencyInvocations = <RefDependencyInvocation>[];
+  @override
+  void visitRefDependencyInvocation(
+    RefDependencyInvocation node,
+  ) {
+    super.visitRefDependencyInvocation(node);
+    refDependencyInvocations.add(node);
+  }
+
   final refWatchInvocations = <RefWatchInvocation>[];
   @override
   void visitRefWatchInvocation(
@@ -422,7 +435,22 @@ class RiverpodAnalysisResult extends RecursiveRiverpodAstVisitor {
 
 class RiverpodAstRegistry {
   void run(AstNode node) {
-    node.accept(_RiverpodAstRegistryVisitor(this));
+    final previousErrorReporter = errorReporter;
+    try {
+      final visitor = _RiverpodAstRegistryVisitor(this);
+      errorReporter =
+          (error) => visitor._runSubscriptions(error, _onRiverpodAnalysisError);
+      node.accept(visitor);
+    } finally {
+      errorReporter = previousErrorReporter;
+    }
+  }
+
+  final _onRiverpodAnalysisError = <void Function(RiverpodAnalysisError)>[];
+  void addRiverpodAnalysisError(
+    void Function(RiverpodAnalysisError node) cb,
+  ) {
+    _onRiverpodAnalysisError.add(cb);
   }
 
   final _onConsumerWidgetDeclaration =
@@ -514,6 +542,12 @@ class RiverpodAstRegistry {
   final _onRefInvocation = <void Function(RefInvocation)>[];
   void addRefInvocation(void Function(RefInvocation node) cb) {
     _onRefInvocation.add(cb);
+  }
+
+  final _onRefDependencyInvocation = <void Function(RefDependencyInvocation)>[];
+  void addRefDependencyInvocation(
+      void Function(RefDependencyInvocation node) cb) {
+    _onRefDependencyInvocation.add(cb);
   }
 
   final _onRefWatchInvocation = <void Function(RefWatchInvocation)>[];
@@ -733,6 +767,15 @@ class _RiverpodAstRegistryVisitor extends RecursiveRiverpodAstVisitor {
     _runSubscriptions(
       node,
       _registry._onRefInvocation,
+    );
+  }
+
+  @override
+  void visitRefDependencyInvocation(RefDependencyInvocation node) {
+    super.visitRefDependencyInvocation(node);
+    _runSubscriptions(
+      node,
+      _registry._onRefDependencyInvocation,
     );
   }
 

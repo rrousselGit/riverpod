@@ -25,9 +25,6 @@ class FunctionalRef extends RiverpodLintRule {
     CustomLintContext context,
   ) {
     riverpodRegistry(context).addFunctionalProviderDeclaration((declaration) {
-      // Scoped providers don't need a ref
-      if (declaration.needsOverride) return;
-
       final parameters = declaration.node.functionExpression.parameters!;
 
       final refNode = parameters.parameters.firstOrNull;

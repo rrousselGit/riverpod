@@ -11,7 +11,6 @@ ErrorReporter errorReporter = (error) {
   );
 };
 
-@internal
 enum RiverpodAnalysisErrorCode {
   missingNotifierBuild,
   abstractNotifier,

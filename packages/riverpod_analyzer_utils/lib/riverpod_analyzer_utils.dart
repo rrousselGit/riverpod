@@ -1,4 +1,4 @@
-export 'src/errors.dart' hide RiverpodAnalysisErrorCode, ErrorReporter;
+export 'src/errors.dart' hide ErrorReporter;
 export 'src/nodes.dart'
     hide
         parseFirstProviderFor,

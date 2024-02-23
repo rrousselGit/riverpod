@@ -49,19 +49,13 @@ class ScopedProvidersShouldSpecifyDependencies extends RiverpodLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    context.registry.addInstanceCreationExpression((node) {
-      final providerScope = node.providerScopeInstanceCreation;
-      if (providerScope != null) {
-        handleProviderScopeInstanceCreation(providerScope, reporter);
-        return;
-      }
-
-      final providerContainer = node.providerContainerInstanceCreation;
-      if (providerContainer != null) {
-        handleProviderContainerInstanceCreation(providerContainer, reporter);
-        return;
-      }
-    });
+    riverpodRegistry(context)
+      ..addProviderContainerInstanceCreationExpression((node) {
+        handleProviderContainerInstanceCreation(node, reporter);
+      })
+      ..addProviderScopeInstanceCreationExpression((node) {
+        handleProviderScopeInstanceCreation(node, reporter);
+      });
   }
 
   void checkScopedOverrideList(
@@ -72,7 +66,7 @@ class ScopedProvidersShouldSpecifyDependencies extends RiverpodLintRule {
     if (overrides == null) return;
 
     for (final override in overrides) {
-      final provider = override.providerElement;
+      final provider = override.provider?.providerElement;
 
       // We can only know statically if a provider is scoped on generator providers
       if (provider is! GeneratorProviderDeclarationElement) continue;
