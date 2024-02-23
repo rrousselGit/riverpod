@@ -10,54 +10,33 @@ import '../riverpod_custom_lint.dart';
 
 const _fixDependenciesPriority = 100;
 
-class _ExtraAndMissingDependencies {
-  final List<RiverpodAnnotationDependency> extra = [];
-  final List<RefDependencyInvocation> missing = [];
+class _FindNestedIdentifiers extends RecursiveRiverpodAstVisitor {
+  final identifiers = <ProviderIdentifier>[];
+
+  @override
+  void visitProviderIdentifier(ProviderIdentifier node) {
+    super.visitProviderIdentifier(node);
+    identifiers.add(node);
+  }
 }
 
-extension on GeneratorProviderDeclaration {
-  Iterable<RefDependencyInvocation> findScopedDependencies() sync* {
-    for (final dependency
-        in node.refInvocations.whereType<RefDependencyInvocation>()) {
-      final dependencyElement = dependency.provider.providerElement;
+class _ExtraAndMissingDependencies {
+  final List<ProviderDependency> extra = [];
+  final List<ProviderIdentifier> missing = [];
+}
+
+extension on Iterable<ProviderIdentifier> {
+  Iterable<ProviderIdentifier> findScopedDependencies() sync* {
+    for (final dependency in this) {
+      final dependencyElement = dependency.providerElement;
       if (dependencyElement is! GeneratorProviderDeclarationElement) {
         // If we cannot statically determine the dependencies of the dependency,
         // we cannot check if the provider is missing a dependency.
-        return;
+        continue;
       }
-      if (dependencyElement.isScoped) {
-        yield dependency;
-      }
+
+      if (dependencyElement.isScoped) yield dependency;
     }
-  }
-
-  _ExtraAndMissingDependencies findExtraAndMissingDependencies() {
-    final result = _ExtraAndMissingDependencies();
-
-    final dependencies = annotation.dependencies?.dependencies;
-    final scopedInvocations = findScopedDependencies().toList();
-
-    for (final scopedDependency in scopedInvocations) {
-      final dependencyName = scopedDependency.listenable.providerElement?.name;
-
-      if (dependencies == null ||
-          !dependencies.any((e) => e.provider.name == dependencyName)) {
-        result.missing.add(scopedDependency);
-      }
-    }
-
-    if (dependencies != null) {
-      for (final dependency in dependencies) {
-        final isDependencyUsed = scopedInvocations.any(
-          (e) => e.listenable.providerElement?.name == dependency.provider.name,
-        );
-        if (!isDependencyUsed) {
-          result.extra.add(dependency);
-        }
-      }
-    }
-
-    return result;
   }
 }
 
@@ -80,7 +59,13 @@ class ProviderDependencies extends RiverpodLintRule {
     CustomLintContext context,
   ) {
     riverpodRegistry(context).addGeneratorProviderDeclaration((declaration) {
-      final extraAndMissing = declaration.findExtraAndMissingDependencies();
+      final visitor = _FindNestedIdentifiers();
+      declaration.node.accept(visitor);
+
+      final extraAndMissing = _findExtraAndMissingDependencies(
+        declaration,
+        visitor.identifiers,
+      );
 
       for (final extra in extraAndMissing.extra) {
         reporter.reportErrorForNode(_code, extra.node);
@@ -88,11 +73,42 @@ class ProviderDependencies extends RiverpodLintRule {
       if (extraAndMissing.missing.isNotEmpty) {
         reporter.reportErrorForNode(
           _code,
-          declaration.annotation.dependencies?.node ??
+          declaration.annotation.dependencyList?.node ??
               declaration.annotation.node,
         );
       }
     });
+  }
+
+  _ExtraAndMissingDependencies _findExtraAndMissingDependencies(
+    GeneratorProviderDeclaration declaration,
+    List<ProviderIdentifier> actualDependencies,
+  ) {
+    final result = _ExtraAndMissingDependencies();
+    final dependencies = declaration.annotation.dependencyList?.values;
+    final scopedInvocations =
+        actualDependencies.findScopedDependencies().toList();
+
+    for (final scopedDependency in scopedInvocations) {
+      final dependency = scopedDependency.providerElement;
+
+      if (dependencies == null ||
+          !dependencies.any((e) => e.provider == dependency)) {
+        result.missing.add(scopedDependency);
+      }
+    }
+
+    if (dependencies != null) {
+      for (final dependency in dependencies) {
+        final isDependencyUsed = scopedInvocations.any(
+          (e) => e.providerElement == dependency.provider,
+        );
+
+        if (!isDependencyUsed) result.extra.add(dependency);
+      }
+    }
+
+    return result;
   }
 
   @override
@@ -113,12 +129,17 @@ class _ProviderDependenciesFix extends RiverpodFix {
         return;
       }
 
-      final scopedDependencies = declaration.findScopedDependencies().toList();
-      final dependenciesNode = declaration.annotation.dependencies?.node;
+      final visitor = _FindNestedIdentifiers();
+      declaration.node.accept(visitor);
+
+      final scopedDependencies =
+          visitor.identifiers.findScopedDependencies().toList();
+
+      final dependenciesNode = declaration.annotation.dependencyList?.node;
 
       final newDependencies = scopedDependencies.isEmpty
           ? null
-          : '[${scopedDependencies.map((e) => e.listenable.providerElement?.name).join(', ')}]';
+          : '[${scopedDependencies.map((e) => e.providerElement.name).join(', ')}]';
 
       if (newDependencies == null) {
         // Should never be null, but just in case
@@ -196,11 +217,10 @@ class _ProviderDependenciesFix extends RiverpodFix {
         priority: _fixDependenciesPriority,
       );
       changeBuilder.addDartFileEdit((builder) {
-        final dependencies = scopedDependencies
-            .map((e) => e.listenable.providerElement?.name)
-            .join(', ');
+        final dependencies =
+            scopedDependencies.map((e) => e.providerElement.name).join(', ');
         builder.addSimpleReplacement(
-          dependenciesNode.expression.sourceRange,
+          dependenciesNode.sourceRange,
           '[$dependencies]',
         );
       });

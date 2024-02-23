@@ -18,7 +18,6 @@ import '../riverpod_analyzer_utils.dart';
 import 'analyzer_utils.dart';
 import 'argument_list_utils.dart';
 import 'element_util.dart';
-import 'errors.dart';
 import 'object_extensions.dart';
 
 part 'nodes/widgets/stateless_widget.dart';

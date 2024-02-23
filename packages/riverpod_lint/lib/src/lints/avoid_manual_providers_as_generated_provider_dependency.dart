@@ -1,3 +1,4 @@
+import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
@@ -22,21 +23,20 @@ class AvoidManualProvidersAsGeneratedProviderDependency
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    void checkDependency(
-      GeneratorProviderDeclaration provider,
-      RefDependencyInvocation dependency,
-    ) {
-      final dependencyElement = dependency.listenable.providerElement;
-      if (dependencyElement is! GeneratorProviderDeclarationElement) {
-        reporter.reportErrorForNode(code, dependency.listenable.provider);
+    riverpodRegistry(context).addRefDependencyInvocation((invocation) {
+      // The dependency is a generated provider, no need to check
+      if (invocation.listenable.provider?.providerElement
+          is GeneratorProviderDeclarationElement) {
+        return;
       }
-    }
 
-    riverpodRegistry(context).addGeneratorProviderDeclaration((declaration) {
-      for (final invocation in declaration.node.refInvocations) {
-        if (invocation is RefDependencyInvocation) {
-          checkDependency(declaration, invocation);
-        }
+      // We're depending on a non-generated provider. Let's check if the
+      // associated provider is a generated provider
+      final enclosingProvider =
+          invocation.node.thisOrAncestorOfType<Declaration>()?.provider;
+
+      if (enclosingProvider != null) {
+        reporter.reportErrorForNode(code, invocation.listenable.node);
       }
     });
   }

@@ -66,125 +66,6 @@ final class KeepAliveProvider
 
 String _$keepAliveHash() => r'756ceaba79af550d4498a93ec30118f989cd5bb4';
 
-typedef AutoDisposeRef = Ref<int>;
-
-@ProviderFor(autoDispose)
-const autoDisposeProvider = AutoDisposeProvider._();
-
-final class AutoDisposeProvider
-    extends $FunctionalProvider<int, int, AutoDisposeRef>
-    with $Provider<int, AutoDisposeRef> {
-  const AutoDisposeProvider._(
-      {int Function(
-        AutoDisposeRef ref,
-      )? create})
-      : _createCb = create,
-        super(
-          from: null,
-          argument: null,
-          name: r'autoDisposeProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          allTransitiveDependencies: null,
-        );
-
-  final int Function(
-    AutoDisposeRef ref,
-  )? _createCb;
-
-  @override
-  String debugGetCreateSourceHash() => _$autoDisposeHash();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(int value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<int>(value),
-    );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
-
-  @override
-  AutoDisposeProvider $copyWithCreate(
-    int Function(
-      AutoDisposeRef ref,
-    ) create,
-  ) {
-    return AutoDisposeProvider._(create: create);
-  }
-
-  @override
-  int create(AutoDisposeRef ref) {
-    final _$cb = _createCb ?? autoDispose;
-    return _$cb(ref);
-  }
-}
-
-String _$autoDisposeHash() => r'd46d894171aed556a8b4deafeda4de6b9465f632';
-
-typedef FnRef = Ref<int>;
-
-@ProviderFor(fn)
-const fnProvider = FnProvider._();
-
-final class FnProvider extends $FunctionalProvider<int, int, FnRef>
-    with $Provider<int, FnRef> {
-  const FnProvider._(
-      {int Function(
-        FnRef ref,
-      )? create})
-      : _createCb = create,
-        super(
-          from: null,
-          argument: null,
-          name: r'fnProvider',
-          isAutoDispose: false,
-          dependencies: null,
-          allTransitiveDependencies: null,
-        );
-
-  final int Function(
-    FnRef ref,
-  )? _createCb;
-
-  @override
-  String debugGetCreateSourceHash() => _$fnHash();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(int value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<int>(value),
-    );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
-
-  @override
-  FnProvider $copyWithCreate(
-    int Function(
-      FnRef ref,
-    ) create,
-  ) {
-    return FnProvider._(create: create);
-  }
-
-  @override
-  int create(FnRef ref) {
-    final _$cb = _createCb ?? fn;
-    return _$cb(ref);
-  }
-}
-
-String _$fnHash() => r'9e89e9bead8aa30a86f31bd16f4106c4b38e8f2b';
-
 @ProviderFor(KeepAliveClass)
 const keepAliveClassProvider = KeepAliveClassProvider._();
 
@@ -253,6 +134,66 @@ abstract class _$KeepAliveClass extends $Notifier<int> {
   @override
   int runBuild() => build();
 }
+
+typedef AutoDisposeRef = Ref<int>;
+
+@ProviderFor(autoDispose)
+const autoDisposeProvider = AutoDisposeProvider._();
+
+final class AutoDisposeProvider
+    extends $FunctionalProvider<int, int, AutoDisposeRef>
+    with $Provider<int, AutoDisposeRef> {
+  const AutoDisposeProvider._(
+      {int Function(
+        AutoDisposeRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'autoDisposeProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final int Function(
+    AutoDisposeRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$autoDisposeHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  AutoDisposeProvider $copyWithCreate(
+    int Function(
+      AutoDisposeRef ref,
+    ) create,
+  ) {
+    return AutoDisposeProvider._(create: create);
+  }
+
+  @override
+  int create(AutoDisposeRef ref) {
+    final _$cb = _createCb ?? autoDispose;
+    return _$cb(ref);
+  }
+}
+
+String _$autoDisposeHash() => r'd46d894171aed556a8b4deafeda4de6b9465f632';
 
 @ProviderFor(AutoDisposeClass)
 const autoDisposeClassProvider = AutoDisposeClassProvider._();
@@ -323,6 +264,64 @@ abstract class _$AutoDisposeClass extends $Notifier<int> {
   int runBuild() => build();
 }
 
-const $kDebugMode = bool.fromEnvironment('dart.vm.product');
+typedef FnRef = Ref<int>;
+
+@ProviderFor(fn)
+const fnProvider = FnProvider._();
+
+final class FnProvider extends $FunctionalProvider<int, int, FnRef>
+    with $Provider<int, FnRef> {
+  const FnProvider._(
+      {int Function(
+        FnRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'fnProvider',
+          isAutoDispose: false,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final int Function(
+    FnRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$fnHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  FnProvider $copyWithCreate(
+    int Function(
+      FnRef ref,
+    ) create,
+  ) {
+    return FnProvider._(create: create);
+  }
+
+  @override
+  int create(FnRef ref) {
+    final _$cb = _createCb ?? fn;
+    return _$cb(ref);
+  }
+}
+
+String _$fnHash() => r'9e89e9bead8aa30a86f31bd16f4106c4b38e8f2b';
+
 // ignore_for_file: type=lint
 // ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

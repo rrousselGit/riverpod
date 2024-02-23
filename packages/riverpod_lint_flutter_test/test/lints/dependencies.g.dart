@@ -1170,6 +1170,162 @@ final class SpecifiedDependencyButNeverUsedProvider
 String _$specifiedDependencyButNeverUsedHash() =>
     r'b0254ee8c3a0360ec249686083f430b12f3b4940';
 
+@ProviderFor(ClassWatchGeneratedRootButMissingDependencies)
+const classWatchGeneratedRootButMissingDependenciesProvider =
+    ClassWatchGeneratedRootButMissingDependenciesProvider._();
+
+final class ClassWatchGeneratedRootButMissingDependenciesProvider
+    extends $NotifierProvider<ClassWatchGeneratedRootButMissingDependencies,
+        int> {
+  const ClassWatchGeneratedRootButMissingDependenciesProvider._(
+      {super.runNotifierBuildOverride,
+      ClassWatchGeneratedRootButMissingDependencies Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'classWatchGeneratedRootButMissingDependenciesProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[],
+          allTransitiveDependencies: const <ProviderOrFamily>[],
+        );
+
+  final ClassWatchGeneratedRootButMissingDependencies Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() =>
+      _$classWatchGeneratedRootButMissingDependenciesHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  ClassWatchGeneratedRootButMissingDependencies create() =>
+      _createCb?.call() ?? ClassWatchGeneratedRootButMissingDependencies();
+
+  @$internal
+  @override
+  ClassWatchGeneratedRootButMissingDependenciesProvider $copyWithCreate(
+    ClassWatchGeneratedRootButMissingDependencies Function() create,
+  ) {
+    return ClassWatchGeneratedRootButMissingDependenciesProvider._(
+        create: create);
+  }
+
+  @$internal
+  @override
+  ClassWatchGeneratedRootButMissingDependenciesProvider $copyWithBuild(
+    int Function(
+      Ref<int>,
+      ClassWatchGeneratedRootButMissingDependencies,
+    ) build,
+  ) {
+    return ClassWatchGeneratedRootButMissingDependenciesProvider._(
+        runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<ClassWatchGeneratedRootButMissingDependencies, int>
+      $createElement(ProviderContainer container) =>
+          $NotifierProviderElement(this, container);
+}
+
+String _$classWatchGeneratedRootButMissingDependenciesHash() =>
+    r'e36d7126a86ea9ded6dc66a6f33eabb2724455a9';
+
+abstract class _$ClassWatchGeneratedRootButMissingDependencies
+    extends $Notifier<int> {
+  int build();
+  @$internal
+  @override
+  int runBuild() => build();
+}
+
+@ProviderFor(ClassWatchGeneratedScopedButMissingDependencies)
+const classWatchGeneratedScopedButMissingDependenciesProvider =
+    ClassWatchGeneratedScopedButMissingDependenciesProvider._();
+
+final class ClassWatchGeneratedScopedButMissingDependenciesProvider
+    extends $NotifierProvider<ClassWatchGeneratedScopedButMissingDependencies,
+        int> {
+  const ClassWatchGeneratedScopedButMissingDependenciesProvider._(
+      {super.runNotifierBuildOverride,
+      ClassWatchGeneratedScopedButMissingDependencies Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'classWatchGeneratedScopedButMissingDependenciesProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[],
+          allTransitiveDependencies: const <ProviderOrFamily>[],
+        );
+
+  final ClassWatchGeneratedScopedButMissingDependencies Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() =>
+      _$classWatchGeneratedScopedButMissingDependenciesHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  ClassWatchGeneratedScopedButMissingDependencies create() =>
+      _createCb?.call() ?? ClassWatchGeneratedScopedButMissingDependencies();
+
+  @$internal
+  @override
+  ClassWatchGeneratedScopedButMissingDependenciesProvider $copyWithCreate(
+    ClassWatchGeneratedScopedButMissingDependencies Function() create,
+  ) {
+    return ClassWatchGeneratedScopedButMissingDependenciesProvider._(
+        create: create);
+  }
+
+  @$internal
+  @override
+  ClassWatchGeneratedScopedButMissingDependenciesProvider $copyWithBuild(
+    int Function(
+      Ref<int>,
+      ClassWatchGeneratedScopedButMissingDependencies,
+    ) build,
+  ) {
+    return ClassWatchGeneratedScopedButMissingDependenciesProvider._(
+        runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<ClassWatchGeneratedScopedButMissingDependencies, int>
+      $createElement(ProviderContainer container) =>
+          $NotifierProviderElement(this, container);
+}
+
+String _$classWatchGeneratedScopedButMissingDependenciesHash() =>
+    r'f5a5ba5f572ee2d0654c89de9e991cef9f15b936';
+
+abstract class _$ClassWatchGeneratedScopedButMissingDependencies
+    extends $Notifier<int> {
+  int build();
+  @$internal
+  @override
+  int runBuild() => build();
+}
+
 typedef Regression2348Ref = Ref<int>;
 
 @ProviderFor(regression2348)
@@ -1233,6 +1389,79 @@ final class Regression2348Provider
 }
 
 String _$regression2348Hash() => r'72fbbe420e9835c9843c28b7c9375ca3d99ca4b7';
+
+@ProviderFor(Regression2417)
+const regression2417Provider = Regression2417Provider._();
+
+final class Regression2417Provider
+    extends $NotifierProvider<Regression2417, int> {
+  const Regression2417Provider._(
+      {super.runNotifierBuildOverride, Regression2417 Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'regression2417Provider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[generatedScopedProvider],
+          allTransitiveDependencies: const <ProviderOrFamily>[
+            Regression2417Provider.$allTransitiveDependencies0,
+          ],
+        );
+
+  static const $allTransitiveDependencies0 = generatedScopedProvider;
+
+  final Regression2417 Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$regression2417Hash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  Regression2417 create() => _createCb?.call() ?? Regression2417();
+
+  @$internal
+  @override
+  Regression2417Provider $copyWithCreate(
+    Regression2417 Function() create,
+  ) {
+    return Regression2417Provider._(create: create);
+  }
+
+  @$internal
+  @override
+  Regression2417Provider $copyWithBuild(
+    int Function(
+      Ref<int>,
+      Regression2417,
+    ) build,
+  ) {
+    return Regression2417Provider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<Regression2417, int> $createElement(
+          ProviderContainer container) =>
+      $NotifierProviderElement(this, container);
+}
+
+String _$regression2417Hash() => r'c9ac0ba44e849ea1460c79c1f676feba1b5400da';
+
+abstract class _$Regression2417 extends $Notifier<int> {
+  int build();
+  @$internal
+  @override
+  int runBuild() => build();
+}
 
 typedef FamilyDepRef = Ref<int>;
 
@@ -1568,235 +1797,6 @@ final class AliasProvider extends $FunctionalProvider<int, int, AliasRef>
 
 String _$aliasHash() => r'871c6c7ab22e4bbed2dc46917daf42e7fc1b9d88';
 
-@ProviderFor(ClassWatchGeneratedRootButMissingDependencies)
-const classWatchGeneratedRootButMissingDependenciesProvider =
-    ClassWatchGeneratedRootButMissingDependenciesProvider._();
-
-final class ClassWatchGeneratedRootButMissingDependenciesProvider
-    extends $NotifierProvider<ClassWatchGeneratedRootButMissingDependencies,
-        int> {
-  const ClassWatchGeneratedRootButMissingDependenciesProvider._(
-      {super.runNotifierBuildOverride,
-      ClassWatchGeneratedRootButMissingDependencies Function()? create})
-      : _createCb = create,
-        super(
-          from: null,
-          argument: null,
-          name: r'classWatchGeneratedRootButMissingDependenciesProvider',
-          isAutoDispose: true,
-          dependencies: const <ProviderOrFamily>[],
-          allTransitiveDependencies: const <ProviderOrFamily>[],
-        );
-
-  final ClassWatchGeneratedRootButMissingDependencies Function()? _createCb;
-
-  @override
-  String debugGetCreateSourceHash() =>
-      _$classWatchGeneratedRootButMissingDependenciesHash();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(int value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<int>(value),
-    );
-  }
-
-  @$internal
-  @override
-  ClassWatchGeneratedRootButMissingDependencies create() =>
-      _createCb?.call() ?? ClassWatchGeneratedRootButMissingDependencies();
-
-  @$internal
-  @override
-  ClassWatchGeneratedRootButMissingDependenciesProvider $copyWithCreate(
-    ClassWatchGeneratedRootButMissingDependencies Function() create,
-  ) {
-    return ClassWatchGeneratedRootButMissingDependenciesProvider._(
-        create: create);
-  }
-
-  @$internal
-  @override
-  ClassWatchGeneratedRootButMissingDependenciesProvider $copyWithBuild(
-    int Function(
-      Ref<int>,
-      ClassWatchGeneratedRootButMissingDependencies,
-    ) build,
-  ) {
-    return ClassWatchGeneratedRootButMissingDependenciesProvider._(
-        runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $NotifierProviderElement<ClassWatchGeneratedRootButMissingDependencies, int>
-      $createElement(ProviderContainer container) =>
-          $NotifierProviderElement(this, container);
-}
-
-String _$classWatchGeneratedRootButMissingDependenciesHash() =>
-    r'e36d7126a86ea9ded6dc66a6f33eabb2724455a9';
-
-abstract class _$ClassWatchGeneratedRootButMissingDependencies
-    extends $Notifier<int> {
-  int build();
-  @$internal
-  @override
-  int runBuild() => build();
-}
-
-@ProviderFor(ClassWatchGeneratedScopedButMissingDependencies)
-const classWatchGeneratedScopedButMissingDependenciesProvider =
-    ClassWatchGeneratedScopedButMissingDependenciesProvider._();
-
-final class ClassWatchGeneratedScopedButMissingDependenciesProvider
-    extends $NotifierProvider<ClassWatchGeneratedScopedButMissingDependencies,
-        int> {
-  const ClassWatchGeneratedScopedButMissingDependenciesProvider._(
-      {super.runNotifierBuildOverride,
-      ClassWatchGeneratedScopedButMissingDependencies Function()? create})
-      : _createCb = create,
-        super(
-          from: null,
-          argument: null,
-          name: r'classWatchGeneratedScopedButMissingDependenciesProvider',
-          isAutoDispose: true,
-          dependencies: const <ProviderOrFamily>[],
-          allTransitiveDependencies: const <ProviderOrFamily>[],
-        );
-
-  final ClassWatchGeneratedScopedButMissingDependencies Function()? _createCb;
-
-  @override
-  String debugGetCreateSourceHash() =>
-      _$classWatchGeneratedScopedButMissingDependenciesHash();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(int value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<int>(value),
-    );
-  }
-
-  @$internal
-  @override
-  ClassWatchGeneratedScopedButMissingDependencies create() =>
-      _createCb?.call() ?? ClassWatchGeneratedScopedButMissingDependencies();
-
-  @$internal
-  @override
-  ClassWatchGeneratedScopedButMissingDependenciesProvider $copyWithCreate(
-    ClassWatchGeneratedScopedButMissingDependencies Function() create,
-  ) {
-    return ClassWatchGeneratedScopedButMissingDependenciesProvider._(
-        create: create);
-  }
-
-  @$internal
-  @override
-  ClassWatchGeneratedScopedButMissingDependenciesProvider $copyWithBuild(
-    int Function(
-      Ref<int>,
-      ClassWatchGeneratedScopedButMissingDependencies,
-    ) build,
-  ) {
-    return ClassWatchGeneratedScopedButMissingDependenciesProvider._(
-        runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $NotifierProviderElement<ClassWatchGeneratedScopedButMissingDependencies, int>
-      $createElement(ProviderContainer container) =>
-          $NotifierProviderElement(this, container);
-}
-
-String _$classWatchGeneratedScopedButMissingDependenciesHash() =>
-    r'f5a5ba5f572ee2d0654c89de9e991cef9f15b936';
-
-abstract class _$ClassWatchGeneratedScopedButMissingDependencies
-    extends $Notifier<int> {
-  int build();
-  @$internal
-  @override
-  int runBuild() => build();
-}
-
-@ProviderFor(Regression2417)
-const regression2417Provider = Regression2417Provider._();
-
-final class Regression2417Provider
-    extends $NotifierProvider<Regression2417, int> {
-  const Regression2417Provider._(
-      {super.runNotifierBuildOverride, Regression2417 Function()? create})
-      : _createCb = create,
-        super(
-          from: null,
-          argument: null,
-          name: r'regression2417Provider',
-          isAutoDispose: true,
-          dependencies: const <ProviderOrFamily>[generatedScopedProvider],
-          allTransitiveDependencies: const <ProviderOrFamily>[
-            Regression2417Provider.$allTransitiveDependencies0,
-          ],
-        );
-
-  static const $allTransitiveDependencies0 = generatedScopedProvider;
-
-  final Regression2417 Function()? _createCb;
-
-  @override
-  String debugGetCreateSourceHash() => _$regression2417Hash();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(int value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<int>(value),
-    );
-  }
-
-  @$internal
-  @override
-  Regression2417 create() => _createCb?.call() ?? Regression2417();
-
-  @$internal
-  @override
-  Regression2417Provider $copyWithCreate(
-    Regression2417 Function() create,
-  ) {
-    return Regression2417Provider._(create: create);
-  }
-
-  @$internal
-  @override
-  Regression2417Provider $copyWithBuild(
-    int Function(
-      Ref<int>,
-      Regression2417,
-    ) build,
-  ) {
-    return Regression2417Provider._(runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $NotifierProviderElement<Regression2417, int> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
-}
-
-String _$regression2417Hash() => r'c9ac0ba44e849ea1460c79c1f676feba1b5400da';
-
-abstract class _$Regression2417 extends $Notifier<int> {
-  int build();
-  @$internal
-  @override
-  int runBuild() => build();
-}
-
 @ProviderFor(AliasClass)
 const aliasClassProvider = AliasClassProvider._();
 
@@ -1865,6 +1865,5 @@ abstract class _$AliasClass extends $Notifier<int> {
   int runBuild() => build();
 }
 
-const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
 // ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

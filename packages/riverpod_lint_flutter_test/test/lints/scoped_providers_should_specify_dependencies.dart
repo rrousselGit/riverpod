@@ -9,10 +9,12 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'scoped_providers_should_specify_dependencies.g.dart';
 
 @Riverpod(dependencies: [])
-int scoped(ScopedRef ref) => 0;
+int unimplementedScoped(UnimplementedScopedRef ref) {
+  throw UnimplementedError();
+}
 
-@riverpod
-external int unimplementedScoped();
+@Riverpod(dependencies: [])
+int scoped(ScopedRef ref) => 0;
 
 @riverpod
 int root(RootRef ref) => 0;
