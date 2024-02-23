@@ -105,9 +105,18 @@ class RiverpodAstRegistry {
   void run(AstNode node) {
     final previousErrorReporter = errorReporter;
     try {
+      final errors = node.upsert(
+        'RiverpodAstRegistry.errors',
+        () => <RiverpodAnalysisError>[],
+      );
+
       final visitor = _RiverpodAstRegistryVisitor(this);
-      errorReporter = (error) => visitor._runSubscriptions(error, _onRiverpodAnalysisError);
+      errorReporter = errors.add;
+
       node.accept(visitor);
+      for (final error in errors) {
+        visitor._runSubscriptions(error, _onRiverpodAnalysisError);
+      }
     } finally {
       errorReporter = previousErrorReporter;
     }
