@@ -189,8 +189,8 @@ class Example extends ConsumerWidget {
       scopes[3].overrides?.overrides?.single.provider?.providerElement,
       null,
     );
-    expect(scopes[3].overrides?.overrides?.single.provider, null);
-    expect(scopes[3].overrides?.overrides?.single.familyArguments, null);
+    expect(scopes[3].overrides!.overrides!.single.provider, null);
+    expect(scopes[3].overrides!.overrides!.single.familyArguments, null);
 
     expect(scopes[4].node.toSource(), "ProviderScope(child: Text('foo'))");
     expect(scopes[4].overrides, null);

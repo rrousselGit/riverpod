@@ -37,14 +37,7 @@ class Example extends ConsumerWidget {
       result.widgetRefWatchInvocations.single.provider.node.toSource(),
       'gibberishProvider',
     );
-    expect(
-      result.widgetRefWatchInvocations.single.provider.provider.node.toSource(),
-      'gibberishProvider',
-    );
-    expect(
-      result.widgetRefWatchInvocations.single.provider.provider.providerElement,
-      null,
-    );
+    expect(result.widgetRefWatchInvocations.single.provider.provider, isNull);
   });
 
   testSource('Decodes ..watch', runGenerator: true, source: r'''
@@ -93,11 +86,11 @@ class MyWidget extends ConsumerWidget {
     expect(result.widgetRefWatchInvocations[0].provider.node.toSource(), 'dep');
     expect(result.widgetRefWatchInvocations[0].provider.familyArguments, null);
     expect(
-      result.widgetRefWatchInvocations[0].provider.provider.node.toSource(),
+      result.widgetRefWatchInvocations[0].provider.provider?.node.toSource(),
       'dep',
     );
     expect(
-      result.widgetRefWatchInvocations[0].provider.provider.providerElement,
+      result.widgetRefWatchInvocations[0].provider.provider?.providerElement,
       same(result.legacyProviderDeclarations.findByName('dep').providerElement),
     );
 
@@ -111,11 +104,11 @@ class MyWidget extends ConsumerWidget {
       'dep2Provider',
     );
     expect(
-      result.widgetRefWatchInvocations[1].provider.provider.node.toSource(),
+      result.widgetRefWatchInvocations[1].provider.provider?.node.toSource(),
       'dep2Provider',
     );
     expect(
-      result.widgetRefWatchInvocations[1].provider.provider.providerElement,
+      result.widgetRefWatchInvocations[1].provider.provider?.providerElement,
       same(
         result.functionalProviderDeclarations
             .findByName('dep2')
@@ -134,11 +127,11 @@ class MyWidget extends ConsumerWidget {
       'dep3Provider',
     );
     expect(
-      result.widgetRefWatchInvocations[2].provider.provider.node.toSource(),
+      result.widgetRefWatchInvocations[2].provider.provider?.node.toSource(),
       'dep3Provider',
     );
     expect(
-      result.widgetRefWatchInvocations[2].provider.provider.providerElement,
+      result.widgetRefWatchInvocations[2].provider.provider?.providerElement,
       same(
         result.classBasedProviderDeclarations
             .findByName('Dep3')
@@ -205,11 +198,11 @@ void fn(_Ref ref) {
     expect(result.widgetRefWatchInvocations[0].provider.node.toSource(), 'dep');
     expect(result.widgetRefWatchInvocations[0].provider.familyArguments, null);
     expect(
-      result.widgetRefWatchInvocations[0].provider.provider.node.toSource(),
+      result.widgetRefWatchInvocations[0].provider.provider?.node.toSource(),
       'dep',
     );
     expect(
-      result.widgetRefWatchInvocations[0].provider.provider.providerElement,
+      result.widgetRefWatchInvocations[0].provider.provider?.providerElement,
       same(result.legacyProviderDeclarations.findByName('dep').providerElement),
     );
 
@@ -223,11 +216,11 @@ void fn(_Ref ref) {
       'dep2Provider',
     );
     expect(
-      result.widgetRefWatchInvocations[1].provider.provider.node.toSource(),
+      result.widgetRefWatchInvocations[1].provider.provider?.node.toSource(),
       'dep2Provider',
     );
     expect(
-      result.widgetRefWatchInvocations[1].provider.provider.providerElement,
+      result.widgetRefWatchInvocations[1].provider.provider?.providerElement,
       same(
         result.functionalProviderDeclarations
             .findByName('dep2')
@@ -246,11 +239,11 @@ void fn(_Ref ref) {
       'dep3Provider',
     );
     expect(
-      result.widgetRefWatchInvocations[2].provider.provider.node.toSource(),
+      result.widgetRefWatchInvocations[2].provider.provider?.node.toSource(),
       'dep3Provider',
     );
     expect(
-      result.widgetRefWatchInvocations[2].provider.provider.providerElement,
+      result.widgetRefWatchInvocations[2].provider.provider?.providerElement,
       same(
         result.classBasedProviderDeclarations
             .findByName('Dep3')
@@ -285,7 +278,7 @@ void fn(WidgetRef ref) {
     expect(result.widgetRefReadInvocations[0].node.toSource(), 'ref.read(dep)');
     expect(result.widgetRefReadInvocations[0].function.toSource(), 'read');
     expect(
-      result.widgetRefReadInvocations[0].provider.provider.providerElement,
+      result.widgetRefReadInvocations[0].provider.provider?.providerElement,
       same(result.legacyProviderDeclarations.findByName('dep').providerElement),
     );
 
@@ -295,7 +288,7 @@ void fn(WidgetRef ref) {
     );
     expect(result.widgetRefReadInvocations[1].function.toSource(), 'read');
     expect(
-      result.widgetRefReadInvocations[1].provider.provider.providerElement,
+      result.widgetRefReadInvocations[1].provider.provider?.providerElement,
       same(
         result.legacyProviderDeclarations.findByName('dep2').providerElement,
       ),
@@ -337,7 +330,7 @@ class MyWidget extends ConsumerWidget {
       '(prev, next) {}',
     );
     expect(
-      result.widgetRefListenInvocations[0].provider.provider.providerElement,
+      result.widgetRefListenInvocations[0].provider.provider?.providerElement,
       same(result.legacyProviderDeclarations.findByName('dep').providerElement),
     );
   });
@@ -386,7 +379,7 @@ class MyWidget extends ConsumerWidget {
     );
     expect(
       result.widgetRefListenManualInvocations[0].provider.provider
-          .providerElement,
+          ?.providerElement,
       same(result.legacyProviderDeclarations.findByName('dep').providerElement),
     );
 
@@ -404,7 +397,7 @@ class MyWidget extends ConsumerWidget {
     );
     expect(
       result.widgetRefListenManualInvocations[1].provider.provider
-          .providerElement,
+          ?.providerElement,
       same(result.legacyProviderDeclarations.findByName('dep').providerElement),
     );
 
@@ -422,7 +415,7 @@ class MyWidget extends ConsumerWidget {
     );
     expect(
       result.widgetRefListenManualInvocations[2].provider.provider
-          .providerElement,
+          ?.providerElement,
       same(result.legacyProviderDeclarations.findByName('dep').providerElement),
     );
   });
@@ -459,7 +452,7 @@ class MyWidget extends ConsumerWidget {
     expect(result.widgetRefReadInvocations[0].node.toSource(), 'ref.read(dep)');
     expect(result.widgetRefReadInvocations[0].function.toSource(), 'read');
     expect(
-      result.widgetRefReadInvocations[0].provider.provider.providerElement,
+      result.widgetRefReadInvocations[0].provider.provider?.providerElement,
       same(result.legacyProviderDeclarations.findByName('dep').providerElement),
     );
 
@@ -469,7 +462,7 @@ class MyWidget extends ConsumerWidget {
     );
     expect(result.widgetRefReadInvocations[1].function.toSource(), 'read');
     expect(
-      result.widgetRefReadInvocations[1].provider.provider.providerElement,
+      result.widgetRefReadInvocations[1].provider.provider?.providerElement,
       same(
         result.legacyProviderDeclarations.findByName('dep2').providerElement,
       ),
@@ -537,11 +530,11 @@ void fn(_Ref ref) {
       'family(0)',
     );
     expect(
-      result.widgetRefWatchInvocations[0].provider.provider.node.toSource(),
+      result.widgetRefWatchInvocations[0].provider.provider?.node.toSource(),
       'family',
     );
     expect(
-      result.widgetRefWatchInvocations[0].provider.provider.providerElement,
+      result.widgetRefWatchInvocations[0].provider.provider?.providerElement,
       same(
         result.legacyProviderDeclarations.findByName('family').providerElement,
       ),
@@ -561,11 +554,11 @@ void fn(_Ref ref) {
       'family2Provider(id: 0)',
     );
     expect(
-      result.widgetRefWatchInvocations[1].provider.provider.node.toSource(),
+      result.widgetRefWatchInvocations[1].provider.provider?.node.toSource(),
       'family2Provider',
     );
     expect(
-      result.widgetRefWatchInvocations[1].provider.provider.providerElement,
+      result.widgetRefWatchInvocations[1].provider.provider?.providerElement,
       same(
         result.functionalProviderDeclarations
             .findByName('family2')
@@ -587,11 +580,11 @@ void fn(_Ref ref) {
       'family3Provider(id: 0)',
     );
     expect(
-      result.widgetRefWatchInvocations[2].provider.provider.node.toSource(),
+      result.widgetRefWatchInvocations[2].provider.provider?.node.toSource(),
       'family3Provider',
     );
     expect(
-      result.widgetRefWatchInvocations[2].provider.provider.providerElement,
+      result.widgetRefWatchInvocations[2].provider.provider?.providerElement,
       same(
         result.classBasedProviderDeclarations
             .findByName('Family3')
@@ -681,11 +674,11 @@ void fn(_Ref ref) {
     );
     expect(result.widgetRefWatchInvocations[0].provider.familyArguments, null);
     expect(
-      result.widgetRefWatchInvocations[0].provider.provider.node.toSource(),
+      result.widgetRefWatchInvocations[0].provider.provider?.node.toSource(),
       'dep',
     );
     expect(
-      result.widgetRefWatchInvocations[0].provider.provider.providerElement,
+      result.widgetRefWatchInvocations[0].provider.provider?.providerElement,
       same(result.legacyProviderDeclarations.findByName('dep').providerElement),
     );
 
@@ -700,11 +693,11 @@ void fn(_Ref ref) {
     );
     expect(result.widgetRefWatchInvocations[1].provider.familyArguments, null);
     expect(
-      result.widgetRefWatchInvocations[1].provider.provider.node.toSource(),
+      result.widgetRefWatchInvocations[1].provider.provider?.node.toSource(),
       'dep2Provider',
     );
     expect(
-      result.widgetRefWatchInvocations[1].provider.provider.providerElement,
+      result.widgetRefWatchInvocations[1].provider.provider?.providerElement,
       same(
         result.functionalProviderDeclarations
             .findByName('dep2')
@@ -723,11 +716,11 @@ void fn(_Ref ref) {
     );
     expect(result.widgetRefWatchInvocations[2].provider.familyArguments, null);
     expect(
-      result.widgetRefWatchInvocations[2].provider.provider.node.toSource(),
+      result.widgetRefWatchInvocations[2].provider.provider?.node.toSource(),
       'dep3Provider',
     );
     expect(
-      result.widgetRefWatchInvocations[2].provider.provider.providerElement,
+      result.widgetRefWatchInvocations[2].provider.provider?.providerElement,
       same(
         result.classBasedProviderDeclarations
             .findByName('Dep3')
@@ -749,11 +742,11 @@ void fn(_Ref ref) {
       '(id: 42)',
     );
     expect(
-      result.widgetRefWatchInvocations[3].provider.provider.node.toSource(),
+      result.widgetRefWatchInvocations[3].provider.provider?.node.toSource(),
       'familyProvider',
     );
     expect(
-      result.widgetRefWatchInvocations[3].provider.provider.providerElement,
+      result.widgetRefWatchInvocations[3].provider.provider?.providerElement,
       same(
         result.classBasedProviderDeclarations
             .findByName('Family')

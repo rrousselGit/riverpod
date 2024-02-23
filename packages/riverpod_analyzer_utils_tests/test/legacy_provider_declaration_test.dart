@@ -204,7 +204,7 @@ final autoDisposeFamily2 = Provider.family.autoDispose<int, int>(
           isA<LegacyProviderDependency>()
               .having((e) => e.node.toSource(), 'node', 'dep')
               .having(
-                (e) => e.provider?.provider.providerElement,
+                (e) => e.provider?.provider?.providerElement,
                 'provider',
                 same(deps['dep']?.providerElement),
               ),
@@ -215,7 +215,7 @@ final autoDisposeFamily2 = Provider.family.autoDispose<int, int>(
           isA<LegacyProviderDependency>()
               .having((e) => e.node.toSource(), 'node', 'family')
               .having(
-                (e) => e.provider?.provider.providerElement,
+                (e) => e.provider?.provider?.providerElement,
                 'provider',
                 same(deps['family']?.providerElement),
               ),
@@ -226,7 +226,7 @@ final autoDisposeFamily2 = Provider.family.autoDispose<int, int>(
           isA<LegacyProviderDependency>()
               .having((e) => e.node.toSource(), 'node', 'family(42)')
               .having(
-                (e) => e.provider?.provider.providerElement,
+                (e) => e.provider?.provider?.providerElement,
                 'provider',
                 same(deps['family']?.providerElement),
               ),
@@ -237,7 +237,7 @@ final autoDisposeFamily2 = Provider.family.autoDispose<int, int>(
           isA<LegacyProviderDependency>()
               .having((e) => e.node.toSource(), 'node', '...getDeps()')
               .having(
-                (e) => e.provider?.provider.providerElement,
+                (e) => e.provider?.provider?.providerElement,
                 'provider',
                 null,
               ),
@@ -259,7 +259,7 @@ final autoDisposeFamily2 = Provider.family.autoDispose<int, int>(
         isA<LegacyProviderDependency>()
             .having((e) => e.node.toSource(), 'node', 'dep2Provider')
             .having(
-              (e) => e.provider?.provider.providerElement,
+              (e) => e.provider?.provider?.providerElement,
               'provider',
               same(
                 result.generatorProviderDeclarations
@@ -273,7 +273,7 @@ final autoDisposeFamily2 = Provider.family.autoDispose<int, int>(
         isA<LegacyProviderDependency>()
             .having((e) => e.node.toSource(), 'node', 'family2Provider')
             .having(
-              (e) => e.provider?.provider.providerElement,
+              (e) => e.provider?.provider?.providerElement,
               'provider',
               same(
                 result.generatorProviderDeclarations

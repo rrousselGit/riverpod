@@ -36,7 +36,7 @@ final class ProviderListenableExpression {
 
   final Expression node;
   final SimpleIdentifier? providerPrefix;
-  final ProviderIdentifier provider;
+  final ProviderIdentifier? provider;
 
   /// If [provider] is a provider with arguments (family), represents the arguments
   /// passed to the provider.
