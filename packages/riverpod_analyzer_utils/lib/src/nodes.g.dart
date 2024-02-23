@@ -21,6 +21,19 @@ mixin RiverpodAstVisitor {
   void visitGeneratorProviderDeclaration(GeneratorProviderDeclaration node) {}
   void visitProviderIdentifier(ProviderIdentifier node) {}
   void visitRiverpodAnnotation(RiverpodAnnotation node) {}
+  void visitProviderListenableExpression(ProviderListenableExpression node) {}
+  void visitRefInvocation(RefInvocation node) {}
+  void visitRefWatchInvocation(RefWatchInvocation node) {}
+  void visitRefReadInvocation(RefReadInvocation node) {}
+  void visitRefListenInvocation(RefListenInvocation node) {}
+  void visitWidgetRefInvocation(WidgetRefInvocation node) {}
+  void visitWidgetRefWatchInvocation(WidgetRefWatchInvocation node) {}
+  void visitWidgetRefReadInvocation(WidgetRefReadInvocation node) {}
+  void visitWidgetRefListenInvocation(WidgetRefListenInvocation node) {}
+  void visitWidgetRefListenManualInvocation(
+      WidgetRefListenManualInvocation node) {}
+  void visitProviderOverrideExpression(ProviderOverrideExpression node) {}
+  void visitProviderOverrideList(ProviderOverrideList node) {}
   void visitProviderContainerInstanceCreationExpression(
       ProviderContainerInstanceCreationExpression node) {}
   void visitProviderScopeInstanceCreationExpression(
@@ -66,6 +79,31 @@ abstract class RecursiveRiverpodAstVisitor extends GeneralizingAstVisitor<void>
     node.provider.let(visitProviderIdentifier);
   }
 
+  void visitExpression(Expression node) {
+    super.visitExpression(node);
+    node.providerListenable.let(visitProviderListenableExpression);
+    node.overrides.let(visitProviderOverrideList);
+  }
+
+  void visitMethodInvocation(MethodInvocation node) {
+    super.visitMethodInvocation(node);
+    node.refInvocation.let(visitRefInvocation);
+    node.refWatchInvocation.let(visitRefWatchInvocation);
+    node.refReadInvocation.let(visitRefReadInvocation);
+    node.refListenInvocation.let(visitRefListenInvocation);
+    node.widgetRefInvocation.let(visitWidgetRefInvocation);
+    node.widgetRefWatchInvocation.let(visitWidgetRefWatchInvocation);
+    node.widgetRefReadInvocation.let(visitWidgetRefReadInvocation);
+    node.widgetRefListenInvocation.let(visitWidgetRefListenInvocation);
+    node.widgetRefListenManualInvocation
+        .let(visitWidgetRefListenManualInvocation);
+  }
+
+  void visitCollectionElement(CollectionElement node) {
+    super.visitCollectionElement(node);
+    node.providerOverride.let(visitProviderOverrideExpression);
+  }
+
   void visitInstanceCreationExpression(InstanceCreationExpression node) {
     super.visitInstanceCreationExpression(node);
     node.providerContainer
@@ -106,6 +144,30 @@ abstract class UnimplementedRiverpodAstVisitor
   void visitProviderIdentifier(ProviderIdentifier node) =>
       throw UnimplementedError();
   void visitRiverpodAnnotation(RiverpodAnnotation node) =>
+      throw UnimplementedError();
+  void visitProviderListenableExpression(ProviderListenableExpression node) =>
+      throw UnimplementedError();
+  void visitRefInvocation(RefInvocation node) => throw UnimplementedError();
+  void visitRefWatchInvocation(RefWatchInvocation node) =>
+      throw UnimplementedError();
+  void visitRefReadInvocation(RefReadInvocation node) =>
+      throw UnimplementedError();
+  void visitRefListenInvocation(RefListenInvocation node) =>
+      throw UnimplementedError();
+  void visitWidgetRefInvocation(WidgetRefInvocation node) =>
+      throw UnimplementedError();
+  void visitWidgetRefWatchInvocation(WidgetRefWatchInvocation node) =>
+      throw UnimplementedError();
+  void visitWidgetRefReadInvocation(WidgetRefReadInvocation node) =>
+      throw UnimplementedError();
+  void visitWidgetRefListenInvocation(WidgetRefListenInvocation node) =>
+      throw UnimplementedError();
+  void visitWidgetRefListenManualInvocation(
+          WidgetRefListenManualInvocation node) =>
+      throw UnimplementedError();
+  void visitProviderOverrideExpression(ProviderOverrideExpression node) =>
+      throw UnimplementedError();
+  void visitProviderOverrideList(ProviderOverrideList node) =>
       throw UnimplementedError();
   void visitProviderContainerInstanceCreationExpression(
           ProviderContainerInstanceCreationExpression node) =>
@@ -229,6 +291,114 @@ class RiverpodAnalysisResult extends RecursiveRiverpodAstVisitor {
     riverpodAnnotations.add(node);
   }
 
+  final providerListenableExpressions = <ProviderListenableExpression>[];
+  @override
+  void visitProviderListenableExpression(
+    ProviderListenableExpression node,
+  ) {
+    super.visitProviderListenableExpression(node);
+    providerListenableExpressions.add(node);
+  }
+
+  final refInvocations = <RefInvocation>[];
+  @override
+  void visitRefInvocation(
+    RefInvocation node,
+  ) {
+    super.visitRefInvocation(node);
+    refInvocations.add(node);
+  }
+
+  final refWatchInvocations = <RefWatchInvocation>[];
+  @override
+  void visitRefWatchInvocation(
+    RefWatchInvocation node,
+  ) {
+    super.visitRefWatchInvocation(node);
+    refWatchInvocations.add(node);
+  }
+
+  final refReadInvocations = <RefReadInvocation>[];
+  @override
+  void visitRefReadInvocation(
+    RefReadInvocation node,
+  ) {
+    super.visitRefReadInvocation(node);
+    refReadInvocations.add(node);
+  }
+
+  final refListenInvocations = <RefListenInvocation>[];
+  @override
+  void visitRefListenInvocation(
+    RefListenInvocation node,
+  ) {
+    super.visitRefListenInvocation(node);
+    refListenInvocations.add(node);
+  }
+
+  final widgetRefInvocations = <WidgetRefInvocation>[];
+  @override
+  void visitWidgetRefInvocation(
+    WidgetRefInvocation node,
+  ) {
+    super.visitWidgetRefInvocation(node);
+    widgetRefInvocations.add(node);
+  }
+
+  final widgetRefWatchInvocations = <WidgetRefWatchInvocation>[];
+  @override
+  void visitWidgetRefWatchInvocation(
+    WidgetRefWatchInvocation node,
+  ) {
+    super.visitWidgetRefWatchInvocation(node);
+    widgetRefWatchInvocations.add(node);
+  }
+
+  final widgetRefReadInvocations = <WidgetRefReadInvocation>[];
+  @override
+  void visitWidgetRefReadInvocation(
+    WidgetRefReadInvocation node,
+  ) {
+    super.visitWidgetRefReadInvocation(node);
+    widgetRefReadInvocations.add(node);
+  }
+
+  final widgetRefListenInvocations = <WidgetRefListenInvocation>[];
+  @override
+  void visitWidgetRefListenInvocation(
+    WidgetRefListenInvocation node,
+  ) {
+    super.visitWidgetRefListenInvocation(node);
+    widgetRefListenInvocations.add(node);
+  }
+
+  final widgetRefListenManualInvocations = <WidgetRefListenManualInvocation>[];
+  @override
+  void visitWidgetRefListenManualInvocation(
+    WidgetRefListenManualInvocation node,
+  ) {
+    super.visitWidgetRefListenManualInvocation(node);
+    widgetRefListenManualInvocations.add(node);
+  }
+
+  final providerOverrideExpressions = <ProviderOverrideExpression>[];
+  @override
+  void visitProviderOverrideExpression(
+    ProviderOverrideExpression node,
+  ) {
+    super.visitProviderOverrideExpression(node);
+    providerOverrideExpressions.add(node);
+  }
+
+  final providerOverrideLists = <ProviderOverrideList>[];
+  @override
+  void visitProviderOverrideList(
+    ProviderOverrideList node,
+  ) {
+    super.visitProviderOverrideList(node);
+    providerOverrideLists.add(node);
+  }
+
   final providerContainerInstanceCreationExpressions =
       <ProviderContainerInstanceCreationExpression>[];
   @override
@@ -332,6 +502,77 @@ class RiverpodAstRegistry {
   final _onRiverpodAnnotation = <void Function(RiverpodAnnotation)>[];
   void addRiverpodAnnotation(void Function(RiverpodAnnotation node) cb) {
     _onRiverpodAnnotation.add(cb);
+  }
+
+  final _onProviderListenableExpression =
+      <void Function(ProviderListenableExpression)>[];
+  void addProviderListenableExpression(
+      void Function(ProviderListenableExpression node) cb) {
+    _onProviderListenableExpression.add(cb);
+  }
+
+  final _onRefInvocation = <void Function(RefInvocation)>[];
+  void addRefInvocation(void Function(RefInvocation node) cb) {
+    _onRefInvocation.add(cb);
+  }
+
+  final _onRefWatchInvocation = <void Function(RefWatchInvocation)>[];
+  void addRefWatchInvocation(void Function(RefWatchInvocation node) cb) {
+    _onRefWatchInvocation.add(cb);
+  }
+
+  final _onRefReadInvocation = <void Function(RefReadInvocation)>[];
+  void addRefReadInvocation(void Function(RefReadInvocation node) cb) {
+    _onRefReadInvocation.add(cb);
+  }
+
+  final _onRefListenInvocation = <void Function(RefListenInvocation)>[];
+  void addRefListenInvocation(void Function(RefListenInvocation node) cb) {
+    _onRefListenInvocation.add(cb);
+  }
+
+  final _onWidgetRefInvocation = <void Function(WidgetRefInvocation)>[];
+  void addWidgetRefInvocation(void Function(WidgetRefInvocation node) cb) {
+    _onWidgetRefInvocation.add(cb);
+  }
+
+  final _onWidgetRefWatchInvocation =
+      <void Function(WidgetRefWatchInvocation)>[];
+  void addWidgetRefWatchInvocation(
+      void Function(WidgetRefWatchInvocation node) cb) {
+    _onWidgetRefWatchInvocation.add(cb);
+  }
+
+  final _onWidgetRefReadInvocation = <void Function(WidgetRefReadInvocation)>[];
+  void addWidgetRefReadInvocation(
+      void Function(WidgetRefReadInvocation node) cb) {
+    _onWidgetRefReadInvocation.add(cb);
+  }
+
+  final _onWidgetRefListenInvocation =
+      <void Function(WidgetRefListenInvocation)>[];
+  void addWidgetRefListenInvocation(
+      void Function(WidgetRefListenInvocation node) cb) {
+    _onWidgetRefListenInvocation.add(cb);
+  }
+
+  final _onWidgetRefListenManualInvocation =
+      <void Function(WidgetRefListenManualInvocation)>[];
+  void addWidgetRefListenManualInvocation(
+      void Function(WidgetRefListenManualInvocation node) cb) {
+    _onWidgetRefListenManualInvocation.add(cb);
+  }
+
+  final _onProviderOverrideExpression =
+      <void Function(ProviderOverrideExpression)>[];
+  void addProviderOverrideExpression(
+      void Function(ProviderOverrideExpression node) cb) {
+    _onProviderOverrideExpression.add(cb);
+  }
+
+  final _onProviderOverrideList = <void Function(ProviderOverrideList)>[];
+  void addProviderOverrideList(void Function(ProviderOverrideList node) cb) {
+    _onProviderOverrideList.add(cb);
   }
 
   final _onProviderContainerInstanceCreationExpression =
@@ -474,6 +715,115 @@ class _RiverpodAstRegistryVisitor extends RecursiveRiverpodAstVisitor {
     _runSubscriptions(
       node,
       _registry._onRiverpodAnnotation,
+    );
+  }
+
+  @override
+  void visitProviderListenableExpression(ProviderListenableExpression node) {
+    super.visitProviderListenableExpression(node);
+    _runSubscriptions(
+      node,
+      _registry._onProviderListenableExpression,
+    );
+  }
+
+  @override
+  void visitRefInvocation(RefInvocation node) {
+    super.visitRefInvocation(node);
+    _runSubscriptions(
+      node,
+      _registry._onRefInvocation,
+    );
+  }
+
+  @override
+  void visitRefWatchInvocation(RefWatchInvocation node) {
+    super.visitRefWatchInvocation(node);
+    _runSubscriptions(
+      node,
+      _registry._onRefWatchInvocation,
+    );
+  }
+
+  @override
+  void visitRefReadInvocation(RefReadInvocation node) {
+    super.visitRefReadInvocation(node);
+    _runSubscriptions(
+      node,
+      _registry._onRefReadInvocation,
+    );
+  }
+
+  @override
+  void visitRefListenInvocation(RefListenInvocation node) {
+    super.visitRefListenInvocation(node);
+    _runSubscriptions(
+      node,
+      _registry._onRefListenInvocation,
+    );
+  }
+
+  @override
+  void visitWidgetRefInvocation(WidgetRefInvocation node) {
+    super.visitWidgetRefInvocation(node);
+    _runSubscriptions(
+      node,
+      _registry._onWidgetRefInvocation,
+    );
+  }
+
+  @override
+  void visitWidgetRefWatchInvocation(WidgetRefWatchInvocation node) {
+    super.visitWidgetRefWatchInvocation(node);
+    _runSubscriptions(
+      node,
+      _registry._onWidgetRefWatchInvocation,
+    );
+  }
+
+  @override
+  void visitWidgetRefReadInvocation(WidgetRefReadInvocation node) {
+    super.visitWidgetRefReadInvocation(node);
+    _runSubscriptions(
+      node,
+      _registry._onWidgetRefReadInvocation,
+    );
+  }
+
+  @override
+  void visitWidgetRefListenInvocation(WidgetRefListenInvocation node) {
+    super.visitWidgetRefListenInvocation(node);
+    _runSubscriptions(
+      node,
+      _registry._onWidgetRefListenInvocation,
+    );
+  }
+
+  @override
+  void visitWidgetRefListenManualInvocation(
+      WidgetRefListenManualInvocation node) {
+    super.visitWidgetRefListenManualInvocation(node);
+    _runSubscriptions(
+      node,
+      _registry._onWidgetRefListenManualInvocation,
+    );
+  }
+
+  @override
+  void visitProviderOverrideExpression(ProviderOverrideExpression node) {
+    super.visitProviderOverrideExpression(node);
+    _runSubscriptions(
+      node,
+      _registry._onProviderOverrideExpression,
+    );
+  }
+
+  @override
+  void visitProviderOverrideList(ProviderOverrideList node) {
+    super.visitProviderOverrideList(node);
+    _runSubscriptions(
+      node,
+      _registry._onProviderOverrideList,
     );
   }
 

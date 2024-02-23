@@ -1,52 +1,69 @@
-part of '../riverpod_ast.dart';
+part of '../nodes.dart';
+
+@_ast
+extension WidgetRefInvocationX on MethodInvocation {
+  WidgetRefInvocation? get widgetRefInvocation {
+    return upsert('WidgetRefInvocation', () {
+      final targetType = realTarget?.staticType;
+      if (targetType == null) return null;
+
+      // Since Ref is sealed, checking that the function is from the package:riverpod
+      // before checking its type skips iterating over the superclasses of an element
+      // if it's not from Riverpod.
+      if (!isFromFlutterRiverpod.isExactlyType(targetType) |
+          !widgetRefType.isAssignableFromType(targetType)) {
+        return null;
+      }
+      final function = this.function;
+      if (function is! SimpleIdentifier) return null;
+      final functionOwner = function.staticElement
+          .cast<MethodElement>()
+          ?.declaration
+          .enclosingElement;
+
+      if (functionOwner == null ||
+          // Since Ref is sealed, checking that the function is from the package:riverpod
+          // before checking its type skips iterating over the superclasses of an element
+          // if it's not from Riverpod.
+          !isFromFlutterRiverpod.isExactly(functionOwner) ||
+          !widgetRefType.isAssignableFrom(functionOwner)) {
+        return null;
+      }
+
+      switch (function.name) {
+        case 'watch':
+          return WidgetRefWatchInvocation._parse(this, function);
+        case 'read':
+          return WidgetRefReadInvocation._parse(this, function);
+        case 'listen':
+          return WidgetRefListenInvocation._parse(this, function);
+        case 'listenManual':
+          return WidgetRefListenManualInvocation._parse(this, function);
+
+        default:
+          return null;
+      }
+    });
+  }
+
+  WidgetRefWatchInvocation? get widgetRefWatchInvocation =>
+      widgetRefInvocation.cast<WidgetRefWatchInvocation>();
+
+  WidgetRefReadInvocation? get widgetRefReadInvocation =>
+      widgetRefInvocation.cast<WidgetRefReadInvocation>();
+
+  WidgetRefListenInvocation? get widgetRefListenInvocation =>
+      widgetRefInvocation.cast<WidgetRefListenInvocation>();
+
+  WidgetRefListenManualInvocation? get widgetRefListenManualInvocation =>
+      widgetRefInvocation.cast<WidgetRefListenManualInvocation>();
+}
 
 sealed class WidgetRefInvocation {
   WidgetRefInvocation._({
     required this.node,
     required this.function,
   });
-
-  static WidgetRefInvocation? _parse(MethodInvocation node) {
-    final targetType = node.realTarget?.staticType;
-    if (targetType == null) return null;
-
-    // Since Ref is sealed, checking that the function is from the package:riverpod
-    // before checking its type skips iterating over the superclasses of an element
-    // if it's not from Riverpod.
-    if (!isFromFlutterRiverpod.isExactlyType(targetType) |
-        !widgetRefType.isAssignableFromType(targetType)) {
-      return null;
-    }
-    final function = node.function;
-    if (function is! SimpleIdentifier) return null;
-    final functionOwner = function.staticElement
-        .cast<MethodElement>()
-        ?.declaration
-        .enclosingElement;
-
-    if (functionOwner == null ||
-        // Since Ref is sealed, checking that the function is from the package:riverpod
-        // before checking its type skips iterating over the superclasses of an element
-        // if it's not from Riverpod.
-        !isFromFlutterRiverpod.isExactly(functionOwner) ||
-        !widgetRefType.isAssignableFrom(functionOwner)) {
-      return null;
-    }
-
-    switch (function.name) {
-      case 'watch':
-        return WidgetRefWatchInvocation._parse(node, function);
-      case 'read':
-        return WidgetRefReadInvocation._parse(node, function);
-      case 'listen':
-        return WidgetRefListenInvocation._parse(node, function);
-      case 'listenManual':
-        return WidgetRefListenManualInvocation._parse(node, function);
-
-      default:
-        return null;
-    }
-  }
 
   final MethodInvocation node;
   final SimpleIdentifier function;
@@ -68,9 +85,10 @@ final class WidgetRefWatchInvocation extends WidgetRefInvocation {
       'Argument error, function is not a ref.watch function',
     );
 
-    final providerListenableExpression = ProviderListenableExpression._parse(
-      node.argumentList.positionalArguments().singleOrNull,
-    );
+    final providerListenableExpression = node.argumentList
+        .positionalArguments()
+        .singleOrNull
+        ?.providerListenable;
     if (providerListenableExpression == null) return null;
 
     return WidgetRefWatchInvocation._(
@@ -99,9 +117,10 @@ final class WidgetRefReadInvocation extends WidgetRefInvocation {
       'Argument error, function is not a ref.read function',
     );
 
-    final providerListenableExpression = ProviderListenableExpression._parse(
-      node.argumentList.positionalArguments().singleOrNull,
-    );
+    final providerListenableExpression = node.argumentList
+        .positionalArguments()
+        .singleOrNull
+        ?.providerListenable;
     if (providerListenableExpression == null) return null;
 
     return WidgetRefReadInvocation._(
@@ -135,9 +154,8 @@ final class WidgetRefListenInvocation extends WidgetRefInvocation {
     final listener = positionalArgs.elementAtOrNull(1);
     if (listener == null) return null;
 
-    final providerListenableExpression = ProviderListenableExpression._parse(
-      positionalArgs.firstOrNull,
-    );
+    final providerListenableExpression =
+        positionalArgs.firstOrNull?.providerListenable;
     if (providerListenableExpression == null) return null;
 
     return WidgetRefListenInvocation._(
@@ -173,9 +191,8 @@ final class WidgetRefListenManualInvocation extends WidgetRefInvocation {
     final listener = positionalArgs.elementAtOrNull(1);
     if (listener == null) return null;
 
-    final providerListenableExpression = ProviderListenableExpression._parse(
-      positionalArgs.firstOrNull,
-    );
+    final providerListenableExpression =
+        positionalArgs.firstOrNull?.providerListenable;
     if (providerListenableExpression == null) return null;
 
     return WidgetRefListenManualInvocation._(

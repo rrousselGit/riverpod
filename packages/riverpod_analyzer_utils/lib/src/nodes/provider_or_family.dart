@@ -1,12 +1,12 @@
 part of '../nodes.dart';
 
 ({
-  SimpleIdentifier provider,
+  ProviderIdentifier provider,
   SimpleIdentifier? providerPrefix,
   ProviderDeclarationElement? providerElement,
   ArgumentList? familyArguments,
 })? _parsesProviderExpression(Expression? expression) {
-  SimpleIdentifier? provider;
+  ProviderIdentifier? provider;
   SimpleIdentifier? providerPrefix;
   ProviderDeclarationElement? providerElement;
   ArgumentList? familyArguments;
@@ -16,19 +16,7 @@ part of '../nodes.dart';
     if (expression == null) return;
     if (expression is SimpleIdentifier) {
       // watch(expression)
-      provider = expression;
-      final element = expression.staticElement;
-      if (element is PropertyAccessorElement) {
-        // watch(provider)
-        final providerFor = parseFirstProviderFor(element.variable);
-
-        if (providerFor != null) {
-          providerElement = providerFor.$1;
-        } else {
-          providerElement =
-              LegacyProviderDeclarationElement._parse(element.variable);
-        }
-      }
+      provider = expression.provider;
     } else if (expression is FunctionExpressionInvocation) {
       // watch(expression())
       familyArguments = expression.argumentList;
@@ -59,13 +47,6 @@ part of '../nodes.dart';
   final p = provider;
 
   if (p == null) return null;
-  final providerType = p.staticType;
-
-  if (providerType == null) return null;
-  if (!providerBaseType.isAssignableFromType(providerType) &&
-      !familyType.isAssignableFromType(providerType)) {
-    return null;
-  }
 
   return (
     provider: p,
@@ -112,7 +93,7 @@ final class ProviderOrFamilyExpression {
 
   final Expression node;
   final SimpleIdentifier? providerPrefix;
-  final SimpleIdentifier provider;
+  final ProviderIdentifier provider;
   final ProviderDeclarationElement? providerElement;
 
   /// If [provider] is a provider with arguments (family), represents the arguments

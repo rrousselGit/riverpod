@@ -1,44 +1,58 @@
-part of '../riverpod_ast.dart';
+part of '../nodes.dart';
+
+@_ast
+extension RefInvocationX on MethodInvocation {
+  RefInvocation? get refInvocation {
+    return upsert('RefInvocation', () {
+      final targetType = realTarget?.staticType;
+      if (targetType == null) return null;
+
+      if (!isRiverpodRef(targetType)) return null;
+
+      final function = this.function;
+      if (function is! SimpleIdentifier) return null;
+      final functionOwner = function.staticElement
+          .cast<MethodElement>()
+          ?.declaration
+          .enclosingElement;
+
+      if (functionOwner == null ||
+          // Since Ref is sealed, checking that the function is from the package:riverpod
+          // before checking its type skips iterating over the superclasses of an element
+          // if it's not from Riverpod.
+          !isFromRiverpod.isExactly(functionOwner) ||
+          !refType.isAssignableFrom(functionOwner)) {
+        return null;
+      }
+
+      switch (function.name) {
+        case 'watch':
+          return RefWatchInvocation._parse(this, function);
+        case 'read':
+          return RefReadInvocation._parse(this, function);
+        case 'listen':
+          return RefListenInvocation._parse(this, function);
+        default:
+          return null;
+      }
+    });
+  }
+
+  RefWatchInvocation? get refWatchInvocation =>
+      refInvocation.cast<RefWatchInvocation>();
+
+  RefReadInvocation? get refReadInvocation =>
+      refInvocation.cast<RefReadInvocation>();
+
+  RefListenInvocation? get refListenInvocation =>
+      refInvocation.cast<RefListenInvocation>();
+}
 
 abstract base class RefInvocation {
   RefInvocation._({
     required this.node,
     required this.function,
   });
-
-  static RefInvocation? _parse(MethodInvocation node) {
-    final targetType = node.realTarget?.staticType;
-    if (targetType == null) return null;
-
-    if (!isRiverpodRef(targetType)) return null;
-
-    final function = node.function;
-    if (function is! SimpleIdentifier) return null;
-    final functionOwner = function.staticElement
-        .cast<MethodElement>()
-        ?.declaration
-        .enclosingElement;
-
-    if (functionOwner == null ||
-        // Since Ref is sealed, checking that the function is from the package:riverpod
-        // before checking its type skips iterating over the superclasses of an element
-        // if it's not from Riverpod.
-        !isFromRiverpod.isExactly(functionOwner) ||
-        !refType.isAssignableFrom(functionOwner)) {
-      return null;
-    }
-
-    switch (function.name) {
-      case 'watch':
-        return RefWatchInvocation._parse(node, function);
-      case 'read':
-        return RefReadInvocation._parse(node, function);
-      case 'listen':
-        return RefListenInvocation._parse(node, function);
-      default:
-        return null;
-    }
-  }
 
   final MethodInvocation node;
   final SimpleIdentifier function;
@@ -72,9 +86,10 @@ final class RefWatchInvocation extends RefDependencyInvocation {
       'Argument error, function is not a ref.watch function',
     );
 
-    final providerListenableExpression = ProviderListenableExpression._parse(
-      node.argumentList.positionalArguments().singleOrNull,
-    );
+    final providerListenableExpression = node.argumentList
+        .positionalArguments()
+        .singleOrNull
+        ?.providerListenable;
     if (providerListenableExpression == null) return null;
 
     return RefWatchInvocation._(
@@ -101,9 +116,10 @@ final class RefReadInvocation extends RefDependencyInvocation {
       'Argument error, function is not a ref.read function',
     );
 
-    final providerListenableExpression = ProviderListenableExpression._parse(
-      node.argumentList.positionalArguments().singleOrNull,
-    );
+    final providerListenableExpression = node.argumentList
+        .positionalArguments()
+        .singleOrNull
+        ?.providerListenable;
     if (providerListenableExpression == null) return null;
 
     return RefReadInvocation._(
@@ -136,9 +152,8 @@ final class RefListenInvocation extends RefDependencyInvocation {
     final listener = positionalArgs.elementAtOrNull(1);
     if (listener == null) return null;
 
-    final providerListenableExpression = ProviderListenableExpression._parse(
-      positionalArgs.firstOrNull,
-    );
+    final providerListenableExpression =
+        positionalArgs.firstOrNull?.providerListenable;
     if (providerListenableExpression == null) return null;
 
     return RefListenInvocation._(

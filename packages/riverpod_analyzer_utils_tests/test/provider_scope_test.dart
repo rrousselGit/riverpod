@@ -77,7 +77,7 @@ class Example extends ConsumerWidget {
         'provider.overrideWith((ref) => 0)',
       );
       expect(
-        scopes[1].overrides!.overrides![0].provider!.toSource(),
+        scopes[1].overrides!.overrides![0].provider!.node.toSource(),
         'provider',
       );
       expect(scopes[1].overrides!.overrides![0].familyArguments, null);
@@ -92,7 +92,7 @@ class Example extends ConsumerWidget {
         'provider.overrideWithValue(42)',
       );
       expect(
-        scopes[1].overrides!.overrides![1].provider!.toSource(),
+        scopes[1].overrides!.overrides![1].provider!.node.toSource(),
         'provider',
       );
       expect(scopes[1].overrides!.overrides![1].familyArguments, null);
@@ -107,7 +107,7 @@ class Example extends ConsumerWidget {
         'provider',
       );
       expect(
-        scopes[1].overrides!.overrides![2].provider!.toSource(),
+        scopes[1].overrides!.overrides![2].provider!.node.toSource(),
         'provider',
       );
       expect(scopes[1].overrides!.overrides![2].familyArguments, null);
@@ -123,7 +123,7 @@ class Example extends ConsumerWidget {
         'family(42)',
       );
       expect(
-        scopes[1].overrides!.overrides![3].provider!.toSource(),
+        scopes[1].overrides!.overrides![3].provider!.node.toSource(),
         'family',
       );
       expect(
@@ -141,7 +141,7 @@ class Example extends ConsumerWidget {
         'family.overrideWith((ref, id) => 0)',
       );
       expect(
-        scopes[1].overrides!.overrides![4].provider!.toSource(),
+        scopes[1].overrides!.overrides![4].provider!.node.toSource(),
         'family',
       );
       expect(scopes[1].overrides!.overrides![4].familyArguments, null);
@@ -156,7 +156,7 @@ class Example extends ConsumerWidget {
         'family(42).overrideWith((ref) => 0)',
       );
       expect(
-        scopes[1].overrides!.overrides![5].provider!.toSource(),
+        scopes[1].overrides!.overrides![5].provider!.node.toSource(),
         'family',
       );
       expect(

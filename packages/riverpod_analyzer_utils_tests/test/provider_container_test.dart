@@ -66,7 +66,7 @@ void main() {
         'provider.overrideWith((ref) => 0)',
       );
       expect(
-        containers[1].overrides!.overrides![0].provider!.toSource(),
+        containers[1].overrides!.overrides![0].provider!.node.toSource(),
         'provider',
       );
       expect(containers[1].overrides!.overrides![0].familyArguments, null);
@@ -81,7 +81,7 @@ void main() {
         'provider.overrideWithValue(42)',
       );
       expect(
-        containers[1].overrides!.overrides![1].provider!.toSource(),
+        containers[1].overrides!.overrides![1].provider!.node.toSource(),
         'provider',
       );
       expect(containers[1].overrides!.overrides![1].familyArguments, null);
@@ -96,7 +96,7 @@ void main() {
         'provider',
       );
       expect(
-        containers[1].overrides!.overrides![2].provider!.toSource(),
+        containers[1].overrides!.overrides![2].provider!.node.toSource(),
         'provider',
       );
       expect(containers[1].overrides!.overrides![2].familyArguments, null);
@@ -112,7 +112,7 @@ void main() {
         'family(42)',
       );
       expect(
-        containers[1].overrides!.overrides![3].provider!.toSource(),
+        containers[1].overrides!.overrides![3].provider!.node.toSource(),
         'family',
       );
       expect(
@@ -130,7 +130,7 @@ void main() {
         'family.overrideWith((ref, id) => 0)',
       );
       expect(
-        containers[1].overrides!.overrides![4].provider!.toSource(),
+        containers[1].overrides!.overrides![4].provider!.node.toSource(),
         'family',
       );
       expect(containers[1].overrides!.overrides![4].familyArguments, null);
@@ -145,7 +145,7 @@ void main() {
         'family(42).overrideWith((ref) => 0)',
       );
       expect(
-        containers[1].overrides!.overrides![5].provider!.toSource(),
+        containers[1].overrides!.overrides![5].provider!.node.toSource(),
         'family',
       );
       expect(

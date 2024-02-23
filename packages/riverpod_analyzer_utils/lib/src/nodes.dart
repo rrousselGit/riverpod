@@ -35,6 +35,9 @@ part 'nodes/providers/identifiers.dart';
 part 'nodes/provider_for.dart';
 part 'nodes/provider_or_family.dart';
 part 'nodes/riverpod.dart';
+part 'nodes/provider_listenable.dart';
+part 'nodes/ref_invocation.dart';
+part 'nodes/widget_ref_invocation.dart';
 
 part 'nodes/scopes/overrides.dart';
 part 'nodes/scopes/provider_container.dart';

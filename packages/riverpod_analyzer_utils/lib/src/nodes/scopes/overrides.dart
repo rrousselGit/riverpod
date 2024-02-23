@@ -1,6 +1,7 @@
 part of '../../nodes.dart';
 
-extension on CollectionElement {
+@_ast
+extension ProviderOverrideExpressionX on CollectionElement {
   ProviderOverrideExpression? get providerOverride {
     return upsert('ProviderOverrideExpression', () {
       final expression = this;
@@ -33,7 +34,7 @@ final class ProviderOverrideExpression {
 
   final CollectionElement node;
   final ProviderDeclarationElement? providerElement;
-  final SimpleIdentifier? provider;
+  final ProviderIdentifier? provider;
   final SimpleIdentifier? providerPrefix;
 
   /// If [provider] is a provider with arguments (family), represents the arguments
@@ -41,12 +42,31 @@ final class ProviderOverrideExpression {
   final ArgumentList? familyArguments;
 }
 
-extension on Expression {
+@_ast
+extension ProviderOverrideListX on Expression {
   ProviderOverrideList? get overrides {
-    return upsert(
-      'ProviderOverrideList',
-      () => ProviderOverrideList._parse(this),
-    );
+    return upsert('ProviderOverrideList', () {
+      final expression = this;
+      final type = staticType;
+      if (type == null || !type.isDartCoreList) return null;
+
+      type as InterfaceType;
+      final valueType = type.typeArguments.single;
+      if (!overrideType.isAssignableFromType(valueType)) return null;
+
+      List<ProviderOverrideExpression>? overrides;
+      if (expression is ListLiteral) {
+        overrides = expression.elements
+            .map((e) => e.providerOverride)
+            .whereNotNull()
+            .toList();
+      }
+
+      return ProviderOverrideList._(
+        node: expression,
+        overrides: overrides,
+      );
+    });
   }
 }
 
@@ -55,28 +75,6 @@ final class ProviderOverrideList {
     required this.node,
     required this.overrides,
   });
-
-  static ProviderOverrideList? _parse(Expression expression) {
-    final type = expression.staticType;
-    if (type == null || !type.isDartCoreList) return null;
-
-    type as InterfaceType;
-    final valueType = type.typeArguments.single;
-    if (!overrideType.isAssignableFromType(valueType)) return null;
-
-    List<ProviderOverrideExpression>? overrides;
-    if (expression is ListLiteral) {
-      overrides = expression.elements
-          .map((e) => e.providerOverride)
-          .whereNotNull()
-          .toList();
-    }
-
-    return ProviderOverrideList._(
-      node: expression,
-      overrides: overrides,
-    );
-  }
 
   final Expression node;
   final List<ProviderOverrideExpression>? overrides;

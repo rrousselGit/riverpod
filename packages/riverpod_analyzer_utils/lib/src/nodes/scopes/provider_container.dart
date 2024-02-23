@@ -17,7 +17,7 @@ extension ProviderContainerInstanceCreationExpressionX
 
       return ProviderContainerInstanceCreationExpression._(
         node: this,
-        overrides: overrides?.expression.let(ProviderOverrideList._parse),
+        overrides: overrides?.expression.overrides,
       );
     });
   }

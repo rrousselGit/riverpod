@@ -30,6 +30,6 @@ extension ProviderIdentifierX on SimpleIdentifier {
 final class ProviderIdentifier {
   ProviderIdentifier._({required this.node, required this.providerElement});
 
-  final Identifier node;
+  final SimpleIdentifier node;
   final ProviderDeclarationElement? providerElement;
 }
