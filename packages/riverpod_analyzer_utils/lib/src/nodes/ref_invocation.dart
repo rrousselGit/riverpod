@@ -63,18 +63,18 @@ abstract base class RefDependencyInvocation extends RefInvocation {
   RefDependencyInvocation._({
     required super.node,
     required super.function,
-    required this.provider,
+    required this.listenable,
   }) : super._();
 
   /// The provider that is being interacted with.
-  final ProviderListenableExpression provider;
+  final ProviderListenableExpression listenable;
 }
 
 final class RefWatchInvocation extends RefDependencyInvocation {
   RefWatchInvocation._({
     required super.node,
     required super.function,
-    required super.provider,
+    required super.listenable,
   }) : super._();
 
   static RefWatchInvocation? _parse(
@@ -95,7 +95,7 @@ final class RefWatchInvocation extends RefDependencyInvocation {
     return RefWatchInvocation._(
       node: node,
       function: function,
-      provider: providerListenableExpression,
+      listenable: providerListenableExpression,
     );
   }
 }
@@ -104,7 +104,7 @@ final class RefReadInvocation extends RefDependencyInvocation {
   RefReadInvocation._({
     required super.node,
     required super.function,
-    required super.provider,
+    required super.listenable,
   }) : super._();
 
   static RefReadInvocation? _parse(
@@ -125,7 +125,7 @@ final class RefReadInvocation extends RefDependencyInvocation {
     return RefReadInvocation._(
       node: node,
       function: function,
-      provider: providerListenableExpression,
+      listenable: providerListenableExpression,
     );
   }
 }
@@ -135,7 +135,7 @@ final class RefListenInvocation extends RefDependencyInvocation {
     required super.node,
     required super.function,
     required this.listener,
-    required super.provider,
+    required super.listenable,
   }) : super._();
 
   static RefListenInvocation? _parse(
@@ -160,7 +160,7 @@ final class RefListenInvocation extends RefDependencyInvocation {
       node: node,
       function: function,
       listener: listener,
-      provider: providerListenableExpression,
+      listenable: providerListenableExpression,
     );
   }
 

@@ -17,8 +17,6 @@ extension ProviderIdentifierX on SimpleIdentifier {
             LegacyProviderDeclarationElement._parse(element.variable);
       }
 
-      if (providerElement == null) return null;
-
       return ProviderIdentifier._(
         node: this,
         providerElement: providerElement,

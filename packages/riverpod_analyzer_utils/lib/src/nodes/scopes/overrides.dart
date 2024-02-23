@@ -14,7 +14,6 @@ extension ProviderOverrideExpressionX on CollectionElement {
 
       return ProviderOverrideExpression._(
         node: expression,
-        providerElement: result?.providerElement,
         familyArguments: result?.familyArguments,
         provider: result?.provider,
         providerPrefix: result?.providerPrefix,
@@ -26,14 +25,12 @@ extension ProviderOverrideExpressionX on CollectionElement {
 final class ProviderOverrideExpression {
   ProviderOverrideExpression._({
     required this.node,
-    required this.providerElement,
     required this.provider,
     required this.familyArguments,
     required this.providerPrefix,
   });
 
   final CollectionElement node;
-  final ProviderDeclarationElement? providerElement;
   final ProviderIdentifier? provider;
   final SimpleIdentifier? providerPrefix;
 

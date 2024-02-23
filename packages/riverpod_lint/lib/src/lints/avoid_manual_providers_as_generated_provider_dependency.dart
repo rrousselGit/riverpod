@@ -26,9 +26,9 @@ class AvoidManualProvidersAsGeneratedProviderDependency
       GeneratorProviderDeclaration provider,
       RefDependencyInvocation dependency,
     ) {
-      final dependencyElement = dependency.provider.providerElement;
+      final dependencyElement = dependency.listenable.providerElement;
       if (dependencyElement is! GeneratorProviderDeclarationElement) {
-        reporter.reportErrorForNode(code, dependency.provider.provider);
+        reporter.reportErrorForNode(code, dependency.listenable.provider);
       }
     }
 

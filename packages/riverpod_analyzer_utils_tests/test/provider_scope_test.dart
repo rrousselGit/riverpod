@@ -69,7 +69,7 @@ class Example extends ConsumerWidget {
     );
     {
       expect(
-        scopes[1].overrides!.overrides![0].providerElement,
+        scopes[1].overrides!.overrides![0].provider?.providerElement,
         same(provider.providerElement),
       );
       expect(
@@ -84,7 +84,7 @@ class Example extends ConsumerWidget {
     }
     {
       expect(
-        scopes[1].overrides!.overrides![1].providerElement,
+        scopes[1].overrides!.overrides![1].provider?.providerElement,
         same(provider.providerElement),
       );
       expect(
@@ -99,7 +99,7 @@ class Example extends ConsumerWidget {
     }
     {
       expect(
-        scopes[1].overrides!.overrides![2].providerElement,
+        scopes[1].overrides!.overrides![2].provider?.providerElement,
         same(provider.providerElement),
       );
       expect(
@@ -115,7 +115,7 @@ class Example extends ConsumerWidget {
 
     {
       expect(
-        scopes[1].overrides!.overrides![3].providerElement,
+        scopes[1].overrides!.overrides![3].provider?.providerElement,
         same(family.providerElement),
       );
       expect(
@@ -133,7 +133,7 @@ class Example extends ConsumerWidget {
     }
     {
       expect(
-        scopes[1].overrides!.overrides![4].providerElement,
+        scopes[1].overrides!.overrides![4].provider?.providerElement,
         same(family.providerElement),
       );
       expect(
@@ -148,7 +148,7 @@ class Example extends ConsumerWidget {
     }
     {
       expect(
-        scopes[1].overrides!.overrides![5].providerElement,
+        scopes[1].overrides!.overrides![5].provider?.providerElement,
         same(family.providerElement),
       );
       expect(
@@ -185,7 +185,10 @@ class Example extends ConsumerWidget {
       scopes[3].overrides?.overrides?.single.node.toSource(),
       '() {return provider;}()',
     );
-    expect(scopes[3].overrides?.overrides?.single.providerElement, null);
+    expect(
+      scopes[3].overrides?.overrides?.single.provider?.providerElement,
+      null,
+    );
     expect(scopes[3].overrides?.overrides?.single.provider, null);
     expect(scopes[3].overrides?.overrides?.single.familyArguments, null);
 

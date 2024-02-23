@@ -38,7 +38,7 @@ extension on GeneratorProviderDeclaration {
     final scopedInvocations = findScopedDependencies().toList();
 
     for (final scopedDependency in scopedInvocations) {
-      final dependencyName = scopedDependency.provider.providerElement?.name;
+      final dependencyName = scopedDependency.listenable.providerElement?.name;
 
       if (dependencies == null ||
           !dependencies.any((e) => e.provider.name == dependencyName)) {
@@ -49,7 +49,7 @@ extension on GeneratorProviderDeclaration {
     if (dependencies != null) {
       for (final dependency in dependencies) {
         final isDependencyUsed = scopedInvocations.any(
-          (e) => e.provider.providerElement?.name == dependency.provider.name,
+          (e) => e.listenable.providerElement?.name == dependency.provider.name,
         );
         if (!isDependencyUsed) {
           result.extra.add(dependency);
@@ -118,7 +118,7 @@ class _ProviderDependenciesFix extends RiverpodFix {
 
       final newDependencies = scopedDependencies.isEmpty
           ? null
-          : '[${scopedDependencies.map((e) => e.provider.providerElement?.name).join(', ')}]';
+          : '[${scopedDependencies.map((e) => e.listenable.providerElement?.name).join(', ')}]';
 
       if (newDependencies == null) {
         // Should never be null, but just in case
@@ -197,7 +197,7 @@ class _ProviderDependenciesFix extends RiverpodFix {
       );
       changeBuilder.addDartFileEdit((builder) {
         final dependencies = scopedDependencies
-            .map((e) => e.provider.providerElement?.name)
+            .map((e) => e.listenable.providerElement?.name)
             .join(', ');
         builder.addSimpleReplacement(
           dependenciesNode.expression.sourceRange,

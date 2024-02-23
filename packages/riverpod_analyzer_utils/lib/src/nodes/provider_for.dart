@@ -9,7 +9,7 @@ part of '../nodes.dart';
   if (type == null || !providerForType.isExactlyType(type)) return null;
 
   final value = annotation.computeConstantValue()?.getField('value');
-  if (value == null) return null;
+  if (value == null) return (null,);
 
   return (value.toDependency(from: from),);
 }

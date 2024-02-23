@@ -36,11 +36,11 @@ int aliased(AliasedRef ref) {
       );
 
       expect(
-        result.refWatchInvocations.single.provider.provider.node.toSource(),
+        result.refWatchInvocations.single.listenable.provider.node.toSource(),
         'aProvider',
       );
       expect(
-        result.refWatchInvocations.single.provider.providerPrefix?.toSource(),
+        result.refWatchInvocations.single.listenable.providerPrefix?.toSource(),
         'alias',
       );
     },
@@ -50,7 +50,7 @@ int aliased(AliasedRef ref) {
 import 'package:riverpod/riverpod.dart';
 
 @ProviderFor(gibberish)
-final gibberishProvider = Provider((ref) => 0);
+final gibberishProvider = Provider<int>((ref) => 0).select((p) => p);
 
 final dependency = Provider((ref) {
   ref.watch(gibberishProvider);
@@ -66,16 +66,19 @@ final dependency = Provider((ref) {
       result.refInvocations.single.node.toSource(),
       'ref.watch(gibberishProvider)',
     );
-    expect(result.refWatchInvocations.single.provider.familyArguments, null);
+    expect(result.refWatchInvocations.single.listenable.familyArguments, null);
     expect(
-      result.refWatchInvocations.single.provider.node.toSource(),
+      result.refWatchInvocations.single.listenable.node.toSource(),
       'gibberishProvider',
     );
     expect(
-      result.refWatchInvocations.single.provider.provider.node.toSource(),
+      result.refWatchInvocations.single.listenable.provider.node.toSource(),
       'gibberishProvider',
     );
-    expect(result.refWatchInvocations.single.provider.providerElement, null);
+    expect(
+      result.refWatchInvocations.single.listenable.provider.providerElement,
+      null,
+    );
   });
 
   testSource('Decodes ref expressions in Notifier methods',
@@ -86,12 +89,15 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'foo.g.dart';
 
 @riverpod
+int generated(GeneratedRef ref) => 0;
+
+@riverpod
 class MyNotifier extends _$MyNotifier {
   @override
   int build() => 0;
 
   void method() {
-    ref.watch(generatedScopedProvider);
+    ref.watch(generatedProvider);
   }
 }
 
@@ -101,15 +107,15 @@ class MyNotifier extends _$MyNotifier {
 
     expect(result.refInvocations, hasLength(1));
     expect(
-      result.refWatchInvocations.single.provider.node.toSource(),
-      'generatedScopedProvider',
+      result.refWatchInvocations.single.listenable.node.toSource(),
+      'generatedProvider',
     );
     expect(
       result.refInvocations.single,
       isA<RefWatchInvocation>().having(
-        (e) => e.provider.node.toSource(),
+        (e) => e.listenable.node.toSource(),
         'provider',
-        'generatedScopedProvider',
+        'generatedProvider',
       ),
     );
   });
@@ -151,12 +157,14 @@ final provider = Provider<int>((ref) {
       '..watch(dep)',
     );
     expect(result.refWatchInvocations[0].function.toSource(), 'watch');
-    expect(result.refWatchInvocations[0].provider.node.toSource(), 'dep');
-    expect(result.refWatchInvocations[0].provider.familyArguments, null);
+    expect(result.refWatchInvocations[0].listenable.node.toSource(), 'dep');
+    expect(result.refWatchInvocations[0].listenable.familyArguments, null);
     expect(
-        result.refWatchInvocations[0].provider.provider.node.toSource(), 'dep');
+      result.refWatchInvocations[0].listenable.provider.node.toSource(),
+      'dep',
+    );
     expect(
-      result.refWatchInvocations[0].provider.providerElement,
+      result.refWatchInvocations[0].listenable.provider.providerElement,
       same(result.legacyProviderDeclarations.findByName('dep').providerElement),
     );
 
@@ -166,22 +174,22 @@ final provider = Provider<int>((ref) {
     );
     expect(result.refWatchInvocations[1].function.toSource(), 'watch');
     expect(
-      result.refWatchInvocations[1].provider.node.toSource(),
+      result.refWatchInvocations[1].listenable.node.toSource(),
       'dep2Provider',
     );
     expect(
-      result.refWatchInvocations[1].provider.provider.node.toSource(),
+      result.refWatchInvocations[1].listenable.provider.node.toSource(),
       'dep2Provider',
     );
     expect(
-      result.refWatchInvocations[1].provider.providerElement,
+      result.refWatchInvocations[1].listenable.provider.providerElement,
       same(
         result.functionalProviderDeclarations
             .findByName('dep2')
             .providerElement,
       ),
     );
-    expect(result.refWatchInvocations[1].provider.familyArguments, null);
+    expect(result.refWatchInvocations[1].listenable.familyArguments, null);
 
     expect(
       result.refWatchInvocations[2].node.toSource(),
@@ -189,22 +197,22 @@ final provider = Provider<int>((ref) {
     );
     expect(result.refWatchInvocations[2].function.toSource(), 'watch');
     expect(
-      result.refWatchInvocations[2].provider.node.toSource(),
+      result.refWatchInvocations[2].listenable.node.toSource(),
       'dep3Provider',
     );
     expect(
-      result.refWatchInvocations[2].provider.provider.node.toSource(),
+      result.refWatchInvocations[2].listenable.provider.node.toSource(),
       'dep3Provider',
     );
     expect(
-      result.refWatchInvocations[2].provider.providerElement,
+      result.refWatchInvocations[2].listenable.provider.providerElement,
       same(
         result.classBasedProviderDeclarations
             .findByName('Dep3')
             .providerElement,
       ),
     );
-    expect(result.refWatchInvocations[2].provider.familyArguments, null);
+    expect(result.refWatchInvocations[2].listenable.familyArguments, null);
   });
 
   testSource('Decodes simple ref.watch usages', runGenerator: true, source: r'''
@@ -254,12 +262,14 @@ void fn(_Ref ref) {
       'ref.watch(dep)',
     );
     expect(result.refWatchInvocations[0].function.toSource(), 'watch');
-    expect(result.refWatchInvocations[0].provider.node.toSource(), 'dep');
-    expect(result.refWatchInvocations[0].provider.familyArguments, null);
+    expect(result.refWatchInvocations[0].listenable.node.toSource(), 'dep');
+    expect(result.refWatchInvocations[0].listenable.familyArguments, null);
     expect(
-        result.refWatchInvocations[0].provider.provider.node.toSource(), 'dep');
+      result.refWatchInvocations[0].listenable.provider.node.toSource(),
+      'dep',
+    );
     expect(
-      result.refWatchInvocations[0].provider.providerElement,
+      result.refWatchInvocations[0].listenable.provider.providerElement,
       same(result.legacyProviderDeclarations.findByName('dep').providerElement),
     );
 
@@ -269,22 +279,22 @@ void fn(_Ref ref) {
     );
     expect(result.refWatchInvocations[1].function.toSource(), 'watch');
     expect(
-      result.refWatchInvocations[1].provider.node.toSource(),
+      result.refWatchInvocations[1].listenable.node.toSource(),
       'dep2Provider',
     );
     expect(
-      result.refWatchInvocations[1].provider.provider.node.toSource(),
+      result.refWatchInvocations[1].listenable.provider.node.toSource(),
       'dep2Provider',
     );
     expect(
-      result.refWatchInvocations[1].provider.providerElement,
+      result.refWatchInvocations[1].listenable.provider.providerElement,
       same(
         result.functionalProviderDeclarations
             .findByName('dep2')
             .providerElement,
       ),
     );
-    expect(result.refWatchInvocations[1].provider.familyArguments, null);
+    expect(result.refWatchInvocations[1].listenable.familyArguments, null);
 
     expect(
       result.refWatchInvocations[2].node.toSource(),
@@ -292,22 +302,22 @@ void fn(_Ref ref) {
     );
     expect(result.refWatchInvocations[2].function.toSource(), 'watch');
     expect(
-      result.refWatchInvocations[2].provider.node.toSource(),
+      result.refWatchInvocations[2].listenable.node.toSource(),
       'dep3Provider',
     );
     expect(
-      result.refWatchInvocations[2].provider.provider.node.toSource(),
+      result.refWatchInvocations[2].listenable.provider.node.toSource(),
       'dep3Provider',
     );
     expect(
-      result.refWatchInvocations[2].provider.providerElement,
+      result.refWatchInvocations[2].listenable.provider.providerElement,
       same(
         result.classBasedProviderDeclarations
             .findByName('Dep3')
             .providerElement,
       ),
     );
-    expect(result.refWatchInvocations[2].provider.familyArguments, null);
+    expect(result.refWatchInvocations[2].listenable.familyArguments, null);
   });
 
   testSource('Decodes ref.listen usages', runGenerator: true, source: '''
@@ -341,7 +351,7 @@ final provider = Provider<int>((ref) {
       '(prev, next) {}',
     );
     expect(
-      result.refListenInvocations[0].provider.providerElement,
+      result.refListenInvocations[0].listenable.provider.providerElement,
       same(result.legacyProviderDeclarations.findByName('dep').providerElement),
     );
 
@@ -355,7 +365,7 @@ final provider = Provider<int>((ref) {
       '(prev, next) {}',
     );
     expect(
-      result.refListenInvocations[1].provider.providerElement,
+      result.refListenInvocations[1].listenable.provider.providerElement,
       same(result.legacyProviderDeclarations.findByName('dep').providerElement),
     );
 
@@ -369,7 +379,7 @@ final provider = Provider<int>((ref) {
       '(prev, next) {}',
     );
     expect(
-      result.refListenInvocations[2].provider.providerElement,
+      result.refListenInvocations[2].listenable.provider.providerElement,
       same(result.legacyProviderDeclarations.findByName('dep').providerElement),
     );
   });
@@ -398,14 +408,14 @@ final provider = Provider<int>((ref) {
     expect(result.refReadInvocations[0].node.toSource(), 'ref.read(dep)');
     expect(result.refReadInvocations[0].function.toSource(), 'read');
     expect(
-      result.refReadInvocations[0].provider.providerElement,
+      result.refReadInvocations[0].listenable.provider.providerElement,
       same(result.legacyProviderDeclarations.findByName('dep').providerElement),
     );
 
     expect(result.refReadInvocations[1].node.toSource(), 'ref.read(dep2)');
     expect(result.refReadInvocations[1].function.toSource(), 'read');
     expect(
-      result.refReadInvocations[1].provider.providerElement,
+      result.refReadInvocations[1].listenable.provider.providerElement,
       same(
         result.legacyProviderDeclarations.findByName('dep2').providerElement,
       ),
@@ -433,14 +443,14 @@ void fn(Ref<int> ref) {
     expect(result.refReadInvocations[0].node.toSource(), 'ref.read(dep)');
     expect(result.refReadInvocations[0].function.toSource(), 'read');
     expect(
-      result.refReadInvocations[0].provider.providerElement,
+      result.refReadInvocations[0].listenable.provider.providerElement,
       same(result.legacyProviderDeclarations.findByName('dep').providerElement),
     );
 
     expect(result.refReadInvocations[1].node.toSource(), 'ref.read(dep2)');
     expect(result.refReadInvocations[1].function.toSource(), 'read');
     expect(
-      result.refReadInvocations[1].provider.providerElement,
+      result.refReadInvocations[1].listenable.provider.providerElement,
       same(
         result.legacyProviderDeclarations.findByName('dep2').providerElement,
       ),
@@ -486,33 +496,30 @@ void fn(_Ref ref) {
 ''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
-    expect(result.refInvocations, isEmpty);
-    expect(result.widgetRefInvocations, isEmpty);
-
     final providerRefInvocations =
         result.refInvocations.cast<RefWatchInvocation>();
 
     expect(providerRefInvocations, hasLength(3));
-    expect(result.refInvocations, providerRefInvocations);
+    expect(result.refWatchInvocations, providerRefInvocations);
 
     expect(
       providerRefInvocations[0].node.toSource(),
       'ref.watch(family(0))',
     );
     expect(providerRefInvocations[0].function.toSource(), 'watch');
-    expect(providerRefInvocations[0].provider.node.toSource(), 'family(0)');
+    expect(providerRefInvocations[0].listenable.node.toSource(), 'family(0)');
     expect(
-      providerRefInvocations[0].provider.provider.node.toSource(),
+      providerRefInvocations[0].listenable.provider.node.toSource(),
       'family',
     );
     expect(
-      providerRefInvocations[0].provider.providerElement,
+      providerRefInvocations[0].listenable.provider.providerElement,
       same(
         result.legacyProviderDeclarations.findByName('family').providerElement,
       ),
     );
     expect(
-      providerRefInvocations[0].provider.familyArguments?.toSource(),
+      providerRefInvocations[0].listenable.familyArguments?.toSource(),
       '(0)',
     );
 
@@ -522,15 +529,15 @@ void fn(_Ref ref) {
     );
     expect(providerRefInvocations[1].function.toSource(), 'watch');
     expect(
-      providerRefInvocations[1].provider.node.toSource(),
+      providerRefInvocations[1].listenable.node.toSource(),
       'family2Provider(id: 0)',
     );
     expect(
-      providerRefInvocations[1].provider.provider.node.toSource(),
+      providerRefInvocations[1].listenable.provider.node.toSource(),
       'family2Provider',
     );
     expect(
-      providerRefInvocations[1].provider.providerElement,
+      providerRefInvocations[1].listenable.provider.providerElement,
       same(
         result.functionalProviderDeclarations
             .findByName('family2')
@@ -538,7 +545,7 @@ void fn(_Ref ref) {
       ),
     );
     expect(
-      providerRefInvocations[1].provider.familyArguments?.toSource(),
+      providerRefInvocations[1].listenable.familyArguments?.toSource(),
       '(id: 0)',
     );
 
@@ -548,15 +555,15 @@ void fn(_Ref ref) {
     );
     expect(result.refWatchInvocations[2].function.toSource(), 'watch');
     expect(
-      result.refWatchInvocations[2].provider.node.toSource(),
+      result.refWatchInvocations[2].listenable.node.toSource(),
       'family3Provider(id: 0)',
     );
     expect(
-      result.refWatchInvocations[2].provider.provider.node.toSource(),
+      result.refWatchInvocations[2].listenable.provider.node.toSource(),
       'family3Provider',
     );
     expect(
-      result.refWatchInvocations[2].provider.providerElement,
+      result.refWatchInvocations[2].listenable.provider.providerElement,
       same(
         result.classBasedProviderDeclarations
             .findByName('Family3')
@@ -564,7 +571,7 @@ void fn(_Ref ref) {
       ),
     );
     expect(
-      result.refWatchInvocations[2].provider.familyArguments?.toSource(),
+      result.refWatchInvocations[2].listenable.familyArguments?.toSource(),
       '(id: 0)',
     );
   });
@@ -634,14 +641,16 @@ void fn(_Ref ref) {
     );
     expect(result.refWatchInvocations[0].function.toSource(), 'watch');
     expect(
-      result.refWatchInvocations[0].provider.node.toSource(),
+      result.refWatchInvocations[0].listenable.node.toSource(),
       'dep.select((e) => e)',
     );
-    expect(result.refWatchInvocations[0].provider.familyArguments, null);
+    expect(result.refWatchInvocations[0].listenable.familyArguments, null);
     expect(
-        result.refWatchInvocations[0].provider.provider.node.toSource(), 'dep');
+      result.refWatchInvocations[0].listenable.provider.node.toSource(),
+      'dep',
+    );
     expect(
-      result.refWatchInvocations[0].provider.providerElement,
+      result.refWatchInvocations[0].listenable.provider.providerElement,
       same(result.legacyProviderDeclarations.findByName('dep').providerElement),
     );
 
@@ -651,16 +660,16 @@ void fn(_Ref ref) {
     );
     expect(result.refWatchInvocations[1].function.toSource(), 'watch');
     expect(
-      result.refWatchInvocations[1].provider.node.toSource(),
+      result.refWatchInvocations[1].listenable.node.toSource(),
       'dep2Provider.select((e) => e)',
     );
-    expect(result.refWatchInvocations[1].provider.familyArguments, null);
+    expect(result.refWatchInvocations[1].listenable.familyArguments, null);
     expect(
-      result.refWatchInvocations[1].provider.provider.node.toSource(),
+      result.refWatchInvocations[1].listenable.provider.node.toSource(),
       'dep2Provider',
     );
     expect(
-      result.refWatchInvocations[1].provider.providerElement,
+      result.refWatchInvocations[1].listenable.provider.providerElement,
       same(
         result.functionalProviderDeclarations
             .findByName('dep2')
@@ -674,16 +683,16 @@ void fn(_Ref ref) {
     );
     expect(result.refWatchInvocations[2].function.toSource(), 'watch');
     expect(
-      result.refWatchInvocations[2].provider.node.toSource(),
+      result.refWatchInvocations[2].listenable.node.toSource(),
       'dep3Provider.select((e) => e)',
     );
-    expect(result.refWatchInvocations[2].provider.familyArguments, null);
+    expect(result.refWatchInvocations[2].listenable.familyArguments, null);
     expect(
-      result.refWatchInvocations[2].provider.provider.node.toSource(),
+      result.refWatchInvocations[2].listenable.provider.node.toSource(),
       'dep3Provider',
     );
     expect(
-      result.refWatchInvocations[2].provider.providerElement,
+      result.refWatchInvocations[2].listenable.provider.providerElement,
       same(
         result.classBasedProviderDeclarations
             .findByName('Dep3')
@@ -697,19 +706,19 @@ void fn(_Ref ref) {
     );
     expect(result.refWatchInvocations[3].function.toSource(), 'watch');
     expect(
-      result.refWatchInvocations[3].provider.node.toSource(),
+      result.refWatchInvocations[3].listenable.node.toSource(),
       'familyProvider(id: 42).notifier.select((e) => e).getter.method()[0]',
     );
     expect(
-      result.refWatchInvocations[3].provider.familyArguments?.toSource(),
+      result.refWatchInvocations[3].listenable.familyArguments?.toSource(),
       '(id: 42)',
     );
     expect(
-      result.refWatchInvocations[3].provider.provider.node.toSource(),
+      result.refWatchInvocations[3].listenable.provider.node.toSource(),
       'familyProvider',
     );
     expect(
-      result.refWatchInvocations[3].provider.providerElement,
+      result.refWatchInvocations[3].listenable.provider.providerElement,
       same(
         result.classBasedProviderDeclarations
             .findByName('Family')

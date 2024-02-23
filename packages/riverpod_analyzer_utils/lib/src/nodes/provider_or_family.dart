@@ -3,12 +3,10 @@ part of '../nodes.dart';
 ({
   ProviderIdentifier provider,
   SimpleIdentifier? providerPrefix,
-  ProviderDeclarationElement? providerElement,
   ArgumentList? familyArguments,
 })? _parsesProviderExpression(Expression? expression) {
   ProviderIdentifier? provider;
   SimpleIdentifier? providerPrefix;
-  ProviderDeclarationElement? providerElement;
   ArgumentList? familyArguments;
 
   void parseExpression(Expression? expression) {
@@ -45,13 +43,11 @@ part of '../nodes.dart';
   parseExpression(expression);
 
   final p = provider;
-
   if (p == null) return null;
 
   return (
     provider: p,
     providerPrefix: providerPrefix,
-    providerElement: providerElement,
     familyArguments: familyArguments,
   );
 }
@@ -61,7 +57,6 @@ final class ProviderOrFamilyExpression {
     required this.node,
     required this.provider,
     required this.providerPrefix,
-    required this.providerElement,
     required this.familyArguments,
   });
 
@@ -78,7 +73,6 @@ final class ProviderOrFamilyExpression {
     final (
       :provider,
       :providerPrefix,
-      :providerElement,
       :familyArguments,
     ) = parseResult;
 
@@ -86,7 +80,6 @@ final class ProviderOrFamilyExpression {
       node: expression,
       provider: provider,
       providerPrefix: providerPrefix,
-      providerElement: providerElement,
       familyArguments: familyArguments,
     );
   }
@@ -94,7 +87,6 @@ final class ProviderOrFamilyExpression {
   final Expression node;
   final SimpleIdentifier? providerPrefix;
   final ProviderIdentifier provider;
-  final ProviderDeclarationElement? providerElement;
 
   /// If [provider] is a provider with arguments (family), represents the arguments
   /// passed to the provider.

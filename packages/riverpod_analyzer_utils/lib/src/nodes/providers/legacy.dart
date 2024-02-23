@@ -259,8 +259,7 @@ class LegacyProviderDeclarationElement implements ProviderDeclarationElement {
       if (providerType == null) return null;
 
       LegacyFamilyInvocationElement? familyElement;
-      if (providerBaseType.isAssignableFromType(element.type)) {
-      } else if (familyType.isAssignableFromType(element.type)) {
+      if (familyType.isAssignableFromType(element.type)) {
         final callFn = (element.type as InterfaceType).lookUpMethod2(
           'call',
           element.library!,
@@ -268,9 +267,6 @@ class LegacyProviderDeclarationElement implements ProviderDeclarationElement {
         final parameter = callFn.parameters.single;
 
         familyElement = LegacyFamilyInvocationElement._(parameter.type);
-      } else {
-        // Not a provider
-        return null;
       }
 
       return LegacyProviderDeclarationElement._(

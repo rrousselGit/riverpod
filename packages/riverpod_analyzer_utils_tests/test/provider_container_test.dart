@@ -58,7 +58,7 @@ void main() {
     );
     {
       expect(
-        containers[1].overrides!.overrides![0].providerElement,
+        containers[1].overrides!.overrides![0].provider?.providerElement,
         same(provider.providerElement),
       );
       expect(
@@ -73,7 +73,7 @@ void main() {
     }
     {
       expect(
-        containers[1].overrides!.overrides![1].providerElement,
+        containers[1].overrides!.overrides![1].provider?.providerElement,
         same(provider.providerElement),
       );
       expect(
@@ -88,7 +88,7 @@ void main() {
     }
     {
       expect(
-        containers[1].overrides!.overrides![2].providerElement,
+        containers[1].overrides!.overrides![2].provider?.providerElement,
         same(provider.providerElement),
       );
       expect(
@@ -104,7 +104,7 @@ void main() {
 
     {
       expect(
-        containers[1].overrides!.overrides![3].providerElement,
+        containers[1].overrides!.overrides![3].provider?.providerElement,
         same(family.providerElement),
       );
       expect(
@@ -122,7 +122,7 @@ void main() {
     }
     {
       expect(
-        containers[1].overrides!.overrides![4].providerElement,
+        containers[1].overrides!.overrides![4].provider?.providerElement,
         same(family.providerElement),
       );
       expect(
@@ -137,7 +137,7 @@ void main() {
     }
     {
       expect(
-        containers[1].overrides!.overrides![5].providerElement,
+        containers[1].overrides!.overrides![5].provider?.providerElement,
         same(family.providerElement),
       );
       expect(
@@ -174,7 +174,10 @@ void main() {
       containers[3].overrides?.overrides?.single.node.toSource(),
       '() {return provider;}()',
     );
-    expect(containers[3].overrides?.overrides?.single.providerElement, null);
+    expect(
+      containers[3].overrides?.overrides?.single.provider?.providerElement,
+      null,
+    );
     expect(containers[3].overrides?.overrides?.single.provider, null);
     expect(containers[3].overrides?.overrides?.single.familyArguments, null);
   });

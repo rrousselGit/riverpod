@@ -268,10 +268,6 @@ final class DependenciesAnnotationElement {
     });
   }
 
-  static DependenciesAnnotationElement? _of(Element element) {
-    return element.metadata.map(_parse).whereNotNull().firstOrNull;
-  }
-
   final ElementAnnotation element;
   final List<GeneratorProviderDeclarationElement>? dependencies;
 }
