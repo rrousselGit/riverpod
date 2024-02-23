@@ -31,7 +31,9 @@ class OnlyUseKeepAliveInsideKeepAlive extends RiverpodLintRule {
       if (dependencyElement is! GeneratorProviderDeclarationElement) return;
       if (!dependencyElement.isAutoDispose) return;
 
-      final provider = node.node.thisOrAncestorOfType<Declaration>()?.provider;
+      final provider = node.node
+          .thisOrAncestorOfType<NamedCompilationUnitMember>()
+          ?.provider;
       if (provider == null) return;
 
       // The enclosing provider is "autoDispose", so it is allowed to use other "autoDispose" providers

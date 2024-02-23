@@ -23,20 +23,19 @@ class AvoidManualProvidersAsGeneratedProviderDependency
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    riverpodRegistry(context).addRefDependencyInvocation((invocation) {
+    riverpodRegistry(context).addProviderIdentifier((dependency) {
       // The dependency is a generated provider, no need to check
-      if (invocation.listenable.provider?.providerElement
-          is GeneratorProviderDeclarationElement) {
+      if (dependency.providerElement is GeneratorProviderDeclarationElement) {
         return;
       }
-
       // We're depending on a non-generated provider. Let's check if the
       // associated provider is a generated provider
-      final enclosingProvider =
-          invocation.node.thisOrAncestorOfType<Declaration>()?.provider;
+      final enclosingProvider = dependency.node
+          .thisOrAncestorOfType<NamedCompilationUnitMember>()
+          ?.provider;
 
       if (enclosingProvider != null) {
-        reporter.reportErrorForNode(code, invocation.listenable.node);
+        reporter.reportErrorForNode(code, dependency.node);
       }
     });
   }
