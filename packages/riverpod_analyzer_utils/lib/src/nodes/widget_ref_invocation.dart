@@ -46,6 +46,9 @@ extension WidgetRefInvocationX on MethodInvocation {
     });
   }
 
+  WidgetRefDependencyInvocation? get widgetRefDependencyInvocation =>
+      widgetRefInvocation.cast<WidgetRefDependencyInvocation>();
+
   WidgetRefWatchInvocation? get widgetRefWatchInvocation =>
       widgetRefInvocation.cast<WidgetRefWatchInvocation>();
 
@@ -69,11 +72,23 @@ sealed class WidgetRefInvocation {
   final SimpleIdentifier function;
 }
 
-final class WidgetRefWatchInvocation extends WidgetRefInvocation {
+/// A [RefInvocation] which interacts with a provider, inducing a dependency.
+abstract base class WidgetRefDependencyInvocation extends WidgetRefInvocation {
+  WidgetRefDependencyInvocation._({
+    required super.node,
+    required super.function,
+    required this.listenable,
+  }) : super._();
+
+  /// The provider that is being interacted with.
+  final ProviderListenableExpression listenable;
+}
+
+final class WidgetRefWatchInvocation extends WidgetRefDependencyInvocation {
   WidgetRefWatchInvocation._({
     required super.node,
     required super.function,
-    required this.provider,
+    required super.listenable,
   }) : super._();
 
   static WidgetRefWatchInvocation? _parse(
@@ -94,18 +109,16 @@ final class WidgetRefWatchInvocation extends WidgetRefInvocation {
     return WidgetRefWatchInvocation._(
       node: node,
       function: function,
-      provider: providerListenableExpression,
+      listenable: providerListenableExpression,
     );
   }
-
-  final ProviderListenableExpression provider;
 }
 
-final class WidgetRefReadInvocation extends WidgetRefInvocation {
+final class WidgetRefReadInvocation extends WidgetRefDependencyInvocation {
   WidgetRefReadInvocation._({
     required super.node,
     required super.function,
-    required this.provider,
+    required super.listenable,
   }) : super._();
 
   static WidgetRefReadInvocation? _parse(
@@ -126,18 +139,16 @@ final class WidgetRefReadInvocation extends WidgetRefInvocation {
     return WidgetRefReadInvocation._(
       node: node,
       function: function,
-      provider: providerListenableExpression,
+      listenable: providerListenableExpression,
     );
   }
-
-  final ProviderListenableExpression provider;
 }
 
-final class WidgetRefListenInvocation extends WidgetRefInvocation {
+final class WidgetRefListenInvocation extends WidgetRefDependencyInvocation {
   WidgetRefListenInvocation._({
     required super.node,
     required super.function,
-    required this.provider,
+    required super.listenable,
     required this.listener,
   }) : super._();
 
@@ -161,20 +172,20 @@ final class WidgetRefListenInvocation extends WidgetRefInvocation {
     return WidgetRefListenInvocation._(
       node: node,
       function: function,
-      provider: providerListenableExpression,
+      listenable: providerListenableExpression,
       listener: listener,
     );
   }
 
-  final ProviderListenableExpression provider;
   final Expression listener;
 }
 
-final class WidgetRefListenManualInvocation extends WidgetRefInvocation {
+final class WidgetRefListenManualInvocation
+    extends WidgetRefDependencyInvocation {
   WidgetRefListenManualInvocation._({
     required super.node,
     required super.function,
-    required this.provider,
+    required super.listenable,
     required this.listener,
   }) : super._();
 
@@ -198,11 +209,10 @@ final class WidgetRefListenManualInvocation extends WidgetRefInvocation {
     return WidgetRefListenManualInvocation._(
       node: node,
       function: function,
-      provider: providerListenableExpression,
+      listenable: providerListenableExpression,
       listener: listener,
     );
   }
 
-  final ProviderListenableExpression provider;
   final Expression listener;
 }

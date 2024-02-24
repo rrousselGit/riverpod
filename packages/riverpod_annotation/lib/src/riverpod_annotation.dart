@@ -197,7 +197,6 @@ class MissingScopeException implements Exception {
 }
 
 // TODO changelog added "Depedencies"
-@Target({TargetKind.classType})
 class Dependencies {
   const Dependencies(this.dependencies);
 

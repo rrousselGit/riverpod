@@ -52,11 +52,16 @@ class _LintVisitorGenerator extends Generator {
       );
     }).toList();
 
-    final byConstraint = <String, List<({String type, String name})>>{};
+    final byConstraint = <({
+      String type,
+      String name,
+    }),
+        List<({String type, String name})>>{};
     for (final ast in allAst) {
-      byConstraint
-          .putIfAbsent(ast.constraint, () => [])
-          .add((type: ast.type, name: ast.name));
+      byConstraint.putIfAbsent((
+        type: ast.constraint,
+        name: ast.constraint == 'AstNode' ? 'Node' : ast.constraint,
+      ), () => []).add((type: ast.type, name: ast.name));
     }
 
     buffer.writeln('''
@@ -68,8 +73,9 @@ abstract class RecursiveRiverpodAstVisitor
     extends GeneralizingAstVisitor<void>
     with RiverpodAstVisitor {
   ${byConstraint.entries.map((e) => '''
-void visit${e.key}(${e.key} node) {
-  super.visit${e.key}(node);
+@override
+void visit${e.key.name}(${e.key.type} node) {
+    super.visit${e.key.name}(node);
   ${e.value.map((e) => 'node.${e.name}.let(visit${e.type});').join('\n')}
 }''').join('\n')}
 }

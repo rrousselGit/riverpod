@@ -7,14 +7,10 @@ part of 'nodes.dart';
 // **************************************************************************
 
 mixin RiverpodAstVisitor {
-  void visitConsumerWidgetDeclaration(ConsumerWidgetDeclaration node) {}
-  void visitHookConsumerWidgetDeclaration(HookConsumerWidgetDeclaration node) {}
-  void visitConsumerStatefulWidgetDeclaration(
-      ConsumerStatefulWidgetDeclaration node) {}
-  void visitStatefulHookConsumerWidgetDeclaration(
-      StatefulHookConsumerWidgetDeclaration node) {}
-  void visitConsumerStateDeclaration(ConsumerStateDeclaration node) {}
+  void visitWidgetDeclaration(WidgetDeclaration node) {}
+  void visitStateDeclaration(StateDeclaration node) {}
   void visitDependenciesAnnotation(DependenciesAnnotation node) {}
+  void visitAccumulatedDependencyList(AccumulatedDependencyList node) {}
   void visitFunctionalProviderDeclaration(FunctionalProviderDeclaration node) {}
   void visitLegacyProviderDeclaration(LegacyProviderDeclaration node) {}
   void visitClassBasedProviderDeclaration(ClassBasedProviderDeclaration node) {}
@@ -28,6 +24,7 @@ mixin RiverpodAstVisitor {
   void visitRefReadInvocation(RefReadInvocation node) {}
   void visitRefListenInvocation(RefListenInvocation node) {}
   void visitWidgetRefInvocation(WidgetRefInvocation node) {}
+  void visitWidgetRefDependencyInvocation(WidgetRefDependencyInvocation node) {}
   void visitWidgetRefWatchInvocation(WidgetRefWatchInvocation node) {}
   void visitWidgetRefReadInvocation(WidgetRefReadInvocation node) {}
   void visitWidgetRefListenInvocation(WidgetRefListenInvocation node) {}
@@ -43,49 +40,59 @@ mixin RiverpodAstVisitor {
 
 abstract class RecursiveRiverpodAstVisitor extends GeneralizingAstVisitor<void>
     with RiverpodAstVisitor {
+  @override
   void visitClassDeclaration(ClassDeclaration node) {
     super.visitClassDeclaration(node);
-    node.consumerWidget.let(visitConsumerWidgetDeclaration);
-    node.hookConsumerWidget.let(visitHookConsumerWidgetDeclaration);
-    node.consumerStatefulWidget.let(visitConsumerStatefulWidgetDeclaration);
-    node.statefulHookConsumerWidget
-        .let(visitStatefulHookConsumerWidgetDeclaration);
-    node.consumerState.let(visitConsumerStateDeclaration);
+    node.widget.let(visitWidgetDeclaration);
+    node.state.let(visitStateDeclaration);
     node.provider.let(visitClassBasedProviderDeclaration);
   }
 
+  @override
   void visitAnnotatedNode(AnnotatedNode node) {
     super.visitAnnotatedNode(node);
     node.dependencies.let(visitDependenciesAnnotation);
     node.riverpod.let(visitRiverpodAnnotation);
   }
 
+  @override
+  void visitNode(AstNode node) {
+    super.visitNode(node);
+    node.accumulatedDependencies.let(visitAccumulatedDependencyList);
+  }
+
+  @override
   void visitFunctionDeclaration(FunctionDeclaration node) {
     super.visitFunctionDeclaration(node);
     node.provider.let(visitFunctionalProviderDeclaration);
   }
 
+  @override
   void visitVariableDeclaration(VariableDeclaration node) {
     super.visitVariableDeclaration(node);
     node.provider.let(visitLegacyProviderDeclaration);
   }
 
+  @override
   void visitDeclaration(Declaration node) {
     super.visitDeclaration(node);
     node.provider.let(visitGeneratorProviderDeclaration);
   }
 
+  @override
   void visitSimpleIdentifier(SimpleIdentifier node) {
     super.visitSimpleIdentifier(node);
     node.provider.let(visitProviderIdentifier);
   }
 
+  @override
   void visitExpression(Expression node) {
     super.visitExpression(node);
     node.providerListenable.let(visitProviderListenableExpression);
     node.overrides.let(visitProviderOverrideList);
   }
 
+  @override
   void visitMethodInvocation(MethodInvocation node) {
     super.visitMethodInvocation(node);
     node.refInvocation.let(visitRefInvocation);
@@ -94,6 +101,7 @@ abstract class RecursiveRiverpodAstVisitor extends GeneralizingAstVisitor<void>
     node.refReadInvocation.let(visitRefReadInvocation);
     node.refListenInvocation.let(visitRefListenInvocation);
     node.widgetRefInvocation.let(visitWidgetRefInvocation);
+    node.widgetRefDependencyInvocation.let(visitWidgetRefDependencyInvocation);
     node.widgetRefWatchInvocation.let(visitWidgetRefWatchInvocation);
     node.widgetRefReadInvocation.let(visitWidgetRefReadInvocation);
     node.widgetRefListenInvocation.let(visitWidgetRefListenInvocation);
@@ -101,11 +109,13 @@ abstract class RecursiveRiverpodAstVisitor extends GeneralizingAstVisitor<void>
         .let(visitWidgetRefListenManualInvocation);
   }
 
+  @override
   void visitCollectionElement(CollectionElement node) {
     super.visitCollectionElement(node);
     node.providerOverride.let(visitProviderOverrideExpression);
   }
 
+  @override
   void visitInstanceCreationExpression(InstanceCreationExpression node) {
     super.visitInstanceCreationExpression(node);
     node.providerContainer
@@ -121,19 +131,13 @@ abstract class SimpleRiverpodAstVisitor extends RecursiveRiverpodAstVisitor {
 
 abstract class UnimplementedRiverpodAstVisitor
     extends SimpleRiverpodAstVisitor {
-  void visitConsumerWidgetDeclaration(ConsumerWidgetDeclaration node) =>
+  void visitWidgetDeclaration(WidgetDeclaration node) =>
       throw UnimplementedError();
-  void visitHookConsumerWidgetDeclaration(HookConsumerWidgetDeclaration node) =>
-      throw UnimplementedError();
-  void visitConsumerStatefulWidgetDeclaration(
-          ConsumerStatefulWidgetDeclaration node) =>
-      throw UnimplementedError();
-  void visitStatefulHookConsumerWidgetDeclaration(
-          StatefulHookConsumerWidgetDeclaration node) =>
-      throw UnimplementedError();
-  void visitConsumerStateDeclaration(ConsumerStateDeclaration node) =>
+  void visitStateDeclaration(StateDeclaration node) =>
       throw UnimplementedError();
   void visitDependenciesAnnotation(DependenciesAnnotation node) =>
+      throw UnimplementedError();
+  void visitAccumulatedDependencyList(AccumulatedDependencyList node) =>
       throw UnimplementedError();
   void visitFunctionalProviderDeclaration(FunctionalProviderDeclaration node) =>
       throw UnimplementedError();
@@ -160,6 +164,8 @@ abstract class UnimplementedRiverpodAstVisitor
       throw UnimplementedError();
   void visitWidgetRefInvocation(WidgetRefInvocation node) =>
       throw UnimplementedError();
+  void visitWidgetRefDependencyInvocation(WidgetRefDependencyInvocation node) =>
+      throw UnimplementedError();
   void visitWidgetRefWatchInvocation(WidgetRefWatchInvocation node) =>
       throw UnimplementedError();
   void visitWidgetRefReadInvocation(WidgetRefReadInvocation node) =>
@@ -185,51 +191,22 @@ abstract class UnimplementedRiverpodAstVisitor
 class RiverpodAnalysisResult extends RecursiveRiverpodAstVisitor {
   final List<RiverpodAnalysisError> errors = [];
 
-  final consumerWidgetDeclarations = <ConsumerWidgetDeclaration>[];
+  final widgetDeclarations = <WidgetDeclaration>[];
   @override
-  void visitConsumerWidgetDeclaration(
-    ConsumerWidgetDeclaration node,
+  void visitWidgetDeclaration(
+    WidgetDeclaration node,
   ) {
-    super.visitConsumerWidgetDeclaration(node);
-    consumerWidgetDeclarations.add(node);
+    super.visitWidgetDeclaration(node);
+    widgetDeclarations.add(node);
   }
 
-  final hookConsumerWidgetDeclarations = <HookConsumerWidgetDeclaration>[];
+  final stateDeclarations = <StateDeclaration>[];
   @override
-  void visitHookConsumerWidgetDeclaration(
-    HookConsumerWidgetDeclaration node,
+  void visitStateDeclaration(
+    StateDeclaration node,
   ) {
-    super.visitHookConsumerWidgetDeclaration(node);
-    hookConsumerWidgetDeclarations.add(node);
-  }
-
-  final consumerStatefulWidgetDeclarations =
-      <ConsumerStatefulWidgetDeclaration>[];
-  @override
-  void visitConsumerStatefulWidgetDeclaration(
-    ConsumerStatefulWidgetDeclaration node,
-  ) {
-    super.visitConsumerStatefulWidgetDeclaration(node);
-    consumerStatefulWidgetDeclarations.add(node);
-  }
-
-  final statefulHookConsumerWidgetDeclarations =
-      <StatefulHookConsumerWidgetDeclaration>[];
-  @override
-  void visitStatefulHookConsumerWidgetDeclaration(
-    StatefulHookConsumerWidgetDeclaration node,
-  ) {
-    super.visitStatefulHookConsumerWidgetDeclaration(node);
-    statefulHookConsumerWidgetDeclarations.add(node);
-  }
-
-  final consumerStateDeclarations = <ConsumerStateDeclaration>[];
-  @override
-  void visitConsumerStateDeclaration(
-    ConsumerStateDeclaration node,
-  ) {
-    super.visitConsumerStateDeclaration(node);
-    consumerStateDeclarations.add(node);
+    super.visitStateDeclaration(node);
+    stateDeclarations.add(node);
   }
 
   final dependenciesAnnotations = <DependenciesAnnotation>[];
@@ -239,6 +216,15 @@ class RiverpodAnalysisResult extends RecursiveRiverpodAstVisitor {
   ) {
     super.visitDependenciesAnnotation(node);
     dependenciesAnnotations.add(node);
+  }
+
+  final accumulatedDependencyLists = <AccumulatedDependencyList>[];
+  @override
+  void visitAccumulatedDependencyList(
+    AccumulatedDependencyList node,
+  ) {
+    super.visitAccumulatedDependencyList(node);
+    accumulatedDependencyLists.add(node);
   }
 
   final functionalProviderDeclarations = <FunctionalProviderDeclaration>[];
@@ -358,6 +344,15 @@ class RiverpodAnalysisResult extends RecursiveRiverpodAstVisitor {
     widgetRefInvocations.add(node);
   }
 
+  final widgetRefDependencyInvocations = <WidgetRefDependencyInvocation>[];
+  @override
+  void visitWidgetRefDependencyInvocation(
+    WidgetRefDependencyInvocation node,
+  ) {
+    super.visitWidgetRefDependencyInvocation(node);
+    widgetRefDependencyInvocations.add(node);
+  }
+
   final widgetRefWatchInvocations = <WidgetRefWatchInvocation>[];
   @override
   void visitWidgetRefWatchInvocation(
@@ -461,45 +456,27 @@ class RiverpodAstRegistry {
     _onRiverpodAnalysisError.add(cb);
   }
 
-  final _onConsumerWidgetDeclaration =
-      <void Function(ConsumerWidgetDeclaration)>[];
-  void addConsumerWidgetDeclaration(
-      void Function(ConsumerWidgetDeclaration node) cb) {
-    _onConsumerWidgetDeclaration.add(cb);
+  final _onWidgetDeclaration = <void Function(WidgetDeclaration)>[];
+  void addWidgetDeclaration(void Function(WidgetDeclaration node) cb) {
+    _onWidgetDeclaration.add(cb);
   }
 
-  final _onHookConsumerWidgetDeclaration =
-      <void Function(HookConsumerWidgetDeclaration)>[];
-  void addHookConsumerWidgetDeclaration(
-      void Function(HookConsumerWidgetDeclaration node) cb) {
-    _onHookConsumerWidgetDeclaration.add(cb);
-  }
-
-  final _onConsumerStatefulWidgetDeclaration =
-      <void Function(ConsumerStatefulWidgetDeclaration)>[];
-  void addConsumerStatefulWidgetDeclaration(
-      void Function(ConsumerStatefulWidgetDeclaration node) cb) {
-    _onConsumerStatefulWidgetDeclaration.add(cb);
-  }
-
-  final _onStatefulHookConsumerWidgetDeclaration =
-      <void Function(StatefulHookConsumerWidgetDeclaration)>[];
-  void addStatefulHookConsumerWidgetDeclaration(
-      void Function(StatefulHookConsumerWidgetDeclaration node) cb) {
-    _onStatefulHookConsumerWidgetDeclaration.add(cb);
-  }
-
-  final _onConsumerStateDeclaration =
-      <void Function(ConsumerStateDeclaration)>[];
-  void addConsumerStateDeclaration(
-      void Function(ConsumerStateDeclaration node) cb) {
-    _onConsumerStateDeclaration.add(cb);
+  final _onStateDeclaration = <void Function(StateDeclaration)>[];
+  void addStateDeclaration(void Function(StateDeclaration node) cb) {
+    _onStateDeclaration.add(cb);
   }
 
   final _onDependenciesAnnotation = <void Function(DependenciesAnnotation)>[];
   void addDependenciesAnnotation(
       void Function(DependenciesAnnotation node) cb) {
     _onDependenciesAnnotation.add(cb);
+  }
+
+  final _onAccumulatedDependencyList =
+      <void Function(AccumulatedDependencyList)>[];
+  void addAccumulatedDependencyList(
+      void Function(AccumulatedDependencyList node) cb) {
+    _onAccumulatedDependencyList.add(cb);
   }
 
   final _onFunctionalProviderDeclaration =
@@ -578,6 +555,13 @@ class RiverpodAstRegistry {
     _onWidgetRefInvocation.add(cb);
   }
 
+  final _onWidgetRefDependencyInvocation =
+      <void Function(WidgetRefDependencyInvocation)>[];
+  void addWidgetRefDependencyInvocation(
+      void Function(WidgetRefDependencyInvocation node) cb) {
+    _onWidgetRefDependencyInvocation.add(cb);
+  }
+
   final _onWidgetRefWatchInvocation =
       <void Function(WidgetRefWatchInvocation)>[];
   void addWidgetRefWatchInvocation(
@@ -651,49 +635,20 @@ class _RiverpodAstRegistryVisitor extends RecursiveRiverpodAstVisitor {
   }
 
   @override
-  void visitConsumerWidgetDeclaration(ConsumerWidgetDeclaration node) {
-    super.visitConsumerWidgetDeclaration(node);
+  void visitWidgetDeclaration(WidgetDeclaration node) {
+    super.visitWidgetDeclaration(node);
     _runSubscriptions(
       node,
-      _registry._onConsumerWidgetDeclaration,
+      _registry._onWidgetDeclaration,
     );
   }
 
   @override
-  void visitHookConsumerWidgetDeclaration(HookConsumerWidgetDeclaration node) {
-    super.visitHookConsumerWidgetDeclaration(node);
+  void visitStateDeclaration(StateDeclaration node) {
+    super.visitStateDeclaration(node);
     _runSubscriptions(
       node,
-      _registry._onHookConsumerWidgetDeclaration,
-    );
-  }
-
-  @override
-  void visitConsumerStatefulWidgetDeclaration(
-      ConsumerStatefulWidgetDeclaration node) {
-    super.visitConsumerStatefulWidgetDeclaration(node);
-    _runSubscriptions(
-      node,
-      _registry._onConsumerStatefulWidgetDeclaration,
-    );
-  }
-
-  @override
-  void visitStatefulHookConsumerWidgetDeclaration(
-      StatefulHookConsumerWidgetDeclaration node) {
-    super.visitStatefulHookConsumerWidgetDeclaration(node);
-    _runSubscriptions(
-      node,
-      _registry._onStatefulHookConsumerWidgetDeclaration,
-    );
-  }
-
-  @override
-  void visitConsumerStateDeclaration(ConsumerStateDeclaration node) {
-    super.visitConsumerStateDeclaration(node);
-    _runSubscriptions(
-      node,
-      _registry._onConsumerStateDeclaration,
+      _registry._onStateDeclaration,
     );
   }
 
@@ -703,6 +658,15 @@ class _RiverpodAstRegistryVisitor extends RecursiveRiverpodAstVisitor {
     _runSubscriptions(
       node,
       _registry._onDependenciesAnnotation,
+    );
+  }
+
+  @override
+  void visitAccumulatedDependencyList(AccumulatedDependencyList node) {
+    super.visitAccumulatedDependencyList(node);
+    _runSubscriptions(
+      node,
+      _registry._onAccumulatedDependencyList,
     );
   }
 
@@ -820,6 +784,15 @@ class _RiverpodAstRegistryVisitor extends RecursiveRiverpodAstVisitor {
     _runSubscriptions(
       node,
       _registry._onWidgetRefInvocation,
+    );
+  }
+
+  @override
+  void visitWidgetRefDependencyInvocation(WidgetRefDependencyInvocation node) {
+    super.visitWidgetRefDependencyInvocation(node);
+    _runSubscriptions(
+      node,
+      _registry._onWidgetRefDependencyInvocation,
     );
   }
 

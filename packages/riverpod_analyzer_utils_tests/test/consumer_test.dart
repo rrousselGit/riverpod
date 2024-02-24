@@ -22,13 +22,9 @@ class ProviderWidget<T> extends ConsumerWidget {
 ''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
-    final consumerWidget = result.consumerWidgetDeclarations.single;
-    expect(consumerWidget, isA<ConsumerWidgetDeclaration>());
+    final consumerWidget = result.widgetDeclarations.single;
+    expect(consumerWidget, isA<StatelessWidgetDeclaration>());
     expect(consumerWidget.node.name.toString(), 'ProviderWidget');
-    expect(
-      consumerWidget.buildMethod!.toSource(),
-      '@override Widget build(BuildContext context, WidgetRef ref) {ref.watch(provider); return Container();}',
-    );
   });
 
   testSource('Decode ConsumerWidget declarations', source: '''
@@ -49,13 +45,9 @@ class MyConsumerWidget extends ConsumerWidget {
 ''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
-    final consumerWidget = result.consumerWidgetDeclarations.single;
-    expect(consumerWidget, isA<ConsumerWidgetDeclaration>());
+    final consumerWidget = result.widgetDeclarations.single;
+    expect(consumerWidget, isA<StatelessWidgetDeclaration>());
     expect(consumerWidget.node.name.toString(), 'MyConsumerWidget');
-    expect(
-      consumerWidget.buildMethod!.toSource(),
-      '@override Widget build(BuildContext context, WidgetRef ref) {ref.watch(provider); return Container();}',
-    );
   });
 
   testSource('Decode HookConsumerWidgetDeclaration declarations', source: '''
@@ -76,13 +68,9 @@ class MyConsumerWidget extends HookConsumerWidget {
 ''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
-    final consumerWidget = result.hookConsumerWidgetDeclarations.single;
-    expect(consumerWidget, isA<HookConsumerWidgetDeclaration>());
+    final consumerWidget = result.widgetDeclarations.single;
+    expect(consumerWidget, isA<StatelessWidgetDeclaration>());
     expect(consumerWidget.node.name.toString(), 'MyConsumerWidget');
-    expect(
-      consumerWidget.buildMethod!.toSource(),
-      '@override Widget build(BuildContext context, WidgetRef ref) {ref.watch(provider); return Container();}',
-    );
   });
 
   testSource('Decode ConsumerStatefulWidgetDeclarations declarations',
@@ -116,14 +104,16 @@ class MyConsumerState extends ConsumerState<MyConsumerWidget> {
 ''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
-    final consumerWidget = result.consumerStatefulWidgetDeclarations.single;
-    final consumerState = result.consumerStateDeclarations.single;
+    final consumerWidget =
+        result.widgetDeclarations.single as StatefulWidgetDeclaration;
+    final consumerState = result.stateDeclarations.single;
 
-    expect(consumerWidget, isA<ConsumerStatefulWidgetDeclaration>());
     expect(consumerWidget.node.name.toString(), 'MyConsumerWidget');
+    expect(consumerWidget.state, consumerState.element);
 
-    expect(consumerState, isA<ConsumerStateDeclaration>());
     expect(consumerState.node.name.toString(), 'MyConsumerState');
+    expect(consumerState.widget, consumerWidget.element);
+    expect(consumerState.element.widget, consumerWidget.element);
   });
 
   testSource('Decode StatefulHookConsumerWidgetDeclaration declarations',
@@ -156,13 +146,15 @@ class MyConsumerState extends ConsumerState<MyConsumerWidget> {
 ''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
-    final consumerWidget = result.statefulHookConsumerWidgetDeclarations.single;
-    final consumerState = result.consumerStateDeclarations.single;
+    final consumerWidget =
+        result.widgetDeclarations.single as StatefulWidgetDeclaration;
+    final consumerState = result.stateDeclarations.single;
 
-    expect(consumerWidget, isA<StatefulHookConsumerWidgetDeclaration>());
     expect(consumerWidget.node.name.toString(), 'MyConsumerWidget');
+    expect(consumerWidget.state, consumerState.element);
 
-    expect(consumerState, isA<ConsumerStateDeclaration>());
     expect(consumerState.node.name.toString(), 'MyConsumerState');
+    expect(consumerState.widget, consumerWidget.element);
+    expect(consumerState.element.widget, consumerWidget.element);
   });
 }

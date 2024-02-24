@@ -1,9 +1,11 @@
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
+import '../object_utils.dart';
 import '../riverpod_custom_lint.dart';
 
 class UnknownScopedUsage extends RiverpodLintRule {
@@ -11,7 +13,8 @@ class UnknownScopedUsage extends RiverpodLintRule {
 
   static const _code = LintCode(
     name: 'unknown_scoped_usage',
-    problemMessage: '{0}',
+    problemMessage:
+        'A provider was used, but could not find the associated `ref`.',
     errorSeverity: ErrorSeverity.WARNING,
   );
 
@@ -28,28 +31,34 @@ class UnknownScopedUsage extends RiverpodLintRule {
 
       final enclosingMethodInvocation =
           identifier.node.thisOrAncestorOfType<MethodInvocation>();
-      final refInvocation = enclosingMethodInvocation?.refInvocation;
+      final refInvocation = enclosingMethodInvocation?.refDependencyInvocation;
       final widgetRefInvocation =
-          enclosingMethodInvocation?.widgetRefInvocation;
+          enclosingMethodInvocation?.widgetRefDependencyInvocation;
 
-      // TODO reject ref.watch(obj.method(provider))
-      if (refInvocation != null || widgetRefInvocation != null) return;
+      // If in a ref expression, and the associated ref is the checked provider,
+      // then it's fine.
+      // This is to reject cases like `ref.watch(something(provider))`.
+      if (refInvocation?.listenable.provider == identifier ||
+          widgetRefInvocation?.listenable.provider == identifier) return;
 
-      // The provider expression is for an override, so it's fine.
-      final enclosingExpression =
-          identifier.node.thisOrAncestorOfType<Expression>();
-      final enclosingExpressionType = enclosingExpression?.staticType;
+      // .parent is used because providers count as overrides.
+      // We don't want to count "provider" as an override, and want to focus
+      // on "provider.overrideX".
+      final override = identifier.node.parent
+          ?.thisOrAncestorOfType<Expression>()
+          ?.providerOverride;
+      // The identifier is in override, so it's fine.
+      if (override?.provider == identifier) return;
 
-      if (enclosingExpressionType != null &&
-          overrideType.isAssignableFromType(enclosingExpressionType)) {
-        return;
-      }
+      final enclosingConstructorType = identifier
+          .node.staticParameterElement?.enclosingElement
+          .safeCast<ConstructorElement>()
+          ?.returnType;
+      // Silence the warning if passed to a widget constructor.
+      if (enclosingConstructorType != null &&
+          widgetType.isAssignableFromType(enclosingConstructorType)) return;
 
-      reporter.reportErrorForNode(
-        code,
-        identifier.node,
-        ['A provider was used, but could not find the associated `ref`.'],
-      );
+      reporter.reportErrorForNode(code, identifier.node);
     });
   }
 }

@@ -1,6 +1,8 @@
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:meta/meta.dart';
 
-extension UpsertAst on AstNode {
+@internal
+extension AstUtils on AstNode {
   R upsert<R>(
     String keyPart,
     R Function() create,
@@ -13,5 +15,13 @@ extension UpsertAst on AstNode {
     final created = create();
     setProperty(key, (created,));
     return created;
+  }
+
+  Iterable<AstNode> get ancestors sync* {
+    var parent = this.parent;
+    while (parent != null) {
+      yield parent;
+      parent = parent.parent;
+    }
   }
 }

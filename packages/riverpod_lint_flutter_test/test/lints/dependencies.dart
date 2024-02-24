@@ -1,5 +1,6 @@
 // ignore_for_file: unused_field
 
+import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'another.dart' as import_alias;
@@ -212,4 +213,117 @@ class AliasClass extends _$AliasClass {
 
   @override
   int build() => 0;
+}
+
+// === @Dependencies ===
+
+// Can specify dependencies on top-level declarations
+@Dependencies([dep])
+class RootDependenciesClass {}
+
+// Specifying @Dependencies on class members requires specifying them on
+// the class too:
+class MemberDependencies {
+  @Dependencies([
+    // expect_lint: dependencies
+    dep,
+  ])
+  int build() => 0;
+}
+
+@Dependencies([dep])
+class MemberDependencies2 {
+  @Dependencies([dep])
+  int build() => 0;
+}
+
+@Dependencies([])
+class MemberDependencies3 {
+  // expect_lint: dependencies
+  @Dependencies([dep])
+  int build() => 0;
+}
+
+// Counts @Riverpod dependencies too
+@Riverpod(dependencies: [dep])
+class RiverpodDependencies extends _$RiverpodDependencies {
+  @Dependencies([dep])
+  @override
+  int build() {
+    ref.watch(depProvider);
+    return 0;
+  }
+}
+
+// Handle identifiers with dependencies
+@Dependencies([dep])
+void fn() {}
+
+void fn2() {
+  // expect_lint: dependencies
+  fn();
+}
+
+@Dependencies([dep])
+void fn3() => fn();
+
+@riverpod
+int foo(FooRef ref) {
+  // expect_lint: dependencies
+  fn();
+  return 0;
+}
+
+// Handle widget with dependencies
+@Dependencies([dep])
+class WidgetDependencies extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) => const SizedBox();
+}
+
+class WidgetDependencies2 extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // expect_lint: dependencies
+    return WidgetDependencies();
+  }
+}
+
+@Dependencies([dep])
+class WidgetDependencies3 extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return WidgetDependencies();
+  }
+}
+
+@Dependencies([dep])
+class Stateful extends StatefulWidget {
+  const Stateful({super.key});
+
+  @override
+  State<Stateful> createState() => _StatefulState();
+}
+
+class _StatefulState extends State<Stateful> {
+  @override
+  Widget build(BuildContext context) {
+    return WidgetDependencies();
+  }
+}
+
+// expect_lint: dependencies
+@Dependencies([])
+class Stateful2 extends StatefulWidget {
+  const Stateful2({super.key});
+
+  @override
+  State<Stateful2> createState() => _Stateful2State();
+}
+
+class _Stateful2State extends State<Stateful2> {
+  @override
+  Widget build(BuildContext context) {
+    return WidgetDependencies();
+  }
 }

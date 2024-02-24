@@ -1865,5 +1865,138 @@ abstract class _$AliasClass extends $Notifier<int> {
   int runBuild() => build();
 }
 
+@ProviderFor(RiverpodDependencies)
+const riverpodDependenciesProvider = RiverpodDependenciesProvider._();
+
+final class RiverpodDependenciesProvider
+    extends $NotifierProvider<RiverpodDependencies, int> {
+  const RiverpodDependenciesProvider._(
+      {super.runNotifierBuildOverride, RiverpodDependencies Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'riverpodDependenciesProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[depProvider],
+          allTransitiveDependencies: const <ProviderOrFamily>[
+            RiverpodDependenciesProvider.$allTransitiveDependencies0,
+          ],
+        );
+
+  static const $allTransitiveDependencies0 = depProvider;
+
+  final RiverpodDependencies Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$riverpodDependenciesHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  RiverpodDependencies create() => _createCb?.call() ?? RiverpodDependencies();
+
+  @$internal
+  @override
+  RiverpodDependenciesProvider $copyWithCreate(
+    RiverpodDependencies Function() create,
+  ) {
+    return RiverpodDependenciesProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  RiverpodDependenciesProvider $copyWithBuild(
+    int Function(
+      Ref<int>,
+      RiverpodDependencies,
+    ) build,
+  ) {
+    return RiverpodDependenciesProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<RiverpodDependencies, int> $createElement(
+          ProviderContainer container) =>
+      $NotifierProviderElement(this, container);
+}
+
+String _$riverpodDependenciesHash() =>
+    r'a0a94e21f6d98df529e4e8a469ed3aec5af37061';
+
+abstract class _$RiverpodDependencies extends $Notifier<int> {
+  int build();
+  @$internal
+  @override
+  int runBuild() => build();
+}
+
+typedef FooRef = Ref<int>;
+
+@ProviderFor(foo)
+const fooProvider = FooProvider._();
+
+final class FooProvider extends $FunctionalProvider<int, int, FooRef>
+    with $Provider<int, FooRef> {
+  const FooProvider._(
+      {int Function(
+        FooRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'fooProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final int Function(
+    FooRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$fooHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  FooProvider $copyWithCreate(
+    int Function(
+      FooRef ref,
+    ) create,
+  ) {
+    return FooProvider._(create: create);
+  }
+
+  @override
+  int create(FooRef ref) {
+    final _$cb = _createCb ?? foo;
+    return _$cb(ref);
+  }
+}
+
+String _$fooHash() => r'f9ce60fe868c2c54aa282702554861a13e8871cd';
+
 // ignore_for_file: type=lint
 // ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

@@ -1,62 +1,71 @@
 part of '../../nodes.dart';
 
-@_ast
-extension ConsumerStatefulWidgetDeclarationX on ClassDeclaration {
-  ConsumerStatefulWidgetDeclaration? get consumerStatefulWidget {
-    return upsert('ConsumerStatefulWidgetDeclaration', () {
-      final type = extendsClause?.superclass.type;
-      if (type == null || !consumerStatefulWidgetType.isExactlyType(type)) {
-        return null;
-      }
+ClassElement? _findState(ClassElement node) {
+  final type =
+      node.methods.firstWhereOrNull((e) => e.name == 'createState')?.returnType;
 
-      return ConsumerStatefulWidgetDeclaration._(node: this);
-    });
+  if (type == null) return null;
+
+  // May be typed as `MyState createState()` or `State<MyWidget> createState()`.
+  // The latter prevents from finding the state class.
+  if (isFromFlutter.isExactlyType(type) ||
+      isFromFlutterRiverpod.isExactlyType(type) ||
+      isFromRiverpod.isExactlyType(type) ||
+      isFromHooksRiverpod.isExactlyType(type)) {
+    return null;
   }
+
+  return type.element.cast<ClassElement>();
 }
 
-final class ConsumerStatefulWidgetDeclaration extends ConsumerDeclaration {
-  ConsumerStatefulWidgetDeclaration._({required this.node});
+final class StatefulWidgetDeclaration extends WidgetDeclaration {
+  StatefulWidgetDeclaration({
+    required this.node,
+    required this.state,
+    required this.element,
+  });
 
+  static StatefulWidgetDeclaration? _parse(ClassDeclaration node) {
+    final stateClass = node.declaredElement.let(_findState);
+    final element = node.declaredElement.let(
+      StatefulWidgetDeclarationElement._parse,
+    );
+    if (element == null) return null;
+
+    return StatefulWidgetDeclaration(
+      node: node,
+      element: element,
+      state: stateClass.let(StateDeclarationElement._parse),
+    );
+  }
+
+  final StateDeclarationElement? state;
+  @override
+  final StatefulWidgetDeclarationElement element;
   @override
   final ClassDeclaration node;
 }
 
-@_ast
-extension StatefulHookConsumerWidgetDeclarationX on ClassDeclaration {
-  StatefulHookConsumerWidgetDeclaration? get statefulHookConsumerWidget {
-    return upsert('StatefulHookConsumerWidgetDeclaration', () {
-      final type = extendsClause?.superclass.type;
-      if (type == null || !statefulHookConsumerStateType.isExactlyType(type)) {
-        return null;
-      }
+final class StatefulWidgetDeclarationElement extends WidgetDeclarationElement {
+  StatefulWidgetDeclarationElement({
+    required this.node,
+    required this.dependencies,
+  });
 
-      return StatefulHookConsumerWidgetDeclaration._(node: this);
+  static final _cache = _Cache<StatefulWidgetDeclarationElement>();
+
+  static StatefulWidgetDeclarationElement? _parse(ClassElement node) {
+    return _cache(node, () {
+      final dependencies = DependenciesAnnotationElement._of(node);
+
+      return StatefulWidgetDeclarationElement(
+        node: node,
+        dependencies: dependencies,
+      );
     });
   }
-}
 
-final class StatefulHookConsumerWidgetDeclaration extends ConsumerDeclaration {
-  StatefulHookConsumerWidgetDeclaration._({required this.node});
-
+  final ClassElement node;
   @override
-  final ClassDeclaration node;
-}
-
-@_ast
-extension ConsumerStateDeclarationX on ClassDeclaration {
-  ConsumerStateDeclaration? get consumerState {
-    return upsert('ConsumerStateDeclaration', () {
-      final type = extendsClause?.superclass.type;
-      if (type == null || !consumerStateType.isExactlyType(type)) return null;
-
-      return ConsumerStateDeclaration._(node: this);
-    });
-  }
-}
-
-final class ConsumerStateDeclaration extends ConsumerDeclaration {
-  ConsumerStateDeclaration._({required this.node});
-
-  @override
-  final ClassDeclaration node;
+  final DependenciesAnnotationElement? dependencies;
 }

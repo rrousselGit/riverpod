@@ -14,6 +14,9 @@ analyzer:
 
 linter:
   rules:
+    # Not an issue if using dartfmt
+    no_adjacent_strings_in_list: false
+
     # False positive for custom enum-like classes (such as Flutter's "Colors")
     avoid_classes_with_only_static_members: false
 

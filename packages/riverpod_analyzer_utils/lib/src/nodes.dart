@@ -20,8 +20,9 @@ import 'argument_list_utils.dart';
 import 'element_util.dart';
 import 'object_extensions.dart';
 
-part 'nodes/widgets/stateless_widget.dart';
+part 'nodes/widgets/state.dart';
 part 'nodes/widgets/stateful_widget.dart';
+part 'nodes/widgets/stateless_widget.dart';
 part 'nodes/widgets/widget.dart';
 
 part 'nodes/dependencies.dart';

@@ -182,11 +182,154 @@ extension on DartObject {
   }
 }
 
+final class AccumulatedDependency {
+  AccumulatedDependency._({required this.node, required this.provider});
+
+  final AstNode? node;
+  final GeneratorProviderDeclarationElement provider;
+}
+
+sealed class AccumulatedDependencyNode {
+  AstNode get node;
+}
+
+class AnnotatedNodeAccumulatedDependencyNode extends AccumulatedDependencyNode {
+  AnnotatedNodeAccumulatedDependencyNode._(this.node);
+
+  @override
+  final AnnotatedNode node;
+}
+
+class IdentifierAccumulatedDependencyNode extends AccumulatedDependencyNode {
+  IdentifierAccumulatedDependencyNode._(this.node);
+
+  @override
+  final Identifier node;
+}
+
+class TypeAnnotationAccumulatedDependencyNode
+    extends AccumulatedDependencyNode {
+  TypeAnnotationAccumulatedDependencyNode._(this.node);
+
+  @override
+  final TypeAnnotation node;
+}
+
+final class AccumulatedDependencyList {
+  AccumulatedDependencyList._({
+    required this.node,
+    required this.riverpod,
+    required this.dependencies,
+    required this.dependenciesElement,
+  }) : parent = node.node.ancestors
+            .map((e) => e.accumulatedDependencies)
+            .whereNotNull()
+            .firstOrNull;
+
+  final AccumulatedDependencyNode node;
+  final AccumulatedDependencyList? parent;
+  final GeneratorProviderDeclaration? riverpod;
+  final DependenciesAnnotation? dependencies;
+  final DependenciesAnnotationElement? dependenciesElement;
+
+  Iterable<AccumulatedDependency>? get allDependencies {
+    final dependencies = this.dependencies?.dependencies;
+    final riverpod = this.riverpod?.annotation.dependencyList;
+    final dependenciesElement = this.dependenciesElement?.dependencies;
+
+    if (dependencies == null &&
+        riverpod == null &&
+        dependenciesElement == null) {
+      return null;
+    }
+
+    final dependenciesValues = dependencies?.values?.map(
+      (e) => AccumulatedDependency._(node: e.node, provider: e.provider),
+    );
+    final riverpodValues = riverpod?.values?.map(
+      (e) => AccumulatedDependency._(node: e.node, provider: e.provider),
+    );
+    final dependenciesElementValues = dependenciesElement
+        ?.map((e) => AccumulatedDependency._(node: null, provider: e));
+
+    return (dependenciesValues ?? const [])
+        .followedBy(riverpodValues ?? const [])
+        .followedBy(dependenciesElementValues ?? const []);
+  }
+}
+
 @_ast
 extension DependenciesAnnotatedAnnotatedNodeX on AnnotatedNode {
   DependenciesAnnotation? get dependencies {
     return upsert('DependenciesAnnotationAnnotatedNodeX', () {
       return metadata.map((e) => e.dependencies).whereNotNull().firstOrNull;
+    });
+  }
+}
+
+@_ast
+extension AccumulatedDependenciesX on AstNode {
+  AccumulatedDependencyList? get accumulatedDependencies {
+    return upsert('accumulatedDependencies', () {
+      final that = this;
+      if (that is AnnotatedNode) {
+        final dependencies = that.dependencies;
+        final provider = cast<Declaration>()?.provider;
+
+        if (provider == null &&
+            dependencies == null &&
+            // Always initialize root declarations,
+            // to handle cases where a method in a class has @Dependencies
+            // but the class itself does not.
+            that is! CompilationUnitMember) return null;
+
+        return AccumulatedDependencyList._(
+          node: AnnotatedNodeAccumulatedDependencyNode._(that),
+          dependencies: dependencies,
+          riverpod: provider,
+          dependenciesElement: null,
+        );
+      }
+
+      if (that is Identifier) {
+        final elementDependencies = that.elementDependencies;
+        if (elementDependencies == null) return null;
+
+        return AccumulatedDependencyList._(
+          node: IdentifierAccumulatedDependencyNode._(that),
+          riverpod: null,
+          dependencies: null,
+          dependenciesElement: elementDependencies,
+        );
+      }
+
+      if (that is TypeAnnotation) {
+        final typeElement = that.type?.element;
+        if (typeElement == null) return null;
+        final dependenciesElement =
+            DependenciesAnnotationElement._of(typeElement);
+        if (dependenciesElement == null) return null;
+
+        return AccumulatedDependencyList._(
+          node: TypeAnnotationAccumulatedDependencyNode._(that),
+          riverpod: null,
+          dependencies: null,
+          dependenciesElement: dependenciesElement,
+        );
+      }
+
+      return null;
+    });
+  }
+}
+
+extension on Identifier {
+  DependenciesAnnotationElement? get elementDependencies {
+    return upsert('Identifier#dependenciesElement', () {
+      final staticElement = this.staticElement;
+      if (staticElement == null) return null;
+
+      return DependenciesAnnotationElement._of(staticElement);
     });
   }
 }
@@ -266,6 +409,10 @@ final class DependenciesAnnotationElement {
         dependencies: dependencyList,
       );
     });
+  }
+
+  static DependenciesAnnotationElement? _of(Element element) {
+    return element.metadata.map(_parse).whereNotNull().firstOrNull;
   }
 
   final ElementAnnotation element;
