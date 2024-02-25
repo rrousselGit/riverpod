@@ -14,6 +14,8 @@
     }
   )
   ```
+
+- Adds `provider_name_prefix` and `provider_family_name_prefix` to `build.yaml`. (thanks to @ValentinVignal)
 - Generated providers are now always `const`.
 - Added support for abstract `build` method on Notifiers:
   ```dart
@@ -121,10 +123,6 @@ This comes with a few minor restrictions:
 
 - **Breaking**: Arguments of the form `fn(void myParameter())`
   are no-longer supported. Instead use `fn(void Function() myParameter)`.
-
-## Unreleased minor
-
-- Adds `provider_name_prefix` and `provider_family_name_prefix` to `build.yaml`. (thanks to @ValentinVignal)
 
 ## 2.3.11 - 2024-02-04
 
