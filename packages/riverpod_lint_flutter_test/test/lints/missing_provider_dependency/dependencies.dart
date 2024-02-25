@@ -1,4 +1,4 @@
-// ignore_for_file: unused_field, avoid_manual_providers_as_generated_provider_dependency, unused_provider_dependency
+// ignore_for_file: unused_field, avoid_manual_providers_as_generated_provider_dependency
 
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -26,11 +26,11 @@ int watchScopedButNoDependencies(WatchScopedButNoDependenciesRef ref) {
   return ref.watch(scoped);
 }
 
+// expect_lint: provider_dependencies
 @riverpod
 int watchGeneratedScopedButNoDependencies(
   WatchGeneratedScopedButNoDependenciesRef ref,
 ) {
-  // expect_lint: missing_provider_dependency
   return ref.watch(generatedScopedProvider);
 }
 
@@ -52,11 +52,11 @@ int watchScopedButEmptyDependencies(WatchScopedButEmptyDependenciesRef ref) {
   return ref.watch(scoped);
 }
 
+// expect_lint: provider_dependencies
 @Riverpod(dependencies: [])
 int watchGeneratedScopedButEmptyDependencies(
   WatchGeneratedScopedButEmptyDependenciesRef ref,
 ) {
-  // expect_lint: missing_provider_dependency
   return ref.watch(generatedScopedProvider);
 }
 
@@ -78,13 +78,6 @@ int watchGeneratedScopedAndContainsDependency(
   WatchGeneratedScopedAndContainsDependencyRef ref,
 ) {
   return ref.watch(generatedScopedProvider);
-}
-
-// A dependency is specified but never used
-@Riverpod(dependencies: [dep, generatedRoot])
-int specifiedDependencyButNeverUsed(SpecifiedDependencyButNeverUsedRef ref) {
-  ref.watch(depProvider);
-  return 0;
 }
 
 // Works with classes too
@@ -148,25 +141,23 @@ class AliasClass extends _$AliasClass {
 
 // Can specify dependencies on top-level declarations
 @Dependencies([dep])
-class RootDependenciesClass {}
+class RootDependenciesClass {
+  void foo() {
+    fn();
+  }
+}
 
 // Specifying @Dependencies on class members requires specifying them on
 // the class too:
 class MemberDependencies {
-  // expect_lint: missing_provider_dependency
-  @Dependencies([dep])
-  int build() => 0;
-}
-
-@Dependencies([dep])
-class MemberDependencies2 {
+  // expect_lint: provider_dependencies
   @Dependencies([dep])
   int build() => 0;
 }
 
 @Dependencies([])
 class MemberDependencies3 {
-  // expect_lint: missing_provider_dependency
+  // expect_lint: provider_dependencies
   @Dependencies([dep])
   int build() => 0;
 }
@@ -183,20 +174,21 @@ class RiverpodDependencies extends _$RiverpodDependencies {
 }
 
 // Handle identifiers with dependencies
+// expect_lint: provider_dependencies
 @Dependencies([dep])
 void fn() {}
 
+// expect_lint: provider_dependencies
 void fn2() {
-  // expect_lint: missing_provider_dependency
   fn();
 }
 
 @Dependencies([dep])
 void fn3() => fn();
 
+// expect_lint: provider_dependencies
 @riverpod
 int foo(FooRef ref) {
-  // expect_lint: missing_provider_dependency
   fn();
   return 0;
 }
@@ -211,10 +203,10 @@ class WidgetDependencies extends StatelessWidget {
   }
 }
 
+// expect_lint: provider_dependencies
 class WidgetDependencies2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // expect_lint: missing_provider_dependency
     return WidgetDependencies();
   }
 }
@@ -250,22 +242,23 @@ class Stateful2 extends StatefulWidget {
   State<Stateful2> createState() => _Stateful2State();
 }
 
+// expect_lint: provider_dependencies
 class _Stateful2State extends State<Stateful2> {
   @override
   Widget build(BuildContext context) {
-    // expect_lint: missing_provider_dependency
     return WidgetDependencies();
   }
 }
 
+// expect_lint: provider_dependencies
 class Stateful3 extends StatefulWidget {
   const Stateful3({super.key});
 
   @override
-  // expect_lint: missing_provider_dependency
   State<Stateful3> createState() => _Stateful3State();
 }
 
+// expect_lint: provider_dependencies
 @Dependencies([dep])
 class _Stateful3State extends State<Stateful3> {
   @override

@@ -1,5 +1,5 @@
 import 'package:collection/collection.dart';
-import 'package:riverpod_lint/src/lints/unused_provider_dependency.dart';
+import 'package:riverpod_lint/src/lints/provider_dependencies.dart';
 import 'package:test/test.dart';
 
 import '../../golden.dart';
@@ -11,7 +11,7 @@ void main() {
     sourcePath:
         'test/lints/unused_provider_dependency/provider_dependencies.dart',
     (result) async {
-      const lint = UnusedProviderDependency();
+      const lint = ProviderDependencies();
       final fix = lint.getFixes().single;
 
       final errors = await lint.testRun(result);

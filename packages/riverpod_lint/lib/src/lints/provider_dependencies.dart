@@ -100,8 +100,8 @@ class _FindNestedDependency extends RecursiveRiverpodAstVisitor {
   }
 }
 
-class UnusedProviderDependency extends RiverpodLintRule {
-  const UnusedProviderDependency() : super(code: _code);
+class ProviderDependencies extends RiverpodLintRule {
+  const ProviderDependencies() : super(code: _code);
 
   static const _code = LintCode(
     name: 'provider_dependencies',
@@ -184,6 +184,9 @@ class UnusedProviderDependency extends RiverpodLintRule {
       );
     });
   }
+
+  @override
+  List<DartFix> getFixes() => [];
 }
 
 // class _ProviderDependenciesFix extends RiverpodFix {
