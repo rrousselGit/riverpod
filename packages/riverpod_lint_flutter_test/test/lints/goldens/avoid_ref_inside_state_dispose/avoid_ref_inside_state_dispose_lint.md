@@ -3,11 +3,13 @@ severity: Severity.warning
 message: Avoid using 'Ref' inside State.dispose.
 test/lints/avoid_ref_inside_state_dispose.dart:17:5
 
+```dart
   void dispose() {
     // expect_lint: avoid_ref_inside_state_dispose
     >>>ref.read(provider)<<<;
     // expect_lint: avoid_ref_inside_state_dispose
     ref.watch(provider);
+```
 
 =======
 
@@ -16,8 +18,10 @@ severity: Severity.warning
 message: Avoid using 'Ref' inside State.dispose.
 test/lints/avoid_ref_inside_state_dispose.dart:19:5
 
+```dart
     ref.read(provider);
     // expect_lint: avoid_ref_inside_state_dispose
     >>>ref.watch(provider)<<<;
 
     super.dispose();
+```

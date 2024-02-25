@@ -4,11 +4,13 @@ correctionMessage: Either stop marking this provider as `keepAlive` or remove `k
 message: If a provider is declared as `keepAlive`, it can only use providers that are also declared as `keepAlive.
 test/lints/only_use_keep_alive_inside_keep_alive.dart:27:3
 
+```dart
 
   // expect_lint: only_use_keep_alive_inside_keep_alive
   >>>ref.watch(autoDisposeProvider)<<<;
   // expect_lint: only_use_keep_alive_inside_keep_alive
   ref.watch(autoDisposeClassProvider);
+```
 
 =======
 
@@ -18,8 +20,10 @@ correctionMessage: Either stop marking this provider as `keepAlive` or remove `k
 message: If a provider is declared as `keepAlive`, it can only use providers that are also declared as `keepAlive.
 test/lints/only_use_keep_alive_inside_keep_alive.dart:29:3
 
+```dart
   ref.watch(autoDisposeProvider);
   // expect_lint: only_use_keep_alive_inside_keep_alive
   >>>ref.watch(autoDisposeClassProvider)<<<;
 
   return 0;
+```
