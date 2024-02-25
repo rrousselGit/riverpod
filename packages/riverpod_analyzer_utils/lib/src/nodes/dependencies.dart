@@ -182,10 +182,22 @@ extension on DartObject {
   }
 }
 
-final class AccumulatedDependency {
-  AccumulatedDependency._({required this.node, required this.provider});
+sealed class Location {}
 
-  final AstNode? node;
+class LocationNode implements Location {
+  LocationNode(this.node);
+  final AstNode node;
+}
+
+class LocationElement implements Location {
+  LocationElement(this.element);
+  final Element element;
+}
+
+final class AccumulatedDependency {
+  AccumulatedDependency._({required this.location, required this.provider});
+
+  final Location location;
   final GeneratorProviderDeclarationElement provider;
 }
 
@@ -222,13 +234,23 @@ final class AccumulatedDependencyList {
     }
 
     final dependenciesValues = dependencies?.values?.map(
-      (e) => AccumulatedDependency._(node: e.node, provider: e.provider),
+      (e) => AccumulatedDependency._(
+        location: LocationNode(e.node),
+        provider: e.provider,
+      ),
     );
     final riverpodValues = riverpod?.values?.map(
-      (e) => AccumulatedDependency._(node: e.node, provider: e.provider),
+      (e) => AccumulatedDependency._(
+        location: LocationNode(e.node),
+        provider: e.provider,
+      ),
     );
-    final dependenciesElementValues = dependenciesElement
-        ?.map((e) => AccumulatedDependency._(node: null, provider: e));
+    final dependenciesElementValues = dependenciesElement?.map(
+      (provider) => AccumulatedDependency._(
+        location: LocationElement(this.dependenciesElement!.element.element!),
+        provider: provider,
+      ),
+    );
 
     return (dependenciesValues ?? const [])
         .followedBy(riverpodValues ?? const [])

@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/diagnostic/diagnostic.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:analyzer_plugin/utilities/change_builder/change_builder_dart.dart';
@@ -11,6 +12,39 @@ import '../riverpod_custom_lint.dart';
 
 const _fixDependenciesPriority = 100;
 
+class _LocatedProvider {
+  _LocatedProvider(this.provider, this.node);
+
+  final ProviderDeclarationElement provider;
+  final Location node;
+}
+
+class _MyDiagnostic implements DiagnosticMessage {
+  _MyDiagnostic({
+    required this.message,
+    required this.filePath,
+    required this.length,
+    required this.offset,
+  });
+
+  @override
+  String? get url => null;
+
+  final String message;
+
+  @override
+  final String filePath;
+
+  @override
+  final int length;
+
+  @override
+  final int offset;
+
+  @override
+  String messageText({required bool includeUrl}) => message;
+}
+
 class _FindNestedDependency extends RecursiveRiverpodAstVisitor {
   _FindNestedDependency(
     this.accumulatedDependencyList, {
@@ -21,7 +55,7 @@ class _FindNestedDependency extends RecursiveRiverpodAstVisitor {
   final AccumulatedDependencyList accumulatedDependencyList;
   final bool visitStates;
   final void Function(
-    ProviderDeclarationElement provider,
+    _LocatedProvider provider,
     AccumulatedDependencyList list, {
     required bool checkOverrides,
   }) onProvider;
@@ -73,7 +107,7 @@ class _FindNestedDependency extends RecursiveRiverpodAstVisitor {
     super.visitProviderIdentifier(node);
 
     onProvider(
-      node.providerElement,
+      _LocatedProvider(node.providerElement, LocationNode(node.node)),
       accumulatedDependencyList,
       checkOverrides: false,
     );
@@ -93,7 +127,7 @@ class _FindNestedDependency extends RecursiveRiverpodAstVisitor {
     if (node.dependencies.dependencies case final deps?) {
       for (final dep in deps) {
         onProvider(
-          dep,
+          _LocatedProvider(dep, LocationNode(node.node)),
           accumulatedDependencyList,
           checkOverrides: false,
         );
@@ -112,7 +146,7 @@ class _FindNestedDependency extends RecursiveRiverpodAstVisitor {
     if (node.dependencies.dependencies case final deps?) {
       for (final dep in deps) {
         onProvider(
-          dep,
+          _LocatedProvider(dep, LocationNode(node.node)),
           accumulatedDependencyList,
           // We check overrides only for Widget instances, as we can't guarantee
           // that non-widget instances use a "ref" that's a child of the overrides.
@@ -130,7 +164,7 @@ class _Data {
   });
 
   final AccumulatedDependencyList list;
-  final Set<GeneratorProviderDeclarationElement> usedDependencies;
+  final List<_LocatedProvider> usedDependencies;
 }
 
 extension on AccumulatedDependencyList {
@@ -168,11 +202,12 @@ class ProviderDependencies extends RiverpodLintRule {
         return;
       }
 
-      final usedDependencies = <GeneratorProviderDeclarationElement>{};
+      final usedDependencies = <_LocatedProvider>[];
 
       final visitor = _FindNestedDependency(
         list,
-        onProvider: (provider, list, {required checkOverrides}) {
+        onProvider: (locatedProvider, list, {required checkOverrides}) {
+          final provider = locatedProvider.provider;
           if (provider is! GeneratorProviderDeclarationElement) return;
           if (!provider.isScoped) return;
           // Check if the provider is overridden. If it is, the provider doesn't
@@ -189,20 +224,23 @@ class ProviderDependencies extends RiverpodLintRule {
             }
           }
 
-          usedDependencies.add(provider);
+          usedDependencies.add(locatedProvider);
         },
       );
 
       list.node.accept(visitor);
 
       var unusedDependencies = list.allDependencies
-          ?.map((e) => e.provider)
-          .where((e) => !usedDependencies.contains(e))
+          ?.where(
+            (dependency) =>
+                !usedDependencies.any((e) => e.provider == dependency.provider),
+          )
           .toList();
       final missingDependencies = usedDependencies
           .where(
             (dependency) =>
-                list.allDependencies?.every((e) => e.provider != dependency) ??
+                list.allDependencies
+                    ?.every((e) => e.provider != dependency.provider) ??
                 true,
           )
           .toSet();
@@ -210,14 +248,39 @@ class ProviderDependencies extends RiverpodLintRule {
       unusedDependencies ??= const [];
       if (unusedDependencies.isEmpty && missingDependencies.isEmpty) return;
 
+      final message = StringBuffer();
+      if (unusedDependencies.isNotEmpty) {
+        message.write('Unused dependencies: ');
+        message.writeAll(unusedDependencies.map((e) => e.provider.name), ', ');
+      }
+      if (missingDependencies.isNotEmpty) {
+        if (unusedDependencies.isNotEmpty) {
+          message.write(' | ');
+        }
+        message.write('Missing dependencies: ');
+        message.writeAll(missingDependencies.map((e) => e.provider.name), ', ');
+      }
+
       reporter.reportErrorForNode(
         _code,
         list.target,
+        [message.toString()],
         [
-          'Unused dependencies: ${unusedDependencies.map((e) => e.name).join(', ')} | '
-              'Missing dependencies: ${missingDependencies.map((e) => e.name).join(', ')} ',
+          for (final dependency in missingDependencies)
+            if (dependency.provider.element.source case final source?)
+              _MyDiagnostic(
+                message: dependency.provider.name,
+                filePath: source.fullName,
+                offset: switch (dependency.node) {
+                  LocationNode(:final node) => node.offset,
+                  LocationElement(:final element) => element.nameOffset,
+                },
+                length: switch (dependency.node) {
+                  LocationNode(:final node) => node.length,
+                  LocationElement(:final element) => element.nameLength,
+                },
+              ),
         ],
-        [],
         _Data(
           usedDependencies: usedDependencies,
           list: list,
@@ -242,7 +305,8 @@ class _ProviderDependenciesFix extends RiverpodFix {
     final data = analysisError.data;
     if (data is! _Data) return;
 
-    final scopedDependencies = data.usedDependencies;
+    final scopedDependencies =
+        data.usedDependencies.map((e) => e.provider).toSet();
     final newDependencies = scopedDependencies.isEmpty
         ? null
         : '[${scopedDependencies.map((e) => e.name).join(', ')}]';
@@ -276,20 +340,14 @@ class _ProviderDependenciesFix extends RiverpodFix {
         data.list.dependencies?.dependencies;
 
     if (dependencyList == null) {
-      if (riverpodAnnotation == null && dependencies == null) {
-        // No annotation found, so we can't fix anything.
-        // This shouldn't happen but prevents errors in case of bad states.
-        return;
-      }
-
       final changeBuilder = reporter.createChangeBuilder(
         message: 'Specify "dependencies"',
         priority: _fixDependenciesPriority,
       );
       changeBuilder.addDartFileEdit((builder) {
-        if (data.list.riverpod?.annotation case final riverpod?) {
+        if (riverpodAnnotation case final riverpod?) {
           _riverpodSpecifyDependencies(builder, riverpod, newDependencies);
-        } else if (dependencies != null) {
+        } else {
           builder.addSimpleInsertion(
             data.list.node.offset,
             '@Dependencies($newDependencies)\n',
@@ -300,12 +358,17 @@ class _ProviderDependenciesFix extends RiverpodFix {
       return;
     }
 
+    if (riverpodAnnotation == null && dependencies == null) {
+      // No annotation found, so we can't fix anything.
+      // This shouldn't happen but prevents errors in case of bad states.
+      return;
+    }
     final changeBuilder = reporter.createChangeBuilder(
       message: 'Update "dependencies"',
       priority: _fixDependenciesPriority,
     );
     changeBuilder.addDartFileEdit((builder) {
-      if (data.list.riverpod?.annotation != null) {
+      if (riverpodAnnotation != null) {
         final dependencies = scopedDependencies.map((e) => e.name).join(', ');
         builder.addSimpleReplacement(
           dependencyList.node!.sourceRange,
