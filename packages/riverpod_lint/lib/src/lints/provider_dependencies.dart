@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
@@ -39,10 +37,12 @@ class _FindNestedDependency extends RecursiveRiverpodAstVisitor {
   void visitProviderIdentifier(ProviderIdentifier node) {
     super.visitProviderIdentifier(node);
 
-    final enclosingExpression =
-        node.node.parent?.thisOrAncestorOfType<Expression>();
-
-    // Overrides don't count as dependencies
+    // Search for whether the provider identifier is used in a provider.override
+    // or family().override expression.
+    final enclosingExpression = node.node.ancestors
+        .whereType<Expression>()
+        .where((e) => e.providerListenable == null)
+        .firstOrNull;
     if (enclosingExpression?.providerOverride != null) return;
 
     onProvider(
@@ -151,7 +151,6 @@ class ProviderDependencies extends RiverpodLintRule {
         onProvider: (provider, list, {required checkOverrides}) {
           if (provider is! GeneratorProviderDeclarationElement) return;
           if (!provider.isScoped) return;
-
           // Check if the provider is overridden. If it is, the provider doesn't
           // count towards the unused/missing dependencies
           if (checkOverrides) {
