@@ -12,6 +12,7 @@ import 'test_lint.dart';
 void main() {
   final plugin = createPlugin();
 
+  // ignore: invalid_use_of_internal_member
   for (final lint in plugin.getLintRules(CustomLintConfigs.empty)) {
     final code = lint.code;
     lint as RiverpodLintRule;

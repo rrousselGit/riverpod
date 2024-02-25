@@ -24,7 +24,7 @@ void testLint(
   );
   final lintGoldenPath = join(
     goldensDirectory,
-    '${basenameWithoutExtension(file)}_lint.diff',
+    '${basenameWithoutExtension(file)}_lint.md',
   );
 
   test(description, () async {
@@ -39,20 +39,18 @@ void testLint(
     );
 
     final fixes = await lint.getFixes();
-    if (fixes.isNotEmpty) {
-      final changes = await Future.wait([
-        for (final fix in fixes)
-          for (final error in errors) fix.testRun(result, error, errors),
-      ]);
+    final changes = await Future.wait([
+      for (final fix in fixes)
+        for (final error in errors) fix.testRun(result, error, errors),
+    ]);
 
-      expect(
-        changes.flattened,
-        matchesPrioritizedSourceChangesGolden(
-          fixesGoldenPath,
-          source: result.content,
-          sourcePath: sourcePath.path,
-        ),
-      );
-    }
+    expect(
+      changes.flattened,
+      matchesPrioritizedSourceChangesGolden(
+        fixesGoldenPath,
+        source: result.content,
+        sourcePath: sourcePath.path,
+      ),
+    );
   });
 }

@@ -19,6 +19,7 @@ Matcher matchesPrioritizedSourceChangesGolden(
 }) {
   return matchersGoldenFile<Iterable<PrioritizedSourceChange>>(
     File(fileName),
+    isEmpty: (value) => value.isEmpty,
     encode: (changes) {
       return encodePrioritizedSourceChanges(
         changes,
@@ -32,6 +33,7 @@ Matcher matchesPrioritizedSourceChangesGolden(
 Matcher matchesAnalysisErrorGoldens(String fileName) {
   return matchersGoldenFile<Iterable<AnalysisError>>(
     File(fileName),
+    isEmpty: (value) => value.isEmpty,
     encode: (changes) {
       return _encodeAnalysisErrors(
         changes,
@@ -87,7 +89,9 @@ void _writeDiagnostic(
   }
   if (diagnostic.contextMessages.isNotEmpty) {
     buffer.writeln('${indent}contextMessages:');
-    for (final message in diagnostic.contextMessages) {
+    for (final (index, message) in diagnostic.contextMessages.indexed) {
+      if (index != 0) buffer.writeln();
+
       _writeDiagnosticMessage(
         buffer,
         message,
@@ -149,6 +153,7 @@ void _highlight(
   );
   buffer.writeln();
 
+  buffer.writeln('$indent```${p.extension(file.path).substring(1)}');
   final firstChangedLine = start.lineNumber - 1;
   final lastChangedLine = end.lineNumber - 1;
 
@@ -190,4 +195,5 @@ void _highlight(
 
     if (!endOfSource) buffer.writeln();
   }
+  buffer.writeln('$indent```');
 }
