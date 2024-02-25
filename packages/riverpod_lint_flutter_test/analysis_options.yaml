@@ -3,5 +3,5 @@ analyzer:
     - custom_lint
   exclude:
     # Files with errors on purpose
-    - test/lints/notifier_extends/notifier_extends.g.dart
+    - test/lints/notifier_extends.g.dart
     - test/lints/functional_ref.g.dart

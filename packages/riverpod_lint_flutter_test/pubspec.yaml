@@ -25,6 +25,7 @@ dev_dependencies:
   test: ^1.24.9
   flutter_test:
     sdk: flutter
+  glob: ^2.1.2
 
 dependency_overrides:
   riverpod_generator:
