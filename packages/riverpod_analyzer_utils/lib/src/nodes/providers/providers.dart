@@ -2,7 +2,7 @@ part of '../../nodes.dart';
 
 sealed class ProviderDeclaration {
   Token get name;
-  AnnotatedNode get node;
+  Declaration get node;
   ProviderDeclarationElement get providerElement;
 }
 

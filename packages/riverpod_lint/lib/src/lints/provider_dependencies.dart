@@ -53,17 +53,6 @@ class _FindNestedDependency extends RecursiveRiverpodAstVisitor {
   }
 
   @override
-  void visitNode(AstNode node) {
-    if (node.accumulatedDependencies case final list?) {
-      visitAccumulatedDependencyList(list);
-      // Remove recursion to fork the visitor on AccumulatedDependencyList
-      return;
-    }
-
-    super.visitNode(node);
-  }
-
-  @override
   void visitAccumulatedDependencyList(AccumulatedDependencyList node) {
     node.node.visitChildren(
       copyWith(accumulatedDependencyList: node),

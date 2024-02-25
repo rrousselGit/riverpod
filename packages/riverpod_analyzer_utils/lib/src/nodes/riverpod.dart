@@ -1,7 +1,6 @@
 part of '../nodes.dart';
 
-@_ast
-extension RiverpodAnnotatedAnnotatedNodeX on AnnotatedNode {
+extension RiverpodAnnotatedAnnotatedNodeOfX on AnnotatedNode {
   RiverpodAnnotation? get riverpod {
     return upsert('RiverpodAnnotationAnnotatedNodeX', () {
       return metadata.map((e) => e.riverpod).whereNotNull().firstOrNull;
@@ -9,7 +8,8 @@ extension RiverpodAnnotatedAnnotatedNodeX on AnnotatedNode {
   }
 }
 
-extension on Annotation {
+@_ast
+extension RiverpodAnnotatedAnnotatedNodeX on Annotation {
   RiverpodAnnotation? get riverpod {
     return upsert('RiverpodAnnotation', () {
       final elementAnnotation = this.elementAnnotation;

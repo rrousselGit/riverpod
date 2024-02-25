@@ -75,9 +75,22 @@ abstract class RecursiveRiverpodAstVisitor
   ${byConstraint.entries.map((e) => '''
 @override
 void visit${e.key.name}(${e.key.type} node) {
-    super.visit${e.key.name}(node);
-  ${e.value.map((e) => 'node.${e.name}.let(visit${e.type});').join('\n')}
+  ${e.value.map((e) => '''
+  if (node.${e.name} case final value?) {
+    visit${e.type}(value);
+    return;
+  }
+  ''').join('\n')}
+
+  super.visit${e.key.name}(node);
 }''').join('\n')}
+
+  ${allAst.map((e) => '''
+  void visit${e.type}(${e.type} node) {
+    super.visit${e.constraint == 'AstNode' ? 'Node' : e.constraint}(node.node);
+  }
+  ''').join('\n')}
+
 }
 
 abstract class SimpleRiverpodAstVisitor

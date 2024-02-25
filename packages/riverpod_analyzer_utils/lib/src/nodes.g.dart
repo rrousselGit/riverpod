@@ -9,10 +9,10 @@ part of 'nodes.dart';
 mixin RiverpodAstVisitor {
   void visitWidgetDeclaration(WidgetDeclaration node) {}
   void visitStateDeclaration(StateDeclaration node) {}
-  void visitDependenciesAnnotation(DependenciesAnnotation node) {}
   void visitAccumulatedDependencyList(AccumulatedDependencyList node) {}
   void visitIdentifierDependencies(IdentifierDependencies node) {}
   void visitNamedTypeDependencies(NamedTypeDependencies node) {}
+  void visitDependenciesAnnotation(DependenciesAnnotation node) {}
   void visitFunctionalProviderDeclaration(FunctionalProviderDeclaration node) {}
   void visitLegacyProviderDeclaration(LegacyProviderDeclaration node) {}
   void visitClassBasedProviderDeclaration(ClassBasedProviderDeclaration node) {}
@@ -34,87 +34,240 @@ abstract class RecursiveRiverpodAstVisitor extends GeneralizingAstVisitor<void>
     with RiverpodAstVisitor {
   @override
   void visitClassDeclaration(ClassDeclaration node) {
-    super.visitClassDeclaration(node);
-    node.widget.let(visitWidgetDeclaration);
-    node.state.let(visitStateDeclaration);
-    node.provider.let(visitClassBasedProviderDeclaration);
-  }
+    if (node.widget case final value?) {
+      visitWidgetDeclaration(value);
+      return;
+    }
 
-  @override
-  void visitAnnotatedNode(AnnotatedNode node) {
-    super.visitAnnotatedNode(node);
-    node.dependencies.let(visitDependenciesAnnotation);
-    node.riverpod.let(visitRiverpodAnnotation);
+    if (node.state case final value?) {
+      visitStateDeclaration(value);
+      return;
+    }
+
+    if (node.provider case final value?) {
+      visitClassBasedProviderDeclaration(value);
+      return;
+    }
+
+    super.visitClassDeclaration(node);
   }
 
   @override
   void visitNode(AstNode node) {
+    if (node.accumulatedDependencies case final value?) {
+      visitAccumulatedDependencyList(value);
+      return;
+    }
+
     super.visitNode(node);
-    node.accumulatedDependencies.let(visitAccumulatedDependencyList);
   }
 
   @override
   void visitIdentifier(Identifier node) {
+    if (node.identifierDependencies case final value?) {
+      visitIdentifierDependencies(value);
+      return;
+    }
+
     super.visitIdentifier(node);
-    node.identifierDependencies.let(visitIdentifierDependencies);
   }
 
   @override
   void visitNamedType(NamedType node) {
+    if (node.typeAnnotationDependencies case final value?) {
+      visitNamedTypeDependencies(value);
+      return;
+    }
+
     super.visitNamedType(node);
-    node.typeAnnotationDependencies.let(visitNamedTypeDependencies);
+  }
+
+  @override
+  void visitAnnotation(Annotation node) {
+    if (node.dependencies case final value?) {
+      visitDependenciesAnnotation(value);
+      return;
+    }
+
+    if (node.riverpod case final value?) {
+      visitRiverpodAnnotation(value);
+      return;
+    }
+
+    super.visitAnnotation(node);
   }
 
   @override
   void visitFunctionDeclaration(FunctionDeclaration node) {
+    if (node.provider case final value?) {
+      visitFunctionalProviderDeclaration(value);
+      return;
+    }
+
     super.visitFunctionDeclaration(node);
-    node.provider.let(visitFunctionalProviderDeclaration);
   }
 
   @override
   void visitVariableDeclaration(VariableDeclaration node) {
+    if (node.provider case final value?) {
+      visitLegacyProviderDeclaration(value);
+      return;
+    }
+
     super.visitVariableDeclaration(node);
-    node.provider.let(visitLegacyProviderDeclaration);
   }
 
   @override
   void visitDeclaration(Declaration node) {
+    if (node.provider case final value?) {
+      visitGeneratorProviderDeclaration(value);
+      return;
+    }
+
     super.visitDeclaration(node);
-    node.provider.let(visitGeneratorProviderDeclaration);
   }
 
   @override
   void visitSimpleIdentifier(SimpleIdentifier node) {
+    if (node.provider case final value?) {
+      visitProviderIdentifier(value);
+      return;
+    }
+
     super.visitSimpleIdentifier(node);
-    node.provider.let(visitProviderIdentifier);
   }
 
   @override
   void visitExpression(Expression node) {
+    if (node.providerListenable case final value?) {
+      visitProviderListenableExpression(value);
+      return;
+    }
+
+    if (node.overrides case final value?) {
+      visitProviderOverrideList(value);
+      return;
+    }
+
     super.visitExpression(node);
-    node.providerListenable.let(visitProviderListenableExpression);
-    node.overrides.let(visitProviderOverrideList);
   }
 
   @override
   void visitMethodInvocation(MethodInvocation node) {
+    if (node.refInvocation case final value?) {
+      visitRefInvocation(value);
+      return;
+    }
+
+    if (node.widgetRefInvocation case final value?) {
+      visitWidgetRefInvocation(value);
+      return;
+    }
+
     super.visitMethodInvocation(node);
-    node.refInvocation.let(visitRefInvocation);
-    node.widgetRefInvocation.let(visitWidgetRefInvocation);
   }
 
   @override
   void visitCollectionElement(CollectionElement node) {
+    if (node.providerOverride case final value?) {
+      visitProviderOverrideExpression(value);
+      return;
+    }
+
     super.visitCollectionElement(node);
-    node.providerOverride.let(visitProviderOverrideExpression);
   }
 
   @override
   void visitInstanceCreationExpression(InstanceCreationExpression node) {
+    if (node.providerContainer case final value?) {
+      visitProviderContainerInstanceCreationExpression(value);
+      return;
+    }
+
+    if (node.providerScope case final value?) {
+      visitProviderScopeInstanceCreationExpression(value);
+      return;
+    }
+
     super.visitInstanceCreationExpression(node);
-    node.providerContainer
-        .let(visitProviderContainerInstanceCreationExpression);
-    node.providerScope.let(visitProviderScopeInstanceCreationExpression);
+  }
+
+  void visitWidgetDeclaration(WidgetDeclaration node) {
+    super.visitClassDeclaration(node.node);
+  }
+
+  void visitStateDeclaration(StateDeclaration node) {
+    super.visitClassDeclaration(node.node);
+  }
+
+  void visitAccumulatedDependencyList(AccumulatedDependencyList node) {
+    super.visitNode(node.node);
+  }
+
+  void visitIdentifierDependencies(IdentifierDependencies node) {
+    super.visitIdentifier(node.node);
+  }
+
+  void visitNamedTypeDependencies(NamedTypeDependencies node) {
+    super.visitNamedType(node.node);
+  }
+
+  void visitDependenciesAnnotation(DependenciesAnnotation node) {
+    super.visitAnnotation(node.node);
+  }
+
+  void visitFunctionalProviderDeclaration(FunctionalProviderDeclaration node) {
+    super.visitFunctionDeclaration(node.node);
+  }
+
+  void visitLegacyProviderDeclaration(LegacyProviderDeclaration node) {
+    super.visitVariableDeclaration(node.node);
+  }
+
+  void visitClassBasedProviderDeclaration(ClassBasedProviderDeclaration node) {
+    super.visitClassDeclaration(node.node);
+  }
+
+  void visitGeneratorProviderDeclaration(GeneratorProviderDeclaration node) {
+    super.visitDeclaration(node.node);
+  }
+
+  void visitProviderIdentifier(ProviderIdentifier node) {
+    super.visitSimpleIdentifier(node.node);
+  }
+
+  void visitRiverpodAnnotation(RiverpodAnnotation node) {
+    super.visitAnnotation(node.node);
+  }
+
+  void visitProviderListenableExpression(ProviderListenableExpression node) {
+    super.visitExpression(node.node);
+  }
+
+  void visitRefInvocation(RefInvocation node) {
+    super.visitMethodInvocation(node.node);
+  }
+
+  void visitWidgetRefInvocation(WidgetRefInvocation node) {
+    super.visitMethodInvocation(node.node);
+  }
+
+  void visitProviderOverrideExpression(ProviderOverrideExpression node) {
+    super.visitCollectionElement(node.node);
+  }
+
+  void visitProviderOverrideList(ProviderOverrideList node) {
+    super.visitExpression(node.node);
+  }
+
+  void visitProviderContainerInstanceCreationExpression(
+      ProviderContainerInstanceCreationExpression node) {
+    super.visitInstanceCreationExpression(node.node);
+  }
+
+  void visitProviderScopeInstanceCreationExpression(
+      ProviderScopeInstanceCreationExpression node) {
+    super.visitInstanceCreationExpression(node.node);
   }
 }
 
@@ -129,13 +282,13 @@ abstract class UnimplementedRiverpodAstVisitor
       throw UnimplementedError();
   void visitStateDeclaration(StateDeclaration node) =>
       throw UnimplementedError();
-  void visitDependenciesAnnotation(DependenciesAnnotation node) =>
-      throw UnimplementedError();
   void visitAccumulatedDependencyList(AccumulatedDependencyList node) =>
       throw UnimplementedError();
   void visitIdentifierDependencies(IdentifierDependencies node) =>
       throw UnimplementedError();
   void visitNamedTypeDependencies(NamedTypeDependencies node) =>
+      throw UnimplementedError();
+  void visitDependenciesAnnotation(DependenciesAnnotation node) =>
       throw UnimplementedError();
   void visitFunctionalProviderDeclaration(FunctionalProviderDeclaration node) =>
       throw UnimplementedError();
@@ -183,17 +336,6 @@ class CollectionRiverpodAst extends SimpleRiverpodAstVisitor {
   }
 
   @override
-  void visitAnnotatedNode(
-    AnnotatedNode node,
-  ) {
-    final list = riverpodAst.putIfAbsent('AnnotatedNode', () => []);
-    final previousList = list;
-    _pendingList = list;
-    super.visitAnnotatedNode(node);
-    _pendingList = previousList;
-  }
-
-  @override
   void visitNode(
     AstNode node,
   ) {
@@ -223,6 +365,17 @@ class CollectionRiverpodAst extends SimpleRiverpodAstVisitor {
     final previousList = list;
     _pendingList = list;
     super.visitNamedType(node);
+    _pendingList = previousList;
+  }
+
+  @override
+  void visitAnnotation(
+    Annotation node,
+  ) {
+    final list = riverpodAst.putIfAbsent('Annotation', () => []);
+    final previousList = list;
+    _pendingList = list;
+    super.visitAnnotation(node);
     _pendingList = previousList;
   }
 
@@ -323,10 +476,6 @@ class CollectionRiverpodAst extends SimpleRiverpodAstVisitor {
     _pendingList!.add(node);
   }
 
-  void visitDependenciesAnnotation(DependenciesAnnotation node) {
-    _pendingList!.add(node);
-  }
-
   void visitAccumulatedDependencyList(AccumulatedDependencyList node) {
     _pendingList!.add(node);
   }
@@ -336,6 +485,10 @@ class CollectionRiverpodAst extends SimpleRiverpodAstVisitor {
   }
 
   void visitNamedTypeDependencies(NamedTypeDependencies node) {
+    _pendingList!.add(node);
+  }
+
+  void visitDependenciesAnnotation(DependenciesAnnotation node) {
     _pendingList!.add(node);
   }
 
@@ -416,15 +569,6 @@ class RiverpodAnalysisResult extends RecursiveRiverpodAstVisitor {
     stateDeclarations.add(node);
   }
 
-  final dependenciesAnnotations = <DependenciesAnnotation>[];
-  @override
-  void visitDependenciesAnnotation(
-    DependenciesAnnotation node,
-  ) {
-    super.visitDependenciesAnnotation(node);
-    dependenciesAnnotations.add(node);
-  }
-
   final accumulatedDependencyLists = <AccumulatedDependencyList>[];
   @override
   void visitAccumulatedDependencyList(
@@ -450,6 +594,15 @@ class RiverpodAnalysisResult extends RecursiveRiverpodAstVisitor {
   ) {
     super.visitNamedTypeDependencies(node);
     namedTypeDependenciesList.add(node);
+  }
+
+  final dependenciesAnnotations = <DependenciesAnnotation>[];
+  @override
+  void visitDependenciesAnnotation(
+    DependenciesAnnotation node,
+  ) {
+    super.visitDependenciesAnnotation(node);
+    dependenciesAnnotations.add(node);
   }
 
   final functionalProviderDeclarations = <FunctionalProviderDeclaration>[];
@@ -610,12 +763,6 @@ class RiverpodAstRegistry {
     _onStateDeclaration.add(cb);
   }
 
-  final _onDependenciesAnnotation = <void Function(DependenciesAnnotation)>[];
-  void addDependenciesAnnotation(
-      void Function(DependenciesAnnotation node) cb) {
-    _onDependenciesAnnotation.add(cb);
-  }
-
   final _onAccumulatedDependencyList =
       <void Function(AccumulatedDependencyList)>[];
   void addAccumulatedDependencyList(
@@ -632,6 +779,12 @@ class RiverpodAstRegistry {
   final _onNamedTypeDependencies = <void Function(NamedTypeDependencies)>[];
   void addNamedTypeDependencies(void Function(NamedTypeDependencies node) cb) {
     _onNamedTypeDependencies.add(cb);
+  }
+
+  final _onDependenciesAnnotation = <void Function(DependenciesAnnotation)>[];
+  void addDependenciesAnnotation(
+      void Function(DependenciesAnnotation node) cb) {
+    _onDependenciesAnnotation.add(cb);
   }
 
   final _onFunctionalProviderDeclaration =
@@ -753,15 +906,6 @@ class _RiverpodAstRegistryVisitor extends RecursiveRiverpodAstVisitor {
   }
 
   @override
-  void visitDependenciesAnnotation(DependenciesAnnotation node) {
-    super.visitDependenciesAnnotation(node);
-    _runSubscriptions(
-      node,
-      _registry._onDependenciesAnnotation,
-    );
-  }
-
-  @override
   void visitAccumulatedDependencyList(AccumulatedDependencyList node) {
     super.visitAccumulatedDependencyList(node);
     _runSubscriptions(
@@ -785,6 +929,15 @@ class _RiverpodAstRegistryVisitor extends RecursiveRiverpodAstVisitor {
     _runSubscriptions(
       node,
       _registry._onNamedTypeDependencies,
+    );
+  }
+
+  @override
+  void visitDependenciesAnnotation(DependenciesAnnotation node) {
+    super.visitDependenciesAnnotation(node);
+    _runSubscriptions(
+      node,
+      _registry._onDependenciesAnnotation,
     );
   }
 

@@ -245,15 +245,6 @@ final class AccumulatedDependencyList {
 }
 
 @_ast
-extension DependenciesAnnotatedAnnotatedNodeX on AnnotatedNode {
-  DependenciesAnnotation? get dependencies {
-    return upsert('DependenciesAnnotationAnnotatedNodeX', () {
-      return metadata.map((e) => e.dependencies).whereNotNull().firstOrNull;
-    });
-  }
-}
-
-@_ast
 extension AccumulatedDependenciesX on AstNode {
   AccumulatedDependencyList? get accumulatedDependencies {
     final that = this;
@@ -361,7 +352,16 @@ extension NamedTypeDependenciesX on NamedType {
   }
 }
 
-extension on Annotation {
+extension DependenciesAnnotatedAnnotatedNodeOfX on AnnotatedNode {
+  DependenciesAnnotation? get dependencies {
+    return upsert('DependenciesAnnotationAnnotatedNodeX', () {
+      return metadata.map((e) => e.dependencies).whereNotNull().firstOrNull;
+    });
+  }
+}
+
+@_ast
+extension DependenciesAnnotatedAnnotatedNodeX on Annotation {
   DependenciesAnnotation? get dependencies {
     return upsert('DependenciesAnnotation', () {
       final elementAnnotation = this.elementAnnotation;
