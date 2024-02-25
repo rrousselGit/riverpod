@@ -351,7 +351,7 @@ class FamilyClass extends _$FamilyClass {
         reason: '${provider.key} has an empty list of dependencies',
       );
       expect(
-        provider.value.annotation.dependencyList?.node.toSource(),
+        provider.value.annotation.dependencyList?.node?.toSource(),
         '[]',
         reason: '${provider.key} has an empty list of dependencies',
       );
@@ -418,7 +418,7 @@ class FamilyClass extends _$FamilyClass {
         reason: '${provider.key} has two dependencies',
       );
       expect(
-        provider.value.annotation.dependencyList?.node.toSource(),
+        provider.value.annotation.dependencyList?.node?.toSource(),
         '[empty, EmptyNotifier]',
         reason: '${provider.key} has two dependencies',
       );
@@ -496,7 +496,7 @@ class FamilyClass extends _$FamilyClass {
         reason: '${provider.key} has two dependencies',
       );
       expect(
-        provider.value.annotation.dependencyList?.node.toSource(),
+        provider.value.annotation.dependencyList?.node?.toSource(),
         '[providerDependency, ProviderDependencyNotifier]',
         reason: '${provider.key} has two dependencies',
       );
