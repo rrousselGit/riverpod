@@ -182,22 +182,10 @@ extension on DartObject {
   }
 }
 
-sealed class Location {}
-
-class LocationNode implements Location {
-  LocationNode(this.node);
-  final AstNode node;
-}
-
-class LocationElement implements Location {
-  LocationElement(this.element);
-  final Element element;
-}
-
 final class AccumulatedDependency {
-  AccumulatedDependency._({required this.location, required this.provider});
+  AccumulatedDependency._({required this.node, required this.provider});
 
-  final Location location;
+  final AstNode? node;
   final GeneratorProviderDeclarationElement provider;
 }
 
@@ -208,7 +196,7 @@ final class AccumulatedDependencyList {
     required this.node,
     required this.riverpod,
     required this.dependencies,
-    required this.dependenciesElement,
+    required this.widgetDependencies,
     required this.overrides,
   }) : parent = node.ancestors
             .map((e) => e.accumulatedDependencies)
@@ -219,35 +207,35 @@ final class AccumulatedDependencyList {
   final AccumulatedDependencyList? parent;
   final GeneratorProviderDeclaration? riverpod;
   final DependenciesAnnotation? dependencies;
-  final DependenciesAnnotationElement? dependenciesElement;
+  final List<GeneratorProviderDeclarationElement>? widgetDependencies;
   final ProviderScopeInstanceCreationExpression? overrides;
 
   Iterable<AccumulatedDependency>? get allDependencies {
     final dependencies = this.dependencies?.dependencies;
     final riverpod = this.riverpod?.annotation.dependencyList;
-    final dependenciesElement = this.dependenciesElement?.dependencies;
+    final widgetDependencies = this.widgetDependencies;
 
     if (dependencies == null &&
         riverpod == null &&
-        dependenciesElement == null) {
+        widgetDependencies == null) {
       return null;
     }
 
     final dependenciesValues = dependencies?.values?.map(
       (e) => AccumulatedDependency._(
-        location: LocationNode(e.node),
+        node: e.node,
         provider: e.provider,
       ),
     );
     final riverpodValues = riverpod?.values?.map(
       (e) => AccumulatedDependency._(
-        location: LocationNode(e.node),
+        node: e.node,
         provider: e.provider,
       ),
     );
-    final dependenciesElementValues = dependenciesElement?.map(
+    final dependenciesElementValues = widgetDependencies?.map(
       (provider) => AccumulatedDependency._(
-        location: LocationElement(this.dependenciesElement!.element.element!),
+        node: null,
         provider: provider,
       ),
     );
@@ -292,7 +280,7 @@ extension on InstanceCreationExpression {
         overrides: providerScope,
         dependencies: null,
         riverpod: null,
-        dependenciesElement: null,
+        widgetDependencies: null,
       );
     });
   }
@@ -318,7 +306,7 @@ extension on AnnotatedNode {
         overrides: null,
         dependencies: dependencies,
         riverpod: provider,
-        dependenciesElement: state?.widget?.dependencies,
+        widgetDependencies: state?.widget?.dependencies?.dependencies,
       );
     });
   }

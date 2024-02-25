@@ -16,7 +16,7 @@ class _LocatedProvider {
   _LocatedProvider(this.provider, this.node);
 
   final ProviderDeclarationElement provider;
-  final Location node;
+  final AstNode node;
 }
 
 class _MyDiagnostic implements DiagnosticMessage {
@@ -107,7 +107,7 @@ class _FindNestedDependency extends RecursiveRiverpodAstVisitor {
     super.visitProviderIdentifier(node);
 
     onProvider(
-      _LocatedProvider(node.providerElement, LocationNode(node.node)),
+      _LocatedProvider(node.providerElement, node.node),
       accumulatedDependencyList,
       checkOverrides: false,
     );
@@ -127,7 +127,7 @@ class _FindNestedDependency extends RecursiveRiverpodAstVisitor {
     if (node.dependencies.dependencies case final deps?) {
       for (final dep in deps) {
         onProvider(
-          _LocatedProvider(dep, LocationNode(node.node)),
+          _LocatedProvider(dep, node.node),
           accumulatedDependencyList,
           checkOverrides: false,
         );
@@ -146,7 +146,7 @@ class _FindNestedDependency extends RecursiveRiverpodAstVisitor {
     if (node.dependencies.dependencies case final deps?) {
       for (final dep in deps) {
         onProvider(
-          _LocatedProvider(dep, LocationNode(node.node)),
+          _LocatedProvider(dep, node.node),
           accumulatedDependencyList,
           // We check overrides only for Widget instances, as we can't guarantee
           // that non-widget instances use a "ref" that's a child of the overrides.
@@ -260,30 +260,24 @@ class ProviderDependencies extends RiverpodLintRule {
         message.writeAll(missingDependencies.map((e) => e.provider.name), ', ');
       }
 
+      late final unit = list.node.thisOrAncestorOfType<CompilationUnit>();
+      late final source = unit?.declaredElement?.source;
+
       reporter.reportErrorForNode(
         _code,
         list.target,
         [message.toString()],
         [
           for (final dependency in missingDependencies)
-            if (dependency.provider.element.source case final source?)
+            if (source != null)
               _MyDiagnostic(
                 message: dependency.provider.name,
                 filePath: source.fullName,
-                offset: switch (dependency.node) {
-                  LocationNode(:final node) => node.offset,
-                  LocationElement(:final element) => element.nameOffset,
-                },
-                length: switch (dependency.node) {
-                  LocationNode(:final node) => node.length,
-                  LocationElement(:final element) => element.nameLength,
-                },
+                offset: dependency.node.offset,
+                length: dependency.node.length,
               ),
         ],
-        _Data(
-          usedDependencies: usedDependencies,
-          list: list,
-        ),
+        _Data(usedDependencies: usedDependencies, list: list),
       );
     });
   }

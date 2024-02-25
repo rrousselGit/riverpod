@@ -7,3 +7,12 @@ final aProvider = Provider<int>((ref) => 0);
 
 @riverpod
 int b(BRef ref) => 0;
+
+@Riverpod(dependencies: [])
+int anotherScoped(AnotherScopedRef ref) => 0;
+
+@Riverpod(dependencies: [anotherScoped])
+int anotherNonEmptyScoped(AnotherNonEmptyScopedRef ref) {
+  ref.watch(anotherScopedProvider);
+  return 0;
+}

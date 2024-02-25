@@ -1,6 +1,6 @@
 Message: `Specify "dependencies"`
 Priority: 100
-Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:30`:
+Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:31`:
 ```
 
 // expect_lint: provider_dependencies
@@ -12,7 +12,7 @@ int watchGeneratedScopedButNoDependencies(
 ---
 Message: `Update "dependencies"`
 Priority: 100
-Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:56`:
+Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:57`:
 ```
 
 // expect_lint: provider_dependencies
@@ -24,7 +24,7 @@ int watchGeneratedScopedButEmptyDependencies(
 ---
 Message: `Remove "dependencies"`
 Priority: 100
-Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:154`:
+Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:155`:
 ```
 class MemberDependencies {
   // expect_lint: provider_dependencies
@@ -36,7 +36,7 @@ class MemberDependencies {
 ---
 Message: `Update "dependencies"`
 Priority: 100
-Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:162`:
+Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:163`:
 ```
 class CanUpdateMultipleDependenciesAtOnce {
   // expect_lint: provider_dependencies
@@ -48,7 +48,7 @@ class CanUpdateMultipleDependenciesAtOnce {
 ---
 Message: `Update "dependencies"`
 Priority: 100
-Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:159`:
+Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:160`:
 ```
 
 // expect_lint: provider_dependencies
@@ -60,7 +60,7 @@ class CanUpdateMultipleDependenciesAtOnce {
 ---
 Message: `Remove "dependencies"`
 Priority: 100
-Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:182`:
+Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:183`:
 ```
 // Handle identifiers with dependencies
 // expect_lint: provider_dependencies
@@ -72,7 +72,7 @@ void fn() {}
 ---
 Message: `Specify "dependencies"`
 Priority: 100
-Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:186`:
+Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:187`:
 ```
 
 // expect_lint: provider_dependencies
@@ -85,7 +85,7 @@ Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:186`:
 ---
 Message: `Specify "dependencies"`
 Priority: 100
-Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:194`:
+Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:195`:
 ```
 
 // expect_lint: provider_dependencies
@@ -97,7 +97,7 @@ int foo(FooRef ref) {
 ---
 Message: `Specify "dependencies"`
 Priority: 100
-Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:211`:
+Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:212`:
 ```
 
 // expect_lint: provider_dependencies
@@ -110,7 +110,7 @@ Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:211`:
 ---
 Message: `Update "dependencies"`
 Priority: 100
-Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:242`:
+Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:243`:
 ```
 
 // expect_lint: provider_dependencies
@@ -122,7 +122,7 @@ class Stateful2 extends StatefulWidget {
 ---
 Message: `Specify "dependencies"`
 Priority: 100
-Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:258`:
+Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:259`:
 ```
 
 // expect_lint: provider_dependencies
@@ -131,5 +131,17 @@ Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:258`:
 + class FindStateFromClassList extends StatefulWidget {
   const FindStateFromClassList({super.key});
 
+```
+---
+Message: `Specify "dependencies"`
+Priority: 100
+Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:272`:
+```
+
+// expect_lint: provider_dependencies
+- @riverpod
++ @Riverpod(dependencies: [anotherNonEmptyScoped])
+int crossFileDependency(CrossFileDependencyRef ref) {
+  ref.watch(anotherNonEmptyScopedProvider);
 ```
 ---

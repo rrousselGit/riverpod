@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'another.dart' as import_alias;
+import 'another.dart';
 
 part 'missing_dependencies2.g.dart';
 
@@ -265,4 +266,11 @@ class FindStateFromClassList extends StatefulWidget {
 class _Stateful3State extends State<FindStateFromClassList> {
   @override
   Widget build(BuildContext context) => WidgetDependencies();
+}
+
+// expect_lint: provider_dependencies
+@riverpod
+int crossFileDependency(CrossFileDependencyRef ref) {
+  ref.watch(anotherNonEmptyScopedProvider);
+  return 0;
 }

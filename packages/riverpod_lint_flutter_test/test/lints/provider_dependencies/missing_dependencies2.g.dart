@@ -1508,5 +1508,66 @@ final class FooProvider extends $FunctionalProvider<int, int, FooRef>
 
 String _$fooHash() => r'f9ce60fe868c2c54aa282702554861a13e8871cd';
 
+typedef CrossFileDependencyRef = Ref<int>;
+
+@ProviderFor(crossFileDependency)
+const crossFileDependencyProvider = CrossFileDependencyProvider._();
+
+final class CrossFileDependencyProvider
+    extends $FunctionalProvider<int, int, CrossFileDependencyRef>
+    with $Provider<int, CrossFileDependencyRef> {
+  const CrossFileDependencyProvider._(
+      {int Function(
+        CrossFileDependencyRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'crossFileDependencyProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final int Function(
+    CrossFileDependencyRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$crossFileDependencyHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  CrossFileDependencyProvider $copyWithCreate(
+    int Function(
+      CrossFileDependencyRef ref,
+    ) create,
+  ) {
+    return CrossFileDependencyProvider._(create: create);
+  }
+
+  @override
+  int create(CrossFileDependencyRef ref) {
+    final _$cb = _createCb ?? crossFileDependency;
+    return _$cb(ref);
+  }
+}
+
+String _$crossFileDependencyHash() =>
+    r'9ca6b69de674377c6906fb835cbe04d01851d088';
+
 // ignore_for_file: type=lint
 // ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main
