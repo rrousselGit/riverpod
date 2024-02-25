@@ -25,12 +25,13 @@ import 'src/lints/scoped_providers_should_specify_dependencies.dart';
 import 'src/lints/unknown_scoped_usage.dart';
 import 'src/lints/unsupported_provider_value.dart';
 import 'src/migration/missing_legacy_import.dart';
+import 'src/riverpod_custom_lint.dart';
 
 PluginBase createPlugin() => _RiverpodPlugin();
 
 class _RiverpodPlugin extends PluginBase {
   @override
-  List<LintRule> getLintRules(CustomLintConfigs configs) => [
+  List<RiverpodLintRule> getLintRules(CustomLintConfigs configs) => [
         const AsyncValueNullablePattern(),
         const AvoidBuildContextInProviders(),
         const OnlyUseKeepAliveInsideKeepAlive(),

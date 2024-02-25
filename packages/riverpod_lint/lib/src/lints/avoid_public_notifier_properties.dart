@@ -4,7 +4,9 @@ import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
-class AvoidPublicNotifierProperties extends DartLintRule {
+import '../riverpod_custom_lint.dart';
+
+class AvoidPublicNotifierProperties extends RiverpodLintRule {
   const AvoidPublicNotifierProperties() : super(code: _code);
 
   static const _code = LintCode(

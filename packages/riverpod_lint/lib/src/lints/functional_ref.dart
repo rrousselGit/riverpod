@@ -76,7 +76,7 @@ class FunctionalRef extends RiverpodLintRule {
   }
 
   @override
-  List<Fix> getFixes() => [FunctionalRefFix()];
+  List<DartFix> getFixes() => [FunctionalRefFix()];
 }
 
 class FunctionalRefFix extends RiverpodFix {
@@ -117,6 +117,8 @@ class FunctionalRefFix extends RiverpodFix {
         return;
       }
 
+      if (refNode is! SimpleFormalParameter) return;
+
       // No type specified, adding it.
       final changeBuilder = reporter.createChangeBuilder(
         message: 'Type as $expectedRefType',
@@ -129,7 +131,6 @@ class FunctionalRefFix extends RiverpodFix {
           return;
         }
 
-        refNode as SimpleFormalParameter;
         builder.addSimpleReplacement(
           sourceRangeFrom(
             start: refNode.type!.offset,
