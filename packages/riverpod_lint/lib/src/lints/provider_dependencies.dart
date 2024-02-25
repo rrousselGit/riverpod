@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
+import 'package:analyzer_plugin/utilities/change_builder/change_builder_dart.dart';
+import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
@@ -106,9 +108,11 @@ class _FindNestedDependency extends RecursiveRiverpodAstVisitor {
 
 class _Data {
   _Data({
+    required this.list,
     required this.usedDependencies,
   });
 
+  final AccumulatedDependencyList list;
   final Set<GeneratorProviderDeclarationElement> usedDependencies;
 }
 
@@ -203,7 +207,10 @@ class ProviderDependencies extends RiverpodLintRule {
               'Missing dependencies: ${missingDependencies.map((e) => e.name).join(', ')} ',
         ],
         [],
-        _Data(usedDependencies: usedDependencies),
+        _Data(
+          usedDependencies: usedDependencies,
+          list: list,
+        ),
       );
     });
   }
@@ -224,101 +231,117 @@ class _ProviderDependenciesFix extends RiverpodFix {
     final data = analysisError.data;
     if (data is! _Data) return;
 
-    riverpodRegistry(context).addGeneratorProviderDeclaration((declaration) {
-      if (!declaration.node.sourceRange.intersects(analysisError.sourceRange)) {
-        return;
-      }
+    final scopedDependencies = data.usedDependencies;
+    final newDependencies = scopedDependencies.isEmpty
+        ? null
+        : '[${scopedDependencies.map((e) => e.name).join(', ')}]';
 
-      final scopedDependencies = data.usedDependencies;
-
-      final dependenciesNode = declaration.annotation.dependencyList?.node;
-
-      final newDependencies = scopedDependencies.isEmpty
-          ? null
-          : '[${scopedDependencies.map((e) => e.name).join(', ')}]';
-
-      if (newDependencies == null) {
-        // Should never be null, but just in case
-        if (dependenciesNode == null) return;
-
-        final changeBuilder = reporter.createChangeBuilder(
-          message: 'Remove "dependencies"',
-          priority: _fixDependenciesPriority,
-        );
-        changeBuilder.addDartFileEdit((builder) {
-          if (declaration.annotation.keepAliveNode == null) {
-            // Only "dependencies" is specified in the annotation.
-            // So instead of @Riverpod(dependencies: []) -> @Riverpod(),
-            // we can do @Riverpod(dependencies: []) -> @riverpod
-            builder.addSimpleReplacement(
-              declaration.annotation.node.sourceRange,
-              '@riverpod',
-            );
-          } else {
-            // Some parameters are specified in the annotation, so we remove
-            // only the "dependencies" parameter.
-
-            final end = min(
-              // End before the closing parenthesis or before the next parameter
-              declaration.annotation.node.arguments!.rightParenthesis.offset,
-              dependenciesNode.endToken.next!.end,
-            );
-
-            final start = max(
-              // Start after the opening parenthesis or after the next parameter
-              declaration.annotation.node.arguments!.leftParenthesis.end,
-              dependenciesNode.beginToken.previous!.end,
-            );
-
-            builder.addDeletion(sourceRangeFrom(start: start, end: end));
-          }
-        });
-
-        return;
-      }
-
-      if (dependenciesNode == null) {
-        final changeBuilder = reporter.createChangeBuilder(
-          message: 'Specify "dependencies"',
-          priority: _fixDependenciesPriority,
-        );
-        changeBuilder.addDartFileEdit((builder) {
-          final annotationArguments = declaration.annotation.node.arguments;
-          if (annotationArguments == null) {
-            // No argument list found. We are using the @riverpod annotation.
-            builder.addSimpleReplacement(
-              declaration.annotation.node.sourceRange,
-              '@Riverpod(dependencies: $newDependencies)',
-            );
-          } else {
-            // Argument list found, we are using the @Riverpod() annotation
-
-            // We want to insert the "dependencies" parameter after the last
-            final insertOffset =
-                annotationArguments.arguments.lastOrNull?.end ??
-                    annotationArguments.leftParenthesis.end;
-
-            builder.addSimpleInsertion(
-              insertOffset,
-              ', dependencies: $newDependencies',
-            );
-          }
-        });
-
-        return;
-      }
-
+    if (newDependencies == null) {
       final changeBuilder = reporter.createChangeBuilder(
-        message: 'Update "dependencies"',
+        message: 'Remove "dependencies"',
         priority: _fixDependenciesPriority,
       );
       changeBuilder.addDartFileEdit((builder) {
+        if (data.list.riverpod?.annotation case final riverpod?) {
+          _riverpodRemoveDependencies(builder, riverpod);
+        } else {
+          builder.addDeletion(data.list.dependencies!.node.sourceRange);
+        }
+      });
+
+      return;
+    }
+
+    final dependencyList = data.list.riverpod?.annotation.dependencyList ??
+        data.list.dependencies?.dependencies;
+
+    if (dependencyList == null) {
+      final changeBuilder = reporter.createChangeBuilder(
+        message: 'Specify "dependencies"',
+        priority: _fixDependenciesPriority,
+      );
+      changeBuilder.addDartFileEdit((builder) {
+        if (data.list.riverpod?.annotation case final riverpod?) {
+          _riverpodSpecifyDependencies(builder, riverpod, newDependencies);
+        } else {
+          builder.addSimpleInsertion(
+            data.list.node.offset,
+            '@Dependencies($newDependencies)\n',
+          );
+        }
+      });
+
+      return;
+    }
+
+    final changeBuilder = reporter.createChangeBuilder(
+      message: 'Update "dependencies"',
+      priority: _fixDependenciesPriority,
+    );
+    changeBuilder.addDartFileEdit((builder) {
+      if (data.list.riverpod?.annotation != null) {
         final dependencies = scopedDependencies.map((e) => e.name).join(', ');
         builder.addSimpleReplacement(
-          dependenciesNode.sourceRange,
+          dependencyList.node!.sourceRange,
           '[$dependencies]',
         );
-      });
+      } else {
+        builder.addSimpleReplacement(
+          data.list.dependencies!.node.sourceRange,
+          '@Dependencies($newDependencies)',
+        );
+      }
     });
+  }
+
+  void _riverpodRemoveDependencies(
+    DartFileEditBuilder builder,
+    RiverpodAnnotation riverpod,
+  ) {
+    if (riverpod.keepAliveNode == null) {
+      // Only "dependencies" is specified in the annotation.
+      // So instead of @Riverpod(dependencies: []) -> @Riverpod(),
+      // we can do @Riverpod(dependencies: []) -> @riverpod
+      builder.addSimpleReplacement(
+        riverpod.node.sourceRange,
+        '@riverpod',
+      );
+      return;
+    }
+
+    // Some parameters are specified in the annotation, so we remove
+    // only the "dependencies" parameter.
+    final dependenciesNode = riverpod.dependenciesNode!;
+    final argumentList = riverpod.node.arguments!;
+
+    builder.addDeletion(
+      range.nodeInList(argumentList.arguments, dependenciesNode),
+    );
+  }
+
+  void _riverpodSpecifyDependencies(
+    DartFileEditBuilder builder,
+    RiverpodAnnotation riverpod,
+    String newDependencies,
+  ) {
+    final annotationArguments = riverpod.node.arguments;
+    if (annotationArguments == null) {
+      // No argument list found. We are using the @riverpod annotation.
+      builder.addSimpleReplacement(
+        riverpod.node.sourceRange,
+        '@Riverpod(dependencies: $newDependencies)',
+      );
+    } else {
+      // Argument list found, we are using the @Riverpod() annotation
+
+      // We want to insert the "dependencies" parameter after the last
+      final insertOffset = annotationArguments.arguments.lastOrNull?.end ??
+          annotationArguments.leftParenthesis.end;
+
+      builder.addSimpleInsertion(
+        insertOffset,
+        ', dependencies: $newDependencies',
+      );
+    }
   }
 }
