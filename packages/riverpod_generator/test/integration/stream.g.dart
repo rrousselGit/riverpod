@@ -118,6 +118,155 @@ final class GenericFamily extends Family {
   }
 }
 
+@ProviderFor(GenericClass)
+const genericClassProvider = GenericClassFamily._();
+
+final class GenericClassProvider<T extends num>
+    extends $StreamNotifierProvider<GenericClass<T>, List<T>> {
+  const GenericClassProvider._(
+      {required GenericClassFamily super.from,
+      super.runNotifierBuildOverride,
+      GenericClass<T> Function()? create})
+      : _createCb = create,
+        super(
+          argument: null,
+          name: r'genericClassProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final GenericClass<T> Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$genericClassHash();
+
+  GenericClassProvider<T> _copyWithCreate(
+    GenericClass<T> Function<T extends num>() create,
+  ) {
+    return GenericClassProvider<T>._(
+        from: from! as GenericClassFamily, create: create<T>);
+  }
+
+  GenericClassProvider<T> _copyWithBuild(
+    Stream<List<T>> Function<T extends num>(
+      Ref<AsyncValue<List<T>>>,
+      GenericClass<T>,
+    ) build,
+  ) {
+    return GenericClassProvider<T>._(
+        from: from! as GenericClassFamily, runNotifierBuildOverride: build<T>);
+  }
+
+  @override
+  String toString() {
+    return r'genericClassProvider'
+        '<${T}>'
+        '()';
+  }
+
+  @$internal
+  @override
+  GenericClass<T> create() => _createCb?.call() ?? GenericClass<T>();
+
+  @$internal
+  @override
+  GenericClassProvider<T> $copyWithCreate(
+    GenericClass<T> Function() create,
+  ) {
+    return GenericClassProvider<T>._(
+        from: from! as GenericClassFamily, create: create);
+  }
+
+  @$internal
+  @override
+  GenericClassProvider<T> $copyWithBuild(
+    Stream<List<T>> Function(
+      Ref<AsyncValue<List<T>>>,
+      GenericClass<T>,
+    ) build,
+  ) {
+    return GenericClassProvider<T>._(
+        from: from! as GenericClassFamily, runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $StreamNotifierProviderElement<GenericClass<T>, List<T>> $createElement(
+          ProviderContainer container) =>
+      $StreamNotifierProviderElement(this, container);
+
+  @override
+  bool operator ==(Object other) {
+    return other is GenericClassProvider &&
+        other.runtimeType == runtimeType &&
+        other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(runtimeType, argument);
+  }
+}
+
+String _$genericClassHash() => r'401ae1cfd97a4291dfd135a69ff8e1c436866e5a';
+
+final class GenericClassFamily extends Family {
+  const GenericClassFamily._()
+      : super(
+          name: r'genericClassProvider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  GenericClassProvider<T> call<T extends num>() =>
+      GenericClassProvider<T>._(from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$genericClassHash();
+
+  @override
+  String toString() => r'genericClassProvider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    GenericClass<T> Function<T extends num>() create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as GenericClassProvider;
+
+        return provider._copyWithCreate(create).$createElement(container);
+      },
+    );
+  }
+
+  /// {@macro riverpod.override_with_build}
+  Override overrideWithBuild(
+    Stream<List<T>> Function<T extends num>(
+            Ref<AsyncValue<List<T>>> ref, GenericClass<T> notifier)
+        build,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as GenericClassProvider;
+
+        return provider._copyWithBuild(build).$createElement(container);
+      },
+    );
+  }
+}
+
+abstract class _$GenericClass<T extends num> extends $StreamNotifier<List<T>> {
+  Stream<List<T>> build();
+  @$internal
+  @override
+  Stream<List<T>> runBuild() => build();
+}
+
 typedef PublicRef = Ref<AsyncValue<String>>;
 
 @ProviderFor(public)
@@ -401,155 +550,6 @@ final class FamilyFamily extends Family {
       },
     );
   }
-}
-
-@ProviderFor(GenericClass)
-const genericClassProvider = GenericClassFamily._();
-
-final class GenericClassProvider<T extends num>
-    extends $StreamNotifierProvider<GenericClass<T>, List<T>> {
-  const GenericClassProvider._(
-      {required GenericClassFamily super.from,
-      super.runNotifierBuildOverride,
-      GenericClass<T> Function()? create})
-      : _createCb = create,
-        super(
-          argument: null,
-          name: r'genericClassProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          allTransitiveDependencies: null,
-        );
-
-  final GenericClass<T> Function()? _createCb;
-
-  @override
-  String debugGetCreateSourceHash() => _$genericClassHash();
-
-  GenericClassProvider<T> _copyWithCreate(
-    GenericClass<T> Function<T extends num>() create,
-  ) {
-    return GenericClassProvider<T>._(
-        from: from! as GenericClassFamily, create: create<T>);
-  }
-
-  GenericClassProvider<T> _copyWithBuild(
-    Stream<List<T>> Function<T extends num>(
-      Ref<AsyncValue<List<T>>>,
-      GenericClass<T>,
-    ) build,
-  ) {
-    return GenericClassProvider<T>._(
-        from: from! as GenericClassFamily, runNotifierBuildOverride: build<T>);
-  }
-
-  @override
-  String toString() {
-    return r'genericClassProvider'
-        '<${T}>'
-        '()';
-  }
-
-  @$internal
-  @override
-  GenericClass<T> create() => _createCb?.call() ?? GenericClass<T>();
-
-  @$internal
-  @override
-  GenericClassProvider<T> $copyWithCreate(
-    GenericClass<T> Function() create,
-  ) {
-    return GenericClassProvider<T>._(
-        from: from! as GenericClassFamily, create: create);
-  }
-
-  @$internal
-  @override
-  GenericClassProvider<T> $copyWithBuild(
-    Stream<List<T>> Function(
-      Ref<AsyncValue<List<T>>>,
-      GenericClass<T>,
-    ) build,
-  ) {
-    return GenericClassProvider<T>._(
-        from: from! as GenericClassFamily, runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $StreamNotifierProviderElement<GenericClass<T>, List<T>> $createElement(
-          ProviderContainer container) =>
-      $StreamNotifierProviderElement(this, container);
-
-  @override
-  bool operator ==(Object other) {
-    return other is GenericClassProvider &&
-        other.runtimeType == runtimeType &&
-        other.argument == argument;
-  }
-
-  @override
-  int get hashCode {
-    return Object.hash(runtimeType, argument);
-  }
-}
-
-String _$genericClassHash() => r'401ae1cfd97a4291dfd135a69ff8e1c436866e5a';
-
-final class GenericClassFamily extends Family {
-  const GenericClassFamily._()
-      : super(
-          name: r'genericClassProvider',
-          dependencies: null,
-          allTransitiveDependencies: null,
-          isAutoDispose: true,
-        );
-
-  GenericClassProvider<T> call<T extends num>() =>
-      GenericClassProvider<T>._(from: this);
-
-  @override
-  String debugGetCreateSourceHash() => _$genericClassHash();
-
-  @override
-  String toString() => r'genericClassProvider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-    GenericClass<T> Function<T extends num>() create,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (container, provider) {
-        provider as GenericClassProvider;
-
-        return provider._copyWithCreate(create).$createElement(container);
-      },
-    );
-  }
-
-  /// {@macro riverpod.override_with_build}
-  Override overrideWithBuild(
-    Stream<List<T>> Function<T extends num>(
-            Ref<AsyncValue<List<T>>> ref, GenericClass<T> notifier)
-        build,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (container, provider) {
-        provider as GenericClassProvider;
-
-        return provider._copyWithBuild(build).$createElement(container);
-      },
-    );
-  }
-}
-
-abstract class _$GenericClass<T extends num> extends $StreamNotifier<List<T>> {
-  Stream<List<T>> build();
-  @$internal
-  @override
-  Stream<List<T>> runBuild() => build();
 }
 
 @ProviderFor(PublicClass)
@@ -901,6 +901,5 @@ abstract class _$FamilyClass extends $StreamNotifier<String> {
       );
 }
 
-const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
 // ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

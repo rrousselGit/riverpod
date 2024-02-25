@@ -1,18 +1,47 @@
 import 'dart:async';
 
 import 'package:analyzer/dart/analysis/results.dart';
+import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/diagnostic/diagnostic.dart';
 import 'package:build/build.dart';
 import 'package:build_test/build_test.dart';
+import 'package:collection/collection.dart';
 import 'package:meta/meta.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
-import 'package:riverpod_analyzer_utils/src/riverpod_ast.dart'
-    show
-        // ignore: invalid_use_of_internal_member
-        RiverpodAnalysisResult;
+import 'package:riverpod_analyzer_utils/src/nodes.dart';
 import 'package:riverpod_generator/src/riverpod_generator.dart';
 import 'package:test/test.dart';
+
+@internal
+extension ObjectX<T> on T? {
+  R? cast<R>() {
+    final that = this;
+    if (that is R) return that;
+    return null;
+  }
+
+  R? let<R>(R? Function(T value)? cb) {
+    if (cb == null) return null;
+    final that = this;
+    if (that != null) return cb(that);
+    return null;
+  }
+}
+
+List<RiverpodAnalysisError> collectErrors(void Function() cb) {
+  final errors = <RiverpodAnalysisError>[];
+  final previousErrorReporter = errorReporter;
+
+  try {
+    errorReporter = errors.add;
+    cb();
+    return errors;
+  } finally {
+    errorReporter = previousErrorReporter;
+  }
+}
 
 int _testNumber = 0;
 
@@ -22,15 +51,21 @@ int _testNumber = 0;
 @isTest
 void testSource(
   String description,
-  Future<void> Function(Resolver resolver) run, {
+  Future<void> Function(
+    Resolver resolver,
+    CompilationUnit unit,
+    List<ResolvedUnitResult> units,
+  ) run, {
   required String source,
   Map<String, String> files = const {},
   bool runGenerator = false,
   Timeout? timeout,
+  Object? skip,
 }) {
   final testId = _testNumber++;
   test(
     description,
+    skip: skip,
     timeout: timeout,
     () async {
       // Giving a unique name to the package to avoid the analyzer cache
@@ -46,20 +81,33 @@ void testSource(
               'library "${entry.key}"; ${entry.value}',
       };
 
+      Future<(List<ResolvedUnitResult>, CompilationUnit)> getUnits(
+        Resolver resolver,
+      ) async {
+        final lib = await resolver.findLibraryByName('foo');
+
+        final ast = await lib!.session.getResolvedLibrary(lib.source.fullName);
+        ast as ResolvedLibraryResult;
+
+        return (
+          ast.units,
+          ast.units.firstWhere((e) => e.path.endsWith('foo.dart')).unit,
+        );
+      }
+
       String? generated;
       if (runGenerator) {
-        final analysisResult = await resolveSources(
+        generated = await resolveSources(
           {
             '$packageName|lib/foo.dart': sourceWithLibrary,
             ...otherSources,
           },
-          (resolver) {
-            return resolver.resolveRiverpodLibraryResult(
-              ignoreErrors: true,
-            );
+          (resolver) async {
+            final (_, unit) = await getUnits(resolver);
+
+            return RiverpodGenerator(const {}).generateForUnit([unit]);
           },
         );
-        generated = RiverpodGenerator(const {}).runGenerator(analysisResult);
       }
 
       await resolveSources({
@@ -71,7 +119,19 @@ void testSource(
         try {
           final originalZone = Zone.current;
           return runZoned(
-            () => run(resolver),
+            () async {
+              final (units, unit) = await getUnits(resolver);
+
+              try {
+                return await run(resolver, unit, units);
+              } finally {
+                collectErrors(() {
+                  for (final unit in units) {
+                    expectRiverpodAstOnlyHasASingleOptionPerNode(unit.unit);
+                  }
+                });
+              }
+            },
             zoneSpecification: ZoneSpecification(
               // Somehow prints are captured inside the callback. Let's restore them
               print: (self, parent, zone, line) => enclosingZone.print(line),
@@ -89,6 +149,33 @@ void testSource(
   );
 }
 
+/// Asserts that no [AstNode] has to Riverpod ast.
+void expectRiverpodAstOnlyHasASingleOptionPerNode(AstNode node) {
+  final result = CollectionRiverpodAst();
+  node.accept(result);
+
+  for (final entry in result.riverpodAst.entries) {
+    expect(
+      entry.value,
+      anyOf(
+        hasLength(0),
+        hasLength(1),
+      ),
+      reason: entry.key,
+    );
+  }
+
+  node.visitChildren(_VisitNode(expectRiverpodAstOnlyHasASingleOptionPerNode));
+}
+
+class _VisitNode extends GeneralizingAstVisitor<void> {
+  _VisitNode(this.cb);
+
+  final void Function(AstNode node) cb;
+  @override
+  void visitNode(AstNode node) => cb(node);
+}
+
 extension MapTake<Key, Value> on Map<Key, Value> {
   Map<Key, Value> take(List<Key> keys) {
     return <Key, Value>{
@@ -101,33 +188,53 @@ extension MapTake<Key, Value> on Map<Key, Value> {
   }
 }
 
-extension ResolverX on Resolver {
-  // ignore: invalid_use_of_internal_member
-  Future<RiverpodAnalysisResult> resolveRiverpodAnalysisResult({
-    String libraryName = 'foo',
-    bool ignoreErrors = false,
-  }) async {
-    final riverpodAst = await resolveRiverpodLibraryResult(
-      libraryName: libraryName,
-      ignoreErrors: ignoreErrors,
-    );
+extension TakeList<T extends ProviderDeclaration> on List<T> {
+  Map<String, T> takeAll(List<String> names) {
+    final result = Map.fromEntries(map((e) => MapEntry(e.name.lexeme, e)));
+    return result.take(names);
+  }
 
-    final result = RiverpodAnalysisResult();
-    riverpodAst.accept(result);
+  T findByName(String name) {
+    return singleWhere((element) => element.name.lexeme == name);
+  }
+}
 
-    if (!ignoreErrors) {
-      final errors = result.resolvedRiverpodLibraryResults
-          .expand((e) => e.errors)
-          .toList();
-      if (errors.isNotEmpty) {
-        throw StateError(errors.map((e) => '- $e\n').join());
+extension FindAst<Base extends AstNode> on List<Base> {
+  T findByName<T extends Base>(String name) {
+    for (final node in this) {
+      switch (node) {
+        case TopLevelVariableDeclaration():
+          final variableWithName = node.variables.variables.firstWhereOrNull(
+            (element) => element.name.lexeme == name,
+          );
+
+          if (variableWithName != null) return variableWithName as T;
+
+        case MethodDeclaration():
+          if (node.name.lexeme == name) return node as T;
+
+        case FieldDeclaration():
+          final variableWithName = node.fields.variables.firstWhereOrNull(
+            (element) => element.name.lexeme == name,
+          );
+
+          if (variableWithName != null) return variableWithName as T;
+
+        case NamedCompilationUnitMember():
+          if (node.name.lexeme == name) return node as T;
+
+        default:
+          throw UnsupportedError('Unsupported node ${node.runtimeType}');
       }
     }
 
-    return result;
+    throw StateError('No node found with name "$name"');
   }
+}
 
-  Future<ResolvedRiverpodLibraryResult> resolveRiverpodLibraryResult({
+extension ResolverX on Resolver {
+  // ignore: invalid_use_of_internal_member
+  Future<RiverpodAnalysisResult> resolveRiverpodAnalysisResult({
     String libraryName = 'foo',
     bool ignoreErrors = false,
   }) async {
@@ -139,11 +246,33 @@ extension ResolverX on Resolver {
         await library.session.getResolvedLibraryByElement(library);
     libraryAst as ResolvedLibraryResult;
 
-    final result = ResolvedRiverpodLibraryResult.from(
-      libraryAst.units.map((e) => e.unit).toList(),
-    );
+    final result = RiverpodAnalysisResult();
 
-    expectValidParentChildrenRelationship(result);
+    final errors = <RiverpodAnalysisError>[];
+    final previousErrorReporter = errorReporter;
+    try {
+      if (ignoreErrors) {
+        errorReporter = errors.add;
+      } else {
+        errorReporter = (error) {
+          throw StateError('Unexpected error: $error');
+        };
+      }
+
+      for (final unit in libraryAst.units) {
+        unit.unit.accept(result);
+      }
+    } finally {
+      errorReporter = previousErrorReporter;
+    }
+
+    result.errors.addAll(errors);
+
+    if (!ignoreErrors) {
+      if (errors.isNotEmpty) {
+        throw StateError(errors.map((e) => '- $e\n').join());
+      }
+    }
 
     return result;
   }
@@ -176,51 +305,5 @@ ${errors.map((e) => '- $e\n').join()}
     }
 
     return library;
-  }
-}
-
-/// Visit all the nodes of the AST and ensure that that all children
-/// have the correct parent.
-void expectValidParentChildrenRelationship(
-  ResolvedRiverpodLibraryResult result,
-) {
-  result.accept(_ParentRiverpodVisitor(null));
-}
-
-class _ParentRiverpodVisitor extends GeneralizingRiverpodAstVisitor {
-  _ParentRiverpodVisitor(this.expectedParent);
-
-  final RiverpodAst? expectedParent;
-
-  @override
-  void visitRiverpodAst(
-    RiverpodAst node,
-  ) {
-    expect(
-      node.parent,
-      expectedParent,
-      reason: 'Node ${node.runtimeType} should have $expectedParent as parent',
-    );
-    node.visitChildren(_ParentRiverpodVisitor(node));
-  }
-}
-
-extension TakeList<T extends ProviderDeclaration> on List<T> {
-  Map<String, T> takeAll(List<String> names) {
-    final result = Map.fromEntries(map((e) => MapEntry(e.name.lexeme, e)));
-    return result.take(names);
-  }
-
-  T findByName(String name) {
-    return singleWhere((element) => element.name.lexeme == name);
-  }
-}
-
-extension LibraryElementX on LibraryElement {
-  Element findElementWithName(String name) {
-    return topLevelElements.singleWhere(
-      (element) => !element.isSynthetic && element.name == name,
-      orElse: () => throw StateError('No element found with name "$name"'),
-    );
   }
 }

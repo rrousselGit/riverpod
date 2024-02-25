@@ -1,3 +1,26 @@
+## Unreleased build
+
+- Updated `provider_dependencies` to support `@Dependencies`
+- added `riverpod_syntax_error`, for reporting errors when the generator would throw.
+- added `avoid_keep_alive_dependency_inside_auto_dispose`
+- added `unknown_scoped_usage`, for reporting when a scoped provider is used but the ref could not be found.****
+- added automatic migration to import `package:riverpod/legacy.dart` for corresponding providers.
+
+- **Breaking**: No-longer exports various providers
+  from `package:riverpod`.
+
+Various lints had their severity changed:
+
+- `avoid_build_context_in_providers` is now an INFO
+- `avoid_ref_inside_state_dispose` is now a WARNING
+- `functional_ref` is now a WARNING
+- `notifier_build` is now an error.
+- `missing_provider_scope` is now a WARNING
+- `provider_dependencies` is now a WARNING
+- `scoped_providers_should_specify_dependencies` is now a WARNING
+- `notifier_extends` is now a WARNING
+- `provider_parameters` is now a WARNING
+
 ## 3.0.0-dev.4 - 2023-11-27
 
 - `riverpod` upgraded to `3.0.0-dev.3`
@@ -26,7 +49,7 @@
 
 - Fix `async_value_nullable_pattern` false positive when used with generics
   that have non-nullable type constrains.
-- Add migration widget field when convert Stateless-based and 
+- Add migration widget field when convert Stateless-based and
   Stateful-based to each other (thanks to @Kurogoma4D)
 
 ## 2.3.7 - 2023-11-27

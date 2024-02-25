@@ -14,7 +14,6 @@ class FunctionalRef extends RiverpodLintRule {
     name: 'functional_ref',
     problemMessage:
         'Functional providers must receive a ref matching the provider name as their first positional parameter.',
-    // TODO changelog: functional_ref is now a WARNING
     errorSeverity: ErrorSeverity.WARNING,
   );
 
@@ -25,9 +24,6 @@ class FunctionalRef extends RiverpodLintRule {
     CustomLintContext context,
   ) {
     riverpodRegistry(context).addFunctionalProviderDeclaration((declaration) {
-      // Scoped providers don't need a ref
-      if (declaration.needsOverride) return;
-
       final parameters = declaration.node.functionExpression.parameters!;
 
       final refNode = parameters.parameters.firstOrNull;

@@ -1,3 +1,4 @@
+import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
@@ -8,7 +9,6 @@ import '../riverpod_custom_lint.dart';
 class OnlyUseKeepAliveInsideKeepAlive extends RiverpodLintRule {
   const OnlyUseKeepAliveInsideKeepAlive() : super(code: _code);
 
-  // TODO changelog added avoid_keep_alive_dependency_inside_auto_dispose
   static const _code = LintCode(
     name: 'only_use_keep_alive_inside_keep_alive',
     problemMessage: 'If a provider is declared as `keepAlive`, '
@@ -24,21 +24,22 @@ class OnlyUseKeepAliveInsideKeepAlive extends RiverpodLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    riverpodRegistry(context).addGeneratorProviderDeclaration((node) {
-      // The current provider is "autoDispose", so it is allowed to use other "autoDispose" providers
-      if (node.providerElement.isAutoDispose) return;
+    riverpodRegistry(context).addRefInvocation((node) {
+      if (node is! RefDependencyInvocation) return;
+      final dependencyElement = node.listenable.provider?.providerElement;
+      // This only applies if the watched provider is a generated one.
+      if (dependencyElement is! GeneratorProviderDeclarationElement) return;
+      if (!dependencyElement.isAutoDispose) return;
 
-      for (final refInvocation in node.refInvocations) {
-        switch (refInvocation) {
-          case RefDependencyInvocation(
-                provider: ProviderListenableExpression(
-                  :final GeneratorProviderDeclarationElement providerElement,
-                )
-              )
-              when providerElement.isAutoDispose:
-            reporter.reportErrorForNode(_code, refInvocation.node);
-        }
-      }
+      final provider = node.node
+          .thisOrAncestorOfType<NamedCompilationUnitMember>()
+          ?.provider;
+      if (provider == null) return;
+
+      // The enclosing provider is "autoDispose", so it is allowed to use other "autoDispose" providers
+      if (provider.providerElement.isAutoDispose) return;
+
+      reporter.reportErrorForNode(_code, node.node);
     });
   }
 }

@@ -111,14 +111,6 @@ abstract class TypeChecker {
     return results.isEmpty ? null : results.first;
   }
 
-  /// Returns if a constant annotating [element] is exactly this type.
-  ///
-  /// Throws [UnresolvedAnnotationException] on unresolved annotations unless
-  /// [throwOnUnresolved] is explicitly set to `false` (default is `true`).
-  bool hasAnnotationOfExact(Element element, {bool throwOnUnresolved = true}) =>
-      firstAnnotationOfExact(element, throwOnUnresolved: throwOnUnresolved) !=
-      null;
-
   DartObject? _computeConstantValue(
     Element element,
     int annotationIndex, {

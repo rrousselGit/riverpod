@@ -426,6 +426,5 @@ abstract class _$Regresion2959 extends $Notifier<void> {
   void runBuild() => build();
 }
 
-const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
 // ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

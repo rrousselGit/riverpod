@@ -11,7 +11,6 @@ void main() async {
   final declarations = result.unit.declarations;
 
   test('Annotations on parameters', () {
-    // TODO changelog added support for annotations on family parameters
     final notifier =
         declarations.findNamed(r'_$ClassBased') as ClassDeclaration;
     final id = notifier.members.findNamed('id');

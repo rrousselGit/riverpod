@@ -65,6 +65,5 @@ final class BProvider extends $FunctionalProvider<int, int, BRef>
 
 String _$bHash() => r'52593050701642f22b31c590f20c003dc2ee1579';
 
-const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
 // ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

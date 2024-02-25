@@ -68,66 +68,6 @@ final class FilterTypeProvider
 
 String _$filterTypeHash() => r'42b68b163daecff7a0b9b069b16025a89910b4fb';
 
-typedef FilteredTodoListRef = Ref<List<Todo>>;
-
-@ProviderFor(filteredTodoList)
-const filteredTodoListProvider = FilteredTodoListProvider._();
-
-final class FilteredTodoListProvider
-    extends $FunctionalProvider<List<Todo>, List<Todo>, FilteredTodoListRef>
-    with $Provider<List<Todo>, FilteredTodoListRef> {
-  const FilteredTodoListProvider._(
-      {List<Todo> Function(
-        FilteredTodoListRef ref,
-      )? create})
-      : _createCb = create,
-        super(
-          from: null,
-          argument: null,
-          name: r'filteredTodoListProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          allTransitiveDependencies: null,
-        );
-
-  final List<Todo> Function(
-    FilteredTodoListRef ref,
-  )? _createCb;
-
-  @override
-  String debugGetCreateSourceHash() => _$filteredTodoListHash();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(List<Todo> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<List<Todo>>(value),
-    );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<List<Todo>> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
-
-  @override
-  FilteredTodoListProvider $copyWithCreate(
-    List<Todo> Function(
-      FilteredTodoListRef ref,
-    ) create,
-  ) {
-    return FilteredTodoListProvider._(create: create);
-  }
-
-  @override
-  List<Todo> create(FilteredTodoListRef ref) {
-    final _$cb = _createCb ?? filteredTodoList;
-    return _$cb(ref);
-  }
-}
-
-String _$filteredTodoListHash() => r'34f1e929a9e7850946ea8634d9f3e8f38ae5687d';
-
 @ProviderFor(Todos)
 const todosProvider = TodosProvider._();
 
@@ -196,6 +136,65 @@ abstract class _$Todos extends $Notifier<List<Todo>> {
   List<Todo> runBuild() => build();
 }
 
-const $kDebugMode = bool.fromEnvironment('dart.vm.product');
+typedef FilteredTodoListRef = Ref<List<Todo>>;
+
+@ProviderFor(filteredTodoList)
+const filteredTodoListProvider = FilteredTodoListProvider._();
+
+final class FilteredTodoListProvider
+    extends $FunctionalProvider<List<Todo>, List<Todo>, FilteredTodoListRef>
+    with $Provider<List<Todo>, FilteredTodoListRef> {
+  const FilteredTodoListProvider._(
+      {List<Todo> Function(
+        FilteredTodoListRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'filteredTodoListProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final List<Todo> Function(
+    FilteredTodoListRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$filteredTodoListHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(List<Todo> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<List<Todo>>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<List<Todo>> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  FilteredTodoListProvider $copyWithCreate(
+    List<Todo> Function(
+      FilteredTodoListRef ref,
+    ) create,
+  ) {
+    return FilteredTodoListProvider._(create: create);
+  }
+
+  @override
+  List<Todo> create(FilteredTodoListRef ref) {
+    final _$cb = _createCb ?? filteredTodoList;
+    return _$cb(ref);
+  }
+}
+
+String _$filteredTodoListHash() => r'34f1e929a9e7850946ea8634d9f3e8f38ae5687d';
+
 // ignore_for_file: type=lint
 // ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

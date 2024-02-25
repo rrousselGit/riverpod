@@ -178,6 +178,5 @@ final class CharactersProvider extends $FunctionalProvider<
 
 String _$charactersHash() => r'b1e8e15bbeab60d92fe959d9e1dd4ceba6a31446';
 
-const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
 // ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

@@ -61,6 +61,5 @@ final class ActivityProvider extends $FunctionalProvider<AsyncValue<Activity>,
 
 String _$activityHash() => r'ef908e3b46693862f082769663b14d5369d6e155';
 
-const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
 // ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

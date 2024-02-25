@@ -1,0 +1,149 @@
+Message: `Remove "dependencies"`
+Priority: 100
+Diff for file `test/lints/missing_provider_dependency/provider_dependencies.dart:17`:
+```
+
+// expect_lint: provider_dependencies
+- @Dependencies([dep])
++ 
+void depFn() {}
+
+```
+---
+Message: `Remove "dependencies"`
+Priority: 100
+Diff for file `test/lints/missing_provider_dependency/provider_dependencies.dart:21`:
+```
+
+// expect_lint: provider_dependencies
+- @Dependencies([depFamily])
++ 
+void depFamilyFn() {}
+
+```
+---
+Message: `Specify "dependencies"`
+Priority: 100
+Diff for file `test/lints/missing_provider_dependency/provider_dependencies.dart:51`:
+```
+
+// expect_lint: provider_dependencies
+- @riverpod
++ @Riverpod(dependencies: [dep])
+int plainAnnotation(PlainAnnotationRef ref) {
+  ref.watch(depProvider);
+```
+---
+Message: `Specify "dependencies"`
+Priority: 100
+Diff for file `test/lints/missing_provider_dependency/provider_dependencies.dart:58`:
+```
+
+// expect_lint: provider_dependencies
+- @Riverpod(keepAlive: false)
++ @Riverpod(keepAlive: false, dependencies: [dep])
+int customAnnotation(CustomAnnotationRef ref) {
+  ref.watch(depProvider);
+```
+---
+Message: `Specify "dependencies"`
+Priority: 100
+Diff for file `test/lints/missing_provider_dependency/provider_dependencies.dart:66`:
+```
+// expect_lint: provider_dependencies
+@Riverpod(
+-   keepAlive: false,
++   keepAlive: false, dependencies: [dep],
+)
+int customAnnotationWithTrailingComma(
+```
+---
+Message: `Update "dependencies"`
+Priority: 100
+Diff for file `test/lints/missing_provider_dependency/provider_dependencies.dart:78`:
+```
+  keepAlive: false,
+  // expect_lint: provider_dependencies
+-   dependencies: [],
++   dependencies: [dep],
+)
+int existingDep(ExistingDepRef ref) {
+```
+---
+Message: `Update "dependencies"`
+Priority: 100
+Diff for file `test/lints/missing_provider_dependency/provider_dependencies.dart:88`:
+```
+  keepAlive: false,
+  // expect_lint: provider_dependencies
+-   dependencies: [],
++   dependencies: [dep, dep2],
+)
+int multipleDeps(MultipleDepsRef ref) {
+```
+---
+Message: `Specify "dependencies"`
+Priority: 100
+Diff for file `test/lints/missing_provider_dependency/provider_dependencies.dart:107`:
+```
+
+// expect_lint: provider_dependencies
+- class AboveScope extends ConsumerWidget {
++ @Dependencies([dep])
++ class AboveScope extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+```
+---
+Message: `Specify "dependencies"`
+Priority: 100
+Diff for file `test/lints/missing_provider_dependency/provider_dependencies.dart:120`:
+```
+
+// expect_lint: provider_dependencies
+- class Scope2 extends ConsumerWidget {
++ @Dependencies([dep])
++ class Scope2 extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+```
+---
+Message: `Specify "dependencies"`
+Priority: 100
+Diff for file `test/lints/missing_provider_dependency/provider_dependencies.dart:131`:
+```
+
+// expect_lint: provider_dependencies
+- class ConditionalScope extends ConsumerWidget {
++ @Dependencies([dep])
++ class ConditionalScope extends ConsumerWidget {
+  ConditionalScope({super.key, required this.condition});
+  final bool condition;
+```
+---
+Message: `Specify "dependencies"`
+Priority: 100
+Diff for file `test/lints/missing_provider_dependency/provider_dependencies.dart:172`:
+```
+
+// expect_lint: provider_dependencies
+- class SupportsMultipleScopes2 extends ConsumerWidget {
++ @Dependencies([depFamily, dep])
++ class SupportsMultipleScopes2 extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+```
+---
+Message: `Specify "dependencies"`
+Priority: 100
+Diff for file `test/lints/missing_provider_dependency/provider_dependencies.dart:203`:
+```
+
+// expect_lint: provider_dependencies
+- class IncompleteFamilyOverride extends ConsumerWidget {
++ @Dependencies([depFamily])
++ class IncompleteFamilyOverride extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+```
+---

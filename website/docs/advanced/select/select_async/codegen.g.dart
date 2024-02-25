@@ -120,6 +120,5 @@ final class ExampleProvider
 
 String _$exampleHash() => r'1fccbdbec0e3585bc9d3a5709ac88a8919dd78fa';
 
-const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
 // ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

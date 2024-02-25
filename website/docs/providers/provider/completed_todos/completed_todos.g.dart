@@ -68,6 +68,5 @@ final class CompletedTodosProvider
 
 String _$completedTodosHash() => r'855706c09268f428696b3b382ae1605818361b83';
 
-const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
 // ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

@@ -12,7 +12,7 @@ int nameless(
 ---
 Message: `Type as NoGenericsRef<A, B>`
 Priority: 90
-Diff for file `test/lints/functional_ref/functional_ref.dart:21`:
+Diff for file `test/lints/functional_ref/functional_ref.dart:18`:
 ```
 @riverpod
 // expect_lint: functional_ref
@@ -24,7 +24,7 @@ Diff for file `test/lints/functional_ref/functional_ref.dart:21`:
 ---
 Message: `Type as MissingGenericsRef<A, B>`
 Priority: 90
-Diff for file `test/lints/functional_ref/functional_ref.dart:25`:
+Diff for file `test/lints/functional_ref/functional_ref.dart:22`:
 ```
 @riverpod
 // expect_lint: functional_ref
@@ -36,7 +36,7 @@ Diff for file `test/lints/functional_ref/functional_ref.dart:25`:
 ---
 Message: `Type as WrongOrderRef<B, A>`
 Priority: 90
-Diff for file `test/lints/functional_ref/functional_ref.dart:29`:
+Diff for file `test/lints/functional_ref/functional_ref.dart:26`:
 ```
 @riverpod
 // expect_lint: functional_ref

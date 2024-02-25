@@ -60,6 +60,5 @@ final class BoredSuggestionProvider extends $FunctionalProvider<
 
 String _$boredSuggestionHash() => r'5975efd623c41e5bc92ecd326209e6124cb1736d';
 
-const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
 // ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

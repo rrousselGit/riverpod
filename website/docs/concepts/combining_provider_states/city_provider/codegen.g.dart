@@ -67,6 +67,5 @@ final class CityProvider extends $FunctionalProvider<String, String, CityRef>
 
 String _$cityHash() => r'2ccdee096b5d5c1cafa736b3e52b788431b9af38';
 
-const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
 // ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

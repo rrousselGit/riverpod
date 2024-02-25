@@ -70,6 +70,5 @@ final class RawStreamProvider extends $FunctionalProvider<
 
 String _$rawStreamHash() => r'7e7c2e8f4f08d33a4d86d60449e143c419ca4822';
 
-const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
 // ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

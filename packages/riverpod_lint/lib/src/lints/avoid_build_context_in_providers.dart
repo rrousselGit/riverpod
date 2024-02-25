@@ -16,7 +16,6 @@ class AvoidBuildContextInProviders extends RiverpodLintRule {
     name: 'avoid_build_context_in_providers',
     problemMessage:
         'Passing BuildContext to providers indicates mixing UI with the business logic.',
-    // TODO changelog: avoid_build_context_in_providers is now an INFO
   );
 
   @override

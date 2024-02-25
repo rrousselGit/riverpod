@@ -6,7 +6,6 @@ import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
 import '../riverpod_custom_lint.dart';
 
-// TODO changelog new lint
 class RiverpodSyntaxError extends RiverpodLintRule {
   const RiverpodSyntaxError() : super(code: _code);
 
@@ -22,31 +21,26 @@ class RiverpodSyntaxError extends RiverpodLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    riverpodRegistry(context).addResolvedRiverpodLibraryResult((unit) {
-      for (final error in unit.errors) {
-        switch (error.code) {
-          case RiverpodAnalysisErrorCode.missingNotifierBuild:
-            // Silencing errors already covered by a different lint
-            continue;
-          case _:
-        }
-
-        final location = switch (error) {
-          RiverpodAnalysisError(:final targetElement?) =>
-            SourceRange(targetElement.nameOffset, targetElement.nameLength),
-          RiverpodAnalysisError(:final targetNode?) => targetNode.sourceRange,
-          _ => null,
-        };
-
-        if (location == null) continue;
-
-        reporter.reportErrorForOffset(
-          _code,
-          location.offset,
-          location.length,
-          [error.message],
-        );
+    riverpodRegistry(context).addRiverpodAnalysisError((error) {
+      if (error.code == RiverpodAnalysisErrorCode.missingNotifierBuild) {
+        return;
       }
+
+      final location = switch (error) {
+        RiverpodAnalysisError(:final targetElement?) =>
+          SourceRange(targetElement.nameOffset, targetElement.nameLength),
+        RiverpodAnalysisError(:final targetNode?) => targetNode.sourceRange,
+        _ => null,
+      };
+
+      if (location == null) return;
+
+      reporter.reportErrorForOffset(
+        _code,
+        location.offset,
+        location.length,
+        [error.message],
+      );
     });
   }
 }

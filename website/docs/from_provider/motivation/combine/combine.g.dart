@@ -126,6 +126,5 @@ final class DoubledProvider extends $FunctionalProvider<int, int, DoubledRef>
 
 String _$doubledHash() => r'ddc640c876bdbe49fe72fe1632b5ff48687c9279';
 
-const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
 // ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main
