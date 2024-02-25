@@ -257,17 +257,21 @@ final class DepFamilyFamily extends Family {
 }
 
 ////////////
+// expect_lint: provider_dependencies
 typedef PlainAnnotationRef = Ref<int>;
 
 ////////////
+// expect_lint: provider_dependencies
 @ProviderFor(plainAnnotation)
 const plainAnnotationProvider = PlainAnnotationProvider._();
 
 ////////////
+// expect_lint: provider_dependencies
 final class PlainAnnotationProvider
     extends $FunctionalProvider<int, int, PlainAnnotationRef>
     with $Provider<int, PlainAnnotationRef> {
   ////////////
+// expect_lint: provider_dependencies
   const PlainAnnotationProvider._(
       {int Function(
         PlainAnnotationRef ref,

@@ -13,60 +13,11 @@ int dep2(Dep2Ref ref) => 0;
 @Riverpod(dependencies: [])
 int depFamily(DepFamilyRef ref, int id) => 0;
 
-////////////
-
-@riverpod
-int plainAnnotation(PlainAnnotationRef ref) {
-  // expect_lint: missing_provider_dependency
-  ref.watch(depProvider);
-  return 0;
-}
-
-@Riverpod(keepAlive: false)
-int customAnnotation(CustomAnnotationRef ref) {
-  // expect_lint: missing_provider_dependency
-  ref.watch(depProvider);
-  return 0;
-}
-
-@Riverpod(
-  keepAlive: false,
-)
-int customAnnotationWithTrailingComma(
-  CustomAnnotationWithTrailingCommaRef ref,
-) {
-  // expect_lint: missing_provider_dependency
-  ref.watch(depProvider);
-  return 0;
-}
-
-@Riverpod(
-  keepAlive: false,
-  dependencies: [],
-)
-int existingDep(ExistingDepRef ref) {
-  // expect_lint: missing_provider_dependency
-  ref.watch(depProvider);
-  return 0;
-}
-
-@Riverpod(
-  keepAlive: false,
-  dependencies: [],
-)
-int multipleDeps(MultipleDepsRef ref) {
-  // expect_lint: missing_provider_dependency
-  ref.watch(depProvider);
-  // expect_lint: missing_provider_dependency
-  ref.watch(dep2Provider);
-  return 0;
-}
-
-// expect_lint: unused_provider_dependency
+// expect_lint: provider_dependencies
 @Dependencies([dep])
 void depFn() {}
 
-// expect_lint: unused_provider_dependency
+// expect_lint: provider_dependencies
 @Dependencies([depFamily])
 void depFamilyFn() {}
 
@@ -94,30 +45,89 @@ class DepFamily extends StatelessWidget {
   }
 }
 
+////////////
+
+// expect_lint: provider_dependencies
+@riverpod
+int plainAnnotation(PlainAnnotationRef ref) {
+  ref.watch(depProvider);
+  return 0;
+}
+
+// expect_lint: provider_dependencies
+@Riverpod(keepAlive: false)
+int customAnnotation(CustomAnnotationRef ref) {
+  ref.watch(depProvider);
+  return 0;
+}
+
+// expect_lint: provider_dependencies
+@Riverpod(
+  keepAlive: false,
+)
+int customAnnotationWithTrailingComma(
+  CustomAnnotationWithTrailingCommaRef ref,
+) {
+  ref.watch(depProvider);
+  return 0;
+}
+
+@Riverpod(
+  keepAlive: false,
+  // expect_lint: provider_dependencies
+  dependencies: [],
+)
+int existingDep(ExistingDepRef ref) {
+  ref.watch(depProvider);
+  return 0;
+}
+
+@Riverpod(
+  keepAlive: false,
+  // expect_lint: provider_dependencies
+  dependencies: [],
+)
+int multipleDeps(MultipleDepsRef ref) {
+  ref.watch(depProvider);
+  ref.watch(dep2Provider);
+  return 0;
+}
+
 class Scope extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // expect_lint: missing_provider_dependency
+    return ProviderScope(
+      overrides: [depProvider.overrideWithValue(42)],
+      child: DepWidget(),
+    );
+  }
+}
+
+// expect_lint: provider_dependencies
+class AboveScope extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     return DepWidget(
       child: ProviderScope(
         overrides: [depProvider.overrideWithValue(42)],
-        child: DepWidget(),
+        child: Container(),
       ),
     );
   }
 }
 
+// expect_lint: provider_dependencies
 class Scope2 extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ProviderScope(
       overrides: [depProvider.overrideWithValue(42)],
-      // expect_lint: missing_provider_dependency
       child: Text('${ref.watch(depProvider)}'),
     );
   }
 }
 
+// expect_lint: provider_dependencies
 class ConditionalScope extends ConsumerWidget {
   ConditionalScope({super.key, required this.condition});
   final bool condition;
@@ -128,7 +138,6 @@ class ConditionalScope extends ConsumerWidget {
       overrides: [
         if (condition) depProvider.overrideWithValue(42),
       ],
-      // expect_lint: missing_provider_dependency
       child: DepWidget(),
     );
   }
@@ -149,13 +158,27 @@ class SupportsMultipleScopes extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ProviderScope(
       overrides: [depProvider.overrideWith((ref) => 0)],
-      // expect_lint: missing_provider_dependency
+      child: DepWidget(),
+    );
+
+    return ProviderScope(
+      overrides: [depFamilyProvider.overrideWith((ref, arg) => 0)],
+      child: DepFamily(),
+    );
+  }
+}
+
+// expect_lint: provider_dependencies
+class SupportsMultipleScopes2 extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    ProviderScope(
+      overrides: [depProvider.overrideWith((ref) => 0)],
       child: DepFamily(),
     );
 
     return ProviderScope(
       overrides: [depFamilyProvider.overrideWith((ref, arg) => 0)],
-      // expect_lint: missing_provider_dependency
       child: DepWidget(),
     );
   }
@@ -176,12 +199,12 @@ class SupportsNestedScopes extends ConsumerWidget {
   }
 }
 
+// expect_lint: provider_dependencies
 class IncompleteFamilyOverride extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ProviderScope(
       overrides: [depFamilyProvider(42).overrideWith((ref) => 0)],
-      // expect_lint: missing_provider_dependency
       child: DepFamily(),
     );
   }
@@ -193,10 +216,10 @@ class NotFoundWidget extends ConsumerStatefulWidget {
   _NotFoundWidgetState createState() => _NotFoundWidgetState();
 }
 
+// expect_lint: provider_dependencies
 class _NotFoundWidgetState extends ConsumerState<ConsumerStatefulWidget> {
   @override
   Widget build(BuildContext context) {
-    // ignore: missing_provider_dependency
     ref.watch(depProvider);
     return const Placeholder();
   }

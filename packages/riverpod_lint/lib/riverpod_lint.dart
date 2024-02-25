@@ -13,7 +13,6 @@ import 'src/lints/avoid_manual_providers_as_generated_provider_dependency.dart';
 import 'src/lints/avoid_public_notifier_properties.dart';
 import 'src/lints/avoid_ref_inside_state_dispose.dart';
 import 'src/lints/functional_ref.dart';
-import 'src/lints/missing_provider_dependency.dart';
 import 'src/lints/missing_provider_scope.dart';
 import 'src/lints/notifier_build.dart';
 import 'src/lints/notifier_extends.dart';
@@ -38,13 +37,13 @@ class _RiverpodPlugin extends PluginBase {
         const AvoidManualProvidersAsGeneratedProviderDependency(),
         const AvoidPublicNotifierProperties(),
         const AvoidRefInsideStateDispose(),
-        const MissingProviderDependency(),
+        // const MissingProviderDependency(),
         const FunctionalRef(),
         const MissingProviderScope(),
         const NotifierBuild(),
         const NotifierExtends(),
         const ProtectedNotifierProperties(),
-        // TODO changelog provider_dependencies split into unused_provider_dependency and missing_provider_dependency
+        // TODO changelog provider_dependencies now handles @Dependencies
         const ProviderParameters(),
         // TODO changelog added riverpod_syntax_error, for reporting errors when the generator would throw.
         const RiverpodSyntaxError(),

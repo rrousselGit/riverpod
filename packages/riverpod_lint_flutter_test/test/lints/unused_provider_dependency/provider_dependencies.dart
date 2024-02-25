@@ -18,8 +18,8 @@ int dep2(Dep2Ref ref) => 0;
 
 @Riverpod(
   keepAlive: false,
+  // expect_lint: provider_dependencies
   dependencies: [
-    // expect_lint: unused_provider_dependency
     dep,
     dep2,
   ],
@@ -31,8 +31,8 @@ int extraDep(ExtraDepRef ref) {
 
 @Riverpod(
   keepAlive: false,
+  // expect_lint: provider_dependencies
   dependencies: [
-    // expect_lint: unused_provider_dependency
     dep,
   ],
 )
@@ -41,8 +41,8 @@ int noDep(NoDepRef ref) {
 }
 
 @Riverpod(
+  // expect_lint: provider_dependencies
   dependencies: [
-    // expect_lint: unused_provider_dependency
     dep,
   ],
   keepAlive: false,
@@ -52,8 +52,8 @@ int dependenciesFirstThenKeepAlive(DependenciesFirstThenKeepAliveRef ref) {
 }
 
 @Riverpod(
+  // expect_lint: provider_dependencies
   dependencies: [
-    // expect_lint: unused_provider_dependency
     dep,
   ],
 )
@@ -61,7 +61,7 @@ int noDepNoParam(NoDepNoParamRef ref) {
   return 0;
 }
 
-// expect_lint: unused_provider_dependency
+// expect_lint: provider_dependencies
 @Riverpod(keepAlive: false, dependencies: [dep])
 int noDepWithoutComma(NoDepWithoutCommaRef ref) {
   return 0;
@@ -69,17 +69,15 @@ int noDepWithoutComma(NoDepWithoutCommaRef ref) {
 
 @Riverpod(
   keepAlive: false,
+  // expect_lint: provider_dependencies
   dependencies: [
-    // expect_lint: unused_provider_dependency
     root,
   ],
 )
 int rootDep(RootDepRef ref) => 0;
 
-@Dependencies([
-  // expect_lint: unused_provider_dependency
-  dep
-])
+// expect_lint: provider_dependencies
+@Dependencies([dep])
 class StateNotFound extends ConsumerStatefulWidget {
   @override
   // Can't track down state due to not typing it as StateNotFoundState
@@ -115,7 +113,7 @@ class IndirectlyUsedState extends ConsumerState<IndirectlyUsed> {
   }
 }
 
-// expect_lint: unused_provider_dependency
+// expect_lint: provider_dependencies
 @Dependencies([dep])
 void fn() {}
 
@@ -128,15 +126,15 @@ class Identifiers extends StatelessWidget {
   }
 }
 
-// expect_lint: unused_provider_dependency
+// expect_lint: provider_dependencies
 @Dependencies([dep2, dep])
 void secondUnused() {
   dep2Provider;
 }
 
+// expect_lint: provider_dependencies
 @Dependencies([
   dep2,
-  // expect_lint: unused_provider_dependency
   dep,
 ])
 void secondUnusedWithTrailingComma() {
