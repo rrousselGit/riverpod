@@ -8,65 +8,6 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef CounterRef = Ref<int>;
-
-@ProviderFor(counter)
-const counterProvider = CounterProvider._();
-
-final class CounterProvider extends $FunctionalProvider<int, int, CounterRef>
-    with $Provider<int, CounterRef> {
-  const CounterProvider._(
-      {int Function(
-        CounterRef ref,
-      )? create})
-      : _createCb = create,
-        super(
-          from: null,
-          argument: null,
-          name: r'counterProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          allTransitiveDependencies: null,
-        );
-
-  final int Function(
-    CounterRef ref,
-  )? _createCb;
-
-  @override
-  String debugGetCreateSourceHash() => _$counterHash();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(int value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<int>(value),
-    );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
-
-  @override
-  CounterProvider $copyWithCreate(
-    int Function(
-      CounterRef ref,
-    ) create,
-  ) {
-    return CounterProvider._(create: create);
-  }
-
-  @override
-  int create(CounterRef ref) {
-    final _$cb = _createCb ?? counter;
-    return _$cb(ref);
-  }
-}
-
-String _$counterHash() => r'9b0db44ecc47057e79891e5ecd92d34b08637679';
-
 @ProviderFor(TodoList)
 const todoListProvider = TodoListProvider._();
 
@@ -135,6 +76,64 @@ abstract class _$TodoList extends $Notifier<List<Todo>> {
   List<Todo> runBuild() => build();
 }
 
-const $kDebugMode = bool.fromEnvironment('dart.vm.product');
+typedef CounterRef = Ref<int>;
+
+@ProviderFor(counter)
+const counterProvider = CounterProvider._();
+
+final class CounterProvider extends $FunctionalProvider<int, int, CounterRef>
+    with $Provider<int, CounterRef> {
+  const CounterProvider._(
+      {int Function(
+        CounterRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'counterProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final int Function(
+    CounterRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$counterHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  CounterProvider $copyWithCreate(
+    int Function(
+      CounterRef ref,
+    ) create,
+  ) {
+    return CounterProvider._(create: create);
+  }
+
+  @override
+  int create(CounterRef ref) {
+    final _$cb = _createCb ?? counter;
+    return _$cb(ref);
+  }
+}
+
+String _$counterHash() => r'9b0db44ecc47057e79891e5ecd92d34b08637679';
+
 // ignore_for_file: type=lint
 // ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

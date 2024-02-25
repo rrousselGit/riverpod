@@ -121,6 +121,5 @@ final class EvenItemsProvider
 
 String _$evenItemsHash() => r'55ae98f9b6108203dfc4a139f1ade9fbd8ba8ddd';
 
-const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
 // ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

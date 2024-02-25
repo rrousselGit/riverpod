@@ -67,6 +67,5 @@ final class MyProvider extends $FunctionalProvider<MyValue, MyValue, MyRef>
 
 String _$myHash() => r'0810ee24cae78c131d00773ac20d254c83eefab7';
 
-const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
 // ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

@@ -118,6 +118,5 @@ final class ProductsProvider extends $FunctionalProvider<
 
 String _$productsHash() => r'd1f4523880408cf8ee0e68969c40cf87d5c78557';
 
-const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
 // ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

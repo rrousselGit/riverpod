@@ -127,6 +127,5 @@ final class CachedDiceRollProvider
 
 String _$cachedDiceRollHash() => r'fc31fcb804f10360d75362e56329976343ee7abb';
 
-const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
 // ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main
