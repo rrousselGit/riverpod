@@ -51,10 +51,9 @@ class RiverpodInvalidGenerationSourceError
     super.message, {
     super.todo = '',
     super.element,
-    this.astNode,
-  });
-
-  final AstNode? astNode;
+    AstNode? astNode,
+    // TODO changelog bumped source_gen 0.14.0 to reprot AstNodes
+  }) : super(node: astNode);
 }
 
 @immutable
