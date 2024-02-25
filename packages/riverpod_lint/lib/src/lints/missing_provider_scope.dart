@@ -15,7 +15,6 @@ class MissingProviderScope extends DartLintRule {
     name: 'missing_provider_scope',
     problemMessage: 'Flutter applications should have a ProviderScope widget '
         'at the top of the widget tree.',
-    // TODO changelog: missing_provider_scope is now a WARNING
     errorSeverity: ErrorSeverity.WARNING,
   );
 

@@ -1,0 +1,141 @@
+Message: `Update "dependencies"`
+Priority: 100
+Diff for file `test/lints/unused_provider_dependency/provider_dependencies.dart:22`:
+```
+  keepAlive: false,
+  // expect_lint: provider_dependencies
+-   dependencies: [
+-     dep,
+-     dep2,
+-   ],
++   dependencies: [dep2],
+)
+int extraDep(ExtraDepRef ref) {
+```
+---
+Message: `Remove "dependencies"`
+Priority: 100
+Diff for file `test/lints/unused_provider_dependency/provider_dependencies.dart:34`:
+```
+@Riverpod(
+  keepAlive: false,
+-   // expect_lint: provider_dependencies
+-   dependencies: [
+-     dep,
+-   ],
+- )
++ )
+int noDep(NoDepRef ref) {
+  return 0;
+```
+---
+Message: `Remove "dependencies"`
+Priority: 100
+Diff for file `test/lints/unused_provider_dependency/provider_dependencies.dart:45`:
+```
+@Riverpod(
+  // expect_lint: provider_dependencies
+-   dependencies: [
+-     dep,
+-   ],
+-   keepAlive: false,
++   keepAlive: false,
+)
+int dependenciesFirstThenKeepAlive(DependenciesFirstThenKeepAliveRef ref) {
+```
+---
+Message: `Remove "dependencies"`
+Priority: 100
+Diff for file `test/lints/unused_provider_dependency/provider_dependencies.dart:54`:
+```
+}
+
+- @Riverpod(
+-   // expect_lint: provider_dependencies
+-   dependencies: [
+-     dep,
+-   ],
+- )
++ @riverpod
+int noDepNoParam(NoDepNoParamRef ref) {
+  return 0;
+```
+---
+Message: `Remove "dependencies"`
+Priority: 100
+Diff for file `test/lints/unused_provider_dependency/provider_dependencies.dart:65`:
+```
+
+// expect_lint: provider_dependencies
+- @Riverpod(keepAlive: false, dependencies: [dep])
++ @Riverpod(keepAlive: false)
+int noDepWithoutComma(NoDepWithoutCommaRef ref) {
+  return 0;
+```
+---
+Message: `Remove "dependencies"`
+Priority: 100
+Diff for file `test/lints/unused_provider_dependency/provider_dependencies.dart:72`:
+```
+@Riverpod(
+  keepAlive: false,
+-   // expect_lint: provider_dependencies
+-   dependencies: [
+-     root,
+-   ],
+- )
++ )
+int rootDep(RootDepRef ref) => 0;
+
+```
+---
+Message: `Remove "dependencies"`
+Priority: 100
+Diff for file `test/lints/unused_provider_dependency/provider_dependencies.dart:80`:
+```
+
+// expect_lint: provider_dependencies
+- @Dependencies([dep])
++ 
+class StateNotFound extends ConsumerStatefulWidget {
+  @override
+```
+---
+Message: `Remove "dependencies"`
+Priority: 100
+Diff for file `test/lints/unused_provider_dependency/provider_dependencies.dart:118`:
+```
+
+// expect_lint: provider_dependencies
+- @Dependencies([dep])
++ 
+void fn() {}
+
+```
+---
+Message: `Update "dependencies"`
+Priority: 100
+Diff for file `test/lints/unused_provider_dependency/provider_dependencies.dart:131`:
+```
+
+// expect_lint: provider_dependencies
+- @Dependencies([dep2, dep])
++ @Dependencies([dep2])
+void secondUnused() {
+  dep2Provider;
+```
+---
+Message: `Update "dependencies"`
+Priority: 100
+Diff for file `test/lints/unused_provider_dependency/provider_dependencies.dart:137`:
+```
+
+// expect_lint: provider_dependencies
+- @Dependencies([
+-   dep2,
+-   dep,
++ @Dependencies([dep2])
+void secondUnusedWithTrailingComma() {
+  dep2Provider;
+```
+---

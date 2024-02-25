@@ -76,6 +76,80 @@ String _$functionalHash() => r'1198a9a7842513019f6a8cd1b32e72217a00ee8f';
 
 /// Hello world
 // Foo
+@ProviderFor(ClassBased)
+const classBasedProvider = ClassBasedProvider._();
+
+/// Hello world
+// Foo
+final class ClassBasedProvider extends $NotifierProvider<ClassBased, String> {
+  /// Hello world
+// Foo
+  const ClassBasedProvider._(
+      {super.runNotifierBuildOverride, ClassBased Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'classBasedProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final ClassBased Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$classBasedHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
+  }
+
+  @$internal
+  @override
+  ClassBased create() => _createCb?.call() ?? ClassBased();
+
+  @$internal
+  @override
+  ClassBasedProvider $copyWithCreate(
+    ClassBased Function() create,
+  ) {
+    return ClassBasedProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  ClassBasedProvider $copyWithBuild(
+    String Function(
+      Ref<String>,
+      ClassBased,
+    ) build,
+  ) {
+    return ClassBasedProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<ClassBased, String> $createElement(
+          ProviderContainer container) =>
+      $NotifierProviderElement(this, container);
+}
+
+String _$classBasedHash() => r'f1139017b1fcf38017402b514c61fb32dae40c39';
+
+abstract class _$ClassBased extends $Notifier<String> {
+  String build();
+  @$internal
+  @override
+  String runBuild() => build();
+}
+
+/// Hello world
+// Foo
 typedef FamilyRef = Ref<String>;
 
 /// Hello world
@@ -216,80 +290,6 @@ final class FamilyFamily extends Family {
       },
     );
   }
-}
-
-/// Hello world
-// Foo
-@ProviderFor(ClassBased)
-const classBasedProvider = ClassBasedProvider._();
-
-/// Hello world
-// Foo
-final class ClassBasedProvider extends $NotifierProvider<ClassBased, String> {
-  /// Hello world
-// Foo
-  const ClassBasedProvider._(
-      {super.runNotifierBuildOverride, ClassBased Function()? create})
-      : _createCb = create,
-        super(
-          from: null,
-          argument: null,
-          name: r'classBasedProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          allTransitiveDependencies: null,
-        );
-
-  final ClassBased Function()? _createCb;
-
-  @override
-  String debugGetCreateSourceHash() => _$classBasedHash();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(String value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<String>(value),
-    );
-  }
-
-  @$internal
-  @override
-  ClassBased create() => _createCb?.call() ?? ClassBased();
-
-  @$internal
-  @override
-  ClassBasedProvider $copyWithCreate(
-    ClassBased Function() create,
-  ) {
-    return ClassBasedProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  ClassBasedProvider $copyWithBuild(
-    String Function(
-      Ref<String>,
-      ClassBased,
-    ) build,
-  ) {
-    return ClassBasedProvider._(runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $NotifierProviderElement<ClassBased, String> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
-}
-
-String _$classBasedHash() => r'f1139017b1fcf38017402b514c61fb32dae40c39';
-
-abstract class _$ClassBased extends $Notifier<String> {
-  String build();
-  @$internal
-  @override
-  String runBuild() => build();
 }
 
 /// Hello world
@@ -465,6 +465,5 @@ abstract class _$ClassFamilyBased extends $Notifier<String> {
       );
 }
 
-const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
 // ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

@@ -8,11 +8,14 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'scoped_providers_should_specify_dependencies.g.dart';
 
+@riverpod
+class UnimplementedScoped extends _$UnimplementedScoped {
+  @override
+  int build();
+}
+
 @Riverpod(dependencies: [])
 int scoped(ScopedRef ref) => 0;
-
-@riverpod
-external int unimplementedScoped();
 
 @riverpod
 int root(RootRef ref) => 0;
@@ -24,7 +27,8 @@ void main() {
   final rootContainer = ProviderContainer(
     overrides: [
       scopedProvider.overrideWith((ref) => 0),
-      unimplementedScopedProvider.overrideWith((ref) => 0),
+      unimplementedScopedProvider
+          .overrideWith(() => throw UnimplementedError()),
       rootProvider.overrideWith((ref) => 0),
     ],
   );
@@ -33,7 +37,8 @@ void main() {
     parent: rootContainer,
     overrides: [
       scopedProvider.overrideWith((ref) => 0),
-      unimplementedScopedProvider.overrideWith((ref) => 0),
+      unimplementedScopedProvider
+          .overrideWith(() => throw UnimplementedError()),
       // expect_lint: scoped_providers_should_specify_dependencies
       rootProvider.overrideWith((ref) => 0),
     ],
@@ -43,7 +48,8 @@ void main() {
     ProviderScope(
       overrides: [
         scopedProvider.overrideWith((ref) => 0),
-        unimplementedScopedProvider.overrideWith((ref) => 0),
+        unimplementedScopedProvider
+            .overrideWith(() => throw UnimplementedError()),
         rootProvider.overrideWith((ref) => 0),
       ],
       child: Container(),
@@ -54,7 +60,8 @@ void main() {
     ProviderScope(
       overrides: [
         scopedProvider.overrideWith((ref) => 0),
-        unimplementedScopedProvider.overrideWith((ref) => 0),
+        unimplementedScopedProvider
+            .overrideWith(() => throw UnimplementedError()),
         // This is not a Flutter's runApp, so the ProviderScope is considered scoped
         // expect_lint: scoped_providers_should_specify_dependencies
         rootProvider.overrideWith((ref) => 0),
@@ -68,7 +75,8 @@ void main() {
       parent: rootContainer,
       overrides: [
         scopedProvider.overrideWith((ref) => 0),
-        unimplementedScopedProvider.overrideWith((ref) => 0),
+        unimplementedScopedProvider
+            .overrideWith(() => throw UnimplementedError()),
         // expect_lint: scoped_providers_should_specify_dependencies
         rootProvider.overrideWith((ref) => 0),
       ],
@@ -82,7 +90,8 @@ void definitelyNotAMain() {
   final rootContainer = ProviderContainer(
     overrides: [
       scopedProvider.overrideWith((ref) => 0),
-      unimplementedScopedProvider.overrideWith((ref) => 0),
+      unimplementedScopedProvider
+          .overrideWith(() => throw UnimplementedError()),
       rootProvider.overrideWith((ref) => 0),
     ],
   );
@@ -91,7 +100,8 @@ void definitelyNotAMain() {
     parent: rootContainer,
     overrides: [
       scopedProvider.overrideWith((ref) => 0),
-      unimplementedScopedProvider.overrideWith((ref) => 0),
+      unimplementedScopedProvider
+          .overrideWith(() => throw UnimplementedError()),
       // expect_lint: scoped_providers_should_specify_dependencies
       rootProvider.overrideWith((ref) => 0),
     ],
@@ -101,7 +111,8 @@ void definitelyNotAMain() {
     ProviderScope(
       overrides: [
         scopedProvider.overrideWith((ref) => 0),
-        unimplementedScopedProvider.overrideWith((ref) => 0),
+        unimplementedScopedProvider
+            .overrideWith(() => throw UnimplementedError()),
         rootProvider.overrideWith((ref) => 0),
       ],
       child: Container(),
@@ -113,7 +124,8 @@ void definitelyNotAMain() {
       parent: rootContainer,
       overrides: [
         scopedProvider.overrideWith((ref) => 0),
-        unimplementedScopedProvider.overrideWith((ref) => 0),
+        unimplementedScopedProvider
+            .overrideWith(() => throw UnimplementedError()),
         // expect_lint: scoped_providers_should_specify_dependencies
         rootProvider.overrideWith((ref) => 0),
       ],
@@ -126,7 +138,8 @@ void someTestFunction() {
   final rootContainer = ProviderContainer(
     overrides: [
       scopedProvider.overrideWith((ref) => 0),
-      unimplementedScopedProvider.overrideWith((ref) => 0),
+      unimplementedScopedProvider
+          .overrideWith(() => throw UnimplementedError()),
       rootProvider.overrideWith((ref) => 0),
     ],
   );
@@ -136,7 +149,8 @@ void someTestFunction() {
       ProviderScope(
         overrides: [
           scopedProvider.overrideWith((ref) => 0),
-          unimplementedScopedProvider.overrideWith((ref) => 0),
+          unimplementedScopedProvider
+              .overrideWith(() => throw UnimplementedError()),
           rootProvider.overrideWith((ref) => 0),
         ],
         child: Container(),
@@ -148,7 +162,8 @@ void someTestFunction() {
         parent: rootContainer,
         overrides: [
           scopedProvider.overrideWith((ref) => 0),
-          unimplementedScopedProvider.overrideWith((ref) => 0),
+          unimplementedScopedProvider
+              .overrideWith(() => throw UnimplementedError()),
           // expect_lint: scoped_providers_should_specify_dependencies
           rootProvider.overrideWith((ref) => 0),
         ],
@@ -161,7 +176,8 @@ void someTestFunction() {
         child: ProviderScope(
           overrides: [
             scopedProvider.overrideWith((ref) => 0),
-            unimplementedScopedProvider.overrideWith((ref) => 0),
+            unimplementedScopedProvider
+                .overrideWith(() => throw UnimplementedError()),
             // expect_lint: scoped_providers_should_specify_dependencies
             rootProvider.overrideWith((ref) => 0),
           ],
@@ -176,7 +192,8 @@ Widget fn() {
   return ProviderScope(
     overrides: [
       scopedProvider.overrideWith((ref) => 0),
-      unimplementedScopedProvider.overrideWith((ref) => 0),
+      unimplementedScopedProvider
+          .overrideWith(() => throw UnimplementedError()),
       // expect_lint: scoped_providers_should_specify_dependencies
       rootProvider.overrideWith((ref) => 0),
     ],
@@ -191,7 +208,8 @@ void showModal(BuildContext context) {
       return ProviderScope(
         overrides: [
           scopedProvider.overrideWith((ref) => 0),
-          unimplementedScopedProvider.overrideWith((ref) => 0),
+          unimplementedScopedProvider
+              .overrideWith(() => throw UnimplementedError()),
           // expect_lint: scoped_providers_should_specify_dependencies
           rootProvider.overrideWith((ref) => 0),
         ],
@@ -209,7 +227,8 @@ class MyWidget extends StatelessWidget {
     return ProviderScope(
       overrides: [
         scopedProvider.overrideWith((ref) => 0),
-        unimplementedScopedProvider.overrideWith((ref) => 0),
+        unimplementedScopedProvider
+            .overrideWith(() => throw UnimplementedError()),
         // expect_lint: scoped_providers_should_specify_dependencies
         rootProvider.overrideWith((ref) => 0),
       ],

@@ -119,6 +119,5 @@ final class WeatherProvider extends $FunctionalProvider<AsyncValue<Weather>,
 
 String _$weatherHash() => r'9a79d0269032630918eef9d3f562ff35b5860061';
 
-const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
 // ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

@@ -13,7 +13,6 @@ void main() async {
   final result = await resolveFile2(path: file.path) as ResolvedUnitResult;
   final topLevelDeclarations = result.unit.declarations.toList();
 
-  // TODO changelog added support for documentation on providers/parameters
   test('Doc on generated variables', () async {
     final doc = topLevelDeclarations.findNamed('functionalProvider').doc;
 

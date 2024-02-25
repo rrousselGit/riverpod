@@ -1,11 +1,9 @@
+// ignore_for_file: require_trailing_commas
+
 import 'package:analyzer/dart/element/element.dart';
-import 'package:analyzer/dart/element/nullability_suffix.dart';
-import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
 import 'package:collection/collection.dart';
 import 'package:source_gen/source_gen.dart' hide TypeChecker;
-
-import 'src/type_checker.dart';
 
 /// Builds generators for `build_runner` to run
 Builder lintVisitorGenerator(BuilderOptions options) {
@@ -15,56 +13,19 @@ Builder lintVisitorGenerator(BuilderOptions options) {
   );
 }
 
-const _riverpodAstType = TypeChecker.fromName(
-  'RiverpodAst',
-  packageName: 'riverpod_analyzer_utils',
-);
-
-sealed class _AstField {
-  _AstField({required this.field, required this.type});
-
-  static _AstField? parse(FieldElement field) {
-    if (field.type.isDartCoreList) {
-      final valueType = (field.type as InterfaceType).typeArguments.single;
-      if (!_riverpodAstType.isAssignableFromType(valueType)) return null;
-
-      return _ListAstField(
-        field: field,
-        type: field.type,
-        valueType: valueType,
-      );
-    } else {
-      if (!_riverpodAstType.isAssignableFromType(field.type)) return null;
-      return _SingleAstField(field: field, type: field.type);
-    }
+extension on String {
+  String get plural {
+    if (endsWith('y')) return '${substring(0, length - 1)}ies';
+    if (endsWith('s')) return '${this}List';
+    return '${this}s';
   }
-
-  final FieldElement field;
-  final DartType type;
-}
-
-class _ListAstField extends _AstField {
-  _ListAstField({
-    required super.field,
-    required super.type,
-    required this.valueType,
-  });
-
-  final DartType valueType;
-}
-
-class _SingleAstField extends _AstField {
-  _SingleAstField({
-    required super.field,
-    required super.type,
-  });
 }
 
 class _LintVisitorGenerator extends Generator {
   @override
   String generate(LibraryReader library, BuildStep buildStep) {
     final buffer = StringBuffer();
-    if (library.element.name == 'riverpod_ast') {
+    if (library.element.name == 'nodes') {
       _writeRiverpodAstVisitor(library, buffer);
     }
 
@@ -76,131 +37,151 @@ class _LintVisitorGenerator extends Generator {
   }
 
   void _writeRiverpodAstVisitor(LibraryReader library, StringBuffer buffer) {
-    final allAst = library.classes
-        .where((e) => e.name != 'RiverpodAst')
-        .where(_riverpodAstType.isAssignableFrom)
-        .toList();
+    final allAst = library.element.topLevelElements
+        .whereType<ExtensionElement>()
+        .where((e) => e.metadata.firstOrNull?.toSource() == '@_ast')
+        .expand((extension) {
+      final constraint = extension.extendedType;
 
-    final relationships = <ClassElement, Set<String>>{};
-
-    for (final ast in allAst) {
-      final relation = relationships.putIfAbsent(ast, () => {});
-
-      final allSuperAstTypes = ast.allSupertypes
-          .where((e) => !e.isDartCoreObject && e.element.name != 'RiverpodAst')
-          .toList();
-
-      final inheritedSuperTypes = <InterfaceType>[];
-      for (var superType = ast.supertype;
-          superType != null &&
-              superType.element.name != 'RiverpodAst' &&
-              !superType.isDartCoreObject;
-          superType = superType.superclass) {
-        inheritedSuperTypes.add(superType);
-      }
-
-      for (final superAst in allSuperAstTypes) {
-        relation.add(superAst.element.name);
-      }
-
-      final astFields = ast.fields
-          // Exclude fields already handled by the supertype
-          .where(
-            (field) => inheritedSuperTypes
-                .expand((e) => e.accessors)
-                .every((superField) => superField.name != field.name),
-          )
-          .map(_AstField.parse)
-          .whereNotNull()
-          .toList();
-
-      _writeAstMixin(
-        buffer,
-        ast,
-        astFields,
-        hasSuperType: inheritedSuperTypes.isNotEmpty,
+      return extension.accessors.map(
+        (e) => (
+          constraint: constraint.element!.name!,
+          type: e.returnType.element!.name!,
+          name: e.name,
+        ),
       );
+    }).toList();
+
+    final byConstraint = <({
+      String type,
+      String name,
+    }),
+        List<({String type, String name})>>{};
+    for (final ast in allAst) {
+      byConstraint.putIfAbsent((
+        type: ast.constraint,
+        name: ast.constraint == 'AstNode' ? 'Node' : ast.constraint,
+      ), () => []).add((type: ast.type, name: ast.name));
     }
 
-    final concreteRelationshipEntries =
-        relationships.entries.where((e) => !e.key.isAbstract);
-
     buffer.writeln('''
-abstract class RiverpodAstVisitor {
-  ${concreteRelationshipEntries.map(
-              (e) => '''
-  void visit${e.key.name}(${e.key.name} node);
-''',
-            ).join('\n')}
+mixin RiverpodAstVisitor {
+  ${allAst.map((e) => 'void visit${e.type}(${e.type} node) {}').join('\n')}
 }
 
-abstract class GeneralizingRiverpodAstVisitor implements RiverpodAstVisitor {
-  void visitRiverpodAst(RiverpodAst node) {
-    node.visitChildren(this);
+abstract class RecursiveRiverpodAstVisitor
+    extends GeneralizingAstVisitor<void>
+    with RiverpodAstVisitor {
+  ${byConstraint.entries.map((e) => '''
+@override
+void visit${e.key.name}(${e.key.type} node) {
+  ${e.value.map((e) => '''
+  if (node.${e.name} case final value?) {
+    visit${e.type}(value);
+    return;
   }
-  
-  ${relationships.entries.map(
-              (e) => '''
-  ${e.key.isAbstract ? '' : '@override'}
-  void visit${e.key.name}(${e.key.name} node) {
-    ${e.value.map((e) => 'visit$e(node);').join('\n')}
+  ''').join('\n')}
+
+  super.visit${e.key.name}(node);
+}''').join('\n')}
+
+  ${allAst.map((e) => '''
+  void visit${e.type}(${e.type} node) {
+    super.visit${e.constraint == 'AstNode' ? 'Node' : e.constraint}(node.node);
   }
-''',
-            ).join('\n')}
+  ''').join('\n')}
+
 }
 
-
-abstract class RecursiveRiverpodAstVisitor implements RiverpodAstVisitor {
-  ${concreteRelationshipEntries.map(
-              (e) => '''
+abstract class SimpleRiverpodAstVisitor
+    extends RecursiveRiverpodAstVisitor {
   @override
-  void visit${e.key.name}(${e.key.name} node) {
-    node.visitChildren(this);
-  }
-''',
-            ).join('\n')}
+  void visitNode(AstNode node) {}
 }
 
-abstract class SimpleRiverpodAstVisitor implements RiverpodAstVisitor {
-  ${concreteRelationshipEntries.map(
-              (e) => '''
-  @override
-  void visit${e.key.name}(${e.key.name} node) {
-  }
-''',
-            ).join('\n')}
-}
-
-abstract class UnimplementedRiverpodAstVisitor implements RiverpodAstVisitor {
-  ${concreteRelationshipEntries.map(
-              (e) => '''
-  @override
-  void visit${e.key.name}(${e.key.name} node) {
-    throw UnimplementedError();
-  }
-''',
-            ).join('\n')}
+abstract class UnimplementedRiverpodAstVisitor
+    extends SimpleRiverpodAstVisitor {
+  ${allAst.map((e) => 'void visit${e.type}(${e.type} node) => throw UnimplementedError();').join('\n')}
 }
 
 @internal
-class RiverpodAnalysisResult extends GeneralizingRiverpodAstVisitor {
-    ${relationships.entries.map(
-              (e) => '''
-  final ${e.key.name.lowerFirst}s =
-      <${e.key.name}>[];
-  @override
-  void visit${e.key.name}(
-    ${e.key.name} node,
-  ) {
-    super.visit${e.key.name}(node);
-    ${e.key.name.lowerFirst}s.add(node);
-  }
-''',
-            ).join('\n')}
+class CollectionRiverpodAst extends SimpleRiverpodAstVisitor {
+  final Map<String, List<Object>> riverpodAst = {};
+  List<Object?>? _pendingList;
 
+${byConstraint.keys.map((e) => '''
+  @override
+  void visit${e.name}(
+    ${e.type} node,
+  ) {
+    final list = riverpodAst.putIfAbsent('${e.type}', () => []);
+    final previousList = list;
+    _pendingList = list;
+    super.visit${e.name}(node);
+    _pendingList = previousList;
+  }
+''').join('\n')}
+
+${allAst.map((e) => '''
+  void visit${e.type}(${e.type} node) {
+    _pendingList!.add(node);
+  }
+''').join('\n')}
 }
 
-class _RiverpodAstRegistryVisitor extends GeneralizingRiverpodAstVisitor {
+@internal
+class RiverpodAnalysisResult extends RecursiveRiverpodAstVisitor {
+  final List<RiverpodAnalysisError> errors = [];
+
+    ${allAst.map((e) => '''
+  final ${e.type.lowerFirst.plural} = <${e.type}>[];
+  @override
+  void visit${e.type}(
+    ${e.type} node,
+  ) {
+    super.visit${e.type}(node);
+    ${e.type.lowerFirst.plural}.add(node);
+  }
+''').join('\n')}
+}
+
+class RiverpodAstRegistry {
+  void run(AstNode node) {
+    final previousErrorReporter = errorReporter;
+    try {
+      final errors = node.upsert(
+        'RiverpodAstRegistry.errors',
+        () => <RiverpodAnalysisError>[],
+      );
+
+      final visitor = _RiverpodAstRegistryVisitor(this);
+      errorReporter = errors.add;
+
+      node.accept(visitor);
+      for (final error in errors) {
+        visitor._runSubscriptions(error, _onRiverpodAnalysisError);
+      }
+    } finally {
+      errorReporter = previousErrorReporter;
+    }
+  }
+
+  final _onRiverpodAnalysisError = <void Function(RiverpodAnalysisError)>[];
+  void addRiverpodAnalysisError(
+    void Function(RiverpodAnalysisError node) cb,
+  ) {
+    _onRiverpodAnalysisError.add(cb);
+  }
+
+  ${allAst.map((e) => '''
+  final _on${e.type} = <void Function(${e.type})>[];
+  void add${e.type}(void Function(${e.type} node) cb) {
+    _on${e.type}.add(cb);
+  }
+''').join('\n')}
+}
+
+class _RiverpodAstRegistryVisitor extends RecursiveRiverpodAstVisitor {
   _RiverpodAstRegistryVisitor(this._registry);
 
   final RiverpodAstRegistry _registry;
@@ -218,110 +199,17 @@ class _RiverpodAstRegistryVisitor extends GeneralizingRiverpodAstVisitor {
     }
   }
 
+  ${allAst.map((e) => '''
   @override
-  void visitRiverpodAst(RiverpodAst node) {
-    node.visitChildren(this);
-  }
-  
-  ${relationships.entries.map(
-              (e) => '''
-  @override
-  void visit${e.key.name}(${e.key.name} node) {
-    super.visit${e.key.name}(node);
-    node.visitChildren(this);
+  void visit${e.type}(${e.type} node) {
+    super.visit${e.type}(node);
     _runSubscriptions(
       node,
-      _registry._on${e.key.name},
+      _registry._on${e.type},
     );
   }
 
-''',
-            ).join('\n')}
-}
-
-class RiverpodAstRegistry {
-  void run(RiverpodAst node) {
-    node.accept(_RiverpodAstRegistryVisitor(this));
-  }
-
-  final _onRiverpodAst = <void Function(RiverpodAst)>[];
-  void addRiverpodAst(void Function(RiverpodAst node) cb) {
-    _onRiverpodAst.add(cb);
-  }
-  
-  ${relationships.entries.map(
-              (e) => '''
-  final _on${e.key.name} = <void Function(${e.key.name})>[];
-  void add${e.key.name}(void Function(${e.key.name} node) cb) {
-    _on${e.key.name}.add(cb);
-  }
-''',
-            ).join('\n')}
-}
-''');
-  }
-
-  void _writeAstMixin(
-    StringBuffer buffer,
-    ClassElement ast,
-    List<_AstField> astFields, {
-    required bool hasSuperType,
-  }) {
-    late final accept = '''
-      @override
-      void accept(RiverpodAstVisitor visitor) {
-        visitor.visit${ast.name}(this as ${ast.name},);
-      }
-    ''';
-
-    final visitChildren = StringBuffer();
-    if (hasSuperType) {
-      visitChildren.writeln('super.visitChildren(visitor);');
-    }
-
-    for (final field in astFields) {
-      switch (field) {
-        case _ListAstField():
-          final op =
-              field.valueType.nullabilitySuffix == NullabilitySuffix.question
-                  ? '?'
-                  : '';
-
-          var leading = '';
-          var trailing = '';
-          if (field.type.nullabilitySuffix == NullabilitySuffix.question) {
-            leading =
-                'if (${field.field.name} case final ${field.field.name}?) {';
-            trailing = '}';
-          }
-
-          visitChildren.writeln('''
-              $leading
-              for (final value in ${field.field.name}) {
-                value$op.accept(visitor);
-              }
-              $trailing
-            ''');
-
-        case _SingleAstField():
-          final op = field.type.nullabilitySuffix == NullabilitySuffix.question
-              ? '?'
-              : '';
-          visitChildren.writeln(
-            '${field.field.name}$op.accept(visitor);',
-          );
-      }
-    }
-
-    buffer.writeln('''
-base mixin _\$${ast.name} on RiverpodAst {
-  ${astFields.map((e) => '${e.type} get ${e.field.name};').join('\n')}
-
-  ${ast.isAbstract ? '' : accept}
-
-  @override void visitChildren(RiverpodAstVisitor visitor) {
-    $visitChildren
-  }
+''').join('\n')}
 }
 ''');
   }

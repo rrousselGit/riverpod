@@ -237,125 +237,6 @@ final class FamilyWithDependencies2Family extends Family {
   }
 }
 
-typedef _Private2Ref = Ref<int>;
-
-@ProviderFor(_private2)
-const _private2Provider = _Private2Provider._();
-
-final class _Private2Provider
-    extends $FunctionalProvider<int, int, _Private2Ref>
-    with $Provider<int, _Private2Ref> {
-  const _Private2Provider._(
-      {int Function(
-        _Private2Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
-          from: null,
-          argument: null,
-          name: r'_private2Provider',
-          isAutoDispose: true,
-          dependencies: null,
-          allTransitiveDependencies: null,
-        );
-
-  final int Function(
-    _Private2Ref ref,
-  )? _createCb;
-
-  @override
-  String debugGetCreateSourceHash() => _$private2Hash();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(int value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<int>(value),
-    );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
-
-  @override
-  _Private2Provider $copyWithCreate(
-    int Function(
-      _Private2Ref ref,
-    ) create,
-  ) {
-    return _Private2Provider._(create: create);
-  }
-
-  @override
-  int create(_Private2Ref ref) {
-    final _$cb = _createCb ?? _private2;
-    return _$cb(ref);
-  }
-}
-
-String _$private2Hash() => r'5e0fa14ff40fb444c027ed25150a42362db3ef19';
-
-typedef Public2Ref = Ref<int>;
-
-@ProviderFor(public2)
-const public2Provider = Public2Provider._();
-
-final class Public2Provider extends $FunctionalProvider<int, int, Public2Ref>
-    with $Provider<int, Public2Ref> {
-  const Public2Provider._(
-      {int Function(
-        Public2Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
-          from: null,
-          argument: null,
-          name: r'public2Provider',
-          isAutoDispose: true,
-          dependencies: null,
-          allTransitiveDependencies: null,
-        );
-
-  final int Function(
-    Public2Ref ref,
-  )? _createCb;
-
-  @override
-  String debugGetCreateSourceHash() => _$public2Hash();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(int value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<int>(value),
-    );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
-
-  @override
-  Public2Provider $copyWithCreate(
-    int Function(
-      Public2Ref ref,
-    ) create,
-  ) {
-    return Public2Provider._(create: create);
-  }
-
-  @override
-  int create(Public2Ref ref) {
-    final _$cb = _createCb ?? public2;
-    return _$cb(ref);
-  }
-}
-
-String _$public2Hash() => r'9767255f0182589fe48b29d217dd488b0a13b9d5';
-
 @ProviderFor(NotifierWithDependencies)
 const notifierWithDependenciesProvider = NotifierWithDependenciesProvider._();
 
@@ -629,6 +510,124 @@ abstract class _$NotifierFamilyWithDependencies extends $Notifier<int> {
       );
 }
 
-const $kDebugMode = bool.fromEnvironment('dart.vm.product');
+typedef _Private2Ref = Ref<int>;
+
+@ProviderFor(_private2)
+const _private2Provider = _Private2Provider._();
+
+final class _Private2Provider
+    extends $FunctionalProvider<int, int, _Private2Ref>
+    with $Provider<int, _Private2Ref> {
+  const _Private2Provider._(
+      {int Function(
+        _Private2Ref ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'_private2Provider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final int Function(
+    _Private2Ref ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$private2Hash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  _Private2Provider $copyWithCreate(
+    int Function(
+      _Private2Ref ref,
+    ) create,
+  ) {
+    return _Private2Provider._(create: create);
+  }
+
+  @override
+  int create(_Private2Ref ref) {
+    final _$cb = _createCb ?? _private2;
+    return _$cb(ref);
+  }
+}
+
+String _$private2Hash() => r'5e0fa14ff40fb444c027ed25150a42362db3ef19';
+
+typedef Public2Ref = Ref<int>;
+
+@ProviderFor(public2)
+const public2Provider = Public2Provider._();
+
+final class Public2Provider extends $FunctionalProvider<int, int, Public2Ref>
+    with $Provider<int, Public2Ref> {
+  const Public2Provider._(
+      {int Function(
+        Public2Ref ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'public2Provider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final int Function(
+    Public2Ref ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$public2Hash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  Public2Provider $copyWithCreate(
+    int Function(
+      Public2Ref ref,
+    ) create,
+  ) {
+    return Public2Provider._(create: create);
+  }
+
+  @override
+  int create(Public2Ref ref) {
+    final _$cb = _createCb ?? public2;
+    return _$cb(ref);
+  }
+}
+
+String _$public2Hash() => r'9767255f0182589fe48b29d217dd488b0a13b9d5';
+
 // ignore_for_file: type=lint
 // ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

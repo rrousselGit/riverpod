@@ -1,0 +1,135 @@
+Message: `Specify "dependencies"`
+Priority: 100
+Diff for file `test/lints/missing_provider_dependency/dependencies.dart:30`:
+```
+
+// expect_lint: provider_dependencies
+- @riverpod
++ @Riverpod(dependencies: [generatedScoped])
+int watchGeneratedScopedButNoDependencies(
+  WatchGeneratedScopedButNoDependenciesRef ref,
+```
+---
+Message: `Update "dependencies"`
+Priority: 100
+Diff for file `test/lints/missing_provider_dependency/dependencies.dart:56`:
+```
+
+// expect_lint: provider_dependencies
+- @Riverpod(dependencies: [])
++ @Riverpod(dependencies: [generatedScoped])
+int watchGeneratedScopedButEmptyDependencies(
+  WatchGeneratedScopedButEmptyDependenciesRef ref,
+```
+---
+Message: `Remove "dependencies"`
+Priority: 100
+Diff for file `test/lints/missing_provider_dependency/dependencies.dart:154`:
+```
+class MemberDependencies {
+  // expect_lint: provider_dependencies
+-   @Dependencies([dep])
++   
+  int build() => 0;
+}
+```
+---
+Message: `Update "dependencies"`
+Priority: 100
+Diff for file `test/lints/missing_provider_dependency/dependencies.dart:162`:
+```
+class CanUpdateMultipleDependenciesAtOnce {
+  // expect_lint: provider_dependencies
+-   @Dependencies([])
++   @Dependencies([dep])
+  int build(WidgetRef ref) {
+    ref.watch(depProvider);
+```
+---
+Message: `Update "dependencies"`
+Priority: 100
+Diff for file `test/lints/missing_provider_dependency/dependencies.dart:159`:
+```
+
+// expect_lint: provider_dependencies
+- @Dependencies([])
++ @Dependencies([dep])
+class CanUpdateMultipleDependenciesAtOnce {
+  // expect_lint: provider_dependencies
+```
+---
+Message: `Remove "dependencies"`
+Priority: 100
+Diff for file `test/lints/missing_provider_dependency/dependencies.dart:182`:
+```
+// Handle identifiers with dependencies
+// expect_lint: provider_dependencies
+- @Dependencies([dep])
++ 
+void fn() {}
+
+```
+---
+Message: `Specify "dependencies"`
+Priority: 100
+Diff for file `test/lints/missing_provider_dependency/dependencies.dart:186`:
+```
+
+// expect_lint: provider_dependencies
+- void fn2() {
++ @Dependencies([dep])
++ void fn2() {
+  fn();
+}
+```
+---
+Message: `Specify "dependencies"`
+Priority: 100
+Diff for file `test/lints/missing_provider_dependency/dependencies.dart:194`:
+```
+
+// expect_lint: provider_dependencies
+- @riverpod
++ @Riverpod(dependencies: [dep])
+int foo(FooRef ref) {
+  fn();
+```
+---
+Message: `Specify "dependencies"`
+Priority: 100
+Diff for file `test/lints/missing_provider_dependency/dependencies.dart:211`:
+```
+
+// expect_lint: provider_dependencies
+- class WidgetDependencies2 extends StatelessWidget {
++ @Dependencies([dep])
++ class WidgetDependencies2 extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+```
+---
+Message: `Update "dependencies"`
+Priority: 100
+Diff for file `test/lints/missing_provider_dependency/dependencies.dart:242`:
+```
+
+// expect_lint: provider_dependencies
+- @Dependencies([])
++ @Dependencies([dep])
+class Stateful2 extends StatefulWidget {
+  const Stateful2({super.key});
+```
+---
+Message: `Specify "dependencies"`
+Priority: 100
+Diff for file `test/lints/missing_provider_dependency/dependencies.dart:258`:
+```
+
+// expect_lint: provider_dependencies
+- class FindStateFromClassList extends StatefulWidget {
++ @Dependencies([dep])
++ class FindStateFromClassList extends StatefulWidget {
+  const FindStateFromClassList({super.key});
+
+```
+---

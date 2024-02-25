@@ -11,9 +11,6 @@ int nameless(
 }
 
 @riverpod
-external int scoped();
-
-@riverpod
 int generics<A extends num, B>(GenericsRef<A, B> ref) => 0;
 
 @riverpod

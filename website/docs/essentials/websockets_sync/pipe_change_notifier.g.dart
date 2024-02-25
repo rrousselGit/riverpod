@@ -78,6 +78,5 @@ final class MyListenableProvider extends $FunctionalProvider<
 
 String _$myListenableHash() => r'c80799a0224092668fca44187b98ccfcd2b33ae1';
 
-const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
 // ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

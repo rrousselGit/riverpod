@@ -60,6 +60,5 @@ final class ExampleProvider extends $FunctionalProvider<AsyncValue<Object>,
 
 String _$exampleHash() => r'3ff29b1cd8fa864286a2a04e39adf1c8589b4275';
 
-const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
 // ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

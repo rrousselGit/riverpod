@@ -69,6 +69,5 @@ final class SynchronousExampleProvider
 String _$synchronousExampleHash() =>
     r'98df96e07d554683041f668c06b36f183ff534c1';
 
-const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
 // ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

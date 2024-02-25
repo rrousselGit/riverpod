@@ -185,6 +185,76 @@ final class AsyncStateNotifierProvider extends $FunctionalProvider<
 String _$asyncStateNotifierHash() =>
     r'66442390f13e38cd9594f841a7610ab0f632db81';
 
+@ProviderFor(StateNotifierClass)
+const stateNotifierClassProvider = StateNotifierClassProvider._();
+
+final class StateNotifierClassProvider
+    extends $NotifierProvider<StateNotifierClass, MyStateNotifier> {
+  const StateNotifierClassProvider._(
+      {super.runNotifierBuildOverride, StateNotifierClass Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'stateNotifierClassProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final StateNotifierClass Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$stateNotifierClassHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(MyStateNotifier value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<MyStateNotifier>(value),
+    );
+  }
+
+  @$internal
+  @override
+  StateNotifierClass create() => _createCb?.call() ?? StateNotifierClass();
+
+  @$internal
+  @override
+  StateNotifierClassProvider $copyWithCreate(
+    StateNotifierClass Function() create,
+  ) {
+    return StateNotifierClassProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  StateNotifierClassProvider $copyWithBuild(
+    MyStateNotifier Function(
+      Ref<MyStateNotifier>,
+      StateNotifierClass,
+    ) build,
+  ) {
+    return StateNotifierClassProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<StateNotifierClass, MyStateNotifier> $createElement(
+          ProviderContainer container) =>
+      $NotifierProviderElement(this, container);
+}
+
+String _$stateNotifierClassHash() =>
+    r'576978be5b8a02c212afe7afbe37c733a49ecbce';
+
+abstract class _$StateNotifierClass extends $Notifier<MyStateNotifier> {
+  MyStateNotifier build();
+  @$internal
+  @override
+  MyStateNotifier runBuild() => build();
+}
+
 typedef StateNotifierAsyncRef = Ref<AsyncValue<MyStateNotifier>>;
 
 @ProviderFor(stateNotifierAsync)
@@ -242,6 +312,264 @@ final class StateNotifierAsyncProvider extends $FunctionalProvider<
 
 String _$stateNotifierAsyncHash() =>
     r'9a9b1986076dfdfa4490cc109f1bd0f112a7455c';
+
+@ProviderFor(SelfNotifier)
+const selfNotifierProvider = SelfNotifierProvider._();
+
+final class SelfNotifierProvider
+    extends $AsyncNotifierProvider<SelfNotifier, SelfNotifier> {
+  const SelfNotifierProvider._(
+      {super.runNotifierBuildOverride, SelfNotifier Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'selfNotifierProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final SelfNotifier Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$selfNotifierHash();
+
+  @$internal
+  @override
+  SelfNotifier create() => _createCb?.call() ?? SelfNotifier();
+
+  @$internal
+  @override
+  SelfNotifierProvider $copyWithCreate(
+    SelfNotifier Function() create,
+  ) {
+    return SelfNotifierProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  SelfNotifierProvider $copyWithBuild(
+    FutureOr<SelfNotifier> Function(
+      Ref<AsyncValue<SelfNotifier>>,
+      SelfNotifier,
+    ) build,
+  ) {
+    return SelfNotifierProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $AsyncNotifierProviderElement<SelfNotifier, SelfNotifier> $createElement(
+          ProviderContainer container) =>
+      $AsyncNotifierProviderElement(this, container);
+}
+
+String _$selfNotifierHash() => r'5a857f5c92a9b7a35daa4e527bd333cf3d8d19ac';
+
+abstract class _$SelfNotifier extends $AsyncNotifier<SelfNotifier> {
+  FutureOr<SelfNotifier> build();
+  @$internal
+  @override
+  FutureOr<SelfNotifier> runBuild() => build();
+}
+
+@ProviderFor(SyncSelfNotifier)
+const syncSelfNotifierProvider = SyncSelfNotifierProvider._();
+
+final class SyncSelfNotifierProvider
+    extends $NotifierProvider<SyncSelfNotifier, SyncSelfNotifier> {
+  const SyncSelfNotifierProvider._(
+      {super.runNotifierBuildOverride, SyncSelfNotifier Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'syncSelfNotifierProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final SyncSelfNotifier Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$syncSelfNotifierHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(SyncSelfNotifier value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<SyncSelfNotifier>(value),
+    );
+  }
+
+  @$internal
+  @override
+  SyncSelfNotifier create() => _createCb?.call() ?? SyncSelfNotifier();
+
+  @$internal
+  @override
+  SyncSelfNotifierProvider $copyWithCreate(
+    SyncSelfNotifier Function() create,
+  ) {
+    return SyncSelfNotifierProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  SyncSelfNotifierProvider $copyWithBuild(
+    SyncSelfNotifier Function(
+      Ref<SyncSelfNotifier>,
+      SyncSelfNotifier,
+    ) build,
+  ) {
+    return SyncSelfNotifierProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<SyncSelfNotifier, SyncSelfNotifier> $createElement(
+          ProviderContainer container) =>
+      $NotifierProviderElement(this, container);
+}
+
+String _$syncSelfNotifierHash() => r'4f3a2463cb5693a5c8d7e772b4d7c9774b9ba637';
+
+abstract class _$SyncSelfNotifier extends $Notifier<SyncSelfNotifier> {
+  SyncSelfNotifier build();
+  @$internal
+  @override
+  SyncSelfNotifier runBuild() => build();
+}
+
+@ProviderFor(StreamSelfNotifier)
+const streamSelfNotifierProvider = StreamSelfNotifierProvider._();
+
+final class StreamSelfNotifierProvider
+    extends $StreamNotifierProvider<StreamSelfNotifier, StreamSelfNotifier> {
+  const StreamSelfNotifierProvider._(
+      {super.runNotifierBuildOverride, StreamSelfNotifier Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'streamSelfNotifierProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final StreamSelfNotifier Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$streamSelfNotifierHash();
+
+  @$internal
+  @override
+  StreamSelfNotifier create() => _createCb?.call() ?? StreamSelfNotifier();
+
+  @$internal
+  @override
+  StreamSelfNotifierProvider $copyWithCreate(
+    StreamSelfNotifier Function() create,
+  ) {
+    return StreamSelfNotifierProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  StreamSelfNotifierProvider $copyWithBuild(
+    Stream<StreamSelfNotifier> Function(
+      Ref<AsyncValue<StreamSelfNotifier>>,
+      StreamSelfNotifier,
+    ) build,
+  ) {
+    return StreamSelfNotifierProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $StreamNotifierProviderElement<StreamSelfNotifier, StreamSelfNotifier>
+      $createElement(ProviderContainer container) =>
+          $StreamNotifierProviderElement(this, container);
+}
+
+String _$streamSelfNotifierHash() =>
+    r'18705475d157d8e592205406c0b884b7213d329e';
+
+abstract class _$StreamSelfNotifier
+    extends $StreamNotifier<StreamSelfNotifier> {
+  Stream<StreamSelfNotifier> build();
+  @$internal
+  @override
+  Stream<StreamSelfNotifier> runBuild() => build();
+}
+
+@ProviderFor(StateNotifierClassAsync)
+const stateNotifierClassAsyncProvider = StateNotifierClassAsyncProvider._();
+
+final class StateNotifierClassAsyncProvider
+    extends $AsyncNotifierProvider<StateNotifierClassAsync, MyStateNotifier> {
+  const StateNotifierClassAsyncProvider._(
+      {super.runNotifierBuildOverride,
+      StateNotifierClassAsync Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'stateNotifierClassAsyncProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final StateNotifierClassAsync Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$stateNotifierClassAsyncHash();
+
+  @$internal
+  @override
+  StateNotifierClassAsync create() =>
+      _createCb?.call() ?? StateNotifierClassAsync();
+
+  @$internal
+  @override
+  StateNotifierClassAsyncProvider $copyWithCreate(
+    StateNotifierClassAsync Function() create,
+  ) {
+    return StateNotifierClassAsyncProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  StateNotifierClassAsyncProvider $copyWithBuild(
+    FutureOr<MyStateNotifier> Function(
+      Ref<AsyncValue<MyStateNotifier>>,
+      StateNotifierClassAsync,
+    ) build,
+  ) {
+    return StateNotifierClassAsyncProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $AsyncNotifierProviderElement<StateNotifierClassAsync, MyStateNotifier>
+      $createElement(ProviderContainer container) =>
+          $AsyncNotifierProviderElement(this, container);
+}
+
+String _$stateNotifierClassAsyncHash() =>
+    r'06c519ed7dbdcd9440365dd2dc3ec12e603b6b7e';
+
+abstract class _$StateNotifierClassAsync
+    extends $AsyncNotifier<MyStateNotifier> {
+  FutureOr<MyStateNotifier> build();
+  @$internal
+  @override
+  FutureOr<MyStateNotifier> runBuild() => build();
+}
 
 typedef ChangeNotifierRef = Ref<MyChangeNotifier>;
 
@@ -304,6 +632,76 @@ final class ChangeNotifierProvider extends $FunctionalProvider<
 }
 
 String _$changeNotifierHash() => r'6325328c129773979364c3cfd628f8f696bbaf66';
+
+@ProviderFor(ChangeNotifierClass)
+const changeNotifierClassProvider = ChangeNotifierClassProvider._();
+
+final class ChangeNotifierClassProvider
+    extends $NotifierProvider<ChangeNotifierClass, MyChangeNotifier> {
+  const ChangeNotifierClassProvider._(
+      {super.runNotifierBuildOverride, ChangeNotifierClass Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'changeNotifierClassProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final ChangeNotifierClass Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$changeNotifierClassHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(MyChangeNotifier value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<MyChangeNotifier>(value),
+    );
+  }
+
+  @$internal
+  @override
+  ChangeNotifierClass create() => _createCb?.call() ?? ChangeNotifierClass();
+
+  @$internal
+  @override
+  ChangeNotifierClassProvider $copyWithCreate(
+    ChangeNotifierClass Function() create,
+  ) {
+    return ChangeNotifierClassProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  ChangeNotifierClassProvider $copyWithBuild(
+    MyChangeNotifier Function(
+      Ref<MyChangeNotifier>,
+      ChangeNotifierClass,
+    ) build,
+  ) {
+    return ChangeNotifierClassProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<ChangeNotifierClass, MyChangeNotifier>
+      $createElement(ProviderContainer container) =>
+          $NotifierProviderElement(this, container);
+}
+
+String _$changeNotifierClassHash() =>
+    r'c9716469ce2f8e7a1a6063587ae8733999e51a6e';
+
+abstract class _$ChangeNotifierClass extends $Notifier<MyChangeNotifier> {
+  MyChangeNotifier build();
+  @$internal
+  @override
+  MyChangeNotifier runBuild() => build();
+}
 
 typedef NotifierRef = Ref<MyNotifier>;
 
@@ -427,6 +825,75 @@ final class AutoDisposeNotifierProvider extends $FunctionalProvider<
 String _$autoDisposeNotifierHash() =>
     r'620df0fc11c887f01e125454afe8de553cfea6d0';
 
+@ProviderFor(NotifierClass)
+const notifierClassProvider = NotifierClassProvider._();
+
+final class NotifierClassProvider
+    extends $NotifierProvider<NotifierClass, MyNotifier> {
+  const NotifierClassProvider._(
+      {super.runNotifierBuildOverride, NotifierClass Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'notifierClassProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final NotifierClass Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$notifierClassHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(MyNotifier value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<MyNotifier>(value),
+    );
+  }
+
+  @$internal
+  @override
+  NotifierClass create() => _createCb?.call() ?? NotifierClass();
+
+  @$internal
+  @override
+  NotifierClassProvider $copyWithCreate(
+    NotifierClass Function() create,
+  ) {
+    return NotifierClassProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  NotifierClassProvider $copyWithBuild(
+    MyNotifier Function(
+      Ref<MyNotifier>,
+      NotifierClass,
+    ) build,
+  ) {
+    return NotifierClassProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<NotifierClass, MyNotifier> $createElement(
+          ProviderContainer container) =>
+      $NotifierProviderElement(this, container);
+}
+
+String _$notifierClassHash() => r'e7eefebec2fca4f982582449e7ec14322932b748';
+
+abstract class _$NotifierClass extends $Notifier<MyNotifier> {
+  MyNotifier build();
+  @$internal
+  @override
+  MyNotifier runBuild() => build();
+}
+
 typedef AsyncNotifierRef = Ref<MyAsyncNotifier>;
 
 @ProviderFor(asyncNotifier)
@@ -488,6 +955,76 @@ final class AsyncNotifierProvider extends $FunctionalProvider<
 }
 
 String _$asyncNotifierHash() => r'c90348efac71d241468236924f6c6bc80ae0d0e0';
+
+@ProviderFor(AsyncNotifierClass)
+const asyncNotifierClassProvider = AsyncNotifierClassProvider._();
+
+final class AsyncNotifierClassProvider
+    extends $NotifierProvider<AsyncNotifierClass, MyAsyncNotifier> {
+  const AsyncNotifierClassProvider._(
+      {super.runNotifierBuildOverride, AsyncNotifierClass Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'asyncNotifierClassProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final AsyncNotifierClass Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$asyncNotifierClassHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(MyAsyncNotifier value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<MyAsyncNotifier>(value),
+    );
+  }
+
+  @$internal
+  @override
+  AsyncNotifierClass create() => _createCb?.call() ?? AsyncNotifierClass();
+
+  @$internal
+  @override
+  AsyncNotifierClassProvider $copyWithCreate(
+    AsyncNotifierClass Function() create,
+  ) {
+    return AsyncNotifierClassProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  AsyncNotifierClassProvider $copyWithBuild(
+    MyAsyncNotifier Function(
+      Ref<MyAsyncNotifier>,
+      AsyncNotifierClass,
+    ) build,
+  ) {
+    return AsyncNotifierClassProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<AsyncNotifierClass, MyAsyncNotifier> $createElement(
+          ProviderContainer container) =>
+      $NotifierProviderElement(this, container);
+}
+
+String _$asyncNotifierClassHash() =>
+    r'815a238752d324b136166c409a39fd3f0db67267';
+
+abstract class _$AsyncNotifierClass extends $Notifier<MyAsyncNotifier> {
+  MyAsyncNotifier build();
+  @$internal
+  @override
+  MyAsyncNotifier runBuild() => build();
+}
 
 typedef RawNotifierRef = Ref<Raw<MyChangeNotifier>>;
 
@@ -791,543 +1328,5 @@ final class StreamRawNotifierProvider extends $FunctionalProvider<
 
 String _$streamRawNotifierHash() => r'b1075c37ef3e8a83dfb9a3d469b76bd4855c336f';
 
-@ProviderFor(StateNotifierClass)
-const stateNotifierClassProvider = StateNotifierClassProvider._();
-
-final class StateNotifierClassProvider
-    extends $NotifierProvider<StateNotifierClass, MyStateNotifier> {
-  const StateNotifierClassProvider._(
-      {super.runNotifierBuildOverride, StateNotifierClass Function()? create})
-      : _createCb = create,
-        super(
-          from: null,
-          argument: null,
-          name: r'stateNotifierClassProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          allTransitiveDependencies: null,
-        );
-
-  final StateNotifierClass Function()? _createCb;
-
-  @override
-  String debugGetCreateSourceHash() => _$stateNotifierClassHash();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(MyStateNotifier value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<MyStateNotifier>(value),
-    );
-  }
-
-  @$internal
-  @override
-  StateNotifierClass create() => _createCb?.call() ?? StateNotifierClass();
-
-  @$internal
-  @override
-  StateNotifierClassProvider $copyWithCreate(
-    StateNotifierClass Function() create,
-  ) {
-    return StateNotifierClassProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  StateNotifierClassProvider $copyWithBuild(
-    MyStateNotifier Function(
-      Ref<MyStateNotifier>,
-      StateNotifierClass,
-    ) build,
-  ) {
-    return StateNotifierClassProvider._(runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $NotifierProviderElement<StateNotifierClass, MyStateNotifier> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
-}
-
-String _$stateNotifierClassHash() =>
-    r'576978be5b8a02c212afe7afbe37c733a49ecbce';
-
-abstract class _$StateNotifierClass extends $Notifier<MyStateNotifier> {
-  MyStateNotifier build();
-  @$internal
-  @override
-  MyStateNotifier runBuild() => build();
-}
-
-@ProviderFor(SelfNotifier)
-const selfNotifierProvider = SelfNotifierProvider._();
-
-final class SelfNotifierProvider
-    extends $AsyncNotifierProvider<SelfNotifier, SelfNotifier> {
-  const SelfNotifierProvider._(
-      {super.runNotifierBuildOverride, SelfNotifier Function()? create})
-      : _createCb = create,
-        super(
-          from: null,
-          argument: null,
-          name: r'selfNotifierProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          allTransitiveDependencies: null,
-        );
-
-  final SelfNotifier Function()? _createCb;
-
-  @override
-  String debugGetCreateSourceHash() => _$selfNotifierHash();
-
-  @$internal
-  @override
-  SelfNotifier create() => _createCb?.call() ?? SelfNotifier();
-
-  @$internal
-  @override
-  SelfNotifierProvider $copyWithCreate(
-    SelfNotifier Function() create,
-  ) {
-    return SelfNotifierProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  SelfNotifierProvider $copyWithBuild(
-    FutureOr<SelfNotifier> Function(
-      Ref<AsyncValue<SelfNotifier>>,
-      SelfNotifier,
-    ) build,
-  ) {
-    return SelfNotifierProvider._(runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<SelfNotifier, SelfNotifier> $createElement(
-          ProviderContainer container) =>
-      $AsyncNotifierProviderElement(this, container);
-}
-
-String _$selfNotifierHash() => r'5a857f5c92a9b7a35daa4e527bd333cf3d8d19ac';
-
-abstract class _$SelfNotifier extends $AsyncNotifier<SelfNotifier> {
-  FutureOr<SelfNotifier> build();
-  @$internal
-  @override
-  FutureOr<SelfNotifier> runBuild() => build();
-}
-
-@ProviderFor(SyncSelfNotifier)
-const syncSelfNotifierProvider = SyncSelfNotifierProvider._();
-
-final class SyncSelfNotifierProvider
-    extends $NotifierProvider<SyncSelfNotifier, SyncSelfNotifier> {
-  const SyncSelfNotifierProvider._(
-      {super.runNotifierBuildOverride, SyncSelfNotifier Function()? create})
-      : _createCb = create,
-        super(
-          from: null,
-          argument: null,
-          name: r'syncSelfNotifierProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          allTransitiveDependencies: null,
-        );
-
-  final SyncSelfNotifier Function()? _createCb;
-
-  @override
-  String debugGetCreateSourceHash() => _$syncSelfNotifierHash();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(SyncSelfNotifier value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<SyncSelfNotifier>(value),
-    );
-  }
-
-  @$internal
-  @override
-  SyncSelfNotifier create() => _createCb?.call() ?? SyncSelfNotifier();
-
-  @$internal
-  @override
-  SyncSelfNotifierProvider $copyWithCreate(
-    SyncSelfNotifier Function() create,
-  ) {
-    return SyncSelfNotifierProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  SyncSelfNotifierProvider $copyWithBuild(
-    SyncSelfNotifier Function(
-      Ref<SyncSelfNotifier>,
-      SyncSelfNotifier,
-    ) build,
-  ) {
-    return SyncSelfNotifierProvider._(runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $NotifierProviderElement<SyncSelfNotifier, SyncSelfNotifier> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
-}
-
-String _$syncSelfNotifierHash() => r'4f3a2463cb5693a5c8d7e772b4d7c9774b9ba637';
-
-abstract class _$SyncSelfNotifier extends $Notifier<SyncSelfNotifier> {
-  SyncSelfNotifier build();
-  @$internal
-  @override
-  SyncSelfNotifier runBuild() => build();
-}
-
-@ProviderFor(StreamSelfNotifier)
-const streamSelfNotifierProvider = StreamSelfNotifierProvider._();
-
-final class StreamSelfNotifierProvider
-    extends $StreamNotifierProvider<StreamSelfNotifier, StreamSelfNotifier> {
-  const StreamSelfNotifierProvider._(
-      {super.runNotifierBuildOverride, StreamSelfNotifier Function()? create})
-      : _createCb = create,
-        super(
-          from: null,
-          argument: null,
-          name: r'streamSelfNotifierProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          allTransitiveDependencies: null,
-        );
-
-  final StreamSelfNotifier Function()? _createCb;
-
-  @override
-  String debugGetCreateSourceHash() => _$streamSelfNotifierHash();
-
-  @$internal
-  @override
-  StreamSelfNotifier create() => _createCb?.call() ?? StreamSelfNotifier();
-
-  @$internal
-  @override
-  StreamSelfNotifierProvider $copyWithCreate(
-    StreamSelfNotifier Function() create,
-  ) {
-    return StreamSelfNotifierProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  StreamSelfNotifierProvider $copyWithBuild(
-    Stream<StreamSelfNotifier> Function(
-      Ref<AsyncValue<StreamSelfNotifier>>,
-      StreamSelfNotifier,
-    ) build,
-  ) {
-    return StreamSelfNotifierProvider._(runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $StreamNotifierProviderElement<StreamSelfNotifier, StreamSelfNotifier>
-      $createElement(ProviderContainer container) =>
-          $StreamNotifierProviderElement(this, container);
-}
-
-String _$streamSelfNotifierHash() =>
-    r'18705475d157d8e592205406c0b884b7213d329e';
-
-abstract class _$StreamSelfNotifier
-    extends $StreamNotifier<StreamSelfNotifier> {
-  Stream<StreamSelfNotifier> build();
-  @$internal
-  @override
-  Stream<StreamSelfNotifier> runBuild() => build();
-}
-
-@ProviderFor(StateNotifierClassAsync)
-const stateNotifierClassAsyncProvider = StateNotifierClassAsyncProvider._();
-
-final class StateNotifierClassAsyncProvider
-    extends $AsyncNotifierProvider<StateNotifierClassAsync, MyStateNotifier> {
-  const StateNotifierClassAsyncProvider._(
-      {super.runNotifierBuildOverride,
-      StateNotifierClassAsync Function()? create})
-      : _createCb = create,
-        super(
-          from: null,
-          argument: null,
-          name: r'stateNotifierClassAsyncProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          allTransitiveDependencies: null,
-        );
-
-  final StateNotifierClassAsync Function()? _createCb;
-
-  @override
-  String debugGetCreateSourceHash() => _$stateNotifierClassAsyncHash();
-
-  @$internal
-  @override
-  StateNotifierClassAsync create() =>
-      _createCb?.call() ?? StateNotifierClassAsync();
-
-  @$internal
-  @override
-  StateNotifierClassAsyncProvider $copyWithCreate(
-    StateNotifierClassAsync Function() create,
-  ) {
-    return StateNotifierClassAsyncProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  StateNotifierClassAsyncProvider $copyWithBuild(
-    FutureOr<MyStateNotifier> Function(
-      Ref<AsyncValue<MyStateNotifier>>,
-      StateNotifierClassAsync,
-    ) build,
-  ) {
-    return StateNotifierClassAsyncProvider._(runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<StateNotifierClassAsync, MyStateNotifier>
-      $createElement(ProviderContainer container) =>
-          $AsyncNotifierProviderElement(this, container);
-}
-
-String _$stateNotifierClassAsyncHash() =>
-    r'06c519ed7dbdcd9440365dd2dc3ec12e603b6b7e';
-
-abstract class _$StateNotifierClassAsync
-    extends $AsyncNotifier<MyStateNotifier> {
-  FutureOr<MyStateNotifier> build();
-  @$internal
-  @override
-  FutureOr<MyStateNotifier> runBuild() => build();
-}
-
-@ProviderFor(ChangeNotifierClass)
-const changeNotifierClassProvider = ChangeNotifierClassProvider._();
-
-final class ChangeNotifierClassProvider
-    extends $NotifierProvider<ChangeNotifierClass, MyChangeNotifier> {
-  const ChangeNotifierClassProvider._(
-      {super.runNotifierBuildOverride, ChangeNotifierClass Function()? create})
-      : _createCb = create,
-        super(
-          from: null,
-          argument: null,
-          name: r'changeNotifierClassProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          allTransitiveDependencies: null,
-        );
-
-  final ChangeNotifierClass Function()? _createCb;
-
-  @override
-  String debugGetCreateSourceHash() => _$changeNotifierClassHash();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(MyChangeNotifier value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<MyChangeNotifier>(value),
-    );
-  }
-
-  @$internal
-  @override
-  ChangeNotifierClass create() => _createCb?.call() ?? ChangeNotifierClass();
-
-  @$internal
-  @override
-  ChangeNotifierClassProvider $copyWithCreate(
-    ChangeNotifierClass Function() create,
-  ) {
-    return ChangeNotifierClassProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  ChangeNotifierClassProvider $copyWithBuild(
-    MyChangeNotifier Function(
-      Ref<MyChangeNotifier>,
-      ChangeNotifierClass,
-    ) build,
-  ) {
-    return ChangeNotifierClassProvider._(runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $NotifierProviderElement<ChangeNotifierClass, MyChangeNotifier>
-      $createElement(ProviderContainer container) =>
-          $NotifierProviderElement(this, container);
-}
-
-String _$changeNotifierClassHash() =>
-    r'c9716469ce2f8e7a1a6063587ae8733999e51a6e';
-
-abstract class _$ChangeNotifierClass extends $Notifier<MyChangeNotifier> {
-  MyChangeNotifier build();
-  @$internal
-  @override
-  MyChangeNotifier runBuild() => build();
-}
-
-@ProviderFor(NotifierClass)
-const notifierClassProvider = NotifierClassProvider._();
-
-final class NotifierClassProvider
-    extends $NotifierProvider<NotifierClass, MyNotifier> {
-  const NotifierClassProvider._(
-      {super.runNotifierBuildOverride, NotifierClass Function()? create})
-      : _createCb = create,
-        super(
-          from: null,
-          argument: null,
-          name: r'notifierClassProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          allTransitiveDependencies: null,
-        );
-
-  final NotifierClass Function()? _createCb;
-
-  @override
-  String debugGetCreateSourceHash() => _$notifierClassHash();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(MyNotifier value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<MyNotifier>(value),
-    );
-  }
-
-  @$internal
-  @override
-  NotifierClass create() => _createCb?.call() ?? NotifierClass();
-
-  @$internal
-  @override
-  NotifierClassProvider $copyWithCreate(
-    NotifierClass Function() create,
-  ) {
-    return NotifierClassProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  NotifierClassProvider $copyWithBuild(
-    MyNotifier Function(
-      Ref<MyNotifier>,
-      NotifierClass,
-    ) build,
-  ) {
-    return NotifierClassProvider._(runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $NotifierProviderElement<NotifierClass, MyNotifier> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
-}
-
-String _$notifierClassHash() => r'e7eefebec2fca4f982582449e7ec14322932b748';
-
-abstract class _$NotifierClass extends $Notifier<MyNotifier> {
-  MyNotifier build();
-  @$internal
-  @override
-  MyNotifier runBuild() => build();
-}
-
-@ProviderFor(AsyncNotifierClass)
-const asyncNotifierClassProvider = AsyncNotifierClassProvider._();
-
-final class AsyncNotifierClassProvider
-    extends $NotifierProvider<AsyncNotifierClass, MyAsyncNotifier> {
-  const AsyncNotifierClassProvider._(
-      {super.runNotifierBuildOverride, AsyncNotifierClass Function()? create})
-      : _createCb = create,
-        super(
-          from: null,
-          argument: null,
-          name: r'asyncNotifierClassProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          allTransitiveDependencies: null,
-        );
-
-  final AsyncNotifierClass Function()? _createCb;
-
-  @override
-  String debugGetCreateSourceHash() => _$asyncNotifierClassHash();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(MyAsyncNotifier value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<MyAsyncNotifier>(value),
-    );
-  }
-
-  @$internal
-  @override
-  AsyncNotifierClass create() => _createCb?.call() ?? AsyncNotifierClass();
-
-  @$internal
-  @override
-  AsyncNotifierClassProvider $copyWithCreate(
-    AsyncNotifierClass Function() create,
-  ) {
-    return AsyncNotifierClassProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  AsyncNotifierClassProvider $copyWithBuild(
-    MyAsyncNotifier Function(
-      Ref<MyAsyncNotifier>,
-      AsyncNotifierClass,
-    ) build,
-  ) {
-    return AsyncNotifierClassProvider._(runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $NotifierProviderElement<AsyncNotifierClass, MyAsyncNotifier> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
-}
-
-String _$asyncNotifierClassHash() =>
-    r'815a238752d324b136166c409a39fd3f0db67267';
-
-abstract class _$AsyncNotifierClass extends $Notifier<MyAsyncNotifier> {
-  MyAsyncNotifier build();
-  @$internal
-  @override
-  MyAsyncNotifier runBuild() => build();
-}
-
-const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
 // ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

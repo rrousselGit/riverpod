@@ -128,6 +128,5 @@ final class FilteredTodoListProvider
 
 String _$filteredTodoListHash() => r'1c35eb0fce8fc7c7cda86413b02f606f8c8ae2b4';
 
-const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
 // ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

@@ -30,18 +30,16 @@ class ProtectedNotifierProperties extends DartLintRule {
         return;
       }
 
-      final enclosingClass = propertyAccess
-          .thisOrAncestorOfType<ClassDeclaration>()
-          ?.declaredElement;
-      if (enclosingClass == null) return;
+      final enclosingClass =
+          propertyAccess.thisOrAncestorOfType<ClassDeclaration>();
+      final enclosingClassElement = enclosingClass?.declaredElement;
+      if (enclosingClass == null || enclosingClassElement == null) return;
 
-      final isAnnotatedWithRiverpod =
-          riverpodType.hasAnnotationOfExact(enclosingClass);
-      if (!isAnnotatedWithRiverpod) return;
+      if (enclosingClass.riverpod == null) return;
 
       final targetType = propertyAccess.target?.staticType;
       if (targetType == null) return;
-      if (targetType == enclosingClass.thisType) return;
+      if (targetType == enclosingClassElement.thisType) return;
       if (!anyNotifierType.isAssignableFromType(targetType)) return;
 
       reporter.reportErrorForNode(_code, propertyAccess.propertyName);

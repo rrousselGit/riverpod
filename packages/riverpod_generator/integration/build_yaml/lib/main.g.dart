@@ -169,6 +169,199 @@ final class CountStreamProvider
 
 String _$countStreamHash() => r'1dbe49244ea19e8dbc3af0534429bb323720c07a';
 
+@ProviderFor(CountNotifier)
+const myCountNotifierPod = CountNotifierProvider._();
+
+final class CountNotifierProvider
+    extends $NotifierProvider<CountNotifier, int> {
+  const CountNotifierProvider._(
+      {super.runNotifierBuildOverride, CountNotifier Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'myCountNotifierPod',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final CountNotifier Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$countNotifierHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  CountNotifier create() => _createCb?.call() ?? CountNotifier();
+
+  @$internal
+  @override
+  CountNotifierProvider $copyWithCreate(
+    CountNotifier Function() create,
+  ) {
+    return CountNotifierProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  CountNotifierProvider $copyWithBuild(
+    int Function(
+      Ref<int>,
+      CountNotifier,
+    ) build,
+  ) {
+    return CountNotifierProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<CountNotifier, int> $createElement(
+          ProviderContainer container) =>
+      $NotifierProviderElement(this, container);
+}
+
+String _$countNotifierHash() => r'a8dd7a66ee0002b8af657245c4affaa206fd99ec';
+
+abstract class _$CountNotifier extends $Notifier<int> {
+  int build();
+  @$internal
+  @override
+  int runBuild() => build();
+}
+
+@ProviderFor(CountAsyncNotifier)
+const myCountAsyncNotifierPod = CountAsyncNotifierProvider._();
+
+final class CountAsyncNotifierProvider
+    extends $AsyncNotifierProvider<CountAsyncNotifier, int> {
+  const CountAsyncNotifierProvider._(
+      {super.runNotifierBuildOverride, CountAsyncNotifier Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'myCountAsyncNotifierPod',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final CountAsyncNotifier Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$countAsyncNotifierHash();
+
+  @$internal
+  @override
+  CountAsyncNotifier create() => _createCb?.call() ?? CountAsyncNotifier();
+
+  @$internal
+  @override
+  CountAsyncNotifierProvider $copyWithCreate(
+    CountAsyncNotifier Function() create,
+  ) {
+    return CountAsyncNotifierProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  CountAsyncNotifierProvider $copyWithBuild(
+    FutureOr<int> Function(
+      Ref<AsyncValue<int>>,
+      CountAsyncNotifier,
+    ) build,
+  ) {
+    return CountAsyncNotifierProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $AsyncNotifierProviderElement<CountAsyncNotifier, int> $createElement(
+          ProviderContainer container) =>
+      $AsyncNotifierProviderElement(this, container);
+}
+
+String _$countAsyncNotifierHash() =>
+    r'2a7049d864bf396e44a5937b4001efb4774a5f29';
+
+abstract class _$CountAsyncNotifier extends $AsyncNotifier<int> {
+  FutureOr<int> build();
+  @$internal
+  @override
+  FutureOr<int> runBuild() => build();
+}
+
+@ProviderFor(CountStreamNotifier)
+const myCountStreamNotifierPod = CountStreamNotifierProvider._();
+
+final class CountStreamNotifierProvider
+    extends $StreamNotifierProvider<CountStreamNotifier, int> {
+  const CountStreamNotifierProvider._(
+      {super.runNotifierBuildOverride, CountStreamNotifier Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'myCountStreamNotifierPod',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final CountStreamNotifier Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$countStreamNotifierHash();
+
+  @$internal
+  @override
+  CountStreamNotifier create() => _createCb?.call() ?? CountStreamNotifier();
+
+  @$internal
+  @override
+  CountStreamNotifierProvider $copyWithCreate(
+    CountStreamNotifier Function() create,
+  ) {
+    return CountStreamNotifierProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  CountStreamNotifierProvider $copyWithBuild(
+    Stream<int> Function(
+      Ref<AsyncValue<int>>,
+      CountStreamNotifier,
+    ) build,
+  ) {
+    return CountStreamNotifierProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $StreamNotifierProviderElement<CountStreamNotifier, int> $createElement(
+          ProviderContainer container) =>
+      $StreamNotifierProviderElement(this, container);
+}
+
+String _$countStreamNotifierHash() =>
+    r'61d2cd311c4808f8d7e8b2d67f5c7b85337666c6';
+
+abstract class _$CountStreamNotifier extends $StreamNotifier<int> {
+  Stream<int> build();
+  @$internal
+  @override
+  Stream<int> runBuild() => build();
+}
+
 typedef Count2Ref = Ref<int>;
 
 @ProviderFor(count2)
@@ -546,199 +739,6 @@ final class CountStream2Family extends Family {
       },
     );
   }
-}
-
-@ProviderFor(CountNotifier)
-const myCountNotifierPod = CountNotifierProvider._();
-
-final class CountNotifierProvider
-    extends $NotifierProvider<CountNotifier, int> {
-  const CountNotifierProvider._(
-      {super.runNotifierBuildOverride, CountNotifier Function()? create})
-      : _createCb = create,
-        super(
-          from: null,
-          argument: null,
-          name: r'myCountNotifierPod',
-          isAutoDispose: true,
-          dependencies: null,
-          allTransitiveDependencies: null,
-        );
-
-  final CountNotifier Function()? _createCb;
-
-  @override
-  String debugGetCreateSourceHash() => _$countNotifierHash();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(int value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<int>(value),
-    );
-  }
-
-  @$internal
-  @override
-  CountNotifier create() => _createCb?.call() ?? CountNotifier();
-
-  @$internal
-  @override
-  CountNotifierProvider $copyWithCreate(
-    CountNotifier Function() create,
-  ) {
-    return CountNotifierProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  CountNotifierProvider $copyWithBuild(
-    int Function(
-      Ref<int>,
-      CountNotifier,
-    ) build,
-  ) {
-    return CountNotifierProvider._(runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $NotifierProviderElement<CountNotifier, int> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
-}
-
-String _$countNotifierHash() => r'a8dd7a66ee0002b8af657245c4affaa206fd99ec';
-
-abstract class _$CountNotifier extends $Notifier<int> {
-  int build();
-  @$internal
-  @override
-  int runBuild() => build();
-}
-
-@ProviderFor(CountAsyncNotifier)
-const myCountAsyncNotifierPod = CountAsyncNotifierProvider._();
-
-final class CountAsyncNotifierProvider
-    extends $AsyncNotifierProvider<CountAsyncNotifier, int> {
-  const CountAsyncNotifierProvider._(
-      {super.runNotifierBuildOverride, CountAsyncNotifier Function()? create})
-      : _createCb = create,
-        super(
-          from: null,
-          argument: null,
-          name: r'myCountAsyncNotifierPod',
-          isAutoDispose: true,
-          dependencies: null,
-          allTransitiveDependencies: null,
-        );
-
-  final CountAsyncNotifier Function()? _createCb;
-
-  @override
-  String debugGetCreateSourceHash() => _$countAsyncNotifierHash();
-
-  @$internal
-  @override
-  CountAsyncNotifier create() => _createCb?.call() ?? CountAsyncNotifier();
-
-  @$internal
-  @override
-  CountAsyncNotifierProvider $copyWithCreate(
-    CountAsyncNotifier Function() create,
-  ) {
-    return CountAsyncNotifierProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  CountAsyncNotifierProvider $copyWithBuild(
-    FutureOr<int> Function(
-      Ref<AsyncValue<int>>,
-      CountAsyncNotifier,
-    ) build,
-  ) {
-    return CountAsyncNotifierProvider._(runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<CountAsyncNotifier, int> $createElement(
-          ProviderContainer container) =>
-      $AsyncNotifierProviderElement(this, container);
-}
-
-String _$countAsyncNotifierHash() =>
-    r'2a7049d864bf396e44a5937b4001efb4774a5f29';
-
-abstract class _$CountAsyncNotifier extends $AsyncNotifier<int> {
-  FutureOr<int> build();
-  @$internal
-  @override
-  FutureOr<int> runBuild() => build();
-}
-
-@ProviderFor(CountStreamNotifier)
-const myCountStreamNotifierPod = CountStreamNotifierProvider._();
-
-final class CountStreamNotifierProvider
-    extends $StreamNotifierProvider<CountStreamNotifier, int> {
-  const CountStreamNotifierProvider._(
-      {super.runNotifierBuildOverride, CountStreamNotifier Function()? create})
-      : _createCb = create,
-        super(
-          from: null,
-          argument: null,
-          name: r'myCountStreamNotifierPod',
-          isAutoDispose: true,
-          dependencies: null,
-          allTransitiveDependencies: null,
-        );
-
-  final CountStreamNotifier Function()? _createCb;
-
-  @override
-  String debugGetCreateSourceHash() => _$countStreamNotifierHash();
-
-  @$internal
-  @override
-  CountStreamNotifier create() => _createCb?.call() ?? CountStreamNotifier();
-
-  @$internal
-  @override
-  CountStreamNotifierProvider $copyWithCreate(
-    CountStreamNotifier Function() create,
-  ) {
-    return CountStreamNotifierProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  CountStreamNotifierProvider $copyWithBuild(
-    Stream<int> Function(
-      Ref<AsyncValue<int>>,
-      CountStreamNotifier,
-    ) build,
-  ) {
-    return CountStreamNotifierProvider._(runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $StreamNotifierProviderElement<CountStreamNotifier, int> $createElement(
-          ProviderContainer container) =>
-      $StreamNotifierProviderElement(this, container);
-}
-
-String _$countStreamNotifierHash() =>
-    r'61d2cd311c4808f8d7e8b2d67f5c7b85337666c6';
-
-abstract class _$CountStreamNotifier extends $StreamNotifier<int> {
-  Stream<int> build();
-  @$internal
-  @override
-  Stream<int> runBuild() => build();
 }
 
 @ProviderFor(CountNotifier2)
@@ -1211,6 +1211,5 @@ abstract class _$CountStreamNotifier2 extends $StreamNotifier<int> {
       );
 }
 
-const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
 // ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

@@ -66,6 +66,5 @@ final class FetchConfigurationProvider extends $FunctionalProvider<
 String _$fetchConfigurationHash() =>
     r'6c0f062e6f20baf883c4282856f1197fbe633d89';
 
-const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
 // ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

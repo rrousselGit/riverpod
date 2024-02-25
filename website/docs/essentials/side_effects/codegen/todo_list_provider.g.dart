@@ -61,6 +61,5 @@ final class TodoListProvider extends $FunctionalProvider<AsyncValue<List<Todo>>,
 
 String _$todoListHash() => r'26b30307668c8feefa7cbe3c400b73e6edccbc39';
 
-const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
 // ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

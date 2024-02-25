@@ -65,65 +65,6 @@ final class NamelessProvider extends $FunctionalProvider<int, int, NamelessRef>
 
 String _$namelessHash() => r'1a2aa61445a64c65301051820b159c5998195606';
 
-typedef ScopedRef = Ref<int>;
-
-@ProviderFor(scoped)
-const scopedProvider = ScopedProvider._();
-
-final class ScopedProvider extends $FunctionalProvider<int, int, ScopedRef>
-    with $Provider<int, ScopedRef> {
-  const ScopedProvider._(
-      {int Function(
-        ScopedRef ref,
-      )? create})
-      : _createCb = create,
-        super(
-          from: null,
-          argument: null,
-          name: r'scopedProvider',
-          isAutoDispose: true,
-          dependencies: const <ProviderOrFamily>[],
-          allTransitiveDependencies: const <ProviderOrFamily>[],
-        );
-
-  final int Function(
-    ScopedRef ref,
-  )? _createCb;
-
-  @override
-  String debugGetCreateSourceHash() => _$scopedHash();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(int value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<int>(value),
-    );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
-
-  @override
-  ScopedProvider $copyWithCreate(
-    int Function(
-      ScopedRef ref,
-    ) create,
-  ) {
-    return ScopedProvider._(create: create);
-  }
-
-  @override
-  int create(ScopedRef ref) {
-    final _$cb = _createCb ?? scoped;
-    return _$cb(ref);
-  }
-}
-
-String _$scopedHash() => r'590f1a203323105e732397a2616fbd7dac65f0cc';
-
 typedef GenericsRef<A extends num, B> = Ref<int>;
 
 @ProviderFor(generics)
@@ -611,7 +552,5 @@ final class WrongOrderFamily extends Family {
     );
   }
 }
-
-const $kDebugMode = bool.fromEnvironment('dart.vm.product');
 // ignore_for_file: type=lint
 // ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main
