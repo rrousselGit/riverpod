@@ -1,3 +1,9 @@
+## Unreleased build
+
+- **Breaking**: Rewrote all RiverpodAst nodes to instead be extensions on `AstNodes`.
+  Too many changes to detail everything. I'm the only one who uses this package anyway.
+  If you're reading this, have a nice day!
+
 ## 1.0.0-dev.1 - 2023-11-20
 
 - **Breaking** `LegacyProviderDeclarationElement.providerType` is now nullable.

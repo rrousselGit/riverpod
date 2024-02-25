@@ -1,3 +1,9 @@
+## Unreleased build
+
+- Added `@Dependencies([...])`, for lint purposes.
+  This is similar to `@Riverpod(dependencies: [...])`, but is applied on
+  non-provider objects that may use a scoped provider.
+
 ## 3.0.0-dev.3 - 2023-11-27
 
 - `riverpod` upgraded to `3.0.0-dev.3`
