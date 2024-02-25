@@ -1,5 +1,4 @@
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
@@ -127,32 +126,32 @@ class _UnusedProviderDependencyFix extends RiverpodFix {
     List<AnalysisError> others,
   ) {
     riverpodRegistry(context).addAccumulatedDependencyList((list) {
-      final dependencies = list.allDependencies ?? const [];
-      for (final dependency in dependencies) {
-        final node = dependency.node;
-        if (node == null) continue;
-        if (!node.sourceRange.intersects(analysisError.sourceRange)) {
-          continue;
-        }
+      final dependencyLists = [
+        if (list.dependencies?.dependencies case final deps?) deps,
+        if (list.riverpod?.annotation.dependencyList case final deps?) deps,
+      ];
 
-        final changeBuilder = reporter.createChangeBuilder(
-          message: 'Remove ${dependency.provider.name}',
-          priority: 100,
-        );
-        changeBuilder.addDartFileEdit((builder) {
-          var startDeletionOffset = node.offset;
-          if (node.beginToken.previous case final previousToken?
-              when previousToken.type == TokenType.COMMA) {
-            startDeletionOffset = previousToken.offset;
+      for (final dependencyList in dependencyLists) {
+        final listNode = dependencyList.node;
+        final dependencies = dependencyList.values;
+        if (dependencies == null || listNode == null) continue;
+
+        for (final dependency in dependencies) {
+          final node = dependency.node;
+          if (!node.sourceRange.intersects(analysisError.sourceRange)) {
+            continue;
           }
 
-          builder.addDeletion(
-            range.startOffsetEndOffset(
-              startDeletionOffset,
-              node.end,
-            ),
+          final changeBuilder = reporter.createChangeBuilder(
+            message: 'Remove ${dependency.provider.name}',
+            priority: 100,
           );
-        });
+          changeBuilder.addDartFileEdit((builder) {
+            builder.addDeletion(
+              range.nodeInList(listNode.elements, node),
+            );
+          });
+        }
       }
     });
   }

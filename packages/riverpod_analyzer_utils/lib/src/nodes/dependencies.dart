@@ -93,7 +93,7 @@ extension on Expression {
       final that = this;
       // explicit null, count as valid value (no dependencies)
       if (that is NullLiteral) {
-        return ProviderDependencyList._(node: that, values: null);
+        return ProviderDependencyList._(node: null, values: null);
       }
 
       if (that is! ListLiteral) {
@@ -124,7 +124,7 @@ final class ProviderDependencyList {
     required this.values,
   });
 
-  final Expression node;
+  final ListLiteral? node;
   final List<ProviderDependency>? values;
 }
 
@@ -287,7 +287,7 @@ extension on InstanceCreationExpression {
 
 extension on AnnotatedNode {
   AccumulatedDependencyList? get accumulatedDependencies {
-    return upsert('#AnnotatedNodeaccumulatedDependencies', () {
+    return upsert('#AnnotatedNodeAccumulatedDependencies', () {
       final provider = cast<Declaration>()?.provider;
       // Have State inherit dependencies from its widget
       final state = cast<ClassDeclaration>()?.state;
