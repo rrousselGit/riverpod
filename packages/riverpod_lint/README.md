@@ -232,6 +232,28 @@ void example(ExampleRef ref) {
   // scopedProvider is scoped and as such specifying "dependencies" is required.
   ref.watch(scopedProvider);
 }
+
+// For non-provider objects that use scoped providers, we can use `@Dependencies`
+// for similar purposes.
+@Dependencies([scoped])
+class BookView extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selectedBookID = ref.watch(scopedProvider);
+    return Text(selectedBookID.toString());
+  }
+}
+
+// Alternatively, widgets specifically can opt to override scoped providers
+// using `ProviderScope`:
+ProviderScope(
+  overrides: [
+    scopedProvider.overrideWithValue(42),
+  ],
+  // Even though BookView uses "scopedProvider", the linter won't complain
+  // as we override the provider.
+  child: BookView(),
+)
 ```
 
 **Bad**:
@@ -251,6 +273,15 @@ void example(ExampleRef ref) {
 void example(ExampleRef ref) {
   // rootProvider is not a scoped provider. As such it shouldn't be listed in "dependencies"
   ref.watch(rootProvider);
+}
+
+class BookView extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    // If a function/class uses a scoped provider, they must specify `@Dependencies`
+    final selectedBookID = ref.watch(scopedProvider);
+    return Text(selectedBookID.toString());
+  }
 }
 ```
 
