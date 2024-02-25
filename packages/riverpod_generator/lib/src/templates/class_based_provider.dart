@@ -1,4 +1,5 @@
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
+
 import '../models.dart';
 import '../riverpod_generator.dart';
 import '../validation.dart';
@@ -8,7 +9,10 @@ String providerNameFor(
   ProviderDeclarationElement provider,
   BuildYamlOptions options,
 ) {
-  return '${provider.name.lowerFirst}${options.providerNameSuffix ?? 'Provider'}';
+  final prefix = options.providerNamePrefix ?? '';
+  final rawProviderName = provider.name;
+  final suffix = options.providerNameSuffix ?? 'Provider';
+  return '$prefix${prefix.isEmpty ? rawProviderName.lowerFirst : rawProviderName.titled}$suffix';
 }
 
 String? serializeDependencies(

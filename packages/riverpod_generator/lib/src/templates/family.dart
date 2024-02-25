@@ -13,7 +13,13 @@ String providerFamilyNameFor(
   ProviderDeclarationElement provider,
   BuildYamlOptions options,
 ) {
-  return '${provider.name.lowerFirst}${options.providerFamilyNameSuffix ?? options.providerNameSuffix ?? 'Provider'}';
+  final prefix =
+      options.providerFamilyNamePrefix ?? options.providerNamePrefix ?? '';
+  final rawProviderName = provider.name;
+  final suffix = options.providerFamilyNameSuffix ??
+      options.providerNameSuffix ??
+      'Provider';
+  return '$prefix${prefix.isEmpty ? rawProviderName.lowerFirst : rawProviderName.titled}$suffix';
 }
 
 class FamilyTemplate extends Template {
