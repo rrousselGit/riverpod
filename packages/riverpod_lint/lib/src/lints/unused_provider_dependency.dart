@@ -1,6 +1,8 @@
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
+import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:collection/collection.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
@@ -112,5 +114,46 @@ class UnusedProviderDependency extends RiverpodLintRule {
   }
 
   @override
-  List<DartFix> getFixes() => const [];
+  List<DartFix> getFixes() => [_UnusedProviderDependencyFix()];
+}
+
+class _UnusedProviderDependencyFix extends RiverpodFix {
+  @override
+  void run(
+    CustomLintResolver resolver,
+    ChangeReporter reporter,
+    CustomLintContext context,
+    AnalysisError analysisError,
+    List<AnalysisError> others,
+  ) {
+    riverpodRegistry(context).addAccumulatedDependencyList((list) {
+      final dependencies = list.allDependencies ?? const [];
+      for (final dependency in dependencies) {
+        final node = dependency.node;
+        if (node == null) continue;
+        if (!node.sourceRange.intersects(analysisError.sourceRange)) {
+          continue;
+        }
+
+        final changeBuilder = reporter.createChangeBuilder(
+          message: 'Remove ${dependency.provider.name}',
+          priority: 100,
+        );
+        changeBuilder.addDartFileEdit((builder) {
+          var startDeletionOffset = node.offset;
+          if (node.beginToken.previous case final previousToken?
+              when previousToken.type == TokenType.COMMA) {
+            startDeletionOffset = previousToken.offset;
+          }
+
+          builder.addDeletion(
+            range.startOffsetEndOffset(
+              startDeletionOffset,
+              node.end,
+            ),
+          );
+        });
+      }
+    });
+  }
 }

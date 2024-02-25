@@ -1,3 +1,4 @@
+// ignore_for_file: unknown_scoped_usage
 import 'package:flutter/widgets.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -125,4 +126,19 @@ class Identifiers extends StatelessWidget {
     fn();
     return const Placeholder();
   }
+}
+
+// expect_lint: unused_provider_dependency
+@Dependencies([dep2, dep])
+void secondUnused() {
+  dep2Provider;
+}
+
+@Dependencies([
+  dep2,
+  // expect_lint: unused_provider_dependency
+  dep,
+])
+void secondUnusedWithTrailingComma() {
+  dep2Provider;
 }
