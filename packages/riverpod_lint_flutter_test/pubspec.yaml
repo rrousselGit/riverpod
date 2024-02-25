@@ -28,6 +28,7 @@ dev_dependencies:
   glob: ^2.1.2
   analyzer: ^6.0.0
   path: ^1.9.0
+  source_span: ^1.10.0
 
 dependency_overrides:
   riverpod_generator:

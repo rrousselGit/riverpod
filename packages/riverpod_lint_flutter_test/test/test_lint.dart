@@ -33,6 +33,10 @@ void testLint(
     result as ResolvedUnitResult;
 
     final errors = await lint.testRun(result);
+    expect(
+      errors,
+      matchesAnalysisErrorGoldens(lintGoldenPath),
+    );
 
     final fixes = await lint.getFixes();
     if (fixes.isNotEmpty) {
