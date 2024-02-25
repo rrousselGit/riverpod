@@ -1,9 +1,9 @@
-// ignore_for_file: unused_field
+// ignore_for_file: unused_field, avoid_manual_providers_as_generated_provider_dependency, unused_provider_dependency
 
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'another.dart' as import_alias;
+import '../another.dart' as import_alias;
 
 part 'dependencies.g.dart';
 
@@ -21,24 +21,21 @@ final root = Provider((ref) => 0);
 int generatedRoot(GeneratedRootRef ref) => 0;
 
 // dep no "dependencies"
-
 @riverpod
 int watchScopedButNoDependencies(WatchScopedButNoDependenciesRef ref) {
-  // expect_lint: avoid_manual_providers_as_generated_provider_dependency
   return ref.watch(scoped);
 }
 
-// expect_lint: provider_dependencies
 @riverpod
 int watchGeneratedScopedButNoDependencies(
   WatchGeneratedScopedButNoDependenciesRef ref,
 ) {
+  // expect_lint: missing_provider_dependency
   return ref.watch(generatedScopedProvider);
 }
 
 @riverpod
 int watchRootButNoDependencies(WatchRootButNoDependenciesRef ref) {
-  // expect_lint: avoid_manual_providers_as_generated_provider_dependency
   return ref.watch(root);
 }
 
@@ -50,24 +47,21 @@ int watchGeneratedRootButNoDependencies(
 }
 
 // Check "dependencies" specified but missing dependency
-
 @Riverpod(dependencies: [])
 int watchScopedButEmptyDependencies(WatchScopedButEmptyDependenciesRef ref) {
-  // expect_lint: avoid_manual_providers_as_generated_provider_dependency
   return ref.watch(scoped);
 }
 
-// expect_lint: provider_dependencies
 @Riverpod(dependencies: [])
 int watchGeneratedScopedButEmptyDependencies(
   WatchGeneratedScopedButEmptyDependenciesRef ref,
 ) {
+  // expect_lint: missing_provider_dependency
   return ref.watch(generatedScopedProvider);
 }
 
 @Riverpod(dependencies: [])
 int watchRootButEmptyDependencies(WatchRootButEmptyDependenciesRef ref) {
-  // expect_lint: avoid_manual_providers_as_generated_provider_dependency
   return ref.watch(root);
 }
 
@@ -78,43 +72,7 @@ int watchGeneratedRootButEmptyDependencies(
   return ref.watch(generatedRootProvider);
 }
 
-// Check "dependencies" specified but missing dependency
-
-@Riverpod(dependencies: [dep])
-int watchScopedButMissingDependencies(
-  WatchScopedButMissingDependenciesRef ref,
-) {
-  ref.watch(depProvider);
-  // expect_lint: avoid_manual_providers_as_generated_provider_dependency
-  return ref.watch(scoped);
-}
-
-// expect_lint: provider_dependencies
-@Riverpod(dependencies: [dep])
-int watchGeneratedScopedButMissingDependencies(
-  WatchGeneratedScopedButMissingDependenciesRef ref,
-) {
-  ref.watch(depProvider);
-  return ref.watch(generatedScopedProvider);
-}
-
-@Riverpod(dependencies: [dep])
-int watchRootButMissingDependencies(WatchRootButMissingDependenciesRef ref) {
-  ref.watch(depProvider);
-  // expect_lint: avoid_manual_providers_as_generated_provider_dependency
-  return ref.watch(root);
-}
-
-@Riverpod(dependencies: [dep])
-int watchGeneratedRootButMissingDependencies(
-  WatchGeneratedRootButMissingDependenciesRef ref,
-) {
-  ref.watch(depProvider);
-  return ref.watch(generatedRootProvider);
-}
-
 // Check "dependencies" specified and contains dependency
-
 @Riverpod(dependencies: [generatedScoped])
 int watchGeneratedScopedAndContainsDependency(
   WatchGeneratedScopedAndContainsDependencyRef ref,
@@ -122,47 +80,20 @@ int watchGeneratedScopedAndContainsDependency(
   return ref.watch(generatedScopedProvider);
 }
 
-@Riverpod(dependencies: [
-  // The dependency is redundant because it is not a scoped provider
-  // expect_lint: provider_dependencies
-  generatedRoot,
-])
-int watchGeneratedRootAndContainsDependency(
-  WatchGeneratedRootAndContainsDependencyRef ref,
-) {
-  return ref.watch(generatedRootProvider);
-}
-
 // A dependency is specified but never used
-
-@Riverpod(dependencies: [
-  dep,
-  // expect_lint: provider_dependencies
-  generatedRoot,
-])
+@Riverpod(dependencies: [dep, generatedRoot])
 int specifiedDependencyButNeverUsed(SpecifiedDependencyButNeverUsedRef ref) {
   ref.watch(depProvider);
   return 0;
 }
 
 // Works with classes too
-
 @Riverpod(dependencies: [])
 class ClassWatchGeneratedRootButMissingDependencies
     extends _$ClassWatchGeneratedRootButMissingDependencies {
   @override
   int build() {
     return ref.watch(generatedRootProvider);
-  }
-}
-
-// expect_lint: provider_dependencies
-@Riverpod(dependencies: [])
-class ClassWatchGeneratedScopedButMissingDependencies
-    extends _$ClassWatchGeneratedScopedButMissingDependencies {
-  @override
-  int build() {
-    return ref.watch(generatedScopedProvider);
   }
 }
 
@@ -198,7 +129,6 @@ int familyDep2(FamilyDep2Ref ref, int p) {
 // Regression test for https://github.com/rrousselGit/riverpod/issues/2935
 @riverpod
 int alias(AliasRef ref) {
-  // expect_lint: avoid_manual_providers_as_generated_provider_dependency
   ref.watch(import_alias.aProvider);
   ref.watch(import_alias.bProvider);
   return 0;
@@ -207,7 +137,6 @@ int alias(AliasRef ref) {
 // Regression test for https://github.com/rrousselGit/riverpod/issues/2935
 @riverpod
 class AliasClass extends _$AliasClass {
-  // expect_lint: avoid_manual_providers_as_generated_provider_dependency
   late final int _a = ref.read(import_alias.aProvider);
   late final int _b = ref.read(import_alias.bProvider);
 
@@ -224,10 +153,8 @@ class RootDependenciesClass {}
 // Specifying @Dependencies on class members requires specifying them on
 // the class too:
 class MemberDependencies {
-  @Dependencies([
-    // expect_lint: dependencies
-    dep,
-  ])
+  // expect_lint: missing_provider_dependency
+  @Dependencies([dep])
   int build() => 0;
 }
 
@@ -239,7 +166,7 @@ class MemberDependencies2 {
 
 @Dependencies([])
 class MemberDependencies3 {
-  // expect_lint: dependencies
+  // expect_lint: missing_provider_dependency
   @Dependencies([dep])
   int build() => 0;
 }
@@ -260,7 +187,7 @@ class RiverpodDependencies extends _$RiverpodDependencies {
 void fn() {}
 
 void fn2() {
-  // expect_lint: dependencies
+  // expect_lint: missing_provider_dependency
   fn();
 }
 
@@ -269,7 +196,7 @@ void fn3() => fn();
 
 @riverpod
 int foo(FooRef ref) {
-  // expect_lint: dependencies
+  // expect_lint: missing_provider_dependency
   fn();
   return 0;
 }
@@ -278,13 +205,16 @@ int foo(FooRef ref) {
 @Dependencies([dep])
 class WidgetDependencies extends StatelessWidget {
   @override
-  Widget build(BuildContext context) => const SizedBox();
+  Widget build(BuildContext context) {
+    fn();
+    return const SizedBox();
+  }
 }
 
 class WidgetDependencies2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // expect_lint: dependencies
+    // expect_lint: missing_provider_dependency
     return WidgetDependencies();
   }
 }
@@ -312,7 +242,6 @@ class _StatefulState extends State<Stateful> {
   }
 }
 
-// expect_lint: dependencies
 @Dependencies([])
 class Stateful2 extends StatefulWidget {
   const Stateful2({super.key});
@@ -324,6 +253,21 @@ class Stateful2 extends StatefulWidget {
 class _Stateful2State extends State<Stateful2> {
   @override
   Widget build(BuildContext context) {
+    // expect_lint: missing_provider_dependency
     return WidgetDependencies();
   }
+}
+
+class Stateful3 extends StatefulWidget {
+  const Stateful3({super.key});
+
+  @override
+  // expect_lint: missing_provider_dependency
+  State<Stateful3> createState() => _Stateful3State();
+}
+
+@Dependencies([dep])
+class _Stateful3State extends State<Stateful3> {
+  @override
+  Widget build(BuildContext context) => Container();
 }

@@ -12,19 +12,19 @@ import 'src/lints/avoid_build_context_in_providers.dart';
 import 'src/lints/avoid_manual_providers_as_generated_provider_dependency.dart';
 import 'src/lints/avoid_public_notifier_properties.dart';
 import 'src/lints/avoid_ref_inside_state_dispose.dart';
-import 'src/lints/deps.dart';
 import 'src/lints/functional_ref.dart';
+import 'src/lints/missing_provider_dependency.dart';
 import 'src/lints/missing_provider_scope.dart';
 import 'src/lints/notifier_build.dart';
 import 'src/lints/notifier_extends.dart';
 import 'src/lints/only_use_keep_alive_inside_keep_alive.dart';
 import 'src/lints/protected_notifier_properties.dart';
-import 'src/lints/provider_dependencies.dart';
 import 'src/lints/provider_parameters.dart';
 import 'src/lints/riverpod_syntax_error.dart';
 import 'src/lints/scoped_providers_should_specify_dependencies.dart';
 import 'src/lints/unknown_scoped_usage.dart';
 import 'src/lints/unsupported_provider_value.dart';
+import 'src/lints/unused_provider_dependency.dart';
 import 'src/migration/missing_legacy_import.dart';
 
 PluginBase createPlugin() => _RiverpodPlugin();
@@ -38,20 +38,21 @@ class _RiverpodPlugin extends PluginBase {
         const AvoidManualProvidersAsGeneratedProviderDependency(),
         const AvoidPublicNotifierProperties(),
         const AvoidRefInsideStateDispose(),
+        const MissingProviderDependency(),
         const FunctionalRef(),
         const MissingProviderScope(),
         const NotifierBuild(),
         const NotifierExtends(),
         const ProtectedNotifierProperties(),
-        const ProviderDependencies(),
+        // TODO changelog provider_dependencies split into unused_provider_dependency and missing_provider_dependency
         const ProviderParameters(),
-        const Deps(),
         // TODO changelog added riverpod_syntax_error, for reporting errors when the generator would throw.
         const RiverpodSyntaxError(),
         const ScopedProvidersShouldSpecifyDependencies(),
         // TODO changelog added unknown_scoped_usage, for reporting when a scoped provider is used but the ref could not be found.
         const UnknownScopedUsage(),
         const UnsupportedProviderValue(),
+        const UnusedProviderDependency(),
 
         // Migrations
         const MissingLegacyImport(),

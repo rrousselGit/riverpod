@@ -10,6 +10,7 @@ int scoped(ScopedRef ref) => 0;
 @riverpod
 int root(RootRef ref) => 0;
 
+@Dependencies([scoped])
 void fn(WidgetRef widgetRef, Ref<int> ref) {
   // expect_lint: unknown_scoped_usage
   scopedProvider;

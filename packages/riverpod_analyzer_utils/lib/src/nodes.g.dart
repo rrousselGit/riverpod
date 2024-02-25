@@ -11,6 +11,8 @@ mixin RiverpodAstVisitor {
   void visitStateDeclaration(StateDeclaration node) {}
   void visitDependenciesAnnotation(DependenciesAnnotation node) {}
   void visitAccumulatedDependencyList(AccumulatedDependencyList node) {}
+  void visitIdentifierDependencies(IdentifierDependencies node) {}
+  void visitNamedTypeDependencies(NamedTypeDependencies node) {}
   void visitFunctionalProviderDeclaration(FunctionalProviderDeclaration node) {}
   void visitLegacyProviderDeclaration(LegacyProviderDeclaration node) {}
   void visitClassBasedProviderDeclaration(ClassBasedProviderDeclaration node) {}
@@ -59,6 +61,18 @@ abstract class RecursiveRiverpodAstVisitor extends GeneralizingAstVisitor<void>
   void visitNode(AstNode node) {
     super.visitNode(node);
     node.accumulatedDependencies.let(visitAccumulatedDependencyList);
+  }
+
+  @override
+  void visitIdentifier(Identifier node) {
+    super.visitIdentifier(node);
+    node.identifierDependencies.let(visitIdentifierDependencies);
+  }
+
+  @override
+  void visitNamedType(NamedType node) {
+    super.visitNamedType(node);
+    node.typeAnnotationDependencies.let(visitNamedTypeDependencies);
   }
 
   @override
@@ -138,6 +152,10 @@ abstract class UnimplementedRiverpodAstVisitor
   void visitDependenciesAnnotation(DependenciesAnnotation node) =>
       throw UnimplementedError();
   void visitAccumulatedDependencyList(AccumulatedDependencyList node) =>
+      throw UnimplementedError();
+  void visitIdentifierDependencies(IdentifierDependencies node) =>
+      throw UnimplementedError();
+  void visitNamedTypeDependencies(NamedTypeDependencies node) =>
       throw UnimplementedError();
   void visitFunctionalProviderDeclaration(FunctionalProviderDeclaration node) =>
       throw UnimplementedError();
@@ -225,6 +243,24 @@ class RiverpodAnalysisResult extends RecursiveRiverpodAstVisitor {
   ) {
     super.visitAccumulatedDependencyList(node);
     accumulatedDependencyLists.add(node);
+  }
+
+  final identifierDependenciesList = <IdentifierDependencies>[];
+  @override
+  void visitIdentifierDependencies(
+    IdentifierDependencies node,
+  ) {
+    super.visitIdentifierDependencies(node);
+    identifierDependenciesList.add(node);
+  }
+
+  final namedTypeDependenciesList = <NamedTypeDependencies>[];
+  @override
+  void visitNamedTypeDependencies(
+    NamedTypeDependencies node,
+  ) {
+    super.visitNamedTypeDependencies(node);
+    namedTypeDependenciesList.add(node);
   }
 
   final functionalProviderDeclarations = <FunctionalProviderDeclaration>[];
@@ -479,6 +515,17 @@ class RiverpodAstRegistry {
     _onAccumulatedDependencyList.add(cb);
   }
 
+  final _onIdentifierDependencies = <void Function(IdentifierDependencies)>[];
+  void addIdentifierDependencies(
+      void Function(IdentifierDependencies node) cb) {
+    _onIdentifierDependencies.add(cb);
+  }
+
+  final _onNamedTypeDependencies = <void Function(NamedTypeDependencies)>[];
+  void addNamedTypeDependencies(void Function(NamedTypeDependencies node) cb) {
+    _onNamedTypeDependencies.add(cb);
+  }
+
   final _onFunctionalProviderDeclaration =
       <void Function(FunctionalProviderDeclaration)>[];
   void addFunctionalProviderDeclaration(
@@ -667,6 +714,24 @@ class _RiverpodAstRegistryVisitor extends RecursiveRiverpodAstVisitor {
     _runSubscriptions(
       node,
       _registry._onAccumulatedDependencyList,
+    );
+  }
+
+  @override
+  void visitIdentifierDependencies(IdentifierDependencies node) {
+    super.visitIdentifierDependencies(node);
+    _runSubscriptions(
+      node,
+      _registry._onIdentifierDependencies,
+    );
+  }
+
+  @override
+  void visitNamedTypeDependencies(NamedTypeDependencies node) {
+    super.visitNamedTypeDependencies(node);
+    _runSubscriptions(
+      node,
+      _registry._onNamedTypeDependencies,
     );
   }
 

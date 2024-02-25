@@ -42,19 +42,24 @@ final class StateDeclaration {
 }
 
 final class StateDeclarationElement {
-  StateDeclarationElement._({required this.widget});
+  StateDeclarationElement._({
+    required this.widget,
+    required this.element,
+  });
 
   static final _cache = _Cache<StateDeclarationElement>();
 
-  static StateDeclarationElement? _parse(ClassElement node) {
-    return _cache(node, () {
-      final widget = node.let(_findWidget);
+  static StateDeclarationElement? _parse(ClassElement element) {
+    return _cache(element, () {
+      final widget = _findWidget(element);
 
       return StateDeclarationElement._(
+        element: element,
         widget: widget.let(StatefulWidgetDeclarationElement._parse),
       );
     });
   }
 
+  final ClassElement element;
   final StatefulWidgetDeclarationElement? widget;
 }

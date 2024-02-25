@@ -189,31 +189,7 @@ final class AccumulatedDependency {
   final GeneratorProviderDeclarationElement provider;
 }
 
-sealed class AccumulatedDependencyNode {
-  AstNode get node;
-}
-
-class AnnotatedNodeAccumulatedDependencyNode extends AccumulatedDependencyNode {
-  AnnotatedNodeAccumulatedDependencyNode._(this.node);
-
-  @override
-  final AnnotatedNode node;
-}
-
-class IdentifierAccumulatedDependencyNode extends AccumulatedDependencyNode {
-  IdentifierAccumulatedDependencyNode._(this.node);
-
-  @override
-  final Identifier node;
-}
-
-class TypeAnnotationAccumulatedDependencyNode
-    extends AccumulatedDependencyNode {
-  TypeAnnotationAccumulatedDependencyNode._(this.node);
-
-  @override
-  final TypeAnnotation node;
-}
+sealed class AccumulatedDependencyNode {}
 
 final class AccumulatedDependencyList {
   AccumulatedDependencyList._({
@@ -221,16 +197,18 @@ final class AccumulatedDependencyList {
     required this.riverpod,
     required this.dependencies,
     required this.dependenciesElement,
-  }) : parent = node.node.ancestors
+    required this.overrides,
+  }) : parent = node.ancestors
             .map((e) => e.accumulatedDependencies)
             .whereNotNull()
             .firstOrNull;
 
-  final AccumulatedDependencyNode node;
+  final AstNode node;
   final AccumulatedDependencyList? parent;
   final GeneratorProviderDeclaration? riverpod;
   final DependenciesAnnotation? dependencies;
   final DependenciesAnnotationElement? dependenciesElement;
+  final ProviderScopeInstanceCreationExpression? overrides;
 
   Iterable<AccumulatedDependency>? get allDependencies {
     final dependencies = this.dependencies?.dependencies;
@@ -256,6 +234,14 @@ final class AccumulatedDependencyList {
         .followedBy(riverpodValues ?? const [])
         .followedBy(dependenciesElementValues ?? const []);
   }
+
+  Iterable<ProviderOverrideExpression> get overridesIncludingParents sync* {
+    if (overrides?.overrides?.overrides case final overrides?) {
+      yield* overrides;
+    }
+
+    if (parent case final parent?) yield* parent.overridesIncludingParents;
+  }
 }
 
 @_ast
@@ -270,66 +256,107 @@ extension DependenciesAnnotatedAnnotatedNodeX on AnnotatedNode {
 @_ast
 extension AccumulatedDependenciesX on AstNode {
   AccumulatedDependencyList? get accumulatedDependencies {
-    return upsert('accumulatedDependencies', () {
-      final that = this;
-      if (that is AnnotatedNode) {
-        final dependencies = that.dependencies;
-        final provider = cast<Declaration>()?.provider;
+    final that = this;
+    switch (that) {
+      case InstanceCreationExpression():
+        return that.accumulatedDependencies;
+      case AnnotatedNode():
+        return that.accumulatedDependencies;
+      default:
+        return null;
+    }
+  }
+}
 
-        if (provider == null &&
-            dependencies == null &&
-            // Always initialize root declarations,
-            // to handle cases where a method in a class has @Dependencies
-            // but the class itself does not.
-            that is! CompilationUnitMember) return null;
+extension on InstanceCreationExpression {
+  AccumulatedDependencyList? get accumulatedDependencies {
+    return upsert('InstanceCreationExpression#accumulatedDependencies', () {
+      final providerScope = this.providerScope;
+      if (providerScope == null) return null;
 
-        return AccumulatedDependencyList._(
-          node: AnnotatedNodeAccumulatedDependencyNode._(that),
-          dependencies: dependencies,
-          riverpod: provider,
-          dependenciesElement: null,
-        );
-      }
-
-      if (that is Identifier) {
-        final elementDependencies = that.elementDependencies;
-        if (elementDependencies == null) return null;
-
-        return AccumulatedDependencyList._(
-          node: IdentifierAccumulatedDependencyNode._(that),
-          riverpod: null,
-          dependencies: null,
-          dependenciesElement: elementDependencies,
-        );
-      }
-
-      if (that is TypeAnnotation) {
-        final typeElement = that.type?.element;
-        if (typeElement == null) return null;
-        final dependenciesElement =
-            DependenciesAnnotationElement._of(typeElement);
-        if (dependenciesElement == null) return null;
-
-        return AccumulatedDependencyList._(
-          node: TypeAnnotationAccumulatedDependencyNode._(that),
-          riverpod: null,
-          dependencies: null,
-          dependenciesElement: dependenciesElement,
-        );
-      }
-
-      return null;
+      return AccumulatedDependencyList._(
+        node: this,
+        overrides: providerScope,
+        dependencies: null,
+        riverpod: null,
+        dependenciesElement: null,
+      );
     });
   }
 }
 
-extension on Identifier {
-  DependenciesAnnotationElement? get elementDependencies {
-    return upsert('Identifier#dependenciesElement', () {
+extension on AnnotatedNode {
+  AccumulatedDependencyList? get accumulatedDependencies {
+    return upsert('#AnnotatedNodeaccumulatedDependencies', () {
+      final provider = cast<Declaration>()?.provider;
+      // Have State inherit dependencies from its widget
+      final state = cast<ClassDeclaration>()?.state;
+
+      if (provider == null &&
+          dependencies == null &&
+          state == null &&
+          // Always initialize root declarations,
+          // to handle cases where a method in a class has @Dependencies
+          // but the class itself does not.
+          this is! CompilationUnitMember) return null;
+
+      return AccumulatedDependencyList._(
+        node: this,
+        overrides: null,
+        dependencies: dependencies,
+        riverpod: provider,
+        dependenciesElement: state?.widget?.dependencies,
+      );
+    });
+  }
+}
+
+class IdentifierDependencies {
+  IdentifierDependencies._({required this.node, required this.dependencies});
+
+  final Identifier node;
+  final DependenciesAnnotationElement dependencies;
+}
+
+@_ast
+extension IdentifierDependenciesX on Identifier {
+  IdentifierDependencies? get identifierDependencies {
+    return upsert('Identifier#identifierDependencies', () {
       final staticElement = this.staticElement;
       if (staticElement == null) return null;
 
-      return DependenciesAnnotationElement._of(staticElement);
+      final dependencies = DependenciesAnnotationElement._of(staticElement);
+      if (dependencies == null) return null;
+
+      return IdentifierDependencies._(node: this, dependencies: dependencies);
+    });
+  }
+}
+
+class NamedTypeDependencies {
+  NamedTypeDependencies._({
+    required this.node,
+    required this.dependencies,
+  });
+
+  final NamedType node;
+  final DependenciesAnnotationElement dependencies;
+}
+
+@_ast
+extension NamedTypeDependenciesX on NamedType {
+  NamedTypeDependencies? get typeAnnotationDependencies {
+    return upsert('NamedType#typeAnnotationDependencies', () {
+      final staticElement = type?.element;
+      if (staticElement == null) return null;
+
+      final dependencies = DependenciesAnnotationElement._of(staticElement);
+      if (dependencies == null) return null;
+
+      return NamedTypeDependencies._(
+        node: this,
+        dependencies: dependencies,
+      );
     });
   }
 }

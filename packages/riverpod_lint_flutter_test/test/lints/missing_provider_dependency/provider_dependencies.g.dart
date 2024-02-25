@@ -124,22 +124,150 @@ final class Dep2Provider extends $FunctionalProvider<int, int, Dep2Ref>
 
 String _$dep2Hash() => r'13cd909366c79168e3d9cd95f529ddbcee6de7dc';
 
+typedef DepFamilyRef = Ref<int>;
+
+@ProviderFor(depFamily)
+const depFamilyProvider = DepFamilyFamily._();
+
+final class DepFamilyProvider
+    extends $FunctionalProvider<int, int, DepFamilyRef>
+    with $Provider<int, DepFamilyRef> {
+  const DepFamilyProvider._(
+      {required DepFamilyFamily super.from,
+      required int super.argument,
+      int Function(
+        DepFamilyRef ref,
+        int id,
+      )? create})
+      : _createCb = create,
+        super(
+          name: r'depFamilyProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final int Function(
+    DepFamilyRef ref,
+    int id,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$depFamilyHash();
+
+  @override
+  String toString() {
+    return r'depFamilyProvider'
+        ''
+        '($argument)';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  DepFamilyProvider $copyWithCreate(
+    int Function(
+      DepFamilyRef ref,
+    ) create,
+  ) {
+    return DepFamilyProvider._(
+        argument: argument as int,
+        from: from! as DepFamilyFamily,
+        create: (
+          ref,
+          int id,
+        ) =>
+            create(ref));
+  }
+
+  @override
+  int create(DepFamilyRef ref) {
+    final _$cb = _createCb ?? depFamily;
+    final argument = this.argument as int;
+    return _$cb(
+      ref,
+      argument,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is DepFamilyProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$depFamilyHash() => r'c11006a8b9718af9899999b7c49f78cf3423f558';
+
+final class DepFamilyFamily extends Family {
+  const DepFamilyFamily._()
+      : super(
+          name: r'depFamilyProvider',
+          dependencies: const <ProviderOrFamily>[],
+          allTransitiveDependencies: const <ProviderOrFamily>[],
+          isAutoDispose: true,
+        );
+
+  DepFamilyProvider call(
+    int id,
+  ) =>
+      DepFamilyProvider._(argument: id, from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$depFamilyHash();
+
+  @override
+  String toString() => r'depFamilyProvider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    int Function(
+      DepFamilyRef ref,
+      int args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as DepFamilyProvider;
+
+        final argument = provider.argument as int;
+
+        return provider
+            .$copyWithCreate((ref) => create(ref, argument))
+            .$createElement(container);
+      },
+    );
+  }
+}
+
 ////////////
-// expect_lint: provider_dependencies
 typedef PlainAnnotationRef = Ref<int>;
 
 ////////////
-// expect_lint: provider_dependencies
 @ProviderFor(plainAnnotation)
 const plainAnnotationProvider = PlainAnnotationProvider._();
 
 ////////////
-// expect_lint: provider_dependencies
 final class PlainAnnotationProvider
     extends $FunctionalProvider<int, int, PlainAnnotationRef>
     with $Provider<int, PlainAnnotationRef> {
   ////////////
-// expect_lint: provider_dependencies
   const PlainAnnotationProvider._(
       {int Function(
         PlainAnnotationRef ref,
@@ -434,328 +562,6 @@ final class MultipleDepsProvider
 }
 
 String _$multipleDepsHash() => r'9d08791636a0435ba115062a453d0d9e530ecf71';
-
-typedef ExtraDepRef = Ref<int>;
-
-@ProviderFor(extraDep)
-const extraDepProvider = ExtraDepProvider._();
-
-final class ExtraDepProvider extends $FunctionalProvider<int, int, ExtraDepRef>
-    with $Provider<int, ExtraDepRef> {
-  const ExtraDepProvider._(
-      {int Function(
-        ExtraDepRef ref,
-      )? create})
-      : _createCb = create,
-        super(
-          from: null,
-          argument: null,
-          name: r'extraDepProvider',
-          isAutoDispose: true,
-          dependencies: const <ProviderOrFamily>[depProvider, dep2Provider],
-          allTransitiveDependencies: const <ProviderOrFamily>[
-            ExtraDepProvider.$allTransitiveDependencies0,
-            ExtraDepProvider.$allTransitiveDependencies1,
-          ],
-        );
-
-  static const $allTransitiveDependencies0 = depProvider;
-  static const $allTransitiveDependencies1 = dep2Provider;
-
-  final int Function(
-    ExtraDepRef ref,
-  )? _createCb;
-
-  @override
-  String debugGetCreateSourceHash() => _$extraDepHash();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(int value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<int>(value),
-    );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
-
-  @override
-  ExtraDepProvider $copyWithCreate(
-    int Function(
-      ExtraDepRef ref,
-    ) create,
-  ) {
-    return ExtraDepProvider._(create: create);
-  }
-
-  @override
-  int create(ExtraDepRef ref) {
-    final _$cb = _createCb ?? extraDep;
-    return _$cb(ref);
-  }
-}
-
-String _$extraDepHash() => r'038d9c819b5d91eb1f7166194d8e646f17ea24d7';
-
-typedef NoDepRef = Ref<int>;
-
-@ProviderFor(noDep)
-const noDepProvider = NoDepProvider._();
-
-final class NoDepProvider extends $FunctionalProvider<int, int, NoDepRef>
-    with $Provider<int, NoDepRef> {
-  const NoDepProvider._(
-      {int Function(
-        NoDepRef ref,
-      )? create})
-      : _createCb = create,
-        super(
-          from: null,
-          argument: null,
-          name: r'noDepProvider',
-          isAutoDispose: true,
-          dependencies: const <ProviderOrFamily>[depProvider],
-          allTransitiveDependencies: const <ProviderOrFamily>[
-            NoDepProvider.$allTransitiveDependencies0,
-          ],
-        );
-
-  static const $allTransitiveDependencies0 = depProvider;
-
-  final int Function(
-    NoDepRef ref,
-  )? _createCb;
-
-  @override
-  String debugGetCreateSourceHash() => _$noDepHash();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(int value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<int>(value),
-    );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
-
-  @override
-  NoDepProvider $copyWithCreate(
-    int Function(
-      NoDepRef ref,
-    ) create,
-  ) {
-    return NoDepProvider._(create: create);
-  }
-
-  @override
-  int create(NoDepRef ref) {
-    final _$cb = _createCb ?? noDep;
-    return _$cb(ref);
-  }
-}
-
-String _$noDepHash() => r'38d78ded1eba491968c0200cc0b51969fcf3ec9a';
-
-typedef DependenciesFirstThenKeepAliveRef = Ref<int>;
-
-@ProviderFor(dependenciesFirstThenKeepAlive)
-const dependenciesFirstThenKeepAliveProvider =
-    DependenciesFirstThenKeepAliveProvider._();
-
-final class DependenciesFirstThenKeepAliveProvider
-    extends $FunctionalProvider<int, int, DependenciesFirstThenKeepAliveRef>
-    with $Provider<int, DependenciesFirstThenKeepAliveRef> {
-  const DependenciesFirstThenKeepAliveProvider._(
-      {int Function(
-        DependenciesFirstThenKeepAliveRef ref,
-      )? create})
-      : _createCb = create,
-        super(
-          from: null,
-          argument: null,
-          name: r'dependenciesFirstThenKeepAliveProvider',
-          isAutoDispose: true,
-          dependencies: const <ProviderOrFamily>[depProvider],
-          allTransitiveDependencies: const <ProviderOrFamily>[
-            DependenciesFirstThenKeepAliveProvider.$allTransitiveDependencies0,
-          ],
-        );
-
-  static const $allTransitiveDependencies0 = depProvider;
-
-  final int Function(
-    DependenciesFirstThenKeepAliveRef ref,
-  )? _createCb;
-
-  @override
-  String debugGetCreateSourceHash() => _$dependenciesFirstThenKeepAliveHash();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(int value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<int>(value),
-    );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
-
-  @override
-  DependenciesFirstThenKeepAliveProvider $copyWithCreate(
-    int Function(
-      DependenciesFirstThenKeepAliveRef ref,
-    ) create,
-  ) {
-    return DependenciesFirstThenKeepAliveProvider._(create: create);
-  }
-
-  @override
-  int create(DependenciesFirstThenKeepAliveRef ref) {
-    final _$cb = _createCb ?? dependenciesFirstThenKeepAlive;
-    return _$cb(ref);
-  }
-}
-
-String _$dependenciesFirstThenKeepAliveHash() =>
-    r'15604dafd167408515dfb4e846fab0af46e7e566';
-
-typedef NoDepNoParamRef = Ref<int>;
-
-@ProviderFor(noDepNoParam)
-const noDepNoParamProvider = NoDepNoParamProvider._();
-
-final class NoDepNoParamProvider
-    extends $FunctionalProvider<int, int, NoDepNoParamRef>
-    with $Provider<int, NoDepNoParamRef> {
-  const NoDepNoParamProvider._(
-      {int Function(
-        NoDepNoParamRef ref,
-      )? create})
-      : _createCb = create,
-        super(
-          from: null,
-          argument: null,
-          name: r'noDepNoParamProvider',
-          isAutoDispose: true,
-          dependencies: const <ProviderOrFamily>[depProvider],
-          allTransitiveDependencies: const <ProviderOrFamily>[
-            NoDepNoParamProvider.$allTransitiveDependencies0,
-          ],
-        );
-
-  static const $allTransitiveDependencies0 = depProvider;
-
-  final int Function(
-    NoDepNoParamRef ref,
-  )? _createCb;
-
-  @override
-  String debugGetCreateSourceHash() => _$noDepNoParamHash();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(int value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<int>(value),
-    );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
-
-  @override
-  NoDepNoParamProvider $copyWithCreate(
-    int Function(
-      NoDepNoParamRef ref,
-    ) create,
-  ) {
-    return NoDepNoParamProvider._(create: create);
-  }
-
-  @override
-  int create(NoDepNoParamRef ref) {
-    final _$cb = _createCb ?? noDepNoParam;
-    return _$cb(ref);
-  }
-}
-
-String _$noDepNoParamHash() => r'fe52f15a4d98159beafe8b9a177073f6b6cbae6d';
-
-typedef NoDepWithoutCommaRef = Ref<int>;
-
-@ProviderFor(noDepWithoutComma)
-const noDepWithoutCommaProvider = NoDepWithoutCommaProvider._();
-
-final class NoDepWithoutCommaProvider
-    extends $FunctionalProvider<int, int, NoDepWithoutCommaRef>
-    with $Provider<int, NoDepWithoutCommaRef> {
-  const NoDepWithoutCommaProvider._(
-      {int Function(
-        NoDepWithoutCommaRef ref,
-      )? create})
-      : _createCb = create,
-        super(
-          from: null,
-          argument: null,
-          name: r'noDepWithoutCommaProvider',
-          isAutoDispose: true,
-          dependencies: const <ProviderOrFamily>[depProvider],
-          allTransitiveDependencies: const <ProviderOrFamily>[
-            NoDepWithoutCommaProvider.$allTransitiveDependencies0,
-          ],
-        );
-
-  static const $allTransitiveDependencies0 = depProvider;
-
-  final int Function(
-    NoDepWithoutCommaRef ref,
-  )? _createCb;
-
-  @override
-  String debugGetCreateSourceHash() => _$noDepWithoutCommaHash();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(int value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<int>(value),
-    );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
-
-  @override
-  NoDepWithoutCommaProvider $copyWithCreate(
-    int Function(
-      NoDepWithoutCommaRef ref,
-    ) create,
-  ) {
-    return NoDepWithoutCommaProvider._(create: create);
-  }
-
-  @override
-  int create(NoDepWithoutCommaRef ref) {
-    final _$cb = _createCb ?? noDepWithoutComma;
-    return _$cb(ref);
-  }
-}
-
-String _$noDepWithoutCommaHash() => r'59d5a7874da40605b1b187766ebb4927d2eaae81';
 
 // ignore_for_file: type=lint
 // ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main

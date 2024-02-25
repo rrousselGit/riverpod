@@ -44,6 +44,19 @@ final class StatefulWidgetDeclaration extends WidgetDeclaration {
   final StatefulWidgetDeclarationElement element;
   @override
   final ClassDeclaration node;
+
+  StateDeclaration? findStateAst() {
+    final stateName = state?.element.name;
+    if (stateName == null) return null;
+
+    final unit = node.thisOrAncestorOfType<CompilationUnit>()!;
+
+    final stateClass = unit.declarations
+        .whereType<ClassDeclaration>()
+        .firstWhereOrNull((e) => e.name.lexeme == stateName);
+
+    return stateClass?.state;
+  }
 }
 
 final class StatefulWidgetDeclarationElement extends WidgetDeclarationElement {
