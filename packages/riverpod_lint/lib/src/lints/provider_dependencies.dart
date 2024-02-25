@@ -181,7 +181,6 @@ class ProviderDependencies extends RiverpodLintRule {
   static const _code = LintCode(
     name: 'provider_dependencies',
     problemMessage: '{0}',
-    // TODO changelog: provider_dependencies is now a WARNING
     errorSeverity: ErrorSeverity.WARNING,
   );
 

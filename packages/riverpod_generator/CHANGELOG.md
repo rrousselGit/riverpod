@@ -14,7 +14,29 @@
     }
   )
   ```
-
+- Generated providers are now always `const`.
+- Added support for abstract `build` method on Notifiers:
+  ```dart
+  @riverpod
+  class Example extends _$Example {
+    @override
+    int build();
+  }
+  ```
+  This is equivalent to writing:
+  ```dart
+  @Riverpod(dependencies: [])
+  class Example extends _$Example {
+    @override
+    int build() => throw UnimplementedError();
+  }
+  ```
+- Added support for documentation and annotations on providers/parameters.
+  Comments on providers and family parameters will be
+  injected in the generated code, for IDE documentation
+  in the relevant places.
+  Annotations will be pasted over, such as to mark parameters
+  as `@deprecated` everywhere.
 - Updated to support latest `riverpod_analyzer_utils`
 
 ## 3.0.0-dev.11 - 2023-11-27

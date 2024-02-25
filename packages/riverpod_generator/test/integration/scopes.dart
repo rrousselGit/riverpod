@@ -2,7 +2,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'scopes.g.dart';
 
-// TODO changelog added support for abstract build method.
 @riverpod
 class ScopedClass extends _$ScopedClass {
   @override

@@ -37,19 +37,15 @@ class _RiverpodPlugin extends PluginBase {
         const AvoidManualProvidersAsGeneratedProviderDependency(),
         const AvoidPublicNotifierProperties(),
         const AvoidRefInsideStateDispose(),
-        // const MissingProviderDependency(),
         const FunctionalRef(),
         const MissingProviderScope(),
         const NotifierBuild(),
         const NotifierExtends(),
         const ProtectedNotifierProperties(),
-        // TODO changelog provider_dependencies now handles @Dependencies
         const ProviderDependencies(),
         const ProviderParameters(),
-        // TODO changelog added riverpod_syntax_error, for reporting errors when the generator would throw.
         const RiverpodSyntaxError(),
         const ScopedProvidersShouldSpecifyDependencies(),
-        // TODO changelog added unknown_scoped_usage, for reporting when a scoped provider is used but the ref could not be found.
         const UnknownScopedUsage(),
         const UnsupportedProviderValue(),
 

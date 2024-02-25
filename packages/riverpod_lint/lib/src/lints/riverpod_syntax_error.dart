@@ -6,7 +6,6 @@ import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
 import '../riverpod_custom_lint.dart';
 
-// TODO changelog new lint
 class RiverpodSyntaxError extends RiverpodLintRule {
   const RiverpodSyntaxError() : super(code: _code);
 

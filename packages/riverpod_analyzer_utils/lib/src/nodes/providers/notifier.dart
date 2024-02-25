@@ -10,7 +10,6 @@ extension ClassBasedProviderDeclarationX on ClassDeclaration {
       final riverpod = this.riverpod;
       if (riverpod == null) return null;
 
-      // TODO changelog report error if abstract
       if (abstractKeyword != null) {
         errorReporter(
           RiverpodAnalysisError(
@@ -35,7 +34,6 @@ extension ClassBasedProviderDeclarationX on ClassDeclaration {
           ),
         );
       }
-      // TODO changelog report error if default constructor is missing
       if (defaultConstructor != null &&
           defaultConstructor.parameters.parameters.any((e) => e.isRequired)) {
         errorReporter(

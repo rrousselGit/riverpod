@@ -6,7 +6,6 @@ import 'package:custom_lint_builder/custom_lint_builder.dart';
 
 import '../riverpod_custom_lint.dart';
 
-// TODO changelog added migration for missing import.
 class MissingLegacyImport extends RiverpodLintRule {
   const MissingLegacyImport() : super(code: _code);
 

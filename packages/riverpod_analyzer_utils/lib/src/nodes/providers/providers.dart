@@ -7,7 +7,6 @@ sealed class ProviderDeclaration {
 }
 
 sealed class ProviderDeclarationElement {
-  // TODO changelog breaking: removed isAutoDispose from ProviderDeclarationElement
   Element get element;
   String get name;
 }
@@ -27,7 +26,6 @@ extension GeneratorProviderDeclarationX on Declaration {
   }
 }
 
-// TODO changelog made sealed
 sealed class GeneratorProviderDeclaration extends ProviderDeclaration {
   @override
   GeneratorProviderDeclarationElement get providerElement;
@@ -61,7 +59,6 @@ sealed class GeneratorProviderDeclaration extends ProviderDeclaration {
   }
 }
 
-// TODO changelog made sealed
 sealed class GeneratorProviderDeclarationElement
     implements ProviderDeclarationElement {
   RiverpodAnnotationElement get annotation;
@@ -73,8 +70,6 @@ sealed class GeneratorProviderDeclarationElement
   bool get isScoped {
     if (annotation.dependencies != null) return true;
 
-    // TODO changelog isScoped now supports abstract build methods
-    // TODO test
     final that = this;
     return that is ClassBasedProviderDeclarationElement &&
         that.buildMethod.isAbstract;

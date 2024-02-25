@@ -18,7 +18,6 @@ import 'package:riverpod/src/internals.dart' show ProviderElementBase;
 /// {@endtemplate}
 @Target({TargetKind.classType, TargetKind.function})
 @sealed
-// TODO changelog make "Riverpod" final
 final class Riverpod {
   /// {@macro riverpod_annotation.provider}
   const Riverpod({

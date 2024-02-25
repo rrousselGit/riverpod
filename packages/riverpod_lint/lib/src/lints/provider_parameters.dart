@@ -17,7 +17,6 @@ class ProviderParameters extends RiverpodLintRule {
         'Meaning either the values should be cached, or the parameters should override ==',
     url:
         'https://riverpod.dev/docs/concepts/modifiers/family#passing-multiple-parameters-to-a-family',
-    // TODO changelog: provider_parameters is now a WARNING
     errorSeverity: ErrorSeverity.WARNING,
   );
 

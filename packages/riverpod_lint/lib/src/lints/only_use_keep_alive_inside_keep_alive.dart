@@ -9,7 +9,6 @@ import '../riverpod_custom_lint.dart';
 class OnlyUseKeepAliveInsideKeepAlive extends RiverpodLintRule {
   const OnlyUseKeepAliveInsideKeepAlive() : super(code: _code);
 
-  // TODO changelog added avoid_keep_alive_dependency_inside_auto_dispose
   static const _code = LintCode(
     name: 'only_use_keep_alive_inside_keep_alive',
     problemMessage: 'If a provider is declared as `keepAlive`, '
