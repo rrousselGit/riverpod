@@ -92,6 +92,31 @@ abstract class UnimplementedRiverpodAstVisitor
 }
 
 @internal
+class CollectionRiverpodAst extends SimpleRiverpodAstVisitor {
+  final Map<String, List<Object>> riverpodAst = {};
+  List<Object?>? _pendingList;
+
+${byConstraint.keys.map((e) => '''
+  @override
+  void visit${e.name}(
+    ${e.type} node,
+  ) {
+    final list = riverpodAst.putIfAbsent('${e.type}', () => []);
+    final previousList = list;
+    _pendingList = list;
+    super.visit${e.name}(node);
+    _pendingList = previousList;
+  }
+''').join('\n')}
+
+${allAst.map((e) => '''
+  void visit${e.type}(${e.type} node) {
+    _pendingList!.add(node);
+  }
+''').join('\n')}
+}
+
+@internal
 class RiverpodAnalysisResult extends RecursiveRiverpodAstVisitor {
   final List<RiverpodAnalysisError> errors = [];
 

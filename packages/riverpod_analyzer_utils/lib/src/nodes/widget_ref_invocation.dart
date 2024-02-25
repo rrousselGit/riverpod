@@ -45,21 +45,6 @@ extension WidgetRefInvocationX on MethodInvocation {
       }
     });
   }
-
-  WidgetRefDependencyInvocation? get widgetRefDependencyInvocation =>
-      widgetRefInvocation.cast<WidgetRefDependencyInvocation>();
-
-  WidgetRefWatchInvocation? get widgetRefWatchInvocation =>
-      widgetRefInvocation.cast<WidgetRefWatchInvocation>();
-
-  WidgetRefReadInvocation? get widgetRefReadInvocation =>
-      widgetRefInvocation.cast<WidgetRefReadInvocation>();
-
-  WidgetRefListenInvocation? get widgetRefListenInvocation =>
-      widgetRefInvocation.cast<WidgetRefListenInvocation>();
-
-  WidgetRefListenManualInvocation? get widgetRefListenManualInvocation =>
-      widgetRefInvocation.cast<WidgetRefListenManualInvocation>();
 }
 
 sealed class WidgetRefInvocation {
@@ -73,7 +58,7 @@ sealed class WidgetRefInvocation {
 }
 
 /// A [RefInvocation] which interacts with a provider, inducing a dependency.
-abstract base class WidgetRefDependencyInvocation extends WidgetRefInvocation {
+sealed class WidgetRefDependencyInvocation extends WidgetRefInvocation {
   WidgetRefDependencyInvocation._({
     required super.node,
     required super.function,

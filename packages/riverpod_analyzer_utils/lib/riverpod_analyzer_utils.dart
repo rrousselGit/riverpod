@@ -4,5 +4,6 @@ export 'src/nodes.dart'
         parseFirstProviderFor,
         parseLegacyProviderType,
         parseProviderFor,
+        CollectionRiverpodAst,
         RiverpodAnalysisResult;
 export 'src/riverpod_types.dart';

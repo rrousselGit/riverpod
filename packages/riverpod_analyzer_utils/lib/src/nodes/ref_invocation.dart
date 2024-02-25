@@ -37,21 +37,9 @@ extension RefInvocationX on MethodInvocation {
       }
     });
   }
-
-  RefDependencyInvocation? get refDependencyInvocation =>
-      refInvocation.cast<RefDependencyInvocation>();
-
-  RefWatchInvocation? get refWatchInvocation =>
-      refInvocation.cast<RefWatchInvocation>();
-
-  RefReadInvocation? get refReadInvocation =>
-      refInvocation.cast<RefReadInvocation>();
-
-  RefListenInvocation? get refListenInvocation =>
-      refInvocation.cast<RefListenInvocation>();
 }
 
-abstract base class RefInvocation {
+sealed class RefInvocation {
   RefInvocation._({
     required this.node,
     required this.function,
@@ -62,7 +50,7 @@ abstract base class RefInvocation {
 }
 
 /// A [RefInvocation] which interacts with a provider, inducing a dependency.
-abstract base class RefDependencyInvocation extends RefInvocation {
+sealed class RefDependencyInvocation extends RefInvocation {
   RefDependencyInvocation._({
     required super.node,
     required super.function,

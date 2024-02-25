@@ -1,7 +1,22 @@
-import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
+import 'package:riverpod_analyzer_utils/src/nodes.dart';
 import 'package:test/test.dart';
 
 import 'analyzer_test_utils.dart';
+
+// ignore: invalid_use_of_internal_member
+extension on RiverpodAnalysisResult {
+  List<RefWatchInvocation> get refWatchInvocations {
+    return refInvocations.cast();
+  }
+
+  List<RefListenInvocation> get refListenInvocations {
+    return refInvocations.cast();
+  }
+
+  List<RefReadInvocation> get refReadInvocations {
+    return refInvocations.cast();
+  }
+}
 
 void main() {
   testSource(

@@ -25,7 +25,8 @@ class OnlyUseKeepAliveInsideKeepAlive extends RiverpodLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    riverpodRegistry(context).addRefDependencyInvocation((node) {
+    riverpodRegistry(context).addRefInvocation((node) {
+      if (node is! RefDependencyInvocation) return;
       final dependencyElement = node.listenable.provider?.providerElement;
       // This only applies if the watched provider is a generated one.
       if (dependencyElement is! GeneratorProviderDeclarationElement) return;

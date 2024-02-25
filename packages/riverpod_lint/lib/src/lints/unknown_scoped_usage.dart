@@ -31,9 +31,10 @@ class UnknownScopedUsage extends RiverpodLintRule {
 
       final enclosingMethodInvocation =
           identifier.node.thisOrAncestorOfType<MethodInvocation>();
-      final refInvocation = enclosingMethodInvocation?.refDependencyInvocation;
-      final widgetRefInvocation =
-          enclosingMethodInvocation?.widgetRefDependencyInvocation;
+      final refInvocation = enclosingMethodInvocation?.refInvocation
+          .safeCast<RefDependencyInvocation>();
+      final widgetRefInvocation = enclosingMethodInvocation?.widgetRefInvocation
+          .safeCast<WidgetRefDependencyInvocation>();
 
       // If in a ref expression, and the associated ref is the checked provider,
       // then it's fine.

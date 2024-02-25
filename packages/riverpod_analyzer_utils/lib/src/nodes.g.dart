@@ -21,17 +21,7 @@ mixin RiverpodAstVisitor {
   void visitRiverpodAnnotation(RiverpodAnnotation node) {}
   void visitProviderListenableExpression(ProviderListenableExpression node) {}
   void visitRefInvocation(RefInvocation node) {}
-  void visitRefDependencyInvocation(RefDependencyInvocation node) {}
-  void visitRefWatchInvocation(RefWatchInvocation node) {}
-  void visitRefReadInvocation(RefReadInvocation node) {}
-  void visitRefListenInvocation(RefListenInvocation node) {}
   void visitWidgetRefInvocation(WidgetRefInvocation node) {}
-  void visitWidgetRefDependencyInvocation(WidgetRefDependencyInvocation node) {}
-  void visitWidgetRefWatchInvocation(WidgetRefWatchInvocation node) {}
-  void visitWidgetRefReadInvocation(WidgetRefReadInvocation node) {}
-  void visitWidgetRefListenInvocation(WidgetRefListenInvocation node) {}
-  void visitWidgetRefListenManualInvocation(
-      WidgetRefListenManualInvocation node) {}
   void visitProviderOverrideExpression(ProviderOverrideExpression node) {}
   void visitProviderOverrideList(ProviderOverrideList node) {}
   void visitProviderContainerInstanceCreationExpression(
@@ -110,17 +100,7 @@ abstract class RecursiveRiverpodAstVisitor extends GeneralizingAstVisitor<void>
   void visitMethodInvocation(MethodInvocation node) {
     super.visitMethodInvocation(node);
     node.refInvocation.let(visitRefInvocation);
-    node.refDependencyInvocation.let(visitRefDependencyInvocation);
-    node.refWatchInvocation.let(visitRefWatchInvocation);
-    node.refReadInvocation.let(visitRefReadInvocation);
-    node.refListenInvocation.let(visitRefListenInvocation);
     node.widgetRefInvocation.let(visitWidgetRefInvocation);
-    node.widgetRefDependencyInvocation.let(visitWidgetRefDependencyInvocation);
-    node.widgetRefWatchInvocation.let(visitWidgetRefWatchInvocation);
-    node.widgetRefReadInvocation.let(visitWidgetRefReadInvocation);
-    node.widgetRefListenInvocation.let(visitWidgetRefListenInvocation);
-    node.widgetRefListenManualInvocation
-        .let(visitWidgetRefListenManualInvocation);
   }
 
   @override
@@ -172,26 +152,7 @@ abstract class UnimplementedRiverpodAstVisitor
   void visitProviderListenableExpression(ProviderListenableExpression node) =>
       throw UnimplementedError();
   void visitRefInvocation(RefInvocation node) => throw UnimplementedError();
-  void visitRefDependencyInvocation(RefDependencyInvocation node) =>
-      throw UnimplementedError();
-  void visitRefWatchInvocation(RefWatchInvocation node) =>
-      throw UnimplementedError();
-  void visitRefReadInvocation(RefReadInvocation node) =>
-      throw UnimplementedError();
-  void visitRefListenInvocation(RefListenInvocation node) =>
-      throw UnimplementedError();
   void visitWidgetRefInvocation(WidgetRefInvocation node) =>
-      throw UnimplementedError();
-  void visitWidgetRefDependencyInvocation(WidgetRefDependencyInvocation node) =>
-      throw UnimplementedError();
-  void visitWidgetRefWatchInvocation(WidgetRefWatchInvocation node) =>
-      throw UnimplementedError();
-  void visitWidgetRefReadInvocation(WidgetRefReadInvocation node) =>
-      throw UnimplementedError();
-  void visitWidgetRefListenInvocation(WidgetRefListenInvocation node) =>
-      throw UnimplementedError();
-  void visitWidgetRefListenManualInvocation(
-          WidgetRefListenManualInvocation node) =>
       throw UnimplementedError();
   void visitProviderOverrideExpression(ProviderOverrideExpression node) =>
       throw UnimplementedError();
@@ -203,6 +164,234 @@ abstract class UnimplementedRiverpodAstVisitor
   void visitProviderScopeInstanceCreationExpression(
           ProviderScopeInstanceCreationExpression node) =>
       throw UnimplementedError();
+}
+
+@internal
+class CollectionRiverpodAst extends SimpleRiverpodAstVisitor {
+  final Map<String, List<Object>> riverpodAst = {};
+  List<Object?>? _pendingList;
+
+  @override
+  void visitClassDeclaration(
+    ClassDeclaration node,
+  ) {
+    final list = riverpodAst.putIfAbsent('ClassDeclaration', () => []);
+    final previousList = list;
+    _pendingList = list;
+    super.visitClassDeclaration(node);
+    _pendingList = previousList;
+  }
+
+  @override
+  void visitAnnotatedNode(
+    AnnotatedNode node,
+  ) {
+    final list = riverpodAst.putIfAbsent('AnnotatedNode', () => []);
+    final previousList = list;
+    _pendingList = list;
+    super.visitAnnotatedNode(node);
+    _pendingList = previousList;
+  }
+
+  @override
+  void visitNode(
+    AstNode node,
+  ) {
+    final list = riverpodAst.putIfAbsent('AstNode', () => []);
+    final previousList = list;
+    _pendingList = list;
+    super.visitNode(node);
+    _pendingList = previousList;
+  }
+
+  @override
+  void visitIdentifier(
+    Identifier node,
+  ) {
+    final list = riverpodAst.putIfAbsent('Identifier', () => []);
+    final previousList = list;
+    _pendingList = list;
+    super.visitIdentifier(node);
+    _pendingList = previousList;
+  }
+
+  @override
+  void visitNamedType(
+    NamedType node,
+  ) {
+    final list = riverpodAst.putIfAbsent('NamedType', () => []);
+    final previousList = list;
+    _pendingList = list;
+    super.visitNamedType(node);
+    _pendingList = previousList;
+  }
+
+  @override
+  void visitFunctionDeclaration(
+    FunctionDeclaration node,
+  ) {
+    final list = riverpodAst.putIfAbsent('FunctionDeclaration', () => []);
+    final previousList = list;
+    _pendingList = list;
+    super.visitFunctionDeclaration(node);
+    _pendingList = previousList;
+  }
+
+  @override
+  void visitVariableDeclaration(
+    VariableDeclaration node,
+  ) {
+    final list = riverpodAst.putIfAbsent('VariableDeclaration', () => []);
+    final previousList = list;
+    _pendingList = list;
+    super.visitVariableDeclaration(node);
+    _pendingList = previousList;
+  }
+
+  @override
+  void visitDeclaration(
+    Declaration node,
+  ) {
+    final list = riverpodAst.putIfAbsent('Declaration', () => []);
+    final previousList = list;
+    _pendingList = list;
+    super.visitDeclaration(node);
+    _pendingList = previousList;
+  }
+
+  @override
+  void visitSimpleIdentifier(
+    SimpleIdentifier node,
+  ) {
+    final list = riverpodAst.putIfAbsent('SimpleIdentifier', () => []);
+    final previousList = list;
+    _pendingList = list;
+    super.visitSimpleIdentifier(node);
+    _pendingList = previousList;
+  }
+
+  @override
+  void visitExpression(
+    Expression node,
+  ) {
+    final list = riverpodAst.putIfAbsent('Expression', () => []);
+    final previousList = list;
+    _pendingList = list;
+    super.visitExpression(node);
+    _pendingList = previousList;
+  }
+
+  @override
+  void visitMethodInvocation(
+    MethodInvocation node,
+  ) {
+    final list = riverpodAst.putIfAbsent('MethodInvocation', () => []);
+    final previousList = list;
+    _pendingList = list;
+    super.visitMethodInvocation(node);
+    _pendingList = previousList;
+  }
+
+  @override
+  void visitCollectionElement(
+    CollectionElement node,
+  ) {
+    final list = riverpodAst.putIfAbsent('CollectionElement', () => []);
+    final previousList = list;
+    _pendingList = list;
+    super.visitCollectionElement(node);
+    _pendingList = previousList;
+  }
+
+  @override
+  void visitInstanceCreationExpression(
+    InstanceCreationExpression node,
+  ) {
+    final list =
+        riverpodAst.putIfAbsent('InstanceCreationExpression', () => []);
+    final previousList = list;
+    _pendingList = list;
+    super.visitInstanceCreationExpression(node);
+    _pendingList = previousList;
+  }
+
+  void visitWidgetDeclaration(WidgetDeclaration node) {
+    _pendingList!.add(node);
+  }
+
+  void visitStateDeclaration(StateDeclaration node) {
+    _pendingList!.add(node);
+  }
+
+  void visitDependenciesAnnotation(DependenciesAnnotation node) {
+    _pendingList!.add(node);
+  }
+
+  void visitAccumulatedDependencyList(AccumulatedDependencyList node) {
+    _pendingList!.add(node);
+  }
+
+  void visitIdentifierDependencies(IdentifierDependencies node) {
+    _pendingList!.add(node);
+  }
+
+  void visitNamedTypeDependencies(NamedTypeDependencies node) {
+    _pendingList!.add(node);
+  }
+
+  void visitFunctionalProviderDeclaration(FunctionalProviderDeclaration node) {
+    _pendingList!.add(node);
+  }
+
+  void visitLegacyProviderDeclaration(LegacyProviderDeclaration node) {
+    _pendingList!.add(node);
+  }
+
+  void visitClassBasedProviderDeclaration(ClassBasedProviderDeclaration node) {
+    _pendingList!.add(node);
+  }
+
+  void visitGeneratorProviderDeclaration(GeneratorProviderDeclaration node) {
+    _pendingList!.add(node);
+  }
+
+  void visitProviderIdentifier(ProviderIdentifier node) {
+    _pendingList!.add(node);
+  }
+
+  void visitRiverpodAnnotation(RiverpodAnnotation node) {
+    _pendingList!.add(node);
+  }
+
+  void visitProviderListenableExpression(ProviderListenableExpression node) {
+    _pendingList!.add(node);
+  }
+
+  void visitRefInvocation(RefInvocation node) {
+    _pendingList!.add(node);
+  }
+
+  void visitWidgetRefInvocation(WidgetRefInvocation node) {
+    _pendingList!.add(node);
+  }
+
+  void visitProviderOverrideExpression(ProviderOverrideExpression node) {
+    _pendingList!.add(node);
+  }
+
+  void visitProviderOverrideList(ProviderOverrideList node) {
+    _pendingList!.add(node);
+  }
+
+  void visitProviderContainerInstanceCreationExpression(
+      ProviderContainerInstanceCreationExpression node) {
+    _pendingList!.add(node);
+  }
+
+  void visitProviderScopeInstanceCreationExpression(
+      ProviderScopeInstanceCreationExpression node) {
+    _pendingList!.add(node);
+  }
 }
 
 @internal
@@ -335,42 +524,6 @@ class RiverpodAnalysisResult extends RecursiveRiverpodAstVisitor {
     refInvocations.add(node);
   }
 
-  final refDependencyInvocations = <RefDependencyInvocation>[];
-  @override
-  void visitRefDependencyInvocation(
-    RefDependencyInvocation node,
-  ) {
-    super.visitRefDependencyInvocation(node);
-    refDependencyInvocations.add(node);
-  }
-
-  final refWatchInvocations = <RefWatchInvocation>[];
-  @override
-  void visitRefWatchInvocation(
-    RefWatchInvocation node,
-  ) {
-    super.visitRefWatchInvocation(node);
-    refWatchInvocations.add(node);
-  }
-
-  final refReadInvocations = <RefReadInvocation>[];
-  @override
-  void visitRefReadInvocation(
-    RefReadInvocation node,
-  ) {
-    super.visitRefReadInvocation(node);
-    refReadInvocations.add(node);
-  }
-
-  final refListenInvocations = <RefListenInvocation>[];
-  @override
-  void visitRefListenInvocation(
-    RefListenInvocation node,
-  ) {
-    super.visitRefListenInvocation(node);
-    refListenInvocations.add(node);
-  }
-
   final widgetRefInvocations = <WidgetRefInvocation>[];
   @override
   void visitWidgetRefInvocation(
@@ -378,51 +531,6 @@ class RiverpodAnalysisResult extends RecursiveRiverpodAstVisitor {
   ) {
     super.visitWidgetRefInvocation(node);
     widgetRefInvocations.add(node);
-  }
-
-  final widgetRefDependencyInvocations = <WidgetRefDependencyInvocation>[];
-  @override
-  void visitWidgetRefDependencyInvocation(
-    WidgetRefDependencyInvocation node,
-  ) {
-    super.visitWidgetRefDependencyInvocation(node);
-    widgetRefDependencyInvocations.add(node);
-  }
-
-  final widgetRefWatchInvocations = <WidgetRefWatchInvocation>[];
-  @override
-  void visitWidgetRefWatchInvocation(
-    WidgetRefWatchInvocation node,
-  ) {
-    super.visitWidgetRefWatchInvocation(node);
-    widgetRefWatchInvocations.add(node);
-  }
-
-  final widgetRefReadInvocations = <WidgetRefReadInvocation>[];
-  @override
-  void visitWidgetRefReadInvocation(
-    WidgetRefReadInvocation node,
-  ) {
-    super.visitWidgetRefReadInvocation(node);
-    widgetRefReadInvocations.add(node);
-  }
-
-  final widgetRefListenInvocations = <WidgetRefListenInvocation>[];
-  @override
-  void visitWidgetRefListenInvocation(
-    WidgetRefListenInvocation node,
-  ) {
-    super.visitWidgetRefListenInvocation(node);
-    widgetRefListenInvocations.add(node);
-  }
-
-  final widgetRefListenManualInvocations = <WidgetRefListenManualInvocation>[];
-  @override
-  void visitWidgetRefListenManualInvocation(
-    WidgetRefListenManualInvocation node,
-  ) {
-    super.visitWidgetRefListenManualInvocation(node);
-    widgetRefListenManualInvocations.add(node);
   }
 
   final providerOverrideExpressions = <ProviderOverrideExpression>[];
@@ -576,64 +684,9 @@ class RiverpodAstRegistry {
     _onRefInvocation.add(cb);
   }
 
-  final _onRefDependencyInvocation = <void Function(RefDependencyInvocation)>[];
-  void addRefDependencyInvocation(
-      void Function(RefDependencyInvocation node) cb) {
-    _onRefDependencyInvocation.add(cb);
-  }
-
-  final _onRefWatchInvocation = <void Function(RefWatchInvocation)>[];
-  void addRefWatchInvocation(void Function(RefWatchInvocation node) cb) {
-    _onRefWatchInvocation.add(cb);
-  }
-
-  final _onRefReadInvocation = <void Function(RefReadInvocation)>[];
-  void addRefReadInvocation(void Function(RefReadInvocation node) cb) {
-    _onRefReadInvocation.add(cb);
-  }
-
-  final _onRefListenInvocation = <void Function(RefListenInvocation)>[];
-  void addRefListenInvocation(void Function(RefListenInvocation node) cb) {
-    _onRefListenInvocation.add(cb);
-  }
-
   final _onWidgetRefInvocation = <void Function(WidgetRefInvocation)>[];
   void addWidgetRefInvocation(void Function(WidgetRefInvocation node) cb) {
     _onWidgetRefInvocation.add(cb);
-  }
-
-  final _onWidgetRefDependencyInvocation =
-      <void Function(WidgetRefDependencyInvocation)>[];
-  void addWidgetRefDependencyInvocation(
-      void Function(WidgetRefDependencyInvocation node) cb) {
-    _onWidgetRefDependencyInvocation.add(cb);
-  }
-
-  final _onWidgetRefWatchInvocation =
-      <void Function(WidgetRefWatchInvocation)>[];
-  void addWidgetRefWatchInvocation(
-      void Function(WidgetRefWatchInvocation node) cb) {
-    _onWidgetRefWatchInvocation.add(cb);
-  }
-
-  final _onWidgetRefReadInvocation = <void Function(WidgetRefReadInvocation)>[];
-  void addWidgetRefReadInvocation(
-      void Function(WidgetRefReadInvocation node) cb) {
-    _onWidgetRefReadInvocation.add(cb);
-  }
-
-  final _onWidgetRefListenInvocation =
-      <void Function(WidgetRefListenInvocation)>[];
-  void addWidgetRefListenInvocation(
-      void Function(WidgetRefListenInvocation node) cb) {
-    _onWidgetRefListenInvocation.add(cb);
-  }
-
-  final _onWidgetRefListenManualInvocation =
-      <void Function(WidgetRefListenManualInvocation)>[];
-  void addWidgetRefListenManualInvocation(
-      void Function(WidgetRefListenManualInvocation node) cb) {
-    _onWidgetRefListenManualInvocation.add(cb);
   }
 
   final _onProviderOverrideExpression =
@@ -808,93 +861,11 @@ class _RiverpodAstRegistryVisitor extends RecursiveRiverpodAstVisitor {
   }
 
   @override
-  void visitRefDependencyInvocation(RefDependencyInvocation node) {
-    super.visitRefDependencyInvocation(node);
-    _runSubscriptions(
-      node,
-      _registry._onRefDependencyInvocation,
-    );
-  }
-
-  @override
-  void visitRefWatchInvocation(RefWatchInvocation node) {
-    super.visitRefWatchInvocation(node);
-    _runSubscriptions(
-      node,
-      _registry._onRefWatchInvocation,
-    );
-  }
-
-  @override
-  void visitRefReadInvocation(RefReadInvocation node) {
-    super.visitRefReadInvocation(node);
-    _runSubscriptions(
-      node,
-      _registry._onRefReadInvocation,
-    );
-  }
-
-  @override
-  void visitRefListenInvocation(RefListenInvocation node) {
-    super.visitRefListenInvocation(node);
-    _runSubscriptions(
-      node,
-      _registry._onRefListenInvocation,
-    );
-  }
-
-  @override
   void visitWidgetRefInvocation(WidgetRefInvocation node) {
     super.visitWidgetRefInvocation(node);
     _runSubscriptions(
       node,
       _registry._onWidgetRefInvocation,
-    );
-  }
-
-  @override
-  void visitWidgetRefDependencyInvocation(WidgetRefDependencyInvocation node) {
-    super.visitWidgetRefDependencyInvocation(node);
-    _runSubscriptions(
-      node,
-      _registry._onWidgetRefDependencyInvocation,
-    );
-  }
-
-  @override
-  void visitWidgetRefWatchInvocation(WidgetRefWatchInvocation node) {
-    super.visitWidgetRefWatchInvocation(node);
-    _runSubscriptions(
-      node,
-      _registry._onWidgetRefWatchInvocation,
-    );
-  }
-
-  @override
-  void visitWidgetRefReadInvocation(WidgetRefReadInvocation node) {
-    super.visitWidgetRefReadInvocation(node);
-    _runSubscriptions(
-      node,
-      _registry._onWidgetRefReadInvocation,
-    );
-  }
-
-  @override
-  void visitWidgetRefListenInvocation(WidgetRefListenInvocation node) {
-    super.visitWidgetRefListenInvocation(node);
-    _runSubscriptions(
-      node,
-      _registry._onWidgetRefListenInvocation,
-    );
-  }
-
-  @override
-  void visitWidgetRefListenManualInvocation(
-      WidgetRefListenManualInvocation node) {
-    super.visitWidgetRefListenManualInvocation(node);
-    _runSubscriptions(
-      node,
-      _registry._onWidgetRefListenManualInvocation,
     );
   }
 

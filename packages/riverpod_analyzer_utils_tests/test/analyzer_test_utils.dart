@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/diagnostic/diagnostic.dart';
 import 'package:build/build.dart';
@@ -121,7 +122,15 @@ void testSource(
             () async {
               final (units, unit) = await getUnits(resolver);
 
-              return run(resolver, unit, units);
+              try {
+                return await run(resolver, unit, units);
+              } finally {
+                collectErrors(() {
+                  for (final unit in units) {
+                    expectRiverpodAstOnlyHasASingleOptionPerNode(unit.unit);
+                  }
+                });
+              }
             },
             zoneSpecification: ZoneSpecification(
               // Somehow prints are captured inside the callback. Let's restore them
@@ -138,6 +147,33 @@ void testSource(
       });
     },
   );
+}
+
+/// Asserts that no [AstNode] has to Riverpod ast.
+void expectRiverpodAstOnlyHasASingleOptionPerNode(AstNode node) {
+  final result = CollectionRiverpodAst();
+  node.accept(result);
+
+  for (final entry in result.riverpodAst.entries) {
+    expect(
+      entry.value,
+      anyOf(
+        hasLength(0),
+        hasLength(1),
+      ),
+      reason: entry.key,
+    );
+  }
+
+  node.visitChildren(_VisitNode(expectRiverpodAstOnlyHasASingleOptionPerNode));
+}
+
+class _VisitNode extends GeneralizingAstVisitor<void> {
+  _VisitNode(this.cb);
+
+  final void Function(AstNode node) cb;
+  @override
+  void visitNode(AstNode node) => cb(node);
 }
 
 extension MapTake<Key, Value> on Map<Key, Value> {

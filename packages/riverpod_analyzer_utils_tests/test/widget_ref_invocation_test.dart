@@ -1,6 +1,26 @@
+import 'package:riverpod_analyzer_utils/src/nodes.dart';
 import 'package:test/test.dart';
 
 import 'analyzer_test_utils.dart';
+
+// ignore: invalid_use_of_internal_member
+extension on RiverpodAnalysisResult {
+  List<WidgetRefWatchInvocation> get widgetRefWatchInvocations {
+    return widgetRefInvocations.cast();
+  }
+
+  List<WidgetRefReadInvocation> get widgetRefReadInvocations {
+    return widgetRefInvocations.cast();
+  }
+
+  List<WidgetRefListenInvocation> get widgetRefListenInvocations {
+    return widgetRefInvocations.cast();
+  }
+
+  List<WidgetRefListenManualInvocation> get widgetRefListenManualInvocations {
+    return widgetRefInvocations.cast();
+  }
+}
 
 void main() {
   testSource('Decode watch expressions with syntax errors', source: '''
