@@ -7,7 +7,7 @@ import 'package:riverpod_lint/riverpod_lint.dart';
 import 'package:riverpod_lint/src/riverpod_custom_lint.dart';
 import 'package:test/test.dart';
 
-import 'golden.dart';
+import 'test_lint.dart';
 
 void main() {
   final plugin = createPlugin();
@@ -36,7 +36,7 @@ void main() {
           'for ${file.path}',
           file.path,
           lint,
-          goldensDirectory: 'lints/goldens/${code.name}',
+          goldensDirectory: 'test/lints/goldens/${code.name}',
         );
       }
     });
