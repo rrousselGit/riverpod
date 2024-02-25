@@ -229,9 +229,9 @@ extension ProviderElementNames on GeneratorProviderDeclarationElement {
   String get familyTypeName => '${name.titled}Family';
 
   String dependencies(BuildYamlOptions options) {
-    var dependencies = annotation.dependencies;
+    var dependencies = annotation.dependencies?.toSet();
     if (dependencies == null && !isScoped) return 'null';
-    dependencies ??= [];
+    dependencies ??= {};
 
     final buffer = StringBuffer('const <ProviderOrFamily>');
     buffer.write('[');

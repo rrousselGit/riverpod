@@ -1322,12 +1322,7 @@ final class DuplicateDependenciesProvider
           argument: null,
           name: r'duplicateDependenciesProvider',
           isAutoDispose: true,
-          dependencies: const <ProviderOrFamily>[
-            depProvider,
-            depProvider,
-            dep2Provider,
-            dep2Provider
-          ],
+          dependencies: const <ProviderOrFamily>[depProvider, dep2Provider],
           allTransitiveDependencies: const <ProviderOrFamily>[
             DuplicateDependenciesProvider.$allTransitiveDependencies0,
             DuplicateDependenciesProvider.$allTransitiveDependencies1,
@@ -1396,8 +1391,6 @@ final class DuplicateDependencies2Provider
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[
             familyProvider,
-            familyProvider,
-            family2Provider,
             family2Provider
           ],
           allTransitiveDependencies: const <ProviderOrFamily>[
