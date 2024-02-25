@@ -24,10 +24,7 @@ extension WidgetX on ClassDeclaration {
       final type = extendsClause?.superclass.type;
       if (type == null) return null;
 
-      if (stateType.isExactlyType(type) ||
-          consumerStateType.isExactlyType(type)) {
-        return StateDeclaration._parse(this);
-      }
+      if (isState(type)) return StateDeclaration._parse(this);
 
       return null;
     });

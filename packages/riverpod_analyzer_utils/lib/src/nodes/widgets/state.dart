@@ -1,6 +1,6 @@
 part of '../../nodes.dart';
 
-ClassElement? _findWidget(ClassElement node) {
+ClassElement? _findStateWidget(ClassElement node) {
   final type = node.supertype?.typeArguments.firstOrNull;
   if (type == null) return null;
 
@@ -24,7 +24,7 @@ final class StateDeclaration {
   });
 
   static StateDeclaration? _parse(ClassDeclaration node) {
-    final widget = node.declaredElement.let(_findWidget);
+    final widget = node.declaredElement.let(_findStateWidget);
     final element = node.declaredElement.let(StateDeclarationElement._parse);
 
     if (element == null) return null;
@@ -39,6 +39,19 @@ final class StateDeclaration {
   final ClassDeclaration node;
   final StatefulWidgetDeclarationElement? widget;
   final StateDeclarationElement element;
+
+  WidgetDeclaration? findWidgetAst() {
+    final widgetName = widget?.element.name;
+    if (widgetName == null) return null;
+
+    final unit = node.thisOrAncestorOfType<CompilationUnit>()!;
+
+    final widgetClass = unit.declarations
+        .whereType<ClassDeclaration>()
+        .firstWhereOrNull((e) => e.name.lexeme == widgetName);
+
+    return widgetClass?.widget;
+  }
 }
 
 final class StateDeclarationElement {
@@ -51,7 +64,7 @@ final class StateDeclarationElement {
 
   static StateDeclarationElement? _parse(ClassElement element) {
     return _cache(element, () {
-      final widget = _findWidget(element);
+      final widget = _findStateWidget(element);
 
       return StateDeclarationElement._(
         element: element,

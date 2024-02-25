@@ -155,11 +155,15 @@ class MemberDependencies {
   int build() => 0;
 }
 
+// expect_lint: provider_dependencies
 @Dependencies([])
-class MemberDependencies3 {
+class CanUpdateMultipleDependenciesAtOnce {
   // expect_lint: provider_dependencies
-  @Dependencies([dep])
-  int build() => 0;
+  @Dependencies([])
+  int build(WidgetRef ref) {
+    ref.watch(depProvider);
+    return 0;
+  }
 }
 
 // Counts @Riverpod dependencies too
@@ -224,7 +228,7 @@ class Stateful extends StatefulWidget {
   const Stateful({super.key});
 
   @override
-  State<Stateful> createState() => _StatefulState();
+  _StatefulState createState() => _StatefulState();
 }
 
 class _StatefulState extends State<Stateful> {
@@ -234,15 +238,15 @@ class _StatefulState extends State<Stateful> {
   }
 }
 
+// expect_lint: provider_dependencies
 @Dependencies([])
 class Stateful2 extends StatefulWidget {
   const Stateful2({super.key});
 
   @override
-  State<Stateful2> createState() => _Stateful2State();
+  _Stateful2State createState() => _Stateful2State();
 }
 
-// expect_lint: provider_dependencies
 class _Stateful2State extends State<Stateful2> {
   @override
   Widget build(BuildContext context) {
@@ -251,16 +255,14 @@ class _Stateful2State extends State<Stateful2> {
 }
 
 // expect_lint: provider_dependencies
-class Stateful3 extends StatefulWidget {
-  const Stateful3({super.key});
+class FindStateFromClassList extends StatefulWidget {
+  const FindStateFromClassList({super.key});
 
   @override
-  State<Stateful3> createState() => _Stateful3State();
+  State<FindStateFromClassList> createState() => _Stateful3State();
 }
 
-// expect_lint: provider_dependencies
-@Dependencies([dep])
-class _Stateful3State extends State<Stateful3> {
+class _Stateful3State extends State<FindStateFromClassList> {
   @override
-  Widget build(BuildContext context) => Container();
+  Widget build(BuildContext context) => WidgetDependencies();
 }

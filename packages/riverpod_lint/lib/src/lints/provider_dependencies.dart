@@ -15,9 +15,11 @@ class _FindNestedDependency extends RecursiveRiverpodAstVisitor {
   _FindNestedDependency(
     this.accumulatedDependencyList, {
     required this.onProvider,
+    this.visitStates = false,
   });
 
   final AccumulatedDependencyList accumulatedDependencyList;
+  final bool visitStates;
   final void Function(
     ProviderDeclarationElement provider,
     AccumulatedDependencyList list, {
@@ -26,24 +28,49 @@ class _FindNestedDependency extends RecursiveRiverpodAstVisitor {
 
   _FindNestedDependency copyWith({
     AccumulatedDependencyList? accumulatedDependencyList,
+    bool? visitStates,
   }) {
     return _FindNestedDependency(
       accumulatedDependencyList ?? this.accumulatedDependencyList,
       onProvider: onProvider,
+      visitStates: visitStates ?? this.visitStates,
     );
+  }
+
+  @override
+  void visitWidgetDeclaration(WidgetDeclaration node) {
+    super.visitWidgetDeclaration(node);
+
+    if (node is! StatefulWidgetDeclaration) return;
+
+    final stateAst = node.findStateAst();
+
+    // If targeting a StatefulWidget, we also need to check the state class.
+    if (stateAst != null) {
+      stateAst.node.accept(copyWith(visitStates: true));
+    }
+  }
+
+  @override
+  void visitStateDeclaration(StateDeclaration node) {
+    if (!visitStates) return;
+
+    super.visitStateDeclaration(node);
+  }
+
+  @override
+  void visitProviderOverrideExpression(ProviderOverrideExpression node) {
+    // Disable the lint for overrides. But only if the override isn't
+    // `overrides: [provider]`.
+    if (node.node.safeCast<Expression>()?.providerListenable != null) {
+      super.visitProviderOverrideExpression(node);
+      return;
+    }
   }
 
   @override
   void visitProviderIdentifier(ProviderIdentifier node) {
     super.visitProviderIdentifier(node);
-
-    // Search for whether the provider identifier is used in a provider.override
-    // or family().override expression.
-    final enclosingExpression = node.node.ancestors
-        .whereType<Expression>()
-        .where((e) => e.providerListenable == null)
-        .firstOrNull;
-    if (enclosingExpression?.providerOverride != null) return;
 
     onProvider(
       node.providerElement,
@@ -78,17 +105,18 @@ class _FindNestedDependency extends RecursiveRiverpodAstVisitor {
   void visitNamedTypeDependencies(NamedTypeDependencies node) {
     super.visitNamedTypeDependencies(node);
 
+    final type = node.node.type;
+    if (type == null) return;
+    late final isWidget = widgetType.isAssignableFromType(type);
+
     if (node.dependencies.dependencies case final deps?) {
       for (final dep in deps) {
-        final type = node.node.type;
-        if (type == null) continue;
-
         onProvider(
           dep,
           accumulatedDependencyList,
           // We check overrides only for Widget instances, as we can't guarantee
           // that non-widget instances use a "ref" that's a child of the overrides.
-          checkOverrides: widgetType.isAssignableFromType(type),
+          checkOverrides: isWidget,
         );
       }
     }
@@ -133,6 +161,13 @@ class ProviderDependencies extends RiverpodLintRule {
       // Ignore ProviderScopes. We only check annotations
       if (list.overrides != null) return;
 
+      // If the State has an associated widget, we don't visit it.
+      // The widget will already visit the state.
+      if (list.node.safeCast<ClassDeclaration>()?.state?.findWidgetAst() !=
+          null) {
+        return;
+      }
+
       final usedDependencies = <GeneratorProviderDeclarationElement>{};
 
       final visitor = _FindNestedDependency(
@@ -159,18 +194,6 @@ class ProviderDependencies extends RiverpodLintRule {
       );
 
       list.node.accept(visitor);
-
-      final stateAst = list.node
-          .safeCast<ClassDeclaration>()
-          ?.widget
-          .safeCast<StatefulWidgetDeclaration>()
-          ?.findStateAst();
-
-      // If targeting a StatefulWidget, we also need to check the state class.
-      if (stateAst != null) {
-        // "visitChildren" to not context-switch on the AccumulatedDependencyList
-        stateAst.node.visitChildren(visitor);
-      }
 
       var unusedDependencies = list.allDependencies
           ?.map((e) => e.provider)
@@ -224,15 +247,24 @@ class _ProviderDependenciesFix extends RiverpodFix {
         ? null
         : '[${scopedDependencies.map((e) => e.name).join(', ')}]';
 
+    final riverpodAnnotation = data.list.riverpod?.annotation;
+    final dependencies = data.list.dependencies;
+
     if (newDependencies == null) {
+      if (riverpodAnnotation == null && dependencies == null) {
+        // No annotation found, so we can't fix anything.
+        // This shouldn't happen but prevents errors in case of bad states.
+        return;
+      }
+
       final changeBuilder = reporter.createChangeBuilder(
         message: 'Remove "dependencies"',
         priority: _fixDependenciesPriority,
       );
       changeBuilder.addDartFileEdit((builder) {
-        if (data.list.riverpod?.annotation case final riverpod?) {
+        if (riverpodAnnotation case final riverpod?) {
           _riverpodRemoveDependencies(builder, riverpod);
-        } else {
+        } else if (dependencies != null) {
           builder.addDeletion(data.list.dependencies!.node.sourceRange);
         }
       });
@@ -244,6 +276,12 @@ class _ProviderDependenciesFix extends RiverpodFix {
         data.list.dependencies?.dependencies;
 
     if (dependencyList == null) {
+      if (riverpodAnnotation == null && dependencies == null) {
+        // No annotation found, so we can't fix anything.
+        // This shouldn't happen but prevents errors in case of bad states.
+        return;
+      }
+
       final changeBuilder = reporter.createChangeBuilder(
         message: 'Specify "dependencies"',
         priority: _fixDependenciesPriority,
@@ -251,7 +289,7 @@ class _ProviderDependenciesFix extends RiverpodFix {
       changeBuilder.addDartFileEdit((builder) {
         if (data.list.riverpod?.annotation case final riverpod?) {
           _riverpodSpecifyDependencies(builder, riverpod, newDependencies);
-        } else {
+        } else if (dependencies != null) {
           builder.addSimpleInsertion(
             data.list.node.offset,
             '@Dependencies($newDependencies)\n',

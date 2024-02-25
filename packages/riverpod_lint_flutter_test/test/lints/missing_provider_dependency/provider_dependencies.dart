@@ -216,7 +216,6 @@ class NotFoundWidget extends ConsumerStatefulWidget {
   _NotFoundWidgetState createState() => _NotFoundWidgetState();
 }
 
-// expect_lint: provider_dependencies
 class _NotFoundWidgetState extends ConsumerState<ConsumerStatefulWidget> {
   @override
   Widget build(BuildContext context) {

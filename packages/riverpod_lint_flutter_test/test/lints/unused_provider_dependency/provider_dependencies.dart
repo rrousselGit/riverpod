@@ -87,7 +87,8 @@ class StateNotFound extends ConsumerStatefulWidget {
   }
 }
 
-class StateNotFoundState extends ConsumerState<StateNotFound> {
+// Hijack generic too to prevent finding the state from the State<T>.
+class StateNotFoundState extends ConsumerState<ConsumerStatefulWidget> {
   @override
   Widget build(BuildContext context) {
     ref.watch(depProvider);

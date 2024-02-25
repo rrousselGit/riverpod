@@ -66,6 +66,10 @@ const statefulHookType = TypeChecker.fromName(
   packageName: 'hooks_riverpod',
 );
 
+bool isState(DartType type) {
+  return stateType.isExactlyType(type) || consumerStateType.isExactlyType(type);
+}
+
 bool isStatelessWidget(DartType type) {
   return statelessWidgetType.isExactlyType(type) ||
       consumerWidgetType.isExactlyType(type) ||

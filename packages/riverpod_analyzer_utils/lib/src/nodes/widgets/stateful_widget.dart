@@ -1,6 +1,13 @@
 part of '../../nodes.dart';
 
-ClassElement? _findState(ClassElement node) {
+bool _isCoreType(DartType type) {
+  return isFromFlutter.isExactlyType(type) ||
+      isFromFlutterRiverpod.isExactlyType(type) ||
+      isFromRiverpod.isExactlyType(type) ||
+      isFromHooksRiverpod.isExactlyType(type);
+}
+
+ClassElement? _findStateFromReturnType(ClassElement node) {
   final type =
       node.methods.firstWhereOrNull((e) => e.name == 'createState')?.returnType;
 
@@ -8,14 +15,24 @@ ClassElement? _findState(ClassElement node) {
 
   // May be typed as `MyState createState()` or `State<MyWidget> createState()`.
   // The latter prevents from finding the state class.
-  if (isFromFlutter.isExactlyType(type) ||
-      isFromFlutterRiverpod.isExactlyType(type) ||
-      isFromRiverpod.isExactlyType(type) ||
-      isFromHooksRiverpod.isExactlyType(type)) {
-    return null;
-  }
+  if (_isCoreType(type)) return null;
 
   return type.element.cast<ClassElement>();
+}
+
+ClassElement? _findStateWithMatchingGeneric(ClassElement node) {
+  for (final clazz in node.enclosingElement.classes) {
+    final type = clazz.supertype;
+    if (type != null && isState(type) && _findStateWidget(clazz) == node) {
+      return clazz;
+    }
+  }
+
+  return null;
+}
+
+ClassElement? _findState(ClassElement node) {
+  return _findStateFromReturnType(node) ?? _findStateWithMatchingGeneric(node);
 }
 
 final class StatefulWidgetDeclaration extends WidgetDeclaration {
@@ -61,7 +78,7 @@ final class StatefulWidgetDeclaration extends WidgetDeclaration {
 
 final class StatefulWidgetDeclarationElement extends WidgetDeclarationElement {
   StatefulWidgetDeclarationElement({
-    required this.node,
+    required this.element,
     required this.dependencies,
   });
 
@@ -72,13 +89,13 @@ final class StatefulWidgetDeclarationElement extends WidgetDeclarationElement {
       final dependencies = DependenciesAnnotationElement._of(node);
 
       return StatefulWidgetDeclarationElement(
-        node: node,
+        element: node,
         dependencies: dependencies,
       );
     });
   }
 
-  final ClassElement node;
+  final ClassElement element;
   @override
   final DependenciesAnnotationElement? dependencies;
 }
