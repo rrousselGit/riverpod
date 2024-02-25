@@ -3,5 +3,7 @@ targets:
     builders:
       riverpod_generator:
         options:
+          provider_name_prefix: 'my'
+          provider_family_name_prefix: 'myFamily'
           provider_name_suffix: 'Pod'
           provider_family_name_suffix: 'ProviderFamily'

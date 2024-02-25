@@ -14,6 +14,8 @@
     }
   )
   ```
+
+- Adds `provider_name_prefix` and `provider_family_name_prefix` to `build.yaml`. (thanks to @ValentinVignal)
 - Generated providers are now always `const`.
 - Added support for abstract `build` method on Notifiers:
   ```dart

@@ -41,6 +41,7 @@ String metaAnnotations(NodeList<Annotation> metadata) {
   return buffer.toString();
 }
 
+const _defaultProviderNamePrefix = '';
 const _defaultProviderNameSuffix = 'Provider';
 
 /// May be thrown by generators during [Generator.generate].
@@ -119,6 +120,10 @@ class _RiverpodGeneratorVisitor {
 
   final StringBuffer buffer;
   final BuildYamlOptions options;
+
+  String get prefix => options.providerNamePrefix ?? _defaultProviderNamePrefix;
+
+  String get familyPrefix => options.providerFamilyNamePrefix ?? prefix;
 
   String get suffix => options.providerNameSuffix ?? _defaultProviderNameSuffix;
 
@@ -213,11 +218,16 @@ class _RiverpodGeneratorVisitor {
 
 extension ProviderElementNames on GeneratorProviderDeclarationElement {
   String providerName(BuildYamlOptions options) {
-    final suffix = isFamily
-        ? options.providerFamilyNameSuffix
-        : options.providerNameSuffix;
+    final prefix = (isFamily
+            ? options.providerFamilyNamePrefix
+            : options.providerNamePrefix) ??
+        _defaultProviderNamePrefix;
+    final suffix = (isFamily
+            ? options.providerFamilyNameSuffix
+            : options.providerNameSuffix) ??
+        _defaultProviderNameSuffix;
 
-    return '${name.lowerFirst}${suffix ?? 'Provider'}';
+    return '$prefix${prefix.isEmpty ? name.lowerFirst : name.titled}$suffix';
   }
 
   String get providerTypeName => '${name.titled}Provider';

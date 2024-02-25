@@ -9,7 +9,7 @@ part of 'main.dart';
 typedef CountRef = Ref<int>;
 
 @ProviderFor(count)
-const countPod = CountProvider._();
+const myCountPod = CountProvider._();
 
 final class CountProvider extends $FunctionalProvider<int, int, CountRef>
     with $Provider<int, CountRef> {
@@ -21,7 +21,7 @@ final class CountProvider extends $FunctionalProvider<int, int, CountRef>
         super(
           from: null,
           argument: null,
-          name: r'countPod',
+          name: r'myCountPod',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
@@ -68,7 +68,7 @@ String _$countHash() => r'4c7e72b275767a60ece5e8662ab1e28f73cf7e44';
 typedef CountFutureRef = Ref<AsyncValue<int>>;
 
 @ProviderFor(countFuture)
-const countFuturePod = CountFutureProvider._();
+const myCountFuturePod = CountFutureProvider._();
 
 final class CountFutureProvider
     extends $FunctionalProvider<AsyncValue<int>, FutureOr<int>, CountFutureRef>
@@ -81,7 +81,7 @@ final class CountFutureProvider
         super(
           from: null,
           argument: null,
-          name: r'countFuturePod',
+          name: r'myCountFuturePod',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
@@ -120,7 +120,7 @@ String _$countFutureHash() => r'ec7cc31ce1c1a10607f1dcb35dd217acd2877729';
 typedef CountStreamRef = Ref<AsyncValue<int>>;
 
 @ProviderFor(countStream)
-const countStreamPod = CountStreamProvider._();
+const myCountStreamPod = CountStreamProvider._();
 
 final class CountStreamProvider
     extends $FunctionalProvider<AsyncValue<int>, Stream<int>, CountStreamRef>
@@ -133,7 +133,7 @@ final class CountStreamProvider
         super(
           from: null,
           argument: null,
-          name: r'countStreamPod',
+          name: r'myCountStreamPod',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
@@ -170,7 +170,7 @@ final class CountStreamProvider
 String _$countStreamHash() => r'1dbe49244ea19e8dbc3af0534429bb323720c07a';
 
 @ProviderFor(CountNotifier)
-const countNotifierPod = CountNotifierProvider._();
+const myCountNotifierPod = CountNotifierProvider._();
 
 final class CountNotifierProvider
     extends $NotifierProvider<CountNotifier, int> {
@@ -180,7 +180,7 @@ final class CountNotifierProvider
         super(
           from: null,
           argument: null,
-          name: r'countNotifierPod',
+          name: r'myCountNotifierPod',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
@@ -239,7 +239,7 @@ abstract class _$CountNotifier extends $Notifier<int> {
 }
 
 @ProviderFor(CountAsyncNotifier)
-const countAsyncNotifierPod = CountAsyncNotifierProvider._();
+const myCountAsyncNotifierPod = CountAsyncNotifierProvider._();
 
 final class CountAsyncNotifierProvider
     extends $AsyncNotifierProvider<CountAsyncNotifier, int> {
@@ -249,7 +249,7 @@ final class CountAsyncNotifierProvider
         super(
           from: null,
           argument: null,
-          name: r'countAsyncNotifierPod',
+          name: r'myCountAsyncNotifierPod',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
@@ -301,7 +301,7 @@ abstract class _$CountAsyncNotifier extends $AsyncNotifier<int> {
 }
 
 @ProviderFor(CountStreamNotifier)
-const countStreamNotifierPod = CountStreamNotifierProvider._();
+const myCountStreamNotifierPod = CountStreamNotifierProvider._();
 
 final class CountStreamNotifierProvider
     extends $StreamNotifierProvider<CountStreamNotifier, int> {
@@ -311,7 +311,7 @@ final class CountStreamNotifierProvider
         super(
           from: null,
           argument: null,
-          name: r'countStreamNotifierPod',
+          name: r'myCountStreamNotifierPod',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
@@ -365,7 +365,7 @@ abstract class _$CountStreamNotifier extends $StreamNotifier<int> {
 typedef Count2Ref = Ref<int>;
 
 @ProviderFor(count2)
-const count2ProviderFamily = Count2Family._();
+const myFamilyCount2ProviderFamily = Count2Family._();
 
 final class Count2Provider extends $FunctionalProvider<int, int, Count2Ref>
     with $Provider<int, Count2Ref> {
@@ -378,7 +378,7 @@ final class Count2Provider extends $FunctionalProvider<int, int, Count2Ref>
       )? create})
       : _createCb = create,
         super(
-          name: r'count2ProviderFamily',
+          name: r'myFamilyCount2ProviderFamily',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
@@ -394,7 +394,7 @@ final class Count2Provider extends $FunctionalProvider<int, int, Count2Ref>
 
   @override
   String toString() {
-    return r'count2ProviderFamily'
+    return r'myFamilyCount2ProviderFamily'
         ''
         '($argument)';
   }
@@ -454,7 +454,7 @@ String _$count2Hash() => r'6256825480d83bb13acde282cf3c9d9524cc3a6c';
 final class Count2Family extends Family {
   const Count2Family._()
       : super(
-          name: r'count2ProviderFamily',
+          name: r'myFamilyCount2ProviderFamily',
           dependencies: null,
           allTransitiveDependencies: null,
           isAutoDispose: true,
@@ -469,7 +469,7 @@ final class Count2Family extends Family {
   String debugGetCreateSourceHash() => _$count2Hash();
 
   @override
-  String toString() => r'count2ProviderFamily';
+  String toString() => r'myFamilyCount2ProviderFamily';
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
@@ -496,7 +496,7 @@ final class Count2Family extends Family {
 typedef CountFuture2Ref = Ref<AsyncValue<int>>;
 
 @ProviderFor(countFuture2)
-const countFuture2ProviderFamily = CountFuture2Family._();
+const myFamilyCountFuture2ProviderFamily = CountFuture2Family._();
 
 final class CountFuture2Provider
     extends $FunctionalProvider<AsyncValue<int>, FutureOr<int>, CountFuture2Ref>
@@ -510,7 +510,7 @@ final class CountFuture2Provider
       )? create})
       : _createCb = create,
         super(
-          name: r'countFuture2ProviderFamily',
+          name: r'myFamilyCountFuture2ProviderFamily',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
@@ -526,7 +526,7 @@ final class CountFuture2Provider
 
   @override
   String toString() {
-    return r'countFuture2ProviderFamily'
+    return r'myFamilyCountFuture2ProviderFamily'
         ''
         '($argument)';
   }
@@ -578,7 +578,7 @@ String _$countFuture2Hash() => r'096675b70a267f5d7c62ac7d3e7dd231ef529034';
 final class CountFuture2Family extends Family {
   const CountFuture2Family._()
       : super(
-          name: r'countFuture2ProviderFamily',
+          name: r'myFamilyCountFuture2ProviderFamily',
           dependencies: null,
           allTransitiveDependencies: null,
           isAutoDispose: true,
@@ -593,7 +593,7 @@ final class CountFuture2Family extends Family {
   String debugGetCreateSourceHash() => _$countFuture2Hash();
 
   @override
-  String toString() => r'countFuture2ProviderFamily';
+  String toString() => r'myFamilyCountFuture2ProviderFamily';
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
@@ -620,7 +620,7 @@ final class CountFuture2Family extends Family {
 typedef CountStream2Ref = Ref<AsyncValue<int>>;
 
 @ProviderFor(countStream2)
-const countStream2ProviderFamily = CountStream2Family._();
+const myFamilyCountStream2ProviderFamily = CountStream2Family._();
 
 final class CountStream2Provider
     extends $FunctionalProvider<AsyncValue<int>, Stream<int>, CountStream2Ref>
@@ -634,7 +634,7 @@ final class CountStream2Provider
       )? create})
       : _createCb = create,
         super(
-          name: r'countStream2ProviderFamily',
+          name: r'myFamilyCountStream2ProviderFamily',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
@@ -650,7 +650,7 @@ final class CountStream2Provider
 
   @override
   String toString() {
-    return r'countStream2ProviderFamily'
+    return r'myFamilyCountStream2ProviderFamily'
         ''
         '($argument)';
   }
@@ -702,7 +702,7 @@ String _$countStream2Hash() => r'051264dd685ebc0a57e454bb676957c93cb4ae20';
 final class CountStream2Family extends Family {
   const CountStream2Family._()
       : super(
-          name: r'countStream2ProviderFamily',
+          name: r'myFamilyCountStream2ProviderFamily',
           dependencies: null,
           allTransitiveDependencies: null,
           isAutoDispose: true,
@@ -717,7 +717,7 @@ final class CountStream2Family extends Family {
   String debugGetCreateSourceHash() => _$countStream2Hash();
 
   @override
-  String toString() => r'countStream2ProviderFamily';
+  String toString() => r'myFamilyCountStream2ProviderFamily';
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
@@ -742,7 +742,7 @@ final class CountStream2Family extends Family {
 }
 
 @ProviderFor(CountNotifier2)
-const countNotifier2ProviderFamily = CountNotifier2Family._();
+const myFamilyCountNotifier2ProviderFamily = CountNotifier2Family._();
 
 final class CountNotifier2Provider
     extends $NotifierProvider<CountNotifier2, int> {
@@ -753,7 +753,7 @@ final class CountNotifier2Provider
       CountNotifier2 Function()? create})
       : _createCb = create,
         super(
-          name: r'countNotifier2ProviderFamily',
+          name: r'myFamilyCountNotifier2ProviderFamily',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
@@ -766,7 +766,7 @@ final class CountNotifier2Provider
 
   @override
   String toString() {
-    return r'countNotifier2ProviderFamily'
+    return r'myFamilyCountNotifier2ProviderFamily'
         ''
         '($argument)';
   }
@@ -830,7 +830,7 @@ String _$countNotifier2Hash() => r'ef12bb4f94add336804ae43bcdbcd8e9b0bec420';
 final class CountNotifier2Family extends Family {
   const CountNotifier2Family._()
       : super(
-          name: r'countNotifier2ProviderFamily',
+          name: r'myFamilyCountNotifier2ProviderFamily',
           dependencies: null,
           allTransitiveDependencies: null,
           isAutoDispose: true,
@@ -845,7 +845,7 @@ final class CountNotifier2Family extends Family {
   String debugGetCreateSourceHash() => _$countNotifier2Hash();
 
   @override
-  String toString() => r'countNotifier2ProviderFamily';
+  String toString() => r'myFamilyCountNotifier2ProviderFamily';
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
@@ -901,7 +901,7 @@ abstract class _$CountNotifier2 extends $Notifier<int> {
 }
 
 @ProviderFor(CountAsyncNotifier2)
-const countAsyncNotifier2ProviderFamily = CountAsyncNotifier2Family._();
+const myFamilyCountAsyncNotifier2ProviderFamily = CountAsyncNotifier2Family._();
 
 final class CountAsyncNotifier2Provider
     extends $AsyncNotifierProvider<CountAsyncNotifier2, int> {
@@ -912,7 +912,7 @@ final class CountAsyncNotifier2Provider
       CountAsyncNotifier2 Function()? create})
       : _createCb = create,
         super(
-          name: r'countAsyncNotifier2ProviderFamily',
+          name: r'myFamilyCountAsyncNotifier2ProviderFamily',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
@@ -925,7 +925,7 @@ final class CountAsyncNotifier2Provider
 
   @override
   String toString() {
-    return r'countAsyncNotifier2ProviderFamily'
+    return r'myFamilyCountAsyncNotifier2ProviderFamily'
         ''
         '($argument)';
   }
@@ -982,7 +982,7 @@ String _$countAsyncNotifier2Hash() =>
 final class CountAsyncNotifier2Family extends Family {
   const CountAsyncNotifier2Family._()
       : super(
-          name: r'countAsyncNotifier2ProviderFamily',
+          name: r'myFamilyCountAsyncNotifier2ProviderFamily',
           dependencies: null,
           allTransitiveDependencies: null,
           isAutoDispose: true,
@@ -997,7 +997,7 @@ final class CountAsyncNotifier2Family extends Family {
   String debugGetCreateSourceHash() => _$countAsyncNotifier2Hash();
 
   @override
-  String toString() => r'countAsyncNotifier2ProviderFamily';
+  String toString() => r'myFamilyCountAsyncNotifier2ProviderFamily';
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
@@ -1056,7 +1056,8 @@ abstract class _$CountAsyncNotifier2 extends $AsyncNotifier<int> {
 }
 
 @ProviderFor(CountStreamNotifier2)
-const countStreamNotifier2ProviderFamily = CountStreamNotifier2Family._();
+const myFamilyCountStreamNotifier2ProviderFamily =
+    CountStreamNotifier2Family._();
 
 final class CountStreamNotifier2Provider
     extends $StreamNotifierProvider<CountStreamNotifier2, int> {
@@ -1067,7 +1068,7 @@ final class CountStreamNotifier2Provider
       CountStreamNotifier2 Function()? create})
       : _createCb = create,
         super(
-          name: r'countStreamNotifier2ProviderFamily',
+          name: r'myFamilyCountStreamNotifier2ProviderFamily',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
@@ -1080,7 +1081,7 @@ final class CountStreamNotifier2Provider
 
   @override
   String toString() {
-    return r'countStreamNotifier2ProviderFamily'
+    return r'myFamilyCountStreamNotifier2ProviderFamily'
         ''
         '($argument)';
   }
@@ -1137,7 +1138,7 @@ String _$countStreamNotifier2Hash() =>
 final class CountStreamNotifier2Family extends Family {
   const CountStreamNotifier2Family._()
       : super(
-          name: r'countStreamNotifier2ProviderFamily',
+          name: r'myFamilyCountStreamNotifier2ProviderFamily',
           dependencies: null,
           allTransitiveDependencies: null,
           isAutoDispose: true,
@@ -1152,7 +1153,7 @@ final class CountStreamNotifier2Family extends Family {
   String debugGetCreateSourceHash() => _$countStreamNotifier2Hash();
 
   @override
-  String toString() => r'countStreamNotifier2ProviderFamily';
+  String toString() => r'myFamilyCountStreamNotifier2ProviderFamily';
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
