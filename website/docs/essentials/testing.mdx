@@ -1,6 +1,6 @@
 ---
 title: Testing your providers
-version: 1
+version: 2
 ---
 
 import { AutoSnippet, When } from "/src/components/CodeSnippet";
@@ -15,6 +15,7 @@ import autoDisposeListen from "!!raw-loader!./testing/auto_dispose_listen.dart";
 import listenProvider from "!!raw-loader!./testing/listen_provider.dart";
 import awaitFuture from "!!raw-loader!./testing/await_future.dart";
 import notifierMock from "./testing/notifier_mock";
+import notifierUsage from "!!raw-loader!./testing/notifier_usage.dart";
 
 A core part of the Riverpod API is the ability to test your providers in isolation.
 
@@ -135,7 +136,9 @@ One way to do so is to read the `.future` of a provider:
 
 ## Mocking Notifiers
 
-It is generally discouraged to mock Notifiers.  
+It is generally discouraged to mock Notifiers. This is because Notifiers cannot be
+instantiated on their own, and only work when used as part of a Provider.
+
 Instead, you should likely introduce a level of abstraction in the logic of your
 Notifier, such that you can mock that abstraction.
 For instance, rather than mocking a Notifier, you could mock a "repository"
@@ -161,3 +164,7 @@ For this to work, your mock will have to be placed in the same file as the
 Notifier you are mocking. Otherwise you would not have access to the `_$MyNotifier` class.
 
 </When>
+
+Then, to use your notifier you could do:
+
+<AutoSnippet raw={notifierUsage} />
