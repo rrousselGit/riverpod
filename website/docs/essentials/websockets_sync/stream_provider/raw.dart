@@ -22,7 +22,7 @@ class Consumer extends ConsumerWidget {
     // We can use the AsyncValue to handle loading/error states and show the data.
     return switch (value) {
       AsyncValue(:final error?) => Text('Error: $error'),
-      AsyncValue(:final valueOrNull?) => Text('$valueOrNull'),
+      AsyncValue(:final value?) => Text('$value'),
       _ => const CircularProgressIndicator(),
     };
   }

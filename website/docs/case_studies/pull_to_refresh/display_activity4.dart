@@ -21,8 +21,7 @@ class ActivityView extends ConsumerWidget {
             switch (activity) {
               // If some data is available, we display it.
               // Note that data will still be available during a refresh.
-              AsyncValue<Activity>(:final valueOrNull?) =>
-                Text(valueOrNull.activity),
+              AsyncValue<Activity>(:final value?) => Text(value.activity),
               // An error is available, so we render it.
               AsyncValue(:final error?) => Text('Error: $error'),
               // No data/error, so we're in loading state.

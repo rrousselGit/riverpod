@@ -105,7 +105,7 @@ class PackageDetailPage extends ConsumerWidget {
         ref.watch(fetchPackageDetailsProvider(packageName: packageName));
 
     final likedPackages = ref.watch(likedPackagesProvider);
-    final isLiked = likedPackages.valueOrNull?.contains(packageName) ?? false;
+    final isLiked = likedPackages.value?.contains(packageName) ?? false;
 
     final metrics = ref.watch(packageMetricsProvider(packageName: packageName));
 
