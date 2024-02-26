@@ -22,6 +22,18 @@ void depFamilyFn() {}
 
 ```
 ---
+Message: `Remove "dependencies"`
+Priority: 100
+Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:40`:
+```
+
+// expect_lint: provider_dependencies
+- @Dependencies([dep])
++ 
+class UnusedDepWidget extends ConsumerWidget {
+  const UnusedDepWidget({super.key});
+```
+---
 Message: `Specify "dependencies"`
 Priority: 100
 Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:77`:

@@ -30,6 +30,21 @@ void depFamilyFn() {}
 
 code: provider_dependencies
 severity: Severity.warning
+message: Unused dependencies: dep
+test/lints/provider_dependencies/missing_dependencies.dart:40:15
+
+```dart
+
+// expect_lint: provider_dependencies
+@Dependencies(>>>[dep]<<<)
+class UnusedDepWidget extends ConsumerWidget {
+  const UnusedDepWidget({super.key});
+```
+
+=======
+
+code: provider_dependencies
+severity: Severity.warning
 contextMessages:
   message: dep
   test/lints/provider_dependencies/missing_dependencies.dart:79:13
