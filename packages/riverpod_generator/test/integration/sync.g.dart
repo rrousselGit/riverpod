@@ -401,7 +401,7 @@ final class GenericClassProvider<T extends num>
   }
 }
 
-String _$genericClassHash() => r'671e348a5abf8e00ab06c5f247defbca8af9677b';
+String _$genericClassHash() => r'42ec5a5635796c0d597f0c9dac28ec2f61a486ff';
 
 final class GenericClassFamily extends Family {
   const GenericClassFamily._()
@@ -1751,7 +1751,7 @@ final class PublicClassProvider extends $NotifierProvider<PublicClass, String> {
       $NotifierProviderElement(this, container);
 }
 
-String _$publicClassHash() => r'c8e7eec9e202acf8394e02496857cbe49405bf62';
+String _$publicClassHash() => r'd261f9eb927ca71440a5e1bdb24558c25fae4833';
 
 abstract class _$PublicClass extends $Notifier<String> {
   String build();
@@ -1820,7 +1820,7 @@ final class _PrivateClassProvider
       $NotifierProviderElement(this, container);
 }
 
-String _$privateClassHash() => r'6d41def3ffdc1f79e593beaefb3304ce4b211a77';
+String _$privateClassHash() => r'796e16abb79d7ad77728f9288d24566e429643f2';
 
 abstract class _$PrivateClass extends $Notifier<String> {
   String build();
@@ -1934,7 +1934,7 @@ final class FamilyClassProvider extends $NotifierProvider<FamilyClass, String> {
   }
 }
 
-String _$familyClassHash() => r'01e3b9cb4d6d0bf12a2284761b1a11819d97d249';
+String _$familyClassHash() => r'ac5aba6b9cbee66236d6e1fa3d18b9b6ffb2c5f1';
 
 /// This is some documentation
 final class FamilyClassFamily extends Family {
@@ -2484,7 +2484,7 @@ final class Supports$InClassNameProvider<And$InT>
 }
 
 String _$supports$InClassNameHash() =>
-    r'9eeab74a85af26136dd698df79669df4cec4c42b';
+    r'848e57774639582ed170dce5765340e1c1cb89b3';
 
 final class Supports$InClassNameFamily extends Family {
   const Supports$InClassNameFamily._()
