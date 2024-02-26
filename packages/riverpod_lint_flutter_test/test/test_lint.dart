@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:analyzer_plugin/protocol/protocol_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:test/test.dart';
 import 'package:path/path.dart';
@@ -50,6 +51,31 @@ void testLint(
         fixesGoldenPath,
         source: result.content,
         sourcePath: sourcePath.path,
+      ),
+    );
+  });
+}
+
+@isTest
+void testGolden(
+  String description,
+  String file,
+  Future<Iterable<PrioritizedSourceChange>> Function(ResolvedUnitResult)
+      testRun, {
+  required String sourcePath,
+}) {
+  assert(sourcePath.endsWith('.dart'));
+  test(description, () async {
+    final absoluteSourcePath = File(normalize(sourcePath)).absolute;
+    final result = await resolveFile2(path: absoluteSourcePath.path);
+    result as ResolvedUnitResult;
+
+    expect(
+      await testRun(result),
+      matchesPrioritizedSourceChangesGolden(
+        file,
+        source: result.content,
+        sourcePath: sourcePath,
       ),
     );
   });
