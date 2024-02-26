@@ -23,7 +23,8 @@ extension on RiverpodAnalysisResult {
 }
 
 void main() {
-  testSource('Decode watch expressions with syntax errors', source: '''
+  testSource('Decode watch expressions with syntax errors',
+      timeout: const Timeout.factor(4), source: '''
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
@@ -60,7 +61,8 @@ class Example extends ConsumerWidget {
     expect(result.widgetRefWatchInvocations.single.listenable.provider, isNull);
   });
 
-  testSource('Decodes ..watch', runGenerator: true, source: r'''
+  testSource('Decodes ..watch',
+      timeout: const Timeout.factor(4), runGenerator: true, source: r'''
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -173,7 +175,8 @@ class MyWidget extends ConsumerWidget {
     );
   });
 
-  testSource('Decodes simple ref.watch usages', runGenerator: true, source: r'''
+  testSource('Decodes simple ref.watch usages',
+      timeout: const Timeout.factor(4), runGenerator: true, source: r'''
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -297,7 +300,8 @@ void fn(_Ref ref) {
     );
   });
 
-  testSource('Decodes unknown ref usages', source: '''
+  testSource('Decodes unknown ref usages',
+      timeout: const Timeout.factor(4), source: '''
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -339,7 +343,8 @@ void fn(WidgetRef ref) {
     );
   });
 
-  testSource('Decodes ref.listen usages', runGenerator: true, source: '''
+  testSource('Decodes ref.listen usages',
+      timeout: const Timeout.factor(4), runGenerator: true, source: '''
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -379,7 +384,8 @@ class MyWidget extends ConsumerWidget {
     );
   });
 
-  testSource('Decodes ref.listenManual usages', runGenerator: true, source: '''
+  testSource('Decodes ref.listenManual usages',
+      timeout: const Timeout.factor(4), runGenerator: true, source: '''
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -464,7 +470,8 @@ class MyWidget extends ConsumerWidget {
     );
   });
 
-  testSource('Decodes ref.read usages', runGenerator: true, source: '''
+  testSource('Decodes ref.read usages',
+      timeout: const Timeout.factor(4), runGenerator: true, source: '''
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -513,7 +520,8 @@ class MyWidget extends ConsumerWidget {
     );
   });
 
-  testSource('Decodes family ref.watch usages', runGenerator: true, source: r'''
+  testSource('Decodes family ref.watch usages',
+      timeout: const Timeout.factor(4), runGenerator: true, source: r'''
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -645,7 +653,7 @@ void fn(_Ref ref) {
   });
 
   testSource('Decodes provider.query ref.watch usages',
-      runGenerator: true, source: r'''
+      timeout: const Timeout.factor(4), runGenerator: true, source: r'''
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
