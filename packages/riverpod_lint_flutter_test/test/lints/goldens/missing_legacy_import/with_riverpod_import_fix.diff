@@ -1,0 +1,11 @@
+Message: `Import "package:flutter_riverpod/legacy.dart"`
+Priority: 100
+Diff for file `test/lints/missing_legacy_import/with_riverpod_import.dart:1`:
+```
+- import 'package:riverpod/legacy.dart';
++ import 'package:flutter_riverpod/legacy.dart';
++ import 'package:riverpod/legacy.dart';
+
+// ignore_for_file: undefined_function, undefined_identifier
+```
+---

@@ -25,6 +25,11 @@ dev_dependencies:
   test: ^1.24.9
   flutter_test:
     sdk: flutter
+  glob: ^2.1.2
+  analyzer: ^6.0.0
+  path: ^1.9.0
+  source_span: ^1.10.0
+  analyzer_plugin: ^0.11.3
 
 dependency_overrides:
   riverpod_generator:

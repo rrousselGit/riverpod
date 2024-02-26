@@ -6,7 +6,7 @@ import 'package:riverpod_lint/src/assists/convert_to_widget_utils.dart';
 import 'package:riverpod_lint/src/riverpod_custom_lint.dart';
 import 'package:test/test.dart';
 
-import '../../golden.dart';
+import '../../test_lint.dart';
 
 void main() {
   final pubspecWithDependencies = Pubspec(
@@ -37,7 +37,7 @@ void main() {
           targetWidget: targetWidget,
         ),
         'Convert widgets to ${targetWidget.name}s with hooks_riverpod and flutter_hooks dependency',
-        'assists/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.diff',
+        'test/assists/goldens/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.diff',
         pubspecWithDependencies,
         expectedChangeCount,
       );
@@ -64,7 +64,7 @@ void main() {
           targetWidget: targetWidget,
         ),
         'Convert widgets to ${targetWidget.name}s with hooks_riverpod and flutter_hooks dependency',
-        'assists/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.diff',
+        'test/assists/goldens/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.diff',
         pubspecWithDependencies,
         expectedChangeCount,
       );
@@ -94,12 +94,12 @@ void main() {
       switch (targetWidget) {
         case StatelessBaseWidgetType.hookWidget:
         case StatelessBaseWidgetType.hookConsumerWidget:
-          goldenFilePath = 'assists/empty.diff';
+          goldenFilePath = 'test/assists/goldens/empty.diff';
           break;
         case StatelessBaseWidgetType.consumerWidget:
         case StatelessBaseWidgetType.statelessWidget:
           goldenFilePath =
-              'assists/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.diff';
+              'test/assists/goldens/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.diff';
           break;
       }
 
@@ -134,12 +134,12 @@ void main() {
       switch (targetWidget) {
         case StatefulBaseWidgetType.statefulHookWidget:
         case StatefulBaseWidgetType.statefulHookConsumerWidget:
-          goldenFilePath = 'assists/empty.diff';
+          goldenFilePath = 'test/assists/goldens/empty.diff';
           break;
         case StatefulBaseWidgetType.consumerStatefulWidget:
         case StatefulBaseWidgetType.statefulWidget:
           goldenFilePath =
-              'assists/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.diff';
+              'test/assists/goldens/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.diff';
           break;
       }
 
@@ -235,7 +235,10 @@ void _runGoldenTest(
             pubspec: pubspec),
       ];
 
-      expect(changes, hasLength(expectedChangeCount));
+      expect(
+        changes,
+        hasLength(expectedChangeCount),
+      );
 
       return changes;
     },

@@ -96,7 +96,7 @@ class NotifierExtends extends RiverpodLintRule {
   }
 
   @override
-  List<Fix> getFixes() => [NotifierExtendsFix()];
+  List<DartFix> getFixes() => [NotifierExtendsFix()];
 }
 
 class NotifierExtendsFix extends RiverpodFix {

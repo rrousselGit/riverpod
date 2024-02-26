@@ -2,6 +2,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'common.g.dart';
 
 final client = Provider((ref) => Dio());
 
@@ -9,12 +12,15 @@ final client = Provider((ref) => Dio());
 ///
 /// This is unimplemented by default, and will be overridden inside [MaterialApp]
 /// with the current theme obtained using a [BuildContext].
-final themeProvider = Provider<ThemeData>(
-  (ref) => throw UnimplementedError(),
+@Riverpod(
   // Specifying an empty "dependencies" signals riverpod_lint that this provider
-  // is scoped.
-  dependencies: const [],
-);
+  // is scoped. This enables catching places where we need to override
+  // this provider.
+  dependencies: [],
+)
+ThemeData theme(ThemeRef ref) {
+  throw UnimplementedError();
+}
 
 class TimestampParser implements JsonConverter<DateTime, int> {
   const TimestampParser();

@@ -62,6 +62,9 @@ abstract class RiverpodLintRule extends DartLintRule with _ParseRiverpod {
     await _setupRiverpod(resolver, context);
     await super.startUp(resolver, context);
   }
+
+  @override
+  List<DartFix> getFixes() => [];
 }
 
 abstract class RiverpodFix extends DartFix with _ParseRiverpod {

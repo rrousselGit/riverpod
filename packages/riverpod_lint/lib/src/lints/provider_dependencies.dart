@@ -16,7 +16,7 @@ class _LocatedProvider {
   _LocatedProvider(this.provider, this.node);
 
   final ProviderDeclarationElement provider;
-  final Location node;
+  final AstNode node;
 }
 
 class _MyDiagnostic implements DiagnosticMessage {
@@ -63,12 +63,18 @@ class _FindNestedDependency extends RecursiveRiverpodAstVisitor {
   _FindNestedDependency copyWith({
     AccumulatedDependencyList? accumulatedDependencyList,
     bool? visitStates,
+    void Function(AccumulatedDependencyList child)? parentAddChild,
   }) {
     return _FindNestedDependency(
       accumulatedDependencyList ?? this.accumulatedDependencyList,
       onProvider: onProvider,
       visitStates: visitStates ?? this.visitStates,
     );
+  }
+
+  @override
+  void visitComment(Comment node) {
+    // Identifiers in comments shouldn't count.
   }
 
   @override
@@ -107,7 +113,7 @@ class _FindNestedDependency extends RecursiveRiverpodAstVisitor {
     super.visitProviderIdentifier(node);
 
     onProvider(
-      _LocatedProvider(node.providerElement, LocationNode(node.node)),
+      _LocatedProvider(node.providerElement, node.node),
       accumulatedDependencyList,
       checkOverrides: false,
     );
@@ -116,7 +122,9 @@ class _FindNestedDependency extends RecursiveRiverpodAstVisitor {
   @override
   void visitAccumulatedDependencyList(AccumulatedDependencyList node) {
     node.node.visitChildren(
-      copyWith(accumulatedDependencyList: node),
+      copyWith(
+        accumulatedDependencyList: node,
+      ),
     );
   }
 
@@ -124,10 +132,12 @@ class _FindNestedDependency extends RecursiveRiverpodAstVisitor {
   void visitIdentifierDependencies(IdentifierDependencies node) {
     super.visitIdentifierDependencies(node);
 
+    if (_isSelfReference(node.dependencies)) return;
+
     if (node.dependencies.dependencies case final deps?) {
       for (final dep in deps) {
         onProvider(
-          _LocatedProvider(dep, LocationNode(node.node)),
+          _LocatedProvider(dep, node.node),
           accumulatedDependencyList,
           checkOverrides: false,
         );
@@ -135,9 +145,17 @@ class _FindNestedDependency extends RecursiveRiverpodAstVisitor {
     }
   }
 
+  /// If an object references itself, so we don't count those dependencies
+  /// as "used".
+  bool _isSelfReference(DependenciesAnnotationElement node) {
+    return node == accumulatedDependencyList.dependencies?.element;
+  }
+
   @override
   void visitNamedTypeDependencies(NamedTypeDependencies node) {
     super.visitNamedTypeDependencies(node);
+
+    if (_isSelfReference(node.dependencies)) return;
 
     final type = node.node.type;
     if (type == null) return;
@@ -146,7 +164,7 @@ class _FindNestedDependency extends RecursiveRiverpodAstVisitor {
     if (node.dependencies.dependencies case final deps?) {
       for (final dep in deps) {
         onProvider(
-          _LocatedProvider(dep, LocationNode(node.node)),
+          _LocatedProvider(dep, node.node),
           accumulatedDependencyList,
           // We check overrides only for Widget instances, as we can't guarantee
           // that non-widget instances use a "ref" that's a child of the overrides.
@@ -209,18 +227,12 @@ class ProviderDependencies extends RiverpodLintRule {
           final provider = locatedProvider.provider;
           if (provider is! GeneratorProviderDeclarationElement) return;
           if (!provider.isScoped) return;
+
           // Check if the provider is overridden. If it is, the provider doesn't
           // count towards the unused/missing dependencies
-          if (checkOverrides) {
-            for (final override in list.overridesIncludingParents) {
-              // If we are overriding only one part of a family,
-              // we can't guarantee that later reads will point to the override.
-              if (override.familyArguments != null) continue;
-
-              if (override.provider?.providerElement == provider) {
-                return;
-              }
-            }
+          if (checkOverrides &&
+              list.isSafelyAccessibleAfterOverrides(provider)) {
+            return;
           }
 
           usedDependencies.add(locatedProvider);
@@ -260,30 +272,24 @@ class ProviderDependencies extends RiverpodLintRule {
         message.writeAll(missingDependencies.map((e) => e.provider.name), ', ');
       }
 
+      late final unit = list.node.thisOrAncestorOfType<CompilationUnit>();
+      late final source = unit?.declaredElement?.source;
+
       reporter.reportErrorForNode(
         _code,
         list.target,
         [message.toString()],
         [
           for (final dependency in missingDependencies)
-            if (dependency.provider.element.source case final source?)
+            if (source != null)
               _MyDiagnostic(
                 message: dependency.provider.name,
                 filePath: source.fullName,
-                offset: switch (dependency.node) {
-                  LocationNode(:final node) => node.offset,
-                  LocationElement(:final element) => element.nameOffset,
-                },
-                length: switch (dependency.node) {
-                  LocationNode(:final node) => node.length,
-                  LocationElement(:final element) => element.nameLength,
-                },
+                offset: dependency.node.offset,
+                length: dependency.node.length,
               ),
         ],
-        _Data(
-          usedDependencies: usedDependencies,
-          list: list,
-        ),
+        _Data(usedDependencies: usedDependencies, list: list),
       );
     });
   }
