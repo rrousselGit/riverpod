@@ -1,3 +1,9 @@
+## Unreleased build
+
+- **Breaking** `AsyncValue.value` now returns `null` during errors.
+- **Breaking** removed `AsyncValue.valueOrNull` (use `.value` instead).
+- Updated `AsyncValue` documentations to use pattern matching.
+
 ## 3.0.0-dev.3 - 2023-11-27
 
 - Fix "pending timer" issue inside tests when using `ref.keepAlive()`.

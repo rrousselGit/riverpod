@@ -40,10 +40,8 @@ extension AsyncTransition<T> on ProviderElementBase<AsyncValue<T>> {
 /// By using [AsyncValue], you are guaranteed that you cannot forget to
 /// handle the loading/error state of an asynchronous operation.
 ///
-/// It also exposes some utilities to nicely convert an [AsyncValue] to
-/// a different object.
-/// For example, a Flutter Widget may use [when] to convert an [AsyncValue]
-/// into either a progress indicator, an error screen, or to show the data:
+/// [AsyncValue] is a sealed class, and is designed to be used with
+/// pattern matching to handle the different states:
 ///
 /// ```dart
 /// /// A provider that asynchronously exposes the current user
@@ -56,29 +54,30 @@ extension AsyncTransition<T> on ProviderElementBase<AsyncValue<T>> {
 ///   Widget build(BuildContext context, WidgetRef ref) {
 ///     final AsyncValue<User> user = ref.watch(userProvider);
 ///
-///     return user.when(
-///       loading: () => CircularProgressIndicator(),
-///       error: (error, stack) => Text('Oops, something unexpected happened'),
-///       data: (user) => Text('Hello ${user.name}'),
+///     return switch (user) {
+///       AsyncValue(hasError: true) => Text('Oops, something unexpected happened'),
+///       AsyncValue(:final value, hasValue: true) => Text('Hello ${value.name}'),
+///       _ => CircularProgressIndicator(),
 ///     );
 ///   }
 /// }
 /// ```
 ///
 /// If a consumer of an [AsyncValue] does not care about the loading/error
-/// state, consider using [value]/[valueOrNull] to read the state:
+/// state, consider using [requireValue] to read the state:
 ///
 /// ```dart
 /// Widget build(BuildContext context, WidgetRef ref) {
-///   // Reading .value will be throw during error and return null on "loading" states.
-///   final User user = ref.watch(userProvider).value;
-///
-///   // Reading .value will be throw both on loading and error states.
-///   final User user2 = ref.watch(userProvider).requiredValue;
+///   // Reading .requiredValue will be throw both on loading and error states.
+///   final User user = ref.watch(userProvider).requiredValue;
 ///
 ///   ...
 /// }
 /// ```
+///
+/// By using [requireValue], we get an immediate access to the value. At the same
+/// time, if we made a mistake and the value is not available, we will get an
+/// exception. This is a good thing because it will help us to spot problem.
 ///
 /// See also:
 ///
@@ -90,14 +89,14 @@ extension AsyncTransition<T> on ProviderElementBase<AsyncValue<T>> {
 sealed class AsyncValue<T> {
   const AsyncValue._();
 
-  /// {@template asyncvalue.data}
+  /// {@template async_value.data}
   /// Creates an [AsyncValue] with a data.
   /// {@endtemplate}
   // coverage:ignore-start
   const factory AsyncValue.data(T value) = AsyncData<T>;
   // coverage:ignore-end
 
-  /// {@template asyncvalue.loading}
+  /// {@template async_value.loading}
   /// Creates an [AsyncValue] in loading state.
   ///
   /// Prefer always using this constructor with the `const` keyword.
@@ -106,7 +105,7 @@ sealed class AsyncValue<T> {
   const factory AsyncValue.loading() = AsyncLoading<T>;
   // coverage:ignore-end
 
-  /// {@template asyncvalue.error_ctor}
+  /// {@template async_value.error_ctor}
   /// Creates an [AsyncValue] in the error state.
   ///
   /// _I don't have a [StackTrace], what can I do?_
@@ -204,18 +203,15 @@ sealed class AsyncValue<T> {
 
   /// The value currently exposed.
   ///
-  /// It will return the previous value during loading/error state.
-  /// If there is no previous value, reading [value] during loading state will
-  /// return null. While during error state, the error will be rethrown instead.
+  /// If currently in error/loading state, will return the previous value.
+  /// If there is no previous value available, `null` will be returned.
   ///
   /// If you do not want to return previous value during loading/error states,
-  /// consider using [unwrapPrevious] with [valueOrNull]:
+  /// consider using [unwrapPrevious]:
   ///
   /// ```dart
-  /// ref.watch(provider).unwrapPrevious().valueOrNull;
+  /// ref.watch(provider).unwrapPrevious().value;
   /// ```
-  ///
-  /// This will return null during loading/error states.
   T? get value;
 
   /// The [error].
@@ -294,7 +290,7 @@ sealed class AsyncValue<T> {
         other.hasValue == hasValue &&
         other.error == error &&
         other.stackTrace == stackTrace &&
-        other.valueOrNull == valueOrNull;
+        other.value == value;
   }
 
   @override
@@ -302,15 +298,15 @@ sealed class AsyncValue<T> {
         runtimeType,
         isLoading,
         hasValue,
-        valueOrNull,
+        value,
         error,
         stackTrace,
       );
 }
 
-/// {@macro asyncvalue.data}
+/// {@macro async_value.data}
 final class AsyncData<T> extends AsyncValue<T> {
-  /// {@macro asyncvalue.data}
+  /// {@macro async_value.data}
   const AsyncData(T value)
       : this._(
           value,
@@ -374,9 +370,9 @@ final class AsyncData<T> extends AsyncValue<T> {
   }
 }
 
-/// {@macro asyncvalue.loading}
+/// {@macro async_value.loading}
 final class AsyncLoading<T> extends AsyncValue<T> {
-  /// {@macro asyncvalue.loading}
+  /// {@macro async_value.loading}
   const AsyncLoading()
       : hasValue = false,
         value = null,
@@ -445,7 +441,7 @@ final class AsyncLoading<T> extends AsyncValue<T> {
         error: (e) => AsyncError._(
           e.error,
           isLoading: true,
-          value: e.valueOrNull,
+          value: e.value,
           stackTrace: e.stackTrace,
           hasValue: e.hasValue,
         ),
@@ -455,13 +451,13 @@ final class AsyncLoading<T> extends AsyncValue<T> {
       return previous.map(
         data: (d) => AsyncLoading._(
           hasValue: true,
-          value: d.valueOrNull,
+          value: d.value,
           error: d.error,
           stackTrace: d.stackTrace,
         ),
         error: (e) => AsyncLoading._(
           hasValue: e.hasValue,
-          value: e.valueOrNull,
+          value: e.value,
           error: e.error,
           stackTrace: e.stackTrace,
         ),
@@ -471,9 +467,9 @@ final class AsyncLoading<T> extends AsyncValue<T> {
   }
 }
 
-/// {@macro asyncvalue.error_ctor}
+/// {@macro async_value.error_ctor}
 final class AsyncError<T> extends AsyncValue<T> {
-  /// {@macro asyncvalue.error_ctor}
+  /// {@macro async_value.error_ctor}
   const AsyncError(Object error, StackTrace stackTrace)
       : this._(
           error,
@@ -486,11 +482,10 @@ final class AsyncError<T> extends AsyncValue<T> {
   const AsyncError._(
     this.error, {
     required this.stackTrace,
-    required T? value,
+    required this.value,
     required this.hasValue,
     required this.isLoading,
-  })  : _value = value,
-        super._();
+  }) : super._();
 
   @override
   String get _displayString => 'AsyncError';
@@ -501,15 +496,8 @@ final class AsyncError<T> extends AsyncValue<T> {
   @override
   final bool hasValue;
 
-  final T? _value;
-
   @override
-  T? get value {
-    if (!hasValue) {
-      throwErrorWithCombinedStackTrace(error, stackTrace);
-    }
-    return _value;
-  }
+  final T? value;
 
   @override
   final Object error;
@@ -524,7 +512,7 @@ final class AsyncError<T> extends AsyncValue<T> {
       error,
       stackTrace: stackTrace,
       isLoading: isLoading,
-      value: _value as R?,
+      value: value as R?,
       hasValue: hasValue,
     );
   }
@@ -547,7 +535,7 @@ final class AsyncError<T> extends AsyncValue<T> {
       error,
       stackTrace: stackTrace,
       isLoading: isLoading,
-      value: previous.valueOrNull,
+      value: previous.value,
       hasValue: previous.hasValue,
     );
   }
@@ -569,23 +557,6 @@ extension AsyncValueX<T> on AsyncValue<T> {
     throw StateError(
       'Tried to call `requireValue` on an `AsyncValue` that has no value: $this',
     );
-  }
-
-  /// Return the value or previous value if in loading/error state.
-  ///
-  /// If there is no previous value, null will be returned during loading/error state.
-  ///
-  /// This is different from [value], which will rethrow the error instead of returning null.
-  ///
-  /// If you do not want to return previous value during loading/error states,
-  /// consider using [unwrapPrevious] :
-  ///
-  /// ```dart
-  /// ref.watch(provider).unwrapPrevious()?.valueOrNull;
-  /// ```
-  T? get valueOrNull {
-    if (hasValue) return value;
-    return null;
   }
 
   /// Whether the associated provider was forced to recompute even though
@@ -682,7 +653,7 @@ extension AsyncValueX<T> on AsyncValue<T> {
   ///
   /// If [AsyncValue] was in a case that is not handled, will return [orElse].
   ///
-  /// {@macro asyncvalue.skip_flags}
+  /// {@macro async_value.skip_flags}
   R maybeWhen<R>({
     bool skipLoadingOnReload = false,
     bool skipLoadingOnRefresh = true,
@@ -706,7 +677,7 @@ extension AsyncValueX<T> on AsyncValue<T> {
   ///
   /// All cases are required, which allows returning a non-nullable value.
   ///
-  /// {@template asyncvalue.skip_flags}
+  /// {@template async_value.skip_flags}
   /// By default, [when] skips "loading" states if triggered by a [Ref.refresh]
   /// or [Ref.invalidate] (but does not skip loading states if triggered by [Ref.watch]).
   ///
@@ -761,7 +732,7 @@ extension AsyncValueX<T> on AsyncValue<T> {
   /// Returns null if [AsyncValue] was in a state that was not handled.
   /// This is similar to [maybeWhen] where `orElse` returns null.
   ///
-  /// {@macro asyncvalue.skip_flags}
+  /// {@macro async_value.skip_flags}
   R? whenOrNull<R>({
     bool skipLoadingOnReload = false,
     bool skipLoadingOnRefresh = true,

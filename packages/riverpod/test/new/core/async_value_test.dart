@@ -202,7 +202,7 @@ void main() {
           expect(value.isLoading, true);
           expect(value.isRefreshing, true);
           expect(value.hasValue, false);
-          expect(() => value.value, throwsA('err'));
+          expect(value.value, null);
           expect(value.error, 'err');
           expect(value.stackTrace, StackTrace.empty);
         });
@@ -1504,8 +1504,8 @@ void main() {
       null,
     );
     expect(
-      () => const AsyncError<int>('err', StackTrace.empty).value,
-      throwsA('err'),
+      const AsyncError<int>('err', StackTrace.empty).value,
+      null,
     );
 
     expect(
@@ -1516,28 +1516,6 @@ void main() {
     );
     expect(
       const AsyncLoading<int>().copyWithPrevious(const AsyncData(42)).value,
-      42,
-    );
-  });
-
-  test('AsyncValue.valueOrNull', () {
-    expect(const AsyncValue.data(42).valueOrNull, 42);
-    expect(
-      const AsyncLoading<int>().valueOrNull,
-      null,
-    );
-    expect(const AsyncError<int>('err', StackTrace.empty).valueOrNull, null);
-
-    expect(
-      const AsyncError<int>('err', StackTrace.empty)
-          .copyWithPrevious(const AsyncData(42))
-          .valueOrNull,
-      42,
-    );
-    expect(
-      const AsyncLoading<int>()
-          .copyWithPrevious(const AsyncData(42))
-          .valueOrNull,
       42,
     );
   });
