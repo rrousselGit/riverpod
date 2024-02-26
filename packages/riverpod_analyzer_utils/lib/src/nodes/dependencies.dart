@@ -245,12 +245,38 @@ final class AccumulatedDependencyList {
         .followedBy(dependenciesElementValues ?? const []);
   }
 
-  Iterable<ProviderOverrideExpression> get overridesIncludingParents sync* {
+  Iterable<ProviderOverrideExpression> get _overridesIncludingParents sync* {
     if (overrides?.overrides?.overrides case final overrides?) {
       yield* overrides;
     }
 
-    if (parent case final parent?) yield* parent.overridesIncludingParents;
+    if (parent case final parent?) yield* parent._overridesIncludingParents;
+  }
+
+  late final Set<ProviderDeclarationElement> _allOverrides =
+      _overridesIncludingParents
+          // If we are overriding only one part of a family,
+          // we can't guarantee that later reads will point to the override.
+          // So we ignore those overrides when considering if a provider is
+          // safe to use.
+          .where((e) => e.familyArguments == null)
+          .map((e) => e.provider?.providerElement)
+          .whereNotNull()
+          .toSet();
+
+  bool isSafelyAccessibleAfterOverrides(
+    GeneratorProviderDeclarationElement provider,
+  ) {
+    final dependencies = provider.annotation.dependencies;
+    if (dependencies == null) return true;
+
+    if (_allOverrides.contains(provider)) return true;
+
+    // If the provider has an empty list of dependencies, and it is not overridden,
+    // then it is not safe to use.
+    if (dependencies.isEmpty) return false;
+
+    return dependencies.every(isSafelyAccessibleAfterOverrides);
   }
 }
 

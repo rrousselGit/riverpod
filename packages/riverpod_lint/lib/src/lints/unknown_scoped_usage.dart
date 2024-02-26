@@ -25,6 +25,9 @@ class UnknownScopedUsage extends RiverpodLintRule {
     CustomLintContext context,
   ) {
     riverpodRegistry(context).addProviderIdentifier((identifier) {
+      // Ignore [provider] identifiers in comments.
+      if (identifier.node.parent is CommentReference) return;
+
       final providerElement = identifier.providerElement;
       if (providerElement is! GeneratorProviderDeclarationElement) return;
       if (!providerElement.isScoped) return;

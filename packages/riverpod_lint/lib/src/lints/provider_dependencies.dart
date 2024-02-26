@@ -72,6 +72,11 @@ class _FindNestedDependency extends RecursiveRiverpodAstVisitor {
   }
 
   @override
+  void visitComment(Comment node) {
+    // Identifiers in comments shouldn't count.
+  }
+
+  @override
   void visitWidgetDeclaration(WidgetDeclaration node) {
     super.visitWidgetDeclaration(node);
 
@@ -209,18 +214,12 @@ class ProviderDependencies extends RiverpodLintRule {
           final provider = locatedProvider.provider;
           if (provider is! GeneratorProviderDeclarationElement) return;
           if (!provider.isScoped) return;
+
           // Check if the provider is overridden. If it is, the provider doesn't
           // count towards the unused/missing dependencies
-          if (checkOverrides) {
-            for (final override in list.overridesIncludingParents) {
-              // If we are overriding only one part of a family,
-              // we can't guarantee that later reads will point to the override.
-              if (override.familyArguments != null) continue;
-
-              if (override.provider?.providerElement == provider) {
-                return;
-              }
-            }
+          if (checkOverrides &&
+              list.isSafelyAccessibleAfterOverrides(provider)) {
+            return;
           }
 
           usedDependencies.add(locatedProvider);
