@@ -15,7 +15,7 @@ export 'package:riverpod/src/internals.dart'
         $FamilyOverride,
         $FunctionalProvider,
         $FutureModifier,
-        $ClassBase,
+        NotifierBase,
         $AsyncClassModifier,
         $ClassProvider,
         Ref,

@@ -10,7 +10,7 @@ part 'notifier/family.dart';
 
 /// A base class for [$Notifier].
 /// Not meant for public consumption.
-abstract class $Notifier<StateT> extends $ClassBase<StateT, StateT> {
+abstract class $Notifier<StateT> extends NotifierBase<StateT, StateT> {
   /// The value currently exposed by this [Notifier].
   ///
   /// If used inside [Notifier.build], may throw if the notifier is not yet initialized.

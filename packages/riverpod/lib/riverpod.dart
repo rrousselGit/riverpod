@@ -33,7 +33,6 @@ export 'src/framework.dart'
         ProviderElementBase,
         ClassBaseX,
         CancelAsyncSubscription,
-        $ClassBase,
         FutureModifierElement,
         RunNotifierBuild,
         $FunctionalProvider,

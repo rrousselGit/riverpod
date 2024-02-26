@@ -30,10 +30,32 @@ typedef RunNotifierBuild< //
         RefT extends Ref<Object?>>
     = CreatedT Function(RefT ref, NotifierT notifier);
 
-/// Implementation detail of `riverpod_generator`.
-/// Do not use.
-abstract class $ClassBase<StateT, CreatedT> {
-  ClassProviderElement<$ClassBase<StateT, CreatedT>, StateT, CreatedT>?
+/// A base class for all "notifiers".
+///
+/// - [StateT] is the type of [state].
+/// - [CreatedT] is the type of the value returned by the notifier's `build` method.
+///
+/// This is a good interface to target for writing mixins for Notifiers.
+///
+/// To perform logic before/after the `build` method of a notifier, you can override
+/// [runBuild]:
+///
+/// ```dart
+/// mixin MyMixin<T> extends NotifierBase<T, FutureOr<T>> {
+///   @override
+///   FutureOr<User> runBuild() {
+///     // It is safe to use "ref" here.
+///     ref.listenSelf((prev, next) => print("New state $next"));
+///
+///     // Before
+///     final result = super.runBuild();
+///     // After
+///     return result;
+///   }
+/// }
+/// ```
+abstract class NotifierBase<StateT, CreatedT> {
+  ClassProviderElement<NotifierBase<StateT, CreatedT>, StateT, CreatedT>?
       _element;
 
   // TODO docs
@@ -64,7 +86,6 @@ abstract class $ClassBase<StateT, CreatedT> {
     element.state = newState;
   }
 
-  @internal
   CreatedT runBuild();
 
   @visibleForOverriding
@@ -72,15 +93,15 @@ abstract class $ClassBase<StateT, CreatedT> {
 }
 
 @internal
-extension ClassBaseX<StateT, CreatedT> on $ClassBase<StateT, CreatedT> {
-  ClassProviderElement<$ClassBase<StateT, CreatedT>, StateT, CreatedT>?
+extension ClassBaseX<StateT, CreatedT> on NotifierBase<StateT, CreatedT> {
+  ClassProviderElement<NotifierBase<StateT, CreatedT>, StateT, CreatedT>?
       get element => _element;
 }
 
 /// Implementation detail of `riverpod_generator`.
 /// Do not use.
 abstract base class $ClassProvider< //
-    NotifierT extends $ClassBase< //
+    NotifierT extends NotifierBase< //
         StateT,
         CreatedT>,
     StateT,
@@ -151,7 +172,7 @@ abstract base class $ClassProvider< //
 
 @internal
 abstract class ClassProviderElement< //
-        NotifierT extends $ClassBase< //
+        NotifierT extends NotifierBase< //
             StateT,
             CreatedT>,
         StateT,

@@ -22,7 +22,8 @@ List<T> complexGeneric<T extends num, Foo extends String?>(
 }
 
 @riverpod
-class GenericClass<T extends num> extends _$GenericClass<T> {
+class GenericClass<T extends num> extends _$GenericClass<T>
+    with MyMixin<List<T>, List<T>> {
   @override
   List<T> build() {
     return <T>[];
@@ -112,9 +113,11 @@ String _private(_PrivateRef ref) {
   return 'Hello world';
 }
 
+mixin MyMixin<A, B> on r.NotifierBase<A, B> {}
+
 /// This is some documentation
 @riverpod
-class PublicClass extends _$PublicClass {
+class PublicClass extends _$PublicClass with MyMixin<String, String> {
   PublicClass([this.param]);
 
   final Object? param;
@@ -128,7 +131,7 @@ class PublicClass extends _$PublicClass {
 const privateClassProvider = _privateClassProvider;
 
 @riverpod
-class _PrivateClass extends _$PrivateClass {
+class _PrivateClass extends _$PrivateClass with MyMixin<String, String> {
   @override
   String build() {
     return 'Hello world';
@@ -137,7 +140,7 @@ class _PrivateClass extends _$PrivateClass {
 
 /// This is some documentation
 @riverpod
-class FamilyClass extends _$FamilyClass {
+class FamilyClass extends _$FamilyClass with MyMixin<String, String> {
   FamilyClass([this.param]);
 
   final Object? param;
@@ -172,7 +175,8 @@ String supports$InFnNameFamily<And$InT>(
 }
 
 @riverpod
-class Supports$InClassName<And$InT> extends _$Supports$InClassName<And$InT> {
+class Supports$InClassName<And$InT> extends _$Supports$InClassName<And$InT>
+    with MyMixin<String, String> {
   @override
   String build() {
     return 'Hello world';

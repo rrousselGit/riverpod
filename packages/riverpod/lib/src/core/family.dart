@@ -146,7 +146,7 @@ class FunctionalFamily< //
 /// This API is not meant for public consumption.
 @internal
 class ClassFamily< //
-        NotifierT extends $ClassBase< //
+        NotifierT extends NotifierBase< //
             StateT,
             CreatedT>,
         StateT,

@@ -14,7 +14,7 @@ part 'stream_notifier/orphan.dart';
 
 /// Implementation detail of `riverpod_generator`.
 /// Do not use.
-abstract class $StreamNotifier<StateT> extends $ClassBase< //
+abstract class $StreamNotifier<StateT> extends NotifierBase< //
         AsyncValue<StateT>,
         Stream<StateT>> //
     with
