@@ -63,6 +63,7 @@ class _FindNestedDependency extends RecursiveRiverpodAstVisitor {
   _FindNestedDependency copyWith({
     AccumulatedDependencyList? accumulatedDependencyList,
     bool? visitStates,
+    void Function(AccumulatedDependencyList child)? parentAddChild,
   }) {
     return _FindNestedDependency(
       accumulatedDependencyList ?? this.accumulatedDependencyList,
@@ -121,13 +122,17 @@ class _FindNestedDependency extends RecursiveRiverpodAstVisitor {
   @override
   void visitAccumulatedDependencyList(AccumulatedDependencyList node) {
     node.node.visitChildren(
-      copyWith(accumulatedDependencyList: node),
+      copyWith(
+        accumulatedDependencyList: node,
+      ),
     );
   }
 
   @override
   void visitIdentifierDependencies(IdentifierDependencies node) {
     super.visitIdentifierDependencies(node);
+
+    if (_isSelfReference(node.dependencies)) return;
 
     if (node.dependencies.dependencies case final deps?) {
       for (final dep in deps) {
@@ -140,9 +145,17 @@ class _FindNestedDependency extends RecursiveRiverpodAstVisitor {
     }
   }
 
+  /// If an object references itself, so we don't count those dependencies
+  /// as "used".
+  bool _isSelfReference(DependenciesAnnotationElement node) {
+    return node == accumulatedDependencyList.dependencies?.element;
+  }
+
   @override
   void visitNamedTypeDependencies(NamedTypeDependencies node) {
     super.visitNamedTypeDependencies(node);
+
+    if (_isSelfReference(node.dependencies)) return;
 
     final type = node.node.type;
     if (type == null) return;
