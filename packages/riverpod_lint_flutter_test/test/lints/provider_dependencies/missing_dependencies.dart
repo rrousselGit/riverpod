@@ -7,6 +7,9 @@ part 'missing_dependencies.g.dart';
 @Riverpod(dependencies: [])
 int dep(DepRef ref) => 0;
 
+@Riverpod(dependencies: [dep])
+int transitiveDep(TransitiveDepRef ref) => ref.watch(depProvider);
+
 @Riverpod(dependencies: [])
 int dep2(Dep2Ref ref) => 0;
 
@@ -29,6 +32,29 @@ class DepWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     depFn();
+    return const Placeholder();
+  }
+}
+
+// expect_lint: provider_dependencies
+@Dependencies([dep])
+class UnusedDepWidget extends ConsumerWidget {
+  const UnusedDepWidget({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return const Placeholder();
+  }
+}
+
+@Dependencies([transitiveDep])
+class TransitiveDepWidget extends ConsumerWidget {
+  const TransitiveDepWidget({super.key, this.child});
+  final Widget? child;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(transitiveDepProvider);
     return const Placeholder();
   }
 }
@@ -153,6 +179,30 @@ class Scope4 extends ConsumerWidget {
   }
 }
 
+class OnlyNeedToOverrideProviderWithEmptyDependencies extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ProviderScope(
+      overrides: [
+        depProvider.overrideWithValue(42),
+      ],
+      child: TransitiveDepWidget(),
+    );
+  }
+}
+
+class CanOverrideTransitiveProviderDirectly extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ProviderScope(
+      overrides: [
+        transitiveDepProvider.overrideWithValue(42),
+      ],
+      child: TransitiveDepWidget(),
+    );
+  }
+}
+
 class SupportsMultipleScopes extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -223,3 +273,8 @@ class _NotFoundWidgetState extends ConsumerState<ConsumerStatefulWidget> {
     return const Placeholder();
   }
 }
+
+/// Random doc to test that identifiers in docs don't trigger the lint.
+/// [dep], [DepWidget], [depProvider]
+@Riverpod(dependencies: [])
+int providerWithDartDoc(ProviderWithDartDocRef ref) => 0;

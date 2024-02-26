@@ -65,6 +65,70 @@ final class DepProvider extends $FunctionalProvider<int, int, DepRef>
 
 String _$depHash() => r'749c4d696d29c72686cabcabd6fa7855f5cbf4db';
 
+typedef TransitiveDepRef = Ref<int>;
+
+@ProviderFor(transitiveDep)
+const transitiveDepProvider = TransitiveDepProvider._();
+
+final class TransitiveDepProvider
+    extends $FunctionalProvider<int, int, TransitiveDepRef>
+    with $Provider<int, TransitiveDepRef> {
+  const TransitiveDepProvider._(
+      {int Function(
+        TransitiveDepRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'transitiveDepProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[depProvider],
+          allTransitiveDependencies: const <ProviderOrFamily>[
+            TransitiveDepProvider.$allTransitiveDependencies0,
+          ],
+        );
+
+  static const $allTransitiveDependencies0 = depProvider;
+
+  final int Function(
+    TransitiveDepRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$transitiveDepHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  TransitiveDepProvider $copyWithCreate(
+    int Function(
+      TransitiveDepRef ref,
+    ) create,
+  ) {
+    return TransitiveDepProvider._(create: create);
+  }
+
+  @override
+  int create(TransitiveDepRef ref) {
+    final _$cb = _createCb ?? transitiveDep;
+    return _$cb(ref);
+  }
+}
+
+String _$transitiveDepHash() => r'3718ab2a36c91fb776740c6aeafc49db08bbffd5';
+
 typedef Dep2Ref = Ref<int>;
 
 @ProviderFor(dep2)
@@ -566,6 +630,75 @@ final class MultipleDepsProvider
 }
 
 String _$multipleDepsHash() => r'9d08791636a0435ba115062a453d0d9e530ecf71';
+
+/// Random doc to test that identifiers in docs don't trigger the lint.
+/// [dep], [DepWidget], [depProvider]
+typedef ProviderWithDartDocRef = Ref<int>;
+
+/// Random doc to test that identifiers in docs don't trigger the lint.
+/// [dep], [DepWidget], [depProvider]
+@ProviderFor(providerWithDartDoc)
+const providerWithDartDocProvider = ProviderWithDartDocProvider._();
+
+/// Random doc to test that identifiers in docs don't trigger the lint.
+/// [dep], [DepWidget], [depProvider]
+final class ProviderWithDartDocProvider
+    extends $FunctionalProvider<int, int, ProviderWithDartDocRef>
+    with $Provider<int, ProviderWithDartDocRef> {
+  /// Random doc to test that identifiers in docs don't trigger the lint.
+  /// [dep], [DepWidget], [depProvider]
+  const ProviderWithDartDocProvider._(
+      {int Function(
+        ProviderWithDartDocRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'providerWithDartDocProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[],
+          allTransitiveDependencies: const <ProviderOrFamily>[],
+        );
+
+  final int Function(
+    ProviderWithDartDocRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$providerWithDartDocHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement(ProviderContainer container) =>
+      $ProviderElement(this, container);
+
+  @override
+  ProviderWithDartDocProvider $copyWithCreate(
+    int Function(
+      ProviderWithDartDocRef ref,
+    ) create,
+  ) {
+    return ProviderWithDartDocProvider._(create: create);
+  }
+
+  @override
+  int create(ProviderWithDartDocRef ref) {
+    final _$cb = _createCb ?? providerWithDartDoc;
+    return _$cb(ref);
+  }
+}
+
+String _$providerWithDartDocHash() =>
+    r'6aeff1697c1ec37f475319a4100e01c0e56369ae';
 
 // ignore_for_file: type=lint
 // ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main
