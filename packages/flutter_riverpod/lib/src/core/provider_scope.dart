@@ -133,10 +133,23 @@ class ProviderScope extends StatefulWidget {
   /// The part of the widget tree that can use Riverpod and has overridden providers.
   final Widget child;
 
-  /// The listeners that subscribes to changes on providers stored on this [ProviderScope].
+  /// The listeners that subscribe to changes on providers stored on this [ProviderScope].
+  ///
+  /// See [ProviderObserver] for more information.
   final List<ProviderObserver>? observers;
 
   /// Information on how to override a provider/family.
+  ///
+  /// This can be used either for:
+  /// - testing, such as to mock a provider
+  /// - dependency injection, to avoid having to pass a value to many
+  ///   widgets in the widget tree.
+  /// - performance optimization: By using this to inject values to widgets
+  ///   using `ref` inside of their constructor, widgets may be able to use
+  ///   `const` constructors, which can improve performance.
+  ///
+  /// **Note**: Overrides only apply to this [ProviderScope] and its descendants.
+  /// Ancestors of this [ProviderScope] will not be affected by the overrides.
   final List<Override> overrides;
 
   @override
@@ -144,13 +157,11 @@ class ProviderScope extends StatefulWidget {
 }
 
 /// Do not use: The [State] of [ProviderScope]
-@visibleForTesting
 @sealed
 @internal
 class ProviderScopeState extends State<ProviderScope> {
   /// The [ProviderContainer] exposed to [ProviderScope.child].
   @visibleForTesting
-  // ignore: diagnostic_describe_all_properties
   late final ProviderContainer container;
   ProviderContainer? _debugParentOwner;
   var _dirty = false;
