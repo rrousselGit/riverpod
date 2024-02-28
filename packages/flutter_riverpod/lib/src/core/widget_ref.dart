@@ -3,6 +3,40 @@ part of '../core.dart';
 // TODO change this doc
 /// {@template flutter_riverpod.widget_ref}
 /// An object that allows widgets to interact with providers.
+///
+/// [WidgetRef]s are typically obtained by using [ConsumerWidget] or its variants:
+///
+/// ```dart
+/// class Example extends ConsumerWidget {
+///   @override
+///   Widget build(BuildContext context, WidgetRef ref) {
+///     // We now have a "ref"
+///   }
+/// }
+/// ```
+///
+/// Once we have a [WidgetRef], we can use its various methods to interact with
+/// providers.
+/// The most common use-case is to use [watch] inside the `build` method of our
+/// widgets. This will enable our UI to update whenever the state of a provider
+/// changes:
+///
+/// ```dart
+/// @override
+/// Widget build(BuildContext context, WidgetRef ref) {
+///   final count = ref.watch(counterProvider);
+///   // The text will automatically update whenever `counterProvider` emits a new value
+///   return Text('$count');
+/// }
+/// ```
+///
+/// **Note**:
+/// Using a [WidgetRef] is equivalent to writing UI logic.
+/// As such, [WidgetRef]s should not leave the widget layer. If you need to
+/// interact with providers outside of the widget layer, consider using
+/// a [Ref] instead.
+///
+///
 /// {@endtemplate}
 abstract class WidgetRef {
   /// The [BuildContext] of the widget associated to this [WidgetRef].
@@ -12,6 +46,66 @@ abstract class WidgetRef {
 
   /// Returns the value exposed by a provider and rebuild the widget when that
   /// value changes.
+  ///
+  /// This method should only be used at the "root" of the `build` method of a widget.
+  ///
+  /// **Good**: Use [watch] inside the `build` method.
+  /// ```dart
+  /// class Example extends ConsumerWidget {
+  ///   @override
+  ///   Widget build(BuildContext context, WidgetRef ref) {
+  ///     // Correct, we are inside the build method and at its root.
+  ///     final count = ref.watch(counterProvider);
+  ///   }
+  /// }
+  /// ```
+  /// **Good**: It is accepted to use [watch] at the root of "builders" too.
+  /// ```dart
+  /// class Example extends ConsumerWidget {
+  ///   @override
+  ///   Widget build(BuildContext context, WidgetRef ref) {
+  ///     return ListView.builder(
+  ///       itemBuilder: (context) {
+  ///          // This is accepted, as we are at the root of a "builder"
+  ///          final count = ref.watch(counterProvider);
+  ///       },
+  ///     );
+  ///   }
+  /// }
+  /// ```
+  ///
+  /// **Bad**: Don't use [watch] outside of the `build` method.
+  /// ```dart
+  /// class Example extends ConsumerStatefulWidget {
+  ///   @override
+  ///   ExampleState createState() => ExampleState();
+  /// }
+  ///
+  /// class ExampleState extends ConsumerState<Example> {
+  ///   @override
+  ///   void initState() {
+  ///     super.initState();
+  ///     // Incorrect, we are not inside the build method.
+  ///     final count = ref.watch(counterProvider);
+  ///   }
+  /// }
+  /// ```
+  ///
+  /// **Bad**: Don't use [watch] inside event handles withing `build` method.
+  /// ```dart
+  /// class Example extends ConsumerWidget {
+  ///   @override
+  ///   Widget build(BuildContext context, WidgetRef ref) {
+  ///     return ElevatedButton(
+  ///       onTap: () {
+  ///         // Incorrect, we are inside the build method, but neither at its
+  ///         // root, nor inside a "builder".
+  ///         final count = ref.watch(counterProvider);
+  ///       }
+  ///     );
+  ///   }
+  /// }
+  /// ```
   ///
   /// See also:
   ///
@@ -56,23 +150,75 @@ abstract class WidgetRef {
   /// Listen to a provider and call `listener` whenever its value changes,
   /// without having to take care of removing the listener.
   ///
-  /// The [listen] method should exclusively be used within the `build` method
-  /// of a widget:
+  /// The [listen] method should exclusively be used at the root of the `build`:
   ///
+  /// **Good**: Use [listen] inside the `build` method.
   /// ```dart
-  /// Consumer(
-  ///   builder: (context, ref, child) {
-  ///     ref.listen<int>(counterProvider, (prev, next) {
-  ///       print('counter changed $next');
-  ///     });
-  ///   },
-  /// )
+  /// class Example extends ConsumerWidget {
+  ///   @override
+  ///   Widget build(BuildContext context, WidgetRef ref) {
+  ///     // Correct, we are inside the build method and at its root.
+  ///     ref.listen(counterProvider, (prev, next) {});
+  ///   }
+  /// }
   /// ```
   ///
-  /// When used inside `build`, listeners will automatically be removed
-  /// if a widget rebuilds and stops listening to a provider.
+  /// **Bad**: Do not use [listen] inside builders.
+  /// ```dart
+  /// class Example extends ConsumerWidget {
+  ///   @override
+  ///   Widget build(BuildContext context, WidgetRef ref) {
+  ///     return ListView.builder(
+  ///       itemBuilder: (context) {
+  ///          // This is accepted, as we are at the root of a "builder"
+  ///          ref.listen(counterProvider, (prev, next) {});
+  ///       },
+  ///     );
+  ///   }
+  /// }
+  /// ```
   ///
-  /// For listening to a provider from outside `build`, consider using [listenManual] instead.
+  /// **Bad**: Don't use [listen] outside of the `build` method.
+  /// ```dart
+  /// class Example extends ConsumerStatefulWidget {
+  ///   @override
+  ///   ExampleState createState() => ExampleState();
+  /// }
+  ///
+  /// class ExampleState extends ConsumerState<Example> {
+  ///   @override
+  ///   void initState() {
+  ///     super.initState();
+  ///     // Incorrect, we are not inside the build method.
+  ///     ref.listen(counterProvider, (prev, next) {});
+  ///   }
+  /// }
+  /// ```
+  ///
+  /// **Bad**: Don't use [listen] inside event handles withing `build` method.
+  /// ```dart
+  /// class Example extends ConsumerWidget {
+  ///   @override
+  ///   Widget build(BuildContext context, WidgetRef ref) {
+  ///     return ElevatedButton(
+  ///       onTap: () {
+  ///         // Incorrect, we are inside the build method, but neither at its
+  ///         // root, nor inside a "builder".
+  ///         ref.listen(counterProvider, (prev, next) {});
+  ///       }
+  ///     );
+  ///   }
+  /// }
+  /// ```
+  ///
+  /// **Note**:
+  /// Listeners will automatically be removed if a widget rebuilds and stops
+  /// listening to a provider.
+  ///
+  /// See also:
+  /// - [listenManual], for listening to a provider from outside `build`.
+  /// - [watch], to listen to providers in a declarative manner.
+  /// - [read], to read a provider without listening to it.
   ///
   /// This is useful for showing modals or other imperative logic.
   void listen<T>(
@@ -150,7 +296,7 @@ abstract class WidgetRef {
   ///
   /// While the idea of not rebuilding the widget if unnecessary is good,
   /// this should not be done with [read].
-  /// Relying on [read] for optimisations is very brittle and dependent
+  /// Relying on [read] for optimizations is very brittle and dependent
   /// on an implementation detail.
   ///
   /// **CONSIDER** using [Provider] or `select` for filtering unwanted rebuilds:
@@ -173,13 +319,7 @@ abstract class WidgetRef {
 
   /// Forces a provider to re-evaluate its state immediately, and return the created value.
   ///
-  /// Writing:
-  ///
-  /// ```dart
-  /// final newValue = ref.refresh(provider);
-  /// ```
-  ///
-  /// is strictly identical to doing:
+  /// Using [refresh] is strictly identical to using [invalidate] followed by [read] :
   ///
   /// ```dart
   /// ref.invalidate(provider);
@@ -187,17 +327,16 @@ abstract class WidgetRef {
   /// ```
   ///
   /// If you do not care about the return value of [refresh], use [invalidate] instead.
-  /// Doing so has the benefit of:
+  /// Doing so has the benefits of:
   /// - making the invalidation logic more resilient by avoiding multiple
   ///   refreshes at once.
-  /// - possibly avoids recomputing a provider if it isn't
-  ///   needed immediately.
+  /// - possibly avoiding recomputing a provider if it isn't needed immediately.
   ///
   /// This method is useful for features like "pull to refresh" or "retry on error",
   /// to restart a specific provider.
   ///
   /// For example, a pull-to-refresh may be implemented by combining
-  /// [FutureProvider] and a `RefreshIndicator`:
+  /// [FutureProvider] and a [RefreshIndicator] :
   ///
   /// ```dart
   /// final productsProvider = FutureProvider((ref) async {

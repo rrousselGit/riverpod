@@ -157,9 +157,8 @@ class ProviderScope extends StatefulWidget {
 }
 
 /// Do not use: The [State] of [ProviderScope]
-@sealed
 @internal
-class ProviderScopeState extends State<ProviderScope> {
+final class ProviderScopeState extends State<ProviderScope> {
   /// The [ProviderContainer] exposed to [ProviderScope.child].
   @visibleForTesting
   late final ProviderContainer container;
@@ -260,10 +259,9 @@ class ProviderScopeState extends State<ProviderScope> {
 /// {@template riverpod.UncontrolledProviderScope}
 /// Expose a [ProviderContainer] to the widget tree.
 ///
-/// This is what makes `ref.watch(`/`Consumer`/`ref.read` work.
+/// This is what makes `ref.watch`/`Consumer`/`ref.read` work.
 /// {@endtemplate}
-@sealed
-class UncontrolledProviderScope extends InheritedWidget {
+final class UncontrolledProviderScope extends InheritedWidget {
   /// {@macro riverpod.UncontrolledProviderScope}
   const UncontrolledProviderScope({
     super.key,
