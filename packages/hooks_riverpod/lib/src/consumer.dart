@@ -5,7 +5,7 @@ import 'internals.dart';
 /// {@template hooks_riverpod.hook_consumer.hook_consumer_widget}
 /// A widget that can both use hooks and listen to providers.
 ///
-/// If you do not need hooks, you can use [Consumer].
+/// If you do not need hooks, you can use [ConsumerWidget] and its variants.
 /// {@endtemplate}
 abstract class HookConsumerWidget extends ConsumerWidget {
   /// {@macro hooks_riverpod.hook_consumer.hook_consumer_widget}
