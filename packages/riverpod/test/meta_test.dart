@@ -65,7 +65,6 @@ void main() {
       'AsyncNotifierProviderFamily',
       'FamilyAsyncNotifierProvider',
       'FutureProvider',
-      'FutureProviderRef',
       'FutureProviderFamily',
       'Notifier',
       'NotifierProvider',

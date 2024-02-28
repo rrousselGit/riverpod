@@ -11,55 +11,6 @@ import 'package:test/test.dart';
 import '../../utils.dart';
 
 void main() {
-  group('FutureProviderRef.future', () {
-    test('returns the pending future', () async {
-      final container = ProviderContainer.test();
-      Future<int>? future;
-      int? value;
-      final provider = FutureProvider<int>((ref) {
-        future = ref.future;
-        if (value == null) return ref.future;
-        return value;
-      });
-
-      container.read(provider);
-
-      expect(
-        future,
-        same(container.read(provider.future)),
-      );
-      expect(future, completion(42));
-
-      value = 42;
-      container.refresh(provider);
-
-      expect(
-        future,
-        same(container.read(provider.future)),
-      );
-      expect(future, completion(42));
-    });
-
-    test('flushes the provider when reading ref.future', () async {
-      final container = ProviderContainer.test();
-      var result = Future.value(42);
-      late FutureProviderRef<int> ref;
-      final provider = FutureProvider<int>((r) {
-        ref = r;
-        return result;
-      });
-
-      container.read(provider);
-
-      await expectLater(ref.future, completion(42));
-
-      result = Future.value(21);
-      container.invalidate(provider);
-
-      expect(ref.future, completion(21));
-    });
-  });
-
   test('Supports void type', () async {
     // Regression test for https://github.com/rrousselGit/riverpod/issues/2028
     final testProvider = FutureProvider<void>((ref) async {
@@ -79,9 +30,9 @@ void main() {
     final autoDispose = FutureProvider.autoDispose<int>((ref) => 0);
     final container = ProviderContainer.test(
       overrides: [
-        provider.overrideWith((FutureProviderRef<int> ref) => 42),
+        provider.overrideWith((Ref<AsyncValue<int>> ref) => 42),
         autoDispose.overrideWith(
-          (FutureProviderRef<int> ref) => 84,
+          (Ref<AsyncValue<int>> ref) => 84,
         ),
       ],
     );
@@ -136,10 +87,10 @@ void main() {
     final container = ProviderContainer.test(
       overrides: [
         family.overrideWith(
-          (FutureProviderRef<String> ref, int arg) => '42 $arg',
+          (Ref<AsyncValue<String>> ref, int arg) => '42 $arg',
         ),
         autoDisposeFamily.overrideWith(
-          (FutureProviderRef<String> ref, int arg) => '84 $arg',
+          (Ref<AsyncValue<String>> ref, int arg) => '84 $arg',
         ),
       ],
     );
@@ -290,7 +241,7 @@ void main() {
   test('can read and set current AsyncValue', () {
     final container = ProviderContainer.test();
     final listener = Listener<AsyncValue<int>>();
-    late FutureProviderRef<int> ref;
+    late Ref<AsyncValue<int>> ref;
     final provider = FutureProvider<int>((r) {
       ref = r;
       return 0;

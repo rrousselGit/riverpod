@@ -85,10 +85,10 @@ base mixin $FutureProvider<StateT, RefT> on ProviderBase<AsyncValue<StateT>> {
 /// - [FutureProvider.autoDispose], to destroy the state of a [FutureProvider] when no longer needed.
 /// {@endtemplate}
 final class FutureProvider<StateT> extends $FunctionalProvider<
-        AsyncValue<StateT>, FutureOr<StateT>, FutureProviderRef<StateT>>
+        AsyncValue<StateT>, FutureOr<StateT>, Ref<AsyncValue<StateT>>>
     with
         $FutureModifier<StateT>,
-        $FutureProvider<StateT, FutureProviderRef<StateT>>,
+        $FutureProvider<StateT, Ref<AsyncValue<StateT>>>,
         LegacyProviderMixin<AsyncValue<StateT>> {
   /// {@macro riverpod.future_provider}
   FutureProvider(
@@ -122,10 +122,10 @@ final class FutureProvider<StateT> extends $FunctionalProvider<
   static const family = FutureProviderFamilyBuilder();
 
   /// TODO add dartdoc on all create cbs.
-  final Create<FutureOr<StateT>, FutureProviderRef<StateT>> _create;
+  final Create<FutureOr<StateT>, Ref<AsyncValue<StateT>>> _create;
 
   @override
-  FutureOr<StateT> create(FutureProviderRef<StateT> ref) => this._create(ref);
+  FutureOr<StateT> create(Ref<AsyncValue<StateT>> ref) => this._create(ref);
 
   @internal
   @override
@@ -137,7 +137,7 @@ final class FutureProvider<StateT> extends $FunctionalProvider<
   @visibleForOverriding
   @override
   FutureProvider<StateT> $copyWithCreate(
-    Create<FutureOr<StateT>, FutureProviderRef<StateT>> create,
+    Create<FutureOr<StateT>, Ref<AsyncValue<StateT>>> create,
   ) {
     return FutureProvider<StateT>.internal(
       create,
@@ -151,35 +151,19 @@ final class FutureProvider<StateT> extends $FunctionalProvider<
   }
 }
 
-/// {@macro riverpod.provider_ref_base}
-abstract class FutureProviderRef<StateT> implements Ref<AsyncValue<StateT>> {
-  /// Obtains the [Future] associated to this provider.
-  ///
-  /// This is equivalent to doing `ref.read(myProvider.future)`.
-  /// See also [FutureProvider.future].
-  // TODO move to Ref
-  Future<StateT> get future;
-}
-
 /// The element of a [FutureProvider]
 /// Implementation detail of `riverpod_generator`. Do not use.
+// TODO changelog breaking: Removed FutureProviderRef. To migrate ref.future, use an AsyncNotifier and its .future
 @internal
 class $FutureProviderElement<StateT>
     extends ProviderElementBase<AsyncValue<StateT>>
-    with FutureModifierElement<StateT>
-    implements FutureProviderRef<StateT> {
+    with FutureModifierElement<StateT> {
   /// The element of a [FutureProvider]
   /// Implementation detail of `riverpod_generator`. Do not use.
   $FutureProviderElement(this.provider, super.container);
 
   @override
   final $FutureProvider<StateT, Ref<AsyncValue<StateT>>> provider;
-
-  @override
-  Future<StateT> get future {
-    flush();
-    return futureNotifier.value;
-  }
 
   @override
   void create({required bool didChangeDependency}) {
@@ -203,7 +187,7 @@ class $FutureProviderElement<StateT>
 
 /// The [Family] of a [FutureProvider]
 class FutureProviderFamily<StateT, ArgT> extends FunctionalFamily<
-    FutureProviderRef<StateT>,
+    Ref<AsyncValue<StateT>>,
     AsyncValue<StateT>,
     ArgT,
     FutureOr<StateT>,
