@@ -45,8 +45,6 @@ void main() {
       'AsyncData',
       'AsyncLoading',
       'AsyncError',
-      // TODO remove
-      'AsyncValueX',
       // TODO rename
       'ProviderBase',
       'NotifierBase',
