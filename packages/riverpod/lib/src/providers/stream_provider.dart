@@ -12,6 +12,7 @@ import 'provider.dart' show Provider;
 
 /// Implementation detail of `riverpod_generator`.
 /// Do not use, as this may be removed at any time.
+@internal
 base mixin $StreamProvider<StateT, RefT> on ProviderBase<AsyncValue<StateT>> {
   Stream<StateT> create(RefT ref);
 }
@@ -142,6 +143,7 @@ base class StreamProvider<StateT> extends $FunctionalProvider<
 }
 
 /// The element of [StreamProvider].
+@internal
 class $StreamProviderElement<StateT>
     extends ProviderElementBase<AsyncValue<StateT>>
     with FutureModifierElement<StateT> {

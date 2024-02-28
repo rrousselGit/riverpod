@@ -102,6 +102,7 @@ abstract base class $NotifierProvider //
 
 /// An implementation detail of `riverpod_generator`.
 /// Do not use.
+@internal
 class $NotifierProviderElement< //
         NotifierT extends $Notifier<StateT>,
         StateT> //

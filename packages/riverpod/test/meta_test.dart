@@ -4,6 +4,7 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/dart/element/visitor.dart';
 import 'package:path/path.dart' as path;
+import 'package:test/expect.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -39,9 +40,8 @@ void main() {
     }
   });
 
-  test('public API snapshot', skip: 'Disabled', () async {
+  test('public API snapshot', () async {
     expect(riverpod.exportNamespace.definedNames.keys, [
-      'StateNotifier',
       'AsyncValue',
       'AsyncData',
       'AsyncLoading',
@@ -50,17 +50,8 @@ void main() {
       'AsyncValueX',
       // TODO rename
       'ProviderBase',
-      // TODO remove
-      'FunctionalProvider',
-      // TODO remove
-      'RunNotifierBuild',
-      // TODO remove
-      'ClassProvider',
-      // TODO remove
-      'ClassProviderElement',
+      'NotifierBase',
       'Refreshable',
-      // TODO remove
-      'ProviderElementBase',
       'ProviderContainer',
       'ProviderObserver',
       // TODO remove
@@ -71,99 +62,32 @@ void main() {
       'ProviderListenableOrFamily',
       // TODO remove
       'ProviderOrFamily',
-      // TODO remove
-      'describeIdentity',
-      // TODO remove
-      'shortHash',
       'ProviderListenable',
       'Ref',
       'KeepAliveLink',
       'Override',
-      // TODO remove
-      'FutureModifier',
-      // TODO remove
-      'FutureModifierElement',
       'AsyncNotifier',
       'AsyncNotifierProvider',
       'FamilyAsyncNotifier',
-      'FamilyAsyncNotifierProvider',
       'AsyncNotifierProviderFamily',
-      'StreamNotifier',
-      'StreamNotifierProvider',
-      'FamilyStreamNotifier',
-      'FamilyStreamNotifierProvider',
-      'StreamNotifierProviderFamily',
-      'StateController',
-      // TODO remove
-      'AutoDisposeStateNotifierProviderRef',
-      // TODO remove
-      'AutoDisposeStateNotifierProvider',
-      // TODO remove
-      'AutoDisposeStateNotifierProviderElement',
-      // TODO remove
-      'AutoDisposeStateNotifierProviderFamily',
-      // TODO remove
-      'StateNotifierProviderRef',
-      'StateNotifierProvider',
-      // TODO remove
-      'StateNotifierProviderElement',
-      'StateNotifierProviderFamily',
-      // TODO remove
-      'AutoDisposeStateProviderRef',
-      // TODO remove
-      'AutoDisposeStateProvider',
-      // TODO remove
-      'AutoDisposeStateProviderElement',
-      // TODO remove
-      'AutoDisposeStateProviderFamily',
-      // TODO remove
-      'StateProviderRef',
-      'StateProvider',
-      // TODO remove
-      'StateProviderElement',
-      'StateProviderFamily',
+      'FamilyAsyncNotifierProvider',
       'FutureProvider',
       // TODO remove
       'FutureProviderRef',
-      // TODO remove
-      'FutureProviderElement',
       'FutureProviderFamily',
-      // TODO remove
-      'alreadyInitializedError',
-      // TODO remove
-      'uninitializedElementError',
-      // TODO remove
-      'AutoDisposeNotifier',
-      // TODO remove
-      'AutoDisposeNotifierProviderRef',
-      // TODO remove
-      // TODO remove
-      // TODO remove
-      'AutoDisposeNotifierProvider',
-      // TODO remove
-      'AutoDisposeNotifierProviderElement',
-      // TODO remove
-      'AutoDisposeFamilyNotifier',
-      // TODO remove
-      'AutoDisposeFamilyNotifierProvider',
-      // TODO remove
-      'AutoDisposeNotifierProviderFamily',
       'Notifier',
-      // TODO remove
-      'NotifierProviderRef',
       'NotifierProvider',
-      // TODO remove
-      'NotifierProviderElement',
       'FamilyNotifier',
-      'NotifierFamilyProvider',
+      'FamilyNotifierProvider',
       'NotifierProviderFamily',
       'Provider',
-      // TODO remove
-      'ProviderElement',
       'ProviderFamily',
+      'FamilyStreamNotifier',
+      'FamilyStreamNotifierProvider',
+      'StreamNotifierProviderFamily',
+      'StreamNotifier',
+      'StreamNotifierProvider',
       'StreamProvider',
-      // TODO remove
-      'StreamProviderElement',
       'StreamProviderFamily',
     ]);
 

@@ -47,6 +47,7 @@ abstract base class $StreamNotifierProvider<
 
 /// Implementation detail of `riverpod_generator`.
 /// Do not use.
+@internal
 class $StreamNotifierProviderElement< //
         NotifierT extends $StreamNotifier<StateT>,
         StateT> //

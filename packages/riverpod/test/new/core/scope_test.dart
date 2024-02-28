@@ -1,7 +1,9 @@
 // Tests related to scoping providers
 
 import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/framework.dart';
+import 'package:riverpod/src/framework.dart' show ProviderContainerTest;
+import 'package:riverpod/src/internals.dart'
+    show $ProviderElement, ProviderElementBase;
 import 'package:test/test.dart';
 
 import 'provider_container_test.dart';

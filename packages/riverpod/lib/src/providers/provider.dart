@@ -8,6 +8,7 @@ import 'stream_provider.dart' show StreamProvider;
 
 /// Implementation detail of `riverpod_generator`.
 /// Do not use, as this may be removed at any time.
+@internal
 base mixin $Provider<StateT, RefT> on ProviderBase<StateT> {
   StateT create(RefT ref);
 }
@@ -328,6 +329,7 @@ base class Provider<StateT>
 ///   when that provider is no longer listened to.
 /// - [Provider.family], to allow providers to create a value from external parameters.
 /// {@endtemplate}
+@internal
 class $ProviderElement<StateT> extends ProviderElementBase<StateT> {
   /// A [ProviderElementBase] for [Provider]
   $ProviderElement(this.provider, super.container);

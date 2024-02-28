@@ -38,16 +38,30 @@ export 'src/framework.dart'
         $FunctionalProvider,
         $ClassProvider,
         LegacyProviderMixin,
-        ClassProviderElement;
+        ClassProviderElement,
+        // TODO changelog breaking unexported
+        alreadyInitializedError,
+        // TODO changelog breaking unexported
+        uninitializedElementError,
+        // TODO changelog breaking unexported
+        shortHash,
+        // TODO changelog breaking unexported
+        describeIdentity;
 
 export 'src/providers/async_notifier.dart'
-    hide $AsyncNotifier, $AsyncNotifierProvider;
+    hide $AsyncNotifier, $AsyncNotifierProvider, $AsyncNotifierProviderElement;
 // TODO changelog breaking: StateNotifier & co are no-longer exported from pkg:riverpod/riverpod.dart
 //  Use pkg:riverpod/legacy.dart
 
-export 'src/providers/future_provider.dart';
-export 'src/providers/notifier.dart' hide $Notifier, $NotifierProvider;
-export 'src/providers/provider.dart';
+export 'src/providers/future_provider.dart'
+    hide $FutureProviderElement, $FutureProvider;
+export 'src/providers/notifier.dart'
+    hide $Notifier, $NotifierProvider, $NotifierProviderElement;
+export 'src/providers/provider.dart' hide $ProviderElement, $Provider;
 export 'src/providers/stream_notifier.dart'
-    hide $StreamNotifier, $StreamNotifierProvider;
-export 'src/providers/stream_provider.dart';
+    hide
+        $StreamNotifier,
+        $StreamNotifierProvider,
+        $StreamNotifierProviderElement;
+export 'src/providers/stream_provider.dart'
+    hide $StreamProviderElement, $StreamProvider;

@@ -1,4 +1,6 @@
 // Annotations used by code-generators
+// ignore_for_file: invalid_use_of_internal_member
+
 import 'package:meta/meta.dart' as meta;
 
 export 'dart:async' show FutureOr;

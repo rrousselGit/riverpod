@@ -153,12 +153,14 @@ Set<ProviderOrFamily>? computeAllTransitiveDependencies(
 ///    distinguish instances of the same class (hash collisions are
 ///    possible, but rare enough that its use in debug output is useful).
 ///  * [Object.runtimeType], the [Type] of an object.
+@internal
 String describeIdentity(Object? object) {
   return '${object.runtimeType}#${shortHash(object)}';
 }
 
 // Copied from Flutter
 /// [Object.hashCode]'s 20 least-significant bits.
+@internal
 String shortHash(Object? object) {
   return object.hashCode.toUnsigned(20).toRadixString(16).padLeft(5, '0');
 }

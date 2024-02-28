@@ -46,6 +46,7 @@ abstract base class $AsyncNotifierProvider< //
 
 /// Implementation detail of `riverpod_generator`.
 /// Do not use.
+@internal
 class $AsyncNotifierProviderElement< //
         NotifierT extends $AsyncNotifier<StateT>,
         StateT> //
