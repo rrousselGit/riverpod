@@ -1266,8 +1266,3 @@ The behavior is the same. Only the syntax changed.
 ## 0.1.0
 
 Initial release
-
-
-## minor change
-
-- Added Todo Riverpod Architecture as third party example on sidebar.js. (thanks to @ilovekimchi6)
