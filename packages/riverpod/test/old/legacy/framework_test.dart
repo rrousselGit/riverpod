@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart'
-    show $ProviderElement, ProviderElementBase;
+    show $ProviderElement, CircularDependencyError, ProviderElementBase;
 import 'package:test/test.dart';
 
 import '../utils.dart';

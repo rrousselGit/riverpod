@@ -1091,6 +1091,8 @@ typedef SetupOverride = void Function({
 /// and maintainability reasons.
 /// Consider reading about unidirectional data flow to learn about the
 /// benefits of avoiding circular dependencies.
+// TODO changelog: CircularDependencyError is no-longer exported
+@internal
 class CircularDependencyError extends Error {
   CircularDependencyError._();
 }

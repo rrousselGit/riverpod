@@ -41,7 +41,6 @@ export 'package:riverpod/src/internals.dart'
         AsyncLoading,
         AsyncData,
         AsyncError,
-        AsyncValueX,
 
         // AsyncNotifier
         $AsyncNotifierProvider,

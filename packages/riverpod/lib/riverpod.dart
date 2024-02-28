@@ -46,7 +46,8 @@ export 'src/framework.dart'
         // TODO changelog breaking unexported
         shortHash,
         // TODO changelog breaking unexported
-        describeIdentity;
+        describeIdentity,
+        CircularDependencyError;
 
 export 'src/providers/async_notifier.dart'
     hide $AsyncNotifier, $AsyncNotifierProvider, $AsyncNotifierProviderElement;

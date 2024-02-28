@@ -51,13 +51,9 @@ void main() {
       'Refreshable',
       'ProviderContainer',
       'ProviderObserver',
-      // TODO remove
-      'CircularDependencyError',
       'Family',
       'ProviderSubscription',
-      // TODO remove
       'ProviderListenableOrFamily',
-      // TODO remove
       'ProviderOrFamily',
       'ProviderListenable',
       'Ref',
@@ -69,7 +65,6 @@ void main() {
       'AsyncNotifierProviderFamily',
       'FamilyAsyncNotifierProvider',
       'FutureProvider',
-      // TODO remove
       'FutureProviderRef',
       'FutureProviderFamily',
       'Notifier',
