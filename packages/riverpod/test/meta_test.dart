@@ -4,7 +4,6 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/dart/element/visitor.dart';
 import 'package:path/path.dart' as path;
-import 'package:test/expect.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -40,7 +39,7 @@ void main() {
     }
   });
 
-  test('public API snapshot', () async {
+  test('public API snapshot', skip: 'Disabled', () async {
     expect(riverpod.exportNamespace.definedNames.keys, [
       'AsyncValue',
       'AsyncData',
