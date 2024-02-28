@@ -72,8 +72,6 @@ mixin $AsyncClassModifier<StateT, CreatedT>
     FutureOr<StateT> Function(StateT previousState) cb, {
     FutureOr<StateT> Function(Object err, StackTrace stackTrace)? onError,
   }) async {
-    // TODO cancel on rebuild?
-
     final newState = await future.then(cb, onError: onError);
     state = AsyncData<StateT>(newState);
     return newState;

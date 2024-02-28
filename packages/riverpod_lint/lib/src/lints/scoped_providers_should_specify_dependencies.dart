@@ -105,6 +105,7 @@ class ScopedProvidersShouldSpecifyDependencies extends RiverpodLintRule {
   ) {
     final hasParentParameter = expression.node.argumentList.arguments
         .whereType<NamedExpression>()
+        // TODO move to riverpod_analyzer_utils
         // TODO handle parent:null.
         // This might be doable by checking that the expression's
         // static type is non-nullable

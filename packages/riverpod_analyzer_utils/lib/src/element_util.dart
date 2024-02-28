@@ -14,14 +14,10 @@ extension LibraryElementX on CompilationUnit {
 
   LibraryElement? get _library => declaredElement?.library;
 
-  Element? findElementWithNameFromPackage(
-    String name, {
-    required String packageName,
-  }) {
+  Element? findElementWithNameFromRiverpod(String name) {
     return _library!.importedLibraries
         .map((e) => e.exportNamespace.get(name))
         .firstWhereOrNull(
-          // TODO find a way to test this
           (element) => element != null && isFromRiverpod.isExactly(element),
         );
   }
@@ -30,10 +26,7 @@ extension LibraryElementX on CompilationUnit {
     final cache = _asyncValueCache[this];
     if (cache != null) return cache;
 
-    final result = findElementWithNameFromPackage(
-      'AsyncValue',
-      packageName: 'riverpod',
-    );
+    final result = findElementWithNameFromRiverpod('AsyncValue');
     if (result == null) {
       errorReporter(
         RiverpodAnalysisError(
