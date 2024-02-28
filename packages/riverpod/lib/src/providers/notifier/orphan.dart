@@ -52,7 +52,7 @@ part of '../notifier.dart';
 /// When using `family`, your notifier type changes.
 /// Instead of extending [Notifier], you should extend [FamilyNotifier].
 /// {@endtemplate}
-abstract class Notifier<State> extends $Notifier<State> {
+abstract class Notifier<StateT> extends $Notifier<StateT> {
   /// {@template riverpod.notifier.build}
   /// Initialize a [Notifier].
   ///
@@ -66,11 +66,11 @@ abstract class Notifier<State> extends $Notifier<State> {
   /// If this method throws, reading this provider will rethrow the error.
   /// {@endtemplate}
   @visibleForOverriding
-  State build();
+  StateT build();
 
   @internal
   @override
-  State runBuild() => build();
+  StateT runBuild() => build();
 }
 
 final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>

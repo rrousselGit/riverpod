@@ -13,7 +13,9 @@ part of '../../framework.dart';
 /// - [Ref], which exposes the methods to read other providers.
 /// - [Provider], a provider that uses [Create] to expose an immutable value.
 @internal
-typedef Create<T, R extends Ref<Object?>> = T Function(R ref);
+typedef Create<CreatedT, RefT extends Ref<Object?>> = CreatedT Function(
+  RefT ref,
+);
 
 /// A callback used to catches errors
 @internal
@@ -21,7 +23,6 @@ typedef OnError = void Function(Object, StackTrace);
 
 /// A base class for _all_ providers.
 @immutable
-// TODO rename all generics to <FooT>
 // Marked as "base" because linters/generators rely on fields on const provider instances.
 abstract base class ProviderBase<StateT> extends ProviderOrFamily
     with ProviderListenable<StateT>

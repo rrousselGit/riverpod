@@ -3,7 +3,8 @@ part of '../async_notifier.dart';
 /// {@macro riverpod.async_notifier}
 ///
 /// {@macro riverpod.async_notifier_provider_modifier}
-abstract class FamilyAsyncNotifier<State, Arg> extends $AsyncNotifier<State> {
+abstract class FamilyAsyncNotifier<StateT, ArgT>
+    extends $AsyncNotifier<StateT> {
   /// {@template riverpod.notifier.family_arg}
   /// The argument that was passed to this family.
   ///
@@ -15,15 +16,15 @@ abstract class FamilyAsyncNotifier<State, Arg> extends $AsyncNotifier<State> {
   ///
   /// then [arg] will be `0`.
   /// {@endtemplate}
-  late final Arg arg = (ref as ProviderElementBase).origin.argument as Arg;
+  late final ArgT arg = (ref as ProviderElementBase).origin.argument as ArgT;
 
   /// {@macro riverpod.async_notifier.build}
   @visibleForOverriding
-  FutureOr<State> build(Arg arg);
+  FutureOr<StateT> build(ArgT arg);
 
   @internal
   @override
-  FutureOr<State> runBuild() => build(arg);
+  FutureOr<StateT> runBuild() => build(arg);
 }
 
 /// The [Family] of [AsyncNotifierProvider].

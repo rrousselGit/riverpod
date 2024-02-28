@@ -2,7 +2,7 @@ part of '../../framework.dart';
 
 /// An internal class for `ProviderBase.selectAsync`.
 @sealed
-class _AsyncSelector<Input, Output> with ProviderListenable<Future<Output>> {
+class _AsyncSelector<InputT, OutputT> with ProviderListenable<Future<OutputT>> {
   /// An internal class for `ProviderBase.select`.
   _AsyncSelector({
     required this.provider,
@@ -11,15 +11,15 @@ class _AsyncSelector<Input, Output> with ProviderListenable<Future<Output>> {
   });
 
   /// The provider that was selected
-  final ProviderListenable<AsyncValue<Input>> provider;
+  final ProviderListenable<AsyncValue<InputT>> provider;
 
   /// The future associated to the listened provider
-  final ProviderListenable<Future<Input>> future;
+  final ProviderListenable<Future<InputT>> future;
 
   /// The selector applied
-  final Output Function(Input) selector;
+  final OutputT Function(InputT) selector;
 
-  Result<Output> _select(Input value) {
+  Result<OutputT> _select(InputT value) {
     if (kDebugMode) _debugIsRunningSelector = true;
 
     try {
@@ -32,18 +32,18 @@ class _AsyncSelector<Input, Output> with ProviderListenable<Future<Output>> {
   }
 
   @override
-  _SelectorSubscription<AsyncValue<Input>, Future<Output>> addListener(
+  _SelectorSubscription<AsyncValue<InputT>, Future<OutputT>> addListener(
     Node node,
-    void Function(Future<Output>? previous, Future<Output> next) listener, {
+    void Function(Future<OutputT>? previous, Future<OutputT> next) listener, {
     required void Function(Object error, StackTrace stackTrace)? onError,
     required void Function()? onDependencyMayHaveChanged,
     required bool fireImmediately,
   }) {
-    Result<Output>? lastSelectedValue;
-    Completer<Output>? selectedCompleter;
-    Future<Output>? selectedFuture;
+    Result<OutputT>? lastSelectedValue;
+    Completer<OutputT>? selectedCompleter;
+    Future<OutputT>? selectedFuture;
 
-    void emitData(Output data, {required bool callListeners}) {
+    void emitData(OutputT data, {required bool callListeners}) {
       final previousFuture = selectedFuture;
       if (selectedCompleter != null) {
         selectedCompleter!.complete(data);
@@ -70,7 +70,7 @@ class _AsyncSelector<Input, Output> with ProviderListenable<Future<Output>> {
     }
 
     void playValue(
-      AsyncValue<Input> value, {
+      AsyncValue<InputT> value, {
       bool callListeners = true,
     }) {
       void onLoading(AsyncValue<void> loading) {
@@ -134,7 +134,7 @@ class _AsyncSelector<Input, Output> with ProviderListenable<Future<Output>> {
       );
     }
 
-    final sub = node.listen<AsyncValue<Input>>(
+    final sub = node.listen<AsyncValue<InputT>>(
       provider,
       (prev, input) => playValue(input),
       onError: onError,
@@ -153,5 +153,5 @@ class _AsyncSelector<Input, Output> with ProviderListenable<Future<Output>> {
   }
 
   @override
-  Future<Output> read(Node node) => future.read(node).then(selector);
+  Future<OutputT> read(Node node) => future.read(node).then(selector);
 }

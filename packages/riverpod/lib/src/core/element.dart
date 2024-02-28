@@ -16,9 +16,9 @@ part of '../framework.dart';
 /// ref.watch(provider.select((value) => value));
 /// ```
 /// {@endtemplate}
-sealed class Refreshable<T> implements ProviderListenable<T> {}
+sealed class Refreshable<StateT> implements ProviderListenable<StateT> {}
 
-mixin _ProviderRefreshable<T> implements Refreshable<T> {
+mixin _ProviderRefreshable<StateT> implements Refreshable<StateT> {
   ProviderBase<Object?> get provider;
 }
 
@@ -42,7 +42,7 @@ void Function()? debugCanModifyProviders;
 /// {@endtemplate}
 // TODO rename to ProviderElement
 @internal
-abstract class ProviderElementBase<State> implements Ref<State>, Node {
+abstract class ProviderElementBase<StateT> implements Ref<StateT>, Node {
   /// {@macro riverpod.provider_element_base}
   // TODO changelog: ProviderElement no-longer takes a provider as parameter but takes a ProviderContainer
   ProviderElementBase(this.container);
@@ -50,10 +50,10 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   static ProviderElementBase<Object?>? _debugCurrentlyBuildingElement;
 
   @override
-  State get state => readSelf();
+  StateT get state => readSelf();
 
   @override
-  set state(State newState) => setStateResult(ResultData(newState));
+  set state(StateT newState) => setStateResult(ResultData(newState));
 
   /// The last result of [ProviderBase.debugGetCreateSourceHash].
   ///
@@ -68,7 +68,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
 
   /// The provider associated with this [ProviderElementBase], after applying overrides.
   // TODO changelog ProviderElement.provider is now abstract
-  ProviderBase<State> get provider;
+  ProviderBase<StateT> get provider;
 
   /// The [ProviderContainer] that owns this [ProviderElementBase].
   @override
@@ -89,7 +89,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   /// This is typically Flutter widgets or manual calls to [ProviderContainer.listen]
   /// with this provider as target.
   // TODO(rrousselGit) refactor to match ChangeNotifier
-  final _externalDependents = <_ExternalProviderSubscription<State>>[];
+  final _externalDependents = <_ExternalProviderSubscription<StateT>>[];
 
   /// The [ProviderSubscription]s associated to the providers that this
   /// [ProviderElementBase] listens to.
@@ -114,7 +114,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   List<void Function()>? _onCancelListeners;
   List<void Function()>? _onAddListeners;
   List<void Function()>? _onRemoveListeners;
-  List<void Function(State?, State)>? _onChangeSelfListeners;
+  List<void Function(StateT?, StateT)>? _onChangeSelfListeners;
   List<OnError>? _onErrorSelfListeners;
 
   bool _mustRecomputeState = false;
@@ -139,7 +139,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   List<KeepAliveLink>? _keepAliveLinks;
 
   /* STATE */
-  Result<State>? _stateResult;
+  Result<StateT>? _stateResult;
 
   /// The current state of the provider.
   ///
@@ -153,7 +153,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   /// This is not meant for public consumption. Instead, public API should use
   /// [readSelf].
   @internal
-  Result<State>? get stateResult => _stateResult;
+  Result<StateT>? get stateResult => _stateResult;
 
   /// Update the exposed value of a provider and notify its listeners.
   ///
@@ -163,7 +163,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   /// This API is not meant for public consumption. Instead if a [Ref] needs
   /// to expose a way to update the state, the practice is to expose a getter/setter.
   @internal
-  void setStateResult(Result<State> newState) {
+  void setStateResult(Result<StateT> newState) {
     if (kDebugMode) _debugDidSetState = true;
 
     final previousResult = stateResult;
@@ -182,7 +182,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   /// This is not meant for public consumption. Instead, public API should use
   /// [readSelf].
   @internal
-  State get requireState {
+  StateT get requireState {
     const uninitializedError = '''
 Tried to read the state of an uninitialized provider.
 This could mean a few things:
@@ -208,7 +208,7 @@ This could mean a few things:
   /// Called when a provider is rebuilt. Used for providers to not notify their
   /// listeners if the exposed value did not change.
   @internal
-  bool updateShouldNotify(State previous, State next);
+  bool updateShouldNotify(StateT previous, StateT next);
 
   /* /STATE */
 
@@ -298,7 +298,7 @@ This could mean a few things:
   /// - `overrideWithValue`, which relies on [update] to handle
   ///   the scenario where the value changed.
   @visibleForOverriding
-  void update(ProviderBase<State> newProvider) {}
+  void update(ProviderBase<StateT> newProvider) {}
 
   @override
   void invalidate(ProviderOrFamily providerOrFamily) {
@@ -470,8 +470,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   void _notifyListeners(
-    Result<State> newState,
-    Result<State>? previousStateResult, {
+    Result<StateT> newState,
+    Result<StateT>? previousStateResult, {
     bool checkUpdateShouldNotify = true,
   }) {
     if (kDebugMode) _debugAssertNotificationAllowed();
@@ -511,7 +511,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         previousStateResult.hasState &&
         newState.hasState &&
         !updateShouldNotify(
-          previousState as State,
+          previousState as StateT,
           newState.requireState,
         )) {
       return;
@@ -774,7 +774,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
 
   @override
   void listenSelf(
-    void Function(State? previous, State next) listener, {
+    void Function(StateT? previous, StateT next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
   }) {
     // TODO do we want to expose a way to close the subscription?
@@ -807,7 +807,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// Returns the currently exposed by a provider
   ///
   /// May throw if the provider threw when creating the exposed value.
-  State readSelf() {
+  StateT readSelf() {
     flush();
 
     return requireState;

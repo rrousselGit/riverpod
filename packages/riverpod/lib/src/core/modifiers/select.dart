@@ -5,9 +5,9 @@ part of '../../framework.dart';
 @internal
 abstract class Node {
   /// Starts listening to this transformer
-  ProviderSubscription<State> listen<State>(
-    ProviderListenable<State> listenable,
-    void Function(State? previous, State next) listener, {
+  ProviderSubscription<StateT> listen<StateT>(
+    ProviderListenable<StateT> listenable,
+    void Function(StateT? previous, StateT next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
     bool fireImmediately = false,
   });
@@ -18,21 +18,21 @@ abstract class Node {
   ///
   /// Do not use this in production code. This is exposed only for testing
   /// and devtools, to be able to test if a provider has listeners or similar.
-  ProviderElementBase<State> readProviderElement<State>(
-    ProviderBase<State> provider,
+  ProviderElementBase<StateT> readProviderElement<StateT>(
+    ProviderBase<StateT> provider,
   );
 
   /// Subscribes to a [ProviderElementBase].
-  ProviderSubscription<State> _listenElement<State>(
-    ProviderElementBase<State> element, {
-    required void Function(State? previous, State next) listener,
+  ProviderSubscription<StateT> _listenElement<StateT>(
+    ProviderElementBase<StateT> element, {
+    required void Function(StateT? previous, StateT next) listener,
     required void Function(Object error, StackTrace stackTrace) onError,
   });
 }
 
 /// An internal class for `ProviderBase.select`.
 @sealed
-class _ProviderSelector<Input, Output> with ProviderListenable<Output> {
+class _ProviderSelector<InputT, OutputT> with ProviderListenable<OutputT> {
   /// An internal class for `ProviderBase.select`.
   _ProviderSelector({
     required this.provider,
@@ -40,12 +40,12 @@ class _ProviderSelector<Input, Output> with ProviderListenable<Output> {
   });
 
   /// The provider that was selected
-  final ProviderListenable<Input> provider;
+  final ProviderListenable<InputT> provider;
 
   /// The selector applied
-  final Output Function(Input) selector;
+  final OutputT Function(InputT) selector;
 
-  Result<Output> _select(Result<Input> value) {
+  Result<OutputT> _select(Result<InputT> value) {
     if (kDebugMode) _debugIsRunningSelector = true;
 
     try {
@@ -63,11 +63,11 @@ class _ProviderSelector<Input, Output> with ProviderListenable<Output> {
   }
 
   void _selectOnChange({
-    required Input newState,
-    required Result<Output> lastSelectedValue,
+    required InputT newState,
+    required Result<OutputT> lastSelectedValue,
     required void Function(Object error, StackTrace stackTrace) onError,
-    required void Function(Output? prev, Output next) listener,
-    required void Function(Result<Output> newState) onChange,
+    required void Function(OutputT? prev, OutputT next) listener,
+    required void Function(Result<OutputT> newState) onChange,
   }) {
     final newSelectedValue = _select(Result.data(newState));
     if (!lastSelectedValue.hasState ||
@@ -91,18 +91,18 @@ class _ProviderSelector<Input, Output> with ProviderListenable<Output> {
   }
 
   @override
-  _SelectorSubscription<Input, Output> addListener(
+  _SelectorSubscription<InputT, OutputT> addListener(
     Node node,
-    void Function(Output? previous, Output next) listener, {
+    void Function(OutputT? previous, OutputT next) listener, {
     required void Function(Object error, StackTrace stackTrace)? onError,
     required void Function()? onDependencyMayHaveChanged,
     required bool fireImmediately,
   }) {
     onError ??= Zone.current.handleUncaughtError;
 
-    late Result<Output> lastSelectedValue;
+    late Result<OutputT> lastSelectedValue;
 
-    final sub = node.listen<Input>(
+    final sub = node.listen<InputT>(
       provider,
       (prev, input) {
         _selectOnChange(
@@ -141,7 +141,7 @@ class _ProviderSelector<Input, Output> with ProviderListenable<Output> {
   }
 
   @override
-  Output read(Node node) {
+  OutputT read(Node node) {
     final input = provider.read(node);
     return selector(input);
   }

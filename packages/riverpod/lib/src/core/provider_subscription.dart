@@ -1,17 +1,17 @@
 part of '../framework.dart';
 
 /// Represents the subscription to a [ProviderListenable]
-abstract class ProviderSubscription<State> {
+abstract class ProviderSubscription<StateT> {
   /// Stops listening to the provider
   @mustCallSuper
   void close();
 
   /// Obtain the latest value emitted by the provider
-  State read();
+  StateT read();
 }
 
 /// When a provider listens to another provider using `listen`
-class _ProviderListener<State> implements ProviderSubscription<State> {
+class _ProviderListener<StateT> implements ProviderSubscription<StateT> {
   _ProviderListener._({
     required this.listenedElement,
     required this.dependentElement,
@@ -22,7 +22,7 @@ class _ProviderListener<State> implements ProviderSubscription<State> {
 // TODO can't we type it properly?
   final void Function(Object? prev, Object? state) listener;
   final ProviderElementBase<Object?> dependentElement;
-  final ProviderElementBase<State> listenedElement;
+  final ProviderElementBase<StateT> listenedElement;
   final OnError onError;
 
   @override
@@ -34,21 +34,21 @@ class _ProviderListener<State> implements ProviderSubscription<State> {
   }
 
   @override
-  State read() => listenedElement.readSelf();
+  StateT read() => listenedElement.readSelf();
 }
 
 var _debugIsRunningSelector = false;
 
-class _ExternalProviderSubscription<State>
-    implements ProviderSubscription<State> {
+class _ExternalProviderSubscription<StateT>
+    implements ProviderSubscription<StateT> {
   _ExternalProviderSubscription._(
     this._listenedElement,
     this._listener, {
     required this.onError,
   });
 
-  final void Function(State? previous, State next) _listener;
-  final ProviderElementBase<State> _listenedElement;
+  final void Function(StateT? previous, StateT next) _listener;
+  final ProviderElementBase<StateT> _listenedElement;
   final void Function(Object error, StackTrace stackTrace) onError;
   var _closed = false;
 
@@ -60,7 +60,7 @@ class _ExternalProviderSubscription<State>
   }
 
   @override
-  State read() {
+  StateT read() {
     if (_closed) {
       throw StateError(
         'called ProviderSubscription.read on a subscription that was closed',
@@ -72,9 +72,9 @@ class _ExternalProviderSubscription<State>
 
 /// Deals with the internals of synchronously calling the listeners
 /// when using `fireImmediately: true`
-void _handleFireImmediately<State>(
-  Result<State> currentState, {
-  required void Function(State? previous, State current) listener,
+void _handleFireImmediately<StateT>(
+  Result<StateT> currentState, {
+  required void Function(StateT? previous, StateT current) listener,
   required void Function(Object error, StackTrace stackTrace) onError,
 }) {
   currentState.map(

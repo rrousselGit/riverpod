@@ -17,11 +17,11 @@ ProviderElementProxy<StateT, StateController<StateT>> _notifier<StateT>(
 
 /// {@macro riverpod.provider_ref_base}
 /// - [controller], the [StateController] currently exposed by this provider.
-abstract class StateProviderRef<State> implements Ref<State> {
+abstract class StateProviderRef<StateT> implements Ref<StateT> {
   /// The [StateController] currently exposed by this provider.
   ///
   /// Cannot be accessed while creating the provider.
-  StateController<State> get controller;
+  StateController<StateT> get controller;
 }
 
 /// {@template riverpod.state_provider}

@@ -172,12 +172,12 @@ String shortHash(Object? object) {
 ///
 /// Should override ==/hashCode when possible
 @immutable
-mixin ProviderListenable<State> implements ProviderListenableOrFamily {
+mixin ProviderListenable<StateT> implements ProviderListenableOrFamily {
   /// Starts listening to this transformer
-  ProviderSubscription<State> addListener(
+  ProviderSubscription<StateT> addListener(
     // TODO remove Node and pass directly the listened Element
     Node node,
-    void Function(State? previous, State next) listener, {
+    void Function(StateT? previous, StateT next) listener, {
     required void Function(Object error, StackTrace stackTrace)? onError,
     // TODO remove
     required void Function()? onDependencyMayHaveChanged,
@@ -185,7 +185,7 @@ mixin ProviderListenable<State> implements ProviderListenableOrFamily {
   });
 
   /// Obtains the result of this provider expression without adding listener.
-  State read(Node node);
+  StateT read(Node node);
 
   /// Partially listen to a provider.
   ///
@@ -253,9 +253,9 @@ mixin ProviderListenable<State> implements ProviderListenableOrFamily {
   /// This will further optimize our widget by rebuilding it only when "isAdult"
   /// changed instead of whenever the age changes.
   ProviderListenable<Selected> select<Selected>(
-    Selected Function(State value) selector,
+    Selected Function(StateT value) selector,
   ) {
-    return _ProviderSelector<State, Selected>(
+    return _ProviderSelector<StateT, Selected>(
       provider: this,
       selector: selector,
     );

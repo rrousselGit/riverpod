@@ -15,14 +15,14 @@ part of '../stream_notifier.dart';
 /// When using `family`, your notifier type changes. Instead of extending
 /// [StreamNotifier], you should extend [FamilyStreamNotifier].
 /// {@endtemplate}
-abstract class StreamNotifier<State> extends $StreamNotifier<State> {
+abstract class StreamNotifier<StateT> extends $StreamNotifier<StateT> {
   /// {@macro riverpod.async_notifier.build}
   @visibleForOverriding
-  Stream<State> build();
+  Stream<StateT> build();
 
   @internal
   @override
-  Stream<State> runBuild() => build();
+  Stream<StateT> runBuild() => build();
 }
 
 /// {@template riverpod.async_notifier_provider}

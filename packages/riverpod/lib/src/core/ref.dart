@@ -9,7 +9,7 @@ part of '../framework.dart';
 /// - [read] and [watch], two methods that allow a provider to consume other providers.
 /// - [onDispose], a method that allows performing a task when the provider is destroyed.
 /// {@endtemplate}
-abstract class Ref<State> {
+abstract class Ref<StateT> {
   // TODO changelog breaking: AutoDisposeRef and related interfaces are removed.
   //  Use the non-autodispose variant instead. They now have the same API.
 
@@ -22,8 +22,8 @@ abstract class Ref<State> {
   /// - on asynchronous providers, this will return an [AsyncLoading].
   ///
   /// Will throw if the provider threw during creation.
-  State get state;
-  set state(State newState);
+  StateT get state;
+  set state(StateT newState);
 
   /// The [ProviderContainer] that this provider is associated with.
   ProviderContainer get container;
@@ -107,7 +107,7 @@ abstract class Ref<State> {
   /// [ProviderElementBase.updateShouldNotify] returns false, meaning that the previous
   /// and new value can potentially be identical.
   void listenSelf(
-    void Function(State? previous, State next) listener, {
+    void Function(StateT? previous, StateT next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
   });
 

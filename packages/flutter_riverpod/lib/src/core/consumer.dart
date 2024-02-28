@@ -340,8 +340,7 @@ abstract class ConsumerStatefulWidget extends StatefulWidget {
 /// ```
 abstract class ConsumerState<T extends ConsumerStatefulWidget>
     extends State<T> {
-  // TODO change this doc
-  /// An object that allows widgets to interact with providers.
+  /// {@macro flutter_riverpod.widget_ref}
   late final WidgetRef ref = context as WidgetRef;
 }
 

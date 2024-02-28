@@ -16,7 +16,7 @@ part of '../async_notifier.dart';
 /// {@endtemplate}
 ///
 /// {@macro riverpod.async_notifier_provider_modifier}
-abstract class AsyncNotifier<State> extends $AsyncNotifier<State> {
+abstract class AsyncNotifier<StateT> extends $AsyncNotifier<StateT> {
   /// {@template riverpod.async_notifier.build}
   /// Initialize an [AsyncNotifier].
   ///
@@ -31,11 +31,11 @@ abstract class AsyncNotifier<State> extends $AsyncNotifier<State> {
   /// will be caught and an [AsyncError] will be emitted.
   /// {@endtemplate}
   @visibleForOverriding
-  FutureOr<State> build();
+  FutureOr<StateT> build();
 
   @internal
   @override
-  FutureOr<State> runBuild() => build();
+  FutureOr<StateT> runBuild() => build();
 }
 
 /// {@template riverpod.async_notifier_provider}

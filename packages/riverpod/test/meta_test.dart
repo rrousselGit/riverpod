@@ -45,7 +45,6 @@ void main() {
       'AsyncData',
       'AsyncLoading',
       'AsyncError',
-      // TODO rename
       'ProviderBase',
       'NotifierBase',
       'Refreshable',

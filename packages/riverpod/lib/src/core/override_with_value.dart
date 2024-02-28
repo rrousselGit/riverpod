@@ -33,25 +33,25 @@ final class $ValueProvider<StateT> extends ProviderBase<StateT>
 }
 
 /// The [ProviderElementBase] of a [$ValueProvider]
-class _ValueProviderElement<State> extends ProviderElementBase<State> {
+class _ValueProviderElement<StateT> extends ProviderElementBase<StateT> {
   /// The [ProviderElementBase] of a [$ValueProvider]
   _ValueProviderElement(this.provider, super.container);
 
   /// A custom listener called when `overrideWithValue` changes
   /// with a different value.
-  void Function(State value)? onChange;
+  void Function(StateT value)? onChange;
 
   @override
-  $ValueProvider<State> provider;
+  $ValueProvider<StateT> provider;
 
   @override
-  void update(covariant $ValueProvider<State> newProvider) {
+  void update(covariant $ValueProvider<StateT> newProvider) {
     super.update(newProvider);
     provider = newProvider;
     final newValue = provider._value;
 
     // `getState` will never be in error/loading state since there is no "create"
-    final previousState = stateResult! as ResultData<State>;
+    final previousState = stateResult! as ResultData<StateT>;
 
     if (newValue != previousState.state) {
       // Asserts would otherwise prevent a provider rebuild from updating
@@ -74,7 +74,7 @@ class _ValueProviderElement<State> extends ProviderElementBase<State> {
   }
 
   @override
-  bool updateShouldNotify(State previous, State next) {
+  bool updateShouldNotify(StateT previous, StateT next) {
     return true;
   }
 }
