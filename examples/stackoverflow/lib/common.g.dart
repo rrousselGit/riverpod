@@ -85,4 +85,4 @@ final class ThemeProvider
 String _$themeHash() => r'ff39eda97684261eefc24ddb24e41172880644cd';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member

@@ -61,4 +61,4 @@ final class ExampleProvider extends $FunctionalProvider<AsyncValue<String>,
 String _$exampleHash() => r'e620af6b870a76eea4228989433de0666957d813';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member

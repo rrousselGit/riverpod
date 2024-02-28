@@ -129,4 +129,4 @@ final class EvenItemsProvider
 String _$evenItemsHash() => r'82b4525e91604745f2b4664531b32d4aff5717d4';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member

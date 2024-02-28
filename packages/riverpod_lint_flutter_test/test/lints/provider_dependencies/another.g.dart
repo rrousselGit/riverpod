@@ -191,4 +191,4 @@ String _$anotherNonEmptyScopedHash() =>
     r'cc21d248e644c853e4647ad60ca72cb42b82475f';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member

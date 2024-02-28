@@ -701,4 +701,4 @@ String _$providerWithDartDocHash() =>
     r'6aeff1697c1ec37f475319a4100e01c0e56369ae';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member

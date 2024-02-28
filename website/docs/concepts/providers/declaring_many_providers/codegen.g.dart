@@ -128,4 +128,4 @@ final class CountryProvider
 String _$countryHash() => r'd1513349c3bc0c99763cb4fb29eb012f2351bc4c';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member

@@ -119,4 +119,4 @@ final class ProductsProvider extends $FunctionalProvider<
 String _$productsHash() => r'd1f4523880408cf8ee0e68969c40cf87d5c78557';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member

@@ -127,4 +127,4 @@ final class ExampleProvider extends $FunctionalProvider<int, int, ExampleRef>
 String _$exampleHash() => r'4429d7d3bb2b31fea4cc42c2f2af02d3f3d10693';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member

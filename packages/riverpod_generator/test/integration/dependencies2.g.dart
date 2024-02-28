@@ -630,4 +630,4 @@ final class Public2Provider extends $FunctionalProvider<int, int, Public2Ref>
 String _$public2Hash() => r'9767255f0182589fe48b29d217dd488b0a13b9d5';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member

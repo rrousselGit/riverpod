@@ -70,4 +70,4 @@ String _$synchronousExampleHash() =>
     r'98df96e07d554683041f668c06b36f183ff534c1';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member

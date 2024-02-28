@@ -68,4 +68,4 @@ final class MyProvider extends $FunctionalProvider<MyValue, MyValue, MyRef>
 String _$myHash() => r'0810ee24cae78c131d00773ac20d254c83eefab7';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member

@@ -128,4 +128,4 @@ final class ValueProvider extends $FunctionalProvider<String, String, ValueRef>
 String _$valueHash() => r'8c26f7aaa911af815cff9e513a18e4d8dcc6d1df';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member

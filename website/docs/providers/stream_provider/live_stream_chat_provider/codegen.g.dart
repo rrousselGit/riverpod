@@ -62,4 +62,4 @@ final class ChatProvider extends $FunctionalProvider<AsyncValue<List<String>>,
 String _$chatHash() => r'db1302132f90e854fe2f5da9d97d89c9a3c8b858';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member

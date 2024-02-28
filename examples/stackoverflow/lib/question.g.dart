@@ -173,4 +173,4 @@ final class CurrentQuestionProvider extends $FunctionalProvider<
 String _$currentQuestionHash() => r'2179e068c1d64674dc292a1a027e9e338284c57f';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member

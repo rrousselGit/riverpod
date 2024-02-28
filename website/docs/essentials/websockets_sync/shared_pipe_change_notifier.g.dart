@@ -132,4 +132,4 @@ final class AnotherListenableProvider extends $FunctionalProvider<
 String _$anotherListenableHash() => r'50dd36b21e07c50818944ec49f9e68d21fcae876';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member

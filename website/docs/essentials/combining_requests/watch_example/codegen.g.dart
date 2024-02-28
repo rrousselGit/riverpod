@@ -121,4 +121,4 @@ final class RestaurantsNearMeProvider extends $FunctionalProvider<
 String _$restaurantsNearMeHash() => r'dd49cc1e6f16abb34dd15286d171e322c06b93b8';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member

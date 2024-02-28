@@ -73,4 +73,4 @@ final class TagThemeProvider
 String _$tagThemeHash() => r'bf5d051ea43e2f60d370096bb756aa81f21e9d68';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member

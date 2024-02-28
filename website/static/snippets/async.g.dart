@@ -64,4 +64,4 @@ final class ConfigurationsProvider extends $FunctionalProvider<
 String _$configurationsHash() => r'27f534f8b2a22c39b2d28c2414358a228c552155';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member

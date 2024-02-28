@@ -1525,4 +1525,4 @@ String _$transitiveDuplicateDependenciesHash() =>
     r'aba44b6c1cf82eea782ad260f2e95d9f771f12ac';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member

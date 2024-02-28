@@ -189,4 +189,4 @@ final class FilteredTodosProvider
 String _$filteredTodosHash() => r'bcb1e81823aaf9b967948b619c177ebc571d96a7';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member

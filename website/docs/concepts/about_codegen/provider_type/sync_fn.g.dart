@@ -69,4 +69,4 @@ final class ExampleProvider
 String _$exampleHash() => r'dd4e9043c704a42a3fc025e7fef9515f659fc78a';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
