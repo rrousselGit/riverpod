@@ -316,6 +316,7 @@ This could mean a few things:
 
     _mustRecomputeState = true;
     runOnDispose();
+    _mayNeedDispose();
     container.scheduler.scheduleProviderRefresh(this);
 
     // We don't call this._markDependencyMayHaveChanged here because we voluntarily

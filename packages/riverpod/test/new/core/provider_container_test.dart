@@ -2176,6 +2176,23 @@ void main() {
     });
 
     group('invalidate', () {
+      group('invalidate', () {
+        test('can disposes of the element if not used anymore', () async {
+          final provider = Provider.autoDispose((r) {
+            r.keepAlive();
+            return 0;
+          });
+          final container = ProviderContainer.test();
+
+          container.read(provider);
+          container.invalidate(provider);
+
+          await container.pump();
+
+          expect(container.getAllProviderElements(), isEmpty);
+        });
+      });
+
       test('supports asReload', () async {
         final container = ProviderContainer.test();
         final provider = FutureProvider<int>((r) async => 0);

@@ -31,6 +31,30 @@ final refMethodsThatDependOnProviderOrFamilies =
 void main() {
   group('Ref', () {
     group('invalidate', () {
+      test('can disposes of the element if not used anymore', () async {
+        late Ref<Object?> ref;
+        final dep = Provider((r) {
+          ref = r;
+          return 0;
+        });
+        final provider = Provider.autoDispose((r) {
+          r.keepAlive();
+          return 0;
+        });
+        final container = ProviderContainer.test();
+
+        container.read(dep);
+        container.read(provider);
+        ref.invalidate(provider);
+
+        await container.pump();
+
+        expect(
+          container.getAllProviderElements().map((e) => e.origin),
+          [dep],
+        );
+      });
+
       test('does not mount providers if they are not already mounted',
           () async {
         final container = ProviderContainer.test();
@@ -74,6 +98,23 @@ void main() {
     });
 
     group('invalidateSelf', () {
+      test('can disposes of the element if not used anymore', () async {
+        late Ref<Object?> ref;
+        final provider = Provider.autoDispose((r) {
+          ref = r;
+          r.keepAlive();
+          return 0;
+        });
+        final container = ProviderContainer.test();
+
+        container.read(provider);
+        ref.invalidateSelf();
+
+        await container.pump();
+
+        expect(container.getAllProviderElements(), isEmpty);
+      });
+
       test('supports asReload', () async {
         final container = ProviderContainer.test();
         late Ref<AsyncValue<int>> ref;
