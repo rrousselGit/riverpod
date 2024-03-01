@@ -754,13 +754,18 @@ class ProviderContainer implements Node {
   }
 
   /// {@macro riverpod.invalidate}
-  void invalidate(ProviderOrFamily provider) {
+  void invalidate(
+    ProviderOrFamily provider, {
+    bool asReload = false,
+  }) {
     switch (provider) {
       case ProviderBase<Object?>():
-        _pointerManager.readElement(provider)?.invalidateSelf();
+        _pointerManager
+            .readElement(provider)
+            ?.invalidateSelf(asReload: asReload);
       case Family():
         for (final element in _pointerManager.listFamily(provider)) {
-          element.invalidateSelf();
+          element.invalidateSelf(asReload: asReload);
         }
     }
   }

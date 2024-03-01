@@ -473,9 +473,12 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
   }
 
   @override
-  void invalidate(ProviderOrFamily provider) {
+  void invalidate(
+    ProviderOrFamily provider, {
+    bool asReload = false,
+  }) {
     _assertNotDisposed();
-    _container.invalidate(provider);
+    _container.invalidate(provider, asReload: asReload);
   }
 
   @override

@@ -2115,6 +2115,23 @@ void main() {
       });
     });
 
+    group('invalidate', () {
+      test('supports asReload', () async {
+        final container = ProviderContainer.test();
+        final provider = FutureProvider<int>((r) async => 0);
+
+        await container.read(provider.future);
+        expect(container.read(provider), const AsyncValue.data(0));
+
+        container.invalidate(provider, asReload: true);
+
+        expect(
+          container.read(provider),
+          isA<AsyncLoading<int>>().having((e) => e.value, 'value', 0),
+        );
+      });
+    });
+
     group('listen', () {
       test('when no onError is specified, fallbacks to handleUncaughtError',
           () async {
