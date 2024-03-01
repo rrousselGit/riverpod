@@ -311,7 +311,6 @@ abstract class Ref<StateT> {
   ///    final sub = listen(provider, (previous, next) {
   ///      invalidateSelf(asReload: true);
   ///    });
-  ///    onDispose(sub.cancel);
   ///    return sub.read();
   /// }
   /// ```
