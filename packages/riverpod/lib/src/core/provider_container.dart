@@ -355,19 +355,31 @@ class ProviderPointerManager {
     /// If the provider has no dependencies, it cannot be locally overridden.
     if (transitiveDependencies == null) return null;
 
-    ProviderContainer? deepestContainer;
-    for (final dependency in transitiveDependencies) {
-      final target = switch (dependency) {
-        Family() => familyPointers[dependency]?.targetContainer,
-        ProviderBase() => readPointer(dependency)?.targetContainer,
-      };
-      if (target == null || target.depth == 0) continue;
-      if (deepestContainer == null || deepestContainer.depth < target.depth) {
-        deepestContainer = target;
-      }
-    }
+    final overrides =
+        transitiveDependencies.expand<ProviderContainer>((dependency) {
+      switch (dependency) {
+        case Family():
+          final familyPointer = familyPointers[dependency];
+          if (familyPointer == null) return const [];
 
-    return deepestContainer;
+          return [familyPointer.targetContainer].followedBy(
+            familyPointer.pointers.values.map((e) => e.targetContainer),
+          );
+        case ProviderBase():
+          return [
+            if (readPointer(dependency)?.targetContainer case final container?)
+              container,
+          ];
+      }
+    });
+
+    return overrides.fold<ProviderContainer?>(null, (deepestContainer, target) {
+      if (deepestContainer == null || deepestContainer.depth < target.depth) {
+        return target;
+      }
+
+      return deepestContainer;
+    });
   }
 
   /// Initializes a family and returns its pointer.

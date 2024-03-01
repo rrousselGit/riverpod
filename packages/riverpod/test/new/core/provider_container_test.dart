@@ -395,208 +395,268 @@ void main() {
         );
       });
 
-      test('handles auto-scoping', () {
-        final dep = Provider(
-          (_) => 0,
-          dependencies: const [],
-        );
-        final family = Provider.family<int, int>(
-          (ref, id) => 0,
-          dependencies: [dep],
-        );
-        final provider = Provider((_) => 0, dependencies: [dep]);
-        final root = ProviderContainer.test();
-        final container = ProviderContainer.test(
-          parent: root,
-          overrides: [dep.overrideWithValue(42)],
-        );
+      group('auto-scoping', () {
+        test('handles auto-scoping', () {
+          final dep = Provider(
+            (_) => 0,
+            dependencies: const [],
+          );
+          final family = Provider.family<int, int>(
+            (ref, id) => 0,
+            dependencies: [dep],
+          );
+          final provider = Provider((_) => 0, dependencies: [dep]);
+          final root = ProviderContainer.test();
+          final container = ProviderContainer.test(
+            parent: root,
+            overrides: [dep.overrideWithValue(42)],
+          );
 
-        final pointer = container.pointerManager.upsertPointer(family(42));
-        final pointer2 = container.pointerManager.upsertPointer(provider);
+          final pointer = container.pointerManager.upsertPointer(family(42));
+          final pointer2 = container.pointerManager.upsertPointer(provider);
 
-        expect(
-          pointer,
-          isPointer(
-            targetContainer: container,
-            override: null,
-          ),
-        );
-        expect(
-          pointer2,
-          isPointer(
-            targetContainer: container,
-            override: isTransitiveProviderOverride(provider),
-          ),
-        );
-
-        expect(
-          container.pointerManager.familyPointers,
-          {
-            family: isProviderDirectory(
+          expect(
+            pointer,
+            isPointer(
               targetContainer: container,
-              override: isTransitiveFamilyOverride(family),
-              pointers: {
-                family(42): pointer,
-              },
+              override: null,
             ),
-          },
-        );
-        expect(
-          container.pointerManager.orphanPointers,
-          isProviderDirectory(
-            targetContainer: root,
-            override: null,
-            pointers: {
-              provider: pointer2,
-              dep: isNotNull,
+          );
+          expect(
+            pointer2,
+            isPointer(
+              targetContainer: container,
+              override: isTransitiveProviderOverride(provider),
+            ),
+          );
+
+          expect(
+            container.pointerManager.familyPointers,
+            {
+              family: isProviderDirectory(
+                targetContainer: container,
+                override: isTransitiveFamilyOverride(family),
+                pointers: {
+                  family(42): pointer,
+                },
+              ),
             },
-          ),
-        );
-
-        // Check that the root was unaffected
-        expect(
-          root.pointerManager.familyPointers,
-          isEmpty,
-        );
-        expect(
-          root.pointerManager.orphanPointers.pointers,
-          isEmpty,
-        );
-      });
-
-      test('skips auto-scoping if the provider is manually overridden', () {
-        final dep = Provider(
-          (_) => 0,
-          dependencies: const [],
-        );
-        final family = Provider.family<int, int>(
-          (ref, id) => 0,
-          dependencies: [dep],
-        );
-        final familyOverride = family.overrideWith((ref, arg) => 0);
-        final provider = Provider((_) => 0, dependencies: [dep]);
-        final providerOverride = provider.overrideWithValue(42);
-
-        final root = ProviderContainer.test();
-        final mid = ProviderContainer.test(
-          parent: root,
-          overrides: [familyOverride, providerOverride],
-        );
-        final container = ProviderContainer.test(
-          parent: mid,
-          overrides: [dep.overrideWithValue(42)],
-        );
-
-        container.pointerManager.upsertPointer(family(42));
-        container.pointerManager.upsertPointer(provider);
-
-        expect(
-          container.pointerManager.familyPointers,
-          {
-            family: isProviderDirectory(
-              targetContainer: mid,
-              override: familyOverride,
+          );
+          expect(
+            container.pointerManager.orphanPointers,
+            isProviderDirectory(
+              targetContainer: root,
+              override: null,
               pointers: {
-                family(42): isPointer(
-                  targetContainer: mid,
-                  override: null,
-                ),
+                provider: pointer2,
+                dep: isNotNull,
               },
             ),
-          },
-        );
-        expect(
-          container.pointerManager.orphanPointers,
-          isProviderDirectory(
-            targetContainer: root,
-            override: null,
-            pointers: {
-              provider: isPointer(
+          );
+
+          // Check that the root was unaffected
+          expect(
+            root.pointerManager.familyPointers,
+            isEmpty,
+          );
+          expect(
+            root.pointerManager.orphanPointers.pointers,
+            isEmpty,
+          );
+        });
+
+        test('skips auto-scoping if the provider is manually overridden', () {
+          final dep = Provider(
+            (_) => 0,
+            dependencies: const [],
+          );
+          final family = Provider.family<int, int>(
+            (ref, id) => 0,
+            dependencies: [dep],
+          );
+          final familyOverride = family.overrideWith((ref, arg) => 0);
+          final provider = Provider((_) => 0, dependencies: [dep]);
+          final providerOverride = provider.overrideWithValue(42);
+
+          final root = ProviderContainer.test();
+          final mid = ProviderContainer.test(
+            parent: root,
+            overrides: [familyOverride, providerOverride],
+          );
+          final container = ProviderContainer.test(
+            parent: mid,
+            overrides: [dep.overrideWithValue(42)],
+          );
+
+          container.pointerManager.upsertPointer(family(42));
+          container.pointerManager.upsertPointer(provider);
+
+          expect(
+            container.pointerManager.familyPointers,
+            {
+              family: isProviderDirectory(
                 targetContainer: mid,
-                override: providerOverride,
+                override: familyOverride,
+                pointers: {
+                  family(42): isPointer(
+                    targetContainer: mid,
+                    override: null,
+                  ),
+                },
               ),
-              dep: isNotNull,
             },
-          ),
-        );
-      });
-
-      test('auto-scoping inserts at the correct container', () {
-        final dep = Provider((_) => 0, dependencies: const [], name: 'dep');
-        final dep2 = Provider((_) => 0, dependencies: const [], name: 'dep2');
-
-        final a = Provider((ref) => 0, dependencies: [dep], name: 'a');
-        final b = Provider((ref) => 0, dependencies: [dep2], name: 'b');
-        final c = Provider.family(
-          (ref, id) => 0,
-          dependencies: [dep],
-          name: 'c',
-        );
-        final d = Provider.family(
-          (ref, id) => 0,
-          dependencies: [dep2],
-          name: 'd',
-        );
-
-        final root = ProviderContainer.test();
-        final mid = ProviderContainer.test(parent: root, overrides: [dep]);
-        final mid2 = ProviderContainer.test(parent: mid, overrides: [dep2]);
-        final leaf = ProviderContainer.test(
-          parent: mid2,
-          overrides: [
-            // Disable scoping optimization
-            Provider((ref) => null, dependencies: const []),
-          ],
-        );
-
-        leaf.pointerManager.upsertPointer(a);
-        leaf.pointerManager.upsertPointer(b);
-        leaf.pointerManager.upsertPointer(c(0));
-        leaf.pointerManager.upsertPointer(d(0));
-
-        expect(
-          leaf.pointerManager.orphanPointers,
-          isProviderDirectory(
-            targetContainer: root,
-            override: null,
-            pointers: allOf(
-              containsPair(
-                a,
-                isPointer(
+          );
+          expect(
+            container.pointerManager.orphanPointers,
+            isProviderDirectory(
+              targetContainer: root,
+              override: null,
+              pointers: {
+                provider: isPointer(
                   targetContainer: mid,
-                  override: isTransitiveProviderOverride(a),
+                  override: providerOverride,
                 ),
-              ),
-              containsPair(
-                b,
-                isPointer(
-                  targetContainer: mid2,
-                  override: isTransitiveProviderOverride(b),
-                ),
-              ),
+                dep: isNotNull,
+              },
             ),
-          ),
-        );
+          );
+        });
 
-        expect(
-          leaf.pointerManager.familyPointers,
-          {
-            c: isProviderDirectory(
-              targetContainer: mid,
-              override: isTransitiveFamilyOverride(c),
-              pointers: {
-                c(0): isPointer(targetContainer: mid, override: null),
-              },
+        test('auto-scoping inserts at the correct container', () {
+          final dep = Provider((_) => 0, dependencies: const [], name: 'dep');
+          final dep2 = Provider((_) => 0, dependencies: const [], name: 'dep2');
+
+          final a = Provider((ref) => 0, dependencies: [dep], name: 'a');
+          final b = Provider((ref) => 0, dependencies: [dep2], name: 'b');
+          final c = Provider.family(
+            (ref, id) => 0,
+            dependencies: [dep],
+            name: 'c',
+          );
+          final d = Provider.family(
+            (ref, id) => 0,
+            dependencies: [dep2],
+            name: 'd',
+          );
+
+          final root = ProviderContainer.test();
+          final mid = ProviderContainer.test(parent: root, overrides: [dep]);
+          final mid2 = ProviderContainer.test(parent: mid, overrides: [dep2]);
+          final leaf = ProviderContainer.test(
+            parent: mid2,
+            overrides: [
+              // Disable scoping optimization
+              Provider((ref) => null, dependencies: const []),
+            ],
+          );
+
+          leaf.pointerManager.upsertPointer(a);
+          leaf.pointerManager.upsertPointer(b);
+          leaf.pointerManager.upsertPointer(c(0));
+          leaf.pointerManager.upsertPointer(d(0));
+
+          expect(
+            leaf.pointerManager.orphanPointers,
+            isProviderDirectory(
+              targetContainer: root,
+              override: null,
+              pointers: allOf(
+                containsPair(
+                  a,
+                  isPointer(
+                    targetContainer: mid,
+                    override: isTransitiveProviderOverride(a),
+                  ),
+                ),
+                containsPair(
+                  b,
+                  isPointer(
+                    targetContainer: mid2,
+                    override: isTransitiveProviderOverride(b),
+                  ),
+                ),
+              ),
             ),
-            d: isProviderDirectory(
-              targetContainer: mid2,
-              override: isTransitiveFamilyOverride(d),
-              pointers: {
-                d(0): isPointer(targetContainer: mid2, override: null),
-              },
-            ),
-          },
-        );
+          );
+
+          expect(
+            leaf.pointerManager.familyPointers,
+            {
+              c: isProviderDirectory(
+                targetContainer: mid,
+                override: isTransitiveFamilyOverride(c),
+                pointers: {
+                  c(0): isPointer(targetContainer: mid, override: null),
+                },
+              ),
+              d: isProviderDirectory(
+                targetContainer: mid2,
+                override: isTransitiveFamilyOverride(d),
+                pointers: {
+                  d(0): isPointer(targetContainer: mid2, override: null),
+                },
+              ),
+            },
+          );
+        });
+
+        test('when overriding a family provider', () {
+          final a = Provider.family.autoDispose<String, String>(
+            (ref, value) => 'root $value',
+            dependencies: [],
+            name: 'a',
+          );
+
+          final b = Provider.family.autoDispose<String, String>(
+            (ref, value) => ref.watch(a(value)),
+            dependencies: [a],
+            name: 'b',
+          );
+
+          final root = ProviderContainer.test();
+          final container = ProviderContainer.test(
+            parent: root,
+            overrides: [a('42').overrideWith((ref) => 'override 42')],
+          );
+
+          expect(container.read(b('42')), 'override 42');
+        });
+
+        test('when overriding both a family and one provider from said family',
+            () {
+          final a = Provider.family.autoDispose<String, String>(
+            (ref, value) => 'root $value',
+            dependencies: [],
+            name: 'a',
+          );
+          final b = Provider.family.autoDispose<String, String>(
+            (ref, value) => ref.watch(a(value)),
+            dependencies: [a],
+            name: 'b',
+          );
+
+          final root = ProviderContainer.test();
+          final mid = ProviderContainer.test(
+            parent: root,
+            overrides: [a.overrideWith((ref, _) => 'mid')],
+          );
+          final container = ProviderContainer.test(
+            parent: mid,
+            overrides: [a('42').overrideWith((ref) => 'override 42')],
+          );
+
+          final mid2 = ProviderContainer.test(
+            parent: root,
+            overrides: [a('42').overrideWith((ref) => 'mid')],
+          );
+          final container2 = ProviderContainer.test(
+            parent: mid2,
+            overrides: [a.overrideWith((ref, value) => 'override $value')],
+          );
+
+          expect(container.read(b('42')), 'override 42');
+          expect(container2.read(b('21')), 'override 21');
+        });
       });
 
       test(
