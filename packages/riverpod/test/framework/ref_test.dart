@@ -6,6 +6,51 @@ import '../utils.dart';
 
 void main() {
   group('Ref', () {
+    group('invalidateSelf', () {
+      test('can disposes of the element if not used anymore', () async {
+        late Ref<Object?> ref;
+        final provider = Provider.autoDispose((r) {
+          ref = r;
+          r.keepAlive();
+          return 0;
+        });
+        final container = createContainer();
+
+        container.read(provider);
+        ref.invalidateSelf();
+
+        await container.pump();
+
+        expect(container.getAllProviderElements(), isEmpty);
+      });
+    });
+
+    group('invalidate', () {
+      test('can disposes of the element if not used anymore', () async {
+        late Ref<Object?> ref;
+        final dep = Provider((r) {
+          ref = r;
+          return 0;
+        });
+        final provider = Provider.autoDispose((r) {
+          r.keepAlive();
+          return 0;
+        });
+        final container = createContainer();
+
+        container.read(dep);
+        container.read(provider);
+        ref.invalidate(provider);
+
+        await container.pump();
+
+        expect(
+          container.getAllProviderElements().map((e) => e.origin),
+          [dep],
+        );
+      });
+    });
+
     test(
       'cannot call ref.watch/ref.read/ref.listen/ref.onDispose after a dependency changed',
       () {
