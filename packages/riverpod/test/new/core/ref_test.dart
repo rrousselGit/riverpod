@@ -30,7 +30,69 @@ final refMethodsThatDependOnProviderOrFamilies =
 
 void main() {
   group('Ref', () {
-    // TODO ref.invalidate does not mount providers if they are not already mounted
+    group('invalidate', () {
+      test('does not mount providers if they are not already mounted',
+          () async {
+        final container = ProviderContainer.test();
+        final provider = FutureProvider<int>((r) async => 0);
+        late Ref<Object?> ref;
+        final dep = Provider((r) {
+          ref = r;
+          return 0;
+        });
+
+        container.read(dep);
+
+        ref.invalidate(provider);
+
+        expect(
+          container.getAllProviderElements().map((e) => e.origin),
+          [dep],
+        );
+      });
+
+      test('supports asReload', () async {
+        final container = ProviderContainer.test();
+        final provider = FutureProvider<int>((r) async => 0);
+        late Ref<Object?> ref;
+        final dep = Provider((r) {
+          ref = r;
+          return 0;
+        });
+
+        container.read(dep);
+        await container.read(provider.future);
+        expect(container.read(provider), const AsyncValue.data(0));
+
+        ref.invalidate(provider, asReload: true);
+
+        expect(
+          container.read(provider),
+          isA<AsyncLoading<int>>().having((e) => e.value, 'value', 0),
+        );
+      });
+    });
+
+    group('invalidateSelf', () {
+      test('supports asReload', () async {
+        final container = ProviderContainer.test();
+        late Ref<AsyncValue<int>> ref;
+        final provider = FutureProvider<int>((r) async {
+          ref = r;
+          return 0;
+        });
+
+        await container.read(provider.future);
+        expect(container.read(provider), const AsyncValue.data(0));
+
+        ref.invalidateSelf(asReload: true);
+
+        expect(
+          container.read(provider),
+          isA<AsyncLoading<int>>().having((e) => e.value, 'value', 0),
+        );
+      });
+    });
 
     test(
       'cannot call ref.watch/ref.read/ref.listen/ref.onDispose after a dependency changed',

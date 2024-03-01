@@ -75,12 +75,18 @@ abstract class Ref<StateT> {
   ///
   /// Calling [invalidate] multiple times will refresh the provider only
   /// once.
-  ///
   /// Calling [invalidate] will cause the provider to be disposed immediately.
+  ///
+  /// - [asReload] (false by default) can be optionally passed to tell
+  ///   Riverpod to clear the state before refreshing it.
+  ///   This is only useful for asynchronous providers, as by default,
+  ///   [AsyncValue] keeps a reference on state during loading states.
+  ///   Using [asReload] will disable this behavior and count as a
+  ///   "hard refresh".
   ///
   /// If used on a provider which is not initialized, this method will have no effect.
   /// {@endtemplate}
-  void invalidate(ProviderOrFamily provider);
+  void invalidate(ProviderOrFamily provider, {bool asReload = false});
 
   /// Notify dependents that this provider has changed.
   ///
@@ -111,16 +117,10 @@ abstract class Ref<StateT> {
     void Function(Object error, StackTrace stackTrace)? onError,
   });
 
-  /// Invalidates the state of the provider, causing it to refresh.
+  /// Invokes [invalidate] on itself.
   ///
-  /// The refresh is not immediate and is instead delayed to the next read
-  /// or next frame.
-  ///
-  /// Calling [invalidateSelf] multiple times will refresh the provider only
-  /// once.
-  ///
-  /// Calling [invalidateSelf] will cause the provider to be disposed immediately.
-  void invalidateSelf();
+  /// {@macro riverpod.invalidate}
+  void invalidateSelf({bool asReload = false});
 
   /// A life-cycle for whenever a new listener is added to the provider.
   ///
@@ -302,6 +302,19 @@ abstract class Ref<StateT> {
   /// - if multiple widgets depends on `sortedTodosProvider` the list will be
   ///   sorted only once.
   /// - if nothing is listening to `sortedTodosProvider`, then no sort is performed.
+  ///
+  ///
+  /// **Note**:
+  /// This can be considered as the combination of [listen] and [invalidateSelf] :
+  /// ```dart
+  /// T watch<T>(ProviderListenable<T> provider) {
+  ///    final sub = listen(provider, (previous, next) {
+  ///      invalidateSelf(asReload: true);
+  ///    });
+  ///    onDispose(sub.cancel);
+  ///    return sub.read();
+  /// }
+  /// ```
   T watch<T>(ProviderListenable<T> provider);
 
   /// {@template riverpod.listen}

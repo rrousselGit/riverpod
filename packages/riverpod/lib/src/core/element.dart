@@ -301,13 +301,17 @@ This could mean a few things:
   void update(ProviderBase<StateT> newProvider) {}
 
   @override
-  void invalidate(ProviderOrFamily providerOrFamily) {
+  void invalidate(
+    ProviderOrFamily providerOrFamily, {
+    bool asReload = false,
+  }) {
     if (kDebugMode) _debugAssertCanDependOn(providerOrFamily);
-    container.invalidate(providerOrFamily);
+    container.invalidate(providerOrFamily, asReload: asReload);
   }
 
   @override
-  void invalidateSelf() {
+  void invalidateSelf({bool asReload = false}) {
+    if (asReload) _didChangeDependency = true;
     if (_mustRecomputeState) return;
 
     _mustRecomputeState = true;
@@ -555,7 +559,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     );
 
     for (var i = 0; i < _providerDependents.length; i++) {
-      _providerDependents[i]._markDependencyChanged();
+      _providerDependents[i].invalidateSelf(asReload: true);
     }
 
     for (final observer in container.observers) {
@@ -582,14 +586,6 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         },
       );
     }
-  }
-
-  void _markDependencyChanged() {
-    _didChangeDependency = true;
-    if (_mustRecomputeState) return;
-
-    // will notify children that their dependency may have changed
-    invalidateSelf();
   }
 
   void _markDependencyMayHaveChanged() {
@@ -691,8 +687,8 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
     if (listenable is! ProviderBase<T>) {
       final sub = listen<T>(
         listenable,
-        (prev, value) => _markDependencyChanged(),
-        onError: (err, stack) => _markDependencyChanged(),
+        (prev, value) => invalidateSelf(asReload: true),
+        onError: (err, stack) => invalidateSelf(asReload: true),
         onDependencyMayHaveChanged: _markDependencyMayHaveChanged,
       );
 

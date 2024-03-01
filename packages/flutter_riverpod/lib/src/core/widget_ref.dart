@@ -370,11 +370,18 @@ abstract class WidgetRef {
   ///
   /// Calling [invalidate] multiple times will refresh the provider only
   /// once.
-  ///
   /// Calling [invalidate] will cause the provider to be disposed immediately.
   ///
+  /// - [asReload] (false by default) can be optionally passed to tell
+  ///   Riverpod to clear the state before refreshing it.
+  ///   This is only useful for asynchronous providers, as by default,
+  ///   [AsyncValue] keeps a reference on state during loading states.
+  ///   Using [asReload] will disable this behavior and count as a
+  ///   "hard refresh".
+  ///
   /// If used on a provider which is not initialized, this method will have no effect.
-  void invalidate(ProviderOrFamily provider);
-
-  // TODO reload
+  void invalidate(
+    ProviderOrFamily provider, {
+    bool asReload = false,
+  });
 }
