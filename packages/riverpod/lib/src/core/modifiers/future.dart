@@ -218,13 +218,14 @@ mixin FutureModifierElement<StateT> on ProviderElementBase<AsyncValue<StateT>> {
   set state(AsyncValue<StateT> newState) {
     // TODO assert Notifier isn't disposed
     newState.map(
-      loading: _onLoading,
+      loading: onLoading,
       error: onError,
       data: onData,
     );
   }
 
-  void _onLoading(AsyncLoading<StateT> value, {bool seamless = false}) {
+  @internal
+  void onLoading(AsyncLoading<StateT> value, {bool seamless = false}) {
     asyncTransition(value, seamless: seamless);
     if (_futureCompleter == null) {
       final completer = _futureCompleter = Completer();
@@ -383,7 +384,7 @@ mixin FutureModifierElement<StateT> on ProviderElementBase<AsyncValue<StateT>> {
     }) listen, {
     required bool didChangeDependency,
   }) {
-    _onLoading(AsyncLoading<StateT>(), seamless: !didChangeDependency);
+    onLoading(AsyncLoading<StateT>(), seamless: !didChangeDependency);
 
     try {
       final sub = _cancelSubscription = listen(

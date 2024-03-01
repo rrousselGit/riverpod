@@ -217,7 +217,7 @@ void main() {
     container.read(provider.future).catchError((Object _) => 0);
   });
 
-  group('scoping an override overrides all the associated subproviders', () {
+  group('scoping an override overrides all the associated sub-providers', () {
     test('when passing the provider itself', () async {
       final provider = FutureProvider.autoDispose(
         (ref) async => 0,
@@ -238,22 +238,27 @@ void main() {
       ]);
     });
 
-    // test('when using provider.overrideWithValue', () async {
-    //   final provider = FutureProvider.autoDispose((ref) async => 0);
-    //   final root = ProviderContainer.test();
-    //   final container = ProviderContainer.test(parent: root, overrides: [
-    //     provider.overrideWithValue(const AsyncValue.data(42)),
-    //   ]);
+    test('when using provider.overrideWithValue', () async {
+      final provider = FutureProvider.autoDispose(
+        (ref) async => 0,
+        dependencies: const [],
+      );
+      final root = ProviderContainer.test();
+      final container = ProviderContainer.test(
+        parent: root,
+        overrides: [
+          provider.overrideWithValue(const AsyncValue.data(42)),
+        ],
+      );
 
-    //   expect(await container.read(provider.future), 42);
-    //   expect(container.read(provider), const AsyncValue.data(42));
-    //   expect(root.getAllProviderElementsInOrder(), isEmpty);
-    //   expect(container.getAllProviderElementsInOrder(), [
-    //     isA<ProviderElementBase<Object?>>().having((e) => e.origin, 'origin', provider),
-    //     isA<ProviderElementBase<Object?>>()
-    //         .having((e) => e.origin, 'origin', provider.future)
-    //   ]);
-    // });
+      expect(await container.read(provider.future), 42);
+      expect(container.read(provider), const AsyncValue.data(42));
+      expect(root.getAllProviderElementsInOrder(), isEmpty);
+      expect(container.getAllProviderElementsInOrder(), [
+        isA<ProviderElementBase<Object?>>()
+            .having((e) => e.origin, 'origin', provider),
+      ]);
+    });
 
     test('when using provider.overrideWith', () async {
       final provider = FutureProvider.autoDispose(

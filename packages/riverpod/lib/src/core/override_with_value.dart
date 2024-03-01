@@ -58,7 +58,7 @@ class _ValueProviderElement<StateT> extends ProviderElementBase<StateT> {
       // other providers
       if (kDebugMode) _debugSkipNotifyListenersAsserts = true;
 
-      setStateResult(ResultData(newValue));
+      _setValue(newValue);
 
       // Asserts would otherwise prevent a provider rebuild from updating
       // other providers
@@ -68,13 +68,46 @@ class _ValueProviderElement<StateT> extends ProviderElementBase<StateT> {
     }
   }
 
+  void _setValue(StateT value) => setStateResult(ResultData(value));
+
   @override
   void create({required bool didChangeDependency}) {
-    setStateResult(ResultData(provider._value));
+    _setValue(provider._value);
   }
 
   @override
   bool updateShouldNotify(StateT previous, StateT next) {
     return true;
+  }
+}
+
+final class $AsyncValueProvider<StateT>
+    extends $ValueProvider<AsyncValue<StateT>> {
+  const $AsyncValueProvider(super._value);
+
+  @override
+  // ignore: library_private_types_in_public_api, not public API
+  _AsyncValueProviderElement<StateT> $createElement(
+    ProviderContainer container,
+  ) {
+    return _AsyncValueProviderElement(this, container);
+  }
+}
+
+class _AsyncValueProviderElement<StateT>
+    extends _ValueProviderElement<AsyncValue<StateT>>
+    with FutureModifierElement<StateT> {
+  _AsyncValueProviderElement(super.provider, super.container);
+
+  @override
+  void _setValue(AsyncValue<StateT> value) {
+    switch (value) {
+      case AsyncData():
+        onData(value, seamless: true);
+      case AsyncError():
+        onError(value, seamless: true);
+      case AsyncLoading():
+        onLoading(value, seamless: true);
+    }
   }
 }
