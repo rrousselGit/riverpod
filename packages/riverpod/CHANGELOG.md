@@ -938,7 +938,7 @@ migrated to null safety.
 
 - Re-added
   `StateProvider.overrideWithValue`/`StateProvider.overrideWithProvider` that
-  were unvoluntarily removed.
+  were involuntarily removed.
 
 ## 0.14.0
 

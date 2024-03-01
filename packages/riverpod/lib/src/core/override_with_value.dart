@@ -81,6 +81,7 @@ class _ValueProviderElement<StateT> extends ProviderElementBase<StateT> {
   }
 }
 
+@internal
 final class $AsyncValueProvider<StateT>
     extends $ValueProvider<AsyncValue<StateT>> {
   const $AsyncValueProvider(super._value);

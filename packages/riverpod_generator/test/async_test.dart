@@ -136,7 +136,7 @@ void main() {
     );
   });
 
-  test('can override providers', () {
+  test('can overrideWith', () {
     final container = ProviderContainer.test(
       overrides: [
         publicProvider.overrideWith((ref) {
@@ -167,5 +167,16 @@ void main() {
           .param,
       (42, second: '42', third: 0.42, fourth: true, fifth: null),
     );
+  });
+
+  test('can overrideWithValue providers ', () {
+    final container = ProviderContainer.test(
+      overrides: [
+        publicProvider.overrideWithValue(const AsyncData('test')),
+      ],
+    );
+
+    expect(container.read(publicProvider), const AsyncData('test'));
+    expect(container.read(publicProvider.future), completion('test'));
   });
 }
