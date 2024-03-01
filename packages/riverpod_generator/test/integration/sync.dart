@@ -223,3 +223,12 @@ class UnnecessaryCastClass extends _$UnnecessaryCastClass {
     return 'Just a simple normal generated provider';
   }
 }
+
+// Regression test for https://github.com/rrousselGit/riverpod/issues/3249
+class ManyProviderData<T, S> {}
+
+@riverpod
+Stream<List<T>> manyDataStream<T extends Object, S extends Object>(
+  ManyDataStreamRef ref,
+  ManyProviderData<T, S> pData,
+) async* {}

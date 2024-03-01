@@ -3137,5 +3137,147 @@ abstract class _$UnnecessaryCastClass extends $Notifier<String> {
       );
 }
 
+typedef ManyDataStreamRef<T extends Object, S extends Object>
+    = Ref<AsyncValue<List<T>>>;
+
+@ProviderFor(manyDataStream)
+const manyDataStreamProvider = ManyDataStreamFamily._();
+
+final class ManyDataStreamProvider<T extends Object, S extends Object>
+    extends $FunctionalProvider<AsyncValue<List<T>>, Stream<List<T>>,
+        ManyDataStreamRef<T, S>>
+    with
+        $FutureModifier<List<T>>,
+        $StreamProvider<List<T>, ManyDataStreamRef<T, S>> {
+  const ManyDataStreamProvider._(
+      {required ManyDataStreamFamily super.from,
+      required ManyProviderData<T, S> super.argument,
+      Stream<List<T>> Function(
+        ManyDataStreamRef<T, S> ref,
+        ManyProviderData<T, S> pData,
+      )? create})
+      : _createCb = create,
+        super(
+          name: r'manyDataStreamProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final Stream<List<T>> Function(
+    ManyDataStreamRef<T, S> ref,
+    ManyProviderData<T, S> pData,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$manyDataStreamHash();
+
+  ManyDataStreamProvider<T, S> _copyWithCreate(
+    Stream<List<T>> Function<T extends Object, S extends Object>(
+      ManyDataStreamRef<T, S> ref,
+      ManyProviderData<T, S> pData,
+    ) create,
+  ) {
+    return ManyDataStreamProvider<T, S>._(
+        argument: argument as ManyProviderData<T, S>,
+        from: from! as ManyDataStreamFamily,
+        create: create<T, S>);
+  }
+
+  @override
+  String toString() {
+    return r'manyDataStreamProvider'
+        '<${T}, ${S}>'
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $StreamProviderElement<List<T>> $createElement(ProviderContainer container) =>
+      $StreamProviderElement(this, container);
+
+  @override
+  ManyDataStreamProvider<T, S> $copyWithCreate(
+    Stream<List<T>> Function(
+      ManyDataStreamRef<T, S> ref,
+    ) create,
+  ) {
+    return ManyDataStreamProvider<T, S>._(
+        argument: argument as ManyProviderData<T, S>,
+        from: from! as ManyDataStreamFamily,
+        create: (
+          ref,
+          ManyProviderData<T, S> pData,
+        ) =>
+            create(ref));
+  }
+
+  @override
+  Stream<List<T>> create(ManyDataStreamRef<T, S> ref) {
+    final _$cb = _createCb ?? manyDataStream<T, S>;
+    final argument = this.argument as ManyProviderData<T, S>;
+    return _$cb(
+      ref,
+      argument,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ManyDataStreamProvider &&
+        other.runtimeType == runtimeType &&
+        other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(runtimeType, argument);
+  }
+}
+
+String _$manyDataStreamHash() => r'965270e9e187c17b8c78c03ded79136a4073ff04';
+
+final class ManyDataStreamFamily extends Family {
+  const ManyDataStreamFamily._()
+      : super(
+          name: r'manyDataStreamProvider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  ManyDataStreamProvider<T, S> call<T extends Object, S extends Object>(
+    ManyProviderData<T, S> pData,
+  ) =>
+      ManyDataStreamProvider<T, S>._(argument: pData, from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$manyDataStreamHash();
+
+  @override
+  String toString() => r'manyDataStreamProvider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    Stream<List<T>> Function<T extends Object, S extends Object>(
+      ManyDataStreamRef<T, S> ref,
+      ManyProviderData<T, S> args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (container, provider) {
+        provider as ManyDataStreamProvider;
+
+        return provider._copyWithCreate(<T extends Object, S extends Object>(
+          ref,
+          ManyProviderData<T, S> pData,
+        ) {
+          return create(ref, pData);
+        }).$createElement(container);
+      },
+    );
+  }
+}
 // ignore_for_file: type=lint
 // ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
