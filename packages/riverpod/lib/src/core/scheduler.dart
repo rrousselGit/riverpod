@@ -5,8 +5,10 @@ part of '../framework.dart';
 @internal
 typedef Vsync = void Function(void Function());
 
-void _defaultVsync(void Function() task) {
-  Future(task);
+void Function()? _defaultVsync(void Function() task) {
+  final timer = Timer(Duration.zero, task);
+
+  return timer.cancel;
 }
 
 /// The object that handles when providers are refreshed and disposed.
@@ -28,7 +30,7 @@ class ProviderScheduler {
   ///
   /// Defaults to refreshing providers at the end of the next event-loop.
   @internal
-  void Function(void Function()) get vsync {
+  void Function()? Function(void Function()) get vsync {
     if (flutterVsyncs.isNotEmpty) {
       // Notify all InheritedWidgets of a possible rebuild.
       // At the same time, we only execute the task once, in whichever
@@ -44,6 +46,8 @@ class ProviderScheduler {
         for (final flutterVsync in flutterVsyncs) {
           flutterVsync(invoke);
         }
+
+        return;
       };
     }
 
@@ -55,6 +59,8 @@ class ProviderScheduler {
 
   Completer<void>? _pendingTaskCompleter;
   Future<void>? get pendingFuture => _pendingTaskCompleter?.future;
+
+  void Function()? _cancel;
 
   void scheduleProviderRefresh(ProviderElementBase<Object?> element) {
     _stateToRefresh.add(element);
@@ -71,10 +77,11 @@ class ProviderScheduler {
     // disposed.
     if (_pendingTaskCompleter != null || _disposed) return;
     _pendingTaskCompleter = Completer<void>();
-    vsync(_task);
+    _cancel = vsync(_task);
   }
 
   void _task() {
+    _cancel = null;
     final pendingTaskCompleter = _pendingTaskCompleter;
     if (pendingTaskCompleter == null) return;
     pendingTaskCompleter.complete();
@@ -129,5 +136,6 @@ class ProviderScheduler {
     _disposed = true;
     _pendingTaskCompleter?.complete();
     _pendingTaskCompleter = null;
+    _cancel?.call();
   }
 }
