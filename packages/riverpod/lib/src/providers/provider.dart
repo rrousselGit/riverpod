@@ -84,32 +84,47 @@ base class Provider<StateT>
   /// Overrides a provider with a value, ejecting the default behavior.
   ///
   /// This will also disable the auto-scoping mechanism, meaning that if the
-  /// overridden provider specified [dependencies], it will have no effect.
+  /// overridden provider specified `dependencies`, it will have no effect.
   ///
-  /// Some common use-cases are:
-  /// - testing, by replacing a service with a fake implementation, or to reach
-  ///   a very specific state easily.
-  /// - multiple environments, by changing the implementation of a class
-  ///   based on the platform or other parameters.
+  /// The main difference between [overrideWith] and [overrideWithValue] is:
+  /// - [overrideWith] allows you to replace the implementation of a provider.
+  ///   This gives full access to [Ref], and the result will be cached by Riverpod.
+  ///   The override can never change.
+  /// - [overrideWithValue] allows you to replace the result of a provider.
+  ///   If the overridden value ever changes, notifiers will be updated.
   ///
-  /// This function should be used in combination with `ProviderScope.overrides`
-  /// or `ProviderContainer.overrides`:
+  ///
+  /// Alongside the typical use-cases of [overrideWith], [overrideWithValue]
+  /// has is particularly useful for converting `BuildContext` values to providers.
+  ///
+  /// For example, we can make a provider that represents `ThemeData` from Flutter:
   ///
   /// ```dart
-  /// final myService = Provider((ref) => MyService());
+  /// final themeProvider = Provider<ThemeData>((ref) => throw UnimplementedError());
+  /// ```
   ///
-  /// runApp(
-  ///   ProviderScope(
-  ///     overrides: [
-  ///       myService.overrideWithValue(
-  ///         // Replace the implementation of MyService with a fake implementation
-  ///         MyFakeService(),
-  ///       ),
-  ///     ],
-  ///     child: MyApp(),
-  ///   ),
+  /// We can then override this provider with the current theme of the app:
+  ///
+  /// ```dart
+  /// MaterialApp(
+  ///   builder: (context, child) {
+  ///     final theme = Theme.of(context);
+  ///
+  ///     return ProviderScope(
+  ///       overrides: [
+  ///         /// We override "themeProvider" with a valid theme instance.
+  ///         /// This allows providers such as "tagThemeProvider" to read the
+  ///         /// current theme, without having a BuildContext.
+  ///         themeProvider.overrideWithValue(theme),
+  ///       ],
+  ///       child: MyApp(),
+  ///     );
+  ///   },
   /// );
   /// ```
+  ///
+  /// The benefit of using [overrideWithValue] over [overrideWith] in this scenario
+  /// is that if the theme ever changes, then `themeProvider` will be updated.
   /// {@endtemplate}
   Override overrideWithValue(StateT value) {
     return $ProviderOverride(

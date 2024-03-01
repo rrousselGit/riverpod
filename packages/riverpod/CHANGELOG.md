@@ -2,6 +2,7 @@
 
 - **Breaking** `AsyncValue.value` now returns `null` during errors.
 - **Breaking** removed `AsyncValue.valueOrNull` (use `.value` instead).
+- `Stream/FutureProvider.overrideWithValue` was added back.
 - Updated `AsyncValue` documentations to use pattern matching.
 
 ## 3.0.0-dev.3 - 2023-11-27
@@ -937,7 +938,7 @@ migrated to null safety.
 
 - Re-added
   `StateProvider.overrideWithValue`/`StateProvider.overrideWithProvider` that
-  were unvoluntarily removed.
+  were involuntarily removed.
 
 ## 0.14.0
 

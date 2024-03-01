@@ -10,7 +10,7 @@ void main() {
     expect(provider(0).argument, 0);
   });
 
-  group('scoping an override overrides all the associated subproviders', () {
+  group('scoping an override overrides all the associated sub-providers', () {
     test('when passing the provider itself', () async {
       final provider = FutureProvider.family<int, int>(
         (ref, _) async => 0,
