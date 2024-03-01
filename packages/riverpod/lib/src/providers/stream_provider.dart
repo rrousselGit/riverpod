@@ -16,7 +16,7 @@ import 'provider.dart' show Provider;
 base mixin $StreamProvider<StateT, RefT> on ProviderBase<AsyncValue<StateT>> {
   Stream<StateT> create(RefT ref);
 
-  // TODO doc
+  /// {@macro riverpod.override_with_value}
   Override overrideWithValue(AsyncValue<StateT> value) {
     return $ProviderOverride(
       origin: this,
