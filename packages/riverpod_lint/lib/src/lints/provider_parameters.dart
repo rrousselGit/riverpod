@@ -5,7 +5,6 @@ import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
-import '../object_utils.dart';
 import '../riverpod_custom_lint.dart';
 
 class ProviderParameters extends RiverpodLintRule {
@@ -54,12 +53,7 @@ class ProviderParameters extends RiverpodLintRule {
           final operatorEqual =
               instantiatedObject?.enclosingElement.recursiveGetMethod('==');
 
-          final isEqualFromObjectMethod = operatorEqual?.enclosingElement
-              .safeCast<ClassElement>()
-              ?.thisType
-              .isDartCoreObject;
-
-          if (operatorEqual == null || (isEqualFromObjectMethod ?? true)) {
+          if (operatorEqual == null) {
             // Doing `provider(new Class())` is bad if the class does not override ==
             reporter.reportErrorForNode(code, value);
           }
@@ -79,6 +73,8 @@ extension on ConstructorElement {
 
 extension on InterfaceElement {
   MethodElement? recursiveGetMethod(String name) {
+    if (thisType.isDartCoreObject) return null;
+
     final thisMethod = getMethod(name);
     if (thisMethod != null) return thisMethod;
 

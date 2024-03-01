@@ -5,6 +5,7 @@
 - added `avoid_keep_alive_dependency_inside_auto_dispose`
 - added `unknown_scoped_usage`, for reporting when a scoped provider is used but the ref could not be found.****
 - added automatic migration to import `package:riverpod/legacy.dart` for corresponding providers.
+- Fix `provider_parameters` for objects using mixins.
 
 - **Breaking**: No-longer exports various providers
   from `package:riverpod`.
