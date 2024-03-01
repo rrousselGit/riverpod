@@ -1,11 +1,11 @@
-## 2.5.0 - 2024-02-03
-
-- Add `test` argument to `AsyncValue.guard` method. (thanks to @utamori)
-
 ## Unreleased fix
 
 - Improved `Provider(dependencies: [...])` documentation.
 - Fix out of date `pub.dev` description
+
+## 2.5.0 - 2024-02-03
+
+- Add `test` argument to `AsyncValue.guard` method. (thanks to @utamori)
 
 ## 2.4.9 - 2023-11-27
 
