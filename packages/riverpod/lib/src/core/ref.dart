@@ -172,6 +172,38 @@ abstract class Ref<StateT> {
   /// - when an `autoDispose` provider is no longer used
   /// - when the associated [ProviderContainer]/`ProviderScope` is disposed`.
   ///
+  /// **Prefer** having multiple [onDispose], for every disposable object created,
+  /// instead of a single large [onDispose]:
+  ///
+  /// Good:
+  /// ```dart
+  /// final disposable1 = Disposable(...);
+  /// ref.onDispose(disposable1.dispose);
+  ///
+  /// final disposable2 = Disposable(...);
+  /// ref.onDispose(disposable2.dispose);
+  /// ```
+  ///
+  /// Bad:
+  /// ```dart
+  /// final disposable1 = Disposable(...);
+  /// final disposable2 = Disposable(...);
+  ///
+  /// ref.onDispose(() {
+  ///   disposable1.dispose();
+  ///   disposable2.dispose();
+  /// });
+  /// ```
+  ///
+  /// This is preferable for multiple reasons:
+  /// - It is easier for readers to know if a "dispose" is missing for a given
+  ///   object. That is because the `dispose` call is directly next to the
+  ///   object creation.
+  /// - It prevents memory leaks in cases of an exception.
+  ///   If an exception happens inside a `dispose()` call, or
+  ///   if an exception happens before [onDispose] is called, then
+  ///   some of your objects may not be disposed.
+  ///
   /// See also:
   ///
   /// - [Provider.autoDispose], a modifier which tell a provider that it should

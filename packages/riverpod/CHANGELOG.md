@@ -37,11 +37,14 @@ Fix exceptions when using multiple root `ProviderContainers`/`ProviderScopes`.
 - **Breaking**: Removed everything marked as "deprecated"
 - Bumped minimum Dart SDK to >= 3.0.0-dev
 
+## Unreleased fix
+
+- Improved `Provider(dependencies: [...])` documentation.
+- Fix out of date `pub.dev` description
+
 ## 2.5.0 - 2024-02-03
 
 - Add `test` argument to `AsyncValue.guard` method. (thanks to @utamori)
-- Improved `Provider(dependencies: [...])` documentation.
-- Fix out of date `pub.dev` description
 
 ## 2.4.9 - 2023-11-27
 
