@@ -297,6 +297,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
 
     _mustRecomputeState = true;
     runOnDispose();
+    mayNeedDispose();
     _container.scheduler.scheduleProviderRefresh(this);
 
     // We don't call this._markDependencyMayHaveChanged here because we voluntarily

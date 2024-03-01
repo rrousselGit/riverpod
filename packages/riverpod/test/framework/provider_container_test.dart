@@ -7,6 +7,23 @@ import '../utils.dart';
 
 void main() {
   group('ProviderContainer', () {
+    group('invalidate', () {
+      test('can disposes of the element if not used anymore', () async {
+        final provider = Provider.autoDispose((r) {
+          r.keepAlive();
+          return 0;
+        });
+        final container = createContainer();
+
+        container.read(provider);
+        container.invalidate(provider);
+
+        await container.pump();
+
+        expect(container.getAllProviderElements(), isEmpty);
+      });
+    });
+
     test('Supports unmounting containers in reverse order', () {
       final container = createContainer();
 

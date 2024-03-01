@@ -2,6 +2,8 @@
 
 - Improved `Provider(dependencies: [...])` documentation.
 - Fix out of date `pub.dev` description
+- `ref.invalidate` now correctly clear all resources associated
+  with the provider if the provider is no-longer used.
 
 ## 2.5.0 - 2024-02-03
 
