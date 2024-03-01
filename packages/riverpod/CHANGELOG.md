@@ -5,6 +5,7 @@
 - `Stream/FutureProvider.overrideWithValue` was added back.
 - Updated `AsyncValue` documentations to use pattern matching.
 - Added support for `Ref/ProviderContainer.invalidate(provider, asReload: true)`
+- Fixed a bug when overriding a specific provider of a `family`, combined with `dependencies: [family]`
 
 ## 3.0.0-dev.3 - 2023-11-27
 
