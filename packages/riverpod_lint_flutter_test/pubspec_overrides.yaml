@@ -14,6 +14,3 @@ dependency_overrides:
     path: ../riverpod_annotation
   riverpod_lint:
     path: ../riverpod_lint
-
-  # hotreloader is out of date
-  vm_service: ^14.0.0
