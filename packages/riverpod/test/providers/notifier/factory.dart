@@ -9,6 +9,18 @@ extension UnsafeWatch on Ref {
     final ref = this as AutoDisposeRef;
     return ref.watch(listenable);
   }
+
+  ProviderSubscription<T> unsafeListen<T>(
+    ProviderListenable<T> listenable,
+    void Function(T? previous, T next) listener,
+  ) {
+    if (listenable is AlwaysAliveProviderListenable<T>) {
+      return listen(listenable, listener);
+    }
+
+    final ref = this as AutoDisposeRef;
+    return ref.listen(listenable, listener);
+  }
 }
 
 typedef NotifierProviderFactoryType = NotifierProviderBase<NotifierT, T>
