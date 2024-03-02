@@ -21,7 +21,7 @@ class TodoList extends StateNotifier<List<Todo>> {
 final counterProvider = StateProvider((ref) => 0);
 
 class HomeView extends ConsumerWidget {
-  const HomeView({Key? key}) : super(key: key);
+  const HomeView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

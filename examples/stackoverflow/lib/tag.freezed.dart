@@ -12,7 +12,7 @@ part of 'tag.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$TagTheme {
@@ -78,10 +78,11 @@ class _$TagThemeCopyWithImpl<$Res, $Val extends TagTheme>
 }
 
 /// @nodoc
-abstract class _$$_TagThemeCopyWith<$Res> implements $TagThemeCopyWith<$Res> {
-  factory _$$_TagThemeCopyWith(
-          _$_TagTheme value, $Res Function(_$_TagTheme) then) =
-      __$$_TagThemeCopyWithImpl<$Res>;
+abstract class _$$TagThemeImplCopyWith<$Res>
+    implements $TagThemeCopyWith<$Res> {
+  factory _$$TagThemeImplCopyWith(
+          _$TagThemeImpl value, $Res Function(_$TagThemeImpl) then) =
+      __$$TagThemeImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -92,11 +93,11 @@ abstract class _$$_TagThemeCopyWith<$Res> implements $TagThemeCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$_TagThemeCopyWithImpl<$Res>
-    extends _$TagThemeCopyWithImpl<$Res, _$_TagTheme>
-    implements _$$_TagThemeCopyWith<$Res> {
-  __$$_TagThemeCopyWithImpl(
-      _$_TagTheme _value, $Res Function(_$_TagTheme) _then)
+class __$$TagThemeImplCopyWithImpl<$Res>
+    extends _$TagThemeCopyWithImpl<$Res, _$TagThemeImpl>
+    implements _$$TagThemeImplCopyWith<$Res> {
+  __$$TagThemeImplCopyWithImpl(
+      _$TagThemeImpl _value, $Res Function(_$TagThemeImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -107,7 +108,7 @@ class __$$_TagThemeCopyWithImpl<$Res>
     Object? backgroundColor = null,
     Object? borderRadius = null,
   }) {
-    return _then(_$_TagTheme(
+    return _then(_$TagThemeImpl(
       style: null == style
           ? _value.style
           : style // ignore: cast_nullable_to_non_nullable
@@ -130,8 +131,8 @@ class __$$_TagThemeCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_TagTheme implements _TagTheme {
-  const _$_TagTheme(
+class _$TagThemeImpl implements _TagTheme {
+  const _$TagThemeImpl(
       {required this.style,
       required this.padding,
       required this.backgroundColor,
@@ -152,10 +153,10 @@ class _$_TagTheme implements _TagTheme {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_TagTheme &&
+            other is _$TagThemeImpl &&
             (identical(other.style, style) || other.style == style) &&
             (identical(other.padding, padding) || other.padding == padding) &&
             (identical(other.backgroundColor, backgroundColor) ||
@@ -171,8 +172,8 @@ class _$_TagTheme implements _TagTheme {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_TagThemeCopyWith<_$_TagTheme> get copyWith =>
-      __$$_TagThemeCopyWithImpl<_$_TagTheme>(this, _$identity);
+  _$$TagThemeImplCopyWith<_$TagThemeImpl> get copyWith =>
+      __$$TagThemeImplCopyWithImpl<_$TagThemeImpl>(this, _$identity);
 }
 
 abstract class _TagTheme implements TagTheme {
@@ -180,7 +181,7 @@ abstract class _TagTheme implements TagTheme {
       {required final TextStyle style,
       required final EdgeInsets padding,
       required final Color backgroundColor,
-      required final BorderRadius borderRadius}) = _$_TagTheme;
+      required final BorderRadius borderRadius}) = _$TagThemeImpl;
 
   @override
   TextStyle get style;
@@ -192,6 +193,6 @@ abstract class _TagTheme implements TagTheme {
   BorderRadius get borderRadius;
   @override
   @JsonKey(ignore: true)
-  _$$_TagThemeCopyWith<_$_TagTheme> get copyWith =>
+  _$$TagThemeImplCopyWith<_$TagThemeImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

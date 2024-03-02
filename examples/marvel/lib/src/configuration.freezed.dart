@@ -12,7 +12,7 @@ part of 'configuration.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 Configuration _$ConfigurationFromJson(Map<String, dynamic> json) {
   return _Configuration.fromJson(json);
@@ -68,22 +68,22 @@ class _$ConfigurationCopyWithImpl<$Res, $Val extends Configuration>
 }
 
 /// @nodoc
-abstract class _$$_ConfigurationCopyWith<$Res>
+abstract class _$$ConfigurationImplCopyWith<$Res>
     implements $ConfigurationCopyWith<$Res> {
-  factory _$$_ConfigurationCopyWith(
-          _$_Configuration value, $Res Function(_$_Configuration) then) =
-      __$$_ConfigurationCopyWithImpl<$Res>;
+  factory _$$ConfigurationImplCopyWith(
+          _$ConfigurationImpl value, $Res Function(_$ConfigurationImpl) then) =
+      __$$ConfigurationImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String publicKey, String privateKey});
 }
 
 /// @nodoc
-class __$$_ConfigurationCopyWithImpl<$Res>
-    extends _$ConfigurationCopyWithImpl<$Res, _$_Configuration>
-    implements _$$_ConfigurationCopyWith<$Res> {
-  __$$_ConfigurationCopyWithImpl(
-      _$_Configuration _value, $Res Function(_$_Configuration) _then)
+class __$$ConfigurationImplCopyWithImpl<$Res>
+    extends _$ConfigurationCopyWithImpl<$Res, _$ConfigurationImpl>
+    implements _$$ConfigurationImplCopyWith<$Res> {
+  __$$ConfigurationImplCopyWithImpl(
+      _$ConfigurationImpl _value, $Res Function(_$ConfigurationImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -92,7 +92,7 @@ class __$$_ConfigurationCopyWithImpl<$Res>
     Object? publicKey = null,
     Object? privateKey = null,
   }) {
-    return _then(_$_Configuration(
+    return _then(_$ConfigurationImpl(
       publicKey: null == publicKey
           ? _value.publicKey
           : publicKey // ignore: cast_nullable_to_non_nullable
@@ -108,11 +108,11 @@ class __$$_ConfigurationCopyWithImpl<$Res>
 /// @nodoc
 
 @JsonSerializable(fieldRename: FieldRename.snake)
-class _$_Configuration implements _Configuration {
-  _$_Configuration({required this.publicKey, required this.privateKey});
+class _$ConfigurationImpl implements _Configuration {
+  _$ConfigurationImpl({required this.publicKey, required this.privateKey});
 
-  factory _$_Configuration.fromJson(Map<String, dynamic> json) =>
-      _$$_ConfigurationFromJson(json);
+  factory _$ConfigurationImpl.fromJson(Map<String, dynamic> json) =>
+      _$$ConfigurationImplFromJson(json);
 
   @override
   final String publicKey;
@@ -125,10 +125,10 @@ class _$_Configuration implements _Configuration {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_Configuration &&
+            other is _$ConfigurationImpl &&
             (identical(other.publicKey, publicKey) ||
                 other.publicKey == publicKey) &&
             (identical(other.privateKey, privateKey) ||
@@ -142,12 +142,12 @@ class _$_Configuration implements _Configuration {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_ConfigurationCopyWith<_$_Configuration> get copyWith =>
-      __$$_ConfigurationCopyWithImpl<_$_Configuration>(this, _$identity);
+  _$$ConfigurationImplCopyWith<_$ConfigurationImpl> get copyWith =>
+      __$$ConfigurationImplCopyWithImpl<_$ConfigurationImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_ConfigurationToJson(
+    return _$$ConfigurationImplToJson(
       this,
     );
   }
@@ -156,10 +156,10 @@ class _$_Configuration implements _Configuration {
 abstract class _Configuration implements Configuration {
   factory _Configuration(
       {required final String publicKey,
-      required final String privateKey}) = _$_Configuration;
+      required final String privateKey}) = _$ConfigurationImpl;
 
   factory _Configuration.fromJson(Map<String, dynamic> json) =
-      _$_Configuration.fromJson;
+      _$ConfigurationImpl.fromJson;
 
   @override
   String get publicKey;
@@ -167,6 +167,6 @@ abstract class _Configuration implements Configuration {
   String get privateKey;
   @override
   @JsonKey(ignore: true)
-  _$$_ConfigurationCopyWith<_$_Configuration> get copyWith =>
+  _$$ConfigurationImplCopyWith<_$ConfigurationImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

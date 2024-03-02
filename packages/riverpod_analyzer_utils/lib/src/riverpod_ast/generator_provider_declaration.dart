@@ -61,9 +61,24 @@ abstract class GeneratorProviderDeclaration extends ProviderDeclaration {
   @override
   GeneratorProviderDeclarationElement get providerElement;
   RiverpodAnnotation get annotation;
-  DartType get valueType;
-  DartType get exposedType;
-  DartType get createdType;
+
+  String get valueTypeDisplayString => valueTypeNode?.toSource() ?? 'Object?';
+  String get exposedTypeDisplayString => exposedTypeNode?.source ?? 'Object?';
+  String get createdTypeDisplayString {
+    final type = createdTypeNode?.type;
+
+    if (type != null &&
+        !type.isRaw &&
+        (type.isDartAsyncFuture || type.isDartAsyncFutureOr)) {
+      return 'FutureOr<$valueTypeDisplayString>';
+    }
+
+    return createdTypeNode?.toSource() ?? 'Object?';
+  }
+
+  TypeAnnotation? get valueTypeNode;
+  SourcedType? get exposedTypeNode;
+  TypeAnnotation? get createdTypeNode;
 
   final List<RefInvocation> refInvocations = [];
 
@@ -85,34 +100,82 @@ abstract class GeneratorProviderDeclaration extends ProviderDeclaration {
   }
 }
 
-DartType? _computeExposedType(
-  DartType createdType,
+SourcedType? _computeExposedType(
+  TypeAnnotation? createdType,
   LibraryElement library,
 ) {
-  if (createdType.isRaw) return createdType;
+  if (createdType == null) {
+    return (
+      source: null,
+      dartType: library.typeProvider.dynamicType,
+    );
+  }
 
-  if (createdType.isDartAsyncFuture ||
-      createdType.isDartAsyncFutureOr ||
-      createdType.isDartAsyncStream) {
-    createdType as InterfaceType;
-    return library.createdTypeToValueType(createdType.typeArguments.first);
+  final createdDartType = createdType.type!;
+  if (createdDartType.isRaw) {
+    return (
+      source: createdType.toSource(),
+      dartType: createdType.type!,
+    );
+  }
+
+  if (createdDartType.isDartAsyncFuture ||
+      createdDartType.isDartAsyncFutureOr ||
+      createdDartType.isDartAsyncStream) {
+    createdType as NamedType;
+    createdDartType as InterfaceType;
+
+    final typeSource = createdType.toSource();
+    if (typeSource != 'Future' &&
+        typeSource != 'FutureOr' &&
+        typeSource != 'Stream' &&
+        !typeSource.startsWith('Future<') &&
+        !typeSource.startsWith('FutureOr<') &&
+        !typeSource.startsWith('Stream<')) {
+      throw UnsupportedError(
+        'Returning a typedef of type Future/FutureOr/Stream is not supported\n'
+        'The code that triggered this error is: $typeSource',
+      );
+    }
+
+    final valueTypeArg = createdType.typeArguments?.arguments.firstOrNull;
+
+    final exposedDartType =
+        library.createdTypeToValueType(createdDartType.typeArguments.first);
+    if (exposedDartType == null) return null;
+
+    return (
+      source: valueTypeArg == null ? 'AsyncValue' : 'AsyncValue<$valueTypeArg>',
+      dartType: exposedDartType,
+    );
+  }
+
+  return (
+    source: createdType.toSource(),
+    dartType: createdType.type!,
+  );
+}
+
+TypeAnnotation? _getValueType(
+  TypeAnnotation? createdType,
+  LibraryElement library,
+) {
+  if (createdType == null) return null;
+  final dartType = createdType.type!;
+  if (dartType.isRaw) return createdType;
+
+  if (dartType.isDartAsyncFuture ||
+      dartType.isDartAsyncFutureOr ||
+      dartType.isDartAsyncStream) {
+    createdType as NamedType;
+
+    return createdType.typeArguments?.arguments.firstOrNull;
   }
 
   return createdType;
 }
 
-DartType _getValueType(DartType createdType) {
-  if (createdType.isRaw) return createdType;
-
-  if (createdType.isDartAsyncFuture ||
-      createdType.isDartAsyncFutureOr ||
-      createdType.isDartAsyncStream) {
-    createdType as InterfaceType;
-    return createdType.typeArguments.first;
-  }
-
-  return createdType;
-}
+typedef SourcedType = ({String? source, DartType dartType});
 
 class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration {
   ClassBasedProviderDeclaration._({
@@ -121,9 +184,9 @@ class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration {
     required this.buildMethod,
     required this.providerElement,
     required this.annotation,
-    required this.createdType,
-    required this.exposedType,
-    required this.valueType,
+    required this.createdTypeNode,
+    required this.exposedTypeNode,
+    required this.valueTypeNode,
   });
 
   static ClassBasedProviderDeclaration? _parse(
@@ -155,24 +218,25 @@ class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration {
     );
     if (providerElement == null) return null;
 
-    final createdType = buildMethod.returnType?.type ??
-        element.library.typeProvider.dynamicType;
+    final createdTypeNode = buildMethod.returnType;
 
-    final exposedType = _computeExposedType(createdType, element.library);
-    if (exposedType == null) {
+    final exposedTypeNode =
+        _computeExposedType(createdTypeNode, element.library);
+    if (exposedTypeNode == null) {
       // Error already reported
       return null;
     }
 
+    final valueTypeNode = _getValueType(createdTypeNode, element.library);
     final classBasedProviderDeclaration = ClassBasedProviderDeclaration._(
       name: node.name,
       node: node,
       buildMethod: buildMethod,
       providerElement: providerElement,
       annotation: riverpodAnnotation,
-      createdType: createdType,
-      exposedType: exposedType,
-      valueType: _getValueType(createdType),
+      createdTypeNode: createdTypeNode,
+      exposedTypeNode: exposedTypeNode,
+      valueTypeNode: valueTypeNode,
     );
     riverpodAnnotation._parent = classBasedProviderDeclaration;
     node.accept(
@@ -192,11 +256,11 @@ class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration {
   final RiverpodAnnotation annotation;
   final MethodDeclaration buildMethod;
   @override
-  final DartType createdType;
+  final TypeAnnotation? createdTypeNode;
   @override
-  final DartType exposedType;
+  final TypeAnnotation? valueTypeNode;
   @override
-  final DartType valueType;
+  final SourcedType exposedTypeNode;
 
   @override
   void accept(RiverpodAstVisitor visitor) {
@@ -249,9 +313,9 @@ class FunctionalProviderDeclaration extends GeneratorProviderDeclaration {
     required this.node,
     required this.providerElement,
     required this.annotation,
-    required this.createdType,
-    required this.exposedType,
-    required this.valueType,
+    required this.createdTypeNode,
+    required this.exposedTypeNode,
+    required this.valueTypeNode,
   });
 
   static FunctionalProviderDeclaration? _parse(
@@ -269,9 +333,10 @@ class FunctionalProviderDeclaration extends GeneratorProviderDeclaration {
     );
     if (providerElement == null) return null;
 
-    final createdType = element.returnType;
-    final exposedType = _computeExposedType(createdType, element.library);
-    if (exposedType == null) {
+    final createdTypeNode = node.returnType;
+    final exposedTypeNode =
+        _computeExposedType(createdTypeNode, element.library);
+    if (exposedTypeNode == null) {
       // Error already reported
       return null;
     }
@@ -281,9 +346,9 @@ class FunctionalProviderDeclaration extends GeneratorProviderDeclaration {
       node: node,
       providerElement: providerElement,
       annotation: riverpodAnnotation,
-      createdType: createdType,
-      exposedType: exposedType,
-      valueType: _getValueType(createdType),
+      createdTypeNode: createdTypeNode,
+      exposedTypeNode: exposedTypeNode,
+      valueTypeNode: _getValueType(createdTypeNode, element.library),
     );
     riverpodAnnotation._parent = functionalProviderDeclaration;
     node.accept(
@@ -302,11 +367,11 @@ class FunctionalProviderDeclaration extends GeneratorProviderDeclaration {
   @override
   final RiverpodAnnotation annotation;
   @override
-  final DartType createdType;
+  final TypeAnnotation? createdTypeNode;
   @override
-  final DartType exposedType;
+  final TypeAnnotation? valueTypeNode;
   @override
-  final DartType valueType;
+  final SourcedType exposedTypeNode;
 
   /// Whether the provider uses the syntax sugar for scoped providers:
   ///

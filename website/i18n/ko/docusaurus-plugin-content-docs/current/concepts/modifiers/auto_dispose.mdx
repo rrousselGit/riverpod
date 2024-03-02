@@ -2,24 +2,27 @@
 title: .autoDispose
 ---
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
+:::caution
+The content of this page may be outdated.  
+It will be updated in the future, but for now you may want to refer to the content
+in the top of the sidebar instead (introduction/essentials/case-studies/...)
+:::
 
-통상적으로 프로바이더를 사용할때, 프로바이더를 더이상 사용하지 않는다면 
-시스템 메모리상에서 해제(destroy)하고 싶은 경우가 있습니다. 
+A common use case is to destroy the state of a provider
+when it is no-longer used.
 
-destroy하고 싶은 경우는 다양한 이유가 있지만 아래의 경우를 생각해볼 수 있습니다. 
+There are multiple reasons for doing so, such as:
 
-- 파이어베이스(Firebase)를 사용할떄  불필요한 코스트 발생을 피하기 위해 연결을 끊는 경우
-- 사용자가 화면상에서 떠나고 재진입했을때 상태를 초기화 해줘야 하는 경우
+- When using Firebase, to close the connection and avoid unnecessary cost.
+- To reset the state when the user leaves a screen and re-enters it.
 
-위의 경우등을 대응할 수 있도록 프로바이더는 빌트인으로 `.autoDispose` 수식어를 지원합니다. 
+Providers come with built-in support for this use case, through the `.autoDispose`
+modifier.
 
-## 사용방법
+## Usage
 
-Riverpod에 더이상 사용하지 않는 프로바이더의 상태를 소멸(destroy)하기위해 
-`.autoDispose` 수식어를 프로바이더에 붙이기만 하면 됩니다. 
-
+To tell Riverpod to destroy the state of a provider when it is no longer used,
+simply append `.autoDispose` to your provider:
 
 ```dart
 final userProvider = StreamProvider.autoDispose<User>((ref) {
@@ -27,14 +30,14 @@ final userProvider = StreamProvider.autoDispose<User>((ref) {
 });
 ```
 
-이것으로 `userProvider`가 더 이상 사용되지 않을때 자동으로 해제 작업을 처리합니다.
+That's it. Now, the state of `userProvider` will automatically be destroyed
+when it is no longer used.
 
-제네릭 파라미터가  `autoDispose`전에 붙는게 아닌 `autoDispose`뒤에 붙는 것으로 
-알 수 있듯이  `autoDispose`는 a named constructor가 아닙니다.
+Note how the generic parameters are passed after `autoDispose` instead of before –
+`autoDispose` is not a named constructor.
 
 :::note
-`.autoDispose`와 다른 수식어를 결합할 수 있습니다. 
-
+You can combine `.autoDispose` with other modifiers if you need to:
 
 ```dart
 final userProvider = StreamProvider.autoDispose.family<User, String>((ref, id) {
@@ -46,12 +49,13 @@ final userProvider = StreamProvider.autoDispose.family<User, String>((ref, id) {
 
 ### ref.keepAlive
 
-프로바이더에 `autoDispose` 수식어를 붙이면 `ref`객체에 `keepAlive` 메소드를 사용할 수 있습니다. 
+Marking a provider with `autoDispose` also adds an extra method on `ref`: `keepAlive`.
 
-`keepAlive` 메소드를 실행하는 것으로, 프로바이더가 참조되지 않게 되었을 때에도 
-상태를 유지하도록 Riverpod 에 전할 수가 있습니다.
+The `keepAlive` function is used to tell Riverpod that the state of the provider
+should be preserved even if no longer listened to.
 
-좀 더 이해를 돕기위해서 HTTP 요청이 완료되면 플레그를 `true`로 설정하는 예시 코드입니다. 
+A use-case would be to set this flag to `true` after an HTTP request has
+completed:
 
 ```dart
 final myProvider = FutureProvider.autoDispose((ref) async {
@@ -61,67 +65,70 @@ final myProvider = FutureProvider.autoDispose((ref) async {
 });
 ```
 
-위의 방식을 사용하면, 만약에 요청이 실패하고 사용자가 화면상에서 떠나고 다시 들어온 경우
-요청을 재 실행할 수 있도록 합니다. 그러나, 만약 요청이 성공적으로 처리된다면, 상태가 유지될 것입니다. 
-그리고 화면에 재 진입해도 새로운 요청을 위한 트리거링이 발생하지 않습니다. 
+This way, if the request fails and the user leaves the screen then re-enters
+it, then the request will be performed again.
+But if the request completed successfully, the state will be preserved
+and re-entering the screen will not trigger a new request.
 
+:::info
+In version 1.0.x, the equivalent of `keepAlive` is the property called `maintainState`.
+:::
 
-## 사용예: 더 이상 프로바이더를 사용하지 않을 때, HTTP 요청 취소하기
+## Example: Canceling HTTP requests when no longer used
 
-`autoDispose` 수식어는  [FutureProvider]와  `ref.onDispose`에 결합 할 수 있습니다.
-프로바이더를 더 이상 사용하지 않을 때 쉽게 HTTP 요청을 취소할 수 있습니다. 
+The `autoDispose` modifier could be combined with [FutureProvider] and `ref.onDispose`
+to easily cancel HTTP requests when they are no longer needed.
 
-이번 예시의 목표는 다음과 같습니다. 
+The goal is:
 
-- 사용자가 화면에 들어왔을 때 HTTP 요청을 시작합니다.
-- 만약 요청이 완료되기 전에 사용자가 화면을 떠났다면, HTTP을 취소합니다.
-- 만약 요청이 성공했다면, 화면을 떠나거나 재 진입했을때 새로운 요청을 시작하지 않습니다. 
+- Start an HTTP request when the user enters a screen
+- if the user leaves the screen before the request completed, cancel the HTTP request
+- if the request succeeded, leaving and re-entering the screen does not start a new request
 
-코드로 구현해 본다면 아래와 같습니다. 
+In code, this would be:
 
 ```dart
 final myProvider = FutureProvider.autoDispose((ref) async {
-  // http 요청을 취소하기 위한 package:dio 객체 
+  // An object from package:dio that allows cancelling http requests
   final cancelToken = CancelToken();
-  // 프로바이더가 해제(destroyed)될 때, http 요청을 취소합니다.
+  // When the provider is destroyed, cancel the http request
   ref.onDispose(() => cancelToken.cancel());
 
-  // 데이터를 가져오고 취소하기 위한 `cancelToken`을 파라미터로 념겨줍니다. 
+  // Fetch our data and pass our `cancelToken` for cancellation to work
   final response = await dio.get('path', cancelToken: cancelToken);
-  // 만약 요청이 성곡적으로 완료되었다면, 현재 상태를 유지합니다. 
+  // If the request completed successfully, keep the state
   ref.keepAlive();
   return response;
 });
 ```
 
-## 'AutoDisposeProvider'인수 타입은 'AlwaysAliveProviderBase' 매개변수에 할당할 수 없습니다.
+## The argument type 'AutoDisposeProvider' can't be assigned to the parameter type 'AlwaysAliveProviderBase'
 
-`.autoDispose`를 사용할 때, 아래와 같은 에러가 발생하면서 컴파일이 되지 않는 경우를 
-만나볼 수 있습니다. 
+When using `.autoDispose`, you may find yourself in a situation where your
+application does not compile with an error similar to:
 
 > The argument type 'AutoDisposeProvider' can't be assigned to the parameter
 > type 'AlwaysAliveProviderBase'
 
-걱정 하지 마세요! 이 에러는 자발적으로 발생하는 오류입니다.
-버그가 발생할 가능성이 높기 때문에 발생하는 오류입니다. 
+Don't worry! This error is voluntary. It happens because you most likely
+have a bug:
 
-`.autoDispose`의 수식어를 붙이지 않은 프로바이더에서 `.autoDispose` 수식어를 사용한 
-프로바이더를 사용할 경우 발생할 수 있습니다. 
-
+You tried to listen to a provider marked with `.autoDispose` in a provider that
+is **not** marked with `.autoDispose`, such as:
 
 ```dart
 final firstProvider = Provider.autoDispose((ref) => 0);
 
 final secondProvider = Provider((ref) {
-  // 'AutoDisposeProvider<int>'인자 값을
-  // 'AlwaysAliveProviderBase<Object, Null>' 파라미터 타입으로 할당할 수 없습니다. 
+  // The argument type 'AutoDisposeProvider<int>' can't be assigned to the
+  // parameter type 'AlwaysAliveProviderBase<Object, Null>'
   ref.watch(firstProvider);
 });
 ```
 
-위의 코드의 경우 `firstProvider`가 절대 disposed 처리 않음으로 사용상 바람직하지 않습니다. 
+This is undesired, as it would cause `firstProvider` to never be disposed.
 
-이를 수정하기 위해 `secondProvider`에 `.autoDispose`를 추가할 필요가 있습니다. 
+To fix this, consider marking `secondProvider` with `.autoDispose` too:
 
 ```dart
 final firstProvider = Provider.autoDispose((ref) => 0);

@@ -1,3 +1,5 @@
+import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:custom_lint_core/custom_lint_core.dart';
 
 /// TypeChecker for the `ProviderFor` annotation
@@ -152,8 +154,10 @@ const notifierBaseType =
     TypeChecker.fromName('NotifierBase', packageName: 'riverpod');
 
 /// Either `NotifierBase` or `AsyncNotifierBase`
-const anyNotifierType =
-    TypeChecker.any([asyncNotifierBaseType, notifierBaseType]);
+const anyNotifierType = TypeChecker.any([
+  asyncNotifierBaseType,
+  notifierBaseType,
+]);
 
 /// Either `ProviderBase` or `Family`
 const providerOrFamilyType = TypeChecker.any([providerBaseType, familyType]);
@@ -182,6 +186,28 @@ const isFromFlutterRiverpod = TypeChecker.fromPackage('flutter_riverpod');
 
 /// [TypeChecker for `Ref`
 const refType = TypeChecker.fromName('Ref', packageName: 'riverpod');
+
+bool _isBuiltInRef(DartType targetType) {
+  // Since Ref is sealed, checking that the function is from the package:riverpod
+  // before checking its type skips iterating over the superclasses of an element
+  // if it's not from Riverpod.
+  return isFromRiverpod.isExactlyType(targetType) &&
+      refType.isAssignableFromType(targetType);
+}
+
+bool isRiverpodRef(DartType targetType) {
+  final isBuiltInRef = _isBuiltInRef(targetType);
+  if (isBuiltInRef) return true;
+
+  final targetElement = targetType.element;
+
+  // Not a built-in ref. Might be a generated ref, let's check that.
+  if (targetElement is! MixinElement) return false;
+  final constraints = targetElement.superclassConstraints.singleOrNull;
+  if (constraints == null) return false;
+
+  return _isBuiltInRef(constraints);
+}
 
 /// Either `WidgetRef` or `Ref`
 const anyRefType = TypeChecker.any([widgetRefType, refType]);
@@ -218,3 +244,27 @@ const statefulHookConsumerStateType = TypeChecker.fromName(
 
 /// `Ref` methods that can make a provider depend on another provider.
 const refBinders = {'read', 'watch', 'listen'};
+
+/// [TypeChecker for `AsyncValue`
+const asyncValueType = TypeChecker.fromName(
+  'AsyncValue',
+  packageName: 'riverpod',
+);
+
+/// [TypeChecker for `AsyncData`
+const asyncDataType = TypeChecker.fromName(
+  'AsyncData',
+  packageName: 'riverpod',
+);
+
+/// [TypeChecker for `AsyncError`
+const asyncErrorType = TypeChecker.fromName(
+  'AsyncError',
+  packageName: 'riverpod',
+);
+
+/// [TypeChecker for `AsyncLoading`
+const asyncLoadingType = TypeChecker.fromName(
+  'AsyncLoading',
+  packageName: 'riverpod',
+);

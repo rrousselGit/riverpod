@@ -79,10 +79,8 @@ class RiverpodAnnotation extends RiverpodAst {
           switch (argument.name.label.name) {
             case 'keepAlive':
               keepAliveNode = argument;
-              break;
             case 'dependencies':
               dependenciesNode = argument;
-              break;
           }
         }
       }

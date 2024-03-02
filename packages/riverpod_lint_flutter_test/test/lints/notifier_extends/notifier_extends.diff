@@ -1,0 +1,24 @@
+Message: `Extend _$NoExtends`
+Priority: 90
+Diff for file `test/lints/notifier_extends/notifier_extends.dart:12`:
+```
+@riverpod
+// expect_lint: notifier_extends
+- class NoExtends {
++ class NoExtends extends _$NoExtends {
+  int build() => 0;
+}
+```
+---
+Message: `Extend _$WrongExtends`
+Priority: 90
+Diff for file `test/lints/notifier_extends/notifier_extends.dart:18`:
+```
+@riverpod
+// expect_lint: notifier_extends
+- class WrongExtends extends AsyncNotifier<int> {
++ class WrongExtends extends _$WrongExtends {
+  int build() => 0;
+}
+```
+---

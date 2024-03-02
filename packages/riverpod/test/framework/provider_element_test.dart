@@ -8,6 +8,17 @@ import '../utils.dart';
 
 void main() {
   group('Ref.exists', () {
+    test('Returns true if available on ancestor container', () {
+      final root = createContainer();
+      final container = createContainer(parent: root);
+      final provider = Provider((ref) => 0);
+
+      root.read(provider);
+
+      expect(container.exists(provider), true);
+      expect(root.exists(provider), true);
+    });
+
     test('simple use-case', () {
       final container = createContainer();
       final provider = Provider((ref) => 0);
@@ -59,7 +70,7 @@ void main() {
     });
 
     test(
-        'can be invoked during first initialization, and does not notify listenrs',
+        'can be invoked during first initialization, and does not notify listeners',
         () {
       final observer = ProviderObserverMock();
       final selfListener = Listener<int>();
@@ -79,7 +90,7 @@ void main() {
     });
 
     test(
-        'can be invoked during a re-initialization, and does not notify listenrs',
+        'can be invoked during a re-initialization, and does not notify listeners',
         () {
       final observer = ProviderObserverMock();
       final listener = Listener<Object>();
@@ -125,103 +136,160 @@ void main() {
     });
   });
 
-  group('ref.invalidate on families', () {
-    test('recomputes providers associated with the family', () async {
+  group('ref.refresh', () {
+    test('Throws if a circular dependency is detected', () {
+      // Regression test for https://github.com/rrousselGit/riverpod/issues/2336
+      late Ref ref;
+      final a = Provider((r) {
+        ref = r;
+        return 0;
+      });
+      final b = Provider((r) => r.watch(a));
       final container = createContainer();
-      final listener = Listener<String>();
-      final listener2 = Listener<String>();
-      final listener3 = Listener<int>();
-      var result = 0;
-      final unrelated = Provider((ref) => result);
-      final provider = Provider.family<String, int>((r, i) => '$result-$i');
-      late Ref ref;
-      final another = Provider((r) {
-        ref = r;
-      });
 
-      container.read(another);
+      container.read(b);
 
-      container.listen(provider(0), listener.call, fireImmediately: true);
-      container.listen(provider(1), listener2.call, fireImmediately: true);
-      container.listen(unrelated, listener3.call, fireImmediately: true);
-
-      verifyOnly(listener, listener(null, '0-0'));
-      verifyOnly(listener2, listener2(null, '0-1'));
-      verifyOnly(listener3, listener3(null, 0));
-
-      ref.invalidate(provider);
-      ref.invalidate(provider);
-      result = 1;
-
-      verifyNoMoreInteractions(listener);
-      verifyNoMoreInteractions(listener2);
-      verifyNoMoreInteractions(listener3);
-
-      await container.pump();
-
-      verifyOnly(listener, listener('0-0', '1-0'));
-      verifyOnly(listener2, listener2('0-1', '1-1'));
-      verifyNoMoreInteractions(listener3);
-    });
-
-    test('clears only on the closest family override', () async {
-      late Ref ref;
-      final another = Provider((r) {
-        ref = r;
-      });
-      var result = 0;
-      final provider = Provider.family<int, int>((r, i) => result);
-      final listener = Listener<int>();
-      final listener2 = Listener<int>();
-      final root = createContainer();
-      final container = createContainer(
-        parent: root,
-        overrides: [provider, another],
+      expect(
+        () => ref.refresh(b),
+        throwsA(isA<CircularDependencyError>()),
       );
-
-      container.read(another);
-      root.listen(provider(0), listener.call, fireImmediately: true);
-      container.listen(provider(1), listener2.call, fireImmediately: true);
-
-      verifyOnly(listener, listener(null, 0));
-      verifyOnly(listener2, listener2(null, 0));
-
-      ref.invalidate(provider);
-      result = 1;
-
-      verifyNoMoreInteractions(listener);
-      verifyNoMoreInteractions(listener2);
-
-      await container.pump();
-
-      verifyOnly(listener2, listener2(0, 1));
-      verifyNoMoreInteractions(listener);
     });
   });
 
-  test('ref.invalidate triggers a rebuild on next frame', () async {
-    final container = createContainer();
-    final listener = Listener<int>();
-    var result = 0;
-    final provider = Provider((r) => result);
-    late Ref ref;
-    final another = Provider((r) {
-      ref = r;
+  group('ref.invalidate', () {
+    test('Throws if a circular dependency is detected', () {
+      // Regression test for https://github.com/rrousselGit/riverpod/issues/2336
+      late Ref ref;
+      final a = Provider((r) {
+        ref = r;
+        return 0;
+      });
+      final b = Provider((r) => r.watch(a));
+      final container = createContainer();
+
+      container.read(b);
+
+      expect(
+        () => ref.invalidate(b),
+        throwsA(isA<CircularDependencyError>()),
+      );
     });
 
-    container.listen(provider, listener.call);
-    container.read(another);
-    verifyZeroInteractions(listener);
+    test('Circular dependency ignores families', () {
+      late Ref ref;
+      final a = Provider((r) {
+        ref = r;
+        return 0;
+      });
+      final b = Provider.family<int, int>((r, id) => r.watch(a));
+      final container = createContainer();
 
-    ref.invalidate(provider);
-    ref.invalidate(provider);
-    result = 1;
+      container.read(b(0));
 
-    verifyZeroInteractions(listener);
+      expect(
+        () => ref.invalidate(b),
+        returnsNormally,
+      );
+    });
 
-    await container.pump();
+    test('triggers a rebuild on next frame', () async {
+      final container = createContainer();
+      final listener = Listener<int>();
+      var result = 0;
+      final provider = Provider((r) => result);
+      late Ref ref;
+      final another = Provider((r) {
+        ref = r;
+      });
 
-    verifyOnly(listener, listener(0, 1));
+      container.listen(provider, listener.call);
+      container.read(another);
+      verifyZeroInteractions(listener);
+
+      ref.invalidate(provider);
+      ref.invalidate(provider);
+      result = 1;
+
+      verifyZeroInteractions(listener);
+
+      await container.pump();
+
+      verifyOnly(listener, listener(0, 1));
+    });
+
+    group('on families', () {
+      test('recomputes providers associated with the family', () async {
+        final container = createContainer();
+        final listener = Listener<String>();
+        final listener2 = Listener<String>();
+        final listener3 = Listener<int>();
+        var result = 0;
+        final unrelated = Provider((ref) => result);
+        final provider = Provider.family<String, int>((r, i) => '$result-$i');
+        late Ref ref;
+        final another = Provider((r) {
+          ref = r;
+        });
+
+        container.read(another);
+
+        container.listen(provider(0), listener.call, fireImmediately: true);
+        container.listen(provider(1), listener2.call, fireImmediately: true);
+        container.listen(unrelated, listener3.call, fireImmediately: true);
+
+        verifyOnly(listener, listener(null, '0-0'));
+        verifyOnly(listener2, listener2(null, '0-1'));
+        verifyOnly(listener3, listener3(null, 0));
+
+        ref.invalidate(provider);
+        ref.invalidate(provider);
+        result = 1;
+
+        verifyNoMoreInteractions(listener);
+        verifyNoMoreInteractions(listener2);
+        verifyNoMoreInteractions(listener3);
+
+        await container.pump();
+
+        verifyOnly(listener, listener('0-0', '1-0'));
+        verifyOnly(listener2, listener2('0-1', '1-1'));
+        verifyNoMoreInteractions(listener3);
+      });
+
+      test('clears only on the closest family override', () async {
+        late Ref ref;
+        final another = Provider((r) {
+          ref = r;
+        });
+        var result = 0;
+        final provider = Provider.family<int, int>((r, i) => result);
+        final listener = Listener<int>();
+        final listener2 = Listener<int>();
+        final root = createContainer();
+        final container = createContainer(
+          parent: root,
+          overrides: [provider, another],
+        );
+
+        container.read(another);
+        root.listen(provider(0), listener.call, fireImmediately: true);
+        container.listen(provider(1), listener2.call, fireImmediately: true);
+
+        verifyOnly(listener, listener(null, 0));
+        verifyOnly(listener2, listener2(null, 0));
+
+        ref.invalidate(provider);
+        result = 1;
+
+        verifyNoMoreInteractions(listener);
+        verifyNoMoreInteractions(listener2);
+
+        await container.pump();
+
+        verifyOnly(listener2, listener2(0, 1));
+        verifyNoMoreInteractions(listener);
+      });
+    });
   });
 
   group('ref.invalidateSelf', () {
@@ -1049,7 +1117,7 @@ void main() {
   });
 
   test(
-      'onDispose is triggered only once if within autoDispose unmount, a dependency chnaged',
+      'onDispose is triggered only once if within autoDispose unmount, a dependency changed',
       () async {
     // regression test for https://github.com/rrousselGit/riverpod/issues/1064
     final container = createContainer();

@@ -1,5 +1,8 @@
 export 'dart:async' show FutureOr;
 
+// Annotations used by code-generators
+export 'package:meta/meta.dart' show visibleForOverriding;
+
 // ignore: invalid_export_of_internal_element
 export 'package:riverpod/src/internals.dart'
     show
@@ -9,6 +12,8 @@ export 'package:riverpod/src/internals.dart'
         Override,
         // ignore: invalid_use_of_internal_member, Used by notifiers for overriding overrideWith
         ProviderOverride,
+        // ignore: invalid_use_of_internal_member, used by families for overrideWith
+        FamilyOverride,
 
         // Provider
         Provider,

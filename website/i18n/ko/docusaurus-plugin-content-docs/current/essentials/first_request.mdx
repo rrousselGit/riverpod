@@ -1,0 +1,320 @@
+---
+title: 첫 번째 provider/네트워크 요청 만들기
+pagination_prev: introduction/getting_started
+version: 1
+---
+
+import { Link } from "../../../../../src/components/Link";
+import { AutoSnippet, When } from "../../../../../src/components/CodeSnippet";
+import activity from "./first_request/activity";
+import provider from "./first_request/provider";
+import consumer from "./first_request/consumer";
+import consumerWidget from "./first_request/consumer_widget";
+import consumerStatefulWidget from "./first_request/consumer_stateful_widget";
+import hookConsumerWidget from "./first_request/hook_consumer_widget";
+import Legend from "./first_request/legend/legend";
+
+네트워크 요청은 모든 애플리케이션의 핵심입니다. 
+하지만 네트워크 요청을 할 때는 고려해야 할 사항이 많습니다:
+
+- 요청이 이루어지는 동안 UI는 로딩 상태를 렌더링해야 합니다.
+- 오류는 정상적으로 처리되어야 합니다.
+- 요청은 가능하면 캐시되어야 합니다.
+
+이 섹션에서는 Riverpod이 이 모든 것을 자연스럽게 처리하는 데 어떻게 도움이 되는지 살펴보겠습니다.
+
+## `ProviderScope` 설정하기
+
+네트워크 요청을 시작하기 전에 애플리케이션의 루트에 `ProviderScope`가 추가되었는지 확인하세요.
+
+```dart
+void main() {
+  runApp(
+    // Riverpod을 설치하려면 다른 모든 위젯 위에 이 위젯을 추가해야 합니다.
+    // 이 위젯은 "MyApp" 내부가 아니라 "runApp"에 직접 파라미터로 추가해야 합니다.
+    ProviderScope(
+      child: MyApp(),
+    ),
+  );
+}
+```
+
+이렇게 하면 전체 애플리케이션에 대해 Riverpod이 활성화됩니다.
+
+:::note
+[riverpod_lint](https://pub.dev/packages/riverpod_lint) 설치와 같은 전체 설치 단계는 <Link documentID="introduction/getting_started" />를 확인하세요
+:::
+
+## "provider"에서 네트워크 요청 수행하기
+
+네트워크 요청을 수행하는 것을 보통 "비즈니스 로직"이라고 부릅니다.
+Riverpod에서 비즈니스 로직은 "providers" 내부에 배치됩니다.  
+프로바이더는 초강력(super-powered) 함수입니다.
+일반 함수처럼 동작하지만 다음과 같은 이점이 추가됩니다:
+
+- 캐시됩니다.
+- 기본적인 오류/로딩 처리를 제공합니다.
+- 리스너를 추가할 수 있습니다.
+- 데이터가 변경될 때 자동으로 다시 실행됩니다.
+
+따라서 공급자는 _GET_ 네트워크 요청에 가장 적합합니다. (_POST/etc_ 요청의 경우, <Link documentID="essentials/side_effects" /> 참조)
+
+예를 들어, 지루할 때 할 수 있는 무작위 활동을 제안하는 간단한 애플리케이션을 만들어 보겠습니다.  
+이를 위해 [Bored API](https://boredapi.com/)를 사용하겠습니다. 
+특히 `/api/activity` 엔드포인트에서 _GET_ 요청을 수행하겠습니다. 
+그러면 JSON 객체가 반환되며, 이 객체를 Dart 클래스 인스턴스로 파싱합니다.  
+다음 단계는 이 활동을 UI에 표시하는 것입니다. 
+또한 요청이 이루어지는 동안 로딩 상태를 렌더링하고 오류를 정상적으로 처리해야 합니다.
+
+멋지게 들리나요? 시작해보세요!
+
+### 모델 정의하기
+
+시작하기 전에 API에서 수신할 데이터의 모델을 정의해야 합니다.
+이 모델에는 JSON 객체를 Dart 클래스 인스턴스로 파싱하는 방법도 필요합니다.
+
+일반적으로 JSON 디코딩을 처리할 때는 [Freezed](https://pub.dev/packages/freezed) 또는 [json_serializable](https://pub.dev/packages/json_serializable)과 같은 코드 생성기를 사용하는 것이 좋습니다. 
+물론 수작업으로 처리하는 것도 가능합니다.
+
+어쨌든, 여기 우리의 모델이 있습니다:
+
+<AutoSnippet title="activity.dart" {...activity} />
+
+### 공급자 만들기
+
+이제 모델이 생겼으니 API 쿼리를 시작할 수 있습니다.  
+그러기 위해서는 첫 번째 공급자를 만들어야 합니다.
+
+공급자를 정의하는 구문은 다음과 같습니다:
+
+<When codegen={false}>
+<Legend
+  code={`final name = SomeProvider.someModifier<Result>((ref) {
+  <your logic here>
+});
+`}
+  annotations={[
+    {
+      offset: 6,
+      length: 4,
+      label: "provider 변수",
+      description: <>
+
+이 변수는 공급자와 상호 작용하는 데 사용되는 변수입니다.  
+변수는 final이여야하고, "top-level" (global)에 선언되어야 합니다.
+
+</>
+    },
+    {
+      offset: 13,
+      length: 12,
+      label: "provider 타입",
+      description: <>
+
+일반적으로 `Provider`, `FutureProvider` 또는 `StreamProvider`중 하나입니다.  
+사용되는 provider 타입은은 함수의 반환값에 따라 달라집니다.
+예를 들어, `Future<Activity>`를 만들려면 `FutureProvider<Activity>`가 필요할 것입니다.
+
+`FutureProvider`가 가장 많이 사용될 것입니다.
+
+:::tip
+"어떤 provider를 선택해야 하나"라는 관점에서 생각하지 마세요.
+대신 "내가 무엇을 반환하고 싶은가"라는 관점에서 생각하세요. 
+공급자 유형은 자연스럽게 따라올 것입니다.
+:::
+
+</>
+    },
+    {
+      offset: 25,
+      length: 13,
+      label: "수정자(Modifiers) (optional)",
+      description: <>
+
+종종 provider 타입 뒤에 "수정자(Modifiers)"가 표시될 수 있습니다.  
+수정자(Modifiers)는 선택 사항이며, 타입에 안전한 방식으로 공급자의 동작을 조정하는 데 사용됩니다.
+
+현재 두 가지 수정자를 사용할 수 있습니다:
+
+- 공급자가 더 이상 사용되지 않을 때 캐시를 자동으로 지우는 `autoDispose`.  
+  <Link documentID="essentials/auto_dispose" />도 참조하세요.
+- provider에 인수를 전달할 수 있는 `family`.  
+  <Link documentID="essentials/passing_args" />도 참조하세요.
+
+</>
+    },
+    {
+      offset: 48,
+      length: 3,
+      label: "Ref",
+      description: <>
+
+다른 provider와 상호작용하는 데 사용되는 객체입니다.  
+모든 providers는 provider 함수의 매개변수(parameter) 또는 Notifier의 속성(property)으로 하나씩 가지고 있습니다.
+
+</>
+    },
+    {
+      offset: 57,
+      length: 17,
+      label: "provider 함수",
+      description: <>
+
+여기에 프로바이더의 로직을 배치합니다.
+이 함수는 공급자를 처음 읽을 때 호출됩니다.  
+이후 읽기는 이 함수를 다시 호출하지 않고 대신 캐시된 값을 반환합니다.
+
+</>
+    },
+]}
+/>
+</When>
+
+<When codegen={true}>
+<Legend
+  code={`@riverpod
+Result myFunction(MyFunctionRef ref) {
+  <your logic here>
+}
+`}
+  annotations={[
+    {
+      offset: 0,
+      length: 9,
+      label: "어노테이션(annotation)",
+      description: <>
+
+모든 프로바이더는 `@riverpod` 또는 `@Riverpod()`로 어노테이션해야 합니다.
+이 어노테이션은 전역 함수나 클래스에 배치할 수 있습니다.  
+이 어노테이션을 통해 프로바이더를 구성할 수 있습니다.
+
+예를 들어, `@Riverpod(keepAlive: true)`를 작성하여 "auto-dispose"(나중에 살펴보겠습니다)를 비활성화할 수 있습니다.
+
+</>
+    },
+    {
+      offset: 17,
+      length: 10,
+      label: "어노테이션된 함수(annotated function)",
+      description: <>
+
+어노테이션된 함수의 이름에 따라 provider와 상호작용하는 방식이 결정됩니다.  
+주어진 함수 `myFunction`에 대해 생성된 `myFunctionProvider` 변수가 생성됩니다.
+
+어노테이션된 함수는 첫 번째 매개변수로 "ref"를 지정해야 합니다.  
+그 외에도 함수는 제네릭을 포함하여 여러 개의 매개변수를 가질 수 있습니다.
+이 함수는 원할 경우 `Future`/`Stream`을 반환할 수도 있습니다.
+
+이 함수는 공급자를 처음 읽을 때 호출됩니다.  
+이후 읽기는 함수를 다시 호출하지 않고 대신 캐시된 값을 반환합니다.
+
+</>
+    },
+    {
+      offset: 28,
+      length: 17,
+      label: "Ref",
+      description: <>
+
+다른 providers와 상호작용하는 데 사용되는 객체입니다.  
+모든 providers에는 provider 함수의 매개변수(parameter) 또는 Notifier의 속성(property)으로 하나씩 가지고 있습니다.
+이 객체의 타입은 함수/클래스의 이름에 의해 결정됩니다.
+
+</>
+    },
+]}
+/>
+</When>
+
+여기서는 API에서 Activity를 _GET_하고자 합니다.  
+_GET_은 비동기 연산이므로 `Future<Activity>`를 생성해야 합니다.
+
+따라서 앞서 정의한 구문을 사용하여 다음과 같이 공급자를 정의할 수 있습니다:
+
+<AutoSnippet title="provider.dart" {...provider} />
+
+이 코드조각에서는 UI가 임의의 액티비티를 가져오는 데 사용할 수 있는 `activityProvider`라는 이름의 공급자를 정의했습니다.
+다음과 같은 것은 주목할 가치가 있습니다:
+
+- 네트워크 요청은 UI가 provider를 한 번 이상 읽을 때까지 실행되지 않습니다.
+- 이후 읽기는 네트워크 요청을 다시 실행하지 않고 이전에 가져온 활동을 반환합니다.
+- UI가 이 공급자의 사용을 중단하면 캐시가 삭제됩니다.
+  그런 다음 UI가 이 공급자를 다시 사용하면 새로운 네트워크 요청이 이루어집니다.
+- 오류는 catch되지 않았습니다. 이는 공급자가 기본적으로 오류를 처리하기 때문에 자발적인 조치입니다.  
+  네트워크 요청이나 JSON 파싱에서 에러가 발생하면 riverpod에서 에러를 catch합니다. 
+  그러면 UI에 오류 페이지를 렌더링하는 데 필요한 정보가 자동으로 표시됩니다.
+
+:::info
+Provider는 "지연(lazy)"입니다. 공급자를 정의해도 네트워크 요청이 실행되지 않습니다.
+대신 공급자를 처음 읽을 때 네트워크 요청이 실행됩니다.
+:::
+
+### UI에서 네트워크 요청의 응답 렌더링하기
+
+Now that we have defined a provider, we can start using it inside our UI to display the activity.
+
+provider와 상호 작용하려면 "ref"라는 객체가 필요합니다. 
+provider는 당연히 "ref" 객체에 액세스할 수 있으므로 이전에 provider 정의에서 이 객체를 보셨을 것입니다.  
+하지만 여기서는 provider가 아니라 위젯에 있습니다. 그렇다면 "ref"는 어떻게 얻을 수 있을까요?
+
+해결책은 `Consumer`라는 커스텀 위젯을 사용하는 것입니다. 
+`Consumer`는 `Builder`와 비슷한 위젲이지만, "ref"를 제공한다는 추가적인 이점이 있습니다. 
+이를 통해 UI가 공급자를 읽을 수 있습니다.
+다음 예제는 `Consumer`를 사용하는 방법을 보여줍니다:
+
+<AutoSnippet title="consumer.dart" {...consumer} />
+
+이 코드 조각에서는 `Consumer`를 사용하여 `activityProvider`를 읽고 Activity를 표시했습니다.
+또한 로딩/오류 상태도 우아하게 처리했습니다.  
+provider에서 특별한 작업을 하지 않고도 UI가 어떻게 로딩/오류 상태를 처리할 수 있었는지 주목하세요.  
+동시에 위젯이 다시 빌드될 경우 네트워크 요청이 올바르게 다시 실행되지 않습니다. 
+다른 위젯도 네트워크 요청을 다시 실행하지 않고도 동일한 provider에 액세스할 수 있습니다.
+
+:::info
+위젯은 원하는 만큼 많은 providers를 수신(listen)할 수 있습니다. 그렇게 하려면 `ref.watch` 호출을 더 추가하기만 하면 됩니다.
+:::
+
+:::tip
+linter를 설치하세요. 
+그러면 IDE에서 자동으로 `Consumer`를 추가하거나 `StatelessWidget`을 `ConsumerWidget`으로 변환하는 리팩터링 옵션을 이용할 수 있습니다.
+
+설치 단계는 <Link documentID="introduction/getting_started" hash="enabling-riverpod_lintcustom_lint" />를 참고하세요.
+:::
+
+## 더 살펴보기: `Consumer` 대신 `ConsumerWidget`을 사용하여 코드 들여쓰기 제거하기.
+
+이전 예제에서는 `Consumer`를 사용하여 provider를 읽었습니다.  
+이 접근 방식에 문제가 있는 것은 아니지만, 들여쓰기가 추가되면 코드를 읽기 어렵게 만들 수 있습니다.
+
+Riverpod은 동일한 결과를 얻을 수 있는 다른 방법을 제공합니다:
+`StatelessWidget`/`StatefulWidget`이 `Consumer`를 반환하는 코드를 작성하는 대신 `ConsumerWidget`/`ConsumerStatefulWidget`을 정의할 수 있습니다.  
+`ConsumerWidget`과 `ConsumerStatefulWidget`은 사실상 `StatelessWidget`/`StatefulWidget`과 `Consumer`를 결합한 것입니다. 
+이들은 원래의 짝과 동일하게 동작하지만 "ref"를 제공한다는 추가적인 이점이 있습니다.
+
+이전 예제를 다음과 같이 `ConsumerWidget`을 사용하도록 다시 작성할 수 있습니다:
+
+<AutoSnippet {...consumerWidget} />
+
+`ConsumerStatefulWidget`의 경우 대신 다음과 같이 작성합니다:
+
+<AutoSnippet {...consumerStatefulWidget} />
+
+### Flutter_hooks 고려 사항: `HookWidget`과 `ConsumerWidget`의 결합
+
+:::caution
+"훅(Hooks)"에 대해 들어본 적이 없다면 이 섹션을 건너뛰셔도 됩니다.  
+[Flutter_hooks](https://pub.dev/packages/flutter_hooks)는 Riverpod과는 별개의 패키지이지만 Riverpod과 함께 사용되는 경우가 많습니다. 
+Riverpod을 처음 사용하는 경우 "훅(Hooks)" 사용을 권장하지 않습니다. 자세한 내용은 <Link documentID="concepts/about_hooks"/>에서 확인하세요.
+:::
+
+`flutter_hooks`를 사용하는 경우 `HookWidget`과 `ConsumerWidget`을 결합하는 방법이 궁금할 수 있습니다. 
+결국 둘 다 확장된(extended) 위젯 클래스를 변경해야 합니다.
+
+Riverpod는 이 문제에 대한 해결책으로 `HookConsumerWidget`과 `StatefulHookConsumerWidget`을 제공합니다.
+`ConsumerWidget`과 `ConsumerStatefulWidget`이 `Consumer`와 `StatelessWidget`/`StatefulWidget`의 결합인 것과 유사하게, 
+`HookConsumerWidget`과 `StatefulHookConsumerWidget`은 `Consumer`와 `HookWidget`/`HookStatefulWidget`의 결합입니다. 
+따라서 동일한 위젯에서 훅(Hooks)와 providers를 모두 사용할 수 있습니다.
+
+이를 보여주기 위해 이전 예제를 다시 한 번 다시 작성해 보겠습니다:
+
+<AutoSnippet {...hookConsumerWidget} />

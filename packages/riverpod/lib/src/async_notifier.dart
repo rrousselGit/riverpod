@@ -10,6 +10,7 @@ import 'listenable.dart';
 import 'notifier.dart';
 import 'pragma.dart';
 import 'result.dart';
+import 'run_guarded.dart';
 import 'stream_provider.dart';
 
 part 'async_notifier/auto_dispose.dart';
@@ -42,34 +43,37 @@ abstract class AsyncNotifierBase<State> {
   ///
   /// Reading [state] if the provider is out of date (such as if one of its
   /// dependency has changed) will trigger [AsyncNotifier.build] to be re-executed.
-  @protected
   @visibleForTesting
+  @protected
   AsyncValue<State> get state {
     _element.flush();
     // ignore: invalid_use_of_protected_member
     return _element.requireState;
   }
 
-  @protected
   @visibleForTesting
+  @protected
   set state(AsyncValue<State> newState) {
     _element.state = newState;
   }
 
   /// The [Ref] from the provider associated with this [AsyncNotifier].
+  @protected
   Ref<AsyncValue<State>> get ref;
 
   /// {@template riverpod.async_notifier.future}
   /// Obtains a [Future] that resolves with the first [state] value that is not
   /// [AsyncLoading].
   ///
-  /// This future will not necesserily wait for [AsyncNotifier.build] to complete.
+  /// This future will not necessarily wait for [AsyncNotifier.build] to complete.
   /// If [state] is modified before [AsyncNotifier.build] completes, then [future]
   /// will resolve with that new [state] value.
   ///
   /// The future will fail if [state] is in error state. In which case the
   /// error will be the same as [AsyncValue.error] and its stacktrace.
   /// {@endtemplate}
+  @visibleForTesting
+  @protected
   Future<State> get future {
     _element.flush();
     return _element.futureNotifier.value;
@@ -89,6 +93,7 @@ abstract class AsyncNotifierBase<State> {
   /// See also:
   /// - [future], for manually awaiting the resolution of [state].
   /// - [AsyncValue.guard], and alternate way to perform asynchronous operations.
+  @visibleForTesting
   @protected
   Future<State> update(
     FutureOr<State> Function(State) cb, {
@@ -179,7 +184,7 @@ abstract class AsyncNotifierProviderBase<NotifierT extends AsyncNotifierBase<T>,
   ///
   /// ```dart
   /// Button(
-  ///   onTap: () => ref.read(stateNotifierProvider.notifer).increment(),
+  ///   onTap: () => ref.read(stateNotifierProvider.notifier).increment(),
   /// )
   /// ```
   ///

@@ -12,7 +12,7 @@ part of 'pub_repository.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 PackageMetricsScore _$PackageMetricsScoreFromJson(Map<String, dynamic> json) {
   return _PackageMetricsScore.fromJson(json);
@@ -91,11 +91,11 @@ class _$PackageMetricsScoreCopyWithImpl<$Res, $Val extends PackageMetricsScore>
 }
 
 /// @nodoc
-abstract class _$$_PackageMetricsScoreCopyWith<$Res>
+abstract class _$$PackageMetricsScoreImplCopyWith<$Res>
     implements $PackageMetricsScoreCopyWith<$Res> {
-  factory _$$_PackageMetricsScoreCopyWith(_$_PackageMetricsScore value,
-          $Res Function(_$_PackageMetricsScore) then) =
-      __$$_PackageMetricsScoreCopyWithImpl<$Res>;
+  factory _$$PackageMetricsScoreImplCopyWith(_$PackageMetricsScoreImpl value,
+          $Res Function(_$PackageMetricsScoreImpl) then) =
+      __$$PackageMetricsScoreImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -107,11 +107,11 @@ abstract class _$$_PackageMetricsScoreCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_PackageMetricsScoreCopyWithImpl<$Res>
-    extends _$PackageMetricsScoreCopyWithImpl<$Res, _$_PackageMetricsScore>
-    implements _$$_PackageMetricsScoreCopyWith<$Res> {
-  __$$_PackageMetricsScoreCopyWithImpl(_$_PackageMetricsScore _value,
-      $Res Function(_$_PackageMetricsScore) _then)
+class __$$PackageMetricsScoreImplCopyWithImpl<$Res>
+    extends _$PackageMetricsScoreCopyWithImpl<$Res, _$PackageMetricsScoreImpl>
+    implements _$$PackageMetricsScoreImplCopyWith<$Res> {
+  __$$PackageMetricsScoreImplCopyWithImpl(_$PackageMetricsScoreImpl _value,
+      $Res Function(_$PackageMetricsScoreImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -123,7 +123,7 @@ class __$$_PackageMetricsScoreCopyWithImpl<$Res>
     Object? popularityScore = null,
     Object? tags = null,
   }) {
-    return _then(_$_PackageMetricsScore(
+    return _then(_$PackageMetricsScoreImpl(
       grantedPoints: null == grantedPoints
           ? _value.grantedPoints
           : grantedPoints // ignore: cast_nullable_to_non_nullable
@@ -150,10 +150,10 @@ class __$$_PackageMetricsScoreCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_PackageMetricsScore
+class _$PackageMetricsScoreImpl
     with DiagnosticableTreeMixin
     implements _PackageMetricsScore {
-  _$_PackageMetricsScore(
+  _$PackageMetricsScoreImpl(
       {required this.grantedPoints,
       required this.maxPoints,
       required this.likeCount,
@@ -161,8 +161,8 @@ class _$_PackageMetricsScore
       required final List<String> tags})
       : _tags = tags;
 
-  factory _$_PackageMetricsScore.fromJson(Map<String, dynamic> json) =>
-      _$$_PackageMetricsScoreFromJson(json);
+  factory _$PackageMetricsScoreImpl.fromJson(Map<String, dynamic> json) =>
+      _$$PackageMetricsScoreImplFromJson(json);
 
   @override
   final int grantedPoints;
@@ -198,10 +198,10 @@ class _$_PackageMetricsScore
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_PackageMetricsScore &&
+            other is _$PackageMetricsScoreImpl &&
             (identical(other.grantedPoints, grantedPoints) ||
                 other.grantedPoints == grantedPoints) &&
             (identical(other.maxPoints, maxPoints) ||
@@ -221,13 +221,13 @@ class _$_PackageMetricsScore
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_PackageMetricsScoreCopyWith<_$_PackageMetricsScore> get copyWith =>
-      __$$_PackageMetricsScoreCopyWithImpl<_$_PackageMetricsScore>(
+  _$$PackageMetricsScoreImplCopyWith<_$PackageMetricsScoreImpl> get copyWith =>
+      __$$PackageMetricsScoreImplCopyWithImpl<_$PackageMetricsScoreImpl>(
           this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_PackageMetricsScoreToJson(
+    return _$$PackageMetricsScoreImplToJson(
       this,
     );
   }
@@ -239,10 +239,10 @@ abstract class _PackageMetricsScore implements PackageMetricsScore {
       required final int maxPoints,
       required final int likeCount,
       required final double popularityScore,
-      required final List<String> tags}) = _$_PackageMetricsScore;
+      required final List<String> tags}) = _$PackageMetricsScoreImpl;
 
   factory _PackageMetricsScore.fromJson(Map<String, dynamic> json) =
-      _$_PackageMetricsScore.fromJson;
+      _$PackageMetricsScoreImpl.fromJson;
 
   @override
   int get grantedPoints;
@@ -256,7 +256,7 @@ abstract class _PackageMetricsScore implements PackageMetricsScore {
   List<String> get tags;
   @override
   @JsonKey(ignore: true)
-  _$$_PackageMetricsScoreCopyWith<_$_PackageMetricsScore> get copyWith =>
+  _$$PackageMetricsScoreImplCopyWith<_$PackageMetricsScoreImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -320,11 +320,12 @@ class _$PackageMetricsResponseCopyWithImpl<$Res,
 }
 
 /// @nodoc
-abstract class _$$_PackageMetricsResponseCopyWith<$Res>
+abstract class _$$PackageMetricsResponseImplCopyWith<$Res>
     implements $PackageMetricsResponseCopyWith<$Res> {
-  factory _$$_PackageMetricsResponseCopyWith(_$_PackageMetricsResponse value,
-          $Res Function(_$_PackageMetricsResponse) then) =
-      __$$_PackageMetricsResponseCopyWithImpl<$Res>;
+  factory _$$PackageMetricsResponseImplCopyWith(
+          _$PackageMetricsResponseImpl value,
+          $Res Function(_$PackageMetricsResponseImpl) then) =
+      __$$PackageMetricsResponseImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({PackageMetricsScore score});
@@ -334,12 +335,13 @@ abstract class _$$_PackageMetricsResponseCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_PackageMetricsResponseCopyWithImpl<$Res>
+class __$$PackageMetricsResponseImplCopyWithImpl<$Res>
     extends _$PackageMetricsResponseCopyWithImpl<$Res,
-        _$_PackageMetricsResponse>
-    implements _$$_PackageMetricsResponseCopyWith<$Res> {
-  __$$_PackageMetricsResponseCopyWithImpl(_$_PackageMetricsResponse _value,
-      $Res Function(_$_PackageMetricsResponse) _then)
+        _$PackageMetricsResponseImpl>
+    implements _$$PackageMetricsResponseImplCopyWith<$Res> {
+  __$$PackageMetricsResponseImplCopyWithImpl(
+      _$PackageMetricsResponseImpl _value,
+      $Res Function(_$PackageMetricsResponseImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -347,7 +349,7 @@ class __$$_PackageMetricsResponseCopyWithImpl<$Res>
   $Res call({
     Object? score = null,
   }) {
-    return _then(_$_PackageMetricsResponse(
+    return _then(_$PackageMetricsResponseImpl(
       score: null == score
           ? _value.score
           : score // ignore: cast_nullable_to_non_nullable
@@ -358,13 +360,13 @@ class __$$_PackageMetricsResponseCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_PackageMetricsResponse
+class _$PackageMetricsResponseImpl
     with DiagnosticableTreeMixin
     implements _PackageMetricsResponse {
-  _$_PackageMetricsResponse({required this.score});
+  _$PackageMetricsResponseImpl({required this.score});
 
-  factory _$_PackageMetricsResponse.fromJson(Map<String, dynamic> json) =>
-      _$$_PackageMetricsResponseFromJson(json);
+  factory _$PackageMetricsResponseImpl.fromJson(Map<String, dynamic> json) =>
+      _$$PackageMetricsResponseImplFromJson(json);
 
   @override
   final PackageMetricsScore score;
@@ -383,10 +385,10 @@ class _$_PackageMetricsResponse
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_PackageMetricsResponse &&
+            other is _$PackageMetricsResponseImpl &&
             (identical(other.score, score) || other.score == score));
   }
 
@@ -397,13 +399,13 @@ class _$_PackageMetricsResponse
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_PackageMetricsResponseCopyWith<_$_PackageMetricsResponse> get copyWith =>
-      __$$_PackageMetricsResponseCopyWithImpl<_$_PackageMetricsResponse>(
-          this, _$identity);
+  _$$PackageMetricsResponseImplCopyWith<_$PackageMetricsResponseImpl>
+      get copyWith => __$$PackageMetricsResponseImplCopyWithImpl<
+          _$PackageMetricsResponseImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_PackageMetricsResponseToJson(
+    return _$$PackageMetricsResponseImplToJson(
       this,
     );
   }
@@ -411,17 +413,17 @@ class _$_PackageMetricsResponse
 
 abstract class _PackageMetricsResponse implements PackageMetricsResponse {
   factory _PackageMetricsResponse({required final PackageMetricsScore score}) =
-      _$_PackageMetricsResponse;
+      _$PackageMetricsResponseImpl;
 
   factory _PackageMetricsResponse.fromJson(Map<String, dynamic> json) =
-      _$_PackageMetricsResponse.fromJson;
+      _$PackageMetricsResponseImpl.fromJson;
 
   @override
   PackageMetricsScore get score;
   @override
   @JsonKey(ignore: true)
-  _$$_PackageMetricsResponseCopyWith<_$_PackageMetricsResponse> get copyWith =>
-      throw _privateConstructorUsedError;
+  _$$PackageMetricsResponseImplCopyWith<_$PackageMetricsResponseImpl>
+      get copyWith => throw _privateConstructorUsedError;
 }
 
 PackageDetails _$PackageDetailsFromJson(Map<String, dynamic> json) {
@@ -478,22 +480,22 @@ class _$PackageDetailsCopyWithImpl<$Res, $Val extends PackageDetails>
 }
 
 /// @nodoc
-abstract class _$$_PackageDetailsCopyWith<$Res>
+abstract class _$$PackageDetailsImplCopyWith<$Res>
     implements $PackageDetailsCopyWith<$Res> {
-  factory _$$_PackageDetailsCopyWith(
-          _$_PackageDetails value, $Res Function(_$_PackageDetails) then) =
-      __$$_PackageDetailsCopyWithImpl<$Res>;
+  factory _$$PackageDetailsImplCopyWith(_$PackageDetailsImpl value,
+          $Res Function(_$PackageDetailsImpl) then) =
+      __$$PackageDetailsImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String version, Pubspec pubspec});
 }
 
 /// @nodoc
-class __$$_PackageDetailsCopyWithImpl<$Res>
-    extends _$PackageDetailsCopyWithImpl<$Res, _$_PackageDetails>
-    implements _$$_PackageDetailsCopyWith<$Res> {
-  __$$_PackageDetailsCopyWithImpl(
-      _$_PackageDetails _value, $Res Function(_$_PackageDetails) _then)
+class __$$PackageDetailsImplCopyWithImpl<$Res>
+    extends _$PackageDetailsCopyWithImpl<$Res, _$PackageDetailsImpl>
+    implements _$$PackageDetailsImplCopyWith<$Res> {
+  __$$PackageDetailsImplCopyWithImpl(
+      _$PackageDetailsImpl _value, $Res Function(_$PackageDetailsImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -502,7 +504,7 @@ class __$$_PackageDetailsCopyWithImpl<$Res>
     Object? version = null,
     Object? pubspec = null,
   }) {
-    return _then(_$_PackageDetails(
+    return _then(_$PackageDetailsImpl(
       version: null == version
           ? _value.version
           : version // ignore: cast_nullable_to_non_nullable
@@ -517,13 +519,13 @@ class __$$_PackageDetailsCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_PackageDetails
+class _$PackageDetailsImpl
     with DiagnosticableTreeMixin
     implements _PackageDetails {
-  _$_PackageDetails({required this.version, required this.pubspec});
+  _$PackageDetailsImpl({required this.version, required this.pubspec});
 
-  factory _$_PackageDetails.fromJson(Map<String, dynamic> json) =>
-      _$$_PackageDetailsFromJson(json);
+  factory _$PackageDetailsImpl.fromJson(Map<String, dynamic> json) =>
+      _$$PackageDetailsImplFromJson(json);
 
   @override
   final String version;
@@ -545,10 +547,10 @@ class _$_PackageDetails
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_PackageDetails &&
+            other is _$PackageDetailsImpl &&
             (identical(other.version, version) || other.version == version) &&
             (identical(other.pubspec, pubspec) || other.pubspec == pubspec));
   }
@@ -560,12 +562,13 @@ class _$_PackageDetails
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_PackageDetailsCopyWith<_$_PackageDetails> get copyWith =>
-      __$$_PackageDetailsCopyWithImpl<_$_PackageDetails>(this, _$identity);
+  _$$PackageDetailsImplCopyWith<_$PackageDetailsImpl> get copyWith =>
+      __$$PackageDetailsImplCopyWithImpl<_$PackageDetailsImpl>(
+          this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_PackageDetailsToJson(
+    return _$$PackageDetailsImplToJson(
       this,
     );
   }
@@ -574,10 +577,10 @@ class _$_PackageDetails
 abstract class _PackageDetails implements PackageDetails {
   factory _PackageDetails(
       {required final String version,
-      required final Pubspec pubspec}) = _$_PackageDetails;
+      required final Pubspec pubspec}) = _$PackageDetailsImpl;
 
   factory _PackageDetails.fromJson(Map<String, dynamic> json) =
-      _$_PackageDetails.fromJson;
+      _$PackageDetailsImpl.fromJson;
 
   @override
   String get version;
@@ -585,7 +588,7 @@ abstract class _PackageDetails implements PackageDetails {
   Pubspec get pubspec;
   @override
   @JsonKey(ignore: true)
-  _$$_PackageDetailsCopyWith<_$_PackageDetails> get copyWith =>
+  _$$PackageDetailsImplCopyWith<_$PackageDetailsImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -651,10 +654,10 @@ class _$PackageCopyWithImpl<$Res, $Val extends Package>
 }
 
 /// @nodoc
-abstract class _$$_PackageCopyWith<$Res> implements $PackageCopyWith<$Res> {
-  factory _$$_PackageCopyWith(
-          _$_Package value, $Res Function(_$_Package) then) =
-      __$$_PackageCopyWithImpl<$Res>;
+abstract class _$$PackageImplCopyWith<$Res> implements $PackageCopyWith<$Res> {
+  factory _$$PackageImplCopyWith(
+          _$PackageImpl value, $Res Function(_$PackageImpl) then) =
+      __$$PackageImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String name, PackageDetails latest});
@@ -664,10 +667,11 @@ abstract class _$$_PackageCopyWith<$Res> implements $PackageCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$_PackageCopyWithImpl<$Res>
-    extends _$PackageCopyWithImpl<$Res, _$_Package>
-    implements _$$_PackageCopyWith<$Res> {
-  __$$_PackageCopyWithImpl(_$_Package _value, $Res Function(_$_Package) _then)
+class __$$PackageImplCopyWithImpl<$Res>
+    extends _$PackageCopyWithImpl<$Res, _$PackageImpl>
+    implements _$$PackageImplCopyWith<$Res> {
+  __$$PackageImplCopyWithImpl(
+      _$PackageImpl _value, $Res Function(_$PackageImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -676,7 +680,7 @@ class __$$_PackageCopyWithImpl<$Res>
     Object? name = null,
     Object? latest = null,
   }) {
-    return _then(_$_Package(
+    return _then(_$PackageImpl(
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -691,11 +695,11 @@ class __$$_PackageCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_Package with DiagnosticableTreeMixin implements _Package {
-  _$_Package({required this.name, required this.latest});
+class _$PackageImpl with DiagnosticableTreeMixin implements _Package {
+  _$PackageImpl({required this.name, required this.latest});
 
-  factory _$_Package.fromJson(Map<String, dynamic> json) =>
-      _$$_PackageFromJson(json);
+  factory _$PackageImpl.fromJson(Map<String, dynamic> json) =>
+      _$$PackageImplFromJson(json);
 
   @override
   final String name;
@@ -717,10 +721,10 @@ class _$_Package with DiagnosticableTreeMixin implements _Package {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_Package &&
+            other is _$PackageImpl &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.latest, latest) || other.latest == latest));
   }
@@ -732,12 +736,12 @@ class _$_Package with DiagnosticableTreeMixin implements _Package {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_PackageCopyWith<_$_Package> get copyWith =>
-      __$$_PackageCopyWithImpl<_$_Package>(this, _$identity);
+  _$$PackageImplCopyWith<_$PackageImpl> get copyWith =>
+      __$$PackageImplCopyWithImpl<_$PackageImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_PackageToJson(
+    return _$$PackageImplToJson(
       this,
     );
   }
@@ -746,9 +750,9 @@ class _$_Package with DiagnosticableTreeMixin implements _Package {
 abstract class _Package implements Package {
   factory _Package(
       {required final String name,
-      required final PackageDetails latest}) = _$_Package;
+      required final PackageDetails latest}) = _$PackageImpl;
 
-  factory _Package.fromJson(Map<String, dynamic> json) = _$_Package.fromJson;
+  factory _Package.fromJson(Map<String, dynamic> json) = _$PackageImpl.fromJson;
 
   @override
   String get name;
@@ -756,7 +760,7 @@ abstract class _Package implements Package {
   PackageDetails get latest;
   @override
   @JsonKey(ignore: true)
-  _$$_PackageCopyWith<_$_Package> get copyWith =>
+  _$$PackageImplCopyWith<_$PackageImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -814,22 +818,22 @@ class _$LikedPackageCopyWithImpl<$Res, $Val extends LikedPackage>
 }
 
 /// @nodoc
-abstract class _$$_LikedPackageCopyWith<$Res>
+abstract class _$$LikedPackageImplCopyWith<$Res>
     implements $LikedPackageCopyWith<$Res> {
-  factory _$$_LikedPackageCopyWith(
-          _$_LikedPackage value, $Res Function(_$_LikedPackage) then) =
-      __$$_LikedPackageCopyWithImpl<$Res>;
+  factory _$$LikedPackageImplCopyWith(
+          _$LikedPackageImpl value, $Res Function(_$LikedPackageImpl) then) =
+      __$$LikedPackageImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String package, bool liked});
 }
 
 /// @nodoc
-class __$$_LikedPackageCopyWithImpl<$Res>
-    extends _$LikedPackageCopyWithImpl<$Res, _$_LikedPackage>
-    implements _$$_LikedPackageCopyWith<$Res> {
-  __$$_LikedPackageCopyWithImpl(
-      _$_LikedPackage _value, $Res Function(_$_LikedPackage) _then)
+class __$$LikedPackageImplCopyWithImpl<$Res>
+    extends _$LikedPackageCopyWithImpl<$Res, _$LikedPackageImpl>
+    implements _$$LikedPackageImplCopyWith<$Res> {
+  __$$LikedPackageImplCopyWithImpl(
+      _$LikedPackageImpl _value, $Res Function(_$LikedPackageImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -838,7 +842,7 @@ class __$$_LikedPackageCopyWithImpl<$Res>
     Object? package = null,
     Object? liked = null,
   }) {
-    return _then(_$_LikedPackage(
+    return _then(_$LikedPackageImpl(
       package: null == package
           ? _value.package
           : package // ignore: cast_nullable_to_non_nullable
@@ -853,11 +857,11 @@ class __$$_LikedPackageCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_LikedPackage with DiagnosticableTreeMixin implements _LikedPackage {
-  _$_LikedPackage({required this.package, required this.liked});
+class _$LikedPackageImpl with DiagnosticableTreeMixin implements _LikedPackage {
+  _$LikedPackageImpl({required this.package, required this.liked});
 
-  factory _$_LikedPackage.fromJson(Map<String, dynamic> json) =>
-      _$$_LikedPackageFromJson(json);
+  factory _$LikedPackageImpl.fromJson(Map<String, dynamic> json) =>
+      _$$LikedPackageImplFromJson(json);
 
   @override
   final String package;
@@ -879,10 +883,10 @@ class _$_LikedPackage with DiagnosticableTreeMixin implements _LikedPackage {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_LikedPackage &&
+            other is _$LikedPackageImpl &&
             (identical(other.package, package) || other.package == package) &&
             (identical(other.liked, liked) || other.liked == liked));
   }
@@ -894,12 +898,12 @@ class _$_LikedPackage with DiagnosticableTreeMixin implements _LikedPackage {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_LikedPackageCopyWith<_$_LikedPackage> get copyWith =>
-      __$$_LikedPackageCopyWithImpl<_$_LikedPackage>(this, _$identity);
+  _$$LikedPackageImplCopyWith<_$LikedPackageImpl> get copyWith =>
+      __$$LikedPackageImplCopyWithImpl<_$LikedPackageImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_LikedPackageToJson(
+    return _$$LikedPackageImplToJson(
       this,
     );
   }
@@ -908,10 +912,10 @@ class _$_LikedPackage with DiagnosticableTreeMixin implements _LikedPackage {
 abstract class _LikedPackage implements LikedPackage {
   factory _LikedPackage(
       {required final String package,
-      required final bool liked}) = _$_LikedPackage;
+      required final bool liked}) = _$LikedPackageImpl;
 
   factory _LikedPackage.fromJson(Map<String, dynamic> json) =
-      _$_LikedPackage.fromJson;
+      _$LikedPackageImpl.fromJson;
 
   @override
   String get package;
@@ -919,7 +923,7 @@ abstract class _LikedPackage implements LikedPackage {
   bool get liked;
   @override
   @JsonKey(ignore: true)
-  _$$_LikedPackageCopyWith<_$_LikedPackage> get copyWith =>
+  _$$LikedPackageImplCopyWith<_$LikedPackageImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -973,22 +977,24 @@ class _$LikedPackagesResponseCopyWithImpl<$Res,
 }
 
 /// @nodoc
-abstract class _$$_LikesPackagesResponseCopyWith<$Res>
+abstract class _$$LikesPackagesResponseImplCopyWith<$Res>
     implements $LikedPackagesResponseCopyWith<$Res> {
-  factory _$$_LikesPackagesResponseCopyWith(_$_LikesPackagesResponse value,
-          $Res Function(_$_LikesPackagesResponse) then) =
-      __$$_LikesPackagesResponseCopyWithImpl<$Res>;
+  factory _$$LikesPackagesResponseImplCopyWith(
+          _$LikesPackagesResponseImpl value,
+          $Res Function(_$LikesPackagesResponseImpl) then) =
+      __$$LikesPackagesResponseImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({List<LikedPackage> likedPackages});
 }
 
 /// @nodoc
-class __$$_LikesPackagesResponseCopyWithImpl<$Res>
-    extends _$LikedPackagesResponseCopyWithImpl<$Res, _$_LikesPackagesResponse>
-    implements _$$_LikesPackagesResponseCopyWith<$Res> {
-  __$$_LikesPackagesResponseCopyWithImpl(_$_LikesPackagesResponse _value,
-      $Res Function(_$_LikesPackagesResponse) _then)
+class __$$LikesPackagesResponseImplCopyWithImpl<$Res>
+    extends _$LikedPackagesResponseCopyWithImpl<$Res,
+        _$LikesPackagesResponseImpl>
+    implements _$$LikesPackagesResponseImplCopyWith<$Res> {
+  __$$LikesPackagesResponseImplCopyWithImpl(_$LikesPackagesResponseImpl _value,
+      $Res Function(_$LikesPackagesResponseImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -996,7 +1002,7 @@ class __$$_LikesPackagesResponseCopyWithImpl<$Res>
   $Res call({
     Object? likedPackages = null,
   }) {
-    return _then(_$_LikesPackagesResponse(
+    return _then(_$LikesPackagesResponseImpl(
       likedPackages: null == likedPackages
           ? _value._likedPackages
           : likedPackages // ignore: cast_nullable_to_non_nullable
@@ -1007,14 +1013,14 @@ class __$$_LikesPackagesResponseCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_LikesPackagesResponse
+class _$LikesPackagesResponseImpl
     with DiagnosticableTreeMixin
     implements _LikesPackagesResponse {
-  _$_LikesPackagesResponse({required final List<LikedPackage> likedPackages})
+  _$LikesPackagesResponseImpl({required final List<LikedPackage> likedPackages})
       : _likedPackages = likedPackages;
 
-  factory _$_LikesPackagesResponse.fromJson(Map<String, dynamic> json) =>
-      _$$_LikesPackagesResponseFromJson(json);
+  factory _$LikesPackagesResponseImpl.fromJson(Map<String, dynamic> json) =>
+      _$$LikesPackagesResponseImplFromJson(json);
 
   final List<LikedPackage> _likedPackages;
   @override
@@ -1038,10 +1044,10 @@ class _$_LikesPackagesResponse
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_LikesPackagesResponse &&
+            other is _$LikesPackagesResponseImpl &&
             const DeepCollectionEquality()
                 .equals(other._likedPackages, _likedPackages));
   }
@@ -1054,13 +1060,13 @@ class _$_LikesPackagesResponse
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_LikesPackagesResponseCopyWith<_$_LikesPackagesResponse> get copyWith =>
-      __$$_LikesPackagesResponseCopyWithImpl<_$_LikesPackagesResponse>(
-          this, _$identity);
+  _$$LikesPackagesResponseImplCopyWith<_$LikesPackagesResponseImpl>
+      get copyWith => __$$LikesPackagesResponseImplCopyWithImpl<
+          _$LikesPackagesResponseImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_LikesPackagesResponseToJson(
+    return _$$LikesPackagesResponseImplToJson(
       this,
     );
   }
@@ -1069,17 +1075,17 @@ class _$_LikesPackagesResponse
 abstract class _LikesPackagesResponse implements LikedPackagesResponse {
   factory _LikesPackagesResponse(
           {required final List<LikedPackage> likedPackages}) =
-      _$_LikesPackagesResponse;
+      _$LikesPackagesResponseImpl;
 
   factory _LikesPackagesResponse.fromJson(Map<String, dynamic> json) =
-      _$_LikesPackagesResponse.fromJson;
+      _$LikesPackagesResponseImpl.fromJson;
 
   @override
   List<LikedPackage> get likedPackages;
   @override
   @JsonKey(ignore: true)
-  _$$_LikesPackagesResponseCopyWith<_$_LikesPackagesResponse> get copyWith =>
-      throw _privateConstructorUsedError;
+  _$$LikesPackagesResponseImplCopyWith<_$LikesPackagesResponseImpl>
+      get copyWith => throw _privateConstructorUsedError;
 }
 
 PubPackagesResponse _$PubPackagesResponseFromJson(Map<String, dynamic> json) {
@@ -1130,22 +1136,22 @@ class _$PubPackagesResponseCopyWithImpl<$Res, $Val extends PubPackagesResponse>
 }
 
 /// @nodoc
-abstract class _$$_PubPackagesResponseCopyWith<$Res>
+abstract class _$$PubPackagesResponseImplCopyWith<$Res>
     implements $PubPackagesResponseCopyWith<$Res> {
-  factory _$$_PubPackagesResponseCopyWith(_$_PubPackagesResponse value,
-          $Res Function(_$_PubPackagesResponse) then) =
-      __$$_PubPackagesResponseCopyWithImpl<$Res>;
+  factory _$$PubPackagesResponseImplCopyWith(_$PubPackagesResponseImpl value,
+          $Res Function(_$PubPackagesResponseImpl) then) =
+      __$$PubPackagesResponseImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({List<Package> packages});
 }
 
 /// @nodoc
-class __$$_PubPackagesResponseCopyWithImpl<$Res>
-    extends _$PubPackagesResponseCopyWithImpl<$Res, _$_PubPackagesResponse>
-    implements _$$_PubPackagesResponseCopyWith<$Res> {
-  __$$_PubPackagesResponseCopyWithImpl(_$_PubPackagesResponse _value,
-      $Res Function(_$_PubPackagesResponse) _then)
+class __$$PubPackagesResponseImplCopyWithImpl<$Res>
+    extends _$PubPackagesResponseCopyWithImpl<$Res, _$PubPackagesResponseImpl>
+    implements _$$PubPackagesResponseImplCopyWith<$Res> {
+  __$$PubPackagesResponseImplCopyWithImpl(_$PubPackagesResponseImpl _value,
+      $Res Function(_$PubPackagesResponseImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -1153,7 +1159,7 @@ class __$$_PubPackagesResponseCopyWithImpl<$Res>
   $Res call({
     Object? packages = null,
   }) {
-    return _then(_$_PubPackagesResponse(
+    return _then(_$PubPackagesResponseImpl(
       packages: null == packages
           ? _value._packages
           : packages // ignore: cast_nullable_to_non_nullable
@@ -1164,14 +1170,14 @@ class __$$_PubPackagesResponseCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_PubPackagesResponse
+class _$PubPackagesResponseImpl
     with DiagnosticableTreeMixin
     implements _PubPackagesResponse {
-  _$_PubPackagesResponse({required final List<Package> packages})
+  _$PubPackagesResponseImpl({required final List<Package> packages})
       : _packages = packages;
 
-  factory _$_PubPackagesResponse.fromJson(Map<String, dynamic> json) =>
-      _$$_PubPackagesResponseFromJson(json);
+  factory _$PubPackagesResponseImpl.fromJson(Map<String, dynamic> json) =>
+      _$$PubPackagesResponseImplFromJson(json);
 
   final List<Package> _packages;
   @override
@@ -1195,10 +1201,10 @@ class _$_PubPackagesResponse
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_PubPackagesResponse &&
+            other is _$PubPackagesResponseImpl &&
             const DeepCollectionEquality().equals(other._packages, _packages));
   }
 
@@ -1210,13 +1216,13 @@ class _$_PubPackagesResponse
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_PubPackagesResponseCopyWith<_$_PubPackagesResponse> get copyWith =>
-      __$$_PubPackagesResponseCopyWithImpl<_$_PubPackagesResponse>(
+  _$$PubPackagesResponseImplCopyWith<_$PubPackagesResponseImpl> get copyWith =>
+      __$$PubPackagesResponseImplCopyWithImpl<_$PubPackagesResponseImpl>(
           this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_PubPackagesResponseToJson(
+    return _$$PubPackagesResponseImplToJson(
       this,
     );
   }
@@ -1224,16 +1230,16 @@ class _$_PubPackagesResponse
 
 abstract class _PubPackagesResponse implements PubPackagesResponse {
   factory _PubPackagesResponse({required final List<Package> packages}) =
-      _$_PubPackagesResponse;
+      _$PubPackagesResponseImpl;
 
   factory _PubPackagesResponse.fromJson(Map<String, dynamic> json) =
-      _$_PubPackagesResponse.fromJson;
+      _$PubPackagesResponseImpl.fromJson;
 
   @override
   List<Package> get packages;
   @override
   @JsonKey(ignore: true)
-  _$$_PubPackagesResponseCopyWith<_$_PubPackagesResponse> get copyWith =>
+  _$$PubPackagesResponseImplCopyWith<_$PubPackagesResponseImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -1285,22 +1291,22 @@ class _$SearchPackageCopyWithImpl<$Res, $Val extends SearchPackage>
 }
 
 /// @nodoc
-abstract class _$$_SearchPackageCopyWith<$Res>
+abstract class _$$SearchPackageImplCopyWith<$Res>
     implements $SearchPackageCopyWith<$Res> {
-  factory _$$_SearchPackageCopyWith(
-          _$_SearchPackage value, $Res Function(_$_SearchPackage) then) =
-      __$$_SearchPackageCopyWithImpl<$Res>;
+  factory _$$SearchPackageImplCopyWith(
+          _$SearchPackageImpl value, $Res Function(_$SearchPackageImpl) then) =
+      __$$SearchPackageImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String package});
 }
 
 /// @nodoc
-class __$$_SearchPackageCopyWithImpl<$Res>
-    extends _$SearchPackageCopyWithImpl<$Res, _$_SearchPackage>
-    implements _$$_SearchPackageCopyWith<$Res> {
-  __$$_SearchPackageCopyWithImpl(
-      _$_SearchPackage _value, $Res Function(_$_SearchPackage) _then)
+class __$$SearchPackageImplCopyWithImpl<$Res>
+    extends _$SearchPackageCopyWithImpl<$Res, _$SearchPackageImpl>
+    implements _$$SearchPackageImplCopyWith<$Res> {
+  __$$SearchPackageImplCopyWithImpl(
+      _$SearchPackageImpl _value, $Res Function(_$SearchPackageImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -1308,7 +1314,7 @@ class __$$_SearchPackageCopyWithImpl<$Res>
   $Res call({
     Object? package = null,
   }) {
-    return _then(_$_SearchPackage(
+    return _then(_$SearchPackageImpl(
       package: null == package
           ? _value.package
           : package // ignore: cast_nullable_to_non_nullable
@@ -1319,11 +1325,13 @@ class __$$_SearchPackageCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_SearchPackage with DiagnosticableTreeMixin implements _SearchPackage {
-  _$_SearchPackage({required this.package});
+class _$SearchPackageImpl
+    with DiagnosticableTreeMixin
+    implements _SearchPackage {
+  _$SearchPackageImpl({required this.package});
 
-  factory _$_SearchPackage.fromJson(Map<String, dynamic> json) =>
-      _$$_SearchPackageFromJson(json);
+  factory _$SearchPackageImpl.fromJson(Map<String, dynamic> json) =>
+      _$$SearchPackageImplFromJson(json);
 
   @override
   final String package;
@@ -1342,10 +1350,10 @@ class _$_SearchPackage with DiagnosticableTreeMixin implements _SearchPackage {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_SearchPackage &&
+            other is _$SearchPackageImpl &&
             (identical(other.package, package) || other.package == package));
   }
 
@@ -1356,28 +1364,28 @@ class _$_SearchPackage with DiagnosticableTreeMixin implements _SearchPackage {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_SearchPackageCopyWith<_$_SearchPackage> get copyWith =>
-      __$$_SearchPackageCopyWithImpl<_$_SearchPackage>(this, _$identity);
+  _$$SearchPackageImplCopyWith<_$SearchPackageImpl> get copyWith =>
+      __$$SearchPackageImplCopyWithImpl<_$SearchPackageImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_SearchPackageToJson(
+    return _$$SearchPackageImplToJson(
       this,
     );
   }
 }
 
 abstract class _SearchPackage implements SearchPackage {
-  factory _SearchPackage({required final String package}) = _$_SearchPackage;
+  factory _SearchPackage({required final String package}) = _$SearchPackageImpl;
 
   factory _SearchPackage.fromJson(Map<String, dynamic> json) =
-      _$_SearchPackage.fromJson;
+      _$SearchPackageImpl.fromJson;
 
   @override
   String get package;
   @override
   @JsonKey(ignore: true)
-  _$$_SearchPackageCopyWith<_$_SearchPackage> get copyWith =>
+  _$$SearchPackageImplCopyWith<_$SearchPackageImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -1429,22 +1437,22 @@ class _$PubSearchResponseCopyWithImpl<$Res, $Val extends PubSearchResponse>
 }
 
 /// @nodoc
-abstract class _$$_PubSearchResponseCopyWith<$Res>
+abstract class _$$PubSearchResponseImplCopyWith<$Res>
     implements $PubSearchResponseCopyWith<$Res> {
-  factory _$$_PubSearchResponseCopyWith(_$_PubSearchResponse value,
-          $Res Function(_$_PubSearchResponse) then) =
-      __$$_PubSearchResponseCopyWithImpl<$Res>;
+  factory _$$PubSearchResponseImplCopyWith(_$PubSearchResponseImpl value,
+          $Res Function(_$PubSearchResponseImpl) then) =
+      __$$PubSearchResponseImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({List<SearchPackage> packages});
 }
 
 /// @nodoc
-class __$$_PubSearchResponseCopyWithImpl<$Res>
-    extends _$PubSearchResponseCopyWithImpl<$Res, _$_PubSearchResponse>
-    implements _$$_PubSearchResponseCopyWith<$Res> {
-  __$$_PubSearchResponseCopyWithImpl(
-      _$_PubSearchResponse _value, $Res Function(_$_PubSearchResponse) _then)
+class __$$PubSearchResponseImplCopyWithImpl<$Res>
+    extends _$PubSearchResponseCopyWithImpl<$Res, _$PubSearchResponseImpl>
+    implements _$$PubSearchResponseImplCopyWith<$Res> {
+  __$$PubSearchResponseImplCopyWithImpl(_$PubSearchResponseImpl _value,
+      $Res Function(_$PubSearchResponseImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -1452,7 +1460,7 @@ class __$$_PubSearchResponseCopyWithImpl<$Res>
   $Res call({
     Object? packages = null,
   }) {
-    return _then(_$_PubSearchResponse(
+    return _then(_$PubSearchResponseImpl(
       packages: null == packages
           ? _value._packages
           : packages // ignore: cast_nullable_to_non_nullable
@@ -1463,14 +1471,14 @@ class __$$_PubSearchResponseCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_PubSearchResponse
+class _$PubSearchResponseImpl
     with DiagnosticableTreeMixin
     implements _PubSearchResponse {
-  _$_PubSearchResponse({required final List<SearchPackage> packages})
+  _$PubSearchResponseImpl({required final List<SearchPackage> packages})
       : _packages = packages;
 
-  factory _$_PubSearchResponse.fromJson(Map<String, dynamic> json) =>
-      _$$_PubSearchResponseFromJson(json);
+  factory _$PubSearchResponseImpl.fromJson(Map<String, dynamic> json) =>
+      _$$PubSearchResponseImplFromJson(json);
 
   final List<SearchPackage> _packages;
   @override
@@ -1494,10 +1502,10 @@ class _$_PubSearchResponse
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_PubSearchResponse &&
+            other is _$PubSearchResponseImpl &&
             const DeepCollectionEquality().equals(other._packages, _packages));
   }
 
@@ -1509,13 +1517,13 @@ class _$_PubSearchResponse
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_PubSearchResponseCopyWith<_$_PubSearchResponse> get copyWith =>
-      __$$_PubSearchResponseCopyWithImpl<_$_PubSearchResponse>(
+  _$$PubSearchResponseImplCopyWith<_$PubSearchResponseImpl> get copyWith =>
+      __$$PubSearchResponseImplCopyWithImpl<_$PubSearchResponseImpl>(
           this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_PubSearchResponseToJson(
+    return _$$PubSearchResponseImplToJson(
       this,
     );
   }
@@ -1523,15 +1531,15 @@ class _$_PubSearchResponse
 
 abstract class _PubSearchResponse implements PubSearchResponse {
   factory _PubSearchResponse({required final List<SearchPackage> packages}) =
-      _$_PubSearchResponse;
+      _$PubSearchResponseImpl;
 
   factory _PubSearchResponse.fromJson(Map<String, dynamic> json) =
-      _$_PubSearchResponse.fromJson;
+      _$PubSearchResponseImpl.fromJson;
 
   @override
   List<SearchPackage> get packages;
   @override
   @JsonKey(ignore: true)
-  _$$_PubSearchResponseCopyWith<_$_PubSearchResponse> get copyWith =>
+  _$$PubSearchResponseImplCopyWith<_$PubSearchResponseImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

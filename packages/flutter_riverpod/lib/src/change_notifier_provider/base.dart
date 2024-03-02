@@ -2,7 +2,7 @@
 
 part of '../change_notifier_provider.dart';
 
-/// {@macro riverpod.providerrefbase}
+/// {@macro riverpod.provider_ref_base}
 abstract class ChangeNotifierProviderRef<NotifierT extends ChangeNotifier?>
     implements Ref<NotifierT> {
   /// The [ChangeNotifier] currently exposed by this provider.
@@ -12,7 +12,7 @@ abstract class ChangeNotifierProviderRef<NotifierT extends ChangeNotifier?>
 }
 
 // ignore: subtype_of_sealed_class
-/// {@template riverpod.ChangeNotifierprovider}
+/// {@template riverpod.change_notifier_provider}
 /// Creates a [ChangeNotifier] and exposes its current state.
 ///
 /// Combined with [ChangeNotifier], [ChangeNotifierProvider] can be used to manipulate
@@ -75,7 +75,7 @@ abstract class ChangeNotifierProviderRef<NotifierT extends ChangeNotifier?>
 class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
     extends _ChangeNotifierProviderBase<NotifierT>
     with AlwaysAliveProviderBase<NotifierT> {
-  /// {@macro riverpod.ChangeNotifierprovider}
+  /// {@macro riverpod.change_notifier_provider}
   ChangeNotifierProvider(
     this._createFn, {
     super.name,
@@ -122,7 +122,7 @@ class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
   late final AlwaysAliveRefreshable<NotifierT> notifier =
       _notifier<NotifierT>(this);
 
-  /// {@template riverpod.overridewith}
+  /// {@template riverpod.override_with}
   /// Override the provider with a new initialization function.
   ///
   /// This will also disable the auto-scoping mechanism, meaning that if the
@@ -256,7 +256,7 @@ class ChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?, Arg>
               computeAllTransitiveDependencies(dependencies),
         );
 
-  /// {@macro riverpod.overridewith}
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     NotifierT Function(ChangeNotifierProviderRef<NotifierT> ref, Arg arg)
         create,

@@ -196,7 +196,7 @@ abstract class _$PackageMetrics
     extends BuildlessAutoDisposeAsyncNotifier<PackageMetricsScore> {
   late final String packageName;
 
-  Future<PackageMetricsScore> build({
+  FutureOr<PackageMetricsScore> build({
     required String packageName,
   });
 }
@@ -312,7 +312,7 @@ class PackageMetricsProvider extends AutoDisposeAsyncNotifierProviderImpl<
   final String packageName;
 
   @override
-  Future<PackageMetricsScore> runNotifierBuild(
+  FutureOr<PackageMetricsScore> runNotifierBuild(
     covariant PackageMetrics notifier,
   ) {
     return notifier.build(
@@ -371,4 +371,4 @@ class _PackageMetricsProviderElement
   String get packageName => (origin as PackageMetricsProvider).packageName;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

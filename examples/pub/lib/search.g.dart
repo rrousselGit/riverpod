@@ -8,7 +8,7 @@ part of 'search.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$fetchPackagesHash() => r'3637226080ea667823875a135a6c4cf002cb0329';
+String _$fetchPackagesHash() => r'46519fce4d1661e1358deac4d806374fa68f12c8';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -175,4 +175,4 @@ class _FetchPackagesProviderElement
   String get search => (origin as FetchPackagesProvider).search;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

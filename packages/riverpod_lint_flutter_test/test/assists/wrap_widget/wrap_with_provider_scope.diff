@@ -1,0 +1,28 @@
+Message: `Wrap with ProviderScope`
+Priority: 27
+Diff for file `test/assists/wrap_widget/wrap_widget.dart:11`:
+```
+    Map();
+
+-     return Scaffold(
+-       body: Container(),
+-     );
++     return ProviderScope(child: Scaffold(
++       body: Container(),
++     ),);
+  }
+}
+```
+---
+Message: `Wrap with ProviderScope`
+Priority: 27
+Diff for file `test/assists/wrap_widget/wrap_widget.dart:12`:
+```
+
+    return Scaffold(
+-       body: Container(),
++       body: ProviderScope(child: Container(),),
+    );
+  }
+```
+---

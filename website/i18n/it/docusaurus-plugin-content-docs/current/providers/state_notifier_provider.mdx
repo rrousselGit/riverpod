@@ -2,30 +2,39 @@
 title: StateNotifierProvider
 ---
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
-import todos from "!!raw-loader!/i18n/it/docusaurus-plugin-content-docs/current/providers/state_notifier_provider/todos.dart";
-import todosConsumer from "!!raw-loader!/i18n/it/docusaurus-plugin-content-docs/current/providers/state_notifier_provider/todos_consumer.dart";
+import todos from "!!raw-loader!/docs/providers/state_notifier_provider/todos.dart";
+import todosConsumer from "!!raw-loader!/docs/providers/state_notifier_provider/todos_consumer.dart";
 import { trimSnippet } from "../../../../../src/components/CodeSnippet";
 
-`StateNotifierProvider` è un provider usato per ascoltare ed esporre uno [StateNotifier] (dal package [state_notifier], che Riverpod ri-esporta).  
-`StateNotifierProvider` unito con [StateNotifier] è la soluzione consigliata da Riverpod per gestire lo stato in reazione all'interazione dell'utente.
+:::caution
+The content of this page may be outdated.  
+It will be updated in the future, but for now you may want to refer to the content
+in the top of the sidebar instead (introduction/essentials/case-studies/...)
+:::
 
-Viene usato in genere per:
+`StateNotifierProvider` is a provider that is used to listen to and expose a
+[StateNotifier] (from the package [state_notifier], which Riverpod re-exports).
 
-- esporre uno stato **immutabile** che può cambiare nel tempo dopo aver reagito ad eventi personalizzabili.
-- centralizzare la logica per modificare lo stato (aka "business logic") in un singolo posto, 
-  migliorando la mantenibilità nel tempo.
+It is typically used for:
 
-Come esempio d'uso, potremmo usare `StateNotifierProvider` per implementare una todo-list (lista di todo).  
-Fare ciò ci permette di esporre dei metodi come `addTodo` per lasciare che l'UI modifichi 
-la todo-list in base alle interazioni dell'utente:
+- exposing an **immutable** state which can change over time after reacting to
+  custom events.
+- centralizing the logic for modifying some state (aka "business logic") in a
+  single place, improving maintainability over time.
+
+:::info
+Prefer using [NotifierProvider] instead.  
+:::
+
+As a usage example, we could use `StateNotifierProvider` to implement a todo-list.
+Doing so would allow us to expose methods such as `addTodo` to let the UI
+modify the list of todos on user interactions:
 
 <CodeBlock>{trimSnippet(todos)}</CodeBlock>
 
-Ora che abbiamo definito uno `StateNotifierProvider`, 
-possiamo usarlo per interagire con la todo-list nella nostra interfaccia grafica:
+Now that we have defined a `StateNotifierProvider`, we can use it to interact
+with the list of todos in our UI:
 
 <CodeBlock>{trimSnippet(todosConsumer)}</CodeBlock>
 
@@ -33,3 +42,4 @@ possiamo usarlo per interagire con la todo-list nella nostra interfaccia grafica
 [statenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/StateNotifier-class.html
 [provider]: ./provider
 [futureprovider]: ./future_provider
+[notifierprovider]: ./notifier_provider

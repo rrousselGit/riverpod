@@ -86,12 +86,15 @@ typedef SetupFamilyOverride<Arg> = void Function(
 /// Do not use: Internal object to used by [ProviderContainer]/`ProviderScope`
 /// to override the behavior of a "family" for part of the application.
 @internal
-abstract class FamilyOverride<State> implements Override {
+abstract class FamilyOverride<@Deprecated('Will be removed in 3.0.0') State>
+    implements Override {
   /// The family that was overridden.
+  // ignore: deprecated_member_use_from_same_package
   Family<State> get overriddenFamily;
 
   /// Obtains the new behavior for a provider associated to the overridden family.
   @visibleForOverriding
+  // ignore: deprecated_member_use_from_same_package
   ProviderBase<State> getProviderOverride(ProviderBase<State> provider);
 }
 
@@ -160,7 +163,7 @@ class FamilyBase<RefT extends Ref<R>, R, Arg, Created,
   @override
   final Set<ProviderOrFamily>? allTransitiveDependencies;
 
-  /// {@template riverpod.create_source_hash}
+  /// {@macro riverpod.create_source_hash}
   @internal
   final DebugGetCreateSourceHash? debugGetCreateSourceHash;
 }
@@ -209,7 +212,7 @@ class AutoDisposeFamilyBase<RefT extends Ref<R>, R, Arg, Created,
   @override
   final Set<ProviderOrFamily>? allTransitiveDependencies;
 
-  /// {@template riverpod.create_source_hash}
+  /// {@macro riverpod.create_source_hash}
   @internal
   final DebugGetCreateSourceHash? debugGetCreateSourceHash;
 }
@@ -258,7 +261,7 @@ class AutoDisposeNotifierFamilyBase<RefT extends Ref<R>, R, Arg, NotifierT,
   @override
   final Set<ProviderOrFamily>? allTransitiveDependencies;
 
-  /// {@template riverpod.create_source_hash}
+  /// {@macro riverpod.create_source_hash}
   @internal
   final DebugGetCreateSourceHash? debugGetCreateSourceHash;
 }

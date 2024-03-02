@@ -19,7 +19,7 @@ abstract class BuildlessAsyncNotifier<State> extends AsyncNotifierBase<State> {
   AsyncNotifierProviderRef<State> get ref => _element;
 }
 
-/// {@template riverpod.asyncnotifier}
+/// {@template riverpod.async_notifier}
 /// A [Notifier] implementation that is asynchronously initialized.
 ///
 /// This is similar to a [FutureProvider] but allows to perform side-effects
@@ -35,9 +35,8 @@ abstract class BuildlessAsyncNotifier<State> extends AsyncNotifierBase<State> {
 /// {@endtemplate}
 ///
 /// {@macro riverpod.async_notifier_provider_modifier}
-// TODO add usage example
 abstract class AsyncNotifier<State> extends BuildlessAsyncNotifier<State> {
-  /// {@template riverpod.asyncnotifier.build}
+  /// {@template riverpod.async_notifier.build}
   /// Initialize an [AsyncNotifier].
   ///
   /// It is safe to use [Ref.watch] or [Ref.listen] inside this method.
@@ -54,7 +53,7 @@ abstract class AsyncNotifier<State> extends BuildlessAsyncNotifier<State> {
   FutureOr<State> build();
 }
 
-/// {@macro riverpod.providerrefbase}
+/// {@macro riverpod.provider_ref_base}
 abstract class AsyncNotifierProviderRef<T> implements Ref<AsyncValue<T>> {}
 
 /// {@template riverpod.async_notifier_provider}
@@ -140,7 +139,7 @@ class AsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
     return (notifier as AsyncNotifier<T>).build();
   }
 
-  /// {@macro riverpod.overridewith}
+  /// {@macro riverpod.override_with}
   @mustBeOverridden
   Override overrideWith(NotifierT Function() create) {
     return ProviderOverride(
@@ -158,7 +157,7 @@ class AsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
   }
 }
 
-/// Internal typedef for cancelling the subsription to an async operation
+/// Internal typedef for cancelling the subscription to an async operation
 @internal
 typedef CancelAsyncSubscription = void Function();
 
@@ -228,12 +227,22 @@ mixin FutureHandlerProviderElementMixin<T>
 
   /// Life-cycle for when an error from the provider's "build" method is received.
   ///
-  /// Might be invokved after the element is disposed in the case where `provider.future`
+  /// Might be invoked after the element is disposed in the case where `provider.future`
   /// has yet to complete.
   @internal
   void onError(AsyncError<T> value, {bool seamless = false}) {
     if (mounted) {
       asyncTransition(value, seamless: seamless);
+
+      for (final observer in container.observers) {
+        runQuaternaryGuarded(
+          observer.providerDidFail,
+          provider,
+          value.error,
+          value.stackTrace,
+          container,
+        );
+      }
     }
 
     final completer = _futureCompleter;
@@ -260,7 +269,7 @@ mixin FutureHandlerProviderElementMixin<T>
 
   /// Life-cycle for when a data from the provider's "build" method is received.
   ///
-  /// Might be invokved after the element is disposed in the case where `provider.future`
+  /// Might be invoked after the element is disposed in the case where `provider.future`
   /// has yet to complete.
   @internal
   void onData(AsyncData<T> value, {bool seamless = false}) {
@@ -556,7 +565,7 @@ extension<T> on Stream<T> {
           result!.map(
             data: (result) => completer.complete(result.state),
             error: (result) {
-              // TODO: shoould this be reported to the zone?
+              // TODO: should this be reported to the zone?
               completer.future.ignore();
               completer.completeError(result.error, result.stackTrace);
             },

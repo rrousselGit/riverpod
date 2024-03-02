@@ -1,6 +1,6 @@
 import 'package:test/test.dart';
 
-import 'analyser_test_utils.dart';
+import 'analyzer_test_utils.dart';
 
 void main() {
   testSource('Decode ProviderScope creations', source: '''
@@ -44,7 +44,7 @@ class Example extends ConsumerWidget {
   }
 }
 ''', (resolver) async {
-    final result = await resolver.resolveRiverpodAnalyssiResult();
+    final result = await resolver.resolveRiverpodAnalysisResult();
 
     final scopes = result.providerScopeInstanceCreationExpressions;
     final consumer = result.consumerWidgetDeclarations.single;

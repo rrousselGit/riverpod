@@ -1,0 +1,49 @@
+---
+title: Logging e segnalazione degli errori
+---
+
+import { AutoSnippet } from "../../../../../src/components/CodeSnippet";
+import providerObserver from "!!raw-loader!./provider_observer/provider_observer.dart";
+
+Riverpod offre nativamente un modo per ascoltare tutti gli eventi che 
+succedono nell'albero dei provider.
+Questo può essere usato per loggare tutti gli eventi, o riportare gli errori 
+ad un servizio remoto.
+
+Ciò è possibile usando la classe `ProviderObserver`, 
+che viene passata a `ProviderScope`/`ProviderContainer`.
+
+## Definire un ProviderObserver
+
+Un `ProviderObserver` è una classe che dovrebbe essere estesa.
+Offre vari metodi che possono essere sovrascritti per ascoltare gli eventi:
+
+- `didAddProvider`, chiamato quando un provider è aggiunto all'albero
+- `didUpdateProvider`, chiamato quando un provider viene aggiornato
+- `didDisposeProvider`, chiamato quando un provider viene distrutto
+- `providerDidFail`, quando un provider sincrono genera un errore
+
+<AutoSnippet raw={providerObserver} />
+
+## Usare un ProviderObserver
+
+Per utilizzare il nostro observer appena definito dovremmo passarlo a `ProviderScope` o a `ProviderContainer`:
+
+```dart
+runApp(
+  ProviderScope(
+    observers: [
+      MyObserver(),
+    ],
+    child: MyApp(),
+  )
+);
+```
+
+```dart
+final container = ProviderContainer(
+  observers: [
+    MyObserver(),
+  ],
+);
+```

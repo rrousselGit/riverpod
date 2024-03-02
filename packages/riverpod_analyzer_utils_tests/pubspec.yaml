@@ -1,7 +1,6 @@
 name: riverpod_analyzer_utils_tests
 description: A sample command-line application.
 publish_to: none
-version: 0.0.1
 
 environment:
   sdk: ">=2.18.0 <3.0.0"

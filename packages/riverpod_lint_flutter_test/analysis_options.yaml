@@ -2,5 +2,6 @@ analyzer:
   plugins:
     - custom_lint
   exclude:
-    - "**/*.g.dart"
-    - "**/*.freezed.dart"
+    # Files with errors on purpose
+    - test/lints/notifier_extends/notifier_extends.g.dart
+    - test/lints/functional_ref.g.dart

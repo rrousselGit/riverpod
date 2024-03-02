@@ -7,10 +7,10 @@ import 'reading_counter.dart';
 
 /* SNIPPET START */
 
-final counterProvider = StateNotifierProvider<Counter, int>((ref) => Counter(ref));
+final counterProvider = StateNotifierProvider<Counter, int>(Counter.new);
 
 class HomeView extends ConsumerWidget {
-  const HomeView({Key? key}): super(key: key);
+  const HomeView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

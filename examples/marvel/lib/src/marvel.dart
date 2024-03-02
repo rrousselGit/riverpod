@@ -103,7 +103,7 @@ class MarvelRepository {
         'hash': hash,
         ...?queryParameters,
       },
-      // TODO deserialize error message
+      // TO-DO deserialize error message
     );
     return MarvelResponse.fromJson(Map<String, Object>.from(result.data!));
   }

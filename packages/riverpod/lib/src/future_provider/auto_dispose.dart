@@ -1,15 +1,15 @@
 part of '../future_provider.dart';
 
-/// {@macro riverpod.providerrefbase}
+/// {@macro riverpod.provider_ref_base}
 /// - [FutureProviderRef.state], the value currently exposed by this provider.
 abstract class AutoDisposeFutureProviderRef<State>
     extends FutureProviderRef<State>
     implements AutoDisposeRef<AsyncValue<State>> {}
 
-/// {@macro riverpod.futureprovider}
+/// {@macro riverpod.future_provider}
 class AutoDisposeFutureProvider<T> extends _FutureProviderBase<T>
     with AsyncSelector<T> {
-  /// {@macro riverpod.futureprovider}
+  /// {@macro riverpod.future_provider}
   AutoDisposeFutureProvider(
     this._createFn, {
     super.name,
@@ -51,7 +51,7 @@ class AutoDisposeFutureProvider<T> extends _FutureProviderBase<T>
   @override
   late final Refreshable<Future<T>> future = _future(this);
 
-  /// {@macro riverpod.overridewith}
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     Create<FutureOr<T>, AutoDisposeFutureProviderRef<T>> create,
   ) {
@@ -110,7 +110,7 @@ class AutoDisposeFutureProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
     required super.debugGetCreateSourceHash,
   }) : super(providerFactory: AutoDisposeFutureProvider<R>.internal);
 
-  /// {@macro riverpod.overridewith}
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     FutureOr<R> Function(AutoDisposeFutureProviderRef<R> ref, Arg arg) create,
   ) {

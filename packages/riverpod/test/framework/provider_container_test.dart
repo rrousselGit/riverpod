@@ -7,6 +7,23 @@ import '../utils.dart';
 
 void main() {
   group('ProviderContainer', () {
+    group('invalidate', () {
+      test('can disposes of the element if not used anymore', () async {
+        final provider = Provider.autoDispose((r) {
+          r.keepAlive();
+          return 0;
+        });
+        final container = createContainer();
+
+        container.read(provider);
+        container.invalidate(provider);
+
+        await container.pump();
+
+        expect(container.getAllProviderElements(), isEmpty);
+      });
+    });
+
     test('Supports unmounting containers in reverse order', () {
       final container = createContainer();
 
@@ -16,7 +33,7 @@ void main() {
       child.dispose();
     });
 
-    group('when unmounting providders', () {
+    group('when unmounting providers', () {
       test(
           'cleans up all the StateReaders of a provider in the entire ProviderContainer tree',
           () async {
@@ -399,7 +416,7 @@ void main() {
 
     group('.pump', () {
       test(
-          'waits for providers to rebuild or get disposed, no matter from which container they are associated in the graph',
+          'Waits for providers associated with this container and its parents to rebuild',
           () async {
         final dep = StateProvider((ref) => 0);
         final a = Provider((ref) => ref.watch(dep));
@@ -417,7 +434,7 @@ void main() {
         verifyOnly(bListener, bListener(null, 0));
 
         root.read(dep.notifier).state++;
-        await root.pump();
+        await scoped.pump();
 
         verifyOnly(aListener, aListener(0, 1));
         verifyOnly(bListener, bListener(0, 1));

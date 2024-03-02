@@ -62,6 +62,8 @@ abstract class ProviderBase<State> extends ProviderOrFamily
 
   /// If this provider was created with the `.family` modifier, [argument] is
   /// the variable that was used.
+  ///
+  /// On generated providers, this will be a record of all arguments.
   final Object? argument;
 
   @override

@@ -1,0 +1,145 @@
+---
+title: Combining requests
+version: 2
+---
+
+import { Link } from "/src/components/Link";
+import { AutoSnippet } from "/src/components/CodeSnippet";
+import functionalRef from "./combining_requests/functional_ref";
+import notifierRef from "./combining_requests/notifier_ref";
+import watchExample from "./combining_requests/watch_example";
+import watchPlacement from "./combining_requests/watch_placement";
+import listenExample from "./combining_requests/listen_example";
+import readExample from './combining_requests/read_example'
+
+Up till now, we've only seen cases where requests are independent from each
+other. But a common use-case is to have to trigger a request based on the
+result of another request.
+
+We _could_ be using the <Link documentID="essentials/passing_args" /> mechanism to
+do that, by passing the result of a provider as a parameter to another provider.
+
+But this approach has a few downsides:
+
+- This leaks implementation details.
+  Now, your UI needs to know about all the providers that are used
+  by your other provider.
+- Whenever the parameter changes, a brand new state will be made.
+  By passing parameters, there is no way to keep the previous state
+  when the parameter changes.
+- It makes combining requests harder.
+- This makes tooling less useful. A devtool wouldn't
+  know about the relationship between providers.
+
+To improve this, Riverpod offers a different approach to combine requests.
+
+## The basics: Obtaining a "ref"
+
+All possible ways of combining requests have one thing in common:
+They are all based on the `Ref` object.
+
+The `Ref` object is an object to which all providers have access.
+It grants them access to various life-cycle listeners, but also
+various methods to combine providers.
+
+The place where `Ref` can be obtained depends on the type of provider.
+
+In functional providers, the `Ref` is passed as a parameter to the
+provider's function:
+
+<AutoSnippet {...functionalRef} />
+
+In class variants, the `Ref` is a property of the Notifier class:
+
+<AutoSnippet {...notifierRef} />
+
+## Using ref to read a provider.
+
+## The `ref.watch` method.
+
+Now that we've obtained a `Ref`, we can use it to combine requests.
+The main way to do so is by using `ref.watch`.  
+It is generally recommended to architecture your code such that you
+can use `ref.watch` over other options, as it is generally easier to maintain.
+
+The `ref.watch` method takes a provider, and returns its current state.
+Then, whenever the listened provider changes, our provider will be
+invalidated and rebuilt next frame or on next read.
+
+By using `ref.watch`, your logic becomes both "reactive" and "declarative".  
+Meaning that your logic will automatically recompute when needed.
+And that the update mechanism doesn't rely on side-effects, such as an "on change".
+This is similar to how StatelessWidgets behave.
+
+As an example, we could define a provider that listens to the user's location.
+Then, we could use this location to fetch the list of restaurants near the user.
+
+<AutoSnippet {...watchExample} />
+
+:::info
+When the listened to provider changes and our request recomputes, the previous
+state is kept until the new request is completed.  
+At the same time, while the request is pending, the "isLoading" and "isReloading"
+flags will be set.
+
+This enables UI to either show the previous state or a loading indicator,
+or even both.
+:::
+
+:::info
+Notice how we used `ref.watch(locationProvider.future)` instead of `ref.watch(locationProvider)`.
+That is because our `locationProvider` is asynchronous. As such, we want to
+await for an initial value to be available.
+
+If we omit that `.future`, we would receive an `AsyncValue`, which is a snapshot
+of the current state of the `locationProvider`. But if no location is available yet,
+we won't be able to do anything.
+:::
+
+:::caution
+It is considered bad practice to call `ref.watch` inside code that is executed
+"imperatively". Meaning any code that is possibly not executed during the build
+phase of the provider. This includes "listener" callbacks or methods on Notifiers:
+
+<AutoSnippet {...watchPlacement} />
+:::
+
+## The `ref.listen`/`listenSelf` methods.
+
+The `ref.listen` method is an alternative to `ref.watch`.  
+It is similar to your traditional "listen"/"addListener" method. It takes a provider
+and a callback, and will invoke said callback whenever the content of the provider
+changes.
+
+Refactoring your code such that you can use `ref.watch` instead of `ref.listen`
+is generally recommended, as the latter is more error-prone due to its imperative nature.  
+But `ref.listen` can be helpful to add some quick logic without having to do
+significant refactor.
+
+We could rewrite the `ref.watch` example to use `ref.listen` instead
+
+<AutoSnippet {...listenExample} />
+
+:::info
+It is entirely safe to use `ref.listen` during the build phase of a provider.
+If the provider somehow is recomputed, previous listeners will be removed.
+
+Alternatively, you can use the return value of `ref.listen` to remove the listener
+manually when you wish.
+:::
+
+## The `ref.read` method.
+
+The last option available is `ref.read`.
+It is similar to `ref.watch` in that it returns the current state of a provider.
+But unlike `ref.watch`, it doesn't listen to the provider.
+
+As such, `ref.read` should be only be used in placed where you can't use
+`ref.watch`, such as inside methods of Notifiers.
+
+<AutoSnippet {...readExample} />
+
+:::caution
+Be careful when using `ref.read` on a provider as, since it doesn't listen to the
+provider, said provider may decide to destroy its state if it isn't listened.
+:::

@@ -1,35 +1,66 @@
 {
+  "riverpod.snippets.selectAsync.todo": {
+    "message": "Bar"
+  },
+  "riverpod.snippets.selectAsync.watch": {
+    "message": "Foo"
+  },
+
   "version.label": {
     "message": "다음",
     "description": "The label for version current"
   },
-  "sidebar.Sidebar.category.Guides": {
-    "message": "가이드",
-    "description": "The label for category Guides in sidebar Sidebar"
+  "sidebar.Sidebar.category.Introduction": {
+    "message": "소개(Introduction)",
+    "description": "The label for category Introduction in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.Riverpod for Provider Users": {
+    "message": "Provider 사용자를 위한 Riverpod",
+    "description": "The label for category Riverpod for Provider Users in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.Essentials": {
+    "message": "필수사항(Essentials)",
+    "description": "The label for category Essentials in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.Case studies": {
+    "message": "사례 연구(Case studies)",
+    "description": "The label for category Case studies in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.Advanced topics": {
+    "message": "고급 주제(Advanced topics)",
+    "description": "The label for category Advanced topics in sidebar Sidebar"
   },
   "sidebar.Sidebar.category.Concepts": {
-    "message": "컨셉",
+    "message": "기본 개념(Concepts)",
     "description": "The label for category Concepts in sidebar Sidebar"
   },
-  "sidebar.Sidebar.category.Modifiers": {
-    "message": "수식어",
-    "description": "The label for category Modifiers in sidebar Sidebar"
-  },
-  "sidebar.Sidebar.category.Migration": {
-    "message": "마이그레이션",
-    "description": "The label for category Migration in sidebar Sidebar"
+  "sidebar.Sidebar.category.Migration guides": {
+    "message": "마이그레이션 가이드",
+    "description": "The label for category Migration guides in sidebar Sidebar"
   },
   "sidebar.Sidebar.category.Official examples": {
-    "message": "사용예제(공식)",
+    "message": "공식 사용예제",
     "description": "The label for category Official examples in sidebar Sidebar"
   },
   "sidebar.Sidebar.category.Third party examples": {
-    "message": "사용예제(서드파티)",
+    "message": "서드파티 사용예제",
     "description": "The label for category Third party examples in sidebar Sidebar"
   },
-  "sidebar.Sidebar.category.Api references": {
-    "message": "Api 레퍼런스",
-    "description": "The label for category Api references in sidebar Sidebar"
+  "sidebar.Sidebar.category.Concepts 🚧": {
+    "message": "기본 개념(Concepts) 🚧",
+    "description": "The label for category Concepts 🚧 in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.Modifiers": {
+    "message": "수식어(Modifiers)",
+    "description": "The label for category Modifiers in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.All Providers 🚧": {
+    "message": "전체 Providers 🚧",
+    "description": "The label for category All Providers 🚧 in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.Guides 🚧": {
+    "message": "가이드 🚧",
+    "description": "The label for category Guides 🚧 in sidebar Sidebar"
   },
   "sidebar.Sidebar.link.Counter": {
     "message": "카운터 앱",
@@ -39,12 +70,16 @@
     "message": "Todo 앱",
     "description": "The label for link Todo list in sidebar Sidebar, linking to https://github.com/rrousselGit/riverpod/tree/master/examples/todos"
   },
+  "sidebar.Sidebar.link.Pub.dev client": {
+    "message": "Pub.dev 클라이언트",
+    "description": "The label for link Pub.dev client in sidebar Sidebar, linking to https://github.com/rrousselGit/riverpod/tree/master/examples/pub"
+  },
   "sidebar.Sidebar.link.Marvel API": {
     "message": "Marvel API",
     "description": "The label for link Marvel API in sidebar Sidebar, linking to https://github.com/rrousselGit/riverpod/tree/master/examples/marvel"
   },
   "sidebar.Sidebar.link.Android Launcher": {
-    "message": "Android Launcher",
+    "message": "안드로이드 Launcher",
     "description": "The label for link Android Launcher in sidebar Sidebar, linking to https://github.com/lohanidamodar/fl_live_launcher"
   },
   "sidebar.Sidebar.link.Worldtime Clock": {
@@ -55,32 +90,28 @@
     "message": "사전 앱",
     "description": "The label for link Dictionary App in sidebar Sidebar, linking to https://github.com/lohanidamodar/fl_dictio"
   },
-  "sidebar.Sidebar.link.Firebase Starter": {
-    "message": "Firebase 스타터",
-    "description": "The label for link Firebase Starter in sidebar Sidebar, linking to https://github.com/lohanidamodar/flutter_firebase_starter/tree/feature/riverpod"
-  },
   "sidebar.Sidebar.link.Time Tracking App (with Firebase)": {
     "message": "시간관리 앱 (with Firebase)",
     "description": "The label for link Time Tracking App (with Firebase) in sidebar Sidebar, linking to https://github.com/bizz84/starter_architecture_flutter_firebase"
   },
   "sidebar.Sidebar.link.Firebase Phone Authentication with Riverpod": {
-    "message": "전화번호 인증 (with Firebase)",
+    "message": "Riverpod을 사용한 Firebase 전화번호 인증",
     "description": "The label for link Firebase Phone Authentication with Riverpod in sidebar Sidebar, linking to https://github.com/julienlebren/flutter_firebase_phone_auth_riverpod"
   },
   "sidebar.Sidebar.link.ListView paging with search": {
-    "message": "검색기능을 포함한 리스트 페이징",
+    "message": "검색지원 리스트 페이징",
     "description": "The label for link ListView paging with search in sidebar Sidebar, linking to https://github.com/tbm98/flutter_loadmore_search"
   },
-  "sidebar.Sidebar.link.Resocoder's Weather Bloc to Weather Riverpod": {
-    "message": "날씨 앱 (Resocoder's)",
-    "description": "The label for link Resocoder's Weather Bloc to Weather Riverpod in sidebar Sidebar, linking to https://github.com/campanagerald/flutter-bloc-library-v1-tutorial"
+  "sidebar.Sidebar.link.Resocoder's Weather Bloc to Weather Riverpod V2": {
+    "message": "Resocoder의 날씨 Bloc to 날씨 Riverpod V2",
+    "description": "The label for link Resocoder's Weather Bloc to Weather Riverpod V2 in sidebar Sidebar, linking to https://github.com/coyksdev/flutter-bloc-library-v1-tutorial"
   },
   "sidebar.Sidebar.link.Blood Pressure Tracker App": {
-    "message": "혈압관리 앱",
+    "message": "혈압 트래커 앱",
     "description": "The label for link Blood Pressure Tracker App in sidebar Sidebar, linking to https://github.com/UrosTodosijevic/blood_pressure_tracker"
   },
   "sidebar.Sidebar.link.Firebase Authentication with Riverpod Following Flutter DDD Architecture Pattern": {
-    "message": "Riverpod와 DDD 아키텍처 패던을 적용한 Firebase 인증(Authentication)",
+    "message": "Flutter DDD 아키텍처 패턴을 따르는 Riverpod을 사용한 Firebase 인증",
     "description": "The label for link Firebase Authentication with Riverpod Following Flutter DDD Architecture Pattern in sidebar Sidebar, linking to https://github.com/pythonhubpy/firebase_authentication_flutter_DDD"
   },
   "sidebar.Sidebar.link.Todo App with Backup and Restore feature": {
@@ -88,35 +119,39 @@
     "description": "The label for link Todo App with Backup and Restore feature in sidebar Sidebar, linking to https://github.com/TheAlphaApp/flutter_riverpod_todo_app"
   },
   "sidebar.Sidebar.link.Integrating Hive database with Riverpod (simple example)": {
-    "message": "Hive 데이터베이스",
+    "message": "Hive 데이터베이스와 Riverpod 통합하기(간단한 예제)",
     "description": "The label for link Integrating Hive database with Riverpod (simple example) in sidebar Sidebar, linking to https://github.com/GitGud31/theme_riverpod_hive"
   },
   "sidebar.Sidebar.link.Browser App with Riverpod": {
-    "message": "브라우저 앱",
-    "description": "The label for link Browser App with Riverpod, linking to https://github.com/MarioCroSite/simple_browser_app"
+    "message": "Riverpod을 사용한 브라우저 앱",
+    "description": "The label for link Browser App with Riverpod in sidebar Sidebar, linking to https://github.com/MarioCroSite/simple_browser_app"
   },
   "sidebar.Sidebar.link.GoRouter with Riverpod": {
-    "message": "GoRouter",
-    "description": "The label for link GoRouter with Riverpod, linking to https://github.com/lucavenir/go_router_riverpod"
+    "message": "Riverpod을 사용한 Go라우터",
+    "description": "The label for link GoRouter with Riverpod in sidebar Sidebar, linking to https://github.com/lucavenir/go_router_riverpod"
   },
   "sidebar.Sidebar.link.Piano Chords Test": {
     "message": "피아노 화음 테스트",
-    "description": "The label for link Piano Chords Test, linking to https://github.com/akvus/piano_fun"
+    "description": "The label for link Piano Chords Test in sidebar Sidebar, linking to https://github.com/akvus/piano_fun"
   },
-  "sidebar.Sidebar.category.All Providers": {
-    "message": "프로바이더",
-    "description": "The label for category All Providers in sidebar Sidebar"
+  "sidebar.Sidebar.link.Movies API App with Caching & Pagination": {
+    "message": "캐싱 및 페이징이 있는 동영상 API 앱",
+    "description": "The label for link Movies API App with Caching & Pagination in sidebar Sidebar, linking to https://github.com/Roaa94/movies_app"
   },
-  "sidebar.Sidebar.link.riverpod": {
-    "message": "riverpod",
-    "description": "The label for link riverpod in sidebar Sidebar, linking to https://pub.dev/documentation/riverpod/latest/riverpod/riverpod-library.html"
+  "sidebar.Sidebar.link.AWS Amplify Storage Gallery App with Riverpod & Freezed": {
+    "message": "Riverpod과 Freezed를 사용한 AWS Amplify 저장소 갤러리 앱",
+    "description": "The label for link AWS Amplify Storage Gallery App with Riverpod & Freezed in sidebar Sidebar, linking to https://github.com/offlineprogrammer/amplify_storage_app"
   },
-  "sidebar.Sidebar.link.flutter_riverpod": {
-    "message": "flutter_riverpod",
-    "description": "The label for link flutter_riverpod in sidebar Sidebar, linking to https://pub.dev/documentation//flutter_riverpod/latest/flutter_riverpod/flutter_riverpod-library.html"
+  "sidebar.Sidebar.link.Clean Architecture demonstration with Riverpod": {
+    "message": "Riverpod을 사용한 클린 아키텍처 데모",
+    "description": "The label for link Clean Architecture demonstration with Riverpod in sidebar Sidebar, linking to https://github.com/Uuttssaavv/flutter-clean-architecture-riverpod"
   },
-  "sidebar.Sidebar.link.hooks_riverpod": {
-    "message": "hooks_riverpod",
-    "description": "The label for link hooks_riverpod in sidebar Sidebar, linking to https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/hooks_riverpod-library.html"
+  "sidebar.Sidebar.link.Delivery App with Google Maps and Live Tracking": {
+    "message": "Google 지도 및 실시간 추적 기능을 갖춘 배달 앱",
+    "description": "The label for link Delivery App with Google Maps and Live Tracking in sidebar Sidebar, linking to https://github.com/AhmedLSayed9/deliverzler"
+  },
+  "sidebar.Sidebar.link.API reference": {
+    "message": "API 참조",
+    "description": "The label for link API reference in sidebar Sidebar, linking to https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/hooks_riverpod-library.html"
   }
 }

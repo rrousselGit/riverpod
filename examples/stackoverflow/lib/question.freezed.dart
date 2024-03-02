@@ -12,7 +12,7 @@ part of 'question.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 QuestionsResponse _$QuestionsResponseFromJson(Map<String, dynamic> json) {
   return _QuestionsResponse.fromJson(json);
@@ -68,22 +68,22 @@ class _$QuestionsResponseCopyWithImpl<$Res, $Val extends QuestionsResponse>
 }
 
 /// @nodoc
-abstract class _$$_QuestionsResponseCopyWith<$Res>
+abstract class _$$QuestionsResponseImplCopyWith<$Res>
     implements $QuestionsResponseCopyWith<$Res> {
-  factory _$$_QuestionsResponseCopyWith(_$_QuestionsResponse value,
-          $Res Function(_$_QuestionsResponse) then) =
-      __$$_QuestionsResponseCopyWithImpl<$Res>;
+  factory _$$QuestionsResponseImplCopyWith(_$QuestionsResponseImpl value,
+          $Res Function(_$QuestionsResponseImpl) then) =
+      __$$QuestionsResponseImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({List<Question> items, int total});
 }
 
 /// @nodoc
-class __$$_QuestionsResponseCopyWithImpl<$Res>
-    extends _$QuestionsResponseCopyWithImpl<$Res, _$_QuestionsResponse>
-    implements _$$_QuestionsResponseCopyWith<$Res> {
-  __$$_QuestionsResponseCopyWithImpl(
-      _$_QuestionsResponse _value, $Res Function(_$_QuestionsResponse) _then)
+class __$$QuestionsResponseImplCopyWithImpl<$Res>
+    extends _$QuestionsResponseCopyWithImpl<$Res, _$QuestionsResponseImpl>
+    implements _$$QuestionsResponseImplCopyWith<$Res> {
+  __$$QuestionsResponseImplCopyWithImpl(_$QuestionsResponseImpl _value,
+      $Res Function(_$QuestionsResponseImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -92,7 +92,7 @@ class __$$_QuestionsResponseCopyWithImpl<$Res>
     Object? items = null,
     Object? total = null,
   }) {
-    return _then(_$_QuestionsResponse(
+    return _then(_$QuestionsResponseImpl(
       items: null == items
           ? _value._items
           : items // ignore: cast_nullable_to_non_nullable
@@ -107,13 +107,13 @@ class __$$_QuestionsResponseCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_QuestionsResponse implements _QuestionsResponse {
-  _$_QuestionsResponse(
+class _$QuestionsResponseImpl implements _QuestionsResponse {
+  _$QuestionsResponseImpl(
       {required final List<Question> items, required this.total})
       : _items = items;
 
-  factory _$_QuestionsResponse.fromJson(Map<String, dynamic> json) =>
-      _$$_QuestionsResponseFromJson(json);
+  factory _$QuestionsResponseImpl.fromJson(Map<String, dynamic> json) =>
+      _$$QuestionsResponseImplFromJson(json);
 
   final List<Question> _items;
   @override
@@ -132,10 +132,10 @@ class _$_QuestionsResponse implements _QuestionsResponse {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_QuestionsResponse &&
+            other is _$QuestionsResponseImpl &&
             const DeepCollectionEquality().equals(other._items, _items) &&
             (identical(other.total, total) || other.total == total));
   }
@@ -148,13 +148,13 @@ class _$_QuestionsResponse implements _QuestionsResponse {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_QuestionsResponseCopyWith<_$_QuestionsResponse> get copyWith =>
-      __$$_QuestionsResponseCopyWithImpl<_$_QuestionsResponse>(
+  _$$QuestionsResponseImplCopyWith<_$QuestionsResponseImpl> get copyWith =>
+      __$$QuestionsResponseImplCopyWithImpl<_$QuestionsResponseImpl>(
           this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_QuestionsResponseToJson(
+    return _$$QuestionsResponseImplToJson(
       this,
     );
   }
@@ -163,10 +163,10 @@ class _$_QuestionsResponse implements _QuestionsResponse {
 abstract class _QuestionsResponse implements QuestionsResponse {
   factory _QuestionsResponse(
       {required final List<Question> items,
-      required final int total}) = _$_QuestionsResponse;
+      required final int total}) = _$QuestionsResponseImpl;
 
   factory _QuestionsResponse.fromJson(Map<String, dynamic> json) =
-      _$_QuestionsResponse.fromJson;
+      _$QuestionsResponseImpl.fromJson;
 
   @override
   List<Question> get items;
@@ -174,7 +174,7 @@ abstract class _QuestionsResponse implements QuestionsResponse {
   int get total;
   @override
   @JsonKey(ignore: true)
-  _$$_QuestionsResponseCopyWith<_$_QuestionsResponse> get copyWith =>
+  _$$QuestionsResponseImplCopyWith<_$QuestionsResponseImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -314,10 +314,11 @@ class _$QuestionCopyWithImpl<$Res, $Val extends Question>
 }
 
 /// @nodoc
-abstract class _$$_QuestionCopyWith<$Res> implements $QuestionCopyWith<$Res> {
-  factory _$$_QuestionCopyWith(
-          _$_Question value, $Res Function(_$_Question) then) =
-      __$$_QuestionCopyWithImpl<$Res>;
+abstract class _$$QuestionImplCopyWith<$Res>
+    implements $QuestionCopyWith<$Res> {
+  factory _$$QuestionImplCopyWith(
+          _$QuestionImpl value, $Res Function(_$QuestionImpl) then) =
+      __$$QuestionImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -339,11 +340,11 @@ abstract class _$$_QuestionCopyWith<$Res> implements $QuestionCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$_QuestionCopyWithImpl<$Res>
-    extends _$QuestionCopyWithImpl<$Res, _$_Question>
-    implements _$$_QuestionCopyWith<$Res> {
-  __$$_QuestionCopyWithImpl(
-      _$_Question _value, $Res Function(_$_Question) _then)
+class __$$QuestionImplCopyWithImpl<$Res>
+    extends _$QuestionCopyWithImpl<$Res, _$QuestionImpl>
+    implements _$$QuestionImplCopyWith<$Res> {
+  __$$QuestionImplCopyWithImpl(
+      _$QuestionImpl _value, $Res Function(_$QuestionImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -362,7 +363,7 @@ class __$$_QuestionCopyWithImpl<$Res>
     Object? title = null,
     Object? body = null,
   }) {
-    return _then(_$_Question(
+    return _then(_$QuestionImpl(
       tags: null == tags
           ? _value._tags
           : tags // ignore: cast_nullable_to_non_nullable
@@ -418,8 +419,8 @@ class __$$_QuestionCopyWithImpl<$Res>
 /// @nodoc
 
 @JsonSerializable(fieldRename: FieldRename.snake)
-class _$_Question implements _Question {
-  _$_Question(
+class _$QuestionImpl implements _Question {
+  _$QuestionImpl(
       {required final List<String> tags,
       required this.viewCount,
       required this.score,
@@ -434,8 +435,8 @@ class _$_Question implements _Question {
       required this.body})
       : _tags = tags;
 
-  factory _$_Question.fromJson(Map<String, dynamic> json) =>
-      _$$_QuestionFromJson(json);
+  factory _$QuestionImpl.fromJson(Map<String, dynamic> json) =>
+      _$$QuestionImplFromJson(json);
 
   final List<String> _tags;
   @override
@@ -475,10 +476,10 @@ class _$_Question implements _Question {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_Question &&
+            other is _$QuestionImpl &&
             const DeepCollectionEquality().equals(other._tags, _tags) &&
             (identical(other.viewCount, viewCount) ||
                 other.viewCount == viewCount) &&
@@ -519,12 +520,12 @@ class _$_Question implements _Question {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_QuestionCopyWith<_$_Question> get copyWith =>
-      __$$_QuestionCopyWithImpl<_$_Question>(this, _$identity);
+  _$$QuestionImplCopyWith<_$QuestionImpl> get copyWith =>
+      __$$QuestionImplCopyWithImpl<_$QuestionImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_QuestionToJson(
+    return _$$QuestionImplToJson(
       this,
     );
   }
@@ -543,9 +544,10 @@ abstract class _Question implements Question {
       required final int questionId,
       required final String link,
       required final String title,
-      required final String body}) = _$_Question;
+      required final String body}) = _$QuestionImpl;
 
-  factory _Question.fromJson(Map<String, dynamic> json) = _$_Question.fromJson;
+  factory _Question.fromJson(Map<String, dynamic> json) =
+      _$QuestionImpl.fromJson;
 
   @override
   List<String> get tags;
@@ -574,7 +576,7 @@ abstract class _Question implements Question {
   String get body;
   @override
   @JsonKey(ignore: true)
-  _$$_QuestionCopyWith<_$_Question> get copyWith =>
+  _$$QuestionImplCopyWith<_$QuestionImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -627,22 +629,22 @@ class _$QuestionThemeCopyWithImpl<$Res, $Val extends QuestionTheme>
 }
 
 /// @nodoc
-abstract class _$$_QuestionThemeCopyWith<$Res>
+abstract class _$$QuestionThemeImplCopyWith<$Res>
     implements $QuestionThemeCopyWith<$Res> {
-  factory _$$_QuestionThemeCopyWith(
-          _$_QuestionTheme value, $Res Function(_$_QuestionTheme) then) =
-      __$$_QuestionThemeCopyWithImpl<$Res>;
+  factory _$$QuestionThemeImplCopyWith(
+          _$QuestionThemeImpl value, $Res Function(_$QuestionThemeImpl) then) =
+      __$$QuestionThemeImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({TextStyle titleStyle, TextStyle descriptionStyle});
 }
 
 /// @nodoc
-class __$$_QuestionThemeCopyWithImpl<$Res>
-    extends _$QuestionThemeCopyWithImpl<$Res, _$_QuestionTheme>
-    implements _$$_QuestionThemeCopyWith<$Res> {
-  __$$_QuestionThemeCopyWithImpl(
-      _$_QuestionTheme _value, $Res Function(_$_QuestionTheme) _then)
+class __$$QuestionThemeImplCopyWithImpl<$Res>
+    extends _$QuestionThemeCopyWithImpl<$Res, _$QuestionThemeImpl>
+    implements _$$QuestionThemeImplCopyWith<$Res> {
+  __$$QuestionThemeImplCopyWithImpl(
+      _$QuestionThemeImpl _value, $Res Function(_$QuestionThemeImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -651,7 +653,7 @@ class __$$_QuestionThemeCopyWithImpl<$Res>
     Object? titleStyle = null,
     Object? descriptionStyle = null,
   }) {
-    return _then(_$_QuestionTheme(
+    return _then(_$QuestionThemeImpl(
       titleStyle: null == titleStyle
           ? _value.titleStyle
           : titleStyle // ignore: cast_nullable_to_non_nullable
@@ -666,8 +668,8 @@ class __$$_QuestionThemeCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_QuestionTheme implements _QuestionTheme {
-  const _$_QuestionTheme(
+class _$QuestionThemeImpl implements _QuestionTheme {
+  const _$QuestionThemeImpl(
       {required this.titleStyle, required this.descriptionStyle});
 
   @override
@@ -681,10 +683,10 @@ class _$_QuestionTheme implements _QuestionTheme {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_QuestionTheme &&
+            other is _$QuestionThemeImpl &&
             (identical(other.titleStyle, titleStyle) ||
                 other.titleStyle == titleStyle) &&
             (identical(other.descriptionStyle, descriptionStyle) ||
@@ -697,14 +699,14 @@ class _$_QuestionTheme implements _QuestionTheme {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_QuestionThemeCopyWith<_$_QuestionTheme> get copyWith =>
-      __$$_QuestionThemeCopyWithImpl<_$_QuestionTheme>(this, _$identity);
+  _$$QuestionThemeImplCopyWith<_$QuestionThemeImpl> get copyWith =>
+      __$$QuestionThemeImplCopyWithImpl<_$QuestionThemeImpl>(this, _$identity);
 }
 
 abstract class _QuestionTheme implements QuestionTheme {
   const factory _QuestionTheme(
       {required final TextStyle titleStyle,
-      required final TextStyle descriptionStyle}) = _$_QuestionTheme;
+      required final TextStyle descriptionStyle}) = _$QuestionThemeImpl;
 
   @override
   TextStyle get titleStyle;
@@ -712,6 +714,6 @@ abstract class _QuestionTheme implements QuestionTheme {
   TextStyle get descriptionStyle;
   @override
   @JsonKey(ignore: true)
-  _$$_QuestionThemeCopyWith<_$_QuestionTheme> get copyWith =>
+  _$$QuestionThemeImplCopyWith<_$QuestionThemeImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

@@ -49,7 +49,7 @@ class _StateReader {
       element.getState()!.map<void>(
         // ignore: avoid_types_on_closure_parameters
         data: (ResultData<Object?> data) {
-          for (final observer in container._observers) {
+          for (final observer in container.observers) {
             runTernaryGuarded(
               observer.didAddProvider,
               origin,
@@ -59,7 +59,7 @@ class _StateReader {
           }
         },
         error: (error) {
-          for (final observer in container._observers) {
+          for (final observer in container.observers) {
             runTernaryGuarded(
               observer.didAddProvider,
               origin,
@@ -67,7 +67,7 @@ class _StateReader {
               container,
             );
           }
-          for (final observer in container._observers) {
+          for (final observer in container.observers) {
             runQuaternaryGuarded(
               observer.providerDidFail,
               origin,
@@ -89,7 +89,7 @@ class _StateReader {
 
 var _debugVerifyDependenciesAreRespectedEnabled = true;
 
-/// {@template riverpod.providercontainer}
+/// {@template riverpod.provider_container}
 /// An object that stores the state of the providers and allows overriding the
 /// behavior of a specific provider.
 ///
@@ -98,7 +98,7 @@ var _debugVerifyDependenciesAreRespectedEnabled = true;
 /// {@endtemplate}
 @sealed
 class ProviderContainer implements Node {
-  /// {@macro riverpod.providercontainer}
+  /// {@macro riverpod.provider_container}
   ProviderContainer({
     ProviderContainer? parent,
     List<Override> overrides = const [],
@@ -106,9 +106,9 @@ class ProviderContainer implements Node {
   })  : _debugOverridesLength = overrides.length,
         depth = parent == null ? 0 : parent.depth + 1,
         _parent = parent,
-        _observers = [
+        observers = [
           ...?observers,
-          if (parent != null) ...parent._observers,
+          if (parent != null) ...parent.observers,
         ],
         _stateReaders = {
           if (parent != null)
@@ -157,8 +157,8 @@ class ProviderContainer implements Node {
   void Function(void Function() task)? vsyncOverride;
 
   /// The object that handles when providers are refreshed and disposed.
-  late final _ProviderScheduler _scheduler =
-      _parent?._scheduler ?? _ProviderScheduler();
+  @internal
+  late final ProviderScheduler scheduler = ProviderScheduler();
 
   /// How deep this [ProviderContainer] is in the graph of containers.
   ///
@@ -179,7 +179,13 @@ class ProviderContainer implements Node {
   final _overrideForFamily = HashMap<Family<Object?>, _FamilyOverrideRef>();
   final Map<ProviderBase<Object?>, _StateReader> _stateReaders;
 
-  final List<ProviderObserver> _observers;
+  /// The list of observers attached to this container.
+  ///
+  /// Observers can be useful for logging purpose.
+  ///
+  /// This list includes the observers of this container and that of its "parent"
+  /// too.
+  final List<ProviderObserver> observers;
 
   /// A debug utility used by `flutter_riverpod`/`hooks_riverpod` to check
   /// if it is safe to modify a provider.
@@ -208,7 +214,13 @@ class ProviderContainer implements Node {
 
   /// Awaits for providers to rebuild/be disposed and for listeners to be notified.
   Future<void> pump() async {
-    return _scheduler.pendingFuture;
+    final a = scheduler.pendingFuture;
+    final b = _parent?.scheduler.pendingFuture;
+
+    await Future.wait<void>([
+      if (a != null) a,
+      if (b != null) b,
+    ]);
   }
 
   /// Reads a provider without listening to it and returns the currently
@@ -231,7 +243,7 @@ class ProviderContainer implements Node {
 
   /// {@macro riverpod.exists}
   bool exists(ProviderBase<Object?> provider) {
-    final element = _stateReaders[provider]?._element;
+    final element = _getOrNull(provider)?._element;
 
     return element != null;
   }
@@ -291,12 +303,12 @@ class ProviderContainer implements Node {
     );
   }
 
-  /// {@template riverpod.invalidate}
+  /// {@macro riverpod.invalidate}
   void invalidate(ProviderOrFamily provider) {
     if (provider is ProviderBase) {
-      final reader = _getStateReader(provider._origin);
+      final reader = _getOrNull(provider);
 
-      reader._element?.invalidateSelf();
+      reader?._element?.invalidateSelf();
     } else {
       provider as Family;
 
@@ -310,25 +322,28 @@ class ProviderContainer implements Node {
     }
   }
 
-  /// {@template riverpod.refresh}
+  /// {@macro riverpod.refresh}
   State refresh<State>(Refreshable<State> provider) {
     invalidate(provider._origin);
     return read(provider);
   }
 
   void _disposeProvider(ProviderBase<Object?> provider) {
-    final element = readProviderElement(provider);
-    element.dispose();
+    final reader = _getOrNull(provider);
+    // The provider is already disposed, so we don't need to do anything
+    if (reader == null) return;
 
-    final reader = _stateReaders[element._origin]!;
+    reader._element?.dispose();
 
     if (reader.isDynamicallyCreated) {
       // Since the StateReader is implicitly created, we don't keep it
       // on provider dispose, to avoid memory leak
 
       void removeStateReaderFrom(ProviderContainer container) {
-        if (container._stateReaders[element._origin] == reader) {
-          container._stateReaders.remove(element._origin);
+        /// Checking if the reader is the same instance is important,
+        /// as it is possible that the provider was overridden.
+        if (container._stateReaders[provider] == reader) {
+          container._stateReaders.remove(provider);
         }
         container._children.forEach(removeStateReaderFrom);
       }
@@ -427,7 +442,7 @@ class ProviderContainer implements Node {
       );
     }
 
-    final reader = _getStateReader(provider);
+    final reader = _putIfAbsent(provider);
 
     assert(
       () {
@@ -481,7 +496,20 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
     return reader.getElement() as ProviderElementBase<State>;
   }
 
-  _StateReader _getStateReader(ProviderBase<Object?> provider) {
+  /// Obtains a [_StateReader] for a provider, but do not create it if it does
+  /// not exist.
+  _StateReader? _getOrNull(ProviderBase<Object?> provider) {
+    return _stateReaders[provider] ??
+
+        /// No need to check "parent". We can directly check "root", because
+        /// if the provider is not in the root, it must have been overridden.
+        /// In which case, it is guaranteed to be in the current container already.
+        _root?._getOrNull(provider);
+  }
+
+  /// Create a [_StateReader] for a provider if it does not exist.
+  /// If one already exists, returns it.
+  _StateReader _putIfAbsent(ProviderBase<Object?> provider) {
     final currentReader = _stateReaders[provider];
     if (currentReader != null) return currentReader;
 
@@ -612,19 +640,16 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
   /// This will destroy the state of all providers associated with this
   /// [ProviderContainer] and call [Ref.onDispose] listeners.
   void dispose() {
-    if (_disposed) {
-      return;
-    }
-
-    _parent?._children.remove(this);
+    if (_disposed) return;
 
     _disposed = true;
+    _parent?._children.remove(this);
+
+    if (_root == null) scheduler.dispose();
 
     for (final element in getAllProviderElementsInOrder().toList().reversed) {
       element.dispose();
     }
-
-    if (_root == null) _scheduler.dispose();
   }
 
   /// Traverse the [ProviderElementBase]s associated with this [ProviderContainer].
@@ -773,7 +798,7 @@ class ProviderOverride implements Override {
   /// The provider that is overridden.
   final ProviderBase<Object?> _origin;
 
-  /// The new provider behaviour.
+  /// The new provider behavior.
   final ProviderBase<Object?> _override;
 }
 

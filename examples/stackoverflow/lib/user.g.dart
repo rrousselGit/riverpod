@@ -8,7 +8,7 @@ part of 'user.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_User _$$_UserFromJson(Map<String, dynamic> json) => _$_User(
+_$UserImpl _$$UserImplFromJson(Map<String, dynamic> json) => _$UserImpl(
       reputation: json['reputation'] as int,
       userId: json['user_id'] as int,
       badgeCounts: json['badge_counts'] == null
@@ -22,7 +22,8 @@ _$_User _$$_UserFromJson(Map<String, dynamic> json) => _$_User(
       link: json['link'] as String,
     );
 
-Map<String, dynamic> _$$_UserToJson(_$_User instance) => <String, dynamic>{
+Map<String, dynamic> _$$UserImplToJson(_$UserImpl instance) =>
+    <String, dynamic>{
       'reputation': instance.reputation,
       'user_id': instance.userId,
       'badge_counts': instance.badgeCounts,
@@ -31,14 +32,14 @@ Map<String, dynamic> _$$_UserToJson(_$_User instance) => <String, dynamic>{
       'link': instance.link,
     };
 
-_$_BadgeCount _$$_BadgeCountFromJson(Map<String, dynamic> json) =>
-    _$_BadgeCount(
+_$BadgeCountImpl _$$BadgeCountImplFromJson(Map<String, dynamic> json) =>
+    _$BadgeCountImpl(
       bronze: json['bronze'] as int,
       silver: json['silver'] as int,
       gold: json['gold'] as int,
     );
 
-Map<String, dynamic> _$$_BadgeCountToJson(_$_BadgeCount instance) =>
+Map<String, dynamic> _$$BadgeCountImplToJson(_$BadgeCountImpl instance) =>
     <String, dynamic>{
       'bronze': instance.bronze,
       'silver': instance.silver,

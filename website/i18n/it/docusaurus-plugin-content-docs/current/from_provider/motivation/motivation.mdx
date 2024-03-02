@@ -1,0 +1,189 @@
+---
+title: Motivazione
+---
+
+import sameType from "./same_type";
+import combine from "./combine";
+import asyncValues from "./async_values";
+import autoDispose from "./auto_dispose";
+import override from "./override";
+import sideEffects from "./side_effects";
+import {
+  AutoSnippet,
+} from "../../../../../../src/components/CodeSnippet";
+
+Questo articolo dettagliato è pensato per spiegare perché Riverpod esiste.
+
+In particolare, questa sezione dovrebbe rispondere alle seguenti domande:
+- Dato che Provider è ampiamente popolare, perché si dovrebbe migrare a Riverpod?
+- Quali vantaggi concreti si ottengono?
+- Come posso migrare a Riverpod?
+- Posso migrare in modo incrementale?
+- ecc.
+
+Alla fine di questa sezione dovresti essere convinto che Riverpod è da preferire rispetto a Provider.
+
+**Riverpod è davvero un approccio più moderno, raccomandato e affidabile rispetto a Provider**.
+
+Riverpod offre migliori capacità di gestione dello stato, migliori strategie di caching e un modello di reattività semplificato. 
+Mentre Provider attualmente presenta molte carenze senza una via d'uscita.
+
+## Limitazioni di Provider
+Provider ha problemi fondamentali dovuti alla restrizione dell'API di InheritedWidget.
+Intrinsecamente, Provider è un "`InheritedWidget` più semplice"; 
+Provider è solo un wrapper di InheritedWidget, ed è quindi limitato da esso.
+
+Ecco un elenco di problemi noti di Provider.
+
+### Provider non può gestire due (o più) provider dello stesso "tipo".
+Dichiarare due `Provider<Item>` porterà a un comportamento non affidabile: l'API di `InheritedWidget` 
+otterrà solo *uno dei due*: l'antenato `Provider<Item>` più vicino. 
+Sebbene [un workaround] sia spiegato nella documentazione di Provider, Riverpod semplicemente non presenta questo problema.
+
+Eliminando questa limitazione, possiamo suddividere liberamente la logica in piccole parti, come segue:
+
+<AutoSnippet language="dart" {...sameType}></AutoSnippet>
+
+### I provider emettono ragionevolmente solo un valore alla volta
+Quando si legge un'API esterna RESTful, è abbastanza comune mostrare l'ultimo valore letto 
+mentre una nuova chiamata carica il successivo. 
+Riverpod consente questo comportamento emettendo due valori contemporaneamente (ossia un valore di dati precedenti 
+e un nuovo valore di caricamento in arrivo) tramite le API di `AsyncValue`:
+
+<AutoSnippet language="dart" {...asyncValues}></AutoSnippet>
+
+Nello snippet precedente, osservando `evenItemsProvider` si avranno i seguenti effetti:
+1. Inizialmente, viene effettuata la richiesta. Otteniamo una lista vuota;
+2. Poi, diciamo che si verifica un errore. Otteniamo `[Item(id: -1)]`;
+3. Quindi, riproviamo la richiesta con una logica di pull-to-refresh (ad esempio tramite `ref.invalidate`);
+4. Mentre ricarichiamo il primo provider, il secondo continua a esporre `[Item(id: -1)]`;
+5. Questa volta, alcuni dati processati vengono ricevuti correttamente: i nostri elementi pari vengono restituiti correttamente.
+
+Con Provider, le caratteristiche sopra menzionate non sono lontanamente realizzabili, e ancor meno facili da aggirare.
+
+### Combinare i provider è difficile e soggetto a errori
+Con Provider potremmo essere tentati di utilizzare `context.watch` all'interno del metodo `create` del provider.
+Questo sarebbe inaffidabile, poiché `didChangeDependencies` potrebbe essere attivato anche se nessuna dipendenza 
+è cambiata (ad esempio quando è coinvolta una GlobalKey nell'albero dei widget).
+
+Tuttavia, Provider ha una soluzione ad hoc chiamata ProxyProvider, ma è considerata tediosa e soggetta a errori.
+
+La combinazione dello stato è un meccanismo fondamentale di Riverpod, poiché possiamo combinare e memorizzare 
+valori reattivamente senza alcun overhead con utilità semplici ma potenti come [ref.watch] e [ref.listen]:
+
+<AutoSnippet language="dart" {...combine}></AutoSnippet>
+
+La combinazione dei valori viene naturale con Riverpod: le dipendenze sono leggibili e le API rimangono le stesse.
+
+### Mancanza di sicurezza
+Con Provider, è comune trovarsi con un'eccezione in fase di esecuzione come `ProviderNotFoundException` durante 
+ristrutturazioni e/o durante modifiche importanti.
+Questa eccezione in fase di esecuzione *era* una delle principali ragioni per cui Riverpod è stato creato in primo luogo.
+
+Anche se Riverpod offre molte altre funzionalità, semplicemente non può generare questa eccezione.
+
+### La distruzione dello stato è difficile
+`InheritedWidget` [non può reagire quando un consumatore smette di ascoltarlo]. 
+Questo impedisce a Provider di distruggere automaticamente lo stato dei suoi provider quando non vengono più utilizzati. 
+Con Provider, [dobbiamo] fare affidamento sulla creazione di provider per eliminare lo stato quando 
+smette di essere utilizzato. 
+Ma questo non è facile, soprattutto quando lo stato è condiviso tra le pagine.
+
+Riverpod risolve questo problema con API facili da capire come [autodispose] e [keepAlive]. 
+Queste due API consentono strategie di caching flessibili e creative (ad esempio, caching basato sul tempo):
+
+<AutoSnippet language="dart" {...autoDispose}></AutoSnippet>
+
+Sfortunatamente, non c'è modo di implementare questo con un `InheritedWidget` grezzo e quindi con Provider.
+
+### Mancanza di un meccanismo di parametrizzazione affidabile
+Riverpod consente all'utente di dichiarare provider "parametrizzati" con il [modificatore .family]. 
+Infatti, `.family` è una delle caratteristiche più potenti di Riverpod ed è fondamentale per le sue innovazioni, 
+ad esempio consente un'enorme [semplificazione della logica].
+
+Se volessimo implementare qualcosa di simile utilizzando Provider, 
+dovremmo rinunciare alla facilità d'uso *e* alla sicurezza dei tipi su tali parametri.
+
+Inoltre, non poter implementare un meccanismo simile a `.autoDispose` con Provider 
+impedisce intrinsecamente la possibilità di una implementazione equivalente di `.family`, [poiché queste due funzionalità vanno di pari passo].
+
+Infine, come mostrato in precedenza, [risulta che] i widget *non smettono mai* di ascoltare un `InheritedWidget`. 
+Ciò comporta gravi perdite di memoria se lo stato di alcuni provider viene "montato dinamicamente", 
+ossia quando si utilizzano parametri per creare un Provider, che è esattamente ciò che fa `.family`. 
+Pertanto, ottenere un equivalente di `.family` per Provider è fondamentalmente impossibile al momento.
+
+### Testare è tedioso
+Per poter scrivere un test, *è necessario* ridefinire i provider all'interno di ogni test.
+
+Con Riverpod, i provider sono pronti per essere utilizzati all'interno dei test di default. 
+Inoltre, Riverpod espone una pratica collezione di utilità di "sovrascrittura" che sono cruciali quando si simulano i provider.
+
+Testare il codice dello stato combinato sarebbe semplice come segue:
+
+<AutoSnippet language="dart" {...override}></AutoSnippet>
+
+Per più informazioni riguardo ai test, vedere [Testing].
+
+### Attivare effetti collaterali non è immediato 
+Poiché `InheritedWidget` non ha un callback `onChange`, Provider non può averne uno. 
+Questo è problematico per la navigazione, ad esempio per le snack bar, le modali, ecc.
+
+Invece, Riverpod offre semplicemente `ref.listen`, che [si integra bene con Flutter].
+
+<AutoSnippet language="dart" {...sideEffects}></AutoSnippet>
+
+## Verso Riverpod
+Dal punto di vista concettuale, Riverpod e Provider sono abbastanza simili. 
+Entrambi i pacchetti svolgono un ruolo simile. Entrambi cercano di:
+
+- memorizzare nella cache e smaltire oggetti con dello stato;
+- offrire un modo per emulare tali oggetti durante i test;
+- offrire un modo per i widget di ascoltare tali oggetti in modo semplice.
+
+Puoi pensare a Riverpod come a ciò che Provider avrebbe potuto diventare se fosse continuato a maturare per alcuni anni.
+
+### Perché un package separato?
+Originariamente, era previsto un importante aggiornamento di Provider come soluzione ai problemi sopra menzionati. 
+Tuttavia, in seguito si è deciso di non farlo, poiché sarebbe stato "troppo incisivo" e persino controverso, 
+a causa della nuova API `ConsumerWidget`. 
+Poiché Provider è ancora uno dei pacchetti Flutter più utilizzati, è stato invece deciso 
+di creare un package separato, e così è nato Riverpod.
+
+La creazione di un package separato ha permesso:
+  - Una facilità di migrazione per chiunque voglia farlo, consentendo anche l'uso temporaneo di entrambi gli approcci, *nello stesso momento*;
+  - Di permettere alle persone di rimanere fedeli a Provider se non gradiscono Riverpod in principio o se non lo trovano ancora affidabile;
+  - Sperimentazione, consentendo a Riverpod di cercare soluzioni production-ready alle varie limitazioni tecniche di Provider.
+
+Infatti, Riverpod è progettato per essere il successore spirituale di Provider. Da qui il nome "Riverpod" (che è un anagramma di "Provider").
+
+### La breaking change
+L'unico vero svantaggio di Riverpod è che richiede la modifica del tipo di widget per funzionare:
+
+- Invece di estendere `StatelessWidget`, con Riverpod dovresti estendere `ConsumerWidget`.
+- Invece di estendere `StatefulWidget`, con Riverpod dovresti estendere `ConsumerStatefulWidget`.
+
+Ma questa inconvenienza è piuttosto minore nel quadro generale. E questa richiesta potrebbe, un giorno, scomparire.
+
+### Scegliere la liberia giusta
+Probabilmente ti stai chiedendo: 
+*"Quindi, come utente di Provider, dovrei usare Provider o Riverpod?"*.
+
+Vogliamo rispondere a questa domanda in modo molto chiaro:
+
+    Probabilmente dovresti utilizzare Riverpod
+
+Riverpod è globalmente meglio progettato e potrebbe portare a semplificazioni drastiche della tua logica.
+
+[ref.watch]: /docs/concepts/reading#using-refwatch-to-observe-a-provider
+[ref.listen]: /docs/concepts/reading#using-reflisten-to-react-to-a-provider-change
+[autodispose]: /docs/concepts/modifiers/auto_dispose
+[workaround]: https://pub.dev/packages/provider#can-i-obtain-two-different-providers-using-the-same-type
+[modifier .family]: /docs/concepts/modifiers/family
+[keepAlive]: /docs/concepts/modifiers/auto_dispose#refkeepalive
+[poiché queste due funzionalità vanno di pari passo]: /docs/concepts/modifiers/family#prefer-using-autodispose-when-the-parameter-is-not-constant
+[semplificazione della logica]: /docs/concepts/modifiers/family#usage
+[dobbiamo]: https://github.com/flutter/flutter/issues/128432
+[risulta che]: https://github.com/flutter/flutter/issues/106549
+[non può reagire quando un consumatore smette di ascoltarlo]: https://github.com/flutter/flutter/issues/106546
+[Testing]: /docs/cookbooks/testing
+[si integra bene con Flutter]: /docs/concepts/reading#using-reflisten-to-react-to-a-provider-change

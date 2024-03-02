@@ -1,0 +1,399 @@
+---
+title: 快速开始
+---
+
+:::info
+译者注：在此章节中，由于 Provider 库，Provider 类，Provider 及其相关的提供者程序类容易造成混淆，一般的，我们约定：  
+- Provider 库 -> `pkg:Provider` / `Provider`，和 Riverpod 一样首字母大写。
+- Provider 类 -> `provider`，小写，特指单纯的提供者程序类 Provider。
+- Provider 泛指 -> `提供者程序`，表示各种不同的提供者程序类都适用。
+
+其他地方的代指某个 provider，会被具体翻译，避免不必要的误解，请放心阅读。  
+如有翻译错误还请 pr 指正。
+:::
+
+<!---
+This section is designed for people familiar with the [Provider] package who
+wants to learn about Riverpod.
+-->
+本部分专为熟悉 [Provider] 包并希望了解 Riverpod 的人员而设计。
+
+<!---
+Before anything, read the short [getting started] article and try out the small
+[sandbox] example to test Riverpod's features out. If you like what you see there, you should then
+definitively consider a migration.
+-->
+首先，请阅读简短的[入门指南]文章，并尝试使用小型[沙盒]示例来测试 Riverpod 的功能。
+如果您喜欢那里看到的内容，那么您应该明确考虑迁移。
+
+<!---
+Indeed, migrating from Provider to Riverpod can be very straightforward.  
+-->
+事实上，从 Provider 迁移到 Riverpod 可以非常简单。
+
+<!---
+Migrating basically consists in a few steps that can be done in an *incremental* way.
+-->
+迁移基本上包括几个步骤，这些步骤可以以*增量*方式完成。
+
+<!---
+## Start with `ChangeNotifierProvider`
+-->
+## 从 `ChangeNotifierProvider` 开始
+
+<!---
+It's fine to keep using `ChangeNotifier` while transitioning towards Riverpod,
+and not use its latest fancy features ASAP.
+-->
+在过渡到 Riverpod 时是可以的继续使用，而不是尽快使用 `ChangeNotifier` 其最新的花哨功能。
+
+<!---
+Indeed, the following is perfectly fine to start with:
+-->
+事实上，可以从以下几点着手开始：
+
+```dart
+// 如果你有这个……
+class MyNotifier extends ChangeNotifier {
+  int state = 0;
+
+  void increment() {
+    state++;
+    notifyListeners();
+  }
+}
+
+// ……只需要加上这个！
+final myNotifierProvider = ChangeNotifierProvider<MyNotifier>((ref) {
+  return MyNotifier();
+});
+```
+
+<!---
+As you can see Riverpod exposes a [ChangeNotifierProvider] class,
+which is there precisely to support migrations from pkg:Provider.
+-->
+正如你所看到的，Riverpod 公开了一个 [ChangeNotifierProvider] 类，
+该类正是为了支持从 pkg:Provider 迁移。
+
+<!---
+Keep in mind that this provider is not recommended when writing new code,
+and it is not the best way to use Riverpod, but it's a gentle and very easy way to start your migration.
+-->
+请记住，在编写新代码时不建议使用 `ChangeNotifierProvider`，因为它不是使用 Riverpod 的最佳方式，
+但它是开始迁移的一种温和且非常简单的方法。
+
+:::tip
+<!---
+There is no rush to *immediately* try to change your `ChangeNotifier`s into the more modern [Riverpod's providers].
+Some requite a bit of a paradigm shift, so it may be difficult to do initially.  
+-->
+不要急于*立即*尝试将您的 `ChangeNotifier` 迁移到更现代的 [Riverpod 的提供者程序]。
+有些地方会进行一些泛型的转变，因此最初可能很难做到。
+
+<!---
+Take your time, as it is important to get yourself familiar with Riverpod first;
+you'll quickly find out that *almost* all Providers from pkg:provider have a strict equivalent in pkg:riverpod.
+-->
+慢慢来，因为首先熟悉 Riverpod 很重要；
+你很快就会发现，几乎所有来自 pkg:provider 的提供者程序在 pkg:riverpod 中都有严格等价的代码。
+:::
+
+<!---
+## Starts with *leaves*
+-->
+## 从*叶子*开始
+
+<!---
+Start with Providers that do not depend on anything else, i.e. start with the *leaves* in your dependency tree.  
+Once you have migrated all of the leaves, you can then move on to the providers that depend on leaves.
+-->
+从不依赖于其他任何内容的提供者程序开始，即从依赖项树中的*叶子*开始。  
+迁移完所有叶子后，可以转到依赖于叶子的提供者程序。
+
+<!---
+In other words, avoid migrating `ProxyProvider`s at first; tackle them once all of their dependencies have been migrated.
+-->
+换言之，首先要避免迁移 `ProxyProvider`；当迁移了它们的所有依赖项，就可以开始处理它们了。
+
+<!---
+This should boost and simplify the migration process, while also minimizing / tracking down any errors.
+-->
+这应该促进和简化迁移过程，同时还可以最大限度地减少/跟踪任何错误。
+
+
+<!---
+## Riverpod and Provider can coexist
+-->
+## Riverpod 和 Provider 可以共存
+
+<!---
+*Keep in mind that it is entirely possible to use both Provider and Riverpod at the same time.*
+-->
+
+*请记住，完全可以同时使用 Provider 和 Riverpod。*
+
+<!---
+Indeed, using import aliases, it is possible to use the two APIs altogheter.  
+This is also great for readibilty and it removes any ambiguous API usage.
+-->
+事实上，使用导入别名，可以同时使用两个 API 了。  
+这也非常有助于提高可用性，并消除了任何模棱两可的 API 用法。
+
+<!---
+If you plan on doing this, consider using import aliases for each Provider import in your codebase.
+-->
+如果计划执行此操作，请考虑对代码库中的每个提供者程序导入使用导入别名。
+
+:::info
+<!---
+A full guide onto how to effectively implement import aliases is incoming soon.
+-->
+关于如何有效实现导入别名的完整指南即将发布。
+:::
+
+
+<!---
+## You don't *have to* use `Consumer` right away
+-->
+## 您*不必*立即使用 `Consumer`
+
+<!---
+It's important to keep in mind that there is no need to *immediately* use [Riverpod's `Consumer` APIs].  
+If you've just started the migration, [as mentioned above], you should probably start with `ChangeNotifierProvider`.
+-->
+请务必记住，无需*立即*使用 [Riverpod 的 `Consumer` API]。  
+如果您刚刚开始迁移，[如上所述]，您可能应该从 `ChangeNotifierProvider` 开始。
+
+<!---
+Consider `myNotifierProvider`, defined above.
+-->
+考虑上面定义的 `myNotifierProvider`。
+
+<!---
+Since your inner code is probably depending on pkg:Provider's APIs, use the following to start consuming `ChangeNotifier`s with pkg:Riverpod.
+-->
+由于您的内部代码可能依赖于 pkg:Provider 的 API，因此请使用以下代码开始使用 pkg:Riverpod 的 `ChangeNotifier`。
+
+```dart
+MultiProvider(
+  providers: [
+    ChangeNotifierProvider.value(value: ref.watch(myNotifierProvider.notifier)),
+  ]
+)
+```
+
+<!---
+This way, only the root Widget has to be initially converted into a `ConsumerWidget`.  
+This should ease the migration towards pkg:Riverpod even more.
+-->
+这样，最初只需将根 Widget 转换为 `ConsumerWidget`。  
+这应该会进一步简化向 pkg:Riverpod 的迁移。
+
+
+<!---
+## Migrate one Provider at a time
+-->
+## 一次迁移一个提供者程序
+
+<!---
+If you have an existing app, don't try to migrate all your providers at once!
+-->
+如果您已有应用，请不要尝试一次迁移所有的提供者程序！
+
+<!---
+While you should strive toward moving all your application to Riverpod in the long-run, 
+**don't burn yourself out**.  
+Do it one provider at a time.  
+-->
+虽然从长远来看，您应该努力将所有应用程序迁移到 Riverpod，**但不要让自己筋疲力尽**。  
+一次只迁移一个提供者程序。
+
+<!---
+Take the above example. **Fully** migrating that `myNotifierProvider` to Riverpod means writing the following:
+-->
+以上面的例子为例。将其 `myNotifierProvider` **完全**迁移到 Riverpod 意味着需要编写以下内容：
+
+```dart
+class MyNotifier extends Notifier<int> {
+  @override
+  int build() => 0;
+
+  void increment() => state++;
+}
+
+final myNotifierProvider = NotifierProvider<MyNotifier, int>(MyNotifier.new);
+```
+
+<!---
+.. and it's _also_ needed to change how that provider is consumed, i.e. writing `ref.watch` in the place of each `context.watch` for this provider.
+-->
+……并且_还_需要更改这个 `myNotifierProvider` 的使用方式，即每个 `context.watch` 的位置替换为 `ref.watch`。
+
+<!---
+This operation might take some time and might lead to some errors, so don't rush doing this all at once.
+-->
+此操作可能需要一些时间，并可能导致一些错误，因此不要急于一次完成所有操作。
+
+<!---
+## Migrating `ProxyProvider`s
+-->
+## 迁移 `ProxyProvider`
+
+<!---
+Within pkg:Provider, `ProxyProvider` is used to combine values from other Providers;
+its build depends on the value of other providers, reactively.
+-->
+在 pkg:Provider 中，`ProxyProvider` 用于组合来自其他提供者程序的值；
+它的构建被动地取决于其他提供者程序的价值。
+
+<!---
+With Riverpod, instead, Providers [are composable by default]; therefore, when migrating a `ProxyProvider`
+you'll simply need to write `ref.watch` if you want to declare a direct dependency from a Provider to another.
+-->
+相反，在 Riverpod 中，提供者程序[默认是可组合的]；
+因此，在迁移 `ProxyProvider` 时，如果要声明从一个提供者程序到另一个提供者程序的直接依赖项，则只需编写 `ref.watch` 即可。
+
+<!---
+If anything, combining values with Riverpod should feel simpler and straightforward; thus, the migration should greatly
+simplify your code.
+-->
+如果有的话，将值与 Riverpod 相结合应该感觉更简单明了；因此，迁移应该大大简化代码。
+
+<!---
+Furthermore, there are no shanenigans about combining more than two providers together:
+just add another `ref.watch` and you'll be good to go.
+-->
+此外，将两个以上的提供者程序组合在一起没有任何障碍：只需添加另一个 `ref.watch`，就可以了。
+
+<!---
+## Eager initialization
+-->
+## 预先初始化
+
+<!---
+Since Riverpod's providers are final global variables, they are [lazy by default].
+-->
+由于 Riverpod 的提供者程序是全局 final 变量，因此它们[默认是懒加载的]。
+
+<!---
+If you need to initialize some warm-up data or a useful service on startup,
+the best way to do it is to first read your provider in the place where you used to put `MultiProvider`.
+-->
+如果您需要在启动时初始化一些预热数据或有用的服务，
+最好的做法是首次读取提供者程序的时候，您手动去设置 `MultiProvider`。
+
+<!---
+In other words, since Riverpod can't be forced to be eager initialized, they can be read and cached
+in your startup phase, so that they're warm and ready when needed inside the rest of your application.
+-->
+换句话说，由于 Riverpod 不能被强制预先初始化，因此可以在启动阶段读取和缓存它们，
+以便在应用程序的其余部分需要时它们完成了初始化并准备就绪。
+
+<!---
+A full guide about eager initialization of pkg:Riverpod's providers [is available here].
+-->
+有关 pkg:Riverpod 提供者程序的快速初始化的完整指南 [可在此处获得]。
+
+<!---
+## Code Generation
+-->
+## 代码生成
+
+<!---
+[Code generation] is recommended to use Riverpod the *future-proof* way.  
+As a side note, chances are that when metaprogramming will be a thing, codegen will be default for Riverpod.
+-->
+建议使用[代码生成]，以便以*面向未来*的方式使用 Riverpod。  
+顺便说一句，当元编程成为现实的时候，代码生成很可能是 Riverpod 的默认代码。
+
+<!---
+Unluckily, `@riverpod` can't generate code for `ChangeNotifierProvider`.  
+To overcome this, you can use the following utility extesion method:
+-->
+不幸的是， `@riverpod` 无法为 `ChangeNotifierProvider` 生成代码。  
+要解决此问题，您可以使用以下实用程序扩展方法：
+
+```dart
+extension ChangeNotifierWithCodeGenExtension on Ref {
+  T listenAndDisposeChangeNotifier<T extends ChangeNotifier>(T notifier) {
+    notifier.addListener(notifyListeners);
+    onDispose(() => notifier.removeListener(notifyListeners));
+    onDispose(notifier.dispose);
+    return notifier;
+  }
+}
+```
+
+<!---
+And then, you can expose your `ChangeNotifier` with the following codegen syntax:
+-->
+然后，您可以使用以下代码生成语法公开您的 `ChangeNotifier`：
+
+```dart
+// ignore_for_file: unsupported_provider_value
+@riverpod
+MyNotifier example(ExampleRef ref) {
+  return ref.listenAndDisposeChangeNotifier(MyNotifier());
+}
+```
+
+<!---
+Once the "base" migration is done, you can change your `ChangeNotifier` to `Notifier`,
+thus eliminating the need for temporary extensions.  
+Taking up the previous examples, a "fully migrated" `Notifier` becomes:
+-->
+完成“基本”迁移后，您可以将 `ChangeNotifier` 更改为 `Notifier`，从而消除了临时扩展的需要。  
+以前面的示例为例，“完全迁移” `Notifier` 变为：
+
+```dart
+@riverpod
+class MyNotifier extends _$MyNotifier {
+  @override
+  int build() => 0;
+
+  void increment() => state++;
+}
+```
+
+<!---
+Once this is done, and you're positive that there are no more `ChangeNotifierProvider`s 
+in your codebase, you can get rid of the temporary extension definitively.
+-->
+一旦完成此操作，并且您确信代码库中不再有 `ChangeNotifierProvider`，您就可以彻底摆脱临时扩展。
+
+<!---
+Keep in mind that, while being recommended, codegen is not *mandatory*.  
+It's good to reason about migrations incrementally:
+if you feel like that implementing this migration *while* transitioning to
+the code generation syntax in one single take might be too much, *that's fine*.
+-->
+请记住，虽然是推荐的，但代码生成不是*强制性的*。  
+以增量方式进行迁移是个好的选择：
+如果您觉得在一次转换到代码生成语法的*同时*实现此迁移可能太麻烦了，*别勉强*。
+
+<!---
+Following this guide, you *can* migrate towards codegen as a further step forward, later on.
+-->
+按照本指南，您*可以*稍后做进一步的迁移到代码生成。
+
+[getting started]: /docs/introduction/getting_started
+[sandbox]: https://dartpad.dev/?null_safety=true&id=ef06ab3ce0b822e6cc5db0575248e6e2
+[provider]: https://pub.dev/packages/provider
+[ChangeNotifierProvider]: /docs/providers/change_notifier_provider
+[Code generation]: /docs/concepts/about_code_generation
+[Riverpod's providers]: /docs/providers/notifier_provider
+[are composable by default]: /docs/from_provider/motivation#combining-providers-is-hard-and-error-prone
+[as mentioned above]: /docs/from_provider/quickstart#start-with-changenotifierprovider
+[Riverpod's `Consumer` APIs]: /docs/concepts/reading
+[lazy by default]: /docs/concepts/provider_lifecycles
+
+[入门指南]: /docs/introduction/getting_started
+[沙盒]: https://dartpad.dev/?null_safety=true&id=ef06ab3ce0b822e6cc5db0575248e6e2
+<!--- TODO(yang-lile): 记得修复链接 -->
+[默认是可组合的]: /docs/from_provider/motivation#combining-providers-is-hard-and-error-prone
+[如上所述]: /docs/from_provider/quickstart#从-changenotifierprovider-开始
+[Riverpod 的 `Consumer` API]: /docs/concepts/reading
+[默认是懒加载的]: /docs/concepts/provider_lifecycles
+[代码生成]: /docs/concepts/about_code_generation
+[Riverpod 的提供者程序]: /docs/providers/notifier_provider

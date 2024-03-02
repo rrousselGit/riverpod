@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 class MyApp extends StatelessWidget {
   // ignore: prefer_const_constructors_in_immutables
-  MyApp({Key? key}) : super(key: key);
+  MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,22 +19,22 @@ class FakeRepository {}
 void main() {
 /* SNIPPET START */
 
-  testWidgets('override repositoryProvider', (tester) async {
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          // repositoryProvider의 행위를 오버라이드하여
-          // Repository 대신 FakeRepository를 반환합니다.
-          /* highlight-start */
-          repositoryProvider.overrideWithValue(FakeRepository())
-          /* highlight-end */
-          // 오버라이드된 repositoryProvider를 자동적으로 사용하기 때문에
-          // `todoListProvider`를 override하지 않아도 됩니다.
-        ],
-        child: MyApp(),
-      ),
-    );
-  });
+testWidgets('override repositoryProvider', (tester) async {
+  await tester.pumpWidget(
+    ProviderScope(
+      overrides: [
+        // Override the behavior of repositoryProvider to return
+        // FakeRepository instead of Repository.
+        /* highlight-start */
+        repositoryProvider.overrideWithValue(FakeRepository())
+        /* highlight-end */
+        // We do not have to override `todoListProvider`, it will automatically
+        // use the overridden repositoryProvider
+      ],
+      child: MyApp(),
+    ),
+  );
+});
 
 /* SNIPPET END */
 }

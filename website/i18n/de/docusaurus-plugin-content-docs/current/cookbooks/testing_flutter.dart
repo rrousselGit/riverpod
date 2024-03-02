@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 class MyApp extends StatelessWidget {
   // ignore: prefer_const_constructors_in_immutables
-  MyApp({Key? key}) : super(key: key);
+  MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {

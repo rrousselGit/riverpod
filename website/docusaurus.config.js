@@ -9,7 +9,7 @@ module.exports = {
   trailingSlash: false,
   i18n: {
     defaultLocale: "en",
-    locales: ["en", "fr", "ko", "ja", "es", "bn", "de", "it", "ru"],
+    locales: ["en", "fr", "ko", "ja", "es", "bn", "de", "it", "ru", "zh-Hans"],
   },
   themeConfig: {
     algolia: {
@@ -36,7 +36,7 @@ module.exports = {
       },
       items: [
         {
-          to: "docs/getting_started",
+          to: "docs/introduction/why_riverpod",
           activeBasePath: "docs",
           label: "Docs",
           position: "right",
@@ -62,14 +62,26 @@ module.exports = {
           title: "Docs",
           items: [
             {
+              label: "Why Riverpod?",
+              to: "docs/introduction/why_riverpod",
+            },
+            {
               label: "Getting started",
-              to: "docs/getting_started",
+              to: "docs/introduction/getting_started",
             },
           ],
         },
         {
           title: "Community",
           items: [
+            {
+              label: "Discord",
+              href: "https://discord.gg/Bbumvej",
+            },
+            {
+              label: "GitHub",
+              href: "https://github.com/rrousselgit/riverpod",
+            },
             {
               label: "Stack Overflow",
               href: "https://stackoverflow.com/questions/tagged/flutter",
@@ -79,12 +91,12 @@ module.exports = {
               href: "https://twitter.com/remi_rousselet",
             },
             {
-              label: "GitHub",
-              href: "https://github.com/rrousselgit/riverpod",
-            },
-            {
               label: "Code of conduct",
               href: "https://github.com/rrousselGit/riverpod/blob/master/CODE_OF_CONDUCT.md",
+            },
+            {
+              label: "Contributing guide",
+              href: "https://github.com/rrousselGit/riverpod/blob/rework-flow/CONTRIBUTING.md",
             },
           ],
         },

@@ -8,15 +8,14 @@ import 'todos.dart';
 /* SNIPPET START */
 
 class TodoListView extends ConsumerWidget {
-  const TodoListView({Key? key}) : super(key: key);
+  const TodoListView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // ricostruisce il widget quando la todo-list cambia
-
+    // rebuild the widget when the todo list changes
     List<Todo> todos = ref.watch(todosProvider);
 
-    // Renderizziamo i todo in una list view scrollabile
+    // Let's render the todos in a scrollable list view
     return ListView(
       children: [
         for (final todo in todos)

@@ -36,6 +36,29 @@ void main() {
         });
       });
 
+      test(
+          'throws if the same Notifier instance is reused in different providers',
+          () {
+        // Regression test for https://github.com/rrousselGit/riverpod/issues/2617
+        final container = createContainer();
+
+        final notifier = factory.notifier((ref) => 0);
+
+        final provider = factory.provider<TestNotifierBase<int>, int>(
+          () => notifier,
+        );
+        final provider2 = factory.provider<TestNotifierBase<int>, int>(
+          () => notifier,
+        );
+
+        container.read(provider);
+
+        expect(
+          () => container.read(provider2),
+          throwsA(isA<Error>()),
+        );
+      });
+
       group('Notifier.stateOrNull', () {
         test('returns null during first build until state= is set', () {
           final stateInBuild = <int?>[];

@@ -1,6 +1,6 @@
 part of '../async_notifier.dart';
 
-/// {@macro riverpod.asyncnotifier}
+/// {@macro riverpod.async_notifier}
 ///
 /// {@macro riverpod.async_notifier_provider_modifier}
 abstract class FamilyAsyncNotifier<State, Arg>
@@ -24,7 +24,7 @@ abstract class FamilyAsyncNotifier<State, Arg>
     arg = element.origin.argument as Arg;
   }
 
-  /// {@macro riverpod.asyncnotifier.build}
+  /// {@macro riverpod.async_notifier.build}
   @visibleForOverriding
   FutureOr<State> build(Arg arg);
 }
@@ -109,7 +109,7 @@ class AsyncNotifierProviderFamily<NotifierT extends FamilyAsyncNotifier<T, Arg>,
           debugGetCreateSourceHash: null,
         );
 
-  /// {@macro riverpod.overridewith}
+  /// {@macro riverpod.override_with}
   Override overrideWith(NotifierT Function() create) {
     return FamilyOverrideImpl<AsyncValue<T>, Arg,
         AsyncNotifierFamilyProvider<NotifierT, T, Arg>>(

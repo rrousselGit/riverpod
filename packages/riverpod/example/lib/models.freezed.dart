@@ -12,7 +12,7 @@ part of 'models.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 Configuration _$ConfigurationFromJson(Map<String, dynamic> json) {
   return _Configuration.fromJson(json);
@@ -68,22 +68,22 @@ class _$ConfigurationCopyWithImpl<$Res, $Val extends Configuration>
 }
 
 /// @nodoc
-abstract class _$$_ConfigurationCopyWith<$Res>
+abstract class _$$ConfigurationImplCopyWith<$Res>
     implements $ConfigurationCopyWith<$Res> {
-  factory _$$_ConfigurationCopyWith(
-          _$_Configuration value, $Res Function(_$_Configuration) then) =
-      __$$_ConfigurationCopyWithImpl<$Res>;
+  factory _$$ConfigurationImplCopyWith(
+          _$ConfigurationImpl value, $Res Function(_$ConfigurationImpl) then) =
+      __$$ConfigurationImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String publicKey, String privateKey});
 }
 
 /// @nodoc
-class __$$_ConfigurationCopyWithImpl<$Res>
-    extends _$ConfigurationCopyWithImpl<$Res, _$_Configuration>
-    implements _$$_ConfigurationCopyWith<$Res> {
-  __$$_ConfigurationCopyWithImpl(
-      _$_Configuration _value, $Res Function(_$_Configuration) _then)
+class __$$ConfigurationImplCopyWithImpl<$Res>
+    extends _$ConfigurationCopyWithImpl<$Res, _$ConfigurationImpl>
+    implements _$$ConfigurationImplCopyWith<$Res> {
+  __$$ConfigurationImplCopyWithImpl(
+      _$ConfigurationImpl _value, $Res Function(_$ConfigurationImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -92,7 +92,7 @@ class __$$_ConfigurationCopyWithImpl<$Res>
     Object? publicKey = null,
     Object? privateKey = null,
   }) {
-    return _then(_$_Configuration(
+    return _then(_$ConfigurationImpl(
       publicKey: null == publicKey
           ? _value.publicKey
           : publicKey // ignore: cast_nullable_to_non_nullable
@@ -108,11 +108,11 @@ class __$$_ConfigurationCopyWithImpl<$Res>
 /// @nodoc
 
 @JsonSerializable(fieldRename: FieldRename.snake)
-class _$_Configuration implements _Configuration {
-  _$_Configuration({required this.publicKey, required this.privateKey});
+class _$ConfigurationImpl implements _Configuration {
+  _$ConfigurationImpl({required this.publicKey, required this.privateKey});
 
-  factory _$_Configuration.fromJson(Map<String, dynamic> json) =>
-      _$$_ConfigurationFromJson(json);
+  factory _$ConfigurationImpl.fromJson(Map<String, dynamic> json) =>
+      _$$ConfigurationImplFromJson(json);
 
   @override
   final String publicKey;
@@ -125,10 +125,10 @@ class _$_Configuration implements _Configuration {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_Configuration &&
+            other is _$ConfigurationImpl &&
             (identical(other.publicKey, publicKey) ||
                 other.publicKey == publicKey) &&
             (identical(other.privateKey, privateKey) ||
@@ -142,12 +142,12 @@ class _$_Configuration implements _Configuration {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_ConfigurationCopyWith<_$_Configuration> get copyWith =>
-      __$$_ConfigurationCopyWithImpl<_$_Configuration>(this, _$identity);
+  _$$ConfigurationImplCopyWith<_$ConfigurationImpl> get copyWith =>
+      __$$ConfigurationImplCopyWithImpl<_$ConfigurationImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_ConfigurationToJson(
+    return _$$ConfigurationImplToJson(
       this,
     );
   }
@@ -156,10 +156,10 @@ class _$_Configuration implements _Configuration {
 abstract class _Configuration implements Configuration {
   factory _Configuration(
       {required final String publicKey,
-      required final String privateKey}) = _$_Configuration;
+      required final String privateKey}) = _$ConfigurationImpl;
 
   factory _Configuration.fromJson(Map<String, dynamic> json) =
-      _$_Configuration.fromJson;
+      _$ConfigurationImpl.fromJson;
 
   @override
   String get publicKey;
@@ -167,7 +167,7 @@ abstract class _Configuration implements Configuration {
   String get privateKey;
   @override
   @JsonKey(ignore: true)
-  _$$_ConfigurationCopyWith<_$_Configuration> get copyWith =>
+  _$$ConfigurationImplCopyWith<_$ConfigurationImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -229,11 +229,11 @@ class _$MarvelResponseCopyWithImpl<$Res, $Val extends MarvelResponse>
 }
 
 /// @nodoc
-abstract class _$$_MarvelResponseCopyWith<$Res>
+abstract class _$$MarvelResponseImplCopyWith<$Res>
     implements $MarvelResponseCopyWith<$Res> {
-  factory _$$_MarvelResponseCopyWith(
-          _$_MarvelResponse value, $Res Function(_$_MarvelResponse) then) =
-      __$$_MarvelResponseCopyWithImpl<$Res>;
+  factory _$$MarvelResponseImplCopyWith(_$MarvelResponseImpl value,
+          $Res Function(_$MarvelResponseImpl) then) =
+      __$$MarvelResponseImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({MarvelData data});
@@ -243,11 +243,11 @@ abstract class _$$_MarvelResponseCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_MarvelResponseCopyWithImpl<$Res>
-    extends _$MarvelResponseCopyWithImpl<$Res, _$_MarvelResponse>
-    implements _$$_MarvelResponseCopyWith<$Res> {
-  __$$_MarvelResponseCopyWithImpl(
-      _$_MarvelResponse _value, $Res Function(_$_MarvelResponse) _then)
+class __$$MarvelResponseImplCopyWithImpl<$Res>
+    extends _$MarvelResponseCopyWithImpl<$Res, _$MarvelResponseImpl>
+    implements _$$MarvelResponseImplCopyWith<$Res> {
+  __$$MarvelResponseImplCopyWithImpl(
+      _$MarvelResponseImpl _value, $Res Function(_$MarvelResponseImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -255,7 +255,7 @@ class __$$_MarvelResponseCopyWithImpl<$Res>
   $Res call({
     Object? data = null,
   }) {
-    return _then(_$_MarvelResponse(
+    return _then(_$MarvelResponseImpl(
       null == data
           ? _value.data
           : data // ignore: cast_nullable_to_non_nullable
@@ -266,11 +266,11 @@ class __$$_MarvelResponseCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_MarvelResponse implements _MarvelResponse {
-  _$_MarvelResponse(this.data);
+class _$MarvelResponseImpl implements _MarvelResponse {
+  _$MarvelResponseImpl(this.data);
 
-  factory _$_MarvelResponse.fromJson(Map<String, dynamic> json) =>
-      _$$_MarvelResponseFromJson(json);
+  factory _$MarvelResponseImpl.fromJson(Map<String, dynamic> json) =>
+      _$$MarvelResponseImplFromJson(json);
 
   @override
   final MarvelData data;
@@ -281,10 +281,10 @@ class _$_MarvelResponse implements _MarvelResponse {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_MarvelResponse &&
+            other is _$MarvelResponseImpl &&
             (identical(other.data, data) || other.data == data));
   }
 
@@ -295,28 +295,29 @@ class _$_MarvelResponse implements _MarvelResponse {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_MarvelResponseCopyWith<_$_MarvelResponse> get copyWith =>
-      __$$_MarvelResponseCopyWithImpl<_$_MarvelResponse>(this, _$identity);
+  _$$MarvelResponseImplCopyWith<_$MarvelResponseImpl> get copyWith =>
+      __$$MarvelResponseImplCopyWithImpl<_$MarvelResponseImpl>(
+          this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_MarvelResponseToJson(
+    return _$$MarvelResponseImplToJson(
       this,
     );
   }
 }
 
 abstract class _MarvelResponse implements MarvelResponse {
-  factory _MarvelResponse(final MarvelData data) = _$_MarvelResponse;
+  factory _MarvelResponse(final MarvelData data) = _$MarvelResponseImpl;
 
   factory _MarvelResponse.fromJson(Map<String, dynamic> json) =
-      _$_MarvelResponse.fromJson;
+      _$MarvelResponseImpl.fromJson;
 
   @override
   MarvelData get data;
   @override
   @JsonKey(ignore: true)
-  _$$_MarvelResponseCopyWith<_$_MarvelResponse> get copyWith =>
+  _$$MarvelResponseImplCopyWith<_$MarvelResponseImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -368,22 +369,22 @@ class _$MarvelDataCopyWithImpl<$Res, $Val extends MarvelData>
 }
 
 /// @nodoc
-abstract class _$$_MarvelDataCopyWith<$Res>
+abstract class _$$MarvelDataImplCopyWith<$Res>
     implements $MarvelDataCopyWith<$Res> {
-  factory _$$_MarvelDataCopyWith(
-          _$_MarvelData value, $Res Function(_$_MarvelData) then) =
-      __$$_MarvelDataCopyWithImpl<$Res>;
+  factory _$$MarvelDataImplCopyWith(
+          _$MarvelDataImpl value, $Res Function(_$MarvelDataImpl) then) =
+      __$$MarvelDataImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({List<Map<String, Object?>> results});
 }
 
 /// @nodoc
-class __$$_MarvelDataCopyWithImpl<$Res>
-    extends _$MarvelDataCopyWithImpl<$Res, _$_MarvelData>
-    implements _$$_MarvelDataCopyWith<$Res> {
-  __$$_MarvelDataCopyWithImpl(
-      _$_MarvelData _value, $Res Function(_$_MarvelData) _then)
+class __$$MarvelDataImplCopyWithImpl<$Res>
+    extends _$MarvelDataCopyWithImpl<$Res, _$MarvelDataImpl>
+    implements _$$MarvelDataImplCopyWith<$Res> {
+  __$$MarvelDataImplCopyWithImpl(
+      _$MarvelDataImpl _value, $Res Function(_$MarvelDataImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -391,7 +392,7 @@ class __$$_MarvelDataCopyWithImpl<$Res>
   $Res call({
     Object? results = null,
   }) {
-    return _then(_$_MarvelData(
+    return _then(_$MarvelDataImpl(
       null == results
           ? _value._results
           : results // ignore: cast_nullable_to_non_nullable
@@ -402,11 +403,12 @@ class __$$_MarvelDataCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_MarvelData implements _MarvelData {
-  _$_MarvelData(final List<Map<String, Object?>> results) : _results = results;
+class _$MarvelDataImpl implements _MarvelData {
+  _$MarvelDataImpl(final List<Map<String, Object?>> results)
+      : _results = results;
 
-  factory _$_MarvelData.fromJson(Map<String, dynamic> json) =>
-      _$$_MarvelDataFromJson(json);
+  factory _$MarvelDataImpl.fromJson(Map<String, dynamic> json) =>
+      _$$MarvelDataImplFromJson(json);
 
   final List<Map<String, Object?>> _results;
   @override
@@ -422,10 +424,10 @@ class _$_MarvelData implements _MarvelData {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_MarvelData &&
+            other is _$MarvelDataImpl &&
             const DeepCollectionEquality().equals(other._results, _results));
   }
 
@@ -437,28 +439,29 @@ class _$_MarvelData implements _MarvelData {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_MarvelDataCopyWith<_$_MarvelData> get copyWith =>
-      __$$_MarvelDataCopyWithImpl<_$_MarvelData>(this, _$identity);
+  _$$MarvelDataImplCopyWith<_$MarvelDataImpl> get copyWith =>
+      __$$MarvelDataImplCopyWithImpl<_$MarvelDataImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_MarvelDataToJson(
+    return _$$MarvelDataImplToJson(
       this,
     );
   }
 }
 
 abstract class _MarvelData implements MarvelData {
-  factory _MarvelData(final List<Map<String, Object?>> results) = _$_MarvelData;
+  factory _MarvelData(final List<Map<String, Object?>> results) =
+      _$MarvelDataImpl;
 
   factory _MarvelData.fromJson(Map<String, dynamic> json) =
-      _$_MarvelData.fromJson;
+      _$MarvelDataImpl.fromJson;
 
   @override
   List<Map<String, Object?>> get results;
   @override
   @JsonKey(ignore: true)
-  _$$_MarvelDataCopyWith<_$_MarvelData> get copyWith =>
+  _$$MarvelDataImplCopyWith<_$MarvelDataImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -514,18 +517,21 @@ class _$ComicCopyWithImpl<$Res, $Val extends Comic>
 }
 
 /// @nodoc
-abstract class _$$_ComicCopyWith<$Res> implements $ComicCopyWith<$Res> {
-  factory _$$_ComicCopyWith(_$_Comic value, $Res Function(_$_Comic) then) =
-      __$$_ComicCopyWithImpl<$Res>;
+abstract class _$$ComicImplCopyWith<$Res> implements $ComicCopyWith<$Res> {
+  factory _$$ComicImplCopyWith(
+          _$ComicImpl value, $Res Function(_$ComicImpl) then) =
+      __$$ComicImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({int id, String title});
 }
 
 /// @nodoc
-class __$$_ComicCopyWithImpl<$Res> extends _$ComicCopyWithImpl<$Res, _$_Comic>
-    implements _$$_ComicCopyWith<$Res> {
-  __$$_ComicCopyWithImpl(_$_Comic _value, $Res Function(_$_Comic) _then)
+class __$$ComicImplCopyWithImpl<$Res>
+    extends _$ComicCopyWithImpl<$Res, _$ComicImpl>
+    implements _$$ComicImplCopyWith<$Res> {
+  __$$ComicImplCopyWithImpl(
+      _$ComicImpl _value, $Res Function(_$ComicImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -534,7 +540,7 @@ class __$$_ComicCopyWithImpl<$Res> extends _$ComicCopyWithImpl<$Res, _$_Comic>
     Object? id = null,
     Object? title = null,
   }) {
-    return _then(_$_Comic(
+    return _then(_$ComicImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -549,11 +555,11 @@ class __$$_ComicCopyWithImpl<$Res> extends _$ComicCopyWithImpl<$Res, _$_Comic>
 
 /// @nodoc
 @JsonSerializable()
-class _$_Comic implements _Comic {
-  _$_Comic({required this.id, required this.title});
+class _$ComicImpl implements _Comic {
+  _$ComicImpl({required this.id, required this.title});
 
-  factory _$_Comic.fromJson(Map<String, dynamic> json) =>
-      _$$_ComicFromJson(json);
+  factory _$ComicImpl.fromJson(Map<String, dynamic> json) =>
+      _$$ComicImplFromJson(json);
 
   @override
   final int id;
@@ -566,10 +572,10 @@ class _$_Comic implements _Comic {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_Comic &&
+            other is _$ComicImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.title, title) || other.title == title));
   }
@@ -581,12 +587,12 @@ class _$_Comic implements _Comic {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_ComicCopyWith<_$_Comic> get copyWith =>
-      __$$_ComicCopyWithImpl<_$_Comic>(this, _$identity);
+  _$$ComicImplCopyWith<_$ComicImpl> get copyWith =>
+      __$$ComicImplCopyWithImpl<_$ComicImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_ComicToJson(
+    return _$$ComicImplToJson(
       this,
     );
   }
@@ -594,9 +600,9 @@ class _$_Comic implements _Comic {
 
 abstract class _Comic implements Comic {
   factory _Comic({required final int id, required final String title}) =
-      _$_Comic;
+      _$ComicImpl;
 
-  factory _Comic.fromJson(Map<String, dynamic> json) = _$_Comic.fromJson;
+  factory _Comic.fromJson(Map<String, dynamic> json) = _$ComicImpl.fromJson;
 
   @override
   int get id;
@@ -604,6 +610,6 @@ abstract class _Comic implements Comic {
   String get title;
   @override
   @JsonKey(ignore: true)
-  _$$_ComicCopyWith<_$_Comic> get copyWith =>
+  _$$ComicImplCopyWith<_$ComicImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

@@ -49,7 +49,7 @@ abstract class _ChangeNotifierProviderBase<NotifierT extends ChangeNotifier?>
   ///
   /// ```dart
   /// Button(
-  ///   onTap: () => ref.read(changeNotifierProvider.notifer).increment(),
+  ///   onTap: () => ref.read(changeNotifierProvider.notifier).increment(),
   /// )
   /// ```
   ///

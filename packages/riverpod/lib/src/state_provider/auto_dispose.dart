@@ -1,6 +1,6 @@
 part of '../state_provider.dart';
 
-/// {@macro riverpod.providerrefbase}
+/// {@macro riverpod.provider_ref_base}
 /// - [controller], the [StateController] currently exposed by this provider.
 abstract class AutoDisposeStateProviderRef<State>
     extends StateProviderRef<State> implements AutoDisposeRef<State> {}
@@ -55,7 +55,7 @@ class AutoDisposeStateProvider<T> extends _StateProviderBase<T> {
   @override
   late final Refreshable<StateController<T>> state = _state(this);
 
-  /// {@macro riverpod.overridewith}
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     Create<T, AutoDisposeStateProviderRef<T>> create,
   ) {
@@ -98,7 +98,7 @@ class AutoDisposeStateProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
               computeAllTransitiveDependencies(dependencies),
         );
 
-  /// {@macro riverpod.overridewith}
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     R Function(AutoDisposeStateProviderRef<R> ref, Arg arg) create,
   ) {

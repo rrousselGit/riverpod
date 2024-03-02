@@ -1,6 +1,6 @@
 part of '../state_provider.dart';
 
-/// {@macro riverpod.providerrefbase}
+/// {@macro riverpod.provider_ref_base}
 /// - [controller], the [StateController] currently exposed by this provider.
 abstract class StateProviderRef<State> implements Ref<State> {
   /// The [StateController] currently exposed by this provider.
@@ -94,7 +94,7 @@ class StateProvider<T> extends _StateProviderBase<T>
   @override
   late final AlwaysAliveRefreshable<StateController<T>> state = _state(this);
 
-  /// {@macro riverpod.overridewith}
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     Create<T, StateProviderRef<T>> create,
   ) {
@@ -189,7 +189,7 @@ class StateProviderFamily<R, Arg>
               computeAllTransitiveDependencies(dependencies),
         );
 
-  /// {@macro riverpod.overridewith}
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     R Function(StateProviderRef<R> ref, Arg arg) create,
   ) {

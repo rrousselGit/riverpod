@@ -17,6 +17,18 @@ extension SimpleIdentifierX on SimpleIdentifier {
     return libraryUri.scheme == 'package' &&
         libraryUri.pathSegments.first == 'flutter';
   }
+
+  bool get isPumpWidget {
+    if (name != 'pumpWidget') return false;
+
+    final library = staticElement?.library;
+    if (library == null) return false;
+    final libraryUri = Uri.tryParse(library.identifier);
+    if (libraryUri == null) return false;
+
+    return libraryUri.scheme == 'package' &&
+        libraryUri.pathSegments.first == 'flutter_test';
+  }
 }
 
 class ScopedProvidersShouldSpecifyDependencies extends RiverpodLintRule {
@@ -90,6 +102,7 @@ class ScopedProvidersShouldSpecifyDependencies extends RiverpodLintRule {
 
     // If the ProviderScope isn't directly as a child of runApp, it is scoped
     return enclosingExpression is! MethodInvocation ||
-        !enclosingExpression.methodName.isFlutterRunApp;
+        (!enclosingExpression.methodName.isFlutterRunApp &&
+            !enclosingExpression.methodName.isPumpWidget);
   }
 }

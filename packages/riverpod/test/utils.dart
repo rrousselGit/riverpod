@@ -176,6 +176,15 @@ class _EqualsIgnoringHashCodes extends Matcher {
 }
 
 class ObserverMock extends Mock implements ProviderObserver {
+  ObserverMock([this.label]);
+
+  final String? label;
+
+  @override
+  String toString() {
+    return label ?? super.toString();
+  }
+
   @override
   void didDisposeProvider(
     ProviderBase<Object?>? provider,

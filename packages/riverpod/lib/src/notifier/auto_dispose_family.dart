@@ -1,11 +1,11 @@
 part of '../notifier.dart';
 
-/// {@template riverpod.notifier}
+/// {@macro riverpod.notifier}
 ///
 /// {@macro riverpod.notifier_provider_modifier}
 abstract class AutoDisposeFamilyNotifier<State, Arg>
     extends BuildlessAutoDisposeNotifier<State> {
-  /// {@template riverpod.notifier.family_arg}
+  /// {@macro riverpod.notifier.family_arg}
   late final Arg arg;
 
   @override
@@ -14,7 +14,7 @@ abstract class AutoDisposeFamilyNotifier<State, Arg>
     arg = element.origin.argument as Arg;
   }
 
-  /// {@macro riverpod.asyncnotifier.build}
+  /// {@macro riverpod.async_notifier.build}
   @visibleForOverriding
   State build(Arg arg);
 }
@@ -104,7 +104,7 @@ class AutoDisposeNotifierProviderFamily<
     required super.debugGetCreateSourceHash,
   }) : super(providerFactory: AutoDisposeFamilyNotifierProvider.internal);
 
-  /// {@macro riverpod.overridewith}
+  /// {@macro riverpod.override_with}
   Override overrideWith(NotifierT Function() create) {
     return FamilyOverrideImpl<T, Arg,
         AutoDisposeFamilyNotifierProvider<NotifierT, T, Arg>>(

@@ -13,6 +13,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:todos/main.dart';
 
+const firstItemText = 'Buy cookies';
+const secondItemText = 'Star Riverpod';
+const thirdItemText = 'Have a walk';
+
 void main() {
   final addTodoInput = find.byKey(addTodoKey);
   final activeFilterButton = find.byKey(activeFilterKey);
@@ -38,7 +42,7 @@ void main() {
       await tester.pumpWidget(const ProviderScope(child: MyApp()));
 
       expect(
-        find.descendant(of: firstItem, matching: find.text('hi')),
+        find.descendant(of: firstItem, matching: find.text(firstItemText)),
         findsOneWidget,
       );
       expect(
@@ -46,7 +50,7 @@ void main() {
         isA<Checkbox>().having((s) => s.value, 'value', false),
       );
       expect(
-        find.descendant(of: secondItem, matching: find.text('hello')),
+        find.descendant(of: secondItem, matching: find.text(secondItemText)),
         findsOneWidget,
       );
       expect(
@@ -54,7 +58,7 @@ void main() {
         isA<Checkbox>().having((s) => s.value, 'value', false),
       );
       expect(
-        find.descendant(of: thirdItem, matching: find.text('bonjour')),
+        find.descendant(of: thirdItem, matching: find.text(thirdItemText)),
         findsOneWidget,
       );
       expect(
@@ -95,7 +99,7 @@ void main() {
     await tester.pumpWidget(const ProviderScope(child: MyApp()));
 
     expect(
-      find.descendant(of: firstItem, matching: find.text('hi')),
+      find.descendant(of: firstItem, matching: find.text(firstItemText)),
       findsOneWidget,
     );
 
@@ -110,7 +114,7 @@ void main() {
     await tester.pump();
 
     expect(
-      find.descendant(of: firstItem, matching: find.text('hi')),
+      find.descendant(of: firstItem, matching: find.text(firstItemText)),
       findsNothing,
     );
     expect(
@@ -123,7 +127,7 @@ void main() {
     await tester.pumpWidget(const ProviderScope(child: MyApp()));
 
     expect(
-      find.descendant(of: firstItem, matching: find.text('hi')),
+      find.descendant(of: firstItem, matching: find.text(firstItemText)),
       findsOneWidget,
     );
 
@@ -138,7 +142,7 @@ void main() {
     await tester.pump();
 
     expect(
-      find.descendant(of: firstItem, matching: find.text('hi')),
+      find.descendant(of: firstItem, matching: find.text(firstItemText)),
       findsNothing,
     );
     expect(

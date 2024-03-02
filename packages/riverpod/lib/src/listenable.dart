@@ -18,7 +18,7 @@ class _Listener<T> {
 /// to subsets of the state exposed by a provider.
 @internal
 class ProxyElementValueNotifier<T> extends _ValueListenable<T> {
-  /// Directly obtain the value exposed, grafully handling cases where
+  /// Directly obtain the value exposed, gratefully handling cases where
   /// [result] is null or in error state.
   T get value {
     final result = _result;

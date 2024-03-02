@@ -1,0 +1,12 @@
+targets:
+  $default:
+    sources:
+      - docs/**
+      - static/**
+    builders:
+      riverpod_generator:
+        enabled: true
+      source_gen:combining_builder:
+        options:
+          ignore_for_file:
+            - non_constant_identifier_names

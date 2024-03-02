@@ -83,7 +83,7 @@ class ResultData<State> implements Result<State> {
   }
 
   @override
-  bool operator ==(Object? other) =>
+  bool operator ==(Object other) =>
       other is ResultData<State> &&
       other.runtimeType == runtimeType &&
       other.state == state;
@@ -130,7 +130,7 @@ class ResultError<State> implements Result<State> {
   }
 
   @override
-  bool operator ==(Object? other) =>
+  bool operator ==(Object other) =>
       other is ResultError<State> &&
       other.runtimeType == runtimeType &&
       other.stackTrace == stackTrace &&

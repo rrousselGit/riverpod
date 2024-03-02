@@ -12,12 +12,6 @@ import 'search.dart';
 
 part 'detail.g.dart';
 
-// TODO hot-reload handle provider type change
-// TODO hot-reload handle provider response type change
-// TODO hot-reload handle provider -> family
-// TODO hot-reload handle family adding parameters
-// TODO found "Future already completed error" after adding family parameter
-
 extension CancelTokenX on Ref {
   CancelToken cancelToken() {
     final cancelToken = CancelToken();

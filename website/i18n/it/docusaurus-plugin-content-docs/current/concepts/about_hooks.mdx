@@ -1,0 +1,317 @@
+---
+title: Informazioni sugli hook
+---
+
+import hookAndConsumer from "!!raw-loader!./about_hooks/hook_and_consumer.dart";
+import hookConsumer from "!!raw-loader!./about_hooks/hook_consumer.dart";
+import hookConsumerWidget from "!!raw-loader!./about_hooks/hook_consumer_widget.dart";
+import { CodeSnippet } from "../../../../../src/components/CodeSnippet";
+import { Link } from "../../../../../src/components/Link";
+
+Questa pagina spiega cosa sono gli hooks e come si relazionano con Riverpod.
+
+Gli "Hooks" sono utilità comuni da un pacchetto separato, indipendente da Riverpod: [flutter_hooks].
+Sebbene [flutter_hooks] sia completamente un pacchetto separato e non ha nulla a che fare con Riverpod 
+(almeno direttamente), è comune usarlo in coppia con Riverpod.
+
+## Dovresti utilizzare gli hook?
+
+Gli hook sono uno strumento potente, ma non sono per tutti.
+Se sei un nuovo arrivato su Riverpod, probabilmente dovresti evitare di utilizzarli.
+
+Nonostante siano utili, gli hook non sono necessari per Riverpod.
+Non dovresti cominciare ad usare gli hook solo per Riverpod. Piuttosto, dovresti iniziare 
+ad utilizzarli perché vuoi utilizzare gli hook.
+
+Usare gli hook è un compromesso. Possono essere ottimi per produrre codice robusto e riutilizzabile, 
+ma sono anche un nuovo concetto da imparare, e all'inizio possono creare confusione.
+Gli hooks non sono un concetto fondamentale di Flutter. In quanto tali, si sentiranno fuori posto in Flutter/Dart.
+
+## Cosa sono gli hooks?
+
+Gli hook sono funzioni utilizzate dentro i widget. Sono progettati come un alternativa 
+agli [StatefulWidget], per rendere la logica più robusta e componibile.
+
+Gli hook sono un concetto che arriva da [React](https://reactjs.org/), e [flutter_hooks] 
+è semplicemente un porting dell'implementazione React su Flutter.
+Pertanto, possono sembrare un po' fuori posto in Flutter. Idealmente, in futuro avremmo una 
+soluzione al problema risolto dagli hook, progettata appositamente per Flutter.
+
+Se i provider di Riverpod sono per lo stato "globale" dell'applicazione, gli hook sono 
+per lo stato locale dei widget. Sono tipicamente utilizzati per interagire con gli oggetti dell'UI aventi stato, 
+come [TextEditingController](https://api.flutter.dev/flutter/widgets/TextEditingController-class.html),
+[AnimationController](https://api.flutter.dev/flutter/animation/AnimationController-class.html).
+Possono anche servire come sostituzione al pattern "builder", sostituendo widget come 
+[FutureBuilder](https://api.flutter.dev/flutter/widgets/FutureBuilder-class.html)/[TweenAnimatedBuilder](https://api.flutter.dev/flutter/widgets/TweenAnimationBuilder-class.html)
+con un'alternativa che non prevede la "nidificazione", migliorando drasticamente la leggibilità.
+
+In generale, gli hook sono utili per:
+
+- form
+- animazioni
+- reagire agli eventi dell'utente
+- ...
+
+Come esempio, possiamo utilizzare gli hook per implementare manualmente una animazione fade-in, 
+dove un widget inizialmente è invisibile per poi apparire.
+
+Se dovessimo utilizzare [StatefulWidget], il codice dovrebbe essere il seguente:
+
+```dart
+class FadeIn extends StatefulWidget {
+  const FadeIn({Key? key, required this.child}) : super(key: key);
+
+  final Widget child;
+
+  @override
+  State<FadeIn> createState() => _FadeInState();
+}
+
+class _FadeInState extends State<FadeIn> with SingleTickerProviderStateMixin {
+  late final AnimationController animationController = AnimationController(
+    vsync: this,
+    duration: const Duration(seconds: 2),
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    animationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: animationController,
+      builder: (context, child) {
+        return Opacity(
+          opacity: animationController.value,
+          child: widget.child,
+        );
+      },
+    );
+  }
+}
+```
+
+Utilizzando gli hook, l'equivalente sarebbe:
+
+```dart
+class FadeIn extends HookWidget {
+  const FadeIn({Key? key, required this.child}) : super(key: key);
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    // Crea un AnimationController. Il controller sarà automaticamente distrutto 
+    // quando il widget verrà smontato.
+    final animationController = useAnimationController(
+      duration: const Duration(seconds: 2),
+    );
+
+    // useEffect è l'equivalente di initState + didUpdateWidget + dispose.
+    // La callback passata all'useEffect è eseguita la prima volta che l'hook è invocato, 
+    // e poi ogni volta che la lista passata come secondo parametro cambia.
+    // Siccome in questo caso passiamo una lista const vuota, è strettamente equivalente a "initState".
+    useEffect(() {
+      // inizia l'animazione quando il widget viene renderizzato per la prima volta.
+      animationController.forward();
+      // Potremmo opzionalmente restituire della logica "dispose" qui
+      return null;
+    }, const []);
+
+    // Informa Flutter di ricostruire questo widget quando l'animazione si aggiorna.
+    // Questo è equivalente ad AnimatedBuilder
+    useAnimation(animationController);
+
+    return Opacity(
+      opacity: animationController.value,
+      child: child,
+    );
+  }
+}
+```
+
+Ci sono alcuni aspetti interessanti da notare in questo codice:
+
+- Non c'è nessuna memory leak. Questo codice non ricrea un nuovo `AnimationController` ogni volta che 
+  il widget si ricostruisce, e il controller è correttamente smaltito quando il widget viene smontato.
+
+- È possibile utilizzare gli hook quante volte vogliamo all'interno dello stesso widget.
+  Perciò possiamo creare multipli `AnimationController` se vogliamo:
+
+  ```dart
+  @override
+  Widget build(BuildContext context) {
+    final animationController = useAnimationController(
+      duration: const Duration(seconds: 2),
+    );
+    final anotherController = useAnimationController(
+      duration: const Duration(seconds: 2),
+    );
+
+    ...
+  }
+  ```
+
+  Questo ricrea due controller, senza nessuna sorta di conseguenza negativa.
+
+- Se vogliamo, possiamo riscrivere questa logica in una riusabile funzione separata:
+
+  ```dart
+  double useFadeIn() {
+    final animationController = useAnimationController(
+      duration: const Duration(seconds: 2),
+    );
+    useEffect(() {
+      animationController.forward();
+      return null;
+    }, const []);
+    useAnimation(animationController);
+    return animationController.value;
+  }
+  ```
+
+  Potremmo poi utilizzare questa funzione all'interno dei nostri widget, purché quel widget sia un [HookWidget]:
+
+  ```dart
+  class FadeIn extends HookWidget {
+    const FadeIn({Key? key, required this.child}) : super(key: key);
+
+    final Widget child;
+
+    @override
+    Widget build(BuildContext context) {
+      final fade = useFadeIn();
+
+      return Opacity(opacity: fade, child: child);
+    }
+  }
+  ```
+
+  Nota come la nostra funzione `useFadeIn` è completamente indipendente dal nostro widget `FadeIn`.
+  Se volessimo, potremmo usare la funzione `useFadeIn` in un widget completamente diverso e funzionerebbe comunque!
+
+## Le regole degli hook
+
+Gli hook sono dotati di vincoli unici:
+
+- Possono solo essere utilizzati all'interno del metodo `build` di un widget che estende [HookWidget]:
+
+  **Giusto**:
+
+  ```dart
+  class Example extends HookWidget {
+    @override
+    Widget build(BuildContext context) {
+      final controller = useAnimationController();
+      ...
+    }
+  }
+  ```
+
+  **Sbagliato**:
+
+  ```dart
+  // Non un HookWidget
+  class Example extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      final controller = useAnimationController();
+      ...
+    }
+  }
+  ```
+
+  **Sbagliato**:
+
+  ```dart
+  class Example extends HookWidget {
+    @override
+    Widget build(BuildContext context) {
+      return ElevatedButton(
+        onPressed: () {
+          // Non è realmente dentro il metodo "build", ma è dentro 
+          // una funzione che interagisce con l'utente (in questo caso "onPressed")
+          final controller = useAnimationController();
+        },
+        child: Text('click me'),
+      );
+    }
+  }
+  ```
+
+- Non possono essere utilizzati condizionalmente in un loop.
+
+  **Sbagliato**:
+
+  ```dart
+  class Example extends HookWidget {
+    const Example({required this.condition, super.key});
+    final bool condition;
+    @override
+    Widget build(BuildContext context) {
+      if (condition) {
+        // Gli hook non dovrebbero essere usati dentro "if"/"for" ...
+        final controller = useAnimationController();
+      }
+      ...
+    }
+  }
+  ```
+
+Per maggiori informazioni riguardo agli hook, vedere [flutter_hooks].
+
+## Hooks e Riverpod
+
+### Installazione
+
+Dato che gli hook sono indipendenti da Riverpod, è necessario installare gli hook separatamente. 
+Se vuoi utilizzarli, installare [hooks_riverpod] non basta. Avrai comunque bisogno di aggiungere 
+[flutter_hooks] alle tue dipendenze.
+Consulta <Link documentID="introduction/getting_started" hash="installazione-del-package" /> for maggiori informazioni.
+
+### Utilizzo
+
+In alcuni casi, vorresti scrivere un Widget che utilizza sia gli hook che Riverpod.
+Ma come avresti già potuto notare, sia gli hook che Riverpod forniscono il proprio 
+tipo base di widget personalizzato: [HookWidget] e [ConsumerWidget].
+Ma le classi possono solo estendere una superclasse alla volta.
+
+Per risolvere questo problema, puoi utilizzare il pacchetto [hooks_riverpod].
+Questo pacchetto fornisce una classe [HookConsumerWidget] che combina sia 
+[HookWidget] che [ConsumerWidget] in un singolo tipo.
+Puoi quindi sottoclassare [HookConsumerWidget] invece di [HookWidget]:
+
+<CodeSnippet snippet={hookConsumerWidget}></CodeSnippet>
+
+In alternativa, puoi utilizzare i "builder" forniti da entrambi i pacchetti.
+Per esempio, potremmo continuare ad utilizzare `StatelessWidget`, ed usare sia 
+`HookBuilder` che `Consumer`.
+
+<CodeSnippet snippet={hookAndConsumer}></CodeSnippet>
+
+:::note
+Questo approccio funzionerebbe senza utilizzare [hooks_riverpod]. Solo [flutter_riverpod] è necessario.
+:::
+
+Se ti piace questo approccio, [hooks_riverpod] lo semplifica fornendo [HookConsumer], 
+che è una combinazione di entrambi i builder in uno:
+
+<CodeSnippet snippet={hookConsumer}></CodeSnippet>
+
+[hookwidget]: https://pub.dev/documentation/flutter_hooks/latest/flutter_hooks/HookWidget-class.html
+[hookconsumer]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/HookConsumer-class.html
+[hookconsumerwidget]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/HookConsumerWidget-class.html
+[consumerwidget]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ConsumerWidget-class.html
+[statefulwidget]: https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html
+[hooks_riverpod]: https://pub.dev/packages/hooks_riverpod
+[flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
+[flutter_hooks]: https://github.com/rrousselGit/flutter_hooks

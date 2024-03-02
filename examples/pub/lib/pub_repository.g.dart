@@ -8,9 +8,9 @@ part of 'pub_repository.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_PackageMetricsScore _$$_PackageMetricsScoreFromJson(
+_$PackageMetricsScoreImpl _$$PackageMetricsScoreImplFromJson(
         Map<String, dynamic> json) =>
-    _$_PackageMetricsScore(
+    _$PackageMetricsScoreImpl(
       grantedPoints: json['grantedPoints'] as int,
       maxPoints: json['maxPoints'] as int,
       likeCount: json['likeCount'] as int,
@@ -18,8 +18,8 @@ _$_PackageMetricsScore _$$_PackageMetricsScoreFromJson(
       tags: (json['tags'] as List<dynamic>).map((e) => e as String).toList(),
     );
 
-Map<String, dynamic> _$$_PackageMetricsScoreToJson(
-        _$_PackageMetricsScore instance) =>
+Map<String, dynamic> _$$PackageMetricsScoreImplToJson(
+        _$PackageMetricsScoreImpl instance) =>
     <String, dynamic>{
       'grantedPoints': instance.grantedPoints,
       'maxPoints': instance.maxPoints,
@@ -28,101 +28,104 @@ Map<String, dynamic> _$$_PackageMetricsScoreToJson(
       'tags': instance.tags,
     };
 
-_$_PackageMetricsResponse _$$_PackageMetricsResponseFromJson(
+_$PackageMetricsResponseImpl _$$PackageMetricsResponseImplFromJson(
         Map<String, dynamic> json) =>
-    _$_PackageMetricsResponse(
+    _$PackageMetricsResponseImpl(
       score:
           PackageMetricsScore.fromJson(json['score'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$$_PackageMetricsResponseToJson(
-        _$_PackageMetricsResponse instance) =>
+Map<String, dynamic> _$$PackageMetricsResponseImplToJson(
+        _$PackageMetricsResponseImpl instance) =>
     <String, dynamic>{
       'score': instance.score,
     };
 
-_$_PackageDetails _$$_PackageDetailsFromJson(Map<String, dynamic> json) =>
-    _$_PackageDetails(
+_$PackageDetailsImpl _$$PackageDetailsImplFromJson(Map<String, dynamic> json) =>
+    _$PackageDetailsImpl(
       version: json['version'] as String,
       pubspec: Pubspec.fromJson(json['pubspec'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$$_PackageDetailsToJson(_$_PackageDetails instance) =>
+Map<String, dynamic> _$$PackageDetailsImplToJson(
+        _$PackageDetailsImpl instance) =>
     <String, dynamic>{
       'version': instance.version,
       'pubspec': instance.pubspec,
     };
 
-_$_Package _$$_PackageFromJson(Map<String, dynamic> json) => _$_Package(
+_$PackageImpl _$$PackageImplFromJson(Map<String, dynamic> json) =>
+    _$PackageImpl(
       name: json['name'] as String,
       latest: PackageDetails.fromJson(json['latest'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$$_PackageToJson(_$_Package instance) =>
+Map<String, dynamic> _$$PackageImplToJson(_$PackageImpl instance) =>
     <String, dynamic>{
       'name': instance.name,
       'latest': instance.latest,
     };
 
-_$_LikedPackage _$$_LikedPackageFromJson(Map<String, dynamic> json) =>
-    _$_LikedPackage(
+_$LikedPackageImpl _$$LikedPackageImplFromJson(Map<String, dynamic> json) =>
+    _$LikedPackageImpl(
       package: json['package'] as String,
       liked: json['liked'] as bool,
     );
 
-Map<String, dynamic> _$$_LikedPackageToJson(_$_LikedPackage instance) =>
+Map<String, dynamic> _$$LikedPackageImplToJson(_$LikedPackageImpl instance) =>
     <String, dynamic>{
       'package': instance.package,
       'liked': instance.liked,
     };
 
-_$_LikesPackagesResponse _$$_LikesPackagesResponseFromJson(
+_$LikesPackagesResponseImpl _$$LikesPackagesResponseImplFromJson(
         Map<String, dynamic> json) =>
-    _$_LikesPackagesResponse(
+    _$LikesPackagesResponseImpl(
       likedPackages: (json['likedPackages'] as List<dynamic>)
           .map((e) => LikedPackage.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
-Map<String, dynamic> _$$_LikesPackagesResponseToJson(
-        _$_LikesPackagesResponse instance) =>
+Map<String, dynamic> _$$LikesPackagesResponseImplToJson(
+        _$LikesPackagesResponseImpl instance) =>
     <String, dynamic>{
       'likedPackages': instance.likedPackages,
     };
 
-_$_PubPackagesResponse _$$_PubPackagesResponseFromJson(
+_$PubPackagesResponseImpl _$$PubPackagesResponseImplFromJson(
         Map<String, dynamic> json) =>
-    _$_PubPackagesResponse(
+    _$PubPackagesResponseImpl(
       packages: (json['packages'] as List<dynamic>)
           .map((e) => Package.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
-Map<String, dynamic> _$$_PubPackagesResponseToJson(
-        _$_PubPackagesResponse instance) =>
+Map<String, dynamic> _$$PubPackagesResponseImplToJson(
+        _$PubPackagesResponseImpl instance) =>
     <String, dynamic>{
       'packages': instance.packages,
     };
 
-_$_SearchPackage _$$_SearchPackageFromJson(Map<String, dynamic> json) =>
-    _$_SearchPackage(
+_$SearchPackageImpl _$$SearchPackageImplFromJson(Map<String, dynamic> json) =>
+    _$SearchPackageImpl(
       package: json['package'] as String,
     );
 
-Map<String, dynamic> _$$_SearchPackageToJson(_$_SearchPackage instance) =>
+Map<String, dynamic> _$$SearchPackageImplToJson(_$SearchPackageImpl instance) =>
     <String, dynamic>{
       'package': instance.package,
     };
 
-_$_PubSearchResponse _$$_PubSearchResponseFromJson(Map<String, dynamic> json) =>
-    _$_PubSearchResponse(
+_$PubSearchResponseImpl _$$PubSearchResponseImplFromJson(
+        Map<String, dynamic> json) =>
+    _$PubSearchResponseImpl(
       packages: (json['packages'] as List<dynamic>)
           .map((e) => SearchPackage.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
-Map<String, dynamic> _$$_PubSearchResponseToJson(
-        _$_PubSearchResponse instance) =>
+Map<String, dynamic> _$$PubSearchResponseImplToJson(
+        _$PubSearchResponseImpl instance) =>
     <String, dynamic>{
       'packages': instance.packages,
     };

@@ -557,7 +557,7 @@ abstract class _$FamilyClass extends BuildlessAutoDisposeAsyncNotifier<String> {
   late final bool fourth;
   late final List<String>? fifth;
 
-  Future<String> build(
+  FutureOr<String> build(
     int first, {
     String? second,
     required double third,
@@ -674,7 +674,7 @@ class FamilyClassProvider
   final List<String>? fifth;
 
   @override
-  Future<String> runNotifierBuild(
+  FutureOr<String> runNotifierBuild(
     covariant FamilyClass notifier,
   ) {
     return notifier.build(
@@ -773,4 +773,4 @@ class _FamilyClassProviderElement
   List<String>? get fifth => (origin as FamilyClassProvider).fifth;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

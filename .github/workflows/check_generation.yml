@@ -1,0 +1,35 @@
+name: Check code-generation
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+      - dev
+
+jobs:
+  check_generation:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3.1.0
+        with:
+          fetch-depth: 2
+      - uses: subosito/flutter-action@v2.7.1
+        with:
+          channel: master
+
+      - name: Add pub cache bin to PATH
+        run: echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
+      - name: Add pub cache to PATH
+        run: echo "PUB_CACHE="$HOME/.pub-cache"" >> $GITHUB_ENV
+      - name: Install dependencies
+        run: flutter pub get
+
+      - run: dart pub global activate melos
+
+      - run: dart pub run melos bootstrap
+      - run: dart pub run melos run generate
+
+      - name: check there are no uncommitted changes
+        run: git diff --exit-code

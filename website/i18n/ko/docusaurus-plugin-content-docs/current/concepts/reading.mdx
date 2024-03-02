@@ -1,245 +1,267 @@
 ---
-title: 프로바이더 읽기
+title: Reading a Provider
 ---
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
-import counter from "!!raw-loader!/i18n/ko/docusaurus-plugin-content-docs/current/concepts/reading_counter.dart";
-import consumerWidget from "!!raw-loader!/i18n/ko/docusaurus-plugin-content-docs/current/concepts/reading_consumer_widget.dart";
-import consumerStatefulWidget from "!!raw-loader!/i18n/ko/docusaurus-plugin-content-docs/current/concepts/reading_consumer_stateful_widget.dart";
-import consumerHookWidget from "!!raw-loader!/i18n/ko/docusaurus-plugin-content-docs/current/concepts/reading_consumer_hook_widget.dart";
-import consumerHook from "!!raw-loader!/i18n/ko/docusaurus-plugin-content-docs/current/concepts/reading_consumer_hook.dart";
-import watch from "!!raw-loader!/i18n/ko/docusaurus-plugin-content-docs/current/concepts/reading_watch.dart";
-import watchBuild from "!!raw-loader!/i18n/ko/docusaurus-plugin-content-docs/current/concepts/reading_watch_build.dart";
-import listen from "!!raw-loader!/i18n/ko/docusaurus-plugin-content-docs/current/concepts/reading_listen.dart";
-import listenBuild from "!!raw-loader!/i18n/ko/docusaurus-plugin-content-docs/current/concepts/reading_listen_build.dart";
-import read from "!!raw-loader!/i18n/ko/docusaurus-plugin-content-docs/current/concepts/reading_read.dart";
-import readBuild from "!!raw-loader!/i18n/ko/docusaurus-plugin-content-docs/current/concepts/reading_read_build.dart";
-import readNotifierBuild from "!!raw-loader!/i18n/ko/docusaurus-plugin-content-docs/current/concepts/reading_read_notifier_build.dart";
-import watchNotifierBuild from "!!raw-loader!/i18n/ko/docusaurus-plugin-content-docs/current/concepts/reading_watch_notifier_build.dart";
-import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+import counter from "./reading/counter";
+import consumerWidget from "./reading/consumer_widget";
+import consumerStatefulWidget from "./reading/consumer_stateful_widget";
+import consumerHook from "!!raw-loader!/docs/concepts/reading/consumer_hook.dart";
+import watch from "./reading/watch";
+import watchBuild from "./reading/watch_build";
+import listen from "./reading/listen";
+import listenBuild from "./reading/listen_build";
+import read from "./reading/read";
+import readBuild from "./reading/read_build";
+import readNotifierBuild from "./reading/read_notifier_build";
+import watchNotifierBuild from "./reading/watch_notifier_build";
+import provider from "./reading/provider";
+import {
+  trimSnippet,
+  AutoSnippet,
+  When,
+} from "../../../../../src/components/CodeSnippet";
+import { Link } from "../../../../../src/components/Link";
 
-본 가이드를 읽기전에 [프로바이더란](/docs/concepts/providers)에 대해서 먼저 알아보는 것을 추천합니다. 
+:::caution
+The content of this page may be outdated.  
+It will be updated in the future, but for now you may want to refer to the content
+in the top of the sidebar instead (introduction/essentials/case-studies/...)
+:::
 
-이 가이드 문서는 프로바이더를 어떻게 사용/소비(consume)하는지에 대해 알아봅니다.
+Before reading this guide, make sure to <Link documentID="concepts/providers"/> first.
 
-## "ref" 객체 얻기
+In this guide, we will see how to consume a provider.
 
-프로바이더를 읽기전 맨 처음 "ref" 라는 객체를 얻을 필요가 있습니다. 
+## Obtaining a "ref" object
 
-이 객체('ref')는 프로바이더간 상호작용을 도와주고 위젯이나 다른 프로바이더에서 얻을 수 있습니다.
+First and foremost, before reading a provider, we need to obtain a "ref" object.
 
-### 프로바이더로 부터 "ref" 객체 얻기
+This object is what allows us to interact with providers, be it from a widget
+or another provider.
 
-모든 프로바이더들은 "ref"객체를 파라미터로서 받게 됩니다. 
+### Obtaining a "ref" from a provider
 
-```dart
-final provider = Provider((ref) {
-  // 다른 프로바이더 객체를 얻기위해 ref를 사용합니다. 
-  // 여기서 repositoryProvider 프로바이더를 Provider 에서 읽는 것을 확인합니다.
-  final repository = ref.watch(repositoryProvider);
+All providers receive a "ref" as a parameter:
 
-  return SomeValue(repository);
-})
-```
+<AutoSnippet language="dart" {...provider}></AutoSnippet>
 
-이 매개변수는 프로바이더가 노출한 값으로 전달하는 것이 안전합니다.
+This parameter is safe to pass to the value exposed by the provider.
 
-예를 들어, 통상적으로 프로바이더의 "ref"를 [StateNotifier]로 전달합니다. 
+<When codegen={false}>
 
-<CodeBlock>{trimSnippet(counter)}</CodeBlock>
+A common use-case is to pass the provider's "ref" to a `StateNotifier`
 
-[StateNotifier]를 상속 받은 `Counter` 클래스는 `ref` 객체를 통해 
-다른 프로바이더를 사용하거나 읽을 수 있게 되었습니다. 
+</When>
 
-### 위젯에서 "ref" 객체 얻기
+<AutoSnippet language="dart" {...counter}></AutoSnippet>
 
-위젯들(Widgets)은 "ref" 파라미터를 가지고 있지 않습니다. 
-그러나, [Riverpod]에서는 위젯에서 "ref" 객체를 얻기위한 다양한 솔루션을 제공합니다.
+Doing so allows our `Counter` class to read providers.
 
-#### StatelessWidget 대신 ConsumerWidget으로 상속받기
+### Obtaining a "ref" from a widget
 
-가장 일반적인 해결방법은 [StatelessWidget]를 [ConsumerWidget]의로 바꿔서 위젯을 생성하는 것입니다.
-(여기서 말하고자하는 해결방법이란 위에서 언급한 위젯에서 "ref" 객체를 얻는 방법입니다.)
+Widgets naturally do not have a ref parameter. But [Riverpod] offers multiple
+solutions to obtain one from widgets.
 
-[ConsumerWidget]은 [StatelessWidget]와 기본적으로 동일합니다. 
-차이점은 build 메소드에서 추가적으로 "ref" 객체를 받는 것입니다.
+<When>
 
-전형적인 [ConsumerWidget] 사용방법은 아래 예시 코드와 같습니다. 
+#### Extending ConsumerWidget instead of StatelessWidget
 
-<CodeBlock>{trimSnippet(consumerWidget)}</CodeBlock>
+The most common way to obtain a ref in the widget tree is
+to replace [StatelessWidget] with [ConsumerWidget].
 
-#### StatefulWidget+State 대신에 ConsumerStatefulWidget+ConsumerState 상속받기
+[ConsumerWidget] is identical in use to [StatelessWidget], with the only
+difference being that it has an extra parameter on its build method: the "ref" object.
 
-[ConsumerWidget]과 유사하게, [ConsumerStatefulWidget]과 [ConsumerState]는 [StatefulWidget]과 [State]와 동일합니다.
-차이점은 "ref" 객체를 상태로 가진다는 점 입니다.
+A typical [ConsumerWidget] looks like:
 
-이번에는 "ref"객체는 build 메소드의 파라미터로서 전달되지 않습니다. 
-"ref" 객체는 [ConsumerState]객체의 속성이 됩니다.
+<AutoSnippet language="dart" {...consumerWidget}></AutoSnippet>
 
-아래의 예시 코드를 확인해 봅시다.
+#### Extending ConsumerStatefulWidget+ConsumerState instead of StatefulWidget+State
 
-<CodeBlock>{trimSnippet(consumerStatefulWidget)}</CodeBlock>
+Similar to [ConsumerWidget], [ConsumerStatefulWidget] and [ConsumerState] are the equivalent of a
+[StatefulWidget] with its [State], with the difference that the state has a "ref" object.
 
-#### HookWidget 대신 HookConsumerWidget 상속받기
+This time, the "ref" isn't passed as parameter of the build method, but is
+a property of the [ConsumerState] object:
 
-이 방법은 [flutter_hooks]를 사용하는 사용자에게 한정됩니다. 
-[flutter_hooks]은 [HookWidget]을 상속받는게 필요하기 때문에 hooks을 사용하기위해 위젯에서
-[ConsumerWidget]을 상속하는것은 불가능합니다. 
+<AutoSnippet language="dart" {...consumerStatefulWidget}></AutoSnippet>
 
-하나의 해결 방안으로 [hooks_riverpod] 패키지를 사용하면 됩니다. 
-이 패키지는 [HookWidget]를  [HookConsumerWidget]으로 대체할 수 있는 해결방안을 제공합니다. 
+</When>
 
-[HookConsumerWidget]은 [ConsumerWidget]과 [HookWidget]의 기능을 포함하고 있습니다. 
-즉, 프로바이더를 구독하는것과 hooks을 사용하는 것이 모두 가능합니다. 
+<When hooks>
 
-예제를 확인해 봅시다.
+#### Extending HookConsumerWidget instead of HookWidget
 
-<CodeBlock>{trimSnippet(consumerHookWidget)}</CodeBlock>
+This option is for [flutter_hooks] users. Since [flutter_hooks] requires
+extending [HookWidget] to work, widgets that use hooks are unable to extend
+[ConsumerWidget].
 
-#### Consumer 와 HookConsumer 위젯
+The package [hooks_riverpod] exposes a new widget called [HookConsumerWidget].
+[HookConsumerWidget] acts as both a [ConsumerWidget] and a [HookWidget]. This
+allows a widget to both listen to providers and use hooks.
 
-위젯(widgets)안에서 "ref" 객체를 얻기 위한 마지막 방안으로
-[Consumer]/[HookConsumer] 위젯을 사용하는 것이 있습니다. 
+An example would be:
 
-이 클래스들은([Consumer]/[HookConsumer]) "ref"를 얻기위해 사용하는 위젯들입니다. 
-[ConsumerWidget]/[HookConsumerWidget]로서 동일한 속성을 가집니다. 
+<AutoSnippet language="dart" {...consumerWidget}></AutoSnippet>
 
-이 위젯들은 "ref"를 얻기위해 별도의 class를 정의할 필요가 없습니다. 
-아래의 예시 코드를 통해 확인해 봅시다.
+#### Extending StatefulHookConsumerWidget instead of HookWidget
+
+This option is for [flutter_hooks] users, who need to use [StatefulWidget] lifecycle methods in addition to hooks.
+
+An example would be:
+
+<AutoSnippet language="dart" {...consumerStatefulWidget}></AutoSnippet>
+
+#### Consumer and HookConsumer widgets
+
+A final way to obtain a "ref" inside widgets is to rely on [Consumer]/
+[HookConsumer].
+
+These classes are widgets that can be used to obtain a "ref" in a builder callback, with the same
+properties as [ConsumerWidget]/[HookConsumerWidget].
+
+As such, these widgets are a way to obtain a "ref" without having to define a class.
+An example would be:
 
 <CodeBlock>{trimSnippet(consumerHook)}</CodeBlock>
 
-## `ref`를 사용해서 프로바이더와 상호작용하기
+</When>
 
-이제 "ref" 겍체와 사용방법에 대해 알아봅시다. 
-"ref"는 3개지 주요한 용도가 있습니다.
+## Using ref to interact with providers
 
-- `ref.watch` = 프로바이더의 값을 취득하고 변화를 구독합니다. 값의 변경이 발생하면,
-  위젯(widget)을 다시 빌드하거나 값을 구독(subscribed)하고 있는 위치에 상태 값을 전달 및 제공합니다.
+Now that we have a "ref", we can start using it.
 
-- `ref.listen` = 프로바이더의 상태 값을 구독하거나 상태값이 변했을때 어떠한 행위를 취해야할 경우 사용합니다. 
+There are three primary usages for "ref":
 
-- `ref.read` = 프로바이더의 상태값을 취득합니다. 이벤트 콜백함수에 사용하기 유용한데 예를들어 버튼의 `onPressed` 
-               콜백 함수에서 프로바이더의 필요한 상태값을 얻기위해서 사용할 수 있습니다. 
+- obtaining the value of a provider and listening to changes, such that when
+  this value changes, this will rebuild the widget or provider that subscribed
+  to the value.
+  This is done using `ref.watch`
+- adding a listener on a provider, to execute an action such as navigating to a new
+  page or showing a modal whenever that provider changes.  
+  This is done using `ref.listen`.
+- obtaining the value of a provider while ignoring changes.
+  This is useful when we need the value of a provider in an event
+  such as "on click".
+  This is done using `ref.read`.
 
 :::note
-기능을 구현할때는 가급적 `ref.read` 또는  `ref.listen` 보다 `ref.watch` 사용을 권장합니다.
-
-`ref.watch`을 사용하게되면 reactive(리엑티브)와 declarative(선언형)에 가까워 지고
-애플리케이션을 더 유지보수 하기 편리하게 만들어 줍니다. 
+Whenever possible, prefer using `ref.watch` over `ref.read` or `ref.listen` to
+implement a feature.  
+By relying on `ref.watch`, your application becomes both reactive
+and declarative, which makes it more maintainable.
 :::
 
-### `ref.watch`를 사용해서 프로바이더 관찰하기
+### Using ref.watch to observe a provider
 
-위젯의 `build` 메소드 내부 또는 프로바이더 내부에서 `ref.watch`를 사용함으로서
-프로바이더의 상태 값을 구독(listen)할 수 있습니다. 
+`ref.watch` is used inside the `build` method of a widget or
+inside the body of a provider to have the widget/provider listen to a provider:
 
-예를 들어, 프로바이더에서 `ref.watch`를 사용하여 복수의 프로바이더와 결합해 새로운 값을 
-생성 할 수도 있습니다. 
-
-할일 목록(a todo-list)에서 필터링하는 방법의 한가지 예시 입니다. 
-여기서 2개의 프로바이더를 사용했습니다. 
+For example, a provider could use `ref.watch` to combine multiple providers
+into a new value.
 
 An example would be filtering a todo-list.
-
 We could have two providers:
 
-- `filterTypeProvider`: 현재 설정한 필터타입(none, show only completed tasks, ...)에대한 상태를 나타내는 프로바이더입니다.
+- `filterTypeProvider`, a provider that exposes the current type of filter
+  (none, show only completed tasks, ...)
+- `todosProvider`, a provider that exposes the entire list of tasks
 
-- `todosProvider`: 할일(tasks)에 대한 목록 전체 값을 가지는 프로바이더 입니다.
+And by using `ref.watch`, we could make a third provider that combines both providers to
+create a filtered list of tasks:
 
-그리고 `ref.watch`를 사용하여 두개의 프로바이더를 결합해 필터링된 작업 목록 생성하는 세 번째 프로바이더를 만들 수 있습니다.
+<AutoSnippet language="dart" {...watch}></AutoSnippet>
 
-<CodeBlock>{trimSnippet(watch)}</CodeBlock>
+With this code, `filteredTodoListProvider` now exposes the filtered list of tasks.
 
-위의 코드에서 확인할 수 있듯이 `filteredTodoListProvider` 프로바이더는 필터링된 할일 목록을 가집니다. 
+The filtered list will also automatically update if either the filter or the list of tasks
+changed. At the same time, the filtered list will not be recomputed if
+neither the filter nor the list of tasks changed.
 
-필터링된 목록은 할일 목록이 변경되거나 필터 상태값이 변경되면 자동적으로 갱신될 것 입니다.
-그러나, 필터 상태가 동일하거나 할일 목록이 동일하다면 다시 계산되거나 갱신되지 않습니다.
+Similarly, a widget can use `ref.watch` to show
+the content from a provider and update the user interface whenever that content changes:
 
-이와 유사하게 위젯에 `ref.watch`를 사용하는 경우 프로바이더상에 의존하는 사용자 인터페이스를 
-표시할 수 있습니다. 
+<AutoSnippet language="dart" {...watchBuild}></AutoSnippet>
 
-<CodeBlock>{trimSnippet(watchBuild)}</CodeBlock>
-
-이 예시코드는 카운터 상태값을 저장하고 있는 프로바이더를 구독하고 있는 위젯을 보여줍니다. 
-그리고 만약 카운터 값이 변경되면 위젯을 다시 빌드되고 UI에 새로 갠신된 값을 표기할 것 입니다.
-
-:::caution
-`watch`메소드는 비동기처리(asynchronously)에 호출하지 마세요.
-예를 들어 [ElevatedButton]의 `onPressed` 콜백 함수 안이나 `initState` 그리고 다른 [State]의 생명주기 안에서는
-`watch`메소드를 호출하면 안됩니다. 
-
-이때는 `ref.watch`대신 `ref.read`메소드를 사용하는 것을 권장합니다. 
-:::
-
-### `ref.listen`을 사용하여 프로바이더 변화에 대응하기
-
-`ref.watch`와 유사하게 프로바이더를 관찰하기 위해 `ref.listen`을 사용할 수 있습니다. 
-`ref.watch`와 `ref.listen`의 주요한 차이점은 `ref.watch`는 프로바이더 상태값이 변경이되면 widget/provider을 다시 빌드하지만 
-`ref.listen`은 함수를 호출한다는 점입니다. 함수는 커스텀된 함수이며 사용자에 따라 다르게 정의해서 사용할 수 있습니다. 
-
-예를 들어 에러가 발생할때 스낵바(snackbar)를 표시하거나 어떠한 반응의 변화에 대응해야 할때 
-유용하게 사용할 수 있습니다.
-
-`ref.listen` 메소드는 2개의 위치인자(positional arguments)가 필요합니다. 
-첫번째는 프로바이더이고 두번쨰는 콜백함수 입니다. 콜백함수는 상태변화에 대응하여 수행할 함수 입니다. 
-콜백함수로 2개의 값이 전달됩니다. 하나는 이전 상태 값이고 나머지 하는 갱신된 상태 값입니다. 
-
-`ref.listen` 메소드는 프로바이더 내부에서도 사용할 수 있습니다. 
-아래의 코드를 확인해 볼 수 있습니다.
-
-<CodeBlock>{trimSnippet(listen)}</CodeBlock>
-
-또는 `build` 메소드 안에서 사용할 수 있습니다. 
-
-<CodeBlock>{trimSnippet(listenBuild)}</CodeBlock>
+This snippet shows a widget that listens to a provider which stores a `count`.
+And if that `count` changes, the widget will rebuild and the UI will update
+to show the new value.
 
 :::caution
-[ElevatedButton]의 `onPressed` 콜백함수 내부, `initState` 내부 그리고 다른 상태주기의 [State]상에서와 같이
-`listen`메소드 또한 비동기(asynchronously)로 호출 가능한 곳에서는 사용을 피해야합니다. 
+The `watch` method should not be called asynchronously,
+like inside an `onPressed` of an [ElevatedButton]. Nor should it be used
+inside `initState` and other [State] life-cycles.
+
+In those cases, consider using `ref.read` instead.
 :::
 
-### `ref.read`을 사용하여 프로바이더의 상태를 한번 취득하기
+### Using ref.listen to react to a provider change
 
-`ref.read` 메소드는 어떠한 부가적인 효과 없이 프로바이더의 상태를 얻기위한 방법을 제공합니다.
+Similarly to `ref.watch`, it is possible to use `ref.listen` to observe a provider.
 
-`ref.read`는 일반적으로 사용자 상호작용으로 발생가능한 트리거 함수내부에서 주로 사용합니다. 
-예를들어 버튼을 눌렀을떄 카운터의 값이 증가시키고 싶을때 `ref.read`메소드를 사용할 수 있습니다. 
+The main difference between them is that, rather than rebuilding the widget/provider
+if the listened to provider changes, using `ref.listen` will instead call a custom function.
 
-<CodeBlock>{trimSnippet(read)}</CodeBlock>
+That can be useful for performing actions when a certain change happens, such
+as showing a snackbar when an error happens.
+
+The `ref.listen` method needs 2 positional arguments, the first one is the Provider and the second one is the callback function that we want to execute when the state changes.
+The callback function when called will be passed 2 values, the value of the previous State and the value of the new State.
+
+The `ref.listen` method can be used inside the body of a provider:
+
+<AutoSnippet language="dart" {...listen}></AutoSnippet>
+
+or inside the `build` method of a widget:
+
+<AutoSnippet language="dart" {...listenBuild}></AutoSnippet>
+
+:::caution
+The `listen` method should not be called asynchronously,
+like inside an `onPressed` of an [ElevatedButton]. Nor should it be used
+inside `initState` and other [State] life-cycles.
+:::
+
+### Using ref.read to obtain the state of a provider
+
+The `ref.read` method is a way to obtain the state of a provider without listening to it.
+
+It is commonly used inside functions triggered by user interactions.
+For example, we can use `ref.read` to increment a counter when a user clicks a button:
+
+<AutoSnippet language="dart" {...read}></AutoSnippet>
 
 :::note
-가능한 `ref.read`사용을 피해주세요.
+Using `ref.read` should be avoided as much as possible because it is not reactive.
 
-`ref.read`메소드는 `watch` 또는 `listen`이 어려운곳에서 사용할 수 있는 대응책으로 사용하되,
-가능한 `watch`/`listen`를 사용해주세요. 여기서 더 추천하는 메소드는 `watch` 메소드입니다.
+It exists for cases where using `watch` or `listen` would cause issues.
+If you can, it is almost always better to use `watch`/`listen`, especially `watch`.
 :::
 
-#### [**DONT'T**] `ref.read`를 `build` 메소드 안에서 **사용하지 마세요.**
+#### **DON'T** use `ref.read` inside the build method
 
-위젯의 성능 최적화를 위해 아래의 예시처럼 `ref.read`를 사용하고 있을 수 있습니다. 
+You might be tempted to use `ref.read` to optimize the performance of a widget
+by doing:
 
-<CodeBlock>{trimSnippet(readBuild)}</CodeBlock>
+<AutoSnippet language="dart" {...readBuild}></AutoSnippet>
 
-그러나, 위의 예시는 나쁜 예시를 나타내고 있습니다. 그리고 이렇게 사용할 경우 
-다루기 어려운 버그들을 유발수 있습니다. 
+But this is a very bad practice and can cause bugs that are difficult to track.
 
-`ref.read`를 사용하기위해 이 방법은 일반적으로 다음과 같이 생각해서 발생할 수 있습니다. 
-"프로바이더의 상태값이 변경되지 않으니까 'ref.read'를 사용하는것이 안전하겠다." 
-그러나, 오늘은 비록 상태 값이 갱신되지 않더라도 내일 상태 값이 같을 것이라고 보장할 수 없기 때문입니다. 
+Using `ref.read` this way is commonly associated with the thought "The value
+exposed by a provider never changes so using 'ref.read' is safe". The problem
+with this assumption is that, while today that provider may indeed never update
+its value, there is no guarantee that tomorrow will be the same.
 
-소프트웨어는 수 없는 변화가 일어나는 경향이 있습니다. 
-그리고 미래에는 현재의 절대 바뀌지 않을 값이 변경될 가능성이 있습니다. 
-그러나, 만약 값의 변화가 시작될때, `ref.read`를 사용하게 되면 모든 `ref.read`메소드를
-전반적으로 `ref.watch`로 변경해야합니다. (이 작업에서 수많은 에러가 발생할 수 있고 특정 케이스에
-대한 변경 처리를 까먹을 수 도 있습니다.)
+Software tends to change a lot, and it is likely that in the future, a value
+that previously never changed will need to change.  
+If you use `ref.read`, when that value needs to change, you have
+to go through your entire codebase to change `ref.read` into `ref.watch` –
+which is error prone and you are likely to forget some cases.
 
-반면 만약 `ref.watch` 를 사용하게되면 어떠한 문제도 걱정도 할 필요없을 것입니다. 
+If you use `ref.watch` to begin with, you will have fewer problems when refactoring.
 
-**_그래도 난 위젯이 다시 빌드되는걸 줄이고 싶고 처음부터 `ref.read`를 사용하고 싶어!_**
+**_But I wanted to use `ref.read` to reduce the number of times my widget rebuilds_**
 
 While the goal is commendable, it is important to note that you can achieve the
 exact same effect (reducing the number of builds) using `ref.watch` instead.
@@ -247,53 +269,73 @@ exact same effect (reducing the number of builds) using `ref.watch` instead.
 Providers offer various ways to obtain a value while reducing the number of
 rebuilds, which you could use instead.
 
-예를 들어
+For example instead of
 
-<CodeBlock>{trimSnippet(readNotifierBuild)}</CodeBlock>
+<AutoSnippet language="dart" {...readNotifierBuild}></AutoSnippet>
 
-위의 코드 대신에 아래의 예시코드처럼 사용하는게 좋습니다.
+we could do:
 
-<CodeBlock>{trimSnippet(watchNotifierBuild)}</CodeBlock>
+<AutoSnippet language="dart" {...watchNotifierBuild}></AutoSnippet>
 
-두 코드의 효과는 동일합니다. 카운트 숫자 값이 변경되어도 버튼 위젯은 다시 빌드되지 않을 것입니다.
+Both snippets achieve the same effect: our button will not rebuild when the
+counter increments.
 
-반면, 후자의 접근 방법은 카운터 값이 초기화되어도 대응이 가능합니다.
-예를 들어, 애플리케이션의 다른 파트에서 아래의 메소드가 호출되면   
+On the other hand, the second approach supports cases where the counter is reset.
+For example, another part of the application could call:
 
 ```dart
 ref.refresh(counterProvider);
 ```
 
-`ref.refresh`가 호출됨으로 `StateController` 객체를 재생성할 것입니다. 
+<When codegen={false}>
+  
+which would recreate the `StateController` object.
 
-만약, 여기서 `ref.read`를 사용한다면 버튼은 여전이 이전 상태의 `StateController`인스턴스를 사용할 것입니다(disposed되었거나 더이상 사용하지 않는).
-`ref.watch`를 사용하면 새로운 `StateController`가 가능한 상태로 버튼이 재빌드 됩니다.
+If we used `ref.read` here, our button would still use the previous
+`StateController` instance, which was disposed and should no-longer be used.
+Whereas using `ref.watch` correctly rebuilds the button to use the new
+`StateController`.
 
-## 무엇을 읽을지 결정하기
+</When>
 
-사용하는 프로바이더에 따라서, 취득 가능한 값의 종류가 다양해 질 수 있습니다.
-예를 들어 [StreamProvider]를 사용한다고 생각해 봅시다.
+<When codegen>
+
+which would recreate the `Counter` object.
+
+If we used `ref.read` here, our button would still use the previous `Counter`
+instance, which was disposed and should no-longer be used. Whereas using
+`ref.watch` correctly rebuilds the button to use the new `Counter`.
+
+</When>
+
+## Deciding what to read
+
+Depending on the provider you want to listen to, you may have multiple possible
+values that you can listen to.
+
+As an example, consider the following [StreamProvider]:
 
 ```dart
 final userProvider = StreamProvider<User>(...);
 ```
-`userProvider`를 읽으려고 할때 아래와 같이 사용할 수 있습니다.
 
-- `userProvider`자체를 구독하는 것으로 동기된(synchronously) 현재 상태 값을 읽을 수 있습니다.
+When reading this `userProvider`, you can:
+
+- synchronously read the current state by listening to `userProvider` itself:
 
   ```dart
   Widget build(BuildContext context, WidgetRef ref) {
     AsyncValue<User> user = ref.watch(userProvider);
 
-    return user.when(
-      loading: () => const CircularProgressIndicator(),
-      error: (error, stack) => const Text('Oops'),
-      data: (user) => Text(user.name),
-    );
+    return switch (user) {
+      AsyncData(:final value) => Text(value.name),
+      AsyncError(:final error) => const Text('Oops $error'),
+      _ => const CircularProgressIndicator(),
+    };
   }
   ```
 
-- `userProvider.stream`을 사용하여 연결된 [Stream]을 얻을 수 있습니다. 
+- obtain the associated [Stream], by listening to `userProvider.stream`:
 
   ```dart
   Widget build(BuildContext context, WidgetRef ref) {
@@ -301,7 +343,7 @@ final userProvider = StreamProvider<User>(...);
   }
   ```
 
-- `userProvider.future`를 사용해 가장 최근 상태값을 가진 [Future]를 얻을 수 있습니다.
+- obtain a [Future] that resolves with the latest value emitted, by listening to `userProvider.future`:
 
   ```dart
   Widget build(BuildContext context, WidgetRef ref) {
@@ -309,21 +351,21 @@ final userProvider = StreamProvider<User>(...);
   }
   ```
 
-다른 프로바이더들은 또 다른 대안 값들(alternative values)을 제공할 수 있습니다.
-더 자세한 정보를 원한다면 [API reference](https://pub.dev/documentation/riverpod/latest/riverpod/riverpod-library.html)
-에 설명되어 있는 각각의 프로바이더에대한 상세한 정보를 참고하세요.
+Other providers may offer different alternative values.  
+For more information, refer to the documentation of each provider by
+consulting the [API reference](https://pub.dev/documentation/riverpod/latest/riverpod/riverpod-library.html).
 
+## Using "select" to filter rebuilds
 
-## "select"를 사용하여 재빌드 필터링하기
+One final feature to mention related to reading providers is the ability to
+reduce the number of times a widget/provider rebuilds from `ref.watch`, or how often `ref.listen`
+executes a function.
 
-마지막 특징으로 a widget/provider의 재빌드를 수를 감소하거나 
-제한하는 방법을 안내합니다. (얼마나 자주 `ref.listen` 실행하는지를 포함하여)
+This is important to keep in mind as, by default, listening to a provider
+listens to the entire object state. But sometimes, a widget/provider may only
+care about changes to some properties instead of the whole object.
 
-
-프로바이더를 감시하는 것은, 그 프로바이더가 공개하는 객체의 모든 속성을 감시하는 것입니다.
-그러나 특정 경우에서 구독 범위를 좁히고 특정 속성만 모니터링 대상으로 만들 수 있습니다.
-
-예를 들어, 프로바이더는 `User` 상태값을 가진다고 가정해 봅시다.
+For example, a provider may expose a `User`:
 
 ```dart
 abstract class User {
@@ -332,7 +374,7 @@ abstract class User {
 }
 ```
 
-그런데 위젯에서는 단순히 `User`의 `name`값만 사용하고 있습니다. 
+But a widget may only use the user name:
 
 ```dart
 Widget build(BuildContext context, WidgetRef ref) {
@@ -341,13 +383,13 @@ Widget build(BuildContext context, WidgetRef ref) {
 }
 ```
 
-만약 `ref.watch`를 사용하면 `User`의 `age` 속성이 변경되면 위젯이 재빌드 될것입니다.
+If we naively used `ref.watch`, this would rebuild the widget when the user's
+`age` changes.
 
-여기서 해결방법은 `select`를 사용하는 것입니다. 
-`select`는 [Riverpod]에서 `User`의 특정 속성만 구독/관찰하고 싶을때 사용합니다. 
+The solution is to use `select` to explicitly tell Riverpod that we only
+want to listen to the name property of the `User`.
 
-
-코드를 다음과 같이 개선해 볼 수 있습니다. 
+The updated code would be:
 
 ```dart
 Widget build(BuildContext context, WidgetRef ref) {
@@ -356,15 +398,17 @@ Widget build(BuildContext context, WidgetRef ref) {
 }
 ```
 
-`select`를 통해 관찰하고 싶은 상태값을 선택하여 
-선택한 속성 값의 변화가 발생했을때 사용할 수 있습니다.
+By using `select`, we are able to specify a function
+that returns the property that we care about.
 
-그리고  `User` 값이 변하면, [Riverpod]은 이 함수를 호출하여 이전 값과 새로운 값을 비교합니다. 
-만약 상태값이 다르다면(예를 들어 `name`이 변경되었다면), [Riverpod]은 위젯을 다시 빌드하는 작업을 처리할 겁니다.
-그러나 만약 값이 같다면 (예를 들어 `age`만 변경되었다면), [Riverpod]은 위젯을 재빌드 하지 않을 겁니다.
+Whenever the `User` changes, Riverpod will call this function and
+compare the previous and new result. If they are different (such as when the name
+changed), Riverpod will rebuild the widget.  
+However, if they are equal (such as when the age changed), Riverpod will not
+rebuild the widget.
 
 :::info
-`select`는 `ref.listen`과 함께 사용할 수 있습니다. 
+It is also possible to use `select` with `ref.listen`:
 
 ```dart
 ref.listen<String>(
@@ -374,13 +418,13 @@ ref.listen<String>(
   }
 );
 ```
-`name`이 변경되었을 때 호출되어 사용할 수 있는 구조를 가지게 됩니다.
 
+Doing so will call the listener only when the name changes.
 :::
 
 :::tip
-`select`를 사용하는 경우 반환하는 값이 반드시 객체일 필요는 없습니다. 
-`==`연자자의 오버라이드(overrides)로 객체가 동일하다고 정의된다면 반환 값으로 무엇이 오든 상관없습니다. 
+You don't have to return a property of the object. Any value that
+overrides == will work. For example you could do:
 
 ```dart
 final label = ref.watch(userProvider.select((user) => 'Mr ${user.name}'));

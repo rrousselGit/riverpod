@@ -24,7 +24,7 @@
     "description": "The label of footer link with label=GitHub linking to https://github.com/rrousselgit/riverpod"
   },
   "copyright": {
-    "message": "কপিরাইট © 2021 Remi Rousselet. Docusaurus দিয়ে তৈরি",
+    "message": "কপিরাইট © 2022 Remi Rousselet. Docusaurus দিয়ে তৈরি",
     "description": "The footer copyright"
   }
 }

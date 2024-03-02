@@ -1,0 +1,372 @@
+---
+title: About code generation
+version: 2
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import fetchUser from "!!raw-loader!./about_codegen/main.dart";
+import rawFetchUser from "!!raw-loader!./about_codegen/raw.dart";
+import { Link } from "/src/components/Link";
+import { trimSnippet, CodeSnippet } from "/src/components/CodeSnippet";
+import syncFn from "!!raw-loader!./about_codegen/provider_type/sync_fn.dart";
+import syncClass from "!!raw-loader!./about_codegen/provider_type/sync_class.dart";
+import asyncFnFuture from "!!raw-loader!./about_codegen/provider_type/async_fn_future.dart";
+import asyncClassFuture from "!!raw-loader!./about_codegen/provider_type/async_class_future.dart";
+import asyncFnStream from "!!raw-loader!./about_codegen/provider_type/async_fn_stream.dart";
+import asyncClassStream from "!!raw-loader!./about_codegen/provider_type/async_class_stream.dart";
+import familyFn from "!!raw-loader!./about_codegen/provider_type/family_fn.dart";
+import familyClass from "!!raw-loader!./about_codegen/provider_type/family_class.dart";
+import provider from "!!raw-loader!./about_codegen/provider_type/non_code_gen/provider.dart";
+import notifierProvider from "!!raw-loader!./about_codegen/provider_type/non_code_gen/notifier_provider.dart";
+import futureProvider from "!!raw-loader!./about_codegen/provider_type/non_code_gen/future_provider.dart";
+import asyncNotifierProvider from "!!raw-loader!./about_codegen/provider_type/non_code_gen/async_notifier_provider.dart";
+import streamProvider from "!!raw-loader!./about_codegen/provider_type/non_code_gen/stream_provider.dart";
+import streamNotifierProvider from "!!raw-loader!./about_codegen/provider_type/non_code_gen/stream_notifier_provider.dart";
+import autoDisposeCodeGen from "!!raw-loader!./about_codegen/provider_type/auto_dispose.dart";
+import autoDisposeNonCodeGen from "!!raw-loader!./about_codegen/provider_type/non_code_gen/auto_dispose.dart";
+import familyCodeGen from "!!raw-loader!./about_codegen/provider_type/family.dart";
+import familyNonCodeGen from "!!raw-loader!./about_codegen/provider_type/non_code_gen/family.dart";
+const TRANSPARENT_STYLE = { backgroundColor: "transparent" };
+const RED_STYLE = { color: "indianred", fontWeight: "700" };
+const BLUE_STYLE = { color: "rgb(103, 134, 196)", fontWeight: "700" };
+const FONT_16_STYLE = {
+  fontSize: "16px",
+  fontWeight: "700",
+};
+const BLUE_20_STYLE = {
+  color: "rgb(103, 134, 196)",
+  fontSize: "20px",
+  fontWeight: "700",
+};
+const PROVIDER_STYLE = {
+  textAlign: "center",
+  fontWeight: "600",
+  maxWidth: "210px",
+};
+const BEFORE_STYLE = {
+  minWidth: "120px",
+  textAlign: "center",
+  fontWeight: "600",
+  color: "crimson",
+};
+const AFTER_STYLE = {
+  minWidth: "120px",
+  textAlign: "center",
+  fontWeight: "600",
+  color: "rgb(40,180,40)",
+};
+
+Code generation is the idea of using a tool to generate code for us.
+In Dart, it comes with the downside of requiring an extra step to "compile"
+an application. Although this problem may be solved in the near future, as the
+Dart team is working on a potential solution to this problem.
+
+In the context of Riverpod, code generation is about slightly changing the syntax
+for defining a "provider". For example, instead of:
+
+<CodeBlock language="dart">{trimSnippet(rawFetchUser)}</CodeBlock>
+
+Using code generation, we would write:
+
+<CodeBlock language="dart">{trimSnippet(fetchUser)}</CodeBlock>
+
+When using Riverpod, code generation is completely optional. It is entirely possible
+to use Riverpod without.
+At the same time, Riverpod embraces code generation and recommends using it.
+
+For information on how to install and use Riverpod's code generator, refer to
+the <Link documentID="introduction/getting_started"/> page. Make sure to enable code generation
+in the documentation's sidebar.
+
+## Should I use code generation?
+
+Code generation is optional in Riverpod.
+With that in mind, you may wonder if you should use it or not.
+
+The answer is: **Most likely Yes**.  
+Using code generation is the recommended way to use Riverpod. It
+is the more future-proof approach and will allow you to use Riverpod to its full
+potential.  
+At the same time, many applications already use code generation with packages such
+as [Freezed](https://pub.dev/packages/freezed) or [json_serializable](https://pub.dev/packages/json_serializable).
+In that case, your project probably is already set up for code generation, and
+using Riverpod should be simple.
+
+Currently, code generation is optional because `build_runner` is disliked by many.
+But once [Static Metaprogramming](https://github.com/dart-lang/language/issues/1482)
+is available in Dart, `build_runner` will no longer be an issue. At that point,
+the code generation syntax will be the only syntax available in Riverpod.
+
+If using `build_runner` is a deal-breaker for you, then and only then you should
+consider not using code generation.
+But keep in mind that you will be missing out on some features, and that
+you will have to migrate to code generation in the future.  
+Although when that happens, Riverpod will provide a migration tool to make
+the transition as smoothly as possible.
+
+## What are the benefits of using code generation?
+
+You may be wondering: "If code generation is optional in Riverpod, why use it?"
+
+As always with packages: To make your life easier.
+This includes but is not limited to:
+
+- better syntax, more readable/flexible, and with a reduced learning curve.
+  - No need to worry about the type of provider. Write your logic,
+    and Riverpod will pick the most suitable provider for you.
+  - The syntax no longer looks like we're defining a "dirty global variable".
+    Instead we are defining a custom function/class.
+  - Passing parameters to providers is now unrestricted. Instead of being limited to
+    using <Link documentID="concepts/modifiers/family"/> and passing a single positional parameter,
+    you can now pass any parameter. This includes named parameters, optional ones,
+    and even default values.
+- **stateful hot-reload** of the code written in Riverpod.
+- better debugging, through the generation of extra metadata that the debugger then picks up.
+- some Riverpod features will be available only with code generation.
+
+## The Syntax
+
+### Defining a provider:
+
+When defining a provider using code generation, it is helpful to keep in mind the following points:
+
+- Providers can be defined either as an annotated <span style={BLUE_STYLE}>function</span> or
+  as an annotated <span style={BLUE_STYLE}>class</span>. They are pretty much the same,
+  but Class-based provider has the advantage of including public methods that enable
+  external objects to modify the state of the provider (side-effects). Functional providers
+  are syntax sugar for writing a Class-based provider with nothing but a `build` method,
+  and as such cannot be modified by the UI.
+- All Dart <span style={RED_STYLE}>async</span> primitives (Future, FutureOr, and Stream) are supported.
+- When a function is marked as <span style={RED_STYLE}>async</span>, the provider automatically handles
+  errors/loading states and exposes an AsyncValue.
+
+<table>
+  <colgroup></colgroup>
+  <tr>
+    <th></th>
+    <th style={{ textAlign: "center" }}>
+      <span style={BLUE_20_STYLE}>Functional</span>
+      <br />
+      (Can’t perform side-effects
+      <br />
+      using public methods)
+    </th>
+    <th style={{ textAlign: "center" }}>
+      <span style={BLUE_20_STYLE}>Class-Based</span>
+      <br />
+      (Can perform side-effects
+      <br />
+      using public methods)
+    </th>
+  </tr>
+  <tr style={TRANSPARENT_STYLE}>
+    <td>
+      <span style={FONT_16_STYLE}>
+        <span style={RED_STYLE}>Sync</span>
+      </span>
+    </td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(syncFn)}</CodeBlock>
+    </td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(syncClass)}</CodeBlock>
+    </td>
+  </tr>
+  <tr style={TRANSPARENT_STYLE}>
+    <td>
+      <span style={FONT_16_STYLE}>
+        <span style={RED_STYLE}>Async - Future</span>
+      </span>
+    </td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(asyncFnFuture)}</CodeBlock>
+    </td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(asyncClassFuture)}</CodeBlock>
+    </td>
+  </tr>
+  <tr style={TRANSPARENT_STYLE}>
+    <td>
+      <span style={FONT_16_STYLE}>
+        <span style={RED_STYLE}>Async - Stream</span>
+      </span>
+    </td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(asyncFnStream)}</CodeBlock>
+    </td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(asyncClassStream)}</CodeBlock>
+    </td>
+  </tr>
+</table>
+
+### Enabling/disable autoDispose:
+
+When using code generation, providers are autoDispose by default. That means that they will automatically
+dispose of themselves when there are no listeners attached to them (ref.watch/ref.listen).  
+This default setting better aligns with Riverpod's philosophy. Initially with the non-code generation variant,
+autoDispose was off by default to accommodate users migrating from `package:provider`.
+
+If you want to disable autoDispose, you can do so by passing `keepAlive: true` to the annotation.
+
+<CodeBlock language="dart">{trimSnippet(autoDisposeCodeGen)}</CodeBlock>
+
+### Passing parameters to a provider (family):
+
+When using code generation, we no-longer need to rely on the `family` modifier to pass parameters to a provider.
+Instead, the main function of our provider can accept any number of parameters, including named, optional, or default values.  
+Do note however that these parameters should have still have a consistent ==.
+Meaning either the values should be cached, or the parameters should override ==.
+
+<table>
+  <colgroup>
+    <col style={{ minWidth: "400px" }} />
+    <col style={{ minWidth: "400px" }} />
+  </colgroup>
+  <tr>
+    <th style={{ textAlign: "center" }}>
+      <span style={BLUE_20_STYLE}>Functional</span>
+    </th>
+    <th style={{ textAlign: "center" }}>
+      <span style={BLUE_20_STYLE}>Class-Based</span>
+    </th>
+  </tr>
+  <tr style={TRANSPARENT_STYLE}>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(familyFn)}</CodeBlock>
+    </td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(familyClass)}</CodeBlock>
+    </td>
+  </tr>
+</table>
+
+## Migrate from non-code-generation variant:
+
+When using non-code-generation variant, it is necessary to manually determine the type of your provider.
+The following are the corresponding options for transitioning into code-generation variant:
+
+<table>
+  <colgroup></colgroup>
+  <tr>
+    <td style={PROVIDER_STYLE} colspan="2">
+      Provider
+    </td>
+  </tr>
+  <tr style={TRANSPARENT_STYLE}>
+    <td style={BEFORE_STYLE}>Before</td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(provider)}</CodeBlock>
+    </td>
+  </tr>
+  <tr style={TRANSPARENT_STYLE}>
+    <td style={AFTER_STYLE}>After</td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(syncFn)}</CodeBlock>
+    </td>
+  </tr>
+  <colgroup></colgroup>
+  <tr>
+    <td style={PROVIDER_STYLE} colspan="2">
+      NotifierProvider
+    </td>
+  </tr>
+  <tr style={TRANSPARENT_STYLE}>
+    <td style={BEFORE_STYLE}>Before</td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(notifierProvider)}</CodeBlock>
+    </td>
+  </tr>
+  <tr style={TRANSPARENT_STYLE}>
+    <td style={AFTER_STYLE}>After</td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(syncClass)}</CodeBlock>
+    </td>
+  </tr>
+  <colgroup></colgroup>
+  <tr>
+    <td style={PROVIDER_STYLE} colspan="2">
+      FutureProvider
+    </td>
+  </tr>
+  <tr style={TRANSPARENT_STYLE}>
+    <td style={BEFORE_STYLE}>Before</td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(futureProvider)}</CodeBlock>
+    </td>
+  </tr>
+  <tr style={TRANSPARENT_STYLE}>
+    <td style={AFTER_STYLE}>After</td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(asyncFnFuture)}</CodeBlock>
+    </td>
+  </tr>
+  <colgroup></colgroup>
+  <tr>
+    <td style={PROVIDER_STYLE} colspan="2">
+      StreamProvider
+    </td>
+  </tr>
+  <tr style={TRANSPARENT_STYLE}>
+    <td style={BEFORE_STYLE}>Before</td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(streamProvider)}</CodeBlock>
+    </td>
+  </tr>
+  <tr style={TRANSPARENT_STYLE}>
+    <td style={AFTER_STYLE}>After</td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(asyncFnStream)}</CodeBlock>
+    </td>
+  </tr>
+  <colgroup></colgroup>
+  <tr>
+    <td style={PROVIDER_STYLE} colspan="2">
+      AsyncNotifierProvider
+    </td>
+  </tr>
+  <tr style={TRANSPARENT_STYLE}>
+    <td style={BEFORE_STYLE}>Before</td>
+    <td>
+      <CodeBlock language="dart">
+        {trimSnippet(asyncNotifierProvider)}
+      </CodeBlock>
+    </td>
+  </tr>
+  <tr style={TRANSPARENT_STYLE}>
+    <td style={AFTER_STYLE}>After</td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(asyncClassFuture)}</CodeBlock>
+    </td>
+  </tr>
+  <colgroup></colgroup>
+  <tr>
+    <td style={PROVIDER_STYLE} colspan="2">
+      StreamNotifierProvider
+    </td>
+  </tr>
+  <tr style={TRANSPARENT_STYLE}>
+    <td style={BEFORE_STYLE}>Before</td>
+    <td>
+      <CodeBlock language="dart">
+        {trimSnippet(streamNotifierProvider)}
+      </CodeBlock>
+    </td>
+  </tr>
+  <tr style={TRANSPARENT_STYLE}>
+    <td style={AFTER_STYLE}>After</td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(asyncClassStream)}</CodeBlock>
+    </td>
+  </tr>
+</table>
+
+[hookwidget]: https://pub.dev/documentation/flutter_hooks/latest/flutter_hooks/HookWidget-class.html
+[statefulwidget]: https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html
+[riverpod]: https://github.com/rrousselgit/riverpod
+[hooks_riverpod]: https://pub.dev/packages/hooks_riverpod
+[flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
+[flutter_hooks]: https://github.com/rrousselGit/flutter_hooks
+[build]: https://pub.dev/documentation/riverpod/latest/riverpod/Notifier/build.html

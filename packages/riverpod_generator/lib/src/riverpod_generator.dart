@@ -33,6 +33,7 @@ String _hashFnIdentifier(String hashFnName) {
       'null : $hashFnName';
 }
 
+const _defaultProviderNamePrefix = '';
 const _defaultProviderNameSuffix = 'Provider';
 
 /// May be thrown by generators during [Generator.generate].
@@ -80,7 +81,7 @@ class RiverpodGenerator extends ParserGenerator<Riverpod> {
     if (buffer.isNotEmpty) {
       buffer.write('''
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
 ''');
     }
 
@@ -94,6 +95,8 @@ class _RiverpodGeneratorVisitor extends RecursiveRiverpodAstVisitor {
   final StringBuffer buffer;
   final BuildYamlOptions options;
 
+  String get prefix => options.providerNamePrefix ?? _defaultProviderNamePrefix;
+  String get familyPrefix => options.providerFamilyNamePrefix ?? prefix;
   String get suffix => options.providerNameSuffix ?? _defaultProviderNameSuffix;
   String get familySuffix => options.providerFamilyNameSuffix ?? suffix;
 
@@ -140,7 +143,9 @@ class _SystemHash {
     buffer.write(_hashFn(provider, hashFunctionName));
 
     if (parameters.isEmpty) {
-      final providerName = '${provider.providerElement.name.lowerFirst}$suffix';
+      final rawProviderName = provider.providerElement.name;
+      final providerName =
+          '$prefix${prefix.isEmpty ? rawProviderName.lowerFirst : rawProviderName.titled}$suffix';
       final notifierTypedefName = providerName.startsWith('_')
           ? '_\$${provider.providerElement.name.substring(1)}'
           : '_\$${provider.providerElement.name}';
@@ -152,8 +157,9 @@ class _SystemHash {
         hashFn: hashFn,
       ).run(buffer);
     } else {
+      final rawProviderName = provider.providerElement.name;
       final providerName =
-          '${provider.providerElement.name.lowerFirst}$familySuffix';
+          '$prefix${prefix.isEmpty ? rawProviderName.lowerFirst : rawProviderName.titled}$suffix';
       final notifierTypedefName = providerName.startsWith('_')
           ? '_\$${provider.providerElement.name.substring(1)}'
           : '_\$${provider.providerElement.name}';

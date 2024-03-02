@@ -12,7 +12,7 @@ part of 'user.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 User _$UserFromJson(Map<String, dynamic> json) {
   return _User.fromJson(json);
@@ -110,9 +110,10 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
 }
 
 /// @nodoc
-abstract class _$$_UserCopyWith<$Res> implements $UserCopyWith<$Res> {
-  factory _$$_UserCopyWith(_$_User value, $Res Function(_$_User) then) =
-      __$$_UserCopyWithImpl<$Res>;
+abstract class _$$UserImplCopyWith<$Res> implements $UserCopyWith<$Res> {
+  factory _$$UserImplCopyWith(
+          _$UserImpl value, $Res Function(_$UserImpl) then) =
+      __$$UserImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -128,9 +129,10 @@ abstract class _$$_UserCopyWith<$Res> implements $UserCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$_UserCopyWithImpl<$Res> extends _$UserCopyWithImpl<$Res, _$_User>
-    implements _$$_UserCopyWith<$Res> {
-  __$$_UserCopyWithImpl(_$_User _value, $Res Function(_$_User) _then)
+class __$$UserImplCopyWithImpl<$Res>
+    extends _$UserCopyWithImpl<$Res, _$UserImpl>
+    implements _$$UserImplCopyWith<$Res> {
+  __$$UserImplCopyWithImpl(_$UserImpl _value, $Res Function(_$UserImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -143,7 +145,7 @@ class __$$_UserCopyWithImpl<$Res> extends _$UserCopyWithImpl<$Res, _$_User>
     Object? profileImage = null,
     Object? link = null,
   }) {
-    return _then(_$_User(
+    return _then(_$UserImpl(
       reputation: null == reputation
           ? _value.reputation
           : reputation // ignore: cast_nullable_to_non_nullable
@@ -175,8 +177,8 @@ class __$$_UserCopyWithImpl<$Res> extends _$UserCopyWithImpl<$Res, _$_User>
 /// @nodoc
 
 @JsonSerializable(fieldRename: FieldRename.snake)
-class _$_User implements _User {
-  _$_User(
+class _$UserImpl implements _User {
+  _$UserImpl(
       {required this.reputation,
       required this.userId,
       this.badgeCounts,
@@ -184,7 +186,8 @@ class _$_User implements _User {
       required this.profileImage,
       required this.link});
 
-  factory _$_User.fromJson(Map<String, dynamic> json) => _$$_UserFromJson(json);
+  factory _$UserImpl.fromJson(Map<String, dynamic> json) =>
+      _$$UserImplFromJson(json);
 
   @override
   final int reputation;
@@ -205,10 +208,10 @@ class _$_User implements _User {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_User &&
+            other is _$UserImpl &&
             (identical(other.reputation, reputation) ||
                 other.reputation == reputation) &&
             (identical(other.userId, userId) || other.userId == userId) &&
@@ -229,12 +232,12 @@ class _$_User implements _User {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_UserCopyWith<_$_User> get copyWith =>
-      __$$_UserCopyWithImpl<_$_User>(this, _$identity);
+  _$$UserImplCopyWith<_$UserImpl> get copyWith =>
+      __$$UserImplCopyWithImpl<_$UserImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_UserToJson(
+    return _$$UserImplToJson(
       this,
     );
   }
@@ -247,9 +250,9 @@ abstract class _User implements User {
       final BadgeCount? badgeCounts,
       required final String displayName,
       required final String profileImage,
-      required final String link}) = _$_User;
+      required final String link}) = _$UserImpl;
 
-  factory _User.fromJson(Map<String, dynamic> json) = _$_User.fromJson;
+  factory _User.fromJson(Map<String, dynamic> json) = _$UserImpl.fromJson;
 
   @override
   int get reputation;
@@ -265,7 +268,8 @@ abstract class _User implements User {
   String get link;
   @override
   @JsonKey(ignore: true)
-  _$$_UserCopyWith<_$_User> get copyWith => throw _privateConstructorUsedError;
+  _$$UserImplCopyWith<_$UserImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 BadgeCount _$BadgeCountFromJson(Map<String, dynamic> json) {
@@ -328,22 +332,22 @@ class _$BadgeCountCopyWithImpl<$Res, $Val extends BadgeCount>
 }
 
 /// @nodoc
-abstract class _$$_BadgeCountCopyWith<$Res>
+abstract class _$$BadgeCountImplCopyWith<$Res>
     implements $BadgeCountCopyWith<$Res> {
-  factory _$$_BadgeCountCopyWith(
-          _$_BadgeCount value, $Res Function(_$_BadgeCount) then) =
-      __$$_BadgeCountCopyWithImpl<$Res>;
+  factory _$$BadgeCountImplCopyWith(
+          _$BadgeCountImpl value, $Res Function(_$BadgeCountImpl) then) =
+      __$$BadgeCountImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({int bronze, int silver, int gold});
 }
 
 /// @nodoc
-class __$$_BadgeCountCopyWithImpl<$Res>
-    extends _$BadgeCountCopyWithImpl<$Res, _$_BadgeCount>
-    implements _$$_BadgeCountCopyWith<$Res> {
-  __$$_BadgeCountCopyWithImpl(
-      _$_BadgeCount _value, $Res Function(_$_BadgeCount) _then)
+class __$$BadgeCountImplCopyWithImpl<$Res>
+    extends _$BadgeCountCopyWithImpl<$Res, _$BadgeCountImpl>
+    implements _$$BadgeCountImplCopyWith<$Res> {
+  __$$BadgeCountImplCopyWithImpl(
+      _$BadgeCountImpl _value, $Res Function(_$BadgeCountImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -353,7 +357,7 @@ class __$$_BadgeCountCopyWithImpl<$Res>
     Object? silver = null,
     Object? gold = null,
   }) {
-    return _then(_$_BadgeCount(
+    return _then(_$BadgeCountImpl(
       bronze: null == bronze
           ? _value.bronze
           : bronze // ignore: cast_nullable_to_non_nullable
@@ -372,12 +376,12 @@ class __$$_BadgeCountCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_BadgeCount implements _BadgeCount {
-  _$_BadgeCount(
+class _$BadgeCountImpl implements _BadgeCount {
+  _$BadgeCountImpl(
       {required this.bronze, required this.silver, required this.gold});
 
-  factory _$_BadgeCount.fromJson(Map<String, dynamic> json) =>
-      _$$_BadgeCountFromJson(json);
+  factory _$BadgeCountImpl.fromJson(Map<String, dynamic> json) =>
+      _$$BadgeCountImplFromJson(json);
 
   @override
   final int bronze;
@@ -392,10 +396,10 @@ class _$_BadgeCount implements _BadgeCount {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_BadgeCount &&
+            other is _$BadgeCountImpl &&
             (identical(other.bronze, bronze) || other.bronze == bronze) &&
             (identical(other.silver, silver) || other.silver == silver) &&
             (identical(other.gold, gold) || other.gold == gold));
@@ -408,12 +412,12 @@ class _$_BadgeCount implements _BadgeCount {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_BadgeCountCopyWith<_$_BadgeCount> get copyWith =>
-      __$$_BadgeCountCopyWithImpl<_$_BadgeCount>(this, _$identity);
+  _$$BadgeCountImplCopyWith<_$BadgeCountImpl> get copyWith =>
+      __$$BadgeCountImplCopyWithImpl<_$BadgeCountImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_BadgeCountToJson(
+    return _$$BadgeCountImplToJson(
       this,
     );
   }
@@ -423,10 +427,10 @@ abstract class _BadgeCount implements BadgeCount {
   factory _BadgeCount(
       {required final int bronze,
       required final int silver,
-      required final int gold}) = _$_BadgeCount;
+      required final int gold}) = _$BadgeCountImpl;
 
   factory _BadgeCount.fromJson(Map<String, dynamic> json) =
-      _$_BadgeCount.fromJson;
+      _$BadgeCountImpl.fromJson;
 
   @override
   int get bronze;
@@ -436,6 +440,6 @@ abstract class _BadgeCount implements BadgeCount {
   int get gold;
   @override
   @JsonKey(ignore: true)
-  _$$_BadgeCountCopyWith<_$_BadgeCount> get copyWith =>
+  _$$BadgeCountImplCopyWith<_$BadgeCountImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

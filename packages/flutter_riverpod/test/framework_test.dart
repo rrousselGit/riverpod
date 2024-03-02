@@ -10,6 +10,85 @@ import 'package:mockito/mockito.dart';
 import 'utils.dart';
 
 void main() {
+  testWidgets('Supports recreating ProviderScope', (tester) async {
+    final provider = Provider<String>((ref) => 'foo');
+
+    await tester.pumpWidget(
+      ProviderScope(
+        child: Consumer(
+          builder: (context, ref, _) {
+            ref.watch(provider);
+            return Consumer(
+              builder: (context, ref, _) {
+                ref.watch(provider);
+                return Container();
+              },
+            );
+          },
+        ),
+      ),
+    );
+
+    await tester.pumpWidget(
+      ProviderScope(
+        key: UniqueKey(),
+        child: Consumer(
+          builder: (context, ref, _) {
+            ref.watch(provider);
+            return Consumer(
+              builder: (context, ref, _) {
+                ref.watch(provider);
+                return Container();
+              },
+            );
+          },
+        ),
+      ),
+    );
+  });
+
+  testWidgets('Supports multiple ProviderScope roots in the same tree',
+      (tester) async {
+    final a = StateProvider((_) => 0);
+    final b = Provider((ref) => ref.watch(a));
+
+    await tester.pumpWidget(
+      // No root scope. We want to test cases where there are multiple roots
+      Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          for (var i = 0; i < 2; i++)
+            SizedBox(
+              width: 100,
+              height: 100,
+              child: ProviderScope(
+                child: Consumer(
+                  builder: (context, ref, _) {
+                    ref.watch(a);
+                    ref.watch(b);
+                    return Container();
+                  },
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+
+    final containers = tester.allElements
+        .where((e) => e.widget is Consumer)
+        .map(ProviderScope.containerOf)
+        .toList();
+
+    expect(containers, hasLength(2));
+
+    for (final container in containers) {
+      container.read(a.notifier).state++;
+    }
+
+    await tester.pump();
+  });
+
   testWidgets('ref.invalidate can invalidate a family', (tester) async {
     final listener = Listener<String>();
     final listener2 = Listener<String>();
@@ -75,7 +154,7 @@ void main() {
     verifyOnly(listener, listener(0, 1));
   });
 
-  testWidgets('ProviderScope can receive a customn parent', (tester) async {
+  testWidgets('ProviderScope can receive a custom parent', (tester) async {
     final provider = Provider((ref) => 0);
 
     final container = createContainer(
@@ -247,8 +326,9 @@ void main() {
   testWidgets('UncontrolledProviderScope gracefully handles vsync',
       (tester) async {
     final container = createContainer();
+    final container2 = createContainer(parent: container);
 
-    expect(vsyncOverride, null);
+    expect(container.scheduler.flutterVsyncs, isEmpty);
 
     await tester.pumpWidget(
       UncontrolledProviderScope(
@@ -257,11 +337,76 @@ void main() {
       ),
     );
 
-    expect(vsyncOverride, isNotNull);
+    expect(container.scheduler.flutterVsyncs, hasLength(1));
+    expect(container2.scheduler.flutterVsyncs, isEmpty);
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: UncontrolledProviderScope(
+          container: container2,
+          child: Container(),
+        ),
+      ),
+    );
+
+    expect(container.scheduler.flutterVsyncs, hasLength(1));
+    expect(container2.scheduler.flutterVsyncs, hasLength(1));
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: Container(),
+      ),
+    );
+
+    expect(container.scheduler.flutterVsyncs, hasLength(1));
+    expect(container2.scheduler.flutterVsyncs, isEmpty);
 
     await tester.pumpWidget(Container());
 
-    expect(vsyncOverride, null);
+    expect(container.scheduler.flutterVsyncs, isEmpty);
+    expect(container2.scheduler.flutterVsyncs, isEmpty);
+  });
+
+  testWidgets('When there are multiple vsyncs, rebuild providers only once',
+      (tester) async {
+    var buildCount = 0;
+    final dep = StateProvider((ref) => 0);
+    final provider = Provider((ref) {
+      buildCount++;
+      return ref.watch(dep);
+    });
+
+    await tester.pumpWidget(
+      Directionality(
+        textDirection: TextDirection.ltr,
+        child: ProviderScope(
+          child: ProviderScope(
+            child: Consumer(
+              builder: (context, ref, _) {
+                return Text('Hello ${ref.watch(provider)}');
+              },
+            ),
+          ),
+        ),
+      ),
+    );
+
+    expect(buildCount, 1);
+    expect(find.text('Hello 0'), findsOneWidget);
+    expect(find.text('Hello 1'), findsNothing);
+
+    final consumerElement = tester.element(find.byType(Consumer));
+    final container = ProviderScope.containerOf(consumerElement);
+
+    container.read(dep.notifier).state++;
+
+    await tester.pump();
+
+    expect(buildCount, 2);
+    expect(find.text('Hello 1'), findsOneWidget);
+    expect(find.text('Hello 0'), findsNothing);
   });
 
   testWidgets(
@@ -440,7 +585,7 @@ void main() {
     expect(tester.takeException(), isAssertionError);
   });
 
-  testWidgets('overrive origin mismatch throws', (tester) async {
+  testWidgets('override origin mismatch throws', (tester) async {
     final provider = Provider((_) => 0);
     final provider2 = Provider((_) => 0);
 
@@ -528,7 +673,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          provider.overrideWithValue('rootoverride'),
+          provider.overrideWithValue('rootOverride'),
         ],
         child: ProviderScope(
           child: Consumer(
@@ -546,7 +691,7 @@ void main() {
     );
 
     expect(find.text('root root2'), findsNothing);
-    expect(find.text('rootoverride root2'), findsOneWidget);
+    expect(find.text('rootOverride root2'), findsOneWidget);
   });
 
   testWidgets('ProviderScope throws if ancestorOwner changed', (tester) async {

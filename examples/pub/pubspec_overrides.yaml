@@ -1,4 +1,4 @@
-# melos_managed_dependency_overrides: flutter_riverpod,hooks_riverpod,riverpod,riverpod_annotation,riverpod_generator
+# melos_managed_dependency_overrides: flutter_riverpod,hooks_riverpod,riverpod,riverpod_lint,riverpod_analyzer_utils
 dependency_overrides:
   flutter_riverpod:
     path: ../../packages/flutter_riverpod
@@ -8,9 +8,9 @@ dependency_overrides:
     path: ../../packages/riverpod
   riverpod_analyzer_utils:
     path: ../../packages/riverpod_analyzer_utils
+  riverpod_lint:
+    path: ../../packages/riverpod_lint
   riverpod_annotation:
     path: ../../packages/riverpod_annotation
   riverpod_generator:
     path: ../../packages/riverpod_generator
-  # necessary for mockito
-  analyzer: ^6.0.0

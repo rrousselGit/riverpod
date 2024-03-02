@@ -1,8 +1,8 @@
 name: riverpod
 description: >
-  A simple way to access state from anywhere in your application while robust
-  and testable.
-version: 2.3.10
+  A reactive caching and data-binding framework.
+  Riverpod makes working with asynchronous code a breeze.
+version: 2.5.0
 homepage: https://riverpod.dev
 repository: https://github.com/rrousselGit/riverpod
 issue_tracker: https://github.com/rrousselGit/riverpod/issues

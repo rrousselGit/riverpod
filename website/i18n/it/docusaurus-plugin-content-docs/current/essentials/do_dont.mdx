@@ -1,0 +1,151 @@
+---
+title: FARE/NON FARE
+---
+
+import { Link } from "../../../../../src/components/Link";
+
+Per assicurare una buona manutenibilità del tuo codice, in questa pagina troverai una lista 
+di pratiche consigliate che dovresti seguire quando utilizzi Riverpod.
+
+Questa lista non è esaustiva ed è soggetta a cambiare.
+Se hai proposte, sentiti libero di [aprire un issue](https://github.com/rrousselGit/riverpod/issues/new?assignees=rrousselGit&labels=documentation%2C+needs+triage&projects=&template=example_request.md&title=).
+
+Gli argomenti in questa lista non seguono un ordine particolare.
+
+Una buona porzione di queste raccomandazioni possono essere rinforzate con [riverpod_lint](https://pub.dev/packages/riverpod_lint).
+Consulta <Link documentID="introduction/getting_started" hash="abilitare-riverpod_lintcustom_lint" /> 
+per i passaggi di installazione.
+
+## EVITA di inizializzare i provider in un widget
+
+I provider dovrebbero inizializzarsi da soli. 
+Non dovrebbero essere inizializzati da un elemento esterno come un widget.
+
+In caso contrario, potrebbero verificarsi race conditions e comportamenti imprevisti.
+
+**NON FARE**
+
+```dart
+class WidgetState extends State<MyWidget> {
+  @override
+  void initState() {
+    super.initState();
+    // Sbagliato: il provider dovrebbe inizializzarsi da solo
+    ref.read(provider).init();
+  }
+}
+```
+
+**CONSIDERA**
+
+Non c'è nessuna soluzione a questo problema che va bene per tutte le casistiche.
+Se la tua logica di inizializzazione dipende da fattori esterni dal provider, spesso 
+il posto migliore per mettere tale logica è dentro il metodo `onPressed` di un bottone:
+
+```dart
+ElevatedButton(
+  onPressed: () {
+    ref.read(provider).init();
+    Navigator.of(context).push(...);
+  },
+  child: Text('Navigate'),
+)
+```
+
+## EVITA di usare i provider per lo stato locale di un widget
+
+I provider sono progettati per condividere stato di business.
+Non sono pensati per essere usati per un stato locale di un widget, come:
+
+- memorizzare lo stato di un form
+- sapere l'elemento attualmente selezionato
+- animazioni
+- in generale ogni cosa che Flutter gestisce con un "controller" (esempio:  `TextEditingController`)
+
+Se stai cercando un modo per gestire lo stato locale di un widget, considera invece 
+di utilizzare [flutter_hooks](https://pub.dev/packages/flutter_hooks).
+
+Una ragione per cui questo è sconsigliato è che tale stato è spesso limitato ad una route.
+Non seguendo questa regola, il pulsante Back dell'app potrebbe rompersi, 
+poiché una nuova pagina sta sovrascrivendo lo stato di una pagina precedente.
+
+## NON performare side effects durante l'inizializzazione di un provider
+
+I provider dovrebbero essere usati generalmente per rappresentare un'operazione di "read" (lettura).
+Non dovresti utilizzarli per operazioni di "write" (scrittura), come inviare un form.
+
+Utilizzare i provider per tali operazioni potrebbe portare a comportamenti imprevisti, 
+come il mancato side-effect se ne veniva eseguito uno precedente.
+
+Se stai cercando un modo per gestire gli stati di caricamento/errore di un side-effect, 
+consulta <Link documentID="essentials/side_effects"/>.
+
+**NON FARE**:
+
+```dart
+final submitProvider = FutureProvider((ref) async {
+  final formState = ref.watch(formState);
+
+  // Sbagliato, i provider non dovrebbero essere usati per operazioni di scrittura
+  return http.post('https://my-api.com', body: formState.toJson());
+});
+```
+
+## PREFERIRE ref.watch/read/listen (e API simili) con provider noti staticamente
+
+Riverpod incoraggia fortemente l'abilitazione le regole di lint (via `riverpod_lint`).
+Ma affinchè i lint siano efficaci, il tuo codice dovrebbe essere scritto in una maniera 
+che è analizzabile in modo statico.
+
+Non farlo potrebbe rendere più difficile individuare bug oppure causare falsi 
+positivi con i lint.
+
+**FARE**:
+
+```dart
+final provider = Provider((ref) => 42);
+
+...
+
+// OK perchè il provider è conosciuto in modo statico
+ref.watch(provider);
+```
+
+**NON FARE**:
+
+```dart
+class Example extends ConsumerWidget {
+  Example({required this.provider});
+  final Provider<int> provider;
+
+  @override
+  Widget build(context, ref) {
+    // Sbagliato: perchè l'analisi statica non può sapere di che provider si tratta
+    ref.watch(provider);
+  }
+}
+```
+
+## EVITA di creare provider in modo dinamico
+
+I provider dovrebbero esclusivamente essere variabili final top-level.
+
+**FARE**:
+
+```dart
+final provider = Provider<String>((ref) => 'Hello world');
+```
+
+**NON FARE**:
+
+```dart
+class Example {
+  // Operazione non supportata. Può portare a memory leaks e comportamenti imprevisti.
+  final provider = Provider<String>((ref) => 'Hello world');
+}
+```
+
+:::info
+Creare provider come variabili finali statiche è permesso, 
+ma non è supportato dal generatore di codice.
+:::

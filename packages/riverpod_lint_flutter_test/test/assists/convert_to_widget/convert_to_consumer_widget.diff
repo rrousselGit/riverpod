@@ -1,0 +1,330 @@
+Message: `Convert to ConsumerWidget`
+Priority: 35
+Diff for file `test/assists/convert_to_widget/convert_to_widget.dart:5`:
+```
+import 'package:flutter_hooks/flutter_hooks.dart';
+
+- class Stateless extends StatelessWidget {
+-   const Stateless({super.key});
+- 
+-   @override
+-   Widget build(BuildContext context) {
++ class Stateless extends ConsumerWidget {
++   const Stateless({super.key});
++ 
++   @override
++   Widget build(BuildContext context, WidgetRef ref) {
+    return const Placeholder();
+  }
+```
+---
+Message: `Convert to ConsumerWidget`
+Priority: 35
+Diff for file `test/assists/convert_to_widget/convert_to_widget.dart:14`:
+```
+}
+
+- class StatelessWithComma extends StatelessWidget {
+-   const StatelessWithComma({super.key});
+- 
+-   @override
+-   Widget build(
+-     BuildContext context,
++ class StatelessWithComma extends ConsumerWidget {
++   const StatelessWithComma({super.key});
++ 
++   @override
++   Widget build(
++     BuildContext context, WidgetRef ref,
+  ) {
+    return const Placeholder();
+```
+---
+Message: `Convert to ConsumerWidget`
+Priority: 35
+Diff for file `test/assists/convert_to_widget/convert_to_widget.dart:25`:
+```
+}
+
+- class Hook extends HookWidget {
+-   const Hook({super.key});
+- 
+-   @override
+-   Widget build(BuildContext context) {
++ class Hook extends ConsumerWidget {
++   const Hook({super.key});
++ 
++   @override
++   Widget build(BuildContext context, WidgetRef ref) {
+    return const Placeholder();
+  }
+```
+---
+Message: `Convert to ConsumerWidget`
+Priority: 35
+Diff for file `test/assists/convert_to_widget/convert_to_widget.dart:34`:
+```
+}
+
+- class HookConsumer extends HookConsumerWidget {
++ class HookConsumer extends ConsumerWidget {
+  const HookConsumer({super.key});
+
+```
+---
+Message: `Convert to ConsumerWidget`
+Priority: 31
+Diff for file `test/assists/convert_to_widget/convert_to_widget.dart:46`:
+```
+}
+
+- class Stateful extends StatefulWidget {
+-   const Stateful({super.key});
+- 
+-   @override
+-   State<Stateful> createState() => _StatefulState();
+- }
+- 
+- class _StatefulState extends State<Stateful> {
+-   /// Hello world
+-   @override
+-   Widget build(BuildContext context) {
++ class Stateful extends ConsumerWidget {
++   const Stateful({super.key});
++ 
++  
++   /// Hello world
++   @override
++   Widget build(BuildContext context, WidgetRef ref) {
+    // Some comments
+    return const Placeholder();
+```
+---
+Message: `Convert to ConsumerWidget`
+Priority: 31
+Diff for file `test/assists/convert_to_widget/convert_to_widget.dart:62`:
+```
+}
+
+- class ExplicitCreateState extends StatefulWidget {
+-   const ExplicitCreateState({super.key});
+- 
+-   @override
+-   ExplicitCreateStateState createState() => ExplicitCreateStateState();
+- }
+- 
+- class ExplicitCreateStateState extends State<ExplicitCreateState> {
+-   @override
+-   Widget build(
+-     BuildContext context,
+-   ) {
++ class ExplicitCreateState extends ConsumerWidget {
++   const ExplicitCreateState({super.key});
++ 
++  
++   @override
++   Widget build(BuildContext context, WidgetRef ref) {
+    return const Placeholder();
+  }
+```
+---
+Message: `Convert to ConsumerWidget`
+Priority: 35
+Diff for file `test/assists/convert_to_widget/convert_to_widget.dart:78`:
+```
+}
+
+- class HookStateful extends StatefulHookWidget {
+-   const HookStateful({super.key});
+- 
+-   @override
+-   State<HookStateful> createState() => HookStatefulState();
+- }
+- 
+- class HookStatefulState extends State<HookStateful> {
+-   @override
+-   Widget build(BuildContext context) {
++ class HookStateful extends ConsumerWidget {
++   const HookStateful({super.key});
++ 
++  
++   @override
++   Widget build(BuildContext context, WidgetRef ref) {
+    return const Placeholder();
+  }
+```
+---
+Message: `Convert to ConsumerWidget`
+Priority: 35
+Diff for file `test/assists/convert_to_widget/convert_to_widget.dart:92`:
+```
+}
+
+- class ConsumerStateful extends ConsumerStatefulWidget {
+-   const ConsumerStateful({super.key});
+- 
+-   @override
+-   ConsumerState<ConsumerStateful> createState() => _ConsumerStatefulState();
+- }
+- 
+- class _ConsumerStatefulState extends ConsumerState<ConsumerStateful> {
+-   @override
+-   Widget build(BuildContext context) {
++ class ConsumerStateful extends ConsumerWidget {
++   const ConsumerStateful({super.key});
++ 
++  
++   @override
++   Widget build(BuildContext context, WidgetRef ref) {
+    return const Placeholder();
+  }
+```
+---
+Message: `Convert to ConsumerWidget`
+Priority: 35
+Diff for file `test/assists/convert_to_widget/convert_to_widget.dart:106`:
+```
+}
+
+- class HookConsumerStateful extends StatefulHookConsumerWidget {
+-   const HookConsumerStateful({super.key});
+- 
+-   @override
+-   ConsumerState<HookConsumerStateful> createState() =>
+-       _HookConsumerStatefulState();
+- }
+- 
+- class _HookConsumerStatefulState extends ConsumerState<HookConsumerStateful> {
+-   @override
+-   Widget build(BuildContext context) {
++ class HookConsumerStateful extends ConsumerWidget {
++   const HookConsumerStateful({super.key});
++ 
++  
++   @override
++   Widget build(BuildContext context, WidgetRef ref) {
+    return const Placeholder();
+  }
+```
+---
+Message: `Convert to ConsumerWidget`
+Priority: 35
+Diff for file `test/assists/convert_to_widget/convert_to_widget.dart:133`:
+```
+}
+
+- class StatelessWithField extends StatelessWidget {
+-   const StatelessWithField({
+-     super.key,
+-     required this.field,
+-   });
+- 
+-   final int field;
+-   static final int staticField = 42;
+- 
+-   @override
+-   Widget build(BuildContext context) {
++ class StatelessWithField extends ConsumerWidget {
++   const StatelessWithField({
++     super.key,
++     required this.field,
++   });
++ 
++   final int field;
++   static final int staticField = 42;
++ 
++   @override
++   Widget build(BuildContext context, WidgetRef ref) {
+    return Column(
+      children: [
+```
+---
+Message: `Convert to ConsumerWidget`
+Priority: 35
+Diff for file `test/assists/convert_to_widget/convert_to_widget.dart:153`:
+```
+}
+
+- class HookConsumerWithField extends HookConsumerWidget {
++ class HookConsumerWithField extends ConsumerWidget {
+  const HookConsumerWithField({
+    super.key,
+```
+---
+Message: `Convert to ConsumerWidget`
+Priority: 35
+Diff for file `test/assists/convert_to_widget/convert_to_widget.dart:180`:
+```
+}
+
+- class ConsumerStatefulWithField extends ConsumerStatefulWidget {
+-   const ConsumerStatefulWithField({
+-     super.key,
+-     required this.field,
+-     required this.foo,
+-   });
+- 
+-   final int field;
+-   final FooClass foo;
+-   static final int staticField = _constantNumber;
+- 
+-   @override
+-   ConsumerState<ConsumerStatefulWithField> createState() =>
+-       _ConsumerStatefulWithFieldState();
+- }
+- 
+- const _constantNumber = 42;
+- 
+- class _ConsumerStatefulWithFieldState
+-     extends ConsumerState<ConsumerStatefulWithField> {
+-   void printFoo() {
+-     print(widget.foo);
+-   }
+- 
+-   @override
+-   Widget build(BuildContext context) {
+-     print(widget.field);
+-     printFoo();
+-     return Column(
+-       children: [
+-         Text('${widget.field}'),
+-         Text('${widget.foo.bar}'),
+-         Text('${ConsumerStatefulWithField.staticField}'),
+-       ],
+-     );
+-   }
+- }
++ class ConsumerStatefulWithField extends ConsumerWidget {
++   const ConsumerStatefulWithField({
++     super.key,
++     required this.field,
++     required this.foo,
++   });
++ 
++   final int field;
++   final FooClass foo;
++   static final int staticField = _constantNumber;
++ 
++  
++   void printFoo() {
++     print(foo);
++   }
++ 
++   @override
++   Widget build(BuildContext context, WidgetRef ref) {
++     print(field);
++     printFoo();
++     return Column(
++       children: [
++         Text('$field'),
++         Text('${foo.bar}'),
++         Text('$staticField'),
++       ],
++     );
++   }
++ }
++ 
++ const _constantNumber = 42;
+
+```
+---

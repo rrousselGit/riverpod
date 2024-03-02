@@ -1,53 +1,61 @@
 ---
 title: FutureProvider
+version: 1
 ---
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
-import CodeBlock from "@theme/CodeBlock";
-import configProvider from "!!raw-loader!/docs/providers/future_provider/config_provider.dart";
-import configConsumer from "!!raw-loader!/docs/providers/future_provider/config_consumer.dart";
-import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+import configProvider from "./future_provider/config_provider";
+import configConsumer from "./future_provider/config_consumer";
+import { AutoSnippet} from "../../../../../src/components/CodeSnippet";
 
-`FutureProvider` è l'equivalente di [Provider] ma per il codice asincrono.
-
-`FutureProvider` è tipicamente usato per:
-
-- eseguire e memorizzare nella cache operazioni asincrone (come le richieste di rete)
-- gestire ottimamente gli stati di errore/caricamento delle operazioni asincrone
-- combinare più valori asincroni in un altro valore
-
-`FutureProvider` è ottimo quando combinato con [ref.watch]. Tale combinazione consente il ri-ottenimento automatico 
-dei dati al variare di alcune variabili, assicurando che si abbia sempre il valore più aggiornato.
-
-:::info
-`FutureProvider` non offre un modo per modificare direttamente il calcolo (o computazione) dopo un'interazione dell'utente. 
-È invece progettato per risolvere semplici casi d'uso. 
-Per scenari più avanzati, considera usare [StateNotifierProvider].
+:::caution
+The content of this page may be outdated.  
+It will be updated in the future, but for now you may want to refer to the content
+in the top of the sidebar instead (introduction/essentials/case-studies/...)
 :::
 
-## Esempio d'uso: leggere un file di configurazione
+`FutureProvider` is the equivalent of [Provider] but for asynchronous code.
 
-`FutureProvider` può essere utile per esporre un oggetto `Configuration` 
-creato leggendo un file JSON.
+`FutureProvider` is typically used for:
 
-La creazione della configurazione verrebbe eseguita con la tipica sintassi async/await, ma all'interno del provider. 
-Usando gli asset di Flutter, sarebbe quindi:
+- performing and caching asynchronous operations (such as network requests)
+- nicely handling error/loading states of asynchronous operations
+- combining multiple asynchronous values into another value
 
-<CodeBlock>{trimSnippet(configProvider)}</CodeBlock>
+`FutureProvider` gains a lot when combined with [ref.watch]. This combination
+allows automatic re-fetching of some data when some variables change,
+ensuring that we always have the most up-to-date value.
 
-Successivamente, la UI può stare in ascolto delle configurazioni in questo modo:
+:::info
+`FutureProvider` does not offer a way of directly modifying the computation after
+a user interaction. It is designed to solve simple use-cases.  
+For more advanced scenarios, consider using [AsyncNotifierProvider].
+:::
 
-<CodeBlock>{trimSnippet(configConsumer)}</CodeBlock>
+## Usage example: reading a configuration file
 
-Ciò ricostruirà automaticamente l'interfaccia quando il [Future] finisce. 
-Allo stesso tempo, se più widget vogliono accedere alle configurazioni, l'asset verrà decodificato solo una volta.
+`FutureProvider` can be a convenient way to expose a `Configuration` object
+created by reading a JSON file.
 
-Come puoi vedere, ascoltare un `FutureProvider` dentro un widget restituisce un [AsyncValue], 
-il che permette di gestire gli stati di errore/caricamento.
+Creating the configuration would be done with your typical async/await
+syntax, but inside the provider.
+Using Flutter's asset system, this would be:
 
-[ref.watch]: ../concepts/reading#usare-ref.watch-per-osservare-un-provider
-[statenotifierprovider]: ./state_notifier_provider
+<AutoSnippet language="dart" {...configProvider}></AutoSnippet>
+
+
+Then, the UI can listen to configurations like so:
+
+<AutoSnippet language="dart" {...configConsumer}></AutoSnippet>
+
+This will automatically rebuild the UI when the [Future] completes.
+At the same time, if multiple widgets want the configurations,
+the asset will be decoded only once.
+
+As you can see, listening to a `FutureProvider` inside a widget returns
+an [AsyncValue] – which allows handling the error/loading states.
+
+[ref.watch]: ../concepts/reading#using-refwatch-to-observe-a-provider
+[asyncnotifierprovider]: ./notifier_provider
 [provider]: ./provider
 [asyncvalue]: https://pub.dev/documentation/riverpod/latest/riverpod/AsyncValue-class.html
 [future]: https://api.dart.dev/dart-async/Future-class.html

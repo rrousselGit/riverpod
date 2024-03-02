@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
@@ -151,7 +149,7 @@ enum LegacyProviderType {
   /// Type for `Provider`
   provider;
 
-  static LegacyProviderType _parse(DartType providerType) {
+  static LegacyProviderType? _parse(DartType providerType) {
     if (anyFutureProviderType.isAssignableFromType(providerType)) {
       return LegacyProviderType.futureProvider;
     }
@@ -177,7 +175,7 @@ enum LegacyProviderType {
       return LegacyProviderType.changeNotifierProvider;
     }
 
-    throw StateError('Unknown provider type $providerType');
+    return null;
   }
 }
 
@@ -205,7 +203,7 @@ class LegacyProviderDeclarationElement implements ProviderDeclarationElement {
 
       bool isAutoDispose;
       LegacyFamilyInvocationElement? familyElement;
-      LegacyProviderType providerType;
+      LegacyProviderType? providerType;
       if (providerBaseType.isAssignableFromType(element.type)) {
         isAutoDispose = !alwaysAliveProviderListenableType
             .isAssignableFromType(element.type);
@@ -216,9 +214,6 @@ class LegacyProviderDeclarationElement implements ProviderDeclarationElement {
           'call',
           element.library!,
         )!;
-        if (callFn.parameters.length != 1) {
-          stdout.writeln('Problem eleemnt: $element');
-        }
         final parameter = callFn.parameters.single;
 
         isAutoDispose = !alwaysAliveProviderListenableType
@@ -253,7 +248,7 @@ class LegacyProviderDeclarationElement implements ProviderDeclarationElement {
 
   final LegacyFamilyInvocationElement? familyElement;
 
-  final LegacyProviderType providerType;
+  final LegacyProviderType? providerType;
 }
 
 class LegacyFamilyInvocationElement {

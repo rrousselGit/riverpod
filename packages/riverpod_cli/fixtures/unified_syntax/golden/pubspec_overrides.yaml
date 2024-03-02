@@ -1,4 +1,0 @@
-dependency_overrides:
-  flutter_riverpod: ^1.0.4
-  hooks_riverpod: ^1.0.4
-  riverpod: ^1.0.3+1

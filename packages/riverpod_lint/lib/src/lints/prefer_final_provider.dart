@@ -22,7 +22,5 @@ class PreferFinalProvider extends RiverpodLintRule {
         reporter.reportErrorForNode(_code, provider.node);
       }
     });
-
-    context.registry.addPropertyAccess((node) {});
   }
 }

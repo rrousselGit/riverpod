@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -18,20 +19,20 @@ class Todo {
   final bool completed;
 }
 
-// Repository를 사용하는 프로바이더 인스턴스
+// We expose our instance of Repository in a provider
 final repositoryProvider = Provider((ref) => Repository());
 
-/// 할일(Todo) 목록
-/// [Repository]를 사용하여 서버로부터 값을 취득하는 FutureProvider 인스턴스
+/// The list of todos. Here, we are simply fetching them from the server using
+/// [Repository] and doing nothing else.
 final todoListProvider = FutureProvider((ref) async {
-  // Repository 인스턴스를 취득합니다.
+  // Obtains the Repository instance
   final repository = ref.read(repositoryProvider);
 
-  // Todo 목록을 가져오고 이를 UI에 노출시킵니다.
+  // Fetch the todos and expose them to the UI.
   return repository.fetchTodos();
 });
 
-/// 레포지토리의 Mock 구현: 사전 정의된 할일 목록을 반환하는 역할
+/// A mocked implementation of Repository that returns a pre-defined list of todos
 class FakeRepository implements Repository {
   @override
   Future<List<Todo>> fetchTodos() async {
@@ -42,7 +43,7 @@ class FakeRepository implements Repository {
 }
 
 class TodoItem extends StatelessWidget {
-  const TodoItem({Key? key, required this.todo}) : super(key: key);
+  const TodoItem({super.key, required this.todo});
   final Todo todo;
   @override
   Widget build(BuildContext context) {
@@ -54,14 +55,16 @@ void main() {
   testWidgets('override repositoryProvider', (tester) async {
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [repositoryProvider.overrideWithValue(FakeRepository())],
-        // todoListProvider로부터 상태 값을 읽어 todo 목록을 표시하는 앱
-        // MyApp 위젯으로도 가능.
+        overrides: [
+          repositoryProvider.overrideWithValue(FakeRepository())
+        ],
+        // Our application, which will read from todoListProvider to display the todo-list.
+        // You may extract this into a MyApp widget
         child: MaterialApp(
           home: Scaffold(
             body: Consumer(builder: (context, ref, _) {
               final todos = ref.watch(todoListProvider);
-              // 할일 목록이 로딩 중이거나 에러가 발생했을 때의 대응
+              // The list of todos is loading or in error
               if (todos.asData == null) {
                 return const CircularProgressIndicator();
               }
@@ -76,17 +79,16 @@ void main() {
       ),
     );
 
-    // 처음 프레임 상태가 로딩중임을 확인.
+    // The first frame is a loading state.
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
 
-    // 재 렌더링을 수행
-    // (TodoListProvider가 할일 목록을 가져오기를 끝냈을 것이라 예상)
+    // Re-render. TodoListProvider should have finished fetching the todos by now
     await tester.pump();
 
-    // CircularProgressIndicator을 찾아 loading 상태인지 확인 .
+    // No longer loading
     expect(find.byType(CircularProgressIndicator), findsNothing);
 
-    // FakeRepository가 반환한 값이 1개의 TodoItem으로 렌더링되었는지 확인.
+    // Rendered one TodoItem with the data returned by FakeRepository
     expect(tester.widgetList(find.byType(TodoItem)), [
       isA<TodoItem>()
           .having((s) => s.todo.id, 'todo.id', '42')

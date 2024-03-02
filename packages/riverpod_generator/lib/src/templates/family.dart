@@ -4,6 +4,7 @@ import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
 import '../models.dart';
 import '../riverpod_generator.dart';
+import '../validation.dart';
 import 'class_based_provider.dart';
 import 'parameters.dart';
 import 'template.dart';
@@ -12,7 +13,13 @@ String providerFamilyNameFor(
   ProviderDeclarationElement provider,
   BuildYamlOptions options,
 ) {
-  return '${provider.name.lowerFirst}${options.providerFamilyNameSuffix ?? options.providerNameSuffix ?? 'Provider'}';
+  final prefix =
+      options.providerFamilyNamePrefix ?? options.providerNamePrefix ?? '';
+  final rawProviderName = provider.name;
+  final suffix = options.providerFamilyNameSuffix ??
+      options.providerNameSuffix ??
+      'Provider';
+  return '$prefix${prefix.isEmpty ? rawProviderName.lowerFirst : rawProviderName.titled}$suffix';
 }
 
 class FamilyTemplate extends Template {
@@ -52,17 +59,17 @@ class FamilyTemplate extends Template {
     var providerType = '${leading}Provider';
     var refType = '${leading}ProviderRef';
     var elementType = '${leading}ProviderElement';
-    var createdType = provider.createdType.toString();
+    var createdType = provider.createdTypeDisplayString;
 
-    final returnType = provider.createdType;
-    if (!returnType.isRaw) {
+    final returnType = provider.createdTypeNode?.type;
+    if (returnType != null && !returnType.isRaw) {
       if (returnType.isDartAsyncFutureOr || returnType.isDartAsyncFuture) {
         providerType = '${leading}FutureProvider';
         refType = '${leading}FutureProviderRef';
         elementType = '${leading}FutureProviderElement';
         // Always use FutureOr<T> in overrideWith as return value
         // or otherwise we get a compilation error.
-        createdType = 'FutureOr<${provider.valueType}>';
+        createdType = 'FutureOr<${provider.valueTypeDisplayString}>';
       } else if (returnType.isDartAsyncStream) {
         providerType = '${leading}StreamProvider';
         refType = '${leading}StreamProviderRef';
@@ -87,7 +94,7 @@ class FamilyTemplate extends Template {
       hashFn: hashFn,
       elementType: elementType,
       refType: refType,
-      providerGenerics: '<${provider.valueType}>',
+      providerGenerics: '<${provider.valueTypeDisplayString}>',
       providerCreate:
           '(ref) => ${provider.name}(ref as ${provider._refImplName}, $parametersPassThrough)',
       providerType: providerType,
@@ -121,6 +128,8 @@ ${parameters.map((e) => '        ${e.name}: ${e.name},\n').join()}
     required String hashFn,
     required BuildYamlOptions options,
   }) {
+    validateClassBasedProvider(provider);
+
     var leading = '';
     if (!provider.annotation.element.keepAlive) {
       leading = 'AutoDispose';
@@ -131,8 +140,8 @@ ${parameters.map((e) => '        ${e.name}: ${e.name},\n').join()}
     var notifierBaseType = 'Buildless${leading}Notifier';
     var elementType = '${leading}NotifierProviderElement';
 
-    final returnType = provider.createdType;
-    if (!returnType.isRaw) {
+    final returnType = provider.createdTypeNode?.type;
+    if (returnType != null && !returnType.isRaw) {
       if (returnType.isDartAsyncFutureOr || returnType.isDartAsyncFuture) {
         providerType = '${leading}AsyncNotifierProviderImpl';
         refType = '${leading}AsyncNotifierProviderRef';
@@ -164,20 +173,21 @@ ${parameters.map((e) => '        ${e.name}: ${e.name},\n').join()}
       hashFn: hashFn,
       elementType: elementType,
       refType: refType,
-      providerGenerics: '<${provider.name}, ${provider.valueType}>',
+      providerGenerics:
+          '<${provider.name}, ${provider.valueTypeDisplayString}>',
       providerType: providerType,
       providerCreate: '() => ${provider.name}()$cascadePropertyInit',
       parametersPassThrough: parametersPassThrough,
       other: '''
-abstract class $notifierTypedefName extends $notifierBaseType<${provider.valueType}> {
+abstract class $notifierTypedefName extends $notifierBaseType<${provider.valueTypeDisplayString}> {
   ${parameters.map((e) => 'late final ${e.type} ${e.name};').join('\n')}
 
-  ${provider.createdType} build($parameterDefinition);
+  ${provider.createdTypeDisplayString} build($parameterDefinition);
 }
 ''',
       providerOther: '''
   @override
-  ${provider.createdType} runNotifierBuild(
+  ${provider.createdTypeDisplayString} runNotifierBuild(
     covariant ${provider.name} notifier,
   ) {
     return notifier.build($parametersPassThrough);
@@ -245,7 +255,7 @@ $docs
 const $providerName = $familyName();
 
 $docs
-class $familyName extends Family<${provider.exposedType}> {
+class $familyName extends Family<${provider.exposedTypeDisplayString}> {
   $docs
   const $familyName();
 
@@ -329,7 +339,7 @@ ${parameters.map((e) => 'hash = _SystemHash.combine(hash, ${e.name}.hashCode);')
   }
 }
 
-mixin $refNameImpl on $refType<${provider.valueType}> {
+mixin $refNameImpl on $refType<${provider.valueTypeDisplayString}> {
   ${parameters.map((e) {
       return '''
 /// The parameter `${e.name}` of this provider.

@@ -67,7 +67,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   /// The [ProviderContainer] that owns this [ProviderElementBase].
   @override
   ProviderContainer get container => _container;
-  late ProviderContainer _container;
+  late final ProviderContainer _container;
 
   /// Whether this [ProviderElementBase] is currently listened to or not.
   ///
@@ -294,6 +294,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
 
   @override
   void invalidate(ProviderOrFamily provider) {
+    assert(_debugAssertCanDependOn(provider), '');
     _container.invalidate(provider);
   }
 
@@ -303,7 +304,8 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
 
     _mustRecomputeState = true;
     runOnDispose();
-    _container._scheduler.scheduleProviderRefresh(this);
+    mayNeedDispose();
+    _container.scheduler.scheduleProviderRefresh(this);
 
     // We don't call this._markDependencyMayHaveChanged here because we voluntarily
     // do not want to set the _dependencyMayHaveChanged flag to true.
@@ -323,7 +325,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   /// - a dependency of the provider has changed (such as when using [watch]).
   ///
   /// This is not meant for public consumption. Public API should hide
-  /// [flush] from users, such that they don't need to care about invocing this function.
+  /// [flush] from users, such that they don't need to care about invoking this function.
   @internal
   void flush() {
     _maybeRebuildDependencies();
@@ -577,23 +579,23 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       dependents[i]._markDependencyChanged();
     }
 
-    for (final observer in _container._observers) {
+    for (final observer in _container.observers) {
       runQuaternaryGuarded(
         observer.didUpdateProvider,
-        provider,
+        origin,
         previousState,
         newState.stateOrNull,
         _container,
       );
     }
 
-    for (final observer in _container._observers) {
+    for (final observer in _container.observers) {
       newState.map(
         data: (_) {},
         error: (newState) {
           runQuaternaryGuarded(
             observer.providerDidFail,
-            provider,
+            origin,
             newState.error,
             newState.stackTrace,
             _container,
@@ -622,7 +624,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     );
   }
 
-  bool _debugAssertCanDependOn(ProviderListenable<Object?> listenable) {
+  bool _debugAssertCanDependOn(ProviderListenableOrFamily listenable) {
     assert(
       () {
         if (listenable is! ProviderBase<Object?>) return true;
@@ -684,6 +686,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   @override
   T refresh<T>(Refreshable<T> provider) {
     _assertNotOutdated();
+    assert(_debugAssertCanDependOn(provider), '');
     return _container.refresh(provider);
   }
 
@@ -937,7 +940,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
     _onDisposeListeners?.forEach(runGuarded);
 
-    for (final observer in _container._observers) {
+    for (final observer in _container.observers) {
       runBinaryGuarded(
         observer.didDisposeProvider,
         _origin,

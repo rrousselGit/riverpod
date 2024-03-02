@@ -1,0 +1,63 @@
+---
+title: 성능 최적화하기
+---
+
+import { AutoSnippet } from "/src/components/CodeSnippet";
+import select from "./select/select";
+import selectAsync from "/docs/advanced/select/select_async";
+
+지금까지 살펴본 내용을 통해 이미 모든 기능을 갖춘 애플리케이션을 구축할 수 있습니다. 
+하지만 성능과 관련하여 궁금한 점이 있을 수 있습니다.
+
+이 페이지에서는 코드를 최적화할 수 있는 몇 가지 팁과 요령을 다룰 것입니다.
+
+:::caution
+최적화를 수행하기 전에 애플리케이션을 벤치마킹(benchmark)해야 합니다.
+최적화로 인한 복잡성 증가는 소소한 이득에 비해 가치가 없을 수 있습니다.
+:::
+
+## "select"을 사용하여 위젯/provider 다시 빌드하는 것을 필터링합니다.
+
+기본적으로 `ref.watch`를 사용하면 객체의 _어떠한(any)_ 프로퍼티라도 변경될때마다, consumers/providers가 다시 빌드하는 것을 보셨을 것입니다.  
+예를 들어, `User`를 watch하고 "name"만 사용해도 'age'가 변경되면 Consumer는 여전히 다시 빌드됩니다.
+
+그러나 일부 속성만 사용하는 consumer가 있는 경우, 다른 속성이 변경될 때 위젯을 다시 빌드하지 않고 싶을 수 있습니다.
+
+이는 provider의 `select` 기능을 사용하여 수행할 수 있습니다.  
+이렇게 하면 `ref.watch`는 더 이상 전체 객체를 반환하지 않고 선택된 프로퍼티만 반환합니다.  
+그리고 consumer/provider는 이제 선택된 프로퍼티가 변경되는 경우에만 다시 빌드됩니다.
+
+<AutoSnippet {...select} />
+
+:::info
+`select`는 원하는 횟수만큼 호출할 수 있습니다.
+원하는 속성당 한 번씩 자유롭게 호출할 수 있습니다.
+:::
+
+:::caution
+선택된 프로퍼티는 변경되지 않을 것으로 예상됩니다.
+`List`를 반환한 다음 해당 리스트를 변경해도 리빌드가 트리거되지 않습니다.
+:::
+
+:::caution
+`select`을 사용하면 무효(invididual) 읽기 작업 속도가 약간 느려지고, 코드의 복잡성이 약간 증가합니다.  
+이러한 "다른 속성"이 거의 변경되지 않는 경우에는 사용할 가치가 없을 수 있습니다.
+:::
+
+### Selecting asynchronous properties
+
+다른 provider를 수신하는 provider를 최적화하려는 경우 다른 provider가 비동기식일 가능성이 있습니다.
+
+일반적으로는 `ref.watch(anotherProvider.future)`를 사용해 값을 가져옵니다.   
+문제는 `select`이 `AsyncValue`에 적용된다는 것인데, 이는 기다릴 수 있는(await) 상황이 아닙니다.
+
+이를 위해 `selectAsync`를 대신 사용할 수 있습니다. 
+이 함수는 비동기 코드에 고유하며, 공급자가 방출한 데이터에 대해 `select` 연산을 수행할 수 있게 해줍니다.  
+사용법은 `select`와 비슷하지만 대신 `Future`를 반환합니다:
+
+<AutoSnippet
+  {...selectAsync}
+  translations={{
+    watch: "  // user를 사용할 수 있을 때까지 기다렸다가 \"firstName\" 속성만 수신합니다."
+  }}
+/>

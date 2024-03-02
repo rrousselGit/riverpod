@@ -1568,6 +1568,46 @@ void main() {
       completion(AsyncError<int>(42, stack)),
     );
   });
+
+  test(
+      'AsyncValue.guard emits the error when the created future fails and predicate is null',
+      () async {
+    final stack = StackTrace.current;
+
+    await expectLater(
+      AsyncValue.guard(
+        () => Future<int>.error(42, stack),
+      ),
+      completion(AsyncError<int>(42, stack)),
+    );
+  });
+
+  test(
+      'AsyncValue.guard emits the error when the created future fails and predicate is true',
+      () async {
+    final stack = StackTrace.current;
+    bool isInt(Object error) => error is int;
+
+    await expectLater(
+      AsyncValue.guard(
+        () => Future<int>.error(42, stack),
+        isInt,
+      ),
+      completion(AsyncError<int>(42, stack)),
+    );
+  });
+
+  test('AsyncValue.guard rethrows exception if predicate is false,', () async {
+    bool isInt(Object error) => error is int;
+
+    await expectLater(
+      AsyncValue.guard<int>(
+        () => throw const FormatException(),
+        isInt,
+      ),
+      throwsA(isA<FormatException>()),
+    );
+  });
 }
 
 class CustomLoading<T> extends AsyncLoading<T> {

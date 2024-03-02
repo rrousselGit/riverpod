@@ -3,7 +3,7 @@ part of '../async_notifier.dart';
 /// {@macro riverpod.streamNotifier}
 abstract class AutoDisposeFamilyStreamNotifier<State, Arg>
     extends BuildlessAutoDisposeStreamNotifier<State> {
-  /// {@template riverpod.notifier.family_arg}
+  /// {@macro riverpod.notifier.family_arg}
   late final Arg arg;
 
   @override
@@ -97,7 +97,7 @@ class AutoDisposeStreamNotifierProviderFamily<
           debugGetCreateSourceHash: null,
         );
 
-  /// {@macro riverpod.overridewith}
+  /// {@macro riverpod.override_with}
   Override overrideWith(NotifierT Function() create) {
     return FamilyOverrideImpl<AsyncValue<T>, Arg,
         AutoDisposeFamilyStreamNotifierProvider<NotifierT, T, Arg>>(

@@ -1,13 +1,14 @@
 ---
 title: FutureProvider
+version: 1
 ---
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
-import configProvider from "!!raw-loader!/i18n/fr/docusaurus-plugin-content-docs/current/providers/future_provider/config_provider.dart";
-import configConsumer from "!!raw-loader!/i18n/fr/docusaurus-plugin-content-docs/current/providers/future_provider/config_consumer.dart";
-import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+import configProvider from "/docs/providers/future_provider/config_provider";
+import configConsumer from "/docs/providers/future_provider/config_consumer";
+import { trimSnippet,AutoSnippet} from "../../../../../src/components/CodeSnippet";
 
 `FutureProvider` est l'équivalent de [Provider] mais pour du code asynchrone.
 
@@ -36,11 +37,12 @@ créé par la lecture d'un fichier JSON.
 La création de la configuration se fait avec la syntaxe async/await typique. 
 mais à l'intérieur du provider. En utilisant le système d'asset de Flutter, ce serait :
 
-<CodeBlock>{trimSnippet(configProvider)}</CodeBlock>
+<AutoSnippet language="dart" {...configProvider}></AutoSnippet>
 
 Ensuite, l'interface utilisateur peut écouter les configurations comme suit :
 
-<CodeBlock>{trimSnippet(configConsumer)}</CodeBlock>
+<AutoSnippet language="dart" {...configConsumer}></AutoSnippet>
+
 
 Cela permettra de reconstruire automatiquement l'interface utilisateur 
 lorsque le [Future] sera terminé. En même temps, 

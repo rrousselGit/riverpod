@@ -1,43 +1,177 @@
 module.exports = {
   Sidebar: [
-    "getting_started",
+    {
+      type: "category",
+      label: "Introduction",
+      collapsible: false,
+      items: ["introduction/why_riverpod", "introduction/getting_started"],
+    },
+    {
+      type: "category",
+      label: "Riverpod for Provider Users",
+      items: [
+        "from_provider/quickstart",
+        "from_provider/provider_vs_riverpod",
+        "from_provider/motivation/motivation",
+      ],
+    },
+    {
+      type: "category",
+      label: "Essentials",
+      collapsible: false,
+      items: [
+        "essentials/first_request",
+        "essentials/side_effects",
+        "essentials/passing_args",
+        "essentials/websockets_sync",
+        "essentials/combining_requests",
+        "essentials/auto_dispose",
+        // {
+        //   type: "link",
+        //   label: "Progress indicators and error pages (WIP)",
+        //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
+        // },
+        "essentials/eager_initialization",
+        "essentials/testing",
+        "essentials/provider_observer",
+        "essentials/faq",
+        "essentials/do_dont",
+      ],
+    },
 
+    // Case studies
+    {
+      type: "category",
+      label: "Case studies",
+      collapsible: false,
+      items: ["case_studies/pull_to_refresh", "case_studies/cancel"],
+    },
+    // {
+    //   type: "link",
+    //   label: "Infinite lists (WIP)",
+    //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
+    // },
+    // {
+    //   type: "link",
+    //   label: "Optimistic UI (WIP)",
+    //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
+    // },
+    // {
+    //   type: "link",
+    //   label: "HTTP polling (WIP)",
+    //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
+    // },
+    // {
+    //   type: "link",
+    //   label: "Debouncing requests (WIP)",
+    //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
+    // },
+    // {
+    //   type: "link",
+    //   label: "Cancelling unused network requests (WIP)",
+    //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
+    // },
+    // {
+    //   type: "link",
+    //   label: "Delaying requests until a certain value is set (WIP)",
+    //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
+    // },
+    // {
+    //   type: "link",
+    //   label: "Deduplicating network requests (WIP)",
+    //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
+    // },
+    // {
+    //   type: "link",
+    //   label: "Show snackbar on error (WIP)",
+    //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
+    // },
+    // {
+    //   type: "link",
+    //   label: "Search as we type (WIP)",
+    //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
+    // },
+    // {
+    //   type: "link",
+    //   label: "Reading InheritedWidgets inside providers (WIP)",
+    //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
+    // },
+    //   ],
+    // },
+
+    // Tutorials
+    // {
+    // type: "category",
+    // label: "Tutorials",
+    // collapsible: false,
+    // items: [
+    // {
+    //   type: "link",
+    //   label: "Multi-step forms (WIP)",
+    //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
+    // },
+    // {
+    //   type: "link",
+    //   label: "Building a login page (WIP)",
+    //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
+    // },
+    // ],
+    // },
+
+    // Advanced
+    {
+      type: "category",
+      label: "Advanced topics",
+      collapsible: false,
+      items: [
+        // {
+        //   type: "link",
+        //   label: "Scoping providers (WIP)",
+        //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
+        // },
+        "advanced/select",
+      ],
+    },
+
+    // Concepts
     {
       type: "category",
       label: "Concepts",
+      collapsible: false,
       items: [
-        "concepts/providers",
-        "concepts/reading",
-        "concepts/combining_providers",
-        {
-          type: "category",
-          label: "Modifiers",
-          items: [
-            "concepts/modifiers/family",
-            "concepts/modifiers/auto_dispose",
-          ],
-        },
-        "concepts/provider_observer",
+        "concepts/about_code_generation",
+        "concepts/about_hooks",
+        // {
+        //   type: "link",
+        //   label: "Provider life-cycles (WIP)",
+        //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
+        // },
+        // {
+        //   type: "link",
+        //   label: "Why immutability (WIP)",
+        //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
+        // },
       ],
     },
+
+    // Migration guides
     {
       type: "category",
-      label: "Guides",
-      collapsed: false,
+      label: "Migration guides",
+      collapsible: false,
       items: [
-        "cookbooks/testing",
-        //"cookbooks/refresh",
+        "migration/from_state_notifier",
+        "migration/from_change_notifier",
+        "migration/0.14.0_to_1.0.0",
+        "migration/0.13.0_to_0.14.0",
       ],
     },
-    {
-      type: "category",
-      label: "Migration",
-      collapsed: false,
-      items: ["migration/0.13.0_to_0.14.0", "migration/0.14.0_to_1.0.0"],
-    },
+
+    // Official examples
     {
       type: "category",
       label: "Official examples",
+      collapsed: true,
       items: [
         {
           type: "link",
@@ -51,15 +185,28 @@ module.exports = {
         },
         {
           type: "link",
+          label: "Pub.dev client",
+          href: "https://github.com/rrousselGit/riverpod/tree/master/examples/pub",
+        },
+        {
+          type: "link",
           label: "Marvel API",
           href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
         },
       ],
     },
+
+    // Third party examples
     {
       type: "category",
       label: "Third party examples",
+      collapsed: true,
       items: [
+        {
+          type: "link",
+          label: "Easy Todo Riverpod Architecture",
+          href: "https://github.com/ilovekimchi6/todo_easy_riverpod_architecture",
+        },
         {
           type: "link",
           label: "Android Launcher",
@@ -146,42 +293,60 @@ module.exports = {
           label: "Clean Architecture demonstration with Riverpod",
           href: "https://github.com/Uuttssaavv/flutter-clean-architecture-riverpod",
         },
+        {
+          type: "link",
+          label: "Delivery App with Google Maps and Live Tracking",
+          href: "https://github.com/AhmedLSayed9/deliverzler",
+        },
       ],
     },
+
+    {
+      type: "link",
+      label: "API reference",
+      href: "https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/hooks_riverpod-library.html",
+    },
+
     {
       type: "category",
-      label: "Api references",
-      collapsed: false,
+      label: "Concepts 🚧",
       items: [
+        "concepts/providers",
+        "concepts/reading",
+        "concepts/combining_providers",
         {
           type: "category",
-          label: "All Providers",
-          collapsed: true,
+          label: "Modifiers",
           items: [
-            "providers/provider",
-            "providers/state_notifier_provider",
-            "providers/future_provider",
-            "providers/stream_provider",
-            "providers/state_provider",
-            "providers/change_notifier_provider",
+            "concepts/modifiers/family",
+            "concepts/modifiers/auto_dispose",
           ],
         },
-        {
-          type: "link",
-          label: "riverpod",
-          href: "https://pub.dev/documentation/riverpod/latest/riverpod/riverpod-library.html",
-        },
-        {
-          type: "link",
-          label: "flutter_riverpod",
-          href: "https://pub.dev/documentation//flutter_riverpod/latest/flutter_riverpod/flutter_riverpod-library.html",
-        },
-        {
-          type: "link",
-          label: "hooks_riverpod",
-          href: "https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/hooks_riverpod-library.html",
-        },
+        "concepts/provider_observer",
+        "concepts/scopes",
+        "concepts/provider_lifecycles",
+        "concepts/why_immutability",
       ],
+    },
+
+    {
+      type: "category",
+      label: "All Providers 🚧",
+      items: [
+        "providers/provider",
+        "providers/notifier_provider",
+        "providers/state_notifier_provider",
+        "providers/future_provider",
+        "providers/stream_provider",
+        "providers/state_provider",
+        "providers/change_notifier_provider",
+      ],
+    },
+
+    {
+      type: "category",
+      label: "Guides 🚧",
+      items: ["cookbooks/testing"],
     },
   ],
 };

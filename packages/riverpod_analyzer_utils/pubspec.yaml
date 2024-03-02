@@ -4,16 +4,16 @@ repository: https://github.com/rrousselGit/river_pod
 issue_tracker: https://github.com/rrousselGit/riverpod/issues
 funding:
   - https://github.com/sponsors/rrousselGit/
-version: 0.3.3
+version: 0.5.1
 
 environment:
-  sdk: ">=2.18.0 <3.0.0"
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   analyzer: ">=5.12.0 <7.0.0"
   collection: ^1.16.0
   crypto: ^3.0.2
-  custom_lint_core: ^0.5.2
+  custom_lint_core: ^0.6.0
   freezed_annotation: ^2.2.0
   meta: ^1.7.0
   path: ^1.8.0

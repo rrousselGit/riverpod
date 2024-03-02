@@ -6,6 +6,7 @@ class ProviderListenableExpression extends RiverpodAst {
   ProviderListenableExpression._({
     required this.node,
     required this.provider,
+    required this.providerPrefix,
     required this.providerElement,
     required this.familyArguments,
   });
@@ -13,8 +14,8 @@ class ProviderListenableExpression extends RiverpodAst {
   static ProviderListenableExpression? _parse(Expression? expression) {
     if (expression == null) return null;
 
-    // print('oy $expression // ${expression.runtimeType}');
     SimpleIdentifier? provider;
+    SimpleIdentifier? providerPrefix;
     ProviderDeclarationElement? providerElement;
     ArgumentList? familyArguments;
 
@@ -26,6 +27,7 @@ class ProviderListenableExpression extends RiverpodAst {
         provider = expression;
         final element = expression.staticElement;
         if (element is PropertyAccessorElement) {
+          // watch(provider)
           DartObject? annotation;
           try {
             annotation =
@@ -50,7 +52,13 @@ class ProviderListenableExpression extends RiverpodAst {
         parseExpression(expression.target);
       } else if (expression is PrefixedIdentifier) {
         // watch(expression.modifier)
-        parseExpression(expression.prefix);
+        final element = expression.prefix.staticElement;
+        if (element is PrefixElement) {
+          providerPrefix = expression.prefix;
+          parseExpression(expression.identifier);
+        } else {
+          parseExpression(expression.prefix);
+        }
       } else if (expression is IndexExpression) {
         // watch(expression[])
         parseExpression(expression.target);
@@ -65,6 +73,7 @@ class ProviderListenableExpression extends RiverpodAst {
     return ProviderListenableExpression._(
       node: expression,
       provider: provider,
+      providerPrefix: providerPrefix,
       providerElement: providerElement,
       // Make sure `(){}()` doesn't report an argument list even though it's not a provider
       familyArguments: provider == null ? null : familyArguments,
@@ -96,6 +105,7 @@ class ProviderListenableExpression extends RiverpodAst {
   }
 
   final Expression node;
+  final SimpleIdentifier? providerPrefix;
   final SimpleIdentifier? provider;
   final ProviderDeclarationElement? providerElement;
 

@@ -17,7 +17,7 @@ class Todo {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +34,7 @@ final foo =
 /* SKIP END */
     ProviderScope(
   overrides: [
-    /// Consente di sovrascrivere un FutureProvider per restituire un valore fisso
+    /// Allows overriding a FutureProvider to return a fixed value
     todoListProvider.overrideWithValue(
       AsyncValue.data([Todo(id: '42', label: 'Hello', completed: true)]),
     ),

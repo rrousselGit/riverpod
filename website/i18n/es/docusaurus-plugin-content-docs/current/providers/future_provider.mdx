@@ -1,13 +1,14 @@
 ---
 title: FutureProvider
+version: 1
 ---
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
-import configProvider from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/providers/future_provider/config_provider.dart";
-import configConsumer from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/providers/future_provider/config_consumer.dart";
-import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+import configProvider from "/docs/providers/future_provider/config_provider";
+import configConsumer from "/docs/providers/future_provider/config_consumer";
+import { trimSnippet,AutoSnippet} from "../../../../../src/components/CodeSnippet";
 
 `FutureProvider` es el equivalente de [Provider] pero para código asíncrono.
 
@@ -34,11 +35,11 @@ creado mediante la lectura de un archivo JSON.
 La creación de la configuración se haría con la sintaxis típica de async/await, pero dentro del provider. 
 Usando el sistema de assets de Flutter, esto sería:
 
-<CodeBlock>{trimSnippet(configProvider)}</CodeBlock>
+<AutoSnippet language="dart" {...configProvider}></AutoSnippet>
 
 Luego, la interfaz de usuario puede escuchar configuraciones como esta:
 
-<CodeBlock>{trimSnippet(configConsumer)}</CodeBlock>
+<AutoSnippet language="dart" {...configConsumer}></AutoSnippet>
 
 Esto reconstruirá automáticamente la interfaz de usuario cuando se complete el [Future]. 
 Al mismo tiempo, si varios widgets desean las configuraciones, el asset se decodificará solo una vez.

@@ -5,11 +5,11 @@ title: Provider
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
-import todo from "!!raw-loader!/docs/providers/provider/todo.dart";
-import completedTodos from "!!raw-loader!/docs/providers/provider/completed_todos.dart";
-import todosConsumer from "!!raw-loader!/docs/providers/provider/todos_consumer.dart";
-import unoptimizedPreviousButton from "!!raw-loader!/docs/providers/provider/unoptimized_previous_button.dart";
-import optimizedPreviousButton from "!!raw-loader!/docs/providers/provider/optimized_previous_button.dart";
+import todo from "!!raw-loader!./provider/todo.dart";
+import completedTodos from "!!raw-loader!./provider/completed_todos.dart";
+import todosConsumer from "!!raw-loader!./provider/todos_consumer.dart";
+import unoptimizedPreviousButton from "!!raw-loader!./provider/unoptimized_previous_button.dart";
+import optimizedPreviousButton from "!!raw-loader!./provider/optimized_previous_button.dart";
 import { trimSnippet } from "../../../../../src/components/CodeSnippet";
 
 `Provider` ist der einfachste aller Provider. Er erzeugt einen Wert... Und das war's auch schon.
@@ -23,43 +23,43 @@ import { trimSnippet } from "../../../../../src/components/CodeSnippet";
 
 ## Verwendung von `Provider` zur Zwischenspeicherung von Berechnungen
 
-`Provider` ist ein leistungsfähiges Werkzeug für die Zwischenspeicherung synchroner 
+`Provider` ist ein leistungsfähiges Werkzeug für die Zwischenspeicherung synchroner
 Operationen, wenn es mit [ref.watch] kombiniert wird.
 
 Ein Beispiel wäre das Filtern einer Liste von ToDos.  
-Da das Filtern einer Liste etwas kostspielig sein könnte, wollen wir idealerweise die 
-Liste der ToDo's nicht jedes Mal herausfiltern, wenn sich unsere Anwendung neu aufbaut.   
+Da das Filtern einer Liste etwas kostspielig sein könnte, wollen wir idealerweise die
+Liste der ToDo's nicht jedes Mal herausfiltern, wenn sich unsere Anwendung neu aufbaut.  
 In dieser Situation könnten wir `Provider` verwenden, um den Filter für uns zu erledigen.
 
-Dazu nehmen wir an, dass unsere Anwendung einen bestehenden [StateNotifierProvider] hat, 
+Dazu nehmen wir an, dass unsere Anwendung einen bestehenden [StateNotifierProvider] hat,
 der eine Liste von Todos bearbeitet:
 
 <CodeBlock>{trimSnippet(todo)}</CodeBlock>
 
-Von dort aus können wir `Provider` verwenden, um die gefilterte Liste der ToDo's zu veröffentlichen, 
+Von dort aus können wir `Provider` verwenden, um die gefilterte Liste der ToDo's zu veröffentlichen,
 die nur nur die erledigten Aufgaben:
 
 <CodeBlock>{trimSnippet(completedTodos)}</CodeBlock>
 
-Indem wir auf `completedTodosProvider` lauschen, ist die UI nun in der Lage, die Liste der 
+Indem wir auf `completedTodosProvider` lauschen, ist die UI nun in der Lage, die Liste der
 erledigten ToDos anzuzeigen:
 
 <CodeBlock>{trimSnippet(todosConsumer)}</CodeBlock>
 
 Das Interessante ist, dass die Listenfilterung jetzt zwischengespeichert wird.
 
-Das bedeutet, dass die Liste der erledigten ToDos nicht neu berechnet wird, bis 
-ToDos hinzugefügt/entfernt/aktualisiert werden, selbst wenn wir die Liste der 
+Das bedeutet, dass die Liste der erledigten ToDos nicht neu berechnet wird, bis
+ToDos hinzugefügt/entfernt/aktualisiert werden, selbst wenn wir die Liste der
 erledigten ToDos mehrmals lesen.
 
-Beachten Sie, dass wir den Cache nicht mehr manuell ungültig machen müssen, wenn 
-sich die Liste der ToDos ändert. Der `Provider` ist automatisch in der Lage zu wissen, 
+Beachten Sie, dass wir den Cache nicht mehr manuell ungültig machen müssen, wenn
+sich die Liste der ToDos ändert. Der `Provider` ist automatisch in der Lage zu wissen,
 wann das Ergebnis neu berechnet werden muss dank [ref.watch].
 
 ## Verringerung von Provider/Widget Neuerstellungen durch Verwendung `Provider`
 
-Ein einzigartiger Aspekt von `Provider` ist, dass selbst wenn `Provider` neu berechnet 
-wird (typischerweise bei der Verwendung von [ref.watch]), werden die Widgets/Provider, 
+Ein einzigartiger Aspekt von `Provider` ist, dass selbst wenn `Provider` neu berechnet
+wird (typischerweise bei der Verwendung von [ref.watch]), werden die Widgets/Provider,
 die darauf lauschen, nicht aktualisiert, es sei denn, der Wert hat sich geändert.
 
 Ein Beispiel aus der realen Welt wäre das Aktivieren/Deaktivieren der vorherigen/nächsten Schaltflächen
@@ -75,26 +75,26 @@ Der Code könnte so aussehen:
 
 <CodeBlock>{trimSnippet(unoptimizedPreviousButton)}</CodeBlock>
 
-Das Problem bei diesem Code ist, dass die Schaltfläche "Zurück" jedes Mal neu erstellt wird, 
-wenn wir die aktuelle Seite wechseln. In der idealen Welt würden wir wollen, dass die 
+Das Problem bei diesem Code ist, dass die Schaltfläche "Zurück" jedes Mal neu erstellt wird,
+wenn wir die aktuelle Seite wechseln. In der idealen Welt würden wir wollen, dass die
 Schaltfläche nur beim Wechsel zwischen aktiviert und deaktiviert neu aufgebaut wird.
 
-Das Problem besteht darin, dass wir berechnen, ob der Benutzer direkt über die Schaltfläche 
+Das Problem besteht darin, dass wir berechnen, ob der Benutzer direkt über die Schaltfläche
 "Zurück" zur vorherigen Seite wechseln darf.
 
-Eine Möglichkeit, dieses Problem zu lösen, besteht darin, diese Logik außerhalb des Widgets 
+Eine Möglichkeit, dieses Problem zu lösen, besteht darin, diese Logik außerhalb des Widgets
 und in einen `Provider` auszulagern:
 
 <CodeBlock>{trimSnippet(optimizedPreviousButton)}</CodeBlock>
 
-Durch dieses kleine Refactoring wird unser `PreviousButton` Widget nicht mehr neu aufgebaut, wenn 
+Durch dieses kleine Refactoring wird unser `PreviousButton` Widget nicht mehr neu aufgebaut, wenn
 sich der Seitenindex ändert und das dank des `Provider`.
 
-Von nun an, wenn sich der Seitenindex ändert, wird unser `canGoToPreviousPageProvider` Provider 
+Von nun an, wenn sich der Seitenindex ändert, wird unser `canGoToPreviousPageProvider` Provider
 neu berechnet. Aber wenn sich der Wert, der durch den Provider zur Verfügung gestellt wrid, nicht ändert,
 dann wird `PreviousButton` nicht neu erstellt.
 
-Diese Änderung verbesserte die Leistung unserer Schaltfläche und hatte den interessanten 
+Diese Änderung verbesserte die Leistung unserer Schaltfläche und hatte den interessanten
 Vorteil, die Logik außerhalb unseres Widgets zu extrahieren.
 
 [ref.watch]: ../concepts/reading#using-refwatch-to-observe-a-provider

@@ -2,17 +2,17 @@
 
 part of '../change_notifier_provider.dart';
 
-/// {@macro riverpod.providerrefbase}
+/// {@macro riverpod.provider_ref_base}
 abstract class AutoDisposeChangeNotifierProviderRef<
         NotifierT extends ChangeNotifier?>
     extends ChangeNotifierProviderRef<NotifierT>
     implements AutoDisposeRef<NotifierT> {}
 
 // ignore: subtype_of_sealed_class
-/// {@macro riverpod.ChangeNotifierprovider}
+/// {@macro riverpod.change_notifier_provider}
 class AutoDisposeChangeNotifierProvider<NotifierT extends ChangeNotifier?>
     extends _ChangeNotifierProviderBase<NotifierT> {
-  /// {@macro riverpod.ChangeNotifierprovider}
+  /// {@macro riverpod.change_notifier_provider}
   AutoDisposeChangeNotifierProvider(
     this._createFn, {
     super.name,
@@ -56,7 +56,7 @@ class AutoDisposeChangeNotifierProvider<NotifierT extends ChangeNotifier?>
   @override
   late final Refreshable<NotifierT> notifier = _notifier<NotifierT>(this);
 
-  /// {@macro riverpod.overridewith}
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     Create<NotifierT, AutoDisposeChangeNotifierProviderRef<NotifierT>> create,
   ) {
@@ -109,7 +109,7 @@ class AutoDisposeChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?,
               computeAllTransitiveDependencies(dependencies),
         );
 
-  /// {@macro riverpod.overridewith}
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     NotifierT Function(
       AutoDisposeChangeNotifierProviderRef<NotifierT> ref,

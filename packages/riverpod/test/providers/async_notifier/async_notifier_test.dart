@@ -39,6 +39,68 @@ void main() {
         });
       });
 
+      test('Can assign `AsyncLoading<T>` to `AsyncValue<void>`', () {
+        // Regression test for https://github.com/rrousselGit/riverpod/issues/2120
+        final provider = factory.simpleTestProvider<void>((ref) => 42);
+        final container = createContainer();
+
+        final sub = container.listen(provider.notifier, (prev, next) {});
+
+        // ignore: void_checks
+        expect(sub.read().state, const AsyncData<void>(42));
+
+        sub.read().state = const AsyncLoading<int>();
+
+        expect(
+          sub.read().state,
+          isA<AsyncLoading<void>>()
+              .having((e) => e.hasValue, 'hasValue', true)
+              .having((e) => e.value, 'value', 42),
+        );
+      });
+
+      test('Can assign `AsyncData<T>` to `AsyncValue<void>`', () {
+        // Regression test for https://github.com/rrousselGit/riverpod/issues/2120
+        final provider = factory.simpleTestProvider<void>((ref) => 42);
+        final container = createContainer();
+
+        final sub = container.listen(provider.notifier, (prev, next) {});
+
+        // ignore: void_checks
+        expect(sub.read().state, const AsyncData<void>(42));
+
+        sub.read().state = const AsyncData<int>(42);
+
+        expect(
+          sub.read().state,
+          isA<AsyncData<void>>()
+              .having((e) => e.hasValue, 'hasValue', true)
+              .having((e) => e.value, 'value', 42),
+        );
+      });
+
+      test('Can assign `AsyncError<T>` to `AsyncValue<void>`', () {
+        // Regression test for https://github.com/rrousselGit/riverpod/issues/2120
+        final provider = factory.simpleTestProvider<void>((ref) => 42);
+        final container = createContainer();
+
+        final sub = container.listen(provider.notifier, (prev, next) {});
+
+        // ignore: void_checks
+        expect(sub.read().state, const AsyncData<void>(42));
+
+        sub.read().state = AsyncError<int>(21, StackTrace.current);
+
+        expect(
+          sub.read().state,
+          isA<AsyncError<void>>()
+              .having((e) => e.hasValue, 'hasValue', true)
+              .having((e) => e.value, 'value', 42)
+              .having((e) => e.hasError, 'hasError', true)
+              .having((e) => e.error, 'error', 21),
+        );
+      });
+
       group('supports AsyncValue transition', () {
         test(
             'performs seamless copyWithPrevious if triggered by ref.invalidate/ref.refresh',

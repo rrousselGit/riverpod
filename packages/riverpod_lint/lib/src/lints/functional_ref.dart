@@ -40,7 +40,12 @@ class FunctionalRef extends RiverpodLintRule {
         return;
       }
 
-      refNode as SimpleFormalParameter;
+      if (refNode is! SimpleFormalParameter) {
+        // Users likely forgot to specify "ref" and the provider has other parameters
+        reporter.reportErrorForToken(_code, refNode.name!);
+        return;
+      }
+
       final refNodeType = refNode.type;
       if (refNodeType == null) return;
 

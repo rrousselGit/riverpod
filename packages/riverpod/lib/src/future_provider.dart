@@ -25,7 +25,7 @@ ProviderElementProxy<AsyncValue<T>, Future<T>> _future<T>(
   );
 }
 
-/// {@template riverpod.futureprovider}
+/// {@template riverpod.future_provider}
 /// A provider that asynchronously creates a value.
 ///
 /// [FutureProvider] can be considered as a combination of [Provider] and
@@ -38,7 +38,7 @@ ProviderElementProxy<AsyncValue<T>, Future<T>> _future<T>(
 /// such as reading a file or making an HTTP request, that is then listened to by the UI.
 ///
 /// It can then be combined with:
-/// - [FutureProvider.family], for parameterizing the http request based on external
+/// - [FutureProvider.family], to parameterize the http request based on external
 ///   parameters, such as fetching a `User` from its id.
 /// - [FutureProvider.autoDispose], to cancel the HTTP request if the user
 ///   leaves the screen before the [Future] completed.

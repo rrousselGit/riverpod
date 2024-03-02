@@ -1,27 +1,36 @@
 ---
 title: Reading a Provider
+version: 1
 ---
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
-import counter from "!!raw-loader!/docs/concepts/reading_counter.dart";
-import consumerWidget from "!!raw-loader!/docs/concepts/reading_consumer_widget.dart";
-import consumerStatefulWidget from "!!raw-loader!/docs/concepts/reading_consumer_stateful_widget.dart";
-import consumerHookWidget from "!!raw-loader!/docs/concepts/reading_consumer_hook_widget.dart";
-import statefulHookConsumerWidget from "!!raw-loader!/docs/concepts/reading_stateful_hook_consumer_widget.dart";
-import consumerHook from "!!raw-loader!/docs/concepts/reading_consumer_hook.dart";
-import watch from "!!raw-loader!/docs/concepts/reading_watch.dart";
-import watchBuild from "!!raw-loader!/docs/concepts/reading_watch_build.dart";
-import listen from "!!raw-loader!/docs/concepts/reading_listen.dart";
-import listenBuild from "!!raw-loader!/docs/concepts/reading_listen_build.dart";
-import read from "!!raw-loader!/docs/concepts/reading_read.dart";
-import readBuild from "!!raw-loader!/docs/concepts/reading_read_build.dart";
-import readNotifierBuild from "!!raw-loader!/docs/concepts/reading_read_notifier_build.dart";
-import watchNotifierBuild from "!!raw-loader!/docs/concepts/reading_watch_notifier_build.dart";
-import { trimSnippet } from "../../src/components/CodeSnippet";
+import counter from "./reading/counter";
+import consumerWidget from "./reading/consumer_widget";
+import consumerStatefulWidget from "./reading/consumer_stateful_widget";
+import consumerHook from "!!raw-loader!/docs/concepts/reading/consumer_hook.dart";
+import watch from "./reading/watch";
+import watchBuild from "./reading/watch_build";
+import listen from "./reading/listen";
+import listenBuild from "./reading/listen_build";
+import read from "./reading/read";
+import readBuild from "./reading/read_build";
+import readNotifierBuild from "./reading/read_notifier_build";
+import watchNotifierBuild from "./reading/watch_notifier_build";
+import provider from "./reading/provider";
+import {
+  trimSnippet,
+  AutoSnippet,
+  When,
+} from "/src/components/CodeSnippet";
+import { Link } from "/src/components/Link";
 
-Before reading this guide, make sure to [read about Providers](/docs/concepts/providers) first.
+:::caution
+The content of this page may be outdated.  
+It will be updated in the future, but for now you may want to refer to the content
+in the top of the sidebar instead (introduction/essentials/case-studies/...)
+:::
+
+Before reading this guide, make sure to <Link documentID="concepts/providers"/> first.
 
 In this guide, we will see how to consume a provider.
 
@@ -36,20 +45,17 @@ or another provider.
 
 All providers receive a "ref" as a parameter:
 
-```dart
-final provider = Provider((ref) {
-  // use ref to obtain other providers
-  final repository = ref.watch(repositoryProvider);
-
-  return SomeValue(repository);
-})
-```
+<AutoSnippet language="dart" {...provider}></AutoSnippet>
 
 This parameter is safe to pass to the value exposed by the provider.
 
-For example, a common use-case is to pass the provider's "ref" to a [StateNotifier]:
+<When codegen={false}>
 
-<CodeBlock>{trimSnippet(counter)}</CodeBlock>
+A common use-case is to pass the provider's "ref" to a `StateNotifier`
+
+</When>
+
+<AutoSnippet language="dart" {...counter}></AutoSnippet>
 
 Doing so allows our `Counter` class to read providers.
 
@@ -57,6 +63,8 @@ Doing so allows our `Counter` class to read providers.
 
 Widgets naturally do not have a ref parameter. But [Riverpod] offers multiple
 solutions to obtain one from widgets.
+
+<When>
 
 #### Extending ConsumerWidget instead of StatelessWidget
 
@@ -68,7 +76,7 @@ difference being that it has an extra parameter on its build method: the "ref" o
 
 A typical [ConsumerWidget] looks like:
 
-<CodeBlock>{trimSnippet(consumerWidget)}</CodeBlock>
+<AutoSnippet language="dart" {...consumerWidget}></AutoSnippet>
 
 #### Extending ConsumerStatefulWidget+ConsumerState instead of StatefulWidget+State
 
@@ -78,7 +86,11 @@ Similar to [ConsumerWidget], [ConsumerStatefulWidget] and [ConsumerState] are th
 This time, the "ref" isn't passed as parameter of the build method, but is
 a property of the [ConsumerState] object:
 
-<CodeBlock>{trimSnippet(consumerStatefulWidget)}</CodeBlock>
+<AutoSnippet language="dart" {...consumerStatefulWidget}></AutoSnippet>
+
+</When>
+
+<When hooks>
 
 #### Extending HookConsumerWidget instead of HookWidget
 
@@ -92,14 +104,15 @@ allows a widget to both listen to providers and use hooks.
 
 An example would be:
 
-<CodeBlock>{trimSnippet(consumerHookWidget)}</CodeBlock>
+<AutoSnippet language="dart" {...consumerWidget}></AutoSnippet>
 
 #### Extending StatefulHookConsumerWidget instead of HookWidget
 
 This option is for [flutter_hooks] users, who need to use [StatefulWidget] lifecycle methods in addition to hooks.
 
 An example would be:
-<CodeBlock>{trimSnippet(statefulHookConsumerWidget)}</CodeBlock>
+
+<AutoSnippet language="dart" {...consumerStatefulWidget}></AutoSnippet>
 
 #### Consumer and HookConsumer widgets
 
@@ -113,6 +126,8 @@ As such, these widgets are a way to obtain a "ref" without having to define a cl
 An example would be:
 
 <CodeBlock>{trimSnippet(consumerHook)}</CodeBlock>
+
+</When>
 
 ## Using ref to interact with providers
 
@@ -157,7 +172,7 @@ We could have two providers:
 And by using `ref.watch`, we could make a third provider that combines both providers to
 create a filtered list of tasks:
 
-<CodeBlock>{trimSnippet(watch)}</CodeBlock>
+<AutoSnippet language="dart" {...watch}></AutoSnippet>
 
 With this code, `filteredTodoListProvider` now exposes the filtered list of tasks.
 
@@ -168,7 +183,7 @@ neither the filter nor the list of tasks changed.
 Similarly, a widget can use `ref.watch` to show
 the content from a provider and update the user interface whenever that content changes:
 
-<CodeBlock>{trimSnippet(watchBuild)}</CodeBlock>
+<AutoSnippet language="dart" {...watchBuild}></AutoSnippet>
 
 This snippet shows a widget that listens to a provider which stores a `count`.
 And if that `count` changes, the widget will rebuild and the UI will update
@@ -197,11 +212,11 @@ The callback function when called will be passed 2 values, the value of the prev
 
 The `ref.listen` method can be used inside the body of a provider:
 
-<CodeBlock>{trimSnippet(listen)}</CodeBlock>
+<AutoSnippet language="dart" {...listen}></AutoSnippet>
 
 or inside the `build` method of a widget:
 
-<CodeBlock>{trimSnippet(listenBuild)}</CodeBlock>
+<AutoSnippet language="dart" {...listenBuild}></AutoSnippet>
 
 :::caution
 The `listen` method should not be called asynchronously,
@@ -216,7 +231,7 @@ The `ref.read` method is a way to obtain the state of a provider without listeni
 It is commonly used inside functions triggered by user interactions.
 For example, we can use `ref.read` to increment a counter when a user clicks a button:
 
-<CodeBlock>{trimSnippet(read)}</CodeBlock>
+<AutoSnippet language="dart" {...read}></AutoSnippet>
 
 :::note
 Using `ref.read` should be avoided as much as possible because it is not reactive.
@@ -230,7 +245,7 @@ If you can, it is almost always better to use `watch`/`listen`, especially `watc
 You might be tempted to use `ref.read` to optimize the performance of a widget
 by doing:
 
-<CodeBlock>{trimSnippet(readBuild)}</CodeBlock>
+<AutoSnippet language="dart" {...readBuild}></AutoSnippet>
 
 But this is a very bad practice and can cause bugs that are difficult to track.
 
@@ -257,11 +272,11 @@ rebuilds, which you could use instead.
 
 For example instead of
 
-<CodeBlock>{trimSnippet(readNotifierBuild)}</CodeBlock>
+<AutoSnippet language="dart" {...readNotifierBuild}></AutoSnippet>
 
 we could do:
 
-<CodeBlock>{trimSnippet(watchNotifierBuild)}</CodeBlock>
+<AutoSnippet language="dart" {...watchNotifierBuild}></AutoSnippet>
 
 Both snippets achieve the same effect: our button will not rebuild when the
 counter increments.
@@ -273,11 +288,26 @@ For example, another part of the application could call:
 ref.refresh(counterProvider);
 ```
 
+<When codegen={false}>
+  
 which would recreate the `StateController` object.
 
 If we used `ref.read` here, our button would still use the previous
-`StateController` instance, which was disposed and should no-longer be used.  
-Whereas using `ref.watch` correctly rebuilds the button to use the new `StateController`.
+`StateController` instance, which was disposed and should no-longer be used.
+Whereas using `ref.watch` correctly rebuilds the button to use the new
+`StateController`.
+
+</When>
+
+<When codegen>
+
+which would recreate the `Counter` object.
+
+If we used `ref.read` here, our button would still use the previous `Counter`
+instance, which was disposed and should no-longer be used. Whereas using
+`ref.watch` correctly rebuilds the button to use the new `Counter`.
+
+</When>
 
 ## Deciding what to read
 
@@ -298,11 +328,11 @@ When reading this `userProvider`, you can:
   Widget build(BuildContext context, WidgetRef ref) {
     AsyncValue<User> user = ref.watch(userProvider);
 
-    return user.when(
-      loading: () => const CircularProgressIndicator(),
-      error: (error, stack) => const Text('Oops'),
-      data: (user) => Text(user.name),
-    );
+    return switch (user) {
+      AsyncData(:final value) => Text(value.name),
+      AsyncError(:final error) => const Text('Oops $error'),
+      _ => const CircularProgressIndicator(),
+    };
   }
   ```
 

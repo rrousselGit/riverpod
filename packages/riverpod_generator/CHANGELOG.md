@@ -1,3 +1,53 @@
+## Unreleased minor
+
+- Adds `provider_name_prefix` and `provider_family_name_prefix` to `build.yaml`. (thanks to @ValentinVignal)
+
+## 2.3.11 - 2024-02-04
+
+- `riverpod_analyzer_utils` upgraded to `0.5.1`
+
+## 2.3.10 - 2024-02-03
+
+- Improved error handling if:
+  - a Notifier has no default constructor
+  - a Notifier has has a default constructor but with required parameters
+  - a Notifier is abstract
+
+## 2.3.9 - 2023-11-27
+
+- `riverpod_annotation` upgraded to `2.3.3`
+- `riverpod` upgraded to `2.4.9`
+
+## 2.3.8 - 2023-11-20
+
+- `riverpod_annotation` upgraded to `2.3.2`
+- `riverpod` upgraded to `2.4.8`
+
+## 2.3.7 - 2023-11-20
+
+- Fix crash when encountering classes with a `ProviderBase` field.
+
+## 2.3.6 - 2023-11-13
+
+- Fix typos and internal changes
+
+## 2.3.5 - 2023-10-21
+
+- `riverpod_analyzer_utils` upgraded to `0.4.1`
+
+## 2.3.4 - 2023-10-19 (retracted)
+
+- `riverpod_analyzer_utils` upgraded to `0.4.1`
+
+## 2.3.3 - 2023-09-27
+
+- `riverpod_analyzer_utils` upgraded to `0.3.4`
+- `riverpod_annotation` upgraded to `2.1.6`
+
+## 2.3.2 - 2023-09-04
+
+- Disable `invalid_use_of_visible_for_testing_member` in generated files
+
 ## 2.3.1 - 2023-08-28
 
 - `riverpod_annotation` upgraded to `2.1.4`

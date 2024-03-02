@@ -1,3 +1,31 @@
+## 0.5.1 - 2024-02-04
+
+- Bumped `custom_lint` version
+
+## 0.5.0 - 2023-11-20
+
+- **Breaking** `LegacyProviderDeclarationElement.providerType` is now nullable.
+- Fix crash when parsing classes with a `ProviderBase` field.
+ 
+## 0.4.3 - 2023-10-28
+
+- `GeneratorProviderDeclaration.createdTypeDisplayString` now always
+  return `FutureOr<value>` on asynchronous providers.
+- Fixing typos
+
+## 0.4.2 - 2023-10-21
+
+- Type `provider.node` as `AnnotatedNode`
+
+## 0.4.1 - 2023-10-06
+
+- Added type checkers for AsyncValue and subclasses.
+
+## 0.4.0 - 2023-10-02
+
+- Correctly parse import aliases when used inside `ref.watch(<...>)`
+- Fixed `refInvocations` not getting parsed for generated providers with arguments.
+
 ## 0.3.3 - 2023-08-16
 
 - Support both analyzer 5.12.0 and analyzer 6.0.0
@@ -48,8 +76,8 @@ the `@riverpod external int value()` syntax.
 
 - Decode generated StreamProviders.
 
-- Upcast `ClassBasedProviderDeclaratation.providerElement` &
-  `FunctionalProviderDeclaratation.providerElement` to their respective element type.
+- Upcast `ClassBasedProviderDeclaration.providerElement` &
+  `FunctionalProviderDeclaration.providerElement` to their respective element type.
 
 - Change error handling mechanism (no more exceptions)
 

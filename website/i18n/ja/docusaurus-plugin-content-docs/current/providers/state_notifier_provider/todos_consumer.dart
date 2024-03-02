@@ -8,7 +8,7 @@ import 'todos.dart';
 /* SNIPPET START */
 
 class TodoListView extends ConsumerWidget {
-  const TodoListView({Key? key}): super(key: key);
+  const TodoListView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

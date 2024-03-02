@@ -1,158 +1,130 @@
 ---
 title: はじめに
+version: 1
 ---
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
-import helloWorldHooks from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/getting_started_hello_world_hooks.dart";
-import helloWorldFlutter from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/getting_started_hello_world_flutter.dart";
-import helloWorldDart from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/getting_started_hello_world_dart.dart";
-import { trimSnippet } from "../../../../src/components/CodeSnippet";
+import pubspec from "./getting_started/pubspec";
+import dartHelloWorld from "./getting_started/dart_hello_world";
+import helloWorld from "./getting_started/hello_world";
+import dartPubspec from "./getting_started/dart_pubspec";
+import {
+  trimSnippet,
+  AutoSnippet,
+  When,
+} from "../../../../src/components/CodeSnippet";
 
-[Riverpod] の仕組みについて深掘りする前に、まずはパッケージのインストール方法をご紹介します。
-そして [Riverpod] を使って定番の Hello world を表示させたいと思います。
+___
 
-## インストールするパッケージの種類
+## オンラインで Riverpod を試す
 
-[Riverpod] には複数の種類のパッケージがあり、それぞれ使用目的が若干異なります。
-どの [Riverpod] パッケージをインストールするかは作るアプリの形態によります。
+Riverpod の感覚を掴むために、[Dartpad](https://dartpad.dev/?null_safety=true&id=ef06ab3ce0b822e6cc5db0575248e6e2) で試してみましょう。
 
-こちらはその対応表です。
+## パッケージのインストール
 
-| アプリの形態                    | パッケージ名                                                                         | 説明                                                     |
-| ----------------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------- |
-| Flutter のみ                   | [flutter_riverpod]                                                                 | Flutter アプリで [Riverpod] を使用する場合の基本のパッケージ。 |
-| Flutter + [flutter_hooks]     | [hooks_riverpod]                                                                   | [flutter_hooks] と [Riverpod] を併用する場合のパッケージ。   |
-| Dart のみ（Flutter は使用しない） | [riverpod](https://github.com/rrousselGit/riverpod/tree/master/packages/riverpod) | Flutter 関連のクラスをすべて除いた [Riverpod] パッケージ。    |
-
-## パッケージのインストール方法
-
-インストールするパッケージの種類が決まったら、パッケージ名とそのバージョン番号を次のように `pubspec.yaml` に追加してください。
+インストールするパッケージが決まったら、次のものを `pubspec.yaml` に追記してください:
 
 <Tabs
   groupId="riverpod"
-  defaultValue="hooks_riverpod"
+  defaultValue="flutter_riverpod"
   values={[
-    { label: 'Flutter + flutter_hooks', value: 'hooks_riverpod', },
     { label: 'Flutter', value: 'flutter_riverpod', },
-    { label: 'Dart のみ', value: 'riverpod', },
+    { label: 'Dart only', value: 'riverpod', },
   ]}
 >
-<TabItem value="hooks_riverpod">
-
-```yaml title="pubspec.yaml"
-environment:
-  sdk: ">=2.12.0 <3.0.0"
-  flutter: ">=2.0.0"
-
-dependencies:
-  flutter:
-    sdk: flutter
-  flutter_hooks: ^0.18.0
-  hooks_riverpod: ^2.1.1
-```
-
-そして `flutter pub get` コマンドを実行してください。
-
-</TabItem>
 <TabItem value="flutter_riverpod">
 
-```yaml title="pubspec.yaml"
-environment:
-  sdk: ">=2.12.0 <3.0.0"
-  flutter: ">=2.0.0"
+<AutoSnippet title="pubspec.yaml" language="yaml" {...pubspec}></AutoSnippet>
 
-dependencies:
-  flutter:
-    sdk: flutter
-  flutter_riverpod: ^2.1.1
-```
+そして `flutter pub get` でパッケージをインストールしてください。
 
-そして `flutter pub get` コマンドを実行してください。
+<When codegen={true}>
+  最後に、 {" "} でコードジェネレータを実行してください。
+  <code>flutter pub run build_runner watch</code>
+</When>
 
 </TabItem>
 <TabItem value="riverpod">
 
-```yaml title="pubspec.yaml"
-environment:
-  sdk: ">=2.12.0-0 <3.0.0"
+<AutoSnippet
+  title="pubspec.yaml"
+  language="yaml"
+  {...dartPubspec}
+></AutoSnippet>
 
-dependencies:
-  riverpod: ^2.1.1
-```
+そして、 `dart pub get` でパッケージをインストールしてください。
 
-そして `dart pub get` コマンドを実行してください。
+<When codegen={true}>
+  最後に、 {" "} でコードジェネレータを実行してください。
+  <code>flutter pub run build_runner watch</code>
+</When>
 
 </TabItem>
 </Tabs>
 
-これで [Riverpod] がアプリに追加されました!
+これで [Riverpod] がアプリに追加されました！
 
-## Hello world の表示
+## 使用例: Hello world
 
-インストールが完了したところで、[Riverpod] の使用方法を確認していきましょう。
+[Riverpod] がインストールできたので、これを使うことができます。
 
-次のサンプルコードを実行すると Hello world が画面に表示されます。
+以下のスニペットは新しい依存性を使って "Hello World" を表示する例です。
 
 export const foo = 42;
 
 <Tabs
   groupId="riverpod"
-  defaultValue="hooks_riverpod"
+  defaultValue="flutter_riverpod"
   values={[
-    { label: "Flutter + flutter_hooks", value: "hooks_riverpod" },
     { label: "Flutter", value: "flutter_riverpod" },
-    { label: "Dart のみ", value: "riverpod" },
+    { label: "Dart only", value: "riverpod" },
   ]}
 >
-<TabItem value="hooks_riverpod">
-
-<CodeBlock title="lib/main.dart">{trimSnippet(helloWorldHooks)}</CodeBlock>
-
-`flutter run` コマンドを実行してみてください。
-デバイスの画面に Hello world が表示されるはずです。
-
-</TabItem>
 <TabItem value="flutter_riverpod">
 
-<CodeBlock title="lib/main.dart">{trimSnippet(helloWorldFlutter)}</CodeBlock>
+<AutoSnippet
+  title="lib/main.dart"
+  language="dart"
+  {...helloWorld}
+></AutoSnippet>
 
-`flutter run` コマンドを実行してみてください。
-デバイスの画面に Hello world が表示されるはずです。
+そして `flutter run` を実行してください。  
+実行すると、デバイスに "Hello World" が表示されます。
 
 </TabItem>
 <TabItem value="riverpod">
 
-<CodeBlock title="lib/main.dart">{trimSnippet(helloWorldDart)}</CodeBlock>
+<AutoSnippet
+  title="lib/main.dart"
+  language="dart"
+  {...dartHelloWorld}
+></AutoSnippet>
 
-`dart lib/main.dart` コマンドを実行してみてください。
-コンソールに Hello world と出力されるはずです。
+そして `dart lib/main.dart` を実行してください。  
+実行すると、コンソールに "Hello World" が出力されます。
 
 </TabItem>
 </Tabs>
 
-## コードスニペット機能の利用
+## 一歩先へ: コードスニペットのインストール
 
-`Flutter` を `VS Code` で利用している場合は、拡張機能の
-[Flutter Riverpod Snippets](https://marketplace.visualstudio.com/items?itemName=robert-brunhage.flutter-riverpod-snippets)
-で [Riverpod] 専用のコードスニペット機能を使うことができます。
+`Flutter` と `VS Code` を使っている場合、 [Flutter Riverpod Snippets](https://marketplace.visualstudio.com/items?itemName=robert-brunhage.flutter-riverpod-snippets) が利用できます。
 
-`Flutter` を `Android Studio` もしくは `IntelliJ` で利用している場合は、
-[Flutter Riverpod Snippets](https://plugins.jetbrains.com/plugin/14641-flutter-riverpod-snippets)
-を利用してください。
+`Flutter` と `Android Studio` もしくは `IntelliJ` を使っている場合、 [Flutter Riverpod Snippets](https://plugins.jetbrains.com/plugin/14641-flutter-riverpod-snippets) が利用できます。
 
 ![img](/img/snippets/greetingProvider.gif)
 
 ## 次のステップ
 
-基本コンセプトを学ぶ：
+基本的なコンセプトを学ぶ:
 
-- [プロバイダとは](/docs/concepts/providers)
+- [プロバイダについて](/docs/concepts/providers)
 
-具体的な使用方法を学ぶ：
+使用例を学ぶ:
 
-- [プロバイダのテストについて](/docs/cookbooks/testing)
+- [プロバイダのテスト](/docs/cookbooks/testing)
 
 [riverpod]: https://github.com/rrousselgit/riverpod
 [hooks_riverpod]: https://pub.dev/packages/hooks_riverpod

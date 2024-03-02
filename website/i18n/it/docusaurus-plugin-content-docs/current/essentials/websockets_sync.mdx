@@ -1,0 +1,108 @@
+---
+title: Websocket ed esecuzione sincrona
+---
+
+import {
+  AutoSnippet,
+  When,
+} from "../../../../../src/components/CodeSnippet";
+import syncDefinition from "./websockets_sync/sync_definition";
+import streamProvider from "./websockets_sync/stream_provider";
+import syncConsumer from "!!raw-loader!./websockets_sync/sync_consumer.dart";
+import rawUsage from "!!raw-loader!./websockets_sync/raw_usage.dart";
+import pipeChangeNotifier from "!!raw-loader!./websockets_sync/pipe_change_notifier.dart";
+import sharedPipeChangeNotifier from "!!raw-loader!./websockets_sync/shared_pipe_change_notifier.dart";
+import changeNotifierProvider from "!!raw-loader!./websockets_sync/change_notifier_provider.dart";
+
+Fino ad ora abbiamo solo coperto come creare un `Future`.
+Abbiamo fatto ciò apposta, dato che i `Future`s sono una parte fondamentale di come 
+le applicazioni che usano Riverpod dovrebbero essere costruite.
+_Ma_, Riverpod supporta anche altri formati se necessario.
+
+In particolare, invece di un `Future`, i provider sono liberi di:
+
+- Ritornare in modo sincrono un oggetto, come creare un "Repository".
+- Ritornare uno `Stream`, come ascoltare i websocket.
+
+Restituire un `Future` e restituire uno `Stream` o un oggetto è abbastanza simile nel complesso.
+Considera questa pagina come una spiegazione delle sottili differenze e de vari 
+suggerimenti per questi casi d'uso.
+
+## Restituire un oggetto in modo sincrono
+
+Per creare un oggetto in modo sincrono, assicurati che il tuo provider non ritorni un Future:
+
+<AutoSnippet {...syncDefinition} />
+
+Quando un provider crea un oggetto in modo sincrono, questo impatta come quell'oggetto verrà consumato.
+In particolare, i valori sincroni non sono contenuti in un "AsyncValue":
+
+<AutoSnippet raw={syncConsumer} />
+
+La conseguenza di questa differenza è che se il tuo provider lancia un'eccezione, 
+provare a leggere il valore ricauserà l'errore.
+In alternativa, quando si usa `ref.listen`, la callback "onError" sarà invocata.
+
+### Considerazioni sugli oggetti "Listenable"
+
+<When codegen={true}>
+
+Gli oggetti Listenable come `ChangeNotifier` or `StateNotifier` non sono supportati.
+Se, per motivi di compatibilità, è necessario interagire con uno di questi oggetti, 
+un workaround consiste nel collegare il loro meccanismo di notifica a Riverpod.
+
+<AutoSnippet raw={pipeChangeNotifier} />
+
+:::info
+Nel caso in cui tu abbia bisogno di questa logica molte volte, è importante notare che 
+la logica è condivisa! L'oggetto "ref" è progettato per essere componibile. 
+Ciò consente di estrarre la logica di dispose/ascolto dal provider:
+
+<AutoSnippet raw={sharedPipeChangeNotifier} />
+:::
+
+</When>
+
+<When codegen={false}>
+
+Quando non si utilizza la generazione di codice, Riverpod offre provider "legacy" 
+per supportare `ChangeNotifier` e `StateNotifier` direttamente: `ChangeNotifierProvider` and `StateNotifierProvider`.
+Usarli è simile ad usare altri tipi di provider. La differenza principale è 
+che entrambi ascolteranno e smaltiranno automaticamente dell'oggetto restituito.
+
+Questi provider non sono consigliati per nuova logica di business.
+Ma possono essere d'aiuto quando si interagisce con codice vecchio, come 
+durante una migrazione da `pkg:provider` a Riverpod.
+
+<AutoSnippet raw={changeNotifierProvider} />
+
+</When>
+
+## Ascoltare uno Stream
+
+Un caso d'uso comune delle moderne applicazioni è interagire con websockets, 
+come Firbase o GraphQL subscriptions.
+Interagire con queste API è spesso fatto ascoltando uno `Stream`.
+
+Per aiutarci in tale scopo, Riverpod supporta di natura gli oggetti `Stream`.
+Come con i `Future`, l'oggetto verrà convertito in un `AsyncValue`:
+
+<AutoSnippet {...streamProvider} />
+
+:::info
+Riverpod non è consapevole delle implementazioni personalizzate di `Stream`, 
+come ad esempio `BehaviorSubject` di RX.
+Pertanto, restituire un `BehaviorSubject` non esporrà il valore 
+in modo sincrono ai widget, anche se è già disponibile alla creazione.
+:::
+ 
+Di default, Riverpod convertirà `Stream` e `Future` in `AsyncValue`.
+Anche se raramente necessario, è possibile disattivare questo comportamento 
+wrappando il tipo del valore di ritorno in un typedef `Raw`.
+
+:::caution
+È generalmente sconsigliato disabilitare la conversione in `AsyncValue`.
+Fallo solo se sai quello che stai facendo.
+:::
+
+<AutoSnippet raw={rawUsage} />

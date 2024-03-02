@@ -1,3 +1,14 @@
+---
+title: Search as we type
+version: 1
+---
+
+:::caution
+The content of this page may be outdated.  
+It will be updated in the future, but for now you may want to refer to the content
+in the top of the sidebar instead (introduction/essentials/case-studies/...)
+:::
+
 A real world example could be to use `FutureProvider` to implement a searchbar.
 
 ## Usage example: "Search as we type" searchbar
@@ -109,14 +120,11 @@ class MyHomePage extends ConsumerWidget {
                 ref.read(searchFieldProvider.notifier).state = value,
           ),
           Expanded(
-            child: questions.when(
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, stack) => Center(child: Text('Error $error')),
-              data: (questions) {
-                return ListView.builder(
-                  itemCount: questions.length,
+            child: switch (questions) {
+              AsyncData(:final value) => ListView.builder(
+                  itemCount: value.length,
                   itemBuilder: (context, index) {
-                    final question = questions[index];
+                    final question = value[index];
 
                     return ListTile(
                       title: Text(
@@ -124,9 +132,10 @@ class MyHomePage extends ConsumerWidget {
                       ),
                     );
                   },
-                );
-              },
-            ),
+                );,
+              AsyncError(:final error) => Center(child: Text('Error $error')),
+              _ => const Center(child: CircularProgressIndicator()),
+            },
           ),
         ],
       ),

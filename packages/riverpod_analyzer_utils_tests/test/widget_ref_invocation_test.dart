@@ -1,6 +1,6 @@
 import 'package:test/test.dart';
 
-import 'analyser_test_utils.dart';
+import 'analyzer_test_utils.dart';
 
 void main() {
   testSource('Decode watch expressions with syntax errors', source: '''
@@ -19,7 +19,7 @@ class Example extends ConsumerWidget {
   }
 }
 ''', (resolver) async {
-    final result = await resolver.resolveRiverpodAnalyssiResult(
+    final result = await resolver.resolveRiverpodAnalysisResult(
       ignoreErrors: true,
     );
 
@@ -80,7 +80,7 @@ class MyWidget extends ConsumerWidget {
   }
 }
 ''', (resolver) async {
-    final result = await resolver.resolveRiverpodAnalyssiResult();
+    final result = await resolver.resolveRiverpodAnalysisResult();
 
     expect(result.widgetRefWatchInvocations, hasLength(3));
     expect(result.widgetRefInvocations, result.widgetRefWatchInvocations);
@@ -192,7 +192,7 @@ void fn(_Ref ref) {
   ref.watch(dep);
 }
 ''', (resolver) async {
-    final result = await resolver.resolveRiverpodAnalyssiResult();
+    final result = await resolver.resolveRiverpodAnalysisResult();
 
     expect(result.widgetRefWatchInvocations, hasLength(3));
     expect(result.widgetRefInvocations, result.widgetRefWatchInvocations);
@@ -273,7 +273,7 @@ void fn(WidgetRef ref) {
   ref.read(dep2);
 }
 ''', (resolver) async {
-    final result = await resolver.resolveRiverpodAnalyssiResult();
+    final result = await resolver.resolveRiverpodAnalysisResult();
 
     final libraryResult = result.resolvedRiverpodLibraryResults.single;
 
@@ -324,7 +324,7 @@ class MyWidget extends ConsumerWidget {
   }
 }
 ''', (resolver) async {
-    final result = await resolver.resolveRiverpodAnalyssiResult();
+    final result = await resolver.resolveRiverpodAnalysisResult();
 
     expect(result.widgetRefListenInvocations, hasLength(1));
     expect(result.widgetRefInvocations, result.widgetRefListenInvocations);
@@ -366,7 +366,7 @@ class MyWidget extends ConsumerWidget {
   }
 }
 ''', (resolver) async {
-    final result = await resolver.resolveRiverpodAnalyssiResult();
+    final result = await resolver.resolveRiverpodAnalysisResult();
 
     expect(result.widgetRefListenManualInvocations, hasLength(3));
     expect(
@@ -450,7 +450,7 @@ class MyWidget extends ConsumerWidget {
   }
 }
 ''', (resolver) async {
-    final result = await resolver.resolveRiverpodAnalyssiResult();
+    final result = await resolver.resolveRiverpodAnalysisResult();
 
     expect(result.widgetRefReadInvocations, hasLength(2));
     expect(result.widgetRefInvocations, result.widgetRefReadInvocations);
@@ -518,7 +518,7 @@ void fn(_Ref ref) {
   ref.watch(family(0));
 }
 ''', (resolver) async {
-    final result = await resolver.resolveRiverpodAnalyssiResult();
+    final result = await resolver.resolveRiverpodAnalysisResult();
 
     final libraryResult = result.resolvedRiverpodLibraryResults.single;
 
@@ -670,7 +670,7 @@ void fn(_Ref ref) {
   ref.watch(dep);
 }
 ''', (resolver) async {
-    final result = await resolver.resolveRiverpodAnalyssiResult();
+    final result = await resolver.resolveRiverpodAnalysisResult();
 
     expect(result.widgetRefWatchInvocations, hasLength(4));
     expect(result.widgetRefInvocations, result.widgetRefWatchInvocations);

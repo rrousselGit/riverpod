@@ -1,4 +1,13 @@
 {
+  "Code generation": {
+    "message": "Génération de code"
+  },
+  "About code generation": {
+    "message": "À propos de la génération de code"
+  },
+  "About hooks": {
+    "message": "À propos des hooks"
+  },
   "theme.NotFound.title": {
     "message": "Page introuvable",
     "description": "The title of the 404 page"
@@ -213,6 +222,72 @@
   "homepage.no_flutter_dependency_body": {
     "message": "Permet de créer/partager/tester des providers, sans dépendre de Flutter. Cela inclut être capable d'écouter un provider sans {BuildContext}."
   },
+  "homepage.declarative_title": {
+    "message": "Programmation déclarative"
+  },
+  "homepage.declarative_body": {
+    "message": "Écrire la logique métier d'une manière similaire aux widgets sans état. Faites en sorte que vos requêtes réseau soient automatiquement recalculées lorsque cela est nécessaire et rendez votre logique facilement réutilisable/composable/maintenable."
+  },
+  "homepage.common_ui_patterns_title": {
+    "message": "Implémentez facilement des modèles d'interface utilisateur courants"
+  },
+  "homepage.common_ui_patterns_body": {
+    "message": "Grâce à Riverpod, des modèles d'interface utilisateur courants mais complexes tels que \"pull to refresh\"/ \"search as we type\"/etc... ne sont plus qu'à quelques lignes de code."
+  },
+  "homepage.tooling_ready_title": {
+    "message": "Outillage prêt"
+  },
+  "homepage.tooling_ready_body": {
+    "message": "Riverpod améliore le compilateur en faisant en sorte que les erreurs courantes soient des erreurs de compilation. Il fournit également des règles de lint personnalisées et des options de refactoring. Il dispose même d'une ligne de commande pour générer de la documentation."
+  },
+  "homepage.features_title": {
+    "message": "Caractéristiques"
+  },
+  "homepage.features_declarative_check": {
+    "message": "Programmation déclarative"
+  },
+  "homepage.features_compile_check": {
+    "message": "Compiler sûrement"
+  },
+  "homepage.features_dart_check": {
+    "message": "Travailler en Dart pur (serveurs/CLI/...)"
+  },
+  "homepage.features_lint_check": {
+    "message": "Règles de lint personnalisées"
+  },
+  "homepage.features_logger_check": {
+    "message": "Journalisation (Logging)"
+  },
+  "homepage.features_network_check": {
+    "message": "Support natif des requêtes réseaux"
+  },
+  "homepage.features_typed_query_check": {
+    "message": "Typage sûr des paramètres de requête"
+  },
+  "homepage.features_combine_check": {
+    "message": "États facilement combinables"
+  },
+  "homepage.features_refactor_check": {
+    "message": "Refactorings intégrés"
+  },
+  "homepage.features_socket_check": {
+    "message": "Support des Websocket"
+  },
+  "homepage.features_error_check": {
+    "message": "Gestion automatique des chargements/erreurs"
+  },
+  "homepage.features_test_check": {
+    "message": "Prêt pour les Tests"
+  },
+  "homepage.features_refresh_check": {
+    "message": "Prise en charge intégrée du \"pull-to-refresh\""
+  },
+  "homepage.features_hot_reload_check": {
+    "message": "Support du rechargement à chaud"
+  },
+  "homepage.features_graph_check": {
+    "message": "Générateur de documentation"
+  },
   "home.tagline": {
     "message": "Un framework Réactif de gestion d'état et d'injection de dépendances"
   },
@@ -250,10 +325,36 @@
   "home.consume_provider": {
     "message": "Consommer le provider"
   },
+  "home.refactors_title": {
+    "message": "Simplifiez le travail quotidien grâce aux refactors"
+  },
+  "home.refactors_list_link": {
+    "message": "liste des refactorings"
+  },
+  "home.refactors_body": {
+    "message": "Riverpod propose différents refactors, tels que \"Wrap widget in a Consumer\" et bien d'autres. Voir la {warnings}."
+  },
+  "home.lint_title": {
+    "message": "Gardez votre code maintenable avec des règles de lint"
+  },
+  "home.lint_rules_list_link": {
+    "message": "liste des règles de lint"
+  },
+  "home.lint_body": {
+    "message": "De nouvelles règles de lint spécifiques à Riverpod sont mises en œuvre et d'autres sont ajoutées en permanence. Cela permet de s'assurer que votre code reste dans les meilleures conditions. Voir la {warnings}."
+  },
   "declare_anywhere_img": {
     "message": "img/intro/fr/declare_anywhere.png"
   },
   "home.async_img": {
     "message": "img/intro/fr/async.png"
+  },
+  "custom.outdatedTranslations": {
+    "message": "Le contenu de cette page peut être obsolète. Pensez à consulter la {englishLink} à la place.",
+    "description": "The label used inside the outdated translation banner"
+  },
+  "custom.outdatedTranslationLink": {
+    "message": "version anglaise",
+    "description": "The link that redirects to the equivalent English doc"
   }
 }

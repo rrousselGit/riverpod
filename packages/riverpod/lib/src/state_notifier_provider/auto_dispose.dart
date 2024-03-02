@@ -1,6 +1,6 @@
 part of '../state_notifier_provider.dart';
 
-/// {@macro riverpod.providerrefbase}
+/// {@macro riverpod.provider_ref_base}
 abstract class AutoDisposeStateNotifierProviderRef<
         NotifierT extends StateNotifier<T>,
         T> extends StateNotifierProviderRef<NotifierT, T>
@@ -54,7 +54,7 @@ class AutoDisposeStateNotifierProvider<NotifierT extends StateNotifier<T>, T>
   @override
   late final Refreshable<NotifierT> notifier = _notifier(this);
 
-  /// {@macro riverpod.overridewith}
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     Create<NotifierT, AutoDisposeStateNotifierProviderRef<NotifierT, T>> create,
   ) {
@@ -106,7 +106,7 @@ class AutoDisposeStateNotifierProviderFamily<NotifierT extends StateNotifier<T>,
               computeAllTransitiveDependencies(dependencies),
         );
 
-  /// {@macro riverpod.overridewith}
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     NotifierT Function(
       AutoDisposeStateNotifierProviderRef<NotifierT, T> ref,

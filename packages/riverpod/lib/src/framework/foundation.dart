@@ -2,7 +2,7 @@ part of '../framework.dart';
 
 /// A common interface shared by [ProviderBase] and [Family]
 @sealed
-abstract class ProviderOrFamily {
+abstract class ProviderOrFamily implements ProviderListenableOrFamily {
   /// A common interface shared by [ProviderBase] and [Family]
   const ProviderOrFamily({
     required this.name,
@@ -50,7 +50,7 @@ abstract class ProviderOrFamily {
   ///
   /// final dependentProvider = Provider((ref) {
   ///   ref.watch(rootProvider);
-  ///   // This provider decided to spcecify "dependencies" anyway, marking
+  ///   // This provider decided to specify "dependencies" anyway, marking
   ///   // "dependentProvider" as possibly scoped.
   ///   // Since "rootProvider" is never scoped, it doesn't need to be included
   ///   // in "dependencies".
@@ -75,11 +75,19 @@ abstract class ProviderOrFamily {
   ///
   /// In that scenario, the `dependencies` parameter is required and it must
   /// include `scopedProvider`.
+  ///
+  /// See also:
+  /// - [provider_dependencies](https://github.com/rrousselGit/riverpod/tree/master/packages/riverpod_lint#provider_dependencies-riverpod_generator-only)
+  ///   and [scoped_providers_should_specify_dependencies](https://github.com/rrousselGit/riverpod/tree/master/packages/riverpod_lint#scoped_providers_should_specify_dependencies-generator-only).\
+  ///   These are lint rules that will warn about incorrect `dependencies` usages.
   final Iterable<ProviderOrFamily>? dependencies;
 
   /// All the dependencies of a provider and their dependencies too.
   final Iterable<ProviderOrFamily>? allTransitiveDependencies;
 }
+
+/// A shared interface between [ProviderListenable] and [Family].
+abstract class ProviderListenableOrFamily {}
 
 /// Computes the list of all dependencies of a provider.
 @internal
@@ -132,7 +140,7 @@ String shortHash(Object? object) {
 ///
 /// Should override ==/hashCode when possible
 @immutable
-mixin ProviderListenable<State> {
+mixin ProviderListenable<State> implements ProviderListenableOrFamily {
   /// Starts listening to this transformer
   ProviderSubscription<State> addListener(
     Node node,

@@ -10,7 +10,7 @@ String _$rawFutureHash() => r'5203a56065b768023770326281618e3229ccb530';
 
 /// See also [rawFuture].
 @ProviderFor(rawFuture)
-final rawFutureProvider = AutoDisposeProvider<Future<String>>.internal(
+final rawFutureProvider = AutoDisposeProvider<Raw<Future<String>>>.internal(
   rawFuture,
   name: r'rawFutureProvider',
   debugGetCreateSourceHash:
@@ -19,12 +19,12 @@ final rawFutureProvider = AutoDisposeProvider<Future<String>>.internal(
   allTransitiveDependencies: null,
 );
 
-typedef RawFutureRef = AutoDisposeProviderRef<Future<String>>;
+typedef RawFutureRef = AutoDisposeProviderRef<Raw<Future<String>>>;
 String _$rawStreamHash() => r'2b764189753a8b74f47ba557a79416f00ef5cebd';
 
 /// See also [rawStream].
 @ProviderFor(rawStream)
-final rawStreamProvider = AutoDisposeProvider<Stream<String>>.internal(
+final rawStreamProvider = AutoDisposeProvider<Raw<Stream<String>>>.internal(
   rawStream,
   name: r'rawStreamProvider',
   debugGetCreateSourceHash:
@@ -33,7 +33,7 @@ final rawStreamProvider = AutoDisposeProvider<Stream<String>>.internal(
   allTransitiveDependencies: null,
 );
 
-typedef RawStreamRef = AutoDisposeProviderRef<Stream<String>>;
+typedef RawStreamRef = AutoDisposeProviderRef<Raw<Stream<String>>>;
 String _$rawFamilyFutureHash() => r'485f59512081852e51279658facc015309743864';
 
 /// Copied from Dart SDK
@@ -62,7 +62,7 @@ class _SystemHash {
 const rawFamilyFutureProvider = RawFamilyFutureFamily();
 
 /// See also [rawFamilyFuture].
-class RawFamilyFutureFamily extends Family<Future<String>> {
+class RawFamilyFutureFamily extends Family<Raw<Future<String>>> {
   /// See also [rawFamilyFuture].
   const RawFamilyFutureFamily();
 
@@ -100,7 +100,7 @@ class RawFamilyFutureFamily extends Family<Future<String>> {
 }
 
 /// See also [rawFamilyFuture].
-class RawFamilyFutureProvider extends AutoDisposeProvider<Future<String>> {
+class RawFamilyFutureProvider extends AutoDisposeProvider<Raw<Future<String>>> {
   /// See also [rawFamilyFuture].
   RawFamilyFutureProvider(
     int id,
@@ -135,7 +135,7 @@ class RawFamilyFutureProvider extends AutoDisposeProvider<Future<String>> {
 
   @override
   Override overrideWith(
-    Future<String> Function(RawFamilyFutureRef provider) create,
+    Raw<Future<String>> Function(RawFamilyFutureRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -152,7 +152,7 @@ class RawFamilyFutureProvider extends AutoDisposeProvider<Future<String>> {
   }
 
   @override
-  AutoDisposeProviderElement<Future<String>> createElement() {
+  AutoDisposeProviderElement<Raw<Future<String>>> createElement() {
     return _RawFamilyFutureProviderElement(this);
   }
 
@@ -170,13 +170,14 @@ class RawFamilyFutureProvider extends AutoDisposeProvider<Future<String>> {
   }
 }
 
-mixin RawFamilyFutureRef on AutoDisposeProviderRef<Future<String>> {
+mixin RawFamilyFutureRef on AutoDisposeProviderRef<Raw<Future<String>>> {
   /// The parameter `id` of this provider.
   int get id;
 }
 
 class _RawFamilyFutureProviderElement
-    extends AutoDisposeProviderElement<Future<String>> with RawFamilyFutureRef {
+    extends AutoDisposeProviderElement<Raw<Future<String>>>
+    with RawFamilyFutureRef {
   _RawFamilyFutureProviderElement(super.provider);
 
   @override
@@ -190,7 +191,7 @@ String _$rawFamilyStreamHash() => r'e778e5cfcb8ab381e2412f5c73213aaa03b93012';
 const rawFamilyStreamProvider = RawFamilyStreamFamily();
 
 /// See also [rawFamilyStream].
-class RawFamilyStreamFamily extends Family<Stream<String>> {
+class RawFamilyStreamFamily extends Family<Raw<Stream<String>>> {
   /// See also [rawFamilyStream].
   const RawFamilyStreamFamily();
 
@@ -228,7 +229,7 @@ class RawFamilyStreamFamily extends Family<Stream<String>> {
 }
 
 /// See also [rawFamilyStream].
-class RawFamilyStreamProvider extends AutoDisposeProvider<Stream<String>> {
+class RawFamilyStreamProvider extends AutoDisposeProvider<Raw<Stream<String>>> {
   /// See also [rawFamilyStream].
   RawFamilyStreamProvider(
     int id,
@@ -263,7 +264,7 @@ class RawFamilyStreamProvider extends AutoDisposeProvider<Stream<String>> {
 
   @override
   Override overrideWith(
-    Stream<String> Function(RawFamilyStreamRef provider) create,
+    Raw<Stream<String>> Function(RawFamilyStreamRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -280,7 +281,7 @@ class RawFamilyStreamProvider extends AutoDisposeProvider<Stream<String>> {
   }
 
   @override
-  AutoDisposeProviderElement<Stream<String>> createElement() {
+  AutoDisposeProviderElement<Raw<Stream<String>>> createElement() {
     return _RawFamilyStreamProviderElement(this);
   }
 
@@ -298,13 +299,14 @@ class RawFamilyStreamProvider extends AutoDisposeProvider<Stream<String>> {
   }
 }
 
-mixin RawFamilyStreamRef on AutoDisposeProviderRef<Stream<String>> {
+mixin RawFamilyStreamRef on AutoDisposeProviderRef<Raw<Stream<String>>> {
   /// The parameter `id` of this provider.
   int get id;
 }
 
 class _RawFamilyStreamProviderElement
-    extends AutoDisposeProviderElement<Stream<String>> with RawFamilyStreamRef {
+    extends AutoDisposeProviderElement<Raw<Stream<String>>>
+    with RawFamilyStreamRef {
   _RawFamilyStreamProviderElement(super.provider);
 
   @override
@@ -579,7 +581,7 @@ String _$rawFutureClassHash() => r'bf66f1cdbd99118b8845d206e6a2611b3101f45c';
 /// See also [RawFutureClass].
 @ProviderFor(RawFutureClass)
 final rawFutureClassProvider =
-    AutoDisposeNotifierProvider<RawFutureClass, Future<String>>.internal(
+    AutoDisposeNotifierProvider<RawFutureClass, Raw<Future<String>>>.internal(
   RawFutureClass.new,
   name: r'rawFutureClassProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -589,13 +591,13 @@ final rawFutureClassProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$RawFutureClass = AutoDisposeNotifier<Future<String>>;
+typedef _$RawFutureClass = AutoDisposeNotifier<Raw<Future<String>>>;
 String _$rawStreamClassHash() => r'712cffcb2018cfb4ff45012c1aa6e43c8cbe9d5d';
 
 /// See also [RawStreamClass].
 @ProviderFor(RawStreamClass)
 final rawStreamClassProvider =
-    AutoDisposeNotifierProvider<RawStreamClass, Stream<String>>.internal(
+    AutoDisposeNotifierProvider<RawStreamClass, Raw<Stream<String>>>.internal(
   RawStreamClass.new,
   name: r'rawStreamClassProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -605,15 +607,15 @@ final rawStreamClassProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$RawStreamClass = AutoDisposeNotifier<Stream<String>>;
+typedef _$RawStreamClass = AutoDisposeNotifier<Raw<Stream<String>>>;
 String _$rawFamilyFutureClassHash() =>
     r'd7cacb0f2c51697d107de6daa68b242c04085dca';
 
 abstract class _$RawFamilyFutureClass
-    extends BuildlessAutoDisposeNotifier<Future<String>> {
+    extends BuildlessAutoDisposeNotifier<Raw<Future<String>>> {
   late final int id;
 
-  Future<String> build(
+  Raw<Future<String>> build(
     int id,
   );
 }
@@ -623,7 +625,7 @@ abstract class _$RawFamilyFutureClass
 const rawFamilyFutureClassProvider = RawFamilyFutureClassFamily();
 
 /// See also [RawFamilyFutureClass].
-class RawFamilyFutureClassFamily extends Family<Future<String>> {
+class RawFamilyFutureClassFamily extends Family<Raw<Future<String>>> {
   /// See also [RawFamilyFutureClass].
   const RawFamilyFutureClassFamily();
 
@@ -662,7 +664,7 @@ class RawFamilyFutureClassFamily extends Family<Future<String>> {
 
 /// See also [RawFamilyFutureClass].
 class RawFamilyFutureClassProvider extends AutoDisposeNotifierProviderImpl<
-    RawFamilyFutureClass, Future<String>> {
+    RawFamilyFutureClass, Raw<Future<String>>> {
   /// See also [RawFamilyFutureClass].
   RawFamilyFutureClassProvider(
     int id,
@@ -693,7 +695,7 @@ class RawFamilyFutureClassProvider extends AutoDisposeNotifierProviderImpl<
   final int id;
 
   @override
-  Future<String> runNotifierBuild(
+  Raw<Future<String>> runNotifierBuild(
     covariant RawFamilyFutureClass notifier,
   ) {
     return notifier.build(
@@ -718,7 +720,7 @@ class RawFamilyFutureClassProvider extends AutoDisposeNotifierProviderImpl<
   }
 
   @override
-  AutoDisposeNotifierProviderElement<RawFamilyFutureClass, Future<String>>
+  AutoDisposeNotifierProviderElement<RawFamilyFutureClass, Raw<Future<String>>>
       createElement() {
     return _RawFamilyFutureClassProviderElement(this);
   }
@@ -738,14 +740,14 @@ class RawFamilyFutureClassProvider extends AutoDisposeNotifierProviderImpl<
 }
 
 mixin RawFamilyFutureClassRef
-    on AutoDisposeNotifierProviderRef<Future<String>> {
+    on AutoDisposeNotifierProviderRef<Raw<Future<String>>> {
   /// The parameter `id` of this provider.
   int get id;
 }
 
 class _RawFamilyFutureClassProviderElement
     extends AutoDisposeNotifierProviderElement<RawFamilyFutureClass,
-        Future<String>> with RawFamilyFutureClassRef {
+        Raw<Future<String>>> with RawFamilyFutureClassRef {
   _RawFamilyFutureClassProviderElement(super.provider);
 
   @override
@@ -756,10 +758,10 @@ String _$rawFamilyStreamClassHash() =>
     r'321796a0befc43fb83f7ccfdcb6b011fc8c7c599';
 
 abstract class _$RawFamilyStreamClass
-    extends BuildlessAutoDisposeNotifier<Stream<String>> {
+    extends BuildlessAutoDisposeNotifier<Raw<Stream<String>>> {
   late final int id;
 
-  Stream<String> build(
+  Raw<Stream<String>> build(
     int id,
   );
 }
@@ -769,7 +771,7 @@ abstract class _$RawFamilyStreamClass
 const rawFamilyStreamClassProvider = RawFamilyStreamClassFamily();
 
 /// See also [RawFamilyStreamClass].
-class RawFamilyStreamClassFamily extends Family<Stream<String>> {
+class RawFamilyStreamClassFamily extends Family<Raw<Stream<String>>> {
   /// See also [RawFamilyStreamClass].
   const RawFamilyStreamClassFamily();
 
@@ -808,7 +810,7 @@ class RawFamilyStreamClassFamily extends Family<Stream<String>> {
 
 /// See also [RawFamilyStreamClass].
 class RawFamilyStreamClassProvider extends AutoDisposeNotifierProviderImpl<
-    RawFamilyStreamClass, Stream<String>> {
+    RawFamilyStreamClass, Raw<Stream<String>>> {
   /// See also [RawFamilyStreamClass].
   RawFamilyStreamClassProvider(
     int id,
@@ -839,7 +841,7 @@ class RawFamilyStreamClassProvider extends AutoDisposeNotifierProviderImpl<
   final int id;
 
   @override
-  Stream<String> runNotifierBuild(
+  Raw<Stream<String>> runNotifierBuild(
     covariant RawFamilyStreamClass notifier,
   ) {
     return notifier.build(
@@ -864,7 +866,7 @@ class RawFamilyStreamClassProvider extends AutoDisposeNotifierProviderImpl<
   }
 
   @override
-  AutoDisposeNotifierProviderElement<RawFamilyStreamClass, Stream<String>>
+  AutoDisposeNotifierProviderElement<RawFamilyStreamClass, Raw<Stream<String>>>
       createElement() {
     return _RawFamilyStreamClassProviderElement(this);
   }
@@ -884,14 +886,14 @@ class RawFamilyStreamClassProvider extends AutoDisposeNotifierProviderImpl<
 }
 
 mixin RawFamilyStreamClassRef
-    on AutoDisposeNotifierProviderRef<Stream<String>> {
+    on AutoDisposeNotifierProviderRef<Raw<Stream<String>>> {
   /// The parameter `id` of this provider.
   int get id;
 }
 
 class _RawFamilyStreamClassProviderElement
     extends AutoDisposeNotifierProviderElement<RawFamilyStreamClass,
-        Stream<String>> with RawFamilyStreamClassRef {
+        Raw<Stream<String>>> with RawFamilyStreamClassRef {
   _RawFamilyStreamClassProviderElement(super.provider);
 
   @override
@@ -1185,4 +1187,4 @@ final supports$InClassNameProvider =
 
 typedef _$Supports$InClassName = AutoDisposeNotifier<String>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

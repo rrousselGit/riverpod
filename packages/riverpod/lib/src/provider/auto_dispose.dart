@@ -1,6 +1,6 @@
 part of '../provider.dart';
 
-/// {@macro riverpod.providerrefbase}
+/// {@macro riverpod.provider_ref_base}
 abstract class AutoDisposeProviderRef<State> extends ProviderRef<State>
     implements AutoDisposeRef<State> {}
 
@@ -44,7 +44,7 @@ class AutoDisposeProvider<T> extends InternalProvider<T> {
     return AutoDisposeProviderElement(this);
   }
 
-  /// {@macro riverpod.overridewith}
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     Create<T, AutoDisposeProviderRef<T>> create,
   ) {
@@ -87,7 +87,7 @@ class AutoDisposeProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
           debugGetCreateSourceHash: null,
         );
 
-  /// {@macro riverpod.overridewith}
+  /// {@macro riverpod.override_with}
   Override overrideWith(
     R Function(AutoDisposeProviderRef<R> ref, Arg arg) create,
   ) {

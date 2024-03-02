@@ -1,13 +1,18 @@
 ---
 title: StreamProvider
+version: 1
 ---
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
-import streamProvider from "!!raw-loader!/docs/providers/stream_provider/live_stream_chat_provider.dart";
+import { trimSnippet,AutoSnippet } from "/src/components/CodeSnippet";
+import streamProvider from "./stream_provider/live_stream_chat_provider";
 import streamConsumer from "!!raw-loader!/docs/providers/stream_provider/live_stream_chat_consumer.dart";
-import { trimSnippet } from "../../src/components/CodeSnippet";
+
+:::caution
+The content of this page may be outdated.  
+It will be updated in the future, but for now you may want to refer to the content
+in the top of the sidebar instead (introduction/essentials/case-studies/...)
+:::
 
 `StreamProvider` is similar to [FutureProvider] but for [Stream]s instead of
 [Future]s.
@@ -32,6 +37,17 @@ Using `StreamProvider` over [StreamBuilder] has numerous benefits:
   immediate access to the most up-to-date event.
 - it allows easily mocking the stream during tests by overriding the `StreamProvider`.
 
+## Usage example: live chat using sockets
+
+`StreamProvider` is used in when we handle stream of asynchronous data
+such as Video Streaming, Weather broadcasting Apis or Live chat as follows:
+
+<AutoSnippet language="dart" {...streamProvider}></AutoSnippet>
+
+Then, the UI can listen to live streaming chats like so:
+
+<CodeBlock>{trimSnippet(streamConsumer)}</CodeBlock>
+
 [ref.watch]: ../concepts/reading#using-refwatch-to-observe-a-provider
 [statenotifierprovider]: ./state_notifier_provider
 [provider]: ./provider
@@ -42,14 +58,3 @@ Using `StreamProvider` over [StreamBuilder] has numerous benefits:
 [stream.periodic]: https://api.dart.dev/stable/2.15.1/dart-async/Stream/Stream.periodic.html
 [family]: ../concepts/modifiers/family
 [streambuilder]: https://api.flutter.dev/flutter/widgets/StreamBuilder-class.html
-
-## Usage example: live chat using sockets
-
-`StreamProvider` is used in when we handle stream of asynchronous data
-such as Video Streaming, Weather broadcasting Apis.
-
-<CodeBlock>{trimSnippet(streamProvider)}</CodeBlock>
-
-Then, the UI can listen to live streaming chats like so:
-
-<CodeBlock>{trimSnippet(streamConsumer)}</CodeBlock>

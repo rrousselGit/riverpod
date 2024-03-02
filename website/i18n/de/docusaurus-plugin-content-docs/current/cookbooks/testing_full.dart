@@ -43,7 +43,7 @@ class FakeRepository implements Repository {
 }
 
 class TodoItem extends StatelessWidget {
-  const TodoItem({Key? key, required this.todo}) : super(key: key);
+  const TodoItem({super.key, required this.todo});
   final Todo todo;
   @override
   Widget build(BuildContext context) {

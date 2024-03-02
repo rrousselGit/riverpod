@@ -1,0 +1,150 @@
+{
+  "version.label": {
+    "message": "Next",
+    "description": "The label for version current"
+  },
+  "sidebar.Sidebar.category.Introduction": {
+    "message": "介绍",
+    "description": "The label for category Introduction in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.Riverpod for Provider Users": {
+    "message": "给 Provider 开发者的 Riverpod 指南",
+    "description": "The label for category Riverpod for Provider Users in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.Essentials": {
+    "message": "要点",
+    "description": "The label for category Essentials in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.Case studies": {
+    "message": "应用案例",
+    "description": "The label for category Case studies in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.Advanced topics": {
+    "message": "进阶内容",
+    "description": "The label for category Advanced topics in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.Concepts": {
+    "message": "概念",
+    "description": "The label for category Concepts in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.Migration guides": {
+    "message": "迁移指南",
+    "description": "The label for category Migration guides in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.Official examples": {
+    "message": "官方示例",
+    "description": "The label for category Official examples in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.Third party examples": {
+    "message": "第三方示例",
+    "description": "The label for category Third party examples in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.Concepts (old)": {
+    "message": "概念（旧）",
+    "description": "The label for category Concepts (old) in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.Modifiers": {
+    "message": "修饰符",
+    "description": "The label for category Modifiers in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.All Providers (old)": {
+    "message": "提供者程序类型（旧）",
+    "description": "The label for category All Providers (old) in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.Guides (old)": {
+    "message": "指南（旧）",
+    "description": "The label for category Guides (old) in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.link.Counter": {
+    "message": "计数器",
+    "description": "The label for link Counter in sidebar Sidebar, linking to https://github.com/rrousselGit/riverpod/tree/master/examples/counter"
+  },
+  "sidebar.Sidebar.link.Todo list": {
+    "message": "待办清单",
+    "description": "The label for link Todo list in sidebar Sidebar, linking to https://github.com/rrousselGit/riverpod/tree/master/examples/todos"
+  },
+  "sidebar.Sidebar.link.Pub.dev client": {
+    "message": "Pub.dev 客户端",
+    "description": "The label for link Pub.dev client in sidebar Sidebar, linking to https://github.com/rrousselGit/riverpod/tree/master/examples/pub"
+  },
+  "sidebar.Sidebar.link.Marvel API": {
+    "message": "Marvel API",
+    "description": "The label for link Marvel API in sidebar Sidebar, linking to https://github.com/rrousselGit/riverpod/tree/master/examples/marvel"
+  },
+  "sidebar.Sidebar.link.Android Launcher": {
+    "message": "Android 桌面",
+    "description": "The label for link Android Launcher in sidebar Sidebar, linking to https://github.com/lohanidamodar/fl_live_launcher"
+  },
+  "sidebar.Sidebar.link.Worldtime Clock": {
+    "message": "世界时钟",
+    "description": "The label for link Worldtime Clock in sidebar Sidebar, linking to https://github.com/lohanidamodar/flutter_worldtime"
+  },
+  "sidebar.Sidebar.link.Dictionary App": {
+    "message": "词典应用",
+    "description": "The label for link Dictionary App in sidebar Sidebar, linking to https://github.com/lohanidamodar/fl_dictio"
+  },
+  "sidebar.Sidebar.link.Time Tracking App (with Firebase)": {
+    "message": "时间追踪应用（使用 Firebase）",
+    "description": "The label for link Time Tracking App (with Firebase) in sidebar Sidebar, linking to https://github.com/bizz84/starter_architecture_flutter_firebase"
+  },
+  "sidebar.Sidebar.link.Firebase Phone Authentication with Riverpod": {
+    "message": "使用 Riverpod 的 Firebase 手机号验证",
+    "description": "The label for link Firebase Phone Authentication with Riverpod in sidebar Sidebar, linking to https://github.com/julienlebren/flutter_firebase_phone_auth_riverpod"
+  },
+  "sidebar.Sidebar.link.ListView paging with search": {
+    "message": "带搜索栏的列表分页",
+    "description": "The label for link ListView paging with search in sidebar Sidebar, linking to https://github.com/tbm98/flutter_loadmore_search"
+  },
+  "sidebar.Sidebar.link.Resocoder's Weather Bloc to Weather Riverpod V2": {
+    "message": "Resocoder 的天气应用迁移从 Bloc 到 Riverpod V2",
+    "description": "The label for link Resocoder's Weather Bloc to Weather Riverpod V2 in sidebar Sidebar, linking to https://github.com/coyksdev/flutter-bloc-library-v1-tutorial"
+  },
+  "sidebar.Sidebar.link.Blood Pressure Tracker App": {
+    "message": "血压记录应用",
+    "description": "The label for link Blood Pressure Tracker App in sidebar Sidebar, linking to https://github.com/UrosTodosijevic/blood_pressure_tracker"
+  },
+  "sidebar.Sidebar.link.Firebase Authentication with Riverpod Following Flutter DDD Architecture Pattern": {
+    "message": "使用 Riverpod 并遵循领域驱动开发（DDD）架构模式的 Firebase 验证",
+    "description": "The label for link Firebase Authentication with Riverpod Following Flutter DDD Architecture Pattern in sidebar Sidebar, linking to https://github.com/pythonhubpy/firebase_authentication_flutter_DDD"
+  },
+  "sidebar.Sidebar.link.Todo App with Backup and Restore feature": {
+    "message": "具有备份和恢复功能的待办清单应用",
+    "description": "The label for link Todo App with Backup and Restore feature in sidebar Sidebar, linking to https://github.com/TheAlphaApp/flutter_riverpod_todo_app"
+  },
+  "sidebar.Sidebar.link.Integrating Hive database with Riverpod (simple example)": {
+    "message": "将 Hive 数据库与 Riverpod 集成（简单示例）",
+    "description": "The label for link Integrating Hive database with Riverpod (simple example) in sidebar Sidebar, linking to https://github.com/GitGud31/theme_riverpod_hive"
+  },
+  "sidebar.Sidebar.link.Browser App with Riverpod": {
+    "message": "使用 Riverpod 的浏览器应用",
+    "description": "The label for link Browser App with Riverpod in sidebar Sidebar, linking to https://github.com/MarioCroSite/simple_browser_app"
+  },
+  "sidebar.Sidebar.link.GoRouter with Riverpod": {
+    "message": "将 GoRouter 与 Riverpod 集成",
+    "description": "The label for link GoRouter with Riverpod in sidebar Sidebar, linking to https://github.com/lucavenir/go_router_riverpod"
+  },
+  "sidebar.Sidebar.link.Piano Chords Test": {
+    "message": "钢琴和弦测试应用",
+    "description": "The label for link Piano Chords Test in sidebar Sidebar, linking to https://github.com/akvus/piano_fun"
+  },
+  "sidebar.Sidebar.link.Movies API App with Caching & Pagination": {
+    "message": "带缓存和分页功能的电影 API 应用",
+    "description": "The label for link Movies API App with Caching & Pagination in sidebar Sidebar, linking to https://github.com/Roaa94/movies_app"
+  },
+  "sidebar.Sidebar.link.AWS Amplify Storage Gallery App with Riverpod & Freezed": {
+    "message": "使用 Riverpod 和 Freezed 的 AWS Amplify 存储图片应用",
+    "description": "The label for link AWS Amplify Storage Gallery App with Riverpod & Freezed in sidebar Sidebar, linking to https://github.com/offlineprogrammer/amplify_storage_app"
+  },
+  "sidebar.Sidebar.link.Clean Architecture demonstration with Riverpod": {
+    "message": "Riverpod 实现 Clean 架构的示范",
+    "description": "The label for link Clean Architecture demonstration with Riverpod in sidebar Sidebar, linking to https://github.com/Uuttssaavv/flutter-clean-architecture-riverpod"
+  },
+  "sidebar.Sidebar.link.Delivery App with Google Maps and Live Tracking": {
+    "message": "具备谷歌地图和在线追踪功能的送货应用",
+    "description": "The label for link Delivery App with Google Maps and Live Tracking in sidebar Sidebar, linking to https://github.com/AhmedLSayed9/deliverzler"
+  },
+  "sidebar.Sidebar.link.API reference": {
+    "message": "API 参考",
+    "description": "The label for link API reference in sidebar Sidebar, linking to https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/hooks_riverpod-library.html"
+  }
+}

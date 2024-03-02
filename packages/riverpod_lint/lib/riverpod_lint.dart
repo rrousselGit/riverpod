@@ -7,12 +7,16 @@ import 'src/assists/convert_to_widget_utils.dart';
 import 'src/assists/functional_to_class_based_provider.dart';
 import 'src/assists/wrap_with_consumer.dart';
 import 'src/assists/wrap_with_provider_scope.dart';
+import 'src/lints/async_value_nullable_pattern.dart';
+import 'src/lints/avoid_build_context_in_providers.dart';
 import 'src/lints/avoid_manual_providers_as_generated_provider_dependency.dart';
 import 'src/lints/avoid_public_notifier_properties.dart';
 import 'src/lints/avoid_ref_inside_state_dispose.dart';
 import 'src/lints/functional_ref.dart';
 import 'src/lints/missing_provider_scope.dart';
+import 'src/lints/notifier_build.dart';
 import 'src/lints/notifier_extends.dart';
+import 'src/lints/protected_notifier_properties.dart';
 import 'src/lints/provider_dependencies.dart';
 import 'src/lints/provider_parameters.dart';
 import 'src/lints/scoped_providers_should_specify_dependencies.dart';
@@ -23,6 +27,7 @@ PluginBase createPlugin() => _RiverpodPlugin();
 class _RiverpodPlugin extends PluginBase {
   @override
   List<LintRule> getLintRules(CustomLintConfigs configs) => [
+        const AvoidBuildContextInProviders(),
         const AvoidPublicNotifierProperties(),
         const FunctionalRef(),
         const MissingProviderScope(),
@@ -33,28 +38,9 @@ class _RiverpodPlugin extends PluginBase {
         const ScopedProvidersShouldSpecifyDependencies(),
         const UnsupportedProviderValue(),
         const AvoidRefInsideStateDispose(),
-//         const AvoidDynamicProviders(),
-// //  "Avoid passing providers as parameter to objects"
-//         const AvoidExposingProviderRef(),
-//         const AvoidExposingWidgetRef(),
-//         const AvoidGlobalProviderContainer(),
-//         const AvoidReadAutoDispose(),
-//         const AvoidReadInsideBuild(),
-//         const AvoidWatchOutsideBuild(),
-//         const DontModifyProvidersDuringInit(),
-// //  async ref.watch(autoDispose) (typically inside FutureProviders)
-//         const DontModifyProvidersInsideWidgetLifecycles(),
-//         const PreferFinalProvider(),
-//         const ProviderMissingDependency(),
-//         const ProviderUnsusedDependency(),
-//  equivalent of use_build_context_synchronously for WidgetRef instead of BuildContext (proposal: extend use_build_context_synchronously to consider Riverpod's WidgetRef dart-lang/linter#3419)
-//  ref.watch(family([])) (or other non-constant object instantiation with no == override)
-//  check circular dependencies (ref.watch/read/listen checks instead of "dependencies" checks)
-
-//  avoid overrides on non-root ProviderScope/ProviderContainer
-//  no ProviderScope detected on runApp
-
-// Hook usage in non-hook widget
+        const NotifierBuild(),
+        const AsyncValueNullablePattern(),
+        const ProtectedNotifierProperties(),
       ];
 
   @override
@@ -71,15 +57,6 @@ class _RiverpodPlugin extends PluginBase {
             targetWidget: targetWidget,
           ),
         ),
-
-// StateProvider to SyncClassBasedProvider
-// convert FutureProvider <> AsyncNotifierProvider
-// convert Provider <> NotifierProvider
-// convert *Notifier <> autoDispose/family
-// Notifier/AsyncNotifier/FutureProvider -> generator
-// Convert StateNotifier -> Notifier
-// Convert StateNotifier<AsyncValue> -> AsyncNotifier
-
         FunctionalToClassBasedProvider(),
         ClassBasedToFunctionalProvider(),
       ];

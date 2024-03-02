@@ -1,0 +1,116 @@
+---
+title: Websockets and synchronous execution
+version: 1
+---
+
+import {
+  trimSnippet,
+  AutoSnippet,
+  When,
+} from "/src/components/CodeSnippet";
+import syncDefinition from "./websockets_sync/sync_definition";
+import streamProvider from "./websockets_sync/stream_provider";
+import syncConsumer from "!!raw-loader!./websockets_sync/sync_consumer.dart";
+import rawUsage from "!!raw-loader!./websockets_sync/raw_usage.dart";
+import pipeChangeNotifier from "!!raw-loader!./websockets_sync/pipe_change_notifier.dart";
+import sharedPipeChangeNotifier from "!!raw-loader!./websockets_sync/shared_pipe_change_notifier.dart";
+import changeNotifierProvider from "!!raw-loader!./websockets_sync/change_notifier_provider.dart";
+
+So far, we've only covered on how to create a `Future`.  
+This is on purpose, as `Future`s are the core of how Riverpod applications
+should be built. _But_, Riverpod also supports other formats if necessary.
+
+In particular, instead of a `Future`, providers are free to:
+
+- Synchronously return an object, such as to create a "Repository".
+- Return a `Stream`, such as to listen to websockets.
+
+Returning a `Future` and returning a `Stream` or an object
+is quite similar overall. Think of this page as
+an explanation of subtle differences and various tips for those use-cases.
+
+## Synchronously returning an object
+
+To synchronously create an object, make sure that your
+provider does not return a Future:
+
+<AutoSnippet {...syncDefinition} />
+
+When a provider synchronously creates an object,
+this impacts how the object is consumed.
+In particular, synchronous values are not wrapped
+in an "AsyncValue":
+
+<AutoSnippet raw={syncConsumer} />
+
+The consequence of this difference is that if your provider
+throws, trying to read the value will rethrow the error.
+Alternatively, when using `ref.listen`, the "onError" callback
+will be invoked.
+
+### Listenable objects considerations
+
+<When codegen={true}>
+
+Listenable objects such as `ChangeNotifier` or `StateNotifier` are not supported.  
+If, for compatibility reasons, you need to interact with one of such objects,
+one workaround is to pipe their notification mechanism to Riverpod.
+
+<AutoSnippet raw={pipeChangeNotifier} />
+
+:::info
+In case you need such logic many times, it is worth noting that
+the logic shared! The "ref" object is designed to be composable.
+This enables extracting the dispose/listening logic out of the provider:
+
+<AutoSnippet raw={sharedPipeChangeNotifier} />
+:::
+
+</When>
+
+<When codegen={false}>
+
+When not using code-generation, Riverpod offers "legacy" providers
+to support `ChangeNotifier` and `StateNotifier` out of the box:
+`ChangeNotifierProvider` and `StateNotifierProvider`. Using them is
+similar to using other kinds of providers. The main difference is
+that they will both listen and dispose of the returned object automatically.
+
+These providers are not recommended for new business logic.
+But they can be helpful when interacting with legacy code,
+such as when migrating from `pkg:provider` to Riverpod.
+
+<AutoSnippet raw={changeNotifierProvider} />
+
+</When>
+
+## Listening to a Stream
+
+A common use-case of modern applications is to interact with websockets,
+such as with Firebase or GraphQL subscriptions.  
+Interacting with those APIs is often done by listening to a `Stream`.
+
+To help with that, Riverpod naturally supports `Stream` objects.
+Like with `Future`s, the object will be converted to an `AsyncValue`:
+
+<AutoSnippet {...streamProvider} />
+
+:::info
+Riverpod is not aware of custom `Stream` implementations, such as
+RX's `BehaviorSubject`.
+As such, returning a `BehaviorSubject` will not expose the `value`
+synchronously to widgets, even if already available on creation.
+:::
+
+## Disabling conversion of `Stream`s/`Future`s to `AsyncValue`
+
+By default, Riverpod will convert `Stream`s and `Future`s to `AsyncValue`.
+Although rarely needed, it is possible to disable this behavior by wrapping
+the return type in a `Raw` typedef.
+
+:::caution
+It is generally discouraged to disable the `AsyncValue` conversion.
+Do so only if you know what you are doing.
+:::
+
+<AutoSnippet raw={rawUsage} />

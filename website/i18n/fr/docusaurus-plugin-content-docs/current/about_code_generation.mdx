@@ -1,0 +1,67 @@
+---
+title: À propos de la génération de code
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import fetchUser from "!!raw-loader!./about_codegen/main.dart";
+import rawFetchUser from "!!raw-loader!./about_codegen/raw.dart";
+import {
+  trimSnippet,
+  CodeSnippet,
+} from "../../../../src/components/CodeSnippet";
+
+La génération de code est l'idée d'utiliser un outil pour générer du code à notre place.  
+Dans Dart, elle présente l'inconvénient de nécessiter une étape supplémentaire pour "compiler" une application. 
+Bien que ce problème puisse être résolu dans un avenir proche, puisque l'équipe de Dart travaille 
+sur une solution potentielle à ce problème.
+
+Dans le contexte de Riverpod, la génération de code consiste à modifier légèrement la syntaxe
+pour définir un "provider". Par exemple, au lieu de :
+
+<CodeBlock language="dart">{trimSnippet(rawFetchUser)}</CodeBlock>
+
+En utilisant la génération de code, nous écririons :
+
+<CodeBlock language="dart">{trimSnippet(fetchUser)}</CodeBlock>
+
+Lorsque vous utilisez Riverpod, la génération de code est totalement facultative. Il est tout à fait possible 
+d'utiliser Riverpod sans.
+En même temps, Riverpod adopte la génération de code et recommande de l'utiliser.
+
+Pour plus d'informations sur la manière d'installer et d'utiliser le générateur de code de Riverpod, reportez-vous à
+la page [Débuter](./getting_started). Assurez-vous d'activer la génération de code
+dans la barre latérale de la documentation.
+
+## Pourquoi utiliser la génération de code avec Riverpod ?
+
+Vous vous demandez peut-être : "Si la génération de code est facultative dans Riverpod, pourquoi l'utiliser ?"
+
+Comme toujours avec les packages : Pour vous faciliter la vie.
+Ceci inclut, mais n'est pas limité à :
+
+- meilleure syntaxe, plus lisible/flexible et avec une courbe d'apprentissage réduite.
+
+  - Plus besoin de se préoccuper de `FutureProvider` ou de `Provider`, etc. Ecrivez votre logique,
+    et Riverpod choisira le provider le plus approprié pour vous.
+  - Le passage de paramètres aux providers est maintenant sans restriction. Au lieu d'être limité à
+    l'utilisation de [family](./concepts/modifiers/family) et le passage d'un seul paramètre positionnel,
+    vous pouvez maintenant passer n'importe quelle forme de paramètre. Cela inclut les paramètres nommés, les paramètres optionnels,
+    et même des valeurs par défaut.
+
+- **rechargement à chaud avec état** du code écrit dans Riverpod.
+- un meilleur débogage, grâce à la génération de métadonnées supplémentaires que le débogueur récupère ensuite.
+- certaines fonctionnalités de Riverpod ne seront disponibles qu'avec la génération de code.
+
+En même temps, de nombreuses applications utilisent déjà la génération de code avec des paquets tels que
+[Freezed](https://pub.dev/packages/freezed) ou [json_serializable](https://pub.dev/packages/json_serializable).
+Dans ce cas, votre projet est probablement déjà configuré pour la génération de code, et son utilisation pour 
+Riverpod devrait être simple.
+
+[hookwidget]: https://pub.dev/documentation/flutter_hooks/latest/flutter_hooks/HookWidget-class.html
+[statefulwidget]: https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html
+[riverpod]: https://github.com/rrousselgit/riverpod
+[hooks_riverpod]: https://pub.dev/packages/hooks_riverpod
+[flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
+[flutter_hooks]: https://github.com/rrousselGit/flutter_hooks

@@ -8,7 +8,7 @@ import 'package:meta/meta.dart';
 
 import 'internals.dart';
 
-/// {@template riverpod.providerscope}
+/// {@template riverpod.provider_scope}
 /// A widget that stores the state of providers.
 ///
 /// All Flutter applications using Riverpod must contain a [ProviderScope] at
@@ -25,7 +25,7 @@ import 'internals.dart';
 /// }
 /// ```
 ///
-/// It optionally possible to specify `overrides` to change the behavior of
+/// It's optionally possible to specify `overrides` to change the behavior of
 /// some providers. This can be useful for testing purposes:
 ///
 /// ```dart
@@ -78,7 +78,7 @@ import 'internals.dart';
 /// {@endtemplate}
 @sealed
 class ProviderScope extends StatefulWidget {
-  /// {@macro riverpod.providerscope}
+  /// {@macro riverpod.provider_scope}
   const ProviderScope({
     super.key,
     this.overrides = const [],
@@ -305,7 +305,7 @@ class _UncontrolledProviderScopeElement extends InheritedElement {
       debugCanModifyProviders ??= _debugCanModifyProviders;
     }
 
-    vsyncOverride ??= _flutterVsync;
+    _containerOf(widget).scheduler.flutterVsyncs.add(_flutterVsync);
     super.mount(parent, newSlot);
   }
 
@@ -352,7 +352,7 @@ in a widget life-cycle, such as but not limited to:
 - initState
 - dispose
 - didUpdateWidget
-- didChangeDepedencies
+- didChangeDependencies
 
 Modifying a provider inside those life-cycles is not allowed, as it could
 lead to an inconsistent UI state. For example, two widgets could listen to the
@@ -364,7 +364,7 @@ To fix this problem, you have one of two solutions:
   life-cycle. For example, maybe you could update your provider inside a button's
   onPressed instead.
 
-- Delay your modification, such as by encasuplating the modification
+- Delay your modification, such as by encapsulating the modification
   in a `Future(() {...})`.
   This will perform your update after the widget tree is done building.
 ''',
@@ -380,9 +380,7 @@ To fix this problem, you have one of two solutions:
       debugCanModifyProviders = null;
     }
 
-    if (vsyncOverride == _flutterVsync) {
-      vsyncOverride = null;
-    }
+    _containerOf(widget).scheduler.flutterVsyncs.remove(_flutterVsync);
 
     super.unmount();
   }

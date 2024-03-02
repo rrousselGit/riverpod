@@ -5,7 +5,7 @@ import 'reading_counter.dart';
 /* SNIPPET START */
 
 class HomeView extends ConsumerStatefulWidget {
-  const HomeView({Key? key}) : super(key: key);
+  const HomeView({super.key});
 
   @override
   HomeViewState createState() => HomeViewState();

@@ -1,20 +1,12 @@
 part of '../framework.dart';
 
-/// A way to override [vsync], used by Flutter to synchronize a container
-/// with the widget tree.
+/// A listener used to determine when providers should rebuild.
+/// This is used to synchronize provider rebuilds when widget rebuilds.
 @internal
-void Function(void Function() task)? vsyncOverride;
+typedef Vsync = void Function(void Function());
 
 void _defaultVsync(void Function() task) {
   Future(task);
-}
-
-/// A function that controls the refresh rate of providers.
-///
-/// Defaults to refreshing providers at the end of the next event-loop.
-@internal
-void Function(void Function()) get vsync {
-  return vsyncOverride ?? _defaultVsync;
 }
 
 /// The object that handles when providers are refreshed and disposed.
@@ -23,7 +15,41 @@ void Function(void Function()) get vsync {
 /// notified that they wanted to rebuild.
 ///
 /// Providers are disposed if they spent at least one full frame without any listener.
-class _ProviderScheduler {
+@internal
+class ProviderScheduler {
+  var _disposed = false;
+
+  /// A way to override [vsync], used by Flutter to synchronize a container
+  /// with the widget tree.
+  @internal
+  final flutterVsyncs = <Vsync>{};
+
+  /// A function that controls the refresh rate of providers.
+  ///
+  /// Defaults to refreshing providers at the end of the next event-loop.
+  @internal
+  void Function(void Function()) get vsync {
+    if (flutterVsyncs.isNotEmpty) {
+      // Notify all InheritedWidgets of a possible rebuild.
+      // At the same time, we only execute the task once, in whichever
+      // InheritedWidget that rebuilds first.
+      return (task) {
+        var invoked = false;
+        void invoke() {
+          if (invoked) return;
+          invoked = true;
+          task();
+        }
+
+        for (final flutterVsync in flutterVsyncs) {
+          flutterVsync(invoke);
+        }
+      };
+    }
+
+    return _defaultVsync;
+  }
+
   final _stateToDispose = <AutoDisposeProviderElementMixin<Object?>>[];
   final _stateToRefresh = <ProviderElementBase<Object?>>[];
 
@@ -37,7 +63,13 @@ class _ProviderScheduler {
   }
 
   void _scheduleTask() {
-    if (_pendingTaskCompleter != null) return;
+    // Don't schedule a task if there is already one pending or if the scheduler
+    // is disposed.
+    // It is possible that during disposal of a ProviderContainer, if a provider
+    // uses ref.keepAlive(), the keepAlive closure will try to schedule a task.
+    // In this case, we don't want to schedule a task as the container is already
+    // disposed.
+    if (_pendingTaskCompleter != null || _disposed) return;
     _pendingTaskCompleter = Completer<void>();
     vsync(_task);
   }
@@ -98,6 +130,7 @@ class _ProviderScheduler {
   }
 
   void dispose() {
+    _disposed = true;
     _pendingTaskCompleter?.complete();
     _pendingTaskCompleter = null;
   }

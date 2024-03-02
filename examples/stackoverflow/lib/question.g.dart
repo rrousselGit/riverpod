@@ -8,22 +8,24 @@ part of 'question.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_QuestionsResponse _$$_QuestionsResponseFromJson(Map<String, dynamic> json) =>
-    _$_QuestionsResponse(
+_$QuestionsResponseImpl _$$QuestionsResponseImplFromJson(
+        Map<String, dynamic> json) =>
+    _$QuestionsResponseImpl(
       items: (json['items'] as List<dynamic>)
           .map((e) => Question.fromJson(e as Map<String, dynamic>))
           .toList(),
       total: json['total'] as int,
     );
 
-Map<String, dynamic> _$$_QuestionsResponseToJson(
-        _$_QuestionsResponse instance) =>
+Map<String, dynamic> _$$QuestionsResponseImplToJson(
+        _$QuestionsResponseImpl instance) =>
     <String, dynamic>{
       'items': instance.items,
       'total': instance.total,
     };
 
-_$_Question _$$_QuestionFromJson(Map<String, dynamic> json) => _$_Question(
+_$QuestionImpl _$$QuestionImplFromJson(Map<String, dynamic> json) =>
+    _$QuestionImpl(
       tags: (json['tags'] as List<dynamic>).map((e) => e as String).toList(),
       viewCount: json['view_count'] as int,
       score: json['score'] as int,
@@ -41,7 +43,7 @@ _$_Question _$$_QuestionFromJson(Map<String, dynamic> json) => _$_Question(
       body: json['body'] as String,
     );
 
-Map<String, dynamic> _$$_QuestionToJson(_$_Question instance) =>
+Map<String, dynamic> _$$QuestionImplToJson(_$QuestionImpl instance) =>
     <String, dynamic>{
       'tags': instance.tags,
       'view_count': instance.viewCount,

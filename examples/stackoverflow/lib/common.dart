@@ -7,7 +7,7 @@ final client = Provider((ref) => Dio());
 
 /// A Provider that exposes the current theme.
 ///
-/// This is unimplemented by default, and will be overriden inside [MaterialApp]
+/// This is unimplemented by default, and will be overridden inside [MaterialApp]
 /// with the current theme obtained using a [BuildContext].
 final themeProvider = Provider<ThemeData>(
   (ref) => throw UnimplementedError(),

@@ -26,10 +26,7 @@ extension AsyncTransition<T> on ProviderElementBase<AsyncValue<T>> {
     } else {
 // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
       setState(
-        newState.copyWithPrevious(
-          previous,
-          isRefresh: seamless,
-        ),
+        newState._cast<T>().copyWithPrevious(previous, isRefresh: seamless),
       );
     }
   }
@@ -73,7 +70,7 @@ extension AsyncTransition<T> on ProviderElementBase<AsyncValue<T>> {
 ///   // Reading .value will be throw during error and return null on "loading" states.
 ///   final User user = ref.watch(userProvider).value;
 ///
-///   // Reading .value will be throw both on loading and errorstates.
+///   // Reading .value will be throw both on loading and error states.
 ///   final User user2 = ref.watch(userProvider).requiredValue;
 ///
 ///   ...
@@ -160,12 +157,33 @@ abstract class AsyncValue<T> {
   ///     });
   ///   }
   /// }
+  ///
+  /// An optional callback can be specified to catch errors only under a certain condition.
+  /// In the following example, we catch all exceptions beside FormatExceptions.
+  ///
+  /// ```dart
+  ///   AsyncValue.guard(
+  ///    () async { /* ... */ },
+  ///     // Catch all errors beside [FormatException]s.
+  ///    (err) => err is! FormatException,
+  ///   );
+  /// }
   /// ```
-  static Future<AsyncValue<T>> guard<T>(Future<T> Function() future) async {
+  static Future<AsyncValue<T>> guard<T>(
+    Future<T> Function() future, [
+    bool Function(Object)? test,
+  ]) async {
     try {
       return AsyncValue.data(await future());
     } catch (err, stack) {
-      return AsyncValue.error(err, stack);
+      if (test == null) {
+        return AsyncValue.error(err, stack);
+      }
+      if (test(err)) {
+        return AsyncValue.error(err, stack);
+      }
+
+      Error.throwWithStackTrace(err, stack);
     }
   }
 
@@ -202,6 +220,9 @@ abstract class AsyncValue<T> {
 
   /// The stacktrace of [error].
   StackTrace? get stackTrace;
+
+  /// Casts the [AsyncValue] to a different type.
+  AsyncValue<R> _cast<R>();
 
   /// Perform some action based on the current state of the [AsyncValue].
   ///
@@ -331,6 +352,17 @@ class AsyncData<T> extends AsyncValue<T> {
   }) {
     return this;
   }
+
+  @override
+  AsyncValue<R> _cast<R>() {
+    if (T == R) return this as AsyncValue<R>;
+    return AsyncData<R>._(
+      value as R,
+      isLoading: isLoading,
+      error: error,
+      stackTrace: stackTrace,
+    );
+  }
 }
 
 /// {@macro asyncvalue.loading}
@@ -364,6 +396,17 @@ class AsyncLoading<T> extends AsyncValue<T> {
 
   @override
   final StackTrace? stackTrace;
+
+  @override
+  AsyncValue<R> _cast<R>() {
+    if (T == R) return this as AsyncValue<R>;
+    return AsyncLoading<R>._(
+      hasValue: hasValue,
+      value: value as R?,
+      error: error,
+      stackTrace: stackTrace,
+    );
+  }
 
   @override
   R map<R>({
@@ -458,6 +501,18 @@ class AsyncError<T> extends AsyncValue<T> {
 
   @override
   final StackTrace stackTrace;
+
+  @override
+  AsyncValue<R> _cast<R>() {
+    if (T == R) return this as AsyncValue<R>;
+    return AsyncError<R>._(
+      error,
+      stackTrace: stackTrace,
+      isLoading: isLoading,
+      value: _value as R?,
+      hasValue: hasValue,
+    );
+  }
 
   @override
   R map<R>({

@@ -1,11 +1,10 @@
 name: my_project
 
-
-
 packages:
-  - website/**
+  - website
   - packages/**
   - examples/**
+  - tools/**
 
 scripts:
   # we voluntarily do not use melos inside goldens
@@ -19,40 +18,6 @@ scripts:
     cd MELOS_ROOT_PATH/packages/riverpod_cli/fixtures/unified_syntax/golden && 
     flutter pub get
 
-  analyze:
-    run: |
-      melos exec -c 1 -- \
-        flutter analyze .
-    description: |
-      Run `dart analyze` in all packages.
-       - Note: you can also rely on your IDEs Dart Analysis / Issues window.
-
   generate:
-    run: melos run generate:dart && melos run generate:flutter
+    run: melos exec --depends-on=build_runner -- "dart run build_runner build -d"
     description: Build all generated files for Dart & Flutter packages in this project.
-
-  generate:dart:
-    run: melos exec -c 1 --depends-on="build_runner" --no-flutter --ignore="riverpod_lint_flutter_test" -- "dart run build_runner build --delete-conflicting-outputs"
-    description: Build all generated files for Dart packages in this project.
-
-  generate:flutter:
-    run: melos exec -c 1 --depends-on="build_runner" --flutter -- "flutter pub run build_runner build --delete-conflicting-outputs"
-    description: Build all generated files for Flutter packages in this project.
-
-  test:
-    run: melos run test:dart --no-select && melos run test:flutter --no-select
-    description: Run all Dart & Flutter tests in this project.
-
-  test:dart:
-    run: melos exec  -c 1 --fail-fast -- "\$MELOS_ROOT_PATH/scripts/coverage.sh"
-    description: Run Dart tests for a specific package in this project.
-    packageFilters:
-      flutter: false
-      dirExists: test
-
-  test:flutter:
-    run: melos exec --dir-exists="test" -c 1 --fail-fast -- "flutter test --coverage"
-    description: Run Flutter tests for a specific package in this project.
-    packageFilters:
-      flutter: true
-      dirExists: test

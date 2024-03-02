@@ -1,6 +1,20 @@
 ---
 title: Providers
+version: 1
 ---
+
+import creatingProvider from "./providers/creating_a_provider";
+import declaringManyProviders from "./providers/declaring_many_providers";
+import {
+  AutoSnippet,
+} from "/src/components/CodeSnippet";
+import { Link } from "/src/components/Link";
+
+:::caution
+The content of this page may be outdated.  
+It will be updated in the future, but for now you may want to refer to the content
+in the top of the sidebar instead (introduction/essentials/case-studies/...)
+:::
 
 Now that we have installed [Riverpod], let's talk about "providers".
 
@@ -38,11 +52,7 @@ Providers come in many variants, but they all work the same way.
 
 The most common usage is to declare them as global constants like so:
 
-```dart
-final myProvider = Provider((ref) {
-  return MyValue();
-});
-```
+<AutoSnippet language="dart" {...creatingProvider}></AutoSnippet>
 
 :::note
 Do not be frightened by the global aspect of providers.
@@ -60,7 +70,7 @@ This snippet consists of three components:
   [Provider] is the most basic of all providers. It exposes an object that never
   changes.
   We could replace [Provider] with other providers like [StreamProvider] or
-  [StateNotifierProvider], to change how the value is interacted with.
+  [NotifierProvider], to change how the value is interacted with.
 
 - A function that creates the shared state.
   That function will always receive an object called `ref` as a parameter. This object
@@ -77,10 +87,7 @@ You can declare as many providers as you want without limitations.
 As opposed to when using `package:provider`, [Riverpod] allows creating multiple
 providers exposing a state of the same "type":
 
-```dart
-final cityProvider = Provider((ref) => 'London');
-final countryProvider = Provider((ref) => 'England');
-```
+<AutoSnippet language="dart" {...declaringManyProviders}></AutoSnippet>
 
 The fact that both providers create a `String` does not cause any problem.
 :::
@@ -104,21 +111,21 @@ There are multiple types of providers for multiple different use cases.
 With all of these providers available, it is sometimes difficult to understand when to use one provider type over another.
 Use the table below to choose a provider that fits what you want to provide to the widget tree.
 
-| Provider Type            | Provider Create Function             | Example Use Case                                                     |
-| ------------------------ | ------------------------------------ | -------------------------------------------------------------------- |
-| [Provider]               | Returns any type                     | A service class / computed property (filtered list)                  |
-| [StateProvider]          | Returns any type                     | A filter condition / simple state object                             |
-| [FutureProvider]         | Returns a Future of any type         | A result from an API call                                            |
-| [StreamProvider]         | Returns a Stream of any type         | A stream of results from an API                                      |
-| [StateNotifierProvider]  | Returns a subclass of StateNotifier  | A complex state object that is immutable except through an interface |
-| [ChangeNotifierProvider] | Returns a subclass of ChangeNotifier | A complex state object that requires mutability                      |
+| Provider Type            | Provider Create Function              | Example Use Case                                                                                      |
+| ------------------------ | ------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| [Provider]               | Returns any type                      | A service class / computed property (filtered list)                                                   |
+| [StateProvider]          | Returns any type                      | A filter condition / simple state object                                                              |
+| [FutureProvider]         | Returns a Future of any type          | A result from an API call                                                                             |
+| [StreamProvider]         | Returns a Stream of any type          | A stream of results from an API                                                                       |
+| [NotifierProvider]       | Returns a subclass of (Async)Notifier | A complex state object that is immutable except through an interface                                  |
+| [StateNotifierProvider]  | Returns a subclass of StateNotifier   | A complex state object that is immutable except through an interface. Prefer using a notifierProvider |
+| [ChangeNotifierProvider] | Returns a subclass of ChangeNotifier  | A complex state object that requires mutability                                                       |
 
 :::caution
-While all providers have their purpose, [ChangeNotifierProvider]s are not recommended for scalable applications, 
-because of issues with mutable state.
-It exists in the `flutter_riverpod` package to provide an easy migration path from `package:provider`, and allows
-for some flutter specific use-cases such as integration with some Navigator 2 packages.
-:::
+While all providers have their purpose, [ChangeNotifierProvider]s are not recommended for scalable applications. See <Link documentID="concepts/why_immutability" />. It exists in the
+`flutter_riverpod` package to provide an easy migration path from
+`package:provider`, and allows for some flutter specific use-cases such as
+integration with some Navigator 2 packages. :::
 
 ## Provider Modifiers
 
@@ -135,9 +142,11 @@ final myFamilyProvider = Provider.family<String, int>((ref, id) => '$id');
 
 At the moment, there are two modifiers available:
 
-- [`.autoDispose`](/docs/concepts/modifiers/auto_dispose), which will make the provider automatically destroy its state
-  when it is no longer being listened to.
-- [`.family`](/docs/concepts/modifiers/family), which allows creating a provider from external parameters.
+- <Link documentID="concepts/modifiers/auto_dispose" />, which will make the
+  provider automatically destroy its state when it is no longer being listened
+  to.
+- <Link documentID="concepts/modifiers/family" />, which allows creating a
+  provider from external parameters.
 
 :::note
 A provider can use multiple modifiers at once:
@@ -152,8 +161,8 @@ final userProvider = FutureProvider.autoDispose.family<User, int>((ref, userId) 
 
 That's it for this guide!
 
-You can continue with [How to read a provider](/docs/concepts/reading).
-Alternatively, you can see [How to combine providers](/docs/concepts/combining_providers).
+You can continue with <Link documentID="concepts/reading"/>.
+Alternatively, you can see <Link documentID="concepts/combining_providers"/>.
 
 [get_it]: http://pub.dev/packages/get_it
 [inheritedwidget]: https://api.flutter.dev/flutter/widgets/InheritedWidget-class.html
@@ -168,6 +177,6 @@ Alternatively, you can see [How to combine providers](/docs/concepts/combining_p
 [futureprovider]: /docs/providers/future_provider
 [stateprovider]: /docs/providers/state_provider
 [statenotifierprovider]: /docs/providers/state_notifier_provider
+[notifierProvider]: /docs/providers/notifier_provider
 [changenotifierprovider]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ChangeNotifierProvider-class.html
-
 [providerscope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
