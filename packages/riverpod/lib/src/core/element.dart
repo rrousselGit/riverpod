@@ -649,7 +649,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   /// On the other hand, this life-cycle will not be executed when a provider
   /// rebuilds.
   ///
-  /// As opposed to [Ref._dispose], this life-cycle is executed only
+  /// As opposed to [runOnDispose], this life-cycle is executed only
   /// for the lifetime of this element.
   @protected
   @mustCallSuper
