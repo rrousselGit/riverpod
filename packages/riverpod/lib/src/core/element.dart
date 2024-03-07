@@ -213,7 +213,7 @@ This could mean a few things:
     _debugCurrentCreateHash = provider.debugGetCreateSourceHash();
 
     if (previousHash != _debugCurrentCreateHash) {
-      ref?.invalidateSelf();
+      invalidateSelf(asReload: false);
     }
   }
 
@@ -418,6 +418,26 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     debugCanModifyProviders?.call();
   }
 
+  void invalidateSelf({required bool asReload}) {
+    if (asReload) _didChangeDependency = true;
+    if (_mustRecomputeState) return;
+
+    _mustRecomputeState = true;
+    runOnDispose();
+    _mayNeedDispose();
+    container.scheduler.scheduleProviderRefresh(this);
+
+    // We don't call this._markDependencyMayHaveChanged here because we voluntarily
+    // do not want to set the _dependencyMayHaveChanged flag to true.
+    // Since the dependency is known to have changed, there is no reason to try
+    // and "flush" it, as it will already get rebuilt.
+    visitChildren(
+      elementVisitor: (element) => element._markDependencyMayHaveChanged(),
+      listenableVisitor: (notifier) =>
+          notifier.notifyDependencyMayHaveChanged(),
+    );
+  }
+
   void _notifyListeners(
     Result<StateT> newState,
     Result<StateT>? previousStateResult, {
@@ -504,7 +524,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     );
 
     for (var i = 0; i < _providerDependents.length; i++) {
-      _providerDependents[i].ref?.invalidateSelf(asReload: true);
+      _providerDependents[i].invalidateSelf(asReload: true);
     }
 
     for (final observer in container.observers) {
@@ -578,9 +598,9 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     // Not part of the public "Ref" API
     void Function()? onDependencyMayHaveChanged,
   }) {
-    ref?._assertNotOutdated();
-    assert(!_debugIsRunningSelector, 'Cannot call ref.read inside a selector');
-    if (kDebugMode) ref?._debugAssertCanDependOn(listenable);
+    final ref = this.ref!;
+    ref._throwIfInvalidUsage();
+    if (kDebugMode) ref._debugAssertCanDependOn(listenable);
 
     return listenable.addListener(
       this,

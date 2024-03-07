@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/src/internals.dart' show UnmountedRefException;
 import 'package:test/test.dart';
 
 import '../utils.dart';
@@ -15,6 +16,7 @@ final refMethodsThatDependOnProviders =
   'listen': (ref, p) => ref.listen(p, (prev, next) {}),
   'invalidate': (ref, p) => ref.invalidate(p),
   'refresh': (ref, p) => ref.refresh(p),
+  'exists': (ref, p) => ref.exists(p),
 };
 final refMethodsThatDependOnListenables =
     <String, void Function(Ref<Object?> ref, ProviderListenable<Object?>)>{
@@ -29,6 +31,175 @@ final refMethodsThatDependOnProviderOrFamilies =
 
 void main() {
   group('Ref', () {
+    test('asserts that a lifecycle cannot be used after a ref is unmounted',
+        () {
+      late Ref<Object?> ref;
+      final container = ProviderContainer.test();
+      final dep = StateProvider((ref) => 0);
+      final provider = Provider<Object?>((r) {
+        r.watch(dep);
+        ref = r;
+        return Object();
+      });
+
+      container.read(provider);
+
+      container.read(dep.notifier).state++;
+
+      final another = Provider((ref) => 0);
+
+      expect(
+        () => ref.state,
+        throwsA(isA<UnmountedRefException>()),
+      );
+      expect(
+        () => ref.state = 42,
+        throwsA(isA<UnmountedRefException>()),
+      );
+      expect(
+        () => ref.watch(another),
+        throwsA(isA<UnmountedRefException>()),
+      );
+      expect(
+        () => ref.invalidateSelf(),
+        throwsA(isA<UnmountedRefException>()),
+      );
+      expect(
+        () => ref.invalidate(dep),
+        throwsA(isA<UnmountedRefException>()),
+      );
+      expect(
+        () => ref.refresh(another),
+        throwsA(isA<UnmountedRefException>()),
+      );
+      expect(
+        () => ref.read(another),
+        throwsA(isA<UnmountedRefException>()),
+      );
+      expect(
+        () => ref.onDispose(() {}),
+        throwsA(isA<UnmountedRefException>()),
+      );
+      expect(
+        () => ref.onAddListener(() {}),
+        throwsA(isA<UnmountedRefException>()),
+      );
+      expect(
+        () => ref.onCancel(() {}),
+        throwsA(isA<UnmountedRefException>()),
+      );
+      expect(
+        () => ref.onRemoveListener(() {}),
+        throwsA(isA<UnmountedRefException>()),
+      );
+      expect(
+        () => ref.onResume(() {}),
+        throwsA(isA<UnmountedRefException>()),
+      );
+      expect(
+        () => ref.notifyListeners(),
+        throwsA(isA<UnmountedRefException>()),
+      );
+      expect(
+        () => ref.listen(another, (_, __) {}),
+        throwsA(isA<UnmountedRefException>()),
+      );
+      expect(
+        () => ref.exists(another),
+        throwsA(isA<UnmountedRefException>()),
+      );
+
+      expect(
+        () => ref.keepAlive(),
+        throwsA(isA<UnmountedRefException>()),
+      );
+    });
+
+    test('asserts that a lifecycle cannot be used inside selectors', () {
+      late Ref<Object?> ref;
+      final container = ProviderContainer.test();
+      final dep = StateProvider((ref) => 0);
+      final provider = Provider<Object?>((r) {
+        r.watch(dep);
+        ref = r;
+        return Object();
+      });
+
+      container.read(provider);
+
+      container.read(dep.notifier).state++;
+
+      final another = Provider((ref) => 0);
+
+      expect(
+        () => container.read(provider.select((_) => ref.state)),
+        throwsA(isA<AssertionError>()),
+      );
+      expect(
+        () => container.read(provider.select((_) => ref.state = 42)),
+        throwsA(isA<AssertionError>()),
+      );
+      expect(
+        () => container.read(provider.select((_) => ref.watch(another))),
+        throwsA(isA<AssertionError>()),
+      );
+      expect(
+        () => container.read(provider.select((_) => ref.invalidateSelf())),
+        throwsA(isA<AssertionError>()),
+      );
+      expect(
+        () => container.read(provider.select((_) => ref.invalidate(dep))),
+        throwsA(isA<AssertionError>()),
+      );
+      expect(
+        () => container.read(provider.select((_) => ref.refresh(another))),
+        throwsA(isA<AssertionError>()),
+      );
+      expect(
+        () => container.read(provider.select((_) => ref.read(another))),
+        throwsA(isA<AssertionError>()),
+      );
+      expect(
+        () => container.read(provider.select((_) => ref.onDispose(() {}))),
+        throwsA(isA<AssertionError>()),
+      );
+      expect(
+        () => container.read(provider.select((_) => ref.onAddListener(() {}))),
+        throwsA(isA<AssertionError>()),
+      );
+      expect(
+        () => container.read(provider.select((_) => ref.onCancel(() {}))),
+        throwsA(isA<AssertionError>()),
+      );
+      expect(
+        () =>
+            container.read(provider.select((_) => ref.onRemoveListener(() {}))),
+        throwsA(isA<AssertionError>()),
+      );
+      expect(
+        () => container.read(provider.select((_) => ref.onResume(() {}))),
+        throwsA(isA<AssertionError>()),
+      );
+      expect(
+        () => container.read(provider.select((_) => ref.notifyListeners())),
+        throwsA(isA<AssertionError>()),
+      );
+      expect(
+        () => container
+            .read(provider.select((_) => ref.listen(another, (_, __) {}))),
+        throwsA(isA<AssertionError>()),
+      );
+      expect(
+        () => container.read(provider.select((_) => ref.exists(another))),
+        throwsA(isA<AssertionError>()),
+      );
+
+      expect(
+        () => container.read(provider.select((_) => ref.keepAlive())),
+        throwsA(isA<AssertionError>()),
+      );
+    });
+
     group('invalidate', () {
       test('can disposes of the element if not used anymore', () async {
         late Ref<Object?> ref;
@@ -133,47 +304,6 @@ void main() {
         );
       });
     });
-
-    test(
-      'cannot call ref.watch/ref.read/ref.listen/ref.onDispose after a dependency changed',
-      () {
-        // TODO assert invalidate & co also throw
-        late Ref<Object?> ref;
-        final container = ProviderContainer.test();
-        final dep = StateProvider((ref) => 0);
-        final provider = Provider((r) {
-          r.watch(dep);
-          ref = r;
-        });
-
-        container.read(provider);
-
-        container.read(dep.notifier).state++;
-
-        final another = Provider((ref) => 0);
-
-        expect(
-          () => ref.watch(another),
-          throwsA(isA<AssertionError>()),
-        );
-        expect(
-          () => ref.refresh(another),
-          throwsA(isA<AssertionError>()),
-        );
-        expect(
-          () => ref.read(another),
-          throwsA(isA<AssertionError>()),
-        );
-        expect(
-          () => ref.onDispose(() {}),
-          throwsA(isA<AssertionError>()),
-        );
-        expect(
-          () => ref.listen(another, (_, __) {}),
-          throwsA(isA<AssertionError>()),
-        );
-      },
-    );
 
     group(
         'asserts that a provider cannot depend on a provider that is not in its dependencies:',
@@ -1563,6 +1693,23 @@ void main() {
     });
 
     group('mounted', () {
+      test('stays false on older refs while new refs are building', () {
+        final container = ProviderContainer.test();
+        late Ref<int> ref;
+        final provider = Provider<int>((r) {
+          ref = r;
+          return 0;
+        });
+
+        container.read(provider);
+        final oldRef = ref;
+
+        container.refresh(provider);
+
+        expect(oldRef.mounted, false);
+        expect(ref.mounted, true);
+      });
+
       test('is false during onDispose caused by ref.watch', () {
         final container = ProviderContainer.test();
         bool? mounted;

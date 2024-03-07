@@ -27,6 +27,7 @@ export 'src/framework.dart'
         TransitiveFamilyOverride,
         TransitiveProviderOverride,
         ProviderPointer,
+        UnmountedRefException,
         ProviderPointerManager,
         ProviderDirectory,
         $AsyncClassModifier,

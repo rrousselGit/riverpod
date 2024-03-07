@@ -774,7 +774,6 @@ class ProviderContainer implements Node {
       case ProviderBase<Object?>():
         _pointerManager
             .readElement(provider)
-            ?.ref
             ?.invalidateSelf(asReload: asReload);
       case Family():
         for (final element in _pointerManager.listFamily(provider)) {

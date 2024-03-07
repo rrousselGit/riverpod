@@ -153,5 +153,7 @@ class _AsyncSelector<InputT, OutputT> with ProviderListenable<Future<OutputT>> {
   }
 
   @override
-  Future<OutputT> read(Node node) => future.read(node).then(selector);
+  Future<OutputT> read(Node node) => future.read(node).then(
+        (v) => _select(v).requireState,
+      );
 }

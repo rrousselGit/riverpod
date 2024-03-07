@@ -9,6 +9,16 @@ extension $RefArg on Ref<Object?> {
   ProviderElementBase<Object?> get $element => _element;
 }
 
+@internal
+class UnmountedRefException implements Exception {
+  @override
+  String toString() {
+    return 'Cannot use a Ref after it has been disposed. '
+        ' This typically happens when a provider rebuilt, but the previous "build" was still pending and is still performing operations.'
+        ' It is generally fine to let this exception be thrown, as it will be caught and handled by Riverpod.';
+  }
+}
+
 /// {@template riverpod.provider_ref_base}
 /// An object used by providers to interact with other providers and the life-cycles
 /// of the application.
@@ -21,6 +31,8 @@ extension $RefArg on Ref<Object?> {
 // TODO changelog breaking "ProviderElementBase" no-longer implements Ref
 // TODO changelog breaking: AutoDisposeRef and related interfaces are removed.
 //  Use the non-autodispose variant instead. They now have the same API.
+// TODO changelog breaking: All ref methods besides "mounted" now throw if used on unmounted refs.
+// TODO changelog patch: ref.exists now correct asserts that the ref can use the provider.
 base class Ref<StateT> {
   /// {@macro riverpod.provider_ref_base}
   Ref._(this._element);
@@ -40,7 +52,6 @@ base class Ref<StateT> {
 
   // TODO changelog minor: Added `Ref.mounted`, similar to `BuildContext.mounted`
   bool get mounted => _mounted;
-  // TODO test
   var _mounted = true;
 
   /// Obtains the state currently exposed by this provider.
@@ -52,8 +63,17 @@ base class Ref<StateT> {
   /// - on asynchronous providers, this will return an [AsyncLoading].
   ///
   /// Will throw if the provider threw during creation.
-  StateT get state => _element.readSelf();
-  set state(StateT newState) => _element.setStateResult(ResultData(newState));
+  StateT get state {
+    _throwIfInvalidUsage();
+
+    return _element.readSelf();
+  }
+
+  set state(StateT newState) {
+    _throwIfInvalidUsage();
+
+    _element.setStateResult(ResultData(newState));
+  }
 
   /// The [ProviderContainer] that this provider is associated with.
   ProviderContainer get container => _element.container;
@@ -117,11 +137,12 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
     }
   }
 
-  void _assertNotOutdated() {
+  void _throwIfInvalidUsage() {
     assert(
-      !_element._didChangeDependency,
-      'Cannot use ref functions after the dependency of a provider changed but before the provider rebuilt',
+      !_debugIsRunningSelector,
+      'Cannot call ref.listen inside a selector',
     );
+    if (!mounted) throw UnmountedRefException();
   }
 
   /// Requests for the state of a provider to not be disposed when all the
@@ -133,6 +154,8 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// If [keepAlive] is invoked multiple times, all [KeepAliveLink] will have
   /// to be closed for the provider to dispose itself when all listeners are removed.
   KeepAliveLink keepAlive() {
+    _throwIfInvalidUsage();
+
     final links = _keepAliveLinks ??= [];
 
     late KeepAliveLink link;
@@ -174,7 +197,8 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// {@endtemplate}
   @useResult
   T refresh<T>(Refreshable<T> refreshable) {
-    _assertNotOutdated();
+    _throwIfInvalidUsage();
+
     if (kDebugMode) _debugAssertCanDependOn(refreshable);
 
     return container.refresh(refreshable);
@@ -200,6 +224,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// If used on a provider which is not initialized, this method will have no effect.
   /// {@endtemplate}
   void invalidate(ProviderOrFamily providerOrFamily, {bool asReload = false}) {
+    _throwIfInvalidUsage();
     if (kDebugMode) _debugAssertCanDependOn(providerOrFamily);
 
     container.invalidate(providerOrFamily, asReload: asReload);
@@ -209,23 +234,9 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///
   /// {@macro riverpod.invalidate}
   void invalidateSelf({bool asReload = false}) {
-    if (asReload) _element._didChangeDependency = true;
-    if (_element._mustRecomputeState) return;
+    _throwIfInvalidUsage();
 
-    _element._mustRecomputeState = true;
-    _element.runOnDispose();
-    _element._mayNeedDispose();
-    container.scheduler.scheduleProviderRefresh(_element);
-
-    // We don't call this._markDependencyMayHaveChanged here because we voluntarily
-    // do not want to set the _dependencyMayHaveChanged flag to true.
-    // Since the dependency is known to have changed, there is no reason to try
-    // and "flush" it, as it will already get rebuilt.
-    _element.visitChildren(
-      elementVisitor: (element) => element._markDependencyMayHaveChanged(),
-      listenableVisitor: (notifier) =>
-          notifier.notifyDependencyMayHaveChanged(),
-    );
+    _element.invalidateSelf(asReload: asReload);
   }
 
   /// Notify dependents that this provider has changed.
@@ -244,6 +255,8 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// }
   /// ```
   void notifyListeners() {
+    _throwIfInvalidUsage();
+
     final currentResult = _element.stateResult;
     // If `notifyListeners` is used during `build`, the result will be null.
     // Throwing would be unnecessarily inconvenient, so we simply skip it.
@@ -263,6 +276,8 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// See also:
   /// - [onRemoveListener], for when a listener is removed
   void onAddListener(void Function() cb) {
+    _throwIfInvalidUsage();
+
     _onAddListeners ??= [];
     _onAddListeners!.add(cb);
   }
@@ -272,6 +287,8 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// See also:
   /// - [onAddListener], for when a listener is added
   void onRemoveListener(void Function() cb) {
+    _throwIfInvalidUsage();
+
     _onRemoveListeners ??= [];
     _onRemoveListeners!.add(cb);
   }
@@ -294,6 +311,8 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// - [onDispose], a life-cycle for when a provider is disposed.
   /// - [onResume], a life-cycle for when the provider is listened to again.
   void onCancel(void Function() cb) {
+    _throwIfInvalidUsage();
+
     _onCancelListeners ??= [];
     _onCancelListeners!.add(cb);
   }
@@ -309,6 +328,8 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// - [onDispose], a life-cycle for when a provider is disposed.
   /// - [onCancel], a life-cycle for when all listeners of a provider are removed.
   void onResume(void Function() cb) {
+    _throwIfInvalidUsage();
+
     _onResumeListeners ??= [];
     _onResumeListeners!.add(cb);
   }
@@ -360,10 +381,8 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///   a [ProviderContainer] at once.
   /// - [onCancel], a life-cycle for when all listeners of a provider are removed.
   void onDispose(void Function() listener) {
-    _assertNotOutdated();
-    if (!_mounted) {
-      throw StateError('Cannot call onDispose after a provider was dispose');
-    }
+    _throwIfInvalidUsage();
+
     _onDisposeListeners ??= [];
     _onDisposeListeners!.add(listener);
   }
@@ -403,9 +422,9 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// If possible, avoid using [read] and prefer [watch], which is generally
   /// safer to use.
   T read<T>(ProviderListenable<T> listenable) {
-    _assertNotOutdated();
-    assert(!_debugIsRunningSelector, 'Cannot call ref.read inside a selector');
+    _throwIfInvalidUsage();
     if (kDebugMode) _debugAssertCanDependOn(listenable);
+
     return container.read(listenable);
   }
 
@@ -442,7 +461,12 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// });
   /// ```
   /// {@endtemplate}
-  bool exists(ProviderBase<Object?> provider) => container.exists(provider);
+  bool exists(ProviderBase<Object?> provider) {
+    _throwIfInvalidUsage();
+    if (kDebugMode) _debugAssertCanDependOn(provider);
+
+    return container.exists(provider);
+  }
 
   /// Obtains the state of a provider and causes the state to be re-evaluated
   /// when that provider emits a new value.
@@ -507,9 +531,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// }
   /// ```
   T watch<T>(ProviderListenable<T> listenable) {
-    _assertNotOutdated();
-    assert(!_debugIsRunningSelector, 'Cannot call ref.watch inside a selector');
-
+    _throwIfInvalidUsage();
     if (listenable is! ProviderBase<T>) {
       final sub = _element.listen<T>(
         listenable,
